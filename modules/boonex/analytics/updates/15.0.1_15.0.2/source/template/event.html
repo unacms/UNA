@@ -1,0 +1,25 @@
+<div class="bx-analytics-detail">
+    <button type="button" class="bx-analytics-back" data-bx-analytics-open="event" data-bx-analytics-value="">__back__</button>
+    <h3 class="bx-analytics-detail-title">__title__</h3>
+    __tiles__
+    <div class="bx-analytics-chart bx-analytics-chart-sm">
+        <canvas role="img" aria-label="__chart_label__"></canvas>
+    </div>
+    <script type="application/json" class="bx-analytics-chart-data">__chart_json__</script>
+    <div class="bx-analytics-columns">
+        <div>
+            <h3 class="bx-analytics-subtitle">__platforms_title__</h3>
+            __platforms__
+        </div>
+        <div>
+            <bx_repeat:props>
+                <h3 class="bx-analytics-subtitle">__title__</h3>
+                __table__
+            </bx_repeat:props>
+            <bx_if:no_props>
+                <h3 class="bx-analytics-subtitle">__props_title__</h3>
+                <div class="bx-analytics-empty">__no_props__</div>
+            </bx_if:no_props>
+        </div>
+    </div>
+</div>

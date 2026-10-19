@@ -1,0 +1,30 @@
+__tabs__
+<div class="bx-analytics-panel" role="tabpanel" id="bx-analytics-panel-retention">
+    <bx_if:cookieless>
+        <p class="bx-analytics-note">__cookieless__</p>
+    </bx_if:cookieless>
+    <div class="bx-analytics-table-wrap" role="region" aria-label="__caption__" tabindex="0">
+        <table class="bx-analytics-table bx-analytics-cohorts">
+            <thead>
+                <tr>
+                    <th scope="col" class="bx-analytics-col-text">__cohort_title__</th>
+                    <th scope="col">__size_title__</th>
+                    <bx_repeat:weeks>
+                        <th scope="col">__week__</th>
+                    </bx_repeat:weeks>
+                </tr>
+            </thead>
+            <tbody>
+                <bx_repeat:rows>
+                    <tr>
+                        <th scope="row" class="bx-analytics-col-text">__start__</th>
+                        <td>__size__</td>
+                        <bx_repeat:cells>
+                            <td class="bx-analytics-cohort-cell __strong__" style="--bx-analytics-heat: __heat__">__percent__</td>
+                        </bx_repeat:cells>
+                    </tr>
+                </bx_repeat:rows>
+            </tbody>
+        </table>
+    </div>
+</div>

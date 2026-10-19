@@ -1,0 +1,224 @@
+SET @sName = 'bx_analytics';
+
+-- SETTINGS
+SET @iTypeId = (SELECT `id` FROM `sys_options_types` WHERE `name`=@sName LIMIT 1);
+
+UPDATE `sys_options_categories` SET `caption`='_bx_analytics_adm_stg_cpt_category_content', `order`='4' WHERE `name`='bx_analytics_general';
+
+DELETE FROM `sys_options_categories` WHERE `name`='bx_analytics_tracking';
+INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) VALUES(@iTypeId, 'bx_analytics_tracking', '_bx_analytics_adm_stg_cpt_category_tracking', 0, 1);
+SET @iCategoryId = LAST_INSERT_ID();
+
+DELETE FROM `sys_options` WHERE `name` IN ('bx_analytics_tracking', 'bx_analytics_platforms', 'bx_analytics_session_timeout', 'bx_analytics_online_window', 'bx_analytics_ignore_params', 'bx_analytics_track_bots', 'bx_analytics_track_actions', 'bx_analytics_limit_hits', 'bx_analytics_limit_visits');
+INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `info`, `value`, `type`, `extra`, `check`, `check_params`, `check_error`, `order`) VALUES
+(@iCategoryId, 'bx_analytics_tracking', '_bx_analytics_adm_stg_cpt_tracking', '_bx_analytics_adm_stg_inf_tracking', 'on', 'checkbox', '', '', '', '', 1),
+(@iCategoryId, 'bx_analytics_platforms', '_bx_analytics_adm_stg_cpt_platforms', '_bx_analytics_adm_stg_inf_platforms', 'core-web,next-web,rn-ios,rn-android,api,core', 'list', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:21:"get_options_platforms";}', '', '', '', 2),
+(@iCategoryId, 'bx_analytics_session_timeout', '_bx_analytics_adm_stg_cpt_session_timeout', '_bx_analytics_adm_stg_inf_session_timeout', '30', 'digit', '', '', '', '', 3),
+(@iCategoryId, 'bx_analytics_online_window', '_bx_analytics_adm_stg_cpt_online_window', '_bx_analytics_adm_stg_inf_online_window', '5', 'digit', '', '', '', '', 4),
+(@iCategoryId, 'bx_analytics_ignore_params', '_bx_analytics_adm_stg_cpt_ignore_params', '_bx_analytics_adm_stg_inf_ignore_params', 'range, tz, platform, metric, bucket, from, to, jfrom, f[*], tab_*, page_*, q_*', 'text', '', '', '', '', 5),
+(@iCategoryId, 'bx_analytics_track_bots', '_bx_analytics_adm_stg_cpt_track_bots', '_bx_analytics_adm_stg_inf_track_bots', 'on', 'checkbox', '', '', '', '', 6),
+(@iCategoryId, 'bx_analytics_track_actions', '_bx_analytics_adm_stg_cpt_track_actions', '_bx_analytics_adm_stg_inf_track_actions', 'on', 'checkbox', '', '', '', '', 7),
+(@iCategoryId, 'bx_analytics_limit_hits', '_bx_analytics_adm_stg_cpt_limit_hits', '_bx_analytics_adm_stg_inf_limit_hits', '300', 'digit', '', '', '', '', 8),
+(@iCategoryId, 'bx_analytics_limit_visits', '_bx_analytics_adm_stg_cpt_limit_visits', '_bx_analytics_adm_stg_inf_limit_visits', '100', 'digit', '', '', '', '', 9);
+
+DELETE FROM `sys_options_categories` WHERE `name`='bx_analytics_privacy';
+INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) VALUES(@iTypeId, 'bx_analytics_privacy', '_bx_analytics_adm_stg_cpt_category_privacy', 0, 2);
+SET @iCategoryId = LAST_INSERT_ID();
+
+DELETE FROM `sys_options` WHERE `name` IN ('bx_analytics_identity', 'bx_analytics_link_members', 'bx_analytics_respect_dnt', 'bx_analytics_exclude_levels', 'bx_analytics_exclude_ips', 'bx_analytics_exclude_paths', 'bx_analytics_trusted_proxies', 'bx_analytics_geo_source', 'bx_analytics_retention_days');
+INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `info`, `value`, `type`, `extra`, `check`, `check_params`, `check_error`, `order`) VALUES
+(@iCategoryId, 'bx_analytics_identity', '_bx_analytics_adm_stg_cpt_identity', '_bx_analytics_adm_stg_inf_identity', 'cookieless', 'select', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:20:"get_options_identity";}', '', '', '', 1),
+(@iCategoryId, 'bx_analytics_link_members', '_bx_analytics_adm_stg_cpt_link_members', '_bx_analytics_adm_stg_inf_link_members', 'on', 'checkbox', '', '', '', '', 2),
+(@iCategoryId, 'bx_analytics_respect_dnt', '_bx_analytics_adm_stg_cpt_respect_dnt', '_bx_analytics_adm_stg_inf_respect_dnt', 'on', 'checkbox', '', '', '', '', 3),
+(@iCategoryId, 'bx_analytics_exclude_levels', '_bx_analytics_adm_stg_cpt_exclude_levels', '_bx_analytics_adm_stg_inf_exclude_levels', '', 'list', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:15:"get_memberships";s:6:"params";a:0:{}s:5:"class";s:18:"TemplAuditServices";}', '', '', '', 4),
+(@iCategoryId, 'bx_analytics_exclude_ips', '_bx_analytics_adm_stg_cpt_exclude_ips', '_bx_analytics_adm_stg_inf_exclude_ips', '', 'text', '', '', '', '', 5),
+(@iCategoryId, 'bx_analytics_exclude_paths', '_bx_analytics_adm_stg_cpt_exclude_paths', '_bx_analytics_adm_stg_inf_exclude_paths', '', 'text', '', '', '', '', 6),
+(@iCategoryId, 'bx_analytics_trusted_proxies', '_bx_analytics_adm_stg_cpt_trusted_proxies', '_bx_analytics_adm_stg_inf_trusted_proxies', '', 'text', '', '', '', '', 7),
+(@iCategoryId, 'bx_analytics_geo_source', '_bx_analytics_adm_stg_cpt_geo_source', '_bx_analytics_adm_stg_inf_geo_source', 'headers', 'select', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:22:"get_options_geo_source";}', '', '', '', 8),
+(@iCategoryId, 'bx_analytics_retention_days', '_bx_analytics_adm_stg_cpt_retention_days', '_bx_analytics_adm_stg_inf_retention_days', '400', 'digit', '', '', '', '', 9);
+
+DELETE FROM `sys_options_categories` WHERE `name`='bx_analytics_health';
+INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) VALUES(@iTypeId, 'bx_analytics_health', '_bx_analytics_adm_stg_cpt_category_health', 0, 3);
+SET @iCategoryId = LAST_INSERT_ID();
+
+DELETE FROM `sys_options` WHERE `name` IN ('bx_analytics_track_errors', 'bx_analytics_errors_ignore', 'bx_analytics_track_vitals', 'bx_analytics_vitals_sample', 'bx_analytics_vitals_retention_days');
+INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `info`, `value`, `type`, `extra`, `check`, `check_params`, `check_error`, `order`) VALUES
+(@iCategoryId, 'bx_analytics_track_errors', '_bx_analytics_adm_stg_cpt_track_errors', '_bx_analytics_adm_stg_inf_track_errors', 'on', 'checkbox', '', '', '', '', 1),
+(@iCategoryId, 'bx_analytics_errors_ignore', '_bx_analytics_adm_stg_cpt_errors_ignore', '_bx_analytics_adm_stg_inf_errors_ignore', 'ResizeObserver loop*\nScript error.*\n*Non-Error promise rejection*', 'text', '', '', '', '', 2),
+(@iCategoryId, 'bx_analytics_track_vitals', '_bx_analytics_adm_stg_cpt_track_vitals', '_bx_analytics_adm_stg_inf_track_vitals', 'on', 'checkbox', '', '', '', '', 3),
+(@iCategoryId, 'bx_analytics_vitals_sample', '_bx_analytics_adm_stg_cpt_vitals_sample', '_bx_analytics_adm_stg_inf_vitals_sample', '100', 'digit', '', '', '', '', 4),
+(@iCategoryId, 'bx_analytics_vitals_retention_days', '_bx_analytics_adm_stg_cpt_vitals_retention_days', '_bx_analytics_adm_stg_inf_vitals_retention_days', '90', 'digit', '', '', '', '', 5);
+
+DELETE FROM `sys_options_categories` WHERE `name`='bx_analytics_system';
+INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) VALUES(@iTypeId, 'bx_analytics_system', '_bx_analytics_adm_stg_cpt_category_system', 1, 5);
+SET @iCategoryId = LAST_INSERT_ID();
+
+DELETE FROM `sys_options` WHERE `name` IN ('bx_analytics_revenue_backfill', 'bx_analytics_revenue_backfill_sbs');
+INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_params`, `check_error`, `order`) VALUES
+(@iCategoryId, 'bx_analytics_revenue_backfill', '', '0', 'digit', '', '', '', '', 1),
+(@iCategoryId, 'bx_analytics_revenue_backfill_sbs', '', '', 'text', '', '', '', '', 2);
+
+-- PAGES & BLOCKS
+UPDATE `sys_objects_page` SET `layout_id`='12', `meta_robots`='noindex' WHERE `object`='bx_analytics_page';
+
+DELETE FROM `sys_objects_page` WHERE `object`='bx_analytics_revenue';
+INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `uri`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`) VALUES
+('bx_analytics_revenue', '_bx_analytics_page_title_sys_revenue', '_bx_analytics_page_title_revenue', @sName, 5, 2147483647, 1, 'analytics-revenue', '', '', '', 'noindex', 0, 1, 0, 'BxAnalyticsPage', 'modules/boonex/analytics/classes/BxAnalyticsPage.php');
+
+DELETE FROM `sys_pages_blocks` WHERE `object`='bx_analytics_page' AND `title_system`='_bx_analytics_page_block_title_system_filters' AND `title`='_bx_analytics_page_block_title_filters';
+DELETE FROM `sys_pages_blocks` WHERE `object`='bx_analytics_page' AND `title_system`='_bx_analytics_page_block_title_system_overview' AND `title`='_bx_analytics_page_block_title_overview';
+DELETE FROM `sys_pages_blocks` WHERE `object`='bx_analytics_page' AND `title_system`='_bx_analytics_page_block_title_system_top_pages' AND `title`='_bx_analytics_page_block_title_top_pages';
+DELETE FROM `sys_pages_blocks` WHERE `object`='bx_analytics_page' AND `title_system`='_bx_analytics_page_block_title_system_top_sources' AND `title`='_bx_analytics_page_block_title_top_sources';
+DELETE FROM `sys_pages_blocks` WHERE `object`='bx_analytics_page' AND `title_system`='_bx_analytics_page_block_title_system_top_locations' AND `title`='_bx_analytics_page_block_title_top_locations';
+DELETE FROM `sys_pages_blocks` WHERE `object`='bx_analytics_page' AND `title_system`='_bx_analytics_page_block_title_system_top_devices' AND `title`='_bx_analytics_page_block_title_top_devices';
+DELETE FROM `sys_pages_blocks` WHERE `object`='bx_analytics_page' AND `title_system`='_bx_analytics_page_block_title_system_top_platforms' AND `title`='_bx_analytics_page_block_title_top_platforms';
+DELETE FROM `sys_pages_blocks` WHERE `object`='bx_analytics_page' AND `title_system`='_bx_analytics_page_block_title_system_canvas' AND `title`='_bx_analytics_page_block_title_canvas';
+DELETE FROM `sys_pages_blocks` WHERE `object`='bx_analytics_revenue';
+INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
+('bx_analytics_page', 2, @sName, '_bx_analytics_page_block_title_system_filters', '_bx_analytics_page_block_title_filters', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:17:"get_block_filters";}', 0, 1, 1, 1),
+('bx_analytics_page', 2, @sName, '_bx_analytics_page_block_title_system_overview', '_bx_analytics_page_block_title_overview', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:18:"get_block_overview";}', 0, 1, 1, 2),
+('bx_analytics_page', 2, @sName, '_bx_analytics_page_block_title_system_top_pages', '_bx_analytics_page_block_title_top_pages', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:5:"pages";}}', 0, 1, 1, 3),
+('bx_analytics_page', 2, @sName, '_bx_analytics_page_block_title_system_top_sources', '_bx_analytics_page_block_title_top_sources', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:7:"sources";}}', 0, 1, 1, 4),
+('bx_analytics_page', 3, @sName, '_bx_analytics_page_block_title_system_top_locations', '_bx_analytics_page_block_title_top_locations', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:9:"locations";}}', 0, 1, 1, 1),
+('bx_analytics_page', 3, @sName, '_bx_analytics_page_block_title_system_top_devices', '_bx_analytics_page_block_title_top_devices', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:7:"devices";}}', 0, 1, 1, 2),
+('bx_analytics_page', 3, @sName, '_bx_analytics_page_block_title_system_top_platforms', '_bx_analytics_page_block_title_top_platforms', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:9:"platforms";}}', 0, 1, 1, 3),
+('bx_analytics_page', 4, @sName, '_bx_analytics_page_block_title_system_canvas', '_bx_analytics_page_block_title_canvas', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:10:"get_canvas";}', 0, 1, 1, 1),
+('bx_analytics_revenue', 1, @sName, '_bx_analytics_page_block_title_system_filters', '_bx_analytics_page_block_title_filters', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:17:"get_block_filters";}', 0, 1, 1, 1),
+('bx_analytics_revenue', 1, @sName, '_bx_analytics_page_block_title_system_revenue', '_bx_analytics_page_block_title_revenue', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:7:"revenue";}}', 0, 1, 1, 2),
+('bx_analytics_revenue', 1, @sName, '_bx_analytics_page_block_title_system_subscriptions', '_bx_analytics_page_block_title_subscriptions', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:13:"subscriptions";}}', 0, 1, 1, 3),
+('bx_analytics_revenue', 1, @sName, '_bx_analytics_page_block_title_system_sales', '_bx_analytics_page_block_title_sales', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:5:"sales";}}', 0, 1, 1, 4),
+('bx_analytics_revenue', 1, @sName, '_bx_analytics_page_block_title_system_credits', '_bx_analytics_page_block_title_credits', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:7:"credits";}}', 0, 1, 1, 5);
+
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_filters' AND `title`='_bx_analytics_page_block_title_filters';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_overview' AND `title`='_bx_analytics_page_block_title_overview';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_top_pages' AND `title`='_bx_analytics_page_block_title_top_pages';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_top_sources' AND `title`='_bx_analytics_page_block_title_top_sources';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_top_locations' AND `title`='_bx_analytics_page_block_title_top_locations';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_top_devices' AND `title`='_bx_analytics_page_block_title_top_devices';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_top_platforms' AND `title`='_bx_analytics_page_block_title_top_platforms';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_table_pages' AND `title`='_bx_analytics_page_block_title_table_pages';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_table_sources' AND `title`='_bx_analytics_page_block_title_table_sources';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_realtime' AND `title`='_bx_analytics_page_block_title_realtime';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_map' AND `title`='_bx_analytics_page_block_title_map';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_bots' AND `title`='_bx_analytics_page_block_title_bots';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_events' AND `title`='_bx_analytics_page_block_title_events';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_sessions' AND `title`='_bx_analytics_page_block_title_sessions';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_users' AND `title`='_bx_analytics_page_block_title_users';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_journeys' AND `title`='_bx_analytics_page_block_title_journeys';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_retention' AND `title`='_bx_analytics_page_block_title_retention';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_goals' AND `title`='_bx_analytics_page_block_title_goals';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_funnels' AND `title`='_bx_analytics_page_block_title_funnels';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_revenue' AND `title`='_bx_analytics_page_block_title_revenue';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_subscriptions' AND `title`='_bx_analytics_page_block_title_subscriptions';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_sales' AND `title`='_bx_analytics_page_block_title_sales';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_credits' AND `title`='_bx_analytics_page_block_title_credits';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_errors' AND `title`='_bx_analytics_page_block_title_errors';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_performance' AND `title`='_bx_analytics_page_block_title_performance';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_query' AND `title`='_bx_analytics_page_block_title_query';
+DELETE FROM `sys_pages_blocks` WHERE `object`='' AND `module`=@sName AND `title_system`='_bx_analytics_page_block_title_system_canvas' AND `title`='_bx_analytics_page_block_title_canvas';
+INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
+('', 0, @sName, '_bx_analytics_page_block_title_system_filters', '_bx_analytics_page_block_title_filters', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:17:"get_block_filters";}', 0, 1, 1, 1),
+('', 0, @sName, '_bx_analytics_page_block_title_system_overview', '_bx_analytics_page_block_title_overview', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:18:"get_block_overview";}', 0, 1, 1, 2),
+('', 0, @sName, '_bx_analytics_page_block_title_system_top_pages', '_bx_analytics_page_block_title_top_pages', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:5:"pages";}}', 0, 1, 1, 3),
+('', 0, @sName, '_bx_analytics_page_block_title_system_top_sources', '_bx_analytics_page_block_title_top_sources', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:7:"sources";}}', 0, 1, 1, 4),
+('', 0, @sName, '_bx_analytics_page_block_title_system_top_locations', '_bx_analytics_page_block_title_top_locations', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:9:"locations";}}', 0, 1, 1, 5),
+('', 0, @sName, '_bx_analytics_page_block_title_system_top_devices', '_bx_analytics_page_block_title_top_devices', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:7:"devices";}}', 0, 1, 1, 6),
+('', 0, @sName, '_bx_analytics_page_block_title_system_top_platforms', '_bx_analytics_page_block_title_top_platforms', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:9:"platforms";}}', 0, 1, 1, 7),
+('', 0, @sName, '_bx_analytics_page_block_title_system_table_pages', '_bx_analytics_page_block_title_table_pages', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:15:"get_block_table";s:6:"params";a:1:{i:0;s:5:"pages";}}', 0, 1, 1, 8),
+('', 0, @sName, '_bx_analytics_page_block_title_system_table_sources', '_bx_analytics_page_block_title_table_sources', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:15:"get_block_table";s:6:"params";a:1:{i:0;s:7:"sources";}}', 0, 1, 1, 9),
+('', 0, @sName, '_bx_analytics_page_block_title_system_realtime', '_bx_analytics_page_block_title_realtime', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:8:"realtime";}}', 0, 1, 1, 10),
+('', 0, @sName, '_bx_analytics_page_block_title_system_map', '_bx_analytics_page_block_title_map', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:3:"map";}}', 0, 1, 1, 11),
+('', 0, @sName, '_bx_analytics_page_block_title_system_bots', '_bx_analytics_page_block_title_bots', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:4:"bots";}}', 0, 1, 1, 12),
+('', 0, @sName, '_bx_analytics_page_block_title_system_events', '_bx_analytics_page_block_title_events', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:6:"events";}}', 0, 1, 1, 13),
+('', 0, @sName, '_bx_analytics_page_block_title_system_sessions', '_bx_analytics_page_block_title_sessions', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:8:"sessions";}}', 0, 1, 1, 14),
+('', 0, @sName, '_bx_analytics_page_block_title_system_users', '_bx_analytics_page_block_title_users', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:5:"users";}}', 0, 1, 1, 15),
+('', 0, @sName, '_bx_analytics_page_block_title_system_journeys', '_bx_analytics_page_block_title_journeys', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:8:"journeys";}}', 0, 1, 1, 16),
+('', 0, @sName, '_bx_analytics_page_block_title_system_retention', '_bx_analytics_page_block_title_retention', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:9:"retention";}}', 0, 1, 1, 17),
+('', 0, @sName, '_bx_analytics_page_block_title_system_goals', '_bx_analytics_page_block_title_goals', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:5:"goals";}}', 0, 1, 1, 18),
+('', 0, @sName, '_bx_analytics_page_block_title_system_funnels', '_bx_analytics_page_block_title_funnels', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:7:"funnels";}}', 0, 1, 1, 19),
+('', 0, @sName, '_bx_analytics_page_block_title_system_revenue', '_bx_analytics_page_block_title_revenue', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:7:"revenue";}}', 0, 1, 1, 20),
+('', 0, @sName, '_bx_analytics_page_block_title_system_subscriptions', '_bx_analytics_page_block_title_subscriptions', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:13:"subscriptions";}}', 0, 1, 1, 21),
+('', 0, @sName, '_bx_analytics_page_block_title_system_sales', '_bx_analytics_page_block_title_sales', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:5:"sales";}}', 0, 1, 1, 22),
+('', 0, @sName, '_bx_analytics_page_block_title_system_credits', '_bx_analytics_page_block_title_credits', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:7:"credits";}}', 0, 1, 1, 23),
+('', 0, @sName, '_bx_analytics_page_block_title_system_errors', '_bx_analytics_page_block_title_errors', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:6:"errors";}}', 0, 1, 1, 24),
+('', 0, @sName, '_bx_analytics_page_block_title_system_performance', '_bx_analytics_page_block_title_performance', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:11:"performance";}}', 0, 1, 1, 25),
+('', 0, @sName, '_bx_analytics_page_block_title_system_query', '_bx_analytics_page_block_title_query', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:5:"query";}}', 0, 1, 1, 26),
+('', 0, @sName, '_bx_analytics_page_block_title_system_canvas', '_bx_analytics_page_block_title_canvas', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:10:"get_canvas";}', 0, 1, 1, 27);
+
+DELETE FROM `sys_pages_blocks` WHERE `object`='sys_std_dashboard' AND `title`='_bx_analytics_page_block_title_std_dash_traffic';
+SET @iStdDashboardOrder = (SELECT IFNULL(MAX(`order`), 0) + 1 FROM `sys_pages_blocks` WHERE `object` = 'sys_std_dashboard' AND `cell_id` = 1);
+INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `icon`, `designbox_id`, `class`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
+('sys_std_dashboard', 1, @sName, '', '_bx_analytics_page_block_title_std_dash_traffic', 'chart-line', 11, 'bx-dbd-block-medium', 0, 0, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:28:"get_studio_dashboard_traffic";}', 0, 0, 1, @iStdDashboardOrder);
+
+-- MENUS
+UPDATE `sys_menu_items` SET `icon`='chart-line' WHERE `set_name`='sys_account_dashboard' AND `module`=@sName AND `name`='dashboard-analytics';
+DELETE FROM `sys_menu_items` WHERE `set_name`='sys_account_dashboard' AND `module`=@sName AND `name`='analytics-revenue';
+SET @iMoAccountDashboard = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name`='sys_account_dashboard' LIMIT 1);
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `editable`, `order`) VALUES
+('sys_account_dashboard', @sName, 'analytics-revenue', '_bx_analytics_item_title_system_revenue', '_bx_analytics_item_title_revenue', 'page.php?i=analytics-revenue', '', '', 'circle-dollar-sign', '', '', 2147483647, 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:20:"is_revenue_avaliable";}', 1, 0, 1, @iMoAccountDashboard + 1);
+
+-- ACL
+SET @iIdActionViewPeople = (SELECT `ID` FROM `sys_acl_actions` WHERE `Module`=@sName AND `Name`='view analytics people' LIMIT 1);
+DELETE FROM `sys_acl_matrix` WHERE `IDAction`=@iIdActionViewPeople;
+DELETE FROM `sys_acl_actions` WHERE `ID`=@iIdActionViewPeople;
+INSERT INTO `sys_acl_actions` (`Module`, `Name`, `AdditionalParamName`, `Title`, `Desc`, `Countable`, `DisabledForLevels`) VALUES
+(@sName, 'view analytics people', NULL, '_bx_analytics_acl_action_view_people', '', 0, 3);
+SET @iIdActionViewPeople = LAST_INSERT_ID();
+
+SET @iIdActionManage = (SELECT `ID` FROM `sys_acl_actions` WHERE `Module`=@sName AND `Name`='manage analytics' LIMIT 1);
+DELETE FROM `sys_acl_matrix` WHERE `IDAction`=@iIdActionManage;
+DELETE FROM `sys_acl_actions` WHERE `ID`=@iIdActionManage;
+INSERT INTO `sys_acl_actions` (`Module`, `Name`, `AdditionalParamName`, `Title`, `Desc`, `Countable`, `DisabledForLevels`) VALUES
+(@sName, 'manage analytics', NULL, '_bx_analytics_acl_action_manage', '', 0, 3);
+SET @iIdActionManage = LAST_INSERT_ID();
+
+SET @iIdActionViewRevenue = (SELECT `ID` FROM `sys_acl_actions` WHERE `Module`=@sName AND `Name`='view analytics revenue' LIMIT 1);
+DELETE FROM `sys_acl_matrix` WHERE `IDAction`=@iIdActionViewRevenue;
+DELETE FROM `sys_acl_actions` WHERE `ID`=@iIdActionViewRevenue;
+INSERT INTO `sys_acl_actions` (`Module`, `Name`, `AdditionalParamName`, `Title`, `Desc`, `Countable`, `DisabledForLevels`) VALUES
+(@sName, 'view analytics revenue', NULL, '_bx_analytics_acl_action_view_revenue', '', 0, 3);
+SET @iIdActionViewRevenue = LAST_INSERT_ID();
+
+SET @iAdministrator = 8;
+INSERT INTO `sys_acl_matrix` (`IDLevel`, `IDAction`) VALUES
+(@iAdministrator, @iIdActionViewPeople),
+(@iAdministrator, @iIdActionManage),
+(@iAdministrator, @iIdActionViewRevenue);
+
+-- INJECTIONS
+DELETE FROM `sys_injections` WHERE `name`='bx_analytics_tracker';
+INSERT INTO `sys_injections` (`name`, `page_index`, `key`, `type`, `data`, `replace`, `active`) VALUES
+('bx_analytics_tracker', 0, 'injection_footer', 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_tracker_code";}', 0, 1);
+
+-- ALERTS
+SET @iHandler := (SELECT `id` FROM `sys_alerts_handlers` WHERE `name`=@sName LIMIT 1);
+DELETE FROM `sys_alerts` WHERE `handler_id`=@iHandler;
+DELETE FROM `sys_alerts_handlers` WHERE `id`=@iHandler;
+
+INSERT INTO `sys_alerts_handlers` (`name`, `class`, `file`, `service_call`) VALUES
+(@sName, 'BxAnalyticsAlertsResponse', 'modules/boonex/analytics/classes/BxAnalyticsAlertsResponse.php', '');
+SET @iHandler := LAST_INSERT_ID();
+
+INSERT INTO `sys_alerts` (`unit`, `action`, `handler_id`) VALUES
+('profile', 'delete', @iHandler),
+('system', 'enable', @iHandler),
+('system', 'disable', @iHandler),
+('account', 'add', @iHandler),
+('account', 'login', @iHandler),
+('profile', 'add', @iHandler),
+('system', 'connection_added', @iHandler),
+('comment', 'added', @iHandler),
+('vote', 'do', @iHandler),
+('system', 'register_payment', @iHandler),
+('system', 'refund_payment', @iHandler),
+('system', 'create_subscription', @iHandler),
+('system', 'prolong_subscription', @iHandler),
+('system', 'overdue_subscription', @iHandler),
+('system', 'cancel_subscription', @iHandler),
+('system', 'cancel_order', @iHandler),
+('system', 'finalize_checkout', @iHandler);
+
+-- CRON
+DELETE FROM `sys_cron_jobs` WHERE `name`='bx_analytics_pruning';
+INSERT INTO `sys_cron_jobs` (`name`, `time`, `class`, `file`, `service_call`) VALUES
+('bx_analytics_pruning', '15 * * * *', '', '', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:7:"pruning";}');

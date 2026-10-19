@@ -1,0 +1,16 @@
+<div class="bx-analytics-tiles">
+    <bx_repeat:tiles>
+        <div class="bx-analytics-tile">
+            <span class="bx-analytics-kpi-title">__title__</span>
+            <span class="bx-analytics-kpi-figures">
+                <span class="bx-analytics-kpi-value">__value__</span>
+                <bx_if:change>
+                    <span class="bx-analytics-kpi-change bx-analytics-trend-__trend__">__change__</span>
+                </bx_if:change>
+            </span>
+            <bx_if:sub>
+                <span class="bx-analytics-tile-sub">__sub__</span>
+            </bx_if:sub>
+        </div>
+    </bx_repeat:tiles>
+</div>

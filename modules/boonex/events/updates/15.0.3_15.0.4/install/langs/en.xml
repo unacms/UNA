@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_events_form_session_input_title_err"><![CDATA[Session title is essential min 3 max 160.]]></string_upd>
+</resources>

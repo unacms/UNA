@@ -1,0 +1,38 @@
+<div class="bx-analytics-performance">
+    <div class="bx-analytics-controls">
+        <label class="bx-analytics-control">
+            <span class="bx-analytics-control-label">__device_label__</span>
+            <select class="bx-def-font-inputs bx-form-input-select bx-analytics-select" data-bx-analytics-param="vital_device">
+                <bx_repeat:devices>
+                    <option value="__device_value__" __device_selected__>__device_title__</option>
+                </bx_repeat:devices>
+            </select>
+        </label>
+    </div>
+    <ul class="bx-analytics-vitals" aria-label="__cards_label__">
+        <bx_repeat:cards>
+            <li>
+                <button type="button" class="bx-analytics-vital bx-analytics-vital-is-__card_rating__" data-bx-analytics-open="vital" data-bx-analytics-value="__card_metric__" aria-pressed="__card_pressed__">
+                    <span class="bx-analytics-vital-title">__card_title__</span>
+                    <span class="bx-analytics-vital-value">__card_value__</span>
+                    <span class="bx-analytics-vital-rating">__card_rating_title__</span>
+                    <span class="bx-analytics-vital-dist" aria-hidden="true">
+                        <span class="bx-analytics-vital-good" style="width: __card_good__%"></span><span class="bx-analytics-vital-ni" style="width: __card_ni__%"></span><span class="bx-analytics-vital-poor" style="width: __card_poor__%"></span>
+                    </span>
+                    <span class="bx-analytics-vital-sub">__card_dist__</span>
+                    <span class="bx-analytics-vital-sub">__card_samples__</span>
+                    <span class="bx-analytics-vital-sub">__card_thresholds__</span>
+                </button>
+            </li>
+        </bx_repeat:cards>
+    </ul>
+    <h3 class="bx-analytics-subtitle">__chart_title__</h3>
+    <div class="bx-analytics-chart bx-analytics-chart-sm">
+        <canvas role="img" aria-label="__chart_label__"></canvas>
+    </div>
+    <script type="application/json" class="bx-analytics-chart-data">__chart_json__</script>
+    <h3 class="bx-analytics-subtitle">__pages_title__</h3>
+    __pages__
+    <h3 class="bx-analytics-subtitle">__platforms_title__</h3>
+    __platforms__
+</div>
