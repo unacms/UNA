@@ -7,7 +7,7 @@
  */
 import type { ReactNode } from 'react';
 import { appSetting } from 'app/lib/util';
-import { NeoButton, useResolvedNeoButton } from 'app/design/controls/neo-button/neo-button';
+import { NeoButton } from 'app/design/controls/neo-button/neo-button';
 import { NeoButtonGroup, useNeoButtonGroupItem } from 'app/design/controls/neo-button/neo-button-group';
 import { legacyToNeoButtonProps } from 'app/design/controls/neo-button/legacy-button-map';
 import { LEGACY_TO_CONTROL_SIZE, NEO_CONTROL_SIZES } from 'app/design/controls/neo-button/control-scale';
@@ -72,11 +72,10 @@ function ButtonMenuAction({
 }
 
 /**
- * Segment of a `ButtonsGroupMenu` / `NeoButtonGroup`: borderless, square
- * inner corners, the group's outer rounding, and a hit area that extends only
- * past the group's outer edges. Its own `size` sets its height (default `sm`);
- * the group's size only drives the rounding. Outside a group it renders as a
- * plain text action.
+ * Segment of a `ButtonsGroupMenu` / `NeoButtonGroup`: a NeoButton that takes
+ * the group's style, size, corners and hit area from the group (see
+ * `NeoButtonGroup`). Its own `size` sets its height (default: the group's).
+ * Outside a group it renders as a plain text action.
  */
 export function ButtonMenuGroupItem({
     variant: _forcedText,
@@ -87,8 +86,6 @@ export function ButtonMenuGroupItem({
     ...rest
 }: ButtonMenuProps) {
     const group = useNeoButtonGroupItem();
-    const controlSize = rest.controlSize ?? adapterControlSize(size);
-    const { hitSlop: slop } = useResolvedNeoButton({ controlSize });
 
     if (!group) {
         return <ButtonMenuAction {...rest} variant="text" size={size} rounded={false} pressed={pressed} haptics={haptics} />;
@@ -98,34 +95,26 @@ export function ButtonMenuGroupItem({
     return (
         <NeoButton
             {...adapterProps(neo, { pressed, haptics, forwardedRef: rest.forwardedRef })}
-            style={rest.style ?? 'borderless'}
-            borderShape="rectangle"
-            controlSize={controlSize}
-            classNames={{ ...neo.classNames, surface: [group.roundedCls, neo.classNames?.surface].filter(Boolean).join(' ') }}
-            // Segments share edges: no interior slop, so none covers its neighbour.
-            hitSlop={rest.hitSlop ?? {
-                top: slop,
-                bottom: slop,
-                left: group.outerStart ? slop : 0,
-                right: group.outerEnd ? slop : 0,
-            }}
+            controlSize={rest.controlSize ?? (size ? adapterControlSize(size) : group.controlSize)}
         />
     );
 }
 
 /**
- * Segmented group of `ButtonMenuGroupItem`s. Legacy ignored `variant`,
- * `fullWidth` and `rounded` on the group; so does this. `size` sets the
- * corner rounding (default `sm` → small).
+ * Group of `ButtonMenuGroupItem`s (object menus: reactions, likes, scores…).
+ * `style` is the group's button style (default: theme
+ * `neo_button.group.defaultStyle`); `size` is its control size (default `sm`
+ * → small). Legacy `variant`, `fullWidth` and `rounded` are ignored.
  */
-export function ButtonsGroupMenu({ size, className, children }: {
+export function ButtonsGroupMenu({ size, style, className, children }: {
     size?: string;
+    style?: string;
     className?: string;
     children?: ReactNode;
     [key: string]: unknown;
 }) {
     return (
-        <NeoButtonGroup controlSize={adapterControlSize(size)} className={className}>
+        <NeoButtonGroup style={style} controlSize={adapterControlSize(size)} className={className}>
             {children}
         </NeoButtonGroup>
     );
