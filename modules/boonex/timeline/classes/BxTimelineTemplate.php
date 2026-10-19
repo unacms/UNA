@@ -3157,10 +3157,24 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
         $iImageFirst = isset($aImageFirst['id']) ? (int)$aImageFirst['id'] : 0;
 
         $aImageSizes = [
-            'small' => '300w', 
-            'medium' => '500w', 
+            'small' => '300w',
+            'medium' => '500w',
             'orig' => '1200w'
         ];
+
+        /*
+         * A feed card shows its images at most about 500px wide from tablets up,
+         * and the whole width of a phone. The item's own page may show them wider.
+         */
+        $sImageAttrSizes = $bViewItem ? '100vw' : '(min-width: 768px) 500px, 100vw';
+
+        /*
+         * Images have no captions of their own, so the alt names the post the image belongs to.
+         * It is also the name of the link around the image.
+         */
+        $sImageTitle = !empty($aEvent['content']['title']) ? trim(strip_tags(bx_process_output($aEvent['content']['title']))) : '';
+
+        $iImageIndex = 0;
         foreach($aImages as $aImage) {
             $sImageSrcKeyCur = $sImageSrcKey;
             if(($bAttachFirst && isset($aImage['id']) && (int)$aImage['id'] == $iImageFirst) || $iTotal == 2)
@@ -3176,10 +3190,17 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
                 if(isset($aImage['src_' . $sSize]))
                     $sImageAttrSrcset .= $aImage['src_' . $sSize] . ' ' . $sWidth . ', ';
 
+            $iImageIndex++;
+            if($iTotal > 1)
+                $sImageAlt = $sImageTitle !== '' ? _t('_bx_timeline_txt_image_alt_title_n', $sImageTitle, $iImageIndex, $iTotal) : _t('_bx_timeline_txt_image_alt_n', $iImageIndex, $iTotal);
+            else
+                $sImageAlt = $sImageTitle !== '' ? $sImageTitle : _t('_bx_timeline_txt_image_alt');
+
             $sImage = $this->parseImage($sImageSrc, array(
                 'class' => $sStylePrefix . '-item-image',
                 'srcset' => trim($sImageAttrSrcset, ", "),
-                'sizes' => '100%'
+                'sizes' => $sImageAttrSizes,
+                'alt' => $sImageAlt
             ));
 
             $aAttrs = array();
