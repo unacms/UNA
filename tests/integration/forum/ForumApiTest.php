@@ -103,11 +103,18 @@ class ForumApiTest extends BxDolIntegrationTestCase
 
     public function testUploadedIconIsSentAsItsUrl(): void
     {
-        $sPath = tempnam(sys_get_temp_dir(), 'bxforum') . '.png';
-        copy(BX_DIRECTORY_PATH_ROOT . 'template/images/acl-account.png', $sPath);
+        // tempnam() creates its own file; the image goes next to it with a .png name.
+        $sTmp = tempnam(sys_get_temp_dir(), 'bxforum');
+        $sPath = $sTmp . '.png';
         $oStorage = BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES);
-        $this->_iImageId = (int)$oStorage->storeFileFromPath($sPath, false, 0);
-        @unlink($sPath);
+        try {
+            copy(BX_DIRECTORY_PATH_ROOT . 'template/images/acl-account.png', $sPath);
+            $this->_iImageId = (int)$oStorage->storeFileFromPath($sPath, false, 0);
+        }
+        finally {
+            @unlink($sPath);
+            @unlink($sTmp);
+        }
         if (!$this->_iImageId)
             $this->fail('Store the icon image: ' . $oStorage->getErrorString());
 
