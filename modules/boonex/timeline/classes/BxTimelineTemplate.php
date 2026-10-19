@@ -1308,22 +1308,23 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
         $iStart = $aParams['start'];
         $iPerPage = $aParams['per_page'];
 
+        $bJumpTo = $aParams['view'] == BX_TIMELINE_VIEW_TIMELINE && $this->_oConfig->isJumpTo();
+
         $aTmplVars = array(
             'style_prefix' => $sStylePrefix,
-            'visible' => ($aParams['view'] == BX_TIMELINE_VIEW_TIMELINE && $bVisible) || ($aParams['view'] == BX_TIMELINE_VIEW_OUTLINE && $bEnabled && $bVisible) ? 'block' : 'none',
-            'disabled' => !$bEnabled ? ' disabled="disabled"' : '',
-            'bx_if:is_disabled' => array(
-                'condition' => !$bEnabled,
-                'content' => array()
-            ),
-            'bx_if:show_on_click' => array(
+            /*
+             * At the end of the feed there is nothing to load, so no button: a disabled one only reads as broken.
+             * The bar stays for the Timeline view's 'jump to' control when that is on.
+             */
+            'visible' => $bVisible && ($bEnabled || $bJumpTo) ? 'block' : 'none',
+            'bx_if:show_button' => array(
                 'condition' => $bEnabled,
                 'content' => array(
                     'on_click' => 'javascript:' . $sJsObject . '.changePage(this, ' . ($iStart + $iPerPage) . ', ' . $iPerPage . ')'
                 )
             ),
             'bx_if:show_jump_to' => array(
-                'condition' => $this->_oConfig->isJumpTo(),
+                'condition' => $bJumpTo,
                 'content' => array(
                     'style_prefix' => $sStylePrefix,
                     'content' => $this->getJumpTo($aParams)
