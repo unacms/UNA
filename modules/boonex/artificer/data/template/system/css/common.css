@@ -186,6 +186,7 @@ import url(../../../../../../../template/css/common.css);
     display: inline-flex;
     -webkit-justify-content: flex-end;
     justify-content: flex-end;
+    gap: 0.5rem; /* between the tabs, so the first and last line up with the block's content */
 }
 .bx-db-menu ul.bx-menu-hor > li:not(.bx-stl-mil-sm),
 .bx-db-menu ul.bx-menu-custom.bx-menu-custom-hor > li:not(.bx-stl-mil-sm) {
@@ -195,9 +196,16 @@ import url(../../../../../../../template/css/common.css);
     -ms-flex:  0 1 auto; 
     flex:  0 1 auto;
 
-    padding: 0 0.25rem;
+    padding: 0;
 
     border-bottom: 1px solid transparent;
+}
+/* Block tabs are capsules, like the header's tabs. Child combinators keep the More list inside a tab out of it. */
+.bx-db-menu ul.bx-menu-hor > li > a.bx-stl-mil-sm,
+.bx-db-menu ul.bx-menu-hor > li > div > a.bx-stl-mil-sm,
+.bx-db-menu ul.bx-menu-custom.bx-menu-custom-hor > li > a.bx-stl-mil-sm,
+.bx-db-menu ul.bx-menu-custom.bx-menu-custom-hor > li > div > a.bx-stl-mil-sm {
+    border-radius: 9999px;
 }
 .bx-db-menu .bx-menu-custom.bx-menu-custom-hor > li:not(.bx-stl-mil-sm) > span {
     display: block;

@@ -59,13 +59,6 @@ li.bx-mi-hidden {
     padding-right: 1.0rem;
 }
 
-/* --- Horizontal, Custom Horizontal Menus --- */
-.bx-menu-custom .bx-menu-item.bx-menu-item-more-auto .bx-popup .bx-menu-custom .bx-menu-item,
-.bx-menu-custom .bx-menu-item.bx-menu-item-more-auto .bx-popup .bx-menu-custom .bx-menu-item a,
-.bx-menu-custom .bx-menu-item.bx-menu-item-more-auto .bx-popup .bx-menu-custom .bx-menu-item > span {
-    border-radius: 0;
-}
-
 /*--- Interactive Menu ---*/
 .bx-menu-inter li.bx-menu-inter-hidden,
 .bx-menu-inter-vert li.bx-menu-inter-hidden {
@@ -100,10 +93,6 @@ li.bx-mi-hidden {
     to {
         opacity: 1;
     }
-}
-.bx-menu-main .bx-menu-item.bx-menu-item-more-auto .bx-popup .bx-menu-custom .bx-menu-item,
-.bx-menu-main .bx-menu-item.bx-menu-item-more-auto .bx-popup .bx-menu-custom .bx-menu-item a {
-    border-radius: 0;
 }
 
 /*--- Page Submenu ---*/
@@ -190,7 +179,7 @@ div.bx-popup-menu-main.sys-add-content ul {
 .bx-db-content .bx-profile-stats .bx-menu-vertical-more-less,
 .bx-db-container:not(.bx-dbc-nopadding) .bx-menu-vertical-more-less,
 .bx-db-container:not(.bx-dbc-nopadding) .bx-menu-profile-followings {
-    margin: -0.75rem;
+    margin: -0.5rem; /* rows 8px from the block's edge, like menu rows in popups */
 }
 .bx-db-container:not(.bx-dbc-notitle) .bx-menu-vertical-more-less,
 .bx-db-container:not(.bx-dbc-notitle) .bx-menu-profile-followings {
