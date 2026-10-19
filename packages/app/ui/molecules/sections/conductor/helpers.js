@@ -737,12 +737,6 @@ function mapLayoutBlocks(items = [], { browseAsBlocks = false } = {}) {
     return { content, endpoint: payload && designbox ? { ...payload, designbox } : payload }
 }
 
-/** Block whose content is an entity cover (`entity_cover` element). */
-function isEntityCoverBlock(item) {
-    return Array.isArray(item?.content)
-        && item.content.some((entry) => entry?.type === 'entity_cover')
-}
-
 /**
  * Build content/endpoint/sidebar/leftbar from layout_parsed page data.
  *
@@ -751,17 +745,15 @@ function isEntityCoverBlock(item) {
  * the list (marked `afterList`, see buildConductorListRows). The list is the
  * center's browse block; the top's or the bottom's only when the center has
  * none (the person profile keeps its timeline in the top area).
+ *
+ * An `entity_cover` block stays in its cell. The page header cover is a
+ * separate payload, `cover_block`, and does not replace this block.
  */
 function processParsedUrl(data) {
     const elements = data?.elements || {}
-    // A profile page's cover comes from `cover_block` (the Conductor header);
-    // an entity cover block in any cell would draw it a second time.
     const cell = (name, options) => {
         const items = Array.isArray(elements[name]) ? elements[name] : []
-        return mapLayoutBlocks(
-            data?.cover_block?.profile ? items.filter((item) => !isEntityCoverBlock(item)) : items,
-            options
-        )
+        return mapLayoutBlocks(items, options)
     }
     const cellTop = cell('cell_top')
     const cellCenter = cell('cell_center')
