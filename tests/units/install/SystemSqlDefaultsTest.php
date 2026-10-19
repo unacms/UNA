@@ -24,6 +24,18 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, (int)$aMatch[1], 'It shows only its form: the content-only design box (BX_DB_CONTENT_ONLY).');
     }
 
+    public function testHomeCreatePostBlockHasBackgroundInApp(): void
+    {
+        // NEO draws the composer row straight in the block, so the block's App config gives it a background
+        // and padding there. The title is left to the design box (none with the content-only one).
+        $sSql = file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-pages.sql');
+        $bFound = preg_match("/UPDATE `sys_pages_blocks` SET `config_api`='([^']*)' WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_title_sys_create_post';/", (string)$sSql, $aMatch);
+
+        $this->assertSame(1, $bFound, 'enable-app-pages.sql sets the App config of the home create-post block.');
+        $aConfig = json_decode($aMatch[1], true);
+        $this->assertSame(['bg' => true, 'padding' => true], $aConfig['designbox'] ?? null, 'Background and padding on every tier, title from the design box.');
+    }
+
     public function testPoweredByBadgeFollowsTheFooterColour(): void
     {
         $bFound = preg_match("/\\('sys_footer', 'system', 'powered_by', [^\\n]*?'_blank', '(<svg.*?<\\/svg>)'/", self::systemSql(), $aMatch);
