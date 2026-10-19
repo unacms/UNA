@@ -367,6 +367,10 @@ const STYLES_WITHOUT_HOVER = new Set(['plain']);
 
 const GLASS_STYLES = new Set(['glass', 'glassProminent']);
 
+// Styles with no native (Expo UI) rendering: `outline` is a shadow ring that
+// SwiftUI and Compose button styles don't draw.
+const JS_ONLY_STYLES = new Set(['outline']);
+
 const SWIFTUI_CONTROL_SIZE: Record<string, string> = {
     mini: 'mini',
     small: 'small',
@@ -457,20 +461,18 @@ export function useNeoButtonExpoUI(props: NeoButtonProps = {}) {
 
     const allowedStyles = resolveScoped(config.styles, ctx);
     if (allowedStyles === false) return null;
-    if (Array.isArray(allowedStyles)) {
-        const defaults = tree?.defaults || {};
-        const stylesTree = tree?.styles || {};
-        const role = props.role ?? defaults.role ?? 'default';
-        const roleConfig = (tree?.roles || {})[role] || {};
-        const style = resolveStyle({
-            propStyle: normalizeStyleProp(props.buttonStyle) ?? normalizeStyleProp(props.style),
-            providerStyle,
-            defaultsStyle: defaults.style,
-            roleConfig,
-            stylesTree,
-        });
-        if (!allowedStyles.includes(style)) return null;
-    }
+    const defaults = tree?.defaults || {};
+    const role = props.role ?? defaults.role ?? 'default';
+    const style = resolveStyle({
+        propStyle: normalizeStyleProp(props.buttonStyle) ?? normalizeStyleProp(props.style),
+        providerStyle,
+        defaultsStyle: defaults.style,
+        roleConfig: (tree?.roles || {})[role] || {},
+        stylesTree: tree?.styles || {},
+    });
+    // No SwiftUI / Compose equivalent: these keep the JS surface.
+    if (JS_ONLY_STYLES.has(style)) return null;
+    if (Array.isArray(allowedStyles) && !allowedStyles.includes(style)) return null;
 
     return { platform, config };
 }
