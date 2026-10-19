@@ -2031,6 +2031,9 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
 
                 $sRet = $bCover ? $oCover->display() : $oCover->displayEmpty();
                 break;
+            case 'page_heading':
+                $sRet = BxDolCover::getInstance($this)->displayPageHeading();
+                break;
             case 'site_submenu_class':
                 $oMenu = BxDolMenu::getObjectInstance('sys_site_submenu');
                 if($oMenu)

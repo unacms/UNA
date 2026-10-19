@@ -15,6 +15,8 @@ class BxBaseCover extends BxDolCover
 {
     protected $_bJsCssAdded = false;
 
+    protected $_sPageHeading = '';
+
     protected $_oTemplate;
 
     public function __construct ($oTemplate)
@@ -109,15 +111,28 @@ class BxBaseCover extends BxDolCover
      */
     public function displayEmpty ()
     {
-        $aTmplVarsTitle = ($sTitle = $this->_oTemplate->getPageHeader()) ? [
-            'title' => bx_process_output(strip_tags($sTitle))
-        ] : false;
+        //--- With no cover the page still needs its <h1>. It is kept here and printed inside <main>
+        //--- by the __page_heading__ key (see displayPageHeading), so it is not left outside every landmark.
+        $sTitle = $this->_oTemplate->getPageHeader();
+        $this->_sPageHeading = $sTitle ? bx_process_output(strip_tags($sTitle)) : '';
 
-        return $this->_oTemplate->parseHtmlByName($this->_sTemplateNameEmpty, [
-            'bx_if:title' => [
-                'condition' => $aTmplVarsTitle !== false,
-                'content' => $aTmplVarsTitle,
-            ],
+        return $this->_oTemplate->parseHtmlByName($this->_sTemplateNameEmpty, []);
+    }
+
+    /**
+     * Display the visually hidden page heading of a page without a cover.
+     * Called for the __page_heading__ key at the start of <main>, after __cover__ was parsed.
+     */
+    public function displayPageHeading ()
+    {
+        if($this->_sPageHeading === '')
+            return '';
+
+        $sTitle = $this->_sPageHeading;
+        $this->_sPageHeading = '';
+
+        return $this->_oTemplate->parseHtmlByName('page_heading.html', [
+            'title' => $sTitle
         ]);
     }
 

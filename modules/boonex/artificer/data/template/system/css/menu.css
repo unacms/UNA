@@ -26,6 +26,28 @@ ul.bx-menu-btns-icon-hor {
 }
 
 li.bx-mi-aux {}
+
+/* --- Home page app grid (sys_homepage) ---*/
+/* On phones the grid of every app took a whole screen and more before the feed. There it is two rows that
+   scroll sideways; the next column peeks past the edge to show there is more. */
+@media (max-width: 767.98px) {
+    ul.bx-menu-floating-blocks {
+        display: grid;
+        grid-auto-flow: column;
+        grid-template-rows: repeat(2, auto);
+        grid-auto-columns: 6rem;
+        justify-content: start;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x proximity;
+        scrollbar-width: none;
+    }
+    ul.bx-menu-floating-blocks > li {
+        margin: 0.25rem 0;
+        scroll-snap-align: start;
+    }
+}
+
 li.bx-mi-hidden {
     display: none;
 }

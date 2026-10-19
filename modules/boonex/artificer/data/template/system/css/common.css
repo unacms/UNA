@@ -3,6 +3,11 @@ import url(../../../../../../../template/css/common.css);
 */
 
 /*--- General ---*/
+/* Text renders heavier on macOS than designed; smooth it once for the whole page, not per component. */
+html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
 .bx-clear {
     clear:both;
     float:none;
