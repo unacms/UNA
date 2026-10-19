@@ -6,7 +6,6 @@ import { useWindowDimensions } from 'react-native'
 import { menuItemsByNameNew, cloneObject, getBreakpoint, isWeb } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile/profile'
-import { CardList } from 'app/ui/molecules/page/card'
 import { useTranslation } from 'react-i18next'
 import FormModal, { handleFormModal, getFormModal } from 'app/ui/molecules/dialogs/form-modal';
 import { BlockWrapper } from 'app/components/block-wrapper'
@@ -122,7 +121,9 @@ export default function MultiPostForm({ data, blockWrapperProps, trigger_label: 
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <CardList className="flex-row items-center gap-3 min-w-0">
+            {/* One row straight in the block: its chrome (background, padding, title) is the
+                block's design box, so no card of its own. */}
+            <Row className="items-center gap-3 min-w-0">
                 <View className="flex-none">
                     <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
                 </View>
@@ -162,7 +163,7 @@ export default function MultiPostForm({ data, blockWrapperProps, trigger_label: 
                     ))}
                 </Row>}
 
-            </CardList>
+            </Row>
         </BlockWrapper>
 
     )
