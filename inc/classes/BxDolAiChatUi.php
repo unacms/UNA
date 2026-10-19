@@ -337,16 +337,24 @@ class BxDolAiChatUi
                 $sUrl = trim((string)($aItem['url'] ?? ''));
                 if (!$this->isAllowedChatActionUrl($sUrl))
                     continue;
-                $aOut[] = ['type' => 'link', 'label' => $sLabel, 'url' => $sUrl];
+                $aLink = ['type' => 'link', 'label' => $sLabel, 'url' => $sUrl];
+                // a link the chat waits for (e.g. OAuth): it polls check_url and sends message when done
+                $sCheckUrl = trim((string)($aItem['check_url'] ?? ''));
+                $sMessage = $this->sanitizeChatActionMessage($aItem['message'] ?? '');
+                if ($sMessage !== '' && $this->isAllowedChatActionServiceUrl($sCheckUrl)) {
+                    $aLink['check_url'] = $sCheckUrl;
+                    $aLink['message'] = $sMessage;
+                }
+                $aOut[] = $aLink;
             } elseif ($sType === 'form') {
-                // form opened in a popup over the chat: 'module/method/&params[]=..' API service call
+                // form opened in a popup over the chat
                 $sFormUrl = trim((string)($aItem['form_url'] ?? ''));
-                if (!preg_match('/^[a-z0-9_]+\/[a-z0-9_]+\/?(&params\[\]=[A-Za-z0-9_\-\.]*)*$/', $sFormUrl))
+                if (!$this->isAllowedChatActionServiceUrl($sFormUrl))
                     continue;
                 $aForm = ['type' => 'form', 'label' => $sLabel, 'form_url' => $sFormUrl];
-                $sMessage = trim(strip_tags((string)($aItem['message'] ?? '')));
+                $sMessage = $this->sanitizeChatActionMessage($aItem['message'] ?? '');
                 if ($sMessage !== '')
-                    $aForm['message'] = function_exists('mb_substr') ? mb_substr($sMessage, 0, 200) : substr($sMessage, 0, 200);
+                    $aForm['message'] = $sMessage;
                 $aOut[] = $aForm;
             }
 
@@ -510,6 +518,23 @@ class BxDolAiChatUi
         if (is_array($mixed))
             return strtolower((string)($mixed['value'] ?? $mixed['name'] ?? ''));
         return strtolower((string)$mixed);
+    }
+
+    /**
+     * API service call of a chat action: 'module/method/&params[]=..', nothing else.
+     */
+    protected function isAllowedChatActionServiceUrl($sUrl)
+    {
+        return (bool)preg_match('/^[a-z0-9_]+\/[a-z0-9_]+\/?(&params\[\]=[A-Za-z0-9_\-\.]*)*$/', (string)$sUrl);
+    }
+
+    /**
+     * Text a chat action sends as the visitor answer: plain, one line, max 200 chars.
+     */
+    protected function sanitizeChatActionMessage($mixed)
+    {
+        $s = trim(strip_tags((string)$mixed));
+        return function_exists('mb_substr') ? mb_substr($s, 0, 200) : substr($s, 0, 200);
     }
 
     protected function isAllowedChatActionUrl($sUrl)
