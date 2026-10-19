@@ -31,4 +31,15 @@ class TimelineEnableSqlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $bFound, 'enable.sql adds the members\' feed to the home page.');
         $this->assertSame(1, (int)$aMatch[1], 'Members keep their feed on the home page.');
     }
+
+    public function testHomeAndDashboardFeedsHaveNoCardAroundThePosts(): void
+    {
+        // Each post is a card, so the block keeps its title and tabs but drops the background and padding (design box 4).
+        foreach (['sys_dashboard' => '@iPBCellDashboard', 'sys_home' => '@iPBCellHome'] as $sObject => $sCell) {
+            $bFound = preg_match("/\\('" . $sObject . "', " . preg_quote($sCell, '/') . ", 'bx_timeline', '_bx_timeline_page_block_title_system_views_timeline', '_bx_timeline_page_block_title_views_timeline', (\\d+),/", self::enableSql(), $aMatch);
+
+            $this->assertSame(1, $bFound, "enable.sql adds the feed to $sObject.");
+            $this->assertSame(4, (int)$aMatch[1], "The $sObject feed uses design box 4 (content + title).");
+        }
+    }
 }
