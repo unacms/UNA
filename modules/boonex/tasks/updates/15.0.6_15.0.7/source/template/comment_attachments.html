@@ -1,0 +1,16 @@
+<div class="pswp-gallery">
+<bx_repeat:attached>
+    <div class="__style_prefix__-attached-preview bx-forum-attached-preview bx-def-round-corners bx-def-padding-thd">
+        <bx_if:show_image>
+            <a class="flex space-x-2" href="__file__" data-file-id="__file_id__" data-src="__file__" data-pswp-src="__file__" data-pswp-width="__w__" data-pswp-height="__h__" title="<bx_text_attribute:_cmt_view_attached_image />">
+                <img class="bg-cover w-8 h-8" src="<bx_image_url:spacer.gif />" style="background-image:url(__preview__)" /><span>__file_name__</span><span class="bx-def-font-grayed">__file_size__</span>
+            </a>
+        </bx_if:show_image>
+        <bx_if:show_file>
+            <a class="flex space-x-2" href="__file__" title="<bx_text_attribute:_cmt_download_attached_file />">
+                <i class="sys-icon __file_icon__ w-8 h-8"></i><span>__file_name__</span><span class="bx-def-font-grayed">__file_size__</span>
+            </a>
+        </bx_if:show_file>
+    </div>
+</bx_repeat:attached>
+</div>

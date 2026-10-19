@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_add name="_bx_credits_txt_analytics_balance"><![CDATA[На балансах участников]]></string_add>
+	<string_add name="_bx_credits_txt_analytics_bought"><![CDATA[Куплено]]></string_add>
+	<string_add name="_bx_credits_txt_analytics_granted"><![CDATA[Начислено администрацией]]></string_add>
+	<string_add name="_bx_credits_txt_analytics_sent"><![CDATA[Переведено участникам]]></string_add>
+	<string_add name="_bx_credits_txt_analytics_service_in"><![CDATA[Начислено модулями]]></string_add>
+	<string_add name="_bx_credits_txt_analytics_service_out"><![CDATA[Списано модулями]]></string_add>
+	<string_add name="_bx_credits_txt_analytics_spent"><![CDATA[Потрачено на покупки]]></string_add>
+	<string_add name="_bx_credits_txt_analytics_top_spenders"><![CDATA[Больше всего потратили]]></string_add>
+	<string_add name="_bx_credits_txt_analytics_withdrawn"><![CDATA[Выведено]]></string_add>
+</resources>

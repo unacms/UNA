@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_persons_menu_item_info_create_profile"><![CDATA[For yourself, with your own feed and connections.]]></string_add>
+</resources>
