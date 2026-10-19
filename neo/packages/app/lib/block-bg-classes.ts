@@ -1,7 +1,7 @@
 /**
  * Per-tier classes for a block's background (block config `designbox.bg` and
  * `designbox.solid`, see block-wrapper.js). No app imports, so
- * `node --test packages/app/lib/block-bg-classes.test.mjs` runs it from the NEO root.
+ * `node --test packages/app/lib/block-bg-classes.test.ts` runs it from the NEO root.
  */
 
 export type BgTier = 'mobile' | 'tablet' | 'desktop';

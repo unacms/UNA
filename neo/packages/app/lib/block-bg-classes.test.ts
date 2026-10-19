@@ -1,4 +1,5 @@
-// Run with `node --test packages/app/lib/block-bg-classes.test.mjs` from the NEO root (Node 24 strips the module's types). A .mjs file, so the typecheck leaves it out.
+/// <reference types="node" />
+// Run with `node --test packages/app/lib/block-bg-classes.test.ts` from the NEO root (Node 24 strips the types).
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { buildBlockBgClasses } from './block-bg-classes.ts';

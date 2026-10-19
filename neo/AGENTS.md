@@ -190,7 +190,7 @@ A block's chrome (background, padding, title) comes from UNA's `designbox_id`, w
 ```
 
 - Each key lists the tiers where that part shows: `mobile` (no prefix), `tablet` (`sm:`), `desktop` (`lg:`). `true` and `false` mean every tier or none.
-- `solid` lists the tiers where the background is the opaque card fill (theme `u-block-bg-solid`) instead of the translucent `u-block-bg` one. Use it for a block among solid cards, such as the home "Add new..." block above the feed on phones (`"solid": ["mobile"]`). The classes come from `lib/block-bg-classes.ts`; run its tests with `node --test packages/app/lib/block-bg-classes.test.mjs`.
+- `solid` lists the tiers where the background is the opaque card fill (theme `u-block-bg-solid`) instead of the translucent `u-block-bg` one. Use it for a block among solid cards, such as the home "Add new..." block above the feed on phones (`"solid": ["mobile"]`). The classes come from `lib/block-bg-classes.ts`; run its tests with `node --test packages/app/lib/block-bg-classes.test.ts`.
 - A missing key keeps `designbox_id`. Props passed from code (`showBg`, `showPadding`, `showTitle`) win over both.
 - Keys sit under `designbox` because every `config_api` key is also spread into each element of the block as a prop.
 - `components/block-wrapper.js` reads them and `ui/molecules/page/page-block.js` turns tiers into classes through `responsiveClasses`. Prefixed classes must stay listed in `@source inline(...)` in `design/styles/utilities.css`; update that list if `theme.blocks` `u-block-bg` or the block padding changes.
