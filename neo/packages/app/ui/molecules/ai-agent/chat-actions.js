@@ -30,6 +30,9 @@ function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' })
     const [pending, setPending] = useState('');
     const [form, setForm] = useState(null);
     const [opening, setOpening] = useState(false);
+    // Several buttons may send the same answer ("… is connected" by OAuth or by the form):
+    // only the pressed one reads as chosen, after a reload the first one.
+    const [pressedIndex, setPressedIndex] = useState(null);
     const selected = chosenReply || pending;
 
     useEffect(() => {
@@ -113,13 +116,16 @@ function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' })
 
     if (!actions.length) return null;
 
+    const firstSelectedIndex = selected ? actions.findIndex((action) => action.message === selected) : -1;
+
     return (
         <View className="flex-row flex-wrap gap-2 mt-2 max-w-full">
             {actions.map((action, index) => {
                 const isLink = action.type === 'link';
                 const isForm = action.type === 'form';
                 // Plain links carry no message; a waited-for link does, and reads as answered once sent.
-                const isSelected = !!action.message && action.message === selected;
+                const isSelected = !!action.message && action.message === selected
+                    && (pressedIndex !== null && actions[pressedIndex]?.message === selected ? pressedIndex === index : firstSelectedIndex === index);
                 // Index is part of the key because an agent may legitimately repeat a
                 // label within one message ("Other", "Other").
                 const key = `${action.type}:${action.label}:${index}`;
@@ -134,7 +140,10 @@ function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' })
                     // internal hrefs through the SPA router and external ones to the
                     // in-app browser.
                     const startWatch = action.checkUrl
-                        ? () => setWatch({ checkUrl: action.checkUrl, message: action.message, until: Date.now() + WATCH_TIMEOUT })
+                        ? () => {
+                            setPressedIndex(index);
+                            setWatch({ checkUrl: action.checkUrl, message: action.message, until: Date.now() + WATCH_TIMEOUT });
+                        }
                         : undefined;
                     return <NeoButtonLink key={key} {...buttonProps} href={action.url} target="_blank" onPress={startWatch} />;
                 }
@@ -147,7 +156,10 @@ function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' })
                             {...buttonProps}
                             selected={isSelected}
                             disabled={opening}
-                            onPress={() => void openForm(action)}
+                            onPress={() => {
+                                setPressedIndex(index);
+                                void openForm(action);
+                            }}
                         />
                     );
                 }
@@ -161,6 +173,7 @@ function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' })
                         disabled={!isSelected && !repliesEnabled}
                         onPress={() => {
                             if (!repliesEnabled || isSelected) return;
+                            setPressedIndex(index);
                             void press(action.message);
                         }}
                     />
