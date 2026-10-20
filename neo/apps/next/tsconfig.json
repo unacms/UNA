@@ -2,7 +2,6 @@
   "compilerOptions": {
     "allowJs": true,
     "allowImportingTsExtensions": true,
-    "baseUrl": ".",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
@@ -16,11 +15,6 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "noEmit": true,
-    "paths": {
-      "react-native": [
-        "react-native-web"
-      ]
-    },
     "plugins": [
       {
         "name": "next"
