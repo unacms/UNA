@@ -35,6 +35,9 @@ export default function FormComments(props) {
    
   
 
+    // Jobs reviews send `cmt_mood` (star rating).
+    const hasMood = !!props.data.inputs['cmt_mood']
+
     const rawEditorText = formContext.watch('cmt_text')
     const imagesValue = formContext.watch('cmt_image')
     const moodValue = formContext.watch('cmt_mood')
@@ -57,7 +60,7 @@ export default function FormComments(props) {
         // The success cue plays when UNA returns the new comment (comments-browse).
         if (formContext.formState.isSubmitted) {
             formContext.setValue('cmt_text', '');
-            if (props.data.inputs['cmt_mood']) {
+            if (hasMood) {
                 formContext.setValue('cmt_mood', 0);
             }
             emitter.emit(EVENTS.comment, { action: 'send'})
@@ -68,7 +71,7 @@ export default function FormComments(props) {
                 Keyboard.dismiss()
             }
         }
-    }, [formContext.formState.isSubmitted, formContext, isWeb]);
+    }, [formContext.formState.isSubmitted, formContext, isWeb, hasMood]);
 
     const handleSubmitWithSanitization = () => {
         let sanitizedHtml = removeEmptyTags(formContext.getValues('cmt_text') || '');
@@ -83,22 +86,27 @@ export default function FormComments(props) {
         handleSubmitWithSanitization();
     };
 
-    props.data.inputs['cmt_submit'].hide_errors = true
-    props.data.inputs['cmt_submit'].icon = 'ArrowUp'
-    props.data.inputs['cmt_submit'].style = 'bordered'
-    props.data.inputs['cmt_submit'].rounded = 'true'
-    props.data.inputs['cmt_submit'].icon_only = true
-    props.data.inputs['cmt_image'].rounded = 'true'
-    props.data.inputs['cmt_image'].variant = 'default'
+    // Copies with the composer's look; `props` itself is never written to.
+    const submitInput = {
+        ...props.data.inputs['cmt_submit'],
+        hide_errors: true,
+        icon: 'ArrowUp',
+        style: 'bordered',
+        rounded: 'true',
+        icon_only: true,
+    }
+    const imageInput = {
+        ...props.data.inputs['cmt_image'],
+        rounded: 'true',
+        variant: 'default',
+    }
     // Comment storage decides: images-only modules keep the photo icon, others get a generic attachment.
-    const attachIcon = getStoragePickerKind(props.data.inputs['cmt_image'].ext_allow) === 'any' ? 'Paperclip' : 'Image'
+    const attachIcon = getStoragePickerKind(imageInput.ext_allow) === 'any' ? 'Paperclip' : 'Image'
 
     const hasContent = !!hasText || !!imagesValue || props.data.inputs['cmt_text'].html == 2 || props.data.inputs['cmt_text'].html == 1
-    // Jobs reviews send `cmt_mood` (star rating). Keep it on the composer
-    // toolbar so the empty pill stays a single line — same row as the
-    // placeholder and attach button — then it drops to the bottom with
-    // attach/send once the composer expands.
-    const hasMood = !!props.data.inputs['cmt_mood']
+    // The mood stars sit on the composer toolbar so the empty pill stays a single
+    // line — same row as the placeholder and attach button — then drop to the
+    // bottom with attach/send once the composer expands.
     const moodInline = hasMood && !hasContent
 
     useEffect(() => {
@@ -184,7 +192,7 @@ export default function FormComments(props) {
                                     {hasContent ? (
                                         <View>
                                             {getFormFieldByData(
-                                                props.data.inputs['cmt_submit'],
+                                                submitInput,
                                                 handleSubmitWithSanitization,
                                                 'custom',
                                                 {
@@ -224,7 +232,7 @@ export default function FormComments(props) {
             <ScrollView horizontal={true}>
                 <Row className={imagesValue ? 'flex-wrap mb-1 mx-1' : 'flex-wrap'}>
                     {getFormFieldByData(
-                        props.data.inputs['cmt_image'],
+                        imageInput,
                         props.handleSubmit,
                         'notitle',
                         { hide_button: true, list_only: true, asDefaultStorage: true, form_name: props.name}
