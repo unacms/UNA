@@ -38,7 +38,6 @@ import { useTabBarColors } from './tab-colors';
 import { selectOverflowTab } from './tab-press';
 import { getWindowSafeAreaInsets, useGlobalSearchParams, useRouter, usePathname, useSafeAreaInsets } from 'app/lib/hooks/router';
 import { rememberSelectedTab } from 'app/lib/navigation/tab-history';
-import emitter, { EVENTS } from 'app/context/emitter';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { useCurrentUser } from 'app/context/user';
 
@@ -357,14 +356,6 @@ export default function ExpoUITabNavigator({
     const agentBottomOffset = 16 + (isAndroid
         ? tabBarHeight
         : IOS_TAB_BAR.height + (getWindowSafeAreaInsets().bottom || 0));
-
-    useEffect(() => {
-        const subscription = emitter.addListener(EVENTS.tabsMore, (data) => {
-            if (data?.action === 'open') setMoreMenuOpen(true);
-            if (data?.action === 'close') setMoreMenuOpen(false);
-        });
-        return () => subscription.remove();
-    }, []);
 
     const overflowMenuItems = useMemo(
         () => buildTabBarMoreMenuItems({

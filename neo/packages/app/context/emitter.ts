@@ -81,10 +81,6 @@ export const EVENTS = {
     wiki: 'wiki',
         /* reload */
 
-    tabsMore: 'tabs-more',
-        /* open | close — native "More" menu. Core no longer emits it (the tab's own
-         * tabPress opens it); kept for forks still on the old native-tab-press-sync. */
-
     // ************************ content ***************************************
 
     feed: 'feed',
