@@ -20,7 +20,31 @@ class BxTasksUpdater extends BxDolStudioUpdater
             $this->oDb->query("ALTER TABLE `bx_tasks_tasks` ALTER `state` SET DEFAULT '2'");
         }
 
-        return parent::actionExecuteSql($sOperation);
+        $iResult = parent::actionExecuteSql($sOperation);
+
+        /**
+         * Remove old attachments.
+         */
+        if($iResult == BX_DOL_STUDIO_INSTALLER_SUCCESS) {
+            $oStorage = BxDolStorage::getObjectInstance('sys_cmts_images');
+            
+            $iCmtsSystemId = (int)$this->oDb->getOne("SELECT `ID` FROM `sys_objects_cmts` WHERE `Name`=:name", ['name' => 'bx_tasks']);
+            
+            $aAttachments = $this->oDb->getAll("SELECT * FROM `sys_cmts_images2entries` WHERE `system_id`=:system_id", [
+                'system_id' => $iCmtsSystemId
+            ]);
+            
+            foreach($aAttachments as $aAttachment) {
+                if($oStorage)
+                    $oStorage->queueFilesForDeletion($aAttachment['image_id']);
+            
+                $this->oDb->query("DELETE FROM `sys_cmts_images2entries` WHERE `id`=:id", [
+                    'id' => $aAttachment['id']
+                ]);
+            }
+        }
+
+        return $iResult;
     }
 
     protected function actionUpdateFiles($bInstall = true)
