@@ -59,7 +59,7 @@ function ensureI18n(lang, initialResources) {
     }
 }
 
-export function Providers({ children, initialLang = 'en', initialResources }) {
+export function Providers({ children, initialLang = 'en', initialResources, onVercel = false }) {
     // Must match server-rendered copy before the first child paints (menu aria-labels, etc.).
     ensureI18n(initialLang, initialResources)
 
@@ -97,8 +97,9 @@ export function Providers({ children, initialLang = 'en', initialResources }) {
         <I18nextProvider i18n={i18nInstance}>
             <JotaiProvider>
                 <QueryClientProvider client={queryClient}>
-                    <Analytics />
-                    <SpeedInsights />
+                    {/* Their scripts are served by Vercel only; elsewhere both 404 on every page load. */}
+                    {onVercel ? <Analytics /> : null}
+                    {onVercel ? <SpeedInsights /> : null}
                     {children}
                     <Subscriber />
                     <AnalyticsTracker />
