@@ -12,6 +12,9 @@ import emitter, { EVENTS } from 'app/context/emitter'
 import { useTranslation } from 'react-i18next'
 import { MessageInput } from 'app/components/elements/chat/parts/message-input'
 
+/** Send time in seconds. Module level on purpose: it is called from the submit handler, never while rendering. */
+const nowInSeconds = () => Math.floor(Date.now() / 1000)
+
 export default function FormMessenger(props) {
     const { t } = useTranslation()
     const isWeb = Platform.OS == 'web'
@@ -54,6 +57,7 @@ export default function FormMessenger(props) {
         if (!editorHtmlIsSubmittable(sanitizedHtml) && !hasFiles(images)) return
 
         formContext.setValue('message', sanitizedHtml, { shouldValidate: true, shouldDirty: true })
+        formContext.setValue('payload', nowInSeconds())
         props.handleSubmit()
     }
 
@@ -61,15 +65,20 @@ export default function FormMessenger(props) {
         handleSubmitWithSanitization()
     }
 
-    props.data.inputs['payload'].value = parseInt((new Date()).getTime() / 1000)
-
-    props.data.inputs['submit'].hide_errors = true
-    props.data.inputs['submit'].icon = 'ArrowUp'
-    props.data.inputs['submit'].style = 'bordered'
-    props.data.inputs['submit'].rounded = 'true'
-    props.data.inputs['submit'].icon_only = true
-    props.data.inputs['files'].rounded = 'true'
-    props.data.inputs['files'].variant = 'default'
+    // Copies with the composer's look; `props` itself is never written to.
+    const submitInput = {
+        ...props.data.inputs['submit'],
+        hide_errors: true,
+        icon: 'ArrowUp',
+        style: 'bordered',
+        rounded: 'true',
+        icon_only: true,
+    }
+    const filesInput = {
+        ...props.data.inputs['files'],
+        rounded: 'true',
+        variant: 'default',
+    }
 
     const hasContent = !!hasText || !!imagesValue
 
@@ -100,7 +109,7 @@ export default function FormMessenger(props) {
                 {hasContent ? (
                     <View className="">
                         {getFormFieldByData(
-                            props.data.inputs['submit'],
+                            submitInput,
                             handleSubmitWithSanitization,
                             'custom',
                             {
@@ -126,7 +135,7 @@ export default function FormMessenger(props) {
                 <ScrollView horizontal={true}>
                     <Row className="flex-wrap  mx-1">
                         {getFormFieldByData(
-                            props.data.inputs['files'],
+                            filesInput,
                             props.handleSubmit,
                             'notitle',
                             { hide_button: true, list_only: true, asDefaultStorage: true, form_name: props.name }

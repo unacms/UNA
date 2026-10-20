@@ -5,7 +5,6 @@ import Profile from 'app/ui/molecules/profile/profile'
 import ProfileHoverCard from 'app/ui/molecules/profile/profile-hover-card'
 import {
     memo,
-    useMemo,
     useState,
     useEffect,
     useRef,
@@ -471,16 +470,17 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
 export const ActionMenu = memo(({ data }) => {
     const settings = appSetting('feed', 'actions_menu');
 
-    if (data?.items?.length > 2) {
-        for (let i = 2; i < data.items.length; i++)
-            if (data.items[i].data)
-                data.items[i].data.params = { 'button_show_title_from_size': 'sm' }
-            else
-                data.items[i].params = { 'button_show_title_from_size': 'sm' }
-    }
+    // From the third item on, titles show from `sm` up. Items are copied, never written to.
+    const items = data?.items?.length > 2
+        ? data.items.map((item, i) => {
+            if (i < 2) return item
+            const params = { 'button_show_title_from_size': 'sm' }
+            return item.data ? { ...item, data: { ...item.data, params } } : { ...item, params }
+        })
+        : data?.items
 
-    const data_other = {...data, items: data?.items.filter(item => item.class != " bx-mi-primary" && item.primary != 1 )};
-    const data_primary = {...data, items: data?.items.filter(item => item.class == " bx-mi-primary" || item.primary == 1 )};
+    const data_other = {...data, items: items?.filter(item => item.class != " bx-mi-primary" && item.primary != 1 )};
+    const data_primary = {...data, items: items?.filter(item => item.class == " bx-mi-primary" || item.primary == 1 )};
 
     return settings && <Row className="flex-auto justify-between gap-1">
         <Menu {...data_primary} displayType="button" params={settings} />
@@ -684,9 +684,8 @@ function enrichFeedItem(data) {
 }
 
 export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
-    const enrichedData = useMemo(() => enrichFeedItem(data), [data?.id]);
-
-    const [datas, setDatas] = useState(enrichedData)
+    // Only the first item seeds the state; later edits arrive through setDatas.
+    const [datas, setDatas] = useState(() => enrichFeedItem(data))
     const itemId = datas?.id
 
     // Comments preview shared through the object store: a reload after a socket
