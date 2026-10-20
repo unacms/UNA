@@ -9,14 +9,6 @@ import { resolveLangCode } from '../../lib/resolve-lang'
 import { cachedUnaPageJson, unaPageCacheKey } from '../../lib/una-page-cache'
 
 const SITE_TITLE = appSetting('config', 'title');
-const IS_CLIENT_PROJECT = UNA_URL != 'https://api.neo.so';
-
-// Rendered here rather than through metadata.manifest, which adds crossOrigin only on Vercel previews.
-// A manifest is fetched without cookies by default, and Chrome opens a second connection (TCP + TLS)
-// for such requests; with credentials it reuses the page's connection.
-function ManifestLink() {
-    return <link rel="manifest" href={IS_CLIENT_PROJECT ? '/static/manifest.json' : '/manifest.json'} crossOrigin="use-credentials" />;
-}
 
 async function loadPage(props) {
     const [params, searchParams] = await Promise.all([
@@ -146,6 +138,7 @@ export async function generateMetadata(props) {
     const description = decodeTextNode(data?.data?.description || SITE_TITLE);
     const name = decodeTextNode(data?.data?.title || SITE_TITLE);
     const image = data?.data?.image;
+    const isClientProject = UNA_URL != 'https://api.neo.so';
 
     const appleAppId = appSetting('smart_app_banner', 'apple_app_id');
     const appleAppArgument = appSetting('smart_app_banner', 'apple_app_argument');
@@ -161,8 +154,9 @@ export async function generateMetadata(props) {
     return {
         title: name,
         description: description,
+        manifest: isClientProject ? '/static/manifest.json' : '/manifest.json',
         icons: {
-            icon: IS_CLIENT_PROJECT ? '/static/favicon.svg' : '/favicon.svg',
+            icon: isClientProject ? '/static/favicon.svg' : '/favicon.svg',
         },
         other,
         openGraph: {
@@ -223,12 +217,9 @@ export default async function Page(props) {
         };
         
         return (
-            <>
-                <ManifestLink />
-                <Suspense fallback={null}>
-                    <Root path={'home'} data={fallbackData} uri={'/'} url={'/'} code={200} />
-                </Suspense>
-            </>
+            <Suspense fallback={null}>
+                <Root path={'home'} data={fallbackData} uri={'/'} url={'/'} code={200} />
+            </Suspense>
         );
     }
     
@@ -237,11 +228,8 @@ export default async function Page(props) {
     }
 
     return (
-        <>
-            <ManifestLink />
-            <Suspense fallback={null}>
-                <Root path={path} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data?.code}></Root>
-            </Suspense>
-        </>
+        <Suspense fallback={null}>
+            <Root path={path} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data?.code}></Root>
+        </Suspense>
     )
 }
