@@ -5,6 +5,18 @@ import { nativeDriver } from 'app/lib/platform/animation';
 import type { PulseOnceOptions } from './use-pulse-once.types';
 
 /**
+ * The system "reduce motion" setting; a failed or missing lookup counts as off.
+ * Kept out of the hook: React Compiler can't compile a conditional inside try/catch.
+ */
+async function prefersReducedMotion(): Promise<boolean> {
+    try {
+        return AccessibilityInfo.isReduceMotionEnabled ? await AccessibilityInfo.isReduceMotionEnabled() : false;
+    } catch {
+        return false;
+    }
+}
+
+/**
  * Parameters:
  * - pulseDurationMs: duration of ONE pulse (down-up), default 3000ms
  * - pulses: how many times to pulse (integer >= 1), default 1
@@ -48,17 +60,10 @@ export function usePulseOne({
             return;
         }
 
-        try {
-            if (respectReducedMotion && AccessibilityInfo.isReduceMotionEnabled) {
-                const reduced = await AccessibilityInfo.isReduceMotionEnabled();
-                if (reduced) {
-                    opacity.setValue(1);
-                    onEnd && onEnd();
-                    return;
-                }
-            }
-        } catch {
-            // Silently ignore AccessibilityInfo errors
+        if (respectReducedMotion && (await prefersReducedMotion())) {
+            opacity.setValue(1);
+            onEnd && onEnd();
+            return;
         }
 
         const anim = buildAnimation();
