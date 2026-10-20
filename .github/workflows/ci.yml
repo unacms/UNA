@@ -175,7 +175,14 @@ jobs:
       if: steps.changes.outputs.neo == 'true'
       working-directory: neo
       # yarn.lock isn't committed (see neo/AGENTS.md), so this resolves the package.json ranges.
-      run: yarn install --non-interactive --network-timeout 600000
+      # The npm registry now and then answers 502 for one tarball; retry instead of failing the PR.
+      run: |
+        for attempt in 1 2 3; do
+          yarn install --non-interactive --network-timeout 600000 && exit 0
+          echo "yarn install failed (attempt $attempt of 3)"
+          sleep 15
+        done
+        exit 1
 
     - name: Lint and typecheck the PR
       if: steps.changes.outputs.neo == 'true'
