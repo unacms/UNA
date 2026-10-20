@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { appSetting } from 'app/lib/util'
 import emitter, { EVENTS } from 'app/context/emitter'
@@ -57,6 +57,13 @@ function parseTimelinePayload(payload: unknown): TimelineSocketEvent | null {
     return payload && typeof payload === 'object' ? (payload as TimelineSocketEvent) : null
 }
 
+/** A page without the rows the socket reported deleted since it was requested. */
+function withoutDeleted(page: any, deletedIds: Set<string>) {
+    return deletedIds.size
+        ? { ...page, data: (page?.data ?? []).filter((it: any) => !deletedIds.has(String(it.id))) }
+        : page
+}
+
 /**
  * Shared UniList infinite query: TanStack is the store.
  * First page is always fetched (no page-JSON seed). Skeletons until that returns.
@@ -97,11 +104,16 @@ export function useUniListQuery({
     const matchesNewContentRef = useRef(matchesNewContent)
     const canFetchNextRef = useRef(canFetchNext)
 
-    requestUrlRef.current = requestUrl
-    paramsRef.current = defaultParams
-    qKeyRef.current = queryKey
-    matchesNewContentRef.current = matchesNewContent
-    canFetchNextRef.current = canFetchNext
+    // "Latest value" refs: written in a layout effect, not during render (React Compiler
+    // rule). Layout effects run before every passive effect, including TanStack's fetch,
+    // so `queryFn` and the socket handlers below always see the current values.
+    useLayoutEffect(() => {
+        requestUrlRef.current = requestUrl
+        paramsRef.current = defaultParams
+        qKeyRef.current = queryKey
+        matchesNewContentRef.current = matchesNewContent
+        canFetchNextRef.current = canFetchNext
+    })
 
     const qKeyId = JSON.stringify(queryKey)
     const queryEnabled = Boolean(enabled && requestUrl)
@@ -202,16 +214,16 @@ export function useUniListQuery({
         const loadNewItems = async () => {
             timer = null
             const cacheKey = qKeyRef.current
+            // The effect was torn down, or the list moved on to another query, while fetching.
+            const isStale = () => cancelled || cacheKey !== qKeyRef.current
             try {
                 const freshPage = await fetchUniListData({
                     pageParam: undefined,
                     requestUrl: requestUrlRef.current,
                     defaultParams: paramsRef.current,
                 })
-                if (cancelled || cacheKey !== qKeyRef.current) return
-                const page = deletedIds.size
-                    ? { ...freshPage, data: (freshPage?.data ?? []).filter((it: any) => !deletedIds.has(String(it.id))) }
-                    : freshPage
+                if (isStale()) return
+                const page = withoutDeleted(freshPage, deletedIds)
                 if (mergeFirstPageIntoUniListQueryCache(queryClient, cacheKey, page)) {
                     refetchRef.current.skipToast = true
                     setRequested(true)
