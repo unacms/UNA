@@ -26,7 +26,7 @@ $aConfig = array(
     'module_dir' => 'boonex/organizations/',
     'module_uri' => 'orgs',
 
-    'db_prefix' => 'bx_orgs_',
+    'db_prefix' => 'bx_organizations_',
     'class_prefix' => 'BxOrgs',
 
     /**
