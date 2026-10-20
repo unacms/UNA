@@ -155,14 +155,7 @@ jobs:
       RAILWAY_BASE_ENVIRONMENT: ${{ secrets.RAILWAY_ENVIRONMENT }}
       RAILWAY_TEMPLATE_ENVIRONMENT: pr-template
       RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
-      # unacms.app hosts: UNA (service una) and the NEO web client (service neo), both on Railway
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_TEAM: yasko
-      PREVIEW_API_HOST: api-pr-${{ github.event.pull_request.number }}.unacms.app
-      PREVIEW_CLIENT_HOST: pr-${{ github.event.pull_request.number }}.unacms.app
       UNA_PREVIEW_API_KEY: ${{ secrets.UNA_PREVIEW_API_KEY }}
-    outputs:
-      domains: ${{ steps.domains.outputs.ok }}
     steps:
     - uses: actions/checkout@v4
       with:
@@ -208,30 +201,27 @@ jobs:
             MYSQLUSER=una \
             MYSQLPASSWORD=una \
             UNA_DEMO_SEED=1 \
-            UNA_CLIENT_URL="https://$PREVIEW_CLIENT_HOST" \
             ${UNA_PREVIEW_API_KEY:+UNA_API_KEY="$UNA_PREVIEW_API_KEY"} \
             && break
           sleep 5
         done
+        # Previews live on their Railway domains (<service>-pr-<n>.up.railway.app), which share
+        # Railway's wildcard certificate. Custom pr-<n> / api-pr-<n> hosts on unacms.app needed two
+        # Let's Encrypt certificates per PR, and a busy week ran into Let's Encrypt's rate limit
+        # (PR #5934 got none). UNA_AUTO_HOSTNAME makes UNA build its URLs from its host.
         railway domain --service una --environment "$RAILWAY_PR_ENVIRONMENT" || true
         railway domain --service neo --environment "$RAILWAY_PR_ENVIRONMENT" || true
-
-        # NEO talks to this PR's UNA through its Railway domain, which has a certificate from
-        # the start (the api-pr host gets one minutes later). UNA_AUTO_HOSTNAME makes UNA build
-        # its URLs from that host.
-        una_host=$(railway domain list --service una --environment "$RAILWAY_PR_ENVIRONMENT" --json | jq -r '.domains[] | select(.type == "service") | .domain' | head -n1)
+        service_host() {
+          railway domain list --service "$1" --environment "$RAILWAY_PR_ENVIRONMENT" --json | jq -r '.domains[] | select(.type == "service") | .domain' | head -n1
+        }
+        una_host=$(service_host una)
+        neo_host=$(service_host neo)
         [ -n "$una_host" ] || { echo "No Railway domain for una" >&2; exit 1; }
-        scripts/railway/neo.sh vars "$RAILWAY_PR_ENVIRONMENT" "https://${una_host#https://}" "https://$PREVIEW_CLIENT_HOST"
-
-    - name: Preview domains on unacms.app
-      id: domains
-      if: env.VERCEL_TOKEN != ''
-      run: |
-        scripts/railway/domains.sh railway-domain "$PREVIEW_API_HOST" "$RAILWAY_PR_ENVIRONMENT" una
-        # Until 2026-10 the client host was a Vercel alias of the neo-ci build; drop it if present.
-        scripts/railway/domains.sh client-unalias "$PREVIEW_CLIENT_HOST"
-        scripts/railway/domains.sh railway-domain "$PREVIEW_CLIENT_HOST" "$RAILWAY_PR_ENVIRONMENT" neo
-        echo "ok=1" >> "$GITHUB_OUTPUT"
+        [ -n "$neo_host" ] || { echo "No Railway domain for neo" >&2; exit 1; }
+        una_url="https://${una_host#https://}"
+        neo_url="https://${neo_host#https://}"
+        railway variable set --service una --environment "$RAILWAY_PR_ENVIRONMENT" --skip-deploys UNA_CLIENT_URL="$neo_url"
+        scripts/railway/neo.sh vars "$RAILWAY_PR_ENVIRONMENT" "$una_url" "$neo_url"
 
   deploy:
     name: Deploy PR to Railway (una)
@@ -292,9 +282,6 @@ jobs:
       RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
       RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
       RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
-      PREVIEW_API_HOST: api-pr-${{ github.event.pull_request.number }}.unacms.app
-      PREVIEW_CLIENT_HOST: pr-${{ github.event.pull_request.number }}.unacms.app
-      DOMAINS_OK: ${{ needs.preview-env.outputs.domains }}
       UNA_RESULT: ${{ needs.deploy.result }}
       NEO_RESULT: ${{ needs.deploy-neo.result }}
       GH_TOKEN: ${{ github.token }}
@@ -319,13 +306,8 @@ jobs:
         state() { [ "$1" = success ] && echo "" || echo " (deploy: $1)"; }
 
         marker="<!-- railway-preview -->"
-        if [ "$DOMAINS_OK" = "1" ]; then
-          body=$(printf '%s\n**Preview**: https://%s (NEO web client%s, also %s)\n**API**: https://%s (UNA%s, also %s)\n\nRailway environment: `%s`. A new custom domain needs a few minutes for its certificate, and a fresh UNA install about 10.' \
-            "$marker" "$PREVIEW_CLIENT_HOST" "$(state "$NEO_RESULT")" "$neo_url" "$PREVIEW_API_HOST" "$(state "$UNA_RESULT")" "$una_url" "$RAILWAY_PR_ENVIRONMENT")
-        else
-          body=$(printf '%s\n**Preview**: %s (NEO web client%s)\n**API**: %s (UNA%s)\n\nRailway environment: `%s`' \
-            "$marker" "$neo_url" "$(state "$NEO_RESULT")" "$una_url" "$(state "$UNA_RESULT")" "$RAILWAY_PR_ENVIRONMENT")
-        fi
+        body=$(printf '%s\n**Preview**: %s (NEO web client%s)\n**API**: %s (UNA%s)\n\nRailway environment: `%s`. A fresh UNA install takes about 10 minutes.' \
+          "$marker" "$neo_url" "$(state "$NEO_RESULT")" "$una_url" "$(state "$UNA_RESULT")" "$RAILWAY_PR_ENVIRONMENT")
 
         comment_id=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --paginate \
           --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | contains(\"${marker}\"))) | .id" \
@@ -493,6 +475,8 @@ jobs:
           .github/actions
           scripts/railway
 
+    # Previews created before they moved to Railway domains (2026-10-20) still have DNS records
+    # on unacms.app; this step can go once those PRs are closed.
     - name: Remove preview domains
       if: env.VERCEL_TOKEN != ''
       continue-on-error: true

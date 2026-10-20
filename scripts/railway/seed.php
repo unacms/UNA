@@ -153,7 +153,7 @@ else
 $aPosts = [
     ['Hello from the demo site', "This site is a fresh UNA install deployed from the master branch. Everything here is sample content."],
     ['What NEO is', "NEO is the universal UNA client: one React Native codebase for web, iOS and Android, talking to UNA through its API."],
-    ['Preview environments', "Every pull request to UNA gets its own backend and client on unacms.app, created by CI and removed when the PR closes."],
+    ['Preview environments', "Every pull request to UNA gets its own backend and client on Railway, created by CI and removed when the PR closes."],
     ['Weekend reading', "A few articles about building communities that stay useful: keep threads short, answer quickly, and welcome new members by name."],
     ['Photo walk this Saturday', "Meeting at the old harbour at 10:00. Bring any camera; phones are fine. Coffee afterwards."],
     ['Tips for a good profile', "Add a picture, write two sentences about what you do, and follow a few groups. That's enough to get a useful feed."],
