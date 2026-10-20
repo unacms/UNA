@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { Animated, PanResponder, Dimensions } from 'react-native';
 import { View } from 'app/design/view';
@@ -17,7 +17,7 @@ export default function Gallery({ items, autoscroll }) {
     const [isPaused, setIsPaused] = useState(false);
 
 
-    const animateToIndex = (newIndex, direction) => {
+    const animateToIndex = useCallback((newIndex, direction) => {
         Animated.parallel([
             Animated.timing(position, {
                 toValue: direction * -screenWidth,
@@ -45,47 +45,50 @@ export default function Gallery({ items, autoscroll }) {
                 }),
             ]).start();
         });
-    };
+    }, [position, opacity]);
 
-    const goLeft = () => {
+    const goLeft = useCallback(() => {
         const prevIndex = (currentIndex - 1 + items.length) % items.length;
         animateToIndex(prevIndex, -1);
-    };
+    }, [currentIndex, items.length, animateToIndex]);
 
-    const goRight = () => {
+    const goRight = useCallback(() => {
         const nextIndex = (currentIndex + 1) % items.length;
         animateToIndex(nextIndex, 1);
-    };
+    }, [currentIndex, items.length, animateToIndex]);
 
-// Auto-scroll
-useEffect(() => {
-    if (!autoscroll || isPaused || items.length <= 1) return;
-    
-    const interval = typeof autoscroll === 'number' ? autoscroll : 3000;
-    const timer = setInterval(() => {
-        goRight();
-    }, interval);
+    // Auto-scroll; restarts after every slide change (manual or automatic).
+    useEffect(() => {
+        if (!autoscroll || isPaused || items.length <= 1) return;
 
-    return () => clearInterval(timer);
-}, [autoscroll, isPaused, currentIndex, items.length]);
+        const interval = typeof autoscroll === 'number' ? autoscroll : 3000;
+        const timer = setInterval(goRight, interval);
 
-    const panResponder = useRef(
-        PanResponder.create({
-            onMoveShouldSetPanResponder: (_, gesture) =>
-                Math.abs(gesture.dx) > 20,
-            onPanResponderGrant: () => {
-                setIsPaused(true); 
-            },
-            onPanResponderRelease: (_, gesture) => {
-                setIsPaused(false); 
-                if (gesture.dx > 50) {
-                    goLeft();
-                } else if (gesture.dx < -50) {
-                    goRight();
-                }
-            },
-        })
-    ).current;
+        return () => clearInterval(timer);
+    }, [autoscroll, isPaused, items.length, goRight]);
+
+    // Rebuilt only when the slide changes (goLeft/goRight depend on it), so a swipe in
+    // progress keeps its responder. Created once, it kept the first render's currentIndex
+    // and every swipe stepped from slide 0.
+    const panResponder = useMemo(
+        () =>
+            PanResponder.create({
+                onMoveShouldSetPanResponder: (_, gesture) =>
+                    Math.abs(gesture.dx) > 20,
+                onPanResponderGrant: () => {
+                    setIsPaused(true);
+                },
+                onPanResponderRelease: (_, gesture) => {
+                    setIsPaused(false);
+                    if (gesture.dx > 50) {
+                        goLeft();
+                    } else if (gesture.dx < -50) {
+                        goRight();
+                    }
+                },
+            }),
+        [goLeft, goRight]
+    );
 
     return (
         <View className=' w-full overflow-hidden py-2 px-0.5 -my-2 ' {...panResponder.panHandlers}>

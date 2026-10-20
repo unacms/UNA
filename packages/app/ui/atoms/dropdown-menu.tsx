@@ -251,7 +251,7 @@ function DropdownMenuPopup({
                     content: resolveContent ? resolveContent(item.content, item) : item.content as ReactNode,
                 }) : openModalByUrl(item.link)) : redirectdRef.current?.redirect('' + item.link);
         },
-        [onSelect, setIsOpen, resolveContent]
+        [onSelect, setIsOpen, resolveContent, openModalWithContent, openModalByUrl]
     );
 
     useEffect(() => {
@@ -421,7 +421,7 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveCont
             }
             redirectdRef.current?.redirect('' + item.link);
         },
-        [onSelect, setBottomSheetData, openModalByUrl, openModalWithContent]
+        [onSelect, setBottomSheetData, openModalByUrl, openModalWithContent, resolveContent]
     );
 
     const classes = isGridLayout ? variantClassMap.grid : variantClassMap.vertical;
