@@ -141,6 +141,85 @@ jobs:
         path: packages/*.zip
         if-no-files-found: error
 
+  neo-checks:
+    # The jobs above don't look at neo/. `yarn lint` and `yarn typecheck` aren't clean on master
+    # yet, so this fails only on errors the PR adds: both run on the PR and on its base, and
+    # neo/scripts/check-new-errors.js compares them per file and rule (line numbers ignored).
+    name: NEO lint and typecheck
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    env:
+      BASE_REF: ${{ github.event.pull_request.base.ref }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Check for NEO changes
+      id: changes
+      run: |
+        if git diff --quiet "origin/$BASE_REF...HEAD" -- neo/; then
+          echo "neo=false" >> "$GITHUB_OUTPUT"
+          echo "No changes under neo/, nothing to check."
+        else
+          echo "neo=true" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Setup Node
+      if: steps.changes.outputs.neo == 'true'
+      uses: actions/setup-node@v4
+      with:
+        node-version: '24'
+
+    - name: Install NEO dependencies
+      if: steps.changes.outputs.neo == 'true'
+      working-directory: neo
+      # yarn.lock isn't committed (see neo/AGENTS.md), so this resolves the package.json ranges.
+      # The npm registry now and then answers 502 for one tarball; retry instead of failing the PR.
+      run: |
+        # --ignore-scripts keeps dependencies' install scripts from running in CI. NEO's own
+        # postinstall is only patch-package, so run that one explicitly: the result is the
+        # same lint and typecheck output as a plain install.
+        for attempt in 1 2 3; do
+          if yarn install --ignore-scripts --non-interactive --network-timeout 600000; then
+            yarn patch-package
+            exit 0
+          fi
+          echo "yarn install failed (attempt $attempt of 3)"
+          sleep 15
+        done
+        exit 1
+
+    - name: Lint and typecheck the PR
+      if: steps.changes.outputs.neo == 'true'
+      working-directory: neo
+      run: |
+        yarn --silent lint -f json -o "$RUNNER_TEMP/lint-head.json" || true
+        node scripts/typecheck.js > "$RUNNER_TEMP/typecheck-head.txt" 2>&1 || true
+
+    - name: Lint and typecheck the base branch
+      if: steps.changes.outputs.neo == 'true'
+      run: |
+        git worktree add "$RUNNER_TEMP/base" "origin/$BASE_REF"
+        cd "$RUNNER_TEMP/base/neo"
+        # Reuse the PR's install instead of a second `yarn install`.
+        ln -s "$GITHUB_WORKSPACE/neo/node_modules" node_modules
+        for app in apps/next apps/expo; do
+          if [ -d "$GITHUB_WORKSPACE/neo/$app/node_modules" ]; then
+            ln -s "$GITHUB_WORKSPACE/neo/$app/node_modules" "$app/node_modules"
+          fi
+        done
+        yarn --silent lint -f json -o "$RUNNER_TEMP/lint-base.json" || true
+        node scripts/typecheck.js > "$RUNNER_TEMP/typecheck-base.txt" 2>&1 || true
+
+    - name: Fail on new errors
+      if: steps.changes.outputs.neo == 'true'
+      working-directory: neo
+      run: >-
+        node scripts/check-new-errors.js
+        --lint "$RUNNER_TEMP/lint-head.json" "$RUNNER_TEMP/lint-base.json"
+        --typecheck "$RUNNER_TEMP/typecheck-head.txt" "$RUNNER_TEMP/typecheck-base.txt"
+
   preview-env:
     # Same-repo PRs only: forks and Dependabot get no secrets, and Dependabot PRs need no preview.
     name: Prepare PR environment

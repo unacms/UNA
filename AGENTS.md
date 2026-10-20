@@ -89,7 +89,7 @@ The pull request description must include the database migration SQL when the ch
 - Run NEO's yarn scripts from `neo/`, not from the UNA root.
 - Branch from `master` and open the PR here. Start the title of a NEO-only PR with `Neo:`.
 - Never commit to unacms/neo. It is a mirror that `.github/workflows/sync-neo.yml` pushes on every push to `master`, and client projects fork it.
-- UNA CI doesn't check `neo/`. Run `yarn typecheck` and `yarn lint` in `neo/` before you push.
+- Run `yarn typecheck` and `yarn lint` in `neo/` before you push. On a PR that touches `neo/`, the CI job `NEO lint and typecheck` runs both on the PR and on its base and fails on any new error.
 - CI deploys both halves to the `una-ci` Railway project: service `una` (UNA) and service `neo` (the NEO web client, built from `neo/` with `scripts/railway/neo/`). A PR gets `neo-pr-<n>.up.railway.app` (NEO) and `una-pr-<n>.up.railway.app` (UNA), Railway's own domains, so previews need no certificates of their own; master deploys production (`api.unacms.app`). See `.github/workflows/ci.yml` and `scripts/railway/`.
 - A UNA service that NEO calls must return JSON for guests too; see [`neo/.agents/skills/una-api/SKILL.md`](neo/.agents/skills/una-api/SKILL.md).
 
