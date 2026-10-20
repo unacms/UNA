@@ -4,6 +4,7 @@
  * Module update packs (modules/<vendor>/<module>/updates/<from>_<to>/) must name the module they update the way the
  * installed module is recorded. BxDolStudioUpdater finds the module by `module_dir` and `module_uri`, and builds the
  * updater class name from `class_prefix`, so a pack that differs from the module's own config fails on every site.
+ * `db_prefix` names the module's tables, so a pack must carry the module's own.
  */
 class ModuleUpdatePacksTest extends \PHPUnit\Framework\TestCase
 {
@@ -50,6 +51,10 @@ class ModuleUpdatePacksTest extends \PHPUnit\Framework\TestCase
             if (($aPack['class_prefix'] ?? '') !== $aModule['class_prefix'])
                 $aErrors[] = "$sPack: class_prefix '" . ($aPack['class_prefix'] ?? '') . "' is not the module's '{$aModule['class_prefix']}'";
 
+            $sDbPrefix = $aModule['db_prefix'] ?? '';
+            if (($aPack['db_prefix'] ?? '') !== $sDbPrefix)
+                $aErrors[] = "$sPack: db_prefix '" . ($aPack['db_prefix'] ?? '') . "' is not the module's '$sDbPrefix'";
+
             $sVersions = ($aPack['version_from'] ?? '') . '_' . ($aPack['version_to'] ?? '');
             if (basename($sPack) !== $sVersions)
                 $aErrors[] = "$sPack: the folder is not named after version_from and version_to ($sVersions)";
@@ -58,6 +63,6 @@ class ModuleUpdatePacksTest extends \PHPUnit\Framework\TestCase
                 $aErrors[] = "$sPack: home_dir '" . ($aPack['home_dir'] ?? '') . "' is not '{$sModuleDir}updates/update_{$sVersions}/'";
         }
 
-        $this->assertSame([], $aErrors, "Update packs that would not apply:\n" . implode("\n", $aErrors));
+        $this->assertSame([], $aErrors, "Update packs that don't match their module:\n" . implode("\n", $aErrors));
     }
 }
