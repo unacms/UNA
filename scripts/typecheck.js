@@ -90,8 +90,6 @@ function run(name) {
         compilerOptions: {
             noEmit: true,
             moduleSuffixes: [platform.suffix, ''],
-            // apps/next still sets `baseUrl`, deprecated since TS 6.
-            ...(parseInt(ts.version, 10) >= 6 ? { ignoreDeprecations: '6.0' } : {}),
             ...platform.compilerOptions,
         },
         include: [],
