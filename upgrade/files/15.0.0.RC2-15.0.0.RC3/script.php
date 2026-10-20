@@ -50,7 +50,9 @@
             $sChat = substr($sSub, $iDot + 1);
             if (!preg_match('/^[A-Za-z0-9_-]{8,64}$/', $sChat))
                 continue;
-            $bMember = (strpos($sSub, '.') === $iDot && preg_match('/^[0-9]+$/', $sOwner));
+            // Bare guest ids are 32 characters (genRndPwd) and may contain a dot.
+            // That is the session id itself, not a member `{profileId}.{chat}` partition.
+            $bMember = (strlen($sSub) !== 32 && strpos($sSub, '.') === $iDot && preg_match('/^[0-9]+$/', $sOwner));
             $bGuest = (strlen($sOwner) === 32);
             if (!$bMember && !$bGuest)
                 continue;
