@@ -47,6 +47,28 @@ function copyCustomizationResources() {
             fs.copyFileSync(src, destPath);
         }
     });
+
+    // The manifest's icon paths are relative, so they resolve under /static/ too. Fill in the
+    // repo's default for each icon it names that customization did not supply; a missing one
+    // 404s on every page load (Chrome fetches it to check installability).
+    const staticManifest = path.join(staticDest, 'manifest.json');
+    if (fs.existsSync(staticManifest)) {
+        let icons = [];
+        try {
+            icons = JSON.parse(fs.readFileSync(staticManifest, 'utf8')).icons || [];
+        } catch (e) {
+            console.warn('public/static/manifest.json is not valid JSON:', e.message);
+        }
+        icons.forEach(({ src }) => {
+            if (!src || src.startsWith('/') || /^[a-z]+:/i.test(src)) return;
+            const destPath = path.join(staticDest, src);
+            const defaultPath = path.resolve(__dirname, 'public', src);
+            if (!fs.existsSync(destPath) && fs.existsSync(defaultPath)) {
+                fs.mkdirSync(path.dirname(destPath), { recursive: true });
+                fs.copyFileSync(defaultPath, destPath);
+            }
+        });
+    }
 }
 
 // Run copy BEFORE loading config

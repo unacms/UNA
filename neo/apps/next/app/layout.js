@@ -26,7 +26,7 @@ export default async function RootLayout({ children }) {
             suppressHydrationWarning
         >
             <body className={appSetting('layout', 'body')}>
-                <Providers initialLang={langCode} initialResources={initialResources}>{children}</Providers>
+                <Providers initialLang={langCode} initialResources={initialResources} onVercel={!!process.env.VERCEL}>{children}</Providers>
             </body>
         </html>
     )
