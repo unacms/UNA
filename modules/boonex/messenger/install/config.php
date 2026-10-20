@@ -17,12 +17,12 @@ $aConfig = array(
 	'name' => 'bx_messenger',
 	'title' => 'Messenger',
 	'note' => 'Messenger, instant messages, chat',
-	'version' => '14.0.0.DEV',
+	'version' => '15.0.0.DEV',
 	'vendor' => 'BoonEx',
 	'help_url' => 'http://feed.una.io/?section={module_name}',
 
 	'compatible_with' => array(
-		'14.0.0'
+		'15.0.x'
 	),
 
 	/**
