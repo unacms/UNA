@@ -1,0 +1,29 @@
+<div class="bx-std-product-view pt-4">
+    <div class="bx-std-pv-line">
+        <span class="bx-std-pv-cpt bx-def-font-grayed">
+            <bx_text:_adm_str_txt_pv_title />:
+        </span> __title__
+    </div>
+    <div class="bx-std-pv-line">
+        <span class="bx-std-pv-cpt bx-def-font-grayed">
+            <bx_text:_adm_str_txt_pv_vendor />:
+        </span> __vendor__
+    </div>
+    <div class="bx-std-pv-line">
+        <span class="bx-std-pv-cpt bx-def-font-grayed">
+            <bx_text:_adm_str_txt_pv_version />:
+        </span> __version__
+    </div>
+    <bx_if:show_note>
+        <div class="bx-std-pv-line">
+            <span class="bx-std-pv-cpt bx-def-font-grayed">
+                <bx_text:_adm_str_txt_pv_description />:
+            </span> __note__
+        </div>
+    </bx_if:show_note>
+    <div class="bx-std-pv-actions bx-def-margin-top">
+        <button type="button" class="bx-btn bx-def-margin-right" onclick="javascript:$('.bx-popup-applied:visible').dolPopupHide();">
+            <bx_text:_adm_btn_cancel_submit />
+        </button>
+    </div>
+</div>

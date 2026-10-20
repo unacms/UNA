@@ -6,6 +6,7 @@
     if (!$this->oDb->isFieldExists('sys_agents_chat_history', 'title'))
         $this->oDb->query("ALTER TABLE `sys_agents_chat_history` ADD COLUMN `title` varchar(255) NOT NULL DEFAULT '' AFTER `closed_reason`");
 
+    // app related changes
     $aPathInfo = pathinfo(__FILE__);
     $mixedResult = $this->oDb->executeSQL($aPathInfo['dirname'] . '/app.sql');
     if (true !== $mixedResult) {
@@ -34,19 +35,4 @@
         }
     }
 
-/*
-    $aPathInfo = pathinfo(__FILE__);
-    $this->oDb->executeSQL($aPathInfo['dirname'] . '/sys-alerts-desc.sql');
-
-    if (($oStorage = BxDolStorage::getObjectInstance('sys_agents_assistants_chats_files')) !== false) {
-        $aFiles = $oStorage->getFiles(false);
-        if (is_array($aFiles)) {
-            foreach ($aFiles as $aFile)
-                $oStorage->deleteFile($aFile['id']);
-        }
-
-        $this->oDb->query("DELETE FROM `sys_objects_storage` WHERE `object` = 'sys_agents_assistants_chats_files'");
-        $this->oDb->query("DROP TABLE IF EXISTS `sys_agents_assistants_chats_files`");
-    }
-*/
     return true;
