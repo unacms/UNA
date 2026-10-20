@@ -1,0 +1,20 @@
+<div class="adm-bp-__action__-block-form">
+    <div class="adm-bp-__action__-block-form-cnt">
+        __form__
+        <script language="javascript">
+            $(document).ready(function () {
+                $("#__form_id__").ajaxForm({ 
+                    dataType: "json",
+                    beforeSubmit: function(formData, jqForm, options) {
+                        bx_loading($("#__form_id__"), true);
+                    },
+                    success: function(oData) {
+                        bx_sound_form_reply(oData);
+                        $(".bx-popup-applied:visible").dolPopupHide();
+                        oBxDolStudioPage.processJson(oData);
+                    }
+                });
+            });
+        </script>
+    </div>
+</div>

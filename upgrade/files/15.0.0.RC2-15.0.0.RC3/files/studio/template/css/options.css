@@ -1,0 +1,35 @@
+div.bx-stg-cells {
+    position: relative;
+    display: flex;
+}
+div.bx-stg-cells div.bx-sc-cell {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex: 1 1 auto;
+}
+div.bx-stg-cells div.bx-sc-cell .bx-btn {
+    margin: 0.25rem;
+    white-space: nowrap;
+}
+
+/*-- Manage --*/
+div.bx-stg-manage div.bx-sc-cell.bx-sc-right {
+    margin: -0.25rem;
+    justify-content: flex-end;
+}
+
+/*-- Mixes --*/
+div.bx-stg-mixes div.bx-sc-cell.bx-sc-select {
+    width: 50%;
+}
+div.bx-stg-mixes div.bx-sc-cell.bx-sc-new {
+    width: 50%;
+
+    margin: -0.25rem;
+    justify-content: flex-end;
+}
+div.bx-stg-mixes div.bx-sc-cell select {
+    width: auto;
+}

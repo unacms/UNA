@@ -1,0 +1,103 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Providers\ZAI;
+
+use Generator;
+use NeuronAI\Chat\Messages\AssistantMessage;
+use NeuronAI\Chat\Messages\ContentBlocks\ReasoningContent;
+use NeuronAI\Chat\Messages\Stream\Chunks\ReasoningChunk;
+use NeuronAI\Chat\Messages\Stream\Chunks\StreamChunk;
+use NeuronAI\HttpClient\HasHttpClient;
+use NeuronAI\HttpClient\HttpClientInterface;
+use NeuronAI\Providers\HandleWithTools;
+use NeuronAI\Providers\MessageMapperInterface;
+use NeuronAI\Providers\OpenAI\OpenAI;
+use NeuronAI\Providers\ToolMapperInterface;
+
+class ZAI extends OpenAI
+{
+    use HasHttpClient;
+    use HandleWithTools;
+    use HandleStructured;
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    public function __construct(
+        protected string $key,
+        protected string $model,
+        protected array $parameters = [],
+        protected bool $strict_response = false,
+        ?HttpClientInterface $httpClient = null,
+        protected string $baseUri = 'https://api.z.ai/api/paas/v4',
+    ) {
+        parent::__construct($key, $model, $parameters, $strict_response, $httpClient);
+    }
+
+    public function messageMapper(): MessageMapperInterface
+    {
+        return $this->messageMapper ??= new MessageMapper();
+    }
+
+    public function toolPayloadMapper(): ToolMapperInterface
+    {
+        return $this->toolPayloadMapper ??= new ToolMapper();
+    }
+
+    protected function createAssistantMessage(array $message): AssistantMessage
+    {
+        $response = new AssistantMessage($message['content']);
+
+        if (isset($message['reasoning_content'])) {
+            $response->addContent(new ReasoningContent($message['reasoning_content']));
+        }
+
+        return $response;
+    }
+
+    /**
+     * @return Generator<StreamChunk>
+     */
+    protected function processToolCallDelta(array $choice): Generator
+    {
+        yield from $this->processReasoning($choice);
+    }
+
+    /**
+     * @return Generator<StreamChunk>
+     */
+    protected function processContentDelta(array $choice): Generator
+    {
+        yield from parent::processContentDelta($choice);
+
+        yield from $this->processReasoning($choice);
+    }
+
+    /**
+     * @return Generator<StreamChunk>
+     */
+    protected function processReasoning(array $choice): Generator
+    {
+        if (isset($choice['delta']['reasoning_content'])) {
+            $reasoningContent = $choice['delta']['reasoning_content'];
+            $this->streamState->updateContentBlock(-1, new ReasoningContent($reasoningContent));
+
+            yield new ReasoningChunk($this->streamState->messageId(), $reasoningContent);
+        }
+    }
+
+    protected function enrichMessage(AssistantMessage $message, ?array $response = null): AssistantMessage
+    {
+        $message = parent::enrichMessage($message);
+
+        $reasoningContent = $response['choices'][0]['message']['reasoning_content'] ?? null;
+
+        if ($reasoningContent !== null && $message->getReasoning() === null) {
+            $message->addContent(new ReasoningContent($reasoningContent));
+        }
+
+        return $message;
+    }
+}
