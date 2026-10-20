@@ -13,9 +13,9 @@ export const MENU_FOOTER_CLASSES = 'flex w-full items-center border-t border-bor
 // Settings use the historical misspelling; keep this key aligned with settings/layout.js.
 const AVAILABLE_LANGS_SETTING_KEY = 'avaliable_langs';
 const FOOTER_THEME_ITEMS = [
-    { id: 'auto', titleKey: 'theme_footer_auto', icon: 'Eclipse' },
-    { id: 'light', titleKey: 'theme_footer_light', icon: 'Sun' },
-    { id: 'dark', titleKey: 'theme_footer_dark', icon: 'Moon' },
+    { id: 'auto', titleKey: 'theme_footer_auto', labelKey: 'theme_level_auto', icon: 'Eclipse' },
+    { id: 'light', titleKey: 'theme_footer_light', labelKey: 'theme_level_light', icon: 'Sun' },
+    { id: 'dark', titleKey: 'theme_footer_dark', labelKey: 'theme_level_dark', icon: 'Moon' },
 ];
 
 const linkVariantToNeoStyle = {
@@ -87,16 +87,17 @@ function FooterThemeSwitcher({ visualProps }) {
         }))
     ), [currentThemeName, t]);
     const currentThemeItem = FOOTER_THEME_ITEMS.find((theme) => theme.id === currentThemeName) ?? FOOTER_THEME_ITEMS[0];
-    const themeLabel = t(currentThemeItem.titleKey);
+    const themeLabel = t(currentThemeItem.labelKey);
 
+    // Icon only: the icon shows the current theme, and the menu names each one.
     return (
         <DropdownMenu
             items={items}
             onSelect={(item) => setThemeName(item.id)}
             buttonProps={{
-                label: themeLabel,
                 image: currentThemeItem.icon,
                 accessibilityLabel: themeLabel,
+                tooltip: themeLabel,
                 style: visualProps.style,
                 controlSize: visualProps.controlSize,
                 className: visualProps.className,
@@ -123,14 +124,15 @@ function FooterSoundsLevel({ visualProps }) {
     const current = SOUND_LEVEL_ITEMS.find((option) => option.id === level) ?? SOUND_LEVEL_ITEMS[0];
     const label = t(current.labelKey);
 
+    // Icon only, like the theme switcher: the icon shows the level, and the menu names each one.
     return (
         <DropdownMenu
             items={items}
             onSelect={(item) => setLevel(item.id)}
             buttonProps={{
-                label,
                 image: current.icon,
                 accessibilityLabel: label,
+                tooltip: label,
                 style: visualProps.style,
                 controlSize: visualProps.controlSize,
                 className: visualProps.className,
