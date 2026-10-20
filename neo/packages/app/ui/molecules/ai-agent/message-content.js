@@ -231,7 +231,8 @@ function safeActionUrl(raw) {
 }
 
 /**
- * Normalize a message's actions into `{ type, label, url }` / `{ type, label, message }` /
+ * Normalize a message's actions into `{ type, label, url }` (plus `checkUrl`, `message`
+ * for a link the chat waits for) / `{ type, label, message }` /
  * `{ type: 'form', label, formUrl, message }`.
  * `streamedActions` (from the live CUSTOM chunk) wins over whatever is on the
  * message, because the message copy may not have been persisted yet.
@@ -259,7 +260,16 @@ export function messageActions(message, streamedActions) {
             // but whose target we rejected must be dropped, never silently downgraded
             // to a reply that would push the label into the chat as if the user typed it.
             const isLink = action.type === 'link' || (!action.type && !!rawUrl);
-            if (isLink) return url ? { type: 'link', label, url } : null;
+            if (isLink) {
+                if (!url) return null;
+                // Optional "wait for it" link (e.g. OAuth): after the press the chat polls
+                // `check_url` and sends `message` itself once the server reports it done.
+                const checkUrl = String(action.check_url || '').trim();
+                const linkMessage = String(action.message || '').trim();
+                return SAFE_FORM_URL.test(checkUrl) && linkMessage
+                    ? { type: 'link', label, url, checkUrl, message: linkMessage }
+                    : { type: 'link', label, url };
+            }
             return { type: 'reply', label, message: String(action.message || label).trim() || label };
         })
         .filter(Boolean);

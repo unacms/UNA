@@ -33,7 +33,7 @@ class BxDolAIToolChatButtons extends BxDolAITool
         return [
             new ArrayProperty(
                 name: 'buttons',
-                description: 'Buttons under this reply. reply = visitor tap sends that label as the next message; link = an https URL (site pages, help, registration); form = opens a site form in a popup over the chat, form_url comes from a tool result only (never made up), after the form is saved the "message" text is sent as the visitor next message. Yes/no labels are exactly "' . $sYes . '" and "' . $sNo . '" (site language). Example: [{"type":"reply","label":"' . $sYes . '"},{"type":"reply","label":"' . $sNo . '"}]',
+                description: 'Buttons under this reply. reply = visitor tap sends that label as the next message; link = an https URL (site pages, help, registration), with check_url and message from a tool result the chat waits for it and sends message by itself; form = opens a site form in a popup over the chat, form_url comes from a tool result only (never made up), after the form is saved the "message" text is sent as the visitor next message. Yes/no labels are exactly "' . $sYes . '" and "' . $sNo . '" (site language). Example: [{"type":"reply","label":"' . $sYes . '"},{"type":"reply","label":"' . $sNo . '"}]',
                 required: true,
                 items: new ObjectProperty(
                     name: 'button',
@@ -42,7 +42,8 @@ class BxDolAIToolChatButtons extends BxDolAITool
                         new ToolProperty('label', PropertyType::STRING, 'Button text shown to the visitor', true),
                         new ToolProperty('url', PropertyType::STRING, 'Required for link. https URL.', false),
                         new ToolProperty('form_url', PropertyType::STRING, 'Required for form. Exactly the form_url from a tool result, like "module/method/&params[]=1".', false),
-                        new ToolProperty('message', PropertyType::STRING, 'For form. Sent as the visitor message after the form is saved, in the site language, e.g. "DigitalOcean is connected".', false),
+                        new ToolProperty('check_url', PropertyType::STRING, 'Optional for link, together with message. Exactly the check_url from a tool result, like "module/method/&params[]=1": the chat polls it after the link is opened and sends message once it is done.', false),
+                        new ToolProperty('message', PropertyType::STRING, 'For form, and for link with check_url. Sent as the visitor message after the form is saved or the check_url reports done, in the site language, e.g. "DigitalOcean is connected".', false),
                     ]
                 ),
                 minItems: 1,
