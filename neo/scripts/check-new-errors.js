@@ -12,7 +12,7 @@
 // (typecheck), ignoring line numbers, so unrelated edits that shift lines don't count.
 // Warnings are ignored.
 
-const fs = require('fs');
+const fs = require('node:fs');
 
 function args() {
     const out = {};
@@ -28,7 +28,7 @@ function args() {
 
 /** Path relative to the NEO root, whatever checkout the report came from. */
 function rel(file) {
-    const p = file.replace(/\\/g, '/');
+    const p = file.replaceAll('\\', '/');
     const m = p.match(/(?:^|\/)((?:apps|packages|scripts|crypto-shim)\/.*)$/);
     return m ? m[1] : p;
 }

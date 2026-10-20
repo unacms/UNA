@@ -177,8 +177,14 @@ jobs:
       # yarn.lock isn't committed (see neo/AGENTS.md), so this resolves the package.json ranges.
       # The npm registry now and then answers 502 for one tarball; retry instead of failing the PR.
       run: |
+        # --ignore-scripts keeps dependencies' install scripts from running in CI. NEO's own
+        # postinstall is only patch-package, so run that one explicitly: the result is the
+        # same lint and typecheck output as a plain install.
         for attempt in 1 2 3; do
-          yarn install --non-interactive --network-timeout 600000 && exit 0
+          if yarn install --ignore-scripts --non-interactive --network-timeout 600000; then
+            yarn patch-package
+            exit 0
+          fi
           echo "yarn install failed (attempt $attempt of 3)"
           sleep 15
         done
