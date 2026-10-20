@@ -588,9 +588,7 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
     // spinner, so the button keeps its size), and `loadingLabel`, when given,
     // becomes the accessible name instead of swapping the visible text.
     const effectiveLabel = label ?? title ?? '';
-    const loadingName = loading && typeof loadingLabel === 'string' && loadingLabel !== ''
-        ? loadingLabel
-        : undefined;
+    const loadingName = loading && loadingLabel ? loadingLabel : undefined;
     const effectiveImage = image ?? systemImage ?? resolved.defaultImage;
     const effectivePlacement = imagePlacement ?? resolved.imagePlacement;
 
@@ -887,8 +885,14 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
     // The spinner sits over the content, which stays in place invisible (see
     // `renderLabel`). A button with no content draws it inline instead.
     const spinnerOverlay = loading && (isTitle || !!effectiveImage || isCustomChildren);
+    // Custom children get a wrapper whenever the button takes `loading` at all,
+    // so toggling it only fades them: a new parent would remount them and reset
+    // their state. Buttons without `loading` render them as before.
+    const childrenContent = props.loading === undefined
+        ? children
+        : <Row className={cn('flex-row items-center', loading && 'opacity-0')}>{children}</Row>;
     const labelContent = isCustomChildren
-        ? (loading ? <Row className="flex-row items-center opacity-0">{children}</Row> : children)
+        ? childrenContent
         : renderLabel({
             label: effectiveLabel,
             image: effectiveImage,
