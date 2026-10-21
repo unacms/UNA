@@ -119,7 +119,7 @@ function bx_login($iId, $bRememberMe = false)
 
     BxDolSession::getInstance()->setUserId($iId);
     if (getParam('sys_session_auth'))
-        BxDolSession::getInstance()->setValue('remember_me', $bRememberMe);
+        BxDolSession::getInstance()->setRememberMe($bRememberMe);
 
     $oAccountQuery->updateLoggedIn($iId);
 

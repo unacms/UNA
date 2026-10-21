@@ -4204,7 +4204,7 @@ INSERT INTO `sys_form_display_inputs` (`display_name`, `input_name`, `visible_fo
 ('sys_login', 'relocate', 2147483647, 1, 2),
 ('sys_login', 'ID', 2147483647, 1, 3),
 ('sys_login', 'Password', 2147483647, 1, 4),
-('sys_login', 'rememberMe', 2147483647, 1, 5),
+('sys_login', 'rememberMe', 2147483647, 0, 5),
 ('sys_login', 'submit_text', 2147483647, 1, 6),
 ('sys_login', 'login', 2147483647, 1, 7),
 
