@@ -111,7 +111,16 @@ class BxAccntModule extends BxBaseModGeneralModule
         
         return array('counter1_value' => $iNum1,'counter3_value' => $iNumTotal, 'counter1_caption' => _t('_bx_accnt_menu_dashboard_manage_tools_addon_counter1_caption'));
     }
-    
+
+    public function checkAllowedManage($isPerformAction = false)
+    {
+        $bAdmin = isAdmin();
+        if(!$bAdmin && !$this->_isModerator($isPerformAction) && !$this->_isAdministrator($isPerformAction))
+            return _t('_sys_txt_access_denied');
+
+        return CHECK_ACTION_RESULT_ALLOWED;
+    }
+
     public function checkAllowedConfirm(&$aDataEntry, $isPerformAction = false)
     {
     	$bAdmin = isAdmin();
@@ -132,6 +141,16 @@ class BxAccntModule extends BxBaseModGeneralModule
             return $aCheck[CHECK_ACTION_MESSAGE];
 
         return CHECK_ACTION_RESULT_ALLOWED;
+    }
+
+    public function checkAllowedEditEmail(&$aDataEntry, $isPerformAction = false)
+    {
+    	$bAdmin = isAdmin();
+        $iAccountId = getLoggedId();
+    	if((!$bAdmin && !$this->_isAdministrator($isPerformAction)) || (int)$aDataEntry['id'] == $iAccountId)
+            return _t('_sys_txt_access_denied');
+
+    	return CHECK_ACTION_RESULT_ALLOWED;
     }
 
     public function checkAllowedSetOperatorRole(&$aDataEntry, $isPerformAction = false)
@@ -166,7 +185,8 @@ class BxAccntModule extends BxBaseModGeneralModule
     
     public function checkAllowedUnlockAccount(&$aDataEntry, $isPerformAction = false)
     {
-    	if((int)$aDataEntry['locked'] != 1)
+        $bAdmin = isAdmin();
+    	if(!$bAdmin || (int)$aDataEntry['locked'] != 1)
     		return _t('_sys_txt_access_denied');
 
     	return CHECK_ACTION_RESULT_ALLOWED;
