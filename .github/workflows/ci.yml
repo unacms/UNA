@@ -325,7 +325,7 @@ jobs:
         pkg_dir=$(find /tmp/una-pkg -mindepth 1 -maxdepth 1 -type d | head -n 1)
         cp -a "$pkg_dir"/. deploy/
         cp scripts/railway/Dockerfile scripts/railway/entrypoint.sh scripts/railway/railway.toml scripts/railway/.railwayignore \
-          scripts/railway/configure.php scripts/railway/seed.php deploy/
+          scripts/railway/configure.php scripts/railway/seed.php scripts/railway/languages.php deploy/
         chmod +x deploy/entrypoint.sh
 
     - uses: ./.github/actions/railway-cli
@@ -432,7 +432,7 @@ jobs:
         pkg_dir=$(find /tmp/una-pkg -mindepth 1 -maxdepth 1 -type d | head -n 1)
         cp -a "$pkg_dir"/. deploy/
         cp scripts/railway/Dockerfile scripts/railway/entrypoint.sh scripts/railway/railway.toml scripts/railway/.railwayignore \
-          scripts/railway/configure.php scripts/railway/seed.php deploy/
+          scripts/railway/configure.php scripts/railway/seed.php scripts/railway/languages.php deploy/
         chmod +x deploy/entrypoint.sh
 
     - uses: ./.github/actions/railway-cli

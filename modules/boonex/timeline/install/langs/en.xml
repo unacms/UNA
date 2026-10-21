@@ -442,6 +442,9 @@
     <string name="_bx_timeline_txt_status_hidden"><![CDATA[Hidden]]></string>
     <string name="_bx_timeline_txt_status_deleted"><![CDATA[Deleted]]></string>
     <string name="_bx_timeline_txt_hot"><![CDATA[Hot post]]></string>
+    <string name="_bx_timeline_txt_image_alt"><![CDATA[Image]]></string>
+    <string name="_bx_timeline_txt_image_alt_n"><![CDATA[Image {0} of {1}]]></string>
+    <string name="_bx_timeline_txt_image_alt_title_n"><![CDATA[{0}, image {1} of {2}]]></string>
     <string name="_bx_timeline_txt_pinned"><![CDATA[Pinned post]]></string>
     <string name="_bx_timeline_txt_sticked"><![CDATA[Pinned for all post]]></string>
     <string name="_bx_timeline_txt_promoted"><![CDATA[Promoted]]></string>

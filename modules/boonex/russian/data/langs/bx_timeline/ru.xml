@@ -435,6 +435,9 @@
     <string name="_bx_timeline_txt_status_hidden"><![CDATA[Скрыто]]></string>
     <string name="_bx_timeline_txt_status_deleted"><![CDATA[Удалено]]></string>
     <string name="_bx_timeline_txt_hot"><![CDATA['Горячее' событие]]></string>
+    <string name="_bx_timeline_txt_image_alt"><![CDATA[Изображение]]></string>
+    <string name="_bx_timeline_txt_image_alt_n"><![CDATA[Изображение {0} из {1}]]></string>
+    <string name="_bx_timeline_txt_image_alt_title_n"><![CDATA[{0}, изображение {1} из {2}]]></string>
     <string name="_bx_timeline_txt_pinned"><![CDATA[Приколотое событие]]></string>
     <string name="_bx_timeline_txt_sticked"><![CDATA[Событие приколотое для всех]]></string>
     <string name="_bx_timeline_txt_promoted"><![CDATA[Рекламируемое]]></string>
