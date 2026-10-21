@@ -212,6 +212,33 @@ class BxInvTemplate extends BxBaseModGeneralTemplate
             )
         ));
     }
+
+    /**
+     * API version of the join form replacement: the message and, when registration is by invitation only and requests are on, a link to the request form.
+     * @param string $sText the message from BxInvModule::serviceAccountAddFormCheck
+     */
+    public function getBlockRequestAPI($sText)
+    {
+        if(!$this->_oConfig->isRegistrationByInvitation() || !$this->_oConfig->isRequestInvite())
+            return [bx_api_get_msg($sText)];
+
+        $sUrl = bx_absolute_url(BxDolPermalinks::getInstance()->permalink($this->_oConfig->CNF['URL_REQUEST']));
+
+        return [bx_api_get_block('menu', [
+            'title' => '',
+            'content' => [
+                'items' => [[
+                    'id' => 1,
+                    'name' => 'invites-request',
+                    'title' => _t('_bx_invites_btn_request'),
+                    'info' => $sText,
+                    'link' => bx_api_get_relative_url($sUrl),
+                    'icon' => BxDolIconset::getObjectInstance()->getIcon('envelope'),
+                ]]
+            ]
+        ])];
+    }
+
     public function getBlockFormRequest()
     {
         if(!$this->_oConfig->isRequestInvite())

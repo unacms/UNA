@@ -493,6 +493,7 @@ class BxInvModule extends BxDolModule
      * Perform neccessary checking on join form.
      *
      * @return empty string - if join is allowed and should be processed as usual, non-empty string - if join form need to be replaced with this code.
+     * In API mode the string is plain text: the join form adds a request link to it (BxInvTemplate::getBlockRequestAPI), social sign-in shows it as a message.
      * 
      * @see BxInvModule::serviceAccountAddFormCheck
      */
@@ -517,6 +518,16 @@ class BxInvModule extends BxDolModule
 
         if($this->_oConfig->getKey() !== false)
             return $sReturn;
+
+        if($this->_bIsApi) {
+            $aTexts = [];
+            if($bKey)
+                $aTexts[] = _t('_bx_invites_err_used');
+            if($this->_oConfig->isRegistrationByInvitation())
+                $aTexts[] = _t('_bx_invites_txt_request_block_text');
+
+            return implode(' ', $aTexts);
+        }
 
         if($bKey)
             $sReturn .= MsgBox(_t('_bx_invites_err_used'));

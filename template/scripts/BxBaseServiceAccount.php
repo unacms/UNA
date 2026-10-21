@@ -60,7 +60,10 @@ class BxBaseServiceAccount extends BxDol
 
         if($bApi) {
             $mixedResult = $this->_oAccountForms->createAccountForm($aParams);
-            if(is_array($mixedResult))
+            // A list of blocks comes from a module which replaced the form, e.g. Invites when registration is by invitation only.
+            if(is_array($mixedResult) && array_is_list($mixedResult))
+                return $mixedResult;
+            else if(is_array($mixedResult))
                 return [bx_api_get_block('form', $mixedResult, [
                     'ext' => [
                         'request' => ['url' => '/api.php?r=system/create_account_form/TemplServiceAccount', 'immutable' => true]
