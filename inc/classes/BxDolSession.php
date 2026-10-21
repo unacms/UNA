@@ -107,17 +107,18 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
 		        $this->exists($this->sId); // it exists for sure but required for initializing some data there
         }
 
-		// if an old session has not been found then generate a new one
-		if (!$this->sId)
+        // if an old session has not been found then generate a new one
+        if (!$this->sId) {
             $this->sId = genRndPwd(32, true);
+        }
 
-        $iLifetime = $this->getLifetime();
+        $iLifetime = 60 * (int)getParam('sys_session_lifetime_in_min');
 
         $bSendCookie = !isset($_COOKIE[BX_DOL_SESSION_COOKIE]) || $_COOKIE[BX_DOL_SESSION_COOKIE] != $this->sId;
         if ($bSendCookie)
             $this->iTTL = 0;
 
-        // Sessions saved before `setRememberMe` existed still carry the flag.
+        // Sessions saved before `bx_login` set the TTL itself still carry the flag.
         if ($this->isValue('remember_me')) {
             if (getParam('sys_session_auth') && $this->getValue('remember_me') && $iLifetime > 0)
                 $this->iTTL = time() + $iLifetime;
@@ -213,6 +214,11 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         return $this->iUserId;
     }
 
+    /**
+     * Set when the session ends (0: with the browser; a remembered session's end then moves with
+     * each visit, see `start`). The cookie goes out with this response: the next request may not
+     * pass cookies back to the browser (NEO's server-side page fetch), so it can't wait for that one.
+     */
     function setTTL($iTTL)
     {
         if(empty($this->sId))
@@ -222,36 +228,18 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
             return;
 
         $this->iTTL = $iTTL;
+        unset($this->aData['remember_me']);
+
+        $this->sendCookie();
         $this->save();
     }
-    
+
     function getTTL()
     {
         if(empty($this->sId))
             $this->start();
 
         return $this->iTTL;
-    }
-
-    /**
-     * Keep the session for `sys_session_lifetime_in_min` after each visit (see `start`), or end it with the browser.
-     * The cookie goes out with this response: the next request may not pass cookies back to the browser
-     * (NEO's server-side page fetch), so it can't wait for that one.
-     */
-    public function setRememberMe($bRememberMe)
-    {
-        if(empty($this->sId))
-            $this->start(true);
-
-        if(empty($this->sId))
-            return;
-
-        $iLifetime = $this->getLifetime();
-        $this->iTTL = $bRememberMe && getParam('sys_session_auth') && $iLifetime > 0 ? time() + $iLifetime : 0;
-        unset($this->aData['remember_me']);
-
-        $this->sendCookie();
-        $this->save();
     }
 
     function setValue($sKey, $mixedValue)
@@ -301,11 +289,6 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
     public function maintenance()
     {
         return $this->oDb->deleteExpired();
-    }
-
-    protected function getLifetime()
-    {
-        return 60 * (int)getParam('sys_session_lifetime_in_min');
     }
 
     protected function sendCookie()

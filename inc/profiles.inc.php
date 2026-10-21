@@ -118,8 +118,11 @@ function bx_login($iId, $bRememberMe = false)
     }
 
     BxDolSession::getInstance()->setUserId($iId);
-    if (getParam('sys_session_auth'))
-        BxDolSession::getInstance()->setRememberMe($bRememberMe);
+    if (getParam('sys_session_auth')) {
+        // The cookie goes out with this response, see BxDolSession::setTTL.
+        $iLifetime = 60 * (int)getParam('sys_session_lifetime_in_min');
+        BxDolSession::getInstance()->setTTL($bRememberMe && $iLifetime > 0 ? time() + $iLifetime : 0);
+    }
 
     $oAccountQuery->updateLoggedIn($iId);
 
