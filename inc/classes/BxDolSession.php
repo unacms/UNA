@@ -13,6 +13,8 @@ if (!defined('BX_DOL_SESSION_IDLE_TIMEOUT_GUESTS'))
     define('BX_DOL_SESSION_IDLE_TIMEOUT_GUESTS', 4*60*60);
 if (!defined('BX_DOL_SESSION_SKIP_UPDATE'))
     define('BX_DOL_SESSION_SKIP_UPDATE', 30);
+if (!defined('BX_DOL_SESSION_TTL_STEP'))
+    define('BX_DOL_SESSION_TTL_STEP', 24*60*60); // how often a remembered session's end moves forward
 define('BX_DOL_SESSION_COOKIE', 'memberSession');
 
 class BxDolSession extends BxDolFactory implements iBxDolSingleton
@@ -79,7 +81,9 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
             return true;
         
         if (getParam('sys_session_auth')) {
-            $this->exists($this->sId);
+            // A remembered session past its end is over, even before the cron job deletes it.
+            if ($this->exists($this->sId) && $this->iTTL && $this->iTTL < time())
+                $this->destroy(false);
         }
         else {
             if ($this->exists($this->sId)) {
@@ -103,19 +107,41 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
 		        $this->exists($this->sId); // it exists for sure but required for initializing some data there
         }
 
-		// if an old session has not been found then generate a new one
-		if (!$this->sId)
+        // if an old session has not been found then generate a new one
+        if (!$this->sId) {
             $this->sId = genRndPwd(32, true);
-
-        if (!isset($_COOKIE[BX_DOL_SESSION_COOKIE]) || $_COOKIE[BX_DOL_SESSION_COOKIE] != $this->sId || $this->isValue('remember_me')) {
-            $iTime = 0;
-            if (getParam('sys_session_auth') && $this->isValue('remember_me') && $this->getValue('remember_me'))
-                $iTime = time() + getParam('sys_session_lifetime_in_min') * 60;
-
-            bx_setcookie(BX_DOL_SESSION_COOKIE, $this->sId, $iTime, 'auto', '', 'auto', true);
-            $this->iTTL = $iTime;
-            unset($this->aData['remember_me']);
         }
+
+        $iLifetime = 60 * (int)getParam('sys_session_lifetime_in_min');
+
+        $bSendCookie = !isset($_COOKIE[BX_DOL_SESSION_COOKIE]) || $_COOKIE[BX_DOL_SESSION_COOKIE] != $this->sId;
+        if ($bSendCookie)
+            $this->iTTL = 0;
+
+        // Sessions saved before `bx_login` set the TTL itself still carry the flag.
+        if ($this->isValue('remember_me')) {
+            if (getParam('sys_session_auth') && $this->getValue('remember_me') && $iLifetime > 0)
+                $this->iTTL = time() + $iLifetime;
+            unset($this->aData['remember_me']);
+            $bSendCookie = true;
+        }
+
+        // A remembered session lasts the lifetime from the last visit. Its end moves at most once
+        // per BX_DOL_SESSION_TTL_STEP, which is one write and one cookie.
+        $bRemembered = getParam('sys_session_auth') && $this->iTTL > 0;
+        if ($bRemembered && $this->iTTL - time() < $iLifetime - min(BX_DOL_SESSION_TTL_STEP, intdiv($iLifetime, 2))) {
+            $this->iTTL = time() + $iLifetime;
+            $bSendCookie = true;
+        }
+
+        // API responses repeat a remembered session's cookie every time. NEO's server-side page
+        // fetch is an API request whose Set-Cookie never reaches the browser, so the next one has to
+        // carry a moved end. They're private JSON; the site's own responses don't repeat it, which
+        // keeps the cookie off files that caches may share (CSS, JS, images). Public files drop a
+        // moved end's cookie too (BxDolGzip, bx_smart_readfile); the browser then keeps the earlier
+        // end until the next move.
+        if ($bSendCookie || ($bRemembered && bx_is_api()))
+            $this->sendCookie();
 
         $this->save();
 
@@ -190,6 +216,11 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         return $this->iUserId;
     }
 
+    /**
+     * Set when the session ends (0: with the browser; a remembered session's end then moves with
+     * each visit, see `start`). The cookie goes out with this response: the next request may not
+     * pass cookies back to the browser (NEO's server-side page fetch), so it can't wait for that one.
+     */
     function setTTL($iTTL)
     {
         if(empty($this->sId))
@@ -199,9 +230,12 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
             return;
 
         $this->iTTL = $iTTL;
+        unset($this->aData['remember_me']);
+
+        $this->sendCookie();
         $this->save();
     }
-    
+
     function getTTL()
     {
         if(empty($this->sId))
@@ -257,6 +291,11 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
     public function maintenance()
     {
         return $this->oDb->deleteExpired();
+    }
+
+    protected function sendCookie()
+    {
+        bx_setcookie(BX_DOL_SESSION_COOKIE, $this->sId, $this->iTTL, 'auto', '', 'auto', true);
     }
 
     protected function save()

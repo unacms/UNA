@@ -2176,6 +2176,9 @@ function bx_smart_readfile($sPath, $sFilename = '', $sMimeType = 'application/oc
 
     header('Content-Type: ' . $sMimeType);
     header('Cache-Control: ' . $sCachePrivacy . ', must-revalidate, max-age=' . $iCacheAge);
+    // A shared cache must not hand one visitor's session cookie to others.
+    if ('public' == $sCachePrivacy)
+        header_remove('Set-Cookie');
     header("Expires: " . gmdate('D, d M Y H:i:s', time() + $iCacheAge) . ' GMT');
     header("Last-Modified: " . gmdate('D, d M Y H:i:s', @filemtime($sPath)) . ' GMT');
     header("Accept-Ranges: bytes");
