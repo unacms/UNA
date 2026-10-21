@@ -55,10 +55,14 @@ function pageHasForm(data) {
     return formItems(data).length > 0
 }
 
+// The Invites request form is not a way to join: with invitation-only registration UNA sends it,
+// after a message, in place of the join form.
+function isJoinForm(item) {
+    return item?.type === 'form' && formDisplay(item) !== 'bx_invites_request_send'
+}
+
 function pageAllowsJoin(data) {
-    return formItems(data).some(
-        (item) => formDisplay(item) !== 'bx_invites_request_send',
-    )
+    return formItems(data).some(isJoinForm)
 }
 
 export default function PageLayout({ data, blocks, children, pageClasses }) {
@@ -68,7 +72,7 @@ export default function PageLayout({ data, blocks, children, pageClasses }) {
     const inviteData = DataByName(data, blocks?.form_invitation)
 
     const isAllowJoin = joinData
-        ? joinData.content.some((item) => item.type === 'form')
+        ? joinData.content.some(isJoinForm)
         : pageAllowsJoin(data)
     const hasForm =
         Boolean(children) ||
@@ -82,6 +86,9 @@ export default function PageLayout({ data, blocks, children, pageClasses }) {
             uri={data.uri}
             data={joinData || inviteData}
             formProps={{ hide_errors: true, button_full_width: true }}
+            // Each item of a block draws its own card: with the invitation-only message and the
+            // request form, the block title would repeat on both.
+            showTitle={isAllowJoin ? undefined : false}
         />
     )
 

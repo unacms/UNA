@@ -7,8 +7,8 @@ if (!function_exists('MsgBox'))
 
 /**
  * The join form in the app when Invites allows registration by invitation only. The API used to send an empty
- * message block, so NEO's sign-up page was a blank card. It now explains why, links to the request form, and
- * still shows the form to people who follow an invitation link.
+ * message block, so NEO's sign-up page was a blank card. It now says why and shows the request form under the
+ * message, and still shows the join form to people who follow an invitation link.
  *
  * The options are set in the param cache and the module is created again for every test, so nothing is saved
  * on the site.
@@ -81,38 +81,47 @@ class InvitesRegistrationApiTest extends BxDolIntegrationTestCase
         return $oModule;
     }
 
+    /**
+     * @return array the items of the sign-up block
+     */
     protected function bxCreateAccountFormApi(): array
     {
         // BxDolService keeps results in memory for the request; every test needs a fresh one.
         $aResult = BxDolService::call('system', 'create_account_form', [], 'TemplServiceAccount', true);
         $this->assertIsArray($aResult);
-        $this->assertCount(1, $aResult, 'The sign-up block has one item.');
+        $this->assertNotEmpty($aResult);
 
-        return $aResult[0];
+        return $aResult;
     }
 
-    public function testInvitationOnlyLinksToTheRequestForm(): void
+    protected function bxAssertRequestForm(array $aItem): void
+    {
+        $this->assertSame('form', $aItem['type']);
+        $this->assertSame('bx_invites_request_send', $aItem['data']['params']['display'] ?? null, 'NEO tells the request form from the join form by its display.');
+        $this->assertSame('/api.php?r=bx_invites/get_block_form_request', $aItem['request']['url'] ?? null, 'It is sent to the Invites request flow.');
+    }
+
+    public function testInvitationOnlyShowsTheMessageAndTheRequestForm(): void
     {
         $this->bxInvites(true, true);
 
-        $aBlock = $this->bxCreateAccountFormApi();
+        $aItems = $this->bxCreateAccountFormApi();
 
-        $this->assertSame('menu', $aBlock['type'], 'NEO draws an item with a description as a full-width choice.');
-        $aItems = $aBlock['data']['content']['items'];
-        $this->assertCount(1, $aItems);
-        $this->assertSame(_t('_bx_invites_btn_request'), $aItems[0]['title']);
-        $this->assertSame(_t('_bx_invites_txt_request_block_text'), $aItems[0]['info']);
-        $this->assertSame('/invites-request', $aItems[0]['link'], 'An app path, not the site URL.');
+        $this->assertCount(2, $aItems);
+        $this->assertSame('msg', $aItems[0]['type']);
+        $this->assertSame(_t('_bx_invites_txt_request_block_text'), $aItems[0]['data']);
+        $this->bxAssertRequestForm($aItems[1]);
     }
 
-    public function testInvitationOnlyWithoutRequestsExplainsOnly(): void
+    public function testInvitationOnlyWithoutRequestsShowsTheMessageOnly(): void
     {
         $this->bxInvites(true, false);
 
-        $aBlock = $this->bxCreateAccountFormApi();
+        $aItems = $this->bxCreateAccountFormApi();
 
-        $this->assertSame('msg', $aBlock['type']);
-        $this->assertSame(_t('_bx_invites_txt_request_block_text'), $aBlock['data']);
+        $this->assertCount(1, $aItems);
+        $this->assertSame('msg', $aItems[0]['type']);
+        $this->assertSame(_t('_bx_invites_txt_request_block_text'), $aItems[0]['data']);
     }
 
     public function testUsedInvitationLinkIsExplained(): void
@@ -120,9 +129,11 @@ class InvitesRegistrationApiTest extends BxDolIntegrationTestCase
         $this->bxInvites(true, true);
         $_GET['icode'] = 'phpunit-' . bin2hex(random_bytes(8));
 
-        $aItem = $this->bxCreateAccountFormApi()['data']['content']['items'][0];
+        $aItems = $this->bxCreateAccountFormApi();
 
-        $this->assertSame(_t('_bx_invites_err_used') . ' ' . _t('_bx_invites_txt_request_block_text'), $aItem['info']);
+        $this->assertCount(2, $aItems);
+        $this->assertSame(_t('_bx_invites_err_used') . ' ' . _t('_bx_invites_txt_request_block_text'), $aItems[0]['data']);
+        $this->bxAssertRequestForm($aItems[1]);
     }
 
     public function testUsedInvitationLinkWithOpenRegistrationKeepsTheSiteMessage(): void
@@ -131,10 +142,11 @@ class InvitesRegistrationApiTest extends BxDolIntegrationTestCase
         $this->bxInvites(false, true);
         $_GET['icode'] = 'phpunit-' . bin2hex(random_bytes(8));
 
-        $aBlock = $this->bxCreateAccountFormApi();
+        $aItems = $this->bxCreateAccountFormApi();
 
-        $this->assertSame('msg', $aBlock['type']);
-        $this->assertSame(_t('_bx_invites_err_used'), $aBlock['data']);
+        $this->assertCount(1, $aItems);
+        $this->assertSame('msg', $aItems[0]['type']);
+        $this->assertSame(_t('_bx_invites_err_used'), $aItems[0]['data']);
     }
 
     public function testSocialSignInGetsPlainText(): void
@@ -165,10 +177,12 @@ class InvitesRegistrationApiTest extends BxDolIntegrationTestCase
         $this->assertGreaterThan(0, $this->_iInviteId);
         $_GET[$oModule->_oConfig->getKeyCode()] = $this->_sKey;
 
-        $aBlock = $this->bxCreateAccountFormApi();
+        $aItems = $this->bxCreateAccountFormApi();
 
-        $this->assertSame('form', $aBlock['type']);
-        $aEmail = $aBlock['data']['inputs']['email'];
+        $this->assertCount(1, $aItems);
+        $this->assertSame('form', $aItems[0]['type']);
+        $this->assertSame('sys_account_create', $aItems[0]['data']['params']['display'] ?? null);
+        $aEmail = $aItems[0]['data']['inputs']['email'];
         $this->assertSame($sEmail, $aEmail['value']);
         $this->assertSame('readonly', $aEmail['attrs']['readonly'] ?? null, 'The invitation is for this email only.');
     }
@@ -177,7 +191,11 @@ class InvitesRegistrationApiTest extends BxDolIntegrationTestCase
     {
         $this->bxInvites(false, true);
 
-        $this->assertSame('form', $this->bxCreateAccountFormApi()['type']);
+        $aItems = $this->bxCreateAccountFormApi();
+
+        $this->assertCount(1, $aItems);
+        $this->assertSame('form', $aItems[0]['type']);
+        $this->assertSame('sys_account_create', $aItems[0]['data']['params']['display'] ?? null);
     }
 
     public function testSiteStillShowsTheRequestBlock(): void
