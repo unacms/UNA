@@ -110,6 +110,8 @@ class BxInvResponse extends BxDolAlertsResponse
         }
         else {
             $oAlert->aExtras['form_code'] = $sCode;
+            if(bx_is_api())
+                $oAlert->aExtras['form_code_api'] = $this->_oModule->_oTemplate->getBlockRequestAPI($sCode);
             $oAlert->aExtras['form_object'] = false;
         }
     }

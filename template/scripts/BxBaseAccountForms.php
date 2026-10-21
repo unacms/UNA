@@ -91,6 +91,7 @@ class BxBaseAccountForms extends BxDolProfileForms
         if (!$oForm->isSubmittedAndValid()) {
             
             $sCode = $oForm->getCode();
+            $aCodeApi = [];
 
             /**
              * @hooks
@@ -102,6 +103,7 @@ class BxBaseAccountForms extends BxDolProfileForms
              * - $extra_params - array of additional params with the following array keys:
              *      - `form_object` - [object] by ref, form object, can be overridden in hook processing
              *      - `form_code` - [string] by ref, html for form, can be overridden in hook processing
+             *      - `form_code_api` - [array] by ref, API blocks returned instead of the form when `form_object` is set to false, can be overridden in hook processing
              * @hook @ref hook-account-add_form
              */
             bx_alert('account', 'add_form', 0, 0, array(
@@ -109,11 +111,13 @@ class BxBaseAccountForms extends BxDolProfileForms
                     'form_inputs_ref' => &$oForm->aInputs,
                     'form_code' => &$sCode,
                     'form_code_ref' => &$sCode,
+                    'form_code_api' => &$aCodeApi,
+                    'form_code_api_ref' => &$aCodeApi,
             ));
             
             if($bIsApi){
                 if (!$oForm)
-                    return false;
+                    return !empty($aCodeApi) ? $aCodeApi : false;
                 return $oForm->getCodeAPI();
             }
 
