@@ -302,6 +302,17 @@ class BxDolAccountQuery extends BxDolDb implements iBxDolSingleton
     }
     
     /**
+     * Update 'receive_news' field.
+     * @param  int    $isReceive - 0: unsubscribe from site news, 1: subscribe
+     * @param  int    $iID       - account id
+     * @return number of affected rows
+     */
+    public function updateReceiveNews($isReceive, $iID)
+    {
+        return $this->_updateField ($iID, 'receive_news', $isReceive ? 1 : 0);
+    }
+
+    /**
      * Update 'welcome_sent' field.
      * @param  int    $isSent   - 0: mark as sent, 1: as not sent
      * @param  int    $iID      - account id

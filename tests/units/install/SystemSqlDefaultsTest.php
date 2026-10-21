@@ -80,6 +80,20 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString("`set_name`='sys_toolbar_site' AND `module`='system' AND `name`='search'", $sSql);
     }
 
+    public function testNewsletterIsOptIn(): void
+    {
+        $sSql = self::systemSql();
+
+        $this->assertStringContainsString("  `receive_news` tinyint(4) NOT NULL DEFAULT '0',", $sSql, 'An account created without the field is not subscribed.');
+
+        // Form input columns: object, module, name, value, values, checked, type, ...
+        $this->assertStringContainsString("('sys_account', 'system', 'receive_news', '1', '', 0, 'switcher',", $sSql, 'The switch starts unticked wherever it shows.');
+
+        // Display input columns: display_name, input_name, visible_for_levels, active, order.
+        $this->assertMatchesRegularExpression("/\\('sys_account_create', 'receive_news', 2147483647, 0, \\d+\\)/", $sSql, 'The join form does not ask; the input stays so a site can turn it on in Studio > Forms.');
+        $this->assertMatchesRegularExpression("/\\('sys_account_settings_email', 'receive_news', 2147483647, 1, \\d+\\)/", $sSql, 'Members can still change it in account settings.');
+    }
+
     public function testToolbarHasNoHardcodedSearchButton(): void
     {
         $sRoot = __DIR__ . '/../../../';

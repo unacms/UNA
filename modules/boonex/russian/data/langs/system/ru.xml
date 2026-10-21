@@ -3013,7 +3013,7 @@
 	<string name="_sys_form_account_input_password_current_error"><![CDATA[Неправильный текущий пароль. Введите пароль, который Вы используете для доступа к этому сайту.]]></string>
 	<string name="_sys_form_account_input_password_error"><![CDATA[Пароль должен иметь как минимум 8 символов, содержать 1 заглавную латинскую букву, 1 строчную букву и 1 число.]]></string>
 	<string name="_sys_form_account_input_phone_error"><![CDATA[Это обязательное поле.]]></string>
-	<string name="_sys_form_account_input_receive_news"><![CDATA[Получать новости]]></string>
+	<string name="_sys_form_account_input_receive_news"><![CDATA[Присылать мне на почту новости и анонсы]]></string>
 	<string name="_sys_form_account_input_receive_updates"><![CDATA[Получать обновления сайта]]></string>
 	<string name="_sys_form_account_input_submit"><![CDATA[Отправить]]></string>
         <string name="_sys_form_account_input_publish"><![CDATA[Создать новую учетную запись]]></string>
@@ -3201,6 +3201,8 @@
         <string name="_sys_form_profile_input_cfu_locked"><![CDATA[Заблокировать контентный фильтр]]></string>
         <string name="_sys_form_profile_input_sys_do_submit"><![CDATA[Выполнить]]></string>
         <string name="_sys_form_profile_input_do_submit"><![CDATA[Выполнить]]></string>
+        <string name="_sys_form_profile_input_receive_news"><![CDATA[Присылать мне на почту новости и анонсы от {0}]]></string>
+        <string name="_sys_form_profile_input_receive_news_info"><![CDATA[Это можно изменить в любой момент в настройках аккаунта.]]></string>
         <string name="_sys_form_profile_input_sys_do_cancel"><![CDATA[Отмена]]></string>
         <string name="_sys_form_profile_input_do_cancel"><![CDATA[Отмена]]></string>
         <string name="_sys_profile_cf_set_successfully_submitted"><![CDATA[Фильтр контента был успешно обновлен]]></string>
@@ -3282,7 +3284,7 @@
 	<string name="_sys_form_unsubscribe_input_caption_system_id"><![CDATA[ID аккаунта]]></string>
 	<string name="_sys_form_unsubscribe_input_caption_system_receive_news"><![CDATA[Получать новости]]></string>
 	<string name="_sys_form_unsubscribe_input_caption_system_receive_updates"><![CDATA[Получать обновления сайта]]></string>
-	<string name="_sys_form_unsubscribe_input_receive_news"><![CDATA[Получать новости]]></string>
+	<string name="_sys_form_unsubscribe_input_receive_news"><![CDATA[Присылать мне на почту новости и анонсы]]></string>
 	<string name="_sys_form_unsubscribe_input_receive_updates"><![CDATA[Получать обновления сайта]]></string>
 	<string name="_sys_form_unsubscribe_input_submit"><![CDATA[Выполнить]]></string>
 	<string name="_sys_form_err_not_unique_value"><![CDATA[Поле должно иметь уникальное значение]]></string>

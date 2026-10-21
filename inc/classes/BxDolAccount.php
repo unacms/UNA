@@ -300,6 +300,48 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
         return false;
     }
     /**
+     * Subscribe account to site news (mass mailings) or unsubscribe it.
+     * Fires the same alerts as saving the switch in account settings,
+     * so Mass Mailer, Mailchimp, Intercom, etc. stay in sync.
+     * @param  bool $bReceive   - true: subscribe, false: unsubscribe
+     * @param  int  $iAccountId - optional account id
+     * @return true on success or when the value is unchanged, false on error
+     */
+    public function updateReceiveNews($bReceive, $iAccountId = false)
+    {
+        $iId = (int)$iAccountId ? (int)$iAccountId : $this->_iAccountID;
+
+        $aInfo = $this->_oQuery->getInfoById($iId);
+        if(empty($aInfo))
+            return false;
+
+        $iValue = $bReceive ? 1 : 0;
+        if((int)$aInfo['receive_news'] == $iValue)
+            return true;
+
+        if(!$this->_oQuery->updateReceiveNews($iValue, $iId))
+            return false;
+
+        if($iId == $this->_iAccountID)
+            $this->_aInfo = false;
+
+        // @see hook-account-change_receive_news
+        bx_alert('account', 'change_receive_news', 0, false, [
+            'account_id' => $iId,
+            'old_value' => $aInfo['receive_news'],
+            'new_value' => $iValue,
+            'email' => $aInfo['email']
+        ]);
+
+        // @see hook-account-edited
+        bx_alert('account', 'edited', $iId, ($iSenderId = getLoggedId()) != 0 ? $iSenderId : $iId, [
+            'action' => 'change_receive_news'
+        ]);
+
+        return true;
+    }
+
+    /**
      * Change account password
      * @param  string  $sPassword - new password
      * @param  int  $iAccountId  - optional account id
@@ -323,7 +365,7 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
              * - $object_id - account id 
              * - $sender_id - account sender id 
              * - $extra_params - array of additional params with the following array keys:
-             *      - `action` - [string] action's name, can be reset_password
+             *      - `action` - [string] action's name, can be reset_password or change_receive_news
              * @hook @ref hook-account-edited
              */
             bx_alert('account', 'edited', $iId, ($iSenderId = getLoggedId()) != 0 ? $iSenderId : $iId, [

@@ -14,6 +14,12 @@
  */
 class BxBaseModProfileFormEntry extends BxBaseModGeneralFormEntry
 {
+    /**
+     * Newsletter question asked when an account creates its first profile.
+     * It's saved to the account, not to the profile.
+     */
+    public static $FIELD_RECEIVE_NEWS = 'receive_news';
+
     protected $_iAccountProfileId = 0;
     protected $_aImageFields = array ();
     
@@ -121,6 +127,69 @@ class BxBaseModProfileFormEntry extends BxBaseModGeneralFormEntry
         $oAccountProfile = BxDolProfile::getInstanceAccountProfile();
         if ($oAccountProfile)
             $this->_iAccountProfileId = $oAccountProfile->id();
+
+        if ($this->_isAskReceiveNews())
+            $this->_addInputReceiveNews();
+    }
+
+    function insert ($aValsToAdd = array(), $isIgnore = false)
+    {
+        $iContentId = parent::insert($aValsToAdd, $isIgnore);
+
+        // The site sends '1' for a ticked switch, the app sends 1 or 0.
+        if ($iContentId && isset($this->aInputs[self::$FIELD_RECEIVE_NEWS]) && (int)$this->getCleanValue(self::$FIELD_RECEIVE_NEWS) == 1 && ($oAccount = BxDolAccount::getInstance()))
+            $oAccount->updateReceiveNews(true);
+
+        return $iContentId;
+    }
+
+    /**
+     * Ask for newsletter consent on the profile creation step which follows joining:
+     * the add form of a module which acts as profile, while the account has no profiles
+     * and isn't subscribed yet. A site which asks on the join form doesn't ask again.
+     */
+    protected function _isAskReceiveNews()
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        if (empty($CNF['OBJECT_FORM_ENTRY_DISPLAY_ADD']) || $this->aParams['display'] != $CNF['OBJECT_FORM_ENTRY_DISPLAY_ADD'] || !$this->_oModule->serviceActAsProfile())
+            return false;
+
+        $oAccount = BxDolAccount::getInstance();
+        if (!$oAccount || $oAccount->getProfilesNumber() > 0)
+            return false;
+
+        $aAccountInfo = $oAccount->getInfo();
+        if (!empty($aAccountInfo['receive_news']))
+            return false;
+
+        $oFormJoin = BxDolForm::getObjectInstance('sys_account', 'sys_account_create');
+        return !$oFormJoin || !isset($oFormJoin->aInputs[self::$FIELD_RECEIVE_NEWS]);
+    }
+
+    protected function _addInputReceiveNews()
+    {
+        $sField = self::$FIELD_RECEIVE_NEWS;
+
+        $aInput = [
+            'type' => 'switcher',
+            'name' => $sField,
+            'caption' => _t('_sys_form_profile_input_receive_news', getParam('site_title')),
+            'info' => _t('_sys_form_profile_input_receive_news_info'),
+            'value' => 1,
+            'checked' => false,
+            'required' => false,
+        ];
+
+        // Right above the submit button(s), or last.
+        $iPosition = 0;
+        foreach ($this->aInputs as $a) {
+            if (in_array($a['type'] ?? '', ['submit', 'input_set']))
+                break;
+            $iPosition++;
+        }
+
+        $this->aInputs = array_slice($this->aInputs, 0, $iPosition, true) + [$sField => $aInput] + array_slice($this->aInputs, $iPosition, null, true);
     }
 
     public function getUploadersInfo($sField = '')
