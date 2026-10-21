@@ -132,7 +132,7 @@ class BxBaseModProfileFormEntry extends BxBaseModGeneralFormEntry
             $this->_addInputReceiveNews();
     }
 
-    function insert ($aValsToAdd = array(), $isIgnore = false)
+    public function insert ($aValsToAdd = array(), $isIgnore = false)
     {
         $iContentId = parent::insert($aValsToAdd, $isIgnore);
 
@@ -156,11 +156,7 @@ class BxBaseModProfileFormEntry extends BxBaseModGeneralFormEntry
             return false;
 
         $oAccount = BxDolAccount::getInstance();
-        if (!$oAccount || $oAccount->getProfilesNumber() > 0)
-            return false;
-
-        $aAccountInfo = $oAccount->getInfo();
-        if (!empty($aAccountInfo['receive_news']))
+        if (!$oAccount || $oAccount->getProfilesNumber() > 0 || !empty($oAccount->getInfo()['receive_news']))
             return false;
 
         $oFormJoin = BxDolForm::getObjectInstance('sys_account', 'sys_account_create');

@@ -303,27 +303,24 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
      * Subscribe account to site news (mass mailings) or unsubscribe it.
      * Fires the same alerts as saving the switch in account settings,
      * so Mass Mailer, Mailchimp, Intercom, etc. stay in sync.
-     * @param  bool $bReceive   - true: subscribe, false: unsubscribe
-     * @param  int  $iAccountId - optional account id
+     * Call it on the account's own instance, BxDolAccount::getInstance($iAccountId),
+     * so the cached info which alert handlers read is refreshed.
+     * @param  bool $bReceive - true: subscribe, false: unsubscribe
      * @return true on success or when the value is unchanged, false on error
      */
-    public function updateReceiveNews($bReceive, $iAccountId = false)
+    public function updateReceiveNews($bReceive)
     {
-        $iId = (int)$iAccountId ? (int)$iAccountId : $this->_iAccountID;
+        $iId = $this->_iAccountID;
+        $iValue = $bReceive ? 1 : 0;
 
         $aInfo = $this->_oQuery->getInfoById($iId);
-        if(empty($aInfo))
-            return false;
-
-        $iValue = $bReceive ? 1 : 0;
-        if((int)$aInfo['receive_news'] == $iValue)
+        if(!empty($aInfo) && (int)$aInfo['receive_news'] == $iValue)
             return true;
 
-        if(!$this->_oQuery->updateReceiveNews($iValue, $iId))
+        if(empty($aInfo) || !$this->_oQuery->updateReceiveNews($iValue, $iId))
             return false;
 
-        if($iId == $this->_iAccountID)
-            $this->_aInfo = false;
+        $this->_aInfo = false;
 
         // @see hook-account-change_receive_news
         bx_alert('account', 'change_receive_news', 0, false, [

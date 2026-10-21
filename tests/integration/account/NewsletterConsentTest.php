@@ -13,12 +13,19 @@ class BxTestNewsletterAlertsResponse extends BxDolAlertsResponse
 
     public function response($oAlert)
     {
-        if ($oAlert->sUnit === 'account' && in_array($oAlert->sAction, ['change_receive_news', 'edited'], true))
-            self::$aAlerts[] = [
-                'action' => $oAlert->sAction,
-                'object' => (int)$oAlert->iObject,
-                'extras' => $oAlert->aExtras,
-            ];
+        if ($oAlert->sUnit !== 'account' || !in_array($oAlert->sAction, ['change_receive_news', 'edited'], true))
+            return;
+
+        // What a handler like Mailchimp's reads from the account object at that moment.
+        $iAccountId = $oAlert->sAction === 'edited' ? (int)$oAlert->iObject : (int)$oAlert->aExtras['account_id'];
+        $oAccount = BxDolAccount::getInstance($iAccountId);
+
+        self::$aAlerts[] = [
+            'action' => $oAlert->sAction,
+            'object' => (int)$oAlert->iObject,
+            'extras' => $oAlert->aExtras,
+            'receive_news_seen' => $oAccount ? (int)$oAccount->getInfo()['receive_news'] : null,
+        ];
     }
 }
 
@@ -128,11 +135,13 @@ class NewsletterConsentTest extends BxDolAccountTestCase
         $this->assertSame(0, (int)$aChange[0]['extras']['old_value']);
         $this->assertSame(1, (int)$aChange[0]['extras']['new_value']);
         $this->assertSame($aAccount['email'], $aChange[0]['extras']['email']);
+        $this->assertSame(1, $aChange[0]['receive_news_seen']);
 
-        $aEdited = array_filter($this->bxAlerts('edited'), function ($a) {
+        $aEdited = array_values(array_filter($this->bxAlerts('edited'), function ($a) {
             return ($a['extras']['action'] ?? '') === 'change_receive_news';
-        });
+        }));
         $this->assertCount(1, $aEdited, 'account/edited lets Mailchimp update the subscription.');
+        $this->assertSame(1, $aEdited[0]['receive_news_seen'], 'Mailchimp reads the new value from the account object.');
     }
 
     public function testFirstProfileWithTheSwitchOffDoesNotSubscribe(): void
@@ -194,6 +203,7 @@ class NewsletterConsentTest extends BxDolAccountTestCase
     {
         $aAccount = $this->bxJoinApi(true);
         $oAccount = $aAccount['account'];
+        $this->assertSame(0, (int)$oAccount->getInfo()['receive_news'], 'The account info is cached before the change.');
 
         $this->assertTrue($oAccount->updateReceiveNews(false));
         $this->assertSame([], BxTestNewsletterAlertsResponse::$aAlerts, 'Nothing changed, nothing to sync.');
@@ -208,6 +218,9 @@ class NewsletterConsentTest extends BxDolAccountTestCase
             return [(int)$a['extras']['old_value'], (int)$a['extras']['new_value']];
         }, $this->bxAlerts('change_receive_news'));
         $this->assertSame([[0, 1], [1, 0]], $aValues);
+
+        $aSeen = array_column($this->bxAlerts('edited'), 'receive_news_seen');
+        $this->assertSame([1, 0], $aSeen, 'Handlers of account/edited read the new value, not the cached old one.');
     }
 
     /**
