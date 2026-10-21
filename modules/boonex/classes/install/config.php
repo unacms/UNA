@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_classes',
     'title' => 'Classes',
     'note' => 'Classes, schedules',
-    'version' => '15.0.4.DEV',
+    'version' => '15.0.5.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
 

@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_tasks',
     'title' => 'Tasks',
     'note' => 'Tasks, to-dos',
-    'version' => '15.0.7.DEV',
+    'version' => '15.0.8.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
 

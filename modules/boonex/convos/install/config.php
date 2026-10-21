@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_convos',
     'title' => 'Conversations',
     'note' => 'Conversations, private messages, inbox',
-    'version' => '15.0.3.DEV',
+    'version' => '15.0.4.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
 
