@@ -31,14 +31,16 @@ class BxDolSessionCookieSpy extends BxDolSession
 #[Group('integration')]
 class RememberMeSessionTest extends BxDolIntegrationTestCase
 {
+    private $_aOptionsBackup = [];
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        if (!getParam('sys_session_auth'))
-            $this->markTestSkipped('Needs session authentication (sys_session_auth).');
-        if ($this->bxLifetime() < 2 * BX_DOL_SESSION_TTL_STEP)
-            $this->markTestSkipped('Needs a session lifetime of at least two days.');
+        foreach (['sys_session_auth', 'sys_session_lifetime_in_min'] as $sName)
+            $this->_aOptionsBackup[$sName] = getParam($sName);
+        setParam('sys_session_auth', 'on');
+        $this->bxSetLifetimeMinutes(129600);
 
         BxDolSessionCookieSpy::install();
     }
@@ -54,6 +56,9 @@ class RememberMeSessionTest extends BxDolIntegrationTestCase
         parent::tearDown();
 
         unset($GLOBALS['bxDolClasses']['BxDolSession']);
+
+        foreach ($this->_aOptionsBackup as $sName => $sValue)
+            setParam($sName, $sValue);
     }
 
     public function testLoginFormHasNoRememberMeSwitch(): void
@@ -134,6 +139,20 @@ class RememberMeSessionTest extends BxDolIntegrationTestCase
         $this->assertSame([['id' => $sId, 'expires' => $iEnd]], $oSession->aCookies, 'Every API response repeats the cookie.');
     }
 
+    public function testShortLifetimeMovesEndAfterHalfOfIt(): void
+    {
+        $this->bxSetLifetimeMinutes(60);
+        $this->bxLoginAs('admin', true);
+        $sId = $this->bxSpy()->getId();
+
+        $iEnd = time() + 3600 - 1000;
+        $this->bxSetTTL($sId, $iEnd);
+        $this->assertSame($iEnd, $this->bxNextRequest()->getTTL(), 'Under half the lifetime used: the end stays.');
+
+        $this->bxSetTTL($sId, time() + 3600 - 2000);
+        $this->assertEqualsWithDelta(time() + 3600, $this->bxNextRequest()->getTTL(), 5, 'Over half used: the end moves.');
+    }
+
     public function testSessionPastItsEndIsNotRevived(): void
     {
         $this->bxLoginAs('admin', true);
@@ -182,6 +201,11 @@ class RememberMeSessionTest extends BxDolIntegrationTestCase
     protected function bxLifetime(): int
     {
         return 60 * (int)getParam('sys_session_lifetime_in_min');
+    }
+
+    protected function bxSetLifetimeMinutes(int $iMinutes): void
+    {
+        setParam('sys_session_lifetime_in_min', (string)$iMinutes);
     }
 
     protected function bxRow(string $sId)

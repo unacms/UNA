@@ -63,6 +63,8 @@ class BxDolGzip extends BxDol
         header("Content-type: " . $this->_sType);
         header("Vary: Accept-Encoding");
         header("Cache-control: max-age=" . $this->_iExpirationOffset . ", public");
+        // A shared cache must not hand one visitor's session cookie to others.
+        header_remove('Set-Cookie');
 
         $encodings = array ();
         if (isset($_SERVER['HTTP_ACCEPT_ENCODING']))
