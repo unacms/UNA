@@ -11,6 +11,8 @@
 
 class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
 {
+    protected $_oAccountDb;
+
     protected $_sFilter2Name;
     protected $_sFilter2Value;
     protected $_aFilter2Values;
@@ -20,6 +22,8 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
     	$this->MODULE = 'bx_accounts';
 
         parent::__construct ($aOptions, $oTemplate);
+
+        $this->_oAccountDb = BxDolAccountQuery::getInstance();
 
         $this->_sPaginateType = 'load_more';
         $this->_bDeleteWithBgJobs = true;
@@ -126,24 +130,27 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
 
     public function performActionEditEmail()
     {
-        $CNF = &$this->_oModule->_oConfig->CNF;
+        $sAction = 'edit_email';
 
         $aIds = bx_get('ids');
         if(!$aIds || !is_array($aIds)) {
             $iId = (int)bx_get('id');
             if(!$iId)
-                return echoJson(array());
+                return echoJson([]);
 
             $aIds = array($iId);
         }
 
-        $iId = $aIds[0];
+        $iId = array_shift($aIds);
         $oAccount = BxDolAccount::getInstance($iId);
         if(!$oAccount)
-            return echoJson(array());
+            return echoJson([]);
 
-        $aAccount = $oAccount->getInfo();
-        $sAction = 'edit_email';
+        $aAccount = $this->_getContentInfo($iId);
+        if(!$aAccount || ($mixedCheck = $this->_oModule->checkAllowedEditEmail($aAccount)) !== CHECK_ACTION_RESULT_ALLOWED)
+            return echoJson(['msg' => $mixedCheck ?? _t('_sys_txt_error_occured')]);
+
+        $CNF = &$this->_oModule->_oConfig->CNF;
 
         $oForm = BxDolForm::getObjectInstance($CNF['OBJECT_FORM_ACCOUNT'], $CNF['OBJECT_FORM_ACCOUNT_DISPLAY_SETTINGS_EMAIL']);
         $oForm->aFormAttrs['action'] = BX_DOL_URL_ROOT . 'grid.php?o=' . $this->_sObject . '&a=' . $sAction . '&id=' . $iId;
@@ -151,7 +158,7 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
 
         if($oForm->isSubmittedAndValid()) {
             $sEmail = $oForm->getCleanValue('email');
-            if(strcmp($aAccount['email'], $sEmail) !== 0 && BxDolAccountQuery::getInstance()->getIdByEmail($sEmail))
+            if(strcmp($aAccount['email'], $sEmail) !== 0 && $this->_oAccountDb->getIdByEmail($sEmail))
                 return echoJson(array('msg' => _t('_sys_form_account_input_email_uniq_error_loggedin')));
 
             if($oForm->update($aAccount['id'])) {
@@ -181,49 +188,56 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
     public function performActionSendMessage()
     {
         $sAction = 'send_message';
-		
+
         $CNF = &$this->_oModule->_oConfig->CNF;
 
         $aIds = bx_get('ids');
         if(!$aIds || !is_array($aIds))
-            return echoJson(array());
-		
+            return echoJson([]);
+
+        if(($mixedCheck = $this->_oModule->checkAllowedManage()) !== CHECK_ACTION_RESULT_ALLOWED)
+            return echoJson(['msg' => $mixedCheck]);
+
         $oForm = BxDolForm::getObjectInstance('bx_accounts_account', 'bx_accounts_send_test');
-        if (!$oForm)
-            return '';
-		
-        $oForm->aFormAttrs['action'] = BX_DOL_URL_ROOT . 'grid.php?' . bx_encode_url_params($_GET, array('_r'));
+        if(!$oForm)
+            return echoJson([]);
+
+        $oForm->aFormAttrs['action'] = BX_DOL_URL_ROOT . 'grid.php?' . bx_encode_url_params($_GET, ['_r']);
         $oForm->initChecker();
         if($oForm->isSubmittedAndValid()) {
-            $aIdsAffected = array();
+            $aIdsAffected = [];
                 foreach($aIds as $iId) {
-                    if(sendMail(BxDolAccount::getInstance()->getEmail($iId), $oForm->getCleanValue('message_subject'), $oForm->getCleanValue('message_text'), 0, [], BX_EMAIL_MASS, 'text', false, ['From' => "=?UTF-8?B?" . base64_encode(getParam('site_title')) . "?= <" . getParam('site_email_notify') . ">"], false)){
+                    if(sendMail(BxDolAccount::getInstance()->getEmail($iId), $oForm->getCleanValue('message_subject'), $oForm->getCleanValue('message_text'), 0, [], BX_EMAIL_MASS, 'text', false, ['From' => "=?UTF-8?B?" . base64_encode(getParam('site_title')) . "?= <" . getParam('site_email_notify') . ">"], false)) {
                         $aIdsAffected[] = $iId;
-                    }	
+                    }
                 }
 
-            echoJson(count($aIdsAffected) > 0 ? array('grid' => $this->getCode(false), 'blink' => $aIdsAffected) : array('msg' => _t($CNF['T']['grid_action_err_perform'])));
+            echoJson(count($aIdsAffected) > 0 ? ['grid' => $this->getCode(false), 'blink' => $aIdsAffected] : ['msg' => _t($CNF['T']['grid_action_err_perform'])]);
         }
         else {
-            $sContent = BxTemplStudioFunctions::getInstance()->popupBox('bx-account-send-message', _t('_bx_accounts_form_display_account_send_message'), $this->_oModule->_oTemplate->parseHtmlByName('manage_item.html', array(
+            $sContent = BxTemplStudioFunctions::getInstance()->popupBox('bx-account-send-message', _t('_bx_accounts_form_display_account_send_message'), $this->_oModule->_oTemplate->parseHtmlByName('manage_item.html', [
                 'form_id' => $oForm->id,
                 'form' => $oForm->getCode(true),
                 'object' => $this->_sObject,
                 'action' => $sAction
-            )));
-            echoJson(array('popup' => array('html' => $sContent, 'options' => array('closeOnOuterClick' => false))));
+            ]));
+
+            echoJson(['popup' => ['html' => $sContent, 'options' => ['closeOnOuterClick' => false]]]);
         }
     }
     
     public function performActionAdd()
     {
-      
-        $CNF = &$this->_oModule->_oConfig->CNF;
         $sAction = 'add';
+
+        if(($mixedCheck = $this->_oModule->checkAllowedManage()) !== CHECK_ACTION_RESULT_ALLOWED)
+            return echoJson(['msg' => $mixedCheck]);
+
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
         $oForm = BxDolForm::getObjectInstance($CNF['OBJECT_FORM_ACCOUNT'], $CNF['OBJECT_FORM_ACCOUNT_DISPLAY_CREATE']);
         $oForm->aFormAttrs['action'] = BX_DOL_URL_ROOT . 'grid.php?o=' . $this->_sObject . '&a=' . $sAction;
         $oForm->initChecker();
-
         if($oForm->isSubmittedAndValid()) {
            
             $iAccountId = $oForm->insert();
@@ -279,12 +293,14 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
 
+        if(($mixedCheck = $this->_oModule->checkAllowedManage()) !== CHECK_ACTION_RESULT_ALLOWED)
+            return echoJson(['msg' => $mixedCheck]);
+
         $aFields = explode(',', getParam($CNF['PARAM_EXPORT_FIELDS']));
         if(empty($aFields) || !is_array($aFields))
-            return echoJson(array());
-
+            return echoJson([]);
         
-        $aTitles = $aConverters = array();
+        $aTitles = $aConverters = [];
         foreach($aFields as $sField) {
             $aTitles[$sField] = _t('_bx_accnt_txt_field_' . $sField);
             
@@ -295,14 +311,14 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
 
         $sMethod = '_exportTo' . bx_gen_method_name(getParam($CNF['PARAM_EXPORT_TO']));
         if(!method_exists($this, $sMethod))
-            return echoJson(array());
+            return echoJson([]);
 
         $aIds = bx_get('ids');
         if(!$aIds || !is_array($aIds))
             $aIds = $this->_oModule->_oDb->getAccountIds();
 
         if(($aFile = $this->$sMethod($aIds, $aFields, $aTitles, $aConverters)) === false)
-            return echoJson(array());
+            return echoJson([]);
 
         list($sFilePath, $sFileUrl) = $aFile;
 
@@ -313,7 +329,7 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
             @unlink($sFilePath);
         }
 
-        return echoJson(array('redirect' => $sFileUrl));
+        return echoJson(['redirect' => $sFileUrl]);
     }
     
     public function performActionConfirm()
@@ -322,28 +338,29 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
 
     	$aIds = bx_get('ids');
         if(!$aIds || !is_array($aIds))
-            return echoJson(array());
+            return echoJson([]);
 
         $oAccount = BxDolAccount::getInstance();
 
-        $iAffected = 0;
-        $aIdsAffected = array();
-        foreach($aIds as $iId){
-            if (BxDolAccount::isNeedConfirmEmail()) {
+        $aIdsAffected = [];
+        foreach($aIds as $iId) {
+            if(!($aInfo = $this->_getContentInfo($iId)) || $this->_oModule->checkAllowedConfirm($aInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+                continue;
+
+            if(BxDolAccount::isNeedConfirmEmail()) {
                 if($oAccount->updateEmailConfirmed(true, true, $iId)) {
                     $aIdsAffected[] = $iId;
-                    $iAffected++;  
                 }
             }
 
-            if (BxDolAccount::isNeedConfirmPhone()){
+            if(BxDolAccount::isNeedConfirmPhone()) {
                 if($oAccount->updatePhoneConfirmed(true, $iId)) {
                     $aIdsAffected[] = $iId;
-                    $iAffected++;  
                 }
             }
         }
-		echoJson($iAffected ? array('grid' => $this->getCode(false), 'blink' => $aIdsAffected) : array('msg' => _t($CNF['T']['grid_action_err_perform'])));
+
+		echoJson($aIdsAffected ? ['grid' => $this->getCode(false), 'blink' => $aIdsAffected] : ['msg' => _t($CNF['T']['grid_action_err_perform'])]);
     }
     
     public function performActionResendCemail()
@@ -352,48 +369,52 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
 
         $aIds = bx_get('ids');
         if(!$aIds || !is_array($aIds))
-            return echoJson(array());
+            return echoJson([]);
+
+        if(($mixedCheck = $this->_oModule->checkAllowedManage()) !== CHECK_ACTION_RESULT_ALLOWED)
+            return echoJson(['msg' => $mixedCheck]);
 
         $oAccount = BxDolAccount::getInstance();
 
-        $iAffected = 0;
-        $aIdsAffected = array();
+        $aIdsAffected = [];
         foreach($aIds as $iId)
             if($oAccount->sendConfirmationEmail($iId)) {
                 $aIdsAffected[] = $iId;
-                $iAffected++;  
             }
 
-        echoJson($iAffected ? array('grid' => $this->getCode(false), 'blink' => $aIdsAffected) : array('msg' => _t($CNF['T']['grid_action_err_perform'])));
+        echoJson($aIdsAffected ? ['grid' => $this->getCode(false), 'blink' => $aIdsAffected] : ['msg' => _t($CNF['T']['grid_action_err_perform'])]);
     }
 
     public function performActionResetPassword()
     {
     	$aIds = bx_get('ids');
         if(!$aIds || !is_array($aIds))
-            return echoJson(array());
+            return echoJson([]);
 
-        $iId = $aIds[0];
+        if(($mixedCheck = $this->_oModule->checkAllowedManage()) !== CHECK_ACTION_RESULT_ALLOWED)
+            return echoJson(['msg' => $mixedCheck]);
+
+        $iId = array_shift($aIds);
         $oAccount = BxDolAccount::getInstance($iId);
         if(!$oAccount)
-            return echoJson(array());
+            return echoJson([]);
 
-        $aRes = array();
+        $aRes = [];
         $sPwd = genRndPwd();
-        if (BxDolAccount::getInstance()->updatePassword($sPwd, $iId)){
+        if ($oAccount->updatePassword($sPwd, $iId)){
             $sPopupId = $this->_oModule->_oConfig->getHtmlIds('password_popup');
             $sPopupTitle = _t('_bx_accounts_form_display_account_settings_password_popup');
-            $sPopupContent = $this->_oModule->_oTemplate->parseHtmlByName('reset_password.html', array(
+            $sPopupContent = $this->_oModule->_oTemplate->parseHtmlByName('reset_password.html', [
                 'js_object' => $this->_oModule->_oConfig->getJsObject('main'),
                 'html_id_text' => $this->_oModule->_oConfig->getHtmlIds('password_text'),
                 'html_id_button' => $this->_oModule->_oConfig->getHtmlIds('password_button'),
                 'password' => $sPwd,
-            ));
+            ]);
 
-            $aRes = array('popup' => BxTemplStudioFunctions::getInstance()->popupBox($sPopupId, $sPopupTitle, $sPopupContent));
+            $aRes = ['popup' => BxTemplStudioFunctions::getInstance()->popupBox($sPopupId, $sPopupTitle, $sPopupContent)];
         }
         else 
-            $aRes = array('msg' => _t('_bx_accnt_grid_action_err_perform'));
+            $aRes = ['msg' => _t('_bx_accnt_grid_action_err_perform')];
 
         return echoJson($aRes);
     }
@@ -401,10 +422,13 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
     public function performActionResendRemail()
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
-
+ 
         $aIds = bx_get('ids');
         if(!$aIds || !is_array($aIds))
-            return echoJson(array());
+            return echoJson([]);
+
+        if(($mixedCheck = $this->_oModule->checkAllowedManage()) !== CHECK_ACTION_RESULT_ALLOWED)
+            return echoJson(['msg' => $mixedCheck]);
 
         $oAccount = BxDolAccount::getInstance();
 
@@ -423,39 +447,40 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
     {
     	$aIds = bx_get('ids');
         if(!$aIds || !is_array($aIds)) {
-            echoJson(array());
+            echoJson([]);
             return;
         }
 
-        $oAccountQuery = BxDolAccountQuery::getInstance();
         foreach($aIds as $iId) {
-            $oAccount = BxDolAccount::getInstance($iId);
-            if(!$oAccount)
+            if(!($aInfo = $this->_getContentInfo($iId)) || $this->_oModule->checkAllowedUnlockAccount($aInfo) !== CHECK_ACTION_RESULT_ALLOWED)
                 continue;
 
-            if ($oAccount->isLocked()){
-                $oAccountQuery->unlockAccount($iId);
+            if(($oAccount = BxDolAccount::getInstance($iId)) !== false && $oAccount->isLocked()) {
+                $this->_oAccountDb->unlockAccount($iId);
+
+                $oAccount->doAudit($iId, '_sys_audit_action_account_unlock');
             }
-            
-            $oAccount->doAudit($iId, '_sys_audit_action_account_unlock');
         }
 
-        return echoJson(array('grid' => $this->getCode(false), 'blink' => $aIds));
+        return echoJson(['grid' => $this->getCode(false), 'blink' => $aIds]);
     }
 
     public function performActionSetOperatorRole()
     {
     	$aIds = bx_get('ids');
         if(!$aIds || !is_array($aIds))
-            return echoJson(array());
+            return echoJson([]);
         
         $oUtils = BxDolStudioRolesUtils::getInstance();
+        $sError = _t('_sys_txt_error_occured');
 
         $aRoles = $oUtils->getRoles();
         if(empty($aRoles) || !is_array($aRoles))
-            return echoJson(array('msg' => _t('_sys_txt_error_occured')));
+            return echoJson(['msg' => $sError]);
 
         $iId = (int)array_shift($aIds);
+        if(!($aInfo = $this->_getContentInfo($iId)) || ($mixedCheck = $this->_oModule->checkAllowedSetOperatorRole($aInfo)) !== CHECK_ACTION_RESULT_ALLOWED)
+            return echoJson(['msg' => $mixedCheck ?? $sError]);
 
         $sPopupName = str_replace('_', '-', $this->MODULE) . '-set-role-popup';
         $sPopupContent = $this->_oModule->_oTemplate->getPopupSetRole($aRoles, $iId, $oUtils->getRole($iId));
@@ -473,16 +498,21 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
     {
         $aIds = bx_get('ids');
         if(!$aIds || !is_array($aIds))
-            return echoJson(array());
+            return echoJson([]);
+
+        $sError = _t('_sys_txt_error_occured');
 
         $iId = (int)array_shift($aIds);
         if(!$iId)
-            return echoJson(array('msg' => _t('_sys_txt_error_occured')));
+            return echoJson(['msg' => $sError]);
+
+        if(!($aInfo = $this->_getContentInfo($iId)) || ($mixedCheck = $this->_oModule->checkAllowedSetOperatorRole($aInfo)) !== CHECK_ACTION_RESULT_ALLOWED)
+            return echoJson(['msg' => $mixedCheck ?? $sError]);
 
         if(!BxDolStudioRolesUtils::getInstance()->setRole($iId, bx_process_input(bx_get('role'), BX_DATA_INT)))
             return echoJson(array('msg' => _t('_error occured')));
 
-        echoJson(array('grid' => $this->getCode(false), 'blink' => $iId));
+        echoJson(['grid' => $this->getCode(false), 'blink' => $iId]);
     }
 
     public function performActionMakeOperator()
@@ -509,6 +539,9 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
         $iAffected = 0;
         $aIdsAffected = array();
         foreach($aIds as $iId) {
+            if(!($aInfo = $this->_getContentInfo($iId)) || $this->_oModule->{'checkAllowed' . ($iRole == 3 ? 'Make' : 'Unmake')  . 'Operator'}($aInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+                continue;
+
             if(!$this->_oModule->_oDb->updateAccount(array('role' => $iRole), array('id' => $iId))) 
                 continue;
 
@@ -529,21 +562,24 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
 
     	$aIds = bx_get('ids');
         if(!$aIds || !is_array($aIds)) {
-            echoJson(array());
+            echoJson([]);
             return;
         }
-        $iAffected = 0;
-        $aIdsAffected = array();
+
+        if(($mixedCheck = $this->_oModule->checkAllowedManage()) !== CHECK_ACTION_RESULT_ALLOWED)
+            return echoJson(['msg' => $mixedCheck]);
+
+        $oAccount = BxDolAccount::getInstance();
+
+        $aIdsAffected = [];
         foreach($aIds as $iId)
         	if($this->_enable($iId, $isChecked)) {
         		$aIdsAffected[] = $iId;
-        		$iAffected++;
-                
-                $oAccount = BxDolAccount::getInstance($iId);
+
                 $oAccount->doAudit($iId, '_sys_audit_action_account_' . $isChecked ? 'activated' : 'suspended');
         	}
 
-        echoJson($iAffected ? array('grid' => $this->getCode(false), 'blink' => $aIdsAffected) : array('msg' => _t($CNF['T']['grid_action_err_perform'])));
+        echoJson($aIdsAffected ? ['grid' => $this->getCode(false), 'blink' => $aIdsAffected] : ['msg' => _t($CNF['T']['grid_action_err_perform'])]);
     }
 
     protected function _enable($mixedId, $isChecked)
@@ -661,7 +697,7 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
 
     protected function _getContentInfo($iId)
     {
-    	return BxDolAccountQuery::getInstance()->getInfoById($iId);
+    	return $this->_oAccountDb->getInfoById($iId);
     }
 
     protected function _doDelete($iId, $aParams = [])
@@ -704,10 +740,9 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
         fputcsv($oFileHandler, $aTitles, $sFileDiv);
 
         $aFieldsFlip = array_flip($aFields);
-        $oAccountQuery = BxDolAccountQuery::getInstance();
 
         foreach($aIds as $iId) {
-            $aAccount = $oAccountQuery->getInfoById($iId);
+            $aAccount = $this->_getContentInfo($iId);
             if(empty($aAccount) || !is_array($aAccount))
                 continue;
             
@@ -732,7 +767,6 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
             return false;
 
         $aFieldsFlip = array_flip($aFields);
-        $oAccountQuery = BxDolAccountQuery::getInstance();
 
         $oXML = xmlwriter_open_memory();
         xmlwriter_set_indent($oXML, 1);
@@ -742,7 +776,7 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
         xmlwriter_start_element($oXML, 'accounts');
 
         foreach($aIds as $iId) {
-            $aAccount = $oAccountQuery->getInfoById($iId);
+            $aAccount = $this->_getContentInfo($iId);
             if(empty($aAccount) || !is_array($aAccount))
                 continue;
 

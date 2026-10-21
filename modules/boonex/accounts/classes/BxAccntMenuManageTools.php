@@ -37,6 +37,9 @@ class BxAccntMenuManageTools extends BxBaseModGeneralMenuManageTools
 
         $sCheckFuncName = '';
         switch ($a['name']) {
+            case 'edit-email':
+                $sCheckFuncName = 'checkAllowedEditEmail';
+                break;
             case 'delete':
             case 'delete-with-content':
                 $sCheckFuncName = 'checkAllowedDelete';
