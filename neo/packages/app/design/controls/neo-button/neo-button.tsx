@@ -232,7 +232,10 @@ function renderLabel({
     /** Native `showTitleFromSize` below its breakpoint: keep the padding, drop the Text. */
     hideLabel?: boolean;
 }) {
-    const effectiveImage = loading ? '_loading' : image;
+    // While loading, the label and image keep their place, invisible, under the
+    // centred spinner, so the button keeps its size. Only a button with neither
+    // draws the spinner here, in the image slot.
+    const effectiveImage = (loading && !label && !image) ? '_loading' : image;
     if (!label && !effectiveImage) return null;
 
     const spreadTrailing =
@@ -248,6 +251,7 @@ function renderLabel({
                 'flex-row items-center min-w-0 max-w-full',
                 spreadTrailing && 'flex-1 w-full justify-between',
                 useGapClass && labelGapCls,
+                loading && effectiveImage !== '_loading' && 'opacity-0',
             )}
             style={(spreadTrailing || useGapClass) ? undefined : { columnGap: labelGap }}
         >
@@ -580,13 +584,11 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
     });
 
     // Effective content props.
-    // While `loading=true`, `loadingLabel` (when provided) replaces the
-    // visible label so consumers don't need a `<Text>{loading ? 'Saving…' : 'Save'}</Text>`
-    // expression at every call site. The image slot still gets the spinner
-    // via `renderLabel`'s loading swap.
-    const effectiveLabel = (loading && loadingLabel != null && loadingLabel !== '')
-        ? loadingLabel
-        : (label ?? title ?? '');
+    // While `loading=true` the content stays as it is (hidden under a centred
+    // spinner, so the button keeps its size), and `loadingLabel`, when given,
+    // becomes the accessible name instead of swapping the visible text.
+    const effectiveLabel = label ?? title ?? '';
+    const loadingName = loading && loadingLabel ? loadingLabel : undefined;
     const effectiveImage = image ?? systemImage ?? resolved.defaultImage;
     const effectivePlacement = imagePlacement ?? resolved.imagePlacement;
 
@@ -602,7 +604,7 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
     const soundOverride = usePressCueOverride();
 
     const accessibleName =
-        accessibilityLabel ?? alt ?? getAccessibleName(undefined, tooltip, effectiveLabel, effectiveImage);
+        loadingName ?? accessibilityLabel ?? alt ?? getAccessibleName(undefined, tooltip, effectiveLabel, effectiveImage);
 
     /* ----------------------- interaction state -------------------------- */
 
@@ -880,8 +882,17 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
         ? { ...classNames, text: cn(classNames?.text, titleFromSizeCls) }
         : classNames;
 
-    const labelContent = isCustomChildren
+    // The spinner sits over the content, which stays in place invisible (see
+    // `renderLabel`). A button with no content draws it inline instead.
+    const spinnerOverlay = loading && (isTitle || !!effectiveImage || isCustomChildren);
+    // Custom children get a wrapper whenever the button takes `loading` at all,
+    // so toggling it only fades them: a new parent would remount them and reset
+    // their state. Buttons without `loading` render them as before.
+    const childrenContent = props.loading === undefined
         ? children
+        : <Row className={cn('flex-row items-center', loading && 'opacity-0')}>{children}</Row>;
+    const labelContent = isCustomChildren
+        ? childrenContent
         : renderLabel({
             label: effectiveLabel,
             image: effectiveImage,
@@ -909,6 +920,11 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
             <NeoButtonContentContext.Provider value={contentValue}>
                 {labelContent}
             </NeoButtonContentContext.Provider>
+            {spinnerOverlay ? (
+                <View className="absolute inset-0 items-center justify-center pointer-events-none">
+                    <NeoSpinner className={cn(textCls, classNames?.image)} color={tintColor} />
+                </View>
+            ) : null}
             {addonContent && (
                 isTitle ? <View className="z-10 ml-1">{addonContent}</View> : <View className="absolute top-0 right-0 w-full h-full z-20 pointer-events-none">{addonContent}</View>
             )}

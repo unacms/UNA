@@ -61,7 +61,12 @@ export type NeoButtonProps = {
 
     // Content
     label?: ReactNode
-    loadingLabel?: ReactNode
+    /**
+     * Accessible name while `loading` ("Saving…"). The drawn content stays as
+     * it is under the spinner, so the button keeps its size. Native glass
+     * buttons (Expo UI, no spinner) show it as their text instead.
+     */
+    loadingLabel?: string
     title?: ReactNode
     /** Icon name, emoji, or a ready element. */
     image?: string | ReactElement | null | false

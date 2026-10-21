@@ -561,13 +561,32 @@ export default function PageLayoutPlayground({ data, children }) {
 
                     <Section
                         title="Loading"
-                        hint="Replaces the image with a spinner; rest of the label stays put."
+                        hint="The label and image stay in place, invisible, under a centred spinner, so the button keeps its size. loadingLabel names it for screen readers."
                     >
                         <NeoButton
                             style="borderedProminent"
                             label="Save"
                             loadingLabel="Saving…"
                             image="Save"
+                            loading={loading}
+                            onPress={() => {
+                                setLoading(true);
+                                setTimeout(() => setLoading(false), 1500);
+                            }}
+                        />
+                        <NeoButton
+                            style="borderedProminent"
+                            label="Log in"
+                            loading={loading}
+                            onPress={() => {
+                                setLoading(true);
+                                setTimeout(() => setLoading(false), 1500);
+                            }}
+                        />
+                        <NeoButton
+                            style="bordered"
+                            image="Trash"
+                            accessibilityLabel="Delete"
                             loading={loading}
                             onPress={() => {
                                 setLoading(true);
