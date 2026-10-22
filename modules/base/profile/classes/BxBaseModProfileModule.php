@@ -1988,18 +1988,22 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
      */
     public function checkAllowedDelete (&$aDataEntry, $isPerformAction = false)
     {
+        $CNF = &$this->_oConfig->CNF;
+
+        $oProfile = BxDolProfile::getInstanceByContentAndType($aDataEntry[$CNF['FIELD_ID']], $this->_aModule['name'], $isPerformAction);
+        if(!$oProfile)
+            return _t('_sys_txt_error_occured');
+
+        if(!$this->isAllowDeleteOrDisable($this->_iProfileId, $oProfile->id()))
+            return _t('_sys_txt_access_denied');
+
         // moderator always has access
-        if ($this->_isModerator($isPerformAction))
+        if($this->_isModerator($isPerformAction))
             return CHECK_ACTION_RESULT_ALLOWED;
 
         // owner (checked by account instead of author!) always have access
         $aCheck = checkActionModule($this->_iProfileId, 'delete entry', $this->getName(), $isPerformAction);
-
-        $oProfile = BxDolProfile::getInstanceByContentAndType($aDataEntry[$this->_oConfig->CNF['FIELD_ID']], $this->_aModule['name'], $isPerformAction);
-        if (!$oProfile)
-            return _t('_sys_txt_error_occured');
-
-        if (($oProfile->id() == $this->_iProfileId || $oProfile->getAccountId() == $this->_iAccountId) && $aCheck[CHECK_ACTION_RESULT] === CHECK_ACTION_RESULT_ALLOWED)
+        if(($oProfile->id() == $this->_iProfileId || $oProfile->getAccountId() == $this->_iAccountId) && $aCheck[CHECK_ACTION_RESULT] === CHECK_ACTION_RESULT_ALLOWED)
             return CHECK_ACTION_RESULT_ALLOWED;
 
         return _t('_sys_txt_access_denied');
