@@ -164,6 +164,24 @@ class BxBaseModGeneralPageEntry extends BxTemplPage
         return $this->_oModule->getEntryImageData($this->_aContentInfo);
     }
 
+    protected function _getPageMetaImage()
+    {
+        // The API page is built even when the viewer can't see the entry, so don't leak its image.
+        if(!$this->_isAvailablePage($this->_aObject) || $this->_oModule->checkAllowedView($this->_aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+            return '';
+
+        if(!($aImage = $this->_getThumbForMetaObject()) || !is_array($aImage))
+            return '';
+
+        $o = null;
+        if(!empty($aImage['object']))
+            $o = BxDolStorage::getObjectInstance($aImage['object']);
+        else if(!empty($aImage['transcoder']))
+            $o = BxDolTranscoder::getObjectInstance($aImage['transcoder']);
+
+        return $o ? (string)$o->getFileUrlById($aImage['id']) : '';
+    }
+
     protected function _getPageCacheParams ()
     {
         $s = parent::_getPageCacheParams ();

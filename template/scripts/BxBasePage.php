@@ -563,7 +563,7 @@ class BxBasePage extends BxDolPage
             'name' => $sName,
             'description' => $this->_getPageMetaDesc(),
             'keywords' => $this->_getPageMetaKeywords(),
-            'image' => '',
+            'image' => $this->_getPageMetaImage(),
             'uri' => $sUri,
             'url' => $sUrl,
             'author' => $this->_aObject['author'],
