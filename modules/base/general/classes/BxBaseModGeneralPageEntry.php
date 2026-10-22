@@ -167,7 +167,7 @@ class BxBaseModGeneralPageEntry extends BxTemplPage
     protected function _getPageMetaImage()
     {
         // The API page is built even when the viewer can't see the entry, so don't leak its image.
-        if(!$this->_aContentInfo || $this->_oModule->checkAllowedView($this->_aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+        if(!$this->_isAvailablePage($this->_aObject) || $this->_oModule->checkAllowedView($this->_aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
             return '';
 
         if(!($aImage = $this->_getThumbForMetaObject()) || !is_array($aImage))
