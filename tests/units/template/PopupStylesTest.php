@@ -27,9 +27,17 @@ class PopupStylesTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('@apply px-1 pt-2 pb-8;', self::rule(self::CENTERED));
     }
 
+    public function testDarkBackdropDimsThePage(): void
+    {
+        // A light gray backdrop in dark mode lifts the page above the popup, which then reads darker than blocks.
+        $this->assertStringContainsString('dark:bg-gray-950', self::rule('.bx-artificer .bx-popup-fog'));
+    }
+
     public function testCenteredPopupIsNeverNarrow(): void
     {
-        $this->assertStringContainsString('md:min-w-[20rem]', self::rule(self::CENTERED . ' .bx-popup'), 'Phones show these popups full width.');
+        $sPopup = self::rule(self::CENTERED . ' .bx-popup');
+        $this->assertStringContainsString('md:min-w-[20rem]', $sPopup, 'Phones show these popups full width.');
+        $this->assertStringContainsString('smooth-shadow-modal', $sPopup, 'Surface and drop shadow only: no edge on the dimmed backdrop.');
     }
 
     public function testDialogsAreTallPaddedAndStartAligned(): void
