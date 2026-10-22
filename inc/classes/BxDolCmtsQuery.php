@@ -324,6 +324,31 @@ class BxDolCmtsQuery extends BxDolDb
         return (int)$this->getOne($sQuery, $aBindings);
     }
 
+    /**
+     * Get IDs of visible comments whose visual parent is one of the given comments.
+     */
+    function getCommentIdsByVParents($iId, $aVParentIds, $iAuthorId = 0)
+    {
+        if(empty($aVParentIds) || !is_array($aVParentIds))
+            return [];
+
+        $aBindings = [
+            'cmt_object_id' => $iId,
+            'system_id' => $this->_oMain->getSystemId()
+        ];
+
+        $sWhereClause = $this->getCommentsCheckStatus($iAuthorId);
+        if(($oCf = $this->_oMain->getObjectContentFilter()) !== false)
+            $sWhereClause .= $oCf->getSQLParts($this->_sTable, 'cmt_cf');
+
+        $sQuery = "SELECT
+                `{$this->_sTable}`.`cmt_id`
+            FROM `{$this->_sTable}`
+            LEFT JOIN `{$this->_sTableIds}` ON (`{$this->_sTable}`.`cmt_id` = `{$this->_sTableIds}`.`cmt_id` AND `{$this->_sTableIds}`.`system_id` = :system_id)
+            WHERE `{$this->_sTable}`.`cmt_object_id` = :cmt_object_id AND `{$this->_sTable}`.`cmt_vparent_id` IN (" . $this->implode_escape(array_map('intval', $aVParentIds)) . ")" . $sWhereClause;
+        return $this->getColumn($sQuery, $aBindings);
+    }
+
     function getStructure($iObjectId, $iAuthorId = 0, $iParentId = 0, $sFilter = '', $aOrder = array())
     {
         $sSelectClause = $sJoinClause = $sWhereClause = "";
