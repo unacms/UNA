@@ -1244,7 +1244,7 @@ class BxBaseServiceProfiles extends BxDol
         $iPerformerId = bx_get_logged_profile_id();
         $aCheck = checkActionModule($iPerformerId, 'set acl level', 'system', false);
         if(!isAdmin() && $aCheck[CHECK_ACTION_RESULT] !== CHECK_ACTION_RESULT_ALLOWED)
-            return true;//array('code' => 1, 'msg' => $aCheck[CHECK_ACTION_MESSAGE]);
+            return false;
 
         $iSet = 0;
         $oAcl = BxDolAcl::getInstance();
@@ -1257,16 +1257,18 @@ class BxBaseServiceProfiles extends BxDol
             checkActionModule($iPerformerId, 'set acl level', 'system', true); // perform action
         }
 
-        if(count($mixedProfileId) != $iSet)
-            return true;//array('code' => 2, 'msg' => _t('_error occured'));
-
-        return true;//$aResult;
+        return $iSet != 0;
     }
 
     public function serviceResetMembership($mixedProfileId)
     {
         if(!is_array($mixedProfileId))
             $mixedProfileId = [$mixedProfileId];
+
+        $iPerformerId = bx_get_logged_profile_id();
+        $aCheck = checkActionModule($iPerformerId, 'set acl level', 'system', false);
+        if(!isAdmin() && $aCheck[CHECK_ACTION_RESULT] !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
 
         $oAcl = BxDolAcl::getInstance();
         $iAclLevelId = MEMBERSHIP_ID_STANDARD;
@@ -1521,20 +1523,19 @@ class BxBaseServiceProfiles extends BxDol
 
     public function serviceUpdateSettings($iProfileId = false, $sSettings = '')
     {
+        if(!($iPerformerId = bx_get_logged_profile_id()) || (!isAdmin() && !bx_acl_is_advanced($iPerformerId)))
+            return false;
+
         $oProfile = BxDolProfile::getInstance($iProfileId);
         if(!$oProfile)
-            return '';
-        
-        $sModule = $oProfile->getModule();
-        
-        $sMethod = 'profile_settings_set';
-        if(!BxDolRequest::serviceExists($sModule, $sMethod))
-            return '';
+            return false;
 
-        BxDolService::call($sModule, $sMethod, [$oProfile->getContentId(), json_decode($sSettings)]);
+        if(($sModule = $oProfile->getModule()) && ($sMethod = 'profile_settings_set') && bx_is_srv($sModule, $sMethod))
+            return bx_srv($sModule, $sMethod, [$oProfile->getContentId(), json_decode($sSettings)]);
+        else
+            return false;
     }
 
-    
     protected function _getIcon ($sIcon)
     {
         return BxTemplFunctions::getInstance()->getIcon($sIcon);
