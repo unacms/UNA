@@ -3041,7 +3041,7 @@
         <string name="_sys_form_account_input_password_error_old_used"><![CDATA[This password has already been used before, use a different one]]></string>
 	<string name="_sys_form_account_input_password_current_error"><![CDATA[Current password isn't correct, please enter password you are using to login to this site.]]></string>
 	<string name="_sys_form_account_input_password_error"><![CDATA[The password must at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter and 1 digit.]]></string>
-	<string name="_sys_form_account_input_receive_news"><![CDATA[Receive Newsletters]]></string>
+	<string name="_sys_form_account_input_receive_news"><![CDATA[Email me news and announcements]]></string>
 	<string name="_sys_form_account_input_receive_updates"><![CDATA[Receive Site Updates]]></string>
 	<string name="_sys_form_account_input_submit"><![CDATA[Submit]]></string>
         <string name="_sys_form_account_input_publish"><![CDATA[Create new account]]></string>
@@ -3230,6 +3230,8 @@
         <string name="_sys_form_profile_input_cfu_locked"><![CDATA[Lock content filter categories]]></string>
         <string name="_sys_form_profile_input_sys_do_submit"><![CDATA[Submit]]></string>
         <string name="_sys_form_profile_input_do_submit"><![CDATA[Submit]]></string>
+        <string name="_sys_form_profile_input_receive_news"><![CDATA[Email me news and announcements from {0}]]></string>
+        <string name="_sys_form_profile_input_receive_news_info"><![CDATA[You can change this anytime in your account settings.]]></string>
         <string name="_sys_form_profile_input_sys_do_cancel"><![CDATA[Cancel]]></string>
         <string name="_sys_form_profile_input_do_cancel"><![CDATA[Cancel]]></string>
         <string name="_sys_profile_cf_set_successfully_submitted"><![CDATA[Content Filter was successfully updated]]></string>
@@ -3311,7 +3313,7 @@
 	<string name="_sys_form_unsubscribe_input_caption_system_id"><![CDATA[Account ID]]></string>
 	<string name="_sys_form_unsubscribe_input_caption_system_receive_news"><![CDATA[Receive Newsletters]]></string>
 	<string name="_sys_form_unsubscribe_input_caption_system_receive_updates"><![CDATA[Receive Site Updates]]></string>
-	<string name="_sys_form_unsubscribe_input_receive_news"><![CDATA[Receive Newsletters]]></string>
+	<string name="_sys_form_unsubscribe_input_receive_news"><![CDATA[Email me news and announcements]]></string>
 	<string name="_sys_form_unsubscribe_input_receive_updates"><![CDATA[Receive Site Updates]]></string>
 	<string name="_sys_form_unsubscribe_input_submit"><![CDATA[Submit]]></string>
 	<string name="_sys_form_err_not_unique_value"><![CDATA[The field should have unique value]]></string>

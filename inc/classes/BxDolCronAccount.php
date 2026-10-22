@@ -77,8 +77,9 @@ class BxDolCronAccount extends BxDolCron
         	if(!$oAccount || !$oAccount->isConfirmed())
         		continue;
 
+        	// It's a notification for site staff, not a newsletter.
         	$aAccount = $oAccount->getInfo();
-        	if((int)$aAccount['receive_news'] != 1)
+        	if((int)$aAccount['receive_updates'] != 1)
         		continue;
 
         	if(in_array($aAccount['email'], $aSent))

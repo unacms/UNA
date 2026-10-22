@@ -1496,7 +1496,7 @@ CREATE TABLE `sys_accounts` (
   `phone_confirmed` tinyint(4) NOT NULL DEFAULT '0',
   `welcome_sent` tinyint(4) NOT NULL DEFAULT '0',
   `receive_updates` tinyint(4) NOT NULL DEFAULT '1',
-  `receive_news` tinyint(4) NOT NULL DEFAULT '1',
+  `receive_news` tinyint(4) NOT NULL DEFAULT '0',
   `password` varchar(40) NOT NULL,
   `password_changed` int(11) NOT NULL DEFAULT '0',
   `salt` varchar(10) NOT NULL,
@@ -4055,7 +4055,7 @@ INSERT INTO `sys_form_inputs` (`object`, `module`, `name`, `value`, `values`, `c
 ('sys_account', 'system', 'delete_content', '1', '', 0, 'hidden', '_sys_form_login_input_caption_system_delete_content', '', '', 1, 0, 0, '', '', '', '', '', '', '', '', 0, 0),
 ('sys_account', 'system', 'delete_confirm', '1', '', 0, 'checkbox', '_sys_form_login_input_caption_system_delete_confirm', '_sys_form_account_input_delete_confirm', '_sys_form_account_input_delete_confirm_info', 1, 0, 0, '', '', '', 'Avail', '', '_sys_form_account_input_delete_confirm_error', '', '', 0, 0),
 ('sys_account', 'system', 'receive_updates', '1', '', 1, 'switcher', '_sys_form_login_input_caption_system_receive_updates', '_sys_form_account_input_receive_updates', '', 0, 0, 0, '', '', '', '', '', '', 'Int', '', 0, 0),
-('sys_account', 'system', 'receive_news', '1', '', 1, 'switcher', '_sys_form_login_input_caption_system_receive_news', '_sys_form_account_input_receive_news', '', 0, 0, 0, '', '', '', '', '', '', 'Int', '', 1, 0),
+('sys_account', 'system', 'receive_news', '1', '', 0, 'switcher', '_sys_form_login_input_caption_system_receive_news', '_sys_form_account_input_receive_news', '', 0, 0, 0, '', '', '', '', '', '', 'Int', '', 1, 0),
 ('sys_account', 'system', 'agreement', '', '', 0, 'custom', '_sys_form_login_input_caption_system_agreement', '_sys_form_account_input_agreement', '', 0, 0, 0, '', '', '', '', '', '', '', '', 1, 0),
 
 ('sys_profile', 'system', 'cfw_value', '', '#!sys_content_filter', 0, 'checkbox_set', '_sys_form_profile_input_sys_cfw_value', '_sys_form_profile_input_cfw_value', '', 0, 0, 0, '', '', '', '', '', '', 'Set', '', 1, 0),
@@ -4221,7 +4221,7 @@ INSERT INTO `sys_form_display_inputs` (`display_name`, `input_name`, `visible_fo
 ('sys_account_create', 'email', 2147483647, 1, 2),
 ('sys_account_create', 'phone', 2147483647, 0, 3),
 ('sys_account_create', 'password', 2147483647, 1, 4),
-('sys_account_create', 'receive_news', 2147483647, 1, 5),
+('sys_account_create', 'receive_news', 2147483647, 0, 5),
 ('sys_account_create', 'do_publish', 2147483647, 1, 6),
 ('sys_account_create', 'agreement', 2147483647, 0, 7),
 
