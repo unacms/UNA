@@ -1003,7 +1003,7 @@ class BxBaseCmts extends BxDolCmts
     protected function _isShowContent($aCmt)
     {
         $oProfileAuthor = BxDolProfile::getInstance(abs($aCmt['cmt_author_id']));
-        return (int)$aCmt['cmt_author_id'] == 0 || ($oProfileAuthor && $oProfileAuthor->isActive()) || isAdmin() || BxDolAcl::getInstance()->isMemberLevelInSet([MEMBERSHIP_ID_MODERATOR, MEMBERSHIP_ID_ADMINISTRATOR]);
+        return (int)$aCmt['cmt_author_id'] == 0 || ($oProfileAuthor && $oProfileAuthor->isActive()) || isAdmin() || bx_acl_is_advanced();
     }
 
     protected function _getContentBefore($aBp = array(), $aDp = array())

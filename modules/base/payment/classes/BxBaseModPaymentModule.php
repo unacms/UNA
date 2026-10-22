@@ -218,12 +218,12 @@ class BxBaseModPaymentModule extends BxBaseModGeneralModule
 
     public function _isModeratorForProfile($isPerformAction = false, $iProfileId = false)
     {
-        return BxDolAcl::getInstance()->isMemberLevelInSet([MEMBERSHIP_ID_MODERATOR, MEMBERSHIP_ID_ADMINISTRATOR], $iProfileId) || (($oProfile = BxDolProfile::getInstance()) !== false && isAdmin($oProfile->getAccountId()));
+        return bx_acl_is_advanced($iProfileId) || (($oProfile = BxDolProfile::getInstance()) !== false && isAdmin($oProfile->getAccountId()));
     }
 
     public function _isAdministratorForProfile($isPerformAction = false, $iProfileId = false)
     {
-        return BxDolAcl::getInstance()->isMemberLevelInSet([MEMBERSHIP_ID_ADMINISTRATOR], $iProfileId) || (($oProfile = BxDolProfile::getInstance()) !== false && isAdmin($oProfile->getAccountId()));
+        return bx_acl_is_administrator($iProfileId) || (($oProfile = BxDolProfile::getInstance()) !== false && isAdmin($oProfile->getAccountId()));
     }
 
     public function isSingleSeller()

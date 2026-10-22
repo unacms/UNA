@@ -2223,9 +2223,9 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
     
     public function isAllowDeleteOrDisable($iActorProfileId, $iTargetProfileId)
     {
-        if (BxDolAcl::getInstance()->isMemberLevelInSet(array(MEMBERSHIP_ID_MODERATOR), $iActorProfileId) && BxDolAcl::getInstance()->isMemberLevelInSet(array(MEMBERSHIP_ID_MODERATOR, MEMBERSHIP_ID_ADMINISTRATOR), $iTargetProfileId))
+        if (bx_acl_is_moderator($iActorProfileId) && bx_acl_is_advanced($iTargetProfileId))
             return false;
-        
+
         return true;    
     }
     

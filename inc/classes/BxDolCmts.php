@@ -1114,9 +1114,9 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
     /**
      * Permissions functions
      */
-    public function isAdmin($iCmtAuthorId)
+    public function isAdmin($iProfileId)
     {
-        return BxDolAcl::getInstance()->isMemberLevelInSet(array(MEMBERSHIP_ID_MODERATOR, MEMBERSHIP_ID_ADMINISTRATOR), $iCmtAuthorId);
+        return bx_acl_is_advanced($iProfileId);
     }
 
     public function checkAction ($sAction, $isPerformAction = false)
@@ -2110,17 +2110,18 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
     {
         $iUserId = $this->_getAuthorId();
         $iAuthorId = (int)$iAuthorId;
+
         $oProfile = $this->_getAuthorObject($iAuthorId);
-        if (!$oProfile->isActive() && !isAdmin() && !BxDolAcl::getInstance()->isMemberLevelInSet(array(MEMBERSHIP_ID_MODERATOR, MEMBERSHIP_ID_ADMINISTRATOR)))
+        if(!$oProfile->isActive() && !isAdmin() && !$this->isAdmin($iUserId))
             $oProfile = BxDolProfileUndefined::getInstance();
 
-        return array(
+        return [
             $oProfile->getDisplayName(),
             $oProfile->getUrl(),
             $oProfile->getThumb(),
-            $oProfile->getUnit(0, array('template' => 'unit_wo_info')),
+            $oProfile->getUnit(0, ['template' => 'unit_wo_info']),
             $oProfile->getBadges()
-        );
+        ];
     }
 
     protected function _getAuthorObject($iAuthorId = 0)

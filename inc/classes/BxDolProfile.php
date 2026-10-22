@@ -197,7 +197,7 @@ class BxDolProfile extends BxDolFactory implements iBxDolProfile
             'membership' => $aMembershipInfo['id'],
             'membership_name' => _t($aMembershipInfo['name']),
             'membership_icon' => strcmp($sIconS, $sIconD) != 0 ? $sIconD : BxDolIconset::getObjectInstance()->getIcon($sIconD),
-            'moderator' => (bool)BxDolAcl::getInstance()->isMemberLevelInSet([MEMBERSHIP_ID_ADMINISTRATOR, MEMBERSHIP_ID_MODERATOR], $iId),
+            'moderator' => bx_acl_is_advanced($iId),
             'operator' => isAdmin(),
             //'info' => $oProfile->getInfo(),
             'confirmed' => $oAccount->isConfirmed(),
@@ -732,7 +732,7 @@ class BxDolProfile extends BxDolFactory implements iBxDolProfile
             $iProfileId = $this->_iProfileID;
         
         //moderators shouldn't be able to suspend other moderators and admins
-        if (BxDolAcl::getInstance()->isMemberLevelInSet(array(MEMBERSHIP_ID_MODERATOR), bx_get_logged_profile_id()) && BxDolAcl::getInstance()->isMemberLevelInSet(array(MEMBERSHIP_ID_MODERATOR, MEMBERSHIP_ID_ADMINISTRATOR), $iProfileId))
+        if (bx_acl_is_moderator(bx_get_logged_profile_id()) && bx_acl_is_advanced($iProfileId))
             return false;
         
         return $this->changeStatus(BX_PROFILE_STATUS_SUSPENDED, 'suspend', $iAction, $iProfileId, $bSendEmailNotification);

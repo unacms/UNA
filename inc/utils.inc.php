@@ -1838,6 +1838,32 @@ function bx_unicode_urldecode($s)
 }
 
 /**
+ * By default checks for any advanced (Moderator or Administrator) membership level to have.
+ */
+function bx_acl_is_advanced(int $iProfileId = 0, $mixedLevels = false)
+{
+    bx_import('BxDolAcl');
+
+    if(!$iProfileId && ($_iProfileId = bx_get_logged_profile_id()))
+        $iProfileId = (int)$_iProfileId;
+
+    if(!$mixedLevels)
+        $mixedLevels = [MEMBERSHIP_ID_MODERATOR, MEMBERSHIP_ID_ADMINISTRATOR];
+
+    return (bool)BxDolAcl::getInstance()->isMemberLevelInSet($mixedLevels, $iProfileId);
+}
+
+function bx_acl_is_moderator(int $iProfileId = 0)
+{
+    return bx_acl_is_advanced($iProfileId, [MEMBERSHIP_ID_MODERATOR]);
+}
+
+function bx_acl_is_administrator(int $iProfileId = 0)
+{
+    return bx_acl_is_advanced($iProfileId, [MEMBERSHIP_ID_ADMINISTRATOR]);
+}
+
+/**
  * Raise an audit event
  * @param int $iContentId - content id
  * @param string $sContentModule - module name
