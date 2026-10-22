@@ -1120,6 +1120,22 @@
         @apply relative;
     }
 
+    /* Centered popups (alerts, confirms, popup forms). The wrapper scrolls a tall popup (overflow-y: auto), so it
+       clips whatever lies outside its box: padding makes room for the popover shadow (the gap adds 16px at the
+       sides). Padding, not margin, so a press on the wrapper itself still counts as outside and closes the popup. */
+    .bx-artificer .bx-popup-trans-wrapper:not(.bx-popup-with-pointer):not(.bx-popup-full-screen):not(.bx-popup-menu):not(.bx-popup-image-wrapper) {
+        @apply px-1 pt-2 pb-8;
+    }
+
+    /* ...and never tiny: at least 20rem wide from tablets up (phones show them full width) and 10rem tall, with
+       short content centred. */
+    .bx-artificer .bx-popup-trans-wrapper:not(.bx-popup-with-pointer):not(.bx-popup-full-screen):not(.bx-popup-menu):not(.bx-popup-image-wrapper) .bx-popup {
+        @apply flex flex-col min-h-[10rem] md:min-w-[20rem];
+    }
+    .bx-artificer .bx-popup-trans-wrapper:not(.bx-popup-with-pointer):not(.bx-popup-full-screen):not(.bx-popup-menu):not(.bx-popup-image-wrapper) .bx-popup-content {
+        @apply my-auto;
+    }
+
     .bx-artificer .bx-popup-color-bg {
         @apply bg-white dark:bg-gray-800 shadow;
     }
