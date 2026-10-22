@@ -2120,6 +2120,65 @@ class BxAdsModule extends BxBaseModTextModule
         return CHECK_ACTION_RESULT_ALLOWED;
     }
 
+    public function checkAllowedOfferAccept($mixedOffer, $isPerformAction = false)
+    {
+        return $this->checkAllowedOfferAcceptForProfile($mixedOffer, $isPerformAction);
+    }
+
+    public function checkAllowedOfferAcceptForProfile($mixedOffer, $isPerformAction = false, $iProfileId = false)
+    {
+        $CNF = &$this->_oConfig->CNF;
+        $sTxtError = _t('_sys_txt_access_denied');
+
+        if(!$iProfileId)
+            $iProfileId = bx_get_logged_profile_id();
+
+        if(!is_array($mixedOffer))
+            $mixedOffer = $this->_oDb->getOffersBy(['type' => 'id', 'id' => (int)$mixedOffer]);
+        if(!$mixedOffer || !is_array($mixedOffer))
+            return $sTxtError;
+
+        $aContent = $this->_oDb->getContentInfoById((int)$mixedOffer[$CNF['FIELD_OFR_CONTENT']]);
+        if(!$aContent || !is_array($aContent))
+            return $sTxtError;
+
+        if((int)$aContent[$CNF['FIELD_AUCTION']] == 0 || (int)$aContent[$CNF['FIELD_AUTHOR']] != $iProfileId)
+            return $sTxtError;
+
+        return CHECK_ACTION_RESULT_ALLOWED;
+    }
+
+    public function checkAllowedOfferDecline($mixedOffer, $isPerformAction = false)
+    {
+        return $this->checkAllowedOfferDeclineForProfile($mixedOffer, $isPerformAction);
+    }
+
+    public function checkAllowedOfferDeclineForProfile($mixedOffer, $isPerformAction = false, $iProfileId = false)
+    {
+        return $this->checkAllowedOfferAcceptForProfile($mixedOffer, $isPerformAction, $iProfileId);
+    }
+
+    public function checkAllowedOfferCancel($mixedOffer, $isPerformAction = false)
+    {
+        return $this->checkAllowedOfferCancelForProfile($mixedOffer, $isPerformAction);
+    }
+
+    public function checkAllowedOfferCancelForProfile($mixedOffer, $isPerformAction = false, $iProfileId = false)
+    {
+        $CNF = &$this->_oConfig->CNF;
+        $sTxtError = _t('_sys_txt_access_denied');
+
+        if(!$iProfileId)
+            $iProfileId = bx_get_logged_profile_id();
+
+        if(!is_array($mixedOffer))
+            $mixedOffer = $this->_oDb->getOffersBy(['type' => 'id', 'id' => (int)$mixedOffer]);
+        if(!$mixedOffer || !is_array($mixedOffer) || (int)$mixedOffer[$CNF['FIELD_OFR_AUTHOR']] != $iProfileId)
+            return $sTxtError;
+
+        return CHECK_ACTION_RESULT_ALLOWED;
+    }
+
     public function onPublished($iContentId)
     {
         $this->serviceUpdateCategoriesStats($iContentId);
@@ -2436,6 +2495,9 @@ class BxAdsModule extends BxBaseModTextModule
         if(empty($aOfferInfo) || !is_array($aOfferInfo))
             return false;
 
+        if($this->checkAllowedOfferAccept($aOfferInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
         $iContentId = (int)$aOfferInfo[$CNF['FIELD_OFR_CONTENT']];
         $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
         if(empty($aContentInfo) || !is_array($aContentInfo))
@@ -2457,6 +2519,9 @@ class BxAdsModule extends BxBaseModTextModule
     {
         $CNF = &$this->_oConfig->CNF;
 
+        if($this->checkAllowedOfferDecline($iId) !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
         if(!$this->_oDb->updateOffer([$CNF['FIELD_OFR_STATUS'] => BX_ADS_OFFER_STATUS_DECLINED], [$CNF['FIELD_OFR_ID'] => $iId]))
             return false;
 
@@ -2467,6 +2532,9 @@ class BxAdsModule extends BxBaseModTextModule
     public function offerCancel($iId)
     {
         $CNF = &$this->_oConfig->CNF;
+
+        if($this->checkAllowedOfferCancel($iId) !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
 
         if(!$this->_oDb->updateOffer([$CNF['FIELD_OFR_STATUS'] => BX_ADS_OFFER_STATUS_CANCELED], [$CNF['FIELD_OFR_ID'] => $iId]))
             return false;
