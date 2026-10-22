@@ -216,16 +216,27 @@ class BxAlbumsModule extends BxBaseModTextModule
         $CNF = &$this->_oConfig->CNF;
 
         $iMediaId = (int)$iMediaId;
+        $aMediaInfo = $this->_oDb->getMediaInfoById($iMediaId);
+        $aContentInfo = $this->_oDb->getContentInfoById($aMediaInfo['content_id']);
+        if(($sMsg = $this->checkAllowedEdit($aContentInfo)) !== CHECK_ACTION_RESULT_ALLOWED)
+            return $this->_bIsApi ? [bx_api_get_msg($sMsg)] : ['msg' => $sMsg];
 
         $oForm = BxDolForm::getObjectInstance($CNF['OBJECT_FORM_MEDIA'], $sDisplay ?: $CNF['OBJECT_FORM_MEDIA_DISPLAY_MOVE']);
         $oForm->initForm('move', $iMediaId);
         $oForm->initChecker();
 
         if($oForm->isSubmittedAndValid()) {
+            $sErr = _t('_bx_albums_txt_err_cannot_perform_action');
+
+            $iContentIdDst = $oForm->getCleanValue('content_id');
+            $aContentInfoDst = $this->_oDb->getContentInfoById($iContentIdDst);
+            if(!$aContentInfoDst || !is_array($aContentInfoDst) || $aContentInfoDst[$CNF['FIELD_AUTHOR']] != $aContentInfo[$CNF['FIELD_AUTHOR']])
+                return $this->_bIsApi ? [bx_api_get_msg($sErr)] : ['msg' => $sErr];
+
             if($oForm->update($iMediaId) !== false)
                 $aRes = ['reload' => 1];
             else
-                $aRes = ($sMsg = _t('_bx_albums_txt_err_cannot_perform_action')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : ['msg' => $sMsg];
+                $aRes = $this->_bIsApi ? [bx_api_get_msg($sErr)] : ['msg' => $sErr];
 
             return $aRes;
         }
