@@ -754,14 +754,18 @@ class BxBaseServiceAccount extends BxDol
         else {
             $sResultMsg = _t($sCaptionKey);
             $sForm = $oForm->getCode();
-            
+
             if($bApi) {
-                return [
+                $aBlocks = [
                     bx_api_get_block('form', $oForm->getCodeAPI(), [
                         'ext' => [
                             'request' => ['url' => '/api.php?r=system/forgot_password/TemplServiceAccount', 'immutable' => true]
                         ]
                 ])];
+
+                // On the page the hint goes under the block title, as the site shows it above the form;
+                // a form submitted to the request url above still gets the blocks alone.
+                return BxDolPage::getBlockProcessing() ? ['description' => $sResultMsg, 'content' => $aBlocks] : $aBlocks;
             }
         }
 

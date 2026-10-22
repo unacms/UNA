@@ -94,6 +94,22 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertMatchesRegularExpression("/\\('sys_account_settings_email', 'receive_news', 2147483647, 1, \\d+\\)/", $sSql, 'Members can still change it in account settings.');
     }
 
+    public function testForgotPasswordPageIsNarrowWithATitledBlock(): void
+    {
+        $sSql = self::systemSql();
+
+        // layout_id follows object, uri, title_system, title, module and cover.
+        $bPage = preg_match("/\\('sys_forgot_password', 'forgot-password', '[^']*', '[^']*', 'system', \\d+, (\\d+),/", $sSql, $aPage);
+        $bLogin = preg_match("/\\('sys_login', 'login', '[^']*', '[^']*', 'system', \\d+, (\\d+),/", $sSql, $aLogin);
+        $this->assertSame(1, $bPage, 'system.sql adds the forgot-password page.');
+        $this->assertSame(1, $bLogin, 'system.sql adds the login page.');
+        $this->assertSame((int)$aLogin[1], (int)$aPage[1], 'Forgot password uses the same narrow layout as Log in.');
+
+        $bBlock = preg_match("/\\('sys_forgot_password', 1, 'system', '', '_sys_page_block_title_forgot_password', (\\d+),/", $sSql, $aBlock);
+        $this->assertSame(1, $bBlock, 'system.sql adds the forgot-password form block.');
+        $this->assertSame(11, (int)$aBlock[1], 'The block shows its title (content, title, background and padding).');
+    }
+
     public function testToolbarHasNoHardcodedSearchButton(): void
     {
         $sRoot = __DIR__ . '/../../../';
