@@ -1127,13 +1127,15 @@
         @apply px-1 pt-2 pb-8;
     }
 
-    /* ...and never tiny: at least 20rem wide from tablets up (phones show them full width) and 10rem tall, with
-       short content centred. */
+    /* ...and never narrow: at least 20rem wide from tablets up (phones show them full width). Alerts, confirms and
+       prompts set their own height and padding (popup_trans_*_cnt.html). */
     .bx-artificer .bx-popup-trans-wrapper:not(.bx-popup-with-pointer):not(.bx-popup-full-screen):not(.bx-popup-menu):not(.bx-popup-image-wrapper) .bx-popup {
-        @apply flex flex-col min-h-[10rem] md:min-w-[20rem];
+        @apply md:min-w-[20rem];
     }
-    .bx-artificer .bx-popup-trans-wrapper:not(.bx-popup-with-pointer):not(.bx-popup-full-screen):not(.bx-popup-menu):not(.bx-popup-image-wrapper) .bx-popup-content {
-        @apply my-auto;
+
+    /* Alerts, confirms and prompts have their own buttons: no phone close row above their padding. */
+    .bx-artificer .bx-popup:has(.bx-popup-dialog) > .bx-popup-close-wrapper {
+        @apply hidden;
     }
 
     .bx-artificer .bx-popup-color-bg {
