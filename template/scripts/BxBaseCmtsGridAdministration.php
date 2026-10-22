@@ -131,8 +131,8 @@ class BxBaseCmtsGridAdministration extends BxDolCmtsGridAdministration
 
     	$sAccountEmail = '';
     	$sManageAccountUrl = '';
-    	if($oProfile && $oProfile instanceof BxDolProfile && BxDolAcl::getInstance()->isMemberLevelInSet(128)) {
-            $sAccountEmail = $oProfile->getAccountObject()->getEmail();
+    	if(bx_acl_is_administrator() && $oProfile && $oProfile instanceof BxDolProfile && ($oAccount = $oProfile->getAccountObject())) {
+            $sAccountEmail = $oAccount->getEmail();
             $sManageAccountUrl = $this->_getManageAccountUrl($sAccountEmail);
     	}
 

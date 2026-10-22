@@ -352,7 +352,7 @@ class BxBaseFormAccount extends BxTemplFormView
 
     protected function _isAdmin()
     {
-        return BxDolAcl::getInstance()->isMemberLevelInSet([MEMBERSHIP_ID_MODERATOR, MEMBERSHIP_ID_ADMINISTRATOR]);
+        return bx_acl_is_advanced();
     }
 
     protected function _getGhostTmplVars($sField)

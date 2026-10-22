@@ -177,14 +177,10 @@ class BxInvGridInvites extends BxInvGrid
     
     protected function _getProfileCell($oProfile, $sKey, $aField, $aRow)
     {
-    	$sProfile = $oProfile->getDisplayName();
-
-        $oAcl = BxDolAcl::getInstance();
-
     	$sAccountEmail = '';
     	$sManageAccountUrl = '';
-    	if($oProfile && $oProfile instanceof BxDolProfile && $oAcl->isMemberLevelInSet(128) && $oProfile->getAccountObject()) {
-            $sAccountEmail = $oProfile->getAccountObject()->getEmail();
+    	if(bx_acl_is_administrator() && $oProfile && $oProfile instanceof BxDolProfile && ($oAccount = $oProfile->getAccountObject())) {
+            $sAccountEmail = $oAccount->getEmail();
             $sManageAccountUrl = $this->_getManageAccountUrl($sAccountEmail);
     	}
 

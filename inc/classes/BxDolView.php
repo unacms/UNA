@@ -185,8 +185,7 @@ class BxDolView extends BxDolObject
 
     public function isAllowedViewViewViewers($isPerformAction = false)
     {
-        $oAcl = BxDolAcl::getInstance();
-        if(isAdmin() || $oAcl->isMemberLevelInSet(array(MEMBERSHIP_ID_MODERATOR, MEMBERSHIP_ID_ADMINISTRATOR)))
+        if(isAdmin() || bx_acl_is_advanced())
             return true;
 
         if(!empty($this->_aSystem['module']) && BxDolRequest::serviceExists($this->_aSystem['module'], 'act_as_profile') && BxDolService::call($this->_aSystem['module'], 'act_as_profile') === true)

@@ -191,15 +191,14 @@ class BxAccntModule extends BxBaseModGeneralModule
 
     	return CHECK_ACTION_RESULT_ALLOWED;
     }
-    
+
     public function isAllowDeleteOrDisable($iActorProfileId, $iTargetProfileId)
     {
-        if (BxDolAcl::getInstance()->isMemberLevelInSet(array(MEMBERSHIP_ID_MODERATOR), $iActorProfileId) && BxDolAcl::getInstance()->isMemberLevelInSet(array(MEMBERSHIP_ID_MODERATOR, MEMBERSHIP_ID_ADMINISTRATOR), $iTargetProfileId))
+        if(bx_acl_is_moderator($iActorProfileId) && bx_acl_is_advanced($iTargetProfileId))
             return false;
-        
+
         return true;    
     }
-    
 }
 
 /** @} */

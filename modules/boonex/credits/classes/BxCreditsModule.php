@@ -639,14 +639,14 @@ class BxCreditsModule extends BxBaseModGeneralModule
     	$CNF = &$this->_oConfig->CNF;
 
         $iAuthorId = $this->_oConfig->getAuthor();
-        if($iSellerId != $iAuthorId && !BxDolAcl::getInstance()->isMemberLevelInSet([MEMBERSHIP_ID_ADMINISTRATOR], $iSellerId))
-            return array();
+        if($iSellerId != $iAuthorId && !bx_acl_is_administrator($iSellerId))
+            return [];
 
-        $aItems = $this->_oDb->getBundle(array('type' => 'all', 'active' => 1));
+        $aItems = $this->_oDb->getBundle(['type' => 'all', 'active' => 1]);
 
-        $aResult = array();
+        $aResult = [];
         foreach($aItems as $aItem)
-            $aResult[] = array(
+            $aResult[] = [
                 'id' => $aItem[$CNF['FIELD_ID']],
                 'author_id' => $iAuthorId,
                 'name' => $aItem[$CNF['FIELD_NAME']],
@@ -658,7 +658,7 @@ class BxCreditsModule extends BxBaseModGeneralModule
                 'period_recurring' => 1,
                 'period_unit_recurring' => '',
                 'trial_recurring' => ''
-            );
+            ];
 
         return $aResult;
     }

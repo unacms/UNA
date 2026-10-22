@@ -86,7 +86,8 @@ class BxDolProfileAnonymous extends BxDolProfileUndefined
         if (null !== $this->_isShowRealProfile)
             return $this->_isShowRealProfile;
 
-        $this->_isShowRealProfile = (isAdmin() || $this->_oProfileOrig->id() == bx_get_logged_profile_id() || BxDolAcl::getInstance()->isMemberLevelInSet(array(MEMBERSHIP_ID_ADMINISTRATOR, MEMBERSHIP_ID_MODERATOR)));
+        $iLogged = bx_get_logged_profile_id();
+        $this->_isShowRealProfile = ($this->_oProfileOrig->id() == $iLogged || isAdmin() || bx_acl_is_advanced($iLogged));
 
         return $this->_isShowRealProfile;
     }

@@ -1364,7 +1364,7 @@ class BxBaseModGeneralModule extends BxDolModule
         $CNF = &$this->_oConfig->CNF;
 
         $mixedMenu = '';
-        if(BxDolAcl::getInstance()->isMemberLevelInSet(192)) {
+        if(bx_acl_is_advanced()) {
             $oPermalink = BxDolPermalinks::getInstance();
 
             $aMenuItems = array();
@@ -2448,10 +2448,11 @@ class BxBaseModGeneralModule extends BxDolModule
         
         $CNF = &$this->_oConfig->CNF;
         
-        if (!isset($CNF['OBJECT_REPORTS']) || !isset($CNF['OBJECT_NOTES']))
+        if(!isset($CNF['OBJECT_REPORTS']) || !isset($CNF['OBJECT_NOTES']))
             return false;
 
-        if(!$aContentInfo || !(BxDolAcl::getInstance()->isMemberLevelInSet(192) || (isset($CNF['FIELD_AUTHOR']) && bx_get_logged_profile_id() == $aContentInfo[$CNF['FIELD_AUTHOR']])))
+        $iLogged = bx_get_logged_profile_id();
+        if(!$aContentInfo || !(bx_acl_is_advanced($iLogged) || (isset($CNF['FIELD_AUTHOR']) && $aContentInfo[$CNF['FIELD_AUTHOR']] == $iLogged)))
             return false;
 
         $oReport = BxDolReport::getObjectInstance($CNF['OBJECT_REPORTS'], $iContentId, true);

@@ -41,24 +41,24 @@ class BxTimelineGridAdministration extends BxTimelineGridManageTools
 
     	$sAccountEmail = '';
     	$sManageAccountUrl = '';
-    	if($oProfile && $oProfile instanceof BxDolProfile && BxDolAcl::getInstance()->isMemberLevelInSet(128)) {
-            $sAccountEmail = $oProfile->getAccountObject()->getEmail();
+    	if(bx_acl_is_administrator() && $oProfile && $oProfile instanceof BxDolProfile && ($oAccount = $oProfile->getAccountObject())) {
+            $sAccountEmail = $oAccount->getEmail();
             $sManageAccountUrl = $this->_getManageAccountUrl($sAccountEmail);
     	}
 
-        $mixedValue = $this->_oTemplate->parseHtmlByName('author_link.html', array(
+        $mixedValue = $this->_oTemplate->parseHtmlByName('author_link.html', [
             'href' => $oProfile->getUrl(),
             'title' => $sProfile,
             'content' => $sProfile,
-            'bx_if:show_account' => array(
+            'bx_if:show_account' => [
                 'condition' => !empty($sManageAccountUrl), 
-                'content' => array(
+                'content' => [
                     'href' => $sManageAccountUrl,
                     'title' => _t($this->_oModule->_oConfig->CNF['T']['grid_txt_account_manager']),
                     'content' => $sAccountEmail
-                )
-            )
-        ));
+                ]
+            ]
+        ]);
 
         return parent::_getCellDefault($mixedValue, $sKey, $aField, $aRow);
     }
