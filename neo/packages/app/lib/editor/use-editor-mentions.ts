@@ -17,6 +17,9 @@ export function useEditorMentions({ fieldName, mentions }: { fieldName?: string;
     const { currentUser } = useCurrentUser()
     // [term, indicator] — indicator falsy means inactive
     const [trigger, setTriggerState] = useState(['', ''])
+    // Set on the first focus: the connections seed for "@" is fetched only then.
+    const [armed, setArmed] = useState(false)
+    const armConnections = useCallback(() => setArmed(true), [])
 
     const objectPrivacyView =
         formContext.watch('object_privacy_view') ||
@@ -35,6 +38,8 @@ export function useEditorMentions({ fieldName, mentions }: { fieldName?: string;
         term: trigger[0],
         indicator: trigger[1],
         userId: (currentUser || undefined)?.id,
+        // A typed trigger arms it too, for an editor that reports no focus.
+        armed: armed || !!trigger[1],
     })
 
     const setTrigger = useCallback((term: string, indicator: string) => {
@@ -84,5 +89,6 @@ export function useEditorMentions({ fieldName, mentions }: { fieldName?: string;
         recordMention,
         handlersRef,
         queryToken: trigger[1] ? trigger[1] + trigger[0] : '',
+        armConnections,
     }
 }
