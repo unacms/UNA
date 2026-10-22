@@ -467,6 +467,7 @@
     "operator_agent_title": "KI fragen",
     "operator_agent_open": "KI-Assistent öffnen",
     "operator_agent_close": "KI-Assistent schließen",
+    "operator_agent_unavailable": "Kein Operator-Agent eingerichtet. Wählen Sie einen in Studio > Einstellungen > Agenten.",
     "agent_chats": "Chats",
     "agent_chats_empty": "Noch keine Chats",
     "agent_chats_search_empty": "Keine Chats gefunden",

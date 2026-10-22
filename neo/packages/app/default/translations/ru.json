@@ -469,6 +469,7 @@
     "operator_agent_title": "Спросить ИИ",
     "operator_agent_open": "Открыть ИИ-ассистента",
     "operator_agent_close": "Закрыть ИИ-ассистента",
+    "operator_agent_unavailable": "Агент-оператор не настроен. Выберите его в Studio > Настройки > Агенты.",
     "agent_chats": "Чаты",
     "agent_chats_empty": "Чатов пока нет",
     "agent_chats_search_empty": "Ничего не найдено",

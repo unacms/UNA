@@ -125,6 +125,7 @@
     "operator_agent_title": "Agent",
     "operator_agent_open": "Open AI assistant",
     "operator_agent_close": "Close AI assistant",
+    "operator_agent_unavailable": "No operator agent is set up. Pick one in Studio > Settings > Agents.",
     "agent_chats": "Chats",
     "agent_chats_empty": "No chats yet",
     "agent_chats_search_empty": "No chats found",

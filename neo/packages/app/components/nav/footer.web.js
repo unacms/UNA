@@ -15,7 +15,7 @@ import { isTabBarLabelsEnabled } from 'app/lib/util';
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu';
 import { NeoButton } from 'app/design/controls';
 import { cn } from 'app/lib/util';
-import { OperatorAgentPanel, useOperatorAgentData } from 'app/ui/molecules/system/operator-agent';
+import { OperatorAgentPanel, useOperatorAgentAvailable } from 'app/ui/molecules/system/operator-agent';
 import {
     splitTabBarItems,
     buildTabBarMoreMenuItems,
@@ -262,7 +262,7 @@ function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
     const footerHeight = useFooterHeight();
     const [menuOpen, setMenuOpen] = useState(false);
     const [agentOpen, setAgentOpen] = useState(false);
-    const agentData = useOperatorAgentData(!!currentUser);
+    const hasAgent = useOperatorAgentAvailable(!!currentUser);
     const allItems = useMemo(
         () => buildTabBarMoreMenuItems({
             visible: visibleTabs,
@@ -277,7 +277,7 @@ function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
     const { header: profileItem, items: profileMenuItems, profileOnly } = splitProfileMoreMenu({
         items: allItems,
         overflow: overflowTabs,
-        hasAgent: !!agentData,
+        hasAgent,
     });
     const items = profileItem ? profileMenuItems : allItems;
     const isOverflowActive = overflowTabs.some((tab) =>
@@ -308,13 +308,13 @@ function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
                 onOpenChange={setMenuOpen}
                 items={items}
                 triggerClassName="group flex-1 w-full h-full min-w-0"
-                header={profileItem || agentData ? (
+                header={profileItem || hasAgent ? (
                     <MoreMenuHeader
                         profileItem={profileItem}
                         currentUser={currentUser}
                         agentActive={agentOpen}
                         onProfilePress={() => setMenuOpen(false)}
-                        onAgentPress={agentData ? toggleAgent : null}
+                        onAgentPress={hasAgent ? toggleAgent : null}
                     />
                 ) : null}
             >
@@ -324,9 +324,8 @@ function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
                     title={profileItem ? profileItem.title : t('More')}
                 />
             </DropdownMenu>
-            {agentData ? (
+            {hasAgent ? (
                 <OperatorAgentPanel
-                    data={agentData}
                     open={agentOpen}
                     onClose={() => setAgentOpen(false)}
                     bottomOffset={footerHeight + 8}
