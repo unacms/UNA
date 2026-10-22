@@ -43,8 +43,9 @@ export function useOperatorAgentAvailable(enabled = true) {
  * The operator agent block, or null when the server has no operator agent
  * (Studio > Settings > Agents) or the viewer may not chat with it. The payload is
  * the one the Dashboard page block renders — same agent, same settings, same
- * thread — see `fetchOperatorAgentBlock`. Loaded once per session and shared by
- * every place that opens the chat.
+ * thread — see `fetchOperatorAgentBlock`. A block is loaded once per session and
+ * shared by every place that opens the chat; no block (also what a failed
+ * request gives) is asked for again on the next open.
  */
 function useOperatorAgentData() {
     const { currentUser } = useCurrentUser();
@@ -54,23 +55,30 @@ function useOperatorAgentData() {
         enabled: !!currentUser?.operator,
         staleTime: Infinity,
         cacheTime: Infinity,
+        refetchOnMount: (query) => !query.state.data,
         refetchOnWindowFocus: false,
-        refetchOnReconnect: false,
+        refetchOnReconnect: (query) => !query.state.data,
     });
 }
 
-/** The chat once its block is loaded; a spinner until then, a note when there is no agent. */
+/**
+ * The chat once its block is loaded; a spinner until then, a note and a retry
+ * when there is no agent (the panel stays mounted, so reopening it doesn't ask again).
+ */
 function OperatorAgentContent({ params, onClose }) {
     const { t } = useTranslation();
-    const { data, isLoading } = useOperatorAgentData();
+    const { data, isFetching, refetch } = useOperatorAgentData();
 
     if (data)
         return <OperatorAgentBody data={data} params={params} onClose={onClose} />;
 
     return (
         <View className="flex-1 min-h-0 items-center justify-center gap-3 p-4">
-            {isLoading ? <Loading /> : (
-                <Text className="text-sm text-center text-muted-foreground">{t('operator_agent_unavailable')}</Text>
+            {isFetching ? <Loading /> : (
+                <>
+                    <Text className="text-sm text-center text-muted-foreground">{t('operator_agent_unavailable')}</Text>
+                    <NeoButton style="bordered" controlSize="small" label={t('Retry')} onPress={() => refetch()} />
+                </>
             )}
             {onClose ? (
                 <View className="absolute top-2 right-2">

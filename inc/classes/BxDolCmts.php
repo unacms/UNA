@@ -866,6 +866,14 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
         return $this->_oQuery->getComments ($this->getId(), $iVParentId, $this->_getAuthorId(), $sFilter, $aOrder, $iStart, $iCount);
     }
 
+    /**
+     * Get IDs of the comments getCommentsArray returns, in the same order.
+     */
+    public function getCommentsIds ($iVParentId, $sFilter, $aOrder, $iStart = 0, $iCount = -1)
+    {
+        return $this->_oQuery->getComments ($this->getId(), $iVParentId, $this->_getAuthorId(), $sFilter, $aOrder, $iStart, $iCount, true);
+    }
+
     public function getCommentsBy ($aParams = [])
     {
         return $this->_oQuery->getCommentsBy($aParams); 
@@ -928,12 +936,11 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
         if((int)$aBp['vparent_id'] == 0 && ($aParents = $this->getCommentParents($aCmt)))
             $iListId = (int)array_pop($aParents);
 
-        $aCmts = $this->getCommentsArray($aBp['vparent_id'], $aBp['filter'], $aBp['order']);
-        foreach($aCmts as $iIndex => $aItem)
-            if((int)$aItem['cmt_id'] == $iListId)
-                return (int)floor($iIndex / $iPerView) * (int)$iPerView;
+        $iIndex = array_search($iListId, array_map('intval', $this->getCommentsIds($aBp['vparent_id'], $aBp['filter'], $aBp['order'])), true);
+        if($iIndex === false)
+            return false;
 
-        return false;
+        return (int)floor($iIndex / $iPerView) * (int)$iPerView;
     }
 
     /**
@@ -947,7 +954,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
         if((int)$iStart <= 0)
             return 0;
 
-        $aIds = array_column($this->getCommentsArray($aBp['vparent_id'], $aBp['filter'], $aBp['order'], 0, (int)$iStart), 'cmt_id');
+        $aIds = $this->getCommentsIds($aBp['vparent_id'], $aBp['filter'], $aBp['order'], 0, (int)$iStart);
         $iCount = count($aIds);
         if((int)$aBp['vparent_id'] != 0)
             return $iCount;

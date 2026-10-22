@@ -387,7 +387,13 @@ export function CommentsBrowse({
     // Scroll to a linked comment once it is in the list (its page may load first);
     // again whenever the link changes.
     useEffect(() => {
-        if (!isCommentId(scrollToIndex) || linkScrolledRef.current == scrollToIndex) return
+        // Not a comment link (e.g. "open comments"): forget the last one, so
+        // following it again scrolls again.
+        if (!isCommentId(scrollToIndex)) {
+            linkScrolledRef.current = false
+            return
+        }
+        if (linkScrolledRef.current == scrollToIndex) return
         if (!refetchState.visibleItems.some((item) => item.id == scrollToIndex)) return
 
         linkScrolledRef.current = scrollToIndex
