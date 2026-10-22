@@ -419,7 +419,7 @@ class BxDolCmtsQuery extends BxDolDb
     /**
      * Get comments list. With $bIdsOnly it returns the comment IDs only, in the same order.
      */
-    function getComments ($iId, $iCmtVParentId = 0, $iAuthorId = 0, $sFilter = '', $aOrder = array(), $iStart = 0, $iCount = -1, $bIdsOnly = false)
+    public function getComments ($iId, $iCmtVParentId = 0, $iAuthorId = 0, $sFilter = '', $aOrder = array(), $iStart = 0, $iCount = -1, $bIdsOnly = false)
     {
     	$aBindings = array(
             'cmt_object_id' => $iId,
