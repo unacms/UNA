@@ -15,6 +15,9 @@ export const settingsBrowse = {
             bx_posts: true,
             bx_timeline: true
         },
+        // Lists of a module which reload on its socket events ('added', 'edited',
+        // 'deleted') on channel `{name}_{current profile id}`: module => name.
+        sockets: {},
         unit_by_source: {
             'system/browse_friends': 'person_friends',
             'system/browse_members': 'person_friends',

@@ -40,7 +40,7 @@ import { BlockWrapper } from 'app/components/block-wrapper'
 import { useIsFocused } from 'app/lib/hooks/router'
 import { useGetScrollValue } from 'app/context/jotai/layout'
 import { setListScrollOffset } from 'app/lib/cache/list-scroll-cache'
-import { useUniListQuery } from 'app/lib/browse-query'
+import { socketChannelForList, useUniListQuery } from 'app/lib/browse-query'
 import { components } from 'app/components/registry';
 import { BrowseItem } from 'app/lib/common-helpers'
 import { useIsDesktop } from 'app/context/measure';
@@ -181,6 +181,7 @@ export default function Browse(props) {
         listenPageReload: true,
         listenFeed: props.data?.unit === 'feed',
         listenTimeline: props.data?.unit === 'feed',
+        listenSocket: socketChannelForList(data.module, currentUser?.id),
         canFetchNext: () => isOnePage != true && props.extraProps?.limit != true,
     })
 
