@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
-import { matchesFeedOwnerFilter, useUniListQuery } from 'app/lib/browse-query'
+import { matchesFeedOwnerFilter, socketChannelForList, useUniListQuery } from 'app/lib/browse-query'
+import { useCurrentUser } from 'app/context/user'
 
 /**
  * How long a native list stays in the TanStack cache after its tab unmounts.
@@ -35,6 +36,7 @@ export function useConductorList({
     gcTime,
     listenPageReload = false,
 }) {
+    const { currentUser } = useCurrentUser()
     const matchesNewContent = useCallback(
         (item) => matchesFeedOwnerFilter(route, item),
         [route]
@@ -51,6 +53,8 @@ export function useConductorList({
         gcTime: gcTime ?? (refetchOnWindowFocus ? undefined : NATIVE_LIST_GC_MS),
         listenPageReload,
         listenFeed: true,
+        // the module's own entries changed (e.g. a project added by the agent)
+        listenSocket: socketChannelForList(route?.endpoint?.module, currentUser?.id),
         matchesNewContent,
     })
 }

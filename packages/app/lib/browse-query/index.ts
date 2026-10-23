@@ -281,6 +281,8 @@ export function useUniListQuery({
         const reload = () => {
             refetchRef.current.skipToast = true
             setRequested(true)
+            // rows held behind "Show New" would hide the change: show the fresh data at once
+            setFrozen(null)
             refetch()
         }
         const offs = ['added', 'edited', 'deleted'].map((sEvent) => subscribe(listenSocket, sEvent, reload))
