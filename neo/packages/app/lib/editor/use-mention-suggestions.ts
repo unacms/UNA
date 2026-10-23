@@ -259,17 +259,19 @@ function localMentionCandidates(term: string, indicator: string, recents: any, c
  *     to mention" list.
  *
  *  3. Cold start without blocking. The connections seed is prefetched in the
- *     background after the form opens (idle time / after interactions) and
- *     cached, so it is ready by the time "@" is typed and never delays render.
+ *     background once the field is focused (`armed`; idle time / after
+ *     interactions) and cached, so it is ready by the time "@" is typed, never
+ *     delays render, and pages where nobody writes don't fetch it.
  *
  * @param {object}  params
  * @param {string}  params.url        Base mention endpoint (already carries m/cid/etc).
  * @param {string}  params.term       Text typed after the indicator.
  * @param {string}  params.indicator  Trigger char ('@' or '#'); falsy when inactive.
  * @param {string|number} [params.userId] Logged-in profile id, used to scope recents/connections.
+ * @param {boolean} [params.armed]   The field has been focused: prefetch the connections seed.
  * @returns {{ suggestions: any[], setSuggestions: Function, reset: Function, recordMention: Function }}
  */
-export function useMentionSuggestions({ url, term, indicator, userId }: { url?: string; term?: string; indicator?: string; userId?: number | string }) {
+export function useMentionSuggestions({ url, term, indicator, userId, armed = false }: { url?: string; term?: string; indicator?: string; userId?: number | string; armed?: boolean }) {
     const [suggestions, setSuggestions] = useState<MentionSuggestion[]>([])
     // Recently mentioned items keyed by indicator, e.g. { '@': [...], '#': [...] }.
     const [recents, setRecents] = useState<Record<string, MentionSuggestion[]>>({})
@@ -303,11 +305,11 @@ export function useMentionSuggestions({ url, term, indicator, userId }: { url?: 
         return () => { alive = false }
     }, [userId])
 
-    // Prefetch connections off the critical path once the form is open. Uses an
+    // Prefetch connections off the critical path once the field is focused. Uses an
     // in-memory cache shared across instances, a persisted copy for instant
     // first paint, and a background refresh when the cache is stale.
     useEffect(() => {
-        if (!userId || !connectionsSources) return
+        if (!armed || !userId || !connectionsSources) return
         let alive = true
 
         const cancelIdle = runWhenIdle(async () => {
@@ -331,7 +333,7 @@ export function useMentionSuggestions({ url, term, indicator, userId }: { url?: 
         })
 
         return () => { alive = false; cancelIdle?.() }
-    }, [userId, connectionsSources])
+    }, [armed, userId, connectionsSources])
 
     const reset = useCallback(() => {
         requestIdRef.current += 1

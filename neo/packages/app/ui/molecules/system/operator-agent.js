@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
@@ -18,6 +19,7 @@ import { fetchOperatorAgentBlock } from 'app/ui/molecules/ai-agent/operator-bloc
 import { hiddenFirstMessageFromData } from 'app/ui/molecules/ai-agent/hidden-first-message';
 import { edgeWash } from 'app/ui/molecules/ai-agent/edge-wash';
 import { EdgeBlurView, edgeBlurConfig } from 'app/ui/atoms/edge-blur';
+import Loading from 'app/ui/atoms/loading';
 
 const AiAgent = lazyComponent(() => import('app/ui/molecules/ai-agent/agent'), { name: 'AiAgent' });
 
@@ -27,33 +29,71 @@ const CHANNEL = EVENTS.operatorAgent;
 const OPERATOR_ASSISTANT_URL = '/copilot';
 
 /**
- * The operator agent block when `user.operator` is true and the server has an
- * operator agent (Studio > Settings > Agents), else null. The payload is the one
- * the Dashboard page block renders — same agent, same settings, same thread —
- * see `fetchOperatorAgentBlock`. `enabled = false` skips the request.
+ * Whether to offer the operator agent: the viewer is an operator (`user.operator`)
+ * and the app doesn't turn it off. No request: the agent block is loaded when the
+ * chat opens (`useOperatorAgentData`). `enabled = false` hides it.
  */
-export function useOperatorAgentData(enabled = true) {
+export function useOperatorAgentAvailable(enabled = true) {
     const { currentUser } = useCurrentUser();
-    const [data, setData] = useState(null);
     const operatorAgent = appSetting('ai', 'operator_agent') || {};
-    const isOperator = enabled && operatorAgent.enabled !== false && !!currentUser?.operator;
+    return enabled && operatorAgent.enabled !== false && !!currentUser?.operator;
+}
 
-    useEffect(() => {
-        if (!isOperator) return undefined;
-        let cancelled = false;
-        fetchOperatorAgentBlock()
-            .then((next) => {
-                if (!cancelled) setData(next);
-            })
-            .catch(() => {
-                if (!cancelled) setData(null);
-            });
-        return () => {
-            cancelled = true;
-        };
-    }, [isOperator]);
+/**
+ * The operator agent block, or null when the server has no operator agent
+ * (Studio > Settings > Agents) or the viewer may not chat with it. The payload is
+ * the one the Dashboard page block renders — same agent, same settings, same
+ * thread — see `fetchOperatorAgentBlock`. A block is loaded once per session and
+ * shared by every place that opens the chat; no block (also what a failed
+ * request gives) is asked for again on the next open.
+ */
+function useOperatorAgentData() {
+    const { currentUser } = useCurrentUser();
+    return useQuery({
+        queryKey: ['operator_agent_block', currentUser?.id],
+        queryFn: fetchOperatorAgentBlock,
+        enabled: !!currentUser?.operator,
+        staleTime: Infinity,
+        cacheTime: Infinity,
+        refetchOnMount: (query) => !query.state.data,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: (query) => !query.state.data,
+    });
+}
 
-    return isOperator ? data : null;
+/**
+ * The chat once its block is loaded; a spinner until then, a note and a retry
+ * when there is no agent (the panel stays mounted, so reopening it doesn't ask again).
+ */
+function OperatorAgentContent({ params, onClose }) {
+    const { t } = useTranslation();
+    const { data, isFetching, refetch } = useOperatorAgentData();
+
+    if (data)
+        return <OperatorAgentBody data={data} params={params} onClose={onClose} />;
+
+    return (
+        <View className="flex-1 min-h-0 items-center justify-center gap-3 p-4">
+            {isFetching ? <Loading /> : (
+                <>
+                    <Text className="text-sm text-center text-muted-foreground">{t('operator_agent_unavailable')}</Text>
+                    <NeoButton style="bordered" controlSize="small" label={t('Retry')} onPress={() => refetch()} />
+                </>
+            )}
+            {onClose ? (
+                <View className="absolute top-2 right-2">
+                    <NeoButton
+                        style="borderless"
+                        borderShape="circle"
+                        controlSize="small"
+                        image="X"
+                        accessibilityLabel={t('operator_agent_close')}
+                        onPress={onClose}
+                    />
+                </View>
+            ) : null}
+        </View>
+    );
 }
 
 /**
@@ -168,10 +208,10 @@ function OperatorAgentBody({ data, params, onClose }) {
 /**
  * Agent chat card anchored bottom-right, `bottomOffset` above the window /
  * screen bottom (native tab bar's More menu hosts the trigger, tabs/expoui-tabs.js).
- * Mounts on first open and then only hides, so the thread and draft survive
- * closing. `children` render under the card.
+ * Mounts (and loads the agent block) on first open and then only hides, so the
+ * thread and draft survive closing. `children` render under the card.
  */
-export function OperatorAgentPanel({ data, open, onClose, bottomOffset, params, children }) {
+export function OperatorAgentPanel({ open, onClose, bottomOffset, params, children }) {
     const { width: windowWidth, height: windowHeight } = useWindowDimensions();
     const [mounted, setMounted] = useState(open);
     if (open && !mounted) setMounted(true);
@@ -195,7 +235,7 @@ export function OperatorAgentPanel({ data, open, onClose, bottomOffset, params, 
                     style={{ width: panelWidth, height: panelHeight }}
                     accessibilityViewIsModal={open}
                 >
-                    <OperatorAgentBody data={data} params={params} onClose={onClose} />
+                    <OperatorAgentContent params={params} onClose={onClose} />
                 </View>
             ) : null}
             {children}
@@ -205,8 +245,9 @@ export function OperatorAgentPanel({ data, open, onClose, bottomOffset, params, 
 
 /**
  * Header toolbar button that opens the operator agent in a dropdown, like
- * notifications. Renders nothing unless the agent is available to this viewer,
- * and not when the native tab bar's More menu hosts the trigger instead.
+ * notifications. Renders nothing unless the viewer is an operator, and not when
+ * the native tab bar's More menu hosts the trigger instead. The agent block
+ * loads on the first open.
  */
 export function OperatorAgentHeaderButton({ buttonProps }) {
     const { t } = useTranslation();
@@ -216,9 +257,9 @@ export function OperatorAgentHeaderButton({ buttonProps }) {
     const params = useLocalSearchParams();
     const [open, setOpen] = useState(false);
     const hostedByTabBar = hasNativeTabsMoreMenu(currentUser);
-    const data = useOperatorAgentData(!hostedByTabBar);
+    const available = useOperatorAgentAvailable(!hostedByTabBar);
 
-    if (!data) return null;
+    if (!available) return null;
 
     const label = t('operator_agent_open');
 
@@ -241,7 +282,7 @@ export function OperatorAgentHeaderButton({ buttonProps }) {
         >
             {open ? (
                 <View key="ddp-content" style={{ height: Math.min(560, Math.max(320, windowHeight - 196)) }}>
-                    <OperatorAgentBody data={data} params={params} />
+                    <OperatorAgentContent params={params} />
                 </View>
             ) : null}
         </DropdownPopup>

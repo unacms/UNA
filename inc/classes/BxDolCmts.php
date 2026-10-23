@@ -866,6 +866,14 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
         return $this->_oQuery->getComments ($this->getId(), $iVParentId, $this->_getAuthorId(), $sFilter, $aOrder, $iStart, $iCount);
     }
 
+    /**
+     * Get IDs of the comments getCommentsArray returns, in the same order.
+     */
+    public function getCommentsIds ($iVParentId, $sFilter, $aOrder, $iStart = 0, $iCount = -1)
+    {
+        return $this->_oQuery->getComments ($this->getId(), $iVParentId, $this->_getAuthorId(), $sFilter, $aOrder, $iStart, $iCount, true);
+    }
+
     public function getCommentsBy ($aParams = [])
     {
         return $this->_oQuery->getCommentsBy($aParams); 
@@ -905,6 +913,60 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
         $this->_getParents($mixedCmt, $iDepthMax, $iDepth, $aParents);
 
         return $aParents;
+    }
+
+    /**
+     * Get start of the page which contains the comment in comments list.
+     * When the list has root comments only (threaded view) the page with comment's root is returned.
+     * @param integer $iCmtId - comment ID.
+     * @param array $aBp - browse params prepared with prepareParams.
+     * @param integer $iPerView - page size.
+     * @return integer page start or false if the comment isn't in the list.
+     */
+    public function getCommentPageStart($iCmtId, $aBp, $iPerView)
+    {
+        if((int)$iPerView <= 0)
+            return false;
+
+        $aCmt = $this->_oQuery->getCommentsBy(['type' => 'id', 'id' => (int)$iCmtId, 'object_id' => $this->getId()]);
+        if(empty($aCmt) || !is_array($aCmt))
+            return false;
+
+        $iListId = (int)$aCmt['cmt_id'];
+        if((int)$aBp['vparent_id'] == 0 && ($aParents = $this->getCommentParents($aCmt)))
+            $iListId = (int)array_pop($aParents);
+
+        $iIndex = array_search($iListId, array_map('intval', $this->getCommentsIds($aBp['vparent_id'], $aBp['filter'], $aBp['order'])), true);
+        if($iIndex === false)
+            return false;
+
+        return (int)floor($iIndex / $iPerView) * (int)$iPerView;
+    }
+
+    /**
+     * Get number of comments, replies included, which are above the start position in comments list.
+     * @param array $aBp - browse params prepared with prepareParams.
+     * @param integer $iStart - start position in the list.
+     * @return integer number of comments.
+     */
+    public function getCommentsCountBefore($aBp, $iStart)
+    {
+        if((int)$iStart <= 0)
+            return 0;
+
+        $aIds = $this->getCommentsIds($aBp['vparent_id'], $aBp['filter'], $aBp['order'], 0, (int)$iStart);
+        $iCount = count($aIds);
+        if((int)$aBp['vparent_id'] != 0)
+            return $iCount;
+
+        // Replies deeper than the levels limit point to an upper level, so each pass takes one level and everything under it.
+        $iLevels = (int)$this->_aSystem['number_of_levels'];
+        for($iLevel = 0; $iLevel < $iLevels && !empty($aIds); $iLevel++) {
+            $aIds = $this->_oQuery->getCommentIdsByVParents($this->getId(), $aIds, $this->_getAuthorId());
+            $iCount += count($aIds);
+        }
+
+        return $iCount;
     }
 
     public function onObjectDelete ($iObjectId = 0)

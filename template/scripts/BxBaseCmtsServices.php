@@ -686,6 +686,19 @@ class BxBaseCmtsServices extends BxDol
              $aBp['per_view'] = $aParams['per_view'];
         }
 
+        // open the page with the comment, e.g. from a notification
+        $iHighlighted = 0;
+        $iCountPrev = false;
+        if(!empty($aParams['around_id']) && !isset($aParams['comment_id'])) {
+            $iAroundId = (int)$aParams['around_id'];
+            if(($iStart = $oCmts->getCommentPageStart($iAroundId, $aBp, $aPp)) !== false) {
+                $aBp['start'] = $iStart;
+                $iHighlighted = $iAroundId;
+                $iCountPrev = $oCmts->getCommentsCountBefore($aBp, $iStart);
+            }
+        }
+        $iStartPrev = $aBp['start'] > 0 ? max(0, $aBp['start'] - $aPp) : -1;
+
         $aCmts = isset($aParams['comment_id']) ? array_map(function($value) {return ['cmt_id' => $value];}, $aParams['comment_id']) : $oCmts->getCommentsArray($aBp['vparent_id'], $aBp['filter'], $aBp['order'], $aBp['start'], $aBp[($aBp['init_view'] != -1 ? 'init' : 'per') . '_view']);
 
         
@@ -717,6 +730,7 @@ class BxBaseCmtsServices extends BxDol
         $aData = [
             'unit' => 'comments',
             'start' => $aParams['start_from'],
+            'start_prev' => $iStartPrev,
             'count' => count($aCmts),
             'per_view' => $aBp['per_view'],
             'total_count' => $oCmts->getCommentsCount(),
@@ -726,9 +740,12 @@ class BxBaseCmtsServices extends BxDol
             'object_id' => $oCmts->getId(),
             'ts' => microtime(true),
             'max_level' => $oCmts->getSystemInfo()['number_of_levels'],
-            'highlighted' => 0,
+            'highlighted' => $iHighlighted,
             'data' => $aCmtsRv,
         ];
+        // comments, replies included, above the page with the highlighted one
+        if($iCountPrev !== false)
+            $aData['count_prev'] = $iCountPrev;
         if (isset($aParams['mode']) &&  $aParams['mode'] == 'feed')
             return $aData;
         

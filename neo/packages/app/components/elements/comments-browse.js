@@ -16,7 +16,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { subscribe } from 'app/ui/atoms/socket';
 import { useCurrentUser } from 'app/context/user';
 import { useTranslation } from 'react-i18next';
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import {
     refetchUniListReducer,
     isSameItemsForUniList
@@ -78,6 +78,7 @@ export function CommentsBrowse({
     const UnitComments = components['unit']['comments'];
     const { t } = useTranslation();
     const flashListRef = useRef(null);
+    const listWrapRef = useRef(null);
     /** Ignore item taps that start as a scroll (chat UX: keep keyboard while scrolling). */
     const listDraggingRef = useRef(false);
     const listDragTimeoutRef = useRef(null);
@@ -111,7 +112,9 @@ export function CommentsBrowse({
     const refetchRef = useRef({
         skipToast: false,
         isFirstLoad: true,
-        prevItems: []
+        prevItems: [],
+        aroundId: false,
+        orderWay: browse?.data?.order
     })
     // State, not the ref: the empty placeholder must re-render once the first
     // page lands, even when the list stays empty.
@@ -133,6 +136,10 @@ export function CommentsBrowse({
 
     const [browseParams, setBrowseParams] = useState(baseParams);
     const [scrollIndex, setScrollIndex] = useState(scrollToIndex);
+    // A linked comment (notification, reply) that isn't on the loaded pages:
+    // UNA returns the page with it (around_id), and earlier pages load on demand.
+    const [aroundId, setAroundId] = useState(false);
+    const linkScrolledRef = useRef(false);
 
     function prepareUrl(params) {
         let def = {
@@ -145,13 +152,16 @@ export function CommentsBrowse({
     }
 
     async function fetchComments({ pageParam }) {
+        // react-query 4: the first page comes without a pageParam
         const {
             start_from = 0,
+            around_id = pageParam ? undefined : aroundId,
         } = pageParam || {}
 
         const sRequest = prepareUrl({
             is_form: false,
             start_from,
+            ...(around_id ? { around_id } : {}),
         })
         const sResponse = await fetcher(sRequest)
         const data = sResponse?.data?.browse?.data
@@ -160,6 +170,8 @@ export function CommentsBrowse({
             raw: sResponse,
             tree: data?.data,
             start: data?.start,
+            start_prev: data?.start_prev,
+            count_prev: data?.count_prev,
             count: data?.count,
             per_view: data?.per_view,
             total_count: data?.total_count,
@@ -172,7 +184,8 @@ export function CommentsBrowse({
     }, [scrollToIndex]);
 
     useEffect(() => {
-        if (scrollIndex !== false && scrollIndex !== true) {
+        // A linked comment (scrollToIndex) is scrolled to by the effect below.
+        if (scrollIndex !== false && scrollIndex !== true && scrollIndex != scrollToIndex) {
             scrollToItemByCommentId(scrollIndex);
         }
         //to the end
@@ -273,13 +286,25 @@ export function CommentsBrowse({
         }
     }, [])
 
-    const qKey = ['comments', module, currentUser?.id, browseParams.object_id, browseParams.order_way]
+    const qKey = ['comments', module, currentUser?.id, browseParams.object_id, browseParams.order_way, ...(aroundId ? [{ around_id: aroundId }] : [])]
+
+    // The page came with the first page of comments: that is the list now, not
+    // what an earlier visit left in the cache (refetching that costs a request
+    // per page it had loaded). Fresh, so nothing is fetched on mount.
+    const queryClient = useQueryClient()
+    useState(() => {
+        if (requestUrl && browse?.data)
+            queryClient.setQueryData(qKey, pagesFromBrowse(browse.data))
+    })
 
     const {
         data: pagesData,
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
+        fetchPreviousPage,
+        hasPreviousPage,
+        isFetchingPreviousPage,
         refetch,
     } = useInfiniteQuery({
         queryKey: qKey,
@@ -299,37 +324,42 @@ export function CommentsBrowse({
             }
         },
 
-        initialData: () => {
-            if (!browse?.data) return undefined
-            const d = browse.data
+        getPreviousPageParam: (firstPage) => {
+            if (!aroundId || !(firstPage?.start_prev >= 0)) return undefined
             return {
-                pages: [
-                    {
-                        raw: { data: { browse: { data: d } } },
-                        tree: d.data,
-                        start: d.start,
-                        count: d.count,
-                        per_view: d.per_view,
-                        total_count: d.total_count,
-                    },
-                ],
-                pageParams: [
-                    {
-                        start_from: 0,
-                    },
-                ],
+                start_from: firstPage.start_prev
             }
+        },
+
+        // The page's comments are in its own order only.
+        initialData: () => {
+            if (!browse?.data || aroundId || browseParams.order_way !== baseParams.order_way) return undefined
+            return pagesFromBrowse(browse.data)
         },
         staleTime: appSetting('browse', 'stale_time'),
         refetchOnWindowFocus: true,
         refetchOnReconnect: true,
     })
 
+    // Linked comment isn't on the loaded pages: switch to the page with it.
+    if (isCommentId(scrollToIndex) && aroundId != scrollToIndex && pagesData?.pages
+        && !pagesData.pages.some((page) => treeHasComment(page?.tree, scrollToIndex))) {
+        setAroundId(scrollToIndex)
+    }
+
 
     useEffect(() => {
         if (!pagesData) return
 
         const items = flattenPagesForComments(pagesData, viewMode)
+
+        // Another order, or the page with a linked comment, replaces the list
+        // like a first load (no "new comments" prompt).
+        if (refetchRef.current.aroundId !== aroundId || refetchRef.current.orderWay !== browseParams.order_way) {
+            refetchRef.current.aroundId = aroundId
+            refetchRef.current.orderWay = browseParams.order_way
+            refetchRef.current.isFirstLoad = true
+        }
 
         if (refetchRef.current.isFirstLoad) {
             dispatch({ type: 'SET_ITEMS', items })
@@ -352,21 +382,23 @@ export function CommentsBrowse({
 
 
         refetchRef.current.prevItems = items
-    }, [pagesData, viewMode])
+    }, [pagesData, viewMode, aroundId, browseParams.order_way])
 
+    // Scroll to a linked comment once it is in the list (its page may load first);
+    // again whenever the link changes.
     useEffect(() => {
-
-        if (refetchRef.current.isFirstLoad && browseParams.order_way === baseParams.order_way) {
+        // Not a comment link (e.g. "open comments"): forget the last one, so
+        // following it again scrolls again.
+        if (!isCommentId(scrollToIndex)) {
+            linkScrolledRef.current = false
             return
         }
+        if (linkScrolledRef.current == scrollToIndex) return
+        if (!refetchState.visibleItems.some((item) => item.id == scrollToIndex)) return
 
-        // Reload data when order_way changes
-        if (!refetchRef.current.isFirstLoad || browseParams.order_way !== baseParams.order_way) {
-            refetchRef.current.skipToast = true
-            refetchRef.current.isFirstLoad = true
-            refetch()
-        }
-    }, [browseParams.order_way])
+        linkScrolledRef.current = scrollToIndex
+        scrollToItemByCommentId(scrollToIndex, { center: true, settle: true })
+    }, [refetchState.visibleItems, scrollToIndex])
 
     const handleEndReached = useCallback(
         (lastItemIndex) => {
@@ -381,7 +413,15 @@ export function CommentsBrowse({
         [hasNextPage, browseParams.object_id, isFetchingNextPage]
     )
 
+    const handleLoadPrevious = useCallback(() => {
+        if (!hasPreviousPage || isFetchingPreviousPage) return
+
+        refetchRef.current.skipToast = true
+        fetchPreviousPage()
+    }, [hasPreviousPage, isFetchingPreviousPage])
+
     const handleOrder = async (orderWay) => {
+        setAroundId(false);
         setBrowseParams(prev => ({
             ...prev,
             order_way: orderWay,
@@ -410,17 +450,42 @@ export function CommentsBrowse({
 
     const extra = (addItems || []).filter(i => i.id !== 'block_comments-empty');
 
-    const dataOut = !refetchState.visibleItems.some(i => i.id === 'block_header') && extra.length
-        ? [...extra, { id: 'block_header', data: header }, ...refetchState.visibleItems]
-        : refetchState.visibleItems;
+    const previousCount = countCommentsAbove(pagesData);
+    const previousTitle = t(browseParams.order_way == 'asc' ? 'Show earlier comments' : 'Show newer comments')
+        + (previousCount > 0 ? ` (${previousCount})` : '');
 
-    function scrollToItemByCommentId(cmtId) {
+    const previous = hasPreviousPage ? [{
+        id: 'block_previous',
+        data: (
+            <View className="px-4 py-2 items-center">
+                {isFetchingPreviousPage ? <Loading /> : (
+                    <NeoButton
+                        style="borderless"
+                        controlSize="small"
+                        title={previousTitle}
+                        onPress={handleLoadPrevious}
+                    />
+                )}
+            </View>
+        ),
+    }] : [];
+
+    const dataOut = !refetchState.visibleItems.some(i => i.id === 'block_header') && extra.length
+        ? [...extra, { id: 'block_header', data: header }, ...previous, ...refetchState.visibleItems]
+        : (previous.length ? [...previous, ...refetchState.visibleItems] : refetchState.visibleItems);
+
+    function scrollToItemByCommentId(cmtId, options) {
         const itemIndex = dataOut.findIndex(obj => obj.id == cmtId);
         if (itemIndex < 0) return;
-        scrollToItemByIndex(itemIndex);
+        scrollToItemByIndex(itemIndex, options);
     }
 
-    function scrollToItemByIndex(itemIndex) {
+    /**
+     * `center` puts the row mid-screen (a linked comment) instead of at the bottom;
+     * `settle` adds later passes for a long jump, when the rows above are measured
+     * only after the first ones.
+     */
+    function scrollToItemByIndex(itemIndex, { center = false, settle = false } = {}) {
         if (itemIndex < 0) return;
 
         const isLast = itemIndex >= dataOut.length - 1;
@@ -433,18 +498,31 @@ export function CommentsBrowse({
                 list.scrollToEnd({ animated });
                 return;
             }
+            // Web: once the row is rendered, its real position beats the list's
+            // size estimates for the unmeasured rows above it.
+            const row = center && Platform.OS === 'web'
+                ? listWrapRef.current?.querySelector?.(`[data-index="${itemIndex}"]`)
+                : null;
+            if (row) {
+                row.scrollIntoView({ block: 'center', behavior: animated ? 'smooth' : 'auto' });
+                return;
+            }
             list.scrollToIndex?.({
                 animated,
                 index: itemIndex,
-                align: 'end',
+                align: center ? 'center' : 'end',
                 behavior: animated ? 'smooth' : 'auto',
-                viewPosition: 1,
+                viewPosition: center ? 0.5 : 1,
             });
         };
 
         // Retry once after row heights are measured (long threads otherwise undershoot).
         setTimeout(() => scrollTo(true), 300);
         setTimeout(() => scrollTo(false), 850);
+        if (settle) {
+            setTimeout(() => scrollTo(false), 1600);
+            setTimeout(() => scrollTo(false), 3000);
+        }
     }
 
     const renderListFooter = useCallback(() => (
@@ -495,7 +573,7 @@ export function CommentsBrowse({
 
     return (
         <>
-            <View className={embedded ? 'w-full' : 'flex-1 w-full min-h-0'} style={height > 0 ? { height } : undefined}>
+            <View ref={listWrapRef} className={embedded ? 'w-full' : 'flex-1 w-full min-h-0'} style={height > 0 ? { height } : undefined}>
             <UniList
                 mode='simple'
                 isModal={isModal}
@@ -555,6 +633,68 @@ export function CommentsBrowse({
 
         </>
     )
+}
+
+/** Infinite query data with the first page of comments that came with the page. */
+function pagesFromBrowse(d) {
+    return {
+        pages: [
+            {
+                raw: { data: { browse: { data: d } } },
+                tree: d.data,
+                start: d.start,
+                count: d.count,
+                per_view: d.per_view,
+                total_count: d.total_count,
+            },
+        ],
+        pageParams: [
+            {
+                start_from: 0,
+            },
+        ],
+    }
+}
+
+/** A comment id (number or numeric string), not the `true` / `false` scroll flags. */
+function isCommentId(value) {
+    return value !== true && value !== false && value != null && value !== '' && !Number.isNaN(Number(value))
+}
+
+/** Whether a comments tree from UNA (as walked by buildFlatListFromTree) contains the comment. */
+function treeHasComment(items, cmtId) {
+    if (!items) return false
+
+    return Object.keys(items).some((k) => {
+        const item = Object.keys(items[k]).length == 1 ? items[k][Object.keys(items[k])[0]] : items[k]
+        return item?.id == cmtId || treeHasComment(item?.items, cmtId)
+    })
+}
+
+/** Number of comments in a comments tree from UNA, replies included. */
+function countTreeComments(items) {
+    if (!items) return 0
+
+    return Object.keys(items).reduce((count, k) => {
+        const item = Object.keys(items[k]).length == 1 ? items[k][Object.keys(items[k])[0]] : items[k]
+        return count + 1 + countTreeComments(item?.items)
+    }, 0)
+}
+
+/**
+ * Comments above the loaded pages: UNA counts them for the page with a linked
+ * comment (count_prev), earlier pages loaded since then are taken off.
+ */
+function countCommentsAbove(pagesData) {
+    const pages = pagesData?.pages || []
+    const index = pages.findIndex((page) => page?.count_prev >= 0)
+    if (index < 0) return 0
+
+    let count = pages[index].count_prev
+    for (let i = 0; i < index; i++)
+        count -= countTreeComments(pages[i]?.tree)
+
+    return Math.max(0, count)
 }
 
 function buildFlatListFromTree(items, viewMode) {
