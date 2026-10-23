@@ -5,6 +5,7 @@ export {
 
 
 export { default as Link } from 'next/link'
+import { useSyncExternalStore } from 'react';
 import type { NavigationLike, RouterLike, SafeAreaInsets } from './router.types';
 
 
@@ -51,9 +52,28 @@ export function goBack(_navigation: NavigationLike, _router: RouterLike, callbac
     }
 }
 
+function subscribeLocation(onChange: () => void): () => void {
+    window.addEventListener('hashchange', onChange);
+    window.addEventListener('popstate', onChange);
+    return () => {
+        window.removeEventListener('hashchange', onChange);
+        window.removeEventListener('popstate', onChange);
+    };
+}
+
+const getHref = (): string => window.location.href;
+const getServerHref = (): string => '';
+
+/**
+ * The current URL, as an external store: a plain `window.location.href` read
+ * goes stale. The React Compiler keeps the first value a component read, and
+ * Next renders the new page before it pushes the new URL; the store is checked
+ * again after commit. Hash changes on the same page (and back / forward
+ * between hashes) re-render it too.
+ */
 export function useLocalSearchParams(): { url: string } {
-    if (typeof window === 'undefined') return { url: '' };
-    return { url: window.location.href };
+    const url = useSyncExternalStore(subscribeLocation, getHref, getServerHref);
+    return { url };
 }
 
 

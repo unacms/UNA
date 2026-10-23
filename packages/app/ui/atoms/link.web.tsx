@@ -10,6 +10,19 @@ import type { LinkProps } from './link.types';
 const ThemeLinkSizes = appSetting('theme', 'link_sizes');
 const ThemeLinkStyles = appSetting('theme', 'link_styles');
 
+/** The new hash when `href` is the current page with another hash, '' otherwise. */
+function samePageHash(href: string | undefined): string {
+    if (!href || typeof window === 'undefined') return '';
+    try {
+        const url = new URL(href, window.location.href);
+        const current = window.location;
+        if (url.origin !== current.origin || url.pathname !== current.pathname || url.search !== current.search) return '';
+        return url.hash && url.hash !== current.hash ? url.hash : '';
+    } catch {
+        return '';
+    }
+}
+
 export default function ElementLink({
     href: hrefProp,
     emulate,
@@ -63,7 +76,18 @@ export default function ElementLink({
     const handleLinkClick = useCallback((event?: any) => {
         emitter.emit(EVENTS.link, { action: 'pressed', href });
         onClick?.(event);
-    }, [onClick, href]);
+
+        // Next changes only the hash with pushState, which nobody hears; set it
+        // on the location instead so the page gets `hashchange` (e.g. #cid= from
+        // a notification on the page it points to).
+        const hash = event && !event.defaultPrevented && !resolvedTarget && event.button === 0
+            && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey
+            ? samePageHash(href) : '';
+        if (hash) {
+            event.preventDefault();
+            window.location.hash = hash;
+        }
+    }, [onClick, href, resolvedTarget]);
 
     const sizeClass = (() => {
         if (!size) return '';

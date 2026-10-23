@@ -136,6 +136,7 @@ export default function RftTextEnriched(props) {
         clearTrigger,
         recordMention,
         handlersRef,
+        armConnections,
     } = useEditorMentions({ fieldName: name, mentions: props.mentions })
 
     // ---- initial / external value ----
@@ -397,8 +398,9 @@ export default function RftTextEnriched(props) {
     }), [initialHeight, maxHeight, editorTextColor])
 
     const handleFocus = useCallback(() => {
+        armConnections()
         if (onFocus) onFocus()
-    }, [onFocus])
+    }, [onFocus, armConnections])
 
     // Web: clicks on padding / empty chrome around ProseMirror (toolbar field
     // padding, areas outside the stretched contenteditable) should still focus.

@@ -33,7 +33,7 @@ import {
 } from './tab-menu';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { NativeMoreSheet, hasNativeMoreSheet } from 'app/components/nav/tabs/more-sheet';
-import { OperatorAgentPanel, useOperatorAgentData } from 'app/ui/molecules/system/operator-agent';
+import { OperatorAgentPanel, useOperatorAgentAvailable } from 'app/ui/molecules/system/operator-agent';
 import { useTabBarColors } from './tab-colors';
 import { selectOverflowTab } from './tab-press';
 import { getWindowSafeAreaInsets, useGlobalSearchParams, useRouter, usePathname, useSafeAreaInsets } from 'app/lib/hooks/router';
@@ -340,7 +340,7 @@ export default function ExpoUITabNavigator({
 
     // Operator agent: opened from the More menu (same rule as pages skipping
     // their floating button, `hasNativeTabsMoreMenu`) and shown over every tab.
-    const agentData = useOperatorAgentData(overflow.length > 0 && !!isShowTabs);
+    const hasAgent = useOperatorAgentAvailable(overflow.length > 0 && !!isShowTabs);
     const agentParams = useGlobalSearchParams();
     const [agentOpen, setAgentOpen] = useState(false);
     const toggleAgent = () => {
@@ -400,7 +400,7 @@ export default function ExpoUITabNavigator({
     const profileMenu = splitProfileMoreMenu({
         items: overflowMenuItems,
         overflow,
-        hasAgent: !!agentData,
+        hasAgent,
         exclude: sheetExclude,
     });
     const sheetHeader = profileMore && hasNativeMoreSheet ? profileMenu.header : null;
@@ -412,7 +412,7 @@ export default function ExpoUITabNavigator({
     const profileOnly = !!sheetHeader && profileMenu.profileOnly;
     // Popup More menu (Android, iOS without the sheet): Agent heads the list,
     // shown selected while its chat is open.
-    const popupMenuItems = agentData
+    const popupMenuItems = hasAgent
         ? [
             { id: OPERATOR_AGENT_ITEM_ID, title: t('operator_agent_title'), icon: 'Sparkles', selected: agentOpen },
             { ...tabBarMoreSeparator(), id: `${OPERATOR_AGENT_ITEM_ID}-separator` },
@@ -542,7 +542,7 @@ export default function ExpoUITabNavigator({
                         name: decodeTextNode(currentUser?.display_name),
                         avatar: currentUser?.avatar ? avatarImageUri(currentUser.avatar, SHEET_AVATAR_PT) : null,
                     } : null}
-                    onAgentPress={agentData ? toggleAgent : undefined}
+                    onAgentPress={hasAgent ? toggleAgent : undefined}
                     agentActive={agentOpen}
                 />
             ) : null}
@@ -580,9 +580,8 @@ export default function ExpoUITabNavigator({
                 sessionKey={tabsSessionKey}
                 backgroundColor={colors.background}
             />
-            {agentData ? (
+            {hasAgent ? (
                 <OperatorAgentPanel
-                    data={agentData}
                     open={agentOpen}
                     onClose={() => setAgentOpen(false)}
                     bottomOffset={agentBottomOffset}
