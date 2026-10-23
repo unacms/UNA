@@ -110,7 +110,7 @@ function html2txt($content, $tags = "")
  *      @endcode
  * @param $mixedParams optional parameters to pass for validation
  * @param $isCheckMagicQuotes deprecated
- * @return the filtered data, or FALSE if the filter fails.
+ * @return mixed The filtered data, or FALSE if the filter fails.
  */
 function bx_process_input ($mixedData, $iDataType = BX_DATA_TEXT, $mixedParams = false, $isCheckMagicQuotes = true)
 {

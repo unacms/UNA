@@ -45,6 +45,9 @@ class BxDevModule extends BxDolModule
     {
     	$oDb = bx_instance('BxDolStudioInstallerQuery');
 
+        if(!$this->_oConfig->isEnabled() || !isAdmin())
+            return;
+
     	$sResult = '';
     	switch ($sType) {
     		case 'system':
@@ -108,6 +111,9 @@ class BxDevModule extends BxDolModule
     
     public function actionExport()
     {
+        if(!$this->_oConfig->isEnabled() || !isAdmin())
+            return echoJson([]);
+
         $sType = bx_process_input(bx_get('type'));
         if(empty($sType))
             return echoJson([]);
@@ -122,6 +128,9 @@ class BxDevModule extends BxDolModule
 
     public function actionDownload()
     {
+        if(!$this->_oConfig->isEnabled() || !isAdmin())
+            return;
+
         $sType = bx_process_input(bx_get('type'));
         if(empty($sType))
             return;
@@ -156,6 +165,9 @@ class BxDevModule extends BxDolModule
     
     public function actionImport()
     {
+        if(!$this->_oConfig->isEnabled() || !isAdmin())
+            return echoJson([]);
+
         $sType = bx_process_input(bx_get('type'));
         if(empty($sType))
             return echoJson([]);
