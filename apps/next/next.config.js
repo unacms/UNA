@@ -207,6 +207,8 @@ const nextConfig = {
       ppr: true,
     },*/
     experimental: {
+        // Set by `next upgrade --agent=security` (16.4.0 to 16.4.2, security advisory).
+        agentUpgrade: 'security',
         // Short client RSC cache so pointer-down prefetch of dynamic pages
         // (profiles) is reused on click. 0 made every tap wait on UNA again.
         staleTimes: {
