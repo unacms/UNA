@@ -557,7 +557,7 @@
     <string name="_bx_dev_btn_cancel"><![CDATA[Отмена]]></string>
     <string name="_bx_dev_txt_import_popup"><![CDATA[Импортировать]]></string>
     <string name="_bx_dev_txt_disable_before_import"><![CDATA[Деактивировать перед импортом]]></string>
-    <string name="_bx_dev_txt_disable_before_import_note"><![CDATA[Существующие пункты меню, блоки и т. д. будут деактивированы перед импортом новых. Это позволяет скрывать нестандартные(отличающиеся) элементы.]]></string>
+    <string name="_bx_dev_txt_disable_before_import_note"><![CDATA[Перед импортом новых элементов (пунктов меню, блоков и т. д.) существующие элементы будут деактивированы на всем сайте. Это позволяет скрывать нестандартные(отличающиеся) элементы.]]></string>
     <string name="_bx_dev_txt_export_type"><![CDATA[Какой вид экспорта вам нужен? <br />(<b>Базовый</b> - только данные, связанные с видимостью, <b>Полный</b> - все данные)]]></string>
     <string name="_bx_dev_err_cannot_perform"><![CDATA[Не могу выполнить действие.]]></string>
     <string name="_bx_dev_msg_imported"><![CDATA[Импорт завершен. Обработано {0} элементов.]]></string>

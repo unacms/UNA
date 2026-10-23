@@ -48,6 +48,8 @@ class BxDolModuleConfig extends BxDol
 
     protected $_sHomeUrl;
 
+    protected $_bEnabled;
+
     /**
      * constructor
      */
@@ -67,6 +69,8 @@ class BxDolModuleConfig extends BxDol
 
         $this->_sUri = $aModule['uri'];
         $this->_sHomeUrl = BX_DOL_URL_MODULES . $this->_sDirectory;
+
+        $this->_bEnabled = (int)$aModule['enabled'] != 0;
     }
     function getId()
     {
@@ -123,6 +127,11 @@ class BxDolModuleConfig extends BxDol
     function getHomeUrl()
     {
         return $this->_sHomeUrl;
+    }
+
+    function isEnabled()
+    {
+        return $this->_bEnabled;
     }
 }
 
