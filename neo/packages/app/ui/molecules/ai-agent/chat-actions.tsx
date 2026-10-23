@@ -11,6 +11,16 @@ import { useTranslation } from 'react-i18next';
 const WATCH_INTERVAL = 3000;
 const WATCH_TIMEOUT = 10 * 60 * 1000;
 
+// Web only: native has no location, there every absolute URL is external.
+function isSameSite(url?: string): boolean {
+    if (!url || typeof window === 'undefined' || !window.location?.host) return false;
+    try {
+        return new URL(url, window.location.href).host === window.location.host;
+    } catch {
+        return false;
+    }
+}
+
 export type ChatAction = {
     type: 'reply' | 'link' | 'form';
     label: string;
@@ -173,7 +183,10 @@ function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' }:
                             setWatch({ checkUrl, message: action.message, until: Date.now() + WATCH_TIMEOUT });
                         }
                         : undefined;
-                    return <NeoButtonLink key={key} {...buttonProps} href={action.url} target="_blank" onPress={startWatch} />;
+                    // A page of this site (e.g. the project page) opens in place; an external
+                    // or waited-for link (OAuth) opens in a new tab so the chat stays and can wait.
+                    const target = checkUrl || !isSameSite(action.url) ? '_blank' : '';
+                    return <NeoButtonLink key={key} {...buttonProps} href={action.url} target={target} onPress={startWatch} />;
                 }
                 if (action.type === 'form') {
                     return (
