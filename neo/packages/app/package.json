@@ -69,7 +69,7 @@
     "jotai": "^2.16.0",
     "lexical": "^0.48.0",
     "lucide-react-native": "1.16.0",
-    "next": "16.4.0",
+    "next": "16.4.2",
     "react": ">=19.0.0",
     "react-dom": ">=19.0.0",
     "react-grid-layout": "^1.4.4",
