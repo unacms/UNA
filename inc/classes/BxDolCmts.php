@@ -1356,7 +1356,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
     public function actionPin ()
     {
         if (!$this->isEnabled())
-            return echoJson(array());
+            return echoJson([]);
 
         $iCmtId = 0;
         if(bx_get('Cmt') !== false)
@@ -1364,23 +1364,26 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
 
         $aCmt = $this->getCommentRow($iCmtId);
         if(empty($aCmt) || !is_array($aCmt))
-            return echoJson(array());
+            return echoJson([]);
 
         $iWay = 0;
         if(bx_get('way') !== false)
             $iWay = bx_process_input(bx_get('way'), BX_DATA_INT);
 
-        if(!$this->_oQuery->updateComments(array('cmt_pinned' => $iWay ? time() : 0), array('cmt_id' => $iCmtId)))
-            return echoJson(array());
+        if(!$this->{'is' . ($iWay ? 'Pin' : 'Unpin') . 'Allowed'}($aCmt))
+            return echoJson([]);
 
-        $aBp = $aDp = array();
+        if(!$this->_oQuery->updateComments(['cmt_pinned' => $iWay ? time() : 0], ['cmt_id' => $iCmtId]))
+            return echoJson([]);
+
+        $aBp = $aDp = [];
         $this->_getParams($aBp, $aDp);
         $this->_prepareParams($aBp, $aDp);
 
-        echoJson(array(
+        echoJson([
             'parent_id' => $aCmt['cmt_parent_id'],
             'per_view' => $aBp['per_view']
-        ));
+        ]);
     }
     
     public function actionGetFormPost ()
