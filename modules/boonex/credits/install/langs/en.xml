@@ -299,12 +299,12 @@
     <string name="_bx_credits_txt_withdrawal_status_canceled"><![CDATA[Canceled]]></string>
     <string name="_bx_credits_txt_withdrawal_status_confirmed"><![CDATA[Confirmed]]></string>
 
-
     <string name="_bx_credits_msg_empty_author"><![CDATA['Main seller' is empty. You need to mark some profile as 'Main seller' in Settings of currently active Payment app.]]></string>
     <string name="_bx_credits_msg_action_performed"><![CDATA[The action was performed successfully.]]></string>
     <string name="_bx_credits_msg_action_withdrawals_disabled"><![CDATA[Withdrawals are disabled.]]></string>
     <string name="_bx_credits_err_profile_not_found"><![CDATA[Profile wasn't found.]]></string>
     <string name="_bx_credits_err_login_required"><![CDATA[Login required.]]></string>
+    <string name="_bx_credits_err_wrong_amont"><![CDATA[The amount of credits must be greater than zero.]]></string>
     <string name="_bx_credits_err_low_balance"><![CDATA[Low balance.]]></string>
     <string name="_bx_credits_err_withdrawal_not_found"><![CDATA[Withdrawal request wasn't found.]]></string>
     <string name="_bx_credits_err_withdraw_minimum"><![CDATA[Withdrawal less then {0} credits isn't available.]]></string>
@@ -312,6 +312,7 @@
     <string name="_bx_credits_err_cannot_update_balance"><![CDATA[Cannot update balance.]]></string>
     <string name="_bx_credits_err_cannot_send"><![CDATA[Cannot send message. Please report.]]></string>
     <string name="_bx_credits_err_cannot_cancel_withdrawal"><![CDATA[Cannot cancel withdrawal request. Please report.]]></string>
+    <string name="_bx_credits_err_cannot_confirm_withdrawal"><![CDATA[Cannot confirm withdrawal request. Please report.]]></string>
     <string name="_bx_credits_err_cannot_perform_action"><![CDATA[Cannot perform the action. Please report.]]></string>
 
 

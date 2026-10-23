@@ -86,6 +86,7 @@
     <string name="_bx_credits_form_profile_input_sys_do_cancel"><![CDATA[Отмена]]></string>
     <string name="_bx_credits_form_profile_input_do_cancel"><![CDATA[Отмена]]></string>
 
+
     <!-- Pages -->
     <string name="_bx_credits_page_title_sys_home"><![CDATA[Кредиты]]></string>
     <string name="_bx_credits_page_title_home"><![CDATA[Кредиты]]></string>
@@ -303,6 +304,7 @@
     <string name="_bx_credits_msg_action_withdrawals_disabled"><![CDATA[Вывод средств отключен.]]></string>
     <string name="_bx_credits_err_profile_not_found"><![CDATA[Профиль не был найден.]]></string>
     <string name="_bx_credits_err_login_required"><![CDATA[Необходимо войти.]]></string>
+    <string name="_bx_credits_err_wrong_amont"><![CDATA[Сумма кредитов должна быть больше нуля.]]></string>
     <string name="_bx_credits_err_low_balance"><![CDATA[Недостаточно средств на балансе.]]></string>
     <string name="_bx_credits_err_withdrawal_not_found"><![CDATA[Запрос на вывод средств не найден.]]></string>
     <string name="_bx_credits_err_withdraw_minimum"><![CDATA[Вывод менее {0} кредитов недоступен.]]></string>
@@ -310,6 +312,7 @@
     <string name="_bx_credits_err_cannot_update_balance"><![CDATA[Невозможно обновить баланс.]]></string>
     <string name="_bx_credits_err_cannot_send"><![CDATA[Невозможно отправить сообщение. Пожалуйста, оповестите нас об этой проблеме.]]></string>
     <string name="_bx_credits_err_cannot_cancel_withdrawal"><![CDATA[Невозможно отменить запрос на вывод средств. Пожалуйста, оповестите нас об этой проблеме.]]></string>
+    <string name="_bx_credits_err_cannot_confirm_withdrawal"><![CDATA[Невозможно подтвердить запрос на вывод средств. Пожалуйста, оповестите нас об этой проблеме.]]></string>
     <string name="_bx_credits_err_cannot_perform_action"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
 
 
