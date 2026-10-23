@@ -7,13 +7,14 @@ import Html from 'app/ui/atoms/html'
 import { Row, View } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import Confirm from 'app/ui/molecules/dialogs/confirm';
-import Badge from 'app/ui/molecules/profile/badge';
 import emitter, { EVENTS } from 'app/context/emitter';
 import Link from 'app/ui/atoms/link';
 import { looksLikeHtml } from 'app/lib/util';
 import { isFormResponseComplete } from 'app/lib/form/form-helpers';
 import { useFocusEffect } from 'app/lib/hooks/router';
 import { useTranslation } from 'react-i18next';
+import { useCurrentUser } from 'app/context/user';
+import { subscribe } from 'app/ui/atoms/socket';
 
 function getFormNamesFromBlock(block) {
     const content = Array.isArray(block?.content) ? block.content : [];
@@ -52,6 +53,14 @@ function getMainDomain(containers) {
     return hosts[0] || '';
 }
 
+// Status pill colors, the same as the badge ones (full class names, so they are not purged).
+const STATUS_COLORS = {
+    green: { bg: 'bg-green-600/20', text: 'text-green-700 dark:text-green-300' },
+    red: { bg: 'bg-red-600/20', text: 'text-red-700 dark:text-red-300' },
+    amber: { bg: 'bg-amber-600/20', text: 'text-amber-700 dark:text-amber-300' },
+    neutral: { bg: 'bg-muted/50', text: 'text-secondary-foreground' },
+};
+
 function getStatusBadgeData(text) {
     if (!text || typeof text !== 'string') return null;
 
@@ -67,6 +76,12 @@ function getStatusBadgeData(text) {
     }
 
     return { text: text.trim(), color };
+}
+
+/** Data of the deployment block in an answer of the deployment service, null when there is none. */
+function getDeployBlockData(response) {
+    const blocks = Array.isArray(response?.data) ? response.data : [];
+    return blocks.find((block) => block?.type === 'deploy')?.data ?? null;
 }
 
 function isDestructiveButton(item) {
@@ -85,12 +100,23 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
         if (!dataUrl) return;
 
         const sResponse = await fetcher(`/api.php?r=${dataUrl}`);
-        setBlockData(sResponse?.data[0]?.data);
+        // The answer may hold other blocks too (e.g. the project URL form): take the deployment one,
+        // keep what is shown when there is none.
+        const deployBlock = getDeployBlockData(sResponse);
+        if (deployBlock) setBlockData(deployBlock);
     }, []);
 
     useEffect(() => {
         refreshBlockData();
     }, [refreshBlockData]);
+
+    // A deployment started, changed or torn down elsewhere (e.g. by the projects agent in the chat):
+    // the Projects module reports it on the author's socket channel, reload so the progress polling starts.
+    const { currentUser } = useCurrentUser();
+    useEffect(() => {
+        if (!currentUser?.id) return undefined;
+        return subscribe(`bx_projects_${currentUser.id}`, 'deployment', () => refreshBlockData());
+    }, [currentUser?.id, refreshBlockData]);
 
     useFocusEffect(
         useCallback(() => {
@@ -143,7 +169,8 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
 
         const poll = async () => {
             const sResponse = await fetcher(`/api.php?r=${dataUrl}`);
-            setBlockData(sResponse?.data[0]?.data);
+            const deployBlock = getDeployBlockData(sResponse);
+            if (deployBlock) setBlockData(deployBlock);
         };
 
         poll();
@@ -171,19 +198,19 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
                 <View className="w-full  gap-3 w-full">
                     {(!!statusBadge && looksLikeHtml(statusBadge.text)) && (
 
-                        <View className={`bg-${statusBadge.color}-600/20 p-3 text-center rounded-full w-full gap-2`}>
+                        <View className={`bg-${statusBadge.color}-600/20 px-4 py-2.5 text-center rounded-2xl w-full min-w-0 gap-2 overflow-hidden web:break-words web:whitespace-normal`}>
                             <Html data={statusBadge.text} />
                         </View>
 
                     )}
                     {(!!statusBadge && !looksLikeHtml(statusBadge.text)) && (
 
-                        <Row className="gap-2 items-center">
-                            <Text>{t('Status:')}</Text><Badge
-                                size="sm"
-                                rounded
-                                data={statusBadge}
-                            /></Row>
+                        // Not the Badge: it keeps one line, and progress texts are long.
+                        <View className={`self-start max-w-full min-w-0 rounded-2xl px-3 py-1.5 ${STATUS_COLORS[statusBadge.color]?.bg ?? STATUS_COLORS.neutral.bg}`}>
+                            <Text className={`text-sm web:break-words ${STATUS_COLORS[statusBadge.color]?.text ?? STATUS_COLORS.neutral.text}`}>
+                                {statusBadge.text}
+                            </Text>
+                        </View>
 
                     )}
 
@@ -198,7 +225,7 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
                                     <NeoButton
                                         key={item.id || item.name || buttonLabel || `deploy-button-${index}`}
                                         buttonStyle={destructive ? 'borderedProminent' : 'bordered'}
-                                        controlSize={buttons.length > 1 ? "small" : "xlarge"}
+                                        controlSize={buttons.length > 1 ? "small" : "regular"}
                                         role={destructive ? 'destructive' : undefined}
                                         accessibilityLabel={buttonLabel}
                                         onPress={() => handleOpenDeployForm(item)}
@@ -226,23 +253,21 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
                             key={`container-${index}`}
                             className="gap-1 rounded-xl border border-border/50 bg-muted/30 px-3 py-2.5"
                         >
-                            <Row className="items-start justify-between gap-3 flex-wrap">
-                                {!!container?.title && (
-                                    <Text className="text-sm text-muted-foreground shrink-0 pt-0.5">
-                                        {container.title}
-                                    </Text>
-                                )}
-                                {!!container?.url && (
-                                    <Link
-                                        href={container.url}
-                                        asExternal
-                                        mode="text"
-                                        className="text-sm font-medium text-primary web:hover:underline min-w-0 flex-1 text-right"
-                                    >
-                                        {container.url}
-                                    </Link>
-                                )}
-                            </Row>
+                            {!!container?.title && (
+                                <Text className="text-xs text-muted-foreground">
+                                    {container.title}
+                                </Text>
+                            )}
+                            {!!container?.url && (
+                                <Link
+                                    href={container.url}
+                                    asExternal
+                                    mode="text"
+                                    className="text-sm font-medium text-primary web:hover:underline min-w-0 w-full web:break-all"
+                                >
+                                    {container.url}
+                                </Link>
+                            )}
                             {!!container?.info && (
                                 <Text className="text-xs text-muted-foreground leading-5">
                                     {container.info}

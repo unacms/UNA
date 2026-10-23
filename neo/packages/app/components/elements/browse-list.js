@@ -32,7 +32,7 @@ import Snackbar from 'app/ui/atoms/snackbar'
 import { useIsFocused } from 'app/lib/hooks/router'
 import { useGetScrollValue } from 'app/context/jotai/layout'
 import { setListScrollOffset } from 'app/lib/cache/list-scroll-cache'
-import { startPerPageNextPageParam, useUniListQuery } from 'app/lib/browse-query'
+import { socketChannelForList, startPerPageNextPageParam, useUniListQuery } from 'app/lib/browse-query'
 import { components } from 'app/components/registry';
 import { BrowseItem } from 'app/lib/common-helpers'
 import { BlockWrapper } from 'app/components/block-wrapper'
@@ -145,6 +145,7 @@ export default function Browse(props) {
         listenPageReload: true,
         listenFeed: props.data?.unit === 'feed',
         listenTimeline: props.data?.unit === 'feed',
+        listenSocket: socketChannelForList(data.module, currentUser?.id),
     })
 
     let sSkeleton = data.module ? data.module : data.unit

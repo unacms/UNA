@@ -57,6 +57,12 @@ function parseTimelinePayload(payload: unknown): TimelineSocketEvent | null {
     return payload && typeof payload === 'object' ? (payload as TimelineSocketEvent) : null
 }
 
+/** Socket channel a list of `module` reloads on (`browse.sockets` setting), '' when none. */
+export function socketChannelForList(module?: string, profileId?: number | string): string {
+    const name = module ? appSetting('browse', 'sockets', module) : ''
+    return name && profileId ? `${name}_${profileId}` : ''
+}
+
 /** A page without the rows the socket reported deleted since it was requested. */
 function withoutDeleted(page: any, deletedIds: Set<string>) {
     return deletedIds.size
@@ -81,9 +87,10 @@ export function useUniListQuery({
     listenPageReload = false,
     listenFeed = false,
     listenTimeline = false,
+    listenSocket = '',
     matchesNewContent,
     canFetchNext,
-}: { queryKey: any; requestUrl: string; defaultParams: any; enabled?: boolean; deferNewItems?: any; refetchOnWindowFocus?: any; refetchOnReconnect?: any; gcTime?: number; getNextPageParam?: any; listenPageReload?: boolean; listenFeed?: boolean; listenTimeline?: boolean; matchesNewContent?: any; canFetchNext?: any }) {
+}: { queryKey: any; requestUrl: string; defaultParams: any; enabled?: boolean; deferNewItems?: any; refetchOnWindowFocus?: any; refetchOnReconnect?: any; gcTime?: number; getNextPageParam?: any; listenPageReload?: boolean; listenFeed?: boolean; listenTimeline?: boolean; listenSocket?: string; matchesNewContent?: any; canFetchNext?: any }) {
     const queryClient = useQueryClient()
     // Exposed as `skipToastRef` (tail skeleton count). Not read in render here:
     // whether a data change is shown or deferred is decided by `requested` below.
@@ -263,6 +270,23 @@ export function useUniListQuery({
             offDeleted()
         }
     }, [listenTimeline, queryClient])
+
+    /*
+     * Module socket (`listenSocket` channel, e.g. `bx_projects_{profile id}`): the
+     * events of the current user's own entries only, so a full refetch is cheap.
+     */
+    useEffect(() => {
+        if (!listenSocket) return undefined
+
+        const reload = () => {
+            refetchRef.current.skipToast = true
+            setRequested(true)
+            refetch()
+        }
+        const offs = ['added', 'edited', 'deleted'].map((sEvent) => subscribe(listenSocket, sEvent, reload))
+
+        return () => offs.forEach((off) => off())
+    }, [listenSocket, refetch])
 
     /*
      * Visible rows are derived from the query cache instead of being copied into
