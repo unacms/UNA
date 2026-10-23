@@ -417,6 +417,9 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
             return [];
 
         $aProperties = $this->_oConfig->getProperties();
+        if($this->_bIsApi)
+            $aProperties = array_merge($aProperties, [$CNF['FIELD_TITLE'], $CNF['FIELD_TEXT']]);
+
         if(in_array($sProperty, $aProperties) && !$this->_oDb->updateEntriesBy([$sProperty => $mixedValue], [$CNF['FIELD_ID'] => $iContentId]))
             return ['msg' => _t('_bx_tasks_txt_err_cannot_perform_action')];
 
