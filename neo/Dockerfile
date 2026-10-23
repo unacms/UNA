@@ -1,4 +1,4 @@
-ARG NODE_VERSION=24.15.0-slim
+ARG NODE_VERSION=24.22.1-slim
 
 # ----------- BUILDER
 FROM node:${NODE_VERSION} AS builder
