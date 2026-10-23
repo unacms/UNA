@@ -1120,6 +1120,25 @@
         @apply relative;
     }
 
+    /* Centered popups (alerts, confirms, popup forms). The wrapper scrolls a tall popup (overflow-y: auto), so it
+       clips whatever lies outside its box: padding makes room for the popover shadow (the gap adds 16px at the
+       sides). Padding, not margin, so a press on the wrapper itself still counts as outside and closes the popup. */
+    .bx-artificer .bx-popup-trans-wrapper:not(.bx-popup-with-pointer):not(.bx-popup-full-screen):not(.bx-popup-menu):not(.bx-popup-image-wrapper) {
+        @apply px-1 pt-2 pb-8;
+    }
+
+    /* ...and never narrow: at least 20rem wide from tablets up (phones show them full width). Alerts, confirms and
+       prompts set their own height and padding (popup_trans_*_cnt.html). On the dimmed backdrop a modal needs
+       no edge, only its surface and the drop shadow. */
+    .bx-artificer .bx-popup-trans-wrapper:not(.bx-popup-with-pointer):not(.bx-popup-full-screen):not(.bx-popup-menu):not(.bx-popup-image-wrapper) .bx-popup {
+        @apply md:min-w-[20rem] smooth-shadow-modal;
+    }
+
+    /* Alerts, confirms and prompts have their own buttons: no phone close row above their padding. */
+    .bx-artificer .bx-popup:has(.bx-popup-dialog) > .bx-popup-close-wrapper {
+        @apply hidden;
+    }
+
     .bx-artificer .bx-popup-color-bg {
         @apply bg-white dark:bg-gray-800 shadow;
     }
@@ -1142,8 +1161,10 @@
         @apply w-full md:w-full;
     }
 
+    /* The backdrop dims the page: in dark mode a light gray would lift the page above the popup, which then reads
+       darker than the blocks it shares a colour with. */
     .bx-artificer .bx-popup-fog {
-        @apply bg-gray-600 opacity-75;
+        @apply bg-gray-600 opacity-75 dark:bg-gray-950;
     }
 
 
