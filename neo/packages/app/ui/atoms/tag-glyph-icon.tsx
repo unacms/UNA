@@ -13,8 +13,10 @@ const TAGS: Record<string, ComponentType<any>> = { path: Path, circle: Circle, r
  */
 export function makeTagGlyphIcon(glyph: GlyphData): TagGlyphIcon {
     const variant = glyph.fixed ?? glyph.hug;
+    // The drawing never changes, so each element gets a key from the glyph once.
+    const elements = variant.node.map(([tag, attrs], i) => ({ key: `${glyph.id}-${i}`, Tag: TAGS[tag], attrs }));
 
-    function TagGlyph({ width, height, color, strokeWidth, className }: TagGlyphIconProps) {
+    function TagGlyph({ width, height, color, strokeWidth, className }: Readonly<TagGlyphIconProps>) {
         const classColor = useIconClassColor(className);
         const size = height || width || 24;
 
@@ -29,10 +31,7 @@ export function makeTagGlyphIcon(glyph: GlyphData): TagGlyphIcon {
                 strokeLinecap="round"
                 strokeLinejoin="round"
             >
-                {variant.node.map(([tag, attrs], i) => {
-                    const Tag = TAGS[tag];
-                    return Tag ? <Tag key={i} {...attrs} /> : null;
-                })}
+                {elements.map(({ key, Tag, attrs }) => (Tag ? <Tag key={key} {...attrs} /> : null))}
             </Svg>
         );
     }
