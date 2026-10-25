@@ -3,6 +3,19 @@ import url(../../../../../../../template/css/general.css);
 --*/
 
 
+/*--- Page scrollbar: its gutter is always kept, so a page that scrolls and one that doesn't are the same width and the header menu
+      doesn't reflow between them (nor when a popup locks the page's scrolling). It is thin and in the theme's colours; scrollbar-color
+      is inherited, so the page's own scroll boxes match. ---*/
+html {
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+}
+html.dark {
+    scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+
 /*--- Toolbar ---*/
 .bx-toolbar-anim {
     -webkit-transition: all .25s ease-in-out;

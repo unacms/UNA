@@ -2359,4 +2359,143 @@ function bx_clicked_stack_pop()
     return window.glClickedStack && window.glClickedStack.length > 0 ? window.glClickedStack.pop() : false;
 }
 
+/**
+ * Overlay scrollbar for a scroll box inside a rounded frame (Studio blocks, popup menus): the box's native bar is hidden and an SVG over
+ * the frame draws a track and a thumb along the box's right edge and round the frame's corners where the box meets them, so the bar
+ * follows the panel's shape. The thumb shows while the pointer is over the frame or the box scrolls (see common.css); it isn't dragged,
+ * the box still scrolls by wheel, touch and keyboard. The SVG is redrawn on scroll, on resize and when the content changes.
+ *
+ * @param oScroller - the element that scrolls (overflow-y: auto)
+ * @param oFrame - the rounded element the bar is drawn over: the scroller itself or an ancestor
+ * @param oClasses - class names, to keep a caller's own styles: svg, track, thumb, scroller (hides the native bar), scrolling (on the
+ *                   frame while the box scrolls), hover (on the frame, shows the bar on hover); an empty name adds nothing
+ */
+function bx_scrollbar_overlay(oScroller, oFrame, oClasses)
+{
+    if(!oScroller || !oFrame || oScroller.bxScrollbar)
+        return;
+
+    var c = $.extend({
+        svg: 'bx-scrollbar',
+        track: 'bx-scrollbar-track',
+        thumb: 'bx-scrollbar-thumb',
+        scroller: 'bx-scrollbar-scroller',
+        scrolling: 'bx-scrollbar-scrolling',
+        hover: 'bx-scrollbar-hover'
+    }, oClasses || {});
+
+    var sNs = 'http://www.w3.org/2000/svg';
+    var oSvg = document.createElementNS(sNs, 'svg');
+    oSvg.setAttribute('class', c.svg);
+    oSvg.setAttribute('aria-hidden', 'true');
+    oSvg.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none;'; // never in the flow, even before its stylesheet loads
+    var oTrack = document.createElementNS(sNs, 'path');
+    oTrack.setAttribute('class', c.track);
+    oTrack.setAttribute('fill', 'none');
+    var oThumb = document.createElementNS(sNs, 'path');
+    oThumb.setAttribute('class', c.thumb);
+    oThumb.setAttribute('fill', 'none');
+    oSvg.appendChild(oTrack);
+    oSvg.appendChild(oThumb);
+    oFrame.insertBefore(oSvg, oFrame.firstChild); // first, so a scroll box that is the frame's :last-child stays it
+
+    if(getComputedStyle(oFrame).position === 'static')
+        oFrame.style.position = 'relative';
+    $(oFrame).addClass(c.hover);
+    $(oScroller).addClass(c.scroller);
+
+    var oState = {scroller: oScroller, frame: oFrame, svg: oSvg, track: oTrack, thumb: oThumb, timer: null, mutation: null};
+    oScroller.bxScrollbar = oState;
+
+    var oResize = null, oMutation = null;
+    var fUpdate = function() {
+        if(!oScroller.isConnected) { // a popup that was removed
+            if(oResize)
+                oResize.disconnect();
+            if(oMutation)
+                oMutation.disconnect();
+            $(window).off('resize', fUpdate);
+            return;
+        }
+
+        bx_scrollbar_overlay_update(oState);
+    };
+
+    oScroller.addEventListener('scroll', function() {
+        fUpdate();
+        if(!c.scrolling)
+            return;
+
+        $(oFrame).addClass(c.scrolling);
+        clearTimeout(oState.timer);
+        oState.timer = setTimeout(function() {
+            $(oFrame).removeClass(c.scrolling);
+        }, 800);
+    }, {passive: true});
+    if(window.ResizeObserver)
+        (oResize = new ResizeObserver(fUpdate)).observe(oScroller);
+    if(window.MutationObserver)
+        (oMutation = new MutationObserver(function() {
+            clearTimeout(oState.mutation);
+            oState.mutation = setTimeout(fUpdate, 50);
+        })).observe(oScroller, {childList: true, subtree: true, attributes: true});
+    $(window).on('resize', fUpdate);
+
+    fUpdate();
+}
+
+function bx_scrollbar_overlay_update(o)
+{
+    var oScroller = o.scroller, iRange = oScroller.scrollHeight - oScroller.clientHeight;
+    if(iRange <= 1) {
+        o.svg.style.display = 'none';
+        return;
+    }
+    o.svg.style.display = '';
+
+    // The frame's own units: a popup scales in, so its rects are scaled for a moment while the SVG inside it scales along with it.
+    var fW = o.frame.offsetWidth, fH = o.frame.offsetHeight;
+    var oRf = o.frame.getBoundingClientRect(), oRs = oScroller.getBoundingClientRect();
+    var fScale = oRf.width > 0 && fW > 0 ? oRf.width / fW : 1;
+    var fTop = (oRs.top - oRf.top) / fScale, fBottom = (oRs.bottom - oRf.top) / fScale, fRight = (oRs.right - oRf.left) / fScale;
+
+    // A corner follows the scroll box's own radius or, where the box meets the frame's edge, the frame's.
+    var oCss = getComputedStyle(oScroller), oCssFrame = getComputedStyle(o.frame);
+    var fRadiusT = fTop < 1 ? (parseFloat(oCss.borderTopRightRadius) || parseFloat(oCssFrame.borderTopRightRadius) || 0) : 0;
+    var fRadiusB = parseFloat(oCss.borderBottomRightRadius) || (fBottom > fH - 1 ? parseFloat(oCssFrame.borderBottomRightRadius) || 0 : 0);
+
+    var fInset = 6; // the bar's centre line, 6px in from the edge: 4px wide with a 4px gap
+    var fRt = Math.max(fRadiusT - fInset, 0), fRb = Math.max(fRadiusB - fInset, 0);
+    var fX = fRight - fInset;
+
+    // round the top corner when the scroll box starts at the frame's top, down the right edge, round the bottom corner
+    var sPath = fRt > 0 ? 'M' + (fX - fRt) + ' ' + (fTop + fInset) + ' A' + fRt + ' ' + fRt + ' 0 0 1 ' + fX + ' ' + (fTop + fInset + fRt) : 'M' + fX + ' ' + (fTop + fInset);
+    sPath += ' L' + fX + ' ' + (fBottom - fInset - fRb);
+    if(fRb > 0)
+        sPath += ' A' + fRb + ' ' + fRb + ' 0 0 1 ' + (fX - fRb) + ' ' + (fBottom - fInset);
+
+    o.svg.setAttribute('viewBox', '0 0 ' + fW + ' ' + fH);
+    o.track.setAttribute('d', sPath);
+    o.thumb.setAttribute('d', sPath);
+
+    var fLength = o.thumb.getTotalLength();
+    var fThumb = Math.max(fLength * oScroller.clientHeight / oScroller.scrollHeight, 24);
+    var fOffset = (fLength - fThumb) * oScroller.scrollTop / iRange;
+    o.thumb.setAttribute('stroke-dasharray', fThumb + ' ' + fLength);
+    o.thumb.setAttribute('stroke-dashoffset', -fOffset);
+}
+
+/**
+ * Overlay scrollbars for the popup contents in oContext (a popup being shown, see jquery.dolPopup.js) that scroll, such as the header's
+ * More and account menus, drawn over the popup's rounded box. Studio keeps the native bar in its popups.
+ */
+function bx_scrollbar_overlay_popups(oContext)
+{
+    $(oContext).not('.bx-std *').find('.bx-popup-content').each(function() {
+        var sOverflow = getComputedStyle(this).overflowY;
+        if(sOverflow === 'auto' || sOverflow === 'scroll')
+            bx_scrollbar_overlay(this, $(this).closest('.bx-popup').get(0) || this);
+    });
+}
+
 /** @} */

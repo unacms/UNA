@@ -263,6 +263,10 @@
 
                 // show popup
                 $el.css({display: 'block', visibility: 'visible'});
+
+                // a scrolling menu swaps its native bar for the overlay one before it fades in (functions.js)
+                if(typeof(bx_scrollbar_overlay_popups) === 'function')
+                    bx_scrollbar_overlay_popups($el);
                 if (o.fog) {
                     var oOnHide = function() {
                         $(window).triggerHandler('resize.popupFog');
