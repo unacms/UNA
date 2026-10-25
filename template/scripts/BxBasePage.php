@@ -1473,7 +1473,12 @@ class BxBasePage extends BxDolPage
      */
     protected function _getPageMetaDesc()
     {
-        return $this->_replaceMarkers(_t($this->_aObject['meta_description']));
+        // A page without a description of its own gets the site's default one (Studio > Languages), not an empty one.
+        $sResult = $this->_replaceMarkers(_t($this->_aObject['meta_description']));
+        if(trim(strip_tags($sResult)) === '')
+            $sResult = $this->_replaceMarkers(_t('_sys_page_meta_description_default'));
+
+        return $sResult;
     }
 
     /**

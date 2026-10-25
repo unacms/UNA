@@ -83,6 +83,17 @@ class LinkPreviewHeadTest extends BxDolIntegrationTestCase
         $this->assertStringContainsString('<meta property="og:url" content="' . BX_DOL_URL_ROOT, $sHead);
     }
 
+    public function testPageWithoutDescriptionGetsTheDefault(): void
+    {
+        unset($GLOBALS['bxDolClasses']['BxDolPage!' . BxDolPageQuery::getPageObjectNameByURI('about')]);
+        $_GET = ['i' => 'about', 'api' => 1];
+        $aData = BxDolPage::getObjectInstanceByURI('about')->getPageAPI();
+
+        $sDefault = bx_replace_markers(_t('_sys_page_meta_description_default'), ['site_title' => getParam('site_title')]);
+        $this->assertStringNotContainsString('_sys_page_meta_description_default', $sDefault, 'The language key is installed.');
+        $this->assertSame(htmlspecialchars(BxTemplFunctions::getInstance()->getMetaText($sDefault), ENT_QUOTES | ENT_HTML5, 'UTF-8'), $aData['description']);
+    }
+
     public function testHomeHasNoOembedLink(): void
     {
         $_GET['i'] = 'home';

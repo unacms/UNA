@@ -218,7 +218,8 @@ class LinkPreviewPrivacyTest extends BxDolIntegrationTestCase
         $aData = BxDolPage::getObjectInstanceByURI('view-persons-profile')->getPageAPI();
 
         $this->assertArrayNotHasKey('page_status', $aData);
-        $this->assertSame('', $aData['description'], 'No About text.');
+        $sDefault = bx_replace_markers(_t('_sys_page_meta_description_default'), ['site_title' => getParam('site_title')]);
+        $this->assertSame(htmlspecialchars(BxTemplFunctions::getInstance()->getMetaText($sDefault), ENT_QUOTES | ENT_HTML5, 'UTF-8'), $aData['description'], 'The site default, not the About text.');
         if (!empty($aData['cover_block']['profile']))
             $this->assertArrayNotHasKey('info', $aData['cover_block']['profile'], 'No about, birthday or location in the cover.');
     }
