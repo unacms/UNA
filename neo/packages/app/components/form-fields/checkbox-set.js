@@ -31,7 +31,7 @@ export default function FormFieldCheckboxSet(props) {
 
     return (
         <Field {...props}>
-            <View className={`${props.view != 'column' ? 'flex-row justity-center' : 'items-start'}  ${themeSettings.container} flex-wrap`}>
+            <View className={`${props.view != 'column' ? 'flex-row' : 'items-start'} ${themeSettings.container} flex-wrap`}>
                 {values.map((item2, index) => {
                     const checked = selected.includes(String(item2.id));
                     return (

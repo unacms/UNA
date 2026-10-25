@@ -4,29 +4,24 @@ export const settingsInputs = {
         cnt: ' rounded-2xl overflow-hidden p-1.5 bg-card/80 backdrop-blur-lg shadow-card-outline dark:shadow-card-outline-deep z-50  ',
     },
     checkbox_set: {
-        container: ' gap-x-2 rounded-lg shadow-input-outline dark:shadow-input-outline-deep bg-input/60 p-1',
+        // Same fill, outline and radius as an input; rows inside are inset 4px with rounded-lg corners.
+        container: 'rounded-xl shadow-input-outline dark:shadow-input-outline-deep bg-input/50 p-1',
     },
     
     doublerange: {
-        container: 'w-full items-center justify-between mt-2',
-        value_container:
-            'w-36 bg-input/50 border border-border/60 py-2 px-4 text-center rounded-lg justify-between min-h-10',
-        text_value: 'text-muted-foreground ',
-        text_info: '',
+        // A readout under the track, not input boxes: the values change only by dragging.
+        container: 'w-full items-center justify-between px-2',
+        value_container: 'items-baseline gap-1.5',
+        text_value: 'text-sm font-medium tabular-nums text-card-foreground',
+        text_info: 'text-sm text-muted-foreground',
         track_height: 4,
-        thumb_size: 15,
-        outbound_color: {
-            light: 'rgb(242, 242, 242)',
-            dark: 'rgb(242, 242, 242)',
-        },
-        inbound_color: {
-            light: 'rgb(242, 242, 242)',
-            dark: 'rgb(242, 242, 242)',
-        },
-        thumb_tint_color: {
-            light: '#2563eb',
-            dark: '#2563eb',
-        },
+        thumb_size: 16,
+        // Colours of the track outside the range, the range and the thumbs, as colour classes
+        // (resolved per theme). `outbound_color` / `inbound_color` / `thumb_tint_color`
+        // ({ light, dark }) still override them.
+        track_class: 'bg-border',
+        range_class: 'bg-primary',
+        thumb_class: 'bg-primary',
     },
     inputs: {
         // Default radius lives in `size.*`. `full` forces a pill; `default` is for
@@ -49,6 +44,15 @@ export const settingsInputs = {
             small: 'min-h-9',
             regular: 'min-h-11',
             large: 'min-h-13',
+        },
+        // Inset and gap of a chip well (labels, selector, visibility, members) per input size.
+        // Its chips are small (36px) buttons with rounded-lg corners: 4px around them fills a
+        // regular 44px well; in a large 52px well they sit 8px from the top and bottom and 6px
+        // from the sides, which keeps their corners concentric with the well's.
+        well:{
+            small: 'p-1 gap-1',
+            regular: 'p-1 gap-1',
+            large: 'py-2 px-1.5 gap-1.5',
         },
         base: 
         'text-card-foreground placeholder:text-muted-foreground  bg-input/50 shadow-input-outline dark:shadow-input-outline-deep text-base placeholder-muted-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring/80 web:focus-visible:border web:focus-visible:shadow-none web:overflow-hidden',
@@ -129,11 +133,12 @@ export const settingsInputs = {
     checkbox: {
         // Container
         'u-controls-checkbox-container':
-            'items-center px-2.5 py-2 rounded-md w-full gap-2 min-h-10',
+            'items-center px-3 py-2 rounded-lg w-full gap-2 min-h-11',
 
-        // Hover & Active backgrounds (optional — Web-only)
+        // Hover & Active backgrounds (optional — Web-only): the fills of a chip
+        // (bordered small NeoButton) at rest and hovered.
         'u-controls-checkbox-container-bg':
-            'web:active:bg-muted web:hover:bg-muted',
+            'web:hover:bg-button web:active:bg-button-hover',
 
         // Text labels
         'u-controls-checkbox-text':
