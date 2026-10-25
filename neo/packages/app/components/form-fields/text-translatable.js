@@ -6,6 +6,7 @@ import {
     getMaxLength,
     useTranslatableField,
     TranslatableFieldLayout,
+    TranslatableLangTabs,
 } from 'app/lib/form/form-fields-helpers';
 
 function LangInput({
@@ -90,11 +91,21 @@ export default function FormFieldTextTranslatable(props) {
     if (!entries.length) return null;
 
     return (
-        <Field {...props}>
+        <Field
+            {...props}
+            captionAccessory={
+                <TranslatableLangTabs
+                    entries={entries}
+                    currentFieldName={currentFieldName}
+                    onSelect={setActiveFieldName}
+                />
+            }
+        >
             <TranslatableFieldLayout
                 entries={entries}
                 currentFieldName={currentFieldName}
                 setActiveFieldName={setActiveFieldName}
+                showTabs={false}
             >
                 {entries.map((entry) => (
                     <LangInput

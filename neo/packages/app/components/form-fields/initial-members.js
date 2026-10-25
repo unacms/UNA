@@ -1,4 +1,5 @@
 import Field from './_field';
+import FieldWell from './_well';
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { useState, useEffect, useReducer } from 'react';
@@ -192,8 +193,8 @@ export default function FormFieldInitialMembers(props) {
             <Modal id='file-preview2' title={props.title || "Choose users"} onVisible={!!isModal} onClose={() => { setIsModal(false) }}>
                 <SelectUsers isSingle={isSingle} onSave={onSave} requestUrl={'/api.php?r=' + props.ajax_get_suggestions + (props.ajax_get_suggestions.includes("params[]") ? '' : "&params=")} initedData={[]} />
             </Modal>
-            <Row className='w-full px-1.5 py-1 items-center justify-between flex-wrap shadow-input-outline dark:shadow-input-outline-deep rounded-lg bg-input/60'>
-                <Row className='gap-2 items-center flex-wrap my-auto flex-1'>
+            <FieldWell className='justify-between flex-nowrap'>
+                <Row className='gap-2 items-center flex-wrap flex-1'>
                     {selected && selected.map((oItem) => <User type={isSingle ? '' : "multi"} key={oItem.id} data={oItem} onSelect={isSingle ? showSelect : onRemove} />)}
                 </Row>
                 <NeoButton
@@ -203,7 +204,7 @@ export default function FormFieldInitialMembers(props) {
                     accessibilityLabel={isSingle ? 'Change' : 'Add'}
                     onPress={() => showSelect()}
                 />
-            </Row>
+            </FieldWell>
         </Field>
     );
 }

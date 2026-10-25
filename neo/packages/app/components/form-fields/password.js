@@ -2,7 +2,7 @@ import Field from './_field';
 import { Input, NeoButton } from 'app/design/controls'
 import { View } from 'app/design/view'
 import { useState } from 'react';
-import { appSetting } from 'app/lib/util';
+import { appSetting, cn } from 'app/lib/util';
 import { useFormField } from 'app/lib/form/use-form-field';
 
 export default function FormFieldPassword(props) {
@@ -23,8 +23,10 @@ export default function FormFieldPassword(props) {
         invalid,
     } = useFormField(props);
 
-    const eyeIcons = appSetting('forms', 'password_eye_button')?.image;
-    const eyeIcon = isVisible ? eyeIcons?.visible : eyeIcons?.hidden;
+    const eyeButton = appSetting('forms', 'password_eye_button');
+    const eyeIcon = isVisible ? eyeButton?.image?.visible : eyeButton?.image?.hidden;
+    const size = props.size || appSetting('theme', 'inputs', 'default_size') || 'regular';
+    const eyePosition = eyeButton?.position?.[size] ?? 'right-1.5';
 
     return (
         <Field {...props} value={field.value} focused={focused} isAdaptiveLabel={isAdaptiveLabel}>
@@ -49,11 +51,12 @@ export default function FormFieldPassword(props) {
                     {...returnKeyProps}
                 />
                 {eyeIcon ? (
-                    <View className="absolute right-1.5 top-1/2 -translate-y-1/2 justify-center items-center z-20">
+                    <View className={cn('absolute top-1/2 -translate-y-1/2 justify-center items-center z-20', eyePosition)}>
                         <NeoButton
                             image={eyeIcon}
                             style="borderless"
                             controlSize="small"
+                            borderShape={eyeButton?.border_shape}
                             hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}
                             accessibilityLabel={isVisible ? 'Show password' : 'Hide password'}
                             onPress={() => { setIsVisible(!isVisible) }}

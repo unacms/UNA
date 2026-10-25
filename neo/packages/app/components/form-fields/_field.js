@@ -10,12 +10,15 @@ import { NeoButton } from 'app/design/controls'
 import i18n from 'i18next'
 import { queueFormEnsureVisible } from 'app/lib/form/form-ensure-visible'
 import { nativeDriver } from 'app/lib/platform/animation'
+import { InputLabelInsideContext } from 'app/design/controls/input-label-context'
 
 const isWeb = Platform.OS === 'web'
 const inputSettings = appSetting('theme', 'inputs')
 const restingOffset = inputSettings.adaptive_label_resting_offset ?? 0
 const floatedOffset = inputSettings.adaptive_label_floated_offset ?? -2
 const duration = inputSettings.adaptive_label_duration ?? 200
+const insideOffset = inputSettings.adaptive_label_floated_inside_offset ?? 6
+const insideSizes = inputSettings.adaptive_label_inside_sizes ?? []
 
 export function getFormFieldDomId(name) {
     if (name == null || name === '') return undefined
@@ -39,7 +42,23 @@ function FieldCaption({ htmlFor, className, children }) {
     return label
 }
 
-function AdaptiveLabel({ caption, value, focused, htmlFor, children }) {
+/** Whether the adaptive label of an input of this size floats inside it (`theme.inputs.adaptive_label_inside_sizes`). */
+export function isAdaptiveLabelInside(size) {
+    return insideSizes.includes(size || inputSettings.default_size || 'regular')
+}
+
+const floatedLabelClass = (inside) =>
+    inside ? inputSettings.adaptive_label_floated_inside : inputSettings.adaptive_label_floated
+
+const floatedLabelTextClass = (inside) =>
+    inside ? inputSettings.adaptive_label_text_floated_inside : inputSettings.adaptive_label_text_floated
+
+/**
+ * Floating caption over the input it wraps. `inside`: the floated label stays inside the input near its
+ * top edge (large inputs) instead of sitting on the border. Compound fields (phone) wrap only their text
+ * input, so the label lines up with it rather than with the whole row.
+ */
+export function AdaptiveLabel({ caption, value, focused, htmlFor, inside, className, children }) {
     const hasValue = value != null && String(value).length > 0
     const floated = !!focused || hasValue
 
@@ -52,8 +71,9 @@ function AdaptiveLabel({ caption, value, focused, htmlFor, children }) {
         boxH > 0 && labelH > 0
             ? Math.max(0, (boxH - labelH) / 2) + restingOffset
             : 0
-    const floatedY =
-        labelH > 0 ? -labelH / 2 + floatedOffset : floatedOffset
+    let floatedY = floatedOffset
+    if (inside) floatedY = insideOffset
+    else if (labelH > 0) floatedY = -labelH / 2 + floatedOffset
 
     useEffect(() => {
         if (boxH <= 0 || labelH <= 0) return
@@ -84,7 +104,7 @@ function AdaptiveLabel({ caption, value, focused, htmlFor, children }) {
     }, [])
 
     return (
-        <View className="relative w-full" onLayout={onBoxLayout}>
+        <View className={cn('relative w-full', className)} onLayout={onBoxLayout}>
             <Animated.View
                 pointerEvents="none"
                 collapsable={false}
@@ -100,22 +120,23 @@ function AdaptiveLabel({ caption, value, focused, htmlFor, children }) {
                     onLayout={onLabelLayout}
                     className={cn(
                         inputSettings.adaptive_label,
-                        floated ? inputSettings.adaptive_label_floated : null
+                        inside && inputSettings.adaptive_label_inside,
+                        floated && floatedLabelClass(inside)
                     )}
                 >
                     <FieldCaption
                         htmlFor={htmlFor}
                         className={
-                            floated
-                                ? inputSettings.adaptive_label_text_floated
-                                : inputSettings.adaptive_label_text_resting
+                            floated ? floatedLabelTextClass(inside) : inputSettings.adaptive_label_text_resting
                         }
                     >
                         {caption}
                     </FieldCaption>
                 </View>
             </Animated.View>
-            {children}
+            <InputLabelInsideContext.Provider value={!!inside}>
+                {children}
+            </InputLabelInsideContext.Provider>
         </View>
     )
 }
@@ -139,6 +160,8 @@ export default function Field({
     focused,
     isAdaptiveLabel,
     info,
+    size,
+    captionAccessory,
 }) {
     const caption = format === 'notitle' ? '' : captionProp
     const wrapRef = useRef(null)
@@ -210,43 +233,56 @@ export default function Field({
     // forms keep the flat full-width layout.
     const isGrid = form_layout !== 'hor' && !use_caption_as_placeholder
 
+    const captionLabel = isShowCaption ? (
+        <Text className={cn('text-secondary-foreground block px-0.5', !captionAccessory && 'w-full')}>
+            <Row className="items-center gap-0.5">
+                <FieldCaption
+                    htmlFor={inputId}
+                    className={appSetting('forms', 'caption_classes')}
+                >
+                    {caption}
+                </FieldCaption>
+                {checker || required ? (
+                    <></>
+                ) : (
+                    <Text className="text-sm sm: text-base text-muted-foreground ">
+                        {isShowOptional}
+                    </Text>
+                )}
+                {!!mandatoryIcon && (checker || required) ? (
+                    <Text className="text-destructive mb-auto leading-5">
+                        <Icon icon={mandatoryIcon} size={12} />
+                    </Text>
+                ) : (
+                    <></>
+                )}
+            </Row>
+        </Text>
+    ) : null
+
+    // `captionAccessory` (the language tabs of a translatable field) shares the caption's line,
+    // at its end, and wraps under it when both don't fit. Without a caption it sits above the control.
     const captionElement = isShowCaption ? (
         <View className="w-full @5xl/form-container:w-1/4 @5xl/form-container:pr-4 @5xl/form-container:min-h-11 @5xl/form-container:justify-center">
-            <Text className=" text-secondary-foreground block px-0.5 w-full ">
-                <Row className="items-center gap-0.5">
-                    <FieldCaption
-                        htmlFor={inputId}
-                        className={appSetting('forms', 'caption_classes')}
-                    >
-                        {caption}
-                    </FieldCaption>
-                    {checker || required ? (
-                        <></>
-                    ) : (
-                        <Text className="text-sm sm: text-base text-muted-foreground ">
-                            {isShowOptional}
-                        </Text>
-                    )}
-                    {!!mandatoryIcon && (checker || required) ? (
-                        <Text className="text-destructive mb-auto leading-5">
-                            <Icon icon={mandatoryIcon} size={12} />
-                        </Text>
-                    ) : (
-                        <></>
-                    )}
+            {captionAccessory ? (
+                <Row className="w-full flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                    {captionLabel}
+                    {captionAccessory}
                 </Row>
-            </Text>
+            ) : captionLabel}
         </View>
     ) : null
 
     const control = (
         <>
+            {!isShowCaption && captionAccessory}
             {!isShowCaption && isAdaptiveLabel && caption ? (
                 <AdaptiveLabel
                     caption={caption}
                     value={value}
                     focused={focused}
                     htmlFor={inputId}
+                    inside={isAdaptiveLabelInside(size)}
                 >
                     {children}
                 </AdaptiveLabel>

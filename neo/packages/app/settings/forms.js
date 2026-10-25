@@ -43,6 +43,14 @@ export const settingsForms = {
                 visible: 'Eye',
                 hidden: 'EyeClosed',
             },
+            border_shape: 'circle',
+            // Right inset per input size. The 36px button is centred, so in a
+            // 52px large input it is 8px from the top and bottom; right-2 matches.
+            position: {
+                small: 'right-1.5',
+                regular: 'right-1.5',
+                large: 'right-2',
+            },
         },
 
         sys_login: { hide_errors: true, button_full_width: true },

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Row, View } from 'app/design/view';
 import { NeoButton, Input, Modal } from 'app/design/controls';
 import RbList from 'app/ui/molecules/form-controls/radio-list';
-import Field from './_field';
+import Field, { AdaptiveLabel, isAdaptiveLabelInside } from './_field';
 import { useFormField } from 'app/lib/form/use-form-field';
 
 const DEFAULT_COUNTRY = 'us';
@@ -88,8 +88,27 @@ export default function FormFieldPhone(props) {
         field.onChange(national ? `${dialCode} ${national}` : '');
     };
 
+    const input = (
+        <Input
+            value={nationalNumber}
+            keyboardType="phone-pad"
+            placeholder={placeholder ?? DEFAULT_PLACEHOLDER}
+            onChangeText={(text) => commitNumber(formatNationalNumber(text))}
+            maxLength={14}
+            autoFocus={props.auto_focus}
+            name={name}
+            readOnly={readOnly}
+            placeholderTextColor={placeholderTextColor}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            aria-label={props.caption}
+        />
+    );
+
+    // The adaptive caption belongs to the number input, not the whole row, or it would sit over the
+    // country button; so the field renders no label of its own and the input gets one here.
     return (
-        <Field {...props} value={field.value} focused={focused} isAdaptiveLabel={isAdaptiveLabel}>
+        <Field {...props} value={field.value} focused={focused} isAdaptiveLabel={false}>
             <Row className="gap-x-2">
                 <NeoButton
                     controlSize="large"
@@ -101,20 +120,18 @@ export default function FormFieldPhone(props) {
                     expoUI={false}
                     onPress={() => setModalVisible(true)}
                 />
-                <Input
-                    value={nationalNumber}
-                    keyboardType="phone-pad"
-                    placeholder={placeholder ?? DEFAULT_PLACEHOLDER}
-                    onChangeText={(text) => commitNumber(formatNationalNumber(text))}
-                    maxLength={14}
-                    autoFocus={props.auto_focus}
-                    name={name}
-                    readOnly={readOnly}
-                    placeholderTextColor={placeholderTextColor}
-                    onFocus={onFocus}
-                    onBlur={onBlur}
-                    aria-label={props.caption}
-                />
+                {/* Field hides the caption for `notitle` (grouped fields in an input set); so does this label. */}
+                {isAdaptiveLabel && props.caption && props.format !== 'notitle' ? (
+                    <AdaptiveLabel
+                        caption={props.caption}
+                        value={nationalNumber}
+                        focused={focused}
+                        inside={isAdaptiveLabelInside(props.size)}
+                        className="flex-1 w-auto"
+                    >
+                        {input}
+                    </AdaptiveLabel>
+                ) : input}
                 <Modal
                     title={t('Choose country')}
                     onClose={() => setModalVisible(false)}

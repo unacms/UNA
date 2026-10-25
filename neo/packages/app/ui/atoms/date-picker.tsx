@@ -5,10 +5,19 @@ import { useState, useMemo, type ReactNode } from 'react';
 import { Modal, InputWithIcons, TextInputClear, NeoButton } from 'app/design/controls'
 import { Text } from 'app/design/typography';
 import { Platform } from 'react-native'
-import { formatDate, appSetting, useDateLocaleTag, getDateFormatSpec, getMonthTitle, getWeekdayShort } from 'app/lib/util'
+import { formatDate, appSetting, cn, useDateLocaleTag, getDateFormatSpec, getMonthTitle, getWeekdayShort } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
 
 type Option = { value: string | number; label?: string };
+
+const inputSettings = appSetting('theme', 'inputs');
+const inputSize: string = inputSettings.default_size || 'regular';
+// The time box takes the date input's height, fill, outline and radius; its segments sit 4px inside.
+const timeBoxClass = cn(
+    'w-auto shrink-0 flex-none flex-row items-center gap-1 px-1 bg-input/50 shadow-input-outline dark:shadow-input-outline-deep',
+    inputSettings.rounded?.default ?? 'rounded-xl',
+    inputSettings.surface_size?.[inputSize] ?? 'min-h-11',
+);
 
 const timeInputKeyboard: Record<string, string> = Platform.OS === 'web'
     ? { type: 'text', inputMode: 'numeric' }
@@ -26,14 +35,13 @@ const minutes = Array.from({ length: 60 }, (_, i) => {
 
 function TimeSelectField({ value, options, onChange, label }: { value: string; options: Option[]; onChange: (value: DropdownValue) => void; label: string }) {
     return (
-        <View className="min-h-9 w-20 shrink-0">
+        <View className="w-24 shrink-0">
             <Dropdown
                 labelField="label"
                 valueField="value"
                 onChange={onChange}
                 data={options}
                 value={value}
-                size="small"
                 accessibilityLabel={label}
             />
         </View>
@@ -48,21 +56,24 @@ function TimeSpinField({ value, onChangeText, onBlur, onStep, label }: {
     label: string;
 }) {
     return (
-        <View className="h-9 shrink-0 flex-row items-stretch rounded-md">
+        // 44px high with rounded-lg corners, concentric with the 52px box around it. The digits are
+        // 16px, the input text size (smaller text makes iOS zoom the page on focus).
+        <View className="h-11 shrink-0 flex-row items-stretch rounded-lg overflow-hidden">
             <TextInputClear
                 onChangeText={onChangeText}
                 onBlur={onBlur}
                 placeholder="00"
-                className="h-full w-8 shrink-0 px-1 text-center text-sm font-medium tracking-tight leading-none text-secondary-foreground bg-transparent border-0 outline-none shadow-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 web:focus:shadow-none web:focus-visible:shadow-none"
+                className="h-full w-9 shrink-0 px-1 text-center text-base tabular-nums leading-none text-card-foreground bg-transparent border-0 outline-none shadow-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 web:focus:shadow-none web:focus-visible:shadow-none"
                 maxLength={2}
                 placeholderTextColor="#6b7280"
                 value={value}
                 accessibilityLabel={label}
                 {...timeInputKeyboard}
             />
-            <View className="w-5 shrink-0 bg-muted/30">
+            {/* Stepper fills follow a chip: bg-button at rest, bg-button-hover on hover. */}
+            <View className="w-6 shrink-0 bg-button">
                 <Pressable
-                    className="flex-1 items-center justify-center web:hover:bg-muted web:active:bg-muted"
+                    className="flex-1 items-center justify-center web:hover:bg-button-hover web:active:bg-button-hover"
                     onPress={() => onStep(1)}
                     accessibilityRole="button"
                     accessibilityLabel={`Increase ${label}`}
@@ -70,7 +81,7 @@ function TimeSpinField({ value, onChangeText, onBlur, onStep, label }: {
                     <Icon icon="ChevronUp" size={14} className="text-muted-foreground" />
                 </Pressable>
                 <Pressable
-                    className="flex-1 items-center justify-center web:hover:bg-muted web:active:bg-muted"
+                    className="flex-1 items-center justify-center web:hover:bg-button-hover web:active:bg-button-hover"
                     onPress={() => onStep(-1)}
                     accessibilityRole="button"
                     accessibilityLabel={`Decrease ${label}`}
@@ -374,15 +385,15 @@ export default function DatePicker({ name, value = '', type, onChange, children,
 
                 {bIsTime && (
                     timeMode === 'select' ? (
-                        <Row className="min-h-10 w-auto shrink-0 flex-none items-center gap-1 px-1.5">
+                        <Row className="w-auto shrink-0 flex-none items-center gap-1">
                             <TimeSelectField
                                 value={tValue[0]}
                                 options={hours}
                                 onChange={val => applyTimeValues(val, tValue[1], false)}
                                 label={t('hours')}
                             />
-                            <View className="h-9 w-2 shrink-0 items-center justify-center">
-                                <Text className="text-sm font-medium tracking-tight text-secondary-foreground">:</Text>
+                            <View className="w-2 shrink-0 items-center justify-center">
+                                <Text className="text-base text-muted-foreground">:</Text>
                             </View>
                             <TimeSelectField
                                 value={tValue[1]}
@@ -392,7 +403,7 @@ export default function DatePicker({ name, value = '', type, onChange, children,
                             />
                         </Row>
                     ) : (
-                        <Row className="min-h-10 w-auto shrink-0 flex-none items-center gap-1 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg px-1.5">
+                        <Row className={timeBoxClass}>
                             <TimeSpinField
                                 value={tValue[0]}
                                 onChangeText={text => handleChangeTime(text, 23, 'h')}
@@ -400,8 +411,8 @@ export default function DatePicker({ name, value = '', type, onChange, children,
                                 onStep={delta => adjustTime('h', delta)}
                                 label={t('hours')}
                             />
-                            <View className="h-9 w-2 shrink-0 items-center justify-center">
-                                <Text className="text-sm font-medium tracking-tight text-secondary-foreground">:</Text>
+                            <View className="w-2 shrink-0 items-center justify-center">
+                                <Text className="text-base text-muted-foreground">:</Text>
                             </View>
                             <TimeSpinField
                                 value={tValue[1]}

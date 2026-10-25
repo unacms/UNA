@@ -23,7 +23,7 @@ function PageContent({ data }) {
     const isShowCreateAccount = BlockDataByName(data, 'system:login_form');
 
     return (
-        <View className="w-full max-w-md gap-4 sm:gap-6">
+        <View className="w-full max-w-sm gap-4 sm:gap-6">
             
                     <BlockByName
                         name={isShowCreateAccount ? "system:login_form" : "system:login_form_only"}

@@ -94,21 +94,21 @@ export const settingsElements = {
         // Mobile: edge to edge on the solid card surface, no outline shadow; from
         // sm the detached, rounded cards are /80 with the outline shadow.
         'u-card-list': ' u-card-list bg-card sm:bg-card/80 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl ',
-        'u-card-list-padding': 'p-4 sm:rounded-2xl',
+        'u-card-list-padding': 'p-4 sm:p-5 sm:rounded-2xl',
         // Profile listings: photo + meta + actions on mobile, card chrome from sm (grid).
         // Mobile: edge-to-edge rows on the card surface, 1px apart (feed cards are 2px), like
         // the Messages and Notifications rows.
         'u-card-list-flush': ' u-card-list u-flush-nav relative isolate mt-px sm:mt-0 bg-card sm:bg-card/80 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
-        'u-card-list-flush-padding': 'px-4 py-2 sm:p-4 sm:rounded-2xl',
+        'u-card-list-flush-padding': 'px-4 py-2 sm:p-5 sm:rounded-2xl',
         'u-card-base': 'u-card-base rounded-2xl bg-card/80 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
-        'u-card-padding': 'py-4 ',
-        'u-card-header': 'px-4',
+        'u-card-padding': 'py-4 sm:py-5 ',
+        'u-card-header': 'px-4 sm:px-5',
         'u-card-icon': ' ',
         'u-card-title': 'font-semibold text-base tracking-tight text-secondary-foreground',
         'u-card-description': 'text-muted-foreground text-sm sm:text-base text-balance',
         'u-card-actions': ' ',
-        'u-card-content': 'px-4 ',
-        'u-card-footer': 'px-4 gap-1',
+        'u-card-content': 'px-4 sm:px-5 ',
+        'u-card-footer': 'px-4 sm:px-5 gap-1',
     },
     panels: {
         'u-panel-base': ' ns--panel-base-- web:h-full min-w-0 flex-col ne-- ',
@@ -122,32 +122,39 @@ export const settingsElements = {
     },
     blocks: {
         'u-block-base':
-            ' text-card-foreground gap-4 ',
+            ' text-card-foreground gap-4 sm:gap-5 ',
         'u-block-bg':
             ' bg-card/60 shadow-block-outline dark:shadow-block-outline-deep ',
         // The fill on tiers in a block's `designbox.solid` (replaces u-block-bg's bg- utility).
         'u-block-bg-solid': 'bg-card',
+        // 16px on phones, 20px from sm up. responsiveClasses follows the sm: step for
+        // blocks that set padding per breakpoint (designbox.padding).
         'u-block-pad':
-            ' p-4 ',
+            ' p-4 sm:p-5 ',
         'u-block-pad-y':
-            ' py-4 ',
+            ' py-4 sm:py-5 ',
         'u-block-pad-x':
-            ' px-4 ',
-        'u-block-rounded': 'rounded-2xl',
-        'u-block-rounded-default': 'sm:rounded-2xl',
+            ' px-4 sm:px-5 ',
+        'u-block-rounded': 'rounded-3xl',
+        'u-block-rounded-default': 'sm:rounded-3xl',
         'u-block-header':
             ' flex-row gap-3  ',
         'u-block-icon': ' items-center w-9 h-9 justify-center bg-muted/50 rounded-lg text-card-foreground flex-none',
         'u-block-icon-size': 20, // Default icon size for block header icons
         'u-block-name': ' flex-auto gap-1 ',
+        // xl from sm up; line height = the mini (legacy xs) button height, 28px, so the title lines up with header buttons.
         'u-block-title':
-            'text-card-foreground px-0.5 text-lg font-semibold tracking-tight',
+            'text-card-foreground px-0.5 text-lg sm:text-xl leading-7 font-semibold tracking-tight',
         'u-block-description': 'text-muted-foreground text-xs lg:text-sm leading-5 px-px',
         'u-block-content': 'gap-0.5 ',  
         'u-block-footer':
             'flex text-card-foreground gap-4 pt-2',
         'u-block-actions':
             'flex flex-row text-card-foreground gap-2  ',
+        // Header "View all" link (small, 36px). Negative margins equal to its padding keep the
+        // hover pill and tap target, but centre the label on the 28px title line and end it at the content edge.
+        // max-w-none: the link's own max-w-full would cap it at its 12px narrower margin box and truncate the label.
+        'u-block-more-link': '-my-1 -me-3 max-w-none',
         'u-block-animate':
             'animate-in fade-in slide-in-from-top-2 duration-200',
     },

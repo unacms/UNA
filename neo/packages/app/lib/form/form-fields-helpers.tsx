@@ -167,20 +167,26 @@ export function TranslatableLangTabs({
     );
 }
 
-/** Lang tabs + per-language field children. */
+/**
+ * Lang tabs + per-language field children. `showTabs={false}` leaves the tabs out, for a field
+ * that passes them to `Field` as `captionAccessory` (on the caption's line).
+ */
 export function TranslatableFieldLayout({
     entries,
     currentFieldName,
     setActiveFieldName,
+    showTabs = true,
     children,
-}: { entries: any; currentFieldName?: any; setActiveFieldName?: any; children?: ReactNode }) {
+}: { entries: any; currentFieldName?: any; setActiveFieldName?: any; showTabs?: boolean; children?: ReactNode }) {
     return (
         <View className="gap-y-2 w-full">
-            <TranslatableLangTabs
-                entries={entries}
-                currentFieldName={currentFieldName}
-                onSelect={setActiveFieldName}
-            />
+            {showTabs ? (
+                <TranslatableLangTabs
+                    entries={entries}
+                    currentFieldName={currentFieldName}
+                    onSelect={setActiveFieldName}
+                />
+            ) : null}
             {children}
         </View>
     );

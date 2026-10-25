@@ -5,7 +5,7 @@ import { appSetting } from 'app/config'
 /** Class on `<html>` when web superellipse corners are enabled. */
 export const CORNER_SMOOTH_CLASS = 'neo-corner-smooth'
 
-const DEFAULT_FACTOR = 1.5
+const DEFAULT_FACTOR = 1.25
 const DEFAULT_FULL_FACTOR = 1
 
 type CornerSmoothingConfig = {
