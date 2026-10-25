@@ -70,7 +70,7 @@ class BxDolModuleConfig extends BxDol
         $this->_sUri = $aModule['uri'];
         $this->_sHomeUrl = BX_DOL_URL_MODULES . $this->_sDirectory;
 
-        $this->_bEnabled = (int)$aModule['enabled'] != 0;
+        $this->_bEnabled = !empty($aModule['enabled']); // module arrays built in code (Profiler) have no 'enabled'
     }
     function getId()
     {
