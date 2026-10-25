@@ -840,7 +840,7 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
      * Clear the page meta info set so far: canonical url, meta title, description, keywords, location and image.
      * Error and access denied pages call it, so their head (and link previews) don't describe content which wasn't shown.
      */
-    function resetPageMeta()
+    public function resetPageMeta()
     {
         $this->aPage['url'] = '';
         $this->aPage['title'] = '';
