@@ -61,4 +61,25 @@ class BxBaseModGeneralPageListEntry extends BxBaseModGeneralPageBrowse
 
         return parent::getCode();
     }
+
+    /**
+     * The checks of getCode, for the API page (and em.php) as well, which don't run getCode.
+     */
+    protected function _isAvailablePage($a)
+    {
+        if($this->_iListId === false)
+            return false;
+
+        return parent::_isAvailablePage($a);
+    }
+
+    protected function _isVisiblePage($a)
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        if($this->_iListId > 0 && !BxDolPrivacy::getObjectInstance($CNF['OBJECT_PRIVACY_LIST_VIEW'])->check($this->_iListId))
+            return false;
+
+        return parent::_isVisiblePage($a);
+    }
 }

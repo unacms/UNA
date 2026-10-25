@@ -1457,11 +1457,14 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         
         if(!empty($this->aPage['rss']) && !empty($this->aPage['rss']['url']))
             $sRet .= '<link rel="alternate" type="application/rss+xml" href="' . $this->aPage['rss']['url'] . '" title="' . bx_html_attribute($this->aPage['rss']['title'], BX_ESCAPE_STR_QUOTE) . '" />';
-        // oEmbed discovery is built from the absolute canonical url: a request uri carries the sub-folder of a site
+        // oEmbed discovery is built from an absolute url: a request uri alone carries the sub-folder of a site
         // installed in one (/una/view-post/...), which em.php can't resolve, so every lookup ended with 404.
-        // The site root (home) has no page uri for em.php either.
-        if($sUrl && $sUri)
-            $sRet .= '<link rel="alternate" type="application/json+oembed" href="' . BX_DOL_URL_ROOT . 'em.php?url=' . urlencode($sUrl) . '&format=json" title="' . $sHeaderAttr . '" />';
+        // The canonical url when it is this page, else this page's own (a feed item's canonical is its entry or comment).
+        // The site root (home) has no page uri for em.php.
+        if($sUrl && $sUri) {
+            $sEmbedUrl = $sUri === bx_get('i') ? $sUrl : bx_get_self_url();
+            $sRet .= '<link rel="alternate" type="application/json+oembed" href="' . BX_DOL_URL_ROOT . 'em.php?url=' . urlencode($sEmbedUrl) . '&format=json" title="' . $sHeaderAttr . '" />';
+        }
 
         if($sUrl)
             $sRet .= '<link rel="canonical" href="' . $sUrl . '" />';

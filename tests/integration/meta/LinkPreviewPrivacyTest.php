@@ -14,6 +14,7 @@ class LinkPreviewPrivacyTest extends BxDolIntegrationTestCase
 {
     protected $_aGetBackup;
     protected $_aIds = [];
+    protected $_aPersonBackup = [];
 
     protected function setUp(): void
     {
@@ -29,9 +30,14 @@ class LinkPreviewPrivacyTest extends BxDolIntegrationTestCase
     protected function tearDown(): void
     {
         $oDb = BxDolDb::getInstance();
-        foreach ($this->_aIds as $iId)
+        foreach ($this->_aIds as $iId) {
+            BxDolPage::deleteSeoLink('bx_posts', 'bx_posts', $iId);
             $oDb->query("DELETE FROM `bx_posts_posts` WHERE `id` = :id", ['id' => $iId]);
+        }
+        if ($this->_aPersonBackup)
+            $oDb->query("UPDATE `bx_persons_data` SET `allow_view_to` = :value WHERE `id` = :id", $this->_aPersonBackup);
         $oDb->cleanMemoryAll();
+        $GLOBALS['glMemCache'] = [];
 
         BxDolTemplate::getInstance()->resetPageMeta();
         $_GET = $this->_aGetBackup ?? [];
@@ -97,7 +103,8 @@ class LinkPreviewPrivacyTest extends BxDolIntegrationTestCase
         $this->assertSame('', $aData['description']);
         $this->assertSame('', $aData['image']);
         $this->assertSame('', $aData['keywords']);
-        $this->assertStringNotContainsString('LinkPreviewPrivacyTest', json_encode([$aData['title'], $aData['name'], $aData['description'], $aData['cover_block']]));
+        $this->assertSame([], $aData['elements'], 'No blocks: the blocks of a pending entry show it.');
+        $this->assertStringNotContainsString('LinkPreviewPrivacyTest', json_encode($aData));
     }
 
     public function testPublicPostDescribesItself(): void
@@ -146,6 +153,65 @@ class LinkPreviewPrivacyTest extends BxDolIntegrationTestCase
         $this->assertSame([], BxDolPage::getEmbedData('page.php?i=view-post&id=' . $iMeOnly));
 
         $this->assertSame([], BxDolPage::getEmbedData('page.php?i=no-such-page-uri'));
+    }
+
+    public function testEmbedDataChecksTheEntryOwnPage(): void
+    {
+        $iMeOnly = $this->addPost(['allow_view_to' => BX_DOL_PG_MEONLY]);
+        $iProfile = (int)BxDolProfile::getInstanceByAccount($this->bxAccount('admin')->id())->id();
+
+        // Another page of the module ignores the id, so it can't vouch for the entry.
+        foreach (['posts-home', 'posts-popular'] as $sUri)
+            $this->assertSame([], BxDolPage::getEmbedData('page.php?i=' . $sUri . '&id=' . $iMeOnly), $sUri);
+
+        // Params of the url other than the id don't reach the page.
+        $this->assertSame([], BxDolPage::getEmbedData('page.php?i=view-post&id=' . $iMeOnly . '&profile_id=' . $iProfile));
+        $_GET['profile_id'] = $iProfile;
+        $this->assertSame([], BxDolPage::getEmbedData('page.php?i=view-post&id=' . $iMeOnly));
+    }
+
+    public function testSharePopupPageKeepsItsEmbed(): void
+    {
+        $iPublic = $this->addPost();
+
+        // page.php creates the page object before the share popup asks for the embed, without the entry id.
+        $sObject = BxDolPageQuery::getPageObjectNameByURI('view-post');
+        unset($GLOBALS['bxDolClasses']['BxDolPage!' . $sObject], $_GET['id']);
+        $oPage = BxDolPage::getObjectInstance($sObject);
+
+        $aEmbed = BxDolPage::getEmbedData('page.php?i=view-post&id=' . $iPublic);
+
+        $this->assertSame('LinkPreviewPrivacyTest post', $aEmbed['title'] ?? null);
+        $this->assertSame($oPage, BxDolPage::getObjectInstance($sObject), 'The page keeps its own object.');
+        $this->assertArrayNotHasKey('id', $_GET, 'The request is put back.');
+    }
+
+    public function testClosedProfileShowsNoInfo(): void
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_persons'))
+            $this->markTestSkipped('Persons are not installed.');
+
+        $oProfile = BxDolProfile::getInstanceByAccount($this->bxAccount('admin')->id());
+        if (!$oProfile || $oProfile->getModule() != 'bx_persons')
+            $this->markTestSkipped('The test account has no person profile.');
+
+        // Friends only: the closed page is shown, with the name, picture and cover, but no info.
+        $iContentId = (int)$oProfile->getContentId();
+        $oDb = BxDolDb::getInstance();
+        $this->_aPersonBackup = ['id' => $iContentId, 'value' => $oDb->getOne("SELECT `allow_view_to` FROM `bx_persons_data` WHERE `id` = :id", ['id' => $iContentId])];
+        $oDb->query("UPDATE `bx_persons_data` SET `allow_view_to` = '5' WHERE `id` = :id", ['id' => $iContentId]);
+        $oDb->cleanMemoryAll();
+        $GLOBALS['glMemCache'] = []; // view checks are remembered for a page load
+
+        $sObject = BxDolPageQuery::getPageObjectNameByURI('view-persons-profile');
+        unset($GLOBALS['bxDolClasses']['BxDolPage!' . $sObject]);
+        $_GET = ['i' => 'view-persons-profile', 'id' => $iContentId, 'api' => 1];
+        $aData = BxDolPage::getObjectInstanceByURI('view-persons-profile')->getPageAPI();
+
+        $this->assertArrayNotHasKey('page_status', $aData);
+        $this->assertSame('', $aData['description'], 'No About text.');
+        if (!empty($aData['cover_block']['profile']))
+            $this->assertArrayNotHasKey('info', $aData['cover_block']['profile'], 'No about, birthday or location in the cover.');
     }
 
     public function testResetPageMetaClearsTheHead(): void

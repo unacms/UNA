@@ -3932,6 +3932,11 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         if(empty($aEvent))
             return array('code' => 1, 'content' => _t('_Empty'));
 
+        // A pending, scheduled, hidden or deleted post, or a repost of a hidden one (inactive), is for its author and moderators only.
+        $bActive = $aEvent[$CNF['FIELD_STATUS']] == BX_TIMELINE_STATUS_ACTIVE && $aEvent[$CNF['FIELD_STATUS_ADMIN']] == BX_TIMELINE_STATUS_ACTIVE && (int)$aEvent['active'] == 1;
+        if(!$bActive && (int)$aEvent[$CNF['FIELD_OBJECT_OWNER_ID']] != (int)$this->getUserId() && !$this->isModerator())
+            return array('code' => 1, 'content' => _t('_Empty'));
+
         $iProfile = (int)$aEvent[$CNF['FIELD_OWNER_ID']];
         if(!empty($iProfile)) {
             $oProfile = BxDolProfile::getInstance($iProfile);

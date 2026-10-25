@@ -552,7 +552,8 @@ class BxBasePage extends BxDolPage
         $sUri = $this->_aObject['uri'];
         $sUrl = ($bGetParams && !empty($aGetParams[0]) ? $aGetParams[0] : $sUri) . ($sQueryString != '' ? '?' . $sQueryString : '');
         $sModule = $this->getModule();
-        $aElements = $this->getPageBlocksAPI($aBlocks);
+        // A closed page has no blocks either: the blocks of a pending entry show it, NEO shows the error by page_status.
+        $aElements = $bIsAllowed ? $this->getPageBlocksAPI($aBlocks) : [];
 
         if(!$bLogged && !in_array($sUri, ['home', 'login', 'create-account']) && ($sAutoProfile = getParam('sys_account_default_profile_type'))) {
             $sRedirect = getParam($sAutoProfile . '_redirect_aadd');
@@ -638,9 +639,10 @@ class BxBasePage extends BxDolPage
                  * A profile the viewer can't open shows no cover: it carries the profile info and the original cover image.
                  */
                 if($bIsAllowed && BxDolCover::getInstance($this)->isCover()) {
+                    // A closed (friends only) profile shows its name, picture and cover, not its info (about, birthday, location).
                     $aProfileInfo = BxDolProfile::getData($this->_aProfileInfo['id'], [
                         'get_avatar' => 'getAvatarBig',
-                        'with_info' => true
+                        'with_info' => $oProfileModule->checkAllowedView($aProfileContentInfo) === CHECK_ACTION_RESULT_ALLOWED
                     ]);
                     $oProfile = BxDolProfile::getInstance($this->_aProfileInfo['id']);
                     $aProfileInfo['online'] = $oProfile->isOnline();
@@ -774,15 +776,13 @@ class BxBasePage extends BxDolPage
     {
         $sModule = $this->getModule();
 
-        // An entry which isn't available (pending, awaiting, deleted) doesn't give out its title.
-        $sTitle = getParam('site_title');
-        if($this->_isAvailablePage($this->_aObject) === true)
-            $sTitle = $this->_getPageMetaTitle() ?: $this->_getPageTitle();
+        // An entry which isn't available (pending, awaiting, deleted) gives out neither its title nor its blocks.
+        $bIsAvailable = $this->_isAvailablePage($this->_aObject) === true;
 
         return [
             'module' => $sModule,
-            'title' => $sTitle,
-            'elements' => $this->getPageBlocksAPI($aBlocks),
+            'title' => $bIsAvailable ? ($this->_getPageMetaTitle() ?: $this->_getPageTitle()) : getParam('site_title'),
+            'elements' => $bIsAvailable ? $this->getPageBlocksAPI($aBlocks) : [],
         ];
     }
 

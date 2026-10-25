@@ -37,15 +37,6 @@ class BxTimelinePageViewItem extends BxTemplPage
         if (!$this->_iItemId || $this->_aItemData['code'] == 1)
             return false;
 
-        // A pending, scheduled or hidden post is shown to its author and moderators only.
-        $CNF = &$this->_oModule->_oConfig->CNF;
-        if (!empty($this->_aItemData['event'])) {
-            $aEvent = $this->_aItemData['event'];
-            $bActive = $aEvent[$CNF['FIELD_STATUS']] == BX_TIMELINE_STATUS_ACTIVE && $aEvent[$CNF['FIELD_STATUS_ADMIN']] == BX_TIMELINE_STATUS_ACTIVE;
-            if (!$bActive && (int)$aEvent[$CNF['FIELD_OBJECT_OWNER_ID']] != (int)$this->_oModule->getUserId() && !$this->_oModule->isModerator())
-                return false;
-        }
-
         return parent::_isAvailablePage($a);
     }
 
