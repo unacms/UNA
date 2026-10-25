@@ -83,6 +83,14 @@ class BxDolTranscoderProxy extends BxDolTranscoder implements iBxDolFactoryObjec
         return $oTranscoder->getFileUrl($mixedHandler);
     }
 
+    /**
+     * alias for @see getFileUrl, the parent's one asks the API for the original file of a source type a proxy doesn't have
+     */
+    public function getFileUrlById($mixedHandler)
+    {
+        return $this->getFileUrl($mixedHandler);
+    }
+
     protected function _isImage($sMimeType)
     {
         return strncmp($sMimeType, 'image/', 6) === 0;

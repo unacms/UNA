@@ -23,6 +23,8 @@ class BxBaseModGeneralPageEntry extends BxTemplPage
 
     protected $_sCoverClass;
 
+    protected $_bMetaAllowed = null;
+
     public function __construct($aObject, $oTemplate = false)
     {
         $this->_oModule = BxDolModule::getInstance($this->MODULE);
@@ -78,9 +80,9 @@ class BxBaseModGeneralPageEntry extends BxTemplPage
             $oCover->setCoverImageUrl($aCover);
         }
 
-        // add content metatags
-        if(!empty($CNF['OBJECT_METATAGS']) && ($o = BxDolMetatags::getObjectInstance($CNF['OBJECT_METATAGS'])) !== false)
-            $o->addPageMetaInfo($this->_aContentInfo[$CNF['FIELD_ID']], $this->_getThumbForMetaObject());
+        // add content metatags (keywords, location), the page meta image is set by _getPageMetaImage
+        if($this->_isMetaAllowed() && !empty($CNF['OBJECT_METATAGS']) && ($o = BxDolMetatags::getObjectInstance($CNF['OBJECT_METATAGS'])) !== false)
+            $o->addPageMetaInfo($this->_aContentInfo[$CNF['FIELD_ID']]);
 
         $oMenuSubmenu = BxDolMenu::getObjectInstance('sys_site_submenu');
         if($oMenuSubmenu) {
@@ -135,8 +137,31 @@ class BxBaseModGeneralPageEntry extends BxTemplPage
         exit;
     }
 
+    /**
+     * Whether the page head (link previews included) may describe the entry: it is available and the viewer may view it.
+     * Unlike _isVisiblePage it doesn't perform the view action, and it is false on a closed profile page.
+     * @return boolean
+     */
+    protected function _isMetaAllowed()
+    {
+        if($this->_bMetaAllowed !== null)
+            return $this->_bMetaAllowed;
+
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        $bResult = $this->_aContentInfo && $this->_isAvailablePage($this->_aObject) === true && $this->_oModule->checkAllowedView($this->_aContentInfo) === CHECK_ACTION_RESULT_ALLOWED;
+        if($bResult && !empty($CNF['FIELD_CF']) && isset($this->_aContentInfo[$CNF['FIELD_CF']]) && ($oCf = BxDolContentFilter::getInstance()) && $oCf->isEnabled())
+            $bResult = $oCf->isAllowed($this->_aContentInfo[$CNF['FIELD_CF']]);
+
+        return ($this->_bMetaAllowed = $bResult);
+    }
+
     protected function _getPageMetaDesc()
     {
+        // The API page is built even when the viewer can't see the entry, and a closed profile page is shown, so don't leak its text.
+        if(!$this->_isMetaAllowed())
+            return parent::_getPageMetaDesc();
+
         $CNF = &$this->_oModule->_oConfig->CNF;
 
         $sResult = '';
@@ -167,7 +192,7 @@ class BxBaseModGeneralPageEntry extends BxTemplPage
     protected function _getPageMetaImage()
     {
         // The API page is built even when the viewer can't see the entry, so don't leak its image.
-        if(!$this->_isAvailablePage($this->_aObject) || $this->_oModule->checkAllowedView($this->_aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+        if(!$this->_isMetaAllowed())
             return '';
 
         if(!($aImage = $this->_getThumbForMetaObject()) || !is_array($aImage))

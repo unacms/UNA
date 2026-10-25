@@ -21,6 +21,7 @@ class BxAlbumsPageMedia extends BxTemplPage
     protected $_aAlbumInfo = false;
     protected $_aMediaInfo = false;
     protected $_mixedContext = false;
+    protected $_bAlbumActive = null;
 
     public function __construct($aObject, $oTemplate = false)
     {        
@@ -60,9 +61,12 @@ class BxAlbumsPageMedia extends BxTemplPage
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
 
+        if($this->_bAlbumActive !== null)
+            return $this->_bAlbumActive;
+
         $oPageEntry = BxDolPage::getObjectInstance($this->MODULE . '_view_entry');
         $oPageEntry->setContentId($this->_aAlbumInfo[$CNF['FIELD_ID']]);
-        return $oPageEntry->isPage();
+        return ($this->_bAlbumActive = $oPageEntry->isPage());
     }
 
     public function getCode ()
@@ -93,6 +97,25 @@ class BxAlbumsPageMedia extends BxTemplPage
         }
 
         return parent::getCode ();
+    }
+
+    /**
+     * The checks of getCode, for the API page as well, which doesn't run getCode.
+     */
+    protected function _isAvailablePage ($a)
+    {
+        if(!$this->_aAlbumInfo || !$this->_aMediaInfo || !$this->isAlbumActive())
+            return false;
+
+        return parent::_isAvailablePage($a);
+    }
+
+    protected function _isVisiblePage ($a)
+    {
+        if(($mixedResult = $this->_oModule->checkAllowedView($this->_aAlbumInfo)) !== CHECK_ACTION_RESULT_ALLOWED)
+            return $mixedResult;
+
+        return parent::_isVisiblePage($a);
     }
 
     protected function _getThumbForMetaObject ()

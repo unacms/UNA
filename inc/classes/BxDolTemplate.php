@@ -837,6 +837,20 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * Clear the page meta info set so far: canonical url, meta title, description, keywords, location and image.
+     * Error and access denied pages call it, so their head (and link previews) don't describe content which wasn't shown.
+     */
+    function resetPageMeta()
+    {
+        $this->aPage['url'] = '';
+        $this->aPage['title'] = '';
+        $this->aPage['description'] = '';
+        $this->aPage['keywords'] = [];
+        $this->aPage['location'] = [];
+        unset($this->aPage['image']);
+    }
+
+    /**
      * Get page type
      * @return int $i page type
      */
@@ -1351,8 +1365,6 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         $sDescription = '';
         if(($sKd = 'description') && !empty($this->aPage[$sKd]) && is_string($this->aPage[$sKd]))
             $sDescription = $this->aPage[$sKd];
-        if(!$sDescription && $bPage)
-            $sDescription = $oPage->getMetaDescription();
         $bDescription = !empty($sDescription);
 
         if($bDescription) {
@@ -1445,7 +1457,11 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         
         if(!empty($this->aPage['rss']) && !empty($this->aPage['rss']['url']))
             $sRet .= '<link rel="alternate" type="application/rss+xml" href="' . $this->aPage['rss']['url'] . '" title="' . bx_html_attribute($this->aPage['rss']['title'], BX_ESCAPE_STR_QUOTE) . '" />';
-        $sRet .= '<link rel="alternate" type="application/json+oembed" href="' . BX_DOL_URL_ROOT . 'em.php?url=' . urlencode($_SERVER["REQUEST_URI"]) . '&format=json" title="' . $sHeaderAttr . '" />';
+        // oEmbed discovery is built from the absolute canonical url: a request uri carries the sub-folder of a site
+        // installed in one (/una/view-post/...), which em.php can't resolve, so every lookup ended with 404.
+        // The site root (home) has no page uri for em.php either.
+        if($sUrl && $sUri)
+            $sRet .= '<link rel="alternate" type="application/json+oembed" href="' . BX_DOL_URL_ROOT . 'em.php?url=' . urlencode($sUrl) . '&format=json" title="' . $sHeaderAttr . '" />';
 
         if($sUrl)
             $sRet .= '<link rel="canonical" href="' . $sUrl . '" />';
@@ -3872,6 +3888,7 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
             $sContent = DesignBoxContent($sTitle, $sContent, $iDesignBox);
 
         $oTemplate = BxDolTemplate::getInstance();
+        $oTemplate->resetPageMeta();
         $oTemplate->setPageNameIndex ($iPage);
         $oTemplate->setPageHeader ($sTitle);
         $oTemplate->setPageContent ('page_main_code', $sContent);

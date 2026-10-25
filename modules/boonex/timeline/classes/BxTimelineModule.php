@@ -2271,6 +2271,10 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         $aItemData = $this->getItemData($iItemId, $aParams);
 
         if (bx_is_api()){
+            // a missing or not allowed item has no event
+            if((int)$aItemData['code'] !== 0)
+                return [bx_api_get_block('msg', $aItemData['content'])];
+
             $aItemData['event'] = $this->_oTemplate->getPostApi($aItemData['event'], $aParams);
             return [bx_api_get_block('feed_item', $aItemData)];
         }

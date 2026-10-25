@@ -709,6 +709,13 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
         unset($aUrl[1]['i']);
         $aParams = $aUrl[1];
 
+        // Nothing is given out of a page the viewer can't open (private, pending or deleted content).
+        // The page reads its params (id) from the request, and page objects are cached per request, which is fine for one url.
+        $_GET = array_merge($_GET, $aParams);
+        $oPage = BxDolPage::getObjectInstanceByURI($sUri, false, true);
+        if (!is_object($oPage) || $oPage->isAvailablePage() !== true || $oPage->isVisiblePage() !== true)
+            return [];
+
         $sTitle = $sAuthorName = $sAuthorUrl = $sThumb = $sHtml = '';
         if (isset($aParams['id'])) {
             $sContentInfo = BxDolPageQuery::getContentInfoObjectNameByURI($sUri);
@@ -724,8 +731,6 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
             }
         }
         else {
-            $oPage = BxDolPage::getObjectInstanceByURI($sUri, false, true);
-            $aPage = $oPage->getObject();
             $sTitle = $oPage->_getPageTitle();
             $sHtml = BxDolTemplate::getInstance()->parseHtmlByName('embed.html', [
                 'title' => $sTitle,

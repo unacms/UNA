@@ -269,8 +269,10 @@ class BxBasePage extends BxDolPage
         if (($mixedAvailable = $this->_isAvailablePage($this->_aObject)) !== true) 
             return $this->_getPageNotFoundMsg($mixedAvailable);
 
-        if (($mixedVisible = $this->_isVisiblePage($this->_aObject)) !== true)
+        if (($mixedVisible = $this->_isVisiblePage($this->_aObject)) !== true) {
+            BxDolTemplate::getInstance()->resetPageMeta();
             return $this->_getPageAccessDeniedMsg($mixedVisible);
+        }
 
         $this->_addJsCss();
 
@@ -523,7 +525,8 @@ class BxBasePage extends BxDolPage
      */
     public function getPageAPI ($aBlocks = [])
     {
-        define('BX_API_PAGE', true);
+        if(!defined('BX_API_PAGE'))
+            define('BX_API_PAGE', true);
 
         $aGetParams = bx_get('params');
         $bGetParams = $aGetParams !== false;
@@ -541,8 +544,11 @@ class BxBasePage extends BxDolPage
         $bIsVisible = $this->_isVisiblePage($this->_aObject);
         //TODO: If page isn't Available or isn't Visible then we should exit with related Error Codes immediately.
 
-        $sMetaTitle = $this->_getPageMetaTitle();
-        $sName = $this->_getPageTitle();
+        // Clients (NEO link previews among them) get nothing of the content of a page the viewer can't open.
+        $bIsAllowed = $bIsAvailable === true && $bIsVisible === true;
+
+        $sMetaTitle = $bIsAllowed ? $this->_getPageMetaTitle() : '';
+        $sName = $bIsAllowed ? $this->_getPageTitle() : getParam('site_title');
         $sUri = $this->_aObject['uri'];
         $sUrl = ($bGetParams && !empty($aGetParams[0]) ? $aGetParams[0] : $sUri) . ($sQueryString != '' ? '?' . $sQueryString : '');
         $sModule = $this->getModule();
@@ -561,9 +567,9 @@ class BxBasePage extends BxDolPage
             'id' => $this->_aObject['id'],
             'title' => $sMetaTitle ? $sMetaTitle : $sName,
             'name' => $sName,
-            'description' => $this->_getPageMetaDesc(),
-            'keywords' => $this->_getPageMetaKeywords(),
-            'image' => $this->_getPageMetaImage(),
+            'description' => $bIsAllowed ? $this->_getPageMetaDesc() : '',
+            'keywords' => $bIsAllowed ? $this->_getPageMetaKeywords() : '',
+            'image' => $bIsAllowed ? $this->_getPageMetaImage() : '',
             'uri' => $sUri,
             'url' => $sUrl,
             'author' => $this->_aObject['author'],
@@ -629,8 +635,9 @@ class BxBasePage extends BxDolPage
 
                 /**
                  * Process page cover with related menus and lists.
+                 * A profile the viewer can't open shows no cover: it carries the profile info and the original cover image.
                  */
-                if(BxDolCover::getInstance($this)->isCover()) {
+                if($bIsAllowed && BxDolCover::getInstance($this)->isCover()) {
                     $aProfileInfo = BxDolProfile::getData($this->_aProfileInfo['id'], [
                         'get_avatar' => 'getAvatarBig',
                         'with_info' => true
@@ -766,12 +773,15 @@ class BxBasePage extends BxDolPage
     public function getPageContentAPI($aBlocks = [])
     {
         $sModule = $this->getModule();
-        $sName = $this->_getPageTitle();
-        $sMetaTitle = $this->_getPageMetaTitle();
+
+        // An entry which isn't available (pending, awaiting, deleted) doesn't give out its title.
+        $sTitle = getParam('site_title');
+        if($this->_isAvailablePage($this->_aObject) === true)
+            $sTitle = $this->_getPageMetaTitle() ?: $this->_getPageTitle();
 
         return [
             'module' => $sModule,
-            'title' => $sMetaTitle ? $sMetaTitle : $sName,
+            'title' => $sTitle,
             'elements' => $this->getPageBlocksAPI($aBlocks),
         ];
     }
