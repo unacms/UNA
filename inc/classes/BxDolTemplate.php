@@ -1386,35 +1386,35 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         // Values are escaped here; the text people write goes last, the template engine replaces keys in order.
         $sRet .= $this->parseHtmlByName('meta_open_graph.html', [
             'card' => $bPageImage ? ($aImageInfo['card'] ?? 'summary_large_image') : 'summary',
-            'site_name' => htmlspecialchars(getParam('site_title'), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
-            'type' => bx_html_attribute(!empty($this->aPage['og_type']) ? $this->aPage['og_type'] : 'website'),
+            'site_name' => $this->_escapeTemplateKeys(htmlspecialchars(getParam('site_title'), ENT_QUOTES | ENT_HTML5, 'UTF-8')),
+            'type' => $this->_escapeTemplateKeys(bx_html_attribute(!empty($this->aPage['og_type']) ? $this->aPage['og_type'] : 'website')),
             'bx_if:url' => [
                 'condition' => $sUrl != '',
-                'content' => ['url' => bx_html_attribute($sUrl)]
+                'content' => ['url' => $this->_escapeTemplateKeys(bx_html_attribute($sUrl))]
             ],
             'bx_if:image' => [
                 'condition' => $bPageImage,
                 'content' => [
-                    'url' => $bPageImage ? bx_html_attribute($this->aPage['image']) : '',
+                    'url' => $bPageImage ? $this->_escapeTemplateKeys(bx_html_attribute($this->aPage['image'])) : '',
                     'bx_if:size' => [
                         'condition' => !empty($aImageInfo['width']) && !empty($aImageInfo['height']),
                         'content' => ['width' => (int)($aImageInfo['width'] ?? 0), 'height' => (int)($aImageInfo['height'] ?? 0)]
                     ],
                     'bx_if:alt' => [
                         'condition' => $sHeaderAttr !== '',
-                        'content' => ['alt' => $sHeaderAttr]
+                        'content' => ['alt' => $this->_escapeTemplateKeys($sHeaderAttr)]
                     ],
                 ]
             ],
             'bx_if:meta_description' => [
                 'condition' => $bDescription,
-                'content' => ['description' => $sDescriptionAttr]
+                'content' => ['description' => $this->_escapeTemplateKeys($sDescriptionAttr)]
             ],
             'bx_if:og_description' => [
                 'condition' => $bDescription,
-                'content' => ['description' => $sDescriptionAttr]
+                'content' => ['description' => $this->_escapeTemplateKeys($sDescriptionAttr)]
             ],
-            'title' => $sHeaderAttr,
+            'title' => $this->_escapeTemplateKeys($sHeaderAttr),
         ]);
 
         // Smart App Banner

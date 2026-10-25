@@ -54,6 +54,29 @@ class LinkPreviewHeadTest extends BxDolIntegrationTestCase
         $this->assertStringContainsString('<meta property="og:site_name" content="', $sHead);
     }
 
+    public function testTemplateKeysInTextStayText(): void
+    {
+        // Without the template cache the engine parses __keys__ in the rendered text.
+        unset($_GET['i']);
+        $oTemplate = BxDolTemplate::getInstance();
+        $oCache = new ReflectionProperty($oTemplate, '_bCacheEnable');
+        $bCache = $oCache->getValue($oTemplate);
+        $oCache->setValue($oTemplate, false);
+        try {
+            $oTemplate->setPageHeader('Python __meta_info__');
+            $oTemplate->setPageDescription('Call __site_title__ twice');
+            $oTemplate->addPageMetaImage('https://example.com/__x__.jpg');
+            $sHead = $oTemplate->getMetaInfo();
+        }
+        finally {
+            $oCache->setValue($oTemplate, $bCache);
+        }
+
+        $this->assertStringContainsString('<meta property="og:title" content="Python &#95;&#95;meta_info&#95;&#95;" />', $sHead);
+        $this->assertStringContainsString('<meta property="og:description" content="Call &#95;&#95;site_title&#95;&#95; twice" />', $sHead);
+        $this->assertStringContainsString('<meta property="og:image" content="https://example.com/&#95;&#95;x&#95;&#95;.jpg" />', $sHead);
+    }
+
     public function testNoEmptyDescription(): void
     {
         unset($_GET['i']);
