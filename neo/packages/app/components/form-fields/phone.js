@@ -120,7 +120,8 @@ export default function FormFieldPhone(props) {
                     expoUI={false}
                     onPress={() => setModalVisible(true)}
                 />
-                {isAdaptiveLabel && props.caption ? (
+                {/* Field hides the caption for `notitle` (grouped fields in an input set); so does this label. */}
+                {isAdaptiveLabel && props.caption && props.format !== 'notitle' ? (
                     <AdaptiveLabel
                         caption={props.caption}
                         value={nationalNumber}
