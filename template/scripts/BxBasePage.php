@@ -546,6 +546,12 @@ class BxBasePage extends BxDolPage
         $bIsVisible = $this->_isVisiblePage($this->_aObject);
         //TODO: If page isn't Available or isn't Visible then we should exit with related Error Codes immediately.
 
+        // A site locked from guests (sys_lock_from_unauthenticated) opens them its exception pages only: page.php sends them
+        // to the login form, clients (NEO and link previews made from it) get 403 and nothing of the page's content.
+        $bIsLocked = self::isLockedFromUnauthenticated($this->_aObject['uri']);
+        if($bIsLocked)
+            $bIsVisible = false;
+
         // Clients (NEO link previews among them) get nothing of the content of a page the viewer can't open.
         $bIsAllowed = $bIsAvailable === true && $bIsVisible === true;
 
@@ -637,7 +643,7 @@ class BxBasePage extends BxDolPage
         /**
          * Profile/Context view page.
          */
-        if(isset($this->_aProfileInfo)) {
+        if(!$bIsLocked && isset($this->_aProfileInfo)) {
             $oProfileModule = BxDolModule::getInstance($this->_aProfileInfo['type']);
             if($oProfileModule !== null)
                 $aProfileContentInfo = $oProfileModule->_oDb->getContentInfoById($this->_aProfileInfo['content_id']);
@@ -770,7 +776,10 @@ class BxBasePage extends BxDolPage
             }
         }
 
-        if($bIsAvailable !== true)
+        // A locked page is 403 whatever it holds: a 404 would tell guests which entries exist.
+        if($bIsLocked)
+            $a['page_status'] = 403;
+        else if($bIsAvailable !== true)
             $a['page_status'] = 404;
         else if($bIsVisible !== true)
             $a['page_status'] = 403;
@@ -788,13 +797,15 @@ class BxBasePage extends BxDolPage
         $sModule = $this->getModule();
 
         // A page the viewer can't open (a pending or private entry, a private list) gives out neither its title nor its blocks, as in getPageAPI.
-        $bIsAllowed = $this->_isAvailablePage($this->_aObject) === true && $this->_isVisiblePage($this->_aObject) === true;
+        // A page a site locked from guests covers is 403 for them, whatever it holds.
+        $bIsLocked = self::isLockedFromUnauthenticated($this->_aObject['uri']);
+        $bIsAllowed = !$bIsLocked && $this->_isAvailablePage($this->_aObject) === true && $this->_isVisiblePage($this->_aObject) === true;
 
         return [
             'module' => $sModule,
             'title' => $bIsAllowed ? ($this->_getPageMetaTitle() ?: $this->_getPageTitle()) : getParam('site_title'),
             'elements' => $bIsAllowed ? $this->getPageBlocksAPI($aBlocks) : [],
-        ];
+        ] + ($bIsLocked ? ['page_status' => 403] : []);
     }
 
     public function getPageBlocksAPI($aBlocks = [])
