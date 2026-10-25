@@ -1467,12 +1467,12 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
                 $sEmbedHref = BX_DOL_URL_ROOT . 'em.php?url=' . urlencode($sUri === bx_get('i') ? $sUrl : bx_get_self_url()) . '&format=json';
 
             $sRet .= $this->parseHtmlByName('meta_links.html', [
-                'url' => bx_html_attribute($sUrl),
+                'url' => $this->_escapeTemplateKeys(bx_html_attribute($sUrl)),
                 'bx_if:oembed' => [
                     'condition' => $sEmbedHref != '',
                     'content' => [
-                        'href' => bx_html_attribute($sEmbedHref),
-                        'title' => $sHeaderAttr,
+                        'href' => $this->_escapeTemplateKeys(bx_html_attribute($sEmbedHref)),
+                        'title' => $this->_escapeTemplateKeys($sHeaderAttr),
                     ]
                 ],
             ]);
@@ -1480,6 +1480,23 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
 
         return $sRet;
     }
+    /**
+     * Encode the key wrapper (__) in an escaped attribute value passed to a template: the engine parses
+     * __keys__ in its result, so a title like "__meta_info__" would be taken for a system key (that one
+     * calls getMetaInfo again). Browsers and crawlers decode the character references back.
+     *
+     * @param string $s escaped attribute value
+     * @return string
+     */
+    protected function _escapeTemplateKeys($s)
+    {
+        $sEncoded = '';
+        foreach(mb_str_split($this->_sKeyWrapperHtml) as $sChar)
+            $sEncoded .= '&#' . mb_ord($sChar) . ';';
+
+        return str_replace($this->_sKeyWrapperHtml, $sEncoded, $s);
+    }
+
     /**
      * Get template, which was loaded earlier.
      * @see method this->loadTemplates and field this->_aTemplates

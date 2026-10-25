@@ -223,6 +223,29 @@ class LinkPreviewPrivacyTest extends BxDolIntegrationTestCase
             $this->assertArrayNotHasKey('info', $aData['cover_block']['profile'], 'No about, birthday or location in the cover.');
     }
 
+    public function testTemplateKeysInTitleStayText(): void
+    {
+        // Without the template cache the engine parses __keys__ in the rendered text: __meta_info__ in a title
+        // made getMetaInfo call itself.
+        $oTemplate = BxDolTemplate::getInstance();
+        $oCache = new ReflectionProperty($oTemplate, '_bCacheEnable');
+        $bCache = $oCache->getValue($oTemplate);
+        $oCache->setValue($oTemplate, false);
+        try {
+            $_GET['i'] = 'about';
+            $oTemplate->setPageHeader('Python __meta_info__ and __site_title__');
+            $oTemplate->setPageUrl('page.php?i=about');
+            $sHead = $oTemplate->getMetaInfo();
+        }
+        finally {
+            $oCache->setValue($oTemplate, $bCache);
+            $oTemplate->setPageHeader('');
+        }
+
+        $this->assertStringContainsString('&#95;&#95;meta_info&#95;&#95; and &#95;&#95;site_title&#95;&#95;', $sHead);
+        $this->assertSame(1, substr_count($sHead, 'rel="canonical"'), 'The head is rendered once.');
+    }
+
     public function testResetPageMetaClearsTheHead(): void
     {
         unset($_GET['i']);
