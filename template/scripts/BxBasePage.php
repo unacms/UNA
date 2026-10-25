@@ -776,13 +776,13 @@ class BxBasePage extends BxDolPage
     {
         $sModule = $this->getModule();
 
-        // An entry which isn't available (pending, awaiting, deleted) gives out neither its title nor its blocks.
-        $bIsAvailable = $this->_isAvailablePage($this->_aObject) === true;
+        // A page the viewer can't open (a pending or private entry, a private list) gives out neither its title nor its blocks, as in getPageAPI.
+        $bIsAllowed = $this->_isAvailablePage($this->_aObject) === true && $this->_isVisiblePage($this->_aObject) === true;
 
         return [
             'module' => $sModule,
-            'title' => $bIsAvailable ? ($this->_getPageMetaTitle() ?: $this->_getPageTitle()) : getParam('site_title'),
-            'elements' => $bIsAvailable ? $this->getPageBlocksAPI($aBlocks) : [],
+            'title' => $bIsAllowed ? ($this->_getPageMetaTitle() ?: $this->_getPageTitle()) : getParam('site_title'),
+            'elements' => $bIsAllowed ? $this->getPageBlocksAPI($aBlocks) : [],
         ];
     }
 

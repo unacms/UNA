@@ -137,6 +137,15 @@ class LinkPreviewPrivacyTest extends BxDolIntegrationTestCase
         $aData = $this->getPage($this->addPost(['status' => 'awaiting']))->getPageContentAPI();
 
         $this->assertSame(getParam('site_title'), $aData['title']);
+        $this->assertSame([], $aData['elements']);
+    }
+
+    public function testContentApiHidesTitleOfPrivatePost(): void
+    {
+        $aData = $this->getPage($this->addPost(['allow_view_to' => BX_DOL_PG_MEONLY]))->getPageContentAPI();
+
+        $this->assertSame(getParam('site_title'), $aData['title']);
+        $this->assertSame([], $aData['elements']);
     }
 
     public function testEmbedDataOnlyForViewablePost(): void
