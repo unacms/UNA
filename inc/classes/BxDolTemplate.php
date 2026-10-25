@@ -847,7 +847,7 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         $this->aPage['description'] = '';
         $this->aPage['keywords'] = [];
         $this->aPage['location'] = [];
-        unset($this->aPage['image']);
+        unset($this->aPage['image'], $this->aPage['image_info'], $this->aPage['og_type']);
     }
 
     /**
@@ -1301,10 +1301,22 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
      * Set page meta image.
      *
      * @param $sImageUrl meta image url
+     * @param $aInfo optional image info: 'width', 'height' and 'card' - twitter card type, 'summary' for a small square picture
      */
-    function addPageMetaImage($sImageUrl)
+    function addPageMetaImage($sImageUrl, $aInfo = [])
     {
         $this->aPage['image'] = $sImageUrl;
+        $this->aPage['image_info'] = $aInfo;
+    }
+
+    /**
+     * Set page meta type (Open Graph type): 'website', 'article' or 'profile'.
+     *
+     * @param $sType page type
+     */
+    function setPageMetaType($sType)
+    {
+        $this->aPage['og_type'] = $sType;
     }
     /**
      * Set page rss link.
@@ -1342,58 +1354,19 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         }
             
         
-        // Process header
-        $sHeader = '';
-        if(($sKh = 'header') && !empty($this->aPage[$sKh]) && is_string($this->aPage[$sKh]))
-            $sHeader = $this->aPage[$sKh];
-        $bHeader = !empty($sHeader);
+        $oFunctions = BxTemplFunctions::getInstance();
 
-        if($bHeader) {
-            $sHeader = strip_tags($sHeader);
-
-            // Collapse spaces/newlines and fix run-on words
-            $sHeader = preg_replace('/\s+/', ' ', $sHeader);                     
-            $sHeader = preg_replace('/([a-z0-9])([A-Z])/', '$1 $2', $sHeader);
-            $sHeader = trim($sHeader);
-
-            $bHeader = !empty($sHeader);
-        }
-
-        $sHeaderAttr = $bHeader ? bx_html_attribute($sHeader) : '';
-
-        // Process description
-        $sDescription = '';
-        if(($sKd = 'description') && !empty($this->aPage[$sKd]) && is_string($this->aPage[$sKd]))
-            $sDescription = $this->aPage[$sKd];
-        $bDescription = !empty($sDescription);
-
-        if($bDescription) {
-            // Convert HTML breaks/lists to spaces before stripping tags
-            $sDescription = preg_replace('#<(?:br\s*/?|/p|/li)>#i', ' ', $sDescription);
-            $sDescription = strip_tags($sDescription);
-
-            // Normalize whitespace
-            $sDescription = preg_replace('/\s+/u', ' ', $sDescription);
-
-            // Ensure space after punctuation if missing (".This" → ". This")
-            $sDescription = preg_replace('/([.,;:])([^\s])/u', '$1 $2', $sDescription);
-            $sDescription = trim($sDescription);
-
-            if(($iDescriptionMaxLen = 300) && mb_strlen($sDescription) > $iDescriptionMaxLen) {
-                $sDescription = mb_substr($sDescription, 0, $iDescriptionMaxLen);
-
-                // Trim partial word and remove dangling punctuation
-                $sDescription = preg_replace('/\s+\S*$/u', '', $sDescription);
-                $sDescription = rtrim($sDescription, " ,;:-");
-
-                $sDescription .= '...';
-            }
-            
-            $bDescription = !empty($sDescription);
-        }
+        // Title and description are plain text: paragraphs don't run together and entities are decoded, then escaped once.
+        $sTitle = '';
+        foreach(['title', 'header'] as $sKey)
+            if(!empty($this->aPage[$sKey]) && is_string($this->aPage[$sKey]) && ($sTitle = $oFunctions->getMetaText($this->aPage[$sKey], 0)) !== '')
+                break;
+        $sHeaderAttr = htmlspecialchars($sTitle, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
         $sDescriptionAttr = '';
-        if($bDescription && ($sDescriptionAttr = bx_html_attribute($sDescription)))
+        if(!empty($this->aPage['description']) && is_string($this->aPage['description']))
+            $sDescriptionAttr = htmlspecialchars($oFunctions->getMetaText($this->aPage['description']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        if($sDescriptionAttr !== '')
             $sRet .= '<meta name="description" content="' . $sDescriptionAttr . '" />';
 
         // location
@@ -1403,46 +1376,30 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
                 <meta name="geo.position" content="' . $this->aPage['location']['lat'] . ';' . $this->aPage['location']['lng'] . '" />
                 <meta name="geo.region" content="' . bx_html_attribute($this->aPage['location']['country']) . '" />';
 
-        //set meta[image] value
-        if(empty($this->aPage['image'])) {
-            // use cover image if exists
-            if($bPage && ($aCover = $oPage->getPageCoverImage()))
-                $this->aPage['image'] = BxDolCover::getInstance($this)->getCoverImageUrl($aCover);
+        // A page without an image of its own gets the page or site cover, or the site icon, @see BxBasePage::getMetaImageDefault
+        if(empty($this->aPage['image']) && $bPage && method_exists($oPage, 'getMetaImageDefault') && ($sImage = $oPage->getMetaImageDefault()))
+            $this->addPageMetaImage($sImage, $oPage->getMetaImageInfo($sImage));
 
-            // use system Apple/Android icons if exists
-            if(empty($this->aPage['image'])) {
-                $oImgStorage = BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES);
-                foreach(['icon_android_splash', 'icon_android', 'icon_apple'] as $sIcon)
-                    if(($iIcon = (int)getParam('sys_site_' . $sIcon)) != 0 && ($sImageUrl = $oImgStorage->getFileUrlById($iIcon))) {
-                        $this->aPage['image'] = $sImageUrl;
-                        break;
-                    }
-            }
-        }
-
-        // facebook / twitter
+        // Open Graph, which X and others read too; a big picture card needs a big landscape image
         $bPageImage = !empty($this->aPage['image']);
-        $sRet .= '<meta name="twitter:card" content="' . ($bPageImage ? 'summary_large_image' : 'summary') . '" />';
+        $aImageInfo = $bPageImage && !empty($this->aPage['image_info']) ? $this->aPage['image_info'] : [];
+        $sCard = $bPageImage ? ($aImageInfo['card'] ?? 'summary_large_image') : 'summary';
+        $sRet .= '<meta name="twitter:card" content="' . $sCard . '" />';
 
-        $sOgType = 'website';
-        if(preg_match("/(discussion|glossary|item|post)/", $sUri))
-            $sOgType = 'article';
-        else if(preg_match("/(ad|product|shopify\-entry|snipcart\-entry)/", $sUri))
-            $sOgType = 'product';
-        else if(preg_match("/(album|album\-media)/", $sUri))
-            $sOgType = 'album';
-        else if(strpos($sUri, 'profile') !== false)
-            $sOgType = 'profile';
-        else if(strpos($sUri, 'photo') !== false)
-            $sOgType = 'image';
-        else if(strpos($sUri, 'video') !== false)
-            $sOgType = 'video.other';
-
-        $sRet .= '<meta property="og:type" content="' . $sOgType . '" />';
+        $sRet .= '<meta property="og:site_name" content="' . htmlspecialchars(getParam('site_title'), ENT_QUOTES | ENT_HTML5, 'UTF-8') . '" />';
+        $sRet .= '<meta property="og:type" content="' . bx_html_attribute(!empty($this->aPage['og_type']) ? $this->aPage['og_type'] : 'website') . '" />';
+        if($sUrl)
+            $sRet .= '<meta property="og:url" content="' . bx_html_attribute($sUrl) . '" />';
         $sRet .= '<meta property="og:title" content="' . $sHeaderAttr . '" />';
-        $sRet .= '<meta property="og:description" content="' . $sDescriptionAttr . '" />';
-        if($bPageImage)
-            $sRet .= '<meta property="og:image" content="' . $this->aPage['image'] . '" />';
+        if($sDescriptionAttr !== '')
+            $sRet .= '<meta property="og:description" content="' . $sDescriptionAttr . '" />';
+        if($bPageImage) {
+            $sRet .= '<meta property="og:image" content="' . bx_html_attribute($this->aPage['image']) . '" />';
+            if(!empty($aImageInfo['width']) && !empty($aImageInfo['height']))
+                $sRet .= '<meta property="og:image:width" content="' . (int)$aImageInfo['width'] . '" /><meta property="og:image:height" content="' . (int)$aImageInfo['height'] . '" />';
+            if($sHeaderAttr !== '')
+                $sRet .= '<meta property="og:image:alt" content="' . $sHeaderAttr . '" />';
+        }
 
         // Smart App Banner
         if(getParam('smart_app_banner') && false === strpos($_SERVER['HTTP_USER_AGENT'], 'UNAMobileApp')) {
@@ -1451,7 +1408,6 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         }
 
         // RSS
-        $oFunctions = BxTemplFunctions::getInstance();
         $sRet .= $oFunctions->getManifests();
         $sRet .= $oFunctions->getMetaIcons();
         

@@ -412,6 +412,44 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
     }
 
     /**
+     * Get the transcoded file as a page meta image (the picture link previews show), with its size.
+     * Unlike getFileUrl it never gives the original file (API calls get it there), nor a url of the transcoding script:
+     * a file which isn't transcoded yet is transcoded right away, as image_transcoder.php does it,
+     * except by a queued transcoder (video), whose file isn't there until the queue gets to it.
+     * @param $mixedHandler - file handler
+     * @return array with 'url', 'width' and 'height' (0 when the size isn't known), or false when there is no public transcoded image
+     */
+    public function getFileMetaImage($mixedHandler)
+    {
+        if (!$this->isFileReady($mixedHandler) && ($this->_sQueueTable || !$this->transcode($mixedHandler)))
+            return false;
+
+        $iFileId = $this->_oDb->getFileIdByHandler($this->processHandlerForRetinaDevice($mixedHandler));
+        $aFile = $iFileId ? $this->_oStorage->getFile($iFileId) : false;
+
+        // a private file has a url with a short-lived token, crawlers come later
+        if (!$aFile || $aFile['private'] || strncmp($aFile['mime_type'], 'image/', 6) !== 0 || $this->_oStorage->isMimeTypeSvg($aFile['mime_type']))
+            return false;
+
+        // a local file can be gone while its record is there; a remote one isn't measured
+        $sPath = $this->_oStorage->getFileLocalPath($iFileId);
+        if (!$sPath && $this->_oStorage instanceof BxDolStorageLocal)
+            return false;
+
+        $iWidth = $iHeight = 0;
+        if ($sPath && ($aSize = @getimagesize($sPath))) {
+            $iWidth = (int)$aSize[0];
+            $iHeight = (int)$aSize[1];
+        }
+
+        return [
+            'url' => $this->_oStorage->getFileUrlById($iFileId),
+            'width' => $iWidth,
+            'height' => $iHeight,
+        ];
+    }
+
+    /**
      * Check if transcoded data is available. No need to call it directly, it is called automatically when it is needed.
      * @param $mixedHandler - file handler
      * @param $isCheckOutdated - check if transcoded file is outdated

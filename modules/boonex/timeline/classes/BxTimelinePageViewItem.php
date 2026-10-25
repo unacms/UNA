@@ -54,6 +54,71 @@ class BxTimelinePageViewItem extends BxTemplPage
         return parent::_isVisiblePage($a);
     }
 
+    /**
+     * The item the page head (link previews included) may describe: a viewable active one.
+     * @return array event or false
+     */
+    protected function _getMetaEvent()
+    {
+        if(empty($this->_aItemData['event']) || (int)$this->_aItemData['code'] !== 0 || $this->_isAvailablePage($this->_aObject) !== true)
+            return false;
+
+        return $this->_aItemData['event'];
+    }
+
+    /**
+     * The title of the post, else its author: "Liam added a discussion" doesn't say what is shared.
+     */
+    protected function _getPageMetaTitle()
+    {
+        if(($aEvent = $this->_getMetaEvent()) === false)
+            return parent::_getPageMetaTitle();
+
+        $sTitle = $aEvent['content']['title'] ?? '';
+        if(trim(strip_tags($sTitle)) === '')
+            $sTitle = $this->_oModule->getObjectUser($aEvent['object_owner_id'])->getDisplayName();
+
+        return $sTitle;
+    }
+
+    protected function _getPageMetaDesc()
+    {
+        if(($aEvent = $this->_getMetaEvent()) === false || empty($aEvent['content']['text']))
+            return parent::_getPageMetaDesc();
+
+        return $aEvent['content']['text'];
+    }
+
+    protected function _getPageMetaType()
+    {
+        return 'article';
+    }
+
+    /**
+     * An entry of another module (a discussion added) shows that entry's image, a post shows its first photo.
+     */
+    protected function _getPageMetaImage()
+    {
+        if(($aEvent = $this->_getMetaEvent()) === false)
+            return '';
+
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        $aImage = false;
+        if($this->_oModule->_oConfig->isSystem($aEvent['type'], $aEvent['action'])) {
+            if(BxDolModuleQuery::getInstance()->isEnabledByName($aEvent['type']) && ($oModule = BxDolModule::getInstance($aEvent['type'])) instanceof BxBaseModGeneralModule
+                && ($aContentInfo = $oModule->_oDb->getContentInfoById($aEvent['object_id'])) && $oModule->checkAllowedView($aContentInfo) === CHECK_ACTION_RESULT_ALLOWED)
+                $aImage = $oModule->getEntryImageData($aContentInfo);
+        }
+        else if(($aPhotos = $this->_oModule->_oDb->getMedia($CNF['FIELD_PHOTO'], $aEvent[$CNF['FIELD_ID']])))
+            $aImage = ['id' => reset($aPhotos), 'transcoder' => $this->_oModule->_oConfig->getObject('transcoder_photos_big')];
+
+        if($aImage && ($sUrl = $this->_getMetaImage($aImage)))
+            return $sUrl;
+
+        return parent::_getPageMetaImage();
+    }
+
     public function getCode()
     {
         if(empty($this->_aItemData) || !is_array($this->_aItemData))
