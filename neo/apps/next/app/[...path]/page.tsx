@@ -3,36 +3,76 @@ import { decodeTextNode, truncateWords } from 'app/lib/util/html-text';
 import { cache } from 'react'
 import Root from 'app/root-client'
 import { Suspense } from 'react'
+import type { Metadata, Viewport } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import { headers } from "next/headers"
 import { resolveLangCode } from '../../lib/resolve-lang'
 import { cachedUnaPageJson, unaPageCacheKey } from '../../lib/una-page-cache'
 
-const SITE_TITLE = appSetting('config', 'title');
+type SearchParams = Record<string, string | string[] | undefined>;
+
+type PageProps = {
+    params: Promise<{ path?: string[] }>;
+    searchParams: Promise<SearchParams>;
+};
+
+/** Link preview hints; only newer UNA versions send them. */
+type UnaPageMeta = {
+    image_width?: number | string;
+    image_height?: number | string;
+    card?: string;
+    og_type?: string;
+};
+
+/** The fields of UNA's page payload read here; the rest goes to Root as it came. */
+type UnaPage = {
+    title?: string;
+    // Read only after a typeof check.
+    description?: unknown;
+    image?: unknown;
+    url?: string;
+    uri?: string;
+    page_status?: number | string;
+    redirect?: string;
+    meta?: UnaPageMeta;
+};
+
+/** UNA's api.php envelope, or the fallback getData builds when the request fails. */
+type UnaPageResponse = {
+    data?: UnaPage;
+    code?: number;
+};
+
+const SITE_TITLE: string = appSetting('config', 'title');
 
 // Query parameters that never change the page: left out of og:url and canonical.
 const TRACKING_PARAM = /^(utm_.*|fbclid|gclid|igshid|mc_cid|mc_eid|_rsc)$/i;
 // Query parameters UNA's API request adds to a `redirect` URL; the rest belong to the page.
 const UNA_API_PARAM = /^(r|lang|_q|params(\[.*\])?)$/;
-const OG_TYPES = ['website', 'article', 'profile'];
-const TWITTER_CARDS = ['summary', 'summary_large_image'];
+const OG_TYPES = ['website', 'article', 'profile'] as const;
+const TWITTER_CARDS = ['summary', 'summary_large_image'] as const;
 // Older UNA versions send up to ~700 chars of stripped HTML as the description.
 const DESCRIPTION_MAX = 200;
 
-async function loadPage(props) {
+/** Whether UNA's value is one of the values this page passes on. */
+function isOneOf<T extends string>(list: readonly T[], value: unknown): value is T {
+    return (list as readonly unknown[]).includes(value);
+}
+
+async function loadPage(props: PageProps): Promise<UnaPageResponse> {
     const [params, searchParams] = await Promise.all([
         props.params,
         props.searchParams,
     ]);
-    return getData(params.path.join('/'), JSON.stringify(searchParams));
+    return getData((params.path ?? []).join('/'), JSON.stringify(searchParams));
 }
 
 // Tenant headers come from proxy.js only (it drops client-sent ones); trust them
 // only when the proxy can set them: multi-tenant mode or CI preview hosts.
-const trustTenantHeaders = () => MULTITENANT || !!PREVIEW_DOMAIN;
+const trustTenantHeaders = (): boolean => !!MULTITENANT || !!PREVIEW_DOMAIN;
 
 /** The UNA this request's page JSON comes from: the tenant's or the configured one. */
-async function unaBaseUrl() {
+async function unaBaseUrl(): Promise<string> {
     const hdrs = await headers();
     return (trustTenantHeaders() ? hdrs.get('x-tenant-una-url') : null) ?? UNA_URL;
 }
@@ -41,7 +81,7 @@ async function unaBaseUrl() {
  * Origin of the public page URL. Multi-tenant and preview hosts use the Host header
  * proxy.js resolved the tenant from; otherwise APP_URL. Never x-forwarded-host.
  */
-async function siteOrigin() {
+async function siteOrigin(): Promise<string> {
     if (!trustTenantHeaders() && APP_URL) {
         try {
             return new URL(APP_URL).origin;
@@ -56,13 +96,13 @@ async function siteOrigin() {
 }
 
 /** `/` for home, else `/<path>`, with the query; tracking parameters dropped when asked. */
-function pagePath(path = [], searchParams, dropTracking) {
-    const isHome = path.length === 0 || (path.length === 1 && ['home', 'index'].includes(path[0]));
+function pagePath(path: string[] = [], searchParams: SearchParams | undefined, dropTracking: boolean): string {
+    const isHome = path.length === 0 || (path.length === 1 && ['home', 'index'].includes(path[0] ?? ''));
     const pathname = isHome ? '/' : '/' + path.map(encodeURIComponent).join('/');
     const query = new URLSearchParams();
     for (const [key, value] of Object.entries(searchParams || {})) {
         if (dropTracking && TRACKING_PARAM.test(key)) continue;
-        for (const item of [].concat(value)) query.append(key, item ?? '');
+        for (const item of Array.isArray(value) ? value : [value]) query.append(key, item ?? '');
     }
     const search = query.toString();
     return pathname + (search ? '?' + search : '');
@@ -73,8 +113,8 @@ function pagePath(path = [], searchParams, dropTracking) {
  * `redirect`: its own absolute URL plus the API request's query. The same path and the
  * page's own query on NEO, or null when it points anywhere but that UNA.
  */
-function unaRedirectPath(redirectUrl, unaBase) {
-    let base, target;
+function unaRedirectPath(redirectUrl: string, unaBase: string): string | null {
+    let base: URL, target: URL;
     try {
         base = new URL(unaBase);
         target = new URL(redirectUrl, base);
@@ -94,7 +134,7 @@ function unaRedirectPath(redirectUrl, unaBase) {
 }
 
 /** Follow UNA's `redirect` on the server, so crawlers (no JS) reach the real page too. */
-async function followUnaRedirect(props, page) {
+async function followUnaRedirect(props: PageProps, page: UnaPage | undefined): Promise<void> {
     if (!page?.redirect) return;
     const [params, searchParams] = await Promise.all([props.params, props.searchParams]);
     const target = unaRedirectPath(page.redirect, await unaBaseUrl());
@@ -104,15 +144,15 @@ async function followUnaRedirect(props, page) {
 }
 
 /** UNA's description as plain text, or '' when it sends none. */
-function previewDescription(raw) {
+function previewDescription(raw: unknown): string {
     return typeof raw === 'string' && raw.trim()
         ? truncateWords(decodeTextNode(raw), DESCRIPTION_MAX)
         : '';
 }
 
 // Primitive arguments let metadata and page rendering share this request's fetch.
-const getData = cache(async (path, searchParamsKey) => {
-    const search_params = JSON.parse(searchParamsKey);
+const getData = cache(async (path: string, searchParamsKey: string): Promise<UnaPageResponse> => {
+    const search_params: SearchParams = JSON.parse(searchParamsKey);
 
     // Early check for static files — before any logs or UNA requests
     const staticFileExtensions = ['.map', '.js', '.css', '.json', '.png', '.jpg', '.svg', '.ico', '.woff', '.woff2', '.ttf'];
@@ -138,16 +178,16 @@ const getData = cache(async (path, searchParamsKey) => {
 
     let l = tenantUnaUrl ?? UNA_URL;
     l += '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
-    const langCode = resolveLangCode(cookieString, hdrs?.get('accept-language') || '');
+    const langCode = resolveLangCode(cookieString, hdrs.get('accept-language') || '');
     if (langCode) {
         l += '&lang=' + encodeURIComponent(langCode);
     }
-    let searchParams = { ...search_params };
+    const searchParams: SearchParams = { ...search_params };
 
     delete searchParams.cookieString; // legacy: old proxy put cookies in the URL
     delete searchParams.path;
     delete searchParams._rsc;
-    let sBlocks = '';
+    let sBlocks: string | string[] = '';
     if (searchParams.blocks) {
         sBlocks = searchParams.blocks;
     }
@@ -161,8 +201,8 @@ const getData = cache(async (path, searchParamsKey) => {
         l = l + '&params[]=' + sBlocks + '&params[]=' + JSON.stringify(searchParams);
     }
 
-    const loadUnaPage = async () => {
-        let res;
+    const loadUnaPage = async (): Promise<UnaPageResponse> => {
+        let res: Response;
         try {
             res = await fetch(l, {
                 headers: fetchHeaders,
@@ -183,7 +223,7 @@ const getData = cache(async (path, searchParamsKey) => {
         let text = '';
         try {
             text = await res.text();
-            return JSON.parse(text);
+            return JSON.parse(text) as UnaPageResponse;
         } catch (error) {
             const fatal = text.match(/Fatal error[^<]*/i)?.[0]
                 || text.match(/Uncaught [\w\\]+:[^\n<]+/)?.[0]
@@ -208,7 +248,7 @@ const getData = cache(async (path, searchParamsKey) => {
 });
 
 
-export const viewport = {
+export const viewport: Viewport = {
     width: 'device-width',
     initialScale: 1,
     //maximumScale: 1, // Prevent iOS auto-zoom on input focus
@@ -220,9 +260,9 @@ export const viewport = {
 }
 
 
-export async function generateMetadata(props) {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
     const data = await loadPage(props);
-    const page = data?.data || {};
+    const page: UnaPage = data?.data || {};
     await followUnaRedirect(props, page);
 
     const [params, searchParams] = await Promise.all([props.params, props.searchParams]);
@@ -230,26 +270,27 @@ export async function generateMetadata(props) {
     const url = pagePath(params.path, searchParams, true);
     // A page the viewer can't open, a missing page or a failed request shows nothing of
     // the entry: older UNA versions still send its title and text there.
-    const isOpen = !page.page_status && !(data?.code >= 400) && !page.redirect;
-    // Only a page UNA reports as missing or closed is kept out of search: a failed request (UNA down) is temporary.
-    const isNoIndex = !!page.page_status || data?.code === 404;
+    const isOpen = !page.page_status && !((data?.code ?? 0) >= 400) && !page.redirect;
+    // Only a page UNA reports as missing or closed (404, 403) is kept out of search. A failed
+    // request is temporary: UNA down, or a reply that isn't JSON (getData's page_status 503).
+    const isNoIndex = [403, 404].includes(Number(page.page_status)) || data?.code === 404;
     // UNA sends titles HTML-escaped; Next escapes metadata again, so the tab would read `&amp;`.
     const name = isOpen ? decodeTextNode(page.title || SITE_TITLE) : SITE_TITLE;
     const description = isOpen ? previewDescription(page.description) : '';
     const image = isOpen && typeof page.image === 'string' ? page.image : '';
     // `meta` comes from newer UNA versions only.
-    const meta = (isOpen && page.meta) || {};
+    const meta: UnaPageMeta = (isOpen && page.meta) || {};
     const imageWidth = Number(meta.image_width) > 0 ? Number(meta.image_width) : undefined;
     const imageHeight = Number(meta.image_height) > 0 ? Number(meta.image_height) : undefined;
     const card = image
-        ? (TWITTER_CARDS.includes(meta.card) ? meta.card : 'summary_large_image')
+        ? (isOneOf(TWITTER_CARDS, meta.card) ? meta.card : 'summary_large_image')
         : 'summary';
     const isClientProject = UNA_URL != 'https://api.neo.so';
     const iconPng = isClientProject ? '/static/logo192.png' : '/logo192.png';
 
     const appleAppId = appSetting('smart_app_banner', 'apple_app_id');
     const appleAppArgument = appSetting('smart_app_banner', 'apple_app_argument');
-    const other = {
+    const other: Record<string, string> = {
         'mobile-web-app-capable': 'yes',
     };
     if (appleAppId) {
@@ -280,7 +321,7 @@ export async function generateMetadata(props) {
             ...(description && { description }),
             url,
             siteName: SITE_TITLE,
-            type: OG_TYPES.includes(meta.og_type) ? meta.og_type : 'website',
+            type: isOneOf(OG_TYPES, meta.og_type) ? meta.og_type : 'website',
             ...(image && {
                 images: [
                     {
@@ -296,7 +337,7 @@ export async function generateMetadata(props) {
     }
 }
 
-export default async function Page(props) {
+export default async function Page(props: PageProps) {
     const params = await props.params;
     const path = params?.path?.join('/') || '';
     const isHomePage = path === '' || path === 'home' || path === 'index';
@@ -337,7 +378,7 @@ export default async function Page(props) {
     }
     
     if (data?.data?.page_status == 404) {
-        notFound(props)
+        notFound()
     }
 
     return (

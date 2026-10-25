@@ -29,7 +29,7 @@ UNA's PHP code is the rest of the UNA repo, one level above `neo/`. Paths below 
   - If the body isn't JSON, `fetcher` returns `{}`, so a broken service shows up as missing data, not as an error.
 - Many endpoints come from UNA data rather than code: `'/api.php?r=' + data.request_url`. Fixed ones live in `appSetting('urls', ...)` (`packages/app/settings/configs.js`).
 - Three places skip `fetcher` on purpose:
-  - The web page shell (`apps/next/app/[...path]/page.js`) fetches the page JSON on the server with the API key and the viewer's cookies.
+  - The web page shell (`apps/next/app/[...path]/page.tsx`) fetches the page JSON on the server with the API key and the viewer's cookies.
   - AI chat streaming (`ui/molecules/ai-agent/helper.js`) reads server-sent events.
   - Direct file uploads (`lib/util/upload.ts`).
 - If the page JSON can't be parsed, the web shell logs the PHP output and renders the page as `page_status: 503`. `Layout` then shows the maintenance screen for the whole page. The home page falls back to a static splash. Fix the PHP; the fallback is only a safety net.
