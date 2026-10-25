@@ -148,23 +148,28 @@ function FooterLanguageSwitcher({ visualProps }) {
     const { lang, langCode, setLang } = useLayoutSettings();
     const configuredLangs = appSetting('layout', AVAILABLE_LANGS_SETTING_KEY);
     const langs = Array.isArray(configuredLangs) ? configuredLangs : [];
+    // The chosen option ('auto' for System), and the language actually in use: in System mode the
+    // device's language (langCode), which the trigger shows and the System option names.
     const currentLang = resolveFooterLang(langs, lang, langCode);
+    const activeLang = currentLang === 'auto' ? langCode : currentLang;
 
     const items = useMemo(() => (
         langs.map((language) => ({
             key: language,
             id: language,
             name: language,
-            title: t('lang_' + language),
+            title: language === 'auto' && activeLang
+                ? `${t('lang_auto')} (${activeLang.toUpperCase()})`
+                : t('lang_' + language),
             // The language's own glyph (EN, RU, ...); System and languages tagsets has no glyph for keep the generic icon.
             icon: localeIconName(language) || 'Languages',
             selected: currentLang === language,
         }))
-    ), [currentLang, langs, t]);
+    ), [activeLang, currentLang, langs, t]);
 
     if (langs.length <= 1 || !currentLang) return null;
 
-    const langLabel = t('lang_' + currentLang);
+    const langLabel = t('lang_' + activeLang);
 
     return (
         <DropdownMenu
@@ -172,7 +177,7 @@ function FooterLanguageSwitcher({ visualProps }) {
             onSelect={(item) => setLang(item.id)}
             buttonProps={{
                 label: langLabel,
-                image: 'Languages',
+                image: localeIconName(activeLang) || 'Languages',
                 accessibilityLabel: langLabel,
                 style: visualProps.style,
                 controlSize: visualProps.controlSize,
