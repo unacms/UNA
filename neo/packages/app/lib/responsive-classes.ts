@@ -16,7 +16,7 @@ const TIER_ORDER = ['mobile', 'tablet', 'desktop'] as const;
 /**
  * Responsive class preset: `on`/`off` utilities per tier, and a default for unset tiers.
  * `multi` presets keep every utility of `on`/`off` (e.g. fill + shadow + its dark variant);
- * the others use the first one.
+ * the others use the first one, or its breakpoint steps (`onUtilByTier`).
  */
 type ResponsivePreset = { on: any; default?: any; off?: any; multi?: boolean };
 
@@ -121,10 +121,18 @@ function parseTiers(value: any) {
     return null;
 }
 
-function isContiguous(selected: Tier[]) {
-    if (selected.length <= 1) return true;
-    const idx = selected.map((bp) => TIER_ORDER.indexOf(bp));
-    return idx.every((v, i) => i === 0 || v === idx[i - 1]! + 1);
+/**
+ * The `on` utility for each tier. A setting may carry its own breakpoint steps
+ * (`py-4 sm:py-5`): a tier takes the step at or below it, so `py-4 sm:py-5`
+ * is `py-4` on mobile and `py-5` on tablet and desktop.
+ */
+function onUtilByTier(on: string): Record<Tier, string> {
+    const tokens = String(on || '').trim().split(/\s+/).filter(Boolean);
+    const step = (prefix: string) => tokens.find((token) => token.startsWith(prefix + ':'))?.slice(prefix.length + 1);
+    const mobile = tokens.find((token) => !/^(?:sm|md|lg|xl|2xl):/.test(token)) ?? baseUtil(on);
+    const tablet = step(TIER_PREFIX.tablet) ?? mobile;
+    const desktop = step(TIER_PREFIX.desktop) ?? tablet;
+    return { mobile, tablet, desktop };
 }
 
 function buildResponsiveClasses(tiers: any, on: string, { off = 'rounded-none', default: defaultClass = '' }: { off?: string; default?: string } = {}) {
@@ -138,46 +146,29 @@ function buildResponsiveClasses(tiers: any, on: string, { off = 'rounded-none', 
         return '';
     }
 
-    const onUtil = baseUtil(on);
+    const onUtil = onUtilByTier(on);
     const offUtil = baseUtil(off);
 
-    if (!onUtil || !offUtil) {
+    if (!onUtil.mobile || !offUtil) {
         return typeof defaultClass === 'string' ? defaultClass.trim() : '';
     }
 
     const normalizedTiers = parsedTiers.map((tier) => tier.toLowerCase().trim());
-    const selected = TIER_ORDER.filter((bp) => normalizedTiers.includes(bp));
-
-    if (!selected.length) {
+    if (!TIER_ORDER.some((bp) => normalizedTiers.includes(bp))) {
         return '';
     }
 
-    const pick = (tier: any) =>
-        withPrefix(TIER_PREFIX[tier as Tier], normalizedTiers.includes(tier) ? onUtil : offUtil);
-
-    if (!isContiguous(selected)) {
-        return TIER_ORDER.map(pick).filter(Boolean).join(' ');
+    // One utility per tier, written only where it differs from the tier below
+    // (mobile is always written, unprefixed).
+    const classes: string[] = [];
+    let previous = '';
+    for (const tier of TIER_ORDER) {
+        const util = normalizedTiers.includes(tier) ? onUtil[tier] : offUtil;
+        if (util !== previous) classes.push(withPrefix(TIER_PREFIX[tier], util));
+        previous = util;
     }
 
-    const start = selected[0];
-    const end = selected[selected.length - 1];
-
-    // All tiers on → bare utility (no breakpoint prefixes).
-    if (start === 'mobile' && end === 'desktop') {
-        return onUtil;
-    }
-
-    const classes = [withPrefix('', start === 'mobile' ? onUtil : offUtil)];
-
-    if (start === 'tablet' || (start === 'mobile' && end !== 'mobile')) {
-        classes.push(withPrefix('sm', onUtil));
-    } else {
-        classes.push(withPrefix('sm', offUtil));
-    }
-
-    classes.push(withPrefix('lg', end === 'desktop' ? onUtil : offUtil));
-
-    return classes.filter(Boolean).join(' ');
+    return classes.join(' ');
 }
 
 /** All utilities of `on` / `off` per tier; a tier only adds classes where it flips the tier below. */

@@ -17,13 +17,13 @@
 @source inline("bg-{orange,yellow,green,teal,sky,indigo,purple,pink,rose,red}-500");
 @source inline("bg-{green,red,gray,emerald,rose}-200 dark:bg-{green,red,gray,emerald,rose}-950");
 @source inline("text-{green,red,gray,emerald,rose}-{800,600} dark:text-{green,red,gray,emerald,rose}-{200,400}");
-@source inline("{sm:,md:,lg:,}rounded-{2xl,xl,none}");
-@source inline("{sm:,md:,lg:,}{p,gap}-{0..4}");
+@source inline("{sm:,md:,lg:,}rounded-{3xl,2xl,xl,none}");
+@source inline("{sm:,md:,lg:,}{p,gap}-{0..5}");
 /* Block design box per breakpoint (responsive-classes `bg`, `block-pad-*`, `title`): keep in
    sync with theme.blocks u-block-bg / u-block-bg-solid / u-block-pad-x / u-block-pad-y (settings/theme/elements.js). */
 @source inline("{sm:,lg:,}{bg-card,bg-card/60,bg-transparent,shadow-block-outline,shadow-none}");
 @source inline("{sm:,lg:,}dark:{shadow-block-outline-deep,shadow-none}");
-@source inline("{sm:,md:,lg:,}{px,py,my}-{0..4}");
+@source inline("{sm:,md:,lg:,}{px,py,my}-{0..5}");
 /* Panel handle offsets: half the page gap (gap-N → -mx-N/2), see page-layout/universal.js. */
 @source inline("{sm:,md:,lg:,}-mx-{0.5,1,1.5,2}");
 @source inline("{sm:,md:,lg:,}mx-0");

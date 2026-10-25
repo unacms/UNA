@@ -163,6 +163,7 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                         style="link"
                         borderShape="roundedRectangle"
                         controlSize="small"
+                        classNames={{ root: appSetting('theme', 'blocks')['u-block-more-link'] }}
                     />
                 ) : null}
             </BlockActions>)}

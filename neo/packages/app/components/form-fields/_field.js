@@ -10,12 +10,15 @@ import { NeoButton } from 'app/design/controls'
 import i18n from 'i18next'
 import { queueFormEnsureVisible } from 'app/lib/form/form-ensure-visible'
 import { nativeDriver } from 'app/lib/platform/animation'
+import { InputLabelInsideContext } from 'app/design/controls/input-label-context'
 
 const isWeb = Platform.OS === 'web'
 const inputSettings = appSetting('theme', 'inputs')
 const restingOffset = inputSettings.adaptive_label_resting_offset ?? 0
 const floatedOffset = inputSettings.adaptive_label_floated_offset ?? -2
 const duration = inputSettings.adaptive_label_duration ?? 200
+const insideOffset = inputSettings.adaptive_label_floated_inside_offset ?? 6
+const insideSizes = inputSettings.adaptive_label_inside_sizes ?? []
 
 export function getFormFieldDomId(name) {
     if (name == null || name === '') return undefined
@@ -39,7 +42,8 @@ function FieldCaption({ htmlFor, className, children }) {
     return label
 }
 
-function AdaptiveLabel({ caption, value, focused, htmlFor, children }) {
+/** `inside`: the floated label stays inside the input near its top edge (large inputs) instead of sitting on the border. */
+function AdaptiveLabel({ caption, value, focused, htmlFor, inside, children }) {
     const hasValue = value != null && String(value).length > 0
     const floated = !!focused || hasValue
 
@@ -52,8 +56,9 @@ function AdaptiveLabel({ caption, value, focused, htmlFor, children }) {
         boxH > 0 && labelH > 0
             ? Math.max(0, (boxH - labelH) / 2) + restingOffset
             : 0
-    const floatedY =
-        labelH > 0 ? -labelH / 2 + floatedOffset : floatedOffset
+    const floatedY = inside
+        ? insideOffset
+        : (labelH > 0 ? -labelH / 2 + floatedOffset : floatedOffset)
 
     useEffect(() => {
         if (boxH <= 0 || labelH <= 0) return
@@ -100,14 +105,17 @@ function AdaptiveLabel({ caption, value, focused, htmlFor, children }) {
                     onLayout={onLabelLayout}
                     className={cn(
                         inputSettings.adaptive_label,
-                        floated ? inputSettings.adaptive_label_floated : null
+                        inside && inputSettings.adaptive_label_inside,
+                        floated
+                            ? (inside ? inputSettings.adaptive_label_floated_inside : inputSettings.adaptive_label_floated)
+                            : null
                     )}
                 >
                     <FieldCaption
                         htmlFor={htmlFor}
                         className={
                             floated
-                                ? inputSettings.adaptive_label_text_floated
+                                ? (inside ? inputSettings.adaptive_label_text_floated_inside : inputSettings.adaptive_label_text_floated)
                                 : inputSettings.adaptive_label_text_resting
                         }
                     >
@@ -115,7 +123,9 @@ function AdaptiveLabel({ caption, value, focused, htmlFor, children }) {
                     </FieldCaption>
                 </View>
             </Animated.View>
-            {children}
+            <InputLabelInsideContext.Provider value={!!inside}>
+                {children}
+            </InputLabelInsideContext.Provider>
         </View>
     )
 }
@@ -139,6 +149,7 @@ export default function Field({
     focused,
     isAdaptiveLabel,
     info,
+    size,
 }) {
     const caption = format === 'notitle' ? '' : captionProp
     const wrapRef = useRef(null)
@@ -247,6 +258,7 @@ export default function Field({
                     value={value}
                     focused={focused}
                     htmlFor={inputId}
+                    inside={insideSizes.includes(size || inputSettings.default_size || 'regular')}
                 >
                     {children}
                 </AdaptiveLabel>

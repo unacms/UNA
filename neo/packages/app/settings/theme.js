@@ -37,7 +37,7 @@ export const settingsTheme = {
         // Set `enabled: false` to use plain CSS border-radius / no continuous curve.
         corner_smoothing: {
             enabled: true,
-            factor: 1.6,
+            factor: 1.25,
             full_factor: 1,
         },
         native_tabs: {

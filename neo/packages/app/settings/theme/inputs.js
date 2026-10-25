@@ -35,17 +35,20 @@ export const settingsInputs = {
             default: 'rounded-xl',
             full: 'rounded-full',
         },
+        // Size that inputs, selects and switch rows use when a field doesn't pass one.
+        default_size: 'large',
         // Shared control heights + default radius — text inputs, selects, matching surfaces.
         size:{
             small: 'px-3 py-1.5 leading-4 min-h-9 rounded-lg',
             regular: 'px-3 py-2 leading-5 min-h-11 rounded-xl',
-            large: 'px-4 py-2 leading-6 min-h-14 rounded-2xl',
+            // 52px, the height of a large NeoButton.
+            large: 'px-4 py-2 leading-6 min-h-13 rounded-xl',
         },
         // Height-only tokens for chip wells / wrappers that bring their own padding.
         surface_size:{
             small: 'min-h-9',
             regular: 'min-h-11',
-            large: 'min-h-12',
+            large: 'min-h-13',
         },
         base: 
         'text-card-foreground placeholder:text-muted-foreground  bg-input/50 shadow-input-outline dark:shadow-input-outline-deep text-base placeholder-muted-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring/80 web:focus-visible:border web:focus-visible:shadow-none web:overflow-hidden',
@@ -65,6 +68,18 @@ export const settingsInputs = {
         adaptive_label_resting_offset: 0,
         adaptive_label_floated_offset: -1.5,
         adaptive_label_duration: 100,
+        // Input sizes whose floated label stays inside the box, near the top edge
+        // (others float it onto the top border). The input then sets its text
+        // below the label, and the resting label lines up with the text.
+        adaptive_label_inside_sizes: ['large'],
+        adaptive_label_inside: 'ml-4',
+        // Used instead of `adaptive_label_floated`: no chip, the label just
+        // shrinks and keeps its resting colour, lined up with the value.
+        adaptive_label_floated_inside: 'h-4 justify-center web:[&_label]:h-full',
+        adaptive_label_text_floated_inside: 'text-xs leading-none text-muted-foreground',
+        adaptive_label_floated_inside_offset: 6,
+        // pt-5.5 + leading-6 + pb-1 = 50px, so the 1px focus border fits in min-h-13 without the box growing.
+        adaptive_input_inside: 'pt-5.5 pb-1',
     },
     switcher: {
         // Container (height/padding via size.*)
@@ -73,7 +88,7 @@ export const settingsInputs = {
         size: {
             small: 'min-h-10 px-2 rounded-lg',
             regular: 'min-h-11 px-3 rounded-xl',
-            large: 'min-h-16 px-4 rounded-xl',
+            large: 'min-h-13 px-4 rounded-xl',
         },
 
         // Text

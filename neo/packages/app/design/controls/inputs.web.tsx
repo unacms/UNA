@@ -1,8 +1,9 @@
-import { forwardRef, type ReactNode } from 'react';
+import { forwardRef, useContext, type ReactNode } from 'react';
 import { Platform } from 'react-native';
 import { View, Row } from 'app/design/view'
 import { Icon } from 'app/ui/atoms/icon'
 import { appSetting, cn } from 'app/lib/util'
+import { InputLabelInsideContext } from './input-label-context'
 
 const inputSettings = appSetting('theme', 'inputs');
 const isWeb = Platform.OS === 'web';
@@ -17,6 +18,12 @@ export const InputSize = {
     regular: 'regular',
     large: 'large',
 } as const;
+
+/** Size for fields that don't pass one: `theme.inputs.default_size`, else regular. */
+const DEFAULT_SIZE: keyof typeof InputSize = inputSettings.default_size in InputSize ? inputSettings.default_size : InputSize.regular;
+
+/** Sizes whose adaptive label floats inside the input (`theme.inputs.adaptive_label_inside_sizes`). */
+const isLabelInsideSize = (size: string) => (inputSettings.adaptive_label_inside_sizes ?? []).includes(size);
 
 type CustomInputProps = {
     className?: string;
@@ -134,14 +141,16 @@ export const TextInputClear = forwardRef<any, CustomInputProps>(
 TextInputClear.displayName = 'TextInputClear';
 
 export const Input = forwardRef<any, CustomInputProps>(
-    ({ className = '', style, rounded = InputRounded.default, size = InputSize.regular, multiline, ...props }, ref) => {
+    ({ className = '', style, rounded = InputRounded.default, size = DEFAULT_SIZE, multiline, ...props }, ref) => {
         const Component = multiline ? 'textarea' : 'input';
+        const labelInside = useContext(InputLabelInsideContext) && isLabelInsideSize(size);
         return (
             <Component
                 ref={ref}
                 className={cn(
                     inputSettings.base,
                     inputSettings.size[size] ?? inputSettings.size.regular,
+                    labelInside && inputSettings.adaptive_input_inside,
                     rounded === InputRounded.full && inputSettings.rounded.full,
                     className,
                 )}
@@ -214,7 +223,7 @@ Hidden.displayName = 'Hidden';
 
 /** Same surface tokens as `Input` (size includes radius) so selects match text fields and superellipse. */
 const getPickerSurfaceClass = (size?: keyof typeof InputSize) => {
-    const sizeClass = inputSettings.size[size ?? InputSize.regular] ?? inputSettings.size.regular;
+    const sizeClass = inputSettings.size[size ?? DEFAULT_SIZE] ?? inputSettings.size.regular;
     return cn(inputSettings.select, sizeClass);
 };
 
@@ -228,7 +237,7 @@ const optionFromChild = (child: any, index: number) => {
     );
 }
 
-export const PickerStyled = ({ className, children, selectedValue, value, onValueChange, onChange, size = InputSize.regular, ...props }: PickerProps) => (
+export const PickerStyled = ({ className, children, selectedValue, value, onValueChange, onChange, size = DEFAULT_SIZE, ...props }: PickerProps) => (
     <select
         className={`${getPickerSurfaceClass(size)} ${className || ''}`}
         value={selectedValue ?? value}
@@ -244,7 +253,7 @@ export const PickerStyled = ({ className, children, selectedValue, value, onValu
 PickerStyled.displayName = 'PickerStyled';
 
 export const PickerStyledRef = forwardRef<any, PickerProps>(
-    ({ classes, className, children, selectedValue, value, onValueChange, onChange, size = InputSize.regular, ...props }, ref) => (
+    ({ classes, className, children, selectedValue, value, onValueChange, onChange, size = DEFAULT_SIZE, ...props }, ref) => (
         <View className={`relative ${isWeb ? 'flex-auto items-center flex-row' : ''}`}>
             <select
                 ref={ref}
