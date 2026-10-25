@@ -97,6 +97,17 @@ export function truncateString(str: string, num: number): string {
     return str.slice(0, num) + '...';
 }
 
+/** Collapse whitespace and cut plain text to at most `max` chars at a word boundary, ending in `…`. */
+export function truncateWords(str: string, max: number): string {
+    const text = String(str ?? '').replace(/\s+/g, ' ').trim();
+    if (text.length <= max) return text;
+    const cut = text.slice(0, max - 1);
+    const space = cut.lastIndexOf(' ');
+    // A single very long word is cut where it is.
+    const words = space > max * 0.6 ? cut.slice(0, space) : cut;
+    return words.replace(/[\s,;:.!?-]+$/, '') + '…';
+}
+
 /** Cut HTML to `maxLength` text chars (and `maxLines`), closing any open tags. */
 export function truncateHTML(html: string | null | undefined, maxLength: number, maxLines: number | null = null): string {
     if (!html) return '';
