@@ -26,6 +26,8 @@
     --destructive-foreground: var(--white);
     --border: var(--neutral-300);
     --input: var(--white);
+    /* Outline that identifies a form control (an unchecked checkbox or radio): 3:1 against inputs, cards and the page. */
+    --control-border: var(--neutral-500);
     /*
      * The ink of the neutral fills (`bg-bubble`, `bg-button`, `bg-button-hover`
      * in theme.css): this colour at an alpha, so fills stack instead of
@@ -85,6 +87,7 @@
     --destructive-foreground: var(--neutral-950);
     --border: var(--neutral-800);
     --input: var(--neutral-900);
+    --control-border: var(--neutral-500);
     /* Near-white ink in dark mode (see the light scheme). */
     --ink: var(--neutral-50);
     /* Opaque fill for shadowed native buttons (`bg-button-solid`); bg-button is the ink. */

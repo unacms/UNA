@@ -31,7 +31,7 @@ export default function RadioButton({ title, info, onPress, status, value, disab
             ? icon
             : null;
     if (rb_obly)
-        return <View className=' h-5 w-5 rounded-full border-2 border-border bg-transparent web:group-hover:border-secondary-foreground justify-center items-center m-1'>
+        return <View className=' h-5 w-5 rounded-full border-2 border-control-border bg-transparent web:group-hover:border-secondary-foreground justify-center items-center m-1'>
             {selected ? <View className="h-2.5 w-2.5 rounded-full bg-primary" /> : null}
         </View>
     return (

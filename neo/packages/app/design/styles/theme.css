@@ -19,6 +19,7 @@
     --container-list-lg: 64rem;
     --container-list-xl: 80rem;
     --color-border: rgb(var(--border));
+    --color-control-border: rgb(var(--control-border));
     --color-input: rgb(var(--input));
     /*
      * Neutral fills: the scheme's ink (palette-schemes.css) at an alpha, so they

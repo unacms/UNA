@@ -167,13 +167,14 @@ export const settingsInputs = {
         // Checkbox square indicator
         'u-controls-checkbox-indicator':
             'shrink-0 h-5 w-5 rounded-md shadow-btn-outline dark:shadow-btn-outline-deep  bg-input/50 justify-center items-center',
-        // Explicit border for contrast on light card / grid surfaces
+        // The box's outline: control-border keeps 3:1 against the input fill, cards and the page
+        // in both schemes (WCAG 1.4.11), so an unchecked box is still visible.
         'u-controls-checkbox-indicator-border':
-            'border border-border',
+            'border border-control-border',
 
         // Radiobutton circular indicator
         'u-controls-radiobutton-indicator':
-            'h-5 w-5 m-1 rounded-full border-2 border-border bg-transparent justify-center items-center ',
+            'h-5 w-5 m-1 rounded-full border-2 border-control-border bg-transparent justify-center items-center ',
 
         // Active mark inside checkbox (filled square) — no margin; parent centers it
         'u-controls-checkbox-indicator-active':
