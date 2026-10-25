@@ -441,12 +441,17 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
         if (!$this->isFileReady($mixedHandler) && ($this->_sQueueTable || !$this->transcode($mixedHandler)))
             return false;
 
-        $iFileId = $this->_oDb->getFileIdByHandler($this->processHandlerForRetinaDevice($mixedHandler));
+        $sHandler = $this->processHandlerForRetinaDevice($mixedHandler);
+        $iFileId = $this->_oDb->getFileIdByHandler($sHandler);
         $aFile = $iFileId ? $this->_oStorage->getFile($iFileId) : false;
 
         // a private file has a url with a short-lived token, crawlers come later
         if (!$aFile || $aFile['private'] || strncmp($aFile['mime_type'], 'image/', 6) !== 0 || $this->_oStorage->isMimeTypeSvg($aFile['mime_type']))
             return false;
+
+        // as getFileUrl does: a copy used only for previews mustn't be pruned as unused
+        if ($this->_aObject['atime_tracking'])
+            $this->_oDb->updateAccessTime($sHandler);
 
         // a local file can be gone while its record is there; a remote one isn't measured
         $sPath = $this->_oStorage->getFileLocalPath($iFileId);
