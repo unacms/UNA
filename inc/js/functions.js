@@ -2432,13 +2432,17 @@ function bx_scrollbar_overlay(oScroller, oFrame, oClasses)
             $(oFrame).removeClass(c.scrolling);
         }, 800);
     }, {passive: true});
-    if(window.ResizeObserver)
-        (oResize = new ResizeObserver(fUpdate)).observe(oScroller);
-    if(window.MutationObserver)
-        (oMutation = new MutationObserver(function() {
+    if(window.ResizeObserver) {
+        oResize = new ResizeObserver(fUpdate);
+        oResize.observe(oScroller);
+    }
+    if(window.MutationObserver) {
+        oMutation = new MutationObserver(function() {
             clearTimeout(oState.mutation);
             oState.mutation = setTimeout(fUpdate, 50);
-        })).observe(oScroller, {childList: true, subtree: true, attributes: true});
+        });
+        oMutation.observe(oScroller, {childList: true, subtree: true, attributes: true});
+    }
     $(window).on('resize', fUpdate);
 
     fUpdate();
@@ -2461,8 +2465,8 @@ function bx_scrollbar_overlay_update(o)
 
     // A corner follows the scroll box's own radius or, where the box meets the frame's edge, the frame's.
     var oCss = getComputedStyle(oScroller), oCssFrame = getComputedStyle(o.frame);
-    var fRadiusT = fTop < 1 ? (parseFloat(oCss.borderTopRightRadius) || parseFloat(oCssFrame.borderTopRightRadius) || 0) : 0;
-    var fRadiusB = parseFloat(oCss.borderBottomRightRadius) || (fBottom > fH - 1 ? parseFloat(oCssFrame.borderBottomRightRadius) || 0 : 0);
+    var fRadiusT = fTop < 1 ? (Number.parseFloat(oCss.borderTopRightRadius) || Number.parseFloat(oCssFrame.borderTopRightRadius) || 0) : 0;
+    var fRadiusB = Number.parseFloat(oCss.borderBottomRightRadius) || (fBottom > fH - 1 ? Number.parseFloat(oCssFrame.borderBottomRightRadius) || 0 : 0);
 
     var fInset = 6; // the bar's centre line, 6px in from the edge: 4px wide with a 4px gap
     var fRt = Math.max(fRadiusT - fInset, 0), fRb = Math.max(fRadiusB - fInset, 0);
