@@ -20,6 +20,7 @@
     "react-hook-form": "^7.45.2",
     "react-i18next": "^13.2.2",
     "solito": "4.3.0",
+    "tagsets": "0.3.0",
     "yaml": "^2.9.0"
   },
   "peerDependencies": {

@@ -7,6 +7,7 @@ import { useCurrentUserNoCounters } from 'app/context/user';
 import { useMenuData } from 'app/context/menu-data';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import { localeIconName } from 'app/ui/atoms/tag-glyph-icons';
 import { SOUND_LEVEL_ITEMS, useSoundsLevel } from 'app/lib/hooks/use-sounds-level';
 
 export const MENU_FOOTER_CLASSES = 'flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-1 p-4 min-h-16';
@@ -155,7 +156,8 @@ function FooterLanguageSwitcher({ visualProps }) {
             id: language,
             name: language,
             title: t('lang_' + language),
-            icon: 'Languages',
+            // The language's own glyph (EN, RU, ...); System and languages tagsets has no glyph for keep the generic icon.
+            icon: localeIconName(language) || 'Languages',
             selected: currentLang === language,
         }))
     ), [currentLang, langs, t]);
