@@ -107,7 +107,10 @@
         if((bLock && eBodyHtml.hasClass('bx-popup-lock')) || (!bLock && !eBodyHtml.hasClass('bx-popup-lock'))) 
             return;
 
-        var iPaddingRight = parseInt(eBody.css("padding-right")) + ((bLock ? 1 : -1) * _getScrollbarWidth());
+        // A page that keeps its scrollbar's gutter (scrollbar-gutter: stable, Artificer's general.css) keeps its width when locked; others
+        // make up for the bar that overflow: hidden takes away.
+        var bGutterKept = ($('html').css('scrollbar-gutter') || '').indexOf('stable') === 0;
+        var iPaddingRight = Number.parseInt(eBody.css("padding-right"), 10) + (bGutterKept ? 0 : (bLock ? 1 : -1) * _getScrollbarWidth());
 
         eBody.css("padding-right", iPaddingRight + "px");
         eBodyHtml.toggleClass('bx-popup-lock', bLock);
@@ -263,6 +266,10 @@
 
                 // show popup
                 $el.css({display: 'block', visibility: 'visible'});
+
+                // a scrolling menu swaps its native bar for the overlay one before it fades in (functions.js)
+                if(typeof(bx_scrollbar_overlay_popups) === 'function')
+                    bx_scrollbar_overlay_popups($el);
                 if (o.fog) {
                     var oOnHide = function() {
                         $(window).triggerHandler('resize.popupFog');

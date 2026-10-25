@@ -448,6 +448,55 @@ body > .bx-popup-wrapper {
     transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
+/*
+ * Overlay scrollbar (bx_scrollbar_overlay in inc/js/functions.js), as on Studio's blocks: the scroll box hides its native bar, and an
+ * SVG over its rounded frame runs a thumb down the right edge and round the frame's corners. It shows while the pointer is over the
+ * frame or the content scrolls. Used by scrolling popup menus (the header's More and account menus).
+ */
+.bx-scrollbar-scroller {
+    scrollbar-width: none;
+}
+.bx-scrollbar-scroller::-webkit-scrollbar {
+    display: none;
+}
+svg.bx-scrollbar {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.bx-scrollbar-hover:hover > svg.bx-scrollbar,
+.bx-scrollbar-scrolling > svg.bx-scrollbar {
+    opacity: 1;
+}
+svg.bx-scrollbar path {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+}
+svg.bx-scrollbar .bx-scrollbar-track {
+    stroke: rgba(0, 0, 0, 0.05);
+}
+svg.bx-scrollbar .bx-scrollbar-thumb {
+    stroke: rgba(0, 0, 0, 0.25);
+}
+.dark svg.bx-scrollbar .bx-scrollbar-track {
+    stroke: rgba(255, 255, 255, 0.05);
+}
+.dark svg.bx-scrollbar .bx-scrollbar-thumb {
+    stroke: rgba(255, 255, 255, 0.25);
+}
+@media (prefers-reduced-motion: reduce) {
+    svg.bx-scrollbar {
+        transition: none;
+    }
+}
+
 .bx-popup-width {
     width: 500px;
 }
