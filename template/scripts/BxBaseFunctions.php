@@ -401,7 +401,7 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
      * @param $iLength - cut the text on a word boundary to this number of characters, 0 - don't cut
      * @return string plain text, escape it for output
      */
-    function getMetaText($sHtml, $iLength = 200)
+    public function getMetaText($sHtml, $iLength = 200)
     {
         $s = preg_replace('#<(script|style)\b.*?</\1\s*>#is', ' ', (string)$sHtml);
         $s = preg_replace('#<(?:br|/?(?:p|div|li|ul|ol|h[1-6]|blockquote|pre|tr|td|th|dt|dd|figcaption|section|article))\b[^>]*>#i', ' ', $s);

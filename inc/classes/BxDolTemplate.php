@@ -1303,7 +1303,7 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
      * @param $sImageUrl meta image url
      * @param $aInfo optional image info: 'width', 'height' and 'card' - twitter card type, 'summary' for a small square picture
      */
-    function addPageMetaImage($sImageUrl, $aInfo = [])
+    public function addPageMetaImage($sImageUrl, $aInfo = [])
     {
         $this->aPage['image'] = $sImageUrl;
         $this->aPage['image_info'] = $aInfo;
@@ -1314,7 +1314,7 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
      *
      * @param $sType page type
      */
-    function setPageMetaType($sType)
+    public function setPageMetaType($sType)
     {
         $this->aPage['og_type'] = $sType;
     }
