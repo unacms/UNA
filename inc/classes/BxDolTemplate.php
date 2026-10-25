@@ -1366,8 +1366,6 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         $sDescriptionAttr = '';
         if(!empty($this->aPage['description']) && is_string($this->aPage['description']))
             $sDescriptionAttr = htmlspecialchars($oFunctions->getMetaText($this->aPage['description']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-        if($sDescriptionAttr !== '')
-            $sRet .= '<meta name="description" content="' . $sDescriptionAttr . '" />';
 
         // location
         if(!empty($this->aPage['location']) && isset($this->aPage['location']['lat']) && isset($this->aPage['location']['lng']) && isset($this->aPage['location']['country']))
@@ -1383,23 +1381,41 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         // Open Graph, which X and others read too; a big picture card needs a big landscape image
         $bPageImage = !empty($this->aPage['image']);
         $aImageInfo = $bPageImage && !empty($this->aPage['image_info']) ? $this->aPage['image_info'] : [];
-        $sCard = $bPageImage ? ($aImageInfo['card'] ?? 'summary_large_image') : 'summary';
-        $sRet .= '<meta name="twitter:card" content="' . $sCard . '" />';
+        $bDescription = $sDescriptionAttr !== '';
 
-        $sRet .= '<meta property="og:site_name" content="' . htmlspecialchars(getParam('site_title'), ENT_QUOTES | ENT_HTML5, 'UTF-8') . '" />';
-        $sRet .= '<meta property="og:type" content="' . bx_html_attribute(!empty($this->aPage['og_type']) ? $this->aPage['og_type'] : 'website') . '" />';
-        if($sUrl)
-            $sRet .= '<meta property="og:url" content="' . bx_html_attribute($sUrl) . '" />';
-        $sRet .= '<meta property="og:title" content="' . $sHeaderAttr . '" />';
-        if($sDescriptionAttr !== '')
-            $sRet .= '<meta property="og:description" content="' . $sDescriptionAttr . '" />';
-        if($bPageImage) {
-            $sRet .= '<meta property="og:image" content="' . bx_html_attribute($this->aPage['image']) . '" />';
-            if(!empty($aImageInfo['width']) && !empty($aImageInfo['height']))
-                $sRet .= '<meta property="og:image:width" content="' . (int)$aImageInfo['width'] . '" /><meta property="og:image:height" content="' . (int)$aImageInfo['height'] . '" />';
-            if($sHeaderAttr !== '')
-                $sRet .= '<meta property="og:image:alt" content="' . $sHeaderAttr . '" />';
-        }
+        // Values are escaped here; the text people write goes last, the template engine replaces keys in order.
+        $sRet .= $this->parseHtmlByName('meta_open_graph.html', [
+            'card' => $bPageImage ? ($aImageInfo['card'] ?? 'summary_large_image') : 'summary',
+            'site_name' => htmlspecialchars(getParam('site_title'), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+            'type' => bx_html_attribute(!empty($this->aPage['og_type']) ? $this->aPage['og_type'] : 'website'),
+            'bx_if:url' => [
+                'condition' => $sUrl != '',
+                'content' => ['url' => bx_html_attribute($sUrl)]
+            ],
+            'bx_if:image' => [
+                'condition' => $bPageImage,
+                'content' => [
+                    'url' => $bPageImage ? bx_html_attribute($this->aPage['image']) : '',
+                    'bx_if:size' => [
+                        'condition' => !empty($aImageInfo['width']) && !empty($aImageInfo['height']),
+                        'content' => ['width' => (int)($aImageInfo['width'] ?? 0), 'height' => (int)($aImageInfo['height'] ?? 0)]
+                    ],
+                    'bx_if:alt' => [
+                        'condition' => $sHeaderAttr !== '',
+                        'content' => ['alt' => $sHeaderAttr]
+                    ],
+                ]
+            ],
+            'bx_if:meta_description' => [
+                'condition' => $bDescription,
+                'content' => ['description' => $sDescriptionAttr]
+            ],
+            'bx_if:og_description' => [
+                'condition' => $bDescription,
+                'content' => ['description' => $sDescriptionAttr]
+            ],
+            'title' => $sHeaderAttr,
+        ]);
 
         // Smart App Banner
         if(getParam('smart_app_banner') && false === strpos($_SERVER['HTTP_USER_AGENT'], 'UNAMobileApp')) {

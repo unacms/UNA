@@ -40,8 +40,18 @@ class BxBaseMetaTextTest extends BxDolTestCase
         $s = $this->text('<p>' . $sText . '</p>');
 
         $this->assertLessThanOrEqual(200, mb_strlen($s));
-        $this->assertStringEndsWith('...', $s);
-        $this->assertMatchesRegularExpression('/(Καλημέρα|κόσμε)\.\.\.$/u', $s, 'The cut falls between words.');
+        $this->assertMatchesRegularExpression('/(Καλημέρα|κόσμε)…$/u', $s, 'The cut falls between words.');
         $this->assertSame(trim(preg_replace('/\s+/u', ' ', $sText)), $this->text($sText, 0), 'No cut without a length.');
+    }
+
+    public function testLongWordIsCutInsideKeepingTheText(): void
+    {
+        $this->assertSame(str_repeat('a', 199) . '…', $this->text(str_repeat('a', 500)), 'One long word is cut inside it.');
+
+        $s = $this->text('Short ' . str_repeat('b', 500));
+        $this->assertSame(200, mb_strlen($s), 'A short word before a long one doesn\'t throw most of the text away.');
+        $this->assertStringStartsWith('Short bbb', $s);
+
+        $this->assertSame('One two three…', $this->text('One two three, four', 15), 'No dangling punctuation before the ellipsis.');
     }
 }

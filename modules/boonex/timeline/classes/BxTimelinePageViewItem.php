@@ -74,9 +74,13 @@ class BxTimelinePageViewItem extends BxTemplPage
     {
         $oConfig = $this->_oModule->_oConfig;
 
-        // A repost's content has the reposted type, action and object.
-        if($aEvent['type'] == $oConfig->getPrefix('common_post') . BX_TIMELINE_PARSE_TYPE_REPOST && !empty($aEvent['content']['type']))
-            return [$aEvent['content']['type'], $aEvent['content']['action'] ?? '', (int)($aEvent['content']['object_id'] ?? 0)];
+        // A repost's stored content has the reposted type, action and object (the prepared one lacks them in API mode).
+        if($aEvent['type'] == $oConfig->getPrefix('common_post') . BX_TIMELINE_PARSE_TYPE_REPOST) {
+            $aRaw = $this->_oModule->_oDb->getEvents(['browse' => 'id', 'value' => $aEvent['id']]);
+            $aContent = !empty($aRaw['content']) && is_string($aRaw['content']) ? unserialize($aRaw['content'], ['allowed_classes' => false]) : [];
+            if(!empty($aContent['type']))
+                return [$aContent['type'], $aContent['action'] ?? '', (int)($aContent['object_id'] ?? 0)];
+        }
 
         return [$aEvent['type'], $aEvent['action'], (int)($oConfig->isSystem($aEvent['type'], $aEvent['action']) ? $aEvent['object_id'] : $aEvent['id'])];
     }

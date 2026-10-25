@@ -1520,8 +1520,8 @@ class BxBasePage extends BxDolPage
 
         // Any of the icons through the biggest (512px) icon transcoder: Facebook and others don't show one under 200px.
         foreach(['icon_android_splash', 'icon_android', 'icon_apple'] as $sIcon)
-            if(($iIcon = (int)getParam('sys_site_' . $sIcon)) != 0)
-                return $this->_getMetaImage(['id' => $iIcon, 'transcoder' => BX_DOL_TRANSCODER_OBJ_ICON_ANDROID_SPLASH], false);
+            if(($iIcon = (int)getParam('sys_site_' . $sIcon)) != 0 && ($sUrl = $this->_getMetaImage(['id' => $iIcon, 'transcoder' => BX_DOL_TRANSCODER_OBJ_ICON_ANDROID_SPLASH], false)))
+                return $sUrl;
 
         return '';
     }

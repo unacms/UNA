@@ -240,6 +240,12 @@ class LinkPreviewImageTest extends BxDolIntegrationTestCase
         $oDb->query("INSERT INTO `bx_timeline_events` SET " . $oDb->arrayToSQL(array_merge($aEvent, ['status_admin' => 'pending'])));
         $iEventPending = (int)$oDb->lastId();
         $this->_aEvents[] = $iEventPending;
+
+        // A repost of the post: the API's prepared content lacks the reposted type, the stored one has it.
+        $sPrefix = BxDolModule::getInstance('bx_timeline')->_oConfig->getPrefix('common_post');
+        $oDb->query("INSERT INTO `bx_timeline_events` SET " . $oDb->arrayToSQL(array_merge($aEvent, ['system' => 0, 'type' => $sPrefix . 'repost', 'action' => '', 'object_id' => $iAuthor, 'title' => '', 'content' => serialize(['type' => 'bx_posts', 'action' => 'added', 'object_id' => $iPost])])));
+        $iEventRepost = (int)$oDb->lastId();
+        $this->_aEvents[] = $iEventRepost;
         $oDb->cleanMemoryAll();
 
         $aData = $this->getPageApi('item', $iEvent);
@@ -247,6 +253,10 @@ class LinkPreviewImageTest extends BxDolIntegrationTestCase
         $this->assertSame('LinkPreviewImageTest text.', $aData['description']);
         $this->assertPublicCopy($aData['image'], 'bx_posts_photos');
         $this->assertSame('summary_large_image', $aData['meta']['card']);
+
+        $aData = $this->getPageApi('item', $iEventRepost);
+        $this->assertSame('LinkPreviewImageTest text.', $aData['description'], 'A repost describes the reposted entry.');
+        $this->assertPublicCopy($aData['image'], 'bx_posts_photos');
 
         $aData = $this->getPageApi('item', $iEventPending);
         $this->assertSame(404, $aData['page_status'], 'A pending feed item is for its author and moderators.');
