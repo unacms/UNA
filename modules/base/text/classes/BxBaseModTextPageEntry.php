@@ -164,6 +164,15 @@ class BxBaseModTextPageEntry extends BxBaseModGeneralPageEntry
     {
         return false;
     }
+
+    protected function _getThumbForMetaObject ()
+    {
+        // An entry without a cover shows its first attached photo in link previews.
+        if(($mixedResult = parent::_getThumbForMetaObject()) === false)
+            $mixedResult = $this->_oModule->getEntryAttachedImageData($this->_aContentInfo);
+
+        return $mixedResult;
+    }
 }
 
 /** @} */

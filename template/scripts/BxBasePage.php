@@ -29,6 +29,8 @@ class BxBasePage extends BxDolPage
 
     protected $_bSubPage = false;
 
+    protected $_aMetaImages = []; //--- Size and twitter card of page meta images by url, @see _getMetaImage
+
     public function __construct ($aObject, $oTemplate)
     {
         parent::__construct ($aObject);
@@ -549,6 +551,8 @@ class BxBasePage extends BxDolPage
 
         $sMetaTitle = $bIsAllowed ? $this->_getPageMetaTitle() : '';
         $sName = $bIsAllowed ? $this->_getPageTitle() : getParam('site_title');
+        $sMetaImage = $bIsAllowed ? $this->_getPageMetaImage() : '';
+        $aMetaImage = $sMetaImage ? $this->getMetaImageInfo($sMetaImage) : [];
         $sUri = $this->_aObject['uri'];
         $sUrl = ($bGetParams && !empty($aGetParams[0]) ? $aGetParams[0] : $sUri) . ($sQueryString != '' ? '?' . $sQueryString : '');
         $sModule = $this->getModule();
@@ -568,9 +572,16 @@ class BxBasePage extends BxDolPage
             'id' => $this->_aObject['id'],
             'title' => $sMetaTitle ? $sMetaTitle : $sName,
             'name' => $sName,
-            'description' => $bIsAllowed ? $this->_getPageMetaDesc() : '',
+            'description' => $bIsAllowed ? htmlspecialchars(BxTemplFunctions::getInstance()->getMetaText($this->_getPageMetaDesc()), ENT_QUOTES | ENT_HTML5, 'UTF-8') : '',
             'keywords' => $bIsAllowed ? $this->_getPageMetaKeywords() : '',
-            'image' => $bIsAllowed ? $this->_getPageMetaImage() : '',
+            'image' => $sMetaImage,
+            // Link preview data clients can't make of the fields above.
+            'meta' => [
+                'image_width' => (int)($aMetaImage['width'] ?? 0),
+                'image_height' => (int)($aMetaImage['height'] ?? 0),
+                'card' => $sMetaImage ? ($aMetaImage['card'] ?? 'summary_large_image') : 'summary',
+                'og_type' => $bIsAllowed ? $this->_getPageMetaType() : 'website',
+            ],
             'uri' => $sUri,
             'url' => $sUrl,
             'author' => $this->_aObject['author'],
@@ -1152,7 +1163,9 @@ class BxBasePage extends BxDolPage
 
         $sMetaImage = $this->_getPageMetaImage();
         if ($sMetaImage)
-            $oTemplate->addPageMetaImage($sMetaImage);
+            $oTemplate->addPageMetaImage($sMetaImage, $this->getMetaImageInfo($sMetaImage));
+
+        $oTemplate->setPageMetaType($this->_getPageMetaType());
 
         $sMetaKeywords = $this->_getPageMetaKeywords();
         if ($sMetaKeywords)
@@ -1460,7 +1473,12 @@ class BxBasePage extends BxDolPage
      */
     protected function _getPageMetaDesc()
     {
-        return $this->_replaceMarkers(_t($this->_aObject['meta_description']));
+        // A page without a description of its own gets the site's default one (Studio > Languages), not an empty one.
+        $sResult = $this->_replaceMarkers(_t($this->_aObject['meta_description']));
+        if(trim(strip_tags($sResult)) === '')
+            $sResult = $this->_replaceMarkers(_t('_sys_page_meta_description_default'));
+
+        return $sResult;
     }
 
     /**
@@ -1473,12 +1491,92 @@ class BxBasePage extends BxDolPage
     }
     
     /**
-     * Get page meta image.
-     * @return string
+     * Get page meta image: the picture link previews show.
+     * @return string image url
      */
     protected function _getPageMetaImage()
     {
+        return $this->getMetaImageDefault();
+    }
+
+    /**
+     * Get page meta type (Open Graph type).
+     * @return string 'website', 'article' or 'profile'
+     */
+    protected function _getPageMetaType()
+    {
+        return 'website';
+    }
+
+    /**
+     * Get the meta image of a page which has no image of its own: the page cover (or the common site cover),
+     * else the site icon as a small square picture.
+     * @return string image url or an empty string
+     */
+    public function getMetaImageDefault()
+    {
+        if(($aCover = $this->getPageCoverImage()) && ($sUrl = $this->_getMetaImage($aCover)))
+            return $sUrl;
+
+        // Any of the icons through the biggest (512px) icon transcoder: Facebook and others don't show one under 200px.
+        foreach(['icon_android_splash', 'icon_android', 'icon_apple'] as $sIcon)
+            if(($iIcon = (int)getParam('sys_site_' . $sIcon)) != 0 && ($sUrl = $this->_getMetaImage(['id' => $iIcon, 'transcoder' => BX_DOL_TRANSCODER_OBJ_ICON_ANDROID_SPLASH], false)))
+                return $sUrl;
+
         return '';
+    }
+
+    /**
+     * Get the size and the twitter card of a meta image got with _getMetaImage.
+     * @param string $sUrl image url
+     * @return array 'width', 'height' (0 when unknown) and 'card', or an empty array for an unknown image
+     */
+    public function getMetaImageInfo($sUrl)
+    {
+        return $this->_aMetaImages[$sUrl] ?? [];
+    }
+
+    /**
+     * Get the url of a page meta image and remember its size and twitter card.
+     * The image is a public transcoded copy, never the original upload or a url with a short-lived token.
+     * @param array $aImage ['id' => file id, 'transcoder' => transcoder object] or ['id' => file id, 'object' => storage object]
+     * @param boolean $bWide a picture of the content (cover, photo) is shown big when its size allows it, otherwise (avatar, icon) small and square
+     * @return string image url or an empty string
+     */
+    protected function _getMetaImage($aImage, $bWide = true)
+    {
+        if(empty($aImage['id']) || !is_array($aImage))
+            return '';
+
+        $aResult = false;
+        if(!empty($aImage['transcoder'])) {
+            if(($oTranscoder = BxDolTranscoder::getObjectInstance($aImage['transcoder'])) !== false)
+                $aResult = $oTranscoder->getFileMetaImage($aImage['id']);
+        }
+        else if(!empty($aImage['object']) && ($oStorage = BxDolStorage::getObjectInstance($aImage['object'])) !== false) {
+            $aFile = $oStorage->getFile($aImage['id']);
+            if($aFile && !$aFile['private'] && strncmp($aFile['mime_type'], 'image/', 6) === 0 && !$oStorage->isMimeTypeSvg($aFile['mime_type'])) {
+                $aSize = !empty($aFile['dimensions']) ? explode('x', $aFile['dimensions']) : [];
+                $aResult = ['url' => $oStorage->getFileUrlById($aImage['id']), 'width' => (int)($aSize[0] ?? 0), 'height' => (int)($aSize[1] ?? 0)];
+            }
+        }
+
+        if(empty($aResult['url']))
+            return '';
+
+        $iWidth = $aResult['width'];
+        $iHeight = $aResult['height'];
+
+        // A big picture needs a big landscape image: X crops it to 2:1, WhatsApp takes 4:1 at most.
+        $bLarge = $bWide && (!$iWidth || !$iHeight || ($iWidth >= 600 && $iHeight >= 315 && $iWidth >= 1.3 * $iHeight && $iWidth <= 4 * $iHeight));
+
+        $this->_aMetaImages[$aResult['url']] = [
+            'width' => $iWidth,
+            'height' => $iHeight,
+            'card' => $bLarge ? 'summary_large_image' : 'summary',
+        ];
+
+        return $aResult['url'];
     }
     
     /**

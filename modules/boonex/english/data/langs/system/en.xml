@@ -4019,6 +4019,7 @@
     <string name="_sys_page_lang_block_about"><![CDATA[This site is powered by UNA. The rest is a mystery.]]></string>
     <string name="_sys_page_lang_block_terms"><![CDATA[Our terms of use.]]></string>
     <string name="_sys_page_lang_block_privacy"><![CDATA[Our privacy policy.]]></string>
+    <string name="_sys_page_meta_description_default"><![CDATA[{site_title} is an online community where people share, discuss and stay in touch with others who care about the same things.]]></string>
     <string name="_sys_page_title_about"><![CDATA[About]]></string>
     <string name="_sys_page_title_account_profile_switcher"><![CDATA[My Profiles]]></string>
     <string name="_sys_page_title_account_settings_delete"><![CDATA[Delete Account]]></string>
@@ -4035,7 +4036,7 @@
     <string name="_sys_page_title_dashboard"><![CDATA[Dashboard]]></string>
     <string name="_sys_page_title_forgot_password"><![CDATA[Forgot Password]]></string>
     <string name="_sys_page_title_forgot_password_reset"><![CDATA[Choose New Password]]></string>
-    <string name="_sys_page_title_home"><![CDATA[{site_title} :: Homepage]]></string>
+    <string name="_sys_page_title_home"><![CDATA[Welcome to {site_title}]]></string>
     <string name="_sys_page_title_logout"><![CDATA[Log out]]></string>
     <string name="_sys_page_title_login"><![CDATA[Log in]]></string>
     <string name="_sys_page_title_login_step2"><![CDATA[Log in - step 2]]></string>

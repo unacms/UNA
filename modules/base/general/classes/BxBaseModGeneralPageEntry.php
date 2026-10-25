@@ -162,26 +162,18 @@ class BxBaseModGeneralPageEntry extends BxTemplPage
         if(!$this->_isMetaAllowed())
             return parent::_getPageMetaDesc();
 
-        $CNF = &$this->_oModule->_oConfig->CNF;
+        // The author's abstract, else the text: the page head and the API make plain text of it.
+        $oTemplate = $this->_oModule->_oTemplate;
+        foreach([$oTemplate->getAbstract($this->_aContentInfo), $oTemplate->getText($this->_aContentInfo, false)] as $sResult)
+            if(trim(strip_tags($sResult)) !== '')
+                return $sResult;
 
-        $sResult = '';
-        if(isset($CNF['FIELD_TEXT'])) {
-            $sResult = strip_tags($this->_oModule->_oTemplate->getText($this->_aContentInfo, false));
+        return parent::_getPageMetaDesc();
+    }
 
-            $iLength = 0;
-            if(!empty($CNF['PARAM_CHARS_SUMMARY']))
-                $iLength = (int)getParam($CNF['PARAM_CHARS_SUMMARY']);
-            if(empty($iLength))
-                $iLength = 240;
-
-            if(mb_strlen($sResult) > $iLength)
-                $sResult = mb_substr($sResult, 0, $iLength);
-        }
-
-        if(empty($sResult))
-            $sResult = $this->_replaceMarkers(_t($this->_aObject['meta_description']));
-
-        return $sResult;
+    protected function _getPageMetaType()
+    {
+        return 'article';
     }
 
     protected function _getThumbForMetaObject ()
@@ -195,16 +187,10 @@ class BxBaseModGeneralPageEntry extends BxTemplPage
         if(!$this->_isMetaAllowed())
             return '';
 
-        if(!($aImage = $this->_getThumbForMetaObject()) || !is_array($aImage))
-            return '';
+        if(($sUrl = $this->_getMetaImage($this->_getThumbForMetaObject())))
+            return $sUrl;
 
-        $o = null;
-        if(!empty($aImage['object']))
-            $o = BxDolStorage::getObjectInstance($aImage['object']);
-        else if(!empty($aImage['transcoder']))
-            $o = BxDolTranscoder::getObjectInstance($aImage['transcoder']);
-
-        return $o ? (string)$o->getFileUrlById($aImage['id']) : '';
+        return parent::_getPageMetaImage();
     }
 
     protected function _getPageCacheParams ()

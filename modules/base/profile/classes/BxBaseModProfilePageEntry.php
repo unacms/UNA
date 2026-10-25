@@ -162,6 +162,29 @@ class BxBaseModProfilePageEntry extends BxBaseModGeneralPageEntry
         return $sResult;
     }
 
+    protected function _getPageMetaType()
+    {
+        return 'profile';
+    }
+
+    /**
+     * The cover, else the picture as a small square one, when their own privacy lets the viewer see them:
+     * a closed (friends only) profile shows them too, @see BxBaseModProfileModule::checkAllowedViewCoverImage
+     */
+    protected function _getPageMetaImage()
+    {
+        if(!$this->_aContentInfo || $this->_isAvailablePage($this->_aObject) !== true)
+            return '';
+
+        if($this->_oModule->checkAllowedViewCoverImage($this->_aContentInfo) === CHECK_ACTION_RESULT_ALLOWED && ($sUrl = $this->_getMetaImage($this->_oModule->getEntryImageData($this->_aContentInfo, 'FIELD_COVER'))))
+            return $sUrl;
+
+        if($this->_oModule->checkAllowedViewProfileImage($this->_aContentInfo) === CHECK_ACTION_RESULT_ALLOWED && ($sUrl = $this->_getMetaImage($this->_oModule->getEntryImageData($this->_aContentInfo, 'FIELD_PICTURE'), false)))
+            return $sUrl;
+
+        return $this->getMetaImageDefault();
+    }
+
     protected function _isAvailablePage($a)
     {
         // check if profile is active

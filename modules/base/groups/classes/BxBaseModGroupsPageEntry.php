@@ -115,6 +115,11 @@ class BxBaseModGroupsPageEntry extends BxBaseModProfilePageEntry
         return $this->_getInvitationCode() . parent::getCode();
     }
 
+    protected function _getPageMetaType()
+    {
+        return 'website';
+    }
+
     protected function _isAvailablePage($a)
     {
         if(!$this->_aContentInfo || !$this->_oModule->isEntryActive($this->_aContentInfo))

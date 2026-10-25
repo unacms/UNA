@@ -395,6 +395,31 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * Get plain text of an html for page meta (description, link previews): the words of separate paragraphs,
+     * list items, headings and table cells don't run together, entities are decoded and whitespace is collapsed.
+     * @param $sHtml - html
+     * @param $iLength - cut the text on a word boundary to this number of characters, 0 - don't cut
+     * @return string plain text, escape it for output
+     */
+    public function getMetaText($sHtml, $iLength = 200)
+    {
+        $s = preg_replace('#<(script|style)\b.*?</\1\s*>#is', ' ', (string)$sHtml);
+        $s = preg_replace('#<(?:br|/?(?:p|div|li|ul|ol|h[1-6]|blockquote|pre|tr|td|th|dt|dd|figcaption|section|article))\b[^>]*>#i', ' ', $s);
+        $s = html_entity_decode(strip_tags($s), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $s = trim(preg_replace('/\s+/u', ' ', $s));
+
+        if(!$iLength || get_mb_len($s) <= $iLength)
+            return $s;
+
+        // Cut at the last space that keeps at least half of the text, else inside the long word, then end with an ellipsis.
+        $s = get_mb_substr($s, 0, $iLength - 1);
+        if(($iSpace = mb_strrpos($s, ' ', 0, 'UTF-8')) !== false && $iSpace >= $iLength / 2)
+            $s = get_mb_substr($s, 0, $iSpace);
+
+        return rtrim($s, ' ,;:-') . '…';
+    }
+
+    /**
      * Display design box with specified title, template, content and menu.
      * @param $sTitle - design box title, please note that some templates don't use title.
      * @param $sContent - design box content.

@@ -853,17 +853,7 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
             }
         }
 
-        $sAuthorName = $oModule->getObjectUser($aEvent['object_owner_id'])->getDisplayName();
-
-        $sTitle = $sAuthorName . ' ' . _t($aEvent['sample_action'], _t($aEvent['sample']));
-        $sDescription = $aEvent['title'];
-        if(get_mb_substr($sDescription, 0, 1) == '_')
-            $sDescription = _t($sDescription);
-
-        $oTemplate = BxDolTemplate::getInstance();
-        $oTemplate->setPageHeader(strip_tags($sTitle));
-        $oTemplate->setPageDescription(strip_tags($sDescription));
-
+        // The page title, description and image are set by the page, @see BxTimelinePageViewItem
         $oMetatags = BxDolMetatags::getObjectInstance($this->_oConfig->getObject('metatags'));
         if($oMetatags)
             $oMetatags->addPageMetaInfo($aEvent[$CNF['FIELD_ID']]);
@@ -2817,18 +2807,6 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
                 $iAttachmentsTotal += $aImagesAttach['total'];
                 $aTmplVarsAttachments = array_merge($aTmplVarsAttachments, $aImagesAttach['items']);
             }
-        }
-
-        //--- Add Meta Image when Item is viewed on a separate page ---//
-        if($bViewItem) {
-            $sMetaImageSrc = '';
-            if($bImages && !empty($aContent['images'][0]['src']))
-                $sMetaImageSrc = $aContent['images'][0]['src'];
-            else if($bImagesAttach && !empty($aContent['images_attach'][0]['src']))
-                $sMetaImageSrc = $aContent['images_attach'][0]['src'];
-
-            if(!empty($sMetaImageSrc))
-                BxDolTemplate::getInstance()->addPageMetaImage($sMetaImageSrc);
         }
 
     	//--- Process Videos ---//

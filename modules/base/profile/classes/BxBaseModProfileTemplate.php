@@ -453,12 +453,8 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
                     $sUrlCover = BxDolCover::getCoverImageUrl($aCover);
             }
 
-            if(!empty($sUrlCover)) {
-                if(!$bUseAsAuthor)
-                    BxDolTemplate::getInstance()->addPageMetaImage($sUrlCover);
-
+            if(!empty($sUrlCover))
                 $bUrlCover = true;
-            }
             else
                 $sUrlCover = $this->getImageUrl('cover.svg');
 
