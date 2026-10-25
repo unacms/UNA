@@ -246,8 +246,10 @@ export const useLayoutSettings = () => {
 
     const { density, name: layoutName, theme: themeName, lang } = layoutSettings ?? {};
     const langCode = resolveLangCode(lang);
+    // The language `auto` picks, whatever is chosen now (the footer's System option names it).
+    const autoLangCode = getDeviceLangCode();
     const storedSounds = layoutSettings?.sounds;
     const ownSoundLevel: SoundLevel | undefined = storedSounds === false ? 'off' : typeof storedSounds === 'string' ? storedSounds : undefined;
 
-    return { layoutSettings, setLayoutSettings, updateLayoutSettings, hydrated, density, layoutName, themeName, setThemeName, setLayoutName, setDensity, setLang, lang, langCode, ownSoundLevel, setSoundLevel };
+    return { layoutSettings, setLayoutSettings, updateLayoutSettings, hydrated, density, layoutName, themeName, setThemeName, setLayoutName, setDensity, setLang, lang, langCode, autoLangCode, ownSoundLevel, setSoundLevel };
 };

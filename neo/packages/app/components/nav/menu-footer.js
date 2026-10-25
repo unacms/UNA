@@ -145,11 +145,12 @@ function FooterSoundsLevel({ visualProps }) {
 
 function FooterLanguageSwitcher({ visualProps }) {
     const { t } = useTranslation();
-    const { lang, langCode, setLang } = useLayoutSettings();
+    const { lang, langCode, autoLangCode, setLang } = useLayoutSettings();
     const configuredLangs = appSetting('layout', AVAILABLE_LANGS_SETTING_KEY);
     const langs = Array.isArray(configuredLangs) ? configuredLangs : [];
-    // The chosen option ('auto' for System), and the language actually in use: in System mode the
-    // device's language (langCode), which the trigger shows and the System option names.
+    // The chosen option ('auto' for System), and the language actually in use (langCode), which the
+    // trigger shows. The System option always names the device's language (autoLangCode), even while
+    // another language is chosen, because that is what choosing it switches to.
     const currentLang = resolveFooterLang(langs, lang, langCode);
     const activeLang = currentLang === 'auto' ? langCode : currentLang;
 
@@ -158,14 +159,14 @@ function FooterLanguageSwitcher({ visualProps }) {
             key: language,
             id: language,
             name: language,
-            title: language === 'auto' && activeLang
-                ? `${t('lang_auto')} (${activeLang.toUpperCase()})`
+            title: language === 'auto' && autoLangCode
+                ? `${t('lang_auto')} (${autoLangCode.toUpperCase()})`
                 : t('lang_' + language),
             // The language's own glyph (EN, RU, ...); System and languages tagsets has no glyph for keep the generic icon.
             icon: localeIconName(language) || 'Languages',
             selected: currentLang === language,
         }))
-    ), [activeLang, currentLang, langs, t]);
+    ), [autoLangCode, currentLang, langs, t]);
 
     if (langs.length <= 1 || !currentLang) return null;
 
