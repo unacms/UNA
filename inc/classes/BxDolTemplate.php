@@ -1461,17 +1461,22 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         // installed in one (/una/view-post/...), which em.php can't resolve, so every lookup ended with 404.
         // The canonical url when it is this page, else this page's own (a feed item's canonical is its entry or comment).
         // The site root (home) has no page uri for em.php.
-        if($sUrl)
+        if($sUrl) {
+            $sEmbedHref = '';
+            if($sUri != '')
+                $sEmbedHref = BX_DOL_URL_ROOT . 'em.php?url=' . urlencode($sUri === bx_get('i') ? $sUrl : bx_get_self_url()) . '&format=json';
+
             $sRet .= $this->parseHtmlByName('meta_links.html', [
                 'url' => bx_html_attribute($sUrl),
                 'bx_if:oembed' => [
-                    'condition' => $sUri != '',
+                    'condition' => $sEmbedHref != '',
                     'content' => [
-                        'href' => bx_html_attribute(BX_DOL_URL_ROOT . 'em.php?url=' . urlencode($sUri === bx_get('i') ? $sUrl : bx_get_self_url()) . '&format=json'),
+                        'href' => bx_html_attribute($sEmbedHref),
                         'title' => $sHeaderAttr,
                     ]
                 ],
             ]);
+        }
 
         return $sRet;
     }
