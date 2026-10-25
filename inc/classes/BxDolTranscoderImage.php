@@ -142,7 +142,7 @@ class BxDolTranscoderImage extends BxDolTranscoder implements iBxDolFactoryObjec
      */
     public function getFileUrlNotReady($mixedHandler)
     {
-        return BX_DOL_URL_ROOT . 'image_transcoder.php?o=' . $this->_aObject['object'] . '&h=' . $mixedHandler . '&dpx=' . $this->getDevicePixelRatio() . '&t=' . time();
+        return BX_DOL_URL_ROOT . 'image_transcoder.php?o=' . $this->_aObject['object'] . '&h=' . $mixedHandler . '&dpx=' . $this->getDevicePixelRatio() . '&t=' . time() . '&s=' . $this->getHandlerSignature($mixedHandler);
     }
 
     public function isFileReady ($mixedHandlerOrig, $isCheckOutdated = true)

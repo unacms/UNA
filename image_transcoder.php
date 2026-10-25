@@ -16,7 +16,8 @@ $sHandler = bx_process_input(bx_get('h'));
 
 $oTranscoder = BxDolTranscoderImage::getObjectInstance($sTranscoderObject);
 
-if (!$oTranscoder) {
+// Only links made by the site (signed when a page shows the file) are served, see BxDolTranscoder::getHandlerSignature
+if (!$oTranscoder || !$oTranscoder->isHandlerSignatureValid($sHandler, bx_get('s'))) {
     ob_end_clean();
     bx_transcoder_error_occured();
     exit;
