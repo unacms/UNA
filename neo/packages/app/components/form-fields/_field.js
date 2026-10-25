@@ -42,8 +42,23 @@ function FieldCaption({ htmlFor, className, children }) {
     return label
 }
 
-/** `inside`: the floated label stays inside the input near its top edge (large inputs) instead of sitting on the border. */
-function AdaptiveLabel({ caption, value, focused, htmlFor, inside, children }) {
+/** Whether the adaptive label of an input of this size floats inside it (`theme.inputs.adaptive_label_inside_sizes`). */
+export function isAdaptiveLabelInside(size) {
+    return insideSizes.includes(size || inputSettings.default_size || 'regular')
+}
+
+const floatedLabelClass = (inside) =>
+    inside ? inputSettings.adaptive_label_floated_inside : inputSettings.adaptive_label_floated
+
+const floatedLabelTextClass = (inside) =>
+    inside ? inputSettings.adaptive_label_text_floated_inside : inputSettings.adaptive_label_text_floated
+
+/**
+ * Floating caption over the input it wraps. `inside`: the floated label stays inside the input near its
+ * top edge (large inputs) instead of sitting on the border. Compound fields (phone) wrap only their text
+ * input, so the label lines up with it rather than with the whole row.
+ */
+export function AdaptiveLabel({ caption, value, focused, htmlFor, inside, className, children }) {
     const hasValue = value != null && String(value).length > 0
     const floated = !!focused || hasValue
 
@@ -56,9 +71,9 @@ function AdaptiveLabel({ caption, value, focused, htmlFor, inside, children }) {
         boxH > 0 && labelH > 0
             ? Math.max(0, (boxH - labelH) / 2) + restingOffset
             : 0
-    const floatedY = inside
-        ? insideOffset
-        : (labelH > 0 ? -labelH / 2 + floatedOffset : floatedOffset)
+    let floatedY = floatedOffset
+    if (inside) floatedY = insideOffset
+    else if (labelH > 0) floatedY = -labelH / 2 + floatedOffset
 
     useEffect(() => {
         if (boxH <= 0 || labelH <= 0) return
@@ -89,7 +104,7 @@ function AdaptiveLabel({ caption, value, focused, htmlFor, inside, children }) {
     }, [])
 
     return (
-        <View className="relative w-full" onLayout={onBoxLayout}>
+        <View className={cn('relative w-full', className)} onLayout={onBoxLayout}>
             <Animated.View
                 pointerEvents="none"
                 collapsable={false}
@@ -106,17 +121,13 @@ function AdaptiveLabel({ caption, value, focused, htmlFor, inside, children }) {
                     className={cn(
                         inputSettings.adaptive_label,
                         inside && inputSettings.adaptive_label_inside,
-                        floated
-                            ? (inside ? inputSettings.adaptive_label_floated_inside : inputSettings.adaptive_label_floated)
-                            : null
+                        floated && floatedLabelClass(inside)
                     )}
                 >
                     <FieldCaption
                         htmlFor={htmlFor}
                         className={
-                            floated
-                                ? (inside ? inputSettings.adaptive_label_text_floated_inside : inputSettings.adaptive_label_text_floated)
-                                : inputSettings.adaptive_label_text_resting
+                            floated ? floatedLabelTextClass(inside) : inputSettings.adaptive_label_text_resting
                         }
                     >
                         {caption}
@@ -258,7 +269,7 @@ export default function Field({
                     value={value}
                     focused={focused}
                     htmlFor={inputId}
-                    inside={insideSizes.includes(size || inputSettings.default_size || 'regular')}
+                    inside={isAdaptiveLabelInside(size)}
                 >
                     {children}
                 </AdaptiveLabel>

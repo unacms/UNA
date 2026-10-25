@@ -187,10 +187,4 @@ export const PickerStyledRef = forwardRef<any, PickerStyledRefProps>(
 );
 
 
-export const PickerStyledIos = ({ className, style, size = DEFAULT_SIZE, ...props }: CustomPickerProps) => (
-    <Picker
-        className={`${getPickerSurfaceClass(size)} ${className || ''}`}
-        {...getPickerStyleProps(style)}
-        {...props}
-    />
-);
+export const PickerStyledIos = PickerStyled;
