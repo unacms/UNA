@@ -7,6 +7,7 @@ import { useCurrentUserNoCounters } from 'app/context/user';
 import { useMenuData } from 'app/context/menu-data';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import { localeIconName } from 'app/ui/atoms/tag-glyph-icons';
 import { SOUND_LEVEL_ITEMS, useSoundsLevel } from 'app/lib/hooks/use-sounds-level';
 
 export const MENU_FOOTER_CLASSES = 'flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-1 p-4 min-h-16';
@@ -144,34 +145,42 @@ function FooterSoundsLevel({ visualProps }) {
 
 function FooterLanguageSwitcher({ visualProps }) {
     const { t } = useTranslation();
-    const { lang, langCode, setLang } = useLayoutSettings();
+    const { lang, langCode, autoLangCode, setLang } = useLayoutSettings();
     const configuredLangs = appSetting('layout', AVAILABLE_LANGS_SETTING_KEY);
     const langs = Array.isArray(configuredLangs) ? configuredLangs : [];
+    // The chosen option ('auto' for System), and the language actually in use (langCode), which the
+    // trigger shows. The System option always names the device's language (autoLangCode), even while
+    // another language is chosen, because that is what choosing it switches to.
     const currentLang = resolveFooterLang(langs, lang, langCode);
+    const activeLang = currentLang === 'auto' ? langCode : currentLang;
 
     const items = useMemo(() => (
         langs.map((language) => ({
             key: language,
             id: language,
             name: language,
-            title: t('lang_' + language),
-            icon: 'Languages',
+            title: language === 'auto' && autoLangCode
+                ? `${t('lang_auto')} (${autoLangCode.toUpperCase()})`
+                : t('lang_' + language),
+            // The language's own glyph (EN, RU, ...); System and languages tagsets has no glyph for keep the generic icon.
+            icon: localeIconName(language) || 'Languages',
             selected: currentLang === language,
         }))
-    ), [currentLang, langs, t]);
+    ), [autoLangCode, currentLang, langs, t]);
 
     if (langs.length <= 1 || !currentLang) return null;
 
-    const langLabel = t('lang_' + currentLang);
+    const langLabel = t('lang_' + activeLang);
 
     return (
         <DropdownMenu
             items={items}
             onSelect={(item) => setLang(item.id)}
             buttonProps={{
-                label: langLabel,
-                image: 'Languages',
+                // Icon-only, like the theme and sounds triggers: the glyph (EN) is the label, the name is for screen readers and the tooltip.
+                image: localeIconName(activeLang) || 'Languages',
                 accessibilityLabel: langLabel,
+                tooltip: langLabel,
                 style: visualProps.style,
                 controlSize: visualProps.controlSize,
                 className: visualProps.className,

@@ -7,13 +7,14 @@ import { Platform } from 'react-native';
 import { findIconFromRemote, appSetting } from 'app/lib/util';
 import SvgIcons from 'app/customization/icons-svg';
 import { animatedIcons } from 'app/customization/animated-icons';
+import { tagGlyphIcons } from 'app/ui/atoms/tag-glyph-icons';
 
 type IconRegistry = Record<string, ComponentType<any> | undefined>;
 
 type IconSize = number | string;
 
 export type IconProps = {
-    /** Lucide name, remote icon key, inline SVG name, or raw `<svg …>` markup. */
+    /** Lucide name, remote icon key, inline SVG name, tagsets language glyph (`LocaleEn`), or raw `<svg …>` markup. */
     icon?: string | null;
     className?: string;
     width?: IconSize;
@@ -143,7 +144,8 @@ function useIconCore({ icon: origIcon, className, width, height, color, size, st
     const isXmlSvg = typeof origIcon === 'string' && origIcon.startsWith('<svg');
     const icon: string | null | undefined = findIconFromRemote(origIcon);
     const _strokeWidth: number | undefined = strokeWidth || appSetting('layout', 'default_icon_stroke_width');
-    const InlineIcon = icon ? (SvgIcons as IconRegistry)[icon] : undefined;
+    // The icons-svg registry first (a fork can replace a glyph there), then the tagsets language glyphs.
+    const InlineIcon = icon ? ((SvgIcons as IconRegistry)[icon] ?? (tagGlyphIcons as IconRegistry)[icon]) : undefined;
     const AnimatedIconComponent = animated && icon && !isXmlSvg && !InlineIcon
         ? getAnimatedIcon(icon)
         : null;
