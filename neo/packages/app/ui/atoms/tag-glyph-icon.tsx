@@ -1,6 +1,7 @@
 import Svg, { Circle, Ellipse, Line, Path, Polygon, Polyline, Rect } from 'react-native-svg';
 import type { ComponentType } from 'react';
 import type { GlyphData } from 'tagsets';
+import { useTheme } from 'app/design/theme';
 import { useIconClassColor } from 'app/ui/atoms/icon-class-color';
 import type { TagGlyphIcon, TagGlyphIconProps } from './tag-glyph-icon.types';
 
@@ -9,7 +10,7 @@ const TAGS: Record<string, ComponentType<any>> = { path: Path, circle: Circle, r
 /**
  * Native: an `Icon` component for one tagsets glyph, drawn like a Lucide icon (24 grid, 2px round strokes).
  * Uses the square `fixed` form, or `hug` where the glyph has none. Colour comes from `color`, else the
- * `text-*` class, as for Lucide icons.
+ * `text-*` class, else the theme's default icon colour, as for Lucide icons (`IconFromSet`).
  */
 export function makeTagGlyphIcon(glyph: GlyphData): TagGlyphIcon {
     const variant = glyph.fixed ?? glyph.hug;
@@ -18,6 +19,7 @@ export function makeTagGlyphIcon(glyph: GlyphData): TagGlyphIcon {
 
     function TagGlyph({ width, height, color, strokeWidth, className }: Readonly<TagGlyphIconProps>) {
         const classColor = useIconClassColor(className);
+        const { colors } = useTheme();
         const size = height || width || 24;
 
         return (
@@ -26,7 +28,7 @@ export function makeTagGlyphIcon(glyph: GlyphData): TagGlyphIcon {
                 height={size}
                 viewBox={`${variant.x} 0 ${variant.width} 24`}
                 fill="none"
-                stroke={color || classColor || 'currentColor'}
+                stroke={color || classColor || colors.default}
                 strokeWidth={strokeWidth || 2}
                 strokeLinecap="round"
                 strokeLinejoin="round"
