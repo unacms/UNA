@@ -176,9 +176,10 @@ function FooterLanguageSwitcher({ visualProps }) {
             items={items}
             onSelect={(item) => setLang(item.id)}
             buttonProps={{
-                label: langLabel,
+                // Icon-only, like the theme and sounds triggers: the glyph (EN) is the label, the name is for screen readers and the tooltip.
                 image: localeIconName(activeLang) || 'Languages',
                 accessibilityLabel: langLabel,
+                tooltip: langLabel,
                 style: visualProps.style,
                 controlSize: visualProps.controlSize,
                 className: visualProps.className,
