@@ -40,6 +40,8 @@ function copyCustomizationResources() {
     const staticDefaults = [
         { src: path.resolve(__dirname, 'public/manifest.json'), dest: 'manifest.json' },
         { src: path.resolve(__dirname, 'public/favicon.svg'), dest: 'favicon.svg' },
+        // PNG icon and apple-touch-icon: link previews (iMessage, Slack, Telegram) can't use SVG.
+        { src: path.resolve(__dirname, 'public/logo192.png'), dest: 'logo192.png' },
     ];
     staticDefaults.forEach(({ src, dest }) => {
         const destPath = path.join(staticDest, dest);
@@ -223,6 +225,11 @@ const nextConfig = {
     // once that gets fixed, set this back to true
     reactStrictMode: false,
     poweredByHeader: false,
+    // Metadata always in <head>, never streamed into <body>: link-preview crawlers that
+    // read only <head> are missing from Next's default list (Mastodon, Bluesky, Iframely,
+    // Embedly, Telegram, Pinterest, Viber...). Costs nothing: the page awaits the same UNA
+    // request as generateMetadata before anything is sent.
+    htmlLimitedBots: /.*/,
     async rewrites() {
         return {
             // Only when no public/lucide file matches: stroke widths that were not
