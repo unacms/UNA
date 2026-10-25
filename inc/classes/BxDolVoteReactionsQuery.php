@@ -92,10 +92,12 @@ class BxDolVoteReactionsQuery extends BxDolVoteQuery
 
     /**
      * The author's latest reaction to the object (what the do-button shows).
+     * No LIMIT on purpose: with LIMIT 1 the server can choose to walk the whole table
+     * backwards by `id` instead of using the object index. getRow takes the first row.
      */
     public function getTrackLatest($iObjectId, $iAuthorId)
     {
-        return $this->getRow("SELECT * FROM `{$this->_sTableTrack}` WHERE `object_id` = :object_id AND `author_id` = :author_id ORDER BY `id` DESC LIMIT 1", [
+        return $this->getRow("SELECT * FROM `{$this->_sTableTrack}` WHERE `object_id` = :object_id AND `author_id` = :author_id ORDER BY `id` DESC", [
             'object_id' => $iObjectId,
             'author_id' => $iAuthorId
         ]);

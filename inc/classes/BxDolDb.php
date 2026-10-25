@@ -646,6 +646,15 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
 
     public function isTableExists($sTable)
     {
+        /**
+         * Look the exact name up first: listing all tables takes milliseconds and
+         * the check runs on every request (BxDolAi::getInstance).
+         */
+        $sDBName = is_array($this->_sDbname) ? $this->_sDbname[0] : $this->_sDbname;
+        if ($this->getOne("SELECT 1 FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA` = :db AND `TABLE_NAME` = :table LIMIT 1", ['db' => $sDBName, 'table' => $sTable]))
+            return true;
+
+        //--- Not found: compare case-insensitively, as before.
         $aTableNames = $this->listTables();
         foreach($aTableNames as $iKey => $sTableName)
             $aTableNames[$iKey] = strtoupper($sTableName);

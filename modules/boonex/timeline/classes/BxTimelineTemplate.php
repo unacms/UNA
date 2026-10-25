@@ -13,6 +13,7 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
 {
     protected static $_aMemoryCacheItems;
     protected static $_aMemoryCacheItemsData;
+    protected static $_aMemoryCacheItemsUrl;
     protected static $_sMemoryCacheItemsKeyMask;
 
     protected static $_sTmplContentItemItem;
@@ -44,6 +45,7 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
 
         self::$_aMemoryCacheItems = array();
         self::$_aMemoryCacheItemsData = array();
+        self::$_aMemoryCacheItemsUrl = array();
         self::$_sMemoryCacheItemsKeyMask = "%s_%d";
     }
 
@@ -1099,6 +1101,13 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
         if($aResult === false)
             return '';
 
+        /**
+         * Keep the url of a system event for the Share menu (API only). Without it the menu
+         * asks the content module for the whole post again to read the url.
+         */
+        if($this->_bIsApi && !empty($aResult['url']) && $this->_oConfig->isSystem($aEvent['type'], $aEvent['action']))
+            self::$_aMemoryCacheItemsUrl[$iEventId] = $aResult['url'];
+
         if(isset($aResult['owner_id']))
             $aEvent['owner_id'] = $aResult['owner_id'];
 
@@ -1136,6 +1145,16 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
     public function getPostApi($aEvent, $aParams = [])
     {
         return $this->_getPostApi($aEvent, $aParams);
+    }
+
+    /**
+     * Get the url of a system event which was already rendered in this request (API only).
+     * @param integer $iEventId event id
+     * @return string url or false if the event wasn't rendered yet.
+     */
+    public function getItemUrlCached($iEventId)
+    {
+        return self::$_aMemoryCacheItemsUrl[(int)$iEventId] ?? false;
     }
 
     public function getPosts($aParams)
@@ -1826,18 +1845,28 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
 
     public function getData(&$aEvent, $aBrowseParams = array())
     {
+        //--- Stored values, taken before the data getters (they get the event by reference).
+        $aStored = [];
+        foreach(['object_owner_id', 'object_privacy_view'] as $sKey)
+            if(array_key_exists($sKey, $aEvent))
+                $aStored[$sKey] = $aEvent[$sKey];
+
         $aResult = $this->_oConfig->isSystem($aEvent['type'], $aEvent['action']) ? $this->_getSystemData($aEvent, $aBrowseParams) : $this->_getCommonData($aEvent, $aBrowseParams);
         if(empty($aResult) || empty($aResult['object_owner_id']) || empty($aResult['content']))
             return false;
 
         $sSample = !empty($aResult['sample']) ? $aResult['sample'] : '_bx_timeline_txt_sample';
 
-        $aUpdate = [
-            'object_owner_id' => $aResult['object_owner_id']
-        ];
+        /**
+         * Update Object Owner and Object Privacy View only when they differ from the stored
+         * values: the event is rendered on every feed request.
+         */
+        $aUpdate = [];
+        if(!array_key_exists('object_owner_id', $aStored) || (int)$aStored['object_owner_id'] !== (int)$aResult['object_owner_id'])
+            $aUpdate['object_owner_id'] = $aResult['object_owner_id'];
 
         //--- Update Object Provacy View if provided.
-        if(!empty($aResult['object_privacy_view']))
+        if(!empty($aResult['object_privacy_view']) && (!array_key_exists('object_privacy_view', $aStored) || (string)$aStored['object_privacy_view'] !== (string)$aResult['object_privacy_view']))
             $aUpdate['object_privacy_view'] = $aResult['object_privacy_view'];
 
         //--- Update Title if empty.

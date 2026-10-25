@@ -1894,6 +1894,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         $oDb = BxDolDb::getInstance();
         $oDb->query("UPDATE `sys_agents_agents` SET `active` = :active WHERE `id` = :id", ['active' => $iActive, 'id' => $iAgentId]);
         $oDb->cleanCache('sys_agents_with_alert');
+        $oDb->cleanMemory('sys_agents_with_alert');
         $oDb->cleanMemory('sys_agents_with_form_' . (string)($aAgent['form_object'] ?? ''));
 
         return ['id' => $iAgentId, 'active' => $iActive];

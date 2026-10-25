@@ -97,10 +97,13 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
             $sCommentsOnclick = bx_replace_markers("{js_object_view}.commentItem(this, '" . $sCommentsSystem . "', " . $iCommentsObject . ")", $this->_aMarkers);
         }
 
-        //--- Repost item
-        $iOwnerId = $this->_oModule->getUserId(); //--- in whose timeline the content will be reposted
-        $iObjectId = $this->_oModule->_oConfig->isSystem($sType, $sAction) ? $this->_aEvent['object_id'] : $this->_aEvent['id'];
-        $sRepostOnclick = $this->_oModule->serviceGetRepostJsClick($iOwnerId, $sType, $sAction, $iObjectId);
+        //--- Repost item, API menus have no onclick handlers
+        $sRepostOnclick = '';
+        if(!$this->_bIsApi) {
+            $iOwnerId = $this->_oModule->getUserId(); //--- in whose timeline the content will be reposted
+            $iObjectId = $this->_oModule->_oConfig->isSystem($sType, $sAction) ? $this->_aEvent['object_id'] : $this->_aEvent['id'];
+            $sRepostOnclick = $this->_oModule->serviceGetRepostJsClick($iOwnerId, $sType, $sAction, $iObjectId);
+        }
 
         $bSystem = $this->_oModule->_oConfig->isSystem($sType, $sAction);
 

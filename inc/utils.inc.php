@@ -2754,10 +2754,17 @@ function bx_api_get_image($mixedStorage, $iId)
 
     $sUrl = '';
     $iWidth = $iHeight = 0;
+    $oTranscoderImage = null;
     if($sTranscoder && ($oTranscoder = BxDolTranscoder::getObjectInstance($sTranscoder))) {
         $sUrl = $oTranscoder->getFileUrl($iId);
 
-        if(($aSize = $oTranscoder->getSize($sUrl)) !== false) {
+        /**
+         * The default getSize of image transcoders and video posters downloads the file from
+         * its url, and runs ffmpeg for a poster. Their size is measured below from the local file.
+         */
+        if($sUrl && bx_api_is_image_transcoder($oTranscoder))
+            $oTranscoderImage = $oTranscoder;
+        else if($sUrl && method_exists($oTranscoder, 'getSize') && ($aSize = $oTranscoder->getSize($sUrl)) !== false) {
             $iWidth = (int)$aSize['w'];
             $iHeight = (int)$aSize['h'];
         }
@@ -2783,6 +2790,9 @@ function bx_api_get_image($mixedStorage, $iId)
         // measure each URL only once per request.
         static $aSizes = [];
         if(!isset($aSizes[$sUrl])) {
+            if($oTranscoderImage)
+                $sLocalPath = $oTranscoderImage->getFileLocalPath($iId);
+
             $aSize = false;
             if($sLocalPath && ($aInfo = @getimagesize($sLocalPath)))
                 $aSize = ['w' => $aInfo[0], 'h' => $aInfo[1]];
@@ -2807,6 +2817,24 @@ function bx_api_get_image($mixedStorage, $iId)
         'width' => $iWidth,
         'height' => $iHeight,
     ] : false;
+}
+
+/**
+ * Check whether the transcoder is a stock image transcoder or video poster. Their files can be
+ * measured on the disk (@see BxDolTranscoder::getFileLocalPath). A custom class can return
+ * other urls or measure them its own way, so it keeps getSize.
+ */
+function bx_api_is_image_transcoder($oTranscoder)
+{
+    switch(get_class($oTranscoder)) {
+        case 'BxDolTranscoderImage':
+            return true;
+
+        case 'BxDolTranscoderVideo':
+            return $oTranscoder->getFilterParams('Poster') !== false;
+    }
+
+    return false;
 }
 
 function bx_api_get_browse_params($sParams, $bParamsOnly = false)

@@ -685,8 +685,9 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
             'injections' => array()
         );
 
-        //--- Load default CSS, JS, etc ---//
-        BxDolPreloader::getInstance()->perform($this);
+        //--- Load default CSS, JS, etc. Only HTML pages use them, api.php never outputs them ---//
+        if (!defined('BX_API'))
+            BxDolPreloader::getInstance()->perform($this);
 
         //--- Load injection's cache ---//
         if (getParam('sys_db_cache_enable')) {
