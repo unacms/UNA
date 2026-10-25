@@ -161,6 +161,7 @@ export default function Field({
     isAdaptiveLabel,
     info,
     size,
+    captionAccessory,
 }) {
     const caption = format === 'notitle' ? '' : captionProp
     const wrapRef = useRef(null)
@@ -232,37 +233,49 @@ export default function Field({
     // forms keep the flat full-width layout.
     const isGrid = form_layout !== 'hor' && !use_caption_as_placeholder
 
+    const captionLabel = isShowCaption ? (
+        <Text className={cn('text-secondary-foreground block px-0.5', !captionAccessory && 'w-full')}>
+            <Row className="items-center gap-0.5">
+                <FieldCaption
+                    htmlFor={inputId}
+                    className={appSetting('forms', 'caption_classes')}
+                >
+                    {caption}
+                </FieldCaption>
+                {checker || required ? (
+                    <></>
+                ) : (
+                    <Text className="text-sm sm: text-base text-muted-foreground ">
+                        {isShowOptional}
+                    </Text>
+                )}
+                {!!mandatoryIcon && (checker || required) ? (
+                    <Text className="text-destructive mb-auto leading-5">
+                        <Icon icon={mandatoryIcon} size={12} />
+                    </Text>
+                ) : (
+                    <></>
+                )}
+            </Row>
+        </Text>
+    ) : null
+
+    // `captionAccessory` (the language tabs of a translatable field) shares the caption's line,
+    // at its end, and wraps under it when both don't fit. Without a caption it sits above the control.
     const captionElement = isShowCaption ? (
         <View className="w-full @5xl/form-container:w-1/4 @5xl/form-container:pr-4 @5xl/form-container:min-h-11 @5xl/form-container:justify-center">
-            <Text className=" text-secondary-foreground block px-0.5 w-full ">
-                <Row className="items-center gap-0.5">
-                    <FieldCaption
-                        htmlFor={inputId}
-                        className={appSetting('forms', 'caption_classes')}
-                    >
-                        {caption}
-                    </FieldCaption>
-                    {checker || required ? (
-                        <></>
-                    ) : (
-                        <Text className="text-sm sm: text-base text-muted-foreground ">
-                            {isShowOptional}
-                        </Text>
-                    )}
-                    {!!mandatoryIcon && (checker || required) ? (
-                        <Text className="text-destructive mb-auto leading-5">
-                            <Icon icon={mandatoryIcon} size={12} />
-                        </Text>
-                    ) : (
-                        <></>
-                    )}
+            {captionAccessory ? (
+                <Row className="w-full flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                    {captionLabel}
+                    {captionAccessory}
                 </Row>
-            </Text>
+            ) : captionLabel}
         </View>
     ) : null
 
     const control = (
         <>
+            {!isShowCaption && captionAccessory}
             {!isShowCaption && isAdaptiveLabel && caption ? (
                 <AdaptiveLabel
                     caption={caption}
