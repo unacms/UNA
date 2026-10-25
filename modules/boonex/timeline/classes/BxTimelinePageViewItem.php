@@ -67,6 +67,41 @@ class BxTimelinePageViewItem extends BxTemplPage
     }
 
     /**
+     * What a post shows: type, action and object (an entry, or the event of a post) of the event or of the reposted one.
+     * @return array [type, action, object id]
+     */
+    protected function _getMetaSource($aEvent)
+    {
+        $oConfig = $this->_oModule->_oConfig;
+
+        // A repost's content has the reposted type, action and object.
+        if($aEvent['type'] == $oConfig->getPrefix('common_post') . BX_TIMELINE_PARSE_TYPE_REPOST && !empty($aEvent['content']['type']))
+            return [$aEvent['content']['type'], $aEvent['content']['action'] ?? '', (int)($aEvent['content']['object_id'] ?? 0)];
+
+        return [$aEvent['type'], $aEvent['action'], (int)($oConfig->isSystem($aEvent['type'], $aEvent['action']) ? $aEvent['object_id'] : $aEvent['id'])];
+    }
+
+    /**
+     * The entry of another module a post shows (a discussion added or reposted), when the viewer may view it.
+     * @return array [module, entry] or false
+     */
+    protected function _getMetaContent()
+    {
+        if(($aEvent = $this->_getMetaEvent()) === false)
+            return false;
+
+        list($sType, $sAction, $iObjectId) = $this->_getMetaSource($aEvent);
+        if(!$this->_oModule->_oConfig->isSystem($sType, $sAction) || !BxDolModuleQuery::getInstance()->isEnabledByName($sType))
+            return false;
+
+        $oModule = BxDolModule::getInstance($sType);
+        if(!($oModule instanceof BxBaseModGeneralModule) || !($aContentInfo = $oModule->_oDb->getContentInfoById($iObjectId)) || $oModule->checkAllowedView($aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
+        return [$oModule, $aContentInfo];
+    }
+
+    /**
      * The title of the post, else its author: "Liam added a discussion" doesn't say what is shared.
      */
     protected function _getPageMetaTitle()
@@ -74,19 +109,29 @@ class BxTimelinePageViewItem extends BxTemplPage
         if(($aEvent = $this->_getMetaEvent()) === false)
             return parent::_getPageMetaTitle();
 
-        $sTitle = $aEvent['content']['title'] ?? '';
+        $sTitle = bx_process_output($aEvent['content']['title'] ?? '');
         if(trim(strip_tags($sTitle)) === '')
             $sTitle = $this->_oModule->getObjectUser($aEvent['object_owner_id'])->getDisplayName();
 
         return $sTitle;
     }
 
+    /**
+     * An entry's abstract or text, as on its own page (the feed has a cut copy), else the text of the post.
+     */
     protected function _getPageMetaDesc()
     {
-        if(($aEvent = $this->_getMetaEvent()) === false || empty($aEvent['content']['text']))
+        if(($aEvent = $this->_getMetaEvent()) === false)
             return parent::_getPageMetaDesc();
 
-        return $aEvent['content']['text'];
+        if(($aContent = $this->_getMetaContent()) !== false) {
+            list($oModule, $aContentInfo) = $aContent;
+            foreach([$oModule->_oTemplate->getAbstract($aContentInfo), $oModule->_oTemplate->getText($aContentInfo, false)] as $sResult)
+                if(trim(strip_tags($sResult)) !== '')
+                    return $sResult;
+        }
+
+        return !empty($aEvent['content']['text']) ? $aEvent['content']['text'] : parent::_getPageMetaDesc();
     }
 
     protected function _getPageMetaType()
@@ -95,7 +140,7 @@ class BxTimelinePageViewItem extends BxTemplPage
     }
 
     /**
-     * An entry of another module (a discussion added) shows that entry's image, a post shows its first photo.
+     * An entry's cover, else its first attached photo; a post's first photo.
      */
     protected function _getPageMetaImage()
     {
@@ -105,13 +150,17 @@ class BxTimelinePageViewItem extends BxTemplPage
         $CNF = &$this->_oModule->_oConfig->CNF;
 
         $aImage = false;
-        if($this->_oModule->_oConfig->isSystem($aEvent['type'], $aEvent['action'])) {
-            if(BxDolModuleQuery::getInstance()->isEnabledByName($aEvent['type']) && ($oModule = BxDolModule::getInstance($aEvent['type'])) instanceof BxBaseModGeneralModule
-                && ($aContentInfo = $oModule->_oDb->getContentInfoById($aEvent['object_id'])) && $oModule->checkAllowedView($aContentInfo) === CHECK_ACTION_RESULT_ALLOWED)
-                $aImage = $oModule->getEntryImageData($aContentInfo);
+        if(($aContent = $this->_getMetaContent()) !== false) {
+            list($oModule, $aContentInfo) = $aContent;
+            $aImage = $oModule->getEntryImageData($aContentInfo);
+            if(!$aImage && $oModule instanceof BxBaseModTextModule)
+                $aImage = $oModule->getEntryAttachedImageData($aContentInfo);
         }
-        else if(($aPhotos = $this->_oModule->_oDb->getMedia($CNF['FIELD_PHOTO'], $aEvent[$CNF['FIELD_ID']])))
-            $aImage = ['id' => reset($aPhotos), 'transcoder' => $this->_oModule->_oConfig->getObject('transcoder_photos_big')];
+        else {
+            list($sType, $sAction, $iObjectId) = $this->_getMetaSource($aEvent);
+            if(!$this->_oModule->_oConfig->isSystem($sType, $sAction) && ($aPhotos = $this->_oModule->_oDb->getMedia($CNF['FIELD_PHOTO'], $iObjectId)))
+                $aImage = ['id' => reset($aPhotos), 'transcoder' => $this->_oModule->_oConfig->getObject('transcoder_photos_big')];
+        }
 
         if($aImage && ($sUrl = $this->_getMetaImage($aImage)))
             return $sUrl;

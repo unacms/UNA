@@ -167,21 +167,11 @@ class BxBaseModTextPageEntry extends BxBaseModGeneralPageEntry
 
     protected function _getThumbForMetaObject ()
     {
-        if(($mixedResult = parent::_getThumbForMetaObject()) !== false)
-            return $mixedResult;
-
         // An entry without a cover shows its first attached photo in link previews.
-        $CNF = &$this->_oModule->_oConfig->CNF;
-        if(empty($CNF['OBJECT_STORAGE_PHOTOS']) || empty($CNF['OBJECT_IMAGES_TRANSCODER_VIEW_PHOTOS']) || !($oStorage = BxDolStorage::getObjectInstance($CNF['OBJECT_STORAGE_PHOTOS'])))
-            return false;
+        if(($mixedResult = parent::_getThumbForMetaObject()) === false)
+            $mixedResult = $this->_oModule->getEntryAttachedImageData($this->_aContentInfo);
 
-        $iContentId = (int)$this->_aContentInfo[$CNF['FIELD_ID']];
-        $aFiles = $oStorage->getGhosts($this->_oModule->serviceGetContentOwnerProfileId($iContentId), $iContentId);
-        if(empty($aFiles) || !is_array($aFiles))
-            return false;
-
-        $aFile = reset($aFiles);
-        return ['id' => $aFile['id'], 'transcoder' => $CNF['OBJECT_IMAGES_TRANSCODER_VIEW_PHOTOS']];
+        return $mixedResult;
     }
 }
 

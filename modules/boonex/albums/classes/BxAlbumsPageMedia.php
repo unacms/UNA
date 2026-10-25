@@ -93,7 +93,7 @@ class BxAlbumsPageMedia extends BxTemplPage
         if(!empty($CNF['OBJECT_METATAGS_MEDIA'])) {
             $oMetatags = BxDolMetatags::getObjectInstance($CNF['OBJECT_METATAGS_MEDIA']);
             if($oMetatags)
-                $oMetatags->addPageMetaInfo($this->_aMediaInfo['id'], $this->_getThumbForMetaObject());
+                $oMetatags->addPageMetaInfo($this->_aMediaInfo['id']);
         }
 
         return parent::getCode ();
@@ -116,6 +116,11 @@ class BxAlbumsPageMedia extends BxTemplPage
             return $mixedResult;
 
         return parent::_isVisiblePage($a);
+    }
+
+    protected function _getPageMetaImage()
+    {
+        return $this->_getMetaImage($this->_getThumbForMetaObject()) ?: parent::_getPageMetaImage();
     }
 
     protected function _getThumbForMetaObject ()

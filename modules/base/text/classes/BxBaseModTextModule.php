@@ -646,6 +646,27 @@ class BxBaseModTextModule extends BxBaseModGeneralModule implements iBxDolConten
         return $mResult;
     }
     
+    /**
+     * Image info of the first photo attached to an entry: link previews of an entry without a cover show it.
+     * @param array $aContentInfo entry
+     * @return array ['id' => file id, 'transcoder' => transcoder object] or false
+     */
+    public function getEntryAttachedImageData($aContentInfo)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        if(empty($CNF['OBJECT_STORAGE_PHOTOS']) || empty($CNF['OBJECT_IMAGES_TRANSCODER_VIEW_PHOTOS']) || !($oStorage = BxDolStorage::getObjectInstance($CNF['OBJECT_STORAGE_PHOTOS'])))
+            return false;
+
+        $iContentId = (int)$aContentInfo[$CNF['FIELD_ID']];
+        $aFiles = $oStorage->getGhosts($this->serviceGetContentOwnerProfileId($iContentId), $iContentId);
+        if(empty($aFiles) || !is_array($aFiles))
+            return false;
+
+        $aFile = reset($aFiles);
+        return ['id' => $aFile['id'], 'transcoder' => $CNF['OBJECT_IMAGES_TRANSCODER_VIEW_PHOTOS']];
+    }
+
     public function decodeDataAPI($aData, $aParams = [])
     {
         $CNF = &$this->_oConfig->CNF;

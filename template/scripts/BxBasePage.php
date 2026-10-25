@@ -579,7 +579,7 @@ class BxBasePage extends BxDolPage
             'meta' => [
                 'image_width' => (int)($aMetaImage['width'] ?? 0),
                 'image_height' => (int)($aMetaImage['height'] ?? 0),
-                'card' => $aMetaImage['card'] ?? 'summary',
+                'card' => $sMetaImage ? ($aMetaImage['card'] ?? 'summary_large_image') : 'summary',
                 'og_type' => $bIsAllowed ? $this->_getPageMetaType() : 'website',
             ],
             'uri' => $sUri,

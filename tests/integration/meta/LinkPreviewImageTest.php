@@ -6,7 +6,8 @@ use PHPUnit\Framework\Attributes\Group;
  * The picture link previews show is a public transcoded copy with its size, for the site head and for the
  * API (NEO) alike: never the original upload, which the API used to get, and never a url with a token that
  * expires in minutes, which the site icon had. A big landscape picture gets the large card, an avatar or
- * the site icon a small square one, and an icon below 200px isn't used at all.
+ * the site icon a small square one; the icon always goes through the 512px icon transcoder (Facebook shows
+ * none under 200px), never its 180 and 192px copies.
  *
  * The test uploads its own images and makes its own post and feed item, and restores the site options it
  * changes, so it runs on any site with Posts and Timeline installed.
@@ -39,10 +40,15 @@ class LinkPreviewImageTest extends BxDolIntegrationTestCase
             setParam($sName, $sValue);
 
         $oDb = BxDolDb::getInstance();
-        foreach ($this->_aEvents as $iId)
+        foreach ($this->_aEvents as $iId) {
+            BxDolPage::deleteSeoLink('bx_timeline', 'bx_timeline', $iId);
+            BxDolModule::getInstance('bx_timeline')->_oDb->deleteEventFlags($iId);
             $oDb->query("DELETE FROM `bx_timeline_events` WHERE `id` = :id", ['id' => $iId]);
-        foreach ($this->_aPosts as $iId)
+        }
+        foreach ($this->_aPosts as $iId) {
+            BxDolPage::deleteSeoLink('bx_posts', 'bx_posts', $iId);
             $oDb->query("DELETE FROM `bx_posts_posts` WHERE `id` = :id", ['id' => $iId]);
+        }
         // the transcoded copies too: the site images have no handlers which delete them with the original
         $aTranscoders = [BX_DOL_TRANSCODER_OBJ_COVER, BX_DOL_TRANSCODER_OBJ_ICON_ANDROID_SPLASH, 'bx_posts_cover'];
         foreach ($this->_aFiles as list($sStorage, $iId)) {
@@ -246,5 +252,42 @@ class LinkPreviewImageTest extends BxDolIntegrationTestCase
         $this->assertSame(404, $aData['page_status'], 'A pending feed item is for its author and moderators.');
         $this->assertSame(getParam('site_title'), $aData['title']);
         $this->assertSame('', $aData['image']);
+        $this->assertStringNotContainsString('LinkPreviewImageTest', json_encode($aData), 'Not in the blocks either.');
+        $this->assertSame([], BxDolPage::getEmbedData('page.php?i=item&id=' . $iEventPending));
+    }
+
+    public function testFeedPostAndItsRepost(): void
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_timeline'))
+            $this->markTestSkipped('Timeline is not installed.');
+
+        $iAuthor = $this->getAuthor();
+        $sPrefix = BxDolModule::getInstance('bx_timeline')->_oConfig->getPrefix('common_post');
+        $oDb = BxDolDb::getInstance();
+
+        $aPost = [
+            'owner_id' => $iAuthor, 'system' => 0, 'type' => $sPrefix . 'post', 'action' => '', 'object_id' => $iAuthor,
+            'object_owner_id' => $iAuthor, 'object_privacy_view' => BX_DOL_PG_ALL, 'content' => serialize(['text' => '<p>LinkPreviewImageTest feed.</p><p>Second line.</p>']),
+            'title' => '', 'description' => '', 'labels' => '', 'location' => '', 'date' => time(), 'status' => 'active', 'status_admin' => 'active',
+        ];
+        $aIds = [];
+        foreach (['active' => [], 'hidden' => ['status' => 'hidden']] as $sKey => $aFields) {
+            $oDb->query("INSERT INTO `bx_timeline_events` SET " . $oDb->arrayToSQL(array_merge($aPost, $aFields)));
+            $this->_aEvents[] = $aIds[$sKey] = (int)$oDb->lastId();
+        }
+        $oDb->query("INSERT INTO `bx_timeline_events` SET " . $oDb->arrayToSQL(array_merge($aPost, ['type' => $sPrefix . 'repost', 'content' => serialize(['type' => $sPrefix . 'post', 'action' => '', 'object_id' => $aIds['active']])])));
+        $this->_aEvents[] = $aIds['repost'] = (int)$oDb->lastId();
+        $oDb->cleanMemoryAll();
+
+        $aData = $this->getPageApi('item', $aIds['active']);
+        $this->assertSame('LinkPreviewImageTest feed. Second line.', $aData['description'], 'A post without a title: its text, paragraphs apart.');
+        $this->assertNotSame('', $aData['title'], 'The author.');
+
+        $aData = $this->getPageApi('item', $aIds['repost']);
+        $this->assertSame('LinkPreviewImageTest feed. Second line.', $aData['description'], 'A repost shows the post.');
+
+        $aData = $this->getPageApi('item', $aIds['hidden']);
+        $this->assertSame(404, $aData['page_status'], 'A hidden post is for its author and moderators.');
+        $this->assertStringNotContainsString('LinkPreviewImageTest', json_encode($aData));
     }
 }
