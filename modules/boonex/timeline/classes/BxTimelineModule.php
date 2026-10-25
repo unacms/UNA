@@ -2271,6 +2271,10 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         $aItemData = $this->getItemData($iItemId, $aParams);
 
         if (bx_is_api()){
+            // a missing or not allowed item has no event
+            if((int)$aItemData['code'] !== 0)
+                return [bx_api_get_block('msg', $aItemData['content'])];
+
             $aItemData['event'] = $this->_oTemplate->getPostApi($aItemData['event'], $aParams);
             return [bx_api_get_block('feed_item', $aItemData)];
         }
@@ -3926,6 +3930,11 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
         $aEvent = $this->_oDb->getEvents(array('browse' => 'id', 'value' => $iId));
         if(empty($aEvent))
+            return array('code' => 1, 'content' => _t('_Empty'));
+
+        // A pending, scheduled, hidden or deleted post, or a repost of a hidden one (inactive), is for its author and moderators only.
+        $bActive = $aEvent[$CNF['FIELD_STATUS']] == BX_TIMELINE_STATUS_ACTIVE && $aEvent[$CNF['FIELD_STATUS_ADMIN']] == BX_TIMELINE_STATUS_ACTIVE && (int)$aEvent['active'] == 1;
+        if(!$bActive && (int)$aEvent[$CNF['FIELD_OBJECT_OWNER_ID']] != (int)$this->getUserId() && !$this->isModerator())
             return array('code' => 1, 'content' => _t('_Empty'));
 
         $iProfile = (int)$aEvent[$CNF['FIELD_OWNER_ID']];

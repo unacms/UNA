@@ -28,7 +28,8 @@ class BxBaseModTextPageEntry extends BxBaseModGeneralPageEntry
             $this->setContentId(bx_process_input($iContentId, BX_DATA_INT));
 
         $sTitle = $sUrl = $sIcon = "";
-        if ($this->_aContentInfo && CHECK_ACTION_RESULT_ALLOWED === $this->_oModule->checkAllowedView($this->_aContentInfo)) {
+        // checkAllowedView doesn't look at the status: a pending or scheduled entry gives its title to its author and moderators only
+        if ($this->_aContentInfo && $this->_oModule->isEntryActive($this->_aContentInfo) && CHECK_ACTION_RESULT_ALLOWED === $this->_oModule->checkAllowedView($this->_aContentInfo)) {
             $sTitle = $this->_oModule->_oTemplate->getTitleAuto($this->_aContentInfo);
             $sUrl = bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=' . $CNF['URI_VIEW_ENTRY'] . '&id=' . $this->_aContentInfo[$CNF['FIELD_ID']]));
             $sIcon = $CNF['ICON'];

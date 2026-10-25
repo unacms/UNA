@@ -92,6 +92,10 @@ class BxAlbumsMenuViewActionsMedia extends BxAlbumsMenuViewActions
             'object_menu' => $CNF['OBJECT_MENU_ACTIONS_VIEW_MEDIA']
         ]);
 
+        // The item isn't available to the viewer (a guest).
+        if(!is_array($aResult))
+            return $aResult;
+
         if($this->_bIsApi) {
             $aResult = array_merge($aResult, [
                 'link' => BxDolPermalinks::getInstance()->permalink('page.php?i=' . $CNF['URI_EDIT_MEDIA'] . '&id=' . $this->_iMediaId),
@@ -111,6 +115,10 @@ class BxAlbumsMenuViewActionsMedia extends BxAlbumsMenuViewActions
             'object_menu' => $CNF['OBJECT_MENU_ACTIONS_VIEW_MEDIA']
         ]);
 
+        // The item isn't available to the viewer (a guest).
+        if(!is_array($aResult))
+            return $aResult;
+
         if($this->_bIsApi) {
             $aResult = array_merge($aResult, [
                 'link' => BxDolPermalinks::getInstance()->permalink('page.php?i=' . $CNF['URI_DELETE_MEDIA'] . '&id=' . $this->_iMediaId),
@@ -129,6 +137,10 @@ class BxAlbumsMenuViewActionsMedia extends BxAlbumsMenuViewActions
         $aResult = $this->_getMenuItemByNameActions($aItem, [
             'object_menu' => $CNF['OBJECT_MENU_ACTIONS_VIEW_MEDIA']
         ]);
+
+        // The item isn't available to the viewer (a guest).
+        if(!is_array($aResult))
+            return $aResult;
 
         if($this->_bIsApi) {
             $aResult = array_merge($aResult, [

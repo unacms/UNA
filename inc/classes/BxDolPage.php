@@ -709,23 +709,36 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
         unset($aUrl[1]['i']);
         $aParams = $aUrl[1];
 
-        $sTitle = $sAuthorName = $sAuthorUrl = $sThumb = $sHtml = '';
+        $oContentInfo = false;
         if (isset($aParams['id'])) {
-            $sContentInfo = BxDolPageQuery::getContentInfoObjectNameByURI($sUri);
-            if(($oContentInfo = BxDolContentInfo::getObjectInstance($sContentInfo))) {
-                $sTitle = $oContentInfo->getContentTitle($aParams['id']);
-                $iAuthor = $oContentInfo->getContentAuthor($aParams['id']);
-                if(($oAuthor = BxDolProfile::getInstance($iAuthor)) !== false) {
-                    $sAuthorName = $oAuthor->getDisplayName();
-                    $sAuthorUrl = $oAuthor->getUrl();
-                }
-                $sThumb = $oContentInfo->getContentThumb($aParams['id']);
-                $sHtml = $oContentInfo->getContentEmbed($aParams['id']);
+            // The content's own page is checked: another page of the module ignores the id.
+            $oContentInfo = BxDolContentInfo::getObjectInstance(BxDolPageQuery::getContentInfoObjectNameByURI($sUri));
+            if (!$oContentInfo)
+                return [];
+
+            list(, $aLink) = bx_get_base_url($oContentInfo->getContentLink((int)$aParams['id']));
+            if (!isset($aLink['i']) || $aLink['i'] !== $sUri)
+                return [];
+
+            $aParams = ['id' => (int)$aParams['id']];
+        }
+
+        // Nothing is given out of a page the viewer can't open (private, pending or deleted content).
+        if (!($oPage = self::_getEmbedPage($sUri, $aParams)))
+            return [];
+
+        $sTitle = $sAuthorName = $sAuthorUrl = $sThumb = $sHtml = '';
+        if ($oContentInfo) {
+            $sTitle = $oContentInfo->getContentTitle($aParams['id']);
+            $iAuthor = $oContentInfo->getContentAuthor($aParams['id']);
+            if(($oAuthor = BxDolProfile::getInstance($iAuthor)) !== false) {
+                $sAuthorName = $oAuthor->getDisplayName();
+                $sAuthorUrl = $oAuthor->getUrl();
             }
+            $sThumb = $oContentInfo->getContentThumb($aParams['id']);
+            $sHtml = $oContentInfo->getContentEmbed($aParams['id']);
         }
         else {
-            $oPage = BxDolPage::getObjectInstanceByURI($sUri, false, true);
-            $aPage = $oPage->getObject();
             $sTitle = $oPage->_getPageTitle();
             $sHtml = BxDolTemplate::getInstance()->parseHtmlByName('embed.html', [
                 'title' => $sTitle,
@@ -733,6 +746,37 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
             ]);
         }
         return ['url' => $sUrl, 'title' => $sTitle, 'author_name' => $sAuthorName, 'author_url' => $sAuthorUrl, 'thumbnail_url' => $sThumb, 'html' => $sHtml];
+    }
+
+    /**
+     * Get the page of an embed url when the viewer can open it.
+     * A page reads its params from the request, so a new page object is made for the url's params only,
+     * then the request and the page object cached for it (the share popup's own page) are put back.
+     * @return page object or false
+     */
+    static protected function _getEmbedPage($sUri, $aParams)
+    {
+        if (!($sObject = BxDolPageQuery::getPageObjectNameByURI($sUri)))
+            return false;
+
+        $sKey = 'BxDolPage!' . $sObject;
+        $oCached = $GLOBALS['bxDolClasses'][$sKey] ?? null;
+        $aRequest = [$_GET, $_POST, $_REQUEST];
+
+        $_GET = $_REQUEST = array_merge(['i' => $sUri], $aParams);
+        $_POST = [];
+        unset($GLOBALS['bxDolClasses'][$sKey]);
+
+        $oPage = BxDolPage::getObjectInstance($sObject);
+        $bOpen = $oPage && $oPage->isAvailablePage() === true && $oPage->isVisiblePage() === true;
+
+        list($_GET, $_POST, $_REQUEST) = $aRequest;
+        if ($oCached)
+            $GLOBALS['bxDolClasses'][$sKey] = $oCached;
+        else
+            unset($GLOBALS['bxDolClasses'][$sKey]);
+
+        return $bOpen ? $oPage : false;
     }
 
     static public function getPageBlockData($iBlockId, $iContentId = 0, $sContentModule = '')

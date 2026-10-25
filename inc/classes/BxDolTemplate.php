@@ -837,6 +837,20 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * Clear the page meta info set so far: canonical url, meta title, description, keywords, location and image.
+     * Error and access denied pages call it, so their head (and link previews) don't describe content which wasn't shown.
+     */
+    public function resetPageMeta()
+    {
+        $this->aPage['url'] = '';
+        $this->aPage['title'] = '';
+        $this->aPage['description'] = '';
+        $this->aPage['keywords'] = [];
+        $this->aPage['location'] = [];
+        unset($this->aPage['image']);
+    }
+
+    /**
      * Get page type
      * @return int $i page type
      */
@@ -1351,8 +1365,6 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         $sDescription = '';
         if(($sKd = 'description') && !empty($this->aPage[$sKd]) && is_string($this->aPage[$sKd]))
             $sDescription = $this->aPage[$sKd];
-        if(!$sDescription && $bPage)
-            $sDescription = $oPage->getMetaDescription();
         $bDescription = !empty($sDescription);
 
         if($bDescription) {
@@ -1445,13 +1457,46 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         
         if(!empty($this->aPage['rss']) && !empty($this->aPage['rss']['url']))
             $sRet .= '<link rel="alternate" type="application/rss+xml" href="' . $this->aPage['rss']['url'] . '" title="' . bx_html_attribute($this->aPage['rss']['title'], BX_ESCAPE_STR_QUOTE) . '" />';
-        $sRet .= '<link rel="alternate" type="application/json+oembed" href="' . BX_DOL_URL_ROOT . 'em.php?url=' . urlencode($_SERVER["REQUEST_URI"]) . '&format=json" title="' . $sHeaderAttr . '" />';
+        // oEmbed discovery is built from an absolute url: a request uri alone carries the sub-folder of a site
+        // installed in one (/una/view-post/...), which em.php can't resolve, so every lookup ended with 404.
+        // The canonical url when it is this page, else this page's own (a feed item's canonical is its entry or comment).
+        // The site root (home) has no page uri for em.php.
+        if($sUrl) {
+            $sEmbedHref = '';
+            if($sUri != '')
+                $sEmbedHref = BX_DOL_URL_ROOT . 'em.php?url=' . urlencode($sUri === bx_get('i') ? $sUrl : bx_get_self_url()) . '&format=json';
 
-        if($sUrl)
-            $sRet .= '<link rel="canonical" href="' . $sUrl . '" />';
+            $sRet .= $this->parseHtmlByName('meta_links.html', [
+                'url' => $this->_escapeTemplateKeys(bx_html_attribute($sUrl)),
+                'bx_if:oembed' => [
+                    'condition' => $sEmbedHref != '',
+                    'content' => [
+                        'href' => $this->_escapeTemplateKeys(bx_html_attribute($sEmbedHref)),
+                        'title' => $this->_escapeTemplateKeys($sHeaderAttr),
+                    ]
+                ],
+            ]);
+        }
 
         return $sRet;
     }
+    /**
+     * Encode the key wrapper (__) in an escaped attribute value passed to a template: the engine parses
+     * __keys__ in its result, so a title like "__meta_info__" would be taken for a system key (that one
+     * calls getMetaInfo again). Browsers and crawlers decode the character references back.
+     *
+     * @param string $s escaped attribute value
+     * @return string
+     */
+    protected function _escapeTemplateKeys($s)
+    {
+        $sEncoded = '';
+        foreach(mb_str_split($this->_sKeyWrapperHtml) as $sChar)
+            $sEncoded .= '&#' . mb_ord($sChar) . ';';
+
+        return str_replace($this->_sKeyWrapperHtml, $sEncoded, $s);
+    }
+
     /**
      * Get template, which was loaded earlier.
      * @see method this->loadTemplates and field this->_aTemplates
@@ -3872,6 +3917,7 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
             $sContent = DesignBoxContent($sTitle, $sContent, $iDesignBox);
 
         $oTemplate = BxDolTemplate::getInstance();
+        $oTemplate->resetPageMeta();
         $oTemplate->setPageNameIndex ($iPage);
         $oTemplate->setPageHeader ($sTitle);
         $oTemplate->setPageContent ('page_main_code', $sContent);
