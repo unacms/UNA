@@ -189,10 +189,12 @@ export function EditorToolbar({ items = [], linkBar, className }: { items?: Tool
 
     if (!items.length) return null
 
+    // -ms-2 pulls the borderless mini buttons out by their own inset, so the first glyph lines up
+    // with the text above it and the button fills sit 8px from the field's edge, as from its bottom.
     return (
         <View
             onMouseDown={onMouseDown}
-            className={cn('flex-row flex-wrap items-center gap-2 mt-2', className)}
+            className={cn('flex-row flex-wrap items-center gap-2 mt-2 -ms-2', className)}
         >
             {items.map((item) => item.menu ? (
                 <ToolbarMenu key={item.id} item={item} />

@@ -22,6 +22,12 @@ export const InputSize = {
 /** Size for fields that don't pass one: `theme.inputs.default_size`, else regular. */
 const DEFAULT_SIZE: keyof typeof InputSize = inputSettings.default_size in InputSize ? inputSettings.default_size : InputSize.regular;
 
+/** Start/end position of an input's 20px icon for its size (`theme.inputs.decorator_inset`). */
+const decoratorInset = (size?: string): { start: string; end: string } =>
+    inputSettings.decorator_inset?.[size ?? DEFAULT_SIZE]
+    ?? inputSettings.decorator_inset?.regular
+    ?? { start: 'left-3', end: 'right-3' };
+
 /** Sizes whose adaptive label floats inside the input (`theme.inputs.adaptive_label_inside_sizes`). */
 const isLabelInsideSize = (size: string) => (inputSettings.adaptive_label_inside_sizes ?? []).includes(size);
 
@@ -165,7 +171,7 @@ Input.displayName = 'Input';
 function renderInputDecorator(decorator?: string | ReactNode) {
     if (!decorator) return null;
     if (typeof decorator === 'string') {
-        return <Icon icon={decorator} size={24} className="text-muted-foreground" />;
+        return <Icon icon={decorator} size={20} className="text-muted-foreground" />;
     }
     return decorator;
 }
@@ -174,7 +180,7 @@ export const InputWithIcons = forwardRef<any, InputWithIconsProps>(
     ({ className, startDecorator, endDecorator, style, rounded = InputRounded.full, ...props }, ref) => (
         <Row className="relative w-full items-center">
             {startDecorator ? (
-                <View className="absolute left-3.5 h-full items-center justify-center pointer-events-none">
+                <View className={`absolute ${decoratorInset(props.size).start} h-full items-center justify-center pointer-events-none`}>
                     {renderInputDecorator(startDecorator)}
                 </View>
             ) : null}
@@ -186,7 +192,7 @@ export const InputWithIcons = forwardRef<any, InputWithIconsProps>(
                 {...props}
             />
             {endDecorator ? (
-                <View className="absolute right-3 h-full items-center justify-center pointer-events-none">
+                <View className={`absolute ${decoratorInset(props.size).end} h-full items-center justify-center pointer-events-none`}>
                     {renderInputDecorator(endDecorator)}
                 </View>
             ) : null}
@@ -267,7 +273,7 @@ export const PickerStyledRef = forwardRef<any, PickerProps>(
             >
                 {Array.isArray(children) ? children.map(optionFromChild) : optionFromChild(children, 0)}
             </select>
-            <View className="absolute right-3 pointer-events-none">
+            <View className={`absolute ${decoratorInset(size).end} pointer-events-none`}>
                 <Icon icon="ChevronDown" size={20} className="text-muted-foreground" />
             </View>
         </View>

@@ -45,14 +45,20 @@ export const settingsInputs = {
             regular: 'min-h-11',
             large: 'min-h-13',
         },
+        // Position of the 20px icons inside inputs (start/end decorators, the select chevron):
+        // as far from the side as from the top and bottom.
+        decorator_inset:{
+            small: { start: 'left-2', end: 'right-2' },
+            regular: { start: 'left-3', end: 'right-3' },
+            large: { start: 'left-4', end: 'right-4' },
+        },
         // Inset and gap of a chip well (labels, selector, visibility, members) per input size.
-        // Its chips are small (36px) buttons with rounded-lg corners: 4px around them fills a
-        // regular 44px well; in a large 52px well they sit 8px from the top and bottom and 6px
-        // from the sides, which keeps their corners concentric with the well's.
+        // Its chips are small (36px) buttons, inset evenly on every side: 4px fills a regular
+        // 44px well, 8px a large 52px one.
         well:{
             small: 'p-1 gap-1',
             regular: 'p-1 gap-1',
-            large: 'py-2 px-1.5 gap-1.5',
+            large: 'p-2 gap-1.5',
         },
         base: 
         'text-card-foreground placeholder:text-muted-foreground  bg-input/50 shadow-input-outline dark:shadow-input-outline-deep text-base placeholder-muted-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring/80 web:focus-visible:border web:focus-visible:shadow-none web:overflow-hidden',
@@ -89,10 +95,18 @@ export const settingsInputs = {
         // Container (height/padding via size.*)
         'u-controls-switcher-container':
             'items-center flex-row-reverse justify-between gap-x-2 min-w-12  flex-auto  shadow-input-outline dark:shadow-input-outline-deep bg-input/50 ',
+        // The caption keeps the input's text inset; the toggle sits as far from the right edge
+        // as from the top and bottom (28px toggle: 8px in a regular 44px row, 12px in a large 52px one).
         size: {
             small: 'min-h-10 px-2 rounded-lg',
-            regular: 'min-h-11 px-3 rounded-xl',
-            large: 'min-h-13 px-4 rounded-xl',
+            regular: 'min-h-11 ps-3 pe-2 rounded-xl',
+            large: 'min-h-13 ps-4 pe-3 rounded-xl',
+        },
+        // Toggle size per row size: a large row keeps the regular 28px toggle (a 32px one reads oversized).
+        toggle_size: {
+            small: 'small',
+            regular: 'regular',
+            large: 'regular',
         },
 
         // Text
