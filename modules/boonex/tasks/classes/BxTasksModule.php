@@ -95,7 +95,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
     {
         return echoJson($this->serviceDeleteTaskList($iContextId, $iId) ? [
             'context_id' => $iContextId,
-        ] : []);
+        ] : ['msg' => _t('_bx_tasks_txt_err_delete_list')]);
     }
 
     public function actionProcessTaskForm($iContextId, $iListId)
@@ -299,7 +299,14 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         $CNF = &$this->_oConfig->CNF;
 
         $aTasks = $this->_oDb->getTasks($iContextId, $iId);
-        if(!empty($aTasks) && ($oConnection = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTION'])) !== false)
+        $bTasks = !empty($aTasks) && is_array($aTasks);
+
+        if($bTasks)
+            foreach($aTasks as $aTask)
+                if($this->checkAllowedDelete($aTask) !== CHECK_ACTION_RESULT_ALLOWED)
+                    return false;
+
+        if($bTasks && ($oConnection = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTION'])) !== false)
             foreach($aTasks as &$aTask)
                 $oConnection->onDeleteContent($aTask[$CNF['FIELD_ID']]);
 
@@ -1596,6 +1603,27 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         }
 
         return false;
+    }
+
+    /**
+     * @return CHECK_ACTION_RESULT_ALLOWED if access is granted or error message if access is forbidden. So make sure to make strict(===) checking.
+     */
+    public function checkAllowedDelete(&$aDataEntry, $isPerformAction = false)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $sErr = _t('_sys_txt_access_denied');
+        $iContentId = (int)$aDataEntry[$CNF['FIELD_ID']];
+
+        $aTimeTracks = $this->_oDb->getTimeTracks(['sample' => 'object_id', 'object_id' => $iContentId]);
+        if($aTimeTracks && is_array($aTimeTracks))
+            return $sErr;
+
+        $aTimers = $this->_oDb->getTimers(['sample' => 'content_id', 'content_id' => $iContentId]);
+        if($aTimers && is_array($aTimers))
+            return $sErr;
+
+        return parent::checkAllowedDelete($aDataEntry, $isPerformAction = false);
     }
 
     /**

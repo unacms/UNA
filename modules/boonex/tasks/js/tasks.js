@@ -51,8 +51,8 @@ BxTasksView.prototype._setCompleted = function (iId, iValue, onComplete) {
     });
 };
 
-BxTasksView.prototype.processTaskList = function (iContextId, iId, oSource, oEvent) {
-    oEvent.stopPropagation();
+BxTasksView.prototype.processTaskList = function (iContextId, iId, oSource) {
+    event.stopPropagation();
 
     var $this = this;
     $(window).dolPopupAjax({
@@ -62,11 +62,16 @@ BxTasksView.prototype.processTaskList = function (iContextId, iId, oSource, oEve
     });
 };
 
-BxTasksView.prototype.deleteTaskList = function (iContextId, iId, obj) {
+BxTasksView.prototype.deleteTaskList = function (iContextId, iId, oSource) {
+    event.stopPropagation();
+
     var $this = this;
     bx_confirm($this._oOptions.t_confirm_block_deletion, function () {
         $.getJSON($this._oOptions.sActionUrl + 'delete_task_list/' + iContextId + '/' + iId + '/', {}, function (oData) {
-            $this.reloadData(oData, iContextId)
+            if(oData && oData.context_id != undefined)
+                $this.reloadData(oData, iContextId)
+            else
+                processJsonData(oData);
         });
     });
 };
