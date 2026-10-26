@@ -149,7 +149,7 @@ class BxInvTemplate extends BxBaseModGeneralTemplate
 
         $oForm->initChecker();
         if(!$oForm->isSubmittedAndValid()) {
-            $sForm = $oForm->getCode();
+            $sForm = !$this->_bIsApi ? $oForm->getCode() : ''; // the API returns getCodeAPI below
 
             if(!$oForm->isSubmitted()) {
                 $this->getCssJs();
@@ -248,7 +248,7 @@ class BxInvTemplate extends BxBaseModGeneralTemplate
 
         $oForm->initChecker();
         if(!$oForm->isSubmittedAndValid()) {
-            $sForm = $oForm->getCode();
+            $sForm = !$this->_bIsApi ? $oForm->getCode() : ''; // the API returns getCodeAPI below
             if(!$oForm->isSubmitted()) {
                 $this->getCssJs();
                 return $this->_bIsApi ? [bx_api_get_block('form', $oForm->getCodeAPI(), ['ext' => ['request' => ['url' => '/api.php?r=' . $this->_oModule->getName() . '/get_block_form_request', 'immutable' => true]]])] : $this->parseHtmlByName('block_request_form.html', array(
