@@ -19,7 +19,10 @@
                 $('#sys-form-login').ajaxForm({
                     dataType: 'json',
                     success: function (oData) {
-                        if ('undefined' !== typeof(oData['res']) && 'OK' == oData['res']) {
+                        if ('undefined' !== typeof(oData['redirect'])) {
+                            location.href = oData['redirect'];
+                        }
+                        else if ('undefined' !== typeof(oData['res']) && 'OK' == oData['res']) {
                             location.reload();
                         }
                         else if ('undefined' !== typeof(oData['form'])) {

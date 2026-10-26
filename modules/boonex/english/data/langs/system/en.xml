@@ -3188,10 +3188,14 @@
 	<string name="_sys_form_login_input_remember_me"><![CDATA[Remember me]]></string>
 	<string name="_sys_form_login_input_sendsms"><![CDATA[Send SMS]]></string>
 	<string name="_sys_form_login_input_submit"><![CDATA[Log in]]></string>
+	<string name="_sys_form_login_input_code_error_attempts"><![CDATA[Too many wrong codes. <a href="{0}">Sign in again</a>.]]></string>
 	<string name="_sys_form_login_input_code_error_empty"><![CDATA[Cannot be empty.]]></string>
+	<string name="_sys_form_login_input_code_error_expired"><![CDATA[The verification code has expired. <a href="{0}">Send a new code</a>.]]></string>
 	<string name="_sys_form_login_input_phone_error_format"><![CDATA[Wrong phone number, allowed digits only and start from '+']]></string>
 	<string name="_sys_form_login_input_phone_error_not_unique"><![CDATA[This phone is already used by someone.]]></string>
 	<string name="_sys_form_login_input_code_error_invalid"><![CDATA[Wrong verification code. Please, repeat code or <a href="{0}">change the phone number and repeat from the beginning</a>.]]></string>
+        <string name="_sys_form_login_input_code_error_restart"><![CDATA[This sign-in has expired. <a href="{0}">Sign in again</a>.]]></string>
+        <string name="_sys_form_login_input_code_error_wrong"><![CDATA[Wrong verification code. Try again or <a href="{0}">send a new code</a>.]]></string>
         <string name="_sys_form_manage"><![CDATA[Manage form]]></string>
         <string name="_sys_form_display_manage_approve"><![CDATA[Manage form: Approve]]></string>
         <string name="_sys_form_manage_input_sys_content_id"><![CDATA[Content ID]]></string>
@@ -4417,7 +4421,9 @@
     <string name="_sys_txt_form_submission_error_csrf_expired"><![CDATA[Token expired. Please try again.]]></string> 
 
     <string name="_sys_txt_homepage_cover"><![CDATA[Unity is strength... when there is teamwork and collaboration, wonderful things can be achieved.<br /><button class="bx-btn bx-hide-when-logged-in bx-def-margin-top" onclick="document.location='{0}'">Join Now!</button>]]></string>
+    <string name="_sys_txt_login_2fa_continue"><![CDATA[Enter the code we send by SMS to finish signing in: <a href="{0}">continue</a>.]]></string>
     <string name="_sys_txt_login_2fa_description"><![CDATA[Two-factor authentication is enabled, please specify the phone number to send verification code to.]]></string>
+    <string name="_sys_txt_login_2fa_description_phone"><![CDATA[Two-factor authentication is on: we will send a verification code to the phone below.]]></string>
 	
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Your verification code is {0}.]]></string>
     <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[An error occurred, please report error to the site administrator.]]></string>
