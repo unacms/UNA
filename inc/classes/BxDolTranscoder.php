@@ -685,6 +685,37 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
         return false;
     }
 
+    /**
+     * Signature for image_transcoder.php links (the 's' param).
+     * The page which prints a link has checked that the viewer may see the file,
+     * image_transcoder.php only checks that the link was made here, so file ids can't be enumerated.
+     * It is bound to the source file, not to the transcoder, because every transcoder of a source
+     * makes a copy of the same file (size, poster, mp4).
+     * @param $mixedHandler - file handler
+     * @return signature string
+     */
+    public function getHandlerSignature($mixedHandler)
+    {
+        $aSource = $this->_aObject['source_params'];
+        $sSource = isset($aSource['object']) ? 'storage:' . $aSource['object'] : 'folder:' . ($aSource['path'] ?? '');
+
+        return substr(hash_hmac('sha256', 'transcoder|' . $sSource . '|' . $mixedHandler, BX_DOL_SECRET), 0, 32);
+    }
+
+    /**
+     * Check the signature of image_transcoder.php link, @see getHandlerSignature
+     * @param $mixedHandler - file handler
+     * @param $sSignature - signature from the link
+     * @return true if signature is valid, false otherwise
+     */
+    public function isHandlerSignatureValid($mixedHandler, $sSignature)
+    {
+        if (!is_scalar($mixedHandler) || !is_string($sSignature) || '' === $sSignature)
+            return false;
+
+        return hash_equals($this->getHandlerSignature($mixedHandler), $sSignature);
+    }
+
     public function getTmpFilename ($sOverrideName = false)
     {
         if ($sOverrideName)
