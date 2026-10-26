@@ -13,7 +13,7 @@
  */
 class BxDolStorageQuery extends BxDolDb
 {
-    protected static $_aFileRowsScope = null; ///< file rows read while a scope is open, @see openFileRowsScope
+    protected static $_aFileRowsScopes = []; ///< open file rows scopes, the last one is in use, @see openFileRowsScope
 
     protected $_aObject;
     protected $_sTableFiles;
@@ -217,40 +217,45 @@ class BxDolStorageQuery extends BxDolDb
 
     public function getFileById($sValue)
     {
-        if(self::$_aFileRowsScope === null)
+        if(empty(self::$_aFileRowsScopes))
             return $this->_getFileBy('`id`', $sValue);
 
+        $iScope = count(self::$_aFileRowsScopes) - 1;
         $sKey = $this->_sTableFiles . '#' . $sValue;
-        if(!array_key_exists($sKey, self::$_aFileRowsScope))
-            self::$_aFileRowsScope[$sKey] = $this->_getFileBy('`id`', $sValue);
+        if(!array_key_exists($sKey, self::$_aFileRowsScopes[$iScope]))
+            self::$_aFileRowsScopes[$iScope][$sKey] = $this->_getFileBy('`id`', $sValue);
 
-        return self::$_aFileRowsScope[$sKey];
+        return self::$_aFileRowsScopes[$iScope][$sKey];
     }
 
     /**
      * While a scope is open a file row is read once. bx_api_get_image opens one: the
      * file's url, its info and its local path all read the same row. A row changed or
      * deleted here (BxDolStorage::getFile fills in missing dimensions, for one) is read
-     * again. Scopes nest; outside of one rows are always read.
-     * @return the scope to give back to @see closeFileRowsScope
+     * again, in this scope and in the ones around it. Scopes nest, a nested one starts
+     * empty; outside of one rows are always read.
+     * @return the scope to give to @see closeFileRowsScope
      */
     public static function openFileRowsScope()
     {
-        $aScope = self::$_aFileRowsScope;
-        self::$_aFileRowsScope = [];
+        self::$_aFileRowsScopes[] = [];
 
-        return $aScope;
+        return count(self::$_aFileRowsScopes);
     }
 
-    public static function closeFileRowsScope($aScope)
+    /**
+     * Close the scope and any scope opened inside it that was left open.
+     */
+    public static function closeFileRowsScope($iScope)
     {
-        self::$_aFileRowsScope = $aScope;
+        array_splice(self::$_aFileRowsScopes, max(0, (int)$iScope - 1));
     }
 
     protected function _forgetScopedFileRow($iFileId)
     {
-        if(self::$_aFileRowsScope !== null)
-            unset(self::$_aFileRowsScope[$this->_sTableFiles . '#' . $iFileId]);
+        $sKey = $this->_sTableFiles . '#' . $iFileId;
+        foreach(array_keys(self::$_aFileRowsScopes) as $iScope)
+            unset(self::$_aFileRowsScopes[$iScope][$sKey]);
     }
 
     public function getFileByRemoteId($sValue)

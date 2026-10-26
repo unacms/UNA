@@ -45,9 +45,9 @@ class StorageQueryMemoTest extends BxDolIntegrationTestCase
         return $this->_iFileId;
     }
 
-    protected function scope()
+    protected function scopes(): array
     {
-        return (new ReflectionProperty(BxDolStorageQuery::class, '_aFileRowsScope'))->getValue();
+        return (new ReflectionProperty(BxDolStorageQuery::class, '_aFileRowsScopes'))->getValue();
     }
 
     protected function storageQuery(): BxDolStorageQuery
@@ -100,26 +100,36 @@ class StorageQueryMemoTest extends BxDolIntegrationTestCase
         });
         $this->assertSame(2, $this->filesQueries($aOutside), 'Outside a scope a row is read every time.');
 
-        $aScope = BxDolStorageQuery::openFileRowsScope();
+        $iScope = BxDolStorageQuery::openFileRowsScope();
         try {
             $aInside = $this->record(function () use ($oQuery) {
                 $this->assertEmpty($oQuery->getFileById(self::MISSING_ID));
                 $this->assertEmpty($oQuery->getFileById(self::MISSING_ID), 'A missing file is remembered as missing.');
 
                 // A nested scope starts empty and gives the outer one back.
-                $aNested = BxDolStorageQuery::openFileRowsScope();
+                $iNested = BxDolStorageQuery::openFileRowsScope();
                 $oQuery->getFileById(self::MISSING_ID);
-                BxDolStorageQuery::closeFileRowsScope($aNested);
+                BxDolStorageQuery::closeFileRowsScope($iNested);
                 $oQuery->getFileById(self::MISSING_ID);
             });
         }
         finally {
-            BxDolStorageQuery::closeFileRowsScope($aScope);
+            BxDolStorageQuery::closeFileRowsScope($iScope);
         }
         $this->assertSame(2, $this->filesQueries($aInside), 'Once in the scope, once in the nested one.');
+        $this->assertSame([], $this->scopes(), 'Every scope is closed.');
 
         $aAfter = $this->record(fn() => $oQuery->getFileById(self::MISSING_ID));
         $this->assertSame(1, $this->filesQueries($aAfter), 'After the scope rows are read again.');
+    }
+
+    public function testClosingAScopeClosesTheOnesLeftOpenInside(): void
+    {
+        $iScope = BxDolStorageQuery::openFileRowsScope();
+        BxDolStorageQuery::openFileRowsScope();
+        BxDolStorageQuery::closeFileRowsScope($iScope);
+
+        $this->assertSame([], $this->scopes());
     }
 
     public function testApiImageReadsItsRowOnce(): void
@@ -135,7 +145,7 @@ class StorageQueryMemoTest extends BxDolIntegrationTestCase
         $this->assertIsArray($mixedImage);
         $this->assertNotEmpty($mixedImage['src']);
         $this->assertSame(1, $this->filesQueries($aQueries), 'The url, the info and the local path share one read.');
-        $this->assertNull($this->scope(), 'The scope is closed again.');
+        $this->assertSame([], $this->scopes(), 'The scope is closed again.');
     }
 
     public function testRowChangedInAScopeIsReadAgain(): void
@@ -143,7 +153,7 @@ class StorageQueryMemoTest extends BxDolIntegrationTestCase
         $oQuery = $this->storageQuery();
         $iId = $this->storeImage();
 
-        $aScope = BxDolStorageQuery::openFileRowsScope();
+        $iScope = BxDolStorageQuery::openFileRowsScope();
         try {
             $this->assertNotSame('phpunit-memo.png', $oQuery->getFileById($iId)['file_name']);
 
@@ -151,7 +161,36 @@ class StorageQueryMemoTest extends BxDolIntegrationTestCase
             $this->assertSame('phpunit-memo.png', $oQuery->getFileById($iId)['file_name'], 'BxDolStorage::getFile writes rows it reads.');
         }
         finally {
-            BxDolStorageQuery::closeFileRowsScope($aScope);
+            BxDolStorageQuery::closeFileRowsScope($iScope);
+        }
+    }
+
+    /**
+     * A bx_api_get_image call inside another scope can fill in the row the outer scope read:
+     * the outer scope reads it again too.
+     */
+    public function testRowChangedInANestedScopeIsReadAgainOutside(): void
+    {
+        $oQuery = $this->storageQuery();
+        $iId = $this->storeImage();
+
+        $iScope = BxDolStorageQuery::openFileRowsScope();
+        try {
+            $this->assertNotSame('phpunit-memo.png', $oQuery->getFileById($iId)['file_name']);
+
+            $iNested = BxDolStorageQuery::openFileRowsScope();
+            try {
+                $oQuery->getFileById($iId);
+                $oQuery->modifyCustomField($iId, 'file_name', 'phpunit-memo.png', false);
+            }
+            finally {
+                BxDolStorageQuery::closeFileRowsScope($iNested);
+            }
+
+            $this->assertSame('phpunit-memo.png', $oQuery->getFileById($iId)['file_name']);
+        }
+        finally {
+            BxDolStorageQuery::closeFileRowsScope($iScope);
         }
     }
 

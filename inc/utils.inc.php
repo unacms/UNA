@@ -2746,12 +2746,12 @@ function bx_api_get_msg($sMessage, $aParams = [])
 function bx_api_get_image($mixedStorage, $iId)
 {
     // The file's url, its info and its local path read the same storage row: read it once (@see BxDolStorageQuery::openFileRowsScope).
-    $aFileRowsScope = BxDolStorageQuery::openFileRowsScope();
+    $iFileRowsScope = BxDolStorageQuery::openFileRowsScope();
     try {
         return _bx_api_get_image($mixedStorage, $iId);
     }
     finally {
-        BxDolStorageQuery::closeFileRowsScope($aFileRowsScope);
+        BxDolStorageQuery::closeFileRowsScope($iFileRowsScope);
     }
 }
 
