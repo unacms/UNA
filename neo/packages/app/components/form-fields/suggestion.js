@@ -2,6 +2,8 @@ import Field from './_field';
 import { View } from 'app/design/view'
 import { useState, useEffect, useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { useDebouncedValue } from '@tanstack/react-pacer';
+import { SEARCH_DEBOUNCE_MS } from 'app/lib/search-debounce';
 import { Input, Hidden } from 'app/design/controls'
 import Dropdown from 'app/ui/atoms/dropdown'
 import { fetcher } from 'app/lib/fetcher';
@@ -15,10 +17,12 @@ export default function FormFieldSuggestion(props) {
 
     const isDisabled = props?.attrs?.disabled == 'disabled';
 
-    // Search as you type: the latest term wins; the previous options stay while it loads.
+    // Search as you type: one request per typing pause, the latest term wins,
+    // and the previous options stay while it loads.
     const [term, setTerm] = useState(null);
+    const [debouncedTerm] = useDebouncedValue(term, { wait: SEARCH_DEBOUNCE_MS });
     const { data: searchResponse } = useFetch(
-        term !== null ? '/api.php?r=' + props.ajax_get_suggestions + "&term=" + term : null,
+        debouncedTerm !== null ? '/api.php?r=' + props.ajax_get_suggestions + "&term=" + debouncedTerm : null,
         { keepPreviousData: true }
     );
     const selectedValues = Array.isArray(searchResponse?.data)

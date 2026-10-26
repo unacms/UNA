@@ -8,6 +8,7 @@
   "dependencies": {
     "@hello-pangea/dnd": "^17.0.0",
     "@legendapp/motion": "^2.5.3",
+    "@tanstack/react-pacer": "^0.24.1",
     "@tanstack/react-query": "^4.32.0",
     "cnfast": "^0.0.8",
     "country-codes-flags-phone-codes": "^1.1.1",
