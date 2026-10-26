@@ -753,7 +753,30 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
      */
     function setCover ($oPage, $aData, $sTemplateName = 'cover.html')
     {
-        BxDolCover::getInstance($this)->set($this->prepareCover($aData, ['page' => $oPage]), $sTemplateName);
+        BxDolCover::getInstance($this)->set(bx_is_api() ? $this->prepareCoverApi($aData) : $this->prepareCover($aData, ['page' => $oPage]), $sTemplateName);
+    }
+
+    /**
+     * Cover of an API page. The page builds its cover block itself (BxBasePage) from the profile,
+     * the entry's actions menu and its meta menu, so the HTML cover isn't built: only those menus
+     * get the entry, as prepareCover gives it to them.
+     */
+    function prepareCoverApi($aData)
+    {
+        $CNF = &$this->_oConfig->CNF;
+        $iContentId = $aData[$CNF['FIELD_ID']];
+
+        $this->getModule()->serviceEntityAllActions([$iContentId, $aData]);
+
+        if(!empty($CNF['OBJECT_MENU_VIEW_ENTRY_META']) && ($oMetaMenu = BxTemplMenu::getObjectInstance($CNF['OBJECT_MENU_VIEW_ENTRY_META'])) !== false) {
+            $oMetaMenu->setContentId($iContentId);
+            $oMetaMenu->setContentPublic($this->isProfilePublic($aData));
+        }
+
+        return [
+            'module' => $this->_oConfig->getName(),
+            'id' => $iContentId,
+        ];
     }
 
     /**
