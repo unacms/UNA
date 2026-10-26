@@ -181,5 +181,8 @@
     "tslib": "^2.8.1",
     "typescript": "7.0.2",
     "uglify-js": "^3.19.3"
+  },
+  "resolutions": {
+    "@tailwindcss/typography/postcss-selector-parser": "^6.1.5"
   }
 }
