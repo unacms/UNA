@@ -5,6 +5,7 @@ use PHPUnit\Framework\Attributes\Group;
 /**
  * Work the API feed does for every item: no database writes while nothing changed,
  * the Share menu takes the item's url from the feed instead of building the post again,
+ * the Counters menu takes the comment and reaction elements the Actions menu built,
  * and attachment lists that API units don't return aren't built.
  *
  * The test makes its own discussion and timeline event, so it runs on any site
@@ -72,8 +73,7 @@ class TimelineFeedApiTest extends BxDolIntegrationTestCase
         foreach ($this->_aIsApiBackup as $aBackup)
             $this->bxSetProtected($aBackup[0], '_bIsApi', $aBackup[1], $aBackup[2]);
 
-        //--- Menus are cached per request and read the API mode when they are created.
-        unset($GLOBALS['bxDolClasses']['BxDolMenu!bx_timeline_menu_item_share']);
+        $this->resetObjectInstances();
         if (class_exists('BxTimelineTemplate', false))
             (new ReflectionProperty(BxTimelineTemplate::class, '_aMemoryCacheItemsUrl'))->setValue(null, []);
 
@@ -108,6 +108,42 @@ class TimelineFeedApiTest extends BxDolIntegrationTestCase
     {
         $this->_aIsApiBackup[] = [$o, $this->bxGetProtected($o, '_bIsApi', $sClass), $sClass];
         $this->bxSetProtected($o, '_bIsApi', $bApi, $sClass);
+    }
+
+    /**
+     * Menus and the fixture's comments, views and votes objects are cached per request
+     * and read the API mode when they are created.
+     */
+    protected function resetObjectInstances(): void
+    {
+        foreach (array_keys($GLOBALS['bxDolClasses'] ?? []) as $sKey)
+            if (preg_match('/^(BxDolMenu!bx_timeline_menu_item_(share|actions|manage|counters)$|BxDol(Cmts|Vote|View)!bx_forum)/', $sKey))
+                unset($GLOBALS['bxDolClasses'][$sKey]);
+    }
+
+    /**
+     * Element data of the API menu's items, by item name.
+     */
+    protected function elementsByName(array $aMenu): array
+    {
+        $aResult = [];
+        foreach ($aMenu['items'] ?? [] as $aItem)
+            if (is_array($aItem) && ($aItem['display_type'] ?? '') === 'element' && isset($aItem['data']['system']))
+                $aResult[$aItem['name']] = $aItem['data'];
+
+        return $aResult;
+    }
+
+    /**
+     * The value without 'ts', the build time every API element carries.
+     */
+    protected function withoutTs($mixedValue)
+    {
+        if (!is_array($mixedValue))
+            return $mixedValue;
+
+        unset($mixedValue['ts']);
+        return array_map([$this, 'withoutTs'], $mixedValue);
     }
 
     /**
@@ -231,6 +267,66 @@ class TimelineFeedApiTest extends BxDolIntegrationTestCase
         });
         $this->assertNotSame([], $oRecorder->services('get_timeline_post'));
         $this->assertSame($aItemsUncached, $aItems);
+    }
+
+    public function testApiCountersMenuReusesActionsElements(): void
+    {
+        $_GET['api'] = 1;
+        $this->resetObjectInstances();
+
+        $aParams = ['view' => BX_TIMELINE_VIEW_TIMELINE, 'type' => BX_TIMELINE_TYPE_DEFAULT];
+
+        $oCounters = BxDolMenu::getObjectInstance('bx_timeline_menu_item_counters');
+        $this->assertInstanceOf(BxTimelineMenuItemCounters::class, $oCounters);
+        $oCounters->setEventById($this->_iEventId, $aParams);
+        $aEvent = $this->bxGetProtected($oCounters, '_aEvent', BxTimelineMenuItemActions::class);
+        $this->assertNotEmpty($aEvent['comments']['system'] ?? '', 'The fixture event has comments.');
+
+        //--- Without the Actions menu in the event the Counters menu builds every element itself, as before.
+        $aBase = [];
+        $oBase = $this->record(function () use ($oCounters, &$aBase) {
+            $aBase = $oCounters->getCodeAPI();
+        });
+        $this->assertArrayHasKey('item-comment', $this->elementsByName($aBase));
+        $this->assertNotSame([], $oBase->queries('`bx_forum_cmts`'), 'The comment counter reads the latest comments.');
+
+        //--- BxTimelineTemplate::_getPostApi puts the Actions menu into the event before it builds the Counters menu.
+        $oActions = BxDolMenu::getObjectInstance('bx_timeline_menu_item_actions');
+        $this->assertInstanceOf(BxTimelineMenuItemActions::class, $oActions);
+        $this->assertTrue($oActions->setEvent($aEvent, $aParams));
+        $aEvent['menu_actions'] = $oActions->getCodeAPI();
+        $aActionsElements = $this->elementsByName($aEvent['menu_actions']);
+        $this->assertArrayHasKey('item-comment', $aActionsElements);
+
+        $this->assertTrue($oCounters->setEvent($aEvent, $aParams));
+        $aReused = [];
+        $oReused = $this->record(function () use ($oCounters, &$aReused) {
+            $aReused = $oCounters->getCodeAPI();
+        });
+        $this->assertSame($this->withoutTs($aBase), $this->withoutTs($aReused), 'The Counters menu returns the same items.');
+
+        $aShared = array_intersect_key($this->elementsByName($aReused), $aActionsElements);
+        $this->assertArrayHasKey('item-comment', $aShared);
+        foreach ($aShared as $sName => $aElement)
+            $this->assertSame($aActionsElements[$sName], $aElement, $sName . ' is the element the Actions menu built, ts included.');
+        $this->assertSame([], $oReused->queries('`bx_forum_cmts`'), 'The latest comments are not read again.');
+        $this->assertLessThan(count($oBase->aQueries), count($oReused->aQueries));
+
+        //--- An element the Actions menu didn't build for this object (hidden for the viewer, another object) is built in full.
+        $aEventOther = $aEvent;
+        foreach ($aEventOther['menu_actions']['items'] as $iKey => $aItem) {
+            if (($aItem['name'] ?? '') === 'item-reaction')
+                unset($aEventOther['menu_actions']['items'][$iKey]);
+            else if (($aItem['name'] ?? '') === 'item-comment')
+                $aEventOther['menu_actions']['items'][$iKey]['data']['object_id'] = 0;
+        }
+        $this->assertTrue($oCounters->setEvent($aEventOther, $aParams));
+        $aFallback = [];
+        $oFallback = $this->record(function () use ($oCounters, &$aFallback) {
+            $aFallback = $oCounters->getCodeAPI();
+        });
+        $this->assertSame($this->withoutTs($aBase), $this->withoutTs($aFallback));
+        $this->assertNotSame([], $oFallback->queries('`bx_forum_cmts`'), 'The comment element is built again.');
     }
 
     public function testApiTimelinePostSkipsAttachments(): void

@@ -530,21 +530,15 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
                     $oContentInfo = BxDolContentInfo::getObjectInstance($sContentInfo);
                     if (!$oContentInfo) {
                         $bSeoUrlFound = false;
-                    } else {
-                        $sSeoTitle = $oContentInfo->getContentTitle($sSeoParamValue);
                     }
-                    if (empty($sSeoTitle))
-                        $sSeoTitle = base_convert((string)sprintf('%u', crc32($sSeoParamValue . BX_DOL_SECRET)), 10, 36);
                 }
                 elseif ('profile_id' == $sSeoParamName) {
                     $oProfile = BxDolProfile::getInstance($sSeoParamValue);
                     if (!$oProfile) {
                         $bSeoUrlFound = false;
-                    } else {
-                        $sSeoTitle = $oProfile->getDisplayName();
                     }
                 }
-                
+
                 $r = false;
                 if (!$bSeoUrlFound) {
                     $sSeoPageUri = false;
@@ -552,6 +546,17 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
                     $r = BxDolPageQuery::getSeoLink($sPageModule, $sPageUri, ['param_value' => $sSeoParamValue]);
                 }
                 if ($bSeoUrlFound && !$r) {
+                    // the title is needed only for the URI of a new SEO link, so it isn't read when the link exists
+                    if ('id' == $sSeoParamName) {
+                        $sSeoTitle = $oContentInfo->getContentTitle($sSeoParamValue);
+                        if (empty($sSeoTitle)) {
+                            $sSeoTitle = base_convert((string)sprintf('%u', crc32($sSeoParamValue . BX_DOL_SECRET)), 10, 36);
+                        }
+                    }
+                    elseif ('profile_id' == $sSeoParamName) {
+                        $sSeoTitle = $oProfile->getDisplayName();
+                    }
+
                     $sSeoTitleLimited = BxTemplFunctions::getInstance()->getStringWithLimitedLength($sSeoTitle, 45);
                     $sUri = uriGenerate ($sSeoTitleLimited, 'sys_seo_links', 'uri', ['cond' => ['module' => $sPageModule, 'page_uri' => $sPageUri]]);
 

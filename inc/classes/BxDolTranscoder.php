@@ -367,6 +367,7 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
      */
     public function getFileUrl($mixedHandler)
     {
+        // BxDolTranscoderImage::getFileUrl returns the original in API mode by itself, change both together
         if (bx_is_api() && !($this instanceof BxDolTranscoderVideo))
             return $this->getOrigFileUrl($mixedHandler);
         

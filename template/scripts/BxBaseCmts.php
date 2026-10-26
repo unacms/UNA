@@ -27,6 +27,12 @@ class BxBaseCmts extends BxDolCmts
     protected $_aHtmlIds;
     
     protected $_aAclId2Name;
+    /**
+     * ACL level id => name map for the '<prefix>-aml-<level>' comment class.
+     * It's the same for every comments object, so it's read once per request
+     * (a feed page builds one comments object per post).
+     */
+    private static $_aAclId2NameMemo = [];
 
     function __construct( $sSystem, $iId, $iInit = true, $oTemplate = false)
     {
@@ -65,10 +71,12 @@ class BxBaseCmts extends BxDolCmts
         ]);
         $this->_aElementParamsApi = [];
 
-        $this->_aAclId2Name = array();
-        $aAclLevels = BxDolAcl::getInstance()->getMemberships(false, false, false);
-        foreach($aAclLevels as $iAclId => $sAclName)
-            $this->_aAclId2Name[$iAclId] = str_replace('_', '-', str_replace('_adm_prm_txt_level_', '', $sAclName));
+        if(empty(self::$_aAclId2NameMemo)) {
+            $aAclLevels = BxDolAcl::getInstance()->getMemberships(false, false, false);
+            foreach($aAclLevels as $iAclId => $sAclName)
+                self::$_aAclId2NameMemo[$iAclId] = str_replace('_', '-', str_replace('_adm_prm_txt_level_', '', $sAclName));
+        }
+        $this->_aAclId2Name = self::$_aAclId2NameMemo;
 
         if(empty(self::$_sTmplContentElementBlock))
             self::$_sTmplContentElementBlock = $this->_oTemplate->getHtml('comment_element_block.html');
@@ -908,14 +916,19 @@ class BxBaseCmts extends BxDolCmts
         ]);
     }
 
+    /**
+     * Comments counter for the app: the number of comments and up to 5 recent authors.
+     * @param $aParams element params; 'count' is the number of comments when the caller
+     *      has counted them already with the same params, as getElementAPI does.
+     */
     public function getCounterApi($aParams = [])
     {
         $aParams = array_merge($this->_aElementDefaultsApi, $aParams);
 
         $bShowReversed = isset($aParams['show_counter_reversed']) && $aParams['show_counter_reversed'] == true;
-        $bRecalculateCounter = isset($aParams['recalculate_counter']) && $aParams['recalculate_counter'] == true;        
+        $bRecalculateCounter = isset($aParams['recalculate_counter']) && $aParams['recalculate_counter'] == true;
 
-        $iCount = (int)$this->getCommentsCountAll(0, $bRecalculateCounter);   
+        $iCount = isset($aParams['count']) ? (int)$aParams['count'] : (int)$this->getCommentsCountAll(0, $bRecalculateCounter);
 
         $iCmtsLimit = 5;
         $aCmts = $this->_getCounterItems($iCmtsLimit);

@@ -13,6 +13,8 @@
  */
 class BxDolStorageQuery extends BxDolDb
 {
+    protected static $_aFileRowsScope = null; ///< file rows read while a scope is open, @see openFileRowsScope
+
     protected $_aObject;
     protected $_sTableFiles;
 
@@ -84,29 +86,31 @@ class BxDolStorageQuery extends BxDolDb
 
     public function getMimeTypeByExt($sExt)
     {
-        $sQuery = $this->prepare("SELECT `mime_type` FROM `sys_storage_mime_types` WHERE `ext` = ?", $sExt);
-        return $this->getOne($sQuery);
+        return $this->_getMimeTypeField($sExt, 'mime_type');
     }
 
     public function getIconByExt($sExt)
     {
-        $sQuery = $this->prepare("SELECT `icon` FROM `sys_storage_mime_types` WHERE `ext` = ?", $sExt);
-        return $this->getOne($sQuery);
+        return $this->_getMimeTypeField($sExt, 'icon');
     }
 
     public function getIconFontByExt($sExt)
     {
-        $sQuery = $this->prepare("SELECT `icon_font` FROM `sys_storage_mime_types` WHERE `ext` = ?", $sExt);
-        return $this->getOne($sQuery);
+        return $this->_getMimeTypeField($sExt, 'icon_font');
     }
-    
+
     public function clearAllMimeTypes()
     {
-        return $this->query("TRUNCATE TABLE `sys_storage_mime_types`");
+        $mixedResult = $this->query("TRUNCATE TABLE `sys_storage_mime_types`");
+        $this->cleanMemoryAll();
+
+        return $mixedResult;
     }
 
     public function addMimeType($sMimeType, $sExt, $sIcon = '', $sIconFont = '')
     {
+        $this->cleanMemory($this->_getMimeTypeMemoryKey($sExt));
+
         $sQuery = $this->prepare("INSERT IGNORE INTO `sys_storage_mime_types` SET `ext` = ?, `mime_type` = ?, `icon` = ?, `icon_font` = ?", $sExt, $sMimeType, $sIcon, $sIconFont);
         return $this->query($sQuery);
     }
@@ -180,7 +184,10 @@ class BxDolStorageQuery extends BxDolDb
         }
 
         $sQuery = "UPDATE " . $this->_sTableFiles . " SET `{$sField}` = :{$sField} {$sAdd} WHERE `id` = :id";
-        return $this->query($sQuery, $aBindings);
+        $mixedResult = $this->query($sQuery, $aBindings);
+        $this->_forgetScopedFileRow($iFileId);
+
+        return $mixedResult;
     }
 
     public function deleteFile($iFileId)
@@ -191,7 +198,9 @@ class BxDolStorageQuery extends BxDolDb
 
         // delete file record
         $sQuery = $this->prepare("DELETE FROM " . $this->_sTableFiles . " WHERE `id` = ?", $iFileId);
-        if (!$this->query($sQuery))
+        $mixedResult = $this->query($sQuery);
+        $this->_forgetScopedFileRow($iFileId);
+        if (!$mixedResult)
             return false;
 
         // delete any file traces in ghosts table
@@ -208,7 +217,40 @@ class BxDolStorageQuery extends BxDolDb
 
     public function getFileById($sValue)
     {
-        return $this->_getFileBy('`id`', $sValue);
+        if(self::$_aFileRowsScope === null)
+            return $this->_getFileBy('`id`', $sValue);
+
+        $sKey = $this->_sTableFiles . '#' . $sValue;
+        if(!array_key_exists($sKey, self::$_aFileRowsScope))
+            self::$_aFileRowsScope[$sKey] = $this->_getFileBy('`id`', $sValue);
+
+        return self::$_aFileRowsScope[$sKey];
+    }
+
+    /**
+     * While a scope is open a file row is read once. bx_api_get_image opens one: the
+     * file's url, its info and its local path all read the same row. A row changed or
+     * deleted here (BxDolStorage::getFile fills in missing dimensions, for one) is read
+     * again. Scopes nest; outside of one rows are always read.
+     * @return the scope to give back to @see closeFileRowsScope
+     */
+    public static function openFileRowsScope()
+    {
+        $aScope = self::$_aFileRowsScope;
+        self::$_aFileRowsScope = [];
+
+        return $aScope;
+    }
+
+    public static function closeFileRowsScope($aScope)
+    {
+        self::$_aFileRowsScope = $aScope;
+    }
+
+    protected function _forgetScopedFileRow($iFileId)
+    {
+        if(self::$_aFileRowsScope !== null)
+            unset(self::$_aFileRowsScope[$this->_sTableFiles . '#' . $iFileId]);
     }
 
     public function getFileByRemoteId($sValue)
@@ -220,6 +262,23 @@ class BxDolStorageQuery extends BxDolDb
     {
         $sQuery = $this->prepare("SELECT * FROM " . $this->_sTableFiles . " WHERE " . $sField . " = ?", $sValue);
         return $this->getRow($sQuery);
+    }
+
+    /**
+     * The mime type, icon and font icon of an extension are read with one query, once per
+     * request, and forgotten when mime types are added or cleared here or the database memory is cleaned.
+     */
+    protected function _getMimeTypeField($sExt, $sField)
+    {
+        $sQuery = $this->prepare("SELECT `mime_type`, `icon`, `icon_font` FROM `sys_storage_mime_types` WHERE `ext` = ?", $sExt);
+        $aRow = is_string($sExt) ? $this->fromMemory($this->_getMimeTypeMemoryKey($sExt), 'getRow', $sQuery) : $this->getRow($sQuery);
+
+        return isset($aRow[$sField]) ? $aRow[$sField] : false;
+    }
+
+    protected function _getMimeTypeMemoryKey($sExt)
+    {
+        return 'BxDolStorageQuery::getMimeTypeByExt' . $sExt;
     }
 
     public function isTokenValid($iFileId, $sToken)

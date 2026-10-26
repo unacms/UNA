@@ -176,4 +176,30 @@ class ForumApiTest extends BxDolIntegrationTestCase
         $this->assertSame('reactions', $aItem['data']['type']);
         $this->assertSame((int)$this->_aContent['id'], (int)$aItem['data']['object_id']);
     }
+
+    public function testCommentsCounterNamesAuthorWithoutComments(): void
+    {
+        $this->bxLoginAsAdmin();
+        $_GET['api'] = 1;
+
+        // A fresh instance in API mode; the shared one may have been built for the web.
+        $sCmtsKey = 'BxDolCmts!bx_forum' . (int)$this->_aContent['id'];
+        unset($GLOBALS['bxDolClasses'][$sCmtsKey]);
+        try {
+            $oCmts = BxDolCmts::getObjectInstance('bx_forum', (int)$this->_aContent['id']);
+            $this->assertInstanceOf(BxForumCmts::class, $oCmts);
+
+            $aElement = $oCmts->getElementAPI();
+        }
+        finally {
+            unset($GLOBALS['bxDolClasses'][$sCmtsKey]);
+        }
+
+        if (!is_array($aElement) || empty($aElement['counter']))
+            $this->markTestSkipped('Discussion comments are off.');
+
+        // BxForumCmts adds the discussion author to the counter, even at 0 comments.
+        $this->assertSame(0, $aElement['counter']['count']);
+        $this->assertContains((int)$this->_aContent['author'], array_map('intval', array_column($aElement['counter']['authors'], 'id')));
+    }
 }
