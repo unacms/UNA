@@ -112,9 +112,10 @@ class BxTimelineTemplateFilesTest extends BxDolTestCase
 
     public function testFileNameIsNotReadAsATemplateKey(): void
     {
-        [$s] = $this->files([$this->document(1, '__href__.txt')]);
+        [$s] = $this->files([$this->document(1, '__icon_src__.txt')]);
 
-        $this->assertStringContainsString('alt="&#95;&#95;href&#95;&#95;.txt"', $s);
-        $this->assertStringNotContainsString('alt="https://', $s);
+        $this->assertStringContainsString('alt="&#95;&#95;icon_src&#95;&#95;.txt"', $s);
+        $this->assertStringContainsString('title="&#95;&#95;icon_src&#95;&#95;.txt"', $s, 'The link\'s tooltip carries the name too.');
+        $this->assertStringNotContainsString('icons/txt.svg.txt', $s, 'Neither attribute has the icon URL in place of the name.');
     }
 }

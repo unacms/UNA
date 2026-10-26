@@ -3404,16 +3404,23 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
             if(isset($aFile['title']))
                 $aAttrs['title'] = $aFile['title'];
 
+            // The file name is in the title and the alt: the template must not read a name like __href__.txt as a key.
             $sAttrs = '';
             foreach($aAttrs as $sKey => $sValue)
-                $sAttrs .= ' ' . $sKey . '="' . bx_html_attribute($sValue) . '"';
+                $sAttrs .= ' ' . $sKey . '="' . $this->_escapeTemplateKeys(bx_html_attribute($sValue)) . '"';
+
+            // A photo opens in place (showItem), but its link still leads to it, in a new tab or without scripts.
+            $sHref = 'javascript:void(0)';
+            if(!empty($aFile['url']))
+                $sHref = $aFile['url'];
+            else if(!empty($aFile['src_orig']))
+                $sHref = $aFile['src_orig'];
 
             $aTmplVarsFiles[] = [
                 'style_prefix' => $sStylePrefix,
                 'class' => '',
                 'item' => $this->parseHtmlByName('file_link.html', [
-                    // A photo opens in place (showItem), but its link still leads to it, in a new tab or without scripts.
-                    'href' => !empty($aFile['url']) ? $aFile['url'] : (!empty($aFile['src_orig']) ? $aFile['src_orig'] : 'javascript:void(0)'),
+                    'href' => $sHref,
                     'attrs' => $sAttrs,
                     'icon_src' => $sFileSrc,
                     'icon_class' => $sStylePrefix . '-item-file',
