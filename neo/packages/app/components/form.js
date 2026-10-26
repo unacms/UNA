@@ -12,7 +12,7 @@ import { sessionCacheGet, sessionCacheSet } from 'app/lib/util/storage';
 import { Platform } from 'react-native';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { FormInstanceProvider } from 'app/context/form-instance';
-import useDebounce from 'app/lib/hooks/use-debounce'
+import { useDebouncer } from '@tanstack/react-pacer'
 import { NeoButton } from 'app/design/controls';
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import { FormError } from 'app/components/form-fields/_field'
@@ -538,14 +538,22 @@ export default function Form({
     // watch() subscribes the whole Form to every field write. Only filter
     // (onChange) forms need that; kitchen-sink / regular submit forms do not.
     const allFields = isAutoChange ? methods.watch() : EMPTY_WATCH;
-    const debouncedFields = useDebounce(allFields, 500);
+    const fieldsDebouncer = useDebouncer((fields) => {
+        sessionCacheSet('form:' + cacheKey, fields);
+        onChange(fields);
+    }, { wait: 500 });
 
+    // watch() returns a new object on every render, so compare deeply and
+    // schedule only real changes. The first values go out at once.
+    const lastFieldsRef = useRef(null);
     useEffect(() => {
-        if (isAutoChange && onChange && Object.keys(debouncedFields).length > 0) {
-            sessionCacheSet('form:' + cacheKey, debouncedFields);
-            onChange(debouncedFields);
-        }
-    }, [debouncedFields, isAutoChange, onChange, cacheKey]);
+        if (!isAutoChange || !onChange || Object.keys(allFields).length === 0) return;
+        if (isObjectsEqual(lastFieldsRef.current, allFields)) return;
+        const isFirst = lastFieldsRef.current === null;
+        lastFieldsRef.current = allFields;
+        fieldsDebouncer.maybeExecute(allFields);
+        if (isFirst) fieldsDebouncer.flush();
+    });
 
 
     
