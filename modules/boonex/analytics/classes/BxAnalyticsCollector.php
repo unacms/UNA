@@ -9,6 +9,10 @@
  * @{
  */
 
+// MEMBERSHIP_ID_* are defined in BxDolAcl.php, which autoloading doesn't load for a constant,
+// and a guest's hits can arrive before anything else in the request has loaded it
+bx_import('BxDolAcl');
+
 /**
  * Takes a batch of hits from a tracker, decides whether to keep them, adds what the server
  * knows (visitor id, member, country, browser, traffic source) and writes sessions and events.
