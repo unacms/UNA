@@ -168,6 +168,7 @@ BxTimelineMain.prototype.initFlickityImages = function(oParent, sSelectorItemIma
         wrapAround: true,
         pageDots: false
     });
+    this.syncFlickityFocus(oCarousel);
 
     oCarousel.find(sItem + ' img').each(function() {
         $(this).load(function() {
@@ -190,6 +191,7 @@ BxTimelineMain.prototype.initFlickityVideos = function(oParent) {
         wrapAround: true,
         pageDots: false
     });
+    this.syncFlickityFocus(oCarousel);
 
     oCarousel.find(sItem + ' video').each(function() {
         this.addEventListener('loadedmetadata', function() {
@@ -212,6 +214,7 @@ BxTimelineMain.prototype.initFlickityAttachments = function(oParent) {
         wrapAround: true,
         pageDots: false
     });
+    this.syncFlickityFocus(oCarousel);
 
     oCarousel.find(sItem + ' img').each(function() {
         $(this).load(function() {
@@ -224,6 +227,39 @@ BxTimelineMain.prototype.initFlickityAttachments = function(oParent) {
             oCarousel.flickity('resize');
         }, true);
     });
+};
+
+/**
+ * Flickity hides the slides that aren't showing from assistive technology (aria-hidden), but the links and players in
+ * them stay in the tab order, so Tab would stop on something nobody can see or hear. They leave it while their slide
+ * is hidden and come back when it shows; the Previous and Next buttons reach them.
+ */
+BxTimelineMain.prototype.syncFlickityFocus = function(oCarousel) {
+    var sFocusable = 'a[href], button, input, select, textarea, iframe, audio[controls], video[controls], [tabindex]';
+
+    var fSync = function() {
+        oCarousel.find('.flickity-cell').each(function() {
+            var bHidden = this.getAttribute('aria-hidden') == 'true';
+
+            $(this).find(sFocusable).each(function() {
+                var oElement = $(this);
+                var bOut = oElement.is('[data-bx-tabindex]');
+                if(bHidden && !bOut)
+                    oElement.attr('data-bx-tabindex', oElement.attr('tabindex') || '').attr('tabindex', '-1');
+                else if(!bHidden && bOut) {
+                    var sTabindex = oElement.attr('data-bx-tabindex');
+                    oElement.removeAttr('data-bx-tabindex');
+                    if(sTabindex)
+                        oElement.attr('tabindex', sTabindex);
+                    else
+                        oElement.removeAttr('tabindex');
+                }
+            });
+        });
+    };
+
+    oCarousel.on('select.flickity', fSync);
+    fSync();
 };
 
 BxTimelineMain.prototype.initFlickity = function(oView) {

@@ -3405,10 +3405,25 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
             $sFileSrcKey = 'src';
         }
 
+        /*
+         * A file's icon or thumbnail is all its link shows, so the alt names the file: its name when the module
+         * passes one (title), otherwise the post it belongs to, as images do.
+         */
+        $sFileTitle = !empty($aEvent['content']['title']) ? trim(strip_tags(bx_process_output($aEvent['content']['title']))) : '';
+
+        $iFileIndex = 0;
         foreach($aFiles as $aFile) {
             $sFileSrc = !empty($aFile[$sFileSrcKey]) ? $aFile[$sFileSrcKey] : $aFile[$sFileSrcKeyDefault];
             if(empty($sFileSrc))
                 continue;
+
+            $iFileIndex++;
+            if(!empty($aFile['title']))
+                $sFileAlt = $aFile['title'];
+            else if($iTotal > 1)
+                $sFileAlt = $sFileTitle !== '' ? _t('_bx_timeline_txt_file_alt_title_n', $sFileTitle, $iFileIndex, $iTotal) : _t('_bx_timeline_txt_file_alt_n', $iFileIndex, $iTotal);
+            else
+                $sFileAlt = $sFileTitle !== '' ? $sFileTitle : _t('_bx_timeline_txt_file_alt');
 
             $aAttrs = ['target' => '_blank'];
             if(isset($aFile['onclick']))
@@ -3418,18 +3433,27 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
             if(isset($aFile['title']))
                 $aAttrs['title'] = $aFile['title'];
 
+            // The file name is in the title and the alt: the template must not read a name like __href__.txt as a key.
             $sAttrs = '';
             foreach($aAttrs as $sKey => $sValue)
-                $sAttrs .= ' ' . $sKey . '="' . bx_html_attribute($sValue) . '"';
+                $sAttrs .= ' ' . $sKey . '="' . $this->_escapeTemplateKeys(bx_html_attribute($sValue)) . '"';
+
+            // A photo opens in place (showItem), but its link still leads to it, in a new tab or without scripts.
+            $sHref = 'javascript:void(0)';
+            if(!empty($aFile['url']))
+                $sHref = $aFile['url'];
+            else if(!empty($aFile['src_orig']))
+                $sHref = $aFile['src_orig'];
 
             $aTmplVarsFiles[] = [
                 'style_prefix' => $sStylePrefix,
                 'class' => '',
                 'item' => $this->parseHtmlByName('file_link.html', [
-                    'href' => isset($aFile['url']) ? $aFile['url'] : 'javascript:void(0)',
+                    'href' => $sHref,
                     'attrs' => $sAttrs,
                     'icon_src' => $sFileSrc,
-                    'icon_class' => $sStylePrefix . '-item-file'
+                    'icon_class' => $sStylePrefix . '-item-file',
+                    'icon_alt' => $this->_escapeTemplateKeys(bx_html_attribute($sFileAlt))
                 ])
             ];
         }

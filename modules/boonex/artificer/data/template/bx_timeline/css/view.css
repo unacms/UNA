@@ -90,7 +90,7 @@ div.bx-tl-item-content div.bx-tl-title {
 }
 div.bx-tl-item-content div.bx-tl-title .bx-tl-title-cnt {
     min-width: 0;
-    /* The title is an h3 under the block's h2; it keeps the size and weight its box sets. */
+    /* The title is an h2, the level of a block title, so each post is a section of the page; it keeps the size and weight its box sets. */
     margin: 0;
     font: inherit;
 }
