@@ -882,7 +882,8 @@ class BxBaseModTextModule extends BxBaseModGeneralModule implements iBxDolConten
                 'src' => $sPhotoSrc,
                 'src_medium' => $sPhotoSrc,
                 'src_orig' => $bImage ? $sUrl : '',
-                'url' => !$bImage ? $sUrl : ''
+                'url' => !$bImage ? $sUrl : '',
+                'title' => $a['file_name']
             );
         }
 

@@ -3376,10 +3376,25 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
             $sFileSrcKey = 'src';
         }
 
+        /*
+         * A file's icon or thumbnail is all its link shows, so the alt names the file: its name when the module
+         * passes one (title), otherwise the post it belongs to, as images do.
+         */
+        $sFileTitle = !empty($aEvent['content']['title']) ? trim(strip_tags(bx_process_output($aEvent['content']['title']))) : '';
+
+        $iFileIndex = 0;
         foreach($aFiles as $aFile) {
             $sFileSrc = !empty($aFile[$sFileSrcKey]) ? $aFile[$sFileSrcKey] : $aFile[$sFileSrcKeyDefault];
             if(empty($sFileSrc))
                 continue;
+
+            $iFileIndex++;
+            if(!empty($aFile['title']))
+                $sFileAlt = $aFile['title'];
+            else if($iTotal > 1)
+                $sFileAlt = $sFileTitle !== '' ? _t('_bx_timeline_txt_file_alt_title_n', $sFileTitle, $iFileIndex, $iTotal) : _t('_bx_timeline_txt_file_alt_n', $iFileIndex, $iTotal);
+            else
+                $sFileAlt = $sFileTitle !== '' ? $sFileTitle : _t('_bx_timeline_txt_file_alt');
 
             $aAttrs = ['target' => '_blank'];
             if(isset($aFile['onclick']))
@@ -3397,10 +3412,12 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
                 'style_prefix' => $sStylePrefix,
                 'class' => '',
                 'item' => $this->parseHtmlByName('file_link.html', [
-                    'href' => isset($aFile['url']) ? $aFile['url'] : 'javascript:void(0)',
+                    // A photo opens in place (showItem), but its link still leads to it, in a new tab or without scripts.
+                    'href' => !empty($aFile['url']) ? $aFile['url'] : (!empty($aFile['src_orig']) ? $aFile['src_orig'] : 'javascript:void(0)'),
                     'attrs' => $sAttrs,
                     'icon_src' => $sFileSrc,
-                    'icon_class' => $sStylePrefix . '-item-file'
+                    'icon_class' => $sStylePrefix . '-item-file',
+                    'icon_alt' => $this->_escapeTemplateKeys(bx_html_attribute($sFileAlt))
                 ])
             ];
         }

@@ -428,6 +428,9 @@
     <string name="_bx_timeline_txt_err_cannot_perform_action"><![CDATA[Cannot perform action. Please report.]]></string>
     <string name="_bx_timeline_txt_err_empty_post"><![CDATA[The post is empty.]]></string>
     <string name="_bx_timeline_txt_err_attach_links"><![CDATA[The maximum allowed number of attached links has been reached.]]></string>
+    <string name="_bx_timeline_txt_file_alt"><![CDATA[File]]></string>
+    <string name="_bx_timeline_txt_file_alt_n"><![CDATA[File {0} of {1}]]></string>
+    <string name="_bx_timeline_txt_file_alt_title_n"><![CDATA[{0}, file {1} of {2}]]></string>
 
     <string name="_bx_timeline_txt_to"><![CDATA[to]]></string>
     <string name="_bx_timeline_txt_load_more"><![CDATA[Load More]]></string>
