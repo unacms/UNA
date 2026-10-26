@@ -43,11 +43,16 @@ if (!$sImageUrl) {
 header('Location: ' . $sImageUrl);
 exit;
 
-function bx_transcoder_error_occured($sMethod = 'displayPageNotFound')
+/**
+ * Nothing to show for this image or video address: a bare 404, not the site's 404 page.
+ * The address is loaded by img and video elements and fetch (NEO checks a video that is
+ * still processing every 15 s), and the answer isn't cached, so the file shows once it's ready.
+ */
+function bx_transcoder_error_occured()
 {
-    require_once(BX_DIRECTORY_PATH_INC . "design.inc.php");
-    $oTemplate = BxDolTemplate::getInstance();
-    $oTemplate->$sMethod ();
+    header('HTTP/1.0 404 Not Found');
+    header('Status: 404 Not Found');
+    header('Cache-Control: no-store');
 }
 
 /** @} */
