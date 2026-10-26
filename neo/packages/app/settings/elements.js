@@ -165,7 +165,7 @@ export const settingsElements = {
             // mirror this via the .bx-mention-link CSS in utilities.css). `editor_color` is
             // the in-editor mention text color (EnrichedTextInput htmlStyle, web + native).
             render_class: 'text-accent-foreground',
-            editor_color: { light: 'rgba(37, 99, 235, 1)', dark: 'rgba(59, 130, 246, 1)' },
+            editor_color: { light: 'rgba(29, 78, 216, 1)', dark: 'rgba(96, 165, 250, 1)' },
         },
         toolbar: {
             padding: 1, // Padding for toolbar buttons in pixels
@@ -176,8 +176,8 @@ export const settingsElements = {
                 iconDark: 'rgba(55, 65, 80, 1)',
             },
         },
-        css:'A.bx-mention-link, A.bx-tag{ color: rgba(37, 99, 235, 1)}',
-        css_dark:'A.bx-mention-link, A.bx-tag{ color: rgba(59, 130, 246, 1)}}',
+        css:'A.bx-mention-link, A.bx-tag{ color: rgba(29, 78, 216, 1)}',
+        css_dark:'A.bx-mention-link, A.bx-tag{ color: rgba(96, 165, 250, 1)}}',
         // Paste images: upload to the form's default files field (asDefaultStorage
         // or first image/files input). `inline` also inserts <img> into the editor
         // (html=1|2 only; html=3 always attaches).
