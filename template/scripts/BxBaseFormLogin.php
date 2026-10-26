@@ -59,17 +59,27 @@ class BxFormLoginCheckerHelper extends BxDolFormCheckerHelper
         if (!is_array($aCode) || empty($aCode['code']) || (int)$aCode['expires'] < time())
             return _t('_sys_form_login_input_code_error_expired', $sUrlStep2);
 
-        if (hash_equals((string)$aCode['code'], $s))
-            return true;
-
-        bx_login_attempt_failed($aAccountInfo);
-
-        if (++$aCode['attempts'] >= BX_ACCOUNT_2FA_LOGIN_CODE_ATTEMPTS) {
+        // The try is counted before the code is compared, and in the database: parallel requests read
+        // the same session, so a count kept there would give each of them a guess of its own.
+        $iTry = !empty($aCode['attempts_key']) ? BxDolKey::getInstance()->useCounterKey($aCode['attempts_key'], BX_ACCOUNT_2FA_LOGIN_CODE_ATTEMPTS) : false;
+        if ($iTry === false) {
             BxTemplServiceLogin::reset2faLogin();
             return _t('_sys_form_login_input_code_error_attempts', $sUrlLogin);
         }
 
-        $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE, $aCode);
+        // Only wrong codes count: a right one rejected later (say, by an expired form token) or sent twice keeps its try.
+        if (hash_equals((string)$aCode['code'], $s)) {
+            BxDolKey::getInstance()->giveBackCounterKey($aCode['attempts_key']);
+            return true;
+        }
+
+        bx_login_attempt_failed($aAccountInfo);
+
+        if ($iTry >= BX_ACCOUNT_2FA_LOGIN_CODE_ATTEMPTS) {
+            BxTemplServiceLogin::reset2faLogin();
+            return _t('_sys_form_login_input_code_error_attempts', $sUrlLogin);
+        }
+
         return _t('_sys_form_login_input_code_error_wrong', $sUrlStep2);
     }   
 }

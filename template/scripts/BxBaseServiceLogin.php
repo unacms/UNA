@@ -276,6 +276,15 @@ class BxBaseServiceLogin extends BxDol
         if (empty($a))
             return false;
 
+        // A new code shares the count of tries of the earlier ones. If those are used up, or the count expires
+        // before a new code would, the sign-in starts over: an SMS with a code that can't be tried isn't sent.
+        $aCode = $oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE);
+        $sAttemptsKey = is_array($aCode) && !empty($aCode['attempts_key']) ? $aCode['attempts_key'] : '';
+        if ($sAttemptsKey !== '' && !BxDolKey::getInstance()->canUseCounterKey($sAttemptsKey, BX_ACCOUNT_2FA_LOGIN_CODE_ATTEMPTS, BX_ACCOUNT_2FA_LOGIN_CODE_LIFETIME)) {
+            self::reset2faLogin();
+            return MsgBox(_t('_sys_form_login_input_code_error_restart', bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=login'))));
+        }
+
         // An account with a phone gets the code there: whoever knows only the password can't send it to another phone.
         // An account without one names a phone here, and it becomes the account's once the code sent to it is entered.
         $sPhoneNumber = trim($a['phone']);
@@ -318,16 +327,16 @@ class BxBaseServiceLogin extends BxDol
                 'override_result' => &$mixedOverrideResult
             ]);
 
-            if($mixedOverrideResult === null && ($oSms = BxDolSms::getObjectInstance()) !== false && !$oSms->sendSms($sSendTo, $sActivationText))
+            if($mixedOverrideResult === null && ($oSms = BxDolSms::getObjectInstance()) !== false && !$oSms->send($sSendTo, $sActivationText))
                 return MsgBox(_t('_sys_txt_login_2fa_sms_error_occured'));
 
-            // A new code keeps the count of wrong ones: asking for codes again gives no more guesses.
-            $aCode = $oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE);
+            // A new code keeps the count of tried ones: asking for codes again gives no more guesses.
+            // A new phone is saved as the one the code went to, which the hook above may have changed.
             $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE, [
                 'code' => $sActivationCode,
-                'phone' => $sNewPhoneNumber,
+                'phone' => $sNewPhoneNumber !== '' ? trim((string)$sSendTo) : '',
                 'expires' => time() + BX_ACCOUNT_2FA_LOGIN_CODE_LIFETIME,
-                'attempts' => is_array($aCode) ? (int)$aCode['attempts'] : 0,
+                'attempts_key' => $sAttemptsKey !== '' ? $sAttemptsKey : (string)BxDolKey::getInstance()->getNewCounterKey(BX_ACCOUNT_2FA_LOGIN_ATTEMPTS_LIFETIME),
             ]);
             header('Location: ' . bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=login-step3')));
         }
@@ -355,8 +364,9 @@ class BxBaseServiceLogin extends BxDol
             $bRememberMe = $oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER);
             self::reset2faLogin();
 
-            // The phone the code was sent to is the account's from now on.
-            if (!empty($aCode['phone']))
+            // The phone the code was sent to is the account's from now on, unless another account
+            // has taken it since the code was sent: one phone belongs to one account.
+            if (!empty($aCode['phone']) && !BxDolAccountQuery::getInstance()->getIdByPhone($aCode['phone']))
                 $oAccount->updatePhone($aCode['phone']);
 
             $aAccount = bx_login($oAccount->id(), $bRememberMe);
@@ -398,6 +408,8 @@ class BxBaseServiceLogin extends BxDol
      */
     public static function reset2faLogin()
     {
+        // The count of tries stays in sys_keys until it expires: a request that read the session before
+        // this one still can't try a code more times than the count allows, and a right code sent twice signs in.
         $oSession = BxDolSession::getInstance();
         foreach ([BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER] as $sKey)
             $oSession->unsetValue($sKey);

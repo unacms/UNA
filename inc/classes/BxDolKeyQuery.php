@@ -52,6 +52,42 @@ class BxDolKeyQuery extends BxDolDb
         return $this->getOne("SELECT `data` FROM `sys_keys` WHERE `key` = :key" . $sWhere, $aBind);
     }
 
+    /**
+     * Add one to the number kept in the data of a counter key, if it is below the maximum and the key hasn't expired.
+     * @return true if the number was increased
+     */
+    public function increaseCounter ($sKey, $iMax)
+    {
+        return (int)$this->query("UPDATE `sys_keys` SET `data` = CAST(`data` AS UNSIGNED) + 1 WHERE `key` = :key AND CAST(`data` AS UNSIGNED) < :max AND `expire` >= :now", [
+            'key' => $sKey,
+            'max' => (int)$iMax,
+            'now' => time(),
+        ]) > 0;
+    }
+
+    /**
+     * Take one back from the number kept in the data of a counter key.
+     * @return true if the number was decreased
+     */
+    public function decreaseCounter ($sKey)
+    {
+        return (int)$this->query("UPDATE `sys_keys` SET `data` = CAST(`data` AS UNSIGNED) - 1 WHERE `key` = :key AND CAST(`data` AS UNSIGNED) > 0", [
+            'key' => $sKey,
+        ]) > 0;
+    }
+
+    /**
+     * Check that the number kept in the data of a counter key is below the maximum, and that the key works until the given time.
+     */
+    public function isCounterBelow ($sKey, $iMax, $iUntil)
+    {
+        return (bool)$this->getOne("SELECT 1 FROM `sys_keys` WHERE `key` = :key AND CAST(`data` AS UNSIGNED) < :max AND `expire` >= :until", [
+            'key' => $sKey,
+            'max' => (int)$iMax,
+            'until' => (int)$iUntil,
+        ]);
+    }
+
     public function prune ()
     {
         $sQuery = $this->prepare("DELETE FROM `sys_keys` WHERE `expire` < ?", time());
