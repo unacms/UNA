@@ -156,6 +156,24 @@ class LinkPreviewImageTest extends BxDolIntegrationTestCase
         $this->assertSame([1280, 720], [$aImage['width'], $aImage['height']], 'sys_cover fits 1920x720 and keeps the shape.');
     }
 
+    public function testPreviewKeepsItsCopyFromPruning(): void
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_posts'))
+            $this->markTestSkipped('Posts are not installed.');
+
+        // bx_posts_cover tracks access time and prunes copies nobody used for 30 days.
+        $iFile = $this->addImage('bx_posts_covers', 1600, 900, false);
+        $oTranscoder = BxDolTranscoder::getObjectInstance('bx_posts_cover');
+        $this->assertIsArray($oTranscoder->getFileMetaImage($iFile));
+
+        $oDb = BxDolDb::getInstance();
+        $sWhere = "WHERE `transcoder_object` = 'bx_posts_cover' AND `handler` = :handler";
+        $oDb->query("UPDATE `sys_transcoder_images_files` SET `atime` = :old " . $sWhere, ['old' => time() - 86400 * 20, 'handler' => $iFile]);
+
+        $this->assertIsArray($oTranscoder->getFileMetaImage($iFile));
+        $this->assertGreaterThan(time() - 60, (int)$oDb->getOne("SELECT `atime` FROM `sys_transcoder_images_files` " . $sWhere, ['handler' => $iFile]), 'A preview counts as a use of the copy.');
+    }
+
     public function testSiteCoverIsTheDefaultImage(): void
     {
         setParam('sys_site_cover_common', (string)$this->addImage(BX_DOL_STORAGE_OBJ_IMAGES, 1600, 900));
