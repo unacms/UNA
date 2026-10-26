@@ -32,7 +32,9 @@ function rememberProfile(userId, data) {
 function fetchProfileOnce(userId) {
     if (lastUserId === userId) {
         if (inflight) return inflight;
-        if (lastData && Date.now() - lastFetchAt < THROTTLE_MS) return Promise.resolve(lastData);
+        // currentUser already holds this profile, maybe with newer local changes
+        // (notifications read since), so a recent fetch returns nothing to write.
+        if (lastData && Date.now() - lastFetchAt < THROTTLE_MS) return Promise.resolve(null);
     }
 
     lastUserId = userId;
@@ -61,11 +63,16 @@ export default function CounterChecker({ }) {
     useEffect(() => {
         if (!isActive || !currentUser?.id) return;
 
+        let cancelled = false;
         fetchProfileOnce(currentUser.id).then((data) => {
-            if (!data) return;
+            if (cancelled || !data) return;
             if (data.id != null && data.id !== currentUser.id) return;
             setCurrentUser(data);
         }).catch(console.error);
+
+        return () => {
+            cancelled = true;
+        };
     }, [isActive, currentUser?.id, setCurrentUser]);
 
     useEffect(() => {
@@ -100,11 +107,16 @@ export function CounterCheckerSingle() {
     useEffect(() => {
         if (!currentUser?.id || currentUser.membership === 2) return;
 
+        let cancelled = false;
         fetchProfileOnce(currentUser.id).then((data) => {
-            if (!data) return;
+            if (cancelled || !data) return;
             if (data.id != null && data.id !== currentUser.id) return;
             setCurrentUser(data);
         }).catch(console.error);
+
+        return () => {
+            cancelled = true;
+        };
     }, [currentUser?.id, currentUser?.membership, setCurrentUser]);
 
     useEffect(() => {
