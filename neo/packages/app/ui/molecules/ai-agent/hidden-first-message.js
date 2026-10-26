@@ -67,6 +67,11 @@ export function isHiddenFirstMessageText(text) {
     return typeof text === 'string' && text.startsWith('[page opened');
 }
 
+/** A line the chat sent for outside code (EVENTS.agentChat `send`), hidden wherever it is. */
+export function isHiddenEventMessageText(text) {
+    return typeof text === 'string' && text.startsWith('[event:');
+}
+
 /**
  * @param {object | null | undefined} data block payload
  * @param {object | null | undefined} params useLocalSearchParams()
