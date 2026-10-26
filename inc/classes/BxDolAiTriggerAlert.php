@@ -11,6 +11,8 @@ class BxDolAiTriggerAlert extends BxDolAiTrigger
 {
     protected $_sType = 'alert';
 
+    protected $_oQuery = null;
+
     protected function usesSenderChatHistory()
     {
         return true;
@@ -52,9 +54,11 @@ class BxDolAiTriggerAlert extends BxDolAiTrigger
 
     public function getAgentsByUnitAndAction($sUnit, $sAction)
     {
+        if (!$this->_oQuery)
+            $this->_oQuery = new BxDolAiQuery();
+
         $aAgents = [];
-        $oDb = new BxDolAiQuery();
-        foreach ($oDb->getAgentsWithAlert() as $r) {
+        foreach ($this->_oQuery->getAgentsWithAlert() as $r) {
             $aAlert = explode(':', $r['alert']); // TODO: remake to concantenate $sUnit and $sAction and then compare
             if (count($aAlert) == 2 && $aAlert[0] == $sUnit && $aAlert[1] == $sAction)
                 $aAgents[] = $r;

@@ -44,7 +44,7 @@ class ModuleUninstallVendorTest extends BxDolIntegrationTestCase
 
         $this->_oDb->deleteModuleTrackFiles((int)$aModule['id']);
         $this->_oDb->query("DELETE FROM `sys_modules` WHERE `id` = :id", ['id' => (int)$aModule['id']]);
-        $this->_oDb->cleanCache('sys_modules_list');
+        $this->_oDb->cleanModulesListCache();
     }
 
     private function config(string $sVendor): array

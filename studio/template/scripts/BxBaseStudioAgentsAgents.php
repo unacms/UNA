@@ -146,6 +146,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             if($bIsValid) {
                 if(($iId = $oForm->insert($aValsToAdd)) !== false) {
                     $this->_oDb->cleanCache('sys_agents_with_alert');
+                    $this->_oDb->cleanMemory('sys_agents_with_alert');
                     $aRes = ['grid' => $this->getCode(false), 'blink' => $iId];
                 }
                 else
@@ -234,6 +235,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             if($bIsValid) {
                 if(($iId = $oForm->update($iId, $aValsToAdd)) !== false) {
                     $this->_oDb->cleanCache('sys_agents_with_alert');
+                    $this->_oDb->cleanMemory('sys_agents_with_alert');
                     $aRes = ['grid' => $this->getCode(false), 'blink' => $iId];
                 }
                 else
@@ -467,6 +469,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
 
         $mixedResult = parent::_delete($mixedId);
         $this->_oDb->cleanCache('sys_agents_with_alert');
+        $this->_oDb->cleanMemory('sys_agents_with_alert');
         if ($mixedResult)
             BxDolAiActivity::deleteForAgent((int)$mixedId);
 

@@ -176,7 +176,8 @@ class BxDolAiQuery extends BxDolDb
 
     public function getAgentsWithAlert($bActiveOnly = true)
     {
-        return $this->fromCache('sys_agents_with_alert', 'getAll', "SELECT * FROM `sys_agents_agents` WHERE `trigger` = 'alert' AND `active` = :active", ['active' => $bActiveOnly ? 1 : 0]);
+        // It's read on every alert, so keep it in memory for the request too.
+        return $this->fromMemory('sys_agents_with_alert', 'fromCache', 'sys_agents_with_alert', 'getAll', "SELECT * FROM `sys_agents_agents` WHERE `trigger` = 'alert' AND `active` = :active", ['active' => $bActiveOnly ? 1 : 0]);
     }
 
     public function getAgentsByProfileId($iProfileId, $bActiveOnly = true)

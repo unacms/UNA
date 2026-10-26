@@ -48,24 +48,36 @@ class BxTimelineMenuItemShare extends BxTemplMenu
 
         $this->_setBrowseParams($aBrowseParams);
 
-        $sRepostOnclick = $sEtSend = '';
+        $sRepostOnclick = $sRepostWithOnclick = $sRepostToOnclick = $sAetSend = '';
         if(!empty($this->_aEvent) && is_array($this->_aEvent)) {
             $sType = $this->_aEvent['type'];
             $sAction = $this->_aEvent['action'];
+            $bSystem = $this->_oModule->_oConfig->isSystem($sType, $sAction);
 
-            $this->_aEvent['url'] = $this->_oModule->_oConfig->getItemViewUrl($this->_aEvent);
-            if($this->_oModule->_oConfig->isSystem($sType, $sAction)) {
-                $aResult = $this->_oModule->_oConfig->getSystemData($this->_aEvent);
-                if(!empty($aResult['url']))
-                    $this->_aEvent['url'] = $aResult['url'];
+            /**
+             * In API mode a system event's url is taken from the feed, which already
+             * got the event's data from the content module.
+             */
+            $sUrl = $bSystem && $this->_bIsApi ? $this->_oModule->_oTemplate->getItemUrlCached($this->_iEvent) : false;
+            if($sUrl !== false)
+                $this->_aEvent['url'] = $sUrl;
+            else {
+                $this->_aEvent['url'] = $this->_oModule->_oConfig->getItemViewUrl($this->_aEvent);
+                if($bSystem) {
+                    $aResult = $this->_oModule->_oConfig->getSystemData($this->_aEvent);
+                    if(!empty($aResult['url']))
+                        $this->_aEvent['url'] = $aResult['url'];
+                }
             }
 
-            //--- Repost and 'Repost To' items
-            $iOwnerId = $this->_oModule->getUserId(); //--- in whose timeline the content will be reposted
-            $iObjectId = $this->_oModule->_oConfig->isSystem($sType, $sAction) ? $this->_aEvent['object_id'] : $this->_aEvent['id'];
-            $sRepostOnclick = $this->_oModule->serviceGetRepostJsClick($iOwnerId, $sType, $sAction, $iObjectId);
-            $sRepostWithOnclick = $this->_oModule->serviceGetRepostWithJsClick($iOwnerId, $sType, $sAction, $iObjectId);
-            $sRepostToOnclick = $this->_oModule->serviceGetRepostToJsClick($iOwnerId, $sType, $sAction, $iObjectId);
+            //--- Repost and 'Repost To' items, API menus have no onclick handlers
+            if(!$this->_bIsApi) {
+                $iOwnerId = $this->_oModule->getUserId(); //--- in whose timeline the content will be reposted
+                $iObjectId = $bSystem ? $this->_aEvent['object_id'] : $this->_aEvent['id'];
+                $sRepostOnclick = $this->_oModule->serviceGetRepostJsClick($iOwnerId, $sType, $sAction, $iObjectId);
+                $sRepostWithOnclick = $this->_oModule->serviceGetRepostWithJsClick($iOwnerId, $sType, $sAction, $iObjectId);
+                $sRepostToOnclick = $this->_oModule->serviceGetRepostToJsClick($iOwnerId, $sType, $sAction, $iObjectId);
+            }
 
             //--- Send item
             $sAetSend = urlencode(base64_encode(json_encode([
@@ -110,7 +122,11 @@ class BxTimelineMenuItemShare extends BxTemplMenu
             'img_url_encoded' => ''
         );
 
-        $aEventData = $this->_oModule->_oTemplate->getDataCached($this->_aEvent);
+        /**
+         * The image is used by the Pinterest link only. API output replaces
+         * social sharing links with the item's url, so the event's data isn't needed.
+         */
+        $aEventData = !$this->_bIsApi ? $this->_oModule->_oTemplate->getDataCached($this->_aEvent) : [];
         if(!empty($aEventData['content']['images']) && is_array($aEventData['content']['images'])) {
             $aImage = array_shift($aEventData['content']['images']);
 

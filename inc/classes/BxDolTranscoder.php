@@ -401,6 +401,23 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
     }
 
     /**
+     * Get local path of the file which @see getFileUrl returns, to read the file from the disk instead of the url.
+     * @param $mixedHandler - file handler
+     * @return file path, or false if the file isn't ready or isn't stored locally.
+     */
+    public function getFileLocalPath($mixedHandler)
+    {
+        if (bx_is_api() && !($this instanceof BxDolTranscoderVideo))
+            return $this->getOrigFileLocalPath($mixedHandler);
+
+        if (!$this->isFileReady($mixedHandler))
+            return false;
+
+        $iFileId = $this->_oDb->getFileIdByHandler($this->processHandlerForRetinaDevice($mixedHandler));
+        return $iFileId ? $this->_oStorage->getFileLocalPath($iFileId) : false;
+    }
+
+    /**
      * alias for @see getFileUrl
      */
     public function getFileUrlById($mixedHandler)
@@ -640,6 +657,24 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
     {
         $sMethodStoreFile = 'getOrigFileUrl_' . $this->_aObject['source_type'];
         return $this->$sMethodStoreFile($mixedHandler);
+    }
+
+    /**
+     * Get local path of the original file, or false if it isn't stored locally.
+     */
+    public function getOrigFileLocalPath ($mixedHandler)
+    {
+        switch ($this->_aObject['source_type']) {
+            case 'Storage':
+                $oStorageOriginal = BxDolStorage::getObjectInstance($this->_aObject['source_params']['object']);
+                return $oStorageOriginal ? $oStorageOriginal->getFileLocalPath($mixedHandler) : false;
+
+            case 'Folder':
+                $sPath = BX_DIRECTORY_PATH_ROOT . $this->_aObject['source_params']['path'] . $mixedHandler;
+                return file_exists($sPath) ? $sPath : false;
+        }
+
+        return false;
     }
 
     /**
