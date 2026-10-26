@@ -1034,7 +1034,10 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
                 $sVal = trim($sVal);
             });
             $aI = array_combine($aURIs, array_fill(0, count($aURIs), 1));
-            if (!preg_match('/\/oauth2\//', $_SERVER['REQUEST_URI']) /*&& !preg_match('/searchKeyword.php$/', $_SERVER['PHP_SELF'])*/ && !preg_match('/member.php$/', $_SERVER['PHP_SELF']) && !isset($aI[$sUri])) {
+
+            // The login page is always open: locked pages send guests there, member.php and the OAuth2 authorization show it too.
+            // Only the page decides, never the request: its url, query string and path info are the guest's to write.
+            if ($sUri != 'login' && !isset($aI[$sUri])) {
                 return true;
             }
         }
