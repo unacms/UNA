@@ -16,15 +16,35 @@ function onNotificationsArrived() {
 }
 
 const PROFILE_URL = '/api.php?r=system/profile_info/TemplServiceProfiles';
+// Remounts on navigation must not refetch profile_info: one request per minute at most.
+const THROTTLE_MS = 60000;
 let inflight = null;
 let lastUserId = null;
+let lastData = null;
+let lastFetchAt = 0;
+
+function rememberProfile(userId, data) {
+    lastUserId = userId;
+    lastData = data;
+    lastFetchAt = Date.now();
+}
 
 function fetchProfileOnce(userId) {
-    if (lastUserId === userId && inflight) return inflight;
+    if (lastUserId === userId) {
+        if (inflight) return inflight;
+        // currentUser already holds this profile, maybe with newer local changes
+        // (notifications read since), so a recent fetch returns nothing to write.
+        if (lastData && Date.now() - lastFetchAt < THROTTLE_MS) return Promise.resolve(null);
+    }
 
     lastUserId = userId;
+    lastData = null;
     inflight = fetcher(PROFILE_URL)
-        .then((r) => r?.data)
+        .then((r) => {
+            const data = r?.data;
+            if (data && lastUserId === userId) rememberProfile(userId, data);
+            return data;
+        })
         .finally(() => {
             inflight = null;
         });
@@ -37,11 +57,28 @@ export default function CounterChecker({ }) {
     const isAppActive = useAppState();
     const isActive = (!!currentUser && currentUser?.membership != 2) && isAppActive;
     const prevNotRef = useRef(null);
-    const { daemonData } = useDaemon(PROFILE_URL, true, isActive, 60000);
+    // The first request goes through the throttle; the daemon only polls after that.
+    const { daemonData } = useDaemon(PROFILE_URL, false, isActive, THROTTLE_MS);
+
+    useEffect(() => {
+        if (!isActive || !currentUser?.id) return;
+
+        let cancelled = false;
+        fetchProfileOnce(currentUser.id).then((data) => {
+            if (cancelled || !data) return;
+            if (data.id != null && data.id !== currentUser.id) return;
+            setCurrentUser(data);
+        }).catch(console.error);
+
+        return () => {
+            cancelled = true;
+        };
+    }, [isActive, currentUser?.id, setCurrentUser]);
 
     useEffect(() => {
         if (!currentUser?.id || !daemonData || currentUser.membership === 2) return;
         if (daemonData.id != null && daemonData.id !== currentUser.id) return;
+        rememberProfile(currentUser.id, daemonData);
         setCurrentUser(daemonData);
     }, [daemonData, currentUser?.id]);
 
@@ -70,11 +107,16 @@ export function CounterCheckerSingle() {
     useEffect(() => {
         if (!currentUser?.id || currentUser.membership === 2) return;
 
+        let cancelled = false;
         fetchProfileOnce(currentUser.id).then((data) => {
-            if (!data) return;
+            if (cancelled || !data) return;
             if (data.id != null && data.id !== currentUser.id) return;
             setCurrentUser(data);
         }).catch(console.error);
+
+        return () => {
+            cancelled = true;
+        };
     }, [currentUser?.id, currentUser?.membership, setCurrentUser]);
 
     useEffect(() => {
