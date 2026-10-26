@@ -11,6 +11,7 @@ import {
     IGNORED_PROPS,
     REVEAL_DELAY_MS,
     type UniListProps,
+    type UniListSlot,
 } from './shared'
 import { lazyComponent } from 'app/lib/lazy-component'
 
@@ -155,8 +156,12 @@ export default function UniList(props: UniListProps) {
     // The list stays mounted under the skeleton (at zero height) so Virtuoso
     // can measure and the header's filter form keeps its state. Once the
     // preload goes away — and, for a grid, once Virtuoso reports it has laid
-    // the rows out — the list fades in after a short delay so the swap does
-    // not flash.
+    // the rows out — the list fades in after a few frames, so it shows rows
+    // that are already laid out.
+    //
+    // The skeleton stays up until then (`heldPreload`): the caller drops it as
+    // soon as the data is there, and an empty area during the wait reads as a
+    // slower load.
     //
     // VirtuosoGrid reports ready only after it has *measured a row*, so an
     // empty grid never reports; do not wait for it when there is nothing to
@@ -164,17 +169,22 @@ export default function UniList(props: UniListProps) {
 
     const [gridReady, setGridReady] = useState(false)
     const [showContent, setShowContent] = useState(!preloadComponent)
+    const [heldPreload, setHeldPreload] = useState<UniListSlot>(preloadComponent)
     const waitForGrid = isGrid && !gridReady && rows.length > 0
 
+    if (preloadComponent) {
+        if (showContent) setShowContent(false)
+        if (!heldPreload) setHeldPreload(preloadComponent)
+    }
+
     useEffect(() => {
-        if (preloadComponent) {
-            setShowContent(false)
-            return undefined
-        }
-        if (waitForGrid) return undefined
-        const timer = setTimeout(() => setShowContent(true), REVEAL_DELAY_MS)
+        if (preloadComponent || waitForGrid || showContent) return undefined
+        const timer = setTimeout(() => {
+            setShowContent(true)
+            setHeldPreload(undefined)
+        }, REVEAL_DELAY_MS)
         return () => clearTimeout(timer)
-    }, [preloadComponent, waitForGrid])
+    }, [preloadComponent, waitForGrid, showContent])
 
     const onGridReadyStateChanged = useCallback((ready: boolean) => {
         if (ready) setGridReady(true)
@@ -258,13 +268,13 @@ export default function UniList(props: UniListProps) {
 
     return (
         <View className="@container/list relative" style={wrapperStyle}>
-            {!showContent && preloadComponent ? (
-                <View>{renderSlot(preloadComponent)}</View>
+            {!showContent && (preloadComponent || heldPreload) ? (
+                <View>{renderSlot(preloadComponent || heldPreload)}</View>
             ) : null}
             <View
                 className={`${listPadding} ${
                     showContent
-                        ? 'transition-opacity duration-500 ease-out opacity-100'
+                        ? 'transition-opacity duration-150 ease-out motion-reduce:transition-none opacity-100'
                         : 'absolute inset-x-0 top-0 h-0 overflow-hidden opacity-0 pointer-events-none'
                 }`}
                 style={wrapperStyle}
