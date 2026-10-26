@@ -62,14 +62,37 @@ class PageLockExceptionsTest extends BxDolIntegrationTestCase
             $this->assertTrue(BxDolPage::isLockedFromUnauthenticated($sUri), $sUri);
     }
 
-    public function testLoginPageIsAlwaysOpen(): void
+    public function testLoginPagesAreAlwaysOpen(): void
     {
-        // Locked pages send guests to the login page, so it can't be locked itself, or nobody could sign in.
+        // Locked pages send guests to the login page, and two-factor login goes on to its SMS and code steps:
+        // none of them can be locked, or nobody could sign in.
         $this->lock('');
 
-        $this->assertFalse(BxDolPage::isLockedFromUnauthenticated('login'));
-        $this->assertTrue(BxDolPage::isLockedFromUnauthenticated('login-step2'));
-        $this->assertTrue(BxDolPage::isLockedFromUnauthenticated('view-post'));
+        foreach (['login', 'login-step2', 'login-step3'] as $sUri)
+            $this->assertFalse(BxDolPage::isLockedFromUnauthenticated($sUri), $sUri);
+
+        foreach (['login-step4', 'view-post'] as $sUri)
+            $this->assertTrue(BxDolPage::isLockedFromUnauthenticated($sUri), $sUri);
+    }
+
+    public function testLoginStepsShowNothingBeforeThePassword(): void
+    {
+        // Open to guests, so they must give nothing away until member.php has checked a password.
+        $oSession = BxDolSession::getInstance();
+        $oSession->unsetValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID);
+        $oSession->unsetValue(BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE);
+
+        $oService = new BxTemplServiceLogin();
+        $this->assertFalse($oService->serviceLoginFormStep2(), 'No phone form without an account that passed the password check.');
+
+        // The code form shows, but no code is accepted without one sent by the SMS step.
+        $_POST = ['code' => '1234', 'do_checkcode' => '1', 'role' => (string)BX_DOL_ROLE_MEMBER];
+        BxDolForm::unSetObjectInstance('sys_login', 'sys_login_step3');
+        $sForm = $oService->serviceLoginFormStep3();
+        BxDolForm::unSetObjectInstance('sys_login', 'sys_login_step3');
+
+        $this->assertIsString($sForm);
+        $this->assertFalse(isLogged());
     }
 
     public static function requests(): array
