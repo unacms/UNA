@@ -39,12 +39,10 @@ function fetchProfileOnce(userId) {
 
     lastUserId = userId;
     lastData = null;
+    // Callers call rememberProfile once they apply the data: a response nobody
+    // applied (cancelled effect) must not hold back the next request.
     inflight = fetcher(PROFILE_URL)
-        .then((r) => {
-            const data = r?.data;
-            if (data && lastUserId === userId) rememberProfile(userId, data);
-            return data;
-        })
+        .then((r) => r?.data)
         .finally(() => {
             inflight = null;
         });
@@ -67,6 +65,7 @@ export default function CounterChecker({ }) {
         fetchProfileOnce(currentUser.id).then((data) => {
             if (cancelled || !data) return;
             if (data.id != null && data.id !== currentUser.id) return;
+            rememberProfile(currentUser.id, data);
             setCurrentUser(data);
         }).catch(console.error);
 
@@ -111,6 +110,7 @@ export function CounterCheckerSingle() {
         fetchProfileOnce(currentUser.id).then((data) => {
             if (cancelled || !data) return;
             if (data.id != null && data.id !== currentUser.id) return;
+            rememberProfile(currentUser.id, data);
             setCurrentUser(data);
         }).catch(console.error);
 
