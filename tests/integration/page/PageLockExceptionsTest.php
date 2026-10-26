@@ -85,13 +85,19 @@ class PageLockExceptionsTest extends BxDolIntegrationTestCase
         $oService = new BxTemplServiceLogin();
         $this->assertFalse($oService->serviceLoginFormStep2(), 'No phone form without an account that passed the password check.');
 
-        // The code form shows, but no code is accepted without one sent by the SMS step.
-        $_POST = ['code' => '1234', 'do_checkcode' => '1', 'role' => (string)BX_DOL_ROLE_MEMBER];
+        // The code form shows, but no code is accepted without one sent by the SMS step. The form gets a valid
+        // CSRF token, so it is the code check that rejects the submission, not the token check.
+        $_POST = ['code' => '1234', 'do_checkcode' => '1', 'role' => (string)BX_DOL_ROLE_MEMBER, 'csrf_token' => BxDolForm::getCsrfToken()];
         BxDolForm::unSetObjectInstance('sys_login', 'sys_login_step3');
         $sForm = $oService->serviceLoginFormStep3();
+        $oForm = BxDolForm::getObjectInstance('sys_login', 'sys_login_step3');
+        $aErrors = array_filter(array_column($oForm->aInputs, 'error'));
+        $sCodeError = $oForm->aInputs['code']['error'] ?? '';
         BxDolForm::unSetObjectInstance('sys_login', 'sys_login_step3');
 
         $this->assertIsString($sForm);
+        $this->assertNotContains(_t('_sys_txt_form_submission_error_csrf_expired'), $aErrors, 'The token check passes.');
+        $this->assertNotEmpty($sCodeError, 'The code check itself rejects the code.');
         $this->assertFalse(isLogged());
     }
 
