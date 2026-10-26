@@ -160,11 +160,13 @@ class BxDolRequest extends BxDol
     {
         $aModule = $mixedModule;
         if(is_string($mixedModule)) {
-            $oModuleQuery = BxDolModuleQuery::getInstance();
-
-            $aModule = [];
-            if($bIgnoreInactive || $oModuleQuery->isEnabledByName($mixedModule))
-                $aModule = $oModuleQuery->getModuleByName($mixedModule);
+            /**
+             * The modules list has `enabled`, the flag isEnabledByName reads,
+             * and it's the same list BxDolService::call reads before the call.
+             */
+            $aModule = BxDolModuleQuery::getInstance()->getModuleByName($mixedModule);
+            if(!$bIgnoreInactive && !empty($aModule) && (int)$aModule['enabled'] != 1)
+                $aModule = [];
         }
 
         if (!$aModule)

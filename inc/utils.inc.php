@@ -2745,6 +2745,21 @@ function bx_api_get_msg($sMessage, $aParams = [])
 
 function bx_api_get_image($mixedStorage, $iId)
 {
+    // The file's url, its info and its local path read the same storage row: read it once (@see BxDolStorageQuery::openFileRowsScope).
+    $iFileRowsScope = BxDolStorageQuery::openFileRowsScope();
+    try {
+        return _bx_api_get_image($mixedStorage, $iId);
+    }
+    finally {
+        BxDolStorageQuery::closeFileRowsScope($iFileRowsScope);
+    }
+}
+
+/**
+ * @see bx_api_get_image
+ */
+function _bx_api_get_image($mixedStorage, $iId)
+{
     $sStorage = $sTranscoder = '';
 
     if(is_array($mixedStorage))
@@ -2771,7 +2786,8 @@ function bx_api_get_image($mixedStorage, $iId)
     }
 
     $sLocalPath = '';
-    if(!$sUrl && ($oS = BxDolStorage::getObjectInstance($sStorage))) {
+    // Id 0 (a profile without a cover, say) is never a file.
+    if(!$sUrl && !empty($iId) && ($oS = BxDolStorage::getObjectInstance($sStorage))) {
         $sUrl = $oS->getFileUrlById($iId);
 
         if(($aFile = $oS->getFile($iId)) && !empty($aFile['dimensions'])) {

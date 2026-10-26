@@ -312,7 +312,13 @@ class BxDolLanguages extends BxDolFactory implements iBxDolSingleton
                 BxDolTemplate::getInstance()->addCss('rtl.css');
         }
 
-        $GLOBALS['bxDolClasses'][__CLASS__]->getCurrentLangName(true);
+        /**
+         * The second pass only differs when the language comes from the 'lang' request parameter:
+         * then it saves that language to the cookie. Otherwise it finds the same language again.
+         */
+        if(!empty($_GET['lang']) || !empty($_POST['lang']))
+            $GLOBALS['bxDolClasses'][__CLASS__]->getCurrentLangName(true);
+
         if(isset($_GET['lang'])) {
             if(BxDolPermalinks::getInstance()->redirectIfNecessary(array('lang')))
                 exit;

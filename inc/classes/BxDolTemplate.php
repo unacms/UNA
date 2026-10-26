@@ -205,6 +205,13 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
     protected $_aLocationsJs;
 
     /**
+     * getHtml results of this instance and the locations they were looked up in.
+     * Private, so that a property of the same name in a subclass cannot collide with them.
+     */
+    private $_aHtmlMemo = [];
+    private $_aHtmlMemoLocations = null;
+
+    /**
      * Cache related fields
      */
     protected $_bCacheEnable;
@@ -1833,8 +1840,30 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
      */
     function getHtml($sName, $sCheckIn = BX_DOL_TEMPLATE_CHECK_IN_BOTH)
     {
-        $sAbsolutePath = $this->_getAbsoluteLocation('path', $this->_sFolderHtml, $sName, $sCheckIn);
-        return !empty($sAbsolutePath) ? trim(file_get_contents($sAbsolutePath)) : false;
+        /**
+         * A 'path|name' or 'key@path|name' name is looked up every time, as before,
+         * because such a lookup may add and remove a location on its own.
+         */
+        if(str_contains((string)$sName, '|')) {
+            $sAbsolutePath = $this->_getAbsoluteLocation('path', $this->_sFolderHtml, $sName, $sCheckIn);
+            return !empty($sAbsolutePath) ? trim(file_get_contents($sAbsolutePath)) : false;
+        }
+
+        /**
+         * Any other file is looked up and read once per instance.
+         * Any change of the locations starts the memo over.
+         */
+        if($this->_aHtmlMemoLocations !== $this->_aLocations)
+            $this->_aHtmlMemo = [];
+        $this->_aHtmlMemoLocations = $this->_aLocations;
+
+        $sKey = $this->getPath() . '|' . $this->_sFolderHtml . $sName . '|' . (is_array($sCheckIn) ? serialize($sCheckIn) : $sCheckIn);
+        if(!isset($this->_aHtmlMemo[$sKey])) {
+            $sAbsolutePath = $this->_getAbsoluteLocation('path', $this->_sFolderHtml, $sName, $sCheckIn);
+            $this->_aHtmlMemo[$sKey] = !empty($sAbsolutePath) ? trim(file_get_contents($sAbsolutePath)) : false;
+        }
+
+        return $this->_aHtmlMemo[$sKey];
     }
 
     /**

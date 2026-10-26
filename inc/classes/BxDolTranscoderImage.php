@@ -123,7 +123,13 @@ class BxDolTranscoderImage extends BxDolTranscoder implements iBxDolFactoryObjec
      */
     public function getFileUrl($mixedHandler)
     {
-        if(($sFileUrl = $this->getOrigFileUrl($mixedHandler)) !== false) {
+        $sFileUrl = $this->getOrigFileUrl($mixedHandler);
+
+        // API gets the original image, SVG or not, as BxDolTranscoder::getFileUrl gives it, so don't read the file twice
+        if(bx_is_api())
+            return $sFileUrl;
+
+        if($sFileUrl !== false) {
             $sFileMimeType = $this->_oStorage->getMimeTypeByFileName($sFileUrl);
             if($this->isMimeTypeSvg($sFileMimeType))
                 return $sFileUrl;
