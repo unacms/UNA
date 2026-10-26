@@ -700,10 +700,17 @@
   dependencies:
     "@tanstack/devtools-event-client" "^0.4.1"
 
-"@tanstack/ai-event-client@^0.13.0", "@tanstack/ai-event-client@^0.13.1":
+"@tanstack/ai-event-client@^0.13.1":
   version "0.13.1"
   resolved "https://registry.yarnpkg.com/@tanstack/ai-event-client/-/ai-event-client-0.13.1.tgz#cb3408c9b37088284275ac6640dd1c1e255954d1"
   integrity sha512-lCPcshu6Sd4tFNeMSr+HXgdqCGupYU2cpJZVUent4GkFx41dXzrBaKkwOgkji6olDBT99OBagWCce1NZ15XeJA==
+  dependencies:
+    "@tanstack/devtools-event-client" "^0.4.1"
+
+"@tanstack/ai-event-client@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai-event-client/-/ai-event-client-1.0.0.tgz#5ef197190ccd4ff09b605fb1826cde42953ba39f"
+  integrity sha512-RXlk6XkIYU4n25QYoCmETKiFjPnEpwvQv5Ve62pdtHaEVP//VZUdwGSRGCf/PATgwYdib8FT49tPmqnKtXPDhw==
   dependencies:
     "@tanstack/devtools-event-client" "^0.4.1"
 
