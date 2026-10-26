@@ -336,6 +336,27 @@ class BxDolAccountQuery extends BxDolDb implements iBxDolSingleton
     }
 
     /**
+     * Give an account that has no phone this one, unless another account has it.
+     * Two accounts saving the same phone at once don't both keep it: each looks for
+     * another owner after its own save and gives the phone up if there is one.
+     * @param  string $sPhone - phone number
+     * @param  int    $iID    - account id
+     * @return true if the account has the phone now
+     */
+    public function setPhoneIfFree($sPhone, $iID)
+    {
+        $aBind = ['phone' => $sPhone, 'id' => $iID];
+        if (!(int)$this->query("UPDATE `sys_accounts` SET `phone` = :phone, `phone_confirmed` = 0 WHERE `id` = :id AND `phone` = '' LIMIT 1", $aBind))
+            return false;
+
+        if (!$this->getOne("SELECT `id` FROM `sys_accounts` WHERE `phone` = :phone AND `id` != :id LIMIT 1", $aBind))
+            return true;
+
+        $this->query("UPDATE `sys_accounts` SET `phone` = '' WHERE `id` = :id AND `phone` = :phone LIMIT 1", $aBind);
+        return false;
+    }
+
+    /**
      * Get account field by specified field name and value.
      * In most cases it is for internal usage only.
      * Use other funtions to get account info, like getIdByEmail, etc.

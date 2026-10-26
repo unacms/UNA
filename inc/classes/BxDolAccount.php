@@ -379,12 +379,13 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
      * Set account phone
      * @param  string  $sPhone - phone number
      * @param  int  $iAccountId  - optional account id
+     * @param  bool  $bIfFree - set it only if the account has no phone and no other account has this one, @see BxDolAccountQuery::setPhoneIfFree
      * @return true on success or false on error
      */
-    public function updatePhone($sPhone, $iAccountId = false)
+    public function updatePhone($sPhone, $iAccountId = false, $bIfFree = false)
     {
         $iId = (int)$iAccountId ? (int)$iAccountId : $this->_iAccountID;
-        if ($this->_oQuery->updatePhone($sPhone, $iId)) {
+        if ($bIfFree ? $this->_oQuery->setPhoneIfFree($sPhone, $iId) : $this->_oQuery->updatePhone($sPhone, $iId)) {
             /**
              * @hooks
              * @hookdef hook-account-set_phone 'account', 'set_phone' - hook after accout password changed

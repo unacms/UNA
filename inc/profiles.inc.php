@@ -318,19 +318,9 @@ function bx_check_password($sLogin, $sPassword, $iRole = BX_DOL_ROLE_MEMBER)
             $aAccountInfo['profile_id']
         );
 
-        $iMaxLoginAttempts = getParam('sys_account_limit_incorrect_login_attempts');
-        if ($iMaxLoginAttempts >0){
-            $oAccountQuery = BxDolAccountQuery::getInstance();
-            if ($aAccountInfo['login_attempts'] >= $iMaxLoginAttempts){
-                $oAccountQuery->lockAccount($aAccountInfo['id'], 1);
-                bx_import('BxDolLanguages');
-                if (bx_is_api()){
-                    return strip_tags(_t("_sys_txt_login_locked", bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=forgot-password'))),'');
-                }
-            }
-            else{
-                $oAccountQuery->updateAttemptsCounter($aAccountInfo['id']);
-            }
+        if (bx_login_attempt_failed($aAccountInfo) && bx_is_api()) {
+            bx_import('BxDolLanguages');
+            return strip_tags(_t("_sys_txt_login_locked", bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=forgot-password'))),'');
         }
         return $sErrorMsg;
     }
@@ -354,6 +344,28 @@ function bx_check_password($sLogin, $sPassword, $iRole = BX_DOL_ROLE_MEMBER)
     bx_alert('account', 'check_login',  $aAccountInfo['id'], false, array('error_msg' => &$sErrorMsg));
     
     return $sErrorMsg;
+}
+
+/**
+ * Count a failed sign-in attempt (a wrong password or a wrong code of two-factor login),
+ * and lock the account once it reaches sys_account_limit_incorrect_login_attempts.
+ * @param $aAccountInfo account info array
+ * @return boolean true when the account got locked
+ */
+function bx_login_attempt_failed($aAccountInfo)
+{
+    $iMaxLoginAttempts = getParam('sys_account_limit_incorrect_login_attempts');
+    if ($iMaxLoginAttempts <= 0)
+        return false;
+
+    $oAccountQuery = BxDolAccountQuery::getInstance();
+    if ($aAccountInfo['login_attempts'] >= $iMaxLoginAttempts) {
+        $oAccountQuery->lockAccount($aAccountInfo['id']);
+        return true;
+    }
+
+    $oAccountQuery->updateAttemptsCounter($aAccountInfo['id']);
+    return false;
 }
 
 /**
