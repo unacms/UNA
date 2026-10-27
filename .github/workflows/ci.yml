@@ -24,8 +24,27 @@ jobs:
     name: Install dependencies
     if: github.event_name == 'push' || github.event.action != 'closed'
     runs-on: ubuntu-latest
+    outputs:
+      una: ${{ steps.changes.outputs.una }}
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: ${{ github.event_name == 'pull_request' && '0' || '1' }}
+
+    # A PR that changes only neo/ skips PHPUnit; the PHP 8.5 Units leg still builds the package
+    # for the preview deploy. Pushes to master always run the tests.
+    - name: Check for changes outside neo/
+      id: changes
+      env:
+        BASE_REF: ${{ github.event.pull_request.base.ref }}
+      run: |
+        if [ "${{ github.event_name }}" = "pull_request" ] \
+          && git diff --quiet "origin/$BASE_REF...HEAD" -- . ':(exclude)neo/'; then
+          echo "una=false" >> "$GITHUB_OUTPUT"
+          echo "Only neo/ changed, PHPUnit is skipped."
+        else
+          echo "una=true" >> "$GITHUB_OUTPUT"
+        fi
 
     # WARNING: after `composer update` or `composer upgrade`, replace this commit SHA
     # with the current shivammathur/setup-php release. Both Setup PHP steps must match.
@@ -68,6 +87,9 @@ jobs:
     needs: dependencies
     if: github.event_name == 'push' || github.event.action != 'closed'
     runs-on: ubuntu-latest
+    env:
+      RUN_TESTS: ${{ needs.dependencies.outputs.una != 'false' }}
+      BUILD_LEG: ${{ matrix.suite == 'Units' && matrix.php == '8.5' }}
     strategy:
       fail-fast: false
       matrix:
@@ -92,10 +114,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      if: env.RUN_TESTS == 'true' || env.BUILD_LEG == 'true'
 
     # WARNING: after `composer update` or `composer upgrade`, replace this commit SHA
     # with the current shivammathur/setup-php release. Both Setup PHP steps must match.
     - name: Setup PHP
+      if: env.RUN_TESTS == 'true' || env.BUILD_LEG == 'true'
       uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
       with:
         php-version: ${{ matrix.php }}
@@ -104,17 +128,20 @@ jobs:
         tools: phing, phpunit:12
 
     - name: Download dependencies
+      if: env.RUN_TESTS == 'true' || env.BUILD_LEG == 'true'
       uses: actions/download-artifact@v4
       with:
         name: una-dependencies
 
     - name: Prepare writable paths
+      if: env.RUN_TESTS == 'true' || env.BUILD_LEG == 'true'
       run: |
         mkdir -p cache cache_public logs tmp storage
         chmod a+rwX inc cache cache_public logs tmp storage
         test -f plugins/ffmpeg/ffmpeg.exe && chmod 0755 plugins/ffmpeg/ffmpeg.exe
 
     - name: Install UNA
+      if: env.RUN_TESTS == 'true' || env.BUILD_LEG == 'true'
       working-directory: install
       run: >
         php cmd.php
@@ -127,6 +154,7 @@ jobs:
         --server_php_self=/install/index.php
 
     - name: Run PHPUnit
+      if: env.RUN_TESTS == 'true'
       run: phpunit -c tests/phpunit.xml --testsuite "${{ matrix.suite }}"
 
     - name: Build package
