@@ -15,8 +15,10 @@ class TranscoderQueueOrphansTest extends BxDolIntegrationTestCase
 
     protected function tearDown(): void
     {
+        $oDb = BxDolDb::getInstance();
+        $oDb->query("UNLOCK TABLES");
         foreach ($this->_aIds as $iId)
-            BxDolDb::getInstance()->query("DELETE FROM `sys_transcoder_queue` WHERE `id` = :id", ['id' => $iId]);
+            $oDb->query("DELETE FROM `sys_transcoder_queue` WHERE `id` = :id", ['id' => $iId]);
 
         parent::tearDown();
     }
@@ -43,19 +45,33 @@ class TranscoderQueueOrphansTest extends BxDolIntegrationTestCase
         $aRegistered = $oDb->getColumn("SELECT `object` FROM `sys_objects_transcoder`");
         $this->assertNotEmpty($aRegistered, 'Core registers its transcoders.');
 
-        $iOrphanId = $this->addPendingRow('phpunit_unregistered_transcoder', 1);
-        $iRegisteredId = $this->addPendingRow($aRegistered[0], 2);
+        // The rows exist only while the queue is locked for this connection: a transcoding cron run
+        // waits for the lock and never sees them (the tables are MyISAM, so a transaction wouldn't hide them).
+        // getNextInQueue reads both tables under these aliases.
+        $oDb->query("LOCK TABLES `sys_transcoder_queue` WRITE, `sys_transcoder_queue` AS `tq` WRITE, `sys_objects_transcoder` AS `tot` READ");
+        try {
+            $iOrphanId = $this->addPendingRow('phpunit_unregistered_transcoder', 1);
+            $iRegisteredId = $this->addPendingRow($aRegistered[0], 2);
 
-        // A server name of its own: the runner reads nothing while its server is transcoding,
-        // and this one never is, whatever the real server is doing.
-        $aRows = BxDolTranscoderQuery::getNextInQueue('phpunit-' . genRndPwd(8, false), 1000);
+            // A server name of its own: the runner reads nothing while its server is transcoding,
+            // and this one never is, whatever the real server is doing.
+            $aRows = BxDolTranscoderQuery::getNextInQueue('phpunit-' . genRndPwd(8, false), 1000);
+            $sOrphanStatus = $oDb->getOne("SELECT `status` FROM `sys_transcoder_queue` WHERE `id` = :id", ['id' => $iOrphanId]);
+
+            foreach ($this->_aIds as $iId)
+                $oDb->query("DELETE FROM `sys_transcoder_queue` WHERE `id` = :id", ['id' => $iId]);
+            $this->_aIds = [];
+        }
+        finally {
+            $oDb->query("UNLOCK TABLES");
+        }
+
         $aIds = array_map('intval', array_column($aRows, 'id'));
-
         $this->assertNotContains($iOrphanId, $aIds, 'The oldest pending row is skipped.');
         $this->assertContains($iRegisteredId, $aIds, 'A row of a registered transcoder is still picked.');
         foreach ($aRows as $aRow)
             $this->assertContains($aRow['transcoder_object'], $aRegistered);
 
-        $this->assertSame('pending', $oDb->getOne("SELECT `status` FROM `sys_transcoder_queue` WHERE `id` = :id", ['id' => $iOrphanId]), 'The row is kept.');
+        $this->assertSame('pending', $sOrphanStatus, 'The row is kept.');
     }
 }
