@@ -1,8 +1,9 @@
 import { Row, View, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { NeoButton } from 'app/design/controls'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { useWindowDimensions } from 'react-native'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { menuItemsByNameNew, cloneObject, getBreakpoint, isWeb } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile/profile'
@@ -47,7 +48,7 @@ const TRIGGER_TEXT_CLASS = 'text-base font-medium tracking-tight text-muted-fore
  */
 export default function MultiPostForm({ data, blockWrapperProps, trigger_label: triggerLabelSetting }) {
     const { currentUser } = useCurrentUser();
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
     const { width: windowWidth } = useWindowDimensions();
     // Other content types: tablet and desktop only. Web hides them with
     // classes (SSR-safe); native does not render them on phones, since a
@@ -57,7 +58,6 @@ export default function MultiPostForm({ data, blockWrapperProps, trigger_label: 
     // Phones get a borderless media button (hydration-safe: bordered until hydrated on web).
     const mediaButtonStyle = useBreakpointName() === '' ? 'borderless' : 'bordered';
     const [pageData, setPageData] = useState(false);
-    const [pageDataDef, setPageDataDef] = useState(false);
     const menu_add_items = menuItemsByNameNew('', data.menu, currentUser).filter(item => item.name != 'more-auto');
 
     const firstForm = menu_add_items.shift();
@@ -68,28 +68,25 @@ export default function MultiPostForm({ data, blockWrapperProps, trigger_label: 
         url: null,
     }));
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const sResponse = await getFormModal(firstForm, data.params);
-            setPageDataDef(sResponse.data);
-        };
-        fetchData();
-    }, []);
-
-    // Show tooltip after configured delay on first feed visit
-    // Keep showing until user opens the post form
-
+    // The first form, kept between mounts: every feed page has the composer, and the form
+    // only changes with the profile, the language or the block. Session cleanup clears it.
+    const queryClient = useQueryClient();
+    const formQuery = {
+        queryKey: ['composer_form', currentUser?.id, i18n.language, firstForm?.link, data.params],
+        queryFn: async () => (await getFormModal(firstForm, data.params)).data ?? null,
+        staleTime: 5 * 60 * 1000,
+        cacheTime: 30 * 60 * 1000,
+    };
+    const { data: pageDataDef } = useQuery({ ...formQuery, enabled: !!firstForm });
 
     const mediaField = useMemo(() => getMediaField(pageDataDef), [pageDataDef]);
 
+    // `ts` only remounts the modal for every open; a count does that.
+    const opens = useRef(0);
     const getFirstForm = async () => {
-        if (pageDataDef) {
-            setPageData({ ...cloneObject(pageDataDef), ts: Date.now() });
-        }
-        else {
-            const a = await getFormModal(firstForm, data.params);
-            setPageData({ ...a.data, ts: Date.now() });
-        }
+        const form = pageDataDef || await queryClient.fetchQuery(formQuery);
+        opens.current += 1;
+        setPageData({ ...cloneObject(form || {}), ts: opens.current });
     }
 
     if (menu_add_items.length == 0 && !firstForm)

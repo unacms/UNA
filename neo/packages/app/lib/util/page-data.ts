@@ -69,8 +69,12 @@ export const updateRouteDataForConnection = (
     }
 };
 
-/** Fetch a UNA page (layout + data) by URL; `codeOnly` fetches page content only. */
-export async function getPageData(url: string, codeOnly = false, fetchOptions: Record<string, any> = {}): Promise<any> {
+/**
+ * Fetch a UNA page (layout + data) by URL; `codeOnly` fetches page content only.
+ * `blocks` lists the block sources to render (`module:method`, comma separated); `'none'`
+ * renders no block, for the page's own data (title, description, cover) alone.
+ */
+export async function getPageData(url: string, codeOnly = false, fetchOptions: Record<string, any> = {}, blocks = ''): Promise<any> {
     const pagePath = parseUrl(url);
     let sAdd = "";
 
@@ -91,11 +95,14 @@ export async function getPageData(url: string, codeOnly = false, fetchOptions: R
                 params = { ...params, ...a.params };
             }
             delete params['params[]'];
-            sAdd = `&params[]=&params[]=${JSON.stringify({ params: params })}`;
+            sAdd = `&params[]=${blocks}&params[]=${JSON.stringify({ params: params })}`;
         }
         else {
-            sAdd = `&params[]=&params[]=${JSON.stringify(params)}`;
+            sAdd = `&params[]=${blocks}&params[]=${JSON.stringify(params)}`;
         }
+    }
+    else if (blocks) {
+        sAdd = `&params[]=${blocks}`;
     }
 
     const path = pagePath.path.startsWith('/') ? pagePath.path.slice(1) : pagePath.path;
