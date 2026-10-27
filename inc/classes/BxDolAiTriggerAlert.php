@@ -24,14 +24,23 @@ class BxDolAiTriggerAlert extends BxDolAiTrigger
     public function handle($mixed = null)
     {
         $oAlert = $mixed;
-        if (!$oAlert || !BxDolAi::getInstance())
+        $oAi = BxDolAi::getInstance();
+        if (!$oAlert || !$oAi)
             return false;
 
         $aAgents = $this->getAgentsByUnitAndAction($oAlert->sUnit, $oAlert->sAction);
         if (!$aAgents)
             return false;
 
+        // Never react to an agent's own action: a comment or mention it posts fires the alert that started it.
+        if ($oAi->isAgentProfile($oAlert->iSender))
+            return false;
+
         foreach ($aAgents as $a) {
+            // A mention alert is about the mentioned profile: only that profile's agents answer it.
+            if ('meta_mention' == $oAlert->sUnit && (int)$oAlert->iObject != (int)$a['profile_id'])
+                continue;
+
             $aParams = [
                 'trigger' => $this->getType(),
                 'object_id' => $oAlert->iObject,
