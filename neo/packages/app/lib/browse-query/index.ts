@@ -217,8 +217,9 @@ export function useUniListQuery({
      * reaches the tab that posted, and the merge ignores rows already cached.
      * A hidden tab or a backgrounded app does not fetch: `added` only marks the
      * list dirty, and coming back runs that same first-page merge once.
-     * When the fresh page shares no cached row, scrolled pages are dropped so
-     * the next request continues from the new cursor instead of skipping the gap.
+     * When the fresh page shares no ordinary cached row, scrolled pages are
+     * dropped so the next request continues from the new cursor. Pinned and
+     * sticked rows stay on every first page and do not count as that boundary.
      * `inactive` (iOS app switcher) keeps a pending timer; only `background` defers.
      */
     useEffect(() => {

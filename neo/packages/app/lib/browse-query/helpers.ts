@@ -114,11 +114,17 @@ export const prependItemToUniListQueryCache = (queryClient: QueryClient, queryKe
     })
 }
 
+/** Pinned and sticked rows stay on the first page, so they are not the scroll boundary. */
+function sticksToFirstPage(item: any): boolean {
+    return Number(item?.pinned) > 0 || Number(item?.sticked) > 0
+}
+
 /**
- * A full first page that shares no cached id sits entirely above the cached
- * rows: merging it would leave a hole, and the next scroll continues from the
- * old cursor, so those rows never load. A short page already holds every new
- * row, and any shared id means the boundary is inside this page.
+ * A full first page whose ordinary rows are all new sits entirely above the
+ * cached rows: merging it would leave a hole, and the next scroll continues
+ * from the old cursor, so those rows never load. A short page already holds
+ * every new row. A shared ordinary id means the boundary is inside this page.
+ * Pinned and sticked rows are ignored: they repeat on every first page.
  */
 export function firstPageLeavesAGap(cached: any, freshPage: any): boolean {
     const freshItems: any[] = freshPage?.data ?? []
@@ -127,9 +133,12 @@ export function firstPageLeavesAGap(cached: any, freshPage: any): boolean {
 
     const cachedIds = new Set<string>()
     for (const page of cached.pages) {
-        for (const item of page.data ?? []) cachedIds.add(String(item.id))
+        for (const item of page.data ?? []) {
+            if (!sticksToFirstPage(item)) cachedIds.add(String(item.id))
+        }
     }
-    return freshItems.every((item) => !cachedIds.has(String(item.id)))
+    const ordinary = freshItems.filter((item) => !sticksToFirstPage(item))
+    return ordinary.length > 0 && ordinary.every((item) => !cachedIds.has(String(item.id)))
 }
 
 /** Drop scrolled pages and continue from this first page. Its cursor is the next request. */
