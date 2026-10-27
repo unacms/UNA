@@ -18,6 +18,7 @@ $GLOBALS['bx_profiler_disable'] = true;
 // Confirmation mail has nowhere to go in CI. Treat a send as done.
 ini_set('sendmail_path', '/bin/true');
 
+define('BX_SKIP_INSTALL_CHECK', 1);
 require_once dirname(__DIR__) . '/inc/header.inc.php';
 
 // The installer header does not load languages. createAccount() reports errors through _t().
