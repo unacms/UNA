@@ -57,6 +57,13 @@ function parseHeight(height: unknown): string | undefined {
  */
 const INCREASE_VIEWPORT_BY = { top: 3000, bottom: 3000 }
 
+/**
+ * Row key by item id, not index: a row prepended (a new post over the socket)
+ * or removed then keeps the other rows mounted, with their state and measured
+ * size. A module constant for the same reason as INCREASE_VIEWPORT_BY.
+ */
+const computeItemKey = (index: number, item: any) => item?.id ?? item?.key ?? index
+
 type Overscan = { main: number; reverse: number }
 
 /**
@@ -271,6 +278,7 @@ export default function UniList(props: UniListProps) {
             ...componentsProp,
         },
         itemContent,
+        computeItemKey,
         ...(scrollToLastItem ? { initialTopMostItemIndex: rows.length } : {}),
         ...(isGrid ? { readyStateChanged: onGridReadyStateChanged } : {}),
         ...rest,

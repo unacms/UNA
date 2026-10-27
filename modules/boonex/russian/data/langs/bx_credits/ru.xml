@@ -307,6 +307,7 @@
     <string name="_bx_credits_err_wrong_amont"><![CDATA[Сумма кредитов должна быть больше нуля.]]></string>
     <string name="_bx_credits_err_low_balance"><![CDATA[Недостаточно средств на балансе.]]></string>
     <string name="_bx_credits_err_withdrawal_not_found"><![CDATA[Запрос на вывод средств не найден.]]></string>
+    <string name="_bx_credits_err_withdrawal_already_processed"><![CDATA[Невозможно выполнить действие, так как запрос на вывод средств уже был обработан.]]></string>
     <string name="_bx_credits_err_withdraw_minimum"><![CDATA[Вывод менее {0} кредитов недоступен.]]></string>
     <string name="_bx_credits_err_withdraw_remaining"><![CDATA[Минимальный остаток на счете после вывода должен быть более {0} кредитов.]]></string>
     <string name="_bx_credits_err_cannot_update_balance"><![CDATA[Невозможно обновить баланс.]]></string>

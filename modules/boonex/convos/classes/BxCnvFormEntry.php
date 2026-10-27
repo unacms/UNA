@@ -189,12 +189,17 @@ class BxCnvFormEntry extends BxBaseModTextFormEntry
     function initChecker ($aValues = array (), $aSpecificValues = array())
     {
         $CNF = $this->_oModule->_oConfig->CNF;
-        if ($aValues && bx_get_logged_profile_id() != $aValues[$CNF['FIELD_AUTHOR']]) { // unset some fields for non author
+
+        $iLogged = bx_get_logged_profile_id();
+        if ($aValues && $aValues[$CNF['FIELD_AUTHOR']] != $iLogged) { // unset some fields for non author
             unset($this->aInputs[$CNF['FIELD_ALLOW_EDIT']]);
             unset($this->aInputs['recipients']);
         }
 
-        if ($iContentId = bx_get('draft_id')) { // if adding from draft, fill in existing fields info
+        /*
+         * If adding from draft, fill in existing fields info.
+         */
+        if (($iContentId = bx_get('draft_id')) && $this->_oModule->_oDb->getConversationFolder($iContentId, $iLogged) == BX_CNV_FOLDER_DRAFTS) {
             $aContentInfo = $this->_oModule->_oDb->getContentInfoById($iContentId);
             if ($aContentInfo)
                 $aValues = array_merge($aContentInfo, $aValues);

@@ -24,8 +24,27 @@ jobs:
     name: Install dependencies
     if: github.event_name == 'push' || github.event.action != 'closed'
     runs-on: ubuntu-latest
+    outputs:
+      una: ${{ steps.changes.outputs.una }}
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: ${{ github.event_name == 'pull_request' && '0' || '1' }}
+
+    # A PR that changes only neo/ skips PHPUnit; the PHP 8.5 Units leg still builds the package
+    # for the preview deploy. Pushes to master always run the tests.
+    - name: Check for changes outside neo/
+      id: changes
+      env:
+        BASE_REF: ${{ github.event.pull_request.base.ref }}
+      run: |
+        if [ "${{ github.event_name }}" = "pull_request" ] \
+          && git diff --quiet "origin/$BASE_REF...HEAD" -- . ':(exclude)neo/'; then
+          echo "una=false" >> "$GITHUB_OUTPUT"
+          echo "Only neo/ changed, PHPUnit is skipped."
+        else
+          echo "una=true" >> "$GITHUB_OUTPUT"
+        fi
 
     # WARNING: after `composer update` or `composer upgrade`, replace this commit SHA
     # with the current shivammathur/setup-php release. Both Setup PHP steps must match.
@@ -68,15 +87,19 @@ jobs:
     needs: dependencies
     if: github.event_name == 'push' || github.event.action != 'closed'
     runs-on: ubuntu-latest
+    env:
+      RUN_TESTS: ${{ needs.dependencies.outputs.una != 'false' }}
+      BUILD_LEG: ${{ matrix.suite == 'Units' && matrix.php == '8.5' }}
     strategy:
       fail-fast: false
       matrix:
         suite: [Units, Integration]
         php: ['8.3', '8.4', '8.5']
 
+    # Only the tests need the database: an empty image keeps the service from starting.
     services:
       mysql:
-        image: mariadb:11
+        image: ${{ needs.dependencies.outputs.una != 'false' && 'mariadb:11' || '' }}
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: una
@@ -92,10 +115,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      if: env.RUN_TESTS == 'true' || env.BUILD_LEG == 'true'
 
     # WARNING: after `composer update` or `composer upgrade`, replace this commit SHA
     # with the current shivammathur/setup-php release. Both Setup PHP steps must match.
     - name: Setup PHP
+      if: env.RUN_TESTS == 'true' || env.BUILD_LEG == 'true'
       uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
       with:
         php-version: ${{ matrix.php }}
@@ -104,29 +129,65 @@ jobs:
         tools: phing, phpunit:12
 
     - name: Download dependencies
+      if: env.RUN_TESTS == 'true' || env.BUILD_LEG == 'true'
       uses: actions/download-artifact@v4
       with:
         name: una-dependencies
 
     - name: Prepare writable paths
+      if: env.RUN_TESTS == 'true' || env.BUILD_LEG == 'true'
       run: |
         mkdir -p cache cache_public logs tmp storage
         chmod a+rwX inc cache cache_public logs tmp storage
         test -f plugins/ffmpeg/ffmpeg.exe && chmod 0755 plugins/ffmpeg/ffmpeg.exe
 
+    # `phing package` copies the sources and needs no installed site.
+    # The installer creates admin@example.com. Integration tests also sign in as user@example.com.
     - name: Install UNA
-      working-directory: install
-      run: >
-        php cmd.php
-        -m bx_antispam
-        --db_host=127.0.0.1
-        --db_name=una
-        --db_user=una
-        --db_password=una
-        --server_http_host=localhost
-        --server_php_self=/install/index.php
+      if: env.RUN_TESTS == 'true'
+      run: |
+        # OAuth before the modules that require it. English, Artificer and Persons are the
+        # installer's own language, template and profile type, so they are repeated first.
+        # Timeline and Notifications next, so later modules can register with them.
+        modules=$(printf '%s,' \
+          bx_oauth \
+          bx_en \
+          bx_artificer \
+          bx_persons \
+          bx_notifications \
+          bx_timeline \
+          bx_ai_proxy \
+          bx_albums \
+          bx_analytics \
+          bx_antispam \
+          bx_api \
+          bx_developer \
+          bx_editor \
+          bx_events \
+          bx_forum \
+          bx_groups \
+          bx_invites \
+          bx_market \
+          bx_massmailer \
+          bx_messenger \
+          bx_posts \
+          bx_payment \
+          bx_tasks \
+          bx_ru \
+        )
+        modules=${modules%,}
+        php install/cmd.php \
+          -m "$modules" \
+          --db_host=127.0.0.1 \
+          --db_name=una \
+          --db_user=una \
+          --db_password=una \
+          --server_http_host=localhost \
+          --server_php_self=/install/index.php
+        php tests/seed.php
 
     - name: Run PHPUnit
+      if: env.RUN_TESTS == 'true'
       run: phpunit -c tests/phpunit.xml --testsuite "${{ matrix.suite }}"
 
     - name: Build package

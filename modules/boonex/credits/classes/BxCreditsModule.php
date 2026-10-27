@@ -1329,12 +1329,18 @@ class BxCreditsModule extends BxBaseModGeneralModule
         if(empty($aWithdrawal) || !is_array($aWithdrawal))
             return ['code' => 1, 'msg' => '_bx_credits_err_withdrawal_not_found'];
 
+        if($aWithdrawal['status'] != 'requested')
+            return ['code' => 2, 'msg' => '_bx_credits_err_withdrawal_already_processed'];
+
         $iProfileId = (int)$aWithdrawal['profile_id'];
         $oProfile = BxDolProfile::getInstance($iProfileId);
         if(!$oProfile)
-            return ['code' => 2, 'msg' => '_bx_credits_err_profile_not_found'];
+            return ['code' => 3, 'msg' => '_bx_credits_err_profile_not_found'];
 
-        $aResult = ['code' => 3, 'msg' => '_bx_credits_err_cannot_cancel_withdrawal'];
+        if($iProfileId != bx_get_logged_profile_id())
+            return ['code' => 4, 'msg' => '_sys_txt_access_denied'];       
+
+        $aResult = ['code' => 5, 'msg' => '_bx_credits_err_cannot_cancel_withdrawal'];
 
         $aTemplateVars = [
             'profile_link' => $oProfile->getUrl(),

@@ -28,9 +28,16 @@ abstract class BxDolAccountTestCase extends BxDolIntegrationTestCase
 
     protected $_sConfirmationBackup;
 
+    /** @var int Account that must still be there after a rejected payload */
+    protected $_iIntactAccountId = 0;
+
+    protected $_sIntactAccountEmail = '';
+
     protected function setUp(): void
     {
         parent::setUp();
+        $this->_sIntactAccountEmail = $this->bxIntactAccountEmail();
+        $this->_iIntactAccountId = $this->bxAccountIdByEmail($this->_sIntactAccountEmail);
         $this->_sConfirmationBackup = getParam('sys_account_confirmation_type');
         $this->bxSetParamCache('sys_account_confirmation_type', BX_ACCOUNT_CONFIRMATION_NONE);
         $this->bxInstallTestAlertHandlers();
@@ -155,10 +162,24 @@ abstract class BxDolAccountTestCase extends BxDolIntegrationTestCase
         ]);
     }
 
+    /**
+     * The configured admin when that account is installed, otherwise the first account
+     * that has an email. Injection checks need a row that already existed.
+     */
+    protected function bxIntactAccountEmail(): string
+    {
+        $sEmail = $this->bxTestEmail('admin');
+        if ($this->bxAccountIdByEmail($sEmail) > 0)
+            return $sEmail;
+
+        return (string)BxDolDb::getInstance()->getOne("SELECT `email` FROM `sys_accounts` WHERE `email` != '' ORDER BY `id` ASC LIMIT 1");
+    }
+
     protected function bxAssertAccountsTableIntact(): void
     {
         $this->assertTrue(BxDolDb::getInstance()->isTableExists('sys_accounts'));
-        $this->assertGreaterThan(0, $this->bxAccountIdByEmail($this->bxTestEmail('admin')));
+        $this->assertGreaterThan(0, $this->_iIntactAccountId);
+        $this->assertSame($this->_iIntactAccountId, $this->bxAccountIdByEmail($this->_sIntactAccountEmail));
     }
 
     protected function bxAssertFormRejected(BxDolForm $oForm, string $sField = ''): void

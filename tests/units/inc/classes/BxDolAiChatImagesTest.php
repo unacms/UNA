@@ -3,7 +3,7 @@
 /**
  * Chat image URLs: this site and the storage host only.
  */
-class BxDolAiChatImagesTest extends \PHPUnit\Framework\TestCase
+class BxDolAiChatImagesTest extends BxDolTestCase
 {
     public function testRejectsOtherHosts()
     {
