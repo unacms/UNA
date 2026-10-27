@@ -517,21 +517,40 @@ export default function DropdownPopup({
     const neoButtonProps = buttonProps
         ? (isLegacyButtonProps(buttonProps) ? legacyToNeoButtonProps(buttonProps) : stripRoutingKeys(buttonProps))
         : null;
+    const triggerButton = neoButtonProps ? (
+        <NeoTriggerButton
+            {...neoButtonProps}
+            // Native: the root classes sit on the measured wrapper below.
+            {...(isWeb ? {} : { classNames: { ...neoButtonProps.classNames, root: undefined } })}
+            collapsable={false}
+            ref={isWeb ? buttonRef : undefined}
+            onPress={openTrigger}
+            selected={isRealOpen}
+            {...triggerMenuProps}
+            {...triggerFocusProps}
+        />
+    ) : null;
 
     return (
         <>
-            {neoButtonProps ? (
-                <NeoTriggerButton
-                    {...neoButtonProps}
-                    // The popup measures this ref; Expo UI (native) drops refs.
-                    expoUI={false}
-                    collapsable={false}
-                    ref={buttonRef}
-                    onPress={openTrigger}
-                    selected={isRealOpen}
-                    {...triggerMenuProps}
-                    {...triggerFocusProps}
-                />
+            {triggerButton ? (
+                isWeb ? (
+                    triggerButton
+                ) : (
+                    // The popup measures the trigger by ref, and Expo UI buttons drop refs, so
+                    // native measures this wrapper and the trigger can stay a native (liquid
+                    // glass) button. It takes the button's root layout (NeoButton `rootLayoutClass`).
+                    <View
+                        collapsable={false}
+                        ref={buttonRef}
+                        className={cn(
+                            neoButtonProps?.width === 'fill' ? 'flex-auto min-w-0' : 'self-start max-w-full min-w-0',
+                            neoButtonProps?.classNames?.root,
+                        )}
+                    >
+                        {triggerButton}
+                    </View>
+                )
             ) : (
                 <DropdownMenuOpenContext.Provider value={isRealOpen}>
                     {/* A button inside the trigger plays the trigger's cue, not its own tap. */}
