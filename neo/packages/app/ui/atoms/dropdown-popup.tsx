@@ -540,16 +540,23 @@ export default function DropdownPopup({
                     // The popup measures the trigger by ref, and Expo UI buttons drop refs, so
                     // native measures this wrapper and the trigger can stay a native (liquid
                     // glass) button. It takes the button's root layout (NeoButton `rootLayoutClass`).
-                    <View
+                    // Expo UI buttons don't report `aria-expanded` either, so the wrapper is the
+                    // accessibility element, like the custom trigger's Pressable below.
+                    <Pressable
                         collapsable={false}
                         ref={buttonRef}
+                        onPress={openTrigger}
+                        accessibilityRole="button"
+                        accessibilityLabel={dialogLabel}
+                        aria-haspopup="true"
+                        aria-expanded={isRealOpen}
                         className={cn(
                             neoButtonProps?.width === 'fill' ? 'flex-auto min-w-0' : 'self-start max-w-full min-w-0',
                             neoButtonProps?.classNames?.root,
                         )}
                     >
                         {triggerButton}
-                    </View>
+                    </Pressable>
                 )
             ) : (
                 <DropdownMenuOpenContext.Provider value={isRealOpen}>
