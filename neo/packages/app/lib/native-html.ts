@@ -4,8 +4,8 @@
 // The renderer's inline tags are b, i, u and s; UNA content uses the semantic ones.
 const INLINE_TAGS: Record<string, string> = { strong: 'b', em: 'i', ins: 'u', del: 's', strike: 's' }
 const INLINE_TAG = /<(\/?)(strong|em|ins|del|strike)\b[^>]*>/gi
-
 const HEADING = /<(h[1-6])\b([^>]*)>([\s\S]*?)<\/\1>/gi
+const BOLD_TAG = /<\/?b\b[^>]*>/gi
 
 /**
  * `<strong>` → `<b>`, `<em>` → `<i>`, `<ins>` → `<u>`, `<del>` / `<strike>` → `<s>`, which the
@@ -17,7 +17,7 @@ export function toNativeInlineTags(html: string) {
     if (!html || typeof html !== 'string') return html || ''
     return html
         .replace(INLINE_TAG, (_tag: string, close: string, name: string) => `<${close}${INLINE_TAGS[name.toLowerCase()]}>`)
-        .replace(HEADING, (_tag: string, name: string, attrs: string, inner: string) => `<${name}${attrs}>${inner.replace(/<\/?b>/gi, '')}</${name}>`)
+        .replace(HEADING, (_tag: string, name: string, attrs: string, inner: string) => `<${name}${attrs}>${inner.replace(BOLD_TAG, '')}</${name}>`)
 }
 
 // Paragraph gaps. On web `.u-vanilla-html` puts a 16px margin around paragraphs
@@ -27,31 +27,60 @@ export function toNativeInlineTags(html: string) {
 // stands in for those margins.
 
 const BLOCKS = 'p|h[1-6]|ul|ol|blockquote|pre|codeblock'
-const BLOCK_BOUNDARY = new RegExp(`(</(?:${BLOCKS})>)\\s*(?=<(?:${BLOCKS})\\b)`, 'gi')
-const EMPTY_P = '<p\\b[^>]*>(?:\\s|&nbsp;|<br\\s*/?>)*</p>'
-const ENDS_WITH_EMPTY_P = new RegExp(`${EMPTY_P}$`, 'i')
-const STARTS_WITH_EMPTY_P = new RegExp(`^${EMPTY_P}`, 'i')
+// A block boundary (a closing block tag followed by an opening one), else a list tag.
+const TOKEN = String.raw`(</(?:${BLOCKS})>)\s*(?=<(?:${BLOCKS})\b)|<(/?)(?:ul|ol)\b[^>]*>`
+const EMPTY_P = String.raw`<p\b[^>]*>(?:\s|&nbsp;|<br\s*/?>)*</p>`
+const WHOLE_EMPTY_P = new RegExp(`^${EMPTY_P}$`, 'i')
+const LIST_CLOSE = /^<\/(?:ul|ol)>$/i
 
-const count = (html: string, re: RegExp) => html.match(re)?.length ?? 0
+const BR_OPEN = /^<br\b/i
+const P_OPEN = /^<p[\s>]/i
 
-/** Whether `offset` sits inside a list, where items keep their own line spacing. */
-function inList(html: string, offset: number) {
-    const before = html.slice(0, offset)
-    return count(before, /<(?:ul|ol)\b/gi) > count(before, /<\/(?:ul|ol)>/gi)
+/**
+ * Whether the block that closes at `end` is an empty paragraph. Steps back over the
+ * paragraph's own tags only (an empty one holds nothing but `<br>`), so the cost is
+ * the paragraph's length, not the document's.
+ */
+function endsWithEmptyParagraph(html: string, end: number) {
+    if (html.slice(end - 4, end).toLowerCase() !== '</p>') return false
+    let pos = end - 4
+    for (;;) {
+        const start = html.lastIndexOf('<', pos - 1)
+        if (start < 0) return false
+        const tag = html.slice(start, start + 4)
+        if (BR_OPEN.test(tag)) {
+            pos = start
+            continue
+        }
+        return P_OPEN.test(tag) && WHOLE_EMPTY_P.test(html.slice(start, end))
+    }
 }
 
 /**
  * A blank line between adjacent blocks (paragraphs, headings, lists, quotes, code).
  * An empty paragraph is a blank line already, so none is added next to one, and
- * blocks inside list items are left as they are.
+ * blocks inside list items are left as they are. One pass over the HTML.
  */
 export function addParagraphGaps(html: string) {
     if (!html || typeof html !== 'string') return html || ''
-    return html.replace(BLOCK_BOUNDARY, (match: string, close: string, offset: number) => {
-        const end = offset + close.length
-        if (ENDS_WITH_EMPTY_P.test(html.slice(0, end))) return match
-        if (STARTS_WITH_EMPTY_P.test(html.slice(offset + match.length))) return match
-        if (inList(html, end)) return match
-        return `${close}<br>`
-    })
+    const token = new RegExp(TOKEN, 'gi')
+    const emptyParagraphAt = new RegExp(EMPTY_P, 'iy')
+    let listDepth = 0
+    let out = ''
+    let copied = 0
+    for (let m = token.exec(html); m; m = token.exec(html)) {
+        const [match, close, listSlash] = m
+        if (!close) {
+            listDepth = Math.max(0, listDepth + (listSlash ? -1 : 1))
+            continue
+        }
+        if (LIST_CLOSE.test(close)) listDepth = Math.max(0, listDepth - 1)
+        const end = m.index + close.length
+        const next = m.index + match.length
+        emptyParagraphAt.lastIndex = next
+        if (listDepth > 0 || endsWithEmptyParagraph(html, end) || emptyParagraphAt.test(html)) continue
+        out += `${html.slice(copied, end)}<br>`
+        copied = next
+    }
+    return out + html.slice(copied)
 }

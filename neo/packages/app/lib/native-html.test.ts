@@ -16,6 +16,18 @@ test('no bold inside headings, which are bold already', () => {
         toNativeInlineTags('<h3><strong>Our mission</strong></h3><p><strong>True</strong></p><h2 class="a"><b>T</b>wo <em>x</em></h2>'),
         '<h3>Our mission</h3><p><b>True</b></p><h2 class="a">Two <i>x</i></h2>',
     );
+    assert.equal(toNativeInlineTags('<h3><b class="x">Title</b></h3>'), '<h3>Title</h3>');
+});
+
+test('nested lists and long articles', () => {
+    assert.equal(
+        addParagraphGaps('<ul><li><p>a</p><ol><li><p>b</p><p>c</p></li></ol><p>d</p></li></ul><p>after</p>'),
+        '<ul><li><p>a</p><ol><li><p>b</p><p>c</p></li></ol><p>d</p></li></ul><br><p>after</p>',
+    );
+    const paragraphs = Array.from({ length: 20000 }, (_, i) => `<p>Paragraph ${i}</p>`);
+    const started = performance.now();
+    assert.equal(addParagraphGaps(paragraphs.join('')), paragraphs.join('<br>'));
+    assert.ok(performance.now() - started < 1000, 'one pass, not a rescan per paragraph');
 });
 
 test('other tags and lookalike names are left alone', () => {
