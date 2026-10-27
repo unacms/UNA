@@ -2946,10 +2946,10 @@ lru-cache@^11.0.0, lru-cache@^11.1.0, lru-cache@^11.2.1:
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-11.5.3.tgz#a7767b4034e35269562d2b9da2b185b5df70c421"
   integrity sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==
 
-lucide-static@^1.59.0:
-  version "1.59.0"
-  resolved "https://registry.yarnpkg.com/lucide-static/-/lucide-static-1.59.0.tgz#3a4b633a0516bd1cf96524ef54f907cec0fd1007"
-  integrity sha512-MuHZYaXbHgzN2QO6D3OM19bj09A+8GJiFSdXIMlbnLLEGQQ9+NRH2KaCxuivevD3Y23vM74kV17XBifgtqhfEg==
+lucide-static@^1.61.0:
+  version "1.61.0"
+  resolved "https://registry.yarnpkg.com/lucide-static/-/lucide-static-1.61.0.tgz#ee7141b653f866e3222bd9d2b167b9e6d931ff10"
+  integrity sha512-yLAiQB3MWUJEstsEDAwenSA3m7vr1tdLvgnC16Q/XMxRRma0DWwMs8M2bWlvgShrIs1m2mWMJ+0AiahqQO4GrA==
 
 lucide@^1.61.0:
   version "1.61.0"
