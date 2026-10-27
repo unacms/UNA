@@ -13,6 +13,7 @@
  *
  * Adding a family: drop its static files next to this file, add an entry
  * here and in fonts-web.web.ts, then select it in customization/config/fonts.js.
+ * A fork adds its own families there instead (`families`, see font-choice.js).
  */
 module.exports = {
     inter: {
