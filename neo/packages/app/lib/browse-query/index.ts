@@ -12,6 +12,8 @@ import {
     prependItemToUniListQueryCache,
     removeItemFromUniListQueryCache,
     mergeFirstPageIntoUniListQueryCache,
+    firstPageLeavesAGap,
+    replaceUniListQueryWithFirstPage,
     cursorNextPageParam,
 } from './helpers'
 
@@ -33,6 +35,8 @@ export {
     prependItemToUniListQueryCache,
     removeItemFromUniListQueryCache,
     mergeFirstPageIntoUniListQueryCache,
+    firstPageLeavesAGap,
+    replaceUniListQueryWithFirstPage,
     dedupeUniListItems,
     matchesFeedOwnerFilter,
     isSameItemsForUniList,
@@ -213,6 +217,8 @@ export function useUniListQuery({
      * reaches the tab that posted, and the merge ignores rows already cached.
      * A hidden tab or a backgrounded app does not fetch: `added` only marks the
      * list dirty, and coming back runs that same first-page merge once.
+     * When the fresh page shares no cached row, scrolled pages are dropped so
+     * the next request continues from the new cursor instead of skipping the gap.
      * `inactive` (iOS app switcher) keeps a pending timer; only `background` defers.
      */
     useEffect(() => {
@@ -223,7 +229,7 @@ export function useUniListQuery({
         let deferred = false
         const deletedIds = new Set<string>()
 
-        const loadNewItems = async () => {
+        const loadNewItems = async (resetOnGap = false) => {
             timer = null
             const cacheKey = qKeyRef.current
             // The effect was torn down, or the list moved on to another query, while fetching.
@@ -236,6 +242,15 @@ export function useUniListQuery({
                 })
                 if (isStale()) return
                 const page = withoutDeleted(freshPage, deletedIds)
+                const cached = queryClient.getQueryData(cacheKey)
+                // Fullness is the server page: a row deleted while hidden must not hide the gap.
+                if (resetOnGap && page?.data?.length && firstPageLeavesAGap(cached, freshPage)) {
+                    replaceUniListQueryWithFirstPage(queryClient, cacheKey, page)
+                    refetchRef.current.skipToast = true
+                    setRequested(true)
+                    setFrozen(null)
+                    return
+                }
                 if (mergeFirstPageIntoUniListQueryCache(queryClient, cacheKey, page)) {
                     refetchRef.current.skipToast = true
                     setRequested(true)
@@ -268,7 +283,7 @@ export function useUniListQuery({
             }
             if (next !== 'active' || !deferred || cancelled) return
             deferred = false
-            void loadNewItems()
+            void loadNewItems(true)
         }
 
         const offAdded = subscribe('bx_timeline_0', 'added', scheduleAdded)

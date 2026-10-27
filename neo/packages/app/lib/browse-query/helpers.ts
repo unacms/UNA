@@ -115,6 +115,29 @@ export const prependItemToUniListQueryCache = (queryClient: QueryClient, queryKe
 }
 
 /**
+ * A full first page that shares no cached id sits entirely above the cached
+ * rows: merging it would leave a hole, and the next scroll continues from the
+ * old cursor, so those rows never load. A short page already holds every new
+ * row, and any shared id means the boundary is inside this page.
+ */
+export function firstPageLeavesAGap(cached: any, freshPage: any): boolean {
+    const freshItems: any[] = freshPage?.data ?? []
+    const perPage = Number(freshPage?.params?.per_page)
+    if (!cached?.pages?.length || !freshItems.length || !perPage || freshItems.length < perPage) return false
+
+    const cachedIds = new Set<string>()
+    for (const page of cached.pages) {
+        for (const item of page.data ?? []) cachedIds.add(String(item.id))
+    }
+    return freshItems.every((item) => !cachedIds.has(String(item.id)))
+}
+
+/** Drop scrolled pages and continue from this first page. Its cursor is the next request. */
+export function replaceUniListQueryWithFirstPage(queryClient: QueryClient, queryKey: unknown[], freshPage: any) {
+    queryClient.setQueryData(queryKey, { pages: [freshPage], pageParams: [undefined] })
+}
+
+/**
  * Put a freshly fetched first page on top of the cached pages: the fresh rows
  * (in server order, pinned rows included), then the old first-page rows that
  * fell out of it. Later pages stay; rows they now repeat are dropped by
