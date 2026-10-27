@@ -724,11 +724,6 @@
   resolved "https://registry.yarnpkg.com/@tanstack/ai-utils/-/ai-utils-0.4.2.tgz#3897be4b193e2b6d1b53da4aad483f9ff8b7428b"
   integrity sha512-ucSgSK9kLloInqr/7s0VZlp1IFtbpgPnskISvnLXti/hc8koqXc4Zv9pfTTc8V80WzIKYWMf+ZgSIDeFM50eCw==
 
-"@tanstack/ai-utils@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/ai-utils/-/ai-utils-0.5.0.tgz#7f1389154dcb963a4b49cbd52cb6d60ddcc8e324"
-  integrity sha512-7RQHPWoon+EPDx6RXb1EAuRWPLijewROF8C56yfVANPeIrIeEBeYVdE8c//cMPDNd+3XS1bgehEg754Aw7htjg==
-
 "@tanstack/ai-utils@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@tanstack/ai-utils/-/ai-utils-1.0.0.tgz#d66a8f75928c8dc55b25530e951ff251b11d97ea"
