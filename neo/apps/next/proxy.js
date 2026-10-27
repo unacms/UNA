@@ -9,7 +9,7 @@ export const config = {
     // Skip Next's own assets. A matched proxy marks the response dynamic, so
     // self-hosted `next start` drops `Cache-Control: public, max-age=31536000, immutable`
     // on hashed chunks. `_next/image` is the optimizer; `_next/webpack-hmr` is dev HMR.
-    matcher: ["/((?!_next/static|_next/image|_next/webpack-hmr|sw.js|logo192.png|loader.svg|favicon.ico|favicon.svg|manifest.json|static/|lucide/|_vercel|\\.well-known).*)"],
+    matcher: ["/((?!_next/static|_next/image|_next/webpack-hmr|sw.js|logo192.png|loader.svg|favicon.ico|favicon.svg|manifest.json|static/|lucide/|_vercel|[.]well-known).*)"],
     //runtime: 'experimental-edge',
 };
 
