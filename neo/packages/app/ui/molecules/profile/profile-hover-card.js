@@ -5,7 +5,7 @@ import { Text } from 'app/design/typography';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from 'app/ui/atoms/hover-card';
 import Profile from 'app/ui/molecules/profile/profile';
 import Link from 'app/ui/atoms/link';
-import { getPageData } from 'app/lib/util';
+import { fetcher } from 'app/lib/fetcher';
 import {
     CoverMenuMeta,
     CoverMenu,
@@ -16,7 +16,7 @@ const isWeb = Platform.OS === 'web';
 /**
  * Simple static content - no data fetching to avoid re-renders
  */
-const ProfileCardContent = memo(function ProfileCardContent({ profileData,  pageData}) {
+const ProfileCardContent = memo(function ProfileCardContent({ profileData, cover }) {
     const displayName = profileData?.display_name || '';
     const avatarUrl = profileData?.url_avatar;
     const profileUrl = profileData?.url;
@@ -39,17 +39,17 @@ const ProfileCardContent = memo(function ProfileCardContent({ profileData,  page
                                 {displayName}
                             </Text>
                         </Link>
-                        <Text className="block w-full min-w-0 text-xs text-secondary-foreground wrap-break-word" numberOfLines={2}>{pageData?.data?.description}</Text>
+                        <Text className="block w-full min-w-0 text-xs text-secondary-foreground wrap-break-word" numberOfLines={2}>{cover?.description}</Text>
                     </View>
                 </Row>
                 <View className="mt-2 gap-y-2">
-                    {!!pageData.data?.cover_block?.meta_menu && <Row>
-                        <CoverMenuMeta {...pageData.data.cover_block.meta_menu} button_size='xs' list_display_size='xs' />
+                    {!!cover?.meta_menu && <Row>
+                        <CoverMenuMeta {...cover.meta_menu} button_size='xs' list_display_size='xs' />
                         </Row>
                     }
-                    {!!pageData.data?.cover_block?.actions_menu && <Row>
+                    {!!cover?.actions_menu && <Row>
                         <CoverMenu
-                            {...pageData.data.cover_block.actions_menu}
+                            {...cover.actions_menu}
                             uri={profileUrl}
                             isSplitMenu={true}
      
@@ -82,18 +82,17 @@ function ProfileHoverCard_({ profileData, children, disabled = false }) {
 }
 
 function ProfileHoverCardContent({ profileData, children }) {
-    const [pageData, setPageData] = useState(false);
-    const url = profileData?.url;
-    const isLoaded = !!pageData?.data;
+    const [cover, setCover] = useState(null);
+    const profileId = profileData?.id;
 
     // Fetch lazily on first open; HoverCard only reads onOpenChange in a
     // callback, so identity is not important (React Compiler memoizes it anyway).
     const handleOpenChange = (open) => {
-        if (!open || isLoaded || !url) return;
-        // The card shows the page's description and cover menus, not its blocks.
-        getPageData(url.slice(1), false, {}, 'none')
-            .then((sResponse) => {
-                setPageData({ data: sResponse.data });
+        if (!open || cover || !profileId) return;
+        // The profile's cover alone (description, meta and actions menus), not its page.
+        fetcher(`/api.php?r=system/profile_cover/TemplServiceProfiles&params[]=${profileId}`)
+            .then((oResponse) => {
+                if (oResponse?.data) setCover(oResponse.data);
             })
             // A failed request leaves the card unloaded; the next open asks again.
             .catch(() => {});
@@ -103,7 +102,7 @@ function ProfileHoverCardContent({ profileData, children }) {
         <HoverCard onOpenChange={handleOpenChange} maxPopupWidth={384}>
             <HoverCardTrigger>{children}</HoverCardTrigger>
             <HoverCardContent className="w-full max-w-sm p-0 overflow-hidden">
-                <ProfileCardContent profileData={profileData} pageData={pageData} />
+                <ProfileCardContent profileData={profileData} cover={cover} />
             </HoverCardContent>
         </HoverCard>
     );
