@@ -753,7 +753,6 @@ class BxBaseServiceAccount extends BxDol
         } 
         else {
             $sResultMsg = _t($sCaptionKey);
-            $sForm = $oForm->getCode();
 
             if($bApi) {
                 $aBlocks = [
@@ -767,6 +766,8 @@ class BxBaseServiceAccount extends BxDol
                 // a form submitted to the request url above still gets the blocks alone.
                 return BxDolPage::getBlockProcessing() ? ['description' => $sResultMsg, 'content' => $aBlocks] : $aBlocks;
             }
+
+            $sForm = $oForm->getCode();
         }
 
         return '<div class="bx-def-padding-sec-bottom">' . $sResultMsg . '</div>' . $sForm . ($bShowErrorEmptyBoth ? '<div class="bx-form-warn">' . _t("_sys_form_forgot_password_phone_and_email_empty_error") . '</div>' : '');

@@ -193,7 +193,12 @@ class BxDolTranscoderQuery extends BxDolDb
         if ($oDb->getOne($sQuery))
             return array();
 
-        $sQuery = $oDb->prepare("SELECT * FROM `" . self::TABLE_QUEUE . "` WHERE `status` = 'pending' ORDER BY `added` ASC LIMIT ?", $iLimit);
+        /**
+         * Rows of a transcoder that isn't registered (its module was uninstalled) are skipped, or they'd
+         * take a place in every run and, once there are $iLimit of them, stop transcoding altogether.
+         * They are kept: the module may come back, and Studio's dashboard can clear the queue.
+         */
+        $sQuery = $oDb->prepare("SELECT `tq`.* FROM `" . self::TABLE_QUEUE . "` AS `tq` INNER JOIN `sys_objects_transcoder` AS `tot` ON `tq`.`transcoder_object` = `tot`.`object` WHERE `tq`.`status` = 'pending' ORDER BY `tq`.`added` ASC LIMIT ?", $iLimit);
         return $oDb->getAll($sQuery);
     }
 

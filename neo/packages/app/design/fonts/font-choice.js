@@ -5,7 +5,15 @@
  * use it.
  */
 const config = require('../../customization/config/fonts');
-const families = require('./font-families');
+const coreFamilies = require('./font-families');
+
+/**
+ * Families a fork adds in customization/config/fonts.js under `families`, in
+ * the shape of font-families.js but with `native` paths relative to
+ * packages/app/customization/. A key there replaces core's family of that name.
+ */
+const customFamilies = config?.families || {};
+const families = { ...coreFamilies, ...customFamilies };
 
 const FONT_ROLES = ['main', 'title'];
 
@@ -14,7 +22,7 @@ function fontChoice(role, platform) {
     const key = config?.[role]?.[platform];
     if (!key || key === 'system') return 'system';
     if (!families[key]) {
-        console.warn(`Font '${key}' (${role}, ${platform}) is not in font-families.js; using the system font.`);
+        console.warn(`Font '${key}' (${role}, ${platform}) is not in font-families.js or the families of customization/config/fonts.js; using the system font.`);
         return 'system';
     }
     return key;
@@ -31,4 +39,4 @@ function nativeFontFamily(role, platform) {
     return platform === 'android' ? 'sans-serif' : 'System';
 }
 
-module.exports = { FONT_ROLES, fontChoice, nativeFontFamily };
+module.exports = { FONT_ROLES, families, customFamilies, fontChoice, nativeFontFamily };

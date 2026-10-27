@@ -1,9 +1,10 @@
 const path = require('path');
 const withFonts = require('expo-font/app.plugin').default;
-const { fontChoice, FONT_ROLES } = require('app/design/fonts/font-choice');
-const families = require('app/design/fonts/font-families');
+const { fontChoice, FONT_ROLES, families, customFamilies } = require('app/design/fonts/font-choice');
 
 const FAMILIES_DIR = path.dirname(require.resolve('app/design/fonts/font-families'));
+// A fork's own families (customization/config/fonts.js) keep their files under packages/app/customization/.
+const CUSTOMIZATION_DIR = path.join(path.dirname(require.resolve('app/customization/config/fonts')), '..');
 
 /** Custom family keys that any role uses on `platform`. */
 function familiesFor(platform) {
@@ -13,9 +14,10 @@ function familiesFor(platform) {
 
 /** [{ weight, path }] for a family's static files (absolute paths). */
 function fontDefinitions(key) {
+    const dir = customFamilies[key] ? CUSTOMIZATION_DIR : FAMILIES_DIR;
     return Object.entries(families[key].native).map(([weight, file]) => ({
         weight: Number(weight),
-        path: path.join(FAMILIES_DIR, file),
+        path: path.join(dir, file),
     }));
 }
 

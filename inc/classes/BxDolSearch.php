@@ -50,6 +50,7 @@ class BxDolSearch extends BxDol
     protected $_aCustomSearchCondition = array();
     protected $_aCustomCurrentCondition = array();
     protected $_sUnitTemplate = '';
+    protected $_aUnitsSlice = null; ///< API search in several sections: the rows to build units for, @see setUnitsSlice
 
     /**
      * Constructor
@@ -159,15 +160,36 @@ class BxDolSearch extends BxDol
                 if(!empty($aQuery['query']))
                     $aQueries[] = trim($aQuery['query'] . ' ' . $aQuery['order'] . ' ' . $aQuery['limit']);
 
-            $aItems = BxDolDb::getInstance()->getAll('(' . implode(') UNION (', $aQueries) . ')');
+            $aItems = !empty($aQueries) ? BxDolDb::getInstance()->getAll('(' . implode(') UNION (', $aQueries) . ')') : [];
+
+            //--- A row without a content info object gets no unit.
+            $aContentInfos = [];
+            foreach($aItems as $iKey => $aItem)
+                if(!($aContentInfos[$iKey] = BxDolContentInfo::getObjectInstance($aItem['content_info'])))
+                    unset($aItems[$iKey]);
+
+            if($this->_aUnitsSlice !== null && count($aItems) > $this->_aUnitsSlice['per_page'])
+                $aItems = array_slice($aItems, $this->_aUnitsSlice['start'], $this->_aUnitsSlice['per_page'], true);
 
             $sCode = [];
-            foreach($aItems as $aItem)
-                if(($oContentInfo = BxDolContentInfo::getObjectInstance($aItem['content_info'])))
-                    $sCode[] = $oContentInfo->getContentInfoAPI($aItem['id'], $bExtendedUnits);
+            foreach($aItems as $iKey => $aItem)
+                $sCode[] = $aContentInfos[$iKey]->getContentInfoAPI($aItem['id'], $bExtendedUnits);
         }
 
         return $sCode;
+    }
+
+    /**
+     * API search in several sections: build units only for the rows the caller keeps.
+     * When there are more rows than $iPerPage, those are the $iPerPage from $iStart, the same
+     * as the caller's array_slice of all units, which is then left with nothing to drop.
+     * Callers that use every row (content search, Messenger) don't set it.
+     * @param $iStart first row to keep
+     * @param $iPerPage number of rows to keep
+     */
+    public function setUnitsSlice($iStart, $iPerPage)
+    {
+        $this->_aUnitsSlice = ['start' => (int)$iStart, 'per_page' => (int)$iPerPage];
     }
 
     public function getEmptyResult ()
@@ -400,6 +422,8 @@ class BxDolSearchResult implements iBxDolReplaceable
     protected $_aParams = [];
     protected $_sCategoryObject = '';
     protected $_aCustomSearchCondition = array();
+    protected $_bNoResults = false; ///< setConditionParams decided that the section has no results (live search without a keyword, '@' in a section of no profiles)
+    protected $_bSkipNum = false; ///< setConditionParams doesn't count the rows (a union query never reads the count)
 
     protected $_aMarkers = array (); ///< markers to replace somewhere, usually title and browse url (defined in custom class)
     
@@ -864,7 +888,19 @@ class BxDolSearchResult implements iBxDolReplaceable
             'added' => !empty($this->aCurrent['added']) ? $this->aCurrent['added'] : 'added'
         ];
 
-        $this->setConditionParams();
+        //--- The union reads the rows itself: getNum's count isn't needed, unless a class counts its own way.
+        $this->_bSkipNum = (new ReflectionMethod($this, 'getNum'))->getDeclaringClass()->getName() === BxDolSearchResult::class;
+        try {
+            $this->setConditionParams();
+        }
+        finally {
+            $this->_bSkipNum = false;
+        }
+
+        //--- A section without results adds nothing to the union (getSearchData doesn't read it either).
+        if($this->_bNoResults)
+            return ['query' => '', 'order' => '', 'limit' => ''];
+
         $aQuery = $this->getSearchDataByParams($aParams);
 
         /**
@@ -1072,20 +1108,25 @@ class BxDolSearchResult implements iBxDolReplaceable
     function setConditionParams()
     {
         $this->aCurrent['paginate']['num'] = 0;
+        $this->_bNoResults = false;
 
         // keyword
         $sKeyword = bx_process_input(isset($this->_aCustomSearchCondition['keyword']) ? $this->_aCustomSearchCondition['keyword'] : bx_get('keyword'));
         $bKeyword = !empty($sKeyword);
 
-        if ($this->_bLiveSearch && !$bKeyword)
+        if ($this->_bLiveSearch && !$bKeyword) {
+            $this->_bNoResults = true;
             return;
+        }
 
         if ($bKeyword) {
             if (substr($sKeyword, 0, 1) == '@') {
                 $sModule = $this->aCurrent['module_name'];
                 $sMethod = 'act_as_profile';
-                if(!bx_is_srv($sModule, $sMethod) || !bx_srv($sModule, $sMethod))
+                if(!bx_is_srv($sModule, $sMethod) || !bx_srv($sModule, $sMethod)) {
+                    $this->_bNoResults = true;
                     return;
+                }
 
                 $sKeyword = substr($sKeyword, 1);
             }
@@ -1184,6 +1225,9 @@ class BxDolSearchResult implements iBxDolReplaceable
             $this->_setPageDescription('_sys_page_description_keyword', $sKeyword, $this->aCurrent['title']);
 
         $this->setPaginate();
+        if ($this->_bSkipNum)
+            return;
+
         $iNum = $this->getNum();
         if ($iNum > 0)
             $this->aCurrent['paginate']['num'] = $iNum;

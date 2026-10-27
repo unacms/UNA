@@ -120,4 +120,14 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
             $this->assertStringNotContainsString('bx_site_search_show', $sHtml, $sFile);
         }
     }
+
+    public function testMenuItemsAreKeyedBySet(): void
+    {
+        $bFound = preg_match('/CREATE TABLE IF NOT EXISTS `sys_menu_items` \((.*?)\n\);/s', self::systemSql(), $aMatch);
+
+        $this->assertSame(1, $bFound, 'system.sql creates sys_menu_items.');
+        // Every menu reads its items by set; without the key each read scans the whole table.
+        // The key is on the set alone: items that share an `order` keep the order they had.
+        $this->assertStringContainsString('KEY `set_name` (`set_name`)', $aMatch[1]);
+    }
 }

@@ -64,9 +64,13 @@ export default function ElementLink({
         return nativeTabPageHref(finalHref, pathname, currentUser);
     }, [target, finalHref, matchedTabPath, currentTabPath, tabPath, currentUser]);
 
-    // Pages always push (same tab or another one); a tab root is navigated to,
-    // which pops that tab's stack back to it.
+    // Pages always push (same tab or another one). The current tab's root is a
+    // `dismissTo`, which pops the stack back to it like a swipe back: React
+    // Navigation 7's `navigate` pushes a second copy of the root instead.
+    // Another tab's root is navigated to, which switches tabs (the tab router
+    // has no pop-to, so `dismissTo` would do nothing there).
     const pushes = typeof p !== 'object' || 'params' in p;
+    const dismissTo = typeof p === 'object' && !('params' in p) && p.pathname === currentTabPath;
 
 
     const sizeClass = (() => {
@@ -141,6 +145,7 @@ export default function ElementLink({
     return (
         <Link
             push={pushes}
+            dismissTo={dismissTo}
             href={p}
             asChild
             onPress={handlePress}

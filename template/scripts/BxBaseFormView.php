@@ -58,6 +58,12 @@ class BxBaseFormView extends BxDolForm
     protected $_bDynamicMode = false;
 
     /**
+     * genForm runs for getCodeAPI: it still completes the inputs (CSRF token, row changes),
+     * but its HTML isn't used, so uploaders and the HTML editor aren't built.
+     */
+    protected $_bGenFormApi = false;
+
+    /**
      * Form is submitted dynamically (using Ajax Submit).
      */
     protected $_bAjaxMode = false;
@@ -407,7 +413,15 @@ class BxBaseFormView extends BxDolForm
         ]);
 
         if($this->sCode === false) {
-            if(!$this->genForm() && (bool)($this->aParams['view_mode'] ?? 0))
+            $this->_bGenFormApi = true;
+            try {
+                $sForm = $this->genForm();
+            }
+            finally {
+                $this->_bGenFormApi = false;
+            }
+
+            if(!$sForm && (bool)($this->aParams['view_mode'] ?? 0))
                 return [];
         }
 
@@ -1809,8 +1823,9 @@ BLAH;
         $sUniq = genRndPwd(10, false);
         $sClassAdd = "bx-def-font-inputs bx-form-input-{$aInput['type']}";
 
-        $bHtml = $bHtmlEditor = false;
-        if(($bHtmlEditor = ($bHtml = (bool)($aInput['html'] ?? false)) && $this->addHtmlEditor($aInput['html'], $aInput, $sUniq))) {
+        $bHtml = (bool)($aInput['html'] ?? false);
+        $bHtmlEditor = $bHtml && !$this->_bGenFormApi && $this->addHtmlEditor($aInput['html'], $aInput, $sUniq);
+        if($bHtmlEditor) {
             $sClassAdd .= ' bx-form-input-html ' . $sUniq;
         }
 
@@ -2012,7 +2027,7 @@ BLAH;
      */
     function genInputFiles(&$aInput, $sInfo = '', $sError = '')
     {
-        if(empty($aInput['uploaders']) || !is_array($aInput['uploaders']))
+        if($this->_bGenFormApi || empty($aInput['uploaders']) || !is_array($aInput['uploaders']))
             return '';
 
         $sUniqId = !empty($aInput['uploaders_id']) ? $aInput['uploaders_id'] : genRndPwd (8, false);
