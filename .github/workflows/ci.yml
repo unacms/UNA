@@ -96,9 +96,10 @@ jobs:
         suite: [Units, Integration]
         php: ['8.3', '8.4', '8.5']
 
+    # Only the tests need the database: an empty image keeps the service from starting.
     services:
       mysql:
-        image: mariadb:11
+        image: ${{ needs.dependencies.outputs.una != 'false' && 'mariadb:11' || '' }}
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: una
@@ -140,8 +141,9 @@ jobs:
         chmod a+rwX inc cache cache_public logs tmp storage
         test -f plugins/ffmpeg/ffmpeg.exe && chmod 0755 plugins/ffmpeg/ffmpeg.exe
 
+    # `phing package` copies the sources and needs no installed site.
     - name: Install UNA
-      if: env.RUN_TESTS == 'true' || env.BUILD_LEG == 'true'
+      if: env.RUN_TESTS == 'true'
       working-directory: install
       run: >
         php cmd.php
