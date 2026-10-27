@@ -538,11 +538,15 @@ export default function DropdownPopup({
         // don't report `aria-expanded` either, so the wrapper is the accessibility element,
         // like the custom trigger's Pressable below.
         const rootLayoutClass = neoButtonProps.width === 'fill' ? 'flex-auto min-w-0' : 'self-start max-w-full min-w-0';
+        // Blocks presses like the button does (NeoButton: disabled or loading).
+        const triggerDisabled = !!(neoButtonProps.disabled || neoButtonProps.loading);
         buttonTrigger = (
             <Pressable
                 collapsable={false}
                 ref={buttonRef}
                 onPress={openTrigger}
+                disabled={triggerDisabled}
+                aria-disabled={triggerDisabled}
                 accessibilityRole="button"
                 accessibilityLabel={dialogLabel}
                 aria-haspopup="true"
