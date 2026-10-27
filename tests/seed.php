@@ -7,6 +7,11 @@
  * user@example.com / unauna
  */
 
+if (PHP_SAPI !== 'cli') {
+    http_response_code(403);
+    exit;
+}
+
 ob_start();
 
 $_SERVER['HTTP_HOST'] = 'localhost';
