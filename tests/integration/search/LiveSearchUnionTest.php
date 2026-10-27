@@ -11,6 +11,7 @@ use PHPUnit\Framework\Attributes\Group;
 class LiveSearchUnionTest extends BxDolIntegrationTestCase
 {
     protected $_aGetBackup;
+    protected $_aPostIds = [];
 
     protected function setUp(): void
     {
@@ -21,8 +22,48 @@ class LiveSearchUnionTest extends BxDolIntegrationTestCase
 
     protected function tearDown(): void
     {
+        $oDb = BxDolDb::getInstance();
+        foreach ($this->_aPostIds as $iId) {
+            BxDolPage::deleteSeoLink('bx_posts', 'bx_posts', $iId);
+            $oDb->query("DELETE FROM `bx_posts_posts` WHERE `id` = :id", ['id' => $iId]);
+        }
+        $oDb->cleanMemoryAll();
+
         $_GET = $this->_aGetBackup ?? [];
         parent::tearDown();
+    }
+
+    /**
+     * Public posts by the admin whose title holds $sKeyword, deleted in tearDown.
+     */
+    protected function addPosts(string $sKeyword, int $iCount): void
+    {
+        $oDb = BxDolDb::getInstance();
+        $iAuthor = (int)BxDolProfile::getInstanceAccountProfile($this->bxAccount('admin')->id())->id();
+        $iNow = time();
+
+        for ($i = 1; $i <= $iCount; $i++) {
+            $oDb->query("INSERT INTO `bx_posts_posts` SET " . $oDb->arrayToSQL([
+                'author' => $iAuthor,
+                'added' => $iNow - $i,
+                'changed' => $iNow - $i,
+                'published' => $iNow - $i,
+                'thumb' => 0,
+                'thumb_data' => '',
+                'title' => 'LiveSearchUnionTest ' . $sKeyword . ' ' . $i,
+                'cat' => 0,
+                'multicat' => '',
+                'abstract' => '',
+                'text' => '<p>LiveSearchUnionTest post.</p>',
+                'labels' => '',
+                'location' => '',
+                'allow_view_to' => BX_DOL_PG_ALL,
+                'status' => 'active',
+                'status_admin' => 'active',
+            ]));
+            $this->_aPostIds[] = (int)$oDb->lastId();
+        }
+        $oDb->cleanMemoryAll();
     }
 
     /**
@@ -127,19 +168,22 @@ class LiveSearchUnionTest extends BxDolIntegrationTestCase
     public function testUnitsSliceKeepsTheUnitsTheCallerKeeps(): void
     {
         $aSections = $this->sections();
-        if (count($aSections) < 2)
-            $this->markTestSkipped('Two sections are needed.');
+        if (count($aSections) < 2 || !in_array('bx_posts', $aSections))
+            $this->markTestSkipped('Posts and one more section are needed.');
 
-        $aFull = $this->search($aSections, 'e', 3)->response();
-        if (count($aFull) <= 3)
-            $this->markTestSkipped('Not enough results for "e" to slice.');
+        // Three posts only this test can find: the search returns exactly them.
+        $sKeyword = 'phpunitslice' . mt_rand(100000, 999999);
+        $this->addPosts($sKeyword, 3);
 
-        $oSearch = $this->search($aSections, 'e', 3);
-        $oSearch->setUnitsSlice(1, 3);
+        $aFull = $this->search($aSections, $sKeyword, 3)->response();
+        $this->assertCount(3, $aFull, 'Every test post is found.');
+
+        $oSearch = $this->search($aSections, $sKeyword, 3);
+        $oSearch->setUnitsSlice(1, 2);
         $aSliced = $oSearch->response();
 
         $fIds = fn($a) => array_map(fn($aUnit) => [$aUnit['module'] ?? '', $aUnit['id'] ?? ''], $a);
-        $this->assertCount(3, $aSliced);
-        $this->assertSame($fIds(array_slice($aFull, 1, 3)), $fIds($aSliced), 'The same units as array_slice of all of them.');
+        $this->assertCount(2, $aSliced);
+        $this->assertSame($fIds(array_slice($aFull, 1, 2)), $fIds($aSliced), 'The same units as array_slice of all of them.');
     }
 }

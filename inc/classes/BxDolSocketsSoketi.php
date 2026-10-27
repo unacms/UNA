@@ -32,7 +32,7 @@ class BxDolSocketsSoketi extends BxDolSockets
     public function sendEvent($sSocket, $iContentId, $sEvent, $sMessage)
     {
         try {
-            $b = $this->getPusher()->trigger($sSocket . '_' . $iContentId, $sEvent, $sMessage);
+            $this->getPusher()->trigger($sSocket . '_' . $iContentId, $sEvent, $sMessage);
         }
         catch (Exception $oException) {
             $this->writeLog($oException->getFile() . ':' . $oException->getLine() . ' ' . $oException->getMessage(), BX_LOG_ERR);
