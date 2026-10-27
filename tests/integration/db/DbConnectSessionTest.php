@@ -9,6 +9,16 @@ use PHPUnit\Framework\Attributes\Group;
 #[Group('integration')]
 class DbConnectSessionTest extends BxDolIntegrationTestCase
 {
+    protected function tearDown(): void
+    {
+        // A failed check can leave the session with the values set below: connect again.
+        $oDb = BxDolDb::getInstance();
+        $oDb->disconnect();
+        $oDb->connect();
+
+        parent::tearDown();
+    }
+
     /**
      * Statement counters of the current server session.
      */
@@ -45,9 +55,13 @@ class DbConnectSessionTest extends BxDolIntegrationTestCase
     public function testConnectSetsTheSession(): void
     {
         $oDb = BxDolDb::getInstance();
+        $sEngine = (new ReflectionProperty(BxDolDb::class, '_sStorageEngine'))->getValue($oDb);
+
+        // Other values first: persistent connections reuse the server session, which would otherwise
+        // already hold the expected ones, so connect() has to set each of them again.
+        $oDb->pdoExec("SET NAMES latin1, sql_mode = 'STRICT_ALL_TABLES', default_storage_engine = " . (0 == strcasecmp($sEngine, 'INNODB') ? 'MYISAM' : 'INNODB'));
         $this->reconnect($oDb);
 
-        $sEngine = (new ReflectionProperty(BxDolDb::class, '_sStorageEngine'))->getValue($oDb);
         $aState = $oDb->getRow("SELECT @@character_set_client AS `client`, @@character_set_connection AS `conn`, @@character_set_results AS `results`, @@collation_connection AS `coll`, @@sql_mode AS `mode`, @@default_storage_engine AS `engine`");
 
         $this->assertSame(['utf8mb4', 'utf8mb4', 'utf8mb4'], [$aState['client'], $aState['conn'], $aState['results']]);
