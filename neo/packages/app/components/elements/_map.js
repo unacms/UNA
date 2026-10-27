@@ -17,6 +17,7 @@ const BrowseSimple = dynamic(() => import('./browse-simple'), { loading: Dynamic
 const BrowseList = dynamic(() => import('./browse-list'), { loading: DynamicFallback });
 const Form = dynamic(() => import('./form'), { loading: DynamicFallback });
 const Msg = dynamic(() => import('./msg'), { loading: DynamicFallback });
+const Informer = dynamic(() => import('./informer'), { loading: DynamicFallback });
 const Login = dynamic(() => import('./login'), { loading: DynamicFallback });
 const Redirect = dynamic(() => import('./redirect'), { loading: DynamicFallback });
 const EntityPoll = dynamic(() => import('./entity-poll'), { loading: DynamicFallback });
@@ -130,6 +131,7 @@ export const componentsMapDefault = {
     comments: Comments,
     form: Form,
     msg: Msg,
+    informer: Informer,
     login: Login,
     redirect: Redirect,
     entity_text: EntityText,
