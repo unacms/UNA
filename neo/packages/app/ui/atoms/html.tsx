@@ -58,7 +58,8 @@ export default function ElementHtml({ customClassName, data, innerRef, preproces
         <View className={`max-w-full ${customClassName || ''}`} ref={innerRef}>
             <EnrichedText
                 selectable
-                style={{ color: textColor, fontFamily: FONT_FAMILY, fontSize: isSmall ? 14 : 16, lineHeight: isSmall ? 18 : 22 }}
+                // 16/24 and 14/20, as `.u-vanilla-html` / `-small` on web.
+                style={{ color: textColor, fontFamily: FONT_FAMILY, fontSize: isSmall ? 14 : 16, lineHeight: isSmall ? 20 : 24 }}
                 htmlStyle={htmlStyle}
                 onLinkPress={(e) => navigate(e?.url)}
                 onMentionPress={(e) => navigate(e?.attributes?.href)}

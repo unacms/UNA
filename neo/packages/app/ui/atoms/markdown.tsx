@@ -369,8 +369,10 @@ export default function ElementMarkdown({ data, customClassName, className = '',
     const tabPath = useCurrentTabPath()
 
     const isSmall = customClassName === 'u-vanilla-html-small'
+    // The `.u-vanilla-html` / `-small` type of web HTML (design/styles/utilities.css):
+    // 16/24 and 14/20, which leaves room between lines for inline code chips.
     const fontSize = isSmall ? 14 : 16
-    const lineHeight = isSmall ? 18 : 22
+    const lineHeight = isSmall ? 20 : 24
 
     const navigate = useCallback((rawUrl?: string) => {
         if (!rawUrl) return
