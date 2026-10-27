@@ -33,23 +33,24 @@ bx_import('BxDolLanguages');
 $sEmail = 'user@example.com';
 $sPassword = 'unauna';
 
-if (BxDolAccount::getInstance($sEmail)) {
+$oAccount = BxDolAccount::getInstance($sEmail);
+if ($oAccount) {
     fwrite(STDOUT, "Account {$sEmail} already exists.\n");
-    exit(0);
+} else {
+    $aResult = bx_instance('BxTemplAccountForms')->createAccount([
+        'name' => 'user',
+        'email' => $sEmail,
+        'password' => $sPassword,
+    ], BX_PROFILE_ACTION_AUTO, false);
+
+    if (empty($aResult['account_id'])) {
+        fwrite(STDERR, "Account {$sEmail} was not created: " . ($aResult['error'] ?? 'unknown') . "\n");
+        exit(1);
+    }
+
+    $oAccount = BxDolAccount::getInstance((int)$aResult['account_id'], true);
 }
 
-$aResult = bx_instance('BxTemplAccountForms')->createAccount([
-    'name' => 'user',
-    'email' => $sEmail,
-    'password' => $sPassword,
-], BX_PROFILE_ACTION_AUTO, false);
-
-if (empty($aResult['account_id'])) {
-    fwrite(STDERR, "Account {$sEmail} was not created: " . ($aResult['error'] ?? 'unknown') . "\n");
-    exit(1);
-}
-
-$oAccount = BxDolAccount::getInstance((int)$aResult['account_id'], true);
 if ($oAccount && !$oAccount->isConfirmedEmail())
     $oAccount->updateEmailConfirmed(true, false);
 
