@@ -63,11 +63,9 @@ class BxTimelineGridCommon extends BxTimelineGridManageTools
          * the date_id key. Read in date order through that key, the list would go through most of the
          * table for a member with few or only old events.
          */
-        $sTable = $this->_aOptions['table'];
-        if(($sHint = $this->_oModule->_oDb->getIgnoreIndexHint($sTable, 'date_id')))
-            $this->_aOptions['source'] = preg_replace('/FROM `' . preg_quote($sTable, '/') . '`(?! IGNORE INDEX)/', 'FROM `' . $sTable . '` ' . $sHint, $this->_aOptions['source'], 1);
+        $this->_aOptions['source'] = $this->_oModule->_oDb->addIgnoreIndexHint($this->_aOptions['source'], $this->_aOptions['table'], 'date_id');
 
-        $this->_aOptions['source'] .=$this->_oModule->_oDb->prepareAsString(" AND (`owner_id`=? OR (`system`='0' AND `object_owner_id`=?))", $iProfileId, $iProfileId);
+        $this->_aOptions['source'] .= $this->_oModule->_oDb->prepareAsString(" AND (`owner_id`=? OR (`system`='0' AND `object_owner_id`=?))", $iProfileId, $iProfileId);
 
         return parent::_getDataSql($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage);
     }

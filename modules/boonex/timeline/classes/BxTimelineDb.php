@@ -49,12 +49,16 @@ class BxTimelineDb extends BxBaseModNotificationsDb
     }
 
     /**
-     * An IGNORE INDEX hint for a key of a table, or '' when the table has no such key (a site
-     * that didn't get the module update which adds it): a hint naming a missing key is an error.
+     * A query with an IGNORE INDEX hint for a key of its table. It is returned unchanged when the
+     * table has no such key (a site that didn't get the module update which adds it: a hint naming
+     * a missing key is an error) or when the hint is there already.
      */
-    public function getIgnoreIndexHint($sTable, $sIndex)
+    public function addIgnoreIndexHint($sQuery, $sTable, $sIndex)
     {
-        return $this->isIndexExists($sTable, $sIndex) ? 'IGNORE INDEX (`' . $sIndex . '`)' : '';
+        if(!$this->isIndexExists($sTable, $sIndex))
+            return $sQuery;
+
+        return preg_replace('/FROM `' . preg_quote($sTable, '/') . '`(?! IGNORE INDEX)/', 'FROM `' . $sTable . '` IGNORE INDEX (`' . $sIndex . '`)', $sQuery, 1);
     }
 
     public function deleteModuleEvents($aData)

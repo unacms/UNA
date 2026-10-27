@@ -44,8 +44,13 @@ class TimelineFeedKeysTest extends BxDolIntegrationTestCase
 
     public function testIgnoreIndexHintOnlyForAnExistingKey(): void
     {
-        $this->assertSame('IGNORE INDEX (`date_id`)', $this->db()->getIgnoreIndexHint('bx_timeline_events', 'date_id'));
-        $this->assertSame('', $this->db()->getIgnoreIndexHint('bx_timeline_events2users', 'date_id'), 'No hint where the key is missing: it would be an SQL error.');
+        $sQuery = 'SELECT * FROM `bx_timeline_events` WHERE 1';
+        $sHinted = $this->db()->addIgnoreIndexHint($sQuery, 'bx_timeline_events', 'date_id');
+        $this->assertSame('SELECT * FROM `bx_timeline_events` IGNORE INDEX (`date_id`) WHERE 1', $sHinted);
+        $this->assertSame($sHinted, $this->db()->addIgnoreIndexHint($sHinted, 'bx_timeline_events', 'date_id'), 'A hinted query keeps its one hint.');
+
+        $sQuery = 'SELECT * FROM `bx_timeline_events2users` WHERE 1';
+        $this->assertSame($sQuery, $this->db()->addIgnoreIndexHint($sQuery, 'bx_timeline_events2users', 'date_id'), 'No hint where the key is missing: it would be an SQL error.');
     }
 
     public function testMyPostsGridKeepsAwayFromTheDateKey(): void
