@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { AppState } from 'react-native'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { appSetting } from 'app/lib/util'
 import emitter, { EVENTS } from 'app/context/emitter'
@@ -210,12 +211,16 @@ export function useUniListQuery({
      * jittered delay, merged on top of the cache; nothing changes when the new
      * post is not in this list. Own posts are not skipped: `EVENTS.feed` only
      * reaches the tab that posted, and the merge ignores rows already cached.
+     * A hidden tab or a backgrounded app does not fetch: `added` only marks the
+     * list dirty, and coming back runs that same first-page merge once.
+     * `inactive` (iOS app switcher) keeps a pending timer; only `background` defers.
      */
     useEffect(() => {
         if (listenTimeline !== true) return undefined
 
         let timer: ReturnType<typeof setTimeout> | null = null
         let cancelled = false
+        let deferred = false
         const deletedIds = new Set<string>()
 
         const loadNewItems = async () => {
@@ -240,11 +245,34 @@ export function useUniListQuery({
             }
         }
 
-        const offAdded = subscribe('bx_timeline_0', 'added', () => {
+        const scheduleAdded = () => {
+            // Hidden tab / backgrounded app: remember the posts, fetch once on return.
+            if (AppState.currentState === 'background') {
+                if (timer) clearTimeout(timer)
+                timer = null
+                deferred = true
+                return
+            }
             if (timer) return
             // Jitter only spreads the load; not security-sensitive.
             timer = setTimeout(loadNewItems, TIMELINE_BATCH_MS + Math.random() * TIMELINE_JITTER_MS) // NOSONAR
-        })
+        }
+
+        const onAppState = (next: string) => {
+            if (next === 'background') {
+                if (!timer) return
+                clearTimeout(timer)
+                timer = null
+                deferred = true
+                return
+            }
+            if (next !== 'active' || !deferred || cancelled) return
+            deferred = false
+            void loadNewItems()
+        }
+
+        const offAdded = subscribe('bx_timeline_0', 'added', scheduleAdded)
+        const appStateSub = AppState.addEventListener('change', onAppState)
 
         const offDeleted = subscribe('bx_timeline_0', 'deleted', (payload: unknown) => {
             const id = parseTimelinePayload(payload)?.id
@@ -268,6 +296,7 @@ export function useUniListQuery({
             if (timer) clearTimeout(timer)
             offAdded()
             offDeleted()
+            appStateSub.remove()
         }
     }, [listenTimeline, queryClient])
 
