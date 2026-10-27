@@ -91,9 +91,12 @@ function ProfileHoverCardContent({ profileData, children }) {
     const handleOpenChange = (open) => {
         if (!open || isLoaded || !url) return;
         // The card shows the page's description and cover menus, not its blocks.
-        getPageData(url.slice(1), false, {}, 'none').then((sResponse) => {
-            setPageData({ data: sResponse.data });
-        });
+        getPageData(url.slice(1), false, {}, 'none')
+            .then((sResponse) => {
+                setPageData({ data: sResponse.data });
+            })
+            // A failed request leaves the card unloaded; the next open asks again.
+            .catch(() => {});
     };
 
     return (
