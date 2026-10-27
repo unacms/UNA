@@ -40,6 +40,10 @@ CREATE TABLE IF NOT EXISTS `bx_timeline_events` (
   PRIMARY KEY (`id`),
   KEY `owner_id` (`owner_id`),
   KEY `object_id` (`object_id`),
+  KEY `sticked_date_id` (`sticked`, `date`, `id`),
+  KEY `date_id` (`date`, `id`),
+  KEY `promoted` (`promoted`),
+  KEY `source` (`source`),
   FULLTEXT KEY `search_fields` (`title`, `description`)
 );
 
@@ -82,6 +86,10 @@ CREATE TABLE IF NOT EXISTS `bx_timeline_events_slice` (
   PRIMARY KEY (`id`),
   KEY `owner_id` (`owner_id`),
   KEY `object_id` (`object_id`),
+  KEY `sticked_date_id` (`sticked`, `date`, `id`),
+  KEY `date_id` (`date`, `id`),
+  KEY `promoted` (`promoted`),
+  KEY `source` (`source`),
   FULLTEXT KEY `search_fields` (`title`, `description`)
 );
 

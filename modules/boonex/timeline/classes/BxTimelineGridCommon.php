@@ -58,7 +58,16 @@ class BxTimelineGridCommon extends BxTimelineGridManageTools
     {
         $iProfileId = bx_get_logged_profile_id();
 
-        $this->_aOptions['source'] .= $this->_oModule->_oDb->prepareAsString(" AND (`owner_id`=? OR (`system`='0' AND `object_owner_id`=?))", $iProfileId, $iProfileId);
+        /*
+         * One member's events are a small part of the table, so they are found and then sorted, as before
+         * the date_id key. Read in date order through that key, the list would go through most of the
+         * table for a member with few or only old events.
+         */
+        $sTable = $this->_aOptions['table'];
+        if(($sHint = $this->_oModule->_oDb->getIgnoreIndexHint($sTable, 'date_id')))
+            $this->_aOptions['source'] = preg_replace('/FROM `' . preg_quote($sTable, '/') . '`(?! IGNORE INDEX)/', 'FROM `' . $sTable . '` ' . $sHint, $this->_aOptions['source'], 1);
+
+        $this->_aOptions['source'] .=$this->_oModule->_oDb->prepareAsString(" AND (`owner_id`=? OR (`system`='0' AND `object_owner_id`=?))", $iProfileId, $iProfileId);
 
         return parent::_getDataSql($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage);
     }

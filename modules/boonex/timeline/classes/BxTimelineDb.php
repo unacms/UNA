@@ -48,6 +48,15 @@ class BxTimelineDb extends BxBaseModNotificationsDb
         ];
     }
 
+    /**
+     * An IGNORE INDEX hint for a key of a table, or '' when the table has no such key (a site
+     * that didn't get the module update which adds it): a hint naming a missing key is an error.
+     */
+    public function getIgnoreIndexHint($sTable, $sIndex)
+    {
+        return $this->isIndexExists($sTable, $sIndex) ? 'IGNORE INDEX (`' . $sIndex . '`)' : '';
+    }
+
     public function deleteModuleEvents($aData)
     {
         foreach($aData['handlers'] as $aHandler) {
