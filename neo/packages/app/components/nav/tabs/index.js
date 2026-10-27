@@ -1,7 +1,8 @@
 import { useRouter, usePathname } from 'app/lib/hooks/router';
 import { View } from 'app/design/view';
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, getPageData, isAndroid, isIos, isNativeTabsEnabled } from 'app/lib/util';
+import { appSetting, isAndroid, isIos, isNativeTabsEnabled } from 'app/lib/util';
+import { fetcher } from 'app/lib/fetcher';
 import { Appearance, BackHandler, Text } from 'react-native';
 import { getWindowSafeAreaInsets } from 'app/lib/hooks/router';
 import { useEffect, useMemo, useState } from 'react';
@@ -71,6 +72,11 @@ if (isNativeTabsEnabled()) {
 }
 registerAll();
 
+/**
+ * Cold-start bootstrap learns the viewer from `profile_info` (`null` for a guest),
+ * not from the home page: tab0 fetches home itself.
+ */
+const BOOTSTRAP_URL = '/api.php?r=system/profile_info/TemplServiceProfiles';
 /** Cold-start bootstrap: fail fast offline instead of 3×15s fetcher retries. */
 const BOOTSTRAP_TIMEOUT_MS = 5000;
 /** AbortController is unreliable on some Android RN builds — race a hard timer. */
@@ -201,7 +207,7 @@ export default function Tabs() {
         (async () => {
             try {
                 const data = await Promise.race([
-                    getPageData('home', false, {
+                    fetcher(BOOTSTRAP_URL, false, {
                         timeoutMs: BOOTSTRAP_TIMEOUT_MS,
                         maxAttempts: 1,
                         silent: true,
@@ -209,12 +215,13 @@ export default function Tabs() {
                     hardTimeout,
                 ]);
                 if (cancelled) return;
-                if (!data?.data) {
+                // A guest's reply is `{ status: 200, data: null }`; a reply that isn't JSON is `{}`.
+                if (data?.status !== 200) {
                     setBootstrapError(true);
                     void SplashScreen.hideAsync().catch(() => {});
                     return;
                 }
-                setCurrentUser(data.data.user ?? false);
+                setCurrentUser(data.data || false);
             } catch {
                 if (!cancelled) {
                     setBootstrapError(true);
