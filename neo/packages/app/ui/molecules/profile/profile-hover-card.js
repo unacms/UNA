@@ -90,9 +90,13 @@ function ProfileHoverCardContent({ profileData, children }) {
     // callback, so identity is not important (React Compiler memoizes it anyway).
     const handleOpenChange = (open) => {
         if (!open || isLoaded || !url) return;
-        getPageData(url.slice(1), false).then((sResponse) => {
-            setPageData({ data: sResponse.data });
-        });
+        // The card shows the page's description and cover menus, not its blocks.
+        getPageData(url.slice(1), false, {}, 'none')
+            .then((sResponse) => {
+                setPageData({ data: sResponse.data });
+            })
+            // A failed request leaves the card unloaded; the next open asks again.
+            .catch(() => {});
     };
 
     return (

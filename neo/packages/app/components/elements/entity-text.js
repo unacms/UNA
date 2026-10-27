@@ -8,7 +8,8 @@ import Html from 'app/ui/atoms/html';
 import { splitInlineMedia } from 'app/lib/editor/inline-video';
 import { Text, H1C } from 'app/design/typography';
 import { Input } from 'app/design/controls';
-import { appSetting, clearLinks, getYouTubeVideoId, cn, decodeText } from 'app/lib/util'
+import { appSetting, clearLinks, cn, decodeText } from 'app/lib/util'
+import { checkEntityText, entityTextCheckEmpty } from './entity-text-check'
 import { useEditableRequest } from 'app/lib/form/form-helpers'
 import { ContentMore } from 'app/ui/molecules/content/content-more';
 import EntityAttachments from './entity-attachments';
@@ -367,7 +368,7 @@ function HtmlWithMedia({ html }) {
 function Default({ data, showPad, sidebar, block, blockWrapperProps, editable, afterTitle }) {
     const att = getImagesData(data);
     const isSmall = block?.module == "bx_market";
-    const checked = _checkEmpty(data);
+    const checked = checkEntityText(data);
     const text = checked?.text ?? clearLinks(data.entry_text);
     const videoId = checked?.videoId ?? null;
     const requestUrl = data?.params?.request_url;
@@ -425,19 +426,4 @@ function Default({ data, showPad, sidebar, block, blockWrapperProps, editable, a
     );
 }
 
-const _checkEmpty = (data) => {
-    if (!data) return false
-    const text = clearLinks(data.entry_text);
-    const videoId = data.video_embed && getYouTubeVideoId(data.video_embed) || null;
-    if (!text && !data.video && !data.image && !videoId)
-        return false
-
-    return {text: text, videoId: videoId}
-}
-
-EntityTextBlock.checkEmpty = (item) => {
-    if (item?.editable || item?.data?.editable) {
-        return _checkEmpty(item.data) || true
-    }
-    return _checkEmpty(item.data)
-};
+EntityTextBlock.checkEmpty = entityTextCheckEmpty;

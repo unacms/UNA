@@ -1,9 +1,11 @@
 import dynamic from 'next/dynamic';
 import { DynamicFallback } from 'app/lib/dynamic-fallback';
 
+import { entityTextCheckEmpty } from './entity-text-check';
+
 // Elements with a static `checkEmpty` (read by block.tsx before render) stay
-// eager — a dynamic() wrapper does not carry statics.
-import EntityText from './entity-text';
+// eager — a dynamic() wrapper does not carry statics — unless the check is set
+// on the wrapper from a small module of its own, as for EntityText below.
 import DataTable from './table';
 import Static from './static';
 import Mockup from './mockup';
@@ -38,6 +40,8 @@ const Comments = dynamic(() => import('./comments'), { loading: DynamicFallback 
 const CommentContent = dynamic(() => import('./comment-content'), { loading: DynamicFallback });
 const ProfileList = dynamic(() => import('./profiles-list'), { loading: DynamicFallback });
 const Logout = dynamic(() => import('./logout'), { loading: DynamicFallback });
+const EntityText = dynamic(() => import('./entity-text'), { loading: DynamicFallback });
+EntityText.checkEmpty = entityTextCheckEmpty;
 const AiAgent = dynamic(() => import('./ai_agent'), { loading: DynamicFallback });
 const AiAgentsAdmin = dynamic(() => import('./ai_agents_admin'), { loading: DynamicFallback });
 const Messenger = dynamic(() => import('./messenger'), { loading: DynamicFallback });
