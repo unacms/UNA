@@ -307,6 +307,7 @@
     <string name="_bx_credits_err_wrong_amont"><![CDATA[The amount of credits must be greater than zero.]]></string>
     <string name="_bx_credits_err_low_balance"><![CDATA[Low balance.]]></string>
     <string name="_bx_credits_err_withdrawal_not_found"><![CDATA[Withdrawal request wasn't found.]]></string>
+    <string name="_bx_credits_err_withdrawal_already_processed"><![CDATA[Cannot perform the action because the withdrawal request was already processed.]]></string>
     <string name="_bx_credits_err_withdraw_minimum"><![CDATA[Withdrawal less then {0} credits isn't available.]]></string>
     <string name="_bx_credits_err_withdraw_remaining"><![CDATA[Minimum remaining balance after withdrawal should be more then {0} credits.]]></string>
     <string name="_bx_credits_err_cannot_update_balance"><![CDATA[Cannot update balance.]]></string>
