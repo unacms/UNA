@@ -761,7 +761,7 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
      * the entry's actions menu and its meta menu, so the HTML cover isn't built: only those menus
      * get the entry, as prepareCover gives it to them.
      */
-    function prepareCoverApi($aData)
+    public function prepareCoverApi($aData)
     {
         $CNF = &$this->_oConfig->CNF;
         $iContentId = $aData[$CNF['FIELD_ID']];

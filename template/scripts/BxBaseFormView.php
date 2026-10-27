@@ -1823,8 +1823,9 @@ BLAH;
         $sUniq = genRndPwd(10, false);
         $sClassAdd = "bx-def-font-inputs bx-form-input-{$aInput['type']}";
 
-        $bHtml = $bHtmlEditor = false;
-        if(($bHtmlEditor = ($bHtml = (bool)($aInput['html'] ?? false)) && !$this->_bGenFormApi && $this->addHtmlEditor($aInput['html'], $aInput, $sUniq))) {
+        $bHtml = (bool)($aInput['html'] ?? false);
+        $bHtmlEditor = $bHtml && !$this->_bGenFormApi && $this->addHtmlEditor($aInput['html'], $aInput, $sUniq);
+        if($bHtmlEditor) {
             $sClassAdd .= ' bx-form-input-html ' . $sUniq;
         }
 
