@@ -1545,6 +1545,14 @@ class BxBaseServiceProfiles extends BxDol
         if(!$bAllowedView && !$oModule->_oTemplate->isProfilePublic($aContentInfo))
             return [];
 
+        // And of the page itself (the closed one for a closed profile): locked from guests, member levels it's visible for.
+        $sPage = $bAllowedView ? 'OBJECT_PAGE_VIEW_ENTRY' : 'OBJECT_PAGE_VIEW_ENTRY_CLOSED';
+        if(empty($CNF[$sPage]) || !($aPage = BxDolPageQuery::getPageObject($CNF[$sPage])))
+            return [];
+
+        if(BxDolPage::isLockedFromUnauthenticated($aPage['uri']) || (!isAdmin() && !BxDolAcl::getInstance()->isMemberLevelInSet($aPage['visible_for_levels'])))
+            return [];
+
         // Gives the entry to the actions and meta menus, as the profile page does when it sets its cover.
         $oModule->_oTemplate->prepareCoverApi($aContentInfo);
 
