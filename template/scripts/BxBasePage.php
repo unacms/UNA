@@ -655,36 +655,8 @@ class BxBasePage extends BxDolPage
                  * Process page cover with related menus and lists.
                  * A profile the viewer can't open shows no cover: it carries the profile info and the original cover image.
                  */
-                if($bIsAllowed && BxDolCover::getInstance($this)->isCover()) {
-                    // A closed (friends only) profile shows its name, picture and cover, not its info (about, birthday, location).
-                    $aProfileInfo = BxDolProfile::getData($this->_aProfileInfo['id'], [
-                        'get_avatar' => 'getAvatarBig',
-                        'with_info' => $oProfileModule->checkAllowedView($aProfileContentInfo) === CHECK_ACTION_RESULT_ALLOWED
-                    ]);
-                    $oProfile = BxDolProfile::getInstance($this->_aProfileInfo['id']);
-                    $aProfileInfo['online'] = $oProfile->isOnline();
-                    unset($aProfileInfo['info']['profile_email']);
-                    unset($aProfileInfo['info']['profile_last_active']);
-                    unset($aProfileInfo['info']['profile_ip']);
-                    
-                    $a['cover_block'] = [
-                        'profile' => $aProfileInfo,
-                        'actions_menu' => '',
-                        'meta_menu' => '',
-                        'badges' => $oProfile->getBadges(),
-                        'cover' => $oProfileModule->serviceGetCover($this->_aProfileInfo['content_id']),
-                        'allow_edit' =>  $oProfileModule->checkAllowedChangeCover($aProfileContentInfo) === CHECK_ACTION_RESULT_ALLOWED
-                    ];
-
-                    if(!empty($CNF['OBJECT_MENU_VIEW_ENTRY_META']) && ($oMetaMenu = BxTemplMenu::getObjectInstance($CNF['OBJECT_MENU_VIEW_ENTRY_META'])) !== false)
-                        $a['cover_block']['meta_menu'] =  $oMetaMenu->getCodeAPI();
-
-                    if(!empty($CNF['OBJECT_CONNECTIONS']) && ($oConnection = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTIONS'])) !== false)
-                        $a['cover_block']['members_list'] = $oConnection->getConnectedListAPI($this->_aProfileInfo['id'], false, BX_CONNECTIONS_CONTENT_TYPE_INITIATORS, 10);
-
-                    if(!empty($CNF['OBJECT_MENU_ACTIONS_VIEW_ENTRY_ALL']) && ($oActionMenu = BxTemplMenu::getObjectInstance($CNF['OBJECT_MENU_ACTIONS_VIEW_ENTRY_ALL'])) !== false)
-                        $a['cover_block']['actions_menu'] = $oActionMenu->getCodeAPI();
-                }
+                if($bIsAllowed && BxDolCover::getInstance($this)->isCover())
+                    $a['cover_block'] = $oProfileModule->getCoverBlockAPI($aProfileContentInfo);
                 
                 /**
                  * Process page mange menu.

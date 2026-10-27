@@ -2517,6 +2517,52 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
         return !empty($sAction) && !empty($aResult[$sAction]) ? $aResult[$sAction] : $aResult;
     }
     
+    /**
+     * Cover block of an API profile page (@see BxBasePage::getPageAPI) and of the profile_cover system service.
+     * The meta and actions menus must already have the entry, as BxBaseModProfileTemplate::prepareCoverApi gives it to them.
+     */
+    public function getCoverBlockAPI($aContentInfo)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $iContentId = (int)$aContentInfo[$CNF['FIELD_ID']];
+        $oProfile = BxDolProfile::getInstanceByContentAndType($iContentId, $this->getName());
+        if(!$oProfile)
+            return [];
+
+        $iProfileId = $oProfile->id();
+
+        // A closed (friends only) profile shows its name, picture and cover, not its info (about, birthday, location).
+        $aProfileInfo = BxDolProfile::getData($iProfileId, [
+            'get_avatar' => 'getAvatarBig',
+            'with_info' => $this->checkAllowedView($aContentInfo) === CHECK_ACTION_RESULT_ALLOWED
+        ]);
+        $aProfileInfo['online'] = $oProfile->isOnline();
+        unset($aProfileInfo['info']['profile_email']);
+        unset($aProfileInfo['info']['profile_last_active']);
+        unset($aProfileInfo['info']['profile_ip']);
+
+        $aResult = [
+            'profile' => $aProfileInfo,
+            'actions_menu' => '',
+            'meta_menu' => '',
+            'badges' => $oProfile->getBadges(),
+            'cover' => $this->serviceGetCover($iContentId),
+            'allow_edit' => $this->checkAllowedChangeCover($aContentInfo) === CHECK_ACTION_RESULT_ALLOWED
+        ];
+
+        if(!empty($CNF['OBJECT_MENU_VIEW_ENTRY_META']) && ($oMetaMenu = BxTemplMenu::getObjectInstance($CNF['OBJECT_MENU_VIEW_ENTRY_META'])) !== false)
+            $aResult['meta_menu'] = $oMetaMenu->getCodeAPI();
+
+        if(!empty($CNF['OBJECT_CONNECTIONS']) && ($oConnection = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTIONS'])) !== false)
+            $aResult['members_list'] = $oConnection->getConnectedListAPI($iProfileId, false, BX_CONNECTIONS_CONTENT_TYPE_INITIATORS, 10);
+
+        if(!empty($CNF['OBJECT_MENU_ACTIONS_VIEW_ENTRY_ALL']) && ($oActionMenu = BxTemplMenu::getObjectInstance($CNF['OBJECT_MENU_ACTIONS_VIEW_ENTRY_ALL'])) !== false)
+            $aResult['actions_menu'] = $oActionMenu->getCodeAPI();
+
+        return $aResult;
+    }
+
     public function decodeDataAPI($aData, $aParams = [])
     {
         $CNF = $this->_oConfig->CNF;
