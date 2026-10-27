@@ -285,6 +285,9 @@ class BxBaseServicesSearch extends BxDol
 
             $oSearch->setCustomCurrentCondition($aCurrentCondition);
 
+            //--- Several sections are joined in one union: units are built only for the rows kept below.
+            $oSearch->setUnitsSlice($aParamsBrowse['start'], $aParamsBrowse['per_page']);
+
             $aData = $oSearch->response();
             if(count($aData) > $aParamsBrowse['per_page'])
                 $aData = array_slice($aData, $aParamsBrowse['start'], $aParamsBrowse['per_page']);
