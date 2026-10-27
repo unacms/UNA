@@ -61,7 +61,10 @@ class BxBaseCalendar extends BxDolCalendar
             return;
 
         $this->_oTemplate->addCss(array(
-             'fullcalendar.css',
+            BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'fullcalendar/|skeleton.css',
+            BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'fullcalendar/|theme.css',
+            BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'fullcalendar/|palette.css',
+            'fullcalendar.css',
         ));
         
         $sCalendarLang = $this->_getLang();
