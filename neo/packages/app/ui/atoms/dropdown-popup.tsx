@@ -517,48 +517,54 @@ export default function DropdownPopup({
     const neoButtonProps = buttonProps
         ? (isLegacyButtonProps(buttonProps) ? legacyToNeoButtonProps(buttonProps) : stripRoutingKeys(buttonProps))
         : null;
-    const triggerButton = neoButtonProps ? (
-        <NeoTriggerButton
-            {...neoButtonProps}
-            // Native: the root classes sit on the measured wrapper below.
-            {...(isWeb ? {} : { classNames: { ...neoButtonProps.classNames, root: undefined } })}
-            collapsable={false}
-            ref={isWeb ? buttonRef : undefined}
-            onPress={openTrigger}
-            selected={isRealOpen}
-            {...triggerMenuProps}
-            {...triggerFocusProps}
-        />
-    ) : null;
+    // The `buttonProps` trigger. Web: the button holds the ref, which focus restore uses too.
+    let buttonTrigger: ReactNode = null;
+    if (neoButtonProps && isWeb) {
+        buttonTrigger = (
+            <NeoTriggerButton
+                {...neoButtonProps}
+                collapsable={false}
+                ref={buttonRef}
+                onPress={openTrigger}
+                selected={isRealOpen}
+                {...triggerMenuProps}
+                {...triggerFocusProps}
+            />
+        );
+    } else if (neoButtonProps) {
+        // Native: the popup measures the trigger by ref, and Expo UI buttons drop refs, so it
+        // measures this wrapper and the trigger can stay a native (liquid glass) button. The
+        // wrapper takes the button's root layout (NeoButton `rootLayoutClass`). Expo UI buttons
+        // don't report `aria-expanded` either, so the wrapper is the accessibility element,
+        // like the custom trigger's Pressable below.
+        const rootLayoutClass = neoButtonProps.width === 'fill' ? 'flex-auto min-w-0' : 'self-start max-w-full min-w-0';
+        buttonTrigger = (
+            <Pressable
+                collapsable={false}
+                ref={buttonRef}
+                onPress={openTrigger}
+                accessibilityRole="button"
+                accessibilityLabel={dialogLabel}
+                aria-haspopup="true"
+                aria-expanded={isRealOpen}
+                className={cn(rootLayoutClass, neoButtonProps.classNames?.root)}
+            >
+                <NeoTriggerButton
+                    {...neoButtonProps}
+                    classNames={{ ...neoButtonProps.classNames, root: undefined }}
+                    collapsable={false}
+                    onPress={openTrigger}
+                    selected={isRealOpen}
+                    {...triggerMenuProps}
+                    {...triggerFocusProps}
+                />
+            </Pressable>
+        );
+    }
 
     return (
         <>
-            {triggerButton ? (
-                isWeb ? (
-                    triggerButton
-                ) : (
-                    // The popup measures the trigger by ref, and Expo UI buttons drop refs, so
-                    // native measures this wrapper and the trigger can stay a native (liquid
-                    // glass) button. It takes the button's root layout (NeoButton `rootLayoutClass`).
-                    // Expo UI buttons don't report `aria-expanded` either, so the wrapper is the
-                    // accessibility element, like the custom trigger's Pressable below.
-                    <Pressable
-                        collapsable={false}
-                        ref={buttonRef}
-                        onPress={openTrigger}
-                        accessibilityRole="button"
-                        accessibilityLabel={dialogLabel}
-                        aria-haspopup="true"
-                        aria-expanded={isRealOpen}
-                        className={cn(
-                            neoButtonProps?.width === 'fill' ? 'flex-auto min-w-0' : 'self-start max-w-full min-w-0',
-                            neoButtonProps?.classNames?.root,
-                        )}
-                    >
-                        {triggerButton}
-                    </Pressable>
-                )
-            ) : (
+            {buttonTrigger ?? (
                 <DropdownMenuOpenContext.Provider value={isRealOpen}>
                     {/* A button inside the trigger plays the trigger's cue, not its own tap. */}
                     <PressCueContext.Provider value={triggerCue}>
