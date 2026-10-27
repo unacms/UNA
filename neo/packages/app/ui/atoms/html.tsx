@@ -8,7 +8,13 @@ import { useThemeValue } from 'app/design/theme'
 import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router'
 import { nativeTabPageHref } from 'app/lib/navigation/tab-history'
 import { preprocessHtml, normalizeRenderedHref, alignClassesToStyles } from 'app/lib/html-helpers'
+import { addParagraphGaps, toNativeInlineTags } from 'app/lib/native-html'
 import { useEnrichedHtmlStyle } from 'app/lib/editor/enriched-html-style'
+import { nativeFonts } from 'app/design/fonts/native-fonts'
+
+// EnrichedText is a native view, so the `font-main` class can't reach it: it takes the
+// app font (customization/config/fonts.js) by name, and keeps its own for the platform font.
+const FONT_FAMILY = nativeFonts.main === 'System' || nativeFonts.main === 'sans-serif' ? undefined : nativeFonts.main
 
 // This file is native-only (web content is rendered by html.web.js), so the
 // Tiptap-based web build is never loaded here — a static import is safe.
@@ -43,13 +49,16 @@ export default function ElementHtml({ customClassName, data, innerRef, preproces
 
     if (!data) return null
     // The renderer reads alignment from `text-align` only (stored as a `text-*` class).
-    const source = `<html>${alignClassesToStyles(preprocess ? preprocessHtml(data) : data)}</html>`
+    const html = toNativeInlineTags(alignClassesToStyles(preprocess ? preprocessHtml(data) : data))
+    // Page and entry text gets the paragraph gaps web has; feed and comment text stays
+    // as compact as it is in the editor.
+    const source = `<html>${isSmall ? html : addParagraphGaps(html)}</html>`
 
     return (
         <View className={`max-w-full ${customClassName || ''}`} ref={innerRef}>
             <EnrichedText
                 selectable
-                style={{ color: textColor, fontSize: isSmall ? 14 : 16, lineHeight: isSmall ? 18 : 22 }}
+                style={{ color: textColor, fontFamily: FONT_FAMILY, fontSize: isSmall ? 14 : 16, lineHeight: isSmall ? 18 : 22 }}
                 htmlStyle={htmlStyle}
                 onLinkPress={(e) => navigate(e?.url)}
                 onMentionPress={(e) => navigate(e?.attributes?.href)}
