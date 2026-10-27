@@ -29,7 +29,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        fetch-depth: ${{ github.event_name == 'pull_request' && 0 || 1 }}
+        fetch-depth: ${{ github.event_name == 'pull_request' && '0' || '1' }}
 
     # A PR that changes only neo/ skips PHPUnit; the PHP 8.5 Units leg still builds the package
     # for the preview deploy. Pushes to master always run the tests.
