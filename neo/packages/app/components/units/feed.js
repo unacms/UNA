@@ -131,7 +131,7 @@ function DefaultFeedUnit({ data }) {
                 padding="px-0"
                
             >
-                <Row className="gap-3 p-4 sm:px-5 sm:pt-5 pb-3 flex-auto">
+                <Row className="gap-3 p-4 pb-3 flex-auto">
                     <Skeleton visible={isSkeleton} preset='feed_author'>
                         <Author data={data} url={url} t={t} />
                         <Row className="flex-none mb-auto items-center gap-2">
@@ -145,14 +145,14 @@ function DefaultFeedUnit({ data }) {
                         </Row>
                     </Skeleton>
                 </Row>
-                <View className="flex-auto px-4 sm:px-5 ">
+                <View className="flex-auto px-4 ">
                     <Skeleton visible={isSkeleton} preset='multitext'>
                         <MainContent url={url} data={data} />
                     </Skeleton>
                 </View>
                 {!!menuCounters?.items?.length && <>
                 
-                    <View className="flex-auto px-4 sm:px-5 ">
+                    <View className="flex-auto px-4 ">
                         {appSetting('feed', 'counters_menu') && (
                             <CounterMenu
                                 data={menuCounters}
@@ -161,7 +161,7 @@ function DefaultFeedUnit({ data }) {
                     </View>
                 </>}
 
-                <Row className="gap-2 items-center flex-auto justify-between p-4 pt-3 sm:px-5 sm:pb-5">
+                <Row className="gap-2 items-center flex-auto justify-between p-4 pt-3">
                     <ActionMenu
                         data={menuActions}
                     />

@@ -94,21 +94,21 @@ export const settingsElements = {
         // The card surface (bg-card/80) on every size: edge to edge with no outline shadow on
         // mobile, detached and rounded with the outline shadow from sm. Overlays use bg-popover.
         'u-card-list': ' u-card-list bg-card/80 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl ',
-        'u-card-list-padding': 'p-4 sm:p-5 sm:rounded-2xl',
+        'u-card-list-padding': 'p-4 sm:rounded-2xl',
         // Profile listings: photo + meta + actions on mobile, card chrome from sm (grid).
         // Mobile: edge-to-edge rows on the card surface, 1px apart (feed cards are 2px), like
         // the Messages and Notifications rows.
         'u-card-list-flush': ' u-card-list u-flush-nav relative isolate mt-px sm:mt-0 bg-card/80 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
-        'u-card-list-flush-padding': 'px-4 py-2 sm:p-5 sm:rounded-2xl',
+        'u-card-list-flush-padding': 'px-4 py-2 sm:p-4 sm:rounded-2xl',
         'u-card-base': 'u-card-base rounded-2xl bg-card/80 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
-        'u-card-padding': 'py-4 sm:py-5 ',
-        'u-card-header': 'px-4 sm:px-5',
+        'u-card-padding': 'py-4 ',
+        'u-card-header': 'px-4',
         'u-card-icon': ' ',
         'u-card-title': 'font-semibold text-base tracking-tight text-secondary-foreground',
         'u-card-description': 'text-muted-foreground text-sm sm:text-base text-balance',
         'u-card-actions': ' ',
-        'u-card-content': 'px-4 sm:px-5 ',
-        'u-card-footer': 'px-4 sm:px-5 gap-1',
+        'u-card-content': 'px-4 ',
+        'u-card-footer': 'px-4 gap-1',
     },
     panels: {
         'u-panel-base': ' ns--panel-base-- web:h-full min-w-0 flex-col ne-- ',
@@ -125,14 +125,14 @@ export const settingsElements = {
             ' text-card-foreground gap-4 sm:gap-5 ',
         'u-block-bg':
             ' bg-card/80 shadow-block-outline dark:shadow-block-outline-deep ',
-        // 20px on every screen size. Call sites and blocks that set padding per breakpoint
-        // (designbox.padding) can still change it.
+        // 16px on every screen size, like cards. Call sites and blocks that set padding per
+        // breakpoint (designbox.padding) can still change it.
         'u-block-pad':
-            ' p-5 ',
+            ' p-4 ',
         'u-block-pad-y':
-            ' py-5 ',
+            ' py-4 ',
         'u-block-pad-x':
-            ' px-5 ',
+            ' px-4 ',
         'u-block-rounded': 'rounded-2xl',
         'u-block-rounded-default': 'sm:rounded-2xl',
         'u-block-header':
