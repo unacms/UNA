@@ -149,9 +149,10 @@ export const settingsElements = {
             'flex text-card-foreground gap-4 pt-2',
         'u-block-actions':
             'flex flex-row text-card-foreground gap-2  ',
-        // Header "View all" link (small, 36px): sits inside the header as is. -my-1 centres it on the
-        // 28px title line without making the header taller.
-        'u-block-more-link': '-my-1',
+        // Header "View all" link (small, 36px). -my-1 centres it on the 28px title line without making
+        // the header taller; -me-1 pulls it 4px toward the content edge (its 12px padding keeps the label
+        // inside). max-w-none: the link's own max-w-full would cap it at its narrower margin box and truncate the label.
+        'u-block-more-link': '-my-1 -me-1 max-w-none',
         'u-block-animate':
             'animate-in fade-in slide-in-from-top-2 duration-200',
     },
