@@ -51,7 +51,7 @@ function SearchAiExtended({ blockWrapperProps, block }) {
     // the page's own get_results block shows the results; this block only produces filters
     const usePageResults = !!block.use_page_results
 
-    const [query, setQuery] = useState('')
+    const [input, setInput] = useState('')
     const [searchParams, setSearchParams] = useState(null) // { field: { value } }
     const [keywordField, setKeywordField] = useState('')
     const [filters, setFilters] = useState(null)           // { input name: value } — search form shape
@@ -62,7 +62,8 @@ function SearchAiExtended({ blockWrapperProps, block }) {
     const requestRef = useRef(null)
     const emittedRef = useRef(false)
 
-    const { parsed, parsing } = useSearchParse(query, aiAvailable, block.parse_url, block.object)
+    // `query` is the text `parsed` belongs to: everything below searches on it, never on the live input
+    const { parsed, parsing, query } = useSearchParse(input, aiAvailable, block.parse_url, block.object)
 
     // parsed query -> editable field set
     useEffect(() => {
@@ -211,8 +212,8 @@ function SearchAiExtended({ blockWrapperProps, block }) {
                     size="large"
                     name="search_ai"
                     placeholder={placeholder}
-                    value={query}
-                    onChangeText={setQuery}
+                    value={input}
+                    onChangeText={setInput}
                     startDecorator={aiAvailable ? 'Sparkles' : 'Search'}
                     role="searchbox"
                     aria-label={t('Search')}
@@ -283,14 +284,15 @@ function SearchAiSections({ blockWrapperProps, block }) {
     const sections = Array.isArray(block.sections) ? block.sections : []
     const aiAvailable = block.available !== false
 
-    const [query, setQuery] = useState('')
+    const [input, setInput] = useState('')
     const [filter, setFilter] = useState(null)
     const [results, setResults] = useState(null) // null = nothing searched yet
     const [loading, setLoading] = useState(false)
     const requestRef = useRef(null)
     const redirectRef = useRef()
 
-    const { parsed, parsing } = useSearchParse(query, aiAvailable, block.parse_url)
+    // `query` is the settled text (parsed, or debounced when AI is off), not the live input
+    const { parsed, parsing, query } = useSearchParse(input, aiAvailable, block.parse_url)
     const aiActive = aiAvailable && !!parsed && parsed.available !== false
 
     // typed query -> filter: parsed by the model, or the raw keyword when AI is unavailable
@@ -362,8 +364,8 @@ function SearchAiSections({ blockWrapperProps, block }) {
                     size="large"
                     name="search_ai"
                     placeholder={placeholder}
-                    value={query}
-                    onChangeText={setQuery}
+                    value={input}
+                    onChangeText={setInput}
                     onSubmitEditing={handleSubmit}
                     onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
                     startDecorator={aiAvailable ? 'Sparkles' : 'Search'}
