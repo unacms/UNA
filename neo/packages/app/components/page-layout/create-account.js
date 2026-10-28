@@ -9,6 +9,7 @@ import AuthPanel from 'app/ui/molecules/auth/auth'
 import MenuFooter from 'app/components/nav/menu-footer'
 import Page from 'app/ui/molecules/page/page'
 import Html from 'app/ui/atoms/html'
+import { appSetting } from 'app/lib/util'
 
 const isWeb = Platform.OS === 'web'
 
@@ -16,7 +17,7 @@ function PageContent({ children }) {
     const { t } = useTranslation()
 
     return (
-        <View className="w-full justify-center max-w-sm gap-4 mx-auto">
+        <View className="w-full justify-center max-w-sm gap-6 mx-auto">
             {children}
             <AuthPanel showSeparator={true} createAccountLink={false} loginLink={false} />
             <Html
@@ -65,9 +66,8 @@ function pageAllowsJoin(data) {
     return formItems(data).some(isJoinForm)
 }
 
-export default function PageLayout({ data, blocks, children, pageClasses }) {
+export default function PageLayout({ data, blocks, children }) {
     const { t } = useTranslation()
-    const { contentWidth, padding, gap } = pageClasses ?? {}
     const joinData = DataByName(data, blocks?.form_join)
     const inviteData = DataByName(data, blocks?.form_invitation)
 
@@ -99,12 +99,13 @@ export default function PageLayout({ data, blocks, children, pageClasses }) {
     return (
         <Page data={data}>
             {isWeb ? (
+                // The same frame as the home splash (ui/molecules/sections/splash.js).
                 <View
-                    className={`flex-1 lg:p-12 xl:p-16 2xl:p-24 justify-center w-full mx-auto lg:flex-row ${contentWidth} ${padding} ${gap}`}
+                    className={`flex-auto items-center justify-center lg:flex-row p-6 lg:p-12 gap-6 lg:gap-12 w-full mx-auto ${appSetting('layout', 'max_width_landing')}`}
                 >
-                    <View className="items-center lg:items-start relative my-auto flex-auto w-full p-4 gap-4">
+                    <View className="items-center lg:items-start gap-6 my-auto flex-auto w-full">
                         {appStatic('join_text')}
-                        <H1 className="text-4xl sm:text-5xl tracking-tight font-bold text-foreground text-balance">
+                        <H1 isfirst islast className="text-center lg:text-start text-balance">
                             {isAllowJoin
                                 ? t('create_account_page_title')
                                 : t('create_account_page_title_request_invite')}
@@ -112,7 +113,7 @@ export default function PageLayout({ data, blocks, children, pageClasses }) {
                         <Text
                             accessible={true}
                             accessibilityRole="text"
-                            className="text-muted-foreground text-center lg:text-start text-base sm:text-lg text-pretty"
+                            className="max-w-3xl text-secondary-foreground text-center lg:text-start text-base sm:text-lg text-pretty"
                         >
                             {isAllowJoin
                                 ? t('create_account_page_text')
