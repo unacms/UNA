@@ -1,9 +1,10 @@
 name: Database migrations
 
-# A PR that changes install SQL also adds a file in scripts/railway/migrations/, which brings the
-# change to databases installed before it (api.unacms.app). Install SQL alone reaches only new
-# installs. A PR whose SQL change needs no migration says so in its description: "No database
-# migration." Separate from ci.yml because it also runs when the description is edited.
+# Install SQL and language files reach only new installs. A PR that changes them also adds a
+# migration (migrations/ or a module's migrations/), which brings the change to sites installed
+# before it. A PR whose change needs no migration says so in its description: "No database
+# migration." Every PR also checks the migration files themselves (names, metadata, XML).
+# Separate from ci.yml because it also runs when the description is edited.
 
 on:
   pull_request:
@@ -22,7 +23,10 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Check
+    - name: Migration files are valid
+      run: php periodic/migrate.php --check
+
+    - name: Install SQL changes have a migration
       env:
         BASE_REF: ${{ github.event.pull_request.base.ref }}
         PR_BODY: ${{ github.event.pull_request.body }}
@@ -30,32 +34,33 @@ jobs:
         changed=$(git diff --name-only "origin/$BASE_REF...HEAD")
         # disable.sql and uninstall.sql run only when a module is removed.
         sql=$(printf '%s\n' "$changed" \
-          | grep -E '^(install/sql|modules/system/install/sql|modules/[^/]+/[^/]+/install/sql)/[^/]+\.sql$' \
+          | grep -E '^(install/sql|modules/system/install/sql|modules/[^/]+/[^/]+/install/sql)/[^/]+\.sql$|^modules/boonex/english/data/langs/system/[^/]+\.xml$|^modules/[^/]+/[^/]+/install/langs/[^/]+\.xml$' \
           | grep -vE '/(disable|uninstall)\.sql$' || true)
         if [ -z "$sql" ]; then
-          echo "No install SQL changed."
+          echo "No install SQL or language file changed."
           exit 0
         fi
 
         # Added, not modified: a site that already ran a migration never runs it again, so a
         # change put into an existing file would not reach it.
-        added=$(git diff --name-only --diff-filter=A "origin/$BASE_REF...HEAD" -- scripts/railway/migrations \
-          | grep -E '\.(sql|php)$' || true)
+        added=$(git diff --name-only --diff-filter=A "origin/$BASE_REF...HEAD" \
+          | grep -E '^(migrations|modules/[^/]+/migrations|modules/[^/]+/[^/]+/migrations)/[^/]+\.(sql|php|xml)$' || true)
         if [ -n "$added" ]; then
-          printf 'Install SQL changed:\n%s\nMigration(s):\n%s\n' "$sql" "$added"
+          printf 'Changed:\n%s\nMigration(s):\n%s\n' "$sql" "$added"
           exit 0
         fi
 
         if printf '%s' "$PR_BODY" | grep -qi 'no database migration'; then
-          printf 'Install SQL changed:\n%s\nThe description says there is no database migration.\n' "$sql"
+          printf 'Changed:\n%s\nThe description says there is no database migration.\n' "$sql"
           exit 0
         fi
 
         for f in $sql; do
-          echo "::error file=$f::Install SQL changed without a migration in scripts/railway/migrations/"
+          echo "::error file=$f::Changed without a migration in migrations/ or the module's migrations/"
         done
-        echo "Sites installed before this PR, like api.unacms.app, get the change only from a migration."
-        echo "Add a new scripts/railway/migrations/YYYYMMDD-short-name.sql (see the README there), or say"
+        echo "Sites installed before this PR get the change only from a migration."
+        echo "Add a new migrations/YYYYMMDDNN_short_desc.sql (or .php, or .xml for language strings;"
+        echo "a module's own go in its migrations/ folder, see migrations/README.md), or say"
         echo "\"No database migration.\" in the PR description with the reason. Editing a migration that"
         echo "is already on master does not count: sites that ran it never run it again."
         exit 1

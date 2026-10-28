@@ -33,8 +33,7 @@ COPY --chown=www-data:www-data . /var/www/html
 RUN mv /var/www/html/entrypoint.sh /usr/local/bin/entrypoint.sh \
     && chmod +x /usr/local/bin/entrypoint.sh \
     && mkdir -p /usr/local/lib/una-railway \
-    && mv /var/www/html/configure.php /var/www/html/seed.php /var/www/html/languages.php \
-        /var/www/html/migrate.php /var/www/html/Migrations.php /var/www/html/migrations /usr/local/lib/una-railway/ \
+    && mv /var/www/html/configure.php /var/www/html/seed.php /var/www/html/languages.php /usr/local/lib/una-railway/ \
     && rm -f /var/www/html/Dockerfile /var/www/html/railway.toml \
     && mkdir -p /var/www/html/cache /var/www/html/cache_public /var/www/html/logs /var/www/html/tmp /var/www/html/storage \
     && chown -R www-data:www-data \

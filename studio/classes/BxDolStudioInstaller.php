@@ -218,6 +218,14 @@ class BxDolStudioInstaller extends BxDolInstallerUtils
         if($aResult['result']) {
             $iModuleId = $this->oDb->insertModule($this->_aConfig);
 
+            // The install SQL that just ran has every change of the module's migrations.
+            try {
+                BxDolMigrations::getInstance()->baselineModule($this->_aConfig['home_dir']);
+            }
+            catch (Throwable $e) {
+                bx_log('sys_debug', 'Migrations of ' . $this->_aConfig['name'] . ' not recorded: ' . $e->getMessage(), BX_LOG_ERR);
+            }
+
             if(($iModuleSubtypes = $this->getSubtypes($this->_aConfig['name'])) != 0)
                 $this->oDb->updateModule(['subtypes' => $iModuleSubtypes], ['id' => $iModuleId]);
 
