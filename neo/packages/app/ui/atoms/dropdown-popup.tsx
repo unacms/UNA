@@ -30,6 +30,24 @@ const dropdownTheme = appSetting('theme', 'dropdown');
  */
 const CONTENT_SETTLE_MS = 350;
 
+type ButtonPos = {
+    triggerY: number;
+    triggerHeight: number;
+    x: number;
+    width: number;
+    height: number;
+    maxHeight: number;
+    shouldOpenAbove: boolean;
+    /** Web: height of the fixed popup layer, for anchoring an above-open popup by its bottom edge. */
+    viewportHeight: number;
+};
+
+/**
+ * Position while closed. One shared object, so resetting a closed popup (on mount and on every
+ * window resize) is a no-op for React instead of a re-render.
+ */
+const CLOSED_POS: ButtonPos = { triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false, viewportHeight: 0 };
+
 const WEB_FOCUSABLE_SELECTOR = [
     'a[href]',
     'button:not([disabled])',
@@ -120,8 +138,7 @@ export default function DropdownPopup({
     const isDesktop = useIsDesktop();
     const contentRef = useRef<any>(null);
     const restoreFocusRef = useRef<any>(null);
-    // `viewportHeight` (web): height of the fixed popup layer, for anchoring an above-open popup by its bottom edge.
-    const [buttonPos, setButtonPos] = useState({ triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false, viewportHeight: 0 });
+    const [buttonPos, setButtonPos] = useState<ButtonPos>(CLOSED_POS);
     const [popupHeight, setPopupHeight] = useState(0);
     const [popupRenderedWidth, setPopupRenderedWidth] = useState(0);
     /**
@@ -252,7 +269,7 @@ export default function DropdownPopup({
             }
         } else {
             measureRetryRef.current = 0;
-            setButtonPos({ triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false, viewportHeight: 0 });
+            setButtonPos(CLOSED_POS);
             setPopupHeight(0);
             setPopupRenderedWidth(0);
             setContentPending(false);
