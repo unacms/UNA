@@ -30,6 +30,8 @@ class UnaRailwayMigrations
 {
     public const LEDGER = 'sys_deploy_migrations';
     public const NAME_PATTERN = '/^\d{8}-[a-z0-9]+(?:-[a-z0-9]+)*\.(sql|php)$/';
+    /** Ledger row, never a file name: migrations ran and caches and languages still need rebuilding. */
+    public const REFRESH_PENDING = '~refresh-pending';
 
     protected PDO $_oPdo;
     protected string $_sDir;
@@ -136,8 +138,8 @@ class UnaRailwayMigrations
             if ($c === '/' && $sNext === '*') {
                 $iEnd = strpos($sSql, '*/', $i + 2);
                 $iEnd = $iEnd === false ? $iLen : $iEnd + 2;
-                if (($sSql[$i + 2] ?? '') === '!')
-                    $sCurrent .= substr($sSql, $i, $iEnd - $i);
+                // A space keeps `SELECT/**/1` two tokens.
+                $sCurrent .= ($sSql[$i + 2] ?? '') === '!' ? substr($sSql, $i, $iEnd - $i) : ' ';
                 $i = $iEnd - 1;
                 continue;
             }
@@ -197,6 +199,8 @@ class UnaRailwayMigrations
                     return;
                 }
 
+                if (!$aResult['applied'])
+                    $this->_setRefreshPending(true);
                 $this->_record($sId, $aMigration['checksum'], 'applied');
                 $aResult['applied'][] = $sId;
                 ($this->_fLog)("$sId applied");
@@ -240,9 +244,41 @@ class UnaRailwayMigrations
 
         $aResult = [];
         foreach ($this->_oPdo->query("SELECT `id`, `checksum`, `status`, `applied` FROM `{$this->_sLedger}`", PDO::FETCH_ASSOC) as $aRow)
-            $aResult[$aRow['id']] = ['checksum' => $aRow['checksum'], 'status' => $aRow['status'], 'applied' => (int)$aRow['applied']];
+            if ($aRow['id'] !== self::REFRESH_PENDING)
+                $aResult[$aRow['id']] = ['checksum' => $aRow['checksum'], 'status' => $aRow['status'], 'applied' => (int)$aRow['applied']];
 
         return $aResult;
+    }
+
+    /**
+     * Whether migrations ran and the rebuild after them (languages, caches) has not succeeded
+     * yet. The flag is set before the first migration of a run is recorded, so a start that
+     * dies or fails to rebuild leaves it for the next start.
+     */
+    public function isRefreshPending(): bool
+    {
+        $this->_ensureLedger();
+
+        $oStatement = $this->_oPdo->prepare("SELECT 1 FROM `{$this->_sLedger}` WHERE `id` = ?");
+        $oStatement->execute([self::REFRESH_PENDING]);
+        $bResult = (bool)$oStatement->fetchColumn();
+        $oStatement->closeCursor();
+        return $bResult;
+    }
+
+    public function setRefreshDone(): void
+    {
+        $this->_setRefreshPending(false);
+    }
+
+    protected function _setRefreshPending(bool $b): void
+    {
+        $this->_ensureLedger();
+
+        $oStatement = $b
+            ? $this->_oPdo->prepare("INSERT IGNORE INTO `{$this->_sLedger}` (`id`, `checksum`, `status`, `applied`) VALUES (?, '', 'pending', UNIX_TIMESTAMP())")
+            : $this->_oPdo->prepare("DELETE FROM `{$this->_sLedger}` WHERE `id` = ?");
+        $oStatement->execute([self::REFRESH_PENDING]);
     }
 
     protected function _apply(array $aMigration): void

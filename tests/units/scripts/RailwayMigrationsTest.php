@@ -37,6 +37,7 @@ class RailwayMigrationsTest extends BxDolTestCase
             'comment marker in a string' => ["SELECT '-- no', '# no';", ["SELECT '-- no', '# no'"]],
             'minus minus without space' => ["SELECT 1--1;", ['SELECT 1--1']],
             'block comment' => ["/* note; with semicolon */SELECT 1;", ['SELECT 1']],
+            'block comment between tokens' => ["SELECT/**/1;", ['SELECT 1']],
             'executable comment kept' => ["/*!40101 SET NAMES utf8mb4 */;", ['/*!40101 SET NAMES utf8mb4 */']],
             'only comments' => ["-- nothing\n\n", []],
             'delimiter' => [

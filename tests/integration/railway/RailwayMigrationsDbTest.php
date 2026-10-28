@@ -163,43 +163,92 @@ class RailwayMigrationsDbTest extends BxDolIntegrationTestCase
         $this->assertSame($iMode, $this->_oPdo->getAttribute(PDO::ATTR_ERRMODE));
     }
 
+    public function testRefreshPendingUntilDone(): void
+    {
+        $this->_write('20261101-noop.sql', 'SELECT 1;');
+
+        $oMigrations = $this->_migrations();
+        $this->assertFalse($oMigrations->isRefreshPending());
+
+        $oMigrations->run();
+        $this->assertTrue($oMigrations->isRefreshPending(), 'set once a migration ran');
+        $this->assertSame(['20261101-noop'], array_keys($oMigrations->getRecorded()), 'the flag is not a migration');
+
+        $oMigrations->run();
+        $this->assertTrue($oMigrations->isRefreshPending(), 'a later start with nothing to apply still sees it');
+
+        $oMigrations->setRefreshDone();
+        $this->assertFalse($oMigrations->isRefreshPending());
+    }
+
     /**
      * Every shipped migration runs on this database without an SQL error (on CI a fresh install
-     * of the same commit, which already has every change), and a second run changes none of the
-     * tables they name: an INSERT IGNORE into a table without a unique key would add its rows again.
+     * of the same commit, which already has every change), and a second run changes no table.
      */
     public function testShippedMigrationsRun(): void
     {
         $sShipped = __DIR__ . '/../../../scripts/railway/migrations';
-        $oFirst = new UnaRailwayMigrations($this->_oPdo, $sShipped, $this->_table('ledger_first'));
-        $aMigrations = $oFirst->listMigrations();
-        if (!$aMigrations)
+        if (!(new UnaRailwayMigrations($this->_oPdo, $sShipped))->listMigrations())
             $this->markTestSkipped('scripts/railway/migrations has no migrations yet');
 
-        $aResult = $oFirst->run();
-        $this->assertSame('', $aResult['failed'], $aResult['failed'] . ': ' . $aResult['error']);
-
-        $sNamed = implode("\n", array_map(function ($a) {
-            return file_get_contents($a['path']);
-        }, $aMigrations));
-        $aTables = array_values(array_filter($this->_oPdo->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN), function ($sTable) use ($sNamed) {
-            return strpos($sNamed, '`' . $sTable . '`') !== false || strpos($sNamed, "'" . $sTable . "'") !== false;
-        }));
-        $aBefore = $this->_checksums($aTables);
-
-        $aResult = (new UnaRailwayMigrations($this->_oPdo, $sShipped, $this->_table('ledger_second')))->run();
-        $this->assertSame('', $aResult['failed'], 'second run: ' . $aResult['failed'] . ': ' . $aResult['error']);
-        $this->assertSame($aBefore, $this->_checksums($aTables), 'a second run of the migrations changed these tables');
+        $this->_assertSecondRunChangesNothing($sShipped);
     }
 
-    private function _checksums(array $aTables): array
+    /**
+     * The check above catches a migration that adds its rows again, whether or not it quotes
+     * the table name, and one in PHP.
+     */
+    public function testSecondRunCheckCatchesDuplicates(): void
     {
-        if (!$aTables)
-            return [];
+        $sData = $this->_table('data');
+        $this->_oPdo->exec("CREATE TABLE `$sData` (`v` varchar(32) NOT NULL)");
+
+        foreach ([
+            '20261101-unquoted.sql' => "INSERT IGNORE INTO $sData (v) VALUES ('again');",
+            '20261101-php.php' => "<?php\nreturn function () { BxDolDb::getInstance()->query(\"INSERT INTO $sData VALUES ('again')\"); };",
+        ] as $sName => $sContent) {
+            array_map('unlink', glob($this->_sDir . '/*'));
+            $this->_write($sName, $sContent);
+
+            try {
+                $this->_assertSecondRunChangesNothing($this->_sDir);
+            }
+            catch (\PHPUnit\Framework\AssertionFailedError $e) {
+                $this->assertStringContainsString($sData, $e->getMessage(), $sName);
+                continue;
+            }
+            $this->fail("$sName: a second run added a row and the check missed it");
+        }
+    }
+
+    private function _assertSecondRunChangesNothing(string $sDir): void
+    {
+        $sSuffix = bin2hex(random_bytes(4));
+        $aResult = (new UnaRailwayMigrations($this->_oPdo, $sDir, $this->_table('ledger_first_' . $sSuffix)))->run();
+        $this->assertSame('', $aResult['failed'], $aResult['failed'] . ': ' . $aResult['error']);
+
+        $aBefore = $this->_checksums();
+        $aResult = (new UnaRailwayMigrations($this->_oPdo, $sDir, $this->_table('ledger_second_' . $sSuffix)))->run();
+        $this->assertSame('', $aResult['failed'], 'second run: ' . $aResult['failed'] . ': ' . $aResult['error']);
+
+        $aAfter = $this->_checksums();
+        $aChanged = array_keys(array_diff_assoc($aAfter, $aBefore) + array_diff_key($aBefore, $aAfter));
+        $this->assertSame([], $aChanged, 'a second run of the migrations changed these tables: ' . implode(', ', $aChanged));
+    }
+
+    /**
+     * Every table but this test's own ledgers, which a run is expected to change.
+     */
+    private function _checksums(): array
+    {
+        $aTables = array_filter($this->_oPdo->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN), function ($sTable) {
+            return strpos($sTable, 'test_migrations_ledger') !== 0;
+        });
 
         $aResult = [];
-        foreach ($this->_oPdo->query('CHECKSUM TABLE `' . implode('`, `', $aTables) . '`', PDO::FETCH_NUM) as $aRow)
-            $aResult[$aRow[0]] = $aRow[1];
+        foreach (array_chunk($aTables, 100) as $aChunk)
+            foreach ($this->_oPdo->query('CHECKSUM TABLE `' . implode('`, `', $aChunk) . '`', PDO::FETCH_NUM) as $aRow)
+                $aResult[$aRow[0]] = $aRow[1];
 
         return $aResult;
     }

@@ -23,9 +23,10 @@ Add a migration when the PR changes what an installed site has in its database:
 Neither do new language keys: `languages.php` adds keys that are missing on every start.
 A changed string does need one (see below).
 
-The `Database migrations` check fails a PR that changes those files without adding a file here,
-unless the PR description says there is no database migration ("No database migration.").
+The `Database migrations` check fails a PR that changes those files without adding a new file
+here, unless the PR description says there is no database migration ("No database migration.").
 Say why there, for example "only changes uninstall SQL" or "a fresh-install default only".
+Editing a file that is already on master does not count: sites that ran it never run it again.
 
 ## Writing one
 
@@ -102,5 +103,7 @@ docker compose exec -w /opt/una php ./plugins/bin/phpunit -c tests/phpunit.xml -
 
 A failed migration does not stop the site from starting. The log says `[migrations] FAILED` and
 which statement; the ones after it wait. The next start tries again from the failed one, so fix
-it in a new commit by editing that same file. A file that has already run is never run again,
-even when it changes: put a further change in a new file.
+it in a new commit by editing that same file (that PR changes no install SQL, so the check
+passes). A file that has already run is never run again, even when it changes: put a further
+change in a new file. When rebuilding languages or caches fails after migrations ran, the
+ledger keeps a `~refresh-pending` row and every start tries the rebuild again.

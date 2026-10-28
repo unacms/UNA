@@ -92,7 +92,7 @@ The installer runs install SQL once, on an empty database, and api.unacms.app is
 - It must be safe to run on a database that already has the change: `IF NOT EXISTS`, `INSERT IGNORE` or `INSERT ... WHERE NOT EXISTS`, `UPDATE ... WHERE` the old value. Never delete a row and insert it again. Statements run with an empty `sql_mode`, like install SQL.
 - Run it on your local site with `docker compose exec -w /opt/una -e UNA_HEADER=/opt/una/inc/header.inc.php php php scripts/railway/migrate.php`. The integration test `RailwayMigrationsDbTest` then runs every migration twice more, ignoring the ledger, and fails on an SQL error.
 - A migration that has run is never run again, even when its file changes, so a further change goes in a new file. One that failed was not recorded: fix that file in place.
-- The `Database migrations` check fails a PR that changes install SQL without adding a migration, unless the description says "No database migration." with the reason.
+- The `Database migrations` check fails a PR that changes install SQL without adding a new migration file, unless the description says "No database migration." with the reason.
 - Module update packs (`modules/*/*/updates/`) are still needed for released versions. A migration is for sites that follow master.
 
 ## NEO (`neo/`)

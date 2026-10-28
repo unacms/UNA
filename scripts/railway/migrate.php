@@ -10,7 +10,8 @@
  *   php migrate.php --baseline   record them all as done without running them (fresh install)
  *
  * After any migration ran: recompile languages, clear UNA's caches and bump sys_revision, so
- * pages, menus, options and CSS/JS bundles are built again from the changed rows.
+ * pages, menus, options and CSS/JS bundles are built again from the changed rows. Until that
+ * succeeds the ledger keeps a pending flag, and every start tries it again.
  *
  * Environment:
  *   UNA_HEADER          another install's header, for running this outside the image
@@ -36,23 +37,32 @@ function migrationsLog(string $s): void
 
 /**
  * Migrations change rows that UNA caches: options, pages, menus, language strings.
+ *
+ * @return string what failed, or '' on success
  */
-function migrationsAfterApplied(): void
+function migrationsRefresh(): string
 {
     $oDb = BxDolDb::getInstance();
     $oDb->cleanMemoryAll();
     $oDb->cacheParams(true, true);
 
-    BxDolStudioLanguagesUtils::getInstance()->compileLanguage();
+    if (!BxDolStudioLanguagesUtils::getInstance()->compileLanguage())
+        return 'compiling languages';
 
     $iRevision = (int)getParam('sys_revision', false);
     $oCache = BxDolCacheUtilities::getInstance();
-    foreach (['db', 'content', 'template', 'css', 'js'] as $sCache)
-        $oCache->clear($sCache);
+    foreach (['db', 'content', 'template', 'css', 'js'] as $sCache) {
+        // false: that cache is off, so there is nothing to clear.
+        $mixedResult = $oCache->clear($sCache);
+        if (is_array($mixedResult) && (int)$mixedResult['code'] !== 0)
+            return "clearing the $sCache cache";
+    }
 
     // clear() bumps it only when the CSS or JS cache is on.
     if ((int)getParam('sys_revision', false) === $iRevision)
         setParam('sys_revision', $iRevision + 1);
+
+    return '';
 }
 
 BxDolDb::getInstance();
@@ -76,16 +86,34 @@ catch (Throwable $e) {
     exit(1);
 }
 
-if ($aResult['applied']) {
-    migrationsAfterApplied();
-    migrationsLog(count($aResult['applied']) . ' applied; caches cleared, sys_revision bumped');
-}
-else if ($aResult['failed'] === '') {
+if ($aResult['applied'])
+    migrationsLog(count($aResult['applied']) . ' applied');
+else if ($aResult['failed'] === '')
     migrationsLog('nothing to apply');
-}
 
+$bFailed = false;
 if ($aResult['failed'] !== '') {
     migrationsLog('FAILED ' . $aResult['failed'] . ': ' . $aResult['error']);
     migrationsLog('later migrations did not run; the next start tries again from this one');
-    exit(1);
+    $bFailed = true;
 }
+
+// Also after a failure: the migrations before it did run.
+try {
+    if ($oMigrations->isRefreshPending()) {
+        if (($sFailed = migrationsRefresh()) === '') {
+            $oMigrations->setRefreshDone();
+            migrationsLog('languages compiled, caches cleared, sys_revision bumped');
+        }
+        else {
+            migrationsLog("FAILED $sFailed after migrations; the next start tries again");
+            $bFailed = true;
+        }
+    }
+}
+catch (Throwable $e) {
+    migrationsLog('FAILED rebuilding after migrations: ' . $e->getMessage() . '; the next start tries again');
+    $bFailed = true;
+}
+
+exit($bFailed ? 1 : 0);

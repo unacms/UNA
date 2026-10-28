@@ -37,7 +37,9 @@ jobs:
           exit 0
         fi
 
-        added=$(git diff --name-only --diff-filter=AM "origin/$BASE_REF...HEAD" -- scripts/railway/migrations \
+        # Added, not modified: a site that already ran a migration never runs it again, so a
+        # change put into an existing file would not reach it.
+        added=$(git diff --name-only --diff-filter=A "origin/$BASE_REF...HEAD" -- scripts/railway/migrations \
           | grep -E '\.(sql|php)$' || true)
         if [ -n "$added" ]; then
           printf 'Install SQL changed:\n%s\nMigration(s):\n%s\n' "$sql" "$added"
@@ -53,6 +55,7 @@ jobs:
           echo "::error file=$f::Install SQL changed without a migration in scripts/railway/migrations/"
         done
         echo "Sites installed before this PR, like api.unacms.app, get the change only from a migration."
-        echo "Add scripts/railway/migrations/YYYYMMDD-short-name.sql (see the README there), or say"
-        echo "\"No database migration.\" in the PR description with the reason."
+        echo "Add a new scripts/railway/migrations/YYYYMMDD-short-name.sql (see the README there), or say"
+        echo "\"No database migration.\" in the PR description with the reason. Editing a migration that"
+        echo "is already on master does not count: sites that ran it never run it again."
         exit 1
