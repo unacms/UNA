@@ -80,11 +80,11 @@ function settingString(value) {
 /**
  * Background of the strip the page header covers at the top of the content
  * (mobile layout, below lg): the list / page spacer on native, a block at the
- * top of the page on web. Same surface as list cards (`u-card-list`): solid on
- * phones, /80 from sm. It belongs to the content, so it scrolls away with it — the fixed
- * header keeps its gradient chrome (`layout.header.fade`).
+ * top of the page on web. Same surface as list cards (`u-card-list`, bg-card/80). It belongs
+ * to the content, so it scrolls away with it — the fixed header keeps its gradient
+ * chrome (`layout.header.fade`).
  */
-export const PAGE_HEADER_BAND_CLASS = 'bg-card sm:bg-card/80 lg:bg-transparent';
+export const PAGE_HEADER_BAND_CLASS = 'bg-card/80 lg:bg-transparent';
 
 /** The band's classes: `layout.header.band`, else PAGE_HEADER_BAND_CLASS (a fork's brand colour). */
 export function getPageHeaderBandClass() {

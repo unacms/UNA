@@ -27,7 +27,7 @@ export const LinkContent = memo(({ url, data }) => (
         </Text>
         <Text
             numberOfLines={2}
-            className=" text-foreground web:hover:text-primary  text-lg sm:text-xl tracking-tight font-bold"
+            className=" text-foreground web:hover:text-primary  text-lg font-semibold tracking-tight"
         >
             {data.content?.title || ''}
         </Text>
@@ -114,7 +114,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
                     </Text>
                     <Text
                         numberOfLines={2}
-                        className=" text-foreground web:hover:text-primary text-lg sm:text-xl tracking-tight font-bold"
+                        className=" text-foreground web:hover:text-primary text-lg font-semibold tracking-tight"
                     >
                         {data.content?.title || ''}
                     </Text>
@@ -223,7 +223,7 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
 
                     <Text
                         numberOfLines={2}
-                        className=" text-foreground web:hover:text-primary  text-lg sm:text-xl tracking-tight font-bold"
+                        className=" text-foreground web:hover:text-primary  text-lg font-semibold tracking-tight"
                     >
                         {data.content?.title || ''}
                     </Text>
@@ -344,7 +344,7 @@ export const DefaultView = memo(
                     <LinkOrModal href={url} showInModal={appSetting('browse', 'show_in_modal', data.type)} className=" ">
                         <Text
                             numberOfLines={3}
-                            className=" text-card-foreground web:hover:text-foreground text-xl font-bold leading-tight font-title tracking-tight"
+                            className=" text-card-foreground web:hover:text-foreground text-lg font-semibold leading-tight font-title tracking-tight"
                         >
                             {data.content?.title || ''}
                         </Text>

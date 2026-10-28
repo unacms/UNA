@@ -8,6 +8,7 @@
 
 import React, { type ReactElement } from 'react';
 import { Pressable, StyleSheet, View, type Insets, type PressableProps, type StyleProp, type ViewStyle } from 'react-native';
+import { useResolveClassNames } from 'uniwind';
 
 type HostSize = { width: number; height: number };
 
@@ -207,4 +208,16 @@ export function wrapNativeButtonHost(host: ReactElement, {
             {host}
         </Pressable>
     );
+}
+
+/**
+ * Corner radius in points of a `roundedRectangle` button: the theme's
+ * `neo_button.borderShapes.roundedRectangle.rounded` class for its size, the
+ * same radius the JS button draws. Undefined for other shapes, which keep
+ * their native look (capsule, circle) or pass their own (rectangle).
+ */
+export function useRoundedRectangleRadius(borderShape: string | undefined, rounded: string | undefined): number | undefined {
+    const style = StyleSheet.flatten(useResolveClassNames(borderShape === 'roundedRectangle' ? (rounded || '') : ''));
+    const radius = style?.borderRadius ?? style?.borderTopLeftRadius;
+    return typeof radius === 'number' && radius > 0 ? radius : undefined;
 }

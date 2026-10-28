@@ -90,15 +90,13 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
 
     // The block's App config (Studio: "Config (for App in JSON format)") can set
     // the design box per breakpoint, e.g. {"designbox": {"bg": ["tablet", "desktop"]}}.
-    // Each key (bg, padding, title, rounded) lists the tiers where that part shows,
-    // and solid the tiers where the background is the opaque card fill;
+    // Each key (bg, padding, title, rounded) lists the tiers where that part shows;
     // a missing key keeps designbox_id. Props from code still win below.
     const designbox = config?.designbox || {};
     if (designbox.bg != null) bIsShowBg = normalizeTiers(designbox.bg);
     if (designbox.padding != null) bIsShowPadding = normalizeTiers(designbox.padding);
     if (designbox.title != null) bIsShowTitle = normalizeTiers(designbox.title);
     const rounded = designbox.rounded ?? config?.rounded;
-    const solid = designbox.solid;
 
     if (typeof showBg !== 'undefined') {
         bIsShowBg = showBg;
@@ -161,7 +159,7 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                         href={config?.header_more_url}
                         label={t(config?.header_more_text || 'See all')}
                         style="link"
-                        borderShape="roundedRectangle"
+                        borderShape="capsule"
                         controlSize="small"
                         classNames={{ root: appSetting('theme', 'blocks')['u-block-more-link'] }}
                     />
@@ -192,7 +190,6 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                     isBg={bIsShowBg}
                     isPad={bIsShowPadding}
                     rounded={rounded}
-                    solid={solid}
                     className={[
                         "w-full mx-auto",
                         fill ? "flex h-full min-h-0 flex-1 flex-col" : "",

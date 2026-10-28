@@ -5,6 +5,7 @@
  */
 
 import { Root } from 'app/root';
+import PlaygroundProviders from '../../playground-providers';
 
 const data = {
     uri: 'pg',
@@ -16,13 +17,15 @@ const data = {
 
 export default function PlaygroundScreen() {
     return (
-        <Root
-            settings={null}
-            path="pg"
-            data={data}
-            uri="pg"
-            url="/pg"
-            code={200}
-        />
+        <PlaygroundProviders>
+            <Root
+                settings={null}
+                path="pg"
+                data={data}
+                uri="pg"
+                url="/pg"
+                code={200}
+            />
+        </PlaygroundProviders>
     );
 }

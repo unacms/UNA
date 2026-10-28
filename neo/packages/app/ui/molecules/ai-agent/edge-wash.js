@@ -7,12 +7,12 @@ import { isWeb } from 'app/lib/util';
  * surface. On iOS `EdgeBlurView` draws a native progressive blur instead.
  *
  * Surfaces:
- * - `card`: a page block's card, `bg-card/60` over the page (theme `u-block-bg`).
- * - `panel`: a floating panel, `bg-card/80` with a backdrop blur (the operator agent
- *   dropdown and tab-bar card).
+ * - `card`: a page block's card, `bg-card/80` over the page (theme `u-block-bg`).
+ * - `panel`: a floating panel, opaque `bg-popover` (the operator agent dropdown and
+ *   tab-bar card).
  * - `background`: the page itself (the full-page agents view, a block without background).
  *
- * On web the translucent surfaces fade from the same mix of card over page, so the
+ * On web the translucent card fades from the same mix of card over page, so the
  * fade's solid end matches what it sits on instead of reading as a lighter band.
  * Class names are spelled out in full so Tailwind can find them.
  */
@@ -24,16 +24,14 @@ const NATIVE_CARD = {
 const EDGE_WASH = {
     card: isWeb
         ? {
-              top: 'bg-linear-to-b from-[color-mix(in_oklab,var(--color-card)_60%,var(--color-background))] from-40% to-transparent',
-              bottom: 'bg-linear-to-t from-[color-mix(in_oklab,var(--color-card)_60%,var(--color-background))] from-40% to-transparent',
-          }
-        : NATIVE_CARD,
-    panel: isWeb
-        ? {
               top: 'bg-linear-to-b from-[color-mix(in_oklab,var(--color-card)_80%,var(--color-background))] from-40% to-transparent',
               bottom: 'bg-linear-to-t from-[color-mix(in_oklab,var(--color-card)_80%,var(--color-background))] from-40% to-transparent',
           }
         : NATIVE_CARD,
+    panel: {
+        top: 'bg-linear-to-b from-popover from-40% to-transparent',
+        bottom: 'bg-linear-to-t from-popover from-40% to-transparent',
+    },
     background: {
         top: 'bg-linear-to-b from-background from-40% to-transparent',
         bottom: 'bg-linear-to-t from-background from-40% to-transparent',

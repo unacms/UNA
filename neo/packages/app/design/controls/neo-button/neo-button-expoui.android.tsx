@@ -15,6 +15,7 @@ import {
     Text as ComposeText,
     Icon as ComposeIcon,
     Spacer,
+    Shape,
 } from '@expo/ui/jetpack-compose';
 import {
     fillMaxWidth,
@@ -23,7 +24,7 @@ import {
 } from '@expo/ui/jetpack-compose/modifiers';
 import { useAndroidStyleColors } from 'app/design/controls/neo-button/native-style-colors';
 import { useResolvedNeoButton, resolveScoped, parseNeoButtonAddon } from 'app/design/controls/neo-button/neo-button-resolver';
-import { useFrozenHostSize, useNativeButtonPress, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
+import { useFrozenHostSize, useNativeButtonPress, useRoundedRectangleRadius, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
 import { FeedbackHaptics, findIconFromRemote } from 'app/lib/util';
 import type { NeoButtonExpoUIConfig, NeoButtonExpoUIProps } from 'app/design/controls/neo-button/neo-button.types';
 import { COMPOSE_FONT_WEIGHT, NATIVE_BUTTON_FONT_FAMILY, fontSizeFromClass, fontWeightFromClass } from 'app/design/controls/neo-button/native-font';
@@ -72,6 +73,8 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     });
 
     const fill = resolved.width === 'fill';
+    // Material buttons default to a pill; a rounded rectangle takes the theme's radius for its size.
+    const cornerRadius = useRoundedRectangleRadius(resolved.borderShape, resolved.rounded);
 
     // `className` styles the Host (the surface); `classNames.root` goes on the
     // outer wrapper so self-* / flex-* / margins reach the parent's layout.
@@ -228,6 +231,9 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
                 enabled={true}
                 colors={colors}
                 contentPadding={contentPadding}
+                shape={cornerRadius != null
+                    ? Shape.RoundedCorner({ cornerRadii: { topStart: cornerRadius, topEnd: cornerRadius, bottomStart: cornerRadius, bottomEnd: cornerRadius } })
+                    : undefined}
                 modifiers={rnOwnsWidth ? [fillMaxWidth()] : undefined}
             >
                 {alignEnd ? alignSpacer : null}

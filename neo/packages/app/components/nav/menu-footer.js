@@ -10,7 +10,14 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { localeIconName } from 'app/ui/atoms/tag-glyph-icons';
 import { SOUND_LEVEL_ITEMS, useSoundsLevel } from 'app/lib/hooks/use-sounds-level';
 
-export const MENU_FOOTER_CLASSES = 'flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-1 p-4 min-h-16';
+// Two sections, links and switchers, in one row that wraps: side by side while they fit (apart from
+// lg), each on its own centred line when they don't.
+export const MENU_FOOTER_CLASSES = 'flex w-full items-center border-t border-border/60 justify-center lg:justify-between flex-row flex-wrap gap-x-6 gap-y-1 p-4 min-h-16';
+// max-w-full: View doesn't shrink, so a section wider than the footer wraps its items instead of spilling out.
+const FOOTER_SECTION_CLASSES = 'max-w-full flex-row flex-wrap items-center justify-center gap-1';
+// iOS draws `link` buttons as SwiftUI .borderless, without the theme paddingX (12 at small) that
+// web and Android put around the label, so the gap makes up the 2 × 12.
+const FOOTER_LINKS_CLASSES = `${FOOTER_SECTION_CLASSES} ios:gap-x-7`;
 // Settings use the historical misspelling; keep this key aligned with settings/layout.js.
 const AVAILABLE_LANGS_SETTING_KEY = 'avaliable_langs';
 const FOOTER_THEME_ITEMS = [
@@ -61,13 +68,15 @@ const menuFooterSkeletonWidths = ['w-12', 'w-12', 'w-12', 'w-12', 'w-12'];
 function MenuFooterSkeleton({ cntClasses, children, role }) {
     return (
         <View className={cntClasses} role={role}>
-            {menuFooterSkeletonWidths.map((width, index) => (
-                <View
-                    key={`menu-footer-skeleton-${index}`}
-                    className={`h-5 my-2 mx-1 ${width} rounded-full bg-muted animate-pulse`}
-                />
-            ))}
-            {children}
+            <View className={FOOTER_LINKS_CLASSES}>
+                {menuFooterSkeletonWidths.map((width, index) => (
+                    <View
+                        key={`menu-footer-skeleton-${index}`}
+                        className={`h-5 my-2 mx-1 ${width} rounded-full bg-muted animate-pulse`}
+                    />
+                ))}
+            </View>
+            {children ? <View className={FOOTER_SECTION_CLASSES}>{children}</View> : null}
         </View>
     );
 }
@@ -244,22 +253,32 @@ function MenuFooterComponent({
     if (menu_launcher_items.length === 0 && menuData && !showThemeSwitcher && !showLanguageSwitcher && !showSoundsLevel)
         return null;
 
+    const showSwitchers = showLanguageSwitcher || showThemeSwitcher || showSoundsLevel;
+
     return (
         <View className={cntClasses} role="contentinfo">
-            {menu_launcher_items.map((item, index) => (
-                <NeoButtonLink
-                    href={normalizeFooterHref(item.link)}
-                    key={item.link || index}
-                    label={t(item.title)}
-                    style={visualProps.style}
-                    controlSize={visualProps.controlSize}
-                    className={visualProps.className}
-                    textClassName={visualProps.textClassName}
-                />
-            ))}
-            {showLanguageSwitcher ? <FooterLanguageSwitcher visualProps={visualProps} /> : null}
-            {showThemeSwitcher ? <FooterThemeSwitcher visualProps={visualProps} /> : null}
-            {showSoundsLevel ? <FooterSoundsLevel visualProps={visualProps} /> : null}
+            {menu_launcher_items.length > 0 ? (
+                <View className={FOOTER_LINKS_CLASSES}>
+                    {menu_launcher_items.map((item, index) => (
+                        <NeoButtonLink
+                            href={normalizeFooterHref(item.link)}
+                            key={item.link || index}
+                            label={t(item.title)}
+                            style={visualProps.style}
+                            controlSize={visualProps.controlSize}
+                            className={visualProps.className}
+                            textClassName={visualProps.textClassName}
+                        />
+                    ))}
+                </View>
+            ) : null}
+            {showSwitchers ? (
+                <View className={FOOTER_SECTION_CLASSES}>
+                    {showLanguageSwitcher ? <FooterLanguageSwitcher visualProps={visualProps} /> : null}
+                    {showThemeSwitcher ? <FooterThemeSwitcher visualProps={visualProps} /> : null}
+                    {showSoundsLevel ? <FooterSoundsLevel visualProps={visualProps} /> : null}
+                </View>
+            ) : null}
         </View>
     );
 }
