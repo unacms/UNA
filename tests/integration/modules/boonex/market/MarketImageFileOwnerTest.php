@@ -24,10 +24,13 @@ class MarketImageFileOwnerTest extends BxDolIntegrationTestCase
         if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_market'))
             $this->markTestSkipped('Market is not installed.');
 
-        $this->_iAdminProfileId = (int)BxDolProfile::getInstanceAccountProfile($this->bxAccount('admin')->id())->id();
-        $this->_iUserProfileId = (int)BxDolProfile::getInstanceAccountProfile($this->bxAccount('user')->id())->id();
+        // Members act as their current profile (a person), not the account's own system profile.
+        $this->_iAdminProfileId = (int)BxDolProfileQuery::getInstance()->getCurrentProfileByAccount($this->bxAccount('admin')->id());
 
         $this->bxLoginAsUser();
+        $this->_iUserProfileId = (int)bx_get_logged_profile_id();
+        $this->assertGreaterThan(0, $this->_iUserProfileId, 'The test user has no profile.');
+        $this->assertNotSame($this->_iAdminProfileId, $this->_iUserProfileId);
 
         $oDb = BxDolDb::getInstance();
         $iNow = time();
@@ -59,7 +62,7 @@ class MarketImageFileOwnerTest extends BxDolIntegrationTestCase
     protected function module(): BxMarketModule
     {
         $oModule = BxDolModule::getInstance('bx_market');
-        (new ReflectionProperty(BxBaseModGeneralModule::class, '_iProfileId'))->setValue($oModule, bx_get_logged_profile_id());
+        (new ReflectionProperty(BxBaseModGeneralModule::class, '_iProfileId'))->setValue($oModule, $this->_iUserProfileId);
 
         return $oModule;
     }
