@@ -64,6 +64,7 @@ const EMPTY_CONTENT = []
  * @param {string}   [props.skeleton='']     Skeleton override for the list.
  * @param {Function} [props.onChangeRoute]   Called with the route after a tab switch.
  * @param {string}   [props.keyword]         Search term; part of the list query key.
+ * @param {Function} [props.prepareData]     Applied to the page JSON of a tab loaded on switch.
  * @param {*}        [props.ts]              Soft-refresh token from the page.
  */
 export function Conductor({
@@ -78,6 +79,7 @@ export function Conductor({
     skeleton = '',
     onChangeRoute,
     keyword,
+    prepareData,
     ts,
 }) {
     const { t } = useTranslation()
@@ -314,7 +316,7 @@ export function Conductor({
     // Only the URL tab is hydrated up front; the rest load their page JSON the
     // first time they are selected.
     useEffect(() => {
-        ensureRouteInited(routes, index, setRoutes)
+        ensureRouteInited(routes, index, setRoutes, prepareData)
     }, [index])
 
     const { isRefreshing, onStartRefresh } = useConductorCommands({

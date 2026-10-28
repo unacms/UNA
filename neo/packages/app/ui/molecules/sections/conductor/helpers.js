@@ -540,7 +540,7 @@ function fetchRoutePage(link) {
  * meanwhile — addMoreData writes by index, so a late response would clobber
  * fresh state.
  */
-export async function ensureRouteInited(routes, index, setRoutes) {
+export async function ensureRouteInited(routes, index, setRoutes, prepareData) {
     const currentRoute = routes.find((item) => item.index === index)
     if (!currentRoute || currentRoute.inited || currentRoute.canNavigate === false) {
         return
@@ -561,11 +561,13 @@ export async function ensureRouteInited(routes, index, setRoutes) {
         return
     }
 
-    const settings = getPageSettings(sResponse.data?.config, getURI(currentRoute.link));
+    const data = prepareData ? prepareData(sResponse.data) : sResponse.data
 
-    const blocks = settings?.blocks || getBlocksFromData(sResponse.data)
+    const settings = getPageSettings(data?.config, getURI(currentRoute.link));
 
-    const contentAndEndpoint = processUrl(sResponse.data, settings?.blocks)
+    const blocks = settings?.blocks || getBlocksFromData(data)
+
+    const contentAndEndpoint = processUrl(data, settings?.blocks)
 
     addMoreData(
         contentAndEndpoint.content,
@@ -575,7 +577,7 @@ export async function ensureRouteInited(routes, index, setRoutes) {
         blocks,
         contentAndEndpoint.sidebar,
         contentAndEndpoint.leftbar,
-        sResponse.data,
+        data,
         link
     )
 }

@@ -13,7 +13,8 @@ const ConductorMemo = memo(Conductor, (prev, next) => (
 
 // Informers ("This project was archived.") come with the page (data.user.informer) and go
 // first in the main column: the conductor joins cell_top and cell_center into it
-// (conductor/helpers.js processParsedUrl). layout.web.js leaves out its bottom bar here.
+// (conductor/helpers.js processParsedUrl). Tabs loaded on switch get it through prepareData.
+// layout.web.js leaves out its bottom bar here.
 function withInformer(data) {
     const informer = data?.user?.informer;
     if (!informer?.length) return data;
@@ -121,6 +122,7 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
             isCoverDisabled={isCoverDisabled}
             menu={menu}
             data={conductorData}
+            prepareData={withInformer}
             blocks={blocks || getBlocksFromData(pageData)}
         />
     )
