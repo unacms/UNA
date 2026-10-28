@@ -140,9 +140,9 @@ export const settingsElements = {
         'u-block-icon': ' items-center w-9 h-9 justify-center bg-muted/50 rounded-lg text-card-foreground flex-none',
         'u-block-icon-size': 20, // Default icon size for block header icons
         'u-block-name': ' flex-auto gap-1 ',
-        // xl from sm up; line height = the mini (legacy xs) button height, 28px, so the title lines up with header buttons.
+        // text-lg on every screen size; line height = the mini (legacy xs) button height, 28px, so the title lines up with header buttons.
         'u-block-title':
-            'text-card-foreground px-0.5 text-lg sm:text-xl leading-7 font-semibold tracking-tight',
+            'text-card-foreground px-0.5 text-lg leading-7 font-semibold tracking-tight',
         'u-block-description': 'text-muted-foreground text-xs lg:text-sm leading-5 px-px',
         'u-block-content': 'gap-0.5 ',  
         'u-block-footer':
