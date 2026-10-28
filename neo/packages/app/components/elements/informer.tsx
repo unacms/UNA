@@ -4,15 +4,28 @@ import { useCurrentUser } from 'app/context/user'
 import { stripTags } from 'app/lib/util';
 import { BlockWrapper } from 'app/components/block-wrapper'
 
-const HIDDEN_IDS = ['sys-account-unconfirmed-email', 'sys-switch-profile-context', 'sys-account-profile-system'];
+const HIDDEN_IDS = new Set(['sys-account-unconfirmed-email', 'sys-switch-profile-context', 'sys-account-profile-system']);
+
+/** One UNA informer message (BxDolInformer). */
+export interface InformerItem {
+    id?: string;
+    msg?: string;
+    type?: string;
+}
+
+interface ElementInformerProps {
+    data?: InformerItem[];
+    blockWrapperProps?: any;
+}
 
 // Fixed bar at the bottom of the page (layout.web.js) with the viewer's informers.
 // As a page block (`data` holds the informers, see page-layout/profile.js) it renders inline.
-export default function ElementInformer({ data, blockWrapperProps }) {
+export default function ElementInformer({ data, blockWrapperProps }: ElementInformerProps) {
     const { currentUser } = useCurrentUser();
     const inline = Array.isArray(data);
 
-    const items = ((inline ? data : currentUser?.informer) || []).filter((item) => item?.msg && !HIDDEN_IDS.includes(item.id));
+    const source: InformerItem[] | undefined = inline ? data : (currentUser ? currentUser.informer : undefined);
+    const items = (source || []).filter((item) => item?.msg && !HIDDEN_IDS.has(item.id ?? ''));
     if (!items.length)
         return null
 

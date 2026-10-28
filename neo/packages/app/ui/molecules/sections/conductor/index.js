@@ -316,7 +316,7 @@ export function Conductor({
     // Only the URL tab is hydrated up front; the rest load their page JSON the
     // first time they are selected.
     useEffect(() => {
-        ensureRouteInited(routes, index, setRoutes, prepareData)
+        void ensureRouteInited(routes, index, setRoutes, prepareData)
     }, [index])
 
     const { isRefreshing, onStartRefresh } = useConductorCommands({
