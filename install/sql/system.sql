@@ -1838,7 +1838,7 @@ CREATE TABLE `sys_migrations` (
   `id` varchar(128) NOT NULL,
   `scope` varchar(16) NOT NULL default '',
   `type` varchar(8) NOT NULL default '',
-  `checksum` char(40) NOT NULL default '',
+  `checksum` char(64) NOT NULL default '',
   `status` varchar(16) NOT NULL default '',
   `applied` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY (`module`, `id`)

@@ -125,7 +125,7 @@ class BxDolMigrationsTest extends BxDolTestCase
             'id' => '2026110100_baseline_one',
             'path' => $this->_sDir . '/2026110100_baseline_one.php',
             'type' => 'php',
-            'checksum' => sha1($sContent),
+            'checksum' => hash('sha256', $sContent),
             'min_version' => '15.0.0',
             'covers' => ['2026100100_old', '2026100200_older'],
         ], BxDolMigrations::readFile($this->_sDir . '/2026110100_baseline_one.php'));

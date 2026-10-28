@@ -74,7 +74,7 @@ class MigrationsDbTest extends BxDolIntegrationTestCase
         $this->assertSame(['2026110100_create', '2026110300_php'], array_keys($aRecorded['']));
         $this->assertSame(['2026110200_rows', '2026110400_function'], array_keys($aRecorded['bx_test']));
         $this->assertSame('applied', $aRecorded['bx_test']['2026110200_rows']['status']);
-        $this->assertSame(sha1_file($this->_sDir . '/module/2026110200_rows.sql'), $aRecorded['bx_test']['2026110200_rows']['checksum']);
+        $this->assertSame(hash_file('sha256', $this->_sDir . '/module/2026110200_rows.sql'), $aRecorded['bx_test']['2026110200_rows']['checksum']);
 
         // The PHP migrations are not idempotent: a second run would fail on the duplicate key.
         $aResult = $oMigrations->run(function () { return ''; });

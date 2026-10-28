@@ -49,7 +49,7 @@ class BxDolMigrationsQuery extends BxDolDb
             `id` varchar(128) NOT NULL,
             `scope` varchar(16) NOT NULL default '',
             `type` varchar(8) NOT NULL default '',
-            `checksum` char(40) NOT NULL default '',
+            `checksum` char(64) NOT NULL default '',
             `status` varchar(16) NOT NULL default '',
             `applied` int(11) unsigned NOT NULL default '0',
             PRIMARY KEY (`module`, `id`)
@@ -216,7 +216,8 @@ class BxDolMigrationsQuery extends BxDolDb
         $oStatement = $this->_pdo()->query('SELECT DATABASE()');
         $sDatabase = (string)$oStatement->fetchColumn();
         $oStatement->closeCursor();
-        return 'una_migrations_' . md5($sDatabase . '.' . $this->_sLedger);
+        // GET_LOCK names are at most 64 characters.
+        return 'una_migrations_' . substr(hash('sha256', $sDatabase . '.' . $this->_sLedger), 0, 48);
     }
 }
 

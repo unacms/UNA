@@ -361,7 +361,7 @@ class BxDolMigrations
             'id' => $sId,
             'path' => $sPath,
             'type' => $sType,
-            'checksum' => sha1($sContent),
+            'checksum' => hash('sha256', $sContent),
             'min_version' => $sVersion,
             'covers' => $aCovers,
         ];
@@ -580,8 +580,9 @@ class BxDolMigrations
     {
         switch ($aMigration['type']) {
             case 'php':
+                // Not require_once: a check runs the same migration again under another ledger.
                 $mixedResult = (static function (string $sPath) {
-                    return require $sPath;
+                    return require $sPath; // NOSONAR
                 })($aMigration['path']);
 
                 if (is_callable($mixedResult))
