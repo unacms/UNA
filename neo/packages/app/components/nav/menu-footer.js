@@ -13,7 +13,8 @@ import { SOUND_LEVEL_ITEMS, useSoundsLevel } from 'app/lib/hooks/use-sounds-leve
 // Two sections, links and switchers, in one row that wraps: side by side while they fit (apart from
 // lg), each on its own centred line when they don't.
 export const MENU_FOOTER_CLASSES = 'flex w-full items-center border-t border-border/60 justify-center lg:justify-between flex-row flex-wrap gap-x-6 gap-y-1 p-4 min-h-16';
-const FOOTER_SECTION_CLASSES = 'flex-row flex-wrap items-center justify-center gap-1';
+// max-w-full: View doesn't shrink, so a section wider than the footer wraps its items instead of spilling out.
+const FOOTER_SECTION_CLASSES = 'max-w-full flex-row flex-wrap items-center justify-center gap-1';
 // iOS draws `link` buttons as SwiftUI .borderless, without the theme paddingX (12 at small) that
 // web and Android put around the label, so the gap makes up the 2 × 12.
 const FOOTER_LINKS_CLASSES = `${FOOTER_SECTION_CLASSES} ios:gap-x-7`;
