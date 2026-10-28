@@ -149,10 +149,11 @@ export const Text = ({
  */
 export const H1 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }: HeadingProps) => {
     const HeadingComponent: any = isWeb ? 'h1' : NativeText
-    const spacing = getSpacing('mt-2', 'mb-6', isfirst, islast)
+    // `pt-2` belongs to the top spacing, so `isfirst` drops it with the margin.
+    const spacing = getSpacing('pt-2 mt-2', 'mb-6', isfirst, islast)
 
     return (
-        <HeadingComponent {...noScale} className={`pt-2 text-4xl xl:text-5xl  tracking-tight leading-tight font-bold text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
+        <HeadingComponent {...noScale} className={`text-4xl xl:text-5xl  tracking-tight leading-tight font-bold text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
             {decodeTextNode(children)}
         </HeadingComponent>
     )
