@@ -36,6 +36,7 @@ These apply to UNA PHP (`inc/`, `modules/`, `studio/`, `template/`, and install 
 - Do not call module by a literal name (`BxDolModule::getInstance('bx_posts')`, `BxDolService::call('bx_posts', ...)`, `new BxPostsModule`) without checking if module is installed `BxDolModuleQuery::getInstance()->isEnabledByName('bx_posts')`.
 - Call `getParam` only with a name that exists in `sys_options`. Declare the option in that module's install SQL before reading it.
 - Do not add or edit anything under `upgrade/files/`. That folder records past releases. Do not put new migrations there.
+- A change to install SQL also needs a migration for sites that are already installed. See "Database migrations" below.
 - Set `active_api` in `modules/system/install/sql/enable-app-pages.sql` (page blocks, including their `config_api`) and `modules/system/install/sql/enable-app-menus.sql` (menu items) for core, for modules use `modules/boonex/*/install/sql/enable-app.sql` files. Do not set it in `install.sql`, `enable.sql`, or other common install and enable scripts.
 
 ## Studio app icons
@@ -78,9 +79,21 @@ Before opening the pull request:
 - Run the affected test suites. The run must finish with no failed tests. A skipped case is acceptable only when the suite skips it because the account or module is not installed.
 - Review the change for security issues (injection, missing auth or permission checks, unsafe file or path handling, secrets in code or logs, and similar).
 - Review the change for performance issues and bottlenecks (queries in loops, unbounded result sets, repeated work per request, and similar).
-- When the change includes a database migration, apply that SQL locally with the `query` tool in `tools/db.php` (see [`tools/AGENTS.md`](tools/AGENTS.md)) before opening the pull request.
+- When the change includes a database migration, run it on your local site and run `--filter RailwayMigrationsDbTest` (see "Database migrations") before opening the pull request.
 
 The pull request description must include the database migration SQL when the change has one. When it has none, say that there is no database migration.
+
+## Database migrations
+
+The installer runs install SQL once, on an empty database, and api.unacms.app is deployed from every master commit without reinstalling, so a change to install SQL never reaches it by itself. A PR that changes what an installed site has in its database adds a migration to [`scripts/railway/migrations/`](scripts/railway/migrations/README.md). The Railway image runs each one once per database on start, records it in `sys_deploy_migrations`, then clears caches and bumps `sys_revision`.
+
+- Needed for changes to `install/sql/*.sql`, `modules/system/install/sql/*.sql`, and a module's `install.sql`, `enable.sql` or `enable-app.sql`. Not for `disable.sql`, `uninstall.sql`, or new language keys (the image adds missing keys on start). A changed language string needs one.
+- One file per change: `scripts/railway/migrations/YYYYMMDD-short-name.sql`, or `.php` returning a function when SQL is not enough. A module's migration starts with `-- module: bx_name`.
+- It must be safe to run on a database that already has the change: `IF NOT EXISTS`, `INSERT IGNORE` or `INSERT ... WHERE NOT EXISTS`, `UPDATE ... WHERE` the old value. Never delete a row and insert it again. Statements run with an empty `sql_mode`, like install SQL.
+- Run it on your local site with `docker compose exec -w /opt/una -e UNA_HEADER=/opt/una/inc/header.inc.php php php scripts/railway/migrate.php`. The integration test `RailwayMigrationsDbTest` then runs every migration twice more, ignoring the ledger, and fails on an SQL error.
+- A migration that has run is never run again, even when its file changes, so a further change goes in a new file. One that failed was not recorded: fix that file in place.
+- The `Database migrations` check fails a PR that changes install SQL without adding a migration, unless the description says "No database migration." with the reason.
+- Module update packs (`modules/*/*/updates/`) are still needed for released versions. A migration is for sites that follow master.
 
 ## NEO (`neo/`)
 

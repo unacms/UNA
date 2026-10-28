@@ -1,0 +1,58 @@
+name: Database migrations
+
+# A PR that changes install SQL also adds a file in scripts/railway/migrations/, which brings the
+# change to databases installed before it (api.unacms.app). Install SQL alone reaches only new
+# installs. A PR whose SQL change needs no migration says so in its description: "No database
+# migration." Separate from ci.yml because it also runs when the description is edited.
+
+on:
+  pull_request:
+    branches: [ "master" ]
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Install SQL changes have a migration
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Check
+      env:
+        BASE_REF: ${{ github.event.pull_request.base.ref }}
+        PR_BODY: ${{ github.event.pull_request.body }}
+      run: |
+        changed=$(git diff --name-only "origin/$BASE_REF...HEAD")
+        # disable.sql and uninstall.sql run only when a module is removed.
+        sql=$(printf '%s\n' "$changed" \
+          | grep -E '^(install/sql|modules/system/install/sql|modules/[^/]+/[^/]+/install/sql)/[^/]+\.sql$' \
+          | grep -vE '/(disable|uninstall)\.sql$' || true)
+        if [ -z "$sql" ]; then
+          echo "No install SQL changed."
+          exit 0
+        fi
+
+        added=$(git diff --name-only --diff-filter=AM "origin/$BASE_REF...HEAD" -- scripts/railway/migrations \
+          | grep -E '\.(sql|php)$' || true)
+        if [ -n "$added" ]; then
+          printf 'Install SQL changed:\n%s\nMigration(s):\n%s\n' "$sql" "$added"
+          exit 0
+        fi
+
+        if printf '%s' "$PR_BODY" | grep -qi 'no database migration'; then
+          printf 'Install SQL changed:\n%s\nThe description says there is no database migration.\n' "$sql"
+          exit 0
+        fi
+
+        for f in $sql; do
+          echo "::error file=$f::Install SQL changed without a migration in scripts/railway/migrations/"
+        done
+        echo "Sites installed before this PR, like api.unacms.app, get the change only from a migration."
+        echo "Add scripts/railway/migrations/YYYYMMDD-short-name.sql (see the README there), or say"
+        echo "\"No database migration.\" in the PR description with the reason."
+        exit 1

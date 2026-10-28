@@ -116,12 +116,23 @@ if [ "$rc" -eq 2 ]; then
         --site_title="${UNA_SITE_TITLE:-UNA}" \
         --admin_username="${UNA_ADMIN_USERNAME:-admin}" \
         --admin_password="${UNA_ADMIN_PASSWORD:-unauna}"
+    # This install ran this commit's install SQL, which already has every migration's change.
+    php /usr/local/lib/una-railway/migrate.php --baseline || echo "Migration baseline failed (exit $?)" >&2
 else
     echo "UNA already installed; writing header from environment."
     if [ ! -f inc/header.inc.php ]; then
         cp install/patterns/header.inc.php inc/header.inc.php
         chmod 0666 inc/header.inc.php
     fi
+fi
+
+# Database changes merged since this database was installed: install SQL runs only on an empty
+# database, so each change also comes as a file in scripts/railway/migrations/, run once here.
+# A failed migration is logged and the site still starts: the code it belongs to is already
+# deployed either way, and the next start tries again from that migration. Runs before
+# configure.php, so this deploy's own settings still win over a migration's.
+if [ "$rc" -eq 0 ]; then
+    php /usr/local/lib/una-railway/migrate.php || echo "Migrations failed (exit $?)" >&2
 fi
 
 # API key, origins and client URL for the NEO front end (idempotent, every start).
