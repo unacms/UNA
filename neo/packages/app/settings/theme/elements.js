@@ -149,10 +149,9 @@ export const settingsElements = {
             'flex text-card-foreground gap-4 pt-2',
         'u-block-actions':
             'flex flex-row text-card-foreground gap-2  ',
-        // Header "View all" link (small, 36px). Negative margins equal to its padding keep the
-        // hover pill and tap target, but centre the label on the 28px title line and end it at the content edge.
-        // max-w-none: the link's own max-w-full would cap it at its 12px narrower margin box and truncate the label.
-        'u-block-more-link': '-my-1 -me-3 max-w-none',
+        // Header "View all" link (small, 36px): sits inside the header as is. -my-1 centres it on the
+        // 28px title line without making the header taller.
+        'u-block-more-link': '-my-1',
         'u-block-animate':
             'animate-in fade-in slide-in-from-top-2 duration-200',
     },
