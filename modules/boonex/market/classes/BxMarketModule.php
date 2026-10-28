@@ -48,6 +48,10 @@ class BxMarketModule extends BxBaseModTextModule
         if(empty($aData) || !is_array($aData))
             return false;
 
+        // The file id comes from the request: only the member's own files or the product's current images.
+        if(!$this->isImageFileAllowed($sValue, $aData))
+            return false;
+
         $mixedResult = parent::serviceUpdateImage($sFiledName, $iContentId, $sValue);
         if($mixedResult === false)
             return false;
@@ -59,10 +63,76 @@ class BxMarketModule extends BxBaseModTextModule
             if($sField != $sFiledName && (int)$aData[$sField] == $iFileIdOld)
                 $bUsed = true;
 
-        if($iFileIdOld && $iFileIdOld != (int)$sValue && !$bUsed && ($oStorage = BxDolStorage::getObjectInstance($CNF['OBJECT_STORAGE'])) !== false)
+        if($iFileIdOld && $iFileIdOld != (int)$sValue && !$bUsed && $this->isImageFileOwner($iFileIdOld, $aData) && ($oStorage = BxDolStorage::getObjectInstance($CNF['OBJECT_STORAGE'])) !== false)
             $oStorage->deleteFile($iFileIdOld);
 
         return $mixedResult;
+    }
+
+    /**
+     * Whether the file from the photos storage belongs to the product author or the current profile.
+     * Checked before a replaced image file is deleted, so someone else's file is never deleted.
+     */
+    public function isImageFileOwner($iFileId, $aContentInfo = [])
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $iFileId = (int)$iFileId;
+        if(!$iFileId || !($oStorage = BxDolStorage::getObjectInstance($CNF['OBJECT_STORAGE'])))
+            return false;
+
+        $aFile = $oStorage->getFile($iFileId);
+        if(empty($aFile) || !is_array($aFile))
+            return false;
+
+        $iOwnerId = (int)$aFile['profile_id'];
+        if($iOwnerId && $iOwnerId == (int)bx_get_logged_profile_id())
+            return true;
+
+        return !empty($aContentInfo[$CNF['FIELD_AUTHOR']]) && $iOwnerId == abs((int)$aContentInfo[$CNF['FIELD_AUTHOR']]);
+    }
+
+    /**
+     * Whether a submitted file id may be set as Icon or Header Image: an empty value,
+     * one of the product's current images, or a file owned by the author or the current profile.
+     */
+    public function isImageFileAllowed($iFileId, $aContentInfo = [])
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $iFileId = (int)$iFileId;
+        if(!$iFileId)
+            return true;
+
+        foreach([$CNF['FIELD_THUMB'], $CNF['FIELD_COVER']] as $sField)
+            if(!empty($aContentInfo[$sField]) && (int)$aContentInfo[$sField] == $iFileId)
+                return true;
+
+        return $this->isImageFileOwner($iFileId, $aContentInfo);
+    }
+
+    /**
+     * The base form saves Icon right from the request: after a form save, put back the previous
+     * value of an image field that got a file id which isn't allowed. Empty $aContentInfoOld for a new product.
+     */
+    public function resetNotAllowedImages($iContentId, $aContentInfoOld = [])
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
+        if(empty($aContentInfo) || !is_array($aContentInfo))
+            return;
+
+        $aReset = [];
+        foreach([$CNF['FIELD_THUMB'], $CNF['FIELD_COVER']] as $sField) {
+            $iFileIdOld = (int)($aContentInfoOld[$sField] ?? 0);
+            $iFileId = (int)$aContentInfo[$sField];
+            if($iFileId != $iFileIdOld && !$this->isImageFileAllowed($iFileId, $aContentInfoOld))
+                $aReset[$sField] = $iFileIdOld;
+        }
+
+        if(!empty($aReset))
+            $this->_oDb->updateEntriesBy($aReset, [$CNF['FIELD_ID'] => $iContentId]);
     }
 
     public function actionPerform()
