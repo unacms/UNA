@@ -194,8 +194,9 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
 
     /**
      * Header Image and Icon ids submitted from API form: [field => file id], only for submitted fields.
+     * A field with someone else's file id is skipped and keeps its value.
      */
-    protected function _getImageFieldsApiValues()
+    protected function _getImageFieldsApiValues($aContentInfo = [])
     {
         $aResult = [];
         foreach($this->_aImageFieldsApi as $sField => $sCaption) {
@@ -206,7 +207,11 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
             if(!is_array($mixedValue))
                 $mixedValue = $mixedValue !== '' ? explode(',', $mixedValue) : [];
 
-            $aResult[$sField] = (int)array_pop($mixedValue);
+            $iFileId = (int)array_pop($mixedValue);
+            if(!$this->_oModule->isImageFileAllowed($iFileId, $aContentInfo))
+                continue;
+
+            $aResult[$sField] = $iFileId;
         }
 
         return $aResult;
@@ -263,7 +268,7 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
             $aCover = isset($_POST[$CNF['FIELD_COVER']]) ? bx_process_input ($_POST[$CNF['FIELD_COVER']], BX_DATA_INT) : false;
 
             $aValsToAdd[$CNF['FIELD_COVER']] = 0;
-            if(!empty($aCover) && is_array($aCover) && ($iFileCover = array_pop($aCover)))
+            if(!empty($aCover) && is_array($aCover) && ($iFileCover = array_pop($aCover)) && $this->_oModule->isImageFileAllowed($iFileCover))
                 $aValsToAdd[$CNF['FIELD_COVER']] = $iFileCover;
         }
 
@@ -313,9 +318,14 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
             }
         }
 
+        // Submitted image ids are checked against the product: its current images and its author's files.
+        $aContentInfoOld = $this->_oModule->_oDb->getContentInfoById($iContentId);
+        if(empty($aContentInfoOld) || !is_array($aContentInfoOld))
+            $aContentInfoOld = [];
+
         $aImagesApi = [];
         if(!empty($this->_aImageFieldsApi)) {
-            $aImagesApi = $this->_getImageFieldsApiValues();
+            $aImagesApi = $this->_getImageFieldsApiValues($aContentInfoOld);
             $aValsToAdd = array_merge($aValsToAdd, $aImagesApi);
         }
         else {
@@ -324,8 +334,8 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
                 if($bSetImage && ($aImage = bx_get($CNF[$sKey])) !== false) {
                     $aImage = bx_process_input($aImage, BX_DATA_INT);
 
-                    $aValsToAdd[$CNF[$sKey]] = 0;
-                    if(!empty($aImage) && is_array($aImage) && ($iFileImage = array_pop($aImage)))
+                    $iFileImage = !empty($aImage) && is_array($aImage) ? (int)array_pop($aImage) : 0;
+                    if($this->_oModule->isImageFileAllowed($iFileImage, $aContentInfoOld))
                         $aValsToAdd[$CNF[$sKey]] = $iFileImage;
                 }
         }
@@ -334,8 +344,6 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
         $aValsToAdd[$CNF['FIELD_PACKAGE']] = 0;
         if(!empty($aPackage) && is_array($aPackage) && ($iFilePackage = array_pop($aPackage)))
             $aValsToAdd[$CNF['FIELD_PACKAGE']] = $iFilePackage;
-
-        $aContentInfoOld = !empty($aImagesApi) ? $this->_oModule->_oDb->getContentInfoById($iContentId) : [];
 
         $iResult = parent::update ($iContentId, $aValsToAdd, $aTrackTextFieldsChanges);
 
@@ -368,7 +376,8 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
                     if($sFieldOther != $sField && (int)($aImagesApi[$sFieldOther] ?? ($aContentInfoOld[$sFieldOther] ?? 0)) == $iFileIdOld)
                         $bUsed = true;
 
-                if($iFileIdOld && !$bUsed && $oStorage)
+                // Never delete someone else's file, even if the product already points to it.
+                if($iFileIdOld && !$bUsed && $oStorage && $this->_oModule->isImageFileOwner($iFileIdOld, $aContentInfoOld))
                     $oStorage->deleteFile($iFileIdOld);
             }
         }
