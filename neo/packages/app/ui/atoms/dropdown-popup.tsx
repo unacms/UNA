@@ -30,6 +30,21 @@ const dropdownTheme = appSetting('theme', 'dropdown');
  */
 const CONTENT_SETTLE_MS = 350;
 
+type ButtonPos = {
+    triggerY: number;
+    triggerHeight: number;
+    x: number;
+    width: number;
+    height: number;
+    maxHeight: number;
+    shouldOpenAbove: boolean;
+    /** Web: height of the fixed popup layer, for anchoring an above-open popup by its bottom edge. */
+    viewportHeight: number;
+};
+
+/** Position while closed: the initial state and what closing resets to. */
+const CLOSED_POS: ButtonPos = { triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false, viewportHeight: 0 };
+
 const WEB_FOCUSABLE_SELECTOR = [
     'a[href]',
     'button:not([disabled])',
@@ -120,8 +135,7 @@ export default function DropdownPopup({
     const isDesktop = useIsDesktop();
     const contentRef = useRef<any>(null);
     const restoreFocusRef = useRef<any>(null);
-    // `viewportHeight` (web): height of the fixed popup layer, for anchoring an above-open popup by its bottom edge.
-    const [buttonPos, setButtonPos] = useState({ triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false, viewportHeight: 0 });
+    const [buttonPos, setButtonPos] = useState<ButtonPos>(CLOSED_POS);
     const [popupHeight, setPopupHeight] = useState(0);
     const [popupRenderedWidth, setPopupRenderedWidth] = useState(0);
     /**
@@ -242,17 +256,22 @@ export default function DropdownPopup({
         [isControlledOutside, isWeb, onOpenChange]
     );
 
+    // Reset only after the popup was open: on mount and on resizes while closed the
+    // state already is the closed one, and a no-op dispatch from an effect isn't free.
+    const wasOpenRef = useRef(false);
     useEffect(() => {
         if (isRealOpen) {
+            wasOpenRef.current = true;
             updateButtonPosition();
             if (isWeb) {
                 window.addEventListener('resize', updateButtonPosition);
                 return () =>
                     window.removeEventListener('resize', updateButtonPosition);
             }
-        } else {
+        } else if (wasOpenRef.current) {
+            wasOpenRef.current = false;
             measureRetryRef.current = 0;
-            setButtonPos({ triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false, viewportHeight: 0 });
+            setButtonPos(CLOSED_POS);
             setPopupHeight(0);
             setPopupRenderedWidth(0);
             setContentPending(false);
