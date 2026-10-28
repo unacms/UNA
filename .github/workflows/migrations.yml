@@ -3,7 +3,8 @@ name: Database migrations
 # Install SQL and language files reach only new installs. A PR that changes them also adds a
 # migration (migrations/ or a module's migrations/), which brings the change to sites installed
 # before it. A PR whose change needs no migration says so in its description: "No database
-# migration." Every PR also checks the migration files themselves (names, metadata, XML).
+# migration." Every PR also checks the migration files themselves (names, metadata, XML), and
+# that migrations already on master are neither edited nor deleted without a baseline.
 # Separate from ci.yml because it also runs when the description is edited.
 
 on:
@@ -24,7 +25,28 @@ jobs:
         fetch-depth: 0
 
     - name: Migration files are valid
-      run: php periodic/migrate.php --check
+      run: php periodic/migration.php --check
+
+    - name: Migrations already on master are not changed
+      env:
+        BASE_REF: ${{ github.event.pull_request.base.ref }}
+      run: |
+        # A site that ran a migration never runs it again, and the next run there stops until an
+        # admin accepts the changed file. A file may be deleted once a baseline covers it.
+        pattern='^(migrations|modules/[^/]+/migrations|modules/[^/]+/[^/]+/migrations)/[^/]+\.(sql|php|xml)$'
+        fail=0
+        for f in $(git diff --no-renames --name-only --diff-filter=M "origin/$BASE_REF...HEAD" | grep -E "$pattern" || true); do
+          echo "::error file=$f::A migration on master is never changed: put the change in a new migration"
+          fail=1
+        done
+        for f in $(git diff --no-renames --name-only --diff-filter=D "origin/$BASE_REF...HEAD" | grep -E "$pattern" || true); do
+          id=$(basename "${f%.*}")
+          if ! grep -hE '^[^A-Za-z]*UNA-Migration-Baseline-Covers:' "$(dirname "$f")"/*.sql "$(dirname "$f")"/*.php 2>/dev/null | grep -qw -- "$id"; then
+            echo "::error file=$f::A migration on master is deleted only when a baseline in its folder covers it"
+            fail=1
+          fi
+        done
+        exit $fail
 
     - name: Install SQL changes have a migration
       env:

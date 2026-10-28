@@ -11,7 +11,7 @@
  * Database migrations: changes to the database of an installed site, each applied once.
  *
  * Install SQL reaches only new installs. A change that an installed site also needs goes in a
- * migration file, which periodic/migrate.php applies once per database and records in the
+ * migration file, which periodic/migration.php applies once per database and records in the
  * `sys_migrations` ledger. migrations/README.md has the rules for writing one.
  *
  * Folders:
@@ -39,8 +39,17 @@
  * It runs where the first migration it covers ran.
  *
  * Migrations run in id order across all folders; on the same id common runs first, then system,
- * then modules by name. The first failure stops the run: it is not recorded, rolled back where
- * the tables allow, and tried again on the next run.
+ * then modules, each after the modules it depends on and otherwise by name. The first failure
+ * stops the run: it is rolled back where the tables allow, recorded as `failed` with its error,
+ * and tried again on the next run.
+ *
+ * Which migrations may run depends on the site's update channel, the `sys_upgrade_channel`
+ * option. On `dev` every migration in the files may. On `beta` and `stable` only those a signed
+ * release manifest lists will; reading manifests is not built yet, so there none run.
+ *
+ * A run first compares the files of migrations that ran with the checksums in the ledger. A
+ * changed or removed file (one no baseline covers) stops it until someone checks the database
+ * and accepts the files as they are (accept()).
  */
 class BxDolMigrations
 {
@@ -54,6 +63,10 @@ class BxDolMigrations
     public const SCOPE_MODULE = 'module';
     public const STATUS_APPLIED = 'applied';
     public const STATUS_BASELINE = 'baseline';
+    public const STATUS_FAILED = 'failed';
+    public const CHANNEL_OPTION = 'sys_upgrade_channel';
+    public const CHANNEL_DEV = 'dev';
+    public const CHANNELS = ['stable', 'beta', self::CHANNEL_DEV];
     /** Ledger row, never a migration id: migrations ran and caches and languages still need rebuilding. */
     public const REFRESH_PENDING = '~refresh-pending';
 
@@ -66,17 +79,20 @@ class BxDolMigrations
     /** @var callable */
     protected $_fLog;
     protected ?string $_sSystemVersion;
+    protected ?string $_sChannel;
 
     /**
      * @param array|null $aSources folders to read, see getSources(); null reads the site's
      * @param string|null $sSystemVersion null reads the installed system version
+     * @param string|null $sChannel null reads the site's update channel
      */
-    public function __construct(BxDolMigrationsQuery $oQuery, ?array $aSources = null, ?callable $fLog = null, ?string $sSystemVersion = null)
+    public function __construct(BxDolMigrationsQuery $oQuery, ?array $aSources = null, ?callable $fLog = null, ?string $sSystemVersion = null, ?string $sChannel = null)
     {
         $this->_oQuery = $oQuery;
         $this->_aSources = $aSources;
         $this->_fLog = $fLog ?? function (string $s): void {};
         $this->_sSystemVersion = $sSystemVersion;
+        $this->_sChannel = $sChannel;
     }
 
     public static function getInstance(): self
@@ -90,9 +106,19 @@ class BxDolMigrations
     }
 
     /**
-     * Folders whose migrations run: the common one and those of enabled modules.
+     * The site's update channel: dev, beta or stable.
+     */
+    public function getChannel(): string
+    {
+        return $this->_sChannel ?? (string)getParam(self::CHANNEL_OPTION);
+    }
+
+    /**
+     * Folders whose migrations run: the common one and those of enabled modules. A module's
+     * `rank` puts it after the modules it depends on; `dependency_error` says why its
+     * migrations cannot run.
      *
-     * @return list<array{scope: string, module: string, dir: string, lang_category: string}>
+     * @return list<array{scope: string, module: string, dir: string, lang_category: string, rank?: int, dependency_error?: string}>
      */
     public function getSources(): array
     {
@@ -105,11 +131,73 @@ class BxDolMigrations
             'dir' => BX_DIRECTORY_PATH_ROOT . 'migrations',
             'lang_category' => '',
         ]];
-        foreach ($this->_oQuery->getEnabledModules() as $aModule)
+
+        $aModules = $this->_oQuery->getEnabledModules();
+        $aOrder = self::orderModules($aModules);
+        foreach ($aModules as $aModule)
             if (($aSource = $this->_getModuleSource($aModule)) !== null)
-                $aResult[] = $aSource;
+                $aResult[] = array_merge($aSource, [
+                    'rank' => $aOrder['rank'][$aModule['name']],
+                    'dependency_error' => $aOrder['errors'][$aModule['name']] ?? '',
+                ]);
 
         return $aResult;
+    }
+
+    /**
+     * Order modules so each comes after the modules it depends on (`sys_modules`.`dependencies`,
+     * from `dependencies` in the module's config.php: names or URIs), otherwise by name.
+     *
+     * @param list<array{name: string, uri: string, dependencies: string}> $aModules enabled modules
+     * @return array{rank: array<string, int>, errors: array<string, string>} rank by module name; errors for modules whose dependencies are not enabled or depend on each other
+     */
+    public static function orderModules(array $aModules): array
+    {
+        $aByKey = [];
+        foreach ($aModules as $aModule) {
+            $aByKey[$aModule['name']] = $aModule['name'];
+            if (($aModule['uri'] ?? '') !== '' && !isset($aByKey[$aModule['uri']]))
+                $aByKey[$aModule['uri']] = $aModule['name'];
+        }
+
+        $aErrors = [];
+        $aDepends = [];
+        foreach ($aModules as $aModule) {
+            $sName = $aModule['name'];
+            $aDepends[$sName] = [];
+            foreach (preg_split('/\s*,\s*/', trim((string)($aModule['dependencies'] ?? '')), -1, PREG_SPLIT_NO_EMPTY) as $sKey) {
+                if (!isset($aByKey[$sKey]))
+                    $aErrors[$sName] = "needs the $sKey module, which is not installed and enabled";
+                else if ($aByKey[$sKey] !== $sName)
+                    $aDepends[$sName][$aByKey[$sKey]] = true;
+            }
+        }
+
+        $aRank = [];
+        $aLeft = $aDepends;
+        ksort($aLeft, SORT_STRING);
+        while ($aLeft) {
+            $sNext = null;
+            foreach ($aLeft as $sName => $aNeeds)
+                if (!array_diff_key($aNeeds, $aRank)) {
+                    $sNext = $sName;
+                    break;
+                }
+
+            if ($sNext === null) {
+                // What is left depends on each other; they go last, by name.
+                foreach ($aLeft as $sName => $aNeeds) {
+                    $aErrors[$sName] = 'depends on modules that depend on it: ' . implode(', ', array_keys(array_intersect_key($aNeeds, $aLeft)));
+                    $aRank[$sName] = count($aRank);
+                }
+                break;
+            }
+
+            $aRank[$sNext] = count($aRank);
+            unset($aLeft[$sNext]);
+        }
+
+        return ['rank' => $aRank, 'errors' => $aErrors];
     }
 
     /**
@@ -132,8 +220,8 @@ class BxDolMigrations
             return substr($a['covers'] ? min($a['covers']) : $a['id'], 0, 10);
         };
         usort($aResult, function ($a, $b) use ($fPosition) {
-            return [$fPosition($a), self::SCOPE_ORDER[$a['scope']], $a['module'], $a['id']]
-                <=> [$fPosition($b), self::SCOPE_ORDER[$b['scope']], $b['module'], $b['id']];
+            return [$fPosition($a), self::SCOPE_ORDER[$a['scope']], $a['rank'] ?? 0, $a['module'], $a['id']]
+                <=> [$fPosition($b), self::SCOPE_ORDER[$b['scope']], $b['rank'] ?? 0, $b['module'], $b['id']];
         });
 
         return $aResult;
@@ -142,20 +230,28 @@ class BxDolMigrations
     /**
      * Run every migration the ledger lacks, in order, and stop at the first failure.
      *
+     * Nothing runs while a migration that ran has a changed or removed file (`problems`, see
+     * accept()). Migrations the channel does not allow wait (`waiting`), and so do all after
+     * the first of them.
+     *
      * $fRefresh rebuilds what the migrations made stale and returns what failed, or ''; null
      * means refresh(). It runs while the refresh flag is set, also after a failure (the
      * migrations before it did run), and under the same lock as the migrations, so one run
      * cannot clear the flag that another run set after its own migrations.
      *
-     * @return array{applied: list<string>, baseline: list<string>, failed: string, error: string, refreshed: bool, refresh_error: string}
+     * @return array{applied: list<string>, baseline: list<string>, waiting: list<string>, failed: string, error: string, problems: list<string>, refreshed: bool, refresh_error: string}
      */
     public function run(?callable $fRefresh = null): array
     {
-        $aResult = ['applied' => [], 'baseline' => [], 'failed' => '', 'error' => '', 'refreshed' => false, 'refresh_error' => ''];
+        $aResult = ['applied' => [], 'baseline' => [], 'waiting' => [], 'failed' => '', 'error' => '', 'problems' => [], 'refreshed' => false, 'refresh_error' => ''];
         $fRefresh = $fRefresh ?? [$this, 'refresh'];
 
         $this->_withLock(function () use ($fRefresh, &$aResult) {
-            $this->_runMigrations($this->listMigrations(), $aResult);
+            $aMigrations = $this->listMigrations();
+            foreach ($this->_checkFiles($aMigrations) as $aProblem)
+                $aResult['problems'][] = $aProblem['message'];
+            if (!$aResult['problems'])
+                $this->_runMigrations($aMigrations, $aResult);
             if (!$this->isRefreshPending())
                 return;
 
@@ -168,6 +264,59 @@ class BxDolMigrations
             if ($aResult['refresh_error'] === '') {
                 $this->_oQuery->forget('', self::REFRESH_PENDING);
                 $aResult['refreshed'] = true;
+            }
+        });
+
+        return $aResult;
+    }
+
+    /**
+     * What a run would do, without running anything.
+     *
+     * @return array{channel: string, version: string, recorded: int, pending: list<string>, failures: list<string>, problems: list<string>}
+     */
+    public function status(): array
+    {
+        $aMigrations = $this->listMigrations();
+        $aDone = $this->getRecorded();
+
+        $aResult = [
+            'channel' => $this->getChannel(),
+            'version' => $this->_sSystemVersion ?? $this->_oQuery->getSystemVersion(),
+            'recorded' => array_sum(array_map('count', $aDone)),
+            'pending' => [],
+            'failures' => [],
+            'problems' => array_column($this->_checkFiles($aMigrations), 'message'),
+        ];
+        $aFailures = $this->getFailures();
+        foreach ($aMigrations as $aMigration) {
+            if (isset($aDone[$aMigration['module']][$aMigration['id']]))
+                continue;
+
+            $aResult['pending'][] = $aMigration['label'];
+            // Only for files still waiting: a failed file that was removed has nothing to fix.
+            if (($aFailure = $aFailures[$aMigration['module']][$aMigration['id']] ?? null) !== null)
+                $aResult['failures'][] = ($aMigration['module'] !== '' ? $aMigration['module'] : self::SCOPE_COMMON) . ": {$aMigration['id']} failed " . date('Y-m-d H:i:s', $aFailure['attempted']) . ': ' . $aFailure['error'];
+        }
+
+        return $aResult;
+    }
+
+    /**
+     * Take the files of migrations that ran as they are now, after someone checked that the
+     * database is right: a changed file's new checksum, or none for a removed file. A run
+     * stops until then (see run()).
+     *
+     * @return list<string> what was accepted
+     */
+    public function accept(): array
+    {
+        $aResult = [];
+
+        $this->_withLock(function () use (&$aResult) {
+            foreach ($this->_checkFiles($this->listMigrations()) as $aProblem) {
+                $this->_oQuery->setChecksum($aProblem['module'], $aProblem['id'], $aProblem['checksum']);
+                $aResult[] = $aProblem['message'];
             }
         });
 
@@ -194,7 +343,7 @@ class BxDolMigrations
     /**
      * Record a module's migrations without running them, when the module is installed: its
      * install SQL has them. Does nothing on a site without the ledger yet; the first run of
-     * periodic/migrate.php creates it.
+     * periodic/migration.php creates it.
      *
      * @param string $sPath the module's path, as in `sys_modules`: `vendor/module/`
      * @return int number of migrations recorded
@@ -218,16 +367,26 @@ class BxDolMigrations
     }
 
     /**
-     * @return array<string, array<string, array{checksum: string, status: string, applied: int}>> by module ('' for common), then by id
+     * Migrations that are done: applied, or recorded as a baseline.
+     *
+     * @return array<string, array<string, array{checksum: string, status: string, applied: int, attempted: int, error: string}>> by module ('' for common), then by id
      */
     public function getRecorded(): array
     {
-        return $this->_oQuery->withExceptions(function () {
-            $this->_oQuery->createLedger();
+        return $this->_getRows(function (array $aRow) {
+            return in_array($aRow['status'], [self::STATUS_APPLIED, self::STATUS_BASELINE], true);
+        });
+    }
 
-            $aResult = $this->_oQuery->getRecorded();
-            unset($aResult[''][self::REFRESH_PENDING]);
-            return array_filter($aResult);
+    /**
+     * Migrations whose last run failed, with the error.
+     *
+     * @return array<string, array<string, array{checksum: string, status: string, applied: int, attempted: int, error: string}>> by module ('' for common), then by id
+     */
+    public function getFailures(): array
+    {
+        return $this->_getRows(function (array $aRow) {
+            return $aRow['status'] === self::STATUS_FAILED;
         });
     }
 
@@ -527,6 +686,7 @@ class BxDolMigrations
     {
         $aDone = $this->getRecorded();
         $sVersion = $this->_sSystemVersion ?? $this->_oQuery->getSystemVersion();
+        $bAllowed = $this->getChannel() === self::CHANNEL_DEV;
         $bFlagged = false;
 
         foreach ($aMigrations as $aMigration) {
@@ -534,15 +694,22 @@ class BxDolMigrations
             $sId = $aMigration['id'];
             $sLabel = $aMigration['label'];
 
-            if (isset($aDone[$sModule][$sId])) {
-                if ($aDone[$sModule][$sId]['checksum'] !== $aMigration['checksum'] && $aDone[$sModule][$sId]['status'] === self::STATUS_APPLIED)
-                    ($this->_fLog)("$sLabel changed after it ran; the change will not run. Add a new migration instead.");
+            if (isset($aDone[$sModule][$sId]))
+                continue;
+
+            // The manifest check of beta and stable goes here; until then only dev runs migrations.
+            if (!$bAllowed || $aResult['waiting']) {
+                $aResult['waiting'][] = $sLabel;
                 continue;
             }
 
-            if (version_compare($sVersion, $aMigration['min_version'], '<')) {
-                $aResult['failed'] = $sLabel;
-                $aResult['error'] = "needs UNA {$aMigration['min_version']} or later; this site has " . ($sVersion !== '' ? $sVersion : 'no version');
+            $sError = '';
+            if (version_compare($sVersion, $aMigration['min_version'], '<'))
+                $sError = "needs UNA {$aMigration['min_version']} or later; this site has " . ($sVersion !== '' ? $sVersion : 'no version');
+            else if (($aMigration['dependency_error'] ?? '') !== '')
+                $sError = "the $sModule module " . $aMigration['dependency_error'];
+            if ($sError !== '') {
+                $this->_fail($aMigration, $sError, $aResult);
                 return;
             }
 
@@ -571,8 +738,7 @@ class BxDolMigrations
             }
             catch (Throwable $e) {
                 $this->_oQuery->rollbackTransaction();
-                $aResult['failed'] = $sLabel;
-                $aResult['error'] = ($aMissing ? 'this database never ran ' . implode(', ', $aMissing) . ', which the baseline covers; ' : '') . $e->getMessage();
+                $this->_fail($aMigration, ($aMissing ? 'this database never ran ' . implode(', ', $aMissing) . ', which the baseline covers; ' : '') . $e->getMessage(), $aResult);
                 return;
             }
 
@@ -580,6 +746,70 @@ class BxDolMigrations
             $aResult['applied'][] = $sLabel;
             ($this->_fLog)("$sLabel applied");
         }
+    }
+
+    protected function _fail(array $aMigration, string $sError, array &$aResult): void
+    {
+        $aResult['failed'] = $aMigration['label'];
+        $aResult['error'] = $sError;
+
+        if (get_mb_len($sError) > 4000)
+            $sError = get_mb_substr($sError, 0, 4000) . '...';
+        $this->_oQuery->recordFailure($aMigration['module'], $aMigration['id'], $aMigration['scope'], $aMigration['type'], $aMigration['checksum'], $sError);
+    }
+
+    /**
+     * Migrations that ran and whose files changed since, or are gone without a baseline that
+     * covers them. A checksum of '' is a removed file someone accepted.
+     *
+     * @return list<array{module: string, id: string, checksum: string, message: string}> checksum: the file's now, '' when it is gone
+     */
+    protected function _checkFiles(array $aMigrations): array
+    {
+        $aFiles = [];
+        $aCovered = [];
+        foreach ($aMigrations as $aMigration) {
+            $aFiles[$aMigration['module']][$aMigration['id']] = $aMigration;
+            foreach ($aMigration['covers'] as $sCovered)
+                $aCovered[$aMigration['module']][$sCovered] = true;
+        }
+
+        $aModules = [];
+        foreach ($this->getSources() as $aSource)
+            $aModules[$aSource['module']] = true;
+
+        $aResult = [];
+        foreach ($this->getRecorded() as $sModule => $aRows) {
+            // A disabled module's files are not read, so there is nothing to compare.
+            if (!isset($aModules[$sModule]))
+                continue;
+
+            $sPrefix = ($sModule !== '' ? $sModule : self::SCOPE_COMMON) . ': ';
+            foreach ($aRows as $sId => $aRow) {
+                $aFile = $aFiles[$sModule][$sId] ?? null;
+                if ($aFile !== null && $aFile['checksum'] !== $aRow['checksum'])
+                    $aResult[] = ['module' => $sModule, 'id' => $sId, 'checksum' => $aFile['checksum'],
+                        'message' => $sPrefix . $aFile['name'] . ' changed after it ' . ($aRow['status'] === self::STATUS_BASELINE ? 'was recorded' : 'ran')];
+                else if ($aFile === null && $aRow['checksum'] !== '' && !isset($aCovered[$sModule][$sId]))
+                    $aResult[] = ['module' => $sModule, 'id' => $sId, 'checksum' => '',
+                        'message' => $sPrefix . $sId . ' ' . ($aRow['status'] === self::STATUS_BASELINE ? 'was recorded' : 'ran') . ', and its file is gone with no baseline covering it'];
+            }
+        }
+
+        return $aResult;
+    }
+
+    protected function _getRows(callable $fFilter): array
+    {
+        return $this->_oQuery->withExceptions(function () use ($fFilter) {
+            $this->_oQuery->createLedger();
+
+            $aResult = [];
+            foreach ($this->_oQuery->getRecorded() as $sModule => $aRows)
+                if ($aRows = array_filter($aRows, $fFilter))
+                    $aResult[$sModule] = $aRows;
+            return $aResult;
+        });
     }
 
     protected function _apply(array $aMigration): void
@@ -672,17 +902,22 @@ class BxDolMigrations
     }
 
     /**
-     * Only module folders under modules/, the application's own files, ever run PHP.
+     * Only module folders under modules/, the application's own files, ever run PHP. A module
+     * without the folder is a source with nothing in it, so the files of migrations it ran
+     * count as gone.
      */
     protected function _getModuleSource(array $aModule): ?array
     {
         if (!preg_match('/^[a-z0-9_]+\/(?:[a-z0-9_]+\/)?$/i', $aModule['path']))
             return null;
 
-        $sDir = realpath(BX_DIRECTORY_PATH_MODULES . $aModule['path'] . 'migrations');
-        $sModules = realpath(BX_DIRECTORY_PATH_MODULES);
-        if ($sDir === false || $sModules === false || !str_starts_with($sDir, $sModules . DIRECTORY_SEPARATOR) || !is_dir($sDir))
-            return null;
+        $sDir = BX_DIRECTORY_PATH_MODULES . $aModule['path'] . 'migrations';
+        if (file_exists($sDir)) {
+            $sDir = realpath($sDir);
+            $sModules = realpath(BX_DIRECTORY_PATH_MODULES);
+            if ($sDir === false || $sModules === false || !str_starts_with($sDir, $sModules . DIRECTORY_SEPARATOR) || !is_dir($sDir))
+                return null;
+        }
 
         return [
             'scope' => $aModule['name'] === 'system' ? self::SCOPE_SYSTEM : self::SCOPE_MODULE,

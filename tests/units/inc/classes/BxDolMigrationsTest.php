@@ -228,6 +228,59 @@ class BxDolMigrationsTest extends BxDolTestCase
         ], array_column($oMigrations->listMigrations(), 'label'));
     }
 
+    public function testOrderModules(): void
+    {
+        $aResult = BxDolMigrations::orderModules([
+            ['name' => 'bx_api', 'uri' => 'api', 'dependencies' => 'oauth2'],
+            ['name' => 'bx_ai_proxy', 'uri' => 'ai_proxy', 'dependencies' => 'oauth2, bx_api'],
+            ['name' => 'bx_albums', 'uri' => 'albums', 'dependencies' => ''],
+            ['name' => 'bx_oauth', 'uri' => 'oauth2', 'dependencies' => ''],
+            ['name' => 'system', 'uri' => 'system', 'dependencies' => ''],
+        ]);
+
+        // By URI or name; otherwise by name.
+        $aRank = $aResult['rank'];
+        asort($aRank);
+        $this->assertSame(['bx_albums', 'bx_oauth', 'bx_api', 'bx_ai_proxy', 'system'], array_keys($aRank));
+        $this->assertSame([], $aResult['errors']);
+    }
+
+    public function testOrderModulesReportsMissingAndCycles(): void
+    {
+        $aResult = BxDolMigrations::orderModules([
+            ['name' => 'bx_a', 'uri' => 'a', 'dependencies' => 'b'],
+            ['name' => 'bx_b', 'uri' => 'b', 'dependencies' => 'bx_a'],
+            ['name' => 'bx_c', 'uri' => 'c', 'dependencies' => 'bx_gone,c'],
+            ['name' => 'bx_d', 'uri' => 'd', 'dependencies' => ''],
+        ]);
+
+        $this->assertSame([
+            'bx_c' => 'needs the bx_gone module, which is not installed and enabled',
+            'bx_a' => 'depends on modules that depend on it: bx_b',
+            'bx_b' => 'depends on modules that depend on it: bx_a',
+        ], $aResult['errors']);
+        // The rest first; a module's dependency on itself is ignored.
+        $this->assertSame(['bx_c' => 0, 'bx_d' => 1, 'bx_a' => 2, 'bx_b' => 3], $aResult['rank']);
+    }
+
+    public function testDependencyOrderOnSameId(): void
+    {
+        $this->_files('posts', ['2026110100_posts.sql' => self::SQL_META . 'SELECT 1;']);
+        $this->_files('albums', ['2026110100_albums.sql' => self::SQL_META . 'SELECT 1;', '2026110200_albums.sql' => self::SQL_META . 'SELECT 2;']);
+
+        // bx_albums depends on bx_posts, so on the same id it comes after; ids still come first.
+        $oMigrations = new BxDolMigrations($this->createStub(BxDolMigrationsQuery::class), [
+            $this->_source('module', 'bx_albums', 'albums') + ['rank' => 1],
+            $this->_source('module', 'bx_posts', 'posts') + ['rank' => 0],
+        ]);
+
+        $this->assertSame([
+            'bx_posts: 2026110100_posts.sql',
+            'bx_albums: 2026110100_albums.sql',
+            'bx_albums: 2026110200_albums.sql',
+        ], array_column($oMigrations->listMigrations(), 'label'));
+    }
+
     public function testValidateTree(): void
     {
         $this->_files('migrations', ['2026110100_ok.sql' => self::SQL_META . 'SELECT 1;']);

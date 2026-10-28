@@ -52,6 +52,8 @@ class BxDolMigrationsQuery extends BxDolDb
             `checksum` char(64) NOT NULL default '',
             `status` varchar(16) NOT NULL default '',
             `applied` int(11) unsigned NOT NULL default '0',
+            `attempted` int(11) unsigned NOT NULL default '0',
+            `error` text NOT NULL,
             PRIMARY KEY (`module`, `id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
     }
@@ -66,23 +68,62 @@ class BxDolMigrationsQuery extends BxDolDb
     }
 
     /**
-     * @return array<string, array<string, array{checksum: string, status: string, applied: int}>> by module ('' for common), then by migration id
+     * Every row, failures included.
+     *
+     * @return array<string, array<string, array{checksum: string, status: string, applied: int, attempted: int, error: string}>> by module ('' for common), then by migration id
      */
     public function getRecorded(): array
     {
         $aResult = [];
-        $oStatement = $this->_pdo()->query("SELECT `module`, `id`, `checksum`, `status`, `applied` FROM `{$this->_sLedger}`", PDO::FETCH_ASSOC);
+        $oStatement = $this->_pdo()->query("SELECT `module`, `id`, `checksum`, `status`, `applied`, `attempted`, `error` FROM `{$this->_sLedger}`", PDO::FETCH_ASSOC);
         foreach ($oStatement as $aRow)
-            $aResult[$aRow['module']][$aRow['id']] = ['checksum' => $aRow['checksum'], 'status' => $aRow['status'], 'applied' => (int)$aRow['applied']];
+            $aResult[$aRow['module']][$aRow['id']] = [
+                'checksum' => $aRow['checksum'],
+                'status' => $aRow['status'],
+                'applied' => (int)$aRow['applied'],
+                'attempted' => (int)$aRow['attempted'],
+                'error' => $aRow['error'],
+            ];
         $oStatement->closeCursor();
 
         return $aResult;
     }
 
+    /**
+     * Record a migration as done. A failure recorded for it earlier is replaced; a row that
+     * says it is done already is kept.
+     */
     public function record(string $sModule, string $sId, string $sScope, string $sType, string $sChecksum, string $sStatus): void
     {
-        $oStatement = $this->_pdo()->prepare("INSERT IGNORE INTO `{$this->_sLedger}` (`module`, `id`, `scope`, `type`, `checksum`, `status`, `applied`) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $oStatement->execute([$sModule, $sId, $sScope, $sType, $sChecksum, $sStatus, time()]);
+        $oStatement = $this->_pdo()->prepare("DELETE FROM `{$this->_sLedger}` WHERE `module` = ? AND `id` = ? AND `status` = 'failed'");
+        $oStatement->execute([$sModule, $sId]);
+
+        $iTime = time();
+        $oStatement = $this->_pdo()->prepare("INSERT IGNORE INTO `{$this->_sLedger}` (`module`, `id`, `scope`, `type`, `checksum`, `status`, `applied`, `attempted`, `error`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, '')");
+        $oStatement->execute([$sModule, $sId, $sScope, $sType, $sChecksum, $sStatus, $iTime, $iTime]);
+    }
+
+    /**
+     * Record why a migration failed, for whoever looks into it. The row never counts as done.
+     */
+    public function recordFailure(string $sModule, string $sId, string $sScope, string $sType, string $sChecksum, string $sError): void
+    {
+        $oStatement = $this->_pdo()->prepare("INSERT INTO `{$this->_sLedger}` (`module`, `id`, `scope`, `type`, `checksum`, `status`, `applied`, `attempted`, `error`) VALUES (?, ?, ?, ?, ?, 'failed', 0, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                `checksum` = IF(`status` = 'failed', VALUES(`checksum`), `checksum`),
+                `attempted` = IF(`status` = 'failed', VALUES(`attempted`), `attempted`),
+                `error` = IF(`status` = 'failed', VALUES(`error`), `error`)");
+        $oStatement->execute([$sModule, $sId, $sScope, $sType, $sChecksum, time(), $sError]);
+    }
+
+    /**
+     * After the files of migrations that ran were changed or removed and someone checked that
+     * the database is right: the ledger takes the file as it is now ('' for a removed file).
+     */
+    public function setChecksum(string $sModule, string $sId, string $sChecksum): void
+    {
+        $oStatement = $this->_pdo()->prepare("UPDATE `{$this->_sLedger}` SET `checksum` = ? WHERE `module` = ? AND `id` = ? AND `status` <> 'failed'");
+        $oStatement->execute([$sChecksum, $sModule, $sId]);
     }
 
     public function forget(string $sModule, string $sId): void
@@ -103,11 +144,11 @@ class BxDolMigrationsQuery extends BxDolDb
     /**
      * Installed and enabled modules, the ones whose migrations run.
      *
-     * @return list<array{name: string, path: string, lang_category: string}>
+     * @return list<array{name: string, uri: string, path: string, lang_category: string, dependencies: string}>
      */
     public function getEnabledModules(): array
     {
-        $oStatement = $this->_pdo()->query("SELECT `name`, `path`, `lang_category` FROM `sys_modules` WHERE `enabled` = 1 ORDER BY `name`", PDO::FETCH_ASSOC);
+        $oStatement = $this->_pdo()->query("SELECT `name`, `uri`, `path`, `lang_category`, `dependencies` FROM `sys_modules` WHERE `enabled` = 1 ORDER BY `name`", PDO::FETCH_ASSOC);
         $aResult = $oStatement->fetchAll();
         $oStatement->closeCursor();
         return $aResult;

@@ -2,13 +2,27 @@
 
 UNA runs install SQL once, when a site or module is installed. A change to install SQL reaches
 new installs and never a database that is already installed. A migration carries that change to
-installed sites. `periodic/migrate.php` (`BxDolMigrations`) runs each migration once per
+installed sites. `periodic/migration.php` (`BxDolMigrations`) runs each migration once per
 database and records it in the `sys_migrations` table. After it applies anything it recompiles
 languages, clears UNA's caches and bumps `sys_revision`.
 
 Until 15.0.0 is released this runs alongside the update packs, on sites that follow master such
 as api.unacms.app, which runs it on every start. After 15.0.0 it is meant to replace the update
 packs.
+
+## Update channels
+
+The site's update channel, the `sys_upgrade_channel` option, decides which migrations may run.
+It is one setting for the whole site, system and modules alike.
+
+- `dev`: every migration in the site's files may run. For sites that follow the code
+  repository, such as api.unacms.app.
+- `beta` and `stable`: only the migrations that a signed release manifest of that channel lists
+  will run, with checksums checked against the manifest. Reading manifests is not built yet, so
+  on these channels no migration runs: `periodic/migration.php` lists them as waiting.
+
+`php periodic/migration.php --channel=dev` sets the channel. On `dev` the update packs of
+`BxDolUpgrader` do not run, since the files come from the repository.
 
 ## Folders
 
@@ -49,8 +63,13 @@ master.
 
 Migrations run in id order across all folders, so a module migration written after a common
 one runs after it. On the same `YYYYMMDDNN`, common migrations run first, then the system
-module's, then other modules' by module name. The first failure stops the run: nothing after it
-runs until it succeeds.
+module's, then other modules'. A module comes after the modules it depends on (`dependencies`
+in its `install/config.php`, kept in `sys_modules`), and otherwise by name. A module whose
+dependency is not enabled, or which depends on a module that depends on it, fails at its first
+migration. The first failure stops the run: nothing after it runs until it succeeds.
+
+Dependencies only order migrations of the same `YYYYMMDDNN`: a migration that needs another
+module's change is dated after it, so it already runs after it.
 
 ## Formats
 
@@ -142,12 +161,46 @@ and MyISAM tables ignore transactions. So write it to be run twice anyway.
 
 ## Failures
 
-The failed migration is not recorded and is rolled back where the tables allow. The run stops
-there, exits with status 1, and the log says `[migrations] FAILED`, the migration, the file and
-which statement. The next run starts again from that migration, so fix it by editing that same
-file. A migration that has run is never run again, even when its file changes: a further change
-goes in a new migration. When rebuilding languages or caches fails after migrations ran, the
-ledger keeps a `~refresh-pending` row and every run tries the rebuild again.
+The failed migration is rolled back where the tables allow and recorded with status `failed`,
+the time and the error. It does not count as done. The run stops there, exits with status 1,
+and the log says `[migrations] FAILED`, the migration, the file and which statement. The next
+run starts again from that migration, so fix it by editing that same file; once it runs, its
+row says `applied`. When rebuilding languages or caches fails after migrations ran, the ledger
+keeps a `~refresh-pending` row and every run tries the rebuild again.
+
+`php periodic/migration.php --status` shows the channel, the pending migrations, the last error
+of each failed one and the problems below, without running anything.
+
+## Changed or removed files
+
+A migration that has run is never run again, even when its file changes: a further change goes
+in a new migration. CI fails a PR that edits a migration already on master, or deletes one that
+no baseline covers.
+
+Before running anything, a run compares the files of the migrations this database ran with the
+checksums in the ledger. When one changed, or is gone and no baseline covers it, nothing runs
+and the run exits with status 1, naming the files. The database may lack what the new file
+says, or have something the old file did that nothing else expects. Restore the files, or check
+the database by hand, then accept the files as they are now:
+
+```bash
+php periodic/migration.php --accept
+```
+
+A module that is disabled is not checked until it is enabled again.
+
+## Updating by copying files
+
+A site updated by copying a newer release's files over its own (not with the update packs):
+
+1. Back up the database and the files.
+2. Copy the new files over the old ones.
+3. Run `php periodic/migration.php --status` to see what will run and whether any file of a
+   migration that ran changed, then `php periodic/migration.php`.
+4. Check the site, and that `--status` reports nothing pending.
+
+A run that stops halfway (a failure, or the process killed) leaves the ledger with what did run,
+so the next run continues from there. That is why each migration must be safe to run twice.
 
 ## Baselines
 
@@ -180,13 +233,14 @@ Language migrations count like any other: a baseline that covers one repeats its
 Check the files, as CI does (no database needed):
 
 ```bash
-docker compose exec -w /opt/una php php periodic/migrate.php --check
+docker compose exec -w /opt/una php php periodic/migration.php --check
 ```
 
-Run it against your local site:
+Run it against your local site, which needs the dev channel:
 
 ```bash
-docker compose exec -w /opt/una php php periodic/migrate.php
+docker compose exec -w /opt/una php php periodic/migration.php --channel=dev
+docker compose exec -w /opt/una php php periodic/migration.php
 ```
 
 The ledger then skips it, so for a second run use the integration test `MigrationsDbTest`. It

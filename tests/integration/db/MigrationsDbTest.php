@@ -3,8 +3,9 @@
 use PHPUnit\Framework\Attributes\Group;
 
 /**
- * BxDolMigrations against the test database: the ledger, order across folders, failures,
- * transactions, versions, language files, baselines and the rebuild after a run. Each case uses
+ * BxDolMigrations against the test database: the ledger, order across folders and module
+ * dependencies, failures, transactions, versions, language files, baselines, changed and removed
+ * files, channels and the rebuild after a run. Each case uses
  * its own ledger table, data tables, language keys and folders, and removes them afterwards.
  *
  * testShippedMigrationsRun runs the real migrations of migrations/ and of the installed modules,
@@ -33,6 +34,7 @@ class MigrationsDbTest extends BxDolIntegrationTestCase
         $this->_sDir = sys_get_temp_dir() . '/una-migrations-' . $this->_sSuffix;
         mkdir($this->_sDir . '/common', 0777, true);
         mkdir($this->_sDir . '/module');
+        mkdir($this->_sDir . '/module2');
     }
 
     protected function tearDown(): void
@@ -44,7 +46,7 @@ class MigrationsDbTest extends BxDolIntegrationTestCase
         foreach ($this->_aKeys as $sKey)
             $oLanguages->deleteLanguageString($sKey, 0, false);
 
-        foreach (['common', 'module'] as $sFolder) {
+        foreach (['common', 'module', 'module2'] as $sFolder) {
             array_map('unlink', glob($this->_sDir . "/$sFolder/*"));
             rmdir($this->_sDir . "/$sFolder");
         }
@@ -98,6 +100,15 @@ class MigrationsDbTest extends BxDolIntegrationTestCase
         $this->assertSame([''], array_keys($oMigrations->getRecorded()));
         $this->assertSame(['before' => ''], $this->_rows($sData), 'a MyISAM table keeps the statements before the failure');
 
+        $aFailure = $oMigrations->getFailures()['bx_test']['2026110200_broken'];
+        $this->assertSame('failed', $aFailure['status']);
+        $this->assertSame(0, $aFailure['applied']);
+        $this->assertGreaterThan(0, $aFailure['attempted']);
+        $this->assertStringContainsString('statement 2', $aFailure['error']);
+        $this->assertSame(['bx_test: 2026110200_broken failed'], array_map(function ($s) {
+            return substr($s, 0, strlen('bx_test: 2026110200_broken failed'));
+        }, $oMigrations->status()['failures']));
+
         // Fixed in a later commit by editing the same file, made safe to run again.
         $this->_write('2026110200_broken.sql', self::SQL_META . "INSERT IGNORE INTO `$sData` (`v`) VALUES ('before');", 'module');
         $aResult = $oMigrations->run(function () { return ''; });
@@ -105,6 +116,9 @@ class MigrationsDbTest extends BxDolIntegrationTestCase
         $this->assertSame(['bx_test: 2026110200_broken.sql', 'common: 2026110300_later.sql'], $aResult['applied']);
         $this->assertSame('', $aResult['failed']);
         $this->assertSame(['before' => '', 'later' => ''], $this->_rows($sData));
+        $this->assertSame([], $oMigrations->getFailures(), 'success replaces the failure');
+        $this->assertSame('applied', $oMigrations->getRecorded()['bx_test']['2026110200_broken']['status']);
+        $this->assertSame('', $oMigrations->getRecorded()['bx_test']['2026110200_broken']['error']);
     }
 
     public function testFailureRollsBackInnoDb(): void
@@ -153,6 +167,64 @@ class MigrationsDbTest extends BxDolIntegrationTestCase
         $this->assertSame('common: 2026110200_later.sql', $aResult['failed']);
         $this->assertSame('needs UNA 15.0.0 or later; this site has 15.0.0-RC3', $aResult['error']);
         $this->assertSame(['now' => ''], $this->_rows($sData));
+        $this->assertSame($aResult['error'], $this->_migrations($aLog, '15.0.0-RC3')->getFailures()['']['2026110200_later']['error']);
+    }
+
+    public function testModulesRunAfterTheirDependencies(): void
+    {
+        $sData = $this->_table('data');
+        $this->_oPdo->exec("CREATE TABLE `$sData` (`n` int NOT NULL AUTO_INCREMENT, `v` varchar(32) NOT NULL, PRIMARY KEY (`n`))");
+        $this->_write('2026110100_test.sql', self::SQL_META . "INSERT INTO `$sData` (`v`) VALUES ('bx_test');", 'module');
+        $this->_write('2026110100_other.sql', self::SQL_META . "INSERT INTO `$sData` (`v`) VALUES ('bx_other');", 'module2');
+
+        // bx_test depends on bx_other, so it comes second though its name sorts first.
+        $aSources = [$this->_source('common'), $this->_source('module') + ['rank' => 1], $this->_source('module2') + ['rank' => 0]];
+        $aResult = $this->_migrations($aLog, '99.0.0', 'ledger', 'dev', $aSources)->run(function () { return ''; });
+
+        $this->assertSame(['bx_other: 2026110100_other.sql', 'bx_test: 2026110100_test.sql'], $aResult['applied']);
+        $this->assertSame(['bx_other', 'bx_test'], $this->_oPdo->query("SELECT `v` FROM `$sData` ORDER BY `n`")->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    public function testMissingDependencyStops(): void
+    {
+        $this->_write('2026110100_test.sql', self::SQL_META . 'SELECT 1;', 'module');
+        $this->_write('2026110200_later.sql', self::SQL_META . 'SELECT 1;');
+
+        $aSources = [$this->_source('common'), $this->_source('module') + ['dependency_error' => 'needs the oauth2 module, which is not installed and enabled']];
+        $oMigrations = $this->_migrations($aLog, '99.0.0', 'ledger', 'dev', $aSources);
+        $aResult = $oMigrations->run(function () { return ''; });
+
+        $this->assertSame([], $aResult['applied']);
+        $this->assertSame('bx_test: 2026110100_test.sql', $aResult['failed']);
+        $this->assertSame('the bx_test module needs the oauth2 module, which is not installed and enabled', $aResult['error']);
+        $this->assertArrayHasKey('2026110100_test', $oMigrations->getFailures()['bx_test']);
+    }
+
+    public function testOnlyDevChannelRuns(): void
+    {
+        $sData = $this->_table('data');
+        $this->_oPdo->exec("CREATE TABLE `$sData` (`v` varchar(32) NOT NULL)");
+        $this->_write('2026110100_one.sql', self::SQL_META . "INSERT INTO `$sData` VALUES ('one');");
+        $this->_write('2026110200_two.sql', self::SQL_META . "INSERT INTO `$sData` VALUES ('two');", 'module');
+
+        foreach (['stable', 'beta'] as $sChannel) {
+            $aCalls = 0;
+            $oMigrations = $this->_migrations($aLog, '99.0.0', 'ledger', $sChannel);
+            $aResult = $oMigrations->run(function () use (&$aCalls) { $aCalls++; return ''; });
+
+            $this->assertSame([], $aResult['applied'], $sChannel);
+            $this->assertSame(['common: 2026110100_one.sql', 'bx_test: 2026110200_two.sql'], $aResult['waiting'], $sChannel);
+            $this->assertSame('', $aResult['failed'], $sChannel);
+            $this->assertSame(0, $aCalls, "$sChannel: nothing ran, nothing to rebuild");
+            $this->assertSame([], $oMigrations->getRecorded(), $sChannel);
+            $this->assertSame([], $this->_rows($sData), $sChannel);
+            $this->assertSame($sChannel, $oMigrations->status()['channel']);
+            $this->assertSame(['common: 2026110100_one.sql', 'bx_test: 2026110200_two.sql'], $oMigrations->status()['pending']);
+        }
+
+        $aResult = $this->_migrations($aLog, '99.0.0', 'ledger', 'dev')->run(function () { return ''; });
+        $this->assertSame(['common: 2026110100_one.sql', 'bx_test: 2026110200_two.sql'], $aResult['applied']);
+        $this->assertSame([], $aResult['waiting']);
     }
 
     public function testLanguageStrings(): void
@@ -238,20 +310,55 @@ class MigrationsDbTest extends BxDolIntegrationTestCase
         $this->assertStringContainsString('never ran 2026110100_one, 2026110200_two', $aResult['error']);
     }
 
-    public function testChangedFileIsNotRunAgain(): void
+    public function testChangedFileStopsUntilAccepted(): void
     {
         $sData = $this->_table('data');
         $this->_oPdo->exec("CREATE TABLE `$sData` (`v` varchar(32) NOT NULL)");
         $this->_write('2026110100_row.sql', self::SQL_META . "INSERT INTO `$sData` VALUES ('one');");
 
-        $aLog = [];
-        $oMigrations = $this->_migrations($aLog);
+        $oMigrations = $this->_migrations();
         $oMigrations->run(function () { return ''; });
 
+        // Overwritten with other content, and a new migration next to it.
         $this->_write('2026110100_row.sql', self::SQL_META . "INSERT INTO `$sData` VALUES ('two');");
-        $this->assertSame([], $oMigrations->run(function () { return ''; })['applied']);
-        $this->assertSame(['one' => ''], $this->_rows($sData));
-        $this->assertStringContainsString('common: 2026110100_row.sql changed after it ran', implode("\n", $aLog));
+        $this->_write('2026110200_next.sql', self::SQL_META . "INSERT INTO `$sData` VALUES ('next');", 'module');
+
+        $aResult = $oMigrations->run(function () { return ''; });
+        $this->assertSame(['common: 2026110100_row.sql changed after it ran'], $aResult['problems']);
+        $this->assertSame([], $aResult['applied']);
+        $this->assertSame(['one' => ''], $this->_rows($sData), 'neither the changed file nor the new one ran');
+        $this->assertSame(['common: 2026110100_row.sql changed after it ran'], $oMigrations->status()['problems']);
+
+        $this->assertSame(['common: 2026110100_row.sql changed after it ran'], $oMigrations->accept());
+        $this->assertSame(hash_file('sha256', $this->_sDir . '/common/2026110100_row.sql'), $oMigrations->getRecorded()['']['2026110100_row']['checksum']);
+
+        $aResult = $oMigrations->run(function () { return ''; });
+        $this->assertSame([], $aResult['problems']);
+        $this->assertSame(['bx_test: 2026110200_next.sql'], $aResult['applied']);
+        $this->assertSame(['next' => '', 'one' => ''], $this->_rows($sData), 'the accepted file did not run again');
+    }
+
+    public function testRemovedFileStopsUntilAccepted(): void
+    {
+        $this->_write('2026110100_gone.sql', self::SQL_META . 'SELECT 1;', 'module');
+        $oMigrations = $this->_migrations();
+        $oMigrations->baseline();
+
+        unlink($this->_sDir . '/module/2026110100_gone.sql');
+        $this->_write('2026110200_next.sql', self::SQL_META . 'SELECT 1;');
+
+        $aProblems = ['bx_test: 2026110100_gone was recorded, and its file is gone with no baseline covering it'];
+        $aResult = $oMigrations->run(function () { return ''; });
+        $this->assertSame($aProblems, $aResult['problems']);
+        $this->assertSame([], $aResult['applied']);
+
+        // A module that is not enabled is not checked: its files are not read.
+        $oDisabled = $this->_migrations($aLog, '99.0.0', 'ledger', 'dev', [$this->_source('common')]);
+        $this->assertSame([], $oDisabled->status()['problems']);
+
+        $this->assertSame($aProblems, $oMigrations->accept());
+        $this->assertSame('', $oMigrations->getRecorded()['bx_test']['2026110100_gone']['checksum']);
+        $this->assertSame(['common: 2026110200_next.sql'], $oMigrations->run(function () { return ''; })['applied']);
     }
 
     public function testInvalidFileStopsBeforeAnything(): void
@@ -331,7 +438,7 @@ class MigrationsDbTest extends BxDolIntegrationTestCase
      */
     public function testShippedMigrationsRun(): void
     {
-        $oShipped = new BxDolMigrations(new BxDolMigrationsQuery());
+        $oShipped = new BxDolMigrations(new BxDolMigrationsQuery(), null, null, null, 'dev');
         $aSources = $oShipped->getSources();
         if (!$oShipped->listMigrations())
             $this->markTestSkipped('no migrations in migrations/ or the installed modules yet');
@@ -374,11 +481,11 @@ class MigrationsDbTest extends BxDolIntegrationTestCase
         $sSuffix = bin2hex(random_bytes(4));
         $fRefresh = function () { return ''; };
 
-        $aResult = (new BxDolMigrations(new BxDolMigrationsQuery($this->_table('ledger_first_' . $sSuffix)), $aSources, null, $sVersion))->run($fRefresh);
+        $aResult = (new BxDolMigrations(new BxDolMigrationsQuery($this->_table('ledger_first_' . $sSuffix)), $aSources, null, $sVersion, 'dev'))->run($fRefresh);
         $this->assertSame('', $aResult['failed'], $aResult['failed'] . ': ' . $aResult['error']);
 
         $aBefore = $this->_checksums();
-        $aResult = (new BxDolMigrations(new BxDolMigrationsQuery($this->_table('ledger_second_' . $sSuffix)), $aSources, null, $sVersion))->run($fRefresh);
+        $aResult = (new BxDolMigrations(new BxDolMigrationsQuery($this->_table('ledger_second_' . $sSuffix)), $aSources, null, $sVersion, 'dev'))->run($fRefresh);
         $this->assertSame('', $aResult['failed'], 'second run: ' . $aResult['failed'] . ': ' . $aResult['error']);
 
         $aAfter = $this->_checksums();
@@ -404,26 +511,34 @@ class MigrationsDbTest extends BxDolIntegrationTestCase
     }
 
     /**
-     * Two folders: common, and one of a module `bx_test` in the System language category.
+     * By default two folders: common, and one of a module `bx_test` in the System language category.
      */
-    private function _migrations(?array &$aLog = null, string $sVersion = '99.0.0', string $sLedger = 'ledger'): BxDolMigrations
+    private function _migrations(?array &$aLog = null, string $sVersion = '99.0.0', string $sLedger = 'ledger', string $sChannel = 'dev', ?array $aSources = null): BxDolMigrations
     {
         $aLog = [];
         return new BxDolMigrations(
             new BxDolMigrationsQuery($this->_table($sLedger)),
-            [$this->_source('common'), $this->_source('module')],
+            $aSources ?? [$this->_source('common'), $this->_source('module')],
             function (string $s) use (&$aLog) {
                 $aLog[] = $s;
             },
-            $sVersion
+            $sVersion,
+            $sChannel
         );
     }
 
+    /**
+     * common; module: `bx_test` in the System language category; module2: `bx_other`.
+     */
     private function _source(string $sFolder): array
     {
-        return $sFolder === 'common'
-            ? ['scope' => 'common', 'module' => '', 'dir' => $this->_sDir . '/common', 'lang_category' => '']
-            : ['scope' => 'module', 'module' => 'bx_test', 'dir' => $this->_sDir . '/module', 'lang_category' => 'System'];
+        switch ($sFolder) {
+            case 'common':
+                return ['scope' => 'common', 'module' => '', 'dir' => $this->_sDir . '/common', 'lang_category' => ''];
+            case 'module2':
+                return ['scope' => 'module', 'module' => 'bx_other', 'dir' => $this->_sDir . '/module2', 'lang_category' => ''];
+        }
+        return ['scope' => 'module', 'module' => 'bx_test', 'dir' => $this->_sDir . '/module', 'lang_category' => 'System'];
     }
 
     private function _table(string $sName): string

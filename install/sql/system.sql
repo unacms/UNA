@@ -378,7 +378,7 @@ SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_params`, `check_error`, `order`) VALUES
 (@iCategoryId, 'sys_cron_time', '_adm_stg_cpt_option_sys_cron_time', '0', 'digit', '', '', '', '', 2),
-(@iCategoryId, 'sys_upgrade_channel', '_adm_stg_cpt_option_sys_upgrade_channel', 'beta', 'select', 'stable,beta', '', '', '', 4),
+(@iCategoryId, 'sys_upgrade_channel', '_adm_stg_cpt_option_sys_upgrade_channel', 'beta', 'select', 'stable,beta,dev', '', '', '', 4),
 (@iCategoryId, 'sys_revision', '_adm_stg_cpt_option_sys_revision', '0', 'digit', '', '', '', '', 5),
 (@iCategoryId, 'sys_eq_time', '_adm_stg_cpt_option_sys_eq_time', '0', 'digit', '', '', '', '', 6),
 (@iCategoryId, 'sys_push_queue_time', '_adm_stg_cpt_option_sys_push_queue_time', '0', 'digit', '', '', '', '', 7),
@@ -1841,6 +1841,8 @@ CREATE TABLE `sys_migrations` (
   `checksum` char(64) NOT NULL default '',
   `status` varchar(16) NOT NULL default '',
   `applied` int(11) unsigned NOT NULL default '0',
+  `attempted` int(11) unsigned NOT NULL default '0',
+  `error` text NOT NULL,
   PRIMARY KEY (`module`, `id`)
 ) ENGINE=InnoDB;
 

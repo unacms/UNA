@@ -27,6 +27,10 @@ class BxDolUpgrader extends BxDol
 
         while(true) {
 
+            // A dev site follows the code repository and gets database changes from migrations.
+            if ('dev' == getParam('sys_upgrade_channel'))
+                break;
+
             // check for modules updates before system update
             if(!$bAuto) {
                 $aUpdates = BxDolStudioInstallerUtils::getInstance()->checkUpdates();
@@ -117,7 +121,7 @@ class BxDolUpgrader extends BxDol
     }
 
     /**
-     * @param string $sChannel 'stable' or 'beta'; empty for the channel set in the sys_upgrade_channel option
+     * @param string $sChannel 'stable' or 'beta' ('dev' checks stable); empty for the channel set in the sys_upgrade_channel option
      */
     public function getVersionUpdateInfo ($sChannel = '')
     {

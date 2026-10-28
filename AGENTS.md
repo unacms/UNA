@@ -85,14 +85,16 @@ The pull request description must include the database migration SQL when the ch
 
 ## Database migrations
 
-Install SQL and language files reach only new installs. A PR that changes what an installed site has in its database also adds a migration, which `periodic/migrate.php` (`BxDolMigrations`) applies once per database and records in `sys_migrations`. Read [`migrations/README.md`](migrations/README.md) before writing one.
+Install SQL and language files reach only new installs. A PR that changes what an installed site has in its database also adds a migration, which `periodic/migration.php` (`BxDolMigrations`) applies once per database and records in `sys_migrations`. Read [`migrations/README.md`](migrations/README.md) before writing one.
 
 - Needed for changes to `install/sql/*.sql`, `modules/system/install/sql/*.sql`, a module's `install.sql`, `enable.sql` or `enable-app.sql`, and language strings (`modules/boonex/english/data/langs/system/en.xml`, a module's `install/langs/*.xml`). Not for `disable.sql` or `uninstall.sql`.
 - Common migrations go in `migrations/`, a module's in `modules/<vendor>/<module>/migrations/`. One file per change: `YYYYMMDDNN_short_desc.sql`, `.php` when SQL is not enough, `.xml` for language strings (`string_add`, `string_upd`, `string_del`).
 - Every file declares `UNA-Migration-Min-System-Version: X.Y.Z` in a comment. A PHP migration starts with `<?php defined('BX_DOL') or die('hack attempt');`.
 - It must be safe to run on a database that already has the change: `IF NOT EXISTS`, `INSERT IGNORE` only on a unique key, otherwise `INSERT ... WHERE NOT EXISTS`, `UPDATE ... WHERE` the old value. Never delete a row and insert it again. Statements run with an empty `sql_mode`, like install SQL.
-- Check the files with `docker compose exec -w /opt/una php php periodic/migrate.php --check`, apply them to your local site with `docker compose exec -w /opt/una php php periodic/migrate.php`, then run `--filter MigrationsDbTest`, which runs every migration twice more, ignoring the ledger.
-- A migration that has run is never run again, even when its file changes, so a further change goes in a new file. One that failed was not recorded: fix that file in place.
+- Migrations run only on the `dev` update channel (`sys_upgrade_channel`); `beta` and `stable` will run what a signed release manifest lists, which is not built yet. Set it locally with `docker compose exec -w /opt/una php php periodic/migration.php --channel=dev`.
+- Check the files with `docker compose exec -w /opt/una php php periodic/migration.php --check`, apply them to your local site with `docker compose exec -w /opt/una php php periodic/migration.php` (`--status` shows what would run), then run `--filter MigrationsDbTest`, which runs every migration twice more, ignoring the ledger.
+- A migration on master is never edited: a further change goes in a new file. A changed or removed file of a migration that ran stops every later run until `--accept`, and CI fails a PR that edits one. One that failed is recorded as `failed` with its error and never counts as done: fix that file in place.
+- On the same `YYYYMMDDNN`, a module's migrations run after those of the modules it depends on (`dependencies` in its `install/config.php`).
 - The `Database migrations` check fails a PR that changes install SQL or language files without adding a new migration, unless the description says "No database migration." with the reason.
 - Until 15.0.0 is released, update packs are still needed for released versions; migrations run on sites that follow master, such as api.unacms.app.
 
