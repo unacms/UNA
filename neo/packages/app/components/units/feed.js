@@ -165,13 +165,6 @@ function DefaultFeedUnit({ data }) {
                     <ActionMenu
                         data={menuActions}
                     />
-                    <View className="flex-none hidden">
-                        <MenuManage
-                            id={data.id}
-                            menu={data?.menu_manage}
-                            setViewState={setViewState}
-                            data={data}
-                        /></View>
                 </Row>
                 {commentsData && (
                     <View className="">
