@@ -23,8 +23,6 @@ class MarketImageFileOwnerTest extends BxDolIntegrationTestCase
 
         if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_market'))
             $this->markTestSkipped('Market is not installed.');
-        if (!function_exists('imagecreatetruecolor'))
-            $this->markTestSkipped('GD is not available.');
 
         $this->_iAdminProfileId = (int)BxDolProfile::getInstanceAccountProfile($this->bxAccount('admin')->id())->id();
         $this->_iUserProfileId = (int)BxDolProfile::getInstanceAccountProfile($this->bxAccount('user')->id())->id();
@@ -68,8 +66,9 @@ class MarketImageFileOwnerTest extends BxDolIntegrationTestCase
 
     protected function storePhoto(int $iProfileId): int
     {
+        // A 1x1 PNG written as is, so the test doesn't need GD.
         $sFile = BX_DIRECTORY_PATH_TMP . 'market-image-file-owner-test-' . uniqid() . '.png';
-        imagepng(imagecreatetruecolor(16, 16), $sFile);
+        file_put_contents($sFile, base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='));
 
         $iFileId = (int)BxDolStorage::getObjectInstance('bx_market_photos')->storeFileFromPath($sFile, false, $iProfileId);
         if (file_exists($sFile))
@@ -95,7 +94,7 @@ class MarketImageFileOwnerTest extends BxDolIntegrationTestCase
         return $this->module()->_oDb->getContentInfoById($this->_iContentId);
     }
 
-    protected function fileExists(int $iFileId): bool
+    protected function photoExists(int $iFileId): bool
     {
         return !empty(BxDolStorage::getObjectInstance('bx_market_photos')->getFile($iFileId));
     }
@@ -135,7 +134,7 @@ class MarketImageFileOwnerTest extends BxDolIntegrationTestCase
 
         $this->assertNotFalse($this->module()->serviceUpdateImage('thumb', $this->_iContentId, $iNew));
         $this->assertSame($iNew, (int)$this->contentInfo()['thumb']);
-        $this->assertFalse($this->fileExists($iOld), 'The replaced own photo is deleted.');
+        $this->assertFalse($this->photoExists($iOld), 'The replaced own photo is deleted.');
     }
 
     public function testReplacingImageKeepsFileSharedWithTheOtherImage(): void
@@ -145,7 +144,7 @@ class MarketImageFileOwnerTest extends BxDolIntegrationTestCase
         $this->setImages($iShared, $iShared);
 
         $this->assertNotFalse($this->module()->serviceUpdateImage('thumb', $this->_iContentId, $iNew));
-        $this->assertTrue($this->fileExists($iShared), 'Header Image still uses the photo.');
+        $this->assertTrue($this->photoExists($iShared), 'Header Image still uses the photo.');
     }
 
     public function testReplacingForeignImageKeepsTheFile(): void
@@ -156,7 +155,7 @@ class MarketImageFileOwnerTest extends BxDolIntegrationTestCase
 
         $this->assertNotFalse($this->module()->serviceUpdateImage('thumb', $this->_iContentId, $iOwn));
         $this->assertSame($iOwn, (int)$this->contentInfo()['thumb']);
-        $this->assertTrue($this->fileExists($iForeign), "Another member's photo is never deleted.");
+        $this->assertTrue($this->photoExists($iForeign), "Another member's photo is never deleted.");
     }
 
     public function testFormSaveResetsForeignImage(): void
