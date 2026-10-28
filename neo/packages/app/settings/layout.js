@@ -109,8 +109,8 @@ export const settingsLayout = {
             fade_blur: { material: 'thin', hold: 0.5, opacity: 0.8, extend: 16, tint: { dark: 0.75 } },
             /** Optional. When set (non-blank), appended to `container` while scrollY > 0 (full-width bar: shadow, border, etc.). */
             container_scrolled: ' ns--header-wrapper-scrolled-- shadow-none ne-- ',
-            // The card surface (bg-card/80) like blocks; the blur only once the page scrolls under it.
-            content: ' ns--header-content-- items-center justify-between h-16 lg:bg-card/80 lg:shadow-border-b dark:lg:shadow-border-b-deep mx-auto w-full ne-- ',
+            // The card surface (bg-card/60) like blocks; the blur only once the page scrolls under it.
+            content: ' ns--header-content-- items-center justify-between h-16 lg:bg-card/60 lg:shadow-border-b dark:lg:shadow-border-b-deep mx-auto w-full ne-- ',
             /** Optional. When set (non-blank), applied to header content only while scrollY > 0. If unset, legacy `content_pinned_fixed` behavior is unchanged. */
             content_scrolled: ' ns--header-content-scrolled-- lg:backdrop-blur-lg ',
             content_pinned_fixed: '  ',
@@ -124,7 +124,7 @@ export const settingsLayout = {
              * content, so it scrolls away with it while the header's glass buttons stay.
              * A fork can give it a brand colour, e.g. 'bg-accent-500 lg:bg-transparent'.
              */
-            band: 'bg-card/80 lg:bg-transparent',
+            band: 'bg-card/60 lg:bg-transparent',
             /**
              * Colour scheme of the header's buttons and page title while they rest on the band
              * (iOS: SwiftUI glass chrome and labels; web: the buttons' colour tokens; the title

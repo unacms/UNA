@@ -5,7 +5,7 @@ export const settingsInputs = {
     },
     checkbox_set: {
         // Same fill, outline and radius as an input; rows inside are inset 4px with rounded-lg corners.
-        container: 'rounded-xl shadow-input-outline dark:shadow-input-outline-deep bg-input/50 p-1',
+        container: 'rounded-xl shadow-input-outline dark:shadow-input-outline-deep bg-card p-1',
     },
     
     doublerange: {
@@ -61,9 +61,9 @@ export const settingsInputs = {
             large: 'p-2 gap-1.5',
         },
         base: 
-        'text-card-foreground placeholder:text-muted-foreground  bg-input/50 shadow-input-outline dark:shadow-input-outline-deep text-base placeholder-muted-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring/80 web:focus-visible:border web:focus-visible:shadow-none web:overflow-hidden',
+        'text-card-foreground placeholder:text-muted-foreground  bg-card shadow-input-outline dark:shadow-input-outline-deep text-base placeholder-muted-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring/80 web:focus-visible:border web:focus-visible:shadow-none web:overflow-hidden',
         // Height/padding come from `size` (same as Input) so select stays in sync.
-        select: ' pr-10 bg-input/50 shadow-input-outline dark:shadow-input-outline-deep web:focus:bg-card flex-auto text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
+        select: ' pr-10 bg-card shadow-input-outline dark:shadow-input-outline-deep web:focus:bg-card flex-auto text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
 
         // Adaptive / floating eyebrow labels (`forms.adaptive_labels`)
         // Chip owns height; web `[&_label]` kills the inherited line-height strut
@@ -97,7 +97,7 @@ export const settingsInputs = {
     switcher: {
         // Container (height/padding via size.*)
         'u-controls-switcher-container':
-            'items-center flex-row-reverse justify-between gap-x-2 min-w-12  flex-auto  shadow-input-outline dark:shadow-input-outline-deep bg-input/50 ',
+            'items-center flex-row-reverse justify-between gap-x-2 min-w-12  flex-auto  shadow-input-outline dark:shadow-input-outline-deep bg-card ',
         // The caption keeps the input's text inset; the toggle sits as far from the right edge
         // as from the top and bottom (28px toggle: 8px in a regular 44px row, 12px in a large 52px one).
         size: {
@@ -169,7 +169,7 @@ export const settingsInputs = {
 
         // Checkbox square indicator
         'u-controls-checkbox-indicator':
-            'shrink-0 h-5 w-5 rounded-md shadow-btn-outline dark:shadow-btn-outline-deep  bg-input/50 justify-center items-center',
+            'shrink-0 h-5 w-5 rounded-md shadow-btn-outline dark:shadow-btn-outline-deep  bg-card justify-center items-center',
         // The box's outline: control-border keeps 3:1 against the input fill, cards and the page
         // in both schemes (WCAG 1.4.11), so an unchecked box is still visible.
         'u-controls-checkbox-indicator-border':

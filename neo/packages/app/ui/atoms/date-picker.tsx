@@ -14,7 +14,7 @@ const inputSettings = appSetting('theme', 'inputs');
 const inputSize: string = inputSettings.default_size || 'regular';
 // The time box takes the date input's height, fill, outline and radius; its segments sit 4px inside.
 const timeBoxClass = cn(
-    'w-auto shrink-0 flex-none flex-row items-center gap-1 px-1 bg-input/50 shadow-input-outline dark:shadow-input-outline-deep',
+    'w-auto shrink-0 flex-none flex-row items-center gap-1 px-1 bg-card shadow-input-outline dark:shadow-input-outline-deep',
     inputSettings.rounded?.default ?? 'rounded-xl',
     inputSettings.surface_size?.[inputSize] ?? 'min-h-11',
 );

@@ -399,11 +399,11 @@ export const settingsButtons = {
                     separator: 'bg-foreground/10',
                     segment: {
                         default: '',
-                        hovered: 'bg-muted/50',
-                        focused: 'bg-muted/50',
-                        pressed: 'bg-accent/80',
+                        hovered: 'bg-button',
+                        focused: 'bg-button',
+                        pressed: 'bg-button-hover',
                         active: 'bg-muted/50',
-                        pressedToggle: 'bg-muted',
+                        pressedToggle: 'bg-button-hover',
                         voted: 'bg-accent/60',
                         disabled: 'opacity-50',
                     },
@@ -563,11 +563,11 @@ export const settingsButtons = {
             borderless: {
                 container: {
                     default: '',
-                    hovered: 'bg-muted/50',
-                    focused: 'bg-muted/50',
-                    pressed: 'bg-accent/80 web:hover:bg-accent',
+                    hovered: 'bg-button',
+                    focused: 'bg-button',
+                    pressed: 'bg-button-hover',
                     active: 'bg-muted/50 ',
-                    pressedToggle: 'bg-muted',
+                    pressedToggle: 'bg-button-hover',
                     // A cast like or reaction (selectedState="voted" in objects/likes, reactions).
                     voted: 'bg-accent/60',
                     disabled: 'opacity-50',
@@ -616,11 +616,11 @@ export const settingsButtons = {
             // text link (no fill, hover-underline on web).
             link: {
                 container: { default: '', 
-                            hovered: 'bg-muted/50',
-                            focused: 'bg-muted/50',
-                            pressed: 'bg-muted/50',
+                            hovered: 'bg-button',
+                            focused: 'bg-button',
+                            pressed: 'bg-button-hover',
                             active: 'bg-muted/50',
-                            pressedToggle: 'bg-muted/50',
+                            pressedToggle: 'bg-button-hover',
                             disabled: 'opacity-50' },
                 text: {
                     base: 'font-medium tracking-tight text-accent-foreground',

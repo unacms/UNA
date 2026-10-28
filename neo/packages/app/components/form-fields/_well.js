@@ -15,7 +15,7 @@ export default function FieldWell({ className, size, children }) {
     return (
         <View
             className={cn(
-                'w-full flex-row flex-wrap items-center bg-input/50 shadow-input-outline dark:shadow-input-outline-deep',
+                'w-full flex-row flex-wrap items-center bg-card shadow-input-outline dark:shadow-input-outline-deep',
                 inputSettings.well?.[wellSize] ?? 'p-1 gap-1',
                 inputSettings.rounded?.default ?? 'rounded-xl',
                 inputSettings.surface_size?.[wellSize] ?? 'min-h-11',

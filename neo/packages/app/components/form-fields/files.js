@@ -921,8 +921,8 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
 
         if (!props.viewClasses) {
             w += isPictureField
-                ? ' bg-input border-border overflow-hidden'
-                : ' bg-input border-border rounded-xl overflow-hidden'
+                ? ' bg-card border-border overflow-hidden'
+                : ' bg-card border-border rounded-xl overflow-hidden'
         }
         else {
             w += ' ' + props.viewClasses
@@ -933,7 +933,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
 
         button = (
             <Pressable onPress={() => selectImage(props.source ?? 'library')} >
-                <View className={`qq ${w} native:max-w-full items-center justify-center bg-input `}>
+                <View className={`qq ${w} native:max-w-full items-center justify-center bg-card `}>
                       {(!img || !img?.file_url) && (<View ref={drop} className={`ss ${w} text-muted-foreground/50 text-lg flex-auto w-full border-border  justify-center flex-col border border-dashed text-center`}>
                         <Text className='text-muted-foreground/50 text-lg justify-center flex-col text-center'>
                             {props?.placeholder || CaptionForFileInput(props)}
