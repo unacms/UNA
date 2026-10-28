@@ -8,6 +8,7 @@ import CheckBox from 'app/ui/atoms/checkbox';
 import { Icon } from 'app/ui/atoms/icon';
 import { stripTags } from 'app/lib/util';
 import RowGridButton from './row-grid-button';
+import { useTranslation } from 'react-i18next';
 import { dedupeGridRowActions } from './actions';
 import { useGrid } from './context';
 
@@ -40,6 +41,7 @@ function TimeCell({ ts, format }) {
 
 /** Interactive cells subscribe to the store themselves — plain cells stay pure. */
 function SwitcherCell({ id, data, label }) {
+    const { t } = useTranslation();
     const toggleSwitch = useGrid((state) => state.toggleSwitch);
 
     return (
@@ -48,7 +50,8 @@ function SwitcherCell({ id, data, label }) {
                 size="small"
                 onValueChange={() => toggleSwitch(id)}
                 value={isSwitcherOn(data)}
-                label={label}
+                // Some grids leave the switcher column untitled (bx_albums_common); the switch still needs a name.
+                label={label || t('Enabled')}
             />
         </View>
     );
