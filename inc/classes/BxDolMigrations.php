@@ -36,6 +36,7 @@
  * of its folder that were folded into install SQL and deleted. A database that has all of them
  * in the ledger just records the baseline. One that misses some runs the baseline's own
  * statements or code, which must bring it to the state the covered migrations would have.
+ * It runs where the first migration it covers ran.
  *
  * Migrations run in id order across all folders; on the same id common runs first, then system,
  * then modules by name. The first failure stops the run: it is not recorded, rolled back where
@@ -125,9 +126,14 @@ class BxDolMigrations
                     'label' => ($aSource['module'] !== '' ? $aSource['module'] : self::SCOPE_COMMON) . ': ' . $aFile['name'],
                 ]);
 
-        usort($aResult, function ($a, $b) {
-            return [substr($a['id'], 0, 10), self::SCOPE_ORDER[$a['scope']], $a['module'], $a['id']]
-                <=> [substr($b['id'], 0, 10), self::SCOPE_ORDER[$b['scope']], $b['module'], $b['id']];
+        // A baseline takes the place of the first migration it covers, so whatever other folders'
+        // migrations came after that one still runs after the baseline's changes.
+        $fPosition = function (array $a): string {
+            return substr($a['covers'] ? min($a['covers']) : $a['id'], 0, 10);
+        };
+        usort($aResult, function ($a, $b) use ($fPosition) {
+            return [$fPosition($a), self::SCOPE_ORDER[$a['scope']], $a['module'], $a['id']]
+                <=> [$fPosition($b), self::SCOPE_ORDER[$b['scope']], $b['module'], $b['id']];
         });
 
         return $aResult;

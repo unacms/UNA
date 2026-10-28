@@ -162,6 +162,10 @@ ALTER TABLE `sys_objects_sockets` ADD COLUMN IF NOT EXISTS `type` varchar(32) NO
 INSERT INTO `sys_menu_items` (...) SELECT ... WHERE NOT EXISTS (...);
 ```
 
+- A baseline runs where the first migration it covers would have run, not at its own date, so
+  a migration in another folder that came after a covered one still runs after the baseline.
+  Its changes must therefore not depend on another folder's migrations dated after the first
+  one it covers.
 - A fresh install records the baseline like any other migration.
 - A database whose ledger has every covered migration records the baseline without running it.
 - A database that misses any of them runs the baseline's statements or code, which must bring

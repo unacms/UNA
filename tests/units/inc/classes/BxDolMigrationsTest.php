@@ -204,6 +204,30 @@ class BxDolMigrationsTest extends BxDolTestCase
         ], array_column($oMigrations->listMigrations(), 'label'));
     }
 
+    /**
+     * A module migration that used a column from a covered common migration still runs after
+     * the baseline that replaced it.
+     */
+    public function testBaselineTakesPlaceOfFirstCovered(): void
+    {
+        $this->_files('common', [
+            '2026110300_baseline.sql' => self::SQL_META . '-- ' . BxDolMigrations::META_COVERS . ": 2026110100_add_column 2026110250_more\nSELECT 1;",
+            '2026110400_later.sql' => self::SQL_META . 'SELECT 4;',
+        ]);
+        $this->_files('posts', ['2026110200_uses_column.sql' => self::SQL_META . 'SELECT 2;']);
+
+        $oMigrations = new BxDolMigrations($this->createStub(BxDolMigrationsQuery::class), [
+            $this->_source('common', '', 'common'),
+            $this->_source('module', 'bx_posts', 'posts'),
+        ]);
+
+        $this->assertSame([
+            'common: 2026110300_baseline.sql',
+            'bx_posts: 2026110200_uses_column.sql',
+            'common: 2026110400_later.sql',
+        ], array_column($oMigrations->listMigrations(), 'label'));
+    }
+
     public function testValidateTree(): void
     {
         $this->_files('migrations', ['2026110100_ok.sql' => self::SQL_META . 'SELECT 1;']);
