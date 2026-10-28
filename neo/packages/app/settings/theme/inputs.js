@@ -88,8 +88,13 @@ export const settingsInputs = {
         adaptive_label_floated_inside: 'h-4 justify-center web:[&_label]:h-full',
         adaptive_label_text_floated_inside: 'text-xs leading-none text-muted-foreground',
         adaptive_label_floated_inside_offset: 6,
+        // iOS draws the label text 1.5pt higher in its box than the web does (Inter, leading-none);
+        // this moves it down in both states, so the resting label is centred as on web.
+        adaptive_label_ios_text_offset: 1.5,
         // pt-5.5 + leading-6 + pb-1 = 50px, so the 1px focus border fits in min-h-13 without the box growing.
-        adaptive_input_inside: 'pt-5.5 pb-1',
+        // iOS centres a single-line value between the paddings instead of on the web line box, which
+        // put it 5.5pt low; these paddings put its baseline where the web has it, 40pt from the top.
+        adaptive_input_inside: 'pt-5.5 pb-1 ios:pt-3.75 ios:pb-2',
     },
     switcher: {
         // Container (height/padding via size.*)
