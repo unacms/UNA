@@ -35,7 +35,7 @@ import {
 import { useConductorList } from './use-conductor-list'
 import { NeoButton, NeoButtonLink } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
-import { getSkeletonForList } from 'app/lib/skeleton-helpers'
+import { getSkeletonForList, skeletonSlotsForLayout } from 'app/lib/skeleton-helpers'
 import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
 import Search from 'app/ui/molecules/sections/search'
@@ -208,7 +208,7 @@ export const TabScene = ({
             {pageRoute?.endpoint?.request_url && hasNextPage
                 ? getSkeletonForList(
                     scene.skeletonKey,
-                    skipToastRef.current.skipToast ? 0 : 5,
+                    skipToastRef.current.skipToast ? 0 : skeletonSlotsForLayout(scene.layout),
                     false,
                     scene.layout,
                     scene.renderItem,
@@ -255,7 +255,7 @@ export const TabScene = ({
         <ListScene
             route={pageRoute}
             skeleton={skeleton}
-            skeletonCount={5}
+            skeletonCount={skeletonSlotsForLayout(layout)}
             listItems={listItems}
             includeSidebar={showSidebarInList}
             showMobileLeftColumn={showLeftColumnInList}
