@@ -6,7 +6,7 @@
 
 .mdxeditor.mdxeditor-wiki,
 .mdxeditor-popup-container.mdxeditor-wiki {
-    --basePageBg: rgb(var(--input));
+    --basePageBg: rgb(var(--card));
     --baseBase: rgb(var(--muted) / 0.35);
     --baseBgSubtle: rgb(var(--muted) / 0.25);
     --baseBg: rgb(var(--muted) / 0.45);
@@ -36,7 +36,7 @@
     --accentTextContrast: rgb(var(--primary-foreground));
 
     color: rgb(var(--card-foreground));
-    background-color: rgb(var(--input));
+    background-color: rgb(var(--card));
 }
 
 .mdxeditor.mdxeditor-wiki .mdxeditor-wiki-toolbar,
@@ -142,12 +142,12 @@
 .mdxeditor.mdxeditor-wiki .mdxeditor-diff-editor,
 .mdxeditor.mdxeditor-wiki .cm-sourceView,
 .mdxeditor.mdxeditor-wiki .cm-editor {
-    background-color: rgb(var(--input)) !important;
+    background-color: rgb(var(--card)) !important;
     color: rgb(var(--card-foreground)) !important;
 }
 
 .mdxeditor.mdxeditor-wiki .cm-scroller {
-    background-color: rgb(var(--input)) !important;
+    background-color: rgb(var(--card)) !important;
     color: rgb(var(--card-foreground)) !important;
     /* Grow with document; outer field surface scrolls. */
     overflow: visible !important;

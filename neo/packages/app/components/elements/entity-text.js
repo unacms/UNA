@@ -97,7 +97,7 @@ function EditableTitleField({
                     onBlur={saveAndClose}
                     onSubmitEditing={saveAndClose}
                     className={cn(
-                        'w-full border border-border/60 bg-input/40 web:focus:bg-input/70 rounded-lg px-3 py-2',
+                        'w-full border border-border/60 bg-card rounded-lg px-3 py-2',
                         inputClassName,
                     )}
                 />

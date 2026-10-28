@@ -69,7 +69,7 @@
 
 /* Semantic — dark overrides */
 @utility scheme-tokens-dark {
-    --background: var(--black);
+    --background: var(--neutral-950);
     --foreground: var(--neutral-50);
     --card: var(--neutral-800);
     --card-foreground: var(--neutral-200);

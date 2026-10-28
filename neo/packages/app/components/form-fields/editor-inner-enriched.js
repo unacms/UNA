@@ -457,7 +457,7 @@ export default function RftTextEnriched(props) {
     })
 
     const surfaceClass = isToolBar
-        ? ' px-4 py-2 bg-input/50 shadow-input-outline dark:shadow-input-outline-deep rounded-xl flex-auto overflow-hidden text-card-foreground '
+        ? ' px-4 py-2 bg-card shadow-input-outline dark:shadow-input-outline-deep rounded-xl flex-auto overflow-hidden text-card-foreground '
         : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.size.regular))
 
     return (

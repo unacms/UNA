@@ -91,16 +91,16 @@ export const settingsElements = {
         header: ' px-3 py-2 min-h-14 items-start justify-start border-b border-border/60 ',
     },
     cards: {
-        // The card surface (bg-card/80) on every size: edge to edge with no outline shadow on
+        // The card surface (bg-card/60) on every size: edge to edge with no outline shadow on
         // mobile, detached and rounded with the outline shadow from sm. Overlays use bg-popover.
-        'u-card-list': ' u-card-list bg-card/80 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl ',
+        'u-card-list': ' u-card-list bg-card/60 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl ',
         'u-card-list-padding': 'p-4 sm:rounded-2xl',
         // Profile listings: photo + meta + actions on mobile, card chrome from sm (grid).
         // Mobile: edge-to-edge rows on the card surface, 1px apart (feed cards are 2px), like
         // the Messages and Notifications rows.
-        'u-card-list-flush': ' u-card-list u-flush-nav relative isolate mt-px sm:mt-0 bg-card/80 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
+        'u-card-list-flush': ' u-card-list u-flush-nav relative isolate mt-px sm:mt-0 bg-card/60 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
         'u-card-list-flush-padding': 'px-4 py-2 sm:p-4 sm:rounded-2xl',
-        'u-card-base': 'u-card-base rounded-2xl bg-card/80 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
+        'u-card-base': 'u-card-base rounded-2xl bg-card/60 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
         'u-card-padding': 'py-4 ',
         'u-card-header': 'px-4',
         'u-card-icon': ' ',
@@ -124,7 +124,7 @@ export const settingsElements = {
         'u-block-base':
             ' text-card-foreground gap-4 ',
         'u-block-bg':
-            ' bg-card/80 shadow-block-outline dark:shadow-block-outline-deep ',
+            ' bg-card/60 shadow-block-outline dark:shadow-block-outline-deep ',
         // 16px on every screen size, like cards. Call sites and blocks that set padding per
         // breakpoint (designbox.padding) can still change it.
         'u-block-pad':
