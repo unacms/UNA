@@ -116,7 +116,7 @@ function UnitCommentsDefault(props) {
 
     const isSelected = props.selectedId == data.cmt_id
 
-    const { animatedStyle } = usePulseOne({ pulseDurationMs: 500, pulses: 3, autoStart: true, minOpacity: 0.2 });
+    const { animatedStyle } = usePulseOne({ pulseDurationMs: 500, pulses: 3, autoStart: isSelected, minOpacity: 0.2 });
 
     const editFormUrl = hasData
         ? '/api.php?r=' +
