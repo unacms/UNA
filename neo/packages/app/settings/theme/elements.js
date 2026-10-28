@@ -135,8 +135,8 @@ export const settingsElements = {
             ' py-4 sm:py-5 ',
         'u-block-pad-x':
             ' px-4 sm:px-5 ',
-        'u-block-rounded': 'rounded-3xl',
-        'u-block-rounded-default': 'sm:rounded-3xl',
+        'u-block-rounded': 'rounded-2xl',
+        'u-block-rounded-default': 'sm:rounded-2xl',
         'u-block-header':
             ' flex-row gap-3  ',
         'u-block-icon': ' items-center w-9 h-9 justify-center bg-muted/50 rounded-lg text-card-foreground flex-none',
