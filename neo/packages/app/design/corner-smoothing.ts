@@ -10,6 +10,8 @@ const DEFAULT_FULL_FACTOR = 1
 
 type CornerSmoothingConfig = {
     enabled?: boolean
+    /** false: web only drops the superellipse (plain CSS radii); iOS keeps its continuous curve. */
+    web?: boolean
     factor?: number
     full_factor?: number
 }
@@ -29,6 +31,7 @@ function readConfig() {
     if (!cfg || typeof cfg !== 'object') {
         return {
             enabled: true,
+            web: true,
             factor: DEFAULT_FACTOR,
             full_factor: DEFAULT_FULL_FACTOR,
         }
@@ -39,6 +42,7 @@ function readConfig() {
 
     return {
         enabled: cfg.enabled !== false,
+        web: cfg.enabled !== false && cfg.web !== false,
         factor: Number.isFinite(factor) && factor > 0 ? factor : DEFAULT_FACTOR,
         full_factor: Number.isFinite(fullFactor) && fullFactor > 0 ? fullFactor : DEFAULT_FULL_FACTOR,
     }
@@ -55,7 +59,7 @@ export const cornerSmoothingFullFactor = config.full_factor
  * consumed by `global.web.css` (`--neo-corner-superellipse-*`).
  */
 export function getCornerSmoothingHtmlProps(): CornerSmoothingHtmlProps {
-    if (!cornerSmoothingEnabled) {
+    if (!config.web) {
         return { className: undefined, style: undefined }
     }
 
@@ -68,7 +72,7 @@ export function getCornerSmoothingHtmlProps(): CornerSmoothingHtmlProps {
     }
 }
 
-/** iOS `borderCurve: 'continuous'` — same on/off as web superellipse. */
+/** iOS `borderCurve: 'continuous'`, on with `enabled` (the `web` switch doesn't touch it). */
 export const iosContinuousCurveStyle: ViewStyle | null = cornerSmoothingEnabled
     ? { borderCurve: 'continuous' }
     : null

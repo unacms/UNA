@@ -18,7 +18,7 @@
     --primary-foreground: var(--neutral-50);
     --secondary: var(--neutral-200);
     --secondary-foreground: var(--neutral-600);
-    --muted: var(--neutral-300);
+    --muted: var(--neutral-200);
     --muted-foreground: var(--neutral-600);
     /* Accent text, links and the toggled look (4.5:1 on --accent, cards, secondary and muted) */
     --accent: var(--accent-100);
@@ -69,9 +69,9 @@
 
 /* Semantic — dark overrides */
 @utility scheme-tokens-dark {
-    --background: var(--neutral-950);
+    --background: var(--black);
     --foreground: var(--neutral-50);
-    --card: var(--neutral-900);
+    --card: var(--neutral-800);
     --card-foreground: var(--neutral-200);
     --popover: var(--neutral-800);
     --popover-foreground: var(--neutral-100);
@@ -87,7 +87,7 @@
     --muted-foreground: var(--neutral-400);
     --destructive: var(--red);
     --destructive-foreground: var(--neutral-950);
-    --border: var(--neutral-800);
+    --border: var(--neutral-700);
     --input: var(--neutral-900);
     --control-border: var(--neutral-500);
     /* Near-white ink in dark mode (see the light scheme). */

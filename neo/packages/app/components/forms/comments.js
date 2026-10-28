@@ -118,7 +118,7 @@ export default function FormComments(props) {
         
         // Resting composer is a single-line pill; once there's content (or the
         // rich toolbar expands it) the taller box switches to a card radius.
-        <View className={`w-full flex-auto bg-card/90 backdrop-blur-lg shadow-input-outline dark:shadow-input-outline-deep ${hasContent ? 'rounded-xl' : 'rounded-full'}`}>
+        <View className={`w-full flex-auto bg-popover/80 backdrop-blur-lg shadow-input-outline dark:shadow-input-outline-deep ${hasContent ? 'rounded-xl' : 'rounded-full'}`}>
             {getFormFieldByData(
                 props.data.inputs['action'],
                 props.handleSubmit,

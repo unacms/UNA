@@ -34,18 +34,18 @@ export const settingsElements = {
         content_ver: 'flex-col gap-1',
         content_hor: 'flex-row  ',
         item_ver:
-            ' group px-2 flex w-full min-w-0 min-h-11 flex-row items-center rounded-xl font-medium web:hover:bg-muted/50 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',
+            ' group px-2 flex w-full min-w-0 min-h-11 flex-row items-center rounded-xl font-medium web:hover:bg-muted/80 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',
         item_hor:
             'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-muted-foreground web:duration-200 outline-none ',
         item_np:
             'flex flex-row web:focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium text-sm text-muted-foreground  web:hover:cursor-pointer',
         /** Tabs overflow menu — match tab strip item height, padding, hover; text aligned in dropdown-item via item_text_key */
         item_tabs_overflow_sm:
-            'group flex w-full min-h-9 h-9 px-3 flex-row items-center rounded-lg font-medium text-secondary-foreground web:hover:bg-muted/50 web:duration-200 web:hover:text-foreground web:cursor-pointer web:focus-visible:outline-2',
+            'group flex w-full min-h-9 h-9 px-3 flex-row items-center rounded-lg font-medium text-secondary-foreground web:hover:bg-muted/80 web:duration-200 web:hover:text-foreground web:cursor-pointer web:focus-visible:outline-2',
         item_tabs_overflow_md:
-            'group flex w-full min-h-10 h-10 px-4 flex-row items-center rounded-lg font-medium text-base text-secondary-foreground web:hover:bg-muted/50 web:duration-200 web:hover:text-foreground web:cursor-pointer web:focus-visible:outline-2',
+            'group flex w-full min-h-10 h-10 px-4 flex-row items-center rounded-lg font-medium text-base text-secondary-foreground web:hover:bg-muted/80 web:duration-200 web:hover:text-foreground web:cursor-pointer web:focus-visible:outline-2',
         item_tabs_overflow_lg:
-            'group flex w-full min-h-12 h-12 px-6 flex-row items-center rounded-lg font-medium text-lg text-secondary-foreground web:hover:bg-muted/50 web:duration-200 web:hover:text-foreground web:cursor-pointer web:focus-visible:outline-2',
+            'group flex w-full min-h-12 h-12 px-6 flex-row items-center rounded-lg font-medium text-lg text-secondary-foreground web:hover:bg-muted/80 web:duration-200 web:hover:text-foreground web:cursor-pointer web:focus-visible:outline-2',
         item_tabs_overflow_text_sm:
             'text-left text-sm font-medium text-secondary-foreground web:group-hover:text-foreground whitespace-nowrap',
         item_tabs_overflow_text_md:
@@ -71,7 +71,7 @@ export const settingsElements = {
         /** Apps launcher waffle — icon above label, no description. */
         content_grid: 'w-full',
         item_grid:
-            'group flex w-full min-w-0 min-h-24 flex-col items-center justify-start gap-1.5 rounded-xl px-1 py-2.5 text-secondary-foreground web:hover:bg-muted/50 web:hover:text-foreground web:hover:cursor-pointer web:focus-visible:outline-2 web:duration-200',
+            'group flex w-full min-w-0 min-h-24 flex-col items-center justify-start gap-1.5 rounded-xl px-1 py-2.5 text-secondary-foreground web:hover:bg-muted/80 web:hover:text-foreground web:hover:cursor-pointer web:focus-visible:outline-2 web:duration-200',
         item_icon_grid:
             'flex shrink-0 items-center w-12 h-12 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
         item_text_grid:
@@ -86,19 +86,19 @@ export const settingsElements = {
     modal: {
         fog: ' bg-background/95 ',
         container:
-        ' bg-card/60 backdrop-blur shadow-card-outline dark:shadow-card-outline-deep md:rounded-3xl overflow-hidden ',
+        ' bg-popover shadow-card-outline dark:shadow-card-outline-deep md:rounded-3xl overflow-hidden ',
         content: '',
         header: ' px-3 py-2 min-h-14 items-start justify-start border-b border-border/60 ',
     },
     cards: {
-        // Mobile: edge to edge on the solid card surface, no outline shadow; from
-        // sm the detached, rounded cards are /80 with the outline shadow.
-        'u-card-list': ' u-card-list bg-card sm:bg-card/80 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl ',
+        // The card surface (bg-card/80) on every size: edge to edge with no outline shadow on
+        // mobile, detached and rounded with the outline shadow from sm. Overlays use bg-popover.
+        'u-card-list': ' u-card-list bg-card/80 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl ',
         'u-card-list-padding': 'p-4 sm:p-5 sm:rounded-2xl',
         // Profile listings: photo + meta + actions on mobile, card chrome from sm (grid).
         // Mobile: edge-to-edge rows on the card surface, 1px apart (feed cards are 2px), like
         // the Messages and Notifications rows.
-        'u-card-list-flush': ' u-card-list u-flush-nav relative isolate mt-px sm:mt-0 bg-card sm:bg-card/80 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
+        'u-card-list-flush': ' u-card-list u-flush-nav relative isolate mt-px sm:mt-0 bg-card/80 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
         'u-card-list-flush-padding': 'px-4 py-2 sm:p-5 sm:rounded-2xl',
         'u-card-base': 'u-card-base rounded-2xl bg-card/80 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
         'u-card-padding': 'py-4 sm:py-5 ',
@@ -124,19 +124,17 @@ export const settingsElements = {
         'u-block-base':
             ' text-card-foreground gap-4 sm:gap-5 ',
         'u-block-bg':
-            ' bg-card/60 shadow-block-outline dark:shadow-block-outline-deep ',
-        // The fill on tiers in a block's `designbox.solid` (replaces u-block-bg's bg- utility).
-        'u-block-bg-solid': 'bg-card',
-        // 16px on phones, 20px from sm up. responsiveClasses follows the sm: step for
-        // blocks that set padding per breakpoint (designbox.padding).
+            ' bg-card/80 shadow-block-outline dark:shadow-block-outline-deep ',
+        // 20px on every screen size. Call sites and blocks that set padding per breakpoint
+        // (designbox.padding) can still change it.
         'u-block-pad':
-            ' p-4 sm:p-5 ',
+            ' p-5 ',
         'u-block-pad-y':
-            ' py-4 sm:py-5 ',
+            ' py-5 ',
         'u-block-pad-x':
-            ' px-4 sm:px-5 ',
-        'u-block-rounded': 'rounded-3xl',
-        'u-block-rounded-default': 'sm:rounded-3xl',
+            ' px-5 ',
+        'u-block-rounded': 'rounded-2xl',
+        'u-block-rounded-default': 'sm:rounded-2xl',
         'u-block-header':
             ' flex-row gap-3  ',
         'u-block-icon': ' items-center w-9 h-9 justify-center bg-muted/50 rounded-lg text-card-foreground flex-none',

@@ -32,7 +32,7 @@ import { useIosStyleColors, useNativeTokenColor } from 'app/design/controls/neo-
 import { lucideAssetName } from 'app/lib/platform/lucide-assets';
 import { toHexColor } from 'app/lib/platform/native-color';
 import { useResolvedNeoButton, resolveScoped, parseNeoButtonAddon } from 'app/design/controls/neo-button/neo-button-resolver';
-import { useFrozenHostSize, useNativeButtonPress, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
+import { useFrozenHostSize, useNativeButtonPress, useRoundedRectangleRadius, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
 import { FeedbackHaptics, appSetting, findIconFromRemote } from 'app/lib/util';
 import type { NeoButtonExpoUIConfig, NeoButtonExpoUIProps } from 'app/design/controls/neo-button/neo-button.types';
 import { NATIVE_BUTTON_FONT_FAMILY, fontSizeFromClass, fontWeightFromClass } from 'app/design/controls/neo-button/native-font';
@@ -219,6 +219,7 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         imagePlacement, align, width, disabled, haptics,
     });
     const mapping = resolved.nativeMapping;
+    const cornerRadius = useRoundedRectangleRadius(resolved.borderShape, resolved.rounded);
     const fill = resolved.width === 'fill';
 
     // `className` styles the Host (the surface); `classNames.root` goes on the
@@ -409,12 +410,13 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         controlSizeModifier(nativeControlSize),
     ];
 
-    if (borderShape) {
-        modifiers.push(
-            borderShape === 'rectangle'
-                ? buttonBorderShapeModifier('roundedRectangle', 0)
-                : buttonBorderShapeModifier(mapping.buttonBorderShape as Parameters<typeof buttonBorderShapeModifier>[0]),
-        );
+    // A rounded rectangle takes the theme's radius for its size, like the JS button.
+    if (borderShape === 'rectangle') {
+        modifiers.push(buttonBorderShapeModifier('roundedRectangle', 0));
+    } else if (cornerRadius != null) {
+        modifiers.push(buttonBorderShapeModifier('roundedRectangle', cornerRadius));
+    } else if (borderShape) {
+        modifiers.push(buttonBorderShapeModifier(mapping.buttonBorderShape as Parameters<typeof buttonBorderShapeModifier>[0]));
     }
 
     if (isGlass) {

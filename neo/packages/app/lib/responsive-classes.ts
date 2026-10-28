@@ -233,15 +233,10 @@ export function normalizeTiers(value: any): boolean | Tier[] {
     return tiers.length ? tiers : false;
 }
 
-/**
- * A block's background (theme `u-block-bg`) on the tiers in `bg`, with the opaque card fill
- * (`u-block-bg-solid`) instead of the translucent one on the tiers in `solid`: block config
- * `designbox.solid`, for a block that sits among solid cards, like the feed's on phones.
- */
-export function blockBgClasses(bg: any, solid?: any) {
-    return buildBlockBgClasses(normalizeTiers(bg), normalizeTiers(solid), {
+/** A block's background (theme `u-block-bg`) on the tiers in `bg`. */
+export function blockBgClasses(bg: any) {
+    return buildBlockBgClasses(normalizeTiers(bg), {
         on: appSetting('theme', 'blocks', 'u-block-bg') || '',
-        solidFill: appSetting('theme', 'blocks', 'u-block-bg-solid') || 'bg-card',
         off: PRESETS.bg?.off || '',
     });
 }

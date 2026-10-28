@@ -1,7 +1,7 @@
 
 export const settingsInputs = {
     dropdown: {
-        cnt: ' rounded-2xl overflow-hidden p-1.5 bg-card/80 backdrop-blur-lg shadow-card-outline dark:shadow-card-outline-deep z-50  ',
+        cnt: ' rounded-2xl overflow-hidden p-1.5 bg-popover shadow-card-outline dark:shadow-card-outline-deep z-50  ',
     },
     checkbox_set: {
         // Same fill, outline and radius as an input; rows inside are inset 4px with rounded-lg corners.

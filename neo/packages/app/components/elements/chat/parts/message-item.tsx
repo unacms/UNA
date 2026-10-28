@@ -28,7 +28,7 @@ export default function MessageItem({ author, time, children, footer, badges }: 
             <Row className="gap-2">
                 <Profile {...author} displayType="unit_wo_info" displaySize="base" showInfo="false" />
                 <View className="flex-auto min-w-0">
-                    <View className="bg-card/60 shadow-card-outline dark:shadow-card-outline-deep rounded-xl px-3">
+                    <View className="bg-card/80 shadow-card-outline dark:shadow-card-outline-deep rounded-xl px-3">
                         <Row className="items-center w-full justify-between gap-1 mb-0.5 pt-2">
                             <Profile {...author} displayType="unit_wo_image" />
                             {badges || time ? (

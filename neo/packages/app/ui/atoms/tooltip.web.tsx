@@ -112,7 +112,7 @@ export default function Tooltip({ children, content, enabled = true, side = 'bot
             <View
                 ref={tooltipRef}
                 pointerEvents="none"
-                className="z-50 shadow-lg w-auto backdrop-blur bg-popover/90 rounded-full py-1.5 px-3"
+                className="z-50 shadow-lg w-auto bg-popover rounded-full py-1.5 px-3"
                 // RN types lack `position: 'fixed'`; react-native-web supports it.
                 style={tooltipStyle as unknown as ViewStyle}
             >

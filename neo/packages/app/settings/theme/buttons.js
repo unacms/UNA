@@ -332,6 +332,8 @@ export const settingsButtons = {
         borderShapes: {
             capsule:   { rounded: 'rounded-full', iconOnlyPadded: true },
             rectangle: { rounded: 'rounded-none' },
+            // 6 / 8 / 12 / 12 / 16px; inputs match (12 at regular and large), cards and blocks
+            // are 16. Native iOS and Android buttons read this too.
             roundedRectangle: {
                 rounded: {
                     default: 'rounded-xl',
@@ -425,7 +427,7 @@ export const settingsButtons = {
                 // iOS 26 draws real liquid glass behind the segments instead
                 // (`liquidContainer` replaces `container` there).
                 glass: {
-                    container: 'web:backdrop-blur-md bg-popover/50 shadow-btn-glass dark:shadow-btn-glass-deep',
+                    container: 'web:backdrop-blur-md bg-popover/80 shadow-btn-glass dark:shadow-btn-glass-deep',
                     liquidContainer: '',
                     separator: 'bg-foreground/10',
                     segment: {
@@ -638,9 +640,9 @@ export const settingsButtons = {
             glass: {
                 container: {
                     base: 'web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep',
-                    default: ' bg-popover/50 ',
+                    default: ' bg-popover/80 ',
                     hovered: ' bg-muted/50 ',
-                    focused: ' bg-popover/50',
+                    focused: ' bg-popover/80',
                     pressed:  'bg-muted shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
                     active: 'bg-muted/50 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
                     pressedToggle: 'bg-accent shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
