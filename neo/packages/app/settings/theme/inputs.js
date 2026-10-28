@@ -92,9 +92,7 @@ export const settingsInputs = {
         // this moves it down in both states, so the resting label is centred as on web.
         adaptive_label_ios_text_offset: 1.5,
         // pt-5.5 + leading-6 + pb-1 = 50px, so the 1px focus border fits in min-h-13 without the box growing.
-        // iOS centres a single-line value between the paddings instead of on the web line box, which
-        // put it 5.5pt low; these paddings put its baseline where the web has it, 40pt from the top.
-        adaptive_input_inside: 'pt-5.5 pb-1 ios:pt-3.75 ios:pb-2',
+        adaptive_input_inside: 'pt-5.5 pb-1',
     },
     switcher: {
         // Container (height/padding via size.*)
