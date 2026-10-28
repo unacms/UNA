@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { UNA_URL, UNA_API_KEY, MULTITENANT, PREVIEW_DOMAIN, PREVIEW_API_KEY, joinUnaUrl } from 'app/config';
+import { APP_URL, UNA_URL, UNA_API_KEY, MULTITENANT, PREVIEW_DOMAIN, PREVIEW_API_KEY, joinUnaUrl } from 'app/config';
 import { getDomainByHostname } from './lib/domains/domains';
 import { dropForeignClientHeaders, resolveEdge } from './lib/client-headers';
 
@@ -63,6 +63,27 @@ function resolvePreviewBackend(hostnameWithPort) {
     };
 }
 
+// The app's own host (APP_URL), lower-cased with its port; empty when APP_URL is unset.
+const APP_HOST = (() => {
+    try {
+        return new URL(APP_URL).host.toLowerCase();
+    } catch {
+        return '';
+    }
+})();
+
+/**
+ * `www.<APP_HOST>` gets a permanent redirect to the same path on APP_URL, so the site has
+ * one address (unacms.app serves both hosts). Null for every other host, and when APP_URL
+ * is itself a www host.
+ */
+function wwwRedirect(request) {
+    if (!APP_HOST || APP_HOST.startsWith('www.')) return null;
+    const host = String(request.headers.get('host') || '').toLowerCase();
+    if (host !== `www.${APP_HOST}`) return null;
+    return NextResponse.redirect(new URL(request.nextUrl.pathname + request.nextUrl.search, APP_URL), 308);
+}
+
 function cookieHeaderFromRequest(request) {
     let cookieString = '';
     request.cookies.getAll().forEach((item) => {
@@ -106,7 +127,10 @@ function rewriteToUna(request, tenant, unaPath) {
 export async function proxy(request) {    
     // Main middleware entry: decide how to rewrite incoming requests.
     const pathname = request.nextUrl.pathname;
-    
+
+    const redirect = wwwRedirect(request);
+    if (redirect) return redirect;
+
     // Early return for static files and source maps - return 404 immediately without rendering
     const staticExtensions = ['.map'];
     const isSourceMap = staticExtensions.some(ext => pathname.endsWith(ext));
