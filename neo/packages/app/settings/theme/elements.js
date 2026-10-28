@@ -122,7 +122,7 @@ export const settingsElements = {
     },
     blocks: {
         'u-block-base':
-            ' text-card-foreground gap-4 sm:gap-5 ',
+            ' text-card-foreground gap-4 ',
         'u-block-bg':
             ' bg-card/80 shadow-block-outline dark:shadow-block-outline-deep ',
         // 16px on every screen size, like cards. Call sites and blocks that set padding per
