@@ -835,7 +835,7 @@ INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `or
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
-(@iCategoryId, 'sys_sockets_type', '_adm_stg_cpt_option_sys_sockets_type', 'sys_soketi', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:33:"get_options_sockets_field_default";s:5:"class";s:13:"TemplServices";}', '', '', 1),
+(@iCategoryId, 'sys_sockets_type', '_adm_stg_cpt_option_sys_sockets_type', 'sys_sockets_soketi', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:33:"get_options_sockets_field_default";s:5:"class";s:13:"TemplServices";}', '', '', 1),
 (@iCategoryId, 'sys_sockets_url', '_adm_stg_cpt_option_sys_sockets_url', '', 'digit', '', '', '', 2),
 (@iCategoryId, 'sys_sockets_app_id', '_adm_stg_cpt_option_sys_sockets_app_id', '', 'digit', '', '', '', 3),
 (@iCategoryId, 'sys_sockets_key', '_adm_stg_cpt_option_sys_sockets_key', '', 'digit', '', '', '', 4),
