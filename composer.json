@@ -98,7 +98,7 @@
         "mpratt/embera": "~2.0",
         "spatie/calendar-links": "^1.5",
         "pusher/pusher-php-server": "^7.2",
-        "enshrined/svg-sanitize": "^0.22.0",
+        "enshrined/svg-sanitize": "^1.1.1",
         "neuron-core/neuron-ai": "^3.0",
         "aws/aws-sdk-php": "^3.371",
         "elasticsearch/elasticsearch": "^9.3",
