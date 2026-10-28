@@ -42,10 +42,7 @@ type ButtonPos = {
     viewportHeight: number;
 };
 
-/**
- * Position while closed. One shared object, so resetting a closed popup (on mount and on every
- * window resize) is a no-op for React instead of a re-render.
- */
+/** Position while closed: the initial state and what closing resets to. */
 const CLOSED_POS: ButtonPos = { triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false, viewportHeight: 0 };
 
 const WEB_FOCUSABLE_SELECTOR = [
@@ -259,15 +256,20 @@ export default function DropdownPopup({
         [isControlledOutside, isWeb, onOpenChange]
     );
 
+    // Reset only after the popup was open: on mount and on resizes while closed the
+    // state already is the closed one, and a no-op dispatch from an effect isn't free.
+    const wasOpenRef = useRef(false);
     useEffect(() => {
         if (isRealOpen) {
+            wasOpenRef.current = true;
             updateButtonPosition();
             if (isWeb) {
                 window.addEventListener('resize', updateButtonPosition);
                 return () =>
                     window.removeEventListener('resize', updateButtonPosition);
             }
-        } else {
+        } else if (wasOpenRef.current) {
+            wasOpenRef.current = false;
             measureRetryRef.current = 0;
             setButtonPos(CLOSED_POS);
             setPopupHeight(0);
