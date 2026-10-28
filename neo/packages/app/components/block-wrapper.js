@@ -159,7 +159,7 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                         href={config?.header_more_url}
                         label={t(config?.header_more_text || 'See all')}
                         style="link"
-                        borderShape="roundedRectangle"
+                        borderShape="capsule"
                         controlSize="small"
                         classNames={{ root: appSetting('theme', 'blocks')['u-block-more-link'] }}
                     />
