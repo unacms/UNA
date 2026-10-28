@@ -9,13 +9,14 @@
 import { StyleSheet, View } from 'react-native';
 import { useResolveClassNames } from 'uniwind';
 import { isValidElement, type ComponentProps } from 'react';
-import { Host, Button, HStack, Image, RNHostView, Text, useNativeState } from '@expo/ui/swift-ui';
+import { Host, Button, HStack, Image, ProgressView, RNHostView, Text, ZStack, useNativeState } from '@expo/ui/swift-ui';
 import {
     buttonStyle as buttonStyleModifier,
     controlSize as controlSizeModifier,
     buttonBorderShape as buttonBorderShapeModifier,
     tint as tintModifier,
     foregroundStyle,
+    opacity as opacityModifier,
     accessibilityLabel as accessibilityLabelModifier,
     frame,
     font as fontModifier,
@@ -493,6 +494,24 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         />
     ) : null;
 
+    const labelContent = (
+        <>
+            {resolved.imagePlacement !== 'trailing' ? glyphView : null}
+            {!isIconOnly && !isCustomOnly ? (
+                <Text modifiers={textModifiers.length ? textModifiers : undefined}>
+                    {nativeLabel}
+                </Text>
+            ) : null}
+            {resolved.imagePlacement === 'trailing' ? glyphView : null}
+            {addonView}
+        </>
+    );
+    // A button that passes `loading` at all keeps the ZStack in both states, so turning busy
+    // on and off never remounts its label. Prominent styles draw a white label, so a white spinner.
+    const busyCapable = props.loading !== undefined;
+    const spinnerColor = foregroundValue
+        || (mapping.buttonStyle === 'borderedProminent' || resolved.style === 'glassProminent' ? '#ffffff' : undefined);
+
     const host = (
         <Host
             colorScheme={colorScheme ?? undefined}
@@ -522,16 +541,21 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
                 onPress={hostPress}
                 modifiers={modifiers}
             >
-                <HStack spacing={resolved.labelGap} modifiers={labelModifiers}>
-                    {resolved.imagePlacement !== 'trailing' ? glyphView : null}
-                    {!isIconOnly && !isCustomOnly ? (
-                        <Text modifiers={textModifiers.length ? textModifiers : undefined}>
-                            {nativeLabel}
-                        </Text>
-                    ) : null}
-                    {resolved.imagePlacement === 'trailing' ? glyphView : null}
-                    {addonView}
-                </HStack>
+                {busyCapable ? (
+                    // Busy keeps the size: the label stays laid out but invisible, the spinner centred over it.
+                    <ZStack>
+                        <HStack spacing={resolved.labelGap} modifiers={loading ? [...labelModifiers, opacityModifier(0)] : labelModifiers}>
+                            {labelContent}
+                        </HStack>
+                        {loading ? (
+                            <ProgressView modifiers={spinnerColor ? [tintModifier(spinnerColor)] : undefined} />
+                        ) : null}
+                    </ZStack>
+                ) : (
+                    <HStack spacing={resolved.labelGap} modifiers={labelModifiers}>
+                        {labelContent}
+                    </HStack>
+                )}
             </Button>
         </Host>
     );
