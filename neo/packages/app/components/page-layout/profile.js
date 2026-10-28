@@ -11,6 +11,18 @@ const ConductorMemo = memo(Conductor, (prev, next) => (
     prev.ts === next.ts && prev.data?.timestamp === next.data?.timestamp
 ));
 
+// Informers ("This project was archived.") come with the page (data.user.informer) and go
+// first in the main column: the conductor joins cell_top and cell_center into it
+// (conductor/helpers.js processParsedUrl). Tabs loaded on switch get it through prepareData.
+// layout.web.js leaves out its bottom bar here.
+function withInformer(data) {
+    const informer = data?.user?.informer;
+    if (!informer?.length) return data;
+    const top = Array.isArray(data.elements?.cell_top) ? data.elements.cell_top : [];
+    const block = { id: 'informer', designbox_id: 0, source: 'system:informer', content: [{ type: 'informer', data: informer }] };
+    return { ...data, elements: { ...data.elements, cell_top: [block, ...top] } };
+}
+
 export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
     const [pageData, setPageData] = useState(data);
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -98,6 +110,8 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
         };
     }, [pageData.ts, pageData.timestamp, uri, pageData.url]);
 
+    const conductorData = useMemo(() => withInformer(pageData), [pageData]);
+
     const isCoverDisabled = appSetting('cover', 'view_by_module', pageData.cover_block.profile?.module) == 'none';
 
     return (
@@ -107,7 +121,8 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
             isHideDefaultHeader={true}
             isCoverDisabled={isCoverDisabled}
             menu={menu}
-            data={pageData}
+            data={conductorData}
+            prepareData={withInformer}
             blocks={blocks || getBlocksFromData(pageData)}
         />
     )
