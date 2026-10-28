@@ -102,11 +102,13 @@ export async function fetchSearchResults(filter, { url = SEARCH_URL, signal } = 
 
 /**
  * Debounced search_parse for a query.
- * Returns { parsed, parsing }; `parsed` is null until the first successful parse.
+ * Returns { parsed, parsing, query }; `parsed` is null until the first successful parse.
+ * `query` is the text `parsed` was made for (with `enabled` off, the text once typing paused):
+ * search on it, not on the live input, so a keystroke does not fire a search with a stale parse.
  * `parsed.available === false` means the server has no judge model: fall back to a plain keyword search.
  */
 export function useSearchParse(query, enabled, url, object = '') {
-    const [parsed, setParsed] = useState(null)
+    const [settled, setSettled] = useState({ query: '', parsed: null })
     const [parsing, setParsing] = useState(false)
     const requestRef = useRef(null)
     const timerRef = useRef(null)
@@ -115,10 +117,16 @@ export function useSearchParse(query, enabled, url, object = '') {
         clearTimeout(timerRef.current)
         requestRef.current?.abort()
 
-        if (!enabled || !query || query.trim().length < PARSE_MIN_LENGTH) {
-            setParsed(null)
+        if (!query || query.trim().length < PARSE_MIN_LENGTH) {
+            setSettled({ query: '', parsed: null })
             setParsing(false)
             return
+        }
+
+        if (!enabled) {
+            setParsing(false)
+            timerRef.current = setTimeout(() => setSettled({ query, parsed: null }), PARSE_DEBOUNCE_MS)
+            return () => clearTimeout(timerRef.current)
         }
 
         setParsing(true)
@@ -128,7 +136,7 @@ export function useSearchParse(query, enabled, url, object = '') {
             try {
                 const data = await parseQuery(query, { url, signal: controller.signal, object })
                 if (controller.signal.aborted) return
-                setParsed(data)
+                setSettled({ query, parsed: data })
                 setParsing(false)
             } catch {
                 // aborted by a newer query
@@ -141,7 +149,7 @@ export function useSearchParse(query, enabled, url, object = '') {
         }
     }, [query, enabled, url, object])
 
-    return { parsed, parsing }
+    return { parsed: settled.parsed, parsing, query: settled.query }
 }
 
 /**
