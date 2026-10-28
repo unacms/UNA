@@ -981,7 +981,7 @@ class BxCreditsModule extends BxBaseModGeneralModule
         if(!$this->updateProfileBalance($iBuyerPid, $iSellerPid, -$fAmount, BX_CREDITS_TRANSFER_TYPE_CHECKOUT, $sOrder, $sInfo))
             return false;
 
-        if(!$this->updateProfileBalance($iSellerPid, $iBuyerPid, $fAmount, $sOrder, BX_CREDITS_TRANSFER_TYPE_CHECKOUT, $sInfo)) {
+        if(!$this->updateProfileBalance($iSellerPid, $iBuyerPid, $fAmount, BX_CREDITS_TRANSFER_TYPE_CHECKOUT, $sOrder, $sInfo)) {
             $this->updateProfileBalance($iBuyerPid, 0, $fAmount, BX_CREDITS_TRANSFER_TYPE_CANCELLATION, $sOrder, '_bx_credits_txt_history_info_cancellation');
             return false;
         }
@@ -1389,8 +1389,7 @@ class BxCreditsModule extends BxBaseModGeneralModule
             return ['code' => 1, 'msg' => '_bx_credits_err_withdrawal_not_found'];
 
         $iProfileId = (int)$aWithdrawal['profile_id'];
-        $oProfile = BxDolProfile::getInstance($iProfileId);
-        if(!$oProfile)
+        if(!BxDolProfile::getInstance($iProfileId))
             return ['code' => 2, 'msg' => '_bx_credits_err_profile_not_found'];
 
         $fAmount = (float)$aWithdrawal['amount'];
@@ -1405,8 +1404,12 @@ class BxCreditsModule extends BxBaseModGeneralModule
 
         $aHistory = $this->_oDb->getHistory(['type' => 'id', 'id' => $iHistoryId]);
 
-        if(!$this->_oDb->updateWithdrawal(['performer_id' => $iUserId, 'order' => $aHistory['order'], 'confirmed' => time(), 'status' => BX_CREDITS_WITHDRAWAL_STATUS_CONFIRMED], ['id' => $iWithdrawalId]))
+        if(!$this->_oDb->updateWithdrawal(['performer_id' => $iUserId, 'order' => $aHistory['order'], 'confirmed' => time(), 'status' => BX_CREDITS_WITHDRAWAL_STATUS_CONFIRMED], ['id' => $iWithdrawalId])) {
+            $sInfo = '_bx_credits_txt_history_info_cancellation';
+            $this->updateProfileBalance($iProfileId, 0, $fAmount, BX_CREDITS_TRANSFER_TYPE_CANCELLATION, $aHistory['order'], $sInfo);
+
             return ['code' => 5, 'msg' => '_bx_credits_err_cannot_confirm_withdrawal'];
+        }
 
         sendMailTemplate($CNF['ETEMPLATE_WITHDRAW_SENT'], 0, $iProfileId, [
             'amount' => $fAmount
