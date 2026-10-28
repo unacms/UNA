@@ -13,7 +13,7 @@ function PageContent({ children }) {
 
     return (
         <View className="w-full justify-center  mx-auto">
-            <View className="gap-4">
+            <View className="gap-6">
                 {children}
                 <AuthPanel showSeparator={true} forgotPasswordLink={true} />
 
