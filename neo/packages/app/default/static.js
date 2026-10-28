@@ -17,7 +17,6 @@ import { Platform } from 'react-native'
 import SvgFile from 'app/ui/molecules/content/svg-file'
 import { useIconClassColor } from 'app/ui/atoms/icon-class-color'
 import MenuFooter from 'app/components/nav/menu-footer'
-import { appSetting } from 'app/lib/util'
 const isWeb = Platform.OS === 'web'
 //mode can be 'adaptive', 'full', 'mark', 'text'
 const Logo = ({ mode = 'adaptive' }) => {
@@ -110,7 +109,7 @@ const SplashTextInner = () => {
     return (
         <View className="text-center max-w-3xl lg:text-start w-full flex-auto ">
             <H1 className="text-center lg:text-start sm:pb-6" fontFamily="font-title">
-                {t('splash_page_title')} {appSetting('config', 'title')}
+                {t('splash_page_title')}
             </H1>
             <Text
                 accessible={true}

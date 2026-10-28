@@ -6,7 +6,7 @@ try {
 } catch (e) { }
 
 const expoConfig = {
-    "name": "NEO",
+    "name": "UNA",
     "slug": "neo",
     "scheme": "neo",
     "version": "1.0.0",
