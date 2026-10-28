@@ -228,9 +228,12 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const rootClassStyle = useResolveClassNames(classNames?.root || '');
     const flatHost = StyleSheet.flatten([hostClassStyle, rootClassStyle]) || {};
 
-    const effectiveLabel = (loading && loadingLabel != null && loadingLabel !== '')
-        ? loadingLabel
-        : (label ?? title ?? '');
+    // Busy keeps the label laid out (hidden under the spinner) so the width holds; `loadingLabel`
+    // only names the busy button for VoiceOver, as on the JS button.
+    const effectiveLabel = label ?? title ?? '';
+    const busyName = loading && loadingLabel != null && loadingLabel !== '' ? String(loadingLabel) : undefined;
+    // Prominent styles are tinted `bg-primary`, so their label and spinner are `text-primary-foreground`.
+    const prominentForeground = useNativeTokenColor('text-primary-foreground');
 
     const glyph = resolveIosGlyph(systemImage ?? image, nativeConfig);
     const sfSymbol = glyph?.kind === 'sf' ? glyph.name : undefined;
@@ -427,7 +430,8 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         modifiers.push(tintModifier(tintValue));
     }
     if (foregroundValue) labelModifiers.push(foregroundStyle(foregroundValue));
-    if ((isIconOnly || isCustomOnly) && nativeLabel) modifiers.push(accessibilityLabelModifier(nativeLabel));
+    if (busyName) modifiers.push(accessibilityLabelModifier(busyName));
+    else if ((isIconOnly || isCustomOnly) && nativeLabel) modifiers.push(accessibilityLabelModifier(nativeLabel));
     // Do not use SwiftUI `disabled` — it changes intrinsic layout when the
     // control toggles. Fade + block presses on the RN wrapper instead.
     if (iconHostWidth != null) {
@@ -507,10 +511,10 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         </>
     );
     // A button that passes `loading` at all keeps the ZStack in both states, so turning busy
-    // on and off never remounts its label. Prominent styles draw a white label, so a white spinner.
+    // on and off never remounts its label. The spinner takes the label's colour.
     const busyCapable = props.loading !== undefined;
-    const spinnerColor = foregroundValue
-        || (mapping.buttonStyle === 'borderedProminent' || resolved.style === 'glassProminent' ? '#ffffff' : undefined);
+    const spinnerColor = (foregroundValue
+        || (mapping.buttonStyle === 'borderedProminent' || resolved.style === 'glassProminent' ? prominentForeground : undefined)) as string | undefined;
 
     const host = (
         <Host
