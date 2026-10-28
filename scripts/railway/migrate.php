@@ -79,7 +79,7 @@ try {
         exit(0);
     }
 
-    $aResult = $oMigrations->run();
+    $aResult = $oMigrations->run('migrationsRefresh');
 }
 catch (Throwable $e) {
     migrationsLog('FAILED: ' . $e->getMessage());
@@ -91,29 +91,14 @@ if ($aResult['applied'])
 else if ($aResult['failed'] === '')
     migrationsLog('nothing to apply');
 
-$bFailed = false;
 if ($aResult['failed'] !== '') {
     migrationsLog('FAILED ' . $aResult['failed'] . ': ' . $aResult['error']);
     migrationsLog('later migrations did not run; the next start tries again from this one');
-    $bFailed = true;
 }
 
-// Also after a failure: the migrations before it did run.
-try {
-    if ($oMigrations->isRefreshPending()) {
-        if (($sFailed = migrationsRefresh()) === '') {
-            $oMigrations->setRefreshDone();
-            migrationsLog('languages compiled, caches cleared, sys_revision bumped');
-        }
-        else {
-            migrationsLog("FAILED $sFailed after migrations; the next start tries again");
-            $bFailed = true;
-        }
-    }
-}
-catch (Throwable $e) {
-    migrationsLog('FAILED rebuilding after migrations: ' . $e->getMessage() . '; the next start tries again');
-    $bFailed = true;
-}
+if ($aResult['refreshed'])
+    migrationsLog('languages compiled, caches cleared, sys_revision bumped');
+else if ($aResult['refresh_error'] !== '')
+    migrationsLog('FAILED ' . $aResult['refresh_error'] . ' after migrations; the next start tries again');
 
-exit($bFailed ? 1 : 0);
+exit($aResult['failed'] !== '' || $aResult['refresh_error'] !== '' ? 1 : 0);

@@ -167,47 +167,70 @@ class UnaRailwayMigrations
      * Run every migration the ledger lacks, in order. Stops at the first failure; that one is
      * not recorded, so the next start tries it again.
      *
-     * @return array{applied: list<string>, skipped: list<string>, failed: string, error: string}
+     * $fRefresh rebuilds what the migrations made stale and returns what failed, or ''. It runs
+     * while the refresh flag is set, also after a failure (the migrations before it did run), and
+     * under the same lock as the migrations, so one start cannot clear the flag that another
+     * start set after its own migrations.
+     *
+     * @return array{applied: list<string>, skipped: list<string>, failed: string, error: string, refreshed: bool, refresh_error: string}
      */
-    public function run(): array
+    public function run(?callable $fRefresh = null): array
     {
         $aMigrations = $this->listMigrations();
-        $aResult = ['applied' => [], 'skipped' => [], 'failed' => '', 'error' => ''];
+        $aResult = ['applied' => [], 'skipped' => [], 'failed' => '', 'error' => '', 'refreshed' => false, 'refresh_error' => ''];
 
-        $this->_withLock(function () use ($aMigrations, &$aResult) {
-            $aDone = $this->getRecorded();
-            foreach ($aMigrations as $sId => $aMigration) {
-                if (isset($aDone[$sId])) {
-                    if ($aDone[$sId]['checksum'] !== $aMigration['checksum'])
-                        ($this->_fLog)("$sId changed after it ran; the change will not run. Add a new migration instead.");
-                    continue;
-                }
+        $this->_withLock(function () use ($aMigrations, $fRefresh, &$aResult) {
+            $this->_runMigrations($aMigrations, $aResult);
+            if ($fRefresh === null || !$this->isRefreshPending())
+                return;
 
-                if ($aMigration['module'] !== '' && !$this->_isModuleInstalled($aMigration['module'])) {
-                    $this->_record($sId, $aMigration['checksum'], 'skipped');
-                    $aResult['skipped'][] = $sId;
-                    ($this->_fLog)("$sId skipped: {$aMigration['module']} is not installed");
-                    continue;
-                }
-
-                try {
-                    $this->_apply($aMigration);
-                }
-                catch (Throwable $e) {
-                    $aResult['failed'] = $sId;
-                    $aResult['error'] = $e->getMessage();
-                    return;
-                }
-
-                if (!$aResult['applied'])
-                    $this->_setRefreshPending(true);
-                $this->_record($sId, $aMigration['checksum'], 'applied');
-                $aResult['applied'][] = $sId;
-                ($this->_fLog)("$sId applied");
+            try {
+                $aResult['refresh_error'] = (string)$fRefresh();
+            }
+            catch (Throwable $e) {
+                $aResult['refresh_error'] = $e->getMessage();
+            }
+            if ($aResult['refresh_error'] === '') {
+                $this->_setRefreshPending(false);
+                $aResult['refreshed'] = true;
             }
         });
 
         return $aResult;
+    }
+
+    protected function _runMigrations(array $aMigrations, array &$aResult): void
+    {
+        $aDone = $this->getRecorded();
+        foreach ($aMigrations as $sId => $aMigration) {
+            if (isset($aDone[$sId])) {
+                if ($aDone[$sId]['checksum'] !== $aMigration['checksum'])
+                    ($this->_fLog)("$sId changed after it ran; the change will not run. Add a new migration instead.");
+                continue;
+            }
+
+            if ($aMigration['module'] !== '' && !$this->_isModuleInstalled($aMigration['module'])) {
+                $this->_record($sId, $aMigration['checksum'], 'skipped');
+                $aResult['skipped'][] = $sId;
+                ($this->_fLog)("$sId skipped: {$aMigration['module']} is not installed");
+                continue;
+            }
+
+            try {
+                $this->_apply($aMigration);
+            }
+            catch (Throwable $e) {
+                $aResult['failed'] = $sId;
+                $aResult['error'] = $e->getMessage();
+                return;
+            }
+
+            if (!$aResult['applied'])
+                $this->_setRefreshPending(true);
+            $this->_record($sId, $aMigration['checksum'], 'applied');
+            $aResult['applied'][] = $sId;
+            ($this->_fLog)("$sId applied");
+        }
     }
 
     /**
@@ -264,11 +287,6 @@ class UnaRailwayMigrations
         $bResult = (bool)$oStatement->fetchColumn();
         $oStatement->closeCursor();
         return $bResult;
-    }
-
-    public function setRefreshDone(): void
-    {
-        $this->_setRefreshPending(false);
     }
 
     protected function _setRefreshPending(bool $b): void

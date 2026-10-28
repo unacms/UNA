@@ -163,22 +163,47 @@ class RailwayMigrationsDbTest extends BxDolIntegrationTestCase
         $this->assertSame($iMode, $this->_oPdo->getAttribute(PDO::ATTR_ERRMODE));
     }
 
-    public function testRefreshPendingUntilDone(): void
+    public function testRefreshUntilItSucceeds(): void
     {
         $this->_write('20261101-noop.sql', 'SELECT 1;');
+        $aCalls = [];
+        $fRefresh = function () use (&$aCalls) {
+            $aCalls[] = 'refresh';
+            return count($aCalls) === 1 ? 'clearing the db cache' : '';
+        };
 
         $oMigrations = $this->_migrations();
         $this->assertFalse($oMigrations->isRefreshPending());
 
-        $oMigrations->run();
-        $this->assertTrue($oMigrations->isRefreshPending(), 'set once a migration ran');
+        $aResult = $oMigrations->run($fRefresh);
+        $this->assertSame(['20261101-noop'], $aResult['applied']);
+        $this->assertFalse($aResult['refreshed']);
+        $this->assertSame('clearing the db cache', $aResult['refresh_error']);
+        $this->assertTrue($oMigrations->isRefreshPending(), 'a failed rebuild keeps the flag');
         $this->assertSame(['20261101-noop'], array_keys($oMigrations->getRecorded()), 'the flag is not a migration');
 
-        $oMigrations->run();
-        $this->assertTrue($oMigrations->isRefreshPending(), 'a later start with nothing to apply still sees it');
-
-        $oMigrations->setRefreshDone();
+        // The next start has nothing to apply but rebuilds again, and clears the flag.
+        $aResult = $oMigrations->run($fRefresh);
+        $this->assertSame([], $aResult['applied']);
+        $this->assertTrue($aResult['refreshed']);
         $this->assertFalse($oMigrations->isRefreshPending());
+
+        $aResult = $oMigrations->run($fRefresh);
+        $this->assertFalse($aResult['refreshed'], 'nothing pending, nothing rebuilt');
+        $this->assertSame(['refresh', 'refresh'], $aCalls);
+    }
+
+    public function testRefreshAfterFailedMigration(): void
+    {
+        $this->_write('20261101-ok.sql', 'SELECT 1;');
+        $this->_write('20261102-broken.sql', "SELECT * FROM `table_that_does_not_exist_{$this->_sSuffix}`;");
+
+        $aResult = $this->_migrations()->run(function () {
+            throw new RuntimeException('cache folder is read-only');
+        });
+
+        $this->assertSame('20261102-broken', $aResult['failed']);
+        $this->assertSame('cache folder is read-only', $aResult['refresh_error'], 'the migration before the failure still gets its rebuild');
     }
 
     /**
