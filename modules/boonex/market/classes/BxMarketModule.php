@@ -111,6 +111,30 @@ class BxMarketModule extends BxBaseModTextModule
         return $this->isImageFileOwner($iFileId, $aContentInfo);
     }
 
+    /**
+     * The base form saves Icon right from the request: after a form save, put back the previous
+     * value of an image field that got a file id which isn't allowed. Empty $aContentInfoOld for a new product.
+     */
+    public function resetNotAllowedImages($iContentId, $aContentInfoOld = [])
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
+        if(empty($aContentInfo) || !is_array($aContentInfo))
+            return;
+
+        $aReset = [];
+        foreach([$CNF['FIELD_THUMB'], $CNF['FIELD_COVER']] as $sField) {
+            $iFileIdOld = (int)($aContentInfoOld[$sField] ?? 0);
+            $iFileId = (int)$aContentInfo[$sField];
+            if($iFileId != $iFileIdOld && !$this->isImageFileAllowed($iFileId, $aContentInfoOld))
+                $aReset[$sField] = $iFileIdOld;
+        }
+
+        if(!empty($aReset))
+            $this->_oDb->updateEntriesBy($aReset, [$CNF['FIELD_ID'] => $iContentId]);
+    }
+
     public function actionPerform()
     {
         $CNF = &$this->_oConfig->CNF;

@@ -268,7 +268,7 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
             $aCover = isset($_POST[$CNF['FIELD_COVER']]) ? bx_process_input ($_POST[$CNF['FIELD_COVER']], BX_DATA_INT) : false;
 
             $aValsToAdd[$CNF['FIELD_COVER']] = 0;
-            if(!empty($aCover) && is_array($aCover) && ($iFileCover = array_pop($aCover)) && $this->_oModule->isImageFileAllowed($iFileCover))
+            if(!empty($aCover) && is_array($aCover) && ($iFileCover = array_pop($aCover)))
                 $aValsToAdd[$CNF['FIELD_COVER']] = $iFileCover;
         }
 
@@ -282,6 +282,8 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
 
         $iContentId = parent::insert ($aValsToAdd, $isIgnore);
         if(!empty($iContentId)) {
+            $this->_oModule->resetNotAllowedImages($iContentId);
+
             $this->processFiles($CNF['FIELD_FILE'], $iContentId, true, $CNF['OBJECT_STORAGE_FILES']);
 
             // Cover is processed by parent.
@@ -334,8 +336,8 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
                 if($bSetImage && ($aImage = bx_get($CNF[$sKey])) !== false) {
                     $aImage = bx_process_input($aImage, BX_DATA_INT);
 
-                    $iFileImage = !empty($aImage) && is_array($aImage) ? (int)array_pop($aImage) : 0;
-                    if($this->_oModule->isImageFileAllowed($iFileImage, $aContentInfoOld))
+                    $aValsToAdd[$CNF[$sKey]] = 0;
+                    if(!empty($aImage) && is_array($aImage) && ($iFileImage = array_pop($aImage)))
                         $aValsToAdd[$CNF[$sKey]] = $iFileImage;
                 }
         }
@@ -346,6 +348,8 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
             $aValsToAdd[$CNF['FIELD_PACKAGE']] = $iFilePackage;
 
         $iResult = parent::update ($iContentId, $aValsToAdd, $aTrackTextFieldsChanges);
+        if($iResult !== false)
+            $this->_oModule->resetNotAllowedImages($iContentId, $aContentInfoOld);
 
         $this->processFiles($CNF['FIELD_FILE'], $iContentId, false, $CNF['OBJECT_STORAGE_FILES']);
 
