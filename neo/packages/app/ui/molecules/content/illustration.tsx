@@ -15,7 +15,7 @@ function useToneColors(): Record<IllustrationTone, string | undefined> {
 }
 
 /** Decorative shape art in the theme's colours; drawn inline, so nothing is fetched. */
-export default function Illustration({ name, className = '' }: IllustrationProps) {
+export default function Illustration({ name, className = '' }: Readonly<IllustrationProps>) {
     const colors = useToneColors();
     return (
         <View className={`w-full h-full ${className}`} accessible={false} importantForAccessibility="no-hide-descendants">

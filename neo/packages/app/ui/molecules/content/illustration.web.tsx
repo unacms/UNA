@@ -13,7 +13,7 @@ const TONE_CLASS: Record<IllustrationTone, string> = {
  * Decorative shape art in the theme's colours. Inline, so it is in the SSR HTML (never the
  * LCP fetch) and follows light/dark without a second file.
  */
-export default function Illustration({ name, className = '' }: IllustrationProps) {
+export default function Illustration({ name, className = '' }: Readonly<IllustrationProps>) {
     return (
         <svg
             viewBox={ILLUSTRATION_VIEWBOX}
