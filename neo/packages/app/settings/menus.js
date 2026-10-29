@@ -41,7 +41,8 @@ export const settingsMenus = {
             'fa-book': 'LibraryBig',
             ad: 'File',
             'object-group': 'SquareStack',
-            film: 'Video',
+            // Videos: the icon the site menu draws for them (menu_navbar videos-home).
+            film: 'TvMinimalPlay',
             hashtag: 'Hash',
             'shopping-cart': 'Store',
             'book-reader': 'LibraryBig',
