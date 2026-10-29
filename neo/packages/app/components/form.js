@@ -18,7 +18,7 @@ import { NeoButton } from 'app/design/controls';
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import { FormError } from 'app/components/form-fields/_field'
 import { useTranslation } from 'react-i18next'
-import { useRouter, usePathname, redirectTo } from 'app/lib/hooks/router'
+import { useRouter, usePathname, redirectTo, useIsFocused } from 'app/lib/hooks/router'
 import { getTabKeyFromPathname } from 'app/lib/navigation/tab-history'
 
 const isWeb = Platform.OS === 'web';
@@ -563,13 +563,18 @@ export default function Form({
     // a re-subscription in the same commit as the block's emit would miss the event.
     const { reset: resetForm, getValues: getFormValues } = methods;
     const fieldsDebouncerRef = useRef(fieldsDebouncer);
+    // native tabs keep their pages mounted: only the focused page's form takes the filters,
+    // like the conductor's own listener (isFocusedRef in useConductorFilters)
+    const isFocused = useIsFocused();
+    const isFocusedRef = useRef(isFocused);
     useEffect(() => {
         fieldsDebouncerRef.current = fieldsDebouncer;
+        isFocusedRef.current = isFocused;
     });
     useEffect(() => {
         if (!isAutoChange || !processedInputs) return;
         const sub = emitter.addListener(EVENTS.conductor, (payload) => {
-            if (payload?.action !== 'filters') return;
+            if (payload?.action !== 'filters' || !isFocusedRef.current) return;
             const values = payload.values && typeof payload.values === 'object' ? payload.values : {};
             const current = getFormValues();
             let base = current;

@@ -398,14 +398,10 @@ class BxBaseServicesSearch extends BxDol
             $bMultiline = !empty($mixedParams['multiline']);
             $sSection = isset($mixedParams['object']) ? (string)$mixedParams['object'] : (isset($mixedParams['section']) ? (string)$mixedParams['section'] : '');
 
-            // extra instructions for the model: 'hint' for every question, 'hints' => [field => text]
-            $aHint = [
-                'hint' => isset($mixedParams['hint']) && is_string($mixedParams['hint']) ? trim($mixedParams['hint']) : '',
-                'hints' => isset($mixedParams['hints']) && is_array($mixedParams['hints']) ? array_filter($mixedParams['hints'], 'is_string') : [],
-            ];
             // the text stays on the server: the block gets an id, search_parse reads the text by it
-            if($aHint['hint'] !== '' || $aHint['hints']) {
-                $sHintId = md5(serialize($aHint));
+            $aHint = $this->_getSearchAiHintFromParams($mixedParams);
+            if($aHint) {
+                $sHintId = $this->_getSearchAiHintId($aHint);
                 BxDolDb::getInstance()->setCache('sys_ai_search_hint_' . $sHintId, $aHint);
             }
         }
@@ -589,7 +585,7 @@ class BxBaseServicesSearch extends BxDol
      */
     protected function _getSearchAiHint($sId)
     {
-        if(!preg_match('/^[a-f0-9]{32}$/', $sId))
+        if(!preg_match('/^[a-f0-9]{64}$/', $sId))
             return [];
 
         $oDb = BxDolDb::getInstance();
@@ -598,21 +594,36 @@ class BxBaseServicesSearch extends BxDol
         if(is_array($mixedHint))
             return $mixedHint;
 
-        $aContents = $oDb->getColumn("SELECT `content` FROM `sys_pages_blocks` WHERE `type` = 'service' AND `content` LIKE '%get_block_search_ai%'");
+        $aContents = BxDolPageQuery::getServiceBlocksContent('get_block_search_ai');
         foreach(is_array($aContents) ? $aContents : [] as $sContent) {
-            $aService = @unserialize($sContent);
+            $aService = unserialize($sContent, ['allowed_classes' => false]);
             $aParams = isset($aService['params'][0]) && is_array($aService['params'][0]) ? $aService['params'][0] : [];
-            $aHint = [
-                'hint' => isset($aParams['hint']) && is_string($aParams['hint']) ? trim($aParams['hint']) : '',
-                'hints' => isset($aParams['hints']) && is_array($aParams['hints']) ? array_filter($aParams['hints'], 'is_string') : [],
-            ];
-            if(($aHint['hint'] !== '' || $aHint['hints']) && md5(serialize($aHint)) === $sId) {
+            $aHint = $this->_getSearchAiHintFromParams($aParams);
+            if($aHint && $this->_getSearchAiHintId($aHint) === $sId) {
                 $oDb->setCache($sKey, $aHint);
                 return $aHint;
             }
         }
 
         return [];
+    }
+
+    /**
+     * Block params -> ['hint' => text for every question, 'hints' => [field => text]], or [] when the block has none.
+     */
+    protected function _getSearchAiHintFromParams($aParams)
+    {
+        $aHint = [
+            'hint' => isset($aParams['hint']) && is_string($aParams['hint']) ? trim($aParams['hint']) : '',
+            'hints' => isset($aParams['hints']) && is_array($aParams['hints']) ? array_filter($aParams['hints'], 'is_string') : [],
+        ];
+
+        return $aHint['hint'] !== '' || $aHint['hints'] ? $aHint : [];
+    }
+
+    protected function _getSearchAiHintId($aHint)
+    {
+        return hash('sha256', json_encode($aHint));
     }
 
     /**

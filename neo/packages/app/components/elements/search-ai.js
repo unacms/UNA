@@ -11,6 +11,7 @@ import BrowseSimple, { BrowseSimpleView } from 'app/components/elements/browse-s
 import { UnitSearchResultsSmall } from 'app/components/units/search-results'
 import {
     useSearchParse,
+    useSearchInput,
     SearchFilterChips,
     SearchExtChips,
     buildSearchUrl,
@@ -88,7 +89,7 @@ function SearchAiExtended({ blockWrapperProps, block, multiline }) {
     // the page's own get_results block shows the results; this block only produces filters
     const usePageResults = !!block.use_page_results
 
-    const [input, setInput] = useState('')
+    const [input, setInput] = useSearchInput()
     const [searchParams, setSearchParams] = useState(null) // { field: { value } }
     const [keywordField, setKeywordField] = useState('')
     const [filters, setFilters] = useState(null)           // { input name: value } — search form shape
@@ -321,7 +322,7 @@ function SearchAiSections({ blockWrapperProps, block, multiline }) {
     const sections = Array.isArray(block.sections) ? block.sections : []
     const aiAvailable = block.available !== false
 
-    const [input, setInput] = useState('')
+    const [input, setInput] = useSearchInput()
     const [filter, setFilter] = useState(null)
     const [results, setResults] = useState(null) // null = nothing searched yet
     const [loading, setLoading] = useState(false)

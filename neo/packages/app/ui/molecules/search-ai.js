@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { fetcher } from 'app/lib/fetcher'
+import { isWeb } from 'app/lib/util'
+import { useGlobalSearchParams } from 'app/lib/hooks/router'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { NeoButton } from 'app/design/controls'
@@ -76,6 +78,42 @@ export function formatDateLabel(date, t) {
     }
     const range = date.to && date.to !== date.from ? format(date.from) + ' – ' + format(date.to) : format(date.from)
     return (fieldLabels[date.field] || fieldLabels.created) + ' ' + range
+}
+
+const subscribeNothing = () => () => {}
+const readWebQuery = () => {
+    try {
+        return new URLSearchParams(window.location.search).get('q') || ''
+    } catch {
+        return ''
+    }
+}
+
+/**
+ * The query a link brought to the page (`/persons-home?q=native Turkish translator`), so a
+ * search box elsewhere (a landing page) can hand its text to the page's AI search block.
+ * Web reads it after hydration (the server renders '' and so does the first client render).
+ */
+export function useInitialQuery() {
+    const nativeParams = useGlobalSearchParams()
+    const webQuery = useSyncExternalStore(subscribeNothing, isWeb ? readWebQuery : () => '', () => '')
+    const q = isWeb ? webQuery : nativeParams?.q
+    return typeof q === 'string' ? q : ''
+}
+
+/**
+ * Input state of the AI search block, filled once with the query of the page URL (useInitialQuery).
+ * Set during render, not in an effect: the URL query arrives right after hydration.
+ */
+export function useSearchInput() {
+    const initialQuery = useInitialQuery()
+    const [input, setInput] = useState('')
+    const [seenQuery, setSeenQuery] = useState('')
+    if (initialQuery !== seenQuery) {
+        setSeenQuery(initialQuery)
+        if (initialQuery) setInput(initialQuery)
+    }
+    return [input, setInput]
 }
 
 /** Calls search_parse once (no debounce); resolves to the parsed block data or { available: false } */

@@ -31,6 +31,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
 {
     const LIST_OPTIONS_MAX = 1000;  // a longer list is not asked about at all
     const LIST_CHUNK = 200;         // a longer list is asked in parts of this size, one choice per part
+    const WORD_SUFFIX_MAX = 3;      // letters an inflected form adds to a word: "politic" -> "politics"
     const LIST_PROBABILITY_MIN = 0.3;
     const BOOL_MIN = 0.6;
     const RADIUS_DEFAULT_KM = 50;   // radius search when the query names a place but no distance
@@ -190,8 +191,9 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
     }
 
     /**
-     * The token is one of the words, or a form of it ("politic" / "politics", "dubbing" / "dub"):
-     * the shorter one, 4+ letters, starts the longer one.
+     * The token is one of the words, or an inflected form of it ("politic" / "politics", "translator" /
+     * "translators"): the shorter one, 4+ letters, starts the longer one, which adds at most
+     * WORD_SUFFIX_MAX letters. A distinct word stays ("java" is not "javascript").
      */
     protected function _isListWord(string $sToken, array $aWords): bool
     {
@@ -201,7 +203,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         foreach ($aWords as $sWord => $b) {
             $sShort = mb_strlen($sToken) <= mb_strlen($sWord) ? $sToken : $sWord;
             $sLong = $sShort === $sToken ? $sWord : $sToken;
-            if (mb_strlen($sShort) >= 4 && mb_strpos($sLong, $sShort) === 0)
+            if (mb_strlen($sShort) >= 4 && mb_strlen($sLong) - mb_strlen($sShort) <= self::WORD_SUFFIX_MAX && mb_strpos($sLong, $sShort) === 0)
                 return true;
         }
 
@@ -466,7 +468,8 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
     /**
      * Fields with the same caption ("Native" after "Source Language" and again after "Target Language")
      * would get the same question and the same answer, so each gets the caption of the field before it:
-     * "Native (Source Language)".
+     * "Native (Source Language)". Numbers keep their caption: numeric fields with the same caption are
+     * one group (_getNumberGroups), like Market's one-time and recurring "Price".
      */
     protected function _qualifySameCaptions(array $aFields): array
     {
@@ -474,7 +477,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
 
         $sPrevCaption = '';
         foreach ($aFields as $sName => $aField) {
-            if ($aCount[$aField['caption']] > 1 && $sPrevCaption !== '') {
+            if ($aField['kind'] != 'number' && $aCount[$aField['caption']] > 1 && $sPrevCaption !== '') {
                 $aFields[$sName]['caption'] = $aField['caption'] . ' (' . $sPrevCaption . ')';
                 $aFields[$sName]['caption_own'] = $aField['caption'];
                 $aFields[$sName]['caption_of'] = $sPrevCaption;

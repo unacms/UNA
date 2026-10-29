@@ -432,9 +432,15 @@ export function fillTabs(
 
     visit(menuItems, 0, null)
 
-    const currentIndex = routes.findIndex((route) =>
+    let currentIndex = routes.findIndex((route) =>
         isCurrentMenuItem(route.item, data, useSectionAsMenu, route.link)
     )
+    // A query the menu link does not have (`?q=` for the AI search, `?filters=`) is still that tab:
+    // UNA returns the page url with it, so match the path when no link matches the whole url.
+    if (currentIndex === -1 && !useSectionAsMenu) {
+        const pagePath = normalizeConductorLink(data.url).split('?')[0]
+        currentIndex = routes.findIndex((route) => !!route.link && !route.link.includes('?') && route.link === pagePath)
+    }
     if (currentIndex !== -1) {
         applyCurrentPageToRoute(routes[currentIndex], data, blocks)
     }
