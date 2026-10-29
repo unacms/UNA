@@ -1193,7 +1193,7 @@ export function TopSidebar({
                     <Row className="w-full items-center gap-4 min-w-0">
                         {(!!title && conductorTheme.show_title !== false && isHideOnDesktop) && (
                             // At most a third of the row, so a long section name truncates and the tabs keep their room.
-                            <Row className="hidden sm:flex items-center gap-2 shrink min-w-0 max-w-1/3 pl-3 lg:pl-4">
+                            <Row className="hidden sm:flex items-center gap-2 shrink min-w-0 max-w-1/3 pl-4">
                                 {!!icon && (
                                     <Icon
                                         icon={icon}
@@ -1201,7 +1201,8 @@ export function TopSidebar({
                                         className="text-card-foreground shrink-0"
                                     />
                                 )}
-                                <Text className="text-xl font-bold tracking-tight text-card-foreground font-main truncate">
+                                {/* The phone header title's size and weight (TextHeader), 16px in like the logo. */}
+                                <Text className="text-2xl font-bold tracking-tight text-card-foreground font-main truncate">
                                     {title}
                                 </Text>
                             </Row>
