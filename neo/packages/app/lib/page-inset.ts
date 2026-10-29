@@ -16,6 +16,25 @@ function asTiers(on: InsetTier[]): boolean | InsetTier[] {
     return on.length ? on : false;
 }
 
+/** The utility a token sets on `tier` (`sm:px-4` → `px-4` on tablet), or null for another tier or variant. */
+function utilityForTier(token: string, tier: InsetTier): string | null {
+    const prefix = PREFIX[tier];
+    if (prefix && !token.startsWith(prefix)) return null;
+    const rest = token.slice(prefix.length);
+    return VARIANT.test(rest) ? null : rest;
+}
+
+/** Whether the tokens turn side padding on (true), off (false) or leave it (null) on `tier`. */
+function sidePaddingOn(tokens: string[], tier: InsetTier): boolean | null {
+    let padded: boolean | null = null;
+    for (const token of tokens) {
+        const utility = utilityForTier(token, tier);
+        const match = utility === null ? null : SIDE_PADDING.exec(utility);
+        if (match) padded = match[1] !== '0';
+    }
+    return padded;
+}
+
 /**
  * Tiers where `classes` pads the sides, e.g. `p-4` → true, `sm:px-4` → ['tablet', 'desktop'],
  * `px-4 lg:px-0` → ['mobile', 'tablet']. A tier keeps the value of the tier below it until a
@@ -28,13 +47,7 @@ export function sidePaddingTiers(classes: string): boolean | InsetTier[] {
     let padded = false;
 
     for (const tier of TIERS) {
-        const prefix = PREFIX[tier];
-        for (const token of tokens) {
-            const rest = prefix ? (token.startsWith(prefix) ? token.slice(prefix.length) : null) : token;
-            if (rest === null || VARIANT.test(rest)) continue;
-            const match = rest.match(SIDE_PADDING);
-            if (match) padded = match[1] !== '0';
-        }
+        padded = sidePaddingOn(tokens, tier) ?? padded;
         if (padded) on.push(tier);
     }
 

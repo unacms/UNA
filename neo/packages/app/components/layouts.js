@@ -4,7 +4,7 @@ import { useCurrentUser, isWebAuthReady } from 'app/context/user'
 import { components } from 'app/components/registry';
 import { appSetting, getLayoutName, getPageContentPaddingTiers, getPageContentWidth, getPageData, getPageSettings, strToObj } from 'app/lib/util'
 import emitter, { EVENTS } from 'app/context/emitter';
-import { normalizeTiers, responsiveClasses } from 'app/lib/responsive-classes'
+import { responsiveClasses } from 'app/lib/responsive-classes'
 import { sidePaddingTiers } from 'app/lib/page-inset'
 import { PageChromeProvider } from 'app/ui/molecules/page/page-chrome'
 import Cell from 'app/components/cell';
@@ -145,14 +145,12 @@ function PageLayoutContent({ layout, data, skipProfileLock = false }) {
     // Derived values; React Compiler memoizes them on their real inputs.
     // UNA's page config, else the fork's `layouts[<uri>]` (as for the layout name).
     const pageConfig = getPageSettings(data?.config, data?.uri?.toString());
-    const paddingTiers = pageConfig?.padding ?? getPageContentPaddingTiers(layoutName);
+    const padding = responsiveClasses('padding', pageConfig?.padding ?? getPageContentPaddingTiers(layoutName));
     const pageClasses = {
-        padding: responsiveClasses('padding', paddingTiers),
+        padding,
         // Where `padding` keeps blocks off the screen edge, for the layouts that apply it
-        // (PageChromeProvider `inset`): the page's tiers, else the default padding's own.
-        paddingTiers: paddingTiers === undefined
-            ? sidePaddingTiers(appSetting('layout', 'page_content_padding_default'))
-            : normalizeTiers(paddingTiers),
+        // (PageChromeProvider `inset`): read from the classes, so a default fills in as it does there.
+        paddingTiers: sidePaddingTiers(padding),
         gap: responsiveClasses('gap', pageConfig?.gap),
         width: appSetting('layout', 'max_width'),
         contentWidth: getPageContentWidth(layoutName, data?.uri),

@@ -208,7 +208,7 @@ The page's App config (Studio → Developer → Pages → page → "Config (for 
 ```
 
 - `padding` and `gap` are the page content's padding and the gap between its blocks (`layout.page_content_padding` / `page_content_gap`; unset uses `page_content_padding_default`, `page_content_padding_layouts` and `page_content_gap_default`).
-- `designbox` is the default for every block on the page; a block's own keys win, key by key. It applies to every block with a design box, so leave out keys that only some blocks should take.
+- `designbox` is the default for every block on the page, browse lists included (the card `paddingForList` draws around them); a block's own keys win, key by key. It applies to every block with a design box, so leave out keys that only some blocks should take. `"rounded": false` means square everywhere.
 - Examples: margins everywhere with rounded cards needs nothing (the default). Content without a card on phones: `{"designbox": {"bg": ["tablet", "desktop"], "padding": ["tablet", "desktop"]}}`. Edge-to-edge square cards on phones, rounded cards with margins from tablet: `{"padding": ["tablet", "desktop"]}`.
 - A fork sets the same keys for a page URI in `layouts[<uri>]` of `customization/settings.js`, used when UNA sends no page config.
 

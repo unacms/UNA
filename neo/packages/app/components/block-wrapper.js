@@ -110,7 +110,9 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
     if (designbox.bg != null) bIsShowBg = normalizeTiers(designbox.bg);
     if (designbox.padding != null) bIsShowPadding = normalizeTiers(designbox.padding);
     if (designbox.title != null) bIsShowTitle = normalizeTiers(designbox.title);
-    const rounded = blockDesignbox.rounded ?? config?.rounded ?? pageDesignbox?.rounded ?? roundedFromInset(inset);
+    const roundedSetting = blockDesignbox.rounded ?? config?.rounded ?? pageDesignbox?.rounded;
+    // `false` is square everywhere; responsiveClasses would read it as unset.
+    const rounded = roundedSetting === false ? [] : roundedSetting ?? roundedFromInset(inset);
 
     if (typeof showBg !== 'undefined') {
         bIsShowBg = showBg;

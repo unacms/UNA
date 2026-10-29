@@ -33,3 +33,15 @@ export function PageChromeProvider({ inset, designbox, children }: Readonly<Page
 export function usePageChrome(): PageChrome {
     return useContext(PageChromeContext);
 }
+
+type ListEndpoint = { designbox?: Record<string, unknown> | null } & Record<string, unknown>;
+
+/**
+ * A list endpoint with the page's `designbox` under the list block's own keys, for
+ * `paddingForList`, which draws the card around a browse list from `endpoint.designbox`.
+ */
+export function usePageListEndpoint<T extends ListEndpoint>(endpoint: T | null | undefined): T | null | undefined {
+    const { designbox } = usePageChrome();
+    if (!endpoint || !designbox) return endpoint;
+    return { ...endpoint, designbox: { ...designbox, ...endpoint.designbox } };
+}
