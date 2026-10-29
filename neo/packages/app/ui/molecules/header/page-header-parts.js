@@ -501,14 +501,20 @@ export const PageHeaderBody = memo(({
     );
 
     const titleElement = isShowTitle && pageTitle ? <TextHeader text={pageTitle} /> : null;
-    const leftElement = hasTabBar && isFullContextSelector ? (
-        <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />
-    ) : isShowLogo && titleElement ? (
-        <Row className="items-center gap-3 min-w-0">
-            {Logo}
-            <View className="min-w-0 shrink">{titleElement}</View>
-        </Row>
-    ) : isShowLogo ? Logo : titleElement;
+    let leftElement = titleElement;
+    if (hasTabBar && isFullContextSelector) {
+        leftElement = <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />;
+    } else if (isShowLogo && titleElement) {
+        // The title truncates in the room the header's actions leave.
+        leftElement = (
+            <Row className="min-w-0 shrink items-center gap-3">
+                {Logo}
+                <View className="min-w-0 shrink">{titleElement}</View>
+            </Row>
+        );
+    } else if (isShowLogo) {
+        leftElement = Logo;
+    }
 
     const contextSelectorElement =
         isContextSelector && !isFullContextSelector ? (
@@ -542,12 +548,12 @@ export const PageHeaderBody = memo(({
         <>
             <Row className={' ' + contentClassName} onLayout={onMainHeaderLayout}>
                 <View className={' ' + appSetting('layout', 'header', 'content_left')}>
-                    <Row className='flex-none items-center gap-3'>
+                    <Row className='min-w-0 shrink items-center gap-3'>
                         {canShowBackButton && (
                             <BackButtonElement />
                         )}
                         
-                        <View className=" min-w-0 ">{leftElement}</View>
+                        <View className="min-w-0 shrink">{leftElement}</View>
                         {contextSelectorElement}
                     </Row>
                 </View>

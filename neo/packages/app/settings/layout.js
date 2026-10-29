@@ -114,7 +114,8 @@ export const settingsLayout = {
             /** Optional. When set (non-blank), applied to header content only while scrollY > 0. If unset, legacy `content_pinned_fixed` behavior is unchanged. */
             content_scrolled: ' ns--header-content-scrolled-- lg:backdrop-blur-lg ',
             content_pinned_fixed: '  ',
-            content_left: 'flex-none 2xl:w-full 2xl:max-w-1/4 px-4 gap-3',
+            // Shrinks (the page title truncates) so the actions on the right keep their room.
+            content_left: 'min-w-0 shrink 2xl:w-full 2xl:max-w-1/4 px-4 gap-3',
             content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl px-4 ',
             content_right: ' items-end flex-none 2xl:w-full 2xl:max-w-1/4 px-4 gap-3',
             active_item_indicator: 'absolute -bottom-2 left-0 h-0.5 rounded-full flex-none bg-ring',
