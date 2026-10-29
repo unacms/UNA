@@ -1192,7 +1192,8 @@ export function TopSidebar({
                       */}
                     <Row className="w-full items-center gap-4 min-w-0">
                         {(!!title && conductorTheme.show_title !== false && isHideOnDesktop) && (
-                            <Row className="hidden sm:flex items-center gap-2 shrink-0 min-w-0 pl-3 lg:pl-4">
+                            // At most a third of the row, so a long section name truncates and the tabs keep their room.
+                            <Row className="hidden sm:flex items-center gap-2 shrink min-w-0 max-w-1/3 pl-3 lg:pl-4">
                                 {!!icon && (
                                     <Icon
                                         icon={icon}
