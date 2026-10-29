@@ -2165,6 +2165,8 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
      */
     function parseLink($sLink, $sContent, $aAttrs = array())
     {
+        $aAttrs = $this->_getLinkAttrs($sLink, $aAttrs);
+
         $sAttrs = '';
         foreach($aAttrs as $sKey => $sValue)
             $sAttrs .= ' ' . $sKey . '="' . bx_html_attribute($sValue) . '"';
@@ -2182,6 +2184,8 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
      */
     function parseLinkByName($sName, $sLink, $sContent, $aAttrs = array())
     {
+        $aAttrs = $this->_getLinkAttrs($sLink, $aAttrs);
+
         $sAttrs = '';
         foreach($aAttrs as $sKey => $sValue)
             $sAttrs .= ' ' . $sKey . '="' . bx_html_attribute($sValue) . '"';
@@ -2194,8 +2198,20 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * A javascript: link only runs a script (a popup, a toggle), so it is a button: role="button" says so to
+     * assistive technology and keeps crawlers from counting it as a link (see BxBaseMenu::_getMenuAttrs).
+     */
+    protected function _getLinkAttrs($sLink, $aAttrs)
+    {
+        if(strncmp($sLink, 'javascript:', 11) === 0 && !isset($aAttrs['role']))
+            $aAttrs['role'] = 'button';
+
+        return $aAttrs;
+    }
+
+    /**
      * Parse tag <BUTTON>
-     * 
+     *
      * @param string $sContent link content
      * @param array $aAttrs an array of key => value pairs
      */

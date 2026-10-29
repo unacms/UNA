@@ -569,8 +569,10 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                 $aAttrs = [];
                 if(!empty($aButton['href']))
                     $aAttrs['href'] = $aButton['href'];
+                // a button that only runs a script (see BxBaseMenu::_getMenuAttrs)
                 if(!empty($aButton['onclick'])) {
                     $aAttrs['href'] = "javascript:void(0);";
+                    $aAttrs['role'] = 'button';
                     $aAttrs['onclick'] = $aButton['onclick'];
                 }
                 

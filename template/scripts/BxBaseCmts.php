@@ -889,6 +889,11 @@ class BxBaseCmts extends BxDolCmts
             'id' => $this->_aHtmlIds['counter'],
             'class' => $sClass,
             'href' => $sHref,
+            // A javascript: counter opens the comments in place: it is a button (see BxBaseMenu::_getMenuAttrs).
+            'bx_if:show_button' => [
+                'condition' => strncmp($sHref, 'javascript:', 11) === 0,
+                'content' => []
+            ],
             'bx_if:show_onclick' => [
                 'condition' => !empty($sOnclick),
                 'content' => [

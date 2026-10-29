@@ -2099,6 +2099,18 @@ $(document).ready(function() {
         $('[data-bx-sounds-switch]').closest('li').hide();
 });
 
+/**
+ * Links that only run a script carry role="button" (BxBaseMenu::_getMenuAttrs, BxDolTemplate::parseLink and the
+ * action counters). Like a real button they answer the Space key too: on release, and the press doesn't scroll.
+ */
+$(document).on('keydown', 'a[role="button"]', function(oEvent) {
+    if(oEvent.key == ' ')
+        oEvent.preventDefault();
+}).on('keyup', 'a[role="button"]', function(oEvent) {
+    if(oEvent.key == ' ')
+        this.click();
+});
+
 function bx_is_mouse()
 {
     return matchMedia('(pointer:fine)').matches;
