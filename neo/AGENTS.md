@@ -193,12 +193,24 @@ A block's chrome (background, padding, title) comes from UNA's `designbox_id`, w
 ```
 
 - Each key lists the tiers where that part shows: `mobile` (no prefix), `tablet` (`sm:`), `desktop` (`lg:`). `true` and `false` mean every tier or none.
+- Corners without a `rounded` key follow the page: rounded where the page's padding keeps the block off the screen edge, square where the block meets it. The `default`, `login` and universal column layouts tell their blocks through `PageChromeProvider` (`ui/molecules/page/page-chrome.tsx`); in other layouts (home, profile, post ...) blocks keep `theme.blocks` `u-block-rounded-default` (square on phones).
 - The background classes come from `lib/block-bg-classes.ts`; run its tests with `node --test packages/app/lib/block-bg-classes.test.ts`.
-- A missing key keeps `designbox_id`. Props passed from code (`showBg`, `showPadding`, `showTitle`) win over both.
+- A missing key takes the page's `designbox` (below), then `designbox_id`. Props passed from code (`showBg`, `showPadding`, `showTitle`) win over all of them.
 - Keys sit under `designbox` because every `config_api` key is also spread into each element of the block as a prop.
 - `components/block-wrapper.js` reads them and `ui/molecules/page/page-block.js` turns tiers into classes through `responsiveClasses`. Prefixed classes must stay listed in `@source inline(...)` in `design/styles/utilities.css`; update that list if `theme.blocks` `u-block-bg` or the block padding changes.
 - List (browse) blocks skip `BlockWrapper`. The list endpoint carries their `designbox`, and `paddingForList` (`default/functions.js`) turns `bg` / `rounded` into a card around the list. This is web only: a native list scrolls under the overlaid page header.
 - Use this rather than per-page or per-block overrides in code: block ids and pages differ between UNA sites.
+
+The page's App config (Studio → Developer → Pages → page → "Config (for App in JSON format)", sent as `config`) sets the page around its blocks, with the same tiers:
+
+```json
+{ "padding": ["tablet", "desktop"], "gap": true, "designbox": { "bg": ["tablet", "desktop"], "padding": ["tablet", "desktop"] } }
+```
+
+- `padding` and `gap` are the page content's padding and the gap between its blocks (`layout.page_content_padding` / `page_content_gap`; unset uses `page_content_padding_default`, `page_content_padding_layouts` and `page_content_gap_default`).
+- `designbox` is the default for every block on the page, browse lists included (the card `paddingForList` draws around them); a block's own keys win, key by key. It applies to every block with a design box, so leave out keys that only some blocks should take. `"rounded": false` means square everywhere.
+- Examples: margins everywhere with rounded cards needs nothing (the default). Content without a card on phones: `{"designbox": {"bg": ["tablet", "desktop"], "padding": ["tablet", "desktop"]}}`. Edge-to-edge square cards on phones, rounded cards with margins from tablet: `{"padding": ["tablet", "desktop"]}`.
+- A fork sets the same keys for a page URI in `layouts[<uri>]` of `customization/settings.js`, used when UNA sends no page config.
 
 ### Fonts
 

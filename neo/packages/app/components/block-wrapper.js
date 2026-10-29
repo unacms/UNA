@@ -9,9 +9,20 @@ import { Icon } from 'app/ui/atoms/icon'
 import { components } from 'app/components/registry'
 import { usePathname } from 'app/lib/hooks/router'
 import { normalizeTiers, responsiveClasses } from 'app/lib/responsive-classes'
+import { usePageChrome } from 'app/ui/molecules/page/page-chrome'
 
 function pathComparable(path) {
     return String(path || '').replace(/^\/+/, '').split(/[?#]/)[0]
+}
+
+/**
+ * Default corners from the page's `inset` (PageChromeProvider): rounded where its padding keeps
+ * the block off the screen edge, square where the block meets it. Unknown (`null`) leaves the
+ * theme's `u-block-rounded-default`.
+ */
+function roundedFromInset(inset) {
+    if (inset == null) return undefined
+    return inset === false ? [] : inset
 }
 
 function BlockHeaderMenu({ menu, pathname }) {
@@ -61,6 +72,7 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
     const { t } = useTranslation()
     const [showHelp, setShowHelp] = useState(false)
     const pathname = usePathname()
+    const { inset, designbox: pageDesignbox } = usePageChrome()
 
     const blockMenu = block?.menu?.items?.length ? block.menu : null
 
@@ -91,12 +103,16 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
     // The block's App config (Studio: "Config (for App in JSON format)") can set
     // the design box per breakpoint, e.g. {"designbox": {"bg": ["tablet", "desktop"]}}.
     // Each key (bg, padding, title, rounded) lists the tiers where that part shows;
-    // a missing key keeps designbox_id. Props from code still win below.
-    const designbox = config?.designbox || {};
+    // a missing key takes the page config's `designbox`, then designbox_id. Props from
+    // code still win below.
+    const blockDesignbox = config?.designbox || {};
+    const designbox = { ...pageDesignbox, ...blockDesignbox };
     if (designbox.bg != null) bIsShowBg = normalizeTiers(designbox.bg);
     if (designbox.padding != null) bIsShowPadding = normalizeTiers(designbox.padding);
     if (designbox.title != null) bIsShowTitle = normalizeTiers(designbox.title);
-    const rounded = designbox.rounded ?? config?.rounded;
+    const roundedSetting = blockDesignbox.rounded ?? config?.rounded ?? pageDesignbox?.rounded;
+    // `false` is square everywhere; responsiveClasses would read it as unset.
+    const rounded = roundedSetting === false ? [] : roundedSetting ?? roundedFromInset(inset);
 
     if (typeof showBg !== 'undefined') {
         bIsShowBg = showBg;

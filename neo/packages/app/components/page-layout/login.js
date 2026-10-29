@@ -8,6 +8,7 @@ import MenuFooter from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import { getPageContentWidth } from 'app/lib/util'
+import { PageChromeProvider } from 'app/ui/molecules/page/page-chrome'
 // `withAuthLinks`: the login page's own extras (forgot password, social sign-in, sign up).
 // Other pages on this layout (forgot-password, through UNA's page config) show just their form.
 function PageContent({ children, withAuthLinks }) {
@@ -42,7 +43,7 @@ function PageContent({ children, withAuthLinks }) {
 }
 
 export default function PageLayout({ data, children, pageClasses }) {
-    const { padding, gap } = pageClasses ?? {};
+    const { padding, paddingTiers, gap } = pageClasses ?? {};
     const contentWidth = getPageContentWidth(data?.layout, data?.uri)
     const isWeb = Platform.OS === 'web'
     const showLoginAside = data?.layout === 'layout_1_column_half'
@@ -54,7 +55,9 @@ export default function PageLayout({ data, children, pageClasses }) {
                         ? appStatic('components_logincontent')
                         : null}
                     <View className={`w-full mx-auto ${contentWidth}`}>
-                        <PageContent withAuthLinks={data?.uri === 'login'}>{children}</PageContent>
+                        <PageChromeProvider inset={paddingTiers}>
+                            <PageContent withAuthLinks={data?.uri === 'login'}>{children}</PageContent>
+                        </PageChromeProvider>
                     </View>
             </View>
             <MenuFooter />
