@@ -5,6 +5,7 @@
 --
 -- 'config_api' settings
 --
+UPDATE `sys_objects_menu` SET `config_api`='{"icon":"compass"}' WHERE `object`='sys_homepage_submenu';
 
 --
 -- 'active_api' switch

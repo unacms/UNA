@@ -36,6 +36,18 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(['bg' => true, 'padding' => true, 'title' => false], $aConfig['designbox'] ?? null);
     }
 
+    public function testHomepageSubmenuHasAnIconInTheApp(): void
+    {
+        // NEO shows a section's title with an icon: a module's own icon, else the `icon` of the submenu's App
+        // config. Explore, Updates and Trends belong to no module, so their submenu carries the icon.
+        $sSql = file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-menus.sql');
+        $bFound = preg_match("/UPDATE `sys_objects_menu` SET `config_api`='([^']*)' WHERE `object`='sys_homepage_submenu';/", (string)$sSql, $aMatch);
+
+        $this->assertSame(1, $bFound, 'enable-app-menus.sql sets the App config of the homepage submenu.');
+        $aConfig = json_decode($aMatch[1], true);
+        $this->assertSame('compass', $aConfig['icon'] ?? null, 'The Explore item\'s own icon, as in the site menu.');
+    }
+
     public function testPoweredByBadgeFollowsTheFooterColour(): void
     {
         $bFound = preg_match("/\\('sys_footer', 'system', 'powered_by', [^\\n]*?'_blank', '(<svg.*?<\\/svg>)'/", self::systemSql(), $aMatch);
