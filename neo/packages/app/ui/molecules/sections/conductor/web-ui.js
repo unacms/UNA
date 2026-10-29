@@ -1159,7 +1159,7 @@ export const HeaderContainer = ({
  * The bar frame around the tabs: optional section title on the left, `children`
  * (the tabs) in the middle, "Add" buttons on the right.
  *
- * On non-profile pages it hides itself from `hide_top_menu_from` (xl) up —
+ * On non-profile pages it hides itself from `hide_top_menu_from` (lg) up —
  * at that width the left column takes over both the nav and the title.
  * Wired from HeaderContainer in this file; page header lives in index.web.js.
  */
@@ -1186,25 +1186,27 @@ export function TopSidebar({
                 className={`${isHideOnDesktop ? '' : 'mx-auto'} ${widthClass} mx-auto`}
             >
                     {/*
-                      * Section title on the tab subbar, for the middle viewport range.
-                      * Below `lg` the title already shows in the page sub-header (see
-                      * the `setHeader` effect in index.web.js), and from
-                      * `hide_top_menu_from` (xl) up this whole bar is hidden and the
-                      * left column carries the title — so `hidden lg:flex` alone lands
-                      * it exactly in the gap where nothing else shows it. No `xl:`
-                      * gate is needed: the parent is already hidden there.
+                      * Section title on the tab row, on desktop only: phones and tablets show it
+                      * in the page header's main row, and from `hide_top_menu_from` (lg) this
+                      * whole bar is hidden and the left column carries the title. It shows only
+                      * where a fork keeps the bar past `lg` (a wider `hide_top_menu_from`).
                       */}
                     <Row className="w-full items-center gap-4 min-w-0">
                         {(!!title && conductorTheme.show_title !== false && isHideOnDesktop) && (
-                            <Row className="hidden lg:flex items-center gap-2 shrink-0 min-w-0 pl-3 lg:pl-4">
+                            // At most a third of the row, so a long section name truncates and the tabs keep their room.
+                            <Row className="hidden lg:flex items-center gap-2 shrink min-w-0 max-w-1/3 pl-4">
+                                {/* The desktop sidebar title's icon (SidebarTitle), from the same settings. */}
                                 {!!icon && (
-                                    <Icon
-                                        icon={icon}
-                                        size={22}
-                                        className="text-card-foreground shrink-0"
-                                    />
+                                    <View className={`${appSetting('conductor', 'sidebar_title_icon')} shrink-0`}>
+                                        <Icon
+                                            icon={icon}
+                                            size={appSetting('conductor', 'sidebar_title_icon_size')}
+                                            className={appSetting('conductor', 'sidebar_title_icon_class')}
+                                        />
+                                    </View>
                                 )}
-                                <Text className="text-xl font-bold tracking-tight text-card-foreground font-main truncate">
+                                {/* The phone header title's size and weight (TextHeader), 16px in like the logo. */}
+                                <Text className="text-2xl font-bold tracking-tight text-card-foreground font-main truncate">
                                     {title}
                                 </Text>
                             </Row>

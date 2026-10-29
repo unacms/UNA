@@ -354,7 +354,7 @@ export const settingsLayout = {
                     defaultSize: 25,
                     minSize: 20,
                     maxSize: 30,
-                    breakpoint: 'xl',
+                    breakpoint: 'lg',
                 },
                 center: { defaultSize: 50, minSize: 40, maxSize: 60 },
                 right: {
@@ -373,7 +373,7 @@ export const settingsLayout = {
                     defaultSize: 30,
                     minSize: 15,
                     maxSize: 30,
-                    breakpoint: 'xl',
+                    breakpoint: 'lg',
                     responsive: {
                         '2xl':{
                             defaultSize: 20,
