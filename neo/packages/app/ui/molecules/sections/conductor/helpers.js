@@ -432,9 +432,15 @@ export function fillTabs(
 
     visit(menuItems, 0, null)
 
-    const currentIndex = routes.findIndex((route) =>
+    let currentIndex = routes.findIndex((route) =>
         isCurrentMenuItem(route.item, data, useSectionAsMenu, route.link)
     )
+    // A query the menu link does not have (`?q=` for the AI search, `?filters=`) is still that tab:
+    // UNA returns the page url with it, so match the path when no link matches the whole url.
+    if (currentIndex === -1 && !useSectionAsMenu) {
+        const pagePath = normalizeConductorLink(data.url).split('?')[0]
+        currentIndex = routes.findIndex((route) => !!route.link && !route.link.includes('?') && route.link === pagePath)
+    }
     if (currentIndex !== -1) {
         applyCurrentPageToRoute(routes[currentIndex], data, blocks)
     }
@@ -540,7 +546,7 @@ function fetchRoutePage(link) {
  * meanwhile — addMoreData writes by index, so a late response would clobber
  * fresh state.
  */
-export async function ensureRouteInited(routes, index, setRoutes) {
+export async function ensureRouteInited(routes, index, setRoutes, prepareData) {
     const currentRoute = routes.find((item) => item.index === index)
     if (!currentRoute || currentRoute.inited || currentRoute.canNavigate === false) {
         return
@@ -561,11 +567,13 @@ export async function ensureRouteInited(routes, index, setRoutes) {
         return
     }
 
-    const settings = getPageSettings(sResponse.data?.config, getURI(currentRoute.link));
+    const data = prepareData ? prepareData(sResponse.data) : sResponse.data
 
-    const blocks = settings?.blocks || getBlocksFromData(sResponse.data)
+    const settings = getPageSettings(data?.config, getURI(currentRoute.link));
 
-    const contentAndEndpoint = processUrl(sResponse.data, settings?.blocks)
+    const blocks = settings?.blocks || getBlocksFromData(data)
+
+    const contentAndEndpoint = processUrl(data, settings?.blocks)
 
     addMoreData(
         contentAndEndpoint.content,
@@ -575,7 +583,7 @@ export async function ensureRouteInited(routes, index, setRoutes) {
         blocks,
         contentAndEndpoint.sidebar,
         contentAndEndpoint.leftbar,
-        sResponse.data,
+        data,
         link
     )
 }

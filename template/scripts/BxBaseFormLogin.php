@@ -29,15 +29,58 @@ class BxFormLoginCheckerHelper extends BxDolFormCheckerHelper
         return BxDolAccountQuery::getInstance()->getIdByPhone($s) ? _t('_sys_form_login_input_phone_error_not_unique') : true;       
     }
 
+    /**
+     * Check the code of two-factor login (login-step3) against the one sent by SMS (login-step2).
+     * A wrong code counts like a wrong password, and BX_ACCOUNT_2FA_LOGIN_CODE_ATTEMPTS of them end the sign-in.
+     */
     function checkCodeExist($s)
     {
         $s = trim($s);
         if($s == '') {
             return _t('_sys_form_login_input_code_error_empty');
         }
-       
+
+        $oPermalinks = BxDolPermalinks::getInstance();
+        $sUrlLogin = bx_absolute_url($oPermalinks->permalink('page.php?i=login'));
+        $sUrlStep2 = bx_absolute_url($oPermalinks->permalink('page.php?i=login-step2'));
+
         $oSession = BxDolSession::getInstance();
-        return $oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE) != $s ? _t('_sys_form_login_input_code_error_invalid', bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=login-step2'))) : true;          
+        $oAccount = BxDolAccount::getInstance($oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID));
+        $aAccountInfo = $oAccount ? $oAccount->getInfo() : false;
+        if (empty($aAccountInfo))
+            return _t('_sys_form_login_input_code_error_restart', $sUrlLogin);
+
+        if ((int)$aAccountInfo['locked']) {
+            BxTemplServiceLogin::reset2faLogin();
+            return _t('_sys_txt_login_locked', bx_absolute_url($oPermalinks->permalink('page.php?i=forgot-password')));
+        }
+
+        $aCode = $oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE);
+        if (!is_array($aCode) || empty($aCode['code']) || (int)$aCode['expires'] < time())
+            return _t('_sys_form_login_input_code_error_expired', $sUrlStep2);
+
+        // The try is counted before the code is compared, and in the database: parallel requests read
+        // the same session, so a count kept there would give each of them a guess of its own.
+        $iTry = !empty($aCode['attempts_key']) ? BxDolKey::getInstance()->useCounterKey($aCode['attempts_key'], BX_ACCOUNT_2FA_LOGIN_CODE_ATTEMPTS) : false;
+        if ($iTry === false) {
+            BxTemplServiceLogin::reset2faLogin();
+            return _t('_sys_form_login_input_code_error_attempts', $sUrlLogin);
+        }
+
+        // Only wrong codes count: a right one rejected later (say, by an expired form token) or sent twice keeps its try.
+        if (hash_equals((string)$aCode['code'], $s)) {
+            BxDolKey::getInstance()->giveBackCounterKey($aCode['attempts_key']);
+            return true;
+        }
+
+        bx_login_attempt_failed($aAccountInfo);
+
+        if ($iTry >= BX_ACCOUNT_2FA_LOGIN_CODE_ATTEMPTS) {
+            BxTemplServiceLogin::reset2faLogin();
+            return _t('_sys_form_login_input_code_error_attempts', $sUrlLogin);
+        }
+
+        return _t('_sys_form_login_input_code_error_wrong', $sUrlStep2);
     }   
 }
 

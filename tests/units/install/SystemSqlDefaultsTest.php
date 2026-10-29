@@ -24,16 +24,28 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(11, (int)$aMatch[1], 'On the site it is the "Add new..." card: content, title, background and padding (BX_DB_PADDING_DEF).');
     }
 
-    public function testHomeCreatePostBlockInAppHasNoTitleAndASolidPhoneBackground(): void
+    public function testHomeCreatePostBlockInAppHasNoTitle(): void
     {
-        // NEO draws the composer row straight in the block. Its App config keeps the background and padding,
-        // drops the design box's title, and makes the background opaque on phones, where the feed's cards are.
+        // NEO draws the composer row straight in the block. Its App config keeps the background and padding
+        // and drops the design box's title. Blocks and the feed's cards share one fill, so no `solid` key.
         $sSql = file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-pages.sql');
         $bFound = preg_match("/UPDATE `sys_pages_blocks` SET `config_api`='([^']*)' WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_title_sys_create_post';/", (string)$sSql, $aMatch);
 
         $this->assertSame(1, $bFound, 'enable-app-pages.sql sets the App config of the home create-post block.');
         $aConfig = json_decode($aMatch[1], true);
-        $this->assertSame(['bg' => true, 'padding' => true, 'title' => false, 'solid' => ['mobile']], $aConfig['designbox'] ?? null);
+        $this->assertSame(['bg' => true, 'padding' => true, 'title' => false], $aConfig['designbox'] ?? null);
+    }
+
+    public function testHomepageSubmenuHasAnIconInTheApp(): void
+    {
+        // NEO shows a section's title with an icon: a module's own icon, else the `icon` of the submenu's App
+        // config. Explore, Updates and Trends belong to no module, so their submenu carries the icon.
+        $sSql = file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-menus.sql');
+        $bFound = preg_match("/UPDATE `sys_objects_menu` SET `config_api`='([^']*)' WHERE `object`='sys_homepage_submenu';/", (string)$sSql, $aMatch);
+
+        $this->assertSame(1, $bFound, 'enable-app-menus.sql sets the App config of the homepage submenu.');
+        $aConfig = json_decode($aMatch[1], true);
+        $this->assertSame('compass', $aConfig['icon'] ?? null, 'The Explore item\'s own icon, as in the site menu.');
     }
 
     public function testPoweredByBadgeFollowsTheFooterColour(): void
@@ -119,5 +131,15 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
             $this->assertStringNotContainsString('bx-ti-search-button', $sHtml, $sFile . ': the search button comes from the member toolbar menu, not from the template.');
             $this->assertStringNotContainsString('bx_site_search_show', $sHtml, $sFile);
         }
+    }
+
+    public function testMenuItemsAreKeyedBySet(): void
+    {
+        $bFound = preg_match('/CREATE TABLE IF NOT EXISTS `sys_menu_items` \((.*?)\n\);/s', self::systemSql(), $aMatch);
+
+        $this->assertSame(1, $bFound, 'system.sql creates sys_menu_items.');
+        // Every menu reads its items by set; without the key each read scans the whole table.
+        // The key is on the set alone: items that share an `order` keep the order they had.
+        $this->assertStringContainsString('KEY `set_name` (`set_name`)', $aMatch[1]);
     }
 }

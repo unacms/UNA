@@ -123,7 +123,13 @@ class BxDolTranscoderImage extends BxDolTranscoder implements iBxDolFactoryObjec
      */
     public function getFileUrl($mixedHandler)
     {
-        if(($sFileUrl = $this->getOrigFileUrl($mixedHandler)) !== false) {
+        $sFileUrl = $this->getOrigFileUrl($mixedHandler);
+
+        // API gets the original image, SVG or not, as BxDolTranscoder::getFileUrl gives it, so don't read the file twice
+        if(bx_is_api())
+            return $sFileUrl;
+
+        if($sFileUrl !== false) {
             $sFileMimeType = $this->_oStorage->getMimeTypeByFileName($sFileUrl);
             if($this->isMimeTypeSvg($sFileMimeType))
                 return $sFileUrl;
@@ -142,7 +148,7 @@ class BxDolTranscoderImage extends BxDolTranscoder implements iBxDolFactoryObjec
      */
     public function getFileUrlNotReady($mixedHandler)
     {
-        return BX_DOL_URL_ROOT . 'image_transcoder.php?o=' . $this->_aObject['object'] . '&h=' . $mixedHandler . '&dpx=' . $this->getDevicePixelRatio() . '&t=' . time();
+        return BX_DOL_URL_ROOT . 'image_transcoder.php?o=' . $this->_aObject['object'] . '&h=' . $mixedHandler . '&dpx=' . $this->getDevicePixelRatio() . '&t=' . time() . '&s=' . $this->getHandlerSignature($mixedHandler);
     }
 
     public function isFileReady ($mixedHandlerOrig, $isCheckOutdated = true)

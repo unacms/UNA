@@ -27,6 +27,7 @@ import {
 import { useHeaderOptions } from 'app/ui/molecules/header/options';
 import { useIsTabSlideCopy } from 'app/context/tab-route-override';
 import MenuTop from 'app/components/nav/menu-top';
+import { isPageCoverShown } from 'app/lib/page-cover';
 
 const DEFAULT_CONTENT_PINNED_FIXED =
     ' bg-card backdrop-blur-xl shadow-sm ';
@@ -80,15 +81,20 @@ function settingString(value) {
 /**
  * Background of the strip the page header covers at the top of the content
  * (mobile layout, below lg): the list / page spacer on native, a block at the
- * top of the page on web. Same surface as list cards (`u-card-list`): solid on
- * phones, /80 from sm. It belongs to the content, so it scrolls away with it — the fixed
- * header keeps its gradient chrome (`layout.header.fade`).
+ * top of the page on web. Same surface as list cards (`u-card-list`, bg-card/60). It belongs
+ * to the content, so it scrolls away with it — the fixed header keeps its gradient
+ * chrome (`layout.header.fade`).
  */
-export const PAGE_HEADER_BAND_CLASS = 'bg-card sm:bg-card/80 lg:bg-transparent';
+export const PAGE_HEADER_BAND_CLASS = 'bg-card/60 lg:bg-transparent';
 
 /** The band's classes: `layout.header.band`, else PAGE_HEADER_BAND_CLASS (a fork's brand colour). */
 export function getPageHeaderBandClass() {
     return appSetting('layout', 'header', 'band') || PAGE_HEADER_BAND_CLASS;
+}
+
+/** Whether the page shows the band: its `band` header option, else `layout.header.band_by_default`. */
+export function isHeaderBandOn(band) {
+    return band ?? Boolean(appSetting('layout', 'header', 'band_by_default'));
 }
 
 /** How far the band reaches above the content top: covers an iOS pull-down bounce. */
@@ -100,6 +106,8 @@ const PAGE_HEADER_BAND_OVERSCROLL = 2000;
  * the band colour instead of its top edge and the screen behind it.
  */
 export function PageHeaderBand({ height }) {
+    const { band } = useHeaderOptions();
+    if (!isHeaderBandOn(band)) return null;
     return (
         <View
             pointerEvents="none"
@@ -241,6 +249,7 @@ export function usePageHeaderBase(pageData) {
         headerActions: options.actions,
         backButton: options.backButton,
         title: options.title,
+        band: isHeaderBandOn(options.band),
     }), [options]);
     const scrollDirection = useScrollDirection();
     const setScrollDirection = useSetScrollDirection();
@@ -258,7 +267,16 @@ export function usePageHeaderBase(pageData) {
         appSetting('native', 'collapsible_header') && !isDesktop;
     const isContextSelector = !!pageData?.context && (appSetting('context_selector', 'show_always') || pageData?.context?.current?.id);
     const isFullContextSelector = appSetting('context_selector', 'show_always');
-    const isShowLogo = isDesktop || (!isWeb && !currentUser) || isHome;
+    // Guests (and unconfirmed members on a locked site) have no bottom tab bar on phones and
+    // tablets, so the logo is their way home there; members see it on Home and on desktop.
+    const hasTabBar = !!currentUser && !(appSetting('layout', 'lock_unconfirmed') && !currentUser?.confirmed);
+    const isShowLogo = isDesktop || !hasTabBar || isHome;
+    // The page title follows the page's cover for this viewer (Studio → Pages → page → Cover); a
+    // page that passes `title` always shows it, one that draws its own heading sets
+    // `showTitle={false}`. Desktop names the page in its top menu instead, and an error page
+    // (403, 404) has no page to name.
+    const isShowTitle = !isDesktop && !pageData?.page_status
+        && (options.showTitle ?? (Boolean(options.title) || isPageCoverShown(pageData?.cover, Boolean(currentUser))));
     const isBackButton = header.backButton;
 
     const menuSettings = getMenuSettings(
@@ -360,7 +378,9 @@ export function usePageHeaderBase(pageData) {
         isCollapsibleHeader,
         isContextSelector,
         isFullContextSelector,
+        hasTabBar,
         isShowLogo,
+        isShowTitle,
         isWeb,
         onHeaderLayout,
         onMainHeaderLayout,
@@ -378,7 +398,9 @@ export const PageHeaderBody = memo(({
     isBackButton,
     isContextSelector,
     isFullContextSelector,
+    hasTabBar,
     isShowLogo,
+    isShowTitle,
     isWeb,
     onMainHeaderLayout,
     onSubHeaderLayout,
@@ -478,15 +500,21 @@ export const PageHeaderBody = memo(({
         </>
     );
 
-    const leftElement = (!currentUser || (appSetting('layout', 'lock_unconfirmed') && !currentUser?.confirmed)) ? (
-        Logo
-    ) : isFullContextSelector ? (
-        <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />
-    ) : isShowLogo ? (
-        Logo
-    ) : (
-        <TextHeader text={pageTitle} />
-    );
+    const titleElement = isShowTitle && pageTitle ? <TextHeader text={pageTitle} /> : null;
+    let leftElement = titleElement;
+    if (hasTabBar && isFullContextSelector) {
+        leftElement = <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />;
+    } else if (isShowLogo && titleElement) {
+        // The title truncates in the room the header's actions leave.
+        leftElement = (
+            <Row className="min-w-0 shrink items-center gap-3">
+                {Logo}
+                <View className="min-w-0 shrink">{titleElement}</View>
+            </Row>
+        );
+    } else if (isShowLogo) {
+        leftElement = Logo;
+    }
 
     const contextSelectorElement =
         isContextSelector && !isFullContextSelector ? (
@@ -520,12 +548,12 @@ export const PageHeaderBody = memo(({
         <>
             <Row className={' ' + contentClassName} onLayout={onMainHeaderLayout}>
                 <View className={' ' + appSetting('layout', 'header', 'content_left')}>
-                    <Row className='flex-none items-center gap-3'>
+                    <Row className='min-w-0 shrink items-center gap-3'>
                         {canShowBackButton && (
                             <BackButtonElement />
                         )}
                         
-                        <View className=" min-w-0 ">{leftElement}</View>
+                        <View className="min-w-0 shrink">{leftElement}</View>
                         {contextSelectorElement}
                     </Row>
                 </View>

@@ -15,9 +15,8 @@ import ProfilesList from 'app/ui/molecules/profile/profile-list'
 import { useTheme } from 'app/design/theme'
 import { Platform } from 'react-native'
 import SvgFile from 'app/ui/molecules/content/svg-file'
-import { useIconClassColor } from 'app/ui/atoms/icon-class-color'
+import Illustration from 'app/ui/molecules/content/illustration'
 import MenuFooter from 'app/components/nav/menu-footer'
-import { appSetting } from 'app/lib/util'
 const isWeb = Platform.OS === 'web'
 //mode can be 'adaptive', 'full', 'mark', 'text'
 const Logo = ({ mode = 'adaptive' }) => {
@@ -105,96 +104,25 @@ const Logo = ({ mode = 'adaptive' }) => {
     )
 }
 
-const SplashTextInner = () => {
+// Illustration, title and text: one stack with gap-6, no margins or padding of their own
+// (`isfirst` / `islast` turn off the H1's prose spacing). The same stack as the join page.
+const SplashTextComponent = (props) => {
     const { t } = useTranslation()
     return (
-        <View className="text-center max-w-3xl lg:text-start w-full flex-auto ">
-            <H1 className="text-center lg:text-start sm:pb-6" fontFamily="font-title">
-                {t('splash_page_title')} {appSetting('config', 'title')}
+        <View className="items-center lg:items-start gap-6 my-auto flex-auto w-full">
+            <View className="h-48 w-48">
+                <Illustration name="splash" />
+            </View>
+            <H1 isfirst islast className="text-center lg:text-start" fontFamily="font-title">
+                {t('splash_page_title')}
             </H1>
             <Text
                 accessible={true}
                 accessibilityRole="text"
-                className=" text-secondary-foreground text-center lg:text-start text-base sm:text-lg text-pretty"
+                className="max-w-3xl text-secondary-foreground text-center lg:text-start text-base sm:text-lg text-pretty"
             >
                 {t('splash_page_text')}
             </Text>
-         
-        </View>
-    )
-}
-
-const SPLASH_PATHS = [
-    'M10 19a2 2 0 1 0 -4 0a2 2 0 0 0 4 0',
-    'M18 5a2 2 0 1 0 -4 0a2 2 0 0 0 4 0',
-    'M10 5a2 2 0 1 0 -4 0a2 2 0 0 0 4 0',
-    'M6 12a2 2 0 1 0 -4 0a2 2 0 0 0 4 0',
-    'M18 19a2 2 0 1 0 -4 0a2 2 0 0 0 4 0',
-    'M14 12a2 2 0 1 0 -4 0a2 2 0 0 0 4 0',
-    'M22 12a2 2 0 1 0 -4 0a2 2 0 0 0 4 0',
-    'M6 12h4',
-    'M14 12h4',
-    'M15 7l-2 3',
-    'M9 7l2 3',
-    'M11 14l-2 3',
-    'M13 14l2 3',
-    'M10 5h4',
-    'M10 19h4',
-    'M17 17l2 -3',
-    'M19 10l-2 -3',
-    'M7 7l-2 3',
-    'M5 14l2 3',
-]
-
-// Inline (not a fetched file): on web it is in the SSR HTML and cannot be the LCP element,
-// on native there is no network fetch. Web: stroke inherits CSS `color` from the wrapper;
-// native: react-native-svg needs a concrete color resolved from the class.
-const SplashIllustration = () => {
-    const className = 'text-secondary-foreground'
-    const color = useIconClassColor(className) || 'currentColor'
-    return (
-        <View className={`w-full h-full ${className}`}>
-            <Svg
-                role="img"
-                aria-label="Splash screen illustration"
-                width="100%"
-                height="100%"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke={color}
-                strokeWidth={1}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            >
-                {SPLASH_PATHS.map((d) => (
-                    <Path key={d} d={d} />
-                ))}
-            </Svg>
-        </View>
-    )
-}
-
-const SplashTextComponent = (props) => {
-    return isWeb ? (
-        <View className="items-center lg:items-start relative gap-6 my-auto flex-auto w-full ">
-
-            <View className="relative flex-auto h-48 w-48">
-
-                <SplashIllustration />
-
-            </View>
-            <View className="flex-auto w-full items-center lg:items-start">
-                <SplashTextInner />
-            </View>
-        </View>
-    ) : (
-        <View className=" items-center lg:items-start flex-auto gap-6 w-full mx-auto">
-            <View className="flex-auto w-64 h-64">
-                <SplashIllustration />
-            </View>
-            <View className="flex-auto w-full">
-                <SplashTextInner />
-            </View>
         </View>
     )
 }
@@ -203,12 +131,8 @@ const SplashTextComponent = (props) => {
 
 const JoinTextComponent = (props) => {
     return (
-        <View className="flex-auto w-1/2 max-w-64">
-            <SvgFile
-                src_dark="create-account-dark.svg"
-                src_default="create-account-light.svg"
-                alt="Create account illustration"
-            />
+        <View className="h-48 w-48">
+            <Illustration name="join" />
         </View>
     )
 }

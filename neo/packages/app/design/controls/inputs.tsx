@@ -53,9 +53,14 @@ interface InputMultiProps extends CustomInputProps {
 
 export const TextInputClear = TextInputDef
 
-const getInputStyleProps = (style: any) =>
+// A single-line UITextField applies the size's line height (leading-*) to typed text but not to the
+// empty field, so the text jumped down on the first keystroke and the caret grew to the full line.
+// Without it the field centres the font's own line, the same before and after typing.
+const IOS_SINGLE_LINE_STYLE = { lineHeight: undefined };
+
+const getInputStyleProps = (style: any, multiline?: boolean) =>
     (isIos || style)
-        ? { style: [isIos && iosContinuousCurveStyle, style].filter(Boolean) }
+        ? { style: [isIos && iosContinuousCurveStyle, isIos && !multiline && IOS_SINGLE_LINE_STYLE, style].filter(Boolean) }
         : {};
 
 export const Input = forwardRef<TextInput, CustomInputProps>(
@@ -70,7 +75,7 @@ export const Input = forwardRef<TextInput, CustomInputProps>(
                     rounded === InputRounded.full && inputSettings.rounded.full,
                     className,
                 )}
-                {...getInputStyleProps(style)}
+                {...getInputStyleProps(style, props.multiline)}
                 {...props}
                 ref={ref}
             />

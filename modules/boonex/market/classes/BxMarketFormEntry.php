@@ -194,8 +194,9 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
 
     /**
      * Header Image and Icon ids submitted from API form: [field => file id], only for submitted fields.
+     * A field with someone else's file id is skipped and keeps its value.
      */
-    protected function _getImageFieldsApiValues()
+    protected function _getImageFieldsApiValues($aContentInfo = [])
     {
         $aResult = [];
         foreach($this->_aImageFieldsApi as $sField => $sCaption) {
@@ -206,7 +207,11 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
             if(!is_array($mixedValue))
                 $mixedValue = $mixedValue !== '' ? explode(',', $mixedValue) : [];
 
-            $aResult[$sField] = (int)array_pop($mixedValue);
+            $iFileId = (int)array_pop($mixedValue);
+            if(!$this->_oModule->isImageFileAllowed($iFileId, $aContentInfo))
+                continue;
+
+            $aResult[$sField] = $iFileId;
         }
 
         return $aResult;
@@ -277,6 +282,8 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
 
         $iContentId = parent::insert ($aValsToAdd, $isIgnore);
         if(!empty($iContentId)) {
+            $this->_oModule->resetNotAllowedImages($iContentId);
+
             $this->processFiles($CNF['FIELD_FILE'], $iContentId, true, $CNF['OBJECT_STORAGE_FILES']);
 
             // Cover is processed by parent.
@@ -313,9 +320,14 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
             }
         }
 
+        // Submitted image ids are checked against the product: its current images and its author's files.
+        $aContentInfoOld = $this->_oModule->_oDb->getContentInfoById($iContentId);
+        if(empty($aContentInfoOld) || !is_array($aContentInfoOld))
+            $aContentInfoOld = [];
+
         $aImagesApi = [];
         if(!empty($this->_aImageFieldsApi)) {
-            $aImagesApi = $this->_getImageFieldsApiValues();
+            $aImagesApi = $this->_getImageFieldsApiValues($aContentInfoOld);
             $aValsToAdd = array_merge($aValsToAdd, $aImagesApi);
         }
         else {
@@ -335,9 +347,9 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
         if(!empty($aPackage) && is_array($aPackage) && ($iFilePackage = array_pop($aPackage)))
             $aValsToAdd[$CNF['FIELD_PACKAGE']] = $iFilePackage;
 
-        $aContentInfoOld = !empty($aImagesApi) ? $this->_oModule->_oDb->getContentInfoById($iContentId) : [];
-
         $iResult = parent::update ($iContentId, $aValsToAdd, $aTrackTextFieldsChanges);
+        if($iResult !== false)
+            $this->_oModule->resetNotAllowedImages($iContentId, $aContentInfoOld);
 
         $this->processFiles($CNF['FIELD_FILE'], $iContentId, false, $CNF['OBJECT_STORAGE_FILES']);
 
@@ -368,7 +380,8 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
                     if($sFieldOther != $sField && (int)($aImagesApi[$sFieldOther] ?? ($aContentInfoOld[$sFieldOther] ?? 0)) == $iFileIdOld)
                         $bUsed = true;
 
-                if($iFileIdOld && !$bUsed && $oStorage)
+                // Never delete someone else's file, even if the product already points to it.
+                if($iFileIdOld && !$bUsed && $oStorage && $this->_oModule->isImageFileOwner($iFileIdOld, $aContentInfoOld))
                     $oStorage->deleteFile($iFileIdOld);
             }
         }

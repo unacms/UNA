@@ -46,6 +46,11 @@ type SwitchProps = {
     size?: ControlSize | LegacyControlSize;
     /** When false, skips haptics + native click sound. */
     feedback?: boolean;
+    /**
+     * Accessible name: screen readers announce a switch by it (WCAG 4.1.2). Pass the
+     * visible caption next to the switch.
+     */
+    label?: string;
 };
 
 export default function Switch({
@@ -54,6 +59,7 @@ export default function Switch({
     onValueChange,
     size = 'regular',
     feedback = true,
+    label,
 }: SwitchProps) {
     const resolvedSize = resolveControlSize(size);
     const trackSize =
@@ -125,6 +131,7 @@ export default function Switch({
     return (
         <Pressable
             accessibilityRole="switch"
+            accessibilityLabel={label || undefined}
             accessibilityState={{ checked: !!value, disabled: !!disabled }}
             aria-checked={!!value}
             aria-disabled={!!disabled}

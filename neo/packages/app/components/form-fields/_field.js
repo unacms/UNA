@@ -19,6 +19,8 @@ const floatedOffset = inputSettings.adaptive_label_floated_offset ?? -2
 const duration = inputSettings.adaptive_label_duration ?? 200
 const insideOffset = inputSettings.adaptive_label_floated_inside_offset ?? 6
 const insideSizes = inputSettings.adaptive_label_inside_sizes ?? []
+// iOS draws the label's glyphs higher in their box than the web does; added to both positions.
+const iosTextOffset = Platform.OS === 'ios' ? (inputSettings.adaptive_label_ios_text_offset ?? 0) : 0
 
 export function getFormFieldDomId(name) {
     if (name == null || name === '') return undefined
@@ -69,11 +71,12 @@ export function AdaptiveLabel({ caption, value, focused, htmlFor, inside, classN
 
     const restingY =
         boxH > 0 && labelH > 0
-            ? Math.max(0, (boxH - labelH) / 2) + restingOffset
+            ? Math.max(0, (boxH - labelH) / 2) + restingOffset + iosTextOffset
             : 0
     let floatedY = floatedOffset
     if (inside) floatedY = insideOffset
     else if (labelH > 0) floatedY = -labelH / 2 + floatedOffset
+    floatedY += iosTextOffset
 
     useEffect(() => {
         if (boxH <= 0 || labelH <= 0) return

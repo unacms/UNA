@@ -2758,15 +2758,10 @@ class BxMessengerModule extends BxBaseModGeneralModule
             'url' => $oObject->getUrl()
         );
 
-        BxDolPush::getObjectInstance()->send(
-            $iReceiverId,
-            array_merge($aInfo, array(
-                'icon' => $sType === 'bx_persons' ?
-                    $oSender->getThumb() :
-                    $oObject->getThumb()
-            )),
-            true
-        );
+        if(($oPush = BxDolPush::getObjectInstance()) !== false)
+            $oPush->send($iReceiverId, array_merge($aInfo, [
+                'icon' => $sType === 'bx_persons' ? $oSender->getThumb() : $oObject->getThumb()
+            ]), true);
     }
 
     public function actionGetVideoConferenceForm($iProfileId)

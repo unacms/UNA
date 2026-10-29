@@ -69,7 +69,7 @@ class BxDolStudioInstallerQuery extends BxDolModuleQuery
 
         if ($iResult > 0) {
             $iRet = (int)$this->lastId();
-            $this->cleanCache('sys_modules_list');
+            $this->cleanModulesListCache();
             return $iRet;
         } else {
             return 0;
@@ -111,7 +111,7 @@ class BxDolStudioInstallerQuery extends BxDolModuleQuery
 
         $this->deleteModuleTrackFiles($iId);
 
-        $this->cleanCache('sys_modules_list');
+        $this->cleanModulesListCache();
 
         return $iId;
     }

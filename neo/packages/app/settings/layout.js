@@ -108,12 +108,14 @@ export const settingsLayout = {
             // gentlest; `material` (ultraThin → thick), `hold`, `tint` also help.
             fade_blur: { material: 'thin', hold: 0.5, opacity: 0.8, extend: 16, tint: { dark: 0.75 } },
             /** Optional. When set (non-blank), appended to `container` while scrollY > 0 (full-width bar: shadow, border, etc.). */
-            container_scrolled: ' ns--header-wrapper-scrolled-- shadow-none lg:bg-card/60 lg:backdrop-blur-lg lg:shadow-border-b dark:lg:shadow-border-b-deep ne-- ',
-            content: ' ns--header-content-- items-center justify-between h-16 lg:bg-card/60 lg:backdrop-blur-lg lg:shadow-border-b dark:lg:shadow-border-b-deep mx-auto w-full ne-- ',
+            container_scrolled: ' ns--header-wrapper-scrolled-- shadow-none ne-- ',
+            // The card surface (bg-card/60) like blocks; the blur only once the page scrolls under it.
+            content: ' ns--header-content-- items-center justify-between h-16 lg:bg-card/60 lg:shadow-border-b dark:lg:shadow-border-b-deep mx-auto w-full ne-- ',
             /** Optional. When set (non-blank), applied to header content only while scrollY > 0. If unset, legacy `content_pinned_fixed` behavior is unchanged. */
-            content_scrolled: ' ns--header-content-scrolled--  ',
+            content_scrolled: ' ns--header-content-scrolled-- lg:backdrop-blur-lg ',
             content_pinned_fixed: '  ',
-            content_left: 'flex-none 2xl:w-full 2xl:max-w-1/4 px-4 gap-3',
+            // Shrinks (the page title truncates) so the actions on the right keep their room.
+            content_left: 'min-w-0 shrink 2xl:w-full 2xl:max-w-1/4 px-4 gap-3',
             content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl px-4 ',
             content_right: ' items-end flex-none 2xl:w-full 2xl:max-w-1/4 px-4 gap-3',
             active_item_indicator: 'absolute -bottom-2 left-0 h-0.5 rounded-full flex-none bg-ring',
@@ -123,7 +125,14 @@ export const settingsLayout = {
              * content, so it scrolls away with it while the header's glass buttons stay.
              * A fork can give it a brand colour, e.g. 'bg-accent-500 lg:bg-transparent'.
              */
-            band: 'bg-card sm:bg-card/80 lg:bg-transparent',
+            band: 'bg-card/60 lg:bg-transparent',
+            /**
+             * Whether pages show the band unless they say otherwise. Off: a page opts in with
+             * `<PageHeaderOptions band />` (the member feed does), and every other page gets
+             * the floating buttons over its own background. A fork that wants the band on
+             * most pages sets it to true; landing pages keep it off with `band={false}`.
+             */
+            band_by_default: false,
             /**
              * Colour scheme of the header's buttons and page title while they rest on the band
              * (iOS: SwiftUI glass chrome and labels; web: the buttons' colour tokens; the title
@@ -345,7 +354,7 @@ export const settingsLayout = {
                     defaultSize: 25,
                     minSize: 20,
                     maxSize: 30,
-                    breakpoint: 'xl',
+                    breakpoint: 'lg',
                 },
                 center: { defaultSize: 50, minSize: 40, maxSize: 60 },
                 right: {
@@ -364,7 +373,7 @@ export const settingsLayout = {
                     defaultSize: 30,
                     minSize: 15,
                     maxSize: 30,
-                    breakpoint: 'xl',
+                    breakpoint: 'lg',
                     responsive: {
                         '2xl':{
                             defaultSize: 20,

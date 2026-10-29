@@ -35,7 +35,8 @@ const PLATFORMS = {
         extends: 'tsconfig.json',
         suffix: '.native',
         extraSuffixes: ['.ios', '.android'],
-        dirs: ['packages/app', 'apps/expo/app'],
+        // apps/expo/plugins: config plugins are CommonJS .js; this picks up their .test.ts files.
+        dirs: ['packages/app', 'apps/expo/app', 'apps/expo/plugins'],
         ambient: ['apps/expo'],
         // Node tests import their module as `./name.ts` (Node runs them without a build), as apps/next allows.
         compilerOptions: { strict: true, allowImportingTsExtensions: true },

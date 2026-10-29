@@ -115,8 +115,11 @@ export function renderSlot(slot: UniListSlot): ReactNode {
     return typeof slot === 'function' ? (slot as () => ReactNode)() : slot
 }
 
-/** Time the list stays at opacity 0 before fading in (web). */
-export const REVEAL_DELAY_MS = 140
+/**
+ * Time the list stays hidden under the skeleton before fading in (web): a few
+ * frames for Virtuoso to measure the first rows.
+ */
+export const REVEAL_DELAY_MS = 50
 
 /** Handled only by index.web.tsx; must never reach LegendList. */
 export const WEB_ONLY_PROPS = [

@@ -12,6 +12,7 @@ import { cueAttributes, PressCueContext } from 'app/lib/sound'
 import { useTranslation } from 'react-i18next'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { layoutForList, paddingForList } from 'app/customization/functions'
+import { usePageListEndpoint } from 'app/ui/molecules/page/page-chrome'
 import {
     getAddon,
     getDropdownItemsFromLeftColumnBlock,
@@ -563,7 +564,7 @@ export function useListScene({
     )
 
     const layout = layoutForList(route?.endpoint)
-    const paddings = paddingForList(route?.endpoint)
+    const paddings = paddingForList(usePageListEndpoint(route?.endpoint))
 
     const Preload = useMemo(
         () => getSkeletonForList(skeletonKey, skeletonCount, true, layout, renderItem, paddings),

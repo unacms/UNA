@@ -530,21 +530,15 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
                     $oContentInfo = BxDolContentInfo::getObjectInstance($sContentInfo);
                     if (!$oContentInfo) {
                         $bSeoUrlFound = false;
-                    } else {
-                        $sSeoTitle = $oContentInfo->getContentTitle($sSeoParamValue);
                     }
-                    if (empty($sSeoTitle))
-                        $sSeoTitle = base_convert((string)sprintf('%u', crc32($sSeoParamValue . BX_DOL_SECRET)), 10, 36);
                 }
                 elseif ('profile_id' == $sSeoParamName) {
                     $oProfile = BxDolProfile::getInstance($sSeoParamValue);
                     if (!$oProfile) {
                         $bSeoUrlFound = false;
-                    } else {
-                        $sSeoTitle = $oProfile->getDisplayName();
                     }
                 }
-                
+
                 $r = false;
                 if (!$bSeoUrlFound) {
                     $sSeoPageUri = false;
@@ -552,6 +546,17 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
                     $r = BxDolPageQuery::getSeoLink($sPageModule, $sPageUri, ['param_value' => $sSeoParamValue]);
                 }
                 if ($bSeoUrlFound && !$r) {
+                    // the title is needed only for the URI of a new SEO link, so it isn't read when the link exists
+                    if ('id' == $sSeoParamName) {
+                        $sSeoTitle = $oContentInfo->getContentTitle($sSeoParamValue);
+                        if (empty($sSeoTitle)) {
+                            $sSeoTitle = base_convert((string)sprintf('%u', crc32($sSeoParamValue . BX_DOL_SECRET)), 10, 36);
+                        }
+                    }
+                    elseif ('profile_id' == $sSeoParamName) {
+                        $sSeoTitle = $oProfile->getDisplayName();
+                    }
+
                     $sSeoTitleLimited = BxTemplFunctions::getInstance()->getStringWithLimitedLength($sSeoTitle, 45);
                     $sUri = uriGenerate ($sSeoTitleLimited, 'sys_seo_links', 'uri', ['cond' => ['module' => $sPageModule, 'page_uri' => $sPageUri]]);
 
@@ -1034,7 +1039,11 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
                 $sVal = trim($sVal);
             });
             $aI = array_combine($aURIs, array_fill(0, count($aURIs), 1));
-            if (!preg_match('/\/oauth2\//', $_SERVER['REQUEST_URI']) /*&& !preg_match('/searchKeyword.php$/', $_SERVER['PHP_SELF'])*/ && !preg_match('/member.php$/', $_SERVER['PHP_SELF']) && !isset($aI[$sUri])) {
+
+            // The login pages are always open: locked pages send guests to the login form, member.php and the OAuth2 authorization
+            // show it too, and two-factor login goes on to its SMS and code steps (they show nothing without a password checked first).
+            // Only the page decides, never the request: its url, query string and path info are the guest's to write.
+            if (!in_array($sUri, ['login', 'login-step2', 'login-step3']) && !isset($aI[$sUri])) {
                 return true;
             }
         }

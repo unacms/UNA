@@ -37,7 +37,7 @@
  */
 
 import React, { createContext, memo, useContext, type ReactNode } from 'react';
-import type { ViewStyle } from 'react-native';
+import { Platform, type ViewStyle } from 'react-native';
 import { Pressable, View, MotionView, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { Icon } from 'app/ui/atoms/icon';
@@ -413,8 +413,8 @@ function canRenderExpoUIButton(props: NeoButtonProps, native: { config: Record<s
     if (!props.onPress && !glass) return false;
     // iOS Expo UI would render String(label) = "[object Object]".
     if (React.isValidElement(props.label ?? props.title)) return false;
-    // Expo UI has no spinner.
-    if (props.loading !== undefined && !glass) return false;
+    // iOS draws a SwiftUI ProgressView over the hidden label; the Android button has no spinner yet.
+    if (props.loading !== undefined && !glass && Platform.OS !== 'ios') return false;
     // Glass keeps Expo UI for selected + addon. Other styles have no native
     // selected/counter mapping and stay on the JS `selectedState` wash.
     if (parseNeoButtonAddon(props.addon) && !glass) return false;

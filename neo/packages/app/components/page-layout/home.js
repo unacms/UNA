@@ -445,7 +445,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
 
     return (
         <>
-            <PageHeaderOptions sub={subHeader} mobileOnly />
+            <PageHeaderOptions sub={subHeader} band mobileOnly />
             {BlocksCenter}
         
             <PanelGroup

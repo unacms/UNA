@@ -132,4 +132,11 @@ export const EVENTS = {
          *     start_new
          *     state — history, restart
          */
+
+    agentChat: 'agent_chat',
+        /* Any open agent chat, driven from outside (e.g. a worker).
+         *     send — agent_id, context_profile_id?, message: the chat of that agent (and
+         *            context, when given) sends `message` as the user; it sets `handled`
+         *            on the payload, so the sender knows whether a chat took it
+         */
 } as const;

@@ -17,7 +17,6 @@ function createBlockComponent({
         isBg,
         isPad,
         rounded,
-        solid,
         ...props
     }) {
         // isBg / isPad: on or off (UNA designbox), or the tiers ['mobile', 'tablet',
@@ -25,9 +24,8 @@ function createBlockComponent({
         const bg = baseClass === 'u-block-base' ? normalizeTiers(isBg) : false
         const pad = normalizeTiers(isPad)
 
-        // Card chrome (fill, outline shadow, radius) only where UNA background is on;
-        // `solid`: tiers with the opaque card fill (block config `designbox.solid`).
-        const bgClass = bg ? blockBgClasses(bg, solid) : ''
+        // Card chrome (fill, outline shadow, radius) only where UNA background is on.
+        const bgClass = bg ? blockBgClasses(bg) : ''
         const roundedClass = bg ? responsiveClasses('rounded', rounded) : ''
 
         // UNA padding: py on the shell, px on header / content / footer.

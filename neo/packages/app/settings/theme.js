@@ -37,6 +37,9 @@ export const settingsTheme = {
         // Set `enabled: false` to use plain CSS border-radius / no continuous curve.
         corner_smoothing: {
             enabled: true,
+            // false: web keeps plain CSS border-radius (no ×factor, no corner-shape); iOS keeps
+            // its continuous curve.
+            web: false,
             factor: 1.25,
             full_factor: 1,
         },

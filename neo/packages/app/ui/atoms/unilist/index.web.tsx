@@ -3,6 +3,7 @@ import type { ViewStyle } from 'react-native'
 import { View } from 'app/design/view'
 import { useRef, useEffect, useState, useCallback, forwardRef, useMemo, type ComponentType, type HTMLAttributes, type ReactNode } from 'react'
 import { paddingForList } from 'app/customization/functions'
+import { usePageListEndpoint } from 'app/ui/molecules/page/page-chrome'
 import {
     dedupeById,
     renderSlot,
@@ -11,6 +12,7 @@ import {
     IGNORED_PROPS,
     REVEAL_DELAY_MS,
     type UniListProps,
+    type UniListSlot,
 } from './shared'
 import { lazyComponent } from 'app/lib/lazy-component'
 
@@ -56,6 +58,13 @@ function parseHeight(height: unknown): string | undefined {
  */
 const INCREASE_VIEWPORT_BY = { top: 3000, bottom: 3000 }
 
+/**
+ * Row key by item id, not index: a row prepended (a new post over the socket)
+ * or removed then keeps the other rows mounted, with their state and measured
+ * size. A module constant for the same reason as INCREASE_VIEWPORT_BY.
+ */
+const computeItemKey = (index: number, item: any) => item?.id ?? item?.key ?? index
+
 type Overscan = { main: number; reverse: number }
 
 /**
@@ -85,6 +94,41 @@ const GridListComponent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivEleme
         />
     )
 })
+
+/**
+ * Preload → fade in. The list stays mounted under the skeleton (at zero
+ * height) so Virtuoso can measure and the header's filter form keeps its
+ * state. Once the preload goes away — and, for a grid, once Virtuoso has laid
+ * the rows out (`waitForGrid`) — the list fades in after a few frames, so it
+ * shows rows that are already laid out.
+ *
+ * The skeleton stays up until then: the caller drops it as soon as the data
+ * is there, and an empty area during the wait reads as a slower load.
+ *
+ * @returns whether the list shows, and the skeleton to render until it does.
+ */
+function useListReveal(preloadComponent: UniListSlot, waitForGrid: boolean) {
+    const [showContent, setShowContent] = useState(!preloadComponent)
+    // A slot can be a component or a render function, which useState and its
+    // setter would call; pass it through a callback so the slot itself is kept.
+    const [heldPreload, setHeldPreload] = useState<UniListSlot>(() => preloadComponent)
+
+    if (preloadComponent) {
+        if (showContent) setShowContent(false)
+        if (!heldPreload) setHeldPreload(() => preloadComponent)
+    }
+
+    useEffect(() => {
+        if (preloadComponent || waitForGrid || showContent) return undefined
+        const timer = setTimeout(() => {
+            setShowContent(true)
+            setHeldPreload(undefined)
+        }, REVEAL_DELAY_MS)
+        return () => clearTimeout(timer)
+    }, [preloadComponent, waitForGrid, showContent])
+
+    return { showContent, skeleton: showContent ? null : (preloadComponent || heldPreload) }
+}
 
 export type { UniListProps } from './shared'
 
@@ -130,7 +174,7 @@ export default function UniList(props: UniListProps) {
     const uniRef = useRef<any>(undefined)
     const rows = useMemo(() => dedupeById(rawData), [rawData])
     const isGrid = mode != 'simple'
-    const listPadding = paddingForList(endpoint)
+    const listPadding = paddingForList(usePageListEndpoint(endpoint))
 
     // ------------------------------------------------------------------
     // Scroller: own box or the window
@@ -149,32 +193,16 @@ export default function UniList(props: UniListProps) {
     }
 
     // ------------------------------------------------------------------
-    // Preload → fade in
+    // Preload → fade in (useListReveal)
     // ------------------------------------------------------------------
-    //
-    // The list stays mounted under the skeleton (at zero height) so Virtuoso
-    // can measure and the header's filter form keeps its state. Once the
-    // preload goes away — and, for a grid, once Virtuoso reports it has laid
-    // the rows out — the list fades in after a short delay so the swap does
-    // not flash.
     //
     // VirtuosoGrid reports ready only after it has *measured a row*, so an
     // empty grid never reports; do not wait for it when there is nothing to
     // lay out, or the header and the empty state would stay hidden.
 
     const [gridReady, setGridReady] = useState(false)
-    const [showContent, setShowContent] = useState(!preloadComponent)
     const waitForGrid = isGrid && !gridReady && rows.length > 0
-
-    useEffect(() => {
-        if (preloadComponent) {
-            setShowContent(false)
-            return undefined
-        }
-        if (waitForGrid) return undefined
-        const timer = setTimeout(() => setShowContent(true), REVEAL_DELAY_MS)
-        return () => clearTimeout(timer)
-    }, [preloadComponent, waitForGrid])
+    const { showContent, skeleton } = useListReveal(preloadComponent, waitForGrid)
 
     const onGridReadyStateChanged = useCallback((ready: boolean) => {
         if (ready) setGridReady(true)
@@ -251,6 +279,7 @@ export default function UniList(props: UniListProps) {
             ...componentsProp,
         },
         itemContent,
+        computeItemKey,
         ...(scrollToLastItem ? { initialTopMostItemIndex: rows.length } : {}),
         ...(isGrid ? { readyStateChanged: onGridReadyStateChanged } : {}),
         ...rest,
@@ -258,13 +287,11 @@ export default function UniList(props: UniListProps) {
 
     return (
         <View className="@container/list relative" style={wrapperStyle}>
-            {!showContent && preloadComponent ? (
-                <View>{renderSlot(preloadComponent)}</View>
-            ) : null}
+            {skeleton ? <View>{renderSlot(skeleton)}</View> : null}
             <View
                 className={`${listPadding} ${
                     showContent
-                        ? 'transition-opacity duration-500 ease-out opacity-100'
+                        ? 'transition-opacity duration-150 ease-out motion-reduce:transition-none opacity-100'
                         : 'absolute inset-x-0 top-0 h-0 overflow-hidden opacity-0 pointer-events-none'
                 }`}
                 style={wrapperStyle}

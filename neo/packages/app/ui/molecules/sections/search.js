@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Platform } from 'react-native'
+import { useDebouncer } from '@tanstack/react-pacer'
+import { SEARCH_DEBOUNCE_MS } from 'app/lib/search-debounce'
 import { appSetting, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { Text } from 'app/design/typography'
@@ -177,12 +179,28 @@ export function ElementSearchData(oProps) {
         redirectdRef.current.redirect(url)
     }
 
-    const handleSearch = async (value) => {
+    // The field updates at once; the request waits until typing pauses, and
+    // the previous results stay on screen until the next response replaces them.
+    const handleSearch = (value) => {
         setInputValue(value)
         searchRequest.current?.abort()
-        setPopupContent(null)
-        if (oProps.noPopup || value.length < 3) return
+        if (oProps.noPopup || value.length < 3) {
+            searchDebouncer.cancel()
+            setPopupContent(null)
+            return
+        }
+        searchDebouncer.maybeExecute(value)
+    }
 
+    const closePopup = () => {
+        searchDebouncer.cancel()
+        searchRequest.current?.abort()
+        setPopupContent(null)
+    }
+
+    const runSearch = async (value) => {
+        // Aborting the previous request drops its stale response.
+        searchRequest.current?.abort()
         const controller = new AbortController()
         searchRequest.current = controller
         const params = {
@@ -220,6 +238,8 @@ export function ElementSearchData(oProps) {
         }
     }
 
+    const searchDebouncer = useDebouncer(runSearch, { wait: SEARCH_DEBOUNCE_MS })
+
     const cnt = !!popupContent && popupContent
 
     const cnt2 = (
@@ -242,10 +262,7 @@ export function ElementSearchData(oProps) {
                 {oProps.icon}
                 <DropdownPopup
                     open={!!popupContent}
-                    onOpenChange={() => {
-                        searchRequest.current?.abort()
-                        setPopupContent(null)
-                    }}
+                    onOpenChange={closePopup}
                     trigger={
                         <Input
                             className="w-full"

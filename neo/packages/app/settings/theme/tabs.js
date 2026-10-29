@@ -71,7 +71,7 @@ export const settingsTabs = {
         glass: {
             indicator: 'pill',
             track:
-                'absolute inset-0 z-0 web:backdrop-blur-md bg-popover/50 shadow-btn-glass dark:shadow-btn-glass-deep pointer-events-none',
+                'absolute inset-0 z-0 web:backdrop-blur-md bg-popover/80 shadow-btn-glass dark:shadow-btn-glass-deep pointer-events-none',
             row: '',
             trigger_active: '',
             trigger_inactive:

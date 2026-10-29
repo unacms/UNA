@@ -22,12 +22,29 @@ if (isset($_POST['ID'])) { // login form is submitted
     $oForm->setRole(bx_get('role'));
     $bLoginSuccess = $oForm->isSubmittedAndValid();
 
+    // SMS two-factor login: a correct password leads to the code steps only, however the form is sent.
+    $sUrl2fa = '';
+    if ($bLoginSuccess) {
+        $oAccount = BxDolAccount::getInstance(trim($oForm->getCleanValue('ID')));
+        $aAccountInfo = $oAccount->getInfo();
+        if((getParam('sys_account_activation_2fa_enable') == 'on' && getParam('sys_sms_default') != '') 
+            && (getParam('sys_account_activation_2fa_lifetime') == 0 || (time() - $aAccountInfo['logged'] > getParam('sys_account_activation_2fa_lifetime')))) {
+            $oSession = BxDolSession::getInstance();
+            $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID, $oAccount->id());
+            $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER, $oForm->getRememberMe());
+            $oSession->unsetValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE);
+            $sUrl2fa = BX_DOL_URL_ROOT . BxDolPermalinks::getInstance()->permalink('page.php?i=login-step2');
+        }
+    }
+
     $bAjxMode = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') ? true : false;
     if ($bAjxMode) {
 
-        if ($bLoginSuccess) {
+        if ($sUrl2fa) {
+            $s = _t('_sys_txt_login_2fa_continue', $sUrl2fa);
+        }
+        else if ($bLoginSuccess) {
             $s = 'OK';
-            $oAccount = BxDolAccount::getInstance(trim($oForm->getCleanValue('ID')));
             $aAccount = bx_login($oAccount->id(), $oForm->getRememberMe());
         }
         else {
@@ -37,7 +54,7 @@ if (isset($_POST['ID'])) { // login form is submitted
         if (isset($_SERVER['HTTP_ACCEPT'])) {
             if (false !== strpos($_SERVER['HTTP_ACCEPT'], 'application/json') || false !== strpos($_SERVER['HTTP_ACCEPT'], 'text/javascript')) {
                 header('Content-type: application/json; charset=utf-8');
-                echo json_encode(['res' => $s, 'form' => $oForm->getCode()]);
+                echo json_encode(['res' => $s, 'form' => $oForm->getCode()] + ($sUrl2fa ? ['redirect' => $sUrl2fa] : []));
                 exit;
             }
         }
@@ -47,39 +64,29 @@ if (isset($_POST['ID'])) { // login form is submitted
         exit;
 
     } 
+    elseif ($sUrl2fa) {
+        header('Location: ' . $sUrl2fa);
+    }
     elseif ($bLoginSuccess) {
-        $sId = trim($oForm->getCleanValue('ID'));
-        $oAccount = BxDolAccount::getInstance($sId);
-        $aAccountInfo = $oAccount->getInfo();
-        if((getParam('sys_account_activation_2fa_enable') == 'on' && getParam('sys_sms_default') != '') 
-            && (getParam('sys_account_activation_2fa_lifetime') == 0 || (time() - $aAccountInfo['logged'] > getParam('sys_account_activation_2fa_lifetime')))) {
-            $oSession = BxDolSession::getInstance();
-            $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID, trim($oForm->getCleanValue('ID')));
-            $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER, $oForm->getRememberMe());
-            header('Location: ' . BX_DOL_URL_ROOT . BxDolPermalinks::getInstance()->permalink('page.php?i=login-step2'));
-        }
-        else{
-    	   
-            $aAccount = bx_login($oAccount->id(), $oForm->getRememberMe());
+        $aAccount = bx_login($oAccount->id(), $oForm->getRememberMe());
 
-            $sUrlRelocate = $oForm->getCleanValue('relocate');
-            if (!$sUrlRelocate || 0 !== strncmp($sUrlRelocate, BX_DOL_URL_ROOT, strlen(BX_DOL_URL_ROOT)))
-                $sUrlRelocate = BX_DOL_ROLE_ADMIN == $oForm->getRole() ? BX_DOL_URL_STUDIO . 'launcher.php' : BX_DOL_URL_ROOT . 'member.php';
+        $sUrlRelocate = $oForm->getCleanValue('relocate');
+        if (!$sUrlRelocate || 0 !== strncmp($sUrlRelocate, BX_DOL_URL_ROOT, strlen(BX_DOL_URL_ROOT)))
+            $sUrlRelocate = BX_DOL_ROLE_ADMIN == $oForm->getRole() ? BX_DOL_URL_STUDIO . 'launcher.php' : BX_DOL_URL_ROOT . 'member.php';
 
-            bx_alert('account', 'login_after', $oAccount->id(),  false, array(
-                'account' => $aAccount,
-                'url_relocate' => &$sUrlRelocate,
-                'url_relocate_ref' => &$sUrlRelocate,
-            ));
+        bx_alert('account', 'login_after', $oAccount->id(),  false, array(
+            'account' => $aAccount,
+            'url_relocate' => &$sUrlRelocate,
+            'url_relocate_ref' => &$sUrlRelocate,
+        ));
 
-            BxDolTemplate::getInstance()->setPageNameIndex (BX_PAGE_TRANSITION);
-            BxDolTemplate::getInstance()->setPageHeader (_t('_Please Wait'));
-            BxDolTemplate::getInstance()->setPageContent ('page_main_code', MsgBox(_t('_Please Wait')));
-            BxDolTemplate::getInstance()->setPageContent ('url_relocate', bx_html_attribute($sUrlRelocate, BX_ESCAPE_STR_QUOTE));
+        BxDolTemplate::getInstance()->setPageNameIndex (BX_PAGE_TRANSITION);
+        BxDolTemplate::getInstance()->setPageHeader (_t('_Please Wait'));
+        BxDolTemplate::getInstance()->setPageContent ('page_main_code', MsgBox(_t('_Please Wait')));
+        BxDolTemplate::getInstance()->setPageContent ('url_relocate', bx_html_attribute($sUrlRelocate, BX_ESCAPE_STR_QUOTE));
 
-            BxDolTemplate::getInstance()->getPageCode();
+        BxDolTemplate::getInstance()->getPageCode();
         exit;
-        }
     }
 
 }

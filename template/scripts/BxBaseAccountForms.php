@@ -90,7 +90,7 @@ class BxBaseAccountForms extends BxDolProfileForms
 
         if (!$oForm->isSubmittedAndValid()) {
             
-            $sCode = $oForm->getCode();
+            $sCode = !$bIsApi ? $oForm->getCode() : ''; // the API returns getCodeAPI below
             $aCodeApi = [];
 
             /**

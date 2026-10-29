@@ -18,7 +18,18 @@ import { useIsDesktop } from 'app/context/measure';
  * touch the focused tab's header.
  */
 
-/** `main` replaces the whole bar; `sub` is the row under it; `hidden` drops the bar. */
+/**
+ * `main` replaces the whole bar; `sub` is the row under it; `hidden` drops the bar.
+ * `band` draws the band behind the bar at rest on phones and tablets
+ * (`layout.header.band`); without it the bar is floating buttons over the page,
+ * with the scroll fade. Unset follows `layout.header.band_by_default` (off), so
+ * pages that want it say so (the member feed); `band={false}` keeps it off on a
+ * page even when a fork turns it on by default (landing pages).
+ * `showTitle` shows or hides the page title on phones and tablets. Unset, the title
+ * follows the page's cover in Studio (Pages → page → Cover) for this viewer, and a
+ * `title` passed here always shows; pages that draw their own heading (landing pages)
+ * set `showTitle={false}`.
+ */
 export const defaultHeaderOptions = Object.freeze({
     main: null,
     sub: null,
@@ -26,6 +37,8 @@ export const defaultHeaderOptions = Object.freeze({
     hidden: false,
     title: false,
     backButton: false,
+    band: null,
+    showTitle: null,
 });
 
 const OPTION_KEYS = Object.keys(defaultHeaderOptions);
@@ -102,7 +115,7 @@ export function useHeaderOptions() {
  * registered at all (not registered as `null`), so it never shadows another
  * owner of the same key. Saves every page from `isDesktop ? null : <…/>`.
  */
-export function PageHeaderOptions({ main, sub, actions, hidden, title, backButton, mobileOnly = false }) {
+export function PageHeaderOptions({ main, sub, actions, hidden, title, backButton, band, showTitle, mobileOnly = false }) {
     const registry = useContext(HeaderOptionsRegistryContext);
     const isDesktop = useIsDesktop();
     const active = !(mobileOnly && isDesktop);
@@ -112,9 +125,9 @@ export function PageHeaderOptions({ main, sub, actions, hidden, title, backButto
     // identity, so callers should memo `sub`/`main` like any other element.
     useIsoLayoutEffect(() => {
         if (!registry || !active) return undefined;
-        registry.set(id, pickDefined({ main, sub, actions, hidden, title, backButton }));
+        registry.set(id, pickDefined({ main, sub, actions, hidden, title, backButton, band, showTitle }));
         return undefined;
-    }, [registry, id, active, main, sub, actions, hidden, title, backButton]);
+    }, [registry, id, active, main, sub, actions, hidden, title, backButton, band, showTitle]);
 
     // Also runs when `active` flips to false (desktop resize), dropping the entry.
     useIsoLayoutEffect(() => {

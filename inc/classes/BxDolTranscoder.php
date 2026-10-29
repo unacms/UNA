@@ -367,6 +367,7 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
      */
     public function getFileUrl($mixedHandler)
     {
+        // BxDolTranscoderImage::getFileUrl returns the original in API mode by itself, change both together
         if (bx_is_api() && !($this instanceof BxDolTranscoderVideo))
             return $this->getOrigFileUrl($mixedHandler);
         
@@ -401,6 +402,23 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
     }
 
     /**
+     * Get local path of the file which @see getFileUrl returns, to read the file from the disk instead of the url.
+     * @param $mixedHandler - file handler
+     * @return file path, or false if the file isn't ready or isn't stored locally.
+     */
+    public function getFileLocalPath($mixedHandler)
+    {
+        if (bx_is_api() && !($this instanceof BxDolTranscoderVideo))
+            return $this->getOrigFileLocalPath($mixedHandler);
+
+        if (!$this->isFileReady($mixedHandler))
+            return false;
+
+        $iFileId = $this->_oDb->getFileIdByHandler($this->processHandlerForRetinaDevice($mixedHandler));
+        return $iFileId ? $this->_oStorage->getFileLocalPath($iFileId) : false;
+    }
+
+    /**
      * alias for @see getFileUrl
      */
     public function getFileUrlById($mixedHandler)
@@ -424,12 +442,17 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
         if (!$this->isFileReady($mixedHandler) && ($this->_sQueueTable || !$this->transcode($mixedHandler)))
             return false;
 
-        $iFileId = $this->_oDb->getFileIdByHandler($this->processHandlerForRetinaDevice($mixedHandler));
+        $sHandler = $this->processHandlerForRetinaDevice($mixedHandler);
+        $iFileId = $this->_oDb->getFileIdByHandler($sHandler);
         $aFile = $iFileId ? $this->_oStorage->getFile($iFileId) : false;
 
         // a private file has a url with a short-lived token, crawlers come later
         if (!$aFile || $aFile['private'] || strncmp($aFile['mime_type'], 'image/', 6) !== 0 || $this->_oStorage->isMimeTypeSvg($aFile['mime_type']))
             return false;
+
+        // as getFileUrl does: a copy used only for previews mustn't be pruned as unused
+        if ($this->_aObject['atime_tracking'])
+            $this->_oDb->updateAccessTime($sHandler);
 
         // a local file can be gone while its record is there; a remote one isn't measured
         $sPath = $this->_oStorage->getFileLocalPath($iFileId);
@@ -643,11 +666,60 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
     }
 
     /**
+     * Get local path of the original file, or false if it isn't stored locally.
+     */
+    public function getOrigFileLocalPath ($mixedHandler)
+    {
+        switch ($this->_aObject['source_type']) {
+            case 'Storage':
+                $oStorageOriginal = BxDolStorage::getObjectInstance($this->_aObject['source_params']['object']);
+                return $oStorageOriginal ? $oStorageOriginal->getFileLocalPath($mixedHandler) : false;
+
+            case 'Folder':
+                $sPath = BX_DIRECTORY_PATH_ROOT . $this->_aObject['source_params']['path'] . $mixedHandler;
+                return file_exists($sPath) ? $sPath : false;
+        }
+
+        return false;
+    }
+
+    /**
      * Get file url when file isn't transcoded yet
      */
     public function getFileUrlNotReady($mixedHandler)
     {
         return false;
+    }
+
+    /**
+     * Signature for image_transcoder.php links (the 's' param).
+     * The page which prints a link has checked that the viewer may see the file,
+     * image_transcoder.php only checks that the link was made here, so file ids can't be enumerated.
+     * It is bound to the source file, not to the transcoder, because every transcoder of a source
+     * makes a copy of the same file (size, poster, mp4).
+     * @param $mixedHandler - file handler
+     * @return signature string
+     */
+    public function getHandlerSignature($mixedHandler)
+    {
+        $aSource = $this->_aObject['source_params'];
+        $sSource = isset($aSource['object']) ? 'storage:' . $aSource['object'] : 'folder:' . ($aSource['path'] ?? '');
+
+        return substr(hash_hmac('sha256', 'transcoder|' . $sSource . '|' . $mixedHandler, BX_DOL_SECRET), 0, 32);
+    }
+
+    /**
+     * Check the signature of image_transcoder.php link, @see getHandlerSignature
+     * @param $mixedHandler - file handler
+     * @param $sSignature - signature from the link
+     * @return true if signature is valid, false otherwise
+     */
+    public function isHandlerSignatureValid($mixedHandler, $sSignature)
+    {
+        if (!is_scalar($mixedHandler) || !is_string($sSignature) || '' === $sSignature)
+            return false;
+
+        return hash_equals($this->getHandlerSignature($mixedHandler), $sSignature);
     }
 
     public function getTmpFilename ($sOverrideName = false)

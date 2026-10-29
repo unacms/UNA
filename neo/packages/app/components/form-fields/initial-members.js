@@ -2,7 +2,9 @@ import Field from './_field';
 import FieldWell from './_well';
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
-import { useState, useEffect, useReducer } from 'react';
+import { useState, useEffect, useReducer, useRef } from 'react';
+import { useDebouncedCallback } from '@tanstack/react-pacer';
+import { SEARCH_DEBOUNCE_MS } from 'app/lib/search-debounce';
 import { fetcher } from 'app/lib/fetcher';
 import Profile from 'app/ui/molecules/profile/profile'
 import { NeoButton, Input, Modal } from 'app/design/controls'
@@ -106,7 +108,10 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
         dispatch({ type: 'searchFinished', suggestedUsers: extraList, searchText: '' });
     }, [extraList]);
 
-    const onChangeText = async (sValue) => {
+    // One request per typing pause; the current suggestions stay until it answers.
+    const searchIdRef = useRef(0);
+    const onChangeText = useDebouncedCallback(async (sValue) => {
+        const searchId = ++searchIdRef.current;
         dispatch({ type: 'setLoading' })
         let suggestions = []
         try {
@@ -115,8 +120,10 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
         } catch {
             suggestions = []
         }
+        // Drop the response if a newer search has started since.
+        if (searchId !== searchIdRef.current) return;
         dispatch({ type: 'searchFinished', suggestedUsers: [...matchExtra(sValue), ...suggestions], searchText: sValue })
-    };
+    }, { wait: SEARCH_DEBOUNCE_MS });
 
     const onSelectUser = (oData) => {
         dispatch({ type: 'userSelected', selectedUsers: [...state.selectedUsers, oData], suggestedUsers: state.suggestedUsers.filter((user) => user.id !== oData.id) })

@@ -3159,10 +3159,14 @@
 	<string name="_sys_form_login_input_remember_me"><![CDATA[Запомнить меня]]></string>
 	<string name="_sys_form_login_input_sendsms"><![CDATA[Отправить SMS]]></string>
 	<string name="_sys_form_login_input_submit"><![CDATA[Вход]]></string>
+	<string name="_sys_form_login_input_code_error_attempts"><![CDATA[Слишком много неверных кодов. <a href="{0}">Войдите снова</a>.]]></string>
 	<string name="_sys_form_login_input_code_error_empty"><![CDATA[Обязательное поле.]]></string>
+	<string name="_sys_form_login_input_code_error_expired"><![CDATA[Срок действия кода подтверждения истёк. <a href="{0}">Отправить новый код</a>.]]></string>
 	<string name="_sys_form_login_input_phone_error_format"><![CDATA[Телефон должен содержать только цифры и начинаться с '+']]></string>
 	<string name="_sys_form_login_input_phone_error_not_unique"><![CDATA[Этот телефон уже кем-то используется]]></string>
 	<string name="_sys_form_login_input_code_error_invalid"><![CDATA[Неправильный код проверки. Пожалуйста, повторите код или  <a href="{0}">измените телефонный номер и начните сначала</a>.]]></string>
+        <string name="_sys_form_login_input_code_error_restart"><![CDATA[Время входа истекло. <a href="{0}">Войдите снова</a>.]]></string>
+        <string name="_sys_form_login_input_code_error_wrong"><![CDATA[Неверный код подтверждения. Попробуйте ещё раз или <a href="{0}">отправьте новый код</a>.]]></string>
         <string name="_sys_form_manage"><![CDATA[Форма управления]]></string>
         <string name="_sys_form_display_manage_approve"><![CDATA[Форма управления: Одобрить]]></string>
         <string name="_sys_form_manage_input_sys_content_id"><![CDATA[Идентификатор контента]]></string>
@@ -4342,7 +4346,9 @@
     <string name="_sys_txt_form_submission_error_csrf_expired"><![CDATA[Маркер устарел. Пожалуйста попробуйте снова.]]></string>
 
     <string name="_sys_txt_homepage_cover"><![CDATA[Сплоченность людей — нерушимая крепость.<br /><button class="bx-btn bx-hide-when-logged-in bx-def-margin-top" onclick="document.location='{0}'">Присоединиться!</button>]]></string>
+    <string name="_sys_txt_login_2fa_continue"><![CDATA[Чтобы завершить вход, введите код из SMS: <a href="{0}">продолжить</a>.]]></string>
     <string name="_sys_txt_login_2fa_description"><![CDATA[Двухэтапная авторизация включена. В дополнении к email-у и паролю, Вам нужно будет ввести код проверки, который мы вышлем вам в SMS.]]></string>
+    <string name="_sys_txt_login_2fa_description_phone"><![CDATA[Включена двухфакторная аутентификация: мы отправим код подтверждения на телефон ниже.]]></string>
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Ваш код проверки {0}.]]></string>
     <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[Произошла ошибка, пожалуйста, уведомите о ней администратора сайта.]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Войти]]></string>

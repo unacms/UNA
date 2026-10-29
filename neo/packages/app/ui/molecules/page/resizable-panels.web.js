@@ -7,9 +7,9 @@ import { appSetting} from 'app/lib/util';
 const panelTheme = appSetting('theme', 'panels');
 
 // Room `clipInset` leaves around a PanelGroup's clip edge: block chrome
-// (`shadow-block-outline` and its `-deep` variant, design/styles/theme.css) reaches 3px
-// outside a card.
-const CLIP_INSET = 4;
+// (`shadow-block-outline` and its `-deep` variant, design/styles/theme.css: 0 2px 8px -2px)
+// paints up to 9px below a card and 7px to its sides.
+const CLIP_INSET = 10;
 const clipInsetStyle = {
     padding: CLIP_INSET,
     margin: -CLIP_INSET,

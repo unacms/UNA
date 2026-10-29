@@ -53,6 +53,8 @@ define('BX_NTFS_SLTMODE_SITE_PUSH', 14);
 
 class BxNtfsModule extends BxBaseModNotificationsModule
 {
+    protected $_aLiveUpdatesUnreadNum = []; ///< unread notifications count by owner for the live updates of one request
+
     /**
      * Constructor
      */
@@ -461,11 +463,7 @@ class BxNtfsModule extends BxBaseModNotificationsModule
             if($oPrivacyExt !== false && !$oPrivacyExt->check($aEvent['id'], $iViewerId))
                 continue;
 
-            $iContentObjectId = $this->_oConfig->getContentObjectId($aEvent);
-            if($iContentObjectId === false) {
-                $this->_oTemplate->getPost($aEvent, $aBrowseParams);
-                $iContentObjectId = $this->_oConfig->getContentObjectId($aEvent);
-            }
+            $iContentObjectId = $this->_getContentObjectId($aEvent, $aBrowseParams);
 
             $sSrvModule = $this->_oConfig->getContentModule($aEvent);
             $sSrvMethod = 'check_allowed_with_content_for_profile';
@@ -538,8 +536,12 @@ class BxNtfsModule extends BxBaseModNotificationsModule
      */
     public function serviceGetLiveUpdates($aMenuItemParent, $aMenuItemChild, $iCount = 0)
     {
-        $iOwnerId = $this->getUserId();
-        $iCountNew = $this->serviceGetUnreadNotificationsNum($iOwnerId);
+        //--- Two live updates (the menu's and the toolbar's) ask for the same owner's count in one poll.
+        $iOwnerId = (int)$this->getUserId();
+        if(!isset($this->_aLiveUpdatesUnreadNum[$iOwnerId]))
+            $this->_aLiveUpdatesUnreadNum[$iOwnerId] = $this->serviceGetUnreadNotificationsNum($iOwnerId);
+
+        $iCountNew = $this->_aLiveUpdatesUnreadNum[$iOwnerId];
         if($iCountNew == $iCount)
 			return false;
 
@@ -559,6 +561,27 @@ class BxNtfsModule extends BxBaseModNotificationsModule
     /*
      * COMMON METHODS
      */
+
+    /**
+     * Content object id of an event, for the unread notifications count. The id is in the content
+     * stored with a processed event: only an event which isn't processed yet needs the post to be
+     * built, which processes it.
+     */
+    protected function _getContentObjectId(&$aEvent, $aBrowseParams)
+    {
+        $iContentObjectId = $this->_oConfig->getContentObjectId($aEvent);
+        if($iContentObjectId !== false)
+            return $iContentObjectId;
+
+        if(!empty($aEvent['content']) && is_string($aEvent['content']))
+            $aEvent['content'] = unserialize($aEvent['content']);
+
+        if((int)$aEvent['processed'] == 0)
+            $this->_oTemplate->getPost($aEvent, $aBrowseParams);
+
+        return $this->_oConfig->getContentObjectId($aEvent);
+    }
+
     public function getBlockSettings($sDeliveryType, $aParams = array())
     {
         return $this->_oTemplate->getSettingsBlock($sDeliveryType, $aParams);

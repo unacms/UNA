@@ -8,8 +8,8 @@
    FullCalendar dims the adjacent-month days to 30% opacity and tints the current
    day's cell, which pushes both day numbers under 4.5:1 in the light and the dark
    scheme alike. The month hierarchy is kept, but with explicit colours instead of
-   transparency. FullCalendar injects its own stylesheet from JS after this file,
-   so the opacity reset has to be flagged important. */
+   transparency. The library stylesheets are loaded before this file, and the
+   theme rules are more specific, so the opacity reset has to be flagged important. */
 .fc .fc-daygrid-day-number {
     color: #374151;
 }

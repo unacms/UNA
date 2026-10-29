@@ -1,5 +1,6 @@
 import { registerAll } from 'app/components/registry-init'
 import { Root } from 'app/root'
+import PlaygroundProviders from '../../playground-providers'
 
 registerAll()
 
@@ -13,13 +14,15 @@ const data = {
 
 export default function PlayScreen() {
     return (
-        <Root
-            settings={null}
-            path="play"
-            data={data}
-            uri="play"
-            url="/play"
-            code={200}
-        />
+        <PlaygroundProviders>
+            <Root
+                settings={null}
+                path="play"
+                data={data}
+                uri="play"
+                url="/play"
+                code={200}
+            />
+        </PlaygroundProviders>
     )
 }

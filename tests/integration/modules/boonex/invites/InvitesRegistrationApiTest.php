@@ -198,6 +198,26 @@ class InvitesRegistrationApiTest extends BxDolIntegrationTestCase
         $this->assertSame('sys_account_create', $aItems[0]['data']['params']['display'] ?? null);
     }
 
+    public function testRequestFormFollowsApiModeAfterTheModuleWasBuilt(): void
+    {
+        // The module is created once per process. An earlier site call builds it, then the home page
+        // asks for this block in the API. It used to print the form and exit, which ended the test run.
+        $this->bxSetParamCache('bx_invites_enable_request_invite', 'on');
+        unset($_GET['api']);
+        unset($GLOBALS['bxDolClasses']['BxInvModule']);
+        $oModule = BxDolModule::getInstance('bx_invites');
+        $this->assertInstanceOf(BxInvModule::class, $oModule);
+
+        $sHtml = $oModule->_oTemplate->getBlockFormRequest();
+        $this->assertIsString($sHtml, 'Built for the site, before the API call.');
+
+        $_GET['api'] = 1;
+        $mixedResult = $oModule->serviceGetBlockFormRequest();
+
+        $this->assertIsArray($mixedResult);
+        $this->bxAssertRequestForm($mixedResult[0]);
+    }
+
     public function testSiteStillShowsTheRequestBlock(): void
     {
         $this->bxInvites(true, true, false);

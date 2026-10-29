@@ -74,7 +74,8 @@ function listCardClasses(designbox) {
     if (Platform.OS !== 'web') return '';
     const bg = normalizeTiers(designbox?.bg);
     if (!bg) return '';
-    const rounded = responsiveClasses('rounded', designbox?.rounded);
+    // `false` is square everywhere; responsiveClasses would read it as unset.
+    const rounded = responsiveClasses('rounded', designbox?.rounded === false ? [] : designbox?.rounded);
     if (bg === true) return [appSetting('theme', 'blocks', 'u-block-bg'), rounded, 'my-4'].join(' ');
     return [responsiveClasses('bg', bg), rounded, responsiveClasses('card-my', bg)].join(' ');
 }

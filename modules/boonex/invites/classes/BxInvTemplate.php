@@ -149,7 +149,7 @@ class BxInvTemplate extends BxBaseModGeneralTemplate
 
         $oForm->initChecker();
         if(!$oForm->isSubmittedAndValid()) {
-            $sForm = $oForm->getCode();
+            $sForm = !$this->_bIsApi ? $oForm->getCode() : ''; // the API returns getCodeAPI below
 
             if(!$oForm->isSubmitted()) {
                 $this->getCssJs();
@@ -228,12 +228,15 @@ class BxInvTemplate extends BxBaseModGeneralTemplate
 
     public function getBlockFormRequest()
     {
+        // This template is built once. The call decides API mode, the same way the service does.
+        $bApi = bx_is_api();
+
         if(!$this->_oConfig->isRequestInvite())
-            return $this->_bIsApi ? [bx_api_get_msg(_t('_bx_invites_err_not_available'))] : MsgBox(_t('_bx_invites_err_not_available'));
+            return $bApi ? [bx_api_get_msg(_t('_bx_invites_err_not_available'))] : MsgBox(_t('_bx_invites_err_not_available'));
 
         $mixedAllowed = $this->getModule()->isAllowedRequest(0);
         if($mixedAllowed !== true)
-            return $this->_bIsApi ? [bx_api_get_msg($mixedAllowed)] : MsgBox($mixedAllowed);
+            return $bApi ? [bx_api_get_msg($mixedAllowed)] : MsgBox($mixedAllowed);
 
         $CNF = &$this->_oConfig->CNF;
 
@@ -248,10 +251,10 @@ class BxInvTemplate extends BxBaseModGeneralTemplate
 
         $oForm->initChecker();
         if(!$oForm->isSubmittedAndValid()) {
-            $sForm = $oForm->getCode();
+            $sForm = !$bApi ? $oForm->getCode() : ''; // the API returns getCodeAPI below
             if(!$oForm->isSubmitted()) {
                 $this->getCssJs();
-                return $this->_bIsApi ? [bx_api_get_block('form', $oForm->getCodeAPI(), ['ext' => ['request' => ['url' => '/api.php?r=' . $this->_oModule->getName() . '/get_block_form_request', 'immutable' => true]]])] : $this->parseHtmlByName('block_request_form.html', array(
+                return $bApi ? [bx_api_get_block('form', $oForm->getCodeAPI(), ['ext' => ['request' => ['url' => '/api.php?r=' . $this->_oModule->getName() . '/get_block_form_request', 'immutable' => true]]])] : $this->parseHtmlByName('block_request_form.html', array(
                     'style_prefix' => $this->_oConfig->getPrefix('style'),
                     'js_object' => $sJsObject,
                     'js_code' => $this->getJsCode('main'),
@@ -261,22 +264,22 @@ class BxInvTemplate extends BxBaseModGeneralTemplate
             }
 
             if(!$oForm->isValid())
-                return $this->_bIsApi ? [bx_api_get_block('form', $oForm->getCodeAPI(), ['ext' => ['request' => ['url' => '/api.php?r=' . $this->_oModule->getName() . '/get_block_form_request', 'immutable' => true]]])] : array('content' => $sForm, 'content_id' => $sFormId, 'eval' => $sEval);
+                return $bApi ? [bx_api_get_block('form', $oForm->getCodeAPI(), ['ext' => ['request' => ['url' => '/api.php?r=' . $this->_oModule->getName() . '/get_block_form_request', 'immutable' => true]]])] : array('content' => $sForm, 'content_id' => $sFormId, 'eval' => $sEval);
         }
         
         $sEmail = $oForm->getCleanValue('email');
         $oAccountQuery = BxDolAccountQuery::getInstance();
         $iAccount = $oAccountQuery->getIdByEmail($sEmail);
         if ($iAccount > 0)
-            return $this->_bIsApi ? [bx_api_get_msg(_t('_bx_invites_err_already_registed', bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=forgot-password'))))] : array('content' => MsgBox(_t('_bx_invites_err_already_registed', bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=forgot-password')))), 'content_id' => $sFormId, 'eval' => $sEval);
+            return $bApi ? [bx_api_get_msg(_t('_bx_invites_err_already_registed', bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=forgot-password'))))] : array('content' => MsgBox(_t('_bx_invites_err_already_registed', bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=forgot-password')))), 'content_id' => $sFormId, 'eval' => $sEval);
         $iCountByEmail = $this->_oDb->getRequests(array('type' => 'count_by_email', 'value' => $sEmail));
         if ($iCountByEmail > 0)
-            return  $this->_bIsApi ? [bx_api_get_msg(_t('_bx_invites_err_already_send'))] : array('content' => MsgBox(_t('_bx_invites_err_already_send')), 'content_id' => $sFormId, 'eval' => $sEval);
+            return  $bApi ? [bx_api_get_msg(_t('_bx_invites_err_already_send'))] : array('content' => MsgBox(_t('_bx_invites_err_already_send')), 'content_id' => $sFormId, 'eval' => $sEval);
        
         $sIp = getVisitorIP();
         $iId = (int)$oForm->insert(array('nip' => ip2long($sIp),'date' => time()));
         if(!$iId)
-            return $this->_bIsApi ? [bx_api_get_msg(_t('_bx_invites_err_cannot_perform'))] : array('content' => MsgBox(_t('_bx_invites_err_cannot_perform')), 'content_id' => $sFormId, 'eval' => $sEval);
+            return $bApi ? [bx_api_get_msg(_t('_bx_invites_err_cannot_perform'))] : array('content' => MsgBox(_t('_bx_invites_err_cannot_perform')), 'content_id' => $sFormId, 'eval' => $sEval);
         $this->getModule()->onRequest($iId);
         $sRequestsEmail = $this->_oConfig->getRequestsEmail();
         if(!empty($sRequestsEmail)) {
@@ -295,7 +298,7 @@ class BxInvTemplate extends BxBaseModGeneralTemplate
             }
         }
 
-        return $this->_bIsApi ? [bx_api_get_msg(_t('_bx_invites_msg_request_sent'))] : array('content' => MsgBox(_t('_bx_invites_msg_request_sent')), 'content_id' => $sFormId, 'eval' => $sEval);
+        return $bApi ? [bx_api_get_msg(_t('_bx_invites_msg_request_sent'))] : array('content' => MsgBox(_t('_bx_invites_msg_request_sent')), 'content_id' => $sFormId, 'eval' => $sEval);
     }
 
     public function getCodePopup($sKey, $sLink)

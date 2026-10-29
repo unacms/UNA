@@ -133,7 +133,7 @@ export default function ElementEntityPoll({ data, block, blockWrapperProps }) {
                     <Video poster={data.video.src_poster} src={data.video.src_mp4} cover={true} controls={true} muted={"muted"} />
                 </View>}
                 {(videoId) && <View className='w-full aspect-video rounded-xl overflow-hidden lg:mt-6'>
-                    <Youtube videoId={videoId} size={3} />
+                    <Youtube videoId={videoId} />
                 </View>}
                 {(!!data.image && !data.video) && (
                     <View className={`w-full ${getCoverAspectClass(block?.module)} rounded-xl overflow-hidden lg:mt-6`}>

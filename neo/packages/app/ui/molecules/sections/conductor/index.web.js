@@ -74,6 +74,7 @@ const LOCKED_COLUMN_STYLE = { top: 0, maxHeight: '100%' }
  * @param {string}   [props.skeleton='']     Skeleton override for the list.
  * @param {Function} [props.onChangeRoute]   Called with the route after a tab switch.
  * @param {string}   [props.keyword]         Search term; part of the list query key.
+ * @param {Function} [props.prepareData]     Applied to the page JSON of a tab loaded on switch.
  * @param {string}   props.layoutName        'profile' | 'navigator' | …; drives chrome.
  */
 export function Conductor({
@@ -87,6 +88,7 @@ export function Conductor({
     onChangeRoute,
     keyword,
     layoutName,
+    prepareData,
 }) {
     // Frozen at mount: busts the list cache once per page visit, so a browser
     // back/forward to the same URL refetches instead of showing stale rows.
@@ -233,7 +235,7 @@ export function Conductor({
     // Only the URL tab is hydrated up front; the rest load their page JSON the
     // first time they are selected.
     useEffect(() => {
-        ensureRouteInited(routes, index, setRoutes)
+        void ensureRouteInited(routes, index, setRoutes, prepareData)
     }, [index])
 
     /**
