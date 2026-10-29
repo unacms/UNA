@@ -33,6 +33,7 @@ import {
 } from 'app/ui/molecules/objects/helpers';
 import { View } from 'app/design/view';
 import { useObjectState } from 'app/lib/object-state';
+import { components } from 'app/components/registry';
 
 export default function ElementFavorites(props) {
     const { t } = useTranslation();
@@ -113,7 +114,24 @@ export default function ElementFavorites(props) {
     const title = objectData?.title != undefined ? objectData.title : '';
 
     const ActionButton = pickActionButton(showCombined, showAsButton);
-    buttonProps.startDecorator = icons[(isFavorited ? 'un' : '') + 'do'];
+    const iconName = icons[(isFavorited ? 'un' : '') + 'do'];
+    buttonProps.startDecorator = iconName;
+
+    // inside a "…" menu: a menu row like the other items, not a button
+    if (props.mode == 'dropdown-menu') {
+        const DropdownMenuItem = components['menu-item']['dropdown'];
+        return (
+            <DropdownMenuItem
+                item={{
+                    title: showLabel ? title : false,
+                    icon: iconName,
+                }}
+                handleSelect={(event) => {
+                    if (!isDisabled) doFavorite(event);
+                }}
+            />
+        );
+    }
 
     const actionButton = (
         <ActionButton
