@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { fetcher } from 'app/lib/fetcher'
-import { isWeb } from 'app/lib/util'
-import { useGlobalSearchParams } from 'app/lib/hooks/router'
+import { useLocalSearchParams } from 'app/lib/hooks/router'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { NeoButton } from 'app/design/controls'
@@ -80,25 +79,31 @@ export function formatDateLabel(date, t) {
     return (fieldLabels[date.field] || fieldLabels.created) + ' ' + range
 }
 
-const subscribeNothing = () => () => {}
-const readWebQuery = () => {
-    try {
-        return new URLSearchParams(window.location.search).get('q') || ''
-    } catch {
-        return ''
+/** `q` of a query string ('a=1&q=text' or a whole url); React Native's URLSearchParams has no get() */
+function queryParamQ(sUrl) {
+    const search = String(sUrl || '').split('?').slice(1).join('?').split('#')[0]
+    for (const pair of search.split('&')) {
+        const [key, value = ''] = pair.split('=')
+        if (key !== 'q') continue
+        try {
+            return decodeURIComponent(value.replace(/\+/g, ' '))
+        } catch {
+            return value
+        }
     }
+    return ''
 }
 
 /**
  * The query a link brought to the page (`/persons-home?q=native Turkish translator`), so a
  * search box elsewhere (a landing page) can hand its text to the page's AI search block.
- * Web reads it after hydration (the server renders '' and so does the first client render).
+ * `url` is the page address: on web the location (read after hydration), on native the screen's
+ * param that in-app links (redirectTo) fill; a native deep link has `q` as its own param.
  */
 export function useInitialQuery() {
-    const nativeParams = useGlobalSearchParams()
-    const webQuery = useSyncExternalStore(subscribeNothing, isWeb ? readWebQuery : () => '', () => '')
-    const q = isWeb ? webQuery : nativeParams?.q
-    return typeof q === 'string' ? q : ''
+    const params = useLocalSearchParams()
+    if (typeof params?.q === 'string') return params.q
+    return typeof params?.url === 'string' ? queryParamQ(params.url) : ''
 }
 
 /**
