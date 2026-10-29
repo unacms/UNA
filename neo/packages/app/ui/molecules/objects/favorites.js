@@ -123,7 +123,7 @@ export default function ElementFavorites(props) {
         return (
             <DropdownMenuItem
                 item={{
-                    title: showLabel ? title : false,
+                    title,
                     icon: iconName,
                 }}
                 handleSelect={(event) => {
