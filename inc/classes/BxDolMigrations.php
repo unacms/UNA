@@ -509,6 +509,9 @@ class BxDolMigrations
                     throw new UnexpectedValueException("$sName: covers '$sCovered', which is not a migration id (a file name without extension)");
         }
 
+        if ($sType === 'sql' && !mb_check_encoding($sContent, 'UTF-8'))
+            throw new UnexpectedValueException("$sName: not valid UTF-8");
+
         if ($sType === 'php' && !preg_match('/^<\?php\s+defined\(\s*[\'"]BX_DOL[\'"]\s*\)\s+or\s+die\b/', $sContent))
             throw new UnexpectedValueException("$sName: a PHP migration starts with <?php defined('BX_DOL') or die('hack attempt');");
 
@@ -617,57 +620,72 @@ class BxDolMigrations
     /**
      * Split SQL into statements. Comments are dropped, except MySQL's executable `/*! ... *\/`.
      * Unlike BxDolDb::executeSQL, line breaks inside a statement are kept, so a line may end
-     * or begin with a keyword.
+     * or begin with a keyword. Walks characters, not bytes, so text in any language is kept
+     * whole.
      *
      * @return list<string>
+     * @throws UnexpectedValueException for SQL that is not valid UTF-8
      */
     public static function splitSql(string $sSql): array
     {
+        $aChars = preg_split('//u', $sSql, -1, PREG_SPLIT_NO_EMPTY);
+        if ($aChars === false)
+            throw new UnexpectedValueException('not valid UTF-8');
+
         $aResult = [];
-        $sDelimiter = ';';
+        $aDelimiter = [';'];
         $sCurrent = '';
         $sQuote = '';
-        // Delimiters, quotes and comment markers are ASCII, so walking bytes never splits a character.
-        $iLen = strlen($sSql);
+        $iLen = count($aChars);
+        // Index of the next line break at or after $i, or $iLen.
+        $fLineEnd = function (int $i) use ($aChars, $iLen): int {
+            while ($i < $iLen && $aChars[$i] !== "\n")
+                $i++;
+            return $i;
+        };
+
         for ($i = 0; $i < $iLen; $i++) {
-            $c = $sSql[$i];
+            $c = $aChars[$i];
 
             if ($sQuote !== '') {
                 $sCurrent .= $c;
                 if ($c === '\\' && $sQuote !== '`' && $i + 1 < $iLen)
-                    $sCurrent .= $sSql[++$i];
+                    $sCurrent .= $aChars[++$i];
                 else if ($c === $sQuote)
                     $sQuote = '';
                 continue;
             }
 
-            $bLineStart = $i === 0 || $sSql[$i - 1] === "\n";
-            if ($bLineStart && trim($sCurrent) === '' && preg_match('/\G[ \t]*DELIMITER[ \t]+(\S+)[^\n]*\n?/i', $sSql, $aMatch, 0, $i)) {
-                $sDelimiter = $aMatch[1];
-                $i += strlen($aMatch[0]) - 1;
-                continue;
+            if (($i === 0 || $aChars[$i - 1] === "\n") && trim($sCurrent) === '') {
+                $iEnd = $fLineEnd($i);
+                if (preg_match('/^[ \t]*DELIMITER[ \t]+(\S+)/i', implode('', array_slice($aChars, $i, $iEnd - $i)), $aMatch)) {
+                    $aDelimiter = preg_split('//u', $aMatch[1], -1, PREG_SPLIT_NO_EMPTY);
+                    $i = $iEnd;
+                    continue;
+                }
             }
 
-            $sNext = $i + 1 < $iLen ? $sSql[$i + 1] : '';
-            if ($c === '#' || ($c === '-' && $sNext === '-' && ($i + 2 >= $iLen || ctype_space($sSql[$i + 2])))) {
-                $iEnd = strpos($sSql, "\n", $i);
-                $i = $iEnd === false ? $iLen : $iEnd - 1;
+            $sNext = $aChars[$i + 1] ?? '';
+            if ($c === '#' || ($c === '-' && $sNext === '-' && ($i + 2 >= $iLen || ctype_space($aChars[$i + 2])))) {
+                $i = $fLineEnd($i) - 1;
                 continue;
             }
             if ($c === '/' && $sNext === '*') {
-                $iEnd = strpos($sSql, '*/', $i + 2);
-                $iEnd = $iEnd === false ? $iLen : $iEnd + 2;
+                $iEnd = $i + 2;
+                while ($iEnd < $iLen && !($aChars[$iEnd] === '*' && ($aChars[$iEnd + 1] ?? '') === '/'))
+                    $iEnd++;
+                $iEnd = min($iEnd + 2, $iLen);
                 // A space keeps `SELECT/**/1` two tokens.
-                $sCurrent .= ($sSql[$i + 2] ?? '') === '!' ? substr($sSql, $i, $iEnd - $i) : ' ';
+                $sCurrent .= ($aChars[$i + 2] ?? '') === '!' ? implode('', array_slice($aChars, $i, $iEnd - $i)) : ' ';
                 $i = $iEnd - 1;
                 continue;
             }
 
-            if (substr_compare($sSql, $sDelimiter, $i, strlen($sDelimiter)) === 0) {
+            if (array_slice($aChars, $i, count($aDelimiter)) === $aDelimiter) {
                 if (($sStatement = trim($sCurrent)) !== '')
                     $aResult[] = $sStatement;
                 $sCurrent = '';
-                $i += strlen($sDelimiter) - 1;
+                $i += count($aDelimiter) - 1;
                 continue;
             }
 

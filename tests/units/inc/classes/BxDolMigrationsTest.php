@@ -53,6 +53,8 @@ class BxDolMigrationsTest extends BxDolTestCase
             ],
             'crlf' => ["SELECT 1;\r\n-- c\r\nSELECT 2;\r\n", ['SELECT 1', 'SELECT 2']],
             'multibyte text' => ["UPDATE `t` SET `s` = 'Grüße; 日本';", ["UPDATE `t` SET `s` = 'Grüße; 日本'"]],
+            'multibyte in comments and identifiers' => ["-- Grüße; 日本\nSELECT `名前` /* ü; */ FROM `t`;\n/*!40101 SET @x = 'é' */;", ["SELECT `名前`   FROM `t`", "/*!40101 SET @x = 'é' */"]],
+            'multibyte delimiter' => ["DELIMITER §\nSELECT 1; SELECT 'ü'§\nDELIMITER ;\nSELECT 2;", ["SELECT 1; SELECT 'ü'", 'SELECT 2']],
         ];
     }
 
@@ -60,6 +62,12 @@ class BxDolMigrationsTest extends BxDolTestCase
     public function testSplitSql(string $sSql, array $aExpected): void
     {
         $this->assertSame($aExpected, BxDolMigrations::splitSql($sSql));
+    }
+
+    public function testSplitSqlRejectsInvalidUtf8(): void
+    {
+        $this->expectException(UnexpectedValueException::class);
+        BxDolMigrations::splitSql("SELECT 'Gr\xfc\xdfe';");
     }
 
     public function testParseMeta(): void
@@ -86,6 +94,7 @@ class BxDolMigrationsTest extends BxDolTestCase
             'unknown type' => ['2026110100_first.txt', 'x', 'unknown migration type'],
             'no version' => ['2026110100_first.sql', 'SELECT 1;', "no $sVersion"],
             'bad version' => ['2026110100_first.sql', "-- $sVersion: latest\nSELECT 1;", 'not a version'],
+            'sql not utf-8' => ['2026110100_first.sql', self::SQL_META . "UPDATE `t` SET `s` = 'Gr\xfc\xdfe';", 'not valid UTF-8'],
             'php without guard' => ['2026110100_first.php', "<?php\n// $sVersion: 15.0.0\nreturn 1;", "defined('BX_DOL')"],
             'xml baseline' => ['2026110100_first.xml', self::XML_HEAD . "<!-- $sCovers: 2026100100_old -->\n<resources name=\"en\" flag=\"gb\" title=\"English\"/>", 'a baseline is'],
             'covers a file name' => ['2026110100_first.sql', self::SQL_META . "-- $sCovers: 2026100100_old.sql\nSELECT 1;", 'not a migration id'],
