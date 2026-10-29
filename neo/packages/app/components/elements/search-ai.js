@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import emitter, { EVENTS } from 'app/context/emitter'
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { InputWithIcons, NeoButton, NeoButtonLink } from 'app/design/controls'
+import { InputWithIcons, InputMulti, NeoButton, NeoButtonLink } from 'app/design/controls'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { Icon } from 'app/ui/atoms/icon'
 import Redirect from 'app/ui/atoms/redirect'
@@ -11,6 +11,7 @@ import BrowseSimple, { BrowseSimpleView } from 'app/components/elements/browse-s
 import { UnitSearchResultsSmall } from 'app/components/units/search-results'
 import {
     useSearchParse,
+    useSearchInput,
     SearchFilterChips,
     SearchExtChips,
     buildSearchUrl,
@@ -34,24 +35,61 @@ import {
  *    use_page_results: the parsed values are pushed into the page's own get_results block as
  *    `filters` — the same contract the search form uses, so that block renders the results.
  *    Otherwise the block fetches and renders them itself via search_ai_results.
+ *
+ * `multiline` (block App config `{ "multiline": true }`, or the block data) shows a growing
+ * text area instead of the one-line field, for long descriptive queries.
  */
-export default function ElementSearchAi({ blockWrapperProps, data }) {
+export default function ElementSearchAi({ blockWrapperProps, data, multiline }) {
     const block = data || {}
+    const isMultiline = !!(multiline ?? block.multiline)
     if (block.mode === 'extended')
-        return <SearchAiExtended blockWrapperProps={blockWrapperProps} block={block} />
-    return <SearchAiSections blockWrapperProps={blockWrapperProps} block={block} />
+        return <SearchAiExtended blockWrapperProps={blockWrapperProps} block={block} multiline={isMultiline} />
+    return <SearchAiSections blockWrapperProps={blockWrapperProps} block={block} multiline={isMultiline} />
+}
+
+/** The query field: one line with an icon, or a text area that grows with the query. */
+function SearchAiInput({ multiline, icon, onSubmit, ...props }) {
+    if (!multiline) {
+        return (
+            <InputWithIcons
+                className="w-full"
+                rounded="full"
+                size="large"
+                startDecorator={icon}
+                onSubmitEditing={onSubmit}
+                onKeyPress={onSubmit ? (e) => e.key === 'Enter' && onSubmit() : undefined}
+                {...props}
+            />
+        )
+    }
+
+    // Enter adds a line here; Ctrl/Cmd+Enter submits on web
+    return (
+        <Row className="relative w-full">
+            <View className="absolute left-4 top-4 pointer-events-none z-10">
+                <Icon icon={icon} size={20} className="text-muted-foreground" />
+            </View>
+            <InputMulti
+                className="w-full pl-12 py-3.5 min-h-24 max-h-60 web:field-sizing-content web:resize-none"
+                size="large"
+                textAlignVertical="top"
+                onKeyPress={onSubmit ? (e) => e.key === 'Enter' && (e.ctrlKey || e.metaKey) && onSubmit() : undefined}
+                {...props}
+            />
+        </Row>
+    )
 }
 
 const EXT_PER_PAGE = 12
 
-function SearchAiExtended({ blockWrapperProps, block }) {
+function SearchAiExtended({ blockWrapperProps, block, multiline }) {
     const { t } = useTranslation()
     const aiAvailable = block.available !== false
     const fields = Array.isArray(block.fields) ? block.fields : []
     // the page's own get_results block shows the results; this block only produces filters
     const usePageResults = !!block.use_page_results
 
-    const [input, setInput] = useState('')
+    const [input, setInput] = useSearchInput()
     const [searchParams, setSearchParams] = useState(null) // { field: { value } }
     const [keywordField, setKeywordField] = useState('')
     const [filters, setFilters] = useState(null)           // { input name: value } — search form shape
@@ -63,7 +101,7 @@ function SearchAiExtended({ blockWrapperProps, block }) {
     const emittedRef = useRef(false)
 
     // `query` is the text `parsed` belongs to: everything below searches on it, never on the live input
-    const { parsed, parsing, query } = useSearchParse(input, aiAvailable, block.parse_url, block.object)
+    const { parsed, parsing, query } = useSearchParse(input, aiAvailable, block.parse_url, block.object, block.hint_id)
 
     // parsed query -> editable field set
     useEffect(() => {
@@ -200,21 +238,21 @@ function SearchAiExtended({ blockWrapperProps, block }) {
         : chips
 
     const hint = fields.map((f) => f.caption).filter(Boolean).slice(0, 5).join(', ')
-    const placeholder = hint ? t('Describe what you are looking for') + ' — ' + hint + '…' : t('Describe what you are looking for…')
+    // block param `placeholder` wins over the one built from the field captions
+    const placeholder = block.placeholder
+        || (hint ? t('Describe what you are looking for') + ' — ' + hint + '…' : t('Describe what you are looking for…'))
     const noMatch = !block.rerank && !!parsed && parsed.available !== false && searchParams && !Object.keys(searchParams).length
 
     return (
         <BlockWrapper {...blockWrapperProps}>
             <View className="w-full gap-y-2 p-1">
-                <InputWithIcons
-                    className="w-full"
-                    rounded="full"
-                    size="large"
+                <SearchAiInput
+                    multiline={multiline}
+                    icon={aiAvailable ? 'Sparkles' : 'Search'}
                     name="search_ai"
                     placeholder={placeholder}
                     value={input}
                     onChangeText={setInput}
-                    startDecorator={aiAvailable ? 'Sparkles' : 'Search'}
                     role="searchbox"
                     aria-label={t('Search')}
                 />
@@ -278,13 +316,13 @@ function SearchAiExtended({ blockWrapperProps, block }) {
     )
 }
 
-function SearchAiSections({ blockWrapperProps, block }) {
+function SearchAiSections({ blockWrapperProps, block, multiline }) {
     const { t } = useTranslation()
     const lockedSection = block.section || ''
     const sections = Array.isArray(block.sections) ? block.sections : []
     const aiAvailable = block.available !== false
 
-    const [input, setInput] = useState('')
+    const [input, setInput] = useSearchInput()
     const [filter, setFilter] = useState(null)
     const [results, setResults] = useState(null) // null = nothing searched yet
     const [loading, setLoading] = useState(false)
@@ -350,25 +388,22 @@ function SearchAiSections({ blockWrapperProps, block }) {
         redirectRef.current?.redirect(allResultsUrl)
     }
 
-    const placeholder = lockedSection
+    const placeholder = block.placeholder || (lockedSection
         ? t('Describe what you are looking for…')
-        : t('Try: events this weekend, posts about design…')
+        : t('Try: events this weekend, posts about design…'))
 
     return (
         <BlockWrapper {...blockWrapperProps}>
             <View className="w-full gap-y-2 p-1">
                 <Redirect ref={redirectRef} />
-                <InputWithIcons
-                    className="w-full"
-                    rounded="full"
-                    size="large"
+                <SearchAiInput
+                    multiline={multiline}
+                    icon={aiAvailable ? 'Sparkles' : 'Search'}
+                    onSubmit={handleSubmit}
                     name="search_ai"
                     placeholder={placeholder}
                     value={input}
                     onChangeText={setInput}
-                    onSubmitEditing={handleSubmit}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
-                    startDecorator={aiAvailable ? 'Sparkles' : 'Search'}
                     role="searchbox"
                     aria-label={t('Search')}
                 />
