@@ -137,6 +137,9 @@ export const settingsElements = {
         'u-block-pad-x':
             ' px-4 ',
         'u-block-rounded': 'rounded-2xl',
+        // Corners of a block that doesn't set `designbox.rounded`, in layouts that don't say
+        // where their padding is (home, profile, post ...). Elsewhere corners follow the page
+        // padding: rounded where it keeps the block off the screen edge (block-wrapper.js).
         'u-block-rounded-default': 'sm:rounded-2xl',
         'u-block-header':
             ' flex-row gap-3  ',

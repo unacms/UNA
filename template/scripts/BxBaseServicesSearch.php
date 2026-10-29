@@ -325,10 +325,15 @@ class BxBaseServicesSearch extends BxDol
         // extended search object (sys_objects_search_extended): fields of that object -> search_params
         $sObject = isset($aParams['object']) ? bx_process_input((string)$aParams['object'], BX_DATA_TEXT) : '';
         if($sObject !== '' && $this->_getSearchExtendedObject($sObject)) {
+            // the block's hint, stored by get_block_search_ai; the client only knows its id
+            $aHint = !empty($aParams['hint_id']) ? $this->_getSearchAiHint((string)$aParams['hint_id']) : [];
+
             $oParser = BxDolAiSearchExtParser::getInstance();
             $aResult = $oParser->parseObject($sObject, $sQuery, [
                 'timezone' => $sTimezone,
                 'debug' => $bDebug,
+                'hint' => $aHint['hint'] ?? '',
+                'hints' => $aHint['hints'] ?? [],
             ]);
             $aResult['available'] = $oParser->isAvailable();
             $aResult['mode'] = 'extended';
@@ -381,10 +386,24 @@ class BxBaseServicesSearch extends BxDol
 
         $bUsePageResults = false;
         $bRerank = false;
+        $bMultiline = false;
+        $sHintId = '';
+        $sPlaceholder = '';
         if(is_array($mixedParams)) {
+            // the field's placeholder; empty: NEO builds one from the field captions
+            $sPlaceholder = isset($mixedParams['placeholder']) && is_string($mixedParams['placeholder']) ? _t(trim($mixedParams['placeholder'])) : '';
             $bUsePageResults = !empty($mixedParams['use_page_results']);
             $bRerank = !empty($mixedParams['rerank']);
+            // a growing text area instead of the one-line field
+            $bMultiline = !empty($mixedParams['multiline']);
             $sSection = isset($mixedParams['object']) ? (string)$mixedParams['object'] : (isset($mixedParams['section']) ? (string)$mixedParams['section'] : '');
+
+            // the text stays on the server: the block gets an id, search_parse reads the text by it
+            $aHint = $this->_getSearchAiHintFromParams($mixedParams);
+            if($aHint) {
+                $sHintId = $this->_getSearchAiHintId($aHint);
+                BxDolDb::getInstance()->setCache('sys_ai_search_hint_' . $sHintId, $aHint);
+            }
         }
         else
             $sSection = (string)$mixedParams;
@@ -408,6 +427,9 @@ class BxBaseServicesSearch extends BxDol
                 // semantic ordering by the judge model: with use_page_results the block swaps the page's
                 // list source to search_ai_results, ranked results cannot be expressed as form filters
                 'rerank' => $bRerank && BxDolAiSearchRerank::getInstance()->isAvailable() ? 1 : 0,
+                'multiline' => $bMultiline ? 1 : 0,
+                'hint_id' => $sHintId,
+                'placeholder' => $sPlaceholder,
                 'results_url' => '/api.php?r=system/search_ai_results/TemplServicesSearch&params=',
             ])];
         }
@@ -427,6 +449,8 @@ class BxBaseServicesSearch extends BxDol
             'parse_url' => '/api.php?r=system/search_parse/TemplServicesSearch&params=',
             'search_url' => '/api.php?r=system/get_data_search_api/TemplServicesSearch&params=',
             'results_url' => '/search-keyword',
+            'multiline' => $bMultiline ? 1 : 0,
+            'placeholder' => $sPlaceholder,
         ])];
     }
 
@@ -553,6 +577,53 @@ class BxBaseServicesSearch extends BxDol
             }
 
         return $aResults;
+    }
+
+    /**
+     * Block hint ['hint' => text, 'hints' => [field => text]] by the id get_block_search_ai gave the block.
+     * From the DB cache; when the cache is off or was cleared, from the AI search blocks themselves.
+     */
+    protected function _getSearchAiHint($sId)
+    {
+        if(!preg_match('/^[a-f0-9]{64}$/', $sId))
+            return [];
+
+        $oDb = BxDolDb::getInstance();
+        $sKey = 'sys_ai_search_hint_' . $sId;
+        $mixedHint = $oDb->getCache($sKey, '');
+        if(is_array($mixedHint))
+            return $mixedHint;
+
+        $aContents = BxDolPageQuery::getServiceBlocksContent('get_block_search_ai');
+        foreach(is_array($aContents) ? $aContents : [] as $sContent) {
+            $aService = unserialize($sContent, ['allowed_classes' => false]);
+            $aParams = isset($aService['params'][0]) && is_array($aService['params'][0]) ? $aService['params'][0] : [];
+            $aHint = $this->_getSearchAiHintFromParams($aParams);
+            if($aHint && $this->_getSearchAiHintId($aHint) === $sId) {
+                $oDb->setCache($sKey, $aHint);
+                return $aHint;
+            }
+        }
+
+        return [];
+    }
+
+    /**
+     * Block params -> ['hint' => text for every question, 'hints' => [field => text]], or [] when the block has none.
+     */
+    protected function _getSearchAiHintFromParams($aParams)
+    {
+        $aHint = [
+            'hint' => isset($aParams['hint']) && is_string($aParams['hint']) ? trim($aParams['hint']) : '',
+            'hints' => isset($aParams['hints']) && is_array($aParams['hints']) ? array_filter($aParams['hints'], 'is_string') : [],
+        ];
+
+        return $aHint['hint'] !== '' || $aHint['hints'] ? $aHint : [];
+    }
+
+    protected function _getSearchAiHintId($aHint)
+    {
+        return hash('sha256', json_encode($aHint));
     }
 
     /**

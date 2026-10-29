@@ -3,6 +3,7 @@ import type { ViewStyle } from 'react-native'
 import { View } from 'app/design/view'
 import { useRef, useEffect, useState, useCallback, forwardRef, useMemo, type ComponentType, type HTMLAttributes, type ReactNode } from 'react'
 import { paddingForList } from 'app/customization/functions'
+import { usePageListEndpoint } from 'app/ui/molecules/page/page-chrome'
 import {
     dedupeById,
     renderSlot,
@@ -173,7 +174,7 @@ export default function UniList(props: UniListProps) {
     const uniRef = useRef<any>(undefined)
     const rows = useMemo(() => dedupeById(rawData), [rawData])
     const isGrid = mode != 'simple'
-    const listPadding = paddingForList(endpoint)
+    const listPadding = paddingForList(usePageListEndpoint(endpoint))
 
     // ------------------------------------------------------------------
     // Scroller: own box or the window

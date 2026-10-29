@@ -16,6 +16,7 @@ SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
 CREATE TABLE `sys_keys` (
   `key` varchar(32) NOT NULL,
   `data` text NOT NULL,
+  `scope` tinyint(4) NOT NULL default '0',
   `expire` int(11) NOT NULL,
   `salt` varchar(255) NOT NULL,
   PRIMARY KEY (`key`)

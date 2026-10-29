@@ -236,6 +236,19 @@ export function useLocationField({
         setSelectionMade(true);
     }, [incoming]);
 
+    // An address set from outside the field (filters from the AI search block): show it.
+    // Typing changes only the term, so this runs for outside writes and picked places.
+    const [seenValue, setSeenValue] = useState(field.value);
+    if (field.value !== seenValue) {
+        setSeenValue(field.value);
+        const address = typeof field.value === 'string' ? field.value : '';
+        // an address replaced, or one shown before and now emptied
+        if (syncName && address !== term && (address || (typeof seenValue === 'string' && seenValue))) {
+            setTerm(address);
+            setSelectionMade(!!address);
+        }
+    }
+
     useEffect(() => {
         if (incoming || field.value) return;
         setTerm('');

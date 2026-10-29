@@ -197,8 +197,26 @@ export default function Block(props: BlockProps) {
     );
 }
 
+/**
+ * Content items of a block. A service that adds keys to its list of items
+ * (`browse_favorite` adds `markers`) comes from PHP as an object,
+ * `{"0": {...}, "markers": {...}}`: take its numeric keys as the list.
+ */
+export function blockContentItems(data: any): any[] {
+    if (Array.isArray(data))
+        return data;
+
+    if (data && typeof data === 'object' && !data.type && !data.content_type) {
+        const keys = Object.keys(data).filter((key) => /^\d+$/.test(key));
+        if (keys.length)
+            return keys.sort((a, b) => Number(a) - Number(b)).map((key) => data[key]);
+    }
+
+    return [data];
+}
+
 export function BlockContent(props: { data: any; [key: string]: any }) {
-    const items: any[] = Array.isArray(props.data) ? props.data : [props.data];
+    const items = blockContentItems(props.data);
 
     const itemsToRender = items.filter((item) => {
         const ElementType = elementRegistry['element']?.[item.content_type || item.type];
