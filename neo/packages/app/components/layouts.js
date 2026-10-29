@@ -2,9 +2,11 @@
 import Layout from 'app/components/layout';
 import { useCurrentUser, isWebAuthReady } from 'app/context/user'
 import { components } from 'app/components/registry';
-import { appSetting, getLayoutName, getPageContentPaddingTiers, getPageContentWidth, getPageData, strToObj } from 'app/lib/util'
+import { appSetting, getLayoutName, getPageContentPaddingTiers, getPageContentWidth, getPageData, getPageSettings, strToObj } from 'app/lib/util'
 import emitter, { EVENTS } from 'app/context/emitter';
-import { responsiveClasses } from 'app/lib/responsive-classes'
+import { normalizeTiers, responsiveClasses } from 'app/lib/responsive-classes'
+import { sidePaddingTiers } from 'app/lib/page-inset'
+import { PageChromeProvider } from 'app/ui/molecules/page/page-chrome'
 import Cell from 'app/components/cell';
 import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect'
@@ -141,9 +143,16 @@ function PageLayoutContent({ layout, data, skipProfileLock = false }) {
     const { layoutName, layoutBlocks, isCustomLayout, columnLayout = '' } = layout;
 
     // Derived values; React Compiler memoizes them on their real inputs.
-    const pageConfig = data?.config;
+    // UNA's page config, else the fork's `layouts[<uri>]` (as for the layout name).
+    const pageConfig = getPageSettings(data?.config, data?.uri?.toString());
+    const paddingTiers = pageConfig?.padding ?? getPageContentPaddingTiers(layoutName);
     const pageClasses = {
-        padding: responsiveClasses('padding', pageConfig?.padding ?? getPageContentPaddingTiers(layoutName)),
+        padding: responsiveClasses('padding', paddingTiers),
+        // Where `padding` keeps blocks off the screen edge, for the layouts that apply it
+        // (PageChromeProvider `inset`): the page's tiers, else the default padding's own.
+        paddingTiers: paddingTiers === undefined
+            ? sidePaddingTiers(appSetting('layout', 'page_content_padding_default'))
+            : normalizeTiers(paddingTiers),
         gap: responsiveClasses('gap', pageConfig?.gap),
         width: appSetting('layout', 'max_width'),
         contentWidth: getPageContentWidth(layoutName, data?.uri),
@@ -196,7 +205,9 @@ function PageLayoutContent({ layout, data, skipProfileLock = false }) {
 
     if (isCustomLayout && layoutBlocks) {
         return (
-            <Component key={componentKey} layoutName={layoutName} columnLayout={columnLayout} data={data} blocks={layoutBlocks} pageClasses={pageClasses} />
+            <PageChromeProvider designbox={pageConfig?.designbox ?? null}>
+                <Component key={componentKey} layoutName={layoutName} columnLayout={columnLayout} data={data} blocks={layoutBlocks} pageClasses={pageClasses} />
+            </PageChromeProvider>
         );
     }
 
@@ -209,8 +220,10 @@ function PageLayoutContent({ layout, data, skipProfileLock = false }) {
     ));
 
     return (
-        <Component key={componentKey} layoutName={layoutName} columnLayout={columnLayout} data={data} pageClasses={pageClasses}>
-            {cells}
-        </Component>
+        <PageChromeProvider designbox={pageConfig?.designbox ?? null}>
+            <Component key={componentKey} layoutName={layoutName} columnLayout={columnLayout} data={data} pageClasses={pageClasses}>
+                {cells}
+            </Component>
+        </PageChromeProvider>
     );
 }

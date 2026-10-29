@@ -5,6 +5,7 @@ import MenuFooter from 'app/components/nav/menu-footer';
 import { Panel, PanelGroup, PanelHandler } from "app/ui/molecules/page/resizable-panels";
 import { useBreakpoint } from 'app/context/measure';
 import Page from 'app/ui/molecules/page/page'
+import { PageChromeProvider } from 'app/ui/molecules/page/page-chrome'
 
 const isRowLayout = (cell, currentBreakpoint) => !cell.defaultSize || (cell.breakpoint && currentBreakpoint <= LAYOUT_BREAKPOINTS[cell.breakpoint]);
 const hasData = (cellData) => Array.isArray(cellData) && cellData.length > 0;
@@ -51,7 +52,7 @@ const LAYOUT_CONFIGS = {
 function PageContentUniversal({ children, data, layoutName, pageClasses }) {
     const currentBreakpoint = useBreakpoint();
     const uri = data.uri;
-    const { contentWidth, padding, gap } = pageClasses ?? {};
+    const { contentWidth, padding, paddingTiers, gap } = pageClasses ?? {};
     const cellsCustomConfig = appSetting('layouts', uri);
 
     const sizable = cellsCustomConfig.sizable === undefined ? true : cellsCustomConfig.sizable;
@@ -90,35 +91,37 @@ function PageContentUniversal({ children, data, layoutName, pageClasses }) {
         // it can't cause horizontal scroll when the page has no side padding.
         <View className="w-full web:overflow-x-clip">
             <View className={`mx-auto ${contentWidth} ${padding} ${gap}`}>
-                <PanelRow gapClass={gap} cell={topCell} currentBreakpoint={currentBreakpoint} />
-                {panelCells.length > 0 && (
-                    <PanelGroup
-                        key={`cells-${uri}-${layoutName}-${sizable ? 'sizable' : 'static'}`}
-                        autoSaveId={sizable ? `cells-${uri}-${layoutName}` : undefined}
-                        direction="horizontal"
-                        className={gap}
-                        clipInset
-                    >
-                        {panelCells.map((cell, i) => {
-                            return (
-                                <PanelCell
-                                    key={cell.key}
-                                    withHandle={i > 0}
-                                    handleClassName={handleClassName}
-                                    sizable={sizable}
-                                    panelLine={cellsCustomConfig?.['panel-line']}
-                                    cell={cell}
-                                    paddingClass={padding}
-                                    gapClass={gap}
-                                />
-                            );
-                        })}
-                    </PanelGroup>
-                )}
-                {midCells.map((cell, i) => {
-                    return <PanelRow key={cell.key} gapClass={gap} currentBreakpoint={currentBreakpoint} cell={cell} />
-                })}
-                {bottomCell?.data?.length > 0 && <PanelRow gapClass={gap} cell={bottomCell} currentBreakpoint={currentBreakpoint} />}
+                <PageChromeProvider inset={paddingTiers}>
+                    <PanelRow gapClass={gap} cell={topCell} currentBreakpoint={currentBreakpoint} />
+                    {panelCells.length > 0 && (
+                        <PanelGroup
+                            key={`cells-${uri}-${layoutName}-${sizable ? 'sizable' : 'static'}`}
+                            autoSaveId={sizable ? `cells-${uri}-${layoutName}` : undefined}
+                            direction="horizontal"
+                            className={gap}
+                            clipInset
+                        >
+                            {panelCells.map((cell, i) => {
+                                return (
+                                    <PanelCell
+                                        key={cell.key}
+                                        withHandle={i > 0}
+                                        handleClassName={handleClassName}
+                                        sizable={sizable}
+                                        panelLine={cellsCustomConfig?.['panel-line']}
+                                        cell={cell}
+                                        paddingClass={padding}
+                                        gapClass={gap}
+                                    />
+                                );
+                            })}
+                        </PanelGroup>
+                    )}
+                    {midCells.map((cell, i) => {
+                        return <PanelRow key={cell.key} gapClass={gap} currentBreakpoint={currentBreakpoint} cell={cell} />
+                    })}
+                    {bottomCell?.data?.length > 0 && <PanelRow gapClass={gap} cell={bottomCell} currentBreakpoint={currentBreakpoint} />}
+                </PageChromeProvider>
             </View>
         </View>
     )
