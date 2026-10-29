@@ -83,7 +83,10 @@ export function formatDateLabel(date, t) {
 function queryParamQ(sUrl) {
     const search = String(sUrl || '').split('?').slice(1).join('?').split('#')[0]
     for (const pair of search.split('&')) {
-        const [key, value = ''] = pair.split('=')
+        // split at the first '=' only: the text itself may hold one ("price=10")
+        const separator = pair.indexOf('=')
+        const key = separator === -1 ? pair : pair.slice(0, separator)
+        const value = separator === -1 ? '' : pair.slice(separator + 1)
         if (key !== 'q') continue
         try {
             return decodeURIComponent(value.replace(/\+/g, ' '))
