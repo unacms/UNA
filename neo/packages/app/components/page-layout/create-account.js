@@ -99,7 +99,7 @@ export default function PageLayout({ data, blocks, children }) {
 
     return (
         <Page data={data}>
-            <PageHeaderOptions band={false} />
+            <PageHeaderOptions band={false} showTitle={false} />
             {isWeb ? (
                 // The same frame as the home splash (ui/molecules/sections/splash.js).
                 <View

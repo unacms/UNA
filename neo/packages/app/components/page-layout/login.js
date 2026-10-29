@@ -50,7 +50,7 @@ export default function PageLayout({ data, children, pageClasses }) {
 
     return (
         <Page data={data}>
-            <PageHeaderOptions band={false} />
+            <PageHeaderOptions band={false} showTitle={false} />
             <View className={`${contentWidth} ${padding} ${gap} mx-auto my-auto`}>
                     {showLoginAside && isWeb
                         ? appStatic('components_logincontent')

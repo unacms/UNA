@@ -68,7 +68,7 @@ export default function Splash(props) {
         // Keyboard-aware scroll (Page default): the login form sits low on
         // the screen, and a plain ScrollView leaves the keyboard over it.
         <Page>
-            <PageHeaderOptions band={false} />
+            <PageHeaderOptions band={false} showTitle={false} />
             <View className={`flex-auto items-center justify-center lg:flex-row p-6 lg:p-12 gap-6 lg:gap-12 w-full mx-auto ${appSetting('layout', 'max_width_landing')}`}>
                 {appStatic('splash_text')}
                 <PageContent {...props} />

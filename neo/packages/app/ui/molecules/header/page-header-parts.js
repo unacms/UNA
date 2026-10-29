@@ -27,6 +27,7 @@ import {
 import { useHeaderOptions } from 'app/ui/molecules/header/options';
 import { useIsTabSlideCopy } from 'app/context/tab-route-override';
 import MenuTop from 'app/components/nav/menu-top';
+import { isPageCoverShown } from 'app/lib/page-cover';
 
 const DEFAULT_CONTENT_PINNED_FIXED =
     ' bg-card backdrop-blur-xl shadow-sm ';
@@ -266,7 +267,16 @@ export function usePageHeaderBase(pageData) {
         appSetting('native', 'collapsible_header') && !isDesktop;
     const isContextSelector = !!pageData?.context && (appSetting('context_selector', 'show_always') || pageData?.context?.current?.id);
     const isFullContextSelector = appSetting('context_selector', 'show_always');
-    const isShowLogo = isDesktop || (!isWeb && !currentUser) || isHome;
+    // Guests (and unconfirmed members on a locked site) have no bottom tab bar on phones and
+    // tablets, so the logo is their way home there; members see it on Home and on desktop.
+    const hasTabBar = !!currentUser && !(appSetting('layout', 'lock_unconfirmed') && !currentUser?.confirmed);
+    const isShowLogo = isDesktop || !hasTabBar || isHome;
+    // The page title follows the page's cover for this viewer (Studio → Pages → page → Cover); a
+    // page that passes `title` always shows it, one that draws its own heading sets
+    // `showTitle={false}`. Desktop names the page in its top menu instead, and an error page
+    // (403, 404) has no page to name.
+    const isShowTitle = !isDesktop && !pageData?.page_status
+        && (options.showTitle ?? (Boolean(options.title) || isPageCoverShown(pageData?.cover, Boolean(currentUser))));
     const isBackButton = header.backButton;
 
     const menuSettings = getMenuSettings(
@@ -368,7 +378,9 @@ export function usePageHeaderBase(pageData) {
         isCollapsibleHeader,
         isContextSelector,
         isFullContextSelector,
+        hasTabBar,
         isShowLogo,
+        isShowTitle,
         isWeb,
         onHeaderLayout,
         onMainHeaderLayout,
@@ -386,7 +398,9 @@ export const PageHeaderBody = memo(({
     isBackButton,
     isContextSelector,
     isFullContextSelector,
+    hasTabBar,
     isShowLogo,
+    isShowTitle,
     isWeb,
     onMainHeaderLayout,
     onSubHeaderLayout,
@@ -486,15 +500,15 @@ export const PageHeaderBody = memo(({
         </>
     );
 
-    const leftElement = (!currentUser || (appSetting('layout', 'lock_unconfirmed') && !currentUser?.confirmed)) ? (
-        Logo
-    ) : isFullContextSelector ? (
+    const titleElement = isShowTitle && pageTitle ? <TextHeader text={pageTitle} /> : null;
+    const leftElement = hasTabBar && isFullContextSelector ? (
         <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />
-    ) : isShowLogo ? (
-        Logo
-    ) : (
-        <TextHeader text={pageTitle} />
-    );
+    ) : isShowLogo && titleElement ? (
+        <Row className="items-center gap-3 min-w-0">
+            {Logo}
+            <View className="min-w-0 shrink">{titleElement}</View>
+        </Row>
+    ) : isShowLogo ? Logo : titleElement;
 
     const contextSelectorElement =
         isContextSelector && !isFullContextSelector ? (
