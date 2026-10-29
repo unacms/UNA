@@ -22,7 +22,8 @@ It is one setting for the whole site, system and modules alike.
   on these channels no migration runs: `periodic/migration.php` lists them as waiting.
 
 `php periodic/migration.php --channel=dev` sets the channel. On `dev` the update packs of
-`BxDolUpgrader` do not run, since the files come from the repository.
+`BxDolUpgrader` do not run, since the files come from the repository: cron skips them, and an
+update started from Studio or `scripts/manage.php` is refused with that reason.
 
 ## Folders
 

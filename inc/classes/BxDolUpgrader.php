@@ -28,8 +28,12 @@ class BxDolUpgrader extends BxDol
         while(true) {
 
             // A dev site follows the code repository and gets database changes from migrations.
-            if ('dev' == getParam('sys_upgrade_channel'))
+            // Cron skips it quietly; a request from Studio or the command line is refused.
+            if ('dev' == getParam('sys_upgrade_channel')) {
+                if (!$bAuto)
+                    $this->setError(_t('_sys_upgrade_dev_channel'));
                 break;
+            }
 
             // check for modules updates before system update
             if(!$bAuto) {

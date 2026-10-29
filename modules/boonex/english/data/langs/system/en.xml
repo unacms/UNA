@@ -4494,6 +4494,7 @@
         <string name="_sys_unconfirmed"><![CDATA[Unconfirmed]]></string>
 	<string name="_sys_upgrade_conclusion"><![CDATA[<h3>Important info:</h3><p>{0}</p>]]></string>
 	<string name="_sys_upgrade_db_and_files_versions_different"><![CDATA[Database and files versions are different, probably previous patch wasn't applied correctly.]]></string>
+	<string name="_sys_upgrade_dev_channel"><![CDATA[This site is on the dev update channel: it follows the code repository and gets database changes from periodic/migration.php, so update packs do not run on it.]]></string>
 	<string name="_sys_upgrade_files_checksum_failed"><![CDATA[Can't apply upgrade because the following files were modified: {0}]]></string>
 	<string name="_sys_upgrade_files_checksum_failed_too_many"><![CDATA[Can't apply upgrade because too many files({0}%) were modified]]></string>
 	<string name="_sys_upgrade_files_checksum_failed_too_many_module"><![CDATA[Can't apply upgrade because too many files({0}%) were modified in {1} module]]></string>
