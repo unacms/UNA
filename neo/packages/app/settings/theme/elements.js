@@ -24,7 +24,10 @@ export const settingsElements = {
             'ns--conductor-cover-content-- items-center h-full w-full justify-between lg:p-4 ne--',
         cover_small: 'mx-auto flex-row items-center ',
 
-        hide_top_menu_from: 'xl',
+        // Where the left column takes over the tab row and the section title (a breakpoint
+        // prefix). Keep it equal to the left column's `breakpoint` in `layouts.cols-l-c` and
+        // `layouts.cols-l-c-r`, or a width range shows the tabs in neither place.
+        hide_top_menu_from: 'lg',
         // Section title + icon next to conductor tabs (TopSidebar).
         show_title: true,
         standalone_context_selector: 'items-center justify-center w-full h-14 px-2',

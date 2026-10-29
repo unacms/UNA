@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Page from 'app/ui/molecules/page/page'
 import { BlockDataByName } from 'app/lib/util';
+import { PageHeaderOptions } from 'app/ui/molecules/header/options';
 /**
  * Renders the login splash screen with adaptive layouts for web and mobile platforms.
  *
@@ -67,6 +68,7 @@ export default function Splash(props) {
         // Keyboard-aware scroll (Page default): the login form sits low on
         // the screen, and a plain ScrollView leaves the keyboard over it.
         <Page>
+            <PageHeaderOptions band={false} showTitle={false} />
             <View className={`flex-auto items-center justify-center lg:flex-row p-6 lg:p-12 gap-6 lg:gap-12 w-full mx-auto ${appSetting('layout', 'max_width_landing')}`}>
                 {appStatic('splash_text')}
                 <PageContent {...props} />
