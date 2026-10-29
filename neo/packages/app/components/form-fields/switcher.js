@@ -34,6 +34,7 @@ export default function FormFieldSwitcher(props) {
                     value={!!field.value}
                     size={toggleSize}
                     disabled={disabled}
+                    label={typeof caption === 'string' ? caption : undefined}
                 />
                 <Text className={switcherTheme['u-controls-switcher-text']}>
                     {caption}
