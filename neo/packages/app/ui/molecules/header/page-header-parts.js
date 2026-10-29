@@ -500,7 +500,14 @@ export const PageHeaderBody = memo(({
         </>
     );
 
-    const titleElement = isShowTitle && pageTitle ? <TextHeader text={pageTitle} /> : null;
+    // Web: phones only. From tablets up the title takes the second line (the conductor's tab
+    // row, or above the blocks: PageTitle), leaving the header room for the full logo.
+    let titleElement = null;
+    if (isShowTitle && pageTitle) {
+        titleElement = isWeb
+            ? <View className="min-w-0 shrink sm:hidden"><TextHeader text={pageTitle} /></View>
+            : <TextHeader text={pageTitle} />;
+    }
     let leftElement = titleElement;
     if (hasTabBar && isFullContextSelector) {
         leftElement = <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />;

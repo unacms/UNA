@@ -5,6 +5,7 @@ import MenuFooter from 'app/components/nav/menu-footer';
 import { Panel, PanelGroup, PanelHandler } from "app/ui/molecules/page/resizable-panels";
 import { useBreakpoint } from 'app/context/measure';
 import Page from 'app/ui/molecules/page/page'
+import { PageTitle } from 'app/ui/molecules/page/page-title'
 
 const isRowLayout = (cell, currentBreakpoint) => !cell.defaultSize || (cell.breakpoint && currentBreakpoint <= LAYOUT_BREAKPOINTS[cell.breakpoint]);
 const hasData = (cellData) => Array.isArray(cellData) && cellData.length > 0;
@@ -90,6 +91,7 @@ function PageContentUniversal({ children, data, layoutName, pageClasses }) {
         // it can't cause horizontal scroll when the page has no side padding.
         <View className="w-full web:overflow-x-clip">
             <View className={`mx-auto ${contentWidth} ${padding} ${gap}`}>
+                <PageTitle data={data} />
                 <PanelRow gapClass={gap} cell={topCell} currentBreakpoint={currentBreakpoint} />
                 {panelCells.length > 0 && (
                     <PanelGroup

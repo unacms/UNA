@@ -1159,7 +1159,7 @@ export const HeaderContainer = ({
  * The bar frame around the tabs: optional section title on the left, `children`
  * (the tabs) in the middle, "Add" buttons on the right.
  *
- * On non-profile pages it hides itself from `hide_top_menu_from` (xl) up —
+ * On non-profile pages it hides itself from `hide_top_menu_from` (lg) up —
  * at that width the left column takes over both the nav and the title.
  * Wired from HeaderContainer in this file; page header lives in index.web.js.
  */
@@ -1186,17 +1186,13 @@ export function TopSidebar({
                 className={`${isHideOnDesktop ? '' : 'mx-auto'} ${widthClass} mx-auto`}
             >
                     {/*
-                      * Section title on the tab subbar, for the middle viewport range.
-                      * Below `lg` the title already shows in the page sub-header (see
-                      * the `setHeader` effect in index.web.js), and from
-                      * `hide_top_menu_from` (xl) up this whole bar is hidden and the
-                      * left column carries the title — so `hidden lg:flex` alone lands
-                      * it exactly in the gap where nothing else shows it. No `xl:`
-                      * gate is needed: the parent is already hidden there.
+                      * Section title on the tab row from tablets up. Phones show it in the
+                      * page header's main row instead, and from `hide_top_menu_from` (lg)
+                      * this whole bar is hidden and the left column carries the title.
                       */}
                     <Row className="w-full items-center gap-4 min-w-0">
                         {(!!title && conductorTheme.show_title !== false && isHideOnDesktop) && (
-                            <Row className="hidden lg:flex items-center gap-2 shrink-0 min-w-0 pl-3 lg:pl-4">
+                            <Row className="hidden sm:flex items-center gap-2 shrink-0 min-w-0 pl-3 lg:pl-4">
                                 {!!icon && (
                                     <Icon
                                         icon={icon}

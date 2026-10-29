@@ -249,7 +249,11 @@ The page header is mounted once per `Layout` (`ui/molecules/header/page-header.j
 <PageHeaderOptions showTitle={false} />            // no title on mobile (the page draws its own heading)
 ```
 
-On phones and tablets the bar shows the logo where there is no bottom tab bar (guests) and on Home, and the page title where the page's cover is on for this viewer (Studio → Pages → page → Cover: all, visitors only or members only; UNA sends it as `cover`). A page that passes `title` always shows it; `showTitle` overrides both. Desktop always shows the logo and names the page in the top menu.
+The header has three states, matching UNA's three tiers (phone, tablet from `sm`, desktop from `lg`):
+
+- Phone: floating buttons; the logo mark where there is no bottom tab bar (guests) and on Home; the page title where the page's cover is on for this viewer (Studio → Pages → page → Cover: all, visitors only or members only; UNA sends it as `cover`). A page that passes `title` always shows it; `showTitle` overrides both.
+- Tablet: floating buttons and the full logo, same rules, but the title moves to the second line: the conductor's tab row (`TopSidebar`), or above the blocks on regular pages (`PageTitle` in the `default` and universal layouts). Native keeps the title in its header.
+- Desktop: the full header with the site menu. Conductor pages put the section title and nav in the left column (from `lg`, `hide_top_menu_from` and the `cols-l-c` / `cols-l-c-r` left `breakpoint`); regular pages show the cover title above their blocks (`PageTitle`).
 
 Only passed props take part in the merge. Mount registers, unmount removes, a prop change updates: gate with JSX or `mobileOnly`, not with `useEffect` / `useFocusEffect`. Later-mounted instances win per key and fall back on unmount (a modal over a page). Memoize `sub` and `main` elements. Hidden native tabs have their own `Layout`, so no focus bookkeeping is needed. Only the measured height flows back, through `useHeaderHeight()` (`context/jotai/layout.ts`).
 

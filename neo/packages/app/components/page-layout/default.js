@@ -1,6 +1,7 @@
 import { View } from 'app/design/view';
 import { appStatic } from 'app/lib/app-static';
 import Page from 'app/ui/molecules/page/page';
+import { PageTitle } from 'app/ui/molecules/page/page-title';
 
 export default function PageLayout({ children, data, pageClasses }) {
     const { width, contentWidth, padding, gap } = pageClasses ?? {};
@@ -13,6 +14,7 @@ export default function PageLayout({ children, data, pageClasses }) {
             {data?.uri ? appStatic('components_' + data?.uri, data) : null}
             <View className={width}>
                 <View className={`${contentWidth} ${padding} ${gap} mx-auto`}>
+                    <PageTitle data={data} />
                     {children}
                 </View>
             </View>
