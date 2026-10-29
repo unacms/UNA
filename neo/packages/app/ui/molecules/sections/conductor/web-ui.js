@@ -1186,14 +1186,15 @@ export function TopSidebar({
                 className={`${isHideOnDesktop ? '' : 'mx-auto'} ${widthClass} mx-auto`}
             >
                     {/*
-                      * Section title on the tab row from tablets up. Phones show it in the
-                      * page header's main row instead, and from `hide_top_menu_from` (lg)
-                      * this whole bar is hidden and the left column carries the title.
+                      * Section title on the tab row, on desktop only: phones and tablets show it
+                      * in the page header's main row, and from `hide_top_menu_from` (lg) this
+                      * whole bar is hidden and the left column carries the title. It shows only
+                      * where a fork keeps the bar past `lg` (a wider `hide_top_menu_from`).
                       */}
                     <Row className="w-full items-center gap-4 min-w-0">
                         {(!!title && conductorTheme.show_title !== false && isHideOnDesktop) && (
                             // At most a third of the row, so a long section name truncates and the tabs keep their room.
-                            <Row className="hidden sm:flex items-center gap-2 shrink min-w-0 max-w-1/3 pl-4">
+                            <Row className="hidden lg:flex items-center gap-2 shrink min-w-0 max-w-1/3 pl-4">
                                 {/* The desktop sidebar title's icon (SidebarTitle), from the same settings. */}
                                 {!!icon && (
                                     <View className={`${appSetting('conductor', 'sidebar_title_icon')} shrink-0`}>

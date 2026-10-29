@@ -500,15 +500,7 @@ export const PageHeaderBody = memo(({
         </>
     );
 
-    // Web: the page's own title is for phones only. From tablets up it takes the second line
-    // (the conductor's tab row, or above the blocks: PageTitle), leaving the header room for the
-    // full logo. A title a page passes (`title`: "Post", "Task") has no second line and stays.
-    let titleElement = null;
-    if (isShowTitle && pageTitle) {
-        titleElement = isWeb && !header.title
-            ? <View className="min-w-0 shrink sm:hidden"><TextHeader text={pageTitle} /></View>
-            : <TextHeader text={pageTitle} />;
-    }
+    const titleElement = isShowTitle && pageTitle ? <TextHeader text={pageTitle} /> : null;
     let leftElement = titleElement;
     if (hasTabBar && isFullContextSelector) {
         leftElement = <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />;
