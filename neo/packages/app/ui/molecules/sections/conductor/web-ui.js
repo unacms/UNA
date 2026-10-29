@@ -1194,12 +1194,15 @@ export function TopSidebar({
                         {(!!title && conductorTheme.show_title !== false && isHideOnDesktop) && (
                             // At most a third of the row, so a long section name truncates and the tabs keep their room.
                             <Row className="hidden sm:flex items-center gap-2 shrink min-w-0 max-w-1/3 pl-4">
+                                {/* The desktop sidebar title's icon (SidebarTitle), from the same settings. */}
                                 {!!icon && (
-                                    <Icon
-                                        icon={icon}
-                                        size={22}
-                                        className="text-card-foreground shrink-0"
-                                    />
+                                    <View className={`${appSetting('conductor', 'sidebar_title_icon')} shrink-0`}>
+                                        <Icon
+                                            icon={icon}
+                                            size={appSetting('conductor', 'sidebar_title_icon_size')}
+                                            className={appSetting('conductor', 'sidebar_title_icon_class')}
+                                        />
+                                    </View>
                                 )}
                                 {/* The phone header title's size and weight (TextHeader), 16px in like the logo. */}
                                 <Text className="text-2xl font-bold tracking-tight text-card-foreground font-main truncate">
