@@ -492,7 +492,7 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
         if(empty($aAccountInfo) || !is_array($aAccountInfo))
             return false;
 
-        $oKey = BxDolKey::getInstance();
+        $oKey = BxDolKey::getInstanceWithScope(BX_KEY_SCOPE_ACCOUNT_EMAIL_CONFIRM);
         $sConfirmationCode = $oKey->getNewKeyNumeric(['account_id' => $iAccountId]);
         $sConfirmationLink = bx_append_url_params(BX_DOL_URL_ROOT . BxDolPermalinks::getInstance()->permalink('page.php?i=confirm-email'), ['code' => $sConfirmationCode]);
 

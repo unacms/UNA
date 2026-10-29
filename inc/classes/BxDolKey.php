@@ -7,6 +7,10 @@
  * @{
  */
 
+define('BX_KEY_SCOPE_GENERAL', 0); ///< The key has general/broad access and is not tied to a specific area of ​​application.
+define('BX_KEY_SCOPE_ACCOUNT_EMAIL_CONFIRM', 1); 
+define('BX_KEY_SCOPE_ACCOUNT_PASSWORD_RESET', 2); 
+
 /**
  * Key objects - automatically generate hashed keys.
  *
@@ -33,18 +37,24 @@
 class BxDolKey extends BxDolFactory implements iBxDolSingleton
 {
     protected $_oQuery;
+    protected $_iScope;
+    protected $_aScopes;
 
     /**
      * Constructor
      */
     protected function __construct()
     {
-        if (isset($GLOBALS['bxDolClasses'][get_class($this)]))
-            trigger_error ('Multiple instances are not allowed for the class: ' . get_class($this), E_USER_ERROR);
-
         parent::__construct();
 
         $this->_oQuery = new BxDolKeyQuery();
+
+        $this->_iScope = BX_KEY_SCOPE_GENERAL;
+        $this->_aScopes = [
+            BX_KEY_SCOPE_GENERAL,
+            BX_KEY_SCOPE_ACCOUNT_EMAIL_CONFIRM,
+            BX_KEY_SCOPE_ACCOUNT_PASSWORD_RESET
+        ];
     }
 
     /**
@@ -61,9 +71,31 @@ class BxDolKey extends BxDolFactory implements iBxDolSingleton
      */
     public static function getInstance()
     {
-        if (!isset($GLOBALS['bxDolClasses'][__CLASS__]))
-            $GLOBALS['bxDolClasses'][__CLASS__] = new BxDolKey();
-        return $GLOBALS['bxDolClasses'][__CLASS__];
+        return self::getInstanceWithScope(BX_KEY_SCOPE_GENERAL);
+    }
+
+    public static function getInstanceWithScope($iScope)
+    {
+        $sClass = __CLASS__;
+        if($iScope)
+            $sClass .= '!' . $iScope;
+
+        if(!isset($GLOBALS['bxDolClasses'][$sClass]))
+            $GLOBALS['bxDolClasses'][$sClass] = new BxDolKey();
+
+        $GLOBALS['bxDolClasses'][$sClass]->setScope($iScope);
+
+        return $GLOBALS['bxDolClasses'][$sClass];
+    }
+
+    public function setScope($iScope)
+    {
+        if(!in_array($iScope, $this->_aScopes))
+            return false;
+
+        $this->_iScope = $iScope;
+
+        return true;
     }
 
     /**
@@ -75,9 +107,8 @@ class BxDolKey extends BxDolFactory implements iBxDolSingleton
     public function getNewKey ($aData = false, $iExpire = 604800, $sSalt = '')
     {
         $sKey = md5(time() . rand() . BX_DOL_SECRET . $sSalt);
-        if ($this->_oQuery->insert($sKey, $aData ? serialize($aData) : '', (int)$iExpire, $sSalt));
-            return $sKey;
-        return false;
+
+        return $this->_insertKey($sKey, $aData, $iExpire, $sSalt);
     }
 
     /**
@@ -98,10 +129,7 @@ class BxDolKey extends BxDolFactory implements iBxDolSingleton
             $sKey = genRndPwd($iLenth, false);
         }
 
-        if($this->_oQuery->insert($sKey, $aData ? serialize($aData) : '', (int)$iExpire));
-            return $sKey;
-
-        return false;
+        return $this->_insertKey($sKey, $aData, $iExpire);
     }
 
     /**
@@ -119,10 +147,7 @@ class BxDolKey extends BxDolFactory implements iBxDolSingleton
                 break;
         }
 
-        if($this->_oQuery->insert($sKey, $aData ? serialize($aData) : '', (int)$iExpire));
-            return $sKey;
-
-        return false;
+        return $this->_insertKey($sKey, $aData, $iExpire);
     }
 
     /**
@@ -133,7 +158,8 @@ class BxDolKey extends BxDolFactory implements iBxDolSingleton
     public function getNewCounterKey ($iExpire = 604800)
     {
         $sKey = bin2hex(random_bytes(16));
-        return $this->_oQuery->insert($sKey, '0', (int)$iExpire) ? $sKey : false;
+
+        return $this->_insertKey($sKey, '0', $iExpire);
     }
 
     /**
@@ -213,6 +239,30 @@ class BxDolKey extends BxDolFactory implements iBxDolSingleton
         return $this->_oQuery->prune();
     }
 
+    protected function _insertKey($sKey, $mixedData = false, $iExpire = 604800, $sSalt = '')
+    {
+        if($mixedData && is_array($mixedData))
+            $mixedData = serialize($mixedData);
+
+        switch($this->_iScope) {
+            case BX_KEY_SCOPE_ACCOUNT_EMAIL_CONFIRM:
+            case BX_KEY_SCOPE_ACCOUNT_PASSWORD_RESET:
+                $this->_oQuery->removeByParams([
+                    'sample' => 'similar', 
+                    'data' => $mixedData, 
+                    'scope' => $this->_iScope
+                ]);
+                break;
+        }
+
+        return $this->_oQuery->insertByParams([
+            'key' => $sKey, 
+            'data' => $mixedData, 
+            'scope' => $this->_iScope,
+            'expire' => (int)$iExpire,  
+            'salt' => $sSalt
+        ]) ? $sKey : false;
+    }
 }
 
 /** @} */
