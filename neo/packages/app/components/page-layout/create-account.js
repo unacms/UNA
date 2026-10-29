@@ -10,6 +10,7 @@ import MenuFooter from 'app/components/nav/menu-footer'
 import Page from 'app/ui/molecules/page/page'
 import Html from 'app/ui/atoms/html'
 import { appSetting } from 'app/lib/util'
+import { PageHeaderOptions } from 'app/ui/molecules/header/options'
 
 const isWeb = Platform.OS === 'web'
 
@@ -98,6 +99,7 @@ export default function PageLayout({ data, blocks, children }) {
 
     return (
         <Page data={data}>
+            <PageHeaderOptions band={false} />
             {isWeb ? (
                 // The same frame as the home splash (ui/molecules/sections/splash.js).
                 <View

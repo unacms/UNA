@@ -126,6 +126,13 @@ export const settingsLayout = {
              */
             band: 'bg-card/60 lg:bg-transparent',
             /**
+             * Whether pages show the band unless they say otherwise. Off: a page opts in with
+             * `<PageHeaderOptions band />` (the member feed does), and every other page gets
+             * the floating buttons over its own background. A fork that wants the band on
+             * most pages sets it to true; landing pages keep it off with `band={false}`.
+             */
+            band_by_default: false,
+            /**
              * Colour scheme of the header's buttons and page title while they rest on the band
              * (iOS: SwiftUI glass chrome and labels; web: the buttons' colour tokens; the title
              * through Uniwind's ScopedTheme). On web a selected button (the active tab) takes the

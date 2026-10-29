@@ -245,6 +245,7 @@ The page header is mounted once per `Layout` (`ui/molecules/header/page-header.j
 <PageHeaderOptions main={<MobileChatHeader />} /> // replace the whole bar
 <PageHeaderOptions actions={actions} />            // header actions
 <PageHeaderOptions hidden />                       // no header (a cover owns the top)
+<PageHeaderOptions band />                         // band behind the bar on mobile (feed); off by default
 ```
 
 Only passed props take part in the merge. Mount registers, unmount removes, a prop change updates: gate with JSX or `mobileOnly`, not with `useEffect` / `useFocusEffect`. Later-mounted instances win per key and fall back on unmount (a modal over a page). Memoize `sub` and `main` elements. Hidden native tabs have their own `Layout`, so no focus bookkeeping is needed. Only the measured height flows back, through `useHeaderHeight()` (`context/jotai/layout.ts`).

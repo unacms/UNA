@@ -91,6 +91,11 @@ export function getPageHeaderBandClass() {
     return appSetting('layout', 'header', 'band') || PAGE_HEADER_BAND_CLASS;
 }
 
+/** Whether the page shows the band: its `band` header option, else `layout.header.band_by_default`. */
+export function isHeaderBandOn(band) {
+    return band ?? Boolean(appSetting('layout', 'header', 'band_by_default'));
+}
+
 /** How far the band reaches above the content top: covers an iOS pull-down bounce. */
 const PAGE_HEADER_BAND_OVERSCROLL = 2000;
 
@@ -100,6 +105,8 @@ const PAGE_HEADER_BAND_OVERSCROLL = 2000;
  * the band colour instead of its top edge and the screen behind it.
  */
 export function PageHeaderBand({ height }) {
+    const { band } = useHeaderOptions();
+    if (!isHeaderBandOn(band)) return null;
     return (
         <View
             pointerEvents="none"
@@ -241,6 +248,7 @@ export function usePageHeaderBase(pageData) {
         headerActions: options.actions,
         backButton: options.backButton,
         title: options.title,
+        band: isHeaderBandOn(options.band),
     }), [options]);
     const scrollDirection = useScrollDirection();
     const setScrollDirection = useSetScrollDirection();
