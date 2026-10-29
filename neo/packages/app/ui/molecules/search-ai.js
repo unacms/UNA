@@ -79,9 +79,11 @@ export function formatDateLabel(date, t) {
 }
 
 /** Calls search_parse once (no debounce); resolves to the parsed block data or { available: false } */
-export async function parseQuery(query, { url = PARSE_URL, signal, object = '' } = {}) {
+export async function parseQuery(query, { url = PARSE_URL, signal, object = '', hintId = '' } = {}) {
     const params = { params: { query: query.trim(), timezone: getClientTimezone() } }
     if (object) params.params.object = object
+    // the block's extra instructions for the model; the server keeps the text, the block only has its id
+    if (hintId) params.params.hint_id = hintId
     try {
         const response = await fetcher(url + encodeURIComponent(JSON.stringify(params)), false, { signal })
         const data = response?.data?.[0]?.data
@@ -107,7 +109,7 @@ export async function fetchSearchResults(filter, { url = SEARCH_URL, signal } = 
  * search on it, not on the live input, so a keystroke does not fire a search with a stale parse.
  * `parsed.available === false` means the server has no judge model: fall back to a plain keyword search.
  */
-export function useSearchParse(query, enabled, url, object = '') {
+export function useSearchParse(query, enabled, url, object = '', hintId = '') {
     const [settled, setSettled] = useState({ query: '', parsed: null })
     const [parsing, setParsing] = useState(false)
     const requestRef = useRef(null)
@@ -134,7 +136,7 @@ export function useSearchParse(query, enabled, url, object = '') {
             const controller = new AbortController()
             requestRef.current = controller
             try {
-                const data = await parseQuery(query, { url, signal: controller.signal, object })
+                const data = await parseQuery(query, { url, signal: controller.signal, object, hintId })
                 if (controller.signal.aborted) return
                 setSettled({ query, parsed: data })
                 setParsing(false)
@@ -147,7 +149,7 @@ export function useSearchParse(query, enabled, url, object = '') {
             clearTimeout(timerRef.current)
             requestRef.current?.abort()
         }
-    }, [query, enabled, url, object])
+    }, [query, enabled, url, object, hintId])
 
     return { parsed: settled.parsed, parsing, query: settled.query }
 }

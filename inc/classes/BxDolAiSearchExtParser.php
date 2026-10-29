@@ -29,7 +29,8 @@
  */
 class BxDolAiSearchExtParser extends BxDolAiSearchParser
 {
-    const LIST_OPTIONS_MAX = 250;
+    const LIST_OPTIONS_MAX = 1000;  // a longer list is not asked about at all
+    const LIST_CHUNK = 200;         // a longer list is asked in parts of this size, one choice per part
     const LIST_PROBABILITY_MIN = 0.3;
     const BOOL_MIN = 0.6;
     const RADIUS_DEFAULT_KM = 50;   // radius search when the query names a place but no distance
@@ -42,6 +43,8 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
     protected $_sQuery = '';
     protected $_sObject = '';
     protected $_iRadius = 0;        // km, when the query says "within 20 km"
+    protected $_sHint = '';         // block param `hint`: what is searched here, for every question
+    protected $_aHints = [];        // block param `hints`: [field name => extra instruction]
 
     public static function getInstance()
     {
@@ -90,6 +93,8 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         ];
 
         $this->_sObject = $sObject;
+        $this->_sHint = isset($aOptions['hint']) && is_string($aOptions['hint']) ? trim($aOptions['hint']) : '';
+        $this->_aHints = isset($aOptions['hints']) && is_array($aOptions['hints']) ? $aOptions['hints'] : [];
         $this->_aFields = $this->_loadFields($sObject);
         if ($sQuery === '' || !$this->_oJudge || !$this->_aFields)
             return $aResult;
@@ -104,6 +109,9 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
             return $aResult;
 
         $aState = ['today' => $oNow->format('Y-m-d l'), 'query' => $sQuery];
+        // the site's own words about what is searched here (block param `hint`)
+        if ($this->_sHint !== '')
+            $aState['context'] = $this->_sHint;
 
         $fStart = microtime(true);
         $aAnswers = $this->_oJudge->askSafe($aState, $aQuestions);
@@ -176,8 +184,64 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         }
 
         $this->_applyNumbers($aResult);
+        $this->_dropKeywordOfLists($aResult);
 
         return $aResult;
+    }
+
+    /**
+     * The token is one of the words, or a form of it ("politic" / "politics", "dubbing" / "dub"):
+     * the shorter one, 4+ letters, starts the longer one.
+     */
+    protected function _isListWord(string $sToken, array $aWords): bool
+    {
+        if (isset($aWords[$sToken]))
+            return true;
+
+        foreach ($aWords as $sWord => $b) {
+            $sShort = mb_strlen($sToken) <= mb_strlen($sWord) ? $sToken : $sWord;
+            $sLong = $sShort === $sToken ? $sWord : $sToken;
+            if (mb_strlen($sShort) >= 4 && mb_strpos($sLong, $sShort) === 0)
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * A word that already became a list value ("software" -> Expertise: Software) must not also be
+     * the keyword: the text condition is ANDed and would drop everything not named "software".
+     */
+    protected function _dropKeywordOfLists(array &$aResult)
+    {
+        $sField = $aResult['keyword_field'];
+        if ($sField === '' || !isset($aResult['search_params'][$sField]))
+            return;
+
+        $aWords = [];
+        foreach ($aResult['chips'] as $sName => $aChip)
+            if (($this->_aFields[$sName]['kind'] ?? '') == 'list')
+                foreach (preg_split('/[^\p{L}\p{N}]+/u', mb_strtolower($aChip['label']), -1, PREG_SPLIT_NO_EMPTY) as $sWord)
+                    $aWords[$sWord] = true;
+        if (!$aWords)
+            return;
+
+        $aKeep = [];
+        foreach (preg_split('/\s+/u', (string)$aResult['search_params'][$sField]['value'], -1, PREG_SPLIT_NO_EMPTY) as $sToken)
+            if (!$this->_isListWord(mb_strtolower($sToken), $aWords))
+                $aKeep[] = $sToken;
+
+        if ($aKeep) {
+            $sKeyword = implode(' ', $aKeep);
+            $aResult['search_params'][$sField]['value'] = $sKeyword;
+            $aResult['filters'][$sField] = $sKeyword;
+            $aResult['chips'][$sField]['label'] = $aResult['chips'][$sField]['value'] = $sKeyword;
+            return;
+        }
+
+        unset($aResult['search_params'][$sField], $aResult['chips'][$sField], $aResult['confidence'][$sField]);
+        $aResult['filters'][$sField] = '';
+        $aResult['keyword_field'] = '';
     }
 
     /**
@@ -355,13 +419,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
                 case 'select':
                 case 'select_multiple':
                 case 'checkbox_set':
-                    $aValues = [];
-                    if (!empty($aField['values']) && is_array($aField['values']))
-                        foreach ($aField['values'] as $mixedKey => $mixedValue) {
-                            if ($mixedKey === '' || $mixedKey === 0 || $mixedKey === '0' || is_array($mixedValue))
-                                continue;
-                            $aValues[(string)$mixedKey] = trim(strip_tags(_t((string)$mixedValue)));
-                        }
+                    $aValues = !empty($aField['values']) && is_array($aField['values']) ? $this->_getListValues($aField['values']) : $this->_getLabelValues($sName, $sCaption);
                     if (count($aValues) < 1 || count($aValues) > self::LIST_OPTIONS_MAX)
                         continue 2;
                     $a['kind'] = 'list';
@@ -402,7 +460,101 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
             $aFields[$sName] = $a;
         }
 
+        return $this->_qualifySameCaptions($aFields);
+    }
+
+    /**
+     * Fields with the same caption ("Native" after "Source Language" and again after "Target Language")
+     * would get the same question and the same answer, so each gets the caption of the field before it:
+     * "Native (Source Language)".
+     */
+    protected function _qualifySameCaptions(array $aFields): array
+    {
+        $aCount = array_count_values(array_column($aFields, 'caption'));
+
+        $sPrevCaption = '';
+        foreach ($aFields as $sName => $aField) {
+            if ($aCount[$aField['caption']] > 1 && $sPrevCaption !== '') {
+                $aFields[$sName]['caption'] = $aField['caption'] . ' (' . $sPrevCaption . ')';
+                $aFields[$sName]['caption_own'] = $aField['caption'];
+                $aFields[$sName]['caption_of'] = $sPrevCaption;
+            }
+            $sPrevCaption = $aField['caption'];
+        }
+
         return $aFields;
+    }
+
+    /**
+     * Pre-values of a list field -> [key => title]. Plain lists are [key => title]; labels fields
+     * (BxDolLabel::getLabelsSystem) are a tree [[value, subitems]], where the value is the key too.
+     */
+    protected function _getListValues(array $aList): array
+    {
+        $aValues = [];
+        foreach ($aList as $mixedKey => $mixedValue) {
+            if (is_array($mixedValue)) {
+                if (isset($mixedValue['value']) && !is_array($mixedValue['value']) && (string)$mixedValue['value'] !== '')
+                    $aValues[(string)$mixedValue['value']] = trim(strip_tags(_t((string)$mixedValue['value'])));
+                if (!empty($mixedValue['subitems']) && is_array($mixedValue['subitems']))
+                    $aValues += $this->_getListValues($mixedValue['subitems']);
+                continue;
+            }
+
+            if ($mixedKey === '' || $mixedKey === 0 || $mixedKey === '0')
+                continue;
+            $aValues[(string)$mixedKey] = trim(strip_tags(_t((string)$mixedValue)));
+        }
+
+        return $aValues;
+    }
+
+    /**
+     * Labels fields keep no pre-values: the form fills them from the labels tree when it is shown.
+     * The field gets the branch named like its caption (Studio > Forms > Labels: "Skills", "Expertise"),
+     * or the whole tree for the `labels` field when there is no such branch.
+     */
+    protected function _getLabelValues(string $sName, string $sCaption): array
+    {
+        $oLabel = BxDolLabel::getInstance();
+
+        $iParentId = -1;
+        $aRoots = $oLabel->getLabels(['type' => 'parent', 'parent' => 0]);
+        foreach (is_array($aRoots) ? $aRoots : [] as $aLabel)
+            if (mb_strtolower(trim($aLabel['value'])) == mb_strtolower($sCaption)) {
+                $iParentId = (int)$aLabel['id'];
+                break;
+            }
+
+        if ($iParentId < 0 && $sName == 'labels')
+            $iParentId = 0;
+        if ($iParentId < 0)
+            return [];
+
+        return $this->_getListValues($oLabel->getLabelsSystem($iParentId));
+    }
+
+    /**
+     * Block param `hints` for a field, as a sentence appended to its question ('' when none).
+     */
+    protected function _getHint($sName): string
+    {
+        $s = $sName !== null && isset($this->_aHints[$sName]) && is_string($this->_aHints[$sName]) ? trim($this->_aHints[$sName]) : '';
+
+        return $s !== '' ? ' ' . $s : '';
+    }
+
+    /**
+     * Ids of the choice questions a list field is asked with: one, or one per part of a long list.
+     */
+    protected function _getListQuestionIds(string $sName, array $aField): array
+    {
+        $iParts = (int)ceil(count($aField['values']) / self::LIST_CHUNK);
+        $aIds = ["f_{$sName}"];
+        for ($i = 1; $i < $iParts; $i++)
+            $aIds[] = "f_{$sName}__{$i}";
+
+        return $aIds;
     }
 
     // questions ------------------------
@@ -418,16 +570,25 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         foreach ($this->_aFields as $sName => $aField) {
             switch ($aField['kind']) {
                 case 'list':
-                    $aCriteria = $aField['values'];
-                    $aCriteria[self::NONE] = "The query does not specify {$aField['caption']}";
-                    $aQuestions["f_{$sName}"] = BxDolAiJudge::choice(
-                        "Which {$aField['caption']} does the user ask for? The query may be in any language; match by meaning." . ($aField['multi'] ? ' Several may apply.' : ''),
-                        $aCriteria
-                    );
+                    // a long list (languages, countries) goes in parts, each with its own "none"
+                    $aIds = $this->_getListQuestionIds($sName, $aField);
+                    foreach ($aIds as $iPart => $sId) {
+                        $aCriteria = array_slice($aField['values'], $iPart * self::LIST_CHUNK, self::LIST_CHUNK, true);
+                        $aCriteria[self::NONE] = count($aIds) > 1
+                            ? "The query does not specify {$aField['caption']}, or it is not in this list"
+                            : "The query does not specify {$aField['caption']}";
+                        $aQuestions[$sId] = BxDolAiJudge::choice(
+                            "Which {$aField['caption']} does the user ask for? The query may be in any language; match by meaning. Pick a value only when the query names it or clearly describes it; never infer it from other words." . $this->_getHint($sName) . ($aField['multi'] ? ' Several may apply.' : ''),
+                            $aCriteria
+                        );
+                    }
                     break;
 
                 case 'bool':
-                    $aQuestions["f_{$sName}"] = BxDolAiJudge::noul("Does the user explicitly ask for items where \"{$aField['caption']}\" is true / enabled / yes?");
+                    // a flag that belongs to the field before it: "Native" of the Target Language
+                    $aQuestions["f_{$sName}"] = BxDolAiJudge::noul((!empty($aField['caption_of'])
+                        ? "Does the user explicitly ask for \"{$aField['caption_own']}\" about the {$aField['caption_of']} — the word \"{$aField['caption_own']}\" (in any language) is said of the {$aField['caption_of']} value in the query?"
+                        : "Does the user explicitly ask for items where \"{$aField['caption']}\" is true / enabled / yes?") . $this->_getHint($sName));
                     break;
 
                 case 'number':
@@ -523,7 +684,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         if ($bLocation && $this->_aTokens) {
             // the word is geocoded afterwards, so any language and spelling works
             $aQuestions['loc_city'] = BxDolAiJudge::choice(
-                'Which word names a place the items should be at — a city, town, area or country?',
+                'Which word names a place the items should be at — a city, town, area or country?' . $this->_getHint('location'),
                 $this->_tokensCriteria() + [self::NONE => 'No place in the query']
             );
         }
@@ -532,7 +693,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
             $aTopicCriteria = $this->_tokensCriteria(true);
             if ($aTopicCriteria)
                 $aQuestions['topic'] = BxDolAiJudge::choice(
-                    'Which word names the topic, subject, product, title or name to search for in the text of the items? Words naming a kind of content, categories, places, dates, numbers, prices, time words, verbs like "find/show" and function words are NOT topic words.',
+                    'Which word names the topic, subject, product, title or name to search for in the text of the items? The word is searched in: ' . implode(', ', array_unique(array_values($aTextFields))) . '. Words naming a kind of content, categories, places, dates, numbers, prices, time words, verbs like "find/show" and function words are NOT topic words.' . $this->_getHint(array_key_first($aTextFields)),
                     $aTopicCriteria + [self::NONE => 'No topic word: the query only has categories, places, numbers or time']
                 );
         }
@@ -601,13 +762,23 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
      */
     protected function _answerList(string $sName, array $aField)
     {
-        list($sChoice, $fConfidence) = $this->_getChoice("f_{$sName}");
-        if ($sChoice === '' || $sChoice == self::NONE || $fConfidence < self::CONFIDENCE_MIN)
+        // a long list was asked in parts: the most confident part that named a value wins
+        $sChoice = '';
+        $fConfidence = 0.0;
+        $aProbabilities = [];
+        foreach ($this->_getListQuestionIds($sName, $aField) as $sId) {
+            list($sPartChoice, $fPartConfidence) = $this->_getChoice($sId);
+            if ($sPartChoice !== '' && $sPartChoice != self::NONE && $fPartConfidence > $fConfidence) {
+                $sChoice = $sPartChoice;
+                $fConfidence = $fPartConfidence;
+            }
+            $aProbabilities += $this->_getProbabilities($sId);
+        }
+        if ($sChoice === '' || $fConfidence < self::CONFIDENCE_MIN)
             return null;
 
         $aKeys = [];
         if ($aField['multi']) {
-            $aProbabilities = $this->_getProbabilities("f_{$sName}");
             foreach ($aField['values'] as $sKey => $sTitle)
                 if ($sKey == $sChoice || ($aProbabilities[$sKey] ?? 0) >= self::LIST_PROBABILITY_MIN)
                     $aKeys[] = $sKey;
@@ -632,7 +803,8 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         if (!is_array($a) || !isset($a['noul']) || (float)$a['noul'] < self::BOOL_MIN)
             return null;
 
-        return ['value' => 1, 'label' => $aField['caption'], 'confidence' => (float)$a['noul']];
+        // the chip reads "Native (Source Language): Yes", not the caption twice
+        return ['value' => 1, 'label' => _t('_Yes'), 'confidence' => (float)$a['noul']];
     }
 
     /**
@@ -724,7 +896,16 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         $bRadius = $aField['search_type'] == 'location_radius';
         $iRadius = $this->_iRadius > 0 ? $this->_iRadius : self::RADIUS_DEFAULT_KM;
 
-        $sLabel = $aGeo['label'] !== '' ? $aGeo['label'] : $sPlace;
+        // the geocoder names places in their local language ("Հայաստան"), so the country comes from
+        // the site's Country list in the viewer's language
+        $sCountry = '';
+        if ($aGeo['country'] !== '') {
+            $aCountries = BxDolFormQuery::getDataItems('Country');
+            $sCountry = $aCountries[$aGeo['country']] ?? '';
+        }
+        $sLabel = $sCountry !== ''
+            ? trim(implode(', ', array_filter([$aGeo['city'], $sCountry])))
+            : ($aGeo['label'] !== '' ? $aGeo['label'] : $sPlace);
         if ($bRadius)
             $sLabel .= ' +' . $iRadius . ' km';
 

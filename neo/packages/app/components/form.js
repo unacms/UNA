@@ -4,6 +4,7 @@ import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, 
 import { getDefaultPasteStorageKey } from 'app/components/form-fields/media-attachments'
 import { markFormBaseline } from 'app/lib/form/use-form-field'
 import { getFormInitialValues } from 'app/lib/form/form-initial-values'
+import { selectorInitialValue } from 'app/lib/form/field-initial-values'
 import { View, Row } from 'app/design/view'
 import { components } from 'app/components/registry';
 import { FeedbackHaptics, appSetting, isNumeric, isObjectsEqual } from 'app/lib/util';
@@ -554,6 +555,47 @@ export default function Form({
         fieldsDebouncer.maybeExecute(allFields);
         if (isFirst) fieldsDebouncer.flush();
     });
+
+    // A filter form shows the filters another block sets on the page (the AI search block):
+    // the conductor applies them to the list, the form only takes the values. Fields the
+    // filters leave out go back to their initial values, unless `merge` keeps them.
+    // Subscribed once per form: `methods` and the debouncer are new objects on every render, and
+    // a re-subscription in the same commit as the block's emit would miss the event.
+    const { reset: resetForm, getValues: getFormValues } = methods;
+    const fieldsDebouncerRef = useRef(fieldsDebouncer);
+    useEffect(() => {
+        fieldsDebouncerRef.current = fieldsDebouncer;
+    });
+    useEffect(() => {
+        if (!isAutoChange || !processedInputs) return;
+        const sub = emitter.addListener(EVENTS.conductor, (payload) => {
+            if (payload?.action !== 'filters') return;
+            const values = payload.values && typeof payload.values === 'object' ? payload.values : {};
+            const current = getFormValues();
+            let base = current;
+            if (!payload.merge) {
+                // values a field adds besides its own (location_lat, location_country, …) have no
+                // initial value: empty them too, or the old place stays in the filters
+                base = {};
+                Object.keys(current).forEach((key) => {
+                    base[key] = Array.isArray(current[key]) ? [] : '';
+                });
+                Object.assign(base, getFormInitialValues(processedInputs));
+            }
+            const next = { ...base };
+            Object.keys(values).forEach((key) => {
+                // a field that holds a list (selector, checkbox set) takes a single value as a list
+                // of string keys: a language comes as "1", the selector holds ["1"]
+                next[key] = Array.isArray(base[key]) ? selectorInitialValue(values[key]) : values[key];
+            });
+            resetForm(next, { keepDefaultValues: true });
+            // the list has these filters already: do not send them back through onChange
+            lastFieldsRef.current = getFormValues();
+            fieldsDebouncerRef.current.cancel();
+            sessionCacheSet('form:' + cacheKey, lastFieldsRef.current);
+        });
+        return () => sub.remove();
+    }, [isAutoChange, processedInputs, resetForm, getFormValues, cacheKey]);
 
 
     
