@@ -3,7 +3,8 @@ import type { LayoutChangeEvent } from 'react-native';
 import { Text } from 'app/design/typography';
 import { View, Row } from 'app/design/view';
 import { Input, NeoButton } from 'app/design/controls';
-import useDebounce from 'app/lib/hooks/use-debounce';
+import { useDebouncedValue } from '@tanstack/react-pacer';
+import { SEARCH_DEBOUNCE_MS } from 'app/lib/search-debounce';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -20,7 +21,6 @@ export function ListInset({ height = 0 }: { height?: number }) {
     return <View style={{ height, width: '100%', flexShrink: 0 }} />;
 }
 
-const SEARCH_DEBOUNCE_MS = 300;
 
 /**
  * Local search field state with debounced notify. Typing stays local to the
@@ -29,7 +29,7 @@ const SEARCH_DEBOUNCE_MS = 300;
  */
 export function useDebouncedSearch(onSearch?: (term: string) => void) {
     const [value, setValue] = useState('');
-    const debounced = useDebounce(value, SEARCH_DEBOUNCE_MS);
+    const [debounced, debouncer] = useDebouncedValue(value, { wait: SEARCH_DEBOUNCE_MS });
     const lastEmitted = useRef<string | null>(null);
     const onSearchRef = useRef(onSearch);
     onSearchRef.current = onSearch;
@@ -45,10 +45,12 @@ export function useDebouncedSearch(onSearch?: (term: string) => void) {
     }, [debounced]);
 
     const reset = useCallback(() => {
+        // Drop a pending term, so it can't fire after the reset.
+        debouncer.cancel();
         setValue('');
         lastEmitted.current = '';
         onSearchRef.current?.('');
-    }, []);
+    }, [debouncer]);
 
     return { value, setValue, reset };
 }

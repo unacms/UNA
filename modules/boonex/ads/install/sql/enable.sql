@@ -693,8 +693,7 @@ INSERT INTO `sys_alerts` (`unit`, `action`, `handler_id`) VALUES
 -- CRON
 INSERT INTO `sys_cron_jobs` (`name`, `time`, `class`, `file`, `service_call`) VALUES
 ('bx_ads_offers', '0 * * * *', 'BxAdsCronOffers', 'modules/boonex/ads/classes/BxAdsCronOffers.php', ''),
-('bx_ads_pruning', '0 0 * * *', 'BxAdsCronPruning', 'modules/boonex/ads/classes/BxAdsCronPruning.php', ''),
-('bx_ads_publishing', '* * * * *', 'BxAdsCronPublishing', 'modules/boonex/ads/classes/BxAdsCronPublishing.php', '');
+('bx_ads_pruning', '0 0 * * *', 'BxAdsCronPruning', 'modules/boonex/ads/classes/BxAdsCronPruning.php', '');
 
 
 -- EMAIL TEMPLATES

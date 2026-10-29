@@ -143,7 +143,7 @@ class BxBaseUploaderServices extends BxDol
                             continue;
 
                         $oTranscoder->getFileUrl($iId); // adds the file to the transcoding queue
-                        $aResult[$sKey] = BX_DOL_URL_ROOT . 'image_transcoder.php?o=' . $sTranscoder . '&h=' . $iId;
+                        $aResult[$sKey] = BX_DOL_URL_ROOT . 'image_transcoder.php?o=' . $sTranscoder . '&h=' . $iId . '&s=' . $oTranscoder->getHandlerSignature($iId);
                     }
 
                     return $aResult['link'] ? $aResult : ['link' => $oStorage->getFileUrlById($iId)];

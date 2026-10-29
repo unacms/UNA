@@ -4,6 +4,7 @@ import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, 
 import { getDefaultPasteStorageKey } from 'app/components/form-fields/media-attachments'
 import { markFormBaseline } from 'app/lib/form/use-form-field'
 import { getFormInitialValues } from 'app/lib/form/form-initial-values'
+import { selectorInitialValue } from 'app/lib/form/field-initial-values'
 import { View, Row } from 'app/design/view'
 import { components } from 'app/components/registry';
 import { FeedbackHaptics, appSetting, isNumeric, isObjectsEqual } from 'app/lib/util';
@@ -12,12 +13,12 @@ import { sessionCacheGet, sessionCacheSet } from 'app/lib/util/storage';
 import { Platform } from 'react-native';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { FormInstanceProvider } from 'app/context/form-instance';
-import useDebounce from 'app/lib/hooks/use-debounce'
+import { useDebouncer } from '@tanstack/react-pacer'
 import { NeoButton } from 'app/design/controls';
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import { FormError } from 'app/components/form-fields/_field'
 import { useTranslation } from 'react-i18next'
-import { useRouter, usePathname, redirectTo } from 'app/lib/hooks/router'
+import { useRouter, usePathname, redirectTo, useIsFocused } from 'app/lib/hooks/router'
 import { getTabKeyFromPathname } from 'app/lib/navigation/tab-history'
 
 const isWeb = Platform.OS === 'web';
@@ -538,14 +539,68 @@ export default function Form({
     // watch() subscribes the whole Form to every field write. Only filter
     // (onChange) forms need that; kitchen-sink / regular submit forms do not.
     const allFields = isAutoChange ? methods.watch() : EMPTY_WATCH;
-    const debouncedFields = useDebounce(allFields, 500);
+    const fieldsDebouncer = useDebouncer((fields) => {
+        sessionCacheSet('form:' + cacheKey, fields);
+        onChange(fields);
+    }, { wait: 500 });
 
+    // watch() returns a new object on every render, so compare deeply and
+    // schedule only real changes. The first values go out at once.
+    const lastFieldsRef = useRef(null);
     useEffect(() => {
-        if (isAutoChange && onChange && Object.keys(debouncedFields).length > 0) {
-            sessionCacheSet('form:' + cacheKey, debouncedFields);
-            onChange(debouncedFields);
-        }
-    }, [debouncedFields, isAutoChange, onChange, cacheKey]);
+        if (!isAutoChange || !onChange || Object.keys(allFields).length === 0) return;
+        if (isObjectsEqual(lastFieldsRef.current, allFields)) return;
+        const isFirst = lastFieldsRef.current === null;
+        lastFieldsRef.current = allFields;
+        fieldsDebouncer.maybeExecute(allFields);
+        if (isFirst) fieldsDebouncer.flush();
+    });
+
+    // A filter form shows the filters another block sets on the page (the AI search block):
+    // the conductor applies them to the list, the form only takes the values. Fields the
+    // filters leave out go back to their initial values, unless `merge` keeps them.
+    // Subscribed once per form: `methods` and the debouncer are new objects on every render, and
+    // a re-subscription in the same commit as the block's emit would miss the event.
+    const { reset: resetForm, getValues: getFormValues } = methods;
+    const fieldsDebouncerRef = useRef(fieldsDebouncer);
+    // native tabs keep their pages mounted: only the focused page's form takes the filters,
+    // like the conductor's own listener (isFocusedRef in useConductorFilters)
+    const isFocused = useIsFocused();
+    const isFocusedRef = useRef(isFocused);
+    useEffect(() => {
+        fieldsDebouncerRef.current = fieldsDebouncer;
+        isFocusedRef.current = isFocused;
+    });
+    useEffect(() => {
+        if (!isAutoChange || !processedInputs) return;
+        const sub = emitter.addListener(EVENTS.conductor, (payload) => {
+            if (payload?.action !== 'filters' || !isFocusedRef.current) return;
+            const values = payload.values && typeof payload.values === 'object' ? payload.values : {};
+            const current = getFormValues();
+            let base = current;
+            if (!payload.merge) {
+                // values a field adds besides its own (location_lat, location_country, …) have no
+                // initial value: empty them too, or the old place stays in the filters
+                base = {};
+                Object.keys(current).forEach((key) => {
+                    base[key] = Array.isArray(current[key]) ? [] : '';
+                });
+                Object.assign(base, getFormInitialValues(processedInputs));
+            }
+            const next = { ...base };
+            Object.keys(values).forEach((key) => {
+                // a field that holds a list (selector, checkbox set) takes a single value as a list
+                // of string keys: a language comes as "1", the selector holds ["1"]
+                next[key] = Array.isArray(base[key]) ? selectorInitialValue(values[key]) : values[key];
+            });
+            resetForm(next, { keepDefaultValues: true });
+            // the list has these filters already: do not send them back through onChange
+            lastFieldsRef.current = getFormValues();
+            fieldsDebouncerRef.current.cancel();
+            sessionCacheSet('form:' + cacheKey, lastFieldsRef.current);
+        });
+        return () => sub.remove();
+    }, [isAutoChange, processedInputs, resetForm, getFormValues, cacheKey]);
 
 
     

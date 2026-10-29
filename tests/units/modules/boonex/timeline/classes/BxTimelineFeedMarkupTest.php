@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Feed markup: post titles are headings, a finished feed shows no disabled Load More, and the action bar keeps
- * one row on narrow cards.
+ * Feed markup: post titles are headings, hidden carousel slides leave the tab order, a finished feed shows no
+ * disabled Load More, and the action bar keeps one row on narrow cards.
  */
 class BxTimelineFeedMarkupTest extends BxDolTestCase
 {
@@ -17,10 +17,19 @@ class BxTimelineFeedMarkupTest extends BxDolTestCase
 
     public function testPostTitleIsAHeading(): void
     {
-        $this->assertStringContainsString('<h3 class="__style_prefix__-title-cnt mr-2">__title__</h3>', self::read('modules/boonex/timeline/template/type_post.html'), 'Post titles are h3 under the block\'s h2, so screen reader users can jump between posts.');
+        $this->assertStringContainsString('<h2 class="__style_prefix__-title-cnt mr-2">__title__</h2>', self::read('modules/boonex/timeline/template/type_post.html'), 'Post titles are h2, the level of a block title, so they never skip a level and screen reader users can jump between posts.');
 
         foreach (['modules/boonex/timeline/template/css/view.css', 'modules/boonex/artificer/data/template/bx_timeline/css/view.css'] as $sPath)
             $this->assertMatchesRegularExpression('/div\.bx-tl-title \.bx-tl-title-cnt \{[^}]*margin: 0;[^}]*font: inherit;/', self::read($sPath), "$sPath keeps the heading at the title's own size.");
+    }
+
+    public function testHiddenCarouselSlidesLeaveTheTabOrder(): void
+    {
+        $s = self::read('modules/boonex/timeline/js/main.js');
+
+        $this->assertStringContainsString('BxTimelineMain.prototype.syncFlickityFocus = function(oCarousel) {', $s);
+        $this->assertSame(3, substr_count($s, "this.syncFlickityFocus(oCarousel);"), 'The image, video and attachment carousels all keep their hidden slides out of the tab order.');
+        $this->assertStringContainsString("oCarousel.on('select.flickity', fSync);", $s, 'Focus follows the slide that shows.');
     }
 
     public function testActionBarHidesLabelsOnNarrowCards(): void

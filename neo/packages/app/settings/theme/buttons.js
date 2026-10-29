@@ -332,6 +332,8 @@ export const settingsButtons = {
         borderShapes: {
             capsule:   { rounded: 'rounded-full', iconOnlyPadded: true },
             rectangle: { rounded: 'rounded-none' },
+            // 6 / 8 / 12 / 12 / 16px; inputs match (12 at regular and large), cards and blocks
+            // are 16. Native iOS and Android buttons read this too.
             roundedRectangle: {
                 rounded: {
                     default: 'rounded-xl',
@@ -397,11 +399,11 @@ export const settingsButtons = {
                     separator: 'bg-foreground/10',
                     segment: {
                         default: '',
-                        hovered: 'bg-muted/50',
-                        focused: 'bg-muted/50',
-                        pressed: 'bg-accent/80',
+                        hovered: 'bg-button',
+                        focused: 'bg-button',
+                        pressed: 'bg-button-hover',
                         active: 'bg-muted/50',
-                        pressedToggle: 'bg-muted',
+                        pressedToggle: 'bg-button-hover',
                         voted: 'bg-accent/60',
                         disabled: 'opacity-50',
                     },
@@ -425,7 +427,7 @@ export const settingsButtons = {
                 // iOS 26 draws real liquid glass behind the segments instead
                 // (`liquidContainer` replaces `container` there).
                 glass: {
-                    container: 'web:backdrop-blur-md bg-popover/50 shadow-btn-glass dark:shadow-btn-glass-deep',
+                    container: 'web:backdrop-blur-md bg-popover/80 shadow-btn-glass dark:shadow-btn-glass-deep',
                     liquidContainer: '',
                     separator: 'bg-foreground/10',
                     segment: {
@@ -561,11 +563,11 @@ export const settingsButtons = {
             borderless: {
                 container: {
                     default: '',
-                    hovered: 'bg-muted/50',
-                    focused: 'bg-muted/50',
-                    pressed: 'bg-accent/80 web:hover:bg-accent',
+                    hovered: 'bg-button',
+                    focused: 'bg-button',
+                    pressed: 'bg-button-hover',
                     active: 'bg-muted/50 ',
-                    pressedToggle: 'bg-muted',
+                    pressedToggle: 'bg-button-hover',
                     // A cast like or reaction (selectedState="voted" in objects/likes, reactions).
                     voted: 'bg-accent/60',
                     disabled: 'opacity-50',
@@ -614,11 +616,11 @@ export const settingsButtons = {
             // text link (no fill, hover-underline on web).
             link: {
                 container: { default: '', 
-                            hovered: 'bg-muted/50',
-                            focused: 'bg-muted/50',
-                            pressed: 'bg-muted/50',
+                            hovered: 'bg-button',
+                            focused: 'bg-button',
+                            pressed: 'bg-button-hover',
                             active: 'bg-muted/50',
-                            pressedToggle: 'bg-muted/50',
+                            pressedToggle: 'bg-button-hover',
                             disabled: 'opacity-50' },
                 text: {
                     base: 'font-medium tracking-tight text-accent-foreground',
@@ -638,9 +640,9 @@ export const settingsButtons = {
             glass: {
                 container: {
                     base: 'web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep',
-                    default: ' bg-popover/50 ',
+                    default: ' bg-popover/80 ',
                     hovered: ' bg-muted/50 ',
-                    focused: ' bg-popover/50',
+                    focused: ' bg-popover/80',
                     pressed:  'bg-muted shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
                     active: 'bg-muted/50 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
                     pressedToggle: 'bg-accent shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',

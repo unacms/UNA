@@ -6,10 +6,10 @@ import { useChat } from '@tanstack/ai-react';
 import { View, Row, ScrollView } from 'app/design/view';
 import { TextInputClear } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { cn, isWeb } from 'app/lib/util';
 import { createAgentChat, fetchAgentChatThread, hydrateAgentChat } from './helper';
-import { isHiddenFirstMessageText } from './hidden-first-message';
+import { isHiddenEventMessageText, isHiddenFirstMessageText } from './hidden-first-message';
 import {
     agentMaxInputChars,
     clipAgentText,
@@ -609,6 +609,8 @@ function AiAgentChat({
                     ) {
                         return false;
                     }
+                    // Lines sent by the chat itself (EVENTS.agentChat), not typed by the user.
+                    if (message.role === 'user' && isHiddenEventMessageText(messageText(message))) return false;
                     if (message.role !== 'assistant') return true;
                     // An assistant turn with neither text nor buttons has nothing to show yet.
                     return !!messageText(message)
@@ -695,6 +697,35 @@ function AiAgentChat({
         if (!text || isLoading || sessionEnded) return false;
         return dispatch(text);
     }, [maxChars, isLoading, sessionEnded, dispatch]);
+
+    /**
+     * Outside code asks this chat to send a message (`EVENTS.agentChat`, action `send`),
+     * e.g. a worker which noticed that something the agent started is over. Only an open
+     * chat of that agent and context takes it; messages waiting while a reply streams go
+     * out one by one, in order, after it.
+     */
+    const outsideQueueRef = useRef([]);
+    const [outsideTick, setOutsideTick] = useState(0);
+    const agentIdForEvents = Number(data?.agent_id) || 0;
+    const contextForEvents = Number(data?.context_profile_id) || 0;
+    useEffect(() => {
+        // An ended session cannot send: leave the message to another chat.
+        if (readOnly || sessionEnded || !agentIdForEvents) return undefined;
+        const subscription = emitter.addListener(EVENTS.agentChat, (event) => {
+            if (event?.action !== 'send' || event.handled || !event.message) return;
+            if (Number(event.agent_id) !== agentIdForEvents) return;
+            if (event.context_profile_id != null && Number(event.context_profile_id) !== contextForEvents) return;
+            event.handled = true;
+            outsideQueueRef.current.push(String(event.message));
+            setOutsideTick((tick) => tick + 1);
+        });
+        return () => subscription.remove();
+    }, [readOnly, sessionEnded, agentIdForEvents, contextForEvents]);
+    useEffect(() => {
+        if (!outsideQueueRef.current.length || isLoading || sessionEnded) return;
+        // One at a time: the next one goes when this reply is over (isLoading changes back).
+        void sendReply(outsideQueueRef.current.shift());
+    }, [outsideTick, isLoading, sessionEnded, sendReply]);
 
     /** Composer send: the draft plus any attached images. */
     const send = useCallback(async () => {

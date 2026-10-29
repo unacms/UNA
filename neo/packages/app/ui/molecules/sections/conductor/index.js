@@ -18,12 +18,10 @@ import { useLeftColumn, useConductorFilters } from './use-conductor'
 import { useConductorRoutes } from './use-conductor-routes'
 import { useConductorList } from './use-conductor-list'
 import { useConductorCover, resolveConductorHeaderMode } from './use-conductor-cover'
-import { useConductorRevalidate } from './use-conductor-revalidate'
 import { useConductorCommands } from './use-conductor-commands'
 import { useConductorFocusRefresh } from './use-conductor-focus-refresh'
 import { PageHeaderOptions } from 'app/ui/molecules/header/options'
 import { useCurrentUser } from 'app/context/user'
-import Snackbar from 'app/ui/atoms/snackbar'
 import { useBottomSheetStore } from 'app/context/bottomsheet'
 import emitter, { EVENTS } from 'app/context/emitter'
 import { useIsFocused } from 'app/lib/hooks/router'
@@ -40,7 +38,7 @@ const EMPTY_CONTENT = []
  * Conductor — native shell (web lives in `index.web.js`).
  *
  * One UNA page = one menu turned into tabs (`routes`) + one list for the active
- * tab. This component composes five loosely coupled concerns, each in its own
+ * tab. This component composes four loosely coupled concerns, each in its own
  * hook, in the order the effects must run:
  *
  *  1. Routes / tabs   — `useConductorRoutes` + a native `adapter` built here
@@ -48,9 +46,8 @@ const EMPTY_CONTENT = []
  *  2. List            — `useConductorList`; kept here, not in TabScene, so
  *                       pull-to-refresh, sockets and emitter commands share
  *                       one refetch.
- *  3. Revalidation    — `useConductorRevalidate`: timeline socket → snackbar.
- *  4. Global commands — `useConductorCommands`: emitter + pull-to-refresh.
- *  5. Chrome          — `useConductorCover` (morph state), filters sheet, tab
+ *  3. Global commands — `useConductorCommands`: emitter + pull-to-refresh.
+ *  4. Chrome         — `useConductorCover` (morph state), filters sheet, tab
  *                       bar, and `PageHeaderOptions` (page header slots).
  *
  * Hook order in sections 1–2 is load-bearing: see the note above `qKey`.
@@ -67,6 +64,7 @@ const EMPTY_CONTENT = []
  * @param {string}   [props.skeleton='']     Skeleton override for the list.
  * @param {Function} [props.onChangeRoute]   Called with the route after a tab switch.
  * @param {string}   [props.keyword]         Search term; part of the list query key.
+ * @param {Function} [props.prepareData]     Applied to the page JSON of a tab loaded on switch.
  * @param {*}        [props.ts]              Soft-refresh token from the page.
  */
 export function Conductor({
@@ -81,6 +79,7 @@ export function Conductor({
     skeleton = '',
     onChangeRoute,
     keyword,
+    prepareData,
     ts,
 }) {
     const { t } = useTranslation()
@@ -294,7 +293,6 @@ export function Conductor({
     )
 
     const {
-        cacheItems,
         listItems,
         isPending,
         isFetching,
@@ -312,26 +310,13 @@ export function Conductor({
     })
 
     // ==================================================================
-    // 3. Revalidation: timeline socket → "Show New Posts" snackbar
-    // ==================================================================
-
-    const { snackbarVisible, hideSnackbar, showNewContent } = useConductorRevalidate({
-        tabRoute,
-        index,
-        cacheItems,
-        refetchList,
-        currentUserId: currentUser?.id,
-        bootstrappedFromCache: Boolean(cachedConductorRef.current?.routes),
-    })
-
-    // ==================================================================
-    // 4. Global commands (emitter) + pull-to-refresh
+    // 3. Global commands (emitter) + pull-to-refresh
     // ==================================================================
 
     // Only the URL tab is hydrated up front; the rest load their page JSON the
     // first time they are selected.
     useEffect(() => {
-        ensureRouteInited(routes, index, setRoutes)
+        void ensureRouteInited(routes, index, setRoutes, prepareData)
     }, [index])
 
     const { isRefreshing, onStartRefresh } = useConductorCommands({
@@ -345,7 +330,7 @@ export function Conductor({
     })
 
     // ==================================================================
-    // 5. Chrome: filters sheet, left column, tab bar, cover, shared header
+    // 4. Chrome: filters sheet, left column, tab bar, cover, shared header
     // ==================================================================
 
     // Filter form values → route.endpoint.params.filters → new list query key.
@@ -488,14 +473,6 @@ export function Conductor({
                 ? <PageHeaderOptions hidden />
                 : <PageHeaderOptions sub={headerComponent} />}
             <View className="w-full flex-1 " style={headerMode === 'dynamic' ? { overflow: 'hidden' } : undefined}>
-                <Snackbar
-                    visible={snackbarVisible}
-                    onPress={showNewContent}
-                    onDismiss={hideSnackbar}
-                    variant="primary"
-                    title={t('Show New Posts')}
-                    size="sm"
-                />
                 {useLocalHeader && headerMode !== 'dynamic' ? headerComponent : null}
                 <TabScene
                     skeleton={skeleton}

@@ -9,13 +9,14 @@
 import { StyleSheet, View } from 'react-native';
 import { useResolveClassNames } from 'uniwind';
 import { isValidElement, type ComponentProps } from 'react';
-import { Host, Button, HStack, Image, RNHostView, Text, useNativeState } from '@expo/ui/swift-ui';
+import { Host, Button, HStack, Image, ProgressView, RNHostView, Text, ZStack, useNativeState } from '@expo/ui/swift-ui';
 import {
     buttonStyle as buttonStyleModifier,
     controlSize as controlSizeModifier,
     buttonBorderShape as buttonBorderShapeModifier,
     tint as tintModifier,
     foregroundStyle,
+    opacity as opacityModifier,
     accessibilityLabel as accessibilityLabelModifier,
     frame,
     font as fontModifier,
@@ -31,7 +32,7 @@ import { useIosStyleColors, useNativeTokenColor } from 'app/design/controls/neo-
 import { lucideAssetName } from 'app/lib/platform/lucide-assets';
 import { toHexColor } from 'app/lib/platform/native-color';
 import { useResolvedNeoButton, resolveScoped, parseNeoButtonAddon } from 'app/design/controls/neo-button/neo-button-resolver';
-import { useFrozenHostSize, useNativeButtonPress, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
+import { useFrozenHostSize, useNativeButtonPress, useRoundedRectangleRadius, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
 import { FeedbackHaptics, appSetting, findIconFromRemote } from 'app/lib/util';
 import type { NeoButtonExpoUIConfig, NeoButtonExpoUIProps } from 'app/design/controls/neo-button/neo-button.types';
 import { NATIVE_BUTTON_FONT_FAMILY, fontSizeFromClass, fontWeightFromClass } from 'app/design/controls/neo-button/native-font';
@@ -218,6 +219,7 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         imagePlacement, align, width, disabled, haptics,
     });
     const mapping = resolved.nativeMapping;
+    const cornerRadius = useRoundedRectangleRadius(resolved.borderShape, resolved.rounded);
     const fill = resolved.width === 'fill';
 
     // `className` styles the Host (the surface); `classNames.root` goes on the
@@ -227,9 +229,12 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const rootClassStyle = useResolveClassNames(classNames?.root || '');
     const flatHost = StyleSheet.flatten([hostClassStyle, rootClassStyle]) || {};
 
-    const effectiveLabel = (loading && loadingLabel != null && loadingLabel !== '')
-        ? loadingLabel
-        : (label ?? title ?? '');
+    // Busy keeps the label laid out (hidden under the spinner) so the width holds; `loadingLabel`
+    // only names the busy button for VoiceOver, as on the JS button.
+    const effectiveLabel = label ?? title ?? '';
+    const busyName = loading && loadingLabel != null && loadingLabel !== '' ? String(loadingLabel) : undefined;
+    // Prominent styles are tinted `bg-primary`, so their label and spinner are `text-primary-foreground`.
+    const prominentForeground = useNativeTokenColor('text-primary-foreground');
 
     const glyph = resolveIosGlyph(systemImage ?? image, nativeConfig);
     const sfSymbol = glyph?.kind === 'sf' ? glyph.name : undefined;
@@ -405,12 +410,13 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         controlSizeModifier(nativeControlSize),
     ];
 
-    if (borderShape) {
-        modifiers.push(
-            borderShape === 'rectangle'
-                ? buttonBorderShapeModifier('roundedRectangle', 0)
-                : buttonBorderShapeModifier(mapping.buttonBorderShape as Parameters<typeof buttonBorderShapeModifier>[0]),
-        );
+    // A rounded rectangle takes the theme's radius for its size, like the JS button.
+    if (borderShape === 'rectangle') {
+        modifiers.push(buttonBorderShapeModifier('roundedRectangle', 0));
+    } else if (cornerRadius != null) {
+        modifiers.push(buttonBorderShapeModifier('roundedRectangle', cornerRadius));
+    } else if (borderShape) {
+        modifiers.push(buttonBorderShapeModifier(mapping.buttonBorderShape as Parameters<typeof buttonBorderShapeModifier>[0]));
     }
 
     if (isGlass) {
@@ -426,7 +432,8 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         modifiers.push(tintModifier(tintValue));
     }
     if (foregroundValue) labelModifiers.push(foregroundStyle(foregroundValue));
-    if ((isIconOnly || isCustomOnly) && nativeLabel) modifiers.push(accessibilityLabelModifier(nativeLabel));
+    if (busyName) modifiers.push(accessibilityLabelModifier(busyName));
+    else if ((isIconOnly || isCustomOnly) && nativeLabel) modifiers.push(accessibilityLabelModifier(nativeLabel));
     // Do not use SwiftUI `disabled` — it changes intrinsic layout when the
     // control toggles. Fade + block presses on the RN wrapper instead.
     if (iconHostWidth != null) {
@@ -493,6 +500,24 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         />
     ) : null;
 
+    const labelContent = (
+        <>
+            {resolved.imagePlacement !== 'trailing' ? glyphView : null}
+            {!isIconOnly && !isCustomOnly ? (
+                <Text modifiers={textModifiers.length ? textModifiers : undefined}>
+                    {nativeLabel}
+                </Text>
+            ) : null}
+            {resolved.imagePlacement === 'trailing' ? glyphView : null}
+            {addonView}
+        </>
+    );
+    // A button that passes `loading` at all keeps the ZStack in both states, so turning busy
+    // on and off never remounts its label. The spinner takes the label's colour.
+    const busyCapable = props.loading !== undefined;
+    const spinnerColor = (foregroundValue
+        || (mapping.buttonStyle === 'borderedProminent' || resolved.style === 'glassProminent' ? prominentForeground : undefined)) as string | undefined;
+
     const host = (
         <Host
             colorScheme={colorScheme ?? undefined}
@@ -522,16 +547,21 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
                 onPress={hostPress}
                 modifiers={modifiers}
             >
-                <HStack spacing={resolved.labelGap} modifiers={labelModifiers}>
-                    {resolved.imagePlacement !== 'trailing' ? glyphView : null}
-                    {!isIconOnly && !isCustomOnly ? (
-                        <Text modifiers={textModifiers.length ? textModifiers : undefined}>
-                            {nativeLabel}
-                        </Text>
-                    ) : null}
-                    {resolved.imagePlacement === 'trailing' ? glyphView : null}
-                    {addonView}
-                </HStack>
+                {busyCapable ? (
+                    // Busy keeps the size: the label stays laid out but invisible, the spinner centred over it.
+                    <ZStack>
+                        <HStack spacing={resolved.labelGap} modifiers={loading ? [...labelModifiers, opacityModifier(0)] : labelModifiers}>
+                            {labelContent}
+                        </HStack>
+                        {loading ? (
+                            <ProgressView modifiers={spinnerColor ? [tintModifier(spinnerColor)] : undefined} />
+                        ) : null}
+                    </ZStack>
+                ) : (
+                    <HStack spacing={resolved.labelGap} modifiers={labelModifiers}>
+                        {labelContent}
+                    </HStack>
+                )}
             </Button>
         </Host>
     );

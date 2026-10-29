@@ -33,7 +33,7 @@ export function MessageInput({ expanded, avatar, actions, header, footer, childr
     const growFromBottom = !isDesktop;
     const rounded = expanded ? 'rounded-2xl' : 'rounded-full';
     // iOS 26: Liquid Glass that grows with the editor; elsewhere a translucent card.
-    const surface = hasLiquidGlass ? '' : 'bg-card/90 backdrop-blur-lg shadow-btn-glass dark:shadow-btn-glass-deep';
+    const surface = hasLiquidGlass ? '' : 'bg-popover/80 backdrop-blur-lg shadow-btn-glass dark:shadow-btn-glass-deep';
 
     return (
         <View className={`w-full flex-auto ${surface} ${rounded}`}>

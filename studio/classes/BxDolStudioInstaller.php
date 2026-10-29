@@ -1137,6 +1137,7 @@ class BxDolStudioInstaller extends BxDolInstallerUtils
         $this->oDb->cleanMemory('sys_modules');
         $this->oDb->cleanMemory('sys_modules_modules');
         $this->oDb->cleanMemory('sys_modules_modules_active');
+        $this->oDb->cleanMemory('BxDolModuleQuery::getModuleByName');
     }
 }
 

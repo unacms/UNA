@@ -4727,19 +4727,22 @@ class BxBaseModGeneralModule extends BxDolModule
 
     	$sUrl = bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=' . $CNF['URI_VIEW_ENTRY'] . '&id=' . $aContentInfo[$CNF['FIELD_ID']]));
 
+        //--- Attachments aren't returned in API mode without extended units.
+        $bApiShort = $this->_bIsApi && getParam('sys_api_extended_units') != 'on';
+
     	//--- Image(s)
         $aImages = $this->_getImagesForTimelinePost($aEvent, $aContentInfo, $sUrl, $aBrowseParams);
-        $aImagesAttach = $this->_getImagesForTimelinePostAttach($aEvent, $aContentInfo, $sUrl, $aBrowseParams);
+        $aImagesAttach = !$bApiShort ? $this->_getImagesForTimelinePostAttach($aEvent, $aContentInfo, $sUrl, $aBrowseParams) : [];
 
         //--- Video(s)
         $aVideos = $this->_getVideosForTimelinePost($aEvent, $aContentInfo, $sUrl, $aBrowseParams);
-        $aVideosAttach = $this->_getVideosForTimelinePostAttach($aEvent, $aContentInfo, $sUrl, $aBrowseParams);
+        $aVideosAttach = !$bApiShort ? $this->_getVideosForTimelinePostAttach($aEvent, $aContentInfo, $sUrl, $aBrowseParams) : [];
 
         //--- Files(s)
         $aFiles = $this->_getFilesForTimelinePost($aEvent, $aContentInfo, $sUrl, $aBrowseParams);
-        $aFilesAttach = $this->_getFilesForTimelinePostAttach($aEvent, $aContentInfo, $sUrl, $aBrowseParams);
+        $aFilesAttach = !$bApiShort ? $this->_getFilesForTimelinePostAttach($aEvent, $aContentInfo, $sUrl, $aBrowseParams) : [];
 
-        if($this->_bIsApi && getParam('sys_api_extended_units') != 'on') {
+        if($bApiShort) {
             $sTitle = '';
             if(isset($CNF['FIELD_TITLE']) && isset($aContentInfo[$CNF['FIELD_TITLE']]))
                 $sTitle = $aContentInfo[$CNF['FIELD_TITLE']];

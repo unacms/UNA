@@ -106,10 +106,14 @@ class BxDolDesigns extends BxDolFactory implements iBxDolSingleton
         if(($iLogoHeight = (int)$this->getSiteLogoHeight()) > 0)
             $aParams['y'] = $iLogoHeight;
 
+        $oTranscoder = BxDolTranscoder::getObjectInstance($this->sLogoTranscoder);
+        if(!$oTranscoder)
+            return false;
+
         if(!empty($aParams))
-            $sFileUrl = BX_DOL_URL_ROOT . bx_append_url_params('image_transcoder.php', array_merge(array('o' => $this->sLogoTranscoder, 'h' => $iFileId), $aParams));
-        else 
-            $sFileUrl = BxDolTranscoder::getObjectInstance($this->sLogoTranscoder)->getFileUrl($iFileId);
+            $sFileUrl = BX_DOL_URL_ROOT . bx_append_url_params('image_transcoder.php', array_merge(array('o' => $this->sLogoTranscoder, 'h' => $iFileId), $aParams, array('s' => $oTranscoder->getHandlerSignature($iFileId))));
+        else
+            $sFileUrl = $oTranscoder->getFileUrl($iFileId);
 
         return !empty($sFileUrl) ? $sFileUrl : false;
     }

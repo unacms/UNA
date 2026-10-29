@@ -16,6 +16,7 @@ SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
 CREATE TABLE `sys_keys` (
   `key` varchar(32) NOT NULL,
   `data` text NOT NULL,
+  `scope` tinyint(4) NOT NULL default '0',
   `expire` int(11) NOT NULL,
   `salt` varchar(255) NOT NULL,
   PRIMARY KEY (`key`)
@@ -835,7 +836,7 @@ INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `or
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
-(@iCategoryId, 'sys_sockets_type', '_adm_stg_cpt_option_sys_sockets_type', 'sys_soketi', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:33:"get_options_sockets_field_default";s:5:"class";s:13:"TemplServices";}', '', '', 1),
+(@iCategoryId, 'sys_sockets_type', '_adm_stg_cpt_option_sys_sockets_type', 'sys_sockets_soketi', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:33:"get_options_sockets_field_default";s:5:"class";s:13:"TemplServices";}', '', '', 1),
 (@iCategoryId, 'sys_sockets_url', '_adm_stg_cpt_option_sys_sockets_url', '', 'digit', '', '', '', 2),
 (@iCategoryId, 'sys_sockets_app_id', '_adm_stg_cpt_option_sys_sockets_app_id', '', 'digit', '', '', '', 3),
 (@iCategoryId, 'sys_sockets_key', '_adm_stg_cpt_option_sys_sockets_key', '', 'digit', '', '', '', 4),
@@ -5058,7 +5059,8 @@ CREATE TABLE IF NOT EXISTS `sys_menu_items` (
   `copyable` tinyint(4) NOT NULL DEFAULT '1',
   `editable` tinyint(4) NOT NULL DEFAULT '1',
   `order` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `set_name` (`set_name`)
 );
 
 -- site menu

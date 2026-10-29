@@ -45,8 +45,12 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
     function getModuleByName($sName, $bFromCache = true)
     {            
         if ($bFromCache) {
+            /**
+             * It's read on every service call, so the list is kept in memory for the request too.
+             * The memory key can't be 'sys_modules_*', which getModuleByUri uses for any uri.
+             */
             $sSql = "SELECT * FROM `sys_modules`";
-            $a = $this->fromCache('sys_modules_list', 'getAllWithKey', $sSql, 'name');
+            $a = $this->fromMemory('BxDolModuleQuery::getModuleByName', 'fromCache', 'sys_modules_list', 'getAllWithKey', $sSql, 'name');
             if ($a && isset($a[$sName]))
                 return $a[$sName];
             return false;
@@ -54,6 +58,14 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
             $sSql = $this->prepare("SELECT * FROM `sys_modules` WHERE `name`=? LIMIT 1", $sName);
             return $this->getRow($sSql);
         }
+    }
+    /**
+     * Clean the modules list which getModuleByName reads, in the cache and in memory.
+     */
+    public function cleanModulesListCache()
+    {
+        $this->cleanMemory('BxDolModuleQuery::getModuleByName');
+        return $this->cleanCache('sys_modules_list');
     }
     function getModuleByUri($sUri, $bFromCache = true)
     {
@@ -65,7 +77,7 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
         $sSql = $this->prepare("UPDATE `sys_modules` SET `enabled`='1' WHERE `uri`=? LIMIT 1", $sUri);
         $bRet = (int)$this->query($sSql) > 0;
         if ($bRet)
-            $this->cleanCache('sys_modules_list');
+            $this->cleanModulesListCache();
         return $bRet;
     }
     function disableModuleByUri($sUri)
@@ -73,7 +85,7 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
         $sSql = $this->prepare("UPDATE `sys_modules` SET `enabled`='0' WHERE `uri`=? LIMIT 1", $sUri);
         $bRet = (int)$this->query($sSql) > 0;
         if ($bRet)
-            $this->cleanCache('sys_modules_list');
+            $this->cleanModulesListCache();
         return $bRet;
     }
     function setModulePendingUninstall($sUri, $bPendingUninstall)
@@ -81,7 +93,7 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
         $sSql = $this->prepare("UPDATE `sys_modules` SET `pending_uninstall` = ? WHERE `uri` = ? LIMIT 1", $bPendingUninstall ? 1 : 0, $sUri);
         $bRet = $this->query($sSql);
         if ($bRet)
-            $this->cleanCache('sys_modules_list');
+            $this->cleanModulesListCache();
         return $bRet;
     }
     function isModule($sUri)
@@ -293,7 +305,7 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
         $sSql = "UPDATE `sys_modules` SET " . $this->arrayToSQL($aParamsSet) . " WHERE " . $sWhereClause;
         $mixedRet = $this->query($sSql);
         if ($mixedRet)
-            $this->cleanCache('sys_modules_list');
+            $this->cleanModulesListCache();
         return $mixedRet;        
     }
     

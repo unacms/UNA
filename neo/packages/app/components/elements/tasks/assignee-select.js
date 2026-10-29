@@ -175,7 +175,7 @@ export function TaskAssigneeSelect({
                             />
                         </Modal>
                     ) : null}
-                    <Row className="w-full px-1.5 py-1 items-center justify-between flex-wrap shadow-input-outline dark:shadow-input-outline-deep rounded-lg bg-input/60">
+                    <Row className="w-full px-1.5 py-1 items-center justify-between flex-wrap shadow-input-outline dark:shadow-input-outline-deep rounded-lg bg-card">
                         <Row className="gap-2 items-center flex-wrap my-auto flex-1">
                             {profiles.map((item, index) => (
                                 <User

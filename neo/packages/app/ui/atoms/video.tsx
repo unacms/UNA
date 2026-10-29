@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { StyleSheet } from 'react-native';
-import { View } from 'app/design/view'
+import { View, Pressable } from 'app/design/view'
+import VideoThumb from 'app/ui/atoms/video-thumb';
 import type { VideoProps } from './video.types'
 
 const styles = StyleSheet.create({
@@ -14,12 +16,13 @@ const styles = StyleSheet.create({
     },
 });
 
-function ElementVideoPlayer({ src, controls, cover, fill, autoplay, muted }: VideoProps & { src: string }) {
+function ElementVideoPlayer({ src, controls, cover, fill, autoplay, muted, startPlaying }: VideoProps & { src: string, startPlaying?: boolean }) {
     const player = useVideoPlayer(src, player => {
         player.muted = muted ? true : false;
         player.loop = autoplay ? true : false;
         // Same as web's autoPlay: start as soon as the player exists (it plays once the source loads).
-        if (autoplay) player.play();
+        // startPlaying: the user tapped the poster, so play once without looping.
+        if (autoplay || startPlaying) player.play();
     });
 
     // fill = stretch to parent (lightbox). Keep aspect-video by default so existing callers keep height.
@@ -52,7 +55,23 @@ function ElementVideoPlayer({ src, controls, cover, fill, autoplay, muted }: Vid
 }
 
 export default function ElementVideo(props: VideoProps) {
+    const [started, setStarted] = useState(false);
+
     if (!props.src) return null;
 
-    return <ElementVideoPlayer {...props} src={props.src} />;
+    // With a poster and no autoplay, show the poster until the user taps it, like web's preload="none".
+    // An expo-video player buffers as soon as it exists, so a feed would otherwise create one per row.
+    if (props.poster && !props.autoplay && !started) {
+        return (
+            <Pressable
+                className={props.fill ? 'w-full h-full' : 'w-full aspect-video'}
+                accessibilityRole="button"
+                onPress={() => setStarted(true)}
+            >
+                <VideoThumb poster={props.poster} />
+            </Pressable>
+        );
+    }
+
+    return <ElementVideoPlayer {...props} src={props.src} startPlaying={started} />;
 }

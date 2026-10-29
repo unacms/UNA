@@ -13,6 +13,8 @@ if (!defined('BX_DOL_SESSION_IDLE_TIMEOUT_GUESTS'))
     define('BX_DOL_SESSION_IDLE_TIMEOUT_GUESTS', 4*60*60);
 if (!defined('BX_DOL_SESSION_SKIP_UPDATE'))
     define('BX_DOL_SESSION_SKIP_UPDATE', 30);
+if (!defined('BX_DOL_SESSION_TOUCH_INTERVAL'))
+    define('BX_DOL_SESSION_TOUCH_INTERVAL', 30); // how often a session in use moves its `date` (last activity)
 if (!defined('BX_DOL_SESSION_TTL_STEP'))
     define('BX_DOL_SESSION_TTL_STEP', 24*60*60); // how often a remembered session's end moves forward
 define('BX_DOL_SESSION_COOKIE', 'memberSession');
@@ -164,6 +166,11 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
 
         $this->oDb->delete($this->sId);
 
+        // A session in use moves its `date` at most once per touch interval (see `exists`), so the
+        // date that delete() copied to the account can be a little behind. The member is active now.
+        if ($this->iUserId)
+            $this->oDb->updateLastActivityAccount($this->iUserId, time());
+
         $this->sId = '';
         $this->iUserId = 0;
         $this->iTTL = 0;
@@ -184,7 +191,14 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         $this->iTTL = isset($mixedSession['ttl']) ? (int)$mixedSession['ttl'] : 0;
 		$this->aData = unserialize($mixedSession['data']);
 
-		$this->oDb->update($this->sId);		//--- update session's time
+        // `date` is the session's last activity. A session in use moves it at most once per touch
+        // interval, which spares nearly every request a write. The interval stays within save()'s
+        // skip window, so save() never writes in its place, and within half the online window, so
+        // a member who keeps using the site stays online.
+        $iTouch = min(BX_DOL_SESSION_TOUCH_INTERVAL, BX_DOL_SESSION_SKIP_UPDATE, intdiv(60 * (int)getParam('sys_account_online_time'), 2));
+        if ((int)$mixedSession['date'] <= time() - $iTouch)
+            $this->oDb->update($this->sId); //--- update session's time
+
 		return true;
     }
 

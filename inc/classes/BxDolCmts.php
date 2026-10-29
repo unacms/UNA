@@ -163,6 +163,12 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
     protected $_oQuery = null;
     protected $_oTemplate = null;
 
+    /**
+     * Comment rows read by getCommentRow while _getStructureAPI builds one comment's menus.
+     * NULL (the default) means rows are read from the database every time.
+     */
+    protected $_aCmtRowsScope = null;
+
     protected $_bPostQuote;
     protected $_bMinPostForm;
     protected $_sFormObject;
@@ -897,10 +903,20 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
 
     /**
      * Get comment's full info.
+     * While _getStructureAPI builds one comment's menus, a repeated call for the same
+     * comment returns the row the first call read. Code that writes the row in that
+     * window and needs the new values must read it with _oQuery->getComment.
      */
     public function getCommentRow ($iCmtId)
     {
-        return $this->_oQuery->getComment ($this->getId(), $iCmtId);
+        if($this->_aCmtRowsScope === null)
+            return $this->_oQuery->getComment ($this->getId(), $iCmtId);
+
+        $sKey = (int)$this->getId() . '_' . (int)$iCmtId;
+        if(!array_key_exists($sKey, $this->_aCmtRowsScope))
+            $this->_aCmtRowsScope[$sKey] = $this->_oQuery->getComment ($this->getId(), $iCmtId);
+
+        return $this->_aCmtRowsScope[$sKey];
     }
 
     public function getCommentParents ($mixedCmt, $iDepthMax = 0)
@@ -2652,17 +2668,30 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
         $sCmtIndex = 'i' . $iCmtId;
 
         if($bItem) {
-            $aMenuActions = [];
-            if(($oMenuActions = BxDolMenu::getObjectInstance($this->_sMenuObjActions)) !== false) {
-                $oMenuActions->setCmtsData($this, $iCmtId, $aBp);
-                $aMenuActions = $oMenuActions->getCodeAPI();
-            }
+            /**
+             * Both menus and isMoreAllowed read the comment row through getCommentRow.
+             * Nothing is written while the menus are built, so the row is read once
+             * and forgotten before the replies are built.
+             */
+            $aCmtRowsScope = $this->_aCmtRowsScope;
+            $this->_aCmtRowsScope = [];
 
-            $aMenuManage = [];
-            if(($oMenuManage = BxDolMenu::getObjectInstance($this->_sMenuObjManage)) !== false) {
-                $oMenuManage->setCmtsData($this, $iCmtId, $aBp);
-                if($oMenuManage->isVisible())
-                    $aMenuManage = $oMenuManage->getShortCodeAPI();
+            try {
+                $aMenuActions = [];
+                if(($oMenuActions = BxDolMenu::getObjectInstance($this->_sMenuObjActions)) !== false) {
+                    $oMenuActions->setCmtsData($this, $iCmtId, $aBp);
+                    $aMenuActions = $oMenuActions->getCodeAPI();
+                }
+
+                $aMenuManage = [];
+                if(($oMenuManage = BxDolMenu::getObjectInstance($this->_sMenuObjManage)) !== false) {
+                    $oMenuManage->setCmtsData($this, $iCmtId, $aBp);
+                    if($oMenuManage->isVisible())
+                        $aMenuManage = $oMenuManage->getShortCodeAPI();
+                }
+            }
+            finally {
+                $this->_aCmtRowsScope = $aCmtRowsScope;
             }
 
             bx_import('BxDolEmbed');

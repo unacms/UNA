@@ -20,7 +20,7 @@
 @source inline("{sm:,md:,lg:,}rounded-{3xl,2xl,xl,none}");
 @source inline("{sm:,md:,lg:,}{p,gap}-{0..5}");
 /* Block design box per breakpoint (responsive-classes `bg`, `block-pad-*`, `title`): keep in
-   sync with theme.blocks u-block-bg / u-block-bg-solid / u-block-pad-x / u-block-pad-y (settings/theme/elements.js). */
+   sync with theme.blocks u-block-bg / u-block-pad-x / u-block-pad-y (settings/theme/elements.js). */
 @source inline("{sm:,lg:,}{bg-card,bg-card/60,bg-transparent,shadow-block-outline,shadow-none}");
 @source inline("{sm:,lg:,}dark:{shadow-block-outline-deep,shadow-none}");
 @source inline("{sm:,md:,lg:,}{px,py,my}-{0..5}");

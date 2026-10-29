@@ -627,6 +627,7 @@
 
     <string name="_bx_tasks_txt_err_cannot_perform_action"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
     <string name="_bx_tasks_txt_err_empty_pre_list"><![CDATA[Пожалуйста, выберите список, в который хотите добавить элементы.]]></string>
+    <string name="_bx_tasks_txt_err_delete_list"><![CDATA[Невозможно удалить список.]]></string>
     <string name="_bx_tasks_txt_msg_status_hidden"><![CDATA[Данное задание было скрыто.]]></string>
     <string name="_bx_tasks_txt_msg_status_pending"><![CDATA[Данное задание ожидает утверждения.]]></string>
     <string name="_bx_tasks_txt_msg_confirm_tasklist_deletion"><![CDATA[Вы удалите все задания, которые содержатся в этом списке заданий. Вы уверены?]]></string>

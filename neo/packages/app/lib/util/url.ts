@@ -144,6 +144,11 @@ export function getYouTubeVideoId(url: string): string | null {
     return match?.[1] ?? null;
 }
 
+/** Thumbnail for a YouTube video id. `hqdefault` exists for every video (`maxresdefault` does not). */
+export function getYouTubeThumbUrl(videoId: string): string {
+    return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+}
+
 export const openExternalLink = async (finalHref: string): Promise<void> => {
     await WebBrowser.openBrowserAsync(finalHref);
 };

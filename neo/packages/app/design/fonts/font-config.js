@@ -9,6 +9,22 @@
  *   - a key of font-families.js (e.g. 'inter'): that font, loaded on that
  *     platform.
  *
+ * customization/config/fonts.js can also add its own families next to these:
+ *
+ *   families: {
+ *       brand: {
+ *           name: 'Brand',   // the family name inside the files
+ *           native: {        // static files, relative to packages/app/customization/
+ *               400: 'design/fonts/brand/Brand-Regular.ttf',
+ *               700: 'design/fonts/brand/Brand-Bold.ttf',
+ *           },
+ *       },
+ *   },
+ *   main: { ios: 'brand', android: 'brand' },
+ *
+ * They are for iOS and Android; on web the project loads its font in
+ * customization/design/fonts/fonts-web.js, which replaces the core web fonts.
+ *
  * This is a build setting: iOS and Android embed the selected fonts in the
  * app binary, so changing ios/android needs a native rebuild (prebuild +
  * run:ios / run:android). Web picks it up on the next build or dev reload.

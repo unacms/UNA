@@ -231,7 +231,7 @@ const Content = React.memo(({ children, currentUser, layoutName, url }) => {
     return (
         <View className="ns--main-wrapper-- w-full mx-auto items-stretch cnt-root ne--" key={contentKey}>
             <main id="main-content" tabIndex={-1} className={`${mainClassName} outline-none scroll-mt-24`}>
-                <Informer />
+                {layoutName !== 'profile' && layoutName !== 'profile-alt' && <Informer />}
                 {children}
             </main>
             {externalScripts.map((script) => {

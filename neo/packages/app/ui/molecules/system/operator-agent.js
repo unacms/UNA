@@ -229,7 +229,7 @@ export function OperatorAgentPanel({ open, onClose, bottomOffset, params, childr
                 <View
                     pointerEvents={open ? 'auto' : 'none'}
                     className={cn(
-                        'overflow-hidden rounded-2xl bg-card/80 backdrop-blur-xl shadow-card-outline dark:shadow-card-outline-deep',
+                        'overflow-hidden rounded-2xl bg-popover shadow-card-outline dark:shadow-card-outline-deep',
                         open ? '' : 'hidden'
                     )}
                     style={{ width: panelWidth, height: panelHeight }}

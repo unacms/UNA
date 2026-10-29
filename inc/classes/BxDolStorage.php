@@ -413,9 +413,11 @@ abstract class BxDolStorage extends BxDolFactory implements iBxDolFactoryObject
     {
         $iMin = PHP_INT_MAX;
 
-        $aUserQuota = $this->_oDb->getUserQuota($iProfileId);
-        if ($aUserQuota['max_file_size'] && $aUserQuota['max_file_size'] < $iMin)
-            $iMin = $aUserQuota['max_file_size'];
+        // A user's max file size comes from the membership level only (getUserQuota takes it from there too),
+        // so the quota row isn't read: an uploader asks for this several times while it's built.
+        $aMembershipInfo = BxDolAcl::getInstance()->getMemberMembershipInfo($iProfileId);
+        if (!empty($aMembershipInfo['quota_max_file_size']) && $aMembershipInfo['quota_max_file_size'] < $iMin)
+            $iMin = $aMembershipInfo['quota_max_file_size'];
 
         $aObjectQuota = $this->_oDb->getStorageObjectQuota();
         if ($aObjectQuota['max_file_size'] && $aObjectQuota['max_file_size'] < $iMin)

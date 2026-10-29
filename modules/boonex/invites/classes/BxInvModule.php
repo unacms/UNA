@@ -319,7 +319,9 @@ class BxInvModule extends BxDolModule
     public function serviceGetBlockAcceptByCode()
     {
         $mixedResult = $this->_oTemplate->getBlockAcceptByCode();
-        if($this->_bIsApi)
+        // The module is one instance for the process and keeps the API mode from when it was built.
+        // A later API call has to receive the block; printing it and exiting ends the request.
+        if(bx_is_api())
             return $mixedResult;
 
         if(is_array($mixedResult)) {
@@ -402,10 +404,12 @@ class BxInvModule extends BxDolModule
     public function serviceGetBlockFormRequest()
     {
         $mixedResult = $this->_oTemplate->getBlockFormRequest();
-        
-        if ($this->_bIsApi)
+
+        // The module is one instance for the process and keeps the API mode from when it was built.
+        // The home page asks for this block in the API after that, and printing it and exiting ends the request.
+        if (bx_is_api())
             return $mixedResult;
-        
+
         if(is_array($mixedResult)) {
             echoJson($mixedResult);
             exit;

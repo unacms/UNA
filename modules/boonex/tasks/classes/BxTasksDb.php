@@ -392,6 +392,14 @@ class BxTasksDb extends BxBaseModTextDb
                     $sWhereClause = "AND `ttt`.`id` = :id";
                     break;
 
+                case 'object_id':
+                    $aMethod['params'][1] = [
+                        'object_id' => $aParams['object_id']
+                    ];
+
+                    $sWhereClause = "AND `ttt`.`object_id` = :object_id";
+                    break;
+
                 case 'assignees':
                     $aMethod['name'] = 'getColumn';
 
@@ -455,6 +463,20 @@ class BxTasksDb extends BxBaseModTextDb
                     ];
 
                     $sWhereClause = "AND `tt`.`profile_id` = :profile_id";
+
+                    if(isset($aParams['active']) && $aParams['active'] === true) {
+                        $aMethod['name'] = 'getRow';
+
+                        $sWhereClause .= " AND `tt`.`started` <> '0'";
+                    }
+                    break;
+
+                case 'content_id':
+                    $aMethod['params'][1] = [
+                        'content_id' => $aParams['content_id']
+                    ];
+
+                    $sWhereClause = "AND `tt`.`content_id` = :content_id";
 
                     if(isset($aParams['active']) && $aParams['active'] === true) {
                         $aMethod['name'] = 'getRow';

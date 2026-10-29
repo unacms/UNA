@@ -272,50 +272,75 @@ class BxBaseServiceLogin extends BxDol
         $oForm->aFormAttrs['action'] = '';
         
         $oAccount = BxDolAccount::getInstance($iAccountId);
-        $a = $oAccount->getInfo($iAccountId);
+        $a = $oAccount ? $oAccount->getInfo() : false;
+        if (empty($a))
+            return false;
+
+        // A new code shares the count of tries of the earlier ones. If those are used up, or the count expires
+        // before a new code would, the sign-in starts over: an SMS with a code that can't be tried isn't sent.
+        $sAttemptsKey = $this->_get2faAttemptsKey();
+        if ($sAttemptsKey === false) {
+            self::reset2faLogin();
+            return MsgBox(_t('_sys_form_login_input_code_error_restart', bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=login'))));
+        }
+
+        // An account with a phone gets the code there: whoever knows only the password can't send it to another phone.
+        // An account without one names a phone here, and it becomes the account's once the code sent to it is entered.
         $sPhoneNumber = trim($a['phone']);
-            
-        $oForm->initChecker(array('phone' => $sPhoneNumber));
+        if ($sPhoneNumber !== '')
+            $oForm->aInputs['phone'] = array_merge($oForm->aInputs['phone'], [
+                'type' => 'value',
+                'value' => $this->_getPhoneMasked($sPhoneNumber),
+                'info' => '',
+                'required' => false,
+            ]);
+
+        $oForm->initChecker();
         if ($oForm->isSubmittedAndValid()) {
-            $sNewPhoneNumber = trim($oForm->getCleanValue('phone'));
-            if ($sPhoneNumber != $sNewPhoneNumber)
-                $oAccount->updatePhone($sNewPhoneNumber);
-            $sActivationCode = rand(1000, 9999);
+            $sNewPhoneNumber = $sPhoneNumber === '' ? trim($oForm->getCleanValue('phone')) : '';
+            $sSendTo = $sPhoneNumber !== '' ? $sPhoneNumber : $sNewPhoneNumber;
+            $sActivationCode = (string)random_int(100000, 999999);
             $sActivationText =_t('_sys_txt_login_2fa_sms_text', $sActivationCode);
 
             $mixedOverrideResult = null;
             /**
              * @hooks
-             * @hookdef hook-account-before_2fa_send_sms 'account', 'before_2fa_send_sms' - hook after user performed login
+             * @hookdef hook-account-before_2fa_send_sms 'account', 'before_2fa_send_sms' - hook before the SMS with the code of two-factor login is sent
              * - $unit_name - equals `system`
              * - $action - equals `before_2fa_send_sms` 
              * - $object_id - account id 
              * - $sender_id - not used 
              * - $extra_params - array of additional params with the following array keys:
-             *      - `phone_number` - [array] contains account info from $oAccount->getInfo()
-             *      - `sms_text` - [string] the password entered by the user
-             *      - `override_result` - [string] the password after encription, to save in db
+             *      - `phone_number` - [string] by ref, the phone the SMS goes to, can be overridden in hook processing
+             *      - `sms_text` - [string] by ref, the text of the SMS with the code, can be overridden in hook processing
+             *      - `override_result` - [mixed] by ref, set it to send the SMS yourself: the system then doesn't send it
              * @hook @ref hook-account-before_2fa_send_sms
              */
             bx_alert('account', 'before_2fa_send_sms', $oAccount->id(), false, [
-                'phone_number' => &$sPhoneNumber, 
+                'phone_number' => &$sSendTo,
                 'sms_text' => &$sActivationText, 
 
-                'phone_number_ref' => &$sPhoneNumber, 
+                'phone_number_ref' => &$sSendTo,
                 'sms_text_ref' => &$sActivationText, 
 
                 'override_result' => &$mixedOverrideResult
             ]);
 
-            if($mixedOverrideResult === null && ($oSms = BxDolSms::getObjectInstance()) !== false && !$oSms->sendSms($sNewPhoneNumber, $sActivationText))
+            if($mixedOverrideResult === null && ($oSms = BxDolSms::getObjectInstance()) !== false && !$oSms->send($sSendTo, $sActivationText))
                 return MsgBox(_t('_sys_txt_login_2fa_sms_error_occured'));
 
-            $oSession = BxDolSession::getInstance();
-            $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE, $sActivationCode);
+            // A new code keeps the count of tried ones: asking for codes again gives no more guesses.
+            // A new phone is saved as the one the code went to, which the hook above may have changed.
+            $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE, [
+                'code' => $sActivationCode,
+                'phone' => $sNewPhoneNumber !== '' ? trim((string)$sSendTo) : '',
+                'expires' => time() + BX_ACCOUNT_2FA_LOGIN_CODE_LIFETIME,
+                'attempts_key' => $sAttemptsKey !== '' ? $sAttemptsKey : (string)BxDolKey::getInstance()->getNewCounterKey(BX_ACCOUNT_2FA_LOGIN_ATTEMPTS_LIFETIME),
+            ]);
             header('Location: ' . bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=login-step3')));
         }
 
-        return '<div class="bx-def-padding-sec-bottom">' . _t("_sys_txt_login_2fa_description") . '</div>' .$oForm->getCode();
+        return '<div class="bx-def-padding-sec-bottom">' . _t($sPhoneNumber !== '' ? '_sys_txt_login_2fa_description_phone' : '_sys_txt_login_2fa_description') . '</div>' .$oForm->getCode();
     }
     
     public function serviceLoginFormStep3 ()
@@ -330,12 +355,20 @@ class BxBaseServiceLogin extends BxDol
         $oForm->aFormAttrs['action'] = '';
         $oForm->initChecker();
         
+        // The code checker (BxFormLoginCheckerHelper::checkCodeExist) has checked the account and the code from the session.
         if ($oForm->isSubmittedAndValid()) {
             $oSession = BxDolSession::getInstance();
-            $oSession->unsetValue(BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE);
-            $iAccountId = $oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID);
-            $oAccount = BxDolAccount::getInstance($iAccountId);
-            $aAccount = bx_login($oAccount->id(), $oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER));
+            $aCode = $oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE);
+            $oAccount = BxDolAccount::getInstance($oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID));
+            $bRememberMe = $oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER);
+            self::reset2faLogin();
+
+            // The phone the code was sent to is the account's from now on, unless another account
+            // has taken it since the code was sent, even at the same moment: one phone belongs to one account.
+            if (!empty($aCode['phone']))
+                $oAccount->updatePhone($aCode['phone'], false, true);
+
+            $aAccount = bx_login($oAccount->id(), $bRememberMe);
            
             $sUrlRelocate = $oForm->getCleanValue('relocate');
             if (!$sUrlRelocate || 0 !== strncmp($sUrlRelocate, BX_DOL_URL_ROOT, strlen(BX_DOL_URL_ROOT)))
@@ -367,6 +400,39 @@ class BxBaseServiceLogin extends BxDol
             header('Location: ' . $sUrlRelocate);
         } 
         return $oForm->getCode();
+    }
+
+    /**
+     * Forget the two-factor login in progress: the next try starts over from the password.
+     */
+    public static function reset2faLogin()
+    {
+        // The count of tries stays in sys_keys until it expires: a request that read the session before
+        // this one still can't try a code more times than the count allows, and a right code sent twice signs in.
+        $oSession = BxDolSession::getInstance();
+        foreach ([BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER] as $sKey)
+            $oSession->unsetValue($sKey);
+    }
+
+    /**
+     * The count of tries that a new code of the two-factor login in progress shares with the earlier ones:
+     * '' when there is none yet, false when it's used up or expires before a new code would.
+     */
+    protected function _get2faAttemptsKey()
+    {
+        $aCode = BxDolSession::getInstance()->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE);
+        if (!is_array($aCode) || empty($aCode['attempts_key']))
+            return '';
+
+        return BxDolKey::getInstance()->canUseCounterKey($aCode['attempts_key'], BX_ACCOUNT_2FA_LOGIN_CODE_ATTEMPTS, BX_ACCOUNT_2FA_LOGIN_CODE_LIFETIME) ? $aCode['attempts_key'] : false;
+    }
+
+    /**
+     * Phone number with all digits but the last two hidden, for showing where a code goes.
+     */
+    protected function _getPhoneMasked($sPhone)
+    {
+        return htmlspecialchars(preg_replace('/\d(?=(?:\D*\d){2})/u', '•', $sPhone));
     }
 
     /**

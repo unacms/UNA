@@ -3,7 +3,7 @@
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { QueryClientProvider } from '@tanstack/react-query'
-import { queryClient } from 'app/lib/platform/query-client'
+import { getQueryClient } from 'app/lib/platform/query-client'
 import { Provider as JotaiProvider } from 'jotai'
 import i18n from 'i18next'
 import { I18nextProvider, initReactI18next } from 'react-i18next'
@@ -75,6 +75,10 @@ export function Providers({ children, initialLang = 'en', initialResources, onVe
         instance.init(i18nOptions(initialLang, initialResources))
         return instance
     })
+
+    // A module-level client would share one cache between every request the
+    // server renders: comments-browse writes into it during render.
+    const [queryClient] = useState(getQueryClient)
 
     const { langCode, hydrated } = useLayoutSettings()
 

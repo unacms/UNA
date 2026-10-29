@@ -97,6 +97,10 @@ define('BX_PROFILE_STATUS_PENDING', 'pending'); ///< profile status - pending, d
 //--- Account settings ---//
 define('BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID', '2FA_LOGIN_ACCOUNT_ID');
 define('BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER', '2FA_LOGIN_IS_REMEMBER');
+define('BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE', '2FA_LOGIN_CODE');
+define('BX_ACCOUNT_2FA_LOGIN_CODE_LIFETIME', 600); ///< seconds an SMS code of two-factor login works
+define('BX_ACCOUNT_2FA_LOGIN_CODE_ATTEMPTS', 5); ///< wrong codes after which two-factor login starts over from the password
+define('BX_ACCOUNT_2FA_LOGIN_ATTEMPTS_LIFETIME', 86400); ///< seconds the count of tried codes is kept, resent codes share it: after that the sign-in starts over
 define('BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE', 'PHONE_ACTIVATEION_CODE');
 define('BX_ACCOUNT_CONFIRMATION_NONE', 'none');
 define('BX_ACCOUNT_CONFIRMATION_EMAIL', 'email');

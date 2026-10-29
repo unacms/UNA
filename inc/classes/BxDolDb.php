@@ -208,14 +208,12 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
 				PDO::ATTR_PERSISTENT => $this->_bPdoPersistent
 	        ));
 
-            $this->pdoExec("SET NAMES 'utf8mb4' COLLATE '" . (defined('BX_DATABASE_COLLATE') ? BX_DATABASE_COLLATE : 'utf8mb4_unicode_ci') . "'");
-            $this->pdoExec("SET sql_mode = ''");
+            // The session settings in one statement: each one is a round trip on every request.
+            // default_storage_engine exists on every supported server (MySQL 5.5.3+, MariaDB), so the
+            // version isn't read for it; PDO's server version wouldn't do anyway, a proxy reports its own.
+            $this->pdoExec("SET NAMES 'utf8mb4' COLLATE '" . (defined('BX_DATABASE_COLLATE') ? BX_DATABASE_COLLATE : 'utf8mb4_unicode_ci') . "', sql_mode = '', default_storage_engine = " . $this->_sStorageEngine);
             if (0 == strcasecmp($this->_sStorageEngine, 'INNODB'))
                 $this->pdoExec("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE");
-
-            $sVer = $this->getVersion();
-            $sStorageEngine = !$sVer || version_compare($sVer, '5.7.5', '>=') ? 'default_storage_engine' : 'storage_engine';
-            $this->pdoExec("SET $sStorageEngine=" . $this->_sStorageEngine);
 
 			$this->cleanMemoryAll();
     	}
@@ -646,6 +644,15 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
 
     public function isTableExists($sTable)
     {
+        /**
+         * Look the exact name up first: listing all tables takes milliseconds and
+         * the check runs on every request (BxDolAi::getInstance).
+         */
+        $sDBName = is_array($this->_sDbname) ? $this->_sDbname[0] : $this->_sDbname;
+        if ($this->getOne("SELECT 1 FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA` = :db AND `TABLE_NAME` = :table LIMIT 1", ['db' => $sDBName, 'table' => $sTable]))
+            return true;
+
+        //--- Not found: compare case-insensitively, as before.
         $aTableNames = $this->listTables();
         foreach($aTableNames as $iKey => $sTableName)
             $aTableNames[$iKey] = strtoupper($sTableName);

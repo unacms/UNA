@@ -193,12 +193,24 @@ A block's chrome (background, padding, title) comes from UNA's `designbox_id`, w
 ```
 
 - Each key lists the tiers where that part shows: `mobile` (no prefix), `tablet` (`sm:`), `desktop` (`lg:`). `true` and `false` mean every tier or none.
-- `solid` lists the tiers where the background is the opaque card fill (theme `u-block-bg-solid`) instead of the translucent `u-block-bg` one. Use it for a block among solid cards, such as the home "Add new..." block above the feed on phones (`"solid": ["mobile"]`). The classes come from `lib/block-bg-classes.ts`; run its tests with `node --test packages/app/lib/block-bg-classes.test.ts`.
-- A missing key keeps `designbox_id`. Props passed from code (`showBg`, `showPadding`, `showTitle`) win over both.
+- Corners without a `rounded` key follow the page: rounded where the page's padding keeps the block off the screen edge, square where the block meets it. The `default`, `login` and universal column layouts tell their blocks through `PageChromeProvider` (`ui/molecules/page/page-chrome.tsx`); in other layouts (home, profile, post ...) blocks keep `theme.blocks` `u-block-rounded-default` (square on phones).
+- The background classes come from `lib/block-bg-classes.ts`; run its tests with `node --test packages/app/lib/block-bg-classes.test.ts`.
+- A missing key takes the page's `designbox` (below), then `designbox_id`. Props passed from code (`showBg`, `showPadding`, `showTitle`) win over all of them.
 - Keys sit under `designbox` because every `config_api` key is also spread into each element of the block as a prop.
 - `components/block-wrapper.js` reads them and `ui/molecules/page/page-block.js` turns tiers into classes through `responsiveClasses`. Prefixed classes must stay listed in `@source inline(...)` in `design/styles/utilities.css`; update that list if `theme.blocks` `u-block-bg` or the block padding changes.
 - List (browse) blocks skip `BlockWrapper`. The list endpoint carries their `designbox`, and `paddingForList` (`default/functions.js`) turns `bg` / `rounded` into a card around the list. This is web only: a native list scrolls under the overlaid page header.
 - Use this rather than per-page or per-block overrides in code: block ids and pages differ between UNA sites.
+
+The page's App config (Studio → Developer → Pages → page → "Config (for App in JSON format)", sent as `config`) sets the page around its blocks, with the same tiers:
+
+```json
+{ "padding": ["tablet", "desktop"], "gap": true, "designbox": { "bg": ["tablet", "desktop"], "padding": ["tablet", "desktop"] } }
+```
+
+- `padding` and `gap` are the page content's padding and the gap between its blocks (`layout.page_content_padding` / `page_content_gap`; unset uses `page_content_padding_default`, `page_content_padding_layouts` and `page_content_gap_default`).
+- `designbox` is the default for every block on the page, browse lists included (the card `paddingForList` draws around them); a block's own keys win, key by key. It applies to every block with a design box, so leave out keys that only some blocks should take. `"rounded": false` means square everywhere.
+- Examples: margins everywhere with rounded cards needs nothing (the default). Content without a card on phones: `{"designbox": {"bg": ["tablet", "desktop"], "padding": ["tablet", "desktop"]}}`. Edge-to-edge square cards on phones, rounded cards with margins from tablet: `{"padding": ["tablet", "desktop"]}`.
+- A fork sets the same keys for a page URI in `layouts[<uri>]` of `customization/settings.js`, used when UNA sends no page config.
 
 ### Fonts
 
@@ -206,6 +218,7 @@ Text uses two roles, `font-main` (the default in `design/typography.tsx`) and `f
 
 - `'system'` is the platform UI font: SF Pro on iOS, the device sans-serif on Android, the OS font stack on web.
 - Any other value is a key of `design/fonts/font-families.js` (`'inter'`). Native needs one static file per weight (iOS and Android pick the face by `fontWeight`; variable fonts don't work). Web needs a `next/font` instance per role in `webFontFamilies` (`design/fonts/fonts-web.web.ts`).
+- A fork adds its own font under `families` in `customization/config/fonts.js`: the same shape as `font-families.js`, with the static files under `packages/app/customization/` and `native` paths relative to that folder (example in `font-config.js`). Select its key for `ios` and `android`, and load it on web in `customization/design/fonts/fonts-web.js`, which replaces the core web fonts. Run the font tests with `node --test apps/expo/plugins/with-app-fonts.test.ts`.
 - iOS and Android values are build settings: `apps/expo/plugins/with-app-fonts.js` embeds only the selected families, so changing them needs a prebuild and a native rebuild. At runtime `design/fonts/native-fonts.ts` points the Uniwind font variables and the navigation header fonts at the family.
 - Don't set `fontFamily` inline; use `font-main` / `font-title`. Expo UI (SwiftUI / Compose) views are the exception and take `nativeFonts.main`.
 
@@ -244,7 +257,15 @@ The page header is mounted once per `Layout` (`ui/molecules/header/page-header.j
 <PageHeaderOptions main={<MobileChatHeader />} /> // replace the whole bar
 <PageHeaderOptions actions={actions} />            // header actions
 <PageHeaderOptions hidden />                       // no header (a cover owns the top)
+<PageHeaderOptions band />                         // band behind the bar on mobile (feed); off by default
+<PageHeaderOptions showTitle={false} />            // no title on mobile (the page draws its own heading)
 ```
+
+The header has three states, matching UNA's three tiers (phone, tablet from `sm`, desktop from `lg`):
+
+- Phone: floating buttons; the logo mark where there is no bottom tab bar (guests) and on Home; the page title where the page's cover is on for this viewer (Studio → Pages → page → Cover: all, visitors only or members only; UNA sends it as `cover`). A page that passes `title` always shows it; `showTitle` overrides both.
+- Tablet: floating buttons and the full logo, otherwise as on phones: the title in the header row, the conductor's tabs on the second row.
+- Desktop: the full header with the site menu. Conductor pages put the section title and nav in the left column (from `lg`, `hide_top_menu_from` and the `cols-l-c` / `cols-l-c-r` left `breakpoint`); regular pages show the cover title above their blocks (`PageTitle` in the `default` and universal layouts).
 
 Only passed props take part in the merge. Mount registers, unmount removes, a prop change updates: gate with JSX or `mobileOnly`, not with `useEffect` / `useFocusEffect`. Later-mounted instances win per key and fall back on unmount (a modal over a page). Memoize `sub` and `main` elements. Hidden native tabs have their own `Layout`, so no focus bookkeeping is needed. Only the measured height flows back, through `useHeaderHeight()` (`context/jotai/layout.ts`).
 

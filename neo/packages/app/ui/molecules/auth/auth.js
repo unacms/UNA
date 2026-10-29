@@ -47,7 +47,7 @@ export default function AuthPanel({
     const { t } = useTranslation()
     const altAuth = hasAltAuth()
     return (
-        <View className="w-full gap-4">
+        <View className="w-full gap-6">
             {forgotPasswordLink && (
                 <Link
                     className="mx-auto"

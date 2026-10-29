@@ -9,6 +9,14 @@ function skeletonCountFor(num: number, isFirst: boolean) {
     return Math.max(0, (isFirst ? 5 : 2) * num)
 }
 
+/**
+ * Skeleton slots per page for a list layout: one for a single-column list,
+ * `gridSlots` when the layout has fractional widths (`w-1/2`, `w-1/3`, ...).
+ */
+export function skeletonSlotsForLayout(layout: string | undefined, gridSlots = 5) {
+    return /(^|[\s:])w-\d+\/\d+/.test(layout || '') ? gridSlots : 1
+}
+
 function getSkeletonModuleName(name: string) {
     const map = appSetting('browse', 'skeletons') || {}
     let key = name

@@ -423,6 +423,7 @@ class BxDolAIToolAgentCreate extends BxDolAITool
 
         $iId = (int)$oDb->lastId();
         $oDb->cleanCache('sys_agents_with_alert');
+        $oDb->cleanMemory('sys_agents_with_alert');
         $this->_logSql('insert', 'sys_agents_agents', 'id', (string)$iId, 'INSERT agent ' . $aRow['name'], null, $aRow);
 
         $aOut['id'] = $iId;
@@ -495,6 +496,7 @@ class BxDolAIToolAgentCreate extends BxDolAITool
             return ['ok' => 0, 'error' => 'UPDATE failed'];
 
         $oDb->cleanCache('sys_agents_with_alert');
+        $oDb->cleanMemory('sys_agents_with_alert');
         $aAfter = $oDb->getRow("SELECT * FROM `sys_agents_agents` WHERE `id` = :id LIMIT 1", ['id' => $iId]);
         $this->_logSql('update', 'sys_agents_agents', 'id', (string)$iId, 'UPDATE agent ' . $iId, $aBefore, $aAfter ?: null);
 

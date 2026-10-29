@@ -1388,11 +1388,11 @@ function bx_get_reset_password_key($sValue, $sField = 'email', $iLifetime = 0)
             $iLifetime = 86400;
     }
 
-    $oKey = BxDolKey::getInstance();
+    $oKey = BxDolKey::getInstanceWithScope(BX_KEY_SCOPE_ACCOUNT_PASSWORD_RESET);
     if(!$oKey)
         return false;
 
-    return $oKey->getNewKey(array($sField => $sValue), $iLifetime);
+    return $oKey->getNewKey([$sField => $sValue], $iLifetime);
 }
 
 function bx_get_reset_password_link($sValue, $sField = 'email', $iLifetime = 0)
@@ -2745,6 +2745,21 @@ function bx_api_get_msg($sMessage, $aParams = [])
 
 function bx_api_get_image($mixedStorage, $iId)
 {
+    // The file's url, its info and its local path read the same storage row: read it once (@see BxDolStorageQuery::openFileRowsScope).
+    $iFileRowsScope = BxDolStorageQuery::openFileRowsScope();
+    try {
+        return _bx_api_get_image($mixedStorage, $iId);
+    }
+    finally {
+        BxDolStorageQuery::closeFileRowsScope($iFileRowsScope);
+    }
+}
+
+/**
+ * @see bx_api_get_image
+ */
+function _bx_api_get_image($mixedStorage, $iId)
+{
     $sStorage = $sTranscoder = '';
 
     if(is_array($mixedStorage))
@@ -2754,17 +2769,25 @@ function bx_api_get_image($mixedStorage, $iId)
 
     $sUrl = '';
     $iWidth = $iHeight = 0;
+    $oTranscoderImage = null;
     if($sTranscoder && ($oTranscoder = BxDolTranscoder::getObjectInstance($sTranscoder))) {
         $sUrl = $oTranscoder->getFileUrl($iId);
 
-        if(($aSize = $oTranscoder->getSize($sUrl)) !== false) {
+        /**
+         * The default getSize of image transcoders and video posters downloads the file from
+         * its url, and runs ffmpeg for a poster. Their size is measured below from the local file.
+         */
+        if($sUrl && bx_api_is_image_transcoder($oTranscoder))
+            $oTranscoderImage = $oTranscoder;
+        else if($sUrl && method_exists($oTranscoder, 'getSize') && ($aSize = $oTranscoder->getSize($sUrl)) !== false) {
             $iWidth = (int)$aSize['w'];
             $iHeight = (int)$aSize['h'];
         }
     }
 
     $sLocalPath = '';
-    if(!$sUrl && ($oS = BxDolStorage::getObjectInstance($sStorage))) {
+    // Id 0 (a profile without a cover, say) is never a file.
+    if(!$sUrl && !empty($iId) && ($oS = BxDolStorage::getObjectInstance($sStorage))) {
         $sUrl = $oS->getFileUrlById($iId);
 
         if(($aFile = $oS->getFile($iId)) && !empty($aFile['dimensions'])) {
@@ -2783,6 +2806,9 @@ function bx_api_get_image($mixedStorage, $iId)
         // measure each URL only once per request.
         static $aSizes = [];
         if(!isset($aSizes[$sUrl])) {
+            if($oTranscoderImage)
+                $sLocalPath = $oTranscoderImage->getFileLocalPath($iId);
+
             $aSize = false;
             if($sLocalPath && ($aInfo = @getimagesize($sLocalPath)))
                 $aSize = ['w' => $aInfo[0], 'h' => $aInfo[1]];
@@ -2807,6 +2833,24 @@ function bx_api_get_image($mixedStorage, $iId)
         'width' => $iWidth,
         'height' => $iHeight,
     ] : false;
+}
+
+/**
+ * Check whether the transcoder is a stock image transcoder or video poster. Their files can be
+ * measured on the disk (@see BxDolTranscoder::getFileLocalPath). A custom class can return
+ * other urls or measure them its own way, so it keeps getSize.
+ */
+function bx_api_is_image_transcoder($oTranscoder)
+{
+    switch(get_class($oTranscoder)) {
+        case 'BxDolTranscoderImage':
+            return true;
+
+        case 'BxDolTranscoderVideo':
+            return $oTranscoder->getFilterParams('Poster') !== false;
+    }
+
+    return false;
 }
 
 function bx_api_get_browse_params($sParams, $bParamsOnly = false)

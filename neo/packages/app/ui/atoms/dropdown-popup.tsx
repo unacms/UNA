@@ -30,6 +30,21 @@ const dropdownTheme = appSetting('theme', 'dropdown');
  */
 const CONTENT_SETTLE_MS = 350;
 
+type ButtonPos = {
+    triggerY: number;
+    triggerHeight: number;
+    x: number;
+    width: number;
+    height: number;
+    maxHeight: number;
+    shouldOpenAbove: boolean;
+    /** Web: height of the fixed popup layer, for anchoring an above-open popup by its bottom edge. */
+    viewportHeight: number;
+};
+
+/** Position while closed: the initial state and what closing resets to. */
+const CLOSED_POS: ButtonPos = { triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false, viewportHeight: 0 };
+
 const WEB_FOCUSABLE_SELECTOR = [
     'a[href]',
     'button:not([disabled])',
@@ -120,8 +135,7 @@ export default function DropdownPopup({
     const isDesktop = useIsDesktop();
     const contentRef = useRef<any>(null);
     const restoreFocusRef = useRef<any>(null);
-    // `viewportHeight` (web): height of the fixed popup layer, for anchoring an above-open popup by its bottom edge.
-    const [buttonPos, setButtonPos] = useState({ triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false, viewportHeight: 0 });
+    const [buttonPos, setButtonPos] = useState<ButtonPos>(CLOSED_POS);
     const [popupHeight, setPopupHeight] = useState(0);
     const [popupRenderedWidth, setPopupRenderedWidth] = useState(0);
     /**
@@ -242,17 +256,22 @@ export default function DropdownPopup({
         [isControlledOutside, isWeb, onOpenChange]
     );
 
+    // Reset only after the popup was open: on mount and on resizes while closed the
+    // state already is the closed one, and a no-op dispatch from an effect isn't free.
+    const wasOpenRef = useRef(false);
     useEffect(() => {
         if (isRealOpen) {
+            wasOpenRef.current = true;
             updateButtonPosition();
             if (isWeb) {
                 window.addEventListener('resize', updateButtonPosition);
                 return () =>
                     window.removeEventListener('resize', updateButtonPosition);
             }
-        } else {
+        } else if (wasOpenRef.current) {
+            wasOpenRef.current = false;
             measureRetryRef.current = 0;
-            setButtonPos({ triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false, viewportHeight: 0 });
+            setButtonPos(CLOSED_POS);
             setPopupHeight(0);
             setPopupRenderedWidth(0);
             setContentPending(false);
@@ -517,22 +536,58 @@ export default function DropdownPopup({
     const neoButtonProps = buttonProps
         ? (isLegacyButtonProps(buttonProps) ? legacyToNeoButtonProps(buttonProps) : stripRoutingKeys(buttonProps))
         : null;
-
-    return (
-        <>
-            {neoButtonProps ? (
+    // The `buttonProps` trigger. Web: the button holds the ref, which focus restore uses too.
+    let buttonTrigger: ReactNode = null;
+    if (neoButtonProps && isWeb) {
+        buttonTrigger = (
+            <NeoTriggerButton
+                {...neoButtonProps}
+                collapsable={false}
+                ref={buttonRef}
+                onPress={openTrigger}
+                selected={isRealOpen}
+                {...triggerMenuProps}
+                {...triggerFocusProps}
+            />
+        );
+    } else if (neoButtonProps) {
+        // Native: the popup measures the trigger by ref, and Expo UI buttons drop refs, so it
+        // measures this wrapper and the trigger can stay a native (liquid glass) button. The
+        // wrapper takes the button's root layout (NeoButton `rootLayoutClass`). Expo UI buttons
+        // don't report `aria-expanded` either, so the wrapper is the accessibility element,
+        // like the custom trigger's Pressable below.
+        const rootLayoutClass = neoButtonProps.width === 'fill' ? 'flex-auto min-w-0' : 'self-start max-w-full min-w-0';
+        // Blocks presses like the button does (NeoButton: disabled or loading).
+        const triggerDisabled = !!(neoButtonProps.disabled || neoButtonProps.loading);
+        buttonTrigger = (
+            <Pressable
+                collapsable={false}
+                ref={buttonRef}
+                onPress={openTrigger}
+                disabled={triggerDisabled}
+                aria-disabled={triggerDisabled}
+                accessibilityRole="button"
+                accessibilityLabel={dialogLabel}
+                aria-haspopup="true"
+                aria-expanded={isRealOpen}
+                className={cn(rootLayoutClass, neoButtonProps.classNames?.root)}
+            >
                 <NeoTriggerButton
                     {...neoButtonProps}
-                    // The popup measures this ref; Expo UI (native) drops refs.
-                    expoUI={false}
+                    classNames={{ ...neoButtonProps.classNames, root: undefined }}
                     collapsable={false}
-                    ref={buttonRef}
                     onPress={openTrigger}
                     selected={isRealOpen}
                     {...triggerMenuProps}
                     {...triggerFocusProps}
                 />
-            ) : (
+            </Pressable>
+        );
+    }
+
+    return (
+        <>
+            {buttonTrigger ?? (
                 <DropdownMenuOpenContext.Provider value={isRealOpen}>
                     {/* A button inside the trigger plays the trigger's cue, not its own tap. */}
                     <PressCueContext.Provider value={triggerCue}>

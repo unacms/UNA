@@ -546,6 +546,12 @@ class BxBasePage extends BxDolPage
         $bIsVisible = $this->_isVisiblePage($this->_aObject);
         //TODO: If page isn't Available or isn't Visible then we should exit with related Error Codes immediately.
 
+        // A site locked from guests (sys_lock_from_unauthenticated) opens them its exception pages only: page.php sends them
+        // to the login form, clients (NEO and link previews made from it) get 403 and nothing of the page's content.
+        $bIsLocked = self::isLockedFromUnauthenticated($this->_aObject['uri']);
+        if($bIsLocked)
+            $bIsVisible = false;
+
         // Clients (NEO link previews among them) get nothing of the content of a page the viewer can't open.
         $bIsAllowed = $bIsAvailable === true && $bIsVisible === true;
 
@@ -637,7 +643,7 @@ class BxBasePage extends BxDolPage
         /**
          * Profile/Context view page.
          */
-        if(isset($this->_aProfileInfo)) {
+        if(!$bIsLocked && isset($this->_aProfileInfo)) {
             $oProfileModule = BxDolModule::getInstance($this->_aProfileInfo['type']);
             if($oProfileModule !== null)
                 $aProfileContentInfo = $oProfileModule->_oDb->getContentInfoById($this->_aProfileInfo['content_id']);
@@ -649,36 +655,8 @@ class BxBasePage extends BxDolPage
                  * Process page cover with related menus and lists.
                  * A profile the viewer can't open shows no cover: it carries the profile info and the original cover image.
                  */
-                if($bIsAllowed && BxDolCover::getInstance($this)->isCover()) {
-                    // A closed (friends only) profile shows its name, picture and cover, not its info (about, birthday, location).
-                    $aProfileInfo = BxDolProfile::getData($this->_aProfileInfo['id'], [
-                        'get_avatar' => 'getAvatarBig',
-                        'with_info' => $oProfileModule->checkAllowedView($aProfileContentInfo) === CHECK_ACTION_RESULT_ALLOWED
-                    ]);
-                    $oProfile = BxDolProfile::getInstance($this->_aProfileInfo['id']);
-                    $aProfileInfo['online'] = $oProfile->isOnline();
-                    unset($aProfileInfo['info']['profile_email']);
-                    unset($aProfileInfo['info']['profile_last_active']);
-                    unset($aProfileInfo['info']['profile_ip']);
-                    
-                    $a['cover_block'] = [
-                        'profile' => $aProfileInfo,
-                        'actions_menu' => '',
-                        'meta_menu' => '',
-                        'badges' => $oProfile->getBadges(),
-                        'cover' => $oProfileModule->serviceGetCover($this->_aProfileInfo['content_id']),
-                        'allow_edit' =>  $oProfileModule->checkAllowedChangeCover($aProfileContentInfo) === CHECK_ACTION_RESULT_ALLOWED
-                    ];
-
-                    if(!empty($CNF['OBJECT_MENU_VIEW_ENTRY_META']) && ($oMetaMenu = BxTemplMenu::getObjectInstance($CNF['OBJECT_MENU_VIEW_ENTRY_META'])) !== false)
-                        $a['cover_block']['meta_menu'] =  $oMetaMenu->getCodeAPI();
-
-                    if(!empty($CNF['OBJECT_CONNECTIONS']) && ($oConnection = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTIONS'])) !== false)
-                        $a['cover_block']['members_list'] = $oConnection->getConnectedListAPI($this->_aProfileInfo['id'], false, BX_CONNECTIONS_CONTENT_TYPE_INITIATORS, 10);
-
-                    if(!empty($CNF['OBJECT_MENU_ACTIONS_VIEW_ENTRY_ALL']) && ($oActionMenu = BxTemplMenu::getObjectInstance($CNF['OBJECT_MENU_ACTIONS_VIEW_ENTRY_ALL'])) !== false)
-                        $a['cover_block']['actions_menu'] = $oActionMenu->getCodeAPI();
-                }
+                if($bIsAllowed && BxDolCover::getInstance($this)->isCover())
+                    $a['cover_block'] = $oProfileModule->getCoverBlockAPI($aProfileContentInfo);
                 
                 /**
                  * Process page mange menu.
@@ -770,7 +748,10 @@ class BxBasePage extends BxDolPage
             }
         }
 
-        if($bIsAvailable !== true)
+        // A locked page is 403 whatever it holds: a 404 would tell guests which entries exist.
+        if($bIsLocked)
+            $a['page_status'] = 403;
+        else if($bIsAvailable !== true)
             $a['page_status'] = 404;
         else if($bIsVisible !== true)
             $a['page_status'] = 403;
@@ -788,13 +769,15 @@ class BxBasePage extends BxDolPage
         $sModule = $this->getModule();
 
         // A page the viewer can't open (a pending or private entry, a private list) gives out neither its title nor its blocks, as in getPageAPI.
-        $bIsAllowed = $this->_isAvailablePage($this->_aObject) === true && $this->_isVisiblePage($this->_aObject) === true;
+        // A page a site locked from guests covers is 403 for them, whatever it holds.
+        $bIsLocked = self::isLockedFromUnauthenticated($this->_aObject['uri']);
+        $bIsAllowed = !$bIsLocked && $this->_isAvailablePage($this->_aObject) === true && $this->_isVisiblePage($this->_aObject) === true;
 
         return [
             'module' => $sModule,
             'title' => $bIsAllowed ? ($this->_getPageMetaTitle() ?: $this->_getPageTitle()) : getParam('site_title'),
             'elements' => $bIsAllowed ? $this->getPageBlocksAPI($aBlocks) : [],
-        ];
+        ] + ($bIsLocked ? ['page_status' => 403] : []);
     }
 
     public function getPageBlocksAPI($aBlocks = [])

@@ -22,7 +22,7 @@ export default memo(function GridRow({ item }) {
                     style={column.style}
                     className={`justify-center min-h-9 min-w-0 ${column.align}`}
                 >
-                    <Cell cell={item[column.name]} id={id} />
+                    <Cell cell={item[column.name]} id={id} label={column.label} />
                 </View>
             ))}
         </Row>

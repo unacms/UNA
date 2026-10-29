@@ -1,7 +1,7 @@
 import Field from './_field';
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { useState, useEffect , useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Modal, NeoButton } from "app/design/controls";
 import ChkList from 'app/ui/molecules/form-controls/checkbox-list';
 import emitter, { EVENTS } from 'app/context/emitter';
@@ -18,10 +18,16 @@ export default function FormFieldLabels(props) {
     const size = props.size || 'sm';
     const [isModal, setIsModal] = useState(!!props.isShow);
     const [value2, setValue2] = useState(() => Array.isArray(field.value) ? field.value : []);
+    // the modal opens on what the field holds now: the form can be filled from outside
+    const fieldValueRef = useRef(field.value);
+    useEffect(() => {
+        fieldValueRef.current = field.value;
+    }, [field.value]);
 
     useEffect(() => {
         const subscription = emitter.addListener(EVENTS.fieldLabels(name), (data) => {
             if (data.action == 'add') {
+                setValue2(Array.isArray(fieldValueRef.current) ? fieldValueRef.current : []);
                 setIsModal(true)
             }
 

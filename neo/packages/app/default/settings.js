@@ -31,6 +31,8 @@ export const settingsDefault = {
         // Per-attempt API timeout. UNA list endpoints (the feed with preloaded comments) can
         // legitimately take several seconds; a timed-out GET is not retried (see fetcher.ts).
         fetch_timeout_ms: 30000,
+        // Pause in typing before a search-as-you-type field sends its request.
+        search_debounce_ms: 300,
          // Uploads (especially video) need a longer window than regular API calls.
         upload_timeout_ms: 300000,
         // Web: files over this size (MB) go straight to UNA with a one-time token instead of
@@ -51,7 +53,7 @@ export const settingsDefault = {
         min_server_version: '15.0.0',
         stable_server_version: '15.x.x',
         multitenant: false,
-        title: 'NEO',
+        title: 'UNA',
         multitenant_images_proxy: null,// 'http://localhost:3000', // or null to disable
         use_customizations: true,
         image_allowlist_hostnames: ImageAllowlistHostnames,

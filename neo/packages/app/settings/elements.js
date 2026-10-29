@@ -73,14 +73,15 @@ export const settingsElements = {
         sidebar_container: ' ns--sidebar-container-- h-full ne--  ',
         // The card keeps its side margin wherever the column shows: from lg on wiki pages, so
         // the panel doesn't clip its outline shadow (the conductor's column starts at xl).
-        sidebar_inner_container: ' mx-4 p-3 gap-3 overflow-y-auto flex flex-col bg-card/80 shadow-card-outline dark:shadow-card-outline-deep rounded-2xl mt-4',
+        sidebar_inner_container: ' mx-4 p-3 gap-3 overflow-y-auto flex flex-col bg-card/60 shadow-card-outline dark:shadow-card-outline-deep rounded-2xl mt-4',
         sidebar_title: 'sticky justify-between items-center z-10 gap-2 h-11 px-1 ',
         // Sidebar title (section icon + name) of conductor and wiki pages (ui/molecules/sidebar-title).
         sidebar_title_name: 'items-center mr-auto min-w-0 hidden lg:flex gap-2',
         sidebar_title_icon: 'h-8 w-8 items-center justify-center flex',
         sidebar_title_icon_class: 'text-card-foreground shrink-0',
         sidebar_title_icon_size: 29,
-        sidebar_title_text: 'text-xl tracking-tight truncate font-bold leading-9 text-card-foreground',
+        // The phone header title's size and weight (TextHeader), as the tablet tab-row title.
+        sidebar_title_text: 'text-2xl tracking-tight truncate font-bold leading-9 text-card-foreground',
         // Section nav under the title. The negative margin and the items' 8px inset put the
         // icons 4px inside sidebar_inner_container's padding, in line with the title icon.
         sidebar_nav: 'gap-0.5 -mx-1 -mb-1',
@@ -165,7 +166,7 @@ export const settingsElements = {
             // mirror this via the .bx-mention-link CSS in utilities.css). `editor_color` is
             // the in-editor mention text color (EnrichedTextInput htmlStyle, web + native).
             render_class: 'text-accent-foreground',
-            editor_color: { light: 'rgba(37, 99, 235, 1)', dark: 'rgba(59, 130, 246, 1)' },
+            editor_color: { light: 'rgba(29, 78, 216, 1)', dark: 'rgba(96, 165, 250, 1)' },
         },
         toolbar: {
             padding: 1, // Padding for toolbar buttons in pixels
@@ -176,8 +177,8 @@ export const settingsElements = {
                 iconDark: 'rgba(55, 65, 80, 1)',
             },
         },
-        css:'A.bx-mention-link, A.bx-tag{ color: rgba(37, 99, 235, 1)}',
-        css_dark:'A.bx-mention-link, A.bx-tag{ color: rgba(59, 130, 246, 1)}}',
+        css:'A.bx-mention-link, A.bx-tag{ color: rgba(29, 78, 216, 1)}',
+        css_dark:'A.bx-mention-link, A.bx-tag{ color: rgba(96, 165, 250, 1)}}',
         // Paste images: upload to the form's default files field (asDefaultStorage
         // or first image/files input). `inline` also inserts <img> into the editor
         // (html=1|2 only; html=3 always attaches).

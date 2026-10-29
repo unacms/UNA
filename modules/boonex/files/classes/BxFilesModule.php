@@ -293,7 +293,8 @@ class BxFilesModule extends BxBaseModFilesModule
             'src' => $sIconSrc,
             'src_medium' => $sIconSrc,
             'src_orig' => '',
-            'url' => $sUrl
+            'url' => $sUrl,
+            'title' => $aFile['file_name']
         ]];
     }
 

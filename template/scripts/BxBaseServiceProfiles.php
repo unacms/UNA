@@ -1286,8 +1286,13 @@ class BxBaseServiceProfiles extends BxDol
 
     public function serviceAccountProfileSwitcher ($iAccountId = false, $iActiveProfileId = null, $sUrlProfileAction = '', $bShowAll = 0, $sButtonTitle = '', $sProfileTemplate = '')
     {
-        if (!$iAccountId)
-            $iAccountId = getLoggedId();
+        $iAccountIdLogged = getLoggedId();
+        if(!$iAccountIdLogged)
+            return false;
+
+        $iAccountId = $iAccountId ?: $iAccountIdLogged;
+        if($iAccountId != $iAccountIdLogged && !isAdmin())
+            return false;
 
         $oProfilesQuery = BxDolProfileQuery::getInstance();
         $aProfiles = $oProfilesQuery->getProfilesByAccount($iAccountId);
@@ -1519,6 +1524,46 @@ class BxBaseServiceProfiles extends BxDol
             $o = BxDolProfile::getInstance();
             return BxDolProfile::getDataForPage($o);
         }
+    }
+
+    /**
+     * Profile cover without its page: the `cover_block` of the profile view page (@see BxBasePage::getPageAPI)
+     * and a short description, for NEO's profile hover card. Empty when the viewer can't open the profile page.
+     */
+    public function serviceProfileCover($iProfileId)
+    {
+        $oProfile = BxDolProfile::getInstance((int)$iProfileId);
+        if(!$oProfile || !($oModule = BxDolModule::getInstance($oProfile->getModule())) || !method_exists($oModule, 'getCoverBlockAPI'))
+            return [];
+
+        $CNF = &$oModule->_oConfig->CNF;
+
+        $aContentInfo = $oModule->_oDb->getContentInfoById($oProfile->getContentId());
+        if(empty($aContentInfo) || !is_array($aContentInfo))
+            return [];
+
+        // The rules of the profile page: an inactive profile for its owner and moderators only, a closed one without its info.
+        if(!$oProfile->isActive() && $oProfile->id() != bx_get_logged_profile_id() && $oModule->checkAllowedEditAnyEntry() !== CHECK_ACTION_RESULT_ALLOWED)
+            return [];
+
+        $bAllowedView = $oModule->checkAllowedView($aContentInfo) === CHECK_ACTION_RESULT_ALLOWED;
+        if(!$bAllowedView && !$oModule->_oTemplate->isProfilePublic($aContentInfo))
+            return [];
+
+        // And of the page itself (the closed one for a closed profile): locked from guests, member levels it's visible for.
+        $sPage = $bAllowedView ? 'OBJECT_PAGE_VIEW_ENTRY' : 'OBJECT_PAGE_VIEW_ENTRY_CLOSED';
+        if(empty($CNF[$sPage]) || !($aPage = BxDolPageQuery::getPageObject($CNF[$sPage])))
+            return [];
+
+        if(BxDolPage::isLockedFromUnauthenticated($aPage['uri']) || (!isAdmin() && !BxDolAcl::getInstance()->isMemberLevelInSet($aPage['visible_for_levels'])))
+            return [];
+
+        // Gives the entry to the actions and meta menus, as the profile page does when it sets its cover.
+        $oModule->_oTemplate->prepareCoverApi($aContentInfo);
+
+        return array_merge($oModule->getCoverBlockAPI($aContentInfo), [
+            'description' => $bAllowedView && !empty($CNF['FIELD_TEXT']) && !empty($aContentInfo[$CNF['FIELD_TEXT']]) ? BxTemplFunctions::getInstance()->getMetaText($aContentInfo[$CNF['FIELD_TEXT']]) : '',
+        ]);
     }
 
     public function serviceUpdateSettings($iProfileId = false, $sSettings = '')

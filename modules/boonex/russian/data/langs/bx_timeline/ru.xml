@@ -421,6 +421,9 @@
     <string name="_bx_timeline_txt_err_cannot_perform_action"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
     <string name="_bx_timeline_txt_err_empty_post"><![CDATA[Сообщение пусто.]]></string>
     <string name="_bx_timeline_txt_err_attach_links"><![CDATA[Достигнуто максимально допустимое количество прикрепленных ссылок.]]></string>
+    <string name="_bx_timeline_txt_file_alt"><![CDATA[Файл]]></string>
+    <string name="_bx_timeline_txt_file_alt_n"><![CDATA[Файл {0} из {1}]]></string>
+    <string name="_bx_timeline_txt_file_alt_title_n"><![CDATA[{0}, файл {1} из {2}]]></string>
 
     <string name="_bx_timeline_txt_to"><![CDATA[в]]></string>
     <string name="_bx_timeline_txt_load_more"><![CDATA[Загрузить ещё]]></string>

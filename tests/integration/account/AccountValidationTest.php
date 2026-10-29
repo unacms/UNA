@@ -111,7 +111,7 @@ class AccountValidationTest extends BxDolAccountTestCase
     public function testCreateFormRejectsDuplicateEmail(): void
     {
         $this->bxBecomeGuest();
-        $sEmail = $this->bxTestEmail('admin');
+        $sEmail = $this->_sIntactAccountEmail;
         $iExistingId = $this->bxAccountIdByEmail($sEmail);
         $this->assertGreaterThan(0, $iExistingId);
 
@@ -183,7 +183,7 @@ class AccountValidationTest extends BxDolAccountTestCase
     public function testEmailFormRejectsDuplicateEmail(): void
     {
         $aCreated = $this->bxCreateLifecycleAccount();
-        $sResult = $this->bxSubmitEmailForm($aCreated['id'], $this->bxTestEmail('admin'), $aCreated['password']);
+        $sResult = $this->bxSubmitEmailForm($aCreated['id'], $this->_sIntactAccountEmail, $aCreated['password']);
 
         $this->assertIsString($sResult);
         $this->assertStringNotContainsString(_t('_sys_account_settings_email_successfully_submitted'), $sResult);

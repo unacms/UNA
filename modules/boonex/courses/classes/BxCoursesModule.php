@@ -120,6 +120,10 @@ class BxCoursesModule extends BxBaseModGroupsModule
             return ['code' => 1];
 
         $iEntryId = (int)$aNode['entry_id'];
+        $aEntryInfo = $this->_oDb->getContentInfoById($iEntryId);
+        if($this->checkAllowedView($aEntryInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+            return ['code' => 2];
+
         $iProfileId = bx_get_logged_profile_id();
         if($this->isNodePassed($iProfileId, $iNodeId)) {
             $aDataItems = $this->_oDb->getContentData([
@@ -157,6 +161,10 @@ class BxCoursesModule extends BxBaseModGroupsModule
         
         if(empty($aData) || !is_array($aData))
             return ['code' => 1];
+
+        $aEntryInfo = $this->_oDb->getContentInfoById($aData['entry_id']);
+        if($this->checkAllowedView($aEntryInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+            return ['code' => 2];
 
         $this->_oDb->insertContentData2Users([
             'data_id' => $iDataId, 
@@ -449,8 +457,18 @@ class BxCoursesModule extends BxBaseModGroupsModule
         if(!$this->_oConfig->isContent())
             return $this->_bIsApi ? [] : '';
 
+        $iContentId = $this->_getContent($iContentId, false);
+
         if(!$iNodeId && ($_iNodeId = bx_get('node_id')) !== false)
             $iNodeId = (int)$_iNodeId;
+
+        $aNode = $this->_oDb->getContentNodes([
+            'sample' => 'id',
+            'id' => $iNodeId
+        ]);
+
+        if(!$aNode || !is_array($aNode) || $aNode['entry_id'] != $iContentId)
+            return $this->_bIsApi ? [] : MsgBox(_t('_sys_txt_not_found'));
 
         if($iUsage === false && ($_iUsage = bx_get('usage')) !== false)
             $iUsage = (int)$_iUsage;
