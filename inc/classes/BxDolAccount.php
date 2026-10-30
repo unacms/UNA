@@ -868,6 +868,22 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
     }
     
     /**
+     * Whether the logged in account has to create a profile before it can use the site: Studio > Settings > Account
+     * "Require a profile" (sys_account_require_profile) is on, and the account has no profile of its own yet, only its
+     * system profile (the case the "create a profile" informer is shown for). The site then sends it to profile
+     * creation (BxDolPage::isLockedFromNoProfile), and so do the apps (`profile_required` in the viewer's data).
+     */
+    public static function isProfileRequired ()
+    {
+        if(!isLogged() || !getParam('sys_account_require_profile') || defined('BX_DOL_CRON_EXECUTE'))
+            return false;
+
+        $oAccount = self::getInstance();
+
+        return $oAccount && !$oAccount->getProfilesIds(false);
+    }
+
+    /**
      * Get all profile ids associated with the account
      */
     public function getProfilesIds ($isFilterNonSwitchableProfiles = true, $isFilterSystemProfiles = true)

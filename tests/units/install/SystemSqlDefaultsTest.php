@@ -15,6 +15,16 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         return $sSql;
     }
 
+    public function testProfileIsNotRequiredByDefault(): void
+    {
+        // An account without a profile of its own gets the "create a profile" informer and uses the site; "Require a
+        // profile" sends it to profile creation instead, on the site and in the apps, once an admin turns it on.
+        $bFound = preg_match("/\\(@iCategoryId, 'sys_account_require_profile', '_adm_stg_cpt_option_sys_account_require_profile', '([^']*)', 'checkbox',/", self::systemSql(), $aMatch);
+
+        $this->assertSame(1, $bFound, 'system.sql adds the "Require a profile" option to the Account settings.');
+        $this->assertSame('', $aMatch[1], 'Off on a fresh install.');
+    }
+
     public function testHomeCreatePostBlockIsACardWithTitle(): void
     {
         // The home page's create-post block: designbox_id follows object, cell, module, title_system and title.

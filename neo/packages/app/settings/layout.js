@@ -69,7 +69,6 @@ export const settingsLayout = {
         show_login_modal: 0,
         //redirect_on_forbidden: '/home',
         lock_unconfirmed: true,
-        lock_no_profile: true,
         allow_create_new_profile: true,
 
         button_style_for_actions: 'secondary',

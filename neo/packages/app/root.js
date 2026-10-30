@@ -71,9 +71,13 @@ export function Root(props) {
                 setCurrentUser(data.user);
                 storageClear();
             }
-            if (currentUser && currentUser?.informer != data.user.informer) {
+            // Each page brings the viewer's informers and whether the site requires a profile (UNA's "Require a
+            // profile", with the add-profile menu its lock leads to): an admin can change it between two pages.
+            if (currentUser && (currentUser?.informer != data.user.informer || currentUser?.profile_required !== data.user.profile_required)) {
                 setCurrentUser({
                     informer: data.user.informer,
+                    profile_required: data.user.profile_required,
+                    menu: data.user.menu,
                 });
             }
         }

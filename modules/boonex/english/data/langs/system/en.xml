@@ -1754,6 +1754,7 @@
     <string name="_adm_stg_cpt_option_sys_account_switch_to_profile_redirect"><![CDATA[Redirect after profile switch to]]></string>
     <string name="_adm_stg_cpt_option_sys_account_switch_to_profile_redirect_custom"><![CDATA[URL for 'Custom Page' redirect]]></string>
     <string name="_adm_stg_cpt_option_sys_account_remember_me"><![CDATA[Default value for 'Remember me' feature]]></string>
+    <string name="_adm_stg_cpt_option_sys_account_require_profile"><![CDATA[Require a profile before using the site (accounts without one are sent to profile creation)]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_switch_to_profile_redirect_back"><![CDATA[Current page]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_switch_to_profile_redirect_home"><![CDATA[Home page]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_switch_to_profile_redirect_profile"><![CDATA[View profile page]]></string>
