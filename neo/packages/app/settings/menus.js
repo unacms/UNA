@@ -257,9 +257,11 @@ export const settingsMenus = {
                 ]
             },
         ],
-        /** Header toolbar (mobile web): popup links, same row pattern as navbar dropdown */
+        /**
+         * Header toolbar (mobile web): popup links, same row pattern as navbar dropdown.
+         * Guests only, so like the guest tabs it links only to system pages.
+         */
         menu_navigation: [
-            
             {
                 name: 'about',
                 title: 'About Us',
@@ -274,23 +276,10 @@ export const settingsMenus = {
                 icon: 'Handshake',
             },
             {
-                name: 'wiki',
-                title: 'Documentation',
-                link: '/docs',
-                icon: 'BookOpenText',
-            },
-            {
                 name: 'privacy',
                 title: 'Privacy Policy',
                 link: '/privacy',
                 icon: 'ShieldCheck',
-            },
-            {
-                name: 'contact',
-                title: 'Contact Us',
-                link: '/contact',
-                icon: 'Mail',
-                animated: true,
             },
         ],
         menu_tabbar_logged: [
@@ -345,6 +334,9 @@ export const settingsMenus = {
             { key: '/tab13', title: 'Sign out', url: '/logout', icon: 'LogOut' },
         ],
 
+        // Guest tabs link only to system pages, which every install has.
+        // A page from a module (Contact Us is bx_contact) is a 404 until
+        // that module is installed, so forks add those tabs themselves.
         menu_tabbar_non_logged: [
             {
                 key: '/tab0',
@@ -367,13 +359,8 @@ export const settingsMenus = {
                 icon: 'Info',
                 animated: true,
             },
-            {
-                key: '/tab3',
-                title: 'Contact',
-                url: '/contact',
-                icon: 'Contact',
-            },
-            { key: '/tab4', title: 'Terms', url: '/terms', icon: 'Info' },
+            { key: '/tab3', title: 'Terms', url: '/terms', icon: 'Handshake' },
+            { key: '/tab4', title: 'Privacy', url: '/privacy', icon: 'ShieldCheck' },
         ],
         /* for vertical layout*/
         menu_sidebar: [
