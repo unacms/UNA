@@ -115,11 +115,11 @@ div.bx-std-block-caption .bx-std-bcap-icon {
     height: 2rem;
     border-radius: 0.5rem;
     background: rgb(0 0 0 / 0.1); /* the same plate as the dashboard row icons */
-    color: rgb(75 85 99);
+    color: rgb(82 82 91);
 }
 .dark div.bx-std-block-caption .bx-std-bcap-icon {
     background: rgb(255 255 255 / 0.05);
-    color: rgb(156 163 175);
+    color: rgb(161 161 170);
 }
 div.bx-std-block-caption .bx-std-bcap-icon .sys-icon {
     color: rgb(0 0 0); /* black at 80% through the element's opacity (white in the dark scheme), not the site-wide accent that .sys-icon carries */
