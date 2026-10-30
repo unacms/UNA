@@ -88,8 +88,9 @@ export const settingsElements = {
     },
     modal: {
         fog: ' bg-background/95 ',
+        // On the near-opaque fog a modal needs its edge too: the popover edge and drop, as menus.
         container:
-        ' bg-popover shadow-card-outline dark:shadow-card-outline-deep md:rounded-3xl overflow-hidden ',
+        ' bg-popover shadow-popover dark:shadow-popover-deep md:rounded-3xl overflow-hidden ',
         content: '',
         header: ' px-3 py-2 min-h-14 items-start justify-start border-b border-border/60 ',
     },

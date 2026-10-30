@@ -1104,6 +1104,13 @@
         @apply max-h-full overflow-x-hidden overflow-y-auto;
     }
 
+    /* A popup at an element (a menu, a pointer popup) is as tall as its content and scrolls that, not itself, so its
+       wrapper must not clip the popover shadow, which reaches 32px below the box (tailwind.smooth-shadow.js).
+       .bx-popup-active (common.css) makes the wrapper scroll too. */
+    .bx-artificer > .bx-popup-wrapper.bx-popup-with-pointer:not(.bx-popup-full-screen) {
+        @apply max-h-none overflow-visible;
+    }
+
     .bx-artificer .bx-popup-applied {
         @apply rounded-lg;
     }
@@ -1356,6 +1363,37 @@
 
     .bx-artificer .bx-popup .bx-menu-ver > li.bx-def-color-bg-active {
         @apply bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white;
+    }
+
+    /* Popup menus: one highlight slides under the items to the one the pointer is on (bx_menu_highlight in
+       functions.js) in the items' hover colour, and the items don't light up on their own. It is the list's ::before
+       (only clearfix used it), 8px round inside the popup's 8px inset, so its corners follow the popup's. */
+    .bx-popup .bx-menu-highlight-list,
+    .bx-popup .bx-menu-highlight-list > li {
+        @apply relative;
+    }
+    .bx-popup .bx-menu-highlight-list::before {
+        content: '';
+        @apply block absolute top-0 left-0 rounded-lg pointer-events-none opacity-0 bg-gray-200/50 dark:bg-gray-700/50;
+        width: var(--bx-menu-highlight-w, 0);
+        height: var(--bx-menu-highlight-h, 0);
+        transform: translate(var(--bx-menu-highlight-x, 0), var(--bx-menu-highlight-y, 0));
+        transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1), width 150ms cubic-bezier(0.22, 1, 0.36, 1), height 150ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms ease-out;
+    }
+    .bx-popup .bx-menu-highlight-list.bx-menu-highlight-on::before {
+        @apply opacity-100;
+    }
+    .bx-popup .bx-menu-highlight-list.bx-menu-highlight-jump::before {
+        transition: opacity 150ms ease-out;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .bx-popup .bx-menu-highlight-list::before {
+            transition: opacity 150ms ease-out;
+        }
+    }
+    .bx-popup .bx-menu-highlight-list > li:not(.bx-menu-tab-active):hover,
+    .bx-popup .bx-menu-highlight-list > li:not(.bx-menu-tab-active) a:hover {
+        background-color: transparent;
     }
 
     /* Common elements: Toolbar menu */

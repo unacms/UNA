@@ -270,6 +270,10 @@
                 // a scrolling menu swaps its native bar for the overlay one before it fades in (functions.js)
                 if(typeof(bx_scrollbar_overlay_popups) === 'function')
                     bx_scrollbar_overlay_popups($el);
+
+                // menu items share one sliding highlight (functions.js)
+                if(typeof(bx_menu_highlight) === 'function')
+                    bx_menu_highlight($el);
                 if (o.fog) {
                     var oOnHide = function() {
                         $(window).triggerHandler('resize.popupFog');
@@ -585,6 +589,10 @@
                     oPopup._dolPopupSetPosition({
                         pointer: oPointerOptions
                     });
+
+                    // the loaded menu's items share one sliding highlight (functions.js)
+                    if(typeof(bx_menu_highlight) === 'function')
+                        bx_menu_highlight(oPopup);
 
                     var aFocusable = bx_get_focusable(oPopup.get(0));
                     if(aFocusable && aFocusable.length > 0)
@@ -971,7 +979,11 @@
                         at: 'center bottom'
                     });
 
-                    $el.css({transition: sTransition, transform: sTransform});
+                    // it grows from its element: from its top edge, or from its bottom one when it opens above the element
+                    var sOriginX = 'left' == o.pointer.align || 'right' == o.pointer.align ? o.pointer.align : 'center';
+                    var sOriginY = $el.offset().top < $(ePointAt).offset().top ? 'bottom' : 'top';
+
+                    $el.css({transition: sTransition, transform: sTransform, transformOrigin: sOriginX + ' ' + sOriginY});
                 };
 
                 fPosition();

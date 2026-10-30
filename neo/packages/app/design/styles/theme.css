@@ -153,6 +153,8 @@
     --shadow-avatar-stack: 0 0 0 1px rgb(var(--card));
     --shadow-card-outline: var(--neo-shadow-card-outline);
     --shadow-card-outline-deep: var(--neo-shadow-card-outline-deep);
+    --shadow-popover: var(--neo-shadow-popover);
+    --shadow-popover-deep: var(--neo-shadow-popover-deep);
     --shadow-block-outline: var(--neo-shadow-block-outline);
     --shadow-block-outline-deep: var(--neo-shadow-block-outline-deep);
     --shadow-input-outline: var(--neo-shadow-input-outline);
@@ -201,6 +203,11 @@
 
         --neo-shadow-card-outline:        inset 0 0 0 1px rgb(255 255 255 / 0.5), 0 2px 8px -2px rgb(0 0 0 / 0.1);
         --neo-shadow-card-outline-deep:  inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 2px 8px -2px rgb(0 0 0 / 0.2);
+
+        /* Floating surfaces (menus, dropdowns, modals): a hairline edge and a soft drop, the same as UNA's
+           smooth-shadow-popover. The drop reaches 32px below the box, 20px to the sides. */
+        --neo-shadow-popover:        0 0 0 1px rgb(0 0 0 / 0.06), 0 4px 6px -2px rgb(0 0 0 / 0.05), 0 12px 24px -4px rgb(0 0 0 / 0.1);
+        --neo-shadow-popover-deep:   0 0 0 1px rgb(255 255 255 / 0.08), 0 12px 24px -4px rgb(0 0 0 / 0.5);
         
         --neo-shadow-block-outline:        inset 0 0 0 1px rgb(255 255 255 / 0.5), 0 2px 8px -2px rgb(0 0 0 / 0.1);
         --neo-shadow-block-outline-deep:  inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 2px 8px -2px rgb(0 0 0 / 0.2);

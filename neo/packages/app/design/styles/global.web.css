@@ -831,3 +831,54 @@ webview {
     touch-action: pan-y pan-x;
     -webkit-overflow-scrolling: touch;
 }
+
+/*
+ * Menus: one highlight slides under the items to the one under the pointer, or the one focused from the
+ * keyboard (`useMenuHighlight`, ui/atoms/menu-highlight.web.ts), in the ghost-link hover tint, and the items don't
+ * light up on their own. It is the list's ::before, placed through CSS variables; it fades in where it first
+ * appears and out when the pointer leaves. UNA's popup menus do the same (bx_menu_highlight).
+ */
+.neo-menu-highlight,
+.neo-menu-highlight > * {
+    position: relative;
+}
+
+.neo-menu-highlight::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--neo-menu-highlight-w, 0);
+    height: var(--neo-menu-highlight-h, 0);
+    transform: translate(var(--neo-menu-highlight-x, 0), var(--neo-menu-highlight-y, 0));
+    border-radius: var(--neo-menu-highlight-r, var(--radius-xl));
+    background-color: rgb(var(--muted) / 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        transform 150ms cubic-bezier(0.22, 1, 0.36, 1),
+        width 150ms cubic-bezier(0.22, 1, 0.36, 1),
+        height 150ms cubic-bezier(0.22, 1, 0.36, 1),
+        border-radius 150ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 150ms ease-out;
+}
+
+.neo-menu-highlight.neo-menu-highlight-on::before {
+    opacity: 1;
+}
+
+.neo-menu-highlight.neo-menu-highlight-jump::before {
+    transition: opacity 150ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .neo-menu-highlight::before {
+        transition: opacity 150ms ease-out;
+    }
+}
+
+/* The item's own hover fill (`item_ver`); the selected item keeps its fill. */
+.neo-menu-highlight > :hover:not(.bg-accent),
+.neo-menu-highlight > * > .group:hover:not(.bg-accent) {
+    background-color: transparent;
+}
