@@ -94,7 +94,7 @@
     <string name="_bx_dev_frm_txt_displays_edit_popup"><![CDATA[Edit "{0}" Display]]></string>
     <string name="_bx_dev_frm_err_displays_create"><![CDATA[Cannot add display]]></string>
     <string name="_bx_dev_frm_err_displays_edit"><![CDATA[Cannot update display]]></string>
-    <string name="_bx_dev_frm_txt_displays_diplay"><![CDATA[Forms Builder Display]]></string>
+    <string name="_bx_dev_frm_txt_displays_display"><![CDATA[Forms Builder Display]]></string>
     <string name="_bx_dev_frm_txt_displays_display_add"><![CDATA[Add]]></string>
     <string name="_bx_dev_frm_txt_displays_display_edit"><![CDATA[Edit]]></string>
     <string name="_bx_dev_frm_txt_sys_displays_id"><![CDATA[ID]]></string>
@@ -252,13 +252,13 @@
     <string name="_bx_dev_nav_txt_items_gl_title_system"><![CDATA[System Name]]></string>
     <string name="_bx_dev_nav_txt_items_gl_link"><![CDATA[URL]]></string>
     <string name="_bx_dev_nav_txt_items_gl_module"><![CDATA[Module]]></string>
-    <string name="_bx_dev_nav_txt_items_gl_visible"><![CDATA[Visibile For]]></string>
+    <string name="_bx_dev_nav_txt_items_gl_visible"><![CDATA[Visible For]]></string>
     <string name="_bx_dev_nav_btn_menus_gl_create"><![CDATA[Add New Menu]]></string>
     <string name="_bx_dev_nav_btn_menus_gl_export"><![CDATA[Export Menu]]></string>
     <string name="_bx_dev_nav_btn_sets_gl_create"><![CDATA[Add New Set]]></string>
     <string name="_bx_dev_nav_btn_items_gl_create"><![CDATA[Add New Item]]></string>
     <string name="_bx_dev_nav_btn_items_gl_import"><![CDATA[Import Items]]></string>
-    <string name="_bx_dev_nav_btn_items_gl_visible"><![CDATA[Visibile For]]></string>
+    <string name="_bx_dev_nav_btn_items_gl_visible"><![CDATA[Visible For]]></string>
     <string name="_bx_dev_nav_txt_select_module"><![CDATA[Select Module...]]></string>
     <string name="_bx_dev_nav_txt_menus_create_popup"><![CDATA[Add New Menu]]></string>
     <string name="_bx_dev_nav_err_menus_create"><![CDATA[Cannot add menu]]></string>
