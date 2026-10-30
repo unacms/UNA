@@ -257,9 +257,11 @@ export const settingsMenus = {
                 ]
             },
         ],
-        /** Header toolbar (mobile web): popup links, same row pattern as navbar dropdown */
+        /**
+         * Header toolbar (mobile web): popup links, same row pattern as navbar dropdown.
+         * Guests only, so like the guest tabs it links only to system pages.
+         */
         menu_navigation: [
-            
             {
                 name: 'about',
                 title: 'About Us',
@@ -274,23 +276,10 @@ export const settingsMenus = {
                 icon: 'Handshake',
             },
             {
-                name: 'wiki',
-                title: 'Documentation',
-                link: '/docs',
-                icon: 'BookOpenText',
-            },
-            {
                 name: 'privacy',
                 title: 'Privacy Policy',
                 link: '/privacy',
                 icon: 'ShieldCheck',
-            },
-            {
-                name: 'contact',
-                title: 'Contact Us',
-                link: '/contact',
-                icon: 'Mail',
-                animated: true,
             },
         ],
         menu_tabbar_logged: [
