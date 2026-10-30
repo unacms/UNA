@@ -132,7 +132,7 @@ BxArtificerUtils.prototype.markColorSchemeSwitches = function()
     });
 
     $('[data-bx-color-scheme]').each(function() {
-        var bCurrent = parseInt($(this).attr('data-bx-color-scheme')) === iCode;
+        var bCurrent = Number.parseInt($(this).attr('data-bx-color-scheme'), 10) === iCode;
         $(this).attr('aria-current', bCurrent ? 'true' : null).closest('li').toggleClass('bx-menu-tab-active', bCurrent);
     });
 
