@@ -261,6 +261,7 @@ class BxDolAiSearchExtParserTest extends \PHPUnit\Framework\TestCase
             'language' => ['kind' => 'list', 'caption' => 'Language', 'multi' => true, 'search_type' => 'checkbox_set', 'operator' => 'like', 'values' => [
                 'tr' => 'Turkish',
                 'en' => 'English',
+                'fa' => 'Persian',
             ]],
         ];
     }
@@ -268,7 +269,7 @@ class BxDolAiSearchExtParserTest extends \PHPUnit\Framework\TestCase
     private function turkeyResult(string $sKeyword, array $aMore = []): array
     {
         return $this->keywordResult($sKeyword, $aMore + [
-            'location' => ['value' => ['array' => [], 'string' => 'Turkey'], 'label' => 'Turkey'],
+            'location' => ['value' => ['array' => [39.29, 35.23, 'TR', '', '', '', '', ''], 'string' => 'Turkey'], 'label' => 'Turkey'],
         ]);
     }
 
@@ -304,6 +305,20 @@ class BxDolAiSearchExtParserTest extends \PHPUnit\Framework\TestCase
         $o->setQuery('Turkey');
         $a = $o->keywordToLists($this->turkeyResult('turkey', ['language' => ['value' => 'en', 'label' => 'English']]));
         $this->assertSame('en', $a['search_params']['language']['value']);
+    }
+
+    public function testCityNeverNamesALanguage()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setFields($this->placeFields());
+        $o->setQuery('Farsi speakers in Perth');
+        $o->setAnswers(['loc_city' => ['choice' => 'Perth', 'confidence' => 1]]);
+
+        $a = $o->keywordToLists($this->keywordResult('speakers', [
+            'language' => ['value' => 'fa', 'label' => 'Persian'],
+            'location' => ['value' => ['array' => [-31.95, 115.86, 'AU', '', 'Perth', '', '', ''], 'string' => 'Perth, Australia'], 'label' => 'Perth, Australia'],
+        ]));
+        $this->assertSame('fa', $a['search_params']['language']['value']);
     }
 
     public function testTwoWordPlacesAreOffered()

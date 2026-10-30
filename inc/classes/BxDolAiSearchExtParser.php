@@ -360,12 +360,13 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
 
     /**
      * A list value the model took from the place alone ("Turkey" -> Language: Turkish) is dropped:
-     * its label starts like a place word (3+ letters: Turkey / Turkish, Spain / Spanish), and no other
-     * query word names it.
+     * the place is a country, the label starts like the country's name (3+ letters: Turkey / Turkish,
+     * Spain / Spanish), and no other query word names it. A city never names a language ("Farsi
+     * speakers in Perth" keeps Persian).
      */
     protected function _dropListsOfPlace(array &$aResult)
     {
-        $aPlace = $this->_getPlaceWords($aResult);
+        $aPlace = $this->_isCountryOnly($aResult) ? $this->_getPlaceWords($aResult) : [];
         if (!$aPlace)
             return;
 
@@ -396,6 +397,22 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
                 $aResult['filters'][$sKey] = '';
             unset($aResult['search_params'][$sName], $aResult['chips'][$sName], $aResult['confidence'][$sName]);
         }
+    }
+
+    /**
+     * The location filter is a whole country: a country code, no state and no city.
+     */
+    protected function _isCountryOnly(array $aResult): bool
+    {
+        foreach ($aResult['chips'] as $sName => $aChip) {
+            if (($this->_aFields[$sName]['kind'] ?? '') != 'location')
+                continue;
+
+            $aValue = $aChip['value']['array'] ?? [];
+            return ($aValue[2] ?? '') !== '' && ($aValue[3] ?? '') === '' && ($aValue[4] ?? '') === '';
+        }
+
+        return false;
     }
 
     /**
