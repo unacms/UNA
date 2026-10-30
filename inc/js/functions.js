@@ -2586,10 +2586,12 @@ function bx_menu_highlight(oContext)
             var bJump = !oList.hasClass('bx-menu-highlight-on');
             oList.toggleClass('bx-menu-highlight-jump', bJump);
 
-            eList.style.setProperty('--bx-menu-highlight-x', (oBox.left - oListBox.left - eList.clientLeft) + 'px');
-            eList.style.setProperty('--bx-menu-highlight-y', (oBox.top - oListBox.top - eList.clientTop) + 'px');
-            eList.style.setProperty('--bx-menu-highlight-w', oBox.width + 'px');
-            eList.style.setProperty('--bx-menu-highlight-h', oBox.height + 'px');
+            // boxes are on screen, so scaled while the popup grows in: back to the list's own pixels
+            var fScale = eList.offsetWidth ? oListBox.width / eList.offsetWidth : 1;
+            eList.style.setProperty('--bx-menu-highlight-x', ((oBox.left - oListBox.left) / fScale - eList.clientLeft) + 'px');
+            eList.style.setProperty('--bx-menu-highlight-y', ((oBox.top - oListBox.top) / fScale - eList.clientTop) + 'px');
+            eList.style.setProperty('--bx-menu-highlight-w', (oBox.width / fScale) + 'px');
+            eList.style.setProperty('--bx-menu-highlight-h', (oBox.height / fScale) + 'px');
 
             if(bJump) {
                 // laid out at its first item before it shows: otherwise the next move, which ends the jump, doesn't slide

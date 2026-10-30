@@ -32,10 +32,12 @@ export function useMenuHighlight() {
             // to theirs.
             const jump = !list.classList.contains('neo-menu-highlight-on');
             list.classList.toggle('neo-menu-highlight-jump', jump);
-            list.style.setProperty('--neo-menu-highlight-x', `${box.left - listBox.left - list.clientLeft}px`);
-            list.style.setProperty('--neo-menu-highlight-y', `${box.top - listBox.top - list.clientTop}px`);
-            list.style.setProperty('--neo-menu-highlight-w', `${box.width}px`);
-            list.style.setProperty('--neo-menu-highlight-h', `${box.height}px`);
+            // Boxes are on screen, so scaled while the menu grows in: back to the list's own pixels.
+            const scale = list.offsetWidth ? listBox.width / list.offsetWidth : 1;
+            list.style.setProperty('--neo-menu-highlight-x', `${(box.left - listBox.left) / scale - list.clientLeft}px`);
+            list.style.setProperty('--neo-menu-highlight-y', `${(box.top - listBox.top) / scale - list.clientTop}px`);
+            list.style.setProperty('--neo-menu-highlight-w', `${box.width / scale}px`);
+            list.style.setProperty('--neo-menu-highlight-h', `${box.height / scale}px`);
             list.style.setProperty('--neo-menu-highlight-r', getComputedStyle(surface).borderRadius);
             if (jump) {
                 // Laid out at its first item before it shows: otherwise the next move, which ends the jump, doesn't slide.

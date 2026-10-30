@@ -852,7 +852,7 @@ webview {
     height: var(--neo-menu-highlight-h, 0);
     transform: translate(var(--neo-menu-highlight-x, 0), var(--neo-menu-highlight-y, 0));
     border-radius: var(--neo-menu-highlight-r, var(--radius-xl));
-    background-color: rgb(var(--muted) / 0.5);
+    background-color: color-mix(in oklab, rgb(var(--muted)) 50%, transparent);
     opacity: 0;
     pointer-events: none;
     transition:
