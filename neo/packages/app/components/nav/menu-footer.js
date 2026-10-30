@@ -1,16 +1,16 @@
 import { View } from 'app/design/view'
-import { appSetting, menuItemsByName, menuItemsByNameNew } from 'app/lib/util'
+import { appSetting, cn, menuItemsByName, menuItemsByNameNew } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
-import { useMemo, useState, memo } from 'react';
-import { NeoButton, NeoButtonLink } from 'app/design/controls'
-import Msg from 'app/ui/molecules/dialogs/msg';
+import { useMemo, memo } from 'react';
+import { NeoButtonLink } from 'app/design/controls'
+import { Text } from 'app/design/typography'
 import { useCurrentUserNoCounters } from 'app/context/user';
 import { useMenuData } from 'app/context/menu-data';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { localeIconName } from 'app/ui/atoms/tag-glyph-icons';
 import { SOUND_LEVEL_ITEMS, useSoundsLevel } from 'app/lib/hooks/use-sounds-level';
-import { usePathname } from 'app/lib/hooks/router';
+import { useScreenPagePath } from 'app/lib/navigation/screen-page-path';
 
 // Two sections, links and switchers, in one row that wraps: side by side while they fit (apart from
 // lg), each on its own centred line when they don't.
@@ -87,25 +87,25 @@ function MenuFooterSkeleton({ cntClasses, children, role }) {
     );
 }
 
-// An item UNA sends with a text instead of a page (Copyright, BxBaseMenuFooter::_getMenuCallbackDataAPI): it opens
-// the text in a dialog, as the site does in a popup.
-function FooterNoticeItem({ item, visualProps }) {
-    const { t } = useTranslation();
-    const [open, setOpen] = useState(false);
+// A line UNA sends as text, not a link (BxBaseMenuFooter::_getMenuItemAPI: the copyright notice, or a text item
+// added in Navigation). The short form on phones, the full one from tablet width, in the links' size and colour; it
+// sits in a 28px row like the links but doesn't react to the pointer.
+function FooterTextItem({ item, visualProps }) {
+    const text = item.text || item.title;
+    const short = item.text_short || text;
+    const textClassName = cn('text-secondary-foreground', visualProps.textClassName);
 
     return (
-        <>
-            <NeoButton
-                label={t(item.title)}
-                style={visualProps.style}
-                controlSize={visualProps.controlSize}
-                contentInsets={visualProps.contentInsets}
-                className={visualProps.className}
-                textClassName={visualProps.textClassName}
-                onPress={() => setOpen(true)}
-            />
-            {open ? <Msg onVisible title={item.data.text} handleOk={() => setOpen(false)} /> : null}
-        </>
+        <View className="min-h-7 justify-center">
+            {short === text ? (
+                <Text className={textClassName}>{text}</Text>
+            ) : (
+                <>
+                    <Text className={cn('sm:hidden', textClassName)}>{short}</Text>
+                    <Text className={cn('hidden sm:flex', textClassName)}>{text}</Text>
+                </>
+            )}
+        </View>
     );
 }
 
@@ -263,7 +263,7 @@ function MenuFooterComponent({
             contentInsets: style === FOOTER_TEXT_STYLE.style ? { x: 0 } : undefined,
         };
     }, [btnStyle, variant, size, itemClassName]);
-    const pathname = usePathname();
+    const pagePath = useScreenPagePath();
   
     
     const menu_launcher_items = useMemo(() => (
@@ -292,12 +292,12 @@ function MenuFooterComponent({
             {menu_launcher_items.length > 0 ? (
                 <View className={FOOTER_LINKS_CLASSES}>
                     {menu_launcher_items.map((item, index) => {
-                        if (item.display_type === 'callback' && item.data?.text)
-                            return <FooterNoticeItem key={item.name || index} item={item} visualProps={visualProps} />;
+                        if (item.display_type === 'text')
+                            return <FooterTextItem key={item.name || index} item={item} visualProps={visualProps} />;
 
                         const href = normalizeFooterHref(item.link);
                         // The page you're on stays in the foreground colour and says so to screen readers.
-                        const isCurrent = !!href && href === pathname;
+                        const isCurrent = !!href && href === pagePath;
                         return (
                             <NeoButtonLink
                                 href={href}

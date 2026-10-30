@@ -1,8 +1,8 @@
 <?php
 
 /**
- * The footer menu (sys_footer, BxBaseMenuFooter): the Theme and Sounds switchers with their menus, and the copyright
- * notice the apps show in a dialog.
+ * The footer menu (sys_footer, BxBaseMenuFooter): the Theme and Sounds switchers with their menus, the tools on the
+ * right, and text items such as the copyright notice.
  */
 class BxBaseMenuFooterTest extends BxDolTestCase
 {
@@ -37,14 +37,81 @@ class BxBaseMenuFooterTest extends BxDolTestCase
         return ['name' => $sName, 'title' => '', 'visible_for_levels' => 2147483647];
     }
 
-    public function testCopyrightCarriesItsTextForTheApps(): void
+    private function footerItems(): array
     {
-        $aData = $this->callProtected($this->footer(), '_getMenuCallbackDataAPI', [['name' => 'copyright', 'title' => '_sys_menu_item_title_copyright']]);
+        $aItems = [];
+        foreach ($this->footer()->getMenuItems() as $aItem)
+            $aItems[$aItem['name']] = $aItem;
 
-        $this->assertSame(_t('_sys_menu_item_title_copyright'), $aData['title']);
-        $this->assertSame(html_entity_decode(strip_tags(_t('_copyright', date('Y'))), ENT_QUOTES | ENT_HTML5, 'UTF-8'), $aData['text']);
-        $this->assertStringContainsString(date('Y'), $aData['text'], 'The year is filled in, as on the site.');
-        $this->assertStringNotContainsString('&copy;', $aData['text'], 'The apps get plain text, not HTML.');
+        return $aItems;
+    }
+
+    public function testCopyrightNamesTheSiteOwner(): void
+    {
+        $sYear = date('Y');
+
+        $this->withOption('site_title', 'Acme Inc.', function () use ($sYear) {
+            $oFooter = $this->footer();
+            $this->assertSame(_t('_sys_txt_copyright_full', $sYear, 'Acme Inc'), $oFooter->getCopyright(), 'The full form ends the name with its own full stop, not a second one.');
+            $this->assertSame(_t('_sys_txt_copyright_short', $sYear, 'Acme Inc.'), $oFooter->getCopyright(true));
+        });
+
+        $this->withOption('site_title', 'Acme', function () use ($sYear) {
+            $sFull = $this->footer()->getCopyright();
+            $this->assertStringContainsString($sYear, $sFull);
+            $this->assertStringContainsString('Acme', $sFull);
+            $this->assertStringNotContainsString('Acme..', $sFull);
+        });
+    }
+
+    public function testCopyrightIsTextNotALink(): void
+    {
+        $aItems = $this->footerItems();
+        $this->assertArrayHasKey('copyright', $aItems, 'The footer shows the copyright notice.');
+
+        $aCopyright = $aItems['copyright'];
+        $this->assertTrue($aCopyright['bx_if:text']['condition']);
+        $this->assertFalse($aCopyright['bx_if:link']['condition'], 'Nothing to click: menu_footer.html draws no link for it.');
+        $this->assertSame(bx_process_output($this->footer()->getCopyright()), $aCopyright['bx_if:text']['content']['text']);
+        $this->assertSame(bx_process_output($this->footer()->getCopyright(true)), $aCopyright['bx_if:text']['content']['text_short'], 'Phones get the short form.');
+
+        $this->assertFalse($aItems['about']['bx_if:text']['condition']);
+        $this->assertTrue($aItems['about']['bx_if:link']['condition']);
+        $this->assertSame($aItems['about']['link'], $aItems['about']['bx_if:link']['content']['link'], 'A link keeps its own markers inside bx_if:link.');
+    }
+
+    public function testAnyItemWithoutALinkIsText(): void
+    {
+        $oFooter = $this->footer();
+        $aLine = ['name' => 'custom_line', 'title' => '_sys_menu_item_title_copyright', 'link' => '', 'onclick' => ''];
+
+        $this->assertTrue($this->callProtected($oFooter, '_isTextItem', [$aLine]));
+        $this->assertSame(['text' => _t('_sys_menu_item_title_copyright'), 'text_short' => _t('_sys_menu_item_title_copyright')], $this->callProtected($oFooter, '_getItemText', [$aLine]), 'An admin\'s own line shows its title.');
+        $this->assertFalse($this->callProtected($oFooter, '_isTextItem', [['link' => 'page.php?i=about', 'onclick' => '']]));
+        $this->assertFalse($this->callProtected($oFooter, '_isTextItem', [['link' => '', 'onclick' => 'bx_menu_popup(1);']]));
+    }
+
+    public function testTextItemsReachTheAppsAsPlainText(): void
+    {
+        $oFooter = $this->footer();
+        $aItem = $this->callProtected($oFooter, '_getMenuItemAPI', [['id' => 1, 'name' => 'copyright', 'title' => '_sys_menu_item_title_copyright', 'link' => '', 'onclick' => '']]);
+
+        $this->assertSame('text', $aItem['display_type']);
+        $this->assertSame('', $aItem['link']);
+        $this->assertSame(html_entity_decode(strip_tags($oFooter->getCopyright()), ENT_QUOTES | ENT_HTML5, 'UTF-8'), $aItem['text']);
+        $this->assertSame(html_entity_decode(strip_tags($oFooter->getCopyright(true)), ENT_QUOTES | ENT_HTML5, 'UTF-8'), $aItem['text_short']);
+        $this->assertStringNotContainsString('&', $aItem['text'], 'The apps get plain text, not HTML.');
+    }
+
+    public function testToolsStartOnTheRight(): void
+    {
+        $aStarts = [];
+        foreach ($this->footerItems() as $sName => $aItem)
+            if (strpos($aItem['class_add'] ?? '', 'bx-menu-footer-tools-start') !== false)
+                $aStarts[] = $sName;
+
+        $this->assertCount(1, $aStarts, 'One item pushes the tools to the right.');
+        $this->assertContains($aStarts[0], BxBaseMenuFooter::TOOLS, 'It is the first tool, not a link or the copyright.');
     }
 
     public function testThePageYoureOnIsMarkedCurrent(): void
@@ -55,9 +122,7 @@ class BxBaseMenuFooterTest extends BxDolTestCase
 
         BxDolMenu::setSelectedGlobal('system', 'terms');
         try {
-            $aItems = [];
-            foreach ($this->footer()->getMenuItems() as $aItem)
-                $aItems[$aItem['name']] = $aItem;
+            $aItems = $this->footerItems();
         }
         finally {
             BxDolMenu::setSelectedGlobal($aPrior[0], $aPrior[1]);
@@ -68,9 +133,18 @@ class BxBaseMenuFooterTest extends BxDolTestCase
         $this->assertStringNotContainsString('aria-current', $aItems['about']['attrs'] ?? '');
     }
 
-    public function testOtherItemsSendNoCallbackData(): void
+    public function testEachLinkHasOneTitle(): void
     {
-        $this->assertSame([], $this->callProtected($this->footer(), '_getMenuCallbackDataAPI', [$this->item('about')]));
+        // The item's attributes carry its title (BxBaseMenu::_getMenuAttrs); the templates must not add another one.
+        foreach (['template/menu_footer.html', 'modules/boonex/artificer/data/template/system/menu_footer.html'] as $sFile)
+            $this->assertStringNotContainsString('title="__title_attr__"', (string)file_get_contents(BX_DIRECTORY_PATH_ROOT . $sFile), $sFile);
+
+        $aItems = $this->footerItems();
+        $this->assertSame(1, substr_count($aItems['about']['attrs'], 'title='));
+
+        $sPoweredBy = bx_html_attribute(_t('_sys_txt_powered_by'));
+        $this->assertStringContainsString('title="' . $sPoweredBy . '"', $aItems['powered_by']['attrs']);
+        $this->assertStringContainsString('aria-label="' . $sPoweredBy . '"', $aItems['powered_by']['attrs'], 'The badge is named in full, starting with the words it shows.');
     }
 
     public function testSoundsItemShowsWhereSoundsPlayOnTheSite(): void

@@ -18,6 +18,12 @@ class BxBaseMenuFooter extends BxTemplMenu
     public const POPUP_COLOR_SCHEME = 'bx-menu-footer-color-scheme';
     public const POPUP_SOUNDS = 'bx-menu-footer-sounds';
 
+    /**
+     * The footer's tools. From desktop width they sit on the right, links and text on the left, as in the apps'
+     * footer; on smaller screens everything is centred and wraps.
+     */
+    public const TOOLS = ['switch_language', 'switch_template', 'color_scheme', 'sounds', 'powered_by'];
+
     public function __construct ($aObject, $oTemplate)
     {
         parent::__construct ($aObject, $oTemplate);
@@ -68,9 +74,21 @@ class BxBaseMenuFooter extends BxTemplMenu
         return BxTemplFunctions::getInstance()->transBox(self::POPUP_SOUNDS, $oMenu->getCode(), true);
     }
 
+    /**
+     * The copyright notice: "© 2026 Site." in full, "© 2026 Site" on phones. The owner is the site title; the full
+     * form ends the name with its own full stop, so a title like "Acme Inc." doesn't get a second one.
+     */
+    public function getCopyright($bShort = false)
+    {
+        $sOwner = trim((string)getParam('site_title'));
+
+        return $bShort ? _t('_sys_txt_copyright_short', date('Y'), $sOwner) : _t('_sys_txt_copyright_full', date('Y'), rtrim($sOwner, '.'));
+    }
+
     public function getMenuItems ()
     {
         $aItems = parent::getMenuItems();
+        $bToolsStart = false;
         foreach($aItems as $iKey => $aItem) {
             switch($aItem['name']) {
                 case 'switch_language':
@@ -94,10 +112,6 @@ class BxBaseMenuFooter extends BxTemplMenu
                     $aItems[$iKey]['bx_if:title']['content']['title'] = $sTitle;
                     break;
 
-                case 'copyright':
-                    $aItems[$iKey]['title_attr'] = bx_html_attribute(_t('_copyright', date('Y')));
-                    break;
-
                 /**
                  * Icon only, as in the apps' footer: the icon shows the current choice and the menu (getSwitcherPopups)
                  * names each one. The item's system title names the button.
@@ -110,12 +124,6 @@ class BxBaseMenuFooter extends BxTemplMenu
                     $aItems[$iKey]['attrs'] .= ' aria-haspopup="menu" aria-expanded="false" data-bx-sounds-switch="1"';
                     break;
 
-                case 'powered_by':
-                    $sTitleAttr = bx_html_attribute(_t('_sys_txt_powered_by'));
-
-                    $aItems[$iKey]['title_attr'] = $sTitleAttr;
-                    $aItems[$iKey]['bx_if:image']['content']['title_attr'] = $sTitleAttr;
-                    break;
             }
 
             // The page you're on: the footer keeps its link in the foreground colour, and screen readers hear it.
@@ -133,9 +141,87 @@ class BxBaseMenuFooter extends BxTemplMenu
                 if(!$bTitleAttrImage)
                     $aItems[$iKey]['bx_if:image']['content']['title_attr'] = $sTitleAttr;
             }
+
+            if(!$bToolsStart && in_array($aItem['name'], self::TOOLS)) {
+                $aItems[$iKey]['class_add'] = (isset($aItems[$iKey]['class_add']) ? $aItems[$iKey]['class_add'] : '') . ' bx-menu-footer-tools-start';
+                $bToolsStart = true;
+            }
+
+            /**
+             * An item with neither a link nor a script is text, not a link: the copyright notice, or a line an
+             * admin adds in Navigation. menu_footer.html shows the short form on phones.
+             */
+            $bText = $this->_isTextItem($aItems[$iKey]);
+            $aText = $bText ? $this->_getItemText($aItems[$iKey]) : ['text' => '', 'text_short' => ''];
+
+            $aItems[$iKey]['bx_if:text'] = [
+                'condition' => $bText,
+                'content' => [
+                    'text' => $aText['text'],
+                    'text_short' => $aText['text_short'],
+                ]
+            ];
+            $aItems[$iKey]['bx_if:link'] = [
+                'condition' => !$bText,
+                'content' => $aItems[$iKey]
+            ];
         }
 
         return $aItems;
+    }
+
+    /**
+     * Text items reach the apps as text too, with both forms (`text`, `text_short`) as plain text.
+     */
+    protected function _getMenuItemAPI ($a)
+    {
+        $aResult = parent::_getMenuItemAPI($a);
+        if(!$this->_isTextItem($a))
+            return $aResult;
+
+        $aText = $this->_getItemText($a);
+        $fPlain = function($s) {
+            return html_entity_decode(strip_tags($s), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        };
+
+        return array_merge($aResult, [
+            'display_type' => 'text',
+            'link' => '',
+            'text' => $fPlain($aText['text']),
+            'text_short' => $fPlain($aText['text_short']),
+        ]);
+    }
+
+    /**
+     * The badge reads "Powered by UNA"; its tooltip and accessible name say it in full.
+     */
+    protected function _getMenuTitle ($a)
+    {
+        if($a['name'] == 'powered_by')
+            return bx_html_attribute(_t('_sys_txt_powered_by'));
+
+        return parent::_getMenuTitle($a);
+    }
+
+    protected function _isTextItem ($a)
+    {
+        return trim(isset($a['link']) ? (string)$a['link'] : '') === '' && trim(isset($a['onclick']) ? (string)$a['onclick'] : '') === '';
+    }
+
+    /**
+     * The text of a text item: the copyright notice, else the item's title. HTML-safe.
+     */
+    protected function _getItemText ($a)
+    {
+        if($a['name'] == 'copyright')
+            return [
+                'text' => bx_process_output($this->getCopyright()),
+                'text_short' => bx_process_output($this->getCopyright(true)),
+            ];
+
+        $sTitle = isset($a['title']) ? _t($a['title']) : '';
+
+        return ['text' => $sTitle, 'text_short' => $sTitle];
     }
 
     protected function _isVisible ($a)
@@ -175,20 +261,6 @@ class BxBaseMenuFooter extends BxTemplMenu
         }
 
         return $bResult;
-    }
-
-    /**
-     * The apps show the copyright notice in a dialog, as the site does in a popup.
-     */
-    protected function _getMenuCallbackDataAPI($a)
-    {
-        if($a['name'] != 'copyright')
-            return parent::_getMenuCallbackDataAPI($a);
-
-        return [
-            'title' => _t($a['title']),
-            'text' => html_entity_decode(strip_tags(_t('_copyright', date('Y'))), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
-        ];
     }
 
     protected function _isItemShown($sName)

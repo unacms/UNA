@@ -4306,6 +4306,8 @@
     <string name="_sys_txt_confirm_phone_confirm_success"><![CDATA[Ваш телефон успешно подтверждён.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_desc_set_phone"><![CDATA[Пожалуйста, введите телефонный номер на который будет отправлено SMS с кодом подтверждения.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_desc_phone_confirmation"><![CDATA[Пожалуйста, введите код проверки из SMS]]></string>
+    <string name="_sys_txt_copyright_full"><![CDATA[© {0} {1}. Все права защищены.]]></string>
+    <string name="_sys_txt_copyright_short"><![CDATA[© {0} {1}]]></string>
 
     <string name="_sys_txt_create_post_placeholder"><![CDATA[Напишите здесь, {0}]]></string>
     <string name="_sys_txt_err_attach_links"><![CDATA[Достигнуто максимально допустимое количество прикрепленных ссылок.]]></string>

@@ -49,12 +49,29 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testFooterCopyrightIsActiveInTheApi(): void
+    public function testFooterCopyrightIsTextAfterTheLinks(): void
     {
-        // The apps show the copyright notice in a dialog, from the text the footer menu sends with the item.
-        $sSql = file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-menus.sql');
+        // No link and no script: BxBaseMenuFooter shows it as text ("(c) 2026 Site. All rights reserved."), after
+        // About, Terms and Privacy and before the tools. The apps get it too, as a text item.
+        $sSql = self::systemSql();
+        $aOrder = [];
+        foreach (['copyright', 'switch_language', 'switch_template', 'color_scheme', 'sounds'] as $sName) {
+            $this->assertSame(1, preg_match("/\\('sys_footer', 'system', '" . $sName . "', '[^']*', '[^']*', '((?:[^']|'')*)', '((?:[^']|'')*)', [^\\n]*, (\\d+)\\),?\\r?\\n/", $sSql, $aMatch), 'system.sql adds the footer\'s ' . $sName . ' item.');
+            $aOrder[$sName] = (int)$aMatch[3];
 
-        $this->assertStringContainsString("UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `module`='system' AND `name`='copyright';", (string)$sSql);
+            if ($sName == 'copyright') {
+                $this->assertSame('', $aMatch[1], 'The copyright notice has no link.');
+                $this->assertSame('', $aMatch[2], 'Nor a script: no popup.');
+            }
+        }
+
+        $this->assertSame(4, $aOrder['copyright'], 'Right after Privacy (3).');
+        $aTools = $aOrder;
+        unset($aTools['copyright']);
+        $this->assertGreaterThan($aOrder['copyright'], min($aTools), 'The tools come after it.');
+
+        $sApp = file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-menus.sql');
+        $this->assertStringContainsString("UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `module`='system' AND `name`='copyright';", (string)$sApp);
     }
 
     public function testHomepageSubmenuHasAnIconInTheApp(): void

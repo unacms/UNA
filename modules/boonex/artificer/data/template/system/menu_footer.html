@@ -1,10 +1,15 @@
-<ul id="bx-menu-footer" class="bx-menu-hor bx-menu-object-__object__ flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+<ul id="bx-menu-footer" class="bx-menu-hor bx-menu-object-__object__ flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-2">
     <bx_repeat:menu_items>
         <li class="bx-menu-item bx-menu-item-__name__ bx-stl-mil-wo-bg-gaps __class_add__">
-            <a href="__link__" <bx_if:onclick>onclick="__onclick__"</bx_if:onclick> title="__title_attr__"__attrs__>
-                <bx_include_auto:menu_icon.html />
-                <bx_if:title>__title__</bx_if:title>
-            </a>
+            <bx_if:link>
+                <a href="__link__" <bx_if:onclick>onclick="__onclick__"</bx_if:onclick>__attrs__>
+                    <bx_include_auto:menu_icon.html />
+                    <bx_if:title>__title__</bx_if:title>
+                </a>
+            </bx_if:link>
+            <bx_if:text>
+                <span class="bx-menu-footer-text"><span class="sm:hidden">__text_short__</span><span class="hidden sm:inline">__text__</span></span>
+            </bx_if:text>
         </li>
     </bx_repeat:menu_items>
 </ul>
