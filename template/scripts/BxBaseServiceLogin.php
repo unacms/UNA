@@ -493,8 +493,9 @@ class BxBaseServiceLogin extends BxDol
 
         $oSession = BxDolSession::getInstance();
         $iTTL = $bLogged ? $oSession->getTTL() : 0;
-        if ($iTTL)
+        if ($iTTL) {
             $oSession->setTTL($iTTL);
+        }
 
         return ['logged' => $bLogged ? 1 : 0];
     }

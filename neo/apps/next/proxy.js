@@ -3,8 +3,8 @@ import { APP_URL, UNA_URL, UNA_API_KEY, MULTITENANT, PREVIEW_DOMAIN, PREVIEW_API
 import { getDomainByHostname } from './lib/domains/domains';
 import { dropForeignClientHeaders, resolveEdge } from './lib/client-headers';
 import {
-    SESSION_MARK_AGE, SESSION_RETRY_AGE, SESSION_TOUCH_PATH, SESSION_TOUCH_TIMEOUT_MS,
-    applySetCookies, hasStaleSessionMark, needsSessionTouch, sessionMarkCookie,
+    SESSION_TOUCH_PATH, SESSION_TOUCH_TIMEOUT_MS,
+    applySetCookies, hasStaleSessionMark, needsSessionTouch, sessionMarkAge, sessionMarkCookie,
 } from './lib/session-touch';
 
 export const config = {
@@ -98,7 +98,7 @@ function cookieHeaderFromRequest(request) {
 
 /**
  * Asks UNA to repeat the session cookie before a page (see lib/session-touch). Returns the
- * `Set-Cookie` lines UNA sent, or null when it didn't answer in time.
+ * `Set-Cookie` lines UNA sent and whether it answered.
  */
 async function touchUnaSession(request, tenant) {
     try {
@@ -112,9 +112,11 @@ async function touchUnaSession(request, tenant) {
             signal: AbortSignal.timeout(SESSION_TOUCH_TIMEOUT_MS),
         });
         res.body?.cancel().catch(() => {});
-        return res.headers.getSetCookie();
+        const setCookies = res.headers.getSetCookie();
+        // An error page without cookies (502 from a proxy) is a failed touch, retried sooner.
+        return { ok: res.ok || setCookies.length > 0, setCookies };
     } catch {
-        return null;
+        return { ok: false, setCookies: [] };
     }
 }
 
@@ -128,12 +130,12 @@ async function withSessionTouch(request, tenant, headers) {
         return { headers, setCookies: hasStaleSessionMark(request.cookies) ? [sessionMarkCookie(0, secure)] : [] };
     }
 
-    const sessionCookies = await touchUnaSession(request, tenant);
-    if (sessionCookies?.length) {
-        headers.set('cookie', applySetCookies(headers.get('cookie') || '', sessionCookies));
+    const { ok, setCookies } = await touchUnaSession(request, tenant);
+    if (setCookies.length) {
+        headers.set('cookie', applySetCookies(headers.get('cookie') || '', setCookies));
     }
-    const mark = sessionMarkCookie(sessionCookies ? SESSION_MARK_AGE : SESSION_RETRY_AGE, secure);
-    return { headers, setCookies: [...(sessionCookies || []), mark] };
+    const mark = sessionMarkCookie(sessionMarkAge(ok, setCookies), secure);
+    return { headers, setCookies: [...setCookies, mark] };
 }
 
 function sysAiChatPath(pathname) {

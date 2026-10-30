@@ -36,9 +36,10 @@ export function sessionMarkCookie(maxAge: number, secure: boolean): string {
     return `${SESSION_MARK}=1; Path=/; Max-Age=${maxAge}; HttpOnly; SameSite=Lax${secure ? '; Secure' : ''}`;
 }
 
-type ParsedSetCookie = { name: string; value: string; removed: boolean };
+/** `expires`: when the cookie ends (ms), null when it ends with the browser. */
+type ParsedSetCookie = { name: string; value: string; removed: boolean; expires: number | null };
 
-/** Name and value of a `Set-Cookie` line, and whether it removes the cookie. */
+/** Name, value and end of a `Set-Cookie` line, and whether it removes the cookie. */
 export function parseSetCookie(raw: string, now: number = Date.now()): ParsedSetCookie | null {
     const [pair = '', ...attributes] = String(raw).split(';');
     const eq = pair.indexOf('=');
@@ -46,22 +47,43 @@ export function parseSetCookie(raw: string, now: number = Date.now()): ParsedSet
 
     const name = pair.slice(0, eq).trim();
     const value = pair.slice(eq + 1).trim();
-    let removed = value === '' || value === 'deleted';
+    let maxAge: number | null = null;
+    let expires: number | null = null;
     for (const attribute of attributes) {
         const [key = '', ...rest] = attribute.split('=');
         const attributeValue = rest.join('=').trim();
         switch (key.trim().toLowerCase()) {
-            case 'max-age':
-                if (Number(attributeValue) <= 0) removed = true;
+            case 'max-age': {
+                const seconds = Number(attributeValue);
+                if (attributeValue !== '' && !Number.isNaN(seconds)) maxAge = seconds;
                 break;
+            }
             case 'expires': {
                 const time = Date.parse(attributeValue);
-                if (!Number.isNaN(time) && time <= now) removed = true;
+                if (!Number.isNaN(time)) expires = time;
                 break;
             }
         }
     }
-    return name ? { name, value, removed } : null;
+    // Max-Age wins over Expires, as in browsers.
+    const end = maxAge !== null ? now + maxAge * 1000 : expires;
+    const removed = value === '' || value === 'deleted' || (end !== null && end <= now);
+    return name ? { name, value, removed, expires: end } : null;
+}
+
+/**
+ * Seconds until the next touch. UNA moves a remembered session's end once half its lifetime
+ * (at most a day) has passed, and the moved end may only reach the browser on a touch. So the
+ * next touch comes while the cookie the browser holds still has half its time left: a short
+ * `sys_session_lifetime_in_min` touches more often. A failed touch is retried sooner.
+ */
+export function sessionMarkAge(ok: boolean, setCookies: string[], now: number = Date.now()): number {
+    if (!ok) return SESSION_RETRY_AGE;
+    const session = setCookies
+        .map((raw) => parseSetCookie(raw, now))
+        .find((cookie) => cookie?.name === SESSION_COOKIE && !cookie.removed);
+    if (!session?.expires) return SESSION_MARK_AGE;
+    return Math.max(60, Math.min(SESSION_MARK_AGE, Math.floor((session.expires - now) / 2000)));
 }
 
 /**

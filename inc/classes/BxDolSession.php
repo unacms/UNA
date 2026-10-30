@@ -139,8 +139,9 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         // Public files drop a moved end's cookie (BxDolGzip, bx_smart_readfile), and NEO's
         // server-side page fetch never passes it to the browser. NEO's proxy picks it up from
         // the touch_session service (BxBaseServiceLogin), which repeats it.
-        if ($bSendCookie)
+        if ($bSendCookie) {
             $this->sendCookie();
+        }
 
         $this->save();
 
