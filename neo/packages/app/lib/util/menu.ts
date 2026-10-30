@@ -81,6 +81,19 @@ export function isMenuItemNavigable(item: MenuItem | null | undefined): boolean 
     return true;
 }
 
+/**
+ * Drop the items UNA hides on this screen tier (an item's "Hidden on" in
+ * Studio, sent as `hidden_on`: `phone`, `tablet`, `desktop`), submenus too.
+ */
+export function filterHiddenOn(items: MenuItemList, tier: string): MenuItem[] {
+    return asMenuItemList(items)
+        .filter((item) => item && !(Array.isArray(item.hidden_on) && item.hidden_on.includes(tier)))
+        .map((item) => {
+            const key = getMenuItemChildrenKey(item);
+            return key ? { ...item, [key]: filterHiddenOn(item[key], tier) } : item;
+        });
+}
+
 /** Prefix relative UNA menu links so dropdown rows navigate in-app. */
 export function normalizeMenuItemHref(link: unknown): string {
     if (typeof link !== 'string') return '';

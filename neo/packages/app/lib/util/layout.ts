@@ -50,6 +50,15 @@ export const LAYOUT_BREAKPOINTS = {
 
 const LAYOUT_BREAKPOINTS_DESC = Object.entries(LAYOUT_BREAKPOINTS).sort((a, b) => b[1] - a[1]);
 
+/** UNA's screen tiers: phone (no prefix), tablet (from `sm`), desktop (from `lg`). */
+export type ScreenTier = 'phone' | 'tablet' | 'desktop';
+
+/** Screen tier for a window width (or a LAYOUT_BREAKPOINTS value). */
+export function screenTierOf(width: number): ScreenTier {
+    if (width >= LAYOUT_BREAKPOINTS.lg) return 'desktop';
+    return width >= LAYOUT_BREAKPOINTS.sm ? 'tablet' : 'phone';
+}
+
 /** Largest breakpoint label (`2xl`…`sm`) whose min width fits; `''` below all. */
 export function getBreakpoint(width: number): string {
     for (const [label, min] of LAYOUT_BREAKPOINTS_DESC) {
