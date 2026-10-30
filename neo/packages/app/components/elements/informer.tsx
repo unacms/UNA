@@ -36,7 +36,7 @@ export default function ElementInformer({ data, blockWrapperProps }: ElementInfo
 
     const source: InformerItem[] | undefined = inline ? data : (currentUser ? currentUser.informer : undefined);
     const items = (source || []).filter((item) => (
-        item?.msg && !HIDDEN_IDS.has(item.id ?? '') && !(item.id === PROFILE_MESSAGE_ID && currentUser && currentUser.profile_required)
+        item?.msg && !HIDDEN_IDS.has(item.id ?? '') && !(item.id === PROFILE_MESSAGE_ID && currentUser?.profile_required)
     ));
     if (!items.length)
         return null
