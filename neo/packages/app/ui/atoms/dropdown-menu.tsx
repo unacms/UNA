@@ -3,7 +3,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { NeoButton, legacyToNeoButtonProps } from 'app/design/controls'
 import { isLegacyButtonProps, stripRoutingKeys } from 'app/design/controls/neo-button/legacy-button-map';
 import { memo, useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
-import { cn, groupDropdownItems, getDropdownSectionsLayout, dropdownLeafItems, getDropdownGridLayout, type DropdownSection, type DropdownSectionsLayout } from 'app/lib/util';
+import { cn, groupDropdownItems, splitDropdownColumns, getDropdownSectionsLayout, dropdownLeafItems, getDropdownGridLayout, type DropdownSection, type DropdownSectionsLayout } from 'app/lib/util';
 import DropdownGridItem, { type DropdownGridMenuItem } from 'app/ui/atoms/dropdown-grid-item';
 import { FeedbackHaptics } from 'app/lib/util';
 import { Keyboard, Alert, Platform, type AlertButton, type StyleProp, type ViewStyle } from 'react-native'
@@ -68,6 +68,8 @@ export type DropdownMenuProps = {
     stacked?: boolean;
     /** Popup min width (px) of a plain list menu; 256 by default. */
     minPopupWidth?: number;
+    /** Popup: lay the rows out in this many columns of about the same height. */
+    columns?: number;
 };
 
 type DropdownMenuPopupProps = Omit<DropdownMenuProps, 'mode' | 'title' | 'cancelable'>;
@@ -146,6 +148,7 @@ function DropdownMenuPopup({
     triggerStyle,
     stacked = false,
     minPopupWidth = 256,
+    columns = 1,
 }: DropdownMenuPopupProps) {
     const DropdownMenuItem = getDropdownMenuItem();
     const redirectdRef = useRef<RedirectHandle | null>(null);
@@ -180,10 +183,11 @@ function DropdownMenuPopup({
         () => (isGridLayout ? getDropdownGridLayout() : null),
         [isGridLayout]
     );
-    const useSectionsLayout = !isGridLayout && (items || []).some((item) => item?.type === 'group_header');
+    const useColumns = !isGridLayout && columns > 1 && (items || []).length > 1;
+    const useSectionsLayout = useColumns || (!isGridLayout && (items || []).some((item) => item?.type === 'group_header'));
     const sections = useMemo(
-        () => (useSectionsLayout ? groupDropdownItems(items) : null),
-        [items, useSectionsLayout]
+        () => (useColumns ? splitDropdownColumns(items, columns) : useSectionsLayout ? groupDropdownItems(items) : null),
+        [items, useSectionsLayout, useColumns, columns]
     );
     const sectionsLayout = useMemo<SectionsLayout>(
         () => stacked
@@ -570,6 +574,7 @@ export default function DropdownMenu({
     triggerStyle,
     stacked = false,
     minPopupWidth,
+    columns,
 }: DropdownMenuProps) {
     const isWeb = Platform.OS === 'web';
 
@@ -596,6 +601,7 @@ export default function DropdownMenu({
                 triggerStyle={triggerStyle}
                 stacked={stacked}
                 minPopupWidth={minPopupWidth}
+                columns={columns}
             />
         );
     }

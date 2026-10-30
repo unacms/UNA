@@ -21,7 +21,6 @@ import { appSetting, cn } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import Link from 'app/ui/atoms/link'
 import { useFetch } from 'app/lib/hooks/use-fetch'
-import DasbordStatOld from 'app/components/elements/dashboard-stat-old'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { SOUND_LEVEL_ITEMS, useSoundsLevel } from 'app/lib/hooks/use-sounds-level'
@@ -112,16 +111,11 @@ function DashboardAction({ href, icon, title }) {
     )
 }
 
-export default function DashboardStat(props) {
-    const useRemoteConfig = appSetting('layout', 'user_remote_config')
-    return useRemoteConfig ? <DashboardStatRemote {...props} /> : <DasbordStatOld {...props} />
-}
-
 /**
  * The block payload comes in two shapes: the account dashboard (`modules` + optional `manage`)
  * and the admin dashboard (system:get_admin_block, `manage` only). Each part renders when its data is present.
  */
-function DashboardStatRemote(props) {
+export default function DashboardStatComponent(props) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     // Only the account stat block has a live endpoint; refresh its snapshot (cached, so returning is instant).

@@ -284,9 +284,8 @@ function createConductorRoute(item, index, depth, parentIndex, link, canNavigate
         addon,
         image: item.image || '',
         icon: item.icon || 'Circle',
-        menu_settings: appSetting('layout', 'user_remote_config') && item.config
-            ? strToObj(item.config)
-            : item.settings,
+        // The item's `config` from UNA, else its own `settings`.
+        menu_settings: (item.config && strToObj(item.config)) || item.settings,
         storageKeyValue: routeLink,
         sidebar: {},
         leftbar: {},
@@ -307,8 +306,9 @@ function applyCurrentPageToRoute(route, data, blocks) {
     route.config = data?.config
     route.blocks = blocks
     route.pageData = data
-    if (appSetting('layout', 'user_remote_config') && route.item?.config) {
-        route.menu_settings = (strToObj(route.item.config)).settings
+    const itemConfig = route.item?.config ? strToObj(route.item.config) : null
+    if (itemConfig) {
+        route.menu_settings = itemConfig.settings
     }
 }
 

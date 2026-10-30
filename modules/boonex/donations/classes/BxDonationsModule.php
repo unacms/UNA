@@ -50,15 +50,18 @@ class BxDonationsModule extends BxBaseModGeneralModule
     {
         $CNF = &$this->_oConfig->CNF;
 
+        if(!$this->_oConfig->isEnableOther())
+            return echoJson([]);
+
         $sBillingType = bx_process_input(bx_get('btype'));
         $bBillingTypeRecurring = $sBillingType == BX_DONATIONS_BTYPE_RECURRING;
 
         $fAmount = bx_process_input(bx_get('amount'), BX_DATA_FLOAT);
     	if(empty($sBillingType) || empty($fAmount))
-            return echoJson(array());
+            return echoJson([]);
 
         if($fAmount < $CNF['PARAM_OTHER_PRICE_MIN'])
-            return echoJson(array('msg' => _t('_bx_donations_err_min_value', _t_format_currency($CNF['PARAM_OTHER_PRICE_MIN'], getParam($CNF['PARAM_AMOUNT_PRECISION'])))));
+            return echoJson(['msg' => _t('_bx_donations_err_min_value', _t_format_currency($CNF['PARAM_OTHER_PRICE_MIN'], getParam($CNF['PARAM_AMOUNT_PRECISION'])))]);
 
         $iOwner = $this->_oConfig->getOwner();
         $sModule = $this->getName();
@@ -138,17 +141,17 @@ class BxDonationsModule extends BxBaseModGeneralModule
     	$CNF = &$this->_oConfig->CNF;
 
         if(!$mixedItemId)
-            return array();
+            return [];
 
-        $aItem = $this->_oDb->getTypes(array(
+        $aItem = $this->_oDb->getTypes([
             'type' => 'by_' . (is_numeric($mixedItemId) ? 'id' : 'name'), 
             'value' => $mixedItemId
-        ));
+        ]);
 
-        if(empty($aItem) || !is_array($aItem))
-            return array();
+        if(empty($aItem) || !is_array($aItem) || (int)$aItem['active'] == 0)
+            return [];
 
-        return array (
+        return [
             'id' => $aItem[$CNF['FIELD_ID']],
             'author_id' => $this->_oConfig->getOwner(),
             'name' => $aItem[$CNF['FIELD_NAME']],
@@ -160,7 +163,7 @@ class BxDonationsModule extends BxBaseModGeneralModule
             'period_recurring' => $aItem[$CNF['FIELD_PERIOD']],
             'period_unit_recurring' => $aItem[$CNF['FIELD_PERIOD_UNIT']],
             'trial_recurring' => ''
-        );
+        ];
     }
 
     public function serviceGetCartItems($iSellerId)

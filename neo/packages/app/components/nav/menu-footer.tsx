@@ -399,7 +399,10 @@ function MenuFooterComponent({
 
     const currentUser = useCurrentUserNoCounters();
     const { hydrated } = useLayoutSettings();
-    const usesRemoteFooter = !menu_items && appSetting('layout', 'user_remote_config');
+    // `menu_footer` setting pins the links; unset, they come from UNA's footer menu.
+    const staticFooter = appSetting('menu_items', 'menu_footer');
+    const useStaticFooter = Array.isArray(staticFooter) && staticFooter.length > 0;
+    const usesRemoteFooter = !menu_items && !useStaticFooter;
     const { available: soundsAvailable } = useSoundsLevel();
     const configuredLangs = appSetting('layout', AVAILABLE_LANGS_SETTING_KEY);
     const switchers: FooterSwitcherFlags = {
@@ -408,7 +411,7 @@ function MenuFooterComponent({
         sounds: hydrated && soundsAvailable,
     };
     const { menuData, isFetched, isLoading } = useMenuData(
-        (menu_items || !hydrated) ? null : appSetting('menu_items', 'objects', 'footer')
+        (!usesRemoteFooter || !hydrated) ? null : appSetting('menu_items', 'objects', 'footer')
     );
 
     const visualProps = useMemo(
@@ -419,8 +422,8 @@ function MenuFooterComponent({
     const menu_launcher_items = useMemo((): FooterMenuItem[] => (
         menu_items || (usesRemoteFooter
             ? menuItemsByNameNew('menu_post', menuData, currentUser)
-            : menuItemsByName('', appSetting('menu_items', 'menu_footer'), currentUser))
-    ), [menu_items, usesRemoteFooter, menuData, currentUser]);
+            : menuItemsByName('', staticFooter, currentUser))
+    ), [menu_items, usesRemoteFooter, menuData, currentUser, staticFooter]);
 
     if (usesRemoteFooter && (!hydrated || isLoading || !isFetched)) {
         return (

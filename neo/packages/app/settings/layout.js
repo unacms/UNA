@@ -57,7 +57,6 @@ export const settingsLayout = {
         hide_header_for_non_logged: false,
         hide_header_for_all: false,
         card_animation_duration: 100,
-        user_remote_config: true,
         background_image_color: '', 
         background_image: '', 
         background_image_dark: '', 

@@ -48,7 +48,7 @@ export default function Layouts({ path, data }) {
     const pageData = useMemo(() => {
         if (!data) return data;
         const raw = data.config;
-        if (typeof raw !== 'string' || !appSetting('layout', 'user_remote_config')) {
+        if (typeof raw !== 'string') {
             return data;
         }
         const parsed = strToObj(raw);
