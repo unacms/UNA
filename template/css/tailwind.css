@@ -65,7 +65,7 @@
     }
 
     .bx-def-vanilla-html {
-        @apply prose dark:prose-invert;
+        @apply prose dark:prose-invert leading-normal;
         @apply prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:font-medium prose-a:no-underline hover:prose-a:underline visited:prose-a:text-purple-700 dark:visited:prose-a:text-purple-400;
     }
     
@@ -580,7 +580,7 @@
     }
 
     .bx-def-vanilla-html p {
-        @apply leading-7 [&:not(:first-child)]:mt-6;
+        @apply leading-6 [&:not(:first-child)]:mt-6;
     }
 
     .bx-def-vanilla-html blockquote {
