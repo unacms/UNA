@@ -29,6 +29,11 @@ export type CurrentUser = {
     /** Active context (e.g. organization) id when acting on behalf of another profile. */
     current_context?: number | string;
     informer?: any[];
+    /**
+     * UNA's "Require a profile" (Studio > Settings > Account, `sys_account_require_profile`) is on and this
+     * account has no profile of its own yet: every page shows profile creation instead (components/layouts.js).
+     */
+    profile_required?: boolean;
     operator?: boolean | number;
     moderator?: boolean | number;
     /** HTTP-like status of the user's page (503 = maintenance). */

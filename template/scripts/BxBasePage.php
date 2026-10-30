@@ -228,7 +228,7 @@ class BxBasePage extends BxDolPage
     {
         if (bx_get('dynamic') && ($iBlockId = (int)bx_get('pageBlock'))) {
 
-            if (self::isLockedFromUnauthenticated($this->_aObject['uri']) || !$this->_isVisiblePage($this->_aObject)) {
+            if (self::isLockedFromUnauthenticated($this->_aObject['uri']) || self::isLockedFromNoProfile($this->_aObject['uri']) || !$this->_isVisiblePage($this->_aObject)) {
                 header('HTTP/1.0 403 Forbidden');
                 exit;
             }

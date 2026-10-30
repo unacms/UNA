@@ -24,8 +24,13 @@ import { appStatic } from 'app/lib/app-static';
 export default function MenuAccount({ buttonProps, children }) {
     const redirectdRef = useRef()
     const { currentUser, setCurrentUser } = useCurrentUser()
-    const { menuData: accountMenuData } = useMenuData(appSetting('menu_items', 'objects', 'account'));
-    const { menuData: footerMenuData } = useMenuData(appSetting('menu_items', 'objects', 'footer'));
+    // `menu_account` / `menu_footer` settings pin the items; unset, they come from UNA's menus.
+    const staticAccount = appSetting('menu_items', 'menu_account');
+    const staticFooter = appSetting('menu_items', 'menu_footer');
+    const useStaticAccount = Array.isArray(staticAccount) && staticAccount.length > 0;
+    const useStaticFooter = Array.isArray(staticFooter) && staticFooter.length > 0;
+    const { menuData: accountMenuData } = useMenuData(useStaticAccount ? null : appSetting('menu_items', 'objects', 'account'));
+    const { menuData: footerMenuData } = useMenuData(useStaticFooter ? null : appSetting('menu_items', 'objects', 'footer'));
     
     const [data, setData] = useState(false)
     const profileFetchRef = useRef(null)
@@ -63,21 +68,13 @@ export default function MenuAccount({ buttonProps, children }) {
 
     const { t } = useTranslation()
 
-    const menu_account_items = appSetting('layout', 'user_remote_config')
-        ? menuItemsByNameNew('menu_post', accountMenuData, currentUser)
-        : menuItemsByName(
-            '',
-            appSetting('menu_items', 'menu_account'),
-            currentUser
-        )
+    const menu_account_items = useStaticAccount
+        ? menuItemsByName('', staticAccount, currentUser)
+        : menuItemsByNameNew('menu_post', accountMenuData, currentUser)
 
-    const menu_footer_items = appSetting('layout', 'user_remote_config')
-        ? menuItemsByNameNew('menu_post', footerMenuData, currentUser)
-        : menuItemsByName(
-            '',
-            appSetting('menu_items', 'menu_footer'),
-            currentUser
-        )
+    const menu_footer_items = useStaticFooter
+        ? menuItemsByName('', staticFooter, currentUser)
+        : menuItemsByNameNew('menu_post', footerMenuData, currentUser)
 
     let profile = null
     if (currentUser) {
