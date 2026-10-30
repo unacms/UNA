@@ -60,6 +60,12 @@ type MenuFooterProps = {
 
 type FooterControlProps = { visualProps: FooterVisualProps };
 
+/** Which switchers the footer shows. */
+type FooterSwitcherFlags = { language: boolean; theme: boolean; sounds: boolean };
+
+/** UNA's Powered by badge: an item whose icon is its SVG. */
+type FooterBadge = FooterMenuItem & { icon: string };
+
 // Two sections, links and switchers, in one row that wraps: side by side while they fit (apart from
 // lg), each on its own centred line when they don't.
 export const MENU_FOOTER_CLASSES = 'flex w-full items-center border-t border-border/60 justify-center lg:justify-between flex-row flex-wrap gap-x-6 gap-y-4 p-4 min-h-16';
@@ -119,7 +125,7 @@ const resolveFooterLang = (langs: string[], lang?: string | null, langCode?: str
 
 const menuFooterSkeletonWidths = ['w-12', 'w-12', 'w-12', 'w-12', 'w-12'];
 
-function MenuFooterSkeleton({ cntClasses, children, role }: { cntClasses: string; children?: ReactNode; role: ComponentProps<typeof View>['role'] }) {
+function MenuFooterSkeleton({ cntClasses, children, role }: Readonly<{ cntClasses: string; children?: ReactNode; role: ComponentProps<typeof View>['role'] }>) {
     return (
         <View className={cntClasses} role={role}>
             <View className={FOOTER_LINKS_CLASSES}>
@@ -138,7 +144,7 @@ function MenuFooterSkeleton({ cntClasses, children, role }: { cntClasses: string
 // A line UNA sends as text, not a link (BxBaseMenuFooter::_getMenuItemAPI: the copyright notice, or a text item
 // added in Navigation). The short form on phones, the full one from tablet width, in the links' size and colour; it
 // sits in a 28px row like the links but doesn't react to the pointer.
-function FooterTextItem({ item, visualProps }: FooterControlProps & { item: FooterMenuItem }) {
+function FooterTextItem({ item, visualProps }: Readonly<FooterControlProps & { item: FooterMenuItem }>) {
     const text = item.text || item.title;
     const short = item.text_short || text;
     const textClassName = cn('text-secondary-foreground', visualProps.textClassName);
@@ -157,7 +163,7 @@ function FooterTextItem({ item, visualProps }: FooterControlProps & { item: Foot
     );
 }
 
-function FooterThemeSwitcher({ visualProps }: FooterControlProps) {
+function FooterThemeSwitcher({ visualProps }: Readonly<FooterControlProps>) {
     const { t } = useTranslation();
     const { themeName, setThemeName } = useLayoutSettings();
     const currentThemeName = themeName || 'auto';
@@ -193,7 +199,7 @@ function FooterThemeSwitcher({ visualProps }: FooterControlProps) {
     );
 }
 
-function FooterSoundsLevel({ visualProps }: FooterControlProps) {
+function FooterSoundsLevel({ visualProps }: Readonly<FooterControlProps>) {
     const { t } = useTranslation();
     const { level, setLevel } = useSoundsLevel();
 
@@ -234,13 +240,13 @@ function FooterSoundsLevel({ visualProps }: FooterControlProps) {
 // UNA's Powered by badge: the item's own SVG (Navigation keeps it editable), 24px tall as on the site, in
 // the links' colour (`currentColor`), foreground on hover.
 const BADGE_HEIGHT = 24;
-const isSvgBadge = (item: FooterMenuItem) => typeof item.icon === 'string' && item.icon.startsWith('<svg') && !item.title;
+const isSvgBadge = (item: FooterMenuItem): item is FooterBadge => typeof item.icon === 'string' && item.icon.startsWith('<svg') && !item.title;
 const badgeWidth = (svg: string) => {
     const [, width, height] = /viewBox="\s*[\d.-]+\s+[\d.-]+\s+([\d.]+)\s+([\d.]+)\s*"/i.exec(svg) ?? [];
     return width && height && +height ? Math.round((BADGE_HEIGHT * +width) / +height) : BADGE_HEIGHT;
 };
 
-function FooterBadgeItem({ item, href, visualProps }: FooterControlProps & { item: FooterMenuItem & { icon: string }; href: string }) {
+function FooterBadgeItem({ item, href, visualProps }: Readonly<FooterControlProps & { item: FooterBadge; href: string }>) {
     return (
         <NeoButtonLink
             href={href}
@@ -261,7 +267,7 @@ function FooterBadgeItem({ item, href, visualProps }: FooterControlProps & { ite
     );
 }
 
-function FooterLanguageSwitcher({ visualProps }: FooterControlProps) {
+function FooterLanguageSwitcher({ visualProps }: Readonly<FooterControlProps>) {
     const { t } = useTranslation();
     const { lang, langCode, autoLangCode, setLang } = useLayoutSettings();
     const configuredLangs = appSetting('layout', AVAILABLE_LANGS_SETTING_KEY);
@@ -308,6 +314,80 @@ function FooterLanguageSwitcher({ visualProps }: FooterControlProps) {
     );
 }
 
+/** The look of the footer's controls: the legacy `btnStyle`, `variant` and `size` props, else quiet text links. */
+function footerVisualProps(btnStyle: FooterButtonStyle | undefined, variant?: string, size?: string, itemClassName?: string): FooterVisualProps {
+    const legacy: FooterButtonStyle = btnStyle || {};
+    const legacyVariant = variant ?? legacy.variant;
+    const legacySize = size ?? legacy.size;
+    const style = legacy.style ?? (legacyVariant ? linkVariantToNeoStyle[legacyVariant] ?? 'link' : FOOTER_TEXT_STYLE.style);
+    const isText = style === FOOTER_TEXT_STYLE.style;
+    return {
+        style,
+        controlSize: legacy.controlSize ?? (legacySize ? linkSizeToNeoControlSize[legacySize] ?? 'small' : FOOTER_TEXT_STYLE.controlSize),
+        className: legacy.containerClassName ?? '',
+        textClassName: itemClassName ?? legacy.textClassName ?? legacy.className ?? (isText ? FOOTER_TEXT_STYLE.textClassName : ''),
+        // Text links sit flush; the section's gap spaces them.
+        contentInsets: isText ? { x: 0 } : undefined,
+    };
+}
+
+// The links and text lines. The page you're on stays in the foreground colour and says so to screen readers.
+function FooterLinks({ links, visualProps }: Readonly<FooterControlProps & { links: FooterMenuItem[] }>) {
+    const { t } = useTranslation();
+    const pagePath = useScreenPagePath();
+
+    if (!links.length) return null;
+
+    return (
+        <View className={FOOTER_LINKS_CLASSES}>
+            {links.map((item, index) => {
+                if (item.display_type === 'text')
+                    return <FooterTextItem key={item.name || index} item={item} visualProps={visualProps} />;
+
+                const href = normalizeFooterHref(item.link);
+                const isCurrent = !!href && href === pagePath;
+                return (
+                    <NeoButtonLink
+                        href={href}
+                        key={item.link || index}
+                        label={t(item.title ?? '')}
+                        style={visualProps.style}
+                        controlSize={visualProps.controlSize}
+                        contentInsets={visualProps.contentInsets}
+                        className={visualProps.className}
+                        textClassName={isCurrent ? `${visualProps.textClassName} text-foreground` : visualProps.textClassName}
+                        aria-current={isCurrent ? 'page' : undefined}
+                    />
+                );
+            })}
+        </View>
+    );
+}
+
+function FooterSwitchers({ language, theme, sounds, visualProps }: Readonly<FooterControlProps & FooterSwitcherFlags>) {
+    return (
+        <>
+            {language ? <FooterLanguageSwitcher visualProps={visualProps} /> : null}
+            {theme ? <FooterThemeSwitcher visualProps={visualProps} /> : null}
+            {sounds ? <FooterSoundsLevel visualProps={visualProps} /> : null}
+        </>
+    );
+}
+
+// The switchers, then the badge, as on the site (its `powered_by` item ends the footer's tools).
+function FooterTools({ switchers, badges, visualProps }: Readonly<FooterControlProps & { switchers: FooterSwitcherFlags; badges: FooterBadge[] }>) {
+    if (!switchers.language && !switchers.theme && !switchers.sounds && !badges.length) return null;
+
+    return (
+        <View className={FOOTER_SECTION_CLASSES}>
+            <FooterSwitchers {...switchers} visualProps={visualProps} />
+            {badges.map((item, index) => (
+                <FooterBadgeItem key={item.name || index} item={item} href={normalizeFooterHref(item.link)} visualProps={visualProps} />
+            ))}
+        </View>
+    );
+}
+
 function MenuFooterComponent({
     cntClasses = MENU_FOOTER_CLASSES,
     btnStyle,
@@ -315,38 +395,27 @@ function MenuFooterComponent({
     variant,
     size,
     itemClassName,
-}: MenuFooterProps) {
+}: Readonly<MenuFooterProps>) {
 
-    const { t } = useTranslation();
     const currentUser = useCurrentUserNoCounters();
     const { hydrated } = useLayoutSettings();
     const usesRemoteFooter = !menu_items && appSetting('layout', 'user_remote_config');
-    const showThemeSwitcher = appSetting('dashboard', 'switch_theme');
     const { available: soundsAvailable } = useSoundsLevel();
     const configuredLangs = appSetting('layout', AVAILABLE_LANGS_SETTING_KEY);
-    const showLanguageSwitcher = hydrated && Array.isArray(configuredLangs) && configuredLangs.length > 1;
-    const showSoundsLevel = hydrated && soundsAvailable;
+    const switchers: FooterSwitcherFlags = {
+        language: hydrated && Array.isArray(configuredLangs) && configuredLangs.length > 1,
+        theme: !!appSetting('dashboard', 'switch_theme'),
+        sounds: hydrated && soundsAvailable,
+    };
     const { menuData, isFetched, isLoading } = useMenuData(
         (menu_items || !hydrated) ? null : appSetting('menu_items', 'objects', 'footer')
     );
 
-    const visualProps = useMemo((): FooterVisualProps => {
-        const legacy: FooterButtonStyle = btnStyle || {};
-        const legacyVariant = variant ?? legacy.variant;
-        const legacySize = size ?? legacy.size;
-        const style = legacy.style ?? (legacyVariant ? linkVariantToNeoStyle[legacyVariant] ?? 'link' : FOOTER_TEXT_STYLE.style);
-        return {
-            style,
-            controlSize: legacy.controlSize ?? (legacySize ? linkSizeToNeoControlSize[legacySize] ?? 'small' : FOOTER_TEXT_STYLE.controlSize),
-            className: legacy.containerClassName ?? '',
-            textClassName: itemClassName ?? legacy.textClassName ?? legacy.className ?? (style === FOOTER_TEXT_STYLE.style ? FOOTER_TEXT_STYLE.textClassName : ''),
-            // Text links sit flush; the section's gap spaces them.
-            contentInsets: style === FOOTER_TEXT_STYLE.style ? { x: 0 } : undefined,
-        };
-    }, [btnStyle, variant, size, itemClassName]);
-    const pagePath = useScreenPagePath();
-  
-    
+    const visualProps = useMemo(
+        () => footerVisualProps(btnStyle, variant, size, itemClassName),
+        [btnStyle, variant, size, itemClassName]
+    );
+
     const menu_launcher_items = useMemo((): FooterMenuItem[] => (
         menu_items || (usesRemoteFooter
             ? menuItemsByNameNew('menu_post', menuData, currentUser)
@@ -356,58 +425,21 @@ function MenuFooterComponent({
     if (usesRemoteFooter && (!hydrated || isLoading || !isFetched)) {
         return (
             <MenuFooterSkeleton cntClasses={cntClasses} role="contentinfo">
-                {showLanguageSwitcher ? <FooterLanguageSwitcher visualProps={visualProps} /> : null}
-                {showThemeSwitcher ? <FooterThemeSwitcher visualProps={visualProps} /> : null}
-                {showSoundsLevel ? <FooterSoundsLevel visualProps={visualProps} /> : null}
+                <FooterSwitchers {...switchers} visualProps={visualProps} />
             </MenuFooterSkeleton>
         );
     }
 
-    if (menu_launcher_items.length === 0 && menuData && !showThemeSwitcher && !showLanguageSwitcher && !showSoundsLevel)
+    if (menu_launcher_items.length === 0 && menuData && !switchers.theme && !switchers.language && !switchers.sounds)
         return null;
 
-    // The badge goes last, after the switchers, as on the site (its `powered_by` item ends the footer's tools).
-    const badges = menu_launcher_items.filter((item): item is FooterMenuItem & { icon: string } => isSvgBadge(item));
+    const badges = menu_launcher_items.filter(isSvgBadge);
     const links = badges.length ? menu_launcher_items.filter((item) => !isSvgBadge(item)) : menu_launcher_items;
-    const showTools = showLanguageSwitcher || showThemeSwitcher || showSoundsLevel || badges.length > 0;
 
     return (
         <View className={cntClasses} role="contentinfo">
-            {links.length > 0 ? (
-                <View className={FOOTER_LINKS_CLASSES}>
-                    {links.map((item, index) => {
-                        if (item.display_type === 'text')
-                            return <FooterTextItem key={item.name || index} item={item} visualProps={visualProps} />;
-
-                        const href = normalizeFooterHref(item.link);
-                        // The page you're on stays in the foreground colour and says so to screen readers.
-                        const isCurrent = !!href && href === pagePath;
-                        return (
-                            <NeoButtonLink
-                                href={href}
-                                key={item.link || index}
-                                label={t(item.title ?? '')}
-                                style={visualProps.style}
-                                controlSize={visualProps.controlSize}
-                                contentInsets={visualProps.contentInsets}
-                                className={visualProps.className}
-                                textClassName={isCurrent ? `${visualProps.textClassName} text-foreground` : visualProps.textClassName}
-                                aria-current={isCurrent ? 'page' : undefined}
-                            />
-                        );
-                    })}
-                </View>
-            ) : null}
-            {showTools ? (
-                <View className={FOOTER_SECTION_CLASSES}>
-                    {showLanguageSwitcher ? <FooterLanguageSwitcher visualProps={visualProps} /> : null}
-                    {showThemeSwitcher ? <FooterThemeSwitcher visualProps={visualProps} /> : null}
-                    {showSoundsLevel ? <FooterSoundsLevel visualProps={visualProps} /> : null}
-                    {badges.map((item, index) => (
-                        <FooterBadgeItem key={item.name || index} item={item} href={normalizeFooterHref(item.link)} visualProps={visualProps} />
-                    ))}
-                </View>
-            ) : null}
+            <FooterLinks links={links} visualProps={visualProps} />
+            <FooterTools switchers={switchers} badges={badges} visualProps={visualProps} />
         </View>
     );
 }

@@ -91,22 +91,8 @@ class BxBaseMenuFooter extends BxTemplMenu
         $bToolsStart = false;
         foreach($aItems as $iKey => $aItem) {
             switch($aItem['name']) {
-                /**
-                 * As in the apps' footer: the language in use by its code ("EN"), named in full ("Language: English");
-                 * its menu opens above it and marks the current one.
-                 */
                 case 'switch_language':
-                    $sLanguage = BxDolLanguages::getInstance()->getCurrentLangName();
-                    $aLanguages = BxDolLanguagesQuery::getInstance()->getLanguages(false, true);
-                    $sLabel = bx_html_attribute(_t('_sys_menu_item_title_switch_language_current', isset($aLanguages[$sLanguage]) ? $aLanguages[$sLanguage] : $sLanguage));
-                    $sTitle = $this->_oTemplate->parseHtmlByName('menu_footer_language.html', [
-                        'code' => bx_process_output($sLanguage)
-                    ]);
-
-                    $aItems[$iKey]['title'] = $sTitle;
-                    $aItems[$iKey]['bx_if:title']['condition'] = true;
-                    $aItems[$iKey]['bx_if:title']['content']['title'] = $sTitle;
-                    $aItems[$iKey]['attrs'] = preg_replace('/ (title|aria-label)="[^"]*"/', '', $aItems[$iKey]['attrs']) . ' title="' . $sLabel . '" aria-label="' . $sLabel . '" aria-haspopup="menu" aria-expanded="false"';
+                    $aItems[$iKey] = $this->_getLanguageItem($aItems[$iKey]);
                     break;
 
                 case 'switch_template':
@@ -140,44 +126,83 @@ class BxBaseMenuFooter extends BxTemplMenu
             if(isset($aItems[$iKey]['class_add']) && strpos($aItems[$iKey]['class_add'], 'bx-menu-tab-active') !== false)
                 $aItems[$iKey]['attrs'] .= ' aria-current="page"';
 
-            $bTitleAttr = isset($aItems[$iKey]['title_attr']);
-            $bTitleAttrImage = isset($aItems[$iKey]['bx_if:image']['content']['title_attr']);
-            if(!$bTitleAttr || !$bTitleAttrImage) {
-                $sTitleAttr = bx_html_attribute(strip_tags($aItems[$iKey]['title']));
-
-                if(!$bTitleAttr)
-                    $aItems[$iKey]['title_attr'] = $sTitleAttr;
-
-                if(!$bTitleAttrImage)
-                    $aItems[$iKey]['bx_if:image']['content']['title_attr'] = $sTitleAttr;
-            }
+            $aItems[$iKey] = $this->_addTitleAttrs($aItems[$iKey]);
 
             if(!$bToolsStart && in_array($aItem['name'], self::TOOLS)) {
-                $aItems[$iKey]['class_add'] = (isset($aItems[$iKey]['class_add']) ? $aItems[$iKey]['class_add'] : '') . ' bx-menu-footer-tools-start';
+                $aItems[$iKey]['class_add'] = ($aItems[$iKey]['class_add'] ?? '') . ' bx-menu-footer-tools-start';
                 $bToolsStart = true;
             }
 
-            /**
-             * An item with neither a link nor a script is text, not a link: the copyright notice, or a line an
-             * admin adds in Navigation. menu_footer.html shows the short form on phones.
-             */
-            $bText = $this->_isTextItem($aItems[$iKey]);
-            $aText = $bText ? $this->_getItemText($aItems[$iKey]) : ['text' => '', 'text_short' => ''];
-
-            $aItems[$iKey]['bx_if:text'] = [
-                'condition' => $bText,
-                'content' => [
-                    'text' => $aText['text'],
-                    'text_short' => $aText['text_short'],
-                ]
-            ];
-            $aItems[$iKey]['bx_if:link'] = [
-                'condition' => !$bText,
-                'content' => $aItems[$iKey]
-            ];
+            $aItems[$iKey] = $this->_addTextOrLink($aItems[$iKey]);
         }
 
         return $aItems;
+    }
+
+    /**
+     * As in the apps' footer: the language in use by its code ("EN"), named in full ("Language: English");
+     * its menu opens above it and marks the current one.
+     */
+    protected function _getLanguageItem ($a)
+    {
+        $sLanguage = BxDolLanguages::getInstance()->getCurrentLangName();
+        $aLanguages = BxDolLanguagesQuery::getInstance()->getLanguages(false, true);
+        $sLabel = bx_html_attribute(_t('_sys_menu_item_title_switch_language_current', $aLanguages[$sLanguage] ?? $sLanguage));
+        $sTitle = $this->_oTemplate->parseHtmlByName('menu_footer_language.html', [
+            'code' => bx_process_output($sLanguage)
+        ]);
+
+        $a['title'] = $sTitle;
+        $a['bx_if:title']['condition'] = true;
+        $a['bx_if:title']['content']['title'] = $sTitle;
+        $a['attrs'] = preg_replace('/ (title|aria-label)="[^"]*"/', '', $a['attrs']) . ' title="' . $sLabel . '" aria-label="' . $sLabel . '" aria-haspopup="menu" aria-expanded="false"';
+
+        return $a;
+    }
+
+    /**
+     * The item's tooltip, on its link and on its image, from its title where it has none of its own.
+     */
+    protected function _addTitleAttrs ($a)
+    {
+        $bTitleAttr = isset($a['title_attr']);
+        $bTitleAttrImage = isset($a['bx_if:image']['content']['title_attr']);
+        if($bTitleAttr && $bTitleAttrImage)
+            return $a;
+
+        $sTitleAttr = bx_html_attribute(strip_tags($a['title']));
+
+        if(!$bTitleAttr)
+            $a['title_attr'] = $sTitleAttr;
+
+        if(!$bTitleAttrImage)
+            $a['bx_if:image']['content']['title_attr'] = $sTitleAttr;
+
+        return $a;
+    }
+
+    /**
+     * An item with neither a link nor a script is text, not a link: the copyright notice, or a line an
+     * admin adds in Navigation. menu_footer.html shows the short form on phones.
+     */
+    protected function _addTextOrLink ($a)
+    {
+        $bText = $this->_isTextItem($a);
+        $aText = $bText ? $this->_getItemText($a) : ['text' => '', 'text_short' => ''];
+
+        $a['bx_if:text'] = [
+            'condition' => $bText,
+            'content' => [
+                'text' => $aText['text'],
+                'text_short' => $aText['text_short'],
+            ]
+        ];
+        $a['bx_if:link'] = [
+            'condition' => !$bText,
+            'content' => $a
+        ];
+
+        return $a;
     }
 
     /**
@@ -268,8 +293,7 @@ class BxBaseMenuFooter extends BxTemplMenu
 
             // The apps show the badge while the site does: switching the item off in Navigation hides it in both.
             case 'powered_by':
-                if($this->_bIsApi)
-                    $bResult = !isset($a['active']) || (int)$a['active'] != 0;
+                $bResult = !$this->_bIsApi || !isset($a['active']) || (int)$a['active'] != 0;
                 break;
 
             case 'switch_template':
