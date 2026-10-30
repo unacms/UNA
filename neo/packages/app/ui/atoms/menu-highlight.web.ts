@@ -28,7 +28,8 @@ export function useMenuHighlight() {
             const surface = item.matches('.group') ? item : (item.querySelector<HTMLElement>(':scope > .group') ?? item);
             const listBox = list.getBoundingClientRect();
             const box = surface.getBoundingClientRect();
-            // The first item it lights fades in where it is, without sliding in from the top of the list.
+            // The first item it lights fades in where it is (`-jump` transitions only the opacity), later ones slide
+            // to theirs.
             const jump = !list.classList.contains('neo-menu-highlight-on');
             list.classList.toggle('neo-menu-highlight-jump', jump);
             list.style.setProperty('--neo-menu-highlight-x', `${box.left - listBox.left - list.clientLeft}px`);
@@ -37,7 +38,8 @@ export function useMenuHighlight() {
             list.style.setProperty('--neo-menu-highlight-h', `${box.height}px`);
             list.style.setProperty('--neo-menu-highlight-r', getComputedStyle(surface).borderRadius);
             if (jump) {
-                void getComputedStyle(list, '::before').transform;
+                // Laid out at its first item before it shows: otherwise the next move, which ends the jump, doesn't slide.
+                list.getBoundingClientRect();
                 list.classList.add('neo-menu-highlight-on');
             }
         };

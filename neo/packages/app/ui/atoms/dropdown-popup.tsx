@@ -31,6 +31,11 @@ const MENU_MOTION_OPEN_CLASS = 'web:duration-250 web:scale-100';
 const MENU_MOTION_ENTER_CLASS = 'web:duration-250 web:scale-97';
 const MENU_MOTION_CLOSE_CLASS = 'web:duration-150 web:scale-99';
 
+function menuMotionClass(measured: boolean, closing: boolean) {
+    if (!measured) return MENU_MOTION_ENTER_CLASS;
+    return closing ? MENU_MOTION_CLOSE_CLASS : MENU_MOTION_OPEN_CLASS;
+}
+
 /**
  * After content was seen loading, wait this long without a height change before showing it.
  * Each registry row has its own Suspense boundary and React reveals sibling boundaries up to
@@ -509,7 +514,7 @@ export default function DropdownPopup({
                 contentClassName,
                 MENU_MOTION_CLASS,
                 buttonPos.shouldOpenAbove ? 'web:origin-bottom-left' : 'web:origin-top-left',
-                !hasMeasured ? MENU_MOTION_ENTER_CLASS : isClosing ? MENU_MOTION_CLOSE_CLASS : MENU_MOTION_OPEN_CLASS
+                menuMotionClass(hasMeasured, isClosing)
             )}
         >
             <ScrollView

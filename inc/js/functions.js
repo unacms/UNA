@@ -2570,8 +2570,8 @@ function bx_menu_highlight(oContext)
     $(oContext).not('.bx-std *').find('.bx-popup ul').filter(function() {
         var oList = $(this);
         return !oList.is('.bx-menu-hor, .bx-menu-custom-hor, .bx-menu-floating-blocks-wide, .bx-menu-highlight-list') && oList.children('li').find('a').length > 1;
-    }).each(function() {
-        var eList = this, oList = $(this).addClass('bx-menu-highlight-list');
+    }).each(function(iIndex, eList) {
+        var oList = $(eList).addClass('bx-menu-highlight-list');
 
         var fItem = function(eTarget) {
             var oItem = $(eTarget).closest(oList.children('li'));
@@ -2581,7 +2581,8 @@ function bx_menu_highlight(oContext)
         var fMove = function(eItem) {
             var oListBox = eList.getBoundingClientRect(), oBox = eItem.getBoundingClientRect();
 
-            // the first item it lights fades in where it is, without sliding in from the top of the list
+            // the first item it lights fades in where it is (.bx-menu-highlight-jump transitions only the opacity), later
+            // ones slide to theirs
             var bJump = !oList.hasClass('bx-menu-highlight-on');
             oList.toggleClass('bx-menu-highlight-jump', bJump);
 
@@ -2591,7 +2592,8 @@ function bx_menu_highlight(oContext)
             eList.style.setProperty('--bx-menu-highlight-h', oBox.height + 'px');
 
             if(bJump) {
-                getComputedStyle(eList, '::before').transform;
+                // laid out at its first item before it shows: otherwise the next move, which ends the jump, doesn't slide
+                eList.getBoundingClientRect();
                 oList.addClass('bx-menu-highlight-on');
             }
         };
