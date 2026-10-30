@@ -24,6 +24,9 @@ class BxGitHubGridAuthorizations extends BxBaseModGeneralGrid
 
     public function setProfileId($iProfileId)
     {
+        if($iProfileId != bx_get_logged_profile_id())
+            return;
+
         $this->_iProfileId = (int)$iProfileId;
         $this->_aQueryAppend['profile_id'] = $this->_iProfileId;
     }
@@ -88,6 +91,9 @@ class BxGitHubGridAuthorizations extends BxBaseModGeneralGrid
 
     protected function _getDataSql($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage)
     {
+        if(!$this->_iProfileId)
+            return false;
+
         $this->_aOptions['source'] .= $this->_oModule->_oDb->prepareAsString(' AND `tan`.`profile_id`=?', $this->_iProfileId);
 
         return parent::_getDataSql($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage);
