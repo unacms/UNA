@@ -1,17 +1,64 @@
 import { View } from 'app/design/view'
 import { appSetting, cn, menuItemsByName, menuItemsByNameNew } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
-import { useMemo, memo } from 'react';
+import { useMemo, memo, type ComponentProps, type ReactNode } from 'react';
 import { NeoButtonLink } from 'app/design/controls'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import { useCurrentUserNoCounters } from 'app/context/user';
 import { useMenuData } from 'app/context/menu-data';
 import { useLayoutSettings } from 'app/context/layout-settings';
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import DropdownMenu, { type DropdownMenuItemData } from 'app/ui/atoms/dropdown-menu';
 import { localeIconName } from 'app/ui/atoms/tag-glyph-icons';
 import { SOUND_LEVEL_ITEMS, useSoundsLevel } from 'app/lib/hooks/use-sounds-level';
 import { useScreenPagePath } from 'app/lib/navigation/screen-page-path';
+
+/** A footer item as UNA sends it (BxBaseMenuFooter::_getMenuItemAPI), or as a caller passes it in `menu_items`. */
+type FooterMenuItem = {
+    name?: string;
+    title?: string;
+    /** The accessible name of an item without a title (the Powered by badge). */
+    title_attr?: string;
+    link?: string;
+    /** Icon name, or raw SVG (the badge). */
+    icon?: string;
+    /** `text`: a line, not a link (the copyright notice). */
+    display_type?: string;
+    text?: string;
+    /** The text on phones. */
+    text_short?: string;
+};
+
+/** The look every footer control takes (MenuFooterComponent). */
+type FooterVisualProps = {
+    style: string;
+    controlSize: string;
+    className: string;
+    textClassName: string;
+    contentInsets?: { x: number };
+};
+
+/** The legacy `btnStyle` prop: a button look, or ButtonLink's variant and size. */
+type FooterButtonStyle = {
+    style?: string;
+    controlSize?: string;
+    variant?: string;
+    size?: string;
+    containerClassName?: string;
+    textClassName?: string;
+    className?: string;
+};
+
+type MenuFooterProps = {
+    cntClasses?: string;
+    btnStyle?: FooterButtonStyle;
+    menu_items?: FooterMenuItem[];
+    variant?: string;
+    size?: string;
+    itemClassName?: string;
+};
+
+type FooterControlProps = { visualProps: FooterVisualProps };
 
 // Two sections, links and switchers, in one row that wraps: side by side while they fit (apart from
 // lg), each on its own centred line when they don't.
@@ -33,7 +80,7 @@ const FOOTER_THEME_ITEMS = [
     { id: 'dark', titleKey: 'theme_footer_dark', labelKey: 'theme_level_dark', icon: 'Moon' },
 ];
 
-const linkVariantToNeoStyle = {
+const linkVariantToNeoStyle: Record<string, string> = {
     default: 'plain',
     secondary: 'borderless',
     accent: 'link',
@@ -42,7 +89,7 @@ const linkVariantToNeoStyle = {
     link: 'link',
 };
 
-const linkSizeToNeoControlSize = {
+const linkSizeToNeoControlSize: Record<string, string> = {
     xs: 'mini',
     sm: 'small',
     md: 'regular',
@@ -50,7 +97,7 @@ const linkSizeToNeoControlSize = {
     lg: 'large',
 };
 
-const normalizeFooterHref = (href = '') => {
+const normalizeFooterHref = (href: unknown = '') => {
     const value = typeof href === 'string' ? href.trim() : '';
     if (!value) return '';
     if (
@@ -64,7 +111,7 @@ const normalizeFooterHref = (href = '') => {
     return `/${value}`;
 };
 
-const resolveFooterLang = (langs, lang, langCode) => {
+const resolveFooterLang = (langs: string[], lang?: string | null, langCode?: string | null) => {
     if (lang && langs.includes(lang)) return lang;
     if (langCode && langs.includes(langCode)) return langCode;
     return langs[0] || '';
@@ -72,7 +119,7 @@ const resolveFooterLang = (langs, lang, langCode) => {
 
 const menuFooterSkeletonWidths = ['w-12', 'w-12', 'w-12', 'w-12', 'w-12'];
 
-function MenuFooterSkeleton({ cntClasses, children, role }) {
+function MenuFooterSkeleton({ cntClasses, children, role }: { cntClasses: string; children?: ReactNode; role: ComponentProps<typeof View>['role'] }) {
     return (
         <View className={cntClasses} role={role}>
             <View className={FOOTER_LINKS_CLASSES}>
@@ -91,7 +138,7 @@ function MenuFooterSkeleton({ cntClasses, children, role }) {
 // A line UNA sends as text, not a link (BxBaseMenuFooter::_getMenuItemAPI: the copyright notice, or a text item
 // added in Navigation). The short form on phones, the full one from tablet width, in the links' size and colour; it
 // sits in a 28px row like the links but doesn't react to the pointer.
-function FooterTextItem({ item, visualProps }) {
+function FooterTextItem({ item, visualProps }: FooterControlProps & { item: FooterMenuItem }) {
     const text = item.text || item.title;
     const short = item.text_short || text;
     const textClassName = cn('text-secondary-foreground', visualProps.textClassName);
@@ -110,12 +157,12 @@ function FooterTextItem({ item, visualProps }) {
     );
 }
 
-function FooterThemeSwitcher({ visualProps }) {
+function FooterThemeSwitcher({ visualProps }: FooterControlProps) {
     const { t } = useTranslation();
     const { themeName, setThemeName } = useLayoutSettings();
     const currentThemeName = themeName || 'auto';
 
-    const items = useMemo(() => (
+    const items = useMemo((): DropdownMenuItemData[] => (
         FOOTER_THEME_ITEMS.map((theme) => ({
             key: theme.id,
             id: theme.id,
@@ -125,7 +172,7 @@ function FooterThemeSwitcher({ visualProps }) {
             selected: currentThemeName === theme.id,
         }))
     ), [currentThemeName, t]);
-    const currentThemeItem = FOOTER_THEME_ITEMS.find((theme) => theme.id === currentThemeName) ?? FOOTER_THEME_ITEMS[0];
+    const currentThemeItem = FOOTER_THEME_ITEMS.find((theme) => theme.id === currentThemeName) ?? FOOTER_THEME_ITEMS[0]!;
     const themeLabel = t(currentThemeItem.labelKey);
 
     // Icon only: the icon shows the current theme, and the menu names each one.
@@ -146,12 +193,12 @@ function FooterThemeSwitcher({ visualProps }) {
     );
 }
 
-function FooterSoundsLevel({ visualProps }) {
+function FooterSoundsLevel({ visualProps }: FooterControlProps) {
     const { t } = useTranslation();
     const { level, setLevel } = useSoundsLevel();
 
     // The chosen level answers itself (`setLevel` plays it at the new level), so its option makes no sound of its own.
-    const items = SOUND_LEVEL_ITEMS.map((option) => ({
+    const items: DropdownMenuItemData[] = SOUND_LEVEL_ITEMS.map((option) => ({
         key: option.id,
         id: option.id,
         name: option.id,
@@ -160,14 +207,17 @@ function FooterSoundsLevel({ visualProps }) {
         selected: level === option.id,
         sound: false,
     }));
-    const current = SOUND_LEVEL_ITEMS.find((option) => option.id === level) ?? SOUND_LEVEL_ITEMS[0];
+    const current = SOUND_LEVEL_ITEMS.find((option) => option.id === level) ?? SOUND_LEVEL_ITEMS[0]!;
     const label = t(current.labelKey);
 
     // Icon only, like the theme switcher: the icon shows the level, and the menu names each one.
     return (
         <DropdownMenu
             items={items}
-            onSelect={(item) => setLevel(item.id)}
+            onSelect={(item) => {
+                const next = SOUND_LEVEL_ITEMS.find((option) => option.id === item.id);
+                if (next) setLevel(next.id);
+            }}
             buttonProps={{
                 image: current.icon,
                 accessibilityLabel: label,
@@ -184,13 +234,13 @@ function FooterSoundsLevel({ visualProps }) {
 // UNA's Powered by badge: the item's own SVG (Navigation keeps it editable), 24px tall as on the site, in
 // the links' colour (`currentColor`), foreground on hover.
 const BADGE_HEIGHT = 24;
-const isSvgBadge = (item) => typeof item.icon === 'string' && item.icon.startsWith('<svg') && !item.title;
-const badgeWidth = (svg) => {
-    const viewBox = /viewBox="\s*[\d.-]+\s+[\d.-]+\s+([\d.]+)\s+([\d.]+)\s*"/i.exec(svg);
-    return viewBox && +viewBox[2] ? Math.round((BADGE_HEIGHT * +viewBox[1]) / +viewBox[2]) : BADGE_HEIGHT;
+const isSvgBadge = (item: FooterMenuItem) => typeof item.icon === 'string' && item.icon.startsWith('<svg') && !item.title;
+const badgeWidth = (svg: string) => {
+    const [, width, height] = /viewBox="\s*[\d.-]+\s+[\d.-]+\s+([\d.]+)\s+([\d.]+)\s*"/i.exec(svg) ?? [];
+    return width && height && +height ? Math.round((BADGE_HEIGHT * +width) / +height) : BADGE_HEIGHT;
 };
 
-function FooterBadgeItem({ item, href, visualProps }) {
+function FooterBadgeItem({ item, href, visualProps }: FooterControlProps & { item: FooterMenuItem & { icon: string }; href: string }) {
     return (
         <NeoButtonLink
             href={href}
@@ -211,18 +261,18 @@ function FooterBadgeItem({ item, href, visualProps }) {
     );
 }
 
-function FooterLanguageSwitcher({ visualProps }) {
+function FooterLanguageSwitcher({ visualProps }: FooterControlProps) {
     const { t } = useTranslation();
     const { lang, langCode, autoLangCode, setLang } = useLayoutSettings();
     const configuredLangs = appSetting('layout', AVAILABLE_LANGS_SETTING_KEY);
-    const langs = Array.isArray(configuredLangs) ? configuredLangs : [];
+    const langs = useMemo((): string[] => (Array.isArray(configuredLangs) ? configuredLangs : []), [configuredLangs]);
     // The chosen option ('auto' for System), and the language actually in use (langCode), which the
     // trigger shows. The System option always names the device's language (autoLangCode), even while
     // another language is chosen, because that is what choosing it switches to.
     const currentLang = resolveFooterLang(langs, lang, langCode);
     const activeLang = currentLang === 'auto' ? langCode : currentLang;
 
-    const items = useMemo(() => (
+    const items = useMemo((): DropdownMenuItemData[] => (
         langs.map((language) => ({
             key: language,
             id: language,
@@ -265,7 +315,7 @@ function MenuFooterComponent({
     variant,
     size,
     itemClassName,
-}) {
+}: MenuFooterProps) {
 
     const { t } = useTranslation();
     const currentUser = useCurrentUserNoCounters();
@@ -280,8 +330,8 @@ function MenuFooterComponent({
         (menu_items || !hydrated) ? null : appSetting('menu_items', 'objects', 'footer')
     );
 
-    const visualProps = useMemo(() => {
-        const legacy = btnStyle || {};
+    const visualProps = useMemo((): FooterVisualProps => {
+        const legacy: FooterButtonStyle = btnStyle || {};
         const legacyVariant = variant ?? legacy.variant;
         const legacySize = size ?? legacy.size;
         const style = legacy.style ?? (legacyVariant ? linkVariantToNeoStyle[legacyVariant] ?? 'link' : FOOTER_TEXT_STYLE.style);
@@ -297,7 +347,7 @@ function MenuFooterComponent({
     const pagePath = useScreenPagePath();
   
     
-    const menu_launcher_items = useMemo(() => (
+    const menu_launcher_items = useMemo((): FooterMenuItem[] => (
         menu_items || (usesRemoteFooter
             ? menuItemsByNameNew('menu_post', menuData, currentUser)
             : menuItemsByName('', appSetting('menu_items', 'menu_footer'), currentUser))
@@ -317,7 +367,7 @@ function MenuFooterComponent({
         return null;
 
     // The badge goes last, after the switchers, as on the site (its `powered_by` item ends the footer's tools).
-    const badges = menu_launcher_items.filter(isSvgBadge);
+    const badges = menu_launcher_items.filter((item): item is FooterMenuItem & { icon: string } => isSvgBadge(item));
     const links = badges.length ? menu_launcher_items.filter((item) => !isSvgBadge(item)) : menu_launcher_items;
     const showTools = showLanguageSwitcher || showThemeSwitcher || showSoundsLevel || badges.length > 0;
 
@@ -336,7 +386,7 @@ function MenuFooterComponent({
                             <NeoButtonLink
                                 href={href}
                                 key={item.link || index}
-                                label={t(item.title)}
+                                label={t(item.title ?? '')}
                                 style={visualProps.style}
                                 controlSize={visualProps.controlSize}
                                 contentInsets={visualProps.contentInsets}

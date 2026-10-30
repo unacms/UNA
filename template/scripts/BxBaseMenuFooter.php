@@ -99,7 +99,9 @@ class BxBaseMenuFooter extends BxTemplMenu
                     $sLanguage = BxDolLanguages::getInstance()->getCurrentLangName();
                     $aLanguages = BxDolLanguagesQuery::getInstance()->getLanguages(false, true);
                     $sLabel = bx_html_attribute(_t('_sys_menu_item_title_switch_language_current', isset($aLanguages[$sLanguage]) ? $aLanguages[$sLanguage] : $sLanguage));
-                    $sTitle = '<span class="bx-menu-footer-lang" aria-hidden="true">' . bx_process_output($sLanguage) . '</span>';
+                    $sTitle = $this->_oTemplate->parseHtmlByName('menu_footer_language.html', [
+                        'code' => bx_process_output($sLanguage)
+                    ]);
 
                     $aItems[$iKey]['title'] = $sTitle;
                     $aItems[$iKey]['bx_if:title']['condition'] = true;
