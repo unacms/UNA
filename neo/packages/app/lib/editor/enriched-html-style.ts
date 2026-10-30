@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { Platform } from 'react-native'
 import type { HtmlStyle } from 'react-native-enriched-html'
 import { useCSSVariable } from 'uniwind'
 import { appSetting } from 'app/lib/util'
@@ -12,6 +13,16 @@ const HEADINGS = {
     base: [36, 24, 20, 18, 16, 14],
     small: [30, 22, 18, 16, 14, 12],
 }
+
+/**
+ * List indents that start the text 24px in, as on web (`pl-6`), with a 6px bullet
+ * ending 6px before the text. The renderer lays lists out differently per platform:
+ * iOS puts the text at margin + gap and the marker's right edge at the margin;
+ * Android puts it at margin + bullet + gap (numbers at margin + gap, centred on the margin).
+ */
+const LIST_INDENT = Platform.OS === 'android'
+    ? { ul: { marginLeft: 12, gapWidth: 6 }, ol: { marginLeft: 12, gapWidth: 12 } }
+    : { ul: { marginLeft: 18, gapWidth: 6 }, ol: { marginLeft: 18, gapWidth: 6 } }
 
 /**
  * Colours of `.u-vanilla-html` from the theme tokens, with the stock palette's values
@@ -57,10 +68,8 @@ export function useEnrichedHtmlStyle({ small = false }: { small?: boolean } = {}
             // so colour alone doesn't mark them (WCAG 1.4.1). Mentions and tags aren't.
             a: { color, textDecorationLine: 'underline' },
             mention: { '@': mention, '#': mention },
-            // Text starts 24px in, as on web (`pl-6`): margin + bullet + gap, and for
-            // numbers margin (the marker's centre) + gap.
-            ul: { bulletColor: colors.text, bulletSize: 6, marginLeft: 12, gapWidth: 6 },
-            ol: { markerColor: colors.text, marginLeft: 12, gapWidth: 12 },
+            ul: { bulletColor: colors.text, bulletSize: 6, ...LIST_INDENT.ul },
+            ol: { markerColor: colors.text, ...LIST_INDENT.ol },
             blockquote: { borderColor: colors.border, borderWidth: 4, gapWidth: 16, color: colors.text },
             code: { color: colors.text, backgroundColor: colors.code },
             codeblock: { color: colors.text, backgroundColor: colors.code, borderRadius: 8 },

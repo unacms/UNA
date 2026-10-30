@@ -55,6 +55,8 @@ export default function ElementHtml({ customClassName, data, innerRef, preproces
 
     return (
         <View className={`max-w-full ${customClassName || ''}`} ref={innerRef}>
+            {/* EnrichedText's display view doesn't apply lineHeight yet (only the input does), so
+                text uses the font's own spacing; the value matches web for when it does. */}
             <EnrichedText
                 selectable
                 style={{ color: textColor, fontFamily: FONT_FAMILY, fontSize: isSmall ? 14 : 16, lineHeight: isSmall ? 20 : 24 }}
