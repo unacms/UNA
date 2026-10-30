@@ -5,7 +5,7 @@ import { appSetting, isAndroid, isIos, isNativeTabsEnabled } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher';
 import { Appearance, BackHandler, Text } from 'react-native';
 import { getWindowSafeAreaInsets } from 'app/lib/hooks/router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { scheduleOneSignalSubscription } from 'app/lib/platform/one-signal';
 import Suggestions from 'app/ui/molecules/misc/suggestions';
 import AsyncWorker from 'app/ui/molecules/system/async-worker';
@@ -33,7 +33,8 @@ import {
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
 import { subscribeDeepLink, takeDeepLink } from 'app/lib/navigation/deep-link';
 import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet-content';
-import { buildTabUrlIndex, getTabList, getTabRouteRootUrl, getTabsSessionKey, splitTabBarItems } from './tab-menu';
+import { buildTabUrlIndex, getTabRouteRootUrl, getTabsSessionKey, splitTabBarItems } from './tab-menu';
+import { useTabList } from 'app/lib/navigation/tab-bar-menu';
 
 function getTabNavigator() {
     return isNativeTabsEnabled()
@@ -118,10 +119,7 @@ export default function Tabs() {
     const pathname = usePathname();
     const { colors } = useTheme();
     const isShowTabs = (currentUser && currentUser.confirmed) || appSetting('native', 'show_tabs_non_logged')
-    const TabList = useMemo(
-        () => getTabList(currentUser),
-        [currentUser?.id]
-    );
+    const { tabList: TabList, ready: tabListReady } = useTabList(currentUser);
 
     const tabsSessionKey = getTabsSessionKey(currentUser);
 
@@ -259,7 +257,8 @@ export default function Tabs() {
             : <Text>OfflineScreen</Text>;
     }
 
-    if (!fontsReady || currentUser === null) {
+    // The tabs open with the list they keep for the session (lib/navigation/tab-bar-menu).
+    if (!fontsReady || currentUser === null || !tabListReady) {
         return null;
     }
 
