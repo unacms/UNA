@@ -427,7 +427,7 @@ export const settingsButtons = {
                 // iOS 26 draws real liquid glass behind the segments instead
                 // (`liquidContainer` replaces `container` there).
                 glass: {
-                    container: 'web:backdrop-blur-md bg-popover/80 shadow-btn-glass dark:shadow-btn-glass-deep',
+                    container: 'web:backdrop-blur-md web:backdrop-saturate-150 bg-popover/80 web:bg-white/30 web:dark:bg-white/12 shadow-btn-glass dark:shadow-btn-glass-deep',
                     liquidContainer: '',
                     separator: 'bg-foreground/10',
                     segment: {
@@ -635,22 +635,25 @@ export const settingsButtons = {
             },
 
             // SwiftUI .glass (iOS 26+). Web fallback uses backdrop-blur.
-            // shadow-btn-glass carries border + inner highlight + wide soft
-            // ambient drop. shadow-btn-glass-pressed shrinks the drop.
+            // shadow-btn-glass draws the iOS glass edge: a hairline ring, darker
+            // at the sides, with bright crescents along the top and bottom rims.
+            // Web fills are translucent white, as on iOS, so the blurred backdrop
+            // shows through; a press brightens the fill and keeps the edge.
             glass: {
                 container: {
-                    base: 'web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep',
-                    default: ' bg-popover/80 ',
-                    hovered: ' bg-muted/50 ',
-                    focused: ' bg-popover/80',
-                    pressed:  'bg-muted shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
-                    active: 'bg-muted/50 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    base: 'web:backdrop-blur-md web:backdrop-saturate-150 shadow-btn-glass dark:shadow-btn-glass-deep',
+                    default: 'bg-popover/80 web:bg-white/30 web:dark:bg-white/12',
+                    hovered: 'bg-muted/50 web:bg-white/40 web:dark:bg-white/16',
+                    focused: 'bg-popover/80 web:bg-white/30 web:dark:bg-white/12',
+                    pressed: 'bg-muted web:bg-white/55 web:dark:bg-white/20',
+                    active: 'bg-muted/50 web:bg-white/40 web:dark:bg-white/16',
                     pressedToggle: 'bg-accent shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
                     disabled: 'bg-muted/50',
                 },
                 text: {
                     base: 'font-medium',
-                    default: 'text-card-foreground',
+                    // Native glass draws its label black / white: the foreground, not card text.
+                    default: 'text-foreground',
                     hovered: 'text-foreground',
                     focused: 'text-foreground',
                     pressed: 'text-foreground',
