@@ -2601,7 +2601,7 @@ function bx_menu_highlight(oContext)
         };
 
         oList.on('pointerover', function(oEvent) {
-            if(oEvent.originalEvent && oEvent.originalEvent.pointerType === 'touch')
+            if(oEvent.originalEvent?.pointerType === 'touch')
                 return;
 
             var eItem = fItem(oEvent.target);
