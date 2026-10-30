@@ -273,7 +273,7 @@ export const settingsMenus = {
          * Header toolbar (mobile web): popup links, same row pattern as navbar dropdown.
          * Guests only, so like the guest tabs it links only to system pages.
          */
-        // Unset, the links come from UNA's footer menu (`objects.footer`). Uncomment to pin them.
+        // Unset, the links come from UNA's site menu (`objects.site`), as on the desktop navbar. Uncomment to pin them.
         // menu_navigation: [
         //     {
         //         name: 'about',
