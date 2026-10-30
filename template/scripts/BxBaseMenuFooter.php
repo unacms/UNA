@@ -205,7 +205,13 @@ class BxBaseMenuFooter extends BxTemplMenu
 
     protected function _isTextItem ($a)
     {
-        return trim(isset($a['link']) ? (string)$a['link'] : '') === '' && trim(isset($a['onclick']) ? (string)$a['onclick'] : '') === '';
+        $sOnclick = trim(isset($a['onclick']) ? (string)$a['onclick'] : '');
+
+        // A site that still has the old Copyright row (a link to the popup, on_copyright_click) shows it as text too.
+        if(isset($a['name']) && $a['name'] == 'copyright' && $sOnclick == 'on_copyright_click()')
+            return true;
+
+        return trim(isset($a['link']) ? (string)$a['link'] : '') === '' && $sOnclick === '';
     }
 
     /**

@@ -103,6 +103,22 @@ class BxBaseMenuFooterTest extends BxDolTestCase
         $this->assertStringNotContainsString('&', $aItem['text'], 'The apps get plain text, not HTML.');
     }
 
+    public function testOldCopyrightRowIsTextToo(): void
+    {
+        // A site that hasn't run the migration still has the link to the popup; the apps get the notice as text.
+        $oFooter = $this->footer();
+        $aOld = ['id' => 1, 'name' => 'copyright', 'title' => '_sys_menu_item_title_copyright', 'link' => 'javascript:void(0)', 'onclick' => 'on_copyright_click()'];
+
+        $this->assertTrue($this->callProtected($oFooter, '_isTextItem', [$aOld]));
+
+        $aItem = $this->callProtected($oFooter, '_getMenuItemAPI', [$aOld]);
+        $this->assertSame('text', $aItem['display_type']);
+        $this->assertSame('', $aItem['link']);
+        $this->assertSame(html_entity_decode(strip_tags($oFooter->getCopyright()), ENT_QUOTES | ENT_HTML5, 'UTF-8'), $aItem['text']);
+
+        $this->assertFalse($this->callProtected($oFooter, '_isTextItem', [['name' => 'about', 'link' => 'javascript:void(0)', 'onclick' => 'on_copyright_click()']]), 'Only the Copyright item.');
+    }
+
     public function testToolsStartOnTheRight(): void
     {
         $aStarts = [];
