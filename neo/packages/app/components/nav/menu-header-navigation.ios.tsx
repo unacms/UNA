@@ -58,7 +58,13 @@ export default function MenuHeaderNavigation({
     return (
         <>
             <Redirect ref={redirectRef} />
-            <Host matchContents style={{ width: BUTTON_PT, height: BUTTON_PT }}>
+            <Host
+                matchContents
+                // Like NeoButton's Host. The header slides up under the status bar on scroll; with the safe
+                // area applied, SwiftUI insets the menu down there and keeps that inset after a tab switch.
+                ignoreSafeArea="all"
+                style={{ width: BUTTON_PT, height: BUTTON_PT }}
+            >
                 <Menu
                     label={<TriggerLabel icon={image ?? startDecorator} label={label} />}
                     modifiers={[
