@@ -27,13 +27,16 @@ const LIST_INDENT = Platform.OS === 'android'
 /**
  * Colours of `.u-vanilla-html` from the theme tokens, with the stock palette's values
  * as fallbacks: body text (`--secondary-foreground`), links (`--accent-foreground`),
- * and rules such as the quote bar (`--border`).
+ * rules such as the quote bar (`--border`) and the fill behind code (`--color-code`).
+ * Tailwind declares an `@theme inline` token only where a scanned file names it, so
+ * these names stay written out in full.
  */
 export function useRichTextColors() {
-    const [text, link, border] = useCSSVariable([
+    const [text, link, border, code] = useCSSVariable([
         '--color-secondary-foreground',
         '--color-accent-foreground',
         '--color-border',
+        '--color-code',
     ])
     const fallback = useThemeValue(
         { text: 'rgb(82, 82, 91)', link: 'rgb(29, 78, 216)', border: 'rgb(212, 212, 216)', code: 'rgba(10, 10, 12, 0.07)' },
@@ -43,7 +46,7 @@ export function useRichTextColors() {
         text: (text as string) || fallback.text,
         link: (link as string) || fallback.link,
         border: (border as string) || fallback.border,
-        code: fallback.code,
+        code: (code as string) || fallback.code,
     }
 }
 
