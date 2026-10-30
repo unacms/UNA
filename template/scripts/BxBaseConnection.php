@@ -297,6 +297,7 @@ class BxBaseConnection extends BxDolConnection
                     'bx_repeat:attrs' => [
                         ['key' => 'id', 'value' => $sHtmlIdCounter],
                         ['key' => 'href', 'value' => 'javascript:void(0)'],
+                        ['key' => 'role', 'value' => 'button'],
                         ['key' => 'onclick', 'value' => 'javascript:' . $sJsObject . '.toggleByPopup(this)'],
                         ['key' => 'title', 'value' => _t('_sys_conn_do_by')]
                     ],

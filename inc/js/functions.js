@@ -2136,6 +2136,25 @@ $(document).ready(function() {
         $('[data-bx-sounds-switch]').closest('li').hide();
 });
 
+/**
+ * Links that only run a script carry role="button" (BxBaseMenu::_getMenuAttrs, BxDolTemplate::parseLink and the
+ * action counters). Like a real button they answer the Space key too: on release, and the press doesn't scroll.
+ * Templates that draw one with its own onclick call this from onkeydown/onkeyup; the rest get it delegated below.
+ */
+function bx_button_key(oEvent, eButton)
+{
+    if(oEvent.key != ' ')
+        return;
+
+    oEvent.preventDefault();
+    if(oEvent.type == 'keyup')
+        eButton.click();
+}
+
+$(document).on('keydown keyup', 'a[role="button"]:not([onkeyup])', function(oEvent) {
+    bx_button_key(oEvent, this);
+});
+
 function bx_is_mouse()
 {
     return matchMedia('(pointer:fine)').matches;

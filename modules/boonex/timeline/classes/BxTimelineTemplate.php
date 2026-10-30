@@ -1539,6 +1539,7 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
                 ['key' => 'id', 'value' => $this->_oConfig->getHtmlIds('repost', 'counter') . $aEvent['id']],
                 ['key' => 'title', 'value' => _t('_bx_timeline_txt_reposted_by')],
                 ['key' => 'href', 'value' => 'javascript:void(0)'],
+                ['key' => 'role', 'value' => 'button'],
                 ['key' => 'onclick', 'value' => 'javascript:' . $sJsObject . '.toggleByPopup(this, ' . $aEvent['id'] . ')']
             ],
             'content' => !empty($aEvent['reposts']) && (int)$aEvent['reposts'] > 0 ? $this->getRepostCounterLabel($aEvent['reposts'], $aParams) : '',
