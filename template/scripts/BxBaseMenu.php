@@ -798,7 +798,8 @@ class BxBaseMenu extends BxDolMenu
                         'onclick' => 'bx_menu_show_more_less(this, \'' . $this->_sObject . '\', \'.bx-menu-object-' . $this->_sObject . '\')',
                     ]
                 ],
-                'attrs' => '',
+                // A toggle, not a link (see _getMenuAttrs): this item is built here and skips it.
+                'attrs' => ' role="button"',
                 'bx_if:image' => [
                     'condition' => false,
                     'content' => ['icon_url' => ''],
