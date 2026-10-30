@@ -3,15 +3,25 @@ import { View } from 'app/design/view'
 import { useCurrentUser } from 'app/context/user'
 import { stripTags } from 'app/lib/util';
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { NeoButtonLink } from 'app/design/controls'
 
-const HIDDEN_IDS = new Set(['sys-account-unconfirmed-email', 'sys-switch-profile-context', 'sys-account-profile-system']);
+// Shown in their own place: the confirm-email screen and the context switcher.
+const HIDDEN_IDS = new Set(['sys-account-unconfirmed-email', 'sys-switch-profile-context']);
+// "Your account doesn't have a profile yet": shown, with its Create profile action, unless the site requires a
+// profile, when every page is profile creation already (`profile_required`, components/layouts.js).
+const PROFILE_MESSAGE_ID = 'sys-account-profile-system';
 
 /** One UNA informer message (BxDolInformer). */
 export interface InformerItem {
     id?: string;
     msg?: string;
-    type?: string;
+    type?: string | number;
+    /** The message's action: a page UNA names relative to the site (`account-profile-switcher`). */
+    action_url?: string;
+    action_title?: string;
 }
+
+const actionHref = (url: string) => (/^(https?:)?\/\//i.test(url) || url.startsWith('/') ? url : `/${url}`);
 
 interface ElementInformerProps {
     data?: InformerItem[];
@@ -25,16 +35,21 @@ export default function ElementInformer({ data, blockWrapperProps }: ElementInfo
     const inline = Array.isArray(data);
 
     const source: InformerItem[] | undefined = inline ? data : (currentUser ? currentUser.informer : undefined);
-    const items = (source || []).filter((item) => item?.msg && !HIDDEN_IDS.has(item.id ?? ''));
+    const items = (source || []).filter((item) => (
+        item?.msg && !HIDDEN_IDS.has(item.id ?? '') && !(item.id === PROFILE_MESSAGE_ID && currentUser && currentUser.profile_required)
+    ));
     if (!items.length)
         return null
 
     const list = items.map((item, index) => (
         <View
             key={item.id || 'informer' + index}
-            className={`${inline ? 'w-full' : 'max-w-screen-lg w-full mx-auto'} bg-accent p-3 rounded-lg items-center`}
+            className={`${inline ? 'w-full' : 'max-w-screen-lg w-full mx-auto'} bg-accent p-3 rounded-lg items-center gap-2 sm:flex-row sm:justify-center`}
         >
-            <Text className="text-accent-foreground text-center">{stripTags(item.msg)}</Text>
+            <Text className="text-accent-foreground text-center">{stripTags(item.msg ?? '')}</Text>
+            {item.action_url && item.action_title ? (
+                <NeoButtonLink href={actionHref(item.action_url)} label={item.action_title} style="borderedProminent" controlSize="small" />
+            ) : null}
         </View>
     ));
 
