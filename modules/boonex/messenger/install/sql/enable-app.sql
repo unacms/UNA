@@ -8,6 +8,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_messenger_main' 
 
 -- MENUS: active_api
 
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='bx_messenger' AND `name`='notifications-messenger';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_messenger_nav_menu' AND `module`='bx_messenger' AND `name`='saved';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_messenger_nav_menu' AND `module`='bx_messenger' AND `name`='reply';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_messenger_nav_menu' AND `module`='bx_messenger' AND `name`='threads';

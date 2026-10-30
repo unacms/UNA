@@ -4,9 +4,9 @@ import { useCurrentUser } from 'app/context/user'
 import { appSetting, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
 import Search from 'app/ui/molecules/sections/search'
 import NotificationButton from 'app/ui/molecules/misc/notif'
-import MenuAdd from 'app/components/nav/menu-add'
+import MenuAdd, { useMenuAddItems } from 'app/components/nav/menu-add'
 import MenuAccount from 'app/components/nav/menu-account'
-import MenuLauncher from 'app/components/nav/menu-launcher'
+import MenuLauncher, { useMenuLauncherItems } from 'app/components/nav/menu-launcher'
 import MenuHeaderNavigation from 'app/components/nav/menu-header-navigation'
 import { OperatorAgentHeaderButton } from 'app/ui/molecules/system/operator-agent'
 import { useIsDesktop } from 'app/context/measure';
@@ -24,24 +24,56 @@ export default function HeaderElement({ url, uri }) {
     const isWeb = Platform.OS == 'web'
     const toolbarNeoButtonDefaults = getHeaderToolbarNeoButtonDefaults(isDesktop);
     const toolbarConfig = appSetting('header_toolbar', 'hor')
-    const itemsToRender = currentUser
+    const itemsToRender = (currentUser
         ? toolbarConfig?.loggedIn
-        : toolbarConfig?.loggedOut
+        : toolbarConfig?.loggedOut) || []
+    const has = (component) => itemsToRender.some(item => item.component === component)
+
+    // Notifications and Messages show while UNA's member toolbar has them for this viewer (`toolbar`, the names
+    // of its items), so a site without the module has no button. Without the list (an older UNA) they show.
+    const unaToolbar = currentUser?.toolbar
+    const inUnaToolbar = (name) => !Array.isArray(unaToolbar) || unaToolbar.includes(name)
+    const addMenu = useMenuAddItems(has('add'))
+    const launcherMenu = useMenuLauncherItems(has('launcher'))
+
+    // A tool with nothing to show gets no slot: an empty one would still take the row's gap.
+    const isShown = (item) => {
+        switch (item.component) {
+            case "search":
+                return bSearch
+            case "launcher":
+                return !launcherMenu.empty
+            case "add":
+                return !addMenu.empty
+            case "notifications":
+                return bNotifs && inUnaToolbar('notifications-preview')
+            case "link":
+                return item.href !== '{messenger}' || inUnaToolbar('notifications-messenger')
+            case "account":
+            case "menu_navigation":
+                return true
+            default:
+                return false
+        }
+    }
+    const shownItems = itemsToRender
+        .map((item, index) => ({ item, index }))
+        .filter(({ item }) => (isWeb ? item.web != false : item.native != false) && isShown(item))
 
     return (
         <Row className="justify-end gap-3 items-center">
-            {itemsToRender?.filter(item => (isWeb ? item.web != false : item.native != false)).map((item, index) => (
+            {shownItems.map(({ item, index }) => (
                 <View key={index} className={item.className}>
                     {(() => {
                         switch (item.component) {
                             case "search":
-                                return bSearch ? <Search /> : null
+                                return <Search />
                             case "launcher":
                                 return <MenuLauncher buttonProps={item.props} />
                             case "add":
                                 return <MenuAdd buttonProps={item.props} />
                             case "notifications":
-                                return bNotifs ? <NotificationButton uri={uri} buttonProps={item.props} /> : null
+                                return <NotificationButton uri={uri} buttonProps={item.props} />
                             case "account":
                                 return (
                                     <Row className="items-center gap-3">

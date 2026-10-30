@@ -12,20 +12,27 @@ import { useTranslation } from 'react-i18next';
 import { useIsDesktop } from 'app/context/measure';
 import { useMenuData } from 'app/context/menu-data';
 
+/**
+ * The apps menu's items, and whether it has nothing to show (off in the settings, or UNA's menu is empty), when the
+ * header leaves no slot for it. `load` false skips loading the menu.
+ */
+export function useMenuLauncherItems(load = true) {
+    const bApps = appSetting('layout', 'apps');
+    const { currentUser } = useCurrentUser();
+    const { menuData } = useMenuData(load ? appSetting('menu_items', 'objects', 'launcher') : null);
+
+    const items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', menuData, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_launcher'), currentUser);
+
+    return { items, empty: !bApps || (items.length == 0 && !!menuData) };
+}
+
 export default function MenuLauncher({ buttonProps }) {
     const bApps = appSetting('layout', 'apps');
-
     const isDesktop = useIsDesktop();
-    const { menuData } = useMenuData(appSetting('menu_items', 'objects', 'launcher'));
-
-    const { currentUser } = useCurrentUser();
     const { t } = useTranslation();
+    const { items: menu_launcher_items, empty } = useMenuLauncherItems();
 
-    const menu_launcher_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', menuData, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_launcher'), currentUser);
-
-    if (!bApps)
-        return <></>;
-    if ((menu_launcher_items.length == 0) && menuData)
+    if (empty)
         return <></>;
 
     return (
