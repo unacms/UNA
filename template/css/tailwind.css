@@ -652,7 +652,7 @@
     }
 
     .bx-def-vanilla-html ul {
-        @apply my-6 ml-6 list-disc [&>li]:mt-2;
+        @apply list-disc;
     }
 
     .bx-def-vanilla-html code {
