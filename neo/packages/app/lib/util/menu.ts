@@ -160,6 +160,27 @@ export function groupDropdownItems(items: MenuItemList): DropdownSection[] {
     return sections.filter((section) => section.header || section.items.length);
 }
 
+/**
+ * Split a flat dropdown list into `count` columns of about the same height.
+ * Section headers stay rows; a column never ends on a header.
+ */
+export function splitDropdownColumns(items: MenuItemList, count: number): DropdownSection[] {
+    const list = asMenuItemList(items).filter(Boolean);
+    const perColumn = Math.max(1, Math.ceil(list.length / Math.max(1, count)));
+    const columns: DropdownSection[] = [];
+    let current: MenuItem[] = [];
+    list.forEach((item, index) => {
+        current.push(item.type === 'group_header' ? { ...item, first: current.length === 0 } : item);
+        const next = list[index + 1];
+        if (current.length >= perColumn && next && item.type !== 'group_header' && columns.length < count - 1) {
+            columns.push({ header: null, items: current });
+            current = [];
+        }
+    });
+    if (current.length) columns.push({ header: null, items: current });
+    return columns;
+}
+
 function menuLeafKeys(item: MenuItem | null | undefined): string[] {
     if (!item || item.type === 'group_header' || item.type === 'separator') return [];
     const keys: string[] = [];
@@ -250,6 +271,37 @@ export function mergeNavbarMoreWithLauncher(localItems: MenuItemList, launcherIt
         });
     });
 
+    return out;
+}
+
+/**
+ * Navbar from the UNA site menu (`sys_site`), used when the
+ * `menu_items.menu_navbar` setting is empty: Home, then the first
+ * `maxTabs` items as tabs, the rest under More.
+ */
+export function navbarItemsFromSiteMenu(items: MenuItemList, maxTabs: number): MenuItem[] {
+    const tabs: MenuItem[] = [];
+    const more: MenuItem[] = [];
+    asMenuItemList(items).forEach((item) => {
+        if (!item || item.name === 'home') return;
+        if (!isMenuItemNavigable(item)) {
+            if (getMenuItemChildren(item).length) more.push(item);
+            return;
+        }
+        const next: MenuItem = {
+            ...item,
+            link: normalizeMenuItemHref(item.link),
+            icon: findIconFromRemote(item.icon) || 'Circle',
+            animated: true,
+        };
+        if (tabs.length < maxTabs) tabs.push(next);
+        else more.push(next);
+    });
+
+    const out: MenuItem[] = [{ name: 'home', title: 'Home', link: '/', icon: 'House', animated: true }, ...tabs];
+    if (more.length) {
+        out.push({ name: 'more', title: 'More', link: '', icon: 'Menu', showTitle: false, chevron: '', animated: true, items: more });
+    }
     return out;
 }
 
@@ -473,13 +525,16 @@ export function menuItemsFilter(items: any, currentUser: any): any {
     return items;
 }
 
+/** Menu settings: the menu's `config` from UNA, else `menu_items[object]` from settings. */
 export function getMenuSettings(object: string, config?: unknown, menu?: { title?: string; icon?: string }): any {
-    if (!appSetting('layout', 'user_remote_config'))
-        return appSetting('menu_items', object);
-
-    let a: any = {}
-    if (appSetting('layout', 'user_remote_config') && config)
-        a = strToObj(config as string);
+    let a: any = config ? strToObj(config as string) : null;
+    if (!a) {
+        const local = object ? appSetting('menu_items', object) : null;
+        // A copy: the name / icon below must not land in the settings object.
+        a = local && typeof local === 'object' && !Array.isArray(local) ? { ...local } : (local ?? {});
+    }
+    if (Array.isArray(a))
+        return a;
 
     if (a && !a.name && menu?.title)
         a.name = menu.title;

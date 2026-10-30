@@ -1,4 +1,4 @@
-import { appSetting } from 'app/lib/util';
+import { getTabListFor } from 'app/lib/navigation/tab-bar-menu';
 import { peekTabLastUrl } from 'app/lib/navigation/tab-history';
 import { splitTabBarItems } from 'app/components/nav/tabs/tab-menu';
 
@@ -6,7 +6,7 @@ type TabMenuItem = { key?: string; url?: string };
 type TabUser = { url?: string } | false | null | undefined;
 
 function getMenu(logged: boolean): TabMenuItem[] {
-    return appSetting('menu_items', logged ? 'menu_tabbar_logged' : 'menu_tabbar_non_logged') || [];
+    return getTabListFor(logged);
 }
 
 /**

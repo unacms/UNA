@@ -9,7 +9,11 @@ export default function ElementProfileMenu({ data, blockWrapperProps }) {
     const { t } = useTranslation();
     const MenuItemSidebarWithWrapper = components['menu-item']['sidebar_with_wrapper'];
     const { currentUser } = useCurrentUser();
-    const menu_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', data, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_sidebar'), currentUser);
+    // `menu_sidebar` setting pins the links; unset, the block's menu from UNA.
+    const staticItems = appSetting('menu_items', 'menu_sidebar');
+    const menu_items = Array.isArray(staticItems) && staticItems.length
+        ? menuItemsByName('', staticItems, currentUser)
+        : menuItemsByNameNew('menu_post', data, currentUser);
     return (
         <BlockWrapper {...blockWrapperProps}>
             <View className="profile-menu gap-0.5 -mx-2">

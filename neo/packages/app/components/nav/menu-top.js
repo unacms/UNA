@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { useCurrentUser } from 'app/context/user'
-import { menuItemsByName, menuItemsByNameNew, appSetting, flattenMenuItemsForDropdown, mergeNavbarMoreWithLauncher } from 'app/lib/util'
+import { menuItemsByName, menuItemsByNameNew, appSetting, flattenMenuItemsForDropdown, mergeNavbarMoreWithLauncher, navbarItemsFromSiteMenu } from 'app/lib/util'
 import { useTranslation } from 'react-i18next'
 import { components } from 'app/components/registry';
 import { useMenuData } from 'app/context/menu-data';
@@ -13,18 +13,35 @@ let __menuTopIndicatorPersist = { initialized: false, translateX: 0, width: 0 };
 export default function MenuTop({ url, uri }) {
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation()
-    const useRemoteApps = !!appSetting('layout', 'user_remote_config') && !!appSetting('layout', 'apps');
+    // The launcher's apps join More when `layout.apps` is on: the `menu_launcher`
+    // setting if set, else UNA's launcher menu.
+    const showApps = !!appSetting('layout', 'apps');
+    const staticLauncher = appSetting('menu_items', 'menu_launcher');
+    const useStaticLauncher = Array.isArray(staticLauncher) && staticLauncher.length > 0;
     const { menuData: launcherMenuData } = useMenuData(
-        useRemoteApps ? appSetting('menu_items', 'objects', 'launcher') : null
+        showApps && !useStaticLauncher ? appSetting('menu_items', 'objects', 'launcher') : null
     );
     const launcherItems = useMemo(
-        () => (useRemoteApps ? menuItemsByNameNew('menu_post', launcherMenuData, currentUser) : []),
-        [useRemoteApps, launcherMenuData, currentUser]
+        () => (!showApps
+            ? []
+            : useStaticLauncher
+                ? menuItemsByName('', staticLauncher, currentUser)
+                : menuItemsByNameNew('menu_post', launcherMenuData, currentUser)),
+        [showApps, useStaticLauncher, staticLauncher, launcherMenuData, currentUser]
     );
+    // No `menu_navbar` setting: the navbar comes from UNA's site menu.
+    const staticNavbar = appSetting('menu_items', 'menu_navbar');
+    const useSiteMenu = !Array.isArray(staticNavbar) || !staticNavbar.length;
+    const { menuData: siteMenuData, isFetched: siteMenuFetched } = useMenuData(
+        useSiteMenu ? appSetting('menu_items', 'objects', 'site') : null
+    );
+    const siteTabs = appSetting('menu_items', 'menu_navbar_site_tabs') ?? 5;
     const menu_navbar_items = useMemo(() => {
         const items = menuItemsByName(
             'main_menu',
-            appSetting('menu_items', 'menu_navbar'),
+            useSiteMenu
+                ? navbarItemsFromSiteMenu(siteMenuData?.items, siteTabs)
+                : staticNavbar,
             currentUser
         );
         // The launcher's apps belong in More; other dropdowns keep their own items.
@@ -35,7 +52,7 @@ export default function MenuTop({ url, uri }) {
                 items: mergeNavbarMoreWithLauncher(item.items, launcherItems),
             };
         });
-    }, [currentUser, launcherItems]);
+    }, [currentUser, launcherItems, useSiteMenu, siteMenuData, staticNavbar, siteTabs]);
 
     // Compute active index based on current route
     const activeIndex = useMemo(() => {
@@ -103,6 +120,22 @@ export default function MenuTop({ url, uri }) {
 
     const MenuTopItem = components['menu-item']['topmenu'];
 
+    // Like the footer: placeholders until the site menu arrives, so the bar
+    // doesn't grow from Home alone to every tab. Home, the tabs and More.
+    if (useSiteMenu && !siteMenuFetched) {
+        return (
+            <Row className={`${appSetting('layout', 'header', 'content_center')} relative`} role="navigation" aria-label="Primary" aria-busy>
+                {Array.from({ length: siteTabs + 2 }, (_, index) => (
+                    <View key={`menu-top-skeleton-${index}`} className="flex-auto relative z-10">
+                        <Row className="items-center justify-center px-2 h-12 min-w-16">
+                            <View className="h-6 w-6 rounded-full bg-muted animate-pulse" />
+                        </Row>
+                    </View>
+                ))}
+            </Row>
+        );
+    }
+
     return (
         <Row
             className={`${appSetting('layout', 'header', 'content_center')} relative`}
@@ -148,6 +181,7 @@ export default function MenuTop({ url, uri }) {
                             chevron={item.chevron}
                             animated={item.animated}
                             addClassName={item.addClassName}
+                            columns={item.columns ?? appSetting('menu_items', 'menu_navbar_more_columns')}
                         />
                     </View>
                 );
