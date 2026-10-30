@@ -3504,6 +3504,7 @@
     <string name="_sys_menu_item_title_privacy"><![CDATA[Privacy]]></string>
     <string name="_sys_menu_item_title_search"><![CDATA[Search]]></string>
     <string name="_sys_menu_item_title_switch_language"><![CDATA[Language]]></string>
+    <string name="_sys_menu_item_title_switch_language_current"><![CDATA[Language: {0}]]></string>
     <string name="_sys_menu_item_title_switch_language_mask"><![CDATA[{1} {0}]]></string>
     <string name="_sys_menu_item_title_switch_template"><![CDATA[Design]]></string>
     <string name="_sys_menu_item_title_switch_template_mask"><![CDATA[{0}]]></string>

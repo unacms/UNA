@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useMemo, memo } from 'react';
 import { NeoButtonLink } from 'app/design/controls'
 import { Text } from 'app/design/typography'
+import { Icon } from 'app/ui/atoms/icon'
 import { useCurrentUserNoCounters } from 'app/context/user';
 import { useMenuData } from 'app/context/menu-data';
 import { useLayoutSettings } from 'app/context/layout-settings';
@@ -180,6 +181,36 @@ function FooterSoundsLevel({ visualProps }) {
     );
 }
 
+// UNA's Powered by badge: the item's own SVG (Navigation keeps it editable), 24px tall as on the site, in
+// the links' colour (`currentColor`), foreground on hover.
+const BADGE_HEIGHT = 24;
+const isSvgBadge = (item) => typeof item.icon === 'string' && item.icon.startsWith('<svg') && !item.title;
+const badgeWidth = (svg) => {
+    const viewBox = /viewBox="\s*[\d.-]+\s+[\d.-]+\s+([\d.]+)\s+([\d.]+)\s*"/i.exec(svg);
+    return viewBox && +viewBox[2] ? Math.round((BADGE_HEIGHT * +viewBox[1]) / +viewBox[2]) : BADGE_HEIGHT;
+};
+
+function FooterBadgeItem({ item, href, visualProps }) {
+    return (
+        <NeoButtonLink
+            href={href}
+            target="_blank"
+            accessibilityLabel={item.title_attr || undefined}
+            style={visualProps.style}
+            controlSize={visualProps.controlSize}
+            contentInsets={visualProps.contentInsets}
+            className={cn('group', visualProps.className)}
+        >
+            <Icon
+                icon={item.icon}
+                width={badgeWidth(item.icon)}
+                height={BADGE_HEIGHT}
+                className="text-secondary-foreground web:transition-colors group-hover:text-foreground"
+            />
+        </NeoButtonLink>
+    );
+}
+
 function FooterLanguageSwitcher({ visualProps }) {
     const { t } = useTranslation();
     const { lang, langCode, autoLangCode, setLang } = useLayoutSettings();
@@ -285,13 +316,16 @@ function MenuFooterComponent({
     if (menu_launcher_items.length === 0 && menuData && !showThemeSwitcher && !showLanguageSwitcher && !showSoundsLevel)
         return null;
 
-    const showSwitchers = showLanguageSwitcher || showThemeSwitcher || showSoundsLevel;
+    // The badge goes last, after the switchers, as on the site (its `powered_by` item ends the footer's tools).
+    const badges = menu_launcher_items.filter(isSvgBadge);
+    const links = badges.length ? menu_launcher_items.filter((item) => !isSvgBadge(item)) : menu_launcher_items;
+    const showTools = showLanguageSwitcher || showThemeSwitcher || showSoundsLevel || badges.length > 0;
 
     return (
         <View className={cntClasses} role="contentinfo">
-            {menu_launcher_items.length > 0 ? (
+            {links.length > 0 ? (
                 <View className={FOOTER_LINKS_CLASSES}>
-                    {menu_launcher_items.map((item, index) => {
+                    {links.map((item, index) => {
                         if (item.display_type === 'text')
                             return <FooterTextItem key={item.name || index} item={item} visualProps={visualProps} />;
 
@@ -314,11 +348,14 @@ function MenuFooterComponent({
                     })}
                 </View>
             ) : null}
-            {showSwitchers ? (
+            {showTools ? (
                 <View className={FOOTER_SECTION_CLASSES}>
                     {showLanguageSwitcher ? <FooterLanguageSwitcher visualProps={visualProps} /> : null}
                     {showThemeSwitcher ? <FooterThemeSwitcher visualProps={visualProps} /> : null}
                     {showSoundsLevel ? <FooterSoundsLevel visualProps={visualProps} /> : null}
+                    {badges.map((item, index) => (
+                        <FooterBadgeItem key={item.name || index} item={item} href={normalizeFooterHref(item.link)} visualProps={visualProps} />
+                    ))}
                 </View>
             ) : null}
         </View>

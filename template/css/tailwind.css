@@ -634,6 +634,10 @@
     #bx-menu-footer > li.bx-menu-footer-tools-start {
         @apply lg:ms-auto;
     }
+    /* The language in use, by its code, as in the apps. */
+    #bx-menu-footer .bx-menu-footer-lang {
+        @apply text-xs font-semibold uppercase tracking-wide;
+    }
     /* Icons at the text's size, as in the apps: 16px beside 14px text. */
     #bx-menu-footer > li > a > .lucide {
         @apply size-4;

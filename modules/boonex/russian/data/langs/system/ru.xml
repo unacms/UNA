@@ -3474,6 +3474,7 @@
     <string name="_sys_menu_item_title_privacy"><![CDATA[Конфиденциальность]]></string>
     <string name="_sys_menu_item_title_search"><![CDATA[Поиск]]></string>
     <string name="_sys_menu_item_title_switch_language"><![CDATA[Язык]]></string>
+    <string name="_sys_menu_item_title_switch_language_current"><![CDATA[Язык: {0}]]></string>
     <string name="_sys_menu_item_title_switch_language_mask"><![CDATA[{1} {0}]]></string>
     <string name="_sys_menu_item_title_switch_template"><![CDATA[Дизайн]]></string>
     <string name="_sys_menu_item_title_switch_template_mask"><![CDATA[{0}]]></string>

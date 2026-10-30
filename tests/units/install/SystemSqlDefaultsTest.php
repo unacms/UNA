@@ -59,6 +59,9 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
             $this->assertSame(1, preg_match("/\\('sys_footer', 'system', '" . $sName . "', '[^']*', '[^']*', '((?:[^']|'')*)', '((?:[^']|'')*)', [^\\n]*, (\\d+)\\),?\\r?\\n/", $sSql, $aMatch), 'system.sql adds the footer\'s ' . $sName . ' item.');
             $aOrder[$sName] = (int)$aMatch[3];
 
+            if ($sName == 'switch_language')
+                $this->assertSame("bx_menu_popup(''sys_switch_language_popup'', this, {pointer: {flip: true}});", $aMatch[2], 'The language menu opens at the footer item, above it like Theme and Sounds.');
+
             if ($sName == 'copyright') {
                 $this->assertSame('', $aMatch[1], 'The copyright notice has no link.');
                 $this->assertSame('', $aMatch[2], 'Nor a script: no popup.');
@@ -72,6 +75,7 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
 
         $sApp = file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-menus.sql');
         $this->assertStringContainsString("UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `module`='system' AND `name`='copyright';", (string)$sApp);
+        $this->assertStringContainsString("UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `module`='system' AND `name`='powered_by';", (string)$sApp, 'The apps show the badge too.');
     }
 
     public function testHomepageSubmenuHasAnIconInTheApp(): void

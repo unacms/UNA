@@ -91,12 +91,20 @@ class BxBaseMenuFooter extends BxTemplMenu
         $bToolsStart = false;
         foreach($aItems as $iKey => $aItem) {
             switch($aItem['name']) {
+                /**
+                 * As in the apps' footer: the language in use by its code ("EN"), named in full ("Language: English");
+                 * its menu opens above it and marks the current one.
+                 */
                 case 'switch_language':
-                    $sTitle = _t('_sys_menu_item_title_switch_language_mask', $aItems[$iKey]['title'], genFlag());
+                    $sLanguage = BxDolLanguages::getInstance()->getCurrentLangName();
+                    $aLanguages = BxDolLanguagesQuery::getInstance()->getLanguages(false, true);
+                    $sLabel = bx_html_attribute(_t('_sys_menu_item_title_switch_language_current', isset($aLanguages[$sLanguage]) ? $aLanguages[$sLanguage] : $sLanguage));
+                    $sTitle = '<span class="bx-menu-footer-lang" aria-hidden="true">' . bx_process_output($sLanguage) . '</span>';
 
                     $aItems[$iKey]['title'] = $sTitle;
-                    $aItems[$iKey]['bx_if:title']['condition'] = (bool)$sTitle;
+                    $aItems[$iKey]['bx_if:title']['condition'] = true;
                     $aItems[$iKey]['bx_if:title']['content']['title'] = $sTitle;
+                    $aItems[$iKey]['attrs'] = preg_replace('/ (title|aria-label)="[^"]*"/', '', $aItems[$iKey]['attrs']) . ' title="' . $sLabel . '" aria-label="' . $sLabel . '" aria-haspopup="menu" aria-expanded="false"';
                     break;
 
                 case 'switch_template':
@@ -176,6 +184,11 @@ class BxBaseMenuFooter extends BxTemplMenu
     protected function _getMenuItemAPI ($a)
     {
         $aResult = parent::_getMenuItemAPI($a);
+
+        // The badge has no title: the apps name it, as the site does in its tooltip and aria-label.
+        if($a['name'] == 'powered_by')
+            $aResult['title_attr'] = _t('_sys_txt_powered_by');
+
         if(!$this->_isTextItem($a))
             return $aResult;
 
@@ -249,6 +262,12 @@ class BxBaseMenuFooter extends BxTemplMenu
 
             case 'sounds':
                 $bResult = BxDolSounds::getInstance()->isOn('site');
+                break;
+
+            // The apps show the badge while the site does: switching the item off in Navigation hides it in both.
+            case 'powered_by':
+                if($this->_bIsApi)
+                    $bResult = !isset($a['active']) || (int)$a['active'] != 0;
                 break;
 
             case 'switch_template':

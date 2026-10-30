@@ -163,6 +163,63 @@ class BxBaseMenuFooterTest extends BxDolTestCase
         $this->assertStringContainsString('aria-label="' . $sPoweredBy . '"', $aItems['powered_by']['attrs'], 'The badge is named in full, starting with the words it shows.');
     }
 
+    public function testPoweredByBadgeReachesTheAppsWhileOnInUna(): void
+    {
+        $oFooter = $this->footer();
+        $aRaw = null;
+        foreach ($this->callProtected($oFooter, 'getMenuItemsRaw') as $aItem)
+            if ($aItem['name'] == 'powered_by')
+                $aRaw = $aItem;
+        $this->assertNotNull($aRaw, 'The footer has the Powered by badge.');
+
+        $aItem = $this->callProtected($oFooter, '_getMenuItemAPI', [$aRaw]);
+        $this->assertStringStartsWith('<svg', $aItem['icon'], 'The apps draw the item\'s own badge.');
+        $this->assertSame(_t('_sys_txt_powered_by'), $aItem['title_attr'], 'And name it, as the site does.');
+
+        $oApi = new ReflectionProperty(BxDolMenu::class, '_bIsApi');
+        $bPrior = $oApi->getValue($oFooter);
+        $oApi->setValue($oFooter, true);
+        try {
+            $this->assertTrue($this->callProtected($oFooter, '_isVisible', [array_merge($aRaw, ['active' => 1])]));
+            $this->assertFalse($this->callProtected($oFooter, '_isVisible', [array_merge($aRaw, ['active' => 0])]), 'Switched off in Navigation, it is gone from the apps too.');
+        }
+        finally {
+            $oApi->setValue($oFooter, $bPrior);
+        }
+    }
+
+    public function testLanguageItemShowsTheCodeAndOpensAMenuAbove(): void
+    {
+        $aItems = $this->footerItems();
+        if (!isset($aItems['switch_language']))
+            $this->markTestSkipped('The language switcher shows only with two or more languages installed.');
+
+        $sLanguage = BxDolLanguages::getInstance()->getCurrentLangName();
+        $aLanguages = BxDolLanguagesQuery::getInstance()->getLanguages(false, true);
+        $aItem = $aItems['switch_language'];
+
+        $this->assertStringContainsString('>' . $sLanguage . '</span>', $aItem['bx_if:title']['content']['title'], 'The code, as in the apps ("EN" by CSS).');
+        $sLabel = bx_html_attribute(_t('_sys_menu_item_title_switch_language_current', $aLanguages[$sLanguage]));
+        $this->assertStringContainsString('aria-label="' . $sLabel . '"', $aItem['attrs']);
+        $this->assertSame(1, substr_count($aItem['attrs'], 'aria-label='), 'One name.');
+        $this->assertStringContainsString('aria-haspopup="menu"', $aItem['attrs']);
+    }
+
+    public function testLanguageMenuMarksTheLanguageInUse(): void
+    {
+        $oMenu = BxDolMenu::getObjectInstance('sys_switch_language_inline');
+        $aItems = $oMenu->getMenuItems();
+        if (count($aItems) < 2)
+            $this->markTestSkipped('Needs two or more languages installed.');
+
+        $sCurrent = 'lang-' . BxDolLanguages::getInstance()->getCurrentLangName();
+        foreach ($aItems as $aItem) {
+            $bCurrent = $aItem['name'] == $sCurrent;
+            $this->assertSame($bCurrent, strpos($aItem['class_add'] ?? '', 'bx-menu-tab-active') !== false, $aItem['name']);
+            $this->assertSame($bCurrent, strpos($aItem['attrs'] ?? '', 'aria-current="true"') !== false, $aItem['name']);
+        }
+    }
+
     public function testSoundsItemShowsWhereSoundsPlayOnTheSite(): void
     {
         $oFooter = $this->footer();
