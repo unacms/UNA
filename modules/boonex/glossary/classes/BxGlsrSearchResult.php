@@ -189,13 +189,13 @@ class BxGlsrSearchResult extends BxBaseModTextSearchResult
                         });
                     </script>";
             }
-            if ($bIsAlphabetical){
+            if ($bIsAlphabetical) {
                 $this->oModule->_oTemplate->addJs('alphabetical_list.js');
-                if (bx_get('letter')){
+                if (($sLetter = bx_get('letter')) !== false) {
                     $sCode .= "
                     <script>
                         $(document).ready(function() {
-                            BxGlsrAlphabeticalList_goAnchor('" . bx_get('letter') . "')
+                            BxGlsrAlphabeticalList_goAnchor('" . bx_process_output($sLetter) . "')
                         });
                     </script>";
                 }
