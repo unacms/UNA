@@ -1754,7 +1754,7 @@ function bx_set_color_scheme_html()
  * sounds play, the sound set, the volume, a set or silence for each kind of action,
  * and the level people start at. Each visitor picks their own level for this
  * browser: full, quiet or off (bx_sound_set_level). The module loads only once a
- * sound can play.
+ * sound can play, and not before the page itself (bx_sound_load_later).
  */
 var glBxSounds = {url: '', config: null, module: null, cuelume: null, readyAt: 0, restore: null};
 
@@ -1784,13 +1784,50 @@ function bx_sound_init(sUrl, oConfig)
     glBxSounds.url = sUrl;
     glBxSounds.config = oConfig;
 
-    // A module that fails to load leaves the page silent; nothing else depends on it.
     if(bx_sound_is_on())
-        bx_sound_load().catch(function() {});
+        bx_sound_load_later();
 
     $(document).ready(function() {
         bx_sound_mark_switches();
     });
+}
+
+/**
+ * Load the module off the page's critical path: a low-priority preload once the page has loaded (import() alone
+ * always fetches at high priority), then import() takes it from there. The visitor's first press or key loads it at
+ * once if that comes sooner; that press itself is silent, it comes before bind().
+ */
+function bx_sound_load_later()
+{
+    var aEvents = ['pointerdown', 'keydown'];
+    var fLoad = function() {
+        aEvents.forEach(function(sEvent) {
+            window.removeEventListener(sEvent, fLoad, true);
+        });
+
+        // A module that fails to load leaves the page silent; nothing else depends on it.
+        bx_sound_load().catch(function() {});
+    };
+    var fPreload = function() {
+        var oLink = document.createElement('link');
+        if(!oLink.relList || !oLink.relList.supports('modulepreload'))
+            return fLoad();
+
+        oLink.rel = 'modulepreload';
+        oLink.href = glBxSounds.url;
+        oLink.setAttribute('fetchpriority', 'low');
+        oLink.onload = oLink.onerror = fLoad;
+        document.head.appendChild(oLink);
+    };
+
+    aEvents.forEach(function(sEvent) {
+        window.addEventListener(sEvent, fLoad, true);
+    });
+
+    if(document.readyState == 'complete')
+        fPreload();
+    else
+        window.addEventListener('load', fPreload);
 }
 
 function bx_sound_load()
