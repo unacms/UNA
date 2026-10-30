@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import DropdownMenu from 'app/ui/atoms/dropdown-menu'
+import DropdownMenu, { type DropdownMenuItemData } from 'app/ui/atoms/dropdown-menu'
 import { NeoButtonLink } from 'app/design/controls'
 import { Row } from 'app/design/view'
 import { getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
@@ -7,6 +7,7 @@ import { useCurrentUser } from 'app/context/user'
 import { useTranslation } from 'react-i18next'
 import { useIsDesktop } from 'app/context/measure';
 import { useMenuNavigationEntries } from 'app/components/nav/menu-header-navigation-entries'
+import type { MenuHeaderNavigationProps } from 'app/components/nav/menu-header-navigation.types'
 
 // Log In and Sign Up share the row equally, whatever their label widths.
 const AUTH_BUTTON_CLASSES = { root: 'basis-0' }
@@ -16,15 +17,14 @@ const AUTH_BUTTON_CLASSES = { root: 'basis-0' }
  * menu as navbar “more” (DropdownMenu + menu_items dropdown rows). A group shows as a
  * section under its title. With `auth`, guests below `sm` also get Log In and Sign Up
  * under the rows. Web and Android; iOS has a native menu (menu-header-navigation.ios.tsx).
- * Props: menu-header-navigation.types.ts.
  */
-export default function MenuHeaderNavigation(props) {
+export default function MenuHeaderNavigation(props: Readonly<MenuHeaderNavigationProps>) {
     const { currentUser } = useCurrentUser()
     const { t } = useTranslation()
     const isDesktop = useIsDesktop()
     const [open, setOpen] = useState(false)
     const entries = useMenuNavigationEntries()
-    const items = entries
+    const items: DropdownMenuItemData[] = entries
         .flatMap(({ key, item, rows }) =>
             rows.length ? [{ type: 'group_header', id: `header-${key}`, name: item.name, title: item.title }, ...rows] : [item]
         )
