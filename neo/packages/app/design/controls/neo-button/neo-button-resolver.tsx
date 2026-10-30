@@ -355,6 +355,7 @@ const SWIFTUI_BUTTON_STYLE: Record<string, string> = {
     borderedProminent: 'borderedProminent',
     borderless: 'borderless',
     link: 'borderless',          // SwiftUI has no .link; .borderless is closest
+    text: 'plain',               // JS only (below); listed for completeness
     glass: 'glass',
     glassProminent: 'glassProminent',
 };
@@ -368,8 +369,9 @@ const STYLES_WITHOUT_HOVER = new Set(['plain']);
 const GLASS_STYLES = new Set(['glass', 'glassProminent']);
 
 // Styles with no native (Expo UI) rendering: `outline` is a shadow ring that
-// SwiftUI and Compose button styles don't draw.
-const JS_ONLY_STYLES = new Set(['outline']);
+// SwiftUI and Compose button styles don't draw; `text` is a text link whose
+// size comes from the caller's text classes, which native labels don't read.
+const JS_ONLY_STYLES = new Set(['outline', 'text']);
 
 const SWIFTUI_CONTROL_SIZE: Record<string, string> = {
     mini: 'mini',

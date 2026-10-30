@@ -47,6 +47,27 @@ class BxBaseMenuFooterTest extends BxDolTestCase
         $this->assertStringNotContainsString('&copy;', $aData['text'], 'The apps get plain text, not HTML.');
     }
 
+    public function testThePageYoureOnIsMarkedCurrent(): void
+    {
+        $oSelModule = new ReflectionProperty(BxDolMenu::class, 'SEL_MODULE');
+        $oSelName = new ReflectionProperty(BxDolMenu::class, 'SEL_NAME');
+        $aPrior = [$oSelModule->getValue(), $oSelName->getValue()];
+
+        BxDolMenu::setSelectedGlobal('system', 'terms');
+        try {
+            $aItems = [];
+            foreach ($this->footer()->getMenuItems() as $aItem)
+                $aItems[$aItem['name']] = $aItem;
+        }
+        finally {
+            BxDolMenu::setSelectedGlobal($aPrior[0], $aPrior[1]);
+        }
+
+        $this->assertArrayHasKey('terms', $aItems, 'The footer has the Terms item.');
+        $this->assertStringContainsString('aria-current="page"', $aItems['terms']['attrs']);
+        $this->assertStringNotContainsString('aria-current', $aItems['about']['attrs'] ?? '');
+    }
+
     public function testOtherItemsSendNoCallbackData(): void
     {
         $this->assertSame([], $this->callProtected($this->footer(), '_getMenuCallbackDataAPI', [$this->item('about')]));

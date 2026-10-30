@@ -10,15 +10,20 @@ import { useLayoutSettings } from 'app/context/layout-settings';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { localeIconName } from 'app/ui/atoms/tag-glyph-icons';
 import { SOUND_LEVEL_ITEMS, useSoundsLevel } from 'app/lib/hooks/use-sounds-level';
+import { usePathname } from 'app/lib/hooks/router';
 
 // Two sections, links and switchers, in one row that wraps: side by side while they fit (apart from
 // lg), each on its own centred line when they don't.
-export const MENU_FOOTER_CLASSES = 'flex w-full items-center border-t border-border/60 justify-center lg:justify-between flex-row flex-wrap gap-x-6 gap-y-1 p-4 min-h-16';
+export const MENU_FOOTER_CLASSES = 'flex w-full items-center border-t border-border/60 justify-center lg:justify-between flex-row flex-wrap gap-x-6 gap-y-4 p-4 min-h-16';
 // max-w-full: View doesn't shrink, so a section wider than the footer wraps its items instead of spilling out.
-const FOOTER_SECTION_CLASSES = 'max-w-full flex-row flex-wrap items-center justify-center gap-1';
-// iOS draws `link` buttons as SwiftUI .borderless, without the theme paddingX (12 at small) that
-// web and Android put around the label, so the gap makes up the 2 × 12.
-const FOOTER_LINKS_CLASSES = `${FOOTER_SECTION_CLASSES} ios:gap-x-7`;
+// The 16px gaps hold the touch areas: a 28px `mini` item reaches 44px with its 8px hitSlop on each side,
+// so neighbours (and wrapped lines) meet without overlapping.
+const FOOTER_SECTION_CLASSES = 'max-w-full flex-row flex-wrap items-center justify-center gap-4';
+const FOOTER_LINKS_CLASSES = FOOTER_SECTION_CLASSES;
+// The footer's look: quiet text links, 14px in a 28px control, secondary text that turns foreground on
+// hover (NeoButton style `text`), like the site's footer (#bx-menu-footer in UNA's tailwind.css).
+// A caller that passes `variant`, `size` or `btnStyle` keeps the button look it asks for.
+const FOOTER_TEXT_STYLE = { style: 'text', controlSize: 'mini', textClassName: 'text-sm' };
 // Settings use the historical misspelling; keep this key aligned with settings/layout.js.
 const AVAILABLE_LANGS_SETTING_KEY = 'avaliable_langs';
 const FOOTER_THEME_ITEMS = [
@@ -94,6 +99,7 @@ function FooterNoticeItem({ item, visualProps }) {
                 label={t(item.title)}
                 style={visualProps.style}
                 controlSize={visualProps.controlSize}
+                contentInsets={visualProps.contentInsets}
                 className={visualProps.className}
                 textClassName={visualProps.textClassName}
                 onPress={() => setOpen(true)}
@@ -245,15 +251,19 @@ function MenuFooterComponent({
 
     const visualProps = useMemo(() => {
         const legacy = btnStyle || {};
-        const legacyVariant = variant ?? legacy.variant ?? 'accent';
-        const legacySize = size ?? legacy.size ?? 'sm';
+        const legacyVariant = variant ?? legacy.variant;
+        const legacySize = size ?? legacy.size;
+        const style = legacy.style ?? (legacyVariant ? linkVariantToNeoStyle[legacyVariant] ?? 'link' : FOOTER_TEXT_STYLE.style);
         return {
-            style: legacy.style ?? linkVariantToNeoStyle[legacyVariant] ?? 'link',
-            controlSize: legacy.controlSize ?? linkSizeToNeoControlSize[legacySize] ?? 'small',
+            style,
+            controlSize: legacy.controlSize ?? (legacySize ? linkSizeToNeoControlSize[legacySize] ?? 'small' : FOOTER_TEXT_STYLE.controlSize),
             className: legacy.containerClassName ?? '',
-            textClassName: itemClassName ?? legacy.textClassName ?? legacy.className ?? '',
+            textClassName: itemClassName ?? legacy.textClassName ?? legacy.className ?? (style === FOOTER_TEXT_STYLE.style ? FOOTER_TEXT_STYLE.textClassName : ''),
+            // Text links sit flush; the section's gap spaces them.
+            contentInsets: style === FOOTER_TEXT_STYLE.style ? { x: 0 } : undefined,
         };
     }, [btnStyle, variant, size, itemClassName]);
+    const pathname = usePathname();
   
     
     const menu_launcher_items = useMemo(() => (
@@ -281,21 +291,27 @@ function MenuFooterComponent({
         <View className={cntClasses} role="contentinfo">
             {menu_launcher_items.length > 0 ? (
                 <View className={FOOTER_LINKS_CLASSES}>
-                    {menu_launcher_items.map((item, index) => (
-                        item.display_type === 'callback' && item.data?.text ? (
-                            <FooterNoticeItem key={item.name || index} item={item} visualProps={visualProps} />
-                        ) : (
+                    {menu_launcher_items.map((item, index) => {
+                        if (item.display_type === 'callback' && item.data?.text)
+                            return <FooterNoticeItem key={item.name || index} item={item} visualProps={visualProps} />;
+
+                        const href = normalizeFooterHref(item.link);
+                        // The page you're on stays in the foreground colour and says so to screen readers.
+                        const isCurrent = !!href && href === pathname;
+                        return (
                             <NeoButtonLink
-                                href={normalizeFooterHref(item.link)}
+                                href={href}
                                 key={item.link || index}
                                 label={t(item.title)}
                                 style={visualProps.style}
                                 controlSize={visualProps.controlSize}
+                                contentInsets={visualProps.contentInsets}
                                 className={visualProps.className}
-                                textClassName={visualProps.textClassName}
+                                textClassName={isCurrent ? `${visualProps.textClassName} text-foreground` : visualProps.textClassName}
+                                aria-current={isCurrent ? 'page' : undefined}
                             />
-                        )
-                    ))}
+                        );
+                    })}
                 </View>
             ) : null}
             {showSwitchers ? (

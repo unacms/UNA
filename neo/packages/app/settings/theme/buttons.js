@@ -634,6 +634,31 @@ export const settingsButtons = {
                 },
             },
 
+            // A quiet text link (the footer): no fill in any state, secondary text that turns
+            // foreground on hover, focus and press. JS only (JS_ONLY_STYLES in the resolver), so
+            // the text classes a caller adds (`text-sm`) apply on iOS and Android too.
+            text: {
+                container: {
+                    default: '',
+                    hovered: '',
+                    focused: '',
+                    pressed: '',
+                    active: '',
+                    pressedToggle: '',
+                    disabled: 'opacity-50',
+                },
+                text: {
+                    base: 'font-normal web:transition-colors',
+                    default: 'text-secondary-foreground',
+                    hovered: 'text-foreground',
+                    focused: 'text-foreground',
+                    pressed: 'text-foreground',
+                    active: 'text-foreground',
+                    pressedToggle: 'text-foreground',
+                    disabled: 'text-muted-foreground',
+                },
+            },
+
             // SwiftUI .glass (iOS 26+). Web fallback uses backdrop-blur.
             // shadow-btn-glass carries border + inner highlight + wide soft
             // ambient drop. shadow-btn-glass-pressed shrinks the drop.
@@ -735,6 +760,7 @@ export const settingsButtons = {
             glassProminent: { press: { type: 'scale', from: 1, to: { default: 1.1, mouse: 0.98, touch: 1.1 }, spring: { damping: 24, stiffness: 360 } }, hover: { type: 'opacity', duration: 200 } },
             plain:          { press: false,                                                            hover: false },
             link:           { press: false, hover: { type: 'opacity', duration: 120 } },
+            text:           { press: false,                                                            hover: false },
             borderless:     { press: { type: 'scale', from: 1, to: 0.98, spring: { damping: 28, stiffness: 380 } }, hover: { type: 'opacity', duration: 120 } },
         },
 

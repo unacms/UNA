@@ -118,6 +118,10 @@ class BxBaseMenuFooter extends BxTemplMenu
                     break;
             }
 
+            // The page you're on: the footer keeps its link in the foreground colour, and screen readers hear it.
+            if(isset($aItems[$iKey]['class_add']) && strpos($aItems[$iKey]['class_add'], 'bx-menu-tab-active') !== false)
+                $aItems[$iKey]['attrs'] .= ' aria-current="page"';
+
             $bTitleAttr = isset($aItems[$iKey]['title_attr']);
             $bTitleAttrImage = isset($aItems[$iKey]['bx_if:image']['content']['title_attr']);
             if(!$bTitleAttr || !$bTitleAttrImage) {
