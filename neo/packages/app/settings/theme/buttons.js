@@ -427,7 +427,7 @@ export const settingsButtons = {
                 // iOS 26 draws real liquid glass behind the segments instead
                 // (`liquidContainer` replaces `container` there).
                 glass: {
-                    container: 'web:backdrop-blur-md web:backdrop-saturate-150 bg-popover/80 web:bg-white/30 web:dark:bg-white/12 shadow-btn-glass dark:shadow-btn-glass-deep',
+                    container: 'web:glass-backdrop web:dark:glass-backdrop-dark bg-popover/80 web:bg-white/30 web:dark:bg-white/15 shadow-btn-glass dark:shadow-btn-glass-deep',
                     liquidContainer: '',
                     separator: 'bg-foreground/10',
                     segment: {
@@ -639,14 +639,15 @@ export const settingsButtons = {
             // at the sides, with bright crescents along the top and bottom rims.
             // Web fills are translucent white, as on iOS, so the blurred backdrop
             // shows through; a press brightens the fill and keeps the edge.
+            // `glass-backdrop` (global.css) keeps labels readable over photos.
             glass: {
                 container: {
-                    base: 'web:backdrop-blur-md web:backdrop-saturate-150 shadow-btn-glass dark:shadow-btn-glass-deep',
-                    default: 'bg-popover/80 web:bg-white/30 web:dark:bg-white/12',
-                    hovered: 'bg-muted/50 web:bg-white/40 web:dark:bg-white/16',
-                    focused: 'bg-popover/80 web:bg-white/30 web:dark:bg-white/12',
-                    pressed: 'bg-muted web:bg-white/55 web:dark:bg-white/20',
-                    active: 'bg-muted/50 web:bg-white/40 web:dark:bg-white/16',
+                    base: 'web:glass-backdrop web:dark:glass-backdrop-dark shadow-btn-glass dark:shadow-btn-glass-deep',
+                    default: 'bg-popover/80 web:bg-white/30 web:dark:bg-white/15',
+                    hovered: 'bg-muted/50 web:bg-white/40 web:dark:bg-white/19',
+                    focused: 'bg-popover/80 web:bg-white/30 web:dark:bg-white/15',
+                    pressed: 'bg-muted web:bg-white/55 web:dark:bg-white/23',
+                    active: 'bg-muted/50 web:bg-white/40 web:dark:bg-white/19',
                     pressedToggle: 'bg-accent shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
                     disabled: 'bg-muted/50',
                 },
