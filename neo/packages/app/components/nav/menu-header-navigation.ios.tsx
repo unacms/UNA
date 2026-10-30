@@ -123,7 +123,7 @@ function useMenuRowPress(): { redirect: ReactNode; press: (row: MenuItem) => voi
         }
         if (row.target === '_blank' || row.target === 'blank') {
             const url = sanitazeUrl(link);
-            if (url) openExternalLink(url);
+            if (url) void openExternalLink(url);
             return;
         }
         if (link) redirectRef.current?.redirect(link);
