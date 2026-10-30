@@ -11,6 +11,7 @@ import Page from 'app/ui/molecules/page/page'
 import Html from 'app/ui/atoms/html'
 import { appSetting } from 'app/lib/util'
 import { PageHeaderOptions } from 'app/ui/molecules/header/options'
+import { PageChromeProvider } from 'app/ui/molecules/page/page-chrome'
 
 const isWeb = Platform.OS === 'web'
 
@@ -67,8 +68,9 @@ function pageAllowsJoin(data) {
     return formItems(data).some(isJoinForm)
 }
 
-export default function PageLayout({ data, blocks, children }) {
+export default function PageLayout({ data, blocks, children, pageClasses }) {
     const { t } = useTranslation()
+    const { padding, paddingTiers } = pageClasses ?? {}
     const joinData = DataByName(data, blocks?.form_join)
     const inviteData = DataByName(data, blocks?.form_invitation)
 
@@ -122,11 +124,17 @@ export default function PageLayout({ data, blocks, children }) {
                                 : t('create_account_page_text_request_invite')}
                         </Text>
                     </View>
-                    <PageContent>{formContent}</PageContent>
+                    {/* The frame's padding keeps the form off the screen edge at every size. */}
+                    <PageChromeProvider inset>
+                        <PageContent>{formContent}</PageContent>
+                    </PageChromeProvider>
                 </View>
             ) : (
-                <View className="flex-1">
-                    <PageContent>{formContent}</PageContent>
+                // The page padding, as on the login layout: the form is a card, not edge to edge.
+                <View className={`flex-1 ${padding ?? ''}`}>
+                    <PageChromeProvider inset={paddingTiers}>
+                        <PageContent>{formContent}</PageContent>
+                    </PageChromeProvider>
                 </View>
             )}
             <MenuFooter />
