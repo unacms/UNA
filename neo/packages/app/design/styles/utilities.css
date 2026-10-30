@@ -132,8 +132,9 @@
         @apply list-decimal pl-6 my-4;
     }
 
-    .u-vanilla-html li :is(ul, ol),
-    .u-vanilla-html-small li :is(ul, ol) {
+    /* :not([data-type]) as above, so a nested bullet list outranks that rule's my-4. */
+    .u-vanilla-html li :is(ul:not([data-type]), ol),
+    .u-vanilla-html-small li :is(ul:not([data-type]), ol) {
         @apply my-1.5;
     }
 
