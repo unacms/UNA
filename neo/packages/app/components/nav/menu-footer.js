@@ -1,8 +1,9 @@
 import { View } from 'app/design/view'
 import { appSetting, menuItemsByName, menuItemsByNameNew } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
-import { useMemo, memo } from 'react';
-import { NeoButtonLink } from 'app/design/controls'
+import { useMemo, useState, memo } from 'react';
+import { NeoButton, NeoButtonLink } from 'app/design/controls'
+import Msg from 'app/ui/molecules/dialogs/msg';
 import { useCurrentUserNoCounters } from 'app/context/user';
 import { useMenuData } from 'app/context/menu-data';
 import { useLayoutSettings } from 'app/context/layout-settings';
@@ -78,6 +79,27 @@ function MenuFooterSkeleton({ cntClasses, children, role }) {
             </View>
             {children ? <View className={FOOTER_SECTION_CLASSES}>{children}</View> : null}
         </View>
+    );
+}
+
+// An item UNA sends with a text instead of a page (Copyright, BxBaseMenuFooter::_getMenuCallbackDataAPI): it opens
+// the text in a dialog, as the site does in a popup.
+function FooterNoticeItem({ item, visualProps }) {
+    const { t } = useTranslation();
+    const [open, setOpen] = useState(false);
+
+    return (
+        <>
+            <NeoButton
+                label={t(item.title)}
+                style={visualProps.style}
+                controlSize={visualProps.controlSize}
+                className={visualProps.className}
+                textClassName={visualProps.textClassName}
+                onPress={() => setOpen(true)}
+            />
+            {open ? <Msg onVisible title={item.data.text} handleOk={() => setOpen(false)} /> : null}
+        </>
     );
 }
 
@@ -260,15 +282,19 @@ function MenuFooterComponent({
             {menu_launcher_items.length > 0 ? (
                 <View className={FOOTER_LINKS_CLASSES}>
                     {menu_launcher_items.map((item, index) => (
-                        <NeoButtonLink
-                            href={normalizeFooterHref(item.link)}
-                            key={item.link || index}
-                            label={t(item.title)}
-                            style={visualProps.style}
-                            controlSize={visualProps.controlSize}
-                            className={visualProps.className}
-                            textClassName={visualProps.textClassName}
-                        />
+                        item.display_type === 'callback' && item.data?.text ? (
+                            <FooterNoticeItem key={item.name || index} item={item} visualProps={visualProps} />
+                        ) : (
+                            <NeoButtonLink
+                                href={normalizeFooterHref(item.link)}
+                                key={item.link || index}
+                                label={t(item.title)}
+                                style={visualProps.style}
+                                controlSize={visualProps.controlSize}
+                                className={visualProps.className}
+                                textClassName={visualProps.textClassName}
+                            />
+                        )
                     ))}
                 </View>
             ) : null}

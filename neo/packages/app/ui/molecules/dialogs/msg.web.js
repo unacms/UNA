@@ -12,7 +12,7 @@ export default function ElementMsg(props) {
     }
 
     return (
-        <Modal id={'file-preview'} onVisible={props.onVisible} >
+        <Modal id={'file-preview'} onVisible={props.onVisible} onClose={() => handleOk()} >
             <View className='gap-4'>
 
                 <Row className='gap-4 min-h-24 justify-center items-center w-full bg-muted/50 rounded-lg p-4 text-card-foreground'>
