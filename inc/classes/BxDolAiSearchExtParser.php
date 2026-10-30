@@ -185,6 +185,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         }
 
         $this->_applyNumbers($aResult);
+        $this->_dropListsOfPlace($aResult);
         $this->_keywordToLists($aResult);
         $this->_dropKeywordOfLists($aResult);
 
@@ -237,7 +238,10 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
      * A keyword word that names list values ("interpreting" -> Consecutive interpreting, Simultaneous
      * interpreting; "interpreter" too, by its stem) searches those values, not the title: items are
      * tagged, their titles rarely repeat the tag. It goes to the one multi-value list field whose values
-     * have it, when the model left that field empty; all matching values are ORed.
+     * have it; all matching values are ORed. A value the model chose stays when a query word names it
+     * ("conference interpreting" -> Simultaneous); one no word names gives way ("Turkish to English
+     * interpreter": Translation becomes the interpreting values). A place word is never a tag ("Turkey"
+     * is not Turkish).
      */
     protected function _keywordToLists(array &$aResult)
     {
@@ -245,28 +249,32 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         if ($sField === '' || !isset($aResult['search_params'][$sField]))
             return;
 
-        // fields the model filled keep its choice; the others collect the matches of every word
+        $aPlace = $this->_getPlaceWords($aResult);
         $aFilled = $aResult['search_params'];
         $aFieldKeys = [];
+        $aNamedKeys = []; // model's values a query word names
         foreach ($this->_getWords((string)$aResult['search_params'][$sField]['value']) as $sToken) {
-            if (mb_strlen($sToken) < 4)
+            if (mb_strlen($sToken) < 4 || isset($aPlace[$sToken]))
                 continue;
 
             $aMatches = [];
             foreach ($this->_aFields as $sName => $aField) {
-                if ($aField['kind'] != 'list' || !$aField['multi'] || isset($aFilled[$sName]))
+                if ($aField['kind'] != 'list' || !$aField['multi'])
                     continue;
 
-                $aKeys = [];
-                foreach ($aField['values'] as $sKey => $sTitle)
-                    foreach ($this->_getWords((string)$sTitle) as $sWord)
-                        if ($this->_isSameWord($sToken, $sWord)) {
-                            $aKeys[] = (string)$sKey;
-                            break;
-                        }
+                $aKeys = $this->_getKeysOfWord($aField, $sToken);
+                if (!$aKeys)
+                    continue;
 
-                if ($aKeys)
-                    $aMatches[$sName] = $aKeys;
+                if (isset($aFilled[$sName])) {
+                    $aChosen = array_intersect(array_map('strval', (array)$aFilled[$sName]['value']), $aKeys);
+                    if ($aChosen) {
+                        $aNamedKeys[$sName] = array_merge($aNamedKeys[$sName] ?? [], $aChosen);
+                        continue 2; // the model already searches this word
+                    }
+                }
+
+                $aMatches[$sName] = $aKeys;
             }
 
             // a word found in several fields is ambiguous: it stays a keyword
@@ -274,10 +282,11 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
                 continue;
 
             $sName = (string)key($aMatches);
-            $aFieldKeys[$sName] = array_values(array_unique(array_merge($aFieldKeys[$sName] ?? [], $aMatches[$sName])));
+            $aFieldKeys[$sName] = array_merge($aFieldKeys[$sName] ?? [], $aMatches[$sName]);
         }
 
         foreach ($aFieldKeys as $sName => $aKeys) {
+            $aKeys = array_values(array_unique(array_merge($aNamedKeys[$sName] ?? [], $aKeys)));
             $aField = $this->_aFields[$sName];
             $aParam = $this->_getListParam($aField, $aKeys, (float)($aResult['confidence'][$sField] ?? self::CONFIDENCE_MIN));
 
@@ -301,6 +310,79 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
     }
 
     /**
+     * Keys of the list values that have the word, or another form of it.
+     */
+    protected function _getKeysOfWord(array $aField, string $sToken): array
+    {
+        $aKeys = [];
+        foreach ($aField['values'] as $sKey => $sTitle)
+            foreach ($this->_getWords((string)$sTitle) as $sWord)
+                if ($this->_isSameWord($sToken, $sWord)) {
+                    $aKeys[] = (string)$sKey;
+                    break;
+                }
+
+        return $aKeys;
+    }
+
+    /**
+     * Words of the place, as the query named it ("vietnam", "czech republic") and as the geocoder
+     * did; empty until the place became a location filter.
+     */
+    protected function _getPlaceWords(array $aResult): array
+    {
+        $aWords = [];
+        foreach ($aResult['chips'] as $sName => $aChip)
+            if (($this->_aFields[$sName]['kind'] ?? '') == 'location')
+                foreach ($this->_getWords((string)$aChip['label']) as $sWord)
+                    $aWords[$sWord] = true;
+        if (!$aWords || !isset($this->_aAnswers['loc_city']))
+            return $aWords;
+
+        list($sPlace) = $this->_getChoice('loc_city');
+        if ($sPlace !== '' && $sPlace != self::NONE)
+            foreach ($this->_getWords($sPlace) as $sWord)
+                $aWords[$sWord] = true;
+
+        return $aWords;
+    }
+
+    /**
+     * A list value the model took from the place alone ("Turkey" -> Language: Turkish) is dropped:
+     * all words of its label are forms of place words, and no other query word names it.
+     */
+    protected function _dropListsOfPlace(array &$aResult)
+    {
+        $aPlace = $this->_getPlaceWords($aResult);
+        if (!$aPlace)
+            return;
+
+        $aOther = [];
+        foreach ($this->_aTokens as $sToken) {
+            $sToken = mb_strtolower($sToken);
+            if (!isset($aPlace[$sToken])) // "turkish" in "Turkish translator in Turkey" names the language
+                $aOther[$sToken] = true;
+        }
+
+        foreach ($aResult['chips'] as $sName => $aChip) {
+            if (($this->_aFields[$sName]['kind'] ?? '') != 'list')
+                continue;
+
+            $aLabel = $this->_getWords((string)$aChip['label']);
+            $bOfPlace = (bool)$aLabel;
+            foreach ($aLabel as $sWord)
+                if (!$this->_isListWord($sWord, $aPlace) || $this->_isListWord($sWord, $aOther))
+                    $bOfPlace = false;
+            if (!$bOfPlace)
+                continue;
+
+            foreach ($aChip['filter_keys'] ?? [$sName] as $sKey)
+                $aResult['filters'][$sKey] = '';
+            unset($aResult['search_params'][$sName], $aResult['chips'][$sName], $aResult['confidence'][$sName]);
+        }
+    }
+
+    /**
      * A word that already became a list value ("software" -> Expertise: Software) or the place
      * ("vietnam" -> Location: Vietnam) must not also be the keyword: the text condition is ANDed and
      * would drop everything not named "software".
@@ -311,23 +393,12 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         if ($sField === '' || !isset($aResult['search_params'][$sField]))
             return;
 
-        $aWords = [];
+        // a place word leaves the keyword only once the place became a filter
+        $aWords = $this->_getPlaceWords($aResult);
         foreach ($aResult['chips'] as $sName => $aChip)
-            if (in_array($this->_aFields[$sName]['kind'] ?? '', ['list', 'location']))
+            if (($this->_aFields[$sName]['kind'] ?? '') == 'list')
                 foreach ($this->_getWords((string)$aChip['label']) as $sWord)
                     $aWords[$sWord] = true;
-        // the place as the query named it ("vietnam", "kypros"): the chip has the geocoder's name;
-        // only once the place became a filter, otherwise the word stays the keyword
-        $bLocation = false;
-        foreach ($aResult['chips'] as $sName => $aChip)
-            if (($this->_aFields[$sName]['kind'] ?? '') == 'location')
-                $bLocation = true;
-        if ($bLocation && isset($this->_aAnswers['loc_city'])) {
-            list($sPlace) = $this->_getChoice('loc_city');
-            if ($sPlace !== '' && $sPlace != self::NONE)
-                foreach ($this->_getWords($sPlace) as $sWord)
-                    $aWords[$sWord] = true;
-        }
         if (!$aWords)
             return;
 
@@ -790,8 +861,8 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         if ($bLocation && $this->_aTokens) {
             // the word is geocoded afterwards, so any language and spelling works
             $aQuestions['loc_city'] = BxDolAiJudge::choice(
-                'Which word names a place the items should be at — a city, town, area or country?' . $this->_getHint('location'),
-                $this->_tokensCriteria() + [self::NONE => 'No place in the query']
+                'Which word, or two words together, name a place the items should be at — a city, town, area or country?' . $this->_getHint('location'),
+                $this->_tokensCriteria() + $this->_placePhrasesCriteria() + [self::NONE => 'No place in the query']
             );
         }
 
@@ -815,6 +886,25 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         foreach ($this->_aTokens as $sToken)
             if (!isset($aSkip[mb_strtolower($sToken)]))
                 $aCriteria[$sToken] = 'The word "' . $sToken . '"';
+
+        return $aCriteria;
+    }
+
+    /**
+     * Two adjacent words of the query as one choice: a place is often named by two words ("Czech
+     * Republic", "New York"), and one of them alone geocodes somewhere else ("Republic" is in Kansas).
+     */
+    protected function _placePhrasesCriteria(): array
+    {
+        $aWords = preg_split('/[^\p{L}]+/u', $this->_sQuery, -1, PREG_SPLIT_NO_EMPTY);
+
+        $aCriteria = [];
+        for ($i = 0; $i + 1 < count($aWords) && count($aCriteria) < self::TOPIC_TOKENS_MAX; $i++) {
+            if (mb_strlen($aWords[$i]) < 2 || mb_strlen($aWords[$i + 1]) < 2)
+                continue;
+            $sPhrase = $aWords[$i] . ' ' . $aWords[$i + 1];
+            $aCriteria[$sPhrase] = 'The words "' . $sPhrase . '" together';
+        }
 
         return $aCriteria;
     }
@@ -1021,7 +1111,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
             $sCountry = $aCountries[$aGeo['country']] ?? '';
         }
         $sLabel = $sCountry !== ''
-            ? trim(implode(', ', array_filter([$aGeo['city'], $sCountry])))
+            ? trim(implode(', ', array_filter([$aGeo['city'], $aGeo['state'] ?? '', $sCountry])))
             : ($aGeo['label'] !== '' ? $aGeo['label'] : $sPlace);
         if ($bRadius)
             $sLabel .= ' +' . $iRadius . ' km';
@@ -1032,7 +1122,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
             (float)$aGeo['lat'],
             (float)$aGeo['lng'],
             $bRadius ? '' : $aGeo['country'],
-            '',
+            $bRadius ? '' : ($aGeo['state'] ?? ''),
             $bRadius ? '' : $aGeo['city'],
             '',
             '',
@@ -1067,7 +1157,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         $sLang = bx_lang_name();
 
         $oDb = BxDolDb::getInstance();
-        $sCacheKey = 'sys_ai_search_geo2_' . $sLang . '_' . hash('sha256', mb_strtolower($sPlace));
+        $sCacheKey = 'sys_ai_search_geo3_' . $sLang . '_' . hash('sha256', mb_strtolower($sPlace));
         $sMissKey = $sCacheKey . '_miss';
 
         $mixedCached = $oDb->getCache($sCacheKey, '');
@@ -1105,13 +1195,22 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
             }
         if (!empty($aAddress['country']) && mb_strtolower($sCity) == mb_strtolower((string)$aAddress['country']))
             $sCity = '';
+        // a region without a settlement ("Bartın" is a province, "Bavaria" a state) searches the stored state
+        $sState = '';
+        if ($sCity === '' && in_array($aLocation['addresstype'] ?? '', ['state', 'province']))
+            foreach (['state', 'province'] as $sKey)
+                if (!empty($aAddress[$sKey])) {
+                    $sState = (string)$aAddress[$sKey];
+                    break;
+                }
 
         $aResult = [
             'lat' => (float)$aLocation['lat'],
             'lng' => (float)$aLocation['lon'],
             'country' => !empty($aAddress['country_code']) ? mb_strtoupper((string)$aAddress['country_code']) : '',
+            'state' => $sState,
             'city' => $sCity,
-            'label' => trim(implode(', ', array_filter([$sCity, !empty($aAddress['country']) ? $aAddress['country'] : '']))),
+            'label' => trim(implode(', ', array_filter([$sCity, $sState, !empty($aAddress['country']) ? $aAddress['country'] : '']))),
         ];
 
         $oDb->setCache($sCacheKey, $aResult);
