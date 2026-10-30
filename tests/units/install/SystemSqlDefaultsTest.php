@@ -36,6 +36,27 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(['bg' => true, 'padding' => true, 'title' => false], $aConfig['designbox'] ?? null);
     }
 
+    public function testFooterHasThemeAndSoundsSwitchers(): void
+    {
+        // Icon-only items (no title) that open their menus above them: BxBaseMenuFooter renders the menus and shows
+        // the Theme item only where the template has a colour scheme, the Sounds item where sounds play on the site.
+        foreach (['color_scheme' => 'adjust', 'sounds' => 'volume-up'] as $sName => $sIcon) {
+            $bFound = preg_match("/\\('sys_footer', 'system', '" . $sName . "', '_sys_menu_item_title_system_" . $sName . "', '', 'javascript:void\\(0\\);', '([^']|'')*', '', '([a-z-]+)',/", self::systemSql(), $aMatch);
+
+            $this->assertSame(1, $bFound, "system.sql adds the footer's " . $sName . ' item.');
+            $this->assertStringContainsString("bx_menu_popup_inline(''#bx-menu-footer-" . str_replace('_', '-', $sName) . "'', this, {pointer: {flip: true}});", $aMatch[0]);
+            $this->assertSame($sIcon, $aMatch[2]);
+        }
+    }
+
+    public function testFooterCopyrightIsActiveInTheApi(): void
+    {
+        // The apps show the copyright notice in a dialog, from the text the footer menu sends with the item.
+        $sSql = file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-menus.sql');
+
+        $this->assertStringContainsString("UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `module`='system' AND `name`='copyright';", (string)$sSql);
+    }
+
     public function testHomepageSubmenuHasAnIconInTheApp(): void
     {
         // NEO shows a section's title with an icon: a module's own icon, else the `icon` of the submenu's App

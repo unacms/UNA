@@ -3638,6 +3638,7 @@
     <string name="_sys_menu_item_title_system_cmts_item_score"><![CDATA[Score]]></string>
     <string name="_sys_menu_item_title_system_cmts_item_vote"><![CDATA[Plus]]></string>
     <string name="_sys_menu_item_title_system_cmts_item_more"><![CDATA[More]]></string>
+    <string name="_sys_menu_item_title_system_color_scheme"><![CDATA[Theme]]></string>
     <string name="_sys_menu_item_title_system_connections"><![CDATA[Connections]]></string>
     <string name="_sys_menu_item_title_system_dashboard"><![CDATA[Dashboard]]></string>
     <string name="_sys_menu_item_title_system_home"><![CDATA[Home]]></string>

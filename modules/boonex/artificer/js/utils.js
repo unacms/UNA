@@ -94,6 +94,50 @@ BxArtificerUtils.prototype.setColorSchemeHtml = function()
 BxArtificerUtils.prototype.setColorSchemeIcon = function() 
 {
     $('.bx-sb-theme-current').html('<i class="sys-icon ' + (this.isColorSchemeDark() ? 'moon' : 'sun') + '"></i>').bxProcessHtml();
+
+    this.markColorSchemeSwitches();
+};
+
+/**
+ * The visitor's choice: 0 follows the system, 1 is light, 2 is dark (the codes of setColorScheme).
+ */
+BxArtificerUtils.prototype.getColorSchemeCode = function()
+{
+    if(!('theme' in localStorage))
+        return 0;
+
+    return localStorage.theme === 'dark' ? 2 : 1;
+};
+
+/**
+ * The footer's Theme item shows the visitor's choice (System, Light or Dark) and every colour scheme menu marks it.
+ * The Lucide iconset draws icons as <svg> with the same classes, so a drawn icon is replaced and redrawn.
+ */
+BxArtificerUtils.prototype.markColorSchemeSwitches = function()
+{
+    var iCode = this.getColorSchemeCode();
+    var sIcon = ['adjust', 'sun', 'moon'][iCode];
+    var bRedraw = false;
+
+    $('[data-bx-color-scheme-switch]').find('.sys-icon.adjust, .sys-icon.sun, .sys-icon.moon').each(function() {
+        if($(this).hasClass(sIcon))
+            return;
+
+        if(this.tagName.toLowerCase() == 'i')
+            $(this).removeClass('adjust sun moon').addClass(sIcon);
+        else {
+            $(this).replaceWith($('<i>').addClass('sys-icon ' + sIcon));
+            bRedraw = true;
+        }
+    });
+
+    $('[data-bx-color-scheme]').each(function() {
+        var bCurrent = parseInt($(this).attr('data-bx-color-scheme')) === iCode;
+        $(this).attr('aria-current', bCurrent ? 'true' : null).closest('li').toggleClass('bx-menu-tab-active', bCurrent);
+    });
+
+    if(bRedraw && typeof(bx_iconset_init_lucide) == 'function')
+        bx_iconset_init_lucide();
 };
 
 BxArtificerUtils.prototype.onColorSchemeChange = function(iCode) 

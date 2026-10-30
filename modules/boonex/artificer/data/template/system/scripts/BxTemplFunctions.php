@@ -215,21 +215,45 @@ class BxTemplFunctions extends BxBaseFunctions
 
     public function getColorSchemeSwitcher()
     {
-        $oModule = BxDolModule::getInstance($this->_sModule);
-
-        if($oModule->_oConfig->getColorScheme() != 'auto')
+        if(!$this->isColorSchemeSwitchable())
             return '';
-        
-        $aMenu = [
-            ['id' => $this->_sModule . '-css-sun', 'name' => $this->_sModule . '-css-sun', 'class' => '', 'link' => 'javascript:void(0)', 'onclick' => 'javascript:oBxArtificerUtils.setColorScheme(1)', 'target' => '_self', 'icon' => 'sun', 'title' => _t('_bx_artificer_txt_color_scheme_light')],
-            ['id' => $this->_sModule . '-css-moon', 'name' => $this->_sModule . '-css-moon', 'class' => '', 'link' => 'javascript:void(0)', 'onclick' => 'javascript:oBxArtificerUtils.setColorScheme(2)', 'target' => '_self', 'icon' => 'moon', 'title' => _t('_bx_artificer_txt_color_scheme_dark')],
-            ['id' => $this->_sModule . '-css-desktop', 'name' => $this->_sModule . '-css-desktop', 'class' => '', 'link' => 'javascript:void(0)', 'onclick' => 'javascript:oBxArtificerUtils.setColorScheme(0)', 'target' => '_self', 'icon' => 'desktop', 'title' => _t('_bx_artificer_txt_color_scheme_system')],
-        ];
-        $oMenu = new BxTemplMenu(['template' => 'menu_vertical.html', 'menu_id'=> $this->_sModule . '-css-menu', 'menu_items' => $aMenu]);
 
-        return $oModule->_oTemplate->parseHtmlByName('color_scheme_switcher.html', [
-            'popup' => $this->transBox('bx-sb-theme-switcher-menu', $oMenu->getCode(), true)
+        return BxDolModule::getInstance($this->_sModule)->_oTemplate->parseHtmlByName('color_scheme_switcher.html', [
+            'popup' => $this->getColorSchemeMenu('bx-sb-theme-switcher-menu')
         ]);
+    }
+
+    public function isColorSchemeSwitchable()
+    {
+        return BxDolModule::getInstance($this->_sModule)->_oConfig->getColorScheme() == 'auto';
+    }
+
+    /**
+     * Light, Dark and System. Each option carries its code (data-bx-color-scheme) so the visitor's choice can be
+     * marked (oBxArtificerUtils.setColorSchemeIcon); several menus can be on one page, each with its own id.
+     */
+    public function getColorSchemeMenu($sId)
+    {
+        if(!$this->isColorSchemeSwitchable())
+            return '';
+
+        $aMenu = [];
+        foreach([1 => ['sun', 'light'], 2 => ['moon', 'dark'], 0 => ['desktop', 'system']] as $iCode => list($sIcon, $sTitle))
+            $aMenu[] = [
+                'id' => $sId . '-' . $sIcon,
+                'name' => $this->_sModule . '-css-' . $sIcon,
+                'class' => '',
+                'link' => 'javascript:void(0)',
+                'onclick' => "javascript:oBxArtificerUtils.setColorScheme(" . $iCode . "); $('#" . $sId . "').dolPopupHide();",
+                'target' => '_self',
+                'icon' => $sIcon,
+                'title' => _t('_bx_artificer_txt_color_scheme_' . $sTitle),
+                'attrs_add' => 'data-bx-color-scheme="' . $iCode . '"',
+            ];
+
+        $oMenu = new BxTemplMenu(['template' => 'menu_vertical.html', 'menu_id'=> $sId . '-items', 'menu_items' => $aMenu]);
+
+        return $this->transBox($sId, $oMenu->getCode(), true);
     }
 
     protected function getInjFooterPopupMenus() 

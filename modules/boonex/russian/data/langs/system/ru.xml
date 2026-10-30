@@ -3602,6 +3602,7 @@
     <string name="_sys_menu_item_title_system_cmts_item_score"><![CDATA[Голосовать (За/Против)]]></string>
     <string name="_sys_menu_item_title_system_cmts_item_vote"><![CDATA[Голосовать (Нравится)]]></string>
     <string name="_sys_menu_item_title_system_cmts_item_more"><![CDATA[Ещё]]></string>
+    <string name="_sys_menu_item_title_system_color_scheme"><![CDATA[Тема]]></string>
     <string name="_sys_menu_item_title_system_connections"><![CDATA[Связи]]></string>
     <string name="_sys_menu_item_title_system_dashboard"><![CDATA[Панель]]></string>
     <string name="_sys_menu_item_title_system_home"><![CDATA[Домой]]></string>
