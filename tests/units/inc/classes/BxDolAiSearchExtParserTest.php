@@ -31,6 +31,13 @@ class BxDolAiSearchExtParserTestDouble extends BxDolAiSearchExtParser
         $this->_dropKeywordOfLists($aResult);
         return $aResult;
     }
+
+    public function keywordToLists(array $aResult): array
+    {
+        $this->_keywordToLists($aResult);
+        $this->_dropKeywordOfLists($aResult);
+        return $aResult;
+    }
 }
 
 /**
@@ -129,7 +136,122 @@ class BxDolAiSearchExtParserTest extends \PHPUnit\Framework\TestCase
             ['javascript', ['java'], false],
             ['dub', ['dubbing'], false],
             ['legal', ['medical'], false],
+            ['interpreter', ['interpreting'], true],
+            ['translator', ['translation'], true],
+            ['conference', ['consecutive'], false],
         ];
+    }
+
+    private function taggedFields(): array
+    {
+        return [
+            'title' => ['kind' => 'text', 'caption' => 'Title', 'search_type' => 'text', 'operator' => 'like'],
+            'labels' => ['kind' => 'list', 'caption' => 'Skills', 'multi' => true, 'search_type' => 'checkbox_set', 'operator' => 'like', 'values' => [
+                'Translation' => 'Translation',
+                'Consecutive interpreting' => 'Consecutive interpreting',
+                'Simultaneous interpreting' => 'Simultaneous interpreting',
+            ]],
+            'expertise' => ['kind' => 'list', 'caption' => 'Expertise', 'multi' => true, 'search_type' => 'checkbox_set', 'operator' => 'like', 'values' => [
+                'Textile' => 'Textile',
+                'Legal' => 'Legal',
+            ]],
+            'location' => ['kind' => 'location', 'caption' => 'Location', 'search_type' => 'location', 'operator' => 'locate'],
+        ];
+    }
+
+    private function keywordResult(string $sKeyword, array $aMore = []): array
+    {
+        $a = [
+            'keyword_field' => 'title',
+            'search_params' => ['title' => ['type' => 'text', 'value' => $sKeyword, 'operator' => 'like']],
+            'filters' => ['title' => $sKeyword],
+            'chips' => ['title' => ['field' => 'title', 'caption' => 'Title', 'label' => $sKeyword, 'value' => $sKeyword]],
+            'confidence' => ['title' => 0.9],
+        ];
+        foreach ($aMore as $sName => $aParam) {
+            $a['search_params'][$sName] = ['value' => $aParam['value']];
+            $a['chips'][$sName] = ['field' => $sName, 'label' => $aParam['label'], 'value' => $aParam['value']];
+        }
+
+        return $a;
+    }
+
+    public function testRoleWordSearchesEveryTagWithIt()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setFields($this->taggedFields());
+
+        $a = $o->keywordToLists($this->keywordResult('interpreter'));
+
+        $this->assertSame(['Consecutive interpreting', 'Simultaneous interpreting'], $a['search_params']['labels']['value']);
+        $this->assertSame(['Consecutive interpreting', 'Simultaneous interpreting'], $a['filters']['labels']);
+        $this->assertArrayNotHasKey('title', $a['search_params']);
+        $this->assertSame('', $a['keyword_field']);
+    }
+
+    public function testTagWordKeepsTheModelsChoice()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setFields($this->taggedFields());
+
+        // the model picked Simultaneous for "conference interpreting": the word does not widen it
+        $a = $o->keywordToLists($this->keywordResult('interpreting java', [
+            'labels' => ['value' => 'Simultaneous interpreting', 'label' => 'Simultaneous interpreting'],
+        ]));
+
+        $this->assertSame('Simultaneous interpreting', $a['search_params']['labels']['value']);
+        $this->assertSame('java', $a['search_params']['title']['value']);
+    }
+
+    public function testPlaceWordLeavesTheKeyword()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setFields($this->taggedFields());
+        $o->setAnswers(['loc_city' => ['choice' => 'vietnam', 'confidence' => 1]]);
+
+        $a = $o->dropKeywordOfLists($this->keywordResult('vietnam', [
+            'location' => ['value' => ['array' => [], 'string' => 'Vietnam'], 'label' => 'Vietnam'],
+        ]));
+
+        $this->assertArrayNotHasKey('title', $a['search_params']);
+        $this->assertArrayHasKey('location', $a['search_params']);
+    }
+
+    public function testTagWordsOfOneFieldAreSearchedTogether()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setFields($this->taggedFields());
+
+        $a = $o->keywordToLists($this->keywordResult('translation interpreting'));
+
+        $this->assertSame(['Translation', 'Consecutive interpreting', 'Simultaneous interpreting'], $a['search_params']['labels']['value']);
+        $this->assertArrayNotHasKey('title', $a['search_params']);
+    }
+
+    public function testPlaceWordStaysWhenNoPlaceWasFound()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setFields($this->taggedFields());
+        $o->setAnswers(['loc_city' => ['choice' => 'vietnam', 'confidence' => 1]]);
+
+        // the geocoder failed: no location filter, so the word keeps searching the title
+        $a = $o->dropKeywordOfLists($this->keywordResult('vietnam'));
+
+        $this->assertSame('vietnam', $a['search_params']['title']['value']);
+        $this->assertSame('title', $a['keyword_field']);
+    }
+
+    public function testSeveralLikeValuesAreSearchedTogether()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $aFields = $this->taggedFields();
+
+        $a = $o->call('_getListParam', $aFields['labels'], ['Consecutive interpreting', 'Simultaneous interpreting'], 0.8);
+        $this->assertSame(['Consecutive interpreting', 'Simultaneous interpreting'], $a['value']);
+        $this->assertSame('Consecutive interpreting, Simultaneous interpreting', $a['label']);
+
+        $a = $o->call('_getListParam', $aFields['labels'], ['Translation'], 0.8);
+        $this->assertSame('Translation', $a['value']);
     }
 
     public function testKeywordKeepsOnlyWordsNoListValueTook()
