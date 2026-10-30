@@ -2102,13 +2102,20 @@ $(document).ready(function() {
 /**
  * Links that only run a script carry role="button" (BxBaseMenu::_getMenuAttrs, BxDolTemplate::parseLink and the
  * action counters). Like a real button they answer the Space key too: on release, and the press doesn't scroll.
+ * Templates that draw one with its own onclick call this from onkeydown/onkeyup; the rest get it delegated below.
  */
-$(document).on('keydown', 'a[role="button"]', function(oEvent) {
-    if(oEvent.key == ' ')
-        oEvent.preventDefault();
-}).on('keyup', 'a[role="button"]', function(oEvent) {
-    if(oEvent.key == ' ')
-        this.click();
+function bx_button_key(oEvent, eButton)
+{
+    if(oEvent.key != ' ')
+        return;
+
+    oEvent.preventDefault();
+    if(oEvent.type == 'keyup')
+        eButton.click();
+}
+
+$(document).on('keydown keyup', 'a[role="button"]:not([onkeyup])', function(oEvent) {
+    bx_button_key(oEvent, this);
 });
 
 function bx_is_mouse()

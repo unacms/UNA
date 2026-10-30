@@ -129,20 +129,40 @@ class BxBaseScriptControlsTest extends BxDolTestCase
     }
 
     /**
-     * Hand-written templates with a script-only link: each one carries the role itself.
+     * Hand-written one-off controls are real buttons.
      */
-    public function testTemplateScriptLinksAreButtons(): void
+    public function testTemplateScriptControlsAreButtons(): void
     {
-        $sRoot = __DIR__ . '/../../../../';
         foreach(['modules/boonex/artificer/template/color_scheme_switcher.html', 'modules/boonex/invites/template/block_invite.html'] as $sFile) {
-            $sHtml = file_get_contents($sRoot . $sFile);
-            $this->assertNotFalse($sHtml, $sFile);
+            $sHtml = $this->templateFile($sFile);
 
-            preg_match_all('/<a\s[^>]*href="javascript:[^>]*>/', $sHtml, $aMatches);
-            $this->assertNotEmpty($aMatches[0], $sFile . ' has script links.');
-            foreach($aMatches[0] as $sAnchor)
-                $this->assertStringContainsString('role="button"', $sAnchor, $sFile);
+            $this->assertDoesNotMatchRegularExpression('/<a\s[^>]*href="javascript:/', $sHtml, $sFile . ' has no script links.');
+            $this->assertStringContainsString('<button type="button"', $sHtml, $sFile);
         }
+    }
+
+    /**
+     * Counter templates keep their links (theme CSS styles them as links) and answer the keyboard themselves.
+     */
+    public function testCounterTemplatesHandleTheKeyboard(): void
+    {
+        foreach(['template/comment_counter.html', 'template/score_counter.html', 'template/vote_counter_wrapper_reactions.html'] as $sFile) {
+            $sHtml = $this->templateFile($sFile);
+
+            // The counter's link: one line, with its conditional attributes inside.
+            $this->assertSame(1, preg_match('/<a [^\n]*sys-ac-link[^\n]*/', $sHtml, $aMatches), $sFile);
+            $this->assertStringContainsString('role="button"', $aMatches[0], $sFile);
+            $this->assertStringContainsString('onkeydown="bx_button_key(event, this)"', $aMatches[0], $sFile);
+            $this->assertStringContainsString('onkeyup="bx_button_key(event, this)"', $aMatches[0], $sFile);
+        }
+    }
+
+    private function templateFile(string $sFile): string
+    {
+        $sHtml = file_get_contents(__DIR__ . '/../../../../' . $sFile);
+        $this->assertNotFalse($sHtml, $sFile);
+
+        return $sHtml;
     }
 
     public function testCommentCounterIsAButtonOnlyWhenItRunsAScript(): void
@@ -156,7 +176,7 @@ class BxBaseScriptControlsTest extends BxDolTestCase
             $this->markTestSkipped('The comment system has no object.');
 
         $sScript = $oCmts->getCounter(['show_counter_empty' => true, 'show_script' => false, 'overwrite_counter_link_href' => 'javascript:void(0)', 'overwrite_counter_link_onclick' => 'oView.commentItem(this)']);
-        $this->assertMatchesRegularExpression('/<a class="sys-ac-link[^"]*" href="javascript:void\(0\)" role="button" onclick=/', $sScript);
+        $this->assertMatchesRegularExpression('/<a class="sys-ac-link[^"]*" href="javascript:void\(0\)" role="button"[^>]* onkeyup="bx_button_key\(event, this\)"[^>]* onclick=/', $sScript);
 
         $sLink = $oCmts->getCounter(['show_counter_empty' => true, 'show_script' => false]);
         $this->assertMatchesRegularExpression('/<a class="sys-ac-link[^"]*" href="(?!javascript:)[^"]*"/', $sLink);
