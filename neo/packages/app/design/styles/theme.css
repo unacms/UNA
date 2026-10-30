@@ -216,8 +216,11 @@
         --neo-shadow-btn-ring:           0 0 0 1px rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.06);
         --neo-shadow-btn-ring-deep:      0 0 0 1px rgb(255 255 255 / 0.14);
        
-        --neo-shadow-btn-glass:                        inset 0 2.5px 1.5px -1px rgb(255 255 255 / 1), inset 0 -2.5px 1.5px -1px rgb(255 255 255 / 1), 0 0 0 0.5px rgb(0 0 0 / 0.11), 0.5px 0 0 0 rgb(0 0 0 / 0.22), -0.5px 0 0 0 rgb(0 0 0 / 0.22), 0 1px 0 0 rgb(0 0 0 / 0.03), 0 4px 10px -2px rgb(0 0 0 / 0.03);
-        --neo-shadow-btn-glass-deep:                   inset 0 1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 -1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 4px 5px -4px rgb(255 255 255 / 0.08), inset 0 -4px 5px -4px rgb(255 255 255 / 0.08), 0 0 0 0.5px rgb(0 0 0 / 0.6);
+        /* Glass edge, as iOS draws it: a hairline that is darker at the sides, white crescents along the
+           top and bottom rims. No half-pixel offsets or spreads: at 3x they rasterize as 1 device px on
+           one side and 2 on the other, which reads as light from a corner. 0.6px is 2 px at 3x, 1 at 2x. */
+        --neo-shadow-btn-glass:                        inset 0 3px 1.5px -1.5px rgb(255 255 255 / 1), inset 0 -3px 1.5px -1.5px rgb(255 255 255 / 1), 0 0 0 0.6px rgb(0 0 0 / 0.08), 1px 0 0 -0.4px rgb(0 0 0 / 0.22), -1px 0 0 -0.4px rgb(0 0 0 / 0.22), 0 4px 10px -2px rgb(0 0 0 / 0.03);
+        --neo-shadow-btn-glass-deep:                   inset 0 1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 -1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 4px 5px -4px rgb(255 255 255 / 0.08), inset 0 -4px 5px -4px rgb(255 255 255 / 0.08), 0 0 0 0.6px rgb(0 0 0 / 0.5);
        
         --neo-shadow-btn-glass-pressed:                inset 0 0 0 1px rgb(255 255 255 / 0.50), inset 0 1px 0 0 rgb(255 255 255 / 0.50), 0 0 0 1px rgb(0 0 0 / 0.01), 0 1px 4px -1px rgb(0 0 0 / 0.1), 0 2px 8px -2px rgb(0 0 0 / 0.1);;
         --neo-shadow-btn-glass-pressed-deep:           inset 0 0 0 1px rgb(255 255 255 / 0.05), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.5), 0 2px 8px -2px rgb(0 0 0 / 0.5);
