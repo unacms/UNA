@@ -8,9 +8,14 @@ import { persistedGet, persistedSet } from 'app/lib/util/storage';
  *
  * `menu_items.menu_tabbar_logged` / `menu_tabbar_non_logged` pin them. Unset,
  * they come from UNA's tab bar menu (`menu_items.objects.tabbar`), whose item
- * visibility decides what guests and members see. The last answer is kept on
- * the device, so a cold start draws the tabs at once; until the very first
- * answer a minimal built-in set keeps the bar from being empty.
+ * visibility decides what guests and members see.
+ *
+ * Each viewer keeps the first list shown to them for the whole app run: tab
+ * pages and their history belong to the tab they opened in, so a label must
+ * not change under them. That list is the viewer's copy saved on the device
+ * by the previous run, else UNA's answer, else (UNA silent for a while, as on
+ * a first run offline) a minimal built-in set. UNA's answer always refreshes
+ * the saved copy, so a changed menu shows from the next run.
  */
 
 export type TabBarItem = {
@@ -44,11 +49,16 @@ const FALLBACK: Record<TabBarContext, TabBarItem[]> = {
     ],
 };
 
-const storageKey = (context: TabBarContext) => `tabbar-menu-${context}`;
+/** How long a viewer without a saved copy waits for UNA before the built-in set. */
+const FALLBACK_AFTER_MS = 5000;
+
+const GUEST_KEY = 'guest';
 
 const contextOf = (currentUser: any): TabBarContext => (currentUser?.id ? 'logged' : 'guest');
 
-const sessionKeyOf = (currentUser: any) => (currentUser?.id ? `user-${currentUser.id}` : 'guest');
+const viewerKeyOf = (currentUser: any) => (currentUser?.id ? `user-${currentUser.id}` : GUEST_KEY);
+
+const storageKey = (viewerKey: string) => `tabbar-menu-${viewerKey}`;
 
 function staticTabList(context: TabBarContext): TabBarItem[] | null {
     const list = appSetting('menu_items', SETTING_KEYS[context]);
@@ -87,76 +97,92 @@ export function tabBarItemsFromMenu(items: unknown): TabBarItem[] {
 }
 
 type TabBarMenuStore = {
-    lists: Partial<Record<TabBarContext, TabBarItem[]>>;
-    /** The load finished, menu or not: the built-in set is final for now. */
-    settled: Partial<Record<TabBarContext, boolean>>;
+    /** Lists by viewer (`user-<id>` / `guest`), set once per app run. */
+    lists: Record<string, TabBarItem[]>;
+    /** The member whose list the logged-in context uses. */
+    loggedKey: string | null;
 };
 
-const useTabBarMenuStore = create<TabBarMenuStore>()(() => ({ lists: {}, settled: {} }));
+const useTabBarMenuStore = create<TabBarMenuStore>()(() => ({ lists: {}, loggedKey: null }));
 
-const setList = (context: TabBarContext, list: TabBarItem[]) =>
-    useTabBarMenuStore.setState((state) => ({ lists: { ...state.lists, [context]: list } }));
+/** Show `list` to the viewer unless they already have one this run. */
+const showOnce = (viewerKey: string, list: TabBarItem[]) =>
+    useTabBarMenuStore.setState((state) => (state.lists[viewerKey]
+        ? state
+        : { lists: { ...state.lists, [viewerKey]: list } }));
 
 /** One load per viewer per app run: the menu depends on who is signed in. */
 const loads = new Map<string, Promise<void>>();
 
-function loadTabBarMenu(context: TabBarContext, sessionKey: string): Promise<void> {
+function loadTabBarMenu(context: TabBarContext, viewerKey: string): Promise<void> {
+    if (context === 'logged') useTabBarMenuStore.setState({ loggedKey: viewerKey });
     if (staticTabList(context)) return Promise.resolve();
-    const existing = loads.get(sessionKey);
+    const existing = loads.get(viewerKey);
     if (existing) return existing;
 
+    const timer = setTimeout(() => showOnce(viewerKey, FALLBACK[context]), FALLBACK_AFTER_MS);
     const promise = (async () => {
         try {
-            const cached = await persistedGet(storageKey(context));
-            if (Array.isArray(cached) && cached.length && !useTabBarMenuStore.getState().lists[context]) {
-                setList(context, cached);
+            const cached = await persistedGet(storageKey(viewerKey));
+            if (Array.isArray(cached) && cached.length) {
+                clearTimeout(timer);
+                showOnce(viewerKey, cached);
             }
         } catch {
-            // No cache: the built-in set stays until UNA answers.
+            // No saved copy: wait for UNA.
         }
         try {
             const data = await getDataForMenu({ object: appSetting('menu_items', 'objects', 'tabbar'), params: null });
             const list = tabBarItemsFromMenu(data?.items);
             if (list.length) {
-                setList(context, list);
-                persistedSet(storageKey(context), list).catch(() => {});
+                showOnce(viewerKey, list);
+                persistedSet(storageKey(viewerKey), list).catch(() => {});
             }
         } catch {
-            // Offline or UNA refused: keep the cached or built-in tabs.
+            // Offline or UNA refused: the saved copy or the built-in set stays.
         }
-        useTabBarMenuStore.setState((state) => ({ settled: { ...state.settled, [context]: true } }));
+        clearTimeout(timer);
+        showOnce(viewerKey, FALLBACK[context]);
     })();
-    loads.set(sessionKey, promise);
+    loads.set(viewerKey, promise);
     return promise;
 }
 
-/** Tab list for guests or members, read synchronously (navigation helpers). */
+function listFor(context: TabBarContext, viewerKey: string | null): TabBarItem[] {
+    return staticTabList(context)
+        ?? (viewerKey ? useTabBarMenuStore.getState().lists[viewerKey] : undefined)
+        ?? FALLBACK[context];
+}
+
+/**
+ * Tab list for guests or members, read synchronously (navigation helpers).
+ * Members: the list of the member signed in last.
+ */
 export function getTabListFor(logged: boolean): TabBarItem[] {
-    const context: TabBarContext = logged ? 'logged' : 'guest';
-    return staticTabList(context) ?? useTabBarMenuStore.getState().lists[context] ?? FALLBACK[context];
+    return logged
+        ? listFor('logged', useTabBarMenuStore.getState().loggedKey)
+        : listFor('guest', GUEST_KEY);
 }
 
 /** Tab list for this viewer, read synchronously. */
 export function getTabListForUser(currentUser: any): TabBarItem[] {
-    return getTabListFor(contextOf(currentUser) === 'logged');
+    return listFor(contextOf(currentUser), viewerKeyOf(currentUser));
 }
 
 /**
- * Tab list for this viewer; re-renders when UNA's menu arrives. `ready` is
- * false while the menu is still loading (the web bar draws placeholders); a
- * site without the menu, or a failed request, settles on the built-in set.
- * Server and first client render agree: both start without the menu.
+ * Tab list for this viewer; re-renders once their list is known. `ready` is
+ * false until then (the web bar draws placeholders, native tabs wait). Server
+ * and first client render agree: both start without the list.
  */
 export function useTabList(currentUser: any): { tabList: TabBarItem[]; ready: boolean } {
     const context = contextOf(currentUser);
-    const sessionKey = sessionKeyOf(currentUser);
+    const viewerKey = viewerKeyOf(currentUser);
     const pinned = staticTabList(context);
-    const remote = useTabBarMenuStore((state) => state.lists[context]);
-    const settled = useTabBarMenuStore((state) => !!state.settled[context]);
+    const own = useTabBarMenuStore((state) => state.lists[viewerKey]);
 
     useEffect(() => {
-        if (!pinned) loadTabBarMenu(context, sessionKey);
-    }, [pinned, context, sessionKey]);
+        if (!pinned) void loadTabBarMenu(context, viewerKey);
+    }, [pinned, context, viewerKey]);
 
-    return { tabList: pinned ?? remote ?? FALLBACK[context], ready: !!pinned || !!remote || settled };
+    return { tabList: pinned ?? own ?? FALLBACK[context], ready: !!pinned || !!own };
 }

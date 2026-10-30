@@ -119,7 +119,7 @@ export default function Tabs() {
     const pathname = usePathname();
     const { colors } = useTheme();
     const isShowTabs = (currentUser && currentUser.confirmed) || appSetting('native', 'show_tabs_non_logged')
-    const { tabList: TabList } = useTabList(currentUser);
+    const { tabList: TabList, ready: tabListReady } = useTabList(currentUser);
 
     const tabsSessionKey = getTabsSessionKey(currentUser);
 
@@ -257,7 +257,8 @@ export default function Tabs() {
             : <Text>OfflineScreen</Text>;
     }
 
-    if (!fontsReady || currentUser === null) {
+    // The tabs open with the list they keep for the session (lib/navigation/tab-bar-menu).
+    if (!fontsReady || currentUser === null || !tabListReady) {
         return null;
     }
 

@@ -1,4 +1,4 @@
-import { getTabListFor } from 'app/lib/navigation/tab-bar-menu';
+import { getTabListFor, getTabListForUser } from 'app/lib/navigation/tab-bar-menu';
 import { peekTabLastUrl } from 'app/lib/navigation/tab-history';
 import { splitTabBarItems } from 'app/components/nav/tabs/tab-menu';
 
@@ -20,7 +20,7 @@ function getMenu(logged: boolean): TabMenuItem[] {
  */
 export function resolveTabPageUrl(tabKey: string, url: string | null | undefined, currentUser: TabUser, pushed: boolean): string | null | undefined {
     const logged = !!currentUser;
-    const tabList = getMenu(logged);
+    const tabList = getTabListForUser(currentUser);
     let path = url;
 
     // A native press on the More tab (switching to it or re-tapping it) is

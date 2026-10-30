@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { useCurrentUser } from 'app/context/user'
-import { menuItemsByName, menuItemsByNameNew, appSetting, flattenMenuItemsForDropdown, mergeNavbarMoreWithLauncher, navbarItemsFromSiteMenu } from 'app/lib/util'
+import { menuItemsByName, menuItemsByNameNew, appSetting, flattenMenuItemsForDropdown, mergeNavbarMoreWithLauncher, navbarItemsFromSiteMenu, navbarMoreItem } from 'app/lib/util'
 import { useTranslation } from 'react-i18next'
 import { components } from 'app/components/registry';
 import { useMenuData } from 'app/context/menu-data';
@@ -45,13 +45,18 @@ export default function MenuTop({ url, uri }) {
             currentUser
         );
         // The launcher's apps belong in More; other dropdowns keep their own items.
-        return items.map((item) => {
-            if (item?.name !== 'more' || !item?.items?.length) return item;
+        const merged = items.map((item) => {
+            if (item?.name !== 'more' || (!item?.items?.length && !launcherItems.length)) return item;
             return {
                 ...item,
-                items: mergeNavbarMoreWithLauncher(item.items, launcherItems),
+                items: mergeNavbarMoreWithLauncher(item.items || [], launcherItems),
             };
         });
+        // No More of its own (the site menu fits in the tabs): the apps still get one.
+        if (launcherItems.length && !merged.some((item) => item?.name === 'more')) {
+            merged.push(navbarMoreItem(mergeNavbarMoreWithLauncher([], launcherItems)));
+        }
+        return merged;
     }, [currentUser, launcherItems, useSiteMenu, siteMenuData, staticNavbar, siteTabs]);
 
     // Compute active index based on current route

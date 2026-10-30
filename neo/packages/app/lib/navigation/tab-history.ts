@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import { usePathname } from 'app/lib/hooks/router';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
-import { getTabListFor } from 'app/lib/navigation/tab-bar-menu';
+import { getTabListForUser } from 'app/lib/navigation/tab-bar-menu';
 import { useBottomSheetStore } from 'app/context/bottomsheet';
 import { getSelectedTabKey, getTabKeyFromPathname, parseTabKey, setSelectedTabKey } from 'app/lib/navigation/tab-path';
 
@@ -95,7 +95,7 @@ function getTabIndex(tabKey: string | null | undefined = '/tab0') {
 }
 
 function getTabRootUrl(tabKey: string | null | undefined, currentUser: unknown) {
-    const tabList = getTabListFor(!!currentUser);
+    const tabList = getTabListForUser(currentUser);
     const tab = tabList[getTabIndex(tabKey)];
     if (!tab) {
         return '/home';

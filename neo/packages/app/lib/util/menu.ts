@@ -299,10 +299,13 @@ export function navbarItemsFromSiteMenu(items: MenuItemList, maxTabs: number): M
     });
 
     const out: MenuItem[] = [{ name: 'home', title: 'Home', link: '/', icon: 'House', animated: true }, ...tabs];
-    if (more.length) {
-        out.push({ name: 'more', title: 'More', link: '', icon: 'Menu', showTitle: false, chevron: '', animated: true, items: more });
-    }
+    if (more.length) out.push(navbarMoreItem(more));
     return out;
+}
+
+/** The navbar's More dropdown holding `items`. */
+export function navbarMoreItem(items: MenuItem[]): MenuItem {
+    return { name: 'more', title: 'More', link: '', icon: 'Menu', showTitle: false, chevron: '', animated: true, items };
 }
 
 const DROPDOWN_SECTION_MIN = 240; // w-60

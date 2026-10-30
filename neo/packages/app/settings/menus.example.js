@@ -65,7 +65,6 @@ export const settingsMenus = {
             cog: 'Cog',
             'sign-out-alt': 'LogOut',
             clock: 'Clock',
-            'item-share': 'Share2',
             'item-copy': 'Clipboard',
             'item-repost': 'RotateCw',
             'video-camera': 'Video',
