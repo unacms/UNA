@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import type { HtmlStyle } from 'react-native-enriched-html'
+import { useCSSVariable } from 'uniwind'
 import { appSetting } from 'app/lib/util'
 import { useThemeValue } from 'app/design/theme'
 
@@ -13,25 +14,56 @@ const HEADINGS = {
 }
 
 /**
+ * Colours of `.u-vanilla-html` from the theme tokens, with the stock palette's values
+ * as fallbacks: body text (`--secondary-foreground`), links (`--accent-foreground`),
+ * and rules such as the quote bar (`--border`).
+ */
+export function useRichTextColors() {
+    const [text, link, border] = useCSSVariable([
+        '--color-secondary-foreground',
+        '--color-accent-foreground',
+        '--color-border',
+    ])
+    const fallback = useThemeValue(
+        { text: 'rgb(82, 82, 91)', link: 'rgb(29, 78, 216)', border: 'rgb(212, 212, 216)', code: 'rgba(10, 10, 12, 0.07)' },
+        { text: 'rgb(161, 161, 170)', link: 'rgb(96, 165, 250)', border: 'rgb(63, 63, 70)', code: 'rgba(250, 250, 252, 0.07)' },
+    )
+    return {
+        text: (text as string) || fallback.text,
+        link: (link as string) || fallback.link,
+        border: (border as string) || fallback.border,
+        code: fallback.code,
+    }
+}
+
+/**
  * One `htmlStyle` for the enriched editor and the native `Html` atom, so a post
  * looks the same while it is written and once it is published.
  */
 export function useEnrichedHtmlStyle({ small = false }: { small?: boolean } = {}): HtmlStyle {
     const themeKey = useThemeValue('light', 'dark')
-    const mentionColorFallback = useThemeValue('rgba(29, 78, 216, 1)', 'rgba(96, 165, 250, 1)')
+    const colors = useRichTextColors()
 
     return useMemo(() => {
         const mentionCfg = appSetting('editor', 'mention') || {}
-        const color = mentionCfg.editor_color?.[themeKey] || mentionColorFallback
+        const color = mentionCfg.editor_color?.[themeKey] || colors.link
         const backgroundColor = mentionCfg.editor_background?.[themeKey] || 'transparent'
         // Keyed per indicator: a flat object lands under an internal '_default' key
         // that native never matches, so it falls back to blue-on-yellow.
         const mention = { color, backgroundColor, textDecorationLine: 'none' as const }
         const [h1, h2, h3, h4, h5, h6] = small ? HEADINGS.small : HEADINGS.base
         return {
-            // No underline on links/mentions/tags — color alone marks them.
-            a: { color, textDecorationLine: 'none' },
+            // Links are underlined, as on web: the accent is as light as the body text,
+            // so colour alone doesn't mark them (WCAG 1.4.1). Mentions and tags aren't.
+            a: { color, textDecorationLine: 'underline' },
             mention: { '@': mention, '#': mention },
+            // Text starts 24px in, as on web (`pl-6`): margin + bullet + gap, and for
+            // numbers margin (the marker's centre) + gap.
+            ul: { bulletColor: colors.text, bulletSize: 6, marginLeft: 12, gapWidth: 6 },
+            ol: { markerColor: colors.text, marginLeft: 12, gapWidth: 12 },
+            blockquote: { borderColor: colors.border, borderWidth: 4, gapWidth: 16, color: colors.text },
+            code: { color: colors.text, backgroundColor: colors.code },
+            codeblock: { color: colors.text, backgroundColor: colors.code, borderRadius: 8 },
             h1: { fontSize: h1, bold: true },
             h2: { fontSize: h2, bold: true },
             h3: { fontSize: h3, bold: true },
@@ -39,5 +71,5 @@ export function useEnrichedHtmlStyle({ small = false }: { small?: boolean } = {}
             h5: { fontSize: h5, bold: true },
             h6: { fontSize: h6, bold: true },
         }
-    }, [themeKey, mentionColorFallback, small])
+    }, [themeKey, colors.link, colors.text, colors.border, colors.code, small])
 }

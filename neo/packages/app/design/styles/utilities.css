@@ -119,15 +119,22 @@
         margin-bottom: 12px !important;
     }
 
-    /* Checkbox lists (data-type) draw their own boxes. */
+    /* Lists: text indented 1.5rem with the marker in the indent, the paragraph gap
+     * around a list and 6px between items; UNA's .bx-def-vanilla-html matches.
+     * Checkbox lists (data-type) draw their own boxes. */
     .u-vanilla-html ul:not([data-type]),
     .u-vanilla-html-small ul:not([data-type]) {
-        @apply list-disc pl-5 my-2;
+        @apply list-disc pl-6 my-4;
     }
 
     .u-vanilla-html ol,
     .u-vanilla-html-small ol {
-        @apply list-decimal pl-5 my-2;
+        @apply list-decimal pl-6 my-4;
+    }
+
+    .u-vanilla-html li :is(ul, ol),
+    .u-vanilla-html-small li :is(ul, ol) {
+        @apply my-1.5;
     }
 
     .u-vanilla-html li,
@@ -411,12 +418,18 @@
         -webkit-overflow-scrolling: touch;
     }
 
+    /* Links are underlined: the accent is as light as the body text, so colour alone
+     * doesn't mark them (WCAG 1.4.1). Mentions and tags (.bx-mention-link, .bx-tag)
+     * keep their own style. */
     .u-vanilla-html A,
     .u-vanilla-html .link {
         @apply text-accent-foreground;
         overflow-wrap: anywhere;
         word-break: break-word;
-        text-decoration: none;
+        text-decoration-line: underline;
+        text-decoration-thickness: from-font;
+        text-underline-offset: 0.2em;
+        text-decoration-color: color-mix(in srgb, currentColor 50%, transparent);
         cursor: pointer;
     }
 
@@ -425,7 +438,10 @@
         @apply text-accent-foreground;
         overflow-wrap: anywhere;
         word-break: break-word;
-        text-decoration: none;
+        text-decoration-line: underline;
+        text-decoration-thickness: from-font;
+        text-underline-offset: 0.2em;
+        text-decoration-color: color-mix(in srgb, currentColor 50%, transparent);
         cursor: pointer;
     }
 
@@ -433,7 +449,7 @@
     .u-vanilla-html .link:hover,
     .u-vanilla-html-small A:hover,
     .u-vanilla-html-small .link:hover {
-        text-decoration: underline;
+        text-decoration-color: currentColor;
     }
     }
 
