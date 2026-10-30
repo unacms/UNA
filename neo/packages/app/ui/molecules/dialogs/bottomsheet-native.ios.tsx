@@ -25,7 +25,7 @@ import { getNativeIcon } from 'app/design/controls/neo-button/neo-button-expoui'
 import { useNativeTokenColor } from 'app/design/controls/neo-button/native-style-colors';
 import { appSetting, isEmoji, resolveMenuItemDescription } from 'app/lib/util';
 import { Icon } from 'app/ui/atoms/icon';
-import GorhomBottomSheet from './bottomsheet-gorhom';
+import GorhomBottomSheet from './bottomsheet-content';
 
 type SFSymbol = NonNullable<ComponentProps<typeof Image>['systemName']>;
 type SheetRequest = Exclude<BottomSheetData, false | null>;
@@ -41,7 +41,8 @@ const DEFAULT_DETENTS: PresentationDetent[] = ['medium', 'large'];
  * iOS: bottom sheets (`setBottomSheetData`) as a native SwiftUI sheet on the system Liquid
  * Glass material (`theme.expo_ui.bottom_sheet`). A menu's rows (`menu`, from DropdownMenu)
  * are drawn natively and the sheet fits them; other content is hosted in the sheet, sized by
- * its `snapPoints`. `modal` requests and `bottom_sheet: false` use the JS sheet.
+ * its `snapPoints`. `modal` requests and `bottom_sheet: false` use the JS sheet
+ * (bottomsheet-content.js), which Android always uses (bottomsheet-native.tsx).
  */
 export default function ElementBottomSheetContent() {
     const { bottomSheetData, setBottomSheetData } = useBottomSheetData();

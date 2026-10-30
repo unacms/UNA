@@ -390,7 +390,7 @@ function DropdownMenuPopup({
 /**
  * A row chosen in a menu bottom sheet: closes the sheet, then runs `onSelect`, or opens the
  * item's modal, external link or page. Shared by the JS sheet (MenuBottomSheet) and the rows
- * a native sheet draws from the sheet's `menu` (ui/molecules/dialogs/bottomsheet-content.ios.tsx).
+ * a native sheet draws from the sheet's `menu` (ui/molecules/dialogs/bottomsheet-native.ios.tsx).
  */
 function useMenuSheetPress({ onSelect, resolveContent, setBottomSheetData, redirectRef }: Pick<DropdownMenuProps, 'onSelect' | 'resolveContent'> & {
     setBottomSheetData: (data: any) => void;
