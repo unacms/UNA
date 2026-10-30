@@ -143,6 +143,8 @@ class BxDolAiSearchExtParserTest extends \PHPUnit\Framework\TestCase
             ['javascript', ['java'], false],
             ['dub', ['dubbing'], false],
             ['legal', ['medical'], false],
+            ['textual', ['textile'], false],
+            ['film', ['films'], true],
             ['interpreter', ['interpreting'], true],
             ['translator', ['translation'], true],
             ['conference', ['consecutive'], false],
@@ -297,6 +299,11 @@ class BxDolAiSearchExtParserTest extends \PHPUnit\Framework\TestCase
         $o->setQuery('Turkish translator in Turkey');
         $a = $o->keywordToLists($this->turkeyResult('translator', $aLanguage));
         $this->assertSame('tr', $a['search_params']['language']['value']);
+
+        // a language that does not start like the place stays
+        $o->setQuery('Turkey');
+        $a = $o->keywordToLists($this->turkeyResult('turkey', ['language' => ['value' => 'en', 'label' => 'English']]));
+        $this->assertSame('en', $a['search_params']['language']['value']);
     }
 
     public function testTwoWordPlacesAreOffered()
