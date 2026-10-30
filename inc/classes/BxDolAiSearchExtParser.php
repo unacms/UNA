@@ -194,8 +194,9 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
 
     /**
      * Two forms of one word ("politic" / "politics", "interpreter" / "interpreting", "translator" /
-     * "translation"): they share a stem of 4+ letters and each adds at most WORD_SUFFIX_MAX letters
-     * after it. A distinct word stays ("java" is not "javascript").
+     * "translation", "film" / "films"): they share a stem of 5+ letters, or one is the other plus an
+     * ending, and each adds at most WORD_SUFFIX_MAX letters after it. A distinct word stays ("java" is
+     * not "javascript", "textual" is not "textile").
      */
     protected function _isSameWord(string $sA, string $sB): bool
     {
@@ -204,11 +205,21 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
 
         $iA = mb_strlen($sA);
         $iB = mb_strlen($sB);
+        $iCommon = $this->_getCommonPrefix($sA, $sB);
+
+        return ($iCommon >= 5 || ($iCommon >= 4 && $iCommon == min($iA, $iB)))
+            && max($iA, $iB) - $iCommon <= self::WORD_SUFFIX_MAX;
+    }
+
+    protected function _getCommonPrefix(string $sA, string $sB): int
+    {
+        $iA = mb_strlen($sA);
+        $iB = mb_strlen($sB);
         $iCommon = 0;
         while ($iCommon < $iA && $iCommon < $iB && mb_substr($sA, $iCommon, 1) === mb_substr($sB, $iCommon, 1))
             $iCommon++;
 
-        return $iCommon >= 4 && max($iA, $iB) - $iCommon <= self::WORD_SUFFIX_MAX;
+        return $iCommon;
     }
 
     /**
@@ -349,11 +360,13 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
 
     /**
      * A list value the model took from the place alone ("Turkey" -> Language: Turkish) is dropped:
-     * all words of its label are forms of place words, and no other query word names it.
+     * the place is a country, the label starts like the country's name (3+ letters: Turkey / Turkish,
+     * Spain / Spanish), and no other query word names it. A city never names a language ("Farsi
+     * speakers in Perth" keeps Persian).
      */
     protected function _dropListsOfPlace(array &$aResult)
     {
-        $aPlace = $this->_getPlaceWords($aResult);
+        $aPlace = $this->_isCountryOnly($aResult) ? $this->_getPlaceWords($aResult) : [];
         if (!$aPlace)
             return;
 
@@ -368,18 +381,38 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
             if (($this->_aFields[$sName]['kind'] ?? '') != 'list')
                 continue;
 
-            $aLabel = $this->_getWords((string)$aChip['label']);
-            $bOfPlace = (bool)$aLabel;
-            foreach ($aLabel as $sWord)
-                if (!$this->_isListWord($sWord, $aPlace) || $this->_isListWord($sWord, $aOther))
-                    $bOfPlace = false;
-            if (!$bOfPlace)
+            $bOfPlace = false;
+            $bNamed = false;
+            foreach ($this->_getWords((string)$aChip['label']) as $sWord) {
+                foreach ($aPlace as $sPlace => $b)
+                    if ($this->_getCommonPrefix($sWord, (string)$sPlace) >= 3)
+                        $bOfPlace = true;
+                if ($this->_isListWord($sWord, $aOther))
+                    $bNamed = true;
+            }
+            if (!$bOfPlace || $bNamed)
                 continue;
 
             foreach ($aChip['filter_keys'] ?? [$sName] as $sKey)
                 $aResult['filters'][$sKey] = '';
             unset($aResult['search_params'][$sName], $aResult['chips'][$sName], $aResult['confidence'][$sName]);
         }
+    }
+
+    /**
+     * The location filter is a whole country: a country code, no state and no city.
+     */
+    protected function _isCountryOnly(array $aResult): bool
+    {
+        foreach ($aResult['chips'] as $sName => $aChip) {
+            if (($this->_aFields[$sName]['kind'] ?? '') != 'location')
+                continue;
+
+            $aValue = $aChip['value']['array'] ?? [];
+            return ($aValue[2] ?? '') !== '' && ($aValue[3] ?? '') === '' && ($aValue[4] ?? '') === '';
+        }
+
+        return false;
     }
 
     /**
@@ -1195,9 +1228,10 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
             }
         if (!empty($aAddress['country']) && mb_strtolower($sCity) == mb_strtolower((string)$aAddress['country']))
             $sCity = '';
-        // a region without a settlement ("Bartın" is a province, "Bavaria" a state) searches the stored state
+        // a region without a settlement ("Bartın" is a province, "Bavaria" a state) searches the stored
+        // state; a country query has neither in its address
         $sState = '';
-        if ($sCity === '' && in_array($aLocation['addresstype'] ?? '', ['state', 'province']))
+        if ($sCity === '')
             foreach (['state', 'province'] as $sKey)
                 if (!empty($aAddress[$sKey])) {
                     $sState = (string)$aAddress[$sKey];
