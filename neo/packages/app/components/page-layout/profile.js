@@ -6,6 +6,7 @@ import { useCurrentUser } from 'app/context/user';
 import { subscribe } from 'app/ui/atoms/socket';
 import { patchCachedPageDataByUrl } from 'app/lib/cache/native-tab-page-cache';
 import emitter, { EVENTS } from 'app/context/emitter';
+import { withInformerBlock } from 'app/components/elements/informer';
 
 const ConductorMemo = memo(Conductor, (prev, next) => (
     prev.ts === next.ts && prev.data?.timestamp === next.data?.timestamp
@@ -14,14 +15,8 @@ const ConductorMemo = memo(Conductor, (prev, next) => (
 // Informers ("This project was archived.") come with the page (data.user.informer) and go
 // first in the main column: the conductor joins cell_top and cell_center into it
 // (conductor/helpers.js processParsedUrl). Tabs loaded on switch get it through prepareData.
-// layout.web.js leaves out its bottom bar here.
-function withInformer(data) {
-    const informer = data?.user?.informer;
-    if (!informer?.length) return data;
-    const top = Array.isArray(data.elements?.cell_top) ? data.elements.cell_top : [];
-    const block = { id: 'informer', designbox_id: 0, source: 'system:informer', content: [{ type: 'informer', data: informer }] };
-    return { ...data, elements: { ...data.elements, cell_top: [block, ...top] } };
-}
+// layout.web.js leaves out its top informers here.
+const withInformer = withInformerBlock;
 
 export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
     const [pageData, setPageData] = useState(data);

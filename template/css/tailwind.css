@@ -1531,9 +1531,12 @@
     }
 
 
-    /* Common elements: Informers */
+    /* Common elements: Informers. A message sits in the page like a block: the page wrapper's gutter (informer.html),
+       the block's corners and padding (bx-def-border-radius-block, bx-content-padding-block on each message). The
+       36px icon, the first line of the text and the 36px button line up at the top; the button stays on the right
+       while the text has room for 15rem beside it, and goes under the text when it does not. */
     .bx-informer-msg {
-        @apply flex items-center gap-3 py-3 px-4 rounded-xl ring-1 ring-inset text-sm leading-5;
+        @apply flex items-start gap-3 ring-1 ring-inset text-sm leading-5;
     }
     .bx-informer-indicator {
         @apply flex-none flex items-center justify-center w-9 h-9 rounded-full;
@@ -1541,8 +1544,11 @@
     .bx-informer-indicator .sys-icon {
         @apply w-5 h-5 leading-5 text-xl text-center;
     }
+    .bx-informer-body {
+        @apply flex-1 min-w-0 flex flex-wrap items-start gap-x-4 gap-y-3;
+    }
     .bx-informer-content {
-        @apply flex-1 min-w-0 font-medium;
+        @apply flex-1 basis-60 min-w-0 py-2 font-medium;
     }
     .bx-informer-content a:not(.bx-btn) {
         @apply font-semibold underline underline-offset-2 text-inherit hover:opacity-80; /* the message colour keeps 4.5:1 on the tinted plates; the site link blue does not on yellow */
