@@ -141,7 +141,7 @@ function replaceEnrichedHtmlHook(fileStem, shimFile) {
 const tiptapReactRealPath = resolveFromPackage('@tiptap/react', 'dist/index.js');
 const enrichedUseOnEditorChangeRealPath = resolveFromPackage(
     'react-native-enriched-html',
-    'lib/module/web/useOnEditorChange.js'
+    'lib/module/web/tiptapWatchers/useOnEditorChange.js'
 );
 const enrichedUseMentionEventsRealPath = resolveFromPackage(
     'react-native-enriched-html',
