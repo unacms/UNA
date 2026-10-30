@@ -1,4 +1,4 @@
-import { useState, type ComponentProps } from 'react';
+import { useState, type ComponentProps, type ReactNode } from 'react';
 import { ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { BottomSheet, Button, Divider, Group, HStack, Host, Image, RNHostView, Spacer, Text, VStack } from '@expo/ui/swift-ui';
@@ -68,18 +68,29 @@ export default function ElementBottomSheetContent() {
                 onDismiss={() => setShown(null)}
                 fitToContents={!!data?.menu}
             >
-                {data?.menu ? (
-                    <MenuSheet menu={data.menu} />
-                ) : data ? (
-                    <ContentSheet data={data} onClose={close} />
-                ) : null}
+                {sheetBody(data, close)}
             </BottomSheet>
         </Host>
     );
 }
 
+function sheetBody(data: SheetRequest | null, close: () => void) {
+    if (!data) return null;
+    if (data.menu) return <MenuSheet menu={data.menu} />;
+    return <ContentSheet data={data} onClose={close} />;
+}
+
+/** A row's or sheet's title as text; React elements are left out (they never get native rows). */
+function textOf(value: unknown): string {
+    return typeof value === 'string' || typeof value === 'number' ? String(value) : '';
+}
+
+function rowKey(item: BottomSheetMenuItem, index: number): string {
+    return textOf(item.id) || textOf(item.name) || String(index);
+}
+
 /** A menu's rows, like the iOS More sheet: icon, title, a checkmark on the chosen one. */
-function MenuSheet({ menu }: { menu: BottomSheetMenu }) {
+function MenuSheet({ menu }: Readonly<{ menu: BottomSheetMenu }>) {
     const check = useNativeTokenColor('text-accent-foreground') as string | undefined;
     // Rows without an icon keep its space when others have one, so the titles line up.
     const reserveIcon = menu.items.some((item) => item.icon && item.type !== 'group_header');
@@ -87,7 +98,7 @@ function MenuSheet({ menu }: { menu: BottomSheetMenu }) {
         <Group modifiers={[presentationDragIndicator('hidden')]}>
             <VStack spacing={2} modifiers={[padding({ horizontal: 12, top: 20, bottom: 8 })]}>
                 {menu.items.map((item, index) => {
-                    const key = String(item.id ?? item.name ?? index);
+                    const key = rowKey(item, index);
                     if (item.type === 'separator') {
                         return <Divider key={key} modifiers={[padding({ horizontal: 16, vertical: 8 })]} />;
                     }
@@ -102,7 +113,7 @@ function MenuSheet({ menu }: { menu: BottomSheetMenu }) {
                                     frame({ maxWidth: Infinity, alignment: 'leading' }),
                                 ]}
                             >
-                                {String(item.title ?? '')}
+                                {textOf(item.title)}
                             </Text>
                         );
                     }
@@ -113,8 +124,11 @@ function MenuSheet({ menu }: { menu: BottomSheetMenu }) {
     );
 }
 
-function MenuRow({ item, check, reserveIcon, onPress }: { item: BottomSheetMenuItem; check?: string; reserveIcon: boolean; onPress: () => void }) {
+function MenuRow({ item, check, reserveIcon, onPress }: Readonly<{ item: BottomSheetMenuItem; check?: string; reserveIcon: boolean; onPress: () => void }>) {
     const description = resolveMenuItemDescription(item);
+    let icon: ReactNode = null;
+    if (item.icon) icon = <RowIcon icon={item.icon} />;
+    else if (reserveIcon) icon = <Spacer modifiers={[frame({ width: ICON_PT, height: ICON_PT })]} />;
     return (
         <Button onPress={onPress} modifiers={[buttonStyle('plain'), ...(item.selected ? [accessibilityAddTraits(['isSelected'])] : [])]}>
             <HStack
@@ -125,9 +139,9 @@ function MenuRow({ item, check, reserveIcon, onPress }: { item: BottomSheetMenuI
                     contentShape(shapes.capsule()),
                 ]}
             >
-                {item.icon ? <RowIcon icon={item.icon} /> : reserveIcon ? <Spacer modifiers={[frame({ width: ICON_PT, height: ICON_PT })]} /> : null}
+                {icon}
                 <VStack alignment="leading" spacing={2}>
-                    <Text modifiers={[font({ size: 17, weight: 'medium' }), lineLimit(1)]}>{String(item.title ?? '')}</Text>
+                    <Text modifiers={[font({ size: 17, weight: 'medium' }), lineLimit(1)]}>{textOf(item.title)}</Text>
                     {description ? (
                         <Text
                             modifiers={[
@@ -154,7 +168,7 @@ function MenuRow({ item, check, reserveIcon, onPress }: { item: BottomSheetMenuI
  * any other icon NEO can draw (a language glyph, a fork's own SVG) is hosted as its `Icon`.
  * Decorative: the row's title names it (an asset image would read as its asset name).
  */
-function RowIcon({ icon }: { icon: string }) {
+function RowIcon({ icon }: Readonly<{ icon: string }>) {
     const hidden = accessibilityHidden();
     const box = frame({ width: ICON_PT, height: ICON_PT });
     if (isEmoji(icon)) {
@@ -176,11 +190,12 @@ function RowIcon({ icon }: { icon: string }) {
 }
 
 /** Any other content: a title row with a glass close button, then the content, scrolling within the detent. */
-function ContentSheet({ data, onClose }: { data: SheetRequest; onClose: () => void }) {
+function ContentSheet({ data, onClose }: Readonly<{ data: SheetRequest; onClose: () => void }>) {
     const { t } = useTranslation();
-    const { title, header, content, footer, isListView, showClose = true } = data as SheetRequest & {
-        title?: unknown; header?: React.ReactNode; footer?: React.ReactNode; isListView?: boolean;
+    const { header, content, footer, isListView, showClose = true } = data as SheetRequest & {
+        header?: ReactNode; footer?: ReactNode; isListView?: boolean;
     };
+    const title = textOf(data.title);
     const detents = toDetents(data.snapPoints);
     // Opens at the second snap point, as the JS sheet did (its `index={1}`).
     const [detent, setDetent] = useState<PresentationDetent>(detents[Math.min(1, detents.length - 1)] ?? 'medium');
@@ -196,7 +211,7 @@ function ContentSheet({ data, onClose }: { data: SheetRequest; onClose: () => vo
                 {hasTitleRow ? (
                     <HStack modifiers={[padding({ leading: 16, trailing: 12, top: 16, bottom: 4 })]}>
                         {title ? (
-                            <Text modifiers={[font({ size: 20, weight: 'bold' }), lineLimit(1)]}>{String(title)}</Text>
+                            <Text modifiers={[font({ size: 20, weight: 'bold' }), lineLimit(1)]}>{title}</Text>
                         ) : null}
                         <Spacer />
                         {showClose ? (
@@ -211,13 +226,13 @@ function ContentSheet({ data, onClose }: { data: SheetRequest; onClose: () => vo
                 ) : null}
                 <RNHostView>
                     <View style={{ flex: 1 }}>
-                        {header as React.ReactNode}
+                        {header}
                         {isListView ? (
                             content
                         ) : (
                             <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 8 }}>
                                 {content}
-                                {footer as React.ReactNode}
+                                {footer}
                             </ScrollView>
                         )}
                     </View>
@@ -235,7 +250,7 @@ function toDetents(snapPoints: (string | number)[] | undefined): PresentationDet
             detents.set(`h${point}`, { height: point });
             continue;
         }
-        const fraction = parseFloat(point) / 100;
+        const fraction = Number.parseFloat(point) / 100;
         if (!Number.isFinite(fraction) || fraction < MIN_FRACTION) continue;
         if (fraction >= 0.9) detents.set('large', 'large');
         else detents.set(`f${fraction}`, { fraction });

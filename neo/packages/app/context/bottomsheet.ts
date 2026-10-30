@@ -4,7 +4,8 @@ import { create } from 'zustand';
 /** A menu row in a bottom sheet (a DropdownMenu item). */
 export type BottomSheetMenuItem = {
     id?: string | number;
-    type?: 'group_header' | 'separator' | string;
+    /** 'group_header' and 'separator' rows structure the menu. */
+    type?: string;
     title?: unknown;
     icon?: string;
     selected?: boolean;

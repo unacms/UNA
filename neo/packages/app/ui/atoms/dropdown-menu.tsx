@@ -387,6 +387,11 @@ function DropdownMenuPopup({
     );
 }
 
+/** A row a native sheet can draw itself: its title is text, not a React element. */
+function hasTextTitle(item: DropdownMenuItemData): boolean {
+    return item.title == null || typeof item.title === 'string' || typeof item.title === 'number';
+}
+
 /**
  * A row chosen in a menu bottom sheet: closes the sheet, then runs `onSelect`, or opens the
  * item's modal, external link or page. Shared by the JS sheet (MenuBottomSheet) and the rows
@@ -513,8 +518,9 @@ function DropdownMenuNative({
                         setBottomSheetData={setBottomSheetData}
                     />
                 ),
-                // The rows as data, for a sheet that draws them natively (iOS); a grid stays `content`.
-                ...(variant === 'grid' ? {} : { menu: { items, onPress: pressItem } }),
+                // The rows as data, for a sheet that draws them natively (iOS). A grid, or rows that are
+                // custom React controls (DynamicMenu's MenuItemEx, MenuAccount's profile switcher), stay `content`.
+                ...(variant !== 'grid' && items.every(hasTextTitle) ? { menu: { items, onPress: pressItem } } : {}),
             });
             Keyboard.dismiss();
         }
