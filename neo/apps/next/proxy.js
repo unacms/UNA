@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server'
 import { APP_URL, UNA_URL, UNA_API_KEY, MULTITENANT, PREVIEW_DOMAIN, PREVIEW_API_KEY, joinUnaUrl } from 'app/config';
 import { getDomainByHostname } from './lib/domains/domains';
 import { dropForeignClientHeaders, resolveEdge } from './lib/client-headers';
+import {
+    SESSION_MARK_AGE, SESSION_RETRY_AGE, SESSION_TOUCH_PATH, SESSION_TOUCH_TIMEOUT_MS,
+    applySetCookies, hasStaleSessionMark, needsSessionTouch, sessionMarkCookie,
+} from './lib/session-touch';
 
 export const config = {
     // Skip /.well-known/* so Digital Asset Links / AASA hit App Router routes
@@ -90,6 +94,46 @@ function cookieHeaderFromRequest(request) {
         cookieString += item.name + '=' + encodeURIComponent(item.value) + '; ';
     });
     return cookieString;
+}
+
+/**
+ * Asks UNA to repeat the session cookie before a page (see lib/session-touch). Returns the
+ * `Set-Cookie` lines UNA sent, or null when it didn't answer in time.
+ */
+async function touchUnaSession(request, tenant) {
+    try {
+        const res = await fetch(joinUnaUrl(SESSION_TOUCH_PATH, tenant ? tenant.unaUrl : UNA_URL), {
+            headers: {
+                authorization: `Bearer ${tenant ? tenant.unaApiKey : UNA_API_KEY}`,
+                cookie: request.headers.get('cookie') || '',
+            },
+            cache: 'no-store',
+            redirect: 'manual',
+            signal: AbortSignal.timeout(SESSION_TOUCH_TIMEOUT_MS),
+        });
+        res.body?.cancel().catch(() => {});
+        return res.headers.getSetCookie();
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Page request headers and the response cookies for the session touch: UNA's `Set-Cookie`
+ * goes to the browser and into the forwarded `Cookie` header, so the page sees it too.
+ */
+async function withSessionTouch(request, tenant, headers) {
+    const secure = (request.headers.get('x-forwarded-proto') || request.nextUrl.protocol).startsWith('https');
+    if (!needsSessionTouch(request.cookies)) {
+        return { headers, setCookies: hasStaleSessionMark(request.cookies) ? [sessionMarkCookie(0, secure)] : [] };
+    }
+
+    const sessionCookies = await touchUnaSession(request, tenant);
+    if (sessionCookies?.length) {
+        headers.set('cookie', applySetCookies(headers.get('cookie') || '', sessionCookies));
+    }
+    const mark = sessionMarkCookie(sessionCookies ? SESSION_MARK_AGE : SESSION_RETRY_AGE, secure);
+    return { headers, setCookies: [...(sessionCookies || []), mark] };
 }
 
 function sysAiChatPath(pathname) {
@@ -185,9 +229,11 @@ export async function proxy(request) {
             const pathname = request.nextUrl.pathname == '/' ? '/home' : request.nextUrl.pathname;
             const url = request.nextUrl.origin + pathname + request.nextUrl.search;
 
+            const { headers, setCookies } = await withSessionTouch(request, tenant, routeRequestHeaders(request, tenant));
             const response = NextResponse.rewrite(new URL(url), {
-                request: { headers: routeRequestHeaders(request, tenant) },
+                request: { headers },
             });
+            for (const cookie of setCookies) response.headers.append('set-cookie', cookie);
             if (request.cookies.getAll().length === 0) {
                 // Guests see the same page: let the CDN cache it.
                 response.headers.set('Cache-Control', 'public, s-maxage=1')
