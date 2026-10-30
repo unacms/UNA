@@ -12,7 +12,6 @@ UPDATE `sys_objects_page` SET `config_api`='{\r\n            layout: \'navigator
 UPDATE `sys_pages_blocks` SET `config_api`='{\r\n\"content_type\": \"browse_simple\", \r\n\"header_more_url\": \"/friend-suggestions\", \r\n\"header_more_text\": \"View All\"\r\n}' WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_title_sys_recom_friends';
 UPDATE `sys_pages_blocks` SET `config_api`='{\r\n\"content_type\": \"browse_simple\", \r\n\"header_more_url\": \"/follow-suggestions\", \r\n\"header_more_text\": \"View All\"\r\n}' WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_title_sys_recom_subscriptions';
 UPDATE `sys_pages_blocks` SET `config_api`='{\"rounded\": true}' WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_system_title_login';
-UPDATE `sys_pages_blocks` SET `config_api`='{\"rounded\": [\"mobile\", \"tablet\", \"desktop\"]}' WHERE `object`='sys_create_account' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_create_account';
 UPDATE `sys_pages_blocks` SET `config_api`='{\r\n\"content_type\":\"browse_simple\", \r\n\"header_more_url\": \"/context-invitations\", \r\n\"header_more_text\": \"View All\"\r\n}' WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_title_sys_invitations';
 UPDATE `sys_pages_blocks` SET `config_api`='{"designbox": {"bg": true, "padding": true, "title": false}}' WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_title_sys_create_post';
 
@@ -39,7 +38,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_conte
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_audit' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_dashboard_audit';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_reports' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_dashboard_reports';
 
-UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_create_account' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_create_account';
+UPDATE `sys_pages_blocks` SET `active_api`=1, `config_api`='{\"rounded\": [\"mobile\", \"tablet\", \"desktop\"]}' WHERE `object`='sys_create_account' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_create_account';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_login' AND `module`='system' AND `title_system`='_sys_page_block_system_title_login' AND `title`='_sys_page_block_title_login';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_login_step2' AND `module`='system' AND `title_system`='_sys_page_block_system_title_login_step2' AND `title`='_sys_page_block_title_login_step2';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_login_step3' AND `module`='system' AND `title_system`='_sys_page_block_system_title_login_step3' AND `title`='_sys_page_block_title_login_step3';
