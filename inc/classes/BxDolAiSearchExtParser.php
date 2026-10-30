@@ -245,13 +245,16 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         if ($sField === '' || !isset($aResult['search_params'][$sField]))
             return;
 
+        // fields the model filled keep its choice; the others collect the matches of every word
+        $aFilled = $aResult['search_params'];
+        $aFieldKeys = [];
         foreach ($this->_getWords((string)$aResult['search_params'][$sField]['value']) as $sToken) {
             if (mb_strlen($sToken) < 4)
                 continue;
 
             $aMatches = [];
             foreach ($this->_aFields as $sName => $aField) {
-                if ($aField['kind'] != 'list' || !$aField['multi'] || isset($aResult['search_params'][$sName]))
+                if ($aField['kind'] != 'list' || !$aField['multi'] || isset($aFilled[$sName]))
                     continue;
 
                 $aKeys = [];
@@ -271,8 +274,12 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
                 continue;
 
             $sName = (string)key($aMatches);
+            $aFieldKeys[$sName] = array_values(array_unique(array_merge($aFieldKeys[$sName] ?? [], $aMatches[$sName])));
+        }
+
+        foreach ($aFieldKeys as $sName => $aKeys) {
             $aField = $this->_aFields[$sName];
-            $aParam = $this->_getListParam($aField, $aMatches[$sName], (float)($aResult['confidence'][$sField] ?? self::CONFIDENCE_MIN));
+            $aParam = $this->_getListParam($aField, $aKeys, (float)($aResult['confidence'][$sField] ?? self::CONFIDENCE_MIN));
 
             $aResult['search_params'][$sName] = [
                 'type' => $aField['search_type'],
@@ -309,8 +316,13 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
             if (in_array($this->_aFields[$sName]['kind'] ?? '', ['list', 'location']))
                 foreach ($this->_getWords((string)$aChip['label']) as $sWord)
                     $aWords[$sWord] = true;
-        // the place as the query named it ("vietnam", "кипр"): the chip has the geocoder's name
-        if (isset($this->_aAnswers['loc_city'])) {
+        // the place as the query named it ("vietnam", "kypros"): the chip has the geocoder's name;
+        // only once the place became a filter, otherwise the word stays the keyword
+        $bLocation = false;
+        foreach ($aResult['chips'] as $sName => $aChip)
+            if (($this->_aFields[$sName]['kind'] ?? '') == 'location')
+                $bLocation = true;
+        if ($bLocation && isset($this->_aAnswers['loc_city'])) {
             list($sPlace) = $this->_getChoice('loc_city');
             if ($sPlace !== '' && $sPlace != self::NONE)
                 foreach ($this->_getWords($sPlace) as $sWord)
@@ -1055,7 +1067,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         $sLang = bx_lang_name();
 
         $oDb = BxDolDb::getInstance();
-        $sCacheKey = 'sys_ai_search_geo2_' . $sLang . '_' . md5(mb_strtolower($sPlace));
+        $sCacheKey = 'sys_ai_search_geo2_' . $sLang . '_' . hash('sha256', mb_strtolower($sPlace));
         $sMissKey = $sCacheKey . '_miss';
 
         $mixedCached = $oDb->getCache($sCacheKey, '');

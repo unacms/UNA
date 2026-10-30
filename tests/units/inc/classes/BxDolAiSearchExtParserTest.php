@@ -217,6 +217,30 @@ class BxDolAiSearchExtParserTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayHasKey('location', $a['search_params']);
     }
 
+    public function testTagWordsOfOneFieldAreSearchedTogether()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setFields($this->taggedFields());
+
+        $a = $o->keywordToLists($this->keywordResult('translation interpreting'));
+
+        $this->assertSame(['Translation', 'Consecutive interpreting', 'Simultaneous interpreting'], $a['search_params']['labels']['value']);
+        $this->assertArrayNotHasKey('title', $a['search_params']);
+    }
+
+    public function testPlaceWordStaysWhenNoPlaceWasFound()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setFields($this->taggedFields());
+        $o->setAnswers(['loc_city' => ['choice' => 'vietnam', 'confidence' => 1]]);
+
+        // the geocoder failed: no location filter, so the word keeps searching the title
+        $a = $o->dropKeywordOfLists($this->keywordResult('vietnam'));
+
+        $this->assertSame('vietnam', $a['search_params']['title']['value']);
+        $this->assertSame('title', $a['keyword_field']);
+    }
+
     public function testSeveralLikeValuesAreSearchedTogether()
     {
         $o = new BxDolAiSearchExtParserTestDouble();
