@@ -4021,7 +4021,17 @@
     <string name="_sys_page_description_mention"><![CDATA[Mentions of "{0}" search results]]></string>
     <string name="_sys_page_description_mention_in_section"><![CDATA[Mentions of "{0}" in "{1}" section search results]]></string>
 
-    <string name="_sys_page_lang_block_about"><![CDATA[This site is powered by UNA. The rest is a mystery.]]></string>
+    <string name="_sys_page_lang_block_about"><![CDATA[<p>Welcome! This is a community for people who want to meet others with similar interests, share what they know and keep in touch.</p>
+<p>Members set up a profile, post news, photos and links, comment on each other's posts and follow the people and topics they care about. Anyone can look around. To post, comment or message other members, sign up for an account.</p>
+<p>To keep this a good place for everyone, we ask members to:</p>
+<ul>
+<li>be respectful, especially when they disagree;</li>
+<li>share only what they have the right to share;</li>
+<li>keep other people's private information private;</li>
+<li>report anything that breaks these rules, so moderators can deal with it.</li>
+</ul>
+<p>The full rules are in our Terms of Service, and our Privacy Policy explains how we handle your data.</p>
+<p>This site is <a href="https://unacms.com">powered by UNA CMS platform</a>, open-source software for building online communities and social networks.</p>]]></string>
     <string name="_sys_page_lang_block_terms"><![CDATA[Our terms of use.]]></string>
     <string name="_sys_page_lang_block_privacy"><![CDATA[Our privacy policy.]]></string>
     <string name="_sys_page_meta_description_default"><![CDATA[{site_title} is an online community where people share, discuss and stay in touch with others who care about the same things.]]></string>
