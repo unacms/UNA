@@ -144,11 +144,13 @@ function useLazyTabActivation(tabKey, viewer) {
         }
         const stagger = tabIndexFromKey(tabKey) * PRELOAD_STAGGER_MS;
         const activate = () => setActivated(true);
+        // Only for a first page that never shows: once it does, the configured delay applies.
+        const fallback = setTimeout(activate, PRELOAD_FALLBACK_MS + stagger);
         let timer = null;
         const off = onFirstPageShown(viewer, () => {
+            clearTimeout(fallback);
             timer = setTimeout(activate, delay + stagger);
         });
-        const fallback = setTimeout(activate, PRELOAD_FALLBACK_MS + stagger);
         return () => {
             off();
             clearTimeout(fallback);
