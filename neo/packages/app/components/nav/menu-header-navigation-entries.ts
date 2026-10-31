@@ -58,13 +58,15 @@ export function useMenuNavigationEntries(): MenuNavigationEntries {
     const { menuData: siteMenuData, isFetched } = useMenuData(
         useSiteMenu ? appSetting('menu_items', 'objects', 'site') : null
     );
+    // The launcher's apps, as MenuTop takes them: the `menu_launcher` setting if set, else UNA's launcher menu.
     const wantsLauncher =
         !useSiteMenu &&
-        !!appSetting('layout', 'user_remote_config') &&
         !!appSetting('layout', 'apps') &&
         staticItems.some((item: MenuItem) => item?.launcher);
+    const staticLauncher = appSetting('menu_items', 'menu_launcher');
+    const useStaticLauncher = Array.isArray(staticLauncher) && staticLauncher.length > 0;
     const { menuData: launcherMenuData } = useMenuData(
-        wantsLauncher ? appSetting('menu_items', 'objects', 'launcher') : null
+        wantsLauncher && !useStaticLauncher ? appSetting('menu_items', 'objects', 'launcher') : null
     );
 
     const entries = useMemo(() => {
@@ -73,7 +75,11 @@ export function useMenuNavigationEntries(): MenuNavigationEntries {
                   .filter((item: MenuItem) => item && item.name !== 'more-auto')
                   .map(siteMenuItem)
             : staticItems;
-        const launcherItems = wantsLauncher ? menuItemsByNameNew('menu_post', launcherMenuData, currentUser) : [];
+        const launcherItems = !wantsLauncher
+            ? []
+            : useStaticLauncher
+                ? menuItemsByName('', staticLauncher, currentUser)
+                : menuItemsByNameNew('menu_post', launcherMenuData, currentUser);
         return menuItemsByName('main_menu', source, currentUser)
             .map((item, index) => {
                 const children = getMenuItemChildren(item);
@@ -88,7 +94,7 @@ export function useMenuNavigationEntries(): MenuNavigationEntries {
             // The site menu can hold script-only items and submenus with nothing for this viewer.
             .filter((entry) => !useSiteMenu || (entry.hasChildren ? entry.rows.length > 0 : isMenuItemNavigable(entry.item)))
             .map(({ hasChildren: _hasChildren, ...entry }) => entry);
-    }, [useSiteMenu, siteMenuData, staticItems, wantsLauncher, launcherMenuData, currentUser, t]);
+    }, [useSiteMenu, siteMenuData, staticItems, wantsLauncher, useStaticLauncher, staticLauncher, launcherMenuData, currentUser, t]);
 
     return { entries, pending: useSiteMenu && !isFetched };
 }
