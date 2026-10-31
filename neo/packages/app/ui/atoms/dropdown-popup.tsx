@@ -332,9 +332,11 @@ export default function DropdownPopup({
         return () => window.removeEventListener('keydown', onKeyDown);
     }, [isWeb, isRealOpen, handleToggle]);
 
+    // Focus goes back to the trigger once the menu has faded out (isModalVisible): until then the page is inert, and
+    // react-native-web's Modal pulls focus that leaves it back inside.
     useEffect(() => {
         if (!isWeb) return;
-        if (isRealOpen) return;
+        if (isRealOpen || isModalVisible) return;
         const node = restoreFocusRef.current;
         restoreFocusRef.current = null;
         if (!node) return;
@@ -350,7 +352,7 @@ export default function DropdownPopup({
         };
         const id = requestAnimationFrame(focusTrigger);
         return () => cancelAnimationFrame(id);
-    }, [isWeb, isRealOpen]);
+    }, [isWeb, isRealOpen, isModalVisible]);
 
     const handleBackdropPress = (event: any) => {
         event.stopPropagation();
