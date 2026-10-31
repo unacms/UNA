@@ -4,7 +4,7 @@ export const settingsConfigs = {
     native: {
         app_version_pages: ['about'], // page uris that show the native app version + build at the bottom
         enable_screens: true, //OLD appSetting('layout', 'native_enable_screens')
-        lazy_tabs_preload_delay: 10000, 
+        lazy_tabs_preload_delay: 1000, // ms after the first page shows before tabs not opened yet render in the background (0 = at once)
         disable_screenshots: false, // OLD appSetting('layout', 'disable_screenshots')
         show_tabs_non_logged: true, // OLD appSetting('layout', 'show_nav_non_logged_native')
         bluetooth: false, //OLD appSetting('layout', 'bluetooth')

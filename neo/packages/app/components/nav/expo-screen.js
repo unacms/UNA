@@ -61,9 +61,31 @@ async function fetchPageProps(pagePath) {
     return data;
 }
 
+// The first page is on screen (or its request failed): tabs not opened yet start
+// rendering in the background from here, so they never compete with it.
+let firstPageShown = false;
+const firstPageListeners = new Set();
+
+function markFirstPageShown() {
+    if (firstPageShown) return;
+    firstPageShown = true;
+    firstPageListeners.forEach((listener) => listener());
+    firstPageListeners.clear();
+}
+
+function onFirstPageShown(listener) {
+    if (firstPageShown) {
+        listener();
+        return () => {};
+    }
+    firstPageListeners.add(listener);
+    return () => firstPageListeners.delete(listener);
+}
+
 function hideSplashOnce(splashHiddenRef, delayMs = 0) {
     if (splashHiddenRef.current) return null;
     splashHiddenRef.current = true;
+    markFirstPageShown();
     if (delayMs > 0) {
         return setTimeout(() => {
             SplashScreen.hideAsync().catch(() => {});
@@ -78,14 +100,26 @@ function routeParam(value) {
     return Array.isArray(value) ? value[0] : value;
 }
 
+// Background tabs start this far apart, so their renders don't land in one frame.
+const PRELOAD_STAGGER_MS = 300;
+// Background tabs start this long after mount even if the first page never shows.
+const PRELOAD_FALLBACK_MS = 10000;
+
+function tabIndexFromKey(tabKey) {
+    const match = String(tabKey || '').match(/tab(\d+)/);
+    return match ? Number(match[1]) : 0;
+}
+
 /**
  * NativeTabs mounts every screen at once and freeze is off (see tabs/index.js),
  * so without this gate all five tabs fetch and render their full page trees —
  * image feeds included — at launch. Activate a tab's content on first focus, or
- * in the background after `lazy_tabs_preload_delay` ms so later switches are
- * still instant. JS tabs already lazy-mount at the navigator level.
+ * in the background `lazy_tabs_preload_delay` ms after the first page shows (one
+ * tab every PRELOAD_STAGGER_MS), so even a tab's first open is instant: a tab
+ * that renders only when opened shows a blank screen, header included, until its
+ * page arrives and renders. JS tabs already lazy-mount at the navigator level.
  */
-function useLazyTabActivation() {
+function useLazyTabActivation(tabKey) {
     const isFocused = useIsFocused();
     const [activated, setActivated] = useState(() => !isNativeTabsEnabled() || isFocused);
     if (isFocused && !activated) {
@@ -98,9 +132,19 @@ function useLazyTabActivation() {
             setActivated(true);
             return undefined;
         }
-        const timer = setTimeout(() => setActivated(true), delay);
-        return () => clearTimeout(timer);
-    }, [activated]);
+        let timer = null;
+        const start = () => {
+            if (timer) return;
+            timer = setTimeout(() => setActivated(true), delay + tabIndexFromKey(tabKey) * PRELOAD_STAGGER_MS);
+        };
+        const off = onFirstPageShown(start);
+        const fallback = setTimeout(start, PRELOAD_FALLBACK_MS);
+        return () => {
+            off();
+            clearTimeout(fallback);
+            if (timer) clearTimeout(timer);
+        };
+    }, [activated, tabKey]);
     return activated;
 }
 
@@ -114,7 +158,7 @@ function ScreenInner(params) {
     const chromeKey = pushed ? `${pathname}/page#${screenId}` : pathname;
     useEffect(() => (pushed ? registerPushedScreen(pathname) : undefined), [pushed, pathname]);
     const { currentUser } = useCurrentUser();
-    const activated = useLazyTabActivation();
+    const activated = useLazyTabActivation(pathname);
     // The More tab's last page after a params-dropping JUMP_TO, a stale URL from the
     // other user context and the tab-root fallback: see resolveTabPageUrl.
     const _path = resolveTabPageUrl(pathname, routeParam(local.url), currentUser, pushed);
