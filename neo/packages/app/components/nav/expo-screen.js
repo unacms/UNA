@@ -106,7 +106,7 @@ const PRELOAD_STAGGER_MS = 300;
 const PRELOAD_FALLBACK_MS = 10000;
 
 function tabIndexFromKey(tabKey) {
-    const match = String(tabKey || '').match(/tab(\d+)/);
+    const match = /tab(\d+)/.exec(String(tabKey || ''));
     return match ? Number(match[1]) : 0;
 }
 
