@@ -19,9 +19,14 @@ import { useMenuData } from 'app/context/menu-data';
 export function useMenuLauncherItems(load = true) {
     const bApps = appSetting('layout', 'apps');
     const { currentUser } = useCurrentUser();
-    const { menuData } = useMenuData(load ? appSetting('menu_items', 'objects', 'launcher') : null);
+    // `menu_launcher` setting pins the apps; unset, they come from UNA's launcher menu.
+    const staticItems = appSetting('menu_items', 'menu_launcher');
+    const useStatic = Array.isArray(staticItems) && staticItems.length > 0;
+    const { menuData } = useMenuData(load && !useStatic ? appSetting('menu_items', 'objects', 'launcher') : null);
 
-    const items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', menuData, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_launcher'), currentUser);
+    const items = useStatic
+        ? menuItemsByName('', staticItems, currentUser)
+        : menuItemsByNameNew('menu_post', menuData, currentUser);
 
     return { items, empty: !bApps || (items.length == 0 && !!menuData) };
 }

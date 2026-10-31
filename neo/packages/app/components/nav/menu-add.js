@@ -13,9 +13,14 @@ import { useMenuData } from 'app/context/menu-data';
 export function useMenuAddItems(load = true) {
     const bMenu = appSetting('layout', 'add_menu') == true;
     const { currentUser } = useCurrentUser();
-    const { menuData } = useMenuData(load ? appSetting('menu_items', 'objects', 'add') : null);
+    // `menu_add` setting pins the items; unset, they come from UNA's add-content menu.
+    const staticItems = appSetting('menu_items', 'menu_add');
+    const useStatic = Array.isArray(staticItems) && staticItems.length > 0;
+    const { menuData } = useMenuData(load && !useStatic ? appSetting('menu_items', 'objects', 'add') : null);
 
-    const items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', menuData, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_add'), currentUser);
+    const items = useStatic
+        ? menuItemsByName('', staticItems, currentUser)
+        : menuItemsByNameNew('menu_post', menuData, currentUser);
 
     return { items, empty: !bMenu || (items.length == 0 && !!menuData) };
 }

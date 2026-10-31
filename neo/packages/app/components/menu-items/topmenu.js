@@ -7,13 +7,14 @@ import { Icon } from 'app/ui/atoms/icon'
 import Tooltip from 'app/ui/atoms/tooltip'
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu';
 
-export default function MenuTopItem({ link, title, index, icon, isTitle, isActive, items, chevron, animated, addClassName }) {
+export default function MenuTopItem({ link, title, index, icon, isTitle, isActive, items, chevron, animated, addClassName, columns }) {
     return items?.length > 0 ?
         <DropdownMenu
             mode="popup"
             triggerAccessibilityLabel={title}
             triggerClassName="group"
             items={items}
+            columns={columns}
             defaultOpen={false}
         >
             <MenuTopItem_ title={title} icon={icon} isTitle={isTitle} isActive={isActive} isPopup={true} chevron={chevron} animated={animated} addClassName={addClassName} />

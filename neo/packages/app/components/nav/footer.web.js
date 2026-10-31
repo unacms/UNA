@@ -17,6 +17,7 @@ import { NeoButton } from 'app/design/controls';
 import { cn } from 'app/lib/util';
 import { OperatorAgentPanel, useOperatorAgentAvailable } from 'app/ui/molecules/system/operator-agent';
 import {
+    TAB_BAR_VISIBLE_LIMIT,
     splitTabBarItems,
     buildTabBarMoreMenuItems,
     inferTabIndexFromUrl,
@@ -24,6 +25,7 @@ import {
     resolveTabUrl,
     splitProfileMoreMenu,
 } from 'app/components/nav/tabs/tab-menu';
+import { useTabList } from 'app/lib/navigation/tab-bar-menu';
 import {
     consumeSkipTabInfer,
     getSelectedTab,
@@ -80,7 +82,7 @@ function persistWebTabLocation(pathname, currentUser, tabList) {
 
 export default function () {
     const { currentUser } = useCurrentUser();
-    const TabList = currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged');
+    const { tabList: TabList, ready: tabListReady } = useTabList(currentUser);
     const { visible: visibleTabs, overflow: overflowTabs } = useMemo(
         () => splitTabBarItems(TabList || []),
         [TabList]
@@ -134,7 +136,13 @@ export default function () {
                 className={`z-50 bg-card shadow-btn-glass dark:shadow-btn-glass-deep rounded-full w-full pb-0 ${isInStandaloneMode() ? "h-12" : ""}`}
             >
                 <Row className="flex-auto items-center flex-row w-full p-1.5 gap-1">
-                    {visibleTabs.filter(item => !item.hide).map((tab, index) => {
+                    {/* Placeholders until UNA's tab bar menu (or its cached copy) is known, like the navbar. */}
+                    {!tabListReady ? Array.from({ length: TAB_BAR_VISIBLE_LIMIT }, (_, index) => (
+                        <View key={`bmi-skeleton-${index}`} className="flex-1 h-12 items-center justify-center">
+                            <View className="h-6 w-6 rounded-full bg-muted animate-pulse" />
+                        </View>
+                    )) : null}
+                    {tabListReady && visibleTabs.filter(item => !item.hide).map((tab, index) => {
                         const tabKey = `/tab${index}`;
                         const root = resolveTabUrl(tab, currentUser);
                         const isActive = selectedTabKey === tabKey || isTabBarUrlActive(locationPath, root);
@@ -156,7 +164,7 @@ export default function () {
                             />
                         );
                     })}
-                    {overflowTabs.length > 0 ? (
+                    {tabListReady && overflowTabs.length > 0 ? (
                         <MoreBottomItem
                             visibleTabs={visibleTabs}
                             overflowTabs={overflowTabs}
