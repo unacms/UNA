@@ -93,7 +93,7 @@ div.bx-std-block-content .bx-dbd-tile.bx-dbd-tile-lg {
 .bx-dbd-vi-time {
     font-size: 0.875rem;
     line-height: 1.25rem;
-    color: rgb(75 85 99); /* gray-600: gray-500 misses 4.5:1 on white */
+    color: rgb(82 82 91); /* gray-600: gray-500 misses 4.5:1 on white */
 }
 /* The update switches follow the panel after a 10px gap; the status rows continue the same list 2px below them. */
 #bx-dbd-version .bx-dbd-htools-items {
@@ -140,7 +140,7 @@ div.bx-dbd-chart {
 .bx-dbd-chart-summary {
     font-size: 0.875rem;
     line-height: 1rem;
-    color: rgb(75 85 99); /* gray-600: gray-500 misses 4.5:1 on white */
+    color: rgb(82 82 91); /* gray-600: gray-500 misses 4.5:1 on white */
 }
 .bx-dbd-chart-foot {
     display: flex;
@@ -154,13 +154,13 @@ div.bx-dbd-chart {
 }
 .bx-dbd-chart-label {
     font-weight: 600;
-    color: rgb(55 65 81);
+    color: rgb(63 63 70);
 }
 .dark .bx-dbd-chart-label {
-    color: rgb(209 213 219);
+    color: rgb(212 212 216);
 }
 .bx-dbd-chart-stat {
-    color: rgb(75 85 99); /* gray-600: gray-500 misses 4.5:1 on white */
+    color: rgb(82 82 91); /* gray-600: gray-500 misses 4.5:1 on white */
 }
 /* Slice tooltip: a dark pill above the bar, centred on the hovered slice (dashboard.js). */
 .bx-dbd-chart-tip {
@@ -168,7 +168,7 @@ div.bx-dbd-chart {
     z-index: 1;
     padding: 0.25rem 0.5rem;
     border-radius: 0.375rem;
-    background: rgb(17 24 39);
+    background: rgb(24 24 27);
     color: #ffffff;
     font-size: 0.75rem;
     line-height: 1rem;
@@ -181,7 +181,7 @@ div.bx-dbd-chart {
 }
 .dark .bx-dbd-chart-tip {
     background: rgba(0, 0, 0, 0.05);
-    color: rgb(17 24 39);
+    color: rgb(24 24 27);
 }
 .bx-dbd-chart-head {
     display: flex;
@@ -194,7 +194,7 @@ div.bx-dbd-chart {
     font-weight: 600;
 }
 .bx-dbd-chart-total {
-    color: rgb(75 85 99); /* gray-600: gray-500 misses 4.5:1 on white */
+    color: rgb(82 82 91); /* gray-600: gray-500 misses 4.5:1 on white */
 }
 .bx-dbd-chart-bar {
     display: flex;
@@ -251,11 +251,11 @@ div.bx-std-block-content .bx-dbd-tile {
 /* Row icons are not buttons: the block caption icon's flat plate (black/10, white/5 in dark), no gradient, ring or shadow. App art tiles carry their own image. */
 div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     background: rgb(0 0 0 / 0.1);
-    color: rgb(75 85 99);
+    color: rgb(82 82 91);
 }
 .dark div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     background: rgb(255 255 255 / 0.05);
-    color: rgb(156 163 175);
+    color: rgb(161 161 170);
 }
 /* The glyph: black (white in the dark scheme) at 80% through the element's opacity, so a glyph's overlapping strokes do not darken where they cross. */
 .bx-dbd-tile .sys-icon {
@@ -294,18 +294,18 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
 }
 .bx-dbd-chart-size {
     flex: none;
-    color: rgb(75 85 99); /* gray-600: gray-500 misses 4.5:1 on white */
+    color: rgb(82 82 91); /* gray-600: gray-500 misses 4.5:1 on white */
 }
 /* A row's note (a file count) is quiet; a warning note (failed queue jobs) and the headline's failed total are red. */
 .bx-dbd-chart-note {
     flex: none;
     font-size: 0.875rem;
-    color: rgb(107 114 128);
+    color: rgb(82 82 91); /* gray-600: gray-500 misses 4.5:1 on the block */
 }
 .bx-dbd-chart-note-alert,
 .bx-dbd-chart-total-fail {
     flex: none;
-    color: rgb(239 68 68);
+    color: rgb(220 38 38); /* red-600: red-500 misses 4.5:1 on white */
 }
 .dark .bx-dbd-chart-note-alert {
     color: rgb(248 113 113);
@@ -416,14 +416,14 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     font-weight: 500;
     line-height: 1;
     letter-spacing: 0.02em;
-    color: rgb(75 85 99); /* gray-600: gray-500 misses 4.5:1 on white */
+    color: rgb(82 82 91); /* gray-600: gray-500 misses 4.5:1 on white */
 }
 .bx-dbd-gauge-label {
     font-size: 0.75rem;
     line-height: 1.25rem;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: rgb(75 85 99); /* gray-600: gray-500 misses 4.5:1 on white */
+    color: rgb(82 82 91); /* gray-600: gray-500 misses 4.5:1 on white */
 }
 /* Status rows: 48px rows with 2px between them; a row with a note grows to fit it. */
 .bx-dbd-htools-items {
@@ -461,7 +461,7 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     width: 0.625rem;
     height: 0.625rem;
     border-radius: 9999px;
-    background: rgb(156 163 175); /* unknown */
+    background: rgb(161 161 170); /* unknown */
 }
 .bx-dbd-htools-item-ok .bx-dbd-htools-dot {
     background: rgb(34 197 94);
@@ -481,7 +481,7 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
 .bx-dbd-htools-desc {
     font-size: 0.875rem;
     line-height: 1.25rem;
-    color: rgb(75 85 99); /* gray-600: gray-500 misses 4.5:1 on white */
+    color: rgb(82 82 91); /* gray-600: gray-500 misses 4.5:1 on white */
     overflow-wrap: anywhere; /* notes quote file paths, which have no break points */
 }
 .bx-dbd-htools-desc a {
@@ -515,7 +515,7 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     background: rgb(239 68 68);
 }
 .bx-dbd-audit-slice-undef {
-    background: rgb(156 163 175);
+    background: rgb(161 161 170);
 }
 
 .bx-dbd-audit {
@@ -584,7 +584,7 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
 .dark .bx-dbd-gauge-label,
 .dark .bx-dbd-htools-desc,
 .dark .bx-dbd-audit-section-title {
-    color: rgb(156 163 175);
+    color: rgb(161 161 170);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -632,7 +632,7 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     height: 0.625rem;
     margin-right: 0.125rem;
     border-radius: 9999px;
-    background: rgb(156 163 175);
+    background: rgb(161 161 170);
 }
 .bx-dbd-users-online-on .bx-dbd-users-online-dot {
     background: rgb(34 197 94);

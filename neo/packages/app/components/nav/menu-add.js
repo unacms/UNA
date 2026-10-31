@@ -6,24 +6,31 @@ import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal'
 import { useIsDesktop } from 'app/context/measure';
 import { useMenuData } from 'app/context/menu-data';
 
-export default function MenuAdd({ buttonProps, children }) {
+/**
+ * The add menu's items, and whether it has nothing to show (off in the settings, or UNA's menu is empty), when the
+ * header leaves no slot for it. `load` false skips loading the menu.
+ */
+export function useMenuAddItems(load = true) {
     const bMenu = appSetting('layout', 'add_menu') == true;
     const { currentUser } = useCurrentUser();
     // `menu_add` setting pins the items; unset, they come from UNA's add-content menu.
     const staticItems = appSetting('menu_items', 'menu_add');
     const useStatic = Array.isArray(staticItems) && staticItems.length > 0;
-    const { menuData } = useMenuData(useStatic ? null : appSetting('menu_items', 'objects', 'add'));
-    const [pageData, setPageData] = useState(false);
-    const isDesktop = useIsDesktop();
+    const { menuData } = useMenuData(load && !useStatic ? appSetting('menu_items', 'objects', 'add') : null);
 
-    const menu_add_items = useStatic
+    const items = useStatic
         ? menuItemsByName('', staticItems, currentUser)
         : menuItemsByNameNew('menu_post', menuData, currentUser);
 
-    if (!bMenu)
-         return <></>;
+    return { items, empty: !bMenu || (items.length == 0 && !!menuData) };
+}
 
-    if ((menu_add_items.length == 0) && menuData)
+export default function MenuAdd({ buttonProps, children }) {
+    const { items: menu_add_items, empty } = useMenuAddItems();
+    const [pageData, setPageData] = useState(false);
+    const isDesktop = useIsDesktop();
+
+    if (empty)
         return <></>;
     
     const defaultButtonProps = {

@@ -27,8 +27,9 @@ export const settingsHeaderToolbar = {
                 { component: 'link', className: 'items-center sm:hidden', href: "/login", title: 'Log In', props: { neoButton: true, borderShape: "circle", image: "UserRound", accessibilityLabel: "Log In" } },
                 { component: 'link', className: 'items-center hidden sm:block', href: "/login", title: 'Log In', props: { neoButton: true, borderShape: "capsule", title: 'Log In' } },
                 { component: 'link', className: 'items-center hidden sm:block', href: "/create-account", title: 'Sign Up', props: { neoButton: true, primary: true, borderShape: "capsule", title: 'Sign Up' } },
-                { component: 'menu_navigation', className: 'items-center sm:hidden', native: false, props: { borderShape: 'circle', image: 'Menu', accessibilityLabel: 'Menu' } },
-                { component: 'menu_navigation', className: 'items-center hidden sm:block lg:hidden', native: false, props: { borderShape: 'circle', image: 'Menu', accessibilityLabel: 'Menu' } },
+                // Web and native (iOS: a SwiftUI pull-down menu). `props.auth: true` also puts
+                // Log In and Sign Up in it below `sm`, for a toolbar without the Log In circle.
+                { component: 'menu_navigation', className: 'items-center lg:hidden', props: { borderShape: 'circle', image: 'Menu', accessibilityLabel: 'Menu' } },
             ],
         },
         mixed: {

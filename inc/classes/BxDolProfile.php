@@ -214,6 +214,11 @@ class BxDolProfile extends BxDolFactory implements iBxDolProfile
             // The apps show profile creation in place of every page while this is true, as the site does.
             $aRv['profile_required'] = BxDolAccount::isProfileRequired();
 
+            // The items of the site's member toolbar the apps get, so their header shows the same tools: no Messages
+            // or Notifications button without its module.
+            $oMenuToolbar = BxDolMenu::getObjectInstance('sys_toolbar_member');
+            $aRv['toolbar'] = $oMenuToolbar ? $oMenuToolbar->getMenuItemsNames() : [];
+
             $oInformer = BxDolInformer::getInstance($oTemplate);
             $sRet = $oInformer ? $oInformer->display() : '';
             if ($sRet){
