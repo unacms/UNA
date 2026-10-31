@@ -12,25 +12,32 @@ import { useTranslation } from 'react-i18next';
 import { useIsDesktop } from 'app/context/measure';
 import { useMenuData } from 'app/context/menu-data';
 
-export default function MenuLauncher({ buttonProps }) {
+/**
+ * The apps menu's items, and whether it has nothing to show (off in the settings, or UNA's menu is empty), when the
+ * header leaves no slot for it. `load` false skips loading the menu.
+ */
+export function useMenuLauncherItems(load = true) {
     const bApps = appSetting('layout', 'apps');
-
-    const isDesktop = useIsDesktop();
+    const { currentUser } = useCurrentUser();
     // `menu_launcher` setting pins the apps; unset, they come from UNA's launcher menu.
     const staticItems = appSetting('menu_items', 'menu_launcher');
     const useStatic = Array.isArray(staticItems) && staticItems.length > 0;
-    const { menuData } = useMenuData(useStatic ? null : appSetting('menu_items', 'objects', 'launcher'));
+    const { menuData } = useMenuData(load && !useStatic ? appSetting('menu_items', 'objects', 'launcher') : null);
 
-    const { currentUser } = useCurrentUser();
-    const { t } = useTranslation();
-
-    const menu_launcher_items = useStatic
+    const items = useStatic
         ? menuItemsByName('', staticItems, currentUser)
         : menuItemsByNameNew('menu_post', menuData, currentUser);
 
-    if (!bApps)
-        return <></>;
-    if ((menu_launcher_items.length == 0) && menuData)
+    return { items, empty: !bApps || (items.length == 0 && !!menuData) };
+}
+
+export default function MenuLauncher({ buttonProps }) {
+    const bApps = appSetting('layout', 'apps');
+    const isDesktop = useIsDesktop();
+    const { t } = useTranslation();
+    const { items: menu_launcher_items, empty } = useMenuLauncherItems();
+
+    if (empty)
         return <></>;
 
     return (

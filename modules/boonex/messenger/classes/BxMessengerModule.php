@@ -1868,8 +1868,9 @@ class BxMessengerModule extends BxBaseModGeneralModule
         if (!$this->isLogged())
             return array();
 
+        // No profile (a module instance made before login) gives `false`, not a list.
         $aLots = $this->_oDb->getLotsWithUnreadMessages($iProfileId ? $iProfileId : $this->_iProfileId);
-        return sizeof($aLots);
+        return is_array($aLots) ? count($aLots) : 0;
     }
 
     /**

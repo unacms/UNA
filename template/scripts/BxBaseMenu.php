@@ -285,6 +285,23 @@ class BxBaseMenu extends BxDolMenu
     }
 
     /**
+     * Get the names of the items the viewer gets, without building them (no links, titles or counters).
+     * @return array
+     */
+    public function getMenuItemsNames ()
+    {
+        if (!isset($this->_aObject['menu_items']))
+            $this->_aObject['menu_items'] = $this->getMenuItemsRaw ();
+
+        $aNames = [];
+        foreach ($this->_aObject['menu_items'] as $a)
+            if ($this->_isActive($a) && $this->_isVisible($a))
+                $aNames[] = $a['name'];
+
+        return $aNames;
+    }
+
+    /**
      * Get menu items array, this is just a wrapper for DB function for make it easier to override.
      * It is used in @see BxBaseMenu::getMenuItems
      * @return array
