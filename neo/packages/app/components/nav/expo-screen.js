@@ -61,31 +61,41 @@ async function fetchPageProps(pagePath) {
     return data;
 }
 
-// The first page is on screen (or its request failed): tabs not opened yet start
-// rendering in the background from here, so they never compete with it.
-let firstPageShown = false;
-const firstPageListeners = new Set();
-
-function markFirstPageShown() {
-    if (firstPageShown) return;
-    firstPageShown = true;
-    firstPageListeners.forEach((listener) => listener());
-    firstPageListeners.clear();
+/** The viewer, as the tabs key their content: signing in or out remounts every tab. */
+function viewerKey(currentUser) {
+    return currentUser?.id ? `${currentUser.id}-${currentUser.confirmed}` : 'guest';
 }
 
-function onFirstPageShown(listener) {
-    if (firstPageShown) {
+// The viewer whose first page is on screen (or whose first request failed): their
+// tabs not opened yet start rendering in the background from here, so they never
+// compete with it. Signing in or out waits for the new viewer's first page again.
+let firstPageViewer = null;
+const firstPageListeners = new Set();
+
+function markFirstPageShown(viewer) {
+    if (firstPageViewer === viewer) return;
+    firstPageViewer = viewer;
+    firstPageListeners.forEach((entry) => {
+        if (entry.viewer !== viewer) return;
+        firstPageListeners.delete(entry);
+        entry.listener();
+    });
+}
+
+function onFirstPageShown(viewer, listener) {
+    if (firstPageViewer === viewer) {
         listener();
         return () => {};
     }
-    firstPageListeners.add(listener);
-    return () => firstPageListeners.delete(listener);
+    const entry = { viewer, listener };
+    firstPageListeners.add(entry);
+    return () => firstPageListeners.delete(entry);
 }
 
-function hideSplashOnce(splashHiddenRef, delayMs = 0) {
+function hideSplashOnce(splashHiddenRef, viewer, delayMs = 0) {
     if (splashHiddenRef.current) return null;
     splashHiddenRef.current = true;
-    markFirstPageShown();
+    markFirstPageShown(viewer);
     if (delayMs > 0) {
         return setTimeout(() => {
             SplashScreen.hideAsync().catch(() => {});
@@ -119,7 +129,7 @@ function tabIndexFromKey(tabKey) {
  * that renders only when opened shows a blank screen, header included, until its
  * page arrives and renders. JS tabs already lazy-mount at the navigator level.
  */
-function useLazyTabActivation(tabKey) {
+function useLazyTabActivation(tabKey, viewer) {
     const isFocused = useIsFocused();
     const [activated, setActivated] = useState(() => !isNativeTabsEnabled() || isFocused);
     if (isFocused && !activated) {
@@ -132,19 +142,19 @@ function useLazyTabActivation(tabKey) {
             setActivated(true);
             return undefined;
         }
+        const stagger = tabIndexFromKey(tabKey) * PRELOAD_STAGGER_MS;
+        const activate = () => setActivated(true);
         let timer = null;
-        const start = () => {
-            if (timer) return;
-            timer = setTimeout(() => setActivated(true), delay + tabIndexFromKey(tabKey) * PRELOAD_STAGGER_MS);
-        };
-        const off = onFirstPageShown(start);
-        const fallback = setTimeout(start, PRELOAD_FALLBACK_MS);
+        const off = onFirstPageShown(viewer, () => {
+            timer = setTimeout(activate, delay + stagger);
+        });
+        const fallback = setTimeout(activate, PRELOAD_FALLBACK_MS + stagger);
         return () => {
             off();
             clearTimeout(fallback);
             if (timer) clearTimeout(timer);
         };
-    }, [activated, tabKey]);
+    }, [activated, tabKey, viewer]);
     return activated;
 }
 
@@ -158,14 +168,12 @@ function ScreenInner(params) {
     const chromeKey = pushed ? `${pathname}/page#${screenId}` : pathname;
     useEffect(() => (pushed ? registerPushedScreen(pathname) : undefined), [pushed, pathname]);
     const { currentUser } = useCurrentUser();
-    const activated = useLazyTabActivation(pathname);
+    const userKey = viewerKey(currentUser);
+    const activated = useLazyTabActivation(pathname, userKey);
     // The More tab's last page after a params-dropping JUMP_TO, a stale URL from the
     // other user context and the tab-root fallback: see resolveTabPageUrl.
     const _path = resolveTabPageUrl(pathname, routeParam(local.url), currentUser, pushed);
 
-    const userKey = currentUser?.id
-        ? `${currentUser.id}-${currentUser.confirmed}`
-        : 'guest';
     // Same rule as the tab bar itself (tabs/index.js `isShowTabs`).
     const isShowTabs = !!((currentUser && currentUser.confirmed) || appSetting('native', 'show_tabs_non_logged'));
 
@@ -283,11 +291,11 @@ const Content = memo(({ pagePath, currentUser, tabKey, chromeKey, pushed, refres
                     setBottomSheetData(false);
                     setPage({ path: pathAtStart, props: data.props });
                 } else {
-                    hideSplashOnce(splashHiddenRef);
+                    hideSplashOnce(splashHiddenRef, viewerKey(currentUser));
                 }
             } catch {
                 if (cancelled) return;
-                hideSplashOnce(splashHiddenRef);
+                hideSplashOnce(splashHiddenRef, viewerKey(currentUser));
             }
         };
 
@@ -328,7 +336,7 @@ const Content = memo(({ pagePath, currentUser, tabKey, chromeKey, pushed, refres
 
     useEffect(() => {
         if (!pageData?.data) return;
-        const timer = hideSplashOnce(splashHiddenRef, 1000);
+        const timer = hideSplashOnce(splashHiddenRef, viewerKey(currentUserRef.current), 1000);
         return () => {
             if (timer) clearTimeout(timer);
         };
