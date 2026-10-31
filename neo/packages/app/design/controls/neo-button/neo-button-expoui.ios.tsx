@@ -8,7 +8,7 @@
 
 import { StyleSheet, View } from 'react-native';
 import { useResolveClassNames } from 'uniwind';
-import { isValidElement, type ComponentProps } from 'react';
+import { isValidElement, type ComponentProps, type ReactElement } from 'react';
 import { Host, Button, HStack, Image, ProgressView, RNHostView, Text, ZStack, useNativeState } from '@expo/ui/swift-ui';
 import {
     buttonStyle as buttonStyleModifier,
@@ -196,6 +196,18 @@ export const hostsCustomContent = true;
 const HOSTED_CONTENT_STYLE = StyleSheet.create({
     box: { alignItems: 'center', justifyContent: 'center' },
 }).box;
+
+/** Hosted content in the Host size cache's key: the element's type and its plain props. */
+function hostedContentKey(element: ReactElement | null): string {
+    if (!element) return '';
+    const type = element.type as string | { displayName?: string; name?: string };
+    const name = typeof type === 'string' ? type : (type?.displayName || type?.name || 'custom');
+    const props = Object.entries((element.props ?? {}) as Record<string, unknown>)
+        .filter(([, value]) => value == null || ['string', 'number', 'boolean'].includes(typeof value))
+        .map(([key, value]) => `${key}=${String(value)}`)
+        .join(',');
+    return `${name}(${props})`;
+}
 
 export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     // A surface with its own brightness (header on a coloured band): see color-scheme-context.
@@ -396,8 +408,10 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         // Do not key on selected / tint — that remounts Host and the
         // capsule flashes at 0 before matchContents measures.
         contentKey: [
-            nativeLabel, sfSymbol || assetName || (customContent ? 'custom' : ''), nativeControlSize, targetHeight,
-            mapping.buttonStyle, borderShape || '', 'host-fit-v5',
+            nativeLabel, sfSymbol || assetName || hostedContentKey(customContent), nativeControlSize, targetHeight,
+            mapping.buttonStyle, borderShape || '', 'host-fit-v6',
+            typeof contentInsets === 'object' ? JSON.stringify(contentInsets) : String(contentInsets ?? ''),
+            String(resolved.paddingX ?? ''), String(resolved.labelGap ?? ''),
             fontParams.family || '', fontParams.weight || '', String(fontParams.size ?? ''), String(nativeIconSize),
             addonMeta?.text || '',
         ].join('|'),

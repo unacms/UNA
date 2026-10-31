@@ -14,7 +14,27 @@ type HostSize = { width: number; height: number };
 
 const HOST_SIZE_CACHE = new Map<string, HostSize>();
 const CACHE_LIMIT = 500;
+// A control with no measured size yet shows after this long even if its Host never reports one.
+const REVEAL_FALLBACK_MS = 250;
 
+function rememberHostSize(contentKey: string, size: HostSize) {
+    const known = HOST_SIZE_CACHE.get(contentKey);
+    if (known?.width === size.width && known?.height === size.height) return;
+    if (!known && HOST_SIZE_CACHE.size >= CACHE_LIMIT) {
+        HOST_SIZE_CACHE.delete(HOST_SIZE_CACHE.keys().next().value!);
+    }
+    HOST_SIZE_CACHE.set(contentKey, size);
+}
+
+/**
+ * Sizes a content-sized Host (`matchContents`) before SwiftUI / Compose has measured it.
+ * The native side reports the content size only after its own layout, a commit after mount,
+ * so the Host mounts 0pt wide and the control jumps sideways into place (the header logo on
+ * every tab's first open). The width a control with the same `contentKey` measured last time
+ * seeds the Host's style width; the native measure still replaces it (Expo's shadow node
+ * applies it over the style), so a label reused elsewhere or a logo that loads late keeps
+ * hugging its content. A control seen for the first time stays invisible until that measure.
+ */
 export function useFrozenHostSize({ contentKey, rnOwnsWidth, rnOwnsHeight }: {
     contentKey: string;
     rnOwnsWidth: boolean;
@@ -26,16 +46,23 @@ export function useFrozenHostSize({ contentKey, rnOwnsWidth, rnOwnsHeight }: {
     // Never pin width. The same label ("Manage") is reused on other screens;
     // a stale or leftover-ScrollView measure left a hole before the next tab.
     // Keep matchContents on so the capsule always hugs the title.
-    const pin = freezeHeight ? HOST_SIZE_CACHE.get(contentKey) : null;
+    const known = active ? HOST_SIZE_CACHE.get(contentKey) : undefined;
+    const seedWidth = freezeWidth ? known?.width : undefined;
+    const [measured, setMeasured] = React.useState(false);
+    const hidden = freezeWidth && seedWidth == null && !measured;
+
+    React.useEffect(() => {
+        if (!hidden) return;
+        const id = setTimeout(() => setMeasured(true), REVEAL_FALLBACK_MS);
+        return () => clearTimeout(id);
+    }, [hidden]);
 
     const onLayoutContent = React.useCallback((e: { nativeEvent: HostSize }) => {
         const { width, height } = e.nativeEvent;
-        if (!freezeHeight || !width || !height || HOST_SIZE_CACHE.has(contentKey)) return;
-        if (HOST_SIZE_CACHE.size >= CACHE_LIMIT) {
-            HOST_SIZE_CACHE.delete(HOST_SIZE_CACHE.keys().next().value!);
-        }
-        HOST_SIZE_CACHE.set(contentKey, { width, height });
-    }, [contentKey, freezeHeight]);
+        if (!width || !height) return;
+        rememberHostSize(contentKey, { width, height });
+        if (hidden) setMeasured(true);
+    }, [contentKey, hidden]);
 
     if (!active) {
         return {
@@ -46,11 +73,16 @@ export function useFrozenHostSize({ contentKey, rnOwnsWidth, rnOwnsHeight }: {
         };
     }
 
-    const pinnedHeight = freezeHeight && !!pin;
+    const pinnedHeight = freezeHeight && !!known;
+
+    let style: ViewStyle | null = null;
+    if (pinnedHeight) style = { height: known!.height };
+    if (seedWidth != null) style = { ...style, width: seedWidth };
+    if (hidden) style = { ...style, opacity: 0 };
 
     return {
-        style: pinnedHeight ? { height: pin!.height } : null,
-        onLayoutContent: freezeHeight ? onLayoutContent : undefined,
+        style,
+        onLayoutContent,
         pinnedWidth: false,
         pinnedHeight,
     };
