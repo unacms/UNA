@@ -159,12 +159,6 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const { press, hostPress, touchHandlers } = useNativeButtonPress(firePress);
 
     const addonMeta = parseNeoButtonAddon(addon);
-    const frozen = useFrozenHostSize({
-        contentKey: [String(effectiveLabel), rawImage || '', variant, selected ? 'sel' : 'off', addonMeta?.text || ''].join('|'),
-        rnOwnsWidth,
-        rnOwnsHeight,
-    });
-
     // Label type from the theme, like the JS button and iOS: size from
     // `controlSizes.*.font`, weight from the style's text classes, the app
     // font family. Material's own label style is 14sp Roboto.
@@ -190,6 +184,18 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
             bottom: MATERIAL_PADDING_Y,
         }
         : undefined;
+    // Everything that sets the button's width, so a cached width only seeds a button of the same size.
+    const frozen = useFrozenHostSize({
+        contentKey: [
+            String(effectiveLabel), rawImage || '', variant, selected ? 'sel' : 'off', addonMeta?.text || '',
+            resolved.controlSize, String(resolved.height), resolved.borderShape || '',
+            String(labelStyle.fontSize), String(labelStyle.fontWeight), NATIVE_BUTTON_FONT_FAMILY || '',
+            String(resolved.iconSize ?? ''), String(resolved.labelGap ?? ''),
+            String(contentPadding?.start ?? ''), String(contentPadding?.end ?? ''),
+        ].join('|'),
+        rnOwnsWidth,
+        rnOwnsHeight,
+    });
     const icon = iconSource ? (
         <ComposeIcon
             source={iconSource}
