@@ -16,12 +16,17 @@ export default function MenuLauncher({ buttonProps }) {
     const bApps = appSetting('layout', 'apps');
 
     const isDesktop = useIsDesktop();
-    const { menuData } = useMenuData(appSetting('menu_items', 'objects', 'launcher'));
+    // `menu_launcher` setting pins the apps; unset, they come from UNA's launcher menu.
+    const staticItems = appSetting('menu_items', 'menu_launcher');
+    const useStatic = Array.isArray(staticItems) && staticItems.length > 0;
+    const { menuData } = useMenuData(useStatic ? null : appSetting('menu_items', 'objects', 'launcher'));
 
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation();
 
-    const menu_launcher_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', menuData, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_launcher'), currentUser);
+    const menu_launcher_items = useStatic
+        ? menuItemsByName('', staticItems, currentUser)
+        : menuItemsByNameNew('menu_post', menuData, currentUser);
 
     if (!bApps)
         return <></>;

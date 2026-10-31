@@ -33,7 +33,7 @@ class BxBaseModGroupsCronPruning extends BxDolCron
             if(!empty($aSubscription) && is_array($aSubscription)) {
                 $aSubscription = array_shift($aSubscription);
 
-                $iRecurringReserve = 86400 * (int)getParam($CNF['PARAM_RECURRING_RESERVE']);
+                $iRecurringReserve = 86400 * $CNF['PARAM_RECURRING_RESERVE'];
                 if($aSubscription['data']['status'] == 'active') {
                     $this->_oModule->_oDb->updateRoles(array('expired' => $aSubscription['data']['cperiod_end'] + $iRecurringReserve), array('id' => $aRole['id']));
                     continue;

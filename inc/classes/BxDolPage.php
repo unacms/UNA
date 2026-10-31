@@ -856,6 +856,11 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
             exit;
         }
 
+        if (self::isLockedFromNoProfile($this->_aObject['uri'])) {
+            header('Location: ' . self::getProfileRequiredUrl());
+            exit;
+        }
+
         if(!$oTemplate)
             $oTemplate = BxDolTemplate::getInstance();
 
@@ -1049,6 +1054,52 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
         }
 
         return false;
+    }
+
+    /**
+     * Whether a page is closed to an account that has to create a profile first (BxDolAccount::isProfileRequired). Its
+     * account pages and the profile creation pages stay open; every other page sends it to profile creation.
+     */
+    public static function isLockedFromNoProfile ($sUri)
+    {
+        if (!BxDolAccount::isProfileRequired() || strncmp((string)$sUri, 'account-', 8) === 0)
+            return false;
+
+        return !in_array($sUri, self::getProfileCreationPages(), true);
+    }
+
+    /**
+     * Where an account that has to create a profile first goes: straight to the profile form when there is one kind of
+     * profile, else to the profile switcher, which lists them (the apps do the same).
+     */
+    public static function getProfileRequiredUrl ()
+    {
+        $aUris = self::getProfileCreationPages();
+
+        return bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=' . (count($aUris) == 1 ? $aUris[0] : 'account-profile-switcher')));
+    }
+
+    /**
+     * The profile creation pages: the page of each active item of the add profile menu (sys_add_profile).
+     */
+    public static function getProfileCreationPages ()
+    {
+        $aMenu = BxDolMenuQuery::getMenuObject('sys_add_profile');
+        if (empty($aMenu))
+            return [];
+
+        $aUris = [];
+        foreach ((new BxDolMenuQuery($aMenu))->getMenuItemsFromSet($aMenu['set_name']) as $aItem) {
+            if (empty($aItem['active']))
+                continue;
+
+            $aQuery = [];
+            parse_str((string)parse_url((string)$aItem['link'], PHP_URL_QUERY), $aQuery);
+            if (!empty($aQuery['i']))
+                $aUris[] = $aQuery['i'];
+        }
+
+        return $aUris;
     }
 
     public static function redirectToLoginForm ()

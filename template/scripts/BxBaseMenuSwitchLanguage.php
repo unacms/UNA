@@ -25,7 +25,14 @@ class BxBaseMenuSwitchLanguage extends BxTemplMenu
     {
         $this->loadData();
 
-        return parent::getMenuItems();
+        $aItems = parent::getMenuItems();
+
+        // The language in use, for screen readers too.
+        foreach($aItems as $iKey => $aItem)
+            if(isset($aItem['class_add']) && strpos($aItem['class_add'], 'bx-menu-tab-active') !== false)
+                $aItems[$iKey]['attrs'] = (isset($aItem['attrs']) ? $aItem['attrs'] : '') . ' aria-current="true"';
+
+        return $aItems;
     }
 
     protected function loadData()
@@ -36,8 +43,9 @@ class BxBaseMenuSwitchLanguage extends BxTemplMenu
 
         $oModuleQuery = BxDolModuleQuery::getInstance();
 
+        // Items are named 'lang-<name>' (below).
         $sLanguage = BxDolLanguages::getInstance()->getCurrentLangName();
-        $this->setSelected('', $sLanguage);
+        $this->setSelected('', 'lang-' . $sLanguage);
 
         list($sPageLink, $aPageParams) = $this->{'getBaseUrl' . bx_gen_method_name($this->_sType)}();
 

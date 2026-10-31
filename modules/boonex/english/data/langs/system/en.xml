@@ -1754,6 +1754,7 @@
     <string name="_adm_stg_cpt_option_sys_account_switch_to_profile_redirect"><![CDATA[Redirect after profile switch to]]></string>
     <string name="_adm_stg_cpt_option_sys_account_switch_to_profile_redirect_custom"><![CDATA[URL for 'Custom Page' redirect]]></string>
     <string name="_adm_stg_cpt_option_sys_account_remember_me"><![CDATA[Default value for 'Remember me' feature]]></string>
+    <string name="_adm_stg_cpt_option_sys_account_require_profile"><![CDATA[Require a profile before using the site (accounts without one are sent to profile creation)]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_switch_to_profile_redirect_back"><![CDATA[Current page]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_switch_to_profile_redirect_home"><![CDATA[Home page]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_switch_to_profile_redirect_profile"><![CDATA[View profile page]]></string>
@@ -3504,6 +3505,7 @@
     <string name="_sys_menu_item_title_privacy"><![CDATA[Privacy]]></string>
     <string name="_sys_menu_item_title_search"><![CDATA[Search]]></string>
     <string name="_sys_menu_item_title_switch_language"><![CDATA[Language]]></string>
+    <string name="_sys_menu_item_title_switch_language_current"><![CDATA[Language: {0}]]></string>
     <string name="_sys_menu_item_title_switch_language_mask"><![CDATA[{1} {0}]]></string>
     <string name="_sys_menu_item_title_switch_template"><![CDATA[Design]]></string>
     <string name="_sys_menu_item_title_switch_template_mask"><![CDATA[{0}]]></string>
@@ -3638,6 +3640,7 @@
     <string name="_sys_menu_item_title_system_cmts_item_score"><![CDATA[Score]]></string>
     <string name="_sys_menu_item_title_system_cmts_item_vote"><![CDATA[Plus]]></string>
     <string name="_sys_menu_item_title_system_cmts_item_more"><![CDATA[More]]></string>
+    <string name="_sys_menu_item_title_system_color_scheme"><![CDATA[Theme]]></string>
     <string name="_sys_menu_item_title_system_connections"><![CDATA[Connections]]></string>
     <string name="_sys_menu_item_title_system_dashboard"><![CDATA[Dashboard]]></string>
     <string name="_sys_menu_item_title_system_home"><![CDATA[Home]]></string>
@@ -4020,7 +4023,17 @@
     <string name="_sys_page_description_mention"><![CDATA[Mentions of "{0}" search results]]></string>
     <string name="_sys_page_description_mention_in_section"><![CDATA[Mentions of "{0}" in "{1}" section search results]]></string>
 
-    <string name="_sys_page_lang_block_about"><![CDATA[This site is powered by UNA. The rest is a mystery.]]></string>
+    <string name="_sys_page_lang_block_about"><![CDATA[<p>Welcome! This is a community for people who want to meet others with similar interests, share what they know and keep in touch.</p>
+<p>Members set up a profile, post news, photos and links, comment on each other's posts and follow the people and topics they care about. Anyone can look around. To post, comment or message other members, sign up for an account.</p>
+<p>To keep this a good place for everyone, we ask members to:</p>
+<ul>
+<li>be respectful, especially when they disagree;</li>
+<li>share only what they have the right to share;</li>
+<li>keep other people's private information private;</li>
+<li>report anything that breaks these rules, so moderators can deal with it.</li>
+</ul>
+<p>The full rules are in our Terms of Service, and our Privacy Policy explains how we handle your data.</p>
+<p>This site is <a href="https://unacms.com">powered by UNA CMS platform</a>, open-source software for building online communities and social networks.</p>]]></string>
     <string name="_sys_page_lang_block_terms"><![CDATA[Our terms of use.]]></string>
     <string name="_sys_page_lang_block_privacy"><![CDATA[Our privacy policy.]]></string>
     <string name="_sys_page_meta_description_default"><![CDATA[{site_title} is an online community where people share, discuss and stay in touch with others who care about the same things.]]></string>
@@ -4377,6 +4390,8 @@
     <string name="_sys_txt_confirm_phone_confirm_success"><![CDATA[Your phone number has been confirmed.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_desc_set_phone"><![CDATA[Please enter a phone number for sending verification SMS.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_desc_phone_confirmation"><![CDATA[Please enter verification code from the SMS.]]></string>
+    <string name="_sys_txt_copyright_full"><![CDATA[© {0} {1}. All rights reserved.]]></string>
+    <string name="_sys_txt_copyright_short"><![CDATA[© {0} {1}]]></string>
 
     <string name="_sys_txt_create_post_placeholder"><![CDATA[Write here, {0}...]]></string>
     <string name="_sys_txt_err_attach_links"><![CDATA[The maximum allowed number of attached links has been reached.]]></string>

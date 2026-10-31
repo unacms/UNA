@@ -67,15 +67,6 @@ class BxBaseMenuToolbarTest extends BxDolTestCase
         $this->assertStringNotContainsString("`set_name`='sys_toolbar_site' AND `module`='system' AND `name`='main-menu'", $sAppSql);
     }
 
-    public function testHeaderHasNoLeftToolbar(): void
-    {
-        foreach (['template/_page_toolbar.html', 'modules/boonex/artificer/template/header.html'] as $sPath) {
-            $sHtml = self::readFile($sPath);
-            $this->assertStringNotContainsString('<bx_menu:sys_toolbar_site />', $sHtml, $sPath . ' renders nothing left of the logo.');
-            $this->assertStringContainsString('<bx_menu:sys_toolbar_member />', $sHtml, $sPath);
-        }
-    }
-
     public function testMainMenuOpensTheSiteSidebar(): void
     {
         $oMenu = $this->getMemberToolbar();

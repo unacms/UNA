@@ -4,12 +4,11 @@ import { EnrichedText } from 'react-native-enriched-html'
 import { Linking } from 'react-native'
 import { View } from 'app/design/view'
 import { isExternalUrl, openExternalLink } from 'app/lib/util'
-import { useThemeValue } from 'app/design/theme'
 import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router'
 import { nativeTabPageHref } from 'app/lib/navigation/tab-history'
 import { preprocessHtml, normalizeRenderedHref, alignClassesToStyles } from 'app/lib/html-helpers'
 import { addParagraphGaps, toNativeInlineTags } from 'app/lib/native-html'
-import { useEnrichedHtmlStyle } from 'app/lib/editor/enriched-html-style'
+import { useEnrichedHtmlStyle, useRichTextColors } from 'app/lib/editor/enriched-html-style'
 import { nativeFonts } from 'app/design/fonts/native-fonts'
 
 // EnrichedText is a native view, so the `font-main` class can't reach it: it takes the
@@ -22,7 +21,7 @@ const FONT_FAMILY = nativeFonts.main === 'System' || nativeFonts.main === 'sans-
 // Native renderer using the enriched-html library's display component. Renders the
 // HTML output of the editor 1:1 (formatting, links, native mention pills).
 export default function ElementHtml({ customClassName, data, innerRef, preprocess = true }: HtmlProps) {
-    const textColor = useThemeValue('rgba(30, 40, 55, 1)', 'rgba(225, 230, 240, 1)')
+    const { text: textColor } = useRichTextColors()
     const router = useRouter()
     const tabPath = useCurrentTabPath()
 
@@ -56,9 +55,11 @@ export default function ElementHtml({ customClassName, data, innerRef, preproces
 
     return (
         <View className={`max-w-full ${customClassName || ''}`} ref={innerRef}>
+            {/* EnrichedText's display view doesn't apply lineHeight yet (only the input does), so
+                text uses the font's own spacing; the value matches web for when it does. */}
             <EnrichedText
                 selectable
-                style={{ color: textColor, fontFamily: FONT_FAMILY, fontSize: isSmall ? 14 : 16, lineHeight: isSmall ? 18 : 22 }}
+                style={{ color: textColor, fontFamily: FONT_FAMILY, fontSize: isSmall ? 14 : 16, lineHeight: isSmall ? 20 : 24 }}
                 htmlStyle={htmlStyle}
                 onLinkPress={(e) => navigate(e?.url)}
                 onMentionPress={(e) => navigate(e?.attributes?.href)}

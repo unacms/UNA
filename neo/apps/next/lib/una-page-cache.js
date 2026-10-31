@@ -32,9 +32,10 @@ function ttlSeconds(path) {
  * Cookies that never change UNA's answer for a given URL. NEO's own language
  * cookies only pick the `&lang=` already in the URL (UNA doesn't read them).
  * Every client gets them on its first visit, so keying on them would give each
- * guest a private cache entry.
+ * guest a private cache entry. `neo_session_ok` only times the proxy's session
+ * touch (lib/session-touch).
  */
-const NEO_ONLY_COOKIES = new Set(['neo_lang', 'neo_lang_code']);
+const NEO_ONLY_COOKIES = new Set(['neo_lang', 'neo_lang_code', 'neo_session_ok']);
 
 /**
  * The viewer's cookies that can change the page, in a stable order. UNA's own

@@ -6,6 +6,7 @@ import { findTabPathForUrl } from 'app/components/nav/tabs/tab-menu';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, sanitazeUrl, cn } from 'app/lib/util';
 import { useMemo, useCallback } from 'react';
+import { useTabList } from 'app/lib/navigation/tab-bar-menu';
 import { Text } from 'app/design/typography'
 import emitter, { EVENTS } from 'app/context/emitter';
 import type { LinkProps } from './link.types';
@@ -43,12 +44,7 @@ export default function ElementLink({
         onPress?.(e); 
     }, [haptics, finalHref, onPress]);
 
-    const isLoggedIn = !!currentUser;
-    const TabList = useMemo(() => {
-        return isLoggedIn
-            ? appSetting('menu_items', 'menu_tabbar_logged')
-            : appSetting('menu_items', 'menu_tabbar_non_logged');
-    }, [isLoggedIn]);
+    const { tabList: TabList } = useTabList(currentUser);
 
    
     // Match against tab urls + transpile_urls so in-app links route to the same
