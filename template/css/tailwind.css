@@ -54,7 +54,7 @@
     body:not(.bx-std) button:not(.bx-btn):focus-visible,
     body:not(.bx-std) summary:focus-visible,
     body:not(.bx-std) [tabindex="0"]:focus-visible {
-        @apply outline outline-2 outline-offset-2 outline-blue-500 dark:outline-blue-400;
+        @apply outline outline-2 outline-offset-2 outline-blue-600 dark:outline-blue-400;
     }
 
     /* The main menu row is inside .bx-menu-more-auto-wrapper, which sets overflow:hidden, so an
@@ -122,7 +122,7 @@
     }
 
     .bx-artificer .bx-menthion-link {
-        @apply font-normal text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300;
+        @apply font-normal text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
     }
 
     .bx-artificer .bx-def-box-sizing {
@@ -534,16 +534,18 @@
     /* Borders */
     .bx-std .bx-def-border,
     .bx-artificer .bx-def-border {
-        @apply border border-gray-200 dark:border-gray-700;
+        @apply border border-gray-300 dark:border-gray-700;
     }
     .bx-artificer .bx-def-round-corners {
         @apply rounded-xl;
     }
 
     /* Fonts */
-    .bx-def-font,
+    .bx-def-font {
+        @apply font-inter text-gray-600 dark:text-gray-400;
+    }
     .bx-artificer .bx-def-font-inputs:not(.bx-btn) {
-        @apply font-inter text-gray-500 dark:text-gray-400;
+        @apply font-inter text-gray-800 dark:text-gray-200;
     }
 
     .bx-def-font-grayed {
@@ -552,28 +554,28 @@
 
     .bx-def-font-author,
     .bx-def-font-author.bx-def-font-meta {
-        @apply text-sm text-gray-800 hover:text-black dark:text-gray-300 dark:hover:text-white font-semibold;
+        @apply text-sm text-gray-800 hover:text-black dark:text-gray-200 dark:hover:text-white font-semibold;
     }
 
     .bx-def-font-meta {
         @apply text-sm;
     }
     .bx-def-font-meta:not(a) {
-        @apply text-gray-700 dark:text-gray-400 text-opacity-60;
+        @apply text-gray-600 dark:text-gray-400;
     }
     a.bx-def-font-meta {
         @apply hover:underline;
     }
 
     .bx-artificer .bx-def-a-colored {
-        @apply text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300;
+        @apply text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
     }
 
     .bx-std a.bx-def-font-meta,
     .bx-std a.bx-def-font-meta.bx-def-a-colored,
     .bx-artificer a.bx-def-font-meta,
     .bx-artificer a.bx-def-font-meta.bx-def-a-colored {
-        @apply text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50;
+        @apply text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50;
     }
     .bx-artificer .bx-def-font-meta:not(a) {
         @apply text-opacity-100;
@@ -728,7 +730,7 @@
         @apply gap-4 lg:gap-6;
     }
     .bx-def-color-bg-page{
-        @apply bg-gray-100 dark:bg-gray-900;
+        @apply bg-gray-100 dark:bg-gray-950;
     }
 
     /* Common elements: Blocks, Boxes, etc. */
@@ -772,20 +774,20 @@
     }
 
     .bx-db-title {
-        @apply text-lg xl:text-xl font-bold text-gray-800 dark:text-gray-100 align-middle;
+        @apply text-lg xl:text-xl font-bold text-gray-900 dark:text-gray-100 align-middle;
     }
 
     /* Common Elements: HR */
     .bx-std .bx-def-hr,
     .bx-artificer .bx-def-hr {
-        @apply mx-0 p-0 border-t border-gray-200 dark:border-gray-700;
+        @apply mx-0 p-0 border-t border-gray-300 dark:border-gray-700;
     }
     .bx-std .bx-def-hr {
         @apply border-black/10 dark:border-white/10; /* Studio: the translucent hairline of the block dividers */
     }
     /* Grid header lines: drawn by the header cells (the <hr> rows that used to sit in <thead> read as fake captions and headerless cells). */
     .bx-grid-table thead th {
-        @apply border-t border-b border-gray-200 dark:border-gray-700;
+        @apply border-t border-b border-gray-300 dark:border-gray-700;
     }
     .bx-std .bx-grid-table thead th {
         @apply border-black/10 dark:border-white/10;
@@ -818,18 +820,18 @@
         @apply bg-gray-100 dark:bg-gray-700;
     }
     .bx-btn-text {
-        @apply text-sm text-gray-700 dark:text-gray-100 font-medium ;
+        @apply text-sm text-gray-800 dark:text-gray-200 font-medium ;
     }
     .bx-btn-hover {
-        @apply hover:bg-white dark:hover:bg-gray-600;
+        @apply hover:bg-gray-200 dark:hover:bg-gray-600;
         @apply hover:border-gray-300 dark:hover:border-gray-500;
-        @apply hover:text-gray-800 dark:hover:text-white;
+        @apply hover:text-gray-900 dark:hover:text-white;
         @apply hover:no-underline;
         @apply hover:-translate-y-px;
     }
     .bx-btn-focus {
         @apply focus:outline-none;
-        @apply focus-visible:border-blue-500 dark:focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900;
+        @apply focus-visible:border-blue-600 dark:focus-visible:border-blue-400 focus-visible:ring-2 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-800;
     }
     
     .bx-btn-active {
@@ -885,8 +887,8 @@
     }
 
     .bx-btn.bx-btn-primary {
-        @apply bg-blue-600 hover:bg-blue-700 active:bg-blue-800 dark:bg-blue-700 dark:hover:bg-blue-600 dark:active:bg-blue-800;
-        @apply border border-blue-600 hover:border-blue-700 active:border-blue-800 dark:border-blue-600 dark:hover:border-blue-500 dark:active:border-blue-700;
+        @apply bg-blue-600 hover:bg-blue-700 active:bg-blue-800;
+        @apply border border-blue-600 hover:border-blue-700 active:border-blue-800;
         @apply text-white hover:text-white active:text-white dark:text-white dark:hover:text-white dark:active:text-white;
     }
 
@@ -948,7 +950,7 @@
     .bx-artificer form a:not(.bx-btn),
     .bx-artificer .sys-jf-agreement a:not(.bx-btn), 
     .bx-artificer .sys-lf-agreement a:not(.bx-btn) {
-        @apply font-normal text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300;
+        @apply font-normal text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
     }
 
     .bx-artificer .bx-form-caption,
@@ -962,7 +964,7 @@
 
     .bx-artificer .bx-form-required,
     .bx-artificer .bx-form-warn {
-        @apply text-red-400;
+        @apply text-red-600 dark:text-red-400;
     }
 
     .bx-form-section.bx-form-section-header {
@@ -1007,9 +1009,9 @@
     .bx-artificer .bx-form-input-wrapper-price span {
         @apply block w-full px-3 py-2;
         @apply bg-gray-50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-900;
-        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-500 focus:border-opacity-70 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none;
-        @apply leading-6 text-base font-medium text-gray-700 dark:text-gray-300 focus:text-gray-900 dark:focus:text-gray-100;
-        @apply placeholder:text-gray-500 dark:focus:placeholder:text-gray-700 focus:placeholder:text-gray-300;
+        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-600 dark:focus:border-blue-400 focus:ring-1 focus:ring-blue-600 dark:focus:ring-blue-400 focus:outline-none;
+        @apply leading-6 text-base font-medium text-gray-800 dark:text-gray-200 focus:text-gray-900 dark:focus:text-gray-100;
+        @apply placeholder:text-gray-600 dark:placeholder:text-gray-400;
         @apply rounded-md;
     }
 	
@@ -1018,10 +1020,15 @@
     .bx-artificer .bx-form-input-wrapper-password {
         @apply relative block w-full;
         @apply bg-gray-50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-900;
-        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-500 focus:border-opacity-70 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none;
-        @apply leading-6 text-base font-medium text-gray-700 dark:text-gray-300 focus:text-gray-900 dark:focus:text-gray-100;
-        @apply placeholder:text-gray-500 dark:focus:placeholder:text-gray-700 focus:placeholder:text-gray-300;
+        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-600 dark:focus:border-blue-400 focus:ring-1 focus:ring-blue-600 dark:focus:ring-blue-400 focus:outline-none;
+        @apply leading-6 text-base font-medium text-gray-800 dark:text-gray-200 focus:text-gray-900 dark:focus:text-gray-100;
+        @apply placeholder:text-gray-600 dark:placeholder:text-gray-400;
         @apply rounded-md;
+    }
+    /* The wrapper carries the field look, and the input inside it takes the focus, so the wrapper shows it. */
+    .bx-artificer .bx-form-input-wrapper-password {
+        @apply focus-within:bg-white dark:focus-within:bg-gray-900;
+        @apply focus-within:border-blue-600 dark:focus-within:border-blue-400 focus-within:ring-1 focus-within:ring-blue-600 dark:focus-within:ring-blue-400;
     }
     .bx-std .bx-form-input-wrapper-password .bx-form-input-password,
     .bx-artificer .bx-form-input-wrapper-password .bx-form-input-password {
@@ -1068,12 +1075,12 @@
     /* Native selects: a Lucide chevrons-up-down glyph on the right says "menu, not text field" (gray-500, gray-400 in dark). */
     .bx-std select.bx-form-input-select {
         @apply appearance-none pr-9 bg-no-repeat;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
         background-position: right 0.625rem center;
         background-size: 1rem 1rem;
     }
     .dark .bx-std select.bx-form-input-select {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
     }
     /* The password wrapper carries the field look; the input inside is bare, and the wrapper shows the focus ring for it. */
     .bx-std .bx-form-input-wrapper-password {
@@ -1095,9 +1102,9 @@
     .bx-artificer .bx-form-input-wrapper-radio_set {
         @apply max-h-80 overflow-x-auto;
         @apply bg-gray-50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-900;
-        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-500 focus:border-opacity-70 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none;
-        @apply leading-6 text-base font-medium text-gray-700 dark:text-gray-300 focus:text-gray-900 dark:focus:text-gray-100;
-        @apply placeholder:text-gray-500 dark:focus:placeholder:text-gray-700 focus:placeholder:text-gray-300;
+        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-600 dark:focus:border-blue-400 focus:ring-1 focus:ring-blue-600 dark:focus:ring-blue-400 focus:outline-none;
+        @apply leading-6 text-base font-medium text-gray-800 dark:text-gray-200 focus:text-gray-900 dark:focus:text-gray-100;
+        @apply placeholder:text-gray-600 dark:placeholder:text-gray-400;
         @apply rounded-md;
     }
     /* Studio: the set container is a field too (see "Studio: Inputs"); this sits after the site rule above so it wins. */
@@ -1119,14 +1126,17 @@
     .bx-form-input-radio {
         @apply block w-4 h-4;
         @apply bg-gray-50 dark:bg-gray-900/50 bg-origin-border;
-        @apply border-2 border-gray-300 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-500 focus:border-opacity-70;
-        @apply placeholder:text-gray-500 dark:focus:placeholder:text-gray-700 focus:placeholder:text-gray-300;
+        @apply border-2 border-gray-500 focus:border-blue-600 dark:focus:border-blue-400;
+        @apply placeholder:text-gray-600 dark:placeholder:text-gray-400;
         @apply scale-150 rounded;
         @apply appearance-none select-none;
     }
+    /* The checked fill is currentColor, so the site's input text colour (.bx-artificer .bx-def-font-inputs) must not win here. */
     .bx-def-font-inputs.bx-form-input-checkbox,
-    .bx-def-font-inputs.bx-form-input-radio {
-        @apply leading-6 text-base font-medium text-blue-600 dark:text-blue-600;
+    .bx-def-font-inputs.bx-form-input-radio,
+    .bx-artificer .bx-def-font-inputs.bx-form-input-checkbox,
+    .bx-artificer .bx-def-font-inputs.bx-form-input-radio {
+        @apply leading-6 text-base font-medium text-blue-600 dark:text-blue-500;
     }
     .bx-form-input-checkbox:checked,
     .bx-form-input-radio:checked {
@@ -1152,26 +1162,28 @@
     }
 
     /* Common elements: Forms: Switcher Input */
+    /* NEO's switch: the accent track when on, a gray one when off, a white knob. The off track is NEO's
+       control border (gray-500), so the switch is 3:1 against cards and the page in both states. */
     .bx-switcher-cont.on button {
-        @apply bg-white dark:bg-gray-800;
+        @apply bg-blue-600 dark:bg-blue-500;
     }
     .bx-switcher-cont.on button span {
-        @apply bg-green-500 dark:bg-green-500 ltr:translate-x-5 rtl:-translate-x-5;
+        @apply bg-white ltr:translate-x-5 rtl:-translate-x-5;
     }
     .bx-switcher-cont.off button {
-        @apply bg-gray-200 dark:bg-gray-900;
+        @apply bg-gray-500;
     }
     .bx-switcher-cont.off button span {
-        @apply bg-white dark:bg-gray-500 translate-x-0;
+        @apply bg-white translate-x-0;
     }
 
     /* Common elements: Forms: Autosuggestion Input */
     .bx-artificer .bx-form-input-text.bx-form-input-autotoken {
         @apply flex flex-wrap items-stretch w-full py-2 px-3 ;
         @apply bg-gray-50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-900;
-        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-500 focus:border-opacity-70 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none;
-        @apply leading-6 text-base font-medium text-gray-700 dark:text-gray-300 focus:text-gray-900 dark:focus:text-gray-100;
-        @apply placeholder:text-gray-500 dark:focus:placeholder:text-gray-700 focus:placeholder:text-gray-300;
+        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-600 dark:focus:border-blue-400 focus:ring-1 focus:ring-blue-600 dark:focus:ring-blue-400 focus:outline-none;
+        @apply leading-6 text-base font-medium text-gray-800 dark:text-gray-200 focus:text-gray-900 dark:focus:text-gray-100;
+        @apply placeholder:text-gray-600 dark:placeholder:text-gray-400;
         @apply rounded-md;
     }
     .bx-artificer .bx-form-input-autotoken b.val {
@@ -1269,7 +1281,7 @@
     }
 
     .bx-stl-mil-focus {
-        @apply focus:border-blue-500 dark:focus:border-blue-500 focus:border-opacity-70 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none;
+        @apply focus:border-blue-600 dark:focus:border-blue-400 focus:ring-1 focus:ring-blue-600 dark:focus:ring-blue-400 focus:outline-none;
     }
     
     .bx-stl-mil-active-bg {
@@ -1555,7 +1567,7 @@
 
     /* Common elements: Profile Stats menu */
     .bx-artificer .bx-menu-profile-stats.bx-menu-ver li.bx-menu-tab-active {
-        @apply bg-slate-900/[.08] dark:bg-slate-900 ring-1 ring-gray-200 dark:ring-gray-800 text-gray-900 dark:text-white;
+        @apply bg-gray-900/[.08] dark:bg-gray-900 ring-1 ring-gray-200 dark:ring-gray-800 text-gray-900 dark:text-white;
     }
     .bx-artificer .bx-menu-profile-stats.bx-menu-ver li.bx-psmi-show-more,
     .bx-artificer .bx-menu-profile-stats.bx-menu-ver li.bx-psmi-show-less {
@@ -1673,7 +1685,7 @@
 
     .bx-base-text-unit-title a,
     .bx-tl-title a {
-        @apply text-gray-800 hover:text-blue-500 dark:text-gray-100 dark:hover:text-blue-400 hover:no-underline;
+        @apply text-gray-800 hover:text-blue-700 dark:text-gray-100 dark:hover:text-blue-400 hover:no-underline;
     }
 
     .bx-base-text-unit-ext .bx-base-text-unit-text {
@@ -1954,6 +1966,12 @@
     }
     .bx-std .bx-switcher-cont.on button {
         @apply bg-white dark:bg-white/10;
+    }
+    .bx-std .bx-switcher-cont.on button span {
+        @apply bg-green-500;
+    }
+    .bx-std .bx-switcher-cont.off button span {
+        @apply bg-white dark:bg-gray-500;
     }
     .bx-std .bx-theme-toggle {
         @apply flex p-0.5 rounded-full bg-black/5 dark:bg-white/5;
@@ -2427,7 +2445,7 @@
     }
 
     .bx-artificer div.ql-editor:focus{
-        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-500 focus:border-opacity-70 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none;
+        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-600 dark:focus:border-blue-400 focus:ring-1 focus:ring-blue-600 dark:focus:ring-blue-400 focus:outline-none;
     }
 
     .bx-artificer .ql-mention-list li {
@@ -2519,12 +2537,12 @@
     @apply ring-1 ring-inset ring-black/10 dark:ring-white/15;
     @apply pl-3 pr-9;
     @apply focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 dark:focus:ring-blue-400;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
     background-position: right 0.625rem center;
     background-size: 1rem 1rem;
 }
 .dark .bx-std .select2-container .select2-selection--single {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
 }
 .bx-std .select2-container--open .select2-selection--single {
     @apply ring-2 ring-inset ring-blue-500 dark:ring-blue-400;
