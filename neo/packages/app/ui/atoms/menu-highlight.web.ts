@@ -1,0 +1,75 @@
+import { useCallback } from 'react';
+
+/** The list class the highlight's CSS hangs on (design/styles/global.web.css). */
+export const MENU_HIGHLIGHT_CLASS = 'neo-menu-highlight';
+
+const INTERACTIVE = 'a, [tabindex]';
+
+/**
+ * One highlight that slides under a menu's items to the one under the pointer, or the one focused from the
+ * keyboard, as UNA's popup menus do (bx_menu_highlight). Returns a ref for the list, whose children are the items;
+ * the list also needs MENU_HIGHLIGHT_CLASS. Touch has no hover: taps don't move it. Native has no hover and
+ * gets a no-op (menu-highlight.ts).
+ */
+export function useMenuHighlight() {
+    return useCallback((node: unknown) => {
+        const list = node as HTMLElement | null;
+        if (!list || typeof list.addEventListener !== 'function') return undefined;
+
+        // The list's child that holds the target: an item, unless it has nothing to press (a group header).
+        const itemOf = (target: EventTarget | null) => {
+            let el = target instanceof HTMLElement ? target : null;
+            while (el && el.parentElement !== list) el = el.parentElement;
+            return el && (el.matches(INTERACTIVE) || el.querySelector(INTERACTIVE)) ? el : null;
+        };
+
+        const move = (item: HTMLElement) => {
+            // The item's own surface (a link wraps it) gives the box and the corners.
+            const surface = item.matches('.group') ? item : (item.querySelector<HTMLElement>(':scope > .group') ?? item);
+            const listBox = list.getBoundingClientRect();
+            const box = surface.getBoundingClientRect();
+            // The first item it lights fades in where it is (`-jump` transitions only the opacity), later ones slide
+            // to theirs.
+            const jump = !list.classList.contains('neo-menu-highlight-on');
+            list.classList.toggle('neo-menu-highlight-jump', jump);
+            // Boxes are on screen, so scaled while the menu grows in: back to the list's own pixels.
+            const scale = list.offsetWidth ? listBox.width / list.offsetWidth : 1;
+            list.style.setProperty('--neo-menu-highlight-x', `${(box.left - listBox.left) / scale - list.clientLeft}px`);
+            list.style.setProperty('--neo-menu-highlight-y', `${(box.top - listBox.top) / scale - list.clientTop}px`);
+            list.style.setProperty('--neo-menu-highlight-w', `${box.width / scale}px`);
+            list.style.setProperty('--neo-menu-highlight-h', `${box.height / scale}px`);
+            list.style.setProperty('--neo-menu-highlight-r', getComputedStyle(surface).borderRadius);
+            if (jump) {
+                // Laid out at its first item before it shows: otherwise the next move, which ends the jump, doesn't slide.
+                list.getBoundingClientRect();
+                list.classList.add('neo-menu-highlight-on');
+            }
+        };
+        const hide = () => list.classList.remove('neo-menu-highlight-on');
+
+        const onPointerOver = (event: PointerEvent) => {
+            if (event.pointerType === 'touch') return;
+            const item = itemOf(event.target);
+            if (item) move(item);
+        };
+        const onFocusIn = (event: FocusEvent) => {
+            const target = event.target as HTMLElement | null;
+            const item = itemOf(target);
+            if (item && target?.matches(':focus-visible')) move(item);
+        };
+        const onFocusOut = (event: FocusEvent) => {
+            if (!(event.relatedTarget instanceof Node) || !list.contains(event.relatedTarget)) hide();
+        };
+
+        list.addEventListener('pointerover', onPointerOver);
+        list.addEventListener('pointerleave', hide);
+        list.addEventListener('focusin', onFocusIn);
+        list.addEventListener('focusout', onFocusOut);
+        return () => {
+            list.removeEventListener('pointerover', onPointerOver);
+            list.removeEventListener('pointerleave', hide);
+            list.removeEventListener('focusin', onFocusIn);
+            list.removeEventListener('focusout', onFocusOut);
+        };
+    }, []);
+}

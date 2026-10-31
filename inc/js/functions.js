@@ -2564,4 +2564,66 @@ function bx_scrollbar_overlay_popups(oContext)
     });
 }
 
+/**
+ * Popup menus: one highlight follows the pointer from item to item instead of each item lighting up on its own. It is
+ * the list's ::before (.bx-menu-highlight-list in tailwind.css), set to the item under the pointer, or the one focused
+ * from the keyboard, through CSS variables; it slides between items and fades out when the pointer leaves the list.
+ * Touch has no hover: taps don't move it.
+ * @param oContext - a popup, or an element with popups in it
+ */
+function bx_menu_highlight(oContext)
+{
+    $(oContext).not('.bx-std *').find('.bx-popup ul').filter(function() {
+        var oList = $(this);
+        return !oList.is('.bx-menu-hor, .bx-menu-custom-hor, .bx-menu-floating-blocks-wide, .bx-menu-highlight-list') && oList.children('li').find('a').length > 1;
+    }).each(function(iIndex, eList) {
+        var oList = $(eList).addClass('bx-menu-highlight-list');
+
+        var fItem = function(eTarget) {
+            var oItem = $(eTarget).closest(oList.children('li'));
+            return oItem.length && oItem.is(':visible') && oItem.find('a').length ? oItem.get(0) : null;
+        };
+
+        var fMove = function(eItem) {
+            var oListBox = eList.getBoundingClientRect(), oBox = eItem.getBoundingClientRect();
+
+            // the first item it lights fades in where it is (.bx-menu-highlight-jump transitions only the opacity), later
+            // ones slide to theirs
+            var bJump = !oList.hasClass('bx-menu-highlight-on');
+            oList.toggleClass('bx-menu-highlight-jump', bJump);
+
+            // boxes are on screen, so scaled while the popup grows in: back to the list's own pixels
+            var fScale = eList.offsetWidth ? oListBox.width / eList.offsetWidth : 1;
+            eList.style.setProperty('--bx-menu-highlight-x', ((oBox.left - oListBox.left) / fScale - eList.clientLeft) + 'px');
+            eList.style.setProperty('--bx-menu-highlight-y', ((oBox.top - oListBox.top) / fScale - eList.clientTop) + 'px');
+            eList.style.setProperty('--bx-menu-highlight-w', (oBox.width / fScale) + 'px');
+            eList.style.setProperty('--bx-menu-highlight-h', (oBox.height / fScale) + 'px');
+
+            if(bJump) {
+                // laid out at its first item before it shows: otherwise the next move, which ends the jump, doesn't slide
+                eList.getBoundingClientRect();
+                oList.addClass('bx-menu-highlight-on');
+            }
+        };
+
+        oList.on('pointerover', function(oEvent) {
+            if(oEvent.originalEvent?.pointerType === 'touch')
+                return;
+
+            var eItem = fItem(oEvent.target);
+            if(eItem)
+                fMove(eItem);
+        }).on('pointerleave', function() {
+            oList.removeClass('bx-menu-highlight-on');
+        }).on('focusin', function(oEvent) {
+            var eItem = fItem(oEvent.target);
+            if(eItem && $(oEvent.target).is(':focus-visible'))
+                fMove(eItem);
+        }).on('focusout', function(oEvent) {
+            if(!oEvent.relatedTarget || !$.contains(eList, oEvent.relatedTarget))
+                oList.removeClass('bx-menu-highlight-on');
+        });
+    });
+}
+
 /** @} */

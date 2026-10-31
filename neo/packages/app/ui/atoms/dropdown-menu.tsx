@@ -10,6 +10,7 @@ import { Keyboard, Alert, Platform, type AlertButton, type StyleProp, type ViewS
 import Redirect, { type RedirectHandle } from 'app/ui/atoms/redirect';
 import { appSetting } from 'app/lib/util';
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
+import { MENU_HIGHLIGHT_CLASS, useMenuHighlight } from 'app/ui/atoms/menu-highlight';
 import DropdownPopup, { DropdownMenuOpenContext, type DropdownButtonProps } from 'app/ui/atoms/dropdown-popup'
 import emitter, { EVENTS } from 'app/context/emitter';
 import { components } from 'app/components/registry'
@@ -173,6 +174,10 @@ function DropdownMenuPopup({
         variant === 'tabs-overflow'
             ? resolveTabsOverflowClasses(tabsOverflowSize)
             : (variant && variantClassMap[variant]) ?? variantClassMap.vertical!;
+
+    // Lists of rows share one sliding hover highlight (web); horizontal and grid menus keep their own hover.
+    const menuHighlightRef = useMenuHighlight();
+    const listClassName = cn(menuSettings[classes.container], classes.container === 'content_ver' && MENU_HIGHLIGHT_CLASS);
 
     const { width: windowWidth } = useWindowSize();
     const gridItems = useMemo(
@@ -348,7 +353,7 @@ function DropdownMenuPopup({
                                         classes={classes}
                                     />
                                 ) : null}
-                                <View className={menuSettings[classes.container]}>
+                                <View ref={menuHighlightRef} className={listClassName}>
                                     {section.items.map((item: DropdownMenuItemData, index: number) => {
                                         const navigable = isNavigableDropdownItem(item, onSelect);
                                         return (
@@ -368,7 +373,7 @@ function DropdownMenuPopup({
                         ))}
                     </View>
                 ) : (
-                    <View className={menuSettings[classes.container]}>
+                    <View ref={menuHighlightRef} className={listClassName}>
                         {items.map((item, index) => {
                             const navigable = isNavigableDropdownItem(item, onSelect);
                             return (

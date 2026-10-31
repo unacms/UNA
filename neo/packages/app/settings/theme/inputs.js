@@ -1,7 +1,9 @@
 
 export const settingsInputs = {
     dropdown: {
-        cnt: ' rounded-2xl overflow-hidden p-1.5 bg-popover shadow-card-outline dark:shadow-card-outline-deep z-50  ',
+        // A floating surface: the popover edge and drop (the same as UNA's popups), 4px around its rows, whose 12px
+        // corners (rounded-xl) sit concentric in its 16px ones.
+        cnt: ' rounded-2xl overflow-hidden p-1 bg-popover shadow-popover dark:shadow-popover-deep z-50  ',
     },
     checkbox_set: {
         // Same fill, outline and radius as an input; rows inside are inset 4px with rounded-lg corners.
