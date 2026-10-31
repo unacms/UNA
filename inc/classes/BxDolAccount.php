@@ -868,6 +868,22 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
     }
     
     /**
+     * Whether the logged in account has to create a profile before it can use the site: Studio > Settings > Account
+     * "Require a profile" (sys_account_require_profile) is on, and the account has no profile of its own yet, only its
+     * system profile (the case the "create a profile" informer is shown for). The site then sends it to profile
+     * creation (BxDolPage::isLockedFromNoProfile), and so do the apps (`profile_required` in the viewer's data).
+     */
+    public static function isProfileRequired ()
+    {
+        if(!isLogged() || !getParam('sys_account_require_profile') || defined('BX_DOL_CRON_EXECUTE'))
+            return false;
+
+        $oAccount = self::getInstance();
+
+        return $oAccount && !$oAccount->getProfilesIds(false);
+    }
+
+    /**
      * Get all profile ids associated with the account
      */
     public function getProfilesIds ($isFilterNonSwitchableProfiles = true, $isFilterSystemProfiles = true)
@@ -1185,7 +1201,7 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
         $oAccountQuery = BxDolAccountQuery::getInstance();
         $aAccounts = [];
         $aAccountsSuspend = [];
-        $bSuspend = false;
+
         $aPruning = explode(',', getParam('sys_account_accounts_pruning'));
         foreach ($aPruning as $sPruning) {
             switch($sPruning) {
@@ -1216,21 +1232,46 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
             }
         }
         
+        /**
+         * Suspend profiles.
+         */
         foreach ($aAccountsSuspend as $k => $aAccount) {
             $oAccount = BxDolAccount::getInstance($aAccount['id']);
-            $oProfile = BxDolProfile::getInstanceAccountProfile($aAccount['id']);
-            $oProfile->suspend(BX_PROFILE_ACTION_AUTO, 0 ,false);
+            if(!$oAccount || isAdmin($aAccount['id']))
+                continue;
+
             $aProfiles = $oAccount->getProfiles();
-            foreach($aProfiles as $aProfile){
-                BxDolProfile::getInstance($aProfile['id'])->suspend(BX_PROFILE_ACTION_AUTO, 0 ,false);
+            foreach($aProfiles as $aProfile)
+                if(bx_acl_is_advanced($aProfile['id']))
+                    continue 2;
+
+            $oProfile = BxDolProfile::getInstanceAccountProfile($aAccount['id']);
+            if($oProfile && $oProfile->getStatus() != BX_PROFILE_STATUS_SUSPENDED)
+                $oProfile->suspend(BX_PROFILE_ACTION_AUTO, 0 ,false);
+
+            foreach($aProfiles as $aProfile) {
+                if(($oProfile = BxDolProfile::getInstance($aProfile['id'])) && $oProfile->getStatus() != BX_PROFILE_STATUS_SUSPENDED)
+                    $oProfile->suspend(BX_PROFILE_ACTION_AUTO, 0 ,false);
             }
+
             $iCount++;
         }
 
-        
+        /**
+         * Delete accounts.
+         */
         foreach ($aAccounts as $k => $aAccount) {
             $oAccount = BxDolAccount::getInstance($aAccount['id']);
+            if(!$oAccount || isAdmin($aAccount['id']))
+                continue;
+
+            $aProfiles = $oAccount->getProfiles();
+            foreach($aProfiles as $aProfile)
+                if(bx_acl_is_advanced($aProfile['id']))
+                    continue 2;
+
             $oAccount->delete(false);
+
             $iCount++;
         }
 

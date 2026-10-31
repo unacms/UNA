@@ -1,10 +1,11 @@
 
 
+// Pinned menus (navbar, tab bars, add, launcher, account, footer, sidebar) and their
+// UNA counterparts: commented examples in menus.example.js.
 export const settingsMenus = {
     menu_items: {
         transpile_urls: [
             // URLS for tabs in native app index = tab index
-            // { index: 1, url: '/friend-suggestions' },
             { index: 1, url: '/friend-requests' },
             { index: 1, url: '/sent-friend-requests' },
         ],
@@ -13,7 +14,15 @@ export const settingsMenus = {
             add: 'sys_add_content',
             launcher: 'sys_homepage',
             footer: 'sys_footer',
+            // Navbar when `menu_navbar` is empty.
+            site: 'sys_site',
+            // Tab bar (web bottom bar, native tabs) when `menu_tabbar_*` are empty.
+            tabbar: 'sys_tabbar',
         },
+        // Tabs after Home in a navbar built from `objects.site`; the rest go under More.
+        menu_navbar_site_tabs: 5,
+        // Columns in the navbar's dropdowns (More); an item's own `columns` wins.
+        menu_navbar_more_columns: 2,
         iconset: {
             'profile-check-in': 'Check',
             'edit-event-questionnaire': 'List',
@@ -54,7 +63,6 @@ export const settingsMenus = {
             cog: 'Cog',
             'sign-out-alt': 'LogOut',
             clock: 'Clock',
-            'item-share': 'Share2',
             'item-copy': 'Clipboard',
             'item-repost': 'RotateCw',
             'video-camera': 'Video',
@@ -63,347 +71,5 @@ export const settingsMenus = {
             'ellipsis-v': 'EllipsisVertical',
             'ellipsis-h': 'Ellipsis',
         },
-        menu_navbar: [
-            {
-                name: 'home',
-                title: 'Home',
-                link: '/',
-                icon: 'House',
-                animated: true,
-            },
-            {
-                name: 'friends',
-                title: 'Friends',
-                link: '/friends',
-                icon: 'UsersRound',
-                animated: true,
-                nonlogged: false,
-            },
-            {
-                name: 'explore',
-                title: 'Explore',
-                link: '/explore',
-                icon: 'Compass',
-                logged: false,
-                animated: true,
-            },
-            {
-                name: 'videos-home',
-                title: 'Video',
-                link: '/videos-home',
-                icon: 'TvMinimalPlay',
-                animated: true,
-            },
-            {
-                name: 'products-home',
-                title: 'Market',
-                link: '/products-home',
-                icon: 'Store',
-                animated: true,
-            },
-            {
-                name: 'groups-home',
-                title: 'Groups',
-                link: '/groups-home',
-                icon: 'Shapes',
-                animated: true,
-            },
-            {
-                name: 'events-home',
-                title: 'Events',
-                link: '/events-home',
-                icon: 'Calendar',
-                animated: true,
-            }, 
-            {
-                name: 'more',
-                title: 'More',
-                link: '',
-                icon: 'Menu',
-                showTitle: false,
-                chevron: '',
-                animated: true,
-                items: [
-                    {
-                        name: 'connect',
-                        title: 'Connect',
-                        items: [
-                            {
-                                name: 'persons-home',
-                                title: 'People',
-                                description: 'Find friends, connect and collaborate.',
-                                link: '/persons-home',
-                                icon: 'UserRound',
-                                animated: true,
-                            },
-                            {
-                                name: 'organizations-home',
-                                title: 'Orgs',
-                                description: 'Work together as an organization.',
-                                link: '/organizations-home',
-                                icon: 'Building2',
-                                animated: true,
-                            },
-                            {
-                                name: 'events-home',
-                                title: 'Events',
-                                description: 'Find what\'s happening.',
-                                link: '/events-home',
-                                icon: 'Calendar',
-                                animated: true,
-                            },
-                            {
-                                name: 'groups-home',
-                                title: 'Groups',
-                                description: 'Get together with others.',
-                                link: '/groups-home',
-                                icon: 'Shapes',
-                                animated: true,
-                            },
-                        ],
-                    },
-                    {
-                        name: 'browse',
-                        title: 'Browse',
-                        items: [
-                            {
-                                name: 'videos-home',
-                                title: 'Video',
-                                description: 'Watch and learn.',
-                                link: '/videos-home',
-                                icon: 'TvMinimalPlay',
-                                animated: true,
-                            },
-                            {
-                                name: 'photos-home',
-                                title: 'Photos',
-                                description: 'Share photos and albums.',
-                                link: '/photos-home',
-                                icon: 'Camera',
-                                animated: true,
-                            },
-                            {
-                                name: 'polls-home',
-                                title: 'Polls',
-                                description: 'Ask the community and vote.',
-                                link: '/polls-home',
-                                icon: 'SquareCheck',
-                                animated: true,
-                            },
-                            {
-                                name: 'spaces-home',
-                                title: 'Spaces',
-                                description: 'Join spaces around a topic.',
-                                link: '/spaces-home',
-                                icon: 'SquareStack',
-                                animated: true,
-                            },
-                            {
-                                name: 'ads-home',
-                                title: 'Ads',
-                                description: 'Browse classifieds and listings.',
-                                link: '/ads-home',
-                                icon: 'CircleStar',
-                                animated: true,
-                            },
-                            {
-                                name: 'jobs-home',
-                                title: 'Jobs',
-                                description: 'Find work or hire talent.',
-                                link: '/jobs-home',
-                                icon: 'BriefcaseBusiness',
-                                animated: true,
-                            },
-                        ],
-                    },
-                    {
-                        name: 'learn',
-                        title: 'Learn',
-                        items: [
-                            {
-                                name: 'posts-home',
-                                title: 'Posts',
-                                description: 'Read stories from the community.',
-                                link: '/posts-home',
-                                icon: 'FileText',
-                                animated: true,
-                            },
-                            {
-                                name: 'courses-home',
-                                title: 'Courses',
-                                description: 'Take courses and grow your skills.',
-                                link: '/courses-home',
-                                icon: 'LibraryBig',
-                                animated: true,
-                            },
-                            {
-                                name: 'wiki',
-                                title: 'Documentation',
-                                description: 'How to use our product.',
-                                link: '/docs',
-                                icon: 'BookOpenText',
-                                animated: true,
-                            },
-                            {
-                                name: 'discussions-home',
-                                title: 'Discussions',
-                                description: 'Talk about your interests.',
-                                link: '/discussions-home',
-                                icon: 'MessagesSquare',
-                                animated: true,
-                            },
-                        ],
-                    },
-                ]
-            },
-        ],
-        /**
-         * Header toolbar (mobile web): popup links, same row pattern as navbar dropdown.
-         * Guests only, so like the guest tabs it links only to system pages.
-         */
-        menu_navigation: [
-            {
-                name: 'about',
-                title: 'About Us',
-                link: '/about',
-                icon: 'Info',
-                animated: true,
-            },
-            {
-                name: 'terms',
-                title: 'Terms of Service',
-                link: '/terms',
-                icon: 'Handshake',
-            },
-            {
-                name: 'privacy',
-                title: 'Privacy Policy',
-                link: '/privacy',
-                icon: 'ShieldCheck',
-            },
-        ],
-        menu_tabbar_logged: [
-            {
-                key: '/tab0',
-                title: 'Home',
-                url: '/home',
-                icon: 'House',
-                animated: true,
-            },
-            {
-                key: '/tab1',
-                title: 'Friends',
-                url: '/friends',
-                icon: 'UsersRound',
-                badge: 'friends',
-                animated: true,
-            },
-            {
-                key: '/tab2',
-                title: 'Messages',
-                url: '/messenger',
-                icon: 'MessageCircleMore',
-                badge: 'messenger',
-                animated: true,
-            },
-            {
-                key: '/tab3',
-                title: 'Activity',
-                url: '/notifications-view',
-                icon: 'Bell',
-                badge: 'notifications',
-                animated: true,
-            },
-            // Fifth slot: own profile, shown as the avatar (iOS). With five items
-            // it is a plain tab; with more it is the More trigger and the menu's
-            // header, and the items below it fill the menu.
-            { key: '/tab4', title: 'Profile', url: '{profile}', icon: 'User' },
-            {
-                key: '/tab5',
-                title: 'Dashboard',
-                url: '/dashboard',
-                icon: 'CircleGauge',
-            },
-            { key: '/tab6', title: 'Groups', url: '/groups-home', icon: 'UsersRound' },
-            { key: '/tab7', title: 'Events', url: '/events-home', icon: 'CalendarCheck' },
-            { key: '/tab8', title: 'Market', url: '/products-home', icon: 'Store' },
-            { key: '/tab9', title: 'Tasks', url: '/tasks-home', icon: 'ListChecks' },
-            { key: '/tab10', title: 'Docs', url: '/docs', icon: 'Book' },
-            { key: '/tab11', title: 'Blog', url: '/posts-home', icon: 'PencilLine' },
-            { key: '/tab12', title: 'Pricing', url: '/pricing', icon: 'Tag' },
-            { key: '/tab13', title: 'Sign out', url: '/logout', icon: 'LogOut' },
-        ],
-
-        // Guest tabs link only to system pages, which every install has.
-        // A page from a module (Contact Us is bx_contact) is a 404 until
-        // that module is installed, so forks add those tabs themselves.
-        menu_tabbar_non_logged: [
-            {
-                key: '/tab0',
-                title: 'Home',
-                url: '/home',
-                icon: 'House',
-                animated: true,
-            },
-            {
-                key: '/tab1',
-                title: 'Explore',
-                url: '/explore',
-                icon: 'Compass',
-                animated: true,
-            },
-            {
-                key: '/tab2',
-                title: 'About',
-                url: '/about',
-                icon: 'Info',
-                animated: true,
-            },
-            { key: '/tab3', title: 'Terms', url: '/terms', icon: 'Handshake' },
-            { key: '/tab4', title: 'Privacy', url: '/privacy', icon: 'ShieldCheck' },
-        ],
-        /* for vertical layout*/
-        menu_sidebar: [
-            {
-                title: 'Profile',
-                link: '{profile}',
-                icon: 'User',
-                nonlogged: false,
-            },
-            {
-                title: 'Notifications',
-                link: '/notifications-view',
-                icon: 'Bell',
-                nonlogged: false,
-            },
-            {
-                title: 'Messages',
-                link: '/messenger',
-                icon: 'MessageCircleMore',
-                nonlogged: false,
-            },
-            {
-                title: 'Friends',
-                link: '/friends',
-                icon: 'Link',
-                nonlogged: false,
-            },
-            { title: 'Groups', link: '/groups-home', icon: 'Group' },
-            { title: 'Spaces', link: '/spaces-home', icon: 'SquareStack' },
-            { title: 'Events', link: '/events-home', icon: 'CalendarCheck' },
-            { title: 'Posts', link: '/posts-home', icon: 'MessageSquareText' },
-            {
-                title: 'Discussions',
-                link: '/discussions-home',
-                icon: 'MessageSquare',
-            },
-            { title: 'Courses', link: '/courses-home', icon: 'LibraryBig' },
-            { title: 'People', link: '/persons-home', icon: 'Users' },
-            { title: 'Jobs', link: '/jobs-home', icon: 'BriefcaseBusiness' },
-            { title: 'About', link: '/about', icon: 'Info' },
-            { title: 'Terms', link: '/terms', icon: 'HelpCircle' },
-            { title: 'Contact', link: '/contact', icon: 'Mail' },
-        ],
-        
     },
 }

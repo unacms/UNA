@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import { View } from 'app/design/view';
 import { androidTabBarHeight, appSetting, isNativeTabsEnabled, isTabBarLabelsEnabled } from 'app/lib/util';
 import { getWindowSafeAreaInsets } from 'app/lib/hooks/router';
+import { getTabListForUser } from 'app/lib/navigation/tab-bar-menu';
 
 /** Shared by JS RouterTabs and NativeTabs. */
 
@@ -11,10 +12,9 @@ export const TAB_BAR_VISIBLE_LIMIT = 5;
 
 export const MORE_TAB_ICON = 'ChevronsUpDown';
 
+/** Tab bar items for this viewer: the settings' list, else UNA's tab bar menu (lib/navigation/tab-bar-menu). */
 export function getTabList(currentUser) {
-    return currentUser?.id
-        ? appSetting('menu_items', 'menu_tabbar_logged')
-        : appSetting('menu_items', 'menu_tabbar_non_logged');
+    return getTabListForUser(currentUser);
 }
 
 /**

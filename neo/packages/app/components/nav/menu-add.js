@@ -9,11 +9,16 @@ import { useMenuData } from 'app/context/menu-data';
 export default function MenuAdd({ buttonProps, children }) {
     const bMenu = appSetting('layout', 'add_menu') == true;
     const { currentUser } = useCurrentUser();
-    const { menuData } = useMenuData(appSetting('menu_items', 'objects', 'add'));
+    // `menu_add` setting pins the items; unset, they come from UNA's add-content menu.
+    const staticItems = appSetting('menu_items', 'menu_add');
+    const useStatic = Array.isArray(staticItems) && staticItems.length > 0;
+    const { menuData } = useMenuData(useStatic ? null : appSetting('menu_items', 'objects', 'add'));
     const [pageData, setPageData] = useState(false);
     const isDesktop = useIsDesktop();
 
-    const menu_add_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', menuData, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_add'), currentUser);
+    const menu_add_items = useStatic
+        ? menuItemsByName('', staticItems, currentUser)
+        : menuItemsByNameNew('menu_post', menuData, currentUser);
 
     if (!bMenu)
          return <></>;

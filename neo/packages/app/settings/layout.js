@@ -57,7 +57,6 @@ export const settingsLayout = {
         hide_header_for_non_logged: false,
         hide_header_for_all: false,
         card_animation_duration: 100,
-        user_remote_config: true,
         background_image_color: '', 
         background_image: '', 
         background_image_dark: '', 
@@ -69,7 +68,6 @@ export const settingsLayout = {
         show_login_modal: 0,
         //redirect_on_forbidden: '/home',
         lock_unconfirmed: true,
-        lock_no_profile: true,
         allow_create_new_profile: true,
 
         button_style_for_actions: 'secondary',
