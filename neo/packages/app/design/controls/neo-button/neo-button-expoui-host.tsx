@@ -19,7 +19,7 @@ const REVEAL_FALLBACK_MS = 250;
 
 function rememberHostSize(contentKey: string, size: HostSize) {
     const known = HOST_SIZE_CACHE.get(contentKey);
-    if (known && known.width === size.width && known.height === size.height) return;
+    if (known?.width === size.width && known?.height === size.height) return;
     if (!known && HOST_SIZE_CACHE.size >= CACHE_LIMIT) {
         HOST_SIZE_CACHE.delete(HOST_SIZE_CACHE.keys().next().value!);
     }
