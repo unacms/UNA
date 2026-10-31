@@ -61,9 +61,41 @@ async function fetchPageProps(pagePath) {
     return data;
 }
 
-function hideSplashOnce(splashHiddenRef, delayMs = 0) {
+/** The viewer, as the tabs key their content: signing in or out remounts every tab. */
+function viewerKey(currentUser) {
+    return currentUser?.id ? `${currentUser.id}-${currentUser.confirmed}` : 'guest';
+}
+
+// The viewer whose first page is on screen (or whose first request failed): their
+// tabs not opened yet start rendering in the background from here, so they never
+// compete with it. Signing in or out waits for the new viewer's first page again.
+let firstPageViewer = null;
+const firstPageListeners = new Set();
+
+function markFirstPageShown(viewer) {
+    if (firstPageViewer === viewer) return;
+    firstPageViewer = viewer;
+    firstPageListeners.forEach((entry) => {
+        if (entry.viewer !== viewer) return;
+        firstPageListeners.delete(entry);
+        entry.listener();
+    });
+}
+
+function onFirstPageShown(viewer, listener) {
+    if (firstPageViewer === viewer) {
+        listener();
+        return () => {};
+    }
+    const entry = { viewer, listener };
+    firstPageListeners.add(entry);
+    return () => firstPageListeners.delete(entry);
+}
+
+function hideSplashOnce(splashHiddenRef, viewer, delayMs = 0) {
     if (splashHiddenRef.current) return null;
     splashHiddenRef.current = true;
+    markFirstPageShown(viewer);
     if (delayMs > 0) {
         return setTimeout(() => {
             SplashScreen.hideAsync().catch(() => {});
@@ -78,14 +110,26 @@ function routeParam(value) {
     return Array.isArray(value) ? value[0] : value;
 }
 
+// Background tabs start this far apart, so their renders don't land in one frame.
+const PRELOAD_STAGGER_MS = 300;
+// Background tabs start this long after mount even if the first page never shows.
+const PRELOAD_FALLBACK_MS = 10000;
+
+function tabIndexFromKey(tabKey) {
+    const match = /tab(\d+)/.exec(String(tabKey || ''));
+    return match ? Number(match[1]) : 0;
+}
+
 /**
  * NativeTabs mounts every screen at once and freeze is off (see tabs/index.js),
  * so without this gate all five tabs fetch and render their full page trees —
  * image feeds included — at launch. Activate a tab's content on first focus, or
- * in the background after `lazy_tabs_preload_delay` ms so later switches are
- * still instant. JS tabs already lazy-mount at the navigator level.
+ * in the background `lazy_tabs_preload_delay` ms after the first page shows (one
+ * tab every PRELOAD_STAGGER_MS), so even a tab's first open is instant: a tab
+ * that renders only when opened shows a blank screen, header included, until its
+ * page arrives and renders. JS tabs already lazy-mount at the navigator level.
  */
-function useLazyTabActivation() {
+function useLazyTabActivation(tabKey, viewer) {
     const isFocused = useIsFocused();
     const [activated, setActivated] = useState(() => !isNativeTabsEnabled() || isFocused);
     if (isFocused && !activated) {
@@ -98,9 +142,21 @@ function useLazyTabActivation() {
             setActivated(true);
             return undefined;
         }
-        const timer = setTimeout(() => setActivated(true), delay);
-        return () => clearTimeout(timer);
-    }, [activated]);
+        const stagger = tabIndexFromKey(tabKey) * PRELOAD_STAGGER_MS;
+        const activate = () => setActivated(true);
+        // Only for a first page that never shows: once it does, the configured delay applies.
+        const fallback = setTimeout(activate, PRELOAD_FALLBACK_MS + stagger);
+        let timer = null;
+        const off = onFirstPageShown(viewer, () => {
+            clearTimeout(fallback);
+            timer = setTimeout(activate, delay + stagger);
+        });
+        return () => {
+            off();
+            clearTimeout(fallback);
+            if (timer) clearTimeout(timer);
+        };
+    }, [activated, tabKey, viewer]);
     return activated;
 }
 
@@ -114,14 +170,12 @@ function ScreenInner(params) {
     const chromeKey = pushed ? `${pathname}/page#${screenId}` : pathname;
     useEffect(() => (pushed ? registerPushedScreen(pathname) : undefined), [pushed, pathname]);
     const { currentUser } = useCurrentUser();
-    const activated = useLazyTabActivation();
+    const userKey = viewerKey(currentUser);
+    const activated = useLazyTabActivation(pathname, userKey);
     // The More tab's last page after a params-dropping JUMP_TO, a stale URL from the
     // other user context and the tab-root fallback: see resolveTabPageUrl.
     const _path = resolveTabPageUrl(pathname, routeParam(local.url), currentUser, pushed);
 
-    const userKey = currentUser?.id
-        ? `${currentUser.id}-${currentUser.confirmed}`
-        : 'guest';
     // Same rule as the tab bar itself (tabs/index.js `isShowTabs`).
     const isShowTabs = !!((currentUser && currentUser.confirmed) || appSetting('native', 'show_tabs_non_logged'));
 
@@ -239,11 +293,11 @@ const Content = memo(({ pagePath, currentUser, tabKey, chromeKey, pushed, refres
                     setBottomSheetData(false);
                     setPage({ path: pathAtStart, props: data.props });
                 } else {
-                    hideSplashOnce(splashHiddenRef);
+                    hideSplashOnce(splashHiddenRef, viewerKey(currentUser));
                 }
             } catch {
                 if (cancelled) return;
-                hideSplashOnce(splashHiddenRef);
+                hideSplashOnce(splashHiddenRef, viewerKey(currentUser));
             }
         };
 
@@ -284,7 +338,7 @@ const Content = memo(({ pagePath, currentUser, tabKey, chromeKey, pushed, refres
 
     useEffect(() => {
         if (!pageData?.data) return;
-        const timer = hideSplashOnce(splashHiddenRef, 1000);
+        const timer = hideSplashOnce(splashHiddenRef, viewerKey(currentUserRef.current), 1000);
         return () => {
             if (timer) clearTimeout(timer);
         };

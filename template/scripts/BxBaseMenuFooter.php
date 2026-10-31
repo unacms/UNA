@@ -122,6 +122,8 @@ class BxBaseMenuFooter extends BxTemplMenu
 
             }
 
+            $aItems[$iKey] = $this->_addTooltip($aItems[$iKey]);
+
             // The page you're on: the footer keeps its link in the foreground colour, and screen readers hear it.
             if(isset($aItems[$iKey]['class_add']) && strpos($aItems[$iKey]['class_add'], 'bx-menu-tab-active') !== false)
                 $aItems[$iKey]['attrs'] .= ' aria-current="page"';
@@ -156,6 +158,28 @@ class BxBaseMenuFooter extends BxTemplMenu
         $a['bx_if:title']['condition'] = true;
         $a['bx_if:title']['content']['title'] = $sTitle;
         $a['attrs'] = preg_replace('/ (title|aria-label)="[^"]*"/', '', $a['attrs']) . ' title="' . $sLabel . '" aria-label="' . $sLabel . '" aria-haspopup="menu" aria-expanded="false"';
+
+        return $a;
+    }
+
+    /**
+     * The Powered by badge is the UNA logo alone: its name shows above it on hover and keyboard focus (bx_if:tooltip in
+     * menu_footer.html), not as the browser's tooltip. Every item sets the block, so the template always parses it.
+     * The apps name the badge themselves (title_attr, _getMenuItemAPI).
+     */
+    protected function _addTooltip ($a)
+    {
+        if($this->_bIsApi)
+            return $a;
+
+        $bBadge = $a['name'] == 'powered_by';
+        if($bBadge && !empty($a['attrs']))
+            $a['attrs'] = preg_replace('/ title="[^"]*"/', '', $a['attrs']);
+
+        $a['bx_if:tooltip'] = [
+            'condition' => $bBadge,
+            'content' => ['tooltip' => $bBadge ? bx_process_output(_t('_sys_txt_powered_by_una')) : ''],
+        ];
 
         return $a;
     }
@@ -214,7 +238,7 @@ class BxBaseMenuFooter extends BxTemplMenu
 
         // The badge has no title: the apps name it, as the site does in its tooltip and aria-label.
         if($a['name'] == 'powered_by')
-            $aResult['title_attr'] = _t('_sys_txt_powered_by');
+            $aResult['title_attr'] = _t('_sys_txt_powered_by_una');
 
         if(!$this->_isTextItem($a))
             return $aResult;
@@ -233,12 +257,12 @@ class BxBaseMenuFooter extends BxTemplMenu
     }
 
     /**
-     * The badge reads "Powered by UNA"; its tooltip and accessible name say it in full.
+     * The badge is the UNA logo; "Powered by UNA" is its tooltip and accessible name, in the site's language.
      */
     protected function _getMenuTitle ($a)
     {
         if($a['name'] == 'powered_by')
-            return bx_html_attribute(_t('_sys_txt_powered_by'));
+            return bx_html_attribute(_t('_sys_txt_powered_by_una'));
 
         return parent::_getMenuTitle($a);
     }

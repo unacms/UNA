@@ -159,6 +159,11 @@ export const settingsExpoUi = {
             },
             androidIcons: null,
         },
+        // Bottom sheets (`setBottomSheetData`): iOS presents them as a native SwiftUI
+        // sheet on the system Liquid Glass material. Menus (DropdownMenu without
+        // `mode="popup"`) list their rows natively; other content is hosted as is.
+        // false = the JS sheet (@gorhom/bottom-sheet), as on Android.
+        bottom_sheet: true,
         tabs: {
             // More opens a native sheet listing every route (tab routes,
             // divider, overflow): iOS a Liquid Glass sheet in place of the tab

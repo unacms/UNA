@@ -4462,6 +4462,7 @@
     <string name="_sys_txt_n_mutual_friends"><![CDATA[{0} mutual friends]]></string>
     <string name="_sys_txt_one_mutual_friend"><![CDATA[<a href="{0}">{1}</a> mutual friend]]></string>
     <string name="_sys_txt_powered_by"><![CDATA[Powered by UNA Community Management System]]></string>
+    <string name="_sys_txt_powered_by_una"><![CDATA[Powered by UNA]]></string>
   <string name="_sys_txt_report_status_0"><![CDATA[New]]></string>
   <string name="_sys_txt_report_status_1"><![CDATA[In-process]]></string>
   <string name="_sys_txt_report_status_2"><![CDATA[Processed]]></string>

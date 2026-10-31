@@ -32,7 +32,7 @@ import {
 } from 'app/lib/navigation/tab-history';
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
 import { subscribeDeepLink, takeDeepLink } from 'app/lib/navigation/deep-link';
-import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet-content';
+import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet-native';
 import { buildTabUrlIndex, getTabRouteRootUrl, getTabsSessionKey, splitTabBarItems } from './tab-menu';
 import { useTabList } from 'app/lib/navigation/tab-bar-menu';
 
