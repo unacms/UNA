@@ -50,6 +50,15 @@ export const LAYOUT_BREAKPOINTS = {
 
 const LAYOUT_BREAKPOINTS_DESC = Object.entries(LAYOUT_BREAKPOINTS).sort((a, b) => b[1] - a[1]);
 
+/** UNA's screen tiers: phone (no prefix), tablet (from `sm`), desktop (from `lg`). */
+export type ScreenTier = 'phone' | 'tablet' | 'desktop';
+
+/** Screen tier for a window width (or a LAYOUT_BREAKPOINTS value). */
+export function screenTierOf(width: number): ScreenTier {
+    if (width >= LAYOUT_BREAKPOINTS.lg) return 'desktop';
+    return width >= LAYOUT_BREAKPOINTS.sm ? 'tablet' : 'phone';
+}
+
 /** Largest breakpoint label (`2xl`…`sm`) whose min width fits; `''` below all. */
 export function getBreakpoint(width: number): string {
     for (const [label, min] of LAYOUT_BREAKPOINTS_DESC) {
@@ -311,15 +320,12 @@ export function getHeaderSettings(uri: string, isDesktop: boolean, layout: strin
 }
 
 /**
- * Per-page layout settings: remote `config` when enabled, else `layouts[uri]` from settings.
+ * Per-page layout settings: the page's `config` from UNA, else `layouts[uri]` from settings.
  * Page override point: `layout` picks a page layout (components/page-layout/_map.js) and
  * `blocks` sets its block list, which can name static components as `static:<name>`.
  * Forks add `layouts[uri]` in customization/settings.js.
  */
 export function getPageSettings(config: unknown, uri: string): any {
-    if (!appSetting('layout', 'user_remote_config')) {
-        return appSetting('layouts', uri);
-    }
     if (!config) return appSetting('layouts', uri);
     if (typeof config === 'object') return config;
     return strToObj(config as string) ?? appSetting('layouts', uri);

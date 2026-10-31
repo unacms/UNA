@@ -38,6 +38,8 @@
     --color-button-solid: rgb(var(--button));
     /* Comment bubbles and other content grouped on a card. */
     --color-bubble: color-mix(in oklab, rgb(var(--ink)) 4.5%, transparent);
+    /* Inline code and code blocks in rich text. */
+    --color-code: color-mix(in oklab, rgb(var(--ink)) 7%, transparent);
     --color-ring: rgb(var(--ring));
     --color-background: rgb(var(--background));
     --color-foreground: rgb(var(--foreground));
