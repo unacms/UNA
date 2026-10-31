@@ -1,5 +1,5 @@
 import { useCurrentUser } from 'app/context/user'
-import { menuItemsByName, appSetting, menuItemsByNameNew, getHeaderToolbarNeoButtonDefaults, flattenMenuItemsForDropdown } from 'app/lib/util'
+import { menuItemsByName, appSetting, menuItemsByNameNew, getHeaderToolbarNeoButtonDefaults, flattenMenuItemsForDropdown, hasDropdownActions } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useState } from 'react';
 import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal';
@@ -22,7 +22,7 @@ export function useMenuAddItems(load = true) {
         ? menuItemsByName('', staticItems, currentUser)
         : menuItemsByNameNew('menu_post', menuData, currentUser);
 
-    return { items, empty: !bMenu || (items.length == 0 && (useStatic || !!menuData)) };
+    return { items, empty: !bMenu || (!hasDropdownActions(items) && (useStatic || !!menuData)) };
 }
 
 export default function MenuAdd({ buttonProps, children }) {

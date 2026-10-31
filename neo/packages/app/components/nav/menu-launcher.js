@@ -5,6 +5,7 @@ import {
     menuItemsByName,
     menuItemsByNameNew,
     flattenMenuItemsForDropdown,
+    hasDropdownActions,
     normalizeMenuItemHref,
 } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
@@ -28,7 +29,7 @@ export function useMenuLauncherItems(load = true) {
         ? menuItemsByName('', staticItems, currentUser)
         : menuItemsByNameNew('menu_post', menuData, currentUser);
 
-    return { items, empty: !bApps || (items.length == 0 && (useStatic || !!menuData)) };
+    return { items, empty: !bApps || (!hasDropdownActions(items) && (useStatic || !!menuData)) };
 }
 
 export default function MenuLauncher({ buttonProps }) {
