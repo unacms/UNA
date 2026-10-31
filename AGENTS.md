@@ -36,6 +36,7 @@ These apply to UNA PHP (`inc/`, `modules/`, `studio/`, `template/`, and install 
 - Do not call module by a literal name (`BxDolModule::getInstance('bx_posts')`, `BxDolService::call('bx_posts', ...)`, `new BxPostsModule`) without checking if module is installed `BxDolModuleQuery::getInstance()->isEnabledByName('bx_posts')`.
 - Call `getParam` only with a name that exists in `sys_options`. Declare the option in that module's install SQL before reading it.
 - Do not add or edit anything under `upgrade/files/`. That folder records past releases. Do not put new migrations there.
+- A change to install SQL also needs a migration for sites that are already installed. See "Database migrations" below.
 - Set `active_api` in `modules/system/install/sql/enable-app-pages.sql` (page blocks, including their `config_api`) and `modules/system/install/sql/enable-app-menus.sql` (menu items) for core, for modules use `modules/boonex/*/install/sql/enable-app.sql` files. Do not set it in `install.sql`, `enable.sql`, or other common install and enable scripts.
 
 ## Studio app icons
@@ -78,9 +79,24 @@ Before opening the pull request:
 - Run the affected test suites. The run must finish with no failed tests. A skipped case is acceptable only when the suite skips it because the account or module is not installed.
 - Review the change for security issues (injection, missing auth or permission checks, unsafe file or path handling, secrets in code or logs, and similar).
 - Review the change for performance issues and bottlenecks (queries in loops, unbounded result sets, repeated work per request, and similar).
-- When the change includes a database migration, apply that SQL locally with the `query` tool in `tools/db.php` (see [`tools/AGENTS.md`](tools/AGENTS.md)) before opening the pull request.
+- When the change includes a database migration, run it on your local site and run `--filter MigrationsDbTest` (see "Database migrations") before opening the pull request.
 
 The pull request description must include the database migration SQL when the change has one. When it has none, say that there is no database migration.
+
+## Database migrations
+
+Install SQL and language files reach only new installs. A PR that changes what an installed site has in its database also adds a migration, which `periodic/migration.php` (`BxDolMigrations`) applies once per database and records in `sys_migrations`. Read [`migrations/README.md`](migrations/README.md) before writing one.
+
+- Needed for changes to `install/sql/*.sql`, `modules/system/install/sql/*.sql`, a module's `install.sql`, `enable.sql` or `enable-app.sql`, and language strings (`modules/boonex/english/data/langs/system/en.xml`, a module's `install/langs/*.xml`). Not for `disable.sql` or `uninstall.sql`.
+- Common migrations go in `migrations/`, a module's in `modules/<vendor>/<module>/migrations/`. One file per change: `YYYYMMDDNN_short_desc.sql`, `.php` when SQL is not enough, `.xml` for language strings (`string_add`, `string_upd`, `string_del`).
+- Every file declares `UNA-Migration-Min-System-Version: X.Y.Z` in a comment. A PHP migration starts with `<?php defined('BX_DOL') or die('hack attempt');`.
+- It must be safe to run on a database that already has the change: `IF NOT EXISTS`, `INSERT IGNORE` only on a unique key, otherwise `INSERT ... WHERE NOT EXISTS`, `UPDATE ... WHERE` the old value. Never delete a row and insert it again. Statements run with an empty `sql_mode`, like install SQL.
+- Migrations run only on the `dev` update channel (`sys_upgrade_channel`); `beta` and `stable` will run what a signed release manifest lists, which is not built yet. Set it locally with `docker compose exec -w /opt/una php php periodic/migration.php --channel=dev`.
+- Check the files with `docker compose exec -w /opt/una php php periodic/migration.php --check`, apply them to your local site with `docker compose exec -w /opt/una php php periodic/migration.php` (`--status` shows what would run), then run `--filter MigrationsDbTest`, which runs every migration twice more, ignoring the ledger.
+- A migration on master is never edited: a further change goes in a new file. A changed or removed file of a migration that ran stops every later run until `--accept`, and CI fails a PR that edits one. One that failed is recorded as `failed` with its error and never counts as done: fix that file in place.
+- On the same `YYYYMMDDNN`, a module's migrations run after those of the modules it depends on (`dependencies` in its `install/config.php`).
+- The `Database migrations` check fails a PR that changes install SQL or language files without adding a new migration, unless the description says "No database migration." with the reason.
+- Until 15.0.0 is released, update packs are still needed for released versions; migrations run on sites that follow master, such as api.unacms.app.
 
 ## NEO (`neo/`)
 

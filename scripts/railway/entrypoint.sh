@@ -124,6 +124,17 @@ else
     fi
 fi
 
+# Database changes merged since this database was installed (migrations/ and each module's
+# migrations/; the installer records the ones it ships with as done). These sites follow master,
+# so they are on the dev update channel, the one that runs every migration in the files. A failed
+# migration is logged and the site still starts: the code it belongs to is already deployed
+# either way, and the next start tries again from that migration. Runs before configure.php, so
+# this deploy's own settings still win over a migration's.
+HTTP_HOST="${RAILWAY_PUBLIC_DOMAIN:-localhost}" php periodic/migration.php --channel=dev || echo "Setting the update channel failed (exit $?)" >&2
+if [ "$rc" -eq 0 ]; then
+    HTTP_HOST="${RAILWAY_PUBLIC_DOMAIN:-localhost}" php periodic/migration.php || echo "Migrations failed (exit $?)" >&2
+fi
+
 # API key, origins and client URL for the NEO front end (idempotent, every start).
 php /usr/local/lib/una-railway/configure.php
 

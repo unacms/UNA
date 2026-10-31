@@ -4425,6 +4425,7 @@
         <string name="_sys_unconfirmed"><![CDATA[Неподтвержденный]]></string>
 	<string name="_sys_upgrade_conclusion"><![CDATA[<h3>Важная информация:</h3><p>{0}</p>]]></string>
 	<string name="_sys_upgrade_db_and_files_versions_different"><![CDATA[База данных и версии файлов отличаются, возможно, предыдущий патч не был правильно применён.]]></string>
+	<string name="_sys_upgrade_dev_channel"><![CDATA[Сайт на канале обновлений dev: он следует за репозиторием кода и получает изменения базы данных из periodic/migration.php, поэтому пакеты обновлений на нём не запускаются.]]></string>
 	<string name="_sys_upgrade_files_checksum_failed"><![CDATA[Невозможно применить обновление, так как следующие файлы были изменены: {0}]]></string>
 	<string name="_sys_upgrade_files_checksum_failed_too_many"><![CDATA[Невозможно применить обновление, потому что слишком много файлов ({0}%) было изменено]]></string>
 	<string name="_sys_upgrade_files_checksum_failed_too_many_module"><![CDATA[Невозможно применить обновление, потому что слишком много файлов ({0}%) было изменено в {1} модуле]]></string>

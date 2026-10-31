@@ -1,0 +1,88 @@
+name: Database migrations
+
+# Install SQL and language files reach only new installs. A PR that changes them also adds a
+# migration (migrations/ or a module's migrations/), which brings the change to sites installed
+# before it. A PR whose change needs no migration says so in its description: "No database
+# migration." Every PR also checks the migration files themselves (names, metadata, XML), and
+# that migrations already on master are neither edited nor deleted without a baseline.
+# Separate from ci.yml because it also runs when the description is edited.
+
+on:
+  pull_request:
+    branches: [ "master" ]
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Install SQL changes have a migration
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Migration files are valid
+      run: php periodic/migration.php --check
+
+    - name: Migrations already on master are not changed
+      env:
+        BASE_REF: ${{ github.event.pull_request.base.ref }}
+      run: |
+        # A site that ran a migration never runs it again, and the next run there stops until an
+        # admin accepts the changed file. A file may be deleted once a baseline covers it.
+        pattern='^(migrations|modules/[^/]+/migrations|modules/[^/]+/[^/]+/migrations)/[^/]+\.(sql|php|xml)$'
+        fail=0
+        for f in $(git diff --no-renames --name-only --diff-filter=M "origin/$BASE_REF...HEAD" | grep -E "$pattern" || true); do
+          echo "::error file=$f::A migration on master is never changed: put the change in a new migration"
+          fail=1
+        done
+        for f in $(git diff --no-renames --name-only --diff-filter=D "origin/$BASE_REF...HEAD" | grep -E "$pattern" || true); do
+          id=$(basename "${f%.*}")
+          if ! grep -hE '^[^A-Za-z]*UNA-Migration-Baseline-Covers:' "$(dirname "$f")"/*.sql "$(dirname "$f")"/*.php 2>/dev/null | grep -qw -- "$id"; then
+            echo "::error file=$f::A migration on master is deleted only when a baseline in its folder covers it"
+            fail=1
+          fi
+        done
+        exit $fail
+
+    - name: Install SQL changes have a migration
+      env:
+        BASE_REF: ${{ github.event.pull_request.base.ref }}
+        PR_BODY: ${{ github.event.pull_request.body }}
+      run: |
+        changed=$(git diff --name-only "origin/$BASE_REF...HEAD")
+        # disable.sql and uninstall.sql run only when a module is removed.
+        sql=$(printf '%s\n' "$changed" \
+          | grep -E '^(install/sql|modules/system/install/sql|modules/[^/]+/[^/]+/install/sql)/[^/]+\.sql$|^modules/boonex/english/data/langs/system/[^/]+\.xml$|^modules/[^/]+/[^/]+/install/langs/[^/]+\.xml$' \
+          | grep -vE '/(disable|uninstall)\.sql$' || true)
+        if [ -z "$sql" ]; then
+          echo "No install SQL or language file changed."
+          exit 0
+        fi
+
+        # Added, not modified: a site that already ran a migration never runs it again, so a
+        # change put into an existing file would not reach it.
+        added=$(git diff --name-only --diff-filter=A "origin/$BASE_REF...HEAD" \
+          | grep -E '^(migrations|modules/[^/]+/migrations|modules/[^/]+/[^/]+/migrations)/[^/]+\.(sql|php|xml)$' || true)
+        if [ -n "$added" ]; then
+          printf 'Changed:\n%s\nMigration(s):\n%s\n' "$sql" "$added"
+          exit 0
+        fi
+
+        if printf '%s' "$PR_BODY" | grep -qi 'no database migration'; then
+          printf 'Changed:\n%s\nThe description says there is no database migration.\n' "$sql"
+          exit 0
+        fi
+
+        for f in $sql; do
+          echo "::error file=$f::Changed without a migration in migrations/ or the module's migrations/"
+        done
+        echo "Sites installed before this PR get the change only from a migration."
+        echo "Add a new migrations/YYYYMMDDNN_short_desc.sql (or .php, or .xml for language strings;"
+        echo "a module's own go in its migrations/ folder, see migrations/README.md), or say"
+        echo "\"No database migration.\" in the PR description with the reason. Editing a migration that"
+        echo "is already on master does not count: sites that ran it never run it again."
+        exit 1
