@@ -397,14 +397,14 @@ span.adm-bp-layout-title {
     font-size: 0.75rem;
     line-height: 1rem;
     text-align: center;
-    color: rgb(75 85 99);
+    color: rgb(82 82 91);
 }
 .dark span.adm-bp-layout-title {
-    color: rgb(156 163 175);
+    color: rgb(161 161 170);
 }
 div.adm-bp-layout-active span.adm-bp-layout-title {
     font-weight: 600;
-    color: rgb(17 24 39);
+    color: rgb(24 24 27);
 }
 .dark div.adm-bp-layout-active span.adm-bp-layout-title {
     color: rgb(255 255 255);
