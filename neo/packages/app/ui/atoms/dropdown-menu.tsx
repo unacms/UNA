@@ -2,7 +2,7 @@ import { Pressable, View } from 'app/design/view';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { NeoButton, legacyToNeoButtonProps } from 'app/design/controls'
 import { isLegacyButtonProps, stripRoutingKeys } from 'app/design/controls/neo-button/legacy-button-map';
-import { memo, useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode, type RefObject } from 'react';
 import { cn, groupDropdownItems, splitDropdownColumns, getDropdownSectionsLayout, dropdownLeafItems, getDropdownGridLayout, type DropdownSection, type DropdownSectionsLayout } from 'app/lib/util';
 import DropdownGridItem, { type DropdownGridMenuItem } from 'app/ui/atoms/dropdown-grid-item';
 import { FeedbackHaptics } from 'app/lib/util';
@@ -391,14 +391,24 @@ function DropdownMenuPopup({
     );
 }
 
-const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveContent, variant }: MenuBottomSheetProps) => {
+/** A row a native sheet can draw itself: its title is text, not a React element. */
+function hasTextTitle(item: DropdownMenuItemData): boolean {
+    return item.title == null || typeof item.title === 'string' || typeof item.title === 'number';
+}
+
+/**
+ * A row chosen in a menu bottom sheet: closes the sheet, then runs `onSelect`, or opens the
+ * item's modal, external link or page. Shared by the JS sheet (MenuBottomSheet) and the rows
+ * a native sheet draws from the sheet's `menu` (ui/molecules/dialogs/bottomsheet-native.ios.tsx).
+ */
+function useMenuSheetPress({ onSelect, resolveContent, setBottomSheetData, redirectRef }: Pick<DropdownMenuProps, 'onSelect' | 'resolveContent'> & {
+    setBottomSheetData: (data: any) => void;
+    redirectRef: RefObject<RedirectHandle | null>;
+}) {
     const openModalByUrl = useOpenModalByUrl();
     const openModalWithContent = useOpenModalWithContent();
-    const DropdownMenuItem = getDropdownMenuItem();
-    const redirectdRef = useRef<RedirectHandle | null>(null);
-    const isGridLayout = variant === 'grid';
-    const handlePressMenu = useCallback(
-        (item: DropdownMenuItemData) => (event?: unknown) => {
+    return useCallback(
+        (item: DropdownMenuItemData, event?: unknown) => {
             FeedbackHaptics('Medium');
             setBottomSheetData(false);
             if (onSelect) {
@@ -423,10 +433,18 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveCont
                 openExternalLink(url);
                 return;
             }
-            redirectdRef.current?.redirect('' + item.link);
+            redirectRef.current?.redirect('' + item.link);
         },
-        [onSelect, setBottomSheetData, openModalByUrl, openModalWithContent, resolveContent]
+        [onSelect, setBottomSheetData, openModalByUrl, openModalWithContent, resolveContent, redirectRef]
     );
+}
+
+const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveContent, variant }: MenuBottomSheetProps) => {
+    const DropdownMenuItem = getDropdownMenuItem();
+    const redirectdRef = useRef<RedirectHandle | null>(null);
+    const isGridLayout = variant === 'grid';
+    const pressItem = useMenuSheetPress({ onSelect, resolveContent, setBottomSheetData, redirectRef: redirectdRef });
+    const handlePressMenu = (item: DropdownMenuItemData) => (event?: unknown) => pressItem(item, event);
 
     const classes = isGridLayout ? variantClassMap.grid : variantClassMap.vertical;
     const sheetItems = isGridLayout ? dropdownLeafItems(items) : items;
@@ -486,6 +504,8 @@ function DropdownMenuNative({
 }: DropdownMenuNativeProps) {
     const { setBottomSheetData } = useBottomSheetData();
     const { t } = useTranslation();
+    const redirectRef = useRef<RedirectHandle | null>(null);
+    const pressItem = useMenuSheetPress({ onSelect, resolveContent, setBottomSheetData, redirectRef });
 
     const handlePress = useCallback(() => {
         if (mode != "alert") {
@@ -502,6 +522,9 @@ function DropdownMenuNative({
                         setBottomSheetData={setBottomSheetData}
                     />
                 ),
+                // The rows as data, for a sheet that draws them natively (iOS). A grid, or rows that are
+                // custom React controls (DynamicMenu's MenuItemEx, MenuAccount's profile switcher), stay `content`.
+                ...(variant !== 'grid' && items.every(hasTextTitle) ? { menu: { items, onPress: pressItem } } : {}),
             });
             Keyboard.dismiss();
         }
@@ -525,7 +548,7 @@ function DropdownMenuNative({
                 { cancelable: cancelable }
             );
         }
-    }, [cancelable, items, mode, onSelect, resolveContent, setBottomSheetData, t, title, variant]);
+    }, [cancelable, items, mode, onSelect, pressItem, resolveContent, setBottomSheetData, t, title, variant]);
 
     useEffect(() => {
         if (defaultOpen)
@@ -537,16 +560,24 @@ function DropdownMenuNative({
             ? legacyToNeoButtonProps(buttonProps)
             : stripRoutingKeys(buttonProps);
         // `handlePress` fires its own haptics.
-        return <NeoButton {...neoButtonProps} haptics={false} onPress={handlePress} />;
+        return (
+            <>
+                <Redirect ref={redirectRef} />
+                <NeoButton {...neoButtonProps} haptics={false} onPress={handlePress} />
+            </>
+        );
     }
     return (
-        <Pressable
-            onPress={handlePress}
-            accessibilityRole="button"
-            accessibilityLabel={triggerAccessibilityLabel}
-        >
-            {children}
-        </Pressable>
+        <>
+            <Redirect ref={redirectRef} />
+            <Pressable
+                onPress={handlePress}
+                accessibilityRole="button"
+                accessibilityLabel={triggerAccessibilityLabel}
+            >
+                {children}
+            </Pressable>
+        </>
     );
 }
 
