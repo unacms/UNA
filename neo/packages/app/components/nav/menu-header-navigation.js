@@ -1,5 +1,5 @@
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
-import { menuItemsByName, appSetting, getHeaderToolbarNeoButtonDefaults, normalizeMenuItemHref, findIconFromRemote } from 'app/lib/util'
+import { menuItemsByName, appSetting, getHeaderToolbarNeoButtonDefaults, normalizeMenuItemHref, findIconFromRemote, flattenMenuItemsForDropdown } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { useTranslation } from 'react-i18next'
 import { useIsDesktop } from 'app/context/measure';
@@ -13,16 +13,19 @@ export default function MenuHeaderNavigation(props) {
     const { currentUser } = useCurrentUser()
     const { t } = useTranslation()
     const isDesktop = useIsDesktop()
-    // No `menu_navigation` setting: the links come from UNA's footer menu.
+    // No `menu_navigation` setting: the links come from UNA's site menu, the
+    // one the desktop navbar shows, flattened (submenus under their headers).
     const staticItems = appSetting('menu_items', 'menu_navigation')
-    const useFooterMenu = !Array.isArray(staticItems) || !staticItems.length
-    const { menuData, isFetched } = useMenuData(useFooterMenu ? appSetting('menu_items', 'objects', 'footer') : null)
-    const source = useFooterMenu
-        ? (menuData?.items || []).map((item) => ({
-            ...item,
-            link: normalizeMenuItemHref(item.link),
-            icon: findIconFromRemote(item.icon) || 'ChevronRight',
-        })).filter((item) => item.link)
+    const useSiteMenu = !Array.isArray(staticItems) || !staticItems.length
+    const { menuData, isFetched } = useMenuData(useSiteMenu ? appSetting('menu_items', 'objects', 'site') : null)
+    const source = useSiteMenu
+        ? flattenMenuItemsForDropdown(menuData?.items).map((item) => (item.type === 'group_header' || item.type === 'separator'
+            ? item
+            : {
+                ...item,
+                link: normalizeMenuItemHref(item.link),
+                icon: findIconFromRemote(item.icon) || 'ChevronRight',
+            }))
         : staticItems
     const resolved = menuItemsByName('main_menu', source, currentUser)
     const items = resolved.map((item) => ({
@@ -31,8 +34,8 @@ export default function MenuHeaderNavigation(props) {
         ...(item.description || item.info ? { description: t(item.description || item.info) } : {}),
     }))
 
-    // While the footer menu loads, keep the button so the header doesn't shift.
-    if (!items.length && (!useFooterMenu || isFetched)) {
+    // While the site menu loads, keep the button so the header doesn't shift.
+    if (!items.length && (!useSiteMenu || isFetched)) {
         return null
     }
 

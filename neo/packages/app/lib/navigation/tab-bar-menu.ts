@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { create } from 'zustand';
-import { appSetting, findIconFromRemote, getDataForMenu, normalizeMenuItemHref, strToObj } from 'app/lib/util';
+import { appSetting, filterHiddenOn, findIconFromRemote, getDataForMenu, normalizeMenuItemHref, screenTierOf, strToObj } from 'app/lib/util';
+import { useMeasureStore } from 'app/context/measure';
 import { persistedGet, persistedSet } from 'app/lib/util/storage';
 
 /**
@@ -133,7 +134,9 @@ function loadTabBarMenu(context: TabBarContext, viewerKey: string): Promise<void
         }
         try {
             const data = await getDataForMenu({ object: appSetting('menu_items', 'objects', 'tabbar'), params: null });
-            const list = tabBarItemsFromMenu(data?.items);
+            // Screen tier at load: the list stays for the run, keys follow positions.
+            const tier = screenTierOf(useMeasureStore.getState().windowWidth);
+            const list = tabBarItemsFromMenu(filterHiddenOn(data?.items, tier));
             if (list.length) {
                 showOnce(viewerKey, list);
                 persistedSet(storageKey(viewerKey), list).catch(() => {});

@@ -28,8 +28,16 @@
  * This is a build setting: iOS and Android embed the selected fonts in the
  * app binary, so changing ios/android needs a native rebuild (prebuild +
  * run:ios / run:android). Web picks it up on the next build or dev reload.
+ *
+ * Out of the box every role uses the system font, so NEO loads no font file
+ * on any platform. Inter's files ship in this folder; to use it everywhere:
+ *
+ *   main: { web: 'inter', ios: 'inter', android: 'inter' },
+ *   title: { web: 'inter', ios: 'inter', android: 'inter' },
+ *
+ * and create its next/font instances on web (see fonts-web.web.ts).
  */
 module.exports = {
-    main: { web: 'inter', ios: 'inter', android: 'inter' },
-    title: { web: 'inter', ios: 'inter', android: 'inter' },
+    main: { web: 'system', ios: 'system', android: 'system' },
+    title: { web: 'system', ios: 'system', android: 'system' },
 };

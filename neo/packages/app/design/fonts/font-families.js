@@ -8,11 +8,12 @@
  *   fontWeight; Android gets an XML font family under this name).
  * - `native`: one static file per weight, relative to this folder. Variable
  *   fonts don't work here: iOS and Android can't select a weight from them.
- * - Web loads the family through next/font: add an instance per role to
- *   `webFontFamilies` in fonts-web.web.ts under the same key.
+ * - Web loads the family through next/font: create an instance per role in
+ *   customization/design/fonts/fonts-web.js under the same key (example in
+ *   fonts-web.web.ts).
  *
  * Adding a family: drop its static files next to this file, add an entry
- * here and in fonts-web.web.ts, then select it in customization/config/fonts.js.
+ * here, then select it in customization/config/fonts.js.
  * A fork adds its own families there instead (`families`, see font-choice.js).
  */
 module.exports = {

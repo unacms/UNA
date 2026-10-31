@@ -32,8 +32,15 @@ class BxDolAiSearchExtParserTestDouble extends BxDolAiSearchExtParser
         return $aResult;
     }
 
+    public function setQuery(string $sQuery)
+    {
+        $this->_sQuery = $sQuery;
+        $this->_aTokens = $this->_getTopicTokens($sQuery);
+    }
+
     public function keywordToLists(array $aResult): array
     {
+        $this->_dropListsOfPlace($aResult);
         $this->_keywordToLists($aResult);
         $this->_dropKeywordOfLists($aResult);
         return $aResult;
@@ -136,6 +143,8 @@ class BxDolAiSearchExtParserTest extends \PHPUnit\Framework\TestCase
             ['javascript', ['java'], false],
             ['dub', ['dubbing'], false],
             ['legal', ['medical'], false],
+            ['textual', ['textile'], false],
+            ['film', ['films'], true],
             ['interpreter', ['interpreting'], true],
             ['translator', ['translation'], true],
             ['conference', ['consecutive'], false],
@@ -226,6 +235,100 @@ class BxDolAiSearchExtParserTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(['Translation', 'Consecutive interpreting', 'Simultaneous interpreting'], $a['search_params']['labels']['value']);
         $this->assertArrayNotHasKey('title', $a['search_params']);
+    }
+
+    public function testTagWordReplacesAChoiceNoWordNames()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setFields($this->taggedFields());
+
+        // "Turkish to English interpreter": the model took Translation from "to"
+        $a = $o->keywordToLists($this->keywordResult('interpreter', [
+            'labels' => ['value' => 'Translation', 'label' => 'Translation'],
+        ]));
+        $this->assertSame(['Consecutive interpreting', 'Simultaneous interpreting'], $a['search_params']['labels']['value']);
+
+        // both words named: both kinds of tags
+        $a = $o->keywordToLists($this->keywordResult('translation interpreter', [
+            'labels' => ['value' => 'Translation', 'label' => 'Translation'],
+        ]));
+        $this->assertSame(['Translation', 'Consecutive interpreting', 'Simultaneous interpreting'], $a['search_params']['labels']['value']);
+    }
+
+    private function placeFields(): array
+    {
+        return $this->taggedFields() + [
+            'language' => ['kind' => 'list', 'caption' => 'Language', 'multi' => true, 'search_type' => 'checkbox_set', 'operator' => 'like', 'values' => [
+                'tr' => 'Turkish',
+                'en' => 'English',
+                'fa' => 'Persian',
+            ]],
+        ];
+    }
+
+    private function turkeyResult(string $sKeyword, array $aMore = []): array
+    {
+        return $this->keywordResult($sKeyword, $aMore + [
+            'location' => ['value' => ['array' => [39.29, 35.23, 'TR', '', '', '', '', ''], 'string' => 'Turkey'], 'label' => 'Turkey'],
+        ]);
+    }
+
+    public function testPlaceWordIsNotATag()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setFields($this->placeFields());
+        $o->setQuery('Turkey');
+        $o->setAnswers(['loc_city' => ['choice' => 'Turkey', 'confidence' => 1]]);
+
+        $a = $o->keywordToLists($this->turkeyResult('turkey'));
+        $this->assertArrayNotHasKey('language', $a['search_params']);
+        $this->assertArrayHasKey('location', $a['search_params']);
+    }
+
+    public function testLanguageOfThePlaceAloneIsDropped()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setFields($this->placeFields());
+        $o->setAnswers(['loc_city' => ['choice' => 'Turkey', 'confidence' => 1]]);
+        $aLanguage = ['language' => ['value' => 'tr', 'label' => 'Turkish']];
+
+        $o->setQuery('Turkey');
+        $a = $o->keywordToLists($this->turkeyResult('turkey', $aLanguage));
+        $this->assertArrayNotHasKey('language', $a['search_params']);
+        $this->assertSame('', $a['filters']['language']);
+
+        $o->setQuery('Turkish translator in Turkey');
+        $a = $o->keywordToLists($this->turkeyResult('translator', $aLanguage));
+        $this->assertSame('tr', $a['search_params']['language']['value']);
+
+        // a language that does not start like the place stays
+        $o->setQuery('Turkey');
+        $a = $o->keywordToLists($this->turkeyResult('turkey', ['language' => ['value' => 'en', 'label' => 'English']]));
+        $this->assertSame('en', $a['search_params']['language']['value']);
+    }
+
+    public function testCityNeverNamesALanguage()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setFields($this->placeFields());
+        $o->setQuery('Farsi speakers in Perth');
+        $o->setAnswers(['loc_city' => ['choice' => 'Perth', 'confidence' => 1]]);
+
+        $a = $o->keywordToLists($this->keywordResult('speakers', [
+            'language' => ['value' => 'fa', 'label' => 'Persian'],
+            'location' => ['value' => ['array' => [-31.95, 115.86, 'AU', '', 'Perth', '', '', ''], 'string' => 'Perth, Australia'], 'label' => 'Perth, Australia'],
+        ]));
+        $this->assertSame('fa', $a['search_params']['language']['value']);
+    }
+
+    public function testTwoWordPlacesAreOffered()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setQuery('agencies in Czech Republic');
+
+        $a = $o->call('_placePhrasesCriteria');
+        $this->assertArrayHasKey('Czech Republic', $a);
+        $this->assertArrayHasKey('in Czech', $a);
     }
 
     public function testPlaceWordStaysWhenNoPlaceWasFound()

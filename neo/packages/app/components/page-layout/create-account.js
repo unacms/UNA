@@ -2,7 +2,6 @@ import { View, Row } from 'app/design/view'
 import { DataByName, BlockByData } from 'app/components/block'
 import { Text, H1 } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
-import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
 import { useTranslation } from 'react-i18next'
 import AuthPanel from 'app/ui/molecules/auth/auth'
@@ -11,8 +10,7 @@ import Page from 'app/ui/molecules/page/page'
 import Html from 'app/ui/atoms/html'
 import { appSetting } from 'app/lib/util'
 import { PageHeaderOptions } from 'app/ui/molecules/header/options'
-
-const isWeb = Platform.OS === 'web'
+import { PageChromeProvider } from 'app/ui/molecules/page/page-chrome'
 
 function PageContent({ children }) {
     const { t } = useTranslation()
@@ -100,35 +98,32 @@ export default function PageLayout({ data, blocks, children }) {
     return (
         <Page data={data}>
             <PageHeaderOptions band={false} showTitle={false} />
-            {isWeb ? (
-                // The same frame as the home splash (ui/molecules/sections/splash.js).
-                <View
-                    className={`flex-auto items-center justify-center lg:flex-row p-6 lg:p-12 gap-6 lg:gap-12 w-full mx-auto ${appSetting('layout', 'max_width_landing')}`}
-                >
-                    <View className="items-center lg:items-start gap-6 my-auto flex-auto w-full">
-                        {appStatic('join_text')}
-                        <H1 isfirst islast className="text-center lg:text-start text-balance">
-                            {isAllowJoin
-                                ? t('create_account_page_title')
-                                : t('create_account_page_title_request_invite')}
-                        </H1>
-                        <Text
-                            accessible={true}
-                            accessibilityRole="text"
-                            className="max-w-3xl text-secondary-foreground text-center lg:text-start text-base sm:text-lg text-pretty"
-                        >
-                            {isAllowJoin
-                                ? t('create_account_page_text')
-                                : t('create_account_page_text_request_invite')}
-                        </Text>
-                    </View>
-                    <PageContent>{formContent}</PageContent>
+            {/* The same frame as the home splash (ui/molecules/sections/splash.js), on every platform. */}
+            <View
+                className={`flex-auto items-center justify-center lg:flex-row p-6 lg:p-12 gap-6 lg:gap-12 w-full mx-auto ${appSetting('layout', 'max_width_landing')}`}
+            >
+                <View className="items-center lg:items-start gap-6 my-auto flex-auto w-full">
+                    {appStatic('join_text')}
+                    <H1 isfirst islast className="text-center lg:text-start text-balance">
+                        {isAllowJoin
+                            ? t('create_account_page_title')
+                            : t('create_account_page_title_request_invite')}
+                    </H1>
+                    <Text
+                        accessible={true}
+                        accessibilityRole="text"
+                        className="max-w-3xl text-secondary-foreground text-center lg:text-start text-base sm:text-lg text-pretty"
+                    >
+                        {isAllowJoin
+                            ? t('create_account_page_text')
+                            : t('create_account_page_text_request_invite')}
+                    </Text>
                 </View>
-            ) : (
-                <View className="flex-1">
+                {/* The frame's padding keeps the form off the screen edge at every size. */}
+                <PageChromeProvider inset>
                     <PageContent>{formContent}</PageContent>
-                </View>
-            )}
+                </PageChromeProvider>
+            </View>
             <MenuFooter />
         </Page>
     )

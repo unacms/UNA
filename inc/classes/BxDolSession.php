@@ -136,14 +136,12 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
             $bSendCookie = true;
         }
 
-        // API responses repeat a remembered session's cookie every time. NEO's server-side page
-        // fetch is an API request whose Set-Cookie never reaches the browser, so the next one has to
-        // carry a moved end. They're private JSON; the site's own responses don't repeat it, which
-        // keeps the cookie off files that caches may share (CSS, JS, images). Public files drop a
-        // moved end's cookie too (BxDolGzip, bx_smart_readfile); the browser then keeps the earlier
-        // end until the next move.
-        if ($bSendCookie || ($bRemembered && bx_is_api()))
+        // Public files drop a moved end's cookie (BxDolGzip, bx_smart_readfile), and NEO's
+        // server-side page fetch never passes it to the browser. NEO's proxy picks it up from
+        // the touch_session service (BxBaseServiceLogin), which repeats it.
+        if ($bSendCookie) {
             $this->sendCookie();
+        }
 
         $this->save();
 

@@ -64,9 +64,41 @@
         @apply outline-offset-0;
     }
 
+    /* Rich text reads the same on the site and in NEO (.u-vanilla-html in
+       neo/packages/app/design/styles/utilities.css): NEO's zinc text colours,
+       blue links, 1.5 line height, 16px between paragraphs, lists indented 1.5rem. */
     .bx-def-vanilla-html {
-        @apply prose dark:prose-invert;
-        @apply prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:font-medium prose-a:no-underline hover:prose-a:underline visited:prose-a:text-purple-700 dark:visited:prose-a:text-purple-400;
+        @apply prose prose-zinc dark:prose-invert leading-normal;
+        @apply prose-a:text-blue-700 dark:prose-a:text-blue-400 prose-a:font-normal;
+        --tw-prose-body: theme('colors.zinc.600');
+        --tw-prose-headings: theme('colors.zinc.900');
+        --tw-prose-bold: theme('colors.zinc.900');
+        --tw-prose-counters: theme('colors.zinc.600');
+        --tw-prose-bullets: theme('colors.zinc.600');
+        --tw-prose-hr: theme('colors.zinc.300');
+        --tw-prose-quotes: theme('colors.zinc.600');
+        --tw-prose-quote-borders: theme('colors.zinc.300');
+        --tw-prose-invert-body: theme('colors.zinc.400');
+        --tw-prose-invert-headings: theme('colors.zinc.100');
+        --tw-prose-invert-bold: theme('colors.zinc.100');
+        --tw-prose-invert-counters: theme('colors.zinc.400');
+        --tw-prose-invert-bullets: theme('colors.zinc.400');
+        --tw-prose-invert-hr: theme('colors.zinc.700');
+        --tw-prose-invert-quotes: theme('colors.zinc.400');
+        --tw-prose-invert-quote-borders: theme('colors.zinc.700');
+    }
+
+    /* Links are underlined: their blue is as light as the body text, so colour alone
+       doesn't mark them (WCAG 1.4.1). Mentions and hashtags keep their own style. */
+    .bx-def-vanilla-html a:not(.bx-mention-link, .bx-menthion-link, .bx-tag-link, .bx-btn) {
+        text-decoration-line: underline;
+        text-decoration-thickness: from-font;
+        text-underline-offset: 0.2em;
+        text-decoration-color: color-mix(in srgb, currentColor 50%, transparent);
+    }
+
+    .bx-def-vanilla-html a:not(.bx-mention-link, .bx-menthion-link, .bx-tag-link, .bx-btn):hover {
+        text-decoration-color: currentColor;
     }
     
     .bx-def-vanilla-html.bx-def-vh-sm {
@@ -580,7 +612,23 @@
     }
 
     .bx-def-vanilla-html p {
-        @apply leading-7 [&:not(:first-child)]:mt-6;
+        @apply my-4;
+    }
+
+    .bx-def-vanilla-html :is(ul, ol) {
+        @apply my-4 ps-6;
+    }
+
+    .bx-def-vanilla-html li :is(ul, ol) {
+        @apply my-1.5;
+    }
+
+    .bx-def-vanilla-html li {
+        @apply mt-0 mb-1.5 ps-0;
+    }
+
+    .bx-def-vanilla-html li > p {
+        @apply my-0;
     }
 
     .bx-def-vanilla-html blockquote {
@@ -604,7 +652,7 @@
     }
 
     .bx-def-vanilla-html ul {
-        @apply my-6 ml-6 list-disc [&>li]:mt-2;
+        @apply list-disc;
     }
 
     .bx-def-vanilla-html code {
