@@ -13,7 +13,7 @@ import { useIsDesktop } from 'app/context/measure';
 import { useMenuData } from 'app/context/menu-data';
 
 /**
- * The apps menu's items, and whether it has nothing to show (off in the settings, or UNA's menu is empty), when the
+ * The apps menu's items, and whether it has nothing to show (off in the settings, or no item for this viewer), when the
  * header leaves no slot for it. `load` false skips loading the menu.
  */
 export function useMenuLauncherItems(load = true) {
@@ -28,7 +28,7 @@ export function useMenuLauncherItems(load = true) {
         ? menuItemsByName('', staticItems, currentUser)
         : menuItemsByNameNew('menu_post', menuData, currentUser);
 
-    return { items, empty: !bApps || (items.length == 0 && !!menuData) };
+    return { items, empty: !bApps || (items.length == 0 && (useStatic || !!menuData)) };
 }
 
 export default function MenuLauncher({ buttonProps }) {
