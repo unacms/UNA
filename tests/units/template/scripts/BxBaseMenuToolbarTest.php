@@ -122,13 +122,15 @@ class BxBaseMenuToolbarTest extends BxDolTestCase
 
     public function testMainMenuLeftInTheMemberToolbarStillWorks(): void
     {
-        $oSiteToolbar = $this->getToolbar('sys_toolbar_site');
-        if (!self::isArtificer($oSiteToolbar))
+        $oMemberToolbar = $this->getToolbar('sys_toolbar_member');
+        if (!self::isArtificer($oMemberToolbar))
             $this->markTestSkipped('The site sidebar belongs to the Artificer template.');
 
-        //--- A site installed while the button was a member toolbar item keeps a working button until it is moved back.
-        $aRow = array_merge($this->getMainMenuRow($oSiteToolbar), ['set_name' => 'sys_toolbar_member', 'order' => 9999]);
-        $a = $this->callProtected($this->getToolbar('sys_toolbar_member'), '_getMenuItem', [$aRow]);
+        //--- A site installed while the button was a member toolbar item keeps a working button until it is moved back:
+        //--- its own row where the migration is not applied, otherwise the site toolbar's row moved over.
+        $aMemberRows = $this->getToolbarRows($oMemberToolbar);
+        $aRow = $aMemberRows['main-menu'] ?? array_merge($this->getMainMenuRow($this->getToolbar('sys_toolbar_site')), ['set_name' => 'sys_toolbar_member', 'order' => 9999]);
+        $a = $this->callProtected($oMemberToolbar, '_getMenuItem', [$aRow]);
 
         $this->assertIsArray($a);
         $this->assertStringContainsString('bx-sidebar-site-trigger', $a['class_add_a']);
