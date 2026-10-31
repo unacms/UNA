@@ -75,11 +75,12 @@ export function useMenuNavigationEntries(): MenuNavigationEntries {
                   .filter((item: MenuItem) => item && item.name !== 'more-auto')
                   .map(siteMenuItem)
             : staticItems;
-        const launcherItems = !wantsLauncher
-            ? []
-            : useStaticLauncher
+        let launcherItems: MenuItem[] = [];
+        if (wantsLauncher) {
+            launcherItems = useStaticLauncher
                 ? menuItemsByName('', staticLauncher, currentUser)
                 : menuItemsByNameNew('menu_post', launcherMenuData, currentUser);
+        }
         return menuItemsByName('main_menu', source, currentUser)
             .map((item, index) => {
                 const children = getMenuItemChildren(item);
