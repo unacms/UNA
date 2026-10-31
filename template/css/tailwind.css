@@ -1190,6 +1190,14 @@
     .bx-artificer > .bx-popup-wrapper.bx-popup-with-pointer:not(.bx-popup-full-screen) {
         @apply max-h-none overflow-visible;
     }
+    /* Its content scrolls instead: never taller than the window, so the popup fits above or below its element and
+       every item stays reachable. :where() keeps it below the header menus' own lower cap (#bx-toolbar, further down)
+       and above the content's overflow-hidden (popup_trans.html). */
+    :where(.bx-artificer > .bx-popup-wrapper.bx-popup-with-pointer:not(.bx-popup-full-screen)) .bx-popup .bx-popup-content {
+        max-height: calc(100vh - 2rem);
+        max-height: calc(100dvh - 2rem);
+        @apply overflow-x-hidden overflow-y-auto overscroll-contain;
+    }
 
     .bx-artificer .bx-popup-applied {
         @apply rounded-lg;

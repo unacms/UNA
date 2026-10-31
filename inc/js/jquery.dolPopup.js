@@ -963,7 +963,9 @@
                         of: ePointAt,
                         my: o.pointer.align + '+' + parseInt(aOffset[0]) + ' top+' + yOffset + '+' + parseInt(aOffset[1] - 0),
                         at: o.pointer.align + ' bottom',
-                        collision: 'fit ' + (o.pointer.flip ? 'flip' : 'none')
+                        // flipped above its element, a popup taller than the room there moves down into the window
+                        // (never taller than the window: tailwind.css), so its first items aren't above the page
+                        collision: 'fit ' + (o.pointer.flip ? 'flipfit' : 'none')
                     });
 
                     // 'fit' only keeps the popup inside the window, flush with its edge
