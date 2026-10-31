@@ -19,6 +19,7 @@ type FontConfig = {
 };
 type FontChoice = {
     customFamilies: Record<string, FontFamily>;
+    fontChoice: (role: string, platform: Platform) => string;
     nativeFontFamily: (role: string, platform: Platform) => string;
 };
 type FontDefinition = { weight: number; path: string };
@@ -81,13 +82,26 @@ test.after(() => {
     for (const file of [CONFIG, CHOICE, PLUGIN, EXPO_FONT]) delete cjsRequire.cache[file];
 });
 
-test('the default config uses core Inter on iOS and Android', () => {
+test('the default config uses the system font everywhere and embeds nothing', () => {
     const { choice, fontOptions } = load(DEFAULT_CONFIG);
+    for (const role of ['main', 'title']) {
+        assert.equal(choice.fontChoice(role, 'web'), 'system');
+        assert.equal(choice.nativeFontFamily(role, 'ios'), 'System');
+        assert.equal(choice.nativeFontFamily(role, 'android'), 'sans-serif');
+    }
+    assert.deepEqual(Object.keys(choice.customFamilies), []);
+    assert.equal(fontOptions, null);
+});
+
+test('core Inter is embedded from design/fonts when selected', () => {
+    const { choice, fontOptions } = load({
+        main: { ios: 'inter', android: 'inter' },
+        title: { ios: 'inter', android: 'inter' },
+    });
     for (const role of ['main', 'title']) {
         assert.equal(choice.nativeFontFamily(role, 'ios'), 'Inter');
         assert.equal(choice.nativeFontFamily(role, 'android'), 'Inter');
     }
-    assert.deepEqual(Object.keys(choice.customFamilies), []);
     const options = embedded(fontOptions);
     assert.deepEqual(iosFiles(options), INTER_FILES);
     assert.deepEqual(androidFamilies(options), [

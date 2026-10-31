@@ -469,12 +469,12 @@ html::-webkit-scrollbar-thumb:window-inactive {
 }
 
 /* Font roles set to 'system' for web in customization/config/fonts.js
-   (fonts-web.web.ts): the OS UI font — SF on Apple, Segoe UI on Windows,
-   Roboto on Android. `html.` outranks the next/font variable class, which
-   can set both variables. */
+   (fonts-web.web.ts), the default: the OS UI font (SF on Apple, Segoe UI on
+   Windows, Roboto on Android), the same stack as UNA's. `html.` outranks the
+   next/font variable class, which can set both variables. */
 html.neo-font-main-system,
 html.neo-font-title-system {
-    --neo-system-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --neo-system-font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 html.neo-font-main-system {
     --font-main: var(--neo-system-font);
@@ -491,7 +491,7 @@ body {
     -moz-osx-font-smoothing: neutralscale;
     -ms-overflow-style: scrollbar;
     -webkit-overflow-scrolling: touch;
-    font-family: var(--font-main, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+    font-family: var(--font-main, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
 }
 
 html,
