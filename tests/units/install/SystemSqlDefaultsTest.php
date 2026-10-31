@@ -109,6 +109,17 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertDoesNotMatchRegularExpression('/(fill|stroke)="#/', $aMatch[1], 'No fixed colour that would vanish on one of the two schemes.');
     }
 
+    public function testPoweredByBadgeIsTheLogoAlone(): void
+    {
+        $bFound = preg_match("/\\('sys_footer', 'system', 'powered_by', [^\\n]*?'_blank', '(<svg.*?<\\/svg>)'/", self::systemSql(), $aMatch);
+
+        $this->assertSame(1, $bFound);
+        $this->assertStringContainsString('viewBox="91 0 67 28"', $aMatch[1], 'The UNA mark and wordmark, at the size they had in the old badge.');
+        $this->assertStringNotContainsString('<rect', $aMatch[1], 'No outline around it.');
+        $this->assertStringNotContainsString('M9.54 18.5', $aMatch[1], 'No "Powered by" lettering, which no language could translate: the name is a language string (_sys_txt_powered_by_una).');
+        $this->assertStringContainsString("('sys_footer', 'system', 'powered_by', '_sys_menu_item_title_system_powered_by', '', 'https://unacms.com', ", self::systemSql(), 'It links to unacms.com.');
+    }
+
     public function testHomeRecommendedFriendsShowsAnEmptyState(): void
     {
         $bFound = preg_match("/\\('sys_home', 4, 'system', '_sys_page_block_title_sys_recom_friends', [^\\n]*?'service', '([^\\n]*?)', /", self::systemSql(), $aMatch);

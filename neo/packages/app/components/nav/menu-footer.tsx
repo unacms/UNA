@@ -237,8 +237,9 @@ function FooterSoundsLevel({ visualProps }: Readonly<FooterControlProps>) {
     );
 }
 
-// UNA's Powered by badge: the item's own SVG (Navigation keeps it editable), 24px tall as on the site, in
-// the links' colour (`currentColor`), foreground on hover.
+// UNA's Powered by badge: the item's own SVG, the UNA logo (Navigation keeps it editable), 24px tall as on
+// the site, in the links' colour (`currentColor`), foreground on hover. Its name ("Powered by UNA", in the
+// site's language) is its tooltip and accessible name.
 const BADGE_HEIGHT = 24;
 const isSvgBadge = (item: FooterMenuItem): item is FooterBadge => typeof item.icon === 'string' && item.icon.startsWith('<svg') && !item.title;
 const badgeWidth = (svg: string) => {
@@ -252,6 +253,8 @@ function FooterBadgeItem({ item, href, visualProps }: Readonly<FooterControlProp
             href={href}
             target="_blank"
             accessibilityLabel={item.title_attr || undefined}
+            tooltip={item.title_attr || undefined}
+            tooltipSide="top"
             style={visualProps.style}
             controlSize={visualProps.controlSize}
             contentInsets={visualProps.contentInsets}

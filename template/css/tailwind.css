@@ -692,6 +692,21 @@
     #bx-menu-footer > li > a > .lucide {
         @apply size-4;
     }
+    /* The Powered by badge is the UNA logo; its name ("Powered by UNA", a language string) shows above it on hover and
+       keyboard focus, lined up with the logo's end so it stays on the page where the badge ends the row. */
+    #bx-menu-footer .bx-menu-footer-tooltip {
+        @apply pointer-events-none absolute bottom-full end-0 z-10 mb-2 whitespace-nowrap rounded-md px-2 py-1;
+        @apply bg-gray-900 dark:bg-gray-100 text-xs font-medium text-white dark:text-gray-900;
+        @apply opacity-0 transition-opacity duration-150;
+    }
+    @media (hover: hover) {
+        #bx-menu-footer > li > a:hover .bx-menu-footer-tooltip {
+            @apply opacity-100;
+        }
+    }
+    #bx-menu-footer > li > a:focus-visible .bx-menu-footer-tooltip {
+        @apply opacity-100;
+    }
 
     /* Common elements: Icons. */
     .bx-icon svg {

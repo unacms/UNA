@@ -4385,6 +4385,7 @@
     <string name="_sys_txt_n_mutual_friends"><![CDATA[{0} общих друзей]]></string>
     <string name="_sys_txt_one_mutual_friend"><![CDATA[<a href="{0}">{1}</a> общий друг]]></string>
     <string name="_sys_txt_powered_by"><![CDATA[Сделано с помощью UNA - системя для управления сообществами]]></string>
+    <string name="_sys_txt_powered_by_una"><![CDATA[Работает на UNA]]></string>
     <string name="_sys_txt_report_status_0"><![CDATA[Новая]]></string>
     <string name="_sys_txt_report_status_1"><![CDATA[В обработке]]></string>
     <string name="_sys_txt_report_status_2"><![CDATA[Обработана]]></string>
