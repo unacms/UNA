@@ -120,20 +120,9 @@ class BxBaseMenuFooter extends BxTemplMenu
                     $aItems[$iKey]['attrs'] .= ' aria-haspopup="menu" aria-expanded="false" data-bx-sounds-switch="1"';
                     break;
 
-                // The UNA logo alone: its name shows above it on hover and keyboard focus (bx_if:tooltip), not as the
-                // browser's tooltip.
-                case 'powered_by':
-                    if(!empty($aItems[$iKey]['attrs']))
-                        $aItems[$iKey]['attrs'] = preg_replace('/ title="[^"]*"/', '', $aItems[$iKey]['attrs']);
-                    break;
-
             }
 
-            if(!$this->_bIsApi)
-                $aItems[$iKey]['bx_if:tooltip'] = [
-                    'condition' => $aItem['name'] == 'powered_by',
-                    'content' => ['tooltip' => $aItem['name'] == 'powered_by' ? bx_process_output(_t('_sys_txt_powered_by_una')) : ''],
-                ];
+            $aItems[$iKey] = $this->_addTooltip($aItems[$iKey]);
 
             // The page you're on: the footer keeps its link in the foreground colour, and screen readers hear it.
             if(isset($aItems[$iKey]['class_add']) && strpos($aItems[$iKey]['class_add'], 'bx-menu-tab-active') !== false)
@@ -169,6 +158,28 @@ class BxBaseMenuFooter extends BxTemplMenu
         $a['bx_if:title']['condition'] = true;
         $a['bx_if:title']['content']['title'] = $sTitle;
         $a['attrs'] = preg_replace('/ (title|aria-label)="[^"]*"/', '', $a['attrs']) . ' title="' . $sLabel . '" aria-label="' . $sLabel . '" aria-haspopup="menu" aria-expanded="false"';
+
+        return $a;
+    }
+
+    /**
+     * The Powered by badge is the UNA logo alone: its name shows above it on hover and keyboard focus (bx_if:tooltip in
+     * menu_footer.html), not as the browser's tooltip. Every item sets the block, so the template always parses it.
+     * The apps name the badge themselves (title_attr, _getMenuItemAPI).
+     */
+    protected function _addTooltip ($a)
+    {
+        if($this->_bIsApi)
+            return $a;
+
+        $bBadge = $a['name'] == 'powered_by';
+        if($bBadge && !empty($a['attrs']))
+            $a['attrs'] = preg_replace('/ title="[^"]*"/', '', $a['attrs']);
+
+        $a['bx_if:tooltip'] = [
+            'condition' => $bBadge,
+            'content' => ['tooltip' => $bBadge ? bx_process_output(_t('_sys_txt_powered_by_una')) : ''],
+        ];
 
         return $a;
     }
