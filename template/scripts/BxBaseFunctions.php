@@ -997,6 +997,23 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * Whether visitors can pick a light or dark colour scheme here. A template with a dark scheme (Artificer) says
+     * yes and builds the menu; the footer's Theme item shows only then (BxBaseMenuFooter).
+     */
+    public function isColorSchemeSwitchable()
+    {
+        return false;
+    }
+
+    /**
+     * The colour scheme menu, hidden until a trigger opens it with bx_menu_popup_inline('#' + $sId, ...).
+     */
+    public function getColorSchemeMenu($sId)
+    {
+        return '';
+    }
+
+    /**
      * Whether pages get the sounds setup while sounds are off here, to preview them (Studio's Settings > Sounds).
      */
     protected function isSoundsPreview()

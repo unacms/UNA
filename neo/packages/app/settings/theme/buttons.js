@@ -427,7 +427,7 @@ export const settingsButtons = {
                 // iOS 26 draws real liquid glass behind the segments instead
                 // (`liquidContainer` replaces `container` there).
                 glass: {
-                    container: 'web:backdrop-blur-md bg-popover/80 shadow-btn-glass dark:shadow-btn-glass-deep',
+                    container: 'web:glass-backdrop web:dark:glass-backdrop-dark bg-popover/80 web:bg-white/30 web:dark:bg-white/15 shadow-btn-glass dark:shadow-btn-glass-deep',
                     liquidContainer: '',
                     separator: 'bg-foreground/10',
                     segment: {
@@ -634,23 +634,52 @@ export const settingsButtons = {
                 },
             },
 
+            // A quiet text link (the footer): no fill in any state, secondary text that turns
+            // foreground on hover, focus and press. JS only (JS_ONLY_STYLES in the resolver), so
+            // the text classes a caller adds (`text-sm`) apply on iOS and Android too.
+            text: {
+                container: {
+                    default: '',
+                    hovered: '',
+                    focused: '',
+                    pressed: '',
+                    active: '',
+                    pressedToggle: '',
+                    disabled: 'opacity-50',
+                },
+                text: {
+                    base: 'font-normal web:transition-colors',
+                    default: 'text-secondary-foreground',
+                    hovered: 'text-foreground',
+                    focused: 'text-foreground',
+                    pressed: 'text-foreground',
+                    active: 'text-foreground',
+                    pressedToggle: 'text-foreground',
+                    disabled: 'text-muted-foreground',
+                },
+            },
+
             // SwiftUI .glass (iOS 26+). Web fallback uses backdrop-blur.
-            // shadow-btn-glass carries border + inner highlight + wide soft
-            // ambient drop. shadow-btn-glass-pressed shrinks the drop.
+            // shadow-btn-glass draws the iOS glass edge: a hairline ring, darker
+            // at the sides, with bright crescents along the top and bottom rims.
+            // Web fills are translucent white, as on iOS, so the blurred backdrop
+            // shows through; a press brightens the fill and keeps the edge.
+            // `glass-backdrop` (global.css) keeps labels readable over photos.
             glass: {
                 container: {
-                    base: 'web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep',
-                    default: ' bg-popover/80 ',
-                    hovered: ' bg-muted/50 ',
-                    focused: ' bg-popover/80',
-                    pressed:  'bg-muted shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
-                    active: 'bg-muted/50 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    base: 'web:glass-backdrop web:dark:glass-backdrop-dark shadow-btn-glass dark:shadow-btn-glass-deep',
+                    default: 'bg-popover/80 web:bg-white/30 web:dark:bg-white/15',
+                    hovered: 'bg-muted/50 web:bg-white/40 web:dark:bg-white/19',
+                    focused: 'bg-popover/80 web:bg-white/30 web:dark:bg-white/15',
+                    pressed: 'bg-muted web:bg-white/55 web:dark:bg-white/23',
+                    active: 'bg-muted/50 web:bg-white/40 web:dark:bg-white/19',
                     pressedToggle: 'bg-accent shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
                     disabled: 'bg-muted/50',
                 },
                 text: {
                     base: 'font-medium',
-                    default: 'text-card-foreground',
+                    // Native glass draws its label black / white: the foreground, not card text.
+                    default: 'text-foreground',
                     hovered: 'text-foreground',
                     focused: 'text-foreground',
                     pressed: 'text-foreground',
@@ -735,6 +764,7 @@ export const settingsButtons = {
             glassProminent: { press: { type: 'scale', from: 1, to: { default: 1.1, mouse: 0.98, touch: 1.1 }, spring: { damping: 24, stiffness: 360 } }, hover: { type: 'opacity', duration: 200 } },
             plain:          { press: false,                                                            hover: false },
             link:           { press: false, hover: { type: 'opacity', duration: 120 } },
+            text:           { press: false,                                                            hover: false },
             borderless:     { press: { type: 'scale', from: 1, to: 0.98, spring: { damping: 28, stiffness: 380 } }, hover: { type: 'opacity', duration: 120 } },
         },
 

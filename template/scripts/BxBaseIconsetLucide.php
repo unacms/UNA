@@ -24,6 +24,7 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'ad' => 'circle-star',
             'address-book' => 'contact-round',
             'address-card' => 'id-card',
+            'adjust' => 'eclipse',
             'angle-double-down' => 'chevrons-down',
             'angle-double-left' => 'chevrons-left',
             'angle-double-right' => 'chevrons-right',

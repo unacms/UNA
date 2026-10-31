@@ -659,6 +659,38 @@
         @apply relative rounded px-[0.3rem] py-[0.2rem] text-sm font-semibold;
     }
 
+    /* Footer: quiet text links, as in NEO's footer (NeoButton style `text`): 14px, secondary text that turns
+       foreground on hover and focus, at least 28px tall. Each link's touch area reaches into the menu's gaps
+       (gap-x-4 gap-y-2, menu_footer.html) without overlapping a neighbour. The page you're on stays in the
+       foreground colour (aria-current, BxBaseMenuFooter). */
+    #bx-menu-footer > li {
+        @apply text-sm font-normal text-gray-600 dark:text-gray-400;
+    }
+    #bx-menu-footer > li > a {
+        @apply relative inline-flex items-center min-h-7 font-normal transition-colors hover:no-underline;
+        @apply hover:text-gray-950 dark:hover:text-gray-50 focus-visible:text-gray-950 dark:focus-visible:text-gray-50;
+        @apply before:absolute before:-inset-x-2 before:-inset-y-1 before:content-[''];
+    }
+    #bx-menu-footer > li > a[aria-current="page"] {
+        @apply text-gray-950 dark:text-gray-50;
+    }
+    /* Text items (the copyright notice) line up with the links but don't react to the pointer. */
+    #bx-menu-footer .bx-menu-footer-text {
+        @apply inline-flex items-center min-h-7;
+    }
+    /* From desktop width the tools (language, theme, sounds, Powered by) sit on the right, as in the apps. */
+    #bx-menu-footer > li.bx-menu-footer-tools-start {
+        @apply lg:ms-auto;
+    }
+    /* The language in use, by its code, as in the apps. */
+    #bx-menu-footer .bx-menu-footer-lang {
+        @apply text-xs font-semibold uppercase tracking-wide;
+    }
+    /* Icons at the text's size, as in the apps: 16px beside 14px text. */
+    #bx-menu-footer > li > a > .lucide {
+        @apply size-4;
+    }
+
     /* Common elements: Icons. */
     .bx-icon svg {
         @apply w-5 h-5;

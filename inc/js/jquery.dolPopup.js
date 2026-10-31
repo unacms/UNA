@@ -32,7 +32,8 @@
     $.fn.dolPopupDefaultPointerOptions = {
         align: 'right',
         offset: '0 0',
-        offset_pointer: '0 0'
+        offset_pointer: '0 0',
+        flip: false // open above the element when there is no room below it (a menu at the foot of the page)
     }; 
 
     $.fn.dolPopupCenter = function () {
@@ -962,7 +963,7 @@
                         of: ePointAt,
                         my: o.pointer.align + '+' + parseInt(aOffset[0]) + ' top+' + yOffset + '+' + parseInt(aOffset[1] - 0),
                         at: o.pointer.align + ' bottom',
-                        collision: 'fit none'
+                        collision: 'fit ' + (o.pointer.flip ? 'flip' : 'none')
                     });
 
                     // 'fit' only keeps the popup inside the window, flush with its edge
@@ -973,11 +974,15 @@
                     if (iLeftMin <= iLeftMax && (iLeft < iLeftMin || iLeft > iLeftMax))
                         $el.offset({left: Math.min(Math.max(iLeft, iLeftMin), iLeftMax)});
 
-                    $el.find('.bx-popup-box-pointer').css('display', 'block').position({
-                        of: ePointAt,
-                        my: 'center+' + (parseInt(aOffsetPointer[0]) + parseInt(aOffset[0])) + ' top+' + yOffset + '+' + (parseInt(aOffsetPointer[1]) + parseInt(aOffset[1]) + 0),
-                        at: 'center bottom'
-                    });
+                    // the pointer is drawn above the popup, so a popup flipped above its element goes without it
+                    if (o.pointer.flip && $el.offset().top < $(ePointAt).offset().top)
+                        $el.find('.bx-popup-box-pointer').css('display', 'none');
+                    else
+                        $el.find('.bx-popup-box-pointer').css('display', 'block').position({
+                            of: ePointAt,
+                            my: 'center+' + (parseInt(aOffsetPointer[0]) + parseInt(aOffset[0])) + ' top+' + yOffset + '+' + (parseInt(aOffsetPointer[1]) + parseInt(aOffset[1]) + 0),
+                            at: 'center bottom'
+                        });
 
                     // it grows from its element: from its top edge, or from its bottom one when it opens above the element
                     var sOriginX = 'left' == o.pointer.align || 'right' == o.pointer.align ? o.pointer.align : 'center';
