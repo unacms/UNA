@@ -1,6 +1,7 @@
 // packages/app/context/menu-data.js
 import { create } from 'zustand';
-import { getDataForMenu } from 'app/lib/util';
+import { filterHiddenOn, getDataForMenu } from 'app/lib/util';
+import { useScreenTier } from 'app/context/measure';
 import { useEffect, useCallback } from 'react';
 
 /** Menu object id (string) or a UNA menu request object. */
@@ -79,6 +80,7 @@ export const useMenuData = (object: MenuObject | null | undefined) => {
     const isLoading = useMenuDataStore((state) => state.menus[key]?.loading ?? false);
     const isFetched = useMenuDataStore((state) => state.menus[key]?.fetched ?? false);
     const fetchMenu = useMenuDataStore((state) => state.fetchMenu);
+    const tier = useScreenTier();
 
     useEffect(() => {
         if (object) fetchMenu(object);
@@ -88,5 +90,8 @@ export const useMenuData = (object: MenuObject | null | undefined) => {
         if (object) fetchMenu(object, true);
     }, [object, fetchMenu]);
 
-    return { menuData: data, isFetched, isLoading, refetch };
+    // Items UNA hides on this screen tier never reach the menus.
+    const menuData = data?.items ? { ...data, items: filterHiddenOn(data.items, tier) } : data;
+
+    return { menuData, isFetched, isLoading, refetch };
 };

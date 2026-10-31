@@ -9,6 +9,7 @@ import Profile from 'app/ui/molecules/profile/profile'
 import { Text } from 'app/design/typography'
 import { Platform } from 'react-native'
 import { components } from 'app/components/registry'
+import { InformerList } from 'app/components/elements/informer'
 import {
     Panel,
     PanelGroup,
@@ -472,6 +473,9 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
                 )}
                 <Panel className="w-full min-w-0 native:w-full" {...centerPanelProps}>
                     <View className={`${appSetting('layout', 'feed_container')}`}>
+                        {/* The viewer's informers first, beside the fixed left column (layout.web.js leaves them out here):
+                            16px around them on phones, where the feed runs edge to edge; the column's own padding from tablet. */}
+                        <InformerList className="p-4 sm:p-0 sm:pb-4" />
                         {FeedContent}
                     </View>
                 </Panel>

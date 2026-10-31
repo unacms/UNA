@@ -78,7 +78,8 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'LoginForm' => 'BxBaseServiceLogin',
             'LoginFormOnly' => 'BxBaseServiceLogin',
             'Logout' => 'BxBaseServiceLogin',
-        
+            'TouchSession' => 'BxBaseServiceLogin',
+
             'KeywordsCloud' => 'BxBaseServiceMetatags',
 
             'AccountProfileSwitcher' => 'BxBaseServiceProfiles',

@@ -1725,6 +1725,7 @@
     <string name="_adm_stg_cpt_option_sys_account_switch_to_profile_redirect"><![CDATA[После смены профиля перенаправить на]]></string>
     <string name="_adm_stg_cpt_option_sys_account_switch_to_profile_redirect_custom"><![CDATA[URL для перенаправления 'Пользовательская страница']]></string>
     <string name="_adm_stg_cpt_option_sys_account_remember_me"><![CDATA[Значение по умолчанию для функции «Запомнить меня»]]></string>
+    <string name="_adm_stg_cpt_option_sys_account_require_profile"><![CDATA[Требовать профайл для работы с сайтом (аккаунты без профайла направляются к его созданию)]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_switch_to_profile_redirect_back"><![CDATA[Текущая страница]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_switch_to_profile_redirect_home"><![CDATA[Главная страница]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_switch_to_profile_redirect_profile"><![CDATA[Страница профиля]]></string>
@@ -3474,6 +3475,7 @@
     <string name="_sys_menu_item_title_privacy"><![CDATA[Конфиденциальность]]></string>
     <string name="_sys_menu_item_title_search"><![CDATA[Поиск]]></string>
     <string name="_sys_menu_item_title_switch_language"><![CDATA[Язык]]></string>
+    <string name="_sys_menu_item_title_switch_language_current"><![CDATA[Язык: {0}]]></string>
     <string name="_sys_menu_item_title_switch_language_mask"><![CDATA[{1} {0}]]></string>
     <string name="_sys_menu_item_title_switch_template"><![CDATA[Дизайн]]></string>
     <string name="_sys_menu_item_title_switch_template_mask"><![CDATA[{0}]]></string>
@@ -3602,6 +3604,7 @@
     <string name="_sys_menu_item_title_system_cmts_item_score"><![CDATA[Голосовать (За/Против)]]></string>
     <string name="_sys_menu_item_title_system_cmts_item_vote"><![CDATA[Голосовать (Нравится)]]></string>
     <string name="_sys_menu_item_title_system_cmts_item_more"><![CDATA[Ещё]]></string>
+    <string name="_sys_menu_item_title_system_color_scheme"><![CDATA[Тема]]></string>
     <string name="_sys_menu_item_title_system_connections"><![CDATA[Связи]]></string>
     <string name="_sys_menu_item_title_system_dashboard"><![CDATA[Панель]]></string>
     <string name="_sys_menu_item_title_system_home"><![CDATA[Домой]]></string>
@@ -3975,7 +3978,17 @@
         <string name="_sys_page_description_mention"><![CDATA[Результаты поиска, где упоминается "{0}"]]></string>
         <string name="_sys_page_description_mention_in_section"><![CDATA[Результаты поиска, где упоминается "{0}" в разделе "{1}"]]></string>
 
-	<string name="_sys_page_lang_block_about"><![CDATA[Этот сайт сделан на UNA. Остальное - тайна, покрытая мраком.]]></string>
+	<string name="_sys_page_lang_block_about"><![CDATA[<p>Добро пожаловать! Это сообщество для тех, кто хочет находить людей со схожими интересами, делиться знаниями и оставаться на связи.</p>
+<p>Участники заполняют профиль, публикуют новости, фото и ссылки, комментируют записи друг друга и подписываются на интересных им людей и темы. Смотреть сайт может любой. Чтобы публиковать, комментировать и писать другим участникам, зарегистрируйтесь.</p>
+<p>Чтобы здесь было хорошо всем, мы просим участников:</p>
+<ul>
+<li>уважать друг друга, особенно в спорах;</li>
+<li>публиковать только то, на что у них есть права;</li>
+<li>не раскрывать чужие личные данные;</li>
+<li>сообщать о нарушениях этих правил, чтобы модераторы могли разобраться.</li>
+</ul>
+<p>Полностью правила изложены в Правилах пользования, а как мы обращаемся с вашими данными, описано в Политике конфиденциальности.</p>
+<p>Сайт <a href="https://unacms.com">работает на платформе UNA CMS</a> с открытым исходным кодом для создания онлайн-сообществ и социальных сетей.</p>]]></string>
 	<string name="_sys_page_lang_block_terms"><![CDATA[Правила пользования нашим сайтом.]]></string>
 	<string name="_sys_page_lang_block_privacy"><![CDATA[Политика конфиденциальности нашего сайта.]]></string>
 	<string name="_sys_page_meta_description_default"><![CDATA[{site_title} — онлайн-сообщество, где люди делятся новостями, обсуждают и общаются с теми, кому интересно то же самое.]]></string>
@@ -4305,6 +4318,8 @@
     <string name="_sys_txt_confirm_phone_confirm_success"><![CDATA[Ваш телефон успешно подтверждён.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_desc_set_phone"><![CDATA[Пожалуйста, введите телефонный номер на который будет отправлено SMS с кодом подтверждения.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_desc_phone_confirmation"><![CDATA[Пожалуйста, введите код проверки из SMS]]></string>
+    <string name="_sys_txt_copyright_full"><![CDATA[© {0} {1}. Все права защищены.]]></string>
+    <string name="_sys_txt_copyright_short"><![CDATA[© {0} {1}]]></string>
 
     <string name="_sys_txt_create_post_placeholder"><![CDATA[Напишите здесь, {0}]]></string>
     <string name="_sys_txt_err_attach_links"><![CDATA[Достигнуто максимально допустимое количество прикрепленных ссылок.]]></string>

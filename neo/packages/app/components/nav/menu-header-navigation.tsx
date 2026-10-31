@@ -13,7 +13,7 @@ import type { MenuHeaderNavigationProps } from 'app/components/nav/menu-header-n
 const AUTH_BUTTON_CLASSES = { root: 'basis-0' }
 
 /**
- * Header-toolbar menu (`menu_navigation`): icon trigger opens the same style of popup
+ * Header-toolbar menu (`menu_navigation`, else UNA's site menu): icon trigger opens the same style of popup
  * menu as navbar “more” (DropdownMenu + menu_items dropdown rows). A group shows as a
  * section under its title. With `auth`, guests below `sm` also get Log In and Sign Up
  * under the rows. Web and Android; iOS has a native menu (menu-header-navigation.ios.tsx).
@@ -23,14 +23,15 @@ export default function MenuHeaderNavigation(props: Readonly<MenuHeaderNavigatio
     const { t } = useTranslation()
     const isDesktop = useIsDesktop()
     const [open, setOpen] = useState(false)
-    const entries = useMenuNavigationEntries()
+    const { entries, pending } = useMenuNavigationEntries()
     const items: DropdownMenuItemData[] = entries
         .flatMap(({ key, item, rows }) =>
             rows.length ? [{ type: 'group_header', id: `header-${key}`, name: item.name, title: item.title }, ...rows] : [item]
         )
         .map((item) => (item.description || item.info ? { ...item, description: t(item.description || item.info) } : item))
 
-    if (!items.length) {
+    // While the site menu loads, keep the button so the header doesn't shift.
+    if (!items.length && !pending) {
         return null
     }
 

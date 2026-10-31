@@ -567,7 +567,7 @@ function bx_menu_popup_inline (jSel, e, options) {
         var fOnShow = options.onShow, fOnHide = options.onHide;
 
         var o = $.extend({}, $.fn.dolPopupDefaultOptions, options, {
-            pointer: bElement ? {el:$(e)} : false, 
+            pointer: bElement ? $.extend({}, options.pointer, {el:$(e)}) : false, 
             cssClass: 'bx-popup-menu',
             onShow: function(oPopup) {
                 if(bExpanded)
@@ -2085,6 +2085,12 @@ function bx_sound_mark_switches()
     $('[data-bx-sounds-level]').each(function() {
         var bChecked = $(this).attr('data-bx-sounds-level') == sLevel;
         $(this).attr('aria-checked', bChecked ? 'true' : 'false').attr('tabindex', bChecked ? '0' : '-1');
+    });
+
+    // The options of the footer's Sounds menu (BxBaseMenuFooter::getSoundsMenu): links, so every one stays in the tab order.
+    $('[data-bx-sounds-option]').each(function() {
+        var bCurrent = $(this).attr('data-bx-sounds-option') == sLevel;
+        $(this).attr('aria-current', bCurrent ? 'true' : null).closest('li').toggleClass('bx-menu-tab-active', bCurrent);
     });
 
     if(bRedraw && typeof(bx_iconset_init_lucide) == 'function')

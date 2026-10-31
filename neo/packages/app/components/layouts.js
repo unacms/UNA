@@ -48,7 +48,7 @@ export default function Layouts({ path, data }) {
     const pageData = useMemo(() => {
         if (!data) return data;
         const raw = data.config;
-        if (typeof raw !== 'string' || !appSetting('layout', 'user_remote_config')) {
+        if (typeof raw !== 'string') {
             return data;
         }
         const parsed = strToObj(raw);
@@ -156,10 +156,6 @@ function PageLayoutContent({ layout, data, skipProfileLock = false }) {
         contentWidth: getPageContentWidth(layoutName, data?.uri),
     };
 
-    const hasProfileInformer = currentUser?.informer?.some(
-        item => item.id === "sys-account-profile-system"
-    );
-
     const Component = components['layout'][layoutName];
 
     // Keep the wiki shell mounted across doc routes (registry key is layout_1_column_wiki).
@@ -181,7 +177,8 @@ function PageLayoutContent({ layout, data, skipProfileLock = false }) {
         return <ConfirmEmail url={data.url} data={data} />;
     }
 
-    if (!skipProfileLock && (hasProfileInformer || currentUser?.membership==2 && data.uri =='home') && appSetting('layout', 'lock_no_profile')) {
+    // UNA decides (BxDolAccount::isProfileRequired): its site sends the account to profile creation too.
+    if (!skipProfileLock && currentUser?.profile_required) {
 
         if (currentUser?.menu?.items?.length > 1) {
             // UNA's account-profile-switcher page: its "create profile" block brings the

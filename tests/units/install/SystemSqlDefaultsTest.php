@@ -15,6 +15,16 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         return $sSql;
     }
 
+    public function testProfileIsNotRequiredByDefault(): void
+    {
+        // An account without a profile of its own gets the "create a profile" informer and uses the site; "Require a
+        // profile" sends it to profile creation instead, on the site and in the apps, once an admin turns it on.
+        $bFound = preg_match("/\\(@iCategoryId, 'sys_account_require_profile', '_adm_stg_cpt_option_sys_account_require_profile', '([^']*)', 'checkbox',/", self::systemSql(), $aMatch);
+
+        $this->assertSame(1, $bFound, 'system.sql adds the "Require a profile" option to the Account settings.');
+        $this->assertSame('', $aMatch[1], 'Off on a fresh install.');
+    }
+
     public function testHomeCreatePostBlockIsACardWithTitle(): void
     {
         // The home page's create-post block: designbox_id follows object, cell, module, title_system and title.
@@ -34,6 +44,48 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $bFound, 'enable-app-pages.sql sets the App config of the home create-post block.');
         $aConfig = json_decode($aMatch[1], true);
         $this->assertSame(['bg' => true, 'padding' => true, 'title' => false], $aConfig['designbox'] ?? null);
+    }
+
+    public function testFooterHasThemeAndSoundsSwitchers(): void
+    {
+        // Icon-only items (no title) that open their menus above them: BxBaseMenuFooter renders the menus and shows
+        // the Theme item only where the template has a colour scheme, the Sounds item where sounds play on the site.
+        foreach (['color_scheme' => 'adjust', 'sounds' => 'volume-up'] as $sName => $sIcon) {
+            $bFound = preg_match("/\\('sys_footer', 'system', '" . $sName . "', '_sys_menu_item_title_system_" . $sName . "', '', 'javascript:void\\(0\\);', '([^']|'')*', '', '([a-z-]+)',/", self::systemSql(), $aMatch);
+
+            $this->assertSame(1, $bFound, "system.sql adds the footer's " . $sName . ' item.');
+            $this->assertStringContainsString("bx_menu_popup_inline(''#bx-menu-footer-" . str_replace('_', '-', $sName) . "'', this, {pointer: {flip: true}});", $aMatch[0]);
+            $this->assertSame($sIcon, $aMatch[2]);
+        }
+    }
+
+    public function testFooterCopyrightIsTextAfterTheLinks(): void
+    {
+        // No link and no script: BxBaseMenuFooter shows it as text ("(c) 2026 Site. All rights reserved."), after
+        // About, Terms and Privacy and before the tools. The apps get it too, as a text item.
+        $sSql = self::systemSql();
+        $aOrder = [];
+        foreach (['copyright', 'switch_language', 'switch_template', 'color_scheme', 'sounds'] as $sName) {
+            $this->assertSame(1, preg_match("/\\('sys_footer', 'system', '" . $sName . "', '[^']*', '[^']*', '((?:[^']|'')*)', '((?:[^']|'')*)', [^\\n]*, (\\d+)\\),?\\r?\\n/", $sSql, $aMatch), 'system.sql adds the footer\'s ' . $sName . ' item.');
+            $aOrder[$sName] = (int)$aMatch[3];
+
+            if ($sName == 'switch_language')
+                $this->assertSame("bx_menu_popup(''sys_switch_language_popup'', this, {pointer: {flip: true}});", $aMatch[2], 'The language menu opens at the footer item, above it like Theme and Sounds.');
+
+            if ($sName == 'copyright') {
+                $this->assertSame('', $aMatch[1], 'The copyright notice has no link.');
+                $this->assertSame('', $aMatch[2], 'Nor a script: no popup.');
+            }
+        }
+
+        $this->assertSame(4, $aOrder['copyright'], 'Right after Privacy (3).');
+        $aTools = $aOrder;
+        unset($aTools['copyright']);
+        $this->assertGreaterThan($aOrder['copyright'], min($aTools), 'The tools come after it.');
+
+        $sApp = file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-menus.sql');
+        $this->assertStringContainsString("UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `module`='system' AND `name`='copyright';", (string)$sApp);
+        $this->assertStringContainsString("UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `module`='system' AND `name`='powered_by';", (string)$sApp, 'The apps show the badge too.');
     }
 
     public function testHomepageSubmenuHasAnIconInTheApp(): void

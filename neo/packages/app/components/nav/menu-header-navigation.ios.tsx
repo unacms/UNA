@@ -49,12 +49,13 @@ export default function MenuHeaderNavigation({
     const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
     const width = useWindowWidth();
-    const entries = useMenuNavigationEntries();
+    const { entries, pending } = useMenuNavigationEntries();
     // The header band's scheme (`layout.header.band_scheme`), as NeoButton's Host takes it.
     const colorScheme = useNeoButtonColorScheme();
     const pressRow = useMenuRowPress();
 
-    if (!entries.length) return null;
+    // While the site menu loads, keep the button so the header doesn't shift.
+    if (!entries.length && !pending) return null;
 
     const showAuth = auth && !currentUser && width < SM_PT;
     const label = t(accessibilityLabel ?? alt);
