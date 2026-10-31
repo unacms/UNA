@@ -12,7 +12,8 @@ function getMenu(logged: boolean): TabMenuItem[] {
 /**
  * The UNA page a tab screen shows (`pagePath` of the native tab Screen): the route's `url`
  * param, or for a tab root without a usable one, the More tab's last page or the tab's menu
- * item. Shared with the analytics tracker, so screen views name the page on screen.
+ * item. Shared through `getScreenPath` (lib/navigation/screen-page-path), so analytics screen
+ * views and the footer's current link name the page on screen.
  *
  * @param tabKey `/tab0`…
  * @param url the route's `url` param

@@ -3475,6 +3475,7 @@
     <string name="_sys_menu_item_title_privacy"><![CDATA[Конфиденциальность]]></string>
     <string name="_sys_menu_item_title_search"><![CDATA[Поиск]]></string>
     <string name="_sys_menu_item_title_switch_language"><![CDATA[Язык]]></string>
+    <string name="_sys_menu_item_title_switch_language_current"><![CDATA[Язык: {0}]]></string>
     <string name="_sys_menu_item_title_switch_language_mask"><![CDATA[{1} {0}]]></string>
     <string name="_sys_menu_item_title_switch_template"><![CDATA[Дизайн]]></string>
     <string name="_sys_menu_item_title_switch_template_mask"><![CDATA[{0}]]></string>
@@ -3603,6 +3604,7 @@
     <string name="_sys_menu_item_title_system_cmts_item_score"><![CDATA[Голосовать (За/Против)]]></string>
     <string name="_sys_menu_item_title_system_cmts_item_vote"><![CDATA[Голосовать (Нравится)]]></string>
     <string name="_sys_menu_item_title_system_cmts_item_more"><![CDATA[Ещё]]></string>
+    <string name="_sys_menu_item_title_system_color_scheme"><![CDATA[Тема]]></string>
     <string name="_sys_menu_item_title_system_connections"><![CDATA[Связи]]></string>
     <string name="_sys_menu_item_title_system_dashboard"><![CDATA[Панель]]></string>
     <string name="_sys_menu_item_title_system_home"><![CDATA[Домой]]></string>
@@ -4316,6 +4318,8 @@
     <string name="_sys_txt_confirm_phone_confirm_success"><![CDATA[Ваш телефон успешно подтверждён.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_desc_set_phone"><![CDATA[Пожалуйста, введите телефонный номер на который будет отправлено SMS с кодом подтверждения.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_desc_phone_confirmation"><![CDATA[Пожалуйста, введите код проверки из SMS]]></string>
+    <string name="_sys_txt_copyright_full"><![CDATA[© {0} {1}. Все права защищены.]]></string>
+    <string name="_sys_txt_copyright_short"><![CDATA[© {0} {1}]]></string>
 
     <string name="_sys_txt_create_post_placeholder"><![CDATA[Напишите здесь, {0}]]></string>
     <string name="_sys_txt_err_attach_links"><![CDATA[Достигнуто максимально допустимое количество прикрепленных ссылок.]]></string>

@@ -189,6 +189,17 @@
 #bx-content-main:has(> #bx-content-wrapper) {
     flex-grow: 3;
 }
+/* The page is at least as tall as the window: on a short page the footer stays at the bottom of the screen, on a
+   long one it comes right after the content. The toolbar is fixed, so main and the footer are the flex items. */
+#bx-content-with-toolbar-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+#bx-content-with-toolbar-wrapper > #bx-content-main {
+    flex-grow: 3;
+}
 
 /* --------------- footer */
 
