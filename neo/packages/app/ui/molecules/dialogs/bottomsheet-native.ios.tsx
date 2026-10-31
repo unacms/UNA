@@ -1,7 +1,7 @@
 import { useState, type ComponentProps, type ReactNode } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, useWindowDimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { BottomSheet, Button, Divider, Group, HStack, Host, Image, RNHostView, Spacer, Text, VStack } from '@expo/ui/swift-ui';
+import { BottomSheet, Button, Divider, Group, HStack, Host, Image, RNHostView, ScrollView as SwiftScrollView, Spacer, Text, VStack } from '@expo/ui/swift-ui';
 import {
     accessibilityAddTraits,
     accessibilityHidden,
@@ -14,6 +14,7 @@ import {
     frame,
     lineLimit,
     padding,
+    preferredColorScheme,
     presentationDetents,
     presentationDragIndicator,
     resizable,
@@ -21,6 +22,7 @@ import {
     type PresentationDetent,
 } from '@expo/ui/swift-ui/modifiers';
 import { useBottomSheetData, type BottomSheetData, type BottomSheetMenu, type BottomSheetMenuItem } from 'app/context/bottomsheet';
+import { useThemeName } from 'app/design/theme';
 import { getNativeIcon } from 'app/design/controls/neo-button/neo-button-expoui';
 import { useNativeTokenColor } from 'app/design/controls/neo-button/native-style-colors';
 import { appSetting, isEmoji, resolveMenuItemDescription } from 'app/lib/util';
@@ -29,6 +31,7 @@ import GorhomBottomSheet from './bottomsheet-content';
 
 type SFSymbol = NonNullable<ComponentProps<typeof Image>['systemName']>;
 type SheetRequest = Exclude<BottomSheetData, false | null>;
+type SheetScheme = 'light' | 'dark';
 
 const nativeSheets = !!appSetting('theme', 'expo_ui', 'bottom_sheet');
 
@@ -36,6 +39,14 @@ const ICON_PT = 22;
 // Snap points under a quarter of the screen were the JS sheet's collapsed state; a native sheet opens at its detents.
 const MIN_FRACTION = 0.25;
 const DEFAULT_DETENTS: PresentationDetent[] = ['medium', 'large'];
+// About how tall MenuSheet draws each kind of row, in points, with the VStack's spacing.
+const MENU_ROW_PT = 48;
+const MENU_ROW_DESCRIPTION_PT = 72;
+const MENU_HEADER_PT = 32;
+const MENU_SEPARATOR_PT = 17;
+const MENU_PADDING_PT = 28;
+// A menu taller than this part of the screen scrolls in a medium / large sheet instead of fitting the sheet to it.
+const MENU_FIT_FRACTION = 0.75;
 
 /**
  * iOS: bottom sheets (`setBottomSheetData`) as a native SwiftUI sheet on the system Liquid
@@ -50,8 +61,15 @@ export default function ElementBottomSheetContent() {
     const [shown, setShown] = useState<SheetRequest | null>(null);
     if (bottomSheetData && bottomSheetData !== shown) setShown(bottomSheetData);
     const data = bottomSheetData || shown;
+    const { height: windowHeight } = useWindowDimensions();
+    // The app's theme, not the system's: a sheet otherwise follows iOS dark mode under a light app
+    // (and RN-drawn icons in it, coloured for the app, disappear).
+    const scheme: SheetScheme = useThemeName() === 'dark' ? 'dark' : 'light';
 
     if (!nativeSheets || data?.modal) return <GorhomBottomSheet />;
+
+    // A sheet can't grow past the screen, so a long menu (many languages) scrolls instead.
+    const scrolls = !!data?.menu && menuHeight(data.menu) > windowHeight * MENU_FIT_FRACTION;
 
     const isPresented = !!bottomSheetData;
     const close = () => setBottomSheetData(null);
@@ -66,18 +84,18 @@ export default function ElementBottomSheetContent() {
                 isPresented={isPresented}
                 onIsPresentedChange={onIsPresentedChange}
                 onDismiss={() => setShown(null)}
-                fitToContents={!!data?.menu}
+                fitToContents={!!data?.menu && !scrolls}
             >
-                {sheetBody(data, close)}
+                {sheetBody(data, close, scrolls, scheme)}
             </BottomSheet>
         </Host>
     );
 }
 
-function sheetBody(data: SheetRequest | null, close: () => void) {
+function sheetBody(data: SheetRequest | null, close: () => void, scrolls: boolean, scheme: SheetScheme) {
     if (!data) return null;
-    if (data.menu) return <MenuSheet menu={data.menu} />;
-    return <ContentSheet data={data} onClose={close} />;
+    if (data.menu) return <MenuSheet menu={data.menu} scrolls={scrolls} scheme={scheme} />;
+    return <ContentSheet data={data} onClose={close} scheme={scheme} />;
 }
 
 /** A row's or sheet's title as text; React elements are left out (they never get native rows). */
@@ -89,39 +107,57 @@ function rowKey(item: BottomSheetMenuItem, index: number): string {
     return textOf(item.id) || textOf(item.name) || String(index);
 }
 
-/** A menu's rows, like the iOS More sheet: icon, title, a checkmark on the chosen one. */
-function MenuSheet({ menu }: Readonly<{ menu: BottomSheetMenu }>) {
+/** Roughly how tall MenuSheet draws a menu, to tell whether the sheet can fit it. */
+function menuHeight(menu: BottomSheetMenu): number {
+    return menu.items.reduce((height, item) => {
+        if (item.type === 'separator') return height + MENU_SEPARATOR_PT;
+        if (item.type === 'group_header') return height + MENU_HEADER_PT;
+        return height + (resolveMenuItemDescription(item) ? MENU_ROW_DESCRIPTION_PT : MENU_ROW_PT);
+    }, MENU_PADDING_PT);
+}
+
+/**
+ * A menu's rows, like the iOS More sheet: icon, title, a checkmark on the chosen one. The sheet
+ * fits them; with `scrolls` (a menu taller than the screen allows) they scroll in a medium / large sheet.
+ */
+function MenuSheet({ menu, scrolls, scheme }: Readonly<{ menu: BottomSheetMenu; scrolls: boolean; scheme: SheetScheme }>) {
     const check = useNativeTokenColor('text-accent-foreground') as string | undefined;
     // Rows without an icon keep its space when others have one, so the titles line up.
     const reserveIcon = menu.items.some((item) => item.icon && item.type !== 'group_header');
-    return (
-        <Group modifiers={[presentationDragIndicator('hidden')]}>
-            <VStack spacing={2} modifiers={[padding({ horizontal: 12, top: 20, bottom: 8 })]}>
-                {menu.items.map((item, index) => {
-                    const key = rowKey(item, index);
-                    if (item.type === 'separator') {
-                        return <Divider key={key} modifiers={[padding({ horizontal: 16, vertical: 8 })]} />;
-                    }
-                    if (item.type === 'group_header') {
-                        return (
-                            <Text
-                                key={key}
-                                modifiers={[
-                                    font({ size: 13, weight: 'semibold' }),
-                                    foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
-                                    padding({ horizontal: 16, top: index ? 12 : 0, bottom: 4 }),
-                                    frame({ maxWidth: Infinity, alignment: 'leading' }),
-                                ]}
-                            >
-                                {textOf(item.title)}
-                            </Text>
-                        );
-                    }
-                    return <MenuRow key={key} item={item} check={check} reserveIcon={reserveIcon} onPress={() => menu.onPress(item)} />;
-                })}
-            </VStack>
-        </Group>
+    const rows = (
+        <VStack spacing={2} modifiers={[padding({ horizontal: 12, top: 20, bottom: 8 })]}>
+            {menu.items.map((item, index) => {
+                const key = rowKey(item, index);
+                if (item.type === 'separator') {
+                    return <Divider key={key} modifiers={[padding({ horizontal: 16, vertical: 8 })]} />;
+                }
+                if (item.type === 'group_header') {
+                    return (
+                        <Text
+                            key={key}
+                            modifiers={[
+                                font({ size: 13, weight: 'semibold' }),
+                                foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                                padding({ horizontal: 16, top: index ? 12 : 0, bottom: 4 }),
+                                frame({ maxWidth: Infinity, alignment: 'leading' }),
+                            ]}
+                        >
+                            {textOf(item.title)}
+                        </Text>
+                    );
+                }
+                return <MenuRow key={key} item={item} check={check} reserveIcon={reserveIcon} onPress={() => menu.onPress(item)} />;
+            })}
+        </VStack>
     );
+    if (scrolls) {
+        return (
+            <Group modifiers={[presentationDetents(DEFAULT_DETENTS), presentationDragIndicator('visible'), preferredColorScheme(scheme)]}>
+                <SwiftScrollView>{rows}</SwiftScrollView>
+            </Group>
+        );
+    }
+    return <Group modifiers={[presentationDragIndicator('hidden'), preferredColorScheme(scheme)]}>{rows}</Group>;
 }
 
 function MenuRow({ item, check, reserveIcon, onPress }: Readonly<{ item: BottomSheetMenuItem; check?: string; reserveIcon: boolean; onPress: () => void }>) {
@@ -190,7 +226,7 @@ function RowIcon({ icon }: Readonly<{ icon: string }>) {
 }
 
 /** Any other content: a title row with a glass close button, then the content, scrolling within the detent. */
-function ContentSheet({ data, onClose }: Readonly<{ data: SheetRequest; onClose: () => void }>) {
+function ContentSheet({ data, onClose, scheme }: Readonly<{ data: SheetRequest; onClose: () => void; scheme: SheetScheme }>) {
     const { t } = useTranslation();
     const { header, content, footer, isListView, showClose = true } = data as SheetRequest & {
         header?: ReactNode; footer?: ReactNode; isListView?: boolean;
@@ -205,6 +241,7 @@ function ContentSheet({ data, onClose }: Readonly<{ data: SheetRequest; onClose:
             modifiers={[
                 presentationDetents(detents, { selection: detent, onSelectionChange: setDetent }),
                 presentationDragIndicator('visible'),
+                preferredColorScheme(scheme),
             ]}
         >
             <VStack spacing={0}>
