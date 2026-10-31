@@ -1,5 +1,5 @@
 import { useCurrentUser } from 'app/context/user'
-import { menuItemsByName, appSetting, menuItemsByNameNew, getHeaderToolbarNeoButtonDefaults, flattenMenuItemsForDropdown } from 'app/lib/util'
+import { menuItemsByName, appSetting, menuItemsByNameNew, getHeaderToolbarNeoButtonDefaults, flattenMenuItemsForDropdown, hasDropdownActions } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useState } from 'react';
 import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal';
@@ -7,7 +7,7 @@ import { useIsDesktop } from 'app/context/measure';
 import { useMenuData } from 'app/context/menu-data';
 
 /**
- * The add menu's items, and whether it has nothing to show (off in the settings, or UNA's menu is empty), when the
+ * The add menu's items, and whether it has nothing to show (off in the settings, or no item for this viewer), when the
  * header leaves no slot for it. `load` false skips loading the menu.
  */
 export function useMenuAddItems(load = true) {
@@ -22,7 +22,7 @@ export function useMenuAddItems(load = true) {
         ? menuItemsByName('', staticItems, currentUser)
         : menuItemsByNameNew('menu_post', menuData, currentUser);
 
-    return { items, empty: !bMenu || (items.length == 0 && !!menuData) };
+    return { items, empty: !bMenu || (!hasDropdownActions(items) && (useStatic || !!menuData)) };
 }
 
 export default function MenuAdd({ buttonProps, children }) {
