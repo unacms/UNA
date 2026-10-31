@@ -120,7 +120,20 @@ class BxBaseMenuFooter extends BxTemplMenu
                     $aItems[$iKey]['attrs'] .= ' aria-haspopup="menu" aria-expanded="false" data-bx-sounds-switch="1"';
                     break;
 
+                // The UNA logo alone: its name shows above it on hover and keyboard focus (bx_if:tooltip), not as the
+                // browser's tooltip.
+                case 'powered_by':
+                    if(!empty($aItems[$iKey]['attrs']))
+                        $aItems[$iKey]['attrs'] = preg_replace('/ title="[^"]*"/', '', $aItems[$iKey]['attrs']);
+                    break;
+
             }
+
+            if(!$this->_bIsApi)
+                $aItems[$iKey]['bx_if:tooltip'] = [
+                    'condition' => $aItem['name'] == 'powered_by',
+                    'content' => ['tooltip' => $aItem['name'] == 'powered_by' ? bx_process_output(_t('_sys_txt_powered_by_una')) : ''],
+                ];
 
             // The page you're on: the footer keeps its link in the foreground colour, and screen readers hear it.
             if(isset($aItems[$iKey]['class_add']) && strpos($aItems[$iKey]['class_add'], 'bx-menu-tab-active') !== false)
@@ -214,7 +227,7 @@ class BxBaseMenuFooter extends BxTemplMenu
 
         // The badge has no title: the apps name it, as the site does in its tooltip and aria-label.
         if($a['name'] == 'powered_by')
-            $aResult['title_attr'] = _t('_sys_txt_powered_by');
+            $aResult['title_attr'] = _t('_sys_txt_powered_by_una');
 
         if(!$this->_isTextItem($a))
             return $aResult;
@@ -233,12 +246,12 @@ class BxBaseMenuFooter extends BxTemplMenu
     }
 
     /**
-     * The badge reads "Powered by UNA"; its tooltip and accessible name say it in full.
+     * The badge is the UNA logo; "Powered by UNA" is its tooltip and accessible name, in the site's language.
      */
     protected function _getMenuTitle ($a)
     {
         if($a['name'] == 'powered_by')
-            return bx_html_attribute(_t('_sys_txt_powered_by'));
+            return bx_html_attribute(_t('_sys_txt_powered_by_una'));
 
         return parent::_getMenuTitle($a);
     }

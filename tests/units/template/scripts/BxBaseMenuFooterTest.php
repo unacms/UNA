@@ -158,9 +158,23 @@ class BxBaseMenuFooterTest extends BxDolTestCase
         $aItems = $this->footerItems();
         $this->assertSame(1, substr_count($aItems['about']['attrs'], 'title='));
 
-        $sPoweredBy = bx_html_attribute(_t('_sys_txt_powered_by'));
-        $this->assertStringContainsString('title="' . $sPoweredBy . '"', $aItems['powered_by']['attrs']);
-        $this->assertStringContainsString('aria-label="' . $sPoweredBy . '"', $aItems['powered_by']['attrs'], 'The badge is named in full, starting with the words it shows.');
+        $sPoweredBy = bx_html_attribute(_t('_sys_txt_powered_by_una'));
+        $this->assertStringNotContainsString('title=', $aItems['powered_by']['attrs'], 'The badge shows its name itself, not as the browser\'s tooltip.');
+        $this->assertStringContainsString('aria-label="' . $sPoweredBy . '"', $aItems['powered_by']['attrs'], 'The logo is named "Powered by UNA".');
+    }
+
+    public function testPoweredByBadgeShowsItsNameOnHover(): void
+    {
+        foreach (['template/menu_footer.html', 'modules/boonex/artificer/data/template/system/menu_footer.html'] as $sFile)
+            $this->assertMatchesRegularExpression('/<bx_if:link>.*<bx_if:tooltip>.*__tooltip__.*<\/bx_if:tooltip>.*<\/bx_if:link>/s', (string)file_get_contents(BX_DIRECTORY_PATH_ROOT . $sFile), $sFile . ' shows the name inside the link.');
+
+        $aItems = $this->footerItems();
+        $aTooltip = $aItems['powered_by']['bx_if:link']['content']['bx_if:tooltip'];
+        $this->assertTrue($aTooltip['condition']);
+        $this->assertSame(bx_process_output(_t('_sys_txt_powered_by_una')), $aTooltip['content']['tooltip'], 'Its name comes from a language string, so it is translated.');
+        $this->assertNotSame('_sys_txt_powered_by_una', $aTooltip['content']['tooltip'], 'The language string is installed.');
+
+        $this->assertFalse($aItems['about']['bx_if:link']['content']['bx_if:tooltip']['condition'], 'Other links have no tooltip.');
     }
 
     public function testPoweredByBadgeReachesTheAppsWhileOnInUna(): void
@@ -174,7 +188,7 @@ class BxBaseMenuFooterTest extends BxDolTestCase
 
         $aItem = $this->callProtected($oFooter, '_getMenuItemAPI', [$aRaw]);
         $this->assertStringStartsWith('<svg', $aItem['icon'], 'The apps draw the item\'s own badge.');
-        $this->assertSame(_t('_sys_txt_powered_by'), $aItem['title_attr'], 'And name it, as the site does.');
+        $this->assertSame(_t('_sys_txt_powered_by_una'), $aItem['title_attr'], 'And name it, as the site does.');
 
         $oApi = new ReflectionProperty(BxDolMenu::class, '_bIsApi');
         $bPrior = $oApi->getValue($oFooter);
@@ -182,6 +196,19 @@ class BxBaseMenuFooterTest extends BxDolTestCase
         try {
             $this->assertTrue($this->callProtected($oFooter, '_isVisible', [array_merge($aRaw, ['active' => 1])]));
             $this->assertFalse($this->callProtected($oFooter, '_isVisible', [array_merge($aRaw, ['active' => 0])]), 'Switched off in Navigation, it is gone from the apps too.');
+
+            // API items have no `attrs`: a warning here would print before the JSON and break the apps' footer.
+            set_error_handler(function ($iErrno, $sError) {
+                throw new ErrorException($sError, 0, $iErrno);
+            }, E_WARNING | E_NOTICE | E_DEPRECATED);
+            try {
+                $aApiItems = $oFooter->getMenuItems();
+            }
+            finally {
+                restore_error_handler();
+            }
+            foreach ($aApiItems as $aApiItem)
+                $this->assertArrayNotHasKey('bx_if:tooltip', $aApiItem, 'The tooltip is the site\'s; the apps show their own.');
         }
         finally {
             $oApi->setValue($oFooter, $bPrior);
