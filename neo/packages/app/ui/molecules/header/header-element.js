@@ -58,7 +58,7 @@ export default function HeaderElement({ url, uri }) {
     }
     const shownItems = itemsToRender
         .map((item, index) => ({ item, index }))
-        .filter(({ item }) => (isWeb ? item.web != false : item.native != false) && isShown(item))
+        .filter(({ item }) => ((isWeb ? item.web : item.native) ?? true) && isShown(item))
 
     return (
         <Row className="justify-end gap-3 items-center">
