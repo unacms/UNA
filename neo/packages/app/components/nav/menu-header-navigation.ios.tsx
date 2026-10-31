@@ -19,7 +19,7 @@ import { useOpenModalByUrl, useOpenModalWithContent } from 'app/context/jotai/mo
 import { useNeoButtonColorScheme } from 'app/design/controls/neo-button/color-scheme-context';
 import { getNativeIcon } from 'app/design/controls/neo-button/neo-button-expoui';
 import { lucideAssetName } from 'app/lib/platform/lucide-assets';
-import { appSetting, openExternalLink, sanitazeUrl, type MenuItem } from 'app/lib/util';
+import { appSetting, isExternalUrl, openExternalLink, sanitazeUrl, type MenuItem } from 'app/lib/util';
 import { useMenuNavigationEntries, type MenuNavigationEntry } from 'app/components/nav/menu-header-navigation-entries';
 import type { MenuHeaderNavigationProps } from 'app/components/nav/menu-header-navigation.types';
 
@@ -109,7 +109,8 @@ export default function MenuHeaderNavigation({
 
 /**
  * Runs a chosen row the way DropdownMenu does: a `modal` row opens its content (or link) in
- * a modal, a `_blank` / `blank` row opens externally, any other row opens its page.
+ * a modal, a `_blank` / `blank` row or a link to another host opens in the browser, any other
+ * row opens its page.
  */
 function useMenuRowPress(): { redirect: ReactNode; press: (row: MenuItem) => void } {
     const redirectRef = useRef<RedirectHandle>(null);
@@ -122,12 +123,13 @@ function useMenuRowPress(): { redirect: ReactNode; press: (row: MenuItem) => voi
             else if (link) openModalByUrl(link);
             return;
         }
-        if (row.target === '_blank' || row.target === 'blank') {
-            const url = sanitazeUrl(link);
+        // As Link does: a link to another host opens in the browser whatever its target.
+        const url = sanitazeUrl(link);
+        if (row.target === '_blank' || row.target === 'blank' || isExternalUrl(url)) {
             if (url) void openExternalLink(url);
             return;
         }
-        if (link) redirectRef.current?.redirect(link);
+        if (url) redirectRef.current?.redirect(url);
     };
     return { redirect: <Redirect ref={redirectRef} />, press };
 }
