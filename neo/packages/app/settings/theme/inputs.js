@@ -169,6 +169,13 @@ export const settingsInputs = {
         'u-controls-checkbox-icon':
             'text-foreground my-auto h-6 w-6',
 
+        // variant="menu": rows sized like dropdown menu items (theme.menu item_ver / item_icon):
+        // a 36px icon or avatar, the same corners and a 44px row.
+        'u-controls-checkbox-container-menu':
+            'items-center px-2 py-1 rounded-xl w-full gap-2 min-h-11',
+        'u-controls-checkbox-icon-menu':
+            'text-foreground my-auto h-9 w-9',
+
         // Checkbox square indicator
         'u-controls-checkbox-indicator':
             'shrink-0 h-5 w-5 rounded-md shadow-btn-outline dark:shadow-btn-outline-deep  bg-card justify-center items-center',

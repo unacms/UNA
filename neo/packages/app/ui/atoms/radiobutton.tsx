@@ -20,11 +20,14 @@ type RadioButtonProps = {
     icon?: string | React.ReactNode;
     /** Render only the round indicator, without label and pressable row. */
     rb_obly?: boolean;
+    /** `menu`: a row sized like a dropdown menu item, with a 36px icon or avatar. */
+    variant?: 'default' | 'menu';
 };
 
-export default function RadioButton({ title, info, onPress, status, value, disabled, icon, rb_obly }: RadioButtonProps) {
+export default function RadioButton({ title, info, onPress, status, value, disabled, icon, rb_obly, variant = 'default' }: RadioButtonProps) {
 
     const selected = status == 'checked';
+    const menu = variant === 'menu';
     const resolvedIcon = typeof icon === 'string'
         ? <Icon icon={icon} width={24} height={24} />
         : isValidElement(icon)
@@ -35,8 +38,8 @@ export default function RadioButton({ title, info, onPress, status, value, disab
             {selected ? <View className="h-2.5 w-2.5 rounded-full bg-primary" /> : null}
         </View>
     return (
-        <Pressable disabled={disabled} onPress={onPress} role="radio" aria-checked={selected} {...(disabled ? {} : cueAttributes('select'))} className={`flex-row gap-x-3 ${checkboxTheme['u-controls-checkbox-container']} ${disabled ? '' : checkboxTheme['u-controls-checkbox-container-bg']}`}>
-            {!!resolvedIcon && <View className={checkboxTheme['u-controls-checkbox-icon']}>{resolvedIcon}</View>}
+        <Pressable disabled={disabled} onPress={onPress} role="radio" aria-checked={selected} {...(disabled ? {} : cueAttributes('select'))} className={`flex-row gap-x-3 ${checkboxTheme[menu ? 'u-controls-checkbox-container-menu' : 'u-controls-checkbox-container']} ${disabled ? '' : checkboxTheme['u-controls-checkbox-container-bg']}`}>
+            {!!resolvedIcon && <View className={checkboxTheme[menu ? 'u-controls-checkbox-icon-menu' : 'u-controls-checkbox-icon']}>{resolvedIcon}</View>}
             <View className='flex-auto '>
                 <Text className={checkboxTheme['u-controls-checkbox-text']}>{title}</Text>
                 {!!info && <Text className={checkboxTheme['u-controls-checkbox-text2']}>{info}</Text>}

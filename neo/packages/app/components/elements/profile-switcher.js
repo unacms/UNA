@@ -106,7 +106,8 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                                 value={item.id}
                                 status={item.id == currentUser.id ? 'checked' : 'unchecked'}
                                 title={item.display_name}
-                                icon={<Profile {...item} url_avatar={item.avatar} displayType="unit_wo_info" displaySize="xs" showLinks={false} />}
+                                icon={<Profile {...item} url_avatar={item.avatar} displayType="unit_wo_info" displaySize="md" showLinks={false} />}
+                                variant="menu"
                                 onPress={() => { if (item.id != currentUser.id) handleSwitch(item.id) }}
                             />
                         ))}
