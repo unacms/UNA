@@ -115,9 +115,10 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                             </Link>
                         )
                     })}
-                    {!listOnly && <View className='sm:flex-row justity-between mt-4 w-full sm:mx-0'>
+                    {/* A gap, not a margin on each button, so every button spans the same width. */}
+                    {!listOnly && <View className='flex-col sm:flex-row gap-2 mt-4 w-full'>
                         {!!currentUser?.menu?.items && currentUser.menu.items.map((item, index) => (
-                            <View key={index} className={'mb-2 sm:mb-0 w-full sm:w-1/' + (currentUser.menu.items.length + 1) + ' pr-2 '}>
+                            <View key={index} className='w-full sm:w-auto sm:flex-1'>
                                 <NeoButtonLink
                                     href={`/${item.name}`}
                                     width="fill"
@@ -126,7 +127,7 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                                 />
                             </View>
                         ))}
-                        {!!currentUser?.menu?.items && <View className={'w-full sm:w-1/' + (currentUser.menu.items.length + 1) + ''}>
+                        {!!currentUser?.menu?.items && <View className='w-full sm:w-auto sm:flex-1'>
                             <NeoButtonLink
                                 href="/logout"
                                 width="fill"
