@@ -138,8 +138,8 @@ export default function DashboardStatComponent(props) {
     return (
         <BlockWrapper {...props.blockWrapperProps}>
             <Block className="u-max-width-block">
-                {hasModules ? <DashboardStatHeader /> : null}
                 <BlockContent className="!gap-3">
+                    {hasModules ? <DashboardStatHeader /> : null}
                     {hasModules ? <DashboardStatModules modules={modules} showWiki={showWiki} /> : null}
                     <DashboardStatMenu items={manageItems} showSettings={hasModules} />
                 </BlockContent>
@@ -164,43 +164,46 @@ function DashboardStatHeader() {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
 
+    // A card like the stat tiles below it, with their 12px inset (the card's p-1 plus p-2).
     return (
-        <BlockHeader className="items-center">
-            <View className="flex-none">
-                <Profile
-                    {...currentUser}
-                    url_avatar={currentUser.avatar}
-                    displayType="unit_wo_info"
-                    displaySize="xl"
-                />
-            </View>
-            <BlockName className="gap-1">
-                <BlockTitle>
-                    <Text className="text-card-foreground text-xl font-semibold">{currentUser.display_name}</Text>
-                </BlockTitle>
-                <BlockDescription>
-                    <Badge
-                        variant="secondary"
-                        size="xs"
-                        data={{
-                            text: currentUser.membership_name,
-                            icon: currentUser.membership_icon,
-                            icon_url: currentUser.membership_icon_url
-                        }}
+        <View className={cn(dropdownTheme.cnt, 'relative z-0 w-full min-w-0')}>
+            <BlockHeader className="items-center p-2">
+                <View className="flex-none">
+                    <Profile
+                        {...currentUser}
+                        url_avatar={currentUser.avatar}
+                        displayType="unit_wo_info"
+                        displaySize="xl"
                     />
-                </BlockDescription>
-            </BlockName>
-            <BlockActions>
-                <ProfileSwitcher hideTitle={true} className="u-neo-btn-link" accessibilityLabel={t('Switch profile')}>
-                    <NeoButton
-                        style="bordered"
-                        borderShape="circle"
-                        image="RefreshCw"
-                        interactive
-                    />
-                </ProfileSwitcher>
-            </BlockActions>
-        </BlockHeader>
+                </View>
+                <BlockName className="gap-1">
+                    <BlockTitle>
+                        <Text className="text-card-foreground text-xl font-semibold">{currentUser.display_name}</Text>
+                    </BlockTitle>
+                    <BlockDescription>
+                        <Badge
+                            variant="secondary"
+                            size="xs"
+                            data={{
+                                text: currentUser.membership_name,
+                                icon: currentUser.membership_icon,
+                                icon_url: currentUser.membership_icon_url
+                            }}
+                        />
+                    </BlockDescription>
+                </BlockName>
+                <BlockActions>
+                    <ProfileSwitcher hideTitle={true} className="u-neo-btn-link" accessibilityLabel={t('Switch profile')}>
+                        <NeoButton
+                            style="bordered"
+                            borderShape="circle"
+                            image="ChevronDown"
+                            interactive
+                        />
+                    </ProfileSwitcher>
+                </BlockActions>
+            </BlockHeader>
+        </View>
     )
 }
 
