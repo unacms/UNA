@@ -318,7 +318,8 @@ const nextConfig = {
             'react-native-webview$': tenPlayWebviewPath,
             'jotai': path.resolve(workspaceRoot, 'node_modules/jotai'),
             'crypto': 'expo-crypto',
-            'react-native-svg': path.resolve(__dirname, 'node_modules/react-native-svg'),
+            // Wherever yarn installs it: apps/next when its version differs from Expo's, the root otherwise.
+            'react-native-svg': path.dirname(require.resolve('react-native-svg/package.json', { paths: [__dirname] })),
             'react-native/Libraries/Utilities/codegenNativeComponent': tenPlayWebviewShimPath,
             'react-native/Libraries/Utilities/codegenNativeComponent$': tenPlayWebviewShimPath,
             'react-native-localize': path.resolve(__dirname, 'stubs/react-native-localize.js'),

@@ -1,5 +1,5 @@
 import { forwardRef, type ComponentType, type ForwardedRef, type ReactNode } from 'react'
-import { StyleSheet, type StyleProp, type View, type ViewProps, type ViewStyle } from 'react-native'
+import { StyleSheet, type StyleProp, type ViewInstance, type ViewProps, type ViewStyle } from 'react-native'
 import { BlurView } from 'expo-blur'
 import {
     getBackdropBlurIntensity,
@@ -28,7 +28,7 @@ export function createBackdropBlurView(
 ) {
     const Base = forwardRef(function BackdropBlurView(
         { className, style, children, ...props }: BackdropBlurViewProps,
-        ref: ForwardedRef<View>,
+        ref: ForwardedRef<ViewInstance>,
     ) {
         const intensity = getBackdropBlurIntensity(className || '')
         const resolvedStyle = mapStyle ? mapStyle(style) : style

@@ -1,0 +1,39 @@
+diff --git a/node_modules/uniwind/dist/common/components/index.js b/node_modules/uniwind/dist/common/components/index.js
+index 8f8d041..01c8d4f 100644
+--- a/node_modules/uniwind/dist/common/components/index.js
++++ b/node_modules/uniwind/dist/common/components/index.js
+@@ -307,5 +307,8 @@ module.exports = {
+   },
+   get XamlHost() {
+     return require("react-native").XamlHost;
++  },
++  get AssetRegistry() {
++    return require("react-native").AssetRegistry;
+   }
+ };
+\ No newline at end of file
+diff --git a/node_modules/uniwind/dist/module/components/index.js b/node_modules/uniwind/dist/module/components/index.js
+index b94a7dd..bbc0213 100644
+--- a/node_modules/uniwind/dist/module/components/index.js
++++ b/node_modules/uniwind/dist/module/components/index.js
+@@ -305,5 +305,8 @@ module.exports = {
+   },
+   get XamlHost() {
+     return require("react-native").XamlHost;
++  },
++  get AssetRegistry() {
++    return require("react-native").AssetRegistry;
+   }
+ };
+diff --git a/node_modules/uniwind/src/components/index.ts b/node_modules/uniwind/src/components/index.ts
+index 6fcad21..12a6cd3 100644
+--- a/node_modules/uniwind/src/components/index.ts
++++ b/node_modules/uniwind/src/components/index.ts
+@@ -307,4 +307,7 @@ module.exports = {
+     get XamlHost() {
+         return require('react-native').XamlHost
+     },
++    get AssetRegistry() {
++        return require('react-native').AssetRegistry
++    },
+ }

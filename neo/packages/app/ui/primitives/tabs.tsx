@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Pressable, Platform, type PressableProps, type ViewProps } from 'react-native';
+import { View, Pressable, Platform, type PressableProps, type ViewProps, type ViewInstance } from 'react-native';
 
 type TabsContextValue = {
   value?: string;
@@ -18,7 +18,7 @@ type TabsRootProps = ViewProps & {
   orientation?: 'horizontal' | 'vertical';
   activationMode?: 'automatic' | 'manual';
   disabled?: boolean;
-  ref?: React.Ref<View>;
+  ref?: React.Ref<ViewInstance>;
 };
 
 function TabsRoot({
@@ -62,7 +62,7 @@ function TabsRoot({
   );
 }
 
-type TabsListProps = ViewProps & { ref?: React.Ref<View> };
+type TabsListProps = ViewProps & { ref?: React.Ref<ViewInstance> };
 
 function TabsList({ children, ...props }: TabsListProps) {
   const context = React.useContext(TabsContext);
@@ -85,7 +85,7 @@ type TabsTriggerProps = Omit<PressableProps, 'children'> & {
   disabled?: boolean;
   children?: React.ReactNode | ((state: TabsTriggerState) => React.ReactNode);
   /** Required for `measureLayout` + scroll-into-view in `molecules/tabs`. */
-  ref?: React.Ref<View>;
+  ref?: React.Ref<ViewInstance>;
 };
 
 function TabsTrigger({ value, disabled, children, ...props }: TabsTriggerProps) {
