@@ -25,6 +25,7 @@ import {
     MORE_TAB_ICON,
     areTabBarLabelsHidden,
     avatarTabPredicate,
+    isAvatarOnProfile,
     buildTabBarMoreMenuItems,
     isProfileTab,
     splitProfileMoreMenu,
@@ -399,6 +400,8 @@ export default function ExpoUITabNavigator({
     // A `{profile}` item heading the More list makes the More tab the user's
     // avatar and the sheet's header (Linear style); web's footer does the same.
     const profileMore = collapsed && isProfileTab(moreRoot);
+    // More takes the avatar only when the profile tab carries it (`native.tab_avatar`).
+    const avatarMore = profileMore && isAvatarOnProfile();
     const sheetExclude = appSetting('theme', 'expo_ui', 'tabs')?.more_sheet_exclude || [];
     const profileMenu = splitProfileMoreMenu({
         items: overflowMenuItems,
@@ -450,7 +453,7 @@ export default function ExpoUITabNavigator({
     const barTabs = (collapsed ? visible : TabList).filter((tab) => tab.hide !== true);
     const slotCount = barTabs.length + (collapsed ? 1 : 0);
     const androidAvatar = isAndroid && currentUser?.avatar ? avatarImageUri(currentUser.avatar, TAB_AVATAR_PT) : null;
-    const avatarSlot = collapsed && profileMore ? barTabs.length : barTabs.findIndex(usesAvatarIcon);
+    const avatarSlot = avatarMore ? barTabs.length : barTabs.findIndex(usesAvatarIcon);
     const androidMoreTarget = isAndroid && isShowTabs && collapsed && hasNativeMoreSheet && !profileOnly;
 
     return (
@@ -512,7 +515,7 @@ export default function ExpoUITabNavigator({
                         disableAutomaticContentInsets
                         listeners={moreTabListeners}
                     >
-                        {profileMore && avatarIcon ? (
+                        {avatarMore && avatarIcon ? (
                             <NativeTabs.Trigger.Icon src={avatarIcon} renderingMode="original" />
                         ) : (
                             <NativeTabs.Trigger.Icon {...tabIconProps(moreIcons)} />
@@ -555,7 +558,7 @@ export default function ExpoUITabNavigator({
                     slotIndex={barTabs.length}
                     slotCount={slotCount}
                     barHeight={tabBarHeight}
-                    avatar={profileMore ? androidAvatar : null}
+                    avatar={avatarMore ? androidAvatar : null}
                     onPress={handleMoreTabPress}
                     accessibilityLabel={moreTitle}
                 />

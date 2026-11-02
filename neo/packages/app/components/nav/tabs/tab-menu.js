@@ -145,12 +145,18 @@ export function isDashboardTab(tab, currentUser) {
     return tabUrl === appSetting('dashboard', 'url') || tab.icon === 'dashboard';
 }
 
+/** Whether the own-profile tab carries the viewer's avatar (`native.tab_avatar`), also as the More tab. */
+export function isAvatarOnProfile() {
+    return appSetting('native', 'tab_avatar') !== 'dashboard';
+}
+
 /**
  * Which tab of `tabList` is drawn as the viewer's avatar (`native.tab_avatar`): the own-profile
- * tab by default, or the dashboard with 'dashboard' or when the menu has no profile tab.
+ * tab by default, or the dashboard with 'dashboard' or when the menu has no profile tab. A profile
+ * tab first in More makes the More tab the avatar (see `isAvatarOnProfile`), so no visible tab is.
  */
 export function avatarTabPredicate(tabList, currentUser) {
-    const onProfile = appSetting('native', 'tab_avatar') !== 'dashboard' && (tabList || []).some(isProfileTab);
+    const onProfile = isAvatarOnProfile() && (tabList || []).some(isProfileTab);
     return (tab) => (onProfile ? isProfileTab(tab) : isDashboardTab(tab, currentUser));
 }
 

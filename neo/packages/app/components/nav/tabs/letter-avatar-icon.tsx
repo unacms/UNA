@@ -1,5 +1,6 @@
 import { useRef, useState, type ReactNode } from 'react';
-import { PixelRatio, View } from 'react-native';
+import { PixelRatio } from 'react-native';
+import { View } from 'app/design/view';
 import Svg, { Circle, Text as SvgText } from 'react-native-svg';
 import { useNativeTokenColor } from 'app/design/controls/neo-button/native-style-colors';
 import { decodeText, getRandomColor } from 'app/lib/util';

@@ -19,6 +19,7 @@ import { OperatorAgentPanel, useOperatorAgentAvailable } from 'app/ui/molecules/
 import {
     TAB_BAR_VISIBLE_LIMIT,
     avatarTabPredicate,
+    isAvatarOnProfile,
     splitTabBarItems,
     buildTabBarMoreMenuItems,
     inferTabIndexFromUrl,
@@ -293,12 +294,13 @@ function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
     const isOverflowActive = overflowTabs.some((tab) =>
         isTabBarUrlActive(pathname, resolveTabUrl(tab, currentUser))
     );
-    const avatarUser = profileItem ? currentUser : null;
+    // The profile heading More is drawn as the avatar only when the profile tab carries it (`native.tab_avatar`).
+    const avatarUser = profileItem && isAvatarOnProfile() ? currentUser : null;
 
     if (profileItem && profileOnly) {
         return (
             <Link href={profileItem.link} className="group flex-1 min-w-0" alt={profileItem.title}>
-                <MoreBottomTrigger isOverflowActive={isOverflowActive} avatarUser={avatarUser} title={profileItem.title} />
+                <MoreBottomTrigger isOverflowActive={isOverflowActive} avatarUser={avatarUser} icon={profileItem.icon} title={profileItem.title} />
             </Link>
         );
     }
@@ -331,6 +333,7 @@ function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
                 <MoreBottomTrigger
                     isOverflowActive={isOverflowActive}
                     avatarUser={avatarUser}
+                    icon={profileItem?.icon}
                     title={profileItem ? profileItem.title : t('More')}
                 />
             </DropdownMenu>
@@ -407,7 +410,7 @@ function MoreMenuHeader({ profileItem, currentUser, agentActive, onProfilePress,
     );
 }
 
-function MoreBottomTrigger({ isOverflowActive, avatarUser, title }) {
+function MoreBottomTrigger({ isOverflowActive, avatarUser, icon, title }) {
     const { t } = useTranslation();
     const isOpen = useContext(DropdownMenuOpenContext) ?? false;
     const isActive = isOverflowActive || isOpen;
@@ -421,7 +424,7 @@ function MoreBottomTrigger({ isOverflowActive, avatarUser, title }) {
                     <TabAvatar currentUser={avatarUser} url={avatarUser.url} />
                 ) : (
                     <Icon
-                        icon="ChevronsUpDown"
+                        icon={icon || 'ChevronsUpDown'}
                         size={24}
                         className={isActive
                             ? 'text-accent-foreground'
