@@ -48,7 +48,8 @@ export const settingsBadges = {
             icon_size: 24,
             inline_icon_size: 12,
             text: ' text-xs leading-6 px-0.5  ',
-            rounded: ' rounded ',
+            // Same corners as a mini button (neo_button borderShapes.roundedRectangle.mini).
+            rounded: ' rounded-md ',
         },
         sm: {
             // Matches profile_sizes['sm']: h-8 (32px)
