@@ -751,10 +751,10 @@
   resolved "https://registry.yarnpkg.com/@tanstack/devtools-event-client/-/devtools-event-client-0.4.4.tgz#c58185e737bee28b3afce206509412225e9f9031"
   integrity sha512-6T5Yop/793YI+H+5J8Hsyj4kCih9sl4t3ElLgKioW5hk3ocn+ZdSJ94tT7vL7uabxSugWYBZlOTMPzEw2puvQw==
 
-"@tanstack/devtools-event-client@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/devtools-event-client/-/devtools-event-client-0.5.0.tgz#15de361dff2cd26b9f2cd01aba63e88043943c69"
-  integrity sha512-H+OH3zC6Vhu/K0NaVfQKknEKawc/+2PT+D3SB3Ox0V8SiMlTo0abbmH2rH0721R2aNYbjdMXA1oENOd8E2UVoA==
+"@tanstack/devtools-event-client@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/devtools-event-client/-/devtools-event-client-0.5.1.tgz#83e41475d4443e9abe3eb8ae6fb7e526b46f999b"
+  integrity sha512-MiBx6Ybr65MFatCnk8IJzhGxd4hvsvEap4aT0gXOC274rV4hm0UPNHxznB5KGYtu84aXrIAsJEBElqzdPe+eeg==
 
 "@tanstack/store@^0.11.1":
   version "0.11.2"
