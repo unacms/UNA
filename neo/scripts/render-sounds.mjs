@@ -59,7 +59,7 @@ const option = (name, fallback) => {
     const i = args.indexOf(name);
     return i >= 0 ? args[i + 1] : fallback;
 };
-const OUT = path.resolve(ROOT, option('--out', 'packages/app/customization/resources/sounds'));
+const OUT = path.resolve(ROOT, option('--out', 'packages/app/resources/sounds'));
 const ONLY = option('--only', '').split(',').filter(Boolean);
 const ONLY_SETS = option('--sets', '').split(',').filter(Boolean);
 
