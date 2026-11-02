@@ -92,7 +92,7 @@
         "erusev/parsedown": "@dev",
         "paypal/paypal-checkout-sdk": "^1.0",
         "phpmailer/phpmailer": "^7.0",
-        "stripe/stripe-php": "^19.0.0",
+        "stripe/stripe-php": "^22.1.0",
         "twilio/sdk": "^8.3",
         "avto-dev/composer-cleanup-plugin": "dev-master",
         "mpratt/embera": "~2.0",
