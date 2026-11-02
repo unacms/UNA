@@ -32,7 +32,7 @@ export function ModalKbAwareScroll({ children, ...rest }: ModalKbAwareScrollProp
 }
 
 /** Web: no OS keyboard overlay — a plain View that keeps `className` (react-native-web's KeyboardAvoidingView drops it). */
-export default function KbAvoidingView({ children, className }: KbAvoidingViewProps) {
+export default function KbAvoidingView({ children, className }: Readonly<KbAvoidingViewProps>) {
     return <AppView className={className}>{children}</AppView>;
 }
 
