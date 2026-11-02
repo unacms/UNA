@@ -9,7 +9,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { useFetch } from 'app/lib/hooks/use-fetch';
 import Redirect from 'app/ui/atoms/redirect';
 import { useTranslation } from 'react-i18next';
-import { Modal } from 'app/design/controls'
+import { Sheet } from 'app/design/controls'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import RadioButton from 'app/ui/atoms/radiobutton'
 
@@ -95,7 +95,7 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                     </Row>
                 </Link>
             }
-            {(show && data) && <Modal id='file-preview' title={t("Your Profiles")} onVisible={show} onClose={() => { setShow(false) }} scrollable>
+            <Sheet visible={show && !!data} title={t("Your Profiles")} onClose={() => { setShow(false) }}>
                 <Redirect ref={redirectdRef} />
                 <View className="   flex-col">
                     {!hideTitle && <View className="flex-row items-center  justify-between">
@@ -132,7 +132,7 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                         ))}
                     </View>}
                 </View>
-            </Modal>}
+            </Sheet>
         </BlockWrapper>
     )
 }

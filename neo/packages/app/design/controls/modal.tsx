@@ -39,7 +39,7 @@ const modalSettings = appSetting('theme', 'modal');
 // Topmost modal wins Escape. Menus that preventDefault on the same keydown run first.
 const webModalEscapeStack: symbol[] = [];
 
-function ModalHeader({ title, headerBorder, onClose, closeRef }: { title?: ReactNode; headerBorder: boolean; onClose?: () => void; closeRef?: Ref<any> }) {
+function ModalHeader({ title, headerBorder, onClose, onBack, closeRef }: { title?: ReactNode; headerBorder: boolean; onClose?: () => void; onBack?: () => void; closeRef?: Ref<any> }) {
     const { t } = useTranslation();
     const align = !title && onClose ? 'end' : 'center';
     if (!title) return null;
@@ -55,6 +55,11 @@ function ModalHeader({ title, headerBorder, onClose, closeRef }: { title?: React
                 </View>
             )}
             {(title && type !== 'string') && (title)}
+            {(onBack && type === 'string') && (
+                <View className='absolute left-3 top-0 bottom-0 justify-center items-center'>
+                    <NeoButton style="glass" controlSize="regular" borderShape="circle" image="ChevronLeft" accessibilityLabel={t('Back')} onPress={onBack} />
+                </View>
+            )}
             {(onClose && type === 'string') && (
                 <View ref={closeRef} className='absolute right-3 top-0 bottom-0 justify-center items-center'>
                     <NeoButton style="glass" controlSize="regular" borderShape="circle" image="X" accessibilityLabel={t('Close')} onPress={onClose} />
@@ -74,6 +79,8 @@ export type ModalProps = {
     outerClickClose?: boolean;
     /** String title renders the header with a close button; an element renders as-is. */
     title?: ReactNode;
+    /** With a string title: a back button before it (a step back inside the modal). */
+    onBack?: () => void;
     headerBorder?: boolean;
     /** RN Modal animation; defaults to fade on desktop, slide elsewhere. */
     animation?: 'none' | 'slide' | 'fade';
@@ -97,6 +104,7 @@ export function Modal({
     outerClickClose = true,
     onVisible,
     title,
+    onBack,
     headerBorder = true,
     maxWidth = 'max-w-3xl',
     children,
@@ -413,6 +421,7 @@ export function Modal({
         title={title}
         headerBorder={headerBorder}
         onClose={tryClose}
+        onBack={onBack}
         closeRef={closeRef}
     />
         <Cnt
@@ -464,6 +473,7 @@ export function Modal({
                                         title={title}
                                         headerBorder={headerBorder}
                                         onClose={tryClose}
+                                        onBack={onBack}
                                     />
                                     <Cnt
                                         ref={scrollable ? scrollRef : undefined}
