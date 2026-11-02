@@ -7,7 +7,8 @@ import type { SheetProps } from './sheet.types';
  */
 export function Sheet({ visible, title, onClose, onBack, children }: Readonly<SheetProps>) {
     return (
-        <Modal onVisible={visible} title={title} onClose={onClose} onBack={onBack} scrollable>
+        // No line under the title and the iOS sheet's insets, so the sheet looks the same everywhere.
+        <Modal onVisible={visible} title={title} onClose={onClose} onBack={onBack} headerBorder={false} padding="px-4 pt-2 pb-4" scrollable>
             {children}
         </Modal>
     );

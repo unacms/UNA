@@ -45,7 +45,7 @@ function ModalHeader({ title, headerBorder, onClose, onBack, closeRef }: { title
     if (!title) return null;
     const type = typeof title;
     return (
-        <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header}`}>
+        <Row className={`items-center justify-${align} ${headerBorder ? modalSettings.header : modalSettings.header_plain}`}>
             {(title && type === 'string') && (
                 <View className='flex-1 px-16  absolute left-0 right-0 top-0 bottom-0 justify-center items-center'>
                     <Text className='text-xl text-center h-14 leading-14 font-bold text-card-foreground'
