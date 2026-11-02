@@ -1,6 +1,5 @@
 'use client'
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
-import { Platform, InteractionManager } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { fetcher } from 'app/lib/fetcher'
 import { appSetting } from 'app/lib/util'
@@ -186,18 +185,14 @@ async function fetchConnections(userId: number | string, sources: any) {
 }
 
 // Run a non-critical task off the critical path so it never delays the form
-// opening or first paint: idle time on web, after interactions on native.
+// opening or first paint (React Native has requestIdleCallback too).
 function runWhenIdle(task: any) {
-    if (Platform.OS === 'web') {
-        if (typeof requestIdleCallback === 'function') {
-            const id = requestIdleCallback(task, { timeout: 2000 })
-            return () => { try { cancelIdleCallback?.(id) } catch {} }
-        }
-        const id = setTimeout(task, 1)
-        return () => clearTimeout(id)
+    if (typeof requestIdleCallback === 'function') {
+        const id = requestIdleCallback(task, { timeout: 2000 })
+        return () => { try { cancelIdleCallback?.(id) } catch {} }
     }
-    const handle = InteractionManager.runAfterInteractions(task)
-    return () => { try { handle?.cancel?.() } catch {} }
+    const id = setTimeout(task, 1)
+    return () => clearTimeout(id)
 }
 
 function deriveSlug(url = '') {

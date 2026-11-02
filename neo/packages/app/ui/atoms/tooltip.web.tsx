@@ -4,10 +4,10 @@ import { createPortal } from 'react-dom';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { appSetting, cn } from 'app/lib/util';
-import type { View as RNView, ViewStyle } from 'react-native';
+import type { ViewInstance, ViewStyle } from 'react-native';
 
 // react-native-web renders View as a DOM node, so the ref is both.
-type WebViewRef = RNView & HTMLDivElement;
+type WebViewRef = ViewInstance & HTMLDivElement;
 
 const CLIP_PAD = 8;
 const GAP = 10;

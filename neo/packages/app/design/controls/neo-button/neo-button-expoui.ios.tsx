@@ -454,7 +454,8 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         modifiers.push(frame({ width: iconHostWidth, height: targetHeight }));
     } else if (rnOwnsWidth) {
         modifiers.push(frame({
-            height: targetHeight,
+            minHeight: targetHeight,
+            maxHeight: targetHeight,
             maxWidth: Infinity,
             alignment: fillAlignment,
         }));

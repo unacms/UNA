@@ -1,5 +1,5 @@
 diff --git a/node_modules/@expo/ui/android/src/main/java/expo/modules/ui/TextView.kt b/node_modules/@expo/ui/android/src/main/java/expo/modules/ui/TextView.kt
-index 66905c6..8828e7f 100644
+index 9bd672a..d453130 100644
 --- a/node_modules/@expo/ui/android/src/main/java/expo/modules/ui/TextView.kt
 +++ b/node_modules/@expo/ui/android/src/main/java/expo/modules/ui/TextView.kt
 @@ -133,7 +133,12 @@ enum class TextLineBreakType(val value: String) : Enumerable {
@@ -13,10 +13,10 @@ index 66905c6..8828e7f 100644
 +  weight: FontWeight? = null,
 +  italic: Boolean = false
 +): FontFamily? {
-   if (name == null) return null
-   return when (name) {
-     "default" -> FontFamily.Default
-@@ -142,7 +147,11 @@ fun resolveFontFamily(name: String?, context: Context): FontFamily? {
+   if (name == null) {
+     return null
+   }
+@@ -144,7 +149,11 @@ fun resolveFontFamily(name: String?, context: Context): FontFamily? {
      "monospace" -> FontFamily.Monospace
      "cursive" -> FontFamily.Cursive
      else -> {
@@ -29,7 +29,7 @@ index 66905c6..8828e7f 100644
        FontFamily(typeface)
      }
    }
-@@ -268,7 +277,14 @@ private fun AnnotatedString.Builder.appendSpans(spans: List<TextSpanRecord>, con
+@@ -270,7 +279,14 @@ private fun AnnotatedString.Builder.appendSpans(spans: List<TextSpanRecord>, con
        fontSize = span.fontSize?.sp ?: androidx.compose.ui.unit.TextUnit.Unspecified,
        fontWeight = span.fontWeight?.toComposeFontWeight(),
        fontStyle = span.fontStyle?.toComposeFontStyle(),
@@ -45,7 +45,7 @@ index 66905c6..8828e7f 100644
        textDecoration = span.textDecoration?.toComposeTextDecoration(),
        letterSpacing = span.letterSpacing?.sp ?: androidx.compose.ui.unit.TextUnit.Unspecified,
        background = colorToComposeColorOrNull(span.background) ?: androidx.compose.ui.graphics.Color.Unspecified,
-@@ -298,7 +314,14 @@ fun FunctionalComposableScope.TextContent(props: TextProps) {
+@@ -300,7 +316,14 @@ fun FunctionalComposableScope.TextContent(props: TextProps) {
        fontSize = props.fontSize?.sp ?: androidx.compose.ui.unit.TextUnit.Unspecified,
        fontWeight = props.fontWeight?.toComposeFontWeight(),
        fontStyle = props.fontStyle?.toComposeFontStyle(),
@@ -62,10 +62,10 @@ index 66905c6..8828e7f 100644
        letterSpacing = props.letterSpacing?.sp ?: androidx.compose.ui.unit.TextUnit.Unspecified,
        lineHeight = props.lineHeight?.sp ?: androidx.compose.ui.unit.TextUnit.Unspecified,
 diff --git a/node_modules/@expo/ui/android/src/main/java/expo/modules/ui/textfield/TextFieldShared.kt b/node_modules/@expo/ui/android/src/main/java/expo/modules/ui/textfield/TextFieldShared.kt
-index b7808d7..716ebb8 100644
+index 19bec07..cc371a3 100644
 --- a/node_modules/@expo/ui/android/src/main/java/expo/modules/ui/textfield/TextFieldShared.kt
 +++ b/node_modules/@expo/ui/android/src/main/java/expo/modules/ui/textfield/TextFieldShared.kt
-@@ -124,7 +124,7 @@ internal fun TextFieldTextStyleRecord?.toTextStyle(context: Context?): TextStyle
+@@ -126,7 +126,7 @@ internal fun TextFieldTextStyleRecord?.toTextStyle(context: Context?): TextStyle
      color = colorToComposeColorOrNull(color) ?: androidx.compose.ui.graphics.Color.Unspecified,
      fontSize = fontSize?.sp ?: TextUnit.Unspecified,
      fontWeight = fontWeight?.toComposeFontWeight(),

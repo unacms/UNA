@@ -142,6 +142,9 @@ function findChrome() {
         '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
         '/usr/bin/google-chrome',
         '/usr/bin/chromium',
+        'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+        'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+        process.env.LOCALAPPDATA && `${process.env.LOCALAPPDATA}\\Google\\Chrome\\Application\\chrome.exe`,
     ];
     const found = candidates.find((p) => p && fs.existsSync(p));
     if (!found) throw new Error('No Chrome found: set CHROME=/path/to/chrome');

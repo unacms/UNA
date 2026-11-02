@@ -34,7 +34,8 @@ export type HeadingProps = TextProps & {
  * Web drops them, so React doesn't log "React does not recognize the `adjustsFontSizeToFit` prop
  * on a DOM element". `role`, `id`, `style` and the `aria-*` props are valid DOM and pass through.
  */
-const NATIVE_ONLY_TEXT_PROPS = new Set<keyof RNTextProps>([
+// Plain strings: the props differ between React Native versions and the web types.
+const NATIVE_ONLY_TEXT_PROPS = new Set<string>([
     // Text
     'allowFontScaling',
     'disabled',
@@ -83,9 +84,6 @@ const NATIVE_ONLY_TEXT_PROPS = new Set<keyof RNTextProps>([
     'accessibilityViewIsModal',
     'importantForAccessibility',
     'onAccessibilityAction',
-    'onAccessibilityEscape',
-    'onAccessibilityTap',
-    'onMagicTap',
     'screenReaderFocusable',
 ])
 
@@ -93,7 +91,7 @@ function sanitizeWebTextProps(props: Record<string, any>) {
     if (!props || !isWeb) return props;
     const domProps: Record<string, any> = {};
     for (const key of Object.keys(props)) {
-        if (!NATIVE_ONLY_TEXT_PROPS.has(key as keyof RNTextProps)) domProps[key] = props[key];
+        if (!NATIVE_ONLY_TEXT_PROPS.has(key)) domProps[key] = props[key];
     }
     const { accessibilityRole, accessibilityLabel, nativeID, onPress, disabled, testID, pointerEvents } = props;
     if (accessibilityRole && !domProps.role) domProps.role = accessibilityRole;

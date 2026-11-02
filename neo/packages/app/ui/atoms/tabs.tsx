@@ -1,5 +1,5 @@
 import type { ReactNode, Ref } from 'react';
-import { View, type ViewProps } from 'react-native';
+import { View, type ViewProps, type ViewInstance } from 'react-native';
 import * as TabsPrimitive from 'app/ui/primitives/tabs';
 import { Text } from 'app/design/typography';
 import { appSetting, cn } from 'app/lib/util';
@@ -30,7 +30,7 @@ type TabsProps = ViewProps & {
   size?: TabsSize;
   value?: string;
   onValueChange?: (value: string) => void;
-  ref?: Ref<View>;
+  ref?: Ref<ViewInstance>;
 };
 
 export function Tabs({ className, size: _size, ...props }: TabsProps) {
@@ -49,7 +49,7 @@ type TabsListProps = ViewProps & {
   /** Shrink to content instead of stretching. */
   hug?: boolean;
   size?: TabsSize;
-  ref?: Ref<View>;
+  ref?: Ref<ViewInstance>;
 };
 
 export function TabsList({ className, fullWidth = false, rounded = false, hug = false, size, ...props }: TabsListProps) {
@@ -80,7 +80,7 @@ type TabsTriggerProps = {
   disabled?: boolean;
   /** A string is rendered with the theme's text classes; a function gets the selected state. */
   children?: ReactNode | ((state: { isSelected: boolean }) => ReactNode);
-  ref?: Ref<View>;
+  ref?: Ref<ViewInstance>;
   [key: string]: unknown;
 };
 
@@ -132,7 +132,7 @@ export function TabsTrigger({ className, rounded = false, hug = false, size, chi
 type TabsContentProps = ViewProps & {
   value: string;
   className?: string;
-  ref?: Ref<View>;
+  ref?: Ref<ViewInstance>;
 };
 
 export function TabsContent({ className, ...props }: TabsContentProps) {
