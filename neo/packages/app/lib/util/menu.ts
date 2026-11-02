@@ -149,6 +149,11 @@ export function flattenMenuItemsForDropdown(items: MenuItemList): MenuItem[] {
     return out;
 }
 
+/** Whether DropdownMenu would have a row to act on: a group whose children are all hidden leaves none. */
+export function hasDropdownActions(items: MenuItemList): boolean {
+    return flattenMenuItemsForDropdown(items).some((item) => item.type !== 'group_header' && item.type !== 'separator');
+}
+
 /** Turn a flat dropdown list (`group_header` + items) into column sections. */
 export function groupDropdownItems(items: MenuItemList): DropdownSection[] {
     const sections: DropdownSection[] = [];
