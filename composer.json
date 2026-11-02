@@ -96,7 +96,7 @@
         "twilio/sdk": "^8.3",
         "avto-dev/composer-cleanup-plugin": "dev-master",
         "mpratt/embera": "~2.0",
-        "spatie/calendar-links": "^1.5",
+        "spatie/calendar-links": "^2.2",
         "pusher/pusher-php-server": "^7.2",
         "enshrined/svg-sanitize": "^1.1.1",
         "neuron-core/neuron-ai": "^3.0",
