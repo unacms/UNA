@@ -59,7 +59,7 @@ const option = (name, fallback) => {
     const i = args.indexOf(name);
     return i >= 0 ? args[i + 1] : fallback;
 };
-const OUT = path.resolve(ROOT, option('--out', 'packages/app/customization/resources/sounds'));
+const OUT = path.resolve(ROOT, option('--out', 'packages/app/resources/sounds'));
 const ONLY = option('--only', '').split(',').filter(Boolean);
 const ONLY_SETS = option('--sets', '').split(',').filter(Boolean);
 
@@ -142,6 +142,9 @@ function findChrome() {
         '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
         '/usr/bin/google-chrome',
         '/usr/bin/chromium',
+        'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+        'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+        process.env.LOCALAPPDATA && `${process.env.LOCALAPPDATA}\\Google\\Chrome\\Application\\chrome.exe`,
     ];
     const found = candidates.find((p) => p && fs.existsSync(p));
     if (!found) throw new Error('No Chrome found: set CHROME=/path/to/chrome');

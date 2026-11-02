@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "91404d83458e3f0fefba1f300590659c",
+    "content-hash": "0ab60e810c52f83564f3ddf0658bb1ae",
     "packages": [
         {
             "name": "achingbrain/php5-akismet",
@@ -3532,26 +3532,28 @@
         },
         {
             "name": "spatie/calendar-links",
-            "version": "1.11.1",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/calendar-links.git",
-                "reference": "bf4645d6a2d8eb32248a5b0b7da7976a13e5e2b5"
+                "reference": "b886a3abeca3764f375ef1111087f689d1f48fef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/calendar-links/zipball/bf4645d6a2d8eb32248a5b0b7da7976a13e5e2b5",
-                "reference": "bf4645d6a2d8eb32248a5b0b7da7976a13e5e2b5",
+                "url": "https://api.github.com/repos/spatie/calendar-links/zipball/b886a3abeca3764f375ef1111087f689d1f48fef",
+                "reference": "b886a3abeca3764f375ef1111087f689d1f48fef",
                 "shasum": ""
             },
             "require": {
-                "php": "^8.1"
+                "php": "^8.3"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.49",
-                "phpunit/phpunit": "^10.5",
-                "spatie/phpunit-snapshot-assertions": "^5.1",
-                "vimeo/psalm": "^5.22"
+                "friendsofphp/php-cs-fixer": "^3.93",
+                "pestphp/pest": "^4.7",
+                "phpunit/phpunit": "^12.5",
+                "psalm/plugin-phpunit": "^0.19.7",
+                "spatie/phpunit-snapshot-assertions": "^5.3",
+                "vimeo/psalm": "^6.15"
             },
             "type": "library",
             "autoload": {
@@ -3575,11 +3577,16 @@
             "homepage": "https://github.com/spatie/calendar-links",
             "keywords": [
                 "calendar-links",
-                "spatie"
+                "google-calendar",
+                "ical",
+                "ics",
+                "outlook",
+                "spatie",
+                "yahoo"
             ],
             "support": {
                 "issues": "https://github.com/spatie/calendar-links/issues",
-                "source": "https://github.com/spatie/calendar-links/tree/1.11.1"
+                "source": "https://github.com/spatie/calendar-links/tree/2.2.0"
             },
             "funding": [
                 {
@@ -3587,7 +3594,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-01-16T16:49:47+00:00"
+            "time": "2026-10-19T17:58:02+00:00"
         },
         {
             "name": "stripe/stripe-php",
@@ -3945,16 +3952,16 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.43.0",
+            "version": "v1.43.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "4d5d331bf731e0aedbc6b2f5e61135b7b7996a72"
+                "reference": "122889ed24dc000165bcbfd77ec412f15cbdfc6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/4d5d331bf731e0aedbc6b2f5e61135b7b7996a72",
-                "reference": "4d5d331bf731e0aedbc6b2f5e61135b7b7996a72",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/122889ed24dc000165bcbfd77ec412f15cbdfc6a",
+                "reference": "122889ed24dc000165bcbfd77ec412f15cbdfc6a",
                 "shasum": ""
             },
             "require": {
@@ -4006,7 +4013,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.43.0"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.43.3"
             },
             "funding": [
                 {
@@ -4026,7 +4033,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-09-24T15:19:04+00:00"
+            "time": "2026-10-28T09:35:49+00:00"
         },
         {
             "name": "symfony/polyfill-php80",
@@ -7759,16 +7766,16 @@
         },
         {
             "name": "vlucas/phpdotenv",
-            "version": "v5.7.0",
+            "version": "v5.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpdotenv/phpdotenv.git",
-                "reference": "301c07936b16d88628b126b01d082ba153cf4c40"
+                "reference": "96149103e62ac67e915f6d2ef59b72dee2e011e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpdotenv/phpdotenv/zipball/301c07936b16d88628b126b01d082ba153cf4c40",
-                "reference": "301c07936b16d88628b126b01d082ba153cf4c40",
+                "url": "https://api.github.com/repos/phpdotenv/phpdotenv/zipball/96149103e62ac67e915f6d2ef59b72dee2e011e0",
+                "reference": "96149103e62ac67e915f6d2ef59b72dee2e011e0",
                 "shasum": ""
             },
             "require": {
@@ -7795,7 +7802,7 @@
                     "forward-command": false
                 },
                 "branch-alias": {
-                    "dev-master": "5.6-dev"
+                    "dev-master": "5.8-dev"
                 }
             },
             "autoload": {
@@ -7826,8 +7833,8 @@
                 "environment"
             ],
             "support": {
-                "issues": "https://github.com/vlucas/phpdotenv/issues",
-                "source": "https://github.com/vlucas/phpdotenv/tree/v5.7.0"
+                "issues": "https://github.com/phpdotenv/phpdotenv/issues",
+                "source": "https://github.com/phpdotenv/phpdotenv/tree/v5.8.0"
             },
             "funding": [
                 {
@@ -7839,7 +7846,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-24T18:07:49+00:00"
+            "time": "2026-10-25T16:26:19+00:00"
         }
     ],
     "aliases": [],

@@ -174,7 +174,7 @@ export function deleteWholeMention(editor: any, key: string) {
     const kids: Array<{ node: any; from: number; to: number }> = []
     parent.forEach((node: any, offset: number) => kids.push({ node, from: offset, to: offset + node.nodeSize }))
     const i = kids.findIndex((k) => at >= k.from && at < k.to)
-    const target = i >= 0 ? type.isInSet(kids[i].node.marks) : null
+    const target = i >= 0 ? type.isInSet(kids[i]!.node.marks) : null
     if (!target) return false
 
     const same = (k: any) => !!k && !!type.isInSet(k.node.marks)?.eq(target)
@@ -182,8 +182,8 @@ export function deleteWholeMention(editor: any, key: string) {
     let last = i
     while (same(kids[first - 1])) first--
     while (same(kids[last + 1])) last++
-    const from = kids[first].from
-    const to = kids[last].to
+    const from = kids[first]!.from
+    const to = kids[last]!.to
 
     const start = $pos.start()
     editor.view.dispatch(state.tr.delete(start + from, start + to))

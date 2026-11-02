@@ -8,7 +8,7 @@ import Animated, {
     Extrapolation,
 } from 'react-native-reanimated'
 import { View } from 'app/design/view'
-import { appSetting } from 'app/lib/util'
+import { appSetting, isWeb } from 'app/lib/util'
 import CoverMorphBody from 'app/customization/covers/cover-morph-body'
 import { useCoverMorph } from './use-cover-morph'
 
@@ -93,7 +93,7 @@ export default function CoverMorph({
                 },
             ],
         }
-    }, [scrollY, parallaxRange, collapsedSV])
+    }, isWeb ? [scrollY, parallaxRange, collapsedSV] : undefined) // native: the Babel plugin collects them
 
     if (!data?.profile?.module) return null
 

@@ -185,8 +185,7 @@ async function fetchConnections(userId: number | string, sources: any) {
 }
 
 // Run a non-critical task off the critical path so it never delays the form
-// opening or first paint: in idle time (web and React Native; InteractionManager,
-// used on native before, is deprecated and warns).
+// opening or first paint (React Native has requestIdleCallback too).
 function runWhenIdle(task: any) {
     if (typeof requestIdleCallback === 'function') {
         const id = requestIdleCallback(task, { timeout: 2000 })

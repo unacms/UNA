@@ -98,8 +98,8 @@
     <string name="_bx_snipcart_page_title_browse_recent"><![CDATA[Недавние товары]]></string>
     <string name="_bx_snipcart_page_title_browse_popular"><![CDATA[Популярные товары]]></string>
     <string name="_bx_snipcart_page_title_browse_updated"><![CDATA[Обновлённые товары]]></string>
-    <string name="_bx_snipcart_page_title_sys_home"><![CDATA[Snipcart - Домой]]></string>
-    <string name="_bx_snipcart_page_title_home"><![CDATA[Товары]]></string>
+    <string name="_bx_snipcart_page_title_sys_home"><![CDATA[Покупки]]></string>
+    <string name="_bx_snipcart_page_title_home"><![CDATA[Покупки]]></string>
     <string name="_bx_snipcart_page_block_title_featured_entries_view_extended"><![CDATA[Продвинутые товары]]></string>
     <string name="_bx_snipcart_page_block_title_recent_entries"><![CDATA[Новые товары (Галерея)]]></string>
     <string name="_bx_snipcart_page_block_title_recent_entries_view_extended"><![CDATA[Новые товары]]></string>
@@ -176,8 +176,8 @@
     <string name="_bx_snipcart_menu_item_title_system_delete_entry"><![CDATA[Удалить товар]]></string>
     <string name="_bx_snipcart_menu_item_title_delete_entry"><![CDATA[Удалить товар]]></string>
     <string name="_bx_snipcart_menu_item_title_system_view_entry"><![CDATA[Просмотреть товар]]></string>
-    <string name="_bx_snipcart_menu_item_title_system_entries_home"><![CDATA[Магазин]]></string>
-    <string name="_bx_snipcart_menu_item_title_entries_home"><![CDATA[Магазин]]></string>
+    <string name="_bx_snipcart_menu_item_title_system_entries_home"><![CDATA[Покупки]]></string>
+    <string name="_bx_snipcart_menu_item_title_entries_home"><![CDATA[Покупки]]></string>
     <string name="_bx_snipcart_menu_item_title_system_entries_public"><![CDATA[Новые]]></string>
     <string name="_bx_snipcart_menu_item_title_entries_public"><![CDATA[Новые]]></string>
     <string name="_bx_snipcart_menu_item_title_system_entries_search"><![CDATA[Поиск]]></string>

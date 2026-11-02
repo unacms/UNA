@@ -5,7 +5,7 @@
  * Expo UI TabView / NavigationBar are in-screen chrome, not a router. NEO's
  * tab0–tab4 slots are full-screen routes, so NativeTabs is the fit.
  */
-import { NativeTabs } from 'expo-router/unstable-native-tabs';
+import { NativeTabs } from 'expo-router/native-tabs';
 import { useEffect, useMemo, useState } from 'react';
 import { PixelRatio, Platform, Pressable, useWindowDimensions } from 'react-native';
 import { Image } from 'expo-image';

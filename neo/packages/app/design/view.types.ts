@@ -5,7 +5,7 @@ import type {
     PressableProps as RNPressableProps,
     PressableStateCallbackType,
     ScrollViewProps as RNScrollViewProps,
-    View as RNView,
+    ViewInstance,
     ViewProps as RNViewProps,
 } from 'react-native'
 
@@ -23,7 +23,7 @@ type WebExtras = {
 export type DesignViewProps = RNViewProps & WebExtras & {
     className?: string
     children?: ReactNode
-    ref?: Ref<RNView>
+    ref?: Ref<ViewInstance>
 }
 
 export type DesignPressableProps = Omit<RNPressableProps, 'children'> & WebExtras & {
@@ -33,7 +33,7 @@ export type DesignPressableProps = Omit<RNPressableProps, 'children'> & WebExtra
     href?: string
     target?: string
     rel?: string
-    ref?: Ref<RNView>
+    ref?: Ref<ViewInstance>
 }
 
 export type DesignScrollViewProps = RNScrollViewProps & WebExtras & {

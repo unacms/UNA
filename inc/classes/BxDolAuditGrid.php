@@ -90,7 +90,12 @@ class BxDolAuditGrid extends BxTemplGrid
         
         $this->oDb = new BxDolStudioFormsQuery();
     }
-    
+
+    protected function _isVisibleGrid ($a)
+    {
+        return isAdmin() || bx_acl_is_advanced();
+    }
+
 	protected function _getDataSql($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage)
     {
         if(strpos($sFilter, $this->_sParamsDivider) !== false)
