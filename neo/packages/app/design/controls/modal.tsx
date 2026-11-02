@@ -202,6 +202,9 @@ export function Modal({
     }, [onRequestClose, onClose, skipUnsavedGuard]);
 
     useEffect(() => {
+        // A hidden modal (kept mounted, as Sheet does) must not react to links pressed on the page.
+        const isShown = onVisible == null ? true : !!onVisible;
+        if (!isShown) return undefined;
         const subscription = emitter.addListener(EVENTS.link, (data: { action?: string }) => {
             if (data.action == 'pressed') {
                 tryClose();
@@ -211,7 +214,7 @@ export function Modal({
         return () => {
             subscription.remove()
         }
-    }, [tryClose])
+    }, [tryClose, onVisible])
 
     // Cleanup guard to prevent removeChild errors
     /*useEffect(() => {
