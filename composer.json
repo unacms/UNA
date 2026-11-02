@@ -112,7 +112,7 @@
         "firebase/php-jwt": "^7.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "12.*",
+        "phpunit/phpunit": "13.*",
         "phpmd/phpmd": "@stable",
         "vlucas/phpdotenv": "^5.6"
     },
