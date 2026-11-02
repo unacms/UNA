@@ -4,7 +4,7 @@
   "dependencies": {
     "@claviska/jquery-minicolors": "^2.3.6",
     "@egjs/hammerjs": "^2.0.17",
-    "@stripe/connect-js": "^3.4.6",
+    "@stripe/connect-js": "^3.5.0",
     "at.js": "^1.5.4",
     "autosize": "^6.0.1",
     "chart.js": "^4.6.1",
