@@ -24,7 +24,7 @@ type RadioButtonProps = {
     variant?: 'default' | 'menu';
 };
 
-export default function RadioButton({ title, info, onPress, status, value, disabled, icon, rb_obly, variant = 'default' }: RadioButtonProps) {
+export default function RadioButton({ title, info, onPress, status, value, disabled, icon, rb_obly, variant = 'default' }: Readonly<RadioButtonProps>) {
 
     const selected = status == 'checked';
     const menu = variant === 'menu';
