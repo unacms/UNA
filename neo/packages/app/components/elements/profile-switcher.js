@@ -31,8 +31,9 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
     };
 
     // Loaded when the modal opens; staleTime 0 re-checks on every open (cached list shows meanwhile).
+    // The last param is show_all: without it UNA leaves out the active profile.
     const { data: sResponse } = useFetch(
-        show ? '/api.php?r=system/account_profile_switcher/TemplServiceProfiles' : null,
+        show ? '/api.php?r=system/account_profile_switcher/TemplServiceProfiles&params=' + encodeURIComponent('[0,null,"",1]') : null,
         { staleTime: 0 }
     );
     const data = sResponse?.data?.[0]?.data || false;
@@ -41,7 +42,7 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
         setShow(true)
     };
 
-    const profileList = data?.profiles?.filter((item) => (item.id != currentUser.id));
+    const profileList = data?.profiles;
 
     if (!currentUser || (currentUser.profiles_count < 2 && currentUser?.menu?.items == 0) || currentUser.profiles_count == currentUser.profiles_limit) {
         return <></>;
@@ -108,8 +109,10 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                             max-w-5xl self-center w-full gap-x-3">
                                     <View className="flex-none ">{profile}</View>
                                     <Text className='text-sm my-auto flex-auto font-semibold truncate text-popover-foreground '>{item.display_name}</Text>
-                                    <View className="text-sm bont-semibold flex-none my-auto">
-                                        <NeoButton controlSize="small" image="RefreshCw" label={t('Switch')} expoUI={false} onPress={() => handleSwitch(item.id)} />
+                                    <View className="flex-none my-auto">
+                                        {item.id == currentUser.id
+                                            ? <Text className="text-sm px-3 text-muted-foreground">{t('Current')}</Text>
+                                            : <NeoButton controlSize="small" image="RefreshCw" label={t('Switch')} expoUI={false} onPress={() => handleSwitch(item.id)} />}
                                     </View>
                                 </View>
                             </Link>
