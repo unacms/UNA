@@ -13,7 +13,7 @@ export default function RadioList({ values, selectedValue, setValue }) {
     const [value, setValue2] = useState(selectedValue)
     return (
         <View>
-            {(values || []).map((item, index) => (
+            {(values || []).map((item) => (
                 item.value ? (
                     <RadioButton
                         key={`value-${item.value}`}
@@ -25,7 +25,7 @@ export default function RadioList({ values, selectedValue, setValue }) {
                         icon={item.icon}
                     />
                 ) : (
-                    <Text key={`header-${index}`} className="text-secondary-foreground  text-sm font-semibold mt-4 mb-2">{item.label}</Text>
+                    <Text key={`header-${item.label}`} className="text-secondary-foreground  text-sm font-semibold mt-4 mb-2">{item.label}</Text>
                 )
             ))}
         </View>
