@@ -131,7 +131,7 @@ function createHeaderOptionsRegistry(): HeaderOptionsRegistry {
     };
 }
 
-export function HeaderOptionsProvider({ children }: { children?: ReactNode }) {
+export function HeaderOptionsProvider({ children }: Readonly<{ children?: ReactNode }>) {
     // Identity-stable for the provider's life, so registering components never re-run their
     // effect because of the provider.
     const [registry] = useState(createHeaderOptionsRegistry);
@@ -169,7 +169,7 @@ export function useHeaderOptions(): HeaderOptions {
  * registered at all (not registered as `null`), so it never shadows another
  * owner of the same key. Saves every page from `isDesktop ? null : <…/>`.
  */
-export function PageHeaderOptions({ main, sub, actions, hidden, title, backButton, band, showTitle, mobileOnly = false }: HeaderOptionValues & { mobileOnly?: boolean }) {
+export function PageHeaderOptions({ main, sub, actions, hidden, title, backButton, band, showTitle, mobileOnly = false }: Readonly<HeaderOptionValues & { mobileOnly?: boolean }>) {
     const registry = useContext(HeaderOptionsRegistryContext);
     const isDesktop = useIsDesktop();
     const active = !(mobileOnly && isDesktop);
