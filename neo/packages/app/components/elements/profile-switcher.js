@@ -97,13 +97,13 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                         </Text>
                     </View>
                     }
-                    {profileList && profileList.map((item, index) => {
+                    {profileList && profileList.map((item) => {
                         let dUser = { ...item }
                         dUser.url_avatar = dUser.avatar
                         let profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
                         return (
-                            <Link href={dUser.url} emulate={true} key={index}>
-                                <View key={'index' + index} className=" p-2 flex-row  
+                            <Link href={dUser.url} emulate={true} key={item.id}>
+                                <View className=" p-2 flex-row  
                             web:duration-200 rounded-lg
                             
                             max-w-5xl self-center w-full gap-x-3">
@@ -120,8 +120,8 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                     })}
                     {/* A gap, not a margin on each button, so every button spans the same width. */}
                     {!listOnly && <View className='flex-col sm:flex-row gap-2 mt-4 w-full'>
-                        {!!currentUser?.menu?.items && currentUser.menu.items.map((item, index) => (
-                            <View key={index} className='w-full sm:w-auto sm:flex-1'>
+                        {!!currentUser?.menu?.items && currentUser.menu.items.map((item) => (
+                            <View key={item.name} className='w-full sm:w-auto sm:flex-1'>
                                 <NeoButtonLink
                                     href={`/${item.name}`}
                                     width="fill"
