@@ -14,7 +14,6 @@ import { PollButton, LabelButton, FileButton } from 'app/lib/form/form-helpers'
 import { useIsDesktop, useScreenTier, useWindowHeight } from 'app/context/measure';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { Icon } from 'app/ui/atoms/icon'
-import { EdgeBlurView, edgeBlurConfig } from 'app/ui/atoms/edge-blur'
 import { Text } from 'app/design/typography';
 import { useTranslation } from 'react-i18next';
 
@@ -102,6 +101,8 @@ const DOCK_ROOM = 72;
 
 // How far the fade behind the floating row runs up above the buttons.
 const DOCK_FADE_RUN_UP = 32;
+// How far the fade reaches down behind the keyboard, past its rounded top edge.
+const DOCK_FADE_TUCK = 24;
 
 function ComposerDock({ children }) {
     const { keyboardLift } = useStickyComposerListInset(0);
@@ -119,22 +120,20 @@ function ComposerDock({ children }) {
                 zIndex: 20,
             }}
         >
-            {/* Text scrolling under the row fades out, as under the comment composer. */}
-            <EdgeBlurView
-                edge="bottom"
-                config={edgeBlurConfig('footer')}
+            {/* Text scrolling under the row fades out into the modal's own surface (bg-popover). */}
+            <View
                 pointerEvents="box-none"
-                washClassName="bg-linear-to-t from-popover from-40% to-transparent"
+                className="bg-linear-to-t from-popover from-40% to-transparent"
                 style={{
                     paddingTop: DOCK_FADE_RUN_UP,
                     marginHorizontal: -bleed,
                     paddingHorizontal: bleed,
-                    marginBottom: -bleed,
-                    paddingBottom: bleed,
+                    marginBottom: -(bleed + DOCK_FADE_TUCK),
+                    paddingBottom: bleed + DOCK_FADE_TUCK,
                 }}
             >
                 {children}
-            </EdgeBlurView>
+            </View>
         </RNView>
     );
 }
