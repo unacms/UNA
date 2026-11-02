@@ -26,9 +26,15 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
     const wrapperClassName = className || '';
 
     const handleSwitch = async (id) => {
-        const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);
-        setCurrentUser(result.data);
-        setShow(false);
+        try {
+            const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);
+            // No user back means UNA refused the switch: keep the current one and the list open.
+            if (!result?.data) return;
+            setCurrentUser(result.data);
+            setShow(false);
+        } catch (err) {
+            console.warn('Profile switch failed:', err);
+        }
     };
 
     // Loaded when the modal opens; staleTime 0 re-checks on every open (cached list shows meanwhile).
@@ -108,7 +114,7 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                                 title={item.display_name}
                                 icon={<Profile {...item} url_avatar={item.avatar} displayType="unit_wo_info" displaySize="md" showLinks={false} />}
                                 variant="menu"
-                                onPress={() => { if (item.id != currentUser.id) handleSwitch(item.id) }}
+                                onPress={() => { if (item.id != currentUser.id) void handleSwitch(item.id) }}
                             />
                         ))}
                     </View>
