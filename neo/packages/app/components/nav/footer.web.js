@@ -181,28 +181,31 @@ export default function () {
     );
 }
 
+/** The count a tab's badge shows: notifications, messages, friend requests, or the first two together. */
+function tabBadgeText({ rootUrl, badge, notifCount, messengerCount, iFrCounter }) {
+    const isNotifications = rootUrl === appSetting('notifications', 'url') || badge == 'notifications'; //to remove in 11.25 link === appSetting('notifications', 'url')
+    const isMessenger = rootUrl === appSetting('messenger', 'url') || badge == 'messenger';
+    const isFriends = rootUrl === '/friends' || badge == 'friends';
+    if (isNotifications && notifCount > 0) return notifCount;
+    if (isMessenger && messengerCount > 0) return messengerCount;
+    if (isFriends && iFrCounter > 0) return iFrCounter;
+    if (badge == 'notifications, messenger' && messengerCount + notifCount > 0) return messengerCount + notifCount;
+    return null;
+}
+
+/** The tab's icon, or the viewer's avatar on the avatar tab (`native.tab_avatar`). */
+function TabItemIcon({ isAvatar, currentUser, rootUrl, icon, animated, isActive, hovered, className }) {
+    if (isAvatar) {
+        return <View className="w-6 h-6"><Profile  {...currentUser} url_avatar = {currentUser.avatar} url={rootUrl} displayType="unit_wo_info" displaySize="xs" /></View>;
+    }
+    return <Icon icon={icon} size={24} animated={animated} active={animated ? isActive : undefined} hovered={animated ? hovered : undefined} className={className} />;
+}
+
 function MenuBottomItem({ link, tabKey, rootUrl, title, badge, icon, isActive, iFrCounter, notifCount, animated, addClassName, isAvatar }) {
     const { currentUser } = useCurrentUser();
     const useAnimatedIcon = animated === true;
     const [groupHovered, setGroupHovered] = useState(false);
-    const badgeObj = [
-        {
-            condition: (rootUrl === appSetting('notifications', 'url') || badge == 'notifications') && notifCount > 0, //to remove in 11.25 link === appSetting('notifications', 'url')
-            value: { variant: 'primary', text: notifCount }
-        },
-        {
-            condition: (rootUrl === appSetting('messenger', 'url') || badge == 'messenger') && currentUser?.counters?.bx_messenger_new_messages > 0,
-            value: { variant: 'primary', text: currentUser?.counters?.bx_messenger_new_messages }
-        },
-        {
-            condition: (rootUrl === '/friends' || badge == 'friends') && iFrCounter > 0,
-            value: { variant: 'primary', text: iFrCounter }
-        },
-        {
-            condition: (badge == 'notifications, messenger') && currentUser?.counters?.bx_messenger_new_messages+notifCount > 0,
-            value: { variant: 'primary', text: currentUser?.counters?.bx_messenger_new_messages+notifCount }
-        }
-    ].find(item => item.condition)?.value || null;
+    const badgeText = tabBadgeText({ rootUrl, badge, notifCount, messengerCount: currentUser?.counters?.bx_messenger_new_messages, iFrCounter });
 
     const handlePress = useCallback(() => {
         rememberSelectedTab(tabKey, { fromPress: true });
@@ -227,16 +230,12 @@ function MenuBottomItem({ link, tabKey, rootUrl, title, badge, icon, isActive, i
                     onMouseLeave={useAnimatedIcon ? () => setGroupHovered(false) : undefined}
                 >
                     <View className="items-center justify-center">
-                        {
-                            isAvatar
-                            ? <View className="w-6 h-6"><Profile  {...currentUser} url_avatar = {currentUser.avatar} url={rootUrl} displayType="unit_wo_info" displaySize="xs" /></View> : 
-                            <Icon icon={icon} size={24} animated={useAnimatedIcon} active={useAnimatedIcon ? isActive : undefined} hovered={useAnimatedIcon ? groupHovered : undefined} className={iconClassName} />
-                        }
+                        <TabItemIcon isAvatar={isAvatar} currentUser={currentUser} rootUrl={rootUrl} icon={icon} animated={useAnimatedIcon} isActive={isActive} hovered={groupHovered} className={iconClassName} />
                     </View>
                     {isTabBarLabelsEnabled() && title ? (
                         <Text className={` web:group-hover:text-accent-foreground text-[11px] tracking-tight leading-none font-medium whitespace-nowrap ${isActive ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>{title}</Text>
                     ) : null}
-                    {badgeObj && <View className={`absolute bg-destructive border-2 border-card rounded-full px-1.5 min-w-6 items-center justify-center  -top-1 left-1/2 -translate-x-1/2 ml-4`}><Text className="text-white text-xs font-medium tracking-tight leading-5 ">{badgeObj.text}</Text></View>}
+                    {badgeText !== null && <View className={`absolute bg-destructive border-2 border-card rounded-full px-1.5 min-w-6 items-center justify-center  -top-1 left-1/2 -translate-x-1/2 ml-4`}><Text className="text-white text-xs font-medium tracking-tight leading-5 ">{badgeText}</Text></View>}
                 </View>
                 
             </Link>
