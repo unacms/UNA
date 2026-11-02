@@ -155,6 +155,7 @@ const expoConfig = {
         ],
         "./plugins/with-expo-audio-no-foreground-services.js",
         "./plugins/with-disable-enriched-markdown-math.js",
+        "./plugins/with-stripe-disable-spm.js",
         // Lucide as native template images (iOS asset catalog, Android vector drawables)
         // for Expo UI buttons and NativeTabs (`expo_ui.iosIconSource` / `androidIconSource`).
         "./plugins/with-lucide-assets.js",
