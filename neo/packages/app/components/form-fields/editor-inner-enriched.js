@@ -85,6 +85,7 @@ export default function RftTextEnriched(props) {
         value = '',
         initialHeight = 120,
         maxHeight = 300,
+        contentInsetBottom = 0,
         onFocus,
         html,
         bg,
@@ -392,10 +393,14 @@ export default function RftTextEnriched(props) {
     const editorStyle = useMemo(() => ({
         minHeight: initialHeight,
         maxHeight,
+        // Room for a bar floating over the editor's end: the text scrolls under it, and its
+        // last line scrolls clear of it (iOS turns this padding into a scroll inset, see
+        // patches/react-native-enriched-html+1.2.0.patch).
+        ...(contentInsetBottom ? { paddingBottom: contentInsetBottom } : null),
         color: editorTextColor,
         fontSize: 16,
         backgroundColor: 'transparent',
-    }), [initialHeight, maxHeight, editorTextColor])
+    }), [initialHeight, maxHeight, contentInsetBottom, editorTextColor])
 
     const handleFocus = useCallback(() => {
         armConnections()

@@ -31,12 +31,9 @@ export function ModalKbAwareScroll({ children, ...rest }: ModalKbAwareScrollProp
     );
 }
 
-export default function KbAvoidingView({ children, ...rest }: KbAvoidingViewProps) {
-    return (
-        <KeyboardAvoidingView {...rest} keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            {children}
-        </KeyboardAvoidingView>
-    );
+/** Web: no OS keyboard overlay — a plain View that keeps `className` (react-native-web's KeyboardAvoidingView drops it). */
+export default function KbAvoidingView({ children, className }: KbAvoidingViewProps) {
+    return <AppView className={className}>{children}</AppView>;
 }
 
 /** Web: no keyboard sticky — render as a plain View. */

@@ -95,6 +95,9 @@ function AttachmentMenuList({ items, onSelect }) {
     );
 }
 
+// Height of the floating row plus its gap, the `pb-14` the form keeps when content follows the editor.
+const DOCK_ROOM = 56;
+
 function ComposerDock({ children }) {
     const { keyboardLift } = useStickyComposerListInset(0);
     return (
@@ -253,9 +256,19 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
     const insets = useStableSafeAreaInsets();
     const { currentUser } = useCurrentUser();
 
-    // iOS: distance from screen top to KbAvoidingView = safe area + modal padding (16) + form header (~48) + gap (12).
+    // iOS: where the form starts on screen = safe area + modal padding (16). The header row above
+    // the editor is inside the form, and KbAvoidingView already counts it, so the form ends right
+    // at the keyboard and the floating row overlaps the editor (see below).
     // Android resizes the window itself, so keep the previous working offset.
-    const modalOffset = isIos ? insets.top + 76 : 60;
+    const modalOffset = isIos ? insets.top + 16 : 60;
+
+    // The Post / attachment row floats over the end of the form (ComposerDock). The editor
+    // fills the form's height and keeps this much room at its end, so text scrolls under the
+    // row instead of stopping above it; attachments, labels or polls under the editor take
+    // that room instead.
+    const [editorArea, setEditorArea] = useState(0);
+    const [belowHeight, setBelowHeight] = useState(0);
+    const hasBelow = belowHeight > 0;
 
     const rawEditorText = formContext.watch('text');
     const object_privacy_view = formContext.watch('object_privacy_view');
@@ -367,10 +380,11 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                     {getFormFieldByData(data.inputs['object_cf'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['owner_id'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['type'], handleSubmit, 'default')}
-                    <View className="flex-auto justify-start pb-14">
+                    <View className={`flex-auto justify-start ${hasBelow ? 'pb-14' : ''}`}>
                         <View className="w-full flex-auto justify-start ">
                             <View
                                 className="flex-auto "
+                                onLayout={(e) => setEditorArea(Math.floor(e.nativeEvent.layout.height))}
                                 style={{
                                     ...(isWeb && { transition: 'height 0.1s cubic-bezier(0.25, 0.1, 0.25, 1)' })
                                 }}
@@ -389,14 +403,15 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                         linkify: true,
                                         autofocus: true,
                                         classes: 'flex-auto',
-                                        initialHeight: 160,
-                                        maxHeight: screenHeight / 2 - 80 ,
+                                        initialHeight: editorArea || 160,
+                                        maxHeight: editorArea || screenHeight / 2 - 80,
+                                        contentInsetBottom: hasBelow ? 0 : DOCK_ROOM,
                                         // Cmd/Ctrl+Enter posts; plain Enter is a newline.
                                         onEnterSubmit: handleEditorEnterSubmit,
                                     }
                                 )}
                             </View>
-                            <View >
+                            <View onLayout={(e) => setBelowHeight(Math.round(e.nativeEvent.layout.height))}>
                                 <Row className='flex-wrap w-full'>
                                     {
                                         getFormFieldByData(
