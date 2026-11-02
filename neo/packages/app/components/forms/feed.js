@@ -268,7 +268,8 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
     // that room instead.
     const [editorArea, setEditorArea] = useState(0);
     const [belowHeight, setBelowHeight] = useState(0);
-    const hasBelow = belowHeight > 0;
+    // Only the enriched editor takes the room as a scroll inset; TenTap keeps the strip.
+    const insetInEditor = belowHeight === 0 && appSetting('editor', 'engine') === 'enriched';
 
     const rawEditorText = formContext.watch('text');
     const object_privacy_view = formContext.watch('object_privacy_view');
@@ -380,7 +381,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                     {getFormFieldByData(data.inputs['object_cf'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['owner_id'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['type'], handleSubmit, 'default')}
-                    <View className={`flex-auto justify-start ${hasBelow ? 'pb-14' : ''}`}>
+                    <View className={`flex-auto justify-start ${insetInEditor ? '' : 'pb-14'}`}>
                         <View className="w-full flex-auto justify-start ">
                             <View
                                 className="flex-auto "
@@ -405,7 +406,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                         classes: 'flex-auto',
                                         initialHeight: editorArea || 160,
                                         maxHeight: editorArea || screenHeight / 2 - 80,
-                                        contentInsetBottom: hasBelow ? 0 : DOCK_ROOM,
+                                        contentInsetBottom: insetInEditor ? DOCK_ROOM : 0,
                                         // Cmd/Ctrl+Enter posts; plain Enter is a newline.
                                         onEnterSubmit: handleEditorEnterSubmit,
                                     }
