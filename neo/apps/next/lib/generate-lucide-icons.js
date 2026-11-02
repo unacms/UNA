@@ -3,10 +3,10 @@
 // Runs from next.config.js on every `next dev` / `next build`; skipped while the
 // stamp matches. Returns a short hash of the stamp, which icon URLs carry as
 // `?v=` so the files can be cached as immutable. The full set is generated
-// (not just names used in code) because UNA can send any Lucide name at runtime. Anything not generated here — other
-// stroke widths, `fill`, Lucide names added later — falls back to /api/icon via
-// the `fallback` rewrite in next.config.js.
-const crypto = require('crypto');
+// (not just names used in code) because UNA can send any Lucide name at runtime.
+// Anything not generated here — other stroke widths, `fill`, Lucide names added
+// later — falls back to /api/icon via the `fallback` rewrite in next.config.js.
+const crypto = require('node:crypto');
 const fs = require('fs');
 const path = require('path');
 const { iconNameToImportKey, renderLucideSvg } = require('./lucide-svg');
@@ -16,6 +16,9 @@ const STROKE_WIDTHS = [1, 2, 3];
 const OUT_DIR = path.resolve(__dirname, '../public/lucide');
 // Bump when the output format changes so existing checkouts regenerate.
 const GENERATOR_VERSION = 1;
+
+// A content hash for the stamp and the URL version; not a security boundary.
+const sha256 = (data) => crypto.createHash('sha256').update(data).digest('hex');
 
 const kebabToPascal = (key) =>
     key.split('-').map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join('');
@@ -30,11 +33,12 @@ function generateLucideIcons() {
         generator: GENERATOR_VERSION,
         lucide: version,
         strokeWidths: STROKE_WIDTHS,
-        aliases: Object.keys(iconAliases).length,
-        // A renderer change must reach browsers that cached the old files.
-        renderer: crypto.createHash('sha1').update(fs.readFileSync(require.resolve('./lucide-svg'))).digest('hex'),
+        // Contents, not counts: a corrected alias or a renderer change must reach
+        // browsers that cached the old files.
+        aliases: sha256(JSON.stringify(iconAliases)),
+        renderer: sha256(fs.readFileSync(require.resolve('./lucide-svg'))),
     });
-    const urlVersion = crypto.createHash('sha1').update(stamp).digest('hex').slice(0, 10);
+    const urlVersion = sha256(stamp).slice(0, 10);
     try {
         if (fs.readFileSync(stampPath, 'utf8') === stamp) return urlVersion;
     } catch {
