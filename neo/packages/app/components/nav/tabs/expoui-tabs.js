@@ -129,7 +129,8 @@ function useAvatarTabIcon(avatar) {
             cancelled = true;
         };
     }, [avatar]);
-    return source;
+    // No photo (a profile switch to one without): not the previous profile's picture.
+    return avatar ? source : null;
 }
 
 function renderTabTrigger({
@@ -327,7 +328,13 @@ export default function ExpoUITabNavigator({
     const photoIcon = useAvatarTabIcon(isIos ? currentUser?.avatar : null);
     // No photo: the letter avatar web shows, drawn into an image for UITabBar.
     const letterIcon = useLetterTabIcon(isIos && currentUser && !currentUser.avatar ? currentUser : null, TAB_AVATAR_PT);
-    const avatarIcon = photoIcon ?? letterIcon.icon;
+    // Keep the last avatar image until the next one is ready (a theme switch redraws the letter
+    // avatar, a profile switch loads a new photo). Falling back to the tab's own icon meanwhile
+    // swaps an image for an xcasset, which react-native-screens rejects ("unsupported icon type").
+    const freshAvatarIcon = photoIcon ?? letterIcon.icon;
+    const [lastAvatarIcon, setLastAvatarIcon] = useState(null);
+    if (freshAvatarIcon && freshAvatarIcon !== lastAvatarIcon) setLastAvatarIcon(freshAvatarIcon);
+    const avatarIcon = currentUser ? freshAvatarIcon ?? lastAvatarIcon : null;
     // Own avatar as a tab icon (`native.tab_avatar`), as on web and in native-tabs.js.
     const usesAvatarIcon = avatarTabPredicate(TabList, currentUser);
 
