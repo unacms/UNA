@@ -93,7 +93,7 @@ class BxDolAuditGrid extends BxTemplGrid
 
     protected function _isVisibleGrid ($a)
     {
-        return isAdmin();
+        return isAdmin() || bx_acl_is_advanced();
     }
 
 	protected function _getDataSql($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage)

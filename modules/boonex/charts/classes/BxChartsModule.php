@@ -223,6 +223,9 @@ class BxChartsModule extends BxDolModule
     
     public function actionGetChartData($Id = 0)
     {
+        if(!isAdmin() && !bx_acl_is_advanced())
+            return echoJson([]);
+
         header('Content-Type: application/json');
         if ($Id == 'TopContentsByLikes'){
             $aValues = array('labels' => array(), 'values' => array(), 'colors' => array(), 'links' => array());
@@ -330,17 +333,22 @@ class BxChartsModule extends BxDolModule
         
         if ($Id == 'GrowthByModules'){
             $aValues = array('labels' => array(), 'values1' => array(), 'values2' => array(), 'links' => array());
-            $sModuleName = $sTableName = bx_get('m');
-            $sModuleTitle = "";
+
             $aTmp = $this->getSelectedModulesGrowth();
-            if (empty($sModuleName)){
+
+            $sModuleName = $sTableName = bx_get('m');
+            if (empty($sModuleName)) {
                 $sModuleName = $sTableName = $aTmp[0][0];
             }
-            $sModuleTitle = $aTmp[1][$sModuleName];
+
+            $sModuleTitle = '';
+            if(!($sModuleTitle = $aTmp[1][$sModuleName] ?? false))
+                return echoJson([]);
+
             $oModule = BxDolModule::getInstance($sModuleName);
             if (isset($oModule->_oConfig->CNF['TABLE_ENTRIES']))
                 $sTableName = $oModule->_oConfig->CNF['TABLE_ENTRIES'];
-            
+
             $aData = $this->_oDb->getGrowth($sTableName);
             $aTmp2 = $this->_oDb->getGrowthInitValue($sTableName); 
             $iValuePrev = $aTmp2[0]; 
