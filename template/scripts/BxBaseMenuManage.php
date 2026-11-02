@@ -35,9 +35,14 @@ class BxBaseMenuManage extends BxTemplMenu
         if((int)$this->_aObject['active'] == 0)
             return false;
 
-        if(!$this->_oObjectManage || !$this->_oObjectManage->isVisible())
+        if(!$this->_oObjectManage)
             return false;
-        
+
+        // The managed menu's items check access against the content, so it needs the id before it answers.
+        $this->_setObjectManageContentId();
+        if(!$this->_oObjectManage->isVisible())
+            return false;
+
         return true;
     }
 
@@ -72,9 +77,6 @@ class BxBaseMenuManage extends BxTemplMenu
         if(!$this->isVisible())
             return '';
 
-        if(!empty($this->_iContentId) && method_exists($this->_oObjectManage, 'setContentId'))
-            $this->_oObjectManage->setContentId($this->_iContentId);
-
         $this->_addJsCss();
         if(!$this->_bAsButton)
             return $this->_oObjectManage->getCode();
@@ -91,10 +93,13 @@ class BxBaseMenuManage extends BxTemplMenu
         if(!$this->isVisible())
             return [];
 
+        return $this->_oObjectManage->getCodeAPI();
+    }
+
+    protected function _setObjectManageContentId()
+    {
         if(!empty($this->_iContentId) && method_exists($this->_oObjectManage, 'setContentId'))
             $this->_oObjectManage->setContentId($this->_iContentId);
-
-        return $this->_oObjectManage->getCodeAPI();
     }
 }
 

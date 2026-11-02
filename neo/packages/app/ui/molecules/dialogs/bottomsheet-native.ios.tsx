@@ -1,4 +1,4 @@
-import { useState, type ComponentProps, type ReactNode } from 'react';
+import { useRef, useState, type ComponentProps, type ReactNode } from 'react';
 import { ScrollView, View, useWindowDimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { BottomSheet, Button, Divider, Group, HStack, Host, Image, RNHostView, ScrollView as SwiftScrollView, Spacer, Text, VStack } from '@expo/ui/swift-ui';
@@ -65,6 +65,9 @@ export default function ElementBottomSheetContent() {
     // The app's theme, not the system's: a sheet otherwise follows iOS dark mode under a light app
     // (and RN-drawn icons in it, coloured for the app, disappear).
     const scheme: SheetScheme = useThemeName() === 'dark' ? 'dark' : 'light';
+    // A menu row's action runs once the sheet has gone: anything it presents (a modal, a form)
+    // is refused by iOS while this sheet is still on screen.
+    const afterDismiss = useRef<(() => void) | null>(null);
 
     if (!nativeSheets || data?.modal) return <GorhomBottomSheet />;
 
@@ -73,6 +76,10 @@ export default function ElementBottomSheetContent() {
 
     const isPresented = !!bottomSheetData;
     const close = () => setBottomSheetData(null);
+    const pressMenuRow = (action: () => void) => {
+        afterDismiss.current = action;
+        close();
+    };
     const onIsPresentedChange = (presented: boolean) => {
         if (!presented && bottomSheetData) close();
     };
@@ -83,19 +90,30 @@ export default function ElementBottomSheetContent() {
             <BottomSheet
                 isPresented={isPresented}
                 onIsPresentedChange={onIsPresentedChange}
-                onDismiss={() => setShown(null)}
+                onDismiss={() => {
+                    setShown(null);
+                    const action = afterDismiss.current;
+                    afterDismiss.current = null;
+                    action?.();
+                }}
                 fitToContents={!!data?.menu && !scrolls}
             >
-                {sheetBody(data, close, scrolls, scheme)}
+                <SheetBody data={data} onClose={close} scrolls={scrolls} scheme={scheme} pressMenuRow={pressMenuRow} />
             </BottomSheet>
         </Host>
     );
 }
 
-function sheetBody(data: SheetRequest | null, close: () => void, scrolls: boolean, scheme: SheetScheme) {
+function SheetBody({ data, onClose, scrolls, scheme, pressMenuRow }: Readonly<{
+    data: SheetRequest | null;
+    onClose: () => void;
+    scrolls: boolean;
+    scheme: SheetScheme;
+    pressMenuRow: (action: () => void) => void;
+}>) {
     if (!data) return null;
-    if (data.menu) return <MenuSheet menu={data.menu} scrolls={scrolls} scheme={scheme} />;
-    return <ContentSheet data={data} onClose={close} scheme={scheme} />;
+    if (data.menu) return <MenuSheet menu={data.menu} scrolls={scrolls} scheme={scheme} pressRow={pressMenuRow} />;
+    return <ContentSheet data={data} onClose={onClose} scheme={scheme} />;
 }
 
 /** A row's or sheet's title as text; React elements are left out (they never get native rows). */
@@ -120,7 +138,7 @@ function menuHeight(menu: BottomSheetMenu): number {
  * A menu's rows, like the iOS More sheet: icon, title, a checkmark on the chosen one. The sheet
  * fits them; with `scrolls` (a menu taller than the screen allows) they scroll in a medium / large sheet.
  */
-function MenuSheet({ menu, scrolls, scheme }: Readonly<{ menu: BottomSheetMenu; scrolls: boolean; scheme: SheetScheme }>) {
+function MenuSheet({ menu, scrolls, scheme, pressRow }: Readonly<{ menu: BottomSheetMenu; scrolls: boolean; scheme: SheetScheme; pressRow: (action: () => void) => void }>) {
     const check = useNativeTokenColor('text-accent-foreground') as string | undefined;
     // Rows without an icon keep its space when others have one, so the titles line up.
     const reserveIcon = menu.items.some((item) => item.icon && item.type !== 'group_header');
@@ -146,7 +164,7 @@ function MenuSheet({ menu, scrolls, scheme }: Readonly<{ menu: BottomSheetMenu; 
                         </Text>
                     );
                 }
-                return <MenuRow key={key} item={item} check={check} reserveIcon={reserveIcon} onPress={() => menu.onPress(item)} />;
+                return <MenuRow key={key} item={item} check={check} reserveIcon={reserveIcon} onPress={() => pressRow(() => menu.onPress(item))} />;
             })}
         </VStack>
     );
