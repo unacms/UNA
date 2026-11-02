@@ -145,6 +145,15 @@ export function isDashboardTab(tab, currentUser) {
     return tabUrl === appSetting('dashboard', 'url') || tab.icon === 'dashboard';
 }
 
+/**
+ * Which tab of `tabList` is drawn as the viewer's avatar (`native.tab_avatar`): the own-profile
+ * tab by default, or the dashboard with 'dashboard' or when the menu has no profile tab.
+ */
+export function avatarTabPredicate(tabList, currentUser) {
+    const onProfile = appSetting('native', 'tab_avatar') !== 'dashboard' && (tabList || []).some(isProfileTab);
+    return (tab) => (onProfile ? isProfileTab(tab) : isDashboardTab(tab, currentUser));
+}
+
 export function isExternalTabUrl(tabUrl) {
     return !!(tabUrl && (tabUrl.startsWith('http://') || tabUrl.startsWith('https://')));
 }

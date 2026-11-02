@@ -24,8 +24,8 @@ import { useLetterTabIcon } from './letter-avatar-icon';
 import {
     MORE_TAB_ICON,
     areTabBarLabelsHidden,
+    avatarTabPredicate,
     buildTabBarMoreMenuItems,
-    isDashboardTab,
     isProfileTab,
     splitProfileMoreMenu,
     splitTabBarItems,
@@ -327,8 +327,8 @@ export default function ExpoUITabNavigator({
     // No photo: the letter avatar web shows, drawn into an image for UITabBar.
     const letterIcon = useLetterTabIcon(isIos && currentUser && !currentUser.avatar ? currentUser : null, TAB_AVATAR_PT);
     const avatarIcon = photoIcon ?? letterIcon.icon;
-    // Own avatar as a tab icon: the dashboard tab, as on web (footer.web.js) and in native-tabs.js.
-    const usesAvatarIcon = (tab) => isDashboardTab(tab, currentUser);
+    // Own avatar as a tab icon (`native.tab_avatar`), as on web and in native-tabs.js.
+    const usesAvatarIcon = avatarTabPredicate(TabList, currentUser);
 
     const { visible, overflow, moreTabIndex } = useMemo(
         () => splitTabBarItems(TabList),

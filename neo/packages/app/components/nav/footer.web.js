@@ -18,6 +18,7 @@ import { cn } from 'app/lib/util';
 import { OperatorAgentPanel, useOperatorAgentAvailable } from 'app/ui/molecules/system/operator-agent';
 import {
     TAB_BAR_VISIBLE_LIMIT,
+    avatarTabPredicate,
     splitTabBarItems,
     buildTabBarMoreMenuItems,
     inferTabIndexFromUrl,
@@ -87,6 +88,7 @@ export default function () {
         () => splitTabBarItems(TabList || []),
         [TabList]
     );
+    const isAvatarTab = avatarTabPredicate(TabList, currentUser);
     const { t } = useTranslation();
     const notifCount = currentUser ? currentUser.notifications : 0;
     const iFrCounter = getFriendsCounter(currentUser);
@@ -161,6 +163,7 @@ export default function () {
                                 animated={tab.animated}
                                 addClassName={tab.addClassName}
                                 rootUrl={root}
+                                isAvatar={isAvatarTab(tab)}
                             />
                         );
                     })}
@@ -178,7 +181,7 @@ export default function () {
     );
 }
 
-function MenuBottomItem({ link, tabKey, rootUrl, title, badge, icon, isActive, iFrCounter, notifCount, animated, addClassName }) {
+function MenuBottomItem({ link, tabKey, rootUrl, title, badge, icon, isActive, iFrCounter, notifCount, animated, addClassName, isAvatar }) {
     const { currentUser } = useCurrentUser();
     const useAnimatedIcon = animated === true;
     const [groupHovered, setGroupHovered] = useState(false);
@@ -225,7 +228,7 @@ function MenuBottomItem({ link, tabKey, rootUrl, title, badge, icon, isActive, i
                 >
                     <View className="items-center justify-center">
                         {
-                            rootUrl === appSetting('dashboard', 'url') || icon=='dashboard' 
+                            isAvatar
                             ? <View className="w-6 h-6"><Profile  {...currentUser} url_avatar = {currentUser.avatar} url={rootUrl} displayType="unit_wo_info" displaySize="xs" /></View> : 
                             <Icon icon={icon} size={24} animated={useAnimatedIcon} active={useAnimatedIcon ? isActive : undefined} hovered={useAnimatedIcon ? groupHovered : undefined} className={iconClassName} />
                         }

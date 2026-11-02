@@ -27,6 +27,9 @@ export const settingsConfigs = {
         // Text under tab bar icons (web mobile footer + native JS / NativeTabs).
         // false = icon-only. Per-tab empty `title` still hides that label.
         tab_labels: true,
+        // Tab drawn as the viewer's avatar (web mobile footer + native): 'profile', the own-profile
+        // ({profile}) item, or 'dashboard'. A menu without a profile item uses the dashboard.
+        tab_avatar: 'profile',
     },
     urls: {
         embeds: '/oembed.php?html=1&a=get_link&l=',
