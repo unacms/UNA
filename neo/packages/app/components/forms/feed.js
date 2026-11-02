@@ -11,9 +11,10 @@ import { appSetting, stripTags } from 'app/lib/util'
 import { Keyboard } from 'react-native'
 import { useFormContext } from 'react-hook-form'
 import { PollButton, LabelButton, FileButton } from 'app/lib/form/form-helpers'
-import { useIsDesktop, useWindowHeight } from 'app/context/measure';
+import { useIsDesktop, useScreenTier, useWindowHeight } from 'app/context/measure';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { Icon } from 'app/ui/atoms/icon'
+import { EdgeBlurView, edgeBlurConfig } from 'app/ui/atoms/edge-blur'
 import { Text } from 'app/design/typography';
 import { useTranslation } from 'react-i18next';
 
@@ -24,7 +25,7 @@ const nativeTruncateProps = isWeb
     ? {}
     : { numberOfLines: 1, ellipsizeMode: 'tail', textBreakStrategy: 'simple' };
 
-const ATTACHMENT_BUTTON = { style: 'bordered', controlSize: 'small', borderShape: 'capsule', tooltipSide: 'top' };
+const ATTACHMENT_BUTTON = { style: 'glass', controlSize: 'small', borderShape: 'capsule', tooltipSide: 'top' };
 
 function getAttachmentMenuItems(inputs) {
     const items = [];
@@ -95,11 +96,18 @@ function AttachmentMenuList({ items, onSelect }) {
     );
 }
 
-// Height of the floating row plus its gap, the `pb-14` the form keeps when content follows the editor.
-const DOCK_ROOM = 56;
+// Room the editor keeps at its end for the floating row, the `pb-18` the form keeps when content
+// follows the editor: the row, its gap and some air above it.
+const DOCK_ROOM = 72;
+
+// How far the fade behind the floating row runs up above the buttons.
+const DOCK_FADE_RUN_UP = 32;
 
 function ComposerDock({ children }) {
     const { keyboardLift } = useStickyComposerListInset(0);
+    // The form's padding (`p-3 sm:p-4` from form-modal): the fade bleeds over it to the edges
+    // and down to the keyboard, and pads back by the same amount so the buttons stay put.
+    const bleed = useScreenTier() === 'phone' ? 12 : 16;
     return (
         <RNView
             pointerEvents="box-none"
@@ -111,7 +119,22 @@ function ComposerDock({ children }) {
                 zIndex: 20,
             }}
         >
-            {children}
+            {/* Text scrolling under the row fades out, as under the comment composer. */}
+            <EdgeBlurView
+                edge="bottom"
+                config={edgeBlurConfig('footer')}
+                pointerEvents="box-none"
+                washClassName="bg-linear-to-t from-popover from-40% to-transparent"
+                style={{
+                    paddingTop: DOCK_FADE_RUN_UP,
+                    marginHorizontal: -bleed,
+                    paddingHorizontal: bleed,
+                    marginBottom: -bleed,
+                    paddingBottom: bleed,
+                }}
+            >
+                {children}
+            </EdgeBlurView>
         </RNView>
     );
 }
@@ -160,7 +183,7 @@ function ComposerToolbar({ data, handleSubmit, isWeb, children }) {
                 <NeoButton
                     {...ATTACHMENT_BUTTON}
                     image="Plus"
-                    style={menuOpen ? 'borderedProminent' : ATTACHMENT_BUTTON.style}
+                    style={menuOpen ? 'glassProminent' : ATTACHMENT_BUTTON.style}
                     accessibilityLabel={t('Add attachment')}
                     onPress={() => setMenuOpen((was) => !was)}
                 />
@@ -381,7 +404,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                     {getFormFieldByData(data.inputs['object_cf'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['owner_id'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['type'], handleSubmit, 'default')}
-                    <View className={`flex-auto justify-start ${insetInEditor ? '' : 'pb-14'}`}>
+                    <View className={`flex-auto justify-start ${insetInEditor ? '' : 'pb-18'}`}>
                         <View className="w-full flex-auto justify-start ">
                             <View
                                 className="flex-auto "
@@ -486,7 +509,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                 disabled: isButtonDisabled,
                                 noPadding: true,
                                 size: 'sm',
-                                style: 'borderedProminent',
+                                style: 'glassProminent',
                                 rounded: true,
                                 notFullWidth: true,
                                 icon: "SendHorizontal",
