@@ -97,7 +97,7 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                         </Text>
                     </View>
                     }
-                    {profileList && profileList.map((item) => {
+                    {profileList?.map((item) => {
                         let dUser = { ...item }
                         dUser.url_avatar = dUser.avatar
                         let profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
