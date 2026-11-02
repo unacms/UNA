@@ -58,6 +58,21 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(['bg' => ['tablet', 'desktop']], $aConfig['designbox'] ?? null);
     }
 
+    public function testProfileIsTheLastMemberTab(): void
+    {
+        // The member tab bar ends with the profile, drawn as the viewer's avatar in NEO; the dashboard comes before it.
+        $sSql = self::systemSql();
+        $aOrder = [];
+        foreach (['home', 'friends', 'profile', 'dashboard'] as $sName) {
+            $bFound = preg_match("/\\('sys_tabbar', 'system', '" . $sName . "', [^\\n]*?, (\\d+)\\)[,;]/", $sSql, $aMatch);
+            $this->assertSame(1, $bFound, "system.sql adds the {$sName} tab.");
+            $aOrder[$sName] = (int)$aMatch[1];
+        }
+
+        $this->assertLessThan($aOrder['profile'], $aOrder['dashboard'], 'The dashboard tab comes before the profile.');
+        $this->assertSame(max($aOrder), $aOrder['profile'], 'No core member tab comes after the profile.');
+    }
+
     public function testFooterHasThemeAndSoundsSwitchers(): void
     {
         // Icon-only items (no title) that open their menus above them: BxBaseMenuFooter renders the menus and shows

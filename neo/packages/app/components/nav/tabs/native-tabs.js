@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { Text } from 'app/design/typography';
 import { getBadgeForTab, getOverflowBadgeTotal } from './badges';
-import { isDashboardTab, resolveTabUrl, splitTabBarItems, buildTabBarMoreMenuItems, MORE_TAB_ICON } from './tab-menu';
+import { avatarTabPredicate, resolveTabUrl, splitTabBarItems, buildTabBarMoreMenuItems, MORE_TAB_ICON } from './tab-menu';
 import { handleTabPress, selectOverflowTab } from './tab-press';
 import { useTabBarColors } from './tab-colors';
 import { useBottomSheetData } from 'app/context/bottomsheet';
@@ -31,7 +31,8 @@ function getBadgeForOverflow(currentUser, overflow = []) {
     );
 }
 
-function TabBarIcon({ tab, tabUrl, currentUser, color, focused }) {    if (isDashboardTab(tab, currentUser)) {
+function TabBarIcon({ tab, tabUrl, currentUser, color, focused, isAvatar }) {
+    if (isAvatar) {
         return (
             <View className="h-full">
                 <View className="rounded-full">
@@ -122,7 +123,7 @@ function getScreenOptions(colors, isShowTabs, tokens) {
     };
 }
 
-function tabScreenOptions({ tab, tabUrl, currentUser, t, extra = {} }) {
+function tabScreenOptions({ tab, tabUrl, currentUser, isAvatar, t, extra = {} }) {
     const options = {
         tabBarBadge: extra.tabBarBadge ?? getBadgeForTab(currentUser, tab),
         tabBarBadgeAllowFontScaling: false,
@@ -135,6 +136,7 @@ function tabScreenOptions({ tab, tabUrl, currentUser, t, extra = {} }) {
                 currentUser={currentUser}
                 color={color}
                 focused={focused}
+                isAvatar={isAvatar}
             />
         )),
         ...extra.screenOptions,
@@ -176,6 +178,7 @@ export default function NativeTabNavigator({
         () => splitTabBarItems(TabList),
         [TabList]
     );
+    const isAvatarTab = avatarTabPredicate(TabList, currentUser);
 
     const [activeOverflowUrl, setActiveOverflowUrl] = useState(null);
 
@@ -235,7 +238,7 @@ export default function NativeTabNavigator({
                                 variant: 'js',
                             }),
                         }}
-                        options={tabScreenOptions({ tab, tabUrl, currentUser, t })}
+                        options={tabScreenOptions({ tab, tabUrl, currentUser, isAvatar: isAvatarTab(tab), t })}
                     />
                 );
             })}
