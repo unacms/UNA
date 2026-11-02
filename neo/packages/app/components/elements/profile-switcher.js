@@ -28,9 +28,13 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
     const handleSwitch = async (id) => {
         try {
             const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);
-            // No user back means UNA refused the switch: keep the current one and the list open.
-            if (!result?.data) return;
-            setCurrentUser(result.data);
+            const user = result?.data;
+            // UNA answers a refused switch with error text: keep the current profile and the list open.
+            if (!user || typeof user !== 'object' || user.id != id) {
+                console.warn('Profile switch refused:', user);
+                return;
+            }
+            setCurrentUser(user);
             setShow(false);
         } catch (err) {
             console.warn('Profile switch failed:', err);
