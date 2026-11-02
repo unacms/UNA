@@ -11,6 +11,7 @@ import Redirect from 'app/ui/atoms/redirect';
 import { useTranslation } from 'react-i18next';
 import { Modal } from 'app/design/controls'
 import { BlockWrapper } from 'app/components/block-wrapper'
+import RadioButton from 'app/ui/atoms/radiobutton'
 
 /**
  * Children mode: the Pressable host owns the press, so `accessibilityLabel` names
@@ -97,48 +98,31 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                         </Text>
                     </View>
                     }
-                    {profileList?.map((item) => {
-                        let dUser = { ...item }
-                        dUser.url_avatar = dUser.avatar
-                        let profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
-                        return (
-                            <Link href={dUser.url} emulate={true} key={item.id}>
-                                <View className=" p-2 flex-row  
-                            web:duration-200 rounded-lg
-                            
-                            max-w-5xl self-center w-full gap-x-3">
-                                    <View className="flex-none ">{profile}</View>
-                                    <Text className='text-sm my-auto flex-auto font-semibold truncate text-popover-foreground '>{item.display_name}</Text>
-                                    <View className="flex-none my-auto">
-                                        {item.id == currentUser.id
-                                            ? <Text className="text-sm px-3 text-muted-foreground">{t('Current')}</Text>
-                                            : <NeoButton controlSize="small" image="RefreshCw" label={t('Switch')} expoUI={false} onPress={() => handleSwitch(item.id)} />}
-                                    </View>
-                                </View>
-                            </Link>
-                        )
-                    })}
+                    {/* One radio row per profile; the checked one is the profile the account acts as. */}
+                    <View accessibilityRole="radiogroup" className="w-full">
+                        {profileList?.map((item) => (
+                            <RadioButton
+                                key={item.id}
+                                value={item.id}
+                                status={item.id == currentUser.id ? 'checked' : 'unchecked'}
+                                title={item.display_name}
+                                icon={<Profile {...item} url_avatar={item.avatar} displayType="unit_wo_info" displaySize="xs" showLinks={false} />}
+                                onPress={() => { if (item.id != currentUser.id) handleSwitch(item.id) }}
+                            />
+                        ))}
+                    </View>
                     {/* A gap, not a margin on each button, so every button spans the same width. */}
-                    {!listOnly && <View className='flex-col sm:flex-row gap-2 mt-4 w-full'>
-                        {!!currentUser?.menu?.items && currentUser.menu.items.map((item) => (
+                    {!listOnly && !!currentUser?.menu?.items && <View className='flex-col sm:flex-row gap-2 mt-4 w-full'>
+                        {currentUser.menu.items.map((item) => (
                             <View key={item.name} className='w-full sm:w-auto sm:flex-1'>
                                 <NeoButtonLink
                                     href={`/${item.name}`}
                                     width="fill"
                                     image="UserCircle"
-                                    label={t("New " + item.title)}
+                                    label={item.name === 'create-persons-profile' ? t('Add a personal profile') : t("New " + item.title)}
                                 />
                             </View>
                         ))}
-                        {!!currentUser?.menu?.items && <View className='w-full sm:w-auto sm:flex-1'>
-                            <NeoButtonLink
-                                href="/logout"
-                                width="fill"
-                                image="LogOut"
-                                label={t("Sign out")}
-                                expoUI={false}
-                            />
-                        </View>}
                     </View>}
                 </View>
             </Modal>}

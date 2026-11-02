@@ -11,7 +11,7 @@ const checkboxTheme = appSetting('theme', 'checkbox');
 type RadioButtonProps = {
     title?: React.ReactNode;
     info?: React.ReactNode;
-    /** Receives the press event (row) or the next checked state (indicator). */
+    /** Called when the row is pressed; the indicator is display only. */
     onPress?: (arg?: unknown) => void;
     status?: 'checked' | 'unchecked' | string;
     value?: unknown;
@@ -35,21 +35,26 @@ export default function RadioButton({ title, info, onPress, status, value, disab
             {selected ? <View className="h-2.5 w-2.5 rounded-full bg-primary" /> : null}
         </View>
     return (
-        <Pressable disabled={disabled} onPress={onPress} aria-checked={selected} {...(disabled ? {} : cueAttributes('select'))} className={`flex-row gap-x-3 ${checkboxTheme['u-controls-checkbox-container']} ${disabled ? '' : checkboxTheme['u-controls-checkbox-container-bg']}`}>
+        <Pressable disabled={disabled} onPress={onPress} role="radio" aria-checked={selected} {...(disabled ? {} : cueAttributes('select'))} className={`flex-row gap-x-3 ${checkboxTheme['u-controls-checkbox-container']} ${disabled ? '' : checkboxTheme['u-controls-checkbox-container-bg']}`}>
             {!!resolvedIcon && <View className={checkboxTheme['u-controls-checkbox-icon']}>{resolvedIcon}</View>}
             <View className='flex-auto '>
                 <Text className={checkboxTheme['u-controls-checkbox-text']}>{title}</Text>
                 {!!info && <Text className={checkboxTheme['u-controls-checkbox-text2']}>{info}</Text>}
             </View>
-            <CheckboxPrimitive.Root
-                checked={selected}
-                onCheckedChange={(checked) => onPress?.(checked)}
-                className={checkboxTheme['u-controls-radiobutton-indicator']}
-            >
-                <CheckboxPrimitive.Indicator>
-                    <View className={checkboxTheme['u-controls-radiobutton-indicator-active']} />
-                </CheckboxPrimitive.Indicator>
-            </CheckboxPrimitive.Root>
+            {/* The ring is on the View: on web the primitive renders a bare <button> without its className. Display only, like the checkbox mark: presses go to the row. */}
+            <View className={checkboxTheme['u-controls-radiobutton-indicator']} pointerEvents="none">
+                <CheckboxPrimitive.Root
+                    checked={selected}
+                    onCheckedChange={() => {}}
+                    tabIndex={-1}
+                    aria-hidden
+                    className="items-center justify-center"
+                >
+                    <CheckboxPrimitive.Indicator>
+                        <View className={checkboxTheme['u-controls-radiobutton-indicator-active']} />
+                    </CheckboxPrimitive.Indicator>
+                </CheckboxPrimitive.Root>
+            </View>
         </Pressable>
     );
 }
