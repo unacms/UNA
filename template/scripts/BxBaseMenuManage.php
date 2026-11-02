@@ -32,18 +32,14 @@ class BxBaseMenuManage extends BxTemplMenu
 
     public function isVisible()
     {
-        if((int)$this->_aObject['active'] == 0)
+        if((int)$this->_aObject['active'] == 0 || !$this->_oObjectManage) {
             return false;
-
-        if(!$this->_oObjectManage)
-            return false;
+        }
 
         // The managed menu's items check access against the content, so it needs the id before it answers.
-        $this->_setObjectManageContentId();
-        if(!$this->_oObjectManage->isVisible())
-            return false;
+        $this->applyContentIdToObjectManage();
 
-        return true;
+        return (bool)$this->_oObjectManage->isVisible();
     }
 
     public function setContentId($iContentId)
@@ -96,7 +92,7 @@ class BxBaseMenuManage extends BxTemplMenu
         return $this->_oObjectManage->getCodeAPI();
     }
 
-    protected function _setObjectManageContentId()
+    protected function applyContentIdToObjectManage()
     {
         if(!empty($this->_iContentId) && method_exists($this->_oObjectManage, 'setContentId'))
             $this->_oObjectManage->setContentId($this->_iContentId);
