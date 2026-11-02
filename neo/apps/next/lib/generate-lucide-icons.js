@@ -1,10 +1,12 @@
 // Writes every Lucide icon as a static mask SVG to public/lucide/<strokeWidth>/<Name>.svg
 // so web icons are served as plain static files (CDN, no proxy.js, no function).
 // Runs from next.config.js on every `next dev` / `next build`; skipped while the
-// stamp matches. The full set is generated (not just names used in code) because
-// UNA can send any Lucide name at runtime. Anything not generated here — other
+// stamp matches. Returns a short hash of the stamp, which icon URLs carry as
+// `?v=` so the files can be cached as immutable. The full set is generated
+// (not just names used in code) because UNA can send any Lucide name at runtime. Anything not generated here — other
 // stroke widths, `fill`, Lucide names added later — falls back to /api/icon via
 // the `fallback` rewrite in next.config.js.
+const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const { iconNameToImportKey, renderLucideSvg } = require('./lucide-svg');
@@ -29,9 +31,12 @@ function generateLucideIcons() {
         lucide: version,
         strokeWidths: STROKE_WIDTHS,
         aliases: Object.keys(iconAliases).length,
+        // A renderer change must reach browsers that cached the old files.
+        renderer: crypto.createHash('sha1').update(fs.readFileSync(require.resolve('./lucide-svg'))).digest('hex'),
     });
+    const urlVersion = crypto.createHash('sha1').update(stamp).digest('hex').slice(0, 10);
     try {
-        if (fs.readFileSync(stampPath, 'utf8') === stamp) return;
+        if (fs.readFileSync(stampPath, 'utf8') === stamp) return urlVersion;
     } catch {
         // no stamp yet
     }
@@ -63,6 +68,7 @@ function generateLucideIcons() {
         }
     }
     fs.writeFileSync(stampPath, stamp);
+    return urlVersion;
 }
 
 module.exports = { generateLucideIcons };
