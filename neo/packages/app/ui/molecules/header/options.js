@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useLayoutEffect, useMemo, useState, useId } from 'react';
+import { createContext, useContext, useEffect, useLayoutEffect, useState, useId } from 'react';
 import { useIsDesktop } from 'app/context/measure';
 
 /**
@@ -43,7 +43,13 @@ export const defaultHeaderOptions = Object.freeze({
 
 const OPTION_KEYS = Object.keys(defaultHeaderOptions);
 
-const HeaderOptionsContext = createContext(defaultHeaderOptions);
+/**
+ * The registry is the only context, and it never changes. The merged options live in it as a
+ * store that the header subscribes to. A context value around the page would push every
+ * registration into the page's subtree, and React renders a Suspense boundary that hasn't
+ * hydrated yet (a lazily loaded block) from scratch when a context above it changes. On web
+ * that threw away the server-rendered login form, with whatever the visitor had typed into it.
+ */
 const HeaderOptionsRegistryContext = createContext(null);
 
 // Native has no server pass; on web the registration effect must not run on
@@ -66,43 +72,67 @@ function mergeEntries(entries) {
     return Object.assign({}, defaultHeaderOptions, ...entries.map((entry) => entry.values));
 }
 
-export function HeaderOptionsProvider({ children }) {
-    const [entries, setEntries] = useState([]);
+function createHeaderOptionsRegistry() {
+    let entries = [];
+    let options = defaultHeaderOptions;
+    const listeners = new Set();
 
-    // Registry is identity-stable for the provider's life so registering
-    // components never re-run their effect because of the provider.
-    const registry = useMemo(() => ({
+    const commit = (next) => {
+        entries = next;
+        options = mergeEntries(entries);
+        listeners.forEach((listener) => listener(options));
+    };
+
+    return {
         set(id, values) {
-            setEntries((prev) => {
-                const index = prev.findIndex((entry) => entry.id === id);
-                if (index === -1) return [...prev, { id, values }];
-                const next = prev.slice();
-                next[index] = { id, values };
-                return next;
-            });
+            const index = entries.findIndex((entry) => entry.id === id);
+            if (index === -1) {
+                commit([...entries, { id, values }]);
+                return;
+            }
+            const next = entries.slice();
+            next[index] = { id, values };
+            commit(next);
         },
         remove(id) {
-            setEntries((prev) => {
-                if (!prev.some((entry) => entry.id === id)) return prev;
-                return prev.filter((entry) => entry.id !== id);
-            });
+            if (!entries.some((entry) => entry.id === id)) return;
+            commit(entries.filter((entry) => entry.id !== id));
         },
-    }), []);
+        /** Calls `listener` with the merged options now and after every change. */
+        subscribe(listener) {
+            listeners.add(listener);
+            listener(options);
+            return () => listeners.delete(listener);
+        },
+    };
+}
 
-    const options = useMemo(() => mergeEntries(entries), [entries]);
+export function HeaderOptionsProvider({ children }) {
+    // Identity-stable for the provider's life, so registering components never re-run their
+    // effect because of the provider.
+    const [registry] = useState(createHeaderOptionsRegistry);
 
     return (
         <HeaderOptionsRegistryContext.Provider value={registry}>
-            <HeaderOptionsContext.Provider value={options}>
-                {children}
-            </HeaderOptionsContext.Provider>
+            {children}
         </HeaderOptionsRegistryContext.Provider>
     );
 }
 
-/** Merged options for the header of the current `Layout`. */
+/**
+ * Merged options for the header of the current `Layout`. The first render has the defaults, as
+ * on the server; the layout-effect subscription applies the page's options before paint.
+ */
 export function useHeaderOptions() {
-    return useContext(HeaderOptionsContext);
+    const registry = useContext(HeaderOptionsRegistryContext);
+    const [options, setOptions] = useState(defaultHeaderOptions);
+
+    useIsoLayoutEffect(() => {
+        if (!registry) return undefined;
+        return registry.subscribe(setOptions);
+    }, [registry]);
+
+    return options;
 }
 
 /**

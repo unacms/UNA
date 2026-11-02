@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { get, useController, useFormContext } from 'react-hook-form';
 import { useGoogleAutocomplete } from '@appandflow/react-native-google-autocomplete';
 import { getValidationRules, getFormFieldDomId, getFormFieldErrorDomId } from 'app/components/form-fields/_field';
@@ -68,6 +68,42 @@ export function useFieldController(params: Parameters<typeof useController>[0]) 
     return controller;
 }
 
+const TEXT_INPUT_TYPES = new Set(['text', 'email', 'password', 'search', 'tel', 'url', 'number']);
+const useIsoLayoutEffect = typeof document !== 'undefined' ? useLayoutEffect : useEffect;
+
+/**
+ * Web: text the input holds that the form doesn't. Typing into a server-rendered form (or the
+ * browser's autofill) before it hydrates reaches the DOM but not react-hook-form. It is read in a
+ * layout effect, right after hydration, because the next render of the controlled input puts the
+ * form's empty value back in the DOM. It is applied after the mount effects (the field's own
+ * value sync and Form's first reset would empty it again), so call this after that sync.
+ */
+function useTextFromBeforeHydration(name: string, inputId: string | undefined, onChange: (value: string) => void) {
+    const { getValues } = useFormContext();
+    const typedRef = useRef('');
+
+    useIsoLayoutEffect(() => {
+        if (typeof document === 'undefined' || !name || !inputId) return;
+        const el = document.getElementById(inputId);
+        const isText =
+            (el instanceof HTMLInputElement && TEXT_INPUT_TYPES.has(el.type)) || el instanceof HTMLTextAreaElement;
+        if (isText && el.value) typedRef.current = el.value;
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once, at mount
+    }, []);
+
+    useEffect(() => {
+        const typed = typedRef.current;
+        if (!typed) return;
+        typedRef.current = '';
+        // Form's first reset runs later in the same flush of effects.
+        queueMicrotask(() => {
+            const current = getValues(name);
+            if (current === undefined || current === null || current === '') onChange(typed);
+        });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once, at mount
+    }, []);
+}
+
 export function useFormField(props: any, options: FormFieldOptions = {}) {
     const { setValue, getValues } = useFormContext();
     const name = props.name || '';
@@ -113,6 +149,9 @@ export function useFormField(props: any, options: FormFieldOptions = {}) {
         setValue(name, value);
     }, [syncValue, name, value, getValues, setValue]);
 
+    const inputId = getFormFieldDomId(name);
+    useTextFromBeforeHydration(name, inputId, field.onChange);
+
     const skipReturnKey =
         options.returnKey === false ||
         props.type === 'value' ||
@@ -139,7 +178,7 @@ export function useFormField(props: any, options: FormFieldOptions = {}) {
         onBlur,
         inputRef,
         returnKeyProps,
-        inputId: getFormFieldDomId(name),
+        inputId,
         errorId: invalid ? getFormFieldErrorDomId(name) : undefined,
         invalid,
     };

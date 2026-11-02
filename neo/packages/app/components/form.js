@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback, useId, useRef } from 'react';
+import { Suspense, useEffect, useState, useMemo, useCallback, useId, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, updateFormDirtyState, isFormUnsavedCloseGuardSkipped, formHasPendingUploads, clearFormPendingUploads, formResponseHasFieldErrors, FILES_FIELD_MIRRORS } from 'app/lib/form/form-helpers'
 import { getDefaultPasteStorageKey } from 'app/components/form-fields/media-attachments'
@@ -85,7 +85,20 @@ const checkInputType = (name, form_name, input_name) => {
     return false;
 }
 
-export default function Form({
+/**
+ * One Suspense boundary for the form and its fields, which are code-split without boundaries of
+ * their own (form-fields/_map.js). A server-rendered form hydrates with all its fields at once, and
+ * a field whose code is still loading (a form opened by a click) blanks only this form, not the page.
+ */
+export default function Form(props) {
+    return (
+        <Suspense fallback={null}>
+            <FormContent {...props} />
+        </Suspense>
+    );
+}
+
+function FormContent({
     layout,
     data: initedData,
     name: formName,

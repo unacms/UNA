@@ -1,46 +1,51 @@
 import dynamic from 'next/dynamic';
 import { coreFormFields } from 'app/components/registry';
-import { DynamicFallback } from 'app/lib/dynamic-fallback';
 
 // Each field type is its own chunk: fetched when a form renders it, and
 // preloaded in the HTML when it was rendered during SSR (see lib/dynamic-fallback.js).
 // Heavy ones (markdown editor, files, location, Stripe, phone codes, sliders)
 // no longer reach pages without such a field.
-const Captcha = dynamic(() => import('./captcha'), { loading: DynamicFallback });
-const Custom = dynamic(() => import('./custom'), { loading: DynamicFallback });
-const Hidden = dynamic(() => import('./hidden'), { loading: DynamicFallback });
-const Password = dynamic(() => import('./password'), { loading: DynamicFallback });
-const Submit = dynamic(() => import('./submit'), { loading: DynamicFallback });
-const Switcher = dynamic(() => import('./switcher'), { loading: DynamicFallback });
-const TextField = dynamic(() => import('./text'), { loading: DynamicFallback });
-const Value = dynamic(() => import('./value'), { loading: DynamicFallback });
-const Phone = dynamic(() => import('./phone'), { loading: DynamicFallback });
-const TextTranslatable = dynamic(() => import('./text-translatable'), { loading: DynamicFallback });
-const MarkdownTranslatable = dynamic(() => import('./markdown-translatable'), { loading: DynamicFallback });
-const Editor = dynamic(() => import('./editor'), { loading: DynamicFallback });
-const EditorMarkdown = dynamic(() => import('./editor-markdown'), { loading: DynamicFallback });
-const Select = dynamic(() => import('./select'), { loading: DynamicFallback });
-const Files = dynamic(() => import('./files'), { loading: DynamicFallback });
-const Location = dynamic(() => import('./location'), { loading: DynamicFallback });
-const Datetime = dynamic(() => import('./datetime'), { loading: DynamicFallback });
-const Selector = dynamic(() => import('./selector'), { loading: DynamicFallback });
-const BlockHeader = dynamic(() => import('./block-header'), { loading: DynamicFallback });
-const BlockEnd = dynamic(() => import('./block-end'), { loading: DynamicFallback });
-const Suggestion = dynamic(() => import('./suggestion'), { loading: DynamicFallback });
-const InitialMembers = dynamic(() => import('./initial-members'), { loading: DynamicFallback });
-const Labels = dynamic(() => import('./labels'), { loading: DynamicFallback });
-const InputSet = dynamic(() => import('./input-set'), { loading: DynamicFallback });
-const LocationRadius = dynamic(() => import('./location-radius'), { loading: DynamicFallback });
-const DoubleRange = dynamic(() => import('./doublerange'), { loading: DynamicFallback });
-const CheckboxSet = dynamic(() => import('./checkbox-set'), { loading: DynamicFallback });
-const Visibility = dynamic(() => import('./visibility'), { loading: DynamicFallback });
-const Stars = dynamic(() => import('./stars'), { loading: DynamicFallback });
-const MultiField = dynamic(() => import('./multi-field'), { loading: DynamicFallback });
-const Embed = dynamic(() => import('./embed'), { loading: DynamicFallback });
-const Polls = dynamic(() => import('./polls'), { loading: DynamicFallback });
-const StripeConnect = dynamic(() => import('./stripe-connect'), { loading: DynamicFallback });
-const List = dynamic(() => import('./list'), { loading: DynamicFallback });
-const Price = dynamic(() => import('./price'), { loading: DynamicFallback });
+//
+// No `loading`, so no Suspense boundary per field: a field waits in Form's own
+// boundary (components/form.js), and a server-rendered form hydrates with all its
+// fields at once. With a boundary each, a field whose code had not run yet was still
+// server HTML when Form re-rendered after mounting, and React rendered it again from
+// scratch, dropping what had been typed before hydration (the login form on web).
+const Captcha = dynamic(() => import('./captcha'));
+const Custom = dynamic(() => import('./custom'));
+const Hidden = dynamic(() => import('./hidden'));
+const Password = dynamic(() => import('./password'));
+const Submit = dynamic(() => import('./submit'));
+const Switcher = dynamic(() => import('./switcher'));
+const TextField = dynamic(() => import('./text'));
+const Value = dynamic(() => import('./value'));
+const Phone = dynamic(() => import('./phone'));
+const TextTranslatable = dynamic(() => import('./text-translatable'));
+const MarkdownTranslatable = dynamic(() => import('./markdown-translatable'));
+const Editor = dynamic(() => import('./editor'));
+const EditorMarkdown = dynamic(() => import('./editor-markdown'));
+const Select = dynamic(() => import('./select'));
+const Files = dynamic(() => import('./files'));
+const Location = dynamic(() => import('./location'));
+const Datetime = dynamic(() => import('./datetime'));
+const Selector = dynamic(() => import('./selector'));
+const BlockHeader = dynamic(() => import('./block-header'));
+const BlockEnd = dynamic(() => import('./block-end'));
+const Suggestion = dynamic(() => import('./suggestion'));
+const InitialMembers = dynamic(() => import('./initial-members'));
+const Labels = dynamic(() => import('./labels'));
+const InputSet = dynamic(() => import('./input-set'));
+const LocationRadius = dynamic(() => import('./location-radius'));
+const DoubleRange = dynamic(() => import('./doublerange'));
+const CheckboxSet = dynamic(() => import('./checkbox-set'));
+const Visibility = dynamic(() => import('./visibility'));
+const Stars = dynamic(() => import('./stars'));
+const MultiField = dynamic(() => import('./multi-field'));
+const Embed = dynamic(() => import('./embed'));
+const Polls = dynamic(() => import('./polls'));
+const StripeConnect = dynamic(() => import('./stripe-connect'));
+const List = dynamic(() => import('./list'));
+const Price = dynamic(() => import('./price'));
 
 export const componentsMapDefault = {
     input_set: InputSet,
