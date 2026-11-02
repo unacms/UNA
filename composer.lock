@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "91404d83458e3f0fefba1f300590659c",
+    "content-hash": "0ab60e810c52f83564f3ddf0658bb1ae",
     "packages": [
         {
             "name": "achingbrain/php5-akismet",
@@ -3532,26 +3532,28 @@
         },
         {
             "name": "spatie/calendar-links",
-            "version": "1.11.1",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/calendar-links.git",
-                "reference": "bf4645d6a2d8eb32248a5b0b7da7976a13e5e2b5"
+                "reference": "b886a3abeca3764f375ef1111087f689d1f48fef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/calendar-links/zipball/bf4645d6a2d8eb32248a5b0b7da7976a13e5e2b5",
-                "reference": "bf4645d6a2d8eb32248a5b0b7da7976a13e5e2b5",
+                "url": "https://api.github.com/repos/spatie/calendar-links/zipball/b886a3abeca3764f375ef1111087f689d1f48fef",
+                "reference": "b886a3abeca3764f375ef1111087f689d1f48fef",
                 "shasum": ""
             },
             "require": {
-                "php": "^8.1"
+                "php": "^8.3"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.49",
-                "phpunit/phpunit": "^10.5",
-                "spatie/phpunit-snapshot-assertions": "^5.1",
-                "vimeo/psalm": "^5.22"
+                "friendsofphp/php-cs-fixer": "^3.93",
+                "pestphp/pest": "^4.7",
+                "phpunit/phpunit": "^12.5",
+                "psalm/plugin-phpunit": "^0.19.7",
+                "spatie/phpunit-snapshot-assertions": "^5.3",
+                "vimeo/psalm": "^6.15"
             },
             "type": "library",
             "autoload": {
@@ -3575,11 +3577,16 @@
             "homepage": "https://github.com/spatie/calendar-links",
             "keywords": [
                 "calendar-links",
-                "spatie"
+                "google-calendar",
+                "ical",
+                "ics",
+                "outlook",
+                "spatie",
+                "yahoo"
             ],
             "support": {
                 "issues": "https://github.com/spatie/calendar-links/issues",
-                "source": "https://github.com/spatie/calendar-links/tree/1.11.1"
+                "source": "https://github.com/spatie/calendar-links/tree/2.2.0"
             },
             "funding": [
                 {
@@ -3587,7 +3594,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-01-16T16:49:47+00:00"
+            "time": "2026-10-19T17:58:02+00:00"
         },
         {
             "name": "stripe/stripe-php",
