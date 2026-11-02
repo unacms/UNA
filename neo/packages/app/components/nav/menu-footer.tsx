@@ -129,10 +129,12 @@ function MenuFooterSkeleton({ cntClasses, children, role }: Readonly<{ cntClasse
     return (
         <View className={cntClasses} role={role}>
             <View className={FOOTER_LINKS_CLASSES}>
+                {/* 20px + 2 × 4px: the 28px row of a `mini` link, so the footer keeps its height when the links arrive.
+                    No side margin: the section's gap spaces the links too. */}
                 {menuFooterSkeletonWidths.map((width, index) => (
                     <View
                         key={`menu-footer-skeleton-${index}`}
-                        className={`h-5 my-2 mx-1 ${width} rounded-full bg-muted animate-pulse`}
+                        className={`h-5 my-1 ${width} rounded-full bg-muted animate-pulse`}
                     />
                 ))}
             </View>
