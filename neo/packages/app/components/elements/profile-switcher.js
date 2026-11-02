@@ -105,7 +105,7 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                     </View>
                     }
                     {/* One radio row per profile; the checked one is the profile the account acts as. */}
-                    <View accessibilityRole="radiogroup" className="w-full">
+                    <View accessibilityRole="radiogroup" className="w-full gap-1">
                         {profileList?.map((item) => (
                             <RadioButton
                                 key={item.id}
