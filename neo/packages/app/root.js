@@ -9,6 +9,7 @@ import { useSetScrollDirection, useSetScrollValue } from 'app/context/jotai/layo
 import emitter, { EVENTS } from 'app/context/emitter';
 import { Platform } from 'react-native'
 import { useWindowScrollNavigationSync } from 'app/lib/navigation/use-window-scroll-navigation-sync';
+import { useIsTabSlideCopy } from 'app/context/tab-route-override';
 
 export function Root(props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -16,17 +17,23 @@ export function Root(props) {
     const prevUserIdRef = useRef(currentUser?.id);
     const router = useRouter();
     useWindowScrollNavigationSync();
+    // The copy of a page that slides with the native tabs (components/nav/tab-slide.js) only draws: the page itself
+    // keeps the viewer, scroll and redirects in sync. A copy held from another moment (a guest page kept over sign-in)
+    // would otherwise sign the viewer out until the real page signs them back in.
+    const isSlideCopy = useIsTabSlideCopy();
 
     const data = props?.data;
     const redirectUrl = data?.redirect;
 
     // Seed Zustand before paint; must not run setState during render (Subscriber et al. subscribe to the store).
     useLayoutEffect(() => {
+        if (isSlideCopy) return;
         seedCurrentUserFromPageData(data);
-    }, [data]);
+    }, [data, isSlideCopy]);
     // ################## CODE FOR NATIVE VERSION
 
     useEffect(() => {
+        if (isSlideCopy) return;
         // Skip: first render (prevUserIdRef not set yet)
         if (prevUserIdRef.current === undefined) {
             prevUserIdRef.current = currentUser?.id;
@@ -43,13 +50,14 @@ export function Root(props) {
         } else {
             emitter.emit(EVENTS.page, { action: 'reload' });
         }
-    }, [currentUser?.id]);
+    }, [currentUser?.id, isSlideCopy]);
 
 
     const setScrollDirection = useSetScrollDirection();
     const setScrollValue = useSetScrollValue();
 
     useEffect(() => {
+        if (isSlideCopy) return;
         // Reset scroll state when page data changes
         setScrollDirection(0);
         if (Platform.OS === 'web' && typeof window !== 'undefined') {
@@ -57,9 +65,10 @@ export function Root(props) {
         } else {
             setScrollValue(0);
         }
-    }, [props?.path, props?.data?.url, setScrollDirection, setScrollValue]);
+    }, [props?.path, props?.data?.url, setScrollDirection, setScrollValue, isSlideCopy]);
 
     useEffect(() => {
+        if (isSlideCopy) return;
         if (data?.user) {
             if (currentUser?.id != data.user.id) {
                 // Login or switch account: never reuse previous session's client caches.
@@ -96,17 +105,17 @@ export function Root(props) {
             storageClear();
         }
 
-    }, [data?.user]);
+    }, [data?.user, isSlideCopy]);
 
     if (props.code == 404 && !data?.page_status) {
         data.page_status = 404
     }
 
     useEffect(() => {
-        if (redirectUrl) {
+        if (redirectUrl && !isSlideCopy) {
             redirectTo(router, redirectUrl);
         }
-    }, [redirectUrl]);
+    }, [redirectUrl, isSlideCopy]);
 
 
     if (!isWebAuthReady(data, currentUser)) {
