@@ -6,7 +6,6 @@ import {
     BlockContent,
     BlockFooter,
     BlockTitle,
-    BlockDescription,
     BlockName,
     BlockActions,
 } from 'app/ui/molecules/page/page-block'
@@ -180,7 +179,8 @@ function DashboardStatHeader() {
                     <BlockTitle>
                         <Text className="text-card-foreground text-xl font-semibold">{currentUser.display_name}</Text>
                     </BlockTitle>
-                    <BlockDescription>
+                    {/* A View, not BlockDescription: that is a Text, and on native a badge inside it is clipped to its line height. */}
+                    <View className="flex-row">
                         <Badge
                             variant="secondary"
                             size="xs"
@@ -190,7 +190,7 @@ function DashboardStatHeader() {
                                 icon_url: currentUser.membership_icon_url
                             }}
                         />
-                    </BlockDescription>
+                    </View>
                 </BlockName>
                 <BlockActions>
                     <ProfileSwitcher hideTitle={true} className="u-neo-btn-link" accessibilityLabel={t('Switch profile')}>
