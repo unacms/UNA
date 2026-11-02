@@ -25,18 +25,15 @@ index b94a7dd..bbc0213 100644
 +    return require("react-native").AssetRegistry;
    }
  };
-diff --git a/node_modules/uniwind/uniwind.css b/node_modules/uniwind/uniwind.css
-index 13d20cb..f941697 100644
---- a/node_modules/uniwind/uniwind.css
-+++ b/node_modules/uniwind/uniwind.css
-@@ -592,9 +592,3 @@
-        }
-    }
+diff --git a/node_modules/uniwind/src/components/index.ts b/node_modules/uniwind/src/components/index.ts
+index 6fcad21..12a6cd3 100644
+--- a/node_modules/uniwind/src/components/index.ts
++++ b/node_modules/uniwind/src/components/index.ts
+@@ -307,4 +307,7 @@ module.exports = {
+     get XamlHost() {
+         return require('react-native').XamlHost
+     },
++    get AssetRegistry() {
++        return require('react-native').AssetRegistry
++    },
  }
--
--
--@theme {
--    --color-background: unset;
--    --app-foreground: unset;
--}
-\ No newline at end of file

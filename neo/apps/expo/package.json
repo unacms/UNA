@@ -72,7 +72,7 @@
     "jotai": "^2.16.0",
     "lucide-react-native": "1.66.0",
     "onesignal-expo-plugin": "^2.8.0",
-    "pusher-js": "8.6.0",
+    "pusher-js": "8.4.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-hook-form": "^7.91.0",

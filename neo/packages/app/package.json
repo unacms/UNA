@@ -17,7 +17,7 @@
     "flatted": "^3.3.1",
     "i18next": "^23.5.1",
     "marked": "18.1.2",
-    "pusher-js": "8.6.0",
+    "pusher-js": "8.4.0",
     "react-hook-form": "^7.91.0",
     "react-i18next": "^13.2.2",
     "solito": "4.3.0",
