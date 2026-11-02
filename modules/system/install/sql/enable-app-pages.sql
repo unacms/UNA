@@ -32,7 +32,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_privacy' AND `m
 
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_cooperator' AND `module`='system' AND `title_system`='_sys_page_block_title_system_cooperator' AND `title`='_sys_page_block_title_cooperator';
 
-UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard' AND `module`='system' AND `title_system`='_sys_page_block_title_dash_stats';
+UPDATE `sys_pages_blocks` SET `active_api`=1, `config_api`='{"designbox": {"bg": ["tablet", "desktop"]}}' WHERE `object`='sys_dashboard' AND `module`='system' AND `title_system`='_sys_page_block_title_dash_stats';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_admin' AND `module`='system' AND `title_system`='_sys_page_block_title_system_dashboard_admin' AND `title`='_sys_page_block_title_dashboard_admin';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_content' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_dashboard_content';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_audit' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_dashboard_audit';
