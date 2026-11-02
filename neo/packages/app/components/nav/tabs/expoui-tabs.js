@@ -20,6 +20,7 @@ import { pngBase64WithCircleMask } from 'app/lib/image/circle-png';
 import { getNativeOptimizedImageUrl } from 'app/lib/image-helpers';
 import { lucideAssetName, lucideDrawableName } from 'app/lib/platform/lucide-assets';
 import { getBadgeLabel, getOverflowBadgeTotal } from './badges';
+import { useLetterTabIcon } from './letter-avatar-icon';
 import {
     MORE_TAB_ICON,
     areTabBarLabelsHidden,
@@ -322,10 +323,12 @@ export default function ExpoUITabNavigator({
     const { setCurrentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
     const hideLabels = areTabBarLabelsHidden(TabList);
-    const avatarIcon = useAvatarTabIcon(isIos ? currentUser?.avatar : null);
-    // Own avatar as a tab icon: the `{profile}` item, or the dashboard in menus without one.
-    const hasProfileTab = TabList.some(isProfileTab);
-    const usesAvatarIcon = (tab) => (hasProfileTab ? isProfileTab(tab) : isDashboardTab(tab, currentUser));
+    const photoIcon = useAvatarTabIcon(isIos ? currentUser?.avatar : null);
+    // No photo: the letter avatar web shows, drawn into an image for UITabBar.
+    const letterIcon = useLetterTabIcon(isIos && currentUser && !currentUser.avatar ? currentUser : null, TAB_AVATAR_PT);
+    const avatarIcon = photoIcon ?? letterIcon.icon;
+    // Own avatar as a tab icon: the dashboard tab, as on web (footer.web.js) and in native-tabs.js.
+    const usesAvatarIcon = (tab) => isDashboardTab(tab, currentUser);
 
     const { visible, overflow, moreTabIndex } = useMemo(
         () => splitTabBarItems(TabList),
@@ -452,6 +455,7 @@ export default function ExpoUITabNavigator({
 
     return (
         <View className="flex-1">
+            {letterIcon.capture}
             <NativeTabs
                 key={tabsSessionKey}
                 hidden={!isShowTabs}
