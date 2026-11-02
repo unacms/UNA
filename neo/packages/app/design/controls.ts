@@ -1,4 +1,5 @@
 export { Modal } from 'app/design/controls/modal';
+export { Sheet } from 'app/design/controls/sheet';
 export { Button, ButtonRef, ButtonLink } from 'app/design/controls/buttons';
 export { ButtonsGroup } from 'app/design/controls/button-groups';
 

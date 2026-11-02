@@ -39,13 +39,13 @@ const modalSettings = appSetting('theme', 'modal');
 // Topmost modal wins Escape. Menus that preventDefault on the same keydown run first.
 const webModalEscapeStack: symbol[] = [];
 
-function ModalHeader({ title, headerBorder, onClose, closeRef }: { title?: ReactNode; headerBorder: boolean; onClose?: () => void; closeRef?: Ref<any> }) {
+function ModalHeader({ title, headerBorder, onClose, onBack, closeRef }: { title?: ReactNode; headerBorder: boolean; onClose?: () => void; onBack?: () => void; closeRef?: Ref<any> }) {
     const { t } = useTranslation();
     const align = !title && onClose ? 'end' : 'center';
     if (!title) return null;
     const type = typeof title;
     return (
-        <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header}`}>
+        <Row className={`items-center justify-${align} ${headerBorder ? modalSettings.header : modalSettings.header_plain}`}>
             {(title && type === 'string') && (
                 <View className='flex-1 px-16  absolute left-0 right-0 top-0 bottom-0 justify-center items-center'>
                     <Text className='text-xl text-center h-14 leading-14 font-bold text-card-foreground'
@@ -55,6 +55,11 @@ function ModalHeader({ title, headerBorder, onClose, closeRef }: { title?: React
                 </View>
             )}
             {(title && type !== 'string') && (title)}
+            {(onBack && type === 'string') && (
+                <View className='absolute left-3 top-0 bottom-0 justify-center items-center'>
+                    <NeoButton style="glass" controlSize="regular" borderShape="circle" image="ChevronLeft" accessibilityLabel={t('Back')} onPress={onBack} />
+                </View>
+            )}
             {(onClose && type === 'string') && (
                 <View ref={closeRef} className='absolute right-3 top-0 bottom-0 justify-center items-center'>
                     <NeoButton style="glass" controlSize="regular" borderShape="circle" image="X" accessibilityLabel={t('Close')} onPress={onClose} />
@@ -74,6 +79,8 @@ export type ModalProps = {
     outerClickClose?: boolean;
     /** String title renders the header with a close button; an element renders as-is. */
     title?: ReactNode;
+    /** With a string title: a back button before it (a step back inside the modal). */
+    onBack?: () => void;
     headerBorder?: boolean;
     /** RN Modal animation; defaults to fade on desktop, slide elsewhere. */
     animation?: 'none' | 'slide' | 'fade';
@@ -97,6 +104,7 @@ export function Modal({
     outerClickClose = true,
     onVisible,
     title,
+    onBack,
     headerBorder = true,
     maxWidth = 'max-w-3xl',
     children,
@@ -194,6 +202,9 @@ export function Modal({
     }, [onRequestClose, onClose, skipUnsavedGuard]);
 
     useEffect(() => {
+        // A hidden modal (kept mounted, as Sheet does) must not react to links pressed on the page.
+        const isShown = onVisible == null ? true : !!onVisible;
+        if (!isShown) return undefined;
         const subscription = emitter.addListener(EVENTS.link, (data: { action?: string }) => {
             if (data.action == 'pressed') {
                 tryClose();
@@ -203,7 +214,7 @@ export function Modal({
         return () => {
             subscription.remove()
         }
-    }, [tryClose])
+    }, [tryClose, onVisible])
 
     // Cleanup guard to prevent removeChild errors
     /*useEffect(() => {
@@ -413,6 +424,7 @@ export function Modal({
         title={title}
         headerBorder={headerBorder}
         onClose={tryClose}
+        onBack={onBack}
         closeRef={closeRef}
     />
         <Cnt
@@ -464,6 +476,7 @@ export function Modal({
                                         title={title}
                                         headerBorder={headerBorder}
                                         onClose={tryClose}
+                                        onBack={onBack}
                                     />
                                     <Cnt
                                         ref={scrollable ? scrollRef : undefined}
