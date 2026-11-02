@@ -73,18 +73,19 @@ const useIsoLayoutEffect = typeof document !== 'undefined' ? useLayoutEffect : u
 
 /**
  * Web: text the input holds that the form doesn't. Typing into a server-rendered form (or the
- * browser's autofill) before it hydrates reaches the DOM but not react-hook-form. It is read in a
- * layout effect, right after hydration, because the next render of the controlled input puts the
- * form's empty value back in the DOM. It is applied after the mount effects (the field's own
- * value sync and Form's first reset would empty it again), so call this after that sync.
+ * browser's autofill) before it hydrates reaches the DOM but not react-hook-form. It is read from
+ * the field's own input in a layout effect, right after hydration, because the next render of the
+ * controlled input puts the form's empty value back in the DOM. It is applied after the mount
+ * effects (the field's own value sync and Form's first reset would empty it again), so call this
+ * after that sync. On a client mount the input holds the form's value, so nothing happens.
  */
-function useTextFromBeforeHydration(name: string, inputId: string | undefined, onChange: (value: string) => void) {
+function useTextFromBeforeHydration(name: string, inputRef: { current: unknown }, onChange: (value: string) => void) {
     const { getValues } = useFormContext();
     const typedRef = useRef('');
 
     useIsoLayoutEffect(() => {
-        if (typeof document === 'undefined' || !name || !inputId) return;
-        const el = document.getElementById(inputId);
+        if (typeof document === 'undefined' || !name) return;
+        const el = inputRef.current;
         const isText =
             (el instanceof HTMLInputElement && TEXT_INPUT_TYPES.has(el.type)) || el instanceof HTMLTextAreaElement;
         if (isText && el.value) typedRef.current = el.value;
@@ -149,9 +150,6 @@ export function useFormField(props: any, options: FormFieldOptions = {}) {
         setValue(name, value);
     }, [syncValue, name, value, getValues, setValue]);
 
-    const inputId = getFormFieldDomId(name);
-    useTextFromBeforeHydration(name, inputId, field.onChange);
-
     const skipReturnKey =
         options.returnKey === false ||
         props.type === 'value' ||
@@ -162,6 +160,7 @@ export function useFormField(props: any, options: FormFieldOptions = {}) {
         skipReturnKey ? null : name,
         props.handleSubmit
     );
+    useTextFromBeforeHydration(name, inputRef, field.onChange);
 
     const fieldErrorText = Array.isArray(props.error) ? props.error[0] : props.error;
     const invalid = !!fieldErrorText;
@@ -178,7 +177,7 @@ export function useFormField(props: any, options: FormFieldOptions = {}) {
         onBlur,
         inputRef,
         returnKeyProps,
-        inputId,
+        inputId: getFormFieldDomId(name),
         errorId: invalid ? getFormFieldErrorDomId(name) : undefined,
         invalid,
     };
