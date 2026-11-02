@@ -30,7 +30,8 @@ const DASHBOARD_FALLBACK_ICONS = {
     friends: 'UsersRound',
     followers: 'UserPlus',
 }
-const dropdownTheme = appSetting('theme', 'dropdown')
+// The feed's card surface, so the dashboard's cards match the cards and blocks elsewhere.
+const DASHBOARD_CARD = cn(appSetting('theme', 'cards')['u-card-base'], 'p-1 relative z-0 w-full min-w-0')
 const menuSettings = appSetting('theme', 'dropdown_menu')
 const STAT_ICON_SIZE = menuSettings.icon_size || 20
 
@@ -60,7 +61,7 @@ function DashboardStatTile({ href, icon, title, count, trailing }) {
     const hasCount = count != null && count !== ''
 
     return (
-        <View className={cn(dropdownTheme.cnt, 'relative z-0 w-full min-w-0')}>
+        <View className={DASHBOARD_CARD}>
             <Link href={href} className="block w-full min-w-0" alt={title}>
                 <Row className={cn(menuSettings.item_ver, 'min-h-0 items-center py-2')}>
                     <View className="min-w-0 flex-auto gap-1">
@@ -165,7 +166,7 @@ function DashboardStatHeader() {
 
     // A card like the stat tiles below it, with their 12px inset (the card's p-1 plus p-2).
     return (
-        <View className={cn(dropdownTheme.cnt, 'relative z-0 w-full min-w-0')}>
+        <View className={DASHBOARD_CARD}>
             <BlockHeader className="items-center p-2">
                 <View className="flex-none">
                     <Profile
