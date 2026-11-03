@@ -59,17 +59,7 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
 
         $sThreadId = !empty($aData['threadId']) ? $aData['threadId'] : null;
 
-        if (class_exists('BxDolAiAguiAdapter')) {
-            $this->stream($aAgent['id'], $oMessage, $aParams, $sThreadId);
-            return;
-        }
-
-        try {
-            $sReply = $this->call($aAgent, $sPrompt !== '' ? $sPrompt : ' ');
-        } catch (Throwable $o) {
-            return echoJson(['code' => 500, 'msg' => $o->getMessage(), 'messages' => []]);
-        }
-        return echoJson(['code' => 200, 'msg' => $sReply, 'text' => $sReply]);
+        $this->stream($aAgent['id'], $oMessage, $aParams, $sThreadId);
     }
 
     /**
