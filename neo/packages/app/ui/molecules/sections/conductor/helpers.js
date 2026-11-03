@@ -306,7 +306,7 @@ function createConductorRoute(item, index, depth, parentIndex, link, canNavigate
         ident: item.ident || (depth > 0 ? 1 : 0),
         addon,
         image: item.image || '',
-        icon: item.icon || 'Circle',
+        icon: item.icon || '',
         // The item's `config` from UNA, else its own `settings`.
         menu_settings: (item.config && strToObj(item.config)) || item.settings,
         storageKeyValue: routeLink,

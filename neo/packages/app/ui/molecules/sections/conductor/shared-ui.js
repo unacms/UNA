@@ -198,11 +198,11 @@ export function FiltersButton({
 /**
  * Pill-shaped dropdown trigger. Highlights while the menu is open (via
  * DropdownMenuOpenContext) or when `isActive` says the selection is inside.
- * `compact` truncates the title and drops the placeholder 'Circle' icon.
+ * `compact` truncates the title.
  */
 function MenuTrigger({ title, icon, isActive = false, compact = false }) {
     const isOpen = useContext(DropdownMenuOpenContext) ?? false
-    const showIcon = Boolean(icon) && (!compact || icon !== 'Circle')
+    const showIcon = Boolean(icon)
     const highlighted = isOpen || isActive
     return (
         <Row

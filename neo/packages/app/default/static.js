@@ -130,6 +130,7 @@ const PageNotFound = () => {
                     <Text className="text-center text-base text-muted-foreground ">
                         {t('Page not found')}
                     </Text>
+                    <NeoButtonLink href="/" style="bordered" controlSize="regular" label={t('Go to the home page')} classNames={{ root: 'self-center mt-2' }} />
                 </View>
             </View>
         </>
@@ -194,6 +195,7 @@ const PageNotAllowed = () => {
                     <Text className="text-center text-base text-muted-foreground ">
                         {t('Page not allowed, sorry.')}
                     </Text>
+                    <NeoButtonLink href="/" style="bordered" controlSize="regular" label={t('Go to the home page')} classNames={{ root: 'self-center mt-2' }} />
                 </View>
             </View>
         </>
