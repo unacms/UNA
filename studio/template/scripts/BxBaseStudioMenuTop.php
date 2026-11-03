@@ -24,7 +24,7 @@ class BxBaseStudioMenuTop extends BxDolStudioMenuTop
     {
         // the dock's app items are context menu triggers on every Studio page, and the menu's actions (activate, uninstall)
         // run through the module JS object, so its script comes with the menu wherever the page itself does not load it
-        return array_merge(BxTemplStudioModules::getInstance()->getJs(), array('menu_top.js', 'context_menu.js'));
+        return array_merge(BxTemplStudioModules::getInstance()->getJs(), array('menu_top.js', 'context_menu.js', 'app_icons.js'));
     }
 
     function getJsObject()
