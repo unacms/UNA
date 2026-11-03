@@ -5,7 +5,7 @@ import { Animated, Easing, StyleSheet, View, useWindowDimensions } from 'react-n
 import { useIsFocused, getWindowSafeAreaInsets } from 'app/lib/hooks/router';
 import { isNativeTabsEnabled } from 'app/lib/util';
 import { nativeDriver } from 'app/lib/platform/animation';
-import { TabChromeProvider } from 'app/context/tab-chrome';
+import { TabChromeProvider, useScreenPagePath } from 'app/context/tab-chrome';
 import { TabRouteOverrideContext } from 'app/context/tab-route-override';
 import { usePathname } from 'expo-router';
 import { useCurrentUser, useCurrentUserStore } from 'app/context/user';
@@ -54,16 +54,16 @@ function useHostSlots() {
     return Array.from(slots.values());
 }
 
-function publishSlot(tabKey, node, chromeKey = tabKey, pushed = false, session = slotsSession) {
+function publishSlot(tabKey, node, chromeKey = tabKey, pushed = false, session = slotsSession, pagePath = null) {
     enterSession(session);
     const prev = slots.get(tabKey);
     if (!node && prev?.node) {
         return;
     }
-    if (prev?.node === node && prev?.chromeKey === chromeKey) {
+    if (prev?.node === node && prev?.chromeKey === chromeKey && prev?.pagePath === pagePath) {
         return;
     }
-    slots.set(tabKey, { tabKey, node, chromeKey, pushed, session });
+    slots.set(tabKey, { tabKey, node, chromeKey, pushed, session, pagePath });
     notifyHost();
 }
 
@@ -173,7 +173,7 @@ export function TabSlideHost({ sessionKey, backgroundColor }) {
                 pointerEvents="box-none"
                 style={[styles.pageLayer, { bottom: bottomReserve, backgroundColor }]}
             >
-                {ordered.map(({ tabKey, node, chromeKey, pushed }) => {
+                {ordered.map(({ tabKey, node, chromeKey, pushed, pagePath }) => {
                     const focused = tabKey === activeTabKey;
                     return (
                         <Animated.View
@@ -186,7 +186,7 @@ export function TabSlideHost({ sessionKey, backgroundColor }) {
                                 { transform: [{ translateX: getTranslate(tabKey, width) }] },
                             ]}
                         >
-                            <TabChromeProvider tabKey={chromeKey || tabKey} pushed={!!pushed}>
+                            <TabChromeProvider tabKey={chromeKey || tabKey} pushed={!!pushed} pagePath={pagePath}>
                                 <TabRouteOverrideContext.Provider
                                     value={{
                                         pathname: focused ? realPathname : tabKey,
@@ -216,6 +216,8 @@ export function TabSlide({ tabKey, chromeKey = tabKey, pushed = false, ready = t
     const session = useCurrentUserStore((state) => getTabsSessionKey(state.currentUser));
     const wasActiveRef = useRef(false);
     const nativeTabs = isNativeTabsEnabled();
+    // The copy carries the screen's page path, so chrome that reads it (cover Back) matches the screen.
+    const pagePath = useScreenPagePath();
     const lastNodeRef = useRef(null);
     if (ready && children) {
         lastNodeRef.current = children;
@@ -224,9 +226,9 @@ export function TabSlide({ tabKey, chromeKey = tabKey, pushed = false, ready = t
 
     useLayoutEffect(() => {
         if (!nativeTabs || !tabKey || !isFocused) return undefined;
-        publishSlot(tabKey, node, chromeKey, pushed, session);
+        publishSlot(tabKey, node, chromeKey, pushed, session, pagePath);
         return undefined;
-    }, [nativeTabs, node, tabKey, chromeKey, pushed, isFocused, session]);
+    }, [nativeTabs, node, tabKey, chromeKey, pushed, isFocused, session, pagePath]);
 
     useLayoutEffect(() => {
         if (!nativeTabs) return;
