@@ -14,6 +14,29 @@ class BxDolStudioDesignerQuery extends BxDolStudioPageQuery
         parent::__construct();
     }
 
+    /**
+     * A template's style options (<prefix>_*, Studio > the template > Styles) with its mix's values over them.
+     * @return array name => value
+     */
+    public function getTemplateStyles($sPrefix, $iMixId = 0)
+    {
+        $aResult = $this->getPairs("SELECT `name`, `value` FROM `sys_options` WHERE `name` LIKE :prefix", 'name', 'value', [
+            'prefix' => $sPrefix . '\_%'
+        ]);
+
+        if((int)$iMixId > 0)
+            $aResult = array_merge($aResult, $this->getPairs("SELECT `option`, `value` FROM `sys_options_mixes2options` WHERE `mix_id`=:mix_id", 'option', 'value', [
+                'mix_id' => (int)$iMixId
+            ]));
+
+        return $aResult;
+    }
+
+    public function getMixTitle($iMixId)
+    {
+        return $this->getOne("SELECT `title` FROM `sys_options_mixes` WHERE `id`=:id", ['id' => (int)$iMixId]);
+    }
+
     public function getInjection($sName)
     {
         return $this->getOne("SELECT `data` FROM `sys_injections` WHERE `name`=:name", [

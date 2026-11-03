@@ -554,3 +554,500 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     background-color: #27272a;
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
+
+/*--- Template: the installed templates as cards ---*/
+.adm-dsg-tmpl-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 0.75rem;
+}
+.adm-dsg-tmpl-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+.adm-dsg-tmpl-card:has([aria-pressed="true"]) {
+    box-shadow: 0 0 0 2px #2563eb;
+}
+.adm-dsg-tmpl-icon {
+    flex: none;
+    width: 3rem;
+    height: 3rem;
+}
+.adm-dsg-tmpl-icon img,
+.adm-dsg-tmpl-icon .sys-icon {
+    display: block;
+    width: 3rem;
+    height: 3rem;
+    font-size: 2rem;
+    line-height: 3rem;
+    text-align: center;
+}
+.adm-dsg-tmpl-text {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+}
+.adm-dsg-tmpl-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    color: #18181b;
+}
+.adm-dsg-tmpl-meta {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #52525b;
+}
+.adm-dsg-tmpl-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+.adm-dsg-tmpl-open {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+.adm-dsg-tmpl-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+}
+.adm-dsg-tmpl-footer-text {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #52525b;
+}
+/* The pinned footer is one row: on narrow screens the button alone (the Default badge names the template). */
+@media (max-width: 40rem) {
+    .adm-dsg-tmpl-footer-text {
+        display: none;
+    }
+}
+.dark .adm-dsg-tmpl-card {
+    background-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+.dark .adm-dsg-tmpl-card:has([aria-pressed="true"]) {
+    box-shadow: 0 0 0 2px #60a5fa;
+}
+.dark .adm-dsg-tmpl-title {
+    color: #f4f4f5;
+}
+.dark .adm-dsg-tmpl-meta,
+.dark .adm-dsg-tmpl-footer-text {
+    color: #a1a1aa;
+}
+
+/*--- Template: a design-only sketch of the site on a desktop, a tablet and a phone ---
+   Everything is sized in container units of .adm-dsg-mk-wrap, so the sketch scales with the block.
+   The template's look comes in as --mk-* variables (getTemplateMockup, designer.js previewTemplate). */
+.adm-dsg-mk-figure {
+    margin: 0;
+}
+.adm-dsg-mk-wrap {
+    container-type: inline-size;
+    padding: 1.5rem 1.5rem 0;
+    border-radius: 0.75rem;
+    background: linear-gradient(160deg, #e4e4e7, #f4f4f5 60%);
+    overflow: hidden;
+}
+.dark .adm-dsg-mk-wrap {
+    background: linear-gradient(160deg, #27272a, #18181b 60%);
+}
+.adm-dsg-mk {
+    position: relative;
+    height: 50cqw;
+    font-family: var(--mk-font);
+}
+.adm-dsg-mk span,
+.adm-dsg-mk i {
+    display: block;
+    box-sizing: border-box;
+}
+.adm-dsg-mk i {
+    font-style: normal;
+}
+
+/* Desktop: a browser window with the favicon and site name in its tab. */
+.adm-dsg-mk-desktop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex !important;
+    flex-direction: column;
+    width: 74cqw;
+    height: 46cqw;
+    overflow: hidden;
+    border-radius: 1cqw;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12), 0 2cqw 4cqw -1cqw rgba(0, 0, 0, 0.25);
+}
+.adm-dsg-mk-chrome {
+    flex: none;
+    background-color: #e4e4e7;
+}
+.adm-dsg-mk-tabs {
+    display: flex !important;
+    align-items: flex-end;
+    gap: 1.2cqw;
+    height: 3.2cqw;
+    padding: 0 1.2cqw;
+}
+.adm-dsg-mk-lights {
+    display: flex !important;
+    gap: 0.5cqw;
+    align-self: center;
+}
+.adm-dsg-mk-lights i {
+    width: 0.9cqw;
+    height: 0.9cqw;
+    border-radius: 9999px;
+    background-color: #f87171;
+}
+.adm-dsg-mk-lights i:nth-child(2) {
+    background-color: #fbbf24;
+}
+.adm-dsg-mk-lights i:nth-child(3) {
+    background-color: #4ade80;
+}
+.adm-dsg-mk-tab {
+    display: flex !important;
+    align-items: center;
+    gap: 0.6cqw;
+    width: 16cqw;
+    height: 2.4cqw;
+    padding: 0 0.9cqw;
+    border-radius: 0.7cqw 0.7cqw 0 0;
+    background-color: #fff;
+}
+.adm-dsg-mk-favicon {
+    flex: none;
+    width: 1.3cqw;
+    height: 1.3cqw;
+    object-fit: contain;
+}
+.adm-dsg-mk-tab-title,
+.adm-dsg-mk-address {
+    overflow: hidden;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 1.05cqw;
+    line-height: 1.4cqw;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #3f3f46;
+}
+.adm-dsg-mk-bar {
+    padding: 0.6cqw 1.2cqw;
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+.adm-dsg-mk-address {
+    padding: 0.35cqw 1cqw;
+    border-radius: 9999px;
+    background-color: #f4f4f5;
+    color: #52525b;
+}
+
+/* The site, in the template's colors. */
+.adm-dsg-mk-site {
+    display: flex !important;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    background-color: var(--mk-page);
+}
+.adm-dsg-mk-header {
+    display: flex !important;
+    flex: none;
+    align-items: center;
+    gap: 1.2cqw;
+    height: 4cqw;
+    padding: 0 1.6cqw;
+    background-color: var(--mk-header);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+}
+.adm-dsg-mk-logo {
+    display: block;
+    flex: none;
+    height: 2cqw;
+    max-width: 14cqw;
+    object-fit: contain;
+    object-position: left center;
+}
+.adm-dsg-mk-nav {
+    display: flex !important;
+    flex: 1 1 auto;
+    gap: 1.2cqw;
+    margin-left: 1cqw;
+}
+.adm-dsg-mk-nav i {
+    width: 4cqw;
+    height: 0.7cqw;
+    border-radius: 9999px;
+    background-color: var(--mk-header-ink);
+    opacity: 0.45;
+}
+.adm-dsg-mk-nav i:first-child {
+    opacity: 0.85;
+}
+.adm-dsg-mk-search {
+    flex: none;
+    width: 10cqw;
+    height: 2.2cqw;
+    margin-left: auto;
+    border-radius: 9999px;
+    background-color: color-mix(in srgb, var(--mk-header-ink) 10%, transparent);
+}
+.adm-dsg-mk-button {
+    flex: none;
+    width: 6cqw;
+    height: 2.2cqw;
+    border-radius: min(var(--mk-radius), 1.1cqw);
+    background-color: var(--mk-accent);
+}
+.adm-dsg-mk-button.adm-dsg-mk-wide {
+    width: 100%;
+    margin-top: 0.8cqw;
+}
+.adm-dsg-mk-dot {
+    flex: none;
+    width: 2.2cqw;
+    height: 2.2cqw;
+    border-radius: 9999px;
+    background-color: color-mix(in srgb, var(--mk-accent) 30%, var(--mk-block));
+}
+.adm-dsg-mk-header .adm-dsg-mk-dot {
+    background-color: color-mix(in srgb, var(--mk-header-ink) 25%, var(--mk-header));
+}
+.adm-dsg-mk-body {
+    display: flex !important;
+    flex: 1 1 auto;
+    gap: 1.2cqw;
+    min-height: 0;
+    padding: 1.4cqw 1.6cqw;
+    overflow: hidden;
+}
+.adm-dsg-mk-main {
+    display: flex !important;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 1.2cqw;
+    min-width: 0;
+}
+.adm-dsg-mk-side {
+    display: flex !important;
+    flex: none;
+    flex-direction: column;
+    gap: 1.2cqw;
+    width: 18cqw;
+}
+/* The site name in the template's font and heading color, the one bit of real text in the sketch. */
+.adm-dsg-mk-heading {
+    flex: none;
+    overflow: hidden;
+    font-size: 2.2cqw;
+    font-weight: 700;
+    line-height: 2.8cqw;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--mk-text);
+}
+.adm-dsg-mk-card {
+    flex: none;
+    padding: 1.2cqw;
+    border: 1px solid var(--mk-block-border);
+    border-radius: min(var(--mk-radius), 1.2cqw);
+    background-color: var(--mk-block);
+}
+.adm-dsg-mk-author {
+    display: flex !important;
+    align-items: center;
+    gap: 0.9cqw;
+}
+.adm-dsg-mk-lines {
+    display: flex !important;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 0.6cqw;
+}
+.adm-dsg-mk-lines i {
+    height: 0.7cqw;
+    border-radius: 9999px;
+    background-color: color-mix(in srgb, var(--mk-text) 22%, transparent);
+}
+.adm-dsg-mk-lines i:first-child {
+    background-color: color-mix(in srgb, var(--mk-text) 55%, transparent);
+}
+.adm-dsg-mk-lines i.adm-dsg-mk-short {
+    width: 55%;
+    background-color: color-mix(in srgb, var(--mk-muted) 40%, transparent);
+}
+.adm-dsg-mk-photo {
+    height: 9cqw;
+    margin-top: 1cqw;
+    border-radius: min(var(--mk-radius), 0.8cqw);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--mk-accent) 45%, var(--mk-block)), color-mix(in srgb, var(--mk-accent) 15%, var(--mk-block)));
+}
+.adm-dsg-mk-actions {
+    display: flex !important;
+    gap: 1.6cqw;
+    margin-top: 1cqw;
+}
+.adm-dsg-mk-actions i {
+    width: 3.5cqw;
+    height: 0.7cqw;
+    border-radius: 9999px;
+    background-color: color-mix(in srgb, var(--mk-muted) 45%, transparent);
+}
+.adm-dsg-mk-people {
+    display: flex !important;
+    gap: 0.6cqw;
+}
+
+/* Tablet and phone: devices in front of the window, the same site at their sizes. */
+.adm-dsg-mk-tablet,
+.adm-dsg-mk-phone {
+    position: absolute;
+    bottom: -2cqw;
+    padding: 0.9cqw;
+    background-color: #18181b;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset, 0 2cqw 4cqw -1cqw rgba(0, 0, 0, 0.35);
+}
+.adm-dsg-mk-tablet {
+    right: 0;
+    width: 28cqw;
+    height: 38cqw;
+    border-radius: 2.4cqw;
+}
+.adm-dsg-mk-phone {
+    right: 22cqw;
+    width: 13.5cqw;
+    height: 28cqw;
+    padding: 0.6cqw;
+    border-radius: 2.4cqw;
+}
+.adm-dsg-mk-screen {
+    display: flex !important;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 1.6cqw;
+    background-color: var(--mk-page);
+}
+.adm-dsg-mk-phone .adm-dsg-mk-screen {
+    border-radius: 1.9cqw;
+}
+.adm-dsg-mk-tablet .adm-dsg-mk-header {
+    height: 3.4cqw;
+    gap: 0.9cqw;
+    padding: 0 1.2cqw;
+}
+.adm-dsg-mk-tablet .adm-dsg-mk-search {
+    width: 6cqw;
+    height: 1.8cqw;
+}
+.adm-dsg-mk-tablet .adm-dsg-mk-dot,
+.adm-dsg-mk-phone .adm-dsg-mk-dot {
+    width: 1.8cqw;
+    height: 1.8cqw;
+}
+.adm-dsg-mk-tablet .adm-dsg-mk-logo {
+    height: 1.6cqw;
+    max-width: 10cqw;
+}
+.adm-dsg-mk-tablet .adm-dsg-mk-body,
+.adm-dsg-mk-phone .adm-dsg-mk-body {
+    padding: 1cqw;
+}
+.adm-dsg-mk-tablet .adm-dsg-mk-card,
+.adm-dsg-mk-phone .adm-dsg-mk-card {
+    padding: 0.9cqw;
+}
+.adm-dsg-mk-tablet .adm-dsg-mk-photo {
+    height: 8cqw;
+}
+.adm-dsg-mk-phone .adm-dsg-mk-photo {
+    height: 5.5cqw;
+}
+.adm-dsg-mk-status {
+    flex: none;
+    height: 2.2cqw;
+    padding: 0.5cqw 1.4cqw 0;
+    background-color: var(--mk-status);
+}
+.adm-dsg-mk-time {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 0.85cqw;
+    font-weight: 600;
+    line-height: 1.2cqw;
+    color: var(--mk-status-ink);
+}
+.adm-dsg-mk-phone .adm-dsg-mk-header {
+    height: 3cqw;
+    gap: 0.6cqw;
+    padding: 0 1cqw;
+    justify-content: space-between;
+}
+.adm-dsg-mk-phone .adm-dsg-mk-logo {
+    height: 1.6cqw;
+    max-width: 7cqw;
+}
+.adm-dsg-mk-phone .adm-dsg-mk-lines i {
+    height: 0.55cqw;
+}
+.adm-dsg-mk-phone .adm-dsg-mk-actions {
+    gap: 1cqw;
+}
+.adm-dsg-mk-phone .adm-dsg-mk-actions i {
+    width: 2cqw;
+    height: 0.55cqw;
+}
+.adm-dsg-mk-tabbar {
+    display: flex !important;
+    flex: none;
+    justify-content: space-around;
+    padding: 0.9cqw 0.6cqw 1.2cqw;
+    background-color: var(--mk-header);
+    box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.06);
+}
+.adm-dsg-mk-tabbar i {
+    width: 1.4cqw;
+    height: 1.4cqw;
+    border-radius: 0.4cqw;
+    background-color: var(--mk-header-ink);
+    opacity: 0.4;
+}
+.adm-dsg-mk-tabbar i:first-child {
+    background-color: var(--mk-accent);
+    opacity: 1;
+}
+.adm-dsg-mk-caption {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #52525b;
+}
+.adm-dsg-mk-template {
+    display: inline;
+    font-weight: 500;
+    color: #18181b;
+}
+.dark .adm-dsg-mk-caption {
+    color: #a1a1aa;
+}
+.dark .adm-dsg-mk-template {
+    color: #f4f4f5;
+}

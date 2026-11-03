@@ -288,6 +288,98 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
     }
 
     /**
+     * How a template looks, for the Template page's sketch: its colors, corners and font from its style options and
+     * default mix (Lucid, Protean, Decorous), or a neutral look in its theme color for those without (Artificer, Ocean).
+     * Every value is checked to be a plain color, length or font list, since it goes into a style attribute.
+     * @return array ['mix' => mix title or '', 'vars' => CSS variable => value]
+     */
+    protected function getTemplateLook($aModule)
+    {
+        $sPrefix = $aModule['name'];
+        $iMix = (int)getParam($sPrefix . '_default_mix');
+        $aStyles = $this->oDb->getTemplateStyles($sPrefix, $iMix);
+        $fStyle = function($aNames) use ($aStyles, $sPrefix) {
+            foreach($aNames as $sName)
+                if(isset($aStyles[$sPrefix . '_' . $sName]) && trim($aStyles[$sPrefix . '_' . $sName]) !== '')
+                    return trim($aStyles[$sPrefix . '_' . $sName]);
+            return '';
+        };
+
+        $sTheme = $this->getTemplateThemeColor($aModule);
+        $aLook = [
+            'page' => [$fStyle(['body_bg_color']), '#f4f4f5'],
+            'header' => [$fStyle(['header_bg_color']), $sTheme],
+            'header-ink' => [$fStyle(['menu_main_font_color', 'header_icon_color']), ''],
+            'block' => [$fStyle(['block_bg_color', 'card_bg_color']), '#ffffff'],
+            'block-border' => [$fStyle(['block_border_color']), 'rgba(0, 0, 0, 0.08)'],
+            'radius' => [$fStyle(['block_border_radius']), '12px'],
+            'text' => [$fStyle(['font_color_default']), '#18181b'],
+            'muted' => [$fStyle(['font_color_grayed']), '#71717a'],
+            'accent' => [$fStyle(['button_nlp_bg_color', 'button_lgp_bg_color', 'button_lg_bg_color', 'body_link_color']), '#2563eb'],
+            'accent-ink' => [$fStyle(['button_nlp_font_color', 'button_lgp_font_color', 'button_lg_font_color']), '#ffffff'],
+            'font' => [$fStyle(['font_family']), 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'],
+        ];
+
+        $aVars = [];
+        foreach($aLook as $sKey => list($sValue, $sDefault)) {
+            if($sKey == 'font')
+                $bValid = (bool)preg_match('/^[\w\s,.\'"-]+$/u', $sValue);
+            else if($sKey == 'radius')
+                $bValid = (bool)preg_match('/^\d+(\.\d+)?(px|rem|em|%)?$/', $sValue);
+            else
+                $bValid = (bool)preg_match('/^(#[0-9a-f]{3,8}|rgba?\([\d\s.,%]+\)|[a-z]+)$/i', $sValue);
+
+            $aVars[$sKey] = $bValid ? $sValue : $sDefault;
+        }
+
+        // Header text the colors don't give: dark or light, whichever reads on the header.
+        if($aVars['header-ink'] === '')
+            $aVars['header-ink'] = $this->getInkFor($aVars['header']);
+
+        return [
+            'mix' => $iMix ? (string)$this->oDb->getMixTitle($iMix) : '',
+            'vars' => $aVars,
+        ];
+    }
+
+    /**
+     * The theme color a template's own _header_meta.html sets (else the base template's), as browsers use it.
+     */
+    protected function getTemplateThemeColor($aModule)
+    {
+        $aFiles = [BX_DIRECTORY_PATH_MODULES . $aModule['path'] . 'data/template/system/_header_meta.html', BX_DIRECTORY_PATH_ROOT . 'template/_header_meta.html'];
+        foreach($aFiles as $sFile)
+            if(file_exists($sFile) && preg_match('/name="theme-color"\s+content="(#[0-9a-fA-F]{3,8})"/', file_get_contents($sFile), $aMatch))
+                return strtolower($aMatch[1]);
+
+        return '#ffffff';
+    }
+
+    /**
+     * Near-black or white for text on a color (#rgb, #rrggbb, rgb() or rgba()), whichever contrasts more (WCAG luminance).
+     */
+    protected function getInkFor($sColor)
+    {
+        if(preg_match('/^#([0-9a-f]{3}|[0-9a-f]{6})/i', $sColor, $aMatch)) {
+            $sHex = strlen($aMatch[1]) == 3 ? preg_replace('/(.)/', '$1$1', $aMatch[1]) : $aMatch[1];
+            $aRgb = [hexdec(substr($sHex, 0, 2)), hexdec(substr($sHex, 2, 2)), hexdec(substr($sHex, 4, 2))];
+        }
+        else if(preg_match('/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i', $sColor, $aMatch))
+            $aRgb = [(int)$aMatch[1], (int)$aMatch[2], (int)$aMatch[3]];
+        else
+            return '#18181b';
+
+        $fLuminance = 0;
+        foreach([0.2126, 0.7152, 0.0722] as $i => $fWeight) {
+            $fChannel = min(255, $aRgb[$i]) / 255;
+            $fChannel = $fChannel <= 0.03928 ? $fChannel / 12.92 : pow(($fChannel + 0.055) / 1.055, 2.4);
+            $fLuminance += $fWeight * $fChannel;
+        }
+
+        return ($fLuminance + 0.05) / (0.0099 + 0.05) > 1.05 / ($fLuminance + 0.05) ? '#18181b' : '#ffffff';
+    }
+
+    /**
      * The URL of a default icon as the site finds it: the site template's own copy in its images/icons, else the system's.
      * @return string, '' when there is neither
      */

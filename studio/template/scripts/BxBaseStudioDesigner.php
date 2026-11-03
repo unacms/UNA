@@ -34,6 +34,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
     protected $sPwaIframeId = 'adm-dsg-pwa-iframe';
     protected $sSettingsFormId = 'adm-dsg-settings-form';
     protected $sSettingsIframeId = 'adm-dsg-settings-iframe';
+    protected $sTemplatesFormId = 'adm-dsg-templates-form';
 
     public function __construct($sPage = '')
     {
@@ -63,7 +64,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
 
         $aMenu = [];
         $aMenuItems = [
-            BX_DOL_STUDIO_DSG_TYPE_GENERAL => ['icon' => 'mi-dsg-general.svg'],
+            BX_DOL_STUDIO_DSG_TYPE_GENERAL => ['icon' => 'mi-dsg-general.svg', 'title' => '_adm_dsg_lmi_cpt_template'], // _adm_lmi_cpt_general is other apps' too
             BX_DOL_STUDIO_DSG_TYPE_LOGO => ['icon' => 'mi-dsg-logo.svg'],
             BX_DOL_STUDIO_DSG_TYPE_ICON => ['icon' => 'mi-dsg-icon.svg'],
             BX_DOL_STUDIO_DSG_TYPE_COVER => ['icon' => 'mi-dsg-cover.svg'],
@@ -78,7 +79,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 'icon' => $aItem['icon'],
                 'icon_bg' => true,
                 'link' => BX_DOL_URL_STUDIO . 'designer.php?page=' . $sMenuItem,
-                'title' => _t('_adm_lmi_cpt_' . $sMenuItem),
+                'title' => _t(isset($aItem['title']) ? $aItem['title'] : '_adm_lmi_cpt_' . $sMenuItem),
                 'selected' => $sMenuItem == $this->sPage
             ];
 
@@ -90,52 +91,179 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         $sJsObject = $this->getPageJsObject();
         $oTemplate = BxDolStudioTemplate::getInstance();
 
-        $sResult = '';
-
-        $sTemplate = getParam('template');
+        $sDefault = getParam('template');
         $aTemplates = get_templates_array(true, false);
 
-        $aTmplVarsTemplates = array ();
-        foreach($aTemplates as $sUri => $aTemplate) {
-        	$sIcon = $this->getModuleIcon($aTemplate, 'store');
-	        $bIcon = strpos($sIcon, '.') === false && strcmp(substr($sIcon, 0, 10), 'data:image') != 0;
+        // Each template's look, with the logos and icons the site would show in it: the logo helpers follow sLogoTemplate.
+        $sLogoTemplate = $this->sLogoTemplate;
+        $aCards = [];
+        $aPreviews = [];
+        foreach($aTemplates as $sUri => $aModule) {
+            $this->sLogoTemplate = $aModule['name'];
+            $aPreviews[$sUri] = $this->getTemplatePreview($aModule);
 
-            $aTmplVarsTemplates[] = array(
+            $sIcon = $this->getModuleIcon($aModule, 'store');
+            $bIcon = strpos($sIcon, '.') === false && strcmp(substr($sIcon, 0, 10), 'data:image') != 0;
+            $sTitle = htmlspecialchars_adv($aModule['title']);
+
+            $aCards[] = [
+                'js_object' => $sJsObject,
                 'uri' => $sUri,
-                'title' => htmlspecialchars_adv($aTemplate['title']),
-                'version' => htmlspecialchars_adv($aTemplate['version']),
-                'vendor' => htmlspecialchars_adv($aTemplate['vendor']),
-            	'bx_if:icon' => array (
-	                'condition' => $bIcon,
-	                'content' => array('icon' => $sIcon),
-	            ),
-                'bx_if:image' => array (
-	                'condition' => !$bIcon,
-	                'content' => array('icon_url' => $sIcon),
-	            ),
-                'bx_if:default' => array (
-                    'condition' => $sUri == $sTemplate,
-                    'content' => array (),
-                ),
-                'bx_if:make_default' => array (
-                    'condition' => $sUri != $sTemplate,
-                    'content' => array(
-                        'js_object' => $sJsObject,
-                        'uri' => $sUri
-                    ),
-                )
-            );
+                'title' => $sTitle,
+                'title_attr' => bx_html_attribute($aModule['title']),
+                'version' => htmlspecialchars_adv($aModule['version']),
+                'vendor' => htmlspecialchars_adv($aModule['vendor']),
+                'pressed' => $sUri == $sDefault ? 'true' : 'false',
+                'bx_if:icon' => [
+                    'condition' => $bIcon,
+                    'content' => ['icon' => $sIcon],
+                ],
+                'bx_if:image' => [
+                    'condition' => !$bIcon,
+                    'content' => ['icon_url' => $sIcon],
+                ],
+                'bx_if:default' => [
+                    'condition' => $sUri == $sDefault,
+                    'content' => [],
+                ],
+            ];
         }
+        $this->sLogoTemplate = $sLogoTemplate;
 
-        $sContent  = $sResult ? MsgBox($sResult, 10) : '';
-        $sContent .= $oTemplate->parseHtmlByName('templates.html', array(
-            'bx_repeat:templates' => $aTmplVarsTemplates,
-        ));
+        $sDesignerUrl = BX_DOL_URL_STUDIO . 'designer.php?page=';
+        $sDefaultTitle = isset($aTemplates[$sDefault]) ? $aTemplates[$sDefault]['title'] : $sDefault;
+        $aForm = [
+            'form_attrs' => [
+                'id' => $this->sTemplatesFormId,
+                'name' => $this->sTemplatesFormId,
+                'action' => '',
+                'method' => 'post',
+                'onsubmit' => 'return false;',
+            ],
+            'params' => [
+                'db' => [
+                    'table' => '',
+                    'key' => '',
+                    'uri' => '',
+                    'uri_title' => '',
+                    'submit_name' => 'none'
+                ],
+            ],
+            'inputs' => [
+                'templates_section' => [
+                    'type' => 'block_header',
+                    'name' => 'templates_section',
+                    'caption' => _t('_adm_dsg_txt_tmpl_section_list'),
+                ],
+                'templates_info' => [
+                    'type' => 'custom',
+                    'name' => 'templates_info',
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_tmpl_section_list')]),
+                ],
+                'templates' => [
+                    'type' => 'custom',
+                    'name' => 'templates',
+                    'content' => $oTemplate->parseHtmlByName('dsr_templates_list.html', ['bx_repeat:templates' => $aCards]),
+                ],
+                'preview_section' => [
+                    'type' => 'block_header',
+                    'name' => 'preview_section',
+                    'caption' => _t('_adm_dsg_txt_tmpl_section_preview'),
+                ],
+                'preview_info' => [
+                    'type' => 'custom',
+                    'name' => 'preview_info',
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', [
+                        'text' => _t('_adm_dsg_inf_tmpl_section_preview', $sDesignerUrl . BX_DOL_STUDIO_DSG_TYPE_LOGO, $sDesignerUrl . BX_DOL_STUDIO_DSG_TYPE_ICON, $sDesignerUrl . BX_DOL_STUDIO_DSG_TYPE_PWA)
+                    ]),
+                ],
+                'preview' => [
+                    'type' => 'custom',
+                    'name' => 'preview',
+                    'content' => $this->getTemplateMockup(isset($aPreviews[$sDefault]) ? $aPreviews[$sDefault] : reset($aPreviews), $aPreviews),
+                ],
+                'header_footer' => [ // the last section is the block's pinned footer (page.css): where the default is chosen
+                    'type' => 'block_header',
+                ],
+                'footer' => [
+                    'type' => 'custom',
+                    'name' => 'footer',
+                    'content' => $oTemplate->parseHtmlByName('dsr_templates_footer.html', [
+                        'text' => _t('_adm_dsg_txt_tmpl_footer', htmlspecialchars_adv($sDefaultTitle)),
+                        'settings_url' => $sDesignerUrl . BX_DOL_STUDIO_DSG_TYPE_SETTINGS,
+                    ]),
+                ],
+            ]
+        ];
 
-        return $oTemplate->parseHtmlByName('designer.html', array(
-            'content' => $sContent,
+        $oForm = new BxTemplStudioFormView($aForm, $oTemplate);
+
+        return $oTemplate->parseHtmlByName('designer.html', [
+            'content' => $oForm->getCode(),
             'js_content' => $this->getPageJsCode()
-        ));
+        ]);
+    }
+
+    /**
+     * What the Template page sketch shows for a template: its look, and the logo, mark and favicon the site uses in it.
+     * Call with sLogoTemplate set to the template.
+     */
+    protected function getTemplatePreview($aModule)
+    {
+        $aSources = $this->getLogoSources();
+        $fImage = function($sType) use ($aSources) {
+            if(empty($aSources[$sType]) || $aSources[$sType]['source'] == BxDolDesigns::LOGO_SOURCE_NONE)
+                return '';
+            if($aSources[$sType]['source'] == BxDolDesigns::LOGO_SOURCE_INLINE)
+                return 'data:image/svg+xml;base64,' . base64_encode($aSources[$sType]['code']);
+            return $aSources[$sType]['url'];
+        };
+
+        $sLogo = $fImage('logo');
+        $sMark = $this->isLogoDrawn('mark') ? $fImage('mark') : '';
+
+        $sFavicon = $this->getIconUrl('icon_svg');
+        if(empty($sFavicon))
+            $sFavicon = $this->getIconUrl('icon');
+        if(empty($sFavicon))
+            $sFavicon = $this->getIconDefaultUrl('favicon.svg');
+
+        $aPwa = BxDolDesigns::getPwaSettings();
+        $aLook = $this->getTemplateLook($aModule);
+        $aLook['vars']['status'] = $aPwa['theme_color']['value'] !== '' ? $aPwa['theme_color']['value'] : $this->getTemplateThemeColor($aModule);
+        $aLook['vars']['status-ink'] = $this->getInkFor($aLook['vars']['status']);
+
+        return [
+            'title' => $aModule['title'],
+            'colors' => $aLook['mix'] !== '' ? _t('_adm_dsg_txt_tmpl_colors_mix', $aLook['mix']) : _t('_adm_dsg_txt_tmpl_colors_own'),
+            'vars' => $aLook['vars'],
+            'logo' => $sLogo,
+            'mark' => $sMark !== '' ? $sMark : $sLogo,
+            'favicon' => $sFavicon,
+        ];
+    }
+
+    /**
+     * The design-only sketch of the site in a template: a desktop browser window, a tablet and a phone, drawn in the
+     * template's colors with the site's logo, favicon and name. designer.js (previewTemplate) switches templates.
+     */
+    protected function getTemplateMockup($aPreview, $aPreviews)
+    {
+        $aStyle = [];
+        foreach($aPreview['vars'] as $sKey => $sValue)
+            $aStyle[] = '--mk-' . $sKey . ': ' . $sValue;
+
+        return BxDolStudioTemplate::getInstance()->parseHtmlByName('dsr_template_mockup.html', [
+            'style' => bx_html_attribute(implode('; ', $aStyle)),
+            'template' => htmlspecialchars_adv($aPreview['title']),
+            'colors' => htmlspecialchars_adv($aPreview['colors']),
+            'site' => htmlspecialchars_adv(getParam('site_title')),
+            'host' => htmlspecialchars_adv(parse_url(BX_DOL_URL_ROOT, PHP_URL_HOST)),
+            'logo' => bx_html_attribute($aPreview['logo']),
+            'mark' => bx_html_attribute($aPreview['mark']),
+            'favicon' => bx_html_attribute($aPreview['favicon']),
+            'data' => json_encode($aPreviews, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
+        ]);
     }
 
     protected function getLogo()
@@ -1300,35 +1428,10 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
             'name' => bx_process_output($aPwa['name']['used']),
             'short_name' => bx_process_output($aPwa['short_name']['used']),
             'background' => bx_html_attribute($sBackground),
-            'background_ink' => $this->getPwaInk($sBackground),
+            'background_ink' => $this->getInkFor($sBackground),
             'theme' => bx_html_attribute($sTheme),
-            'theme_ink' => $this->getPwaInk($sTheme),
+            'theme_ink' => $this->getInkFor($sTheme),
         ]);
-    }
-
-    /**
-     * Text color for a background (#rgb, #rrggbb or rgb()): near-black on light colors, white on dark ones (relative luminance, as in WCAG).
-     */
-    protected function getPwaInk($sColor)
-    {
-        if(preg_match('/^#([0-9a-f]{3}|[0-9a-f]{6})$/i', $sColor, $aMatch)) {
-            $sHex = strlen($aMatch[1]) == 3 ? preg_replace('/(.)/', '$1$1', $aMatch[1]) : $aMatch[1];
-            $aRgb = [hexdec(substr($sHex, 0, 2)), hexdec(substr($sHex, 2, 2)), hexdec(substr($sHex, 4, 2))];
-        }
-        else if(preg_match('/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i', $sColor, $aMatch))
-            $aRgb = [(int)$aMatch[1], (int)$aMatch[2], (int)$aMatch[3]];
-        else
-            return '#18181b';
-
-        $fLuminance = 0;
-        foreach([0.2126, 0.7152, 0.0722] as $i => $fWeight) {
-            $fChannel = min(255, $aRgb[$i]) / 255;
-            $fChannel = $fChannel <= 0.03928 ? $fChannel / 12.92 : pow(($fChannel + 0.055) / 1.055, 2.4);
-            $fLuminance += $fWeight * $fChannel;
-        }
-
-        // Pick whichever of the two inks contrasts more with the color.
-        return ($fLuminance + 0.05) / (0.0099 + 0.05) > 1.05 / ($fLuminance + 0.05) ? '#18181b' : '#ffffff';
     }
 
     protected function getSettings()

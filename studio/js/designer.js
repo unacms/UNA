@@ -279,7 +279,7 @@ BxDolStudioDesigner.prototype.getPwaShortName = function(sName) {
 };
 
 /**
- * Near-black or white, whichever contrasts more with the color (the same rule as BxBaseStudioDesigner::getPwaInk).
+ * Near-black or white, whichever contrasts more with the color (the same rule as BxDolStudioDesigner::getInkFor).
  */
 BxDolStudioDesigner.prototype.getPwaInk = function(sColor) {
     var aRgb = null;
@@ -301,6 +301,38 @@ BxDolStudioDesigner.prototype.getPwaInk = function(sColor) {
     });
 
     return (fLuminance + 0.05) / (0.0099 + 0.05) > 1.05 / (fLuminance + 0.05) ? '#18181b' : '#ffffff';
+};
+
+/**
+ * Shows a template in the Template page sketch: its colors, and the logo, mark and favicon the site uses in it.
+ * The data for every template is in the sketch's JSON (BxBaseStudioDesigner::getTemplateMockup).
+ */
+BxDolStudioDesigner.prototype.previewTemplate = function(oButton, sUri) {
+    var oForm = $(oButton).parents('form:first');
+    var oFigure = oForm.find('.adm-dsg-mk-figure');
+    var aPreviews = {};
+    try {
+        aPreviews = JSON.parse(oFigure.find('.adm-dsg-mk-data').text());
+    }
+    catch(e) {}
+
+    var oPreview = aPreviews[sUri];
+    if(!oPreview)
+        return;
+
+    var oSketch = oFigure.find('.adm-dsg-mk');
+    $.each(oPreview.vars, function(sKey, sValue) {
+        oSketch.get(0).style.setProperty('--mk-' + sKey, sValue);
+    });
+
+    oSketch.find('.adm-dsg-mk-logo').not('.adm-dsg-mk-mark').attr('src', oPreview.logo);
+    oSketch.find('.adm-dsg-mk-mark').attr('src', oPreview.mark);
+    oSketch.find('.adm-dsg-mk-favicon').attr('src', oPreview.favicon);
+    oFigure.find('.adm-dsg-mk-template').text(oPreview.title);
+    oFigure.find('.adm-dsg-mk-colors').text(oPreview.colors);
+
+    oForm.find('.adm-dsg-tmpl-card [aria-pressed]').attr('aria-pressed', 'false');
+    $(oButton).attr('aria-pressed', 'true');
 };
 
 BxDolStudioDesigner.prototype.deleteIcon = function(sName, oButton) {
