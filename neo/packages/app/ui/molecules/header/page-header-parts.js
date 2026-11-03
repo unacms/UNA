@@ -5,7 +5,7 @@ import { ScopedTheme } from 'uniwind';
 import { nativeDriver } from 'app/lib/platform/animation';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { FeedbackHaptics, appSetting, getBreakpoint, getMenuItemTitleForUri, getMenuSettings } from 'app/lib/util';
+import { FeedbackHaptics, appSetting, getBreakpoint, getMenuItemTitleForUri, getMenuSettings, isOwnHeadingPage } from 'app/lib/util';
 import { playCue } from 'app/lib/sound';
 import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
@@ -274,10 +274,12 @@ export function usePageHeaderBase(pageData) {
     const isShowLogo = isDesktop || !hasTabBar || isHome;
     // The page title follows the page's cover for this viewer (Studio → Pages → page → Cover); a
     // page that passes `title` always shows it, one that draws its own heading sets
-    // `showTitle={false}`. Desktop names the page in its top menu instead, and an error page
+    // `showTitle={false}` (the splash, login and create-account pages are known from the page data,
+    // before they mount). Desktop names the page in its top menu instead, and an error page
     // (403, 404) has no page to name.
+    const isOwnHeading = useMemo(() => isOwnHeadingPage(pageData, !currentUser), [pageData, currentUser]);
     const isShowTitle = !isDesktop && !pageData?.page_status
-        && (options.showTitle ?? (Boolean(options.title) || isPageCoverShown(pageData?.cover, Boolean(currentUser))));
+        && (options.showTitle ?? (!isOwnHeading && (Boolean(options.title) || isPageCoverShown(pageData?.cover, Boolean(currentUser)))));
     const isBackButton = header.backButton;
 
     const menuSettings = getMenuSettings(
