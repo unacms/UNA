@@ -131,7 +131,10 @@ BxDolStudioDesigner.prototype.openPreviewFullscreen = function(oButton, sDialog,
         oViewport.bxObserved = true;
     }
 
+    // The width field is in the settings form: leave it holding a valid width, or the browser blocks Save.
     $(oDialog).one('close', function() {
+        var iWidth = parseInt(oViewport.style.width, 10) || 1280;
+        $(oDialog).find('.adm-dsg-fs-width-input').val(Math.min(3840, Math.max(320, iWidth)));
         oButton.focus();
     });
 
@@ -169,6 +172,10 @@ BxDolStudioDesigner.prototype.setPreviewViewport = function(oControl, iWidth) {
  * out at that width. Then the width field, the zoom readout and the pressed preset follow.
  */
 BxDolStudioDesigner.prototype.syncPreviewViewport = function(oDialog) {
+    // A closed dialog has no size to fit (its frame measures 0).
+    if(!oDialog.open)
+        return;
+
     var oStage = $(oDialog).find('.adm-dsg-fs-stage').get(0);
     var oViewport = $(oDialog).find('.adm-dsg-fs-viewport').get(0);
     var oStyle = window.getComputedStyle(oStage);
