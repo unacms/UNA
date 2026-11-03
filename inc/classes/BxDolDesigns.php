@@ -275,50 +275,70 @@ class BxDolDesigns extends BxDolFactory implements iBxDolSingleton
     {
         $oStorage = BxDolStorage::getObjectInstance('sys_images_custom');
 
-        $fValue = function($sName) use ($aTemplateParams) {
-            if(!empty($aTemplateParams[$sName]) && ($sValue = getParam($aTemplateParams[$sName])) != '' && $sValue !== '0')
-                return [self::LOGO_SOURCE_TEMPLATE, $sValue];
-
-            if(($sValue = getParam('sys_site_' . $sName)) != '' && $sValue !== '0')
-                return [self::LOGO_SOURCE_SYSTEM, $sValue];
-
-            return [self::LOGO_SOURCE_NONE, ''];
-        };
-
         $aResult = [];
         foreach(self::$aLogoBuiltins as $sType => $sBuiltin) {
             $aResult[$sType] = ['source' => self::LOGO_SOURCE_NONE, 'file_id' => 0, 'url' => '', 'code' => ''];
 
-            list($sSource, $sValue) = $fValue($sType);
-            if($sSource != self::LOGO_SOURCE_NONE && ($sUrl = $oStorage->getFileUrlById((int)$sValue))) {
+            list($sSource, $sValue) = static::getLogoSourceValue($aTemplateParams, $sType);
+            $sUrl = $sSource != self::LOGO_SOURCE_NONE ? $oStorage->getFileUrlById((int)$sValue) : '';
+            if($sUrl) {
                 $aResult[$sType] = ['source' => $sSource, 'file_id' => (int)$sValue, 'url' => $sUrl, 'code' => ''];
                 continue;
             }
 
             // The dark mark follows the mark, everything else the logo.
             $sBase = $sType == 'mark_dark' ? 'mark' : 'logo';
-            if(($sType == 'logo' || $aResult[$sBase]['source'] == self::LOGO_SOURCE_BUILTIN) && is_callable($fBuiltinUrl) && ($sUrl = (string)call_user_func($fBuiltinUrl, $sBuiltin)) != '')
+            if($sType != 'logo' && $aResult[$sBase]['source'] != self::LOGO_SOURCE_BUILTIN)
+                continue;
+
+            $sUrl = is_callable($fBuiltinUrl) ? (string)call_user_func($fBuiltinUrl, $sBuiltin) : '';
+            if($sUrl != '')
                 $aResult[$sType] = ['source' => self::LOGO_SOURCE_BUILTIN, 'file_id' => 0, 'url' => $sUrl, 'code' => ''];
         }
 
-        // SVG code stands in for any image that is not uploaded, built-in or missing, in both modes.
-        foreach(['logo' => 'logo_dark', 'mark' => 'mark_dark'] as $sType => $sTypeDark) {
-            if(!in_array($aResult[$sType]['source'], [self::LOGO_SOURCE_BUILTIN, self::LOGO_SOURCE_NONE]))
-                continue;
-
-            // Only templates with an SVG code setting of their own draw the code.
-            if(!empty($aTemplateParams) && !isset($aTemplateParams[$sType . '_inline']))
-                continue;
-
-            list($sSource, $sCode) = $fValue($sType . '_inline');
-            if($sSource == self::LOGO_SOURCE_NONE)
-                continue;
-
-            $aResult[$sType] = ['source' => self::LOGO_SOURCE_INLINE, 'file_id' => 0, 'url' => '', 'code' => $sCode, 'code_source' => $sSource];
-            $aResult[$sTypeDark] = ['source' => self::LOGO_SOURCE_NONE, 'file_id' => 0, 'url' => '', 'code' => ''];
-        }
+        foreach(['logo' => 'logo_dark', 'mark' => 'mark_dark'] as $sType => $sTypeDark)
+            static::applyLogoSourceCode($aResult, $aTemplateParams, $sType, $sTypeDark);
 
         return $aResult;
+    }
+
+    /**
+     * The value of a logo option: the template's own when it is set, else Designer's (sys_site_*).
+     * @return array [LOGO_SOURCE_TEMPLATE | LOGO_SOURCE_SYSTEM | LOGO_SOURCE_NONE, value]
+     */
+    protected static function getLogoSourceValue($aTemplateParams, $sName)
+    {
+        if(!empty($aTemplateParams[$sName])) {
+            $sValue = getParam($aTemplateParams[$sName]);
+            if($sValue != '' && $sValue !== '0')
+                return [self::LOGO_SOURCE_TEMPLATE, $sValue];
+        }
+
+        $sValue = getParam('sys_site_' . $sName);
+        if($sValue != '' && $sValue !== '0')
+            return [self::LOGO_SOURCE_SYSTEM, $sValue];
+
+        return [self::LOGO_SOURCE_NONE, ''];
+    }
+
+    /**
+     * SVG code stands in for an image that is not uploaded (built-in or missing), in both modes,
+     * for templates with an SVG code setting of their own.
+     */
+    protected static function applyLogoSourceCode(&$aResult, $aTemplateParams, $sType, $sTypeDark)
+    {
+        if(!in_array($aResult[$sType]['source'], [self::LOGO_SOURCE_BUILTIN, self::LOGO_SOURCE_NONE]))
+            return;
+
+        if(!empty($aTemplateParams) && !isset($aTemplateParams[$sType . '_inline']))
+            return;
+
+        list($sSource, $sCode) = static::getLogoSourceValue($aTemplateParams, $sType . '_inline');
+        if($sSource == self::LOGO_SOURCE_NONE)
+            return;
+
+        $aResult[$sType] = ['source' => self::LOGO_SOURCE_INLINE, 'file_id' => 0, 'url' => '', 'code' => $sCode, 'code_source' => $sSource];
+        $aResult[$sTypeDark] = ['source' => self::LOGO_SOURCE_NONE, 'file_id' => 0, 'url' => '', 'code' => ''];
     }
 
     public function getSiteLogoParam($sName, $bGetSystem = false)

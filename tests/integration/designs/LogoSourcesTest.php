@@ -187,7 +187,9 @@ class LogoSourcesTest extends BxDolIntegrationTestCase
 
     private function storeFile(): int
     {
-        $sPath = tempnam(sys_get_temp_dir(), 'bx-logo-test-') . '.svg';
+        $sTemp = tempnam(sys_get_temp_dir(), 'bx-logo-test-');
+        $sPath = $sTemp . '.svg';
+        rename($sTemp, $sPath);
         file_put_contents($sPath, '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="40" viewBox="0 0 200 40"><rect width="200" height="40"/></svg>');
 
         $iId = (int)BxDolStorage::getObjectInstance('sys_images_custom')->storeFileFromPath($sPath, false, 0);

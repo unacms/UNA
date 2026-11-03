@@ -558,6 +558,7 @@
 	<string name="_adm_bp_err_page_create"><![CDATA[Cannot create the page.]]></string>
 	<string name="_adm_bp_err_page_delete"><![CDATA[Cannot delete the page.]]></string>
 	<string name="_adm_bp_err_page_layout"><![CDATA[Please, select a page layout.]]></string>
+        <string name="_adm_bp_err_page_not_deletable"><![CDATA[The requested page cannot be deleted.]]></string>
 	<string name="_adm_bp_err_page_title"><![CDATA[A title with at least 3 characters is required.]]></string>
 	<string name="_adm_bp_err_page_title_system"><![CDATA[A name with at least 3 characters is required.]]></string>
 	<string name="_adm_bp_err_page_uri"><![CDATA[A unique URL with at least 3 characters is required.]]></string>

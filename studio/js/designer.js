@@ -43,6 +43,7 @@ BxDolStudioDesigner.prototype.deleteLogo = function(sName, oButton) {
         var aParams = {_t: oDate.getTime()};
         aParams[$this.sParamPrefix + '_action'] = 'delete_logo';
         aParams[$this.sParamPrefix + '_value'] = sName;
+        aParams['csrf_token'] = $(oButton).parents('form:first').find('input[name=csrf_token]').val();
 
         $.post(
             $this.sActionsUrl,
@@ -54,7 +55,7 @@ BxDolStudioDesigner.prototype.deleteLogo = function(sName, oButton) {
                 }
 
                 // Every preview may change (a dark slot shows the light image when it has none), so reload them all.
-                document.location.href = document.location.href;
+                document.location.reload();
             },
             'json'
         );

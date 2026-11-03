@@ -319,18 +319,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
     protected function getLogoPreviews($sTemplate)
     {
         $aSources = $this->getLogoSources();
-        $aTemplateParams = $this->getLogoTemplateParams();
-        $bTemplatePage = !empty($this->sLogoTemplate);
-        $sPageSource = $bTemplatePage ? BxDolDesigns::LOGO_SOURCE_TEMPLATE : BxDolDesigns::LOGO_SOURCE_SYSTEM;
-
-        // What the header draws for each image: its own, or the one that stands in for it.
-        $fSet = function($sType) use ($aSources) {
-            return $aSources[$sType]['source'] != BxDolDesigns::LOGO_SOURCE_NONE;
-        };
-        $aShown = ['logo' => $aSources['logo']];
-        $aShown['logo_dark'] = $fSet('logo_dark') ? $aSources['logo_dark'] : $aShown['logo'];
-        $aShown['mark'] = $fSet('mark') ? $aSources['mark'] : $aShown['logo'];
-        $aShown['mark_dark'] = $fSet('mark_dark') ? $aSources['mark_dark'] : ($fSet('mark') ? $aShown['mark'] : $aShown['logo_dark']);
+        $aShown = $this->getLogoShown($aSources);
 
         $sAlt = getParam($this->sParamLogoAlt);
         if(empty($sAlt))
@@ -341,40 +330,8 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
             if(empty($this->{$this->aLogos[$sType]['param']}))
                 continue;
 
-            $aSource = $aSources[$sType];
-            $bMark = strpos($sType, 'mark') === 0;
             $bDark = strpos($sType, '_dark') !== false;
-
-            if(!$bTemplatePage && !empty($aTemplateParams) && !isset($aTemplateParams[$sType]))
-                $sInfo = _t('_adm_dsg_txt_logo_src_unused', $sTemplate);
-            else switch($aSource['source']) {
-                case BxDolDesigns::LOGO_SOURCE_TEMPLATE:
-                case BxDolDesigns::LOGO_SOURCE_SYSTEM:
-                    if($aSource['source'] == $sPageSource)
-                        $sInfo = _t('_adm_dsg_txt_logo_src_here');
-                    else
-                        $sInfo = _t($bTemplatePage ? '_adm_dsg_txt_logo_src_system' : '_adm_dsg_txt_logo_src_template', $sTemplate);
-                    break;
-
-                case BxDolDesigns::LOGO_SOURCE_BUILTIN:
-                    $sInfo = _t($bMark ? '_adm_dsg_txt_mark_src_builtin' : '_adm_dsg_txt_logo_src_builtin', $sTemplate);
-                    break;
-
-                case BxDolDesigns::LOGO_SOURCE_INLINE:
-                    if($aSource['code_source'] == $sPageSource)
-                        $sInfo = _t('_adm_dsg_txt_logo_src_code');
-                    else
-                        $sInfo = _t($bTemplatePage ? '_adm_dsg_txt_logo_src_code_system' : '_adm_dsg_txt_logo_src_code_template', $sTemplate);
-                    break;
-
-                default:
-                    if($sType == 'logo')
-                        $sInfo = _t('_adm_dsg_txt_logo_src_none');
-                    else if($sType == 'mark' || ($sType == 'mark_dark' && !$fSet('mark')))
-                        $sInfo = _t('_adm_dsg_txt_mark_src_none');
-                    else
-                        $sInfo = _t($bMark ? '_adm_dsg_txt_mark_dark_src_none' : '_adm_dsg_txt_logo_dark_src_none');
-            }
+            $sInfo = $this->getLogoPreviewInfo($sType, $aSources, $sTemplate);
 
             $aShow = $aShown[$sType];
             $bImage = !empty($aShow['url']);
@@ -417,6 +374,65 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         }
 
         return $aResult;
+    }
+
+    /**
+     * What the header draws for each logo image: its own, or the image that stands in for it
+     * (the light one in dark mode, the logo where there is no mark).
+     */
+    protected function getLogoShown($aSources)
+    {
+        $fSet = function($sType) use ($aSources) {
+            return $aSources[$sType]['source'] != BxDolDesigns::LOGO_SOURCE_NONE;
+        };
+
+        $aShown = ['logo' => $aSources['logo']];
+        $aShown['logo_dark'] = $fSet('logo_dark') ? $aSources['logo_dark'] : $aShown['logo'];
+        $aShown['mark'] = $fSet('mark') ? $aSources['mark'] : $aShown['logo'];
+
+        $aShown['mark_dark'] = $aSources['mark_dark'];
+        if(!$fSet('mark_dark'))
+            $aShown['mark_dark'] = $fSet('mark') ? $aShown['mark'] : $aShown['logo_dark'];
+
+        return $aShown;
+    }
+
+    /**
+     * The line under a logo preview: where the image the header draws for it comes from.
+     */
+    protected function getLogoPreviewInfo($sType, $aSources, $sTemplate)
+    {
+        $aSource = $aSources[$sType];
+        $bTemplatePage = !empty($this->sLogoTemplate);
+        $sPageSource = $bTemplatePage ? BxDolDesigns::LOGO_SOURCE_TEMPLATE : BxDolDesigns::LOGO_SOURCE_SYSTEM;
+
+        $aTemplateParams = $this->getLogoTemplateParams();
+        if(!$bTemplatePage && !empty($aTemplateParams) && !isset($aTemplateParams[$sType]))
+            return _t('_adm_dsg_txt_logo_src_unused', $sTemplate);
+
+        switch($aSource['source']) {
+            case BxDolDesigns::LOGO_SOURCE_TEMPLATE:
+            case BxDolDesigns::LOGO_SOURCE_SYSTEM:
+                if($aSource['source'] == $sPageSource)
+                    return _t('_adm_dsg_txt_logo_src_here');
+                return _t($bTemplatePage ? '_adm_dsg_txt_logo_src_system' : '_adm_dsg_txt_logo_src_template', $sTemplate);
+
+            case BxDolDesigns::LOGO_SOURCE_BUILTIN:
+                return _t(strpos($sType, 'mark') === 0 ? '_adm_dsg_txt_mark_src_builtin' : '_adm_dsg_txt_logo_src_builtin', $sTemplate);
+
+            case BxDolDesigns::LOGO_SOURCE_INLINE:
+                if($aSource['code_source'] == $sPageSource)
+                    return _t('_adm_dsg_txt_logo_src_code');
+                return _t($bTemplatePage ? '_adm_dsg_txt_logo_src_code_system' : '_adm_dsg_txt_logo_src_code_template', $sTemplate);
+        }
+
+        $aNone = [
+            'logo' => '_adm_dsg_txt_logo_src_none',
+            'logo_dark' => '_adm_dsg_txt_logo_dark_src_none',
+            'mark' => '_adm_dsg_txt_mark_src_none',
+            'mark_dark' => $aSources['mark']['source'] != BxDolDesigns::LOGO_SOURCE_NONE ? '_adm_dsg_txt_mark_dark_src_none' : '_adm_dsg_txt_mark_src_none',
+        ];
+        return _t($aNone[$sType]);
     }
 
     protected function getIcon()

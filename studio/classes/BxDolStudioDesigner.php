@@ -137,6 +137,13 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         $aResult = array('code' => 1, 'message' => _t('_adm_dsg_err_cannot_process_action'));
         switch($sAction) {
             case 'delete_logo':
+                // Deletes a file: a POST from the logo form only, with its CSRF token (kept, so the form can still be saved).
+                $sToken = isset($_POST['csrf_token']) ? bx_process_input($_POST['csrf_token']) : '';
+                if(!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] != 'POST' || !BxDolForm::isCsrfTokenValid($sToken, false)) {
+                    $aResult = ['code' => 3, 'message' => _t('_sys_txt_form_submission_error_csrf_expired')];
+                    break;
+                }
+
                 $sValue = bx_process_input(bx_get($this->sParamPrefix . '_value'));
 
                 $aResult = ['code' => 0, 'message' => ''];
@@ -189,36 +196,32 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         $this->sParamPrefix = $sPrefix;
     }
 
-    function setLogoParams($aParams)
+    /**
+     * Points the page at a template's own logo options (its config's getLogoParams()). A slot the
+     * template doesn't declare is cleared, so the page never edits Designer's site-wide option for it.
+     * @param array $aParams option names by slot (logo, logo_dark, logo_inline, mark, mark_dark, mark_inline, logo_alt)
+     */
+    public function setLogoParams($aParams)
     {
-        switch(count($aParams)) {
-            case 2:
-                list($this->sParamLogo, $this->sParamLogoAlt) = $aParams;
-                break;
+        $aSlots = [
+            'logo' => 'sParamLogo',
+            'logo_dark' => 'sParamLogoDark',
+            'logo_inline' => 'sParamLogoInline',
+            'mark' => 'sParamMark',
+            'mark_dark' => 'sParamMarkDark',
+            'mark_inline' => 'sParamMarkInline',
+            'logo_alt' => 'sParamLogoAlt',
+        ];
 
-            case 3:
-                list($this->sParamLogo, $this->sParamMark, $this->sParamLogoAlt) = array_values($aParams);
-                break;
-
-            case 7:
-                list(
-                    $this->sParamLogo, 
-                    $this->sParamLogoDark, 
-                    $this->sParamLogoInline, 
-                    $this->sParamMark, 
-                    $this->sParamMarkDark, 
-                    $this->sParamMarkInline, 
-                    $this->sParamLogoAlt
-                ) = array_values($aParams);
-                break;
-        }
+        foreach($aSlots as $sSlot => $sProperty)
+            $this->$sProperty = !empty($aParams[$sSlot]) ? $aParams[$sSlot] : '';
     }
 
     /**
      * Makes the page edit a template's own logo settings rather than Designer's.
      * @param string $sModule the template module name
      */
-    function setLogoTemplate($sModule)
+    public function setLogoTemplate($sModule)
     {
         $this->sLogoTemplate = $sModule;
     }
@@ -257,7 +260,8 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         $aParams = $this->getLogoTemplateParams();
         $sImagesPath = $sImagesUrl = '';
 
-        if(($aModule = $this->getLogoTemplateModule())) {
+        $aModule = $this->getLogoTemplateModule();
+        if(!empty($aModule)) {
             $sImagesPath = BX_DIRECTORY_PATH_MODULES . $aModule['path'] . 'data/template/system/images/';
             $sImagesUrl = BX_DOL_URL_MODULES . $aModule['path'] . 'data/template/system/images/';
         }
