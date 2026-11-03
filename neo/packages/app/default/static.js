@@ -103,11 +103,9 @@ const ComponentsContentEmpty = () => {
                     <View className="mx-auto m-4 text-secondary-foreground">
                         <Icon icon="Binoculars" width={32} height={32} />
                     </View>
+                    {/* One calm message for every empty list, as UNA's `_Empty`: not an error to retry. */}
                     <Text className="text-center text-lg text-secondary-foreground  lg:text-xl font-semibold  ">
-                        {t('Nothing found')}
-                    </Text>
-                    <Text className="text-center text-base text-muted-foreground ">
-                        {t('Try again later')}
+                        {t('Nothing here yet')}
                     </Text>
                 </View>
             </View>
@@ -124,11 +122,12 @@ const PageNotFound = () => {
                     <View className="mx-auto m-4 text-muted-foreground ">
                         <Icon icon="Binoculars" width={32} height={32} />
                     </View>
+                    {/* The same words as UNA's 404 (_sys_request_page_not_found_cpt / _text). */}
                     <Text className="text-center text-lg text-foreground lg:text-xl font-semibold ">
-                        {t('404 - not found')}
+                        {t('Page not found')}
                     </Text>
                     <Text className="text-center text-base text-muted-foreground ">
-                        {t('Page not found')}
+                        {t('The page may have moved, or the link is wrong.')}
                     </Text>
                     <NeoButtonLink href="/" style="bordered" controlSize="regular" label={t('Go to the home page')} classNames={{ root: 'self-center mt-2' }} />
                 </View>

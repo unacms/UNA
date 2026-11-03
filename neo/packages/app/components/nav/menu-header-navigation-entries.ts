@@ -12,6 +12,7 @@ import {
     menuItemsByNameNew,
     mergeNavbarMoreWithLauncher,
     normalizeMenuItemHref,
+    withSiteMenuHomeLink,
     type MenuItem,
 } from 'app/lib/util';
 
@@ -34,7 +35,7 @@ function siteMenuItem(item: MenuItem): MenuItem {
     const children = getMenuItemChildren(item);
     return {
         ...item,
-        link: normalizeMenuItemHref(item.link),
+        link: normalizeMenuItemHref(withSiteMenuHomeLink(item).link),
         icon: findIconFromRemote(item.icon) || 'ChevronRight',
         ...(children.length ? { subitems: children.map(siteMenuItem) } : {}),
     };

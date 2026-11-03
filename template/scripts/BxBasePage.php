@@ -927,6 +927,11 @@ class BxBasePage extends BxDolPage
             $aVars[$sKey] = $sCell;
         }
 
+        // A one-column page with nothing to show this viewer (Explore for guests without Timeline)
+        // says so, as the apps do, instead of a blank area under the cover.
+        if((int)$this->_aObject['cells_number'] == 1 && isset($aVars['cell_1']) && trim($aVars['cell_1']) === '')
+            $aVars['cell_1'] = MsgBox(_t('_Empty'));
+
         return $aVars;
     }
 

@@ -30,9 +30,6 @@ export default function ElementSearchSections({ blockWrapperProps, data }: Searc
                 <Text className="text-center text-lg text-secondary-foreground  lg:text-xl font-semibold">
                     {t('Nothing found')}
                 </Text>
-                <Text className="text-center text-base text-muted-foreground">
-                    {t('Try again later')}
-                </Text>
             </View>
         </View>
     );

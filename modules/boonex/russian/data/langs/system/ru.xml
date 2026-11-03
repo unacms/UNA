@@ -39,7 +39,7 @@
 	<string name="_Edit"><![CDATA[Редактировать]]></string>
 	<string name="_Email"><![CDATA[Email]]></string>
 	<string name="_Email sent failed"><![CDATA[Невозможно послать письмо]]></string>
-	<string name="_Empty"><![CDATA[Пусто]]></string>
+	<string name="_Empty"><![CDATA[Здесь пока ничего нет]]></string>
 	<string name="_Enter_value_here"><![CDATA[Пожалуйста, введите значение]]></string>
 	<string name="_Error"><![CDATA[Ошибка]]></string>
 	<string name="_Failed"><![CDATA[Неудача]]></string>
@@ -3190,7 +3190,7 @@
 	<string name="_sys_form_account_input_receive_news"><![CDATA[Присылать мне на почту новости и анонсы]]></string>
 	<string name="_sys_form_account_input_receive_updates"><![CDATA[Получать обновления сайта]]></string>
 	<string name="_sys_form_account_input_submit"><![CDATA[Отправить]]></string>
-        <string name="_sys_form_account_input_publish"><![CDATA[Создать новую учетную запись]]></string>
+        <string name="_sys_form_account_input_publish"><![CDATA[Создать аккаунт]]></string>
         <string name="_sys_form_account_input_caption_system_picture"><![CDATA[Изображение аккаунта]]></string>
         <string name="_sys_form_account_input_picture"><![CDATA[Загрузить изображение аккаунта]]></string>
 	<string name="_sys_form_checkbox_value_off"><![CDATA[Нет]]></string>
@@ -3264,7 +3264,7 @@
 	<string name="_sys_form_forgot_password_input_email"><![CDATA[Email]]></string>
 	<string name="_sys_form_forgot_password_input_caption_system_phone"><![CDATA[Телефон]]></string>
 	<string name="_sys_form_forgot_password_input_phone"><![CDATA[Телефон]]></string>
-	<string name="_sys_form_forgot_password_input_submit"><![CDATA[Выполнить]]></string>
+	<string name="_sys_form_forgot_password_input_submit"><![CDATA[Отправить ссылку]]></string>
 	<string name="_sys_form_input_age"><![CDATA[Возраст]]></string>
         <string name="_sys_form_input_allow_view_to"><![CDATA[Видимость]]></string>
 	<string name="_sys_form_input_sys_location"><![CDATA[Расположение]]></string>
@@ -4370,6 +4370,7 @@
     <string name="_sys_request_module_not_found_cpt"><![CDATA[Модуль не найден]]></string>
     <string name="_sys_request_module_not_found_cnt"><![CDATA[Модуль({0}) не найден]]></string>
     <string name="_sys_request_page_not_found_cpt"><![CDATA[Страница не найдена]]></string>
+    <string name="_sys_request_page_not_found_text"><![CDATA[Возможно, страницу перенесли или ссылка неверна. <a href="{0}">На главную страницу</a>]]></string>
     <string name="_sys_request_page_not_found_cnt"><![CDATA[Страница({0}) не найдена в модуле ({1})]]></string>
     <string name="_sys_request_method_not_found_cpt"><![CDATA[Метод не найден]]></string>
     <string name="_sys_request_method_not_found_cnt"><![CDATA[Метод ({0}) не найден в модуле ({1})]]></string>
@@ -4545,7 +4546,7 @@
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Ваш код проверки {0}.]]></string>
     <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[Произошла ошибка, пожалуйста, уведомите о ней администратора сайта.]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Войти]]></string>
-    <string name="_sys_txt_login_description_action"><![CDATA[Создать новый аккаунт]]></string>
+    <string name="_sys_txt_login_description_action"><![CDATA[Создать аккаунт]]></string>
     <string name="_sys_txt_login_error"><![CDATA[Введённый email или пароль неправильны. Пожалуйста, попытайтесь снова.]]></string>
     <string name="_sys_txt_login_locked"><![CDATA[Ваш аккаунт заблокирован, для разблокировки, пожалуйста, используйте  <a href="{0}">страницу сброса пароля</a>.]]></string>
     <string name="_sys_txt_following_counter"><![CDATA[Подписки: {0}]]></string>

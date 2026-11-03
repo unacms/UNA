@@ -3915,7 +3915,13 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         bx_import('BxDolLanguages');
         header('HTTP/1.0 404 Not Found');
         header('Status: 404 Not Found');
-        $this->displayMsg($sMsg ? $sMsg : _t('_sys_request_page_not_found_cpt'), false, $iPage, $iDesignBox);
+
+        // The default page is titled "Page not found" and says what to do, as the apps' 404 does.
+        $mixedMsg = $sMsg ? $sMsg : [
+            'title' => _t('_sys_request_page_not_found_cpt'),
+            'content' => _t('_sys_request_page_not_found_text', BX_DOL_URL_ROOT),
+        ];
+        $this->displayMsg($mixedMsg, false, $iPage, $iDesignBox);
     }
 
     function displayMsg ($s, $bTranslate = false, $iPage = BX_PAGE_DEFAULT, $iDesignBox = BX_DB_PADDING_DEF)

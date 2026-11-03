@@ -37,6 +37,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_persons_administ
 -- MENUS: config_api
 
 -- MENUS: active_api
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='bx_persons' AND `name`='persons-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_homepage' AND `module`='bx_persons' AND `name`='persons-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_add_profile_links' AND `module`='bx_persons' AND `name`='create-persons-profile';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='bx_persons' AND `name`='profile-stats-friend-requests';

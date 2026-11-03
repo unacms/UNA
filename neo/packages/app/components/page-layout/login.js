@@ -52,7 +52,10 @@ export default function PageLayout({ data, children, pageClasses }) {
     return (
         <Page data={data}>
             <PageHeaderOptions band={false} showTitle={false} />
-            <View className={`${contentWidth} ${padding} ${gap} mx-auto my-auto`}>
+            {/* The padding sits outside the width cap, so the card is as wide as UNA's thin column
+                (448px for max-w-md), not 32px narrower. */}
+            <View className={`w-full ${padding} my-auto`}>
+                <View className={`${contentWidth} ${gap} mx-auto`}>
                     {showLoginAside && isWeb
                         ? appStatic('components_logincontent')
                         : null}
@@ -61,6 +64,7 @@ export default function PageLayout({ data, children, pageClasses }) {
                             <PageContent withAuthLinks={data?.uri === 'login'}>{children}</PageContent>
                         </PageChromeProvider>
                     </View>
+                </View>
             </View>
             <MenuFooter />
         </Page>

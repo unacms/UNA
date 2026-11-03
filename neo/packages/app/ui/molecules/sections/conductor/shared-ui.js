@@ -627,13 +627,17 @@ export function useListScene({
         : !!(requestUrl && !listReady) || !isInited
     // "No content": the query is fully done, there is no next page, and it
     // still produced nothing. Every condition guards a false positive.
+    // A tab with no list and nothing else either (no blocks, no form, no left-column
+    // blocks): Explore for guests on a site without Timeline. Say so instead of a blank page.
+    const isBlankTab = !requestUrl && isInited && !rows?.length && !hasForm && !hasLeftColumnItems
     const showNoContent = !!(
-        requestUrl &&
-        listReady &&
-        hasNextPage === false &&
-        !isPending &&
-        !isFetching &&
-        isEmpty
+        (requestUrl &&
+            listReady &&
+            hasNextPage === false &&
+            !isPending &&
+            !isFetching &&
+            isEmpty) ||
+        isBlankTab
     )
 
     return {

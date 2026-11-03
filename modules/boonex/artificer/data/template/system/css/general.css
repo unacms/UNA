@@ -210,7 +210,8 @@ html.dark {
 
 /*--- Join/Login Forms ---*/
 .sys-jf .bx-form-advanced .bx-form-element .bx-form-input-submit.bx-btn,
-.sys-lf .bx-form-advanced .bx-form-element .bx-form-input-submit.bx-btn {
+.sys-lf .bx-form-advanced .bx-form-element .bx-form-input-submit.bx-btn,
+#sys_forgot_password.bx-form-advanced .bx-form-element .bx-form-input-submit.bx-btn {
     width: 100%;
     -webkit-justify-content: center;
     justify-content: center;

@@ -41,7 +41,7 @@
 	<string name="_Edit"><![CDATA[Edit]]></string>
 	<string name="_Email"><![CDATA[Email]]></string>
 	<string name="_Email sent failed"><![CDATA[Email send failed]]></string>
-	<string name="_Empty"><![CDATA[Empty]]></string>
+	<string name="_Empty"><![CDATA[Nothing here yet]]></string>
 	<string name="_Enter_value_here"><![CDATA[Please, enter a value here]]></string>
 	<string name="_Error"><![CDATA[Error]]></string>
 	<string name="_Failed"><![CDATA[Failed]]></string>
@@ -79,7 +79,7 @@
 	<string name="_Male"><![CDATA[Man]]></string>
 	<string name="_Manage"><![CDATA[Manage]]></string>
 	<string name="_Member"><![CDATA[Member]]></string>
-	<string name="_Member Login"><![CDATA[Login]]></string>
+	<string name="_Member Login"><![CDATA[Log in]]></string>
 	<string name="_Message text"><![CDATA[Message text]]></string>
 	<string name="_N_point"><![CDATA[<span>{0}</span> plus]]></string>
 	<string name="_N_points"><![CDATA[<span>{0}</span> pluses]]></string>
@@ -3218,7 +3218,7 @@
 	<string name="_sys_form_account_input_receive_news"><![CDATA[Email me news and announcements]]></string>
 	<string name="_sys_form_account_input_receive_updates"><![CDATA[Receive Site Updates]]></string>
 	<string name="_sys_form_account_input_submit"><![CDATA[Submit]]></string>
-        <string name="_sys_form_account_input_publish"><![CDATA[Create new account]]></string>
+        <string name="_sys_form_account_input_publish"><![CDATA[Create account]]></string>
         <string name="_sys_form_account_input_caption_system_picture"><![CDATA[Account Picture]]></string>
         <string name="_sys_form_account_input_picture"><![CDATA[Upload an account picture]]></string>
 	<string name="_sys_form_checkbox_value_off"><![CDATA[No]]></string>
@@ -3270,7 +3270,7 @@
 	<string name="_sys_form_display_confirm_email"><![CDATA[Email Confirmation]]></string>
 	<string name="_sys_form_display_confirm_phone_set_phone"><![CDATA[Set phone]]></string>
 	<string name="_sys_form_display_confirm_phone_confirmation"><![CDATA[Phone confirmation]]></string>
-	<string name="_sys_form_display_forgot_password"><![CDATA[Forgot Password]]></string>
+	<string name="_sys_form_display_forgot_password"><![CDATA[Forgot password]]></string>
         <string name="_sys_form_display_forgot_password_reset"><![CDATA[Reset Password]]></string>
 	<string name="_sys_form_display_login"><![CDATA[Log in]]></string>
 	<string name="_sys_form_display_login_step2"><![CDATA[Log in - step 2]]></string>
@@ -3278,7 +3278,7 @@
 	<string name="_sys_form_display_report_post"><![CDATA[Report From Post]]></string>
 	<string name="_sys_form_display_unsubscribe_news"><![CDATA[Unsubscribe From Newsletters]]></string>
 	<string name="_sys_form_display_unsubscribe_updates"><![CDATA[Unsubscribe From Updates]]></string>
-	<string name="_sys_form_forgot_password"><![CDATA[Forgot Password]]></string>
+	<string name="_sys_form_forgot_password"><![CDATA[Forgot password]]></string>
 	<string name="_sys_form_forgot_password_email_not_recognized"><![CDATA[This email doesn't belong to any account. Please make sure that it is typed correctly.]]></string>
 	<string name="_sys_form_forgot_password_phone_not_recognized"><![CDATA[This phone doesn't belong to any account. Please make sure that it is typed correctly.]]></string>
 	<string name="_sys_form_forgot_password_phone_error_format"><![CDATA[Wrong phone number, allowed digits only and start from '+']]></string>
@@ -3293,7 +3293,7 @@
 	<string name="_sys_form_forgot_password_input_email"><![CDATA[Email]]></string>
 	<string name="_sys_form_forgot_password_input_caption_system_phone"><![CDATA[Phone]]></string>
 	<string name="_sys_form_forgot_password_input_phone"><![CDATA[Phone]]></string>
-	<string name="_sys_form_forgot_password_input_submit"><![CDATA[Submit]]></string>
+	<string name="_sys_form_forgot_password_input_submit"><![CDATA[Send reset link]]></string>
 	<string name="_sys_form_input_age"><![CDATA[Age]]></string>
         <string name="_sys_form_input_allow_view_to"><![CDATA[Visibility]]></string>
 	<string name="_sys_form_input_sys_location"><![CDATA[Location]]></string>
@@ -3822,7 +3822,7 @@
     <string name="_sys_menu_item_title_system_invoices"><![CDATA[Invoices]]></string>
     <string name="_sys_menu_item_title_system_login"><![CDATA[Log in]]></string>
     <string name="_sys_menu_item_title_system_logout"><![CDATA[Log out]]></string>
-    <string name="_sys_menu_item_title_system_main_menu"><![CDATA[Main Menu]]></string>
+    <string name="_sys_menu_item_title_system_main_menu"><![CDATA[Main menu]]></string>
     <string name="_sys_menu_item_title_system_member_avatar"><![CDATA[Member Avatar]]></string>
     <string name="_sys_menu_item_title_system_member_followings"><![CDATA[Member Following]]></string>
     <string name="_sys_menu_item_title_system_member_menu"><![CDATA[Member Menu]]></string>
@@ -4141,7 +4141,7 @@
     <string name="_sys_page_block_title_dash_stats"><![CDATA[Dashboard Stats (for App only)]]></string>
     <string name="_sys_page_block_title_homepage_menu"><![CDATA[Content modules menu]]></string>
     <string name="_sys_page_block_title_homepage_splash"><![CDATA[Splash]]></string>
-    <string name="_sys_page_block_title_forgot_password"><![CDATA[Forgot Password]]></string>
+    <string name="_sys_page_block_title_forgot_password"><![CDATA[Forgot password]]></string>
     <string name="_sys_page_block_title_search_keyword_form"><![CDATA[Search Form]]></string>
     <string name="_sys_page_block_title_search_keyword_result"><![CDATA[Search Result]]></string>
     <string name="_sys_page_block_title_settings"><![CDATA[Settings]]></string>
@@ -4227,7 +4227,7 @@
     <string name="_sys_page_title_confirm_phone"><![CDATA[Phone Confirmation]]></string>
     <string name="_sys_page_title_create_account"><![CDATA[Sign up]]></string>
     <string name="_sys_page_title_dashboard"><![CDATA[Dashboard]]></string>
-    <string name="_sys_page_title_forgot_password"><![CDATA[Forgot Password]]></string>
+    <string name="_sys_page_title_forgot_password"><![CDATA[Forgot password]]></string>
     <string name="_sys_page_title_forgot_password_reset"><![CDATA[Choose New Password]]></string>
     <string name="_sys_page_title_home"><![CDATA[Welcome to {site_title}]]></string>
     <string name="_sys_page_title_logout"><![CDATA[Log out]]></string>
@@ -4439,7 +4439,8 @@
     <string name="_sys_relation"><![CDATA[Relationship]]></string>
     <string name="_sys_request_module_not_found_cpt"><![CDATA[Module was not found]]></string>
     <string name="_sys_request_module_not_found_cnt"><![CDATA[Module({0}) was not found]]></string>
-    <string name="_sys_request_page_not_found_cpt"><![CDATA[Page was not found]]></string>
+    <string name="_sys_request_page_not_found_cpt"><![CDATA[Page not found]]></string>
+    <string name="_sys_request_page_not_found_text"><![CDATA[The page may have moved, or the link is wrong. <a href="{0}">Go to the home page</a>]]></string>
     <string name="_sys_request_page_not_found_cnt"><![CDATA[Page({0}) was not found in module({1})]]></string>
     <string name="_sys_request_method_not_found_cpt"><![CDATA[Method was not found]]></string>
     <string name="_sys_request_method_not_found_cnt"><![CDATA[Method({0}) was not found in module({1})]]></string>
@@ -4621,7 +4622,7 @@
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Your verification code is {0}.]]></string>
     <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[An error occurred, please report error to the site administrator.]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Log in]]></string>
-    <string name="_sys_txt_login_description_action"><![CDATA[Create New Account]]></string>
+    <string name="_sys_txt_login_description_action"><![CDATA[Create account]]></string>
     <string name="_sys_txt_login_error"><![CDATA[Entered email or password is incorrect. Please try again.]]></string>
     <string name="_sys_txt_login_locked"><![CDATA[Your account is locked and needs to be unlocked using <a href="{0}">forgot password page</a>.]]></string>
   
@@ -4657,7 +4658,7 @@
 	<string name="_sys_txt_splash_slide04_txt"><![CDATA[Already one of us?]]></string>
 	<string name="_sys_txt_splash_title"><![CDATA[Connect. Share. Create.]]></string>
 	<string name="_sys_txt_splash_slogan"><![CDATA[Join our community now to connect with like-minded people, share exciting news and create inspiring content.]]></string>
-        <string name="_sys_txt_splash_login"><![CDATA[Login]]></string>
+        <string name="_sys_txt_splash_login"><![CDATA[Log in]]></string>
         <string name="_sys_txt_splash_join"><![CDATA[Join]]></string>
         <string name="_sys_txt_splash_connect"><![CDATA[Connect]]></string>
         <string name="_sys_txt_splash_connect_text"><![CDATA[Find like-minded people, make new friends, follow interesting authors and stay in touch anywhere.]]></string>

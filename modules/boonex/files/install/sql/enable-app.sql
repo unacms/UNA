@@ -38,6 +38,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_files_administra
 -- MENUS: config_api
 
 -- MENUS: active_api
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='bx_files' AND `name`='files-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='bx_files' AND `name`='profile-stats-my-files';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_files_view' AND `module`='bx_files' AND `name`='download-file';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_files_view' AND `module`='bx_files' AND `name`='edit-file';
