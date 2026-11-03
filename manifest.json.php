@@ -11,21 +11,20 @@ define('BX_MANIFEST', true);
 
 require_once('./inc/header.inc.php');
 
+$aPwa = BxDolDesigns::getPwaSettings();
+
 $aContent = [
-    'name' => '',
-    'short_name' => '',
-    'description' => getParam('sys_pwa_manifest_description'),
+    'name' => $aPwa['name']['used'],
+    'short_name' => $aPwa['short_name']['used'],
+    'description' => $aPwa['description']['used'],
     'orientation' => 'portrait',
     'start_url' => parse_url(BX_DOL_URL_ROOT, PHP_URL_PATH),
     'display' => 'standalone',
     'scope' => '/',
-    'background_color' => getParam('sys_pwa_manifest_background_color'),
-    'theme_color' => getParam('sys_pwa_manifest_theme_color'),
+    'background_color' => $aPwa['background_color']['used'],
+    'theme_color' => $aPwa['theme_color']['used'],
     'gcm_sender_id' => isLogged() ? '482941778795' : ''
 ];
-
-$aContent['name'] = ($sName = getParam('sys_pwa_manifest_name')) != '' ? $sName : parse_url(BX_DOL_URL_ROOT, PHP_URL_HOST);
-$aContent['short_name'] = ($sShortName = getParam('sys_pwa_manifest_short_name')) != '' ? $sShortName : $aContent['name'];
 
 foreach($aContent as $sKey => $sValue)
     if(empty($sValue))

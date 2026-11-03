@@ -206,6 +206,103 @@ BxDolStudioDesigner.prototype.syncPreviewViewport = function(oDialog) {
     $(oDialog).find('.adm-dsg-fs-vp:not([data-width])').attr('aria-pressed', bPreset ? 'false' : 'true');
 };
 
+/**
+ * Draws the PWA preview once the form is ready. The color pickers are built later (jquery.webForms), so their swatches
+ * get their default colors when they appear.
+ */
+BxDolStudioDesigner.prototype.initPwaPreview = function(oForm) {
+    var $this = this;
+    if(!oForm)
+        return;
+
+    this.updatePwaPreview(oForm);
+    if($(oForm).find('.minicolors-swatch').length || typeof(window.MutationObserver) == 'undefined')
+        return;
+
+    var oObserver = new MutationObserver(function() {
+        if(!$(oForm).find('.minicolors-swatch').length)
+            return;
+
+        oObserver.disconnect();
+        $this.updatePwaPreview(oForm);
+    });
+    oObserver.observe(oForm, {childList: true, subtree: true});
+};
+
+/**
+ * Redraws the PWA preview from the form: a field left empty shows its default, which is its placeholder.
+ */
+BxDolStudioDesigner.prototype.updatePwaPreview = function(oForm) {
+    var $this = this;
+    var oPreview = $(oForm).find('.adm-dsg-pwa-previews');
+    var fValue = function(sKey) {
+        var oInput = $(oForm).find('[name="sys_pwa_manifest_' + sKey + '"]');
+        var sValue = $.trim(oInput.val());
+        return sValue !== '' ? sValue : (oInput.attr('placeholder') || '');
+    };
+    var fColor = function(sKey) {
+        var sColor = fValue(sKey);
+        return /^(#[0-9a-f]{3}|#[0-9a-f]{6}|rgba?\(.+\))$/i.test(sColor) ? sColor : $(oForm).find('[name="sys_pwa_manifest_' + sKey + '"]').attr('placeholder');
+    };
+
+    // The short name defaults to the app name, shortened (BxDolDesigns::getPwaShortName): its placeholder follows the name.
+    var sName = fValue('name');
+    $(oForm).find('[name="sys_pwa_manifest_short_name"]').attr('placeholder', $this.getPwaShortName(sName));
+
+    oPreview.find('.adm-dsg-pwa-name').text(sName);
+    oPreview.find('.adm-dsg-pwa-short-name').text(fValue('short_name'));
+
+    var sBackground = fColor('background_color');
+    oPreview.find('.adm-dsg-pwa-launch').css({'background-color': sBackground, 'color': $this.getPwaInk(sBackground)});
+
+    var sTheme = fColor('theme_color');
+    oPreview.find('.adm-dsg-pwa-titlebar').css({'background-color': sTheme, 'color': $this.getPwaInk(sTheme)});
+
+    // An empty color field shows its default in the picker's swatch, not a blank one.
+    $.each({'background_color': sBackground, 'theme_color': sTheme}, function(sKey, sColor) {
+        var oInput = $(oForm).find('[name="sys_pwa_manifest_' + sKey + '"]');
+        if($.trim(oInput.val()) === '')
+            oInput.siblings('.minicolors-swatch').find('.minicolors-swatch-color').css({'background-color': sColor, 'opacity': 1});
+    });
+};
+
+BxDolStudioDesigner.prototype.getPwaShortName = function(sName) {
+    var aChars = Array.from(sName);
+    if(aChars.length <= 12)
+        return sName;
+
+    var sWord = sName.split(/\s+/)[0];
+    if(sWord && Array.from(sWord).length <= 12)
+        return sWord;
+
+    return aChars.slice(0, 12).join('');
+};
+
+/**
+ * Near-black or white, whichever contrasts more with the color (the same rule as BxBaseStudioDesigner::getPwaInk).
+ */
+BxDolStudioDesigner.prototype.getPwaInk = function(sColor) {
+    var aRgb = null;
+    var aMatch = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(sColor || '');
+    if(aMatch) {
+        var sHex = aMatch[1].length == 3 ? aMatch[1].replace(/(.)/g, '$1$1') : aMatch[1];
+        aRgb = [parseInt(sHex.substr(0, 2), 16), parseInt(sHex.substr(2, 2), 16), parseInt(sHex.substr(4, 2), 16)];
+    }
+    else if((aMatch = /^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i.exec(sColor || '')))
+        aRgb = [parseInt(aMatch[1], 10), parseInt(aMatch[2], 10), parseInt(aMatch[3], 10)];
+    if(!aRgb)
+        return '#18181b';
+
+    var fLuminance = 0;
+    $.each([0.2126, 0.7152, 0.0722], function(i, fWeight) {
+        var fChannel = Math.min(255, aRgb[i]) / 255;
+        fChannel = fChannel <= 0.03928 ? fChannel / 12.92 : Math.pow((fChannel + 0.055) / 1.055, 2.4);
+        fLuminance += fWeight * fChannel;
+    });
+
+    return (fLuminance + 0.05) / (0.0099 + 0.05) > 1.05 / (fLuminance + 0.05) ? '#18181b' : '#ffffff';
+};
+
 BxDolStudioDesigner.prototype.deleteIcon = function(sName, oButton) {
     var $this = this;
 

@@ -807,6 +807,19 @@
 	<string name="_adm_dsg_inf_logo_text"><![CDATA[Его читают экранные дикторы, и он показывается в шапке, когда нет изображения логотипа. Оставьте пустым, чтобы использовать название сайта.]]></string>
 	<string name="_adm_dsg_inf_mark_code"><![CDATA[Рисует знак из SVG-разметки вместо изображения по умолчанию. Загруженное изображение важнее.]]></string>
 	<string name="_adm_dsg_inf_mark_section"><![CDATA[Компактный символ: показывается в шапке на телефонах и планшетах.]]></string>
+	<string name="_adm_dsg_inf_pwa_background_color"><![CDATA[Заполняет экран за иконкой, пока приложение запускается. По умолчанию белый.]]></string>
+	<string name="_adm_dsg_inf_pwa_description"><![CDATA[Одно-два предложения о сайте. Его показывают некоторые окна установки.]]></string>
+	<string name="_adm_dsg_inf_pwa_name"><![CDATA[Показывается при установке и в списке приложений. По умолчанию — название сайта.]]></string>
+	<string name="_adm_dsg_inf_pwa_preview_home"><![CDATA[Иконка и короткое название.]]></string>
+	<string name="_adm_dsg_inf_pwa_preview_launch"><![CDATA[Показывается, пока приложение запускается.]]></string>
+	<string name="_adm_dsg_inf_pwa_preview_window"><![CDATA[Заголовок окна в цвете окна.]]></string>
+	<string name="_adm_dsg_inf_pwa_section_app"><![CDATA[Сайт можно добавить на главный экран или установить из браузера. Тогда он открывается в отдельном окне, как приложение. Оставьте поле пустым, чтобы использовать значение по умолчанию, которое в нём показано. Иконка приложения задаётся в разделе <a href="{0}">Иконка</a>.]]></string>
+	<string name="_adm_dsg_inf_pwa_section_sw"><![CDATA[Service worker — небольшой скрипт, который браузер хранит для сайта. Он сохраняет стили, скрипты и иконки сайта на устройстве, поэтому страницы открываются быстрее, и может показать офлайн-страницу, когда нет связи.]]></string>
+	<string name="_adm_dsg_inf_pwa_short_name"><![CDATA[Показывается под иконкой на главном экране, где помещается около 12 символов. По умолчанию — название приложения, сокращённое.]]></string>
+	<string name="_adm_dsg_inf_pwa_sw_cache"><![CDATA[По одному адресу в строке, на этом сайте или полный. Они сохраняются при установке service worker вместе со стилями, скриптами и иконками сайта, которые он сохраняет в любом случае.]]></string>
+	<string name="_adm_dsg_inf_pwa_sw_enable"><![CDATA[Когда вы меняете стили или скрипты сайта, посетители получают новые при следующем открытии сайта.]]></string>
+	<string name="_adm_dsg_inf_pwa_sw_offline"><![CDATA[Показывается вместо ошибки браузера, когда нет связи: адрес на этом сайте, например page.php?i=about. Оставьте пустым, чтобы показывать страницу браузера.]]></string>
+	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Цвет заголовка окна приложения, а на телефонах — строки состояния. По умолчанию — цвет, заданный шаблоном.]]></string>
 	<string name="_adm_dsg_inf_splash_section_code"><![CDATA[HTML страницы. Эти подстановки заменяются при показе страницы: <code>__logo__</code> — логотип сайта, <code>__join_form_in_box__</code> и <code>__login_form_in_box__</code> — формы регистрации и входа в блоке, <code>__join_form__</code> и <code>__login_form__</code> — те же формы без блока, <code>__join_link__</code> и <code>__login_link__</code> — их адреса, <code>{site_title}</code> — название сайта.]]></string>
 	<string name="_adm_dsg_inf_splash_section_landing"><![CDATA[Гости, открывшие главную страницу, видят вместо неё эту страницу. Участники, которые вошли на сайт, по-прежнему видят главную.]]></string>
 	<string name="_adm_dsg_inf_splash_section_preview"><![CDATA[Так страницу видят гости. «Показать изменения» показывает код из редактора до сохранения.]]></string>
@@ -842,6 +855,21 @@
 	<string name="_adm_dsg_txt_mark_src_builtin"><![CDATA[Знак {0} по умолчанию. Загрузите свой, чтобы заменить его.]]></string>
 	<string name="_adm_dsg_txt_mark_src_default"><![CDATA[Знак по умолчанию. Загрузите свой, чтобы заменить его.]]></string>
 	<string name="_adm_dsg_txt_mark_src_none"><![CDATA[Нет. На телефонах и планшетах показывается логотип.]]></string>
+	<string name="_adm_dsg_txt_pwa_background_color"><![CDATA[Цвет экрана запуска]]></string>
+	<string name="_adm_dsg_txt_pwa_description"><![CDATA[Описание]]></string>
+	<string name="_adm_dsg_txt_pwa_name"><![CDATA[Название приложения]]></string>
+	<string name="_adm_dsg_txt_pwa_note"><![CDATA[Установленные приложения получают новое название, цвета или иконку при следующем запуске. Некоторые телефоны показывают их только после переустановки приложения.]]></string>
+	<string name="_adm_dsg_txt_pwa_preview"><![CDATA[Предпросмотр]]></string>
+	<string name="_adm_dsg_txt_pwa_preview_home"><![CDATA[Главный экран]]></string>
+	<string name="_adm_dsg_txt_pwa_preview_launch"><![CDATA[Экран запуска]]></string>
+	<string name="_adm_dsg_txt_pwa_preview_window"><![CDATA[Окно приложения]]></string>
+	<string name="_adm_dsg_txt_pwa_section_app"><![CDATA[Установленное приложение]]></string>
+	<string name="_adm_dsg_txt_pwa_section_sw"><![CDATA[Офлайн и кеширование]]></string>
+	<string name="_adm_dsg_txt_pwa_short_name"><![CDATA[Короткое название]]></string>
+	<string name="_adm_dsg_txt_pwa_sw_cache"><![CDATA[Другие файлы для офлайна]]></string>
+	<string name="_adm_dsg_txt_pwa_sw_enable"><![CDATA[Использовать service worker]]></string>
+	<string name="_adm_dsg_txt_pwa_sw_offline"><![CDATA[Офлайн-страница]]></string>
+	<string name="_adm_dsg_txt_pwa_theme_color"><![CDATA[Цвет окна]]></string>
 	<string name="_adm_dsg_txt_alt_text"><![CDATA[Текст лого]]></string>
 	<string name="_adm_dsg_txt_cover_common"><![CDATA[Стандартная обложка страницы]]></string>
 	<string name="_adm_dsg_txt_cover_unit_profile"><![CDATA[Стандартная обложка миниатюры профиля]]></string>
@@ -1352,7 +1380,7 @@
         <string name="_adm_lmi_cpt_providers"><![CDATA[Поставщики]]></string>
 	<string name="_adm_lmi_cpt_popular"><![CDATA[Популярные]]></string>
 	<string name="_adm_lmi_cpt_purchases"><![CDATA[Покупки]]></string>
-        <string name="_adm_lmi_cpt_pwa"><![CDATA[Веб приложение]]></string>
+        <string name="_adm_lmi_cpt_pwa"><![CDATA[PWA]]></string>
         <string name="_adm_lmi_cpt_ractions"><![CDATA[Действия]]></string>
         <string name="_adm_lmi_cpt_reports"><![CDATA[Отчеты]]></string>
         <string name="_adm_lmi_cpt_rlevels"><![CDATA[Уровни]]></string>

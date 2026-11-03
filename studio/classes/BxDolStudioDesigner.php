@@ -498,6 +498,24 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SPLASH);
     }
 
+    function submitPwa(&$oForm)
+    {
+        foreach(['name', 'short_name', 'description', 'background_color', 'theme_color'] as $sKey) {
+            $sValue = trim($oForm->getCleanValue('sys_pwa_manifest_' . $sKey));
+            // The color picker gives rgb(); a typed #hex works too. Anything else leaves the default in use.
+            if(in_array($sKey, ['background_color', 'theme_color']) && !preg_match('/^(#[0-9a-fA-F]{3}|#[0-9a-fA-F]{6}|rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(,\s*[\d.]+\s*)?\))$/', $sValue))
+                $sValue = '';
+
+            setParam('sys_pwa_manifest_' . $sKey, $sValue);
+        }
+
+        setParam('sys_pwa_sw_enable', $oForm->getCleanValue('sys_pwa_sw_enable') == 'on' ? 'on' : '');
+        setParam('sys_pwa_sw_offline', ltrim(trim($oForm->getCleanValue('sys_pwa_sw_offline')), '/'));
+        setParam('sys_pwa_sw_cache', trim($oForm->getCleanValue('sys_pwa_sw_cache')));
+
+        return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_PWA);
+    }
+
     function submitInjections(&$oForm)
     {
         $sResult = '_adm_dsg_err_save_changes';

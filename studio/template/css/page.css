@@ -42,11 +42,11 @@ div.bx-std-block {
  * follows the panel's shape; the thumb shows while the pointer is over the block or the content scrolls.
  */
 div.bx-std-block-content,
-form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"]) > .bx-form-advanced-wrapper {
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"]) > .bx-form-advanced-wrapper {
     scrollbar-width: none; /* the forms that scroll inside their block (Options forms below) get the same overlay bar, so opening a section shifts nothing */
 }
 div.bx-std-block-content::-webkit-scrollbar,
-form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"]) > .bx-form-advanced-wrapper::-webkit-scrollbar {
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"]) > .bx-form-advanced-wrapper::-webkit-scrollbar {
     display: none;
 }
 svg.bx-std-scrollbar {
@@ -237,7 +237,7 @@ div.bx-std-block-content div.bx-grid-header {
 /* Content inset: the block's 8px plus 8px from the content root itself, 16px in all. Forms, the designer's template list and
    builder cells add theirs here; product lists do the same in store.css, agent cards in agents.css. Options forms and grids are
    laid out as a header / scroller / footer stack below and own their inset there. */
-div.bx-std-block-content > .bx-form-advanced:not([name="adm-settings-form"]):not([name="adm-dsg-logo-form"]):not([name="adm-dsg-icon-form"]):not([name="adm-dsg-cover-form"]):not([name="adm-dsg-splash-form"]):not([name="adm-dsg-injections-form"]),
+div.bx-std-block-content > .bx-form-advanced:not([name="adm-settings-form"]):not([name="adm-dsg-logo-form"]):not([name="adm-dsg-icon-form"]):not([name="adm-dsg-cover-form"]):not([name="adm-dsg-splash-form"]):not([name="adm-dsg-injections-form"]):not([name="adm-dsg-pwa-form"]),
 div.bx-std-block-content > .bx-dsg-templates,
 div.bx-std-block-content > .adm-bp-cell,
 div.bx-std-block-content > .bx-layout-wrapper {
@@ -246,12 +246,12 @@ div.bx-std-block-content > .bx-layout-wrapper {
 
 /**
  * Header / scroller / footer stack.
- * A block whose content is an options form (BxDolStudioOptions, name="adm-settings-form"; Designer's logo, icon, cover, landing and injections forms) or a grid keeps its caption fixed, scrolls
+ * A block whose content is an options form (BxDolStudioOptions, name="adm-settings-form"; Designer's logo, icon, cover, landing, injections and PWA forms) or a grid keeps its caption fixed, scrolls
  * the middle, and pins a 64px footer: 16px around the 32px buttons, like the caption, hairline drawn outside the box.
  * The form footer is the form's last section (the Save button, BxBaseStudioOptions always puts it in a section of its own); the grid
  * footer is the grid's own footer (bulk actions, paging). Grid rows run edge to edge with 16px inside the first and last cell.
  */
-div.bx-std-block-content:has(> form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"])),
+div.bx-std-block-content:has(> form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"])),
 div.bx-std-block-content:has(> [id^="bx-grid-wrap-"]) {
     display: flex;
     flex-direction: column;
@@ -259,14 +259,14 @@ div.bx-std-block-content:has(> [id^="bx-grid-wrap-"]) {
     overflow: hidden;
 }
 
-/* Designer's logo, icon, cover, landing and injections forms are taller than the screen: the page column keeps its height (no min-content growth), so the form scrolls inside
+/* Designer's logo, icon, cover, landing, injections and PWA forms are taller than the screen: the page column keeps its height (no min-content growth), so the form scrolls inside
    the block under its caption and the Save footer stays at the bottom. */
-#bx-std-pc-content:has(> .bx-std-block > .bx-std-block-content > form:is([name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"])) {
+#bx-std-pc-content:has(> .bx-std-block > .bx-std-block-content > form:is([name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"])) {
     min-height: 0;
 }
 
 /* Options forms */
-div.bx-std-block-content > form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"]) {
+div.bx-std-block-content > form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"]) {
     --bx-std-inset: 1rem; /* the scroller's inset: 16px for fields and for the accordion cards alike */
     position: relative;
     display: flex;
@@ -275,7 +275,7 @@ div.bx-std-block-content > form:is([name="adm-settings-form"], [name="adm-dsg-lo
     min-height: 0;
     padding: 0;
 }
-form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"]) > .bx-form-advanced-wrapper {
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"]) > .bx-form-advanced-wrapper {
     display: flex; /* a column, so the footer can drop to the bottom (margin-top: auto) when the content does not fill the block */
     flex-direction: column;
     flex: 1 1 auto;
@@ -283,7 +283,7 @@ form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-i
     overflow-y: auto;
     padding: var(--bx-std-inset) var(--bx-std-inset) 0; /* no bottom inset: sticky elements stop at the scroller's padding edge */
 }
-form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper {
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper {
     flex: none; /* sections overflow the scroller instead of shrinking into it */
     margin: 0 0 0.5rem; /* overrides the my-4 emitted by BxBaseFormView::getOpenSection */
     padding: 0;
@@ -293,7 +293,7 @@ form#adm-settings-form > .bx-form-advanced-wrapper > .bx-form-section-wrapper:no
     padding: 0 0 0.5rem;
 }
 /* Footer: the last section, holding the Save button. */
-form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child) {
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child) {
     position: sticky;
     bottom: 0;
     z-index: 1;
@@ -309,13 +309,13 @@ form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-i
 }
 /* Code editors stack their scrollbars and gutter up to z-index 6; isolated, those stay inside
    the editor and the footer above scrolls over it. */
-form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"]) .CodeMirror {
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"]) .CodeMirror {
     isolation: isolate;
 }
-form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child) .bx-form-section-content {
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child) .bx-form-section-content {
     padding: 0;
 }
-form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child) .bx-form-element-wrapper {
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child) .bx-form-element-wrapper {
     margin: 0;
 }
 
@@ -408,12 +408,12 @@ div.bx-std-block-content > [id^="bx-grid-wrap-"] .bx-grid-table th:last-child,
 div.bx-std-block-content > [id^="bx-grid-wrap-"] .bx-grid-table td:last-child {
     padding-right: 1rem;
 }
-.dark form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child),
+.dark form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child),
 .dark div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header,
 .dark div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer {
     background-color: #1a1a1a; /* black page + the block's white/10, so the sticky row matches the block around it */
 }
-.dark form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child),
+.dark form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child),
 .dark div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer {
     box-shadow: 0 -1px 0 0 rgba(255, 255, 255, 0.025);
 }

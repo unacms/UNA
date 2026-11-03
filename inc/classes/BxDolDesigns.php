@@ -356,6 +356,65 @@ class BxDolDesigns extends BxDolFactory implements iBxDolSingleton
     {
         return isset($this->aValues[$sName]) ? $this->aValues[$sName] : false;
     }
+
+    /**
+     * The web app manifest fields set in Studio > Designer > PWA (sys_pwa_manifest_*): for each, the saved value,
+     * the default an empty one takes, and the one in use. The manifest, the theme-color meta tag and Studio all read this.
+     * @return array name => ['value' => ..., 'default' => ..., 'used' => ...]
+     */
+    public static function getPwaSettings()
+    {
+        $sName = trim(getParam('site_title'));
+        if($sName === '')
+            $sName = parse_url(BX_DOL_URL_ROOT, PHP_URL_HOST);
+
+        $aDefaults = [
+            'name' => $sName,
+            'short_name' => '', // the app name in use, shortened: set below
+            'description' => '',
+            'background_color' => '#ffffff',
+            'theme_color' => self::getTemplateThemeColor(),
+        ];
+
+        $aResult = [];
+        foreach($aDefaults as $sKey => $sDefault) {
+            if($sKey == 'short_name')
+                $sDefault = self::getPwaShortName($aResult['name']['used']);
+
+            $sValue = trim((string)getParam('sys_pwa_manifest_' . $sKey));
+            $aResult[$sKey] = ['value' => $sValue, 'default' => $sDefault, 'used' => $sValue !== '' ? $sValue : $sDefault];
+        }
+
+        return $aResult;
+    }
+
+    /**
+     * A name that fits under a home screen icon (about 12 characters): the name itself, its first word, or its start.
+     */
+    public static function getPwaShortName($sName)
+    {
+        $iMax = 12;
+        if(get_mb_len($sName) <= $iMax)
+            return $sName;
+
+        $aWords = preg_split('/\s+/u', $sName);
+        if(!empty($aWords[0]) && get_mb_len($aWords[0]) <= $iMax)
+            return $aWords[0];
+
+        return get_mb_substr($sName, 0, $iMax);
+    }
+
+    /**
+     * The theme color the site's template sets in its _header_meta.html, the one browsers use when Designer sets none.
+     */
+    public static function getTemplateThemeColor()
+    {
+        $sMeta = BxDolTemplate::getInstance()->getHtml('_header_meta.html');
+        if(is_string($sMeta) && preg_match('/name="theme-color"\s+content="(#[0-9a-fA-F]{3,8})"/', $sMeta, $aMatch))
+            return strtolower($aMatch[1]);
+
+        return '#ffffff';
+    }
 }
 
 /** @} */

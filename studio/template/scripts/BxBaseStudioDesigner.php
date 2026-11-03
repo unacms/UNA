@@ -30,6 +30,8 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
     protected $sInjectionsFormId = 'adm-dsg-injections-form';
     protected $sInjectionsIframeId = 'adm-dsg-injections-iframe';
     protected $sInjectionsEditorId = 'adm-dsg-injections-editor';
+    protected $sPwaFormId = 'adm-dsg-pwa-form';
+    protected $sPwaIframeId = 'adm-dsg-pwa-iframe';
 
     public function __construct($sPage = '')
     {
@@ -1127,14 +1129,204 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
 
     protected function getPwa()
     {
-        $oOptions = new BxTemplStudioOptions(BX_DOL_STUDIO_STG_TYPE_SYSTEM, ['pwa_manifest', 'pwa_sw']);
+        $oTemplate = BxDolStudioTemplate::getInstance();
+        $sJsObject = $this->getPageJsObject();
+        $aPwa = BxDolDesigns::getPwaSettings();
 
-        $this->aPageCss = array_merge($this->aPageCss, $oOptions->getCss());
-        $this->aPageJs = array_merge($this->aPageJs, $oOptions->getJs());
-        return BxDolStudioTemplate::getInstance()->parseHtmlByName('designer.html', array(
-            'content' => $oOptions->getCode(),
+        $aForm = [
+            'form_attrs' => [
+                'id' => $this->sPwaFormId,
+                'name' => $this->sPwaFormId,
+                'action' => BX_DOL_URL_STUDIO . 'designer.php',
+                'method' => 'post',
+                'enctype' => 'multipart/form-data',
+                'target' => $this->sPwaIframeId
+            ],
+            'params' => [
+                'db' => [
+                    'table' => '',
+                    'key' => '',
+                    'uri' => '',
+                    'uri_title' => '',
+                    'submit_name' => 'save'
+                ],
+            ],
+            'inputs' => [
+                'page' => [
+                    'type' => 'hidden',
+                    'name' => 'page',
+                    'value' => $this->sPage
+                ],
+                'app_section' => [
+                    'type' => 'block_header',
+                    'name' => 'app_section',
+                    'caption' => _t('_adm_dsg_txt_pwa_section_app'),
+                ],
+                'app_info' => [
+                    'type' => 'custom',
+                    'name' => 'app_info',
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', [
+                        'text' => _t('_adm_dsg_inf_pwa_section_app', BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_ICON)
+                    ]),
+                ],
+            ]
+        ];
+
+        // Each manifest field: empty takes the default, which the field shows as its placeholder.
+        $sPreviewJs = $sJsObject . '.updatePwaPreview(this.form);';
+        foreach(['name' => 'text', 'short_name' => 'text', 'description' => 'textarea', 'background_color' => 'rgb', 'theme_color' => 'rgb'] as $sKey => $sType) {
+            $aAttrs = [
+                'placeholder' => $aPwa[$sKey]['default'],
+                'oninput' => $sPreviewJs,
+                'onchange' => $sPreviewJs,
+            ];
+            if($sType == 'textarea')
+                $aAttrs['rows'] = 3;
+
+            $aForm['inputs']['sys_pwa_manifest_' . $sKey] = [
+                'type' => $sType,
+                'name' => 'sys_pwa_manifest_' . $sKey,
+                'caption' => _t('_adm_dsg_txt_pwa_' . $sKey),
+                'info' => _t('_adm_dsg_inf_pwa_' . $sKey),
+                'value' => $aPwa[$sKey]['value'],
+                'attrs' => $aAttrs,
+                'db' => ['pass' => 'Xss'],
+            ];
+        }
+
+        $aForm['inputs'] += [
+            'preview' => [
+                'type' => 'custom',
+                'name' => 'preview',
+                'caption' => _t('_adm_dsg_txt_pwa_preview'),
+                'content' => $this->getPwaPreview($aPwa),
+            ],
+            'sw_section' => [
+                'type' => 'block_header',
+                'name' => 'sw_section',
+                'caption' => _t('_adm_dsg_txt_pwa_section_sw'),
+            ],
+            'sw_info' => [
+                'type' => 'custom',
+                'name' => 'sw_info',
+                'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_pwa_section_sw')]),
+            ],
+            'sys_pwa_sw_enable' => [
+                'type' => 'switcher',
+                'name' => 'sys_pwa_sw_enable',
+                'caption' => _t('_adm_dsg_txt_pwa_sw_enable'),
+                'info' => _t('_adm_dsg_inf_pwa_sw_enable'),
+                'value' => 'on',
+                'checked' => getParam('sys_pwa_sw_enable') == 'on',
+                'db' => ['pass' => 'Xss'],
+            ],
+            'sys_pwa_sw_offline' => [
+                'type' => 'text',
+                'name' => 'sys_pwa_sw_offline',
+                'caption' => _t('_adm_dsg_txt_pwa_sw_offline'),
+                'info' => _t('_adm_dsg_inf_pwa_sw_offline'),
+                'value' => getParam('sys_pwa_sw_offline'),
+                'attrs' => ['placeholder' => 'page.php?i=about'],
+                'db' => ['pass' => 'Xss'],
+            ],
+            'sys_pwa_sw_cache' => [
+                'type' => 'textarea',
+                'name' => 'sys_pwa_sw_cache',
+                'caption' => _t('_adm_dsg_txt_pwa_sw_cache'),
+                'info' => _t('_adm_dsg_inf_pwa_sw_cache'),
+                'value' => getParam('sys_pwa_sw_cache'),
+                'attrs' => ['rows' => 4],
+                'db' => ['pass' => 'Xss'],
+            ],
+            'header_note' => [ // the note under the sections, in a section of its own
+                'type' => 'block_header',
+            ],
+            'note' => [
+                'type' => 'custom',
+                'name' => 'note',
+                'content' => $oTemplate->parseHtmlByName('dsr_logo_note.html', [
+                    'text' => _t('_adm_dsg_txt_pwa_note'),
+                    'bx_if:show_link' => [
+                        'condition' => false,
+                        'content' => []
+                    ],
+                ]),
+            ],
+            'header_save' => [ // a section of its own for the Save button: the block footer (page.css) is that last section
+                'type' => 'block_header',
+            ],
+            'save' => [
+                'type' => 'submit',
+                'name' => 'save',
+                'value' => _t('_adm_btn_settings_save'),
+            ]
+        ];
+
+        $oForm = new BxTemplStudioFormView($aForm, $oTemplate);
+        $oForm->initChecker();
+
+        if($oForm->isSubmittedAndValid()) {
+            echo $this->submitPwa($oForm);
+            exit;
+        }
+
+        return $oTemplate->parseHtmlByName('designer.html', [
+            'content' => $oTemplate->parseHtmlByName('dsr_splash.html', [
+                'splash_iframe_id' => $this->sPwaIframeId,
+                'form' => $oForm->getCode()
+            ]),
             'js_content' => $this->getPageJsCode()
-        ));
+        ]);
+    }
+
+    /**
+     * How the installed app looks: its home screen icon, launch screen and window, with the values in use.
+     * designer.js (updatePwaPreview) redraws it as the fields change.
+     */
+    protected function getPwaPreview($aPwa)
+    {
+        $sIconUrl = $this->getIconUrl('icon_android');
+        if(empty($sIconUrl))
+            $sIconUrl = $this->getIconDefaultUrl('android-icon-192.png');
+
+        $sBackground = $aPwa['background_color']['used'];
+        $sTheme = $aPwa['theme_color']['used'];
+
+        return BxDolStudioTemplate::getInstance()->parseHtmlByName('dsr_pwa_preview.html', [
+            'js_object' => $this->getPageJsObject(),
+            'icon_url' => $sIconUrl,
+            'name' => bx_process_output($aPwa['name']['used']),
+            'short_name' => bx_process_output($aPwa['short_name']['used']),
+            'background' => bx_html_attribute($sBackground),
+            'background_ink' => $this->getPwaInk($sBackground),
+            'theme' => bx_html_attribute($sTheme),
+            'theme_ink' => $this->getPwaInk($sTheme),
+        ]);
+    }
+
+    /**
+     * Text color for a background (#rgb, #rrggbb or rgb()): near-black on light colors, white on dark ones (relative luminance, as in WCAG).
+     */
+    protected function getPwaInk($sColor)
+    {
+        if(preg_match('/^#([0-9a-f]{3}|[0-9a-f]{6})$/i', $sColor, $aMatch)) {
+            $sHex = strlen($aMatch[1]) == 3 ? preg_replace('/(.)/', '$1$1', $aMatch[1]) : $aMatch[1];
+            $aRgb = [hexdec(substr($sHex, 0, 2)), hexdec(substr($sHex, 2, 2)), hexdec(substr($sHex, 4, 2))];
+        }
+        else if(preg_match('/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i', $sColor, $aMatch))
+            $aRgb = [(int)$aMatch[1], (int)$aMatch[2], (int)$aMatch[3]];
+        else
+            return '#18181b';
+
+        $fLuminance = 0;
+        foreach([0.2126, 0.7152, 0.0722] as $i => $fWeight) {
+            $fChannel = min(255, $aRgb[$i]) / 255;
+            $fChannel = $fChannel <= 0.03928 ? $fChannel / 12.92 : pow(($fChannel + 0.055) / 1.055, 2.4);
+            $fLuminance += $fWeight * $fChannel;
+        }
+
+        // Pick whichever of the two inks contrasts more with the color.
+        return ($fLuminance + 0.05) / (0.0099 + 0.05) > 1.05 / ($fLuminance + 0.05) ? '#18181b' : '#ffffff';
     }
 
     protected function getSettings()

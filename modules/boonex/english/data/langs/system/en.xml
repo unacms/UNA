@@ -813,6 +813,19 @@
 	<string name="_adm_dsg_inf_logo_text"><![CDATA[Read by screen readers, and shown in the header when there is no logo image. Leave empty to use the site name.]]></string>
 	<string name="_adm_dsg_inf_mark_code"><![CDATA[Draws the mark from SVG markup in place of the default image. An uploaded image comes first.]]></string>
 	<string name="_adm_dsg_inf_mark_section"><![CDATA[The compact symbol, shown in the header on phones and tablets.]]></string>
+	<string name="_adm_dsg_inf_pwa_background_color"><![CDATA[Fills the screen behind the icon while the app starts. Defaults to white.]]></string>
+	<string name="_adm_dsg_inf_pwa_description"><![CDATA[One or two sentences about the site. Some install prompts show it.]]></string>
+	<string name="_adm_dsg_inf_pwa_name"><![CDATA[Shown when installing and in the list of apps. Defaults to the site name.]]></string>
+	<string name="_adm_dsg_inf_pwa_preview_home"><![CDATA[The icon and short name.]]></string>
+	<string name="_adm_dsg_inf_pwa_preview_launch"><![CDATA[Shown while the app starts.]]></string>
+	<string name="_adm_dsg_inf_pwa_preview_window"><![CDATA[The title bar in the window color.]]></string>
+	<string name="_adm_dsg_inf_pwa_section_app"><![CDATA[People can add the site to their home screen or install it from the browser. It then opens in a window of its own, like an app. Leave a field empty to use the default it shows. The app icon comes from <a href="{0}">Icon</a>.]]></string>
+	<string name="_adm_dsg_inf_pwa_section_sw"><![CDATA[A service worker is a small script the browser keeps for the site. It saves the site styles, scripts and icons on the device, so pages open faster, and it can show an offline page when there is no connection.]]></string>
+	<string name="_adm_dsg_inf_pwa_short_name"><![CDATA[Shown under the icon on the home screen, where about 12 characters fit. Defaults to the app name, shortened.]]></string>
+	<string name="_adm_dsg_inf_pwa_sw_cache"><![CDATA[One address per line, on this site or full. They are saved when the service worker installs, along with the site styles, scripts and icons, which it keeps anyway.]]></string>
+	<string name="_adm_dsg_inf_pwa_sw_enable"><![CDATA[When you change the site styles or scripts, visitors get the new ones the next time they open the site.]]></string>
+	<string name="_adm_dsg_inf_pwa_sw_offline"><![CDATA[Shown instead of the browser error when there is no connection: an address on this site, such as page.php?i=about. Leave it empty to use the browser page.]]></string>
+	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Colors the app title bar and, on phones, the status bar. Defaults to the color your template sets.]]></string>
 	<string name="_adm_dsg_inf_splash_section_code"><![CDATA[HTML for the page. These placeholders are filled in when the page is shown: <code>__logo__</code> the site logo, <code>__join_form_in_box__</code> and <code>__login_form_in_box__</code> the sign-up and sign-in forms in a box, <code>__join_form__</code> and <code>__login_form__</code> the same forms without one, <code>__join_link__</code> and <code>__login_link__</code> their addresses, <code>{site_title}</code> the site name.]]></string>
 	<string name="_adm_dsg_inf_splash_section_landing"><![CDATA[Guests who open the home page see this page instead. Members who are signed in still see the home page.]]></string>
 	<string name="_adm_dsg_inf_splash_section_preview"><![CDATA[How guests see the page. Preview changes shows the code from the editor before you save it.]]></string>
@@ -848,6 +861,21 @@
 	<string name="_adm_dsg_txt_mark_src_builtin"><![CDATA[{0}'s default mark. Upload your own to replace it.]]></string>
 	<string name="_adm_dsg_txt_mark_src_default"><![CDATA[Default mark. Upload your own to replace it.]]></string>
 	<string name="_adm_dsg_txt_mark_src_none"><![CDATA[None. Phones and tablets show the logo.]]></string>
+	<string name="_adm_dsg_txt_pwa_background_color"><![CDATA[Launch screen color]]></string>
+	<string name="_adm_dsg_txt_pwa_description"><![CDATA[Description]]></string>
+	<string name="_adm_dsg_txt_pwa_name"><![CDATA[App name]]></string>
+	<string name="_adm_dsg_txt_pwa_note"><![CDATA[Installed apps pick up a new name, colors or icon the next time they start. Some phones show them only after the app is reinstalled.]]></string>
+	<string name="_adm_dsg_txt_pwa_preview"><![CDATA[Preview]]></string>
+	<string name="_adm_dsg_txt_pwa_preview_home"><![CDATA[Home screen]]></string>
+	<string name="_adm_dsg_txt_pwa_preview_launch"><![CDATA[Launch screen]]></string>
+	<string name="_adm_dsg_txt_pwa_preview_window"><![CDATA[App window]]></string>
+	<string name="_adm_dsg_txt_pwa_section_app"><![CDATA[Installed app]]></string>
+	<string name="_adm_dsg_txt_pwa_section_sw"><![CDATA[Offline and caching]]></string>
+	<string name="_adm_dsg_txt_pwa_short_name"><![CDATA[Short name]]></string>
+	<string name="_adm_dsg_txt_pwa_sw_cache"><![CDATA[More files to keep offline]]></string>
+	<string name="_adm_dsg_txt_pwa_sw_enable"><![CDATA[Use a service worker]]></string>
+	<string name="_adm_dsg_txt_pwa_sw_offline"><![CDATA[Offline page]]></string>
+	<string name="_adm_dsg_txt_pwa_theme_color"><![CDATA[Window color]]></string>
 	<string name="_adm_dsg_txt_alt_text"><![CDATA[Logo Text]]></string>
 	<string name="_adm_dsg_txt_cover_common"><![CDATA[Default pages cover]]></string>
 	<string name="_adm_dsg_txt_cover_unit_profile"><![CDATA[Default profile unit cover]]></string>
@@ -1373,7 +1401,7 @@
     <string name="_adm_lmi_cpt_providers"><![CDATA[Providers]]></string>
     <string name="_adm_lmi_cpt_popular"><![CDATA[Popular]]></string>
     <string name="_adm_lmi_cpt_purchases"><![CDATA[Purchases]]></string>
-    <string name="_adm_lmi_cpt_pwa"><![CDATA[Progressive Web App]]></string>
+    <string name="_adm_lmi_cpt_pwa"><![CDATA[PWA]]></string>
     <string name="_adm_lmi_cpt_ractions"><![CDATA[Actions]]></string>
     <string name="_adm_lmi_cpt_reports"><![CDATA[Reports]]></string>
     <string name="_adm_lmi_cpt_rlevels"><![CDATA[Levels]]></string>

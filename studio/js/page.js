@@ -122,7 +122,7 @@ $(document).ready(function() {
  */
 function bx_std_scrollbars(sSelector) {
     // Block contents, and the forms that scroll inside their block under a fixed Save footer (page.css "Options forms").
-    $(sSelector || 'div.bx-std-block-content, form[name="adm-settings-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-logo-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-icon-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-cover-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-splash-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-injections-form"] > .bx-form-advanced-wrapper').each(function() {
+    $(sSelector || 'div.bx-std-block-content, form[name="adm-settings-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-logo-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-icon-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-cover-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-splash-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-injections-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-pwa-form"] > .bx-form-advanced-wrapper').each(function() {
         bx_std_scrollbar(this);
     });
 }

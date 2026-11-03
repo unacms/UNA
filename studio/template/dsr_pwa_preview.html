@@ -1,0 +1,42 @@
+<div class="adm-dsg-pwa-previews grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <div class="adm-dsg-pwa-card flex flex-col rounded-xl overflow-hidden bg-white dark:bg-white/5 ring-1 ring-black/10 dark:ring-white/10">
+        <div class="adm-dsg-pwa-stage adm-dsg-pwa-home">
+            <img class="adm-dsg-pwa-icon" src="__icon_url__" alt="" />
+            <span class="adm-dsg-pwa-short-name">__short_name__</span>
+        </div>
+        <div class="p-3">
+            <div class="text-sm font-medium text-gray-900 dark:text-gray-100"><bx_text:_adm_dsg_txt_pwa_preview_home /></div>
+            <div class="text-sm leading-5 text-gray-600 dark:text-gray-400"><bx_text:_adm_dsg_inf_pwa_preview_home /></div>
+        </div>
+    </div>
+    <div class="adm-dsg-pwa-card flex flex-col rounded-xl overflow-hidden bg-white dark:bg-white/5 ring-1 ring-black/10 dark:ring-white/10">
+        <div class="adm-dsg-pwa-stage adm-dsg-pwa-launch" style="background-color: __background__; color: __background_ink__;">
+            <img class="adm-dsg-pwa-icon" src="__icon_url__" alt="" />
+            <span class="adm-dsg-pwa-name">__name__</span>
+        </div>
+        <div class="p-3">
+            <div class="text-sm font-medium text-gray-900 dark:text-gray-100"><bx_text:_adm_dsg_txt_pwa_preview_launch /></div>
+            <div class="text-sm leading-5 text-gray-600 dark:text-gray-400"><bx_text:_adm_dsg_inf_pwa_preview_launch /></div>
+        </div>
+    </div>
+    <div class="adm-dsg-pwa-card flex flex-col rounded-xl overflow-hidden bg-white dark:bg-white/5 ring-1 ring-black/10 dark:ring-white/10">
+        <div class="adm-dsg-pwa-stage adm-dsg-pwa-window">
+            <div class="adm-dsg-pwa-frame">
+                <div class="adm-dsg-pwa-titlebar" style="background-color: __theme__; color: __theme_ink__;">
+                    <img class="adm-dsg-pwa-titlebar-icon" src="__icon_url__" alt="" />
+                    <span class="adm-dsg-pwa-name">__name__</span>
+                </div>
+                <div class="adm-dsg-pwa-page"></div>
+            </div>
+        </div>
+        <div class="p-3">
+            <div class="text-sm font-medium text-gray-900 dark:text-gray-100"><bx_text:_adm_dsg_txt_pwa_preview_window /></div>
+            <div class="text-sm leading-5 text-gray-600 dark:text-gray-400"><bx_text:_adm_dsg_inf_pwa_preview_window /></div>
+        </div>
+    </div>
+</div>
+<script language="javascript">
+    $(document).ready(function() {
+        __js_object__.initPwaPreview($('.adm-dsg-pwa-previews').parents('form:first').get(0));
+    });
+</script>
