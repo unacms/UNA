@@ -17,6 +17,9 @@ type ChatHintsProps = Readonly<{
  * Task hints above the composer (UNA `BxDolAiChatHints`). Each one only sends its
  * message to the chat: no selected state, nothing remembered — unlike the buttons
  * under a message, a hint answers no question.
+ *
+ * Drawn as suggested prompts: a dashed chip (a message not sent yet) with a sparkle.
+ * Dashes need a real border, and the JS surface: native Expo UI buttons can't draw one.
  */
 function ChatHintsImpl({ hints, onSend, disabled = false }: ChatHintsProps) {
     const replies = hints.filter((hint) => hint.type === 'reply' && hint.message);
@@ -29,8 +32,13 @@ function ChatHintsImpl({ hints, onSend, disabled = false }: ChatHintsProps) {
                     // Index is part of the key: a module may repeat a label.
                     key={`${hint.label}:${index}`}
                     label={hint.label}
-                    style="link"
+                    image="Sparkles"
+                    style="borderless"
                     controlSize="small"
+                    borderShape="capsule"
+                    expoUI={false}
+                    className="border border-dashed border-border"
+                    classNames={{ text: 'font-medium text-muted-foreground', image: 'text-accent-foreground' }}
                     disabled={disabled}
                     onPress={() => {
                         if (!disabled && hint.message) void onSend(hint.message);
