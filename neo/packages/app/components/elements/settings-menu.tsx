@@ -40,7 +40,7 @@ function itemHref(item: SettingsMenuItem): string {
     return `/${path}`
 }
 
-function SettingsRow({ item, first, danger }: { item: SettingsMenuItem; first: boolean; danger: boolean }) {
+function SettingsRow({ item, first, danger }: Readonly<{ item: SettingsMenuItem; first: boolean; danger: boolean }>) {
     const title = item?.title || item?.name || ''
     const tone = danger ? 'text-destructive' : 'text-card-foreground'
     return (
@@ -60,7 +60,7 @@ function SettingsRow({ item, first, danger }: { item: SettingsMenuItem; first: b
  * the account's first, then the current profile's under its name, then the rest, and deleting the
  * account last on its own. One list for both, so switching profiles visibly changes the second card.
  */
-export default function SettingsMenu({ items }: { items: SettingsMenuItem[] }) {
+export default function SettingsMenu({ items }: Readonly<{ items: SettingsMenuItem[] }>) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
 
