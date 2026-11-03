@@ -1,15 +1,25 @@
-<svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="72" height="72" fill="url(#paint0_linear_127_20)"/>
-<path d="M36 56C47.0457 56 56 47.0457 56 36C56 24.9543 47.0457 16 36 16C24.9543 16 16 24.9543 16 36C16 47.0457 24.9543 56 36 56Z" stroke="url(#paint1_linear_127_20)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M36 57C47.0457 57 56 48.0457 56 37C56 25.9543 47.0457 17 36 17C24.9543 17 16 25.9543 16 37C16 48.0457 24.9543 57 36 57Z" stroke="black" stroke-opacity="0.1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<svg class="icon v-streams-pulse-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- glyph: circle-play, lucide-static v1.48.0, ISC -->
+<style>
+.v-streams-pulse-v1 .rn{transform-box:view-box;transform-origin:36px 36px}
+.v-streams-pulse-v1 .sh.rn{transform-origin:36px 37px}
+.v-streams-pulse-v1 .ec{transform-box:view-box;transform-origin:36px 36px}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-streams-pulse-v1 [class]{animation:var(--a) 1500ms linear both;animation-delay:var(--d,0ms)}
+.v-streams-pulse-v1 [class]{--a:none}
+.v-streams-pulse-v1 :is(.rn,.sh.rn){--a:sp0}
+@keyframes sp0{0%,100%{transform:none}4%{transform:scale(1);animation-timing-function:cubic-bezier(.3,0,.4,1)}12%{transform:scale(1.07);animation-timing-function:ease-in-out}20%{transform:scale(.98);animation-timing-function:ease-in-out}28%{transform:scale(1.05);animation-timing-function:ease-in-out}40%{transform:scale(1)}}
+.v-streams-pulse-v1 .ec{--a:sp1}
+@keyframes sp1{0%{opacity:0;transform:scale(1)}10%{opacity:0;transform:scale(1);animation-timing-function:steps(1,end)}10.67%{opacity:.9;transform:scale(1.05);animation-timing-function:cubic-bezier(.2,.6,.4,1)}60%,100%{opacity:0;transform:scale(2.273)}}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-streams-pulse-v1 .qv.qv{animation:q-streams-pulse-v1 1500ms linear both}
+@keyframes q-streams-pulse-v1{0%{opacity:1;animation-timing-function:ease-out}9.333%{opacity:0}76%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.v-streams-pulse-v1 *{animation:none!important}}
+</style>
+<rect width="72" height="72" fill="url(#bg-streams-pulse-v1)"/>
+<path d="M10 36a26 26 0 1 0 52 0a26 26 0 1 0 -52 0M5.5 36a30.5 30.5 0 1 0 61 0a30.5 30.5 0 1 0 -61 0M1 36a35 35 0 1 0 70 0a35 35 0 1 0 -70 0M-3.5 36a39.5 39.5 0 1 0 79 0a39.5 39.5 0 1 0 -79 0M-8 36a44 44 0 1 0 88 0a44 44 0 1 0 -88 0M-12.5 36a48.5 48.5 0 1 0 97 0a48.5 48.5 0 1 0 -97 0" stroke="white" stroke-width=".7" opacity=".16"/><rect width="72" height="72" fill="url(#bg-streams-pulse-v1)" class="qv" mask="url(#quiet-streams-pulse-v1)"/>
+<circle class="ec" style="--d:0ms" cx="36" cy="36" r="22" stroke="#FCD34D" stroke-width="2" vector-effect="non-scaling-stroke" opacity="0"/><circle class="ec" style="--d:240ms" cx="36" cy="36" r="22" stroke="#FCD34D" stroke-width="2" vector-effect="non-scaling-stroke" opacity="0"/>
+<rect width="72" height="72" fill="url(#inside-streams-pulse-v1)" opacity=".55" mask="url(#insides-streams-pulse-v1)"/><g stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><g stroke="white"><g class="rn"><path d="M14 36a22 22 0 1 0 44 0a22 22 0 1 0 -44 0"/><path d="M29.4 29.407A2.2 2.2 0 0 1 32.737 27.517L43.731 34.11A2.2 2.2 0 0 1 43.731 37.89L32.737 44.483A2.2 2.2 0 0 1 29.4 42.591Z"/></g></g><g mask="url(#lit-streams-pulse-v1)" stroke="black"><g class="sh rn"><path d="M14 37a22 22 0 1 0 44 0a22 22 0 1 0 -44 0"/><path d="M29.4 30.407A2.2 2.2 0 0 1 32.737 28.517L43.731 35.11A2.2 2.2 0 0 1 43.731 38.89L32.737 45.483A2.2 2.2 0 0 1 29.4 43.591Z"/></g></g></g>
 <defs>
-<linearGradient id="paint0_linear_127_20" x1="36" y1="0" x2="36" y2="72" gradientUnits="userSpaceOnUse">
-<stop stop-color="#059669"/>
-<stop offset="1" stop-color="#065F46"/>
-</linearGradient>
-<linearGradient id="paint1_linear_127_20" x1="36" y1="16" x2="36" y2="56" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
-</linearGradient>
-</defs>
+<linearGradient id="bg-streams-pulse-v1" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#059669"/><stop offset="1" stop-color="#065F46"/></linearGradient><linearGradient id="inside-streams-pulse-v1" x1="36" y1="14" x2="36" y2="58" gradientUnits="userSpaceOnUse"><stop stop-color="#065F46"/><stop offset="1" stop-color="#022C22"/></linearGradient><linearGradient id="light-streams-pulse-v1" x1="36" y1="15" x2="36" y2="59" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity=".1"/><stop offset="1" stop-color="white" stop-opacity=".2"/></linearGradient><mask id="lit-streams-pulse-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-streams-pulse-v1)"/></mask>
+<mask id="insides-streams-pulse-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><g fill="white"><path class="rn" d="M14 36a22 22 0 1 0 44 0a22 22 0 1 0 -44 0"/></g></mask>
+<radialGradient id="quietv-streams-pulse-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-streams-pulse-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-streams-pulse-v1)"/></mask></defs>
 </svg>

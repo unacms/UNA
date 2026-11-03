@@ -1,15 +1,37 @@
-<svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="72" height="72" fill="url(#paint0_linear_149_139)"/>
-<path d="M25 22C20 22 16 26 16 31V46C16 47.0609 16.4214 48.0783 17.1716 48.8284C17.9217 49.5786 18.9391 50 20 50H52C53.0609 50 54.0783 49.5786 54.8284 48.8284C55.5786 48.0783 56 47.0609 56 46V30C56 25.6 52.4 22 48 22H25ZM25 22C30 22 34 26 34 31V46C34 47.0609 33.5786 48.0783 32.8284 48.8284C32.0783 49.5786 31.0609 50 30 50M42 30H48V34M24 32H26" stroke="url(#paint1_linear_149_139)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M25 23C20 23 16 27 16 32V47C16 48.0609 16.4214 49.0783 17.1716 49.8284C17.9217 50.5786 18.9391 51 20 51H52C53.0609 51 54.0783 50.5786 54.8284 49.8284C55.5786 49.0783 56 48.0609 56 47V31C56 26.6 52.4 23 48 23H25ZM25 23C30 23 34 27 34 32V47C34 48.0609 33.5786 49.0783 32.8284 49.8284C32.0783 50.5786 31.0609 51 30 51M42 31H48V35M24 33H26" stroke="black" stroke-opacity="0.1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<svg class="icon v-conversations-inbox-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- glyph: messages-circle, lucide-static v1.48.0, ISC -->
+<style>
+.v-conversations-inbox-v1 .fr{transform-box:view-box;transform-origin:29.399px 29.374px}
+.v-conversations-inbox-v1 .sh.fr{transform-origin:29.399px 30.374px}
+.v-conversations-inbox-v1 .bk{transform-box:view-box;transform-origin:42.601px 42.576px}
+.v-conversations-inbox-v1 .sh.bk{transform-origin:42.601px 43.576px}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-conversations-inbox-v1 [class]{animation:var(--a) 1500ms linear both;animation-delay:var(--d,0ms)}
+.v-conversations-inbox-v1 [class]{--a:none}
+.v-conversations-inbox-v1 .r0{--a:ci0}
+@keyframes ci0{0%,100%{transform:none}20%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.4,0,.2,1)}50.67%{transform:translate(0px,14px)}99.93%{transform:translate(0px,14px);animation-timing-function:steps(1,end)}}
+.v-conversations-inbox-v1 .r1{--a:ci1}
+@keyframes ci1{0%,100%{transform:none}22.67%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.4,0,.2,1)}53.33%{transform:translate(0px,14px)}99.93%{transform:translate(0px,14px);animation-timing-function:steps(1,end)}}
+.v-conversations-inbox-v1 .r2{--a:ci2}
+@keyframes ci2{0%,100%{transform:none}25.33%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.4,0,.2,1)}56%{transform:translate(0px,14px)}99.93%{transform:translate(0px,14px);animation-timing-function:steps(1,end)}}
+.v-conversations-inbox-v1 .r3{--a:ci3}
+@keyframes ci3{0%,100%{transform:none}28%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.4,0,.2,1)}58.67%{transform:translate(0px,14px)}99.93%{transform:translate(0px,14px);animation-timing-function:steps(1,end)}}
+.v-conversations-inbox-v1 .r4{--a:ci4}
+@keyframes ci4{0%,100%{transform:none}17.33%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.45,0,.25,1)}54.67%{transform:translate(0px,-56px)}99.93%{transform:translate(0px,-56px);animation-timing-function:steps(1,end)}}
+.v-conversations-inbox-v1 .ud{--a:ci5}
+@keyframes ci5{0%,90%,100%{opacity:0}16%{opacity:0;animation-timing-function:ease-out}21.33%{opacity:1}73.33%{opacity:1;animation-timing-function:ease-in}}
+.v-conversations-inbox-v1 :is(.fr,.sh.fr){--a:ci6}
+@keyframes ci6{0%,100%{transform:none}8%{transform:scale(1);animation-timing-function:cubic-bezier(.5,0,.8,.5)}14%{transform:scale(.95);animation-timing-function:cubic-bezier(.2,.7,.3,1)}25.33%{transform:scale(1.06);animation-timing-function:ease-in-out}36%{transform:scale(1)}}
+.v-conversations-inbox-v1 :is(.bk,.sh.bk){--a:ci7}
+@keyframes ci7{0%,100%{transform:none}58.67%{transform:scale(1);animation-timing-function:cubic-bezier(.5,0,.8,.5)}64.67%{transform:scale(.95);animation-timing-function:cubic-bezier(.2,.7,.3,1)}76%{transform:scale(1.06);animation-timing-function:ease-in-out}86.67%{transform:scale(1)}}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-conversations-inbox-v1 .qv.qv{animation:q-conversations-inbox-v1 1500ms linear both}
+@keyframes q-conversations-inbox-v1{0%{opacity:1;animation-timing-function:ease-out}9.333%{opacity:0}76%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.v-conversations-inbox-v1 *{animation:none!important}}
+</style>
+<rect width="72" height="72" fill="url(#bg-conversations-inbox-v1)"/>
+<path d="M6 14H66M6 28H66M6 42H66M6 56H66" stroke="white" stroke-width=".4" opacity=".12"/><g stroke-width="1.3" stroke-linecap="round"><g class="r0"><circle cx="9" cy="7" r="3.4" fill="white" opacity=".2"/><path d="M16 5.2h16M16 9h28" stroke="white" opacity=".18"/><path d="M59 5.2h6" stroke="white" opacity=".12"/></g><g class="r1"><circle cx="9" cy="21" r="3.4" fill="white" opacity=".2"/><path d="M16 19.2h16M16 23h28" stroke="white" opacity=".18"/><path d="M59 19.2h6" stroke="white" opacity=".12"/></g><g class="r2"><circle cx="9" cy="35" r="3.4" fill="white" opacity=".2"/><path d="M16 33.2h16M16 37h28" stroke="white" opacity=".18"/><path d="M59 33.2h6" stroke="white" opacity=".12"/></g><g class="r3"><circle cx="9" cy="49" r="3.4" fill="white" opacity=".2"/><path d="M16 47.2h16M16 51h28" stroke="white" opacity=".18"/><path d="M59 47.2h6" stroke="white" opacity=".12"/></g><g class="r4"><circle class="ud" cx="12.2" cy="60" r="1.9" fill="#FCD34D" opacity="0"/><circle cx="9" cy="63" r="3.4" fill="white" opacity=".2"/><path d="M16 61.2h16M16 65h28" stroke="white" opacity=".18"/><path d="M59 61.2h6" stroke="white" opacity=".12"/></g></g><rect width="72" height="72" fill="url(#bg-conversations-inbox-v1)" class="qv" mask="url(#quiet-conversations-inbox-v1)"/>
+<rect width="72" height="72" fill="url(#inside-conversations-inbox-v1)" opacity=".55" mask="url(#insides-conversations-inbox-v1)"/><g stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><g stroke="white"><path class="bk" d="M53.492 31.684A15.402 15.402 0 0 1 56.599 49.005A2.2 2.2 0 0 0 56.471 50.736L57.956 55.333A2.2 2.2 0 0 1 55.237 57.903L50.495 56.514A2.2 2.2 0 0 0 48.856 56.646A15.402 15.402 0 0 1 31.709 53.467"/><path class="fr" d="M15.529 37.533A2.2 2.2 0 0 0 15.401 35.805A15.402 15.402 0 1 1 23.142 43.447A2.2 2.2 0 0 0 21.505 43.313L16.763 44.699A2.2 2.2 0 0 1 14.043 42.131Z"/></g><g mask="url(#lit-conversations-inbox-v1)" stroke="black"><path class="sh bk" d="M53.492 32.684A15.402 15.402 0 0 1 56.599 50.005A2.2 2.2 0 0 0 56.471 51.736L57.956 56.333A2.2 2.2 0 0 1 55.237 58.903L50.495 57.514A2.2 2.2 0 0 0 48.856 57.646A15.402 15.402 0 0 1 31.709 54.467"/><path class="sh fr" d="M15.529 38.533A2.2 2.2 0 0 0 15.401 36.805A15.402 15.402 0 1 1 23.142 44.447A2.2 2.2 0 0 0 21.505 44.313L16.763 45.699A2.2 2.2 0 0 1 14.043 43.131Z"/></g></g>
 <defs>
-<linearGradient id="paint0_linear_149_139" x1="36" y1="0" x2="36" y2="72" gradientUnits="userSpaceOnUse">
-<stop stop-color="#059669"/>
-<stop offset="1" stop-color="#065F46"/>
-</linearGradient>
-<linearGradient id="paint1_linear_149_139" x1="36" y1="22" x2="36" y2="50" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
-</linearGradient>
-</defs>
+<linearGradient id="bg-conversations-inbox-v1" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#059669"/><stop offset="1" stop-color="#065F46"/></linearGradient><linearGradient id="inside-conversations-inbox-v1" x1="36" y1="14.024" x2="36" y2="57.976" gradientUnits="userSpaceOnUse"><stop stop-color="#065F46"/><stop offset="1" stop-color="#022C22"/></linearGradient><linearGradient id="light-conversations-inbox-v1" x1="36" y1="15.024" x2="36" y2="58.976" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity=".1"/><stop offset="1" stop-color="white" stop-opacity=".2"/></linearGradient><mask id="lit-conversations-inbox-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-conversations-inbox-v1)"/></mask>
+<mask id="insides-conversations-inbox-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><g fill="white"><path class="fr" d="M15.529 37.533A2.2 2.2 0 0 0 15.401 35.805A15.402 15.402 0 1 1 23.142 43.447A2.2 2.2 0 0 0 21.505 43.313L16.763 44.699A2.2 2.2 0 0 1 14.043 42.131Z"/><path class="bk" d="M53.492 31.684A15.402 15.402 0 0 1 56.599 49.005A2.2 2.2 0 0 0 56.471 50.736L57.956 55.333A2.2 2.2 0 0 1 55.237 57.903L50.495 56.514A2.2 2.2 0 0 0 48.856 56.646A15.402 15.402 0 0 1 31.709 53.467Z"/><path class="bk" d="M27.199 42.576a15.402 15.402 0 1 0 30.804 0a15.402 15.402 0 1 0 -30.804 0"/></g></mask>
+<radialGradient id="quietv-conversations-inbox-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-conversations-inbox-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-conversations-inbox-v1)"/></mask></defs>
 </svg>
