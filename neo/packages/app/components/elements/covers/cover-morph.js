@@ -52,6 +52,7 @@ export default function CoverMorph({
         collapsed,
         onSlotLayout,
         onInnerLayout,
+        onPinnedRowsLayout,
         onRootLayout,
         parallaxRange,
         coverScrollY: scrollY,
@@ -64,6 +65,7 @@ export default function CoverMorph({
         coverScrollY,
         onOverlayHeight,
         skipCollapse,
+        stickyTop,
     })
 
     useLayoutEffect(() => {
@@ -155,8 +157,10 @@ export default function CoverMorph({
                     suppressCoverBackButton={suppressCoverBackButton}
                     onSlotLayout={onSlotLayout}
                 />
-                {sceneHeader}
-                {filter}
+                <View onLayout={onPinnedRowsLayout}>
+                    {sceneHeader}
+                    {filter}
+                </View>
             </Animated.View>
         </View>
     )
