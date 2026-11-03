@@ -565,3 +565,23 @@ export function getMenuSettings(object: string, config?: unknown, menu?: { title
 
     return a
 }
+
+type MenuWithItems = { object?: string; config?: unknown; title?: string; items?: { title?: string; link?: string }[] };
+
+/**
+ * A section whose menu names a page that lists it (`hub` in the menu's `config`, UNA's
+ * `sys_objects_menu.config_api`; Settings). Below desktop that page replaces the section's tab
+ * row, so each of its pages shows its own item's title.
+ */
+export function isMenuHub(menu?: MenuWithItems | null): boolean {
+    if (!menu?.object) return false;
+    const settings = getMenuSettings(menu.object, menu.config, menu);
+    return !!settings && !Array.isArray(settings) && !!settings.hub;
+}
+
+/** The title of `menu`'s item that opens page `uri` (UNA sends item links as page uris). */
+export function getMenuItemTitleForUri(menu: MenuWithItems | null | undefined, uri?: string): string {
+    if (!uri) return '';
+    const item = (menu?.items || []).find((i) => String(i?.link || '').replace(/^\/+/, '') === uri);
+    return item?.title || '';
+}

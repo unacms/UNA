@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { View } from 'app/design/view'
-import { deepEqual } from 'app/lib/util'
+import { deepEqual, isMenuHub } from 'app/lib/util'
 import {
     fillTabs,
     mergeConductorRoutes,
@@ -25,6 +25,7 @@ import { useCurrentUser } from 'app/context/user'
 import { useBottomSheetStore } from 'app/context/bottomsheet'
 import emitter, { EVENTS } from 'app/context/emitter'
 import { useIsFocused } from 'app/lib/hooks/router'
+import { useIsDesktop } from 'app/context/measure'
 import {
     getCachedConductorState,
     setCachedConductorState,
@@ -33,6 +34,8 @@ import { useTranslation } from 'react-i18next'
 
 /** Stable fallback so `useLeftColumn` memos survive tabs without a left column. */
 const EMPTY_CONTENT = []
+/** No tabs to show (a hub section below desktop): one array, so the tab bar memo holds. */
+const NO_ROUTES = []
 
 /**
  * Conductor — native shell (web lives in `index.web.js`).
@@ -84,6 +87,7 @@ export function Conductor({
 }) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
+    const isDesktop = useIsDesktop()
     // Setter only: subscribing to the sheet data would re-render the whole
     // conductor on every sheet open/close.
     const setBottomSheetData = useBottomSheetStore((state) => state.setBottomSheetData)
@@ -403,11 +407,15 @@ export function Conductor({
         [showFiltersBtn, showFilters]
     )
 
+    // A section listed by its own page (Settings, `isMenuHub`) has no tab row below desktop: that page
+    // lists the tabs, and each one opens from it with Back.
+    const hideTabs = !isDesktop && isMenuHub(menu)
+
     /** The tab strip itself; the cover embeds it and collapses around it. */
     const sceneHeader = useMemo(
         () => (
             <TabBar
-                routes={routes}
+                routes={hideTabs ? NO_ROUTES : routes}
                 routesRef={routesRef}
                 index={index}
                 setIndex={setIndex}
@@ -416,7 +424,7 @@ export function Conductor({
                 leftColumnMenus={leftColumnMenuBlocks}
             />
         ),
-        [routes, index, setIndex, onChangeRoute, onSelectTab, leftColumnMenuBlocks]
+        [hideTabs, routes, index, setIndex, onChangeRoute, onSelectTab, leftColumnMenuBlocks]
     )
 
     const { headerMode, useLocalHeader } = resolveConductorHeaderMode({

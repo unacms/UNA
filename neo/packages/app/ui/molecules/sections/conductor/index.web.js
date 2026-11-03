@@ -5,6 +5,7 @@ import {
     getHeaderSettings,
     getURI,
     getPageContentWidth,
+    isMenuHub,
 } from 'app/lib/util'
 import {
     fillTabs,
@@ -43,6 +44,8 @@ const VIEWPORT_LOCK_CLASS = 'ns-viewport-lock'
 
 /** Stable fallback so `useLeftColumn` memos survive tabs without a left column. */
 const EMPTY_CONTENT = []
+/** No tabs to show (a hub section below desktop): one array, so the header memo holds. */
+const NO_ROUTES = []
 // Side columns of a viewport-locked page (/tasks-home): the panel group is their scroll
 // container there, so they stick at its top and fill it instead of clearing the header.
 const LOCKED_COLUMN_STYLE = { top: 0, maxHeight: '100%' }
@@ -342,6 +345,10 @@ export function Conductor({
      * Deps list `data.*` fields rather than `data` itself: the page object is a
      * new reference on every poll, and rebuilding this would remount the cover.
      */
+    // A section listed by its own page (Settings, `isMenuHub`) has no tab row below desktop: that page
+    // lists the tabs, and each one opens from it with Back.
+    const hideTabs = !isDesktop && isMenuHub(menu)
+
     const headerComponent = useMemo(
         () => (
             <HeaderContainer
@@ -352,7 +359,7 @@ export function Conductor({
                 headerSettings={headerSettings}
                 pageData={data}
                 menu={menu}
-                routes={routes}
+                routes={hideTabs ? NO_ROUTES : routes}
                 layoutName={layoutName}
                 index={index}
                 setIndex={setIndex}
@@ -376,6 +383,7 @@ export function Conductor({
             data?.module,
             menu,
             routes,
+            hideTabs,
             layoutName,
             index,
             setIndex,
@@ -430,6 +438,8 @@ export function Conductor({
             {isUseCurrentHeader
                 ? <PageHeaderOptions hidden mobileOnly />
                 : <PageHeaderOptions sub={headerComponent} mobileOnly />}
+            {/* Below desktop a hub section's page was opened from its list: Back returns there. */}
+            {hideTabs ? <PageHeaderOptions backButton mobileOnly /> : null}
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <View
                 // Grows to the wrapper's viewport min-height (flex-auto), so the columns and the

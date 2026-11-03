@@ -5,7 +5,7 @@ import { ScopedTheme } from 'uniwind';
 import { nativeDriver } from 'app/lib/platform/animation';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { FeedbackHaptics, appSetting, getBreakpoint, getMenuSettings } from 'app/lib/util';
+import { FeedbackHaptics, appSetting, getBreakpoint, getMenuItemTitleForUri, getMenuSettings } from 'app/lib/util';
 import { playCue } from 'app/lib/sound';
 import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
@@ -302,12 +302,17 @@ export function usePageHeaderBase(pageData) {
         if (menuSettings.name) {
             nextTitle = menuSettings.name;
         }
+        // A section listed by its own page (Settings): below desktop that list replaces the tab row,
+        // so each page is named by its item ("Email"); the list page itself keeps the section name.
+        if (menuSettings.hub && !isDesktop) {
+            nextTitle = getMenuItemTitleForUri(pageData?.menu, pageData?.uri) || nextTitle;
+        }
         if (header.title) {
             nextTitle = header.title;
         }
 
         return (nextTitle || '').replace('__notification__', '');
-    }, [header.title, menuSettings.name, pageData?.name]);
+    }, [header.title, isDesktop, menuSettings.hub, menuSettings.name, pageData?.menu, pageData?.name, pageData?.uri]);
 
     const onHeaderLayout = useCallback((event) => {
         const { height } = event.nativeEvent.layout;

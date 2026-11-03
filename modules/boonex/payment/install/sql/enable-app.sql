@@ -28,6 +28,7 @@ UPDATE `sys_menu_items` SET `link`='page.php?i=payment-orders' WHERE `set_name`=
 
 -- MENUS: active_api
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_settings' AND `module`='bx_payment' AND `name`='payment-details';
+UPDATE `sys_menu_items` SET `config_api`='{"group":"profile"}' WHERE `set_name`='sys_account_settings' AND `module`='bx_payment' AND `name`='payment-details';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_payment_menu_cart_submenu' AND `module`='bx_payment' AND `name`='cart';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_payment_menu_cart_submenu' AND `module`='bx_payment' AND `name`='cart-history';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_payment_menu_sbs_submenu' AND `module`='bx_payment' AND `name`='sbs-list-all';
