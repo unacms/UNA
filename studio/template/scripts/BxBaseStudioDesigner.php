@@ -804,11 +804,14 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
      */
     protected function getCoverPreviews()
     {
-        // The site's own defaults: the template's cover art (Artificer's cover.css), the profile module's cover.svg.
+        // The site's own defaults. Page covers: the template's own art when its cover.css has some (Artificer's cover-default.svg,
+        // with a dark version), else template/css/cover.css's cover.svg, which the other templates import. Profile cards: cover.svg.
         $aDefaults = [
             'cover_common' => [$this->getSiteImageUrl('images/', 'cover-default.svg', false), $this->getSiteImageUrl('images/', 'cover-default-dark.svg', false)],
             'cover_unit_profile' => [$this->getSiteImageUrl('images/', 'cover.svg'), ''],
         ];
+        if(empty($aDefaults['cover_common'][0]))
+            $aDefaults['cover_common'] = [$this->getSiteImageUrl('images/', 'cover.svg'), ''];
 
         $aResult = [];
         foreach($this->aCovers as $sCover => $aCover) {
