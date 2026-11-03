@@ -2212,6 +2212,8 @@
 	<string name="_adm_txt_modules_updates"><![CDATA[Доступные обновления]]></string>
 	<string name="_adm_txt_modules_upload"><![CDATA[Добавить новый Модуль]]></string>
 	<string name="_adm_txt_modules_writable"><![CDATA[Записываемый]]></string>
+	<string name="_adm_txt_page_menu_collapse"><![CDATA[Свернуть боковую панель]]></string>
+	<string name="_adm_txt_page_menu_expand"><![CDATA[Развернуть боковую панель]]></string>
 	<string name="_adm_txt_pca_active"><![CDATA[Активные]]></string>
         <string name="_adm_txt_pca_bookmark"><![CDATA[Держать в доке для меня]]></string>
 	<string name="_adm_txt_pca_featured"><![CDATA[Держать в доке для всех]]></string>

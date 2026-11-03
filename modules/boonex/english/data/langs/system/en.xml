@@ -2241,6 +2241,8 @@
 	<string name="_adm_txt_modules_updates"><![CDATA[Available Updates]]></string>
 	<string name="_adm_txt_modules_upload"><![CDATA[Add New Module]]></string>
 	<string name="_adm_txt_modules_writable"><![CDATA[Writable]]></string>
+	<string name="_adm_txt_page_menu_collapse"><![CDATA[Collapse sidebar]]></string>
+	<string name="_adm_txt_page_menu_expand"><![CDATA[Expand sidebar]]></string>
 	<string name="_adm_txt_pca_active"><![CDATA[Active]]></string>
         <string name="_adm_txt_pca_bookmark"><![CDATA[Keep in Dock for me]]></string>
 	<string name="_adm_txt_pca_featured"><![CDATA[Keep in Dock for everyone]]></string>
