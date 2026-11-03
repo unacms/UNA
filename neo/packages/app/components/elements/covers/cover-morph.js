@@ -35,6 +35,7 @@ export default function CoverMorph({
     onProgress,
     coverScrollY,
     onOverlayHeight,
+    onCollapseRange,
     leading,
     sceneHeader,
     filter,
@@ -64,6 +65,7 @@ export default function CoverMorph({
         onProgress,
         coverScrollY,
         onOverlayHeight,
+        onCollapseRange,
         skipCollapse,
         stickyTop,
     })

@@ -8,7 +8,6 @@ import {
     coverTabScroll,
     resetCoverTabScroll,
     releaseCoverTabScrollHold,
-    setCoverTabScrollRange,
 } from './cover-tab-scroll'
 
 /** Collapse state at offset `y`, with hysteresis once collapsed. No range: any scroll collapses. */
@@ -77,7 +76,7 @@ export function useCoverMorphDriver({
             }
             const collapsed = isCollapsedAt(y, range, collapsedRef.current)
             coverTabScroll.y = y
-            setCoverTabScrollRange(range)
+            coverTabScroll.range = range
             coverTabScroll.collapsed = collapsed
             if (collapsed === collapsedRef.current) return
             collapsedRef.current = collapsed

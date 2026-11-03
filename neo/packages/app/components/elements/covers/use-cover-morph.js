@@ -5,7 +5,7 @@ import { appSetting } from 'app/lib/util'
 import { useIsDesktop } from 'app/context/measure'
 import { useCoverMorphDriver } from './use-cover-morph-driver'
 import { getCoverMorphSizing } from './constants'
-import { setCoverTabScrollRange } from './cover-tab-scroll'
+import { coverTabScroll } from './cover-tab-scroll'
 
 /**
  * Native CoverMorph: overlay measure + list-scroll collapse.
@@ -19,6 +19,7 @@ export function useCoverMorph({
     onProgress,
     coverScrollY,
     onOverlayHeight,
+    onCollapseRange,
     skipCollapse = false,
     stickyTop = 0,
 }) {
@@ -63,9 +64,11 @@ export function useCoverMorph({
     useLayoutEffect(() => {
         scrollCollapseRangeRef.current = parallaxRange
         if (parallaxRange > 0) {
-            setCoverTabScrollRange(parallaxRange)
+            coverTabScroll.range = parallaxRange
+            // Only this cover's conductor: a pinned tab switch follows the new tab's rows.
+            onCollapseRange?.(parallaxRange)
         }
-    }, [parallaxRange])
+    }, [parallaxRange, onCollapseRange])
 
     const onSlotLayout = useCallback((e) => {
         const h = e.nativeEvent.layout.height
