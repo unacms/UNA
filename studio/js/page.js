@@ -162,6 +162,19 @@ function bx_std_scrollbar(oScroller) {
 
 $(document).ready(function() {
     bx_std_scrollbars();
+
+    // One-column pages (the launcher, the dashboard) scroll a box of the window's height under the fixed header; it gets the same
+    // bar, drawn over the page's content area down the window's right edge and starting under the header (general.css).
+    $('div.bx-std-content-wrp.bx-std-one-col').each(function() {
+        bx_scrollbar_overlay(this, this.parentNode, {
+            svg: 'bx-std-scrollbar',
+            track: 'bx-std-scrollbar-track',
+            thumb: 'bx-std-scrollbar-thumb',
+            scroller: '', // general.css hides the native bar
+            scrolling: 'bx-std-scrolling',
+            hover: '' // page.css shows the bar while the pointer is over the page
+        });
+    });
 });
 
 /**
