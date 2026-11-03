@@ -27,9 +27,8 @@ import { PageHeaderOptions } from 'app/ui/molecules/header/options'
 import { useCurrentUser } from 'app/context/user'
 import { useBottomSheetStore } from 'app/context/bottomsheet'
 import emitter, { EVENTS } from 'app/context/emitter'
-import { useIsFocused } from 'app/lib/hooks/router'
+import { useIsFocused, useRouter } from 'app/lib/hooks/router'
 import { useIsDesktop, useScreenTier, useHydrated } from 'app/context/measure'
-import { useRouter } from 'app/lib/hooks/router'
 import {
     getCachedConductorState,
     setCachedConductorState,
