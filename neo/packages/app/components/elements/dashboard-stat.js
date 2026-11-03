@@ -343,10 +343,25 @@ function DashboardSettingsMenu() {
     const showFeedUnits = appSetting('layout', 'avaliable_feed_units').length > 1
     const { available: showSounds, level: soundLevel, setLevel: setSoundLevel } = useSoundsLevel()
     const currentSoundLevel = SOUND_LEVEL_ITEMS.find((option) => option.id === soundLevel) ?? SOUND_LEVEL_ITEMS[0]
-    if (!(showLangs || showTheme || showLayouts || showFeedUnits || showSounds)) return null
+    // The account settings pages (email, password, notifications ...): elsewhere only the desktop member menu links them.
+    const settingsUrl = appSetting('dashboard', 'settings_url')
+    if (!(settingsUrl || showLangs || showTheme || showLayouts || showFeedUnits || showSounds)) return null
 
     return (
         <View className={DASHBOARD_GRID}>
+            {settingsUrl ? (
+                <View className="w-full min-w-0">
+                    <NeoButtonLink
+                        href={settingsUrl}
+                        label={t('Settings')}
+                        style="bordered"
+                        controlSize="large"
+                        image="Settings"
+                        width="fill"
+                        align="start"
+                    />
+                </View>
+            ) : null}
             {showLangs ? (
                 <View className="w-full min-w-0">
                     <DropdownMenu
