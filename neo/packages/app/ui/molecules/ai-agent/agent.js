@@ -8,7 +8,8 @@ import { TextInputClear } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { cn, isWeb } from 'app/lib/util';
-import { createAgentChat, fetchAgentChatThread, hydrateAgentChat } from './helper';
+import { subscribe } from 'app/ui/atoms/socket';
+import { createAgentChat, fetchAgentChatHints, fetchAgentChatThread, hydrateAgentChat } from './helper';
 import { isHiddenEventMessageText, isHiddenFirstMessageText } from './hidden-first-message';
 import {
     agentMaxInputChars,
@@ -30,6 +31,7 @@ import { MessageInput } from 'app/components/elements/chat/parts/message-input';
 import { EdgeBlurView, edgeBlurConfig } from 'app/ui/atoms/edge-blur';
 import { edgeWash } from './edge-wash';
 import { AgentStatus, ChatBubble } from './chat-bubble';
+import { ChatHints } from './chat-hints';
 import { CHAT_IMAGES_MAX_DEFAULT, chatImageParts, imageFilesFromDataTransfer, pickedFromFile, revokePickedPreview, uploadAgentChatImage } from './chat-images';
 import { pickAgentChatImage } from './pick-image';
 import { AttachButton, ComposerAttachments, ComposerButtons, ComposerNotice, HistoryButton } from './composer-controls';
@@ -49,6 +51,7 @@ import { ChatThreads, liveThreadId, useAgentChatThreads } from './chat-threads';
  * @property {number|string} [max_input_chars] Per-message cap; 0 or absent means none.
  * @property {number|string} [guest_new_session_on_reload] 1 = every guest reload starts a fresh chat.
  * @property {number|string} [show_history] 1 = "Chats" panel with the viewer's earlier threads.
+ * @property {number|string} [show_hints] 1 = task hints above the composer (UNA `BxDolAiChatHints`).
  * @property {'html'|'text'} [message_format] How to read agent output. Default 'html'.
  * @property {string} [hidden_first_message] Bootstrap rule, read by the block element — see hidden-first-message.js.
  */
@@ -444,6 +447,8 @@ function AiAgentChat({
     const bootstrapSentRef = useRef('');
     const [streamActions, setStreamActions] = useState({});
     const [streamedSession, setStreamedSession] = useState(null);
+    /** Task hints above the composer, raw items as UNA sent them. */
+    const [hintItems, setHintItems] = useState([]);
 
     const agentId = data?.agent_id;
     const contextProfileId = Number(data?.context_profile_id) || 0;
@@ -451,6 +456,7 @@ function AiAgentChat({
     const maxChars = agentMaxInputChars(data);
     const messageFormat = data?.message_format === 'text' ? 'text' : 'html';
     const allowImages = !!Number(data?.allow_images);
+    const showHints = !!Number(data?.show_hints);
     const maxImages = Math.max(1, Number(data?.max_images) || CHAT_IMAGES_MAX_DEFAULT);
 
     const { listRef, onScroll, scrollToEnd, pinToBottom, followIfPinned } = useChatAutoscroll();
@@ -620,6 +626,36 @@ function AiAgentChat({
             ),
         [messages, hideInitialMessage, streamActions]
     );
+    /**
+     * Task hints come from UNA's data, not from the conversation: asked when the chat
+     * opens, after every turn (a tool may have changed the data) and whenever UNA says
+     * the data changed (`hints` on `sys_agent_{agent}_{profile}`). Only the newest
+     * answer counts. They stay while a reply streams, disabled.
+     */
+    const hintsEnabled = showHints && !readOnly;
+    const hintsRequestRef = useRef(0);
+    const loadHints = useCallback(() => {
+        const request = ++hintsRequestRef.current;
+        fetchAgentChatHints(agentId, { contextProfileId, chatId })
+            .then((items) => {
+                if (request === hintsRequestRef.current) setHintItems(items);
+            })
+            .catch(() => {});
+    }, [agentId, contextProfileId, chatId]);
+    useEffect(() => {
+        if (hintsEnabled) loadHints();
+    }, [hintsEnabled, loadHints]);
+    const hintsWasLoadingRef = useRef(false);
+    useEffect(() => {
+        if (hintsEnabled && hintsWasLoadingRef.current && !isLoading) loadHints();
+        hintsWasLoadingRef.current = isLoading;
+    }, [hintsEnabled, isLoading, loadHints]);
+    const hintsUserId = Number(currentUser?.id) || 0;
+    useEffect(() => {
+        if (!hintsEnabled || !agentId || hintsUserId <= 0) return undefined;
+        return subscribe(`sys_agent_${agentId}_${hintsUserId}`, 'hints', loadHints);
+    }, [hintsEnabled, agentId, hintsUserId, loadHints]);
+    const hints = useMemo(() => (hintsEnabled ? messageActions(null, hintItems) : []), [hintsEnabled, hintItems]);
     const showStartNew = !!onStartAgain && (canRestart || (!sessionEnded && visibleMessages.length > 0));
 
     const last = messages[messages.length - 1];
@@ -960,6 +996,11 @@ function AiAgentChat({
                 disabled={isLoading || uploading}
                 onRemove={removePendingImage}
             />
+            {hints.length && !sessionEnded ? (
+                <View className="mb-2">
+                    <ChatHints hints={hints} onSend={sendReply} disabled={isLoading || uploading} />
+                </View>
+            ) : null}
             <Row className="items-center justify-center gap-2 w-full">
                 {onToggleHistory ? <HistoryButton onPress={onToggleHistory} alwaysVisible={historyOverlayOnly} /> : null}
                 <View className={cn('flex-1 min-w-0', sessionEnded ? 'opacity-60' : '')}>

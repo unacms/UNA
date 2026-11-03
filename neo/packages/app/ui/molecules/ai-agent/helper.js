@@ -186,6 +186,24 @@ export async function fetchAgentChatThread(agentId, threadId) {
 }
 
 /**
+ * Task hints of this chat (`?hints=1`, UNA `BxDolAiChatHints`): the module the chat is
+ * about builds them from its data, for the chat's context.
+ *
+ * @returns {Promise<object[]>} raw hint items, see `messageActions`
+ */
+export async function fetchAgentChatHints(agentId, options = {}) {
+    const url = requestUrl(agentId, options.contextProfileId, options.chatId);
+    const response = await chatFetch(`${url}${url.includes('?') ? '&' : '?'}hints=1`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        credentials: 'include',
+        cache: 'no-store',
+    });
+    const data = await response.json().catch(() => ({}));
+    return Array.isArray(data?.hints) ? data.hints : [];
+}
+
+/**
  * Transcript only, without building a stream.
  *
  * `createAgentChat` constructs an SSE client eagerly, so calling it just to reach

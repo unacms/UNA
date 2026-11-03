@@ -901,6 +901,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
      *       'allow_images' => true,   // composer image attachments
      *       'allow_new' => false,     // "Start new" extra threads (`?chat=`)
      *       'show_history' => false,  // "Chats" panel with the viewer's earlier threads (App only; operator block turns it on)
+     *       'show_hints' => false,    // task hints above the composer, from the module of the chat (App only, see BxDolAiChatHints)
      *     ),
      *   ),
      *   'class' => 'TemplServices',
@@ -939,6 +940,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'allow_images' => $aParams['allow_images'] ? 1 : 0,
             'allow_new' => $aParams['allow_new'] ? 1 : 0,
             'show_history' => $aParams['show_history'] ? 1 : 0,
+            'show_hints' => $aParams['show_hints'] ? 1 : 0,
             'max_images' => BxDolAiChatImages::MAX_PER_TURN,
             'max_input_chars' => (int)($aAgent['max_input_chars'] ?? 0),
             ])];
@@ -1017,7 +1019,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
     /**
      * Named options for {@see serviceGetBlockAiAgent}, plus legacy positional args.
      *
-     * @return array{context:mixed,require_post:bool,allow_images:bool,allow_new:bool,show_history:bool}
+     * @return array{context:mixed,require_post:bool,allow_images:bool,allow_new:bool,show_history:bool,show_hints:bool}
      */
     protected function _normalizeAiAgentBlockParams($mixedParams, array $aLegacy = [])
     {
@@ -1031,9 +1033,10 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'allow_images' => false,
             'allow_new' => false,
             'show_history' => false,
+            'show_hints' => false,
         ];
 
-        $aNamedKeys = ['context', 'context_profile_id', 'require_post', 'allow_images', 'allow_new', 'show_history'];
+        $aNamedKeys = ['context', 'context_profile_id', 'require_post', 'allow_images', 'allow_new', 'show_history', 'show_hints'];
         $bNamed = is_array($mixedParams);
         if ($bNamed && $mixedParams) {
             $bNamed = false;
@@ -1058,6 +1061,8 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
                 $aOut['allow_new'] = $mixedParams['allow_new'];
             if (array_key_exists('show_history', $mixedParams))
                 $aOut['show_history'] = $mixedParams['show_history'];
+            if (array_key_exists('show_hints', $mixedParams))
+                $aOut['show_hints'] = $mixedParams['show_hints'];
         } else {
             $aOut['context'] = $mixedParams;
             if (array_key_exists(0, $aLegacy))
@@ -1074,6 +1079,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         $aOut['allow_images'] = $isOn($aOut['allow_images']);
         $aOut['allow_new'] = $isOn($aOut['allow_new']);
         $aOut['show_history'] = $isOn($aOut['show_history']);
+        $aOut['show_hints'] = $isOn($aOut['show_hints']);
         return $aOut;
     }
 
