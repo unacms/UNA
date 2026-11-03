@@ -2244,7 +2244,8 @@ headroom.js@^0.12.0:
 
 "highlight.js@github:highlightjs/highlight.js":
   version "11.12.0"
-  resolved "https://codeload.github.com/highlightjs/highlight.js/tar.gz/fc3f06392f189354eed922973635ab9e9268b983"
+  uid "60e092057673595fa542db0bc2b13a99df5d0551"
+  resolved "https://codeload.github.com/highlightjs/highlight.js/tar.gz/60e092057673595fa542db0bc2b13a99df5d0551"
 
 highlight.js@~11.11.0:
   version "11.11.2"
