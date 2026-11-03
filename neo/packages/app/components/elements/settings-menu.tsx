@@ -100,8 +100,8 @@ export default function SettingsMenu({ items, hub = '' }: Readonly<{ items: Sett
 
     return (
         // Rows read as a list, not a table: a phone-like width on wide screens too. Below desktop the
-        // section's tab pane has no inset of its own, so the cards keep the page's 16px.
-        <View className="w-full max-w-2xl gap-6 px-4 lg:px-0">
+        // section's tab pane has no inset of its own, so the list keeps the page's 16px on every side.
+        <View className="w-full max-w-2xl gap-6 p-4 lg:p-0">
             {GROUPS.filter((group) => byGroup.has(group)).map((group) => (
                 <View key={group} className="w-full gap-2">
                     {headings[group] ? (
