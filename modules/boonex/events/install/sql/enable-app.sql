@@ -21,7 +21,6 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_events_profile_i
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_events_profile_info' AND `module`='bx_events' AND `title_system`='' AND `title`='_bx_events_page_block_title_profile_calendar';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_events_profile_info' AND `module`='bx_events' AND `title_system`='' AND `title`='_bx_events_page_block_title_entry_location';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_events_profile_pricing' AND `module`='bx_events' AND `title_system`='' AND `title`='_bx_events_page_block_title_profile_pricing';
-UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_events_home' AND `module`='bx_events' AND `title_system`='' AND `title`='_bx_events_page_block_title_featured_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_events_home' AND `module`='bx_events' AND `title_system`='' AND `title`='_bx_events_page_block_title_latest_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_events_top' AND `module`='bx_events' AND `title_system`='' AND `title`='_bx_events_page_block_title_top_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_events_context' AND `module`='bx_events' AND `title_system`='_bx_events_page_block_title_sys_entries_in_context' AND `title`='_bx_events_page_block_title_entries_in_context';
