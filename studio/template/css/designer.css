@@ -284,6 +284,12 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+/* The launch screen and title bar take the colors in use, which the template and designer.js set as variables. */
+.adm-dsg-pwa-launch,
+.adm-dsg-pwa-titlebar {
+    background-color: var(--adm-dsg-pwa-bg, #ffffff);
+    color: var(--adm-dsg-pwa-ink, #18181b);
+}
 .adm-dsg-pwa-launch .adm-dsg-pwa-icon {
     width: 4rem;
     height: 4rem;

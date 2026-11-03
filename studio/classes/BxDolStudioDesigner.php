@@ -501,7 +501,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
     /**
      * Designer > Settings: the site template and the default page layouts, each only from what can be chosen.
      */
-    function submitSettings()
+    public function submitSettings()
     {
         $aValues = [];
 
@@ -533,12 +533,22 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             ]);
         }
 
+        $this->clearSettingsCache();
+
+        return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SETTINGS);
+    }
+
+    /**
+     * What Studio's settings forms clear after saving (BxDolStudioOptions::clearCache). Clearing the CSS cache also bumps
+     * sys_revision, which names the service worker's cache, so installed apps drop files no longer listed.
+     */
+    protected function clearSettingsCache()
+    {
         BxDolDb::getInstance()->cacheParams(true, true);
+
         $oCacheUtilities = BxDolCacheUtilities::getInstance();
         $oCacheUtilities->clear('db');
         $oCacheUtilities->clear('css');
-
-        return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SETTINGS);
     }
 
     /**
@@ -576,7 +586,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         return $aResult;
     }
 
-    function submitPwa(&$oForm)
+    public function submitPwa(&$oForm)
     {
         foreach(['name', 'short_name', 'description', 'background_color', 'theme_color'] as $sKey) {
             $sValue = trim($oForm->getCleanValue('sys_pwa_manifest_' . $sKey));
@@ -590,6 +600,8 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         setParam('sys_pwa_sw_enable', $oForm->getCleanValue('sys_pwa_sw_enable') == 'on' ? 'on' : '');
         setParam('sys_pwa_sw_offline', ltrim(trim($oForm->getCleanValue('sys_pwa_sw_offline')), '/'));
         setParam('sys_pwa_sw_cache', trim($oForm->getCleanValue('sys_pwa_sw_cache')));
+
+        $this->clearSettingsCache();
 
         return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_PWA);
     }

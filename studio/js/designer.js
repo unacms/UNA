@@ -253,10 +253,10 @@ BxDolStudioDesigner.prototype.updatePwaPreview = function(oForm) {
     oPreview.find('.adm-dsg-pwa-short-name').text(fValue('short_name'));
 
     var sBackground = fColor('background_color');
-    oPreview.find('.adm-dsg-pwa-launch').css({'background-color': sBackground, 'color': $this.getPwaInk(sBackground)});
+    oPreview.find('.adm-dsg-pwa-launch').css({'--adm-dsg-pwa-bg': sBackground, '--adm-dsg-pwa-ink': $this.getPwaInk(sBackground)});
 
     var sTheme = fColor('theme_color');
-    oPreview.find('.adm-dsg-pwa-titlebar').css({'background-color': sTheme, 'color': $this.getPwaInk(sTheme)});
+    oPreview.find('.adm-dsg-pwa-titlebar').css({'--adm-dsg-pwa-bg': sTheme, '--adm-dsg-pwa-ink': $this.getPwaInk(sTheme)});
 
     // An empty color field shows its default in the picker's swatch, not a blank one.
     $.each({'background_color': sBackground, 'theme_color': sTheme}, function(sKey, sColor) {

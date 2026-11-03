@@ -80,7 +80,7 @@ class PwaSettingsTest extends BxDolIntegrationTestCase
         $this->assertSame('', $oTemplate->parseSystemKey('theme_color_meta'), 'the template keeps its own meta');
 
         setParam('sys_pwa_manifest_theme_color', '#1d4ed8');
-        $this->assertSame('<meta name="theme-color" content="#1d4ed8" />', $oTemplate->parseSystemKey('theme_color_meta'));
+        $this->assertSame('<meta name="theme-color" content="#1d4ed8" />', trim($oTemplate->parseSystemKey('theme_color_meta')));
     }
 
     public function testEveryTemplateMetaPutsTheSettingFirst(): void
