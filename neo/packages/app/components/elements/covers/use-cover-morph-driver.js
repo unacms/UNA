@@ -8,6 +8,7 @@ import {
     coverTabScroll,
     resetCoverTabScroll,
     releaseCoverTabScrollHold,
+    setCoverTabScrollRange,
 } from './cover-tab-scroll'
 
 /**
@@ -73,7 +74,7 @@ export function useCoverMorphDriver({
                 collapsed = y >= range
             }
             coverTabScroll.y = y
-            coverTabScroll.range = range
+            setCoverTabScrollRange(range)
             coverTabScroll.collapsed = collapsed
             if (collapsed === collapsedRef.current) return
             collapsedRef.current = collapsed

@@ -4,6 +4,7 @@ import { appSetting } from 'app/lib/util'
 import {
     pinCollapsedCoverForTabSwitch,
     releaseCoverTabScrollHold,
+    subscribeCoverTabScrollRange,
 } from 'app/components/elements/covers/cover-tab-scroll'
 
 /**
@@ -52,6 +53,16 @@ export function useConductorCover({ pageUrl }) {
     const pinCoverForTabSwitch = useCallback(() => {
         setCoverPadPin(pinCollapsedCoverForTabSwitch())
     }, [])
+
+    // While pinned, follow the range: the new tab's pinned rows can differ from the old tab's
+    // (a filter row or none), and a stale pin leaves a gap or hides the list's top under the bar.
+    const isPinned = coverPadPin > 0
+    useEffect(() => {
+        if (!isPinned) return undefined
+        return subscribeCoverTabScrollRange((range) => {
+            setCoverPadPin((prev) => (prev > 0 && range > 0 ? range : prev))
+        })
+    }, [isPinned])
 
     // A new page gets a fresh cover, so the pin from the old one must go.
     useEffect(() => {

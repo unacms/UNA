@@ -5,7 +5,7 @@ import { appSetting } from 'app/lib/util'
 import { useIsDesktop } from 'app/context/measure'
 import { useCoverMorphDriver } from './use-cover-morph-driver'
 import { getCoverMorphSizing } from './constants'
-import { coverTabScroll } from './cover-tab-scroll'
+import { setCoverTabScrollRange } from './cover-tab-scroll'
 
 /**
  * Native CoverMorph: overlay measure + list-scroll collapse.
@@ -63,7 +63,7 @@ export function useCoverMorph({
     useLayoutEffect(() => {
         scrollCollapseRangeRef.current = parallaxRange
         if (parallaxRange > 0) {
-            coverTabScroll.range = parallaxRange
+            setCoverTabScrollRange(parallaxRange)
         }
     }, [parallaxRange])
 

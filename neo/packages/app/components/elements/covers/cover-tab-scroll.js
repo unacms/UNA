@@ -14,6 +14,24 @@ export const coverTabScroll = {
     range: 0,
 }
 
+const rangeListeners = new Set()
+
+/**
+ * The morph's latest collapse range. A pinned conductor follows it: the next tab's pinned rows
+ * (a filter row or none) change the collapsed overlay, and so how much pad the list must drop.
+ */
+export function setCoverTabScrollRange(range) {
+    if (coverTabScroll.range === range) return
+    coverTabScroll.range = range
+    rangeListeners.forEach((listener) => listener(range))
+}
+
+/** Returns the unsubscribe function. */
+export function subscribeCoverTabScrollRange(listener) {
+    rangeListeners.add(listener)
+    return () => rangeListeners.delete(listener)
+}
+
 export function resetCoverTabScroll() {
     coverTabScroll.collapsed = false
     coverTabScroll.hold = false
