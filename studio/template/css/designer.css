@@ -49,3 +49,21 @@ div.bx-dsg-cover-actions .bx-btn {
     float: none;
     display: inline-flex; /* keeps the 32px Studio button's centred label */
 }
+
+/*--- Logo ---*/
+/* Each preview stage is the page the image sits on: white in light mode, Artificer's gray-900 in dark mode. */
+.adm-dsg-lp-stage.adm-dsg-lp-light {
+    background-color: #ffffff;
+    color: #18181b;
+}
+.adm-dsg-lp-stage.adm-dsg-lp-dark {
+    background-color: #18181b;
+    color: #ffffff;
+}
+/* SVG code draws at the header's 40px height; its own width follows from its viewBox. */
+.adm-dsg-lp-code > svg {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: 100%;
+}

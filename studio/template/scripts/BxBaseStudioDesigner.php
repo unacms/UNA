@@ -137,8 +137,12 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
     protected function getLogo()
     {
         $oTemplate = BxDolStudioTemplate::getInstance();
+        $oFunctions = BxTemplStudioFunctions::getInstance();
 
-        $aForm = array(
+        $aTemplate = $this->getLogoTemplateModule();
+        $sTemplate = !empty($aTemplate['title']) ? $aTemplate['title'] : '';
+
+        $aForm = [
             'form_attrs' => [
                 'id' => $this->sLogoFormId,
                 'name' => $this->sLogoFormId,
@@ -162,61 +166,105 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     'name' => 'page',
                     'value' => $this->sPage
                 ],
-                'alt' => [
-                    'type' => 'text',
-                    'name' => 'alt',
-                    'caption' => _t('_adm_dsg_txt_alt_text'),
-                    'info' => _t('_adm_dsg_dsc_alt_text'),
-                    'value' => getParam($this->sParamLogoAlt),
-                    'checker' => [
-                        'func' => '',
-                        'params' => [],
-                        'error' => ''
-                    ],
-                    'db' => [
-                        'pass' => 'Xss',
-                    ],
+                'note' => [
+                    'type' => 'custom',
+                    'name' => 'note',
+                    'content' => $this->getLogoNote($aTemplate),
                 ],
-                'save' => [
-                    'type' => 'submit',
-                    'name' => 'save',
-                    'value' => _t('_adm_btn_designer_submit'),
-                ]
             ]
-        );
+        ];
 
-        $aInputs = [];
-        foreach($this->aLogos as $sLogo => $aLogo) {
-            if(empty($this->{$aLogo['param']}))
+        // A section per image: the previews of what the header shows, then the uploads and the SVG code.
+        $aPreviews = $this->getLogoPreviews($sTemplate);
+        foreach(['logo' => ['logo', 'logo_dark', 'logo_inline'], 'mark' => ['mark', 'mark_dark', 'mark_inline']] as $sSection => $aLogos) {
+            $aInputs = [];
+            foreach($aLogos as $sLogo) {
+                $aLogo = $this->aLogos[$sLogo];
+                if(empty($this->{$aLogo['param']}))
+                    continue;
+
+                if(isset($aLogo['storage'], $aLogo['transcoder']))
+                    $aInputs[$sLogo] = [
+                        'type' => 'files',
+                        'name' => $sLogo,
+                        'storage_object' => $aLogo['storage'],
+                        'storage_private' => 0,
+                        'images_transcoder' => $aLogo['transcoder'],
+                        'uploaders' => ['sys_html5'],
+                        'multiple' => false,
+                        'content_id' => $this->getOptionId($this->{$aLogo['param']}),
+                        'ghost_template' => $oFunctions->getDefaultGhostTemplate($sLogo),
+                        'caption' => _t(strpos($sLogo, '_dark') !== false ? '_adm_dsg_txt_logo_upload_for_dark' : '_adm_dsg_txt_logo_upload_for_light'),
+                    ];
+                else
+                    $aInputs[$sLogo] = [
+                        'type' => 'textarea',
+                        'name' => $sLogo,
+                        'caption' => _t('_adm_dsg_txt_logo_code'),
+                        'info' => _t('_adm_dsg_inf_' . $sSection . '_code'),
+                        'value' => getParam($this->{$aLogo['param']}),
+                        'code' => 1,
+                        'db' => [
+                            'pass' => 'Xss',
+                        ],
+                    ];
+            }
+
+            if(empty($aInputs))
                 continue;
 
-            if(isset($aLogo['storage'], $aLogo['transcoder']))
-                $aInputs[$sLogo] = [
-                    'type' => 'files',
-                    'name' => $sLogo,
-                    'storage_object' => $aLogo['storage'],
-                    'storage_private' => 0,
-                    'images_transcoder' => $aLogo['transcoder'],
-                    'uploaders' => ['sys_html5'],
-                    'multiple' => false,
-                    'content_id' => $this->getOptionId($this->{$aLogo['param']}),
-                    'ghost_template' => BxTemplStudioFunctions::getInstance()->getDefaultGhostTemplate($sLogo),
-                    'caption' => _t('_adm_dsg_txt_upload_' . $sLogo),
-                ];
-            else
-                $aInputs[$sLogo] = [
-                    'type' => 'textarea',
-                    'name' => $sLogo,
-                    'caption' => _t('_adm_dsg_txt_upload_' . $sLogo),
-                    'value' => getParam($this->{$aLogo['param']}),
-                    'code' => 1,
-                    'db' => [
-                        'pass' => 'Xss',
-                    ],
-                ];
+            $aForm['inputs'] = array_merge($aForm['inputs'], [
+                $sSection . '_section' => [
+                    'type' => 'block_header',
+                    'name' => $sSection . '_section',
+                    'caption' => _t('_adm_dsg_txt_' . $sSection . '_section'),
+                    'info' => _t('_adm_dsg_inf_' . $sSection . '_section'),
+                ],
+                $sSection . '_preview' => [
+                    'type' => 'custom',
+                    'name' => $sSection . '_preview',
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_preview.html', [
+                        'bx_repeat:previews' => array_values(array_filter($aPreviews, function($aPreview) use ($aLogos) {
+                            return in_array($aPreview['name'], $aLogos);
+                        }))
+                    ]),
+                ],
+            ], $aInputs);
         }
 
-        $aForm['inputs'] = bx_array_insert_after($aInputs, $aForm['inputs'], 'page');
+        $aForm['inputs'] = array_merge($aForm['inputs'], [
+            'text_section' => [
+                'type' => 'block_header',
+                'name' => 'text_section',
+                'caption' => _t('_adm_dsg_txt_logo_text_section'),
+            ],
+            'alt' => [
+                'type' => 'text',
+                'name' => 'alt',
+                'caption' => _t('_adm_dsg_txt_logo_text'),
+                'info' => _t('_adm_dsg_inf_logo_text'),
+                'value' => getParam($this->sParamLogoAlt),
+                'attrs' => [
+                    'placeholder' => getParam('site_title'),
+                ],
+                'checker' => [
+                    'func' => '',
+                    'params' => [],
+                    'error' => ''
+                ],
+                'db' => [
+                    'pass' => 'Xss',
+                ],
+            ],
+            'header_save' => [ // a section of its own for the Save button: the block footer (page.css) is that last section
+                'type' => 'block_header',
+            ],
+            'save' => [
+                'type' => 'submit',
+                'name' => 'save',
+                'value' => _t('_adm_btn_settings_save'),
+            ]
+        ]);
 
         $oForm = new BxTemplStudioFormView($aForm);
         $oForm->initChecker();
@@ -226,10 +274,149 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
             exit;
         }
 
-        return MsgBox(_t('_adm_dsg_txt_logo_redefinition')) . $oTemplate->parseHtmlByName('designer.html', array(
-            'content' => $oTemplate->parseHtmlByName('dsr_logo.html', array('logo_iframe_id' => $this->sLogoIframeId, 'form' => $oForm->getCode())),
+        return $oTemplate->parseHtmlByName('designer.html', [
+            'content' => $oTemplate->parseHtmlByName('dsr_logo.html', ['logo_iframe_id' => $this->sLogoIframeId, 'form' => $oForm->getCode()]),
             'js_content' => $this->getPageJsCode()
-        ));
+        ]);
+    }
+
+    /**
+     * The note above the logo form: which logos the page sets and where the others are.
+     */
+    protected function getLogoNote($aTemplate)
+    {
+        $sTemplate = !empty($aTemplate['title']) ? $aTemplate['title'] : '';
+
+        if(!empty($this->sLogoTemplate)) {
+            $sText = _t('_adm_dsg_txt_logo_note_template', $sTemplate);
+            $sLink = _t('_adm_dsg_lnk_logo_system');
+            $sUrl = bx_append_url_params(BX_DOL_URL_STUDIO . 'designer.php', ['page' => BX_DOL_STUDIO_DSG_TYPE_LOGO]);
+        }
+        else {
+            $sText = _t('_adm_dsg_txt_logo_note_system');
+            $sLink = $sUrl = '';
+            if(!empty($aTemplate) && $this->getLogoTemplateParams()) {
+                $sLink = _t('_adm_dsg_lnk_logo_template', $sTemplate);
+                $sUrl = bx_append_url_params(BX_DOL_URL_STUDIO . 'design.php', ['name' => $aTemplate['name'], 'page' => BX_DOL_STUDIO_DSG_TYPE_LOGO]);
+            }
+        }
+
+        return BxDolStudioTemplate::getInstance()->parseHtmlByName('dsr_logo_note.html', [
+            'text' => $sText,
+            'bx_if:show_link' => [
+                'condition' => !empty($sUrl),
+                'content' => [
+                    'url' => $sUrl,
+                    'link' => $sLink,
+                ]
+            ],
+        ]);
+    }
+
+    /**
+     * A preview per logo image this page sets: what the header shows for it, and where that comes from.
+     */
+    protected function getLogoPreviews($sTemplate)
+    {
+        $aSources = $this->getLogoSources();
+        $aTemplateParams = $this->getLogoTemplateParams();
+        $bTemplatePage = !empty($this->sLogoTemplate);
+        $sPageSource = $bTemplatePage ? BxDolDesigns::LOGO_SOURCE_TEMPLATE : BxDolDesigns::LOGO_SOURCE_SYSTEM;
+
+        // What the header draws for each image: its own, or the one that stands in for it.
+        $fSet = function($sType) use ($aSources) {
+            return $aSources[$sType]['source'] != BxDolDesigns::LOGO_SOURCE_NONE;
+        };
+        $aShown = ['logo' => $aSources['logo']];
+        $aShown['logo_dark'] = $fSet('logo_dark') ? $aSources['logo_dark'] : $aShown['logo'];
+        $aShown['mark'] = $fSet('mark') ? $aSources['mark'] : $aShown['logo'];
+        $aShown['mark_dark'] = $fSet('mark_dark') ? $aSources['mark_dark'] : ($fSet('mark') ? $aShown['mark'] : $aShown['logo_dark']);
+
+        $sAlt = getParam($this->sParamLogoAlt);
+        if(empty($sAlt))
+            $sAlt = getParam('site_title');
+
+        $aResult = [];
+        foreach(['logo', 'logo_dark', 'mark', 'mark_dark'] as $sType) {
+            if(empty($this->{$this->aLogos[$sType]['param']}))
+                continue;
+
+            $aSource = $aSources[$sType];
+            $bMark = strpos($sType, 'mark') === 0;
+            $bDark = strpos($sType, '_dark') !== false;
+
+            if(!$bTemplatePage && !empty($aTemplateParams) && !isset($aTemplateParams[$sType]))
+                $sInfo = _t('_adm_dsg_txt_logo_src_unused', $sTemplate);
+            else switch($aSource['source']) {
+                case BxDolDesigns::LOGO_SOURCE_TEMPLATE:
+                case BxDolDesigns::LOGO_SOURCE_SYSTEM:
+                    if($aSource['source'] == $sPageSource)
+                        $sInfo = _t('_adm_dsg_txt_logo_src_here');
+                    else
+                        $sInfo = _t($bTemplatePage ? '_adm_dsg_txt_logo_src_system' : '_adm_dsg_txt_logo_src_template', $sTemplate);
+                    break;
+
+                case BxDolDesigns::LOGO_SOURCE_BUILTIN:
+                    $sInfo = _t($bMark ? '_adm_dsg_txt_mark_src_builtin' : '_adm_dsg_txt_logo_src_builtin', $sTemplate);
+                    break;
+
+                case BxDolDesigns::LOGO_SOURCE_INLINE:
+                    if($aSource['code_source'] == $sPageSource)
+                        $sInfo = _t('_adm_dsg_txt_logo_src_code');
+                    else
+                        $sInfo = _t($bTemplatePage ? '_adm_dsg_txt_logo_src_code_system' : '_adm_dsg_txt_logo_src_code_template', $sTemplate);
+                    break;
+
+                default:
+                    if($sType == 'logo')
+                        $sInfo = _t('_adm_dsg_txt_logo_src_none');
+                    else if($sType == 'mark' || ($sType == 'mark_dark' && !$fSet('mark')))
+                        $sInfo = _t('_adm_dsg_txt_mark_src_none');
+                    else
+                        $sInfo = _t($bMark ? '_adm_dsg_txt_mark_dark_src_none' : '_adm_dsg_txt_logo_dark_src_none');
+            }
+
+            $aShow = $aShown[$sType];
+            $bImage = !empty($aShow['url']);
+            $bCode = !$bImage && !empty($aShow['code']);
+
+            $aResult[] = [
+                'name' => $sType,
+                'scheme' => $bDark ? 'dark' : 'light',
+                'caption' => _t($bDark ? '_adm_dsg_txt_logo_upload_dark' : '_adm_dsg_txt_logo_upload_light'),
+                'info' => $sInfo,
+                'bx_if:show_image' => [
+                    'condition' => $bImage,
+                    'content' => [
+                        'url' => $bImage ? $aShow['url'] : '',
+                        'alt' => bx_html_attribute($sAlt),
+                    ]
+                ],
+                'bx_if:show_code' => [
+                    'condition' => $bCode,
+                    'content' => [
+                        'code' => $bCode ? $aShow['code'] : '',
+                    ]
+                ],
+                'bx_if:show_text' => [
+                    'condition' => !$bImage && !$bCode,
+                    'content' => [
+                        'text' => bx_process_output($sAlt),
+                    ]
+                ],
+                'bx_if:show_remove' => [
+                    'condition' => (int)getParam($this->{$this->aLogos[$sType]['param']}) != 0,
+                    'content' => [
+                        'js_object' => $this->getPageJsObject(),
+                        'name' => $sType,
+                        'label' => bx_html_attribute(_t('_adm_dsg_btn_logo_remove_' . $sType)),
+                        'confirm' => bx_html_attribute(_t('_adm_dsg_cnf_logo_remove')),
+                    ]
+                ],
+            ];
+        }
+
+        return $aResult;
     }
 
     protected function getIcon()

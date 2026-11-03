@@ -32,6 +32,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
     protected $sParamMarkDark;
     protected $sParamMarkInline;
     protected $sParamLogoAlt;
+    protected $sLogoTemplate; // the template module whose own logo settings this page edits, '' for Designer's (every template's)
 
     protected $aLogos;
     protected $aIcons;
@@ -51,12 +52,13 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         $this->sParamPrefix = 'dsg';
 
         $this->sParamLogo = 'sys_site_logo';
-        $this->sParamLogoDark = '';
-        $this->sParamLogoInline = '';
-        $this->sParamMark = '';
-        $this->sParamMarkDark = '';
-        $this->sParamMarkInline = '';
+        $this->sParamLogoDark = 'sys_site_logo_dark';
+        $this->sParamLogoInline = 'sys_site_logo_inline';
+        $this->sParamMark = 'sys_site_mark';
+        $this->sParamMarkDark = 'sys_site_mark_dark';
+        $this->sParamMarkInline = 'sys_site_mark_inline';
         $this->sParamLogoAlt = 'sys_site_logo_alt';
+        $this->sLogoTemplate = '';
 
         $this->aLogos = [
             'logo' => [
@@ -134,6 +136,14 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
 
         $aResult = array('code' => 1, 'message' => _t('_adm_dsg_err_cannot_process_action'));
         switch($sAction) {
+            case 'delete_logo':
+                $sValue = bx_process_input(bx_get($this->sParamPrefix . '_value'));
+
+                $aResult = ['code' => 0, 'message' => ''];
+                if(empty($sValue) || !isset($this->aLogos[$sValue]['storage']) || empty($this->{$this->aLogos[$sValue]['param']}) || !$this->deleteLogo($sValue))
+                    $aResult = ['code' => 2, 'message' => _t('_adm_dsg_err_logo_remove')];
+                break;
+
             case 'delete_icon':
                 $sValue = bx_process_input(bx_get($this->sParamPrefix . '_value'));
 
@@ -204,6 +214,59 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         }
     }
 
+    /**
+     * Makes the page edit a template's own logo settings rather than Designer's.
+     * @param string $sModule the template module name
+     */
+    function setLogoTemplate($sModule)
+    {
+        $this->sLogoTemplate = $sModule;
+    }
+
+    /**
+     * The template module the logo previews are drawn for: this page's template, or on Designer's page the site's default one.
+     * @return array module row, [] if there is none
+     */
+    protected function getLogoTemplateModule()
+    {
+        $oModuleQuery = BxDolModuleQuery::getInstance();
+        $aModule = !empty($this->sLogoTemplate) ? $oModuleQuery->getModuleByName($this->sLogoTemplate) : $oModuleQuery->getModuleByUri(getParam('template'));
+
+        return !empty($aModule) && is_array($aModule) ? $aModule : [];
+    }
+
+    /**
+     * The previewed template's logo option names (its config's getLogoParams()), [] when it has no logo settings.
+     * @return array
+     */
+    protected function getLogoTemplateParams()
+    {
+        if(!($aModule = $this->getLogoTemplateModule()))
+            return [];
+
+        $oModule = BxDolModule::getInstance($aModule['name']);
+        return $oModule && method_exists($oModule->_oConfig, 'getLogoParams') ? $oModule->_oConfig->getLogoParams() : [];
+    }
+
+    /**
+     * Where the logo images of the previewed template come from, as BxDolDesigns::getLogoSources describes.
+     * @return array
+     */
+    protected function getLogoSources()
+    {
+        $aParams = $this->getLogoTemplateParams();
+        $sImagesPath = $sImagesUrl = '';
+
+        if(($aModule = $this->getLogoTemplateModule())) {
+            $sImagesPath = BX_DIRECTORY_PATH_MODULES . $aModule['path'] . 'data/template/system/images/';
+            $sImagesUrl = BX_DOL_URL_MODULES . $aModule['path'] . 'data/template/system/images/';
+        }
+
+        return BxDolDesigns::getLogoSources($aParams, function($sFile) use ($sImagesPath, $sImagesUrl) {
+            return $sImagesPath && file_exists($sImagesPath . $sFile) ? $sImagesUrl . $sFile : '';
+        });
+    }
+
     function makeDefault()
     {
         $sValue = bx_get($this->sParamPrefix . '_value');
@@ -271,8 +334,9 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         $sParamByType = $this->aLogos[$sLogo]['param'];
         $oStorage = BxDolStorage::getObjectInstance($this->aLogos[$sLogo]['storage']);
 
+        // A file that is already gone (removed in the uploader) only needs its setting cleared.
         $iId = (int)getParam($this->$sParamByType);
-        if($iId != 0 && !$oStorage->deleteFile($iId, $iProfileId))
+        if($iId != 0 && $oStorage->getFile($iId) && !$oStorage->deleteFile($iId, $iProfileId))
             return false;
 
         setParam($this->$sParamByType, 0);

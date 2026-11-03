@@ -489,8 +489,13 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_site_icon_android_splash', '', '0', 'digit', '', '', '', 19),
 
 (@iCategoryId, 'sys_site_logo', '', '0', 'digit', '', '', '', 20),
-(@iCategoryId, 'sys_site_logo_alt', '_adm_dsg_txt_alt_text', '0', 'text', '', '', '', 21),
+(@iCategoryId, 'sys_site_logo_alt', '_adm_dsg_txt_alt_text', '', 'text', '', '', '', 21),
 (@iCategoryId, 'sys_site_logo_aspect_ratio', '_adm_stg_cpt_option_sys_site_logo_aspect_ratio', '', 'digit', '', '', '', 22),
+(@iCategoryId, 'sys_site_logo_dark', '', '0', 'digit', '', '', '', 23),
+(@iCategoryId, 'sys_site_logo_inline', '', '', 'text', '', '', '', 23),
+(@iCategoryId, 'sys_site_mark', '', '0', 'digit', '', '', '', 24),
+(@iCategoryId, 'sys_site_mark_dark', '', '0', 'digit', '', '', '', 24),
+(@iCategoryId, 'sys_site_mark_inline', '', '', 'text', '', '', '', 24),
 -- (@iCategoryId, 'sys_site_logo_width', '_adm_stg_cpt_option_sys_site_logo_width', '240', 'digit', '', '', '', 23),
 -- (@iCategoryId, 'sys_site_logo_height', '_adm_stg_cpt_option_sys_site_logo_height', '48', 'digit', '', '', '', 24),
 

@@ -35,6 +35,32 @@ BxDolStudioDesigner.prototype.makeDefault = function(sUri) {
     );
 };
 
+BxDolStudioDesigner.prototype.deleteLogo = function(sName, oButton) {
+    var $this = this;
+
+    bx_confirm($(oButton).attr('data-confirm'), function() {
+        var oDate = new Date();
+        var aParams = {_t: oDate.getTime()};
+        aParams[$this.sParamPrefix + '_action'] = 'delete_logo';
+        aParams[$this.sParamPrefix + '_value'] = sName;
+
+        $.post(
+            $this.sActionsUrl,
+            aParams,
+            function(oData) {
+                if(oData.code != 0 && oData.message.length > 0) {
+                    bx_alert(oData.message);
+                    return;
+                }
+
+                // Every preview may change (a dark slot shows the light image when it has none), so reload them all.
+                document.location.href = document.location.href;
+            },
+            'json'
+        );
+    });
+};
+
 BxDolStudioDesigner.prototype.deleteIcon = function(sName) {
     var $this = this;
     var oDate = new Date();
