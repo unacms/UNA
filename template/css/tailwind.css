@@ -1850,8 +1850,9 @@
         @apply hover:ring-8 hover:ring-black/10 dark:hover:ring-white/10;
     }
     /* Dock and current-app tiles: the same halo. In the light scheme their art has no outer hairline, so the hover draws one, the ring's
-       1px black/10 offset; in the dark scheme the tile's own black/20 outer hairline already is. The selected dock item keeps its blue ring. */
-    .bx-std .bx-menu-top-center li:not(.bx-menu-tab-active) .bx-mi-icon,
+       1px black/10 offset; in the dark scheme the tile's own black/20 outer hairline already is. The selected dock item keeps its blue ring and a keyboard-focused one its focus ring
+       (left out with :where, so the halo gains no specificity over either). */
+    .bx-std .bx-menu-top-center li:where(:not(.bx-menu-tab-active)) a:where(:not(:focus-visible)) .bx-mi-icon,
     .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile {
         @apply hover:ring-[7px] hover:ring-offset-1 hover:ring-black/10 hover:ring-offset-black/10;
         @apply dark:hover:ring-8 dark:hover:ring-offset-0 dark:hover:ring-white/10;

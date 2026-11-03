@@ -36,7 +36,7 @@ class HoverHaloTest extends BxDolTestCase
 
     public function testDockAndAppTilesMatchTheButtons(): void
     {
-        $sRule = self::rule(self::read('template/css/tailwind.css'), "    .bx-std .bx-menu-top-center li:not(.bx-menu-tab-active) .bx-mi-icon,\n    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile");
+        $sRule = self::rule(self::read('template/css/tailwind.css'), "    .bx-std .bx-menu-top-center li:where(:not(.bx-menu-tab-active)) a:where(:not(:focus-visible)) .bx-mi-icon,\n    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile");
 
         // light: 1px offset line plus 7px of ring = 8px; dark: the tile's black/20 hairline is the line, the ring is the full 8px
         $this->assertStringContainsString('@apply hover:ring-[7px] hover:ring-offset-1 hover:ring-black/10 hover:ring-offset-black/10;', $sRule);
@@ -50,6 +50,16 @@ class HoverHaloTest extends BxDolTestCase
         // the selected app's blue ring is not replaced by the halo while hovered: the halo rule leaves it out
         $this->assertStringContainsString("    .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon {\n        @apply ring ring-blue-300/50 ring-offset-1", $s);
         $this->assertDoesNotMatchRegularExpression('/\.bx-menu-top-center (li )?\.bx-mi-icon[^{]*\{[^}]*hover:ring/', $s, 'Every dock hover halo rule excludes the selected item.');
+    }
+
+    public function testFocusRingWinsOverTheDockHalo(): void
+    {
+        $s = self::read('template/css/tailwind.css');
+
+        // a focused tile under the pointer shows the focus ring: the halo leaves focused links out, and :where keeps its specificity at
+        // (0,4,1), under the focus rule's (0,4,2), in both schemes
+        $this->assertStringContainsString('.bx-std .bx-menu-top-center li a:focus-visible .bx-mi-icon', $s);
+        $this->assertStringContainsString('.bx-std .bx-menu-top-center li:where(:not(.bx-menu-tab-active)) a:where(:not(:focus-visible)) .bx-mi-icon,', $s);
     }
 
     public static function templates(): array
