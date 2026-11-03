@@ -46,6 +46,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_logout' AND `mo
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_forgot_password' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_forgot_password';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_confirm_email' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_confirm_email';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_confirm_phone' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_confirm_phone';
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_settings' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_settings';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_settings_email' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_account_settings_email';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_settings_pwd' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_account_settings_pwd';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_settings_info' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_account_settings_info';

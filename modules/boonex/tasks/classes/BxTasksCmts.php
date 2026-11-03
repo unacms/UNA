@@ -70,6 +70,20 @@ class BxTasksCmts extends BxTemplCmts
         return parent::getComment($aCmt, $aBp, $aDp);
     }
 
+    public function getCommentPrivate($mixedCmt, $aBp = [], $aDp = [])
+    {
+        $aCmt = !is_array($mixedCmt) ? $this->getCommentRow((int)$mixedCmt) : $mixedCmt;
+        if(!$aCmt)
+            return '';
+
+        return $this->_oTemplate->parseHtmlByName('comment_private.html', [
+            'system' => $this->_sSystem,
+            'style_prefix' => $this->_sStylePrefix,
+            'js_object' => $this->_sJsObjName,
+            'id' => $aCmt['cmt_id'],
+        ]);
+    }
+
     public function getDataAPI($aData, $aParams = [])
     {
         $aResult = parent::getDataAPI($aData, $aParams);

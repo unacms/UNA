@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { View } from 'app/design/view'
-import { deepEqual } from 'app/lib/util'
+import { deepEqual, isMenuHub } from 'app/lib/util'
 import {
     fillTabs,
     mergeConductorRoutes,
     ensureRouteInited,
     findConductorRouteIndex,
+    firstShownConductorRoute,
+    hideRoutesOnTier,
+    conductorHref,
     conductorListQueryKey,
 } from './helpers'
 import {
@@ -24,7 +27,9 @@ import { PageHeaderOptions } from 'app/ui/molecules/header/options'
 import { useCurrentUser } from 'app/context/user'
 import { useBottomSheetStore } from 'app/context/bottomsheet'
 import emitter, { EVENTS } from 'app/context/emitter'
-import { useIsFocused } from 'app/lib/hooks/router'
+import { useIsFocused, useRouter, usePathname, redirectTo } from 'app/lib/hooks/router'
+import { getTabKeyFromPathname } from 'app/lib/navigation/tab-history'
+import { useIsDesktop, useScreenTier, useHydrated } from 'app/context/measure'
 import {
     getCachedConductorState,
     setCachedConductorState,
@@ -33,6 +38,8 @@ import { useTranslation } from 'react-i18next'
 
 /** Stable fallback so `useLeftColumn` memos survive tabs without a left column. */
 const EMPTY_CONTENT = []
+/** No tabs to show (a hub section below desktop): one array, so the tab bar memo holds. */
+const NO_ROUTES = []
 
 /**
  * Conductor — native shell (web lives in `index.web.js`).
@@ -84,6 +91,10 @@ export function Conductor({
 }) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
+    const isDesktop = useIsDesktop()
+    const tier = useScreenTier()
+    // The tier reads `desktop` until hydration: a hidden tab is only acted on after it.
+    const hydrated = useHydrated()
     // Setter only: subscribing to the sheet data would re-render the whole
     // conductor on every sheet open/close.
     const setBottomSheetData = useBottomSheetStore((state) => state.setBottomSheetData)
@@ -232,7 +243,7 @@ export function Conductor({
     )
 
     const {
-        routes,
+        routes: storedRoutes,
         setRoutes,
         routesRef,
         index,
@@ -254,6 +265,20 @@ export function Conductor({
         persistWriteKey: `${layoutName}:${currentUser?.id ?? 'guest'}`,
         adapter: routesAdapter,
     })
+
+    // The tabs as shown at this screen size (`hideRoutesOnTier`); `storedRoutes` keep the loaded pages.
+    const routes = useMemo(() => hideRoutesOnTier(storedRoutes, tier), [storedRoutes, tier])
+    const router = useRouter()
+
+    // A tab hidden at this screen size (Settings' Overview on a wide tablet) opens the first tab shown,
+    // as the page of this same screen (`redirectTo` swaps its params: no deep link, no other tab), and
+    // only while the screen is focused, so a tab in the background never takes over.
+    const pathname = usePathname()
+    useEffect(() => {
+        if (!hydrated || !isFocused || !routes.find((route) => route.index === index)?.hiddenOnTier) return
+        const href = conductorHref(firstShownConductorRoute(routes)?.link)
+        if (href) redirectTo(router, href, getTabKeyFromPathname(pathname))
+    }, [hydrated, isFocused, routes, index, router, pathname])
 
     /** Tab press: pin the cover first, then switch. */
     const onSelectTab = useCallback((tab) => {
@@ -404,11 +429,15 @@ export function Conductor({
         [showFiltersBtn, showFilters]
     )
 
+    // A section listed by its own page (Settings, `isMenuHub`) has no tab row below desktop: that page
+    // lists the tabs, and each one opens from it with Back.
+    const hideTabs = !isDesktop && isMenuHub(menu)
+
     /** The tab strip itself; the cover embeds it and collapses around it. */
     const sceneHeader = useMemo(
         () => (
             <TabBar
-                routes={routes}
+                routes={hideTabs ? NO_ROUTES : routes}
                 routesRef={routesRef}
                 index={index}
                 setIndex={setIndex}
@@ -417,7 +446,7 @@ export function Conductor({
                 leftColumnMenus={leftColumnMenuBlocks}
             />
         ),
-        [routes, index, setIndex, onChangeRoute, onSelectTab, leftColumnMenuBlocks]
+        [hideTabs, routes, index, setIndex, onChangeRoute, onSelectTab, leftColumnMenuBlocks]
     )
 
     const { headerMode, useLocalHeader } = resolveConductorHeaderMode({

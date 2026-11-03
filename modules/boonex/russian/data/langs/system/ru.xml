@@ -3488,6 +3488,7 @@
     <string name="_sys_menu_item_title_account_settings_delete"><![CDATA[Удалить]]></string>
     <string name="_sys_menu_item_title_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_account_settings_info"><![CDATA[Аккаунт]]></string>
+    <string name="_sys_menu_item_title_account_settings_overview"><![CDATA[Обзор]]></string>
     <string name="_sys_menu_item_title_account_settings_pwd"><![CDATA[Пароль]]></string>
     <string name="_sys_menu_item_title_profile_settings_cfilter"><![CDATA[Фильтр контента]]></string>
     <string name="_sys_menu_item_title_add_content"><![CDATA[Добавить...]]></string>
@@ -3586,6 +3587,7 @@
     <string name="_sys_menu_item_title_system_account_settings_delete"><![CDATA[Удалить]]></string>
     <string name="_sys_menu_item_title_system_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_system_account_settings_info"><![CDATA[Аккаунт]]></string>
+    <string name="_sys_menu_item_title_system_account_settings_overview"><![CDATA[Обзор]]></string>
     <string name="_sys_menu_item_title_system_account_settings_pwd"><![CDATA[Пароль]]></string>
     <string name="_sys_menu_item_title_system_profile_settings_cfilter"><![CDATA[Фильтр контента]]></string>
     <string name="_sys_menu_item_title_system_add_content"><![CDATA[Добавить Содержимое]]></string>
@@ -3926,6 +3928,7 @@
 	<string name="_sys_page_block_title_forgot_password"><![CDATA[Забыли пароль]]></string>
         <string name="_sys_page_block_title_search_keyword_form"><![CDATA[Форма поиска]]></string>
         <string name="_sys_page_block_title_search_keyword_result"><![CDATA[Результаты поиска]]></string>
+        <string name="_sys_page_block_title_settings"><![CDATA[Настройки]]></string>
         <string name="_sys_page_block_title_sys_search_ai"><![CDATA[AI поиск]]></string>
         <string name="_sys_page_block_title_search_ai"><![CDATA[Поиск]]></string>
         <string name="_sys_page_block_title_membership_stats"><![CDATA[Лимиты членства]]></string>
@@ -4045,7 +4048,9 @@
         <string name="_sys_page_title_dashboard_admin"><![CDATA[Администрирование]]></string>
         <string name="_sys_page_title_system_forgot_password"><![CDATA[Вход - Забыли пароль]]></string>
         <string name="_sys_page_title_system_search_keyword"><![CDATA[Поиск по ключевым словам]]></string>
+        <string name="_sys_page_title_system_settings"><![CDATA[Настройки]]></string>
         <string name="_sys_page_title_search_keyword"><![CDATA[Поиск по ключевым словам]]></string>
+        <string name="_sys_page_title_settings"><![CDATA[Настройки]]></string>
         <string name="_sys_page_title_system_home"><![CDATA[Домашняя страница]]></string>
         <string name="_sys_page_title_system_login"><![CDATA[Вход - Шаг 1]]></string>
 	<string name="_sys_page_title_system_login_step2"><![CDATA[Вход - Шаг 2]]></string>
