@@ -111,19 +111,20 @@ export function AdaptiveLabel({ caption, value, focused, htmlFor, inside, classN
         setLabelH((prev) => (prev === next ? prev : next))
     }, [])
 
+    let labelBoxStyle = { position: 'absolute', top: 0, zIndex: 10, opacity: 0 }
+    if (placed) {
+        labelBoxStyle = { position: 'absolute', top: 0, zIndex: 10, transform: [{ translateY }] }
+    } else if (isWeb && !floated) {
+        // display / flexDirection inline: react-native-web adds its base View class only on the client.
+        labelBoxStyle = { position: 'absolute', top: 0, bottom: 0, zIndex: 10, display: 'flex', flexDirection: 'column', justifyContent: 'center', transform: [{ translateY: restingOffset }] }
+    }
+
     return (
         <View className={cn('relative w-full', className)} onLayout={onBoxLayout}>
             <Animated.View
                 pointerEvents="none"
                 collapsable={false}
-                style={
-                    placed
-                        ? { position: 'absolute', top: 0, zIndex: 10, transform: [{ translateY }] }
-                        : isWeb && !floated
-                            // display / flexDirection inline: react-native-web adds its base View class only on the client.
-                            ? { position: 'absolute', top: 0, bottom: 0, zIndex: 10, display: 'flex', flexDirection: 'column', justifyContent: 'center', transform: [{ translateY: restingOffset }] }
-                            : { position: 'absolute', top: 0, zIndex: 10, opacity: 0 }
-                }
+                style={labelBoxStyle}
             >
                 <View
                     onLayout={onLabelLayout}

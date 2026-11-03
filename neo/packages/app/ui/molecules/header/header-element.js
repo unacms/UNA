@@ -40,7 +40,7 @@ export default function HeaderElement({ url, uri }) {
     // Style and size for an item that shows on one side of `lg` only; the item's own props win.
     const tierButtonProps = (item) => {
         const tier = getItemTier(item.className)
-        return tier === 'both' ? item.props : { ...getHeaderToolbarNeoButtonDefaults(tier === 'desktop'), ...(item.props || {}) }
+        return tier === 'both' ? item.props : { ...getHeaderToolbarNeoButtonDefaults(tier === 'desktop'), ...item.props }
     }
     const toolbarConfig = appSetting('header_toolbar', 'hor')
     const itemsToRender = (currentUser
