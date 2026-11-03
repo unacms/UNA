@@ -134,6 +134,27 @@ class AppIconsTest extends BxDolTestCase
         $this->assertStringContainsString("oHost.querySelector('img[src*=\".svg\"]')", self::read('studio/js/app_icons.js'), 'The script finds the icon with its query string.');
     }
 
+    public function testAppIconsStayFilesWhenImagesAreInlined(): void
+    {
+        // with sys_template_cache_image_enable on, small icons come back as data: URIs; an app icon must stay a file (the hover script
+        // loads it, and a revision appended to base64 data would break the image)
+        $oTemplate = BxDolStudioTemplate::getInstance();
+        $bInline = $this->bxGetProtected($oTemplate, '_bImagesInline', BxDolTemplate::class);
+        $iMaxSize = $this->bxGetProtected($oTemplate, '_iImagesMaxSize', BxDolTemplate::class);
+        $this->bxSetProtected($oTemplate, '_bImagesInline', true, BxDolTemplate::class);
+        $this->bxSetProtected($oTemplate, '_iImagesMaxSize', 1024 * 1024, BxDolTemplate::class);
+
+        try {
+            $this->assertStringStartsWith('data:', $oTemplate->getIconUrl('mi-cog.svg'), 'Inlining is on for other icons.');
+            $this->assertStringEndsWith('/images/icons/wi-audit.svg?rev=' . $oTemplate->getRevision(), $oTemplate->getIconUrl('wi-audit.svg'));
+            $this->assertStringEndsWith('/images/modules/bx_posts.svg?rev=' . $oTemplate->getRevision(), $oTemplate->getIconUrl('bx_posts@modules/boonex/posts/|std-icon.svg'));
+        }
+        finally {
+            $this->bxSetProtected($oTemplate, '_bImagesInline', $bInline, BxDolTemplate::class);
+            $this->bxSetProtected($oTemplate, '_iImagesMaxSize', $iMaxSize, BxDolTemplate::class);
+        }
+    }
+
     public function testScriptLoadsWithTheHeaderAndCoversItsTiles(): void
     {
         $this->assertStringContainsString("array('menu_top.js', 'context_menu.js', 'app_icons.js')", self::read('studio/template/scripts/BxBaseStudioMenuTop.php'));

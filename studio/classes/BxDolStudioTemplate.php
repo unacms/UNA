@@ -97,8 +97,11 @@ class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
         if(($sModuleIcon = $this->_getModuleIcon('url', $sName)) !== false)
             return $sModuleIcon;
 
-        $sUrl = parent::getIconUrl($sName, $sCheckIn);
-        return strncmp($sName, 'wi-', 3) == 0 ? $this->_addAppIconRevision($sUrl) : $sUrl;
+        // app icons stay files, never inlined as data: the hover animation (studio/js/app_icons.js) loads the file, and the URL carries the revision
+        if(strncmp($sName, 'wi-', 3) == 0)
+            return $this->_addAppIconRevision($this->_getAbsoluteLocation('url', $this->_sFolderIcons, $sName, $sCheckIn));
+
+        return parent::getIconUrl($sName, $sCheckIn);
     }
 
     function getIconPath($sName, $sCheckIn = BX_DOL_TEMPLATE_CHECK_IN_BOTH)
