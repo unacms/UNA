@@ -258,9 +258,12 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const isIconOnly = !!glyph && !effectiveLabel;
     const isCustomOnly = !!customContent && !effectiveLabel;
     const pinToSquare = isIconOnly && resolved.aspectSquare;
+    // A circle around custom content (header avatar) is square too, like the JS
+    // button's fixed `aspectSquare` box: no `paddingX` beside it.
+    const pinCustomToSquare = isCustomOnly && resolved.aspectSquare;
     // Own width for every icon-only control. Capsule keeps JS paddingX so
     // bordered chrome is not clipped to the plus glyph (composer Plus).
-    const rnOwnsWidth = isIconOnly || fill
+    const rnOwnsWidth = isIconOnly || pinCustomToSquare || fill
         || flatHost.width != null || flatHost.flexGrow != null
         || flatHost.flex != null || flatHost.flexBasis != null;
     // Always pin Host height to controlSizes so icon-only and labelled
@@ -294,7 +297,9 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const targetHeight = (rnOwnsHeight
         && [flatHost.height, flatHost.minHeight].find((v) => typeof v === 'number'))
         || resolved.height;
-    const iconHostWidth = !isIconOnly
+    const iconHostWidth = pinCustomToSquare
+        ? targetHeight
+        : !isIconOnly
         ? null
         : (pinToSquare
             ? targetHeight
@@ -338,7 +343,7 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         && typeof contentInsets.x === 'number' ? contentInsets.x : null;
     if (isGlass) {
         labelModifiers.push(padding({
-            horizontal: customInsetX ?? resolved.paddingX ?? 12,
+            horizontal: customInsetX ?? (pinCustomToSquare ? 0 : (resolved.paddingX ?? 12)),
             vertical: vPad,
         }));
     }

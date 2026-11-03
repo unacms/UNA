@@ -263,7 +263,8 @@ export function usePageHeaderBase(pageData) {
 
     const isWeb = Platform.OS === 'web';
     const isDesktop = useIsDesktop();
-    const isHome = pageData?.uri === 'home';
+    // UNA can serve another page at `home` (members get the dashboard: uri `dashboard`, url `home`).
+    const isHome = pageData?.uri === 'home' || pageData?.url === 'home';
     const isCollapsibleHeader =
         appSetting('native', 'collapsible_header') && !isDesktop;
     const isContextSelector = !!pageData?.context && (appSetting('context_selector', 'show_always') || pageData?.context?.current?.id);
