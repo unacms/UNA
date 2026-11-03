@@ -527,7 +527,9 @@ export const PageHeaderBody = memo(({
         ) : null;
 
     if (header.header) {
-        if (!isWeb && canShowBackButton) {
+        // A page that draws its own bar (`main`, the messenger chat) brings its own back control: ours is
+        // added only when the page asks for it with a `backButton` handler, not because the screen was pushed.
+        if (!isWeb && canShowBackButton && typeof isBackButton === 'function') {
             return (
                 <View onLayout={onMainHeaderLayout}>
                     <Row className={`${contentClassName}`}>
