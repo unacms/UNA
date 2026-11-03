@@ -491,10 +491,11 @@ export const PageHeaderBody = memo(({
                     {appStatic('logo')}
                 </NeoButtonLink>
             </View>}
-            {/* Desktop: just the logo at the header's px-4 inset, as in UNA. */}
+            {/* Desktop: just the logo at the header's px-4 inset, 40px tall as in UNA, in a
+                link at least 44px tall like the header's buttons. */}
             {(isWeb || logoSize === 'desktop') && <View className="hidden lg:flex">
-                <Link href="/home" alt={t('Home')} className="items-center">
-                    {appStatic('logo')}
+                <Link href="/home" alt={t('Home')} className="min-h-11 min-w-11 justify-center">
+                    {appStatic('logo', { mode: 'full', height: 40 })}
                 </Link>
             </View>}
         </>
