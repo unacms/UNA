@@ -1,26 +1,26 @@
 <svg class="icon v-messenger-thread-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
 <!-- glyph: message-square-more, lucide-static v1.48.0, ISC -->
 <style>
-.v-messenger-thread-v1 .bb{transform-box:view-box;transform-origin:36px 36px}
-.v-messenger-thread-v1 .sh.bb{transform-origin:36px 37px}
+.v-messenger-thread-v1 .bx-ai-bb{transform-box:view-box;transform-origin:36px 36px}
+.v-messenger-thread-v1 .bx-ai-sh.bx-ai-bb{transform-origin:36px 37px}
 :is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-messenger-thread-v1 [class]{animation:var(--a) 1500ms linear both;animation-delay:var(--d,0ms)}
 .v-messenger-thread-v1 [class]{--a:none}
-.v-messenger-thread-v1 :is(.bb,.sh.bb){--a:mh0}
+.v-messenger-thread-v1 :is(.bx-ai-bb,.bx-ai-sh.bx-ai-bb){--a:mh0}
 @keyframes mh0{0%,100%{transform:none}5.33%{transform:scale(1);animation-timing-function:cubic-bezier(.5,0,.8,.5)}11.33%{transform:scale(.96);animation-timing-function:cubic-bezier(.2,.7,.3,1)}22.67%{transform:scale(1.05);animation-timing-function:ease-in-out}33.33%{transform:scale(1)}}
-.v-messenger-thread-v1 .thr{--a:mh1}
+.v-messenger-thread-v1 .bx-ai-thr{--a:mh1}
 @keyframes mh1{0%,100%{transform:none}14.67%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.3,0,.2,1)}54.67%{transform:translate(0px,-24px)}99.93%{transform:translate(0px,-24px);animation-timing-function:steps(1,end)}}
-.v-messenger-thread-v1 .nw{--a:mh2}
+.v-messenger-thread-v1 .bx-ai-nw{--a:mh2}
 @keyframes mh2{0%,92%,100%{opacity:0}20%{opacity:0;animation-timing-function:ease-out}34.67%{opacity:1}66.67%{opacity:1;animation-timing-function:ease-in}}
-:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-messenger-thread-v1 .qv.qv{animation:q-messenger-thread-v1 1500ms linear both}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-messenger-thread-v1 .bx-ai-qv.bx-ai-qv{animation:q-messenger-thread-v1 1500ms linear both}
 @keyframes q-messenger-thread-v1{0%{opacity:1;animation-timing-function:ease-out}9.333%{opacity:0}76%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
 @media (prefers-reduced-motion:reduce){.v-messenger-thread-v1 *{animation:none!important}}
 </style>
 <rect width="72" height="72" fill="url(#bg-messenger-thread-v1)"/>
-<g class="thr"><rect y="0" width="72" height="120" fill="url(#thread-messenger-thread-v1)"/><rect class="nw" x="39" y="87" width="27" height="7" rx="3.5" fill="#FCD34D" opacity="0"/></g><rect width="72" height="72" fill="url(#bg-messenger-thread-v1)" class="qv" mask="url(#quiet-messenger-thread-v1)"/>
-<rect width="72" height="72" fill="url(#inside-messenger-thread-v1)" opacity=".55" mask="url(#insides-messenger-thread-v1)"/><g stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><g stroke="white"><g class="bb"><path d="M57 45.454A4.2 4.2 0 0 1 52.8 49.654H25.139A4.2 4.2 0 0 0 22.169 50.885L17.545 55.509A1.491 1.491 0 0 1 15 54.455V20.254A4.2 4.2 0 0 1 19.2 16.054H52.8A4.2 4.2 0 0 1 57 20.254Z"/><path d="M27.6 32.854H27.621"/><path d="M36 32.854H36.021"/><path d="M44.4 32.854H44.421"/></g></g><g mask="url(#lit-messenger-thread-v1)" stroke="black"><g class="sh bb"><path d="M57 46.454A4.2 4.2 0 0 1 52.8 50.654H25.139A4.2 4.2 0 0 0 22.169 51.885L17.545 56.509A1.491 1.491 0 0 1 15 55.455V21.254A4.2 4.2 0 0 1 19.2 17.054H52.8A4.2 4.2 0 0 1 57 21.254Z"/><path d="M27.6 33.854H27.621"/><path d="M36 33.854H36.021"/><path d="M44.4 33.854H44.421"/></g></g></g>
+<g class="bx-ai-thr"><rect y="0" width="72" height="120" fill="url(#thread-messenger-thread-v1)"/><rect class="bx-ai-nw" x="39" y="87" width="27" height="7" rx="3.5" fill="#FCD34D" opacity="0"/></g><rect width="72" height="72" fill="url(#bg-messenger-thread-v1)" class="bx-ai-qv" mask="url(#quiet-messenger-thread-v1)"/>
+<rect width="72" height="72" fill="url(#inside-messenger-thread-v1)" opacity=".55" mask="url(#insides-messenger-thread-v1)"/><g stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><g stroke="white"><g class="bx-ai-bb"><path d="M57 45.454A4.2 4.2 0 0 1 52.8 49.654H25.139A4.2 4.2 0 0 0 22.169 50.885L17.545 55.509A1.491 1.491 0 0 1 15 54.455V20.254A4.2 4.2 0 0 1 19.2 16.054H52.8A4.2 4.2 0 0 1 57 20.254Z"/><path d="M27.6 32.854H27.621"/><path d="M36 32.854H36.021"/><path d="M44.4 32.854H44.421"/></g></g><g mask="url(#lit-messenger-thread-v1)" stroke="black"><g class="bx-ai-sh bx-ai-bb"><path d="M57 46.454A4.2 4.2 0 0 1 52.8 50.654H25.139A4.2 4.2 0 0 0 22.169 51.885L17.545 56.509A1.491 1.491 0 0 1 15 55.455V21.254A4.2 4.2 0 0 1 19.2 17.054H52.8A4.2 4.2 0 0 1 57 21.254Z"/><path d="M27.6 33.854H27.621"/><path d="M36 33.854H36.021"/><path d="M44.4 33.854H44.421"/></g></g></g>
 <defs>
 <linearGradient id="bg-messenger-thread-v1" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0D9488"/><stop offset="1" stop-color="#115E59"/></linearGradient><linearGradient id="inside-messenger-thread-v1" x1="36" y1="16.054" x2="36" y2="55.946" gradientUnits="userSpaceOnUse"><stop stop-color="#115E59"/><stop offset="1" stop-color="#042F2E"/></linearGradient><linearGradient id="light-messenger-thread-v1" x1="36" y1="17.054" x2="36" y2="56.946" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity=".1"/><stop offset="1" stop-color="white" stop-opacity=".2"/></linearGradient><mask id="lit-messenger-thread-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-messenger-thread-v1)"/></mask>
 <pattern id="thread-messenger-thread-v1" width="72" height="24" patternUnits="userSpaceOnUse"><rect x="6" y="3" width="27" height="7" rx="3.5" fill="white" fill-opacity=".08"/><rect x="39" y="15" width="27" height="7" rx="3.5" fill="white" fill-opacity=".15"/></pattern>
-<mask id="insides-messenger-thread-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><g fill="white"><path class="bb" d="M57 45.454A4.2 4.2 0 0 1 52.8 49.654H25.139A4.2 4.2 0 0 0 22.169 50.885L17.545 55.509A1.491 1.491 0 0 1 15 54.455V20.254A4.2 4.2 0 0 1 19.2 16.054H52.8A4.2 4.2 0 0 1 57 20.254Z"/></g></mask>
+<mask id="insides-messenger-thread-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><g fill="white"><path class="bx-ai-bb" d="M57 45.454A4.2 4.2 0 0 1 52.8 49.654H25.139A4.2 4.2 0 0 0 22.169 50.885L17.545 55.509A1.491 1.491 0 0 1 15 54.455V20.254A4.2 4.2 0 0 1 19.2 16.054H52.8A4.2 4.2 0 0 1 57 20.254Z"/></g></mask>
 <radialGradient id="quietv-messenger-thread-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-messenger-thread-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-messenger-thread-v1)"/></mask></defs>
 </svg>

@@ -71,6 +71,24 @@ class AppIconsTest extends BxDolTestCase
                 $this->assertStringContainsString('.v-' . $sKey, $sLine, 'Every rule is scoped to the icon.');
     }
 
+    #[\PHPUnit\Framework\Attributes\DataProvider('icons')]
+    public function testIconClassesAreOutOfThePagesReach(string $sPath): void
+    {
+        $s = self::read($sPath);
+
+        // the page's CSS reaches into an inline SVG: template/css/common.css spins any `svg .outer` and `svg .inner` forever, so every
+        // class below the root carries the bx-ai- prefix (scripts/studio_app_icons.py)
+        preg_match_all('/class="([^"]+)"/', substr($s, strpos($s, '>') + 1), $a);
+        foreach ($a[1] as $sClasses)
+            foreach (explode(' ', $sClasses) as $sClass)
+                $this->assertStringStartsWith('bx-ai-', $sClass);
+
+        preg_match('/<style>(.*?)<\/style>/s', $s, $aStyle);
+        preg_match_all('/(?<![\w-])\.([a-z][\w-]*)/', preg_replace('/\d\.\d/', '', $aStyle[1] ?? ''), $aSelectors);
+        foreach (array_unique($aSelectors[1]) as $sClass)
+            $this->assertMatchesRegularExpression('/^(bx-ai-|v-|icon$|tile$)/', $sClass, 'The style names only the prefixed classes, the root and its tile.');
+    }
+
     public function testKeyframeNamesAreUniqueAcrossIcons(): void
     {
         $aSeen = [];
@@ -96,6 +114,44 @@ class AppIconsTest extends BxDolTestCase
                 continue;
 
             $this->assertArrayHasKey($sName, $aModules, basename($sFile) . ' is used only for a module of that name (BxDolStudioTemplate::_getModuleIcon).');
+        }
+    }
+
+    public function testAppIconUrlsCarryTheRevision(): void
+    {
+        // a release replaces the icons under the same names and they are cached for 30 days: the revision, bumped by every update,
+        // makes browsers fetch the new files (and studio/js/app_icons.js inline them, not the old ones)
+        $oTemplate = BxDolStudioTemplate::getInstance();
+        $sRev = 'rev=' . $oTemplate->getRevision();
+
+        $this->assertStringEndsWith('/images/modules/bx_posts.svg?' . $sRev, $oTemplate->getModuleIconUrl('bx_posts.svg'));
+        $this->assertStringEndsWith('/images/modules/bx_posts.svg?' . $sRev, $oTemplate->getIconUrl('bx_posts@modules/boonex/posts/|std-icon.svg'));
+        $this->assertStringEndsWith('/images/icons/wi-agents.svg?' . $sRev, $oTemplate->getIconUrl('wi-agents.svg'));
+
+        $this->assertSame('', $oTemplate->getModuleIconUrl('bx_no_such_module.svg'), 'A missing icon stays empty, so callers fall back.');
+        $this->assertStringNotContainsString('rev=', $oTemplate->getIconUrl('mi-cog.svg'), 'Other Studio icons are unchanged.');
+
+        $this->assertStringContainsString("oHost.querySelector('img[src*=\".svg\"]')", self::read('studio/js/app_icons.js'), 'The script finds the icon with its query string.');
+    }
+
+    public function testAppIconsStayFilesWhenImagesAreInlined(): void
+    {
+        // with sys_template_cache_image_enable on, small icons come back as data: URIs; an app icon must stay a file (the hover script
+        // loads it, and a revision appended to base64 data would break the image)
+        $oTemplate = BxDolStudioTemplate::getInstance();
+        $bInline = $this->bxGetProtected($oTemplate, '_bImagesInline', BxDolTemplate::class);
+        $iMaxSize = $this->bxGetProtected($oTemplate, '_iImagesMaxSize', BxDolTemplate::class);
+        $this->bxSetProtected($oTemplate, '_bImagesInline', true, BxDolTemplate::class);
+        $this->bxSetProtected($oTemplate, '_iImagesMaxSize', 1024 * 1024, BxDolTemplate::class);
+
+        try {
+            $this->assertStringStartsWith('data:', $oTemplate->getIconUrl('mi-cog.svg'), 'Inlining is on for other icons.');
+            $this->assertStringEndsWith('/images/icons/wi-audit.svg?rev=' . $oTemplate->getRevision(), $oTemplate->getIconUrl('wi-audit.svg'));
+            $this->assertStringEndsWith('/images/modules/bx_posts.svg?rev=' . $oTemplate->getRevision(), $oTemplate->getIconUrl('bx_posts@modules/boonex/posts/|std-icon.svg'));
+        }
+        finally {
+            $this->bxSetProtected($oTemplate, '_bImagesInline', $bInline, BxDolTemplate::class);
+            $this->bxSetProtected($oTemplate, '_iImagesMaxSize', $iMaxSize, BxDolTemplate::class);
         }
     }
 
