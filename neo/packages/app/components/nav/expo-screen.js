@@ -183,7 +183,7 @@ function ScreenInner(params) {
     return (
         <>
             {activated ? (
-                <TabChromeProvider tabKey={chromeKey} pushed={pushed}>
+                <TabChromeProvider tabKey={chromeKey} pushed={pushed} pagePath={_path}>
                     <Content
                         key={`${pathname}__${userKey}`}
                         pagePath={_path}
