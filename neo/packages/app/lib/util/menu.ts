@@ -335,14 +335,26 @@ export function navbarItemsFromSiteMenu(items: MenuItemList, maxTabs: number): M
     return out;
 }
 
+/** A menu item's whole destination (host, path and query), for telling two links apart. */
+function menuItemDestination(item: MenuItem | null | undefined): string {
+    if (!item || item.type === 'group_header' || item.type === 'separator') return '';
+    const href = normalizeMenuItemHref(item.link || '');
+    return href.length > 1 && href.endsWith('/') ? href.slice(0, -1) : href;
+}
+
 /**
  * The launcher's items without the ones the navbar already shows as tabs (an app that is also in
- * the site menu), so More doesn't repeat them. Section headers left without items go too.
+ * the site menu), so More doesn't repeat them. Only the same destination counts: a launcher link
+ * that merely shares a name or a first path segment with a tab stays. Section headers left
+ * without items go too.
  */
 export function launcherItemsWithoutTabs(launcherItems: MenuItemList, tabs: MenuItemList): MenuItem[] {
-    const tabKeys = new Set(asMenuItemList(tabs).flatMap((item) => menuLeafKeys(item)));
+    const tabDestinations = new Set(asMenuItemList(tabs).map(menuItemDestination).filter(Boolean));
     const rest = flattenMenuItemsForDropdown(launcherItems)
-        .filter((item) => !menuLeafKeys(item).some((key) => tabKeys.has(key)));
+        .filter((item) => {
+            const destination = menuItemDestination(item);
+            return !destination || !tabDestinations.has(destination);
+        });
     return rest.filter((item, index) => {
         if (item.type !== 'group_header') return true;
         const next = rest[index + 1];
