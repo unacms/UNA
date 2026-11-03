@@ -9,8 +9,27 @@
 
 class BxDolDesigns extends BxDolFactory implements iBxDolSingleton
 {
+    /**
+     * Where a logo image comes from (BxDolDesigns::getLogoSources).
+     */
+    const LOGO_SOURCE_TEMPLATE = 'template'; // uploaded in the template's own logo settings
+    const LOGO_SOURCE_SYSTEM = 'system'; // uploaded in Studio > Designer > Logo
+    const LOGO_SOURCE_INLINE = 'inline'; // SVG code, in place of the built-in image
+    const LOGO_SOURCE_BUILTIN = 'builtin'; // the image the template ships with
+    const LOGO_SOURCE_NONE = 'none'; // nothing: another image stands in, or the site name as text
+
     public static $fLogoAspectRatioDefault = 1.0;
     public static $fMarkAspectRatioDefault = 1.0;
+
+    /**
+     * Built-in images, by logo type, that a template can ship in its images folder.
+     */
+    public static $aLogoBuiltins = [
+        'logo' => 'logo-generic.svg',
+        'logo_dark' => 'logo-dark-generic.svg',
+        'mark' => 'mark-generic.svg',
+        'mark_dark' => 'mark-dark-generic.svg',
+    ];
 
     protected $sDesign;
     protected $oDesign;
@@ -229,6 +248,99 @@ class BxDolDesigns extends BxDolFactory implements iBxDolSingleton
         return ($iResult = $this->getSiteLogoValue('mark_dark_height')) !== false ? $iResult : 0;
     }
 
+    /**
+     * Where each logo image of the current template comes from. See getLogoSources.
+     * @param callable|null $fBuiltinUrl the URL of a built-in image by its file name, '' when the template has none
+     * @return array
+     */
+    public function getSiteLogoSources($fBuiltinUrl = null)
+    {
+        return static::getLogoSources(is_array($this->aParams) ? $this->aParams : [], $fBuiltinUrl);
+    }
+
+    /**
+     * Where each logo image of a template comes from, in the order its header looks for them:
+     * 1. the file uploaded in the template's own logo settings,
+     * 2. the file uploaded in Studio > Designer > Logo,
+     * 3. SVG code (the template's, then Designer's),
+     * 4. the template's built-in image.
+     * The dark logo and the mark fall back to built-in images only while the logo itself does, and the
+     * dark mark only while the mark does, so an upload is never paired with a built-in counterpart.
+     *
+     * @param array $aTemplateParams the template's logo option names (its config's getLogoParams()), [] for none
+     * @param callable|null $fBuiltinUrl the URL of a built-in image by its file name, '' when the template has none
+     * @return array by type (logo, logo_dark, mark, mark_dark): ['source' => LOGO_SOURCE_*, 'file_id' => int, 'url' => string, 'code' => string]
+     */
+    public static function getLogoSources($aTemplateParams, $fBuiltinUrl = null)
+    {
+        $oStorage = BxDolStorage::getObjectInstance('sys_images_custom');
+
+        $aResult = [];
+        foreach(self::$aLogoBuiltins as $sType => $sBuiltin) {
+            $aResult[$sType] = ['source' => self::LOGO_SOURCE_NONE, 'file_id' => 0, 'url' => '', 'code' => ''];
+
+            list($sSource, $sValue) = static::getLogoSourceValue($aTemplateParams, $sType);
+            $sUrl = $sSource != self::LOGO_SOURCE_NONE ? $oStorage->getFileUrlById((int)$sValue) : '';
+            if($sUrl) {
+                $aResult[$sType] = ['source' => $sSource, 'file_id' => (int)$sValue, 'url' => $sUrl, 'code' => ''];
+                continue;
+            }
+
+            // The dark mark follows the mark, everything else the logo.
+            $sBase = $sType == 'mark_dark' ? 'mark' : 'logo';
+            if($sType != 'logo' && $aResult[$sBase]['source'] != self::LOGO_SOURCE_BUILTIN)
+                continue;
+
+            $sUrl = is_callable($fBuiltinUrl) ? (string)call_user_func($fBuiltinUrl, $sBuiltin) : '';
+            if($sUrl != '')
+                $aResult[$sType] = ['source' => self::LOGO_SOURCE_BUILTIN, 'file_id' => 0, 'url' => $sUrl, 'code' => ''];
+        }
+
+        foreach(['logo' => 'logo_dark', 'mark' => 'mark_dark'] as $sType => $sTypeDark)
+            static::applyLogoSourceCode($aResult, $aTemplateParams, $sType, $sTypeDark);
+
+        return $aResult;
+    }
+
+    /**
+     * The value of a logo option: the template's own when it is set, else Designer's (sys_site_*).
+     * @return array [LOGO_SOURCE_TEMPLATE | LOGO_SOURCE_SYSTEM | LOGO_SOURCE_NONE, value]
+     */
+    protected static function getLogoSourceValue($aTemplateParams, $sName)
+    {
+        if(!empty($aTemplateParams[$sName])) {
+            $sValue = getParam($aTemplateParams[$sName]);
+            if($sValue != '' && $sValue !== '0')
+                return [self::LOGO_SOURCE_TEMPLATE, $sValue];
+        }
+
+        $sValue = getParam('sys_site_' . $sName);
+        if($sValue != '' && $sValue !== '0')
+            return [self::LOGO_SOURCE_SYSTEM, $sValue];
+
+        return [self::LOGO_SOURCE_NONE, ''];
+    }
+
+    /**
+     * SVG code stands in for an image that is not uploaded (built-in or missing), in both modes,
+     * for templates with an SVG code setting of their own.
+     */
+    protected static function applyLogoSourceCode(&$aResult, $aTemplateParams, $sType, $sTypeDark)
+    {
+        if(!in_array($aResult[$sType]['source'], [self::LOGO_SOURCE_BUILTIN, self::LOGO_SOURCE_NONE]))
+            return;
+
+        if(!empty($aTemplateParams) && !isset($aTemplateParams[$sType . '_inline']))
+            return;
+
+        list($sSource, $sCode) = static::getLogoSourceValue($aTemplateParams, $sType . '_inline');
+        if($sSource == self::LOGO_SOURCE_NONE)
+            return;
+
+        $aResult[$sType] = ['source' => self::LOGO_SOURCE_INLINE, 'file_id' => 0, 'url' => '', 'code' => $sCode, 'code_source' => $sSource];
+        $aResult[$sTypeDark] = ['source' => self::LOGO_SOURCE_NONE, 'file_id' => 0, 'url' => '', 'code' => ''];
+    }
+
     public function getSiteLogoParam($sName, $bGetSystem = false)
     {
     	if(!empty($this->aParams[$sName]) && !$bGetSystem) {
@@ -243,6 +355,65 @@ class BxDolDesigns extends BxDolFactory implements iBxDolSingleton
     protected function getSiteLogoValue($sName)
     {
         return isset($this->aValues[$sName]) ? $this->aValues[$sName] : false;
+    }
+
+    /**
+     * The web app manifest fields set in Studio > Designer > PWA (sys_pwa_manifest_*): for each, the saved value,
+     * the default an empty one takes, and the one in use. The manifest, the theme-color meta tag and Studio all read this.
+     * @return array name => ['value' => ..., 'default' => ..., 'used' => ...]
+     */
+    public static function getPwaSettings()
+    {
+        $sName = trim(getParam('site_title'));
+        if($sName === '')
+            $sName = parse_url(BX_DOL_URL_ROOT, PHP_URL_HOST);
+
+        $aDefaults = [
+            'name' => $sName,
+            'short_name' => '', // the app name in use, shortened: set below
+            'description' => '',
+            'background_color' => '#ffffff',
+            'theme_color' => self::getTemplateThemeColor(),
+        ];
+
+        $aResult = [];
+        foreach($aDefaults as $sKey => $sDefault) {
+            if($sKey == 'short_name')
+                $sDefault = self::getPwaShortName($aResult['name']['used']);
+
+            $sValue = trim((string)getParam('sys_pwa_manifest_' . $sKey));
+            $aResult[$sKey] = ['value' => $sValue, 'default' => $sDefault, 'used' => $sValue !== '' ? $sValue : $sDefault];
+        }
+
+        return $aResult;
+    }
+
+    /**
+     * A name that fits under a home screen icon (about 12 characters): the name itself, its first word, or its start.
+     */
+    public static function getPwaShortName($sName)
+    {
+        $iMax = 12;
+        if(get_mb_len($sName) <= $iMax)
+            return $sName;
+
+        $aWords = preg_split('/\s+/u', $sName);
+        if(!empty($aWords[0]) && get_mb_len($aWords[0]) <= $iMax)
+            return $aWords[0];
+
+        return get_mb_substr($sName, 0, $iMax);
+    }
+
+    /**
+     * The theme color the site's template sets in its _header_meta.html, the one browsers use when Designer sets none.
+     */
+    public static function getTemplateThemeColor()
+    {
+        $sMeta = BxDolTemplate::getInstance()->getHtml('_header_meta.html');
+        if(is_string($sMeta) && preg_match('/name="theme-color"\s+content="(#[0-9a-fA-F]{3,8})"/', $sMeta, $aMatch))
+            return strtolower($aMatch[1]);
+
+        return '#ffffff';
     }
 }
 

@@ -70,7 +70,6 @@ class BxBasePageHome extends BxTemplPage
             }
 
             $oTemplate = BxDolTemplate::getInstance();
-            $oTemplate->addJs(array('lottie.min.js'));
             $aBlock['content'] = $oTemplate->parseHtmlByContent($aBlock['content'], array(
                 'join_link' => bx_absolute_url($oPermalink->permalink('page.php?i=create-account')),
                 'join_form' => $sJoinForm,

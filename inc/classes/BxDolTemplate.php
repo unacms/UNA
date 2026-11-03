@@ -2034,6 +2034,11 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
             case 'page_viewport':
                 $sRet = getParam('sys_viewport_meta_tag');
                 break;
+            case 'theme_color_meta': // the theme color set in Designer > PWA; templates' _header_meta.html put it before their own
+                $sColor = trim((string)getParam('sys_pwa_manifest_theme_color'));
+                if($sColor !== '')
+                    $sRet = $this->parseHtmlByName('meta_theme_color.html', ['color' => bx_html_attribute($sColor)]);
+                break;
             case 'system_injection_head':
                 $sRet = $this->_oTemplateFunctions->getInjectionHead();
                 break;

@@ -695,15 +695,33 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
             $sAlt = getParam('site_title');
 
         $aLogoImages = [];
-        if(($mixedFileUrl = $this->getMainLogoUrl()) && !empty($mixedFileUrl)) {
+        $mixedFileUrl = $this->getMainLogoUrl();
+
+        // Nothing uploaded: the default logo (template/images/logo-generic.svg, or the template's own copy).
+        $bDefault = false;
+        if(empty($mixedFileUrl)) {
+            $aLogo = $oDesigns->getSiteLogoSources(function($sFile) {
+                return $this->_oTemplate->getImageUrl($sFile);
+            })['logo'];
+
+            if($aLogo['source'] == BxDolDesigns::LOGO_SOURCE_BUILTIN) {
+                $mixedFileUrl = $aLogo['url'];
+                $bDefault = true;
+            }
+        }
+
+        if(!empty($mixedFileUrl)) {
             if(!is_array($mixedFileUrl))
                 $mixedFileUrl = ['light' => $mixedFileUrl];
 
             foreach($mixedFileUrl as $sName => $sFileUrl) {
-                $iLogoWidth = (int)$oDesigns->getSiteLogoWidth();
+                // The default SVG gets the height only; the browser takes the width from its aspect ratio.
+                $iLogoWidth = !$bDefault ? (int)$oDesigns->getSiteLogoWidth() : 0;
                 $sWidth = $iLogoWidth > 0 ? 'width:' . round($iLogoWidth/16, 3) . 'rem;' : '';
 
                 $iLogoHeight = (int)$oDesigns->getSiteLogoHeight();
+                if($bDefault && $iLogoHeight <= 0)
+                    $iLogoHeight = 40; // the SVG's own size is 335x100
                 $sHeight = $iLogoHeight > 0 ? 'height:' . round($iLogoHeight/16, 3) . 'rem;' : '';
 
                 $aLogoImages[] = [
