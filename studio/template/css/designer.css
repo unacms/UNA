@@ -608,9 +608,13 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     line-height: 1.25rem;
     color: #18181b;
 }
+/* Vendor and version: secondary, a step smaller. */
+.adm-dsg-tmpl-meta,
+.adm-dsg-choice-info.adm-dsg-choice-meta {
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
 .adm-dsg-tmpl-meta {
-    font-size: 0.875rem;
-    line-height: 1.25rem;
     color: #52525b;
 }
 .adm-dsg-tmpl-actions {
