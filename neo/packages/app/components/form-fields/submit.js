@@ -27,6 +27,13 @@ const RESPONSIVE_SUBMIT_CONTAINER = 'w-full @sm/form-container:w-auto';
 const FULL_SUBMIT_WIDTH = 'w-full flex-auto';
 const FULL_SUBMIT_CONTAINER = 'w-full';
 
+/** The submit's width classes: `alwaysFullWidth` keeps it full width, else it hugs its label in a wide form. */
+function submitWidthClassNames(alwaysFullWidth) {
+    return alwaysFullWidth
+        ? { root: FULL_SUBMIT_WIDTH, container: FULL_SUBMIT_CONTAINER }
+        : { root: RESPONSIVE_SUBMIT_WIDTH, container: RESPONSIVE_SUBMIT_CONTAINER };
+}
+
 const VARIANT_TO_STYLE = {
     primary: 'borderedProminent',
     secondary: 'bordered',
@@ -129,13 +136,8 @@ export default function FormFieldSubmit(props) {
         'items-center',
     );
 
-    const alwaysFullWidth = !!(props.button_full_width ?? formProps.button_full_width);
-    const submitContainerClassName = alwaysFullWidth ? FULL_SUBMIT_CONTAINER : RESPONSIVE_SUBMIT_CONTAINER;
-    const responsiveButtonClassNames = fullWidth && !icon_only
-        ? alwaysFullWidth
-            ? { root: FULL_SUBMIT_WIDTH, container: FULL_SUBMIT_CONTAINER }
-            : { root: RESPONSIVE_SUBMIT_WIDTH, container: RESPONSIVE_SUBMIT_CONTAINER }
-        : undefined;
+    const widthClassNames = submitWidthClassNames(!!(props.button_full_width ?? formProps.button_full_width));
+    const responsiveButtonClassNames = fullWidth && !icon_only ? widthClassNames : undefined;
 
     const isBusy = isSumbitting || isUploading;
 
@@ -179,7 +181,7 @@ export default function FormFieldSubmit(props) {
     return (
         <Field {...props}>
             <Row className={rowClassName}>
-                <View className={icon_only || notFullWidth ? '' : submitContainerClassName}>
+                <View className={icon_only || notFullWidth ? '' : widthClassNames.container}>
                     {submitButton}
                 </View>
                 {saveOnChanges && (
