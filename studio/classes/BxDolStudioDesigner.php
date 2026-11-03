@@ -292,7 +292,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
      */
     protected function getInkFor($sColor)
     {
-        if(preg_match('/^#([0-9a-f]{3}|[0-9a-f]{6})/i', $sColor, $aMatch)) {
+        if(preg_match('/^#([0-9a-f]{6}|[0-9a-f]{3})$/i', $sColor, $aMatch)) {
             $sHex = strlen($aMatch[1]) == 3 ? preg_replace('/(.)/', '$1$1', $aMatch[1]) : $aMatch[1];
             $aRgb = [hexdec(substr($sHex, 0, 2)), hexdec(substr($sHex, 2, 2)), hexdec(substr($sHex, 4, 2))];
         }
