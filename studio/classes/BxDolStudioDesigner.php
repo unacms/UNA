@@ -257,18 +257,32 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
      */
     protected function getLogoSources()
     {
-        $aParams = $this->getLogoTemplateParams();
-        $sImagesPath = $sImagesUrl = '';
+        return BxDolDesigns::getLogoSources($this->getLogoTemplateParams(), function($sFile) {
+            return $this->getLogoBuiltinUrl($sFile);
+        });
+    }
 
-        $aModule = $this->getLogoTemplateModule();
-        if(!empty($aModule)) {
-            $sImagesPath = BX_DIRECTORY_PATH_MODULES . $aModule['path'] . 'data/template/system/images/';
-            $sImagesUrl = BX_DOL_URL_MODULES . $aModule['path'] . 'data/template/system/images/';
+    /**
+     * The URL of a default logo image as the site finds it: the template's own copy, else the system's in template/images.
+     * @return string, '' when there is neither
+     */
+    protected function getLogoBuiltinUrl($sFile)
+    {
+        if($this->isLogoBuiltinOwn($sFile)) {
+            $aModule = $this->getLogoTemplateModule();
+            return BX_DOL_URL_MODULES . $aModule['path'] . 'data/template/system/images/' . $sFile;
         }
 
-        return BxDolDesigns::getLogoSources($aParams, function($sFile) use ($sImagesPath, $sImagesUrl) {
-            return $sImagesPath && file_exists($sImagesPath . $sFile) ? $sImagesUrl . $sFile : '';
-        });
+        return file_exists(BX_DIRECTORY_PATH_ROOT . 'template/images/' . $sFile) ? BX_DOL_URL_ROOT . 'template/images/' . $sFile : '';
+    }
+
+    /**
+     * Whether the previewed template ships its own copy of a default logo image.
+     */
+    protected function isLogoBuiltinOwn($sFile)
+    {
+        $aModule = $this->getLogoTemplateModule();
+        return !empty($aModule) && file_exists(BX_DIRECTORY_PATH_MODULES . $aModule['path'] . 'data/template/system/images/' . $sFile);
     }
 
     function makeDefault()

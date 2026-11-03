@@ -157,6 +157,50 @@ class LogoSourcesTest extends BxDolIntegrationTestCase
         $this->assertSame(BxDolDesigns::LOGO_SOURCE_BUILTIN, $this->sources()['logo']['source']);
     }
 
+    public function testTheDefaultImagesShipWithTheSystem(): void
+    {
+        foreach (BxDolDesigns::$aLogoBuiltins as $sType => $sFile) {
+            $this->assertFileExists(BX_DIRECTORY_PATH_ROOT . 'template/images/' . $sFile, $sType);
+            $this->assertFileDoesNotExist(BX_DIRECTORY_PATH_MODULES . 'boonex/artificer/data/template/system/images/' . $sFile, $sType . ': one copy, the system\'s');
+        }
+    }
+
+    public function testBothHeadersDrawTheSystemDefaultWhenNothingIsUploaded(): void
+    {
+        $sDefault = 'template/images/logo-generic.svg';
+
+        $this->assertStringContainsString($sDefault, BxTemplFunctions::getInstance()->getMainLogo(), 'Artificer');
+
+        // Lucid, Ocean, Decorous and Protean draw the logo with the base class and the base logo_main.html. The site's
+        // template here is Artificer, whose logo_main.html takes other variables, so read what the base class passes.
+        $oTemplate = new class {
+            public array $aVars = [];
+
+            public function getImageUrl($sName)
+            {
+                return BxDolTemplate::getInstance()->getImageUrl($sName);
+            }
+
+            public function parseHtmlByName($sName, $aVars)
+            {
+                $this->aVars = $aVars;
+                return '';
+            }
+        };
+
+        // A singleton with a protected constructor: build the base class itself, not the template's subclass.
+        $oClass = new ReflectionClass('BxBaseFunctions');
+        $oBase = $oClass->newInstanceWithoutConstructor();
+        $oClass->getConstructor()->invoke($oBase, $oTemplate);
+        $oBase->getMainLogo();
+
+        $this->assertTrue($oTemplate->aVars['bx_if:show_logo']['condition'], 'base templates show an image, not the site name');
+        $aImage = $oTemplate->aVars['bx_if:show_logo']['content']['bx_repeat:images'][0];
+        $this->assertStringContainsString($sDefault, $aImage['src']);
+        $this->assertStringContainsString('height:', $aImage['style'], 'the default SVG is sized by its height');
+        $this->assertStringNotContainsString('width:', $aImage['style']);
+    }
+
     public function testDesignerHasAnOptionForEveryLogoImage(): void
     {
         $oDb = BxDolDb::getInstance();

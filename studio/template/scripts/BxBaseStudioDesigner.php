@@ -437,10 +437,11 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 return _t($bTemplatePage ? '_adm_dsg_txt_logo_src_system' : '_adm_dsg_txt_logo_src_template', $sTemplate);
 
             case BxDolDesigns::LOGO_SOURCE_BUILTIN:
+                // The system's default, unless the template ships its own copy (named on the template's page only).
                 $sKind = strpos($sType, 'mark') === 0 ? 'mark' : 'logo';
-                if(!$bTemplatePage)
-                    return _t('_adm_dsg_txt_' . $sKind . '_src_default');
-                return _t('_adm_dsg_txt_' . $sKind . '_src_builtin', $sTemplate);
+                if($bTemplatePage && $this->isLogoBuiltinOwn(BxDolDesigns::$aLogoBuiltins[$sType]))
+                    return _t('_adm_dsg_txt_' . $sKind . '_src_builtin', $sTemplate);
+                return _t('_adm_dsg_txt_' . $sKind . '_src_default');
 
             case BxDolDesigns::LOGO_SOURCE_INLINE:
                 if($aSource['code_source'] == $sPageSource)
