@@ -115,6 +115,25 @@ $(document).ready(function() {
     oMenu.scrollLeft += oActive.getBoundingClientRect().left - oMenu.getBoundingClientRect().left - (oMenu.clientWidth - oActive.offsetWidth) / 2;
 });
 
+/**
+ * Wide screens: the toggle between the page menu and the content (page_content_2_col.html) narrows the menu to the tablet strip
+ * and back. The choice is kept per browser and applied before the first paint (page_3.html). The button's name is whichever of
+ * its two labels the CSS shows; the tooltip copies it on hover. Delegated, so a redrawn page (a module enabled) keeps working.
+ */
+$(document).on('click', '.bx-std-page-menu-toggle', function() {
+    var bNarrow = document.documentElement.classList.toggle('bx-std-pmen-narrow');
+    try {
+        if(bNarrow)
+            localStorage.setItem('bx-std-page-menu-narrow', '1');
+        else
+            localStorage.removeItem('bx-std-page-menu-narrow');
+    }
+    catch(e) {}
+
+    $(this).trigger('mouseenter');
+}).on('mouseenter', '.bx-std-page-menu-toggle', function() {
+    $(this).attr('title', $(this).children(':visible').text());
+});
 
 /**
  * Overlay scrollbar for a block's scroll box (div.bx-std-block-content, see page.css): bx_scrollbar_overlay (inc/js/functions.js) draws

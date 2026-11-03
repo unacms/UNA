@@ -33,6 +33,14 @@ div.bx-std-page-columns-cnt {
     backdrop-filter: blur(40px);
 
     overflow-y: auto;
+
+    container: bx-std-pmen / inline-size; /* the items switch to the tablet strip by the column's width (general.css), whether a breakpoint or the toggle narrows it */
+}
+@media (prefers-reduced-motion: no-preference) {
+    .bx-std-page-column.bx-std-page-menu {
+        -webkit-transition: flex-basis 0.2s ease, width 0.2s ease;
+        transition: flex-basis 0.2s ease, width 0.2s ease;
+    }
 }
 .bx-std-page-column.bx-std-page-menu::-webkit-scrollbar {
   display: none;
@@ -41,6 +49,90 @@ div.bx-std-page-columns-cnt {
     position: -webkit-sticky;
     position: sticky;
     top: 0;
+}
+
+/*
+ * Page menu toggle (wide screens only): the 12px gap between the columns is a button that narrows the menu to the tablet strip and back.
+ * Its bar shows while the gap is hovered or focused; the hit area spreads 6px into the menu's inset and the content's edge (24px).
+ */
+.bx-std-page-menu-toggle {
+    display: none;
+}
+@media (min-width: 1024px) {
+    .bx-std-page-menu-toggle {
+        position: relative;
+        z-index: 1;
+        display: block;
+        -webkit-flex: 0 0 0.75rem;
+        flex: 0 0 0.75rem;
+
+        width: 0.75rem;
+        margin: 0;
+        padding: 0;
+
+        border: 0;
+        background: transparent;
+        outline: none;
+        cursor: pointer;
+    }
+    .bx-std-page-menu-toggle::before {
+        content: '';
+        position: absolute;
+        inset: 0 -0.375rem;
+    }
+    .bx-std-page-menu-toggle::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        width: 0.25rem;
+        height: 8rem;
+
+        border-radius: 9999px;
+        background-color: rgba(0, 0, 0, 0.45); /* 3:1 on the page background */
+        opacity: 0;
+
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        -webkit-transition: opacity 0.15s ease, background-color 0.15s ease;
+        transition: opacity 0.15s ease, background-color 0.15s ease;
+    }
+    .dark .bx-std-page-menu-toggle::after {
+        background-color: rgba(255, 255, 255, 0.45);
+    }
+    .bx-std-page-menu-toggle:hover::after,
+    .bx-std-page-menu-toggle:focus-visible::after {
+        opacity: 1;
+    }
+    .bx-std-page-menu-toggle:active::after {
+        background-color: rgba(0, 0, 0, 0.6);
+    }
+    .dark .bx-std-page-menu-toggle:active::after {
+        background-color: rgba(255, 255, 255, 0.6);
+    }
+    .bx-std-page-menu-toggle:focus-visible::after {
+        background-color: #3b82f6; /* blue-500, the Studio focus ring */
+    }
+    .dark .bx-std-page-menu-toggle:focus-visible::after {
+        background-color: #60a5fa; /* blue-400 */
+    }
+    html.bx-std-pmen-narrow .bx-std-pmt-collapse,
+    html:not(.bx-std-pmen-narrow) .bx-std-pmt-expand {
+        display: none;
+    }
+
+    /* the toggle is the gap now */
+    .bx-std-page-menu-toggle + .bx-std-page-column.bx-std-page-content div.bx-std-page-column-cnt {
+        padding-left: 0;
+    }
+
+    html.bx-std-pmen-narrow .bx-std-page-column.bx-std-page-menu {
+        -webkit-flex: 0 0 6.5rem;
+        flex: 0 0 6.5rem;
+
+        width: 6.5rem; /* the tablet strip */
+    }
 }
 
 /*--- Page Content ---*/
@@ -84,8 +176,8 @@ div.bx-std-page-columns-cnt {
 }
 
 /*
- * Narrow screens. Below 1024px the sidebar collapses to a strip of icon tiles with small labels under them;
- * below 768px it becomes a horizontal row of tabs above the content. Item styles are in general.css.
+ * Narrow screens. Below 1024px the sidebar collapses to a strip of icon tiles with small labels under them (as the toggle does on
+ * wider screens); below 768px it becomes a horizontal row of tabs above the content. Item styles are in general.css.
  */
 @media (max-width: 1023px) {
     .bx-std-page-column.bx-std-page-menu {
