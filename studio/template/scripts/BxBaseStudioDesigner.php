@@ -94,14 +94,8 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         $sDefault = getParam('template');
         $aTemplates = get_templates_array(true, false);
 
-        // Each template's look, with the logos and icons the site would show in it: the logo helpers follow sLogoTemplate.
-        $sLogoTemplate = $this->sLogoTemplate;
         $aCards = [];
-        $aPreviews = [];
         foreach($aTemplates as $sUri => $aModule) {
-            $this->sLogoTemplate = $aModule['name'];
-            $aPreviews[$sUri] = $this->getTemplatePreview($aModule);
-
             $sIcon = $this->getModuleIcon($aModule, 'store');
             $bIcon = strpos($sIcon, '.') === false && strcmp(substr($sIcon, 0, 10), 'data:image') != 0;
             $sTitle = htmlspecialchars_adv($aModule['title']);
@@ -114,6 +108,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 'version' => htmlspecialchars_adv($aModule['version']),
                 'vendor' => htmlspecialchars_adv($aModule['vendor']),
                 'pressed' => $sUri == $sDefault ? 'true' : 'false',
+                'title_data' => bx_html_attribute($aModule['title']),
                 'bx_if:icon' => [
                     'condition' => $bIcon,
                     'content' => ['icon' => $sIcon],
@@ -128,7 +123,6 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 ],
             ];
         }
-        $this->sLogoTemplate = $sLogoTemplate;
 
         $sDesignerUrl = BX_DOL_URL_STUDIO . 'designer.php?page=';
         $sDefaultTitle = isset($aTemplates[$sDefault]) ? $aTemplates[$sDefault]['title'] : $sDefault;
@@ -174,13 +168,13 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     'type' => 'custom',
                     'name' => 'preview_info',
                     'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', [
-                        'text' => _t('_adm_dsg_inf_tmpl_section_preview', $sDesignerUrl . BX_DOL_STUDIO_DSG_TYPE_LOGO, $sDesignerUrl . BX_DOL_STUDIO_DSG_TYPE_ICON, $sDesignerUrl . BX_DOL_STUDIO_DSG_TYPE_PWA)
+                        'text' => _t('_adm_dsg_inf_tmpl_section_preview')
                     ]),
                 ],
                 'preview' => [
                     'type' => 'custom',
                     'name' => 'preview',
-                    'content' => $this->getTemplateMockup(isset($aPreviews[$sDefault]) ? $aPreviews[$sDefault] : reset($aPreviews), $aPreviews),
+                    'content' => $this->getTemplateViewer($sDefault, isset($aTemplates[$sDefault]) ? $aTemplates[$sDefault]['title'] : $sDefault),
                 ],
                 'header_footer' => [ // the last section is the block's pinned footer (page.css): where the default is chosen
                     'type' => 'block_header',
@@ -205,65 +199,59 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
     }
 
     /**
-     * What the Template page sketch shows for a template: its look, and the logo, mark and favicon the site uses in it.
-     * Call with sLogoTemplate set to the template.
+     * The Template page preview: the real site in a template (?skin=...&preview=1 shows it without setting the template
+     * cookie), with a choice of pages and the viewport controls of the Landing preview. designer.js does the rest.
      */
-    protected function getTemplatePreview($aModule)
+    protected function getTemplateViewer($sUri, $sTitle)
     {
-        $aSources = $this->getLogoSources();
-        $fImage = function($sType) use ($aSources) {
-            if(empty($aSources[$sType]) || $aSources[$sType]['source'] == BxDolDesigns::LOGO_SOURCE_NONE)
-                return '';
-            if($aSources[$sType]['source'] == BxDolDesigns::LOGO_SOURCE_INLINE)
-                return 'data:image/svg+xml;base64,' . base64_encode($aSources[$sType]['code']);
-            return $aSources[$sType]['url'];
-        };
+        $aPages = $this->getTemplatePages();
+        $sSrc = bx_append_url_params($aPages[0]['url'], ['skin' => $sUri, 'preview' => 1]);
 
-        $sLogo = $fImage('logo');
-        $sMark = $this->isLogoDrawn('mark') ? $fImage('mark') : '';
+        $aOptions = [];
+        foreach($aPages as $i => $aPage)
+            $aOptions[] = [
+                'page_url' => bx_html_attribute($aPage['url']),
+                'page_title' => $aPage['title'],
+                'page_selected' => $i == 0 ? 'selected="selected"' : '',
+            ];
 
-        $sFavicon = $this->getIconUrl('icon_svg');
-        if(empty($sFavicon))
-            $sFavicon = $this->getIconUrl('icon');
-        if(empty($sFavicon))
-            $sFavicon = $this->getIconDefaultUrl('favicon.svg');
-
-        $aPwa = BxDolDesigns::getPwaSettings();
-        $aLook = $this->getTemplateLook($aModule);
-        $aLook['vars']['status'] = $aPwa['theme_color']['value'] !== '' ? $aPwa['theme_color']['value'] : $this->getTemplateThemeColor($aModule);
-        $aLook['vars']['status-ink'] = $this->getInkFor($aLook['vars']['status']);
-
-        return [
-            'title' => $aModule['title'],
-            'colors' => $aLook['mix'] !== '' ? _t('_adm_dsg_txt_tmpl_colors_mix', $aLook['mix']) : _t('_adm_dsg_txt_tmpl_colors_own'),
-            'vars' => $aLook['vars'],
-            'logo' => $sLogo,
-            'mark' => $sMark !== '' ? $sMark : $sLogo,
-            'favicon' => $sFavicon,
-        ];
+        return BxDolStudioTemplate::getInstance()->parseHtmlByName('dsr_template_viewer.html', [
+            'js_object' => $this->getPageJsObject(),
+            'uri' => bx_html_attribute($sUri),
+            'title' => htmlspecialchars_adv($sTitle),
+            'src' => bx_html_attribute($sSrc),
+            'dialog_id' => $this->sTemplatesFormId . '-fullscreen',
+            'bx_repeat:pages' => $aOptions,
+        ]);
     }
 
     /**
-     * The design-only sketch of the site in a template: a desktop browser window, a tablet and a phone, drawn in the
-     * template's colors with the site's logo, favicon and name. designer.js (previewTemplate) switches templates.
+     * Pages worth seeing a template on: the home page, system pages, the viewer's own profile, and the home pages of
+     * People and Timeline when they are on.
+     * @return array of ['url' => ..., 'title' => ...], the home page first
      */
-    protected function getTemplateMockup($aPreview, $aPreviews)
+    protected function getTemplatePages()
     {
-        $aStyle = [];
-        foreach($aPreview['vars'] as $sKey => $sValue)
-            $aStyle[] = '--mk-' . $sKey . ': ' . $sValue;
+        $oPermalinks = BxDolPermalinks::getInstance();
+        $fPage = function($sUri) use ($oPermalinks) {
+            return bx_absolute_url($oPermalinks->permalink('page.php?i=' . $sUri));
+        };
 
-        return BxDolStudioTemplate::getInstance()->parseHtmlByName('dsr_template_mockup.html', [
-            'style' => bx_html_attribute(implode('; ', $aStyle)),
-            'template' => htmlspecialchars_adv($aPreview['title']),
-            'colors' => htmlspecialchars_adv($aPreview['colors']),
-            'site' => htmlspecialchars_adv(getParam('site_title')),
-            'host' => htmlspecialchars_adv(parse_url(BX_DOL_URL_ROOT, PHP_URL_HOST)),
-            'logo' => bx_html_attribute($aPreview['logo']),
-            'mark' => bx_html_attribute($aPreview['mark']),
-            'favicon' => bx_html_attribute($aPreview['favicon']),
-            'data' => json_encode($aPreviews, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
-        ]);
+        $aPages = [['url' => BX_DOL_URL_ROOT, 'title' => _t('_adm_dsg_txt_tmpl_page_home')]];
+
+        $oModules = BxDolModuleQuery::getInstance();
+        if($oModules->isEnabledByName('bx_timeline'))
+            $aPages[] = ['url' => $fPage('timeline-view-home'), 'title' => _t('_adm_dsg_txt_tmpl_page_timeline')];
+        if($oModules->isEnabledByName('bx_persons'))
+            $aPages[] = ['url' => $fPage('persons-home'), 'title' => _t('_adm_dsg_txt_tmpl_page_people')];
+
+        if(($oProfile = BxDolProfile::getInstance()) && ($sProfileUrl = $oProfile->getUrl()))
+            $aPages[] = ['url' => $sProfileUrl, 'title' => _t('_adm_dsg_txt_tmpl_page_profile')];
+
+        foreach(['explore' => 'explore', 'about' => 'about', 'login' => 'login', 'create-account' => 'join'] as $sUri => $sKey)
+            $aPages[] = ['url' => $fPage($sUri), 'title' => _t('_adm_dsg_txt_tmpl_page_' . $sKey)];
+
+        return $aPages;
     }
 
     protected function getLogo()

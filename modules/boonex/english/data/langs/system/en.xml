@@ -784,7 +784,9 @@
 	<string name="_adm_dsg_btn_splash_preview"><![CDATA[Preview changes]]></string>
 	<string name="_adm_dsg_btn_splash_preview_fullscreen"><![CDATA[Preview in full screen]]></string>
 	<string name="_adm_dsg_btn_tmpl_choose_default"><![CDATA[Choose the default template]]></string>
+	<string name="_adm_dsg_btn_tmpl_fullscreen"><![CDATA[Full screen]]></string>
 	<string name="_adm_dsg_btn_tmpl_preview"><![CDATA[Preview]]></string>
+	<string name="_adm_dsg_btn_tmpl_reload"><![CDATA[Reload]]></string>
 	<string name="_adm_dsg_cnf_logo_remove"><![CDATA[Remove this image? It will be deleted.]]></string>
 	<string name="_adm_dsg_dsc_alt_text"><![CDATA[Serves as "ALT" text for logo image. Used as a logo when no logo image is uploaded.]]></string>
 	<string name="_adm_dsg_dsc_splash_warning"><![CDATA[Note, that improper use of HTML may break the site layout.]]></string>
@@ -837,7 +839,7 @@
 	<string name="_adm_dsg_inf_splash_section_landing"><![CDATA[Guests who open the home page see this page instead. Members who are signed in still see the home page.]]></string>
 	<string name="_adm_dsg_inf_splash_section_preview"><![CDATA[How guests see the page. Preview changes shows the code from the editor before you save it.]]></string>
 	<string name="_adm_dsg_inf_tmpl_section_list"><![CDATA[A template draws the whole site: its header, menus, colors and fonts. These are the templates installed and turned on. Preview one to see it below, or open the site with it to try the real pages.]]></string>
-	<string name="_adm_dsg_inf_tmpl_section_preview"><![CDATA[A sketch of the site, not its real pages: the template colors with your <a href="{0}">logo</a>, <a href="{1}">icon</a> and site name, and the <a href="{2}">window color</a> on phones.]]></string>
+	<string name="_adm_dsg_inf_tmpl_section_preview"><![CDATA[The real site in the template, on the page and at the screen size you pick. You see it signed in, as yourself, and links in it keep the template. Nothing changes for anyone else.]]></string>
 	<string name="_adm_dsg_lmi_cpt_template"><![CDATA[Template]]></string>
 	<string name="_adm_dsg_lnk_logo_system"><![CDATA[Open Designer › Logo]]></string>
 	<string name="_adm_dsg_lnk_logo_template"><![CDATA[Open {0} logo settings]]></string>
@@ -914,11 +916,19 @@
 	<string name="_adm_dsg_txt_splash_section_code"><![CDATA[Page code]]></string>
 	<string name="_adm_dsg_txt_splash_section_landing"><![CDATA[Landing page]]></string>
 	<string name="_adm_dsg_txt_splash_section_preview"><![CDATA[Preview]]></string>
-	<string name="_adm_dsg_txt_tmpl_colors_mix"><![CDATA[colors from its {0} preset]]></string>
-	<string name="_adm_dsg_txt_tmpl_colors_own"><![CDATA[its own colors]]></string>
 	<string name="_adm_dsg_txt_tmpl_default"><![CDATA[Default]]></string>
 	<string name="_adm_dsg_txt_tmpl_footer"><![CDATA[Everyone sees {0} unless they pick another template themselves.]]></string>
-	<string name="_adm_dsg_txt_tmpl_mockup"><![CDATA[Showing]]></string>
+	<string name="_adm_dsg_txt_tmpl_frame"><![CDATA[Site preview]]></string>
+	<string name="_adm_dsg_txt_tmpl_page"><![CDATA[Page]]></string>
+	<string name="_adm_dsg_txt_tmpl_page_about"><![CDATA[About]]></string>
+	<string name="_adm_dsg_txt_tmpl_page_explore"><![CDATA[Explore]]></string>
+	<string name="_adm_dsg_txt_tmpl_page_home"><![CDATA[Home]]></string>
+	<string name="_adm_dsg_txt_tmpl_page_join"><![CDATA[Join]]></string>
+	<string name="_adm_dsg_txt_tmpl_page_login"><![CDATA[Sign in]]></string>
+	<string name="_adm_dsg_txt_tmpl_page_other"><![CDATA[Other page]]></string>
+	<string name="_adm_dsg_txt_tmpl_page_people"><![CDATA[People]]></string>
+	<string name="_adm_dsg_txt_tmpl_page_profile"><![CDATA[Your profile]]></string>
+	<string name="_adm_dsg_txt_tmpl_page_timeline"><![CDATA[Timeline]]></string>
 	<string name="_adm_dsg_txt_tmpl_section_list"><![CDATA[Templates]]></string>
 	<string name="_adm_dsg_txt_tmpl_section_preview"><![CDATA[Preview]]></string>
 	<string name="_adm_dsg_txt_default"><![CDATA[default]]></string>

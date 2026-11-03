@@ -778,7 +778,9 @@
 	<string name="_adm_dsg_btn_splash_preview"><![CDATA[Показать изменения]]></string>
 	<string name="_adm_dsg_btn_splash_preview_fullscreen"><![CDATA[Просмотр на весь экран]]></string>
 	<string name="_adm_dsg_btn_tmpl_choose_default"><![CDATA[Выбрать шаблон по умолчанию]]></string>
+	<string name="_adm_dsg_btn_tmpl_fullscreen"><![CDATA[На весь экран]]></string>
 	<string name="_adm_dsg_btn_tmpl_preview"><![CDATA[Предпросмотр]]></string>
+	<string name="_adm_dsg_btn_tmpl_reload"><![CDATA[Обновить]]></string>
 	<string name="_adm_dsg_cnf_logo_remove"><![CDATA[Удалить это изображение? Оно будет удалено безвозвратно.]]></string>
 	<string name="_adm_dsg_dsc_alt_text"><![CDATA[Используется для дополнительного текста для лого-картинки. Используется в качестве лого, если картинка не загружена.]]></string>
 	<string name="_adm_dsg_dsc_splash_warning"><![CDATA[Заметьте, что неправильное применение HTML может испортить дизайн сайта.]]></string>
@@ -831,7 +833,7 @@
 	<string name="_adm_dsg_inf_splash_section_landing"><![CDATA[Гости, открывшие главную страницу, видят вместо неё эту страницу. Участники, которые вошли на сайт, по-прежнему видят главную.]]></string>
 	<string name="_adm_dsg_inf_splash_section_preview"><![CDATA[Так страницу видят гости. «Показать изменения» показывает код из редактора до сохранения.]]></string>
 	<string name="_adm_dsg_inf_tmpl_section_list"><![CDATA[Шаблон отвечает за весь вид сайта: шапку, меню, цвета и шрифты. Здесь установленные и включённые шаблоны. Нажмите «Предпросмотр», чтобы увидеть шаблон ниже, или откройте с ним сайт, чтобы посмотреть настоящие страницы.]]></string>
-	<string name="_adm_dsg_inf_tmpl_section_preview"><![CDATA[Набросок сайта, а не его настоящие страницы: цвета шаблона с вашим <a href="{0}">логотипом</a>, <a href="{1}">иконкой</a> и названием сайта, а на телефоне — <a href="{2}">цвет окна</a>.]]></string>
+	<string name="_adm_dsg_inf_tmpl_section_preview"><![CDATA[Настоящий сайт с этим шаблоном, на выбранной странице и при выбранном размере экрана. Вы видите его как вошедший пользователь, а ссылки внутри сохраняют шаблон. Для остальных ничего не меняется.]]></string>
 	<string name="_adm_dsg_lmi_cpt_template"><![CDATA[Шаблон]]></string>
 	<string name="_adm_dsg_lnk_logo_system"><![CDATA[Открыть «Дизайнер › Лого»]]></string>
 	<string name="_adm_dsg_lnk_logo_template"><![CDATA[Открыть настройки логотипа {0}]]></string>
@@ -908,11 +910,19 @@
 	<string name="_adm_dsg_txt_splash_section_code"><![CDATA[Код страницы]]></string>
 	<string name="_adm_dsg_txt_splash_section_landing"><![CDATA[Лендинг]]></string>
 	<string name="_adm_dsg_txt_splash_section_preview"><![CDATA[Предпросмотр]]></string>
-	<string name="_adm_dsg_txt_tmpl_colors_mix"><![CDATA[цвета из набора {0}]]></string>
-	<string name="_adm_dsg_txt_tmpl_colors_own"><![CDATA[собственные цвета]]></string>
 	<string name="_adm_dsg_txt_tmpl_default"><![CDATA[По умолчанию]]></string>
 	<string name="_adm_dsg_txt_tmpl_footer"><![CDATA[Все видят шаблон {0}, если сами не выбрали другой.]]></string>
-	<string name="_adm_dsg_txt_tmpl_mockup"><![CDATA[Показан]]></string>
+	<string name="_adm_dsg_txt_tmpl_frame"><![CDATA[Предпросмотр сайта]]></string>
+	<string name="_adm_dsg_txt_tmpl_page"><![CDATA[Страница]]></string>
+	<string name="_adm_dsg_txt_tmpl_page_about"><![CDATA[О сайте]]></string>
+	<string name="_adm_dsg_txt_tmpl_page_explore"><![CDATA[Обзор]]></string>
+	<string name="_adm_dsg_txt_tmpl_page_home"><![CDATA[Главная]]></string>
+	<string name="_adm_dsg_txt_tmpl_page_join"><![CDATA[Регистрация]]></string>
+	<string name="_adm_dsg_txt_tmpl_page_login"><![CDATA[Вход]]></string>
+	<string name="_adm_dsg_txt_tmpl_page_other"><![CDATA[Другая страница]]></string>
+	<string name="_adm_dsg_txt_tmpl_page_people"><![CDATA[Люди]]></string>
+	<string name="_adm_dsg_txt_tmpl_page_profile"><![CDATA[Ваш профиль]]></string>
+	<string name="_adm_dsg_txt_tmpl_page_timeline"><![CDATA[Лента]]></string>
 	<string name="_adm_dsg_txt_tmpl_section_list"><![CDATA[Шаблоны]]></string>
 	<string name="_adm_dsg_txt_tmpl_section_preview"><![CDATA[Предпросмотр]]></string>
 	<string name="_adm_dsg_txt_default"><![CDATA[по умолчанию]]></string>

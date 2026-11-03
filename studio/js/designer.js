@@ -147,7 +147,7 @@ BxDolStudioDesigner.prototype.openPreviewFullscreen = function(oButton, sDialog,
  * Sets the full-screen preview's width: a preset, a typed width, or no width (Custom), which moves focus to the width field.
  */
 BxDolStudioDesigner.prototype.setPreviewViewport = function(oControl, iWidth) {
-    var oDialog = $(oControl).parents('dialog:first');
+    var oDialog = $(oControl).closest('.adm-dsg-fs-viewer, dialog'); // the Template viewer, or the Landing preview dialog
     var oViewport = oDialog.find('.adm-dsg-fs-viewport').get(0);
 
     iWidth = parseInt(iWidth, 10);
@@ -172,8 +172,8 @@ BxDolStudioDesigner.prototype.setPreviewViewport = function(oControl, iWidth) {
  * out at that width. Then the width field, the zoom readout and the pressed preset follow.
  */
 BxDolStudioDesigner.prototype.syncPreviewViewport = function(oDialog) {
-    // A closed dialog has no size to fit (its frame measures 0).
-    if(!oDialog.open)
+    // A closed dialog, or a viewer not on screen, has no size to fit (its frame measures 0).
+    if((oDialog.tagName == 'DIALOG' && !oDialog.open) || !oDialog.offsetWidth)
         return;
 
     var oStage = $(oDialog).find('.adm-dsg-fs-stage').get(0);
@@ -304,35 +304,166 @@ BxDolStudioDesigner.prototype.getPwaInk = function(sColor) {
 };
 
 /**
- * Shows a template in the Template page sketch: its colors, and the logo, mark and favicon the site uses in it.
- * The data for every template is in the sketch's JSON (BxBaseStudioDesigner::getTemplateMockup).
+ * The Template page preview: the real site in a template, at the viewport chosen (setPreviewViewport fits it).
+ */
+BxDolStudioDesigner.prototype.initTemplateViewer = function(oViewer) {
+    var $this = this;
+    if(!oViewer)
+        return;
+
+    if(typeof(window.ResizeObserver) != 'undefined') {
+        var oObserver = new ResizeObserver(function() {
+            $this.syncPreviewViewport(oViewer);
+        });
+        oObserver.observe($(oViewer).find('.adm-dsg-fs-viewport').get(0));
+        oObserver.observe($(oViewer).find('.adm-dsg-fs-stage').get(0));
+    }
+    this.syncPreviewViewport(oViewer);
+
+    $(oViewer).find('.adm-dsg-tmpl-frame').on('load', function() {
+        $this.keepTemplateInFrame(oViewer, this);
+        $this.syncTemplatePage(oViewer, this);
+    });
+};
+
+/**
+ * The Page list follows the frame: the page it is on, or "Other page" for one reached by a link that isn't in the list.
+ */
+BxDolStudioDesigner.prototype.syncTemplatePage = function(oViewer, oFrame) {
+    var sPath = '';
+    try {
+        var oUrl = new URL(oFrame.contentWindow.location.href);
+        oUrl.searchParams.delete('skin');
+        oUrl.searchParams.delete('preview');
+        sPath = oUrl.toString().replace(/\/$/, '');
+    }
+    catch(e) {
+        return;
+    }
+
+    var oSelect = $(oViewer).find('.adm-dsg-tmpl-page');
+    var oMatch = oSelect.find('option').filter(function() {
+        return this.value && new URL(this.value, window.location.href).toString().replace(/\/$/, '') == sPath;
+    }).first();
+
+    if(oMatch.length) {
+        oSelect.find('option.adm-dsg-tmpl-page-other').remove();
+        oSelect.val(oMatch.val());
+        return;
+    }
+
+    var oOther = oSelect.find('option.adm-dsg-tmpl-page-other');
+    if(!oOther.length)
+        oOther = $('<option class="adm-dsg-tmpl-page-other" value="" disabled></option>').text(oSelect.attr('data-other')).appendTo(oSelect);
+    oOther.prop('selected', true);
+};
+
+/**
+ * Links followed in the frame keep the previewed template: ?skin=...&preview=1 lasts one page, it sets no cookie.
+ */
+BxDolStudioDesigner.prototype.keepTemplateInFrame = function(oViewer, oFrame) {
+    var oDocument = null;
+    try {
+        oDocument = oFrame.contentDocument;
+    }
+    catch(e) {}
+    if(!oDocument)
+        return;
+
+    oDocument.addEventListener('click', function(oEvent) {
+        var oLink = oEvent.target && oEvent.target.closest ? oEvent.target.closest('a[href]') : null;
+        if(!oLink || (oLink.target && oLink.target != '_self'))
+            return;
+
+        var oUrl = new URL(oLink.href, oDocument.baseURI);
+        if(oUrl.origin != window.location.origin || !/^https?:$/.test(oUrl.protocol))
+            return;
+
+        oUrl.searchParams.set('skin', $(oViewer).attr('data-template'));
+        oUrl.searchParams.set('preview', '1');
+        oLink.href = oUrl.toString();
+    }, true);
+};
+
+BxDolStudioDesigner.prototype.getTemplatePageUrl = function(oViewer) {
+    var oUrl = new URL($(oViewer).find('.adm-dsg-tmpl-page').val(), window.location.href);
+    oUrl.searchParams.set('skin', $(oViewer).attr('data-template'));
+    oUrl.searchParams.set('preview', '1');
+    return oUrl.toString();
+};
+
+/**
+ * Opens the chosen page in the frame, in the template being previewed.
+ */
+BxDolStudioDesigner.prototype.loadTemplatePage = function(oControl) {
+    var oViewer = $(oControl).closest('.adm-dsg-tmpl-viewer');
+    var sUrl = this.getTemplatePageUrl(oViewer);
+
+    oViewer.find('.adm-dsg-tmpl-frame').attr('src', sUrl);
+    oViewer.find('.adm-dsg-tmpl-open').attr('href', sUrl);
+};
+
+/**
+ * Reloads whatever page the frame is on now, which may be one reached by a link.
+ */
+BxDolStudioDesigner.prototype.reloadTemplatePage = function(oControl) {
+    var oFrame = $(oControl).closest('.adm-dsg-tmpl-viewer').find('.adm-dsg-tmpl-frame').get(0);
+    try {
+        oFrame.contentWindow.location.reload();
+    }
+    catch(e) {
+        this.loadTemplatePage(oControl);
+    }
+};
+
+/**
+ * Shows a template in the preview, on the page it is on: the template cards' Preview buttons.
  */
 BxDolStudioDesigner.prototype.previewTemplate = function(oButton, sUri) {
     var oForm = $(oButton).parents('form:first');
-    var oFigure = oForm.find('.adm-dsg-mk-figure');
-    var aPreviews = {};
-    try {
-        aPreviews = JSON.parse(oFigure.find('.adm-dsg-mk-data').text());
-    }
-    catch(e) {}
+    var oViewer = oForm.find('.adm-dsg-tmpl-viewer');
 
-    var oPreview = aPreviews[sUri];
-    if(!oPreview)
-        return;
-
-    var oSketch = oFigure.find('.adm-dsg-mk');
-    $.each(oPreview.vars, function(sKey, sValue) {
-        oSketch.get(0).style.setProperty('--mk-' + sKey, sValue);
-    });
-
-    oSketch.find('.adm-dsg-mk-logo').not('.adm-dsg-mk-mark').attr('src', oPreview.logo);
-    oSketch.find('.adm-dsg-mk-mark').attr('src', oPreview.mark);
-    oSketch.find('.adm-dsg-mk-favicon').attr('src', oPreview.favicon);
-    oFigure.find('.adm-dsg-mk-template').text(oPreview.title);
-    oFigure.find('.adm-dsg-mk-colors').text(oPreview.colors);
+    oViewer.attr('data-template', sUri);
+    oViewer.find('.adm-dsg-tmpl-viewer-title').text($(oButton).closest('.adm-dsg-tmpl-card').attr('data-title'));
+    this.loadTemplatePage(oViewer.find('.adm-dsg-tmpl-page').get(0));
 
     oForm.find('.adm-dsg-tmpl-card [aria-pressed]').attr('aria-pressed', 'false');
     $(oButton).attr('aria-pressed', 'true');
+};
+
+/**
+ * Full screen: the viewer moves into a modal dialog with its controls, and back when it closes. A moved frame reloads,
+ * so it reopens the page it was on.
+ */
+BxDolStudioDesigner.prototype.openTemplateFullscreen = function(oButton, sDialog) {
+    var $this = this;
+    var oDialog = document.getElementById(sDialog);
+    var oViewer = $(oButton).closest('.adm-dsg-tmpl-viewer').get(0);
+    if(!oDialog || typeof(oDialog.showModal) != 'function' || !oViewer)
+        return;
+
+    var oFrame = $(oViewer).find('.adm-dsg-tmpl-frame');
+    var fKeepPage = function() {
+        try {
+            oFrame.attr('src', oFrame.get(0).contentWindow.location.href);
+        }
+        catch(e) {}
+    };
+
+    var oMarker = document.createComment('');
+    fKeepPage();
+    oViewer.parentNode.insertBefore(oMarker, oViewer);
+    oDialog.appendChild(oViewer);
+
+    $(oDialog).one('close', function() {
+        fKeepPage();
+        oMarker.parentNode.replaceChild(oViewer, oMarker);
+        $this.syncPreviewViewport(oViewer);
+        oButton.focus();
+    });
+
+    oDialog.showModal();
+    this.syncPreviewViewport(oViewer);
 };
 
 BxDolStudioDesigner.prototype.deleteIcon = function(sName, oButton) {
