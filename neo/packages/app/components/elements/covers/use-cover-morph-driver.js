@@ -7,7 +7,28 @@ import {
 import {
     coverTabScroll,
     resetCoverTabScroll,
+    releaseCoverTabScrollHold,
 } from './cover-tab-scroll'
+
+/** Collapse state at offset `y`, with hysteresis once collapsed. No range: any scroll collapses. */
+function isCollapsedAt(y, range, wasCollapsed) {
+    if (range <= 0) return y > 0
+    return wasCollapsed ? y > range - MORPH_HYSTERESIS : y >= range
+}
+
+/**
+ * While a tab switch holds the cover collapsed, whether this scroll report counts.
+ * The new list can report y=0 (or a small offset) before initialScrollOffset, so it
+ * must not expand the cover. A pull past the top is the user asking for the cover:
+ * the pinned list starts at its top, with no offset left to scroll back through.
+ */
+function passesTabSwitchHold(y, range) {
+    if (y < -MORPH_HYSTERESIS) {
+        releaseCoverTabScrollHold()
+        return true
+    }
+    return isCollapsedAt(y, range, true)
+}
 
 /**
  * Native: same collapse thresholds as web, driven by list `coverScrollY`.
@@ -50,21 +71,10 @@ export function useCoverMorphDriver({
                           slotHeightRef.current,
                           hasCoverBlock,
                       )
-            // Tab switch remounts the list, which can report y=0 (or a small
-            // offset) before initialScrollOffset. Do not expand while holding.
-            if (coverTabScroll.hold && collapsedRef.current) {
-                const stillCollapsed =
-                    range <= 0 ? y > 0 : y > range - MORPH_HYSTERESIS
-                if (!stillCollapsed) return
+            if (coverTabScroll.hold && collapsedRef.current && !passesTabSwitchHold(y, range)) {
+                return
             }
-            let collapsed
-            if (range <= 0) {
-                collapsed = y > 0
-            } else if (collapsedRef.current) {
-                collapsed = y > range - MORPH_HYSTERESIS
-            } else {
-                collapsed = y >= range
-            }
+            const collapsed = isCollapsedAt(y, range, collapsedRef.current)
             coverTabScroll.y = y
             coverTabScroll.range = range
             coverTabScroll.collapsed = collapsed

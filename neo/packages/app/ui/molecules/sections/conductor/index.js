@@ -134,6 +134,7 @@ export function Conductor({
         coverOverlayPad,
         coverPadPin,
         onOverlayHeight,
+        onCollapseRange,
         onCoverProgress,
         pinCoverForTabSwitch,
     } = useConductorCover({ pageUrl: data?.url })
@@ -479,10 +480,11 @@ export function Conductor({
                 ts={ts}
                 coverScrollY={coverScrollY}
                 onOverlayHeight={onOverlayHeight}
+                onCollapseRange={onCollapseRange}
                 onProgress={onCoverProgress}
             />
         ),
-        [headerMode, coverBlock, pageUri, pageContext, sceneHeader, filter, ts, coverScrollY, onOverlayHeight, onCoverProgress]
+        [headerMode, coverBlock, pageUri, pageContext, sceneHeader, filter, ts, coverScrollY, onOverlayHeight, onCollapseRange, onCoverProgress]
     )
 
     useConductorFocusRefresh({ routesRef, indexRef, onStartRefresh })

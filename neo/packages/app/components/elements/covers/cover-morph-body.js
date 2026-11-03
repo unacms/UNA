@@ -294,7 +294,7 @@ export function CoverMorphBody({
                                 className={
                                     compactBar
                                         ? 'relative'
-                                        : 'absolute -bottom-1 left-0 rounded-full p-1 bg-card'
+                                        : 'absolute -bottom-1 left-0 rounded-full p-1 bg-card-surface'
                                 }
                             >
                                 <CoverImage

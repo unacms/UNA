@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSharedValue } from 'react-native-reanimated'
 import { appSetting } from 'app/lib/util'
 import {
@@ -30,39 +30,57 @@ export function useConductorCover({ pageUrl }) {
     const coverScrollY = useSharedValue(0)
     const [coverOverlayPad, setCoverOverlayPad] = useState(0)
     const [coverPadPin, setCoverPadPin] = useState(0)
+    // The pin beside its state, so callers skip no-op updates: some run from the cover's
+    // layout effects, where a no-op dispatch can keep a sync render going (AGENTS.md).
+    const coverPadPinRef = useRef(0)
+    const setPin = useCallback((pin) => {
+        if (coverPadPinRef.current === pin) return
+        coverPadPinRef.current = pin
+        setCoverPadPin(pin)
+    }, [])
 
     /** CoverMorph reports its overlay height; 0 means the overlay is gone. */
     const onOverlayHeight = useCallback((height) => {
-        if (height === 0) setCoverPadPin(0)
+        if (height === 0) setPin(0)
         setCoverOverlayPad((prev) => (prev === height ? prev : height))
-    }, [])
+    }, [setPin])
 
     /** Any un-collapse drops the pin and hands scroll control back to the cover. */
     const onCoverProgress = useCallback((progress) => {
         if (progress < 1) {
-            setCoverPadPin(0)
+            setPin(0)
             releaseCoverTabScrollHold()
         }
-    }, [])
+    }, [setPin])
 
     /**
      * Call right before a tab switch: freezes the collapsed cover so the new
      * list does not jump under a cover that is mid-animation.
      */
     const pinCoverForTabSwitch = useCallback(() => {
-        setCoverPadPin(pinCollapsedCoverForTabSwitch())
-    }, [])
+        setPin(pinCollapsedCoverForTabSwitch())
+    }, [setPin])
+
+    /**
+     * This conductor's cover reports its collapse range. While pinned, the pin follows it: the
+     * new tab's pinned rows can differ from the old tab's (a filter row or none), and a stale
+     * pin leaves a gap or hides the list's top under the bar.
+     */
+    const onCollapseRange = useCallback((range) => {
+        if (coverPadPinRef.current > 0 && range > 0) setPin(range)
+    }, [setPin])
 
     // A new page gets a fresh cover, so the pin from the old one must go.
     useEffect(() => {
-        setCoverPadPin(0)
-    }, [pageUrl])
+        setPin(0)
+    }, [pageUrl, setPin])
 
     return {
         coverScrollY,
         coverOverlayPad,
         coverPadPin,
         onOverlayHeight,
+        onCollapseRange,
         onCoverProgress,
         pinCoverForTabSwitch,
     }

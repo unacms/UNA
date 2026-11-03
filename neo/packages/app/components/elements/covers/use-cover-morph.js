@@ -19,12 +19,15 @@ export function useCoverMorph({
     onProgress,
     coverScrollY,
     onOverlayHeight,
+    onCollapseRange,
     skipCollapse = false,
+    stickyTop = 0,
 }) {
     const isDesktop = useIsDesktop()
     const sizing = getCoverMorphSizing(isDesktop)
     const [collapsed, setCollapsed] = useState(false)
     const [expandedHeight, setExpandedHeight] = useState(0)
+    const [pinnedRowsHeight, setPinnedRowsHeight] = useState(0)
     const overlayMaxRef = useRef(0)
     const slotHeightRef = useRef(44)
     const scrollCollapseRangeRef = useRef(0)
@@ -33,7 +36,10 @@ export function useCoverMorph({
         appSetting('cover', 'view_by_module', data?.profile?.module) || mode
     const hasCoverBlock =
         showImage && coverMode !== 'min' && coverMode !== 'none'
-    const parallaxRange = Math.max(0, expandedHeight - sizing.stripH)
+    // Collapsed, the overlay is the status bar inset (cover-morph.js pads it), the compact bar
+    // (stripH) and the rows pinned under it (tabs, filter). The list reserves the expanded height, so
+    // the range leaves exactly that much of it showing, or the bar covers the top of the content.
+    const parallaxRange = Math.max(0, expandedHeight - sizing.stripH - stickyTop - pinnedRowsHeight)
 
     useCoverMorphDriver({
         coverScrollY,
@@ -59,8 +65,10 @@ export function useCoverMorph({
         scrollCollapseRangeRef.current = parallaxRange
         if (parallaxRange > 0) {
             coverTabScroll.range = parallaxRange
+            // Only this cover's conductor: a pinned tab switch follows the new tab's rows.
+            onCollapseRange?.(parallaxRange)
         }
-    }, [parallaxRange])
+    }, [parallaxRange, onCollapseRange])
 
     const onSlotLayout = useCallback((e) => {
         const h = e.nativeEvent.layout.height
@@ -71,6 +79,11 @@ export function useCoverMorph({
         const height = e.nativeEvent.layout.height
         if (height <= 0) return
         setExpandedHeight((prev) => (height > prev ? height : prev))
+    }, [])
+
+    const onPinnedRowsLayout = useCallback((e) => {
+        const height = e.nativeEvent.layout.height
+        setPinnedRowsHeight((prev) => (prev === height ? prev : height))
     }, [])
 
     const onRootLayout = useCallback(
@@ -88,6 +101,7 @@ export function useCoverMorph({
         collapsed,
         onSlotLayout,
         onInnerLayout,
+        onPinnedRowsLayout,
         onRootLayout,
         parallaxRange,
         coverScrollY,
