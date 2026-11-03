@@ -12,7 +12,9 @@ export const settingsConfigs = {
         onesignal_request_on_load: true,
         check_version: 'optional', // variants: [no, required, optional]
         collapsible_header: true,
-        backbutton_in_header: false,
+        // A page pushed onto a tab's stack (Settings or Documentation from the dashboard, a post from
+        // the feed) shows a back button in its header; tab roots never do. Swiping back works either way.
+        backbutton_in_header: true,
         // Page uris (UNA page `uri`) that show the header back button on
         // native even when `backbutton_in_header` is off.
         backbutton_in_header_path: ['item'],
