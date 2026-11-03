@@ -1,4 +1,8 @@
 <bx_include_auto:_sub_header.html />
+<script language="javascript">
+    // the page menu narrowed with its toggle (studio/js/page.js) stays narrow, from the first paint
+    try { if(localStorage.getItem('bx-std-page-menu-narrow') == '1') document.documentElement.classList.add('bx-std-pmen-narrow'); } catch(e) {}
+</script>
 <div class="bx-std-content-wrp bx-std-two-col bx-std-pc-stretch">
     <script defer language="javascript">
     <!--

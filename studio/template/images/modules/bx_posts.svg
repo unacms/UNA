@@ -1,15 +1,28 @@
-<svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="72" height="72" fill="url(#paint0_linear_147_54)"/>
-<path d="M20 56H52C53.0609 56 54.0783 55.5786 54.8284 54.8284C55.5786 54.0783 56 53.0609 56 52V20C56 18.9391 55.5786 17.9217 54.8284 17.1716C54.0783 16.4214 53.0609 16 52 16H28C26.9391 16 25.9217 16.4214 25.1716 17.1716C24.4214 17.9217 24 18.9391 24 20V30M20 56C18.9391 56 17.9217 55.5786 17.1716 54.8284C16.4214 54.0783 16 53.0609 16 52V34C16 32.9391 16.4214 31.9217 17.1716 31.1716C17.9217 30.4214 18.9391 30 20 30H24M20 56C21.0609 56 22.0783 55.5786 22.8284 54.8284C23.5786 54.0783 24 53.0609 24 52V30M42 48H32M48 40H32M46 24H34C32.8954 24 32 24.8954 32 26V30C32 31.1046 32.8954 32 34 32H46C47.1046 32 48 31.1046 48 30V26C48 24.8954 47.1046 24 46 24Z" stroke="url(#paint1_linear_147_54)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M20 57H52C53.0609 57 54.0783 56.5786 54.8284 55.8284C55.5786 55.0783 56 54.0609 56 53V21C56 19.9391 55.5786 18.9217 54.8284 18.1716C54.0783 17.4214 53.0609 17 52 17H28C26.9391 17 25.9217 17.4214 25.1716 18.1716C24.4214 18.9217 24 19.9391 24 21V31M20 57C18.9391 57 17.9217 56.5786 17.1716 55.8284C16.4214 55.0783 16 54.0609 16 53V35C16 33.9391 16.4214 32.9217 17.1716 32.1716C17.9217 31.4214 18.9391 31 20 31H24M20 57C21.0609 57 22.0783 56.5786 22.8284 55.8284C23.5786 55.0783 24 54.0609 24 53V31M42 49H32M48 41H32M46 25H34C32.8954 25 32 25.8954 32 27V31C32 32.1046 32.8954 33 34 33H46C47.1046 33 48 32.1046 48 31V27C48 25.8954 47.1046 25 46 25Z" stroke="black" stroke-opacity="0.1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<svg class="icon v-posts-typeset-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- glyph: newspaper, lucide-static v1.48.0, ISC -->
+<style>
+.v-posts-typeset-v1 .img{transform-box:view-box;transform-origin:40.2px 27.6px}
+.v-posts-typeset-v1 .sh.img{transform-origin:40.2px 28.6px}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-posts-typeset-v1 [class]{animation:var(--a) 1500ms linear both;animation-delay:var(--d,0ms)}
+.v-posts-typeset-v1 [class]{--a:none}
+.v-posts-typeset-v1 :is(.img,.sh.img){--a:pt0}
+@keyframes pt0{0%,100%{transform:none;opacity:1}0.07%{transform:scale(.2);opacity:0}5.33%{transform:scale(.2);opacity:0;animation-timing-function:steps(1,end)}6%{transform:scale(.2);opacity:1;animation-timing-function:cubic-bezier(.3,1.5,.5,1)}25.33%,99.93%{transform:scale(1);opacity:1}}
+.v-posts-typeset-v1 .fla{--a:pt1}
+@keyframes pt1{0%,66.67%,100%{opacity:0}20%{opacity:0;animation-timing-function:ease-out}26.67%{opacity:.9}43.33%{opacity:.9;animation-timing-function:ease-in}}
+.v-posts-typeset-v1 :is(.l1,.sh.l1){--a:pt2}
+@keyframes pt2{0%,100%{stroke-dasharray:none;stroke-dashoffset:0}0.07%,41.33%,99.93%{stroke-dasharray:16.8 33.6;stroke-dashoffset:0}0.13%{stroke-dasharray:16.8 33.6;stroke-dashoffset:16.8}25.33%{stroke-dasharray:16.8 33.6;stroke-dashoffset:16.8;animation-timing-function:cubic-bezier(.3,0,.2,1)}}
+.v-posts-typeset-v1 :is(.l2,.sh.l2){--a:pt3}
+@keyframes pt3{0%,100%{stroke-dasharray:none;stroke-dashoffset:0}0.07%,50.67%,99.93%{stroke-dasharray:10.5 21;stroke-dashoffset:0}0.13%{stroke-dasharray:10.5 21;stroke-dashoffset:10.5}37.33%{stroke-dasharray:10.5 21;stroke-dashoffset:10.5;animation-timing-function:cubic-bezier(.3,0,.2,1)}}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-posts-typeset-v1 .qv.qv{animation:q-posts-typeset-v1 1500ms linear both}
+@keyframes q-posts-typeset-v1{0%{opacity:1;animation-timing-function:ease-out}9.333%{opacity:0}76%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.v-posts-typeset-v1 *{animation:none!important}}
+</style>
+<rect width="72" height="72" fill="url(#bg-posts-typeset-v1)"/>
+<g stroke="white" stroke-width=".6" opacity=".16"><rect x="5" y="2" width="62" height="20" rx="3"/><rect x="5" y="26" width="62" height="20" rx="3"/><rect x="5" y="50" width="62" height="20" rx="3"/></g><g fill="white" opacity=".2"><circle cx="11" cy="8" r="2.4"/><circle cx="11" cy="32" r="2.4"/><circle cx="11" cy="56" r="2.4"/></g><path d="M16 7h12M9 14h46M9 17.5h30M16 31h12M9 38h38M9 41.5h36M16 55h12M9 62h46M9 65.5h42" stroke="white" stroke-width="1.3" stroke-linecap="round" opacity=".15"/><rect width="72" height="72" fill="url(#bg-posts-typeset-v1)" class="qv" mask="url(#quiet-posts-typeset-v1)"/>
+<rect width="72" height="72" fill="url(#inside-posts-typeset-v1)" opacity=".55" mask="url(#insides-posts-typeset-v1)"/><g stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><g stroke="white"><path d="M19.2 57H52.8A4.2 4.2 0 0 0 57 52.8V19.2A4.2 4.2 0 0 0 52.8 15H27.6A4.2 4.2 0 0 0 23.4 19.2V52.8A4.2 4.2 0 0 1 15 52.8V33.9A4.2 4.2 0 0 1 19.2 29.7H23.4"/><path class="img" d="M33.9 23.4H46.5A2.1 2.1 0 0 1 48.6 25.5V29.7A2.1 2.1 0 0 1 46.5 31.8H33.9A2.1 2.1 0 0 1 31.8 29.7V25.5A2.1 2.1 0 0 1 33.9 23.4Z"/><path class="l1" d="M31.8 40.2H48.6"/><path class="l2" d="M31.8 48.6H42.3"/></g><g mask="url(#lit-posts-typeset-v1)" stroke="black"><path d="M19.2 58H52.8A4.2 4.2 0 0 0 57 53.8V20.2A4.2 4.2 0 0 0 52.8 16H27.6A4.2 4.2 0 0 0 23.4 20.2V53.8A4.2 4.2 0 0 1 15 53.8V34.9A4.2 4.2 0 0 1 19.2 30.7H23.4"/><path class="sh img" d="M33.9 24.4H46.5A2.1 2.1 0 0 1 48.6 26.5V30.7A2.1 2.1 0 0 1 46.5 32.8H33.9A2.1 2.1 0 0 1 31.8 30.7V26.5A2.1 2.1 0 0 1 33.9 24.4Z"/><path class="sh l1" d="M31.8 41.2H48.6"/><path class="sh l2" d="M31.8 49.6H42.3"/></g></g>
+<rect class="fla" x="33.795" y="25.395" width="12.81" height="4.41" fill="#FCD34D" opacity="0"/>
 <defs>
-<linearGradient id="paint0_linear_147_54" x1="36" y1="0" x2="36" y2="72" gradientUnits="userSpaceOnUse">
-<stop stop-color="#059669"/>
-<stop offset="1" stop-color="#065F46"/>
-</linearGradient>
-<linearGradient id="paint1_linear_147_54" x1="36" y1="16" x2="36" y2="56" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
-</linearGradient>
-</defs>
+<linearGradient id="bg-posts-typeset-v1" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#059669"/><stop offset="1" stop-color="#065F46"/></linearGradient><linearGradient id="inside-posts-typeset-v1" x1="36" y1="15" x2="36" y2="57" gradientUnits="userSpaceOnUse"><stop stop-color="#065F46"/><stop offset="1" stop-color="#022C22"/></linearGradient><linearGradient id="light-posts-typeset-v1" x1="36" y1="16" x2="36" y2="58" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity=".1"/><stop offset="1" stop-color="white" stop-opacity=".2"/></linearGradient><mask id="lit-posts-typeset-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-posts-typeset-v1)"/></mask>
+<mask id="insides-posts-typeset-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><g fill="white"><path d="M27.6 15H52.8A4.2 4.2 0 0 1 57 19.2V52.8A4.2 4.2 0 0 1 52.8 57H23.4V19.2A4.2 4.2 0 0 1 27.6 15Z"/><path d="M19.2 29.7H23.4V57H19.2A4.2 4.2 0 0 1 15 52.8V33.9A4.2 4.2 0 0 1 19.2 29.7Z"/></g></mask>
+<radialGradient id="quietv-posts-typeset-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-posts-typeset-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-posts-typeset-v1)"/></mask></defs>
 </svg>

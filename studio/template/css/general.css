@@ -52,8 +52,14 @@ div.bx-std-content-wrp {
 }
 div.bx-std-content-wrp.bx-std-one-col {
     padding-top: 4.75rem; /* the fixed header's bottom edge: 12px margin plus the 64px bar */
+    scroll-padding-top: 4.75rem; /* focus and anchors scroll below the header, and the overlay scrollbar starts there */
 
     overflow-y: auto;
+
+    scrollbar-width: none; /* the overlay scrollbar (studio/js/page.js) instead: the fixed header covered the native one, and the page no longer narrows when it starts to scroll */
+}
+div.bx-std-content-wrp.bx-std-one-col::-webkit-scrollbar {
+    display: none;
 }
 div.bx-std-page-columns,
 div.bx-std-page-columns-cnt {
@@ -242,11 +248,12 @@ img.bx-std-api {
 
 /*
  * Page menu on narrow screens (the columns themselves are in page_columns.css).
- * Tablet: a vertical strip of square tiles (as wide as the strip's items, 88px), the 32px icon and a small label centred in each.
+ * Strip (the column narrowed to 104px, below 1024px or by its toggle): a vertical strip of square tiles (as wide as the strip's items, 88px),
+ * the 32px icon and a small label centred in each.
  * Phone: a horizontal, scrollable row of 48px tabs, each its 32px tile alone (the link's aria-label names it); the active tab shows its
  * label beside the tile, so the row stays one even line whatever the labels' length.
  */
-@media (max-width: 1023px) {
+@container bx-std-pmen (max-width: 10rem) {
     div.bx-std-pmen-item {
         height: 5.5rem; /* square: the item is 88px wide (page_columns.css) */
     }
@@ -310,6 +317,10 @@ img.bx-std-api {
         -webkit-justify-content: flex-start;
         justify-content: flex-start;
     }
+    div.bx-std-pmen-item .bx-std-pmen-ic-icon,
+    .bx-dir-rtl div.bx-std-pmen-item .bx-std-pmen-ic-icon {
+        margin: 0;
+    }
     div.bx-std-pmen-item .bx-std-pmen-ic-title {
         display: none; /* icon only */
     }
@@ -333,7 +344,7 @@ img.bx-std-api {
  * The column's own title (shown when the header breadcrumb is off): small and centred in the strip,
  * with its actions button under it; a plain row again above the phone tabs.
  */
-@media (max-width: 1023px) {
+@container bx-std-pmen (max-width: 10rem) {
     div.bx-std-pcm-title {
         font-size: 0.875rem;
         line-height: 1.25rem;
@@ -352,9 +363,15 @@ img.bx-std-api {
     }
 }
 @media (max-width: 767px) {
+    div.bx-std-pcm-title {
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+    }
     div.bx-std-pcm-title .bx-std-pcm-title-cnt {
-        -webkit-flex-direction: row;
-        flex-direction: row;
+        -webkit-align-items: center;
+        align-items: center;
+        gap: 0.5rem;
+        overflow-wrap: anywhere;
 
         padding: 0 0.5rem;
 

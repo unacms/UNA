@@ -38,9 +38,10 @@
 
     /* The logo link wraps a block level <img>, so as a plain inline element it has no inline box
        of its own and the browser paints no focus ring on it at all. Giving it a box makes the
-       ring below visible without moving the logo. */
+       ring below visible without moving the logo. At least 44px each way, like the header's
+       buttons, however small the logo is drawn. */
     #bx-logo-container > a {
-        @apply inline-flex items-center align-middle rounded;
+        @apply inline-flex items-center justify-center align-middle min-h-11 min-w-11 rounded;
     }
 
     /* Public site only - Studio has its own .bx-std focus rings further down, and body.bx-std keeps

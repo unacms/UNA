@@ -1,15 +1,24 @@
-<svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="72" height="72" fill="url(#paint0_linear_127_42)"/>
-<path d="M16 18H56M54 18V40C54 41.0609 53.5786 42.0783 52.8284 42.8284C52.0783 43.5786 51.0609 44 50 44H22C20.9391 44 19.9217 43.5786 19.1716 42.8284C18.4214 42.0783 18 41.0609 18 40V18M26 54L36 44L46 54" stroke="url(#paint1_linear_127_42)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M16 19H56M54 19V41C54 42.0609 53.5786 43.0783 52.8284 43.8284C52.0783 44.5786 51.0609 45 50 45H22C20.9391 45 19.9217 44.5786 19.1716 43.8284C18.4214 43.0783 18 42.0609 18 41V19M26 55L36 45L46 55" stroke="black" stroke-opacity="0.1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<svg class="icon v-classes-unroll-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- glyph: presentation, lucide-static v1.48.0, ISC -->
+<style>
+.v-classes-unroll-v1 .bd{transform-box:view-box;transform-origin:36px 17.1px}
+.v-classes-unroll-v1 .sh.bd{transform-origin:36px 18.1px}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-classes-unroll-v1 [class]{animation:var(--a) 1600ms linear both;animation-delay:var(--d,0ms)}
+.v-classes-unroll-v1 [class]{--a:none}
+.v-classes-unroll-v1 :is(.bd,.sh.bd){--a:lr0}
+@keyframes lr0{0%,100%{transform:none}5%{transform:scaleY(1);animation-timing-function:cubic-bezier(.5,0,.8,.4)}18.75%{transform:scaleY(.04);animation-timing-function:steps(1,end)}23.75%{transform:scaleY(.04);animation-timing-function:cubic-bezier(.2,.7,.3,1)}45%{transform:scaleY(1.05);animation-timing-function:ease-in-out}53.75%{transform:scaleY(1)}}
+.v-classes-unroll-v1 .pt{--a:lr1}
+@keyframes lr1{0%,100%{opacity:0;transform:translate(0px,0px)}55%{opacity:0;transform:translate(0px,0px);animation-timing-function:ease-out}60%{opacity:1;transform:translate(0px,0px);animation-timing-function:ease-in-out}75%{opacity:1;transform:translate(15.75px,-4.2px);animation-timing-function:ease-in}88.75%{opacity:0;transform:translate(15.75px,-4.2px)}}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-classes-unroll-v1 .qv.qv{animation:q-classes-unroll-v1 1600ms linear both}
+@keyframes q-classes-unroll-v1{0%{opacity:1;animation-timing-function:ease-out}8.75%{opacity:0}77.5%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.v-classes-unroll-v1 *{animation:none!important}}
+</style>
+<rect width="72" height="72" fill="url(#bg-classes-unroll-v1)"/>
+<g fill="white" opacity=".12"><rect x="3" y="60" width="9" height="3.4" rx="1"/><rect x="15" y="60" width="9" height="3.4" rx="1"/><rect x="27" y="60" width="9" height="3.4" rx="1"/><rect x="39" y="60" width="9" height="3.4" rx="1"/><rect x="51" y="60" width="9" height="3.4" rx="1"/><rect x="63" y="60" width="9" height="3.4" rx="1"/><rect x="3" y="66.5" width="9" height="3.4" rx="1"/><rect x="15" y="66.5" width="9" height="3.4" rx="1"/><rect x="27" y="66.5" width="9" height="3.4" rx="1"/><rect x="39" y="66.5" width="9" height="3.4" rx="1"/><rect x="51" y="66.5" width="9" height="3.4" rx="1"/><rect x="63" y="66.5" width="9" height="3.4" rx="1"/><rect x="2" y="10" width="5" height="3.4" rx="1"/><rect x="65" y="10" width="5" height="3.4" rx="1"/><rect x="2" y="19" width="5" height="3.4" rx="1"/><rect x="65" y="19" width="5" height="3.4" rx="1"/><rect x="2" y="28" width="5" height="3.4" rx="1"/><rect x="65" y="28" width="5" height="3.4" rx="1"/><rect x="2" y="37" width="5" height="3.4" rx="1"/><rect x="65" y="37" width="5" height="3.4" rx="1"/><rect x="2" y="46" width="5" height="3.4" rx="1"/><rect x="65" y="46" width="5" height="3.4" rx="1"/><rect x="2" y="55" width="5" height="3.4" rx="1"/><rect x="65" y="55" width="5" height="3.4" rx="1"/></g><rect width="72" height="72" fill="url(#bg-classes-unroll-v1)" class="qv" mask="url(#quiet-classes-unroll-v1)"/>
+<rect width="72" height="72" fill="url(#inside-classes-unroll-v1)" opacity=".55" mask="url(#insides-classes-unroll-v1)"/><g stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><g stroke="white"><path d="M15 17.1H57"/><path class="bd" d="M54.9 17.1V40.2A4.2 4.2 0 0 1 50.7 44.4H21.3A4.2 4.2 0 0 1 17.1 40.2V17.1"/><path d="M25.5 54.9L36 44.4L46.5 54.9"/></g><g mask="url(#lit-classes-unroll-v1)" stroke="black"><path d="M15 18.1H57"/><path class="sh bd" d="M54.9 18.1V41.2A4.2 4.2 0 0 1 50.7 45.4H21.3A4.2 4.2 0 0 1 17.1 41.2V18.1"/><path d="M25.5 55.9L36 45.4L46.5 55.9"/></g></g>
+<circle class="pt" cx="27.6" cy="30.75" r="2" fill="#FCD34D" opacity="0"/>
 <defs>
-<linearGradient id="paint0_linear_127_42" x1="36" y1="0" x2="36" y2="72" gradientUnits="userSpaceOnUse">
-<stop stop-color="#059669"/>
-<stop offset="1" stop-color="#065F46"/>
-</linearGradient>
-<linearGradient id="paint1_linear_127_42" x1="36" y1="18" x2="36" y2="54" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
-</linearGradient>
-</defs>
+<linearGradient id="bg-classes-unroll-v1" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#059669"/><stop offset="1" stop-color="#065F46"/></linearGradient><linearGradient id="inside-classes-unroll-v1" x1="36" y1="17.1" x2="36" y2="54.9" gradientUnits="userSpaceOnUse"><stop stop-color="#065F46"/><stop offset="1" stop-color="#022C22"/></linearGradient><linearGradient id="light-classes-unroll-v1" x1="36" y1="18.1" x2="36" y2="55.9" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity=".1"/><stop offset="1" stop-color="white" stop-opacity=".2"/></linearGradient><mask id="lit-classes-unroll-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-classes-unroll-v1)"/></mask>
+<mask id="insides-classes-unroll-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><g fill="white"><path class="bd" d="M17.1 17.1H54.9V40.2A4.2 4.2 0 0 1 50.7 44.4H21.3A4.2 4.2 0 0 1 17.1 40.2Z"/></g></mask>
+<radialGradient id="quietv-classes-unroll-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-classes-unroll-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-classes-unroll-v1)"/></mask></defs>
 </svg>

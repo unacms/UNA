@@ -1,15 +1,25 @@
-<svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="72" height="72" fill="url(#paint0_linear_149_12)"/>
-<path d="M18 18L24 24M54 18L48 24M18 54L24 48M54 54L48 48M36 52C44.8366 52 52 44.8366 52 36C52 27.1634 44.8366 20 36 20C27.1634 20 20 27.1634 20 36C20 44.8366 27.1634 52 36 52Z" stroke="url(#paint1_linear_149_12)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M18 19L24 25M54 19L48 25M18 55L24 49M54 55L48 49M36 53C44.8366 53 52 45.8366 52 37C52 28.1634 44.8366 21 36 21C27.1634 21 20 28.1634 20 37C20 45.8366 27.1634 53 36 53Z" stroke="black" stroke-opacity="0.1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<svg class="icon v-payments-pay-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- glyph: currency, lucide-static v1.48.0, ISC -->
+<style>
+.v-payments-pay-v1 .cs{transform-box:view-box;transform-origin:36px 36px}
+.v-payments-pay-v1 .sh.cs{transform-origin:36px 37px}
+.v-payments-pay-v1 .ring{transform-box:view-box;transform-origin:36px 36px}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-payments-pay-v1 [class]{animation:var(--a) 1500ms linear both;animation-delay:var(--d,0ms)}
+.v-payments-pay-v1 [class]{--a:none}
+.v-payments-pay-v1 :is(.cs,.sh.cs){--a:yp0}
+@keyframes yp0{0%,100%{transform:none}4%{transform:scale(1);animation-timing-function:cubic-bezier(.5,0,.8,.5)}10%{transform:scale(.93);animation-timing-function:cubic-bezier(.2,.7,.3,1)}21.33%{transform:scale(1.06);animation-timing-function:ease-in-out}32%{transform:scale(1)}}
+.v-payments-pay-v1 .ring{--a:yp1}
+@keyframes yp1{0%,14.67%{opacity:0;transform:scale(.95)}16.67%{opacity:1;transform:scale(1);animation-timing-function:cubic-bezier(.3,.6,.5,1)}42.53%{opacity:.6;transform:scale(1.66)}65.33%,100%{opacity:0;transform:scale(2.31)}}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-payments-pay-v1 .qv.qv{animation:q-payments-pay-v1 1500ms linear both}
+@keyframes q-payments-pay-v1{0%{opacity:1;animation-timing-function:ease-out}9.333%{opacity:0}76%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.v-payments-pay-v1 *{animation:none!important}}
+</style>
+<rect width="72" height="72" fill="url(#bg-payments-pay-v1)"/>
+<rect width="72" height="72" fill="url(#cu-payments-pay-v1)" opacity=".2"/><rect width="72" height="72" fill="url(#bg-payments-pay-v1)" class="qv" mask="url(#quiet-payments-pay-v1)"/><rect width="72" height="72" fill="url(#cul-payments-pay-v1)" mask="url(#reveal-payments-pay-v1)"/>
+<rect width="72" height="72" fill="url(#inside-payments-pay-v1)" opacity=".55" mask="url(#insides-payments-pay-v1)"/><g stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><g stroke="white"><g class="cs"><path d="M17.333 36a18.667 18.667 0 1 0 37.333 0a18.667 18.667 0 1 0 -37.333 0"/><path d="M15 15L22 22"/><path d="M57 15L50 22"/><path d="M15 57L22 50"/><path d="M57 57L50 50"/></g></g><g mask="url(#lit-payments-pay-v1)" stroke="black"><g class="sh cs"><path d="M17.333 37a18.667 18.667 0 1 0 37.333 0a18.667 18.667 0 1 0 -37.333 0"/><path d="M15 16L22 23"/><path d="M57 16L50 23"/><path d="M15 58L22 51"/><path d="M57 58L50 51"/></g></g></g>
 <defs>
-<linearGradient id="paint0_linear_149_12" x1="36" y1="0" x2="36" y2="72" gradientUnits="userSpaceOnUse">
-<stop stop-color="#0D9488"/>
-<stop offset="1" stop-color="#115E59"/>
-</linearGradient>
-<linearGradient id="paint1_linear_149_12" x1="36" y1="18" x2="36" y2="54" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
-</linearGradient>
-</defs>
+<linearGradient id="bg-payments-pay-v1" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0D9488"/><stop offset="1" stop-color="#115E59"/></linearGradient><linearGradient id="inside-payments-pay-v1" x1="36" y1="15" x2="36" y2="57" gradientUnits="userSpaceOnUse"><stop stop-color="#115E59"/><stop offset="1" stop-color="#042F2E"/></linearGradient><linearGradient id="light-payments-pay-v1" x1="36" y1="16" x2="36" y2="58" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity=".1"/><stop offset="1" stop-color="white" stop-opacity=".2"/></linearGradient><mask id="lit-payments-pay-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-payments-pay-v1)"/></mask>
+<pattern id="cu-payments-pay-v1" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M4.2 6a1.8 1.8 0 1 0 3.6 0a1.8 1.8 0 1 0 -3.6 0M2.9 2.9l1.2 1.2M9.1 2.9l-1.2 1.2M2.9 9.1l1.2-1.2M9.1 9.1l-1.2-1.2" stroke="white" stroke-width=".8" stroke-linecap="round"/></pattern><pattern id="cul-payments-pay-v1" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M4.2 6a1.8 1.8 0 1 0 3.6 0a1.8 1.8 0 1 0 -3.6 0M2.9 2.9l1.2 1.2M9.1 2.9l-1.2 1.2M2.9 9.1l1.2-1.2M9.1 9.1l-1.2-1.2" stroke="#FCD34D" stroke-width=".8" stroke-linecap="round"/></pattern>
+<mask id="insides-payments-pay-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><g fill="white"><path class="cs" d="M17.333 36a18.667 18.667 0 1 0 37.333 0a18.667 18.667 0 1 0 -37.333 0"/></g></mask><mask id="reveal-payments-pay-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><circle class="ring" cx="36" cy="36" r="22" fill="none" stroke="white" stroke-width="5" opacity="0"/></mask>
+<radialGradient id="quietv-payments-pay-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-payments-pay-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-payments-pay-v1)"/></mask></defs>
 </svg>

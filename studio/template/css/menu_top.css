@@ -136,7 +136,8 @@ div.bx-std-menu-top .bx-menu-breadcrumb .bx-menu-bc-sep {
     background-color: rgba(255, 255, 255, 0.1);
 }
 /* Page item: the app's launcher icon fills its 32px tile (8px corners, the tile's hairline ring over the art), the title 12px after it. */
-div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item.bx-menu-bc-page .bx-mi-icon.bx-icon-tile img {
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item.bx-menu-bc-page .bx-mi-icon.bx-icon-tile img,
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item.bx-menu-bc-page .bx-mi-icon.bx-icon-tile svg.bx-std-app-icon {
     display: block;
     width: 100%; /* the whole tile, not the 20px glyph size the header-button rule below gives images */
     height: 100%;
@@ -317,6 +318,7 @@ div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item img,
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item:not(.bx-menu-tab-search) svg,
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item .sys-icon,
 div.bx-std-menu-top .bx-menu-top-center li img,
+div.bx-std-menu-top .bx-menu-top-center li svg.bx-std-app-icon,
 div.bx-std-menu-top .bx-menu-top-center li .sys-icon {
     display: block;
     box-sizing: content-box;
@@ -328,7 +330,8 @@ div.bx-std-menu-top .bx-menu-top-center li .sys-icon {
     border-radius: 0.5rem; /* matches rounded-lg on the icon wrapper, whose ring/shadow must not be clipped */
 }
 
-div.bx-std-menu-top .bx-menu-top-center li img {
+div.bx-std-menu-top .bx-menu-top-center li img,
+div.bx-std-menu-top .bx-menu-top-center li svg.bx-std-app-icon {
     position: relative;
     z-index: -1;
 }

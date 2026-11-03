@@ -251,23 +251,31 @@ class BxBaseStudioPolyglotKeys extends BxDolStudioPolyglotKeys
 
     public function performActionDelete()
     {
-        $iAffected = 0;
         $aIds = bx_get('ids');
         if(!$aIds || !is_array($aIds)) {
-            echoJson(array());
+            echoJson([]);
             exit;
         }
 
-        $aIdsAffected = array ();
+        $oLanguagesUtils = BxDolStudioLanguagesUtils::getInstance();
+        $aIdsAffected = [];
         foreach($aIds as $iId) {
-            if(!BxDolStudioLanguagesUtils::getInstance()->deleteLanguageStringById($iId, 0, false))
+            if(!$oLanguagesUtils->deleteLanguageStringById($iId, 0, false))
                 continue;
 
             $aIdsAffected[] = $iId;
-            $iAffected++;
         }
 
-        echoJson($iAffected ? array('grid' => $this->getCode(false), 'blink' => $aIdsAffected) : array('msg' => _t('_adm_pgt_err_save')));
+        $aResult = [];
+        if($aIdsAffected) {
+            $oLanguagesUtils->compileLanguage();
+
+            $aResult = ['grid' => $this->getCode(false), 'blink' => $aIdsAffected];
+        }
+        else
+            $aResult = ['msg' => _t('_adm_pgt_err_save')];
+
+        echoJson($aResult);
     }
 
     function getJsObject()

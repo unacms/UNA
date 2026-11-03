@@ -120,7 +120,9 @@ div.bx-std-widget-empty {
     opacity: 0.4;    
 }
 
-.bx-std-widget-link > img {
+/* the app icon, as an image or (once pointed at, studio/js/app_icons.js) inline so its animation can play */
+.bx-std-widget-link > img,
+.bx-std-widget-link > svg.bx-std-app-icon {
     position: relative;
     z-index: -1;
 
@@ -416,6 +418,7 @@ div.bx-std-widget-caption-jitter {
     line-height: 4rem;
 }
 .bx-std-launcher-browser .bx-std-widget-link > img,
+.bx-std-launcher-browser .bx-std-widget-link > svg.bx-std-app-icon,
 .bx-std-launcher-browser div.bx-std-widget-icon-jitter {
     width: 4rem;
     height: 4rem;

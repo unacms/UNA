@@ -1,15 +1,45 @@
-<svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="72" height="72" fill="url(#paint0_linear_112_9)"/>
-<path d="M30 36L34 40L42 32M52 38C52 48 45 53 36.68 55.9C36.2443 56.0476 35.7711 56.0406 35.34 55.88C27 53 20 48 20 38V24C20 23.4696 20.2107 22.9609 20.5858 22.5858C20.9609 22.2107 21.4696 22 22 22C26 22 31 19.6 34.48 16.56C34.9037 16.198 35.4427 15.9991 36 15.9991C36.5573 15.9991 37.0963 16.198 37.52 16.56C41.02 19.62 46 22 50 22C50.5304 22 51.0391 22.2107 51.4142 22.5858C51.7893 22.9609 52 23.4696 52 24V38Z" stroke="url(#paint1_linear_112_9)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M30 37L34 41L42 33M52 39C52 49 45 54 36.68 56.9C36.2443 57.0476 35.7711 57.0406 35.34 56.88C27 54 20 49 20 39V25C20 24.4696 20.2107 23.9609 20.5858 23.5858C20.9609 23.2107 21.4696 23 22 23C26 23 31 20.6 34.48 17.56C34.9037 17.198 35.4427 16.9991 36 16.9991C36.5573 16.9991 37.0963 17.198 37.52 17.56C41.02 20.62 46 23 50 23C50.5304 23 51.0391 23.2107 51.4142 23.5858C51.7893 23.9609 52 24.4696 52 25V39Z" stroke="black" stroke-opacity="0.1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<svg class="icon v-antispam-denied-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- glyph: octagon-x, lucide-static v1.47.0, ISC -->
+<style>
+.v-antispam-denied-v1 .sign{transform-box:view-box;transform-origin:36px 36px}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-antispam-denied-v1 [class]{animation:var(--a) 1300ms linear both;animation-delay:var(--d,0ms)}
+.v-antispam-denied-v1 [class]{--a:none}
+.v-antispam-denied-v1 :is(.x1,.sh.x1){--a:sd0}
+@keyframes sd0{0%{stroke-dasharray:none;stroke-dashoffset:0}0.08%{stroke-dasharray:17.819 35.638;stroke-dashoffset:0}0.15%{stroke-dasharray:17.819 35.638;stroke-dashoffset:17.819}6.15%{stroke-dasharray:17.819 35.638;stroke-dashoffset:17.819;animation-timing-function:cubic-bezier(.3,0,.2,1)}20%{stroke-dasharray:17.819 35.638;stroke-dashoffset:0}99.92%{stroke-dasharray:17.819 35.638;stroke-dashoffset:0}100%{stroke-dasharray:none;stroke-dashoffset:0}}
+.v-antispam-denied-v1 :is(.x2,.sh.x2){--a:sd1}
+@keyframes sd1{0%{stroke-dasharray:none;stroke-dashoffset:0}0.08%{stroke-dasharray:17.819 35.638;stroke-dashoffset:0}0.15%{stroke-dasharray:17.819 35.638;stroke-dashoffset:17.819}20%{stroke-dasharray:17.819 35.638;stroke-dashoffset:17.819;animation-timing-function:cubic-bezier(.3,0,.2,1)}33.85%{stroke-dasharray:17.819 35.638;stroke-dashoffset:0}99.92%{stroke-dasharray:17.819 35.638;stroke-dashoffset:0}100%{stroke-dasharray:none;stroke-dashoffset:0}}
+.v-antispam-denied-v1 .hot{--a:sd2}
+@keyframes sd2{0%{opacity:0}33.85%{opacity:0;animation-timing-function:ease-out}36.92%{opacity:0.8;animation-timing-function:ease-in}61.54%{opacity:0}100%{opacity:0}}
+.v-antispam-denied-v1 .sign{--a:sd3}
+@keyframes sd3{0%{transform:translate(0px,0px)}35.38%{transform:translate(0px,0px);animation-timing-function:ease-in-out}40.77%{transform:translate(-4.5px,0px);animation-timing-function:ease-in-out}46.15%{transform:translate(4px,0px);animation-timing-function:ease-in-out}51.54%{transform:translate(-3px,0px);animation-timing-function:ease-in-out}56.92%{transform:translate(2.2px,0px);animation-timing-function:ease-in-out}62.31%{transform:translate(-1.2px,0px);animation-timing-function:ease-in-out}67.69%{transform:translate(0px,0px);animation-timing-function:ease-in-out}100%{transform:translate(0px,0px)}}
+.v-antispam-denied-v1 .band{--a:sd4}
+@keyframes sd4{0%{opacity:0}34.62%{opacity:0;animation-timing-function:ease-out}38.46%{opacity:.12;animation-timing-function:ease-in}69.23%{opacity:0}100%{opacity:0}}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-antispam-denied-v1 .qv.qv{animation:q-antispam-denied-v1 1300ms linear both}
+@keyframes q-antispam-denied-v1{0%{opacity:1;animation-timing-function:ease-out}10.769%{opacity:0}72.308%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.v-antispam-denied-v1 *{animation:none!important}}
+</style>
+<rect width="72" height="72" fill="url(#bg-antispam-denied-v1)"/>
+<rect width="72" height="72" fill="url(#haz-antispam-denied-v1)" opacity="0.05"/><rect width="72" height="72" fill="url(#bg-antispam-denied-v1)" class="qv" mask="url(#quiet-antispam-denied-v1)"/>
+<rect class="band" width="72" height="72" fill="url(#haz-antispam-denied-v1)" opacity="0"/>
+<g class="sign" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M16.231 45.925A4.2 4.2 0 0 1 15 42.955V29.045A4.2 4.2 0 0 1 16.231 26.075L26.075 16.231A4.2 4.2 0 0 1 29.045 15H42.955A4.2 4.2 0 0 1 45.925 16.231L55.769 26.075A4.2 4.2 0 0 1 57 29.045V42.955A4.2 4.2 0 0 1 55.769 45.925L45.925 55.769A4.2 4.2 0 0 1 42.955 57H29.045A4.2 4.2 0 0 1 26.075 55.769Z" fill="url(#redfill-antispam-denied-v1)" fill-opacity="0.8"/><path class="hot" d="M16.231 45.925A4.2 4.2 0 0 1 15 42.955V29.045A4.2 4.2 0 0 1 16.231 26.075L26.075 16.231A4.2 4.2 0 0 1 29.045 15H42.955A4.2 4.2 0 0 1 45.925 16.231L55.769 26.075A4.2 4.2 0 0 1 57 29.045V42.955A4.2 4.2 0 0 1 55.769 45.925L45.925 55.769A4.2 4.2 0 0 1 42.955 57H29.045A4.2 4.2 0 0 1 26.075 55.769Z" fill="url(#flare-antispam-denied-v1)" opacity="0"/><path d="M16.231 45.925A4.2 4.2 0 0 1 15 42.955V29.045A4.2 4.2 0 0 1 16.231 26.075L26.075 16.231A4.2 4.2 0 0 1 29.045 15H42.955A4.2 4.2 0 0 1 45.925 16.231L55.769 26.075A4.2 4.2 0 0 1 57 29.045V42.955A4.2 4.2 0 0 1 55.769 45.925L45.925 55.769A4.2 4.2 0 0 1 42.955 57H29.045A4.2 4.2 0 0 1 26.075 55.769Z" stroke="white"/><path class="x1" d="M29.7 29.7L42.3 42.3" stroke="white"/><path class="x2" d="M42.3 29.7L29.7 42.3" stroke="white"/>
+<g mask="url(#lit-antispam-denied-v1)" stroke="black"><path d="M16.231 46.925A4.2 4.2 0 0 1 15 43.955V30.045A4.2 4.2 0 0 1 16.231 27.075L26.075 17.231A4.2 4.2 0 0 1 29.045 16H42.955A4.2 4.2 0 0 1 45.925 17.231L55.769 27.075A4.2 4.2 0 0 1 57 30.045V43.955A4.2 4.2 0 0 1 55.769 46.925L45.925 56.769A4.2 4.2 0 0 1 42.955 58H29.045A4.2 4.2 0 0 1 26.075 56.769Z"/><path class="sh x1" d="M29.7 30.7L42.3 43.3"/><path class="sh x2" d="M42.3 30.7L29.7 43.3"/></g>
+</g>
 <defs>
-<linearGradient id="paint0_linear_112_9" x1="36" y1="0" x2="36" y2="72" gradientUnits="userSpaceOnUse">
+<linearGradient id="bg-antispam-denied-v1" x1="0" y1="0" x2="0" y2="1">
 <stop stop-color="#71717A"/>
 <stop offset="1" stop-color="#3F3F46"/>
 </linearGradient>
-<linearGradient id="paint1_linear_112_9" x1="36" y1="15.9991" x2="36" y2="56.0058" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
+<linearGradient id="redfill-antispam-denied-v1" x1="36" y1="15" x2="36" y2="57" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F43F5E"/>
+<stop offset="1" stop-color="#BE123C"/>
 </linearGradient>
-</defs>
+<linearGradient id="light-antispam-denied-v1" x1="36" y1="16" x2="36" y2="58" gradientUnits="userSpaceOnUse">
+<stop stop-color="white" stop-opacity="0.1"/>
+<stop stop-color="white" offset="1" stop-opacity="0.2"/>
+</linearGradient>
+<mask id="lit-antispam-denied-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-antispam-denied-v1)"/></mask>
+<radialGradient id="flare-antispam-denied-v1"><stop stop-color="#FFD1D9"/><stop offset="1" stop-color="#FB5A6E"/></radialGradient>
+<pattern id="haz-antispam-denied-v1" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="3.5" height="7" fill="white"/></pattern>
+<radialGradient id="quietv-antispam-denied-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-antispam-denied-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-antispam-denied-v1)"/></mask></defs>
 </svg>

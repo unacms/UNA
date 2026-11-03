@@ -1,27 +1,25 @@
-<svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="72" height="72" fill="url(#paint0_linear_114_2)"/>
-<path d="M36 16.2797L44 20.9464V30.2797L36 34.9464L28 30.2797V20.9464L36 16.2797Z" stroke="url(#paint1_linear_114_2)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M24 34.9464L32 39.613V48.9464L24 53.613L16 48.9464V39.613L24 34.9464Z" stroke="url(#paint2_linear_114_2)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M48 34.9464L56 39.613V48.9464L48 53.613L40 48.9464V39.613L48 34.9464Z" stroke="url(#paint3_linear_114_2)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M36 17.2797L44 21.9464V31.2797L36 35.9464L28 31.2797V21.9464L36 17.2797Z" stroke="black" stroke-opacity="0.1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M24 35.9464L32 40.613V49.9464L24 54.613L16 49.9464V40.613L24 35.9464Z" stroke="black" stroke-opacity="0.1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M48 35.9464L56 40.613V49.9464L48 54.613L40 49.9464V40.613L48 35.9464Z" stroke="black" stroke-opacity="0.1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<svg class="icon v-spaces-honeycomb-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- glyph: hexagons, tabler-icons v3.49.0, MIT -->
+<style>
+.v-spaces-honeycomb-v1 .hc{transform-box:view-box;transform-origin:36px 36px}
+.v-spaces-honeycomb-v1 .sh.hc{transform-origin:36px 37px}
+.v-spaces-honeycomb-v1 .ring{transform-box:view-box;transform-origin:36px 36px}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-spaces-honeycomb-v1 [class]{animation:var(--a) 1500ms linear both;animation-delay:var(--d,0ms)}
+.v-spaces-honeycomb-v1 [class]{--a:none}
+.v-spaces-honeycomb-v1 :is(.hc,.sh.hc){--a:sw0}
+@keyframes sw0{0%,100%{transform:none}4%{transform:scale(1);animation-timing-function:cubic-bezier(.5,0,.8,.5)}10%{transform:scale(.94);animation-timing-function:cubic-bezier(.2,.7,.3,1)}21.33%{transform:scale(1.06);animation-timing-function:ease-in-out}32%{transform:scale(1)}}
+.v-spaces-honeycomb-v1 .ring{--a:sw1}
+@keyframes sw1{0%,14.67%{opacity:0;transform:scale(.95)}16.67%{opacity:1;transform:scale(1);animation-timing-function:cubic-bezier(.3,.6,.5,1)}42.53%{opacity:.6;transform:scale(1.66)}65.33%,100%{opacity:0;transform:scale(2.31)}}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-spaces-honeycomb-v1 .qv.qv{animation:q-spaces-honeycomb-v1 1500ms linear both}
+@keyframes q-spaces-honeycomb-v1{0%{opacity:1;animation-timing-function:ease-out}9.333%{opacity:0}76%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.v-spaces-honeycomb-v1 *{animation:none!important}}
+</style>
+<rect width="72" height="72" fill="url(#bg-spaces-honeycomb-v1)"/>
+<rect width="72" height="72" fill="url(#hx-spaces-honeycomb-v1)" opacity=".2"/><rect width="72" height="72" fill="url(#bg-spaces-honeycomb-v1)" class="qv" mask="url(#quiet-spaces-honeycomb-v1)"/><rect width="72" height="72" fill="url(#hxl-spaces-honeycomb-v1)" mask="url(#reveal-spaces-honeycomb-v1)"/>
+<rect width="72" height="72" fill="url(#inside-spaces-honeycomb-v1)" opacity=".5" mask="url(#insides-spaces-honeycomb-v1)"/><g stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><g stroke="white"><g class="hc"><path d="M15 51.75V38.625L25.5 33.375L36 38.625V51.75L25.5 57L15 51.75"/><path d="M25.5 33.375V20.25L36 15L46.5 20.25V33.375"/><path d="M36 38.625L46.5 33.375L57 38.625V51.75L46.5 57L36 51.75"/></g></g><g mask="url(#lit-spaces-honeycomb-v1)" stroke="black"><g class="sh hc"><path d="M15 52.75V39.625L25.5 34.375L36 39.625V52.75L25.5 58L15 52.75"/><path d="M25.5 34.375V21.25L36 16L46.5 21.25V34.375"/><path d="M36 39.625L46.5 34.375L57 39.625V52.75L46.5 58L36 52.75"/></g></g></g>
 <defs>
-<linearGradient id="paint0_linear_114_2" x1="36" y1="0" x2="36" y2="72" gradientUnits="userSpaceOnUse">
-<stop stop-color="#F43F5E"/>
-<stop offset="1" stop-color="#BE123C"/>
-</linearGradient>
-<linearGradient id="paint1_linear_114_2" x1="36" y1="16.2797" x2="36" y2="53.613" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
-</linearGradient>
-<linearGradient id="paint2_linear_114_2" x1="36" y1="16.2797" x2="36" y2="53.613" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
-</linearGradient>
-<linearGradient id="paint3_linear_114_2" x1="36" y1="16.2797" x2="36" y2="53.613" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
-</linearGradient>
-</defs>
+<linearGradient id="bg-spaces-honeycomb-v1" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#F43F5E"/><stop offset="1" stop-color="#BE123C"/></linearGradient><linearGradient id="inside-spaces-honeycomb-v1" x1="36" y1="15" x2="36" y2="57" gradientUnits="userSpaceOnUse"><stop stop-color="#9F1239"/><stop offset="1" stop-color="#4C0519"/></linearGradient><linearGradient id="light-spaces-honeycomb-v1" x1="36" y1="16" x2="36" y2="58" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity=".1"/><stop offset="1" stop-color="white" stop-opacity=".2"/></linearGradient><mask id="lit-spaces-honeycomb-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-spaces-honeycomb-v1)"/></mask>
+<pattern id="hx-spaces-honeycomb-v1" width="7.2" height="12.6" patternUnits="userSpaceOnUse" x="0" y="-1"><path d="M0 1.8l3.6 -1.8l3.6 1.8v4.5l-3.6 1.8l-3.6 -1.8zM3.6 8.1l3.6 -1.8l3.6 1.8v4.5l-3.6 1.8l-3.6 -1.8zM-3.6 8.1l3.6 -1.8l3.6 1.8v4.5l-3.6 1.8l-3.6 -1.8z" stroke="white" stroke-width=".6" stroke-linejoin="round"/></pattern><pattern id="hxl-spaces-honeycomb-v1" width="7.2" height="12.6" patternUnits="userSpaceOnUse" x="0" y="-1"><path d="M0 1.8l3.6 -1.8l3.6 1.8v4.5l-3.6 1.8l-3.6 -1.8zM3.6 8.1l3.6 -1.8l3.6 1.8v4.5l-3.6 1.8l-3.6 -1.8zM-3.6 8.1l3.6 -1.8l3.6 1.8v4.5l-3.6 1.8l-3.6 -1.8z" stroke="#FDE68A" stroke-width=".6" stroke-linejoin="round"/></pattern>
+<mask id="insides-spaces-honeycomb-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><g fill="white"><path class="hc" d="M15 51.75V38.625L25.5 33.375L36 38.625V51.75L25.5 57Z"/><path class="hc" d="M25.5 33.375V20.25L36 15L46.5 20.25V33.375L36 38.625Z"/><path class="hc" d="M36 38.625L46.5 33.375L57 38.625V51.75L46.5 57L36 51.75Z"/></g></mask><mask id="reveal-spaces-honeycomb-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><circle class="ring" cx="36" cy="36" r="22" fill="none" stroke="white" stroke-width="5" opacity="0"/></mask>
+<radialGradient id="quietv-spaces-honeycomb-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-spaces-honeycomb-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-spaces-honeycomb-v1)"/></mask></defs>
 </svg>
