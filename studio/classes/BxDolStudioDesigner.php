@@ -252,6 +252,19 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
     }
 
     /**
+     * Whether the previewed template's header draws an image. Templates with a dark logo setting (Artificer) draw all four;
+     * the others (Lucid, Ocean, Decorous, Protean) draw the base header, the logo alone, at every size and in both modes.
+     */
+    protected function isLogoDrawn($sType)
+    {
+        if($sType == 'logo')
+            return true;
+
+        $aParams = $this->getLogoTemplateParams();
+        return empty($aParams) || isset($aParams['logo_dark']);
+    }
+
+    /**
      * Where the logo images of the previewed template come from, as BxDolDesigns::getLogoSources describes.
      * @return array
      */

@@ -13,6 +13,7 @@ class LogoSourcesTest extends BxDolIntegrationTestCase
     private const TYPES = ['logo', 'logo_dark', 'mark', 'mark_dark'];
 
     private array $_aTemplateParams = [];
+    private array $_aActiveParams = [];
     private array $_aOptionsBackup = [];
     private array $_aFiles = [];
 
@@ -24,6 +25,12 @@ class LogoSourcesTest extends BxDolIntegrationTestCase
             $this->markTestSkipped('Artificer is not installed.');
 
         $this->_aTemplateParams = BxDolModule::getInstance('bx_artificer')->_oConfig->getLogoParams();
+
+        // The site's template may be another one (Lucid...); its own logo options are cleared too.
+        $aActive = BxDolModuleQuery::getInstance()->getModuleByUri(getParam('template'));
+        $oActive = !empty($aActive['name']) ? BxDolModule::getInstance($aActive['name']) : null;
+        if ($oActive && method_exists($oActive->_oConfig, 'getLogoParams'))
+            $this->_aActiveParams = $oActive->_oConfig->getLogoParams();
 
         foreach ($this->optionNames() as $sName)
             $this->_aOptionsBackup[$sName] = getParam($sName);
@@ -169,7 +176,8 @@ class LogoSourcesTest extends BxDolIntegrationTestCase
     {
         $sDefault = 'template/images/logo-generic.svg';
 
-        $this->assertStringContainsString($sDefault, BxTemplFunctions::getInstance()->getMainLogo(), 'Artificer');
+        if (getParam('template') == 'artificer')
+            $this->assertStringContainsString($sDefault, BxTemplFunctions::getInstance()->getMainLogo(), 'Artificer');
 
         // Lucid, Ocean, Decorous and Protean draw the logo with the base class and the base logo_main.html. The site's
         // template here is Artificer, whose logo_main.html takes other variables, so read what the base class passes.
@@ -222,11 +230,12 @@ class LogoSourcesTest extends BxDolIntegrationTestCase
         $aNames = [];
         foreach (array_merge(self::TYPES, ['logo_inline', 'mark_inline']) as $sType) {
             $aNames[] = 'sys_site_' . $sType;
-            if (!empty($this->_aTemplateParams[$sType]))
-                $aNames[] = $this->_aTemplateParams[$sType];
+            foreach ([$this->_aTemplateParams, $this->_aActiveParams] as $aParams)
+                if (!empty($aParams[$sType]))
+                    $aNames[] = $aParams[$sType];
         }
 
-        return $aNames;
+        return array_values(array_unique($aNames));
     }
 
     private function storeFile(): int

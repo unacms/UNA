@@ -413,6 +413,11 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         if(!$fSet('mark_dark'))
             $aShown['mark_dark'] = $fSet('mark') ? $aShown['mark'] : $aShown['logo_dark'];
 
+        // A header that draws the logo alone shows it in place of every other image.
+        foreach(['logo_dark', 'mark', 'mark_dark'] as $sType)
+            if(!$this->isLogoDrawn($sType))
+                $aShown[$sType] = $aShown['logo'];
+
         return $aShown;
     }
 
@@ -425,8 +430,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         $bTemplatePage = !empty($this->sLogoTemplate);
         $sPageSource = $bTemplatePage ? BxDolDesigns::LOGO_SOURCE_TEMPLATE : BxDolDesigns::LOGO_SOURCE_SYSTEM;
 
-        $aTemplateParams = $this->getLogoTemplateParams();
-        if(!$bTemplatePage && !empty($aTemplateParams) && !isset($aTemplateParams[$sType]))
+        if(!$this->isLogoDrawn($sType))
             return _t('_adm_dsg_txt_logo_src_unused', $sTemplate);
 
         switch($aSource['source']) {
