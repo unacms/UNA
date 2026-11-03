@@ -1,6 +1,9 @@
 import { memo } from "react";
 import dynamic from 'next/dynamic';
 import { DynamicFallback } from 'app/lib/dynamic-fallback';
+// Not a chunk: every page's header has the toolbar, and on phones and tablets the visible header
+// is a second copy that mounts after hydration, which would show no buttons until a chunk loads.
+import HeaderElement from './header/header-element';
 
 // Each molecule is its own chunk: fetched when a page renders it, and preloaded
 // in the HTML when it was rendered during SSR (see lib/dynamic-fallback.js).
@@ -22,7 +25,6 @@ const ContextSelector = dynamic(() => import('./sections/context-selector'), { l
 const Badges = dynamic(() => import('./profile/badges'), { loading: DynamicFallback });
 const Splash = dynamic(() => import('./sections/splash'), { loading: DynamicFallback });
 const ConfirmEmail = dynamic(() => import('./auth/confirm-email'), { loading: DynamicFallback });
-const HeaderElement = dynamic(() => import('./header/header-element'), { loading: DynamicFallback });
 const CounterIndicator = dynamic(() => import('./misc/counter-indicator'), { loading: DynamicFallback });
 const ProfileLink = dynamic(() => import('./profile/profile-link'), { loading: DynamicFallback });
 const NoContent = dynamic(() => import('./misc/no-content'), { loading: DynamicFallback });

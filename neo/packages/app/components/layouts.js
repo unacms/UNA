@@ -2,7 +2,7 @@
 import Layout from 'app/components/layout';
 import { useCurrentUser, isWebAuthReady } from 'app/context/user'
 import { components } from 'app/components/registry';
-import { appSetting, getLayoutName, getPageContentPaddingTiers, getPageContentWidth, getPageData, getPageSettings, strToObj } from 'app/lib/util'
+import { appSetting, getLayoutName, getPageContentPaddingTiers, getPageContentWidth, getPageData, getPageSettings, isSplashPage, strToObj } from 'app/lib/util'
 import emitter, { EVENTS } from 'app/context/emitter';
 import { responsiveClasses } from 'app/lib/responsive-classes'
 import { sidePaddingTiers } from 'app/lib/page-inset'
@@ -195,7 +195,7 @@ function PageLayoutContent({ layout, data, skipProfileLock = false }) {
     }
 
     const Splash = components['molecule']['splash']
-    if (!currentUser && layoutName == 'home' && (data.layout == 'splash' || appSetting('layout', 'use_splash_page')))
+    if (isSplashPage(data, layoutName, !currentUser))
         return <Splash data={data} />
 
     if (isCustomLayout && layoutBlocks) {

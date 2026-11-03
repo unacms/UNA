@@ -68,6 +68,10 @@ export function AdaptiveLabel({ caption, value, focused, htmlFor, inside, classN
     const [labelH, setLabelH] = useState(0)
     const translateY = useAnimatedValue(0)
     const readyRef = useRef(false)
+    // Set once translateY holds the measured position. Until then a resting label on web is
+    // centred by CSS, so the server HTML shows it and measuring doesn't move it (native keeps it
+    // hidden, as there is no server HTML).
+    const [placed, setPlaced] = useState(false)
 
     const restingY =
         boxH > 0 && labelH > 0
@@ -86,6 +90,7 @@ export function AdaptiveLabel({ caption, value, focused, htmlFor, inside, classN
         if (!readyRef.current) {
             readyRef.current = true
             translateY.setValue(toValue)
+            setPlaced(true)
             return
         }
 
@@ -111,13 +116,14 @@ export function AdaptiveLabel({ caption, value, focused, htmlFor, inside, classN
             <Animated.View
                 pointerEvents="none"
                 collapsable={false}
-                style={{
-                    position: 'absolute',
-                    top: 0,
-                    zIndex: 10,
-                    opacity: boxH > 0 && labelH > 0 ? 1 : 0,
-                    transform: [{ translateY }],
-                }}
+                style={
+                    placed
+                        ? { position: 'absolute', top: 0, zIndex: 10, transform: [{ translateY }] }
+                        : isWeb && !floated
+                            // display / flexDirection inline: react-native-web adds its base View class only on the client.
+                            ? { position: 'absolute', top: 0, bottom: 0, zIndex: 10, display: 'flex', flexDirection: 'column', justifyContent: 'center', transform: [{ translateY: restingOffset }] }
+                            : { position: 'absolute', top: 0, zIndex: 10, opacity: 0 }
+                }
             >
                 <View
                     onLayout={onLabelLayout}

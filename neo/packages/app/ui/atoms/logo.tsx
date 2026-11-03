@@ -1,4 +1,5 @@
 import Svg, { Circle, G, Path } from 'react-native-svg';
+import { Platform } from 'react-native';
 import { View } from 'app/design/view';
 import { useThemeValue } from 'app/design/theme';
 
@@ -9,6 +10,8 @@ const LOGO_PETALS = 'M322.4 324.2c1.4-1.3 3.8-.1 3.5 1.7-1 6-2 12-3.1 18-4.3 24.
 const LOGO_WORDMARK_UN = 'M128.5 14C128.5 16.4853 126.485 18.5 124 18.5C121.515 18.5 119.5 16.4853 119.5 14V8.75C119.5 8.33579 119.164 8 118.75 8C118.336 8 118 8.33579 118 8.75V14C118 17.3137 120.686 20 124 20C127.314 20 130 17.3137 130 14V8.75C130 8.33579 129.664 8 129.25 8C128.836 8 128.5 8.33579 128.5 8.75V14ZM142.5 14V19.25C142.5 19.6642 142.836 20 143.25 20C143.664 20 144 19.6642 144 19.25V14C144 10.6863 141.314 8 138 8C134.686 8 132 10.6863 132 14V19.25C132 19.6642 132.336 20 132.75 20C133.164 20 133.5 19.6642 133.5 19.25V14C133.5 11.5147 135.515 9.5 138 9.5C140.485 9.5 142.5 11.5147 142.5 14Z';
 const LOGO_WORDMARK_A = 'M156.5 17.9687V19.25C156.5 19.6642 156.836 20 157.25 20V20C157.664 20 158 19.6642 158 19.25V14C158 10.6863 155.314 8 152 8C148.686 8 146 10.6863 146 14C146 17.3137 148.686 20 152 20C153.792 20 155.401 19.2144 156.5 17.9687ZM156.5 14C156.5 16.4853 154.485 18.5 152 18.5C149.515 18.5 147.5 16.4853 147.5 14C147.5 11.5147 149.515 9.5 152 9.5C154.485 9.5 156.5 11.5147 156.5 14Z';
 const LOGO_FILL = { light: '#18181B', dark: '#FFFFFF' };
+// The same pair as LOGO_FILL, for the web's `currentColor`.
+const LOGO_TEXT_CLASS = 'web:text-[#18181B] web:dark:text-white';
 
 type LogoArtProps = { height: number; fill: string };
 
@@ -43,19 +46,23 @@ const LogoFull = ({ height, fill }: Readonly<LogoArtProps>) => (
     </Svg>
 );
 
+const isWeb = Platform.OS === 'web';
+
 export default function Logo({ mode = 'adaptive', height = 32 }: Readonly<LogoProps>) {
-    // A concrete colour, not `currentColor`: react-native-svg doesn't inherit a parent
-    // View's text colour.
-    const fill = useThemeValue(LOGO_FILL.light, LOGO_FILL.dark)
+    // Native: a concrete colour, since react-native-svg doesn't inherit a parent View's text
+    // colour. Web: `currentColor` from the classes below, so the server HTML (which can't know
+    // the theme) already has the right one and a light / dark scope around the logo counts.
+    const themeFill = useThemeValue(LOGO_FILL.light, LOGO_FILL.dark)
+    const fill = isWeb ? 'currentColor' : themeFill
 
     if (mode === 'mark')
-        return <LogoGlyph height={height} fill={fill} />
+        return <View className={LOGO_TEXT_CLASS}><LogoGlyph height={height} fill={fill} /></View>
 
     if (mode !== 'adaptive')
-        return <LogoFull height={height} fill={fill} />
+        return <View className={LOGO_TEXT_CLASS}><LogoFull height={height} fill={fill} /></View>
 
     return (
-        <View className="web:motion-safe:hover:animate-pulse">
+        <View className={`web:motion-safe:hover:animate-pulse ${LOGO_TEXT_CLASS}`}>
             <View className="sm:hidden">
                 <LogoGlyph height={height} fill={fill} />
             </View>

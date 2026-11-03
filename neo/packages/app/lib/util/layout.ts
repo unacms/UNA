@@ -267,6 +267,21 @@ export function getLayoutName(data: any, uri: string): LayoutNameResult {
     return { layoutName: 'default', layoutBlocks: customBlocks, isCustomLayout: isCustom, columnLayout: '' };
 }
 
+/** A guest's home is the splash page (sign-in form and welcome text): UNA's `splash` layout, or `layout.use_splash_page`. */
+export function isSplashPage(data: any, layoutName: string, isGuest: boolean): boolean {
+    return isGuest && layoutName === 'home' && (data?.layout === 'splash' || Boolean(appSetting('layout', 'use_splash_page')));
+}
+
+/**
+ * The splash, login and create-account pages draw their own heading, so the header shows no page
+ * title there. Each also says so with `<PageHeaderOptions showTitle={false} />`, but on web the page
+ * hydrates after the header, which would show the title until then.
+ */
+export function isOwnHeadingPage(data: any, isGuest: boolean): boolean {
+    const { layoutName } = getLayoutName(data, data?.uri?.toString() || '');
+    return layoutName === 'login' || layoutName === 'create-account' || isSplashPage(data, layoutName, isGuest);
+}
+
 export function getHeaderSettings(uri: string, isDesktop: boolean, layout: string, config?: unknown): any {
     let settings = getPageSettings(config, uri);
     if (!settings?.headerSettings) {
