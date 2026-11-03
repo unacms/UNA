@@ -555,6 +555,7 @@
 	<string name="_adm_bp_err_page_create"><![CDATA[Невозможно создать страницу.]]></string>
 	<string name="_adm_bp_err_page_delete"><![CDATA[Невозможно удалить страницу.]]></string>
 	<string name="_adm_bp_err_page_layout"><![CDATA[Пожалуйста, выберите отображение страницы.]]></string>
+        <string name="_adm_bp_err_page_not_deletable"><![CDATA[Невозможно удалить данную страницу.]]></string>
 	<string name="_adm_bp_err_page_title"><![CDATA[Необходимо указать заголовок из как минимум 3 символов.]]></string>
 	<string name="_adm_bp_err_page_title_system"><![CDATA[Необходимо указать название из как минимум 3 символов.]]></string>
 	<string name="_adm_bp_err_page_uri"><![CDATA[Необходимо указать уникальный URL из как минимум 3 символов.]]></string>
