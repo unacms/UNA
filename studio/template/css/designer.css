@@ -32,22 +32,13 @@ span.bx-dsg-template-version {
     font-weight: bold;
 }
 
-/*--- Icon Manager---*/
-.adm-dsg-icon .bx-form-input-files-uploaders {
-    margin-top: 0;
+/*--- Cover ---*/
+/* The cover's 8:3 (1920x720, 640x240); a gray stage where there is no image, the dark half for the default art's dark version. */
+.adm-dsg-cp-light {
+    background-color: #f4f4f5;
 }
-.adm-dsg-icon .adm-dsg-ip-icon_svg img {
-    max-height: 2rem;
-}
-
-/*--- Cover Manager---*/
-div.bx-dsg-cover {
-    position: relative;
-}
-
-div.bx-dsg-cover-actions .bx-btn {
-    float: none;
-    display: inline-flex; /* keeps the 32px Studio button's centred label */
+.adm-dsg-cp-dark {
+    background-color: #18181b;
 }
 
 /*--- Logo ---*/
@@ -66,4 +57,20 @@ div.bx-dsg-cover-actions .bx-btn {
     width: auto;
     max-width: 100%;
     height: 100%;
+}
+
+/*--- Icon ---*/
+/* The page an icon sits on: color-scheme makes an SVG icon's prefers-color-scheme follow the half it's drawn on, not the browser. */
+.adm-dsg-ip-light {
+    background-color: #ffffff;
+    color-scheme: light;
+}
+.adm-dsg-ip-dark {
+    background-color: #18181b;
+    color-scheme: dark;
+}
+/* Home screen icons sit on a phone's gray, so their own tile and corners show. */
+.adm-dsg-ip-home {
+    background-color: #f4f4f5;
+    color-scheme: light;
 }

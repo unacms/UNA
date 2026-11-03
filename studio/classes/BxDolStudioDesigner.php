@@ -114,14 +114,12 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             'cover_common' => array(
                 'setting' => 'sys_site_cover_common',
                 'transcoder' => BX_DOL_TRANSCODER_OBJ_COVER,
-                'title' => '_adm_dsg_txt_cover_common', 
-                'template' => 'dsr_cover_preview_page.html'
+                'title' => '_adm_dsg_txt_cover_common'
             ),
             'cover_unit_profile' => array(
                 'setting' => 'sys_unit_cover_profile',
                 'transcoder' => BX_DOL_TRANSCODER_OBJ_COVER_UNIT_PROFILE, 
-                'title' => '_adm_dsg_txt_cover_unit_profile', 
-                'template' => 'dsr_cover_preview_unit_profile.html'
+                'title' => '_adm_dsg_txt_cover_unit_profile'
             )
         );
     }
@@ -290,6 +288,32 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
     }
 
     /**
+     * The URL of a default icon as the site finds it: the site template's own copy in its images/icons, else the system's.
+     * @return string, '' when there is neither
+     */
+    protected function getIconDefaultUrl($sFile)
+    {
+        return $this->getSiteImageUrl('images/icons/', $sFile);
+    }
+
+    /**
+     * The URL of a site image as the site template finds it: its own copy (data/template/system/<folder>), else the system's
+     * (template/<folder>) unless $bSystem is false.
+     * @return string, '' when there is none
+     */
+    protected function getSiteImageUrl($sFolder, $sFile, $bSystem = true)
+    {
+        $aModule = $this->getLogoTemplateModule();
+        if(!empty($aModule) && file_exists(BX_DIRECTORY_PATH_MODULES . $aModule['path'] . 'data/template/system/' . $sFolder . $sFile))
+            return BX_DOL_URL_MODULES . $aModule['path'] . 'data/template/system/' . $sFolder . $sFile;
+
+        if(!$bSystem || !file_exists(BX_DIRECTORY_PATH_ROOT . 'template/' . $sFolder . $sFile))
+            return '';
+
+        return BX_DOL_URL_ROOT . 'template/' . $sFolder . $sFile;
+    }
+
+    /**
      * Whether the previewed template ships its own copy of a default logo image.
      */
     protected function isLogoBuiltinOwn($sFile)
@@ -447,7 +471,8 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             $oStorage->afterUploadCleanup($iIdNew, $iProfile);
         }
 
-        setParam('sys_site_cover_disabled', $oForm->getCleanValue('disabled') == 'on' ? 'on' : '');
+        // The form asks whether to show covers; the option stores whether they are off.
+        setParam('sys_site_cover_disabled', $oForm->getCleanValue('show') == 'on' ? '' : 'on');
 
         return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_COVER);
     }

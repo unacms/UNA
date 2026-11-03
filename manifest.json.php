@@ -81,6 +81,18 @@ if(($iId = (int)getParam('sys_site_icon_android_splash')) != 0) {
     ];
 }
 
+/*
+ * Android defaults: the 192 and 512 icons home screens and the launch screen need (template/images/icons, or the template's own).
+ */
+$oTemplate = BxDolTemplate::getInstance();
+foreach(['sys_site_icon_android' => ['android-icon-192.png', '192x192'], 'sys_site_icon_android_splash' => ['android-icon-512.png', '512x512']] as $sSetting => $aDefault)
+    if((int)getParam($sSetting) == 0 && ($sUrl = $oTemplate->getIconUrl($aDefault[0])) != '')
+        $aAdi[] = [
+            'src' => $sUrl,
+            'type' => 'image/png',
+            'sizes' => $aDefault[1]
+        ];
+
 if(!empty($aAdi) && is_array($aAdi))
     $aContent['icons'] = $aAdi;
 

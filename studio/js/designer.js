@@ -62,51 +62,57 @@ BxDolStudioDesigner.prototype.deleteLogo = function(sName, oButton) {
     });
 };
 
-BxDolStudioDesigner.prototype.deleteIcon = function(sName) {
+BxDolStudioDesigner.prototype.deleteIcon = function(sName, oButton) {
     var $this = this;
-    var oDate = new Date();
-    var aParams = {_t: oDate.getTime()};
-    aParams[this.sParamPrefix + '_action'] = 'delete_icon';
-    aParams[this.sParamPrefix + '_value'] = sName;
 
-    $.post(
-        this.sActionsUrl,
-        aParams,
-        function(oData) {
-            if(oData.code != 0 && oData.message.length > 0) {
-                bx_alert(oData.message);
-                return;
-            }
+    bx_confirm($(oButton).attr('data-confirm'), function() {
+        var oDate = new Date();
+        var aParams = {_t: oDate.getTime()};
+        aParams[$this.sParamPrefix + '_action'] = 'delete_icon';
+        aParams[$this.sParamPrefix + '_value'] = sName;
+        aParams['csrf_token'] = $(oButton).parents('form:first').find('input[name=csrf_token]').val();
 
-            $('.adm-dsg-ip-' + sName).bx_anim('hide', $this.sAnimationEffect, $this.iAnimationSpeed, function() {
-                $(this).remove();
-            });
-        },
-        'json'
-    );
+        $.post(
+            $this.sActionsUrl,
+            aParams,
+            function(oData) {
+                if(oData.code != 0 && oData.message.length > 0) {
+                    bx_alert(oData.message);
+                    return;
+                }
+
+                // The preview now shows what replaces the icon: the default, or the other favicon.
+                document.location.reload();
+            },
+            'json'
+        );
+    });
 };
 
-BxDolStudioDesigner.prototype.deleteCover = function(sType, iId) {
+BxDolStudioDesigner.prototype.deleteCover = function(sType, oButton) {
     var $this = this;
-    var oDate = new Date();
-    var aParams = {_t: oDate.getTime()};
-    aParams[this.sParamPrefix + '_action'] = 'delete_cover';
-    aParams[this.sParamPrefix + '_value'] = sType;
 
-    $.post(
-        this.sActionsUrl,
-        aParams,
-        function(oData) {
-            if(oData.code != 0 && oData.message.length > 0) {
-                bx_alert(oData.message);
-                return;
-            }
+    bx_confirm($(oButton).attr('data-confirm'), function() {
+        var oDate = new Date();
+        var aParams = {_t: oDate.getTime()};
+        aParams[$this.sParamPrefix + '_action'] = 'delete_cover';
+        aParams[$this.sParamPrefix + '_value'] = sType;
+        aParams['csrf_token'] = $(oButton).parents('form:first').find('input[name=csrf_token]').val();
 
-            $('#bx-dsg-cover-' + iId).bx_anim('hide', $this.sAnimationEffect, $this.iAnimationSpeed, function() {
-                $(this).remove();
-            });
-        },
-        'json'
-    );
+        $.post(
+            $this.sActionsUrl,
+            aParams,
+            function(oData) {
+                if(oData.code != 0 && oData.message.length > 0) {
+                    bx_alert(oData.message);
+                    return;
+                }
+
+                // The preview now shows the default cover.
+                document.location.reload();
+            },
+            'json'
+        );
+    });
 };
 /** @} */

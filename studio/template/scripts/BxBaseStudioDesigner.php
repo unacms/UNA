@@ -467,139 +467,104 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         $oTemplate = BxDolStudioTemplate::getInstance();
         $oFunctions = BxTemplStudioFunctions::getInstance();
 
-        $aTmplVarsPreview = ['bx_repeat:images' => []];
-        foreach($this->aIcons as $sIcon => $aIcon) {
-            $sSetting = 'sys_site_' . $sIcon;
-            $iIconValue = (int)getParam($sSetting);
-
-            if(($iOptionId = $this->getOptionId($sSetting)) != 0)
+        foreach($this->aIcons as $sIcon => $aIcon)
+            if(($iOptionId = $this->getOptionId('sys_site_' . $sIcon)) != 0)
                 $this->aIcons[$sIcon]['id'] = $iOptionId;
 
-            if(empty($iIconValue))
-                continue;
-
-            $sIconUrl = '';
-            $aIconParams = [];
-            if(!empty($aIcon['transcoder'])) {
-                $oTranscoder = BxDolTranscoderImage::getObjectInstance($aIcon['transcoder']);
-                $sIconUrl = $oTranscoder->getFileUrl($iIconValue);
-                $aIconParams = $oTranscoder->getFilterParams('Resize');
-            }
-            else {
-                $oStorage = BxDolStorage::getObjectInstance($aIcon['storage']);
-                $sIconUrl = $oStorage->getFileUrlById($iIconValue);
-            }
-
-            if($sIconUrl === false) {
-                setParam($sSetting, 0);
-                continue;
-            }
-
-            $bIconWidth = !empty($aIconParams['w']);
-            $bIconHeight = !empty($aIconParams['h']);
-
-            $aTmplVarsPreview['bx_repeat:images'][] = array(
-                'js_object' => $this->getPageJsObject(),
-                'id' => $iIconValue,
-                'name' => $sIcon,
-                'caption' => _t('_adm_dsg_txt_' . $sIcon),
-                'url' => $sIconUrl,
-                'bx_if:show_width' => array(
-                    'condition' => $bIconWidth,
-                    'content' => array(
-                        'width' => $bIconWidth ? (int)$aIconParams['w'] : 0
-                    )
-                ),
-                'bx_if:show_height' => array(
-                    'condition' => $bIconHeight,
-                    'content' => array(
-                        'height' => $bIconHeight ? (int)$aIconParams['h'] : 0
-                    )
-                ), 
-            );
-        }
-        
-        $aForm = array(
-            'form_attrs' => array(
+        $aForm = [
+            'form_attrs' => [
                 'id' => $this->sIconFormId,
                 'name' => $this->sIconFormId,
                 'action' => BX_DOL_URL_STUDIO . 'designer.php',
                 'method' => 'post',
                 'enctype' => 'multipart/form-data',
                 'target' => $this->sIconIframeId
-            ),
-            'params' => array(
-                'db' => array(
+            ],
+            'params' => [
+                'db' => [
                     'table' => '',
                     'key' => '',
                     'uri' => '',
                     'uri_title' => '',
                     'submit_name' => 'save'
-                ),
-            ),
-            'inputs' => array(
-                'page' => array(
+                ],
+            ],
+            'inputs' => [
+                'page' => [
                     'type' => 'hidden',
                     'name' => 'page',
                     'value' => $this->sPage
-                ),
-                'icon' => array(
-                    'type' => 'file',
-                    'name' => 'icon',
-                    'caption' => _t('_adm_dsg_txt_upload_icon'),
-                    'info' => _t('_adm_dsg_txt_upload_icon_inf'),
-                    'attrs' => ['accept' => '.ico']
-                ),
-                'icon_svg' => array(
-                    'type' => 'file',
-                    'name' => 'icon_svg',
-                    'caption' => _t('_adm_dsg_txt_upload_icon_svg'),
-                    'info' => _t('_adm_dsg_txt_upload_icon_svg_inf'),
-                    'attrs' => ['accept' => '.svg']
-                ),
-                'icon_apple' => array(
-                    'type' => 'files',
-                    'name' => 'icon_apple',
-                    'storage_object' => $this->aIcons['icon_apple']['storage'],
-                    'images_transcoder' => $this->aIcons['icon_apple']['transcoder'],
-                    'uploaders' => ['sys_html5'],
-                    'multiple' => false,
-                    'content_id' => $this->aIcons['icon_apple']['id'],
-                    'ghost_template' => $oFunctions->getDefaultGhostTemplate('icon_apple'),
-                    'caption' => _t('_adm_dsg_txt_upload_icon_apple'),
-                    'info' => _t('_adm_dsg_txt_upload_icon_apple_inf'),
-                ),
-                'icon_android' => array(
-                    'type' => 'files',
-                    'name' => 'icon_android',
-                    'storage_object' => $this->aIcons['icon_android']['storage'],
-                    'images_transcoder' => $this->aIcons['icon_android']['transcoder'],
-                    'uploaders' => ['sys_html5'],
-                    'multiple' => false,
-                    'content_id' => $this->aIcons['icon_android']['id'],
-                    'ghost_template' => $oFunctions->getDefaultGhostTemplate('icon_android'),
-                    'caption' => _t('_adm_dsg_txt_upload_icon_android'),
-                    'info' => _t('_adm_dsg_txt_upload_icon_android_inf'),
-                ),
-                'icon_android_splash' => array(
-                    'type' => 'files',
-                    'name' => 'icon_android_splash',
-                    'storage_object' => $this->aIcons['icon_android_splash']['storage'],
-                    'images_transcoder' => $this->aIcons['icon_android_splash']['transcoder'],
-                    'uploaders' => ['sys_html5'],
-                    'multiple' => false,
-                    'content_id' => $this->aIcons['icon_android_splash']['id'],
-                    'ghost_template' => $oFunctions->getDefaultGhostTemplate('icon_android_splash'),
-                    'caption' => _t('_adm_dsg_txt_upload_icon_android_splash'),
-                    'info' => _t('_adm_dsg_txt_upload_icon_android_splash_inf'),
-                ),
-                'save' => array(
-                    'type' => 'submit',
-                    'name' => 'save',
-                    'value' => _t('_adm_btn_designer_submit'),
-                )
-            )
-        );
+                ],
+            ]
+        ];
+
+        // A section per place the icons show: previews of what the site uses, then the uploads, each with a hint.
+        $aPreviews = $this->getIconPreviews();
+        $aAccept = ['icon' => '.ico', 'icon_svg' => '.svg'];
+        foreach(['tab' => ['icon_svg', 'icon'], 'home' => ['icon_apple', 'icon_android', 'icon_android_splash']] as $sSection => $aIcons) {
+            $aForm['inputs'] = array_merge($aForm['inputs'], [
+                $sSection . '_section' => [
+                    'type' => 'block_header',
+                    'name' => $sSection . '_section',
+                    'caption' => _t('_adm_dsg_txt_icon_section_' . $sSection),
+                ],
+                $sSection . '_info' => [
+                    'type' => 'custom',
+                    'name' => $sSection . '_info',
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_icon_section_' . $sSection)]),
+                ],
+                $sSection . '_preview' => [
+                    'type' => 'custom',
+                    'name' => $sSection . '_preview',
+                    'content' => $oTemplate->parseHtmlByName('dsr_icon_preview.html', [
+                        'bx_repeat:previews' => array_map(function($sIcon) use ($aPreviews) {
+                            return $aPreviews[$sIcon];
+                        }, $aIcons)
+                    ]),
+                ],
+            ]);
+
+            foreach($aIcons as $sIcon) {
+                $aIcon = $this->aIcons[$sIcon];
+                if(isset($aAccept[$sIcon]))
+                    $aInput = [
+                        'type' => 'file',
+                        'name' => $sIcon,
+                        'caption' => _t('_adm_dsg_txt_icon_upload_' . $sIcon),
+                        'attrs' => ['accept' => $aAccept[$sIcon]]
+                    ];
+                else
+                    $aInput = [
+                        'type' => 'files',
+                        'name' => $sIcon,
+                        'storage_object' => $aIcon['storage'],
+                        'images_transcoder' => $aIcon['transcoder'],
+                        'uploaders' => ['sys_html5'],
+                        'multiple' => false,
+                        'content_id' => isset($aIcon['id']) ? $aIcon['id'] : 0,
+                        'ghost_template' => $oFunctions->getDefaultGhostTemplate($sIcon),
+                        'caption' => _t('_adm_dsg_txt_icon_upload_' . $sIcon),
+                    ];
+
+                $aForm['inputs'][$sIcon] = $aInput;
+                $aForm['inputs'][$sIcon . '_hint'] = [
+                    'type' => 'custom',
+                    'name' => $sIcon . '_hint',
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_icon_upload_' . $sIcon)]),
+                ];
+            }
+        }
+
+        $aForm['inputs'] = array_merge($aForm['inputs'], [
+            'header_save' => [ // a section of its own for the Save button: the block footer (page.css) is that last section
+                'type' => 'block_header',
+            ],
+            'save' => [
+                'type' => 'submit',
+                'name' => 'save',
+                'value' => _t('_adm_btn_settings_save'),
+            ]
+        ]);
 
         $oForm = new BxTemplStudioFormView($aForm);
         $oForm->initChecker();
@@ -611,121 +576,214 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
 
         return $oTemplate->parseHtmlByName('designer.html', [
             'content' => $oTemplate->parseHtmlByName('dsr_icon.html', [
-                'preview' => $oTemplate->parseHtmlByName('dsr_icon_preview.html', $aTmplVarsPreview),
-                'icon_iframe_id' => $this->sIconIframeId, 
+                'icon_iframe_id' => $this->sIconIframeId,
                 'form' => $oForm->getCode()
             ]),
             'js_content' => $this->getPageJsCode()
         ]);
     }
 
-    protected function getCover()
+    /**
+     * A preview per icon: what the site uses for it (the upload, the default, or the other favicon), and where it comes from.
+     */
+    protected function getIconPreviews()
     {
-    	$sJsObject = $this->getPageJsObject();
-        $oTemplate = BxDolStudioTemplate::getInstance();
+        $aUrls = [];
+        foreach($this->aIcons as $sIcon => $aIcon)
+            $aUrls[$sIcon] = $this->getIconUrl($sIcon);
 
-        $oDbSettings = new BxDolStudioSettingsQuery();
+        // The site's own defaults, as BxBaseFunctions::getMetaIcons and manifest.json.php use them.
+        $aDefaults = [
+            'icon' => 'favicon.svg',
+            'icon_svg' => 'favicon.svg',
+            'icon_apple' => 'apple-touch-icon.png',
+            'icon_android' => 'android-icon-192.png',
+            'icon_android_splash' => 'android-icon-512.png',
+        ];
+        $aSizes = [
+            'icon' => 'w-8 h-8',
+            'icon_svg' => 'w-8 h-8',
+            'icon_apple' => 'w-16 h-16 rounded-2xl',
+            'icon_android' => 'w-16 h-16 rounded-2xl',
+            'icon_android_splash' => 'w-20 h-20 rounded-2xl',
+        ];
+        $bFavicons = !empty($aUrls['icon']) || !empty($aUrls['icon_svg']);
 
-        $aFormInputs = array();
-        $aTmplVarsCovers = array();
-        foreach($this->aCovers as $sCover => $aCover) {
-            $aSetting = array();
-            $oDbSettings->getOptions(array('type' => 'by_name', 'value' => $aCover['setting']), $aSetting, false);
-            if(empty($aSetting) || !is_array($aSetting))
-                continue;
-
-            $aFormInputs[$sCover] = array(
-                'type' => 'files',
-                    'name' => $sCover,
-                    'storage_object' => $this->sCoverStorage,
-                    'images_transcoder' => $this->sCoverTranscoder,
-                    'uploaders' => array('sys_std_crop_cover'),
-                    'multiple' => false,
-                    'content_id' => $aSetting['id'],
-                    'ghost_template' => BxTemplStudioFunctions::getInstance()->getDefaultGhostTemplate($sCover),
-                    'caption' => _t('_adm_dsg_txt_upload_' . $sCover),
-                    'db' => array (
-                    'pass' => 'Int',
-                )
-            );
-
-            if(($iImageId = (int)getParam($aCover['setting'])) == 0)
-                continue;
-
-            $sImageUrl = BxDolTranscoderImage::getObjectInstance($aCover['transcoder'])->getFileUrl($iImageId);
-            if($sImageUrl === false) {
-            	setParam($aCover['setting'], 0);
-                continue;
+        $aResult = [];
+        foreach($this->aIcons as $sIcon => $aIcon) {
+            $sUrl = $aUrls[$sIcon];
+            if(!empty($sUrl))
+                $sInfo = _t('_adm_dsg_txt_logo_src_here');
+            else if(in_array($sIcon, ['icon', 'icon_svg']) && $bFavicons) {
+                // One favicon uploaded: browsers use it for both.
+                $sUrl = $sIcon == 'icon' ? $aUrls['icon_svg'] : $aUrls['icon'];
+                $sInfo = _t('_adm_dsg_txt_icon_src_none_' . $sIcon);
+            }
+            else {
+                $sUrl = $this->getIconDefaultUrl($aDefaults[$sIcon]);
+                $sInfo = _t(in_array($sIcon, ['icon', 'icon_svg']) ? '_adm_dsg_txt_icon_src_default_svg' : '_adm_dsg_txt_icon_src_default');
             }
 
-            $aTmplVarsCovers[] = array(
-                'image_id' => $iImageId,
-                'content' => $oTemplate->parseHtmlByName($aCover['template'], array(
-                    'js_object' => $sJsObject,
-                    'type' => $sCover,
-                    'caption' => _t($aCover['title']),
-                    'image_id' => $iImageId,
-                        'bx_if:show_bg' => array(
-                            'condition' => !empty($sImageUrl),
-                            'content' => array(
-                                'image_url' => $sImageUrl
-                            )
-                    ),
-                ))
-            );
+            $bTab = in_array($sIcon, ['icon', 'icon_svg']);
+            $aResult[$sIcon] = [
+                'name' => $sIcon,
+                'stage' => $bTab ? 'adm-dsg-ip-light' : 'adm-dsg-ip-home',
+                'caption' => _t('_adm_dsg_txt_icon_preview_' . $sIcon),
+                'info' => $sInfo,
+                'bx_if:show_image' => [
+                    'condition' => !empty($sUrl),
+                    'content' => [
+                        'url' => $sUrl,
+                        'size' => $aSizes[$sIcon],
+                    ]
+                ],
+                // Browser tab icons on both: an SVG icon can switch colours itself (prefers-color-scheme, see designer.css).
+                'bx_if:show_dark' => [
+                    'condition' => !empty($sUrl) && $bTab,
+                    'content' => [
+                        'url' => $sUrl,
+                        'size' => $aSizes[$sIcon],
+                    ]
+                ],
+                'bx_if:show_remove' => [
+                    'condition' => !empty($aUrls[$sIcon]),
+                    'content' => [
+                        'js_object' => $this->getPageJsObject(),
+                        'name' => $sIcon,
+                        'label' => bx_html_attribute(_t('_adm_dsg_btn_icon_remove_' . $sIcon)),
+                        'confirm' => bx_html_attribute(_t('_adm_dsg_cnf_logo_remove')),
+                    ]
+                ],
+            ];
         }
 
-        $aForm = array(
-            'form_attrs' => array(
+        return $aResult;
+    }
+
+    /**
+     * The URL of an uploaded icon, '' when there is none (a setting whose file is gone is cleared).
+     */
+    protected function getIconUrl($sIcon)
+    {
+        $aIcon = $this->aIcons[$sIcon];
+        $sSetting = 'sys_site_' . $sIcon;
+        $iId = (int)getParam($sSetting);
+        if(empty($iId))
+            return '';
+
+        if(!empty($aIcon['transcoder']))
+            $sUrl = BxDolTranscoderImage::getObjectInstance($aIcon['transcoder'])->getFileUrl($iId);
+        else
+            $sUrl = BxDolStorage::getObjectInstance($aIcon['storage'])->getFileUrlById($iId);
+
+        if($sUrl === false) {
+            setParam($sSetting, 0);
+            return '';
+        }
+
+        return $sUrl;
+    }
+
+    protected function getCover()
+    {
+        $oTemplate = BxDolStudioTemplate::getInstance();
+        $oDbSettings = new BxDolStudioSettingsQuery();
+
+        $aForm = [
+            'form_attrs' => [
                 'id' => $this->sCoverFormId,
                 'name' => $this->sCoverFormId,
                 'action' => BX_DOL_URL_STUDIO . 'designer.php',
                 'method' => 'post',
                 'enctype' => 'multipart/form-data',
                 'target' => $this->sCoverIframeId
-            ),
-            'params' => array(
-                'db' => array(
+            ],
+            'params' => [
+                'db' => [
                     'table' => '',
                     'key' => '',
                     'uri' => '',
                     'uri_title' => '',
                     'submit_name' => 'save'
-                ),
-            ),
-            'inputs' => array(
-                'page' => array(
+                ],
+            ],
+            'inputs' => [
+                'page' => [
                     'type' => 'hidden',
                     'name' => 'page',
                     'value' => $this->sPage
-                ),
-                'disabled' => array(
-                    'type' => 'checkbox',
-                    'name' => 'disabled',
-                    'caption' => _t('_adm_dsg_txt_cover_disabled'),
-                    'value' => 'on',
-                    'checked' => getParam('sys_site_cover_disabled') == 'on',
-                    'db' => array (
-                        'pass' => 'Xss',
-                    ),
-                ),
-                'preview' => array(
+                ],
+            ]
+        ];
+
+        // A section per cover: what it is, the switch for page covers, a preview of what the site shows, the upload and its hint.
+        $aPreviews = $this->getCoverPreviews();
+        foreach(['cover_common' => 'page', 'cover_unit_profile' => 'unit'] as $sCover => $sSection) {
+            $aSetting = [];
+            $oDbSettings->getOptions(['type' => 'by_name', 'value' => $this->aCovers[$sCover]['setting']], $aSetting, false);
+            if(empty($aSetting) || !is_array($aSetting))
+                continue;
+
+            $aForm['inputs'] = array_merge($aForm['inputs'], [
+                $sSection . '_section' => [
+                    'type' => 'block_header',
+                    'name' => $sSection . '_section',
+                    'caption' => _t('_adm_dsg_txt_cover_section_' . $sSection),
+                ],
+                $sSection . '_info' => [
                     'type' => 'custom',
-                    'name' => 'preview',
-                    'content' => $oTemplate->parseHtmlByName('dsr_cover_preview.html', array(
-                        'bx_repeat:covers' => $aTmplVarsCovers
-                    ))
-                ),
+                    'name' => $sSection . '_info',
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_cover_section_' . $sSection)]),
+                ],
+            ], $sSection != 'page' ? [] : [
+                'show' => [
+                    'type' => 'checkbox',
+                    'name' => 'show',
+                    'caption' => _t('_adm_dsg_txt_cover_show'),
+                    'value' => 'on',
+                    'checked' => getParam('sys_site_cover_disabled') != 'on',
+                    'db' => [
+                        'pass' => 'Xss',
+                    ],
+                ],
+            ], [
+                $sSection . '_preview' => [
+                    'type' => 'custom',
+                    'name' => $sSection . '_preview',
+                    'content' => $oTemplate->parseHtmlByName('dsr_cover_preview.html', ['bx_repeat:previews' => [$aPreviews[$sCover]]]),
+                ],
+                $sCover => [
+                    'type' => 'files',
+                    'name' => $sCover,
+                    'storage_object' => $this->sCoverStorage,
+                    'images_transcoder' => $this->sCoverTranscoder,
+                    'uploaders' => ['sys_std_crop_cover'],
+                    'multiple' => false,
+                    'content_id' => $aSetting['id'],
+                    'ghost_template' => BxTemplStudioFunctions::getInstance()->getDefaultGhostTemplate($sCover),
+                    'caption' => _t('_adm_dsg_txt_cover_upload_' . $sSection),
+                    'db' => [
+                        'pass' => 'Int',
+                    ]
+                ],
+                $sCover . '_hint' => [
+                    'type' => 'custom',
+                    'name' => $sCover . '_hint',
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_cover_upload_' . $sSection)]),
+                ],
+            ]);
+        }
 
-                'save' => array(
-                    'type' => 'submit',
-                    'name' => 'save',
-                    'value' => _t('_adm_btn_designer_submit'),
-                )
-            )
-        );
-
-        $aForm['inputs'] = bx_array_insert_after($aFormInputs, $aForm['inputs'], 'preview');
+        $aForm['inputs'] = array_merge($aForm['inputs'], [
+            'header_save' => [ // a section of its own for the Save button: the block footer (page.css) is that last section
+                'type' => 'block_header',
+            ],
+            'save' => [
+                'type' => 'submit',
+                'name' => 'save',
+                'value' => _t('_adm_btn_settings_save'),
+            ]
+        ]);
 
         $oForm = new BxTemplStudioFormView($aForm);
         $oForm->initChecker();
@@ -735,11 +793,71 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
             exit;
         }
 
-        $this->aPageCss[] = 'cover.css';
-        return $oTemplate->parseHtmlByName('designer.html', array(
-            'content' => $oTemplate->parseHtmlByName('dsr_cover.html', array('iframe_id' => $this->sCoverIframeId, 'form' => $oForm->getCode())),
+        return $oTemplate->parseHtmlByName('designer.html', [
+            'content' => $oTemplate->parseHtmlByName('dsr_cover.html', ['iframe_id' => $this->sCoverIframeId, 'form' => $oForm->getCode()]),
             'js_content' => $this->getPageJsCode()
-        ));
+        ]);
+    }
+
+    /**
+     * A preview per cover: the upload, or the default the site shows without one (in light and dark mode where it has both).
+     */
+    protected function getCoverPreviews()
+    {
+        // The site's own defaults: the template's cover art (Artificer's cover.css), the profile module's cover.svg.
+        $aDefaults = [
+            'cover_common' => [$this->getSiteImageUrl('images/', 'cover-default.svg', false), $this->getSiteImageUrl('images/', 'cover-default-dark.svg', false)],
+            'cover_unit_profile' => [$this->getSiteImageUrl('images/', 'cover.svg'), ''],
+        ];
+
+        $aResult = [];
+        foreach($this->aCovers as $sCover => $aCover) {
+            $sUrl = $sUrlDark = '';
+            $iId = (int)getParam($aCover['setting']);
+            if($iId != 0) {
+                $sUrl = BxDolTranscoderImage::getObjectInstance($aCover['transcoder'])->getFileUrl($iId);
+                if($sUrl === false) {
+                    setParam($aCover['setting'], 0);
+                    $sUrl = '';
+                    $iId = 0;
+                }
+            }
+
+            if($sUrl) {
+                $sInfo = _t('_adm_dsg_txt_logo_src_here');
+            }
+            else {
+                list($sUrl, $sUrlDark) = $aDefaults[$sCover];
+                if(empty($sUrl))
+                    $sInfo = _t('_adm_dsg_txt_cover_src_none');
+                else
+                    $sInfo = _t(!empty($sUrlDark) ? '_adm_dsg_txt_cover_src_default_dark' : '_adm_dsg_txt_cover_src_default');
+            }
+
+            $aResult[$sCover] = [
+                'name' => $sCover,
+                'info' => $sInfo,
+                'bx_if:show_image' => [
+                    'condition' => !empty($sUrl),
+                    'content' => ['url' => $sUrl]
+                ],
+                'bx_if:show_dark' => [
+                    'condition' => !empty($sUrlDark),
+                    'content' => ['url' => $sUrlDark]
+                ],
+                'bx_if:show_remove' => [
+                    'condition' => $iId != 0,
+                    'content' => [
+                        'js_object' => $this->getPageJsObject(),
+                        'name' => $sCover,
+                        'label' => bx_html_attribute(_t('_adm_dsg_btn_cover_remove_' . $sCover)),
+                        'confirm' => bx_html_attribute(_t('_adm_dsg_cnf_logo_remove')),
+                    ]
+                ],
+            ];
+        }
+
+        return $aResult;
     }
 
     protected function getSplash()
