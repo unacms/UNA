@@ -6,7 +6,7 @@
 import { configureReanimatedLogger } from 'react-native-reanimated';
 configureReanimatedLogger({ strict: false });
 
-import { LogBox } from 'react-native';
+import { LogBox, View, useColorScheme } from 'react-native';
 // Reanimated 4.7 warns when a hook gets a dependency array, which only matters on the web.
 // react-native-keyboard-controller and @gorhom/bottom-sheet pass them, so keep the warning
 // out of the in-app banner; Metro's console still prints it.
@@ -22,8 +22,6 @@ import { ExpoRoot } from "expo-router";
 import { useState, useEffect, useMemo } from 'react'
 import InitialScreen from './initial_screen'
 import Constants from 'expo-constants';
-import { View } from 'react-native';
-import { useColorScheme } from 'react-native';
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { applyNativeFonts } from 'app/design/fonts/native-fonts';
