@@ -8,7 +8,7 @@ import AuthPanel from 'app/ui/molecules/auth/auth'
 import MenuFooter from 'app/components/nav/menu-footer'
 import Page from 'app/ui/molecules/page/page'
 import Html from 'app/ui/atoms/html'
-import { appSetting } from 'app/lib/util'
+import { appSetting, getPageForms } from 'app/lib/util'
 import { PageHeaderOptions } from 'app/ui/molecules/header/options'
 import { PageChromeProvider } from 'app/ui/molecules/page/page-chrome'
 
@@ -40,19 +40,12 @@ function PageContent({ children }) {
     )
 }
 
-function formItems(data) {
-    return Object.values(data?.elements ?? {})
-        .flatMap((cell) => Object.values(cell ?? {}))
-        .flatMap((block) => block?.content ?? [])
-        .filter((item) => item?.type === 'form')
-}
-
 function formDisplay(item) {
     return item?.data?.params?.display || item?.object || item?.name
 }
 
 function pageHasForm(data) {
-    return formItems(data).length > 0
+    return getPageForms(data).length > 0
 }
 
 // The Invites request form is not a way to join: with invitation-only registration UNA sends it,
@@ -62,7 +55,7 @@ function isJoinForm(item) {
 }
 
 function pageAllowsJoin(data) {
-    return formItems(data).some(isJoinForm)
+    return getPageForms(data).some(isJoinForm)
 }
 
 export default function PageLayout({ data, blocks, children }) {
