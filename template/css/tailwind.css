@@ -1841,12 +1841,20 @@
         @apply transition duration-300 active:duration-100 active:scale-95;
         @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5),0_0_0_1px_rgb(0_0_0/0.1)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
     }
-    /* The header's own controls keep a hover halo, drawn on the element under the ::after hairlines: a 4px black/10 (white/10 in dark) ring
-       straight off the plate, no offset gap (an offset ring reads as a bright halo in the light scheme). The dock and sidebar tiles use the same halo. */
+    /* The header's own controls keep a hover halo, drawn on the element under the ::after hairlines: an 8px black/10 (white/10 in dark) ring
+       straight off the plate, as wide as the sidebar items' background round their tiles (16px outer corners), no offset gap (an offset ring
+       reads as a bright halo in the light scheme). The plate's outer hairline is the halo's inner edge, a 1px line that sets the two apart. */
     .bx-std .bx-menu-toolbar .bx-menu-tab-item,
     .bx-std .bx-std-search-trigger,
     .bx-std .bx-std-header-btn {
-        @apply hover:ring-4 hover:ring-black/10 dark:hover:ring-white/10;
+        @apply hover:ring-8 hover:ring-black/10 dark:hover:ring-white/10;
+    }
+    /* Dock and current-app tiles: the same halo. In the light scheme their art has no outer hairline, so the hover draws one, the ring's
+       1px black/10 offset; in the dark scheme the tile's own black/20 outer hairline already is. */
+    .bx-std .bx-menu-top-center .bx-mi-icon,
+    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile {
+        @apply hover:ring-[7px] hover:ring-offset-1 hover:ring-black/10 hover:ring-offset-black/10;
+        @apply dark:hover:ring-8 dark:hover:ring-offset-0 dark:hover:ring-white/10;
     }
     .bx-std .bx-menu-toolbar .bx-menu-tab-item a,
     .bx-std .bx-menu-toolbar .bx-menu-tab-item button {
@@ -1881,13 +1889,14 @@
         @apply bg-black/10 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/10;
         @apply font-semibold;
     }
-    /* The item background plays the role of the header icons' hover halo; the icon only gets a second hairline ring. */
+    /* The item background (8px round the tile) plays the role of the header icons' hover halo, and the tile is set apart from it the same
+       way: a 1px black/10 outer hairline in the light scheme; in the dark scheme the tile's own black/20 outer hairline. */
     .bx-std-pmen-item .bx-std-pmen-ic-icon {
         @apply duration-300;
     }
     .bx-std-pmen-item:hover .bx-std-pmen-ic-icon,
     .bx-std-pmen-item.bx-menu-tab-active .bx-std-pmen-ic-icon {
-        @apply ring-1 ring-black/10 dark:ring-white/10;
+        @apply ring-1 ring-black/10 dark:ring-transparent;
     }
     .bx-std-pmen-item a {
         @apply text-gray-800 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white;
