@@ -374,8 +374,10 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
         if(empty($this->sPage) || empty($this->aPageRebuild) || !is_array($this->aPageRebuild))
             return array('msg' => _t('_adm_bp_err_page_delete'));
 
+        if((int)$this->aPageRebuild['deletable'] == 0)
+            return array('msg' => _t('_adm_bp_err_page_not_deletable'));
+
         $oLangauge = BxDolStudioLanguagesUtils::getInstance();
-        $oStorage = BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES);
 
         $aBlocks = array();
         $this->oDb->getBlocks(array('type' => 'by_object', 'value' => $this->sPage), $aBlocks, false);
