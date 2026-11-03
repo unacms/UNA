@@ -574,9 +574,14 @@ type MenuWithItems = { object?: string; config?: unknown; title?: string; items?
  * row, so each of its pages shows its own item's title.
  */
 export function isMenuHub(menu?: MenuWithItems | null): boolean {
-    if (!menu?.object) return false;
+    return getMenuHub(menu) !== '';
+}
+
+/** The page uri a section's menu names as its list (`hub`), or `''`. */
+export function getMenuHub(menu?: MenuWithItems | null): string {
+    if (!menu?.object) return '';
     const settings = getMenuSettings(menu.object, menu.config, menu);
-    return !!settings && !Array.isArray(settings) && !!settings.hub;
+    return settings && !Array.isArray(settings) && settings.hub ? String(settings.hub) : '';
 }
 
 /** The title of `menu`'s item that opens page `uri` (UNA sends item links as page uris). */

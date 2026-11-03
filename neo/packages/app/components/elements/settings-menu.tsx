@@ -14,6 +14,7 @@ type SettingsMenuItem = {
     url?: string
     icon?: string
     config?: string
+    subitems?: SettingsMenuItem[]
 }
 
 /** Groups in the order the list shows them; an item without one goes to `other`. */
@@ -34,8 +35,22 @@ export function hasSettingsGroups(items: SettingsMenuItem[]): boolean {
     return items.some((item) => getSettingsItemGroup(item) !== null)
 }
 
+/**
+ * Every row the list shows: items nested under a parent in Studio (`subitems`) come right after it,
+ * in its group unless they name their own; a parent that only groups them (no link) has no row.
+ */
+function flattenSettingsItems(items: SettingsMenuItem[], parentGroup: SettingsGroup | null = null): { item: SettingsMenuItem; group: SettingsGroup }[] {
+    return items.flatMap((item) => {
+        const group = getSettingsItemGroup(item) ?? parentGroup
+        const row = itemHref(item) ? [{ item, group: group ?? 'other' }] : []
+        return [...row, ...flattenSettingsItems(item.subitems || [], group)]
+    })
+}
+
 function itemHref(item: SettingsMenuItem): string {
     const path = String(item?.url || item?.link || '')
+    // A parent that only opens its children has no link (UNA sends `javascript:void(0)`).
+    if (path.startsWith('javascript:')) return ''
     if (!path || /^https?:/.test(path) || path.startsWith('/')) return path
     return `/${path}`
 }
@@ -65,8 +80,7 @@ export default function SettingsMenu({ items }: Readonly<{ items: SettingsMenuIt
     const { currentUser } = useCurrentUser()
 
     const byGroup = new Map<SettingsGroup, SettingsMenuItem[]>()
-    for (const item of items) {
-        const group = getSettingsItemGroup(item) ?? 'other'
+    for (const { item, group } of flattenSettingsItems(items)) {
         byGroup.set(group, [...(byGroup.get(group) || []), item])
     }
 

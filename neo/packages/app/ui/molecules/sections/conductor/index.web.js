@@ -5,7 +5,7 @@ import {
     getHeaderSettings,
     getURI,
     getPageContentWidth,
-    isMenuHub,
+    getMenuHub,
 } from 'app/lib/util'
 import {
     fillTabs,
@@ -37,6 +37,7 @@ import { useIsDesktop, useWindowHeight, useBreakpointName } from 'app/context/me
 import { useHeaderHeight, useFooterHeight } from 'app/context/jotai/layout'
 import { isTasksHomeUri } from 'app/components/elements/tasks/helpers'
 import { PageHeaderOptions } from 'app/ui/molecules/header/options'
+import { useRouter } from 'app/lib/hooks/router'
 import { useStickyHeaderOffset, stickySidebarStyle } from 'app/lib/hooks/use-sticky-header-offset'
 
 /** `html` class that makes the page block, not the document, the scroller (global.web.css). */
@@ -347,7 +348,15 @@ export function Conductor({
      */
     // A section listed by its own page (Settings, `isMenuHub`) has no tab row below desktop: that page
     // lists the tabs, and each one opens from it with Back.
-    const hideTabs = !isDesktop && isMenuHub(menu)
+    const menuHub = getMenuHub(menu)
+    const hideTabs = !isDesktop && menuHub !== ''
+    const router = useRouter()
+    // Back to the list: the previous page when there is one, else the list itself (a visit that
+    // opened the list in a new tab has no earlier page for the header's own Back).
+    const backToHub = useCallback(() => {
+        if (typeof window !== 'undefined' && window.history.length > 2) router.back()
+        else router.push('/' + menuHub)
+    }, [router, menuHub])
 
     const headerComponent = useMemo(
         () => (
@@ -439,7 +448,7 @@ export function Conductor({
                 ? <PageHeaderOptions hidden mobileOnly />
                 : <PageHeaderOptions sub={headerComponent} mobileOnly />}
             {/* Below desktop a hub section's page was opened from its list: Back returns there. */}
-            {hideTabs ? <PageHeaderOptions backButton mobileOnly /> : null}
+            {hideTabs ? <PageHeaderOptions backButton={backToHub} mobileOnly /> : null}
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <View
                 // Grows to the wrapper's viewport min-height (flex-auto), so the columns and the
