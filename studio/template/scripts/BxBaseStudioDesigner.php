@@ -934,9 +934,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 'code_tools' => [
                     'type' => 'custom',
                     'name' => 'code_tools',
-                    'content' => $oTemplate->parseHtmlByName('dsr_splash_code.html', [
-                        'js_object' => $this->getPageJsObject(),
-                        'dialog_id' => $this->sSplashEditorId . '-fullscreen',
+                    'content' => $this->getCodeFullscreen('code', $this->sSplashEditorId . '-fullscreen', _t('_adm_dsg_txt_splash_section_code'), [
                         'preview_dialog_id' => $sPreviewDialogId,
                         'preview_frame_id' => $sPreviewDialogId . '-frame',
                         'preview_url' => $sPreviewUrl,
@@ -1009,53 +1007,85 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
     {
     	$oTemplate = BxDolStudioTemplate::getInstance();
 
-        $aForm = array(
-            'form_attrs' => array(
+        $aForm = [
+            'form_attrs' => [
                 'id' => $this->sInjectionsFormId,
                 'name' => $this->sInjectionsFormId,
                 'action' => BX_DOL_URL_STUDIO . 'designer.php',
                 'method' => 'post',
                 'enctype' => 'multipart/form-data',
                 'target' => $this->sInjectionsIframeId
-            ),
-            'params' => array(
-                'db' => array(
+            ],
+            'params' => [
+                'db' => [
                     'table' => '',
                     'key' => '',
                     'uri' => '',
                     'uri_title' => '',
                     'submit_name' => 'save'
-                ),
-            ),
-            'inputs' => array(
-                'page' => array(
+                ],
+            ],
+            'inputs' => [
+                'page' => [
                     'type' => 'hidden',
                     'name' => 'page',
                     'value' => $this->sPage
-                ),
-                'sys_head' => array(
+                ],
+            ]
+        ];
+
+        foreach(['head', 'body'] as $sPart) {
+            $sField = 'sys_' . $sPart;
+            $aForm['inputs'] += [
+                $sPart . '_section' => [
+                    'type' => 'block_header',
+                    'name' => $sPart . '_section',
+                    'caption' => _t('_adm_dsg_txt_inj_section_' . $sPart),
+                ],
+                $sPart . '_info' => [
+                    'type' => 'custom',
+                    'name' => $sPart . '_info',
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_inj_section_' . $sPart)]),
+                ],
+                $sField => [
                     'type' => 'textarea',
                     'code' => true,
-                    'name' => 'sys_head',
-                    'caption' => _t('_adm_dsg_txt_inj_head'),
-                    'info' => _t('_adm_dsg_txt_inj_head_inf'),
-                    'value' => $this->oDb->getOne("SELECT `data` FROM `sys_injections` WHERE `name`='sys_head'"),
-                ),
-                'sys_body' => array(
-                    'type' => 'textarea',
-                    'code' => true,
-                    'name' => 'sys_body',
-                    'caption' => _t('_adm_dsg_txt_inj_body'),
-                    'info' => _t('_adm_dsg_txt_inj_body_inf'),
-                    'value' => $this->oDb->getOne("SELECT `data` FROM `sys_injections` WHERE `name`='sys_body'"),
-                ),
-                'save' => array(
+                    'name' => $sField,
+                    'caption' => _t('_adm_dsg_txt_inj_' . $sPart),
+                    'value' => $this->oDb->getInjection($sField),
+                ],
+                $sPart . '_tools' => [
+                    'type' => 'custom',
+                    'name' => $sPart . '_tools',
+                    'content' => $this->getCodeFullscreen($sField, $this->sInjectionsEditorId . '-' . $sPart, _t('_adm_dsg_txt_inj_section_' . $sPart)),
+                ],
+            ];
+        }
+
+        $aForm['inputs'] += [
+            'header_note' => [ // the warning under the sections, in a section of its own
+                'type' => 'block_header',
+            ],
+            'note' => [
+                'type' => 'custom',
+                'name' => 'note',
+                'content' => $oTemplate->parseHtmlByName('dsr_logo_note.html', [
+                    'text' => _t('_adm_dsg_txt_inj_note'),
+                    'bx_if:show_link' => [
+                        'condition' => false,
+                        'content' => []
+                    ],
+                ]),
+            ],
+            'header_save' => [ // a section of its own for the Save button: the block footer (page.css) is that last section
+                'type' => 'block_header',
+            ],
+            'save' => [
                 'type' => 'submit',
                 'name' => 'save',
-                'value' => _t('_adm_btn_designer_submit'),
-                )
-            )
-        );
+                'value' => _t('_adm_btn_settings_save'),
+            ]
+        ];
 
         $oForm = new BxTemplStudioFormView($aForm, $oTemplate);
         $oForm->initChecker();
@@ -1067,11 +1097,31 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
 
         return $oTemplate->parseHtmlByName('designer.html', [
             'content' => $oTemplate->parseHtmlByName('dsr_injections.html', [
-                'warning' => '',
-                'splash_iframe_id' => $this->sInjectionsIframeId, 
+                'splash_iframe_id' => $this->sInjectionsIframeId,
                 'form' => $oForm->getCode()
             ]),
             'js_content' => $this->getPageJsCode()
+        ]);
+    }
+
+    /**
+     * "Edit in full screen" for a code field: the button under the editor and the dialog the editor moves into.
+     * With $aPreview (preview_dialog_id, preview_frame_id, preview_url) the dialog can open the full-screen preview too.
+     */
+    protected function getCodeFullscreen($sField, $sDialogId, $sTitle, $aPreview = [])
+    {
+        $sJsObject = $this->getPageJsObject();
+
+        return BxDolStudioTemplate::getInstance()->parseHtmlByName('dsr_code_fullscreen.html', [
+            'js_object' => $sJsObject,
+            'field' => $sField,
+            'dialog_id' => $sDialogId,
+            'title' => $sTitle,
+            'title_attr' => bx_html_attribute($sTitle),
+            'bx_if:show_preview' => [
+                'condition' => !empty($aPreview),
+                'content' => array_merge(['js_object' => $sJsObject], $aPreview)
+            ],
         ]);
     }
 

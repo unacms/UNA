@@ -759,6 +759,7 @@
         <string name="_adm_dbd_msg_c_clean_success"><![CDATA[Кэш был удачно очищен]]></string>
         <string name="_adm_dbd_msg_c_all_disabled"><![CDATA[Весь кэш был отключён]]></string>
         <string name="_adm_dsn_cnf_uninstall"><![CDATA[<h3>Удалить тему "{0}"?</h3><p>Удаление темы "{0}" также удалит все связанные с ней данные. Вы хотите продолжить?</p>]]></string>
+        <string name="_adm_dsg_btn_code_fullscreen"><![CDATA[Редактировать на весь экран]]></string>
         <string name="_adm_dsg_btn_cover_remove_cover_common"><![CDATA[Удалить обложку страницы]]></string>
         <string name="_adm_dsg_btn_cover_remove_cover_unit_profile"><![CDATA[Удалить обложку карточки профиля]]></string>
         <string name="_adm_dsg_btn_delete"><![CDATA[Удалить]]></string>
@@ -774,7 +775,6 @@
 	<string name="_adm_dsg_btn_logo_remove_mark"><![CDATA[Удалить знак светлой темы]]></string>
 	<string name="_adm_dsg_btn_logo_remove_mark_dark"><![CDATA[Удалить знак тёмной темы]]></string>
 	<string name="_adm_dsg_btn_make_default"><![CDATA[Сделать основным]]></string>
-	<string name="_adm_dsg_btn_splash_code_fullscreen"><![CDATA[Редактировать на весь экран]]></string>
 	<string name="_adm_dsg_btn_splash_preview"><![CDATA[Показать изменения]]></string>
 	<string name="_adm_dsg_btn_splash_preview_fullscreen"><![CDATA[Просмотр на весь экран]]></string>
 	<string name="_adm_dsg_cnf_logo_remove"><![CDATA[Удалить это изображение? Оно будет удалено безвозвратно.]]></string>
@@ -800,6 +800,8 @@
 	<string name="_adm_dsg_inf_icon_upload_icon_android_splash"><![CDATA[512×512.]]></string>
 	<string name="_adm_dsg_inf_icon_upload_icon_apple"><![CDATA[180×180. iOS заливает прозрачные области чёрным, поэтому задайте фон.]]></string>
 	<string name="_adm_dsg_inf_icon_upload_icon_svg"><![CDATA[Файл .svg. Он может менять цвета для тёмной темы стилем prefers-color-scheme.]]></string>
+	<string name="_adm_dsg_inf_inj_section_body"><![CDATA[Добавляется на каждую страницу сайта прямо перед <code>&lt;/body&gt;</code>. Подходит для скриптов, которые загружаются после содержимого, например виджетов чата.]]></string>
+	<string name="_adm_dsg_inf_inj_section_head"><![CDATA[Добавляется на каждую страницу сайта прямо перед <code>&lt;/head&gt;</code>. Подходит для мета-тегов, подтверждения сайта, шрифтов, стилей и аналитики.]]></string>
 	<string name="_adm_dsg_inf_logo_code"><![CDATA[Рисует логотип из SVG-разметки вместо изображения по умолчанию. Загруженное изображение важнее.]]></string>
 	<string name="_adm_dsg_inf_logo_section"><![CDATA[Показывается в шапке на широких экранах.]]></string>
 	<string name="_adm_dsg_inf_logo_text"><![CDATA[Его читают экранные дикторы, и он показывается в шапке, когда нет изображения логотипа. Оставьте пустым, чтобы использовать название сайта.]]></string>
@@ -906,9 +908,12 @@
 	<string name="_adm_dsg_txt_viewport_mobile"><![CDATA[Телефон]]></string>
 	<string name="_adm_dsg_txt_viewport_tablet"><![CDATA[Планшет]]></string>
 	<string name="_adm_dsg_txt_viewport_width"><![CDATA[Ширина]]></string>
-	<string name="_adm_dsg_txt_inj_head"><![CDATA[&lt;HEAD&gt; инъекция]]></string>
+	<string name="_adm_dsg_txt_inj_head"><![CDATA[Код перед &lt;/head&gt;]]></string>
 	<string name="_adm_dsg_txt_inj_head_inf"><![CDATA[Код для вставки перед закрывающим HEAD тагом]]></string>
-	<string name="_adm_dsg_txt_inj_body"><![CDATA[&lt;BODY&gt; инъекция]]></string>
+	<string name="_adm_dsg_txt_inj_note"><![CDATA[Этот код выполняется на каждой странице для каждого посетителя. Ошибка может сломать сайт, а скрипт может прочитать то, что вводят посетители. Добавляйте только код, которому доверяете.]]></string>
+	<string name="_adm_dsg_txt_inj_section_body"><![CDATA[Конец страницы]]></string>
+	<string name="_adm_dsg_txt_inj_section_head"><![CDATA[Заголовок страницы]]></string>
+	<string name="_adm_dsg_txt_inj_body"><![CDATA[Код перед &lt;/body&gt;]]></string>
 	<string name="_adm_dsg_txt_inj_body_inf"><![CDATA[Код для вставки перед закрывающим BODY тагом]]></string>
 	<string name="_adm_err_cannot_process_action"><![CDATA[Невозможно выполнить действие. Отсутствует связанный обработчик.]]></string>
 	<string name="_adm_err_modules_already_disabled"><![CDATA[Модуль уже отключён.]]></string>

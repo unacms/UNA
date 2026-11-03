@@ -83,12 +83,12 @@ BxDolStudioDesigner.prototype.previewSplash = function(oButton, sFrame, sUrl) {
 };
 
 /**
- * Full-screen code editor: moves the form's code editor into a modal dialog, and back when the dialog closes.
- * The editor itself moves, so its text, history and cursor stay as they were.
+ * Full-screen code editor: moves the code editor of the form's sField textarea into a modal dialog, and back when the
+ * dialog closes. The editor itself moves, so its text, history and cursor stay as they were.
  */
-BxDolStudioDesigner.prototype.openCodeFullscreen = function(oButton, sDialog) {
+BxDolStudioDesigner.prototype.openCodeFullscreen = function(oButton, sDialog, sField) {
     var oDialog = document.getElementById(sDialog);
-    var oEditor = $(oButton).parents('form:first').find('textarea[name=code]').nextAll('.CodeMirror').get(0);
+    var oEditor = $(oButton).parents('form:first').find('textarea[name="' + (sField || 'code') + '"]').nextAll('.CodeMirror').get(0);
     if(!oDialog || typeof(oDialog.showModal) != 'function' || !oEditor || !oEditor.CodeMirror)
         return;
 
