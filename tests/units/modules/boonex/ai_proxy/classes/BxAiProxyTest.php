@@ -266,9 +266,9 @@ class BxAiProxyTestProvider implements NeuronAI\Providers\AIProviderInterface
     /** @var list<NeuronAI\Tools\ToolInterface> */
     public array $aTools = [];
 
-    public function systemPrompt(?string $prompt): NeuronAI\Providers\AIProviderInterface
+    public function systemPrompt(NeuronAI\Chat\Messages\SystemMessage|string|null $prompt): NeuronAI\Providers\AIProviderInterface
     {
-        $this->sSystem = (string)$prompt;
+        $this->sSystem = $prompt instanceof NeuronAI\Chat\Messages\SystemMessage ? (string)$prompt->getContent() : (string)$prompt;
         return $this;
     }
 
@@ -278,30 +278,25 @@ class BxAiProxyTestProvider implements NeuronAI\Providers\AIProviderInterface
         return $this;
     }
 
-    public function messageMapper(): NeuronAI\Providers\MessageMapperInterface
+    public function getModel(): string
     {
-        throw new Exception('unused');
+        return 'test';
     }
 
-    public function toolPayloadMapper(): NeuronAI\Providers\ToolMapperInterface
-    {
-        throw new Exception('unused');
-    }
-
-    public function chat(NeuronAI\Chat\Messages\Message ...$messages): NeuronAI\Chat\Messages\Message
+    public function chat(NeuronAI\Chat\Messages\Message ...$messages): NeuronAI\Providers\ProviderResponse
     {
         $this->aMessages = $messages;
-        return new NeuronAI\Chat\Messages\AssistantMessage('ok');
+        return new NeuronAI\Providers\ProviderResponse(new NeuronAI\Chat\Messages\AssistantMessage('ok'));
     }
 
     public function stream(NeuronAI\Chat\Messages\Message ...$messages): Generator
     {
         $this->aMessages = $messages;
         yield new NeuronAI\Chat\Messages\Stream\Chunks\TextChunk('m', 'ok');
-        return new NeuronAI\Chat\Messages\AssistantMessage('ok');
+        return new NeuronAI\Providers\ProviderResponse(new NeuronAI\Chat\Messages\AssistantMessage('ok'));
     }
 
-    public function structured(array|NeuronAI\Chat\Messages\Message $messages, string $class, array $response_schema): NeuronAI\Chat\Messages\Message
+    public function structured(array|NeuronAI\Chat\Messages\Message $messages, string $class, array $response_schema): NeuronAI\Providers\ProviderResponse
     {
         throw new Exception('unused');
     }
@@ -345,7 +340,7 @@ class BxAiProxyTestEmbeddings implements NeuronAI\RAG\Embeddings\EmbeddingsProvi
 
     public function embedDocument(NeuronAI\RAG\Document $document): NeuronAI\RAG\Document
     {
-        $document->embedding = $this->embedText($document->getContent());
+        $document->setEmbedding($this->embedText($document->getContent()));
         return $document;
     }
 
@@ -372,23 +367,23 @@ class BxAiProxyTestVectorStore implements NeuronAI\RAG\VectorStore\VectorStoreIn
         return $this;
     }
 
-    public function deleteBySource(string $sourceType, string $sourceName): NeuronAI\RAG\VectorStore\VectorStoreInterface
+    public function getSchema(): NeuronAI\RAG\Schema\DocumentSchema
+    {
+        return NeuronAI\RAG\Schema\DocumentSchema::default();
+    }
+
+    public function delete(NeuronAI\RAG\VectorStore\Filter\FilterExpression $filters): NeuronAI\RAG\VectorStore\VectorStoreInterface
     {
         return $this;
     }
 
-    public function deleteBy(string $sourceType, ?string $sourceName = null): NeuronAI\RAG\VectorStore\VectorStoreInterface
+    public function search(NeuronAI\RAG\VectorStore\SearchRequest $request): iterable
     {
-        return $this;
-    }
-
-    public function similaritySearch(array $embedding): iterable
-    {
-        $this->aSeenEmbedding = $embedding;
+        $this->aSeenEmbedding = $request->embedding;
         $oDocument = new NeuronAI\RAG\Document('Pages are blocks.');
-        $oDocument->sourceType = 'file';
-        $oDocument->sourceName = 'pages.md';
-        $oDocument->embedding = [9.9, 8.8];
+        $oDocument->setSourceType('file');
+        $oDocument->setSourceName('pages.md');
+        $oDocument->setEmbedding([9.9, 8.8]);
         $oDocument->setScore(0.9);
         return [$oDocument];
     }

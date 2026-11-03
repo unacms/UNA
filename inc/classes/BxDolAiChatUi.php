@@ -92,7 +92,7 @@ class BxDolAiChatUi
             elseif (!empty($aMessage['metadata']['__id']) && is_string($aMessage['metadata']['__id']))
                 $sId = $aMessage['metadata']['__id'];
 
-            $mixedActions = $aMessage['actions'] ?? ($aMessage['metadata']['actions'] ?? null);
+            $mixedActions = $aMessage['actions'] ?? ($aMessage['__meta']['actions'] ?? ($aMessage['metadata']['actions'] ?? null));
             $aUi = $this->finalizeUiChatMessage($sId !== '' ? $sId : ('msg_' . $i), $sRole, $aParts, $mixedActions);
             if (!$aUi)
                 continue;

@@ -59,7 +59,7 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
 
         $sThreadId = !empty($aData['threadId']) ? $aData['threadId'] : null;
 
-        if (class_exists('NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter')) {
+        if (class_exists('BxDolAiAguiAdapter')) {
             $this->stream($aAgent['id'], $oMessage, $aParams, $sThreadId);
             return;
         }
@@ -245,20 +245,23 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
         // UNA BxDolDb::pdoExceptionHandler dumps HTML 503 on uncaught PDOException.
         restore_exception_handler();
 
-        $oAdapter = new NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter($sThreadId);
+        $aAgent = BxDolAiQuery::getAgentObject((int)$iAgentId);
+
+        $oAdapter = new BxDolAiAguiAdapter((string)($sThreadId ?: ($aAgent ? BxDolAiChat::threadId($aAgent, $aParams) : $iAgentId)));
 
         http_response_code(200);
         foreach ($oAdapter->getHeaders() as $sName => $sValue)
             header($sName . ': ' . $sValue);
 
         $fEmit = function ($sEvent) {
+            if ($sEvent instanceof NeuronAI\Workflow\Streaming\ProtocolEvent)
+                $sEvent = NeuronAI\Workflow\Streaming\SSEEncoder::frame($sEvent);
             echo $sEvent;
             if (ob_get_level())
                 ob_flush();
             flush();
         };
 
-        $aAgent = BxDolAiQuery::getAgentObject((int)$iAgentId);
         if ($aAgent)
             $oChat->setChatContext($aAgent, $aParams);
 
@@ -294,10 +297,13 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
             if (!$oUserMessage)
                 throw new Exception('Empty chat message');
             $o = BxDolAi::getAgentInstance((int)$iAgentId, $aParams);
-            $oHandler = $o->stream($oUserMessage);
+            $o->setStreamAdapter(fn () => $oAdapter);
 
-            foreach ($oHandler->events($oAdapter) as $sChunk) {
+            foreach ($o->stream($oUserMessage) as $oEvent) {
                 $bStarted = true;
+                if (!($oEvent instanceof NeuronAI\Workflow\Streaming\ProtocolEvent))
+                    continue;
+                $sChunk = NeuronAI\Workflow\Streaming\SSEEncoder::frame($oEvent);
                 foreach ($this->splitSseEvents($sChunk) as $sEvent) {
                     $aPayload = $this->parseSseEvent($sEvent);
                     $sType = is_array($aPayload) ? (string)($aPayload['type'] ?? '') : '';
@@ -321,9 +327,8 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
                 foreach ($oAdapter->start() as $sEvent)
                     $fEmit($sEvent);
             }
-            $sMsg = isAdmin() ? self::visibleError($oException) : $oException->getMessage();
-            $fEmit('data: ' . json_encode(['type' => 'RUN_ERROR', 'message' => $sMsg !== '' ? $sMsg : _t('_sys_agents_exception')]) . "\n\n");
-            foreach ($oAdapter->end() as $sEvent)
+            // nothing is emitted when the adapter has already reported the failure of the run
+            foreach ($oAdapter->error($oException) as $sEvent)
                 $fEmit($sEvent);
         }
 
@@ -681,11 +686,7 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
         if (!is_object($oAgent) || !method_exists($oAgent, 'getChatHistory'))
             return ['messageId' => '', 'actions' => $aPending];
 
-        $oHistory = $oAgent->getChatHistory();
-        if (!is_object($oHistory) || !method_exists($oHistory, 'getMessages'))
-            return ['messageId' => '', 'actions' => $aPending];
-
-        $aMessages = $oHistory->getMessages();
+        $aMessages = $oAgent->getChatHistory()->getMessages();
         for ($i = count($aMessages) - 1; $i >= 0; $i--) {
             $oMessage = $aMessages[$i];
             if ($oMessage instanceof NeuronAI\Chat\Messages\ToolResultMessage)
@@ -713,8 +714,8 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
                 $oMessage->setContents($aParsed['content']);
             if (method_exists($oMessage, 'addMetadata'))
                 $oMessage->addMetadata('actions', $aActions);
-            if (method_exists($oHistory, 'persistMessages'))
-                $oHistory->persistMessages();
+            if (method_exists($oAgent, 'updateStoredMessage'))
+                $oAgent->updateStoredMessage($oMessage);
 
             $sId = method_exists($oMessage, 'getMetadata') ? $oMessage->getMetadata('__id') : '';
             return [

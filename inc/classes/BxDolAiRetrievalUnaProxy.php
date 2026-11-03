@@ -23,7 +23,7 @@ class BxDolAiRetrievalUnaProxy implements NeuronAI\RAG\Retrieval\RetrievalInterf
     ) {
     }
 
-    public function retrieve(NeuronAI\Chat\Messages\Message $query): array
+    public function retrieve(NeuronAI\Chat\Messages\Message $query, ?NeuronAI\RAG\VectorStore\Filter\FilterExpression $filters = null): array
     {
         $sQuery = trim((string)$query->getContent());
         if ($sQuery === '' || $this->sKey === '' || $this->sSecret === '')
@@ -95,9 +95,9 @@ class BxDolAiRetrievalUnaProxy implements NeuronAI\RAG\Retrieval\RetrievalInterf
             $sSourceType = trim((string)($aDocument['sourceType'] ?? ''));
             $sSourceName = trim((string)($aDocument['sourceName'] ?? ''));
             if ($sSourceType !== '')
-                $oDocument->sourceType = $sSourceType;
+                $oDocument->setSourceType($sSourceType);
             if ($sSourceName !== '')
-                $oDocument->sourceName = $sSourceName;
+                $oDocument->setSourceName($sSourceName);
             if (isset($aDocument['score']))
                 $oDocument->setScore((float)$aDocument['score']);
             $aDocuments[] = $oDocument;

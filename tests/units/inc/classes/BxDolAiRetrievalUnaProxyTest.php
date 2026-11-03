@@ -39,7 +39,7 @@ class BxDolAiRetrievalUnaProxyTest extends BxDolTestCase
         $this->assertSame('file', $aDocuments[0]->getSourceType());
         $this->assertSame('pages.md', $aDocuments[0]->getSourceName());
         $this->assertEqualsWithDelta(0.82, $aDocuments[0]->getScore(), 0.0001);
-        $this->assertSame([], $aDocuments[0]->getEmbedding());
+        $this->assertNull($aDocuments[0]->getEmbedding());
     }
 
     public function testFailedResponseReturnsNoDocuments()

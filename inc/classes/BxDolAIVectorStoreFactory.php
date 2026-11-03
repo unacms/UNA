@@ -76,7 +76,7 @@ class BxDolAIVectorStoreFactory extends BxDolFactory
                     'base_uri' => $aParameters['client_params']['endpoint'] ?? 'http://localhost:9200',
                 ]);
         
-                $o = NeuronAI\RAG\VectorStore\OpenSearchVectorStore(
+                $o = new NeuronAI\RAG\VectorStore\OpenSearchVectorStore(
                     client: $oClient,
                     index: $aParameters['index'],
                     topK: $a['topk'] ?? 4,

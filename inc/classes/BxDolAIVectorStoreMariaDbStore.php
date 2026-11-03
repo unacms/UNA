@@ -39,58 +39,41 @@ class BxDolAIVectorStoreMariaDbStore extends NeuronAI\RAG\VectorStore\MariaDBVec
         return $this;
     }
 
-    public function deleteBy(string $sourceType, ?string $sourceName = null): NeuronAI\RAG\VectorStore\VectorStoreInterface
+    public function delete(NeuronAI\RAG\VectorStore\Filter\FilterExpression $filters): NeuronAI\RAG\VectorStore\VectorStoreInterface
     {
-        foreach (BxDolAIVectorStoreMariaDb::DIMENSIONS as $iDimension) {
-            $this->tableName = BxDolAIVectorStoreMariaDb::tableForDimension($iDimension);
-            parent::deleteBy($sourceType, $sourceName);
+        $sCurrent = $this->tableName;
+        try {
+            foreach (BxDolAIVectorStoreMariaDb::DIMENSIONS as $iDimension) {
+                $this->tableName = BxDolAIVectorStoreMariaDb::tableForDimension($iDimension);
+                parent::delete(NeuronAI\RAG\VectorStore\Filter\FilterGroup::and(
+                    NeuronAI\RAG\VectorStore\Filter\Filter::eq('sourceType', $this->sStoreId),
+                    $filters
+                ));
+            }
+        }
+        finally {
+            $this->tableName = $sCurrent;
         }
 
         return $this;
     }
 
-    public function similaritySearch(array $embedding): iterable
+    /**
+     * Searches the table of the query width, limited to this store.
+     */
+    public function search(NeuronAI\RAG\VectorStore\SearchRequest $request): iterable
     {
-        $this->tableName = BxDolAIVectorStoreMariaDb::tableForDimension(count($embedding));
+        $oStoreFilter = NeuronAI\RAG\VectorStore\Filter\Filter::eq('sourceType', $this->sStoreId);
+        $oFilters = $request->filters ? NeuronAI\RAG\VectorStore\Filter\FilterGroup::and($oStoreFilter, $request->filters) : $oStoreFilter;
 
-        $oStatement = $this->pdo->prepare(sprintf(
-            <<<'SQL'
-                SELECT id, content, sourceType, sourceName, metadata,
-                       VEC_DISTANCE_COSINE(embedding, VEC_FromText(:embedding)) AS distance
-                FROM %s
-                WHERE sourceType = :storeId
-                ORDER BY distance ASC
-                LIMIT %d
-                SQL,
-            $this->tableName,
-            $this->topK,
-        ));
-
-        $oStatement->execute([
-            ':embedding' => json_encode($embedding),
-            ':storeId' => $this->sStoreId,
-        ]);
-
-        $aDocuments = [];
-        while ($aRow = $oStatement->fetch(PDO::FETCH_ASSOC)) {
-            $oDocument = new NeuronAI\RAG\Document($aRow['content']);
-            $oDocument->id = $aRow['id'];
-            $oDocument->sourceType = $aRow['sourceType'];
-            $oDocument->sourceName = $aRow['sourceName'];
-            $oDocument->score = NeuronAI\RAG\VectorSimilarity::similarityFromDistance((float)$aRow['distance']);
-
-            $aMetadata = json_decode($aRow['metadata'] ?? '{}', true);
-            if (is_array($aMetadata)) {
-                foreach ($aMetadata as $sKey => $mixedValue) {
-                    if (!in_array($sKey, ['content', 'sourceType', 'sourceName', 'score', 'embedding', 'id'], true))
-                        $oDocument->addMetadata($sKey, $mixedValue);
-                }
-            }
-
-            $aDocuments[] = $oDocument;
+        $sCurrent = $this->tableName;
+        $this->tableName = BxDolAIVectorStoreMariaDb::tableForDimension(count($request->embedding));
+        try {
+            return parent::search(new NeuronAI\RAG\VectorStore\SearchRequest($request->embedding, $oFilters, $request->topK));
         }
-
-        return $aDocuments;
+        finally {
+            $this->tableName = $sCurrent;
+        }
     }
 }
 
