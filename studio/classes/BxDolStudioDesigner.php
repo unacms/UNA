@@ -498,6 +498,84 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SPLASH);
     }
 
+    /**
+     * Designer > Settings: the site template and the default page layouts, each only from what can be chosen.
+     */
+    function submitSettings()
+    {
+        $aValues = [];
+
+        $sTemplate = bx_process_input(bx_get('template'));
+        if(array_key_exists($sTemplate, $this->getSettingsTemplateList()))
+            $aValues['template'] = $sTemplate;
+
+        $aLayouts = $this->getSettingsLayoutList();
+        foreach(['sys_pt_default_visitor', 'sys_pt_default_member'] as $sName) {
+            $iType = (int)bx_get($sName);
+            if(isset($aLayouts[$iType]))
+                $aValues[$sName] = $iType;
+        }
+
+        // As Studio's settings forms save (BxDolStudioOptions::saveChanges): an alert per changed option, then fresh caches.
+        $aCategory = [];
+        BxDolStudioOptionsQuery::getInstance()->getCategories(['type' => 'by_name', 'value' => 'templates'], $aCategory, false); // BX_DOL_STUDIO_STG_CATEGORY_TEMPLATES, defined with BxDolStudioOptions, which this page doesn't load
+        foreach($aValues as $sName => $mixedValue) {
+            $mixedPrior = getParam($sName);
+            if((string)$mixedPrior === (string)$mixedValue)
+                continue;
+
+            setParam($sName, $mixedValue);
+            bx_alert('system', 'save_setting', 0, 0, [
+                'category' => $aCategory,
+                'option' => $sName,
+                'value' => $mixedValue,
+                'value_prior' => $mixedPrior
+            ]);
+        }
+
+        BxDolDb::getInstance()->cacheParams(true, true);
+        $oCacheUtilities = BxDolCacheUtilities::getInstance();
+        $oCacheUtilities->clear('db');
+        $oCacheUtilities->clear('css');
+
+        return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SETTINGS);
+    }
+
+    /**
+     * The templates the site can use: the enabled ones, by URI.
+     */
+    protected function getSettingsTemplateList()
+    {
+        return get_templates_array(true, false);
+    }
+
+    /**
+     * The page layouts a default can be: every page type but Default itself, by id, with a slug from its template file
+     * (pt_standard.html is 'standard'). Standard and Application come first, Without header/footer last.
+     */
+    protected function getSettingsLayoutList()
+    {
+        $aOrder = [BX_PAGE_TYPE_STANDARD => 1, BX_PAGE_TYPE_APPLICATION => 2, BX_PAGE_TYPE_DEFAULT_WO_HF => 4];
+
+        $aResult = [];
+        foreach(BxDolPageQuery::getPageTypes() as $aType) {
+            $iType = (int)$aType['id'];
+            if($iType == BX_PAGE_TYPE_DEFAULT)
+                continue;
+
+            $aResult[$iType] = [
+                'title' => $aType['title'],
+                'slug' => preg_replace('/^pt_|\.html$/', '', $aType['template']),
+            ];
+        }
+
+        uksort($aResult, function($iA, $iB) use ($aOrder) {
+            return (isset($aOrder[$iA]) ? $aOrder[$iA] : 3) <=> (isset($aOrder[$iB]) ? $aOrder[$iB] : 3);
+        });
+
+        return $aResult;
+    }
+
     function submitPwa(&$oForm)
     {
         foreach(['name', 'short_name', 'description', 'background_color', 'theme_color'] as $sKey) {

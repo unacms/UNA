@@ -1,0 +1,17 @@
+<fieldset class="adm-dsg-choice-group">
+    <legend class="sr-only"><bx_text:_adm_dsg_txt_settings_section_template /></legend>
+    <div class="adm-dsg-choices adm-dsg-choices-templates">
+<bx_repeat:templates>
+        <label class="adm-dsg-choice">
+            <span class="adm-dsg-choice-art adm-dsg-template-art">
+                <bx_if:show_icon><img class="adm-dsg-template-icon" src="__icon_url__" alt="" /></bx_if:show_icon>
+                <bx_if:show_letter><span class="adm-dsg-template-letter" aria-hidden="true">__letter__</span></bx_if:show_letter>
+            </span>
+            <span class="adm-dsg-choice-text">
+                <span class="adm-dsg-choice-title"><input type="radio" class="adm-dsg-choice-input" name="template" value="__uri__" __checked__ />__title__<bx_if:show_current> <span class="adm-dsg-choice-badge"><bx_text:_adm_dsg_txt_settings_template_current /></span></bx_if:show_current></span>
+                <span class="adm-dsg-choice-info"><bx_text:_adm_dsg_txt_settings_template_version /> __version__</span>
+            </span>
+        </label>
+</bx_repeat:templates>
+    </div>
+</fieldset>

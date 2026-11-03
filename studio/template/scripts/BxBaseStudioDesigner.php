@@ -32,6 +32,8 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
     protected $sInjectionsEditorId = 'adm-dsg-injections-editor';
     protected $sPwaFormId = 'adm-dsg-pwa-form';
     protected $sPwaIframeId = 'adm-dsg-pwa-iframe';
+    protected $sSettingsFormId = 'adm-dsg-settings-form';
+    protected $sSettingsIframeId = 'adm-dsg-settings-iframe';
 
     public function __construct($sPage = '')
     {
@@ -1331,14 +1333,170 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
 
     protected function getSettings()
     {
-        $oOptions = new BxTemplStudioOptions(BX_DOL_STUDIO_STG_TYPE_SYSTEM, BX_DOL_STUDIO_STG_CATEGORY_TEMPLATES);
+        $oTemplate = BxDolStudioTemplate::getInstance();
 
-        $this->aPageCss = array_merge($this->aPageCss, $oOptions->getCss());
-        $this->aPageJs = array_merge($this->aPageJs, $oOptions->getJs());
-        return BxDolStudioTemplate::getInstance()->parseHtmlByName('designer.html', array(
-            'content' => $oOptions->getCode(),
+        $aForm = [
+            'form_attrs' => [
+                'id' => $this->sSettingsFormId,
+                'name' => $this->sSettingsFormId,
+                'action' => BX_DOL_URL_STUDIO . 'designer.php',
+                'method' => 'post',
+                'enctype' => 'multipart/form-data',
+                'target' => $this->sSettingsIframeId
+            ],
+            'params' => [
+                'db' => [
+                    'table' => '',
+                    'key' => '',
+                    'uri' => '',
+                    'uri_title' => '',
+                    'submit_name' => 'save'
+                ],
+            ],
+            'inputs' => [
+                'page' => [
+                    'type' => 'hidden',
+                    'name' => 'page',
+                    'value' => $this->sPage
+                ],
+                'template_section' => [
+                    'type' => 'block_header',
+                    'name' => 'template_section',
+                    'caption' => _t('_adm_dsg_txt_settings_section_template'),
+                ],
+                'template_info' => [
+                    'type' => 'custom',
+                    'name' => 'template_info',
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_settings_section_template')]),
+                ],
+                'template' => [
+                    'type' => 'custom',
+                    'name' => 'template',
+                    'content' => $this->getSettingsTemplates(),
+                ],
+                'layout_section' => [
+                    'type' => 'block_header',
+                    'name' => 'layout_section',
+                    'caption' => _t('_adm_dsg_txt_settings_section_layout'),
+                ],
+                'layout_info' => [
+                    'type' => 'custom',
+                    'name' => 'layout_info',
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', [
+                        'text' => _t('_adm_dsg_inf_settings_section_layout', BX_DOL_URL_STUDIO . 'builder_page.php')
+                    ]),
+                ],
+            ]
+        ];
+
+        foreach(['visitor', 'member'] as $sWho)
+            $aForm['inputs']['sys_pt_default_' . $sWho] = [
+                'type' => 'custom',
+                'name' => 'sys_pt_default_' . $sWho,
+                'content' => $this->getSettingsLayouts('sys_pt_default_' . $sWho, _t('_adm_dsg_txt_settings_layout_' . $sWho)),
+            ];
+
+        $aForm['inputs'] += [
+            'header_note' => [ // the note under the sections, in a section of its own
+                'type' => 'block_header',
+            ],
+            'note' => [
+                'type' => 'custom',
+                'name' => 'note',
+                'content' => $oTemplate->parseHtmlByName('dsr_logo_note.html', [
+                    'text' => _t('_adm_dsg_txt_settings_note'),
+                    'bx_if:show_link' => [
+                        'condition' => false,
+                        'content' => []
+                    ],
+                ]),
+            ],
+            'header_save' => [ // a section of its own for the Save button: the block footer (page.css) is that last section
+                'type' => 'block_header',
+            ],
+            'save' => [
+                'type' => 'submit',
+                'name' => 'save',
+                'value' => _t('_adm_btn_settings_save'),
+            ]
+        ];
+
+        $oForm = new BxTemplStudioFormView($aForm, $oTemplate);
+        $oForm->initChecker();
+
+        if($oForm->isSubmittedAndValid()) {
+            echo $this->submitSettings();
+            exit;
+        }
+
+        return $oTemplate->parseHtmlByName('designer.html', [
+            'content' => $oTemplate->parseHtmlByName('dsr_splash.html', [
+                'splash_iframe_id' => $this->sSettingsIframeId,
+                'form' => $oForm->getCode()
+            ]),
             'js_content' => $this->getPageJsCode()
-        ));
+        ]);
+    }
+
+    /**
+     * The site template as a choice of cards: each enabled template with its Studio icon, the one in use checked.
+     */
+    protected function getSettingsTemplates()
+    {
+        $sCurrent = getParam('template');
+
+        $aCards = [];
+        foreach($this->getSettingsTemplateList() as $sUri => $aModule) {
+            $sIcon = 'template/images/icons/std-icon.svg';
+            $bIcon = file_exists(BX_DIRECTORY_PATH_MODULES . $aModule['path'] . $sIcon);
+
+            $aCards[] = [
+                'uri' => bx_html_attribute($sUri),
+                'title' => bx_process_output($aModule['title']),
+                'version' => bx_process_output($aModule['version']),
+                'checked' => $sUri == $sCurrent ? 'checked="checked"' : '',
+                'bx_if:show_icon' => [
+                    'condition' => $bIcon,
+                    'content' => ['icon_url' => BX_DOL_URL_MODULES . $aModule['path'] . $sIcon]
+                ],
+                'bx_if:show_letter' => [
+                    'condition' => !$bIcon,
+                    'content' => ['letter' => bx_process_output(get_mb_substr($aModule['title'], 0, 1))]
+                ],
+                'bx_if:show_current' => [
+                    'condition' => $sUri == $sCurrent,
+                    'content' => []
+                ],
+            ];
+        }
+
+        return BxDolStudioTemplate::getInstance()->parseHtmlByName('dsr_settings_templates.html', [
+            'bx_repeat:templates' => $aCards
+        ]);
+    }
+
+    /**
+     * A default page layout as a choice of cards: each layout with a sketch of where the header, menus and footer go.
+     */
+    protected function getSettingsLayouts($sName, $sCaption)
+    {
+        $iCurrent = (int)getParam($sName);
+
+        $aCards = [];
+        foreach($this->getSettingsLayoutList() as $iType => $aType)
+            $aCards[] = [
+                'name' => $sName,
+                'value' => $iType,
+                'slug' => $aType['slug'],
+                'title' => _t($aType['title']),
+                'info' => _t('_adm_dsg_inf_page_type_' . $aType['slug']),
+                'checked' => $iType == $iCurrent ? 'checked="checked"' : '',
+            ];
+
+        return BxDolStudioTemplate::getInstance()->parseHtmlByName('dsr_settings_layouts.html', [
+            'caption' => $sCaption,
+            'bx_repeat:layouts' => $aCards
+        ]);
     }
 
     protected function getOptionId($sName)

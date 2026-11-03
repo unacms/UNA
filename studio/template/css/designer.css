@@ -336,3 +336,215 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     background-clip: content-box;
     padding: 0.75rem;
 }
+
+/*--- Settings: the site template and the default page layouts as cards to pick ---*/
+.adm-dsg-choice-group {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.adm-dsg-choice-group + .adm-dsg-choice-group {
+    margin-top: 1.5rem;
+}
+.adm-dsg-choice-legend {
+    margin-bottom: 0.5rem;
+    padding: 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+}
+.adm-dsg-choices {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    gap: 0.75rem;
+}
+.adm-dsg-choice {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+.adm-dsg-choice:hover {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+.adm-dsg-choice:has(.adm-dsg-choice-input:checked) {
+    box-shadow: 0 0 0 2px #2563eb;
+}
+.adm-dsg-choice:has(.adm-dsg-choice-input:focus-visible) {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+.adm-dsg-choice-input:focus-visible {
+    outline: none; /* the card draws the focus ring */
+}
+/* A real radio, next to the title: it takes focus and arrow keys; the whole card is its label. */
+.adm-dsg-choice-input {
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    margin: 0;
+    accent-color: #2563eb;
+}
+.adm-dsg-choice-art {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 7rem;
+    background-color: #f4f4f5;
+}
+.adm-dsg-choice-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: 0.75rem;
+}
+.adm-dsg-choice-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    color: #18181b;
+}
+.adm-dsg-choice-info {
+    padding-left: 1.5rem; /* under the title, past the radio */
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #52525b;
+}
+.adm-dsg-choice-badge {
+    display: inline-block;
+    padding: 0 0.375rem;
+    border-radius: 9999px;
+    background-color: #dbeafe;
+    color: #1d4ed8;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    vertical-align: 1px;
+}
+.adm-dsg-template-icon {
+    display: block;
+    width: 4rem;
+    height: 4rem;
+}
+.adm-dsg-template-letter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 1rem;
+    background-color: #71717a;
+    color: #fff;
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+/* Page layout sketches: header, side menu, content and footer as blocks, shown or hidden per layout. */
+.adm-dsg-pt {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0.25rem;
+    padding: 0.75rem;
+    box-sizing: border-box;
+}
+.adm-dsg-pt > span,
+.adm-dsg-pt-body > span,
+.adm-dsg-pt-content > span {
+    display: block;
+    border-radius: 0.25rem;
+}
+.adm-dsg-pt-header,
+.adm-dsg-pt-footer {
+    flex: none;
+    height: 0.625rem;
+    background-color: #a1a1aa;
+}
+.adm-dsg-pt-footer {
+    height: 0.375rem;
+    background-color: #d4d4d8;
+}
+.adm-dsg-pt-body {
+    display: flex !important;
+    flex: 1 1 auto;
+    gap: 0.25rem;
+    background: transparent;
+}
+.adm-dsg-pt-side {
+    flex: none;
+    width: 22%;
+    background-color: #a1a1aa;
+}
+.adm-dsg-pt-content {
+    display: flex !important;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.adm-dsg-pt-content > span {
+    flex: 1 1 auto;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+.adm-dsg-pt-standard .adm-dsg-pt-side,
+.adm-dsg-pt-wo_hf .adm-dsg-pt-side,
+.adm-dsg-pt-wo_hf .adm-dsg-pt-header,
+.adm-dsg-pt-wo_hf .adm-dsg-pt-footer {
+    display: none !important;
+}
+.adm-dsg-pt-application .adm-dsg-pt-header {
+    height: 0.375rem;
+}
+.adm-dsg-pt-application .adm-dsg-pt-footer {
+    display: none !important;
+}
+
+.dark .adm-dsg-choice {
+    background-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+.dark .adm-dsg-choice:hover {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+.dark .adm-dsg-choice:has(.adm-dsg-choice-input:checked) {
+    box-shadow: 0 0 0 2px #60a5fa;
+}
+.dark .adm-dsg-choice:has(.adm-dsg-choice-input:focus-visible) {
+    outline-color: #60a5fa;
+}
+.dark .adm-dsg-choice-input {
+    accent-color: #60a5fa;
+}
+.dark .adm-dsg-choice-art {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+.dark .adm-dsg-choice-title {
+    color: #f4f4f5;
+}
+.dark .adm-dsg-choice-info {
+    color: #a1a1aa;
+}
+.dark .adm-dsg-choice-badge {
+    background-color: #172554;
+    color: #93c5fd;
+}
+.dark .adm-dsg-pt-header,
+.dark .adm-dsg-pt-side {
+    background-color: #52525b;
+}
+.dark .adm-dsg-pt-footer {
+    background-color: #3f3f46;
+}
+.dark .adm-dsg-pt-content > span {
+    background-color: #27272a;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+}

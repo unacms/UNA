@@ -813,6 +813,9 @@
 	<string name="_adm_dsg_inf_logo_text"><![CDATA[Read by screen readers, and shown in the header when there is no logo image. Leave empty to use the site name.]]></string>
 	<string name="_adm_dsg_inf_mark_code"><![CDATA[Draws the mark from SVG markup in place of the default image. An uploaded image comes first.]]></string>
 	<string name="_adm_dsg_inf_mark_section"><![CDATA[The compact symbol, shown in the header on phones and tablets.]]></string>
+	<string name="_adm_dsg_inf_page_type_application"><![CDATA[A menu down the side and a slim bar on top, like an app.]]></string>
+	<string name="_adm_dsg_inf_page_type_standard"><![CDATA[The header and site menu across the top, the footer at the bottom.]]></string>
+	<string name="_adm_dsg_inf_page_type_wo_hf"><![CDATA[Only the page content: no header, menus or footer.]]></string>
 	<string name="_adm_dsg_inf_pwa_background_color"><![CDATA[Fills the screen behind the icon while the app starts. Defaults to white.]]></string>
 	<string name="_adm_dsg_inf_pwa_description"><![CDATA[One or two sentences about the site. Some install prompts show it.]]></string>
 	<string name="_adm_dsg_inf_pwa_name"><![CDATA[Shown when installing and in the list of apps. Defaults to the site name.]]></string>
@@ -826,6 +829,8 @@
 	<string name="_adm_dsg_inf_pwa_sw_enable"><![CDATA[When you change the site styles or scripts, visitors get the new ones the next time they open the site.]]></string>
 	<string name="_adm_dsg_inf_pwa_sw_offline"><![CDATA[Shown instead of the browser error when there is no connection: an address on this site, such as page.php?i=about. Leave it empty to use the browser page.]]></string>
 	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Colors the app title bar and, on phones, the status bar. Defaults to the color your template sets.]]></string>
+	<string name="_adm_dsg_inf_settings_section_layout"><![CDATA[Where the header, menus and footer go around the content of a page. Pages with a layout of their own in <a href="{0}">Pages</a> keep it; all the others use the ones below.]]></string>
+	<string name="_adm_dsg_inf_settings_section_template"><![CDATA[The template draws the whole site: its header, menus, colors and fonts. Everyone sees this one unless they pick another enabled template themselves.]]></string>
 	<string name="_adm_dsg_inf_splash_section_code"><![CDATA[HTML for the page. These placeholders are filled in when the page is shown: <code>__logo__</code> the site logo, <code>__join_form_in_box__</code> and <code>__login_form_in_box__</code> the sign-up and sign-in forms in a box, <code>__join_form__</code> and <code>__login_form__</code> the same forms without one, <code>__join_link__</code> and <code>__login_link__</code> their addresses, <code>{site_title}</code> the site name.]]></string>
 	<string name="_adm_dsg_inf_splash_section_landing"><![CDATA[Guests who open the home page see this page instead. Members who are signed in still see the home page.]]></string>
 	<string name="_adm_dsg_inf_splash_section_preview"><![CDATA[How guests see the page. Preview changes shows the code from the editor before you save it.]]></string>
@@ -876,6 +881,13 @@
 	<string name="_adm_dsg_txt_pwa_sw_enable"><![CDATA[Use a service worker]]></string>
 	<string name="_adm_dsg_txt_pwa_sw_offline"><![CDATA[Offline page]]></string>
 	<string name="_adm_dsg_txt_pwa_theme_color"><![CDATA[Window color]]></string>
+	<string name="_adm_dsg_txt_settings_layout_member"><![CDATA[For members]]></string>
+	<string name="_adm_dsg_txt_settings_layout_visitor"><![CDATA[For visitors]]></string>
+	<string name="_adm_dsg_txt_settings_note"><![CDATA[Without header/footer leaves no menus for moving around the site. Set it for single pages in Pages rather than as a default.]]></string>
+	<string name="_adm_dsg_txt_settings_section_layout"><![CDATA[Page layout]]></string>
+	<string name="_adm_dsg_txt_settings_section_template"><![CDATA[Site template]]></string>
+	<string name="_adm_dsg_txt_settings_template_current"><![CDATA[In use]]></string>
+	<string name="_adm_dsg_txt_settings_template_version"><![CDATA[Version]]></string>
 	<string name="_adm_dsg_txt_alt_text"><![CDATA[Logo Text]]></string>
 	<string name="_adm_dsg_txt_cover_common"><![CDATA[Default pages cover]]></string>
 	<string name="_adm_dsg_txt_cover_unit_profile"><![CDATA[Default profile unit cover]]></string>

@@ -807,6 +807,9 @@
 	<string name="_adm_dsg_inf_logo_text"><![CDATA[Его читают экранные дикторы, и он показывается в шапке, когда нет изображения логотипа. Оставьте пустым, чтобы использовать название сайта.]]></string>
 	<string name="_adm_dsg_inf_mark_code"><![CDATA[Рисует знак из SVG-разметки вместо изображения по умолчанию. Загруженное изображение важнее.]]></string>
 	<string name="_adm_dsg_inf_mark_section"><![CDATA[Компактный символ: показывается в шапке на телефонах и планшетах.]]></string>
+	<string name="_adm_dsg_inf_page_type_application"><![CDATA[Меню сбоку и узкая панель сверху, как в приложении.]]></string>
+	<string name="_adm_dsg_inf_page_type_standard"><![CDATA[Шапка и меню сайта сверху, подвал внизу.]]></string>
+	<string name="_adm_dsg_inf_page_type_wo_hf"><![CDATA[Только содержимое страницы: без шапки, меню и подвала.]]></string>
 	<string name="_adm_dsg_inf_pwa_background_color"><![CDATA[Заполняет экран за иконкой, пока приложение запускается. По умолчанию белый.]]></string>
 	<string name="_adm_dsg_inf_pwa_description"><![CDATA[Одно-два предложения о сайте. Его показывают некоторые окна установки.]]></string>
 	<string name="_adm_dsg_inf_pwa_name"><![CDATA[Показывается при установке и в списке приложений. По умолчанию — название сайта.]]></string>
@@ -820,6 +823,8 @@
 	<string name="_adm_dsg_inf_pwa_sw_enable"><![CDATA[Когда вы меняете стили или скрипты сайта, посетители получают новые при следующем открытии сайта.]]></string>
 	<string name="_adm_dsg_inf_pwa_sw_offline"><![CDATA[Показывается вместо ошибки браузера, когда нет связи: адрес на этом сайте, например page.php?i=about. Оставьте пустым, чтобы показывать страницу браузера.]]></string>
 	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Цвет заголовка окна приложения, а на телефонах — строки состояния. По умолчанию — цвет, заданный шаблоном.]]></string>
+	<string name="_adm_dsg_inf_settings_section_layout"><![CDATA[Где вокруг содержимого страницы стоят шапка, меню и подвал. Страницы со своим макетом в разделе <a href="{0}">Страницы</a> сохраняют его, остальные используют макеты ниже.]]></string>
+	<string name="_adm_dsg_inf_settings_section_template"><![CDATA[Шаблон отвечает за весь вид сайта: шапку, меню, цвета и шрифты. Все видят этот шаблон, если сами не выбрали другой включённый.]]></string>
 	<string name="_adm_dsg_inf_splash_section_code"><![CDATA[HTML страницы. Эти подстановки заменяются при показе страницы: <code>__logo__</code> — логотип сайта, <code>__join_form_in_box__</code> и <code>__login_form_in_box__</code> — формы регистрации и входа в блоке, <code>__join_form__</code> и <code>__login_form__</code> — те же формы без блока, <code>__join_link__</code> и <code>__login_link__</code> — их адреса, <code>{site_title}</code> — название сайта.]]></string>
 	<string name="_adm_dsg_inf_splash_section_landing"><![CDATA[Гости, открывшие главную страницу, видят вместо неё эту страницу. Участники, которые вошли на сайт, по-прежнему видят главную.]]></string>
 	<string name="_adm_dsg_inf_splash_section_preview"><![CDATA[Так страницу видят гости. «Показать изменения» показывает код из редактора до сохранения.]]></string>
@@ -870,6 +875,13 @@
 	<string name="_adm_dsg_txt_pwa_sw_enable"><![CDATA[Использовать service worker]]></string>
 	<string name="_adm_dsg_txt_pwa_sw_offline"><![CDATA[Офлайн-страница]]></string>
 	<string name="_adm_dsg_txt_pwa_theme_color"><![CDATA[Цвет окна]]></string>
+	<string name="_adm_dsg_txt_settings_layout_member"><![CDATA[Для участников]]></string>
+	<string name="_adm_dsg_txt_settings_layout_visitor"><![CDATA[Для гостей]]></string>
+	<string name="_adm_dsg_txt_settings_note"><![CDATA[Макет без шапки и подвала не оставляет меню для перехода по сайту. Задавайте его отдельным страницам в разделе Страницы, а не по умолчанию.]]></string>
+	<string name="_adm_dsg_txt_settings_section_layout"><![CDATA[Макет страниц]]></string>
+	<string name="_adm_dsg_txt_settings_section_template"><![CDATA[Шаблон сайта]]></string>
+	<string name="_adm_dsg_txt_settings_template_current"><![CDATA[Используется]]></string>
+	<string name="_adm_dsg_txt_settings_template_version"><![CDATA[Версия]]></string>
 	<string name="_adm_dsg_txt_alt_text"><![CDATA[Текст лого]]></string>
 	<string name="_adm_dsg_txt_cover_common"><![CDATA[Стандартная обложка страницы]]></string>
 	<string name="_adm_dsg_txt_cover_unit_profile"><![CDATA[Стандартная обложка миниатюры профиля]]></string>
