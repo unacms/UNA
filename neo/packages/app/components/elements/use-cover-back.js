@@ -25,12 +25,14 @@ export function useCoverBackTabKey() {
     return getTabKeyFromPathname(pathKey)
 }
 
-/** A page's path without origin, query or slashes at its ends (`https://x/u/me?a=1` → `u/me`). */
+/** A page's path without origin, query or empty segments (`https://x/u/me?a=1` → `u/me`). */
 function pagePath(url) {
     return String(url || '')
         .replace(/^https?:\/\/[^/]+/i, '')
         .split(/[?#]/)[0]
-        .replace(/^\/+|\/+$/g, '')
+        .split('/')
+        .filter(Boolean)
+        .join('/')
 }
 
 /**

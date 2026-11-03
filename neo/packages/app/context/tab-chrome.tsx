@@ -14,7 +14,7 @@ const ScreenPagePathContext = createContext<string | null>(null);
  * of one tab are mounted. `pushed`: the screen has a page below it to go back to.
  * `pagePath`: the page the screen shows now (a tab root swaps it in place).
  */
-export function TabChromeProvider({ tabKey, pushed = false, pagePath = null, children }: { tabKey?: string | null; pushed?: boolean; pagePath?: string | null; children?: ReactNode }) {
+export function TabChromeProvider({ tabKey, pushed = false, pagePath = null, children }: Readonly<{ tabKey?: string | null; pushed?: boolean; pagePath?: string | null; children?: ReactNode }>) {
     return (
         <TabChromeContext.Provider value={tabKey || WEB_CHROME_KEY}>
             <PushedScreenContext.Provider value={pushed}>
