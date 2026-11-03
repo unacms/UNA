@@ -762,6 +762,7 @@
         <string name="_adm_dsg_btn_cover_remove_cover_common"><![CDATA[Удалить обложку страницы]]></string>
         <string name="_adm_dsg_btn_cover_remove_cover_unit_profile"><![CDATA[Удалить обложку карточки профиля]]></string>
         <string name="_adm_dsg_btn_delete"><![CDATA[Удалить]]></string>
+	<string name="_adm_dsg_btn_fullscreen_done"><![CDATA[Готово]]></string>
 	<string name="_adm_dsg_btn_icon_remove_icon"><![CDATA[Удалить favicon.ico]]></string>
 	<string name="_adm_dsg_btn_icon_remove_icon_android"><![CDATA[Удалить иконку для Android]]></string>
 	<string name="_adm_dsg_btn_icon_remove_icon_android_splash"><![CDATA[Удалить изображение экрана запуска Android]]></string>
@@ -773,7 +774,9 @@
 	<string name="_adm_dsg_btn_logo_remove_mark"><![CDATA[Удалить знак светлой темы]]></string>
 	<string name="_adm_dsg_btn_logo_remove_mark_dark"><![CDATA[Удалить знак тёмной темы]]></string>
 	<string name="_adm_dsg_btn_make_default"><![CDATA[Сделать основным]]></string>
+	<string name="_adm_dsg_btn_splash_code_fullscreen"><![CDATA[Редактировать на весь экран]]></string>
 	<string name="_adm_dsg_btn_splash_preview"><![CDATA[Показать изменения]]></string>
+	<string name="_adm_dsg_btn_splash_preview_fullscreen"><![CDATA[Просмотр на весь экран]]></string>
 	<string name="_adm_dsg_cnf_logo_remove"><![CDATA[Удалить это изображение? Оно будет удалено безвозвратно.]]></string>
 	<string name="_adm_dsg_dsc_alt_text"><![CDATA[Используется для дополнительного текста для лого-картинки. Используется в качестве лого, если картинка не загружена.]]></string>
 	<string name="_adm_dsg_dsc_splash_warning"><![CDATA[Заметьте, что неправильное применение HTML может испортить дизайн сайта.]]></string>
@@ -897,6 +900,12 @@
         <string name="_adm_dsg_txt_upload_mark"><![CDATA[Изображение метки]]></string>
         <string name="_adm_dsg_txt_upload_mark_dark"><![CDATA[Изображение метки (для темного режима)]]></string>
         <string name="_adm_dsg_txt_upload_mark_inline"><![CDATA[Изображение метки (встроенный, низкий приоритет)]]></string>
+	<string name="_adm_dsg_txt_viewport"><![CDATA[Размер экрана]]></string>
+	<string name="_adm_dsg_txt_viewport_custom"><![CDATA[Свой]]></string>
+	<string name="_adm_dsg_txt_viewport_desktop"><![CDATA[Компьютер]]></string>
+	<string name="_adm_dsg_txt_viewport_mobile"><![CDATA[Телефон]]></string>
+	<string name="_adm_dsg_txt_viewport_tablet"><![CDATA[Планшет]]></string>
+	<string name="_adm_dsg_txt_viewport_width"><![CDATA[Ширина]]></string>
 	<string name="_adm_dsg_txt_inj_head"><![CDATA[&lt;HEAD&gt; инъекция]]></string>
 	<string name="_adm_dsg_txt_inj_head_inf"><![CDATA[Код для вставки перед закрывающим HEAD тагом]]></string>
 	<string name="_adm_dsg_txt_inj_body"><![CDATA[&lt;BODY&gt; инъекция]]></string>

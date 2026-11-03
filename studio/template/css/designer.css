@@ -74,3 +74,181 @@ span.bx-dsg-template-version {
     background-color: #f4f4f5;
     color-scheme: light;
 }
+
+/*--- Full-screen code editor and preview (Landing): native modal dialogs ---*/
+dialog.adm-dsg-fullscreen {
+    box-sizing: border-box;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background-color: #fff;
+    color: #18181b;
+}
+dialog.adm-dsg-fullscreen[open] {
+    display: flex;
+    flex-direction: column;
+}
+dialog.adm-dsg-fullscreen::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+html:has(dialog.adm-dsg-fullscreen[open]) {
+    overflow: hidden;
+}
+.adm-dsg-fs-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1);
+}
+.adm-dsg-fs-title {
+    margin: 0 auto 0 0;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+}
+.adm-dsg-fs-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+.adm-dsg-fs-body {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+.adm-dsg-fs-code .CodeMirror {
+    height: 100%;
+}
+.adm-dsg-code-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+/* Viewport presets: a segmented control, the pressed one raised. */
+.adm-dsg-fs-viewports {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border-radius: 0.75rem;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+.adm-dsg-fs-vp {
+    min-height: 2.25rem;
+    padding: 0 0.75rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: #52525b;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    cursor: pointer;
+}
+.adm-dsg-fs-vp:hover {
+    color: #18181b;
+}
+.adm-dsg-fs-vp[aria-pressed="true"] {
+    background-color: #fff;
+    color: #18181b;
+    font-weight: 500;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+}
+.adm-dsg-fs-width {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #52525b;
+}
+.adm-dsg-fs-width-input {
+    box-sizing: border-box;
+    width: 6rem;
+    min-height: 2.25rem;
+    padding: 0 0.5rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background-color: #fff;
+    color: #18181b;
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+/* The page at the chosen width, centred. A width wider than the stage is scaled down to fit
+   (designer.js sets the scale and the fit box's size); at full size the corner handle drags it. */
+.adm-dsg-fs-stage {
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    padding: 1rem;
+    background-color: #f4f4f5;
+}
+.adm-dsg-fs-fit {
+    position: relative;
+    flex: none;
+    height: 100%;
+}
+.adm-dsg-fs-viewport {
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    width: 1280px;
+    min-width: 320px;
+    height: 100%;
+    overflow: hidden;
+    resize: horizontal;
+    transform-origin: 0 0;
+    border-radius: 0.75rem;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+.adm-dsg-fs-viewport.adm-dsg-fs-scaled {
+    resize: none;
+}
+.adm-dsg-fs-scale {
+    font-variant-numeric: tabular-nums;
+}
+.adm-dsg-fs-viewport iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.dark dialog.adm-dsg-fullscreen {
+    background-color: #18181b;
+    color: #f4f4f5;
+}
+.dark .adm-dsg-fs-header {
+    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.1);
+}
+.dark .adm-dsg-fs-viewports {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+.dark .adm-dsg-fs-vp,
+.dark .adm-dsg-fs-width {
+    color: #a1a1aa;
+}
+.dark .adm-dsg-fs-vp:hover,
+.dark .adm-dsg-fs-vp[aria-pressed="true"] {
+    color: #f4f4f5;
+}
+.dark .adm-dsg-fs-vp[aria-pressed="true"],
+.dark .adm-dsg-fs-width-input {
+    background-color: #3f3f46;
+    color: #f4f4f5;
+}
+.dark .adm-dsg-fs-width-input {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+.dark .adm-dsg-fs-stage {
+    background-color: #09090b;
+}
+.dark .adm-dsg-fs-viewport {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}

@@ -868,6 +868,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         $oTemplate = BxDolStudioTemplate::getInstance();
 
         $sPreviewUrl = BX_DOL_URL_ROOT . 'splash.php?preview=1';
+        $sPreviewDialogId = $this->sSplashIframeId . '-fullscreen';
 
         $aForm = [
             'form_attrs' => [
@@ -930,6 +931,17 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     'caption' => _t('_adm_dsg_txt_splash_code'),
                     'value' => getParam('sys_site_splash_code'),
                 ],
+                'code_tools' => [
+                    'type' => 'custom',
+                    'name' => 'code_tools',
+                    'content' => $oTemplate->parseHtmlByName('dsr_splash_code.html', [
+                        'js_object' => $this->getPageJsObject(),
+                        'dialog_id' => $this->sSplashEditorId . '-fullscreen',
+                        'preview_dialog_id' => $sPreviewDialogId,
+                        'preview_frame_id' => $sPreviewDialogId . '-frame',
+                        'preview_url' => $sPreviewUrl,
+                    ]),
+                ],
                 'preview_section' => [
                     'type' => 'block_header',
                     'name' => 'preview_section',
@@ -947,6 +959,8 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                         'js_object' => $this->getPageJsObject(),
                         'preview_url' => $sPreviewUrl,
                         'frame_id' => $this->sSplashIframeId . '-preview',
+                        'dialog_id' => $sPreviewDialogId,
+                        'dialog_frame_id' => $sPreviewDialogId . '-frame',
                     ]),
                 ],
                 'header_note' => [ // the warning under the sections, in a section of its own

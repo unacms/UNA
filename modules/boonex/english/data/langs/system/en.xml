@@ -768,6 +768,7 @@
 	<string name="_adm_dsg_btn_cover_remove_cover_common"><![CDATA[Remove the page cover]]></string>
 	<string name="_adm_dsg_btn_cover_remove_cover_unit_profile"><![CDATA[Remove the profile card cover]]></string>
 	<string name="_adm_dsg_btn_delete"><![CDATA[Delete]]></string>
+	<string name="_adm_dsg_btn_fullscreen_done"><![CDATA[Done]]></string>
 	<string name="_adm_dsg_btn_icon_remove_icon"><![CDATA[Remove favicon.ico]]></string>
 	<string name="_adm_dsg_btn_icon_remove_icon_android"><![CDATA[Remove the Android icon]]></string>
 	<string name="_adm_dsg_btn_icon_remove_icon_android_splash"><![CDATA[Remove the Android launch screen image]]></string>
@@ -779,7 +780,9 @@
 	<string name="_adm_dsg_btn_logo_remove_mark"><![CDATA[Remove the light mode mark]]></string>
 	<string name="_adm_dsg_btn_logo_remove_mark_dark"><![CDATA[Remove the dark mode mark]]></string>
 	<string name="_adm_dsg_btn_make_default"><![CDATA[Make Default]]></string>
+	<string name="_adm_dsg_btn_splash_code_fullscreen"><![CDATA[Edit in full screen]]></string>
 	<string name="_adm_dsg_btn_splash_preview"><![CDATA[Preview changes]]></string>
+	<string name="_adm_dsg_btn_splash_preview_fullscreen"><![CDATA[Preview in full screen]]></string>
 	<string name="_adm_dsg_cnf_logo_remove"><![CDATA[Remove this image? It will be deleted.]]></string>
 	<string name="_adm_dsg_dsc_alt_text"><![CDATA[Serves as "ALT" text for logo image. Used as a logo when no logo image is uploaded.]]></string>
 	<string name="_adm_dsg_dsc_splash_warning"><![CDATA[Note, that improper use of HTML may break the site layout.]]></string>
@@ -903,6 +906,12 @@
         <string name="_adm_dsg_txt_upload_mark"><![CDATA[Mark Image]]></string>
         <string name="_adm_dsg_txt_upload_mark_dark"><![CDATA[Mark Image (for Dark mode)]]></string>
         <string name="_adm_dsg_txt_upload_mark_inline"><![CDATA[Mark Image (inline, low priority)]]></string>
+	<string name="_adm_dsg_txt_viewport"><![CDATA[Viewport]]></string>
+	<string name="_adm_dsg_txt_viewport_custom"><![CDATA[Custom]]></string>
+	<string name="_adm_dsg_txt_viewport_desktop"><![CDATA[Desktop]]></string>
+	<string name="_adm_dsg_txt_viewport_mobile"><![CDATA[Mobile]]></string>
+	<string name="_adm_dsg_txt_viewport_tablet"><![CDATA[Tablet]]></string>
+	<string name="_adm_dsg_txt_viewport_width"><![CDATA[Width]]></string>
 	<string name="_adm_dsg_txt_inj_head"><![CDATA[&lt;HEAD&gt; injection]]></string>
 	<string name="_adm_dsg_txt_inj_head_inf"><![CDATA[Code to insert before closing HEAD tag]]></string>
 	<string name="_adm_dsg_txt_inj_body"><![CDATA[&lt;BODY&gt; injection]]></string>
