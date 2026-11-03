@@ -20,7 +20,6 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_profile_i
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_profile_pricing' AND `module`='bx_spaces' AND `title_system`='_bx_spaces_page_block_title_system_profile_pricing' AND `title`='_bx_spaces_page_block_title_profile_pricing_link';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_fans' AND `module`='bx_spaces' AND `title_system`='_bx_spaces_page_block_title_system_fans' AND `title`='_bx_spaces_page_block_title_fans_link';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_fans' AND `module`='bx_spaces' AND `title_system`='_bx_spaces_page_block_title_system_invites' AND `title`='_bx_spaces_page_block_title_fans_invites';
-UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_home' AND `module`='bx_spaces' AND `title_system`='' AND `title`='_bx_spaces_page_block_title_featured_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_home' AND `module`='bx_spaces' AND `title_system`='' AND `title`='_bx_spaces_page_block_title_latest_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_top' AND `module`='bx_spaces' AND `title_system`='' AND `title`='_bx_spaces_page_block_title_top_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_search' AND `module`='bx_spaces' AND `title_system`='' AND `title`='_bx_spaces_page_block_title_search_form';

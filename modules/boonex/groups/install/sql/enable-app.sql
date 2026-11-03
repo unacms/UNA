@@ -18,7 +18,6 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_groups_join_prof
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_groups_profile_info' AND `module`='bx_groups' AND `title_system`='_bx_groups_page_block_title_system_profile_info' AND `title`='_bx_groups_page_block_title_profile_info_link';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_groups_profile_info' AND `module`='bx_groups' AND `title_system`='' AND `title`='_bx_groups_page_block_title_profile_description';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_groups_profile_pricing' AND `module`='bx_groups' AND `title_system`='_bx_groups_page_block_title_system_profile_pricing' AND `title`='_bx_groups_page_block_title_profile_pricing_link';
-UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_groups_home' AND `module`='bx_groups' AND `title_system`='' AND `title`='_bx_groups_page_block_title_featured_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_groups_home' AND `module`='bx_groups' AND `title_system`='' AND `title`='_bx_groups_page_block_title_latest_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_groups_top' AND `module`='bx_groups' AND `title_system`='' AND `title`='_bx_groups_page_block_title_top_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_groups_search' AND `module`='bx_groups' AND `title_system`='' AND `title`='_bx_groups_page_block_title_search_form';
