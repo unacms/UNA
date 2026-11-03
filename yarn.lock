@@ -2251,10 +2251,10 @@ highlight.js@~11.11.0:
   resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-11.11.2.tgz#f53a9178171212014ae428a9771749dd2cc65847"
   integrity sha512-oaXMACAU0kzOMXBjWpNcX+vlwSBCIAiZ9BHa7gA15NOTtT2L/l8OSZDuqS2XppOhZBPJ7hm4o8ep2kyuip2uEQ==
 
-hls.js@^1.7.3:
-  version "1.7.3"
-  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.7.3.tgz#79a3338dd2e78fe63fc2ba6cfebdf5e34495537a"
-  integrity sha512-MsPlx6yVW4Qv4C7mEVou4/gk/5cN2dVxOTnrNjPSmyH2f0Ln+/UkG10Ax1PE6OvrmTVPKgQYozTtBaPOuCzq7A==
+hls.js@^1.7.4:
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.7.4.tgz#1857f0cf1b849da5d7ea86b42bce8a321bf912de"
+  integrity sha512-3GlxGdPvT2YHvQYOt+yOzT/DEior/qJVNIylHA77kgeoBTdQQqi70GwefNEUmHQeNGyjC8U62+bruqW/Tpm+tg==
 
 hosted-git-info@^10.1.0, hosted-git-info@^10.1.1:
   version "10.1.1"
