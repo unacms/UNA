@@ -90,6 +90,6 @@ export function useCoverMorphDriver({
             if (!coverScrollY) return
             runOnJS(applyScroll)(y)
         },
-        [applyScroll, coverScrollY],
+        // No deps: native ignores them (and warns); the Babel plugin collects the closure.
     )
 }

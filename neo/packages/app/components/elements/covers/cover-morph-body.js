@@ -200,11 +200,9 @@ export function CoverMorphBody({
                                     profileData={profileData}
                                     allowEdit={bAllowEdit}
                                     allowSwitch={isAllowSwitch}
-                                    // Web: back lives in the collapsed morph bar only.
-                                    // Native: page header is hidden on profile — keep back on the cover.
-                                    suppressCoverBackButton={
-                                        suppressCoverBackButton || Platform.OS === 'web'
-                                    }
+                                    // The page header is hidden on a cover page: Back is on the cover,
+                                    // expanded and collapsed alike, where `useShowCoverBackButton` allows it.
+                                    suppressCoverBackButton={suppressCoverBackButton}
                                     priority
                                 />
                             </View>
