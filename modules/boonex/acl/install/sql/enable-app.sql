@@ -10,3 +10,4 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_acl_view' AND `m
 
 -- MENUS: active_api
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_settings' AND `module`='bx_acl' AND `name`='acl-view';
+UPDATE `sys_menu_items` SET `config_api`='{"group":"profile"}' WHERE `set_name`='sys_account_settings' AND `module`='bx_acl' AND `name`='acl-view';

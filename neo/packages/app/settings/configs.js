@@ -52,8 +52,9 @@ export const settingsConfigs = {
     },
     dashboard: {
         url: '/dashboard',
-        // UNA's account settings (email, password, notifications ...); empty hides the dashboard's link.
-        settings_url: '/account-settings-email',
+        // UNA's Settings page, which lists every settings page (email, password, notifications ...);
+        // empty hides the dashboard's link.
+        settings_url: '/settings',
         switch_theme: true,
         modules_list: [
             'friends',

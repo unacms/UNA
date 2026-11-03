@@ -1430,7 +1430,7 @@ class BxBaseServiceProfiles extends BxDol
         if ($oMenuSubmenu) {
             $oMenuSubmenu->setObjectSubmenu('sys_account_settings_submenu', array (
                 'title' => _t('_sys_menu_item_title_account_settings'),
-                'link' => BX_DOL_URL_ROOT . 'member.php',
+                'link' => bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=settings')),
                 'icon' => '',
             ));
         }
