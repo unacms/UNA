@@ -15,17 +15,22 @@
  */
 (function() {
     var sHosts = '.bx-std-widget-link, .bx-menu-top-center li > a, .bx-menu-breadcrumb li.bx-menu-bc-page > a';
-    var oFiles = {}; // url => promise of the file's markup, '' for a file without an animation
+    var oFiles = {}; // url => promise of the file's markup, '' for a file without an animation, null when the request failed
     var iCopies = 0;
 
+    // A failed request is forgotten, so the next hover asks again; a file without an animation is remembered as such.
     function load(sUrl) {
         if(!oFiles[sUrl])
             oFiles[sUrl] = fetch(sUrl, {credentials: 'same-origin'}).then(function(oResponse) {
-                return oResponse.ok ? oResponse.text() : '';
+                if(!oResponse.ok)
+                    throw new Error(oResponse.status);
+
+                return oResponse.text();
             }).then(function(s) {
                 return s.indexOf('class="icon v-') != -1 ? s : '';
             }).catch(function() {
-                return '';
+                delete oFiles[sUrl];
+                return null;
             });
 
         return oFiles[sUrl];
@@ -51,6 +56,8 @@
 
         oHost.bxAppIcon = true;
         load(oImg.src).then(function(s) {
+            if(s === null)
+                oHost.bxAppIcon = false; // try again on the next hover
             if(!s || !oImg.parentNode)
                 return;
 
