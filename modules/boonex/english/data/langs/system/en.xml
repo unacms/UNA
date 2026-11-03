@@ -923,8 +923,6 @@
 	<string name="_adm_dsg_txt_tmpl_page_about"><![CDATA[About]]></string>
 	<string name="_adm_dsg_txt_tmpl_page_explore"><![CDATA[Explore]]></string>
 	<string name="_adm_dsg_txt_tmpl_page_home"><![CDATA[Home]]></string>
-	<string name="_adm_dsg_txt_tmpl_page_join"><![CDATA[Join]]></string>
-	<string name="_adm_dsg_txt_tmpl_page_login"><![CDATA[Sign in]]></string>
 	<string name="_adm_dsg_txt_tmpl_page_other"><![CDATA[Other page]]></string>
 	<string name="_adm_dsg_txt_tmpl_page_people"><![CDATA[People]]></string>
 	<string name="_adm_dsg_txt_tmpl_page_profile"><![CDATA[Your profile]]></string>

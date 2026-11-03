@@ -226,7 +226,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
     }
 
     /**
-     * Pages worth seeing a template on: the home page, system pages, the viewer's own profile, and the home pages of
+     * Pages worth seeing a template on: the home page, Explore and About, the viewer's own profile, and the home pages of
      * People and Timeline when they are on.
      * @return array of ['url' => ..., 'title' => ...], the home page first
      */
@@ -248,7 +248,8 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         if(($oProfile = BxDolProfile::getInstance()) && ($sProfileUrl = $oProfile->getUrl()))
             $aPages[] = ['url' => $sProfileUrl, 'title' => _t('_adm_dsg_txt_tmpl_page_profile')];
 
-        foreach(['explore' => 'explore', 'about' => 'about', 'login' => 'login', 'create-account' => 'join'] as $sUri => $sKey)
+        // Not Sign in or Join: the frame shows the site signed in, as the admin, and those send a member home.
+        foreach(['explore' => 'explore', 'about' => 'about'] as $sUri => $sKey)
             $aPages[] = ['url' => $fPage($sUri), 'title' => _t('_adm_dsg_txt_tmpl_page_' . $sKey)];
 
         return $aPages;

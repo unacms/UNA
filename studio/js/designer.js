@@ -321,6 +321,9 @@ BxDolStudioDesigner.prototype.initTemplateViewer = function(oViewer) {
     this.syncPreviewViewport(oViewer);
 
     $(oViewer).find('.adm-dsg-tmpl-frame').on('load', function() {
+        if($this.restoreTemplateInFrame(oViewer, this))
+            return;
+
         $this.keepTemplateInFrame(oViewer, this);
         $this.syncTemplatePage(oViewer, this);
     });
@@ -360,6 +363,34 @@ BxDolStudioDesigner.prototype.syncTemplatePage = function(oViewer, oFrame) {
     if(!oOther.length)
         oOther = $('<option class="adm-dsg-tmpl-page-other" value="" disabled></option>').text(oSelect.attr('data-other')).appendTo(oSelect);
     oOther.prop('selected', true);
+};
+
+/**
+ * A redirect (a page that sends a signed-in member home, say) drops ?skin=...&preview=1, and the frame would show the
+ * default template under another's name: reload that page in the previewed template, once per address.
+ * @return true when the frame is being reloaded
+ */
+BxDolStudioDesigner.prototype.restoreTemplateInFrame = function(oViewer, oFrame) {
+    var oUrl = null;
+    try {
+        oUrl = new URL(oFrame.contentWindow.location.href);
+    }
+    catch(e) {
+        return false;
+    }
+
+    var sTemplate = $(oViewer).attr('data-template');
+    if(oUrl.origin != window.location.origin || oUrl.searchParams.get('skin') == sTemplate)
+        return false;
+
+    oUrl.searchParams.set('skin', sTemplate);
+    oUrl.searchParams.set('preview', '1');
+    if($(oViewer).attr('data-restored') == oUrl.toString())
+        return false; // the page drops the template again: show what it gives rather than loop
+
+    $(oViewer).attr('data-restored', oUrl.toString());
+    oFrame.contentWindow.location.replace(oUrl.toString());
+    return true;
 };
 
 /**

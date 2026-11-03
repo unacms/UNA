@@ -917,8 +917,6 @@
 	<string name="_adm_dsg_txt_tmpl_page_about"><![CDATA[О сайте]]></string>
 	<string name="_adm_dsg_txt_tmpl_page_explore"><![CDATA[Обзор]]></string>
 	<string name="_adm_dsg_txt_tmpl_page_home"><![CDATA[Главная]]></string>
-	<string name="_adm_dsg_txt_tmpl_page_join"><![CDATA[Регистрация]]></string>
-	<string name="_adm_dsg_txt_tmpl_page_login"><![CDATA[Вход]]></string>
 	<string name="_adm_dsg_txt_tmpl_page_other"><![CDATA[Другая страница]]></string>
 	<string name="_adm_dsg_txt_tmpl_page_people"><![CDATA[Люди]]></string>
 	<string name="_adm_dsg_txt_tmpl_page_profile"><![CDATA[Ваш профиль]]></string>
