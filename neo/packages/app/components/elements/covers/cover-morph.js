@@ -138,7 +138,9 @@ export default function CoverMorph({
             {leading}
             <Animated.View
                 className={coverBaseClass}
-                style={translateStyle}
+                // Collapsed, the image is gone and the compact bar is the top of the screen: it clears
+                // the status bar itself (expanded, the image runs under it on purpose).
+                style={[translateStyle, collapsed && stickyTop > 0 ? { paddingTop: stickyTop } : null]}
                 onLayout={onInnerLayout}
             >
                 <CoverMorphBody
