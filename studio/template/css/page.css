@@ -41,10 +41,12 @@ div.bx-std-block {
  * thumb down the right edge and round the 24px bottom corner (the top one too when nothing sits above the scroll box), like a bar that
  * follows the panel's shape; the thumb shows while the pointer is over the block or the content scrolls.
  */
-div.bx-std-block-content {
-    scrollbar-width: none;
+div.bx-std-block-content,
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"]) > .bx-form-advanced-wrapper {
+    scrollbar-width: none; /* the forms that scroll inside their block (Options forms below) get the same overlay bar, so opening a section shifts nothing */
 }
-div.bx-std-block-content::-webkit-scrollbar {
+div.bx-std-block-content::-webkit-scrollbar,
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"]) > .bx-form-advanced-wrapper::-webkit-scrollbar {
     display: none;
 }
 svg.bx-std-scrollbar {
