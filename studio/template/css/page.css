@@ -307,6 +307,11 @@ form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-i
     background-color: #f5f5f7; /* gray-200 page + the block's white/60, so the sticky row matches the block around it */
     box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.05);
 }
+/* Code editors stack their scrollbars and gutter up to z-index 6; isolated, those stay inside
+   the editor and the footer above scrolls over it. */
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"]) .CodeMirror {
+    isolation: isolate;
+}
 form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child) .bx-form-section-content {
     padding: 0;
 }
