@@ -30,12 +30,10 @@ class BxStoriesModule extends BxBaseModTextModule
 
     public function actionPlay($iContentId)
     {
-        $CNF = &$this->_oConfig->CNF;
-
         $sJsObject = $this->_oConfig->getJsObject('main');
 
         $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
-        if(($sMsg = $this->checkAllowedEdit($aContentInfo)) !== CHECK_ACTION_RESULT_ALLOWED)
+        if(($sMsg = $this->checkAllowedView($aContentInfo)) !== CHECK_ACTION_RESULT_ALLOWED)
             return echoJson(['msg' => $sMsg]);
 
         return echoJson(['popup' => [
