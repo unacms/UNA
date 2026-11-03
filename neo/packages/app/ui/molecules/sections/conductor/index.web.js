@@ -12,6 +12,7 @@ import {
     ensureRouteInited,
     findConductorRouteIndex,
     firstShownConductorRoute,
+    hideRoutesOnTier,
     conductorHref,
     getConductorLayoutCols,
     getConductorColumnsConfig,
@@ -127,8 +128,8 @@ export function Conductor({
 
     /** Menu JSON → tab routes, with the current URL's tab already hydrated. */
     const initedTabs = useMemo(
-        () => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu, tier),
-        [menu, data, blocks, currentUser, useSectionAsMenu, tier]
+        () => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu),
+        [menu, data, blocks, currentUser, useSectionAsMenu]
     )
 
     /**
@@ -187,7 +188,7 @@ export function Conductor({
     }, [])
 
     const {
-        routes,
+        routes: storedRoutes,
         setRoutes,
         index,
         setIndex,
@@ -205,16 +206,17 @@ export function Conductor({
         adapter: routesAdapter,
     })
 
-    // A tab hidden at this screen size (Settings' Overview on desktop) opens the first tab shown, in
-    // place and under its own URL, as if it were picked in the menu.
+    // The tabs as shown at this screen size (`hideRoutesOnTier`); `storedRoutes` keep the loaded pages.
+    const routes = useMemo(() => hideRoutesOnTier(storedRoutes, tier), [storedRoutes, tier])
+    const router = useRouter()
+
+    // A tab hidden at this screen size (Settings' Overview on desktop) opens the first tab shown, as
+    // its own page (the URL replaced), so the page header, title and Back follow it.
     useEffect(() => {
-        if (!hydrated || !activeRoute?.hiddenOnTier) return
-        const first = firstShownConductorRoute(routes)
-        if (!first) return
-        setIndex(first.index)
-        const href = conductorHref(first.link)
-        if (href && typeof window !== 'undefined') window.history.replaceState(window.history.state, '', href)
-    }, [hydrated, activeRoute, routes, setIndex])
+        if (!hydrated || !routes.find((route) => route.index === index)?.hiddenOnTier) return
+        const href = conductorHref(firstShownConductorRoute(routes)?.link)
+        if (href) router.replace(href)
+    }, [hydrated, routes, index, router])
 
     // ==================================================================
     // 2. Layout config (columns, widths, page header)
@@ -366,7 +368,6 @@ export function Conductor({
     // lists the tabs, and each one opens from it with Back.
     const menuHub = getMenuHub(menu)
     const hideTabs = !isDesktop && menuHub !== ''
-    const router = useRouter()
     // Back to the list: the previous page when there is one, else the list itself (a visit that
     // opened the list in a new tab has no earlier page for the header's own Back).
     const backToHub = useCallback(() => {

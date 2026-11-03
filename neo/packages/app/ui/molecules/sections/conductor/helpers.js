@@ -72,6 +72,24 @@ export function conductorHref(link) {
     return normalized ? `/${normalized}` : undefined
 }
 
+/**
+ * Tabs as shown at UNA's screen tier (`phone`, `tablet`, `desktop`): an item hidden on it (Studio's
+ * "Hidden on") gets no tab or menu link, and is marked `hiddenOnTier` so its page can open the first
+ * tab shown. Worked out per render, so a window that crosses a breakpoint follows; the routes'
+ * loaded content is shared, not copied.
+ */
+export function hideRoutesOnTier(routes, tier) {
+    if (!tier) return routes
+    let changed = false
+    const next = (routes || []).map((route) => {
+        const hidden = Array.isArray(route?.item?.hidden_on) && route.item.hidden_on.includes(tier)
+        if (!hidden) return route
+        changed = true
+        return { ...route, hideInTop: true, hiddenOnTier: true }
+    })
+    return changed ? next : routes
+}
+
 /** The first tab the menu shows (not hidden here, with a page of its own), or `undefined`. */
 export function firstShownConductorRoute(routes) {
     return (routes || []).find((route) => route.depth === 0 && route.canNavigate && !route.hideInTop)
@@ -398,10 +416,7 @@ export function fillTabs(
     data,
     blocks,
     currentUser,
-    useSectionAsMenu,
-    // UNA's screen tier (`phone`, `tablet`, `desktop`): an item hidden on it (Studio's "Hidden on")
-    // gets no tab or menu link here, and its page opens the first tab shown (`hiddenOnTier`).
-    tier = ''
+    useSectionAsMenu
 ) {
     const menuItems = menuItemsByName(
         menu.object,
@@ -429,10 +444,6 @@ export function fillTabs(
                 canNavigate,
                 hasChildren
             )
-            if (tier && Array.isArray(item?.hidden_on) && item.hidden_on.includes(tier)) {
-                route.hideInTop = true
-                route.hiddenOnTier = true
-            }
             routes.push(route)
             indices.push(index)
             if (hasChildren) {

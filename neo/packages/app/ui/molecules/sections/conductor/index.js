@@ -7,6 +7,8 @@ import {
     ensureRouteInited,
     findConductorRouteIndex,
     firstShownConductorRoute,
+    hideRoutesOnTier,
+    conductorHref,
     conductorListQueryKey,
 } from './helpers'
 import {
@@ -27,6 +29,7 @@ import { useBottomSheetStore } from 'app/context/bottomsheet'
 import emitter, { EVENTS } from 'app/context/emitter'
 import { useIsFocused } from 'app/lib/hooks/router'
 import { useIsDesktop, useScreenTier, useHydrated } from 'app/context/measure'
+import { useRouter } from 'app/lib/hooks/router'
 import {
     getCachedConductorState,
     setCachedConductorState,
@@ -108,8 +111,8 @@ export function Conductor({
 
     /** Menu JSON → tab routes, with the current URL's tab already hydrated. */
     const initedTabs = useMemo(
-        () => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu, tier),
-        [menu, data, blocks, currentUser, useSectionAsMenu, tier]
+        () => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu),
+        [menu, data, blocks, currentUser, useSectionAsMenu]
     )
 
     /** Identity of the cached entry: layout + page + user. */
@@ -239,7 +242,7 @@ export function Conductor({
     )
 
     const {
-        routes,
+        routes: storedRoutes,
         setRoutes,
         routesRef,
         index,
@@ -262,12 +265,17 @@ export function Conductor({
         adapter: routesAdapter,
     })
 
-    // A tab hidden at this screen size (Settings' Overview on a wide tablet) opens the first tab shown.
+    // The tabs as shown at this screen size (`hideRoutesOnTier`); `storedRoutes` keep the loaded pages.
+    const routes = useMemo(() => hideRoutesOnTier(storedRoutes, tier), [storedRoutes, tier])
+    const router = useRouter()
+
+    // A tab hidden at this screen size (Settings' Overview on a wide tablet) opens the first tab shown,
+    // as its own page, so the header and Back follow it.
     useEffect(() => {
-        if (!hydrated || !activeRoute?.hiddenOnTier) return
-        const first = firstShownConductorRoute(routes)
-        if (first) onSelectTabRoute(first)
-    }, [hydrated, activeRoute, routes, onSelectTabRoute])
+        if (!hydrated || !routes.find((route) => route.index === index)?.hiddenOnTier) return
+        const href = conductorHref(firstShownConductorRoute(routes)?.link)
+        if (href) router.replace(href)
+    }, [hydrated, routes, index, router])
 
     /** Tab press: pin the cover first, then switch. */
     const onSelectTab = useCallback((tab) => {
