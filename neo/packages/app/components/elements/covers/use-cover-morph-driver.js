@@ -7,6 +7,7 @@ import {
 import {
     coverTabScroll,
     resetCoverTabScroll,
+    releaseCoverTabScrollHold,
 } from './cover-tab-scroll'
 
 /**
@@ -52,10 +53,16 @@ export function useCoverMorphDriver({
                       )
             // Tab switch remounts the list, which can report y=0 (or a small
             // offset) before initialScrollOffset. Do not expand while holding.
+            // A pull past the top is the user asking for the cover: the pinned list
+            // starts at its top, so it has no offset left to scroll back through.
             if (coverTabScroll.hold && collapsedRef.current) {
-                const stillCollapsed =
-                    range <= 0 ? y > 0 : y > range - MORPH_HYSTERESIS
-                if (!stillCollapsed) return
+                if (y < -MORPH_HYSTERESIS) {
+                    releaseCoverTabScrollHold()
+                } else {
+                    const stillCollapsed =
+                        range <= 0 ? y > 0 : y > range - MORPH_HYSTERESIS
+                    if (!stillCollapsed) return
+                }
             }
             let collapsed
             if (range <= 0) {
