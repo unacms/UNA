@@ -20,7 +20,7 @@ function PageContent({ children }) {
             {children}
             <AuthPanel showSeparator={true} createAccountLink={false} loginLink={false} />
             <Html
-                customClassName="text-xs text-center text-muted-foreground"
+                customClassName="text-xs text-center text-muted-foreground u-html-links"
                 data={t('create_account_page_terms')}
             />
             <Row className="mx-auto gap-1 justify-center items-center text-center">

@@ -434,8 +434,11 @@
         cursor: pointer;
     }
 
+    /* `.u-html-links`: only the link style, for HTML that sets its own type (Html with
+     * customClassName, such as the sign-up terms note). */
     .u-vanilla-html-small A,
-    .u-vanilla-html-small .link {
+    .u-vanilla-html-small .link,
+    .u-html-links A {
         @apply text-accent-foreground;
         overflow-wrap: anywhere;
         word-break: break-word;
@@ -449,7 +452,8 @@
     .u-vanilla-html A:hover,
     .u-vanilla-html .link:hover,
     .u-vanilla-html-small A:hover,
-    .u-vanilla-html-small .link:hover {
+    .u-vanilla-html-small .link:hover,
+    .u-html-links A:hover {
         text-decoration-color: currentColor;
     }
     }

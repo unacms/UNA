@@ -15,9 +15,10 @@ export default function MenuItemSidebar({ title, icon, isActive, addon, iconEnd 
         ? 'text-primary-foreground'
         : 'text-secondary-foreground web:group-hover:text-foreground'
     return (
-        <Row className="w-full items-center">
+        <Row className="w-full items-center min-h-8">
 
-            <View className={`h-8 w-8 items-center justify-center flex rounded-full ${isActive
+            {/* An item without an icon (UNA's module submenus ship none) gets no chip, not a placeholder. */}
+            {!!icon && <View className={`h-8 w-8 items-center justify-center flex rounded-full ${isActive
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-muted/50 text-secondary-foreground web:group-hover:bg-muted web:group-hover:text-foreground web:duration-100'
                 }`}>
@@ -28,7 +29,7 @@ export default function MenuItemSidebar({ title, icon, isActive, addon, iconEnd 
                 ) : (
                     <Icon icon={icon} size="20" className={iconClassName} />
                 )}
-            </View>
+            </View>}
 
             <Text numberOfLines={2} className={`flex-1 px-2 text-sm leading-4 font-semibold line-clamp-2 ${isActive ? 'text-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>{title}</Text>
             {!!iconEnd && <View className={`ml-auto h-8 w-8 items-center justify-center flex rounded-full ${isActive

@@ -196,7 +196,8 @@ class BxBaseServicesSearch extends BxDol
             'section' => '',
             'sections' => array_values($aSections),
             'start' => 0,
-            'per_page' => 12
+            'per_page' => 12,
+            'live' => false
         ], !empty($aParams['params']) && is_array($aParams['params']) ? $aParams['params'] : []);
 
         if(empty($aParamsBrowse['section']))

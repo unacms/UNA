@@ -828,6 +828,11 @@ BLAH;
                 $sRow = $this->genRowCustom($aInput, 'genInputFiles');
             break;
 
+            case 'captcha':
+                // no row without a configured CAPTCHA: the form check passes then too (BxDolFormCheckerHelper::checkCaptcha)
+                $sRow = BxDolCaptcha::getObjectInstance() ? $this->genRowStandard($aInput) : '';
+            break;
+
             case 'switcher':
             case 'checkbox':
                 $sRow = $this->genRowStandard($aInput, true);
