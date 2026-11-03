@@ -3553,10 +3553,10 @@ minizlib@^3.0.1, minizlib@^3.1.0:
   dependencies:
     minipass "^7.1.2"
 
-moment-timezone@^0.6.5:
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.6.5.tgz#a8153ebe88199bd76f2d2ce329eb1d568eafbdee"
-  integrity sha512-KKzZAxGv2Qx4cnk6eSlvf4C+DLFW52vmMY5MN7UARY7GONbozkutylQG3DrrtmLCTXdQ5XZrqao9cI16bLFzXA==
+moment-timezone@^0.6.6:
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.6.6.tgz#a2f6fe85002ef199645f96b1e94842897158bf8a"
+  integrity sha512-LF5AAYsMduXFW2ungr/D9JqNq9ykZyhWgYG6wFtdGZW5ZlBDTBgTUFqW8EC7Fa+Dvs3IMZxlWkSR09sW2D/+0w==
   dependencies:
     moment "^2.29.4"
 
