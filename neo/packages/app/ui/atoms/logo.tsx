@@ -20,7 +20,7 @@ export type LogoProps = {
 };
 
 // Glyph: four petals at 40% and two dots, in its own 362-unit box.
-const LogoGlyph = ({ height, fill }: LogoArtProps) => (
+const LogoGlyph = ({ height, fill }: Readonly<LogoArtProps>) => (
     <Svg aria-hidden={true} width={height} height={height} viewBox="75 75 362 362" fill="none">
         <G fill={fill}>
             <Path d={LOGO_PETALS} fillOpacity={0.4} />
@@ -31,7 +31,7 @@ const LogoGlyph = ({ height, fill }: LogoArtProps) => (
 );
 
 // Glyph and wordmark, 67:20, as UNA draws it at 40px.
-const LogoFull = ({ height, fill }: LogoArtProps) => (
+const LogoFull = ({ height, fill }: Readonly<LogoArtProps>) => (
     <Svg aria-hidden={true} width={Math.round((height * 67) / 20)} height={height} viewBox="91 4 67 20" fill="none">
         <G transform="matrix(0.0552 0 0 0.0552 86.8564 -0.1436)" fill={fill}>
             <Path d={LOGO_PETALS} fillOpacity={0.4} />
@@ -43,7 +43,7 @@ const LogoFull = ({ height, fill }: LogoArtProps) => (
     </Svg>
 );
 
-export default function Logo({ mode = 'adaptive', height = 32 }: LogoProps) {
+export default function Logo({ mode = 'adaptive', height = 32 }: Readonly<LogoProps>) {
     // A concrete colour, not `currentColor`: react-native-svg doesn't inherit a parent
     // View's text colour.
     const fill = useThemeValue(LOGO_FILL.light, LOGO_FILL.dark)
