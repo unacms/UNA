@@ -794,6 +794,7 @@
 	<string name="_adm_dsg_scs_save"><![CDATA[The changes were successfully saved]]></string>
         <string name="_adm_dsg_txt_logo_code"><![CDATA[SVG code]]></string>
         <string name="_adm_dsg_txt_logo_dark_src_none"><![CDATA[None. Dark mode shows the light mode logo.]]></string>
+        <string name="_adm_dsg_txt_logo_note_previews"><![CDATA[The previews show what the site's template, {0}, draws.]]></string>
         <string name="_adm_dsg_txt_logo_note_system"><![CDATA[These logos are used by every template. A template can replace them in its own logo settings.]]></string>
         <string name="_adm_dsg_txt_logo_note_template"><![CDATA[Logos here replace the ones in Designer › Logo, for {0} only.]]></string>
         <string name="_adm_dsg_txt_logo_redefinition"><![CDATA[Note. All logo parameters can be overwritten in currently active Template app.]]></string>
@@ -802,6 +803,7 @@
 	<string name="_adm_dsg_txt_logo_src_code"><![CDATA[Drawn from the SVG code below.]]></string>
 	<string name="_adm_dsg_txt_logo_src_code_system"><![CDATA[Drawn from the SVG code in Designer › Logo.]]></string>
 	<string name="_adm_dsg_txt_logo_src_code_template"><![CDATA[Not shown: {0} draws it from the SVG code in its own logo settings.]]></string>
+	<string name="_adm_dsg_txt_logo_src_default"><![CDATA[Default logo. Upload your own to replace it.]]></string>
 	<string name="_adm_dsg_txt_logo_src_here"><![CDATA[Uploaded here.]]></string>
 	<string name="_adm_dsg_txt_logo_src_none"><![CDATA[None. The header shows the site name as text.]]></string>
 	<string name="_adm_dsg_txt_logo_src_system"><![CDATA[From Designer › Logo. Upload one here to replace it for {0} only.]]></string>
@@ -816,6 +818,7 @@
 	<string name="_adm_dsg_txt_mark_dark_src_none"><![CDATA[None. Dark mode shows the light mode mark.]]></string>
 	<string name="_adm_dsg_txt_mark_section"><![CDATA[Mark]]></string>
 	<string name="_adm_dsg_txt_mark_src_builtin"><![CDATA[{0}'s default mark. Upload your own to replace it.]]></string>
+	<string name="_adm_dsg_txt_mark_src_default"><![CDATA[Default mark. Upload your own to replace it.]]></string>
 	<string name="_adm_dsg_txt_mark_src_none"><![CDATA[None. Phones and tablets show the logo.]]></string>
 	<string name="_adm_dsg_txt_alt_text"><![CDATA[Logo Text]]></string>
 	<string name="_adm_dsg_txt_cover_common"><![CDATA[Default pages cover]]></string>

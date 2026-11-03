@@ -166,11 +166,6 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     'name' => 'page',
                     'value' => $this->sPage
                 ],
-                'note' => [
-                    'type' => 'custom',
-                    'name' => 'note',
-                    'content' => $this->getLogoNote($aTemplate),
-                ],
             ]
         ];
 
@@ -196,18 +191,24 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                         'ghost_template' => $oFunctions->getDefaultGhostTemplate($sLogo),
                         'caption' => _t(strpos($sLogo, '_dark') !== false ? '_adm_dsg_txt_logo_upload_for_dark' : '_adm_dsg_txt_logo_upload_for_light'),
                     ];
-                else
+                else {
                     $aInputs[$sLogo] = [
                         'type' => 'textarea',
                         'name' => $sLogo,
                         'caption' => _t('_adm_dsg_txt_logo_code'),
-                        'info' => _t('_adm_dsg_inf_' . $sSection . '_code'),
                         'value' => getParam($this->{$aLogo['param']}),
                         'code' => 1,
                         'db' => [
                             'pass' => 'Xss',
                         ],
                     ];
+                    // The hint in the section text style: the form's own field info is too faint to read.
+                    $aInputs[$sLogo . '_info'] = [
+                        'type' => 'custom',
+                        'name' => $sLogo . '_info',
+                        'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_' . $sSection . '_code')]),
+                    ];
+                }
             }
 
             if(empty($aInputs))
@@ -218,7 +219,11 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     'type' => 'block_header',
                     'name' => $sSection . '_section',
                     'caption' => _t('_adm_dsg_txt_' . $sSection . '_section'),
-                    'info' => _t('_adm_dsg_inf_' . $sSection . '_section'),
+                ],
+                $sSection . '_info' => [
+                    'type' => 'custom',
+                    'name' => $sSection . '_info',
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_' . $sSection . '_section')]),
                 ],
                 $sSection . '_preview' => [
                     'type' => 'custom',
@@ -238,11 +243,15 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 'name' => 'text_section',
                 'caption' => _t('_adm_dsg_txt_logo_text_section'),
             ],
+            'text_info' => [
+                'type' => 'custom',
+                'name' => 'text_info',
+                'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_logo_text')]),
+            ],
             'alt' => [
                 'type' => 'text',
                 'name' => 'alt',
                 'caption' => _t('_adm_dsg_txt_logo_text'),
-                'info' => _t('_adm_dsg_inf_logo_text'),
                 'value' => getParam($this->sParamLogoAlt),
                 'attrs' => [
                     'placeholder' => getParam('site_title'),
@@ -255,6 +264,14 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 'db' => [
                     'pass' => 'Xss',
                 ],
+            ],
+            'header_note' => [ // the note under the sections, in a section of its own
+                'type' => 'block_header',
+            ],
+            'note' => [
+                'type' => 'custom',
+                'name' => 'note',
+                'content' => $this->getLogoNote($aTemplate),
             ],
             'header_save' => [ // a section of its own for the Save button: the block footer (page.css) is that last section
                 'type' => 'block_header',
@@ -294,6 +311,8 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         }
         else {
             $sText = _t('_adm_dsg_txt_logo_note_system');
+            if(!empty($sTemplate))
+                $sText .= ' ' . _t('_adm_dsg_txt_logo_note_previews', $sTemplate);
             $sLink = $sUrl = '';
             if(!empty($aTemplate) && $this->getLogoTemplateParams()) {
                 $sLink = _t('_adm_dsg_lnk_logo_template', $sTemplate);
@@ -418,7 +437,10 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 return _t($bTemplatePage ? '_adm_dsg_txt_logo_src_system' : '_adm_dsg_txt_logo_src_template', $sTemplate);
 
             case BxDolDesigns::LOGO_SOURCE_BUILTIN:
-                return _t(strpos($sType, 'mark') === 0 ? '_adm_dsg_txt_mark_src_builtin' : '_adm_dsg_txt_logo_src_builtin', $sTemplate);
+                $sKind = strpos($sType, 'mark') === 0 ? 'mark' : 'logo';
+                if(!$bTemplatePage)
+                    return _t('_adm_dsg_txt_' . $sKind . '_src_default');
+                return _t('_adm_dsg_txt_' . $sKind . '_src_builtin', $sTemplate);
 
             case BxDolDesigns::LOGO_SOURCE_INLINE:
                 if($aSource['code_source'] == $sPageSource)

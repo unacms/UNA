@@ -257,6 +257,12 @@ div.bx-std-block-content:has(> [id^="bx-grid-wrap-"]) {
     overflow: hidden;
 }
 
+/* Designer's logo form is taller than the screen: the page column keeps its height (no min-content growth), so the form scrolls inside
+   the block under its caption and the Save footer stays at the bottom. */
+#bx-std-pc-content:has(> .bx-std-block > .bx-std-block-content > form[name="adm-dsg-logo-form"]) {
+    min-height: 0;
+}
+
 /* Options forms */
 div.bx-std-block-content > form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"]) {
     --bx-std-inset: 1rem; /* the scroller's inset: 16px for fields and for the accordion cards alike */

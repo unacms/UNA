@@ -788,6 +788,7 @@
 	<string name="_adm_dsg_scs_save"><![CDATA[Изменения удачно сохранены]]></string>
         <string name="_adm_dsg_txt_logo_code"><![CDATA[SVG-код]]></string>
         <string name="_adm_dsg_txt_logo_dark_src_none"><![CDATA[Нет. В тёмной теме показывается логотип светлой темы.]]></string>
+        <string name="_adm_dsg_txt_logo_note_previews"><![CDATA[Превью показывают, что рисует шаблон сайта, {0}.]]></string>
         <string name="_adm_dsg_txt_logo_note_system"><![CDATA[Эти логотипы используют все шаблоны. Шаблон может заменить их в своих настройках логотипа.]]></string>
         <string name="_adm_dsg_txt_logo_note_template"><![CDATA[Логотипы здесь заменяют логотипы из «Дизайнер › Лого», только для шаблона {0}.]]></string>
         <string name="_adm_dsg_txt_logo_redefinition"><![CDATA[Заметка. Все лого параметры могут быть переопределены в активном на данный момент шаблонном приложении.]]></string>
@@ -796,6 +797,7 @@
 	<string name="_adm_dsg_txt_logo_src_code"><![CDATA[Нарисован по SVG-коду ниже.]]></string>
 	<string name="_adm_dsg_txt_logo_src_code_system"><![CDATA[Нарисован по SVG-коду из «Дизайнер › Лого».]]></string>
 	<string name="_adm_dsg_txt_logo_src_code_template"><![CDATA[Не показывается: {0} рисует его по SVG-коду из своих настроек логотипа.]]></string>
+	<string name="_adm_dsg_txt_logo_src_default"><![CDATA[Логотип по умолчанию. Загрузите свой, чтобы заменить его.]]></string>
 	<string name="_adm_dsg_txt_logo_src_here"><![CDATA[Загружено здесь.]]></string>
 	<string name="_adm_dsg_txt_logo_src_none"><![CDATA[Нет. В шапке показывается название сайта текстом.]]></string>
 	<string name="_adm_dsg_txt_logo_src_system"><![CDATA[Из «Дизайнер › Лого». Загрузите здесь, чтобы заменить его только для {0}.]]></string>
@@ -810,6 +812,7 @@
 	<string name="_adm_dsg_txt_mark_dark_src_none"><![CDATA[Нет. В тёмной теме показывается знак светлой темы.]]></string>
 	<string name="_adm_dsg_txt_mark_section"><![CDATA[Знак]]></string>
 	<string name="_adm_dsg_txt_mark_src_builtin"><![CDATA[Знак {0} по умолчанию. Загрузите свой, чтобы заменить его.]]></string>
+	<string name="_adm_dsg_txt_mark_src_default"><![CDATA[Знак по умолчанию. Загрузите свой, чтобы заменить его.]]></string>
 	<string name="_adm_dsg_txt_mark_src_none"><![CDATA[Нет. На телефонах и планшетах показывается логотип.]]></string>
 	<string name="_adm_dsg_txt_alt_text"><![CDATA[Текст лого]]></string>
 	<string name="_adm_dsg_txt_cover_common"><![CDATA[Стандартная обложка страницы]]></string>
