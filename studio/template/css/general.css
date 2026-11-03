@@ -52,8 +52,14 @@ div.bx-std-content-wrp {
 }
 div.bx-std-content-wrp.bx-std-one-col {
     padding-top: 4.75rem; /* the fixed header's bottom edge: 12px margin plus the 64px bar */
+    scroll-padding-top: 4.75rem; /* focus and anchors scroll below the header, and the overlay scrollbar starts there */
 
     overflow-y: auto;
+
+    scrollbar-width: none; /* the overlay scrollbar (studio/js/page.js) instead: the fixed header covered the native one, and the page no longer narrows when it starts to scroll */
+}
+div.bx-std-content-wrp.bx-std-one-col::-webkit-scrollbar {
+    display: none;
 }
 div.bx-std-page-columns,
 div.bx-std-page-columns-cnt {

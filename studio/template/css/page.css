@@ -59,8 +59,14 @@ svg.bx-std-scrollbar {
     transition: opacity 0.3s;
 }
 div.bx-std-block:hover > svg.bx-std-scrollbar,
-div.bx-std-block.bx-std-scrolling > svg.bx-std-scrollbar {
+div.bx-std-block.bx-std-scrolling > svg.bx-std-scrollbar,
+div.bx-std-content:hover > svg.bx-std-scrollbar,
+div.bx-std-content.bx-std-scrolling > svg.bx-std-scrollbar {
     opacity: 1;
+}
+/* the page's bar runs down the window's right edge in the 12px gutter, above the blocks' own bars */
+div.bx-std-content > svg.bx-std-scrollbar {
+    z-index: 3;
 }
 svg.bx-std-scrollbar path {
     fill: none;
