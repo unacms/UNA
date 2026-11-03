@@ -8,7 +8,8 @@ class BxBaseServicesSearchTest extends BxDolTestCase
 {
     public function testSearchWithoutLiveRaisesNoWarning(): void
     {
-        $bHadApi = isset($_GET['api']);
+        $bHadApi = array_key_exists('api', $_GET);
+        $mPriorApi = $_GET['api'] ?? null;
         $_GET['api'] = 1;
         set_error_handler(function ($iErrno, $sError) {
             throw new ErrorException($sError, 0, $iErrno);
@@ -18,7 +19,9 @@ class BxBaseServicesSearchTest extends BxDolTestCase
         }
         finally {
             restore_error_handler();
-            if (!$bHadApi)
+            if ($bHadApi)
+                $_GET['api'] = $mPriorApi;
+            else
                 unset($_GET['api']);
         }
 

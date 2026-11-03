@@ -427,7 +427,10 @@ function MenuFooterComponent({
         return configured.filter((language) => language === 'auto' || siteLanguages.includes(language));
     }, [configuredLangs, usesRemoteFooter, siteLanguages]);
     const switchers: FooterSwitcherFlags = {
-        language: hydrated && languages.filter((language) => language !== 'auto').length > 1,
+        // UNA's footer: two site languages NEO has; a footer of its own: two options, System counted, as before.
+        language: hydrated && (usesRemoteFooter
+            ? languages.filter((language) => language !== 'auto').length > 1
+            : languages.length > 1),
         languages,
         theme: !!appSetting('dashboard', 'switch_theme'),
         sounds: hydrated && soundsAvailable,
