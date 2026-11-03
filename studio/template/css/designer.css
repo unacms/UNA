@@ -440,6 +440,8 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     display: block;
     width: 4rem;
     height: 4rem;
+    border-radius: 1rem;
+    object-fit: cover;
 }
 .adm-dsg-template-letter {
     display: flex;
@@ -577,11 +579,14 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     width: 3rem;
     height: 3rem;
 }
+/* App icon corners as in the launcher (72px, 16px) and the header (32px, 8px): about a quarter of the size. */
 .adm-dsg-tmpl-icon img,
 .adm-dsg-tmpl-icon .sys-icon {
     display: block;
     width: 3rem;
     height: 3rem;
+    border-radius: 0.75rem;
+    object-fit: cover;
     font-size: 2rem;
     line-height: 3rem;
     text-align: center;
