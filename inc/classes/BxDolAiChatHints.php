@@ -40,34 +40,20 @@ class BxDolAiChatHints
      */
     public static function get($aAgent, $iContextPid = 0)
     {
-        if (!is_array($aAgent) || empty($aAgent['id']))
+        if (!is_array($aAgent) || empty($aAgent['id'])) {
             return [];
-
-        $aModules = [];
-        if ($iContextPid > 0) {
-            $oProfile = BxDolProfile::getInstance((int)$iContextPid);
-            if (!$oProfile)
-                return [];
-            $aModules[] = $oProfile->getModule();
-        }
-        else {
-            foreach (BxDolModuleQuery::getInstance()->getModulesBy(['type' => 'modules']) as $aModule)
-                if (!empty($aModule['enabled']))
-                    $aModules[] = $aModule['name'];
         }
 
-        foreach ($aModules as $sModule) {
-            if (!BxDolRequest::serviceExists($sModule, self::SERVICE))
-                continue;
-
-            $mixed = bx_srv($sModule, self::SERVICE, [(int)$aAgent['id'], (int)$iContextPid]);
-            if (!is_array($mixed))
-                continue;
-
-            return array_slice(BxDolAiChatUi::getInstance()->sanitizeChatActions($mixed), 0, self::MAX_HINTS);
+        $aHints = [];
+        foreach (static::modulesFor((int)$iContextPid) as $sModule) {
+            $mixed = static::askModule($sModule, (int)$aAgent['id'], (int)$iContextPid);
+            if (is_array($mixed)) {
+                $aHints = $mixed;
+                break;
+            }
         }
 
-        return [];
+        return array_slice(BxDolAiChatUi::getInstance()->sanitizeChatActions($aHints), 0, self::MAX_HINTS);
     }
 
     /**
@@ -77,10 +63,45 @@ class BxDolAiChatHints
     {
         $iAgentId = (int)$iAgentId;
         $iProfileId = (int)$iProfileId;
-        if (!$iAgentId || !$iProfileId || !($oSockets = BxDolSockets::getInstance()) || !$oSockets->isEnabled())
-            return;
+        $oSockets = BxDolSockets::getInstance();
+        if ($iAgentId > 0 && $iProfileId > 0 && $oSockets && $oSockets->isEnabled()) {
+            $oSockets->sendEvent('sys_agent_' . $iAgentId, $iProfileId, 'hints', '{}');
+        }
+    }
 
-        $oSockets->sendEvent('sys_agent_' . $iAgentId, $iProfileId, 'hints', '{}');
+    /**
+     * Modules to ask, in order: the one of the context profile, or every enabled module.
+     *
+     * @return string[]
+     */
+    protected static function modulesFor($iContextPid)
+    {
+        if ($iContextPid > 0) {
+            $oProfile = BxDolProfile::getInstance($iContextPid);
+            return $oProfile ? [$oProfile->getModule()] : [];
+        }
+
+        $aModules = [];
+        foreach (BxDolModuleQuery::getInstance()->getModulesBy(['type' => 'modules']) as $aModule) {
+            if (!empty($aModule['enabled'])) {
+                $aModules[] = $aModule['name'];
+            }
+        }
+
+        return $aModules;
+    }
+
+    /**
+     * @return array|null the module's hints; null when it has no such service or the agent is not its own
+     */
+    protected static function askModule($sModule, $iAgentId, $iContextPid)
+    {
+        if (!BxDolRequest::serviceExists($sModule, self::SERVICE)) {
+            return null;
+        }
+
+        $mixed = bx_srv($sModule, self::SERVICE, [$iAgentId, $iContextPid]);
+        return is_array($mixed) ? $mixed : null;
     }
 }
 

@@ -5,12 +5,13 @@ import { View } from 'app/design/view';
 import { NeoButton } from 'app/design/controls';
 import type { ChatAction } from './chat-actions';
 
-type ChatHintsProps = {
+type ChatHintsProps = Readonly<{
     /** Normalized hints (`messageActions`); only `reply` ones are shown. */
     hints: ChatAction[];
     onSend: (message: string) => unknown;
+    /** While a reply streams or an image message uploads: a hint would overtake it. */
     disabled?: boolean;
-};
+}>;
 
 /**
  * Task hints above the composer (UNA `BxDolAiChatHints`). Each one only sends its

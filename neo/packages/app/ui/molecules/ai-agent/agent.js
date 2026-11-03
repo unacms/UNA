@@ -998,7 +998,7 @@ function AiAgentChat({
             />
             {hints.length && !sessionEnded ? (
                 <View className="mb-2">
-                    <ChatHints hints={hints} onSend={sendReply} disabled={isLoading} />
+                    <ChatHints hints={hints} onSend={sendReply} disabled={isLoading || uploading} />
                 </View>
             ) : null}
             <Row className="items-center justify-center gap-2 w-full">

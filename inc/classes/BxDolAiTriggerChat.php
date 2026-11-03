@@ -24,7 +24,7 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
         $iAgentId = (int)$mixed;
         $sMethod = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '';
         if ('GET' === $sMethod)
-            return bx_get('hints') ? $this->hints($iAgentId) : $this->hydrate($iAgentId);
+            return $this->hydrate($iAgentId);
 
         if ('POST' !== $sMethod)
             return echoJson(['code' => 405, 'msg' => _t('_error occured')]);
@@ -334,6 +334,12 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
 
     protected function hydrate($iAgentId)
     {
+        // the same GET with `?hints=1` asks for the task hints instead of the transcript
+        if (bx_get('hints')) {
+            $this->hints($iAgentId);
+            return;
+        }
+
         if (false !== bx_get('offset'))
             return echoJson(['code' => 405, 'msg' => _t('_error occured'), 'messages' => [], 'activeRun' => null, 'interrupts' => null]);
 
@@ -377,16 +383,15 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
      */
     protected function hints($iAgentId)
     {
+        $aHints = [];
         $aAgent = $this->loadAgent($iAgentId);
         $oAi = $aAgent ? $this->getAi() : null;
-        if (!$aAgent || !$oAi || !$oAi->canChatDirectly($aAgent))
-            return echoJson(['hints' => []]);
+        $aParams = $oAi && $oAi->canChatDirectly($aAgent) ? $this->historyParams($aAgent) : false;
+        if ($aParams) {
+            $aHints = BxDolAiChatHints::get($aAgent, (int)($aParams['chat_history_context_pid'] ?? 0));
+        }
 
-        $aParams = $this->historyParams($aAgent);
-        if (!$aParams)
-            return echoJson(['hints' => []]);
-
-        return echoJson(['hints' => BxDolAiChatHints::get($aAgent, (int)($aParams['chat_history_context_pid'] ?? 0))]);
+        echoJson(['hints' => $aHints]);
     }
 
     /**
