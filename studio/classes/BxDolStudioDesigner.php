@@ -667,7 +667,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
 
             $aResult[$iType] = [
                 'title' => $aType['title'],
-                'slug' => preg_replace('/^pt_|\.html$/', '', $aType['template']),
+                'slug' => preg_replace('/(^pt_)|(\.html$)/', '', $aType['template']),
             ];
         }
 
