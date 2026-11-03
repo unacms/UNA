@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Link from 'app/ui/atoms/link'
 import { components } from 'app/components/registry';
-import { appSetting } from 'app/lib/util';
+import { appSetting, getMenuHub } from 'app/lib/util';
 import { useState } from 'react';
 import SettingsMenu, { hasSettingsGroups } from './settings-menu';
 
@@ -124,7 +124,7 @@ export default function ElementMenu({ data, blockWrapperProps, url, itemsClassNa
     if (hasSettingsGroups(topLevelItems)) {
         return (
             <BlockWrapper {...blockWrapperProps}>
-                <SettingsMenu items={topLevelItems} />
+                <SettingsMenu items={topLevelItems} hub={getMenuHub(data?.content)} />
             </BlockWrapper>
         );
     }

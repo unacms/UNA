@@ -72,6 +72,11 @@ export function conductorHref(link) {
     return normalized ? `/${normalized}` : undefined
 }
 
+/** The first tab the menu shows (not hidden here, with a page of its own), or `undefined`. */
+export function firstShownConductorRoute(routes) {
+    return (routes || []).find((route) => route.depth === 0 && route.canNavigate && !route.hideInTop)
+}
+
 /** Match URL to a tab index; supports nested paths. Returns -1 if none. */
 export function findConductorRouteIndex(tabRoutes, url, useSectionAsMenu) {
     if (!tabRoutes?.length || url == null || url === '') return -1
@@ -393,7 +398,10 @@ export function fillTabs(
     data,
     blocks,
     currentUser,
-    useSectionAsMenu
+    useSectionAsMenu,
+    // UNA's screen tier (`phone`, `tablet`, `desktop`): an item hidden on it (Studio's "Hidden on")
+    // gets no tab or menu link here, and its page opens the first tab shown (`hiddenOnTier`).
+    tier = ''
 ) {
     const menuItems = menuItemsByName(
         menu.object,
@@ -421,6 +429,10 @@ export function fillTabs(
                 canNavigate,
                 hasChildren
             )
+            if (tier && Array.isArray(item?.hidden_on) && item.hidden_on.includes(tier)) {
+                route.hideInTop = true
+                route.hiddenOnTier = true
+            }
             routes.push(route)
             indices.push(index)
             if (hasChildren) {

@@ -3518,6 +3518,7 @@
     <string name="_sys_menu_item_title_account_settings_delete"><![CDATA[Delete]]></string>
     <string name="_sys_menu_item_title_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_account_settings_info"><![CDATA[Account]]></string>
+    <string name="_sys_menu_item_title_account_settings_overview"><![CDATA[Overview]]></string>
     <string name="_sys_menu_item_title_account_settings_pwd"><![CDATA[Password]]></string>
     <string name="_sys_menu_item_title_profile_settings_cfilter"><![CDATA[Content Filter]]></string>
     <string name="_sys_menu_item_title_add_content"><![CDATA[Add...]]></string>
@@ -3622,6 +3623,7 @@
     <string name="_sys_menu_item_title_system_account_settings_delete"><![CDATA[Delete]]></string>
     <string name="_sys_menu_item_title_system_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_system_account_settings_info"><![CDATA[Account]]></string>
+    <string name="_sys_menu_item_title_system_account_settings_overview"><![CDATA[Overview]]></string>
     <string name="_sys_menu_item_title_system_account_settings_pwd"><![CDATA[Password]]></string>
     <string name="_sys_menu_item_title_system_profile_settings_cfilter"><![CDATA[Content Filter]]></string>
     <string name="_sys_menu_item_title_system_add_content"><![CDATA[Add Content]]></string>

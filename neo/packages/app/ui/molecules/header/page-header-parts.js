@@ -303,8 +303,8 @@ export function usePageHeaderBase(pageData) {
             nextTitle = menuSettings.name;
         }
         // A section listed by its own page (Settings): below desktop that list replaces the tab row,
-        // so each page is named by its item ("Email"); the list page itself keeps the section name.
-        if (menuSettings.hub && !isDesktop) {
+        // so each page is named by its item ("Email"); the list page (Overview) keeps the section name.
+        if (menuSettings.hub && !isDesktop && pageData?.uri !== menuSettings.hub) {
             nextTitle = getMenuItemTitleForUri(pageData?.menu, pageData?.uri) || nextTitle;
         }
         if (header.title) {

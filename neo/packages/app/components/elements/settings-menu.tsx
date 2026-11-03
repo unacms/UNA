@@ -4,6 +4,7 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Link from 'app/ui/atoms/link'
 import { useCurrentUser } from 'app/context/user'
+import { useScreenTier } from 'app/context/measure'
 import { appSetting, cn, strToObj } from 'app/lib/util'
 
 type SettingsMenuItem = {
@@ -14,6 +15,7 @@ type SettingsMenuItem = {
     url?: string
     icon?: string
     config?: string
+    hidden_on?: string[] | false
     subitems?: SettingsMenuItem[]
 }
 
@@ -39,11 +41,12 @@ export function hasSettingsGroups(items: SettingsMenuItem[]): boolean {
  * Every row the list shows: items nested under a parent in Studio (`subitems`) come right after it,
  * in its group unless they name their own; a parent that only groups them (no link) has no row.
  */
-function flattenSettingsItems(items: SettingsMenuItem[], parentGroup: SettingsGroup | null = null): { item: SettingsMenuItem; group: SettingsGroup }[] {
+function flattenSettingsItems(items: SettingsMenuItem[], skip: (item: SettingsMenuItem) => boolean, parentGroup: SettingsGroup | null = null): { item: SettingsMenuItem; group: SettingsGroup }[] {
     return items.flatMap((item) => {
+        if (skip(item)) return []
         const group = getSettingsItemGroup(item) ?? parentGroup
         const row = itemHref(item) ? [{ item, group: group ?? 'other' }] : []
-        return [...row, ...flattenSettingsItems(item.subitems || [], group)]
+        return [...row, ...flattenSettingsItems(item.subitems || [], skip, group)]
     })
 }
 
@@ -75,12 +78,18 @@ function SettingsRow({ item, first, danger }: Readonly<{ item: SettingsMenuItem;
  * the account's first, then the current profile's under its name, then the rest, and deleting the
  * account last on its own. One list for both, so switching profiles visibly changes the second card.
  */
-export default function SettingsMenu({ items }: Readonly<{ items: SettingsMenuItem[] }>) {
+export default function SettingsMenu({ items, hub = '' }: Readonly<{ items: SettingsMenuItem[]; hub?: string }>) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
+    const tier = useScreenTier()
+
+    // Not the list's own page (the menu's `hub`, its Overview item), nor what UNA hides at this size.
+    const skip = (item: SettingsMenuItem) =>
+        (!!hub && itemHref(item).replace(/^\/+/, '') === hub)
+        || (Array.isArray(item.hidden_on) && item.hidden_on.includes(tier))
 
     const byGroup = new Map<SettingsGroup, SettingsMenuItem[]>()
-    for (const { item, group } of flattenSettingsItems(items)) {
+    for (const { item, group } of flattenSettingsItems(items, skip)) {
         byGroup.set(group, [...(byGroup.get(group) || []), item])
     }
 
@@ -90,8 +99,9 @@ export default function SettingsMenu({ items }: Readonly<{ items: SettingsMenuIt
     }
 
     return (
-        // Rows read as a list, not a table: a phone-like width on wide screens too.
-        <View className="w-full max-w-2xl gap-6">
+        // Rows read as a list, not a table: a phone-like width on wide screens too. Below desktop the
+        // section's tab pane has no inset of its own, so the cards keep the page's 16px.
+        <View className="w-full max-w-2xl gap-6 px-4 lg:px-0">
             {GROUPS.filter((group) => byGroup.has(group)).map((group) => (
                 <View key={group} className="w-full gap-2">
                     {headings[group] ? (

@@ -11,6 +11,8 @@ import {
     fillTabs,
     ensureRouteInited,
     findConductorRouteIndex,
+    firstShownConductorRoute,
+    conductorHref,
     getConductorLayoutCols,
     getConductorColumnsConfig,
     isConductorColumnShown,
@@ -33,7 +35,7 @@ import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
 import { useBottomSheetStore } from 'app/context/bottomsheet'
 import { useLayoutSettings } from 'app/context/layout-settings'
-import { useIsDesktop, useWindowHeight, useBreakpointName } from 'app/context/measure'
+import { useIsDesktop, useWindowHeight, useBreakpointName, useScreenTier, useHydrated } from 'app/context/measure'
 import { useHeaderHeight, useFooterHeight } from 'app/context/jotai/layout'
 import { isTasksHomeUri } from 'app/components/elements/tasks/helpers'
 import { PageHeaderOptions } from 'app/ui/molecules/header/options'
@@ -105,6 +107,9 @@ export function Conductor({
     const { layoutName: tmplLayout } = useLayoutSettings()
     const isDesktop = useIsDesktop()
     const breakpointName = useBreakpointName()
+    const tier = useScreenTier()
+    // The tier reads `desktop` until hydration: a hidden tab is only acted on after it.
+    const hydrated = useHydrated()
     const pageHeaderHeight = useHeaderHeight()
     const footerHeight = useFooterHeight()
     const windowHeight = useWindowHeight()
@@ -122,8 +127,8 @@ export function Conductor({
 
     /** Menu JSON → tab routes, with the current URL's tab already hydrated. */
     const initedTabs = useMemo(
-        () => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu),
-        [menu, data, blocks, currentUser, useSectionAsMenu]
+        () => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu, tier),
+        [menu, data, blocks, currentUser, useSectionAsMenu, tier]
     )
 
     /**
@@ -199,6 +204,17 @@ export function Conductor({
         onChangeRoute,
         adapter: routesAdapter,
     })
+
+    // A tab hidden at this screen size (Settings' Overview on desktop) opens the first tab shown, in
+    // place and under its own URL, as if it were picked in the menu.
+    useEffect(() => {
+        if (!hydrated || !activeRoute?.hiddenOnTier) return
+        const first = firstShownConductorRoute(routes)
+        if (!first) return
+        setIndex(first.index)
+        const href = conductorHref(first.link)
+        if (href && typeof window !== 'undefined') window.history.replaceState(window.history.state, '', href)
+    }, [hydrated, activeRoute, routes, setIndex])
 
     // ==================================================================
     // 2. Layout config (columns, widths, page header)
@@ -448,7 +464,7 @@ export function Conductor({
                 ? <PageHeaderOptions hidden mobileOnly />
                 : <PageHeaderOptions sub={headerComponent} mobileOnly />}
             {/* Below desktop a hub section's page was opened from its list: Back returns there. */}
-            {hideTabs ? <PageHeaderOptions backButton={backToHub} mobileOnly /> : null}
+            {hideTabs && data?.uri !== menuHub ? <PageHeaderOptions backButton={backToHub} mobileOnly /> : null}
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <View
                 // Grows to the wrapper's viewport min-height (flex-auto), so the columns and the

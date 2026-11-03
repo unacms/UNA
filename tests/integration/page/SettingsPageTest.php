@@ -3,10 +3,11 @@
 use PHPUnit\Framework\Attributes\Group;
 
 /**
- * The `settings` page lists every settings page: a members-only page whose one block is the settings
- * submenu (sys_account_settings_submenu). The submenu's `config_api` names that page (`hub`), and each
- * item says whose setting it is (`group`), so the apps list them under the account or the profile.
- * The pages it lists (account-settings-email ...) stay as they are.
+ * The `settings` page lists every settings page: a members-only page in the settings section, as its
+ * Overview item (hidden on desktop, where the menu is beside every settings page), whose one block is
+ * the settings submenu (sys_account_settings_submenu). The submenu's `config_api` names that page
+ * (`hub`), and each item says whose setting it is (`group`), so the apps list them under the account
+ * or the profile. The pages it lists (account-settings-email ...) stay as they are.
  */
 #[Group('integration')]
 class SettingsPageTest extends BxDolIntegrationTestCase
@@ -19,7 +20,13 @@ class SettingsPageTest extends BxDolIntegrationTestCase
         $this->assertNotEmpty($aPage, 'The settings page is installed.');
         $this->assertSame('sys_settings', $aPage['object']);
         $this->assertSame(2147483646, (int)$aPage['visible_for_levels'], 'Only members see it.');
-        $this->assertSame('', $aPage['override_class_name'], 'A plain page: it carries no submenu of its own.');
+        $this->assertSame('BxTemplPageAccount', $aPage['override_class_name'], 'An account page: it carries the settings submenu, as its siblings do.');
+
+        $aOverview = $oDb->getRow("SELECT * FROM `sys_menu_items` WHERE `set_name` = 'sys_account_settings' AND `module` = 'system' AND `name` = 'settings'");
+        $this->assertNotEmpty($aOverview, 'The page is the Overview item of its own section.');
+        $this->assertSame('page.php?i=settings', $aOverview['link']);
+        $this->assertSame((string)pow(2, BX_DB_HIDDEN_DESKTOP - 1), (string)$aOverview['hidden_on'], 'Hidden on desktop by default.');
+        $this->assertSame(1, (int)$aOverview['active_api'], 'The apps get it.');
 
         $aBlock = $oDb->getRow("SELECT * FROM `sys_pages_blocks` WHERE `object` = 'sys_settings' AND `module` = 'system' AND `title` = '_sys_page_block_title_settings'");
         $this->assertNotEmpty($aBlock);
@@ -67,6 +74,8 @@ class SettingsPageTest extends BxDolIntegrationTestCase
         $this->assertSame(['hub' => 'settings'], json_decode($aMenu['config'], true));
 
         $aItems = array_column($aMenu['items'], null, 'name');
+        $this->assertArrayHasKey('settings', $aItems);
+        $this->assertSame(['desktop'], $aItems['settings']['hidden_on'], 'The apps hide the Overview on desktop.');
         $this->assertArrayHasKey('account-settings-email', $aItems);
         $this->assertSame(['group' => 'account'], json_decode($aItems['account-settings-email']['config'], true));
         $this->assertArrayHasKey('account-settings-delete', $aItems);

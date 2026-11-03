@@ -3488,6 +3488,7 @@
     <string name="_sys_menu_item_title_account_settings_delete"><![CDATA[Удалить]]></string>
     <string name="_sys_menu_item_title_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_account_settings_info"><![CDATA[Аккаунт]]></string>
+    <string name="_sys_menu_item_title_account_settings_overview"><![CDATA[Обзор]]></string>
     <string name="_sys_menu_item_title_account_settings_pwd"><![CDATA[Пароль]]></string>
     <string name="_sys_menu_item_title_profile_settings_cfilter"><![CDATA[Фильтр контента]]></string>
     <string name="_sys_menu_item_title_add_content"><![CDATA[Добавить...]]></string>
@@ -3586,6 +3587,7 @@
     <string name="_sys_menu_item_title_system_account_settings_delete"><![CDATA[Удалить]]></string>
     <string name="_sys_menu_item_title_system_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_system_account_settings_info"><![CDATA[Аккаунт]]></string>
+    <string name="_sys_menu_item_title_system_account_settings_overview"><![CDATA[Обзор]]></string>
     <string name="_sys_menu_item_title_system_account_settings_pwd"><![CDATA[Пароль]]></string>
     <string name="_sys_menu_item_title_system_profile_settings_cfilter"><![CDATA[Фильтр контента]]></string>
     <string name="_sys_menu_item_title_system_add_content"><![CDATA[Добавить Содержимое]]></string>

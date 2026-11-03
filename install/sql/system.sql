@@ -5156,6 +5156,10 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_account_settings', 'system', 'account-settings-password', '_sys_menu_item_title_system_account_settings_pwd', '_sys_menu_item_title_account_settings_pwd', 'page.php?i=account-settings-password', '', '', 'key', '', 2147483646, '', 1, 1, 4),
 ('sys_account_settings', 'system', 'profile-settings-cfilter', '_sys_menu_item_title_system_profile_settings_cfilter', '_sys_menu_item_title_profile_settings_cfilter', 'page.php?i=profile-settings-cfilter', '', '', 'filter', '', 2147483646, 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"is_enabled_cfilter";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 1, 1, 5),
 ('sys_account_settings', 'system', 'account-settings-delete', '_sys_menu_item_title_system_account_settings_delete', '_sys_menu_item_title_account_settings_delete', 'page.php?i=account-settings-delete', '', '', 'remove', '', 2147483646, '', 1, 1, 9999);
+-- Overview: the settings page itself, which lists the items. Hidden on desktop, where the menu is
+-- beside every settings page and the settings page opens the first item instead.
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `hidden_on`, `active`, `copyable`, `order`) VALUES
+('sys_account_settings', 'system', 'settings', '_sys_menu_item_title_system_account_settings_overview', '_sys_menu_item_title_account_settings_overview', 'page.php?i=settings', '', '', 'cog', '', 2147483646, '', '4', 1, 1, 0);
 
 -- account dashboard
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
@@ -6163,7 +6167,7 @@ INSERT INTO `sys_objects_page` (`object`, `uri`, `title_system`, `title`, `modul
 ('sys_forgot_password', 'forgot-password', '_sys_page_title_system_forgot_password', '_sys_page_title_forgot_password', 'system', 1, 18, '', 2147483647, 1, 'page.php?i=forgot-password', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_confirm_email', 'confirm-email', '_sys_page_title_system_confirm_email', '_sys_page_title_confirm_email', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=confirm-email', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_confirm_phone', 'confirm-phone', '_sys_page_title_system_confirm_phone', '_sys_page_title_confirm_phone', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=confirm-phone', '', '', '', 0, 1, 0, '', '', 0),
-('sys_settings', 'settings', '_sys_page_title_system_settings', '_sys_page_title_settings', 'system', 1, 5, '', 2147483646, 1, 'page.php?i=settings', '', '', '', 0, 1, 0, '', '', 0),
+('sys_settings', 'settings', '_sys_page_title_system_settings', '_sys_page_title_settings', 'system', 1, 5, '', 2147483646, 1, 'page.php?i=settings', '', '', '', 0, 1, 0, 'BxTemplPageAccount', '', 0),
 ('sys_account_settings_email', 'account-settings-email', '_sys_page_title_system_account_settings_email', '_sys_page_title_account_settings_email', 'system', 1, 5, '', 2147483647, 1, 'member.php', '', '', '', 0, 1, 0, 'BxTemplPageAccount', '', 0),
 ('sys_account_settings_pwd', 'account-settings-password', '_sys_page_title_system_account_settings_pwd', '_sys_page_title_account_settings_pwd', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=account-settings-pwd', '', '', '', 0, 1, 0, 'BxTemplPageAccount', '', 0),
 ('sys_account_settings_info', 'account-settings-info', '_sys_page_title_system_account_settings_info', '_sys_page_title_account_settings_info', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=account-settings-info', '', '', '', 0, 1, 0, 'BxTemplPageAccount', '', 0),
