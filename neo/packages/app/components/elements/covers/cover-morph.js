@@ -98,7 +98,7 @@ export default function CoverMorph({
     if (!data?.profile?.module) return null
 
     const coverBaseClass =
-        appSetting('theme', 'conductor').cover_base || 'bg-card'
+        appSetting('theme', 'conductor').cover_base || 'bg-card-surface'
 
     // `none`: same as web — chrome stays in flow above the list
     // (no overlay parallax). Tabs render inside CoverMorphBody.

@@ -19,7 +19,7 @@ export const settingsElements = {
         topmenu_button_size: 'base',
         topmenu_button_pressed: true,
         left_menu_cnt: '  ',
-        cover_base: 'ns--cover-base- w-full bg-card ne--',
+        cover_base: 'ns--cover-base- w-full bg-card-surface ne--',
         cover_content:
             'ns--conductor-cover-content-- items-center h-full w-full justify-between lg:p-4 ne--',
         cover_small: 'mx-auto flex-row items-center ',

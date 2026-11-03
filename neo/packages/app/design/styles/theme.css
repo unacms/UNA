@@ -48,6 +48,12 @@
     --color-segment-foreground: rgb(var(--segment-foreground));
     --color-card: rgb(var(--card));
     --color-card-foreground: rgb(var(--card-foreground));
+    /*
+     * A block's surface made opaque: `bg-card/60` (theme.blocks u-block-bg) over the page
+     * background, mixed in sRGB as the browser composites it. For chrome that content
+     * scrolls under, such as the profile cover, so it matches the blocks below it.
+     */
+    --color-card-surface: color-mix(in srgb, rgb(var(--card)) 60%, rgb(var(--background)));
     --color-popover: rgb(var(--popover));
     --color-popover-foreground: rgb(var(--popover-foreground));
     --color-primary: rgb(var(--primary));
