@@ -62,6 +62,26 @@ BxDolStudioDesigner.prototype.deleteLogo = function(sName, oButton) {
     });
 };
 
+/**
+ * Shows the editor's code, saved or not, in the Landing page preview: posted to splash.php with the form's CSRF token,
+ * which splash.php checks before it renders posted code for an admin.
+ */
+BxDolStudioDesigner.prototype.previewSplash = function(oButton, sFrame, sUrl) {
+    var oForm = $(oButton).parents('form:first');
+    var oCode = oForm.find('textarea[name=code]');
+    var oEditor = oCode.nextAll('.CodeMirror').get(0);
+    var sCode = oEditor && oEditor.CodeMirror ? oEditor.CodeMirror.getValue() : oCode.val();
+
+    // A form of its own (forms don't nest), posted into the preview frame.
+    var oPost = $('<form method="post" class="bx-std-hidden"></form>').attr({action: sUrl, target: sFrame});
+    oPost.append($('<input type="hidden" name="code" />').val(sCode));
+    oPost.append($('<input type="hidden" name="csrf_token" />').val(oForm.find('input[name=csrf_token]').val()));
+
+    $('body').append(oPost);
+    oPost.get(0).submit();
+    oPost.remove();
+};
+
 BxDolStudioDesigner.prototype.deleteIcon = function(sName, oButton) {
     var $this = this;
 

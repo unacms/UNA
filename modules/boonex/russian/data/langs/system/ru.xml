@@ -773,6 +773,7 @@
 	<string name="_adm_dsg_btn_logo_remove_mark"><![CDATA[Удалить знак светлой темы]]></string>
 	<string name="_adm_dsg_btn_logo_remove_mark_dark"><![CDATA[Удалить знак тёмной темы]]></string>
 	<string name="_adm_dsg_btn_make_default"><![CDATA[Сделать основным]]></string>
+	<string name="_adm_dsg_btn_splash_preview"><![CDATA[Показать изменения]]></string>
 	<string name="_adm_dsg_cnf_logo_remove"><![CDATA[Удалить это изображение? Оно будет удалено безвозвратно.]]></string>
 	<string name="_adm_dsg_dsc_alt_text"><![CDATA[Используется для дополнительного текста для лого-картинки. Используется в качестве лого, если картинка не загружена.]]></string>
 	<string name="_adm_dsg_dsc_splash_warning"><![CDATA[Заметьте, что неправильное применение HTML может испортить дизайн сайта.]]></string>
@@ -801,8 +802,12 @@
 	<string name="_adm_dsg_inf_logo_text"><![CDATA[Его читают экранные дикторы, и он показывается в шапке, когда нет изображения логотипа. Оставьте пустым, чтобы использовать название сайта.]]></string>
 	<string name="_adm_dsg_inf_mark_code"><![CDATA[Рисует знак из SVG-разметки вместо изображения по умолчанию. Загруженное изображение важнее.]]></string>
 	<string name="_adm_dsg_inf_mark_section"><![CDATA[Компактный символ: показывается в шапке на телефонах и планшетах.]]></string>
+	<string name="_adm_dsg_inf_splash_section_code"><![CDATA[HTML страницы. Эти подстановки заменяются при показе страницы: <code>__logo__</code> — логотип сайта, <code>__join_form_in_box__</code> и <code>__login_form_in_box__</code> — формы регистрации и входа в блоке, <code>__join_form__</code> и <code>__login_form__</code> — те же формы без блока, <code>__join_link__</code> и <code>__login_link__</code> — их адреса, <code>{site_title}</code> — название сайта.]]></string>
+	<string name="_adm_dsg_inf_splash_section_landing"><![CDATA[Гости, открывшие главную страницу, видят вместо неё эту страницу. Участники, которые вошли на сайт, по-прежнему видят главную.]]></string>
+	<string name="_adm_dsg_inf_splash_section_preview"><![CDATA[Так страницу видят гости. «Показать изменения» показывает код из редактора до сохранения.]]></string>
 	<string name="_adm_dsg_lnk_logo_system"><![CDATA[Открыть «Дизайнер › Лого»]]></string>
 	<string name="_adm_dsg_lnk_logo_template"><![CDATA[Открыть настройки логотипа {0}]]></string>
+	<string name="_adm_dsg_lnk_splash_open"><![CDATA[Открыть в новой вкладке]]></string>
 	<string name="_adm_dsg_scs_save"><![CDATA[Изменения удачно сохранены]]></string>
         <string name="_adm_dsg_txt_logo_code"><![CDATA[SVG-код]]></string>
         <string name="_adm_dsg_txt_logo_dark_src_none"><![CDATA[Нет. В тёмной теме показывается логотип светлой темы.]]></string>
@@ -844,7 +849,14 @@
 	<string name="_adm_dsg_txt_cover_src_default"><![CDATA[Обложка по умолчанию. Загрузите свою, чтобы заменить её.]]></string>
 	<string name="_adm_dsg_txt_cover_src_default_dark"><![CDATA[Обложка по умолчанию, с версией для тёмной темы. Загрузите свою, чтобы заменить её.]]></string>
 	<string name="_adm_dsg_txt_cover_src_none"><![CDATA[Нет. Страницы показывают простую обложку.]]></string>
+	<string name="_adm_dsg_txt_splash_code"><![CDATA[HTML-код]]></string>
+	<string name="_adm_dsg_txt_splash_enable"><![CDATA[Включить свою главную страницу]]></string>
 	<string name="_adm_dsg_txt_splash_enabled"><![CDATA[Включить титульную страницу]]></string>
+	<string name="_adm_dsg_txt_splash_note"><![CDATA[Ошибки в HTML могут сломать страницу. Проверьте её в предпросмотре перед сохранением.]]></string>
+	<string name="_adm_dsg_txt_splash_preview_title"><![CDATA[Предпросмотр лендинга]]></string>
+	<string name="_adm_dsg_txt_splash_section_code"><![CDATA[Код страницы]]></string>
+	<string name="_adm_dsg_txt_splash_section_landing"><![CDATA[Лендинг]]></string>
+	<string name="_adm_dsg_txt_splash_section_preview"><![CDATA[Предпросмотр]]></string>
 	<string name="_adm_dsg_txt_default"><![CDATA[по умолчанию]]></string>
         <string name="_adm_dsg_txt_icon"><![CDATA[Фавикон (32x32)]]></string>
         <string name="_adm_dsg_txt_icon_svg"><![CDATA[Иконка SVG со светлым/темным стилями]]></string>
@@ -1298,7 +1310,7 @@
     <string name="_adm_lmi_cpt_search_forms"><![CDATA[Формы поиска]]></string>
     <string name="_adm_lmi_cpt_search_fields"><![CDATA[Поля поиска]]></string>
     <string name="_adm_lmi_cpt_search_sortable_fields"><![CDATA[Поля сортироски поиска]]></string>
-	<string name="_adm_lmi_cpt_splash"><![CDATA[Приветственная страница]]></string>
+	<string name="_adm_lmi_cpt_splash"><![CDATA[Лендинг]]></string>
 	<string name="_adm_lmi_cpt_displays"><![CDATA[Дисплеи]]></string>
 	<string name="_adm_lmi_cpt_downloaded"><![CDATA[Скачано]]></string>
 	<string name="_adm_lmi_cpt_etemplates_text"><![CDATA[Тексты email-ов]]></string>

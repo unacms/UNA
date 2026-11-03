@@ -865,56 +865,114 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
 
     protected function getSplash()
     {
-    	$oTemplate = BxDolStudioTemplate::getInstance();
+        $oTemplate = BxDolStudioTemplate::getInstance();
 
-        $aForm = array(
-            'form_attrs' => array(
+        $sPreviewUrl = BX_DOL_URL_ROOT . 'splash.php?preview=1';
+
+        $aForm = [
+            'form_attrs' => [
                 'id' => $this->sSplashFormId,
                 'name' => $this->sSplashFormId,
                 'action' => BX_DOL_URL_STUDIO . 'designer.php',
                 'method' => 'post',
                 'enctype' => 'multipart/form-data',
                 'target' => $this->sSplashIframeId
-            ),
-            'params' => array(
-                'db' => array(
+            ],
+            'params' => [
+                'db' => [
                     'table' => '',
                     'key' => '',
                     'uri' => '',
                     'uri_title' => '',
                     'submit_name' => 'save'
-                ),
-            ),
-            'inputs' => array(
-                'page' => array(
+                ],
+            ],
+            'inputs' => [
+                'page' => [
                     'type' => 'hidden',
                     'name' => 'page',
                     'value' => $this->sPage
-                ),
-                'enabled' => array(
-                    'type' => 'checkbox',
+                ],
+                'landing_section' => [
+                    'type' => 'block_header',
+                    'name' => 'landing_section',
+                    'caption' => _t('_adm_dsg_txt_splash_section_landing'),
+                ],
+                'landing_info' => [
+                    'type' => 'custom',
+                    'name' => 'landing_info',
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_splash_section_landing')]),
+                ],
+                'enabled' => [
+                    'type' => 'switcher',
                     'name' => 'enabled',
-                    'caption' => _t('_adm_dsg_txt_splash_enabled'),
+                    'caption' => _t('_adm_dsg_txt_splash_enable'),
                     'value' => 'on',
                     'checked' => getParam('sys_site_splash_enabled') == 'on',
-                    'db' => array (
+                    'db' => [
                         'pass' => 'Xss',
-                    ),
-                ),
-                'code' => array(
+                    ],
+                ],
+                'code_section' => [
+                    'type' => 'block_header',
+                    'name' => 'code_section',
+                    'caption' => _t('_adm_dsg_txt_splash_section_code'),
+                ],
+                'code_info' => [
+                    'type' => 'custom',
+                    'name' => 'code_info',
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_splash_section_code')]),
+                ],
+                'code' => [
                     'type' => 'textarea',
                     'code' => true,
                     'name' => 'code',
-                    'caption' => '',
+                    'caption' => _t('_adm_dsg_txt_splash_code'),
                     'value' => getParam('sys_site_splash_code'),
-                ),
-                'save' => array(
+                ],
+                'preview_section' => [
+                    'type' => 'block_header',
+                    'name' => 'preview_section',
+                    'caption' => _t('_adm_dsg_txt_splash_section_preview'),
+                ],
+                'preview_info' => [
+                    'type' => 'custom',
+                    'name' => 'preview_info',
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_splash_section_preview')]),
+                ],
+                'preview' => [
+                    'type' => 'custom',
+                    'name' => 'preview',
+                    'content' => $oTemplate->parseHtmlByName('dsr_splash_preview.html', [
+                        'js_object' => $this->getPageJsObject(),
+                        'preview_url' => $sPreviewUrl,
+                        'frame_id' => $this->sSplashIframeId . '-preview',
+                    ]),
+                ],
+                'header_note' => [ // the warning under the sections, in a section of its own
+                    'type' => 'block_header',
+                ],
+                'note' => [
+                    'type' => 'custom',
+                    'name' => 'note',
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_note.html', [
+                        'text' => _t('_adm_dsg_txt_splash_note'),
+                        'bx_if:show_link' => [
+                            'condition' => false,
+                            'content' => []
+                        ],
+                    ]),
+                ],
+                'header_save' => [ // a section of its own for the Save button: the block footer (page.css) is that last section
+                    'type' => 'block_header',
+                ],
+                'save' => [
                     'type' => 'submit',
                     'name' => 'save',
-                    'value' => _t('_adm_btn_designer_submit'),
-                )
-            )
-        );
+                    'value' => _t('_adm_btn_settings_save'),
+                ]
+            ]
+        ];
 
         $oForm = new BxTemplStudioFormView($aForm, $oTemplate);
         $oForm->initChecker();
@@ -926,8 +984,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
 
         return $oTemplate->parseHtmlByName('designer.html', [
             'content' => $oTemplate->parseHtmlByName('dsr_splash.html', [
-                'warning' => MsgBox(_t('_adm_dsg_dsc_splash_warning')),
-                'splash_iframe_id' => $this->sSplashIframeId, 
+                'splash_iframe_id' => $this->sSplashIframeId,
                 'form' => $oForm->getCode()
             ]),
             'js_content' => $this->getPageJsCode(),
