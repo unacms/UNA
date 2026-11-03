@@ -248,6 +248,7 @@ export function usePageHeaderBase(pageData) {
         subHeader: options.sub,
         headerActions: options.actions,
         backButton: options.backButton,
+        ownBackButton: options.ownBackButton,
         title: options.title,
         band: isHeaderBandOn(options.band),
     }), [options]);
@@ -527,12 +528,16 @@ export const PageHeaderBody = memo(({
         ) : null;
 
     if (header.header) {
-        if (!isWeb && canShowBackButton) {
+        // A bar that draws its own back control (the messenger chat, `ownBackButton`) gets no second one.
+        if (!isWeb && canShowBackButton && !header.ownBackButton) {
+            // The bar keeps its own height (the messenger list adds a menu row under its title), so Back
+            // sits in a slot as tall as the header row, at its px-4 inset; -me-1 against the bar's own
+            // px-4 leaves the row's gap-3 to the bar's first item.
             return (
                 <View onLayout={onMainHeaderLayout}>
-                    <Row className={`${contentClassName}`}>
-                        <BackButtonElement className="items-center mr-2" />
-                        <View className="flex-1">{header.header}</View>
+                    <Row className={`${appSetting('layout', 'page_content_width_default')} items-start`}>
+                        <BackButtonElement className="h-16 justify-center ps-4 -me-1" />
+                        <View className="flex-1 min-w-0">{header.header}</View>
                     </Row>
                 </View>
             );
