@@ -296,7 +296,7 @@ form#adm-settings-form > .bx-form-advanced-wrapper > .bx-form-section-wrapper:no
 form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child) {
     position: sticky;
     bottom: 0;
-    z-index: 1;
+    z-index: 10; /* over what fields stack inside themselves: color swatches (2), code editor layers (6) */
     display: flex;
     align-items: center;
     width: auto;
