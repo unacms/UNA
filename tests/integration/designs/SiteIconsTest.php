@@ -1,6 +1,8 @@
 <?php
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
 /**
  * The site's default icons (template/images/icons): every icon Studio > Designer > Icon previews has one, and the
@@ -48,6 +50,10 @@ class SiteIconsTest extends BxDolIntegrationTestCase
         }
     }
 
+    // manifest.json.php defines BX_MANIFEST, which turns sessions off (BxDolSession) for the rest of the process,
+    // so it runs in a process of its own: the login tests after it need sessions.
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function testTheManifestListsTheAndroidDefaultsWhenNothingIsUploaded(): void
     {
         foreach (array_keys(self::ANDROID) as $sName)
