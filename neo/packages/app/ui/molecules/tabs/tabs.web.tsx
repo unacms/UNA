@@ -15,11 +15,11 @@ import {
     hasTabContent,
     TabsMeasureRow,
 } from 'app/ui/molecules/tabs/tabs-shared';
-import type { View as RNView } from 'react-native';
+import type { ViewInstance } from 'react-native';
 import type { TabItem, TabsProps } from './tabs.types';
 
 /** Design `View` ref on web: typed as the RN view, backed by a DOM element. */
-type WebViewRef = RNView & HTMLDivElement;
+type WebViewRef = ViewInstance & HTMLDivElement;
 import {
     TABS_SELECTION_DURATION_MS,
     TABS_UNDERLINE_HEIGHT_PX,

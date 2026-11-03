@@ -136,6 +136,7 @@ const expoConfig = {
     },
     plugins: [
         "expo-web-browser",
+        "expo-font",
         ["expo-router", {}],
         [
             "expo-maps",
@@ -154,6 +155,7 @@ const expoConfig = {
         ],
         "./plugins/with-expo-audio-no-foreground-services.js",
         "./plugins/with-disable-enriched-markdown-math.js",
+        "./plugins/with-stripe-disable-spm.js",
         // Lucide as native template images (iOS asset catalog, Android vector drawables)
         // for Expo UI buttons and NativeTabs (`expo_ui.iosIconSource` / `androidIconSource`).
         "./plugins/with-lucide-assets.js",
@@ -179,14 +181,10 @@ const expoConfig = {
             {
                 ios: {
                     deploymentTarget: '16.4',
-                    // UIKit scene lifecycle (ExpoAppSceneDelegate + UIApplicationSceneManifest):
-                    // apps built with the iOS 27 SDK (Xcode 27) are killed at launch on iOS 27
-                    // without it. Needs expo >= 57.0.23; a no-op (with a warning) from SDK 58.
-                    enableSceneSupport: true,
                 },
                 android: {
                     minSdkVersion: 29, // Android 10
-                    compileSdkVersion: 36,
+                    compileSdkVersion: 37,
                     targetSdkVersion: 36,
                     buildToolsVersion: "36.0.0"
                 }

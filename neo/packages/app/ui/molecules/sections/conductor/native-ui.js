@@ -42,6 +42,7 @@ import { getNativeTabBarOverlayInset } from 'app/components/nav/tabs/tab-menu';
  * @param {*}        [props.ts]           Soft-refresh token; part of the cover key.
  * @param {object}   [props.coverScrollY] Reanimated shared value (dynamic only).
  * @param {Function} [props.onOverlayHeight]
+ * @param {Function} [props.onCollapseRange] The cover's collapse range, for a pinned tab switch.
  * @param {Function} [props.onProgress]
  */
 export const TabSceneHeader = React.memo(function TabSceneHeader({
@@ -54,6 +55,7 @@ export const TabSceneHeader = React.memo(function TabSceneHeader({
     ts,
     coverScrollY,
     onOverlayHeight,
+    onCollapseRange,
     onProgress,
 }) {
     const { top: stableTopInset } = useStableSafeAreaInsets();
@@ -86,6 +88,7 @@ export const TabSceneHeader = React.memo(function TabSceneHeader({
                 showImage={isOverlayMorph && coverMode !== 'min' && coverMode !== 'none'}
                 coverScrollY={isOverlayMorph ? coverScrollY : undefined}
                 onOverlayHeight={isOverlayMorph ? onOverlayHeight : undefined}
+                onCollapseRange={isOverlayMorph ? onCollapseRange : undefined}
                 onProgress={isOverlayMorph ? onProgress : undefined}
                 sceneHeader={sceneHeader}
                 filter={filter}

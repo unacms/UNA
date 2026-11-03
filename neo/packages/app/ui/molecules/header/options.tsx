@@ -29,6 +29,8 @@ import { useIsDesktop } from 'app/context/measure';
  * follows the page's cover in Studio (Pages → page → Cover) for this viewer, and a
  * `title` passed here always shows; pages that draw their own heading (landing pages)
  * set `showTitle={false}`.
+ * `ownBackButton` says a `main` bar draws its own back control (the messenger chat), so a
+ * pushed native screen gets no second one in front of it.
  */
 export type HeaderOptions = {
     main: ReactNode;
@@ -37,6 +39,7 @@ export type HeaderOptions = {
     hidden: boolean;
     title: ReactNode;
     backButton: boolean;
+    ownBackButton: boolean;
     band: boolean | null;
     showTitle: boolean | null;
 };
@@ -60,6 +63,7 @@ export const defaultHeaderOptions: Readonly<HeaderOptions> = Object.freeze({
     hidden: false,
     title: false,
     backButton: false,
+    ownBackButton: false,
     band: null,
     showTitle: null,
 });
@@ -169,7 +173,7 @@ export function useHeaderOptions(): HeaderOptions {
  * registered at all (not registered as `null`), so it never shadows another
  * owner of the same key. Saves every page from `isDesktop ? null : <…/>`.
  */
-export function PageHeaderOptions({ main, sub, actions, hidden, title, backButton, band, showTitle, mobileOnly = false }: Readonly<HeaderOptionValues & { mobileOnly?: boolean }>) {
+export function PageHeaderOptions({ main, sub, actions, hidden, title, backButton, ownBackButton, band, showTitle, mobileOnly = false }: Readonly<HeaderOptionValues & { mobileOnly?: boolean }>) {
     const registry = useContext(HeaderOptionsRegistryContext);
     const isDesktop = useIsDesktop();
     const active = !(mobileOnly && isDesktop);
@@ -179,9 +183,9 @@ export function PageHeaderOptions({ main, sub, actions, hidden, title, backButto
     // identity, so callers should memo `sub`/`main` like any other element.
     useIsoLayoutEffect(() => {
         if (!registry || !active) return undefined;
-        registry.set(id, pickDefined({ main, sub, actions, hidden, title, backButton, band, showTitle }));
+        registry.set(id, pickDefined({ main, sub, actions, hidden, title, backButton, ownBackButton, band, showTitle }));
         return undefined;
-    }, [registry, id, active, main, sub, actions, hidden, title, backButton, band, showTitle]);
+    }, [registry, id, active, main, sub, actions, hidden, title, backButton, ownBackButton, band, showTitle]);
 
     // Also runs when `active` flips to false (desktop resize), dropping the entry.
     useIsoLayoutEffect(() => {

@@ -13,6 +13,7 @@ UPDATE `sys_menu_items` SET `config_api`='{"badge":"notifications"}' WHERE `set_
 -- MENUS: active_api
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='bx_notifications' AND `name`='notifications-preview';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_settings' AND `module`='bx_notifications' AND `name`='notifications-settings';
+UPDATE `sys_menu_items` SET `config_api`='{"group":"profile"}' WHERE `set_name`='sys_account_settings' AND `module`='bx_notifications' AND `name`='notifications-settings';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_ntfs_submenu' AND `module`='bx_notifications' AND `name`='notifications-view';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_tabbar' AND `module`='bx_notifications' AND `name`='notifications-view';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_notifications_submenu' AND `module`='bx_notifications' AND `name`='notifications-all';

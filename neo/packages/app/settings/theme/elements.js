@@ -19,7 +19,7 @@ export const settingsElements = {
         topmenu_button_size: 'base',
         topmenu_button_pressed: true,
         left_menu_cnt: '  ',
-        cover_base: 'ns--cover-base- w-full bg-card ne--',
+        cover_base: 'ns--cover-base- w-full bg-card-surface ne--',
         cover_content:
             'ns--conductor-cover-content-- items-center h-full w-full justify-between lg:p-4 ne--',
         cover_small: 'mx-auto flex-row items-center ',
@@ -93,6 +93,8 @@ export const settingsElements = {
         ' bg-popover shadow-popover dark:shadow-popover-deep md:rounded-3xl overflow-hidden ',
         content: '',
         header: ' px-3 py-2 min-h-14 items-start justify-start border-b border-border/60 ',
+        // headerBorder={false} (Sheet on web and Android): the same bar without the line, as the iOS sheet.
+        header_plain: ' px-3 py-2 min-h-14 items-start justify-start ',
     },
     cards: {
         // The card surface (bg-card/60) on every size: edge to edge with no outline shadow on

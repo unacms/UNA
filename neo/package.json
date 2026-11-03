@@ -8,13 +8,13 @@
   "devDependencies": {
     "@types/blueimp-md5": "~2.18.2",
     "@types/fbemitter": "~2.0.35",
-    "@types/react": "~19.2.10",
-    "@types/react-dom": "~19.2.3",
+    "@types/react": "~19.3.0",
+    "@types/react-dom": "~19.3.0",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9.17.0",
     "lerna-update-wizard": "^1.1.2",
     "patch-package": "^8.0.1",
-    "turbo": "^2.5.8",
+    "turbo": "^2.11.10",
     "typescript": "~6.0.3",
     "unicode-emoji-json": "0.9.0"
   },
@@ -45,11 +45,12 @@
   ],
   "dependencies": {
     "@10play/react-native-web-webview": "^0.0.3",
-    "cuelume": "0.2.6",
-    "dotenv-cli": "^11.0.0",
+    "cuelume": "0.2.8",
+    "dotenv-cli": "^11.1.0",
     "web-haptics": "^0.0.6"
   },
   "resolutions": {
+    "uniwind": "1.12.2",
     "tailwindcss": "4.3.2",
     "@tailwindcss/postcss": "4.3.2",
     "@radix-ui/primitive": "1.1.7",

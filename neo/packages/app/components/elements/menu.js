@@ -4,8 +4,9 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Link from 'app/ui/atoms/link'
 import { components } from 'app/components/registry';
-import { appSetting } from 'app/lib/util';
+import { appSetting, getMenuHub } from 'app/lib/util';
 import { useState } from 'react';
+import SettingsMenu, { hasSettingsGroups } from './settings-menu';
 
 const conductorTheme = appSetting('theme', 'conductor');
 
@@ -118,6 +119,15 @@ export default function ElementMenu({ data, blockWrapperProps, url, itemsClassNa
                 </View>
             );
         });
+
+    // A menu whose items name their group (the Settings page's `sys_account_settings`) is a grouped list.
+    if (hasSettingsGroups(topLevelItems)) {
+        return (
+            <BlockWrapper {...blockWrapperProps}>
+                <SettingsMenu items={topLevelItems} hub={getMenuHub(data?.content)} />
+            </BlockWrapper>
+        );
+    }
 
     // Flat menus whose items all carry a description render as choices instead of sidebar links.
     const isChoiceList = topLevelItems.length > 0 && topLevelItems.every(

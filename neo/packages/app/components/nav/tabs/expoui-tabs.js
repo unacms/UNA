@@ -5,7 +5,7 @@
  * Expo UI TabView / NavigationBar are in-screen chrome, not a router. NEO's
  * tab0–tab4 slots are full-screen routes, so NativeTabs is the fit.
  */
-import { NativeTabs } from 'expo-router/unstable-native-tabs';
+import { NativeTabs } from 'expo-router/native-tabs';
 import { useEffect, useMemo, useState } from 'react';
 import { PixelRatio, Platform, Pressable, useWindowDimensions } from 'react-native';
 import { Image } from 'expo-image';
@@ -20,11 +20,13 @@ import { pngBase64WithCircleMask } from 'app/lib/image/circle-png';
 import { getNativeOptimizedImageUrl } from 'app/lib/image-helpers';
 import { lucideAssetName, lucideDrawableName } from 'app/lib/platform/lucide-assets';
 import { getBadgeLabel, getOverflowBadgeTotal } from './badges';
+import { useLetterTabIcon } from './letter-avatar-icon';
 import {
     MORE_TAB_ICON,
     areTabBarLabelsHidden,
+    avatarTabPredicate,
+    isAvatarOnProfile,
     buildTabBarMoreMenuItems,
-    isDashboardTab,
     isProfileTab,
     splitProfileMoreMenu,
     splitTabBarItems,
@@ -127,7 +129,8 @@ function useAvatarTabIcon(avatar) {
             cancelled = true;
         };
     }, [avatar]);
-    return source;
+    // No photo (a profile switch to one without): not the previous profile's picture.
+    return avatar ? source : null;
 }
 
 function renderTabTrigger({
@@ -322,10 +325,18 @@ export default function ExpoUITabNavigator({
     const { setCurrentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
     const hideLabels = areTabBarLabelsHidden(TabList);
-    const avatarIcon = useAvatarTabIcon(isIos ? currentUser?.avatar : null);
-    // Own avatar as a tab icon: the `{profile}` item, or the dashboard in menus without one.
-    const hasProfileTab = TabList.some(isProfileTab);
-    const usesAvatarIcon = (tab) => (hasProfileTab ? isProfileTab(tab) : isDashboardTab(tab, currentUser));
+    const photoIcon = useAvatarTabIcon(isIos ? currentUser?.avatar : null);
+    // No photo: the letter avatar web shows, drawn into an image for UITabBar.
+    const letterIcon = useLetterTabIcon(isIos && currentUser && !currentUser.avatar ? currentUser : null, TAB_AVATAR_PT);
+    // Keep the last avatar image until the next one is ready (a theme switch redraws the letter
+    // avatar, a profile switch loads a new photo). Falling back to the tab's own icon meanwhile
+    // swaps an image for an xcasset, which react-native-screens rejects ("unsupported icon type").
+    const freshAvatarIcon = photoIcon ?? letterIcon.icon;
+    const [lastAvatarIcon, setLastAvatarIcon] = useState(null);
+    if (freshAvatarIcon && freshAvatarIcon !== lastAvatarIcon) setLastAvatarIcon(freshAvatarIcon);
+    const avatarIcon = currentUser ? freshAvatarIcon ?? lastAvatarIcon : null;
+    // Own avatar as a tab icon (`native.tab_avatar`), as on web and in native-tabs.js.
+    const usesAvatarIcon = avatarTabPredicate(TabList, currentUser);
 
     const { visible, overflow, moreTabIndex } = useMemo(
         () => splitTabBarItems(TabList),
@@ -396,6 +407,8 @@ export default function ExpoUITabNavigator({
     // A `{profile}` item heading the More list makes the More tab the user's
     // avatar and the sheet's header (Linear style); web's footer does the same.
     const profileMore = collapsed && isProfileTab(moreRoot);
+    // More takes the avatar only when the profile tab carries it (`native.tab_avatar`).
+    const avatarMore = profileMore && isAvatarOnProfile();
     const sheetExclude = appSetting('theme', 'expo_ui', 'tabs')?.more_sheet_exclude || [];
     const profileMenu = splitProfileMoreMenu({
         items: overflowMenuItems,
@@ -447,11 +460,12 @@ export default function ExpoUITabNavigator({
     const barTabs = (collapsed ? visible : TabList).filter((tab) => tab.hide !== true);
     const slotCount = barTabs.length + (collapsed ? 1 : 0);
     const androidAvatar = isAndroid && currentUser?.avatar ? avatarImageUri(currentUser.avatar, TAB_AVATAR_PT) : null;
-    const avatarSlot = collapsed && profileMore ? barTabs.length : barTabs.findIndex(usesAvatarIcon);
+    const avatarSlot = avatarMore ? barTabs.length : barTabs.findIndex(usesAvatarIcon);
     const androidMoreTarget = isAndroid && isShowTabs && collapsed && hasNativeMoreSheet && !profileOnly;
 
     return (
         <View className="flex-1">
+            {letterIcon.capture}
             <NativeTabs
                 key={tabsSessionKey}
                 hidden={!isShowTabs}
@@ -508,7 +522,7 @@ export default function ExpoUITabNavigator({
                         disableAutomaticContentInsets
                         listeners={moreTabListeners}
                     >
-                        {profileMore && avatarIcon ? (
+                        {avatarMore && avatarIcon ? (
                             <NativeTabs.Trigger.Icon src={avatarIcon} renderingMode="original" />
                         ) : (
                             <NativeTabs.Trigger.Icon {...tabIconProps(moreIcons)} />
@@ -551,7 +565,7 @@ export default function ExpoUITabNavigator({
                     slotIndex={barTabs.length}
                     slotCount={slotCount}
                     barHeight={tabBarHeight}
-                    avatar={profileMore ? androidAvatar : null}
+                    avatar={avatarMore ? androidAvatar : null}
                     onPress={handleMoreTabPress}
                     accessibilityLabel={moreTitle}
                 />

@@ -17,7 +17,9 @@ export function IconFromSet({ icon, InlineIcon, AnimatedIconComponent, width, he
         if (!icon || InlineIcon || AnimatedIconComponent) return null;
         const strokeWidth = maskStrokeWidth(_strokeWidth);
         if (fill) return `/api/api.icon?icon=${icon}&strokeWidth=${strokeWidth}&fill=${encodeURIComponent(fill)}`;
-        return `/lucide/${strokeWidth}/${icon}.svg`;
+        // ?v= marks the URL immutable (next.config.js headers()).
+        const version = process.env.NEXT_PUBLIC_LUCIDE_VERSION;
+        return `/lucide/${strokeWidth}/${icon}.svg` + (version ? `?v=${version}` : '');
     }, [icon, InlineIcon, AnimatedIconComponent, _strokeWidth, fill]);
 
     if (!maskUrl) return null;

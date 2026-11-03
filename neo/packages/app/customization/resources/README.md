@@ -6,7 +6,7 @@ Files a fork ships with its build, plus its notes for coding agents. The rules f
 |---|---|
 | `web/` | Flat files copied into `apps/next/public/static/` whenever the Next config loads, served as `/static/<name>`: `favicon.svg`, `manifest.json` and every icon the manifest names. Subfolders aren't copied, and the copy never deletes stale files. The folder is optional. |
 | `native/` | App icon, splash and other native assets. Nothing reads this folder on its own; reference the files from `config/app.config.js` as `../../packages/app/customization/resources/native/<file>`. |
-| `sounds/` | Default notification and UI sounds, used through `customization/sounds.js`. |
+| `sounds/` | Your own native sounds (create it). Core's defaults are in `packages/app/resources/sounds/`; point keys of `customization/sounds.js` at your files. |
 | `agents.md` | The fork's notes for every coding agent. |
 | `claude.md` | The fork's notes for Claude Code only. |
 

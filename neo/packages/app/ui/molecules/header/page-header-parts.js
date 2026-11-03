@@ -5,7 +5,7 @@ import { ScopedTheme } from 'uniwind';
 import { nativeDriver } from 'app/lib/platform/animation';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { FeedbackHaptics, appSetting, getBreakpoint, getMenuSettings } from 'app/lib/util';
+import { FeedbackHaptics, appSetting, getBreakpoint, getMenuItemTitleForUri, getMenuSettings } from 'app/lib/util';
 import { playCue } from 'app/lib/sound';
 import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
@@ -248,6 +248,7 @@ export function usePageHeaderBase(pageData) {
         subHeader: options.sub,
         headerActions: options.actions,
         backButton: options.backButton,
+        ownBackButton: options.ownBackButton,
         title: options.title,
         band: isHeaderBandOn(options.band),
     }), [options]);
@@ -301,12 +302,17 @@ export function usePageHeaderBase(pageData) {
         if (menuSettings.name) {
             nextTitle = menuSettings.name;
         }
+        // A section listed by its own page (Settings): below desktop that list replaces the tab row,
+        // so each page is named by its item ("Email"); the list page (Overview) keeps the section name.
+        if (menuSettings.hub && !isDesktop && pageData?.uri !== menuSettings.hub) {
+            nextTitle = getMenuItemTitleForUri(pageData?.menu, pageData?.uri) || nextTitle;
+        }
         if (header.title) {
             nextTitle = header.title;
         }
 
         return (nextTitle || '').replace('__notification__', '');
-    }, [header.title, menuSettings.name, pageData?.name]);
+    }, [header.title, isDesktop, menuSettings.hub, menuSettings.name, pageData?.menu, pageData?.name, pageData?.uri]);
 
     const onHeaderLayout = useCallback((event) => {
         const { height } = event.nativeEvent.layout;
@@ -527,12 +533,16 @@ export const PageHeaderBody = memo(({
         ) : null;
 
     if (header.header) {
-        if (!isWeb && canShowBackButton) {
+        // A bar that draws its own back control (the messenger chat, `ownBackButton`) gets no second one.
+        if (!isWeb && canShowBackButton && !header.ownBackButton) {
+            // The bar keeps its own height (the messenger list adds a menu row under its title), so Back
+            // sits in a slot as tall as the header row, at its px-4 inset; -me-1 against the bar's own
+            // px-4 leaves the row's gap-3 to the bar's first item.
             return (
                 <View onLayout={onMainHeaderLayout}>
-                    <Row className={`${contentClassName}`}>
-                        <BackButtonElement className="items-center mr-2" />
-                        <View className="flex-1">{header.header}</View>
+                    <Row className={`${appSetting('layout', 'page_content_width_default')} items-start`}>
+                        <BackButtonElement className="h-16 justify-center ps-4 -me-1" />
+                        <View className="flex-1 min-w-0">{header.header}</View>
                     </Row>
                 </View>
             );

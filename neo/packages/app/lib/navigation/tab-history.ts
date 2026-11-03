@@ -240,6 +240,13 @@ export function peekTabLastUrl(tabKey: string | null | undefined) {
     return stack?.[stack.length - 1];
 }
 
+/** `url` is the tab's own root page (the Profile tab's `{profile}` is the viewer's profile). */
+export function isTabRootUrl(tabKey: string | null | undefined, url: string | null | undefined, currentUser: unknown) {
+    const key = parseTabKey(tabKey);
+    if (!key) return false;
+    return tabHistoryPath(url) === tabHistoryPath(getTabRootUrl(key, currentUser));
+}
+
 export function isAtTabRoot(tabKey: string | null | undefined, currentUser: unknown) {
     const key = parseTabKey(tabKey);
     if (!key) return true;
