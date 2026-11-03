@@ -27,7 +27,8 @@ import { PageHeaderOptions } from 'app/ui/molecules/header/options'
 import { useCurrentUser } from 'app/context/user'
 import { useBottomSheetStore } from 'app/context/bottomsheet'
 import emitter, { EVENTS } from 'app/context/emitter'
-import { useIsFocused, useRouter } from 'app/lib/hooks/router'
+import { useIsFocused, useRouter, usePathname, redirectTo } from 'app/lib/hooks/router'
+import { getTabKeyFromPathname } from 'app/lib/navigation/tab-history'
 import { useIsDesktop, useScreenTier, useHydrated } from 'app/context/measure'
 import {
     getCachedConductorState,
@@ -269,12 +270,14 @@ export function Conductor({
     const router = useRouter()
 
     // A tab hidden at this screen size (Settings' Overview on a wide tablet) opens the first tab shown,
-    // as its own page, so the header and Back follow it.
+    // as the page of this same screen (`redirectTo` swaps its params: no deep link, no other tab), and
+    // only while the screen is focused, so a tab in the background never takes over.
+    const pathname = usePathname()
     useEffect(() => {
-        if (!hydrated || !routes.find((route) => route.index === index)?.hiddenOnTier) return
+        if (!hydrated || !isFocused || !routes.find((route) => route.index === index)?.hiddenOnTier) return
         const href = conductorHref(firstShownConductorRoute(routes)?.link)
-        if (href) router.replace(href)
-    }, [hydrated, routes, index, router])
+        if (href) redirectTo(router, href, getTabKeyFromPathname(pathname))
+    }, [hydrated, isFocused, routes, index, router, pathname])
 
     /** Tab press: pin the cover first, then switch. */
     const onSelectTab = useCallback((tab) => {
