@@ -341,6 +341,10 @@ BxDolStudioDesigner.prototype.syncTemplatePage = function(oViewer, oFrame) {
         return;
     }
 
+    // The page the frame is on, listed or reached by a link: another template's Preview and "Open in a new tab" use it.
+    $(oViewer).attr('data-page', sPath);
+    $(oViewer).find('.adm-dsg-tmpl-open').attr('href', this.getTemplatePageUrl(oViewer));
+
     var oSelect = $(oViewer).find('.adm-dsg-tmpl-page');
     var oMatch = oSelect.find('option').filter(function() {
         return this.value && new URL(this.value, window.location.href).toString().replace(/\/$/, '') == sPath;
@@ -386,7 +390,7 @@ BxDolStudioDesigner.prototype.keepTemplateInFrame = function(oViewer, oFrame) {
 };
 
 BxDolStudioDesigner.prototype.getTemplatePageUrl = function(oViewer) {
-    var oUrl = new URL($(oViewer).find('.adm-dsg-tmpl-page').val(), window.location.href);
+    var oUrl = new URL($(oViewer).attr('data-page') || $(oViewer).find('.adm-dsg-tmpl-page').val(), window.location.href);
     oUrl.searchParams.set('skin', $(oViewer).attr('data-template'));
     oUrl.searchParams.set('preview', '1');
     return oUrl.toString();
@@ -397,6 +401,8 @@ BxDolStudioDesigner.prototype.getTemplatePageUrl = function(oViewer) {
  */
 BxDolStudioDesigner.prototype.loadTemplatePage = function(oControl) {
     var oViewer = $(oControl).closest('.adm-dsg-tmpl-viewer');
+    if($(oControl).is('.adm-dsg-tmpl-page') && $(oControl).val())
+        oViewer.attr('data-page', $(oControl).val()); // a page chosen from the list
     var sUrl = this.getTemplatePageUrl(oViewer);
 
     oViewer.find('.adm-dsg-tmpl-frame').attr('src', sUrl);
@@ -425,7 +431,7 @@ BxDolStudioDesigner.prototype.previewTemplate = function(oButton, sUri) {
 
     oViewer.attr('data-template', sUri);
     oViewer.find('.adm-dsg-tmpl-viewer-title').text($(oButton).closest('.adm-dsg-tmpl-card').attr('data-title'));
-    this.loadTemplatePage(oViewer.find('.adm-dsg-tmpl-page').get(0));
+    this.loadTemplatePage(oViewer.get(0)); // on the page the frame is on (data-page), not the one last chosen in the list
 
     oForm.find('.adm-dsg-tmpl-card [aria-pressed]').attr('aria-pressed', 'false');
     $(oButton).attr('aria-pressed', 'true');
