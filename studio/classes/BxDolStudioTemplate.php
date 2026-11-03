@@ -97,7 +97,8 @@ class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
         if(($sModuleIcon = $this->_getModuleIcon('url', $sName)) !== false)
             return $sModuleIcon;
 
-        return parent::getIconUrl($sName, $sCheckIn);
+        $sUrl = parent::getIconUrl($sName, $sCheckIn);
+        return strncmp($sName, 'wi-', 3) == 0 ? $this->_addAppIconRevision($sUrl) : $sUrl;
     }
 
     function getIconPath($sName, $sCheckIn = BX_DOL_TEMPLATE_CHECK_IN_BOTH)
@@ -164,7 +165,7 @@ class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
 
     function getModuleIconUrl($sName, $sCheckIn = BX_DOL_TEMPLATE_CHECK_IN_BOTH)
     {
-        return $this->_getAbsoluteLocation('url', $this->_sFolderModuleIcons, $sName, $sCheckIn);
+        return $this->_addAppIconRevision($this->_getAbsoluteLocation('url', $this->_sFolderModuleIcons, $sName, $sCheckIn));
     }
 
     function getModuleIconPath($sName, $sCheckIn = BX_DOL_TEMPLATE_CHECK_IN_BOTH)
@@ -259,6 +260,15 @@ class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
         $this->addCss($oPage->getPageCss());
         $this->addJs($oPage->getPageJs());
         $this->getPageCode();
+    }
+
+    /**
+     * App icons (wi-*.svg, images/modules/*.svg) are cached for a long time and a release replaces them under the same names, so their
+     * URLs carry the revision, which every update bumps. An icon that wasn't found stays an empty string.
+     */
+    protected function _addAppIconRevision($sUrl)
+    {
+        return !empty($sUrl) ? $this->addRevision($sUrl) : $sUrl;
     }
 
     protected function _getModuleIcon($sType, $sName)

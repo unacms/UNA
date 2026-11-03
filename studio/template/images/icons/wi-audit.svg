@@ -3,21 +3,21 @@
 <style>
 :is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-activity-trace-v1 [class]{animation:var(--a) 1600ms linear both;animation-delay:var(--d,0ms)}
 .v-activity-trace-v1 [class]{--a:none}
-.v-activity-trace-v1 :is(.ln,.sh.ln){--a:vt0}
+.v-activity-trace-v1 :is(.bx-ai-ln,.bx-ai-sh.bx-ai-ln){--a:vt0}
 @keyframes vt0{0%{stroke-dasharray:none;stroke-dashoffset:0}0.06%{stroke-dasharray:108.233 216.466;stroke-dashoffset:-108.233}7.5%{stroke-dasharray:108.233 216.466;stroke-dashoffset:-108.233;animation-timing-function:linear}67.5%{stroke-dasharray:108.233 216.466;stroke-dashoffset:0}99.94%{stroke-dasharray:108.233 216.466;stroke-dashoffset:0}100%{stroke-dasharray:none;stroke-dashoffset:0}}
-.v-activity-trace-v1 .pen{--a:vt1}
+.v-activity-trace-v1 .bx-ai-pen{--a:vt1}
 @keyframes vt1{0%{opacity:0;transform:translate(14px,36px)}7.5%{opacity:1;transform:translate(14px,36px)}10.5%{opacity:1;transform:translate(19.467px,36px)}12.12%{opacity:1;transform:translate(22.124px,35.107px)}13.69%{opacity:1;transform:translate(23.702px,32.791px)}24.25%{opacity:1;transform:translate(28.871px,14.409px)}24.69%{opacity:1;transform:translate(29.4px,14.01px)}25.06%{opacity:1;transform:translate(29.929px,14.409px)}49.94%{opacity:1;transform:translate(42.071px,57.591px)}50.31%{opacity:1;transform:translate(42.6px,57.99px)}50.75%{opacity:1;transform:translate(43.129px,57.591px)}61.31%{opacity:1;transform:translate(48.298px,39.209px)}62.88%{opacity:1;transform:translate(49.876px,36.893px)}64.5%{opacity:1;transform:translate(52.533px,36px)}67.5%{opacity:1;transform:translate(58px,36px)}83.75%{opacity:0;transform:translate(58px,36px)}100%{opacity:0;transform:translate(58px,36px)}}
-:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-activity-trace-v1 .qv.qv{animation:q-activity-trace-v1 1600ms linear both}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-activity-trace-v1 .bx-ai-qv.bx-ai-qv{animation:q-activity-trace-v1 1600ms linear both}
 @keyframes q-activity-trace-v1{0%{opacity:1;animation-timing-function:ease-out}8.75%{opacity:0}77.5%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
 @media (prefers-reduced-motion:reduce){.v-activity-trace-v1 *{animation:none!important}}
 </style>
 <rect width="72" height="72" fill="url(#bg-activity-trace-v1)"/>
-<rect width="72" height="72" fill="url(#ecg-activity-trace-v1)" opacity="0.13"/><rect width="72" height="72" fill="url(#bg-activity-trace-v1)" class="qv" mask="url(#quiet-activity-trace-v1)"/>
+<rect width="72" height="72" fill="url(#ecg-activity-trace-v1)" opacity="0.13"/><rect width="72" height="72" fill="url(#bg-activity-trace-v1)" class="bx-ai-qv" mask="url(#quiet-activity-trace-v1)"/>
 <g stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-<path class="ln" d="M58 36L52.533 36A4.4 4.4 0 0 0 48.298 39.209L43.129 57.591A0.55 0.55 0 0 1 42.071 57.591L29.929 14.409A0.55 0.55 0 0 0 28.871 14.409L23.702 32.791A4.4 4.4 0 0 1 19.467 36L14 36" stroke="white"/>
-<g mask="url(#lit-activity-trace-v1)" stroke="black"><path class="sh ln" d="M58 37L52.533 37A4.4 4.4 0 0 0 48.298 40.209L43.129 58.591A0.55 0.55 0 0 1 42.071 58.591L29.929 15.409A0.55 0.55 0 0 0 28.871 15.409L23.702 33.791A4.4 4.4 0 0 1 19.467 37L14 37"/></g>
+<path class="bx-ai-ln" d="M58 36L52.533 36A4.4 4.4 0 0 0 48.298 39.209L43.129 57.591A0.55 0.55 0 0 1 42.071 57.591L29.929 14.409A0.55 0.55 0 0 0 28.871 14.409L23.702 32.791A4.4 4.4 0 0 1 19.467 36L14 36" stroke="white"/>
+<g mask="url(#lit-activity-trace-v1)" stroke="black"><path class="bx-ai-sh bx-ai-ln" d="M58 37L52.533 37A4.4 4.4 0 0 0 48.298 40.209L43.129 58.591A0.55 0.55 0 0 1 42.071 58.591L29.929 15.409A0.55 0.55 0 0 0 28.871 15.409L23.702 33.791A4.4 4.4 0 0 1 19.467 37L14 37"/></g>
 </g>
-<g class="pen" opacity="0"><circle r="5" fill="url(#glow-activity-trace-v1)"/><circle r="2.4" fill="#FB7185"/><circle r="1" fill="white"/></g>
+<g class="bx-ai-pen" opacity="0"><circle r="5" fill="url(#glow-activity-trace-v1)"/><circle r="2.4" fill="#FB7185"/><circle r="1" fill="white"/></g>
 <defs>
 <linearGradient id="bg-activity-trace-v1" x1="0" y1="0" x2="0" y2="1">
 <stop stop-color="#71717A"/>

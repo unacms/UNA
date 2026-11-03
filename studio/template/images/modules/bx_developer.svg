@@ -1,35 +1,35 @@
 <svg class="icon v-developer-spin-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
 <!-- glyph: code-xml, lucide-static v1.47.0, ISC -->
 <style>
-.v-developer-spin-v1 .sl{transform-box:view-box;transform-origin:36px 36px}
-.v-developer-spin-v1 .sh.sl{transform-origin:36px 37px}
-.v-developer-spin-v1 .ring{transform-box:view-box;transform-origin:36px 36px}
-.v-developer-spin-v1 .sh.ring{transform-origin:36px 37px}
+.v-developer-spin-v1 .bx-ai-sl{transform-box:view-box;transform-origin:36px 36px}
+.v-developer-spin-v1 .bx-ai-sh.bx-ai-sl{transform-origin:36px 37px}
+.v-developer-spin-v1 .bx-ai-ring{transform-box:view-box;transform-origin:36px 36px}
+.v-developer-spin-v1 .bx-ai-sh.bx-ai-ring{transform-origin:36px 37px}
 :is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-developer-spin-v1 [class]{animation:var(--a) 1500ms linear both;animation-delay:var(--d,0ms)}
 .v-developer-spin-v1 [class]{--a:none}
-.v-developer-spin-v1 .cl{--a:ds0}
+.v-developer-spin-v1 .bx-ai-cl{--a:ds0}
 @keyframes ds0{0%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.2,.7,.3,1)}14.67%{transform:translate(-7.9px,0px)}46.67%{transform:translate(-7.9px,0px);animation-timing-function:cubic-bezier(.55,0,.85,.4)}54.67%{transform:translate(0.6px,0px);animation-timing-function:ease-out}64%{transform:translate(0px,0px)}100%{transform:translate(0px,0px)}}
-.v-developer-spin-v1 .cr{--a:ds1}
+.v-developer-spin-v1 .bx-ai-cr{--a:ds1}
 @keyframes ds1{0%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.2,.7,.3,1)}14.67%{transform:translate(7.9px,0px)}46.67%{transform:translate(7.9px,0px);animation-timing-function:cubic-bezier(.55,0,.85,.4)}54.67%{transform:translate(-0.6px,0px);animation-timing-function:ease-out}64%{transform:translate(0px,0px)}100%{transform:translate(0px,0px)}}
-.v-developer-spin-v1 .sl{--a:ds2}
+.v-developer-spin-v1 .bx-ai-sl{--a:ds2}
 @keyframes ds2{0%{transform:rotate(0deg)}10.67%{transform:rotate(0deg);animation-timing-function:cubic-bezier(.6,0,.3,1)}41.33%{transform:rotate(192deg);animation-timing-function:ease-in-out}48%{transform:rotate(180deg)}99.93%{transform:rotate(180deg)}100%{transform:rotate(0deg)}}
-.v-developer-spin-v1 .hot{--a:ds3}
+.v-developer-spin-v1 .bx-ai-hot{--a:ds3}
 @keyframes ds3{0%{opacity:0}54%{opacity:0;animation-timing-function:ease-out}56.67%{opacity:0.95;animation-timing-function:ease-in}74%{opacity:0}100%{opacity:0}}
-.v-developer-spin-v1 .ring{--a:ds4}
+.v-developer-spin-v1 .bx-ai-ring{--a:ds4}
 @keyframes ds4{0%{opacity:0;transform:scale(.95)}54.67%{opacity:0;transform:scale(.95)}56.67%{opacity:1;transform:scale(1);animation-timing-function:cubic-bezier(.3,.6,.5,1)}75.2%{opacity:.6;transform:scale(1.77)}92%{opacity:0;transform:scale(2.55)}100%{opacity:0;transform:scale(2.55)}}
-:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-developer-spin-v1 .qv.qv{animation:q-developer-spin-v1 1500ms linear both}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-developer-spin-v1 .bx-ai-qv.bx-ai-qv{animation:q-developer-spin-v1 1500ms linear both}
 @keyframes q-developer-spin-v1{0%{opacity:1;animation-timing-function:ease-out}9.333%{opacity:0}76%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
 @media (prefers-reduced-motion:reduce){.v-developer-spin-v1 *{animation:none!important}}
 </style>
 <rect width="72" height="72" fill="url(#bg-developer-spin-v1)"/>
-<rect width="72" height="72" fill="url(#cells-developer-spin-v1)" opacity="0.16"/><rect width="72" height="72" fill="url(#bg-developer-spin-v1)" class="qv" mask="url(#quiet-developer-spin-v1)"/>
+<rect width="72" height="72" fill="url(#cells-developer-spin-v1)" opacity="0.16"/><rect width="72" height="72" fill="url(#bg-developer-spin-v1)" class="bx-ai-qv" mask="url(#quiet-developer-spin-v1)"/>
 <rect width="72" height="72" fill="url(#cells-developer-spin-v1)" opacity="0.8" mask="url(#reveal-developer-spin-v1)"/>
-<g class="unit" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-<path class="cl" d="M22.8 27.2L14 36L22.8 44.8" stroke="white"/>
-<path class="cr" d="M49.2 44.8L58 36L49.2 27.2" stroke="white"/>
+<g class="bx-ai-unit" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+<path class="bx-ai-cl" d="M22.8 27.2L14 36L22.8 44.8" stroke="white"/>
+<path class="bx-ai-cr" d="M49.2 44.8L58 36L49.2 27.2" stroke="white"/>
 <rect width="72" height="72" fill="url(#code-developer-spin-v1)" mask="url(#slash-developer-spin-v1)"/>
-<g class="sl"><path class="hot" d="M41.5 18.4L30.5 53.6" stroke="#FFE7D1" opacity="0"/></g>
-<g mask="url(#lit-developer-spin-v1)" stroke="black"><path class="sh cl" d="M22.8 28.2L14 37L22.8 45.8"/><path class="sh cr" d="M49.2 45.8L58 37L49.2 28.2"/><path class="sh sl" d="M41.5 19.4L30.5 54.6"/></g>
+<g class="bx-ai-sl"><path class="bx-ai-hot" d="M41.5 18.4L30.5 53.6" stroke="#FFE7D1" opacity="0"/></g>
+<g mask="url(#lit-developer-spin-v1)" stroke="black"><path class="bx-ai-sh bx-ai-cl" d="M22.8 28.2L14 37L22.8 45.8"/><path class="bx-ai-sh bx-ai-cr" d="M49.2 45.8L58 37L49.2 28.2"/><path class="bx-ai-sh bx-ai-sl" d="M41.5 19.4L30.5 54.6"/></g>
 </g>
 <defs>
 <linearGradient id="bg-developer-spin-v1" x1="0" y1="0" x2="0" y2="1">
@@ -42,8 +42,8 @@
 <stop stop-color="white" offset="1" stop-opacity="0.2"/>
 </linearGradient>
 <mask id="lit-developer-spin-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-developer-spin-v1)"/></mask>
-<mask id="slash-developer-spin-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><path class="sl" d="M41.5 18.4L30.5 53.6" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></mask>
+<mask id="slash-developer-spin-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><path class="bx-ai-sl" d="M41.5 18.4L30.5 53.6" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></mask>
 <pattern id="cells-developer-spin-v1" x="0" y="0" width="4" height="6" patternUnits="userSpaceOnUse"><rect x="1.5" y="2.2" width="1" height="1.6" rx=".3" fill="white"/></pattern>
-<mask id="reveal-developer-spin-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><circle class="ring" cx="36" cy="36" r="20" fill="none" stroke="white" stroke-width="5" opacity="0"/></mask>
+<mask id="reveal-developer-spin-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><circle class="bx-ai-ring" cx="36" cy="36" r="20" fill="none" stroke="white" stroke-width="5" opacity="0"/></mask>
 <radialGradient id="quietv-developer-spin-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-developer-spin-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-developer-spin-v1)"/></mask></defs>
 </svg>

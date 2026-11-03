@@ -50,7 +50,7 @@
     }
 
     function inline(oHost) {
-        var oImg = oHost.querySelector('img[src$=".svg"]');
+        var oImg = oHost.querySelector('img[src*=".svg"]'); // the URL carries the revision (BxDolStudioTemplate::_addAppIconRevision)
         if(!oImg || oHost.bxAppIcon)
             return;
 

@@ -1,30 +1,30 @@
 <svg class="icon v-settings-bolt-tighten-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
 <!-- glyph: lucide-static v1.47.0, ISC -->
 <style>
-.v-settings-bolt-tighten-v1 :is(.unit,.spin,.ring){transform-box:view-box;transform-origin:36px 36px}
-.v-settings-bolt-tighten-v1 .spin-sh{transform-box:view-box;transform-origin:36px 37px}
-:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-settings-bolt-tighten-v1 :is(.spin,.spin-sh){animation:settings-bolt-tighten-v1-spin 1400ms linear both}
+.v-settings-bolt-tighten-v1 :is(.bx-ai-unit,.bx-ai-spin,.bx-ai-ring){transform-box:view-box;transform-origin:36px 36px}
+.v-settings-bolt-tighten-v1 .bx-ai-spin-sh{transform-box:view-box;transform-origin:36px 37px}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-settings-bolt-tighten-v1 :is(.bx-ai-spin,.bx-ai-spin-sh){animation:settings-bolt-tighten-v1-spin 1400ms linear both}
 @keyframes settings-bolt-tighten-v1-spin{0%{transform:rotate(0deg)}5.71%{transform:rotate(0deg);animation-timing-function:cubic-bezier(.55,0,.85,.4)}13.57%{transform:rotate(22deg);animation-timing-function:cubic-bezier(.2,.8,.3,1)}20%{transform:rotate(20deg)}27.14%{transform:rotate(20deg);animation-timing-function:cubic-bezier(.55,0,.85,.4)}35%{transform:rotate(42deg);animation-timing-function:cubic-bezier(.2,.8,.3,1)}41.43%{transform:rotate(40deg)}48.57%{transform:rotate(40deg);animation-timing-function:cubic-bezier(.55,0,.85,.4)}56.43%{transform:rotate(62deg);animation-timing-function:cubic-bezier(.2,.8,.3,1)}62.86%{transform:rotate(60deg)}100%{transform:rotate(60deg)}}
-:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-settings-bolt-tighten-v1 .unit{animation:settings-bolt-tighten-v1-seat 1400ms linear both}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-settings-bolt-tighten-v1 .bx-ai-unit{animation:settings-bolt-tighten-v1-seat 1400ms linear both}
 @keyframes settings-bolt-tighten-v1-seat{0%{transform:scale(1)}56.43%{transform:scale(1);animation-timing-function:cubic-bezier(.2,.7,.3,1)}60%{transform:scale(.95);animation-timing-function:ease-in-out}70.71%{transform:scale(1.012);animation-timing-function:ease-in-out}80%{transform:scale(1)}100%{transform:scale(1)}}
-:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-settings-bolt-tighten-v1 .flare{animation:settings-bolt-tighten-v1-hub 1400ms linear both}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-settings-bolt-tighten-v1 .bx-ai-flare{animation:settings-bolt-tighten-v1-hub 1400ms linear both}
 @keyframes settings-bolt-tighten-v1-hub{0%{opacity:0}56.43%{opacity:0;animation-timing-function:ease-out}59.29%{opacity:0.9;animation-timing-function:ease-in-out}77.86%{opacity:0}100%{opacity:0}}
-:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-settings-bolt-tighten-v1 .ring{animation:settings-bolt-tighten-v1-ring 1400ms linear both}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-settings-bolt-tighten-v1 .bx-ai-ring{animation:settings-bolt-tighten-v1-ring 1400ms linear both}
 @keyframes settings-bolt-tighten-v1-ring{0%{opacity:0;transform:scale(.95)}57.14%{opacity:0;transform:scale(.95)}59.29%{opacity:1;transform:scale(1);animation-timing-function:cubic-bezier(.3,.6,.5,1)}77.57%{opacity:.6;transform:scale(1.56)}94.29%{opacity:0;transform:scale(2.12)}100%{opacity:0;transform:scale(2.12)}}
-:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-settings-bolt-tighten-v1 .qv.qv{animation:q-settings-bolt-tighten-v1 1400ms linear both}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-settings-bolt-tighten-v1 .bx-ai-qv.bx-ai-qv{animation:q-settings-bolt-tighten-v1 1400ms linear both}
 @keyframes q-settings-bolt-tighten-v1{0%{opacity:1;animation-timing-function:ease-out}10%{opacity:0}74.286%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
 @media (prefers-reduced-motion:reduce){.v-settings-bolt-tighten-v1 *{animation:none!important}}
 </style>
 <rect width="72" height="72" fill="url(#bg-settings-bolt-tighten-v1)"/>
-<rect width="72" height="72" fill="url(#hex-settings-bolt-tighten-v1)" opacity="0.13"/><rect width="72" height="72" fill="url(#bg-settings-bolt-tighten-v1)" class="qv" mask="url(#quiet-settings-bolt-tighten-v1)"/>
+<rect width="72" height="72" fill="url(#hex-settings-bolt-tighten-v1)" opacity="0.13"/><rect width="72" height="72" fill="url(#bg-settings-bolt-tighten-v1)" class="bx-ai-qv" mask="url(#quiet-settings-bolt-tighten-v1)"/>
 <rect width="72" height="72" fill="url(#hex-settings-bolt-tighten-v1)" opacity="0.7" mask="url(#reveal-settings-bolt-tighten-v1)"/>
-<g class="unit">
+<g class="bx-ai-unit">
 <rect y="14" width="72" height="44" fill="url(#body-settings-bolt-tighten-v1)" opacity="0.8" mask="url(#shape-settings-bolt-tighten-v1)"/>
-<circle class="hub" cx="36" cy="36" r="8.728" fill="url(#red-settings-bolt-tighten-v1)" fill-opacity="0.8"/>
-<circle class="flare" cx="36" cy="36" r="8.728" fill="url(#flare-settings-bolt-tighten-v1)" opacity="0"/>
-<path class="spin" d="M55.637 27.182A4.364 4.364 0 0 0 53.455 23.403L38.182 14.585A4.364 4.364 0 0 0 33.818 14.585L18.545 23.403A4.364 4.364 0 0 0 16.363 27.182L16.363 44.818A4.364 4.364 0 0 0 18.545 48.597L33.818 57.415A4.364 4.364 0 0 0 38.182 57.415L53.455 48.597A4.364 4.364 0 0 0 55.637 44.818Z" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<circle class="bx-ai-hub" cx="36" cy="36" r="8.728" fill="url(#red-settings-bolt-tighten-v1)" fill-opacity="0.8"/>
+<circle class="bx-ai-flare" cx="36" cy="36" r="8.728" fill="url(#flare-settings-bolt-tighten-v1)" opacity="0"/>
+<path class="bx-ai-spin" d="M55.637 27.182A4.364 4.364 0 0 0 53.455 23.403L38.182 14.585A4.364 4.364 0 0 0 33.818 14.585L18.545 23.403A4.364 4.364 0 0 0 16.363 27.182L16.363 44.818A4.364 4.364 0 0 0 18.545 48.597L33.818 57.415A4.364 4.364 0 0 0 38.182 57.415L53.455 48.597A4.364 4.364 0 0 0 55.637 44.818Z" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
 <circle cx="36" cy="36" r="8.728" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<g mask="url(#lit-settings-bolt-tighten-v1)"><path class="spin-sh" d="M55.637 28.182A4.364 4.364 0 0 0 53.455 24.403L38.182 15.585A4.364 4.364 0 0 0 33.818 15.585L18.545 24.403A4.364 4.364 0 0 0 16.363 28.182L16.363 45.818A4.364 4.364 0 0 0 18.545 49.597L33.818 58.415A4.364 4.364 0 0 0 38.182 58.415L53.455 49.597A4.364 4.364 0 0 0 55.637 45.818Z" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="36" cy="37" r="8.728" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g mask="url(#lit-settings-bolt-tighten-v1)"><path class="bx-ai-spin-sh" d="M55.637 28.182A4.364 4.364 0 0 0 53.455 24.403L38.182 15.585A4.364 4.364 0 0 0 33.818 15.585L18.545 24.403A4.364 4.364 0 0 0 16.363 28.182L16.363 45.818A4.364 4.364 0 0 0 18.545 49.597L33.818 58.415A4.364 4.364 0 0 0 38.182 58.415L53.455 49.597A4.364 4.364 0 0 0 55.637 45.818Z" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="36" cy="37" r="8.728" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>
 </g>
 <defs>
 <linearGradient id="bg-settings-bolt-tighten-v1" x1="0" y1="0" x2="0" y2="1">
@@ -44,9 +44,9 @@
 <stop stop-color="white" stop-opacity="0.1"/>
 <stop stop-color="white" offset="1" stop-opacity="0.2"/>
 </linearGradient>
-<mask id="shape-settings-bolt-tighten-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><path class="spin" d="M55.637 27.182A4.364 4.364 0 0 0 53.455 23.403L38.182 14.585A4.364 4.364 0 0 0 33.818 14.585L18.545 23.403A4.364 4.364 0 0 0 16.363 27.182L16.363 44.818A4.364 4.364 0 0 0 18.545 48.597L33.818 57.415A4.364 4.364 0 0 0 38.182 57.415L53.455 48.597A4.364 4.364 0 0 0 55.637 44.818ZM27.272 36A8.728 8.728 0 1 0 44.728 36A8.728 8.728 0 1 0 27.272 36Z" fill="white" fill-rule="evenodd"/></mask>
+<mask id="shape-settings-bolt-tighten-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><path class="bx-ai-spin" d="M55.637 27.182A4.364 4.364 0 0 0 53.455 23.403L38.182 14.585A4.364 4.364 0 0 0 33.818 14.585L18.545 23.403A4.364 4.364 0 0 0 16.363 27.182L16.363 44.818A4.364 4.364 0 0 0 18.545 48.597L33.818 57.415A4.364 4.364 0 0 0 38.182 57.415L53.455 48.597A4.364 4.364 0 0 0 55.637 44.818ZM27.272 36A8.728 8.728 0 1 0 44.728 36A8.728 8.728 0 1 0 27.272 36Z" fill="white" fill-rule="evenodd"/></mask>
 <mask id="lit-settings-bolt-tighten-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect y="12" width="72" height="50" fill="url(#light-settings-bolt-tighten-v1)"/></mask>
 <pattern id="hex-settings-bolt-tighten-v1" x="36" y="36" width="6.928" height="12" patternUnits="userSpaceOnUse"><path d="M0 -4L3.464 -2L3.464 2L0 4L-3.464 2L-3.464 -2ZM6.928 -4L10.392 -2L10.392 2L6.928 4L3.464 2L3.464 -2ZM3.464 2L6.928 4L6.928 8L3.464 10L0 8L0 4ZM0 8L3.464 10L3.464 14L0 16L-3.464 14L-3.464 10ZM6.928 8L10.392 10L10.392 14L6.928 16L3.464 14L3.464 10Z" stroke="white" stroke-width=".4"/></pattern>
-<mask id="reveal-settings-bolt-tighten-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><circle class="ring" cx="36" cy="36" r="24.001" fill="none" stroke="white" stroke-width="5" opacity="0"/></mask>
+<mask id="reveal-settings-bolt-tighten-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><circle class="bx-ai-ring" cx="36" cy="36" r="24.001" fill="none" stroke="white" stroke-width="5" opacity="0"/></mask>
 <radialGradient id="quietv-settings-bolt-tighten-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-settings-bolt-tighten-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-settings-bolt-tighten-v1)"/></mask></defs>
 </svg>

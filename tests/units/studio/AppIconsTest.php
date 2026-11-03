@@ -71,6 +71,24 @@ class AppIconsTest extends BxDolTestCase
                 $this->assertStringContainsString('.v-' . $sKey, $sLine, 'Every rule is scoped to the icon.');
     }
 
+    #[\PHPUnit\Framework\Attributes\DataProvider('icons')]
+    public function testIconClassesAreOutOfThePagesReach(string $sPath): void
+    {
+        $s = self::read($sPath);
+
+        // the page's CSS reaches into an inline SVG: template/css/common.css spins any `svg .outer` and `svg .inner` forever, so every
+        // class below the root carries the bx-ai- prefix (scripts/studio_app_icons.py)
+        preg_match_all('/class="([^"]+)"/', substr($s, strpos($s, '>') + 1), $a);
+        foreach ($a[1] as $sClasses)
+            foreach (explode(' ', $sClasses) as $sClass)
+                $this->assertStringStartsWith('bx-ai-', $sClass);
+
+        preg_match('/<style>(.*?)<\/style>/s', $s, $aStyle);
+        preg_match_all('/(?<![\w-])\.([a-z][\w-]*)/', preg_replace('/\d\.\d/', '', $aStyle[1] ?? ''), $aSelectors);
+        foreach (array_unique($aSelectors[1]) as $sClass)
+            $this->assertMatchesRegularExpression('/^(bx-ai-|v-|icon$|tile$)/', $sClass, 'The style names only the prefixed classes, the root and its tile.');
+    }
+
     public function testKeyframeNamesAreUniqueAcrossIcons(): void
     {
         $aSeen = [];
@@ -97,6 +115,23 @@ class AppIconsTest extends BxDolTestCase
 
             $this->assertArrayHasKey($sName, $aModules, basename($sFile) . ' is used only for a module of that name (BxDolStudioTemplate::_getModuleIcon).');
         }
+    }
+
+    public function testAppIconUrlsCarryTheRevision(): void
+    {
+        // a release replaces the icons under the same names and they are cached for 30 days: the revision, bumped by every update,
+        // makes browsers fetch the new files (and studio/js/app_icons.js inline them, not the old ones)
+        $oTemplate = BxDolStudioTemplate::getInstance();
+        $sRev = 'rev=' . $oTemplate->getRevision();
+
+        $this->assertStringEndsWith('/images/modules/bx_posts.svg?' . $sRev, $oTemplate->getModuleIconUrl('bx_posts.svg'));
+        $this->assertStringEndsWith('/images/modules/bx_posts.svg?' . $sRev, $oTemplate->getIconUrl('bx_posts@modules/boonex/posts/|std-icon.svg'));
+        $this->assertStringEndsWith('/images/icons/wi-agents.svg?' . $sRev, $oTemplate->getIconUrl('wi-agents.svg'));
+
+        $this->assertSame('', $oTemplate->getModuleIconUrl('bx_no_such_module.svg'), 'A missing icon stays empty, so callers fall back.');
+        $this->assertStringNotContainsString('rev=', $oTemplate->getIconUrl('mi-cog.svg'), 'Other Studio icons are unchanged.');
+
+        $this->assertStringContainsString("oHost.querySelector('img[src*=\".svg\"]')", self::read('studio/js/app_icons.js'), 'The script finds the icon with its query string.');
     }
 
     public function testScriptLoadsWithTheHeaderAndCoversItsTiles(): void
