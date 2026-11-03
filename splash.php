@@ -50,7 +50,6 @@ function getPageMainCode()
 
     $oPermalink = BxDolPermalinks::getInstance();
 
-    $oTemplate->addJs(array('lottie.min.js'));
     $s = $oTemplate->parseHtmlByContent($sCode, array(
         'logo' => BxTemplFunctions::getInstance()->getMainLogo(array('attrs' => array('class' => 'bx-def-font-color'))),
     	'join_link' => BX_DOL_URL_ROOT . $oPermalink->permalink('page.php?i=create-account'),
