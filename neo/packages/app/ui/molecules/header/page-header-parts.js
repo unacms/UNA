@@ -248,6 +248,7 @@ export function usePageHeaderBase(pageData) {
         subHeader: options.sub,
         headerActions: options.actions,
         backButton: options.backButton,
+        ownBackButton: options.ownBackButton,
         title: options.title,
         band: isHeaderBandOn(options.band),
     }), [options]);
@@ -527,9 +528,8 @@ export const PageHeaderBody = memo(({
         ) : null;
 
     if (header.header) {
-        // A page that draws its own bar (`main`, the messenger chat) brings its own back control: ours is
-        // added only when the page asks for it with a `backButton` handler, not because the screen was pushed.
-        if (!isWeb && canShowBackButton && typeof isBackButton === 'function') {
+        // A bar that draws its own back control (the messenger chat, `ownBackButton`) gets no second one.
+        if (!isWeb && canShowBackButton && !header.ownBackButton) {
             return (
                 <View onLayout={onMainHeaderLayout}>
                     <Row className={`${contentClassName}`}>

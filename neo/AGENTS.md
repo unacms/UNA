@@ -256,6 +256,7 @@ The page header is mounted once per `Layout` (`ui/molecules/header/page-header.j
 <PageHeaderOptions sub={subHeader} mobileOnly />   // sub row on mobile only (feed switcher, tab bar)
 <PageHeaderOptions backButton title="Post" />      // item page
 <PageHeaderOptions main={<MobileChatHeader />} /> // replace the whole bar
+<PageHeaderOptions main={bar} ownBackButton />    // the bar draws its own Back (native adds none)
 <PageHeaderOptions actions={actions} />            // header actions
 <PageHeaderOptions hidden />                       // no header (a cover owns the top)
 <PageHeaderOptions band />                         // band behind the bar on mobile (feed); off by default
