@@ -42,7 +42,7 @@ export function useConductorList({
         [route]
     )
 
-    return useUniListQuery({
+    const list = useUniListQuery({
         queryKey,
         requestUrl: route?.endpoint?.request_url,
         defaultParams: route?.endpoint?.params,
@@ -57,4 +57,10 @@ export function useConductorList({
         listenSocket: socketChannelForList(route?.endpoint?.module, currentUser?.id),
         matchesNewContent,
     })
+
+    // The first page says the list is empty only because nothing was asked for yet
+    // (a search page before its form is used), so the list shows no "Nothing found".
+    const hideEmptyMsg = !!list.pagesData?.pages?.[0]?.hideEmptyMsg
+
+    return { ...list, hideEmptyMsg }
 }

@@ -115,13 +115,33 @@ $(document).ready(function() {
     oMenu.scrollLeft += oActive.getBoundingClientRect().left - oMenu.getBoundingClientRect().left - (oMenu.clientWidth - oActive.offsetWidth) / 2;
 });
 
+/**
+ * Wide screens: the toggle between the page menu and the content (page_content_2_col.html) narrows the menu to the tablet strip
+ * and back. The choice is kept per browser and applied before the first paint (page_3.html). The button's name is whichever of
+ * its two labels the CSS shows; the tooltip copies it on hover. Delegated, so a redrawn page (a module enabled) keeps working.
+ */
+$(document).on('click', '.bx-std-page-menu-toggle', function() {
+    var bNarrow = document.documentElement.classList.toggle('bx-std-pmen-narrow');
+    try {
+        if(bNarrow)
+            localStorage.setItem('bx-std-page-menu-narrow', '1');
+        else
+            localStorage.removeItem('bx-std-page-menu-narrow');
+    }
+    catch(e) {}
+
+    $(this).trigger('mouseenter');
+}).on('mouseenter', '.bx-std-page-menu-toggle', function() {
+    $(this).attr('title', $(this).children(':visible').text());
+});
 
 /**
  * Overlay scrollbar for a block's scroll box (div.bx-std-block-content, see page.css): bx_scrollbar_overlay (inc/js/functions.js) draws
  * a track and a thumb over the block, along the box's right edge and round its rounded corners, with the block's own class names.
  */
 function bx_std_scrollbars(sSelector) {
-    $(sSelector || 'div.bx-std-block-content').each(function() {
+    // Block contents, and the forms that scroll inside their block under a fixed Save footer (page.css "Options forms").
+    $(sSelector || 'div.bx-std-block-content, form[name="adm-settings-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-logo-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-icon-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-cover-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-splash-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-injections-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-pwa-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-settings-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-templates-form"] > .bx-form-advanced-wrapper').each(function() {
         bx_std_scrollbar(this);
     });
 }
@@ -143,6 +163,19 @@ function bx_std_scrollbar(oScroller) {
 
 $(document).ready(function() {
     bx_std_scrollbars();
+
+    // One-column pages (the launcher, the dashboard) scroll a box of the window's height under the fixed header; it gets the same
+    // bar, drawn over the page's content area down the window's right edge and starting under the header (general.css).
+    $('div.bx-std-content-wrp.bx-std-one-col').each(function() {
+        bx_scrollbar_overlay(this, this.parentNode, {
+            svg: 'bx-std-scrollbar',
+            track: 'bx-std-scrollbar-track',
+            thumb: 'bx-std-scrollbar-thumb',
+            scroller: '', // general.css hides the native bar
+            scrolling: 'bx-std-scrolling',
+            hover: '' // page.css shows the bar while the pointer is over the page
+        });
+    });
 });
 
 /**

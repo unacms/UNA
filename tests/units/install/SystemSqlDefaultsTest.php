@@ -58,6 +58,21 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(['bg' => ['tablet', 'desktop']], $aConfig['designbox'] ?? null);
     }
 
+    public function testProfileIsTheLastMemberTab(): void
+    {
+        // The member tab bar ends with the profile, drawn as the viewer's avatar in NEO; the dashboard comes before it.
+        $sSql = self::systemSql();
+        $aOrder = [];
+        foreach (['home', 'friends', 'profile', 'dashboard'] as $sName) {
+            $bFound = preg_match("/\\('sys_tabbar', 'system', '" . $sName . "', [^\\n]*?, (\\d+)\\)[,;]/", $sSql, $aMatch);
+            $this->assertSame(1, $bFound, "system.sql adds the {$sName} tab.");
+            $aOrder[$sName] = (int)$aMatch[1];
+        }
+
+        $this->assertLessThan($aOrder['profile'], $aOrder['dashboard'], 'The dashboard tab comes before the profile.');
+        $this->assertSame(max($aOrder), $aOrder['profile'], 'No core member tab comes after the profile.');
+    }
+
     public function testFooterHasThemeAndSoundsSwitchers(): void
     {
         // Icon-only items (no title) that open their menus above them: BxBaseMenuFooter renders the menus and shows
@@ -216,5 +231,51 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         // Every menu reads its items by set; without the key each read scans the whole table.
         // The key is on the set alone: items that share an `order` keep the order they had.
         $this->assertStringContainsString('KEY `set_name` (`set_name`)', $aMatch[1]);
+    }
+
+    public function testSiteMenuReachesTheAppsAsOnTheSite(): void
+    {
+        // The guest menu in the apps (NEO) is UNA's site menu: what Studio marks "Active (for App)". By default it
+        // matches the site: Home, About, and each module's own item from every module that is ready for the apps
+        // (ships enable-app.sql). Search opens the site's search panel, so it stays off.
+        $sSystem = (string)file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-menus.sql');
+        foreach (['home', 'about'] as $sName)
+            $this->assertStringContainsString("SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='system' AND `name`='" . $sName . "';", $sSystem, $sName);
+
+        $iChecked = 0;
+        foreach (glob(__DIR__ . '/../../../modules/boonex/*/install/sql/enable.sql') as $sEnable) {
+            $sApp = dirname($sEnable) . '/enable-app.sql';
+            if (!file_exists($sApp))
+                continue;
+            preg_match_all("/\\('sys_site', '([^']+)', '([^']+)'/", (string)file_get_contents($sEnable), $aItems, PREG_SET_ORDER);
+            $sAppSql = (string)file_get_contents($sApp);
+            foreach ($aItems as $aItem) {
+                $this->assertStringContainsString("SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='" . $aItem[1] . "' AND `name`='" . $aItem[2] . "';", $sAppSql, $aItem[1] . ' ' . $aItem[2]);
+                $iChecked++;
+            }
+        }
+        $this->assertGreaterThan(10, $iChecked, 'The modules with a site menu item were found.');
+    }
+
+    public function testSignUpUsesTheLogInLayout(): void
+    {
+        // Sign up, Log in and Forgot password share the thin one-column layout (id 18), one card width on the site and in the apps.
+        $sSql = self::systemSql();
+        foreach (['sys_create_account', 'sys_login', 'sys_forgot_password'] as $sObject) {
+            $bFound = preg_match("/\\('" . $sObject . "', '[^']+', '[^']+', '[^']+', 'system', \\d+, (\\d+),/", $sSql, $aMatch);
+            $this->assertSame(1, $bFound, $sObject);
+            $this->assertSame(18, (int)$aMatch[1], $sObject);
+        }
+
+        $this->assertStringContainsString('w-full max-w-md mx-auto', (string)file_get_contents(__DIR__ . '/../../../template/_row_1_column_thin.html'), 'The thin column is 448px (max-w-md), as NEO\'s.');
+    }
+
+    public function testScreenSizeColumns(): void
+    {
+        // Studio's per-screen-size switches, empty (shown everywhere) on a fresh install.
+        $sSql = self::systemSql();
+        $this->assertMatchesRegularExpression("/CREATE TABLE IF NOT EXISTS `sys_objects_page` \\([^;]*`cover_hidden_on` varchar\\(255\\) NOT NULL DEFAULT ''/s", $sSql);
+        foreach (['title_hidden_on', 'bg_hidden_on', 'padding_hidden_on'] as $sColumn)
+            $this->assertMatchesRegularExpression("/CREATE TABLE IF NOT EXISTS `sys_pages_blocks` \\([^;]*`" . $sColumn . "` varchar\\(255\\) NOT NULL DEFAULT ''/s", $sSql, $sColumn);
     }
 }

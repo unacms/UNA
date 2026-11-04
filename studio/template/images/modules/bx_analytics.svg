@@ -1,15 +1,21 @@
-<svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="72" height="72" fill="url(#paint0_linear_118_44)"/>
-<path d="M54.42 43.78C53.1477 46.789 51.1576 49.4404 48.6238 51.5026C46.09 53.5648 43.0896 54.9748 39.8849 55.6096C36.6802 56.2443 33.3689 56.0843 30.2403 55.1436C27.1118 54.2029 24.2613 52.5101 21.9381 50.2133C19.6148 47.9165 17.8896 45.0855 16.9133 41.9679C15.9369 38.8503 15.7391 35.541 16.3372 32.3293C16.9353 29.1176 18.311 26.1012 20.3441 23.5441C22.3772 20.9869 25.0058 18.9666 28 17.66M54 36C55.104 36 56.01 35.102 55.9 34.004C55.4389 29.4123 53.4041 25.1214 50.1407 21.8586C46.8772 18.5959 42.5858 16.5621 37.994 16.102C36.894 15.992 35.998 16.898 35.998 18.002V34.002C35.998 34.5324 36.2087 35.0411 36.5838 35.4162C36.9589 35.7913 37.4676 36.002 37.998 36.002L54 36Z" stroke="url(#paint1_linear_118_44)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M54.42 44.78C53.1477 47.789 51.1576 50.4404 48.6238 52.5026C46.09 54.5648 43.0896 55.9748 39.8849 56.6096C36.6802 57.2443 33.3689 57.0843 30.2403 56.1436C27.1118 55.2029 24.2613 53.5101 21.9381 51.2133C19.6148 48.9165 17.8896 46.0855 16.9133 42.9679C15.9369 39.8503 15.7391 36.541 16.3372 33.3293C16.9353 30.1176 18.311 27.1012 20.3441 24.5441C22.3772 21.9869 25.0058 19.9666 28 18.66M54 37C55.104 37 56.01 36.102 55.9 35.004C55.4389 30.4123 53.4041 26.1214 50.1407 22.8586C46.8772 19.5959 42.5858 17.5621 37.994 17.102C36.894 16.992 35.998 17.898 35.998 19.002V35.002C35.998 35.5324 36.2087 36.0411 36.5838 36.4162C36.9589 36.7913 37.4676 37.002 37.998 37.002L54 37Z" stroke="black" stroke-opacity="0.1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<svg class="icon v-analytics-explode-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- glyph: chart-pie, lucide-static v1.48.0, ISC -->
+<style>
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-analytics-explode-v1 [class]{animation:var(--a) 1500ms linear both;animation-delay:var(--d,0ms)}
+.v-analytics-explode-v1 [class]{--a:none}
+.v-analytics-explode-v1 :is(.bx-ai-sc,.bx-ai-sh.bx-ai-sc,.bx-ai-sf){--a:ax0}
+@keyframes ax0{0%,100%{transform:none}4%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.3,0,.2,1)}22.67%{transform:translate(2.651px,-2.651px)}41.33%{transform:translate(2.651px,-2.651px);animation-timing-function:cubic-bezier(.6,0,.9,.4)}53.33%{transform:translate(-0.5px,0.5px);animation-timing-function:ease-out}62%{transform:translate(0px,0px)}}
+.v-analytics-explode-v1 .bx-ai-so{--a:ax1}
+@keyframes ax1{0%,70%,100%{opacity:0}5.33%{opacity:0;animation-timing-function:ease-out}20%{opacity:.6}46.67%{opacity:.6;animation-timing-function:ease-in}}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-analytics-explode-v1 .bx-ai-qv.bx-ai-qv{animation:q-analytics-explode-v1 1500ms linear both}
+@keyframes q-analytics-explode-v1{0%{opacity:1;animation-timing-function:ease-out}9.333%{opacity:0}76%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.v-analytics-explode-v1 *{animation:none!important}}
+</style>
+<rect width="72" height="72" fill="url(#bg-analytics-explode-v1)"/>
+<path d="M0 9H72M0 63H72M9 0V72M63 0V72" stroke="white" stroke-width=".5" stroke-dasharray="1 2" opacity=".25"/><path d="M4 68L12 64L19 66L27 60L35 63L43 57L51 61L59 55L68 58" stroke="white" stroke-width=".9" stroke-linejoin="round" stroke-linecap="round" opacity=".22"/><rect width="72" height="72" fill="url(#bg-analytics-explode-v1)" class="bx-ai-qv" mask="url(#quiet-analytics-explode-v1)"/>
+<rect width="72" height="72" fill="url(#inside-analytics-explode-v1)" opacity=".55" mask="url(#insides-analytics-explode-v1)"/><g class="bx-ai-sf"><path class="bx-ai-so" d="M55.897 35.959C57.115 35.959 58.114 34.968 57.992 33.758A22.054 22.054 0 0 0 38.248 14.018C37.035 13.896 36.047 14.895 36.047 16.113V33.756A2.205 2.205 0 0 0 38.252 35.961Z" fill="#FCD34D" opacity="0"/></g><g stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><g stroke="white"><path d="M56.361 44.537A22.054 22.054 0 1 1 27.228 15.736"/><path class="bx-ai-sc" d="M55.897 35.959C57.115 35.959 58.114 34.968 57.992 33.758A22.054 22.054 0 0 0 38.248 14.018C37.035 13.896 36.047 14.895 36.047 16.113V33.756A2.205 2.205 0 0 0 38.252 35.961Z"/></g><g mask="url(#lit-analytics-explode-v1)" stroke="black"><path d="M56.361 45.537A22.054 22.054 0 1 1 27.228 16.736"/><path class="bx-ai-sh bx-ai-sc" d="M55.897 36.959C57.115 36.959 58.114 35.968 57.992 34.758A22.054 22.054 0 0 0 38.248 15.018C37.035 14.896 36.047 15.895 36.047 17.113V34.756A2.205 2.205 0 0 0 38.252 36.961Z"/></g></g>
 <defs>
-<linearGradient id="paint0_linear_118_44" x1="36" y1="0" x2="36" y2="72" gradientUnits="userSpaceOnUse">
-<stop stop-color="#0D9488"/>
-<stop offset="1" stop-color="#115E59"/>
-</linearGradient>
-<linearGradient id="paint1_linear_118_44" x1="35.9541" y1="16.0929" x2="35.9541" y2="55.9906" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
-</linearGradient>
-</defs>
+<linearGradient id="bg-analytics-explode-v1" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0D9488"/><stop offset="1" stop-color="#115E59"/></linearGradient><linearGradient id="inside-analytics-explode-v1" x1="36" y1="14.01" x2="36" y2="57.99" gradientUnits="userSpaceOnUse"><stop stop-color="#115E59"/><stop offset="1" stop-color="#042F2E"/></linearGradient><linearGradient id="light-analytics-explode-v1" x1="36" y1="15.01" x2="36" y2="58.99" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity=".1"/><stop offset="1" stop-color="white" stop-opacity=".2"/></linearGradient><mask id="lit-analytics-explode-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-analytics-explode-v1)"/></mask>
+<mask id="insides-analytics-explode-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><g fill="white"><path d="M13.996 35.959a22.054 22.054 0 1 0 44.107 0a22.054 22.054 0 1 0 -44.107 0"/><path class="bx-ai-sc" d="M55.897 35.959C57.115 35.959 58.114 34.968 57.992 33.758A22.054 22.054 0 0 0 38.248 14.018C37.035 13.896 36.047 14.895 36.047 16.113V33.756A2.205 2.205 0 0 0 38.252 35.961Z"/></g></mask>
+<radialGradient id="quietv-analytics-explode-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-analytics-explode-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-analytics-explode-v1)"/></mask></defs>
 </svg>

@@ -232,6 +232,46 @@ class BxBaseMenuFooterTest extends BxDolTestCase
         $this->assertStringContainsString('aria-haspopup="menu"', $aItem['attrs']);
     }
 
+    public function testLanguageItemSendsTheSiteLanguagesToTheApps(): void
+    {
+        $sSql = file_get_contents(BX_DIRECTORY_PATH_ROOT . 'modules/system/install/sql/enable-app-menus.sql');
+        $this->assertStringContainsString("`active_api`=1 WHERE `set_name`='sys_footer' AND `module`='system' AND `name`='switch_language'", $sSql, 'The apps get the item.');
+
+        $oFooter = $this->footer();
+        $aItem = $this->callProtected($oFooter, '_getMenuItemAPI', [['id' => 1, 'name' => 'switch_language', 'title' => '_sys_menu_item_title_switch_language', 'link' => 'javascript:void(0);', 'onclick' => '']]);
+        $this->assertSame(array_keys(BxDolLanguagesQuery::getInstance()->getLanguages(false, true)), $aItem['languages'], 'The codes of the enabled languages, for the apps\' switcher.');
+
+        $aLanguages = BxDolLanguagesQuery::getInstance()->getLanguages(false, true);
+        $this->assertSame(count($aLanguages) > 1, $this->callProtected($oFooter, '_isVisible', [$this->item('switch_language')]), 'Sent only while the site has two or more.');
+    }
+
+    public function testLanguageItemReachesTheAppsWithoutTheSiteMarkup(): void
+    {
+        if (count(BxDolLanguagesQuery::getInstance()->getLanguages(false, true)) < 2)
+            $this->markTestSkipped('The language item is sent only with two or more languages installed.');
+
+        $oFooter = $this->footer();
+        $oApi = new ReflectionProperty(BxDolMenu::class, '_bIsApi');
+        $bPrior = $oApi->getValue($oFooter);
+        $oApi->setValue($oFooter, true);
+        // API items have no `attrs`: the site's language markup warned here, before the JSON.
+        set_error_handler(function ($iErrno, $sError) {
+            throw new ErrorException($sError, 0, $iErrno);
+        }, E_WARNING | E_NOTICE | E_DEPRECATED);
+        try {
+            $aItems = [];
+            foreach ($oFooter->getMenuItems() as $aItem)
+                $aItems[$aItem['name']] = $aItem;
+        }
+        finally {
+            restore_error_handler();
+            $oApi->setValue($oFooter, $bPrior);
+        }
+
+        $this->assertArrayHasKey('switch_language', $aItems);
+        $this->assertStringNotContainsString('<', $aItems['switch_language']['title'], 'A plain title, not the site\'s code-and-label HTML.');
+    }
+
     public function testLanguageMenuMarksTheLanguageInUse(): void
     {
         $oMenu = BxDolMenu::getObjectInstance('sys_switch_language_inline');

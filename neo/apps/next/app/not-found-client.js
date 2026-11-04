@@ -4,6 +4,7 @@ import Root from 'app/root-client'
 import { Loading } from 'app/customization/loading'
 import { appSetting } from 'app/config'
 import { useFetch } from 'app/lib/hooks/use-fetch'
+import { useTranslation } from 'react-i18next'
 
 const SITE_TITLE = appSetting('config', 'title')
 const HOME_PAGE_URL = '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=home'
@@ -29,12 +30,14 @@ const FALLBACK_DATA = {
  */
 export default function NotFoundClient() {
     const { data: response, isLoading } = useFetch(HOME_PAGE_URL)
+    const { t } = useTranslation()
 
     if (isLoading) {
         return <Loading />
     }
 
-    const data = response?.data ? { ...response.data, page_status: 404 } : FALLBACK_DATA
+    // The home page's chrome, but not its title: the layout writes `title` into the tab.
+    const data = { ...(response?.data ?? FALLBACK_DATA), page_status: 404, title: t('Page not found') }
 
     return <Root path={'home'} data={data} uri={data.uri} url={data.url} code={404} />
 }

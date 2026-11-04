@@ -4,7 +4,7 @@ import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
 import AuthPanel from 'app/ui/molecules/auth/auth'
 import Page from 'app/ui/molecules/page/page'
-import MenuFooter from 'app/components/nav/menu-footer'
+import { PageFooter } from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import { getPageContentWidth } from 'app/lib/util'
@@ -52,7 +52,10 @@ export default function PageLayout({ data, children, pageClasses }) {
     return (
         <Page data={data}>
             <PageHeaderOptions band={false} showTitle={false} />
-            <View className={`${contentWidth} ${padding} ${gap} mx-auto my-auto`}>
+            {/* The padding sits outside the width cap, so the card is as wide as UNA's thin column
+                (448px for max-w-md), not 32px narrower. */}
+            <View className={`w-full ${padding} my-auto`}>
+                <View className={`${contentWidth} ${gap} mx-auto`}>
                     {showLoginAside && isWeb
                         ? appStatic('components_logincontent')
                         : null}
@@ -61,8 +64,9 @@ export default function PageLayout({ data, children, pageClasses }) {
                             <PageContent withAuthLinks={data?.uri === 'login'}>{children}</PageContent>
                         </PageChromeProvider>
                     </View>
+                </View>
             </View>
-            <MenuFooter />
+            <PageFooter />
         </Page>
     )
 }

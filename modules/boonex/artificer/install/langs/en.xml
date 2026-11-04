@@ -44,15 +44,15 @@
     <string name="_bx_artificer_txt_splash_welcome_l2"><![CDATA[the community]]></string>
     <string name="_bx_artificer_txt_splash_welcome_l3"><![CDATA[The best social media network for people to connect, collaborate, share content and inspire each other.]]></string>
     <string name="_bx_artificer_txt_splash_welcome_l4"><![CDATA[Powered by <a class="font-medium underline" href="https://una.io">UNA Community Management System</a>.]]></string>
-    <string name="_bx_artificer_txt_splash_welcome_a1"><![CDATA[Create Account]]></string>
-    <string name="_bx_artificer_txt_splash_welcome_a2"><![CDATA[Login]]></string>
+    <string name="_bx_artificer_txt_splash_welcome_a1"><![CDATA[Create account]]></string>
+    <string name="_bx_artificer_txt_splash_welcome_a2"><![CDATA[Log in]]></string>
     <string name="_bx_artificer_txt_splash_stats_l1"><![CDATA[We rise by helping others]]></string>
     <string name="_bx_artificer_txt_splash_stats_l2"><![CDATA[Make new friends, follow interesting creators and stay in touch with your community.]]></string>
     <string name="_bx_artificer_txt_splash_stats_c1"><![CDATA[members]]></string>
     <string name="_bx_artificer_txt_splash_stats_c2"><![CDATA[posts]]></string>
     <string name="_bx_artificer_txt_splash_stats_c3"><![CDATA[comments]]></string>
     <string name="_bx_artificer_txt_splash_login_title"><![CDATA[Log in to your account]]></string>
-    <string name="_bx_artificer_txt_splash_login_join"><![CDATA[Create New Account]]></string>
+    <string name="_bx_artificer_txt_splash_login_join"><![CDATA[Create account]]></string>
     <string name="_bx_artificer_txt_splash_login_agreement"><![CDATA[By logging in, you agree to our <a href="{0}" class="font-medium text-gray-900 dark:text-white hover:underline">Terms of use</a> and <a href="{1}" class="dark:text-white font-medium text-gray-900 hover:underline">Privacy policy</a>.]]></string>
     
 </resources>

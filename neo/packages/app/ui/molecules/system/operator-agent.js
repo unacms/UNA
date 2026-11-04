@@ -26,7 +26,7 @@ const AiAgent = lazyComponent(() => import('app/ui/molecules/ai-agent/agent'), {
 // Emitter channel between the title bar here and the `AiAgent` inside; see its `channel` prop.
 const CHANNEL = EVENTS.operatorAgent;
 // Full-page version of the operator agent (layout `chat`, see settings/layout.js `layouts`).
-const OPERATOR_ASSISTANT_URL = '/copilot';
+const OPERATOR_ASSISTANT_URL = '/cooperator';
 
 /**
  * Whether to offer the operator agent: the viewer is an operator (`user.operator`)

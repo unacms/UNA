@@ -13,21 +13,44 @@ require_once(BX_DIRECTORY_PATH_INC . "design.inc.php");
 bx_import('BxDolAcl');
 bx_import('BxDolLanguages');
 
+/**
+ * Studio > Designer > Landing previews this page for admins, enabled or not: the saved code, or the editor's code posted with
+ * the Studio form's CSRF token (so no other site can make an admin's browser run code of its choosing here).
+ */
+function getPreviewCode()
+{
+    if(!isAdmin() || bx_get('preview') === false)
+        return false;
+
+    if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['code'])) {
+        $sToken = isset($_POST['csrf_token']) ? bx_process_input($_POST['csrf_token']) : '';
+        if(!BxDolForm::isCsrfTokenValid($sToken, false))
+            return false;
+
+        return (string)$_POST['code'];
+    }
+
+    return getParam('sys_site_splash_code');
+}
+
 function getPageMainCode()
 {
     $oTemplate = BxDolTemplate::getInstance();    
 
-    $bEnabled = getParam('sys_site_splash_enabled');
-    if(!$bEnabled)
-    	$oTemplate->displayPageNotFound();
+    $sCode = getPreviewCode();
+    if($sCode === false) {
+        if(!getParam('sys_site_splash_enabled'))
+            $oTemplate->displayPageNotFound();
+
+        $sCode = getParam('sys_site_splash_code');
+    }
 
     $sJoinForm = BxDolService::call('system', 'create_account_form', array(), 'TemplServiceAccount');
     $sLoginForm = BxDolService::call('system', 'login_form', array(), 'TemplServiceLogin');
 
     $oPermalink = BxDolPermalinks::getInstance();
 
-    $oTemplate->addJs(array('lottie.min.js'));
-    $s = $oTemplate->parseHtmlByContent(getParam('sys_site_splash_code'), array(
+    $s = $oTemplate->parseHtmlByContent($sCode, array(
         'logo' => BxTemplFunctions::getInstance()->getMainLogo(array('attrs' => array('class' => 'bx-def-font-color'))),
     	'join_link' => BX_DOL_URL_ROOT . $oPermalink->permalink('page.php?i=create-account'),
         'join_form' => $sJoinForm,

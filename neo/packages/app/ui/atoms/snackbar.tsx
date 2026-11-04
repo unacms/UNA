@@ -133,7 +133,7 @@ export default function Snackbar({
     const animatedStyle = useAnimatedStyle(() => ({
         transform: [{ translateY: translateY.value }],
         opacity: opacity.value,
-    }), []);
+    }));
 
     // Position classes
     const positionClasses = position === 'bottom'

@@ -92,7 +92,7 @@
         "erusev/parsedown": "@dev",
         "paypal/paypal-checkout-sdk": "^1.0",
         "phpmailer/phpmailer": "^7.0",
-        "stripe/stripe-php": "^19.0.0",
+        "stripe/stripe-php": "^22.1.0",
         "twilio/sdk": "^8.3",
         "avto-dev/composer-cleanup-plugin": "dev-master",
         "mpratt/embera": "~2.0",
@@ -113,7 +113,7 @@
         "firebase/php-jwt": "^7.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "12.*",
+        "phpunit/phpunit": "13.*",
         "phpmd/phpmd": "@stable",
         "vlucas/phpdotenv": "^5.6"
     },

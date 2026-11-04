@@ -52,50 +52,49 @@ class BxTemplFunctions extends BxBaseFunctions
             $sAlt = $sTitle;
         $sAltAttr = bx_html_attribute($sAlt, BX_ESCAPE_STR_QUOTE);
 
-        $aImages = [
-            'logo' => ['uc' => 'Logo', 'gi' => 'logo-generic.svg'], 
-            'logo_dark' => ['uc' => 'LogoDark', 'gi' => 'logo-dark-generic.svg'], 
-            'mark' => ['uc' => 'Mark', 'gi' => 'mark-generic.svg'], 
-            'mark_dark' => ['uc' => 'MarkDark', 'gi' => 'mark-dark-generic.svg'], 
-        ];
+        $aTypes = ['logo' => 'Logo', 'logo_dark' => 'LogoDark', 'mark' => 'Mark', 'mark_dark' => 'MarkDark'];
+        $aSources = $oDesigns->getSiteLogoSources(function($sFile) {
+            return $this->_oTemplate->getImageUrl($sFile);
+        });
 
         $aTmplVarsImages = [];
         $bLogo = $bLogoDark = $bMark = $bMarkDark = false;
-        foreach($aImages as $sType => &$aParams)
-            if(($aParams['g'] = false) || ($sFileUrl = $this->{'getMain' . $aParams['uc'] . 'Url'}()) !== false || ($aParams['g'] = (($sType == 'logo' || $aImages['logo']['g']) && ($sFileUrl = $this->_oTemplate->getImageUrl($aParams['gi'])) != ''))) {
-                $iLogoHeight = (int)$oDesigns->{'getSite' . $aParams['uc'] . 'Height'}();
-                $sLogoHeight = $iLogoHeight > 0 ? 'height:' . round($iLogoHeight/16, 3) . 'rem;' : '';
+        foreach($aTypes as $sType => $sTypeUc) {
+            $aSource = $aSources[$sType];
+            if(!in_array($aSource['source'], [BxDolDesigns::LOGO_SOURCE_TEMPLATE, BxDolDesigns::LOGO_SOURCE_SYSTEM, BxDolDesigns::LOGO_SOURCE_BUILTIN]))
+                continue;
 
-                /**
-                 * Generic (SVG) images get the height only, the browser derives the width from the image's own aspect ratio.
-                 * Uploaded images use the dimensions from Designs settings.
-                 */
-                $iLogoWidth = empty($aParams['g']) ? (int)$oDesigns->{'getSite' . $aParams['uc'] . 'Width'}() : 0;
-                $sLogoWidth = $iLogoWidth > 0 ? 'width:' . round($iLogoWidth/16, 3) . 'rem;' : '';
+            $iLogoHeight = (int)$oDesigns->{'getSite' . $sTypeUc . 'Height'}();
+            $sLogoHeight = $iLogoHeight > 0 ? 'height:' . round($iLogoHeight/16, 3) . 'rem;' : '';
 
-                $aTmplVarsImages[$sType] = [
-                    'id' => 'bx-' . str_replace('_', '-', $sType),
-                    'src' => $sFileUrl,
-                    'alt' => $sAltAttr,
-                    'class' => '',
-                    'style' => $sLogoWidth . ' ' . $sLogoHeight,
-                ];
+            /**
+             * Generic (SVG) images get the height only, the browser derives the width from the image's own aspect ratio.
+             * Uploaded images use the dimensions from Designs settings.
+             */
+            $iLogoWidth = $aSource['source'] != BxDolDesigns::LOGO_SOURCE_BUILTIN ? (int)$oDesigns->{'getSite' . $sTypeUc . 'Width'}() : 0;
+            $sLogoWidth = $iLogoWidth > 0 ? 'width:' . round($iLogoWidth/16, 3) . 'rem;' : '';
 
-                ${'b' . $aParams['uc']} = true;
-            }
+            $aTmplVarsImages[$sType] = [
+                'id' => 'bx-' . str_replace('_', '-', $sType),
+                'src' => $aSource['url'],
+                'alt' => $sAltAttr,
+                'class' => '',
+                'style' => $sLogoWidth . ' ' . $sLogoHeight,
+            ];
+
+            ${'b' . $sTypeUc} = true;
+        }
 
         $sLogoInline = $sLogoInlineClass = '';
-        if($aImages['logo']['g'] && ($sLogoInline = $this->getMainLogoInline()) != '') {
+        if($aSources['logo']['source'] == BxDolDesigns::LOGO_SOURCE_INLINE) {
+            $sLogoInline = $aSources['logo']['code'];
             $bLogo = true;
-            $bLogoDark = false;
-            unset($aTmplVarsImages['logo'], $aTmplVarsImages['logo_dark']);
         }
 
         $sMarkInline = $sMarkInlineClass = '';
-        if($aImages['mark']['g'] && ($sMarkInline = $this->getMainMarkInline()) != '') {
+        if($aSources['mark']['source'] == BxDolDesigns::LOGO_SOURCE_INLINE) {
+            $sMarkInline = $aSources['mark']['code'];
             $bMark = true;
-            $bMarkDark = false;
-            unset($aTmplVarsImages['mark'], $aTmplVarsImages['mark_dark']);
         }
 
         if($bLogo) {
@@ -165,7 +164,7 @@ class BxTemplFunctions extends BxBaseFunctions
             ]
         ];
 
-        foreach($aImages as $sType => $aParams) {
+        foreach($aTypes as $sType => $sTypeUc) {
             if(($sTypeIf = 'bx_if:show_' . $sType) && isset($aTmplVarsImages[$sType]))
                 $aTmplVars[$sTypeIf] = [
                     'condition' => true,

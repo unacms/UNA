@@ -77,7 +77,7 @@ function copyCustomizationResources() {
 copyCustomizationResources();
 
 // Static web icons: public/lucide/<strokeWidth>/<Name>.svg (see lib/generate-lucide-icons.js).
-require('./lib/generate-lucide-icons').generateLucideIcons();
+const lucideVersion = require('./lib/generate-lucide-icons').generateLucideIcons();
 
 const nextConfigCustom = require('app/customization/config/next.config');
 
@@ -192,6 +192,8 @@ const nextConfig = {
     // hydration agree on whether Google auth (and the OR separator) render.
     // Prefer NEXT_PUBLIC_* when set; fall back to the server-only name used in .env.
     env: {
+        // Icon URLs carry it as ?v=, see headers() below.
+        NEXT_PUBLIC_LUCIDE_VERSION: lucideVersion,
         NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID:
             process.env.NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID ||
             process.env.GOOGLE_WEB_CLIENT_ID ||
@@ -247,9 +249,16 @@ const nextConfig = {
     async headers() {
         return [
             {
-                // File names are not versioned, so a Lucide upgrade must reach browsers.
+                // Unversioned URLs (older pages, links from outside): a Lucide upgrade must reach browsers.
                 source: '/lucide/:path*',
                 headers: [{ key: 'Cache-Control', value: 'public, max-age=604800, stale-while-revalidate=86400' }],
+            },
+            {
+                // IconFromSet adds ?v=<NEXT_PUBLIC_LUCIDE_VERSION>; it changes with every
+                // Lucide or renderer change, so the file under that URL never does.
+                source: '/lucide/:path*',
+                has: [{ type: 'query', key: 'v' }],
+                headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
             },
         ];
     },

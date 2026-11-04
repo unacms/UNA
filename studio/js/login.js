@@ -14,7 +14,7 @@ function BxDolStudioLogin() {
 	            opacity: 0
 	        },
 	        closeOnOuterClick: false
-		});
+		}).removeClass('bx-popup-responsive'); // a block on phones too, not a full screen sheet (media-phone.css)
 	});
 }
 

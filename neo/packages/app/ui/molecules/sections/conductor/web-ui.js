@@ -189,6 +189,7 @@ export const TabScene = ({
         handleEndReached,
         listReady,
         skipToastRef,
+        hideEmptyMsg,
     } = useConductorList({
         route: pageRoute,
         queryKey: qKey,
@@ -269,6 +270,7 @@ export const TabScene = ({
             hasNextPage={hasNextPage}
             isPending={isPending}
             isFetching={isFetching}
+            hideEmptyMsg={hideEmptyMsg}
             showListPreload
             listRef={uniRef}
             handleEndReached={handleEndReached}
@@ -475,7 +477,8 @@ export const TabSceneColumns = ({
                 <View
                     className={`${isRightColumn ? 'flex-auto' : 'w-full mx-auto'
                         } ${layoutName !== 'navigator'
-                            ? 'mt-0.5 sm:m-0 sm:p-3 lg:p-4'
+                            // No gap above the first block on phones: it meets the cover or tab row, as on native.
+                            ? 'sm:p-3 lg:p-4'
                             : (!pageRoute?.endpoint?.request_url ? 'sm:p-4 ' : '')
                         }${fillViewport ? ' h-full min-h-0 overflow-hidden' : ''}`}
                 >
@@ -809,7 +812,7 @@ export function SidebarNav({ routes, index, onSelect }) {
         const canNavigate = Boolean(route.canNavigate)
         const isActive = route.index === index
         const href = conductorHref(route.link || route.key)
-        const icon = route.image || route.icon || 'Circle'
+        const icon = route.image || route.icon || ''
 
         return (
             <View key={`lmenu-${route.index}`} className="w-full">
@@ -871,7 +874,7 @@ function NavigatorMenuLink({ item, index, setIndex }) {
         <MenuItemSidebar
             addon={getAddon(item.addon)}
             title={item.title}
-            icon={item.icon || 'Circle'}
+            icon={item.icon || ''}
             isActive={isActive}
         />
     )

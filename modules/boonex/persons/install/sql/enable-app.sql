@@ -4,6 +4,7 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 
 -- PAGES: config_api
 UPDATE `sys_pages_blocks` SET `config_api`='{\r\n\"content_type\":\"browse_simple\",\r\n\"header_more_url\":\"/persons-home\",\r\n\"view\":\"row\"\r\n}' WHERE `object`='sys_explore' AND `module`='bx_persons' AND `title_system`='_bx_persons_page_block_title_sys_featured_entries_view_showcase' AND `title`='_bx_persons_page_block_title_featured_entries_view_showcase_1759743271';
+UPDATE `sys_pages_blocks` SET `config_api`='{"use_as_filter":true}' WHERE `object`='bx_persons_search' AND `module`='bx_persons' AND `title_system`='' AND `title`='_bx_persons_page_block_title_search_form';
 
 -- PAGES: active_api
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_persons_create_profile' AND `module`='bx_persons' AND `title_system`='' AND `title`='_bx_persons_page_block_title_create_profile';
@@ -24,7 +25,6 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_persons_profile_
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_persons_profile_subscriptions' AND `module`='bx_persons' AND `title_system`='_bx_persons_page_block_title_system_profile_subscribed_me' AND `title`='_bx_persons_page_block_title_profile_subscribed_me';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_persons_profile_relations' AND `module`='bx_persons' AND `title_system`='_bx_persons_page_block_title_system_profile_relations' AND `title`='_bx_persons_page_block_title_profile_relations';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_persons_profile_relations' AND `module`='bx_persons' AND `title_system`='_bx_persons_page_block_title_system_profile_related_me' AND `title`='_bx_persons_page_block_title_profile_related_me';
-UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_persons_home' AND `module`='bx_persons' AND `title_system`='' AND `title`='_bx_persons_page_block_title_featured_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_persons_home' AND `module`='bx_persons' AND `title_system`='' AND `title`='_bx_persons_page_block_title_latest_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_persons_active' AND `module`='bx_persons' AND `title_system`='' AND `title`='_bx_persons_page_block_title_active_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_persons_online' AND `module`='bx_persons' AND `title_system`='' AND `title`='_bx_persons_page_block_title_online_profiles';
@@ -38,6 +38,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_persons_administ
 -- MENUS: config_api
 
 -- MENUS: active_api
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='bx_persons' AND `name`='persons-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_homepage' AND `module`='bx_persons' AND `name`='persons-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_add_profile_links' AND `module`='bx_persons' AND `name`='create-persons-profile';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='bx_persons' AND `name`='profile-stats-friend-requests';

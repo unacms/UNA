@@ -2425,7 +2425,8 @@ function bx_clicked_stack_pop()
  * Overlay scrollbar for a scroll box inside a rounded frame (Studio blocks, popup menus): the box's native bar is hidden and an SVG over
  * the frame draws a track and a thumb along the box's right edge and round the frame's corners where the box meets them, so the bar
  * follows the panel's shape. The thumb shows while the pointer is over the frame or the box scrolls (see common.css); it isn't dragged,
- * the box still scrolls by wheel, touch and keyboard. The SVG is redrawn on scroll, on resize and when the content changes.
+ * the box still scrolls by wheel, touch and keyboard. The SVG is redrawn on scroll, on resize and when the content changes. The bar
+ * keeps clear of the box's scroll-padding at the top and bottom, the part a fixed header or footer covers.
  *
  * @param oScroller - the element that scrolls (overflow-y: auto)
  * @param oFrame - the rounded element the bar is drawn over: the scroller itself or an ancestor
@@ -2525,8 +2526,11 @@ function bx_scrollbar_overlay_update(o)
     var fScale = oRf.width > 0 && fW > 0 ? oRf.width / fW : 1;
     var fTop = (oRs.top - oRf.top) / fScale, fBottom = (oRs.bottom - oRf.top) / fScale, fRight = (oRs.right - oRf.left) / fScale;
 
-    // A corner follows the scroll box's own radius or, where the box meets the frame's edge, the frame's.
     var oCss = getComputedStyle(oScroller), oCssFrame = getComputedStyle(o.frame);
+    fTop += Number.parseFloat(oCss.scrollPaddingTop) || 0;
+    fBottom -= Number.parseFloat(oCss.scrollPaddingBottom) || 0;
+
+    // A corner follows the scroll box's own radius or, where the box meets the frame's edge, the frame's.
     var fRadiusT = fTop < 1 ? (Number.parseFloat(oCss.borderTopRightRadius) || Number.parseFloat(oCssFrame.borderTopRightRadius) || 0) : 0;
     var fRadiusB = Number.parseFloat(oCss.borderBottomRightRadius) || (fBottom > fH - 1 ? Number.parseFloat(oCssFrame.borderBottomRightRadius) || 0 : 0);
 

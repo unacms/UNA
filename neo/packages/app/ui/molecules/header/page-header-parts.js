@@ -5,13 +5,13 @@ import { ScopedTheme } from 'uniwind';
 import { nativeDriver } from 'app/lib/platform/animation';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { FeedbackHaptics, appSetting, getBreakpoint, getMenuSettings } from 'app/lib/util';
+import { FeedbackHaptics, appSetting, getBreakpoint, getMenuItemTitleForUri, getMenuSettings, isOwnHeadingPage } from 'app/lib/util';
 import { playCue } from 'app/lib/sound';
 import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
 import { usePathname, useRouter } from 'app/lib/hooks/router';
 import { components } from 'app/components/registry';
-import { useIsDesktop } from 'app/context/measure';
+import { useIsDesktop, useScreenTier } from 'app/context/measure';
 import { NeoButton, NeoButtonLink } from 'app/design/controls';
 import { useNeoButtonColorScheme } from 'app/design/controls/neo-button/color-scheme-context';
 import Link from 'app/ui/atoms/link';
@@ -27,7 +27,7 @@ import {
 import { useHeaderOptions } from 'app/ui/molecules/header/options';
 import { useIsTabSlideCopy } from 'app/context/tab-route-override';
 import MenuTop from 'app/components/nav/menu-top';
-import { isPageCoverShown } from 'app/lib/page-cover';
+import { isPageCoverShown, isPageCoverHiddenOn } from 'app/lib/page-cover';
 
 const DEFAULT_CONTENT_PINNED_FIXED =
     ' bg-card backdrop-blur-xl shadow-sm ';
@@ -248,6 +248,7 @@ export function usePageHeaderBase(pageData) {
         subHeader: options.sub,
         headerActions: options.actions,
         backButton: options.backButton,
+        ownBackButton: options.ownBackButton,
         title: options.title,
         band: isHeaderBandOn(options.band),
     }), [options]);
@@ -262,7 +263,9 @@ export function usePageHeaderBase(pageData) {
 
     const isWeb = Platform.OS === 'web';
     const isDesktop = useIsDesktop();
-    const isHome = pageData?.uri === 'home';
+    const screenTier = useScreenTier();
+    // UNA can serve another page at `home` (members get the dashboard: uri `dashboard`, url `home`).
+    const isHome = pageData?.uri === 'home' || pageData?.url === 'home';
     const isCollapsibleHeader =
         appSetting('native', 'collapsible_header') && !isDesktop;
     const isContextSelector = !!pageData?.context && (appSetting('context_selector', 'show_always') || pageData?.context?.current?.id);
@@ -273,10 +276,15 @@ export function usePageHeaderBase(pageData) {
     const isShowLogo = isDesktop || !hasTabBar || isHome;
     // The page title follows the page's cover for this viewer (Studio → Pages → page → Cover); a
     // page that passes `title` always shows it, one that draws its own heading sets
-    // `showTitle={false}`. Desktop names the page in its top menu instead, and an error page
+    // `showTitle={false}` (the splash, login and create-account pages are known from the page data,
+    // before they mount). Desktop names the page in its top menu instead, and an error page
     // (403, 404) has no page to name.
+    const isOwnHeading = useMemo(() => isOwnHeadingPage(pageData, !currentUser), [pageData, currentUser]);
+    // Cover hidden on this screen size (or in the apps, Studio's "Cover hidden on"): no title from it here.
+    const isCoverShown = isPageCoverShown(pageData?.cover, Boolean(currentUser))
+        && !isPageCoverHiddenOn(pageData?.cover_hidden_on, screenTier, !isWeb);
     const isShowTitle = !isDesktop && !pageData?.page_status
-        && (options.showTitle ?? (Boolean(options.title) || isPageCoverShown(pageData?.cover, Boolean(currentUser))));
+        && (options.showTitle ?? (!isOwnHeading && (Boolean(options.title) || isCoverShown)));
     const isBackButton = header.backButton;
 
     const menuSettings = getMenuSettings(
@@ -296,17 +304,21 @@ export function usePageHeaderBase(pageData) {
     // the list under the header.
 
     const pageTitle = useMemo(() => {
-        let nextTitle = pageData?.name;
-
-        if (menuSettings.name) {
-            nextTitle = menuSettings.name;
+        // A section's pages share its name (the menu's App config `name`, else UNA's section title: "People" on
+        // every People tab, as UNA's cover); other pages take the title UNA's cover shows (`cover_title`), else
+        // their name (older UNA).
+        let nextTitle = menuSettings.name || pageData?.cover_title || pageData?.name;
+        // A section listed by its own page (Settings): below desktop that list replaces the tab row,
+        // so each page is named by its item ("Email"); the list page (Overview) keeps the section name.
+        if (menuSettings.hub && !isDesktop && pageData?.uri !== menuSettings.hub) {
+            nextTitle = getMenuItemTitleForUri(pageData?.menu, pageData?.uri) || nextTitle;
         }
         if (header.title) {
             nextTitle = header.title;
         }
 
         return (nextTitle || '').replace('__notification__', '');
-    }, [header.title, menuSettings.name, pageData?.name]);
+    }, [header.title, isDesktop, menuSettings.hub, menuSettings.name, pageData?.cover_title, pageData?.menu, pageData?.name, pageData?.uri]);
 
     const onHeaderLayout = useCallback((event) => {
         const { height } = event.nativeEvent.layout;
@@ -485,17 +497,12 @@ export const PageHeaderBody = memo(({
                     {appStatic('logo')}
                 </NeoButtonLink>
             </View>}
-            {(isWeb || logoSize === 'desktop') && <View className="hidden lg:flex -ms-2">
-                <NeoButtonLink
-                    href="/home"
-                    alt={t('Home')}
-                    style="borderless"
-                    controlSize="regular"
-                    contentInsets={{ x: 8 }}
-                    accessibilityLabel={t('Home')}
-                >
-                    {appStatic('logo')}
-                </NeoButtonLink>
+            {/* Desktop: just the logo at the header's px-4 inset, 40px tall as in UNA, in a
+                link at least 44px tall like the header's buttons. */}
+            {(isWeb || logoSize === 'desktop') && <View className="hidden lg:flex">
+                <Link href="/home" alt={t('Home')} className="flex min-h-11 min-w-11 items-center justify-center">
+                    {appStatic('logo', { mode: 'full', height: 40 })}
+                </Link>
             </View>}
         </>
     );
@@ -527,12 +534,16 @@ export const PageHeaderBody = memo(({
         ) : null;
 
     if (header.header) {
-        if (!isWeb && canShowBackButton) {
+        // A bar that draws its own back control (the messenger chat, `ownBackButton`) gets no second one.
+        if (!isWeb && canShowBackButton && !header.ownBackButton) {
+            // The bar keeps its own height (the messenger list adds a menu row under its title), so Back
+            // sits in a slot as tall as the header row, at its px-4 inset; -me-1 against the bar's own
+            // px-4 leaves the row's gap-3 to the bar's first item.
             return (
                 <View onLayout={onMainHeaderLayout}>
-                    <Row className={`${contentClassName}`}>
-                        <BackButtonElement className="items-center mr-2" />
-                        <View className="flex-1">{header.header}</View>
+                    <Row className={`${appSetting('layout', 'page_content_width_default')} items-start`}>
+                        <BackButtonElement className="h-16 justify-center ps-4 -me-1" />
+                        <View className="flex-1 min-w-0">{header.header}</View>
                     </Row>
                 </View>
             );

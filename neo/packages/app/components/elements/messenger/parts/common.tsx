@@ -774,7 +774,8 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
             // The conversation list and the open chat sit on the screen background
             // (rows and bubbles carry their own fill), like the desktop split view.
             <View className='web:h-auto w-full h-full flex-row'>
-                <PageHeaderOptions main={injectedHeader} />
+                {/* The open chat's bar has its own Back (to the list); the list's bar takes the header's. */}
+                <PageHeaderOptions main={injectedHeader} ownBackButton={!!(panelsVisible.jots && selectedConvo)} />
                 {panelsVisible.convos && <View className='w-full'>
                     <ConvosList
                         {...convosListProps}

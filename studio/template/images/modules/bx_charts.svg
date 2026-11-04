@@ -1,15 +1,30 @@
-<svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="72" height="72" fill="url(#paint0_linear_149_83)"/>
-<path d="M18 18V50C18 51.0609 18.4214 52.0783 19.1716 52.8284C19.9217 53.5786 20.9391 54 22 54H54M48 22H44C42.8954 22 42 22.8954 42 24V44C42 45.1046 42.8954 46 44 46H48C49.1046 46 50 45.1046 50 44V24C50 22.8954 49.1046 22 48 22ZM32 28H28C26.8954 28 26 28.8954 26 30V44C26 45.1046 26.8954 46 28 46H32C33.1046 46 34 45.1046 34 44V30C34 28.8954 33.1046 28 32 28Z" stroke="url(#paint1_linear_149_83)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M18 19V51C18 52.0609 18.4214 53.0783 19.1716 53.8284C19.9217 54.5786 20.9391 55 22 55H54M48 23H44C42.8954 23 42 23.8954 42 25V45C42 46.1046 42.8954 47 44 47H48C49.1046 47 50 46.1046 50 45V25C50 23.8954 49.1046 23 48 23ZM32 29H28C26.8954 29 26 29.8954 26 31V45C26 46.1046 26.8954 47 28 47H32C33.1046 47 34 46.1046 34 45V31C34 29.8954 33.1046 29 32 29Z" stroke="black" stroke-opacity="0.1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<svg class="icon v-charts-grow-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- glyph: chart-column, lucide-static v1.48.0, ISC -->
+<style>
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-charts-grow-v1 [class]{animation:var(--a) 1500ms linear both;animation-delay:var(--d,0ms)}
+.v-charts-grow-v1 [class]{--a:none}
+.v-charts-grow-v1 :is(.bx-ai-b1,.bx-ai-sh.bx-ai-b1){--a:cg0}
+@keyframes cg0{0%,100%{stroke-dasharray:none;stroke-dashoffset:0}0.07%,21.33%,99.93%{stroke-dasharray:7.333 14.666;stroke-dashoffset:0}0.13%{stroke-dasharray:7.333 14.666;stroke-dashoffset:7.333}6.67%{stroke-dasharray:7.333 14.666;stroke-dashoffset:7.333;animation-timing-function:cubic-bezier(.3,0,.2,1)}}
+.v-charts-grow-v1 :is(.bx-ai-b2,.bx-ai-sh.bx-ai-b2){--a:cg1}
+@keyframes cg1{0%,100%{stroke-dasharray:none;stroke-dashoffset:0}0.07%,37.33%,99.93%{stroke-dasharray:29.333 58.666;stroke-dashoffset:0}0.13%{stroke-dasharray:29.333 58.666;stroke-dashoffset:29.333}14.67%{stroke-dasharray:29.333 58.666;stroke-dashoffset:29.333;animation-timing-function:cubic-bezier(.3,0,.2,1)}}
+.v-charts-grow-v1 :is(.bx-ai-b3,.bx-ai-sh.bx-ai-b3){--a:cg2}
+@keyframes cg2{0%,100%{stroke-dasharray:none;stroke-dashoffset:0}0.07%,42.67%,99.93%{stroke-dasharray:19.555 39.11;stroke-dashoffset:0}0.13%{stroke-dasharray:19.555 39.11;stroke-dashoffset:19.555}22.67%{stroke-dasharray:19.555 39.11;stroke-dashoffset:19.555;animation-timing-function:cubic-bezier(.3,0,.2,1)}}
+.v-charts-grow-v1 .bx-ai-cp1{--a:cg3}
+@keyframes cg3{0%,49.33%,100%{opacity:0}21.33%{opacity:0;animation-timing-function:ease-out}24%{opacity:1}29.33%{opacity:1;animation-timing-function:ease-in}}
+.v-charts-grow-v1 .bx-ai-cp2{--a:cg4}
+@keyframes cg4{0%,65.33%,100%{opacity:0}37.33%{opacity:0;animation-timing-function:ease-out}40%{opacity:1}45.33%{opacity:1;animation-timing-function:ease-in}}
+.v-charts-grow-v1 .bx-ai-cp3{--a:cg5}
+@keyframes cg5{0%,70.67%,100%{opacity:0}42.67%{opacity:0;animation-timing-function:ease-out}45.33%{opacity:1}50.67%{opacity:1;animation-timing-function:ease-in}}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-charts-grow-v1 .bx-ai-qv.bx-ai-qv{animation:q-charts-grow-v1 1500ms linear both}
+@keyframes q-charts-grow-v1{0%{opacity:1;animation-timing-function:ease-out}9.333%{opacity:0}76%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.v-charts-grow-v1 *{animation:none!important}}
+</style>
+<rect width="72" height="72" fill="url(#bg-charts-grow-v1)"/>
+<path d="M3 6H69M3 16H69M3 26H69M3 36H69M3 46H69M3 56H69M3 66H69" stroke="white" stroke-width=".5" stroke-dasharray="1 2" opacity=".24"/><path d="M1 6h2M1 16h2M1 26h2M1 36h2M1 46h2M1 56h2M1 66h2" stroke="white" stroke-width=".7" opacity=".3"/><rect width="72" height="72" fill="url(#bg-charts-grow-v1)" class="bx-ai-qv" mask="url(#quiet-charts-grow-v1)"/>
+<rect width="72" height="72" fill="url(#inside-charts-grow-v1)" opacity=".55" mask="url(#insides-charts-grow-v1)"/><g stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><g stroke="white"><path d="M14 14V53.111A4.889 4.889 0 0 0 18.889 58H58"/><path class="bx-ai-b1" d="M26.222 48.222V40.889"/><path class="bx-ai-b2" d="M38.444 48.222V18.889"/><path class="bx-ai-b3" d="M50.667 48.222V28.667"/></g><g mask="url(#lit-charts-grow-v1)" stroke="black"><path d="M14 15V54.111A4.889 4.889 0 0 0 18.889 59H58"/><path class="bx-ai-sh bx-ai-b1" d="M26.222 49.222V41.889"/><path class="bx-ai-sh bx-ai-b2" d="M38.444 49.222V19.889"/><path class="bx-ai-sh bx-ai-b3" d="M50.667 49.222V29.667"/></g></g>
+<circle class="bx-ai-cp1" cx="26.222" cy="40.889" r="3.4" fill="url(#capglow-charts-grow-v1)" opacity="0"/><circle class="bx-ai-cp2" cx="38.444" cy="18.889" r="3.4" fill="url(#capglow-charts-grow-v1)" opacity="0"/><circle class="bx-ai-cp3" cx="50.667" cy="28.667" r="3.4" fill="url(#capglow-charts-grow-v1)" opacity="0"/>
 <defs>
-<linearGradient id="paint0_linear_149_83" x1="36" y1="0" x2="36" y2="72" gradientUnits="userSpaceOnUse">
-<stop stop-color="#0D9488"/>
-<stop offset="1" stop-color="#115E59"/>
-</linearGradient>
-<linearGradient id="paint1_linear_149_83" x1="36" y1="18" x2="36" y2="54" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
-</linearGradient>
-</defs>
+<linearGradient id="bg-charts-grow-v1" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0D9488"/><stop offset="1" stop-color="#115E59"/></linearGradient><linearGradient id="inside-charts-grow-v1" x1="36" y1="14" x2="36" y2="58" gradientUnits="userSpaceOnUse"><stop stop-color="#115E59"/><stop offset="1" stop-color="#042F2E"/></linearGradient><linearGradient id="light-charts-grow-v1" x1="36" y1="15" x2="36" y2="59" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity=".1"/><stop offset="1" stop-color="white" stop-opacity=".2"/></linearGradient><mask id="lit-charts-grow-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-charts-grow-v1)"/></mask>
+<mask id="insides-charts-grow-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><g fill="white"></g></mask><radialGradient id="capglow-charts-grow-v1"><stop stop-color="#FCD34D"/><stop offset=".5" stop-color="#FCD34D" stop-opacity=".7"/><stop offset="1" stop-color="#FCD34D" stop-opacity="0"/></radialGradient>
+<radialGradient id="quietv-charts-grow-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-charts-grow-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-charts-grow-v1)"/></mask></defs>
 </svg>

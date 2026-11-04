@@ -21,7 +21,8 @@ import { useIsPushedScreen } from 'app/context/tab-chrome'
 import { useTranslation } from 'react-i18next'
 import { playCue } from 'app/lib/sound'
 
-// Matches `top-3` overlay spacing on the full cover.
+// The page header's floating buttons: centred in its h-16 row (10px above a 44px button), inset by
+// its px-4 and spaced by its gap-3 (`layout.header.content_left` / `content_right`).
 const COVER_CONTROL_TOP = 10
 
 function getNativeTabsTopInset() {
@@ -142,7 +143,7 @@ export function CoverImage({
                         </View>
                     ) : null}
                     <Row
-                        className="justify-end gap-2 absolute right-3"
+                        className="justify-end gap-3 lg:gap-2 absolute right-4 lg:right-3"
                         style={{ top: overlayTop }}
                     >
                         {allowSwitch ? (
@@ -166,7 +167,7 @@ export function CoverImage({
                         ) : null}
                     </Row>
                     <View
-                        className="absolute lg:hidden left-3 z-50"
+                        className="absolute lg:hidden left-4 z-50"
                         style={{ top: overlayTop }}
                     >
                         {!suppressCoverBackButton ? getCoverBackButton() : null}

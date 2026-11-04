@@ -35,6 +35,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_persons_view_pro
 -- MENUS: config_api
 
 -- MENUS: active_api
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='bx_glossary' AND `name`='glossary-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='bx_glossary' AND `name`='profile-stats-my-glossary';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_glossary_view' AND `module`='bx_glossary' AND `name`='edit-glossary';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_glossary_view' AND `module`='bx_glossary' AND `name`='delete-glossary';

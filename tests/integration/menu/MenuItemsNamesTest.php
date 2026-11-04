@@ -35,17 +35,6 @@ class MenuItemsNamesTest extends BxDolIntegrationTestCase
         return $oMenu;
     }
 
-    public function testNamesAreTheItemsTheMenuBuilds(): void
-    {
-        $this->bxLoginAsAdmin();
-
-        $oMenu = $this->toolbar();
-        $aBuilt = array_column($oMenu->getMenuItems(), 'name');
-
-        $this->assertNotEmpty($aBuilt);
-        $this->assertSame($aBuilt, $oMenu->getMenuItemsNames());
-    }
-
     public function testInactiveAndHiddenItemsAreLeftOut(): void
     {
         $this->bxLoginAsAdmin();

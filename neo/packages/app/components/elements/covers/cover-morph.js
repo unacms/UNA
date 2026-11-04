@@ -35,6 +35,7 @@ export default function CoverMorph({
     onProgress,
     coverScrollY,
     onOverlayHeight,
+    onCollapseRange,
     leading,
     sceneHeader,
     filter,
@@ -52,6 +53,7 @@ export default function CoverMorph({
         collapsed,
         onSlotLayout,
         onInnerLayout,
+        onPinnedRowsLayout,
         onRootLayout,
         parallaxRange,
         coverScrollY: scrollY,
@@ -63,7 +65,9 @@ export default function CoverMorph({
         onProgress,
         coverScrollY,
         onOverlayHeight,
+        onCollapseRange,
         skipCollapse,
+        stickyTop,
     })
 
     useLayoutEffect(() => {
@@ -98,7 +102,7 @@ export default function CoverMorph({
     if (!data?.profile?.module) return null
 
     const coverBaseClass =
-        appSetting('theme', 'conductor').cover_base || 'bg-card'
+        appSetting('theme', 'conductor').cover_base || 'bg-card-surface'
 
     // `none`: same as web — chrome stays in flow above the list
     // (no overlay parallax). Tabs render inside CoverMorphBody.
@@ -138,7 +142,9 @@ export default function CoverMorph({
             {leading}
             <Animated.View
                 className={coverBaseClass}
-                style={translateStyle}
+                // Collapsed, the image is gone and the compact bar is the top of the screen: it clears
+                // the status bar itself (expanded, the image runs under it on purpose).
+                style={[translateStyle, collapsed && stickyTop > 0 ? { paddingTop: stickyTop } : null]}
                 onLayout={onInnerLayout}
             >
                 <CoverMorphBody
@@ -153,8 +159,10 @@ export default function CoverMorph({
                     suppressCoverBackButton={suppressCoverBackButton}
                     onSlotLayout={onSlotLayout}
                 />
-                {sceneHeader}
-                {filter}
+                <View onLayout={onPinnedRowsLayout}>
+                    {sceneHeader}
+                    {filter}
+                </View>
             </Animated.View>
         </View>
     )

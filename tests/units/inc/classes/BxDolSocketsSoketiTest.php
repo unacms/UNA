@@ -2,7 +2,8 @@
 
 /**
  * Socket events of one request share one client, which waits BX_DOL_SOCKETS_TIMEOUT at most
- * for the sockets server instead of the library's 30 s. No event is sent here.
+ * for the sockets server instead of the library's 30 s. No event is sent here. Without a
+ * sockets server pages get no client script.
  */
 class BxDolSocketsSoketiTest extends BxDolTestCase
 {
@@ -28,5 +29,18 @@ class BxDolSocketsSoketiTest extends BxDolTestCase
         $this->assertSame(BX_DOL_SOCKETS_TIMEOUT, $aSettings['timeout']);
         $this->assertLessThan(30, $aSettings['timeout']);
         $this->assertSame('sockets.example.com', $aSettings['host']);
+    }
+
+    public function testNoClientScriptWithoutASocketsServer(): void
+    {
+        $o = $this->sockets();
+
+        $this->bxSetProtected($o, '_sIsEnabled', false, BxDolSockets::class);
+        $this->assertSame('', $o->getJsCode(), 'A fresh install (no sockets URL) would connect to Pusher\'s own hosts on every page.');
+
+        $this->bxSetProtected($o, '_sIsEnabled', true, BxDolSockets::class);
+        $this->bxSetProtected($o, '_sJsClass', 'BxDolSockets', BxDolSocketsSoketi::class);
+        $this->bxSetProtected($o, '_sJsObject', 'oBxDolSockets', BxDolSocketsSoketi::class);
+        $this->assertStringContainsString('var oBxDolSockets = new BxDolSockets(', $o->getJsCode());
     }
 }

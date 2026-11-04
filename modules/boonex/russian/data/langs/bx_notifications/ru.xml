@@ -50,7 +50,9 @@
 
     <string name="_bx_ntfs_menu_title_preview"><![CDATA[Уведомления - Пред просмотр]]></string>
     <string name="_bx_ntfs_menu_set_title_preview"><![CDATA[Уведомления - Пред просмотр]]></string>
+    <string name="_bx_ntfs_menu_item_title_system_activity"><![CDATA[Активность]]></string>
     <string name="_bx_ntfs_menu_item_title_system_more"><![CDATA[Смотреть все уведомления]]></string>
+    <string name="_bx_ntfs_menu_item_title_activity"><![CDATA[Активность]]></string>
     <string name="_bx_ntfs_menu_item_title_more"><![CDATA[Смотреть все уведомления]]></string>
     <string name="_bx_ntfs_lmi_cpt_site"><![CDATA[На сайте]]></string>
     <string name="_bx_ntfs_lmi_cpt_email"><![CDATA[Email]]></string>
