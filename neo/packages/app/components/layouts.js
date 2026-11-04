@@ -2,7 +2,7 @@
 import Layout from 'app/components/layout';
 import { useCurrentUser, isWebAuthReady } from 'app/context/user'
 import { components } from 'app/components/registry';
-import { appSetting, getLayoutName, getPageContentPaddingTiers, getPageContentWidth, getPageData, getPageSettings, strToObj } from 'app/lib/util'
+import { appSetting, getLayoutName, getPageContentPaddingTiers, getPageContentWidth, getPageData, getPageSettings, isSplashPage, strToObj } from 'app/lib/util'
 import emitter, { EVENTS } from 'app/context/emitter';
 import { responsiveClasses } from 'app/lib/responsive-classes'
 import { sidePaddingTiers } from 'app/lib/page-inset'
@@ -10,6 +10,9 @@ import { PageChromeProvider } from 'app/ui/molecules/page/page-chrome'
 import Cell from 'app/components/cell';
 import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect'
+import Page from 'app/ui/molecules/page/page'
+import { PageFooter } from 'app/components/nav/menu-footer'
+import { View } from 'app/design/view'
 import { useRef, useEffect, useMemo, useState } from 'react';
 import PageByUrl from 'app/ui/molecules/page/page-by-url'
 import { registerAll } from 'app/components/registry-init';
@@ -98,7 +101,7 @@ export default function Layouts({ path, data }) {
     )
 }
 
-function ErrorPage({ type }) {
+function ErrorPage({ type, data }) {
     const redirectKey = type === 404 ? 'redirect_on_not_found' : 'redirect_on_forbidden';
     const staticPageKey = type === 404 ? 'page_not_found' : 'page_not_allowed';
 
@@ -111,11 +114,14 @@ function ErrorPage({ type }) {
         }
     }, [redirectUrl]);
 
+    // In a page with the site footer, as UNA shows its error pages.
     return (
-        <>
+        <Page data={data}>
             <Redirect ref={redirectRef} />
             {!redirectUrl && appStatic(staticPageKey)}
-        </>
+            <View className="flex-1" />
+            {!redirectUrl && <PageFooter />}
+        </Page>
     );
 }
 
@@ -168,7 +174,7 @@ function PageLayoutContent({ layout, data, skipProfileLock = false }) {
         : `layout-${layoutName}-${pageUri || pageUrl || ''}-${pageTimestamp || ''}`;
 
     if (data?.page_status === 404 || data?.page_status === 403) {
-        return <ErrorPage type={data?.page_status} />;
+        return <ErrorPage type={data?.page_status} data={data} />;
     }
 
     const ConfirmEmail = components['molecule']['confirm_email']
@@ -195,7 +201,7 @@ function PageLayoutContent({ layout, data, skipProfileLock = false }) {
     }
 
     const Splash = components['molecule']['splash']
-    if (!currentUser && layoutName == 'home' && (data.layout == 'splash' || appSetting('layout', 'use_splash_page')))
+    if (isSplashPage(data, layoutName, !currentUser))
         return <Splash data={data} />
 
     if (isCustomLayout && layoutBlocks) {

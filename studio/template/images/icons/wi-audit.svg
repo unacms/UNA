@@ -1,15 +1,34 @@
-<svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="72" height="72" fill="url(#paint0_linear_147_31)"/>
-<path d="M56 36H51.04C50.1659 35.9981 49.3153 36.2826 48.6182 36.8099C47.9212 37.3373 47.416 38.0784 47.18 38.92L42.48 55.64C42.4497 55.7439 42.3865 55.8351 42.3 55.9C42.2135 55.9649 42.1082 56 42 56C41.8918 56 41.7865 55.9649 41.7 55.9C41.6135 55.8351 41.5503 55.7439 41.52 55.64L30.48 16.36C30.4497 16.2561 30.3865 16.1649 30.3 16.1C30.2135 16.0351 30.1082 16 30 16C29.8918 16 29.7865 16.0351 29.7 16.1C29.6135 16.1649 29.5503 16.2561 29.52 16.36L24.82 33.08C24.5849 33.9183 24.0828 34.657 23.3897 35.184C22.6967 35.711 21.8506 35.9975 20.98 36H16" stroke="url(#paint1_linear_147_31)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M56 37H51.04C50.1659 36.9981 49.3153 37.2826 48.6182 37.8099C47.9212 38.3373 47.416 39.0784 47.18 39.92L42.48 56.64C42.4497 56.7439 42.3865 56.8351 42.3 56.9C42.2135 56.9649 42.1082 57 42 57C41.8918 57 41.7865 56.9649 41.7 56.9C41.6135 56.8351 41.5503 56.7439 41.52 56.64L30.48 17.36C30.4497 17.2561 30.3865 17.1649 30.3 17.1C30.2135 17.0351 30.1082 17 30 17C29.8918 17 29.7865 17.0351 29.7 17.1C29.6135 17.1649 29.5503 17.2561 29.52 17.36L24.82 34.08C24.5849 34.9183 24.0828 35.657 23.3897 36.184C22.6967 36.711 21.8506 36.9975 20.98 37H16" stroke="black" stroke-opacity="0.1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<svg class="icon v-activity-trace-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- glyph: activity, lucide-static v1.47.0, ISC -->
+<style>
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-activity-trace-v1 [class]{animation:var(--a) 1600ms linear both;animation-delay:var(--d,0ms)}
+.v-activity-trace-v1 [class]{--a:none}
+.v-activity-trace-v1 :is(.bx-ai-ln,.bx-ai-sh.bx-ai-ln){--a:vt0}
+@keyframes vt0{0%{stroke-dasharray:none;stroke-dashoffset:0}0.06%{stroke-dasharray:108.233 216.466;stroke-dashoffset:-108.233}7.5%{stroke-dasharray:108.233 216.466;stroke-dashoffset:-108.233;animation-timing-function:linear}67.5%{stroke-dasharray:108.233 216.466;stroke-dashoffset:0}99.94%{stroke-dasharray:108.233 216.466;stroke-dashoffset:0}100%{stroke-dasharray:none;stroke-dashoffset:0}}
+.v-activity-trace-v1 .bx-ai-pen{--a:vt1}
+@keyframes vt1{0%{opacity:0;transform:translate(14px,36px)}7.5%{opacity:1;transform:translate(14px,36px)}10.5%{opacity:1;transform:translate(19.467px,36px)}12.12%{opacity:1;transform:translate(22.124px,35.107px)}13.69%{opacity:1;transform:translate(23.702px,32.791px)}24.25%{opacity:1;transform:translate(28.871px,14.409px)}24.69%{opacity:1;transform:translate(29.4px,14.01px)}25.06%{opacity:1;transform:translate(29.929px,14.409px)}49.94%{opacity:1;transform:translate(42.071px,57.591px)}50.31%{opacity:1;transform:translate(42.6px,57.99px)}50.75%{opacity:1;transform:translate(43.129px,57.591px)}61.31%{opacity:1;transform:translate(48.298px,39.209px)}62.88%{opacity:1;transform:translate(49.876px,36.893px)}64.5%{opacity:1;transform:translate(52.533px,36px)}67.5%{opacity:1;transform:translate(58px,36px)}83.75%{opacity:0;transform:translate(58px,36px)}100%{opacity:0;transform:translate(58px,36px)}}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-activity-trace-v1 .bx-ai-qv.bx-ai-qv{animation:q-activity-trace-v1 1600ms linear both}
+@keyframes q-activity-trace-v1{0%{opacity:1;animation-timing-function:ease-out}8.75%{opacity:0}77.5%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.v-activity-trace-v1 *{animation:none!important}}
+</style>
+<rect width="72" height="72" fill="url(#bg-activity-trace-v1)"/>
+<rect width="72" height="72" fill="url(#ecg-activity-trace-v1)" opacity="0.13"/><rect width="72" height="72" fill="url(#bg-activity-trace-v1)" class="bx-ai-qv" mask="url(#quiet-activity-trace-v1)"/>
+<g stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+<path class="bx-ai-ln" d="M58 36L52.533 36A4.4 4.4 0 0 0 48.298 39.209L43.129 57.591A0.55 0.55 0 0 1 42.071 57.591L29.929 14.409A0.55 0.55 0 0 0 28.871 14.409L23.702 32.791A4.4 4.4 0 0 1 19.467 36L14 36" stroke="white"/>
+<g mask="url(#lit-activity-trace-v1)" stroke="black"><path class="bx-ai-sh bx-ai-ln" d="M58 37L52.533 37A4.4 4.4 0 0 0 48.298 40.209L43.129 58.591A0.55 0.55 0 0 1 42.071 58.591L29.929 15.409A0.55 0.55 0 0 0 28.871 15.409L23.702 33.791A4.4 4.4 0 0 1 19.467 37L14 37"/></g>
+</g>
+<g class="bx-ai-pen" opacity="0"><circle r="5" fill="url(#glow-activity-trace-v1)"/><circle r="2.4" fill="#FB7185"/><circle r="1" fill="white"/></g>
 <defs>
-<linearGradient id="paint0_linear_147_31" x1="36" y1="0" x2="36" y2="72" gradientUnits="userSpaceOnUse">
-<stop stop-color="#0D9488"/>
-<stop offset="1" stop-color="#115E59"/>
+<linearGradient id="bg-activity-trace-v1" x1="0" y1="0" x2="0" y2="1">
+<stop stop-color="#71717A"/>
+<stop offset="1" stop-color="#3F3F46"/>
 </linearGradient>
-<linearGradient id="paint1_linear_147_31" x1="36" y1="16" x2="36" y2="56" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
+<linearGradient id="light-activity-trace-v1" x1="36" y1="13.526" x2="36" y2="60.474" gradientUnits="userSpaceOnUse">
+<stop stop-color="white" stop-opacity="0.1"/>
+<stop stop-color="white" offset="1" stop-opacity="0.2"/>
 </linearGradient>
-</defs>
+<mask id="lit-activity-trace-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-activity-trace-v1)"/></mask>
+<pattern id="ecg-activity-trace-v1" width="15" height="15" x="6" y="6" patternUnits="userSpaceOnUse"><path d="M0 3H15M0 6H15M0 9H15M0 12H15M3 0V15M6 0V15M9 0V15M12 0V15" stroke="white" stroke-width=".3" opacity=".5"/><path d="M0 0H15M0 0V15" stroke="white" stroke-width=".6"/></pattern>
+<radialGradient id="glow-activity-trace-v1"><stop stop-color="#FB7185" stop-opacity=".8"/><stop offset="1" stop-color="#FB7185" stop-opacity="0"/></radialGradient>
+<radialGradient id="quietv-activity-trace-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-activity-trace-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-activity-trace-v1)"/></mask></defs>
 </svg>

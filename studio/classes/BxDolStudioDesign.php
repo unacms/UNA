@@ -37,6 +37,10 @@ class BxDolStudioDesign extends BxTemplStudioModule
 
         $aResult = ['code' => 1, 'message' => _t('_adm_dsg_err_cannot_process_action')];
         switch($sAction) {
+            case 'delete_logo':
+                $aResult = $this->getObjectDesigner()->checkAction();
+                break;
+
             default:
                 $aResult = parent::checkAction();
         }
@@ -70,6 +74,7 @@ class BxDolStudioDesign extends BxTemplStudioModule
 
     	$oModule = BxDolModule::getInstance($this->sModule);
     	$oPage->setLogoParams($oModule->_oConfig->getLogoParams());
+        $oPage->setLogoTemplate($this->sModule);
 
     	return $oPage;
     }

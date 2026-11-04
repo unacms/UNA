@@ -96,8 +96,8 @@ class BxBaseMenuToolbarTest extends BxDolTestCase
         preg_match('/<div id="bx-menu-toolbar-1-container" class="([^"]*)">/', $sHtml, $aMatch);
         $aClasses = explode(' ', $aMatch[1]);
         $this->assertContains('lg:hidden', $aClasses, 'Wide screens show the main menu inline.');
-        $this->assertContains('ltr:ml-2', $aClasses, 'The same 8px gap as between the toolbar buttons.');
-        $this->assertContains('rtl:mr-2', $aClasses);
+        $this->assertContains('ltr:ml-3', $aClasses, 'The same 12px gap as between the toolbar buttons.');
+        $this->assertContains('rtl:mr-3', $aClasses);
         $this->assertNotContains('ltr:mr-4', $aClasses, 'No gap towards a logo on its right.');
 
         $this->assertStringContainsString('ltr:mr-4', self::readFile('template/menu_toolbar_left.html'), 'Lucid, Decorous and Ocean still show it left of their logo.');

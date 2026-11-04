@@ -4,6 +4,7 @@ import { memo } from 'react';
 import { View, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import Image from 'app/ui/atoms/image';
+import { Icon } from 'app/ui/atoms/icon';
 import { cn } from 'app/lib/util';
 
 /** A hint as UNA sends it (`BxDolAiChatHints`): only `reply` ones are shown. */
@@ -42,8 +43,9 @@ function toHints(items: unknown[]): Hint[] {
 /**
  * Task hints above the composer (UNA `BxDolAiChatHints`): suggested prompts in a row
  * that wraps, each with its icon (the picture of the project it is about, else an
- * emoji) and a dashed outline that tells them from answer buttons. A press only sends
- * the label to the chat: no selected state, a hint answers no question.
+ * emoji, else a sparkle) and a dashed outline that tells them from answer buttons.
+ * Dashes need a real border and the JS surface, so these are not NeoButtons on Expo UI.
+ * A press only sends the label to the chat: no selected state, a hint answers no question.
  */
 function ChatHintsImpl({ hints, onSend, disabled = false }: ChatHintsProps) {
     const items = toHints(hints);
@@ -70,6 +72,7 @@ function ChatHintsImpl({ hints, onSend, disabled = false }: ChatHintsProps) {
                         <Image src={hint.image} width={16} height={16} alt="" className="w-4 h-4 rounded" />
                     ) : null}
                     {!hint.image && hint.emoji ? <Text className="text-sm leading-5">{hint.emoji}</Text> : null}
+                    {!hint.image && !hint.emoji ? <Icon icon="Sparkles" size={16} className="text-accent-foreground" /> : null}
                     <Text className="text-sm leading-5 text-card-foreground shrink" numberOfLines={1}>
                         {hint.label}
                     </Text>

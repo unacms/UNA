@@ -27,6 +27,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_courses_joined' 
 -- MENUS: config_api
 
 -- MENUS: active_api
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='bx_courses' AND `name`='courses-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_homepage' AND `module`='bx_courses' AND `name`='courses-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_dashboard_manage_tools' AND `module`='bx_courses' AND `name`='courses-administration';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_courses_view_actions_more' AND `module`='bx_courses' AND `name`='edit-course-profile';

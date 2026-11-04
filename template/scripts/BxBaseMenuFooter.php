@@ -92,7 +92,9 @@ class BxBaseMenuFooter extends BxTemplMenu
         foreach($aItems as $iKey => $aItem) {
             switch($aItem['name']) {
                 case 'switch_language':
-                    $aItems[$iKey] = $this->_getLanguageItem($aItems[$iKey]);
+                    // The site's code-and-label markup; the apps draw their own switcher from `languages` (_getMenuItemAPI).
+                    if(!$this->_bIsApi)
+                        $aItems[$iKey] = $this->_getLanguageItem($aItems[$iKey]);
                     break;
 
                 case 'switch_template':
@@ -239,6 +241,10 @@ class BxBaseMenuFooter extends BxTemplMenu
         // The badge has no title: the apps name it, as the site does in its tooltip and aria-label.
         if($a['name'] == 'powered_by')
             $aResult['title_attr'] = _t('_sys_txt_powered_by_una');
+
+        // The apps show their language switcher with the site's languages only (the item is sent while there are two or more, see _isVisible).
+        if($a['name'] == 'switch_language')
+            $aResult['languages'] = array_keys(BxDolLanguagesQuery::getInstance()->getLanguages(false, true));
 
         if(!$this->_isTextItem($a))
             return $aResult;

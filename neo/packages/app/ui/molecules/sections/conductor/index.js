@@ -326,6 +326,7 @@ export function Conductor({
         refetch: refetchList,
         handleEndReached,
         listReady,
+        hideEmptyMsg,
     } = useConductorList({
         route: activeRoute?.inited ? activeRoute : {},
         queryKey: qKey,
@@ -518,6 +519,7 @@ export function Conductor({
                     isPending={isPending}
                     isFetching={isFetching}
                     hasNextPage={hasNextPage}
+                    hideEmptyMsg={hideEmptyMsg}
                     onFormChangedValues={onFormChangedValues}
                     skipHeaderOffset={useLocalHeader}
                     listRef={listRef}

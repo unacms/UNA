@@ -1,0 +1,18 @@
+<div class="adm-dsg-tmpl-list">
+<bx_repeat:templates>
+    <div class="adm-dsg-tmpl-card" data-uri="__uri__" data-title="__title_data__">
+        <div class="adm-dsg-tmpl-icon">
+            <bx_if:icon><i class="sys-icon __icon__"></i></bx_if:icon>
+            <bx_if:image><img src="__icon_url__" alt="" /></bx_if:image>
+        </div>
+        <div class="adm-dsg-tmpl-text">
+            <div class="adm-dsg-tmpl-title">__title__<bx_if:default> <span class="adm-dsg-choice-badge"><bx_text:_adm_dsg_txt_tmpl_default /></span></bx_if:default></div>
+            <div class="adm-dsg-tmpl-meta">__vendor__ &middot; __version__</div>
+            <div class="adm-dsg-tmpl-actions">
+                <button type="button" class="bx-btn bx-btn-small" aria-pressed="__pressed__" aria-label="<bx_text_attribute:_adm_dsg_btn_tmpl_preview />: __title_attr__" onclick="__js_object__.previewTemplate(this, '__uri__');"><bx_text:_adm_dsg_btn_tmpl_preview /></button>
+                <a class="adm-dsg-tmpl-open" href="<bx_url_root />?skin=__uri__&amp;preview=1" target="_blank" rel="noopener"><bx_text:_adm_dsg_lnk_tmpl_open /></a>
+            </div>
+        </div>
+    </div>
+</bx_repeat:templates>
+</div>

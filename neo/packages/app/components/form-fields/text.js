@@ -49,6 +49,7 @@ export default function FormFieldText(props) {
         inputId,
         errorId,
         invalid,
+        required,
     } = useFormField(props);
     const inputMode = getTextFieldInputMode(props);
 
@@ -75,6 +76,7 @@ export default function FormFieldText(props) {
                 value={String(field.value)}
                 aria-label={props.caption}
                 aria-invalid={invalid || undefined}
+                aria-required={required || undefined}
                 aria-describedby={errorId}
                 {...(props.checker?.params?.max ? { maxLength: props.checker.params.max } : {})}
                 {...returnKeyProps}

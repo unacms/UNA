@@ -44,11 +44,13 @@ function ModalHeader({ title, headerBorder, onClose, onBack, closeRef }: { title
     const align = !title && onClose ? 'end' : 'center';
     if (!title) return null;
     const type = typeof title;
+    // A string title reads as a block's title (its size and 16px padding); Back and Close are the
+    // small (36px) bordered circle buttons a block's header uses, 16px from the edges.
     return (
         <Row className={`items-center justify-${align} ${headerBorder ? modalSettings.header : modalSettings.header_plain}`}>
             {(title && type === 'string') && (
-                <View className='flex-1 px-16  absolute left-0 right-0 top-0 bottom-0 justify-center items-center'>
-                    <Text className='text-xl text-center h-14 leading-14 font-bold text-card-foreground'
+                <View className='flex-1 px-11 justify-center items-center'>
+                    <Text className={`${modalSettings.title} text-center`}
                         numberOfLines={1}
                         ellipsizeMode='tail'
                     >{title}</Text>
@@ -56,13 +58,13 @@ function ModalHeader({ title, headerBorder, onClose, onBack, closeRef }: { title
             )}
             {(title && type !== 'string') && (title)}
             {(onBack && type === 'string') && (
-                <View className='absolute left-3 top-0 bottom-0 justify-center items-center'>
-                    <NeoButton style="glass" controlSize="regular" borderShape="circle" image="ChevronLeft" accessibilityLabel={t('Back')} onPress={onBack} />
+                <View className='absolute left-4 top-0 bottom-0 justify-center items-center'>
+                    <NeoButton style="bordered" controlSize="small" borderShape="circle" image="ChevronLeft" accessibilityLabel={t('Back')} onPress={onBack} />
                 </View>
             )}
             {(onClose && type === 'string') && (
-                <View ref={closeRef} className='absolute right-3 top-0 bottom-0 justify-center items-center'>
-                    <NeoButton style="glass" controlSize="regular" borderShape="circle" image="X" accessibilityLabel={t('Close')} onPress={onClose} />
+                <View ref={closeRef} className='absolute right-4 top-0 bottom-0 justify-center items-center'>
+                    <NeoButton style="bordered" role="close" controlSize="small" borderShape="circle" image="X" accessibilityLabel={t('Close')} onPress={onClose} />
                 </View>
             )}
         </Row>
@@ -85,7 +87,7 @@ export type ModalProps = {
     /** RN Modal animation; defaults to fade on desktop, slide elsewhere. */
     animation?: 'none' | 'slide' | 'fade';
     position?: 'top' | 'bottom' | 'center';
-    /** Tailwind max-width class. */
+    /** Tailwind max-width class, for the dialog (a full-screen modal takes the whole width). */
     maxWidth?: string;
     /** Tailwind padding class for the body. */
     padding?: string;
@@ -442,6 +444,10 @@ export function Modal({
             </Pressable>
         </Cnt></>
 
+    // A dialog over the page (desktop, or a small centred one) has its width, corners and outline; a
+    // modal that fills the screen has none of them.
+    const isDialog = isWeb ? (isDesktop && !isIPadWeb) || autoHeight : autoHeight;
+
     if (isWeb) {
         return (
             <ModalDef visible={onVisible} animationType={animationType} transparent={true} onRequestClose={handleRequestClose}>
@@ -452,7 +458,7 @@ export function Modal({
                     onPress={handleWebOuterPress}
                 >
                     <RemoveScroll className={`flex-1  flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
-                        <View ref={panelRef} style={{paddingBottom: isKeyboardOpen ? 96 : 0, height: (isDesktop && !isIPadWeb) || autoHeight ? 'auto' : heightActual }} className={`w-full ${maxWidth} left-0 right-0 z-50 w-full mx-auto ${modalSettings.container} `}>
+                        <View ref={panelRef} style={{paddingBottom: isKeyboardOpen ? 96 : 0, height: isDialog ? 'auto' : heightActual }} className={`w-full ${isDialog ? maxWidth : ''} left-0 right-0 z-50 w-full mx-auto ${modalSettings.container} ${isDialog ? modalSettings.dialog : ''} `}>
                        
                             {content}
 
@@ -467,10 +473,11 @@ export function Modal({
             <ModalDef visible={onVisible} animationType={animationType} transparent={isWeb} onRequestClose={handleRequestClose}>
                 <SafeAreaProvider initialMetrics={initialWindowMetrics}>
                     <View
-                        className={`pointerEvents cursor-default flex justify-end w-full h-full ${modalSettings.fog}`}
+                        // Full screen, the panel's colour runs under the status bar and the home indicator too.
+                        className={`pointerEvents cursor-default flex justify-end w-full h-full ${isDialog ? modalSettings.fog : modalSettings.fullscreen_bg}`}
                     >
                         <NativeModalSafePad autoHeight={autoHeight} sClassPosition={sClassPosition}>
-                            <View className={`w-full  ${maxWidth}  ${modalSettings.container}  ${autoHeight ? 'rounded-2xl ' : ''}`}>
+                            <View className={`w-full  ${isDialog ? maxWidth : ''}  ${modalSettings.container}  ${isDialog ? modalSettings.dialog_native : ''}`}>
                                 <View className={`${autoHeight ? '' : 'h-full'} ${modalSettings.content}`}>
                                     <ModalHeader
                                         title={title}

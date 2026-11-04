@@ -16,6 +16,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_credits_checkout
 -- MENUS: config_api
 
 -- MENUS: active_api
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='bx_credits' AND `name`='credits-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_credits_manage_submenu' AND `module`='bx_credits' AND `name`='credits-history-common';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_credits_manage_submenu' AND `module`='bx_credits' AND `name`='credits-history-administration';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_credits_manage_submenu' AND `module`='bx_credits' AND `name`='credits-orders-common';

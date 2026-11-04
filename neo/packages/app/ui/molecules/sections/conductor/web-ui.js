@@ -189,6 +189,7 @@ export const TabScene = ({
         handleEndReached,
         listReady,
         skipToastRef,
+        hideEmptyMsg,
     } = useConductorList({
         route: pageRoute,
         queryKey: qKey,
@@ -269,6 +270,7 @@ export const TabScene = ({
             hasNextPage={hasNextPage}
             isPending={isPending}
             isFetching={isFetching}
+            hideEmptyMsg={hideEmptyMsg}
             showListPreload
             listRef={uniRef}
             handleEndReached={handleEndReached}
@@ -810,7 +812,7 @@ export function SidebarNav({ routes, index, onSelect }) {
         const canNavigate = Boolean(route.canNavigate)
         const isActive = route.index === index
         const href = conductorHref(route.link || route.key)
-        const icon = route.image || route.icon || 'Circle'
+        const icon = route.image || route.icon || ''
 
         return (
             <View key={`lmenu-${route.index}`} className="w-full">
@@ -872,7 +874,7 @@ function NavigatorMenuLink({ item, index, setIndex }) {
         <MenuItemSidebar
             addon={getAddon(item.addon)}
             title={item.title}
-            icon={item.icon || 'Circle'}
+            icon={item.icon || ''}
             isActive={isActive}
         />
     )

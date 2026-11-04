@@ -232,4 +232,87 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         // The key is on the set alone: items that share an `order` keep the order they had.
         $this->assertStringContainsString('KEY `set_name` (`set_name`)', $aMatch[1]);
     }
+
+    public function testSiteMenuReachesTheAppsAsOnTheSite(): void
+    {
+        // The guest menu in the apps (NEO) is UNA's site menu: what Studio marks "Active (for App)". By default it
+        // matches the site: Home, About, and each module's own item from every module that is ready for the apps
+        // (ships enable-app.sql). Search opens the site's search panel, so it stays off.
+        $sSystem = (string)file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-menus.sql');
+        foreach (['home', 'about'] as $sName)
+            $this->assertStringContainsString("SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='system' AND `name`='" . $sName . "';", $sSystem, $sName);
+
+        $iChecked = 0;
+        foreach (glob(__DIR__ . '/../../../modules/boonex/*/install/sql/enable.sql') as $sEnable) {
+            $sApp = dirname($sEnable) . '/enable-app.sql';
+            if (!file_exists($sApp))
+                continue;
+            preg_match_all("/\\('sys_site', '([^']+)', '([^']+)'/", (string)file_get_contents($sEnable), $aItems, PREG_SET_ORDER);
+            $sAppSql = (string)file_get_contents($sApp);
+            foreach ($aItems as $aItem) {
+                $this->assertStringContainsString("SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='" . $aItem[1] . "' AND `name`='" . $aItem[2] . "';", $sAppSql, $aItem[1] . ' ' . $aItem[2]);
+                $iChecked++;
+            }
+        }
+        $this->assertGreaterThan(10, $iChecked, 'The modules with a site menu item were found.');
+    }
+
+    public function testSiteMenuPutsModulesFirstAndGuestsGetLogInAndSignUpOnPhones(): void
+    {
+        // The site menu (the phone menu and the desktop navbar, on the site and in the apps): modules' items first,
+        // then About, then Log in and Sign up for guests on phones, and More last. Home is the logo on phones.
+        // Every system row of the site menu: name, then the last numbers of the row (levels, ..., order).
+        preg_match_all("/\\('sys_site', 'system', '([^']+)', .*, (\\d+), (?:'([^']*)', )?\\d, (?:\\d, )?(\\d+)\\)[,;]$/m", self::systemSql(), $aRows, PREG_SET_ORDER);
+        $aItems = [];
+        foreach ($aRows as $aRow)
+            $aItems[$aRow[1]] = ['levels' => (int)$aRow[2], 'hidden_on' => $aRow[3], 'order' => (int)$aRow[4]];
+
+        foreach (['home', 'about', 'login', 'create-account', 'more-auto'] as $sName)
+            $this->assertArrayHasKey($sName, $aItems, $sName);
+
+        $this->assertStringContainsString("UPDATE `sys_menu_items` SET `hidden_on` = '1' WHERE `set_name` = 'sys_site' AND `name` = 'home';", self::systemSql(), 'Home is hidden on phones (BX_DB_HIDDEN_PHONE).');
+
+        // About and More get their places after the rows are in (the rows keep their form).
+        foreach (['more-auto' => 10010, 'about' => 9999] as $sName => $iOrder)
+            if (preg_match("/UPDATE `sys_menu_items` SET `order` = (\\d+) WHERE `set_name` = 'sys_site' AND `name` = '" . $sName . "';/", self::systemSql(), $aMatch))
+                $aItems[$sName]['order'] = (int)$aMatch[1];
+        $this->assertSame(10010, $aItems['more-auto']['order']);
+
+        // A module adds its item after the last one below 9999 (enable.sql), so About and the rest stay under it.
+        $this->assertGreaterThanOrEqual(9999, $aItems['about']['order']);
+        $this->assertStringContainsString("`set_name` = 'sys_site' AND `active` = 1 AND `order` < 9999", (string)file_get_contents(__DIR__ . '/../../../modules/boonex/persons/install/sql/enable.sql'));
+
+        foreach (['login', 'create-account'] as $sName) {
+            $this->assertSame(1, $aItems[$sName]['levels'], $sName . ' is for guests only.');
+            $this->assertSame('6', $aItems[$sName]['hidden_on'], $sName . ' is hidden on tablets and desktops, where the header has Log in and Sign up.');
+        }
+        $this->assertTrue($aItems['about']['order'] < $aItems['login']['order'] && $aItems['login']['order'] < $aItems['create-account']['order'], 'About, Log in, Sign up.');
+        $this->assertGreaterThan($aItems['create-account']['order'], $aItems['more-auto']['order'], 'More is last.');
+
+        $sApp = (string)file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-menus.sql');
+        foreach (['login', 'create-account'] as $sName)
+            $this->assertStringContainsString("SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='system' AND `name`='" . $sName . "';", $sApp, $sName . ' reaches the apps.');
+    }
+
+    public function testSignUpUsesTheLogInLayout(): void
+    {
+        // Sign up, Log in and Forgot password share the thin one-column layout (id 18), one card width on the site and in the apps.
+        $sSql = self::systemSql();
+        foreach (['sys_create_account', 'sys_login', 'sys_forgot_password'] as $sObject) {
+            $bFound = preg_match("/\\('" . $sObject . "', '[^']+', '[^']+', '[^']+', 'system', \\d+, (\\d+),/", $sSql, $aMatch);
+            $this->assertSame(1, $bFound, $sObject);
+            $this->assertSame(18, (int)$aMatch[1], $sObject);
+        }
+
+        $this->assertStringContainsString('w-full max-w-md mx-auto', (string)file_get_contents(__DIR__ . '/../../../template/_row_1_column_thin.html'), 'The thin column is 448px (max-w-md), as NEO\'s.');
+    }
+
+    public function testScreenSizeColumns(): void
+    {
+        // Studio's per-screen-size switches, empty (shown everywhere) on a fresh install.
+        $sSql = self::systemSql();
+        $this->assertMatchesRegularExpression("/CREATE TABLE IF NOT EXISTS `sys_objects_page` \\([^;]*`cover_hidden_on` varchar\\(255\\) NOT NULL DEFAULT ''/s", $sSql);
+        foreach (['title_hidden_on', 'bg_hidden_on', 'padding_hidden_on'] as $sColumn)
+            $this->assertMatchesRegularExpression("/CREATE TABLE IF NOT EXISTS `sys_pages_blocks` \\([^;]*`" . $sColumn . "` varchar\\(255\\) NOT NULL DEFAULT ''/s", $sSql, $sColumn);
+    }
 }

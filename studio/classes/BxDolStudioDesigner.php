@@ -32,6 +32,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
     protected $sParamMarkDark;
     protected $sParamMarkInline;
     protected $sParamLogoAlt;
+    protected $sLogoTemplate; // the template module whose own logo settings this page edits, '' for Designer's (every template's)
 
     protected $aLogos;
     protected $aIcons;
@@ -51,12 +52,13 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         $this->sParamPrefix = 'dsg';
 
         $this->sParamLogo = 'sys_site_logo';
-        $this->sParamLogoDark = '';
-        $this->sParamLogoInline = '';
-        $this->sParamMark = '';
-        $this->sParamMarkDark = '';
-        $this->sParamMarkInline = '';
+        $this->sParamLogoDark = 'sys_site_logo_dark';
+        $this->sParamLogoInline = 'sys_site_logo_inline';
+        $this->sParamMark = 'sys_site_mark';
+        $this->sParamMarkDark = 'sys_site_mark_dark';
+        $this->sParamMarkInline = 'sys_site_mark_inline';
         $this->sParamLogoAlt = 'sys_site_logo_alt';
+        $this->sLogoTemplate = '';
 
         $this->aLogos = [
             'logo' => [
@@ -112,14 +114,12 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             'cover_common' => array(
                 'setting' => 'sys_site_cover_common',
                 'transcoder' => BX_DOL_TRANSCODER_OBJ_COVER,
-                'title' => '_adm_dsg_txt_cover_common', 
-                'template' => 'dsr_cover_preview_page.html'
+                'title' => '_adm_dsg_txt_cover_common'
             ),
             'cover_unit_profile' => array(
                 'setting' => 'sys_unit_cover_profile',
                 'transcoder' => BX_DOL_TRANSCODER_OBJ_COVER_UNIT_PROFILE, 
-                'title' => '_adm_dsg_txt_cover_unit_profile', 
-                'template' => 'dsr_cover_preview_unit_profile.html'
+                'title' => '_adm_dsg_txt_cover_unit_profile'
             )
         );
     }
@@ -134,6 +134,21 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
 
         $aResult = array('code' => 1, 'message' => _t('_adm_dsg_err_cannot_process_action'));
         switch($sAction) {
+            case 'delete_logo':
+                // Deletes a file: a POST from the logo form only, with its CSRF token (kept, so the form can still be saved).
+                $sToken = isset($_POST['csrf_token']) ? bx_process_input($_POST['csrf_token']) : '';
+                if(!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] != 'POST' || !BxDolForm::isCsrfTokenValid($sToken, false)) {
+                    $aResult = ['code' => 3, 'message' => _t('_sys_txt_form_submission_error_csrf_expired')];
+                    break;
+                }
+
+                $sValue = bx_process_input(bx_get($this->sParamPrefix . '_value'));
+
+                $aResult = ['code' => 0, 'message' => ''];
+                if(empty($sValue) || !isset($this->aLogos[$sValue]['storage']) || empty($this->{$this->aLogos[$sValue]['param']}) || !$this->deleteLogo($sValue))
+                    $aResult = ['code' => 2, 'message' => _t('_adm_dsg_err_logo_remove')];
+                break;
+
             case 'delete_icon':
                 $sValue = bx_process_input(bx_get($this->sParamPrefix . '_value'));
 
@@ -179,29 +194,156 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         $this->sParamPrefix = $sPrefix;
     }
 
-    function setLogoParams($aParams)
+    /**
+     * Points the page at a template's own logo options (its config's getLogoParams()). A slot the
+     * template doesn't declare is cleared, so the page never edits Designer's site-wide option for it.
+     * @param array $aParams option names by slot (logo, logo_dark, logo_inline, mark, mark_dark, mark_inline, logo_alt)
+     */
+    public function setLogoParams($aParams)
     {
-        switch(count($aParams)) {
-            case 2:
-                list($this->sParamLogo, $this->sParamLogoAlt) = $aParams;
-                break;
+        $aSlots = [
+            'logo' => 'sParamLogo',
+            'logo_dark' => 'sParamLogoDark',
+            'logo_inline' => 'sParamLogoInline',
+            'mark' => 'sParamMark',
+            'mark_dark' => 'sParamMarkDark',
+            'mark_inline' => 'sParamMarkInline',
+            'logo_alt' => 'sParamLogoAlt',
+        ];
 
-            case 3:
-                list($this->sParamLogo, $this->sParamMark, $this->sParamLogoAlt) = array_values($aParams);
-                break;
+        foreach($aSlots as $sSlot => $sProperty)
+            $this->$sProperty = !empty($aParams[$sSlot]) ? $aParams[$sSlot] : '';
+    }
 
-            case 7:
-                list(
-                    $this->sParamLogo, 
-                    $this->sParamLogoDark, 
-                    $this->sParamLogoInline, 
-                    $this->sParamMark, 
-                    $this->sParamMarkDark, 
-                    $this->sParamMarkInline, 
-                    $this->sParamLogoAlt
-                ) = array_values($aParams);
-                break;
+    /**
+     * Makes the page edit a template's own logo settings rather than Designer's.
+     * @param string $sModule the template module name
+     */
+    public function setLogoTemplate($sModule)
+    {
+        $this->sLogoTemplate = $sModule;
+    }
+
+    /**
+     * The template module the logo previews are drawn for: this page's template, or on Designer's page the site's default one.
+     * @return array module row, [] if there is none
+     */
+    protected function getLogoTemplateModule()
+    {
+        $oModuleQuery = BxDolModuleQuery::getInstance();
+        $aModule = !empty($this->sLogoTemplate) ? $oModuleQuery->getModuleByName($this->sLogoTemplate) : $oModuleQuery->getModuleByUri(getParam('template'));
+
+        return !empty($aModule) && is_array($aModule) ? $aModule : [];
+    }
+
+    /**
+     * The previewed template's logo option names (its config's getLogoParams()), [] when it has no logo settings.
+     * @return array
+     */
+    protected function getLogoTemplateParams()
+    {
+        if(!($aModule = $this->getLogoTemplateModule()))
+            return [];
+
+        $oModule = BxDolModule::getInstance($aModule['name']);
+        return $oModule && method_exists($oModule->_oConfig, 'getLogoParams') ? $oModule->_oConfig->getLogoParams() : [];
+    }
+
+    /**
+     * Whether the previewed template's header draws an image. Templates with a dark logo setting (Artificer) draw all four;
+     * the others (Lucid, Ocean, Decorous, Protean) draw the base header, the logo alone, at every size and in both modes.
+     */
+    protected function isLogoDrawn($sType)
+    {
+        if($sType == 'logo')
+            return true;
+
+        $aParams = $this->getLogoTemplateParams();
+        return empty($aParams) || isset($aParams['logo_dark']);
+    }
+
+    /**
+     * Where the logo images of the previewed template come from, as BxDolDesigns::getLogoSources describes.
+     * @return array
+     */
+    protected function getLogoSources()
+    {
+        return BxDolDesigns::getLogoSources($this->getLogoTemplateParams(), function($sFile) {
+            return $this->getLogoBuiltinUrl($sFile);
+        });
+    }
+
+    /**
+     * The URL of a default logo image as the site finds it: the template's own copy, else the system's in template/images.
+     * @return string, '' when there is neither
+     */
+    protected function getLogoBuiltinUrl($sFile)
+    {
+        if($this->isLogoBuiltinOwn($sFile)) {
+            $aModule = $this->getLogoTemplateModule();
+            return BX_DOL_URL_MODULES . $aModule['path'] . 'data/template/system/images/' . $sFile;
         }
+
+        return file_exists(BX_DIRECTORY_PATH_ROOT . 'template/images/' . $sFile) ? BX_DOL_URL_ROOT . 'template/images/' . $sFile : '';
+    }
+
+    /**
+     * Near-black or white for text on a color (#rgb, #rrggbb, rgb() or rgba()), whichever contrasts more (WCAG luminance).
+     */
+    protected function getInkFor($sColor)
+    {
+        if(preg_match('/^#([0-9a-f]{6}|[0-9a-f]{3})$/i', $sColor, $aMatch)) {
+            $sHex = strlen($aMatch[1]) == 3 ? preg_replace('/(.)/', '$1$1', $aMatch[1]) : $aMatch[1];
+            $aRgb = [hexdec(substr($sHex, 0, 2)), hexdec(substr($sHex, 2, 2)), hexdec(substr($sHex, 4, 2))];
+        }
+        else if(preg_match('/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i', $sColor, $aMatch))
+            $aRgb = [(int)$aMatch[1], (int)$aMatch[2], (int)$aMatch[3]];
+        else
+            return '#18181b';
+
+        $fLuminance = 0;
+        foreach([0.2126, 0.7152, 0.0722] as $i => $fWeight) {
+            $fChannel = min(255, $aRgb[$i]) / 255;
+            $fChannel = $fChannel <= 0.03928 ? $fChannel / 12.92 : pow(($fChannel + 0.055) / 1.055, 2.4);
+            $fLuminance += $fWeight * $fChannel;
+        }
+
+        return ($fLuminance + 0.05) / (0.0099 + 0.05) > 1.05 / ($fLuminance + 0.05) ? '#18181b' : '#ffffff';
+    }
+
+    /**
+     * The URL of a default icon as the site finds it: the site template's own copy in its images/icons, else the system's.
+     * @return string, '' when there is neither
+     */
+    protected function getIconDefaultUrl($sFile)
+    {
+        return $this->getSiteImageUrl('images/icons/', $sFile);
+    }
+
+    /**
+     * The URL of a site image as the site template finds it: its own copy (data/template/system/<folder>), else the system's
+     * (template/<folder>) unless $bSystem is false.
+     * @return string, '' when there is none
+     */
+    protected function getSiteImageUrl($sFolder, $sFile, $bSystem = true)
+    {
+        $aModule = $this->getLogoTemplateModule();
+        if(!empty($aModule) && file_exists(BX_DIRECTORY_PATH_MODULES . $aModule['path'] . 'data/template/system/' . $sFolder . $sFile))
+            return BX_DOL_URL_MODULES . $aModule['path'] . 'data/template/system/' . $sFolder . $sFile;
+
+        if(!$bSystem || !file_exists(BX_DIRECTORY_PATH_ROOT . 'template/' . $sFolder . $sFile))
+            return '';
+
+        return BX_DOL_URL_ROOT . 'template/' . $sFolder . $sFile;
+    }
+
+    /**
+     * Whether the previewed template ships its own copy of a default logo image.
+     */
+    protected function isLogoBuiltinOwn($sFile)
+    {
+        $aModule = $this->getLogoTemplateModule();
+        return !empty($aModule) && file_exists(BX_DIRECTORY_PATH_MODULES . $aModule['path'] . 'data/template/system/images/' . $sFile);
     }
 
     function makeDefault()
@@ -271,8 +413,9 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         $sParamByType = $this->aLogos[$sLogo]['param'];
         $oStorage = BxDolStorage::getObjectInstance($this->aLogos[$sLogo]['storage']);
 
+        // A file that is already gone (removed in the uploader) only needs its setting cleared.
         $iId = (int)getParam($this->$sParamByType);
-        if($iId != 0 && !$oStorage->deleteFile($iId, $iProfileId))
+        if($iId != 0 && $oStorage->getFile($iId) && !$oStorage->deleteFile($iId, $iProfileId))
             return false;
 
         setParam($this->$sParamByType, 0);
@@ -352,7 +495,8 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             $oStorage->afterUploadCleanup($iIdNew, $iProfile);
         }
 
-        setParam('sys_site_cover_disabled', $oForm->getCleanValue('disabled') == 'on' ? 'on' : '');
+        // The form asks whether to show covers; the option stores whether they are off.
+        setParam('sys_site_cover_disabled', $oForm->getCleanValue('show') == 'on' ? '' : 'on');
 
         return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_COVER);
     }
@@ -376,6 +520,114 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         setParam('sys_site_splash_enabled', $oForm->getCleanValue('enabled') == 'on' ? 'on' : '');
 
         return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SPLASH);
+    }
+
+    /**
+     * Designer > Settings: the site template and the default page layouts, each only from what can be chosen.
+     */
+    public function submitSettings()
+    {
+        $aValues = [];
+
+        $sTemplate = bx_process_input(bx_get('template'));
+        if(array_key_exists($sTemplate, $this->getSettingsTemplateList()))
+            $aValues['template'] = $sTemplate;
+
+        $aLayouts = $this->getSettingsLayoutList();
+        foreach(['sys_pt_default_visitor', 'sys_pt_default_member'] as $sName) {
+            $iType = (int)bx_get($sName);
+            if(isset($aLayouts[$iType]))
+                $aValues[$sName] = $iType;
+        }
+
+        // As Studio's settings forms save (BxDolStudioOptions::saveChanges): an alert per changed option, then fresh caches.
+        $aCategory = [];
+        BxDolStudioOptionsQuery::getInstance()->getCategories(['type' => 'by_name', 'value' => 'templates'], $aCategory, false); // BX_DOL_STUDIO_STG_CATEGORY_TEMPLATES, defined with BxDolStudioOptions, which this page doesn't load
+        foreach($aValues as $sName => $mixedValue) {
+            $mixedPrior = getParam($sName);
+            if((string)$mixedPrior === (string)$mixedValue)
+                continue;
+
+            setParam($sName, $mixedValue);
+            bx_alert('system', 'save_setting', 0, 0, [
+                'category' => $aCategory,
+                'option' => $sName,
+                'value' => $mixedValue,
+                'value_prior' => $mixedPrior
+            ]);
+        }
+
+        $this->clearSettingsCache();
+
+        return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SETTINGS);
+    }
+
+    /**
+     * What Studio's settings forms clear after saving (BxDolStudioOptions::clearCache). Clearing the CSS cache also bumps
+     * sys_revision, which names the service worker's cache, so installed apps drop files no longer listed.
+     */
+    protected function clearSettingsCache()
+    {
+        BxDolDb::getInstance()->cacheParams(true, true);
+
+        $oCacheUtilities = BxDolCacheUtilities::getInstance();
+        $oCacheUtilities->clear('db');
+        $oCacheUtilities->clear('css');
+    }
+
+    /**
+     * The templates the site can use: the enabled ones, by URI.
+     */
+    protected function getSettingsTemplateList()
+    {
+        return get_templates_array(true, false);
+    }
+
+    /**
+     * The page layouts a default can be: every page type but Default itself, by id, with a slug from its template file
+     * (pt_standard.html is 'standard'). Standard and Application come first, Without header/footer last.
+     */
+    protected function getSettingsLayoutList()
+    {
+        $aOrder = [BX_PAGE_TYPE_STANDARD => 1, BX_PAGE_TYPE_APPLICATION => 2, BX_PAGE_TYPE_DEFAULT_WO_HF => 4];
+
+        $aResult = [];
+        foreach(BxDolPageQuery::getPageTypes() as $aType) {
+            $iType = (int)$aType['id'];
+            if($iType == BX_PAGE_TYPE_DEFAULT)
+                continue;
+
+            $aResult[$iType] = [
+                'title' => $aType['title'],
+                'slug' => preg_replace('/(^pt_)|(\.html$)/', '', $aType['template']),
+            ];
+        }
+
+        uksort($aResult, function($iA, $iB) use ($aOrder) {
+            return (isset($aOrder[$iA]) ? $aOrder[$iA] : 3) <=> (isset($aOrder[$iB]) ? $aOrder[$iB] : 3);
+        });
+
+        return $aResult;
+    }
+
+    public function submitPwa(&$oForm)
+    {
+        foreach(['name', 'short_name', 'description', 'background_color', 'theme_color'] as $sKey) {
+            $sValue = trim($oForm->getCleanValue('sys_pwa_manifest_' . $sKey));
+            // The color picker gives rgb(); a typed #hex works too. Anything else leaves the default in use.
+            if(in_array($sKey, ['background_color', 'theme_color']) && !preg_match('/^(#[0-9a-fA-F]{3}|#[0-9a-fA-F]{6}|rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(,\s*[\d.]+\s*)?\))$/', $sValue))
+                $sValue = '';
+
+            setParam('sys_pwa_manifest_' . $sKey, $sValue);
+        }
+
+        setParam('sys_pwa_sw_enable', $oForm->getCleanValue('sys_pwa_sw_enable') == 'on' ? 'on' : '');
+        setParam('sys_pwa_sw_offline', ltrim(trim($oForm->getCleanValue('sys_pwa_sw_offline')), '/'));
+        setParam('sys_pwa_sw_cache', trim($oForm->getCleanValue('sys_pwa_sw_cache')));
+
+        $this->clearSettingsCache();
+
+        return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_PWA);
     }
 
     function submitInjections(&$oForm)

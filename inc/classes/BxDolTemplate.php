@@ -2034,6 +2034,11 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
             case 'page_viewport':
                 $sRet = getParam('sys_viewport_meta_tag');
                 break;
+            case 'theme_color_meta': // the theme color set in Designer > PWA; templates' _header_meta.html put it before their own
+                $sColor = trim((string)getParam('sys_pwa_manifest_theme_color'));
+                if($sColor !== '')
+                    $sRet = $this->parseHtmlByName('meta_theme_color.html', ['color' => bx_html_attribute($sColor)]);
+                break;
             case 'system_injection_head':
                 $sRet = $this->_oTemplateFunctions->getInjectionHead();
                 break;
@@ -2075,7 +2080,29 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
                     }
             	}
 
-                $sRet = $bCover ? $oCover->display() : $oCover->displayEmpty();
+                $iHiddenOn = $bCover && $oPage && method_exists($oPage, 'getPageCoverHiddenOn') ? $oPage->getPageCoverHiddenOn() : 0;
+                if(!$bCover)
+                    $sRet = $oCover->displayEmpty();
+                else if(!($iHiddenOn & (pow(2, BX_DB_HIDDEN_PHONE - 1) | pow(2, BX_DB_HIDDEN_TABLET - 1) | pow(2, BX_DB_HIDDEN_DESKTOP - 1))))
+                    $sRet = $oCover->display();
+                else {
+                    // "Cover hidden on" some screen sizes: the cover where it shows, the empty one (the toolbar's
+                    // spacing and the page's h1) elsewhere.
+                    $aClasses = [BX_DB_HIDDEN_PHONE => 'bx-def-media-phone-hide', BX_DB_HIDDEN_TABLET => 'bx-def-media-tablet-hide', BX_DB_HIDDEN_DESKTOP => 'bx-def-media-desktop-hide'];
+                    $aCoverClasses = $aEmptyClasses = [];
+                    foreach($aClasses as $iBit => $sClass)
+                        if($iHiddenOn & pow(2, $iBit - 1))
+                            $aCoverClasses[] = $sClass;
+                        else
+                            $aEmptyClasses[] = $sClass;
+
+                    $sRet = $this->parseHtmlByName('cover_screen_sizes.html', [
+                        'cover_class' => implode(' ', $aCoverClasses),
+                        'cover' => $oCover->display(),
+                        'empty_class' => implode(' ', $aEmptyClasses),
+                        'empty' => $oCover->displayEmpty(),
+                    ]);
+                }
                 break;
             case 'site_submenu_class':
                 $oMenu = BxDolMenu::getObjectInstance('sys_site_submenu');
@@ -3910,7 +3937,13 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         bx_import('BxDolLanguages');
         header('HTTP/1.0 404 Not Found');
         header('Status: 404 Not Found');
-        $this->displayMsg($sMsg ? $sMsg : _t('_sys_request_page_not_found_cpt'), false, $iPage, $iDesignBox);
+
+        // The default page is titled "Page not found" and says what to do, as the apps' 404 does.
+        $mixedMsg = $sMsg ? $sMsg : [
+            'title' => _t('_sys_request_page_not_found_cpt'),
+            'content' => _t('_sys_request_page_not_found_text', BX_DOL_URL_ROOT),
+        ];
+        $this->displayMsg($mixedMsg, false, $iPage, $iDesignBox);
     }
 
     function displayMsg ($s, $bTranslate = false, $iPage = BX_PAGE_DEFAULT, $iDesignBox = BX_DB_PADDING_DEF)

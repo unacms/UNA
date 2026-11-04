@@ -465,7 +465,21 @@ export const settingsButtons = {
         roles: {
             default:     {},
             cancel:      { textClass: 'text-secondary-foreground' },
-            close:       { textClass: 'text-secondary-foreground', defaultImage: 'X' },
+            close:       {
+                textClass: 'text-secondary-foreground',
+                defaultImage: 'X',
+                // Bordered Close (modal headers) as the site's: a light fill that darkens on hover and press, quickly.
+                container: {
+                    bordered: {
+                        base: 'web:duration-100',
+                        default: 'bg-bubble',
+                        hovered: 'bg-button-hover',
+                        focused: 'bg-button-hover',
+                        pressed: 'bg-foreground/15',
+                        active: 'bg-foreground/15',
+                    },
+                },
+            },
             confirm:     { defaultStyle: 'borderedProminent' },
             destructive: {
                 tint: 'rgb(var(--destructive))',

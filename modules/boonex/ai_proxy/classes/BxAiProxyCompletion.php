@@ -58,7 +58,7 @@ class BxAiProxyCompletion
         }
 
         try {
-            $oMessage = $oProvider->chat(...$aMessages);
+            $oResponse = $oProvider->chat(...$aMessages);
         }
         catch (BxAiProxyException $oException) {
             throw $oException;
@@ -68,6 +68,7 @@ class BxAiProxyCompletion
             throw new BxAiProxyException(503, 'The proxy model is not available');
         }
 
+        $oMessage = $oResponse instanceof NeuronAI\Providers\ProviderResponse ? $oResponse->message() : null;
         if (!$oMessage instanceof NeuronAI\Chat\Messages\Message)
             throw new BxAiProxyException(503, 'The proxy model is not available');
 
@@ -107,7 +108,7 @@ class BxAiProxyCompletion
     }
 
     /**
-     * @return array{system: string, messages: list<NeuronAI\Chat\Messages\Message>, tools: list<NeuronAI\Tools\Tool>}
+     * @return array{system: string, messages: list<NeuronAI\Chat\Messages\Message>, tools: list<NeuronAI\Tools\FrontendTool>}
      */
     protected function mapBody(array $aBody): array
     {
@@ -134,9 +135,7 @@ class BxAiProxyCompletion
                 $sName = (string)($aMessage['name'] ?? ($aCallNames[$sCallId] ?? 'tool'));
                 if ($sName === '')
                     $sName = 'tool';
-                $oTool = NeuronAI\Tools\Tool::make($sName, '');
-                if ($sCallId !== '')
-                    $oTool->setCallId($sCallId);
+                $oTool = new NeuronAI\Tools\ToolCall($sName, $sCallId !== '' ? $sCallId : null);
                 $oTool->setResult($this->textOf($aMessage['content'] ?? ''));
                 $aMessages[] = new NeuronAI\Chat\Messages\ToolResultMessage([$oTool]);
                 continue;
@@ -189,7 +188,7 @@ class BxAiProxyCompletion
     }
 
     /**
-     * @return list<NeuronAI\Tools\Tool>
+     * @return list<NeuronAI\Tools\FrontendTool>
      */
     protected function definedTools(array $aBody): array
     {
@@ -210,9 +209,9 @@ class BxAiProxyCompletion
         return $aTools;
     }
 
-    protected function stubTool(string $sName, string $sDescription, array $aParameters): NeuronAI\Tools\Tool
+    protected function stubTool(string $sName, string $sDescription, array $aParameters): NeuronAI\Tools\FrontendTool
     {
-        $oTool = NeuronAI\Tools\Tool::make($sName, $sDescription);
+        $oTool = new NeuronAI\Tools\FrontendTool($sName, $sDescription);
         foreach ($this->schemaProperties($aParameters) as $oProperty)
             $oTool->addProperty($oProperty);
         return $oTool;
@@ -275,16 +274,13 @@ class BxAiProxyCompletion
         return new NeuronAI\Tools\ObjectProperty($sName, $sDescription, $bRequired, null, $this->schemaProperties($aSchema));
     }
 
-    protected function callTool(array $aCall): NeuronAI\Tools\Tool
+    protected function callTool(array $aCall): NeuronAI\Tools\ToolCall
     {
         $aFunction = isset($aCall['function']) && is_array($aCall['function']) ? $aCall['function'] : [];
         $sName = (string)($aFunction['name'] ?? 'tool');
         if ($sName === '')
             $sName = 'tool';
-        $oTool = NeuronAI\Tools\Tool::make($sName, '');
         $sId = (string)($aCall['id'] ?? '');
-        if ($sId !== '')
-            $oTool->setCallId($sId);
 
         $mixedArgs = $aFunction['arguments'] ?? [];
         if (is_string($mixedArgs)) {
@@ -293,8 +289,7 @@ class BxAiProxyCompletion
         }
         elseif (!is_array($mixedArgs))
             $mixedArgs = [];
-        $oTool->setInputs($mixedArgs);
-        return $oTool;
+        return new NeuronAI\Tools\ToolCall($sName, $sId !== '' ? $sId : null, $mixedArgs);
     }
 
     protected function contentBlocks(mixed $mixed): string|array|null
@@ -373,7 +368,7 @@ class BxAiProxyCompletion
                     $fEmit($this->contentDelta($sId, $oChunk->content));
                 }
             }
-            $oMessage = $oGen->getReturn();
+            $oResponse = $oGen->getReturn();
         }
         catch (BxAiProxyException $oException) {
             throw $oException;
@@ -383,6 +378,7 @@ class BxAiProxyCompletion
             throw new BxAiProxyException(503, 'The proxy model is not available');
         }
 
+        $oMessage = $oResponse instanceof NeuronAI\Providers\ProviderResponse ? $oResponse->message() : null;
         if (!$oMessage instanceof NeuronAI\Chat\Messages\Message)
             throw new BxAiProxyException(503, 'The proxy model is not available');
 
@@ -411,7 +407,7 @@ class BxAiProxyCompletion
     protected function emitToolCalls(string $sId, NeuronAI\Chat\Messages\ToolCallMessage $oMessage, callable $fEmit): void
     {
         $iIndex = 0;
-        foreach ($oMessage->getTools() as $oTool) {
+        foreach ($oMessage->getToolCalls() as $oTool) {
             $sCallId = (string)($oTool->getCallId() ?? ('call_' . $iIndex));
             $aInputs = $oTool->getInputs();
             $sArgs = json_encode($aInputs === [] ? new stdClass() : $aInputs, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
@@ -473,7 +469,7 @@ class BxAiProxyCompletion
         if ($oMessage instanceof NeuronAI\Chat\Messages\ToolCallMessage) {
             $sFinish = 'tool_calls';
             $aCalls = [];
-            foreach ($oMessage->getTools() as $oTool) {
+            foreach ($oMessage->getToolCalls() as $oTool) {
                 $aInputs = $oTool->getInputs();
                 $aCalls[] = [
                     'id' => (string)($oTool->getCallId() ?? ''),

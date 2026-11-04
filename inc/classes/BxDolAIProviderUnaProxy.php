@@ -33,8 +33,11 @@ class BxDolAIProviderUnaProxy extends NeuronAI\Providers\OpenAI\OpenAI
         );
     }
 
-    public function systemPrompt(?string $prompt): NeuronAI\Providers\AIProviderInterface
+    public function systemPrompt(NeuronAI\Chat\Messages\SystemMessage|string|null $prompt): NeuronAI\Providers\AIProviderInterface
     {
+        if ($prompt instanceof NeuronAI\Chat\Messages\SystemMessage)
+            $prompt = $prompt->getContent();
+
         $sOperator = trim($this->operatorPrompt());
         if ($sOperator !== '') {
             $sClient = trim((string)$prompt);

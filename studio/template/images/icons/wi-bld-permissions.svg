@@ -1,21 +1,25 @@
-<svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="72" height="72" fill="url(#paint0_linear_112_41)"/>
-<path d="M17.172 46.828C16.4218 47.578 16.0002 48.5952 16 49.656V54C16 54.5304 16.2107 55.0391 16.5858 55.4142C16.9609 55.7893 17.4696 56 18 56H24C24.5304 56 25.0391 55.7893 25.4142 55.4142C25.7893 55.0391 26 54.5304 26 54V52C26 51.4696 26.2107 50.9609 26.5858 50.5858C26.9609 50.2107 27.4696 50 28 50H30C30.5304 50 31.0391 49.7893 31.4142 49.4142C31.7893 49.0391 32 48.5304 32 48V46C32 45.4696 32.2107 44.9609 32.5858 44.5858C32.9609 44.2107 33.4696 44 34 44H34.344C35.4048 43.9998 36.422 43.5782 37.172 42.828L38.8 41.2C41.5797 42.1683 44.6057 42.1646 47.383 41.1895C50.1603 40.2144 52.5244 38.3257 54.0887 35.8323C55.653 33.3388 56.3248 30.3883 55.9942 27.4635C55.6636 24.5386 54.3502 21.8125 52.2689 19.7311C50.1875 17.6498 47.4614 16.3364 44.5365 16.0058C41.6117 15.6752 38.6612 16.347 36.1677 17.9113C33.6743 19.4756 31.7856 21.8397 30.8105 24.617C29.8354 27.3943 29.8317 30.4203 30.8 33.2L17.172 46.828Z" stroke="url(#paint1_linear_112_41)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M45 28C45.5523 28 46 27.5523 46 27C46 26.4477 45.5523 26 45 26C44.4477 26 44 26.4477 44 27C44 27.5523 44.4477 28 45 28Z" stroke="url(#paint2_linear_112_41)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M17.172 47.828C16.4218 48.578 16.0002 49.5952 16 50.656V55C16 55.5304 16.2107 56.0391 16.5858 56.4142C16.9609 56.7893 17.4696 57 18 57H24C24.5304 57 25.0391 56.7893 25.4142 56.4142C25.7893 56.0391 26 55.5304 26 55V53C26 52.4696 26.2107 51.9609 26.5858 51.5858C26.9609 51.2107 27.4696 51 28 51H30C30.5304 51 31.0391 50.7893 31.4142 50.4142C31.7893 50.0391 32 49.5304 32 49V47C32 46.4696 32.2107 45.9609 32.5858 45.5858C32.9609 45.2107 33.4696 45 34 45H34.344C35.4048 44.9998 36.422 44.5782 37.172 43.828L38.8 42.2C41.5797 43.1683 44.6057 43.1646 47.383 42.1895C50.1603 41.2144 52.5244 39.3257 54.0887 36.8323C55.653 34.3388 56.3248 31.3883 55.9942 28.4635C55.6636 25.5386 54.3502 22.8125 52.2689 20.7311C50.1875 18.6498 47.4614 17.3364 44.5365 17.0058C41.6117 16.6752 38.6612 17.347 36.1677 18.9113C33.6743 20.4756 31.7856 22.8397 30.8105 25.617C29.8354 28.3943 29.8317 31.4203 30.8 34.2L17.172 47.828Z" stroke="black" stroke-opacity="0.1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M45 29C45.5523 29 46 28.5523 46 28C46 27.4477 45.5523 27 45 27C44.4477 27 44 27.4477 44 28C44 28.5523 44.4477 29 45 29Z" stroke="black" stroke-opacity="0.1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<svg class="icon v-permissions-tap-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- glyph: key-round, lucide-static v1.47.0, ISC -->
+<style>
+.v-permissions-tap-v1 .bx-ai-wv{transform-box:view-box;transform-origin:12.84px 59.16px}
+.v-permissions-tap-v1 .bx-ai-sh.bx-ai-wv{transform-origin:12.84px 60.16px}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-permissions-tap-v1 [class]{animation:var(--a) 1700ms linear both;animation-delay:var(--d,0ms)}
+.v-permissions-tap-v1 [class]{--a:none}
+.v-permissions-tap-v1 :is(.bx-ai-key,.bx-ai-sh.bx-ai-key){--a:pp0}
+@keyframes pp0{0%{transform:none}9.41%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.5,0,.8,.5)}15.88%{transform:translate(-2.8px,2.8px);animation-timing-function:cubic-bezier(.2,.7,.3,1)}25.88%{transform:translate(0px,0px)}32.94%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.5,0,.8,.5)}39.41%{transform:translate(-2.8px,2.8px);animation-timing-function:cubic-bezier(.2,.7,.3,1)}49.41%{transform:translate(0px,0px)}100%{transform:none}}
+.v-permissions-tap-v1 .bx-ai-wv{--a:pp1}
+@keyframes pp1{0%{opacity:0;transform:scale(.3)}15.29%{opacity:0;transform:scale(.3)}17.06%{opacity:1;transform:scale(.6);animation-timing-function:cubic-bezier(.25,.6,.45,1)}57.65%{opacity:.7;transform:scale(14.94)}60%{opacity:0;transform:scale(14.94)}100%{opacity:0;transform:scale(14.94)}}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-permissions-tap-v1 .bx-ai-qv.bx-ai-qv{animation:q-permissions-tap-v1 1700ms linear both}
+@keyframes q-permissions-tap-v1{0%{opacity:1;animation-timing-function:ease-out}8.235%{opacity:0}78.824%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.v-permissions-tap-v1 *{animation:none!important}}
+</style>
+<rect width="72" height="72" fill="url(#bg-permissions-tap-v1)"/>
+<use href="#rr-permissions-tap-v1" stroke="white" stroke-width=".6" opacity="0.1"/><rect width="72" height="72" fill="url(#bg-permissions-tap-v1)" class="bx-ai-qv" mask="url(#quiet-permissions-tap-v1)"/>
+<g mask="url(#wave-permissions-tap-v1)"><use href="#rr-permissions-tap-v1" stroke="#FB923C" stroke-width="4" opacity=".3"/><use href="#rr-permissions-tap-v1" stroke="#FDBA74" stroke-width="1.5"/></g>
+<rect width="72" height="72" fill="url(#inside-permissions-tap-v1)" opacity="0.55" mask="url(#keyshape-permissions-tap-v1)"/><g stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><use class="bx-ai-key" href="#kk-permissions-tap-v1" stroke="white"/><g mask="url(#lit-permissions-tap-v1)" stroke="black"><use class="bx-ai-sh bx-ai-key" href="#kk-permissions-tap-v1" y="1"/></g></g>
 <defs>
-<linearGradient id="paint0_linear_112_41" x1="36" y1="0" x2="36" y2="72" gradientUnits="userSpaceOnUse">
-<stop stop-color="#0284C7"/>
-<stop offset="1" stop-color="#1E40AF"/>
-</linearGradient>
-<linearGradient id="paint1_linear_112_41" x1="36.0382" y1="15.9235" x2="36.0382" y2="56" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
-</linearGradient>
-<linearGradient id="paint2_linear_112_41" x1="36.0382" y1="15.9235" x2="36.0382" y2="56" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
-</linearGradient>
-</defs>
+<linearGradient id="bg-permissions-tap-v1" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0284C7"/><stop offset="1" stop-color="#1E40AF"/></linearGradient><linearGradient id="inside-permissions-tap-v1" x1="36" y1="14" x2="36" y2="58" gradientUnits="userSpaceOnUse"><stop stop-color="#1E40AF"/><stop offset="1" stop-color="#172554"/></linearGradient><linearGradient id="light-permissions-tap-v1" x1="36" y1="15" x2="36" y2="59" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity="0.1"/><stop offset="1" stop-color="white" stop-opacity="0.2"/></linearGradient><mask id="lit-permissions-tap-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-permissions-tap-v1)"/></mask>
+<g id="rr-permissions-tap-v1"><circle cx="12.84" cy="59.16" r="10"/><circle cx="12.84" cy="59.16" r="18"/><circle cx="12.84" cy="59.16" r="26"/><circle cx="12.84" cy="59.16" r="34"/><circle cx="12.84" cy="59.16" r="42"/><circle cx="12.84" cy="59.16" r="50"/><circle cx="12.84" cy="59.16" r="58"/><circle cx="12.84" cy="59.16" r="66"/><circle cx="12.84" cy="59.16" r="74"/><circle cx="12.84" cy="59.16" r="82"/></g><mask id="wave-permissions-tap-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><circle class="bx-ai-wv" style="--d:0ms" cx="12.84" cy="59.16" r="6" stroke="white" stroke-width="15" vector-effect="non-scaling-stroke" opacity="0"/><circle class="bx-ai-wv" style="--d:400ms" cx="12.84" cy="59.16" r="6" stroke="white" stroke-width="15" vector-effect="non-scaling-stroke" opacity="0"/></mask>
+<path id="kp-permissions-tap-v1" d="M15.289 47.911A4.4 4.4 0 0 0 14 51.022V55.8A2.2 2.2 0 0 0 16.2 58H22.8A2.2 2.2 0 0 0 25 55.8V53.6A2.2 2.2 0 0 1 27.2 51.4H29.4A2.2 2.2 0 0 0 31.6 49.2V47A2.2 2.2 0 0 1 33.8 44.8H34.178A4.4 4.4 0 0 0 37.289 43.511L39.08 41.72A14.3 14.3 0 1 0 30.28 32.92Z"/><g id="kk-permissions-tap-v1"><use href="#kp-permissions-tap-v1"/><path d="M45.9 26.1h.01" stroke-width="6.2"/></g><mask id="keyshape-permissions-tap-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><use class="bx-ai-key" href="#kp-permissions-tap-v1" fill="white"/></mask>
+<radialGradient id="quietv-permissions-tap-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-permissions-tap-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-permissions-tap-v1)"/></mask></defs>
 </svg>

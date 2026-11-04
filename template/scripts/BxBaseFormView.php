@@ -828,6 +828,11 @@ BLAH;
                 $sRow = $this->genRowCustom($aInput, 'genInputFiles');
             break;
 
+            case 'captcha':
+                // no row without a configured CAPTCHA: the form check passes then too (BxDolFormCheckerHelper::checkCaptcha)
+                $sRow = BxDolCaptcha::getObjectInstance() ? $this->genRowStandard($aInput) : '';
+            break;
+
             case 'switcher':
             case 'checkbox':
                 $sRow = $this->genRowStandard($aInput, true);
@@ -1088,6 +1093,33 @@ BLAH;
         if (isset($aInput['values_list_name'])  && ($oCategory = BxDolCategory::getObjectInstanceByFormAndList($this->aFormAttrs['name'], $aInput['values_list_name'])) !== false)
             return $oCategory->getCategoryLink($s, $aInput['value']);
         return $s;
+    }
+
+    /**
+     * The caption's star for screen readers too. Not the native `required`, which would stop the form in the browser before the checker.
+     */
+    protected function _addAriaRequired($aInput, &$aAttrs)
+    {
+        if(!empty($aInput['required']) && !in_array($aAttrs['type'] ?? '', ['hidden', 'submit', 'button', 'reset', 'image']))
+            $aAttrs['aria-required'] = 'true';
+    }
+
+    /**
+     * Tell the browser and password managers what each field holds (WCAG 1.3.5), as [input name => autocomplete token].
+     * An `autocomplete` the input already has in its attributes is kept.
+     */
+    protected function _setAutocomplete($aTokens)
+    {
+        foreach($aTokens as $sName => $sToken) {
+            if(!isset($this->aInputs[$sName]))
+                continue;
+
+            if(!is_array($this->aInputs[$sName]['attrs'] ?? null))
+                $this->aInputs[$sName]['attrs'] = [];
+
+            if(empty($this->aInputs[$sName]['attrs']['autocomplete']))
+                $this->aInputs[$sName]['attrs']['autocomplete'] = $sToken;
+        }
     }
 
     protected function _isSecretInput($aInput)
@@ -1680,6 +1712,8 @@ BLAH;
         if(($sAreaLabel = $this->_genInputAreaLabel($aInput) ?: bx_html_attribute($this->_genInputCaption($aInput))))
             $aAttrs['aria-label'] = $sAreaLabel;
 
+        $this->_addAriaRequired($aInput, $aAttrs);
+
         // for inputs with labels generate id
         if (isset($aInput['label']))
             $aAttrs['id'] = $this->getInputId($aInput);
@@ -1899,6 +1933,8 @@ BLAH;
 
         if(($sAreaLabel = $this->_genInputAreaLabel($aInput) ?: bx_html_attribute($this->_genInputCaption($aInput))))
             $aAttrs['aria-label'] = $sAreaLabel;
+
+        $this->_addAriaRequired($aInput, $aAttrs);
 
         // for inputs with labels generate id
         if (isset($aInput['label']))
@@ -2484,6 +2520,8 @@ BLAH;
 
         if(($sAreaLabel = $this->_genInputAreaLabel($aInput) ?: bx_html_attribute($this->_genInputCaption($aInput))))
             $aAttrs['aria-label'] = $sAreaLabel;
+
+        $this->_addAriaRequired($aInput, $aAttrs);
 
         // for inputs with labels generate id
         if (isset($aInput['label']))

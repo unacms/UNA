@@ -198,11 +198,11 @@ export function FiltersButton({
 /**
  * Pill-shaped dropdown trigger. Highlights while the menu is open (via
  * DropdownMenuOpenContext) or when `isActive` says the selection is inside.
- * `compact` truncates the title and drops the placeholder 'Circle' icon.
+ * `compact` truncates the title.
  */
 function MenuTrigger({ title, icon, isActive = false, compact = false }) {
     const isOpen = useContext(DropdownMenuOpenContext) ?? false
-    const showIcon = Boolean(icon) && (!compact || icon !== 'Circle')
+    const showIcon = Boolean(icon)
     const highlighted = isOpen || isActive
     return (
         <Row
@@ -509,6 +509,8 @@ const EMPTY_LIST_ITEMS = []
  * @param {boolean} [opts.isFetching=false]
  * @param {boolean} [opts.preloadWhenEmpty=false]  Native: keep skeletons until
  *        the first rows land, even when `listReady` is already true.
+ * @param {boolean} [opts.hideEmptyMsg=false]  UNA says the list is empty only because
+ *        nothing was asked for yet (a search page before its form is used): no "No content".
  */
 export function useListScene({
     route,
@@ -528,6 +530,7 @@ export function useListScene({
     isPending = false,
     isFetching = false,
     preloadWhenEmpty = false,
+    hideEmptyMsg = false,
 }) {
     const unitType = useMemo(
         () => resolveConductorUnitType(route),
@@ -627,13 +630,17 @@ export function useListScene({
         : !!(requestUrl && !listReady) || !isInited
     // "No content": the query is fully done, there is no next page, and it
     // still produced nothing. Every condition guards a false positive.
-    const showNoContent = !!(
-        requestUrl &&
-        listReady &&
-        hasNextPage === false &&
-        !isPending &&
-        !isFetching &&
-        isEmpty
+    // A tab with no list and nothing else either (no blocks, no form, no left-column
+    // blocks): Explore for guests on a site without Timeline. Say so instead of a blank page.
+    const isBlankTab = !requestUrl && isInited && !rows?.length && !hasForm && !hasLeftColumnItems
+    const showNoContent = !hideEmptyMsg && !!(
+        (requestUrl &&
+            listReady &&
+            hasNextPage === false &&
+            !isPending &&
+            !isFetching &&
+            isEmpty) ||
+        isBlankTab
     )
 
     return {

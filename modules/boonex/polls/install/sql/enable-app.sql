@@ -38,6 +38,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_persons_view_pro
 -- MENUS: config_api
 
 -- MENUS: active_api
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='bx_polls' AND `name`='polls-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_homepage' AND `module`='bx_polls' AND `name`='polls-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_add_content_links' AND `module`='bx_polls' AND `name`='create-poll';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='bx_polls' AND `name`='profile-stats-my-polls';

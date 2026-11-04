@@ -19,3 +19,13 @@ export function isPageCoverShown(cover: unknown, isMember: boolean): boolean {
             return false;
     }
 }
+
+/**
+ * Whether the page's cover, and the page title that follows it, is hidden on this screen size:
+ * `cover_hidden_on` (Studio → Pages → page → Cover hidden on: phone, tablet, desktop, mobile-app).
+ * The native apps count as the mobile app as well as their screen size, as UNA's mobile app does.
+ */
+export function isPageCoverHiddenOn(hiddenOn: unknown, tier: string, isApp: boolean): boolean {
+    if (!Array.isArray(hiddenOn)) return false;
+    return hiddenOn.includes(tier) || (isApp && hiddenOn.includes('mobile-app'));
+}

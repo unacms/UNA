@@ -229,7 +229,10 @@ const Content = memo(({ pagePath, currentUser, tabKey, chromeKey, pushed, refres
     // the cache during render (React "adjusting state while rendering") so body
     // appears in the same pass — no empty frame + layout-effect re-render.
     const [page, setPage] = useState(() => readCachedPage(tabKey, pagePath, currentUser, refreshToken));
-    let pageData = page?.path === pagePath ? page.props : null;
+    // `page` is null before the first load, and `pagePath` can be undefined (a pushed
+    // screen without a url, the profile tab for a guest), so `page?.path === pagePath`
+    // alone would be true and read `null.props`.
+    let pageData = page && page.path === pagePath ? page.props : null;
     if (!pageData) {
         const cached = readCachedPage(tabKey, pagePath, currentUser, refreshToken);
         if (cached) {

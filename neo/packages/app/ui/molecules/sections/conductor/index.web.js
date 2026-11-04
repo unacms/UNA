@@ -38,6 +38,7 @@ import { useBottomSheetStore } from 'app/context/bottomsheet'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { useIsDesktop, useWindowHeight, useBreakpointName, useScreenTier, useHydrated } from 'app/context/measure'
 import { useHeaderHeight, useFooterHeight } from 'app/context/jotai/layout'
+import { PageFooter } from 'app/components/nav/menu-footer'
 import { isTasksHomeUri } from 'app/components/elements/tasks/helpers'
 import { PageHeaderOptions } from 'app/ui/molecules/header/options'
 import { useRouter } from 'app/lib/hooks/router'
@@ -499,6 +500,9 @@ export function Conductor({
                     />
                 </TabSceneColumns>
             </View>
+            {/* The site footer, as on every other page: inside the viewport-high wrapper, so a
+                short or empty tab keeps it at the bottom of the screen. */}
+            {!isTasksHome && <PageFooter />}
         </View>
     )
 }

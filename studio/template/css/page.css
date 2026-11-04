@@ -41,10 +41,12 @@ div.bx-std-block {
  * thumb down the right edge and round the 24px bottom corner (the top one too when nothing sits above the scroll box), like a bar that
  * follows the panel's shape; the thumb shows while the pointer is over the block or the content scrolls.
  */
-div.bx-std-block-content {
-    scrollbar-width: none;
+div.bx-std-block-content,
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"], [name="adm-dsg-settings-form"], [name="adm-dsg-templates-form"]) > .bx-form-advanced-wrapper {
+    scrollbar-width: none; /* the forms that scroll inside their block (Options forms below) get the same overlay bar, so opening a section shifts nothing */
 }
-div.bx-std-block-content::-webkit-scrollbar {
+div.bx-std-block-content::-webkit-scrollbar,
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"], [name="adm-dsg-settings-form"], [name="adm-dsg-templates-form"]) > .bx-form-advanced-wrapper::-webkit-scrollbar {
     display: none;
 }
 svg.bx-std-scrollbar {
@@ -59,8 +61,14 @@ svg.bx-std-scrollbar {
     transition: opacity 0.3s;
 }
 div.bx-std-block:hover > svg.bx-std-scrollbar,
-div.bx-std-block.bx-std-scrolling > svg.bx-std-scrollbar {
+div.bx-std-block.bx-std-scrolling > svg.bx-std-scrollbar,
+div.bx-std-content:hover > svg.bx-std-scrollbar,
+div.bx-std-content.bx-std-scrolling > svg.bx-std-scrollbar {
     opacity: 1;
+}
+/* the page's bar runs down the window's right edge in the 12px gutter, above the blocks' own bars */
+div.bx-std-content > svg.bx-std-scrollbar {
+    z-index: 3;
 }
 svg.bx-std-scrollbar path {
     fill: none;
@@ -99,7 +107,7 @@ div.bx-std-block-caption {
     z-index: 1;
 
     gap: 0.75rem;
-    padding: 1rem; /* 16px around a 32px row, like the header bar: a 64px caption with its icon, buttons and tabs on the block's 16px content line */
+    padding: 1rem; /* 16px round a 36px row (a small button's height): a 68px caption like the header bar, its icon, buttons and tabs on the block's 16px content line, their 8px corners concentric with the block's 24px */
     box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.05); /* hairline divider drawn outside the box, so it adds no height */
 }
 .dark div.bx-std-block-caption {
@@ -147,7 +155,7 @@ div.bx-std-block-caption > .bx-btn {
     -ms-flex: 1 1 auto;
     flex: 1 1 auto;
 
-    line-height: 2rem; /* the row is 32px with or without an icon, so every caption is the same height */
+    line-height: 2.25rem; /* the row is 36px with or without an icon or a button, so every caption is the same height */
     font-weight: 600;
     font-size: 1.25rem;
 }
@@ -182,7 +190,7 @@ div.bx-std-bcap-action-div:first-child {
     display: none;
 }
 
-/* Top panel (the Pages builder's selects): the same toolbar as a grid header, 64px with 16px sides and a hairline below it;
+/* Top panel (the Pages builder's selects): the same toolbar as a grid header, 68px with 16px sides and a hairline below it;
    under a caption the 16px between them is split 8 / 8 like the grid toolbar. Its fields are spaced by an 8px gap alone. */
 div.bx-std-block-panel-top {
     padding: 1rem;
@@ -232,11 +240,10 @@ div.bx-std-block-content .bx-grid-table-wrapper {
 div.bx-std-block-content div.bx-grid-header {
     margin-top: 0px;
 }
-/* Content inset: the block's 8px plus 8px from the content root itself, 16px in all. Forms, the designer's template list and
+/* Content inset: the block's 8px plus 8px from the content root itself, 16px in all. Forms and
    builder cells add theirs here; product lists do the same in store.css, agent cards in agents.css. Options forms and grids are
    laid out as a header / scroller / footer stack below and own their inset there. */
-div.bx-std-block-content > .bx-form-advanced:not([name="adm-settings-form"]),
-div.bx-std-block-content > .bx-dsg-templates,
+div.bx-std-block-content > .bx-form-advanced:not([name="adm-settings-form"]):not([name="adm-dsg-logo-form"]):not([name="adm-dsg-icon-form"]):not([name="adm-dsg-cover-form"]):not([name="adm-dsg-splash-form"]):not([name="adm-dsg-injections-form"]):not([name="adm-dsg-pwa-form"]):not([name="adm-dsg-settings-form"]):not([name="adm-dsg-templates-form"]),
 div.bx-std-block-content > .adm-bp-cell,
 div.bx-std-block-content > .bx-layout-wrapper {
     padding: 0.5rem;
@@ -244,12 +251,12 @@ div.bx-std-block-content > .bx-layout-wrapper {
 
 /**
  * Header / scroller / footer stack.
- * A block whose content is an options form (BxDolStudioOptions, name="adm-settings-form") or a grid keeps its caption fixed, scrolls
- * the middle, and pins a 64px footer: 16px around the 32px buttons, like the caption, hairline drawn outside the box.
+ * A block whose content is an options form (BxDolStudioOptions, name="adm-settings-form"; Designer's template, logo, icon, cover, landing, injections, PWA and settings forms) or a grid keeps its caption fixed, scrolls
+ * the middle, and pins a footer: 16px around the buttons (a grid's 36px, 68px like the caption; a form's 44px Save), hairline drawn outside the box.
  * The form footer is the form's last section (the Save button, BxBaseStudioOptions always puts it in a section of its own); the grid
  * footer is the grid's own footer (bulk actions, paging). Grid rows run edge to edge with 16px inside the first and last cell.
  */
-div.bx-std-block-content:has(> form[name="adm-settings-form"]),
+div.bx-std-block-content:has(> form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"], [name="adm-dsg-settings-form"], [name="adm-dsg-templates-form"])),
 div.bx-std-block-content:has(> [id^="bx-grid-wrap-"]) {
     display: flex;
     flex-direction: column;
@@ -257,8 +264,14 @@ div.bx-std-block-content:has(> [id^="bx-grid-wrap-"]) {
     overflow: hidden;
 }
 
+/* Designer's template, logo, icon, cover, landing, injections, PWA and settings forms are taller than the screen: the page column keeps its height (no min-content growth), so the form scrolls inside
+   the block under its caption and the Save footer stays at the bottom. */
+#bx-std-pc-content:has(> .bx-std-block > .bx-std-block-content > form:is([name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"], [name="adm-dsg-settings-form"], [name="adm-dsg-templates-form"])) {
+    min-height: 0;
+}
+
 /* Options forms */
-div.bx-std-block-content > form[name="adm-settings-form"] {
+div.bx-std-block-content > form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"], [name="adm-dsg-settings-form"], [name="adm-dsg-templates-form"]) {
     --bx-std-inset: 1rem; /* the scroller's inset: 16px for fields and for the accordion cards alike */
     position: relative;
     display: flex;
@@ -267,7 +280,7 @@ div.bx-std-block-content > form[name="adm-settings-form"] {
     min-height: 0;
     padding: 0;
 }
-form[name="adm-settings-form"] > .bx-form-advanced-wrapper {
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"], [name="adm-dsg-settings-form"], [name="adm-dsg-templates-form"]) > .bx-form-advanced-wrapper {
     display: flex; /* a column, so the footer can drop to the bottom (margin-top: auto) when the content does not fill the block */
     flex-direction: column;
     flex: 1 1 auto;
@@ -275,7 +288,7 @@ form[name="adm-settings-form"] > .bx-form-advanced-wrapper {
     overflow-y: auto;
     padding: var(--bx-std-inset) var(--bx-std-inset) 0; /* no bottom inset: sticky elements stop at the scroller's padding edge */
 }
-form[name="adm-settings-form"] > .bx-form-advanced-wrapper > .bx-form-section-wrapper {
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"], [name="adm-dsg-settings-form"], [name="adm-dsg-templates-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper {
     flex: none; /* sections overflow the scroller instead of shrinking into it */
     margin: 0 0 0.5rem; /* overrides the my-4 emitted by BxBaseFormView::getOpenSection */
     padding: 0;
@@ -285,10 +298,10 @@ form#adm-settings-form > .bx-form-advanced-wrapper > .bx-form-section-wrapper:no
     padding: 0 0 0.5rem;
 }
 /* Footer: the last section, holding the Save button. */
-form[name="adm-settings-form"] > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child) {
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"], [name="adm-dsg-settings-form"], [name="adm-dsg-templates-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child) {
     position: sticky;
     bottom: 0;
-    z-index: 1;
+    z-index: 10; /* over what fields stack inside themselves: color swatches (2), code editor layers (6) */
     display: flex;
     align-items: center;
     width: auto;
@@ -299,10 +312,15 @@ form[name="adm-settings-form"] > .bx-form-advanced-wrapper > .bx-form-section-wr
     background-color: #f5f5f7; /* gray-200 page + the block's white/60, so the sticky row matches the block around it */
     box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.05);
 }
-form[name="adm-settings-form"] > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child) .bx-form-section-content {
+/* Code editors stack their scrollbars and gutter up to z-index 6; isolated, those stay inside
+   the editor and the footer above scrolls over it. */
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"], [name="adm-dsg-settings-form"], [name="adm-dsg-templates-form"]) .CodeMirror {
+    isolation: isolate;
+}
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"], [name="adm-dsg-settings-form"], [name="adm-dsg-templates-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child) .bx-form-section-content {
     padding: 0;
 }
-form[name="adm-settings-form"] > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child) .bx-form-element-wrapper {
+form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"], [name="adm-dsg-settings-form"], [name="adm-dsg-templates-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child) .bx-form-element-wrapper {
     margin: 0;
 }
 
@@ -316,7 +334,7 @@ div.bx-std-block-content > [id^="bx-grid-wrap-"] {
     padding: 0;
 }
 div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header {
-    position: sticky; /* the filter / add toolbar stays under the caption, 64px like it */
+    position: sticky; /* the filter / add toolbar stays under the caption, 68px like it */
     top: 0;
     z-index: 2;
     flex: none;
@@ -395,12 +413,12 @@ div.bx-std-block-content > [id^="bx-grid-wrap-"] .bx-grid-table th:last-child,
 div.bx-std-block-content > [id^="bx-grid-wrap-"] .bx-grid-table td:last-child {
     padding-right: 1rem;
 }
-.dark form[name="adm-settings-form"] > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child),
+.dark form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"], [name="adm-dsg-settings-form"], [name="adm-dsg-templates-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child),
 .dark div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header,
 .dark div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer {
     background-color: #1a1a1a; /* black page + the block's white/10, so the sticky row matches the block around it */
 }
-.dark form[name="adm-settings-form"] > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child),
+.dark form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"], [name="adm-dsg-settings-form"], [name="adm-dsg-templates-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child),
 .dark div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer {
     box-shadow: 0 -1px 0 0 rgba(255, 255, 255, 0.025);
 }

@@ -84,7 +84,6 @@ class BxDolAIModelFactory extends BxDolFactory
                     key: $a['key'],
                     model: $a['model'],
                     endpoint: $aParameters['endpoint'],
-                    version: $aParameters['version'],
                     parameters: $aParameters['parameters'] ?? [],
                     strict_response: $aParameters['strict_response'] ?? false,
                 );
@@ -124,7 +123,7 @@ class BxDolAIModelFactory extends BxDolFactory
                 $o = new NeuronAI\Providers\HuggingFace\HuggingFace(
                     key: $a['key'],
                     model: $a['model'],
-                    inferenceProvider: $aParameters['inferenceProvider'] ?? 'hf-inference/models', // cohere, groq, etc - https://github.com/neuron-core/neuron-ai/blob/3.x/src/Providers/HuggingFace/InferenceProvider.php
+                    inferenceProvider: self::_getHuggingFaceInferenceProvider($aParameters['inferenceProvider'] ?? ''),
                     parameters: $aParameters['parameters'] ?? [],
                     strict_response: $aParameters['strict_response'] ?? false,
                 );
@@ -149,7 +148,7 @@ class BxDolAIModelFactory extends BxDolFactory
                 $oClient = new Aws\BedrockRuntime\BedrockRuntimeClient($aParameters['client_params']);
 
                 $o = new NeuronAI\Providers\AWS\BedrockRuntime(
-                    client: $oClient,
+                    bedrockRuntimeClient: $oClient,
                     model: $a['model'],
                     inferenceConfig: $aParameters['inferenceConfig'] ?? [],
                 );
@@ -204,7 +203,7 @@ class BxDolAIModelFactory extends BxDolFactory
             case 'aws-bedrock-embeddings':
                 $oClient = new Aws\BedrockRuntime\BedrockRuntimeClient($aParameters['client_params']);
                 $o = new NeuronAI\RAG\Embeddings\AwsBedrockEmbeddingsProvider(
-                    client: $oClient,
+                    bedrockRuntimeClient: $oClient,
                     model: $a['model']
                 );
                 break;
@@ -216,6 +215,20 @@ class BxDolAIModelFactory extends BxDolFactory
         $GLOBALS['bxDolClasses'][$sCacheKey] = $o;
 
         return $o;
+    }
+
+    /**
+     * Neuron AI 4.x takes an enum. Stored settings hold a plain name, or the 3.x
+     * default 'hf-inference/models' (a router path, not a provider name).
+     */
+    protected static function _getHuggingFaceInferenceProvider($sValue): ?NeuronAI\Providers\HuggingFace\InferenceProvider
+    {
+        $sValue = strtolower(trim((string)$sValue));
+        $sValue = (string)strtok($sValue, '/');
+        if ($sValue === '')
+            return null;
+
+        return NeuronAI\Providers\HuggingFace\InferenceProvider::tryFrom($sValue);
     }
 
     /**

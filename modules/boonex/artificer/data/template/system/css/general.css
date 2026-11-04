@@ -40,38 +40,84 @@ html.dark {
     max-height: 100%;
     width: auto;
 }
-/*--- Floating search bar: takes the place of the member toolbar's 'search' item, at the end of the toolbar's items group (phones: the whole group) ---*/
-#bx-toolbar .bx-tis-button-hidden {
-    display: none;
+/*--- Search popup, opened by the member toolbar's 'search' item, as the apps' search: a full-screen sheet below 1024px
+      (the apps' desktop breakpoint), from there a 48rem dialog of a fixed height, so it doesn't move as results come ---*/
+#bx-site-search-popup .bx-popup-width {
+    width: 48rem;
 }
-.bx-ti-search-box.bx-tis-box-shown {
-    position: absolute;
-    display: block;
-    top: 50%;
-    inset-inline-end: 0;
-    transform: translateY(-50%);
+#bx-site-search-popup .bx-popup-content {
+    display: flex;
+    flex-direction: column;
 }
-@media (max-width: 767px) {
-    .bx-ti-search-box.bx-tis-box-shown {
-        inset-inline-start: 0;
-    }
+/* NEO's search modal: its 24px corners, its line under the title (--border, neutral-300 / -700, at 60%) and a quick
+   colour change on Close */
+#bx-site-search-popup .bx-popup {
+    border-radius: 1.5rem;
 }
-.bx-ti-search-box .bx-form-advanced .bx-loading-ajax {
+#bx-site-search-popup .bx-popup-header {
+    border-bottom-color: rgb(212 212 216 / 0.6);
+}
+.dark #bx-site-search-popup .bx-popup-header {
+    border-bottom-color: rgb(63 63 70 / 0.6);
+}
+#bx-site-search-popup .bx-popup-element-close {
+    transition-property: color, background-color;
+    transition-duration: 100ms;
+    transition-timing-function: ease-out;
+}
+#bx-site-search-popup .bx-site-search-title {
+    padding-inline: 2.5rem; /* clear of Close */
+}
+#bx-site-search-popup .bx-popup-element-close svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+#bx-site-search-popup .bx-site-search-results {
+    height: 20rem;
+    overflow-y: auto;
+}
+#bx-site-search-popup .bx-form-advanced .bx-loading-ajax {
     top: 0;
     max-height: 100%;
 }
-.bx-ti-search-box .bx-form-advanced-wrapper .bx-form-section-wrapper:first-child {
+#bx-site-search-popup .bx-form-advanced-wrapper .bx-form-section-wrapper:first-child {
     margin-top: 0;
 }
-.bx-ti-search-box .sys-search-results-quick {
-    position: absolute;
-    z-index: 10;
-}
-.bx-ti-search-box .sys-search-results-quick .bx-btn.sys-agents-ask {
+#bx-site-search-popup .sys-search-results-quick .bx-btn.sys-agents-ask {
+    display: flex;
+    float: none;
+    width: 100%;
     margin-bottom: 0.5rem;
 }
-.bx-ti-search-box .sys-search-results-quick .bx-btn.sys-agents-ask:last-child {
-    margin-bottom: 0;
+@media (max-width: 1023px) {
+    #bx-site-search-popup {
+        position: fixed !important;
+        inset: 0 !important;
+        border-radius: 0;
+    }
+    #bx-site-search-popup .bx-popup-gap {
+        height: 100%;
+        margin: 0;
+    }
+    #bx-site-search-popup .bx-popup {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+    #bx-site-search-popup .bx-popup-content,
+    #bx-site-search-popup .bx-site-search,
+    #bx-site-search-popup .bx-site-search-results {
+        flex: 1 1 auto;
+        min-height: 0;
+    }
+    #bx-site-search-popup .bx-site-search-results {
+        height: auto;
+    }
 }
 
 /*--- Agents: Assistants ---*/
@@ -210,7 +256,8 @@ html.dark {
 
 /*--- Join/Login Forms ---*/
 .sys-jf .bx-form-advanced .bx-form-element .bx-form-input-submit.bx-btn,
-.sys-lf .bx-form-advanced .bx-form-element .bx-form-input-submit.bx-btn {
+.sys-lf .bx-form-advanced .bx-form-element .bx-form-input-submit.bx-btn,
+#sys_forgot_password.bx-form-advanced .bx-form-element .bx-form-input-submit.bx-btn {
     width: 100%;
     -webkit-justify-content: center;
     justify-content: center;

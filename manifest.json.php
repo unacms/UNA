@@ -11,21 +11,20 @@ define('BX_MANIFEST', true);
 
 require_once('./inc/header.inc.php');
 
+$aPwa = BxDolDesigns::getPwaSettings();
+
 $aContent = [
-    'name' => '',
-    'short_name' => '',
-    'description' => getParam('sys_pwa_manifest_description'),
+    'name' => $aPwa['name']['used'],
+    'short_name' => $aPwa['short_name']['used'],
+    'description' => $aPwa['description']['used'],
     'orientation' => 'portrait',
     'start_url' => parse_url(BX_DOL_URL_ROOT, PHP_URL_PATH),
     'display' => 'standalone',
     'scope' => '/',
-    'background_color' => getParam('sys_pwa_manifest_background_color'),
-    'theme_color' => getParam('sys_pwa_manifest_theme_color'),
+    'background_color' => $aPwa['background_color']['used'],
+    'theme_color' => $aPwa['theme_color']['used'],
     'gcm_sender_id' => isLogged() ? '482941778795' : ''
 ];
-
-$aContent['name'] = ($sName = getParam('sys_pwa_manifest_name')) != '' ? $sName : parse_url(BX_DOL_URL_ROOT, PHP_URL_HOST);
-$aContent['short_name'] = ($sShortName = getParam('sys_pwa_manifest_short_name')) != '' ? $sShortName : $aContent['name'];
 
 foreach($aContent as $sKey => $sValue)
     if(empty($sValue))
@@ -80,6 +79,18 @@ if(($iId = (int)getParam('sys_site_icon_android_splash')) != 0) {
         'sizes' => $sSizes
     ];
 }
+
+/*
+ * Android defaults: the 192 and 512 icons home screens and the launch screen need (template/images/icons, or the template's own).
+ */
+$oTemplate = BxDolTemplate::getInstance();
+foreach(['sys_site_icon_android' => ['android-icon-192.png', '192x192'], 'sys_site_icon_android_splash' => ['android-icon-512.png', '512x512']] as $sSetting => $aDefault)
+    if((int)getParam($sSetting) == 0 && ($sUrl = $oTemplate->getIconUrl($aDefault[0])) != '')
+        $aAdi[] = [
+            'src' => $sUrl,
+            'type' => 'image/png',
+            'sizes' => $aDefault[1]
+        ];
 
 if(!empty($aAdi) && is_array($aAdi))
     $aContent['icons'] = $aAdi;

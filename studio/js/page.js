@@ -140,7 +140,8 @@ $(document).on('click', '.bx-std-page-menu-toggle', function() {
  * a track and a thumb over the block, along the box's right edge and round its rounded corners, with the block's own class names.
  */
 function bx_std_scrollbars(sSelector) {
-    $(sSelector || 'div.bx-std-block-content').each(function() {
+    // Block contents, and the forms that scroll inside their block under a fixed Save footer (page.css "Options forms").
+    $(sSelector || 'div.bx-std-block-content, form[name="adm-settings-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-logo-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-icon-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-cover-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-splash-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-injections-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-pwa-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-settings-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-templates-form"] > .bx-form-advanced-wrapper').each(function() {
         bx_std_scrollbar(this);
     });
 }
@@ -162,6 +163,19 @@ function bx_std_scrollbar(oScroller) {
 
 $(document).ready(function() {
     bx_std_scrollbars();
+
+    // One-column pages (the launcher, the dashboard) scroll a box of the window's height under the fixed header; it gets the same
+    // bar, drawn over the page's content area down the window's right edge and starting under the header (general.css).
+    $('div.bx-std-content-wrp.bx-std-one-col').each(function() {
+        bx_scrollbar_overlay(this, this.parentNode, {
+            svg: 'bx-std-scrollbar',
+            track: 'bx-std-scrollbar-track',
+            thumb: 'bx-std-scrollbar-thumb',
+            scroller: '', // general.css hides the native bar
+            scrolling: 'bx-std-scrolling',
+            hover: '' // page.css shows the bar while the pointer is over the page
+        });
+    });
 });
 
 /**

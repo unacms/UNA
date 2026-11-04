@@ -1,4 +1,5 @@
 import { View } from 'app/design/view'
+import { Platform } from 'react-native'
 import { appSetting, cn, menuItemsByName, menuItemsByNameNew } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
 import { useMemo, memo, type ComponentProps, type ReactNode } from 'react';
@@ -27,6 +28,8 @@ type FooterMenuItem = {
     text?: string;
     /** The text on phones. */
     text_short?: string;
+    /** `switch_language`: the site's languages (UNA sends the item while it has two or more). */
+    languages?: string[];
 };
 
 /** The look every footer control takes (MenuFooterComponent). */
@@ -60,8 +63,8 @@ type MenuFooterProps = {
 
 type FooterControlProps = { visualProps: FooterVisualProps };
 
-/** Which switchers the footer shows. */
-type FooterSwitcherFlags = { language: boolean; theme: boolean; sounds: boolean };
+/** Which switchers the footer shows; `languages` are the language switcher's options. */
+type FooterSwitcherFlags = { language: boolean; languages: string[]; theme: boolean; sounds: boolean };
 
 /** UNA's Powered by badge: an item whose icon is its SVG. */
 type FooterBadge = FooterMenuItem & { icon: string };
@@ -272,11 +275,9 @@ function FooterBadgeItem({ item, href, visualProps }: Readonly<FooterControlProp
     );
 }
 
-function FooterLanguageSwitcher({ visualProps }: Readonly<FooterControlProps>) {
+function FooterLanguageSwitcher({ langs, visualProps }: Readonly<FooterControlProps & { langs: string[] }>) {
     const { t } = useTranslation();
     const { lang, langCode, autoLangCode, setLang } = useLayoutSettings();
-    const configuredLangs = appSetting('layout', AVAILABLE_LANGS_SETTING_KEY);
-    const langs = useMemo((): string[] => (Array.isArray(configuredLangs) ? configuredLangs : []), [configuredLangs]);
     // The chosen option ('auto' for System), and the language actually in use (langCode), which the
     // trigger shows. The System option always names the device's language (autoLangCode), even while
     // another language is chosen, because that is what choosing it switches to.
@@ -369,10 +370,10 @@ function FooterLinks({ links, visualProps }: Readonly<FooterControlProps & { lin
     );
 }
 
-function FooterSwitchers({ language, theme, sounds, visualProps }: Readonly<FooterControlProps & FooterSwitcherFlags>) {
+function FooterSwitchers({ language, languages, theme, sounds, visualProps }: Readonly<FooterControlProps & FooterSwitcherFlags>) {
     return (
         <>
-            {language ? <FooterLanguageSwitcher visualProps={visualProps} /> : null}
+            {language ? <FooterLanguageSwitcher langs={languages} visualProps={visualProps} /> : null}
             {theme ? <FooterThemeSwitcher visualProps={visualProps} /> : null}
             {sounds ? <FooterSoundsLevel visualProps={visualProps} /> : null}
         </>
@@ -409,15 +410,32 @@ function MenuFooterComponent({
     const useStaticFooter = Array.isArray(staticFooter) && staticFooter.length > 0;
     const usesRemoteFooter = !menu_items && !useStaticFooter;
     const { available: soundsAvailable } = useSoundsLevel();
-    const configuredLangs = appSetting('layout', AVAILABLE_LANGS_SETTING_KEY);
-    const switchers: FooterSwitcherFlags = {
-        language: hydrated && Array.isArray(configuredLangs) && configuredLangs.length > 1,
-        theme: !!appSetting('dashboard', 'switch_theme'),
-        sounds: hydrated && soundsAvailable,
-    };
     const { menuData, isFetched, isLoading } = useMenuData(
         (!usesRemoteFooter || !hydrated) ? null : appSetting('menu_items', 'objects', 'footer')
     );
+
+    const remoteItems = useMemo((): FooterMenuItem[] => (
+        usesRemoteFooter ? menuItemsByNameNew('menu_post', menuData, currentUser) : []
+    ), [usesRemoteFooter, menuData, currentUser]);
+    // With UNA's footer, UNA decides: its `switch_language` item comes while the site has two or
+    // more languages, and the switcher offers only those (and System). Without it, the setting.
+    const siteLanguages = usesRemoteFooter ? remoteItems.find((item) => item.name === 'switch_language')?.languages : undefined;
+    const configuredLangs = appSetting('layout', AVAILABLE_LANGS_SETTING_KEY);
+    const languages = useMemo((): string[] => {
+        const configured: string[] = Array.isArray(configuredLangs) ? configuredLangs : [];
+        if (!usesRemoteFooter) return configured;
+        if (!Array.isArray(siteLanguages)) return [];
+        return configured.filter((language) => language === 'auto' || siteLanguages.includes(language));
+    }, [configuredLangs, usesRemoteFooter, siteLanguages]);
+    const switchers: FooterSwitcherFlags = {
+        // UNA's footer: two site languages NEO has; a footer of its own: two options, System counted, as before.
+        language: hydrated && (usesRemoteFooter
+            ? languages.filter((language) => language !== 'auto').length > 1
+            : languages.length > 1),
+        languages,
+        theme: !!appSetting('dashboard', 'switch_theme'),
+        sounds: hydrated && soundsAvailable,
+    };
 
     const visualProps = useMemo(
         () => footerVisualProps(btnStyle, variant, size, itemClassName),
@@ -426,9 +444,9 @@ function MenuFooterComponent({
 
     const menu_launcher_items = useMemo((): FooterMenuItem[] => (
         menu_items || (usesRemoteFooter
-            ? menuItemsByNameNew('menu_post', menuData, currentUser)
+            ? remoteItems.filter((item) => item.name !== 'switch_language')
             : menuItemsByName('', staticFooter, currentUser))
-    ), [menu_items, usesRemoteFooter, menuData, currentUser, staticFooter]);
+    ), [menu_items, usesRemoteFooter, remoteItems, currentUser, staticFooter]);
 
     if (usesRemoteFooter && (!hydrated || isLoading || !isFetched)) {
         return (
@@ -452,4 +470,16 @@ function MenuFooterComponent({
     );
 }
 
-export default memo(MenuFooterComponent);
+const MenuFooter = memo(MenuFooterComponent);
+
+/**
+ * The site footer at the end of a page. Native apps show none by default (the tab bar holds the
+ * pages, and infinite lists would push it away; the member menu has the footer's links); a fork
+ * turns it on with `layout.native_page_footer`.
+ */
+export function PageFooter() {
+    if (Platform.OS !== 'web' && !appSetting('layout', 'native_page_footer')) return null;
+    return <MenuFooter />;
+}
+
+export default MenuFooter;

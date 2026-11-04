@@ -1,3 +1,12 @@
-<bx_repeat:covers>
-	<div id="bx-dsg-cover-__image_id__" class="bx-dsg-cover bx-def-margin-top-auto">__content__</div>
-</bx_repeat:covers>
+<bx_repeat:previews>
+<div class="adm-dsg-cover-preview adm-dsg-cp-__name__ flex flex-col rounded-xl overflow-hidden bg-white dark:bg-white/5 ring-1 ring-black/10 dark:ring-white/10">
+    <div class="adm-dsg-cp-stage flex">
+        <div class="adm-dsg-cp-light flex-1 aspect-[8/3]"><bx_if:show_image><img class="block w-full h-full object-cover" src="__url__" alt="" /></bx_if:show_image></div>
+        <bx_if:show_dark><div class="adm-dsg-cp-dark flex-1 aspect-[8/3]"><img class="block w-full h-full object-cover" src="__url__" alt="" /></div></bx_if:show_dark>
+    </div>
+    <div class="adm-dsg-cp-info flex flex-col items-start gap-1 p-3">
+        <div class="adm-dsg-cp-source text-sm leading-5 text-gray-600 dark:text-gray-400">__info__</div>
+        <bx_if:show_remove><button type="button" class="bx-btn bx-btn-small mt-1" aria-label="__label__" data-confirm="__confirm__" onclick="__js_object__.deleteCover('__name__', this);"><bx_text:_adm_dsg_btn_logo_remove /></button></bx_if:show_remove>
+    </div>
+</div>
+</bx_repeat:previews>

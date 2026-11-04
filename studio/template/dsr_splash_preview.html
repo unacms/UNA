@@ -1,0 +1,38 @@
+<div class="adm-dsg-splash-preview flex flex-col gap-3">
+    <div class="rounded-xl overflow-hidden bg-white ring-1 ring-black/10 dark:ring-white/10">
+        <iframe id="__frame_id__" name="__frame_id__" class="block w-full h-[32rem] border-0" src="__preview_url__" title="<bx_text_attribute:_adm_dsg_txt_splash_preview_title />" loading="lazy"></iframe>
+    </div>
+    <div class="flex flex-wrap items-center gap-3">
+        <button type="button" class="bx-btn bx-btn-small" onclick="__js_object__.previewSplash(this, '__frame_id__', '__preview_url__');"><bx_text:_adm_dsg_btn_splash_preview /></button>
+        <button type="button" class="bx-btn bx-btn-small" aria-haspopup="dialog" onclick="__js_object__.openPreviewFullscreen(this, '__dialog_id__', '__dialog_frame_id__', '__preview_url__');"><bx_text:_adm_dsg_btn_splash_preview_fullscreen /></button>
+        <a class="text-sm" href="__preview_url__" target="_blank" rel="noopener"><bx_text:_adm_dsg_lnk_splash_open /></a>
+    </div>
+</div>
+<dialog id="__dialog_id__" class="adm-dsg-fullscreen" aria-labelledby="__dialog_id__-title">
+    <div class="adm-dsg-fs-header">
+        <h2 id="__dialog_id__-title" class="adm-dsg-fs-title"><bx_text:_adm_dsg_txt_splash_preview_title /></h2>
+        <div class="adm-dsg-fs-viewports" role="group" aria-label="<bx_text_attribute:_adm_dsg_txt_viewport />">
+            <button type="button" class="adm-dsg-fs-vp" aria-pressed="false" data-width="390" onclick="__js_object__.setPreviewViewport(this, 390);"><bx_text:_adm_dsg_txt_viewport_mobile /></button>
+            <button type="button" class="adm-dsg-fs-vp" aria-pressed="false" data-width="768" onclick="__js_object__.setPreviewViewport(this, 768);"><bx_text:_adm_dsg_txt_viewport_tablet /></button>
+            <button type="button" class="adm-dsg-fs-vp" aria-pressed="true" data-width="1280" onclick="__js_object__.setPreviewViewport(this, 1280);"><bx_text:_adm_dsg_txt_viewport_desktop /></button>
+            <button type="button" class="adm-dsg-fs-vp" aria-pressed="false" onclick="__js_object__.setPreviewViewport(this);"><bx_text:_adm_dsg_txt_viewport_custom /></button>
+        </div>
+        <label class="adm-dsg-fs-width">
+            <span><bx_text:_adm_dsg_txt_viewport_width /></span>
+            <input type="number" class="adm-dsg-fs-width-input" min="320" max="3840" step="1" inputmode="numeric" value="1280" onchange="__js_object__.setPreviewViewport(this, this.value);" onkeydown="if(event.key == 'Enter') { event.preventDefault(); __js_object__.setPreviewViewport(this, this.value); }" />
+            <span aria-hidden="true">px</span>
+            <span class="adm-dsg-fs-scale" hidden></span>
+        </label>
+        <div class="adm-dsg-fs-actions">
+            <button type="button" class="bx-btn bx-btn-small" onclick="__js_object__.previewSplash(this, '__dialog_frame_id__', '__preview_url__');"><bx_text:_adm_dsg_btn_splash_preview /></button>
+            <button type="button" class="bx-btn bx-btn-small bx-btn-primary" onclick="this.closest('dialog').close();"><bx_text:_adm_dsg_btn_fullscreen_done /></button>
+        </div>
+    </div>
+    <div class="adm-dsg-fs-body adm-dsg-fs-stage">
+        <div class="adm-dsg-fs-fit">
+            <div class="adm-dsg-fs-viewport">
+                <iframe name="__dialog_frame_id__" title="<bx_text_attribute:_adm_dsg_txt_splash_preview_title />"></iframe>
+            </div>
+        </div>
+    </div>
+</dialog>
