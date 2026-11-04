@@ -1041,10 +1041,15 @@
         @apply placeholder:text-gray-600 dark:placeholder:text-gray-400;
         @apply rounded-md;
     }
-    /* The wrapper carries the field look, and the input inside it takes the focus, so the wrapper shows it. */
+    /* The wrapper carries the field look (the site inputs' below) and its focus ring, as the input inside it takes the focus; that input is bare and takes the sides. */
     .bx-artificer .bx-form-input-wrapper-password {
-        @apply focus-within:bg-white dark:focus-within:bg-gray-900;
-        @apply focus-within:border-blue-600 dark:focus-within:border-blue-400 focus-within:ring-1 focus-within:ring-blue-600 dark:focus-within:ring-blue-400;
+        @apply rounded-xl border-0 p-0 font-normal;
+        @apply bg-white dark:bg-gray-800 focus-within:bg-white dark:focus-within:bg-gray-800;
+        @apply text-gray-800 dark:text-gray-200;
+        @apply ring-1 ring-inset ring-black/10 dark:ring-white/5;
+        @apply transition-shadow duration-200;
+        @apply focus-within:outline focus-within:outline-2 focus-within:outline-offset-0 focus-within:outline-blue-600 dark:focus-within:outline-blue-500;
+        @apply focus-within:ring-1 focus-within:ring-inset focus-within:ring-blue-600/80 dark:focus-within:ring-blue-500/80;
     }
     .bx-std .bx-form-input-wrapper-password .bx-form-input-password,
     .bx-artificer .bx-form-input-wrapper-password .bx-form-input-password {
@@ -1070,8 +1075,7 @@
     .bx-artificer .bx-form-input-textarea:not(.bx-form-input-html),
     .bx-artificer .bx-form-input-text,
     .bx-artificer .bx-form-input-price,
-    .bx-artificer .bx-form-input-wrapper-price span,
-    .bx-artificer .bx-form-input-wrapper-password {
+    .bx-artificer .bx-form-input-wrapper-price span {
         @apply rounded-xl border-0 px-4 font-normal;
         @apply bg-white dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-800;
         @apply text-gray-800 dark:text-gray-200 focus:text-gray-800 dark:focus:text-gray-200;
@@ -1089,15 +1093,11 @@
     .bx-artificer .bx-form-input-datetime:focus-visible,
     .bx-artificer .bx-form-input-textarea:not(.bx-form-input-html):focus-visible,
     .bx-artificer .bx-form-input-text:focus-visible,
-    .bx-artificer .bx-form-input-price:focus-visible,
-    .bx-artificer .bx-form-input-wrapper-password:focus-within {
+    .bx-artificer .bx-form-input-price:focus-visible {
         @apply outline outline-2 outline-offset-0 outline-blue-600 dark:outline-blue-500;
         @apply ring-1 ring-inset ring-blue-600/80 dark:ring-blue-500/80;
     }
     /* The password field draws the look on its wrapper, so the input inside it is bare and takes the height and the sides. */
-    .bx-artificer .bx-form-input-wrapper-password {
-        @apply p-0;
-    }
     .bx-artificer .bx-form-input-wrapper-password .bx-form-input-password:focus-visible {
         @apply outline-none ring-0;
     }
