@@ -200,9 +200,10 @@ class BxEventsModule extends BxBaseModGroupsModule implements iBxDolCalendarServ
             case 'author':
                 $iProfileId = !empty($aParams['profile_id']) ? (int)$aParams['profile_id'] : 0;
 
-                $aSQLPart = [
-                    'where' => $this->_oDb->prepareAsString("AND `{$CNF['TABLE_ENTRIES']}`.`{$CNF['FIELD_AUTHOR']}`=?", $iProfileId)
-                ];
+                $aSQLPart = $oPrivacy->getContentPublicAsSQLPart(0, $oPrivacy->getPartiallyVisiblePrivacyGroups());
+
+                $aSQLPart['where'] ??= '';
+                $aSQLPart['where'] .= $this->_oDb->prepareAsString(" AND `{$CNF['TABLE_ENTRIES']}`.`{$CNF['FIELD_AUTHOR']}`=?", $iProfileId);
                 break;
 
             case 'joined':
@@ -216,12 +217,15 @@ class BxEventsModule extends BxBaseModGroupsModule implements iBxDolCalendarServ
                 if(empty($aEventsJoined) || !is_array($aEventsJoined))
                     return [];
 
-                $aSQLPart = [
-                    'join' => "INNER JOIN `sys_profiles` ON `{$CNF['TABLE_ENTRIES']}`.`{$CNF['FIELD_ID']}`=`sys_profiles`.`content_id` AND `sys_profiles`.`type`='{$sModule}'",
-                    'where' => "AND `sys_profiles`.`id` IN (" . $this->_oDb->implode_escape($aEventsJoined) . ")"
-                ];
-                break;
+                $aSQLPart = $oPrivacy->getContentPublicAsSQLPart(0, $oPrivacy->getPartiallyVisiblePrivacyGroups());
                 
+                $aSQLPart['join'] ??= '';
+                $aSQLPart['join'] .= "INNER JOIN `sys_profiles` ON `{$CNF['TABLE_ENTRIES']}`.`{$CNF['FIELD_ID']}`=`sys_profiles`.`content_id` AND `sys_profiles`.`type`='{$sModule}'";
+
+                $aSQLPart['where'] ??= '';
+                $aSQLPart['where'] .= " AND `sys_profiles`.`id` IN (" . $this->_oDb->implode_escape($aEventsJoined) . ")";
+                break;
+
             case 'followed':
                 $iProfileId = !empty($aParams['profile_id']) ? (int)$aParams['profile_id'] : 0;
 
@@ -233,10 +237,13 @@ class BxEventsModule extends BxBaseModGroupsModule implements iBxDolCalendarServ
                 if(empty($aEventsFollowed) || !is_array($aEventsFollowed))
                     return [];
 
-                $aSQLPart = [
-                    'join' => "INNER JOIN `sys_profiles` ON `{$CNF['TABLE_ENTRIES']}`.`{$CNF['FIELD_ID']}`=`sys_profiles`.`content_id` AND `sys_profiles`.`type`='{$sModule}'",
-                    'where' => "AND `sys_profiles`.`id` IN (" . $this->_oDb->implode_escape($aEventsFollowed) . ")"
-                ];
+                $aSQLPart = $oPrivacy->getContentPublicAsSQLPart(0, $oPrivacy->getPartiallyVisiblePrivacyGroups());
+
+                $aSQLPart['join'] ??= '';
+                $aSQLPart['join'] .= "INNER JOIN `sys_profiles` ON `{$CNF['TABLE_ENTRIES']}`.`{$CNF['FIELD_ID']}`=`sys_profiles`.`content_id` AND `sys_profiles`.`type`='{$sModule}'";
+
+                $aSQLPart['where'] ??= '';
+                $aSQLPart['where'] .= "AND `sys_profiles`.`id` IN (" . $this->_oDb->implode_escape($aEventsFollowed) . ")";
                 break;
 
             case 'context':
@@ -254,7 +261,7 @@ class BxEventsModule extends BxBaseModGroupsModule implements iBxDolCalendarServ
         // get entries
         $aEntries = $this->_oDb->getEntriesByDate($sStart, $sEnd, $iContentId, $aSQLPart);
         
-        foreach($aEntries as &$aEntry){
+        foreach($aEntries as &$aEntry) {
             $aEntry['cover'] = $this->serviceGetCover($aEntry['id']);
         }
         
@@ -275,7 +282,7 @@ class BxEventsModule extends BxBaseModGroupsModule implements iBxDolCalendarServ
          *      - `data` - [array] by ref, data for calendar, can be overridden in hook processing
          * @hook @ref hook-bx_events-calendar_data
          */
-        bx_alert($this->getName(), 'calendar_data', 0, false, array(
+        bx_alert($this->getName(), 'calendar_data', 0, false, [
             'params' => $aParams,
             'event' => $iContentId,
             'context_id' => $iContextId,
@@ -285,7 +292,7 @@ class BxEventsModule extends BxBaseModGroupsModule implements iBxDolCalendarServ
             'data' => &$aEntries,
             'sql_part_ref' => &$aSQLPart,
             'data_ref' => &$aEntries,
-        ));
+        ]);
 
         return [
             'params' => ['start' => strtotime($sStart), 'end' => strtotime($sEnd)],
@@ -295,14 +302,13 @@ class BxEventsModule extends BxBaseModGroupsModule implements iBxDolCalendarServ
 
     public function serviceIsIcalExportAvaliable($iContentId)
     {
-        return true;
         $aContentInfo = $iContentId ? $this->_oDb->getContentInfoById($iContentId) : false;
-        if ($aContentInfo)
+        if(!$aContentInfo)
             return false;
-        
+
         return $aContentInfo['date_start'] && $aContentInfo['date_end'];
     }
-    
+
     public function decodeDataAPI($aData, $aParams = [])
     {
         $CNF = $this->_oConfig->CNF;
