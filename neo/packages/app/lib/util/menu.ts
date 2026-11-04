@@ -322,6 +322,8 @@ export function navbarItemsFromSiteMenu(items: MenuItemList, maxTabs: number): M
             ...item,
             link: normalizeMenuItemHref(item.link),
             icon: findIconFromRemote(item.icon) || (item.name === 'home' ? 'House' : 'Circle'),
+            // The title shows next to the icon unless Studio marks the item "Icon only", as on the site.
+            showTitle: !Number(item.icon_only),
             animated: true,
         };
         // Home leads the bar wherever the site menu puts it, and doesn't count as a tab.
@@ -592,8 +594,10 @@ export function getMenuSettings(object: string, config?: unknown, menu?: { title
     let a: any = config ? strToObj(config as string) : null;
     if (!a) {
         const local = object ? appSetting('menu_items', object) : null;
-        // A copy: the name / icon below must not land in the settings object.
-        a = local && typeof local === 'object' && !Array.isArray(local) ? { ...local } : (local ?? {});
+        // A copy: the name / icon below must not land in the settings object. A menu with no settings
+        // (appSetting gives '') still gets UNA's title and icon, so its section is named.
+        if (Array.isArray(local)) a = local;
+        else a = local && typeof local === 'object' ? { ...local } : {};
     }
     if (Array.isArray(a))
         return a;

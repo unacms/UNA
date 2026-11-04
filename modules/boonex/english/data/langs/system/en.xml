@@ -4622,6 +4622,10 @@
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Your verification code is {0}.]]></string>
     <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[An error occurred, please report error to the site administrator.]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Log in]]></string>
+    <string name="_sys_txt_join_text"><![CDATA[Joining is quick and easy. Create your own community account to get started.]]></string>
+    <string name="_sys_txt_join_text_invite"><![CDATA[Registration is by invitation only. Use your invitation code to join.]]></string>
+    <string name="_sys_txt_join_title"><![CDATA[Time to join!]]></string>
+    <string name="_sys_txt_join_title_invite"><![CDATA[Request an invitation]]></string>
     <string name="_sys_txt_login_description_action"><![CDATA[Create account]]></string>
     <string name="_sys_txt_login_error"><![CDATA[Entered email or password is incorrect. Please try again.]]></string>
     <string name="_sys_txt_login_locked"><![CDATA[Your account is locked and needs to be unlocked using <a href="{0}">forgot password page</a>.]]></string>

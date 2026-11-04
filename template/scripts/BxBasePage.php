@@ -620,10 +620,12 @@ class BxBasePage extends BxDolPage
             if(($bModuleEntries || $bModuleProfiles) && ($oModule = BxDolModule::getInstance($sModule))) {
                 $CNF = &$oModule->_oConfig->CNF;
 
-                // Section name and icon for NEO's sidebar title; profile modules (Persons) get them too.
+                // Section name and icon for NEO's sidebar title; profile modules (Persons) get them too. The title is the
+                // section's own (the selected site menu item, "People", as UNA's cover shows it), else the module's.
+                $aSectionCover = $oMenuSubmenu->getPageCoverParams();
                 $aMenuAdd = [
                     'name' => $oModule->getName(),
-                    'title' => BxDolModule::getTitle($oModule->_oConfig->getUri()),
+                    'title' => !empty($aSectionCover['title']) ? $aSectionCover['title'] : BxDolModule::getTitle($oModule->_oConfig->getUri()),
                     'icon' => !empty($CNF['ICON']) ? $CNF['ICON'] : '',
                 ];
 
@@ -638,6 +640,28 @@ class BxBasePage extends BxDolPage
 
                 $a['menu'] = array_merge($a['menu'], $aMenuAdd);
             }
+        }
+
+        // The words of the apps' own landing pages (the home splash, Sign up), in the viewer's language, so Studio's
+        // language strings reach them; a project's own text in the app wins.
+        if($sUri == 'home')
+            $a['texts'] = [
+                'title' => _t('_sys_txt_splash_title'),
+                'text' => _t('_sys_txt_splash_slogan'),
+            ];
+        else if($sUri == 'create-account')
+            $a['texts'] = [
+                'title' => _t('_sys_txt_join_title'),
+                'text' => _t('_sys_txt_join_text'),
+                'title_invite' => _t('_sys_txt_join_title_invite'),
+                'text_invite' => _t('_sys_txt_join_text_invite'),
+            ];
+
+        // The title UNA's cover shows (the selected site menu item for a section, else the page's), for the apps' header.
+        // HTML-escaped like `title`.
+        if($bIsAllowed) {
+            $aCoverParams = $this->getPageCoverParams();
+            $a['cover_title'] = isset($aCoverParams['title']) ? (string)$aCoverParams['title'] : '';
         }
     
         /**

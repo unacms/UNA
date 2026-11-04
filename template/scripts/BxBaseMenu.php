@@ -587,6 +587,8 @@ class BxBaseMenu extends BxDolMenu
             'config' => isset($a['config_api']) ? $a['config_api'] : '',
             'primary' => isset($a['primary']) ? $a['primary'] : 0,
             'persistent' => isset($a['persistent']) ? $a['persistent'] : 0,
+            // Studio's "Icon only": the apps show the item's title next to its icon unless it is on, as the site does.
+            'icon_only' => isset($a['icon_only']) ? (int)$a['icon_only'] : 0,
         ];
 
         if(!empty($a['onclick']))

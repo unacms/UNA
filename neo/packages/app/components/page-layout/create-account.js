@@ -5,10 +5,11 @@ import Link from 'app/ui/atoms/link'
 import { appStatic } from 'app/lib/app-static'
 import { useTranslation } from 'react-i18next'
 import AuthPanel from 'app/ui/molecules/auth/auth'
-import MenuFooter from 'app/components/nav/menu-footer'
+import { PageFooter } from 'app/components/nav/menu-footer'
 import Page from 'app/ui/molecules/page/page'
 import Html from 'app/ui/atoms/html'
 import { appSetting, getPageForms } from 'app/lib/util'
+import { landingText } from 'app/lib/landing-text'
 import { PageHeaderOptions } from 'app/ui/molecules/header/options'
 import { PageChromeProvider } from 'app/ui/molecules/page/page-chrome'
 
@@ -59,7 +60,8 @@ function pageAllowsJoin(data) {
 }
 
 export default function PageLayout({ data, blocks, children }) {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
+    const texts = data?.texts
     const joinData = DataByName(data, blocks?.form_join)
     const inviteData = DataByName(data, blocks?.form_invitation)
 
@@ -99,8 +101,8 @@ export default function PageLayout({ data, blocks, children }) {
                     {appStatic('join_text')}
                     <H1 isfirst islast className="text-center lg:text-start text-balance">
                         {isAllowJoin
-                            ? t('create_account_page_title')
-                            : t('create_account_page_title_request_invite')}
+                            ? landingText(t, i18n, 'create_account_page_title', texts?.title, 'Time to join!')
+                            : landingText(t, i18n, 'create_account_page_title_request_invite', texts?.title_invite, 'Request an invitation')}
                     </H1>
                     <Text
                         accessible={true}
@@ -108,8 +110,8 @@ export default function PageLayout({ data, blocks, children }) {
                         className="max-w-3xl text-secondary-foreground text-center lg:text-start text-base sm:text-lg text-pretty"
                     >
                         {isAllowJoin
-                            ? t('create_account_page_text')
-                            : t('create_account_page_text_request_invite')}
+                            ? landingText(t, i18n, 'create_account_page_text', texts?.text, 'Joining is quick and easy. Create your own community account to get started.')
+                            : landingText(t, i18n, 'create_account_page_text_request_invite', texts?.text_invite, 'Registration is by invitation only. Use your invitation code to join.')}
                     </Text>
                 </View>
                 {/* The frame's padding keeps the form off the screen edge at every size. */}
@@ -117,7 +119,7 @@ export default function PageLayout({ data, blocks, children }) {
                     <PageContent>{formContent}</PageContent>
                 </PageChromeProvider>
             </View>
-            <MenuFooter />
+            <PageFooter />
         </Page>
     )
 }

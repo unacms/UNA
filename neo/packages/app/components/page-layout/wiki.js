@@ -2,7 +2,7 @@ import { View } from 'app/design/view'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { appSetting, LAYOUT_BREAKPOINTS, stripTags } from 'app/lib/util'
 import Page from 'app/ui/molecules/page/page'
-import MenuFooter from 'app/components/nav/menu-footer'
+import { PageFooter } from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
 import {
   Panel,
@@ -481,7 +481,7 @@ export default function PageLayoutWiki({ data }) {
         <Page data={data} processKeyboard={false} scrollRef={scrollRef}>
             <PageContentWiki data={data} scrollRef={scrollRef} />
             <View className="flex-1" />
-            <MenuFooter />
+            <PageFooter />
         </Page>
     )
 }

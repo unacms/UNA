@@ -300,11 +300,10 @@ export function usePageHeaderBase(pageData) {
     // the list under the header.
 
     const pageTitle = useMemo(() => {
-        let nextTitle = pageData?.name;
-
-        if (menuSettings.name) {
-            nextTitle = menuSettings.name;
-        }
+        // A section's pages share its name (the menu's App config `name`, else UNA's section title: "People" on
+        // every People tab, as UNA's cover); other pages take the title UNA's cover shows (`cover_title`), else
+        // their name (older UNA).
+        let nextTitle = menuSettings.name || pageData?.cover_title || pageData?.name;
         // A section listed by its own page (Settings): below desktop that list replaces the tab row,
         // so each page is named by its item ("Email"); the list page (Overview) keeps the section name.
         if (menuSettings.hub && !isDesktop && pageData?.uri !== menuSettings.hub) {
@@ -315,7 +314,7 @@ export function usePageHeaderBase(pageData) {
         }
 
         return (nextTitle || '').replace('__notification__', '');
-    }, [header.title, isDesktop, menuSettings.hub, menuSettings.name, pageData?.menu, pageData?.name, pageData?.uri]);
+    }, [header.title, isDesktop, menuSettings.hub, menuSettings.name, pageData?.cover_title, pageData?.menu, pageData?.name, pageData?.uri]);
 
     const onHeaderLayout = useCallback((event) => {
         const { height } = event.nativeEvent.layout;

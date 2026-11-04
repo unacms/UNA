@@ -4546,6 +4546,10 @@
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Ваш код проверки {0}.]]></string>
     <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[Произошла ошибка, пожалуйста, уведомите о ней администратора сайта.]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Войти]]></string>
+    <string name="_sys_txt_join_text"><![CDATA[Регистрация быстрая и простая. Создайте аккаунт, чтобы начать.]]></string>
+    <string name="_sys_txt_join_text_invite"><![CDATA[Регистрация только по приглашению. Используйте код приглашения.]]></string>
+    <string name="_sys_txt_join_title"><![CDATA[Пора присоединиться!]]></string>
+    <string name="_sys_txt_join_title_invite"><![CDATA[Запросить приглашение]]></string>
     <string name="_sys_txt_login_description_action"><![CDATA[Создать аккаунт]]></string>
     <string name="_sys_txt_login_error"><![CDATA[Введённый email или пароль неправильны. Пожалуйста, попытайтесь снова.]]></string>
     <string name="_sys_txt_login_locked"><![CDATA[Ваш аккаунт заблокирован, для разблокировки, пожалуйста, используйте  <a href="{0}">страницу сброса пароля</a>.]]></string>
@@ -4580,7 +4584,7 @@
 	<string name="_sys_txt_splash_slide03_txt"><![CDATA["Лучший способ завести друзей - быть кому-то другом."]]></string>
         <string name="_sys_txt_splash_slide04_txt"><![CDATA[Уже один из нас?]]></string>
 	<string name="_sys_txt_splash_title"><![CDATA[Присоединяйся. Делись. Создавай.]]></string>
-	<string name="_sys_txt_splash_slogan"><![CDATA[Вступай в наше сообщество сейчас, чтобы найти единомышленников, дулиться захватывающими новостями и создавать вдохновляющий контент.]]></string>
+	<string name="_sys_txt_splash_slogan"><![CDATA[Вступай в наше сообщество сейчас, чтобы найти единомышленников, делиться захватывающими новостями и создавать вдохновляющий контент.]]></string>
         <string name="_sys_txt_splash_login"><![CDATA[Войти]]></string>
         <string name="_sys_txt_splash_join"><![CDATA[Зарегистрироваться]]></string>
 	<string name="_sys_txt_splash_connect"><![CDATA[Присоединяйся]]></string>

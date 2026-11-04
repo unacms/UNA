@@ -24,6 +24,7 @@ export const settingsHeaderToolbar = {
                 { component: 'account', className: 'hidden lg:block' },
             ],
             loggedOut: [
+                { component: 'search', className: '' },
                 { component: 'link', className: 'items-center sm:hidden', href: "/login", title: 'Log In', props: { neoButton: true, borderShape: "circle", image: "UserRound", accessibilityLabel: "Log In" } },
                 { component: 'link', className: 'items-center hidden sm:block', href: "/login", title: 'Log In', props: { neoButton: true, borderShape: "capsule", title: 'Log In' } },
                 { component: 'link', className: 'items-center hidden sm:block', href: "/create-account", title: 'Sign Up', props: { neoButton: true, primary: true, borderShape: "capsule", title: 'Sign Up' } },
