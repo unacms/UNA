@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { Dimensions } from 'react-native';
-import { appSetting, getBreakpoint, LAYOUT_BREAKPOINTS } from 'app/lib/util';
+import { appSetting, getBreakpoint, LAYOUT_BREAKPOINTS, screenTierOf } from 'app/lib/util';
 import { useState, useEffect, useSyncExternalStore } from 'react';
 import { Platform } from 'react-native'
 const DESKTOP_KEY = appSetting('layout', 'tablet_mode_from') || 'lg';
@@ -99,6 +99,8 @@ export const useBreakpoint = () => {
     return useHydrated() ? currentBreakpoint : SSR_LAYOUT_BREAKPOINT;
 };
 export const useBreakpointName = () => getBreakpoint(useBreakpoint());
+/** UNA's screen tier (`phone`, `tablet`, `desktop`); desktop until hydration. */
+export const useScreenTier = () => screenTierOf(useBreakpoint());
 export const useIsDesktop = () => {
     const isDesktop = useMeasureStore((s) => s.isDesktop);
     const hydrated = useHydrated();

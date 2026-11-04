@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import { View } from 'app/design/view';
 import { androidTabBarHeight, appSetting, isNativeTabsEnabled, isTabBarLabelsEnabled } from 'app/lib/util';
 import { getWindowSafeAreaInsets } from 'app/lib/hooks/router';
+import { getTabListForUser } from 'app/lib/navigation/tab-bar-menu';
 
 /** Shared by JS RouterTabs and NativeTabs. */
 
@@ -11,10 +12,9 @@ export const TAB_BAR_VISIBLE_LIMIT = 5;
 
 export const MORE_TAB_ICON = 'ChevronsUpDown';
 
+/** Tab bar items for this viewer: the settings' list, else UNA's tab bar menu (lib/navigation/tab-bar-menu). */
 export function getTabList(currentUser) {
-    return currentUser?.id
-        ? appSetting('menu_items', 'menu_tabbar_logged')
-        : appSetting('menu_items', 'menu_tabbar_non_logged');
+    return getTabListForUser(currentUser);
 }
 
 /**
@@ -143,6 +143,21 @@ export function isProfileTab(tab) {
 export function isDashboardTab(tab, currentUser) {
     const tabUrl = resolveTabUrl(tab, currentUser);
     return tabUrl === appSetting('dashboard', 'url') || tab.icon === 'dashboard';
+}
+
+/** Whether the own-profile tab carries the viewer's avatar (`native.tab_avatar`), also as the More tab. */
+export function isAvatarOnProfile() {
+    return appSetting('native', 'tab_avatar') !== 'dashboard';
+}
+
+/**
+ * Which tab of `tabList` is drawn as the viewer's avatar (`native.tab_avatar`): the own-profile
+ * tab by default, or the dashboard with 'dashboard' or when the menu has no profile tab. A profile
+ * tab first in More makes the More tab the avatar (see `isAvatarOnProfile`), so no visible tab is.
+ */
+export function avatarTabPredicate(tabList, currentUser) {
+    const onProfile = isAvatarOnProfile() && (tabList || []).some(isProfileTab);
+    return (tab) => (onProfile ? isProfileTab(tab) : isDashboardTab(tab, currentUser));
 }
 
 export function isExternalTabUrl(tabUrl) {

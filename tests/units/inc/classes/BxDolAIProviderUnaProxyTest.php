@@ -33,8 +33,6 @@ class BxDolAIProviderUnaProxyTest extends \PHPUnit\Framework\TestCase
         $oHttp = $this->createMock(NeuronAI\HttpClient\HttpClientInterface::class);
         $oHttp->expects($this->never())->method('request');
         $oHttp->expects($this->never())->method('stream');
-        $oHttp->expects($this->never())->method('withBaseUri');
-        $oHttp->expects($this->never())->method('withHeaders');
 
         $this->expectException(Exception::class);
         new BxDolAIProviderUnaProxy('', 'secret', 'una-proxy', $oHttp);
@@ -167,16 +165,16 @@ class BxDolAIProviderUnaProxyTest extends \PHPUnit\Framework\TestCase
             new BxDolAIProxyTestHttpClient(new BxDolAIProxyTestStream($aLines))
         );
         $oProvider->setTools([
-            NeuronAI\Tools\Tool::make('content_search', 'Search content'),
+            new NeuronAI\Tools\FrontendTool('content_search', 'Search content'),
         ]);
 
         $oGen = $oProvider->stream(new NeuronAI\Chat\Messages\UserMessage('find cats'));
         foreach ($oGen as $oChunk) {
         }
-        $oMessage = $oGen->getReturn();
+        $oMessage = $oGen->getReturn()->message();
 
         $this->assertInstanceOf(NeuronAI\Chat\Messages\ToolCallMessage::class, $oMessage);
-        $aTools = $oMessage->getTools();
+        $aTools = $oMessage->getToolCalls();
         $this->assertCount(1, $aTools);
         $this->assertSame('content_search', $aTools[0]->getName());
         $this->assertSame(['keyword' => 'cats'], $aTools[0]->getInputs());

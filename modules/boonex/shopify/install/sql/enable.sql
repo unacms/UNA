@@ -163,17 +163,17 @@ INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system`, `t
 -- MENU: add to site menu
 SET @iSiteMenuOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_site' AND `active` = 1 AND `order` < 9999 ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_site', 'bx_shopify', 'shopify-home', '_bx_shopify_menu_item_title_system_entries_home', '_bx_shopify_menu_item_title_entries_home', 'page.php?i=shopify-home', '', '', 'shopping-cart', 'bx_shopify_submenu', 2147483647, 1, 1, IFNULL(@iSiteMenuOrder, 0) + 1);
+('sys_site', 'bx_shopify', 'shopify-home', '_bx_shopify_menu_item_title_system_entries_home', '_bx_shopify_menu_item_title_entries_home', 'page.php?i=shopify-home', '', '', 'shopping-bag', 'bx_shopify_submenu', 2147483647, 1, 1, IFNULL(@iSiteMenuOrder, 0) + 1);
 
 -- MENU: add to homepage menu
 SET @iHomepageMenuOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_homepage' AND `active` = 1 ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_homepage', 'bx_shopify', 'shopify-home', '_bx_shopify_menu_item_title_system_entries_home', '_bx_shopify_menu_item_title_entries_home', 'page.php?i=shopify-home', '', '', 'shopping-cart', 'bx_shopify_submenu', 2147483647, 1, 1, IFNULL(@iHomepageMenuOrder, 0) + 1);
+('sys_homepage', 'bx_shopify', 'shopify-home', '_bx_shopify_menu_item_title_system_entries_home', '_bx_shopify_menu_item_title_entries_home', 'page.php?i=shopify-home', '', '', 'shopping-bag', 'bx_shopify_submenu', 2147483647, 1, 1, IFNULL(@iHomepageMenuOrder, 0) + 1);
 
 -- MENU: add to "add content" menu
 SET @iAddMenuOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_add_content_links' AND `active` = 1 ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_add_content_links', 'bx_shopify', 'create-shopify-entry', '_bx_shopify_menu_item_title_system_create_entry', '_bx_shopify_menu_item_title_create_entry', 'page.php?i=create-shopify-entry', '', '', 'shopping-cart', '', 2147483647, 1, 1, IFNULL(@iAddMenuOrder, 0) + 1);
+('sys_add_content_links', 'bx_shopify', 'create-shopify-entry', '_bx_shopify_menu_item_title_system_create_entry', '_bx_shopify_menu_item_title_create_entry', 'page.php?i=create-shopify-entry', '', '', 'shopping-bag', '', 2147483647, 1, 1, IFNULL(@iAddMenuOrder, 0) + 1);
 
 -- MENU: actions menu for view entry 
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
@@ -267,7 +267,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 -- MENU: profile stats
 SET @iNotifMenuOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name` = 'sys_profile_stats' AND `active` = 1 LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
-('sys_profile_stats', 'bx_shopify', 'profile-stats-my-shopify', '_bx_shopify_menu_item_title_system_manage_my_entries', '_bx_shopify_menu_item_title_manage_my_entries', 'page.php?i=shopify-author&profile_id={member_id}', '', '_self', 'shopping-cart', 'a:2:{s:6:"module";s:10:"bx_shopify";s:6:"method";s:41:"get_menu_addon_manage_tools_profile_stats";}', '', 2147483646, 1, 0, @iNotifMenuOrder + 1);
+('sys_profile_stats', 'bx_shopify', 'profile-stats-my-shopify', '_bx_shopify_menu_item_title_system_manage_my_entries', '_bx_shopify_menu_item_title_manage_my_entries', 'page.php?i=shopify-author&profile_id={member_id}', '', '_self', 'shopping-bag', 'a:2:{s:6:"module";s:10:"bx_shopify";s:6:"method";s:41:"get_menu_addon_manage_tools_profile_stats";}', '', 2147483646, 1, 0, @iNotifMenuOrder + 1);
 
 -- MENU: manage tools submenu
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
@@ -282,12 +282,12 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 -- MENU: dashboard manage tools
 SET @iManageMenuOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name`='sys_account_dashboard_manage_tools' LIMIT 1);
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_account_dashboard_manage_tools', 'bx_shopify', 'shopify-administration', '_bx_shopify_menu_item_title_system_admt_entries', '_bx_shopify_menu_item_title_admt_entries', 'page.php?i=shopify-administration', '', '_self', 'shopping-cart', 'a:2:{s:6:"module";s:10:"bx_shopify";s:6:"method";s:27:"get_menu_addon_manage_tools";}', '', 192, 1, 0, @iManageMenuOrder + 1);
+('sys_account_dashboard_manage_tools', 'bx_shopify', 'shopify-administration', '_bx_shopify_menu_item_title_system_admt_entries', '_bx_shopify_menu_item_title_admt_entries', 'page.php?i=shopify-administration', '', '_self', 'shopping-bag', 'a:2:{s:6:"module";s:10:"bx_shopify";s:6:"method";s:27:"get_menu_addon_manage_tools";}', '', 192, 1, 0, @iManageMenuOrder + 1);
 
 -- MENU: add menu item to profiles modules (trigger* menu sets are processed separately upon modules enable/disable)
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('trigger_profile_view_submenu', 'bx_shopify', 'shopify-author', '_bx_shopify_menu_item_title_system_view_entries_author', '_bx_shopify_menu_item_title_view_entries_author', 'page.php?i=shopify-author&profile_id={profile_id}', '', '', 'shopping-cart', '', 2147483647, 1, 0, 0),
-('trigger_group_view_submenu', 'bx_shopify', 'shopify-context', '_bx_shopify_menu_item_title_system_view_entries_in_context', '_bx_shopify_menu_item_title_view_entries_in_context', 'page.php?i=shopify-context&profile_id={profile_id}', '', '', 'shopping-cart', '', 2147483647, 1, 0, 0);
+('trigger_profile_view_submenu', 'bx_shopify', 'shopify-author', '_bx_shopify_menu_item_title_system_view_entries_author', '_bx_shopify_menu_item_title_view_entries_author', 'page.php?i=shopify-author&profile_id={profile_id}', '', '', 'shopping-bag', '', 2147483647, 1, 0, 0),
+('trigger_group_view_submenu', 'bx_shopify', 'shopify-context', '_bx_shopify_menu_item_title_system_view_entries_in_context', '_bx_shopify_menu_item_title_view_entries_in_context', 'page.php?i=shopify-context&profile_id={profile_id}', '', '', 'shopping-bag', '', 2147483647, 1, 0, 0);
  
 -- PRIVACY 
 INSERT INTO `sys_objects_privacy` (`object`, `module`, `action`, `title`, `default_group`, `table`, `table_field_id`, `table_field_author`, `override_class_name`, `override_class_file`) VALUES
@@ -386,7 +386,7 @@ INSERT INTO `sys_objects_category` (`object`, `module`, `search_object`, `form_o
 -- STATS
 SET @iMaxOrderStats = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_statistics`);
 INSERT INTO `sys_statistics` (`module`, `name`, `title`, `link`, `icon`, `query`, `order`) VALUES 
-('bx_shopify', 'bx_shopify', '_bx_shopify', 'page.php?i=shopify-home', 'shopping-cart', 'SELECT COUNT(*) FROM `bx_shopify_entries` WHERE 1 AND `status` = ''active'' AND `status_admin` = ''active''', @iMaxOrderStats + 1);
+('bx_shopify', 'bx_shopify', '_bx_shopify', 'page.php?i=shopify-home', 'shopping-bag', 'SELECT COUNT(*) FROM `bx_shopify_entries` WHERE 1 AND `status` = ''active'' AND `status_admin` = ''active''', @iMaxOrderStats + 1);
 
 
 -- CHARTS

@@ -2,6 +2,7 @@ import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher'
 import { updateRouteDataForConnection, appSetting } from 'app/lib/util'
 import { normalizeTiers, responsiveClasses } from 'app/lib/responsive-classes'
+import { withoutHiddenOn } from 'app/lib/hidden-on'
 import { FLUSH_LIST_MODULES } from 'app/components/units/flush-list'
 import { components } from 'app/components/registry';
 import { settingsLayout } from 'app/settings/layout'
@@ -67,20 +68,22 @@ export function layoutForList(endpoint, unitMode = '') {
  * Card chrome for a browse list, from its block's App config in UNA, e.g.
  * {"designbox": {"bg": ["tablet", "desktop"]}}: the theme's block background,
  * radius (`rounded` tiers) and space around the card, on the tiers listed.
+ * Studio's "Background hidden on" (`bgHiddenOn`) takes screen sizes off.
  * Web only: a native list scrolls under the overlaid page header and pads for
  * it inside, so a card on its content would reach up under the header.
  */
-function listCardClasses(designbox) {
+function listCardClasses(designbox, bgHiddenOn) {
     if (Platform.OS !== 'web') return '';
-    const bg = normalizeTiers(designbox?.bg);
+    const bg = withoutHiddenOn(normalizeTiers(designbox?.bg), bgHiddenOn, false);
     if (!bg) return '';
-    const rounded = responsiveClasses('rounded', designbox?.rounded);
+    // `false` is square everywhere; responsiveClasses would read it as unset.
+    const rounded = responsiveClasses('rounded', designbox?.rounded === false ? [] : designbox?.rounded);
     if (bg === true) return [appSetting('theme', 'blocks', 'u-block-bg'), rounded, 'my-4'].join(' ');
     return [responsiveClasses('bg', bg), rounded, responsiveClasses('card-my', bg)].join(' ');
 }
 
 export function paddingForList(endpoint) {
-    const card = listCardClasses(endpoint?.designbox);
+    const card = listCardClasses(endpoint?.designbox, endpoint?.bg_hidden_on);
 
     // Timeline uses no padding (full width items)
     if (!endpoint || endpoint?.request_url?.includes('bx_timeline') || endpoint?.params?.request_url?.includes('bx_timeline'))

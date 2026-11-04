@@ -8,6 +8,7 @@ import CheckBox from 'app/ui/atoms/checkbox';
 import { Icon } from 'app/ui/atoms/icon';
 import { stripTags } from 'app/lib/util';
 import RowGridButton from './row-grid-button';
+import { useTranslation } from 'react-i18next';
 import { dedupeGridRowActions } from './actions';
 import { useGrid } from './context';
 
@@ -39,7 +40,8 @@ function TimeCell({ ts, format }) {
 }
 
 /** Interactive cells subscribe to the store themselves — plain cells stay pure. */
-function SwitcherCell({ id, data }) {
+function SwitcherCell({ id, data, label }) {
+    const { t } = useTranslation();
     const toggleSwitch = useGrid((state) => state.toggleSwitch);
 
     return (
@@ -48,6 +50,8 @@ function SwitcherCell({ id, data }) {
                 size="small"
                 onValueChange={() => toggleSwitch(id)}
                 value={isSwitcherOn(data)}
+                // Some grids leave the switcher column untitled (bx_albums_common); the switch still needs a name.
+                label={label || t('Enabled')}
             />
         </View>
     );
@@ -75,7 +79,7 @@ function SelectCell({ rowId }) {
  * Render one UNA grid cell by `cell.type` (text, date, switcher, actions, …).
  * Unknown types fall back to JSON so new backend types are visible in UI.
  */
-export default function Cell({ cell, id }) {
+export default function Cell({ cell, id, label }) {
     switch (cell?.type) {
         case 'time':
         case 'datetime':
@@ -93,7 +97,7 @@ export default function Cell({ cell, id }) {
                 </View>
             )
         case 'switcher':
-            return <SwitcherCell id={id} data={cell.data} />
+            return <SwitcherCell id={id} data={cell.data} label={label} />
         case 'checkbox':
             return <SelectCell rowId={cell.data} />
         case 'profile':

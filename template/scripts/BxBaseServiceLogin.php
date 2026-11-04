@@ -463,8 +463,41 @@ class BxBaseServiceLogin extends BxDol
         else {
             header("Location: " . BX_DOL_URL_ROOT);
         }
-        
+
         return true;
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_system_general System Services
+     * @subsection bx_system_general-login Login
+     * @subsubsection bx_system_general-touch_session touch_session
+     *
+     * @code bx_srv('system', 'touch_session', [], 'TemplServiceLogin'); @endcode
+     *
+     * Sends a remembered session's cookie with its current end (the session start moves it
+     * when due). NEO's proxy calls it every few hours: the end often moves on NEO's
+     * server-side page fetch, whose Set-Cookie never reaches the browser.
+     *
+     * @return array with 'logged' key: 1 for a member, 0 for a guest
+     *
+     * @see BxBaseServiceLogin::serviceTouchSession
+     */
+    /**
+     * @ref bx_system_general-touch_session "touch_session"
+     * @api @ref bx_system_general-touch_session "touch_session"
+     */
+    public function serviceTouchSession ()
+    {
+        $bLogged = isLogged();
+
+        $oSession = BxDolSession::getInstance();
+        $iTTL = $bLogged ? $oSession->getTTL() : 0;
+        if ($iTTL) {
+            $oSession->setTTL($iTTL);
+        }
+
+        return ['logged' => $bLogged ? 1 : 0];
     }
 }
 

@@ -72,6 +72,29 @@ export function conductorHref(link) {
     return normalized ? `/${normalized}` : undefined
 }
 
+/**
+ * Tabs as shown at UNA's screen tier (`phone`, `tablet`, `desktop`): an item hidden on it (Studio's
+ * "Hidden on") gets no tab or menu link, and is marked `hiddenOnTier` so its page can open the first
+ * tab shown. Worked out per render, so a window that crosses a breakpoint follows; the routes'
+ * loaded content is shared, not copied.
+ */
+export function hideRoutesOnTier(routes, tier) {
+    if (!tier) return routes
+    let changed = false
+    const next = (routes || []).map((route) => {
+        const hidden = Array.isArray(route?.item?.hidden_on) && route.item.hidden_on.includes(tier)
+        if (!hidden) return route
+        changed = true
+        return { ...route, hideInTop: true, hiddenOnTier: true }
+    })
+    return changed ? next : routes
+}
+
+/** The first tab the menu shows (not hidden here, with a page of its own), or `undefined`. */
+export function firstShownConductorRoute(routes) {
+    return (routes || []).find((route) => route.depth === 0 && route.canNavigate && !route.hideInTop)
+}
+
 /** Match URL to a tab index; supports nested paths. Returns -1 if none. */
 export function findConductorRouteIndex(tabRoutes, url, useSectionAsMenu) {
     if (!tabRoutes?.length || url == null || url === '') return -1
@@ -283,10 +306,9 @@ function createConductorRoute(item, index, depth, parentIndex, link, canNavigate
         ident: item.ident || (depth > 0 ? 1 : 0),
         addon,
         image: item.image || '',
-        icon: item.icon || 'Circle',
-        menu_settings: appSetting('layout', 'user_remote_config') && item.config
-            ? strToObj(item.config)
-            : item.settings,
+        icon: item.icon || '',
+        // The item's `config` from UNA, else its own `settings`.
+        menu_settings: (item.config && strToObj(item.config)) || item.settings,
         storageKeyValue: routeLink,
         sidebar: {},
         leftbar: {},
@@ -307,8 +329,9 @@ function applyCurrentPageToRoute(route, data, blocks) {
     route.config = data?.config
     route.blocks = blocks
     route.pageData = data
-    if (appSetting('layout', 'user_remote_config') && route.item?.config) {
-        route.menu_settings = (strToObj(route.item.config)).settings
+    const itemConfig = route.item?.config ? strToObj(route.item.config) : null
+    if (itemConfig) {
+        route.menu_settings = itemConfig.settings
     }
 }
 
@@ -432,9 +455,15 @@ export function fillTabs(
 
     visit(menuItems, 0, null)
 
-    const currentIndex = routes.findIndex((route) =>
+    let currentIndex = routes.findIndex((route) =>
         isCurrentMenuItem(route.item, data, useSectionAsMenu, route.link)
     )
+    // A query the menu link does not have (`?q=` for the AI search, `?filters=`) is still that tab:
+    // UNA returns the page url with it, so match the path when no link matches the whole url.
+    if (currentIndex === -1 && !useSectionAsMenu) {
+        const pagePath = normalizeConductorLink(data.url).split('?')[0]
+        currentIndex = routes.findIndex((route) => !!route.link && !route.link.includes('?') && route.link === pagePath)
+    }
     if (currentIndex !== -1) {
         applyCurrentPageToRoute(routes[currentIndex], data, blocks)
     }
@@ -659,7 +688,7 @@ export function getContent(data, block) {
     const b = findElementBySource(data, blockName, (element) => !!element.content)
 
     return b?.content[0]?.type === 'browse' && !block.sidebar && !block.leftbar
-        ? { data: b.content[0].data, type: 'browse', designbox: b.config_api?.designbox }
+        ? { data: b.content[0].data, type: 'browse', designbox: b.config_api?.designbox, bg_hidden_on: b.bg_hidden_on }
         : { data: b, type: 'block', block: block }
 }
 
@@ -674,6 +703,7 @@ function processEndpoint(acc, b) {
         unit: b.data.unit,
         module: b.data.module,
         ...(b.designbox ? { designbox: b.designbox } : null),
+        ...(b.bg_hidden_on ? { bg_hidden_on: b.bg_hidden_on } : null),
     }
 }
 
@@ -688,6 +718,7 @@ function endpointFromBrowsePayload(payload) {
         unit: payload.unit,
         module: payload.module,
         ...(payload.designbox ? { designbox: payload.designbox } : null),
+        ...(payload.bg_hidden_on ? { bg_hidden_on: payload.bg_hidden_on } : null),
     }
 }
 
@@ -734,9 +765,15 @@ function mapLayoutBlocks(items = [], { browseAsBlocks = false } = {}) {
         return type === 'browse' || type === 'browse_list'
     })
     const payload = browseBlock?.content?.[0]?.data
-    // The browse block's App config styles the list: its card per breakpoint (`paddingForList`).
+    // The browse block's App config styles the list: its card per breakpoint (`paddingForList`),
+    // without the screen sizes Studio's "Background hidden on" lists.
     const designbox = browseBlock?.config_api?.designbox
-    return { content, endpoint: payload && designbox ? { ...payload, designbox } : payload }
+    const bgHiddenOn = browseBlock?.bg_hidden_on
+    if (!payload || (!designbox && !bgHiddenOn)) return { content, endpoint: payload }
+    return {
+        content,
+        endpoint: { ...payload, ...(designbox ? { designbox } : null), ...(bgHiddenOn ? { bg_hidden_on: bgHiddenOn } : null) },
+    }
 }
 
 /**

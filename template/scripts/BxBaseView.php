@@ -127,6 +127,7 @@ class BxBaseView extends BxDolView
                     'bx_repeat:attrs' => array(
                         array('key' => 'id', 'value' => $this->_aHtmlIds['counter']),
                         array('key' => 'href', 'value' => 'javascript:void(0)'),
+                        array('key' => 'role', 'value' => 'button'),
                         array('key' => 'onclick', 'value' => 'javascript:' . $this->getJsObjectName() . '.toggleByPopup(this)'),
                         array('key' => 'title', 'value' => _t('_view_do_view_by'))
                     ),

@@ -107,6 +107,7 @@ class BxBaseVote extends BxDolVote
         if($bShowActive)
             $aTmplVarsAttrs = array_merge($aTmplVarsAttrs, array(
                 array('key' => 'href', 'value' => 'javascript:void(0)'),
+                array('key' => 'role', 'value' => 'button'),
                 array('key' => 'title', 'value' => bx_html_attribute($this->_getTitleDoBy($aParams))),
                 array('key' => 'onclick', 'value' => 'javascript:' . $this->getJsClickCounter($aParams))
             ));

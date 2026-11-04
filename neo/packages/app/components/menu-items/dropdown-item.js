@@ -106,7 +106,9 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     const description = resolveMenuItemDescription(item);
     const descriptionText = description ? t(description) : '';
 
-    const Wrapper = handleSelect ? Pressable : View;
+    // A link row is the child of `<Link asChild>` (below). Web wraps it in an anchor; on
+    // native the Link hands its onPress to the child, so the row has to be pressable.
+    const Wrapper = handleSelect || (link && Platform.OS !== 'web') ? Pressable : View;
     const isSelectableAction =
         typeof handleSelect === 'function' &&
         (item.selected === true || item.selected === false);

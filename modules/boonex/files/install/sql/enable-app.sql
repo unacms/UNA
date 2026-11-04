@@ -24,7 +24,6 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_files_favorites'
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_files_favorites' AND `module`='bx_files' AND `title_system`='' AND `title`='_bx_files_page_block_title_favorites_entries_info';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_files_favorites' AND `module`='bx_files' AND `title_system`='' AND `title`='_bx_files_page_block_title_favorites_entries_actions';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_files_context' AND `module`='bx_files' AND `title_system`='_bx_files_page_block_title_sys_entries_in_context' AND `title`='_bx_files_page_block_title_entries_in_context';
-UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_files_home' AND `module`='bx_files' AND `title_system`='' AND `title`='_bx_files_page_block_title_featured_entries_view_extended';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_files_home' AND `module`='bx_files' AND `title_system`='' AND `title`='_bx_files_page_block_title_recent_entries_view_extended';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_files_home' AND `module`='bx_files' AND `title_system`='' AND `title`='_bx_files_page_block_title_popular_keywords';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_files_home' AND `module`='bx_files' AND `title_system`='' AND `title`='_bx_files_page_block_title_cats';
@@ -39,6 +38,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_files_administra
 -- MENUS: config_api
 
 -- MENUS: active_api
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='bx_files' AND `name`='files-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='bx_files' AND `name`='profile-stats-my-files';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_files_view' AND `module`='bx_files' AND `name`='download-file';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_files_view' AND `module`='bx_files' AND `name`='edit-file';

@@ -2,6 +2,7 @@ import { View } from 'app/design/view'
 import Html from 'app/ui/atoms/html'
 import { stripTags, appSetting, isUrl } from 'app/lib/util';
 import { useState } from 'react';
+import { Platform } from 'react-native';
 import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader, BlockTitle, BlockDescription, BlockIcon } from 'app/ui/molecules/page/page-block'
 import { useTranslation } from 'react-i18next'
 import { Modal, NeoButton, NeoButtonLink } from 'app/design/controls'
@@ -9,9 +10,21 @@ import { Icon } from 'app/ui/atoms/icon'
 import { components } from 'app/components/registry'
 import { usePathname } from 'app/lib/hooks/router'
 import { normalizeTiers, responsiveClasses } from 'app/lib/responsive-classes'
+import { withoutHiddenOn } from 'app/lib/hidden-on'
+import { usePageChrome } from 'app/ui/molecules/page/page-chrome'
 
 function pathComparable(path) {
     return String(path || '').replace(/^\/+/, '').split(/[?#]/)[0]
+}
+
+/**
+ * Default corners from the page's `inset` (PageChromeProvider): rounded where its padding keeps
+ * the block off the screen edge, square where the block meets it. Unknown (`null`) leaves the
+ * theme's `u-block-rounded-default`.
+ */
+function roundedFromInset(inset) {
+    if (inset == null) return undefined
+    return inset === false ? [] : inset
 }
 
 function BlockHeaderMenu({ menu, pathname }) {
@@ -57,10 +70,26 @@ function BlockHeaderMenu({ menu, pathname }) {
 // itself, and the colour it sits on — 'card' where the block has its background,
 // 'background' (the page) where it has none — for fades over the content to start
 // from. Its gutters are then the content's to keep, inside the scroller.
-export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, fill, clip = false, overlayHeader = false, children }) {
+/**
+ * A page block, on the screen sizes Studio shows it on: its "Hidden on" (`hidden_on`: phone, tablet,
+ * desktop, mobile-app) hides it with classes on the web and drops it in the apps on mobile-app.
+ */
+export function BlockWrapper(props) {
+    const visible = withoutHiddenOn(true, props.block?.hidden_on, Platform.OS !== 'web')
+    if (visible === false) return null
+    if (visible === true) return <BlockWrapperContent {...props} />
+    return (
+        <View className={`w-full ${responsiveClasses('title', visible)}`}>
+            <BlockWrapperContent {...props} />
+        </View>
+    )
+}
+
+function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, fill, clip = false, overlayHeader = false, children }) {
     const { t } = useTranslation()
     const [showHelp, setShowHelp] = useState(false)
     const pathname = usePathname()
+    const { inset, designbox: pageDesignbox } = usePageChrome()
 
     const blockMenu = block?.menu?.items?.length ? block.menu : null
 
@@ -91,12 +120,22 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
     // The block's App config (Studio: "Config (for App in JSON format)") can set
     // the design box per breakpoint, e.g. {"designbox": {"bg": ["tablet", "desktop"]}}.
     // Each key (bg, padding, title, rounded) lists the tiers where that part shows;
-    // a missing key keeps designbox_id. Props from code still win below.
-    const designbox = config?.designbox || {};
+    // a missing key takes the page config's `designbox`, then designbox_id. Props from
+    // code still win below.
+    const blockDesignbox = config?.designbox || {};
+    const designbox = { ...pageDesignbox, ...blockDesignbox };
     if (designbox.bg != null) bIsShowBg = normalizeTiers(designbox.bg);
     if (designbox.padding != null) bIsShowPadding = normalizeTiers(designbox.padding);
     if (designbox.title != null) bIsShowTitle = normalizeTiers(designbox.title);
-    const rounded = designbox.rounded ?? config?.rounded;
+    const roundedSetting = blockDesignbox.rounded ?? config?.rounded ?? pageDesignbox?.rounded;
+    // `false` is square everywhere; responsiveClasses would read it as unset.
+    const rounded = roundedSetting === false ? [] : roundedSetting ?? roundedFromInset(inset);
+
+    // Studio's "Title / Background / Padding hidden on" (the block's `*_hidden_on`) take those screen sizes
+    // out, on the site and here.
+    const isApp = Platform.OS !== 'web';
+    bIsShowBg = withoutHiddenOn(bIsShowBg, block.bg_hidden_on, isApp);
+    bIsShowPadding = withoutHiddenOn(bIsShowPadding, block.padding_hidden_on, isApp);
 
     if (typeof showBg !== 'undefined') {
         bIsShowBg = showBg;
@@ -130,6 +169,8 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
     if (blockMenu) {
         bIsShowTitle = true;
     }
+    // Last: Studio's "Title hidden on" wins over the help and menu that bring the title back.
+    bIsShowTitle = withoutHiddenOn(bIsShowTitle, block.title_hidden_on, isApp);
 
     const isHelpLink = isUrl(pureHelp)
     const isHelp = !!block.help

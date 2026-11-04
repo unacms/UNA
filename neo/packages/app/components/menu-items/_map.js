@@ -1,14 +1,16 @@
 import { memo } from "react";
 import dynamic from 'next/dynamic';
 import { DynamicFallback } from 'app/lib/dynamic-fallback';
+// Every dropdown draws its rows with this. As a chunk it held each first open
+// behind DropdownPopup's loading row for most of a second.
+import DropdownItem from './dropdown-item';
 
-// Each menu item type is its own chunk (see lib/dynamic-fallback.js).
+// The other menu item types are each their own chunk (see lib/dynamic-fallback.js).
 const Link = dynamic(() => import('./link'), { loading: DynamicFallback });
 const Button = dynamic(() => import('./button'), { loading: DynamicFallback });
 const Element = dynamic(() => import('./element'), { loading: DynamicFallback });
 const Callback = dynamic(() => import('./callback'), { loading: DynamicFallback });
 const Modal = dynamic(() => import('./modal'), { loading: DynamicFallback });
-const DropdownItem = dynamic(() => import('./dropdown-item'), { loading: DynamicFallback });
 const Submenu = dynamic(() => import('./submenu'), { loading: DynamicFallback });
 const Blockmenu = dynamic(() => import('./blockmenu'), { loading: DynamicFallback });
 const TopMenu = dynamic(() => import('./topmenu'), { loading: DynamicFallback });

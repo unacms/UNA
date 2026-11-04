@@ -1,11 +1,32 @@
 import type { ReactNode } from 'react';
 import { create } from 'zustand';
 
+/** A menu row in a bottom sheet (a DropdownMenu item). */
+export type BottomSheetMenuItem = {
+    id?: string | number;
+    /** 'group_header' and 'separator' rows structure the menu. */
+    type?: string;
+    title?: unknown;
+    icon?: string;
+    selected?: boolean;
+    [key: string]: unknown;
+};
+
+/**
+ * A menu's rows as data, next to the `content` that renders them, so a native sheet can draw
+ * them itself (iOS). `onPress` closes the sheet and runs the row's action.
+ */
+export type BottomSheetMenu = {
+    items: BottomSheetMenuItem[];
+    onPress: (item: any, event?: unknown) => void;
+};
+
 /** Bottom sheet request: `false`/`null` closes; an object opens it (see MenuBottomSheet / layout). */
 export type BottomSheetData = {
     content?: ReactNode;
     snapPoints?: (string | number)[];
     showClose?: boolean;
+    menu?: BottomSheetMenu;
     [key: string]: unknown;
 } | false | null;
 

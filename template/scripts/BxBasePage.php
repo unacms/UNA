@@ -228,7 +228,7 @@ class BxBasePage extends BxDolPage
     {
         if (bx_get('dynamic') && ($iBlockId = (int)bx_get('pageBlock'))) {
 
-            if (self::isLockedFromUnauthenticated($this->_aObject['uri']) || !$this->_isVisiblePage($this->_aObject)) {
+            if (self::isLockedFromUnauthenticated($this->_aObject['uri']) || self::isLockedFromNoProfile($this->_aObject['uri']) || !$this->_isVisiblePage($this->_aObject)) {
                 header('HTTP/1.0 403 Forbidden');
                 exit;
             }
@@ -397,6 +397,31 @@ class BxBasePage extends BxDolPage
         }
 
     	return $bResult;
+    }
+
+    /**
+     * The screen sizes the page's cover is hidden on (Studio > Pages > Cover: "Cover hidden on"), a set of
+     * BX_DB_HIDDEN_* bits as a block's "Hidden on".
+     * @return int
+     */
+    public function getPageCoverHiddenOn()
+    {
+        return isset($this->_aObject['cover_hidden_on']) ? (int)$this->_aObject['cover_hidden_on'] : 0;
+    }
+
+    /**
+     * Names of the screen sizes a set of BX_DB_HIDDEN_* bits hides on, as the apps get them: phone, tablet, desktop,
+     * mobile-app.
+     * @return array
+     */
+    public static function getHiddenOnNamesAPI($iHiddenOn)
+    {
+        $aNames = [];
+        foreach([BX_DB_HIDDEN_PHONE => 'phone', BX_DB_HIDDEN_TABLET => 'tablet', BX_DB_HIDDEN_DESKTOP => 'desktop', BX_DB_HIDDEN_MOBILE => 'mobile-app'] as $iBit => $sName)
+            if((int)$iHiddenOn & pow(2, $iBit - 1))
+                $aNames[] = $sName;
+
+        return $aNames;
     }
 
     public function setSubPage($b = true)
@@ -598,6 +623,8 @@ class BxBasePage extends BxDolPage
             'layout_parsed' => !is_numeric(trim(current(array_keys($aElements)), 'cell_')),
             'cover_block' => '',
             'cover' => $this->_aObject['cover'],
+            // Where the cover (and so the page title) is hidden: phone, tablet, desktop, mobile-app.
+            'cover_hidden_on' => self::getHiddenOnNamesAPI($this->getPageCoverHiddenOn()),
             'menu_top' => '',
             'menu' => '',
             'menu_bottom' => '',
@@ -620,10 +647,12 @@ class BxBasePage extends BxDolPage
             if(($bModuleEntries || $bModuleProfiles) && ($oModule = BxDolModule::getInstance($sModule))) {
                 $CNF = &$oModule->_oConfig->CNF;
 
-                // Section name and icon for NEO's sidebar title; profile modules (Persons) get them too.
+                // Section name and icon for NEO's sidebar title; profile modules (Persons) get them too. The title is the
+                // section's own (the selected site menu item, "People", as UNA's cover shows it), else the module's.
+                $aSectionCover = $oMenuSubmenu->getPageCoverParams();
                 $aMenuAdd = [
                     'name' => $oModule->getName(),
-                    'title' => BxDolModule::getTitle($oModule->_oConfig->getUri()),
+                    'title' => !empty($aSectionCover['title']) ? $aSectionCover['title'] : BxDolModule::getTitle($oModule->_oConfig->getUri()),
                     'icon' => !empty($CNF['ICON']) ? $CNF['ICON'] : '',
                 ];
 
@@ -638,6 +667,23 @@ class BxBasePage extends BxDolPage
 
                 $a['menu'] = array_merge($a['menu'], $aMenuAdd);
             }
+        }
+
+        // The words of the apps' own landing pages (the home splash, Sign up), in the viewer's language, so Studio's
+        // language strings reach them; a project's own text in the app wins.
+        $aTexts = [];
+        if($sUri == 'home')
+            $aTexts = ['title' => '_sys_txt_splash_title', 'text' => '_sys_txt_splash_slogan'];
+        else if($sUri == 'create-account')
+            $aTexts = ['title' => '_sys_txt_join_title', 'text' => '_sys_txt_join_text', 'title_invite' => '_sys_txt_join_title_invite', 'text_invite' => '_sys_txt_join_text_invite'];
+        if($aTexts)
+            $a['texts'] = self::getTranslatedTextsAPI($aTexts);
+
+        // The title UNA's cover shows (the selected site menu item for a section, else the page's), for the apps' header.
+        // HTML-escaped like `title`.
+        if($bIsAllowed) {
+            $aCoverParams = $this->getPageCoverParams();
+            $a['cover_title'] = isset($aCoverParams['title']) ? (string)$aCoverParams['title'] : '';
         }
     
         /**
@@ -764,6 +810,20 @@ class BxBasePage extends BxDolPage
         ]);
     }
 
+    /**
+     * The strings of the language keys in $aKeys (field => key), in the viewer's language. A string the site's
+     * language doesn't have comes back from _t as its key: it is left out, so the app uses its own words.
+     */
+    public static function getTranslatedTextsAPI($aKeys)
+    {
+        $aTexts = [];
+        foreach($aKeys as $sField => $sKey)
+            if(($sText = _t($sKey)) !== $sKey)
+                $aTexts[$sField] = $sText;
+
+        return $aTexts;
+    }
+
     public function getPageContentAPI($aBlocks = [])
     {
         $sModule = $this->getModule();
@@ -866,7 +926,10 @@ class BxBasePage extends BxDolPage
                 }
                 else 
                     $aCells[$sKey][$i][$sK] = false;
-                    
+
+                // Where its title, background or padding is hidden (Studio), for the apps' design box per screen size.
+                foreach(BxDolPageDesignbox::PARTS as $sPart)
+                    $aCells[$sKey][$i][$sPart . '_hidden_on'] = !empty($aBlock[$sPart . '_hidden_on']) ? self::getHiddenOnNamesAPI($aBlock[$sPart . '_hidden_on']) : false;
 
                 $aCells[$sKey][$i] = array_diff_key($aCells[$sKey][$i], array_flip($aFieldsUnset));
             }
@@ -912,6 +975,10 @@ class BxBasePage extends BxDolPage
                         if((int)$aBlock['hidden_on'] & $iHiddenOn)
                             $sClassAdd .= ' ' . $sHiddenOnClass;
 
+                // Its title, background or padding hidden on some screen sizes (Studio).
+                if(($sDesignboxClasses = BxDolPageDesignbox::getHiddenOnClasses($aBlock)))
+                    $sClassAdd .= ' ' . $sDesignboxClasses;
+
                 if ($sContentWithBox)
                     $sCell .= $this->_oTemplate->parseHtmlByName('designbox_container.html', array(
                         'class_add' => $sClassAdd,
@@ -926,6 +993,11 @@ class BxBasePage extends BxDolPage
             }
             $aVars[$sKey] = $sCell;
         }
+
+        // A one-column page with nothing to show this viewer (Explore for guests without Timeline)
+        // says so, as the apps do, instead of a blank area under the cover.
+        if((int)$this->_aObject['cells_number'] == 1 && isset($aVars['cell_1']) && trim($aVars['cell_1']) === '')
+            $aVars['cell_1'] = MsgBox(_t('_Empty'));
 
         return $aVars;
     }

@@ -18,38 +18,81 @@ class BxDolKeyQuery extends BxDolDb
         parent::__construct();
     }
 
+    public function insertByParams ($aParams)
+    {
+        $aParams['expire'] = time() + ($aParams['expire'] ?? 604800);
+
+        return $this->query("INSERT INTO `sys_keys` SET " . $this->arrayToSQL($aParams));
+    }
+
     public function insert ($sKey, $sData, $iExpire, $sSalt = '')
     {
-        $sQuery = $this->prepare("INSERT INTO `sys_keys` SET `key` = ?, `data` = ?, `expire` = ?, `salt` = ?", $sKey, $sData, time() + $iExpire, $sSalt);
-        return $this->query($sQuery);
+        return $this->insertByParams ([
+            'key' => $sKey, 
+            'data' => $sData,
+            'expire' => $iExpire,
+            'salt' => $sSalt
+        ]);
+    }
+
+    public function removeByParams ($aParams)
+    {
+        $aBindings = [];
+        $sWhere = '';
+
+        switch($aParams['sample']) {
+            case 'key':
+                $aBindings = [
+                    'key' => $aParams['key']
+                ];
+
+                $sWhere = '`key` = :key';
+                break;
+
+            case 'similar':
+                $aBindings = [
+                    'data' => $aParams['data'],
+                    'scope' => $aParams['scope']
+                ];
+
+                $sWhere = '`data` = :data AND `scope` = :scope';
+                break;
+        }
+
+        if(!$sWhere && !$aBindings)
+            return false;
+
+        return $this->query("DELETE FROM `sys_keys` WHERE " . $sWhere, $aBindings);
     }
 
     public function remove ($sKey)
     {
-        $sQuery = $this->prepare("DELETE FROM `sys_keys` WHERE `key` = ?", $sKey);
-        return $this->query($sQuery);
+        return $this->removeByParams([
+            'sample' => 'key', 
+            'key' => $sKey
+        ]);
     }
 
     public function get ($sKey, $sSalt = '')
     {
         $sWhere = '';
-        $aBind = ['key' => $sKey];
+        $aBind = ['key' => $sKey, 'now' => time()];
         if ($sSalt) {
             $sWhere .= " AND `salt` = :salt ";
             $aBind['salt'] = $sSalt;
         }
-        return $this->getOne("SELECT `key` FROM `sys_keys` WHERE `key` = :key" . $sWhere, $aBind);
+        return $this->getOne("SELECT `key` FROM `sys_keys` WHERE `key` = :key AND `expire` > :now" . $sWhere, $aBind);
     }
 
     public function getData ($sKey, $sSalt = '')
     {
         $sWhere = '';
-        $aBind = ['key' => $sKey];
+        $aBind = ['key' => $sKey, 'now' => time()];
         if ($sSalt) {
             $sWhere .= " AND `salt` = :salt ";
             $aBind['salt'] = $sSalt;
         }
-        return $this->getOne("SELECT `data` FROM `sys_keys` WHERE `key` = :key" . $sWhere, $aBind);
+        return $this->getOne("SELECT `data` FROM `sys_keys` WHERE `key` = :key AND `expire` > :now" . $sWhere, $aBind);
     }
 
     /**

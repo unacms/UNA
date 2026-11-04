@@ -185,7 +185,7 @@ export function useListScrollPublisher({ url, coverScrollY, onTopZoneChange, pin
                 Math.max(0, event.contentSize.height - event.layoutMeasurement.height)
             )
         },
-    }, [coverScrollY, pinHeader, onOvershootEnd, clampPaused, publishTopZone, publishScrollDirection, publishScrollValue])
+    })
 
     // Zero everything before paint when the list identity changes.
     // Shared values are stable objects; they are not in deps on purpose.

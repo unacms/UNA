@@ -91,7 +91,7 @@ export default function ElementConfirmEmail(props) {
                         <CardHeader>
                             <CardTitle>{t("Verify your email address")}</CardTitle>
                             <CardDescription>
-                                {t("Enter the verification code we sent to your email.")}
+                                {t("Enter the verification code we sent to your email.", { email: currentUser?.email || "" })}
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="gap-4">
@@ -127,7 +127,7 @@ export default function ElementConfirmEmail(props) {
                                         href="/logout"
                                         style="bordered"
                                         controlSize="regular"
-                                        label={t("Sign out")}
+                                        label={t("Wrong email? Sign out")}
                                         width="fill"
                                     />
                                 </View>

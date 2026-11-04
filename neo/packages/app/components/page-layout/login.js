@@ -4,10 +4,12 @@ import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
 import AuthPanel from 'app/ui/molecules/auth/auth'
 import Page from 'app/ui/molecules/page/page'
-import MenuFooter from 'app/components/nav/menu-footer'
+import { PageFooter } from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import { getPageContentWidth } from 'app/lib/util'
+import { PageHeaderOptions } from 'app/ui/molecules/header/options'
+import { PageChromeProvider } from 'app/ui/molecules/page/page-chrome'
 // `withAuthLinks`: the login page's own extras (forgot password, social sign-in, sign up).
 // Other pages on this layout (forgot-password, through UNA's page config) show just their form.
 function PageContent({ children, withAuthLinks }) {
@@ -42,22 +44,29 @@ function PageContent({ children, withAuthLinks }) {
 }
 
 export default function PageLayout({ data, children, pageClasses }) {
-    const { padding, gap } = pageClasses ?? {};
+    const { padding, paddingTiers, gap } = pageClasses ?? {};
     const contentWidth = getPageContentWidth(data?.layout, data?.uri)
     const isWeb = Platform.OS === 'web'
     const showLoginAside = data?.layout === 'layout_1_column_half'
 
     return (
         <Page data={data}>
-            <View className={`${contentWidth} ${padding} ${gap} mx-auto my-auto`}>
+            <PageHeaderOptions band={false} showTitle={false} />
+            {/* The padding sits outside the width cap, so the card is as wide as UNA's thin column
+                (448px for max-w-md), not 32px narrower. */}
+            <View className={`w-full ${padding} my-auto`}>
+                <View className={`${contentWidth} ${gap} mx-auto`}>
                     {showLoginAside && isWeb
                         ? appStatic('components_logincontent')
                         : null}
                     <View className={`w-full mx-auto ${contentWidth}`}>
-                        <PageContent withAuthLinks={data?.uri === 'login'}>{children}</PageContent>
+                        <PageChromeProvider inset={paddingTiers}>
+                            <PageContent withAuthLinks={data?.uri === 'login'}>{children}</PageContent>
+                        </PageChromeProvider>
                     </View>
+                </View>
             </View>
-            <MenuFooter />
+            <PageFooter />
         </Page>
     )
 }

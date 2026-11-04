@@ -11,6 +11,17 @@ use NeuronAI\Tools\Tool;
 
 class BxDolAITool extends Tool
 {
+    /**
+     * Neuron AI 4.x Tool has no constructor: the identity is declared as properties.
+     * Keeps the `parent::__construct($name, $description)` call of every UNA tool.
+     */
+    public function __construct(string $sName = '', ?string $sDescription = null)
+    {
+        if ($sName !== '')
+            $this->name = $sName;
+        $this->description = $sDescription;
+    }
+
     function getContentModules() 
     {
         $a = bx_srv('system', 'modules_list', [true, true], 'TemplServiceContent');

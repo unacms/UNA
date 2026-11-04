@@ -31,8 +31,8 @@ export { PageHeaderSmall, TextHeader };
  * setting. The band classes resolve for the current width and theme, so `sm:` / `lg:` / `dark:`
  * fills count; 'auto' composites a translucent fill over the page background.
  */
-function useHeaderBandScheme(isScrolled) {
-    const setting = appSetting('layout', 'header', 'band_scheme');
+function useHeaderBandScheme(isScrolled, hasBand) {
+    const setting = hasBand ? appSetting('layout', 'header', 'band_scheme') : null;
     const band = useResolveClassNames(setting ? getPageHeaderBandClass() : '');
     const page = useResolveClassNames(setting === 'auto' ? 'bg-background' : '');
     if (!setting || isScrolled || !isVisibleColor(band?.backgroundColor)) return null;
@@ -56,7 +56,7 @@ export const PageHeader = ({ pageData }) => {
     const edgeToEdgeTop = isNativeTabsEnabled() ? (getWindowSafeAreaInsets().top || 0) : 0;
 
     const isScrolled = useIsScrolled();
-    const bandScheme = useHeaderBandScheme(isScrolled);
+    const bandScheme = useHeaderBandScheme(isScrolled, header.band);
     const headerTranslateY = useAnimatedValue(0);
     const headerBgOpacity = useAnimatedValue(isScrolled ? 0 : 1);
     const headerFadeOpacity = useAnimatedValue(isScrolled ? 1 : 0);

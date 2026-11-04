@@ -85,9 +85,10 @@ export default function RftText(props) {
     // text-base (16px) — inputs below 16px trigger mobile web zoom on focus
     const editorFontSize = '16px'
     const editorLineHeight = '24px'
-    // Match published feed font (Inter via --font-main) so the editor looks identical to posts.
+    // Match published posts (--font-main); inside the editor iframe, where that
+    // variable is unset, the system font stack.
     const editorFontFamily =
-        'var(--font-main, "Inter", "Inter Variable", "InterVariable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif)'
+        'var(--font-main, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji")'
     const themeName = useThemeName() || 'light'
     const editorPalette = {
         light: {
@@ -108,9 +109,6 @@ export default function RftText(props) {
             : appSetting('editor', 'css')
 
         return `
-    /* Load Inter inside the editor iframe to match published posts */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
     :root {
       --editor-font: ${editorFontFamily};
       --color-text-light: ${editorPalette.light.text};

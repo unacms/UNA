@@ -150,7 +150,8 @@ export const PageHeader = ({ pageData }) => {
     const setScrollValue = useSetScrollValue();
     const usesFixedOverlayHeader = isCollapsibleHeader;
     const [band, setBand] = useState(null);
-    const bandScheme = useBandScheme(band, usesFixedOverlayHeader);
+    const showBand = usesFixedOverlayHeader && header.band;
+    const bandScheme = useBandScheme(band, showBand);
     const pastRevealThreshold =
         usesFixedOverlayHeader && headerHeight > 0 && scrollY >= headerHeight;
 
@@ -260,7 +261,7 @@ export const PageHeader = ({ pageData }) => {
             {/* The card band behind the header at rest: part of the page (top of
                 the flow header's slot), so it scrolls away; the fixed header
                 layer that shows at the top keeps its gradient chrome. */}
-            {usesFixedOverlayHeader && headerHeight > 0 ? (
+            {showBand && headerHeight > 0 ? (
                 <div
                     ref={setBand}
                     aria-hidden

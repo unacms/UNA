@@ -7,6 +7,7 @@ import { KeyboardGestureArea } from 'react-native-keyboard-controller'
 import { useHeaderHeight, useCoverScrollCompensation } from 'app/context/jotai/layout'
 import { getListScrollOffset, setListScrollOffset } from 'app/lib/cache/list-scroll-cache'
 import { paddingForList } from 'app/customization/functions'
+import { usePageListEndpoint } from 'app/ui/molecules/page/page-chrome'
 import { getHeaderFadeExtend, PageHeaderBand } from 'app/ui/molecules/header/page-header-parts'
 import {
     dedupeById,
@@ -145,7 +146,8 @@ export default function UniList(props: UniListProps) {
     )
 
     // Match web UniList: layout wraps each item; paddings come from endpoint.
-    const listPadding = endpoint ? paddingForList(endpoint) : ''
+    const pageEndpoint = usePageListEndpoint(endpoint)
+    const listPadding = pageEndpoint ? paddingForList(pageEndpoint) : ''
     const contentContainerClassName = [
         '@container/list',
         rows.length ? listPadding : '',

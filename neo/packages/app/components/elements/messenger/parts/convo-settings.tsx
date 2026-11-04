@@ -54,7 +54,7 @@ export default function ConvoSettings({ lotId, settings, onSaved, onError }: Con
             <View className="gap-y-3">
                 {settings.options.map((option) => (
                     <Row key={option.key} className="items-center gap-x-3">
-                        <Switch value={values.includes(option.key)} onValueChange={() => toggle(option.key)} />
+                        <Switch value={values.includes(option.key)} onValueChange={() => toggle(option.key)} label={option.value} />
                         <Text className="text-popover-foreground text-base">{option.value}</Text>
                     </Row>
                 ))}

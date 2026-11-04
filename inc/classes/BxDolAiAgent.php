@@ -8,30 +8,34 @@
  */
 
 use NeuronAI\RAG\RAG;
-use NeuronAI\Observability\InspectorObserver;
-use NeuronAI\Observability\LogObserver;
+use NeuronAI\Agent\Observability\ToolCalled;
+use NeuronAI\Chat\History\InMemoryMessageStore;
+use NeuronAI\Chat\History\MessageStoreInterface;
+use NeuronAI\Chat\Messages\Message;
+use NeuronAI\Observability\LogListener;
+use NeuronAI\Observability\ObservabilityEvent;
 
 class BxDolAiAgent extends RAG
 {
     public function __construct(protected array $aAgent, protected array $aParams = [])
     {
-        parent::__construct();
+        // the thread of the agent is the identity of its workflow run and of its chat history
+        parent::__construct(BxDolAiChat::threadId($this->aAgent, $this->aParams));
 
         $sKey = getParam('sys_agents_inspector_key');
         if ($sKey) {
-            $logger = InspectorObserver::instance(
+            $oInspector = Inspector\Neuron\V4\InspectorSubscriber::instance(
                 key: $sKey,
-                autoFlush: true,
             );
-            $this->observe($logger);
+            $this->subscribe(ObservabilityEvent::class, $oInspector);
         }
         else {
             $logger = new BxDolLoggerDb('sys_agents_' . $this->aAgent['id']);
-            $this->observe(new LogObserver($logger));
+            $this->subscribe(ObservabilityEvent::class, new LogListener($logger));
         }
 
         // what the agent did (comments, content, SQL) — shown as activity history
-        $this->observe(new BxDolAiActivityObserver($this->aAgent, $this->aParams));
+        $this->subscribe(ToolCalled::class, new BxDolAiActivityObserver($this->aAgent, $this->aParams));
     }
 
     protected function provider(): NeuronAI\Providers\AIProviderInterface
@@ -126,21 +130,32 @@ class BxDolAiAgent extends RAG
         throw new Exception('Embedding model is not configured');
     }
 
-    protected function chatHistory(): NeuronAI\Chat\History\ChatHistoryInterface
+    protected function messageStore(): MessageStoreInterface
     {
-        if ($this->aAgent['chat_history_context']) {
-            return new BxDolAiChatHistory(
-                thread_id: $this->getChatHistoryThreadId(),
-                pdo: BxDolDb::getInstance()->getLink(),
-                table: 'sys_agents_chat_history',
-                contextWindow: $this->aAgent['chat_history_context']
-            );
-        }
-        else {
-            return new NeuronAI\Chat\History\InMemoryChatHistory(
-                contextWindow: 50000
-            );
-        }
+        if ($this->aAgent['chat_history_context'])
+            return new BxDolAiChatHistory();
+
+        return new InMemoryMessageStore();
+    }
+
+    protected function contextWindow(): int
+    {
+        if ($this->aAgent['chat_history_context'])
+            return (int)$this->aAgent['chat_history_context'];
+
+        return 50000;
+    }
+
+    /**
+     * Save the changed version of a message already stored in the chat history of the agent.
+     */
+    public function updateStoredMessage(Message $oMessage): bool
+    {
+        $oStore = $this->resolveMessageStore();
+        if (!($oStore instanceof BxDolAiChatHistory))
+            return false;
+
+        return $oStore->replace($this->requireWorkflowId(), $oMessage);
     }
 
     /**
@@ -153,11 +168,6 @@ class BxDolAiAgent extends RAG
         return function (\Throwable $e, NeuronAI\Tools\ToolInterface $tool): string {
             return 'Tool "' . $tool->getName() . '" failed: ' . $e->getMessage();
         };
-    }
-
-    protected function getChatHistoryThreadId(): string
-    {
-        return BxDolAiChat::threadId($this->aAgent, $this->aParams);
     }
 
     protected function getAlertTriggerModifyableKeys(): string

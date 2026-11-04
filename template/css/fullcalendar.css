@@ -11,7 +11,7 @@
    transparency. The library stylesheets are loaded before this file, and the
    theme rules are more specific, so the opacity reset has to be flagged important. */
 .fc .fc-daygrid-day-number {
-    color: #374151;
+    color: #3f3f46;
 }
 
 .fc .fc-daygrid-day.fc-day-other .fc-daygrid-day-top {
@@ -19,22 +19,22 @@
 }
 
 .fc .fc-daygrid-day.fc-day-other .fc-daygrid-day-number {
-    color: #6b7280;
+    color: #71717a;
 }
 
 .fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
-    color: #111827;
+    color: #18181b;
     font-weight: 600;
 }
 
 .dark .fc .fc-daygrid-day-number {
-    color: #e5e7eb;
+    color: #e4e4e7;
 }
 
 .dark .fc .fc-daygrid-day.fc-day-other .fc-daygrid-day-number {
-    color: #9ca3af;
+    color: #a1a1aa;
 }
 
 .dark .fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
-    color: #f3f4f6;
+    color: #f4f4f5;
 }

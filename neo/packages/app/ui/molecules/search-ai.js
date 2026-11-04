@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { fetcher } from 'app/lib/fetcher'
+import { useLocalSearchParams } from 'app/lib/hooks/router'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { NeoButton } from 'app/design/controls'
@@ -78,10 +79,57 @@ export function formatDateLabel(date, t) {
     return (fieldLabels[date.field] || fieldLabels.created) + ' ' + range
 }
 
+/** `q` of a query string ('a=1&q=text' or a whole url); React Native's URLSearchParams has no get() */
+function queryParamQ(sUrl) {
+    const search = String(sUrl || '').split('?').slice(1).join('?').split('#')[0]
+    for (const pair of search.split('&')) {
+        // split at the first '=' only: the text itself may hold one ("price=10")
+        const separator = pair.indexOf('=')
+        const key = separator === -1 ? pair : pair.slice(0, separator)
+        const value = separator === -1 ? '' : pair.slice(separator + 1)
+        if (key !== 'q') continue
+        try {
+            return decodeURIComponent(value.replace(/\+/g, ' '))
+        } catch {
+            return value
+        }
+    }
+    return ''
+}
+
+/**
+ * The query a link brought to the page (`/persons-home?q=native Turkish translator`), so a
+ * search box elsewhere (a landing page) can hand its text to the page's AI search block.
+ * `url` is the page address: on web the location (read after hydration), on native the screen's
+ * param that in-app links (redirectTo) fill; a native deep link has `q` as its own param.
+ */
+export function useInitialQuery() {
+    const params = useLocalSearchParams()
+    if (typeof params?.q === 'string') return params.q
+    return typeof params?.url === 'string' ? queryParamQ(params.url) : ''
+}
+
+/**
+ * Input state of the AI search block, filled once with the query of the page URL (useInitialQuery).
+ * Set during render, not in an effect: the URL query arrives right after hydration.
+ */
+export function useSearchInput() {
+    const initialQuery = useInitialQuery()
+    const [input, setInput] = useState('')
+    const [seenQuery, setSeenQuery] = useState('')
+    if (initialQuery !== seenQuery) {
+        setSeenQuery(initialQuery)
+        if (initialQuery) setInput(initialQuery)
+    }
+    return [input, setInput]
+}
+
 /** Calls search_parse once (no debounce); resolves to the parsed block data or { available: false } */
-export async function parseQuery(query, { url = PARSE_URL, signal, object = '' } = {}) {
+export async function parseQuery(query, { url = PARSE_URL, signal, object = '', hintId = '' } = {}) {
     const params = { params: { query: query.trim(), timezone: getClientTimezone() } }
     if (object) params.params.object = object
+    // the block's extra instructions for the model; the server keeps the text, the block only has its id
+    if (hintId) params.params.hint_id = hintId
     try {
         const response = await fetcher(url + encodeURIComponent(JSON.stringify(params)), false, { signal })
         const data = response?.data?.[0]?.data
@@ -102,11 +150,13 @@ export async function fetchSearchResults(filter, { url = SEARCH_URL, signal } = 
 
 /**
  * Debounced search_parse for a query.
- * Returns { parsed, parsing }; `parsed` is null until the first successful parse.
+ * Returns { parsed, parsing, query }; `parsed` is null until the first successful parse.
+ * `query` is the text `parsed` was made for (with `enabled` off, the text once typing paused):
+ * search on it, not on the live input, so a keystroke does not fire a search with a stale parse.
  * `parsed.available === false` means the server has no judge model: fall back to a plain keyword search.
  */
-export function useSearchParse(query, enabled, url, object = '') {
-    const [parsed, setParsed] = useState(null)
+export function useSearchParse(query, enabled, url, object = '', hintId = '') {
+    const [settled, setSettled] = useState({ query: '', parsed: null })
     const [parsing, setParsing] = useState(false)
     const requestRef = useRef(null)
     const timerRef = useRef(null)
@@ -115,10 +165,16 @@ export function useSearchParse(query, enabled, url, object = '') {
         clearTimeout(timerRef.current)
         requestRef.current?.abort()
 
-        if (!enabled || !query || query.trim().length < PARSE_MIN_LENGTH) {
-            setParsed(null)
+        if (!query || query.trim().length < PARSE_MIN_LENGTH) {
+            setSettled({ query: '', parsed: null })
             setParsing(false)
             return
+        }
+
+        if (!enabled) {
+            setParsing(false)
+            timerRef.current = setTimeout(() => setSettled({ query, parsed: null }), PARSE_DEBOUNCE_MS)
+            return () => clearTimeout(timerRef.current)
         }
 
         setParsing(true)
@@ -126,9 +182,9 @@ export function useSearchParse(query, enabled, url, object = '') {
             const controller = new AbortController()
             requestRef.current = controller
             try {
-                const data = await parseQuery(query, { url, signal: controller.signal, object })
+                const data = await parseQuery(query, { url, signal: controller.signal, object, hintId })
                 if (controller.signal.aborted) return
-                setParsed(data)
+                setSettled({ query, parsed: data })
                 setParsing(false)
             } catch {
                 // aborted by a newer query
@@ -139,9 +195,9 @@ export function useSearchParse(query, enabled, url, object = '') {
             clearTimeout(timerRef.current)
             requestRef.current?.abort()
         }
-    }, [query, enabled, url, object])
+    }, [query, enabled, url, object, hintId])
 
-    return { parsed, parsing }
+    return { parsed: settled.parsed, parsing, query: settled.query }
 }
 
 /**

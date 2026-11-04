@@ -24,12 +24,13 @@
     /*
      * Neutral fills: the scheme's ink (palette-schemes.css) at an alpha, so they
      * stack. color-mix, not `rgb(var(--ink) / a)`: Uniwind (native) only keeps
-     * the alpha of a color-mix. One alpha for both schemes; every step stays
-     * even on the page background, a card and a bubble, and text keeps AA.
+     * the alpha of a color-mix. Buttons take their alpha from the scheme
+     * (--button-fill, palette-schemes.css): in dark a button on the page must be
+     * lighter than a card. Every step stays even and text keeps AA.
      */
-    --color-button: color-mix(in oklab, rgb(var(--ink)) 7%, transparent);
+    --color-button: var(--button-fill);
     --color-button-foreground: rgb(var(--button-foreground));
-    --color-button-hover: color-mix(in oklab, rgb(var(--ink)) 10%, transparent);
+    --color-button-hover: var(--button-fill-hover);
     /*
      * Opaque neutral fill (the legacy --button) for native surfaces that cast a
      * shadow: Android's elevated button draws its shadow under the container,
@@ -38,6 +39,8 @@
     --color-button-solid: rgb(var(--button));
     /* Comment bubbles and other content grouped on a card. */
     --color-bubble: color-mix(in oklab, rgb(var(--ink)) 4.5%, transparent);
+    /* Inline code and code blocks in rich text. */
+    --color-code: color-mix(in oklab, rgb(var(--ink)) 7%, transparent);
     --color-ring: rgb(var(--ring));
     --color-background: rgb(var(--background));
     --color-foreground: rgb(var(--foreground));
@@ -45,6 +48,12 @@
     --color-segment-foreground: rgb(var(--segment-foreground));
     --color-card: rgb(var(--card));
     --color-card-foreground: rgb(var(--card-foreground));
+    /*
+     * A block's surface made opaque: `bg-card/60` (theme.blocks u-block-bg) over the page
+     * background, mixed in sRGB as the browser composites it. For chrome that content
+     * scrolls under, such as the profile cover, so it matches the blocks below it.
+     */
+    --color-card-surface: color-mix(in srgb, rgb(var(--card)) 60%, rgb(var(--background)));
     --color-popover: rgb(var(--popover));
     --color-popover-foreground: rgb(var(--popover-foreground));
     --color-primary: rgb(var(--primary));
@@ -153,6 +162,8 @@
     --shadow-avatar-stack: 0 0 0 1px rgb(var(--card));
     --shadow-card-outline: var(--neo-shadow-card-outline);
     --shadow-card-outline-deep: var(--neo-shadow-card-outline-deep);
+    --shadow-popover: var(--neo-shadow-popover);
+    --shadow-popover-deep: var(--neo-shadow-popover-deep);
     --shadow-block-outline: var(--neo-shadow-block-outline);
     --shadow-block-outline-deep: var(--neo-shadow-block-outline-deep);
     --shadow-input-outline: var(--neo-shadow-input-outline);
@@ -201,6 +212,11 @@
 
         --neo-shadow-card-outline:        inset 0 0 0 1px rgb(255 255 255 / 0.5), 0 2px 8px -2px rgb(0 0 0 / 0.1);
         --neo-shadow-card-outline-deep:  inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 2px 8px -2px rgb(0 0 0 / 0.2);
+
+        /* Floating surfaces (menus, dropdowns, modals): a hairline edge and a soft drop, the same as UNA's
+           smooth-shadow-popover. The drop reaches 32px below the box, 20px to the sides. */
+        --neo-shadow-popover:        0 0 0 1px rgb(0 0 0 / 0.06), 0 4px 6px -2px rgb(0 0 0 / 0.05), 0 12px 24px -4px rgb(0 0 0 / 0.1);
+        --neo-shadow-popover-deep:   0 0 0 1px rgb(255 255 255 / 0.08), 0 12px 24px -4px rgb(0 0 0 / 0.5);
         
         --neo-shadow-block-outline:        inset 0 0 0 1px rgb(255 255 255 / 0.5), 0 2px 8px -2px rgb(0 0 0 / 0.1);
         --neo-shadow-block-outline-deep:  inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 2px 8px -2px rgb(0 0 0 / 0.2);
@@ -216,8 +232,11 @@
         --neo-shadow-btn-ring:           0 0 0 1px rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.06);
         --neo-shadow-btn-ring-deep:      0 0 0 1px rgb(255 255 255 / 0.14);
        
-        --neo-shadow-btn-glass:                        inset 0 0 0 1px rgb(255 255 255 / 0.50), inset 0 1px 0 0 rgb(255 255 255 / 0.50), 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 8px -2px rgb(0 0 0 / 0.05), 0 4px 16px -4px rgb(0 0 0 / 0.05);
-        --neo-shadow-btn-glass-deep:                   inset 0 0 0 1px rgb(255 255 255 / 0.05), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.2), 0 2px 8px -2px rgb(0 0 0 / 0.2), 0 4px 16px -4px rgb(0 0 0 / 0.2);
+        /* Glass edge, as iOS draws it: a hairline that is darker at the sides, white crescents along the
+           top and bottom rims. No half-pixel offsets or spreads: at 3x they rasterize as 1 device px on
+           one side and 2 on the other, which reads as light from a corner. 0.6px is 2 px at 3x, 1 at 2x. */
+        --neo-shadow-btn-glass:                        inset 0 3px 1.5px -1.5px rgb(255 255 255 / 1), inset 0 -3px 1.5px -1.5px rgb(255 255 255 / 1), 0 0 0 0.6px rgb(0 0 0 / 0.08), 1px 0 0 -0.4px rgb(0 0 0 / 0.22), -1px 0 0 -0.4px rgb(0 0 0 / 0.22), 0 4px 10px -2px rgb(0 0 0 / 0.03);
+        --neo-shadow-btn-glass-deep:                   inset 0 1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 -1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 4px 5px -4px rgb(255 255 255 / 0.08), inset 0 -4px 5px -4px rgb(255 255 255 / 0.08), 0 0 0 0.6px rgb(0 0 0 / 0.5);
        
         --neo-shadow-btn-glass-pressed:                inset 0 0 0 1px rgb(255 255 255 / 0.50), inset 0 1px 0 0 rgb(255 255 255 / 0.50), 0 0 0 1px rgb(0 0 0 / 0.01), 0 1px 4px -1px rgb(0 0 0 / 0.1), 0 2px 8px -2px rgb(0 0 0 / 0.1);;
         --neo-shadow-btn-glass-pressed-deep:           inset 0 0 0 1px rgb(255 255 255 / 0.05), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.5), 0 2px 8px -2px rgb(0 0 0 / 0.5);

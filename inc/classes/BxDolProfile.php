@@ -211,6 +211,14 @@ class BxDolProfile extends BxDolFactory implements iBxDolProfile
         if ($iId == bx_get_logged_profile_id()){
             $aRv['counters'] = bx_srv('system', 'profile_counters', [defined('BX_API_PAGE')], 'TemplServiceProfiles');
 
+            // The apps show profile creation in place of every page while this is true, as the site does.
+            $aRv['profile_required'] = BxDolAccount::isProfileRequired();
+
+            // The items of the site's member toolbar the apps get, so their header shows the same tools: no Messages
+            // or Notifications button without its module.
+            $oMenuToolbar = BxDolMenu::getObjectInstance('sys_toolbar_member');
+            $aRv['toolbar'] = $oMenuToolbar ? $oMenuToolbar->getMenuItemsNames() : [];
+
             $oInformer = BxDolInformer::getInstance($oTemplate);
             $sRet = $oInformer ? $oInformer->display() : '';
             if ($sRet){

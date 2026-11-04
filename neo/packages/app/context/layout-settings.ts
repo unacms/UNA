@@ -123,6 +123,32 @@ const syncAutoLangCookies = (langCode: string) => {
     syncLanguageCookies('auto', langCode);
 };
 
+const LANG_RELOAD_KEY = 'neo-lang-reload';
+
+/**
+ * Web: the server rendered the page in the language of the cookies (or
+ * Accept-Language). When the stored preference differs, switching the shared
+ * i18n instance now makes the page blocks, which hydrate later inside
+ * Suspense, render in another language than their server HTML (React #418).
+ * Reload instead, once per language and session: the cookies are synced by
+ * then, so the server renders the right language. With cookies blocked the
+ * second time falls back to switching in place.
+ */
+const reloadForLang = (mode: string | undefined, langCode: string): boolean => {
+    if (Platform.OS !== 'web' || typeof document === 'undefined') return false;
+    const serverLang = document.documentElement.lang;
+    if (!serverLang || serverLang === langCode) return false;
+    try {
+        if (window.sessionStorage.getItem(LANG_RELOAD_KEY) === langCode) return false;
+        window.sessionStorage.setItem(LANG_RELOAD_KEY, langCode);
+    } catch {
+        return false;
+    }
+    syncLanguageCookies(mode, langCode);
+    window.location.reload();
+    return true;
+};
+
 type LayoutSettingsStore = {
     layoutSettings: LayoutSettings;
     hydrated: boolean;
@@ -153,6 +179,8 @@ export const useLayoutSettingsStore = create<LayoutSettingsStore>()((set, get) =
             const stored = await persistedGet(STORAGE_KEY);
             const parsed: LayoutSettings = stored && typeof stored === 'object' ? stored : DEFAULT_LAYOUT_SETTINGS;
             const resolvedLangCode = resolveLangCode(parsed?.lang);
+            // Stay unhydrated: Providers would otherwise switch the language too.
+            if (reloadForLang(parsed?.lang, resolvedLangCode)) return;
             await changeI18nLanguage(resolvedLangCode);
             set({ layoutSettings: parsed, hydrated: true });
             if (parsed?.lang === 'auto') {

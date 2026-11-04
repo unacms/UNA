@@ -43,6 +43,8 @@ export function IconFromSet({ icon, width, height, size, _strokeWidth, color, cl
     );
 }
 
-export function XmlIcon({ origIcon, width, height, size, color }: IconCoreProps) {
-    return <SvgXml xml={origIcon ?? null} width={width || size} height={height || size} color={color} />;
+export function XmlIcon({ origIcon, width, height, size, color, cleanedClassName }: IconCoreProps) {
+    // `currentColor` in the markup takes `color`, else the className's text colour, as IconFromSet does.
+    const classColor = useResolveClassNames(cleanedClassName || '')?.color as string | undefined;
+    return <SvgXml xml={origIcon ?? null} width={width || size} height={height || size} color={color || classColor} />;
 }

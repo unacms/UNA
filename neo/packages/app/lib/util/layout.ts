@@ -50,6 +50,15 @@ export const LAYOUT_BREAKPOINTS = {
 
 const LAYOUT_BREAKPOINTS_DESC = Object.entries(LAYOUT_BREAKPOINTS).sort((a, b) => b[1] - a[1]);
 
+/** UNA's screen tiers: phone (no prefix), tablet (from `sm`), desktop (from `lg`). */
+export type ScreenTier = 'phone' | 'tablet' | 'desktop';
+
+/** Screen tier for a window width (or a LAYOUT_BREAKPOINTS value). */
+export function screenTierOf(width: number): ScreenTier {
+    if (width >= LAYOUT_BREAKPOINTS.lg) return 'desktop';
+    return width >= LAYOUT_BREAKPOINTS.sm ? 'tablet' : 'phone';
+}
+
 /** Largest breakpoint label (`2xl`…`sm`) whose min width fits; `''` below all. */
 export function getBreakpoint(width: number): string {
     for (const [label, min] of LAYOUT_BREAKPOINTS_DESC) {
@@ -258,6 +267,31 @@ export function getLayoutName(data: any, uri: string): LayoutNameResult {
     return { layoutName: 'default', layoutBlocks: customBlocks, isCustomLayout: isCustom, columnLayout: '' };
 }
 
+/** A guest's home is the splash page (sign-in form and welcome text): UNA's `splash` layout, or `layout.use_splash_page`. */
+export function isSplashPage(data: any, layoutName: string, isGuest: boolean): boolean {
+    return isGuest && layoutName === 'home' && (data?.layout === 'splash' || Boolean(appSetting('layout', 'use_splash_page')));
+}
+
+/** The forms in a page's blocks (UNA `type: 'form'` items). */
+export function getPageForms(data: any): any[] {
+    return Object.values(data?.elements ?? {})
+        .flatMap((cell: any) => Object.values(cell ?? {}))
+        .flatMap((block: any) => block?.content ?? [])
+        .filter((item: any) => item?.type === 'form');
+}
+
+/**
+ * The splash, login and create-account pages draw their own heading, so the header shows no page
+ * title there. Each also says so with `<PageHeaderOptions showTitle={false} />`, but on web the page
+ * hydrates after the header, which would show the title until then. Create account draws it around
+ * its cells, or around a form (with `blocks` set, invitation-only registration can send only a message).
+ */
+export function isOwnHeadingPage(data: any, isGuest: boolean): boolean {
+    const { layoutName, layoutBlocks } = getLayoutName(data, data?.uri?.toString() || '');
+    if (layoutName === 'create-account') return !layoutBlocks || getPageForms(data).length > 0;
+    return layoutName === 'login' || isSplashPage(data, layoutName, isGuest);
+}
+
 export function getHeaderSettings(uri: string, isDesktop: boolean, layout: string, config?: unknown): any {
     let settings = getPageSettings(config, uri);
     if (!settings?.headerSettings) {
@@ -311,15 +345,12 @@ export function getHeaderSettings(uri: string, isDesktop: boolean, layout: strin
 }
 
 /**
- * Per-page layout settings: remote `config` when enabled, else `layouts[uri]` from settings.
+ * Per-page layout settings: the page's `config` from UNA, else `layouts[uri]` from settings.
  * Page override point: `layout` picks a page layout (components/page-layout/_map.js) and
  * `blocks` sets its block list, which can name static components as `static:<name>`.
  * Forks add `layouts[uri]` in customization/settings.js.
  */
 export function getPageSettings(config: unknown, uri: string): any {
-    if (!appSetting('layout', 'user_remote_config')) {
-        return appSetting('layouts', uri);
-    }
     if (!config) return appSetting('layouts', uri);
     if (typeof config === 'object') return config;
     return strToObj(config as string) ?? appSetting('layouts', uri);

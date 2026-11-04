@@ -5,11 +5,15 @@ import {
     getHeaderSettings,
     getURI,
     getPageContentWidth,
+    getMenuHub,
 } from 'app/lib/util'
 import {
     fillTabs,
     ensureRouteInited,
     findConductorRouteIndex,
+    firstShownConductorRoute,
+    hideRoutesOnTier,
+    conductorHref,
     getConductorLayoutCols,
     getConductorColumnsConfig,
     isConductorColumnShown,
@@ -32,10 +36,12 @@ import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
 import { useBottomSheetStore } from 'app/context/bottomsheet'
 import { useLayoutSettings } from 'app/context/layout-settings'
-import { useIsDesktop, useWindowHeight, useBreakpointName } from 'app/context/measure'
+import { useIsDesktop, useWindowHeight, useBreakpointName, useScreenTier, useHydrated } from 'app/context/measure'
 import { useHeaderHeight, useFooterHeight } from 'app/context/jotai/layout'
+import { PageFooter } from 'app/components/nav/menu-footer'
 import { isTasksHomeUri } from 'app/components/elements/tasks/helpers'
 import { PageHeaderOptions } from 'app/ui/molecules/header/options'
+import { useRouter } from 'app/lib/hooks/router'
 import { useStickyHeaderOffset, stickySidebarStyle } from 'app/lib/hooks/use-sticky-header-offset'
 
 /** `html` class that makes the page block, not the document, the scroller (global.web.css). */
@@ -43,6 +49,8 @@ const VIEWPORT_LOCK_CLASS = 'ns-viewport-lock'
 
 /** Stable fallback so `useLeftColumn` memos survive tabs without a left column. */
 const EMPTY_CONTENT = []
+/** No tabs to show (a hub section below desktop): one array, so the header memo holds. */
+const NO_ROUTES = []
 // Side columns of a viewport-locked page (/tasks-home): the panel group is their scroll
 // container there, so they stick at its top and fill it instead of clearing the header.
 const LOCKED_COLUMN_STYLE = { top: 0, maxHeight: '100%' }
@@ -101,6 +109,9 @@ export function Conductor({
     const { layoutName: tmplLayout } = useLayoutSettings()
     const isDesktop = useIsDesktop()
     const breakpointName = useBreakpointName()
+    const tier = useScreenTier()
+    // The tier reads `desktop` until hydration: a hidden tab is only acted on after it.
+    const hydrated = useHydrated()
     const pageHeaderHeight = useHeaderHeight()
     const footerHeight = useFooterHeight()
     const windowHeight = useWindowHeight()
@@ -178,7 +189,7 @@ export function Conductor({
     }, [])
 
     const {
-        routes,
+        routes: storedRoutes,
         setRoutes,
         index,
         setIndex,
@@ -195,6 +206,18 @@ export function Conductor({
         onChangeRoute,
         adapter: routesAdapter,
     })
+
+    // The tabs as shown at this screen size (`hideRoutesOnTier`); `storedRoutes` keep the loaded pages.
+    const routes = useMemo(() => hideRoutesOnTier(storedRoutes, tier), [storedRoutes, tier])
+    const router = useRouter()
+
+    // A tab hidden at this screen size (Settings' Overview on desktop) opens the first tab shown, as
+    // its own page (the URL replaced), so the page header, title and Back follow it.
+    useEffect(() => {
+        if (!hydrated || !routes.find((route) => route.index === index)?.hiddenOnTier) return
+        const href = conductorHref(firstShownConductorRoute(routes)?.link)
+        if (href) router.replace(href)
+    }, [hydrated, routes, index, router])
 
     // ==================================================================
     // 2. Layout config (columns, widths, page header)
@@ -342,6 +365,17 @@ export function Conductor({
      * Deps list `data.*` fields rather than `data` itself: the page object is a
      * new reference on every poll, and rebuilding this would remount the cover.
      */
+    // A section listed by its own page (Settings, `isMenuHub`) has no tab row below desktop: that page
+    // lists the tabs, and each one opens from it with Back.
+    const menuHub = getMenuHub(menu)
+    const hideTabs = !isDesktop && menuHub !== ''
+    // Back to the list: the previous page when there is one, else the list itself (a visit that
+    // opened the list in a new tab has no earlier page for the header's own Back).
+    const backToHub = useCallback(() => {
+        if (typeof window !== 'undefined' && window.history.length > 2) router.back()
+        else router.push('/' + menuHub)
+    }, [router, menuHub])
+
     const headerComponent = useMemo(
         () => (
             <HeaderContainer
@@ -352,7 +386,7 @@ export function Conductor({
                 headerSettings={headerSettings}
                 pageData={data}
                 menu={menu}
-                routes={routes}
+                routes={hideTabs ? NO_ROUTES : routes}
                 layoutName={layoutName}
                 index={index}
                 setIndex={setIndex}
@@ -376,6 +410,7 @@ export function Conductor({
             data?.module,
             menu,
             routes,
+            hideTabs,
             layoutName,
             index,
             setIndex,
@@ -430,6 +465,8 @@ export function Conductor({
             {isUseCurrentHeader
                 ? <PageHeaderOptions hidden mobileOnly />
                 : <PageHeaderOptions sub={headerComponent} mobileOnly />}
+            {/* Below desktop a hub section's page was opened from its list: Back returns there. */}
+            {hideTabs && data?.uri !== menuHub ? <PageHeaderOptions backButton={backToHub} mobileOnly /> : null}
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <View
                 // Grows to the wrapper's viewport min-height (flex-auto), so the columns and the
@@ -463,6 +500,9 @@ export function Conductor({
                     />
                 </TabSceneColumns>
             </View>
+            {/* The site footer, as on every other page: inside the viewport-high wrapper, so a
+                short or empty tab keeps it at the bottom of the screen. */}
+            {!isTasksHome && <PageFooter />}
         </View>
     )
 }

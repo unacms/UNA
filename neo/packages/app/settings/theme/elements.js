@@ -19,12 +19,15 @@ export const settingsElements = {
         topmenu_button_size: 'base',
         topmenu_button_pressed: true,
         left_menu_cnt: '  ',
-        cover_base: 'ns--cover-base- w-full bg-card ne--',
+        cover_base: 'ns--cover-base- w-full bg-card-surface ne--',
         cover_content:
             'ns--conductor-cover-content-- items-center h-full w-full justify-between lg:p-4 ne--',
         cover_small: 'mx-auto flex-row items-center ',
 
-        hide_top_menu_from: 'xl',
+        // Where the left column takes over the tab row and the section title (a breakpoint
+        // prefix). Keep it equal to the left column's `breakpoint` in `layouts.cols-l-c` and
+        // `layouts.cols-l-c-r`, or a width range shows the tabs in neither place.
+        hide_top_menu_from: 'lg',
         // Section title + icon next to conductor tabs (TopSidebar).
         show_title: true,
         standalone_context_selector: 'items-center justify-center w-full h-14 px-2',
@@ -86,9 +89,19 @@ export const settingsElements = {
     modal: {
         fog: ' bg-background/95 ',
         container:
-        ' bg-popover shadow-card-outline dark:shadow-card-outline-deep md:rounded-3xl overflow-hidden ',
+        ' bg-popover overflow-hidden ',
+        // A dialog over the page (desktop, or a small centred one): on the near-opaque fog it needs its
+        // edge too, the popover edge and drop, as menus. A modal that fills the screen has no edge or corners.
+        dialog: ' shadow-popover dark:shadow-popover-deep rounded-3xl ',
+        dialog_native: ' shadow-popover dark:shadow-popover-deep rounded-2xl ',
+        // Native full screen: behind the status bar and the home indicator, the panel's own colour.
+        fullscreen_bg: ' bg-popover ',
         content: '',
-        header: ' px-3 py-2 min-h-14 items-start justify-start border-b border-border/60 ',
+        // A block's padding (16px) and title (`blocks.u-block-title`).
+        header: ' p-4 min-h-14 items-start justify-start border-b border-border/60 ',
+        // headerBorder={false} (Sheet on web and Android): the same bar without the line, as the iOS sheet.
+        header_plain: ' p-4 min-h-14 items-start justify-start ',
+        title: 'text-card-foreground text-lg leading-7 font-semibold tracking-tight',
     },
     cards: {
         // The card surface (bg-card/60) on every size: edge to edge with no outline shadow on
@@ -134,6 +147,9 @@ export const settingsElements = {
         'u-block-pad-x':
             ' px-4 ',
         'u-block-rounded': 'rounded-2xl',
+        // Corners of a block that doesn't set `designbox.rounded`, in layouts that don't say
+        // where their padding is (home, profile, post ...). Elsewhere corners follow the page
+        // padding: rounded where it keeps the block off the screen edge (block-wrapper.js).
         'u-block-rounded-default': 'sm:rounded-2xl',
         'u-block-header':
             ' flex-row gap-3  ',

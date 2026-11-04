@@ -2,12 +2,17 @@
 import Layout from 'app/components/layout';
 import { useCurrentUser, isWebAuthReady } from 'app/context/user'
 import { components } from 'app/components/registry';
-import { appSetting, getLayoutName, getPageContentPaddingTiers, getPageContentWidth, getPageData, strToObj } from 'app/lib/util'
+import { appSetting, getLayoutName, getPageContentPaddingTiers, getPageContentWidth, getPageData, getPageSettings, isSplashPage, strToObj } from 'app/lib/util'
 import emitter, { EVENTS } from 'app/context/emitter';
 import { responsiveClasses } from 'app/lib/responsive-classes'
+import { sidePaddingTiers } from 'app/lib/page-inset'
+import { PageChromeProvider } from 'app/ui/molecules/page/page-chrome'
 import Cell from 'app/components/cell';
 import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect'
+import Page from 'app/ui/molecules/page/page'
+import { PageFooter } from 'app/components/nav/menu-footer'
+import { View } from 'app/design/view'
 import { useRef, useEffect, useMemo, useState } from 'react';
 import PageByUrl from 'app/ui/molecules/page/page-by-url'
 import { registerAll } from 'app/components/registry-init';
@@ -46,7 +51,7 @@ export default function Layouts({ path, data }) {
     const pageData = useMemo(() => {
         if (!data) return data;
         const raw = data.config;
-        if (typeof raw !== 'string' || !appSetting('layout', 'user_remote_config')) {
+        if (typeof raw !== 'string') {
             return data;
         }
         const parsed = strToObj(raw);
@@ -96,7 +101,7 @@ export default function Layouts({ path, data }) {
     )
 }
 
-function ErrorPage({ type }) {
+function ErrorPage({ type, data }) {
     const redirectKey = type === 404 ? 'redirect_on_not_found' : 'redirect_on_forbidden';
     const staticPageKey = type === 404 ? 'page_not_found' : 'page_not_allowed';
 
@@ -109,11 +114,14 @@ function ErrorPage({ type }) {
         }
     }, [redirectUrl]);
 
+    // In a page with the site footer, as UNA shows its error pages.
     return (
-        <>
+        <Page data={data}>
             <Redirect ref={redirectRef} />
             {!redirectUrl && appStatic(staticPageKey)}
-        </>
+            <View className="flex-1" />
+            {!redirectUrl && <PageFooter />}
+        </Page>
     );
 }
 
@@ -141,17 +149,18 @@ function PageLayoutContent({ layout, data, skipProfileLock = false }) {
     const { layoutName, layoutBlocks, isCustomLayout, columnLayout = '' } = layout;
 
     // Derived values; React Compiler memoizes them on their real inputs.
-    const pageConfig = data?.config;
+    // UNA's page config, else the fork's `layouts[<uri>]` (as for the layout name).
+    const pageConfig = getPageSettings(data?.config, data?.uri?.toString());
+    const padding = responsiveClasses('padding', pageConfig?.padding ?? getPageContentPaddingTiers(layoutName));
     const pageClasses = {
-        padding: responsiveClasses('padding', pageConfig?.padding ?? getPageContentPaddingTiers(layoutName)),
+        padding,
+        // Where `padding` keeps blocks off the screen edge, for the layouts that apply it
+        // (PageChromeProvider `inset`): read from the classes, so a default fills in as it does there.
+        paddingTiers: sidePaddingTiers(padding),
         gap: responsiveClasses('gap', pageConfig?.gap),
         width: appSetting('layout', 'max_width'),
         contentWidth: getPageContentWidth(layoutName, data?.uri),
     };
-
-    const hasProfileInformer = currentUser?.informer?.some(
-        item => item.id === "sys-account-profile-system"
-    );
 
     const Component = components['layout'][layoutName];
 
@@ -165,7 +174,7 @@ function PageLayoutContent({ layout, data, skipProfileLock = false }) {
         : `layout-${layoutName}-${pageUri || pageUrl || ''}-${pageTimestamp || ''}`;
 
     if (data?.page_status === 404 || data?.page_status === 403) {
-        return <ErrorPage type={data?.page_status} />;
+        return <ErrorPage type={data?.page_status} data={data} />;
     }
 
     const ConfirmEmail = components['molecule']['confirm_email']
@@ -174,7 +183,8 @@ function PageLayoutContent({ layout, data, skipProfileLock = false }) {
         return <ConfirmEmail url={data.url} data={data} />;
     }
 
-    if (!skipProfileLock && (hasProfileInformer || currentUser?.membership==2 && data.uri =='home') && appSetting('layout', 'lock_no_profile')) {
+    // UNA decides (BxDolAccount::isProfileRequired): its site sends the account to profile creation too.
+    if (!skipProfileLock && currentUser?.profile_required) {
 
         if (currentUser?.menu?.items?.length > 1) {
             // UNA's account-profile-switcher page: its "create profile" block brings the
@@ -191,12 +201,14 @@ function PageLayoutContent({ layout, data, skipProfileLock = false }) {
     }
 
     const Splash = components['molecule']['splash']
-    if (!currentUser && layoutName == 'home' && (data.layout == 'splash' || appSetting('layout', 'use_splash_page')))
+    if (isSplashPage(data, layoutName, !currentUser))
         return <Splash data={data} />
 
     if (isCustomLayout && layoutBlocks) {
         return (
-            <Component key={componentKey} layoutName={layoutName} columnLayout={columnLayout} data={data} blocks={layoutBlocks} pageClasses={pageClasses} />
+            <PageChromeProvider designbox={pageConfig?.designbox ?? null}>
+                <Component key={componentKey} layoutName={layoutName} columnLayout={columnLayout} data={data} blocks={layoutBlocks} pageClasses={pageClasses} />
+            </PageChromeProvider>
         );
     }
 
@@ -209,8 +221,10 @@ function PageLayoutContent({ layout, data, skipProfileLock = false }) {
     ));
 
     return (
-        <Component key={componentKey} layoutName={layoutName} columnLayout={columnLayout} data={data} pageClasses={pageClasses}>
-            {cells}
-        </Component>
+        <PageChromeProvider designbox={pageConfig?.designbox ?? null}>
+            <Component key={componentKey} layoutName={layoutName} columnLayout={columnLayout} data={data} pageClasses={pageClasses}>
+                {cells}
+            </Component>
+        </PageChromeProvider>
     );
 }

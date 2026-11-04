@@ -1,6 +1,6 @@
 import { forwardRef, useContext, type ReactNode } from 'react';
 import { TextInput as TextInputDef, Platform, TextInputProps } from 'react-native'
-import type { TextInput } from 'react-native';
+import type { TextInputInstance } from 'react-native';
 import { View, Row } from 'app/design/view'
 import { Icon } from 'app/ui/atoms/icon'
 import { iosContinuousCurveStyle } from 'app/design/corner-smoothing'
@@ -63,7 +63,7 @@ const getInputStyleProps = (style: any, multiline?: boolean) =>
         ? { style: [isIos && iosContinuousCurveStyle, isIos && !multiline && IOS_SINGLE_LINE_STYLE, style].filter(Boolean) }
         : {};
 
-export const Input = forwardRef<TextInput, CustomInputProps>(
+export const Input = forwardRef<TextInputInstance, CustomInputProps>(
     ({ className, style, rounded = InputRounded.default, size = DEFAULT_SIZE, ...props }, ref) => {
         const labelInside = useContext(InputLabelInsideContext) && isLabelInsideSize(size);
         return (
@@ -91,7 +91,7 @@ function renderInputDecorator(decorator?: string | ReactNode) {
     return decorator;
 }
 
-export const InputWithIcons = forwardRef<TextInput, InputWithIconsProps>(
+export const InputWithIcons = forwardRef<TextInputInstance, InputWithIconsProps>(
     ({ className, startDecorator, endDecorator, style, rounded = InputRounded.full, ...props }, ref) => (
         <Row className="relative w-full items-center">
             {startDecorator ? (
@@ -115,7 +115,7 @@ export const InputWithIcons = forwardRef<TextInput, InputWithIconsProps>(
     )
 );
 
-export const InputMulti = forwardRef<TextInput, InputMultiProps>(
+export const InputMulti = forwardRef<TextInputInstance, InputMultiProps>(
     ({ className, onHeight, style, onContentSizeChange, ...props }, ref) => (
         <Input
             ref={ref}
@@ -133,7 +133,7 @@ export const InputMulti = forwardRef<TextInput, InputMultiProps>(
     )
 );
 
-export const Hidden = forwardRef<TextInput, CustomInputProps>(
+export const Hidden = forwardRef<TextInputInstance, CustomInputProps>(
     (props, ref) => {
         // Native: do not mount a display:none TextInput — Yoga relayout on keyboard
         // focus can SIGABRT (react-native#52349). Form values use useController.

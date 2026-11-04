@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { get, useController, useFormContext } from 'react-hook-form';
 import { useGoogleAutocomplete } from '@appandflow/react-native-google-autocomplete';
 import { getValidationRules, getFormFieldDomId, getFormFieldErrorDomId } from 'app/components/form-fields/_field';
@@ -68,6 +68,43 @@ export function useFieldController(params: Parameters<typeof useController>[0]) 
     return controller;
 }
 
+const TEXT_INPUT_TYPES = new Set(['text', 'email', 'password', 'search', 'tel', 'url', 'number']);
+const useIsoLayoutEffect = typeof document !== 'undefined' ? useLayoutEffect : useEffect;
+
+/**
+ * Web: text the input holds that the form doesn't. Typing into a server-rendered form (or the
+ * browser's autofill) before it hydrates reaches the DOM but not react-hook-form. It is read from
+ * the field's own input in a layout effect, right after hydration, because the next render of the
+ * controlled input puts the form's empty value back in the DOM. It is applied after the mount
+ * effects (the field's own value sync and Form's first reset would empty it again), so call this
+ * after that sync. On a client mount the input holds the form's value, so nothing happens.
+ */
+function useTextFromBeforeHydration(name: string, inputRef: { current: unknown }, onChange: (value: string) => void) {
+    const { getValues } = useFormContext();
+    const typedRef = useRef('');
+
+    useIsoLayoutEffect(() => {
+        if (typeof document === 'undefined' || !name) return;
+        const el = inputRef.current;
+        const isText =
+            (el instanceof HTMLInputElement && TEXT_INPUT_TYPES.has(el.type)) || el instanceof HTMLTextAreaElement;
+        if (isText && el.value) typedRef.current = el.value;
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once, at mount
+    }, []);
+
+    useEffect(() => {
+        const typed = typedRef.current;
+        if (!typed) return;
+        typedRef.current = '';
+        // Form's first reset runs later in the same flush of effects.
+        queueMicrotask(() => {
+            const current = getValues(name);
+            if (current === undefined || current === null || current === '') onChange(typed);
+        });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once, at mount
+    }, []);
+}
+
 export function useFormField(props: any, options: FormFieldOptions = {}) {
     const { setValue, getValues } = useFormContext();
     const name = props.name || '';
@@ -123,6 +160,7 @@ export function useFormField(props: any, options: FormFieldOptions = {}) {
         skipReturnKey ? null : name,
         props.handleSubmit
     );
+    useTextFromBeforeHydration(name, inputRef, field.onChange);
 
     const fieldErrorText = Array.isArray(props.error) ? props.error[0] : props.error;
     const invalid = !!fieldErrorText;
@@ -142,6 +180,8 @@ export function useFormField(props: any, options: FormFieldOptions = {}) {
         inputId: getFormFieldDomId(name),
         errorId: invalid ? getFormFieldErrorDomId(name) : undefined,
         invalid,
+        // The caption's star (Field shows it for a checker or `required`), for screen readers too.
+        required: !!(props.checker || props.required),
     };
 }
 
@@ -235,6 +275,19 @@ export function useLocationField({
         applyPlace(value);
         setSelectionMade(true);
     }, [incoming]);
+
+    // An address set from outside the field (filters from the AI search block): show it.
+    // Typing changes only the term, so this runs for outside writes and picked places.
+    const [seenValue, setSeenValue] = useState(field.value);
+    if (field.value !== seenValue) {
+        setSeenValue(field.value);
+        const address = typeof field.value === 'string' ? field.value : '';
+        // an address replaced, or one shown before and now emptied
+        if (syncName && address !== term && (address || (typeof seenValue === 'string' && seenValue))) {
+            setTerm(address);
+            setSelectionMade(!!address);
+        }
+    }
 
     useEffect(() => {
         if (incoming || field.value) return;

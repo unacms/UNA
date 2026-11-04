@@ -1019,6 +1019,8 @@ export const NeoButtonLink = ({
     emulate,
     onPress,
     onLongPress: _onLongPress,
+    // The link's own state ("page" for the page you're on): on the <a>, not the button inside it.
+    'aria-current': ariaCurrent,
     ...props
 }: NeoButtonProps) => {
     const finalHref = sanitazeUrl(href);
@@ -1113,6 +1115,7 @@ export const NeoButtonLink = ({
             className={linkClassName}
             alt={linkAccessibleName}
             {...(anchorStyle ? { style: anchorStyle } : null)}
+            {...(ariaCurrent ? { 'aria-current': ariaCurrent } : null)}
             {...pressProps}
         >
             <NeoButton {...neoProps} />

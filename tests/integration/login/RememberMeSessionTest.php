@@ -122,7 +122,7 @@ class RememberMeSessionTest extends BxDolIntegrationTestCase
         $this->assertSame([], $oSession->aCookies, 'Site responses, cached files among them, carry no cookie.');
     }
 
-    public function testApiResponseRepeatsCookie(): void
+    public function testApiResponseSendsNoCookieUntilEndMoves(): void
     {
         $this->bxLoginAs('admin', true);
         $sId = $this->bxSpy()->getId();
@@ -136,7 +136,62 @@ class RememberMeSessionTest extends BxDolIntegrationTestCase
             unset($_GET['api']);
         }
 
-        $this->assertSame([['id' => $sId, 'expires' => $iEnd]], $oSession->aCookies, 'Every API response repeats the cookie.');
+        $this->assertSame([], $oSession->aCookies, 'API responses no longer repeat the cookie; NEO calls touch_session.');
+    }
+
+    public function testTouchSessionRepeatsRememberedCookie(): void
+    {
+        $this->bxLoginAs('admin', true);
+        $sId = $this->bxSpy()->getId();
+        $iEnd = time() + $this->bxLifetime() - 3600;
+        $this->bxSetTTL($sId, $iEnd);
+        $oSession = $this->bxNextRequest();
+
+        $aResult = BxDolService::call('system', 'touch_session', [], 'TemplServiceLogin');
+
+        $this->assertSame(['logged' => 1], $aResult);
+        $this->assertSame([['id' => $sId, 'expires' => $iEnd]], $oSession->aCookies, 'The cookie goes out with its current end.');
+        $this->assertSame($iEnd, (int)$this->bxRow($sId)['ttl'], 'Touching does not move the end by itself.');
+    }
+
+    public function testTouchSessionSendsMovedEnd(): void
+    {
+        $this->bxLoginAs('admin', true);
+        $sId = $this->bxSpy()->getId();
+        $this->bxSetTTL($sId, time() + $this->bxLifetime() - 2 * BX_DOL_SESSION_TTL_STEP);
+        $oSession = $this->bxNextRequest();
+
+        BxDolService::call('system', 'touch_session', [], 'TemplServiceLogin');
+
+        $this->assertEqualsWithDelta(time() + $this->bxLifetime(), end($oSession->aCookies)['expires'], 5);
+    }
+
+    public function testTouchSessionLeavesBrowserSessionAlone(): void
+    {
+        $this->bxLoginAs('admin', false);
+        $oSession = $this->bxNextRequest();
+
+        $aResult = BxDolService::call('system', 'touch_session', [], 'TemplServiceLogin');
+
+        $this->assertSame(['logged' => 1], $aResult);
+        $this->assertSame([], $oSession->aCookies, 'A session that ends with the browser has no end to repeat.');
+    }
+
+    public function testTouchSessionForGuestSendsNoCookie(): void
+    {
+        $oSession = $this->bxSpy();
+        $oSession->setValue('test_guest', 1);
+        $oSession = $this->bxNextRequest();
+
+        $aResult = BxDolService::call('system', 'touch_session', [], 'TemplServiceLogin');
+
+        $this->assertSame(['logged' => 0], $aResult);
+        $this->assertSame([], $oSession->aCookies);
+    }
+
+    public function testTouchSessionIsSafeForApi(): void
+    {
+        $this->assertTrue(BxDolService::call('system', 'is_safe_service', ['touch_session'], 'TemplServices'));
     }
 
     public function testShortLifetimeMovesEndAfterHalfOfIt(): void

@@ -80,7 +80,8 @@ export const settingsElements = {
         sidebar_title_icon: 'h-8 w-8 items-center justify-center flex',
         sidebar_title_icon_class: 'text-card-foreground shrink-0',
         sidebar_title_icon_size: 29,
-        sidebar_title_text: 'text-xl tracking-tight truncate font-bold leading-9 text-card-foreground',
+        // The phone header title's size and weight (TextHeader), as the tablet tab-row title.
+        sidebar_title_text: 'text-2xl tracking-tight truncate font-bold leading-9 text-card-foreground',
         // Section nav under the title. The negative margin and the items' 8px inset put the
         // icons 4px inside sidebar_inner_container's padding, in line with the title icon.
         sidebar_nav: 'gap-0.5 -mx-1 -mb-1',

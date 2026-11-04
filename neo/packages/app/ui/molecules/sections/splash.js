@@ -4,11 +4,12 @@ import { appSetting } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
 import AuthPanel from 'app/ui/molecules/auth/auth'
 import { BlockByName } from 'app/components/block';
-import MenuFooter from 'app/components/nav/menu-footer'
+import { PageFooter } from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Page from 'app/ui/molecules/page/page'
 import { BlockDataByName } from 'app/lib/util';
+import { PageHeaderOptions } from 'app/ui/molecules/header/options';
 /**
  * Renders the login splash screen with adaptive layouts for web and mobile platforms.
  *
@@ -23,7 +24,7 @@ function PageContent({ data }) {
     const isShowCreateAccount = BlockDataByName(data, 'system:login_form');
 
     return (
-        <View className="w-full max-w-sm gap-6">
+        <View className="w-full max-w-md gap-6">
             
                     <BlockByName
                         name={isShowCreateAccount ? "system:login_form" : "system:login_form_only"}
@@ -67,11 +68,12 @@ export default function Splash(props) {
         // Keyboard-aware scroll (Page default): the login form sits low on
         // the screen, and a plain ScrollView leaves the keyboard over it.
         <Page>
-            <View className={`flex-auto items-center justify-center lg:flex-row p-6 lg:p-12 gap-6 lg:gap-12 w-full mx-auto ${appSetting('layout', 'max_width_landing')}`}>
-                {appStatic('splash_text')}
+            <PageHeaderOptions band={false} showTitle={false} />
+            <View className={`flex-auto items-center justify-center lg:flex-row p-4 sm:p-6 lg:p-12 gap-6 lg:gap-12 w-full mx-auto ${appSetting('layout', 'max_width_landing')}`}>
+                {appStatic('splash_text', { texts: props.data?.texts })}
                 <PageContent {...props} />
             </View>
-            <MenuFooter />
+            <PageFooter />
         </Page>
     )
 }

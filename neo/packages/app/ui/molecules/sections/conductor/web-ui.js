@@ -189,6 +189,7 @@ export const TabScene = ({
         handleEndReached,
         listReady,
         skipToastRef,
+        hideEmptyMsg,
     } = useConductorList({
         route: pageRoute,
         queryKey: qKey,
@@ -269,6 +270,7 @@ export const TabScene = ({
             hasNextPage={hasNextPage}
             isPending={isPending}
             isFetching={isFetching}
+            hideEmptyMsg={hideEmptyMsg}
             showListPreload
             listRef={uniRef}
             handleEndReached={handleEndReached}
@@ -475,7 +477,8 @@ export const TabSceneColumns = ({
                 <View
                     className={`${isRightColumn ? 'flex-auto' : 'w-full mx-auto'
                         } ${layoutName !== 'navigator'
-                            ? 'mt-0.5 sm:m-0 sm:p-3 lg:p-4'
+                            // No gap above the first block on phones: it meets the cover or tab row, as on native.
+                            ? 'sm:p-3 lg:p-4'
                             : (!pageRoute?.endpoint?.request_url ? 'sm:p-4 ' : '')
                         }${fillViewport ? ' h-full min-h-0 overflow-hidden' : ''}`}
                 >
@@ -809,7 +812,7 @@ export function SidebarNav({ routes, index, onSelect }) {
         const canNavigate = Boolean(route.canNavigate)
         const isActive = route.index === index
         const href = conductorHref(route.link || route.key)
-        const icon = route.image || route.icon || 'Circle'
+        const icon = route.image || route.icon || ''
 
         return (
             <View key={`lmenu-${route.index}`} className="w-full">
@@ -871,7 +874,7 @@ function NavigatorMenuLink({ item, index, setIndex }) {
         <MenuItemSidebar
             addon={getAddon(item.addon)}
             title={item.title}
-            icon={item.icon || 'Circle'}
+            icon={item.icon || ''}
             isActive={isActive}
         />
     )
@@ -1159,7 +1162,7 @@ export const HeaderContainer = ({
  * The bar frame around the tabs: optional section title on the left, `children`
  * (the tabs) in the middle, "Add" buttons on the right.
  *
- * On non-profile pages it hides itself from `hide_top_menu_from` (xl) up —
+ * On non-profile pages it hides itself from `hide_top_menu_from` (lg) up —
  * at that width the left column takes over both the nav and the title.
  * Wired from HeaderContainer in this file; page header lives in index.web.js.
  */
@@ -1186,25 +1189,27 @@ export function TopSidebar({
                 className={`${isHideOnDesktop ? '' : 'mx-auto'} ${widthClass} mx-auto`}
             >
                     {/*
-                      * Section title on the tab subbar, for the middle viewport range.
-                      * Below `lg` the title already shows in the page sub-header (see
-                      * the `setHeader` effect in index.web.js), and from
-                      * `hide_top_menu_from` (xl) up this whole bar is hidden and the
-                      * left column carries the title — so `hidden lg:flex` alone lands
-                      * it exactly in the gap where nothing else shows it. No `xl:`
-                      * gate is needed: the parent is already hidden there.
+                      * Section title on the tab row, on desktop only: phones and tablets show it
+                      * in the page header's main row, and from `hide_top_menu_from` (lg) this
+                      * whole bar is hidden and the left column carries the title. It shows only
+                      * where a fork keeps the bar past `lg` (a wider `hide_top_menu_from`).
                       */}
                     <Row className="w-full items-center gap-4 min-w-0">
                         {(!!title && conductorTheme.show_title !== false && isHideOnDesktop) && (
-                            <Row className="hidden lg:flex items-center gap-2 shrink-0 min-w-0 pl-3 lg:pl-4">
+                            // At most a third of the row, so a long section name truncates and the tabs keep their room.
+                            <Row className="hidden lg:flex items-center gap-2 shrink min-w-0 max-w-1/3 pl-4">
+                                {/* The desktop sidebar title's icon (SidebarTitle), from the same settings. */}
                                 {!!icon && (
-                                    <Icon
-                                        icon={icon}
-                                        size={22}
-                                        className="text-card-foreground shrink-0"
-                                    />
+                                    <View className={`${appSetting('conductor', 'sidebar_title_icon')} shrink-0`}>
+                                        <Icon
+                                            icon={icon}
+                                            size={appSetting('conductor', 'sidebar_title_icon_size')}
+                                            className={appSetting('conductor', 'sidebar_title_icon_class')}
+                                        />
+                                    </View>
                                 )}
-                                <Text className="text-xl font-bold tracking-tight text-card-foreground font-main truncate">
+                                {/* The phone header title's size and weight (TextHeader), 16px in like the logo. */}
+                                <Text className="text-2xl font-bold tracking-tight text-card-foreground font-main truncate">
                                     {title}
                                 </Text>
                             </Row>

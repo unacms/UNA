@@ -38,9 +38,10 @@
 
     /* The logo link wraps a block level <img>, so as a plain inline element it has no inline box
        of its own and the browser paints no focus ring on it at all. Giving it a box makes the
-       ring below visible without moving the logo. */
+       ring below visible without moving the logo. At least 44px each way, like the header's
+       buttons, however small the logo is drawn. */
     #bx-logo-container > a {
-        @apply inline-flex items-center align-middle rounded;
+        @apply inline-flex items-center justify-center align-middle min-h-11 min-w-11 rounded;
     }
 
     /* Public site only - Studio has its own .bx-std focus rings further down, and body.bx-std keeps
@@ -54,7 +55,7 @@
     body:not(.bx-std) button:not(.bx-btn):focus-visible,
     body:not(.bx-std) summary:focus-visible,
     body:not(.bx-std) [tabindex="0"]:focus-visible {
-        @apply outline outline-2 outline-offset-2 outline-blue-500 dark:outline-blue-400;
+        @apply outline outline-2 outline-offset-2 outline-blue-600 dark:outline-blue-400;
     }
 
     /* The main menu row is inside .bx-menu-more-auto-wrapper, which sets overflow:hidden, so an
@@ -64,9 +65,41 @@
         @apply outline-offset-0;
     }
 
+    /* Rich text reads the same on the site and in NEO (.u-vanilla-html in
+       neo/packages/app/design/styles/utilities.css): NEO's zinc text colours,
+       blue links, 1.5 line height, 16px between paragraphs, lists indented 1.5rem. */
     .bx-def-vanilla-html {
-        @apply prose dark:prose-invert;
-        @apply prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:font-medium prose-a:no-underline hover:prose-a:underline visited:prose-a:text-purple-700 dark:visited:prose-a:text-purple-400;
+        @apply prose prose-zinc dark:prose-invert leading-normal;
+        @apply prose-a:text-blue-700 dark:prose-a:text-blue-400 prose-a:font-normal;
+        --tw-prose-body: theme('colors.zinc.600');
+        --tw-prose-headings: theme('colors.zinc.900');
+        --tw-prose-bold: theme('colors.zinc.900');
+        --tw-prose-counters: theme('colors.zinc.600');
+        --tw-prose-bullets: theme('colors.zinc.600');
+        --tw-prose-hr: theme('colors.zinc.300');
+        --tw-prose-quotes: theme('colors.zinc.600');
+        --tw-prose-quote-borders: theme('colors.zinc.300');
+        --tw-prose-invert-body: theme('colors.zinc.400');
+        --tw-prose-invert-headings: theme('colors.zinc.100');
+        --tw-prose-invert-bold: theme('colors.zinc.100');
+        --tw-prose-invert-counters: theme('colors.zinc.400');
+        --tw-prose-invert-bullets: theme('colors.zinc.400');
+        --tw-prose-invert-hr: theme('colors.zinc.700');
+        --tw-prose-invert-quotes: theme('colors.zinc.400');
+        --tw-prose-invert-quote-borders: theme('colors.zinc.700');
+    }
+
+    /* Links are underlined: their blue is as light as the body text, so colour alone
+       doesn't mark them (WCAG 1.4.1). Mentions and hashtags keep their own style. */
+    .bx-def-vanilla-html a:not(.bx-mention-link, .bx-menthion-link, .bx-tag-link, .bx-btn) {
+        text-decoration-line: underline;
+        text-decoration-thickness: from-font;
+        text-underline-offset: 0.2em;
+        text-decoration-color: color-mix(in srgb, currentColor 50%, transparent);
+    }
+
+    .bx-def-vanilla-html a:not(.bx-mention-link, .bx-menthion-link, .bx-tag-link, .bx-btn):hover {
+        text-decoration-color: currentColor;
     }
     
     .bx-def-vanilla-html.bx-def-vh-sm {
@@ -90,7 +123,7 @@
     }
 
     .bx-artificer .bx-menthion-link {
-        @apply font-normal text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300;
+        @apply font-normal text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
     }
 
     .bx-artificer .bx-def-box-sizing {
@@ -502,16 +535,18 @@
     /* Borders */
     .bx-std .bx-def-border,
     .bx-artificer .bx-def-border {
-        @apply border border-gray-200 dark:border-gray-700;
+        @apply border border-gray-300 dark:border-gray-700;
     }
     .bx-artificer .bx-def-round-corners {
         @apply rounded-xl;
     }
 
     /* Fonts */
-    .bx-def-font,
+    .bx-def-font {
+        @apply font-inter text-gray-600 dark:text-gray-400;
+    }
     .bx-artificer .bx-def-font-inputs:not(.bx-btn) {
-        @apply font-inter text-gray-500 dark:text-gray-400;
+        @apply font-inter text-gray-800 dark:text-gray-200;
     }
 
     .bx-def-font-grayed {
@@ -520,28 +555,28 @@
 
     .bx-def-font-author,
     .bx-def-font-author.bx-def-font-meta {
-        @apply text-sm text-gray-800 hover:text-black dark:text-gray-300 dark:hover:text-white font-semibold;
+        @apply text-sm text-gray-800 hover:text-black dark:text-gray-200 dark:hover:text-white font-semibold;
     }
 
     .bx-def-font-meta {
         @apply text-sm;
     }
     .bx-def-font-meta:not(a) {
-        @apply text-gray-700 dark:text-gray-400 text-opacity-60;
+        @apply text-gray-600 dark:text-gray-400;
     }
     a.bx-def-font-meta {
         @apply hover:underline;
     }
 
     .bx-artificer .bx-def-a-colored {
-        @apply text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300;
+        @apply text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
     }
 
     .bx-std a.bx-def-font-meta,
     .bx-std a.bx-def-font-meta.bx-def-a-colored,
     .bx-artificer a.bx-def-font-meta,
     .bx-artificer a.bx-def-font-meta.bx-def-a-colored {
-        @apply text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50;
+        @apply text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50;
     }
     .bx-artificer .bx-def-font-meta:not(a) {
         @apply text-opacity-100;
@@ -580,7 +615,23 @@
     }
 
     .bx-def-vanilla-html p {
-        @apply leading-7 [&:not(:first-child)]:mt-6;
+        @apply my-4;
+    }
+
+    .bx-def-vanilla-html :is(ul, ol) {
+        @apply my-4 ps-6;
+    }
+
+    .bx-def-vanilla-html li :is(ul, ol) {
+        @apply my-1.5;
+    }
+
+    .bx-def-vanilla-html li {
+        @apply mt-0 mb-1.5 ps-0;
+    }
+
+    .bx-def-vanilla-html li > p {
+        @apply my-0;
     }
 
     .bx-def-vanilla-html blockquote {
@@ -604,11 +655,58 @@
     }
 
     .bx-def-vanilla-html ul {
-        @apply my-6 ml-6 list-disc [&>li]:mt-2;
+        @apply list-disc;
     }
 
     .bx-def-vanilla-html code {
         @apply relative rounded px-[0.3rem] py-[0.2rem] text-sm font-semibold;
+    }
+
+    /* Footer: quiet text links, as in NEO's footer (NeoButton style `text`): 14px, secondary text that turns
+       foreground on hover and focus, at least 28px tall. Each link's touch area reaches into the menu's gaps
+       (gap-x-4 gap-y-2, menu_footer.html) without overlapping a neighbour. The page you're on stays in the
+       foreground colour (aria-current, BxBaseMenuFooter). */
+    #bx-menu-footer > li {
+        @apply text-sm font-normal text-gray-600 dark:text-gray-400;
+    }
+    #bx-menu-footer > li > a {
+        @apply relative inline-flex items-center min-h-7 font-normal transition-colors hover:no-underline;
+        @apply hover:text-gray-950 dark:hover:text-gray-50 focus-visible:text-gray-950 dark:focus-visible:text-gray-50;
+        @apply before:absolute before:-inset-x-2 before:-inset-y-1 before:content-[''];
+    }
+    #bx-menu-footer > li > a[aria-current="page"] {
+        @apply text-gray-950 dark:text-gray-50;
+    }
+    /* Text items (the copyright notice) line up with the links but don't react to the pointer. */
+    #bx-menu-footer .bx-menu-footer-text {
+        @apply inline-flex items-center min-h-7;
+    }
+    /* From desktop width the tools (language, theme, sounds, Powered by) sit on the right, as in the apps. */
+    #bx-menu-footer > li.bx-menu-footer-tools-start {
+        @apply lg:ms-auto;
+    }
+    /* The language in use, by its code, as in the apps. */
+    #bx-menu-footer .bx-menu-footer-lang {
+        @apply text-xs font-semibold uppercase tracking-wide;
+    }
+    /* Icons at the text's size, as in the apps: 16px beside 14px text. */
+    #bx-menu-footer > li > a > .lucide {
+        @apply size-4;
+    }
+    /* The Powered by badge is the UNA logo; its name ("Powered by UNA", a language string) shows above it on hover and
+       keyboard focus, lined up with the logo's end so it stays on the page where the badge ends the row. */
+    #bx-menu-footer .bx-menu-footer-tooltip {
+        @apply pointer-events-none absolute bottom-full end-0 z-10 mb-2 whitespace-nowrap rounded-md px-2 py-1;
+        @apply bg-gray-900 dark:bg-gray-100 text-xs font-medium text-white dark:text-gray-900;
+        @apply opacity-0 transition-opacity duration-150;
+    }
+    @media (hover: hover) {
+        #bx-menu-footer > li > a:hover .bx-menu-footer-tooltip {
+            @apply opacity-100;
+        }
+    }
+    #bx-menu-footer > li > a:focus-visible .bx-menu-footer-tooltip {
+        @apply opacity-100;
     }
 
     /* Common elements: Icons. */
@@ -648,7 +746,7 @@
         @apply gap-4 lg:gap-6;
     }
     .bx-def-color-bg-page{
-        @apply bg-gray-100 dark:bg-gray-900;
+        @apply bg-gray-100 dark:bg-gray-950;
     }
 
     /* Common elements: Blocks, Boxes, etc. */
@@ -692,20 +790,20 @@
     }
 
     .bx-db-title {
-        @apply text-lg xl:text-xl font-bold text-gray-800 dark:text-gray-100 align-middle;
+        @apply text-lg xl:text-xl font-bold text-gray-900 dark:text-gray-100 align-middle;
     }
 
     /* Common Elements: HR */
     .bx-std .bx-def-hr,
     .bx-artificer .bx-def-hr {
-        @apply mx-0 p-0 border-t border-gray-200 dark:border-gray-700;
+        @apply mx-0 p-0 border-t border-gray-300 dark:border-gray-700;
     }
     .bx-std .bx-def-hr {
         @apply border-black/10 dark:border-white/10; /* Studio: the translucent hairline of the block dividers */
     }
     /* Grid header lines: drawn by the header cells (the <hr> rows that used to sit in <thead> read as fake captions and headerless cells). */
     .bx-grid-table thead th {
-        @apply border-t border-b border-gray-200 dark:border-gray-700;
+        @apply border-t border-b border-gray-300 dark:border-gray-700;
     }
     .bx-std .bx-grid-table thead th {
         @apply border-black/10 dark:border-white/10;
@@ -738,18 +836,18 @@
         @apply bg-gray-100 dark:bg-gray-700;
     }
     .bx-btn-text {
-        @apply text-sm text-gray-700 dark:text-gray-100 font-medium ;
+        @apply text-sm text-gray-800 dark:text-gray-200 font-medium ;
     }
     .bx-btn-hover {
-        @apply hover:bg-white dark:hover:bg-gray-600;
+        @apply hover:bg-gray-200 dark:hover:bg-gray-600;
         @apply hover:border-gray-300 dark:hover:border-gray-500;
-        @apply hover:text-gray-800 dark:hover:text-white;
+        @apply hover:text-gray-900 dark:hover:text-white;
         @apply hover:no-underline;
         @apply hover:-translate-y-px;
     }
     .bx-btn-focus {
         @apply focus:outline-none;
-        @apply focus-visible:border-blue-500 dark:focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900;
+        @apply focus-visible:border-blue-600 dark:focus-visible:border-blue-400 focus-visible:ring-2 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-800;
     }
     
     .bx-btn-active {
@@ -805,8 +903,8 @@
     }
 
     .bx-btn.bx-btn-primary {
-        @apply bg-blue-600 hover:bg-blue-700 active:bg-blue-800 dark:bg-blue-700 dark:hover:bg-blue-600 dark:active:bg-blue-800;
-        @apply border border-blue-600 hover:border-blue-700 active:border-blue-800 dark:border-blue-600 dark:hover:border-blue-500 dark:active:border-blue-700;
+        @apply bg-blue-600 hover:bg-blue-700 active:bg-blue-800;
+        @apply border border-blue-600 hover:border-blue-700 active:border-blue-800;
         @apply text-white hover:text-white active:text-white dark:text-white dark:hover:text-white dark:active:text-white;
     }
 
@@ -868,7 +966,7 @@
     .bx-artificer form a:not(.bx-btn),
     .bx-artificer .sys-jf-agreement a:not(.bx-btn), 
     .bx-artificer .sys-lf-agreement a:not(.bx-btn) {
-        @apply font-normal text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300;
+        @apply font-normal text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
     }
 
     .bx-artificer .bx-form-caption,
@@ -882,7 +980,7 @@
 
     .bx-artificer .bx-form-required,
     .bx-artificer .bx-form-warn {
-        @apply text-red-400;
+        @apply text-red-600 dark:text-red-400;
     }
 
     .bx-form-section.bx-form-section-header {
@@ -927,9 +1025,9 @@
     .bx-artificer .bx-form-input-wrapper-price span {
         @apply block w-full px-3 py-2;
         @apply bg-gray-50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-900;
-        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-500 focus:border-opacity-70 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none;
-        @apply leading-6 text-base font-medium text-gray-700 dark:text-gray-300 focus:text-gray-900 dark:focus:text-gray-100;
-        @apply placeholder:text-gray-500 dark:focus:placeholder:text-gray-700 focus:placeholder:text-gray-300;
+        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-600 dark:focus:border-blue-400 focus:ring-1 focus:ring-blue-600 dark:focus:ring-blue-400 focus:outline-none;
+        @apply leading-6 text-base font-medium text-gray-800 dark:text-gray-200 focus:text-gray-900 dark:focus:text-gray-100;
+        @apply placeholder:text-gray-600 dark:placeholder:text-gray-400;
         @apply rounded-md;
     }
 	
@@ -938,10 +1036,20 @@
     .bx-artificer .bx-form-input-wrapper-password {
         @apply relative block w-full;
         @apply bg-gray-50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-900;
-        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-500 focus:border-opacity-70 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none;
-        @apply leading-6 text-base font-medium text-gray-700 dark:text-gray-300 focus:text-gray-900 dark:focus:text-gray-100;
-        @apply placeholder:text-gray-500 dark:focus:placeholder:text-gray-700 focus:placeholder:text-gray-300;
+        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-600 dark:focus:border-blue-400 focus:ring-1 focus:ring-blue-600 dark:focus:ring-blue-400 focus:outline-none;
+        @apply leading-6 text-base font-medium text-gray-800 dark:text-gray-200 focus:text-gray-900 dark:focus:text-gray-100;
+        @apply placeholder:text-gray-600 dark:placeholder:text-gray-400;
         @apply rounded-md;
+    }
+    /* The wrapper carries the field look (the site inputs' below) and its focus ring, as the input inside it takes the focus; that input is bare and takes the sides. */
+    .bx-artificer .bx-form-input-wrapper-password {
+        @apply rounded-xl border-0 p-0 font-normal;
+        @apply bg-white dark:bg-gray-800 focus-within:bg-white dark:focus-within:bg-gray-800;
+        @apply text-gray-800 dark:text-gray-200;
+        @apply ring-1 ring-inset ring-black/10 dark:ring-white/5;
+        @apply transition-shadow duration-200;
+        @apply focus-within:outline focus-within:outline-2 focus-within:outline-offset-0 focus-within:outline-blue-600 dark:focus-within:outline-blue-500;
+        @apply focus-within:ring-1 focus-within:ring-inset focus-within:ring-blue-600/80 dark:focus-within:ring-blue-500/80;
     }
     .bx-std .bx-form-input-wrapper-password .bx-form-input-password,
     .bx-artificer .bx-form-input-wrapper-password .bx-form-input-password {
@@ -949,10 +1057,78 @@
         @apply rounded-md;
     }
     .bx-artificer .bx-form-input-wrapper-password .bx-form-input-password {
-        @apply ltr:pl-3 rtl:pl-8 ltr:pr-8 rtl:pr-3;
+        @apply ltr:pl-4 rtl:pl-12 ltr:pr-12 rtl:pr-4;
+    }
+    /* Show / Hide password on the site: NEO's borderless small (36px) round button, gray-800 (gray-200 in dark), a light fill on hover and press; its place is in Artificer's forms.css. Studio keeps its own. */
+    .bx-artificer .bx-form-input-wrapper-password > .password-show,
+    .bx-artificer .bx-form-input-wrapper-password > .password-hide {
+        @apply flex items-center justify-center w-9 h-9 rounded-full text-gray-800 dark:text-gray-200 hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700/50 dark:active:bg-gray-700 transition-colors duration-200;
     }
 
-    /* Studio: Inputs: the buttons' 8px radius, translucent black/5 (white/10 in dark) fill, a 1px inset hairline instead of a border, a 2px inset blue ring on focus. Single-line fields are 32px like the buttons; textareas and lists keep their height. (The launcher's own search field in studio/template/page_breadcrumb.html is bare, see menu_top.css.) */
+    /* Site inputs as NEO's Input (packages/app/settings/theme/inputs.js): a single-line field is 52px, a large button's height, with 16px sides,
+       16px regular text, 12px corners, the card's fill and a 1px inset hairline instead of a border. Focus has the ring every focused element has
+       in NEO: a 2px solid accent outline (blue-600, blue-500 in dark, 3:1 and more on the page and on a card) around a 1px accent edge. Textareas
+       and lists keep their height. */
+    .bx-artificer .bx-form-input-slider,
+    .bx-artificer .bx-form-input-doublerange,
+    .bx-artificer .bx-form-input-select_multiple,
+    .bx-artificer .bx-form-input-select,
+    .bx-artificer .bx-form-input-number,
+    .bx-artificer .bx-form-input-time,
+    .bx-artificer .bx-form-input-datepicker,
+    .bx-artificer .bx-form-input-datetime,
+    .bx-artificer .bx-form-input-textarea:not(.bx-form-input-html),
+    .bx-artificer .bx-form-input-text,
+    .bx-artificer .bx-form-input-price,
+    .bx-artificer .bx-form-input-wrapper-price span {
+        @apply rounded-xl border-0 px-4 font-normal;
+        @apply bg-white dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-800;
+        @apply text-gray-800 dark:text-gray-200 focus:text-gray-800 dark:focus:text-gray-200;
+        @apply placeholder:text-gray-600 dark:placeholder:text-gray-400;
+        @apply ring-1 ring-inset ring-black/10 dark:ring-white/5;
+        @apply transition-shadow duration-200;
+    }
+    .bx-artificer .bx-form-input-slider:focus-visible,
+    .bx-artificer .bx-form-input-doublerange:focus-visible,
+    .bx-artificer .bx-form-input-select_multiple:focus-visible,
+    .bx-artificer .bx-form-input-select:focus-visible,
+    .bx-artificer .bx-form-input-number:focus-visible,
+    .bx-artificer .bx-form-input-time:focus-visible,
+    .bx-artificer .bx-form-input-datepicker:focus-visible,
+    .bx-artificer .bx-form-input-datetime:focus-visible,
+    .bx-artificer .bx-form-input-textarea:not(.bx-form-input-html):focus-visible,
+    .bx-artificer .bx-form-input-text:focus-visible,
+    .bx-artificer .bx-form-input-price:focus-visible {
+        @apply outline outline-2 outline-offset-0 outline-blue-600 dark:outline-blue-500;
+        @apply ring-1 ring-inset ring-blue-600/80 dark:ring-blue-500/80;
+    }
+    /* The password field draws the look on its wrapper, so the input inside it is bare and takes the height and the sides. */
+    .bx-artificer .bx-form-input-wrapper-password .bx-form-input-password:focus-visible {
+        @apply outline-none ring-0;
+    }
+    .bx-artificer .bx-form-input-select,
+    .bx-artificer .bx-form-input-number,
+    .bx-artificer .bx-form-input-time,
+    .bx-artificer .bx-form-input-datepicker,
+    .bx-artificer .bx-form-input-datetime,
+    .bx-artificer .bx-form-input-text,
+    .bx-artificer .bx-form-input-price,
+    .bx-artificer .bx-form-input-wrapper-password .bx-form-input-password {
+        @apply min-h-[3.25rem] py-2 leading-6;
+    }
+
+    /* A single select is a menu, not a text field: NEO's chevron (Lucide chevron-down, 20px, muted: gray-600, gray-400 in dark) 16px from the end. */
+    .bx-artificer select.bx-form-input-select:not([multiple]) {
+        @apply appearance-none bg-no-repeat ltr:pr-11 rtl:pl-11 ltr:[background-position:right_1rem_center] rtl:[background-position:left_1rem_center];
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2352525b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+        background-size: 1.25rem 1.25rem;
+    }
+    .dark .bx-artificer select.bx-form-input-select:not([multiple]) {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    }
+
+    /* Studio: Inputs: the buttons' radius, translucent black/5 (white/10 in dark) fill, a 1px inset hairline instead of a border, a 2px inset blue ring on focus. Single-line fields are as tall as the buttons beside them:
+       small 36px with 14px text in toolbars (a grid's search, a block's top panel), regular 44px with 16px text and 12px corners in a form or a dialog; textareas and lists keep their height. (The launcher's own search field in studio/template/page_breadcrumb.html is bare, see menu_top.css.) */
     .bx-std .bx-form-input-slider,
     .bx-std .bx-form-input-doublerange,
     .bx-std .bx-form-input-select_multiple,
@@ -983,17 +1159,23 @@
     .bx-std .bx-form-input-price,
     .bx-std .bx-form-input-wrapper-price span,
     .bx-std .bx-form-input-wrapper-password {
-        @apply h-8 py-0 leading-5;
+        @apply h-9 py-0 leading-5;
+    }
+    .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) :is(.bx-form-input-slider, .bx-form-input-doublerange, .bx-form-input-select_multiple, .bx-form-input-select, .bx-form-input-number, .bx-form-input-time, .bx-form-input-datepicker, .bx-form-input-datetime, .bx-form-input-textarea:not(.bx-form-input-html), .bx-form-input-text, .bx-form-input-price, .bx-form-input-wrapper-price span, .bx-form-input-wrapper-password) {
+        @apply rounded-xl text-base;
+    }
+    .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) :is(.bx-form-input-select, .bx-form-input-number, .bx-form-input-time, .bx-form-input-datepicker, .bx-form-input-datetime, .bx-form-input-text, .bx-form-input-price, .bx-form-input-wrapper-price span, .bx-form-input-wrapper-password) {
+        @apply h-11 leading-6;
     }
     /* Native selects: a Lucide chevrons-up-down glyph on the right says "menu, not text field" (gray-500, gray-400 in dark). */
     .bx-std select.bx-form-input-select {
         @apply appearance-none pr-9 bg-no-repeat;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
         background-position: right 0.625rem center;
         background-size: 1rem 1rem;
     }
     .dark .bx-std select.bx-form-input-select {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
     }
     /* The password wrapper carries the field look; the input inside is bare, and the wrapper shows the focus ring for it. */
     .bx-std .bx-form-input-wrapper-password {
@@ -1002,6 +1184,9 @@
     .bx-std .bx-form-input-wrapper-password .bx-form-input-password {
         @apply h-full py-0 rounded-lg border-0 bg-transparent text-sm font-medium leading-5 text-inherit;
         @apply focus:outline-none focus:ring-0;
+    }
+    .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .bx-form-input-wrapper-password .bx-form-input-password {
+        @apply rounded-xl text-base leading-6;
     }
 
     /* Common elements: Forms: Checkbox/Radio Set Input */
@@ -1015,9 +1200,9 @@
     .bx-artificer .bx-form-input-wrapper-radio_set {
         @apply max-h-80 overflow-x-auto;
         @apply bg-gray-50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-900;
-        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-500 focus:border-opacity-70 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none;
-        @apply leading-6 text-base font-medium text-gray-700 dark:text-gray-300 focus:text-gray-900 dark:focus:text-gray-100;
-        @apply placeholder:text-gray-500 dark:focus:placeholder:text-gray-700 focus:placeholder:text-gray-300;
+        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-600 dark:focus:border-blue-400 focus:ring-1 focus:ring-blue-600 dark:focus:ring-blue-400 focus:outline-none;
+        @apply leading-6 text-base font-medium text-gray-800 dark:text-gray-200 focus:text-gray-900 dark:focus:text-gray-100;
+        @apply placeholder:text-gray-600 dark:placeholder:text-gray-400;
         @apply rounded-md;
     }
     /* Studio: the set container is a field too (see "Studio: Inputs"); this sits after the site rule above so it wins. */
@@ -1026,6 +1211,9 @@
         @apply rounded-lg border-0 text-sm font-medium;
         @apply bg-black/5 dark:bg-white/10 text-gray-900 dark:text-gray-100;
         @apply ring-1 ring-inset ring-black/10 dark:ring-white/15;
+    }
+    .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) :is(.bx-form-input-checkbox_set, .bx-form-input-radio_set) {
+        @apply rounded-xl text-base;
     }
 
     /* Common elements: Forms: Checkbox Input */
@@ -1039,14 +1227,17 @@
     .bx-form-input-radio {
         @apply block w-4 h-4;
         @apply bg-gray-50 dark:bg-gray-900/50 bg-origin-border;
-        @apply border-2 border-gray-300 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-500 focus:border-opacity-70;
-        @apply placeholder:text-gray-500 dark:focus:placeholder:text-gray-700 focus:placeholder:text-gray-300;
+        @apply border-2 border-gray-500 focus:border-blue-600 dark:focus:border-blue-400;
+        @apply placeholder:text-gray-600 dark:placeholder:text-gray-400;
         @apply scale-150 rounded;
         @apply appearance-none select-none;
     }
+    /* The checked fill is currentColor, so the site's input text colour (.bx-artificer .bx-def-font-inputs) must not win here. */
     .bx-def-font-inputs.bx-form-input-checkbox,
-    .bx-def-font-inputs.bx-form-input-radio {
-        @apply leading-6 text-base font-medium text-blue-600 dark:text-blue-600;
+    .bx-def-font-inputs.bx-form-input-radio,
+    .bx-artificer .bx-def-font-inputs.bx-form-input-checkbox,
+    .bx-artificer .bx-def-font-inputs.bx-form-input-radio {
+        @apply leading-6 text-base font-medium text-blue-600 dark:text-blue-500;
     }
     .bx-form-input-checkbox:checked,
     .bx-form-input-radio:checked {
@@ -1072,26 +1263,28 @@
     }
 
     /* Common elements: Forms: Switcher Input */
+    /* NEO's switch: the accent track when on, a gray one when off, a white knob. The off track is NEO's
+       control border (gray-500), so the switch is 3:1 against cards and the page in both states. */
     .bx-switcher-cont.on button {
-        @apply bg-white dark:bg-gray-800;
+        @apply bg-blue-600 dark:bg-blue-500;
     }
     .bx-switcher-cont.on button span {
-        @apply bg-green-500 dark:bg-green-500 ltr:translate-x-5 rtl:-translate-x-5;
+        @apply bg-white ltr:translate-x-5 rtl:-translate-x-5;
     }
     .bx-switcher-cont.off button {
-        @apply bg-gray-200 dark:bg-gray-900;
+        @apply bg-gray-500;
     }
     .bx-switcher-cont.off button span {
-        @apply bg-white dark:bg-gray-500 translate-x-0;
+        @apply bg-white translate-x-0;
     }
 
     /* Common elements: Forms: Autosuggestion Input */
     .bx-artificer .bx-form-input-text.bx-form-input-autotoken {
         @apply flex flex-wrap items-stretch w-full py-2 px-3 ;
         @apply bg-gray-50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-900;
-        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-500 focus:border-opacity-70 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none;
-        @apply leading-6 text-base font-medium text-gray-700 dark:text-gray-300 focus:text-gray-900 dark:focus:text-gray-100;
-        @apply placeholder:text-gray-500 dark:focus:placeholder:text-gray-700 focus:placeholder:text-gray-300;
+        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-600 dark:focus:border-blue-400 focus:ring-1 focus:ring-blue-600 dark:focus:ring-blue-400 focus:outline-none;
+        @apply leading-6 text-base font-medium text-gray-800 dark:text-gray-200 focus:text-gray-900 dark:focus:text-gray-100;
+        @apply placeholder:text-gray-600 dark:placeholder:text-gray-400;
         @apply rounded-md;
     }
     .bx-artificer .bx-form-input-autotoken b.val {
@@ -1102,6 +1295,21 @@
     /* Common elements: Popups */
     .bx-artificer > .bx-popup-wrapper {
         @apply max-h-full overflow-x-hidden overflow-y-auto;
+    }
+
+    /* A popup at an element (a menu, a pointer popup) is as tall as its content and scrolls that, not itself, so its
+       wrapper must not clip the popover shadow, which reaches 32px below the box (tailwind.smooth-shadow.js).
+       .bx-popup-active (common.css) makes the wrapper scroll too. */
+    .bx-artificer > .bx-popup-wrapper.bx-popup-with-pointer:not(.bx-popup-full-screen) {
+        @apply max-h-none overflow-visible;
+    }
+    /* Its content scrolls instead: never taller than the window, so the popup fits above or below its element and
+       every item stays reachable. :where() keeps it below the header menus' own lower cap (#bx-toolbar, further down)
+       and above the content's overflow-hidden (popup_trans.html). */
+    :where(.bx-artificer > .bx-popup-wrapper.bx-popup-with-pointer:not(.bx-popup-full-screen)) .bx-popup .bx-popup-content {
+        max-height: calc(100vh - 2rem);
+        max-height: calc(100dvh - 2rem);
+        @apply overflow-x-hidden overflow-y-auto overscroll-contain;
     }
 
     .bx-artificer .bx-popup-applied {
@@ -1189,7 +1397,7 @@
     }
 
     .bx-stl-mil-focus {
-        @apply focus:border-blue-500 dark:focus:border-blue-500 focus:border-opacity-70 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none;
+        @apply focus:border-blue-600 dark:focus:border-blue-400 focus:ring-1 focus:ring-blue-600 dark:focus:ring-blue-400 focus:outline-none;
     }
     
     .bx-stl-mil-active-bg {
@@ -1358,6 +1566,37 @@
         @apply bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white;
     }
 
+    /* Popup menus: one highlight slides under the items to the one the pointer is on (bx_menu_highlight in
+       functions.js) in the items' hover colour, and the items don't light up on their own. It is the list's ::before
+       (only clearfix used it), 8px round inside the popup's 8px inset, so its corners follow the popup's. */
+    .bx-popup .bx-menu-highlight-list,
+    .bx-popup .bx-menu-highlight-list > li {
+        @apply relative;
+    }
+    .bx-popup .bx-menu-highlight-list::before {
+        content: '';
+        @apply block absolute top-0 left-0 rounded-lg pointer-events-none opacity-0 bg-gray-200/50 dark:bg-gray-700/50;
+        width: var(--bx-menu-highlight-w, 0);
+        height: var(--bx-menu-highlight-h, 0);
+        transform: translate(var(--bx-menu-highlight-x, 0), var(--bx-menu-highlight-y, 0));
+        transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1), width 150ms cubic-bezier(0.22, 1, 0.36, 1), height 150ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms ease-out;
+    }
+    .bx-popup .bx-menu-highlight-list.bx-menu-highlight-on::before {
+        @apply opacity-100;
+    }
+    .bx-popup .bx-menu-highlight-list.bx-menu-highlight-jump::before {
+        transition: opacity 150ms ease-out;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .bx-popup .bx-menu-highlight-list::before {
+            transition: opacity 150ms ease-out;
+        }
+    }
+    .bx-popup .bx-menu-highlight-list > li:not(.bx-menu-tab-active):hover,
+    .bx-popup .bx-menu-highlight-list > li:not(.bx-menu-tab-active) a:hover {
+        background-color: transparent;
+    }
+
     /* Common elements: Toolbar menu */
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item .bx-menu-toolbar-item-unit {
         @apply border-[6px] border-transparent; /* 32px avatar + 2 x 6px = 44px, like the other header buttons */
@@ -1475,7 +1714,7 @@
 
     /* Common elements: Profile Stats menu */
     .bx-artificer .bx-menu-profile-stats.bx-menu-ver li.bx-menu-tab-active {
-        @apply bg-slate-900/[.08] dark:bg-slate-900 ring-1 ring-gray-200 dark:ring-gray-800 text-gray-900 dark:text-white;
+        @apply bg-gray-900/[.08] dark:bg-gray-900 ring-1 ring-gray-200 dark:ring-gray-800 text-gray-900 dark:text-white;
     }
     .bx-artificer .bx-menu-profile-stats.bx-menu-ver li.bx-psmi-show-more,
     .bx-artificer .bx-menu-profile-stats.bx-menu-ver li.bx-psmi-show-less {
@@ -1493,9 +1732,12 @@
     }
 
 
-    /* Common elements: Informers */
+    /* Common elements: Informers. A message sits in the page like a block: the page wrapper's gutter (informer.html),
+       the block's corners and padding (bx-def-border-radius-block, bx-content-padding-block on each message). The
+       36px icon, the first line of the text and the 36px button line up at the top; the button stays on the right
+       while the text has room for 15rem beside it, and goes under the text when it does not. */
     .bx-informer-msg {
-        @apply flex items-center gap-3 py-3 px-4 rounded-xl ring-1 ring-inset text-sm leading-5;
+        @apply flex items-start gap-3 ring-1 ring-inset text-sm leading-5;
     }
     .bx-informer-indicator {
         @apply flex-none flex items-center justify-center w-9 h-9 rounded-full;
@@ -1503,8 +1745,11 @@
     .bx-informer-indicator .sys-icon {
         @apply w-5 h-5 leading-5 text-xl text-center;
     }
+    .bx-informer-body {
+        @apply flex-1 min-w-0 flex flex-wrap items-start gap-x-4 gap-y-3;
+    }
     .bx-informer-content {
-        @apply flex-1 min-w-0 font-medium;
+        @apply flex-1 basis-60 min-w-0 py-2 font-medium;
     }
     .bx-informer-content a:not(.bx-btn) {
         @apply font-semibold underline underline-offset-2 text-inherit hover:opacity-80; /* the message colour keeps 4.5:1 on the tinted plates; the site link blue does not on yellow */
@@ -1587,7 +1832,7 @@
 
     .bx-base-text-unit-title a,
     .bx-tl-title a {
-        @apply text-gray-800 hover:text-blue-500 dark:text-gray-100 dark:hover:text-blue-400 hover:no-underline;
+        @apply text-gray-800 hover:text-blue-700 dark:text-gray-100 dark:hover:text-blue-400 hover:no-underline;
     }
 
     .bx-base-text-unit-ext .bx-base-text-unit-text {
@@ -1644,9 +1889,11 @@
         @apply bg-gray-200 dark:bg-black;
     }
 
-    /* Active dock item and the hover halo below: a 3px ring 1px off the tile. */
+    /* Active dock item: the sidebar's active item round its tile, as a ring: 0.5rem of black/10 (white/10 in dark), one step over the hover
+       halo's black/5, straight off the tile like the buttons' halo (the tile's own outer hairline is its inner edge), so neighbours 18px apart
+       keep 2px between their rings. The app is named beside the current-app tile in the breadcrumb too, so the ring is not its only cue. */
     .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon {
-        @apply ring ring-blue-300/50 ring-offset-1 ring-offset-white dark:ring-offset-black;
+        @apply ring-[0.5rem] ring-black/10 dark:ring-white/10;
     }
     /* The divider follows the dock items it separates: both are hidden below md. */
     .bx-std .bx-menu-top-center .bx-menu-item-divider {
@@ -1682,16 +1929,31 @@
         @apply transition duration-300 active:duration-100 active:scale-95;
         @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5),0_0_0_1px_rgb(0_0_0/0.1)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
     }
-    /* The header's own controls keep a hover halo, drawn on the element under the ::after hairlines: a 4px black/10 (white/10 in dark) ring
-       straight off the plate, no offset gap (an offset ring reads as a bright halo in the light scheme). The dock and sidebar tiles use the same halo. */
+    /* The header's own controls keep a hover halo, drawn on the element under the ::after hairlines: a 0.5rem (8px) black/10 (white/10 in dark) ring
+       straight off the plate, as wide as the sidebar items' background round their tiles (16px outer corners), no offset gap (an offset ring
+       reads as a bright halo in the light scheme). The plate's outer hairline is the halo's inner edge, a 1px line that sets the two apart.
+       In rem like the bar's padding and corners, so the tile (0.5rem corners), the halo (1rem) and the bar (1.5rem) stay concentric at any text size.
+       Its black/5 (white/5) is the sidebar items' hover background, and the active dock item takes their active black/10 (white/10). */
     .bx-std .bx-menu-toolbar .bx-menu-tab-item,
     .bx-std .bx-std-search-trigger,
     .bx-std .bx-std-header-btn {
-        @apply hover:ring-4 hover:ring-black/10 dark:hover:ring-white/10;
+        @apply hover:ring-[0.5rem] hover:ring-black/5 dark:hover:ring-white/5;
+    }
+    /* Dock and current-app tiles: the same halo, straight off the tile: its art carries the buttons' two hairlines (below), so the outer one is the
+       halo's inner edge as on the buttons. The selected dock item keeps its active ring and a keyboard-focused one its focus ring
+       (left out with :where, so the halo gains no specificity over either). */
+    .bx-std .bx-menu-top-center li:where(:not(.bx-menu-tab-active)) a:where(:not(:focus-visible)) .bx-mi-icon,
+    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile {
+        @apply hover:ring-[0.5rem] hover:ring-black/5 dark:hover:ring-white/5;
     }
     .bx-std .bx-menu-toolbar .bx-menu-tab-item a,
     .bx-std .bx-menu-toolbar .bx-menu-tab-item button {
         @apply text-black/80 dark:text-white/80 hover:text-black dark:hover:text-white;
+    }
+    /* A 24px glyph in each 36px header button (the tmi-*.svg files are drawn at 20px for their other uses). */
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item svg,
+    .bx-std .bx-std-search-trigger svg {
+        @apply w-6 h-6;
     }
 
     /* Studio surfaces: translucent white (60% light, 6% dark) with an inset ring (white 50% light, 2.5% dark) and an outer shadow, no border. */
@@ -1722,13 +1984,10 @@
         @apply bg-black/10 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/10;
         @apply font-semibold;
     }
-    /* The item background plays the role of the header icons' hover halo; the icon only gets a second hairline ring. */
+    /* The item background (8px round the tile) plays the role of the header icons' hover halo, and the tile is set apart from it the same
+       way: by its own outer hairline (the buttons' pair, below), in both schemes. */
     .bx-std-pmen-item .bx-std-pmen-ic-icon {
         @apply duration-300;
-    }
-    .bx-std-pmen-item:hover .bx-std-pmen-ic-icon,
-    .bx-std-pmen-item.bx-menu-tab-active .bx-std-pmen-ic-icon {
-        @apply ring-1 ring-black/10 dark:ring-white/10;
     }
     .bx-std-pmen-item a {
         @apply text-gray-800 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white;
@@ -1756,14 +2015,20 @@
     .bx-std .bx-icon-tile:not(.bx-std-pmen-ic-icon):not(.bx-std-menu-top .bx-icon-tile) {
         @apply after:ring-1 after:ring-inset after:ring-black/10 dark:after:ring-white/15;
     }
-    /* 32px art tiles in the header (dock, current app) and the sidebar: the header buttons' plate under the artwork (isolate keeps the z-index:-1 image above it). In the light scheme the artwork keeps a single dark inset hairline (black/10), which crisps white-chrome tiles and vanishes on coloured plates, where the buttons' white inset plus black outer pair would read as two fuzzy gray edges around mid-tone art; the dark scheme uses the buttons' hairlines. */
+    /* Art tiles in the header (dock, current app) and the sidebar, all 36px: the header buttons' plate under the artwork (isolate keeps the z-index:-1 image above it). */
     .bx-std .bx-std-menu-top .bx-icon-tile,
     .bx-std .bx-std-pmen-ic-icon {
         @apply isolate border-0 bg-gradient-to-b from-white to-black/5 dark:from-white/10 dark:to-white/5;
-        @apply after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.1)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
+    }
+    /* The art itself runs 1px past the tile (menu_top.css, general.css), as far as a button's outer hairline reaches, and a 1px black/20 line
+       over that outer pixel darkens the art's own edge: a darker shade of whatever colour the icon has there, so the edge is always darker than
+       the icon and never a gray that clashes with it, in both schemes. The tile buttons in the sidebar (plain glyphs) keep the buttons' hairlines. */
+    .bx-std .bx-std-menu-top .bx-icon-tile,
+    .bx-std .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) {
+        @apply after:-inset-px after:rounded-[calc(0.5rem_+_1px)] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.2)];
     }
 
-    /* 32px tiles and buttons in the header: a tight stack that stays inside the bar. The md stack above is sized for the 72px launcher tiles and lands mostly below the bar, where it reads as no shadow at all. */
+    /* Tiles and buttons in the header (36px): a tight stack that stays inside the bar. The md stack above is sized for the 72px launcher tiles and lands mostly below the bar, where it reads as no shadow at all. */
     .bx-std .bx-std-menu-top .bx-icon-tile,
     .bx-std .bx-menu-toolbar .bx-menu-tab-item,
     .bx-std .bx-std-search-trigger,
@@ -1783,9 +2048,9 @@
         @apply text-black/80 dark:text-white/80;
         @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5),0_0_0_1px_rgb(0_0_0/0.1)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
     }
-    /* 20px glyph in the 32px tile, like the header buttons (the svg fills the padding box; font icons get the same size). */
+    /* 24px glyph in the 36px tile, like the header buttons (the svg fills the 6px padding box, menu_side.html; font icons get the same size). */
     .bx-std .bx-std-tile-btn > .sys-icon {
-        @apply flex items-center justify-center text-[20px] leading-5;
+        @apply flex items-center justify-center text-[24px] leading-6;
         @apply text-black/80 dark:text-white/80;
     }
     /* group-hover can't be @applied here (Tailwind would put .group above .bx-std), so the hovered link is spelled out. */
@@ -1868,6 +2133,12 @@
     }
     .bx-std .bx-switcher-cont.on button {
         @apply bg-white dark:bg-white/10;
+    }
+    .bx-std .bx-switcher-cont.on button span {
+        @apply bg-green-500;
+    }
+    .bx-std .bx-switcher-cont.off button span {
+        @apply bg-white dark:bg-gray-500;
     }
     .bx-std .bx-theme-toggle {
         @apply flex p-0.5 rounded-full bg-black/5 dark:bg-white/5;
@@ -1982,12 +2253,23 @@
         @apply block w-5 h-5 text-inherit;
     }
 
-    /* Studio: Buttons: every .bx-btn is the header button (plate, hairline, shadow, hover halo and press scale come from the "Header buttons" rules above): 32px, 12px side padding, 14px text one step darker than the header glyphs so it passes AA on the plate. Primary is the same plate inverted: the dark-mode plate in light mode and the light-mode plate in dark mode. */
+    /* Studio: Buttons: every .bx-btn is the header button (plate, hairline, shadow, hover halo and press scale come from the "Header buttons" rules above), with the label one step darker than the header glyphs so it passes AA on the plate. Primary is the same plate inverted: the dark-mode plate in light mode and the light-mode plate in dark mode.
+       Sizes are the site's and NEO's scale: small 36px (12px sides, 14px text, 8px corners) is the default, for the toolbars, grid rows, cards and
+       captions; regular 44px (16px sides, 16px text, 12px corners) is a form's and a dialog's; .bx-btn-small, -mini (28px) and -large (52px) keep theirs anywhere. */
     .bx-std .bx-btn {
-        @apply inline-flex items-center justify-center h-8 min-h-8 px-3 py-0 rounded-lg;
+        @apply inline-flex items-center justify-center h-9 min-h-9 px-3 py-0 rounded-lg;
         @apply text-sm font-medium leading-5;
         @apply text-black/80 dark:text-white/80 hover:text-black dark:hover:text-white active:text-black dark:active:text-white;
         @apply hover:translate-y-0 active:translate-y-0; /* the site button lifts on hover and sinks on press; the header button scales instead */
+    }
+    .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .bx-btn:where(:not(.bx-btn-small, .bx-btn-mini, .bx-btn-large, .bx-btn-xlarge)) {
+        @apply h-11 min-h-11 px-4 rounded-xl text-base leading-6;
+    }
+    .bx-std .bx-btn.bx-btn-mini {
+        @apply h-7 min-h-7 px-2.5 rounded-md text-xs leading-4;
+    }
+    .bx-std .bx-btn.bx-btn-large {
+        @apply h-[3.25rem] min-h-[3.25rem] px-6 rounded-xl text-base leading-6;
     }
     /* The header's skip link is a .bx-btn.sr-only: keep it off-screen until focused (sr-only spelled out, Tailwind refuses to @apply it here), the button rules above would otherwise put it in the flow. */
     .bx-std .bx-btn.sr-only:not(:focus) {
@@ -2002,29 +2284,50 @@
         border-width: 0;
     }
     .bx-std .bx-btn i,
-    .bx-std .bx-btn img,
-    /* Icon-only button: a 32px square with a 20px Lucide glyph (the name goes in aria-label and title). */
-    .bx-std .bx-btn.bx-btn-icon {
+    .bx-std .bx-btn img {
         @apply w-8 min-w-8 px-0;
     }
+    /* Icon-only button: a square of the button's height with a 24px Lucide glyph (16px in a mini one; the name goes in aria-label and title). */
+    .bx-std .bx-btn.bx-btn-icon {
+        @apply w-9 min-w-9 px-0;
+    }
     .bx-std .bx-btn.bx-btn-icon svg {
-        @apply w-5 h-5;
+        @apply w-6 h-6;
     }
     .bx-std .bx-btn svg {
         @apply w-4 h-4 leading-4;
     }
-    /* Icon-only buttons (grid row actions, caption and chart row actions): a 32px square with a 20px glyph, like the tiles. */
+    /* Icon-only buttons (grid row actions, caption and chart row actions): the same square with a 24px glyph, like the tiles. */
     .bx-std .bx-btn:has(> .sys-icon:only-child),
     .bx-std .bx-btn:has(> img:only-child),
     .bx-std .bx-btn:has(> div:only-child > .sys-icon:only-child),
     .bx-std .bx-btn:has(> div:only-child > svg:only-child) {
-        @apply w-8 px-0;
+        @apply w-9 px-0;
+    }
+    .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .bx-btn.bx-btn-icon:where(:not(.bx-btn-small, .bx-btn-mini, .bx-btn-large, .bx-btn-xlarge)),
+    .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .bx-btn:where(:not(.bx-btn-small, .bx-btn-mini, .bx-btn-large, .bx-btn-xlarge)):has(> .sys-icon:only-child, > img:only-child, > div:only-child > .sys-icon:only-child, > div:only-child > svg:only-child) {
+        @apply w-11 min-w-11;
+    }
+    .bx-std .bx-btn.bx-btn-mini.bx-btn-icon,
+    .bx-std .bx-btn.bx-btn-mini:has(> .sys-icon:only-child, > img:only-child, > div:only-child > .sys-icon:only-child, > div:only-child > svg:only-child) {
+        @apply w-7 min-w-7;
+    }
+    .bx-std .bx-btn.bx-btn-large.bx-btn-icon,
+    .bx-std .bx-btn.bx-btn-large:has(> .sys-icon:only-child, > img:only-child, > div:only-child > .sys-icon:only-child, > div:only-child > svg:only-child) {
+        @apply w-[3.25rem] min-w-[3.25rem];
     }
     .bx-std .bx-btn:has(> .sys-icon:only-child) > .sys-icon,
     .bx-std .bx-btn:has(> img:only-child) > img,
     .bx-std .bx-btn:has(> div:only-child > .sys-icon:only-child) .sys-icon,
     .bx-std .bx-btn:has(> div:only-child > svg:only-child) svg {
-        @apply w-5 h-5 leading-5 text-[20px];
+        @apply w-6 h-6 leading-6 text-[24px];
+    }
+    .bx-std .bx-btn.bx-btn-mini.bx-btn-icon svg,
+    .bx-std .bx-btn.bx-btn-mini:has(> .sys-icon:only-child) > .sys-icon,
+    .bx-std .bx-btn.bx-btn-mini:has(> img:only-child) > img,
+    .bx-std .bx-btn.bx-btn-mini:has(> div:only-child > .sys-icon:only-child) .sys-icon,
+    .bx-std .bx-btn.bx-btn-mini:has(> div:only-child > svg:only-child) svg {
+        @apply w-4 h-4 leading-4 text-[16px];
     }
     /* Their glyph is black (white in the dark scheme) at 80% through the element's opacity, solid on hover, not the iconset's blue. */
     .bx-std .bx-btn:has(> .sys-icon:only-child) > .sys-icon:not(.sys-colored),
@@ -2037,7 +2340,7 @@
     .bx-std .bx-btn:hover:has(> div:only-child > svg:only-child) svg {
         @apply opacity-100;
     }
-    /* Studio: Hit areas: a control keeps its 32px (28px, 24px) look, but a transparent ::before it owns takes clicks and hover out to a 44px
+    /* Studio: Hit areas: a control keeps its 36px (28px, 24px) look, but a transparent ::before it owns takes clicks and hover out to a 44px
        square (WCAG 2.5.8 target size); the plate and its hover ring are drawn by the element itself, so they do not change. ::after is the
        plate's hairline, hence ::before. Controls that sit shoulder to shoulder (segments, theme options, grouped buttons) grow up and down only. */
     .bx-std .bx-std-segment,
@@ -2058,10 +2361,17 @@
     .bx-std .bx-switcher-cont > button::before {
         content: '';
         position: absolute;
-        inset: -0.375rem; /* 32px → 44px */
+        inset: -0.25rem; /* 36px → 44px */
+    }
+    .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .bx-btn:where(:not(.bx-btn-small, .bx-btn-mini, .bx-btn-large, .bx-btn-xlarge))::before,
+    .bx-std .bx-btn.bx-btn-large::before {
+        inset: 0; /* 44px and up already are */
+    }
+    .bx-std .bx-btn.bx-btn-mini::before {
+        inset: -0.5rem; /* 28px */
     }
     .bx-std .bx-btn-group > .bx-btn::before {
-        inset: -0.375rem 0;
+        inset: -0.25rem 0;
     }
     .bx-std .bx-std-segment::before,
     .bx-std .bx-theme-option::before {
@@ -2166,15 +2476,29 @@
     .bx-std .bx-std-pmen-item:has(a:focus-visible) {
         @apply ring-2 ring-blue-500 dark:ring-blue-400 ring-offset-2 ring-offset-white dark:ring-offset-black;
     }
+    /* In the header the focus ring fills the hover halo's and the active ring's 0.5rem: a 0.1875rem (3px) white (black in dark) gap and 0.3125rem (5px) of blue,
+       so a focused icon next to a hovered or active one keeps the same 2px between their rings. blue-500 is 3.4:1 on the light bar and 3.7:1 on
+       the gap; blue-400 6.9:1 on the dark bar. */
+    .bx-std .bx-menu-top-center li a:focus-visible .bx-mi-icon,
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item:has(:is(a, button):focus-visible),
+    .bx-std .bx-menu-breadcrumb li a:focus-visible .bx-std-header-btn,
+    .bx-std .bx-std-search-trigger:focus-visible {
+        @apply ring-[0.3125rem] ring-offset-[0.1875rem];
+    }
+    /* Launcher tiles: the same 0.1875rem gap and 0.3125rem of blue, the gap in the launcher page's gray-100 (black in dark) so it reads as space;
+       the tiles are 24-40px apart, so the ring never reaches a neighbour's hover ring. */
     .bx-std .bx-std-widget-icon:has(> .bx-std-widget-link:focus-visible) {
-        @apply ring-offset-gray-200 dark:ring-offset-black scale-105;
+        @apply ring-[0.3125rem] ring-offset-[0.1875rem] ring-offset-gray-100 dark:ring-offset-black scale-105;
     }
+    /* Sidebar items sit 2px apart, so their ring is drawn inside the item: 0.3125rem of blue along its edge leaves the item's own 0.5rem padding
+       minus that, 3px, round the tile, the header's gap and ring measured from the tile, and the label inside the ring. */
     .bx-std .bx-std-pmen-item:has(a:focus-visible) {
-        @apply ring-offset-0;
+        @apply ring-inset ring-[0.3125rem] ring-offset-0;
     }
-    /* Launcher: the tile Enter will open while filtering looks exactly like a hovered tile. */
+    /* Launcher: the tile Enter will open while filtering looks exactly like a hovered tile (widget.html): the header and sidebar halo, 0.5rem
+       of black/5 (white/5 in dark) straight off the tile. */
     .bx-std .bx-std-widget-icon.bx-std-widget-icon-pick {
-        @apply ring ring-gray-300 dark:ring-gray-700 ring-offset-1 ring-offset-gray-200 dark:ring-offset-black scale-105;
+        @apply ring-[0.5rem] ring-black/5 dark:ring-white/5 scale-105;
     }
     /* Launcher grid: one uniform inset per tile, so the gap between columns, between rows and above the first row is always 2x the inset. */
     .bx-std .bx-std-launcher {
@@ -2341,7 +2665,7 @@
     }
 
     .bx-artificer div.ql-editor:focus{
-        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-500 focus:border-opacity-70 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none;
+        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-600 dark:focus:border-blue-400 focus:ring-1 focus:ring-blue-600 dark:focus:ring-blue-400 focus:outline-none;
     }
 
     .bx-artificer .ql-mention-list li {
@@ -2424,21 +2748,21 @@
 .select2-container .select2-selection--single {
     @apply h-10 flex items-center border rounded-md px-3;
 }
-/* Studio: select2 is the same 32px field as its inputs (see "Studio: Inputs"), with the native select's Lucide chevrons-up-down instead of
+/* Studio: select2 is the same field as its inputs (see "Studio: Inputs": 36px, 44px with 16px text and 12px corners in a form or a dialog), with the native select's Lucide chevrons-up-down instead of
    select2's triangle; open, it shows the field's focus ring. The dropdown is a Studio popup: 12px radius, ring + shadow, 4px inset,
    a Studio search field, 32px option rows with a blue/10 highlight and a black/5 (white/5) selected row. */
 .bx-std .select2-container .select2-selection--single {
-    @apply h-8 rounded-lg border-0 text-sm font-medium bg-no-repeat;
+    @apply h-9 rounded-lg border-0 text-sm font-medium bg-no-repeat;
     @apply bg-black/5 dark:bg-white/10 text-gray-900 dark:text-gray-100;
     @apply ring-1 ring-inset ring-black/10 dark:ring-white/15;
     @apply pl-3 pr-9;
     @apply focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 dark:focus:ring-blue-400;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
     background-position: right 0.625rem center;
     background-size: 1rem 1rem;
 }
 .dark .bx-std .select2-container .select2-selection--single {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
 }
 .bx-std .select2-container--open .select2-selection--single {
     @apply ring-2 ring-inset ring-blue-500 dark:ring-blue-400;
@@ -2454,7 +2778,14 @@
     @apply rounded-lg;
 }
 .bx-std .select2-container--default .select2-selection--single .select2-selection__rendered {
-    @apply p-0 leading-8 text-inherit;
+    @apply p-0 leading-9 text-inherit;
+}
+.bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .select2-container .select2-selection--single,
+.bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .select2-container--default.select2-container--open:is(.select2-container--below, .select2-container--above) .select2-selection--single {
+    @apply h-11 rounded-xl text-base;
+}
+.bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .select2-container--default .select2-selection--single .select2-selection__rendered {
+    @apply leading-[2.75rem];
 }
 .dark .bx-std .select2-container--default .select2-selection--single .select2-selection__rendered {
     @apply bg-transparent text-gray-100;

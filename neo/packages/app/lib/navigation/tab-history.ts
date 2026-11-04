@@ -2,6 +2,7 @@ import { Platform } from 'react-native';
 import { usePathname } from 'app/lib/hooks/router';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
+import { getTabListForUser } from 'app/lib/navigation/tab-bar-menu';
 import { useBottomSheetStore } from 'app/context/bottomsheet';
 import { getSelectedTabKey, getTabKeyFromPathname, parseTabKey, setSelectedTabKey } from 'app/lib/navigation/tab-path';
 
@@ -94,8 +95,7 @@ function getTabIndex(tabKey: string | null | undefined = '/tab0') {
 }
 
 function getTabRootUrl(tabKey: string | null | undefined, currentUser: unknown) {
-    const tabListKey = currentUser ? 'menu_tabbar_logged' : 'menu_tabbar_non_logged';
-    const tabList = appSetting('menu_items', tabListKey) || [];
+    const tabList = getTabListForUser(currentUser);
     const tab = tabList[getTabIndex(tabKey)];
     if (!tab) {
         return '/home';
@@ -238,6 +238,13 @@ export function peekTabLastUrl(tabKey: string | null | undefined) {
     }
     const stack = tabHistoryState.byTab[key]!; // ensureTabHistory() above guarantees it
     return stack?.[stack.length - 1];
+}
+
+/** `url` is the tab's own root page (the Profile tab's `{profile}` is the viewer's profile). */
+export function isTabRootUrl(tabKey: string | null | undefined, url: string | null | undefined, currentUser: unknown) {
+    const key = parseTabKey(tabKey);
+    if (!key) return false;
+    return tabHistoryPath(url) === tabHistoryPath(getTabRootUrl(key, currentUser));
 }
 
 export function isAtTabRoot(tabKey: string | null | undefined, currentUser: unknown) {

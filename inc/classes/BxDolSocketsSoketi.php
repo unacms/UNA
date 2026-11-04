@@ -62,6 +62,10 @@ class BxDolSocketsSoketi extends BxDolSockets
 
     public function getJsCode()
     {
+        // Without a sockets server (a fresh install) the client would try Pusher's own hosts on every page.
+        if(!$this->isEnabled())
+            return '';
+
         $sMask = "{var} {object} = new {class}({params});";
         $aParams = [
             'sKey' => $this->_sKey,

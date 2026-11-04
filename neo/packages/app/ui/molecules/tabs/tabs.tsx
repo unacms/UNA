@@ -6,7 +6,7 @@ import {
     useLayoutEffect,
     useMemo,
 } from 'react';
-import { View, ScrollView, Platform, type LayoutChangeEvent } from 'react-native';
+import { View, ScrollView, Platform, type LayoutChangeEvent, type ViewInstance, type ScrollViewInstance } from 'react-native';
 import { Text } from 'app/design/typography';
 import * as TabsPrimitive from 'app/ui/primitives/tabs';
 import { cn } from 'app/lib/util';
@@ -144,14 +144,14 @@ export default function Tabs({
     /** Per-tab `Pressable` layout relative to the list — avoids `measureLayout`, which can hang on Fabric. */
     const triggerLayoutsRef = useRef<Record<string, Layout>>({});
     /** "More" row view — `onLayout` is not relative to the tab list (Dropdown wraps the trigger). */
-    const moreViewRef = useRef<View | null>(null);
+    const moreViewRef = useRef<ViewInstance | null>(null);
     const currentTabRef = useRef(currentTab);
     useIsomorphicLayoutEffect(() => {
         currentTabRef.current = currentTab;
     });
 
-    const headerRowLayoutRef = useRef<View | null>(null);
-    const scrollViewRef = useRef<ScrollView | null>(null);
+    const headerRowLayoutRef = useRef<ViewInstance | null>(null);
+    const scrollViewRef = useRef<ScrollViewInstance | null>(null);
     const scrollXRef = useRef(0);
     const scrollViewWidthRef = useRef(0);
     const skipFirstScrollIntoViewRef = useRef(true);

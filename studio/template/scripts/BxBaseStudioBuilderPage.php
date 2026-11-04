@@ -374,8 +374,10 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
         if(empty($this->sPage) || empty($this->aPageRebuild) || !is_array($this->aPageRebuild))
             return array('msg' => _t('_adm_bp_err_page_delete'));
 
+        if((int)$this->aPageRebuild['deletable'] == 0)
+            return array('msg' => _t('_adm_bp_err_page_not_deletable'));
+
         $oLangauge = BxDolStudioLanguagesUtils::getInstance();
-        $oStorage = BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES);
 
         $aBlocks = array();
         $this->oDb->getBlocks(array('type' => 'by_object', 'value' => $this->sPage), $aBlocks, false);
@@ -587,6 +589,13 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
             return array('msg' => _t('_adm_bp_err_block_not_found'));
 
         bx_import('BxDolStudioUtils');
+        // Where the block's title, background and padding are hidden (BxDolPageDesignbox).
+        $aDesignboxHiddenOn = array(
+            BX_DB_HIDDEN_PHONE => _t('_adm_bp_txt_block_hidden_on_phone'),
+            BX_DB_HIDDEN_TABLET => _t('_adm_bp_txt_block_hidden_on_tablet'),
+            BX_DB_HIDDEN_DESKTOP => _t('_adm_bp_txt_block_hidden_on_desktop'),
+            BX_DB_HIDDEN_MOBILE => _t('_adm_bp_txt_block_hidden_on_mobile')
+        );
         $aForm = array(
             'form_attrs' => array(
                 'id' => 'adm-bp-block-edit',
@@ -715,6 +724,39 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                         BX_DB_HIDDEN_DESKTOP => _t('_adm_bp_txt_block_hidden_on_desktop'),
                         BX_DB_HIDDEN_MOBILE => _t('_adm_bp_txt_block_hidden_on_mobile')
                     ),
+                    'db' => array (
+                        'pass' => 'Set',
+                    )
+                ),
+                'title_hidden_on' => array(
+                    'type' => 'select_multiple',
+                    'name' => 'title_hidden_on',
+                    'caption' => _t('_adm_bp_txt_block_title_hidden_on'),
+                    'info' => _t('_adm_bp_txt_block_part_hidden_on_info'),
+                    'value' => (int)$aBlock['title_hidden_on'],
+                    'values' => $aDesignboxHiddenOn,
+                    'db' => array (
+                        'pass' => 'Set',
+                    )
+                ),
+                'bg_hidden_on' => array(
+                    'type' => 'select_multiple',
+                    'name' => 'bg_hidden_on',
+                    'caption' => _t('_adm_bp_txt_block_bg_hidden_on'),
+                    'info' => _t('_adm_bp_txt_block_part_hidden_on_info'),
+                    'value' => (int)$aBlock['bg_hidden_on'],
+                    'values' => $aDesignboxHiddenOn,
+                    'db' => array (
+                        'pass' => 'Set',
+                    )
+                ),
+                'padding_hidden_on' => array(
+                    'type' => 'select_multiple',
+                    'name' => 'padding_hidden_on',
+                    'caption' => _t('_adm_bp_txt_block_padding_hidden_on'),
+                    'info' => _t('_adm_bp_txt_block_part_hidden_on_info'),
+                    'value' => (int)$aBlock['padding_hidden_on'],
+                    'values' => $aDesignboxHiddenOn,
                     'db' => array (
                         'pass' => 'Set',
                     )
@@ -1120,6 +1162,25 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                     ),
                     'db' => array (
                         'pass' => 'Int',
+                    )
+                ),
+                // Per screen size, as a block's "Hidden on": the cover (and its title) stays off there; the apps
+                // show the title in their header instead where the cover is hidden on phones and tablets.
+                'cover_hidden_on' => array(
+                    'type' => 'select_multiple',
+                    'name' => 'cover_hidden_on',
+                    'caption' => _t('_adm_bp_txt_page_cover_hidden_on'),
+                    'info' => _t('_adm_bp_txt_page_cover_hidden_on_info'),
+                    // This settings form has no db binding to unpack the bits, so the options come as a list.
+                    'value' => BxDolFormCheckerHelper::displaySet(isset($aPage['cover_hidden_on']) ? $aPage['cover_hidden_on'] : 0),
+                    'values' => array(
+                        BX_DB_HIDDEN_PHONE => _t('_adm_bp_txt_block_hidden_on_phone'),
+                        BX_DB_HIDDEN_TABLET => _t('_adm_bp_txt_block_hidden_on_tablet'),
+                        BX_DB_HIDDEN_DESKTOP => _t('_adm_bp_txt_block_hidden_on_desktop'),
+                        BX_DB_HIDDEN_MOBILE => _t('_adm_bp_txt_block_hidden_on_mobile')
+                    ),
+                    'db' => array (
+                        'pass' => 'Set',
                     )
                 ),
                 'cover_image' => array(

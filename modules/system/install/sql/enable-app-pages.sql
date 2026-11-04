@@ -32,13 +32,13 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_privacy' AND `m
 
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_cooperator' AND `module`='system' AND `title_system`='_sys_page_block_title_system_cooperator' AND `title`='_sys_page_block_title_cooperator';
 
-UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard' AND `module`='system' AND `title_system`='_sys_page_block_title_dash_stats';
+UPDATE `sys_pages_blocks` SET `active_api`=1, `config_api`='{"designbox": {"bg": ["tablet", "desktop"]}}' WHERE `object`='sys_dashboard' AND `module`='system' AND `title_system`='_sys_page_block_title_dash_stats';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_admin' AND `module`='system' AND `title_system`='_sys_page_block_title_system_dashboard_admin' AND `title`='_sys_page_block_title_dashboard_admin';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_content' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_dashboard_content';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_audit' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_dashboard_audit';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_reports' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_dashboard_reports';
 
-UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_create_account' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_create_account';
+UPDATE `sys_pages_blocks` SET `active_api`=1, `config_api`='{\"rounded\": [\"mobile\", \"tablet\", \"desktop\"]}' WHERE `object`='sys_create_account' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_create_account';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_login' AND `module`='system' AND `title_system`='_sys_page_block_system_title_login' AND `title`='_sys_page_block_title_login';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_login_step2' AND `module`='system' AND `title_system`='_sys_page_block_system_title_login_step2' AND `title`='_sys_page_block_title_login_step2';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_login_step3' AND `module`='system' AND `title_system`='_sys_page_block_system_title_login_step3' AND `title`='_sys_page_block_title_login_step3';
@@ -46,6 +46,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_logout' AND `mo
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_forgot_password' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_forgot_password';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_confirm_email' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_confirm_email';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_confirm_phone' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_confirm_phone';
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_settings' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_settings';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_settings_email' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_account_settings_email';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_settings_pwd' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_account_settings_pwd';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_settings_info' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_account_settings_info';

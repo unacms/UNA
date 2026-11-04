@@ -81,6 +81,19 @@ export function isMenuItemNavigable(item: MenuItem | null | undefined): boolean 
     return true;
 }
 
+/**
+ * Drop the items UNA hides on this screen tier (an item's "Hidden on" in
+ * Studio, sent as `hidden_on`: `phone`, `tablet`, `desktop`), submenus too.
+ */
+export function filterHiddenOn(items: MenuItemList, tier: string): MenuItem[] {
+    return asMenuItemList(items)
+        .filter((item) => item && !(Array.isArray(item.hidden_on) && item.hidden_on.includes(tier)))
+        .map((item) => {
+            const key = getMenuItemChildrenKey(item);
+            return key ? { ...item, [key]: filterHiddenOn(item[key], tier) } : item;
+        });
+}
+
 /** Prefix relative UNA menu links so dropdown rows navigate in-app. */
 export function normalizeMenuItemHref(link: unknown): string {
     if (typeof link !== 'string') return '';
@@ -136,6 +149,11 @@ export function flattenMenuItemsForDropdown(items: MenuItemList): MenuItem[] {
     return out;
 }
 
+/** Whether DropdownMenu would have a row to act on: a group whose children are all hidden leaves none. */
+export function hasDropdownActions(items: MenuItemList): boolean {
+    return flattenMenuItemsForDropdown(items).some((item) => item.type !== 'group_header' && item.type !== 'separator');
+}
+
 /** Turn a flat dropdown list (`group_header` + items) into column sections. */
 export function groupDropdownItems(items: MenuItemList): DropdownSection[] {
     const sections: DropdownSection[] = [];
@@ -158,6 +176,27 @@ export function groupDropdownItems(items: MenuItemList): DropdownSection[] {
     });
 
     return sections.filter((section) => section.header || section.items.length);
+}
+
+/**
+ * Split a flat dropdown list into `count` columns of about the same height.
+ * Section headers stay rows; a column never ends on a header.
+ */
+export function splitDropdownColumns(items: MenuItemList, count: number): DropdownSection[] {
+    const list = asMenuItemList(items).filter(Boolean);
+    const perColumn = Math.max(1, Math.ceil(list.length / Math.max(1, count)));
+    const columns: DropdownSection[] = [];
+    let current: MenuItem[] = [];
+    list.forEach((item, index) => {
+        current.push(item.type === 'group_header' ? { ...item, first: current.length === 0 } : item);
+        const next = list[index + 1];
+        if (current.length >= perColumn && next && item.type !== 'group_header' && columns.length < count - 1) {
+            columns.push({ header: null, items: current });
+            current = [];
+        }
+    });
+    if (current.length) columns.push({ header: null, items: current });
+    return columns;
 }
 
 function menuLeafKeys(item: MenuItem | null | undefined): string[] {
@@ -251,6 +290,83 @@ export function mergeNavbarMoreWithLauncher(localItems: MenuItemList, launcherIt
     });
 
     return out;
+}
+
+/**
+ * The site menu's Home item, which UNA sends with an empty link (its home page is the site root),
+ * as a link to `/`. Other items come back unchanged.
+ */
+export function withSiteMenuHomeLink(item: MenuItem): MenuItem {
+    if (item?.name !== 'home' || normalizeMenuItemHref(item.link)) return item;
+    return { ...item, link: '/' };
+}
+
+/**
+ * Navbar from the UNA site menu (`sys_site`), used when the
+ * `menu_items.menu_navbar` setting is empty: the first `maxTabs` items
+ * as tabs, the rest under More. Home is the site menu's own item, so
+ * Studio's "Active (for App)" switch shows or hides it like any other.
+ */
+export function navbarItemsFromSiteMenu(items: MenuItemList, maxTabs: number): MenuItem[] {
+    const tabs: MenuItem[] = [];
+    const more: MenuItem[] = [];
+    let home: MenuItem | null = null;
+    asMenuItemList(items).forEach((rawItem) => {
+        if (!rawItem) return;
+        const item = withSiteMenuHomeLink(rawItem);
+        if (!isMenuItemNavigable(item)) {
+            if (getMenuItemChildren(item).length) more.push(item);
+            return;
+        }
+        const next: MenuItem = {
+            ...item,
+            link: normalizeMenuItemHref(item.link),
+            icon: findIconFromRemote(item.icon) || (item.name === 'home' ? 'House' : 'Circle'),
+            // The title shows next to the icon unless Studio marks the item "Icon only", as on the site.
+            showTitle: !Number(item.icon_only),
+            animated: true,
+        };
+        // Home leads the bar wherever the site menu puts it, and doesn't count as a tab.
+        if (item.name === 'home') home = next;
+        else if (tabs.length < maxTabs) tabs.push(next);
+        else more.push(next);
+    });
+
+    const out: MenuItem[] = home ? [home, ...tabs] : tabs;
+    if (more.length) out.push(navbarMoreItem(more));
+    return out;
+}
+
+/** A menu item's whole destination (host, path and query), for telling two links apart. */
+function menuItemDestination(item: MenuItem | null | undefined): string {
+    if (!item || item.type === 'group_header' || item.type === 'separator') return '';
+    const href = normalizeMenuItemHref(item.link || '');
+    return href.length > 1 && href.endsWith('/') ? href.slice(0, -1) : href;
+}
+
+/**
+ * The launcher's items without the ones the navbar already shows as tabs (an app that is also in
+ * the site menu), so More doesn't repeat them. Only the same destination counts: a launcher link
+ * that merely shares a name or a first path segment with a tab stays. Section headers left
+ * without items go too.
+ */
+export function launcherItemsWithoutTabs(launcherItems: MenuItemList, tabs: MenuItemList): MenuItem[] {
+    const tabDestinations = new Set(asMenuItemList(tabs).map(menuItemDestination).filter(Boolean));
+    const rest = flattenMenuItemsForDropdown(launcherItems)
+        .filter((item) => {
+            const destination = menuItemDestination(item);
+            return !destination || !tabDestinations.has(destination);
+        });
+    return rest.filter((item, index) => {
+        if (item.type !== 'group_header') return true;
+        const next = rest[index + 1];
+        return !!next && next.type !== 'group_header';
+    });
+}
+
+/** The navbar's More dropdown holding `items`. */
+export function navbarMoreItem(items: MenuItem[]): MenuItem {
+    return { name: 'more', title: 'More', link: '', icon: 'Menu', showTitle: false, chevron: '', animated: true, items };
 }
 
 const DROPDOWN_SECTION_MIN = 240; // w-60
@@ -473,13 +589,24 @@ export function menuItemsFilter(items: any, currentUser: any): any {
     return items;
 }
 
-export function getMenuSettings(object: string, config?: unknown, menu?: { title?: string; icon?: string }): any {
-    if (!appSetting('layout', 'user_remote_config'))
-        return appSetting('menu_items', object);
+/** Menu settings: the menu's `config` from UNA, else `menu_items[object]` from settings. */
+/**
+ * The menu's own `menu_items` setting: an array as is, an object as a copy (the name / icon added
+ * by getMenuSettings must not land in the settings), else {}: a menu with no settings (appSetting
+ * gives '') still gets UNA's title and icon, so its section is named.
+ */
+function localMenuSettings(object: string): any {
+    const local = object ? appSetting('menu_items', object) : null;
+    if (Array.isArray(local)) return local;
+    return local && typeof local === 'object' ? { ...local } : {};
+}
 
-    let a: any = {}
-    if (appSetting('layout', 'user_remote_config') && config)
-        a = strToObj(config as string);
+export function getMenuSettings(object: string, config?: unknown, menu?: { title?: string; icon?: string }): any {
+    let a: any = config ? strToObj(config as string) : null;
+    if (!a)
+        a = localMenuSettings(object);
+    if (Array.isArray(a))
+        return a;
 
     if (a && !a.name && menu?.title)
         a.name = menu.title;
@@ -488,4 +615,29 @@ export function getMenuSettings(object: string, config?: unknown, menu?: { title
         a.icon = menu.icon;
 
     return a
+}
+
+type MenuWithItems = { object?: string; config?: unknown; title?: string; items?: { title?: string; link?: string }[] };
+
+/**
+ * A section whose menu names a page that lists it (`hub` in the menu's `config`, UNA's
+ * `sys_objects_menu.config_api`; Settings). Below desktop that page replaces the section's tab
+ * row, so each of its pages shows its own item's title.
+ */
+export function isMenuHub(menu?: MenuWithItems | null): boolean {
+    return getMenuHub(menu) !== '';
+}
+
+/** The page uri a section's menu names as its list (`hub`), or `''`. */
+export function getMenuHub(menu?: MenuWithItems | null): string {
+    if (!menu?.object) return '';
+    const settings = getMenuSettings(menu.object, menu.config, menu);
+    return settings && !Array.isArray(settings) && settings.hub ? String(settings.hub) : '';
+}
+
+/** The title of `menu`'s item that opens page `uri` (UNA sends item links as page uris). */
+export function getMenuItemTitleForUri(menu: MenuWithItems | null | undefined, uri?: string): string {
+    if (!uri) return '';
+    const item = (menu?.items || []).find((i) => String(i?.link || '').replace(/^\/+/, '') === uri);
+    return item?.title || '';
 }

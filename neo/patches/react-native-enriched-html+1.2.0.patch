@@ -1,0 +1,28 @@
+diff --git a/node_modules/react-native-enriched-html/ios/EnrichedTextInputView.mm b/node_modules/react-native-enriched-html/ios/EnrichedTextInputView.mm
+index f4f5ab9..9410be8 100644
+--- a/node_modules/react-native-enriched-html/ios/EnrichedTextInputView.mm
++++ b/node_modules/react-native-enriched-html/ios/EnrichedTextInputView.mm
+@@ -173,6 +173,23 @@ Class<RCTComponentViewProtocol> EnrichedTextInputViewCls(void) {
+                                             action:@selector(onTextBlockTap:)]];
+ }
+ 
++// NEO patch: bottom padding is a scroll inset, not a shorter text view, so
++// text scrolls under a bar floating over the editor's end and its last line
++// still scrolls clear of the bar.
++- (void)updateLayoutMetrics:(const LayoutMetrics &)layoutMetrics
++           oldLayoutMetrics:(const LayoutMetrics &)oldLayoutMetrics {
++  [super updateLayoutMetrics:layoutMetrics
++            oldLayoutMetrics:oldLayoutMetrics];
++  CGFloat bottom = layoutMetrics.contentInsets.bottom;
++  CGRect frame = textView.frame;
++  frame.size.height += bottom;
++  textView.frame = frame;
++  if (textView.contentInset.bottom != bottom) {
++    textView.contentInset = UIEdgeInsetsMake(0, 0, bottom, 0);
++    textView.verticalScrollIndicatorInsets = UIEdgeInsetsMake(0, 0, bottom, 0);
++  }
++}
++
+ - (void)setupPlaceholderLabel {
+   _placeholderLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+   _placeholderLabel.translatesAutoresizingMaskIntoConstraints = NO;

@@ -1,24 +1,36 @@
 import { useCurrentUser } from 'app/context/user'
-import { menuItemsByName, appSetting, menuItemsByNameNew, getHeaderToolbarNeoButtonDefaults, flattenMenuItemsForDropdown } from 'app/lib/util'
+import { menuItemsByName, appSetting, menuItemsByNameNew, getHeaderToolbarNeoButtonDefaults, flattenMenuItemsForDropdown, hasDropdownActions } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useState } from 'react';
 import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal';
 import { useIsDesktop } from 'app/context/measure';
 import { useMenuData } from 'app/context/menu-data';
 
-export default function MenuAdd({ buttonProps, children }) {
+/**
+ * The add menu's items, and whether it has nothing to show (off in the settings, or no item for this viewer), when the
+ * header leaves no slot for it. `load` false skips loading the menu.
+ */
+export function useMenuAddItems(load = true) {
     const bMenu = appSetting('layout', 'add_menu') == true;
     const { currentUser } = useCurrentUser();
-    const { menuData } = useMenuData(appSetting('menu_items', 'objects', 'add'));
+    // `menu_add` setting pins the items; unset, they come from UNA's add-content menu.
+    const staticItems = appSetting('menu_items', 'menu_add');
+    const useStatic = Array.isArray(staticItems) && staticItems.length > 0;
+    const { menuData } = useMenuData(load && !useStatic ? appSetting('menu_items', 'objects', 'add') : null);
+
+    const items = useStatic
+        ? menuItemsByName('', staticItems, currentUser)
+        : menuItemsByNameNew('menu_post', menuData, currentUser);
+
+    return { items, empty: !bMenu || (!hasDropdownActions(items) && (useStatic || !!menuData)) };
+}
+
+export default function MenuAdd({ buttonProps, children }) {
+    const { items: menu_add_items, empty } = useMenuAddItems();
     const [pageData, setPageData] = useState(false);
     const isDesktop = useIsDesktop();
 
-    const menu_add_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', menuData, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_add'), currentUser);
-
-    if (!bMenu)
-         return <></>;
-
-    if ((menu_add_items.length == 0) && menuData)
+    if (empty)
         return <></>;
     
     const defaultButtonProps = {

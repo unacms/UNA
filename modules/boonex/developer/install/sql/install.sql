@@ -177,7 +177,7 @@ INSERT INTO `sys_form_display_inputs` (`display_name`, `input_name`, `visible_fo
 -- Forms Builder -> Displays.
 --
 INSERT INTO `sys_objects_form` (`object`, `module`, `title`, `action`, `form_attrs`, `submit_name`, `table`, `key`, `uri`, `uri_title`, `params`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES
-('bx_developer_forms_display', @sName, '_bx_dev_frm_txt_displays_diplay', '', '', 'do_submit', 'sys_form_displays', 'id', '', '', '', 0, 1, 'BxDevFormView', 'modules/boonex/developer/classes/BxDevFormView.php');
+('bx_developer_forms_display', @sName, '_bx_dev_frm_txt_displays_display', '', '', 'do_submit', 'sys_form_displays', 'id', '', '', '', 0, 1, 'BxDevFormView', 'modules/boonex/developer/classes/BxDevFormView.php');
 
 INSERT INTO `sys_form_displays` (`display_name`, `module`, `object`, `title`, `view_mode`) VALUES
 ('bx_developer_forms_display_add', @sName, 'bx_developer_forms_display', '_bx_dev_frm_txt_displays_display_add', 0),

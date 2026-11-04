@@ -103,7 +103,7 @@ class BxChartsDb extends BxBaseModGeneralDb
     public function getGrowth($sTableName)
     {
         $iInterval = intval(getParam('bx_charts_chart_growth_interval_day'));
-        $sQuery =  "SELECT " . getParam('bx_charts_chart_growth_group_by') . "(FROM_UNIXTIME(`added`))  AS `period`, YEAR(FROM_UNIXTIME(`added`))  AS `year`,  COUNT(*) AS `count` FROM " . $sTableName . " WHERE `added` > " . ($iInterval > 0 ? $this->getTimeFromDaysBefore($iInterval) : 0) . " GROUP BY `period`, `year` ORDER BY `year`, `period` ASC";
+        $sQuery =  "SELECT " . getParam('bx_charts_chart_growth_group_by') . "(FROM_UNIXTIME(`added`))  AS `period`, YEAR(FROM_UNIXTIME(`added`))  AS `year`,  COUNT(*) AS `count` FROM `" . $sTableName . "` WHERE `added` > " . ($iInterval > 0 ? $this->getTimeFromDaysBefore($iInterval) : 0) . " GROUP BY `period`, `year` ORDER BY `year`, `period` ASC";
         return $this->getAll($sQuery);
     }
     
@@ -111,14 +111,15 @@ class BxChartsDb extends BxBaseModGeneralDb
     {
         $iInterval = intval(getParam('bx_charts_chart_growth_interval_day'));
         $mixedStartDate = $this->getTimeFromDaysBefore($iInterval);
-        
-        $sQuery =  "SELECT  COUNT(*) AS `count` FROM " . $sTableName . " WHERE `added` < " . ($iInterval > 0 ? $mixedStartDate : 0);
+
+        $sQuery =  "SELECT  COUNT(*) AS `count` FROM `" . $sTableName . "` WHERE `added` < " . ($iInterval > 0 ? $mixedStartDate : 0);
         $mixedStartValue = $this->getOne($sQuery);
-      
+
         if ($iInterval == 0){
             $sQuery =  "SELECT  MIN(`added`) AS `mindata` FROM " . $sTableName;
             $mixedStartDate = $this->getOne($sQuery);
         }
+
         return array($mixedStartValue,$mixedStartDate);
     }
     

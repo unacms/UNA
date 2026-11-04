@@ -5,11 +5,11 @@ import { Animated, Easing, StyleSheet, View, useWindowDimensions } from 'react-n
 import { useIsFocused, getWindowSafeAreaInsets } from 'app/lib/hooks/router';
 import { isNativeTabsEnabled } from 'app/lib/util';
 import { nativeDriver } from 'app/lib/platform/animation';
-import { TabChromeProvider } from 'app/context/tab-chrome';
+import { TabChromeProvider, useScreenPagePath } from 'app/context/tab-chrome';
 import { TabRouteOverrideContext } from 'app/context/tab-route-override';
 import { usePathname } from 'expo-router';
-import { useCurrentUser } from 'app/context/user';
-import { getNativeTabBarHeight } from 'app/components/nav/tabs/tab-menu';
+import { useCurrentUser, useCurrentUserStore } from 'app/context/user';
+import { getNativeTabBarHeight, getTabsSessionKey } from 'app/components/nav/tabs/tab-menu';
 
 const SLIDE_MS = 320;
 const SLIDE_EASING = Easing.bezier(0.32, 0.72, 0, 1);
@@ -22,6 +22,8 @@ let lastTabKey = null;
 let coveredTabKey = null;
 let holdTabKey = null;
 let slideAnim = null;
+/** The viewer the slots belong to (getTabsSessionKey). Module-level: the host remounts while a new viewer's tabs load. */
+let slotsSession = null;
 
 function tabIndexFromKey(tabKey) {
     const match = String(tabKey || '').match(/tab(\d+)/);
@@ -52,16 +54,28 @@ function useHostSlots() {
     return Array.from(slots.values());
 }
 
-function publishSlot(tabKey, node, chromeKey = tabKey, pushed = false) {
+function publishSlot(tabKey, node, chromeKey = tabKey, pushed = false, session = slotsSession, pagePath = null) {
+    enterSession(session);
     const prev = slots.get(tabKey);
     if (!node && prev?.node) {
         return;
     }
-    if (prev?.node === node && prev?.chromeKey === chromeKey) {
+    if (prev?.node === node && prev?.chromeKey === chromeKey && prev?.pagePath === pagePath) {
         return;
     }
-    slots.set(tabKey, { tabKey, node, chromeKey, pushed });
+    slots.set(tabKey, { tabKey, node, chromeKey, pushed, session, pagePath });
     notifyHost();
+}
+
+/**
+ * Slots and slide state belong to one viewer: the first publish or host render for another one starts clean, so a
+ * page held from before sign-in (or sign-out) never slides over the new viewer's tabs.
+ */
+function enterSession(session) {
+    if (slotsSession === session) return;
+    const first = slotsSession === null;
+    slotsSession = session;
+    if (!first) resetTabSlideSlots();
 }
 
 export function resetTabSlideSlots() {
@@ -136,15 +150,12 @@ export function TabSlideHost({ sessionKey, backgroundColor }) {
     const screens = useHostSlots();
     const { width } = useWindowDimensions();
     const realPathname = usePathname();
-    const sessionRef = useRef(sessionKey);
     const { currentUser } = useCurrentUser();
     // Leave the tab bar's strip free (taller on Android with labels).
     const bottomReserve = getNativeTabBarHeight(currentUser) + (getWindowSafeAreaInsets().bottom || 0);
 
     useLayoutEffect(() => {
-        if (sessionRef.current === sessionKey) return;
-        sessionRef.current = sessionKey;
-        resetTabSlideSlots();
+        enterSession(sessionKey);
     }, [sessionKey]);
 
     if (!isNativeTabsEnabled() || !isOverlayActive()) {
@@ -153,7 +164,7 @@ export function TabSlideHost({ sessionKey, backgroundColor }) {
 
     const overlayKeys = new Set([activeTabKey, coveredTabKey, holdTabKey].filter(Boolean));
     const ordered = screens
-        .filter((screen) => screen.node && overlayKeys.has(screen.tabKey))
+        .filter((screen) => screen.node && screen.session === sessionKey && overlayKeys.has(screen.tabKey))
         .sort((a, b) => rankScreen(a.tabKey) - rankScreen(b.tabKey));
 
     return (
@@ -162,7 +173,7 @@ export function TabSlideHost({ sessionKey, backgroundColor }) {
                 pointerEvents="box-none"
                 style={[styles.pageLayer, { bottom: bottomReserve, backgroundColor }]}
             >
-                {ordered.map(({ tabKey, node, chromeKey, pushed }) => {
+                {ordered.map(({ tabKey, node, chromeKey, pushed, pagePath }) => {
                     const focused = tabKey === activeTabKey;
                     return (
                         <Animated.View
@@ -175,7 +186,7 @@ export function TabSlideHost({ sessionKey, backgroundColor }) {
                                 { transform: [{ translateX: getTranslate(tabKey, width) }] },
                             ]}
                         >
-                            <TabChromeProvider tabKey={chromeKey || tabKey} pushed={!!pushed}>
+                            <TabChromeProvider tabKey={chromeKey || tabKey} pushed={!!pushed} pagePath={pagePath}>
                                 <TabRouteOverrideContext.Provider
                                     value={{
                                         pathname: focused ? realPathname : tabKey,
@@ -202,8 +213,11 @@ export function TabSlideHost({ sessionKey, backgroundColor }) {
 export function TabSlide({ tabKey, chromeKey = tabKey, pushed = false, ready = true, children }) {
     const isFocused = useIsFocused();
     const { width } = useWindowDimensions();
+    const session = useCurrentUserStore((state) => getTabsSessionKey(state.currentUser));
     const wasActiveRef = useRef(false);
     const nativeTabs = isNativeTabsEnabled();
+    // The copy carries the screen's page path, so chrome that reads it (cover Back) matches the screen.
+    const pagePath = useScreenPagePath();
     const lastNodeRef = useRef(null);
     if (ready && children) {
         lastNodeRef.current = children;
@@ -212,9 +226,9 @@ export function TabSlide({ tabKey, chromeKey = tabKey, pushed = false, ready = t
 
     useLayoutEffect(() => {
         if (!nativeTabs || !tabKey || !isFocused) return undefined;
-        publishSlot(tabKey, node, chromeKey, pushed);
+        publishSlot(tabKey, node, chromeKey, pushed, session, pagePath);
         return undefined;
-    }, [nativeTabs, node, tabKey, chromeKey, pushed, isFocused]);
+    }, [nativeTabs, node, tabKey, chromeKey, pushed, isFocused, session, pagePath]);
 
     useLayoutEffect(() => {
         if (!nativeTabs) return;

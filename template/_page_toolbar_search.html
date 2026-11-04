@@ -1,3 +1,11 @@
-<div id="bx-ti-search-box" class="bx-ti-search-box md:min-w-88 bg-white/95 dark:bg-gray-800/95 rounded-md shadow-md hidden">
-    <div class="relative w-full">__sys_site_search__</div>
+<div class="bx-site-search flex flex-col gap-3" data-min-len="__min_len__">
+    __sys_site_search__
+    <div class="bx-site-search-results flex flex-col">
+        <button type="button" class="bx-site-search-all hidden self-center items-center gap-1 px-3 py-1 text-sm font-medium text-gray-800 dark:text-gray-100 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700" onclick="bx_site_search_all(this)">
+            <bx_text:_sys_search_see_all_results />
+            <i class="sys-icon angle-double-right" aria-hidden="true"></i>
+        </button>
+        __results__
+        <div class="bx-site-search-empty hidden">__empty__</div>
+    </div>
 </div>

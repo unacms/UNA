@@ -60,6 +60,7 @@
 
     <string name="_bx_github_msg_save_settings"><![CDATA[Settings were successfully saved.]]></string>
     <string name="_bx_github_err_save_settings"><![CDATA[Cannot save settings.]]></string>
+    <string name="_bx_github_err_app_already_exists"><![CDATA[The app with identical credentials already exists.]]></string>
     <string name="_bx_github_err_cannot_perform_action"><![CDATA[An error appeared. Please report.]]></string>
 
     <string name="_bx_github_txt_login"><![CDATA[Login with GitHub]]></string>

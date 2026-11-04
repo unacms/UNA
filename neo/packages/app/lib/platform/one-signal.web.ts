@@ -67,6 +67,7 @@ export async function subscribeOneSignal(currentUser: OneSignalUser, askPermissi
                                 prompts: [{
                                     type: 'push',
                                     autoPrompt: false,
+                                    delay: {},
                                 }],
                             },
                         },

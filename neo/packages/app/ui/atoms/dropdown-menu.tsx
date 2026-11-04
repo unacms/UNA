@@ -2,14 +2,15 @@ import { Pressable, View } from 'app/design/view';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { NeoButton, legacyToNeoButtonProps } from 'app/design/controls'
 import { isLegacyButtonProps, stripRoutingKeys } from 'app/design/controls/neo-button/legacy-button-map';
-import { memo, useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
-import { cn, groupDropdownItems, getDropdownSectionsLayout, dropdownLeafItems, getDropdownGridLayout, type DropdownSection, type DropdownSectionsLayout } from 'app/lib/util';
+import { memo, useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode, type RefObject } from 'react';
+import { cn, groupDropdownItems, splitDropdownColumns, getDropdownSectionsLayout, dropdownLeafItems, getDropdownGridLayout, type DropdownSection, type DropdownSectionsLayout } from 'app/lib/util';
 import DropdownGridItem, { type DropdownGridMenuItem } from 'app/ui/atoms/dropdown-grid-item';
 import { FeedbackHaptics } from 'app/lib/util';
 import { Keyboard, Alert, Platform, type AlertButton, type StyleProp, type ViewStyle } from 'react-native'
 import Redirect, { type RedirectHandle } from 'app/ui/atoms/redirect';
 import { appSetting } from 'app/lib/util';
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
+import { MENU_HIGHLIGHT_CLASS, useMenuHighlight } from 'app/ui/atoms/menu-highlight';
 import DropdownPopup, { DropdownMenuOpenContext, type DropdownButtonProps } from 'app/ui/atoms/dropdown-popup'
 import emitter, { EVENTS } from 'app/context/emitter';
 import { components } from 'app/components/registry'
@@ -68,6 +69,8 @@ export type DropdownMenuProps = {
     stacked?: boolean;
     /** Popup min width (px) of a plain list menu; 256 by default. */
     minPopupWidth?: number;
+    /** Popup: lay the rows out in this many columns of about the same height. */
+    columns?: number;
 };
 
 type DropdownMenuPopupProps = Omit<DropdownMenuProps, 'mode' | 'title' | 'cancelable'>;
@@ -146,6 +149,7 @@ function DropdownMenuPopup({
     triggerStyle,
     stacked = false,
     minPopupWidth = 256,
+    columns = 1,
 }: DropdownMenuPopupProps) {
     const DropdownMenuItem = getDropdownMenuItem();
     const redirectdRef = useRef<RedirectHandle | null>(null);
@@ -171,6 +175,10 @@ function DropdownMenuPopup({
             ? resolveTabsOverflowClasses(tabsOverflowSize)
             : (variant && variantClassMap[variant]) ?? variantClassMap.vertical!;
 
+    // Lists of rows share one sliding hover highlight (web); horizontal and grid menus keep their own hover.
+    const menuHighlightRef = useMenuHighlight();
+    const listClassName = cn(menuSettings[classes.container], classes.container === 'content_ver' && MENU_HIGHLIGHT_CLASS);
+
     const { width: windowWidth } = useWindowSize();
     const gridItems = useMemo(
         () => (isGridLayout ? dropdownLeafItems(items) : null),
@@ -180,10 +188,11 @@ function DropdownMenuPopup({
         () => (isGridLayout ? getDropdownGridLayout() : null),
         [isGridLayout]
     );
-    const useSectionsLayout = !isGridLayout && (items || []).some((item) => item?.type === 'group_header');
+    const useColumns = !isGridLayout && columns > 1 && (items || []).length > 1;
+    const useSectionsLayout = useColumns || (!isGridLayout && (items || []).some((item) => item?.type === 'group_header'));
     const sections = useMemo(
-        () => (useSectionsLayout ? groupDropdownItems(items) : null),
-        [items, useSectionsLayout]
+        () => (useColumns ? splitDropdownColumns(items, columns) : useSectionsLayout ? groupDropdownItems(items) : null),
+        [items, useSectionsLayout, useColumns, columns]
     );
     const sectionsLayout = useMemo<SectionsLayout>(
         () => stacked
@@ -344,7 +353,7 @@ function DropdownMenuPopup({
                                         classes={classes}
                                     />
                                 ) : null}
-                                <View className={menuSettings[classes.container]}>
+                                <View ref={menuHighlightRef} className={listClassName}>
                                     {section.items.map((item: DropdownMenuItemData, index: number) => {
                                         const navigable = isNavigableDropdownItem(item, onSelect);
                                         return (
@@ -364,7 +373,7 @@ function DropdownMenuPopup({
                         ))}
                     </View>
                 ) : (
-                    <View className={menuSettings[classes.container]}>
+                    <View ref={menuHighlightRef} className={listClassName}>
                         {items.map((item, index) => {
                             const navigable = isNavigableDropdownItem(item, onSelect);
                             return (
@@ -387,14 +396,24 @@ function DropdownMenuPopup({
     );
 }
 
-const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveContent, variant }: MenuBottomSheetProps) => {
+/** A row a native sheet can draw itself: its title is text, not a React element. */
+function hasTextTitle(item: DropdownMenuItemData): boolean {
+    return item.title == null || typeof item.title === 'string' || typeof item.title === 'number';
+}
+
+/**
+ * A row chosen in a menu bottom sheet: closes the sheet, then runs `onSelect`, or opens the
+ * item's modal, external link or page. Shared by the JS sheet (MenuBottomSheet) and the rows
+ * a native sheet draws from the sheet's `menu` (ui/molecules/dialogs/bottomsheet-native.ios.tsx).
+ */
+function useMenuSheetPress({ onSelect, resolveContent, setBottomSheetData, redirectRef }: Pick<DropdownMenuProps, 'onSelect' | 'resolveContent'> & {
+    setBottomSheetData: (data: any) => void;
+    redirectRef: RefObject<RedirectHandle | null>;
+}) {
     const openModalByUrl = useOpenModalByUrl();
     const openModalWithContent = useOpenModalWithContent();
-    const DropdownMenuItem = getDropdownMenuItem();
-    const redirectdRef = useRef<RedirectHandle | null>(null);
-    const isGridLayout = variant === 'grid';
-    const handlePressMenu = useCallback(
-        (item: DropdownMenuItemData) => (event?: unknown) => {
+    return useCallback(
+        (item: DropdownMenuItemData, event?: unknown) => {
             FeedbackHaptics('Medium');
             setBottomSheetData(false);
             if (onSelect) {
@@ -419,10 +438,18 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveCont
                 openExternalLink(url);
                 return;
             }
-            redirectdRef.current?.redirect('' + item.link);
+            redirectRef.current?.redirect('' + item.link);
         },
-        [onSelect, setBottomSheetData, openModalByUrl, openModalWithContent, resolveContent]
+        [onSelect, setBottomSheetData, openModalByUrl, openModalWithContent, resolveContent, redirectRef]
     );
+}
+
+const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveContent, variant }: MenuBottomSheetProps) => {
+    const DropdownMenuItem = getDropdownMenuItem();
+    const redirectdRef = useRef<RedirectHandle | null>(null);
+    const isGridLayout = variant === 'grid';
+    const pressItem = useMenuSheetPress({ onSelect, resolveContent, setBottomSheetData, redirectRef: redirectdRef });
+    const handlePressMenu = (item: DropdownMenuItemData) => (event?: unknown) => pressItem(item, event);
 
     const classes = isGridLayout ? variantClassMap.grid : variantClassMap.vertical;
     const sheetItems = isGridLayout ? dropdownLeafItems(items) : items;
@@ -482,6 +509,8 @@ function DropdownMenuNative({
 }: DropdownMenuNativeProps) {
     const { setBottomSheetData } = useBottomSheetData();
     const { t } = useTranslation();
+    const redirectRef = useRef<RedirectHandle | null>(null);
+    const pressItem = useMenuSheetPress({ onSelect, resolveContent, setBottomSheetData, redirectRef });
 
     const handlePress = useCallback(() => {
         if (mode != "alert") {
@@ -498,6 +527,9 @@ function DropdownMenuNative({
                         setBottomSheetData={setBottomSheetData}
                     />
                 ),
+                // The rows as data, for a sheet that draws them natively (iOS). A grid, or rows that are
+                // custom React controls (DynamicMenu's MenuItemEx, MenuAccount's profile switcher), stay `content`.
+                ...(variant !== 'grid' && items.every(hasTextTitle) ? { menu: { items, onPress: pressItem } } : {}),
             });
             Keyboard.dismiss();
         }
@@ -521,7 +553,7 @@ function DropdownMenuNative({
                 { cancelable: cancelable }
             );
         }
-    }, [cancelable, items, mode, onSelect, resolveContent, setBottomSheetData, t, title, variant]);
+    }, [cancelable, items, mode, onSelect, pressItem, resolveContent, setBottomSheetData, t, title, variant]);
 
     useEffect(() => {
         if (defaultOpen)
@@ -533,16 +565,24 @@ function DropdownMenuNative({
             ? legacyToNeoButtonProps(buttonProps)
             : stripRoutingKeys(buttonProps);
         // `handlePress` fires its own haptics.
-        return <NeoButton {...neoButtonProps} haptics={false} onPress={handlePress} />;
+        return (
+            <>
+                <Redirect ref={redirectRef} />
+                <NeoButton {...neoButtonProps} haptics={false} onPress={handlePress} />
+            </>
+        );
     }
     return (
-        <Pressable
-            onPress={handlePress}
-            accessibilityRole="button"
-            accessibilityLabel={triggerAccessibilityLabel}
-        >
-            {children}
-        </Pressable>
+        <>
+            <Redirect ref={redirectRef} />
+            <Pressable
+                onPress={handlePress}
+                accessibilityRole="button"
+                accessibilityLabel={triggerAccessibilityLabel}
+            >
+                {children}
+            </Pressable>
+        </>
     );
 }
 
@@ -570,6 +610,7 @@ export default function DropdownMenu({
     triggerStyle,
     stacked = false,
     minPopupWidth,
+    columns,
 }: DropdownMenuProps) {
     const isWeb = Platform.OS === 'web';
 
@@ -596,6 +637,7 @@ export default function DropdownMenu({
                 triggerStyle={triggerStyle}
                 stacked={stacked}
                 minPopupWidth={minPopupWidth}
+                columns={columns}
             />
         );
     }

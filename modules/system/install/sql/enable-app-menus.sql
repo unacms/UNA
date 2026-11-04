@@ -5,11 +5,21 @@
 --
 -- 'config_api' settings
 --
+UPDATE `sys_objects_menu` SET `config_api`='{"icon":"compass"}' WHERE `object`='sys_homepage_submenu';
+UPDATE `sys_objects_menu` SET `config_api`='{}' WHERE `object`='sys_ntfs_submenu';
+-- Settings: `hub` is the page that lists the section; `group` puts an item under Account or the current profile
+UPDATE `sys_objects_menu` SET `config_api`='{"hub":"settings"}' WHERE `object`='sys_account_settings_submenu';
+UPDATE `sys_menu_items` SET `config_api`='{"group":"account"}' WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name` IN ('account-profile-switcher', 'account-settings-info', 'account-settings-email', 'account-settings-password');
+UPDATE `sys_menu_items` SET `config_api`=IF(`name`='account-settings-delete', '{"group":"danger"}', '{"group":"profile"}') WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name` IN ('profile-settings-cfilter', 'account-settings-delete');
+UPDATE `sys_menu_items` SET `config_api`='{"badge":"friends"}' WHERE `set_name`='sys_tabbar' AND `module`='system' AND `name`='friends';
 
 --
 -- 'active_api' switch
 --
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='system' AND `name`='home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='system' AND `name`='about';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='system' AND `name`='login';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='system' AND `name`='create-account';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site_panel' AND `module`='system' AND `name`='member-avatar';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site_panel' AND `module`='system' AND `name`='member-menu';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site_panel' AND `module`='system' AND `name`='member-followings';
@@ -22,12 +32,15 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_homepage_submen
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `module`='system' AND `name`='about';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `module`='system' AND `name`='terms';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `module`='system' AND `name`='privacy';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `module`='system' AND `name`='copyright';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `module`='system' AND `name`='switch_language';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `module`='system' AND `name`='powered_by';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_site' AND `module`='system' AND `name`='main-menu';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='search';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='add-content';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='apps';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='account';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='login';
-UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='main-menu';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_popup' AND `module`='system' AND `name`='profile-active';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_popup' AND `module`='system' AND `name`='profile-notifications';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_popup' AND `module`='system' AND `name`='profile-switcher';
@@ -38,6 +51,7 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_notific
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_notifications' AND `module`='system' AND `name`='studio';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_notifications' AND `module`='system' AND `name`='cart';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_notifications' AND `module`='system' AND `name`='logout';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name`='settings';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name`='account-settings-email';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name`='account-settings-password';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name`='account-settings-delete';
@@ -83,3 +97,11 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_con_submenu' AN
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_con_submenu' AND `module`='system' AND `name`='followers';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_con_submenu' AND `module`='system' AND `name`='following';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_ntfs_submenu' AND `module`='system' AND `name`='context-invitations';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_tabbar' AND `module`='system' AND `name`='home';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_tabbar' AND `module`='system' AND `name`='explore';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_tabbar' AND `module`='system' AND `name`='friends';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_tabbar' AND `module`='system' AND `name`='about';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_tabbar' AND `module`='system' AND `name`='terms';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_tabbar' AND `module`='system' AND `name`='privacy';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_tabbar' AND `module`='system' AND `name`='profile';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_tabbar' AND `module`='system' AND `name`='dashboard';

@@ -104,7 +104,7 @@ class BxDolAiTrigger extends BxDol implements iBxDolAiTrigger
                 return false;
 
             $oMessage = $o->chat(new NeuronAI\Chat\Messages\UserMessage($sParams))->getMessage();
-            $mixed = $oMessage->getContent();
+            $mixed = $oMessage ? $oMessage->getContent() : '';
         } catch (Exception $exception) {
             bx_log('sys_agents', "Exception in '{$aAgent['name']}' agent: " . $exception->getMessage() . " INPUT:" . $sParams, BX_LOG_ERR);
             $mixed = isAdmin() ? self::visibleError($exception) : _t('_sys_agents_exception');

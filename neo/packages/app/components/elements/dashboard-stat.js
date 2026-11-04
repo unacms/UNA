@@ -6,7 +6,6 @@ import {
     BlockContent,
     BlockFooter,
     BlockTitle,
-    BlockDescription,
     BlockName,
     BlockActions,
 } from 'app/ui/molecules/page/page-block'
@@ -21,7 +20,6 @@ import { appSetting, cn } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import Link from 'app/ui/atoms/link'
 import { useFetch } from 'app/lib/hooks/use-fetch'
-import DasbordStatOld from 'app/components/elements/dashboard-stat-old'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { SOUND_LEVEL_ITEMS, useSoundsLevel } from 'app/lib/hooks/use-sounds-level'
@@ -32,7 +30,8 @@ const DASHBOARD_FALLBACK_ICONS = {
     friends: 'UsersRound',
     followers: 'UserPlus',
 }
-const dropdownTheme = appSetting('theme', 'dropdown')
+// The feed's card surface, so the dashboard's cards match the cards and blocks elsewhere.
+const DASHBOARD_CARD = cn(appSetting('theme', 'cards')['u-card-base'], 'p-1 relative z-0 w-full min-w-0')
 const menuSettings = appSetting('theme', 'dropdown_menu')
 const STAT_ICON_SIZE = menuSettings.icon_size || 20
 
@@ -62,7 +61,7 @@ function DashboardStatTile({ href, icon, title, count, trailing }) {
     const hasCount = count != null && count !== ''
 
     return (
-        <View className={cn(dropdownTheme.cnt, 'relative z-0 w-full min-w-0')}>
+        <View className={DASHBOARD_CARD}>
             <Link href={href} className="block w-full min-w-0" alt={title}>
                 <Row className={cn(menuSettings.item_ver, 'min-h-0 items-center py-2')}>
                     <View className="min-w-0 flex-auto gap-1">
@@ -112,16 +111,11 @@ function DashboardAction({ href, icon, title }) {
     )
 }
 
-export default function DashboardStat(props) {
-    const useRemoteConfig = appSetting('layout', 'user_remote_config')
-    return useRemoteConfig ? <DashboardStatRemote {...props} /> : <DasbordStatOld {...props} />
-}
-
 /**
  * The block payload comes in two shapes: the account dashboard (`modules` + optional `manage`)
  * and the admin dashboard (system:get_admin_block, `manage` only). Each part renders when its data is present.
  */
-function DashboardStatRemote(props) {
+export default function DashboardStatComponent(props) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     // Only the account stat block has a live endpoint; refresh its snapshot (cached, so returning is instant).
@@ -144,8 +138,8 @@ function DashboardStatRemote(props) {
     return (
         <BlockWrapper {...props.blockWrapperProps}>
             <Block className="u-max-width-block">
-                {hasModules ? <DashboardStatHeader /> : null}
                 <BlockContent className="!gap-3">
+                    {hasModules ? <DashboardStatHeader /> : null}
                     {hasModules ? <DashboardStatModules modules={modules} showWiki={showWiki} /> : null}
                     <DashboardStatMenu items={manageItems} showSettings={hasModules} />
                 </BlockContent>
@@ -170,43 +164,47 @@ function DashboardStatHeader() {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
 
+    // A card like the stat tiles below it, with their 12px inset (the card's p-1 plus p-2).
     return (
-        <BlockHeader className="items-center">
-            <View className="flex-none">
-                <Profile
-                    {...currentUser}
-                    url_avatar={currentUser.avatar}
-                    displayType="unit_wo_info"
-                    displaySize="xl"
-                />
-            </View>
-            <BlockName className="gap-1">
-                <BlockTitle>
-                    <Text className="text-card-foreground text-xl font-semibold">{currentUser.display_name}</Text>
-                </BlockTitle>
-                <BlockDescription>
-                    <Badge
-                        variant="secondary"
-                        size="xs"
-                        data={{
-                            text: currentUser.membership_name,
-                            icon: currentUser.membership_icon,
-                            icon_url: currentUser.membership_icon_url
-                        }}
+        <View className={DASHBOARD_CARD}>
+            <BlockHeader className="items-center p-2">
+                <View className="flex-none">
+                    <Profile
+                        {...currentUser}
+                        url_avatar={currentUser.avatar}
+                        displayType="unit_wo_info"
+                        displaySize="xl"
                     />
-                </BlockDescription>
-            </BlockName>
-            <BlockActions>
-                <ProfileSwitcher hideTitle={true} className="u-neo-btn-link" accessibilityLabel={t('Switch profile')}>
-                    <NeoButton
-                        style="bordered"
-                        borderShape="circle"
-                        image="RefreshCw"
-                        interactive
-                    />
-                </ProfileSwitcher>
-            </BlockActions>
-        </BlockHeader>
+                </View>
+                <BlockName className="gap-1">
+                    <BlockTitle>
+                        <Text className="text-card-foreground text-xl font-semibold">{currentUser.display_name}</Text>
+                    </BlockTitle>
+                    {/* A View, not BlockDescription: that is a Text, and on native a badge inside it is clipped to its line height. */}
+                    <View className="flex-row">
+                        <Badge
+                            variant="secondary"
+                            size="xs"
+                            data={{
+                                text: currentUser.membership_name,
+                                icon: currentUser.membership_icon,
+                                icon_url: currentUser.membership_icon_url
+                            }}
+                        />
+                    </View>
+                </BlockName>
+                <BlockActions>
+                    <ProfileSwitcher hideTitle={true} className="u-neo-btn-link" accessibilityLabel={t('Switch profile')}>
+                        <NeoButton
+                            style="bordered"
+                            borderShape="circle"
+                            image="ChevronDown"
+                            interactive
+                        />
+                    </ProfileSwitcher>
+                </BlockActions>
+            </BlockHeader>
+        </View>
     )
 }
 
@@ -345,10 +343,25 @@ function DashboardSettingsMenu() {
     const showFeedUnits = appSetting('layout', 'avaliable_feed_units').length > 1
     const { available: showSounds, level: soundLevel, setLevel: setSoundLevel } = useSoundsLevel()
     const currentSoundLevel = SOUND_LEVEL_ITEMS.find((option) => option.id === soundLevel) ?? SOUND_LEVEL_ITEMS[0]
-    if (!(showLangs || showTheme || showLayouts || showFeedUnits || showSounds)) return null
+    // The account settings pages (email, password, notifications ...): elsewhere only the desktop member menu links them.
+    const settingsUrl = appSetting('dashboard', 'settings_url')
+    if (!(settingsUrl || showLangs || showTheme || showLayouts || showFeedUnits || showSounds)) return null
 
     return (
         <View className={DASHBOARD_GRID}>
+            {settingsUrl ? (
+                <View className="w-full min-w-0">
+                    <NeoButtonLink
+                        href={settingsUrl}
+                        label={t('Settings')}
+                        style="bordered"
+                        controlSize="large"
+                        image="Settings"
+                        width="fill"
+                        align="start"
+                    />
+                </View>
+            ) : null}
             {showLangs ? (
                 <View className="w-full min-w-0">
                     <DropdownMenu

@@ -414,22 +414,26 @@ body > .bx-popup-wrapper {
     /* -webkit-overflow-scrolling:touch; */
 }
 
+/* Popups grow from where they open (dolPopup sets the origin at their element) while they fade in, and close
+   faster, without the grow; under reduced motion they only fade. */
 .bx-popup-transitions {
-    -webkit-transition: opacity 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
-    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+    transition: opacity 250ms cubic-bezier(0.22, 1, 0.36, 1), transform 250ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .bx-popup-inactive {
-    -webkit-opacity: 0;
     opacity: 0;
+    transform: scale(0.97);
+}
 
-    -webkit-transform: scale(0.75);
-    transform: scale(0.75);
+/* closing: shown popups keep .bx-popup-inactive under .bx-popup-active */
+.bx-popup-transitions.bx-popup-inactive:not(.bx-popup-active) {
+    transform: scale(0.99);
+    transition-duration: 150ms;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .bx-popup-inactive {
-        -webkit-transform: none;
+    .bx-popup-inactive,
+    .bx-popup-transitions.bx-popup-inactive:not(.bx-popup-active) {
         transform: none;
     }
 }
@@ -438,14 +442,10 @@ body > .bx-popup-wrapper {
     max-height:100%;
     overflow-y:auto;
 
-    -webkit-opacity: 1;
     opacity: 1;
-
-    -webkit-transform: scale(1);
     transform: scale(1);
 
-    -webkit-transition: opacity 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
-    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+    transition: opacity 250ms cubic-bezier(0.22, 1, 0.36, 1), transform 250ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /*

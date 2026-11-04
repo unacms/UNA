@@ -567,7 +567,7 @@ function bx_menu_popup_inline (jSel, e, options) {
         var fOnShow = options.onShow, fOnHide = options.onHide;
 
         var o = $.extend({}, $.fn.dolPopupDefaultOptions, options, {
-            pointer: bElement ? {el:$(e)} : false, 
+            pointer: bElement ? $.extend({}, options.pointer, {el:$(e)}) : false, 
             cssClass: 'bx-popup-menu',
             onShow: function(oPopup) {
                 if(bExpanded)
@@ -1754,7 +1754,7 @@ function bx_set_color_scheme_html()
  * sounds play, the sound set, the volume, a set or silence for each kind of action,
  * and the level people start at. Each visitor picks their own level for this
  * browser: full, quiet or off (bx_sound_set_level). The module loads only once a
- * sound can play.
+ * sound can play, and not before the page itself (bx_sound_load_later).
  */
 var glBxSounds = {url: '', config: null, module: null, cuelume: null, readyAt: 0, restore: null};
 
@@ -1784,13 +1784,50 @@ function bx_sound_init(sUrl, oConfig)
     glBxSounds.url = sUrl;
     glBxSounds.config = oConfig;
 
-    // A module that fails to load leaves the page silent; nothing else depends on it.
     if(bx_sound_is_on())
-        bx_sound_load().catch(function() {});
+        bx_sound_load_later();
 
     $(document).ready(function() {
         bx_sound_mark_switches();
     });
+}
+
+/**
+ * Load the module off the page's critical path: a low-priority preload once the page has loaded (import() alone
+ * always fetches at high priority), then import() takes it from there. The visitor's first press or key loads it at
+ * once if that comes sooner; that press itself is silent, it comes before bind().
+ */
+function bx_sound_load_later()
+{
+    var aEvents = ['pointerdown', 'keydown'];
+    var fLoad = function() {
+        aEvents.forEach(function(sEvent) {
+            window.removeEventListener(sEvent, fLoad, true);
+        });
+
+        // A module that fails to load leaves the page silent; nothing else depends on it.
+        bx_sound_load().catch(function() {});
+    };
+    var fPreload = function() {
+        var oLink = document.createElement('link');
+        if(!oLink.relList || !oLink.relList.supports('modulepreload'))
+            return fLoad();
+
+        oLink.rel = 'modulepreload';
+        oLink.href = glBxSounds.url;
+        oLink.setAttribute('fetchpriority', 'low');
+        oLink.onload = oLink.onerror = fLoad;
+        document.head.appendChild(oLink);
+    };
+
+    aEvents.forEach(function(sEvent) {
+        window.addEventListener(sEvent, fLoad, true);
+    });
+
+    if(document.readyState == 'complete')
+        fPreload();
+    else
+        window.addEventListener('load', fPreload);
 }
 
 function bx_sound_load()
@@ -2050,6 +2087,12 @@ function bx_sound_mark_switches()
         $(this).attr('aria-checked', bChecked ? 'true' : 'false').attr('tabindex', bChecked ? '0' : '-1');
     });
 
+    // The options of the footer's Sounds menu (BxBaseMenuFooter::getSoundsMenu): links, so every one stays in the tab order.
+    $('[data-bx-sounds-option]').each(function() {
+        var bCurrent = $(this).attr('data-bx-sounds-option') == sLevel;
+        $(this).attr('aria-current', bCurrent ? 'true' : null).closest('li').toggleClass('bx-menu-tab-active', bCurrent);
+    });
+
     if(bRedraw && typeof(bx_iconset_init_lucide) == 'function')
         bx_iconset_init_lucide();
 }
@@ -2097,6 +2140,25 @@ $(document).ready(function() {
     // A cached menu can still carry the Sounds item where sounds are off for everyone.
     if(!glBxSounds.config)
         $('[data-bx-sounds-switch]').closest('li').hide();
+});
+
+/**
+ * Links that only run a script carry role="button" (BxBaseMenu::_getMenuAttrs, BxDolTemplate::parseLink and the
+ * action counters). Like a real button they answer the Space key too: on release, and the press doesn't scroll.
+ * Templates that draw one with its own onclick call this from onkeydown/onkeyup; the rest get it delegated below.
+ */
+function bx_button_key(oEvent, eButton)
+{
+    if(oEvent.key != ' ')
+        return;
+
+    oEvent.preventDefault();
+    if(oEvent.type == 'keyup')
+        eButton.click();
+}
+
+$(document).on('keydown keyup', 'a[role="button"]:not([onkeyup])', function(oEvent) {
+    bx_button_key(oEvent, this);
 });
 
 function bx_is_mouse()
@@ -2363,7 +2425,8 @@ function bx_clicked_stack_pop()
  * Overlay scrollbar for a scroll box inside a rounded frame (Studio blocks, popup menus): the box's native bar is hidden and an SVG over
  * the frame draws a track and a thumb along the box's right edge and round the frame's corners where the box meets them, so the bar
  * follows the panel's shape. The thumb shows while the pointer is over the frame or the box scrolls (see common.css); it isn't dragged,
- * the box still scrolls by wheel, touch and keyboard. The SVG is redrawn on scroll, on resize and when the content changes.
+ * the box still scrolls by wheel, touch and keyboard. The SVG is redrawn on scroll, on resize and when the content changes. The bar
+ * keeps clear of the box's scroll-padding at the top and bottom, the part a fixed header or footer covers.
  *
  * @param oScroller - the element that scrolls (overflow-y: auto)
  * @param oFrame - the rounded element the bar is drawn over: the scroller itself or an ancestor
@@ -2463,8 +2526,11 @@ function bx_scrollbar_overlay_update(o)
     var fScale = oRf.width > 0 && fW > 0 ? oRf.width / fW : 1;
     var fTop = (oRs.top - oRf.top) / fScale, fBottom = (oRs.bottom - oRf.top) / fScale, fRight = (oRs.right - oRf.left) / fScale;
 
-    // A corner follows the scroll box's own radius or, where the box meets the frame's edge, the frame's.
     var oCss = getComputedStyle(oScroller), oCssFrame = getComputedStyle(o.frame);
+    fTop += Number.parseFloat(oCss.scrollPaddingTop) || 0;
+    fBottom -= Number.parseFloat(oCss.scrollPaddingBottom) || 0;
+
+    // A corner follows the scroll box's own radius or, where the box meets the frame's edge, the frame's.
     var fRadiusT = fTop < 1 ? (Number.parseFloat(oCss.borderTopRightRadius) || Number.parseFloat(oCssFrame.borderTopRightRadius) || 0) : 0;
     var fRadiusB = Number.parseFloat(oCss.borderBottomRightRadius) || (fBottom > fH - 1 ? Number.parseFloat(oCssFrame.borderBottomRightRadius) || 0 : 0);
 
@@ -2499,6 +2565,68 @@ function bx_scrollbar_overlay_popups(oContext)
         var sOverflow = getComputedStyle(this).overflowY;
         if(sOverflow === 'auto' || sOverflow === 'scroll')
             bx_scrollbar_overlay(this, $(this).closest('.bx-popup').get(0) || this);
+    });
+}
+
+/**
+ * Popup menus: one highlight follows the pointer from item to item instead of each item lighting up on its own. It is
+ * the list's ::before (.bx-menu-highlight-list in tailwind.css), set to the item under the pointer, or the one focused
+ * from the keyboard, through CSS variables; it slides between items and fades out when the pointer leaves the list.
+ * Touch has no hover: taps don't move it.
+ * @param oContext - a popup, or an element with popups in it
+ */
+function bx_menu_highlight(oContext)
+{
+    $(oContext).not('.bx-std *').find('.bx-popup ul').filter(function() {
+        var oList = $(this);
+        return !oList.is('.bx-menu-hor, .bx-menu-custom-hor, .bx-menu-floating-blocks-wide, .bx-menu-highlight-list') && oList.children('li').find('a').length > 1;
+    }).each(function(iIndex, eList) {
+        var oList = $(eList).addClass('bx-menu-highlight-list');
+
+        var fItem = function(eTarget) {
+            var oItem = $(eTarget).closest(oList.children('li'));
+            return oItem.length && oItem.is(':visible') && oItem.find('a').length ? oItem.get(0) : null;
+        };
+
+        var fMove = function(eItem) {
+            var oListBox = eList.getBoundingClientRect(), oBox = eItem.getBoundingClientRect();
+
+            // the first item it lights fades in where it is (.bx-menu-highlight-jump transitions only the opacity), later
+            // ones slide to theirs
+            var bJump = !oList.hasClass('bx-menu-highlight-on');
+            oList.toggleClass('bx-menu-highlight-jump', bJump);
+
+            // boxes are on screen, so scaled while the popup grows in: back to the list's own pixels
+            var fScale = eList.offsetWidth ? oListBox.width / eList.offsetWidth : 1;
+            eList.style.setProperty('--bx-menu-highlight-x', ((oBox.left - oListBox.left) / fScale - eList.clientLeft) + 'px');
+            eList.style.setProperty('--bx-menu-highlight-y', ((oBox.top - oListBox.top) / fScale - eList.clientTop) + 'px');
+            eList.style.setProperty('--bx-menu-highlight-w', (oBox.width / fScale) + 'px');
+            eList.style.setProperty('--bx-menu-highlight-h', (oBox.height / fScale) + 'px');
+
+            if(bJump) {
+                // laid out at its first item before it shows: otherwise the next move, which ends the jump, doesn't slide
+                eList.getBoundingClientRect();
+                oList.addClass('bx-menu-highlight-on');
+            }
+        };
+
+        oList.on('pointerover', function(oEvent) {
+            if(oEvent.originalEvent?.pointerType === 'touch')
+                return;
+
+            var eItem = fItem(oEvent.target);
+            if(eItem)
+                fMove(eItem);
+        }).on('pointerleave', function() {
+            oList.removeClass('bx-menu-highlight-on');
+        }).on('focusin', function(oEvent) {
+            var eItem = fItem(oEvent.target);
+            if(eItem && $(oEvent.target).is(':focus-visible'))
+                fMove(eItem);
+        }).on('focusout', function(oEvent) {
+            if(!oEvent.relatedTarget || !$.contains(eList, oEvent.relatedTarget))
+                oList.removeClass('bx-menu-highlight-on');
+        });
     });
 }
 

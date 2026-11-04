@@ -27,7 +27,7 @@ class BxGitHubDb extends BxDolModuleDb
         $aMethod = ['name' => 'getAll', 'params' => [0 => 'query']];
 
         $sSelectClause = "*";
-        $sWhereClause = $sOrderByClause = "";
+        $sWhereClause = $sOrderClause = "";
 
         switch($aParams['sample']) {
             case 'id':
@@ -45,10 +45,20 @@ class BxGitHubDb extends BxDolModuleDb
                 ];
 
                 $sWhereClause .= " AND `profile_id`=:profile_id";
+
+                if(($sClientId = $aParams['client_id'] ?? false)) {
+                    $aMethod['name'] = 'getRow';
+                    $aMethod['params'][1]['client_id'] = $sClientId;
+
+                    $sWhereClause .= " AND `client_id`=:client_id";
+                }
                 break;
         }
 
-        $aMethod['params'][0] = "SELECT " . $sSelectClause . " FROM `" . $CNF['TABLE_APPS'] . "` WHERE 1 " . $sWhereClause;
+        if(!empty($sOrderClause))
+            $sOrderClause = "ORDER BY " . $sOrderClause;
+
+        $aMethod['params'][0] = "SELECT " . $sSelectClause . " FROM `" . $CNF['TABLE_APPS'] . "` WHERE 1 " . $sWhereClause . " " . $sOrderClause;
 
         return call_user_func_array([$this, $aMethod['name']], $aMethod['params']);
     }
@@ -60,7 +70,7 @@ class BxGitHubDb extends BxDolModuleDb
         $aMethod = ['name' => 'getAll', 'params' => [0 => 'query']];
 
         $sSelectClause = "*";
-        $sWhereClause = $sOrderByClause = "";
+        $sWhereClause = $sOrderClause = "";
 
         switch($aParams['sample']) {
             case 'id':
@@ -83,7 +93,10 @@ class BxGitHubDb extends BxDolModuleDb
                 break;
         }
 
-        $aMethod['params'][0] = "SELECT " . $sSelectClause . " FROM `" . $CNF['TABLE_AUTHORIZATIONS'] . "` WHERE 1 " . $sWhereClause;
+        if(!empty($sOrderClause))
+            $sOrderClause = "ORDER BY " . $sOrderClause;
+
+        $aMethod['params'][0] = "SELECT " . $sSelectClause . " FROM `" . $CNF['TABLE_AUTHORIZATIONS'] . "` WHERE 1 " . $sWhereClause . " " . $sOrderClause;
 
         return call_user_func_array([$this, $aMethod['name']], $aMethod['params']);
     }
@@ -126,7 +139,7 @@ class BxGitHubDb extends BxDolModuleDb
         $aMethod = ['name' => 'getAll', 'params' => [0 => 'query']];
 
         $sSelectClause = "*";
-        $sWhereClause = $sOrderByClause = "";
+        $sWhereClause = $sOrderClause = "";
 
         switch($aParams['sample']) {
             case 'id':
@@ -148,7 +161,10 @@ class BxGitHubDb extends BxDolModuleDb
                 break;
         }
 
-        $aMethod['params'][0] = "SELECT " . $sSelectClause . " FROM `" . $CNF['TABLE_SETTINGS'] . "` WHERE 1 " . $sWhereClause;
+        if(!empty($sOrderClause))
+            $sOrderClause = "ORDER BY " . $sOrderClause;
+
+        $aMethod['params'][0] = "SELECT " . $sSelectClause . " FROM `" . $CNF['TABLE_SETTINGS'] . "` WHERE 1 " . $sWhereClause . " " . $sOrderClause;
 
         return call_user_func_array([$this, $aMethod['name']], $aMethod['params']);
     }

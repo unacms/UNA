@@ -117,6 +117,15 @@ class BxDolPageQuery extends BxDolDb
         return BxDolDb::getInstance()->getAll("SELECT * FROM `sys_pages_types` WHERE 1");
     }
 
+    /**
+     * Content (serialized service call) of every service block that calls the given method.
+     */
+    static public function getServiceBlocksContent($sMethod)
+    {
+        $oDb = BxDolDb::getInstance();
+        return $oDb->getColumn("SELECT `content` FROM `sys_pages_blocks` WHERE `type` = 'service' AND `content` LIKE " . $oDb->escape('%' . $sMethod . '%'));
+    }
+
     public function getPageLayoutColumns($iLayoutId, $sKey = 'index')
     {
         return $this->getAllWithKey('SELECT * FROM `sys_pages_layout_columns` WHERE `layout_id`=:layout_id', $sKey, [

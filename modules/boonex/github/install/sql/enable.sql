@@ -68,7 +68,7 @@ INSERT INTO `sys_acl_matrix` (`IDLevel`, `IDAction`) VALUES
 
 -- GRIDS: apps
 INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `override_class_name`, `override_class_file`) VALUES
-('bx_github_apps', 'Sql', 'SELECT * FROM `bx_github_apps` WHERE 1 ', 'bx_github_apps', 'id', '', '', '', 20, NULL, 'start', '', 'title,client_id', '', 'like', '', '', 2147483647, 'BxGitHubGridApps', 'modules/boonex/github/classes/BxGitHubGridApps.php');
+('bx_github_apps', 'Sql', 'SELECT * FROM `bx_github_apps` WHERE 1 ', 'bx_github_apps', 'id', '', '', '', 20, NULL, 'start', '', 'title,client_id', '', 'like', '', '', 2147483646, 'BxGitHubGridApps', 'modules/boonex/github/classes/BxGitHubGridApps.php');
 
 INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `order`) VALUES
 ('bx_github_apps', 'checkbox', '_sys_select', '5%', 0, 0, '', 1),
@@ -86,7 +86,7 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 
 -- GRIDS: authorizations
 INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `override_class_name`, `override_class_file`) VALUES
-('bx_github_authorizations', 'Sql', 'SELECT `tan`.*, `tap`.`title` AS `app_title` FROM `bx_github_authorizations` AS `tan` INNER JOIN `bx_github_apps` AS `tap` ON `tan`.`app_id`=`tap`.`id`  WHERE 1 ', 'bx_github_authorizations', 'id', '', '', '', 20, NULL, 'start', '', '', '', 'like', '', '', 2147483647, 'BxGitHubGridAuthorizations', 'modules/boonex/github/classes/BxGitHubGridAuthorizations.php');
+('bx_github_authorizations', 'Sql', 'SELECT `tan`.*, `tap`.`title` AS `app_title` FROM `bx_github_authorizations` AS `tan` INNER JOIN `bx_github_apps` AS `tap` ON `tan`.`app_id`=`tap`.`id`  WHERE 1 ', 'bx_github_authorizations', 'id', '', '', '', 20, NULL, 'start', '', '', '', 'like', '', '', 2147483646, 'BxGitHubGridAuthorizations', 'modules/boonex/github/classes/BxGitHubGridAuthorizations.php');
 
 INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `order`) VALUES
 ('bx_github_authorizations', 'checkbox', '_sys_select', '5%', 0, 0, '', 1),

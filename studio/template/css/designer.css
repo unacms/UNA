@@ -32,20 +32,695 @@ span.bx-dsg-template-version {
     font-weight: bold;
 }
 
-/*--- Icon Manager---*/
-.adm-dsg-icon .bx-form-input-files-uploaders {
-    margin-top: 0;
+/*--- Cover ---*/
+/* The cover's 8:3 (1920x720, 640x240); a gray stage where there is no image, the dark half for the default art's dark version. */
+.adm-dsg-cp-light {
+    background-color: #f4f4f5;
 }
-.adm-dsg-icon .adm-dsg-ip-icon_svg img {
-    max-height: 2rem;
+.adm-dsg-cp-dark {
+    background-color: #18181b;
 }
 
-/*--- Cover Manager---*/
-div.bx-dsg-cover {
+/*--- Logo ---*/
+/* Each preview stage is the page the image sits on: white in light mode, Artificer's gray-900 in dark mode. */
+.adm-dsg-lp-stage.adm-dsg-lp-light {
+    background-color: #ffffff;
+    color: #18181b;
+}
+.adm-dsg-lp-stage.adm-dsg-lp-dark {
+    background-color: #18181b;
+    color: #ffffff;
+}
+/* SVG code draws at the header's 40px height; its own width follows from its viewBox. */
+.adm-dsg-lp-code > svg {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: 100%;
+}
+
+/*--- Icon ---*/
+/* The page an icon sits on: color-scheme makes an SVG icon's prefers-color-scheme follow the half it's drawn on, not the browser. */
+.adm-dsg-ip-light {
+    background-color: #ffffff;
+    color-scheme: light;
+}
+.adm-dsg-ip-dark {
+    background-color: #18181b;
+    color-scheme: dark;
+}
+/* Home screen icons sit on a phone's gray, so their own tile and corners show. */
+.adm-dsg-ip-home {
+    background-color: #f4f4f5;
+    color-scheme: light;
+}
+
+/*--- Full-screen code editor and preview (Landing): native modal dialogs ---*/
+dialog.adm-dsg-fullscreen {
+    box-sizing: border-box;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background-color: #fff;
+    color: #18181b;
+}
+dialog.adm-dsg-fullscreen[open] {
+    display: flex;
+    flex-direction: column;
+}
+dialog.adm-dsg-fullscreen::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+html:has(dialog.adm-dsg-fullscreen[open]) {
+    overflow: hidden;
+}
+.adm-dsg-fs-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1);
+}
+.adm-dsg-fs-title {
+    margin: 0 auto 0 0;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+}
+.adm-dsg-fs-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+.adm-dsg-fs-body {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+.adm-dsg-fs-code .CodeMirror {
+    height: 100%;
+}
+.adm-dsg-code-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+/* Viewport presets: a segmented control, the pressed one raised. */
+.adm-dsg-fs-viewports {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border-radius: 0.75rem;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+.adm-dsg-fs-vp {
+    min-height: 2.25rem;
+    padding: 0 0.75rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: #52525b;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    cursor: pointer;
+}
+.adm-dsg-fs-vp:hover {
+    color: #18181b;
+}
+.adm-dsg-fs-vp[aria-pressed="true"] {
+    background-color: #fff;
+    color: #18181b;
+    font-weight: 500;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+}
+.adm-dsg-fs-width {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #52525b;
+}
+.adm-dsg-fs-width-input {
+    box-sizing: border-box;
+    width: 6rem;
+    min-height: 2.25rem;
+    padding: 0 0.5rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background-color: #fff;
+    color: #18181b;
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+/* The page at the chosen width, centred. A width wider than the stage is scaled down to fit
+   (designer.js sets the scale and the fit box's size); at full size the corner handle drags it. */
+.adm-dsg-fs-stage {
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    padding: 1rem;
+    background-color: #f4f4f5;
+}
+.adm-dsg-fs-fit {
     position: relative;
+    flex: none;
+    height: 100%;
+}
+.adm-dsg-fs-viewport {
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    width: 1280px;
+    min-width: 320px;
+    height: 100%;
+    overflow: hidden;
+    resize: horizontal;
+    transform-origin: 0 0;
+    border-radius: 0.75rem;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+.adm-dsg-fs-viewport.adm-dsg-fs-scaled {
+    resize: none;
+}
+.adm-dsg-fs-scale {
+    font-variant-numeric: tabular-nums;
+}
+.adm-dsg-fs-viewport iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
 }
 
-div.bx-dsg-cover-actions .bx-btn {
-    float: none;
-    display: inline-flex; /* keeps the 32px Studio button's centred label */
+.dark dialog.adm-dsg-fullscreen {
+    background-color: #18181b;
+    color: #f4f4f5;
+}
+.dark .adm-dsg-fs-header {
+    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.1);
+}
+.dark .adm-dsg-fs-viewports {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+.dark .adm-dsg-fs-vp,
+.dark .adm-dsg-fs-width {
+    color: #a1a1aa;
+}
+.dark .adm-dsg-fs-vp:hover,
+.dark .adm-dsg-fs-vp[aria-pressed="true"] {
+    color: #f4f4f5;
+}
+.dark .adm-dsg-fs-vp[aria-pressed="true"],
+.dark .adm-dsg-fs-width-input {
+    background-color: #3f3f46;
+    color: #f4f4f5;
+}
+.dark .adm-dsg-fs-width-input {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+.dark .adm-dsg-fs-stage {
+    background-color: #09090b;
+}
+.dark .adm-dsg-fs-viewport {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/*--- PWA: home screen, launch screen and app window previews ---*/
+.adm-dsg-pwa-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 11rem;
+    padding: 1rem;
+    box-sizing: border-box;
+    text-align: center;
+}
+.adm-dsg-pwa-icon {
+    display: block;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 0.875rem;
+    object-fit: cover;
+}
+.adm-dsg-pwa-home {
+    background: linear-gradient(160deg, #3f3f46, #18181b);
+    color: #fff;
+}
+.adm-dsg-pwa-short-name {
+    max-width: 5.5rem;
+    overflow: hidden;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+/* The launch screen and title bar take the colors in use, which the template and designer.js set as variables. */
+.adm-dsg-pwa-launch,
+.adm-dsg-pwa-titlebar {
+    background-color: var(--adm-dsg-pwa-bg, #ffffff);
+    color: var(--adm-dsg-pwa-ink, #18181b);
+}
+.adm-dsg-pwa-launch .adm-dsg-pwa-icon {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 1rem;
+}
+.adm-dsg-pwa-name {
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.adm-dsg-pwa-window {
+    background-color: #f4f4f5;
+}
+.dark .adm-dsg-pwa-window {
+    background-color: #09090b;
+}
+.adm-dsg-pwa-frame {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 4px 12px -4px rgba(0, 0, 0, 0.15);
+}
+.adm-dsg-pwa-titlebar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.625rem;
+    text-align: start;
+}
+.adm-dsg-pwa-titlebar-icon {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.25rem;
+}
+.adm-dsg-pwa-titlebar .adm-dsg-pwa-name {
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+.adm-dsg-pwa-page {
+    flex: 1 1 auto;
+    background: repeating-linear-gradient(180deg, #fff 0 0.75rem, #f4f4f5 0.75rem 1rem);
+    background-clip: content-box;
+    padding: 0.75rem;
+}
+
+/*--- Settings: the site template and the default page layouts as cards to pick ---*/
+.adm-dsg-choice-group {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.adm-dsg-choice-group + .adm-dsg-choice-group {
+    margin-top: 1.5rem;
+}
+.adm-dsg-choice-legend {
+    margin-bottom: 0.5rem;
+    padding: 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+}
+.adm-dsg-choices {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    gap: 0.75rem;
+}
+.adm-dsg-choice {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+.adm-dsg-choice:hover {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+.adm-dsg-choice:has(.adm-dsg-choice-input:checked) {
+    box-shadow: 0 0 0 2px #2563eb;
+}
+.adm-dsg-choice:has(.adm-dsg-choice-input:focus-visible) {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+.adm-dsg-choice-input:focus-visible {
+    outline: none; /* the card draws the focus ring */
+}
+/* A real radio, next to the title: it takes focus and arrow keys; the whole card is its label. */
+.adm-dsg-choice-input {
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    margin: 0;
+    accent-color: #2563eb;
+}
+.adm-dsg-choice-art {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 7rem;
+    background-color: #f4f4f5;
+}
+.adm-dsg-choice-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: 0.75rem;
+}
+.adm-dsg-choice-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    color: #18181b;
+}
+.adm-dsg-choice-info {
+    padding-left: 1.5rem; /* under the title, past the radio */
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #52525b;
+}
+.adm-dsg-choice-badge {
+    display: inline-block;
+    padding: 0 0.375rem;
+    border-radius: 9999px;
+    background-color: #dbeafe;
+    color: #1d4ed8;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    vertical-align: 1px;
+}
+.adm-dsg-template-icon {
+    display: block;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 1rem;
+    object-fit: cover;
+}
+.adm-dsg-template-letter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 1rem;
+    background-color: #71717a;
+    color: #fff;
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+/* Page layout sketches: header, side menu, content and footer as blocks, shown or hidden per layout. */
+.adm-dsg-pt {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0.25rem;
+    padding: 0.75rem;
+    box-sizing: border-box;
+}
+.adm-dsg-pt > span,
+.adm-dsg-pt-body > span,
+.adm-dsg-pt-content > span {
+    display: block;
+    border-radius: 0.25rem;
+}
+.adm-dsg-pt-header,
+.adm-dsg-pt-footer {
+    flex: none;
+    height: 0.625rem;
+    background-color: #a1a1aa;
+}
+.adm-dsg-pt-footer {
+    height: 0.375rem;
+    background-color: #d4d4d8;
+}
+.adm-dsg-pt-body {
+    display: flex !important;
+    flex: 1 1 auto;
+    gap: 0.25rem;
+    background: transparent;
+}
+.adm-dsg-pt-side {
+    flex: none;
+    width: 22%;
+    background-color: #a1a1aa;
+}
+.adm-dsg-pt-content {
+    display: flex !important;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.adm-dsg-pt-content > span {
+    flex: 1 1 auto;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+.adm-dsg-pt-standard .adm-dsg-pt-side,
+.adm-dsg-pt-wo_hf .adm-dsg-pt-side,
+.adm-dsg-pt-wo_hf .adm-dsg-pt-header,
+.adm-dsg-pt-wo_hf .adm-dsg-pt-footer {
+    display: none !important;
+}
+.adm-dsg-pt-application .adm-dsg-pt-header {
+    height: 0.375rem;
+}
+.adm-dsg-pt-application .adm-dsg-pt-footer {
+    display: none !important;
+}
+
+.dark .adm-dsg-choice {
+    background-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+.dark .adm-dsg-choice:hover {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+.dark .adm-dsg-choice:has(.adm-dsg-choice-input:checked) {
+    box-shadow: 0 0 0 2px #60a5fa;
+}
+.dark .adm-dsg-choice:has(.adm-dsg-choice-input:focus-visible) {
+    outline-color: #60a5fa;
+}
+.dark .adm-dsg-choice-input {
+    accent-color: #60a5fa;
+}
+.dark .adm-dsg-choice-art {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+.dark .adm-dsg-choice-title {
+    color: #f4f4f5;
+}
+.dark .adm-dsg-choice-info {
+    color: #a1a1aa;
+}
+.dark .adm-dsg-choice-badge {
+    background-color: #172554;
+    color: #93c5fd;
+}
+.dark .adm-dsg-pt-header,
+.dark .adm-dsg-pt-side {
+    background-color: #52525b;
+}
+.dark .adm-dsg-pt-footer {
+    background-color: #3f3f46;
+}
+.dark .adm-dsg-pt-content > span {
+    background-color: #27272a;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+/*--- Template: the installed templates as cards ---*/
+.adm-dsg-tmpl-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 0.75rem;
+}
+.adm-dsg-tmpl-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+.adm-dsg-tmpl-card:has([aria-pressed="true"]) {
+    box-shadow: 0 0 0 2px #2563eb;
+}
+.adm-dsg-tmpl-icon {
+    flex: none;
+    width: 3rem;
+    height: 3rem;
+}
+/* App icon corners as in the launcher (72px, 16px) and the header (32px, 8px): about a quarter of the size. */
+.adm-dsg-tmpl-icon img,
+.adm-dsg-tmpl-icon .sys-icon {
+    display: block;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+    object-fit: cover;
+    font-size: 2rem;
+    line-height: 3rem;
+    text-align: center;
+}
+.adm-dsg-tmpl-text {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+}
+.adm-dsg-tmpl-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    color: #18181b;
+}
+/* Vendor and version: secondary, a step smaller. */
+.adm-dsg-tmpl-meta,
+.adm-dsg-choice-info.adm-dsg-choice-meta {
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+.adm-dsg-tmpl-meta {
+    color: #52525b;
+}
+.adm-dsg-tmpl-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+.adm-dsg-tmpl-open {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+.adm-dsg-tmpl-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+}
+.adm-dsg-tmpl-footer-text {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #52525b;
+}
+/* The pinned footer is one row: on narrow screens the button alone (the Default badge names the template). */
+@media (max-width: 40rem) {
+    .adm-dsg-tmpl-footer-text {
+        display: none;
+    }
+}
+.dark .adm-dsg-tmpl-card {
+    background-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+.dark .adm-dsg-tmpl-card:has([aria-pressed="true"]) {
+    box-shadow: 0 0 0 2px #60a5fa;
+}
+.dark .adm-dsg-tmpl-title {
+    color: #f4f4f5;
+}
+.dark .adm-dsg-tmpl-meta,
+.dark .adm-dsg-tmpl-footer-text {
+    color: #a1a1aa;
+}
+
+/*--- Template: the site in the chosen template, with page and viewport controls ---
+   The Landing full-screen preview's stage, fit and controls (adm-dsg-fs-*), inline here; Full screen moves it into a dialog. */
+.adm-dsg-tmpl-viewer {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+.adm-dsg-tmpl-viewer .adm-dsg-fs-stage {
+    height: 36rem;
+}
+.adm-dsg-tmpl-viewer-title {
+    margin-right: auto;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+}
+.adm-dsg-tmpl-page {
+    box-sizing: border-box;
+    min-height: 2.25rem;
+    padding: 0 0.5rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background-color: #fff;
+    color: #18181b;
+    font-size: 0.875rem;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+.adm-dsg-tmpl-open {
+    align-self: center;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+.adm-dsg-tmpl-viewer .adm-dsg-tmpl-done {
+    display: none;
+}
+.adm-dsg-fullscreen > .adm-dsg-tmpl-viewer {
+    flex: 1 1 auto;
+    min-height: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+.adm-dsg-fullscreen .adm-dsg-tmpl-viewer .adm-dsg-fs-stage {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+}
+.adm-dsg-fullscreen .adm-dsg-tmpl-viewer .adm-dsg-tmpl-done {
+    display: inline-flex;
+}
+.adm-dsg-fullscreen .adm-dsg-tmpl-viewer .adm-dsg-tmpl-fullscreen {
+    display: none;
+}
+.dark .adm-dsg-tmpl-viewer {
+    background-color: #18181b;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+.dark .adm-dsg-tmpl-page {
+    background-color: #3f3f46;
+    color: #f4f4f5;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15);
 }

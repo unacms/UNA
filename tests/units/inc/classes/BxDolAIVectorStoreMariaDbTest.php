@@ -82,9 +82,9 @@ class BxDolAIVectorStoreMariaDbTest extends BxDolTestCase
 
         $oStore = BxDolAIVectorStoreMariaDb::open(903, 4);
         $oDocument = new NeuronAI\RAG\Document('width-mismatch');
-        $oDocument->embedding = [0.1, 0.2, 0.3];
-        $oDocument->sourceType = '903';
-        $oDocument->sourceName = 'width-mismatch';
+        $oDocument->setEmbedding([0.1, 0.2, 0.3]);
+        $oDocument->setSourceType('903');
+        $oDocument->setSourceName('width-mismatch');
 
         try {
             $oStore->addDocument($oDocument);
@@ -126,19 +126,19 @@ class BxDolAIVectorStoreMariaDbTest extends BxDolTestCase
 
         $oStore = BxDolAIVectorStoreMariaDb::open(904, 4);
         $oFar = new NeuronAI\RAG\Document('far-chunk');
-        $oFar->embedding = $aFar;
-        $oFar->sourceType = '904';
-        $oFar->sourceName = 'rank';
+        $oFar->setEmbedding($aFar);
+        $oFar->setSourceType('904');
+        $oFar->setSourceName('rank');
         $oNear = new NeuronAI\RAG\Document('near-chunk');
-        $oNear->embedding = $aNear;
-        $oNear->sourceType = '904';
-        $oNear->sourceName = 'rank';
+        $oNear->setEmbedding($aNear);
+        $oNear->setSourceType('904');
+        $oNear->setSourceName('rank');
 
         try {
             $oStore->addDocument($oFar);
             $oStore->addDocument($oNear);
 
-            $aFound = iterator_to_array($oStore->similaritySearch($aNear));
+            $aFound = iterator_to_array($oStore->search(new NeuronAI\RAG\VectorStore\SearchRequest($aNear)));
 
             $this->assertSame('near-chunk', $aFound[0]->getContent());
             $this->assertGreaterThan(0.9, $aFound[0]->getScore());
@@ -146,7 +146,7 @@ class BxDolAIVectorStoreMariaDbTest extends BxDolTestCase
             $this->assertGreaterThan($aFound[1]->getScore(), $aFound[0]->getScore());
         }
         finally {
-            $oStore->deleteBy('904', 'rank');
+            $oStore->delete(NeuronAI\RAG\VectorStore\Filter\Filter::where('sourceType', '904')->where('sourceName', 'rank'));
         }
     }
 
@@ -161,20 +161,20 @@ class BxDolAIVectorStoreMariaDbTest extends BxDolTestCase
 
         $oStore = BxDolAIVectorStoreMariaDb::open(905, 4);
         $oWide = new NeuronAI\RAG\Document('wide-chunk');
-        $oWide->embedding = $aWide;
-        $oWide->sourceType = '905';
-        $oWide->sourceName = 'cross-dim';
+        $oWide->setEmbedding($aWide);
+        $oWide->setSourceType('905');
+        $oWide->setSourceName('cross-dim');
         $oNarrow = new NeuronAI\RAG\Document('narrow-chunk');
-        $oNarrow->embedding = $aNarrow;
-        $oNarrow->sourceType = '905';
-        $oNarrow->sourceName = 'cross-dim';
+        $oNarrow->setEmbedding($aNarrow);
+        $oNarrow->setSourceType('905');
+        $oNarrow->setSourceName('cross-dim');
 
         try {
             $oStore->addDocument($oWide);
             $oStore->addDocument($oNarrow);
 
-            $aFromWide = iterator_to_array($oStore->similaritySearch($aWide));
-            $aFromNarrow = iterator_to_array($oStore->similaritySearch($aNarrow));
+            $aFromWide = iterator_to_array($oStore->search(new NeuronAI\RAG\VectorStore\SearchRequest($aWide)));
+            $aFromNarrow = iterator_to_array($oStore->search(new NeuronAI\RAG\VectorStore\SearchRequest($aNarrow)));
 
             $this->assertCount(1, $aFromWide);
             $this->assertSame('wide-chunk', $aFromWide[0]->getContent());
@@ -184,7 +184,7 @@ class BxDolAIVectorStoreMariaDbTest extends BxDolTestCase
             $this->assertSame(1, $this->countBySourceName(384, 'cross-dim'));
         }
         finally {
-            $oStore->deleteBy('905', 'cross-dim');
+            $oStore->delete(NeuronAI\RAG\VectorStore\Filter\Filter::where('sourceType', '905')->where('sourceName', 'cross-dim'));
         }
 
         $this->assertSame(0, $this->countBySourceName(1024, 'cross-dim'));
@@ -204,20 +204,20 @@ class BxDolAIVectorStoreMariaDbTest extends BxDolTestCase
         $oStoreA = BxDolAIVectorStoreMariaDb::open(901, 4);
         $oStoreB = BxDolAIVectorStoreMariaDb::open(902, 4);
         $oDocA = new NeuronAI\RAG\Document('store-a-only');
-        $oDocA->embedding = $aNearA;
-        $oDocA->sourceType = '901';
-        $oDocA->sourceName = 'search-filter';
+        $oDocA->setEmbedding($aNearA);
+        $oDocA->setSourceType('901');
+        $oDocA->setSourceName('search-filter');
         $oDocB = new NeuronAI\RAG\Document('store-b-only');
-        $oDocB->embedding = $aNearB;
-        $oDocB->sourceType = '902';
-        $oDocB->sourceName = 'search-filter';
+        $oDocB->setEmbedding($aNearB);
+        $oDocB->setSourceType('902');
+        $oDocB->setSourceName('search-filter');
 
         try {
             $oStoreA->addDocument($oDocA);
             $oStoreB->addDocument($oDocB);
 
-            $aFromA = iterator_to_array($oStoreA->similaritySearch($aNearB));
-            $aFromB = iterator_to_array($oStoreB->similaritySearch($aNearB));
+            $aFromA = iterator_to_array($oStoreA->search(new NeuronAI\RAG\VectorStore\SearchRequest($aNearB)));
+            $aFromB = iterator_to_array($oStoreB->search(new NeuronAI\RAG\VectorStore\SearchRequest($aNearB)));
 
             $this->assertSame('store-a-only', $aFromA[0]->getContent());
             $this->assertSame('901', (string)$aFromA[0]->getSourceType());
@@ -225,8 +225,8 @@ class BxDolAIVectorStoreMariaDbTest extends BxDolTestCase
             $this->assertSame('902', (string)$aFromB[0]->getSourceType());
         }
         finally {
-            $oStoreA->deleteBy('901', 'search-filter');
-            $oStoreB->deleteBy('902', 'search-filter');
+            $oStoreA->delete(NeuronAI\RAG\VectorStore\Filter\Filter::where('sourceType', '901')->where('sourceName', 'search-filter'));
+            $oStoreB->delete(NeuronAI\RAG\VectorStore\Filter\Filter::where('sourceType', '902')->where('sourceName', 'search-filter'));
         }
     }
 

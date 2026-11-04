@@ -486,7 +486,7 @@ class BxDolAccountQuery extends BxDolDb implements iBxDolSingleton
     			break;
                 
             case 'no_confirm':
-    			$sWhereClause = "SELECT `sys_accounts`.`id` FROM `sys_accounts` WHERE `added` < :date_limit AND (phone_confirmed = 0 OR email_confirmed = 0) AND name <> 'Robot'";
+    			$sQuery = "SELECT `sys_accounts`.`id` FROM `sys_accounts` WHERE `added` < :date_limit AND (phone_confirmed = 0 OR email_confirmed = 0) AND name <> 'Robot'";
     			break;
     	}
         

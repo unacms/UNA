@@ -98,8 +98,8 @@
     <string name="_bx_snipcart_page_title_browse_recent"><![CDATA[Latest Goods]]></string>
     <string name="_bx_snipcart_page_title_browse_popular"><![CDATA[Popular Goods]]></string>
     <string name="_bx_snipcart_page_title_browse_updated"><![CDATA[Updated Goods]]></string>
-    <string name="_bx_snipcart_page_title_sys_home"><![CDATA[Goods Home]]></string>
-    <string name="_bx_snipcart_page_title_home"><![CDATA[Goods]]></string>
+    <string name="_bx_snipcart_page_title_sys_home"><![CDATA[Shopping]]></string>
+    <string name="_bx_snipcart_page_title_home"><![CDATA[Shopping]]></string>
     <string name="_bx_snipcart_page_block_title_featured_entries_view_extended"><![CDATA[Featured Goods]]></string>
     <string name="_bx_snipcart_page_block_title_recent_entries"><![CDATA[Latest Goods (Gallery View)]]></string>
     <string name="_bx_snipcart_page_block_title_recent_entries_view_extended"><![CDATA[Latest Goods]]></string>
@@ -176,8 +176,8 @@
     <string name="_bx_snipcart_menu_item_title_system_delete_entry"><![CDATA[Delete]]></string>
     <string name="_bx_snipcart_menu_item_title_delete_entry"><![CDATA[Delete]]></string>
     <string name="_bx_snipcart_menu_item_title_system_view_entry"><![CDATA[View Goods]]></string>
-    <string name="_bx_snipcart_menu_item_title_system_entries_home"><![CDATA[Shop]]></string>
-    <string name="_bx_snipcart_menu_item_title_entries_home"><![CDATA[Shop]]></string>
+    <string name="_bx_snipcart_menu_item_title_system_entries_home"><![CDATA[Shopping]]></string>
+    <string name="_bx_snipcart_menu_item_title_entries_home"><![CDATA[Shopping]]></string>
     <string name="_bx_snipcart_menu_item_title_system_entries_public"><![CDATA[Latest]]></string>
     <string name="_bx_snipcart_menu_item_title_entries_public"><![CDATA[Latest]]></string>
     <string name="_bx_snipcart_menu_item_title_system_entries_search"><![CDATA[Search]]></string>

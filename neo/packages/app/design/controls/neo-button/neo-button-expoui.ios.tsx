@@ -8,7 +8,7 @@
 
 import { StyleSheet, View } from 'react-native';
 import { useResolveClassNames } from 'uniwind';
-import { isValidElement, type ComponentProps } from 'react';
+import { isValidElement, type ComponentProps, type ReactElement } from 'react';
 import { Host, Button, HStack, Image, ProgressView, RNHostView, Text, ZStack, useNativeState } from '@expo/ui/swift-ui';
 import {
     buttonStyle as buttonStyleModifier,
@@ -197,6 +197,18 @@ const HOSTED_CONTENT_STYLE = StyleSheet.create({
     box: { alignItems: 'center', justifyContent: 'center' },
 }).box;
 
+/** Hosted content in the Host size cache's key: the element's type and its plain props. */
+function hostedContentKey(element: ReactElement | null): string {
+    if (!element) return '';
+    const type = element.type as string | { displayName?: string; name?: string };
+    const name = typeof type === 'string' ? type : (type?.displayName || type?.name || 'custom');
+    const props = Object.entries((element.props ?? {}) as Record<string, unknown>)
+        .filter(([, value]) => value == null || ['string', 'number', 'boolean'].includes(typeof value))
+        .map(([key, value]) => `${key}=${String(value)}`)
+        .join(',');
+    return `${name}(${props})`;
+}
+
 export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     // A surface with its own brightness (header on a coloured band): see color-scheme-context.
     const colorScheme = useNeoButtonColorScheme();
@@ -246,9 +258,12 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const isIconOnly = !!glyph && !effectiveLabel;
     const isCustomOnly = !!customContent && !effectiveLabel;
     const pinToSquare = isIconOnly && resolved.aspectSquare;
+    // A circle around custom content (header avatar) is square too, like the JS
+    // button's fixed `aspectSquare` box: no `paddingX` beside it.
+    const pinCustomToSquare = isCustomOnly && resolved.aspectSquare;
     // Own width for every icon-only control. Capsule keeps JS paddingX so
     // bordered chrome is not clipped to the plus glyph (composer Plus).
-    const rnOwnsWidth = isIconOnly || fill
+    const rnOwnsWidth = isIconOnly || pinCustomToSquare || fill
         || flatHost.width != null || flatHost.flexGrow != null
         || flatHost.flex != null || flatHost.flexBasis != null;
     // Always pin Host height to controlSizes so icon-only and labelled
@@ -282,7 +297,9 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const targetHeight = (rnOwnsHeight
         && [flatHost.height, flatHost.minHeight].find((v) => typeof v === 'number'))
         || resolved.height;
-    const iconHostWidth = !isIconOnly
+    const iconHostWidth = pinCustomToSquare
+        ? targetHeight
+        : !isIconOnly
         ? null
         : (pinToSquare
             ? targetHeight
@@ -326,7 +343,7 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         && typeof contentInsets.x === 'number' ? contentInsets.x : null;
     if (isGlass) {
         labelModifiers.push(padding({
-            horizontal: customInsetX ?? resolved.paddingX ?? 12,
+            horizontal: customInsetX ?? (pinCustomToSquare ? 0 : (resolved.paddingX ?? 12)),
             vertical: vPad,
         }));
     }
@@ -396,8 +413,10 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         // Do not key on selected / tint — that remounts Host and the
         // capsule flashes at 0 before matchContents measures.
         contentKey: [
-            nativeLabel, sfSymbol || assetName || (customContent ? 'custom' : ''), nativeControlSize, targetHeight,
-            mapping.buttonStyle, borderShape || '', 'host-fit-v5',
+            nativeLabel, sfSymbol || assetName || hostedContentKey(customContent), nativeControlSize, targetHeight,
+            mapping.buttonStyle, borderShape || '', 'host-fit-v6',
+            typeof contentInsets === 'object' ? JSON.stringify(contentInsets) : String(contentInsets ?? ''),
+            String(resolved.paddingX ?? ''), String(resolved.labelGap ?? ''),
             fontParams.family || '', fontParams.weight || '', String(fontParams.size ?? ''), String(nativeIconSize),
             addonMeta?.text || '',
         ].join('|'),
@@ -440,7 +459,8 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         modifiers.push(frame({ width: iconHostWidth, height: targetHeight }));
     } else if (rnOwnsWidth) {
         modifiers.push(frame({
-            height: targetHeight,
+            minHeight: targetHeight,
+            maxHeight: targetHeight,
             maxWidth: Infinity,
             alignment: fillAlignment,
         }));

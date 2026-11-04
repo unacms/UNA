@@ -5,6 +5,8 @@ div.bx-inv-invite-btn  {
 div.bx-inv-invite-btn .bx-btn {
     float: none;
     display: inline-block;
+    /* The email link and the link/code buttons share a row: a <button> and an <a> sit on different baselines. */
+    vertical-align: middle;
 }
 
 

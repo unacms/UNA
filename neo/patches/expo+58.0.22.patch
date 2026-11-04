@@ -1,0 +1,215 @@
+diff --git a/node_modules/expo/src/async-require/hmr.ts b/node_modules/expo/src/async-require/hmr.ts
+index 7b2687d..95da984 100644
+--- a/node_modules/expo/src/async-require/hmr.ts
++++ b/node_modules/expo/src/async-require/hmr.ts
+@@ -29,6 +29,8 @@ declare global {
+ }
+ 
+ const pendingEntryPoints: string[] = [];
++// Every entry point sent to Metro, to register again on a new socket after a reconnect.
++const registeredEntryPoints: string[] = [];
+ 
+ // @ts-expect-error: Account for multiple versions of pretty-format inside of a monorepo.
+ const prettyFormatFunc = typeof prettyFormat === 'function' ? prettyFormat : prettyFormat.default;
+@@ -37,6 +39,13 @@ let hmrClient: MetroHMRClient | null = null;
+ let hmrUnavailableReason: string | null = null;
+ const buildErrorQueue = new Set<unknown>();
+ let didConnect: boolean = false;
++// A dropped socket (Metro restarting, or the network changing under a simulator) is reopened a few
++// times before HMR is reported unavailable; it used to give up on the first drop.
++const RECONNECT_ATTEMPTS = 10;
++let reconnectAttempt = 0;
++let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
++let hmrOrigin = '';
++let hmrServerHost = '';
+ const pendingLogs: [LogLevel, any[]][] = [];
+ 
+ type LogLevel =
+@@ -184,9 +193,9 @@ const HMRClient = {
+       serverScheme = scheme;
+     }
+ 
+-    const origin = `${serverScheme}://${serverHost}`;
+-    const client = new MetroHMRClient(`${origin}/hot`);
+-    hmrClient = client;
++    hmrServerHost = serverHost;
++    hmrOrigin = `${serverScheme}://${serverHost}`;
++    connectClient();
+ 
+     pendingEntryPoints.push(
+       // HMRServer understands regular bundle URLs, so prefer that in case
+@@ -200,64 +209,6 @@ const HMRClient = {
+       })
+     );
+ 
+-    client.on('connection-error', (e: Error) => {
+-      setHMRUnavailableReason(getConnectionError(serverHost, e));
+-    });
+-
+-    client.on('update-start', ({ isInitialUpdate }: { isInitialUpdate?: boolean }) => {
+-      buildErrorQueue.clear();
+-      didConnect = true;
+-
+-      if (client.isEnabled() && !isInitialUpdate) {
+-        showLoading('Refreshing...', 'refresh');
+-      }
+-    });
+-
+-    client.on(
+-      'update',
+-      ({
+-        isInitialUpdate,
+-        added,
+-        modified,
+-        deleted,
+-      }: {
+-        isInitialUpdate?: boolean;
+-        added: unknown[];
+-        modified: unknown[];
+-        deleted: unknown[];
+-      }) => {
+-        // NOTE(@krystofwoldrich): I don't know why sometimes empty updates are sent. But they should not reset the overlay.
+-        const isEmpty = added.length === 0 && modified.length === 0 && deleted.length === 0;
+-        if (client.isEnabled() && !isInitialUpdate && !isEmpty) {
+-          resetErrorOverlay();
+-        }
+-      }
+-    );
+-
+-    client.on('update-done', () => {
+-      hideLoading();
+-    });
+-
+-    client.on('error', (data) => this._onMetroError(data));
+-
+-    client.on('close', (closeEvent?: { code: number; reason: string }) => {
+-      hideLoading();
+-      const reason = closeEvent?.reason;
+-      const code = closeEvent?.code || 1000;
+-      // https://www.rfc-editor.org/rfc/rfc6455.html#section-7.4.1
+-      // https://www.rfc-editor.org/rfc/rfc6455.html#section-7.1.5
+-      const title =
+-        reason && code !== 1000 && code !== 1001 && code !== 1005
+-          ? `Disconnected from Metro (${code}: "${reason}")`
+-          : `Disconnected from Metro (${code})`;
+-      const message =
+-        title +
+-        '\nTo reconnect:' +
+-        '\n- Ensure that Metro is running and available on the same network' +
+-        '\n- Reload this app (will trigger further help if Metro cannot be connected to)';
+-      setHMRUnavailableReason(message);
+-    });
+-
+     if (isEnabled) {
+       HMRClient.enable();
+     } else {
+@@ -300,6 +251,101 @@ const HMRClient = {
+   },
+ };
+ 
++/** Opens the HMR socket and wires its events; called at setup and again on each reconnect. */
++function connectClient() {
++  const wasEnabled = hmrClient?.isEnabled() ?? false;
++  const client = new MetroHMRClient(`${hmrOrigin}/hot`);
++  hmrClient = client;
++  if (wasEnabled) client.enable();
++
++  client.on('open', () => {
++    // A reconnected socket: register the bundle again so Metro sends its updates here. The first
++    // socket needs nothing: registerBundleEntryPoints queued its registration before it opened.
++    if (reconnectAttempt === 0) return;
++    reconnectAttempt = 0;
++    if (registeredEntryPoints.length > 0) {
++      client.send(JSON.stringify({ type: 'register-entrypoints', entryPoints: registeredEntryPoints }));
++    }
++  });
++
++  client.on('connection-error', (e: Error) => {
++    if (scheduleReconnect(client)) return;
++    setHMRUnavailableReason(getConnectionError(hmrServerHost, e));
++  });
++
++  client.on('update-start', ({ isInitialUpdate }: { isInitialUpdate?: boolean }) => {
++    buildErrorQueue.clear();
++    didConnect = true;
++
++    if (client.isEnabled() && !isInitialUpdate) {
++      showLoading('Refreshing...', 'refresh');
++    }
++  });
++
++  client.on(
++    'update',
++    ({
++      isInitialUpdate,
++      added,
++      modified,
++      deleted,
++    }: {
++      isInitialUpdate?: boolean;
++      added: unknown[];
++      modified: unknown[];
++      deleted: unknown[];
++    }) => {
++      // NOTE(@krystofwoldrich): I don't know why sometimes empty updates are sent. But they should not reset the overlay.
++      const isEmpty = added.length === 0 && modified.length === 0 && deleted.length === 0;
++      if (client.isEnabled() && !isInitialUpdate && !isEmpty) {
++        resetErrorOverlay();
++      }
++    }
++  );
++
++  client.on('update-done', () => {
++    hideLoading();
++  });
++
++  client.on('error', (data) => HMRClient._onMetroError(data));
++
++  client.on('close', (closeEvent?: { code: number; reason: string }) => {
++    hideLoading();
++    if (scheduleReconnect(client)) return;
++    const reason = closeEvent?.reason;
++    const code = closeEvent?.code || 1000;
++    // https://www.rfc-editor.org/rfc/rfc6455.html#section-7.4.1
++    // https://www.rfc-editor.org/rfc/rfc6455.html#section-7.1.5
++    const title =
++      reason && code !== 1000 && code !== 1001 && code !== 1005
++        ? `Disconnected from Metro (${code}: "${reason}")`
++        : `Disconnected from Metro (${code})`;
++    const message =
++      title +
++      '\nTo reconnect:' +
++      '\n- Ensure that Metro is running and available on the same network' +
++      '\n- Reload this app (will trigger further help if Metro cannot be connected to)';
++    setHMRUnavailableReason(message);
++  });
++}
++
++/**
++ * After a socket that had connected drops, open a new one with a growing delay. Returns false when
++ * HMR is already unavailable for another reason, the socket never connected, or the attempts ran out.
++ */
++function scheduleReconnect(client: MetroHMRClient): boolean {
++  if (client !== hmrClient) return true; // an old socket's late event
++  if (hmrUnavailableReason !== null || !didConnect) return false;
++  if (reconnectTimer !== null) return true;
++  if (reconnectAttempt >= RECONNECT_ATTEMPTS) return false;
++  reconnectAttempt += 1;
++  reconnectTimer = setTimeout(() => {
++    reconnectTimer = null;
++    connectClient();
++  }, Math.min(1000 * reconnectAttempt, 5000));
++  return true;
++}
++
+ function setHMRUnavailableReason(reason: string) {
+   assert(hmrClient, 'Expected HMRClient.setup() call at startup.');
+   if (hmrUnavailableReason !== null) {
+@@ -330,6 +376,7 @@ function registerBundleEntryPoints(client: MetroHMRClient | null) {
+   }
+ 
+   if (pendingEntryPoints.length > 0) {
++    registeredEntryPoints.push(...pendingEntryPoints);
+     client?.send(
+       JSON.stringify({
+         type: 'register-entrypoints',

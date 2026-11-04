@@ -152,6 +152,10 @@ class BxBaseMenuUnitMeta extends BxTemplMenuCustom
         if(!isset($aAttrs['href']))
             $aAttrs['href'] = 'javascript:void(0)';
 
+        // A button that only runs a script is a button, not a link (see BxBaseMenu::_getMenuAttrs).
+        if(!isset($aAttrs['role']) && strncmp($aAttrs['href'], 'javascript:', 11) === 0)
+            $aAttrs['role'] = 'button';
+
         return $this->getUnitMetaItem($sName, $sContent, $aAttrs);
     }
     

@@ -1,12 +1,13 @@
 /* Global focus ring. Use solid (not auto) — auto ignores custom outline-color
  * in Firefox/Safari. Keep offset ≥ 0 so overflow:hidden/clip on inputs doesn't
- * eat the ring. Same alpha in light and dark (dark used to force / 0.8 and
- * override this). */
+ * eat the ring. A 2px opaque ring: --ring is 3:1 or more against the page and a
+ * card in both schemes (a 4px ring at 60% was about 2.5:1 on white). The site's
+ * inputs have the same ring (template/css/tailwind.css). */
  *:focus-visible {
-    outline-color: rgb(var(--ring) / 0.6);
+    outline-color: rgb(var(--ring));
     outline-style: solid;
     outline-offset: 0px;
-    outline-width: 4px;
+    outline-width: 2px;
 }
 
 select {
@@ -469,12 +470,12 @@ html::-webkit-scrollbar-thumb:window-inactive {
 }
 
 /* Font roles set to 'system' for web in customization/config/fonts.js
-   (fonts-web.web.ts): the OS UI font — SF on Apple, Segoe UI on Windows,
-   Roboto on Android. `html.` outranks the next/font variable class, which
-   can set both variables. */
+   (fonts-web.web.ts), the default: the OS UI font (SF on Apple, Segoe UI on
+   Windows, Roboto on Android), the same stack as UNA's. `html.` outranks the
+   next/font variable class, which can set both variables. */
 html.neo-font-main-system,
 html.neo-font-title-system {
-    --neo-system-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --neo-system-font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 html.neo-font-main-system {
     --font-main: var(--neo-system-font);
@@ -491,7 +492,7 @@ body {
     -moz-osx-font-smoothing: neutralscale;
     -ms-overflow-style: scrollbar;
     -webkit-overflow-scrolling: touch;
-    font-family: var(--font-main, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+    font-family: var(--font-main, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
 }
 
 html,
@@ -830,4 +831,55 @@ iframe[title*="editor"],
 webview {
     touch-action: pan-y pan-x;
     -webkit-overflow-scrolling: touch;
+}
+
+/*
+ * Menus: one highlight slides under the items to the one under the pointer, or the one focused from the
+ * keyboard (`useMenuHighlight`, ui/atoms/menu-highlight.web.ts), in the ghost-link hover tint, and the items don't
+ * light up on their own. It is the list's ::before, placed through CSS variables; it fades in where it first
+ * appears and out when the pointer leaves. UNA's popup menus do the same (bx_menu_highlight).
+ */
+.neo-menu-highlight,
+.neo-menu-highlight > * {
+    position: relative;
+}
+
+.neo-menu-highlight::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--neo-menu-highlight-w, 0);
+    height: var(--neo-menu-highlight-h, 0);
+    transform: translate(var(--neo-menu-highlight-x, 0), var(--neo-menu-highlight-y, 0));
+    border-radius: var(--neo-menu-highlight-r, var(--radius-xl));
+    background-color: color-mix(in oklab, rgb(var(--muted)) 50%, transparent);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        transform 150ms cubic-bezier(0.22, 1, 0.36, 1),
+        width 150ms cubic-bezier(0.22, 1, 0.36, 1),
+        height 150ms cubic-bezier(0.22, 1, 0.36, 1),
+        border-radius 150ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 150ms ease-out;
+}
+
+.neo-menu-highlight.neo-menu-highlight-on::before {
+    opacity: 1;
+}
+
+.neo-menu-highlight.neo-menu-highlight-jump::before {
+    transition: opacity 150ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .neo-menu-highlight::before {
+        transition: opacity 150ms ease-out;
+    }
+}
+
+/* The item's own hover fill (`item_ver`); the selected item keeps its fill. */
+.neo-menu-highlight > :hover:not(.bg-accent),
+.neo-menu-highlight > * > .group:hover:not(.bg-accent) {
+    background-color: transparent;
 }

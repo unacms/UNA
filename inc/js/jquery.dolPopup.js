@@ -32,7 +32,8 @@
     $.fn.dolPopupDefaultPointerOptions = {
         align: 'right',
         offset: '0 0',
-        offset_pointer: '0 0'
+        offset_pointer: '0 0',
+        flip: false // open above the element when there is no room below it (a menu at the foot of the page)
     }; 
 
     $.fn.dolPopupCenter = function () {
@@ -270,6 +271,10 @@
                 // a scrolling menu swaps its native bar for the overlay one before it fades in (functions.js)
                 if(typeof(bx_scrollbar_overlay_popups) === 'function')
                     bx_scrollbar_overlay_popups($el);
+
+                // menu items share one sliding highlight (functions.js)
+                if(typeof(bx_menu_highlight) === 'function')
+                    bx_menu_highlight($el);
                 if (o.fog) {
                     var oOnHide = function() {
                         $(window).triggerHandler('resize.popupFog');
@@ -585,6 +590,10 @@
                     oPopup._dolPopupSetPosition({
                         pointer: oPointerOptions
                     });
+
+                    // the loaded menu's items share one sliding highlight (functions.js)
+                    if(typeof(bx_menu_highlight) === 'function')
+                        bx_menu_highlight(oPopup);
 
                     var aFocusable = bx_get_focusable(oPopup.get(0));
                     if(aFocusable && aFocusable.length > 0)
@@ -954,7 +963,9 @@
                         of: ePointAt,
                         my: o.pointer.align + '+' + parseInt(aOffset[0]) + ' top+' + yOffset + '+' + parseInt(aOffset[1] - 0),
                         at: o.pointer.align + ' bottom',
-                        collision: 'fit none'
+                        // flipped above its element, a popup taller than the room there moves down into the window
+                        // (never taller than the window: tailwind.css), so its first items aren't above the page
+                        collision: 'fit ' + (o.pointer.flip ? 'flipfit' : 'none')
                     });
 
                     // 'fit' only keeps the popup inside the window, flush with its edge
@@ -965,13 +976,21 @@
                     if (iLeftMin <= iLeftMax && (iLeft < iLeftMin || iLeft > iLeftMax))
                         $el.offset({left: Math.min(Math.max(iLeft, iLeftMin), iLeftMax)});
 
-                    $el.find('.bx-popup-box-pointer').css('display', 'block').position({
-                        of: ePointAt,
-                        my: 'center+' + (parseInt(aOffsetPointer[0]) + parseInt(aOffset[0])) + ' top+' + yOffset + '+' + (parseInt(aOffsetPointer[1]) + parseInt(aOffset[1]) + 0),
-                        at: 'center bottom'
-                    });
+                    // the pointer is drawn above the popup, so a popup flipped above its element goes without it
+                    if (o.pointer.flip && $el.offset().top < $(ePointAt).offset().top)
+                        $el.find('.bx-popup-box-pointer').css('display', 'none');
+                    else
+                        $el.find('.bx-popup-box-pointer').css('display', 'block').position({
+                            of: ePointAt,
+                            my: 'center+' + (parseInt(aOffsetPointer[0]) + parseInt(aOffset[0])) + ' top+' + yOffset + '+' + (parseInt(aOffsetPointer[1]) + parseInt(aOffset[1]) + 0),
+                            at: 'center bottom'
+                        });
 
-                    $el.css({transition: sTransition, transform: sTransform});
+                    // it grows from its element: from its top edge, or from its bottom one when it opens above the element
+                    var sOriginX = 'left' == o.pointer.align || 'right' == o.pointer.align ? o.pointer.align : 'center';
+                    var sOriginY = $el.offset().top < $(ePointAt).offset().top ? 'bottom' : 'top';
+
+                    $el.css({transition: sTransition, transform: sTransform, transformOrigin: sOriginX + ' ' + sOriginY});
                 };
 
                 fPosition();

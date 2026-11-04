@@ -1388,11 +1388,11 @@ function bx_get_reset_password_key($sValue, $sField = 'email', $iLifetime = 0)
             $iLifetime = 86400;
     }
 
-    $oKey = BxDolKey::getInstance();
+    $oKey = BxDolKey::getInstanceWithScope(BX_KEY_SCOPE_ACCOUNT_PASSWORD_RESET);
     if(!$oKey)
         return false;
 
-    return $oKey->getNewKey(array($sField => $sValue), $iLifetime);
+    return $oKey->getNewKey([$sField => $sValue], $iLifetime);
 }
 
 function bx_get_reset_password_link($sValue, $sField = 'email', $iLifetime = 0)

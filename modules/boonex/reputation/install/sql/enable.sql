@@ -120,8 +120,8 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 ('bx_reputation_handlers', 'single', 'edit', '_bx_reputation_grid_action_title_hdr_edit', 'pencil-alt', 1, 0, 1);
 
 -- GRIDS: levels
-INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `override_class_name`, `override_class_file`) VALUES
-('bx_reputation_levels', 'Sql', 'SELECT * FROM `bx_reputation_levels` WHERE 1 ', 'bx_reputation_levels', 'id', 'order', 'active', '', 20, NULL, 'start', '', 'name', 'title', 'like', '', '', 'BxReputationGridLevels', 'modules/boonex/reputation/classes/BxReputationGridLevels.php');
+INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `override_class_name`, `override_class_file`) VALUES
+('bx_reputation_levels', 'Sql', 'SELECT * FROM `bx_reputation_levels` WHERE 1 ', 'bx_reputation_levels', 'id', 'order', 'active', '', 20, NULL, 'start', '', 'name', 'title', 'like', '', '', 192, 'BxReputationGridLevels', 'modules/boonex/reputation/classes/BxReputationGridLevels.php');
 
 INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `order`) VALUES
 ('bx_reputation_levels', 'order', '', '1%', 0, 0, '', 1),
@@ -139,8 +139,8 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 ('bx_reputation_levels', 'single', 'delete', '_bx_reputation_grid_action_title_lvl_delete', 'remove', 1, 1, 2);
 
 -- GRIDS: manage leaderboard
-INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `override_class_name`, `override_class_file`) VALUES
-('bx_reputation_manage_leaderboard', 'Sql', 'SELECT * FROM `bx_reputation_profiles` WHERE 1 AND `profile_id`<>0 ', 'bx_reputation_profiles', 'id', 'points', 'visible', '', 20, NULL, 'start', '', '', '', 'like', '', '', 'BxReputationGridManageLeaderboard', 'modules/boonex/reputation/classes/BxReputationGridManageLeaderboard.php');
+INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `override_class_name`, `override_class_file`) VALUES
+('bx_reputation_manage_leaderboard', 'Sql', 'SELECT * FROM `bx_reputation_profiles` WHERE 1 AND `profile_id`<>0 ', 'bx_reputation_profiles', 'id', 'points', 'visible', '', 20, NULL, 'start', '', '', '', 'like', '', '', 192, 'BxReputationGridManageLeaderboard', 'modules/boonex/reputation/classes/BxReputationGridManageLeaderboard.php');
 
 INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `order`) VALUES
 ('bx_reputation_manage_leaderboard', 'switcher', '', '10%', 0, 0, '', 1),

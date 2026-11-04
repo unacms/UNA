@@ -70,9 +70,18 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
             case 'sys_toolbar_search':
                 $oSearch = new BxTemplSearch();
                 $oSearch->setLiveSearch(true);
+                $oSearch->setIdSuffix('_popup');
 
-                $mixedResult = $this->_oTemplate->parseHtmlByName('_page_toolbar_search.html', [
-                    'sys_site_search' => $oSearch->getForm(BX_DB_PADDING_DEF, false, true) . $oSearch->getResultsContainer()
+                // The search popup of the toolbar's 'search' item: the field, the live results and all results, as in the apps.
+                $mixedResult = $this->_oTemplate->parseHtmlByName('_page_toolbar_search_popup.html', [
+                    'id' => 'bx-site-search-popup',
+                    'title' => _t('_Search'),
+                    'content' => $this->_oTemplate->parseHtmlByName('_page_toolbar_search.html', [
+                        'sys_site_search' => $oSearch->getForm(BX_DB_PADDING_DEF, false, true),
+                        'results' => $oSearch->getResultsContainer(),
+                        'empty' => MsgBox(_t('_Empty')),
+                        'min_len' => (int)getParam('sys_search_keyword_min_len'),
+                    ]),
                 ]);
                 break;
         }
@@ -569,8 +578,10 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                 $aAttrs = [];
                 if(!empty($aButton['href']))
                     $aAttrs['href'] = $aButton['href'];
+                // a button that only runs a script (see BxBaseMenu::_getMenuAttrs)
                 if(!empty($aButton['onclick'])) {
                     $aAttrs['href'] = "javascript:void(0);";
+                    $aAttrs['role'] = 'button';
                     $aAttrs['onclick'] = $aButton['onclick'];
                 }
                 
@@ -693,15 +704,33 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
             $sAlt = getParam('site_title');
 
         $aLogoImages = [];
-        if(($mixedFileUrl = $this->getMainLogoUrl()) && !empty($mixedFileUrl)) {
+        $mixedFileUrl = $this->getMainLogoUrl();
+
+        // Nothing uploaded: the default logo (template/images/logo-generic.svg, or the template's own copy).
+        $bDefault = false;
+        if(empty($mixedFileUrl)) {
+            $aLogo = $oDesigns->getSiteLogoSources(function($sFile) {
+                return $this->_oTemplate->getImageUrl($sFile);
+            })['logo'];
+
+            if($aLogo['source'] == BxDolDesigns::LOGO_SOURCE_BUILTIN) {
+                $mixedFileUrl = $aLogo['url'];
+                $bDefault = true;
+            }
+        }
+
+        if(!empty($mixedFileUrl)) {
             if(!is_array($mixedFileUrl))
                 $mixedFileUrl = ['light' => $mixedFileUrl];
 
             foreach($mixedFileUrl as $sName => $sFileUrl) {
-                $iLogoWidth = (int)$oDesigns->getSiteLogoWidth();
+                // The default SVG gets the height only; the browser takes the width from its aspect ratio.
+                $iLogoWidth = !$bDefault ? (int)$oDesigns->getSiteLogoWidth() : 0;
                 $sWidth = $iLogoWidth > 0 ? 'width:' . round($iLogoWidth/16, 3) . 'rem;' : '';
 
                 $iLogoHeight = (int)$oDesigns->getSiteLogoHeight();
+                if($bDefault && $iLogoHeight <= 0)
+                    $iLogoHeight = 40; // the SVG's own size is 335x100
                 $sHeight = $iLogoHeight > 0 ? 'height:' . round($iLogoHeight/16, 3) . 'rem;' : '';
 
                 $aLogoImages[] = [
@@ -992,6 +1021,23 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     protected function getSoundsPlatform()
     {
         return 'site';
+    }
+
+    /**
+     * Whether visitors can pick a light or dark colour scheme here. A template with a dark scheme (Artificer) says
+     * yes and builds the menu; the footer's Theme item shows only then (BxBaseMenuFooter).
+     */
+    public function isColorSchemeSwitchable()
+    {
+        return false;
+    }
+
+    /**
+     * The colour scheme menu, hidden until a trigger opens it with bx_menu_popup_inline('#' + $sId, ...).
+     */
+    public function getColorSchemeMenu($sId)
+    {
+        return '';
     }
 
     /**

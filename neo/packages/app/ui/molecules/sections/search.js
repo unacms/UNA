@@ -59,6 +59,8 @@ export default function ElementSearch(oProps) {
                 tooltip={
                     oProps.tooltip === undefined ? 'Search' : oProps.tooltip
                 }
+                // An icon-only button: screen readers read this, not the icon's name ("search").
+                accessibilityLabel={t('Search')}
                 {...toolbarNeoButtonDefaults}
                 {...(oParams?.trigger &&
                     (({ onPress, ...rest }) => rest)(oParams.trigger))}
@@ -334,7 +336,9 @@ export function ElementSearchData(oProps) {
     }
 
     return (
-        <View className="web:h-screen lg:h-96 web:pb-20 web:lg:pb-0">
+        // Full height on phones and tablets; on desktop a dialog of a fixed height, so it stays put
+        // as results come (UNA's search popup has the same sizes). `web:lg:` outranks `web:`.
+        <View className="web:h-screen web:lg:h-96 web:pb-20 web:lg:pb-0">
             <Redirect ref={redirectdRef} />
             {!!inputValue && appSetting('layout', 'extended_search') && (
                 <View className="hidden flex-row items-center m-2 justify-end">
@@ -361,7 +365,8 @@ export function ElementSearchData(oProps) {
                     onChangeText={(value) => handleSearch(value)}
                 />
             </View>
-            <KbAvoidingView>
+            {/* Web: the results take the rest of the fixed height and scroll there. */}
+            <KbAvoidingView className="web:flex-1 web:min-h-0">
                 <ScrollView
                     keyboardShouldPersistTaps="always"
                     keyboardDismissMode="none"

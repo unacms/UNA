@@ -1,15 +1,28 @@
-<svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="72" height="72" fill="url(#paint0_linear_147_22)"/>
-<path d="M20 22H52M20 36H52M20 50H52" stroke="url(#paint1_linear_147_22)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M20 23H52M20 37H52M20 51H52" stroke="black" stroke-opacity="0.1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<svg class="icon v-navigation-open-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- glyph: square-menu, lucide-static v1.47.0, ISC -->
+<style>
+.v-navigation-open-v1 .bx-ai-win{transform-box:view-box;transform-origin:36px 36px}
+.v-navigation-open-v1 .bx-ai-sh.bx-ai-win{transform-origin:36px 37px}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-navigation-open-v1 [class]{animation:var(--a) 1500ms linear both;animation-delay:var(--d,0ms)}
+.v-navigation-open-v1 [class]{--a:none}
+.v-navigation-open-v1 .bx-ai-it{--a:no0}
+@keyframes no0{0%{opacity:0;transform:translateX(-14px)}8%{opacity:0;transform:translateX(-14px);animation-timing-function:cubic-bezier(.3,.7,.4,1)}12.67%{opacity:1;transform:translateX(-9px);animation-timing-function:cubic-bezier(.3,.7,.4,1)}28%{opacity:1;transform:translateX(1.2px);animation-timing-function:ease-in-out}37.33%{opacity:1;transform:translateX(0px)}100%{opacity:1;transform:translateX(0px)}}
+.v-navigation-open-v1 :is(.bx-ai-win,.bx-ai-sh.bx-ai-win){--a:no1}
+@keyframes no1{0%{transform:scale(1)}41.33%{transform:scale(1);animation-timing-function:cubic-bezier(.2,.7,.3,1)}49.33%{transform:scale(1.04);animation-timing-function:ease-in-out}61.33%{transform:scale(1)}100%{transform:scale(1)}}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-navigation-open-v1 .bx-ai-qv.bx-ai-qv{animation:q-navigation-open-v1 1500ms linear both}
+@keyframes q-navigation-open-v1{0%{opacity:1;animation-timing-function:ease-out}9.333%{opacity:0}76%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.v-navigation-open-v1 *{animation:none!important}}
+</style>
+<rect width="72" height="72" fill="url(#bg-navigation-open-v1)"/>
+<path d="M4.3 8.8h5.9M4.3 14.8h3.4M4.3 20.8h4.9M4.3 26.8h2.9M4.3 32.8h5.4M4.3 38.8h3.9M4.3 44.8h4.4M4.3 50.8h2.4M4.3 56.8h5.9M4.3 62.8h3.4M61.8 8.8h5.9M64.3 14.8h3.4M62.8 20.8h4.9M64.8 26.8h2.9M62.3 32.8h5.4M63.8 38.8h3.9M63.3 44.8h4.4M65.3 50.8h2.4M61.8 56.8h5.9M64.3 62.8h3.4" stroke="white" stroke-width="1.6" stroke-linecap="round" opacity="0.22"/><rect width="72" height="72" fill="url(#bg-navigation-open-v1)" class="bx-ai-qv" mask="url(#quiet-navigation-open-v1)"/>
+<g stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+<g class="bx-ai-win"><path d="M20.444 16H51.556A4.444 4.444 0 0 1 56 20.444V51.556A4.444 4.444 0 0 1 51.556 56H20.444A4.444 4.444 0 0 1 16 51.556V20.444A4.444 4.444 0 0 1 20.444 16Z" fill="url(#inside-navigation-open-v1)" fill-opacity="0.55" stroke="white"/><g clip-path="url(#inner-navigation-open-v1)"><path class="bx-ai-it" style="--d:0ms" d="M24.889 27.111H47.111" stroke="white"/><path class="bx-ai-it" style="--d:120ms" d="M24.889 36H47.111" stroke="white"/><path class="bx-ai-it" style="--d:240ms" d="M24.889 44.889H47.111" stroke="white"/></g></g>
+<g mask="url(#lit-navigation-open-v1)" stroke="black"><g class="bx-ai-sh bx-ai-win"><path d="M20.444 17H51.556A4.444 4.444 0 0 1 56 21.444V52.556A4.444 4.444 0 0 1 51.556 57H20.444A4.444 4.444 0 0 1 16 52.556V21.444A4.444 4.444 0 0 1 20.444 17Z"/><g clip-path="url(#inner-sh-navigation-open-v1)"><path class="bx-ai-sh bx-ai-it" style="--d:0ms" d="M24.889 28.111H47.111"/><path class="bx-ai-sh bx-ai-it" style="--d:120ms" d="M24.889 37H47.111"/><path class="bx-ai-sh bx-ai-it" style="--d:240ms" d="M24.889 45.889H47.111"/></g></g></g>
+</g>
 <defs>
-<linearGradient id="paint0_linear_147_22" x1="36" y1="0" x2="36" y2="72" gradientUnits="userSpaceOnUse">
-<stop stop-color="#0284C7"/>
-<stop offset="1" stop-color="#1E40AF"/>
-</linearGradient>
-<linearGradient id="paint1_linear_147_22" x1="36" y1="22" x2="36" y2="50" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
-</linearGradient>
-</defs>
+<linearGradient id="bg-navigation-open-v1" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0284C7"/><stop offset="1" stop-color="#1E40AF"/></linearGradient>
+<linearGradient id="inside-navigation-open-v1" x1="36" y1="16" x2="36" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#1E40AF"/><stop offset="1" stop-color="#172554"/></linearGradient><clipPath id="inner-navigation-open-v1"><rect x="18" y="18" width="36" height="36"/></clipPath><clipPath id="inner-sh-navigation-open-v1"><rect x="18" y="19" width="36" height="36"/></clipPath>
+<linearGradient id="light-navigation-open-v1" x1="36" y1="17" x2="36" y2="57" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity="0.1"/><stop offset="1" stop-color="white" stop-opacity="0.2"/></linearGradient>
+<mask id="lit-navigation-open-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-navigation-open-v1)"/></mask>
+<radialGradient id="quietv-navigation-open-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-navigation-open-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-navigation-open-v1)"/></mask></defs>
 </svg>

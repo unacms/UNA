@@ -7,7 +7,7 @@
  * @{
  */
 
-class BxDolAIUnaProxyHttpClient extends NeuronAI\HttpClient\GuzzleHttpClient
+class BxDolAIUnaProxyHttpClient extends NeuronAI\HttpClient\Guzzle\GuzzleHttpClient
 {
     public function __construct(
         protected string $sUnaKey,

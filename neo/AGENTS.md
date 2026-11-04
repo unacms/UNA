@@ -51,16 +51,16 @@ Rules for forks:
 | `functions.js` | Re-exports `app/default/functions`. Declare a local export with the same name to replace one function. |
 | `loading.js`, `sounds.js`, `covers/`, `splash-mockups/`, `nav/footer.web.js` | Replace the export. |
 | `<type>/_map.js` for elements, form-fields, forms, molecules, page-layout, menu-items, units, units/content-list, units/profile-list, skeletons, workers | Import `componentsMapDefault` from the core `_map.js`, add or replace keys, re-export it. Put new components under `customization/<type>/`. |
-| `design/styles/global.css`, `global.web.css` | CSS variable and `@theme` overrides (both platforms; the second is web only). Neutral fills follow your `--neutral-*` scale through `--ink`; set `--ink` in your `@variant light` / `@variant dark` blocks to tint them differently, or redefine `--color-bubble` / `--color-button` / `--color-button-hover` in an `@theme inline` block (as `color-mix()`, see Styling) to change the steps. `--button` / `--button-hover` keep their old opaque values; only `bg-button-solid` still reads `--button`. On web, `.light` / `.dark` colour-scheme scopes (the header on a band, `layout.header.band_scheme`) re-declare core's semantic tokens, so set a semantic token you override on `:root` (`--accent-foreground`, ...) on `.light` / `.dark` in `global.web.css` too. |
+| `design/styles/global.css`, `global.web.css` | CSS variable and `@theme` overrides (both platforms; the second is web only). Neutral fills follow your `--neutral-*` scale through `--ink`; set `--ink` in your `@variant light` / `@variant dark` blocks to tint them differently, or redefine `--color-bubble` / `--color-button` / `--color-button-hover` / `--color-code` in an `@theme inline` block (as `color-mix()`, see Styling) to change the steps. `--button` / `--button-hover` keep their old opaque values; only `bg-button-solid` still reads `--button`. On web, `.light` / `.dark` colour-scheme scopes (the header on a band, `layout.header.band_scheme`) re-declare core's semantic tokens, so set a semantic token you override on `:root` (`--accent-foreground`, ...) on `.light` / `.dark` in `global.web.css` too. |
 | `design/fonts/fonts-web.js`, `design/fonts/fonts.js` | Web `next/font` variables and the native `useFonts` map. |
 | `config/fonts.js` | Font family per role and platform; see [Fonts](#fonts). |
 | `config/next.config.js` | Deep-merged into `apps/next/next.config.js`. Arrays are concatenated. Functions (`webpack`, `rewrites`, `headers`) replace upstream's, so define one only if you reimplement upstream's. This is the fork hook despite the "don't edit" comment at its top. |
-| `config/app.config.js` | Create it. It's deep-merged into the Expo config, but `ios.infoPlist`, `ios.associatedDomains`, `android.permissions`, `android.intentFilters` and `plugins` replace upstream's when you set them. If you set `plugins`, copy upstream's full list (it includes `expo-build-properties` with `ios.enableSceneSupport`, which iOS 27 requires) and re-check it after every sync. A syntax error in this file is swallowed and the app builds as stock NEO. |
+| `config/app.config.js` | Create it. It's deep-merged into the Expo config, but `ios.infoPlist`, `ios.associatedDomains`, `android.permissions`, `android.intentFilters` and `plugins` replace upstream's when you set them. If you set `plugins`, copy upstream's full list and re-check it after every sync. A syntax error in this file is swallowed and the app builds as stock NEO. |
 | `config/images-allowlist.js` | Extra image hosts, used by `next/image` and at runtime. |
 | `config/package.next.js`, `config/package.expo.js` | Extra npm dependencies. The root `preinstall` script merges them into `apps/next/package.json` and `apps/expo/package.json`; don't commit those rewritten files, and restore them before a sync. |
 | `resources/web/` | Flat files copied into `apps/next/public/static/` (gitignored) whenever the Next config loads: `favicon.svg`, `manifest.json` and every icon the manifest names. |
 | `resources/native/` | App icon, splash and other native assets. Reference them from `config/app.config.js` as `../../packages/app/customization/resources/native/...`. |
-| `resources/sounds/` | Native interface sounds: Cuelume cues rendered to WAV, in every sound set, by `scripts/render-sounds.mjs`. Point keys of `sounds.js` at your own files; see [Interface sounds](#interface-sounds). |
+| `resources/sounds/` | Your own native interface sounds (empty upstream). Core's WAV files are in `packages/app/resources/sounds/`, rendered from Cuelume by `scripts/render-sounds.mjs`; point keys of `sounds.js` at your files instead of replacing core's. See [Interface sounds](#interface-sounds). |
 
 ## Layout and stack
 
@@ -79,7 +79,7 @@ patches/         patch-package patches, applied on postinstall
 ```
 
 - Next.js 16 with React 19.2, built with webpack (`next dev --webpack`), not Turbopack. `@expo/next-adapter` aliases `react-native` to `react-native-web`. `typescript.ignoreBuildErrors` is on and `reactStrictMode` is off. `apps/next/proxy.js` is Next 16's middleware. Next ships its docs in `node_modules/next/dist/docs/`; `apps/next/AGENTS.md` (written by `next dev`) points there.
-- Expo SDK 57 with React Native 0.86 (New Architecture only), expo-router and Hermes. `apps/expo/ios` and `android` are generated by prebuild and gitignored. A change to `app.config.js`, a config plugin or a native dependency needs a prebuild and a native rebuild.
+- Expo SDK 58 with React Native 0.88 (New Architecture only), expo-router and Hermes. `apps/expo/ios` and `android` are generated by prebuild and gitignored. A change to `app.config.js`, a config plugin or a native dependency needs a prebuild and a native rebuild.
 - Styling: Tailwind CSS 4 on web and Uniwind (Tailwind 4 for React Native) on native. Tailwind is pinned in the root `resolutions` because 4.3.3 broke Uniwind breakpoints ([uni-stack/uniwind#668](https://github.com/uni-stack/uniwind/issues/668)).
 - TypeScript 6, Node 24, Yarn 1 workspaces. No local script runs Turborepo, but Vercel builds through it, and its strict env mode hides any variable that `turbo.json` `globalEnv` doesn't list. Add a new environment variable the web build reads to that list.
 - `yarn.lock` is gitignored, so every fresh `yarn install` re-resolves the ranges in `package.json`, native modules included. Don't change a dependency range in passing. To check what is installed, run `node -p "require('next/package.json').version"` from `neo/`; declared ranges differ from installed versions.
@@ -108,6 +108,7 @@ patches/         patch-package patches, applied on postinstall
 - If the page JSON can't be parsed (a PHP fatal or an HTML error page), web shows the maintenance screen for the whole page and home falls back to a static splash. Fix the UNA service; the [`una-api` skill](.agents/skills/una-api/SKILL.md) lists the rules, the usual cause being a block that fails for guests.
 - Auth: `useCurrentUser()` from `app/context/user` returns `{ currentUser, setCurrentUser }`. `currentUser` is `null` until known, `false` for a guest and an object when signed in. `Root` and the layouts hold rendering until it is known, so components rarely need to wait themselves. The guest sign-in prompt is `layout.show_login_modal`.
 - The UNA session cookie identifies the viewer. `UNA_API_KEY` identifies the NEO server to UNA and stays on the server (`proxy.js` and the page shell). Never expose it to client code or put it in `expo.extra`.
+- The page shell's `Set-Cookie` never reaches the browser (a Server Component can't set cookies). On web, `proxy.js` calls UNA's `system/touch_session/TemplServiceLogin` before a page at most every six hours (sooner with a short session lifetime) and passes the session cookie it gets to the browser and the page (`apps/next/lib/session-touch.ts`). Native talks to UNA directly and needs none of this.
 - Real-time updates: `subscribe(channel, event, callback)` from `app/ui/atoms/socket` returns an unsubscribe function; return it from a `useEffect`. The server is Soketi (Pusher protocol), configured in `config.sockets`. Channels include `bx_timeline_0` (`added`, `deleted`, `edited`), `cmts_<module>_<id>` (`comment_added`, `comment_edited`, `comment_deleted`), `profile_<id>` and `sys_connections_<id>` (`changed`), and `bx_messenger` (`convo_<id>`, `profile_<id>`).
 
 ### Images
@@ -148,7 +149,7 @@ Render icons with `<Icon icon="House" />` from `app/ui/atoms/icon`, using Lucide
 
 - Design tokens (colours, radii, shadows) are the Tailwind `@theme inline` map in `packages/app/design/styles/theme.css`, with light and dark values in `palette.css`. `apps/next/tailwind.config.js` and `design/tailwind/theme.js` are not loaded by any build; a token added there does nothing.
 - Settings hold class presets per component (`settings/theme/*.js`), read with `appSetting`. Use tokens and existing presets, not raw colours or arbitrary values.
-- Neutral fills are translucent "ink", so they stack instead of blending: `bg-bubble` (comment bubbles), `bg-button` and `bg-button-hover` are the scheme's `--ink` at 4.5%, 7% and 10%. A button on a bubble on a card is one even step darker than each layer below, and text keeps AA on every stack. `--ink` is `--neutral-950` in light and `--neutral-50` in dark (`palette-schemes.css`); the alphas are `color-mix()` in `theme.css`, one value for both schemes.
+- Neutral fills are translucent "ink", so they stack instead of blending: `bg-bubble` (comment bubbles), `bg-button` and `bg-button-hover` are the scheme's `--ink` at 4.5%, 7% and 10%; `bg-code`, behind code in native rich text, is 7% too. A button on a bubble on a card is one even step darker than each layer below, and text keeps AA on every stack. `--ink` is `--neutral-950` in light and `--neutral-50` in dark (`palette-schemes.css`); the alphas are `color-mix()` in `theme.css`, one value for both schemes.
 - Write an alpha only as `color-mix()` or an opacity modifier (`bg-button/50`). Uniwind compiles `rgb(var(--x) / 0.07)` and a variable holding `r g b / a` into `NaN` on native, so the colour silently disappears there.
 - Native buttons read the same tokens through `theme.expo_ui.button` (`settings/theme/expo_ui.js`): iOS bordered (`tint`) and Android tonal take the translucent `bg-button`. Android's elevated button (the `glass` style) draws its shadow under the container, so it uses the opaque `bg-button-solid` (the legacy `--button`) instead.
 - Edit the style partials in `design/styles/` (`theme.css`, `palette.css`, `utilities.css`, `global.css`), not `apps/expo/global.combined.css`, which only imports them for Uniwind.
@@ -193,20 +194,32 @@ A block's chrome (background, padding, title) comes from UNA's `designbox_id`, w
 ```
 
 - Each key lists the tiers where that part shows: `mobile` (no prefix), `tablet` (`sm:`), `desktop` (`lg:`). `true` and `false` mean every tier or none.
+- Corners without a `rounded` key follow the page: rounded where the page's padding keeps the block off the screen edge, square where the block meets it. The `default`, `login` and universal column layouts tell their blocks through `PageChromeProvider` (`ui/molecules/page/page-chrome.tsx`); in other layouts (home, profile, post ...) blocks keep `theme.blocks` `u-block-rounded-default` (square on phones).
 - The background classes come from `lib/block-bg-classes.ts`; run its tests with `node --test packages/app/lib/block-bg-classes.test.ts`.
-- A missing key keeps `designbox_id`. Props passed from code (`showBg`, `showPadding`, `showTitle`) win over both.
+- A missing key takes the page's `designbox` (below), then `designbox_id`. Props passed from code (`showBg`, `showPadding`, `showTitle`) win over all of them.
 - Keys sit under `designbox` because every `config_api` key is also spread into each element of the block as a prop.
 - `components/block-wrapper.js` reads them and `ui/molecules/page/page-block.js` turns tiers into classes through `responsiveClasses`. Prefixed classes must stay listed in `@source inline(...)` in `design/styles/utilities.css`; update that list if `theme.blocks` `u-block-bg` or the block padding changes.
 - List (browse) blocks skip `BlockWrapper`. The list endpoint carries their `designbox`, and `paddingForList` (`default/functions.js`) turns `bg` / `rounded` into a card around the list. This is web only: a native list scrolls under the overlaid page header.
 - Use this rather than per-page or per-block overrides in code: block ids and pages differ between UNA sites.
 
+The page's App config (Studio → Developer → Pages → page → "Config (for App in JSON format)", sent as `config`) sets the page around its blocks, with the same tiers:
+
+```json
+{ "padding": ["tablet", "desktop"], "gap": true, "designbox": { "bg": ["tablet", "desktop"], "padding": ["tablet", "desktop"] } }
+```
+
+- `padding` and `gap` are the page content's padding and the gap between its blocks (`layout.page_content_padding` / `page_content_gap`; unset uses `page_content_padding_default`, `page_content_padding_layouts` and `page_content_gap_default`).
+- `designbox` is the default for every block on the page, browse lists included (the card `paddingForList` draws around them); a block's own keys win, key by key. It applies to every block with a design box, so leave out keys that only some blocks should take. `"rounded": false` means square everywhere.
+- Examples: margins everywhere with rounded cards needs nothing (the default). Content without a card on phones: `{"designbox": {"bg": ["tablet", "desktop"], "padding": ["tablet", "desktop"]}}`. Edge-to-edge square cards on phones, rounded cards with margins from tablet: `{"padding": ["tablet", "desktop"]}`.
+- A fork sets the same keys for a page URI in `layouts[<uri>]` of `customization/settings.js`, used when UNA sends no page config.
+
 ### Fonts
 
 Text uses two roles, `font-main` (the default in `design/typography.tsx`) and `font-title` (headings). Pick the family per role and platform in `customization/config/fonts.js` (defaults in `design/fonts/font-config.js`), for example `main: { web: 'inter', ios: 'system', android: 'inter' }`.
 
-- `'system'` is the platform UI font: SF Pro on iOS, the device sans-serif on Android, the OS font stack on web.
-- Any other value is a key of `design/fonts/font-families.js` (`'inter'`). Native needs one static file per weight (iOS and Android pick the face by `fontWeight`; variable fonts don't work). Web needs a `next/font` instance per role in `webFontFamilies` (`design/fonts/fonts-web.web.ts`).
-- A fork adds its own font under `families` in `customization/config/fonts.js`: the same shape as `font-families.js`, with the static files under `packages/app/customization/` and `native` paths relative to that folder (example in `font-config.js`). Select its key for `ios` and `android`, and load it on web in `customization/design/fonts/fonts-web.js`, which replaces the core web fonts. Run the font tests with `node --test apps/expo/plugins/with-app-fonts.test.ts`.
+- `'system'` is the platform UI font: SF Pro on iOS, the device sans-serif on Android, the OS font stack on web (the same stack as UNA's, in `global.web.css`). It is the default for every role and platform, so stock NEO loads no font file. Keep it that way upstream; custom fonts are a fork's choice.
+- Any other value is a key of `design/fonts/font-families.js` (`'inter'`; its files ship in `design/fonts/`). Native needs one static file per weight (iOS and Android pick the face by `fontWeight`; variable fonts don't work). Web needs a `next/font` instance per role, created in `customization/design/fonts/fonts-web.js` and passed to `webFontClassName()`; core creates none (example in `design/fonts/fonts-web.web.ts`).
+- A fork adds its own font under `families` in `customization/config/fonts.js`: the same shape as `font-families.js`, with the static files under `packages/app/customization/` and `native` paths relative to that folder (example in `font-config.js`). Select its key for `ios` and `android`, and load it on web in `customization/design/fonts/fonts-web.js`. Run the font tests with `node --test apps/expo/plugins/with-app-fonts.test.ts`.
 - iOS and Android values are build settings: `apps/expo/plugins/with-app-fonts.js` embeds only the selected families, so changing them needs a prebuild and a native rebuild. At runtime `design/fonts/native-fonts.ts` points the Uniwind font variables and the navigation header fonts at the family.
 - Don't set `fontFamily` inline; use `font-main` / `font-title`. Expo UI (SwiftUI / Compose) views are the exception and take `nativeFonts.main`.
 
@@ -216,7 +229,7 @@ Text uses two roles, `font-main` (the default in `design/typography.tsx`) and `f
 
 Use `NeoButton`, `NeoButtonLink` or `NeoButtonRef` from `app/design/controls`. The legacy `Button`, `ButtonRef` and `ButtonLink` are deprecated.
 
-- Axes: `style` (`plain`, `bordered`, `borderedProminent`, `borderless`, `outline`, `link`, `glass`, `glassProminent`), `role` (`default`, `cancel`, `close`, `confirm`, `destructive`), `controlSize` (`mini`, `small`, `regular`, `large`, `xlarge`), `borderShape` and `tint`.
+- Axes: `style` (`plain`, `bordered`, `borderedProminent`, `borderless`, `outline`, `link`, `text`, `glass`, `glassProminent`; `text` is a quiet JS-only text link, as in the footer), `role` (`default`, `cancel`, `close`, `confirm`, `destructive`), `controlSize` (`mini`, `small`, `regular`, `large`, `xlarge`), `borderShape` and `tint`.
 - Code lives in `design/controls/neo-button/`: props in `neo-button.types.ts`, scope and style precedence in `neo-button-resolver.tsx`, the legacy variant mapping in `control-scale.ts`. The theme is `neo_button` in `settings/theme/buttons.js`.
 - On iOS and Android, `native.expo_ui_buttons` (`settings/configs.js`) renders buttons with native Expo UI (SwiftUI / Compose) views; the `expoUI` prop controls it per button.
 - `NeoButtonGroup` joins buttons into one control with the same `style`, `controlSize`, `borderShape`, `role` / `tint` and `width` axes. The group paints the style's surface once (no border: outline and glass are shadow rings); each NeoButton inside becomes a segment through context, with the group's style and size, only the state washes, square inner corners and no hit area over its neighbours. Segments always use the JS surface; a `glass` group on iOS 26+ draws native liquid glass behind them. Recipes are `neo_button.group` in `settings/theme/buttons.js`. Object menus (reactions, likes, scores) build theirs through `ButtonsGroupMenu`, which uses `group.defaultStyle`.
@@ -227,7 +240,7 @@ Use `NeoButton`, `NeoButtonLink` or `NeoButtonRef` from `app/design/controls`. T
 Sounds are [Cuelume](https://cuelume.dev/agents.md)'s cues, one per interface job. Pick a cue by its job from Cuelume's "Which cue?" table: subtle emphasis for frequent actions, strong only for rare ones that matter. Never play one on hover, on page load, per item of a burst, or for a number that updates constantly. Everything is in `app/lib/sound`.
 
 - Web synthesizes cues with the `cuelume` package. `InterfaceSounds` (`ui/molecules/system/interface-sounds.tsx`, mounted once in `apps/next/app/providers.js` and `components/nav/tabs/index.js`) calls `bind()` and applies the settings.
-- Native plays WAV files rendered from the same package version, in each of Cuelume's four sets (themes): `Sounds` in `default/sounds.js`, keyed `[<set>-]<cue>[-<emphasis>][-back]` (the default set has no prefix). A cue without its own key falls back to a plainer key, then to the default set's, then to the pre-Cuelume key for its job (`click`, `tab`, `success`, `notif`). After bumping `cuelume` (pinned in `package.json`), or to give native a new variant, add it to `CUES` in `scripts/render-sounds.mjs`, run `node scripts/render-sounds.mjs` (needs Chrome; mono 32 kHz, every set) and add the keys to `default/sounds.js`.
+- Native plays WAV files rendered from the same package version, in each of Cuelume's four sets (themes): `Sounds` in `default/sounds.js`, keyed `[<set>-]<cue>[-<emphasis>][-back]` (the default set has no prefix); the files are in `packages/app/resources/sounds/`. A cue without its own key falls back to a plainer key, then to the default set's, then to the pre-Cuelume key for its job (`click`, `tab`, `success`, `notif`). After bumping `cuelume` (pinned in `package.json`), or to give native a new variant, add it to `CUES` in `scripts/render-sounds.mjs`, run `node scripts/render-sounds.mjs` (needs Chrome; mono 32 kHz, every set) and add the keys to `default/sounds.js`.
 - A press: `cueAttributes(cue)` on the pressed element (web; `bind()` plays it as the pointer goes down) plus `playPressCue(cue)` in the handler (native). NeoButton has a `sound` prop: by default a button with haptics taps (subtle unless prominent), a menu trigger opens or closes, `close` / `cancel` roles close. `PressCueContext` changes the cue for the buttons inside (menu items select). Native buttons answer with haptics only; native plays cues for toggles, disclosures, the tab bar and outcomes.
 - An outcome: `playCue('success', { emphasis: 'subtle' })` once UNA has saved, `playCue('error')` when it refuses. `Form` already does this for every submit with a reply (not for filters or save-on-change forms).
 - Kinds of action: UNA's settings can give buttons, choices, reactions, menus, navigation, results and notifications their own set, or no sound. A cue's kind comes from the cue (`cueGroup` in `lib/sound/cues.ts`); a like, reaction, rating, favorite or follow plays `toggle` with `group: 'reactions'` (`cueAttributes` turns that into `data-bx-sound-group`).
@@ -243,9 +256,18 @@ The page header is mounted once per `Layout` (`ui/molecules/header/page-header.j
 <PageHeaderOptions sub={subHeader} mobileOnly />   // sub row on mobile only (feed switcher, tab bar)
 <PageHeaderOptions backButton title="Post" />      // item page
 <PageHeaderOptions main={<MobileChatHeader />} /> // replace the whole bar
+<PageHeaderOptions main={bar} ownBackButton />    // the bar draws its own Back (native adds none)
 <PageHeaderOptions actions={actions} />            // header actions
 <PageHeaderOptions hidden />                       // no header (a cover owns the top)
+<PageHeaderOptions band />                         // band behind the bar on mobile (feed); off by default
+<PageHeaderOptions showTitle={false} />            // no title on mobile (the page draws its own heading)
 ```
+
+The header has three states, matching UNA's three tiers (phone, tablet from `sm`, desktop from `lg`):
+
+- Phone: floating buttons; the logo mark where there is no bottom tab bar (guests) and on Home; the page title where the page's cover is on for this viewer (Studio → Pages → page → Cover: all, visitors only or members only; UNA sends it as `cover`). A page that passes `title` always shows it; `showTitle` overrides both.
+- Tablet: floating buttons and the full logo, otherwise as on phones: the title in the header row, the conductor's tabs on the second row.
+- Desktop: the full header with the site menu. Conductor pages put the section title and nav in the left column (from `lg`, `hide_top_menu_from` and the `cols-l-c` / `cols-l-c-r` left `breakpoint`); regular pages show the cover title above their blocks (`PageTitle` in the `default` and universal layouts).
 
 Only passed props take part in the merge. Mount registers, unmount removes, a prop change updates: gate with JSX or `mobileOnly`, not with `useEffect` / `useFocusEffect`. Later-mounted instances win per key and fall back on unmount (a modal over a page). Memoize `sub` and `main` elements. Hidden native tabs have their own `Layout`, so no focus bookkeeping is needed. Only the measured height flows back, through `useHeaderHeight()` (`context/jotai/layout.ts`).
 

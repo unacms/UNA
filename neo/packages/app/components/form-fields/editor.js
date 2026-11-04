@@ -27,6 +27,7 @@ function PlainText(props) {
         placeholderTextColor,
         onFocus,
         onBlur,
+        inputRef,
     } = useFormField(props, {
         rules: getValidationRules(props),
         returnKey: false,
@@ -46,6 +47,7 @@ function PlainText(props) {
 
     return (
         <InputMulti
+            ref={inputRef}
             multiline
             name={name}
             placeholder={placeholder}

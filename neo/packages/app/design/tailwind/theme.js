@@ -24,6 +24,9 @@ const boxShadowBtn = {
     'card-outline':       neoShadow('card-outline'),
     'card-outline-deep':  neoShadow('card-outline-deep'),
 
+    'popover':            neoShadow('popover'),
+    'popover-deep':       neoShadow('popover-deep'),
+
     'block-outline':       neoShadow('block-outline'),
     'block-outline-deep':  neoShadow('block-outline-deep'),
 

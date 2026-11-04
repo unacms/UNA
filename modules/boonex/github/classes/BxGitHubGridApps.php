@@ -46,6 +46,9 @@ class BxGitHubGridApps extends BxBaseModGeneralGrid
 
     public function setProfileId($iProfileId)
     {
+        if($iProfileId != bx_get_logged_profile_id())
+            return;
+
         $this->_iProfileId = (int)$iProfileId;
         $this->_aQueryAppend['profile_id'] = $this->_iProfileId;
     }
@@ -59,6 +62,15 @@ class BxGitHubGridApps extends BxBaseModGeneralGrid
         $oForm = $this->_getFormObject($sAction, $CNF['OBJECT_FORM_APPS_DISPLAY_ADD']);
         $oForm->initChecker();
         if($oForm->isSubmittedAndValid()) {
+            $aApp = $this->_oModule->_oDb->getApps([
+                'sample' => 'profile_id', 
+                'profile_id' => $this->_iProfileId, 
+                'client_id' => $oForm->getCleanValue('client_id')
+            ]);
+
+            if($aApp && is_array($aApp))
+                return echoJson(['msg' => _t('_bx_github_err_app_already_exists')]);
+
             if(($iId = (int)$oForm->insert(['profile_id' => $this->_iProfileId, 'added' => time()])) != 0)
                 $aRes = ['grid' => $this->getCode(false), 'blink' => $iId];
             else
@@ -124,6 +136,9 @@ class BxGitHubGridApps extends BxBaseModGeneralGrid
 
     protected function _getDataSql($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage)
     {
+        if(!$this->_iProfileId)
+            return false;
+
         $this->_aOptions['source'] .= $this->_oModule->_oDb->prepareAsString(' AND `profile_id`=?', $this->_iProfileId);
 
         return parent::_getDataSql($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage);

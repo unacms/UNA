@@ -65,6 +65,7 @@ export default function (props, blockWrapperProps) {
                             <Switch
                                 onValueChange={() => toggleSwitch(item.id, item.value == 1 ? 0 : 1)}
                                 value={item.value == 1 ? true : false}
+                                label={item.title}
                             />
                             <Text className="ml-2 text-popover-foreground  text-sm">{item.title}</Text>
                         </Row>

@@ -21,6 +21,9 @@ class BxBaseStudioMenu extends BxDolStudioMenu
         $this->_bMenuSide = $this->_aObject['template'] == 'menu_side.html';
         $this->_bMenuToolbar = $this->_aObject['template'] == 'menu_top_toolbar.html';
 
+        // Studio's script-only items are real buttons already (the toolbar, the account popup, context menus).
+        $this->_bScriptItemsRoleButton = false;
+
         $this->_bInlineIcons = in_array($this->_aObject['template'], array(
             'menu_side.html', 
             'menu_top_toolbar.html', 

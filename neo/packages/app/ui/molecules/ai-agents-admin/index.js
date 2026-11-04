@@ -30,6 +30,7 @@ function AgentRowImpl({ agent, expanded, busy, onToggleActive, onToggleHistory, 
                     disabled={busy}
                     size="small"
                     onValueChange={(next) => onToggleActive(agent, next)}
+                    label={agent.title}
                 />
                 <View className="w-8">
                     <Profile

@@ -9,7 +9,7 @@ import {
 import { Pressable, ScrollView, View } from 'app/design/view'
 import { RemoveScroll } from 'react-remove-scroll';
 import { appSetting } from 'app/lib/util';
-import { useIsDesktop, useWindowSize } from 'app/context/measure';
+import { useWindowSize } from 'app/context/measure';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { NeoButtonRef, legacyToNeoButtonProps } from 'app/design/controls'
 import { isLegacyButtonProps, stripRoutingKeys } from 'app/design/controls/neo-button/legacy-button-map';
@@ -22,6 +22,19 @@ import { cueAttributes, playCue, PressCueContext } from 'app/lib/sound';
 const NeoTriggerButton: ComponentType<any> = NeoButtonRef;
 
 const dropdownTheme = appSetting('theme', 'dropdown');
+
+// Web: the menu opens from its trigger, growing from 97% as it fades in (250ms), and closes faster (150ms) to 99%;
+// under reduced motion it only fades. Native menus open and close at once.
+const MENU_CLOSE_MS = 150;
+const MENU_MOTION_CLASS = 'web:transition-[opacity,scale] web:ease-[cubic-bezier(0.22,1,0.36,1)] web:motion-reduce:scale-100';
+const MENU_MOTION_OPEN_CLASS = 'web:duration-250 web:scale-100';
+const MENU_MOTION_ENTER_CLASS = 'web:duration-250 web:scale-97';
+const MENU_MOTION_CLOSE_CLASS = 'web:duration-150 web:scale-99';
+
+function menuMotionClass(measured: boolean, closing: boolean) {
+    if (!measured) return MENU_MOTION_ENTER_CLASS;
+    return closing ? MENU_MOTION_CLOSE_CLASS : MENU_MOTION_OPEN_CLASS;
+}
 
 /**
  * After content was seen loading, wait this long without a height change before showing it.
@@ -132,7 +145,6 @@ export default function DropdownPopup({
     triggerStyle,
 }: DropdownPopupProps) {
     const buttonRef = useRef<any>(null);
-    const isDesktop = useIsDesktop();
     const contentRef = useRef<any>(null);
     const restoreFocusRef = useRef<any>(null);
     const [buttonPos, setButtonPos] = useState<ButtonPos>(CLOSED_POS);
@@ -152,10 +164,6 @@ export default function DropdownPopup({
     const isWeb = useMemo(() => Platform.OS === 'web', []);
     const isIos = useMemo(() => Platform.OS == 'ios', []);
 
-    const animation = useMemo(
-        () => (isDesktop ? 'fade' : 'none'),
-        [isDesktop]
-    );
     const [isOpen, setIsOpen] = useState(defaultOpen);
     const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -180,18 +188,29 @@ export default function DropdownPopup({
         }
     }, [isControlledOutside, onOpenChange])
 
+    // Web keeps a closing menu on screen while it fades out (MENU_CLOSE_MS); native closes at once.
+    const [isClosing, setIsClosing] = useState(false);
     useEffect(() => {
-        // Add safety checks for modal state
         if (isRealOpen) {
+            if (isClosing) setIsClosing(false);
             // Only set modal visible if it's not already visible
             if (!isModalVisible) {
                 setIsModalVisible(true);
             }
-
-        } else {
-            setIsModalVisible(false);
+            return undefined;
         }
-    }, [isRealOpen, isModalVisible]);
+        if (!isModalVisible) return undefined;
+        if (!isWeb) {
+            setIsModalVisible(false);
+            return undefined;
+        }
+        if (!isClosing) setIsClosing(true);
+        const timer = setTimeout(() => {
+            setIsModalVisible(false);
+            setIsClosing(false);
+        }, MENU_CLOSE_MS);
+        return () => clearTimeout(timer);
+    }, [isRealOpen, isModalVisible, isClosing, isWeb]);
 
     const measureElement = useCallback((node: any, callback: (x: number, y: number, width: number, height: number) => void) => {
         if (!node) return false;
@@ -258,6 +277,7 @@ export default function DropdownPopup({
 
     // Reset only after the popup was open: on mount and on resizes while closed the
     // state already is the closed one, and a no-op dispatch from an effect isn't free.
+    // A closing menu keeps its place until it has faded out (isModalVisible).
     const wasOpenRef = useRef(false);
     useEffect(() => {
         if (isRealOpen) {
@@ -268,7 +288,7 @@ export default function DropdownPopup({
                 return () =>
                     window.removeEventListener('resize', updateButtonPosition);
             }
-        } else if (wasOpenRef.current) {
+        } else if (wasOpenRef.current && !isModalVisible) {
             wasOpenRef.current = false;
             measureRetryRef.current = 0;
             setButtonPos(CLOSED_POS);
@@ -279,7 +299,7 @@ export default function DropdownPopup({
             if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
             settleTimerRef.current = null;
         }
-    }, [isRealOpen, updateButtonPosition]);
+    }, [isRealOpen, isModalVisible, updateButtonPosition]);
 
     useEffect(() => () => {
         if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
@@ -312,9 +332,11 @@ export default function DropdownPopup({
         return () => window.removeEventListener('keydown', onKeyDown);
     }, [isWeb, isRealOpen, handleToggle]);
 
+    // Focus goes back to the trigger once the menu has faded out (isModalVisible): until then the page is inert, and
+    // react-native-web's Modal pulls focus that leaves it back inside.
     useEffect(() => {
         if (!isWeb) return;
-        if (isRealOpen) return;
+        if (isRealOpen || isModalVisible) return;
         const node = restoreFocusRef.current;
         restoreFocusRef.current = null;
         if (!node) return;
@@ -330,7 +352,7 @@ export default function DropdownPopup({
         };
         const id = requestAnimationFrame(focusTrigger);
         return () => cancelAnimationFrame(id);
-    }, [isWeb, isRealOpen]);
+    }, [isWeb, isRealOpen, isModalVisible]);
 
     const handleBackdropPress = (event: any) => {
         event.stopPropagation();
@@ -471,14 +493,14 @@ export default function DropdownPopup({
         <View
             ref={contentRef}
             onLayout={handleContentLayout}
-            pointerEvents={hasMeasured ? 'auto' : 'none'}
+            pointerEvents={hasMeasured && !isClosing ? 'auto' : 'none'}
             style={{
                 position: 'absolute',
                 ...(anchorAboveByBottom
                     ? { bottom: buttonPos.viewportHeight - buttonPos.triggerY + triggerGapAbove }
                     : { top: popupTop }),
                 left: finalLeft,
-                opacity: hasMeasured ? 1 : 0,
+                opacity: hasMeasured && !isClosing ? 1 : 0,
                 visibility: hasMeasured ? 'visible' : 'hidden',
                 elevation: 5,
                 minWidth: maxPopupWidth ? Math.min(minPopupWidth, cappedPopupWidth) : minPopupWidth,
@@ -489,7 +511,13 @@ export default function DropdownPopup({
                 maxHeight: buttonPos.maxHeight || undefined,
                 zIndex: 1000,
             } as unknown as ViewStyle /* web-only `visibility` */}
-            className={cn(contentClasses, contentClassName)}
+            className={cn(
+                contentClasses,
+                contentClassName,
+                MENU_MOTION_CLASS,
+                buttonPos.shouldOpenAbove ? 'web:origin-bottom-left' : 'web:origin-top-left',
+                menuMotionClass(hasMeasured, isClosing)
+            )}
         >
             <ScrollView
                 showsVerticalScrollIndicator={false}
@@ -615,7 +643,7 @@ export default function DropdownPopup({
                     transparent={true}
                     visible={isModalVisible}
                     presentationStyle="overFullScreen"
-                    animationType={isWeb ? animation : 'none'}
+                    animationType="none"
                     onRequestClose={() => handleToggle(false)}
                     onDismiss={() => {
                         // Ensure modal is fully cleaned up on native

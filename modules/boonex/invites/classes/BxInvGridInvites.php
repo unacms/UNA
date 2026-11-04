@@ -35,36 +35,29 @@ class BxInvGridInvites extends BxInvGrid
             $this->_aQueryAppend['filter1'] = $this->_sFilter1Value;
         }
     }
-    
-    public function performActionDelete($aParams = array())
+
+    public function performActionDelete($aParams = [])
     {
         $iProfileId = $this->_oModule->getProfileId();
 
-        $mixedAllowed = $this->_oModule->isAllowedDeleteInvite($iProfileId);
-        if($mixedAllowed !== true) {
-            echoJson(array('msg' => $mixedAllowed));
-            exit;
+        if(($mixedAllowed = $this->_oModule->isAllowedDeleteInvite($iProfileId)) !== true) {
+            return echoJson(['msg' => $mixedAllowed]);
         }
 
-        $iAffected = 0;
         $aIds = bx_get('ids');
         if(!$aIds || !is_array($aIds)) {
-            echoJson(array());
-            exit;
+            return echoJson([]);
         }
 
-        $aIdsAffected = array ();
+        $aIdsAffected = [];
         foreach($aIds as $iId) {
-            if(!$this->_oModule->_oDb->deleteInvites(array('id' => $iId)))
+            if(!$this->_oModule->deleteInvite($iId, $iProfileId))
                 continue;
 
-            $this->_oModule->isAllowedDeleteInvite($iProfileId, true);
-
             $aIdsAffected[] = $iId;
-            $iAffected++;
         }
 
-        echoJson($iAffected ? array('grid' => $this->getCode(false), 'blink' => $aIdsAffected) : array('msg' => _t('_bx_invites_err_delete_invite')));
+        echoJson($aIdsAffected ? ['grid' => $this->getCode(false), 'blink' => $aIdsAffected] : ['msg' => _t('_bx_invites_err_delete_invite')]);
     }
 
     protected function _getCellEmail($mixedValue, $sKey, $aField, $aRow)

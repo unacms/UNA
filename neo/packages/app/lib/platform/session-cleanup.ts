@@ -2,7 +2,8 @@ import { Platform } from 'react-native'
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache'
 import { dismissNavigationOverlays, resetAllTabHistory } from 'app/lib/navigation/tab-history'
 import { queryClient } from 'app/lib/platform/query-client'
-import { appSetting, storageClear } from 'app/lib/util'
+import { storageClear } from 'app/lib/util'
+import { getTabListFor } from 'app/lib/navigation/tab-bar-menu'
 import { usePrefsStore } from 'app/context/prefs'
 import { useBottomSheetStore } from 'app/context/bottomsheet'
 import emitter, { EVENTS } from 'app/context/emitter'
@@ -49,7 +50,7 @@ export function clearClientSessionState() {
 export function resetNavigationAfterSignOut(router: any, { url, navigation }: { url?: string; navigation?: any } = {}) {
     if (!router) return
 
-    const guestTabs = appSetting('menu_items', 'menu_tabbar_non_logged') || []
+    const guestTabs = getTabListFor(false)
     const targetUrl = url && url !== '/' ? url : (guestTabs[0]?.url || '/home')
     const refresh = Date.now()
 

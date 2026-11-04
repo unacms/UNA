@@ -59,7 +59,7 @@ class BxDolAiAgentRetrievalTestEmbeddings implements NeuronAI\RAG\Embeddings\Emb
 
     public function embedDocument(NeuronAI\RAG\Document $document): NeuronAI\RAG\Document
     {
-        $document->embedding = [0.0];
+        $document->setEmbedding([0.0]);
         return $document;
     }
 

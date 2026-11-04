@@ -39,7 +39,7 @@ class BxAiProxyKnowledge
                 throw new BxAiProxyException(503, 'The proxy knowledge is not available');
 
             $aDocuments = [];
-            foreach ($oStore->similaritySearch($aEmbedding) as $oDocument) {
+            foreach ($oStore->search(new NeuronAI\RAG\VectorStore\SearchRequest($aEmbedding)) as $oDocument) {
                 if (!$oDocument instanceof NeuronAI\RAG\Document)
                     continue;
 

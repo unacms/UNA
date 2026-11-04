@@ -140,6 +140,23 @@
 }
 
 /*
+ * Glass backdrop (NeoButton `glass`, its group, the glass tabs track), web only: `web:glass-backdrop
+ * web:dark:glass-backdrop-dark`. Contrast runs before brightness, an order Tailwind's backdrop-*
+ * utilities can't give (they apply brightness first). The page behind looks as under a plain blur,
+ * while a photo behind (a cover) stays apart from the label: light mode lifts black to about L135
+ * under black labels, dark mode dims white to about L115 under white ones.
+ */
+@utility glass-backdrop {
+    -webkit-backdrop-filter: blur(12px) saturate(150%) contrast(50%) brightness(130%);
+    backdrop-filter: blur(12px) saturate(150%) contrast(50%) brightness(130%);
+}
+
+@utility glass-backdrop-dark {
+    -webkit-backdrop-filter: blur(12px) saturate(150%) brightness(35%);
+    backdrop-filter: blur(12px) saturate(150%) brightness(35%);
+}
+
+/*
  * Fallback superellipse factors (overridden on <html> from theme.corner_smoothing
  * via app/design/corner-smoothing.js when enabled). Consumed by global.web.css.
  */

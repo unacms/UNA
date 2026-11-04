@@ -59,17 +59,7 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
 
         $sThreadId = !empty($aData['threadId']) ? $aData['threadId'] : null;
 
-        if (class_exists('NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter')) {
-            $this->stream($aAgent['id'], $oMessage, $aParams, $sThreadId);
-            return;
-        }
-
-        try {
-            $sReply = $this->call($aAgent, $sPrompt !== '' ? $sPrompt : ' ');
-        } catch (Throwable $o) {
-            return echoJson(['code' => 500, 'msg' => $o->getMessage(), 'messages' => []]);
-        }
-        return echoJson(['code' => 200, 'msg' => $sReply, 'text' => $sReply]);
+        $this->stream($aAgent['id'], $oMessage, $aParams, $sThreadId);
     }
 
     /**
@@ -245,20 +235,23 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
         // UNA BxDolDb::pdoExceptionHandler dumps HTML 503 on uncaught PDOException.
         restore_exception_handler();
 
-        $oAdapter = new NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter($sThreadId);
+        $aAgent = BxDolAiQuery::getAgentObject((int)$iAgentId);
+
+        $oAdapter = new BxDolAiAguiAdapter((string)($sThreadId ?: ($aAgent ? BxDolAiChat::threadId($aAgent, $aParams) : $iAgentId)));
 
         http_response_code(200);
         foreach ($oAdapter->getHeaders() as $sName => $sValue)
             header($sName . ': ' . $sValue);
 
         $fEmit = function ($sEvent) {
+            if ($sEvent instanceof NeuronAI\Workflow\Streaming\ProtocolEvent)
+                $sEvent = NeuronAI\Workflow\Streaming\SSEEncoder::frame($sEvent);
             echo $sEvent;
             if (ob_get_level())
                 ob_flush();
             flush();
         };
 
-        $aAgent = BxDolAiQuery::getAgentObject((int)$iAgentId);
         if ($aAgent)
             $oChat->setChatContext($aAgent, $aParams);
 
@@ -294,10 +287,13 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
             if (!$oUserMessage)
                 throw new Exception('Empty chat message');
             $o = BxDolAi::getAgentInstance((int)$iAgentId, $aParams);
-            $oHandler = $o->stream($oUserMessage);
+            $o->setStreamAdapter(fn () => $oAdapter);
 
-            foreach ($oHandler->events($oAdapter) as $sChunk) {
+            foreach ($o->stream($oUserMessage) as $oEvent) {
                 $bStarted = true;
+                if (!($oEvent instanceof NeuronAI\Workflow\Streaming\ProtocolEvent))
+                    continue;
+                $sChunk = NeuronAI\Workflow\Streaming\SSEEncoder::frame($oEvent);
                 foreach ($this->splitSseEvents($sChunk) as $sEvent) {
                     $aPayload = $this->parseSseEvent($sEvent);
                     $sType = is_array($aPayload) ? (string)($aPayload['type'] ?? '') : '';
@@ -321,9 +317,8 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
                 foreach ($oAdapter->start() as $sEvent)
                     $fEmit($sEvent);
             }
-            $sMsg = isAdmin() ? self::visibleError($oException) : $oException->getMessage();
-            $fEmit('data: ' . json_encode(['type' => 'RUN_ERROR', 'message' => $sMsg !== '' ? $sMsg : _t('_sys_agents_exception')]) . "\n\n");
-            foreach ($oAdapter->end() as $sEvent)
+            // nothing is emitted when the adapter has already reported the failure of the run
+            foreach ($oAdapter->error($oException) as $sEvent)
                 $fEmit($sEvent);
         }
 
@@ -334,6 +329,12 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
 
     protected function hydrate($iAgentId)
     {
+        // the same GET with `?hints=1` asks for the task hints instead of the transcript
+        if (bx_get('hints')) {
+            $this->hints($iAgentId);
+            return;
+        }
+
         if (false !== bx_get('offset'))
             return echoJson(['code' => 405, 'msg' => _t('_error occured'), 'messages' => [], 'activeRun' => null, 'interrupts' => null]);
 
@@ -369,6 +370,23 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
             'activeRun' => null,
             'interrupts' => null,
         ]);
+    }
+
+    /**
+     * `GET ?hints=1`: task hints of this chat (see BxDolAiChatHints), asked when the chat
+     * opens, after every turn and on the `hints` socket event.
+     */
+    protected function hints($iAgentId)
+    {
+        $aHints = [];
+        $aAgent = $this->loadAgent($iAgentId);
+        $oAi = $aAgent ? $this->getAi() : null;
+        $aParams = $oAi && $oAi->canChatDirectly($aAgent) ? $this->historyParams($aAgent) : false;
+        if ($aParams) {
+            $aHints = BxDolAiChatHints::get($aAgent, (int)($aParams['chat_history_context_pid'] ?? 0));
+        }
+
+        echoJson(['hints' => $aHints]);
     }
 
     /**
@@ -681,11 +699,7 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
         if (!is_object($oAgent) || !method_exists($oAgent, 'getChatHistory'))
             return ['messageId' => '', 'actions' => $aPending];
 
-        $oHistory = $oAgent->getChatHistory();
-        if (!is_object($oHistory) || !method_exists($oHistory, 'getMessages'))
-            return ['messageId' => '', 'actions' => $aPending];
-
-        $aMessages = $oHistory->getMessages();
+        $aMessages = $oAgent->getChatHistory()->getMessages();
         for ($i = count($aMessages) - 1; $i >= 0; $i--) {
             $oMessage = $aMessages[$i];
             if ($oMessage instanceof NeuronAI\Chat\Messages\ToolResultMessage)
@@ -713,8 +727,8 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
                 $oMessage->setContents($aParsed['content']);
             if (method_exists($oMessage, 'addMetadata'))
                 $oMessage->addMetadata('actions', $aActions);
-            if (method_exists($oHistory, 'persistMessages'))
-                $oHistory->persistMessages();
+            if (method_exists($oAgent, 'updateStoredMessage'))
+                $oAgent->updateStoredMessage($oMessage);
 
             $sId = method_exists($oMessage, 'getMetadata') ? $oMessage->getMetadata('__id') : '';
             return [

@@ -10,6 +10,7 @@ export type NeoButtonStyle =
     | 'borderless'
     | 'outline'
     | 'link'
+    | 'text'
     | 'glass'
     | 'glassProminent'
 
@@ -154,6 +155,8 @@ export type NeoButtonProps = {
     size?: string
     mode?: string
     noprefetch?: boolean
+    /** NeoButtonLink: the link's place in a set, `page` for the page you're on (set on the web `<a>`). */
+    'aria-current'?: boolean | 'page' | 'step' | 'location' | 'date' | 'time' | 'true' | 'false'
 
     /** Anything else (e.g. data-* attrs) is forwarded to the surface. */
     [key: string]: unknown

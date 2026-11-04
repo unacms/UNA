@@ -1,11 +1,15 @@
-<bx_repeat:images>
-    <div class="adm-dsg-icon-preview adm-dsg-ip-__name__ mt-4 first:mt-0">
-        <div class="adm-dsg-ip-title font-bold">__caption__</div>
-        <div class="adm-dsg-ip-image pt-1 pb-2">
-            <img src="__url__" alt="__caption__"<bx_if:show_width> width="__width__"</bx_if:show_width><bx_if:show_height> height="__height__"</bx_if:show_height> />
+<div class="adm-dsg-icon-previews grid grid-cols-1 sm:grid-cols-2 gap-3">
+<bx_repeat:previews>
+    <div class="adm-dsg-icon-preview adm-dsg-ip-__name__ flex flex-col rounded-xl overflow-hidden bg-white dark:bg-white/5 ring-1 ring-black/10 dark:ring-white/10">
+        <div class="adm-dsg-ip-stage flex h-24">
+            <div class="__stage__ flex flex-1 items-center justify-center px-4"><bx_if:show_image><img class="block __size__ object-contain" src="__url__" alt="" /></bx_if:show_image></div>
+            <bx_if:show_dark><div class="adm-dsg-ip-dark flex flex-1 items-center justify-center px-4"><img class="block __size__ object-contain" src="__url__" alt="" /></div></bx_if:show_dark>
         </div>
-        <div class="adm-dsg-ip-action">
-            <a class="bx-btn bx-btn-small" href="javascript:void(0)" onclick="__js_object__.deleteIcon('__name__');"><bx_text:_adm_dsg_btn_delete /></a>
+        <div class="adm-dsg-ip-info flex flex-col items-start gap-1 p-3">
+            <div class="adm-dsg-ip-caption text-sm font-medium text-gray-900 dark:text-gray-100">__caption__</div>
+            <div class="adm-dsg-ip-source text-sm leading-5 text-gray-600 dark:text-gray-400">__info__</div>
+            <bx_if:show_remove><button type="button" class="bx-btn bx-btn-small mt-1" aria-label="__label__" data-confirm="__confirm__" onclick="__js_object__.deleteIcon('__name__', this);"><bx_text:_adm_dsg_btn_logo_remove /></button></bx_if:show_remove>
         </div>
     </div>
-</bx_repeat:images>
+</bx_repeat:previews>
+</div>

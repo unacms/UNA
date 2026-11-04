@@ -355,6 +355,7 @@ const SWIFTUI_BUTTON_STYLE: Record<string, string> = {
     borderedProminent: 'borderedProminent',
     borderless: 'borderless',
     link: 'borderless',          // SwiftUI has no .link; .borderless is closest
+    text: 'plain',               // JS only (below); listed for completeness
     glass: 'glass',
     glassProminent: 'glassProminent',
 };
@@ -368,8 +369,9 @@ const STYLES_WITHOUT_HOVER = new Set(['plain']);
 const GLASS_STYLES = new Set(['glass', 'glassProminent']);
 
 // Styles with no native (Expo UI) rendering: `outline` is a shadow ring that
-// SwiftUI and Compose button styles don't draw.
-const JS_ONLY_STYLES = new Set(['outline']);
+// SwiftUI and Compose button styles don't draw; `text` is a text link whose
+// size comes from the caller's text classes, which native labels don't read.
+const JS_ONLY_STYLES = new Set(['outline', 'text']);
 
 const SWIFTUI_CONTROL_SIZE: Record<string, string> = {
     mini: 'mini',
@@ -578,7 +580,12 @@ export function useResolvedNeoButton(props: NeoButtonProps = {}) {
         const styleDef = glassFx
             ? mergeOrReplace(stylesTree[style], stylesTree[style]?.realistic)
             : (stylesTree[style] || {});
-        const containerSlot = styleDef.container || {};
+        // A role can restyle a style's container state by state (`roles.close.container.bordered`: Close's
+        // quieter fill); its keys replace the style's.
+        const roleContainerSlot = isPlainObject(roleConfig.container) ? roleConfig.container[style] : undefined;
+        const containerSlot = isPlainObject(roleContainerSlot)
+            ? { ...styleDef.container, ...roleContainerSlot }
+            : (styleDef.container || {});
         const textSlot = styleDef.text || {};
         const containerCls = (state: string) => resolveSlot(containerSlot, state, ctx);
         // A button inside a NeoButtonGroup: the group paints the resting

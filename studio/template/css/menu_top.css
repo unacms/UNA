@@ -5,13 +5,13 @@ div.bx-std-menu-top-wrp {
     flex-wrap: nowrap;
 
     width: 100%;
-    height: 5.5rem; /* the 64px bar (32px icons in 16px padding) with 12px above and below */
+    height: 5.75rem; /* the 68px bar (36px icons in 16px padding) with 12px above and below */
 }
-/* The bar: 16px padding around the 32px icons (64px tall) and 12px of margin above and at the sides. */
+/* The bar: 16px padding round the 36px icons (68px tall, like the block captions) and 12px of margin above and at the sides. */
 div.bx-std-menu-top-gap {
     margin: 0.75rem 0.75rem 0;
     padding: 1rem;
-    border-radius: 1.5rem; /* 24px, like the blocks */
+    border-radius: 1.5rem; /* 24px = the tiles' 8px corners + the 16px padding, so the bar's corners run parallel with theirs (and with the 16px corners of their 8px hover halo, 8px in); the blocks' corners too */
     backdrop-filter: blur(16px);
 }
 div.bx-std-menu-top-wrp .bx-std-menu-top.bx-std-menu-top-center:first-child {
@@ -36,7 +36,7 @@ div.bx-std-menu-top.bx-std-menu-top-right {
 div.bx-std-menu-top.bx-std-menu-top-center {
     display: flex;
     z-index: 1;
-    height: 2rem;
+    height: 2.25rem;
 }
 div.bx-std-menu-top.bx-std-menu-top-right {
     z-index: 2;
@@ -44,10 +44,10 @@ div.bx-std-menu-top.bx-std-menu-top-right {
 /* Hairline between the dock and the tool buttons, only while the dock has visible items (md and up). */
 @media (min-width: 768px) {
     div.bx-std-menu-top.bx-std-menu-top-center:has(.bx-menu-top-center li) {
-        margin-right: 0.75rem;
-        padding-right: 0.75rem;
+        margin-right: 0.6875rem;
+        padding-right: 0.6875rem;
     }
-    /* The breadcrumb's separator bar (2 x 16px, rounded), centred on the block's edge between the 12px + 12px. */
+    /* The breadcrumb's separator bar (2 x 16px, rounded), centred on the block's edge between the 11px + 11px: an icon's 8px ring stops 2px short of it. */
     div.bx-std-menu-top.bx-std-menu-top-center:has(.bx-menu-top-center li)::after {
         content: '';
         position: absolute;
@@ -74,8 +74,8 @@ div.bx-std-menu-top-center ul {
     
 }
 div.bx-std-menu-top-left {
-    padding-right: 0.75rem; /* same 12px step as between the dock icons, so the search field never touches the dock */
-    line-height: 2rem;
+    padding-right: 1.125rem; /* the same 18px step as between the dock icons, so the search field and the title never touch the first icon's ring */
+    line-height: 2.25rem;
     text-align: left;
     font-size: 1.5rem;
 }
@@ -99,7 +99,7 @@ div.bx-std-menu-top .bx-menu-top-center {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 0.75rem; /* one 12px step between icons, around the divider and before the hairline, same as the toolbar */
+    gap: 1.125rem; /* 18px between icons, same as the toolbar: room for two 8px rings (one hovered, one active) and 2px between them */
 
     padding: 0;
     margin: 0;
@@ -117,12 +117,12 @@ div.bx-std-menu-top .bx-menu-top-center li {
     -webkit-align-items: center;
     align-items: center;
 
-    width: 2rem; /* icon width only: spacing comes from the dock's list gap and the breadcrumb separator's padding */
-    height: 2rem;
+    width: 2.25rem; /* icon width only: spacing comes from the dock's list gap and the breadcrumb separator's padding */
+    height: 2.25rem;
 }
-/* Breadcrumb separator: a 2 x 16px bar that takes no room of its own (-1px margins) between 12px of padding either side, so the launcher icon and the app icon sit exactly 24px apart with the bar centred between them. */
+/* Breadcrumb separator: a 2 x 16px bar that takes no room of its own (-1px margins) between 11px of padding either side, so the launcher icon and the app icon sit 22px apart with the bar centred between them and 2px clear of either icon's 8px ring. */
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-div {
-    padding: 0 0.75rem;
+    padding: 0 0.6875rem;
 }
 div.bx-std-menu-top .bx-menu-breadcrumb .bx-menu-bc-sep {
     display: block;
@@ -135,12 +135,15 @@ div.bx-std-menu-top .bx-menu-breadcrumb .bx-menu-bc-sep {
 .dark div.bx-std-menu-top .bx-menu-breadcrumb .bx-menu-bc-sep {
     background-color: rgba(255, 255, 255, 0.1);
 }
-/* Page item: the app's launcher icon fills its 32px tile (8px corners, the tile's hairline ring over the art), the title 12px after it. */
-div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item.bx-menu-bc-page .bx-mi-icon.bx-icon-tile img {
+/* Page item: the app's launcher icon fills its 36px tile and 1px beyond it (9px corners), where the tile's darker edge line sits over the art (tailwind.css), the title 12px after it. */
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item.bx-menu-bc-page .bx-mi-icon.bx-icon-tile img,
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item.bx-menu-bc-page .bx-mi-icon.bx-icon-tile svg.bx-std-app-icon {
     display: block;
-    width: 100%; /* the whole tile, not the 20px glyph size the header-button rule below gives images */
-    height: 100%;
-    border-radius: inherit;
+    width: calc(100% + 2px); /* the whole tile, not the 20px glyph size the header-button rule below gives images */
+    max-width: none; /* Tailwind's base caps images at their box */
+    height: calc(100% + 2px);
+    margin: -1px;
+    border-radius: calc(0.5rem + 1px);
     object-fit: cover;
 }
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon + .bx-mi-title {
@@ -171,19 +174,19 @@ div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item.bx-menu-tab-search {
     width: auto;
     padding: 0; /* the separator before it provides the spacing, so its glyph box lands where an app icon sits on app pages */
 }
-/* On the launcher the field is bare: no fill, ring or focus ring (the caret marks focus; a ring would come back the moment the user types); the search glyph is centred in a transparent 32px box at the field's left edge and the text starts 4px after that box. */
+/* On the launcher the field is bare: no fill, ring or focus ring (the caret marks focus; a ring would come back the moment the user types); the search glyph is centred in a transparent 36px box at the field's left edge and the text starts 4px after that box. */
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-field > span {
     justify-content: center;
-    width: 2rem;
+    width: 2.25rem;
     padding-left: 0;
     padding-right: 0;
 }
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-field > input {
-    padding: 0 2.25rem; /* the glyph box on one side, the clear button on the other, whichever way the text runs */
+    padding: 0 2.5rem; /* the glyph box on one side, the clear button on the other, whichever way the text runs */
     background-color: transparent;
     box-shadow: none;
 }
-/* The browser's own clear control is replaced by a Lucide x: a 16px glyph in a 32px hover target at the field's right edge, shown while there is text (menu_top.js). */
+/* The browser's own clear control is replaced by a Lucide x: a 16px glyph in a 36px hover target at the field's right edge, shown while there is text (menu_top.js). */
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-field > input::-webkit-search-cancel-button {
     -webkit-appearance: none;
     appearance: none;
@@ -196,10 +199,10 @@ div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-cle
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2rem;
-    height: 2rem;
+    width: 2.25rem;
+    height: 2.25rem;
     border-radius: 0.5rem;
-    color: rgb(107 114 128);
+    color: rgb(113 113 122);
     cursor: pointer;
     transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
 }
@@ -211,8 +214,8 @@ div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-cle
     left: 0;
 }
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-clear:hover {
-    background-color: rgb(229 231 235);
-    color: rgb(55 65 81);
+    background-color: rgb(228 228 231);
+    color: rgb(63 63 70);
 }
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-clear:focus-visible {
     outline: none;
@@ -223,11 +226,11 @@ div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-cle
     height: 1rem;
 }
 .dark div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-clear {
-    color: rgb(156 163 175);
+    color: rgb(161 161 170);
 }
 .dark div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-clear:hover {
-    background-color: rgb(31 41 55);
-    color: rgb(209 213 219);
+    background-color: rgb(39 39 42);
+    color: rgb(212 212 216);
 }
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search > .bx-std-search-trigger {
     display: none;
@@ -236,8 +239,8 @@ div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search.bx-mt-compact > .b
     display: flex;
     flex: 0 0 auto;
     box-sizing: border-box;
-    width: 2rem;
-    height: 2rem;
+    width: 2.25rem;
+    height: 2.25rem;
 }
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search.bx-mt-compact:not(.bx-mt-active) > .bx-std-search-field {
     display: none;
@@ -265,9 +268,9 @@ div.bx-std-menu-top .bx-menu-top-center li.bx-menu-item-disabled .bx-mi-icon {
     opacity: 0.4; /* a disabled app, dimmed as its launcher tile is (.bx-std-widget-icon-disabled) */
 }
 div.bx-std-menu-top .bx-menu-top-center li.bx-menu-item-divider {
-    width: 2px; /* the breadcrumb's separator bar: 2 x 16px, rounded, no room of its own (-1px margins) */
+    width: 2px; /* the breadcrumb's separator bar: 2 x 16px, rounded; -8px margins against the list's 18px gaps put it 10px from either icon (22px between them, as at the breadcrumb), 2px clear of their 8px rings */
     height: 1rem;
-    margin: 0 -1px;
+    margin: 0 -0.5rem;
     border: 0;
     border-radius: 1px;
     background-color: rgba(0, 0, 0, 0.1);
@@ -285,8 +288,8 @@ div.bx-std-menu-top .bx-menu-top-center li a {
     z-index: 2;
     box-sizing: content-box;
 
-    width: 2rem;
-    height: 2rem;
+    width: 2.25rem;
+    height: 2.25rem;
 }
 .bx-menu-breadcrumb li.bx-menu-bc-item > a {
     display: -webkit-flex;
@@ -306,31 +309,45 @@ div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item .bx-mi-title {
     text-align: center;
     letter-spacing: -0.02em;
 }
-/* Launcher button: a 20px glyph in a 32px button, like the toolbar. */
+/* Launcher button: a 24px glyph in a 36px button, like the toolbar. */
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item .bx-mi-icon.bx-std-header-btn svg,
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item .bx-mi-icon.bx-std-header-btn img {
     display: block;
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 1.5rem;
+    height: 1.5rem;
 }
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item img,
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item:not(.bx-menu-tab-search) svg,
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item .sys-icon,
 div.bx-std-menu-top .bx-menu-top-center li img,
+div.bx-std-menu-top .bx-menu-top-center li svg.bx-std-app-icon,
 div.bx-std-menu-top .bx-menu-top-center li .sys-icon {
     display: block;
     box-sizing: content-box;
 
-    width: 2rem;
-    height: 2rem;
+    width: 2.25rem;
+    height: 2.25rem;
 
     margin: 0;
     border-radius: 0.5rem; /* matches rounded-lg on the icon wrapper, whose ring/shadow must not be clipped */
 }
 
-div.bx-std-menu-top .bx-menu-top-center li img {
+/* The dock's art: 1px beyond its 36px tile on every side (9px corners), as large as a header button with its outer hairline; the tile's
+   darker edge line sits over that outer 1px (tailwind.css). */
+div.bx-std-menu-top .bx-menu-top-center li img,
+div.bx-std-menu-top .bx-menu-top-center li svg.bx-std-app-icon {
     position: relative;
     z-index: -1;
+
+    width: calc(2.25rem + 2px);
+    max-width: none; /* Tailwind's base caps images at their box */
+    height: calc(2.25rem + 2px);
+    margin: -1px;
+    border-radius: calc(0.5rem + 1px);
+}
+/* The tile keeps its 36px: its own block formatting context holds the art's -1px margins instead of letting them collapse through it. */
+div.bx-std-menu-top .bx-menu-top-center li .bx-icon-tile {
+    display: flow-root;
 }
 
 div.bx-std-menu-top .bx-menu-top-center li .sys-icon {
@@ -363,8 +380,8 @@ div.bx-std-menu-top ul li.bx-menu-tab-search > div.bx-menu-tab-item {
     -webkit-flex-wrap: nowrap;
     flex-wrap: nowrap;
 
-    width: 2rem;
-    height: 2rem;
+    width: 2.25rem;
+    height: 2.25rem;
     right: 0;
 
     border-radius: 0.5rem;
@@ -381,7 +398,7 @@ div.bx-std-menu-top ul li.bx-menu-tab-search > div.bx-menu-tab-item > button {
     height: 100%; /* overrides the 3rem toolbar link height from template/css/menu.css */
 }
 div.bx-std-menu-top ul li.bx-menu-tab-search .bx-form-input-text {
-    height: 2rem;
+    height: 2.25rem;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
 
@@ -417,12 +434,12 @@ div.bx-std-menu-top .bx-menu-toolbar li {
     float: none;
     display: block;
 
-    height: 2rem;
-    min-width: 2rem;
+    height: 2.25rem;
+    min-width: 2.25rem;
     
     border-radius: 0.5rem;
 
-    line-height: 2rem;
+    line-height: 2.25rem;
 }
 div.bx-std-menu-top .bx-menu-toolbar li:not(.bx-menu-tab-search) a,
 div.bx-std-menu-top .bx-menu-toolbar li:not(.bx-menu-tab-search) button {
@@ -442,7 +459,7 @@ div.bx-std-menu-top .bx-menu-toolbar li:not(.bx-menu-tab-search) button {
 
 div.bx-std-menu-top .bx-menu-toolbar li a:hover,
 div.bx-std-menu-top .bx-menu-toolbar li button:hover {
-    color: rgb(55, 65, 81);
+    color: rgb(63, 63, 70);
 }
 
 div.bx-std-menu-top i.sys-icon {
@@ -470,7 +487,7 @@ body > .bx-popup-wrapper.bx-std-mod-popup-settings-wrapper,
 #bx-std-pcap-menu-popup-actions .bx-popup-gap,
 #bx-std-pcap-menu-popup-account .bx-popup-gap,
 #bx-std-pmenu-popup-actions .bx-popup-gap {
-    margin: 8px 0 0; /* with the script's 8px this puts the box 16px under the 32px trigger: flush with the header bar's bottom edge */
+    margin: 8px 0 0; /* with the script's 8px this puts the box 16px under the 36px trigger: flush with the header bar's bottom edge */
 }
 #bx-std-pcap-menu-popup-help .bx-popup,
 #bx-std-pcap-menu-popup-actions .bx-popup,
@@ -504,8 +521,8 @@ body > .bx-popup-wrapper.bx-std-mod-popup-settings-wrapper,
 }
 
 .bx-std-mod-popup-settings-wrapper .bx-form-input-select {
-    border-color: rgb(55, 65, 81, 1.0);
-    background-color: rgb(17, 24, 39, 1.0);
+    border-color: rgb(63, 63, 70, 1.0);
+    background-color: rgb(24, 24, 27, 1.0);
 }
 
 /*--- Assistant ---*/
@@ -524,7 +541,7 @@ body > .bx-popup-wrapper.bx-std-mod-popup-settings-wrapper,
 }
 .bx-std-pcap-assistant .cmt .cmt-head .cmt-meta {
     margin-right: 0;
-    color: rgb(156 163 175);
+    color: rgb(161 161 170);
 }
 .cmt.cmt-agents .cmt-head ul li:first-child .bx-base-general-unit-meta-div {
   display: none;

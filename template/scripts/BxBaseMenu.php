@@ -29,6 +29,12 @@ class BxBaseMenu extends BxDolMenu
     protected $_aTemplatesCueSelect = ['menu_main_submenu.html', 'menu_main_submenu_more_auto.html', 'menu_block_submenu_hor.html', 'menu_block_submenu_ver.html', 'menu_feeds.html'];
     protected $_bCueSelect = false;
 
+    /**
+     * Items that only run a script are drawn as links with role="button" (see _getMenuAttrs). A menu whose
+     * templates draw them as real buttons turns this off.
+     */
+    protected $_bScriptItemsRoleButton = true;
+
     public function __construct ($aObject, $oTemplate)
     {
         parent::__construct ($aObject);
@@ -276,6 +282,23 @@ class BxBaseMenu extends BxDolMenu
 
         if(!empty($sName))
             return $this->_getMenuItem($this->_aObject['menu_items'][$sName]);
+    }
+
+    /**
+     * Get the names of the items the viewer gets, without building them (no links, titles or counters).
+     * @return array
+     */
+    public function getMenuItemsNames ()
+    {
+        if (!isset($this->_aObject['menu_items']))
+            $this->_aObject['menu_items'] = $this->getMenuItemsRaw ();
+
+        $aNames = [];
+        foreach ($this->_aObject['menu_items'] as $a)
+            if ($this->_isActive($a) && $this->_isVisible($a))
+                $aNames[] = $a['name'];
+
+        return $aNames;
     }
 
     /**
@@ -564,6 +587,8 @@ class BxBaseMenu extends BxDolMenu
             'config' => isset($a['config_api']) ? $a['config_api'] : '',
             'primary' => isset($a['primary']) ? $a['primary'] : 0,
             'persistent' => isset($a['persistent']) ? $a['persistent'] : 0,
+            // Studio's "Icon only": the apps show the item's title next to its icon unless it is on, as the site does.
+            'icon_only' => isset($a['icon_only']) ? (int)$a['icon_only'] : 0,
         ];
 
         if(!empty($a['onclick']))
@@ -736,6 +761,14 @@ class BxBaseMenu extends BxDolMenu
             $sAttrs .= ' ' . $aMenuItem['attrs_add'];
 
         /**
+         * An item that only runs a script (a javascript: link: a popup, a toggle, an action) is a button, not a link
+         * to another page. The role says so to assistive technology, and crawlers stop counting it as a link nobody
+         * can follow (Lighthouse "Links are not crawlable"). inc/js/functions.js gives it the Space key of a button.
+         */
+        if($this->_bScriptItemsRoleButton && $this->_isMenuItemScript($aMenuItem) && !preg_match('/(^|\s)role\s*=/', $sAttrs))
+            $sAttrs .= ' role="button"';
+
+        /**
          * An explicit `area_label` always wins. Otherwise the item title is used as the accessible name, but only
          * when the visible content of the link does not already provide one - an aria-label that repeats the title
          * while the link also renders an addon (a counter) hides that counter from the accessible name and breaks
@@ -748,6 +781,11 @@ class BxBaseMenu extends BxDolMenu
             $sAttrs .= ' aria-label="' . $sAreaLabel . '"';
 
         return $sAttrs;
+    }
+
+    protected function _isMenuItemScript ($aMenuItem)
+    {
+        return !empty($aMenuItem['link']) && strncmp($aMenuItem['link'], 'javascript:', 11) === 0;
     }
 
     protected function _addMenuItemsMoreLess($aItems, $iMenuItemsMin)
@@ -779,7 +817,8 @@ class BxBaseMenu extends BxDolMenu
                         'onclick' => 'bx_menu_show_more_less(this, \'' . $this->_sObject . '\', \'.bx-menu-object-' . $this->_sObject . '\')',
                     ]
                 ],
-                'attrs' => '',
+                // A toggle, not a link (see _getMenuAttrs): this item is built here and skips it.
+                'attrs' => ' role="button"',
                 'bx_if:image' => [
                     'condition' => false,
                     'content' => ['icon_url' => ''],

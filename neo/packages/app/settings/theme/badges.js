@@ -6,7 +6,8 @@ export const settingsBadges = {
         'u-badge-destructive': ' bg-destructive flex items-center justify-center ',
         'u-badge-outline': ' bg-transparent border border-border/60 flex items-center justify-center ',
         'u-badge-accent': ' bg-accent flex items-center justify-center',
-        'u-badge-secondary': ' bg-secondary flex items-center justify-center ',
+        // dark: bg-secondary is the card colour, so the badge takes the button ink there.
+        'u-badge-secondary': ' bg-secondary dark:bg-button flex items-center justify-center ',
         'u-badge-text': ' font-medium whitespace-nowrap flex items-center justify-center ',
         'u-badge-default-text': ' font-medium text-primary whitespace-nowrap flex items-center justify-center ',
         'u-badge-destructive-text': ' font-medium text-destructive-foreground whitespace-nowrap flex items-center justify-center ',
@@ -48,7 +49,8 @@ export const settingsBadges = {
             icon_size: 24,
             inline_icon_size: 12,
             text: ' text-xs leading-6 px-0.5  ',
-            rounded: ' rounded ',
+            // Same corners as a mini button (neo_button borderShapes.roundedRectangle.mini).
+            rounded: ' rounded-md ',
         },
         sm: {
             // Matches profile_sizes['sm']: h-8 (32px)

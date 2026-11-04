@@ -29,6 +29,16 @@ export type CurrentUser = {
     /** Active context (e.g. organization) id when acting on behalf of another profile. */
     current_context?: number | string;
     informer?: any[];
+    /**
+     * UNA's "Require a profile" (Studio > Settings > Account, `sys_account_require_profile`) is on and this
+     * account has no profile of its own yet: every page shows profile creation instead (components/layouts.js).
+     */
+    profile_required?: boolean;
+    /**
+     * The items of UNA's member toolbar (`sys_toolbar_member`) this viewer gets in the apps, by name: the header
+     * shows Notifications and Messages only while it has them (ui/molecules/header/header-element.js).
+     */
+    toolbar?: string[];
     operator?: boolean | number;
     moderator?: boolean | number;
     /** HTTP-like status of the user's page (503 = maintenance). */

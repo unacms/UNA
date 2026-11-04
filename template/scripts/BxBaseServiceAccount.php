@@ -937,7 +937,7 @@ class BxBaseServiceAccount extends BxDol
     protected function _confirmEmail($sKey)
     {
         // check if key exists
-        $oKey = BxDolKey::getInstance();
+        $oKey = BxDolKey::getInstanceWithScope(BX_KEY_SCOPE_ACCOUNT_EMAIL_CONFIRM);
         if (!$oKey || !$oKey->isKeyExists($sKey))
             return _t("_sys_txt_confirm_email_error_occured");
 

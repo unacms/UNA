@@ -16,7 +16,7 @@ class BxFormConfirmEmailCheckerHelper extends BxDolFormCheckerHelper
      */
     function checkCodeExist ($s)
     {
-        $oKey = BxDolKey::getInstance();
+        $oKey = BxDolKey::getInstanceWithScope(BX_KEY_SCOPE_ACCOUNT_EMAIL_CONFIRM);
         return $oKey && $oKey->isKeyExists(trim($s));
     }
 
