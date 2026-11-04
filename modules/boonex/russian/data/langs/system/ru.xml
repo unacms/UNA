@@ -4398,6 +4398,7 @@
     <string name="_sys_select"><![CDATA[Выбрать]]></string>
     <string name="_sys_send"><![CDATA[Отправить]]></string>
     <string name="_sys_search_placeholder"><![CDATA[Поиск...]]></string>
+    <string name="_sys_search_see_all_results"><![CDATA[Все результаты]]></string>
     <string name="_sys_show_less"><![CDATA[Показать меньше]]></string>
     <string name="_sys_show_more"><![CDATA[Показать ещё]]></string>
     <string name="_sys_skip_to_main_content"><![CDATA[Перейти к основному содержимому]]></string>

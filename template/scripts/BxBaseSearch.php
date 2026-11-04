@@ -17,6 +17,7 @@ class BxBaseSearch extends BxDolSearch
     protected $_sIdResults = 'sys_search_results';
     protected $_sIdLoading;
     protected $_sSuffixLiveSearch = '_quick';
+    protected $_sClassResults = '';
 
     protected $_iSearchLenth;
     protected $_sSearchFunctionParams;
@@ -44,6 +45,25 @@ class BxBaseSearch extends BxDolSearch
             $this->_sIdResults .= $this->_sSuffixLiveSearch;
             $this->_sIdLoading = $this->_sIdResults;
         }
+    }
+
+    /**
+     * Ids of their own for one more search form on the page (the header's search popup next to the sidebar's
+     * search): the live search writes its results into the first element with the results id. Call it after
+     * setLiveSearch. The results keep their class.
+     */
+    public function setIdSuffix($sSuffix)
+    {
+        if(!$this->_sClassResults)
+            $this->_sClassResults = str_replace('_', '-', $this->_sIdResults);
+
+        $aIds = [
+            $this->_sIdForm => $this->_sIdForm . $sSuffix,
+            $this->_sIdResults => $this->_sIdResults . $sSuffix,
+        ];
+        $this->_sIdLoading = $aIds[$this->_sIdLoading] ?? $this->_sIdLoading;
+        $this->_sIdForm = $aIds[$this->_sIdForm];
+        $this->_sIdResults = $aIds[$this->_sIdResults];
     }
 
     public function getForm($iDesignBoxTemplate = BX_DB_PADDING_DEF, $sTitle = false, $bOnlyForm = false)
@@ -89,7 +109,7 @@ class BxBaseSearch extends BxDolSearch
     {
         return $this->_oTemplate->parseHtmlByName('search_result.html', [
             'html_id' => $this->_sIdResults,
-            'class' => str_replace('_', '-', $this->_sIdResults),
+            'class' => $this->_sClassResults ? $this->_sClassResults : str_replace('_', '-', $this->_sIdResults),
             'content' => $sCode
         ]);
     }

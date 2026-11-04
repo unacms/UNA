@@ -88,11 +88,11 @@ class BxTemplMenuToolbar extends BxBaseMenuToolbar
                 if(isset($a['class_add']))
                     $a['class_add'] = str_replace('bx-def-media-phone-hide', '',  $a['class_add']);
 
-                //--- The floating search bar (see _page_toolbar_search.html) takes the button's place. Without it the button opens the search page.
+                //--- The button opens the search popup (see _page_toolbar_search.html). Without it the button opens the search page.
                 if(getParam('bx_artificer_header_search') == 'on') {
                     $a['link'] = 'javascript:void(0)';
                     $a['bx_if:onclick'] = ['condition' => true, 'content' => ['onclick' => 'bx_site_search_show(this)']];
-                    $sAttrsAdd = 'aria-expanded="false" aria-controls="bx-ti-search-box"';
+                    $sAttrsAdd = 'aria-haspopup="dialog" aria-expanded="false" aria-controls="bx-site-search-popup"';
                 }
                 else {
                     $a['link'] = BX_DOL_URL_ROOT . 'searchKeyword.php';

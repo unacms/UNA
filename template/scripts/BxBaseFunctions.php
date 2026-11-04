@@ -70,9 +70,18 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
             case 'sys_toolbar_search':
                 $oSearch = new BxTemplSearch();
                 $oSearch->setLiveSearch(true);
+                $oSearch->setIdSuffix('_popup');
 
-                $mixedResult = $this->_oTemplate->parseHtmlByName('_page_toolbar_search.html', [
-                    'sys_site_search' => $oSearch->getForm(BX_DB_PADDING_DEF, false, true) . $oSearch->getResultsContainer()
+                // The search popup of the toolbar's 'search' item: the field, the live results and all results, as in the apps.
+                $mixedResult = $this->_oTemplate->parseHtmlByName('_page_toolbar_search_popup.html', [
+                    'id' => 'bx-site-search-popup',
+                    'title' => _t('_Search'),
+                    'content' => $this->_oTemplate->parseHtmlByName('_page_toolbar_search.html', [
+                        'sys_site_search' => $oSearch->getForm(BX_DB_PADDING_DEF, false, true),
+                        'results' => $oSearch->getResultsContainer(),
+                        'empty' => MsgBox(_t('_Empty')),
+                        'min_len' => (int)getParam('sys_search_keyword_min_len'),
+                    ]),
                 ]);
                 break;
         }
