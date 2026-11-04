@@ -261,7 +261,8 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
     {
         // The site menu (the phone menu and the desktop navbar, on the site and in the apps): modules' items first,
         // then About, then Log in and Sign up for guests on phones, and More last. Home is the logo on phones.
-        preg_match_all("/\\('sys_site', 'system', '([^']+)', '[^']*', '[^']*', '[^']*', '(?:[^'\\\\]|\\\\.)*', '[^']*', '[^']*', '[^']*', (\\d+), '([^']*)', \\d, \\d, (\\d+)\\)/", self::systemSql(), $aRows, PREG_SET_ORDER);
+        // Every system row of the site menu: name, then the last numbers of the row (levels, ..., order).
+        preg_match_all("/\\('sys_site', 'system', '([^']+)', .*, (\\d+), (?:'([^']*)', )?\\d, (?:\\d, )?(\\d+)\\)[,;]$/m", self::systemSql(), $aRows, PREG_SET_ORDER);
         $aItems = [];
         foreach ($aRows as $aRow)
             $aItems[$aRow[1]] = ['levels' => (int)$aRow[2], 'hidden_on' => $aRow[3], 'order' => (int)$aRow[4]];
@@ -269,7 +270,7 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         foreach (['home', 'about', 'login', 'create-account', 'more-auto'] as $sName)
             $this->assertArrayHasKey($sName, $aItems, $sName);
 
-        $this->assertSame('1', $aItems['home']['hidden_on'], 'Home is hidden on phones (BX_DB_HIDDEN_PHONE).');
+        $this->assertStringContainsString("UPDATE `sys_menu_items` SET `hidden_on` = '1' WHERE `set_name` = 'sys_site' AND `name` = 'home';", self::systemSql(), 'Home is hidden on phones (BX_DB_HIDDEN_PHONE).');
 
         // A module adds its item after the last one below 9999 (enable.sql), so About and the rest stay under it.
         $this->assertGreaterThanOrEqual(9999, $aItems['about']['order']);
