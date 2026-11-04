@@ -29,6 +29,8 @@ export async function fetchUniListData({ pageParam, requestUrl, defaultParams }:
                 payload.unit != 'notifications'
                     ? params.start + params.per_page
                     : params.start,
+            // UNA's "nothing to list yet" (a search nobody has run): no "Nothing found" for it.
+            ...(payload.hide_empty_msg ? { hideEmptyMsg: true } : null),
         }
     }
 
