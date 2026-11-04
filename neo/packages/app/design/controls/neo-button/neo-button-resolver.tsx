@@ -580,7 +580,12 @@ export function useResolvedNeoButton(props: NeoButtonProps = {}) {
         const styleDef = glassFx
             ? mergeOrReplace(stylesTree[style], stylesTree[style]?.realistic)
             : (stylesTree[style] || {});
-        const containerSlot = styleDef.container || {};
+        // A role can restyle a style's container state by state (`roles.close.container.bordered`: Close's
+        // quieter fill); its keys replace the style's.
+        const roleContainerSlot = isPlainObject(roleConfig.container) ? roleConfig.container[style] : undefined;
+        const containerSlot = isPlainObject(roleContainerSlot)
+            ? { ...(styleDef.container || {}), ...roleContainerSlot }
+            : (styleDef.container || {});
         const textSlot = styleDef.text || {};
         const containerCls = (state: string) => resolveSlot(containerSlot, state, ctx);
         // A button inside a NeoButtonGroup: the group paints the resting

@@ -49,6 +49,22 @@ html.dark {
     display: flex;
     flex-direction: column;
 }
+/* NEO's search modal: its 24px corners, its line under the title (--border, neutral-300 / -700, at 60%) and a quick
+   colour change on Close */
+#bx-site-search-popup .bx-popup {
+    border-radius: 1.5rem;
+}
+#bx-site-search-popup .bx-popup-header {
+    border-bottom-color: rgb(212 212 216 / 0.6);
+}
+.dark #bx-site-search-popup .bx-popup-header {
+    border-bottom-color: rgb(63 63 70 / 0.6);
+}
+#bx-site-search-popup .bx-popup-element-close {
+    transition-property: color, background-color;
+    transition-duration: 100ms;
+    transition-timing-function: ease-out;
+}
 #bx-site-search-popup .bx-site-search-title {
     padding-inline: 2.5rem; /* clear of Close */
 }

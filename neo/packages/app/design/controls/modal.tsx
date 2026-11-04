@@ -64,7 +64,7 @@ function ModalHeader({ title, headerBorder, onClose, onBack, closeRef }: { title
             )}
             {(onClose && type === 'string') && (
                 <View ref={closeRef} className='absolute right-4 top-0 bottom-0 justify-center items-center'>
-                    <NeoButton style="bordered" controlSize="small" borderShape="circle" image="X" accessibilityLabel={t('Close')} onPress={onClose} />
+                    <NeoButton style="bordered" role="close" controlSize="small" borderShape="circle" image="X" accessibilityLabel={t('Close')} onPress={onClose} />
                 </View>
             )}
         </Row>
