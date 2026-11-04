@@ -27,7 +27,7 @@ jobs:
     outputs:
       una: ${{ steps.changes.outputs.una }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: ${{ github.event_name == 'pull_request' && '0' || '1' }}
 
@@ -57,7 +57,7 @@ jobs:
         tools: composer
 
     - name: Setup Node
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: '24'
         cache: yarn
@@ -69,7 +69,7 @@ jobs:
       run: yarn install --frozen-lockfile
 
     - name: Upload dependencies
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: una-dependencies
         retention-days: 1
@@ -114,7 +114,7 @@ jobs:
           --health-retries=10
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       if: env.RUN_TESTS == 'true' || env.BUILD_LEG == 'true'
 
     # WARNING: after `composer update` or `composer upgrade`, replace this commit SHA
@@ -130,7 +130,7 @@ jobs:
 
     - name: Download dependencies
       if: env.RUN_TESTS == 'true' || env.BUILD_LEG == 'true'
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v7
       with:
         name: una-dependencies
 
@@ -201,7 +201,7 @@ jobs:
 
     - name: Upload package artifact
       if: success() && matrix.suite == 'Units' && matrix.php == '8.5'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: una-package
         path: packages/*.zip
@@ -217,7 +217,7 @@ jobs:
     env:
       BASE_REF: ${{ github.event.pull_request.base.ref }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
 
@@ -233,7 +233,7 @@ jobs:
 
     - name: Setup Node
       if: steps.changes.outputs.neo == 'true'
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: '24'
 
@@ -302,7 +302,7 @@ jobs:
       RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
       UNA_PREVIEW_API_KEY: ${{ secrets.UNA_PREVIEW_API_KEY }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         sparse-checkout: |
           .github/actions
@@ -377,9 +377,9 @@ jobs:
       RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
       RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: una-package
         path: packages
@@ -409,7 +409,7 @@ jobs:
       RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
       RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - uses: ./.github/actions/railway-cli
 
@@ -432,7 +432,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         sparse-checkout: .github/actions
 
@@ -484,9 +484,9 @@ jobs:
       VERCEL_TEAM: yasko
       UNA_API_KEY: ${{ secrets.UNA_API_KEY }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: una-package
         path: packages
@@ -559,7 +559,7 @@ jobs:
       VERCEL_TEAM: yasko
       NEO_PRODUCTION_HOST: ${{ vars.NEO_PRODUCTION_HOST }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - uses: ./.github/actions/railway-cli
 
@@ -614,7 +614,7 @@ jobs:
       PREVIEW_API_HOST: api-pr-${{ github.event.pull_request.number }}.unacms.app
       PREVIEW_CLIENT_HOST: pr-${{ github.event.pull_request.number }}.unacms.app
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         sparse-checkout: |
           .github/actions

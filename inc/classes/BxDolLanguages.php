@@ -74,6 +74,10 @@ class BxDolLanguages extends BxDolFactory implements iBxDolSingleton
         if(!$sLang)
             $sLang = $this->tryToGetLang(BX_DOL_LANGUAGE_DEFAULT);
 
+        // No language is installed yet (the installer, before the first language module): nothing to set the locale for, and the current language isn't known either.
+        if (!$sLang)
+            return $sLang;
+
         $sLocale = $this->getLangCountryCode($sLang);
         if (!$sLocale)
             $sLocale = $sLang . '_' . strtoupper($sLang);
@@ -169,8 +173,9 @@ class BxDolLanguages extends BxDolFactory implements iBxDolSingleton
      */
     function detectLanguageFromArray($aLangs, $sFallbackLanguage = 'en', $bLowercase = false)
     {
-        if (isset($aLangs[$GLOBALS['sCurrentLanguage']])) {
-            return $GLOBALS['sCurrentLanguage'];
+        $sCurrentLanguage = $this->getCurrentLanguage();
+        if ($sCurrentLanguage !== '' && isset($aLangs[$sCurrentLanguage])) {
+            return $sCurrentLanguage;
         } 
         elseif ($sLangCountry = $this->getLangCountryCode()) {
             if ($bLowercase)
@@ -192,7 +197,7 @@ class BxDolLanguages extends BxDolFactory implements iBxDolSingleton
      */
     function getCurrentLanguage()
     {
-        return $GLOBALS['sCurrentLanguage'];
+        return $GLOBALS['sCurrentLanguage'] ?? '';
     }
 
     function _t()
