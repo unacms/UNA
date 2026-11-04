@@ -1055,6 +1055,73 @@
         @apply ltr:pl-3 rtl:pl-8 ltr:pr-8 rtl:pr-3;
     }
 
+    /* Site inputs as NEO's Input (packages/app/settings/theme/inputs.js): a single-line field is 52px, a large button's height, with 16px sides,
+       16px regular text, 12px corners, the card's fill and a 1px inset hairline instead of a border. Focus has the ring every focused element has
+       in NEO: a 2px solid accent outline (blue-600, blue-500 in dark, 3:1 and more on the page and on a card) around a 1px accent edge. Textareas
+       and lists keep their height. */
+    .bx-artificer .bx-form-input-slider,
+    .bx-artificer .bx-form-input-doublerange,
+    .bx-artificer .bx-form-input-select_multiple,
+    .bx-artificer .bx-form-input-select,
+    .bx-artificer .bx-form-input-number,
+    .bx-artificer .bx-form-input-time,
+    .bx-artificer .bx-form-input-datepicker,
+    .bx-artificer .bx-form-input-datetime,
+    .bx-artificer .bx-form-input-textarea:not(.bx-form-input-html),
+    .bx-artificer .bx-form-input-text,
+    .bx-artificer .bx-form-input-price,
+    .bx-artificer .bx-form-input-wrapper-price span,
+    .bx-artificer .bx-form-input-wrapper-password {
+        @apply rounded-xl border-0 px-4 font-normal;
+        @apply bg-white dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-800;
+        @apply text-gray-800 dark:text-gray-200 focus:text-gray-800 dark:focus:text-gray-200;
+        @apply placeholder:text-gray-600 dark:placeholder:text-gray-400;
+        @apply ring-1 ring-inset ring-black/10 dark:ring-white/5;
+        @apply transition-shadow duration-200;
+    }
+    .bx-artificer .bx-form-input-slider:focus-visible,
+    .bx-artificer .bx-form-input-doublerange:focus-visible,
+    .bx-artificer .bx-form-input-select_multiple:focus-visible,
+    .bx-artificer .bx-form-input-select:focus-visible,
+    .bx-artificer .bx-form-input-number:focus-visible,
+    .bx-artificer .bx-form-input-time:focus-visible,
+    .bx-artificer .bx-form-input-datepicker:focus-visible,
+    .bx-artificer .bx-form-input-datetime:focus-visible,
+    .bx-artificer .bx-form-input-textarea:not(.bx-form-input-html):focus-visible,
+    .bx-artificer .bx-form-input-text:focus-visible,
+    .bx-artificer .bx-form-input-price:focus-visible,
+    .bx-artificer .bx-form-input-wrapper-password:focus-within {
+        @apply outline outline-2 outline-offset-0 outline-blue-600 dark:outline-blue-500;
+        @apply ring-1 ring-inset ring-blue-600/80 dark:ring-blue-500/80;
+    }
+    /* The password field draws the look on its wrapper, so the input inside it is bare and takes the height. */
+    .bx-artificer .bx-form-input-wrapper-password .bx-form-input-password:focus-visible {
+        @apply outline-none ring-0;
+    }
+    .bx-artificer .bx-form-input-select,
+    .bx-artificer .bx-form-input-number,
+    .bx-artificer .bx-form-input-time,
+    .bx-artificer .bx-form-input-datepicker,
+    .bx-artificer .bx-form-input-datetime,
+    .bx-artificer .bx-form-input-text,
+    .bx-artificer .bx-form-input-price,
+    .bx-artificer .bx-form-input-wrapper-password .bx-form-input-password {
+        @apply min-h-[3.25rem] py-2 leading-6;
+    }
+    .bx-artificer .bx-form-input-wrapper-password .bx-form-input-password {
+        @apply ltr:pl-4 rtl:pl-10 ltr:pr-10 rtl:pr-4;
+    }
+
+    /* A single select is a menu, not a text field: NEO's chevron (Lucide chevron-down, 20px, muted: gray-600, gray-400 in dark) 16px from the end. */
+    .bx-artificer select.bx-form-input-select:not([multiple]) {
+        @apply appearance-none bg-no-repeat ltr:pr-11 rtl:pl-11 ltr:[background-position:right_1rem_center] rtl:[background-position:left_1rem_center];
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2352525b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+        background-size: 1.25rem 1.25rem;
+    }
+    .dark .bx-artificer select.bx-form-input-select:not([multiple]) {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    }
+
     /* Studio: Inputs: the buttons' radius, translucent black/5 (white/10 in dark) fill, a 1px inset hairline instead of a border, a 2px inset blue ring on focus. Single-line fields are as tall as the buttons beside them:
        small 36px with 14px text in toolbars (a grid's search, a block's top panel), regular 44px with 16px text and 12px corners in a form or a dialog; textareas and lists keep their height. (The launcher's own search field in studio/template/page_breadcrumb.html is bare, see menu_top.css.) */
     .bx-std .bx-form-input-slider,

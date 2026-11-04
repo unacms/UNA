@@ -105,7 +105,8 @@
     --button: var(--neutral-800);
     --button-foreground: var(--neutral-200);
     --button-hover: var(--neutral-700);
-    --ring: var(--accent-600);
+    /* accent-600 is under 3:1 on a dark card; 500 is about 4:1 there. */
+    --ring: var(--accent-500);
     --segment: var(--neutral-800);
     --segment-foreground: var(--neutral-200);
     --link-primary: var(--primary);

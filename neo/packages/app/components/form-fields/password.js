@@ -21,7 +21,10 @@ export default function FormFieldPassword(props) {
         inputId,
         errorId,
         invalid,
+        required,
     } = useFormField(props);
+    // UNA says which password it is (`new-password` on sign-up and password change), so managers offer to make one.
+    const autoComplete = props.attrs?.autocomplete || 'current-password';
 
     const eyeButton = appSetting('forms', 'password_eye_button');
     const eyeIcon = isVisible ? eyeButton?.image?.visible : eyeButton?.image?.hidden;
@@ -35,8 +38,8 @@ export default function FormFieldPassword(props) {
                     ref={inputRef}
                     id={inputId}
                     nativeID={inputId}
-                    textContentType="password"
-                    autoComplete="current-password"
+                    textContentType={autoComplete === 'new-password' ? 'newPassword' : 'password'}
+                    autoComplete={autoComplete}
                     placeholderTextColor={placeholderTextColor}
                     placeholder={placeholder}
                     secureTextEntry={isVisible}
@@ -47,6 +50,7 @@ export default function FormFieldPassword(props) {
                     value={field.value}
                     aria-label={props.caption}
                     aria-invalid={invalid || undefined}
+                    aria-required={required || undefined}
                     aria-describedby={errorId}
                     {...returnKeyProps}
                 />

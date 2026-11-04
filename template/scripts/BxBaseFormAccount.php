@@ -138,6 +138,8 @@ class BxBaseFormAccount extends BxTemplFormView
 
         $this->aParams['checker_errors']['summary']['disabled'] = true;
 
+        $this->_setAutocomplete(['email' => 'email', 'name' => 'name', 'password' => 'new-password', 'password_confirm' => 'new-password', 'password_current' => 'current-password', 'phone' => 'tel']);
+
         if(($sField = 'picture') && isset($this->aInputs[$sField])) {
             /**
              * Note. For now Account Picture is available in edit form only. 
