@@ -365,7 +365,8 @@ export function ElementSearchData(oProps) {
                     onChangeText={(value) => handleSearch(value)}
                 />
             </View>
-            <KbAvoidingView>
+            {/* Web: the results take the rest of the fixed height and scroll there. */}
+            <KbAvoidingView className="web:flex-1 web:min-h-0">
                 <ScrollView
                     keyboardShouldPersistTaps="always"
                     keyboardDismissMode="none"

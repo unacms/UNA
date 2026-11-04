@@ -127,7 +127,12 @@
                 oInput.focus();
             },
             onHide: function () {
-                $('a[aria-controls="bx-site-search-popup"]').attr('aria-expanded', 'false');
+                var oTrigger = $('a[aria-controls="bx-site-search-popup"]').attr('aria-expanded', 'false');
+
+                // After the close button too: dolPopup focuses the element clicked last, which is that button.
+                setTimeout(function () {
+                    oTrigger.filter(':visible').first().focus();
+                }, 0);
             }
         });
     }
