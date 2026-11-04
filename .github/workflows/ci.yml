@@ -186,6 +186,10 @@ jobs:
           --server_http_host=localhost \
           --server_php_self=/install/index.php
         php tests/seed.php
+        # Every script which loads inc/header.inc.php redirects to the installer while the
+        # install folder exists, as a site served over HTTP (storage.php) would. Units read
+        # install/sql, so only the Integration leg removes it.
+        if [ "${{ matrix.suite }}" = "Integration" ]; then rm -rf install; fi
 
     - name: Run PHPUnit
       if: env.RUN_TESTS == 'true'

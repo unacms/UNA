@@ -434,10 +434,18 @@ class TimelineApiParamsTest extends BxDolIntegrationTestCase
         $iAuthorId = $this->adminProfileId();
 
         $this->setApiModule();
-        $mixedResult = $this->module()->serviceRepost($iAuthorId, $iAuthorId, 'timeline_common_post', '', $iId, true);
+
+        // Without an owner the destination check passes, so the permission check of the repost refuses.
+        $mixedResult = $this->module()->serviceRepost($iAuthorId, 0, 'timeline_common_post', '', $iId, true);
 
         $this->assertIsArray($mixedResult, 'A guest cannot repost, whatever author and force it sends.');
         $this->assertSame(2, $mixedResult['code']);
+
+        // An owner profile may refuse the guest first, which depends on the profile type and settings.
+        $mixedResult = $this->module()->serviceRepost($iAuthorId, $iAuthorId, 'timeline_common_post', '', $iId, true);
+
+        $this->assertIsArray($mixedResult, 'A guest cannot repost, whatever author and force it sends.');
+        $this->assertContains($mixedResult['code'], [1, 2]);
         $this->assertSame(0, $this->repostsOf($iId));
     }
 
