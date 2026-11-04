@@ -98,6 +98,16 @@ class BxInvDb extends BxDolModuleDb
                 $sLimitClause = "";
                 break;
 
+            case 'by_id':
+                $aMethod['name'] = 'getRow';
+                $aMethod['params'][1] = [
+                    'id' => $aParams['id']
+                ];
+
+                $sWhereClause = "AND `{$this->_sTableInvites}`.`id`=:id ";
+                $sLimitClause = "LIMIT 1";
+                break;
+
             case 'by_key':
                 $aMethod['name'] = 'getRow';
                 $aMethod['params'][1] = [
@@ -119,11 +129,27 @@ class BxInvDb extends BxDolModuleDb
                 break;
 
             case 'all':
-                $aMethod['name'] = 'getAll';
-                $aMethod['params'][1] = array(
+                $aMethod['params'][1] = [
                     'request_id' => $aParams['value']
-                );
+                ];
+
                 $sWhereClause = "AND `{$this->_sTableInvites}`.`request_id`=:request_id ";
+                break;
+
+            case 'all_by_profile_id':
+                $aMethod['params'][1] = [
+                    'profile_id' => $aParams['profile_id']
+                ];
+
+                $sWhereClause = "AND `{$this->_sTableInvites}`.`profile_id`=:profile_id ";
+                break;
+
+            case 'all_by_joined_account_id':
+                $aMethod['params'][1] = [
+                    'account_id' => $aParams['account_id']
+                ];
+
+                $sWhereClause = "AND `{$this->_sTableInvites}`.`joined_account_id`=:account_id ";
                 break;
         }
 

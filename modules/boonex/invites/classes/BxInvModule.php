@@ -662,7 +662,25 @@ class BxInvModule extends BxDolModule
 
         return $aResults;
     }
-    
+
+    public function deleteInvite($iId, $iProfileId = 0)
+    {
+        $aInvite = $this->_oDb->getInvites(['type' => 'by_id', 'id' => $iId]);
+        if(!$aInvite || !is_array($aInvite))
+            return false;
+
+        if(!$this->_oDb->deleteInvites(['id' => $iId]))
+            return false;
+
+        if(($sKey = $aInvite['key'] ?: false) && ($oKeys = BxDolKey::getInstance()) && $oKeys->isKeyExists($sKey))
+            $oKeys->removeKey($sKey);
+
+        if($iProfileId)
+            $this->isAllowedDeleteInvite($iProfileId, true);
+
+        return true;
+    }
+
     public function processFormObjectInvite(&$oForm)
     {
         $iProfileId = $this->getProfileId();

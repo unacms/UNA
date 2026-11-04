@@ -189,25 +189,27 @@ class BxInvResponse extends BxDolAlertsResponse
                 }
             }
         }
-        
-        
     }
-    
+
     protected function _processProfileDelete($oAlert)
     {
-        $this->_oModule->_oDb->deleteInvites(array('profile_id' => $oAlert->iObject));
+        $aInvites = $this->_oModule->_oDb->getInvites(['type' => 'all_by_profile_id', 'profile_id' => $oAlert->iObject]);
+        foreach($aInvites as $aInvite)
+            $this->_oModule->deleteInvite($aInvite['id']);
     }
-    
+
     protected function _processAccountDelete($oAlert)
     {
-        $this->_oModule->_oDb->deleteInvitesByAccount(array('joined_account_id' => $oAlert->iObject));
+        $aInvites = $this->_oModule->_oDb->getInvites(['type' => 'all_by_joined_account_id', 'account_id' => $oAlert->iObject]);
+        foreach($aInvites as $aInvite)
+            $this->_oModule->deleteInvite($aInvite['id']);
     }
-    
+
     protected function _processBxAnalyticsGetModules($oAlert)
     {
         $oAlert->aExtras['list'][$this->_oModule->_aModule['name']] = $this->_oModule->_aModule['title'];
     }
-    
+
     protected function _processBxAnalyticsGetReports($oAlert)
     {
         if ($this->_oModule->_aModule['name'] == $oAlert->aExtras['module']){
