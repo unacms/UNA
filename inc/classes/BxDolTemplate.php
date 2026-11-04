@@ -2080,7 +2080,29 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
                     }
             	}
 
-                $sRet = $bCover ? $oCover->display() : $oCover->displayEmpty();
+                $iHiddenOn = $bCover && $oPage && method_exists($oPage, 'getPageCoverHiddenOn') ? $oPage->getPageCoverHiddenOn() : 0;
+                if(!$bCover)
+                    $sRet = $oCover->displayEmpty();
+                else if(!($iHiddenOn & (pow(2, BX_DB_HIDDEN_PHONE - 1) | pow(2, BX_DB_HIDDEN_TABLET - 1) | pow(2, BX_DB_HIDDEN_DESKTOP - 1))))
+                    $sRet = $oCover->display();
+                else {
+                    // "Cover hidden on" some screen sizes: the cover where it shows, the empty one (the toolbar's
+                    // spacing and the page's h1) elsewhere.
+                    $aClasses = [BX_DB_HIDDEN_PHONE => 'bx-def-media-phone-hide', BX_DB_HIDDEN_TABLET => 'bx-def-media-tablet-hide', BX_DB_HIDDEN_DESKTOP => 'bx-def-media-desktop-hide'];
+                    $aCoverClasses = $aEmptyClasses = [];
+                    foreach($aClasses as $iBit => $sClass)
+                        if($iHiddenOn & pow(2, $iBit - 1))
+                            $aCoverClasses[] = $sClass;
+                        else
+                            $aEmptyClasses[] = $sClass;
+
+                    $sRet = $this->parseHtmlByName('cover_screen_sizes.html', [
+                        'cover_class' => implode(' ', $aCoverClasses),
+                        'cover' => $oCover->display(),
+                        'empty_class' => implode(' ', $aEmptyClasses),
+                        'empty' => $oCover->displayEmpty(),
+                    ]);
+                }
                 break;
             case 'site_submenu_class':
                 $oMenu = BxDolMenu::getObjectInstance('sys_site_submenu');

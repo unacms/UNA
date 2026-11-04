@@ -575,6 +575,7 @@
 	<string name="_adm_bp_txt_block_active"><![CDATA[Active]]></string>
         <string name="_adm_bp_txt_block_active_api"><![CDATA[Active (for App)]]></string>
 	<string name="_adm_bp_txt_block_async"><![CDATA[Asynchronous Mode]]></string>
+	<string name="_adm_bp_txt_block_bg_hidden_on"><![CDATA[Background hidden on]]></string>
 	<string name="_adm_bp_txt_block_cache_lifetime"><![CDATA[Block Cache Lifetime (in seconds)]]></string>
 	<string name="_adm_bp_txt_block_content_attachments_html"><![CDATA[Attachments]]></string>
 	<string name="_adm_bp_txt_block_content_image_align"><![CDATA[Alignment]]></string>
@@ -603,10 +604,13 @@
 	<string name="_adm_bp_txt_block_hidden_on_desktop"><![CDATA[desktop]]></string>
         <string name="_adm_bp_txt_block_hidden_on_mobile"><![CDATA[mobile app]]></string>
         <string name="_adm_bp_txt_block_icon"><![CDATA[Icon]]></string>
+	<string name="_adm_bp_txt_block_padding_hidden_on"><![CDATA[Padding hidden on]]></string>
+	<string name="_adm_bp_txt_block_part_hidden_on_info"><![CDATA[On the site and in the apps. A part the block's design box doesn't have stays off.]]></string>
 	<string name="_adm_bp_txt_block_selected"><![CDATA[blocks selected]]></string>
         <string name="_adm_bp_txt_block_submenu"><![CDATA[Block submenu]]></string>
         <string name="_adm_bp_txt_block_tabs"><![CDATA[Use 'tabs' based block submenu]]></string>
 	<string name="_adm_bp_txt_block_title"><![CDATA[Display Name]]></string>
+	<string name="_adm_bp_txt_block_title_hidden_on"><![CDATA[Title hidden on]]></string>
 	<string name="_adm_bp_txt_block_visible_for"><![CDATA[Visible For]]></string>
 	<string name="_adm_bp_txt_block_visible_for_all"><![CDATA[Anyone]]></string>
 	<string name="_adm_bp_txt_block_visible_for_levels"><![CDATA[Select Levels]]></string>
@@ -622,6 +626,8 @@
         <string name="_adm_bp_txt_page_cover_1"><![CDATA[Enabled for all]]></string>
         <string name="_adm_bp_txt_page_cover_2"><![CDATA[Enabled for visitors only]]></string>
         <string name="_adm_bp_txt_page_cover_3"><![CDATA[Enabled for members only]]></string>
+        <string name="_adm_bp_txt_page_cover_hidden_on"><![CDATA[Cover hidden on]]></string>
+        <string name="_adm_bp_txt_page_cover_hidden_on_info"><![CDATA[On the screen sizes you pick, the page shows no cover and no page title, on the site and in the apps.]]></string>
         <string name="_adm_bp_txt_page_inj_footer"><![CDATA[In Footer]]></string>
         <string name="_adm_bp_txt_page_inj_head"><![CDATA[In Head]]></string>
 	<string name="_adm_bp_txt_page_layout"><![CDATA[Layout]]></string>

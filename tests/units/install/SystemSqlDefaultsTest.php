@@ -269,4 +269,13 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertStringContainsString('w-full max-w-md mx-auto', (string)file_get_contents(__DIR__ . '/../../../template/_row_1_column_thin.html'), 'The thin column is 448px (max-w-md), as NEO\'s.');
     }
+
+    public function testScreenSizeColumns(): void
+    {
+        // Studio's per-screen-size switches, empty (shown everywhere) on a fresh install.
+        $sSql = self::systemSql();
+        $this->assertMatchesRegularExpression("/CREATE TABLE IF NOT EXISTS `sys_objects_page` \\([^;]*`cover_hidden_on` varchar\\(255\\) NOT NULL DEFAULT ''/s", $sSql);
+        foreach (['title_hidden_on', 'bg_hidden_on', 'padding_hidden_on'] as $sColumn)
+            $this->assertMatchesRegularExpression("/CREATE TABLE IF NOT EXISTS `sys_pages_blocks` \\([^;]*`" . $sColumn . "` varchar\\(255\\) NOT NULL DEFAULT ''/s", $sSql, $sColumn);
+    }
 }

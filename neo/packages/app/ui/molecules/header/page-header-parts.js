@@ -11,7 +11,7 @@ import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
 import { usePathname, useRouter } from 'app/lib/hooks/router';
 import { components } from 'app/components/registry';
-import { useIsDesktop } from 'app/context/measure';
+import { useIsDesktop, useScreenTier } from 'app/context/measure';
 import { NeoButton, NeoButtonLink } from 'app/design/controls';
 import { useNeoButtonColorScheme } from 'app/design/controls/neo-button/color-scheme-context';
 import Link from 'app/ui/atoms/link';
@@ -27,7 +27,7 @@ import {
 import { useHeaderOptions } from 'app/ui/molecules/header/options';
 import { useIsTabSlideCopy } from 'app/context/tab-route-override';
 import MenuTop from 'app/components/nav/menu-top';
-import { isPageCoverShown } from 'app/lib/page-cover';
+import { isPageCoverShown, isPageCoverHiddenOn } from 'app/lib/page-cover';
 
 const DEFAULT_CONTENT_PINNED_FIXED =
     ' bg-card backdrop-blur-xl shadow-sm ';
@@ -263,6 +263,7 @@ export function usePageHeaderBase(pageData) {
 
     const isWeb = Platform.OS === 'web';
     const isDesktop = useIsDesktop();
+    const screenTier = useScreenTier();
     // UNA can serve another page at `home` (members get the dashboard: uri `dashboard`, url `home`).
     const isHome = pageData?.uri === 'home' || pageData?.url === 'home';
     const isCollapsibleHeader =
@@ -279,8 +280,11 @@ export function usePageHeaderBase(pageData) {
     // before they mount). Desktop names the page in its top menu instead, and an error page
     // (403, 404) has no page to name.
     const isOwnHeading = useMemo(() => isOwnHeadingPage(pageData, !currentUser), [pageData, currentUser]);
+    // Cover hidden on this screen size (or in the apps, Studio's "Cover hidden on"): no title from it here.
+    const isCoverShown = isPageCoverShown(pageData?.cover, Boolean(currentUser))
+        && !isPageCoverHiddenOn(pageData?.cover_hidden_on, screenTier, !isWeb);
     const isShowTitle = !isDesktop && !pageData?.page_status
-        && (options.showTitle ?? (!isOwnHeading && (Boolean(options.title) || isPageCoverShown(pageData?.cover, Boolean(currentUser)))));
+        && (options.showTitle ?? (!isOwnHeading && (Boolean(options.title) || isCoverShown)));
     const isBackButton = header.backButton;
 
     const menuSettings = getMenuSettings(
