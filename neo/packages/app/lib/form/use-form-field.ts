@@ -180,6 +180,8 @@ export function useFormField(props: any, options: FormFieldOptions = {}) {
         inputId: getFormFieldDomId(name),
         errorId: invalid ? getFormFieldErrorDomId(name) : undefined,
         invalid,
+        // The caption's star (Field shows it for a checker or `required`), for screen readers too.
+        required: !!(props.checker || props.required),
     };
 }
 

@@ -183,7 +183,9 @@
                     oFld.attr("type", "password");
                 }
                 oLink.toggleClass('password-show password-hide');
-                oLink.find('i').toggleClass('eye eye-slash');
+                // Markup with one icon swaps it; with both (form_field_password.html) the button's class shows the right one.
+                if(!oLink.find('.bx-pw-eye').length)
+                    oLink.find('i').toggleClass('eye eye-slash');
             });
 
             $(this).addClass(sClassInited);

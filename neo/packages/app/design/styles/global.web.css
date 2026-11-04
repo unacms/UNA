@@ -1,12 +1,13 @@
 /* Global focus ring. Use solid (not auto) — auto ignores custom outline-color
  * in Firefox/Safari. Keep offset ≥ 0 so overflow:hidden/clip on inputs doesn't
- * eat the ring. Same alpha in light and dark (dark used to force / 0.8 and
- * override this). */
+ * eat the ring. A 2px opaque ring: --ring is 3:1 or more against the page and a
+ * card in both schemes (a 4px ring at 60% was about 2.5:1 on white). The site's
+ * inputs have the same ring (template/css/tailwind.css). */
  *:focus-visible {
-    outline-color: rgb(var(--ring) / 0.6);
+    outline-color: rgb(var(--ring));
     outline-style: solid;
     outline-offset: 0px;
-    outline-width: 4px;
+    outline-width: 2px;
 }
 
 select {
