@@ -201,6 +201,13 @@
 .bx-form-input-wrapper-password {
     padding: 0;
 }
+/* Show / Hide password: an open eye while the password is hidden, a crossed-out one while it shows (the button's class, see jquery.webForms.js). */
+.bx-form-input-wrapper-password > .password-hide .bx-pw-eye {
+    display: none;
+}
+.bx-form-input-wrapper-password > .password-hide .bx-pw-eye-off {
+    display: flex;
+}
 .bx-form-input-wrapper-password > .password-show,
 .bx-form-input-wrapper-password > .password-hide {
     position: absolute;

@@ -59,6 +59,7 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'exchange-alt' => 'repeat',
             'exclamation-circle' => 'circle-alert',
             'exclamation-triangle' => 'triangle-alert',
+            'eye-slash' => 'eye-closed',
             'fa-book' => 'book-text',
             'fa-bookmark' => 'bookmark',
             'fa-certificate' => 'badge',

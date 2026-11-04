@@ -1052,7 +1052,7 @@
         @apply rounded-md;
     }
     .bx-artificer .bx-form-input-wrapper-password .bx-form-input-password {
-        @apply ltr:pl-4 rtl:pl-10 ltr:pr-10 rtl:pr-4;
+        @apply ltr:pl-4 rtl:pl-12 ltr:pr-12 rtl:pr-4;
     }
 
     /* Site inputs as NEO's Input (packages/app/settings/theme/inputs.js): a single-line field is 52px, a large button's height, with 16px sides,
