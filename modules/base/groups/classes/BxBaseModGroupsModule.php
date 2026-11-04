@@ -2045,7 +2045,7 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
         // in case neither of the profile's roles are having permissions set explicitly then fallback to an old way
         if ($bResult === NULL) {
             $bResult = false;
-            if($this->isFanByGroupProfileId($iGroupProfileId)) {
+            if($this->isFanByGroupProfileId($iGroupProfileId, $iProfileId)) {
                 switch ($sAction) {
                     case BX_BASE_MOD_GROUPS_ACTION_DELETE:
                     case BX_BASE_MOD_GROUPS_ACTION_EDIT:
