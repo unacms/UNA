@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Home page fixes: phones show the feed before the side column and the app grid as a two-row strip, grid tiles
- * fill the row like menu rows, text is smoothed once at the root, and the composer's 'more' trigger has a name.
+ * Home page fixes: phones show the feed before the side column, the app grid wraps into rows at every width, grid
+ * tiles fill the row like menu rows, text is smoothed once at the root, and the composer's 'more' trigger has a name.
  */
 class HomePageLayoutTest extends BxDolTestCase
 {
@@ -32,7 +32,13 @@ class HomePageLayoutTest extends BxDolTestCase
 
         $s = self::read('modules/boonex/artificer/data/template/system/css/menu.css');
         $this->assertMatchesRegularExpression('/\nul\.bx-menu-floating-blocks \{\s*display: grid;\s*grid-template-columns: repeat\(auto-fill, minmax\(6\.5rem, 1fr\)\);\s*margin: -0\.5rem;\s*\}/', $s, 'Tiles stretch to fill the row, at least 6.5rem (wider than a tile is tall), 8px from the card edge.');
-        $this->assertMatchesRegularExpression('/@media \(max-width: 767\.98px\) \{\s*ul\.bx-menu-floating-blocks \{[^}]*grid-auto-flow: column;[^}]*grid-template-rows: repeat\(2, auto\);[^}]*overflow-x: auto;/', $s, 'Phones: a two-row strip that scrolls sideways.');
+    }
+
+    public function testAppGridWrapsOnPhonesToo(): void
+    {
+        $s = self::read('modules/boonex/artificer/data/template/system/css/menu.css');
+        foreach (['grid-auto-flow: column', 'grid-template-rows', 'grid-auto-columns', 'overflow-x: auto', 'scroll-snap-type'] as $sRule)
+            $this->assertDoesNotMatchRegularExpression('/ul\.bx-menu-floating-blocks(\s*>\s*li)? \{[^}]*' . preg_quote($sRule, '/') . '/', $s, 'The app grid wraps into rows at every width; no capped, sideways-scrolling strip on phones (' . $sRule . ').');
     }
 
     public function testTextIsSmoothedOnceAtTheRoot(): void
