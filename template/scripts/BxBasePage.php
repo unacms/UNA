@@ -644,18 +644,13 @@ class BxBasePage extends BxDolPage
 
         // The words of the apps' own landing pages (the home splash, Sign up), in the viewer's language, so Studio's
         // language strings reach them; a project's own text in the app wins.
+        $aTexts = [];
         if($sUri == 'home')
-            $a['texts'] = [
-                'title' => _t('_sys_txt_splash_title'),
-                'text' => _t('_sys_txt_splash_slogan'),
-            ];
+            $aTexts = ['title' => '_sys_txt_splash_title', 'text' => '_sys_txt_splash_slogan'];
         else if($sUri == 'create-account')
-            $a['texts'] = [
-                'title' => _t('_sys_txt_join_title'),
-                'text' => _t('_sys_txt_join_text'),
-                'title_invite' => _t('_sys_txt_join_title_invite'),
-                'text_invite' => _t('_sys_txt_join_text_invite'),
-            ];
+            $aTexts = ['title' => '_sys_txt_join_title', 'text' => '_sys_txt_join_text', 'title_invite' => '_sys_txt_join_title_invite', 'text_invite' => '_sys_txt_join_text_invite'];
+        if($aTexts)
+            $a['texts'] = self::getTranslatedTextsAPI($aTexts);
 
         // The title UNA's cover shows (the selected site menu item for a section, else the page's), for the apps' header.
         // HTML-escaped like `title`.
@@ -786,6 +781,20 @@ class BxBasePage extends BxDolPage
             'sounds' => BxDolSounds::getInstance()->getConfig(),
             'ts' => time()
         ]);
+    }
+
+    /**
+     * The strings of the language keys in $aKeys (field => key), in the viewer's language. A string the site's
+     * language doesn't have comes back from _t as its key: it is left out, so the app uses its own words.
+     */
+    public static function getTranslatedTextsAPI($aKeys)
+    {
+        $aTexts = [];
+        foreach($aKeys as $sField => $sKey)
+            if(($sText = _t($sKey)) !== $sKey)
+                $aTexts[$sField] = $sText;
+
+        return $aTexts;
     }
 
     public function getPageContentAPI($aBlocks = [])

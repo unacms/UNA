@@ -62,6 +62,15 @@ class PageApiLandingTest extends BxDolIntegrationTestCase
         $this->assertArrayNotHasKey('texts', $this->request('about'), 'Other pages carry none.');
     }
 
+    public function testUntranslatedWordsAreLeftOut(): void
+    {
+        // A language without the string gives back its key (as _t does when a pack lacks it): the field is left
+        // out, so the app falls back to its own words.
+        $aTexts = BxBasePage::getTranslatedTextsAPI(['title' => '_sys_txt_join_title', 'title_invite' => '_phpunit_no_such_string']);
+
+        $this->assertSame(['title' => _t('_sys_txt_join_title')], $aTexts);
+    }
+
     public function testCoverTitleIsTheSectionsName(): void
     {
         $this->assertSame(_t('_sys_page_title_about'), $this->request('about')['cover_title'] ?? null, 'A page of its own: its title.');
