@@ -25,9 +25,10 @@ const getIcon = (oItem, iconSize = 20, rowHovered) => {
     if (!oItem?.icon) return null;
 
     const selected = !!oItem.selected;
-    const glyphClass = selected
-        ? (menuSettings.item_icon_selected ?? 'text-accent-foreground')
-        : (menuSettings.item_icon ? menuSettings.item_icon_glyph : null);
+    // In the item's icon circle the glyph takes the label's colour; the selected one is the circle's foreground.
+    let glyphClass = menuSettings.item_icon ? menuSettings.item_icon_glyph : null;
+    if (selected)
+        glyphClass = menuSettings.item_icon_selected ?? 'text-accent-foreground';
     const className = [oItem?.class_item_icon, oItem?.addClassName, glyphClass]
         .filter(Boolean)
         .join(' ');
