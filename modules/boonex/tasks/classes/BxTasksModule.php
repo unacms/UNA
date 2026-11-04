@@ -187,6 +187,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
             'SaveFilter' => '',
             'ApplyFilter' => '',
             'ProcessTimer' => '',
+            'GetBlockTimersStats' => '',
         ]);
     }
 
@@ -860,6 +861,16 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         return $this->_bIsApi ? [
             bx_api_get_block('tasks_timers', $mixedResult)
         ] : $mixedResult;
+    }
+
+    public function serviceGetBlockTimersStats()
+    {
+        if(!$this->_bIsApi)
+            return '';
+
+        return [
+            bx_api_get_block('tasks_timers_stats', $this->_oTemplate->getBlockTimersStats($this->_iProfileId))
+        ];
     }
 
     public function serviceGetBlockManageBudget($sType = 'administration', $iContextPid = 0)

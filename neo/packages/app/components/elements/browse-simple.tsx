@@ -41,9 +41,11 @@ interface BrowseProps {
     view?: BrowseSimpleViewType;
     autoscroll?: boolean;
     blockWrapperProps?: any;
+    /** Stable row key for lists that remove items locally; defaults to the index. */
+    getItemKey?: (item: any) => string | number | null | undefined;
 }
 
-export default function Browse({ unitMode, data, limit_by, view, autoscroll, blockWrapperProps }: BrowseProps) {
+export default function Browse({ unitMode, data, limit_by, view, autoscroll, blockWrapperProps, getItemKey }: BrowseProps) {
     const normalizedData = data && typeof data === 'object' ? data : {};
     const sourceItems = Array.isArray(normalizedData.data) ? normalizedData.data : [];
     const normalizedLimit = typeof limit_by === 'number' && limit_by > 0 ? limit_by : undefined;
@@ -61,10 +63,11 @@ export default function Browse({ unitMode, data, limit_by, view, autoscroll, blo
             data: item
         };
 
-        const unitElement = <Unit key={`item${index}`} {...unitProps} />;
+        const itemKey = getItemKey?.(item) ?? index;
+        const unitElement = <Unit key={`item${itemKey}`} {...unitProps} />;
 
         return view === BrowseSimpleView.Row ? (
-            <View key={`wrapper${index}`} className={layout || 'w-full'}>
+            <View key={`wrapper${itemKey}`} className={layout || 'w-full'}>
                 {unitElement}
             </View>
         ) : unitElement;

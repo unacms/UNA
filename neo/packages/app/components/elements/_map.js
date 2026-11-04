@@ -48,6 +48,7 @@ const AiAgentsAdmin = dynamic(() => import('./ai_agents_admin'), { loading: Dyna
 const Messenger = dynamic(() => import('./messenger'), { loading: DynamicFallback });
 const TasksMenu = dynamic(() => import('./tasks-menu'), { loading: DynamicFallback });
 const TasksTimers = dynamic(() => import('./tasks-timers'), { loading: DynamicFallback });
+const TasksTimersStats = dynamic(() => import('./tasks-timers-stats'), { loading: DynamicFallback });
 const TasksList = dynamic(() => import('./tasks-list'), { loading: DynamicFallback });
 const TasksBudget = dynamic(() => import('./tasks-budget'), { loading: DynamicFallback });
 const TaskTimer = dynamic(() => import('./task-timer'), { loading: DynamicFallback });
@@ -106,6 +107,7 @@ export const componentsMapDefault = {
     analytics_credits: AnalyticsReport,
     tasks_menu: TasksMenu,
     tasks_timers: TasksTimers,
+    tasks_timers_stats: TasksTimersStats,
     tasks_list: TasksList,
     tasks_budget: TasksBudget,
     task_timer: TaskTimer,
