@@ -997,7 +997,8 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
      */
     function getCssClassName()
     {
-        return str_replace('_', '-', $this->_sName);
+        // The name is empty while the installer has not enabled the template module yet.
+        return str_replace('_', '-', (string)$this->_sName);
     }
 
     /**
