@@ -1055,7 +1055,8 @@
         @apply ltr:pl-3 rtl:pl-8 ltr:pr-8 rtl:pr-3;
     }
 
-    /* Studio: Inputs: the buttons' 8px radius, translucent black/5 (white/10 in dark) fill, a 1px inset hairline instead of a border, a 2px inset blue ring on focus. Single-line fields are 32px like the buttons; textareas and lists keep their height. (The launcher's own search field in studio/template/page_breadcrumb.html is bare, see menu_top.css.) */
+    /* Studio: Inputs: the buttons' radius, translucent black/5 (white/10 in dark) fill, a 1px inset hairline instead of a border, a 2px inset blue ring on focus. Single-line fields are as tall as the buttons beside them:
+       small 36px with 14px text in toolbars (a grid's search, a block's top panel), regular 44px with 16px text and 12px corners in a form or a dialog; textareas and lists keep their height. (The launcher's own search field in studio/template/page_breadcrumb.html is bare, see menu_top.css.) */
     .bx-std .bx-form-input-slider,
     .bx-std .bx-form-input-doublerange,
     .bx-std .bx-form-input-select_multiple,
@@ -1086,7 +1087,13 @@
     .bx-std .bx-form-input-price,
     .bx-std .bx-form-input-wrapper-price span,
     .bx-std .bx-form-input-wrapper-password {
-        @apply h-8 py-0 leading-5;
+        @apply h-9 py-0 leading-5;
+    }
+    .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) :is(.bx-form-input-slider, .bx-form-input-doublerange, .bx-form-input-select_multiple, .bx-form-input-select, .bx-form-input-number, .bx-form-input-time, .bx-form-input-datepicker, .bx-form-input-datetime, .bx-form-input-textarea:not(.bx-form-input-html), .bx-form-input-text, .bx-form-input-price, .bx-form-input-wrapper-price span, .bx-form-input-wrapper-password) {
+        @apply rounded-xl text-base;
+    }
+    .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) :is(.bx-form-input-select, .bx-form-input-number, .bx-form-input-time, .bx-form-input-datepicker, .bx-form-input-datetime, .bx-form-input-text, .bx-form-input-price, .bx-form-input-wrapper-price span, .bx-form-input-wrapper-password) {
+        @apply h-11 leading-6;
     }
     /* Native selects: a Lucide chevrons-up-down glyph on the right says "menu, not text field" (gray-500, gray-400 in dark). */
     .bx-std select.bx-form-input-select {
@@ -1105,6 +1112,9 @@
     .bx-std .bx-form-input-wrapper-password .bx-form-input-password {
         @apply h-full py-0 rounded-lg border-0 bg-transparent text-sm font-medium leading-5 text-inherit;
         @apply focus:outline-none focus:ring-0;
+    }
+    .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .bx-form-input-wrapper-password .bx-form-input-password {
+        @apply rounded-xl text-base leading-6;
     }
 
     /* Common elements: Forms: Checkbox/Radio Set Input */
@@ -1129,6 +1139,9 @@
         @apply rounded-lg border-0 text-sm font-medium;
         @apply bg-black/5 dark:bg-white/10 text-gray-900 dark:text-gray-100;
         @apply ring-1 ring-inset ring-black/10 dark:ring-white/15;
+    }
+    .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) :is(.bx-form-input-checkbox_set, .bx-form-input-radio_set) {
+        @apply rounded-xl text-base;
     }
 
     /* Common elements: Forms: Checkbox Input */
@@ -1804,9 +1817,11 @@
         @apply bg-gray-200 dark:bg-black;
     }
 
-    /* Active dock item and the hover halo below: a 3px ring 1px off the tile. */
+    /* Active dock item: the sidebar's active item round its tile, as a ring: 0.5rem of black/10 (white/10 in dark), one step over the hover
+       halo's black/5, straight off the tile like the buttons' halo (the tile's own outer hairline is its inner edge), so neighbours 18px apart
+       keep 2px between their rings. The app is named beside the current-app tile in the breadcrumb too, so the ring is not its only cue. */
     .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon {
-        @apply ring ring-blue-300/50 ring-offset-1 ring-offset-white dark:ring-offset-black;
+        @apply ring-[0.5rem] ring-black/10 dark:ring-white/10;
     }
     /* The divider follows the dock items it separates: both are hidden below md. */
     .bx-std .bx-menu-top-center .bx-menu-item-divider {
@@ -1842,25 +1857,31 @@
         @apply transition duration-300 active:duration-100 active:scale-95;
         @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5),0_0_0_1px_rgb(0_0_0/0.1)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
     }
-    /* The header's own controls keep a hover halo, drawn on the element under the ::after hairlines: an 8px black/10 (white/10 in dark) ring
+    /* The header's own controls keep a hover halo, drawn on the element under the ::after hairlines: a 0.5rem (8px) black/10 (white/10 in dark) ring
        straight off the plate, as wide as the sidebar items' background round their tiles (16px outer corners), no offset gap (an offset ring
-       reads as a bright halo in the light scheme). The plate's outer hairline is the halo's inner edge, a 1px line that sets the two apart. */
+       reads as a bright halo in the light scheme). The plate's outer hairline is the halo's inner edge, a 1px line that sets the two apart.
+       In rem like the bar's padding and corners, so the tile (0.5rem corners), the halo (1rem) and the bar (1.5rem) stay concentric at any text size.
+       Its black/5 (white/5) is the sidebar items' hover background, and the active dock item takes their active black/10 (white/10). */
     .bx-std .bx-menu-toolbar .bx-menu-tab-item,
     .bx-std .bx-std-search-trigger,
     .bx-std .bx-std-header-btn {
-        @apply hover:ring-8 hover:ring-black/10 dark:hover:ring-white/10;
+        @apply hover:ring-[0.5rem] hover:ring-black/5 dark:hover:ring-white/5;
     }
-    /* Dock and current-app tiles: the same halo. In the light scheme their art has no outer hairline, so the hover draws one, the ring's
-       1px black/10 offset; in the dark scheme the tile's own black/20 outer hairline already is. The selected dock item keeps its blue ring and a keyboard-focused one its focus ring
+    /* Dock and current-app tiles: the same halo, straight off the tile: its art carries the buttons' two hairlines (below), so the outer one is the
+       halo's inner edge as on the buttons. The selected dock item keeps its active ring and a keyboard-focused one its focus ring
        (left out with :where, so the halo gains no specificity over either). */
     .bx-std .bx-menu-top-center li:where(:not(.bx-menu-tab-active)) a:where(:not(:focus-visible)) .bx-mi-icon,
     .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile {
-        @apply hover:ring-[7px] hover:ring-offset-1 hover:ring-black/10 hover:ring-offset-black/10;
-        @apply dark:hover:ring-8 dark:hover:ring-offset-0 dark:hover:ring-white/10;
+        @apply hover:ring-[0.5rem] hover:ring-black/5 dark:hover:ring-white/5;
     }
     .bx-std .bx-menu-toolbar .bx-menu-tab-item a,
     .bx-std .bx-menu-toolbar .bx-menu-tab-item button {
         @apply text-black/80 dark:text-white/80 hover:text-black dark:hover:text-white;
+    }
+    /* A 24px glyph in each 36px header button (the tmi-*.svg files are drawn at 20px for their other uses). */
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item svg,
+    .bx-std .bx-std-search-trigger svg {
+        @apply w-6 h-6;
     }
 
     /* Studio surfaces: translucent white (60% light, 6% dark) with an inset ring (white 50% light, 2.5% dark) and an outer shadow, no border. */
@@ -1892,13 +1913,9 @@
         @apply font-semibold;
     }
     /* The item background (8px round the tile) plays the role of the header icons' hover halo, and the tile is set apart from it the same
-       way: a 1px black/10 outer hairline in the light scheme; in the dark scheme the tile's own black/20 outer hairline. */
+       way: by its own outer hairline (the buttons' pair, below), in both schemes. */
     .bx-std-pmen-item .bx-std-pmen-ic-icon {
         @apply duration-300;
-    }
-    .bx-std-pmen-item:hover .bx-std-pmen-ic-icon,
-    .bx-std-pmen-item.bx-menu-tab-active .bx-std-pmen-ic-icon {
-        @apply ring-1 ring-black/10 dark:ring-transparent;
     }
     .bx-std-pmen-item a {
         @apply text-gray-800 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white;
@@ -1926,14 +1943,20 @@
     .bx-std .bx-icon-tile:not(.bx-std-pmen-ic-icon):not(.bx-std-menu-top .bx-icon-tile) {
         @apply after:ring-1 after:ring-inset after:ring-black/10 dark:after:ring-white/15;
     }
-    /* 32px art tiles in the header (dock, current app) and the sidebar: the header buttons' plate under the artwork (isolate keeps the z-index:-1 image above it). In the light scheme the artwork keeps a single dark inset hairline (black/10), which crisps white-chrome tiles and vanishes on coloured plates, where the buttons' white inset plus black outer pair would read as two fuzzy gray edges around mid-tone art; the dark scheme uses the buttons' hairlines. */
+    /* Art tiles in the header (dock, current app) and the sidebar, all 36px: the header buttons' plate under the artwork (isolate keeps the z-index:-1 image above it). */
     .bx-std .bx-std-menu-top .bx-icon-tile,
     .bx-std .bx-std-pmen-ic-icon {
         @apply isolate border-0 bg-gradient-to-b from-white to-black/5 dark:from-white/10 dark:to-white/5;
-        @apply after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.1)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
+    }
+    /* The art itself runs 1px past the tile (menu_top.css, general.css), as far as a button's outer hairline reaches, and a 1px black/20 line
+       over that outer pixel darkens the art's own edge: a darker shade of whatever colour the icon has there, so the edge is always darker than
+       the icon and never a gray that clashes with it, in both schemes. The tile buttons in the sidebar (plain glyphs) keep the buttons' hairlines. */
+    .bx-std .bx-std-menu-top .bx-icon-tile,
+    .bx-std .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) {
+        @apply after:-inset-px after:rounded-[calc(0.5rem_+_1px)] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.2)];
     }
 
-    /* 32px tiles and buttons in the header: a tight stack that stays inside the bar. The md stack above is sized for the 72px launcher tiles and lands mostly below the bar, where it reads as no shadow at all. */
+    /* Tiles and buttons in the header (36px): a tight stack that stays inside the bar. The md stack above is sized for the 72px launcher tiles and lands mostly below the bar, where it reads as no shadow at all. */
     .bx-std .bx-std-menu-top .bx-icon-tile,
     .bx-std .bx-menu-toolbar .bx-menu-tab-item,
     .bx-std .bx-std-search-trigger,
@@ -1953,9 +1976,9 @@
         @apply text-black/80 dark:text-white/80;
         @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5),0_0_0_1px_rgb(0_0_0/0.1)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
     }
-    /* 20px glyph in the 32px tile, like the header buttons (the svg fills the padding box; font icons get the same size). */
+    /* 24px glyph in the 36px tile, like the header buttons (the svg fills the 6px padding box, menu_side.html; font icons get the same size). */
     .bx-std .bx-std-tile-btn > .sys-icon {
-        @apply flex items-center justify-center text-[20px] leading-5;
+        @apply flex items-center justify-center text-[24px] leading-6;
         @apply text-black/80 dark:text-white/80;
     }
     /* group-hover can't be @applied here (Tailwind would put .group above .bx-std), so the hovered link is spelled out. */
@@ -2158,12 +2181,23 @@
         @apply block w-5 h-5 text-inherit;
     }
 
-    /* Studio: Buttons: every .bx-btn is the header button (plate, hairline, shadow, hover halo and press scale come from the "Header buttons" rules above): 32px, 12px side padding, 14px text one step darker than the header glyphs so it passes AA on the plate. Primary is the same plate inverted: the dark-mode plate in light mode and the light-mode plate in dark mode. */
+    /* Studio: Buttons: every .bx-btn is the header button (plate, hairline, shadow, hover halo and press scale come from the "Header buttons" rules above), with the label one step darker than the header glyphs so it passes AA on the plate. Primary is the same plate inverted: the dark-mode plate in light mode and the light-mode plate in dark mode.
+       Sizes are the site's and NEO's scale: small 36px (12px sides, 14px text, 8px corners) is the default, for the toolbars, grid rows, cards and
+       captions; regular 44px (16px sides, 16px text, 12px corners) is a form's and a dialog's; .bx-btn-small, -mini (28px) and -large (52px) keep theirs anywhere. */
     .bx-std .bx-btn {
-        @apply inline-flex items-center justify-center h-8 min-h-8 px-3 py-0 rounded-lg;
+        @apply inline-flex items-center justify-center h-9 min-h-9 px-3 py-0 rounded-lg;
         @apply text-sm font-medium leading-5;
         @apply text-black/80 dark:text-white/80 hover:text-black dark:hover:text-white active:text-black dark:active:text-white;
         @apply hover:translate-y-0 active:translate-y-0; /* the site button lifts on hover and sinks on press; the header button scales instead */
+    }
+    .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .bx-btn:where(:not(.bx-btn-small, .bx-btn-mini, .bx-btn-large, .bx-btn-xlarge)) {
+        @apply h-11 min-h-11 px-4 rounded-xl text-base leading-6;
+    }
+    .bx-std .bx-btn.bx-btn-mini {
+        @apply h-7 min-h-7 px-2.5 rounded-md text-xs leading-4;
+    }
+    .bx-std .bx-btn.bx-btn-large {
+        @apply h-[3.25rem] min-h-[3.25rem] px-6 rounded-xl text-base leading-6;
     }
     /* The header's skip link is a .bx-btn.sr-only: keep it off-screen until focused (sr-only spelled out, Tailwind refuses to @apply it here), the button rules above would otherwise put it in the flow. */
     .bx-std .bx-btn.sr-only:not(:focus) {
@@ -2178,29 +2212,50 @@
         border-width: 0;
     }
     .bx-std .bx-btn i,
-    .bx-std .bx-btn img,
-    /* Icon-only button: a 32px square with a 20px Lucide glyph (the name goes in aria-label and title). */
-    .bx-std .bx-btn.bx-btn-icon {
+    .bx-std .bx-btn img {
         @apply w-8 min-w-8 px-0;
     }
+    /* Icon-only button: a square of the button's height with a 24px Lucide glyph (16px in a mini one; the name goes in aria-label and title). */
+    .bx-std .bx-btn.bx-btn-icon {
+        @apply w-9 min-w-9 px-0;
+    }
     .bx-std .bx-btn.bx-btn-icon svg {
-        @apply w-5 h-5;
+        @apply w-6 h-6;
     }
     .bx-std .bx-btn svg {
         @apply w-4 h-4 leading-4;
     }
-    /* Icon-only buttons (grid row actions, caption and chart row actions): a 32px square with a 20px glyph, like the tiles. */
+    /* Icon-only buttons (grid row actions, caption and chart row actions): the same square with a 24px glyph, like the tiles. */
     .bx-std .bx-btn:has(> .sys-icon:only-child),
     .bx-std .bx-btn:has(> img:only-child),
     .bx-std .bx-btn:has(> div:only-child > .sys-icon:only-child),
     .bx-std .bx-btn:has(> div:only-child > svg:only-child) {
-        @apply w-8 px-0;
+        @apply w-9 px-0;
+    }
+    .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .bx-btn.bx-btn-icon:where(:not(.bx-btn-small, .bx-btn-mini, .bx-btn-large, .bx-btn-xlarge)),
+    .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .bx-btn:where(:not(.bx-btn-small, .bx-btn-mini, .bx-btn-large, .bx-btn-xlarge)):has(> .sys-icon:only-child, > img:only-child, > div:only-child > .sys-icon:only-child, > div:only-child > svg:only-child) {
+        @apply w-11 min-w-11;
+    }
+    .bx-std .bx-btn.bx-btn-mini.bx-btn-icon,
+    .bx-std .bx-btn.bx-btn-mini:has(> .sys-icon:only-child, > img:only-child, > div:only-child > .sys-icon:only-child, > div:only-child > svg:only-child) {
+        @apply w-7 min-w-7;
+    }
+    .bx-std .bx-btn.bx-btn-large.bx-btn-icon,
+    .bx-std .bx-btn.bx-btn-large:has(> .sys-icon:only-child, > img:only-child, > div:only-child > .sys-icon:only-child, > div:only-child > svg:only-child) {
+        @apply w-[3.25rem] min-w-[3.25rem];
     }
     .bx-std .bx-btn:has(> .sys-icon:only-child) > .sys-icon,
     .bx-std .bx-btn:has(> img:only-child) > img,
     .bx-std .bx-btn:has(> div:only-child > .sys-icon:only-child) .sys-icon,
     .bx-std .bx-btn:has(> div:only-child > svg:only-child) svg {
-        @apply w-5 h-5 leading-5 text-[20px];
+        @apply w-6 h-6 leading-6 text-[24px];
+    }
+    .bx-std .bx-btn.bx-btn-mini.bx-btn-icon svg,
+    .bx-std .bx-btn.bx-btn-mini:has(> .sys-icon:only-child) > .sys-icon,
+    .bx-std .bx-btn.bx-btn-mini:has(> img:only-child) > img,
+    .bx-std .bx-btn.bx-btn-mini:has(> div:only-child > .sys-icon:only-child) .sys-icon,
+    .bx-std .bx-btn.bx-btn-mini:has(> div:only-child > svg:only-child) svg {
+        @apply w-4 h-4 leading-4 text-[16px];
     }
     /* Their glyph is black (white in the dark scheme) at 80% through the element's opacity, solid on hover, not the iconset's blue. */
     .bx-std .bx-btn:has(> .sys-icon:only-child) > .sys-icon:not(.sys-colored),
@@ -2213,7 +2268,7 @@
     .bx-std .bx-btn:hover:has(> div:only-child > svg:only-child) svg {
         @apply opacity-100;
     }
-    /* Studio: Hit areas: a control keeps its 32px (28px, 24px) look, but a transparent ::before it owns takes clicks and hover out to a 44px
+    /* Studio: Hit areas: a control keeps its 36px (28px, 24px) look, but a transparent ::before it owns takes clicks and hover out to a 44px
        square (WCAG 2.5.8 target size); the plate and its hover ring are drawn by the element itself, so they do not change. ::after is the
        plate's hairline, hence ::before. Controls that sit shoulder to shoulder (segments, theme options, grouped buttons) grow up and down only. */
     .bx-std .bx-std-segment,
@@ -2234,10 +2289,17 @@
     .bx-std .bx-switcher-cont > button::before {
         content: '';
         position: absolute;
-        inset: -0.375rem; /* 32px → 44px */
+        inset: -0.25rem; /* 36px → 44px */
+    }
+    .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .bx-btn:where(:not(.bx-btn-small, .bx-btn-mini, .bx-btn-large, .bx-btn-xlarge))::before,
+    .bx-std .bx-btn.bx-btn-large::before {
+        inset: 0; /* 44px and up already are */
+    }
+    .bx-std .bx-btn.bx-btn-mini::before {
+        inset: -0.5rem; /* 28px */
     }
     .bx-std .bx-btn-group > .bx-btn::before {
-        inset: -0.375rem 0;
+        inset: -0.25rem 0;
     }
     .bx-std .bx-std-segment::before,
     .bx-std .bx-theme-option::before {
@@ -2342,15 +2404,29 @@
     .bx-std .bx-std-pmen-item:has(a:focus-visible) {
         @apply ring-2 ring-blue-500 dark:ring-blue-400 ring-offset-2 ring-offset-white dark:ring-offset-black;
     }
+    /* In the header the focus ring fills the hover halo's and the active ring's 0.5rem: a 0.1875rem (3px) white (black in dark) gap and 0.3125rem (5px) of blue,
+       so a focused icon next to a hovered or active one keeps the same 2px between their rings. blue-500 is 3.4:1 on the light bar and 3.7:1 on
+       the gap; blue-400 6.9:1 on the dark bar. */
+    .bx-std .bx-menu-top-center li a:focus-visible .bx-mi-icon,
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item:has(:is(a, button):focus-visible),
+    .bx-std .bx-menu-breadcrumb li a:focus-visible .bx-std-header-btn,
+    .bx-std .bx-std-search-trigger:focus-visible {
+        @apply ring-[0.3125rem] ring-offset-[0.1875rem];
+    }
+    /* Launcher tiles: the same 0.1875rem gap and 0.3125rem of blue, the gap in the launcher page's gray-100 (black in dark) so it reads as space;
+       the tiles are 24-40px apart, so the ring never reaches a neighbour's hover ring. */
     .bx-std .bx-std-widget-icon:has(> .bx-std-widget-link:focus-visible) {
-        @apply ring-offset-gray-200 dark:ring-offset-black scale-105;
+        @apply ring-[0.3125rem] ring-offset-[0.1875rem] ring-offset-gray-100 dark:ring-offset-black scale-105;
     }
+    /* Sidebar items sit 2px apart, so their ring is drawn inside the item: 0.3125rem of blue along its edge leaves the item's own 0.5rem padding
+       minus that, 3px, round the tile, the header's gap and ring measured from the tile, and the label inside the ring. */
     .bx-std .bx-std-pmen-item:has(a:focus-visible) {
-        @apply ring-offset-0;
+        @apply ring-inset ring-[0.3125rem] ring-offset-0;
     }
-    /* Launcher: the tile Enter will open while filtering looks exactly like a hovered tile. */
+    /* Launcher: the tile Enter will open while filtering looks exactly like a hovered tile (widget.html): the header and sidebar halo, 0.5rem
+       of black/5 (white/5 in dark) straight off the tile. */
     .bx-std .bx-std-widget-icon.bx-std-widget-icon-pick {
-        @apply ring ring-gray-300 dark:ring-gray-700 ring-offset-1 ring-offset-gray-200 dark:ring-offset-black scale-105;
+        @apply ring-[0.5rem] ring-black/5 dark:ring-white/5 scale-105;
     }
     /* Launcher grid: one uniform inset per tile, so the gap between columns, between rows and above the first row is always 2x the inset. */
     .bx-std .bx-std-launcher {

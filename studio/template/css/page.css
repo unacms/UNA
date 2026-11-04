@@ -107,7 +107,7 @@ div.bx-std-block-caption {
     z-index: 1;
 
     gap: 0.75rem;
-    padding: 1rem; /* 16px around a 32px row, like the header bar: a 64px caption with its icon, buttons and tabs on the block's 16px content line */
+    padding: 1rem; /* 16px round a 36px row (a small button's height): a 68px caption like the header bar, its icon, buttons and tabs on the block's 16px content line, their 8px corners concentric with the block's 24px */
     box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.05); /* hairline divider drawn outside the box, so it adds no height */
 }
 .dark div.bx-std-block-caption {
@@ -155,7 +155,7 @@ div.bx-std-block-caption > .bx-btn {
     -ms-flex: 1 1 auto;
     flex: 1 1 auto;
 
-    line-height: 2rem; /* the row is 32px with or without an icon, so every caption is the same height */
+    line-height: 2.25rem; /* the row is 36px with or without an icon or a button, so every caption is the same height */
     font-weight: 600;
     font-size: 1.25rem;
 }
@@ -190,7 +190,7 @@ div.bx-std-bcap-action-div:first-child {
     display: none;
 }
 
-/* Top panel (the Pages builder's selects): the same toolbar as a grid header, 64px with 16px sides and a hairline below it;
+/* Top panel (the Pages builder's selects): the same toolbar as a grid header, 68px with 16px sides and a hairline below it;
    under a caption the 16px between them is split 8 / 8 like the grid toolbar. Its fields are spaced by an 8px gap alone. */
 div.bx-std-block-panel-top {
     padding: 1rem;
@@ -252,7 +252,7 @@ div.bx-std-block-content > .bx-layout-wrapper {
 /**
  * Header / scroller / footer stack.
  * A block whose content is an options form (BxDolStudioOptions, name="adm-settings-form"; Designer's template, logo, icon, cover, landing, injections, PWA and settings forms) or a grid keeps its caption fixed, scrolls
- * the middle, and pins a 64px footer: 16px around the 32px buttons, like the caption, hairline drawn outside the box.
+ * the middle, and pins a footer: 16px around the buttons (a grid's 36px, 68px like the caption; a form's 44px Save), hairline drawn outside the box.
  * The form footer is the form's last section (the Save button, BxBaseStudioOptions always puts it in a section of its own); the grid
  * footer is the grid's own footer (bulk actions, paging). Grid rows run edge to edge with 16px inside the first and last cell.
  */
@@ -334,7 +334,7 @@ div.bx-std-block-content > [id^="bx-grid-wrap-"] {
     padding: 0;
 }
 div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header {
-    position: sticky; /* the filter / add toolbar stays under the caption, 64px like it */
+    position: sticky; /* the filter / add toolbar stays under the caption, 68px like it */
     top: 0;
     z-index: 2;
     flex: none;
