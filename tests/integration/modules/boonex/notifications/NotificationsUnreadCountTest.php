@@ -123,8 +123,55 @@ class NotificationsUnreadCountTest extends BxDolIntegrationTestCase
         $this->assertSame($oModule->serviceGetUnreadNotificationsNum($iProfileId), $oModule->serviceGetUnreadNotificationsNum());
         $this->assertSame($oModule->serviceGetUnreadNotificationsNum($iProfileId), $oModule->serviceGetUnreadNotificationsNum(0));
 
-        // another profile is not readable by an ordinary member
-        $this->assertSame(0, $oModule->serviceGetUnreadNotificationsNum($iProfileId + 1000000));
+        // another profile is not readable by an ordinary member when asked from outside (API, macro)
+        $iOtherId = $this->otherProfileId($iProfileId);
+        $this->assertSame(0, $this->externalCount($iOtherId));
+        $this->assertSame(0, $this->externalCount($iProfileId + 1000000));
+    }
+
+    public function testInternalCallCountsForGivenProfileWithoutSignedInMember(): void
+    {
+        // the push queue runs without a member and asks for the recipient's count
+        $this->bxLoginAsUser();
+        $oModule = $this->module();
+        $iProfileId = (int)$oModule->getUserId();
+        $this->assertGreaterThan(0, $iProfileId);
+        $iOwn = $oModule->serviceGetUnreadNotificationsNum();
+
+        $this->bxBecomeGuest();
+        $this->assertSame(0, (int)$oModule->getUserId());
+
+        $this->assertSame($iOwn, $oModule->serviceGetUnreadNotificationsNum($iProfileId), 'A push job counts for its recipient.');
+        $this->assertSame($iOwn, bx_srv('bx_notifications', 'get_unread_notifications_num', [$iProfileId]), 'The same through an internal service call.');
+        $this->assertSame(0, $this->externalCount($iProfileId), 'An outside caller who is not signed in gets nothing.');
+    }
+
+    public function testAdministratorReadsOtherProfileFromOutside(): void
+    {
+        $this->bxLoginAsUser();
+        $iUserId = (int)$this->module()->getUserId();
+        $iOwn = $this->module()->serviceGetUnreadNotificationsNum();
+
+        $this->bxLoginAsAdmin();
+        $this->assertNotSame($iUserId, (int)$this->module()->getUserId());
+        $this->assertSame($iOwn, $this->externalCount($iUserId));
+    }
+
+    protected function externalCount(int $iOwnerId): int
+    {
+        return (int)BxDolService::callExternal('bx_notifications', 'get_unread_notifications_num', [$iOwnerId], 'Module', true);
+    }
+
+    protected function otherProfileId(int $iProfileId): int
+    {
+        $this->bxLoginAsAdmin();
+        $iOther = (int)$this->module()->getUserId();
+        $this->bxLoginAsUser();
+
+        if ($iOther == $iProfileId)
+            $this->markTestSkipped('The test accounts share a profile.');
+
+        return $iOther;
     }
 
     public function testLiveUpdatesOfOnePollShareTheCount(): void

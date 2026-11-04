@@ -420,8 +420,9 @@ class BxNtfsModule extends BxBaseModNotificationsModule
         if(!$iOwnerId)
             $iOwnerId = $iProfileId;
 
-        // only administrators can request counters of other profiles
-        if($iOwnerId != $iProfileId && !isAdmin())
+        // outside callers (API, OAuth API, macros) can read other profiles only as administrator;
+        // internal callers (push queue, profile info) count for the profile they pass
+        if($iOwnerId != $iProfileId && BxDolService::isExternalCall($this->getName(), 'get_unread_notifications_num') && !isAdmin())
             return 0;
 
         if(!$iOwnerId)
