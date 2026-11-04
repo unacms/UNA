@@ -49,6 +49,10 @@ html.dark {
     display: flex;
     flex-direction: column;
 }
+#bx-site-search-popup .bx-popup-element-close svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
 #bx-site-search-popup .bx-site-search-results {
     height: 20rem;
     overflow-y: auto;
@@ -81,7 +85,9 @@ html.dark {
         width: 100%;
         height: 100%;
         margin: 0;
+        border: 0;
         border-radius: 0;
+        box-shadow: none;
     }
     #bx-site-search-popup .bx-popup-content,
     #bx-site-search-popup .bx-site-search,
