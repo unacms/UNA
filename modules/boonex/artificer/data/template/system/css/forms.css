@@ -128,32 +128,34 @@ import url(../../../../../../../template/css/forms.css);
 
 
 /*-- Form field: Password --*/
+/* Show / Hide password: NEO's borderless small (36px) round button, centred and 8px from the end of the 52px field,
+   with a 20px glyph; its size, colours and hover come from form_field_password.html. */
 .bx-artificer .bx-form-input-wrapper-password > .password-show,
 .bx-artificer .bx-form-input-wrapper-password > .password-hide {
     position: absolute;
     z-index: 1000;
-    
-    display: -webkit-flex;
+
+    top: 50%;
+    right: 0.5rem;
+    transform: translateY(-50%);
+
+    margin: 0;
+}
+.bx-artificer .bx-form-input-wrapper-password > .password-show svg,
+.bx-artificer .bx-form-input-wrapper-password > .password-hide svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+/* An open eye while the password is hidden, a closed one while it shows (the button's class, see jquery.webForms.js). */
+.bx-artificer .bx-form-input-wrapper-password > .password-hide .bx-pw-eye {
+    display: none;
+}
+.bx-artificer .bx-form-input-wrapper-password > .password-hide .bx-pw-eye-off {
     display: flex;
-    -webkit-align-items: center;
-    align-items: center;
-    -webkit-justify-content: center;
-    justify-content: center;
-
-    top: 0;
-    right: 0;    
-    height: 100%;
-
-    /* WCAG 2.5.8 (AA): at least 24px wide. 1.75rem is the project's "mini"
-       button size. The side margin is reduced by exactly half the added
-       width, (28px - 18px) / 2 = 5px, so the eye glyph does not move. */
-    min-width: 1.75rem;
-
-    margin: 0 0.1875rem;
 }
 .bx-dir-rtl.bx-artificer .bx-form-input-wrapper-password > .password-show,
 .bx-dir-rtl.bx-artificer .bx-form-input-wrapper-password > .password-hide {
-    left: 0;
+    left: 0.5rem;
     right: auto;
 }
 .bx-artificer .bx-form-input-password {
