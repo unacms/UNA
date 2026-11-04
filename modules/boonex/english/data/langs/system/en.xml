@@ -2048,6 +2048,8 @@
     <string name="_adm_stg_cpt_option_sys_security_form_token_lifetime"><![CDATA[CSRF token lifetime in seconds(0 - do not track time)]]></string>
     <string name="_adm_stg_cpt_option_sys_security_impact_threshold_block"><![CDATA[Total security impact threshold to send report and block aggressor]]></string>
     <string name="_adm_stg_cpt_option_sys_security_impact_threshold_log"><![CDATA[Total security impact threshold to send report]]></string>
+    <string name="_adm_stg_cpt_option_sys_security_upload_token_enable"><![CDATA[Enable upload security tokens]]></string>
+    <string name="_adm_stg_cpt_option_sys_security_upload_token_lifetime"><![CDATA[Upload security token lifetime]]></string>
     <string name="_adm_stg_cpt_option_sys_security_block_content_after_n_reports"><![CDATA[Block content after N reports (0 - do not block)]]></string>
     <string name="_adm_stg_cpt_option_sys_site_logo_aspect_ratio"><![CDATA[Logo aspect ratio]]></string>
     <string name="_adm_stg_cpt_option_sys_storage_default"><![CDATA[Default storage engine (other than Local may require custom/additional setup)]]></string>

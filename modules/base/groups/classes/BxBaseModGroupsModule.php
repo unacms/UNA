@@ -156,6 +156,9 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
         
         $aResult = parent::decodeDataAPI($aData, $aParams);
 
+        if (isset($aResult['module']) && $aResult['module'] === 'sys_private')
+            return $aResult;
+
         if(isset($aParams['template']) && $aParams['template'] == 'unit_wo_info')
             return $aResult;
 
@@ -780,17 +783,24 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
     {
         $CNF = &$this->_oConfig->CNF;
 
-        if(!$iInvitedPid)
-            $iInvitedPid = bx_process_input(bx_get('profile_id'), BX_DATA_INT);
+        $iLoggedPid = bx_get_logged_profile_id();
+        if(!$iLoggedPid)
+            return false;
+
+        $iPassedInvitedPid = (int)$iInvitedPid;
+        $iInvitedPid = $iLoggedPid;
+        if(isAdmin()) {
+            if($iPassedInvitedPid)
+                $iInvitedPid = $iPassedInvitedPid;
+            else if(bx_get('profile_id') !== false)
+                $iInvitedPid = bx_process_input(bx_get('profile_id'), BX_DATA_INT);
+        }
         if(!$iInvitedPid)
             return false;
 
         $aInvites = $this->_oDb->getInvites(['sample' => 'invited_pid', 'invited_pid' => $iInvitedPid]);
         if(empty($aInvites) || !is_array($aInvites))
             return false;
-
-        if($bAsArray)
-            return $aInvites;
 
         $iStart = $iLimit = 0;
         if($this->_bIsApi) {
@@ -839,6 +849,9 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
             return false;
 
         if(!($oGroupProfile = BxDolProfile::getInstanceByContentAndType($iContentId, $this->getName())))
+            return false;
+
+        if($this->checkAllowedView($aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
             return false;
 
         if(is_bool($bAsArray) && $bAsArray === true)
@@ -890,6 +903,9 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
             return false;
 
         if (!($oGroupProfile = BxDolProfile::getInstanceByContentAndType($iContentId, $this->getName())))
+            return false;
+
+        if($this->checkAllowedView($aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
             return false;
         
         $CNF = &$this->_oConfig->CNF;
@@ -1084,7 +1100,8 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
         if($this->_bIsApi)
             $aParams = bx_api_get_browse_params($aParams, true);
 
-        if(!$iProfileId)
+        // recommendations are the viewer's own: on the API a client can't name another profile
+        if(!$iProfileId || $this->_bIsApi)
             $iProfileId = bx_get_logged_profile_id();
         if(!$iProfileId)
             return '';
@@ -1564,6 +1581,9 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
         $aContentInfo = $this->_oDb->getContentInfoByProfileId($iContentProfileId);
         if(empty($aContentInfo) || !is_array($aContentInfo))
             return $this->_bIsApi ? [bx_api_get_msg($sMsg)] : ['code' => 1, 'msg' => $sMsg];
+
+        if($this->checkAllowedView($aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED || $this->checkAllowedFanAdd($aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+            return $this->_bIsApi ? [bx_api_get_msg('_sys_txt_access_denied')] : ['code' => 1, 'msg' => _t('_sys_txt_access_denied')];
         
         $oForm = null;
         if(($oConnection = BxDolConnection::getObjectInstance($sObject)) !== false) {

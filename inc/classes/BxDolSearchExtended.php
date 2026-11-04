@@ -197,8 +197,19 @@ class BxDolSearchExtended extends BxDolFactory implements iBxDolFactoryObject
     {
         $oDb = BxDolDb::getInstance();
 
+        $sTable = isset($aQueryParts['table']) ? $aQueryParts['table'] : '';
+        if(!$oDb->isValidFieldName($sTable, true) || !$oDb->isTableExists($sTable))
+            throw new Exception('Invalid table in processParams method');
+
         $sWhereConditions = "1";
         foreach($aParams as $sSearchParam => $aSearchParam) {
+            if(!is_array($aSearchParam) || empty($aSearchParam['operator']))
+                continue;
+
+            // The key is a column identifier. Values are bound; the name is not, so it has to be a real column.
+            if(!$oDb->isValidFieldName($sSearchParam, true) || !$oDb->isFieldExists($sTable, $sSearchParam))
+                continue;
+
             $sSearchValue = "";
             switch ($aSearchParam['operator']) {
                 case 'like':

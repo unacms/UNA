@@ -206,8 +206,18 @@ class BxOktaConModule extends BxBaseModConnectModule
         }
     }
 
+    protected function _isRemoteEmailVerified($aProfileInfo)
+    {
+        // enforced when Okta reports it
+        return !isset($aProfileInfo['email_verified']) || $this->_isRemoteFlagTrue($aProfileInfo['email_verified']);
+    }
+
     function serviceLogin($sRemoteId)
     {
+        // logs in by a remote ID given by the caller, so it is for internal calls only (not for API clients)
+        if (BxDolService::isExternalCall($this->getName(), 'login'))
+            return false;
+
         $iProfileId = $this->_oDb->getProfileId($sRemoteId);
         if (!$iProfileId || !($oProfile = BxDolProfile::getInstance($iProfileId)))
             return false;
@@ -221,6 +231,10 @@ class BxOktaConModule extends BxBaseModConnectModule
 
     function serviceGetUserIds($sRemoteId)
     {
+        // it discloses local IDs by a remote ID given by the caller, so it is for internal calls only (not for API clients)
+        if (BxDolService::isExternalCall($this->getName(), 'get_user_ids'))
+            return false;
+
         $iProfileId = $this->_oDb->getProfileId($sRemoteId);
         if (!$iProfileId || !($oProfile = BxDolProfile::getInstance($iProfileId)))
             return false;

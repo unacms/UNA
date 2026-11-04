@@ -99,6 +99,12 @@ class BxGoogleConModule extends BxBaseModConnectModule
 
         $aRemoteProfileInfo = $aResponse;
 
+        // don't use an email address which wasn't verified by Google
+        if (isset($aRemoteProfileInfo['verified_email']) && !$this->_isRemoteFlagTrue($aRemoteProfileInfo['verified_email'])) {
+            $this->_oTemplate->getPage(_t('_Error'), MsgBox(_t('_sys_connect_profile_error_info')));
+            return;
+        }
+
         if ($aRemoteProfileInfo) {
 
             // check if user logged in before
@@ -125,28 +131,141 @@ class BxGoogleConModule extends BxBaseModConnectModule
         ]);
     }
 
-    public function serviceHandle($aRemoteProfileInfo = [])
+    /**
+     * Sign in (or join) with a Google access token which was received by a client (NEO app).
+     *
+     * Only the access token is taken from the request. Who the user is, is defined by Google:
+     * the token is checked to be issued to one of our clients and the profile is requested from Google here.
+     *
+     * @param $mParams - access token as array ['access_token' => '...'] or as JSON string of such array
+     */
+    public function serviceHandle($mParams = [])
     {
         if(!$this->_bIsApi)
             return;
 
-        if(is_string($aRemoteProfileInfo))
-            $aRemoteProfileInfo = bx_api_get_browse_params($aRemoteProfileInfo);
+        $aError = [
+            bx_api_get_msg(_t('_sys_connect_profile_error_info'))
+        ];
 
-        if(empty($aRemoteProfileInfo) || !is_array($aRemoteProfileInfo))
-            return [
-                bx_api_get_msg(_t('_sys_connect_profile_error_info'))
-            ];
+        if(!($sAccessToken = $this->_getAccessToken($mParams)))
+            return $aError;
 
-        if(empty($aRemoteProfileInfo['id']) && !empty($aRemoteProfileInfo['sub']))
-            $aRemoteProfileInfo['id'] = $aRemoteProfileInfo['sub'];
-        
+        $aTokenInfo = $this->_requestTokenInfo($sAccessToken);
+        if(!$aTokenInfo)
+            return $aError;
+
+        $aUserInfo = $this->_requestUserInfo($sAccessToken);
+        if(!$aUserInfo)
+            return $aError;
+
+        $aRemoteProfileInfo = $this->_buildVerifiedProfile($aTokenInfo, $aUserInfo);
+        if(!$aRemoteProfileInfo)
+            return $aError;
+
         // check if user logged in before
         $iProfileId = $this->_oDb->getProfileId($aRemoteProfileInfo['id']);
         if($iProfileId && $oProfile = BxDolProfile::getInstance($iProfileId))
             return $this->setLogged($oProfile->id());
         else
             return $this->_createProfile($aRemoteProfileInfo);
+    }
+
+    /**
+     * Ask Google about the access token: to which client it was issued, until when it is valid.
+     *
+     * @return array with token info or false on error
+     */
+    protected function _requestTokenInfo($sAccessToken)
+    {
+        $sHttpCode = '';
+        $s = bx_file_get_contents($this->_oConfig->sTokenInfoUrl, ['access_token' => $sAccessToken], 'post', ['Content-Type: application/x-www-form-urlencoded'], $sHttpCode, [], 10);
+
+        return $this->_decodeJsonResponse($s, $sHttpCode);
+    }
+
+    /**
+     * Ask Google for the profile of the user the access token was issued for.
+     *
+     * @return array with profile info or false on error
+     */
+    protected function _requestUserInfo($sAccessToken)
+    {
+        $sHttpCode = '';
+        $s = bx_file_get_contents($this->_oConfig->sUserInfoUrl, [], 'get', ['Authorization: Bearer ' . $sAccessToken], $sHttpCode, [], 10);
+
+        return $this->_decodeJsonResponse($s, $sHttpCode);
+    }
+
+    /**
+     * Build remote profile info from the data received from Google.
+     * Returns false if the token wasn't issued to our client, expired, or if the user can't be identified reliably.
+     *
+     * @param $aTokenInfo - response of Google tokeninfo endpoint
+     * @param $aUserInfo - response of Google userinfo endpoint
+     * @return array with whitelisted profile fields or false
+     */
+    protected function _buildVerifiedProfile($aTokenInfo, $aUserInfo)
+    {
+        if(!is_array($aTokenInfo) || !is_array($aUserInfo))
+            return false;
+
+        // the token must be issued to one of our clients
+        $sAudience = isset($aTokenInfo['aud']) ? $aTokenInfo['aud'] : (isset($aTokenInfo['azp']) ? $aTokenInfo['azp'] : '');
+        if(!is_string($sAudience) || $sAudience === '' || !in_array($sAudience, $this->_oConfig->aClientIds, true))
+            return false;
+
+        // the token must be alive
+        if(!isset($aTokenInfo['expires_in']) || !is_numeric($aTokenInfo['expires_in']) || (int)$aTokenInfo['expires_in'] <= 0)
+            return false;
+
+        // the user must be identified by the stable Google account ID
+        if(empty($aUserInfo['sub']) || !is_string($aUserInfo['sub']) || !preg_match('/^[A-Za-z0-9_.-]{1,255}$/D', $aUserInfo['sub']))
+            return false;
+        if(isset($aTokenInfo['sub']) && $aTokenInfo['sub'] !== $aUserInfo['sub'])
+            return false;
+
+        // the email must be verified by Google
+        if(empty($aUserInfo['email']) || !is_string($aUserInfo['email']) || !filter_var($aUserInfo['email'], FILTER_VALIDATE_EMAIL))
+            return false;
+        if(!isset($aUserInfo['email_verified']) || !$this->_isRemoteFlagTrue($aUserInfo['email_verified']))
+            return false;
+
+        $aProfileInfo = [
+            'id' => $aUserInfo['sub'],
+            'email' => $aUserInfo['email'],
+            'verified_email' => true,
+        ];
+        foreach(['name', 'given_name', 'family_name'] as $sKey)
+            $aProfileInfo[$sKey] = isset($aUserInfo[$sKey]) && is_string($aUserInfo[$sKey]) ? get_mb_substr($aUserInfo[$sKey], 0, 255) : '';
+        $aProfileInfo['picture'] = $this->_getSafePicture(isset($aUserInfo['picture']) ? $aUserInfo['picture'] : '');
+
+        return $aProfileInfo;
+    }
+
+    /**
+     * Profile pictures are downloaded by the server, so only Google image hosts are allowed.
+     */
+    protected function _getSafePicture($sUrl)
+    {
+        if(!is_string($sUrl) || $sUrl === '' || preg_match('/[\s\x00-\x1f]/', $sUrl))
+            return '';
+
+        $aUrl = parse_url($sUrl);
+        if(!is_array($aUrl) || empty($aUrl['host']) || empty($aUrl['scheme']) || !preg_match('/^https$/iD', $aUrl['scheme']))
+            return '';
+        if(isset($aUrl['user']) || isset($aUrl['pass']) || isset($aUrl['port']))
+            return '';
+
+        return preg_match('/^([a-z0-9-]+\.)+googleusercontent\.com$/iD', $aUrl['host']) ? $sUrl : '';
+    }
+
+    protected function _isRemoteEmailVerified($aProfileInfo)
+    {
+        if(isset($aProfileInfo['verified_email']))
+            return $this->_isRemoteFlagTrue($aProfileInfo['verified_email']);
+
+        return isset($aProfileInfo['email_verified']) && $this->_isRemoteFlagTrue($aProfileInfo['email_verified']);
     }
 
     /**
@@ -158,10 +277,10 @@ class BxGoogleConModule extends BxBaseModConnectModule
     {
         $aProfileFields = $aProfileInfo;
 
-        $aProfileFields['name'] = $aProfileInfo['given_name'];
-        $aProfileFields['fullname'] = $aProfileInfo['name'];
+        $aProfileFields['name'] = !empty($aProfileInfo['given_name']) ? $aProfileInfo['given_name'] : (isset($aProfileInfo['name']) ? $aProfileInfo['name'] : '');
+        $aProfileFields['fullname'] = isset($aProfileInfo['name']) ? $aProfileInfo['name'] : '';
         $aProfileFields['email'] = isset($aProfileInfo['email']) ? $aProfileInfo['email'] : '';
-        $aProfileFields['picture'] = isset($aProfileInfo['picture']) ? $aProfileInfo['picture'] : '';
+        $aProfileFields['picture'] = $this->_getSafePicture(isset($aProfileInfo['picture']) ? $aProfileInfo['picture'] : '');
         $aProfileFields['allow_view_to'] = getParam('bx_googlecon_privacy');
         
         return $aProfileFields;

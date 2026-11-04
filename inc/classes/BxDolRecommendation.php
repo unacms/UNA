@@ -136,6 +136,9 @@ class BxDolRecommendation extends BxDolFactory implements iBxDolFactoryObject
         if(!$iProfileId)
             $iProfileId = $this->_iProfileId;
 
+        if (!bx_is_logged_profile($iProfileId))
+            return ['code' => 1, 'msg' => '_sys_txt_access_denied'];
+
         if(!$iItemId)
             $iItemId = bx_process_input(bx_get('id'), BX_DATA_INT);
 
@@ -149,6 +152,9 @@ class BxDolRecommendation extends BxDolFactory implements iBxDolFactoryObject
     {
         if(!$iProfileId)
             $iProfileId = $this->_iProfileId;
+
+        if (!bx_is_logged_profile($iProfileId))
+            return ['code' => 1, 'msg' => '_sys_txt_access_denied'];
 
         if(!$iItemId)
             $iItemId = bx_process_input(bx_get('id'), BX_DATA_INT);

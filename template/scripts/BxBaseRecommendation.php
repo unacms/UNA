@@ -96,8 +96,9 @@ class BxBaseRecommendation extends BxDolRecommendation
 
         $bShowcaseView = (bool)($aParams['showcase'] ?? false);
 
-        $aParams['start'] = (int)($aParams['start'] ??= 0);
-        $aParams['per_page'] = (int)($aParams['per_page'] ??= 0) ?: $this->{'_iPerPageDefault' . ($bShowcaseView ? 'Showcase' : '')};
+        // a page has 1 to 50 profiles, otherwise the default number
+        $aParams['start'] = bx_api_get_start($aParams['start'] ?? 0);
+        $aParams['per_page'] = bx_api_get_per_page($aParams['per_page'] ?? 0, $this->{'_iPerPageDefault' . ($bShowcaseView ? 'Showcase' : '')});
 
         $bForceGetData = false;
         if(($sK = 'force_get_data') && isset($aParams[$sK])) {

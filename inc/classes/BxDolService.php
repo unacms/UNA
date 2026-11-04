@@ -30,6 +30,7 @@
 class BxDolService extends BxDol
 {
     static protected $_aMemoryCache = array();
+    static protected $_aExternalCall = null;
 
     /**
      * Perform serice call
@@ -52,6 +53,41 @@ class BxDolService extends BxDol
         self::$_aMemoryCache[$sKey] = BxDolRequest::processAsService($aModule, $sMethod, array_values($aParams), $sClass);
 
         return self::$_aMemoryCache[$sKey];
+    }
+
+    /**
+     * Perform service call on behalf of an outside caller: API, OAuth API or a macro in content.
+     * Services can tell such a call from an internal one with isExternalCall and return less data.
+     * The result is cached apart from internal calls, because it may be reduced for the caller.
+     */
+    public static function callExternal($mixed, $sMethod, $aParams = array(), $sClass = 'Module', $bIgnoreCache = false)
+    {
+        $aModule = self::getModule($mixed);
+        if (empty($aModule) || (int)$aModule['enabled'] == 0)
+            return '';
+
+        $sKey = 'external' . md5($mixed . $sMethod . print_r($aParams, true) . $sClass . bx_get_logged_profile_id());
+        if (!$bIgnoreCache && isset(self::$_aMemoryCache[$sKey]))
+            return self::$_aMemoryCache[$sKey];
+
+        $aPrev = self::$_aExternalCall;
+        self::$_aExternalCall = array($aModule['name'], bx_gen_method_name($sMethod));
+        try {
+            self::$_aMemoryCache[$sKey] = BxDolRequest::processAsService($aModule, $sMethod, array_values($aParams), $sClass);
+        } finally {
+            self::$_aExternalCall = $aPrev;
+        }
+
+        return self::$_aMemoryCache[$sKey];
+    }
+
+    /**
+     * Check if the service which is running right now was called by an outside caller (see callExternal).
+     * Services which are called by that service internally are not external.
+     */
+    public static function isExternalCall($sModule, $sMethod)
+    {
+        return self::$_aExternalCall !== null && self::$_aExternalCall === array($sModule, bx_gen_method_name($sMethod));
     }
 
     /**
@@ -121,7 +157,7 @@ class BxDolService extends BxDol
         }
 
         // perform call
-        $mixed = self::call($a[0], $a[1], $aParams, isset($a[2]) ? $a[2] : 'Module', isset($a[3]) && 'ignore_cache' == $a[3] ? true : false);
+        $mixed = self::callExternal($a[0], $a[1], $aParams, isset($a[2]) ? $a[2] : 'Module', isset($a[3]) && 'ignore_cache' == $a[3] ? true : false);
 
         // check result
         if (is_object($mixed))

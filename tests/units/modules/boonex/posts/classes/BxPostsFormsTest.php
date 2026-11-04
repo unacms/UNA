@@ -99,6 +99,107 @@ class BxPostsFormsTest extends BxPostsTestCase
         $this->assertSame('thumb', $a['name_thumb']);
     }
 
+    public function testContextPostIgnoresContentWithoutContext()
+    {
+        foreach ([3, 0, '', null, false] as $mixedValue) {
+            $oForm = $this->bxFormDouble($mixedValue);
+            $oForm->aInputs = ['allow_view_to' => ['name' => 'allow_view_to']];
+
+            $this->assertTrue($this->bxCallProtected($oForm, '_checkContextPost', []));
+            $this->assertTrue($oForm->isValid());
+        }
+    }
+
+    public function testContextPostDeniedForMissingContext()
+    {
+        $oForm = $this->bxFormDouble(-99999999);
+        $oForm->aInputs = ['allow_view_to' => ['name' => 'allow_view_to']];
+
+        $this->assertFalse($this->bxCallProtected($oForm, '_checkContextPost', []));
+        $this->assertFalse($oForm->isValid());
+        $this->assertNotEmpty($oForm->aInputs['allow_view_to']['error']);
+    }
+
+    public function testContextPostFollowsContextPermission()
+    {
+        $iContext = $this->bxExistingProfileId();
+
+        $this->bxWithContextProfile($iContext, 'Denied', function () use ($iContext) {
+            $oForm = $this->bxFormDouble(-$iContext);
+            $oForm->aInputs = ['allow_view_to' => ['name' => 'allow_view_to']];
+
+            $this->assertFalse($this->bxCallProtected($oForm, '_checkContextPost', []));
+            $this->assertFalse($oForm->isValid());
+        });
+
+        $this->bxWithContextProfile($iContext, CHECK_ACTION_RESULT_ALLOWED, function () use ($iContext) {
+            $oForm = $this->bxFormDouble(-$iContext);
+            $oForm->aInputs = ['allow_view_to' => ['name' => 'allow_view_to']];
+
+            $this->assertTrue($this->bxCallProtected($oForm, '_checkContextPost', []));
+        });
+    }
+
+    public function testContextPostChecksValuePassedToInsertNotOnlySubmittedOne()
+    {
+        $iContext = $this->bxExistingProfileId();
+
+        $this->bxWithContextProfile($iContext, 'Denied', function () use ($iContext) {
+            $oForm = $this->bxFormDouble(3);
+            $oForm->aInputs = ['allow_view_to' => ['name' => 'allow_view_to']];
+
+            $this->assertFalse($this->bxCallProtected($oForm, '_checkContextPost', ['allow_view_to' => -$iContext]));
+        });
+    }
+
+    public function testContextPostKeepsCurrentContextOnEdit()
+    {
+        $iContext = $this->bxExistingProfileId();
+
+        $this->bxWithContextProfile($iContext, 'Denied', function () use ($iContext) {
+            $oForm = $this->bxFormDouble(-$iContext);
+            $oForm->aInputs = ['allow_view_to' => ['name' => 'allow_view_to']];
+
+            // Content which already lives in the context may be edited, even if posting there is closed now.
+            $this->assertTrue($this->bxCallProtected($oForm, '_checkContextPost', [], $this->bxSamplePost(['allow_view_to' => -$iContext])));
+            // Moving other content into the context is a new post.
+            $this->assertFalse($this->bxCallProtected($oForm, '_checkContextPost', [], $this->bxSamplePost(['allow_view_to' => 3])));
+        });
+    }
+
+    protected function bxExistingProfileId(): int
+    {
+        $iProfileId = (int)BxDolDb::getInstance()->getOne("SELECT `id` FROM `sys_profiles` WHERE `type` <> 'system' AND `status` = 'active' LIMIT 1");
+        if(!$iProfileId)
+            $this->markTestSkipped('No profile is installed.');
+
+        return $iProfileId;
+    }
+
+    /**
+     * Runs the callback while the profile resolves to a stub, which answers
+     * checkAllowedPostInProfile with the given result.
+     */
+    protected function bxWithContextProfile(int $iProfileId, $mixedResult, callable $fCallback): void
+    {
+        $sKey = 'BxDolProfile_' . $iProfileId;
+        $mixedCached = $GLOBALS['bxDolClasses'][$sKey] ?? null;
+
+        $oProfile = $this->createMock(BxDolProfile::class);
+        $oProfile->method('id')->willReturn($iProfileId);
+        $oProfile->method('checkAllowedPostInProfile')->willReturn($mixedResult);
+        $GLOBALS['bxDolClasses'][$sKey] = $oProfile;
+
+        try {
+            $fCallback();
+        }
+        finally {
+            unset($GLOBALS['bxDolClasses'][$sKey]);
+            if($mixedCached !== null)
+                $GLOBALS['bxDolClasses'][$sKey] = $mixedCached;
+        }
+    }
+
     protected function bxFormDouble($mixedClean = null): BxPostsFormEntry
     {
         $oForm = new class($this->_oModule) extends BxPostsFormEntry {

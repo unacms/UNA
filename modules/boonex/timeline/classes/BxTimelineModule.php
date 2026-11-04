@@ -100,6 +100,12 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
     protected $_sCmtTemplate;
 
     /**
+     * The most events a client (API or live update) gets per page, and the furthest it can page.
+     */
+    protected static $_iClientPerPageMax = 100;
+    protected static $_iClientStartMax = 100000;
+
+    /**
      * Constructor
      */
     function __construct($aModule)
@@ -620,7 +626,9 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
      */
     public function serviceGetPosts($aParams)
     {
-        if(is_string($aParams))
+        if($this->_bIsApi || $this->_isExternalServiceCall('get_posts'))
+            $aParams = $this->_prepareParamsApi($aParams);
+        else if(is_string($aParams))
             $aParams = bx_api_get_browse_params($aParams, true);
 
         return $this->_serviceGetBlockViewByType($aParams);
@@ -1408,6 +1416,16 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         	'value' => $iContentId)
         );
 
+        if($aContentInfo && $this->_isRawInfoDenied()) {
+            $CNF = &$this->_oConfig->CNF;
+
+            if(!$this->isAllowedView($aContentInfo))
+                return [];
+
+            $aFields = ($sSf = $CNF['PARAM_SEARCHABLE_FIELDS'] ?? false) ? explode(',', getParam($sSf)) : [];
+            $aContentInfo = array_intersect_key($aContentInfo, array_flip($aFields));
+        }
+
         return BxDolContentInfo::formatFields($aContentInfo);
     }
 
@@ -1488,7 +1506,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
     public function serviceGetSearchResultUnit ($iContentId, $sUnitTemplate = '')
     {
         $aEvent = $this->_oDb->getEvents(array('browse' => 'id', 'value' => $iContentId));
-        if(empty($aEvent) || !is_array($aEvent))
+        if(empty($aEvent) || !is_array($aEvent) || !$this->_isEventAvailable($aEvent) || $this->isAllowedView($aEvent) !== true)
             return '';
 
         if(empty($sUnitTemplate))
@@ -3086,6 +3104,15 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
      */
     public function serviceRepost($iAuthorId, $iOwnerId, $sType, $sAction, $iObjectId, $bForce = false)
     {
+        //--- An API client reposts as the logged-in profile and always goes through the permission check.
+        if($this->_bIsApi) {
+            $iAuthorId = (int)$this->getUserId();
+            $bForce = false;
+
+            if(!$this->_isAllowedPostDestination($iOwnerId))
+                return ['code' => 1, 'message' => _t('_sys_txt_access_denied')];
+        }
+
         $mixedResult = $this->repost($iAuthorId, $iOwnerId, $sType, $sAction, $iObjectId, false, $bForce);
         if($this->_bIsApi && !is_array($mixedResult))
             $mixedResult = [
@@ -3683,7 +3710,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         if((int)BxDolSession::getInstance()->getValue($sKey) == 1)
             return false;
 
-        $aParams = $this->_prepareParams($aBrowseParams);
+        $aParams = $this->_prepareParamsLiveUpdate($aBrowseParams);
         if(($iLiveUpdateLength = $this->_oConfig->getLiveUpdateLength()) != 0)
             $aParams['per_page'] = $iLiveUpdateLength;
 
@@ -3751,7 +3778,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         if((int)BxDolSession::getInstance()->getValue($sKey) == 1)
             return false;
 
-        $aParams = $this->_prepareParams($aBrowseParams);
+        $aParams = $this->_prepareParamsLiveUpdate($aBrowseParams);
         $aParams['filter'] = BX_TIMELINE_FILTER_OTHER_VIEWER;
         $aParams['count'] = true;
 
@@ -3840,8 +3867,8 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
     public function serviceGet($aParams)
     {
-        if($this->_bIsApi && is_string($aParams))
-            $aParams = bx_api_get_browse_params($aParams, true);
+        if($this->_bIsApi || $this->_isExternalServiceCall('get'))
+            $aParams = $this->_prepareParamsApi($aParams, true);
 
         $aParams = $this->_prepareParams($aParams);
         $aParams['return_data_type'] = 'array';
@@ -3932,9 +3959,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         if(empty($aEvent))
             return array('code' => 1, 'content' => _t('_Empty'));
 
-        // A pending, scheduled, hidden or deleted post, or a repost of a hidden one (inactive), is for its author and moderators only.
-        $bActive = $aEvent[$CNF['FIELD_STATUS']] == BX_TIMELINE_STATUS_ACTIVE && $aEvent[$CNF['FIELD_STATUS_ADMIN']] == BX_TIMELINE_STATUS_ACTIVE && (int)$aEvent['active'] == 1;
-        if(!$bActive && (int)$aEvent[$CNF['FIELD_OBJECT_OWNER_ID']] != (int)$this->getUserId() && !$this->isModerator())
+        if(!$this->_isEventAvailable($aEvent))
             return array('code' => 1, 'content' => _t('_Empty'));
 
         $iProfile = (int)$aEvent[$CNF['FIELD_OWNER_ID']];
@@ -4025,6 +4050,9 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
                 $iObjectPrivacyView = $iObjectPrivacyViewDefault;
             else if($iObjectPrivacyView < 0)
                 $iOwnerId = abs($iObjectPrivacyView);
+
+            if(!$this->_isAllowedPostDestination($iOwnerId))
+                return $this->_bIsApi ? [bx_api_get_msg('_sys_txt_access_denied')] : [];
 
             //--- Process Link ---//
             $aLinkIds = $oForm->getCleanValue($CNF['FIELD_LINK']);
@@ -4259,6 +4287,9 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
                         'owner_id' => abs($iObjectPrivacyView)
                     ]);
             }
+
+            if(isset($aValsToAdd['owner_id']) && !$this->_isAllowedPostDestination($aValsToAdd['owner_id']))
+                return $this->_bIsApi ? bx_api_get_msg('_sys_txt_access_denied') : ['message' => _t('_sys_txt_access_denied')];
 
             //--- Process Link ---//
             $aLinkIds = $oForm->getCleanValue($CNF['FIELD_LINK']);
@@ -4682,6 +4713,15 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
         $oCmts->addCssJs();
         return true;
+    }
+
+    protected function _isAllowedPostDestination($iProfileId)
+    {
+        if(!(int)$iProfileId)
+            return true;
+
+        $oProfile = BxDolProfile::getInstance((int)$iProfileId);
+        return $oProfile && $oProfile->checkAllowedPostInProfile((int)$iProfileId, $this->getName()) === CHECK_ACTION_RESULT_ALLOWED;
     }
 
     public function isAllowedViewCounter($aEvent, $bPerform = false)
@@ -6510,7 +6550,8 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
             $aParams['modules'] = [];
 
         if(!empty($aParams['media'])) {
-            if(($sDv = ',') && strpos($aParams['media'], $sDv) !== false)
+            //--- Params prepared before (a live update's) already have the list.
+            if(is_string($aParams['media']) && ($sDv = ',') && strpos($aParams['media'], $sDv) !== false)
                 $aParams['media'] = explode($sDv, $aParams['media']);
         }
         else
@@ -6580,6 +6621,105 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
             'moderator' => $this->isModeratorForProfile($aParams['viewer_id']),
             'dynamic_mode' => true,
         ]);
+    }
+
+    /**
+     * Browse params sent by an API client (a JSON string or an array), cleaned
+     * by _prepareParamsClient. With $bItem a client may also ask for one event
+     * (browse 'id'), which it gets only when it may see it (_isEventAvailable).
+     */
+    protected function _prepareParamsApi($mParams, $bItem = false)
+    {
+        if(is_string($mParams))
+            $mParams = bx_api_get_browse_params($mParams, true);
+        if(empty($mParams) || !is_array($mParams))
+            $mParams = [];
+
+        $aParams = $this->_prepareParamsClient($mParams);
+        $aParams['dynamic_mode'] = !empty($mParams['dynamic_mode']);
+
+        if($bItem && isset($mParams['browse']) && $mParams['browse'] === 'id') {
+            $iId = (int)($mParams['value'] ?? 0);
+            $aEvent = $iId > 0 ? $this->_oDb->getEvents(['browse' => 'id', 'value' => $iId]) : [];
+
+            $aParams['browse'] = 'id';
+            $aParams['value'] = !empty($aEvent) && $this->_isEventAvailable($aEvent) ? $iId : 0;
+        }
+
+        return $aParams;
+    }
+
+    /**
+     * Browse params of a live update check, which come back from the client.
+     */
+    protected function _prepareParamsLiveUpdate($aBrowseParams)
+    {
+        return $this->_prepareParams($this->_prepareParamsClient(is_array($aBrowseParams) ? $aBrowseParams : []));
+    }
+
+    /**
+     * Browse params sent by a client: only the keys a client may set, cleaned as
+     * for the web (_prepareParamsGet), with the media filter kept and paging
+     * limited. The status, moderator flag and viewer are always decided on the server.
+     */
+    protected function _prepareParamsClient($aClientParams)
+    {
+        //--- The media filter is cleaned on its own, and the params never come from the query string.
+        $aParams = $this->_prepareParamsGet(array_merge($aClientParams, ['media' => false]));
+        $aParams['media'] = $this->_prepareParamsMedia($aClientParams['media'] ?? '');
+
+        if(in_array($aParams['type'], [BX_TIMELINE_TYPE_FEED, BX_TIMELINE_TYPE_OWNER_AND_CONNECTIONS, BX_TIMELINE_TYPE_CHANNELS, BX_TIMELINE_TYPE_CONNECTED_CONTEXTS, BX_TIMELINE_TYPE_FOR_YOU]))
+            $aParams['owner_id'] = $this->getUserId();
+
+        foreach(['per_page', 'per_page_default'] as $sKey)
+            if($aParams[$sKey] > static::$_iClientPerPageMax)
+                $aParams[$sKey] = static::$_iClientPerPageMax;
+        if($aParams['start'] > static::$_iClientStartMax)
+            $aParams['start'] = static::$_iClientStartMax;
+
+        return $aParams;
+    }
+
+    /**
+     * A media filter sent as an array or as a comma separated string (NEO joins
+     * the checked types), reduced to the known media types and joined with
+     * commas, which _prepareParams splits again.
+     */
+    protected function _prepareParamsMedia($mMedia)
+    {
+        if(is_string($mMedia))
+            $mMedia = explode(',', $mMedia);
+        if(empty($mMedia) || !is_array($mMedia))
+            return '';
+
+        $aMedia = array_map('trim', array_filter($mMedia, 'is_string'));
+        return implode(',', array_intersect($this->_oConfig->getFiltersMedia(), $aMedia));
+    }
+
+    /**
+     * A pending, scheduled, hidden or deleted post, or a repost of a hidden one
+     * (inactive), is for its author and moderators only.
+     */
+    protected function _isEventAvailable($aEvent)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $bActive = $aEvent[$CNF['FIELD_STATUS']] == BX_TIMELINE_STATUS_ACTIVE && $aEvent[$CNF['FIELD_STATUS_ADMIN']] == BX_TIMELINE_STATUS_ACTIVE && (int)$aEvent['active'] == 1;
+        if($bActive)
+            return true;
+
+        //--- A guest (id 0) is never the author, even of an event which has no author.
+        $iViewerId = (int)$this->getUserId();
+        return ($iViewerId != 0 && (int)$aEvent[$CNF['FIELD_OBJECT_OWNER_ID']] == $iViewerId) || $this->isModerator();
+    }
+
+    /**
+     * Check if the service which is running now was called by an outside caller
+     * (API, macro in content), which can't be trusted to send browse params.
+     */
+    protected function _isExternalServiceCall($sMethod)
+    {
+        return BxDolService::isExternalCall($this->getName(), $sMethod);
     }
 
     protected function _prepareTextForSave($s)

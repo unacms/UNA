@@ -250,6 +250,10 @@ class BxBaseModConnectModule extends BxBaseModGeneralModule
         // check if user with the same email already exists
         $oExistingAccount = $this->_getExistingAccount($aProfileInfo, $aFieldsAccount, $aFieldsProfile);
 
+        // never log in to an existing account by an email which wasn't verified by the remote site
+        if ($oExistingAccount && !$this->_isRemoteEmailVerified($aProfileInfo))
+            return _t('_sys_txt_error_account_creation');
+
         // check redirect page
         if ('join' == $this->_oConfig->sRedirectPage && !$oExistingAccount)
             return array('remote_profile_info' => $aProfileInfo, 'profile_fields' => $aFieldsAccount, 'join_page_redirect' => true);
@@ -414,6 +418,65 @@ class BxBaseModConnectModule extends BxBaseModGeneralModule
     protected function _getExistingAccount($aProfileInfo, &$aFieldsAccount, &$aFieldsProfile)
     {
         return BxDolAccount::getInstance($aFieldsAccount['email']);
+    }
+
+    /**
+     * Check if the email address of the remote profile was verified by the remote site.
+     * It is checked before the remote profile is linked to an existing local account by email.
+     * The default is permissive, modules whose remote site reports email verification should override it.
+     *
+     * @param $aProfileInfo - remote profile info
+     * @return boolean
+     */
+    protected function _isRemoteEmailVerified($aProfileInfo)
+    {
+        return true;
+    }
+
+    /**
+     * Get access token from the params of a service which is called by a client app.
+     * Nothing else is taken from them: who the user is, has to be defined by the remote site.
+     *
+     * @param $mParams - array ['access_token' => '...'] or JSON string of such array
+     * @return string with token or false if there is no valid token
+     */
+    protected function _getAccessToken($mParams)
+    {
+        if(is_string($mParams))
+            $mParams = bx_api_get_browse_params($mParams);
+
+        if(!is_array($mParams) || empty($mParams['access_token']) || !is_string($mParams['access_token']))
+            return false;
+
+        if(!preg_match('/^[A-Za-z0-9._~+\/=-]{10,4096}$/D', $mParams['access_token']))
+            return false;
+
+        return $mParams['access_token'];
+    }
+
+    /**
+     * Decode JSON response of a remote site.
+     *
+     * @return array or false if the response is not successful
+     */
+    protected function _decodeJsonResponse($s, $sHttpCode)
+    {
+        if(!$s || (int)$sHttpCode != 200)
+            return false;
+
+        $a = json_decode($s, true);
+        if(!is_array($a) || !$a || isset($a['error']))
+            return false;
+
+        return $a;
+    }
+
+    /**
+     * Interpret a flag from remote profile info: boolean true, 1, '1' or 'true' mean true.
+     */
+    protected function _isRemoteFlagTrue($mixedValue)
+    {
+        return $mixedValue === true || $mixedValue === 1 || $mixedValue === '1' || $mixedValue === 'true';
     }
 
     protected function _genPwd($aProfileInfo, &$aFieldsAccount, &$aFieldsProfile)

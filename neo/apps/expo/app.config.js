@@ -132,6 +132,9 @@ const expoConfig = {
         "PORT": process.env.PORT,
         "APP_URL": process.env.APP_URL,
         "GOOGLE_WEB_CLIENT_ID": process.env.GOOGLE_WEB_CLIENT_ID,
+        "SOCKETS_HOST": process.env.SOCKETS_HOST,
+        "SOCKETS_PORT": process.env.SOCKETS_PORT,
+        "SOCKETS_KEY": process.env.SOCKETS_KEY,
         "EXPO_OS": "native",
     },
     plugins: [

@@ -41,6 +41,16 @@ if(($bM = bx_get('m')) !== false)
 
 $sAction = bx_process_input(bx_get('a'));
 
+if ($sAction == 'upload' && BxDolUploader::isUploadTokenEnabled()) {
+    $aUploadToken = BxDolUploader::checkUploadToken(bx_get('ut'), 'upload', $sStorageObject, $sUploaderObject);
+    if (!$aUploadToken) {
+        header('HTTP/1.0 403 Forbidden');
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['error' => _t('_Access denied'), 'code' => 403]);
+        exit;
+    }
+}
+
 switch ($sAction) {
     case 'show_uploader_form':
         header('Content-type: text/html; charset=utf-8');
@@ -75,7 +85,8 @@ switch ($sAction) {
 
         bx_import('BxDolLanguages');
 
-        $oUploader->handleUploads(bx_get_logged_profile_id(), isset($_FILES['f']) ? $_FILES['f'] : null, $isMultiple, $iContentId, $isPrivate);
+        $iProfileId = isset($aUploadToken) && is_array($aUploadToken) ? (int)$aUploadToken['profile_id'] : (int)bx_get_logged_profile_id();
+        $oUploader->handleUploads($iProfileId, isset($_FILES['f']) ? $_FILES['f'] : null, $isMultiple, $iContentId, $isPrivate);
         break;
 }
 

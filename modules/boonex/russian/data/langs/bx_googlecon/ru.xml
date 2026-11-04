@@ -17,6 +17,7 @@
     <string name="_bx_googlecon_adm_stg_cpt_type"><![CDATA[Google-соединение]]></string>
     <string name="_bx_googlecon_option_app_id"><![CDATA[Client ID]]></string>
     <string name="_bx_googlecon_option_app_secret"><![CDATA[Client Secret]]></string>
+	<string name="_bx_googlecon_option_client_ids"><![CDATA[Дополнительные разрешенные Client ID (через запятую, для веб, iOS и Android приложений NEO)]]></string>
 
 	<string name="_bx_googlecon_et_password_generated"><![CDATA[Google-соединение: временный пароль]]></string>
 	<string name="_bx_googlecon_et_password_generated_subject"><![CDATA[Временный пароль]]></string>

@@ -156,7 +156,7 @@ class BxBaseServiceAccount extends BxDol
 
     public function serviceAccountSettingsEmail ($iAccountId = false)
     {
-        if (false === $iAccountId)
+        if (false === $iAccountId || !isAdmin())
             $iAccountId = getLoggedId();
         
         $bApi = bx_is_api();
@@ -191,7 +191,7 @@ class BxBaseServiceAccount extends BxDol
 
     public function serviceAccountSettingsPassword ($iAccountId = false)
     {
-        if (false === $iAccountId)
+        if (false === $iAccountId || !isAdmin())
             $iAccountId = getLoggedId();
         
         $bApi = bx_is_api();
@@ -225,7 +225,7 @@ class BxBaseServiceAccount extends BxDol
 
     public function serviceAccountSettingsInfo ($iAccountId = false)
     {
-        if (false === $iAccountId)
+        if (false === $iAccountId || !isAdmin())
             $iAccountId = getLoggedId();
         
         $bApi = bx_is_api();

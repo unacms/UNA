@@ -117,7 +117,7 @@ class BxNtfsDb extends BxBaseModNotificationsDb
         $bViewerId = !empty($aParams['viewer_id']);
 
         $sSelectClauseClicked = ", 0 AS `clicked`";
-        $sLimitClause = isset($aParams['per_page']) ? "LIMIT 0, " . ($aParams['start'] + $aParams['per_page']) : "";
+        $sLimitClause = isset($aParams['per_page']) ? "LIMIT 0, " . ((int)$aParams['start'] + (int)$aParams['per_page']) : "";
 
         $sSelectClauseGrouped = $sGroupByClauseGrouped = "";
         if($bEventsGroupedDb) {
@@ -176,7 +176,7 @@ class BxNtfsDb extends BxBaseModNotificationsDb
         if(!$bCountOnly) {
             $sUnionMethod = $sMethod;
             $sUnionOrderClause = "ORDER BY `date` DESC, `id` DESC";
-            $sUnionLimitClause = isset($aParams['per_page']) ? "LIMIT " . (!$bStartFromItem ? $aParams['start'] : 0) . ", " . $aParams['per_page'] : "";
+            $sUnionLimitClause = isset($aParams['per_page']) ? "LIMIT " . (!$bStartFromItem ? (int)$aParams['start'] : 0) . ", " . (int)$aParams['per_page'] : "";
         }
 
         $aAlertParams = $aParams;

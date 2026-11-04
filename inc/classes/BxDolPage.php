@@ -784,6 +784,50 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
         return $bOpen ? $oPage : false;
     }
 
+    /**
+     * The viewer may read this block: the page is available and visible, the block's membership mask matches,
+     * and a content-scoped row is an entry the viewer may open.
+     */
+    static public function isViewerAllowedBlock($iBlockId, $iContentId = 0, $sContentModule = '')
+    {
+        $oDb = new BxDolPageQuery([]);
+        $aBlock = $oDb->getBlockById((int)$iBlockId);
+        if (empty($aBlock) || empty($aBlock['object']))
+            return false;
+
+        $aPage = BxDolPageQuery::getPageObject($aBlock['object']);
+        if (empty($aPage))
+            return false;
+
+        if (!empty($aPage['uri']) && self::isLockedFromUnauthenticated($aPage['uri']))
+            return false;
+
+        if (!isAdmin() && !BxDolAcl::getInstance()->isMemberLevelInSet($aPage['visible_for_levels']))
+            return false;
+
+        if (!isAdmin() && !BxDolAcl::getInstance()->isMemberLevelInSet($aBlock['visible_for_levels']))
+            return false;
+
+        $oPage = self::getObjectInstance($aBlock['object']);
+        if (!$oPage)
+            return false;
+
+        // A content page has no entry until the request names one. The module view check below is that entry.
+        $bPageOpen = $oPage->isAvailablePage() === true && $oPage->isVisiblePage() === true;
+        if ($iContentId && $sContentModule !== '') {
+            if (!BxDolModuleQuery::getInstance()->isEnabledByName($sContentModule))
+                return false;
+            if (!bx_is_srv($sContentModule, 'check_allowed_with_content'))
+                return false;
+            if (bx_srv($sContentModule, 'check_allowed_with_content', ['view', (int)$iContentId]) !== CHECK_ACTION_RESULT_ALLOWED)
+                return false;
+
+            return true;
+        }
+
+        return $bPageOpen;
+    }
+
     static public function getPageBlockData($iBlockId, $iContentId = 0, $sContentModule = '')
     {
         $oDb = new BxDolPageQuery([]);

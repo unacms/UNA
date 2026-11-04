@@ -441,6 +441,9 @@ class BxPaymentModule extends BxBaseModPaymentModule
      */
     public function serviceGetProviderOptions($iVendorId, $sVendorProvider, $sPaymentType = '')
     {
+        if((int)$iVendorId !== (int)bx_get_logged_profile_id() && !isAdmin())
+            return false;
+
     	$aProviders = array();
     	switch($sPaymentType) {
             case BX_PAYMENT_TYPE_SINGLE:
@@ -1255,6 +1258,9 @@ class BxPaymentModule extends BxBaseModPaymentModule
             return $this->_bIsApi ? [bx_api_get_msg($aResult['message'])] : ['error' => $aResult['message']];
 
         $aPending = $this->_oDb->getOrderPending(['type' => 'id', 'id' => (int)$aResult['pending_id']]);
+        if(empty($aPending) || ((int)$aPending['client_id'] && (int)$aPending['client_id'] !== (int)bx_get_logged_profile_id()))
+            return ($sMsg = $this->_sLangsPrefix . 'err_incorrect_provider') && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : ['error' => $sMsg];
+
         $bTypeRecurring = $aPending['type'] == BX_PAYMENT_TYPE_RECURRING;
         $bAuthorized = isset($aResult['authorized']) && $aResult['authorized'];
         $bPaid = isset($aResult['paid']) && $aResult['paid'];

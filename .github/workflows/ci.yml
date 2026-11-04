@@ -173,6 +173,7 @@ jobs:
           bx_posts \
           bx_payment \
           bx_tasks \
+          bx_resources \
           bx_ru \
         )
         modules=${modules%,}

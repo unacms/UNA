@@ -38,10 +38,12 @@ export const settingsDefault = {
         // Web: files over this size (MB) go straight to UNA with a one-time token instead of
         // through the Next proxy (Vercel caps request bodies at 4.5MB). 0 = always direct.
         direct_upload_over_mb: 4,
+        // Real-time updates: the Soketi server and app key UNA sends events to (Studio →
+        // Settings → Sockets). Off while SOCKETS_HOST or SOCKETS_KEY is unset.
         sockets: {
-            host: 'ci.una.io',
-            port: '443',
-            key: 'app-key',
+            host: env('SOCKETS_HOST'),
+            port: env('SOCKETS_PORT') || '443',
+            key: env('SOCKETS_KEY'),
         },
         api_keys: {
             google_maps: env('GOOGLE_MAPS_API_KEY'),

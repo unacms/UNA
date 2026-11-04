@@ -25,6 +25,7 @@ class BxEditorEditor extends BxDolEditor
     protected static $CONF_COMMON = "
         var oParams = {   
 			root_url: '{bx_url_root}',
+            upload_token: '{bx_var_upload_token}',
             name: '{bx_var_editor_name}',
             selector: '{bx_var_selector}',
 			toolbar: {toolbar},
@@ -103,6 +104,7 @@ class BxEditorEditor extends BxDolEditor
             'bx_var_element_name' => str_replace(['-', ' '], '_', $aAttrs['element_name']),
             'bx_var_editor_name' => $sEditorName,
             'bx_url_root' => bx_js_string(BX_DOL_URL_ROOT, BX_ESCAPE_STR_APOS),
+            'bx_var_upload_token' => BxDolUploader::isUploadTokenEnabled() ? bx_js_string(BxDolUploader::getUploadToken('upload', 'sys_images_editor'), BX_ESCAPE_STR_APOS) : '',
         ));
 
         $sInitCallBack = "

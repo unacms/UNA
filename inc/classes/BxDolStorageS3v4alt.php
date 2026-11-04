@@ -28,9 +28,10 @@ class BxDolStorageS3v4alt extends BxDolStorageS3
         $sSecretKey = getParam('sys_storage_s3_secret_key');
         $aCredentials = [];
         if (getParam('sys_storage_s3_amz_iam_role')) {
-            $sToken = bx_file_get_contents('http://169.254.169.254/latest/api/token', [], 'PUT', ['X-aws-ec2-metadata-token-ttl-seconds: 600']);
-            $sRole = bx_file_get_contents('http://169.254.169.254/latest/meta-data/iam/security-credentials/', [], 'GET', ["X-aws-ec2-metadata-token: $sToken"]);
-            $sCredentials = bx_file_get_contents('http://169.254.169.254/latest/meta-data/iam/security-credentials/' . $sRole, [], 'GET', ["X-aws-ec2-metadata-token: $sToken"]);
+            $sHttpCode = null;
+            $sToken = bx_file_get_contents('http://169.254.169.254/latest/api/token', [], 'PUT', ['X-aws-ec2-metadata-token-ttl-seconds: 600'], $sHttpCode, [], 0, [], true);
+            $sRole = bx_file_get_contents('http://169.254.169.254/latest/meta-data/iam/security-credentials/', [], 'GET', ["X-aws-ec2-metadata-token: $sToken"], $sHttpCode, [], 0, [], true);
+            $sCredentials = bx_file_get_contents('http://169.254.169.254/latest/meta-data/iam/security-credentials/' . $sRole, [], 'GET', ["X-aws-ec2-metadata-token: $sToken"], $sHttpCode, [], 0, [], true);
             if ($sCredentials && ($aCredentials = @json_decode($sCredentials, true))) {
                 $sAccessKey = $aCredentials['AccessKeyId'];
                 $sSecretKey = $aCredentials['SecretAccessKey'];

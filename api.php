@@ -128,7 +128,7 @@ elseif (is_string($aParams) && preg_match('/^\[.*\]$/', $aParams))
 if (!is_array($aParams))
     $aParams = array($aParams);
 
-$mixedRet = BxDolService::call($sModule, $sMethod, $aParams, $sClass);
+$mixedRet = BxDolService::callExternal($sModule, $sMethod, $aParams, $sClass);
 
 // check output and return JSON
 

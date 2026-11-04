@@ -425,6 +425,15 @@ class BxBaseModGeneralModule extends BxDolModule
 
     public function serviceDeletePoll($iId)
     {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aPollInfo = $this->_oDb->getPollInfoById($iId);
+        if(empty($aPollInfo) || !($aContentInfo = $this->_oDb->getContentInfoById($aPollInfo[$CNF['FIELD_POLL_CONTENT_ID']])))
+            return false;
+
+        if($this->checkAllowedEdit($aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
         return $this->_oDb->deletePolls([$this->_oConfig->CNF['FIELD_POLL_ID'] => $iId]);
     }
 
@@ -703,7 +712,7 @@ class BxBaseModGeneralModule extends BxDolModule
 
     public function serviceGetSafeServices()
     {
-        return array(
+        $a = array(
             // other
             'ModuleIcon' => '',
             'GetLink' => '',
@@ -744,6 +753,8 @@ class BxBaseModGeneralModule extends BxDolModule
             
             'GetProfiles' => '',
         );
+
+        return $a;
     }
 
     /**
@@ -976,8 +987,14 @@ class BxBaseModGeneralModule extends BxDolModule
     {
         $CNF = &$this->_oConfig->CNF;
 
+        if($this->_isRawInfoDenied())
+            $bSearchableFieldsOnly = true;
+
         $aContentInfo = $this->_getFields($iContentId);
         if(empty($aContentInfo))
+            return [];
+
+        if($this->checkAllowedView($aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
             return [];
 
         if($bSearchableFieldsOnly === false)
@@ -989,6 +1006,16 @@ class BxBaseModGeneralModule extends BxDolModule
             return array_intersect_key($aContentInfo, array_flip($aFields));
 
         return [];
+    }
+
+    /**
+     * 'get_info' is a safe service, so it is reachable from API, macros and OAuth. Raw database
+     * rows (all columns, or a single column by name) are for administrators and moderators there,
+     * everybody else gets searchable fields only. Internal calls (bx_srv and direct) are not affected.
+     */
+    protected function _isRawInfoDenied()
+    {
+        return BxDolService::isExternalCall($this->getName(), 'get_info') && !isAdmin() && !bx_acl_is_advanced();
     }
 
     public function serviceGetInfoApi ($iContentId, $bExtendedUnits = false)
@@ -1020,11 +1047,11 @@ class BxBaseModGeneralModule extends BxDolModule
     public function serviceGetSearchResultUnit ($iContentId, $sUnitTemplate = '')
     {
         $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
+        if(empty($aContentInfo) || $this->checkAllowedView($aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+            return $this->_bIsApi ? [] : '';
+
         if($this->_bIsApi)
             return $this->getDataAPI($aContentInfo);
-
-        if(empty($aContentInfo))
-            return '';
 
         if(empty($sUnitTemplate))
             $sUnitTemplate = 'unit.html';
@@ -1474,6 +1501,16 @@ class BxBaseModGeneralModule extends BxDolModule
         // So 'filters' is safe, 'filter' isn't safe!
         if($this->_bIsApi && isset($aParams['params']['filter']))
             unset($aParams['params']['filter']);
+
+        // Paging from an API client: at most 50 entries a page, otherwise the module's own number.
+        // A name of a setting isn't accepted either, it would be read with getParam.
+        if($this->_bIsApi && isset($aParams['params']) && is_array($aParams['params'])) {
+            if(isset($aParams['params']['start']))
+                $aParams['params']['start'] = bx_api_get_start($aParams['params']['start']);
+
+            if(isset($aParams['params']['per_page']) && !($aParams['params']['per_page'] = bx_api_get_per_page($aParams['params']['per_page'], 0)))
+                unset($aParams['params']['per_page']);
+        }
 
         return $this->serviceBrowseWithCondition ($aParams);
     }
@@ -2284,6 +2321,14 @@ class BxBaseModGeneralModule extends BxDolModule
      */
     public function serviceEntityAttachments ($iContentId = 0)
     {
+        $mixedContent = $this->_getContent($iContentId);
+        if($mixedContent === false)
+            return false;
+
+        list($iContentId, $aContentInfo) = $mixedContent;
+        if($this->checkAllowedView($aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
         return $this->_serviceTemplateFunc ('entryAttachments', $iContentId);
     }
 
@@ -3369,20 +3414,31 @@ class BxBaseModGeneralModule extends BxDolModule
     
     public function serviceCheckAllowedCommentsView($iContentId, $sObjectComments) 
     {
-        //negative id used in comments for reports
+        // A negative id is the comment thread on a report. Only report viewers may open it.
         if ($iContentId < 0)
-            return CHECK_ACTION_RESULT_ALLOWED;
+            return $this->_isAllowedReportThread();
         
         return $this->serviceCheckAllowedWithContent('comments_view', $iContentId);
     }
     
     public function serviceCheckAllowedCommentsPost($iContentId, $sObjectComments) 
     {
-        //negative id used in comments for reports
         if ($iContentId < 0)
-            return CHECK_ACTION_RESULT_ALLOWED;
+            return $this->_isAllowedReportThread();
         
         return $this->serviceCheckAllowedWithContent('comments_post', $iContentId);
+    }
+
+    protected function _isAllowedReportThread()
+    {
+        if (isAdmin())
+            return CHECK_ACTION_RESULT_ALLOWED;
+
+        $aCheck = checkActionModule(bx_get_logged_profile_id(), 'report_view', 'system');
+        if ($aCheck[CHECK_ACTION_RESULT] === CHECK_ACTION_RESULT_ALLOWED)
+            return CHECK_ACTION_RESULT_ALLOWED;
+
+        return _t('_sys_txt_access_denied');
     }
 
     public function serviceGetContentOwnerProfileId ($iContentId)
@@ -4138,13 +4194,14 @@ class BxBaseModGeneralModule extends BxDolModule
 
         $iContentId = (int)$oForm->getCleanValue($CNF['FIELD_ATTACH_LINK_CONTENT_ID']);
         $sLink = rtrim($oForm->getCleanValue('url'), '/');
-        $sHost = parse_url($sLink, PHP_URL_HOST);
-        if($sHost && is_private_ip(gethostbyname($sHost)))
-            return ['message' => _t('_sys_txt_error_occured')];
 
         $aMatches = [];
-        preg_match($this->_oConfig->getPregPattern('url'), $sLink, $aMatches);
+        if (!preg_match($this->_oConfig->getPregPattern('url'), $sLink, $aMatches) || empty($aMatches[0]))
+            return ['message' => _t('_sys_txt_error_occured')];
         $sLink = (empty($aMatches[2]) ? 'http://' : '') . $aMatches[0];
+        $sHost = parse_url($sLink, PHP_URL_HOST);
+        if (!bx_remote_url_is_allowed($sLink))
+            return ['message' => _t('_sys_txt_error_occured')];
 
         $aSiteInfo = bx_get_site_info($sLink, [
             'thumbnailUrl' => ['tag' => 'link', 'content_attr' => 'href'],

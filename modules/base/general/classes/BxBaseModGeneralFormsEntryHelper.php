@@ -467,6 +467,9 @@ class BxBaseModGeneralFormsEntryHelper extends BxDolProfileForms
         if (!$aContentInfo)
             return _t('_sys_txt_error_entry_is_not_defined');
 
+        if (CHECK_ACTION_RESULT_ALLOWED !== ($sMsg = $this->_oModule->checkAllowedEdit($aContentInfo)))
+            return $sMsg;
+
         // get display form
         $oForm = $this->getObjectFormEdit($sDisplay);
         if (!$oForm)

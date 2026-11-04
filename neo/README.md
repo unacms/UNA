@@ -55,6 +55,7 @@ APP_ORIGIN=neo://app
 | `GOOGLE_WEB_CLIENT_ID` | Optional. Google sign-in. Google sign-in doesn't work on `.localhost` URLs. |
 | `GOOGLE_MAPS_API_KEY`, `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Optional. Maps. |
 | `ONE_SIGNAL_API_KEY` | Optional. Push notifications. |
+| `SOCKETS_HOST`, `SOCKETS_PORT`, `SOCKETS_KEY` | Optional. Real-time updates: the Soketi server and app key set in UNA Studio → Settings → Sockets (`SOCKETS_PORT` defaults to 443). Without a host and key, NEO doesn't connect. The key is public: the browser and the app send it. |
 | `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` | Optional. Downloads the Mapbox native SDK at build time. |
 | `EAS_PROJECT_ID` | Optional. EAS builds and updates. |
 | `REDIS_URL` | Multi-tenant mode only: the domain map. |

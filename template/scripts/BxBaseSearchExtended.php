@@ -88,6 +88,14 @@ class BxBaseSearchExtended extends BxDolSearchExtended
         $bJsMode = isset($aParams['js_mode']) ? (bool)$aParams['js_mode'] : $this->_bJsMode;
         $bCondition = !empty($aParams['cond']) && is_array($aParams['cond']);
 
+        // Paging from an API client: 1 to 50 results a page, otherwise the default number, and start from 0 to 100000.
+        if($this->_bIsApi) {
+            if(isset($aParams['per_page']) && !bx_api_get_per_page($aParams['per_page'], 0))
+                unset($aParams['per_page']);
+            if(isset($aParams['start']))
+                $aParams['start'] = bx_api_get_start($aParams['start']);
+        }
+
         $iStart = !empty($aParams['start']) ? (int)$aParams['start'] : 0;
         $iPerPage = !empty($aParams['per_page']) ? (int)$aParams['per_page'] : (int)getParam('sys_per_page_search_extended');
         if(!$iPerPage) {

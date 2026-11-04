@@ -398,6 +398,13 @@ class BxBaseVoteReactions extends BxDolVoteReactions
 
     public function getPerformedByAPI($aParams = [])
     {
+        if (!$this->isAllowedVoteViewVoters())
+            return ['code' => BX_DOL_OBJECT_ERR_ACCESS_DENIED, 'message' => $this->msgErrAllowedVoteViewVoters()];
+
+        $aObject = $this->_oQuery->getObjectInfo($this->getId());
+        if (empty($aObject) || !is_array($aObject) || !$this->_isAllowedVoteByObject($aObject))
+            return ['code' => BX_DOL_OBJECT_ERR_ACCESS_DENIED, 'message' => _t('_sys_txt_access_denied')];
+
         if(!empty($aParams['reaction']))
             $aReactions = $this->getReaction($aParams['reaction']) !== false ? [$aParams['reaction']] : [];
         else

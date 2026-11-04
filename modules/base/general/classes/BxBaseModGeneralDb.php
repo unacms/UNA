@@ -603,7 +603,11 @@ class BxBaseModGeneralDb extends BxDolModuleDb
 
         $sWhereConditions = "1";
         foreach($aParams['search_params'] as $sSearchParam => $aSearchParam) {
-            if(empty($aSearchParam['operator']))
+            if(!is_array($aSearchParam) || empty($aSearchParam['operator']))
+                continue;
+
+            // The key is a column identifier. Values are bound; the name is not, so it has to be a real column.
+            if(!$this->isValidFieldName($sSearchParam, true) || !$this->isFieldExists($CNF['TABLE_ENTRIES'], $sSearchParam))
                 continue;
 
             $sSearchValue = "";
@@ -744,12 +748,19 @@ class BxBaseModGeneralDb extends BxDolModuleDb
 
         $aOrders = array();
         foreach($aParams['search_params']['order'] as $aOrder) {
-            $sTable = (isset($aOrder['table']) ? $aOrder['table'] : $CNF['TABLE_ENTRIES']);
+            if (!is_array($aOrder))
+                throw new Exception('Invalid order in _getEntriesBySearchIdsOrder method');
+
+            $sTable = !empty($aOrder['table']) ? $aOrder['table'] : $CNF['TABLE_ENTRIES'];
+            if (!$this->isValidFieldName($sTable, true) || ($sTable !== $CNF['TABLE_ENTRIES'] && !$this->isTableExists($sTable)))
+                throw new Exception('Invalid table in _getEntriesBySearchIdsOrder method');
+
             $sField = $CNF['FIELD_ADDED'];
-            if (!empty($aOrder['field'])) {                
-                if (!$this->isFieldExists($sTable, $aOrder['field'])) {
+            if (!empty($aOrder['field'])) {
+                if (!$this->isValidFieldName($aOrder['field'], true))
+                    throw new Exception('Invalid field in _getEntriesBySearchIdsOrder method');
+                if (!$this->isFieldExists($sTable, $aOrder['field']))
                     throw new Exception('Invalid field ' . $aOrder['field'] . ' in table ' . $sTable . ' in _getEntriesBySearchIdsOrder method');
-                }
                 $sField = $aOrder['field'];
             }
 

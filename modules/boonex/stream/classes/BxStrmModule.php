@@ -72,9 +72,23 @@ class BxStrmModule extends BxBaseModTextModule
 	    }
 
         $sBaseUrl = rtrim(getParam('bx_stream_recordings_url'), '/');
-        $sUrl = str_replace($sBasePath, $sBaseUrl, $sPath);
+        $iBaseLen = get_mb_len($sBasePath);
+        $sRest = get_mb_substr($sPath, $iBaseLen, get_mb_len($sPath) - $iBaseLen);
+        $sBaseTail = $iBaseLen > 0 ? get_mb_substr($sBasePath, $iBaseLen - 1, 1) : '';
+        $sRestHead = $sRest === '' ? '' : get_mb_substr($sRest, 0, 1);
+        if ($sBaseUrl === '' || bx_mb_strpos($sPath, $sBasePath) !== 0 || ($sRest !== '' && $sRestHead !== '/' && $sBaseTail !== '/')) {
+            header('HTTP/1.0 400 Bad Request');
+            return;
+        }
+        $sUrl = $sBaseUrl . $sRest;
+        $sBaseHost = parse_url($sBaseUrl, PHP_URL_HOST);
+        $sUrlHost = parse_url($sUrl, PHP_URL_HOST);
+        if (!preg_match('#^https?://#i', $sUrl) || !$sBaseHost || !$sUrlHost || strcasecmp($sBaseHost, $sUrlHost) !== 0) {
+            header('HTTP/1.0 400 Bad Request');
+            return;
+        }
         if ($oStorage = BxDolStorage::getObjectInstance('bx_stream_recordings')) {
-            $iFileId = $oStorage->storeFileFromUrl($sUrl, true, $aContentInfo[$CNF['FIELD_AUTHOR']], $aContentInfo['id']);
+            $iFileId = $oStorage->storeFileFromUrl($sUrl, true, $aContentInfo[$CNF['FIELD_AUTHOR']], $aContentInfo['id'], true);
             if (!$iFileId)
                 bx_log('bx_stream', "Store recording from URL(" . $sUrl . ") failed for content id({$aContentInfo['id']})", BX_LOG_ERR);
         }

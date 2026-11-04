@@ -181,7 +181,7 @@ class BxBaseChartServices extends BxDol
         
         if($iContentId){
             $oChart->addMarkers([
-                'content_id' => $iContentId
+                'content_id' => (int)$iContentId
             ]);
         }
 

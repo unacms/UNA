@@ -387,6 +387,8 @@ function bx_editor_init(oParams) {
                     const formData = new FormData();
                    
                     formData.append("file", file);
+                    if (oParams.upload_token)
+                        formData.append("ut", oParams.upload_token);
                     fetch(oParams.root_url + "storage.php?o=sys_images_editor&t=sys_images_editor&a=upload", {
                             method: "POST",
                             body: formData

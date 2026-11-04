@@ -79,6 +79,10 @@ class BxDrupalModule extends BxBaseModConnectModule
 
     public function serviceHandleUser($aRemoteProfileInfo)
     {
+        // it trusts the remote profile info given by the caller, so it is for internal calls only (not for API clients)
+        if (BxDolService::isExternalCall($this->getName(), 'handle_user'))
+            return false;
+
         if ($aRemoteProfileInfo && isset($aRemoteProfileInfo['user']) && isset($aRemoteProfileInfo['user']['uid'])) {
 
             // check if user logged in before

@@ -140,7 +140,12 @@ class BxForumGrid extends BxBaseModGeneralGrid
             }
 
         $this->_aOptions['field_order'] = $sField;
-        $this->_aOptions['paginate_per_page'] = !empty($this->_aBrowseParams['per_page']) ? (int)$this->_aBrowseParams['per_page'] : (int)$this->_oModule->_oDb->getParam('bx_forum_per_page_browse');
+
+        // On the API the browse params (bp) come from the client: 1 to 50 topics a page, otherwise the module's number.
+        $iPerPage = (int)$this->_oModule->_oDb->getParam('bx_forum_per_page_browse');
+        if(!empty($this->_aBrowseParams['per_page']))
+            $iPerPage = $this->_bIsApi ? bx_api_get_per_page($this->_aBrowseParams['per_page'], $iPerPage) : (int)$this->_aBrowseParams['per_page'];
+        $this->_aOptions['paginate_per_page'] = $iPerPage;
     }
 
     public function getCode ($isDisplayHeader = true)

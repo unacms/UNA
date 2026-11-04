@@ -101,6 +101,53 @@
  */
 abstract class BxDolUploader extends BxDolFactory
 {
+    const UPLOAD_TOKEN_SALT = 'uploader';
+
+    public static function isUploadTokenEnabled()
+    {
+        return getParam('sys_security_upload_token_enable') == 'on';
+    }
+
+    public static function getUploadToken($sAction, $sStorageObject, $sUploaderObject = '', $aTranscoders = [])
+    {
+        $oSession = BxDolSession::getInstance();
+        $oSession->start(true);
+        $iLifetime = max(60, (int)getParam('sys_security_upload_token_lifetime'));
+        $aData = [
+            'action' => $sAction,
+            'storage' => $sStorageObject,
+            'uploader' => $sUploaderObject,
+            'session' => $oSession->getId(),
+            'profile_id' => (int)bx_get_logged_profile_id(),
+            'transcoders' => array_values($aTranscoders),
+        ];
+        return BxDolKey::getInstance()->getNewKey($aData, $iLifetime, self::UPLOAD_TOKEN_SALT);
+    }
+
+    /**
+     * Check an upload token. The token is not consumed: one form render serves several uploads
+     * (multiple files, repeated uploads, editor images), so it works for any number of uploads
+     * of its action, storage, uploader and session until it expires.
+     * @return token payload (with `profile_id`) or false
+     */
+    public static function checkUploadToken($sToken, $sAction, $sStorageObject, $sUploaderObject = '')
+    {
+        if (!self::isUploadTokenEnabled() || !is_string($sToken) || $sToken === '')
+            return false;
+
+        $oSession = BxDolSession::getInstance();
+        $oSession->start(true);
+        $aData = BxDolKey::getInstance()->getKeyData($sToken, self::UPLOAD_TOKEN_SALT);
+        if (!is_array($aData)
+            || ($aData['action'] ?? '') !== $sAction
+            || ($aData['storage'] ?? '') !== $sStorageObject
+            || ($aData['uploader'] ?? '') !== $sUploaderObject
+            || ($aData['session'] ?? '') !== $oSession->getId())
+            return false;
+
+        return $aData;
+    }
+
     protected $_bIsApi;
     protected $_oTemplate;
 
@@ -312,6 +359,9 @@ abstract class BxDolUploader extends BxDolFactory
             'multiple' => $isMultiple ? 1 : 0,
             'latest' => 0, //--- Return the latest one uploaded ghost only.
             'storage_private' => isset($aParams['storage_private']) ? $aParams['storage_private'] : 1,
+            'upload_token' => isset($aParams['upload_token'])
+                ? bx_js_string($aParams['upload_token'])
+                : (self::isUploadTokenEnabled() ? bx_js_string(self::getUploadToken('upload', $this->_sStorageObject, $this->_aObject['object'])) : ''),
             'is_init_reordering' => isset($aParams['is_init_reordering']) ? $aParams['is_init_reordering'] : 0,
             'bx_if:restore_ghosts' => [
                 'condition' => isset($aParams['is_init_ghosts']) ? $aParams['is_init_ghosts'] : 1,

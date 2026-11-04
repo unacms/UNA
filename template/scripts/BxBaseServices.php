@@ -2045,7 +2045,11 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
      */
     public function serviceGetMockupBlock($iBlockId = 0)
     {
-        $aTree = BxDolAIToolMockup::getTree((int)$iBlockId);
+        $iBlockId = (int)$iBlockId;
+        if (!BxDolAIToolMockup::isMockupBlock($iBlockId) || !BxDolPage::isViewerAllowedBlock($iBlockId))
+            return [];
+
+        $aTree = BxDolAIToolMockup::getTree($iBlockId);
 
         if (!$aTree) {
             $aTree = [

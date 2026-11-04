@@ -80,10 +80,16 @@ class BxDolStorageLocal extends BxDolStorage
         }
         
 
-        if (!bx_smart_readfile($sFileLocation, $aFile['file_name'], $aFile['mime_type'], $aFile['private'] && $this->_iCacheControl > $this->_aObject['token_life'] ? $this->_aObject['token_life'] : $this->_iCacheControl, $aFile['private'] ? 'private' : 'public', $bForceDownloadDialog ? 'attachment' : 'inline')) {
+        // a public file is never changed under its URL, so it is sent as immutable
+        $mixedResult = bx_smart_readfile($sFileLocation, $aFile['file_name'], $aFile['mime_type'], $aFile['private'] && $this->_iCacheControl > $this->_aObject['token_life'] ? $this->_aObject['token_life'] : $this->_iCacheControl, $aFile['private'] ? 'private' : 'public', $bForceDownloadDialog ? 'attachment' : 'inline', !$aFile['private'] && !$bForceDownloadDialog);
+        if (!$mixedResult) {
             $this->setErrorCode(BX_DOL_STORAGE_ERR_ENGINE_GET);
             return false;
         }
+
+        // HEAD, 304 and 416 answers don't send the file, so they aren't downloads
+        if (true !== $mixedResult)
+            return true;
 
         return parent::download($aFile);
     }

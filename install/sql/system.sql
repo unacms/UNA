@@ -667,6 +667,8 @@ SET @iCategoryId = LAST_INSERT_ID();
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
 (@iCategoryId, 'sys_security_form_token_enable', '_adm_stg_cpt_option_sys_security_form_token_enable', 'on', 'checkbox', '', '', '', 10),
 (@iCategoryId, 'sys_security_form_token_lifetime', '_adm_stg_cpt_option_sys_security_form_token_lifetime', '86400', 'digit', '', '', '', 11),
+(@iCategoryId, 'sys_security_upload_token_enable', '_adm_stg_cpt_option_sys_security_upload_token_enable', 'on', 'checkbox', '', '', '', 12),
+(@iCategoryId, 'sys_security_upload_token_lifetime', '_adm_stg_cpt_option_sys_security_upload_token_lifetime', '900', 'digit', '', '', '', 13),
 (@iCategoryId, 'sys_captcha_default', '_adm_stg_cpt_option_sys_captcha_default', 'sys_recaptcha_new', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:27:"get_options_captcha_default";s:5:"class";s:13:"TemplServices";}', '', '', 19),
 (@iCategoryId, 'sys_recaptcha_key_public', '_adm_stg_cpt_option_sys_recaptcha_key_public', '', 'digit', '', '', '', 20),
 (@iCategoryId, 'sys_recaptcha_key_private', '_adm_stg_cpt_option_sys_recaptcha_key_private', '', 'secret', '', '', '', 21),

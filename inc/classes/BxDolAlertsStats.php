@@ -9,6 +9,15 @@
 
 class BxDolAlertsStats extends BxDol
 {
+    /**
+     * Keys whose values are never written to the log: credentials, codes, sessions,
+     * message contents or addresses, links (which can carry a reset or confirmation
+     * key), form inputs (the values people typed) and remote (third-party) profile data.
+     * Matched as a whole word in snake_case or camelCase keys at any depth.
+     */
+    private const REDACT_KEYS = '/(^|_)(pwd|pass|passwd|password|salt|secret|token|otp|key|code|sessid|sid|session|body|e?mails?|headers?|recipients?|phones?|sms|message|url|link|inputs|remote)(_|$)/i';
+    private const REDACTED = '[redacted]';
+
     private static array $logs = [];
     private static array $stats = [];
     private static bool $registered = false;
@@ -105,7 +114,7 @@ class BxDolAlertsStats extends BxDol
                 }
             }
             self::$logs[$s]['extra_refs'] = json_encode(self::$logs[$s]['extra_refs'] ?? []);
-            self::$logs[$s]['extra'] = json_encode(self::$logs[$s]['extra']);            
+            self::$logs[$s]['extra'] = json_encode(self::redact($data['extra']));
 
             if (getParam('sys_alerts_stats')) {
                 $oDb->query("
@@ -145,6 +154,30 @@ class BxDolAlertsStats extends BxDol
                 }
             }
         }
+    }
+
+    /**
+     * A copy of an alert's extra data for the log, with the values of secret or
+     * personal keys (REDACT_KEYS) replaced and objects named by class. The keys stay,
+     * since the log is there to show the shape of each alert's data. The extras hold
+     * references to the caller's variables, so they are read into a new array and
+     * never changed in place.
+     */
+    public static function redact(array $aExtras, int $iDepth = 0): array
+    {
+        $aResult = [];
+        foreach ($aExtras as $mixedKey => $mixedValue) {
+            if (is_string($mixedKey) && preg_match(self::REDACT_KEYS, preg_replace('/([a-z0-9])([A-Z])/', '$1_$2', $mixedKey)))
+                $aResult[$mixedKey] = self::REDACTED;
+            else if (is_array($mixedValue))
+                $aResult[$mixedKey] = $iDepth < 10 ? self::redact($mixedValue, $iDepth + 1) : self::REDACTED;
+            else if (is_object($mixedValue))
+                $aResult[$mixedKey] = '[object ' . get_class($mixedValue) . ']'; // a form, for one, holds the submitted values
+            else
+                $aResult[$mixedKey] = $mixedValue;
+        }
+
+        return $aResult;
     }
 }
 

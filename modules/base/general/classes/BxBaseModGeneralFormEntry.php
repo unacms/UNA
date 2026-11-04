@@ -488,6 +488,9 @@ class BxBaseModGeneralFormEntry extends BxTemplFormView
             }
         }
 
+        if(!$this->_checkContextPost($aValsToAdd))
+            return 0;
+
         if (isset($CNF['FIELD_ADDED']) && empty($aValsToAdd[$CNF['FIELD_ADDED']]) && empty($this->getCleanValue($CNF['FIELD_ADDED'])))
             $aValsToAdd[$CNF['FIELD_ADDED']] = time();
 
@@ -606,6 +609,10 @@ class BxBaseModGeneralFormEntry extends BxTemplFormView
         $CNF = &$this->_oModule->_oConfig->CNF;
 
         $aContentInfo = $this->_oModule->_oDb->getContentInfoById($iContentId);
+
+        // Moving existing content into another context needs the same permission as posting there.
+        if(!$this->_checkContextPost($aValsToAdd, $aContentInfo))
+            return false;
 
         $iAuthor = -1;
         if(isset($CNF['FIELD_AUTHOR'])) {
@@ -1185,6 +1192,44 @@ class BxBaseModGeneralFormEntry extends BxTemplFormView
                 array('key' => '', 'value' => '----', 'attrs' => array('disabled' => 'disabled'))
             ), $this->aInputs[$sField]['values']);
         }
+    }
+
+    /**
+     * Check that the current profile may post into the context (a negative view privacy value)
+     * which the content is going to be saved with. Content without a context, and content which
+     * keeps its current context on edit, is not affected.
+     *
+     * @param array $aValsToAdd values which are passed to insert or update, they override submitted ones
+     * @param array $aContentInfo current content info on edit, empty on add
+     * @return true if allowed, false otherwise (the form is marked as invalid in this case)
+     */
+    protected function _checkContextPost($aValsToAdd, $aContentInfo = [])
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        $sField = $CNF['FIELD_ALLOW_VIEW_TO'] ?? '';
+        if(!$sField)
+            return true;
+
+        $mixedValue = $aValsToAdd[$sField] ?? null;
+        if($mixedValue === null && isset($this->aInputs[$sField]))
+            $mixedValue = $this->getCleanValue($sField);
+
+        if(!is_numeric($mixedValue) || (int)$mixedValue >= 0)
+            return true;
+
+        if(!empty($aContentInfo) && isset($aContentInfo[$sField]) && (int)$aContentInfo[$sField] == (int)$mixedValue)
+            return true;
+
+        $oContext = BxDolProfile::getInstance(abs((int)$mixedValue));
+        if($oContext && $oContext->checkAllowedPostInProfile($oContext->id(), $this->_oModule->getName()) === CHECK_ACTION_RESULT_ALLOWED)
+            return true;
+
+        if(isset($this->aInputs[$sField]))
+            $this->aInputs[$sField]['error'] = _t('_sys_txt_access_denied');
+        $this->setValid(false);
+
+        return false;
     }
 
     protected function _processContextBeforeAdd()

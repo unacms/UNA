@@ -32,14 +32,18 @@ class BxMarketDb extends BxBaseModTextDb
     {
         $CNF = &$this->_oConfig->CNF;
 
-        $sWhere = '';
-        $aBindings = array('limit' => $iLimit);
+        $sWhere = "AND `{$CNF['FIELD_STATUS']}` = :status AND `{$CNF['FIELD_STATUS_ADMIN']}` = :status_admin";
+        $aBindings = array(
+            'limit' => $iLimit,
+            'status' => 'active',
+            'status_admin' => 'active',
+        );
         if ($iVendor) {
             $aBindings['author'] = $iVendor;
-            $sWhere .= "AND `{$CNF['FIELD_AUTHOR']} = :author`";
+            $sWhere .= " AND `{$CNF['FIELD_AUTHOR']} = :author`";
         }
 
-        return $this->getColumn("SELECT `{$CNF['FIELD_NAME']}` FROM `{$CNF['TABLE_ENTRIES']}` WHERE (`{$CNF['FIELD_PRICE_SINGLE']}` != '0' OR `{$CNF['FIELD_PRICE_RECURRING']}` != '0') $sWhere LIMIT :limit", $aBindings);
+        return $this->getAll("SELECT * FROM `{$CNF['TABLE_ENTRIES']}` WHERE (`{$CNF['FIELD_PRICE_SINGLE']}` != '0' OR `{$CNF['FIELD_PRICE_RECURRING']}` != '0') $sWhere LIMIT :limit", $aBindings);
     }
     
     public function getContentInfoBy ($aParams)

@@ -15,12 +15,34 @@ $sToken = bx_process_input(bx_get('t'));
 
 $oStorage = BxDolStorage::getObjectInstance($sStorageObject);
 // upload action implementation
-if ($oStorage && bx_get('a') == 'upload' && bx_get('t')) {
+if ($oStorage && bx_get('a') == 'upload') {
     header('Content-Type: application/json; charset=utf-8');
 
     $iProfileId = bx_get_logged_profile_id();
+    if (BxDolUploader::isUploadTokenEnabled()) {
+        $aUploadToken = BxDolUploader::checkUploadToken(bx_get('ut'), 'upload', $sStorageObject);
+        if (!$aUploadToken) {
+            http_response_code(403);
+            echo json_encode(['error' => _t('_Access denied'), 'code' => 403]);
+            exit;
+        }
+        $iProfileId = (int)$aUploadToken['profile_id'];
+    }
 
-    if (!($iId = $oStorage->storeFileFromForm($_FILES['file'], false, $iProfileId))) {
+    // Only a transcoder fed by this storage is allowed; check it before the file is stored.
+    $oTranscoder = false;
+    if (!empty($sToken)) {
+        $aTranscoder = BxDolTranscoderQuery::getTranscoderObject($sToken);
+        $aSource = !empty($aTranscoder['source_params']) ? unserialize($aTranscoder['source_params']) : [];
+        $oTranscoder = ($aSource['object'] ?? '') === $sStorageObject ? BxDolTranscoderImage::getObjectInstance($sToken) : false;
+        if (!$oTranscoder) {
+            http_response_code(403);
+            echo json_encode(['error' => _t('_Access denied'), 'code' => 403]);
+            exit;
+        }
+    }
+
+    if (empty($_FILES['file']) || !($iId = $oStorage->storeFileFromForm($_FILES['file'], false, $iProfileId))) {
         echo json_encode(array('error' => '1'));
         exit;
     }
@@ -28,8 +50,7 @@ if ($oStorage && bx_get('a') == 'upload' && bx_get('t')) {
     $oStorage->afterUploadCleanup($iId, $iProfileId);
 
     $aFileInfo = $oStorage->getFile($iId);
-    if ($aFileInfo && in_array($aFileInfo['ext'], array('jpg', 'jpeg', 'jpe', 'png'))) {
-        $oTranscoder = BxDolTranscoderImage::getObjectInstance(bx_get('t'));
+    if ($oTranscoder && $aFileInfo && in_array($aFileInfo['ext'], array('jpg', 'jpeg', 'jpe', 'png'))) {
         $sUrl = $oTranscoder->getFileUrl($iId);
     }
     else {
@@ -93,6 +114,9 @@ if (!$oStorage->download($sRemoteId, $sToken)) {
 function bx_storage_download_error_occured($sMethod = 'displayPageNotFound')
 {
     bx_import('BxDolLanguages');
+
+    // an error must not be kept by browsers or shared caches in place of the file
+    header('Cache-Control: no-store');
 
     if ('displayPageNotFound' == $sMethod) {
         header('HTTP/1.0 404 Not Found');

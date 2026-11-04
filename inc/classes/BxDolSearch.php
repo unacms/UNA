@@ -1416,12 +1416,12 @@ class BxDolSearchResult implements iBxDolReplaceable
         if(isset($this->aCurrent['paginate']['perPage']) && (int)$this->aCurrent['paginate']['perPage'] != 0)
             $iPerPage = (int)$this->aCurrent['paginate']['perPage'];
         
-        //--- Check in aParams (middle priority).
+        //--- Check in aParams (middle priority). On the API they can come from the client: at most 50.
         if(isset($this->_aParams['per_page']) && (int)$this->_aParams['per_page'] != 0)
-            $iPerPage = (int)$this->_aParams['per_page'];
+            $iPerPage = $this->_bIsApi ? bx_api_get_per_page($this->_aParams['per_page'], $iPerPage) : (int)$this->_aParams['per_page'];
 
-        //--- Check in GET params (high priority).
-        if(isset($_GET['per_page']) && (int)$_GET['per_page'] != 0)
+        //--- Check in GET params (high priority). An API request takes it from the service params only.
+        if(!$this->_bIsApi && isset($_GET['per_page']) && (int)$_GET['per_page'] != 0)
             $iPerPage = (int)$_GET['per_page'];
 
         //--- Trying to get from System settings.
@@ -1434,6 +1434,10 @@ class BxDolSearchResult implements iBxDolReplaceable
         
         if ($this->iPaginatePerPage != BX_DOL_SEARCH_RESULTS_PER_PAGE_DEFAULT)
             $iPerPage = $this->iPaginatePerPage;
+
+        //--- An API page has 1 to 50 units (see bx_api_get_per_page), whatever setting a client named as per_page.
+        if ($this->_bIsApi)
+            $iPerPage = min(max($iPerPage, 1), 50);
 
         $this->aCurrent['paginate']['perPage'] = $iPerPage;
 

@@ -209,8 +209,27 @@ class BxBaseModGroupsGridConnections extends BxDolGridConnections
         return $this->_getActionResult(!$this->_bIsApi ? ['grid' => $this->getCode(false), 'blink' => $iId] : []);
     }
     
+    public function performActionDelete()
+    {
+        if ($this->_oModule->checkAllowedManageFans($this->_iGroupProfileId) !== CHECK_ACTION_RESULT_ALLOWED)
+            return $this->_getActionResult(['msg' => _t('_sys_txt_access_denied')]);
+
+        return parent::performActionDelete();
+    }
+
+    public function performActionAccept()
+    {
+        if ($this->_oModule->checkAllowedManageFans($this->_iGroupProfileId) !== CHECK_ACTION_RESULT_ALLOWED)
+            return $this->_getActionResult(['msg' => _t('_sys_txt_access_denied')]);
+
+        return parent::performActionAccept();
+    }
+
     public function performActionDeleteAndBan()
     {
+        if ($this->_oModule->checkAllowedManageFans($this->_iGroupProfileId) !== CHECK_ACTION_RESULT_ALLOWED)
+            return $this->_getActionResult(['msg' => _t('_sys_txt_access_denied')]);
+
         $this->_replaceMarkers ();
 
         $aResult = [];

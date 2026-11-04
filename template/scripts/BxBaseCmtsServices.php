@@ -664,10 +664,11 @@ class BxBaseCmtsServices extends BxDol
         if($mixedResult !== CHECK_ACTION_RESULT_ALLOWED)
             return $mixedResult; // TODO: error checking
 
+        // comments asked for by id: whole numbers, each once, at most 50 of them
         if (isset($aParams['comment_id']))
-            $aParams['comment_id'] = explode(',', $aParams['comment_id']);
+            $aParams['comment_id'] = array_slice(array_values(array_unique(array_filter(is_scalar($aParams['comment_id']) ? explode(',', $aParams['comment_id']) : [], 'ctype_digit'))), 0, 50);
        
-        $aBp = !isset($aParams['aBp']) ? [] : $aParams['aBp'];
+        $aBp = !isset($aParams['aBp']) || !is_array($aParams['aBp']) ? [] : $aParams['aBp'];
         $aDp = ['in_designbox' => false, 'show_empty' => false];
         
         $aDp['type'] = !getParam('sys_api_comments_flat') ? 'threaded' : 'flat';
@@ -679,11 +680,18 @@ class BxBaseCmtsServices extends BxDol
 
         $aBp['order']['way'] = $sOrderWay;
         $aBp['order_way'] = $sOrderWay;
-        $aBp['start'] = !empty($aParams['start_from']) ? (int)$aParams['start_from'] : 0; 
+        $aBp['start'] = !empty($aParams['start_from']) ? bx_api_get_start($aParams['start_from']) : 0; 
+
+        // A page has 1 to 50 comments, whichever way a client asks for more (per_view or init_view in aBp,
+        // CmtPerView, per_view): anything else gets the comments object's own number.
+        $aBp['per_view'] = bx_api_get_per_page($aBp['per_view'], (int)$oCmts->getPerView(0));
+        if ($aBp['init_view'] != -1)
+            $aBp['init_view'] = bx_api_get_per_page($aBp['init_view'], $aBp['per_view']);
+
         $aPp = $aBp['per_view'];
         $aBp['per_view'] =  $aBp['per_view'] + 1; 
         if (isset($aParams['per_view'])){
-             $aBp['per_view'] = $aParams['per_view'];
+             $aBp['per_view'] = bx_api_get_per_page($aParams['per_view'], $aBp['per_view']);
         }
 
         // open the page with the comment, e.g. from a notification
@@ -711,6 +719,10 @@ class BxBaseCmtsServices extends BxDol
 
         $aCmtsRv = [];
         foreach ($aCmts as $aCmt) {
+            // an id that isn't a comment of this object would give the structure of all its comments
+            if (isset($aParams['comment_id']) && !$oCmts->getCommentSimple((int)$aCmt['cmt_id']))
+                continue;
+
             $aBp['order_way'] = 'asc';
             $aCmts = $oCmts->getCommentStructure($aCmt['cmt_id'], $aBp, $aDp);
             if($aCmts === false)

@@ -688,12 +688,17 @@ class BxBaseModTextModule extends BxBaseModGeneralModule implements iBxDolConten
             $sSummary = BxTemplFunctions::getInstance()->getStringWithLimitedLength(strip_tags($sSummary), (int)getParam($CNF['PARAM_CHARS_SUMMARY_PLAIN']));
         }
 
+        // A negative author id marks an anonymous post, its absolute value is the real author.
+        $iAuthor = (int)$aData[$CNF['FIELD_AUTHOR']];
+        if($iAuthor < 0 && abs($iAuthor) != (int)bx_get_logged_profile_id() && !isAdmin() && !bx_acl_is_advanced())
+            $iAuthor = 0;
+
         $aResult = [
             'id' => $iId,
             'module' => $sModule,
             'module_title' => _t($CNF['T']['txt_sample_single']),
             'added' => $aData[$CNF['FIELD_ADDED']],
-            'author' => $aData[$CNF['FIELD_AUTHOR']],
+            'author' => $iAuthor,
             'author_data' => !empty($aData[$CNF['FIELD_AUTHOR']]) ? BxDolProfile::getData($aData[$CNF['FIELD_AUTHOR']]) : '',
             'title' => $aData[$CNF['FIELD_TITLE']],
             'url' => bx_api_get_relative_url($this->serviceGetLink($iId)),
