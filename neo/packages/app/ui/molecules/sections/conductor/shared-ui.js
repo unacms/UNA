@@ -509,6 +509,8 @@ const EMPTY_LIST_ITEMS = []
  * @param {boolean} [opts.isFetching=false]
  * @param {boolean} [opts.preloadWhenEmpty=false]  Native: keep skeletons until
  *        the first rows land, even when `listReady` is already true.
+ * @param {boolean} [opts.hideEmptyMsg=false]  UNA says the list is empty only because
+ *        nothing was asked for yet (a search page before its form is used): no "No content".
  */
 export function useListScene({
     route,
@@ -528,6 +530,7 @@ export function useListScene({
     isPending = false,
     isFetching = false,
     preloadWhenEmpty = false,
+    hideEmptyMsg = false,
 }) {
     const unitType = useMemo(
         () => resolveConductorUnitType(route),
@@ -630,7 +633,7 @@ export function useListScene({
     // A tab with no list and nothing else either (no blocks, no form, no left-column
     // blocks): Explore for guests on a site without Timeline. Say so instead of a blank page.
     const isBlankTab = !requestUrl && isInited && !rows?.length && !hasForm && !hasLeftColumnItems
-    const showNoContent = !!(
+    const showNoContent = !hideEmptyMsg && !!(
         (requestUrl &&
             listReady &&
             hasNextPage === false &&

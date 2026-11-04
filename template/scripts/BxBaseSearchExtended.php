@@ -272,6 +272,8 @@ class BxBaseSearchExtended extends BxDolSearchExtended
             'request_url' => '/api.php?r=system/get_results/TemplSearchExtendedServices&params[]=',
             'data' =>  defined('BX_API_PAGE') ? [] : $aData,
             'params' => ['per_page' => $iPerPage, 'start' => $iStart, 'object' => $this->_aObject['module'], 'search_params' => $aParamsSearch],
+            // Nothing to search for yet: an empty list is not "nothing found".
+            'hide_empty_msg' => !$this->_bFilterMode && empty($aParamsSearch),
         ]);
     }
 

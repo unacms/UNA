@@ -4,6 +4,7 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 
 -- PAGES: config_api
 UPDATE `sys_pages_blocks` SET `config_api`='{\r\n\"content_type\":\"browse_simple\",\r\n\"header_more_url\":\"/persons-home\",\r\n\"view\":\"row\"\r\n}' WHERE `object`='sys_explore' AND `module`='bx_persons' AND `title_system`='_bx_persons_page_block_title_sys_featured_entries_view_showcase' AND `title`='_bx_persons_page_block_title_featured_entries_view_showcase_1759743271';
+UPDATE `sys_pages_blocks` SET `config_api`='{"use_as_filter":true}' WHERE `object`='bx_persons_search' AND `module`='bx_persons' AND `title_system`='' AND `title`='_bx_persons_page_block_title_search_form';
 
 -- PAGES: active_api
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_persons_create_profile' AND `module`='bx_persons' AND `title_system`='' AND `title`='_bx_persons_page_block_title_create_profile';
