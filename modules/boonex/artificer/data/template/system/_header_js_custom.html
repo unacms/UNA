@@ -138,7 +138,7 @@
     }
 
     function bx_site_search_too_short(oPopup) {
-        return $.trim(oPopup.find('input[name=keyword]').val()).length < Math.max(1, parseInt(oPopup.find('.bx-site-search').attr('data-min-len')) || 0);
+        return String(oPopup.find('input[name=keyword]').val() || '').trim().length < Math.max(1, Number.parseInt(oPopup.find('.bx-site-search').attr('data-min-len')) || 0);
     }
 
     /**
