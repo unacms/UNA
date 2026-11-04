@@ -1,6 +1,6 @@
 import { decodeTextNode } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
-import { isPageCoverShown } from 'app/lib/page-cover';
+import { isPageCoverShown, isPageCoverHiddenOn } from 'app/lib/page-cover';
 import type { PageTitleProps } from './page-title.types';
 
 /**
@@ -12,6 +12,8 @@ export function PageTitle({ data }: Readonly<PageTitleProps>) {
     const { currentUser } = useCurrentUser();
     if (!data?.name || data.page_status) return null;
     if (!isPageCoverShown(data.cover, Boolean(currentUser))) return null;
+    // Desktop only (lg:block), so Studio's "Cover hidden on: desktop" hides it.
+    if (isPageCoverHiddenOn(data.cover_hidden_on, 'desktop', false)) return null;
     return (
         <h1 className="hidden lg:block font-main text-4xl font-bold tracking-tight leading-tight text-foreground">
             {decodeTextNode(data.name)}

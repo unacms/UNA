@@ -399,6 +399,31 @@ class BxBasePage extends BxDolPage
     	return $bResult;
     }
 
+    /**
+     * The screen sizes the page's cover is hidden on (Studio > Pages > Cover: "Cover hidden on"), a set of
+     * BX_DB_HIDDEN_* bits as a block's "Hidden on".
+     * @return int
+     */
+    public function getPageCoverHiddenOn()
+    {
+        return isset($this->_aObject['cover_hidden_on']) ? (int)$this->_aObject['cover_hidden_on'] : 0;
+    }
+
+    /**
+     * Names of the screen sizes a set of BX_DB_HIDDEN_* bits hides on, as the apps get them: phone, tablet, desktop,
+     * mobile-app.
+     * @return array
+     */
+    public static function getHiddenOnNamesAPI($iHiddenOn)
+    {
+        $aNames = [];
+        foreach([BX_DB_HIDDEN_PHONE => 'phone', BX_DB_HIDDEN_TABLET => 'tablet', BX_DB_HIDDEN_DESKTOP => 'desktop', BX_DB_HIDDEN_MOBILE => 'mobile-app'] as $iBit => $sName)
+            if((int)$iHiddenOn & pow(2, $iBit - 1))
+                $aNames[] = $sName;
+
+        return $aNames;
+    }
+
     public function setSubPage($b = true)
     {
         $this->_bSubPage = $b;
@@ -598,6 +623,8 @@ class BxBasePage extends BxDolPage
             'layout_parsed' => !is_numeric(trim(current(array_keys($aElements)), 'cell_')),
             'cover_block' => '',
             'cover' => $this->_aObject['cover'],
+            // Where the cover (and so the page title) is hidden: phone, tablet, desktop, mobile-app.
+            'cover_hidden_on' => self::getHiddenOnNamesAPI($this->getPageCoverHiddenOn()),
             'menu_top' => '',
             'menu' => '',
             'menu_bottom' => '',
@@ -899,7 +926,10 @@ class BxBasePage extends BxDolPage
                 }
                 else 
                     $aCells[$sKey][$i][$sK] = false;
-                    
+
+                // Where its title, background or padding is hidden (Studio), for the apps' design box per screen size.
+                foreach(BxDolPageDesignbox::PARTS as $sPart)
+                    $aCells[$sKey][$i][$sPart . '_hidden_on'] = !empty($aBlock[$sPart . '_hidden_on']) ? self::getHiddenOnNamesAPI($aBlock[$sPart . '_hidden_on']) : false;
 
                 $aCells[$sKey][$i] = array_diff_key($aCells[$sKey][$i], array_flip($aFieldsUnset));
             }
@@ -944,6 +974,10 @@ class BxBasePage extends BxDolPage
                     foreach($aHiddenOn as $iHiddenOn => $sHiddenOnClass)
                         if((int)$aBlock['hidden_on'] & $iHiddenOn)
                             $sClassAdd .= ' ' . $sHiddenOnClass;
+
+                // Its title, background or padding hidden on some screen sizes (Studio).
+                if(($sDesignboxClasses = BxDolPageDesignbox::getHiddenOnClasses($aBlock)))
+                    $sClassAdd .= ' ' . $sDesignboxClasses;
 
                 if ($sContentWithBox)
                     $sCell .= $this->_oTemplate->parseHtmlByName('designbox_container.html', array(

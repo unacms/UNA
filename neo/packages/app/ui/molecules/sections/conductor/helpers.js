@@ -688,7 +688,7 @@ export function getContent(data, block) {
     const b = findElementBySource(data, blockName, (element) => !!element.content)
 
     return b?.content[0]?.type === 'browse' && !block.sidebar && !block.leftbar
-        ? { data: b.content[0].data, type: 'browse', designbox: b.config_api?.designbox }
+        ? { data: b.content[0].data, type: 'browse', designbox: b.config_api?.designbox, bg_hidden_on: b.bg_hidden_on }
         : { data: b, type: 'block', block: block }
 }
 
@@ -703,6 +703,7 @@ function processEndpoint(acc, b) {
         unit: b.data.unit,
         module: b.data.module,
         ...(b.designbox ? { designbox: b.designbox } : null),
+        ...(b.bg_hidden_on ? { bg_hidden_on: b.bg_hidden_on } : null),
     }
 }
 
@@ -717,6 +718,7 @@ function endpointFromBrowsePayload(payload) {
         unit: payload.unit,
         module: payload.module,
         ...(payload.designbox ? { designbox: payload.designbox } : null),
+        ...(payload.bg_hidden_on ? { bg_hidden_on: payload.bg_hidden_on } : null),
     }
 }
 
@@ -763,9 +765,15 @@ function mapLayoutBlocks(items = [], { browseAsBlocks = false } = {}) {
         return type === 'browse' || type === 'browse_list'
     })
     const payload = browseBlock?.content?.[0]?.data
-    // The browse block's App config styles the list: its card per breakpoint (`paddingForList`).
+    // The browse block's App config styles the list: its card per breakpoint (`paddingForList`),
+    // without the screen sizes Studio's "Background hidden on" lists.
     const designbox = browseBlock?.config_api?.designbox
-    return { content, endpoint: payload && designbox ? { ...payload, designbox } : payload }
+    const bgHiddenOn = browseBlock?.bg_hidden_on
+    if (!payload || (!designbox && !bgHiddenOn)) return { content, endpoint: payload }
+    return {
+        content,
+        endpoint: { ...payload, ...(designbox ? { designbox } : null), ...(bgHiddenOn ? { bg_hidden_on: bgHiddenOn } : null) },
+    }
 }
 
 /**
