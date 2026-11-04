@@ -11,7 +11,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && a2enmod rewrite deflate expires \
     && rm -rf /var/lib/apt/lists/*
 
+# PHP's built-in default shows errors in the page: a warning before an API response's JSON
+# breaks NEO's parsing of it, and messages show server paths. They go to the Apache error
+# log instead, which is the container's stderr and so Railway's logs.
 RUN printf '%s\n' \
+        'display_errors=Off' \
+        'display_startup_errors=Off' \
+        'log_errors=On' \
         'short_open_tag=On' \
         'memory_limit=256M' \
         'upload_max_filesize=64M' \

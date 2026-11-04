@@ -695,7 +695,8 @@ class BxBaseModTextModule extends BxBaseModGeneralModule implements iBxDolConten
             'added' => $aData[$CNF['FIELD_ADDED']],
             'author' => $aData[$CNF['FIELD_AUTHOR']],
             'author_data' => !empty($aData[$CNF['FIELD_AUTHOR']]) ? BxDolProfile::getData($aData[$CNF['FIELD_AUTHOR']]) : '',
-            'title' => $aData[$CNF['FIELD_TITLE']],
+            // The template's title: a module without a title field (Polls) makes one from its text.
+            'title' => $this->_oTemplate->getTitle($aData, false),
             'url' => bx_api_get_relative_url($this->serviceGetLink($iId)),
             'image' => $this->serviceGetThumb($iId),
             'summary_plain' => $sSummary,
