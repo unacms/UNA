@@ -93,17 +93,13 @@ class BxBaseAuditGrid extends BxDolAuditGrid
     
     protected function _getCellContentModule ($mixedValue, $sKey, $aField, $aRow)
     {
-        $oModule = bxDolModule::getInstance($aRow['content_module']);
-        if($oModule && $oModule instanceof iBxDolContentInfoService){
-            $mixedValue = $oModule->_aModule['title'];
+        if(($oModule = BxDolModule::getInstance($aRow['content_module'])) && ($sTitle = $oModule->_aModule['title'] ?? false)) {
+            $mixedValue = $sTitle;
         }
-        else{
-            $mixedValue = $aRow['content_module'];
-        }
+
         return parent::_getCellDefault($mixedValue, $sKey, $aField, $aRow);
     }
-    
-    
+
     protected function _getCellProfileId ($mixedValue, $sKey, $aField, $aRow)
     {
         if ($aRow['profile_id'] > 0){
