@@ -17,7 +17,7 @@ div.bx-std-page-columns-cnt {
     display: flex;
     align-items: stretch;
 
-    padding: 5.5rem 0.75rem 0.75rem 0.75rem; /* top: the header wrapper's height, so the content starts 12px under the bar; 12px sides and bottom, like the header's margins */
+    padding: 5.75rem 0.75rem 0.75rem 0.75rem; /* top: the header wrapper's height, so the content starts 12px under the bar; 12px sides and bottom, like the header's margins */
 }
 
 /*--- Page Menu ---*/

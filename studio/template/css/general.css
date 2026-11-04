@@ -51,8 +51,8 @@ div.bx-std-content-wrp {
     height: 100vh;
 }
 div.bx-std-content-wrp.bx-std-one-col {
-    padding-top: 4.75rem; /* the fixed header's bottom edge: 12px margin plus the 64px bar */
-    scroll-padding-top: 4.75rem; /* focus and anchors scroll below the header, and the overlay scrollbar starts there */
+    padding-top: 5rem; /* the fixed header's bottom edge: 12px margin plus the 68px bar */
+    scroll-padding-top: 5rem; /* focus and anchors scroll below the header, and the overlay scrollbar starts there */
 
     overflow-y: auto;
 
@@ -121,7 +121,7 @@ div.bx-std-pcap-mp-right div.bx-std-pcap-action {
  */
 div.bx-std-pmen-item {
     position: relative;
-    height: 3rem; /* 32px icon + 8px above and below (the icon's 1px white gap on hover and the item background make up the header icons' halo) */
+    height: 3.25rem; /* 36px icon + 8px above and below: the item background is the header icons' 8px halo (and the active one their active ring) */
     margin-top: 0.125rem;
 
     border-radius: 1rem; /* icon radius (8px) + 8px padding */
@@ -151,8 +151,8 @@ div.bx-std-pmen-item .bx-std-pmen-ic-icon {
     display: none;
     flex: 0 0 auto;
 
-    width: 2rem;
-    height: 2rem;
+    width: 2.25rem;
+    height: 2.25rem;
     box-sizing: border-box;
 
     margin-right: 0.75rem;
@@ -190,6 +190,17 @@ div.bx-std-pmen-item .sys-icon {
 div.bx-std-pmen-item .bx-std-tile-btn svg,
 div.bx-std-pmen-item .bx-std-tile-btn .sys-icon {
     border-radius: 0;
+}
+/* App art: 1px beyond its 36px tile on every side (9px corners), as large as a tile button with its outer hairline; the tile's darker edge
+   line sits over that outer 1px (tailwind.css). */
+div.bx-std-pmen-item .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) > img,
+div.bx-std-pmen-item .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) > svg {
+    display: block;
+    width: calc(100% + 2px);
+    max-width: none; /* Tailwind's base caps images at their box */
+    height: calc(100% + 2px);
+    margin: -1px;
+    border-radius: calc(0.5rem + 1px);
 }
 
 div.bx-std-pmen-item a, 
@@ -249,8 +260,8 @@ img.bx-std-api {
 /*
  * Page menu on narrow screens (the columns themselves are in page_columns.css).
  * Strip (the column narrowed to 104px, below 1024px or by its toggle): a vertical strip of square tiles (as wide as the strip's items, 88px),
- * the 32px icon and a small label centred in each.
- * Phone: a horizontal, scrollable row of 48px tabs, each its 32px tile alone (the link's aria-label names it); the active tab shows its
+ * the 36px icon and a small label centred in each (8 + 36 + 4 + two 16px lines + 8 = 88px).
+ * Phone: a horizontal, scrollable row of 52px tabs, each its 36px tile alone (the link's aria-label names it); the active tab shows its
  * label beside the tile, so the row stays one even line whatever the labels' length.
  */
 @container bx-std-pmen (max-width: 10rem) {
@@ -308,7 +319,7 @@ img.bx-std-api {
         -webkit-flex: 0 0 auto;
         flex: 0 0 auto;
 
-        height: 3rem; /* the 32px tile with 8px around it, like the wide-screen list */
+        height: 3.25rem; /* the 36px tile with 8px around it, like the wide-screen list */
         margin-top: 0;
     }
     div.bx-std-pmen-item-cnt {
