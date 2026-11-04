@@ -30,6 +30,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_administra
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_time_manage' AND `module`='bx_tasks' AND `title_system`='_bx_tasks_page_block_title_system_time_manage' AND `title`='_bx_tasks_page_block_title_time_manage';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_time_administration' AND `module`='bx_tasks' AND `title_system`='_bx_tasks_page_block_title_system_time_manage_administration' AND `title`='_bx_tasks_page_block_title_time_manage';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_timers' AND `module`='bx_tasks' AND `title_system`='_bx_tasks_page_block_title_system_timers' AND `title`='_bx_tasks_page_block_title_timers';
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_timers' AND `module`='bx_tasks' AND `title_system`='_bx_tasks_page_block_title_system_timers_stats' AND `title`='_bx_tasks_page_block_title_timers_stats';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_context_pre_values' AND `module`='bx_tasks' AND `title_system`='_bx_tasks_page_block_title_sys_menu_in_context' AND `title`='_bx_tasks_page_block_title_menu_in_context';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_context_settings' AND `module`='bx_tasks' AND `title_system`='_bx_tasks_page_block_title_sys_menu_in_context' AND `title`='_bx_tasks_page_block_title_menu_in_context';
 

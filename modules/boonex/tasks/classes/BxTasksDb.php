@@ -400,6 +400,18 @@ class BxTasksDb extends BxBaseModTextDb
                     $sWhereClause = "AND `ttt`.`object_id` = :object_id";
                     break;
 
+                case 'author_period_sum':
+                    $aMethod['params'][1] = [
+                        'author_id' => $aParams['author_id'],
+                        'date_from' => $aParams['date_from'],
+                        'date_to' => $aParams['date_to']
+                    ];
+
+                    $sSelectClause = '`ttt`.`object_id`, SUM(`ttt`.`value`) AS `value`';
+                    $sWhereClause = "AND `ttt`.`author_id` = :author_id AND `ttt`.`value_date` >= :date_from AND `ttt`.`value_date` < :date_to GROUP BY `ttt`.`object_id`";
+                    $sOrderClause = "`value` DESC";
+                    break;
+
                 case 'assignees':
                     $aMethod['name'] = 'getColumn';
 

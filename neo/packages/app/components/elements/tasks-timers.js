@@ -25,6 +25,11 @@ function removeTimer(prev, timerId) {
     return { ...prev, sections };
 }
 
+/** Rows keep their own timer state, so a row must not take over its removed neighbour's instance. */
+function getTimerKey(item) {
+    return item?.timer?.id;
+}
+
 export default function ElementTasksTimers({ data, blockWrapperProps }) {
     const NoContent = components['molecule']['no_content'];
     const [timersData, setTimersData] = useState(data);
@@ -89,6 +94,7 @@ export default function ElementTasksTimers({ data, blockWrapperProps }) {
                                     module: 'bx_tasks_timer',
                                 }}
                                 blockWrapperProps={{ block: { designbox_id: null } }}
+                                getItemKey={getTimerKey}
                             />
                         </View>
                     ))

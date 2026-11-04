@@ -259,6 +259,72 @@ class BxTasksTemplate extends BxBaseModTextTemplate
         ]);
     }
 
+    public function getBlockTimersStats ($iProfileId)
+    {
+        $iMonth = (int)date('n');
+        $iYear = (int)date('Y');
+
+        $iThisMonth = mktime(0, 0, 0, $iMonth, 1, $iYear);
+        $iLastMonth = mktime(0, 0, 0, $iMonth - 1, 1, $iYear);
+        $iNextMonth = mktime(0, 0, 0, $iMonth + 1, 1, $iYear);
+
+        return [
+            'periods' => [
+                $this->_getTimersStatsPeriod('this_month', _t('_bx_tasks_txt_timers_stats_this_month'), $iProfileId, $iThisMonth, $iNextMonth),
+                $this->_getTimersStatsPeriod('last_month', _t('_bx_tasks_txt_timers_stats_last_month'), $iProfileId, $iLastMonth, $iThisMonth),
+            ],
+            'labels' => [
+                'total' => _t('_bx_tasks_txt_timers_stats_total'),
+                'tasks' => _t('_bx_tasks_txt_timers_stats_tasks'),
+                'show_more' => _t('_bx_tasks_txt_timers_stats_show_more'),
+                'empty' => _t('_bx_tasks_txt_timers_stats_empty'),
+            ]
+        ];
+    }
+
+    protected function _getTimersStatsPeriod ($sName, $sTitle, $iProfileId, $iDateFrom, $iDateTo)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $oPermalinks = BxDolPermalinks::getInstance();
+
+        $aTracks = $this->_oDb->getTimeTracks([
+            'sample' => 'author_period_sum',
+            'author_id' => $iProfileId,
+            'date_from' => $iDateFrom,
+            'date_to' => $iDateTo
+        ]);
+
+        $iTotal = 0;
+        $aTasks = $aContexts = [];
+        foreach($aTracks as $aTrack) {
+            $aContentInfo = $this->_oDb->getContentInfoById($aTrack['object_id']);
+            if(!$aContentInfo || !is_array($aContentInfo))
+                continue;
+
+            $iTotal += (int)$aTrack['value'];
+
+            $iContextId = abs(min(0, (int)$aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']]));
+            if($iContextId && !isset($aContexts[$iContextId]))
+                $aContexts[$iContextId] = ($oContext = BxDolProfile::getInstance($iContextId)) !== false ? BxDolProfile::getData($oContext) : [];
+
+            $aTasks[] = [
+                'id' => (int)$aContentInfo[$CNF['FIELD_ID']],
+                'title' => $aContentInfo[$CNF['FIELD_TITLE']],
+                'url' => bx_api_get_relative_url(bx_absolute_url($oPermalinks->permalink('page.php?i=' . $CNF['URI_VIEW_ENTRY'] . '&id=' . $aContentInfo[$CNF['FIELD_ID']]))),
+                'minutes' => (int)$aTrack['value'],
+                'context' => $iContextId ? $aContexts[$iContextId] : [],
+            ];
+        }
+
+        return [
+            'name' => $sName,
+            'title' => $sTitle,
+            'minutes' => $iTotal,
+            'tasks' => $aTasks
+        ];
+    }
+
     public function getTimer ($iContentId, $iProfileId, $sName = '')
     {
         $CNF = &$this->_oConfig->CNF;
