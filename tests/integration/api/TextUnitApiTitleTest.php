@@ -95,4 +95,12 @@ class TextUnitApiTitleTest extends BxDolIntegrationTestCase
 
         $this->assertSame('Tea & biscuits', $this->unit('bx_posts', $aData)['title'], 'The raw title, as before: the app escapes it.');
     }
+
+    public function testClassTitleIsTheStoredTitle(): void
+    {
+        // The Classes template wraps a title in status HTML for the site; the app gets the stored title.
+        $aData = $this->entry('bx_classes', 'bx_classes_classes', ['title' => 'Intro & basics', 'text' => '<p>Fixture</p>', 'status' => 'active', 'status_admin' => 'active']);
+
+        $this->assertSame('Intro & basics', $this->unit('bx_classes', $aData)['title']);
+    }
 }
