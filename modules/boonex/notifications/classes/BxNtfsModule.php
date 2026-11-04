@@ -415,8 +415,15 @@ class BxNtfsModule extends BxBaseModNotificationsModule
      */
     public function serviceGetUnreadNotificationsNum($iOwnerId = 0)
     {
+        $iProfileId = (int)$this->getUserId();
+        $iOwnerId = (int)$iOwnerId;
         if(!$iOwnerId)
-            $iOwnerId = $this->getUserId();
+            $iOwnerId = $iProfileId;
+
+        // outside callers (API, OAuth API, macros) can read other profiles only as administrator;
+        // internal callers (push queue, profile info) count for the profile they pass
+        if($iOwnerId != $iProfileId && (BxDolService::isExternalCall($this->getName(), 'get_unread_notifications_num') || BxDolService::isExternalCall($this->getName(), 'get_unread_notifications_num_ex')) && !isAdmin())
+            return 0;
 
         if(!$iOwnerId)
             return 0;

@@ -220,27 +220,140 @@ class BxCidaasConModule extends BxBaseModConnectModule
         ]);
     }
 
-    public function serviceHandle($aRemoteProfileInfo = [])
+    /**
+     * Sign in (or join) with a Cidaas access token which was received by a client app.
+     *
+     * Only the access token is taken from the request. The token is introspected by Cidaas
+     * to be sure that it was issued for this site's client, and the profile is requested from Cidaas here.
+     *
+     * @param $mParams - access token as array ['access_token' => '...'] or as JSON string of such array
+     */
+    public function serviceHandle($mParams = [])
     {
         if (!$this->_bIsApi)
             return;
 
-        if (is_string($aRemoteProfileInfo))
-            $aRemoteProfileInfo = bx_api_get_browse_params($aRemoteProfileInfo);
+        $aError = [
+            bx_api_get_msg(_t('_sys_connect_profile_error_info'))
+        ];
 
-        if (empty($aRemoteProfileInfo) || !is_array($aRemoteProfileInfo))
-            return [
-                bx_api_get_msg(_t('_sys_connect_profile_error_info'))
-            ];
+        if (!($sAccessToken = $this->_getAccessToken($mParams)))
+            return $aError;
 
-        if (empty($aRemoteProfileInfo['id']) && !empty($aRemoteProfileInfo['sub']))
-            $aRemoteProfileInfo['id'] = $aRemoteProfileInfo['sub'];
+        $aTokenInfo = $this->_requestTokenInfo($sAccessToken);
+        if (!$aTokenInfo)
+            return $aError;
+
+        $aUserInfo = $this->_requestUserInfo($sAccessToken);
+        if (!$aUserInfo)
+            return $aError;
+
+        $aRemoteProfileInfo = $this->_buildVerifiedProfile($aTokenInfo, $aUserInfo);
+        if (!$aRemoteProfileInfo)
+            return $aError;
 
         $iProfileId = $this->_oDb->getProfileId($aRemoteProfileInfo['id']);
         if ($iProfileId && $oProfile = BxDolProfile::getInstance($iProfileId))
             return $this->setLogged($oProfile->id());
         else
             return $this->_createProfile($aRemoteProfileInfo);
+    }
+
+    /**
+     * Ask Cidaas about the access token (token introspection, RFC 7662).
+     *
+     * @return array with token info or false on error
+     */
+    protected function _requestTokenInfo($sAccessToken)
+    {
+        $aParams = ['token' => $sAccessToken, 'token_type_hint' => 'access_token', 'client_id' => $this->_oConfig->sClientID];
+
+        $aHeaders = ['Content-Type: application/x-www-form-urlencoded'];
+        if ($this->_oConfig->sSecret)
+            $aHeaders[] = 'Authorization: Basic ' . base64_encode($this->_oConfig->sClientID . ':' . $this->_oConfig->sSecret);
+
+        $sHttpCode = '';
+        $s = bx_file_get_contents($this->_oConfig->sBaseUrl . '/token-srv/introspect', $aParams, 'post', $aHeaders, $sHttpCode, [], 10);
+
+        return $this->_decodeJsonResponse($s, $sHttpCode);
+    }
+
+    /**
+     * Get the profile of the user the access token was issued for from Cidaas.
+     *
+     * @return array with profile info or false on error
+     */
+    protected function _requestUserInfo($sAccessToken)
+    {
+        try {
+            $aProfile = $this->_getProvider()->getUserProfile($sAccessToken)->wait();
+        } catch (Exception $oException) {
+            return false;
+        }
+
+        if (isset($aProfile['data']) && is_array($aProfile['data']))
+            $aProfile = $aProfile['data'];
+
+        return is_array($aProfile) && $aProfile && !isset($aProfile['error']) ? $aProfile : false;
+    }
+
+    /**
+     * Build remote profile info from the data received from Cidaas.
+     * Returns false if the token wasn't issued to this site's client, expired, or if the user can't be identified reliably.
+     *
+     * @param $aTokenInfo - response of the introspection endpoint
+     * @param $aUserInfo - response of the user profile endpoint
+     * @return array with whitelisted profile fields or false
+     */
+    protected function _buildVerifiedProfile($aTokenInfo, $aUserInfo)
+    {
+        if (!is_array($aTokenInfo) || !is_array($aUserInfo) || !$this->_oConfig->sClientID)
+            return false;
+
+        if (!isset($aTokenInfo['active']) || !$this->_isRemoteFlagTrue($aTokenInfo['active']))
+            return false;
+
+        // the token must be issued to this site's client
+        $aAudience = [];
+        if (isset($aTokenInfo['client_id']) && is_string($aTokenInfo['client_id']))
+            $aAudience[] = $aTokenInfo['client_id'];
+        if (isset($aTokenInfo['aud']))
+            $aAudience = array_merge($aAudience, (array)$aTokenInfo['aud']);
+        if (!in_array($this->_oConfig->sClientID, $aAudience, true))
+            return false;
+
+        if (isset($aTokenInfo['exp']) && (!is_numeric($aTokenInfo['exp']) || (int)$aTokenInfo['exp'] <= time()))
+            return false;
+
+        // the user must be identified by the stable Cidaas ID
+        if (empty($aUserInfo['sub']) || !is_string($aUserInfo['sub']) || !preg_match('/^[A-Za-z0-9_.:-]{1,255}$/D', $aUserInfo['sub']))
+            return false;
+        if (isset($aTokenInfo['sub']) && $aTokenInfo['sub'] !== $aUserInfo['sub'])
+            return false;
+
+        // the email must be verified by Cidaas
+        if (empty($aUserInfo['email']) || !is_string($aUserInfo['email']) || !filter_var($aUserInfo['email'], FILTER_VALIDATE_EMAIL))
+            return false;
+        if (!isset($aUserInfo['email_verified']) || !$this->_isRemoteFlagTrue($aUserInfo['email_verified']))
+            return false;
+
+        $aProfileInfo = [
+            'id' => $aUserInfo['sub'],
+            'sub' => $aUserInfo['sub'],
+            'email' => $aUserInfo['email'],
+            'email_verified' => true,
+        ];
+        foreach (['name', 'given_name', 'family_name', 'preferred_username'] as $sKey)
+            $aProfileInfo[$sKey] = isset($aUserInfo[$sKey]) && is_string($aUserInfo[$sKey]) ? get_mb_substr($aUserInfo[$sKey], 0, 255) : '';
+        $aProfileInfo['picture'] = isset($aUserInfo['picture']) && is_string($aUserInfo['picture']) ? get_mb_substr($aUserInfo['picture'], 0, 2048) : '';
+
+        return $aProfileInfo;
+    }
+
+    protected function _isRemoteEmailVerified($aProfileInfo)
+    {
+        // enforced when Cidaas reports it
+        return !isset($aProfileInfo['email_verified']) || $this->_isRemoteFlagTrue($aProfileInfo['email_verified']);
     }
 
     /**

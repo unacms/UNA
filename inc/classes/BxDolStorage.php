@@ -632,9 +632,9 @@ abstract class BxDolStorage extends BxDolFactory implements iBxDolFactoryObject
     /**
      * the same as storeFileFromPath, but it tries to do it from URL
      */
-    public function storeFileFromUrl($sUrl, $isPrivate = true, $iProfileId = 0, $iContentId = 0)
+    public function storeFileFromUrl($sUrl, $isPrivate = true, $iProfileId = 0, $iContentId = 0, $bAllowRestricted = false)
     {
-        return $this->storeFile('Url', array('url' => $sUrl), false, $isPrivate, $iProfileId, $iContentId);
+        return $this->storeFile('Url', array('url' => $sUrl, 'allow_restricted' => (bool)$bAllowRestricted), false, $isPrivate, $iProfileId, $iContentId);
     }
 
     /**
@@ -1549,41 +1549,47 @@ class BxDolStorageHelperUrl extends BxDolStorageHelperPath
     );
 
     function __construct ($aParams)
-    {   
+    {
+        $bAllowRestricted = !empty($aParams['allow_restricted']);
+        $sUrl = isset($aParams['url']) ? (string)$aParams['url'] : '';
         $aParams['path'] = '';
-        $sExt = pathinfo(parse_url($aParams['url'], PHP_URL_PATH), PATHINFO_EXTENSION);
+        $sExt = pathinfo((string)parse_url($sUrl, PHP_URL_PATH), PATHINFO_EXTENSION);
+
+        if (!$bAllowRestricted && !bx_remote_url_is_allowed($sUrl)) {
+            parent::__construct($aParams);
+            return;
+        }
+
         if ($sTmpFilename = tempnam(BX_DIRECTORY_PATH_TMP, '')) {
-            $s = '';
-            if (!$sExt) {
-                $s = @file_get_contents($aParams['url']);
+            // the body is streamed into the temporary file, it is never held in memory as a whole
+            $bSaved = false;
+            if (!$bAllowRestricted) {
+                $sHttpCode = null;
+                $bSaved = true === bx_file_get_contents($sUrl, [], 'get', [], $sHttpCode, [], 0, [], false, $sTmpFilename);
+            }
+            else {
+                $hRead = @fopen($sUrl, 'rb');
+                $hWrite = fopen($sTmpFilename, 'wb');
+                if (false !== $hRead && false !== $hWrite)
+                    $bSaved = false !== stream_copy_to_stream($hRead, $hWrite);
+                if (false !== $hRead)
+                    fclose($hRead);
+                if (false !== $hWrite)
+                    fclose($hWrite);
+            }
+
+            if (!$bSaved)
+                file_put_contents($sTmpFilename, '');
+
+            if (!$sExt && $bSaved && filesize($sTmpFilename) > 0) {
                 $oFinfo = new finfo(FILEINFO_MIME_TYPE);
-                $sMime = $oFinfo->buffer($s);
+                $sMime = $oFinfo->file($sTmpFilename);
                 if (isset($this->aMime2Ext[$sMime]))
                     $sExt = $this->aMime2Ext[$sMime];
             }
 
-            $aParams['path'] =  $sTmpFilename . '.' . $sExt;
+            $aParams['path'] = $sTmpFilename . '.' . $sExt;
             @rename($sTmpFilename, $aParams['path']);
-
-            if ($s) {
-                file_put_contents($aParams['path'], $s);
-            } 
-            else {
-                $hRead = @fopen($aParams['url'], "rb");
-                $hWrite = fopen($aParams['path'], "wb");
-                if (false !== $hRead && false !== $hWrite) {
-                    while (!feof($hRead)) {
-                        $data = fread($hRead, 8192);
-                        if (false === fwrite($hWrite, $data)) {
-                            fclose($hWrite);
-                            file_put_contents($aParams['path'], '');
-                            break;
-                        }
-                    }
-                    fclose($hRead);
-                    fclose($hWrite);
-                }
-            }
         }
         parent::__construct($aParams);
     }
@@ -1637,7 +1643,8 @@ class BxDolStorageHelperStorage
 
     function save($path)
     {
-        $s = bx_file_get_contents ($this->oStorage->getFileUrlById($this->iFileId));
+        $sHttpCode = null;
+        $s = bx_file_get_contents($this->oStorage->getFileUrlById($this->iFileId), [], 'get', [], $sHttpCode, [], 0, [], true);
         if (!$s)
             return false;
 

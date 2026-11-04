@@ -153,24 +153,23 @@ class BxBaseServiceProfiles extends BxDol
     public function serviceBefriend ($sParams)
     {
         $aParams = json_decode($sParams, true);
-        $iProfileId = $aParams['profile_id'];
-        $oConnection = BxDolConnection::getObjectInstance('sys_profiles_friends'); 
+        $iProfileId = (int)($aParams['profile_id'] ?? 0);
+        $iLogged = (int)bx_get_logged_profile_id();
+        $oConnection = BxDolConnection::getObjectInstance('sys_profiles_friends');
         $oProfile = BxDolProfile::getInstance($iProfileId);
+        if (!$iLogged || !$oProfile || !$oConnection)
+            return ['profile' => BxDolProfile::getData($iProfileId), 'result' => false];
+
         if ($aParams['action'] == 'info'){
-            return ['profile' => BxDolProfile::getData($iProfileId), 'result' => $oConnection->isConnected((int)bx_get_logged_profile_id(), $iProfileId, true)];
+            return ['profile' => BxDolProfile::getData($iProfileId), 'result' => $oConnection->isConnected($iLogged, $iProfileId, true)];
         }
-       
-        if ($oProfile && $oConnection){
-            if ($oConnection->isConnected((int)bx_get_logged_profile_id(), $iProfileId, true)){
-                 return ['profile' => BxDolProfile::getData($iProfileId), 'result' => false];
-            }
-            else{
-                $oConnection->addConnection((int)bx_get_logged_profile_id(), $iProfileId);
-                $oConnection->addConnection($iProfileId, (int)bx_get_logged_profile_id());
-                $oProfile = BxDolProfile::getInstance($iProfileId);
-                return ['profile' => BxDolProfile::getData($iProfileId), 'result' => true];
-            }
-        }
+
+        if ($oConnection->isConnected($iLogged, $iProfileId, true))
+            return ['profile' => BxDolProfile::getData($iProfileId), 'result' => false];
+
+        // One side only: the other profile confirms, the same way the friend button does.
+        $aResult = $oConnection->actionAdd($iProfileId);
+        return ['profile' => BxDolProfile::getData($iProfileId), 'result' => empty($aResult['err'])];
     }
 
     public function serviceProfileStats ($iProfileId = 0)
@@ -744,7 +743,7 @@ class BxBaseServiceProfiles extends BxDol
 
         if(!$iProfileId)
             $iProfileId = bx_get_logged_profile_id();
-        if(!$iProfileId)
+        if(!$iProfileId || (int)$iProfileId !== (int)bx_get_logged_profile_id())
             return '';
 
         $aParams = array_merge([
@@ -770,7 +769,7 @@ class BxBaseServiceProfiles extends BxDol
 
         if(!$iProfileId)
             $iProfileId = bx_get_logged_profile_id();
-        if(!$iProfileId)
+        if(!$iProfileId || (int)$iProfileId !== (int)bx_get_logged_profile_id())
             return '';
 
         $aParams = array_merge([
@@ -794,7 +793,7 @@ class BxBaseServiceProfiles extends BxDol
 
         if(!$iProfileId)
             $iProfileId = bx_get_logged_profile_id();
-        if(!$iProfileId)
+        if(!$this->_canBrowseFollowList($iProfileId, 'PARAM_PUBLIC_SBSN'))
             return '';
 
         $aParams = array_merge([
@@ -818,7 +817,7 @@ class BxBaseServiceProfiles extends BxDol
 
         if(!$iProfileId)
             $iProfileId = bx_get_logged_profile_id();
-        if(!$iProfileId)
+        if(!$this->_canBrowseFollowList($iProfileId, 'PARAM_PUBLIC_SBSD'))
             return '';
 
         $aParams = array_merge([
@@ -842,7 +841,7 @@ class BxBaseServiceProfiles extends BxDol
 
         if(!$iProfileId)
             $iProfileId = bx_get_logged_profile_id();
-        if(!$iProfileId)
+        if(!$this->_canBrowseMembers($iProfileId, $sObject))
             return '';
 
         $aParams = array_merge([
@@ -1123,7 +1122,8 @@ class BxBaseServiceProfiles extends BxDol
 
     protected function _serviceBrowseRecommendations($iProfileId = 0, $aParams = [])
     {
-        if(!$iProfileId)
+        // recommendations are the viewer's own: on the API a client can't name another profile
+        if(!$iProfileId || $this->_bIsApi)
             $iProfileId = bx_get_logged_profile_id();
         if(!$iProfileId)
             return '';
@@ -1571,6 +1571,10 @@ class BxBaseServiceProfiles extends BxDol
         if(!($iPerformerId = bx_get_logged_profile_id()) || (!isAdmin() && !bx_acl_is_advanced($iPerformerId)))
             return false;
 
+        // A moderator membership may change its own profile only. An operator may name another profile.
+        if (!isAdmin())
+            $iProfileId = $iPerformerId;
+
         $oProfile = BxDolProfile::getInstance($iProfileId);
         if(!$oProfile)
             return false;
@@ -1579,6 +1583,65 @@ class BxBaseServiceProfiles extends BxDol
             return bx_srv($sModule, $sMethod, [$oProfile->getContentId(), json_decode($sSettings)]);
         else
             return false;
+    }
+
+    /**
+     * Following and followers are private unless the profile module turns the list on.
+     */
+    protected function _canBrowseFollowList($iProfileId, $sParamKey)
+    {
+        $iProfileId = (int)$iProfileId;
+        if (!$iProfileId)
+            return false;
+
+        if ($iProfileId === (int)bx_get_logged_profile_id())
+            return true;
+
+        $oProfile = BxDolProfile::getInstance($iProfileId);
+        if (!$oProfile)
+            return false;
+
+        $sModule = $oProfile->getModule();
+        if (!$sModule || !BxDolModuleQuery::getInstance()->isEnabledByName($sModule))
+            return false;
+
+        $oModule = BxDolModule::getInstance($sModule);
+        if (!$oModule)
+            return false;
+
+        $CNF = &$oModule->_oConfig->CNF;
+        if (empty($CNF[$sParamKey]))
+            return false;
+
+        return getParam($CNF[$sParamKey]) == 'on';
+    }
+
+    /**
+     * Members of a profile (a group) are listed only when the viewer may open that profile,
+     * and only through that module's own connection object.
+     */
+    protected function _canBrowseMembers($iProfileId, $sObject)
+    {
+        $oProfile = BxDolProfile::getInstance((int)$iProfileId);
+        if (!$oProfile || $sObject === '')
+            return false;
+
+        $sModule = $oProfile->getModule();
+        if (!$sModule || !BxDolModuleQuery::getInstance()->isEnabledByName($sModule))
+            return false;
+
+        $oModule = BxDolModule::getInstance($sModule);
+        if (!$oModule || empty($oModule->_oConfig->CNF['OBJECT_CONNECTIONS']))
+            return false;
+
+        if ($sObject !== $oModule->_oConfig->CNF['OBJECT_CONNECTIONS'])
+            return false;
+
+        $aContentInfo = $oModule->_oDb->getContentInfoById($oProfile->getContentId());
+        if (empty($aContentInfo) || !is_array($aContentInfo))
+            return false;
+
+        return $oModule->checkAllowedView($aContentInfo) === CHECK_ACTION_RESULT_ALLOWED;
     }
 
     protected function _getIcon ($sIcon)

@@ -204,6 +204,10 @@ const nextConfig = {
             process.env.NEXT_PUBLIC_UNA_PREVIEW_DOMAIN ||
             process.env.UNA_PREVIEW_DOMAIN ||
             '',
+        // Real-time updates (config.sockets): the browser connects to Soketi itself.
+        NEXT_PUBLIC_SOCKETS_HOST: process.env.NEXT_PUBLIC_SOCKETS_HOST || process.env.SOCKETS_HOST || '',
+        NEXT_PUBLIC_SOCKETS_PORT: process.env.NEXT_PUBLIC_SOCKETS_PORT || process.env.SOCKETS_PORT || '',
+        NEXT_PUBLIC_SOCKETS_KEY: process.env.NEXT_PUBLIC_SOCKETS_KEY || process.env.SOCKETS_KEY || '',
     },
     // Disable source maps in production
     productionBrowserSourceMaps: false,

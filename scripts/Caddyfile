@@ -25,6 +25,14 @@
 	}
 	redir @canonicalPath {path}/ 308
 
+	# Folders that Apache closes with "Deny from all" in their .htaccess: files,
+	# logs, caches and code that only PHP reads (storage.php serves the files).
+	@unaPrivate {
+		path /storage/* /logs/* /tmp/* /cache/* /plugins/* /periodic/* /template/scripts/* /modules/boonex/files/data/* /inc/*
+		not path /inc/js/*
+	}
+	respond @unaPrivate 404
+
 	@unapages path_regexp ^/page/(.*)$
 	rewrite @unapages /page.php?i={re.unapages.1}
 

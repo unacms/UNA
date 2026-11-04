@@ -218,6 +218,10 @@ class BxBaseModProfileGridAdministration extends BxBaseModGeneralGridAdministrat
 
     protected function _enable ($mixedId, $isChecked)
     {
+        $aContentInfo = $this->_getContentInfo($mixedId);
+        if ($this->_oModule->checkAllowedEdit($aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
         $oProfile = $this->_getProfileObject($mixedId);
 
         if($oProfile instanceof BxDolProfileUndefined)

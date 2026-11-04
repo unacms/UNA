@@ -129,6 +129,14 @@ class BxBaseServicePages extends BxDol
 
     public function serviceGetPageBlockData($iBlockId, $iContentId = 0, $sContentModule = '')
     {
+        if (!$iContentId || $sContentModule === '') {
+            $iContentId = 0;
+            $sContentModule = '';
+        }
+
+        if (!BxDolPage::isViewerAllowedBlock($iBlockId, $iContentId, $sContentModule))
+            return [];
+
         return BxDolPage::getPageBlockData($iBlockId, $iContentId, $sContentModule);
     }
 
@@ -147,7 +155,50 @@ class BxBaseServicePages extends BxDol
 
     public function serviceGetPageBlockImageData($iImageId)
     {
-        return bx_api_get_image(['sys_images_editor', 'sys_images_editor'], (int)$iImageId);
+        $iImageId = (int)$iImageId;
+        if ($iImageId <= 0)
+            return false;
+
+        $aRefs = (new BxDolPageQuery([]))->getEditorImageRefs($iImageId);
+        if (empty($aRefs) || !is_array($aRefs))
+            return false;
+
+        foreach ($aRefs as $aRef) {
+            $aData = json_decode($aRef['data'], true);
+            if (!$this->_editorDataHasImage($aData, $iImageId))
+                continue;
+
+            $iContentId = (int)$aRef['content_id'];
+            $sContentModule = (string)$aRef['content_module'];
+            if (!$iContentId || $sContentModule === '') {
+                $iContentId = 0;
+                $sContentModule = '';
+            }
+
+            if (BxDolPage::isViewerAllowedBlock($aRef['block_id'], $iContentId, $sContentModule))
+                return bx_api_get_image(['sys_images_editor', 'sys_images_editor'], $iImageId);
+        }
+
+        return false;
+    }
+
+    protected function _editorDataHasImage($aData, $iImageId)
+    {
+        if (!is_array($aData))
+            return false;
+
+        foreach ($aData as $mixed) {
+            if (!is_array($mixed))
+                continue;
+
+            if (isset($mixed['type'], $mixed['content']) && $mixed['type'] === 'image' && (int)$mixed['content'] === (int)$iImageId)
+                return true;
+
+            if ($this->_editorDataHasImage($mixed, $iImageId))
+                return true;
+        }
+
+        return false;
     }
 
     public function serviceGetUrlInfo($sUrl)

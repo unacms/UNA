@@ -1,70 +1,35 @@
 import { NextResponse } from 'next/server'
-import { APP_URL, UNA_URL, UNA_API_KEY, MULTITENANT, PREVIEW_DOMAIN, PREVIEW_API_KEY, joinUnaUrl } from 'app/config';
-import { getDomainByHostname } from './lib/domains/domains';
+import { APP_URL, UNA_URL, UNA_API_KEY, MULTITENANT, joinUnaUrl } from 'app/config';
 import { dropForeignClientHeaders, resolveEdge } from './lib/client-headers';
+import { resolveRequestTenant } from './lib/request-tenant';
 import {
     SESSION_TOUCH_PATH, SESSION_TOUCH_TIMEOUT_MS,
     applySetCookies, hasStaleSessionMark, needsSessionTouch, sessionMarkAge, sessionMarkCookie,
 } from './lib/session-touch';
+import { dropTenantHeaders } from './lib/tenant';
 
 export const config = {
+    // Skip public files: exact names, or folders ending in `/`. A prefix such as
+    // `manifest.json` would skip any path that starts with it, page routes included.
     // Skip /.well-known/* so Digital Asset Links / AASA hit App Router routes
     // directly (no 404, no UNA rewrite).
     // Skip Next's own assets. A matched proxy marks the response dynamic, so
     // self-hosted `next start` drops `Cache-Control: public, max-age=31536000, immutable`
     // on hashed chunks. `_next/image` is the optimizer; `_next/webpack-hmr` is dev HMR.
-    matcher: ["/((?!_next/static|_next/image|_next/webpack-hmr|sw.js|logo192.png|loader.svg|favicon.ico|favicon.svg|manifest.json|static/|lucide/|_vercel|[.]well-known).*)"],
+    matcher: ["/((?!(?:sw\\.js|logo192\\.png|loader\\.svg|favicon\\.ico|favicon\\.svg|manifest\\.json)$|(?:_next/image|_next/webpack-hmr)(?:/|$)|(?:_next/static|static|lucide|_vercel|\\.well-known)/).*)"],
     //runtime: 'experimental-edge',
 };
 
 // The CDN or proxy in front of NEO, whose address and location headers UNA may read.
 const EDGE = resolveEdge(process.env);
 
-const TENANT_HEADERS = ['x-tenant-id', 'x-tenant-una-url', 'x-tenant-una-key', 'x-tenant-revision'];
-
 /**
- * Request headers for a Next route (page, icon API).
- * - Client-sent `x-tenant-*` are always dropped: the page trusts them to pick
- *   the UNA host and key, so a client must never be able to set them.
- * - The resolved tenant is added here and passed with
- *   `rewrite(url, { request: { headers } })` — it reaches the route only.
- *   Response headers would also be sent to the browser (tenant API key).
+ * Request headers for a Next route (page, icon and image APIs): the client's, without any
+ * `x-tenant-*`. The tenant isn't passed on in headers; the page resolves it from the Host
+ * header itself (lib/tenant.ts).
  */
-function routeRequestHeaders(request, tenant) {
-    const headers = new Headers(request.headers);
-    for (const name of TENANT_HEADERS) headers.delete(name);
-    if (tenant) {
-        headers.set('x-tenant-id', String(tenant.id));
-        headers.set('x-tenant-una-url', tenant.unaUrl);
-        headers.set('x-tenant-una-key', tenant.unaApiKey);
-        headers.set('x-tenant-revision', String(tenant.revision));
-    }
-    return headers;
-}
-
-async function resolveTenant(hostnameWithPort) {
-    const hostname = hostnameWithPort.split(':')[0];
-    const domain = await getDomainByHostname(hostname); 
-    return domain;
-}
-
-/**
- * CI previews (UNA's .github/workflows/ci.yml): `pr-<n>.<PREVIEW_DOMAIN>` is a client
- * alias for PR <n>, whose backend is `api-pr-<n>.<PREVIEW_DOMAIN>`. Returned in the
- * tenant shape so the proxy and the page use it the same way. Null for any other host,
- * which keeps the configured UNA_URL.
- */
-function resolvePreviewBackend(hostnameWithPort) {
-    if (!PREVIEW_DOMAIN || !PREVIEW_API_KEY) return null;
-    const hostname = String(hostnameWithPort || '').split(':')[0].toLowerCase();
-    const match = hostname.match(/^pr-(\d+)\.(.+)$/);
-    if (!match || match[2] !== PREVIEW_DOMAIN.toLowerCase()) return null;
-    return {
-        id: `preview-${match[1]}`,
-        unaUrl: `https://api-pr-${match[1]}.${PREVIEW_DOMAIN}`,
-        unaApiKey: PREVIEW_API_KEY,
-        revision: 0,
-    };
+function routeRequestHeaders(request) {
+    return dropTenantHeaders(new Headers(request.headers));
 }
 
 // The app's own host (APP_URL), lower-cased with its port; empty when APP_URL is unset.
@@ -158,7 +123,7 @@ function rewriteToUna(request, tenant, unaPath) {
 
     // UNA trusts the visitor's address and location headers on requests with the API key:
     // pass only those the edge set, not ones the browser added.
-    const tmpHeaders = dropForeignClientHeaders(new Headers(request.headers), EDGE);
+    const tmpHeaders = dropTenantHeaders(dropForeignClientHeaders(new Headers(request.headers), EDGE));
     tmpHeaders.set('authorization', `Bearer ${unaApiKey}`);
     tmpHeaders.set('cookie', cookieHeaderFromRequest(request));
 
@@ -189,7 +154,7 @@ export async function proxy(request) {
         pathname === '/apple-app-site-association';
 
     if (isDigitalAssetLinks) {
-        const res = NextResponse.next();
+        const res = NextResponse.next({ request: { headers: routeRequestHeaders(request) } });
         res.headers.set('Content-Type', 'application/json');
         return res;
     }
@@ -201,11 +166,10 @@ export async function proxy(request) {
 
     // serve images proxy as it is
     if (pathname.includes('/api/image')) {
-        return NextResponse.next();
+        return NextResponse.next({ request: { headers: routeRequestHeaders(request) } });
     }
 
-    const hostname = request.headers.get("host");
-    const tenant = MULTITENANT ? await resolveTenant(hostname) : resolvePreviewBackend(hostname);
+    const tenant = await resolveRequestTenant(request.headers.get("host"));
 
     // Pretty URL for UNA Agents chat (GET hydrate JSON + POST AG-UI SSE).
     // Not a .php path, so it would otherwise hit the Next catch-all page.
@@ -231,7 +195,7 @@ export async function proxy(request) {
             const pathname = request.nextUrl.pathname == '/' ? '/home' : request.nextUrl.pathname;
             const url = request.nextUrl.origin + pathname + request.nextUrl.search;
 
-            const { headers, setCookies } = await withSessionTouch(request, tenant, routeRequestHeaders(request, tenant));
+            const { headers, setCookies } = await withSessionTouch(request, tenant, routeRequestHeaders(request));
             const response = NextResponse.rewrite(new URL(url), {
                 request: { headers },
             });
@@ -251,7 +215,7 @@ export async function proxy(request) {
             const iconApiUrl = new URL('/api/icon', request.url);
             iconApiUrl.search = url.search;
             return NextResponse.rewrite(iconApiUrl, {
-                request: { headers: routeRequestHeaders(request, tenant) },
+                request: { headers: routeRequestHeaders(request) },
             });
         }
     }

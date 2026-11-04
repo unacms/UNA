@@ -95,11 +95,16 @@ class BxStrmEngineOvenMediaEngine extends BxDol
         $oStorage = BxDolStorage::getObjectInstance('bx_stream_recordings');
 
         if ($oStorage) {
-            $sFileUrl = getParam('bx_stream_recordings_url') . $aContentInfo['key'] . '_' . $iRecordingId . '.ts';
+            $sRecordingsUrl = getParam('bx_stream_recordings_url');
+            $sFileUrl = $sRecordingsUrl . $aContentInfo['key'] . '_' . $iRecordingId . '.ts';
+            $sBaseHost = parse_url($sRecordingsUrl, PHP_URL_HOST);
+            $sUrlHost = parse_url($sFileUrl, PHP_URL_HOST);
 
             $oModule->_oDb->updateRecording($iRecordingId, ['status' => 'processing']);
 
-            $iFileId = $oStorage->storeFileFromUrl($sFileUrl, true, $aContentInfo[$CNF['FIELD_AUTHOR']], $aContentInfo['id']);
+            $iFileId = ($sBaseHost && $sUrlHost && strcasecmp($sBaseHost, $sUrlHost) === 0)
+                ? $oStorage->storeFileFromUrl($sFileUrl, true, $aContentInfo[$CNF['FIELD_AUTHOR']], $aContentInfo['id'], true)
+                : false;
             if ($iFileId) {
                 $bDeleteRecording = true;
             }
@@ -209,7 +214,8 @@ class BxStrmEngineOvenMediaEngine extends BxDol
             return false;
 
         $sUrl = $sApiProtocol . "://{$sHost}:$iApiPort/v1{$sUri}";
-        $s = bx_file_get_contents($sUrl, $aBody, $sMethod, ['Authorization: Basic ' . $sApiKey]);
+        $sHttpCode = null;
+        $s = bx_file_get_contents($sUrl, $aBody, $sMethod, ['Authorization: Basic ' . $sApiKey], $sHttpCode, [], 0, [], true);
         bx_log('bx_stream_ome_api', $sUrl . "\n" . $s, BX_LOG_DEBUG);
         if (!$s)
             return false;

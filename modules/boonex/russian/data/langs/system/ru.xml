@@ -2019,6 +2019,8 @@
     <string name="_adm_stg_cpt_option_sys_security_form_token_lifetime"><![CDATA[CSRF token - срок жизни в секундах (0 - не вести отчёт времени)]]></string>
     <string name="_adm_stg_cpt_option_sys_security_impact_threshold_block"><![CDATA[Общий порог угрозы бесопасности перед тем, как послать отчёт и заблокировать агрессора]]></string>
     <string name="_adm_stg_cpt_option_sys_security_impact_threshold_log"><![CDATA[Общий порог угрозы бесопасности перед тем, как послать отчёт]]></string>
+    <string name="_adm_stg_cpt_option_sys_security_upload_token_enable"><![CDATA[Включить токены безопасности загрузки]]></string>
+    <string name="_adm_stg_cpt_option_sys_security_upload_token_lifetime"><![CDATA[Время жизни токена безопасности загрузки]]></string>
     <string name="_adm_stg_cpt_option_sys_security_block_content_after_n_reports"><![CDATA[Блокировать контент после N жалоб (0 - не блокировать)]]></string>
     <string name="_adm_stg_cpt_option_sys_site_logo_aspect_ratio"><![CDATA[Соотношение сторон лого]]></string>
     <string name="_adm_stg_cpt_option_sys_storage_default"><![CDATA[Основной движок хранения (отличный от Local может потребовать дополнительную настройку)]]></string>

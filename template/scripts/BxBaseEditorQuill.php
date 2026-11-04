@@ -29,6 +29,7 @@ class BxBaseEditorQuill extends BxDolEditor
                 css_class: '{bx_var_css_additional_class}',
                 toolbar: {toolbar},
                 root_url: '{bx_url_root}',
+                upload_token: '{bx_var_upload_token}',
                 query_params: {bx_var_query_params},
                 insert_as_plain_text: {insert_as_plain_text},
                 empty_tags: {empty_tags},
@@ -131,6 +132,7 @@ class BxBaseEditorQuill extends BxDolEditor
             'bx_var_editor_call_destroy' => $sEditorCallDestroy,
             'bx_var_skin' => bx_js_string($this->_aObject['skin'], BX_ESCAPE_STR_APOS),
             'bx_url_root' => bx_js_string(BX_DOL_URL_ROOT, BX_ESCAPE_STR_APOS)
+            , 'bx_var_upload_token' => BxDolUploader::isUploadTokenEnabled() ? bx_js_string(BxDolUploader::getUploadToken('upload', 'sys_images_editor'), BX_ESCAPE_STR_APOS) : ''
         ]);
 
         $sScript = "var " . $sEditorName . " = undefined; ";

@@ -31,7 +31,8 @@ class BxDolLocationFieldNominatim extends BxDolLocationField
             'limit' => $iLimit
         ], $aAddress));
 
-        $sResults = bx_file_get_contents($sEndpoint);
+        $sHttpCode = null;
+        $sResults = bx_file_get_contents($sEndpoint, [], 'get', [], $sHttpCode, [], 0, [], true);
         if(empty($sResults))
             return false;
         

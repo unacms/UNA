@@ -1173,6 +1173,9 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
         if (!$aProfileInfo || getLoggedId() != $aProfileInfo['account_id'])
             return _t('_sys_txt_access_denied');
 
+        if (!isAdmin() && (empty($aContentInfo['id']) || (int)$aContentInfo['id'] !== (int)getLoggedId()))
+            return _t('_sys_txt_access_denied');
+
         return CHECK_ACTION_RESULT_ALLOWED;
     }
 

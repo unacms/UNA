@@ -160,12 +160,22 @@ class BxBaseModProfileFormsEntryHelper extends BxBaseModGeneralFormsEntryHelper
 
         bx_content_cache_del_by_prefix('sprofile_unit_vars:' . $oEditedProfile->id() . ':');
 
-        if(($oSockets = BxDolSockets::getInstance()) && $oSockets->isEnabled()) {
-            $aProfileData = BxDolProfile::getDataForPage($oEditedProfile);
-            $oSockets->sendEvent('profile', $aContentInfo['profile_id'], 'changed', json_encode($aProfileData));
-        }
+        $this->_sendProfileChangedEvent((int)$aContentInfo['profile_id']);
 
         return '';
+    }
+
+    /**
+     * Tell the apps that a profile changed.
+     * Note. Socket channels are public, so the event names the profile only. The app reloads
+     * the profile through the API, where the viewer's session decides what it may read.
+     */
+    protected function _sendProfileChangedEvent($iProfileId)
+    {
+        if(($oSockets = BxDolSockets::getInstance()) && $oSockets->isEnabled())
+            $oSockets->sendEvent('profile', $iProfileId, 'changed', json_encode([
+                'id' => $iProfileId
+            ]));
     }
 
     public function onDataAddAfter ($iAccountId, $iContentId)

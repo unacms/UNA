@@ -49,6 +49,7 @@ BxDolUploaderBase.prototype.init = function (sUploaderObject, sStorageObject, sU
     this._iContentId = undefined == options.content_id || '' == options.content_id ? '' : parseInt(options.content_id);
 
     this._sImagesTranscoder = options.images_transcoder ? options.images_transcoder : '';
+    this._sUploadToken = options.upload_token ? options.upload_token : '';
 
     this._isPrivate = undefined == options.storage_private || parseInt(options.storage_private) ? 1 : 0;
 
@@ -556,6 +557,8 @@ function BxDolUploaderHTML5 (sUploaderObject, sStorageObject, sUniqId, options) 
 					formData.append('c', this._iContentId);
 					formData.append('p', this._isPrivate);
 					formData.append('a', 'upload');
+					if (this._sUploadToken)
+					    formData.append('ut', this._sUploadToken);
 
 					const request = new XMLHttpRequest();
 					request.open('POST', sUrlRoot + 'storage_uploader.php');
@@ -818,6 +821,8 @@ function BxDolUploaderCrop (sUploaderObject, sStorageObject, sUniqId, options) {
                 $.each(oOptions.bx_form, function (sName) {
                     fd.append(sName, this);
                 });
+                if ($this._sUploadToken)
+                    fd.append('ut', $this._sUploadToken);
                 
                 $this.onBeforeUpload(fd);
 
@@ -1003,6 +1008,8 @@ function BxDolUploaderRecordVideo (sUploaderObject, sStorageObject, sUniqId, opt
 
         var data = new FormData(form);
         if (this._blob != null) data.append("f[]", this._blob, new Date().toISOString() + '.webm');
+        if (this._sUploadToken)
+            data.append('ut', this._sUploadToken);
 
         var $this = this;
         $.ajax({

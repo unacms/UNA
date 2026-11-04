@@ -29,12 +29,19 @@ class BxStrmEngineNGINX extends BxDol
         if (!$sHost || !$sApp)
             return false;
 
+        $sTemplate = getParam('bx_stream_server_nginx_stats_url');
         $sUrl = str_replace(
-            ['{host}', '{app}', '{key}'], 
-            [$sHost, $sApp, $sStreamKey], 
-            getParam('bx_stream_server_nginx_stats_url')
+            ['{host}', '{app}', '{key}'],
+            [$sHost, $sApp, $sStreamKey],
+            $sTemplate
         );
-        $s = bx_file_get_contents($sUrl);
+        $sExpectedHost = parse_url(str_replace(['{host}', '{app}', '{key}'], [$sHost, $sApp, ''], $sTemplate), PHP_URL_HOST);
+        $sUrlHost = parse_url($sUrl, PHP_URL_HOST);
+        if (!$sExpectedHost || !$sUrlHost || strcasecmp($sExpectedHost, $sUrlHost) !== 0)
+            return false;
+
+        $sHttpCode = null;
+        $s = bx_file_get_contents($sUrl, [], 'get', [], $sHttpCode, [], 0, [], true);
         if (!$s)
             return false;
 

@@ -39,6 +39,7 @@ class BxResourcesConfig extends BxBaseModTextConfig
 
             // database fields
             'FIELD_LIST_ID' => 'id',
+            'FIELD_LIST_CONTEXT_ID' => 'context_id',
             'FIELD_LIST_TITLE' => 'title',
 
             'FIELD_ID' => 'id',

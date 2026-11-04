@@ -78,8 +78,27 @@ class BxBaseModGeneralGridAdministration extends BxBaseModGeneralGrid
         return $this->_bIsApi ? $aResult : echoJson($aResult);
     }
     
+    public function performActionReorder()
+    {
+        $aOrder = bx_get($this->_sObject . '_row');
+        if (is_array($aOrder)) {
+            foreach ($aOrder as $mixedId) {
+                $aContentInfo = $this->_getContentInfo($mixedId);
+                if ($this->_oModule->checkAllowedEdit($aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+                    return $this->_getActionResult(['msg' => _t('_sys_txt_access_denied')]);
+            }
+        }
+
+        return parent::performActionReorder();
+    }
+
     public function performActionClearReports($aParams = array())
     {
+        if (!isAdmin() && !BxDolAcl::getInstance()->isMemberLevelInSet(array(MEMBERSHIP_ID_MODERATOR, MEMBERSHIP_ID_ADMINISTRATOR))) {
+            $aResult = array('msg' => _t('_sys_txt_access_denied'));
+            return $this->_bIsApi ? $aResult : echoJson($aResult);
+        }
+
     	$CNF = &$this->_oModule->_oConfig->CNF;
 
         $iAffected = 0;
@@ -217,6 +236,10 @@ class BxBaseModGeneralGridAdministration extends BxBaseModGeneralGrid
     protected function __enable ($mixedId, $isChecked)
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
+
+        $aContentInfo = $this->_getContentInfo($mixedId);
+        if ($this->_oModule->checkAllowedEdit($aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
 
         $mixedResult = parent::_enable($mixedId, $isChecked);
         if(!$mixedResult) 

@@ -25,7 +25,8 @@ class BxDolStudioOptionsApi extends BxTemplStudioOptions
 
         $sAppUrl = getParam('sys_api_url_root_email');
         if ($sAppUrl != ''){
-           bx_file_get_contents($sAppUrl . '_upd_conf');
+           $sHttpCode = null;
+           bx_file_get_contents($sAppUrl . '_upd_conf', [], 'get', [], $sHttpCode, [], 0, [], true);
         }
         
         return $sResult;

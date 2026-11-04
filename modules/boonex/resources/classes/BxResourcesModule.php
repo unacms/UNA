@@ -31,7 +31,7 @@ class BxResourcesModule extends BxBaseModTextModule
 
         $CNF = &$this->_oConfig->CNF;
 
-        $bAdd = $iId == 0;
+        $bAdd = (int)$iId == 0;
 
         $oForm = null;
         $sPopupTitle = "";
@@ -41,9 +41,12 @@ class BxResourcesModule extends BxBaseModTextModule
             $sPopupTitle = _t('_bx_resources_form_list_entry_display_add');
         }
         else {
+            $aContentInfo = $this->getListInContext($iId, $iContextId);
+            if($aContentInfo === false)
+                return '';
+
             $oForm = BxDolForm::getObjectInstance($CNF['OBJECT_FORM_LIST_ENTRY'], $CNF['OBJECT_FORM_LIST_ENTRY_DISPLAY_EDIT']);
             $sPopupTitle = _t('_bx_resources_form_list_entry_display_edit');
-            $aContentInfo = $this->_oDb->getList($iId);
         }
 
         $oForm->aFormAttrs['action'] = BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'process_list_form/' . $iContextId . '/' . $iId . '/';
@@ -82,6 +85,9 @@ class BxResourcesModule extends BxBaseModTextModule
         if(!$this->isAllowManageByContext($iContextId))
             return echoJson([]);
 
+        if(!is_array($this->getListInContext($iListId, $iContextId)))
+            return echoJson([]);
+
         $this->_oDb->deleteList($iListId);
 
         echoJson([
@@ -92,6 +98,9 @@ class BxResourcesModule extends BxBaseModTextModule
     public function actionProcessEntryForm($iContextId, $iListId = 0)
     {
         if(!$this->isAllowAdd($iContextId))
+            return echoJson([]);
+
+        if($this->getListInContext($iListId, $iContextId) === false)
             return echoJson([]);
 
         $CNF = &$this->_oConfig->CNF;
@@ -221,6 +230,27 @@ class BxResourcesModule extends BxBaseModTextModule
     public function checkAllowedSetThumb ($iContentId = 0)
     {
         return CHECK_ACTION_RESULT_ALLOWED;
+    }
+
+    /**
+     * A list id from the request has to belong to the context that passed the permission check.
+     * Zero is a new list, or no list, and is not looked up.
+     *
+     * @return array|true|false list row, true when there is no list id, false when it is missing or belongs to another context
+     */
+    protected function getListInContext($iListId, $iContextId)
+    {
+        $iListId = (int)$iListId;
+        if($iListId === 0)
+            return true;
+
+        $CNF = &$this->_oConfig->CNF;
+
+        $aList = $this->_oDb->getList($iListId);
+        if(empty($aList) || !is_array($aList) || (int)$aList[$CNF['FIELD_LIST_CONTEXT_ID']] !== (int)$iContextId)
+            return false;
+
+        return $aList;
     }
 
     public function isAllowView($iContextId)

@@ -77,7 +77,8 @@ class BxFilesBulkDownloader
             $sFileUrl = $oStorage->getFileUrlById($aFile['id']);
             $sFilePath = BX_DIRECTORY_PATH_TMP . 'download-job-file-'.$aFile['id'];
             if (!file_exists($sFilePath)) {
-                @file_put_contents($sFilePath, bx_file_get_contents($sFileUrl));
+                $sHttpCode = null;
+                @file_put_contents($sFilePath, bx_file_get_contents($sFileUrl, [], 'get', [], $sHttpCode, [], 0, [], true));
             }
 
             $aFiles[$iIndex]['downloaded'] = $sFilePath;

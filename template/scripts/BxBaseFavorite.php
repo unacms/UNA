@@ -224,6 +224,13 @@ class BxBaseFavorite extends BxDolFavorite
 
     public function getPerformedByAPI($aParams = [])
     {
+        if (!$this->isAllowedFavoriteView())
+            return ['code' => BX_DOL_OBJECT_ERR_ACCESS_DENIED, 'message' => $this->msgErrAllowedFavoriteView()];
+
+        $aObject = $this->_oQuery->getObjectInfo($this->getId());
+        if (empty($this->_aSystem['module']) || empty($aObject) || !is_array($aObject) || bx_srv($this->_aSystem['module'], 'check_allowed_view_for_profile', [$aObject]) !== CHECK_ACTION_RESULT_ALLOWED)
+            return ['code' => BX_DOL_OBJECT_ERR_ACCESS_DENIED, 'message' => _t('_sys_txt_access_denied')];
+
         $aValues = $this->_oQuery->getPerformedBy($this->getId());
 
         $aTmplUsers = [];

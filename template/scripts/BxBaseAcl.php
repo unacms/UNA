@@ -40,16 +40,20 @@ class BxBaseAcl extends BxDolAcl
             $sIconS = $aLevelInfo['icon'];
             $sIconD = $oTemplate->getImage($sIconS, ['wrap_in_tag' => false]);
 
+            $aLevelApi = [
+                'id' => $aLevel['id'],
+                'name' => !empty($aLevelInfo['name']) ? _t($aLevelInfo['name']) : '',
+                'description' => !empty($aLevelInfo['description']) ? _t($aLevelInfo['description']) : '',
+                'icon' => strcmp($sIconS, $sIconD) != 0 ? $sIconD : BxDolIconset::getObjectInstance()->getIcon($sIconD),
+            ];
+            if ($bOwner || $bCanView) {
+                $aLevelApi['date_starts'] = (int)$aLevel['date_starts'];
+                $aLevelApi['date_expires'] = (int)$aLevel['date_expires'];
+            }
+
             return [
                 'profile' => BxDolProfile::getData($iProfileId),
-                'level' => [
-                    'id' => $aLevel['id'],
-                    'name' => !empty($aLevelInfo['name']) ? _t($aLevelInfo['name']) : '',
-                    'description' => !empty($aLevelInfo['description']) ? _t($aLevelInfo['description']) : '',
-                    'icon' => strcmp($sIconS, $sIconD) != 0 ? $sIconD : BxDolIconset::getObjectInstance()->getIcon($sIconD),
-                    'date_starts' => (int)$aLevel['date_starts'],
-                    'date_expires' => (int)$aLevel['date_expires'],
-                ]
+                'level' => $aLevelApi,
             ];
         }
 

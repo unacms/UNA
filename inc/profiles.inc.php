@@ -17,6 +17,28 @@ function bx_get_logged_profile_id ()
 }
 
 /**
+ * The profile belongs to the account that is logged in.
+ */
+function bx_is_logged_profile($iProfileId)
+{
+    $iProfileId = (int)$iProfileId;
+    $iLogged = (int)bx_get_logged_profile_id();
+    if (!$iProfileId || !$iLogged)
+        return false;
+
+    if ($iProfileId === $iLogged)
+        return true;
+
+    $oLogged = BxDolProfile::getInstance($iLogged);
+    $oProfile = BxDolProfile::getInstance($iProfileId);
+    if (!$oLogged || !$oProfile)
+        return false;
+
+    $iAccountId = (int)$oLogged->getAccountId();
+    return $iAccountId > 0 && $iAccountId === (int)$oProfile->getAccountId();
+}
+
+/**
  * @return true if user is logged in
  */
 function isLogged()

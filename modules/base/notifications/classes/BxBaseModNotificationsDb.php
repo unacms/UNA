@@ -522,7 +522,7 @@ class BxBaseModNotificationsDb extends BxBaseModGeneralDb
             case 'list':
                 list($sJoinClause, $sWhereClause) = $this->_getSqlPartsEventsList($aParams);
                 $sOrderClause = "ORDER BY `{$sTableAlias}`.`date` DESC, `{$sTableAlias}`.`id` DESC";
-                $sLimitClause = isset($aParams['per_page']) ? "LIMIT " . $aParams['start'] . ", " . $aParams['per_page'] : "";
+                $sLimitClause = isset($aParams['per_page']) ? "LIMIT " . (int)$aParams['start'] . ", " . (int)$aParams['per_page'] : "";
                 break;
         }
 

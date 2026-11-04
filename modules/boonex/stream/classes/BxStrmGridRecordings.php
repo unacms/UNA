@@ -152,7 +152,7 @@ class BxStrmGridRecordings extends BxTemplGrid
         if (!$oStorageVideos)
             return false;
 
-        $iFileIdNew = $oStorageVideos->storeFileFromUrl($sFileUrl, false, bx_get_logged_profile_id());
+        $iFileIdNew = $oStorageVideos->storeFileFromUrl($sFileUrl, false, bx_get_logged_profile_id(), 0, true);
         if (!$iFileIdNew) {
             $sErrorMsg = $oStorageVideos->getErrorString();
             return false;

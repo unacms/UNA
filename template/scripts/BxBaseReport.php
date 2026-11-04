@@ -354,6 +354,9 @@ class BxBaseReport extends BxDolReport
 
     public function getPerformedByAPI($aParams = [])
     {
+        if (!$this->isAllowedReportView())
+            return ['code' => BX_DOL_OBJECT_ERR_ACCESS_DENIED, 'message' => $this->msgErrAllowedReportView()];
+
         $aValues = $this->_oQuery->getPerformedBy($this->getId());
 
         $aTmplUsers = [];
@@ -623,10 +626,14 @@ class BxBaseReport extends BxDolReport
         return $aResult;
     }
 
+    /**
+     * Socket channels are public, while reporters and report counters are shown to
+     * moderators only (isAllowedReportView). So the event only says that reports changed.
+     */
     protected function _returnReportDataForSocket($aData, $aMask = [])
     {
         if(empty($aMask) || !is_array($aMask))
-            $aMask = ['code', 'count', 'countf', 'api'];
+            $aMask = ['code'];
 
         return array_intersect_key($aData, array_flip($aMask));
     }

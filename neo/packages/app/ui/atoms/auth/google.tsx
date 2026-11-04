@@ -33,9 +33,6 @@ type GoogleSettings = {
     android_client_id?: string
 }
 
-/** OpenID Connect userinfo, forwarded to UNA's bx_googlecon handler. */
-type GoogleUser = Record<string, unknown>
-
 /** UNA API reply: a list of blocks, e.g. { type: 'redirect', data: { uri } } or { type: 'msg', data }. */
 type UnaApiResult = { data?: Array<{ type?: string; data?: any }> | any }
 
@@ -87,19 +84,6 @@ function AuthGoogleButton({ googleSettings }: { googleSettings: GoogleSettings }
         }
     }, [isWeb]);
 
-    async function fetchUserInfo(accessToken: string): Promise<GoogleUser | undefined> {
-        try {
-            const res = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
-                headers: { Authorization: `Bearer ${accessToken}` }
-            });
-            if (!res.ok) throw new Error(`Error ${res.status}`);
-            const user = await res.json();
-            return user;
-        } catch (err) {
-            console.error('Error:', err);
-        }
-    }
-
     // Must match Authorized JavaScript origins + redirect URIs in Google Cloud (public TLD or localhost only).
     const redirectUri = makeRedirectUri();
 
@@ -116,8 +100,10 @@ function AuthGoogleButton({ googleSettings }: { googleSettings: GoogleSettings }
     });
 
     useEffect(() => {
-        const completeSignIn = async (user: GoogleUser) => {
-            const result: UnaApiResult = await fetcher('/api.php?r=bx_googlecon/handle/&params[]=' + JSON.stringify(user));
+        // Only the access token is sent. UNA verifies it with Google and gets the profile from Google itself,
+        // anything else sent by a client can't be trusted.
+        const completeSignIn = async (accessToken: string) => {
+            const result: UnaApiResult = await fetcher('/api.php?r=bx_googlecon/handle/&params[]=' + encodeURIComponent(JSON.stringify({ access_token: accessToken })));
             const uri = redirectUriFromApiResult(result);
             const errorMsg = errorMessageFromApiResult(result);
 
@@ -156,9 +142,7 @@ function AuthGoogleButton({ googleSettings }: { googleSettings: GoogleSettings }
                 response.authentication?.accessToken ??
                 response.params?.access_token;
             if (!accessToken) return;
-            fetchUserInfo(accessToken).then((user) => {
-                if (user) completeSignIn(user);
-            });
+            completeSignIn(accessToken);
         } else if (response?.type === 'error') {
             setError(
                 String(

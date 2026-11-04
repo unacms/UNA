@@ -1071,41 +1071,319 @@ function bx_php_string_quot ($mixedInput)
 }
 
 /**
- * Gets file contents by URL.
- *
- * @param string $sFileUrl - file URL to be read.
- * @param array $aParams - an array of parameters to be pathed with URL.
- * @param string $sMethod - post or get.
- * @param array $aHeaders - custom headers.
- * @param string $sHttpCode - HTTP code to return
- * @param array $aBasicAuth - array with 'user' and 'password' for Basic HTTP Auth
- * @return string the file's contents.
+ * True when an address is not a global unicast target (private, reserved, shared or multicast).
  */
-function bx_file_get_contents($sFileUrl, $aParams = array(), $sMethod = 'get', $aHeaders = array(), &$sHttpCode = null, $aBasicAuth = array(), $iTimeout = 0, $aCustomCurlParams = array())
+function bx_ip_is_blocked($sIp)
 {
-    if(!in_array($sMethod, ['post', 'post-raw', 'post-json', 'post-json-object']))
-    	$sFileUrl = bx_append_url_params($sFileUrl, $aParams);
+    if (!is_string($sIp) || $sIp === '' || is_private_ip($sIp))
+        return true;
 
+    if (filter_var($sIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== $sIp)
+        return false;
+
+    $iIp = ip2long($sIp);
+    if ($iIp === false)
+        return true;
+
+    // 224.0.0.0/4 multicast and 100.64.0.0/10 shared address space are outside is_private_ip().
+    if (($iIp & 0xf0000000) === 0xe0000000)
+        return true;
+    if (($iIp & 0xffc00000) === 0x64400000)
+        return true;
+
+    return false;
+}
+
+/**
+ * Curl-style IPv4 literal (decimal, octal, hex, and short forms such as 127.1), or null when it is not one.
+ * False when it looks like an IPv4 literal but is not a valid address.
+ *
+ * @return string|false|null
+ */
+function bx_host_to_ipv4($sHost)
+{
+    if (!is_string($sHost) || !preg_match('/^(?:0x[0-9a-f]+|[0-9]+)(?:\.(?:0x[0-9a-f]+|[0-9]+)){0,3}$/i', $sHost))
+        return null;
+
+    $aNums = [];
+    foreach (explode('.', $sHost) as $sPart) {
+        if (stripos($sPart, '0x') === 0) {
+            $iNum = hexdec($sPart);
+        }
+        elseif (isset($sPart[0]) && $sPart[0] === '0' && $sPart !== '0') {
+            if (!preg_match('/^[0-7]+$/', $sPart))
+                return false;
+            $iNum = octdec($sPart);
+        }
+        else {
+            $iNum = (int)$sPart;
+        }
+        if (is_float($iNum) || $iNum < 0)
+            return false;
+        $aNums[] = (int)$iNum;
+    }
+
+    $n = count($aNums);
+    if ($n === 4) {
+        foreach ($aNums as $iNum)
+            if ($iNum > 255)
+                return false;
+        $iIp = ($aNums[0] << 24) | ($aNums[1] << 16) | ($aNums[2] << 8) | $aNums[3];
+    }
+    elseif ($n === 3) {
+        if ($aNums[0] > 255 || $aNums[1] > 255 || $aNums[2] > 65535)
+            return false;
+        $iIp = ($aNums[0] << 24) | ($aNums[1] << 16) | $aNums[2];
+    }
+    elseif ($n === 2) {
+        if ($aNums[0] > 255 || $aNums[1] > 16777215)
+            return false;
+        $iIp = ($aNums[0] << 24) | $aNums[1];
+    }
+    else {
+        if ($aNums[0] > 4294967295)
+            return false;
+        $iIp = $aNums[0];
+    }
+
+    return long2ip($iIp);
+}
+
+/**
+ * The URL's host and port are this site's own origin, so a private address there is the site itself.
+ */
+function bx_remote_url_is_site($sHost, $iPort)
+{
+    if (!defined('BX_DOL_URL_ROOT') || !BX_DOL_URL_ROOT)
+        return false;
+
+    $aSite = parse_url(BX_DOL_URL_ROOT);
+    if (empty($aSite['host']))
+        return false;
+
+    $sSiteHost = $aSite['host'];
+    if (isset($sSiteHost[0]) && $sSiteHost[0] === '[')
+        $sSiteHost = trim($sSiteHost, '[]');
+    $sSiteHost = rtrim($sSiteHost, '.');
+    if (function_exists('idn_to_ascii')) {
+        $sAscii = idn_to_ascii($sSiteHost);
+        if (is_string($sAscii) && $sAscii !== '')
+            $sSiteHost = $sAscii;
+    }
+
+    if (strcasecmp($sSiteHost, $sHost) !== 0)
+        return false;
+
+    $sScheme = isset($aSite['scheme']) ? strtolower($aSite['scheme']) : 'http';
+    $iSitePort = isset($aSite['port']) ? (int)$aSite['port'] : ($sScheme === 'https' ? 443 : 80);
+    return (int)$iPort === $iSitePort;
+}
+
+/**
+ * http(s) URL whose addresses are all global, or this site's own origin.
+ * Fills CURLOPT_RESOLVE entries so the connection uses the addresses just checked.
+ *
+ * @param array|null $aResolve
+ * @param string|null $sNormalized URL curl should request (ASCII host)
+ */
+function bx_remote_url_is_allowed($sUrl, &$aResolve = null, &$sNormalized = null)
+{
+    $aResolve = [];
+    $sNormalized = '';
+
+    if (!is_string($sUrl) || $sUrl === '' || get_mb_len($sUrl) > 8192)
+        return false;
+    if (preg_match('/[\x00-\x20\x7f\\\\]/', $sUrl))
+        return false;
+
+    $aUrl = parse_url($sUrl);
+    if (!is_array($aUrl) || empty($aUrl['scheme']) || empty($aUrl['host']) || !empty($aUrl['user']) || !empty($aUrl['pass']))
+        return false;
+
+    $sScheme = strtolower($aUrl['scheme']);
+    if ($sScheme !== 'http' && $sScheme !== 'https')
+        return false;
+
+    $sHostInUrl = $aUrl['host'];
+    $sHost = $sHostInUrl;
+    if (isset($sHost[0]) && $sHost[0] === '[')
+        $sHost = trim($sHost, '[]');
+    $sHost = rtrim($sHost, '.');
+    if ($sHost === '' || bx_mb_strpos($sHost, '%') !== false)
+        return false;
+
+    if (function_exists('idn_to_ascii')) {
+        $sAscii = idn_to_ascii($sHost);
+        if (is_string($sAscii) && $sAscii !== '')
+            $sHost = $sAscii;
+    }
+
+    $iPort = isset($aUrl['port']) ? (int)$aUrl['port'] : ($sScheme === 'https' ? 443 : 80);
+    if ($iPort < 1 || $iPort > 65535)
+        return false;
+
+    $bSite = bx_remote_url_is_site($sHost, $iPort);
+    $mLiteral = bx_host_to_ipv4($sHost);
+    if ($mLiteral === false)
+        return false;
+
+    $aIps = [];
+    if (is_string($mLiteral)) {
+        $aIps[] = $mLiteral;
+    }
+    elseif (filter_var($sHost, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6) === $sHost) {
+        $aIps[] = $sHost;
+    }
+    else {
+        $aV4 = @gethostbynamel($sHost);
+        if (is_array($aV4))
+            foreach ($aV4 as $sIp)
+                $aIps[] = $sIp;
+        if (function_exists('dns_get_record')) {
+            $aRecords = @dns_get_record($sHost, DNS_AAAA);
+            if (is_array($aRecords))
+                foreach ($aRecords as $aRecord)
+                    if (!empty($aRecord['ipv6']))
+                        $aIps[] = $aRecord['ipv6'];
+        }
+    }
+
+    $aIps = array_values(array_unique($aIps));
+    if (!$aIps)
+        return false;
+
+    foreach ($aIps as $sIp)
+        if (bx_ip_is_blocked($sIp) && !$bSite)
+            return false;
+
+    // Names are pinned to the address just checked. A literal has no DNS lookup to rebind.
+    $bLiteral = is_string($mLiteral) || filter_var($sHost, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6) === $sHost;
+    if (!$bLiteral) {
+        $sAddr = bx_mb_strpos($aIps[0], ':') !== false ? '[' . $aIps[0] . ']' : $aIps[0];
+        $aResolve[] = $sHost . ':' . $iPort . ':' . $sAddr;
+    }
+
+    $sNormalized = $sUrl;
+    if (strcasecmp($sHostInUrl, $sHost) !== 0 && strcasecmp($sHostInUrl, '[' . $sHost . ']') !== 0) {
+        $iPos = bx_mb_strpos($sUrl, $sHostInUrl, get_mb_len($aUrl['scheme']) + 3);
+        if ($iPos === false)
+            return false;
+        $sHostForUrl = (filter_var($sHost, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === $sHost) ? '[' . $sHost . ']' : $sHost;
+        $sNormalized = get_mb_substr($sUrl, 0, $iPos) . $sHostForUrl . get_mb_substr($sUrl, $iPos + get_mb_len($sHostInUrl), get_mb_len($sUrl));
+    }
+
+    return true;
+}
+
+/**
+ * Absolute URL a redirect Location points at, or false.
+ */
+function bx_remote_redirect_url($sCurrent, $sLocation)
+{
+    $sLocation = trim((string)$sLocation);
+    if ($sLocation === '' || preg_match('/[\x00-\x20\x7f\\\\]/', $sLocation))
+        return false;
+    if (preg_match('#^https?://#i', $sLocation))
+        return $sLocation;
+
+    $a = parse_url($sCurrent);
+    if (empty($a['scheme']) || empty($a['host']))
+        return false;
+
+    if (strncmp($sLocation, '//', 2) === 0)
+        return $a['scheme'] . ':' . $sLocation;
+
+    $sOrigin = $a['scheme'] . '://' . $a['host'] . (empty($a['port']) ? '' : ':' . $a['port']);
+    if (isset($sLocation[0]) && $sLocation[0] === '/')
+        return $sOrigin . $sLocation;
+
+    $sPath = isset($a['path']) ? $a['path'] : '/';
+    if (isset($sLocation[0]) && $sLocation[0] === '?')
+        return $sOrigin . $sPath . $sLocation;
+
+    $iSlash = mb_strrpos($sPath, '/');
+    $sDir = $iSlash === false ? '/' : get_mb_substr($sPath, 0, $iSlash + 1);
+    return $sOrigin . $sDir . $sLocation;
+}
+
+/**
+ * Origin of a URL as 'scheme://host:port' with the default port filled in, or '' when it can not be parsed.
+ */
+function bx_remote_origin($sUrl)
+{
+    $a = parse_url((string)$sUrl);
+    if (!$a || empty($a['scheme']) || empty($a['host']))
+        return '';
+
+    $sScheme = strtolower($a['scheme']);
+    $iPort = isset($a['port']) ? (int)$a['port'] : ('https' === $sScheme ? 443 : 80);
+    $sHost = rtrim(strtolower($a['host']), '.');
+    if ($sHost !== '' && function_exists('idn_to_ascii')) {
+        $sAscii = idn_to_ascii($sHost);
+        if (is_string($sAscii) && $sAscii !== '')
+            $sHost = $sAscii;
+    }
+
+    return $sScheme . '://' . $sHost . ':' . $iPort;
+}
+
+/**
+ * Removes headers that carry credentials (Authorization, Cookie, API keys, tokens and similar).
+ *
+ * @param array $aHeaders - list of 'Name: value' strings
+ * @return array
+ */
+function bx_remote_strip_sensitive_headers($aHeaders)
+{
+    return array_values(array_filter((array)$aHeaders, function ($sHeader) {
+        $sName = strtolower(trim((string)strstr((string)$sHeader, ':', true)));
+        if ($sName === '')
+            return true;
+        if (in_array($sName, ['authorization', 'proxy-authorization', 'cookie'], true))
+            return false;
+        return !preg_match('/auth|token|secret|api-?key|session|credential/', $sName);
+    }));
+}
+
+/**
+ * One HTTP request. When $bPinDns is set, redirects are not followed and the connection is pinned to $aResolve.
+ *
+ * @return string|false
+ */
+function bx_file_get_contents_request($sFileUrl, $aParams, $sMethod, $aHeaders, &$sHttpCode, $aBasicAuth, $iTimeout, $aCustomCurlParams, $aResolve, $bPinDns, &$sRedirectUrl, $sSaveTo = '')
+{
+    $sRedirectUrl = '';
     $sResult = '';
-    if(function_exists('curl_init')) {
+    $rSave = null;
+    if ($sSaveTo !== '') {
+        $rSave = @fopen($sSaveTo, 'wb');
+        if (false === $rSave)
+            return false;
+    }
+
+    if (function_exists('curl_init')) {
         $rConnect = curl_init();
 
         curl_setopt($rConnect, CURLOPT_USERAGENT, 'UNA ' . (defined('BX_DOL_VERSION') ? constant('BX_DOL_VERSION') : ''));
         curl_setopt($rConnect, CURLOPT_TIMEOUT, BxDolDb::getInstance() ? getParam('sys_default_curl_timeout') : 10);
         curl_setopt($rConnect, CURLOPT_URL, $sFileUrl);
         curl_setopt($rConnect, CURLOPT_RETURNTRANSFER, 1);
+        if ($rSave) {
+            curl_setopt($rConnect, CURLOPT_RETURNTRANSFER, 0);
+            curl_setopt($rConnect, CURLOPT_FILE, $rSave);
+        }
 
         if (0 !== $iTimeout) {
             curl_setopt($rConnect, CURLOPT_CONNECTTIMEOUT, $iTimeout);
             curl_setopt($rConnect, CURLOPT_TIMEOUT, $iTimeout);
         }
-        
-        if(getParam('sys_curl_ssl_allow_untrusted') == 'on'){
+
+        if (getParam('sys_curl_ssl_allow_untrusted') == 'on') {
             curl_setopt($rConnect, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($rConnect, CURLOPT_SSL_VERIFYHOST, false);
         }
 
-        if (!ini_get('open_basedir'))
+        if (!$bPinDns && !ini_get('open_basedir'))
             curl_setopt($rConnect, CURLOPT_FOLLOWLOCATION, 1);
 
         if ($aBasicAuth)
@@ -1136,41 +1414,179 @@ function bx_file_get_contents($sFileUrl, $aParams = array(), $sMethod = 'get', $
         if ($aHeaders)
             curl_setopt($rConnect, CURLOPT_HTTPHEADER, $aHeaders);
 
-        if (defined('BX_DOL_URL_ROOT') && 0 === strpos($sFileUrl, BX_DOL_URL_ROOT)) {
+        if (defined('BX_DOL_URL_ROOT') && 0 === strpos($sFileUrl, BX_DOL_URL_ROOT))
             curl_setopt($rConnect, CURLOPT_COOKIE, http_build_query($_COOKIE, '', '; ', PHP_QUERY_RFC3986));
-        }
 
         if ($aCustomCurlParams)
             foreach ($aCustomCurlParams as $sName => $mixedValue)
                 curl_setopt($rConnect, $sName, $mixedValue);
 
+        $sLocationHeader = '';
+        if ($bPinDns) {
+            curl_setopt($rConnect, CURLOPT_FOLLOWLOCATION, 0);
+            if ($aResolve)
+                curl_setopt($rConnect, CURLOPT_RESOLVE, $aResolve);
+            if (defined('CURLPROTO_HTTP') && defined('CURLPROTO_HTTPS'))
+                curl_setopt($rConnect, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+            curl_setopt($rConnect, CURLOPT_HEADERFUNCTION, function ($rCurl, $sHeader) use (&$sLocationHeader) {
+                unset($rCurl);
+                if (stripos($sHeader, 'Location:') === 0)
+                    $sLocationHeader = trim(substr($sHeader, 9));
+                return strlen($sHeader);
+            });
+        }
+
         $sResult = curl_exec($rConnect);
 
         if (curl_errno($rConnect) == 60) { // CURLE_SSL_CACERT
             curl_setopt($rConnect, CURLOPT_CAINFO, BX_DIRECTORY_PATH_PLUGINS . 'curl/cacert/cacert.pem');
+            if ($rSave) {
+                ftruncate($rSave, 0);
+                rewind($rSave);
+            }
             $sResult = curl_exec($rConnect);
         }
 
         if (NULL !== $sHttpCode)
             $sHttpCode = curl_getinfo($rConnect, CURLINFO_HTTP_CODE);
 
+        if ($bPinDns) {
+            $sRedirect = curl_getinfo($rConnect, CURLINFO_REDIRECT_URL);
+            if (!$sRedirect && $sLocationHeader !== '')
+                $sRedirect = $sLocationHeader;
+            $sRedirectUrl = is_string($sRedirect) ? $sRedirect : '';
+        }
     }
     else {
-
         $iSaveTimeout = false;
         if (0 !== $iTimeout) {
             $iSaveTimeout = ini_get('default_socket_timeout');
             ini_set('default_socket_timeout', $iTimeout);
         }
 
-        $sResult = @file_get_contents($sFileUrl);
+        $rContext = null;
+        if ($bPinDns)
+            $rContext = stream_context_create(['http' => [
+                'follow_location' => 0,
+                'max_redirects' => 0,
+                'timeout' => $iTimeout ?: 10,
+            ]]);
 
-        if (0 !== $iTimeout && false !== $iSaveTimeout) {
-            ini_set('default_socket_timeout', $iSaveTimeout);
+        if ($rSave) {
+            $rRead = $rContext ? @fopen($sFileUrl, 'rb', false, $rContext) : @fopen($sFileUrl, 'rb');
+            $sResult = false;
+            if (false !== $rRead) {
+                $sResult = false !== stream_copy_to_stream($rRead, $rSave);
+                fclose($rRead);
+            }
         }
+        elseif ($rContext) {
+            $sResult = @file_get_contents($sFileUrl, false, $rContext);
+        }
+        else {
+            $sResult = @file_get_contents($sFileUrl);
+        }
+
+        if (0 !== $iTimeout && false !== $iSaveTimeout)
+            ini_set('default_socket_timeout', $iSaveTimeout);
     }
 
+    if ($rSave)
+        fclose($rSave);
+
     return $sResult;
+}
+
+/**
+ * Gets file contents by URL.
+ *
+ * Refuses non-http(s) URLs and addresses that are not global (and not this site's own origin),
+ * and checks each redirect again. Pass $bAllowRestricted for a server-configured host that is
+ * meant to be on a private network (instance metadata, a media server, this site's storage).
+ *
+ * @param string $sFileUrl - file URL to be read.
+ * @param array $aParams - an array of parameters to be pathed with URL.
+ * @param string $sMethod - post or get.
+ * @param array $aHeaders - custom headers.
+ * @param string $sHttpCode - HTTP code to return
+ * @param array $aBasicAuth - array with 'user' and 'password' for Basic HTTP Auth
+ * @param bool $bAllowRestricted - fetch even when the host resolves to a private or reserved address
+ * @param string $sSaveTo - when set, the response body is streamed into this file instead of being returned
+ * @return string|bool|false the file's contents (true when saved to $sSaveTo), or false when the URL is refused.
+ */
+function bx_file_get_contents($sFileUrl, $aParams = array(), $sMethod = 'get', $aHeaders = array(), &$sHttpCode = null, $aBasicAuth = array(), $iTimeout = 0, $aCustomCurlParams = array(), $bAllowRestricted = false, $sSaveTo = '')
+{
+    $bPost = in_array($sMethod, ['post', 'post-raw', 'post-json', 'post-json-object'], true);
+    if (!$bPost)
+        $sFileUrl = bx_append_url_params($sFileUrl, $aParams);
+
+    $bFollow = !isset($aCustomCurlParams[CURLOPT_FOLLOWLOCATION]) || $aCustomCurlParams[CURLOPT_FOLLOWLOCATION];
+    $sOrigin = null; // taken from the first normalized URL, so a trailing dot or a Unicode host is not a different origin
+    $bLeftOrigin = false;
+    $aBody = $bPost ? $aParams : [];
+    $iLeft = 5;
+
+    while (true) {
+        $aResolve = [];
+        $sNormalized = '';
+        if (!$bAllowRestricted) {
+            if (!bx_remote_url_is_allowed($sFileUrl, $aResolve, $sNormalized)) {
+                $sHttpCode = 0;
+                return false;
+            }
+            if ($sNormalized !== '')
+                $sFileUrl = $sNormalized;
+        }
+
+        // once a redirect leaves the original origin (scheme, host or port), credentials are dropped for good
+        if (null === $sOrigin)
+            $sOrigin = bx_remote_origin($sFileUrl);
+        if (!$bLeftOrigin && bx_remote_origin($sFileUrl) !== $sOrigin) {
+            $bLeftOrigin = true;
+            $aHeaders = bx_remote_strip_sensitive_headers($aHeaders);
+            $aBasicAuth = [];
+            foreach (['CURLOPT_USERPWD', 'CURLOPT_COOKIE', 'CURLOPT_XOAUTH2_BEARER'] as $sOpt)
+                if (defined($sOpt))
+                    unset($aCustomCurlParams[constant($sOpt)]);
+        }
+        $aAuth = $aBasicAuth;
+
+        $sRedirect = '';
+        // always capture the status, the redirect loop needs it even when the caller does not ask for it
+        $sStatus = 0;
+        $sResult = bx_file_get_contents_request($sFileUrl, $aBody, $sMethod, $aHeaders, $sStatus, $aAuth, $iTimeout, $aCustomCurlParams, $aResolve, !$bAllowRestricted, $sRedirect, (string)$sSaveTo);
+        if (NULL !== $sHttpCode)
+            $sHttpCode = $sStatus;
+
+        if ($bAllowRestricted || !$bFollow || $sRedirect === '')
+            return $sResult;
+
+        $iCode = (int)$sStatus;
+        if ($iCode < 300 || $iCode >= 400)
+            return $sResult;
+
+        if ($iLeft <= 0) {
+            $sHttpCode = 0;
+            return false;
+        }
+
+        $sNext = bx_remote_redirect_url($sFileUrl, $sRedirect);
+        if ($sNext === false) {
+            $sHttpCode = 0;
+            return false;
+        }
+
+        if (in_array($iCode, [301, 302, 303], true)) {
+            $sMethod = 'get';
+            $aBody = [];
+            $aHeaders = array_values(array_filter($aHeaders, function ($sHeader) {
+                return stripos($sHeader, 'Content-Type:') !== 0;
+            }));
+        }
+
+        $sFileUrl = $sNext;
+        $iLeft--;
+    }
 }
 
 function bx_make_utf8($s)
@@ -2179,85 +2595,176 @@ function bx_show_service_unavailable_error_and_exit ($sMsg = false, $iRetryAfter
 }
 
 /**
- * The function is sumilar to php readfile, but it send all required headers and can send file by chunks and suports file seek
+ * The function is similar to php readfile, but it sends all required headers, answers HEAD,
+ * conditional (If-None-Match, If-Modified-Since) and single byte range requests, and sends the file by chunks.
+ * Headers are sent only when the request can be answered, so an error never goes out with cache headers.
  * @param $sPath path to file to output to the browser
  * @param $sFilename filename without path, ig file is saved from browser, then this name is used, not used(empty) by default
  * @param $sMimeType file mime type, by default 'application/octet-stream'
  * @param $iCacheAge file cache age, by default 0
  * @param $sCachePrivacy cache privacy 'public' (default value) or 'private'
  * @param $sContentDisposition content disposition header ('inline' or 'attachment' usually
- * @return true on success or false on error
+ * @param $bImmutable file behind the URL never changes, so browsers don't need to revalidate it while it is fresh
+ * @return true when the file or its part was sent;
+ *         HTTP status code when the request was answered without the file: 200 for HEAD, 304 or 416;
+ *         false on error, nothing is sent then
  */
-function bx_smart_readfile($sPath, $sFilename = '', $sMimeType = 'application/octet-stream', $iCacheAge = 0, $sCachePrivacy = 'public', $sContentDisposition = 'inline')
+function bx_smart_readfile($sPath, $sFilename = '', $sMimeType = 'application/octet-stream', $iCacheAge = 0, $sCachePrivacy = 'public', $sContentDisposition = 'inline', $bImmutable = false)
 {
-    if (!file_exists($sPath))
-        return  false;
+    if (!is_file($sPath) || !is_readable($sPath) || false === ($iSize = @filesize($sPath)))
+        return false;
 
-    $fp = @fopen($sPath, 'rb');
+    $iLastModified = (int)@filemtime($sPath);
+    $sLastModified = gmdate('D, d M Y H:i:s', $iLastModified) . ' GMT';
+    $sETag = '"' . dechex($iLastModified) . '-' . dechex($iSize) . '"';
 
-    $size   = filesize($sPath);
-    $length = $size;
-    $start  = 0;
-    $end    = $size - 1;
+    $sMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+    $iStatus = 200;
+    $iStart = 0;
+    $iEnd = $iSize - 1;
+
+    if (('GET' == $sMethod || 'HEAD' == $sMethod) && bx_is_http_not_modified($_SERVER['HTTP_IF_NONE_MATCH'] ?? null, $_SERVER['HTTP_IF_MODIFIED_SINCE'] ?? null, $sETag, $iLastModified)) {
+        $iStatus = 304;
+    }
+    elseif ('GET' == $sMethod && isset($_SERVER['HTTP_RANGE']) && (!isset($_SERVER['HTTP_IF_RANGE']) || in_array(trim($_SERVER['HTTP_IF_RANGE']), [$sETag, $sLastModified], true))) {
+        $mixedRange = bx_parse_http_range($_SERVER['HTTP_RANGE'], $iSize);
+        if (false === $mixedRange) {
+            http_response_code(416);
+            header('Cache-Control: no-store');
+            header('Content-Range: bytes */' . $iSize);
+            return 416;
+        }
+        if (is_array($mixedRange)) {
+            list($iStart, $iEnd) = $mixedRange;
+            $iStatus = 206;
+        }
+    }
+
+    $fp = false;
+    if (304 != $iStatus && 'HEAD' != $sMethod) {
+        if (!($fp = @fopen($sPath, 'rb')))
+            return false;
+
+        if ($iStart && 0 !== fseek($fp, $iStart)) {
+            fclose($fp);
+            return false;
+        }
+
+        set_time_limit(0);
+    }
 
     header('Content-Type: ' . $sMimeType);
-    header('Cache-Control: ' . $sCachePrivacy . ', must-revalidate, max-age=' . $iCacheAge);
+    header('Cache-Control: ' . $sCachePrivacy . ', must-revalidate, max-age=' . $iCacheAge . ($bImmutable && $iCacheAge > 0 ? ', immutable' : ''));
     // A shared cache must not hand one visitor's session cookie to others.
     if ('public' == $sCachePrivacy)
         header_remove('Set-Cookie');
     header("Expires: " . gmdate('D, d M Y H:i:s', time() + $iCacheAge) . ' GMT');
-    header("Last-Modified: " . gmdate('D, d M Y H:i:s', @filemtime($sPath)) . ' GMT');
+    header("Last-Modified: " . $sLastModified);
+    header("ETag: " . $sETag);
+
+    if (304 == $iStatus) {
+        http_response_code(304);
+        return 304;
+    }
+
     header("Accept-Ranges: bytes");
     if ($sFilename)
         header('Content-Disposition: ' . $sContentDisposition . '; filename="' . $sFilename . '"');
 
-    if (isset($_SERVER['HTTP_RANGE'])) {
+    if (206 == $iStatus)
+        http_response_code(206);
+    if ($iSize)
+        header("Content-Range: bytes $iStart-$iEnd/$iSize");
+    header("Content-Length: " . ($iEnd - $iStart + 1));
 
-        $c_start = $start;
-        $c_end   = $end;
+    if (!$fp)
+        return 200;
 
-        list(, $range) = explode('=', $_SERVER['HTTP_RANGE'], 2);
-        if (strpos($range, ',') !== false) {
-            header('HTTP/1.1 416 Requested Range Not Satisfiable');
-            header("Content-Range: bytes $start-$end/$size");
-            return false;
-        }
-        if ($range == '-') {
-            $c_start = $size - substr($range, 1);
-        }else{
-            $range  = explode('-', $range);
-            $c_start = $range[0];
-            $c_end   = (isset($range[1]) && is_numeric($range[1])) ? $range[1] : $size;
-        }
-        $c_end = ($c_end > $end) ? $end : $c_end;
-        if ($c_start > $c_end || $c_start > $size - 1 || $c_end >= $size) {
-            header('HTTP/1.1 416 Requested Range Not Satisfiable');
-            header("Content-Range: bytes $start-$end/$size");
-            return false;
-        }
-        $start  = $c_start;
-        $end    = $c_end;
-        $length = $end - $start + 1;
-        fseek($fp, $start);
-        header('HTTP/1.1 206 Partial Content');
-    }
-    header("Content-Range: bytes $start-$end/$size");
-    header("Content-Length: ".$length);
+    $iChunk = 256 * 1024;
+    $iLeft = $iEnd - $iStart + 1;
+    while ($iLeft > 0 && !feof($fp)) {
+        $s = fread($fp, min($iChunk, $iLeft));
+        if (false === $s || '' === $s)
+            break;
 
-    set_time_limit(0);
-    $buffer = 1024 * 8;
-    while(!feof($fp) && ($p = ftell($fp)) <= $end) {
-
-        if ($p + $buffer > $end) {
-            $buffer = $end - $p + 1;
-        }
-        echo fread($fp, $buffer);
+        echo $s;
         flush();
+
+        $iLeft = $iEnd + 1 - ftell($fp);
     }
 
     fclose($fp);
 
     return true;
+}
+
+/**
+ * Parse the Range header of a request for a file, only a single byte range is supported
+ * @param $sRange Range header value
+ * @param $iSize file size in bytes
+ * @return array with the first and the last byte positions of the range;
+ *         null when the header must be ignored (other range unit);
+ *         false when the range is invalid or not satisfiable (416)
+ */
+function bx_parse_http_range($sRange, $iSize)
+{
+    if (!preg_match('/^\s*([^\s=]+)=(.*?)\s*$/Ds', $sRange, $aMatches))
+        return false;
+
+    if (0 !== strcasecmp($aMatches[1], 'bytes'))
+        return null;
+
+    if (!$iSize || !preg_match('/^(\d*)-(\d*)$/D', $aMatches[2], $aRange) || ('' === $aRange[1] && '' === $aRange[2]))
+        return false;
+
+    // suffix range: the last N bytes
+    if ('' === $aRange[1]) {
+        $iLength = (int)$aRange[2];
+        return $iLength ? [max(0, $iSize - $iLength), $iSize - 1] : false;
+    }
+
+    $iStart = (int)$aRange[1];
+    $iEnd = '' === $aRange[2] ? $iSize - 1 : (int)$aRange[2];
+    if ($iStart >= $iSize || $iEnd < $iStart)
+        return false;
+
+    return [$iStart, min($iEnd, $iSize - 1)];
+}
+
+/**
+ * Check conditional request headers against the file validators
+ * @param $sIfNoneMatch If-None-Match header value, null when there is no such header
+ * @param $sIfModifiedSince If-Modified-Since header value, null when there is no such header
+ * @param $sETag file ETag
+ * @param $iLastModified file modification time
+ * @return true when the copy the client has is current, so 304 can be sent
+ */
+function bx_is_http_not_modified($sIfNoneMatch, $sIfModifiedSince, $sETag, $iLastModified)
+{
+    // If-Modified-Since is ignored when If-None-Match is present
+    if (null !== $sIfNoneMatch) {
+        foreach (explode(',', $sIfNoneMatch) as $s) {
+            $s = trim($s);
+            if ('*' === $s || $sETag === preg_replace('/^W\//', '', $s))
+                return true;
+        }
+        return false;
+    }
+
+    if (null === $sIfModifiedSince)
+        return false;
+
+    // all three HTTP date formats: IMF-fixdate, RFC 850 and asctime
+    $oUtc = new DateTimeZone('UTC');
+    foreach (['D, d M Y H:i:s \G\M\T', 'l, d-M-y H:i:s \G\M\T', 'D M j H:i:s Y'] as $sFormat) {
+        if (!($oDate = DateTime::createFromFormat('!' . $sFormat, trim($sIfModifiedSince), $oUtc)))
+            continue;
+
+        $iDate = $oDate->getTimestamp();
+        return $iLastModified <= $iDate && $iDate <= time();
+    }
+
+    return false;
 }
 
 /**
@@ -2866,6 +3373,25 @@ function bx_api_get_browse_params($sParams, $bParamsOnly = false)
         return [];
 
     return $aParams['params'];
+}
+
+/**
+ * Number of items per page asked by an API client: a whole number from 1 to $iMax.
+ * Anything else, including a missing value, gets $mixedDefault, the service's own default.
+ */
+function bx_api_get_per_page($mixedPerPage, $mixedDefault = 12, $iMax = 50)
+{
+    $iPerPage = is_numeric($mixedPerPage) ? (int)$mixedPerPage : 0;
+    return $iPerPage >= 1 && $iPerPage <= $iMax ? $iPerPage : $mixedDefault;
+}
+
+/**
+ * Paging offset asked by an API client: a whole number from 0 to $iMax.
+ */
+function bx_api_get_start($mixedStart, $iMax = 100000)
+{
+    $iStart = is_numeric($mixedStart) ? (int)$mixedStart : 0;
+    return min(max($iStart, 0), $iMax);
 }
 
 function bx_api_get_location_string($mixedValue)

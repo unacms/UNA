@@ -76,8 +76,8 @@ class BxBaseServicesSearch extends BxDol
             $oSearch->setRawProcessing(true);
         $oSearch->setCustomCurrentCondition(array(
             'paginate' => array (
-                'start' => $iStart,
-                'perPage' => $iPerPage ? $iPerPage : BX_DOL_SEARCH_RESULTS_PER_PAGE_DEFAULT,
+                'start' => bx_api_get_start($iStart),
+                'perPage' => bx_api_get_per_page($iPerPage, BX_DOL_SEARCH_RESULTS_PER_PAGE_DEFAULT),
             )));
         if ($sTemplate)
             $oSearch->setUnitTemplate($sTemplate);
@@ -200,6 +200,9 @@ class BxBaseServicesSearch extends BxDol
             'live' => false
         ], !empty($aParams['params']) && is_array($aParams['params']) ? $aParams['params'] : []);
 
+        $aParamsBrowse['start'] = bx_api_get_start($aParamsBrowse['start']);
+        $aParamsBrowse['per_page'] = bx_api_get_per_page($aParamsBrowse['per_page'], 12);
+
         if(empty($aParamsBrowse['section']))
             $aParamsBrowse['section'] = array_keys($aSections);
         else if(is_string($aParamsBrowse['section']))
@@ -214,7 +217,13 @@ class BxBaseServicesSearch extends BxDol
             $aParamsBrowse['sections'] = [];
             
             $aDataRv = [];
+            $aSectionsDone = [];
             foreach ($sSections as $sSection) {
+                // each global search section once, however many times the client lists it
+                if (!is_string($sSection) || !isset($aSectionsAll[$sSection]) || isset($aSectionsDone[$sSection]))
+                    continue;
+                $aSectionsDone[$sSection] = true;
+
                 $oSearch = new $sClass($sSection);
                 $oSearch->setLiveSearch(true);
                 $oSearch->setDataProcessing(true);
@@ -472,10 +481,8 @@ class BxBaseServicesSearch extends BxDol
         $aParams = !empty($aParams['params']) && is_array($aParams['params']) ? $aParams['params'] : [];
 
         $sObject = isset($aParams['object']) ? bx_process_input((string)$aParams['object'], BX_DATA_TEXT) : '';
-        $iStart = isset($aParams['start']) ? (int)$aParams['start'] : 0;
-        $iPerPage = isset($aParams['per_page']) ? (int)$aParams['per_page'] : 12;
-        if($iPerPage < 1 || $iPerPage > 50)
-            $iPerPage = 12;
+        $iStart = bx_api_get_start($aParams['start'] ?? 0);
+        $iPerPage = bx_api_get_per_page($aParams['per_page'] ?? 12, 12);
 
         $aObject = $sObject !== '' ? $this->_getSearchExtendedObject($sObject) : false;
         $oSearch = $aObject ? BxDolSearchExtended::getObjectInstance($sObject) : false;

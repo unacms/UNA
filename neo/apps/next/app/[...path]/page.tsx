@@ -8,6 +8,8 @@ import { notFound, redirect } from 'next/navigation'
 import { headers } from "next/headers"
 import { resolveLangCode } from '../../lib/resolve-lang'
 import { cachedUnaPageJson, unaPageCacheKey } from '../../lib/una-page-cache'
+import { resolveRequestTenant } from '../../lib/request-tenant'
+import type { Tenant } from '../../lib/tenant'
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -67,14 +69,21 @@ async function loadPage(props: PageProps): Promise<UnaPageResponse> {
     return getData((params.path ?? []).join('/'), JSON.stringify(searchParams));
 }
 
-// Tenant headers come from proxy.js only (it drops client-sent ones); trust them
-// only when the proxy can set them: multi-tenant mode or CI preview hosts.
-const trustTenantHeaders = (): boolean => !!MULTITENANT || !!PREVIEW_DOMAIN;
+// Multi-tenant mode and CI preview hosts: the Host header picks the UNA backend.
+const hostPicksBackend = (): boolean => !!MULTITENANT || !!PREVIEW_DOMAIN;
+
+/**
+ * This request's UNA backend, resolved from the Host header as proxy.js does (lib/tenant.ts).
+ * Not from request headers: a request the proxy's matcher skips keeps the ones the client sent.
+ */
+const requestTenant = cache(async (): Promise<Tenant | null> => {
+    if (!hostPicksBackend()) return null;
+    return resolveRequestTenant((await headers()).get('host'));
+});
 
 /** The UNA this request's page JSON comes from: the tenant's or the configured one. */
 async function unaBaseUrl(): Promise<string> {
-    const hdrs = await headers();
-    return (trustTenantHeaders() ? hdrs.get('x-tenant-una-url') : null) ?? UNA_URL;
+    return (await requestTenant())?.unaUrl ?? UNA_URL;
 }
 
 /**
@@ -82,7 +91,7 @@ async function unaBaseUrl(): Promise<string> {
  * proxy.js resolved the tenant from; otherwise APP_URL. Never x-forwarded-host.
  */
 async function siteOrigin(): Promise<string> {
-    if (!trustTenantHeaders() && APP_URL) {
+    if (!hostPicksBackend() && APP_URL) {
         try {
             return new URL(APP_URL).origin;
         } catch {
@@ -166,8 +175,9 @@ const getData = cache(async (path: string, searchParamsKey: string): Promise<Una
     const hdrs = await headers();
     // The viewer's Cookie header exactly as the browser sent it — forwarded to UNA.
     const cookieString = hdrs.get('cookie') || '';
-    const tenantUnaUrl = trustTenantHeaders() ? hdrs.get('x-tenant-una-url') : null;
-    const tenantUnaKey = trustTenantHeaders() ? hdrs.get('x-tenant-una-key') : null;
+    const tenant = await requestTenant();
+    const tenantUnaUrl = tenant?.unaUrl ?? null;
+    const tenantUnaKey = tenant?.unaApiKey ?? null;
 
     const fetchHeaders = {
         cookie: cookieString,

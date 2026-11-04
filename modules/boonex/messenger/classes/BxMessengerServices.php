@@ -472,6 +472,14 @@ class BxMessengerServices extends BxDol
         if ($iLotId && !$this->_isAvailable($iLotId))
             return ['code' => 1, 'message' => _t('_bx_messenger_talk_is_not_allowed')];
 
+        if($iJot) {
+            $aJotInfo = $this->_oModule->_oDb->getJotById($iJot);
+            if(empty($aJotInfo) || !$this->_isAvailable($aJotInfo[$CNF['FIELD_MESSAGE_FK']]) || ($iLotId && (int)$aJotInfo[$CNF['FIELD_MESSAGE_FK']] !== $iLotId))
+                return ['code' => 1, 'message' => _t('_bx_messenger_talk_is_not_allowed')];
+
+            $iLotId = (int)$aJotInfo[$CNF['FIELD_MESSAGE_FK']];
+        }
+
         $sUrl = isset($aOptions['url']) ? $aOptions['url'] : '';
         if ($sUrl)
             $sUrl = $this->_oModule->getPreparedUrl($sUrl);
@@ -941,6 +949,14 @@ class BxMessengerServices extends BxDol
             return [];
 
         $iLotId = $this->_oModule->_oDb->getConvoByHash($sLotHash);
+        $CNF = &$this->_oModule->_oConfig->CNF;
+        $aJotInfo = $this->_oModule->_oDb->getJotById($iJotId);
+        if(!$iLotId || empty($aJotInfo) || (int)$aJotInfo[$CNF['FIELD_MESSAGE_FK']] !== $iLotId || !$this->_isAvailable($iLotId))
+            return [];
+
+        if(!$this->_oModule->_oDb->isAllowedToDeleteJot($iJotId, $this->_iProfileId, $aJotInfo[$CNF['FIELD_MESSAGE_AUTHOR']]))
+            return [];
+
         $this->_pusherData('convo_' . $sLotHash, [
             'convo' => $iLotId, 
             'action' => 'deleted', 
@@ -1118,10 +1134,8 @@ class BxMessengerServices extends BxDol
         if(!$iLotId)
             return false;
 
-        $CNF = &$this->_oModule->_oConfig->CNF;
-
         $aLotInfo = $this->_oModule->_oDb->getLotInfoById($iLotId);
-        if(!empty($aLotInfo) && !$this->_oModule->_oDb->isParticipant($iLotId, $this->_iProfileId) && $aLotInfo[$CNF['FIELD_TYPE']] == BX_IM_TYPE_PRIVATE)
+        if(empty($aLotInfo) || !$this->_oModule->_oDb->isParticipant($iLotId, $this->_iProfileId))
             return false;
 
         return true;
@@ -1162,7 +1176,12 @@ class BxMessengerServices extends BxDol
             return [];
 
         $iLimit = $aOptions['limit'] ?? 0;
-        return $this->_oModule->_oDb->getVideoConferenceInfoByRoom($sUid, $iLimit);
+        $aInfo = $this->_oModule->_oDb->getVideoConferenceInfoByRoom($sUid, $iLimit);
+        foreach($aInfo as $aRow)
+            if(!$this->_isAvailable($aRow[$this->_oModule->_oConfig->CNF['FJVC_LOT_ID']]))
+                return [];
+
+        return $aInfo;
     }
 }
 

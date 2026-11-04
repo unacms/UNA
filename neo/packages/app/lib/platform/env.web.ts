@@ -11,6 +11,13 @@ export function env(key: string) {
         return process.env.NEXT_PUBLIC_UNA_PREVIEW_DOMAIN || process.env.UNA_PREVIEW_DOMAIN;
     if (key == 'GOOGLE_WEB_CLIENT_ID')
         return process.env.NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID || process.env.GOOGLE_WEB_CLIENT_ID;
+    // next.config.js copies SOCKETS_* → NEXT_PUBLIC_SOCKETS_* (the app key is public).
+    if (key == 'SOCKETS_HOST')
+        return process.env.NEXT_PUBLIC_SOCKETS_HOST;
+    if (key == 'SOCKETS_PORT')
+        return process.env.NEXT_PUBLIC_SOCKETS_PORT;
+    if (key == 'SOCKETS_KEY')
+        return process.env.NEXT_PUBLIC_SOCKETS_KEY;
 
     return process.env[key];
 }

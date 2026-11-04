@@ -218,6 +218,9 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
     public function serviceGetInitialMembers($iContextPid, $sTerm)
     {
+        if(!$this->isAllowView($iContextPid))
+            return [];
+
         if($this->_bIsApi) {
             if(!$sTerm)
                 return [];
@@ -243,7 +246,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
         $CNF = &$this->_oConfig->CNF;
 
-        $bAdd = $iId == 0;
+        $bAdd = (int)$iId == 0;
 
         $aContentInfo = [];
         $sFormDisplay = $sPopupTitle = '';
@@ -252,7 +255,10 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
             $sPopupTitle = _t('_bx_tasks_form_list_entry_display_add');
         }
         else {
-            $aContentInfo = $this->_oDb->getList($iId);
+            $aContentInfo = $this->getListInContext($iId, $iContextId);
+            if($aContentInfo === false)
+                return [];
+
             $sFormDisplay = $CNF['OBJECT_FORM_LIST_ENTRY_DISPLAY_EDIT'];
             $sPopupTitle = _t('_bx_tasks_form_list_entry_display_edit');
         }
@@ -297,6 +303,9 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         if(!$this->isAllowManageByContext($iContextId))
             return false;
 
+        if(!is_array($this->getListInContext($iId, $iContextId)))
+            return false;
+
         $CNF = &$this->_oConfig->CNF;
 
         $aTasks = $this->_oDb->getTasks($iContextId, $iId);
@@ -317,6 +326,9 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
     public function serviceProcessTaskForm($iContextId, $iListId = 0)
     {
         if(!$this->isAllowAdd($iContextId))
+            return [];
+
+        if($this->getListInContext($iListId, $iContextId) === false)
             return [];
 
         $CNF = &$this->_oConfig->CNF;
@@ -365,7 +377,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         $CNF = &$this->_oConfig->CNF;
 
         $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
-        if(!$this->isAllowAdd(abs($aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']])))
+        if(!$aContentInfo || !$this->isAllowManage($iContentId))
             return [];
 
         $sForm = $CNF['OBJECT_FORM_ENTRY_DISPLAY_EDIT_' . strtoupper($sProperty)] ?? false;
@@ -421,7 +433,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         $CNF = &$this->_oConfig->CNF;
 
         $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
-        if(!$this->isAllowAdd(abs($aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']])))
+        if(!$aContentInfo || !$this->isAllowManage($iContentId))
             return [];
 
         $aProperties = $this->_oConfig->getProperties();
@@ -455,6 +467,9 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
     public function serviceCreateFilter($iContextId)
     {
+        if(!$this->isAllowView($iContextId))
+            return [];
+
         $iAuthorId = bx_get_logged_profile_id();
         $iFilterId = $this->_oDb->getTemporaryFilterId($iContextId, $iAuthorId);
 
@@ -493,7 +508,8 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
             if($aValues && is_array($aValues) && ($aCnds = $this->_getFilterConditions($iContextId, $aValues)))
                 $aValsToAdd['conditions'] = json_encode($aCnds);
 
-            if(($bForAll = $oForm->getCleanValue('save_all') == 'on') || ($oForm->getCleanValue('save_me') == 'on')) {
+            $bForAll = $oForm->getCleanValue('save_all') == 'on' && $this->isAllowManageByContext($iContextId);
+            if($bForAll || ($oForm->getCleanValue('save_me') == 'on')) {
                 $aValsToAdd = array_merge($aValsToAdd, [
                     'author' => $bForAll ? 0 : $iAuthorId,
                     'title' => $oForm->getCleanValue('title') ?: $sFltTitle,
@@ -525,8 +541,14 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
     public function serviceSaveFilter($iContextId, $iFilterId = 0)
     {
+        if(!$this->isAllowView($iContextId))
+            return [];
+
         $iAuthorId = bx_get_logged_profile_id();
         $iFilterId = $iFilterId ?: $this->_oDb->getTemporaryFilterId($iContextId, $iAuthorId);
+        $aFilter = $this->_oDb->getFilterById($iFilterId);
+        if(!$aFilter || (int)$aFilter['context_id'] !== (int)$iContextId || ((int)$aFilter['author'] !== $iAuthorId && (!$this->isAllowManageByContext($iContextId) || (int)$aFilter['author'] !== 0)))
+            return [];
 
         $oForm = $this->_getSaveFilterForm($iContextId);
         if(!$oForm)
@@ -534,8 +556,9 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
         $oForm->initChecker();
         if($oForm->isSubmittedAndValid()) {
+            $bForAll = $oForm->getCleanValue('save_all') == ($this->_bIsApi ? 1 : 'on') && $this->isAllowManageByContext($iContextId);
             $aValsToAdd = [
-                'author' => $oForm->getCleanValue('save_all') == ($this->_bIsApi ? 1 : 'on') ? 0 : $iAuthorId,
+                'author' => $bForAll ? 0 : $iAuthorId,
                 'title' => $oForm->getCleanValue('title'),
                 'permanent' => 1
             ];
@@ -562,6 +585,9 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
     public function serviceApplyFilter($iContextId, $iFilterId)
     {
+        if(!$this->isAllowView($iContextId))
+            return [];
+
         $this->applyFilter($iContextId, $iFilterId);
 
         return $this->_oTemplate->getEntries($iContextId, ['filter' => $iFilterId]);
@@ -572,6 +598,9 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         $CNF = &$this->_oConfig->CNF;
 
         $aResult = ['code' => 1, 'msg' => _t('_sys_txt_error_occured')];
+        $iProfileId = bx_get_logged_profile_id();
+        if(!$iProfileId || !$this->isAllowManage($iContentId))
+            return $aResult;
 
         $iNow = time();
         switch($sAction) {
@@ -1323,6 +1352,9 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         if(!$iProfileId && $this->_iProfileId)
             $iProfileId = $this->_iProfileId;
 
+        if($this->_bIsApi && (int)$iProfileId !== (int)$this->_iProfileId)
+            return [];
+
         $mixedResult = $this->_oTemplate->getEntriesList(0, array_merge($aParams, [
             'for_profile' => $iProfileId
         ]));
@@ -1558,6 +1590,27 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         }
     }
     
+    /**
+     * A list id from the request has to belong to the context that passed the permission check.
+     * Zero is a new list, or no list, and is not looked up.
+     *
+     * @return array|true|false list row, true when there is no list id, false when it is missing or belongs to another context
+     */
+    protected function getListInContext($iListId, $iContextId)
+    {
+        $iListId = (int)$iListId;
+        if($iListId === 0)
+            return true;
+
+        $CNF = &$this->_oConfig->CNF;
+
+        $aList = $this->_oDb->getList($iListId);
+        if(empty($aList) || !is_array($aList) || (int)$aList[$CNF['FIELD_LIST_CONTEXT_ID']] !== (int)$iContextId)
+            return false;
+
+        return $aList;
+    }
+
     public function isAllowView($iContextId)
     {
         if(!($oContext = BxDolProfile::getInstance($iContextId)) || $oContext->checkAllowedProfileView($iContextId) !== CHECK_ACTION_RESULT_ALLOWED)

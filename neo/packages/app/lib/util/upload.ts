@@ -291,7 +291,8 @@ async function uploadDirectToUna(
     if (!['upload', 'upload_inline'].includes(params.get('a') || '')) return null;
     const tokenPath = '/api.php?r=system/get_upload_token/TemplUploaderServices'
         + '&uo=' + encodeURIComponent(params.get('uo') || '')
-        + '&so=' + encodeURIComponent(params.get('so') || '');
+        + '&so=' + encodeURIComponent(params.get('so') || '')
+        + '&a=' + encodeURIComponent(params.get('a') || 'upload');
     const tokenRes = await fetcher(tokenPath, false, { signal, maxAttempts: 1, silent: true });
     const token: string | undefined = tokenRes?.data?.token;
     const url: string | undefined = tokenRes?.data?.url;

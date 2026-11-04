@@ -93,9 +93,13 @@ class BxDolAiChatImages
 
         if ($iFileId > 0) {
             $oStorage = BxDolStorage::getObjectInstance(self::STORAGE);
-            $sStored = $oStorage ? (string)$oStorage->getFileUrlById($iFileId) : '';
-            if ($sStored !== '')
-                $sUrl = $sStored;
+            $aFile = $oStorage ? $oStorage->getFile($iFileId) : false;
+            $iOwnerId = (int)bx_get_logged_profile_id();
+            if ($aFile && $iOwnerId && (int)$aFile['profile_id'] === $iOwnerId) {
+                $sStored = (string)$oStorage->getFileUrlById($iFileId);
+                if ($sStored !== '')
+                    $sUrl = $sStored;
+            }
         }
 
         if ($sType === 'image' || $sType === 'image_url' || $sUrl !== '') {
@@ -301,7 +305,7 @@ class BxDolAiChatImages
         $sBin = ($sLocal !== '' && is_readable($sLocal)) ? @file_get_contents($sLocal) : false;
         if (!is_string($sBin) || $sBin === '') {
             $sCode = null;
-            $sBin = bx_file_get_contents($sUrl, [], 'get', [], $sCode, [], 10, [CURLOPT_FOLLOWLOCATION => false]);
+            $sBin = bx_file_get_contents($sUrl, [], 'get', [], $sCode, [], 10, [CURLOPT_FOLLOWLOCATION => false], true);
         }
         $iMax = $this->maxBytes();
         if (!is_string($sBin) || $sBin === '' || ($iMax > 0 && strlen($sBin) > $iMax))

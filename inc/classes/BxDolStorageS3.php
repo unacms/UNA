@@ -101,14 +101,19 @@ class BxDolStorageS3 extends BxDolStorage
             // download remote file to tmp
             $sTmpFilePath = BX_DIRECTORY_PATH_TMP . 'dwnld_'.$sRemoteId;
             if (!file_exists($sTmpFilePath)) {
-                @file_put_contents($sTmpFilePath, bx_file_get_contents($sUrl));
+                $sHttpCode = null;
+                @file_put_contents($sTmpFilePath, bx_file_get_contents($sUrl, [], 'get', [], $sHttpCode, [], 0, [], true));
             }
 
             // read from a local storage to be able to send it as attachment and give it a proper name
-            if (!file_exists($sTmpFilePath) || !bx_smart_readfile($sTmpFilePath, $aFile['file_name'], $aFile['mime_type'], $aFile['private'] && $this->_iCacheControl > $this->_aObject['token_life'] ? $this->_aObject['token_life'] : $this->_iCacheControl, $aFile['private'] ? 'private' : 'public', 'attachment')) {
+            if (!file_exists($sTmpFilePath) || !($mixedResult = bx_smart_readfile($sTmpFilePath, $aFile['file_name'], $aFile['mime_type'], $aFile['private'] && $this->_iCacheControl > $this->_aObject['token_life'] ? $this->_aObject['token_life'] : $this->_iCacheControl, $aFile['private'] ? 'private' : 'public', 'attachment'))) {
                 $this->setErrorCode(BX_DOL_STORAGE_ERR_ENGINE_GET);
                 return false;
             }
+
+            // HEAD, 304 and 416 answers don't send the file, so they aren't downloads
+            if (true !== $mixedResult)
+                return true;
         } else {
             header("Location: " . $sUrl);
         }

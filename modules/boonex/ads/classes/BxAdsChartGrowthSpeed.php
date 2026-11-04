@@ -33,7 +33,15 @@ class BxAdsChartGrowthSpeed extends BxDolChartGrowthSpeed
 
     public function checkAllowedView($isPerformAction = false)
     {
-        return CHECK_ACTION_RESULT_ALLOWED;
+        $iContentId = (int)($this->_aMarkers['content_id'] ?? 0);
+        if (!$iContentId || !$this->_oModule)
+            return _t('_sys_txt_access_denied');
+
+        $aContentInfo = $this->_oModule->_oDb->getContentInfoById($iContentId);
+        if (empty($aContentInfo) || !is_array($aContentInfo))
+            return _t('_sys_txt_access_denied');
+
+        return $this->_oModule->checkAllowedEdit($aContentInfo);
     }
 }
 

@@ -151,6 +151,19 @@ class BxAzrConModule extends BxBaseModConnectModule
         return $aProfileFields;
     }
 
+    /**
+     * The 'mail' attribute is not verified by Microsoft (it can be set to any address by the admin of a tenant),
+     * so it can't be used to log in to an existing account. The domain of 'userPrincipalName'
+     * belongs to the tenant of the user, so only the address which equals to it is trusted.
+     */
+    protected function _isRemoteEmailVerified($aProfileInfo)
+    {
+        if (empty($aProfileInfo['mail']))
+            return !empty($aProfileInfo['userPrincipalName']);
+
+        return !empty($aProfileInfo['userPrincipalName']) && is_string($aProfileInfo['mail']) && is_string($aProfileInfo['userPrincipalName']) && 0 === strcasecmp($aProfileInfo['mail'], $aProfileInfo['userPrincipalName']);
+    }
+
     protected function _decodeResponseAndHandleError($s, $bDisplayErrorPage = true)
     {
         if (!$s || NULL === ($aData = json_decode($s, true)) || !$aData || isset($aData['error'])) {

@@ -82,6 +82,70 @@ class BxPostsDbTest extends BxPostsTestCase
         $this->bxCallProtectedArgs($oDb, '_getEntriesBySearchIds', $aArgsBad);
     }
 
+    public function testSearchByIdsIgnoresUnknownFieldNames()
+    {
+        $oDb = $this->_oModule->_oDb;
+        $aParams = [
+            'search_params' => [
+                'title' => ['operator' => 'like', 'value' => 'hello'],
+                'id` OR 1' => ['operator' => 'and', 'value' => '1'],
+                'not_a_real_column' => ['operator' => '=', 'value' => '1'],
+                'order' => [['field' => 'added', 'direction' => 'ASC']],
+            ],
+            'show_all_content' => true,
+        ];
+        $aMethod = ['name' => 'getAll', 'params' => [0 => 'query', 1 => []]];
+        $sSelect = $sJoin = $sWhere = $sOrder = $sLimit = '';
+        $aArgs = [$aParams, &$aMethod, &$sSelect, &$sJoin, &$sWhere, &$sOrder, &$sLimit];
+        $this->bxCallProtectedArgs($oDb, '_getEntriesBySearchIds', $aArgs);
+
+        $this->assertStringContainsString('`bx_posts_posts`.`title`', $sWhere);
+        $this->assertStringContainsString('LIKE', $sWhere);
+        $this->assertStringNotContainsString('OR 1', $sWhere);
+        $this->assertStringNotContainsString('not_a_real_column', $sWhere);
+        $this->assertStringContainsString('`bx_posts_posts`.`added` ASC', $sOrder);
+        $this->assertArrayNotHasKey('id` OR 1', $aMethod['params'][1]);
+    }
+
+    public function testSearchByIdsOrderRejectsBadIdentifier()
+    {
+        $oDb = $this->_oModule->_oDb;
+        $aMethod = ['name' => 'getAll', 'params' => [0 => 'query', 1 => []]];
+        $sSelect = $sJoin = $sWhere = $sOrder = $sLimit = '';
+        $aParams = [
+            'search_params' => [
+                'order' => [['table' => 'bx_posts_posts`', 'field' => 'added']],
+            ],
+            'show_all_content' => true,
+        ];
+        $aArgs = [$aParams, &$aMethod, &$sSelect, &$sJoin, &$sWhere, &$sOrder, &$sLimit];
+
+        $this->expectException(Exception::class);
+        $this->bxCallProtectedArgs($oDb, '_getEntriesBySearchIds', $aArgs);
+    }
+
+    public function testProcessParamsIgnoresUnknownFieldNames()
+    {
+        $aBindings = [];
+        $sWhere = '';
+        BxDolSearchExtended::processParams([
+            'title' => ['operator' => 'like', 'value' => 'hello'],
+            'id` OR 1' => ['operator' => 'and', 'value' => '1'],
+            'not_a_real_column' => ['operator' => '=', 'value' => '1'],
+            'order' => [['field' => 'added', 'direction' => 'ASC']],
+        ], [
+            'table' => 'bx_posts_posts',
+            'bindings' => &$aBindings,
+            'where_clause' => &$sWhere,
+        ]);
+
+        $this->assertStringContainsString('`bx_posts_posts`.`title`', $sWhere);
+        $this->assertStringContainsString('LIKE', $sWhere);
+        $this->assertStringNotContainsString('OR 1', $sWhere);
+        $this->assertStringNotContainsString('not_a_real_column', $sWhere);
+        $this->assertArrayNotHasKey('id` OR 1', $aBindings);
+    }
+
     public function testUpdateEntriesByRejectsEmpty()
     {
         $this->assertFalse($this->_oModule->_oDb->updateEntriesBy([], ['id' => 1]));

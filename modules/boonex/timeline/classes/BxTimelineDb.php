@@ -769,7 +769,7 @@ class BxTimelineDb extends BxBaseModNotificationsDb
         $sOrderSubclause = $sLimitSubclause = '';
         if(!$bCount) {
             $sOrderSubclause = $sOrderClause;
-            $sLimitSubclause = isset($aParams['per_page']) ? 'LIMIT 0, ' . ($aParams['start'] + $aParams['per_page']) : '';
+            $sLimitSubclause = isset($aParams['per_page']) ? 'LIMIT 0, ' . ((int)$aParams['start'] + (int)$aParams['per_page']) : '';
         }
 
         $aSqlParts = array();
@@ -1407,7 +1407,7 @@ class BxTimelineDb extends BxBaseModNotificationsDb
                 $aQueryParts = $oConnection->getConnectedContentAsSQLPartsExt($sTableAlias, 'owner_id', $aParams['owner_id']);
                 $aJoin1 = $aQueryParts['join'];
 
-                $mixedJoinSubclause['p1'] = "INNER JOIN `sys_profiles` AS `p` ON `" . $sTableAlias ."`.`owner_id`=`p`.`id` AND `p`.`type`='" . $aParams['type'] . "' ";
+                $mixedJoinSubclause['p1'] = "INNER JOIN `sys_profiles` AS `p` ON `" . $sTableAlias ."`.`owner_id`=`p`.`id` AND " . $this->prepareAsString("`p`.`type`=? ", $aParams['type']);
                 $mixedJoinSubclause['p1'] .= "INNER JOIN `" . $aJoin1['table'] . "` AS `" . $aJoin1['table_alias'] . "` ON " . $aJoin1['condition'];
 
                 $mixedWhereSubclause['p1'] = "1";

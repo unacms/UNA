@@ -689,7 +689,20 @@ class BxMarketModule extends BxBaseModTextModule
      */
     public function serviceGetProductsNames($iVendorId, $iLimit = 1000)
     {
-    	return $this->_oDb->getProductsNames($iVendorId, $iLimit);
+        $CNF = &$this->_oConfig->CNF;
+        $aNames = array();
+        $aEntries = $this->_oDb->getProductsNames($iVendorId, $iLimit);
+        if (empty($aEntries) || !is_array($aEntries))
+            return $aNames;
+
+        foreach ($aEntries as $aEntry) {
+            if ($this->checkAllowedView($aEntry) !== CHECK_ACTION_RESULT_ALLOWED)
+                continue;
+
+            $aNames[] = $aEntry[$CNF['FIELD_NAME']];
+        }
+
+        return $aNames;
     }
 
     /**

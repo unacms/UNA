@@ -154,19 +154,30 @@ class BxDolPageQuery extends BxDolDb
         return $this->getRow($sQuery);
     }
 
+    public function getBlockById($iBlockId)
+    {
+        return $this->getRow("SELECT * FROM `sys_pages_blocks` WHERE `id` = :id", ['id' => (int)$iBlockId]);
+    }
+
+    public function getEditorImageRefs($iImageId)
+    {
+        return $this->getAll("SELECT `block_id`, `content_id`, `content_module`, `data` FROM `sys_pages_blocks_data` WHERE `data` LIKE :needle", [
+            'needle' => '%"content":' . (int)$iImageId . '%',
+        ]);
+    }
+
     public function getPageBlockData($iBlockId, $iContentId = 0, $sContentModule = '')
     {
         $aBindings = [
             'block_id' => $iBlockId
         ];
 
-        $sWhereClause = "";
+        $sWhereClause = '';
         if(!empty($iContentId) && !empty($sContentModule)) {
             $aBindings = array_merge($aBindings, [
                 'content_id' => $iContentId,
                 'content_module' => $sContentModule
             ]);
-
             $sWhereClause .= " AND `content_id` = :content_id AND `content_module` = :content_module";
         }
 

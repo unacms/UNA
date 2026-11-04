@@ -101,6 +101,10 @@ class BxEventsDb extends BxBaseModGroupsDb
         if ($oDateFrom > $oDateTo)
             return array();
 
+        // every day takes two queries: read 62 days at most, a calendar shows six weeks at a time
+        if ($oDateFrom->diff($oDateTo)->days > 62)
+            $oDateTo = (clone($oDateFrom))->add(new DateInterval("P62D"));
+
         $sModule = $this->_oConfig->getName();
         $oMetatags = BxDolMetatags::getObjectInstance($CNF['OBJECT_METATAGS']);
 

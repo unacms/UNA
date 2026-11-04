@@ -59,8 +59,8 @@ class BxBaseServiceLogin extends BxDol
      */
     public function serviceMemberAuthCode($aAuthTypes = array())
     {
-        if(empty($aAuthTypes) || !is_array($aAuthTypes))
-            $aAuthTypes = BxDolDb::getInstance()->fromCache('sys_objects_auths', 'getAll', 'SELECT * FROM `sys_objects_auths`');
+        // The argument is ignored: a caller-supplied Style is unserialized and OnClick is written into the page.
+        $aAuthTypes = BxDolDb::getInstance()->fromCache('sys_objects_auths', 'getAll', 'SELECT * FROM `sys_objects_auths`');
 
         $bCompact = getParam('site_login_social_compact') == 'on';
 
@@ -204,6 +204,19 @@ class BxBaseServiceLogin extends BxDol
             $oForm->initChecker();
             if ($oForm->isSubmittedAndValid()) {
                 $oAccount = BxDolAccount::getInstance(trim($oForm->getCleanValue('ID')));
+                $aAccountInfo = $oAccount->getInfo();
+                // Same SMS two-factor gate as member.php: a correct password does not sign in yet.
+                if((getParam('sys_account_activation_2fa_enable') == 'on' && getParam('sys_sms_default') != '')
+                    && (getParam('sys_account_activation_2fa_lifetime') == 0 || (time() - $aAccountInfo['logged'] > getParam('sys_account_activation_2fa_lifetime')))) {
+                    $oSession = BxDolSession::getInstance();
+                    $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID, $oAccount->id());
+                    $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER, $oForm->getRememberMe());
+                    $oSession->unsetValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE);
+                    $sUrl = BxDolPermalinks::getInstance()->permalink('page.php?i=login-step2');
+                    return [
+                        bx_api_get_block('redirect', ['uri' => bx_api_get_relative_url($sUrl)]),
+                    ];
+                }
                 bx_login($oAccount->id(), $oForm->getRememberMe());
                 return [
                     //bx_api_get_block('login', ['session' => BxDolSession::getInstance()->getId()], ['id' => 2]),

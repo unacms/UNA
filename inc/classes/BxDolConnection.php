@@ -274,6 +274,9 @@ class BxDolConnection extends BxDolFactory implements iBxDolFactoryObject
         if(!$iContent && ($_iContent = bx_get('id')) !== false)
             $iContent = bx_process_input($_iContent, BX_DATA_INT);
 
+        if($iInitiator && !$this->_isAllowedInitiator($iInitiator, $iContent))
+            return ['err' => true, 'msg' => _t('_sys_txt_access_denied')];
+
         if($iInitiator)
             $this->_iInitiator = $iInitiator;
         $this->_iContent = $iContent;
@@ -290,6 +293,9 @@ class BxDolConnection extends BxDolFactory implements iBxDolFactoryObject
     {
         if (!$iContent && ($_iContent = bx_get('id')) !== false)
             $iContent = bx_process_input($_iContent, BX_DATA_INT);
+
+        if($iInitiator && !$this->_isAllowedInitiator($iInitiator, $iContent))
+            return ['err' => true, 'msg' => _t('_sys_txt_access_denied')];
 
         if ($iContent != bx_get_logged_profile_id() && BX_CONNECTIONS_TYPE_MUTUAL == $this->_aObject['type']) {
             $a = $this->actionReject($iContent, $iInitiator);
@@ -313,6 +319,9 @@ class BxDolConnection extends BxDolFactory implements iBxDolFactoryObject
     {
         if (!$iContent && ($_iContent = bx_get('id')) !== false)
             $iContent = bx_process_input($_iContent, BX_DATA_INT);
+
+        if($iInitiator && !$this->_isAllowedInitiator($iInitiator, $iContent))
+            return ['err' => true, 'msg' => _t('_sys_txt_access_denied')];
 
         if($iInitiator)
             $this->_iInitiator = $iInitiator;
@@ -439,27 +448,20 @@ class BxDolConnection extends BxDolFactory implements iBxDolFactoryObject
 
         /**
          * Call socket.
+         * Note. Socket channels are public, anyone who knows a profile id can subscribe
+         * to its channel. So the message carries ids only, the app reloads the viewer's
+         * data through the API.
          */
         if(($oSockets = BxDolSockets::getInstance()) && $oSockets->isEnabled()) {
-            $aMessageInitiator = $aMessageContent = [
+            $sMessage = json_encode([
                 'object' => $this->_sObject, 
                 'action' => 'added',
                 'initiator' => $iInitiator,
                 'content' => $iContent,
-            ];
+            ]);
 
-            if(bx_is_api()) {
-                $aMessageInitiator = array_merge($aMessageInitiator, [
-                    'user' => BxDolProfile::getDataForPage($iInitiator)
-                ]);
-
-                $aMessageContent = array_merge($aMessageContent, [
-                    'user' => BxDolProfile::getDataForPage($iContent)
-                ]);
-            }
-
-            $oSockets->sendEvent('sys_connections', $iInitiator , 'changed', json_encode($aMessageInitiator));
-            $oSockets->sendEvent('sys_connections', $iContent , 'changed', json_encode($aMessageContent));
+            $oSockets->sendEvent('sys_connections', $iInitiator , 'changed', $sMessage);
+            $oSockets->sendEvent('sys_connections', $iContent , 'changed', $sMessage);
         }
 
         $bMutual = false;
@@ -553,25 +555,16 @@ class BxDolConnection extends BxDolFactory implements iBxDolFactoryObject
 
         /**
          * Call socket.
+         * Note. Channels are public, see onAdded.
          */
         if(($oSockets = BxDolSockets::getInstance()) && $oSockets->isEnabled()) {
-            $aMessageInitiator = $aMessageContent = [
+            $sMessage = json_encode([
                 'object' => $this->_sObject, 
                 'action' => 'deleted',
-            ];
+            ]);
 
-            if(bx_is_api()) {
-                $aMessageInitiator = array_merge($aMessageInitiator, [
-                    'user' => BxDolProfile::getDataForPage($iInitiator)
-                ]);
-
-                $aMessageContent = array_merge($aMessageContent, [
-                    'user' => BxDolProfile::getDataForPage($iContent)
-                ]);
-            }
-
-            $oSockets->sendEvent('sys_connections', $iInitiator , 'changed', json_encode($aMessageInitiator));
-            $oSockets->sendEvent('sys_connections', $iContent , 'changed', json_encode($aMessageContent));
+            $oSockets->sendEvent('sys_connections', $iInitiator , 'changed', $sMessage);
+            $oSockets->sendEvent('sys_connections', $iContent , 'changed', $sMessage);
         }
     }
 
@@ -1227,6 +1220,46 @@ class BxDolConnection extends BxDolFactory implements iBxDolFactoryObject
             return ['code' => 3, 'message' => $mixedResult];
 
         return ['code' => 0];
+    }
+
+    /**
+     * A caller may act as this initiator when it is their own profile, another profile on the same account,
+     * or a group they may manage fans or admins of. The content profile is the other side of the connection,
+     * so a group manager can also remove a member of a group they manage.
+     */
+    protected function _isAllowedInitiator($iInitiator, $iContent)
+    {
+        if (bx_is_logged_profile($iInitiator))
+            return true;
+
+        if ($this->_canManageProfile($iInitiator) || $this->_canManageProfile($iContent))
+            return true;
+
+        return false;
+    }
+
+    protected function _canManageProfile($iProfileId)
+    {
+        $oProfile = BxDolProfile::getInstance((int)$iProfileId);
+        if (!$oProfile)
+            return false;
+
+        $sModule = $oProfile->getModule();
+        if (!$sModule || !BxDolModuleQuery::getInstance()->isEnabledByName($sModule))
+            return false;
+
+        $oModule = BxDolModule::getInstance($sModule);
+        if (!$oModule)
+            return false;
+
+        $iProfileId = $oProfile->id();
+        if (method_exists($oModule, 'checkAllowedManageFans') && $oModule->checkAllowedManageFans($iProfileId) === CHECK_ACTION_RESULT_ALLOWED)
+            return true;
+
+        if (method_exists($oModule, 'checkAllowedManageAdmins') && $oModule->checkAllowedManageAdmins($iProfileId) === CHECK_ACTION_RESULT_ALLOWED)
+            return true;
+
+        return false;
     }
 
     protected function _checkAllowedConnectInitiator ($oInitiator, $isPerformAction = false)

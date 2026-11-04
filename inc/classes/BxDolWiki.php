@@ -839,14 +839,17 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
 
         // convert links to be viewable in external editor
         $s = preg_replace_callback('#\((([a-zA-Z0-9_]+)/([a-zA-Z0-9]+))\)#', function ($aMatches) {
-            $oStorage = BxDolStorage::getObjectInstance($aMatches[2]);
+            if ($aMatches[2] !== 'sys_wiki_files')
+                return $aMatches[0];
+
+            $oStorage = BxDolStorage::getObjectInstance('sys_wiki_files');
             if ($oStorage) {
                 $sUrl = $oStorage->getFileUrlByRemoteId($aMatches[3]);
                 if ($sUrl)
                     return '(' . $sUrl . ')';
             }
 
-            return '(' . $aMatches[0] . ')';
+            return $aMatches[0];
         }, $s);
 
         // add references to existing pages, so short references will work in external editor

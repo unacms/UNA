@@ -328,7 +328,7 @@ class BxOAuthAPI extends BxDol
             return false;
         }
 
-        $mixedRet = BxDolService::call($sModule, $sMethod, $aParams, $sClass);
+        $mixedRet = BxDolService::callExternal($sModule, $sMethod, $aParams, $sClass);
 
         if (is_array($mixedRet) && isset($mixedRet['error']) && isset($mixedRet['code'])) {
             $this->errorOutput($mixedRet['code'], $mixedRet['error'], isset($mixedRet['desc']) ? $mixedRet['desc'] : $mixedRet['error']);
