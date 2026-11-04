@@ -272,6 +272,12 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertStringContainsString("UPDATE `sys_menu_items` SET `hidden_on` = '1' WHERE `set_name` = 'sys_site' AND `name` = 'home';", self::systemSql(), 'Home is hidden on phones (BX_DB_HIDDEN_PHONE).');
 
+        // About and More get their places after the rows are in (the rows keep their form).
+        foreach (['more-auto' => 10010, 'about' => 9999] as $sName => $iOrder)
+            if (preg_match("/UPDATE `sys_menu_items` SET `order` = (\\d+) WHERE `set_name` = 'sys_site' AND `name` = '" . $sName . "';/", self::systemSql(), $aMatch))
+                $aItems[$sName]['order'] = (int)$aMatch[1];
+        $this->assertSame(10010, $aItems['more-auto']['order']);
+
         // A module adds its item after the last one below 9999 (enable.sql), so About and the rest stay under it.
         $this->assertGreaterThanOrEqual(9999, $aItems['about']['order']);
         $this->assertStringContainsString("`set_name` = 'sys_site' AND `active` = 1 AND `order` < 9999", (string)file_get_contents(__DIR__ . '/../../../modules/boonex/persons/install/sql/enable.sql'));
