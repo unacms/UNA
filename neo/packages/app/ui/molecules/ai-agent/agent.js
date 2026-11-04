@@ -65,6 +65,7 @@ function isInteractiveTarget(target) {
 
 /** Stable "no messages" so `useChat` does not see a new array on every render. */
 const NO_MESSAGES = [];
+const NO_HINTS = [];
 
 /**
  * Loads the UNA transcript before `useChat` mounts, so the bootstrap send cannot race
@@ -655,7 +656,8 @@ function AiAgentChat({
         if (!hintsEnabled || !agentId || hintsUserId <= 0) return undefined;
         return subscribe(`sys_agent_${agentId}_${hintsUserId}`, 'hints', loadHints);
     }, [hintsEnabled, agentId, hintsUserId, loadHints]);
-    const hints = useMemo(() => (hintsEnabled ? messageActions(null, hintItems) : []), [hintsEnabled, hintItems]);
+    const hints = hintsEnabled ? hintItems : NO_HINTS;
+    const showHintsRow = hints.length > 0 && !sessionEnded;
     const showStartNew = !!onStartAgain && (canRestart || (!sessionEnded && visibleMessages.length > 0));
 
     const last = messages[messages.length - 1];
@@ -937,6 +939,9 @@ function AiAgentChat({
     // messages scroll behind it and the list pads itself by its measured height.
     const isChat = variant === 'chat';
     const wash = edgeWash(fadeSurface || (isChat ? 'background' : 'card'));
+    // iOS draws a blur instead of the wash: hold it over the hints in the same way.
+    const footerBlur = edgeBlurConfig('footer');
+    const composerBlur = footerBlur && showHintsRow ? { ...footerBlur, hold: 0.85 } : footerBlur;
     const onComposerBoxLayout = useCallback((event) => {
         const next = Math.round(event.nativeEvent.layout.height);
         if (next > 0) setComposerBoxHeight((prev) => (prev === next ? prev : next));
@@ -996,8 +1001,8 @@ function AiAgentChat({
                 disabled={isLoading || uploading}
                 onRemove={removePendingImage}
             />
-            {hints.length && !sessionEnded ? (
-                <View className="mb-2">
+            {showHintsRow ? (
+                <View className={cn('pb-2', wash.solid)}>
                     <ChatHints hints={hints} onSend={sendReply} disabled={isLoading || uploading} />
                 </View>
             ) : null}
@@ -1124,7 +1129,7 @@ function AiAgentChat({
                 ) : null
             ) : (
                 <View className="absolute bottom-0 inset-x-0 z-10" pointerEvents="box-none">
-                    <EdgeBlurView edge="bottom" config={edgeBlurConfig('footer')} washClassName={wash.bottom} pointerEvents="box-none">
+                    <EdgeBlurView edge="bottom" config={composerBlur} washClassName={showHintsRow ? wash.bottomTall : wash.bottom} pointerEvents="box-none">
                         {composerBox}
                     </EdgeBlurView>
                 </View>

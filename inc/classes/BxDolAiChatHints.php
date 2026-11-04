@@ -14,8 +14,10 @@
  * They do not come from the conversation or a model: the module the chat is about
  * builds them from its data, with its `get_chat_hints` service:
  *
- *   serviceGetChatHints($iAgentId, $iContextPid) => [['type' => 'reply', 'label' => ..], ...]
+ *   serviceGetChatHints($iAgentId, $iContextPid) => [['type' => 'reply', 'label' => .., 'emoji' => '🚀'], ...]
  *
+ * A hint may carry an icon: `image` (an https URL, e.g. the picture of the project it
+ * is about) or else `emoji` (a few symbols, no letters or digits).
  * Which module: the one of the chat context profile (e.g. a project on its page);
  * without a context, the module which answers for this agent at all (it knows its
  * own agent, e.g. `bx_projects_agent_id`). A module returns a non-array for an agent
@@ -53,7 +55,31 @@ class BxDolAiChatHints
             }
         }
 
-        return array_slice(BxDolAiChatUi::getInstance()->sanitizeChatActions($aHints), 0, self::MAX_HINTS);
+        return self::sanitize($aHints);
+    }
+
+    /**
+     * Chat action rules for the type, label and target, plus the hint's icon; at most MAX_HINTS.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public static function sanitize($aHints)
+    {
+        $oUi = BxDolAiChatUi::getInstance();
+        $aOut = [];
+        foreach (is_array($aHints) ? $aHints : [] as $aHint) {
+            $aClean = $oUi->sanitizeChatActions([$aHint]);
+            if (!$aClean) {
+                continue;
+            }
+
+            $aOut[] = array_merge($aClean[0], self::icon($aHint));
+            if (count($aOut) >= self::MAX_HINTS) {
+                break;
+            }
+        }
+
+        return $aOut;
     }
 
     /**
@@ -67,6 +93,27 @@ class BxDolAiChatHints
         if ($iAgentId > 0 && $iProfileId > 0 && $oSockets && $oSockets->isEnabled()) {
             $oSockets->sendEvent('sys_agent_' . $iAgentId, $iProfileId, 'hints', '{}');
         }
+    }
+
+    /**
+     * `image` when it is an https URL, else `emoji` when it is a few symbols, else no icon.
+     *
+     * @return array<string, string>
+     */
+    protected static function icon($aHint)
+    {
+        $sImage = trim((string)($aHint['image'] ?? ''));
+        $aUrl = parse_url($sImage);
+        if (($aUrl['scheme'] ?? '') === 'https' && !empty($aUrl['host'])) {
+            return ['image' => $sImage];
+        }
+
+        $sEmoji = trim((string)($aHint['emoji'] ?? ''));
+        if ($sEmoji !== '' && mb_strlen($sEmoji) <= 8 && preg_match('/^[^\p{L}\p{N}\s<>&"\'`]+$/u', $sEmoji)) {
+            return ['emoji' => $sEmoji];
+        }
+
+        return [];
     }
 
     /**

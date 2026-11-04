@@ -75,6 +75,21 @@ class BxDolAiChatHintsTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function testHintIconIsAnHttpsImageOrAFewSymbols()
+    {
+        $this->assertSame([
+            ['type' => 'reply', 'label' => 'Image', 'image' => 'https://una.io/p.png'],
+            ['type' => 'reply', 'label' => 'Image wins', 'image' => 'https://una.io/p.png'],
+            ['type' => 'reply', 'label' => 'Emoji', 'emoji' => '🚀'],
+            ['type' => 'reply', 'label' => 'No icon'],
+        ], BxDolAiChatHints::sanitize([
+            ['type' => 'reply', 'label' => 'Image', 'image' => 'https://una.io/p.png'],
+            ['type' => 'reply', 'label' => 'Image wins', 'image' => 'https://una.io/p.png', 'emoji' => '🚀'],
+            ['type' => 'reply', 'label' => 'Emoji', 'emoji' => ' 🚀 '],
+            ['type' => 'reply', 'label' => 'No icon', 'image' => 'http://una.io/p.png', 'emoji' => '<b>x</b>'],
+        ]));
+    }
+
     public function testUnknownContextProfileAsksNoModule()
     {
         $this->assertSame([], BxDolAiChatHints::get(['id' => 15], 2147483000));
