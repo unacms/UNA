@@ -3688,6 +3688,8 @@
     <string name="_sys_menu_item_title_dashboard"><![CDATA[Панель]]></string>
     <string name="_sys_menu_item_title_home"><![CDATA[Домой]]></string>
     <string name="_sys_menu_item_title_invoices"><![CDATA[Счета]]></string>
+    <string name="_sys_menu_item_title_join"><![CDATA[Присоединиться]]></string>
+    <string name="_sys_menu_item_title_login"><![CDATA[Вход]]></string>
     <string name="_sys_menu_item_title_logout"><![CDATA[Выйти]]></string>
     <string name="_sys_menu_item_title_more"><![CDATA[Ещё]]></string>
     <string name="_sys_menu_item_title_more_auto"><![CDATA[]]></string>
@@ -3790,6 +3792,7 @@
     <string name="_sys_menu_item_title_system_dashboard"><![CDATA[Панель]]></string>
     <string name="_sys_menu_item_title_system_home"><![CDATA[Домой]]></string>
     <string name="_sys_menu_item_title_system_invoices"><![CDATA[Счета]]></string>
+    <string name="_sys_menu_item_title_system_join"><![CDATA[Присоединиться]]></string>
     <string name="_sys_menu_item_title_system_login"><![CDATA[Вход]]></string>
     <string name="_sys_menu_item_title_system_logout"><![CDATA[Выйти]]></string>
     <string name="_sys_menu_item_title_system_main_menu"><![CDATA[Главное меню]]></string>

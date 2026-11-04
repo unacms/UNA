@@ -257,6 +257,36 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertGreaterThan(10, $iChecked, 'The modules with a site menu item were found.');
     }
 
+    public function testSiteMenuPutsModulesFirstAndGuestsGetLogInAndSignUpOnPhones(): void
+    {
+        // The site menu (the phone menu and the desktop navbar, on the site and in the apps): modules' items first,
+        // then About, then Log in and Sign up for guests on phones, and More last. Home is the logo on phones.
+        preg_match_all("/\\('sys_site', 'system', '([^']+)', '[^']*', '[^']*', '[^']*', '(?:[^'\\\\]|\\\\.)*', '[^']*', '[^']*', '[^']*', (\\d+), '([^']*)', \\d, \\d, (\\d+)\\)/", self::systemSql(), $aRows, PREG_SET_ORDER);
+        $aItems = [];
+        foreach ($aRows as $aRow)
+            $aItems[$aRow[1]] = ['levels' => (int)$aRow[2], 'hidden_on' => $aRow[3], 'order' => (int)$aRow[4]];
+
+        foreach (['home', 'about', 'login', 'create-account', 'more-auto'] as $sName)
+            $this->assertArrayHasKey($sName, $aItems, $sName);
+
+        $this->assertSame('1', $aItems['home']['hidden_on'], 'Home is hidden on phones (BX_DB_HIDDEN_PHONE).');
+
+        // A module adds its item after the last one below 9999 (enable.sql), so About and the rest stay under it.
+        $this->assertGreaterThanOrEqual(9999, $aItems['about']['order']);
+        $this->assertStringContainsString("`set_name` = 'sys_site' AND `active` = 1 AND `order` < 9999", (string)file_get_contents(__DIR__ . '/../../../modules/boonex/persons/install/sql/enable.sql'));
+
+        foreach (['login', 'create-account'] as $sName) {
+            $this->assertSame(1, $aItems[$sName]['levels'], $sName . ' is for guests only.');
+            $this->assertSame('6', $aItems[$sName]['hidden_on'], $sName . ' is hidden on tablets and desktops, where the header has Log in and Sign up.');
+        }
+        $this->assertTrue($aItems['about']['order'] < $aItems['login']['order'] && $aItems['login']['order'] < $aItems['create-account']['order'], 'About, Log in, Sign up.');
+        $this->assertGreaterThan($aItems['create-account']['order'], $aItems['more-auto']['order'], 'More is last.');
+
+        $sApp = (string)file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-menus.sql');
+        foreach (['login', 'create-account'] as $sName)
+            $this->assertStringContainsString("SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='system' AND `name`='" . $sName . "';", $sApp, $sName . ' reaches the apps.');
+    }
+
     public function testSignUpUsesTheLogInLayout(): void
     {
         // Sign up, Log in and Forgot password share the thin one-column layout (id 18), one card width on the site and in the apps.
