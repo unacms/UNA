@@ -16,7 +16,7 @@ class TimelineApiParamsTest extends BxDolIntegrationTestCase
     protected $_bReady = false;
     protected $_aEventIds = [];
     protected $_aIsApiBackup = [];
-    protected $_iProfileIdBackup = null;
+    protected $_aProfileIdBackup = [];
 
     protected function setUp(): void
     {
@@ -27,7 +27,6 @@ class TimelineApiParamsTest extends BxDolIntegrationTestCase
 
         // The module (which defines the BX_TIMELINE_* constants) is shared by every test
         // and keeps the profile it was built for: make it the guest's.
-        $this->_iProfileIdBackup = $this->module()->setProfileId(0);
         $this->becomeGuest();
         $this->_bReady = true;
     }
@@ -42,8 +41,7 @@ class TimelineApiParamsTest extends BxDolIntegrationTestCase
             foreach (array_reverse($this->_aIsApiBackup) as $aBackup)
                 $this->bxSetProtected($aBackup[0], '_bIsApi', $aBackup[1], $aBackup[2]);
 
-            if ($this->_iProfileIdBackup !== null)
-                $this->module()->setProfileId($this->_iProfileIdBackup);
+            $this->restoreProfileIds();
 
             BxDolDb::getInstance()->cleanMemoryAll();
             parent::tearDown();
@@ -53,7 +51,27 @@ class TimelineApiParamsTest extends BxDolIntegrationTestCase
     protected function becomeGuest(): void
     {
         $this->bxBecomeGuest();
-        $this->module()->setProfileId(0);
+        $this->setModuleProfileId($this->module(), 0);
+    }
+
+    /**
+     * Change a cached module's viewer, remembering the one it had before the test.
+     */
+    protected function setModuleProfileId($oModule, int $iProfileId): void
+    {
+        $sName = $oModule->getName();
+        $iPrev = $oModule->setProfileId($iProfileId);
+        if (!array_key_exists($sName, $this->_aProfileIdBackup))
+            $this->_aProfileIdBackup[$sName] = $iPrev;
+    }
+
+    protected function restoreProfileIds(): void
+    {
+        foreach ($this->_aProfileIdBackup as $sName => $iProfileId)
+            if (BxDolModuleQuery::getInstance()->isEnabledByName($sName))
+                BxDolModule::getInstance($sName)->setProfileId($iProfileId);
+
+        $this->_aProfileIdBackup = [];
     }
 
     /**
@@ -64,13 +82,13 @@ class TimelineApiParamsTest extends BxDolIntegrationTestCase
         $this->bxLoginAs($sKind);
 
         $iProfileId = (int)bx_get_logged_profile_id();
-        $this->module()->setProfileId($iProfileId);
+        $this->setModuleProfileId($this->module(), $iProfileId);
 
         // The profile's own module checks who may post to it as the profile it was created for,
         // which an earlier test may have logged in as.
         $oProfile = BxDolProfile::getInstance($iProfileId);
         if ($oProfile && $oProfile->getModule() !== $this->module()->getName() && BxDolModuleQuery::getInstance()->isEnabledByName($oProfile->getModule()))
-            BxDolModule::getInstance($oProfile->getModule())->setProfileId($iProfileId);
+            $this->setModuleProfileId(BxDolModule::getInstance($oProfile->getModule()), $iProfileId);
 
         return $iProfileId;
     }

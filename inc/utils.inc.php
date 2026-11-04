@@ -1265,11 +1265,11 @@ function bx_remote_url_is_allowed($sUrl, &$aResolve = null, &$sNormalized = null
 
     $sNormalized = $sUrl;
     if (strcasecmp($sHostInUrl, $sHost) !== 0 && strcasecmp($sHostInUrl, '[' . $sHost . ']') !== 0) {
-        $iPos = stripos($sUrl, $sHostInUrl);
+        $iPos = bx_mb_strpos($sUrl, $sHostInUrl, get_mb_len($aUrl['scheme']) + 3);
         if ($iPos === false)
             return false;
         $sHostForUrl = (filter_var($sHost, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === $sHost) ? '[' . $sHost . ']' : $sHost;
-        $sNormalized = substr($sUrl, 0, $iPos) . $sHostForUrl . substr($sUrl, $iPos + strlen($sHostInUrl));
+        $sNormalized = get_mb_substr($sUrl, 0, $iPos) . $sHostForUrl . get_mb_substr($sUrl, $iPos + get_mb_len($sHostInUrl), get_mb_len($sUrl));
     }
 
     return true;
@@ -1317,7 +1317,14 @@ function bx_remote_origin($sUrl)
 
     $sScheme = strtolower($a['scheme']);
     $iPort = isset($a['port']) ? (int)$a['port'] : ('https' === $sScheme ? 443 : 80);
-    return $sScheme . '://' . strtolower($a['host']) . ':' . $iPort;
+    $sHost = rtrim(strtolower($a['host']), '.');
+    if ($sHost !== '' && function_exists('idn_to_ascii')) {
+        $sAscii = idn_to_ascii($sHost);
+        if (is_string($sAscii) && $sAscii !== '')
+            $sHost = $sAscii;
+    }
+
+    return $sScheme . '://' . $sHost . ':' . $iPort;
 }
 
 /**
@@ -1343,10 +1350,16 @@ function bx_remote_strip_sensitive_headers($aHeaders)
  *
  * @return string|false
  */
-function bx_file_get_contents_request($sFileUrl, $aParams, $sMethod, $aHeaders, &$sHttpCode, $aBasicAuth, $iTimeout, $aCustomCurlParams, $aResolve, $bPinDns, &$sRedirectUrl)
+function bx_file_get_contents_request($sFileUrl, $aParams, $sMethod, $aHeaders, &$sHttpCode, $aBasicAuth, $iTimeout, $aCustomCurlParams, $aResolve, $bPinDns, &$sRedirectUrl, $sSaveTo = '')
 {
     $sRedirectUrl = '';
     $sResult = '';
+    $rSave = null;
+    if ($sSaveTo !== '') {
+        $rSave = @fopen($sSaveTo, 'wb');
+        if (false === $rSave)
+            return false;
+    }
 
     if (function_exists('curl_init')) {
         $rConnect = curl_init();
@@ -1355,6 +1368,10 @@ function bx_file_get_contents_request($sFileUrl, $aParams, $sMethod, $aHeaders, 
         curl_setopt($rConnect, CURLOPT_TIMEOUT, BxDolDb::getInstance() ? getParam('sys_default_curl_timeout') : 10);
         curl_setopt($rConnect, CURLOPT_URL, $sFileUrl);
         curl_setopt($rConnect, CURLOPT_RETURNTRANSFER, 1);
+        if ($rSave) {
+            curl_setopt($rConnect, CURLOPT_RETURNTRANSFER, 0);
+            curl_setopt($rConnect, CURLOPT_FILE, $rSave);
+        }
 
         if (0 !== $iTimeout) {
             curl_setopt($rConnect, CURLOPT_CONNECTTIMEOUT, $iTimeout);
@@ -1423,6 +1440,10 @@ function bx_file_get_contents_request($sFileUrl, $aParams, $sMethod, $aHeaders, 
 
         if (curl_errno($rConnect) == 60) { // CURLE_SSL_CACERT
             curl_setopt($rConnect, CURLOPT_CAINFO, BX_DIRECTORY_PATH_PLUGINS . 'curl/cacert/cacert.pem');
+            if ($rSave) {
+                ftruncate($rSave, 0);
+                rewind($rSave);
+            }
             $sResult = curl_exec($rConnect);
         }
 
@@ -1443,13 +1464,24 @@ function bx_file_get_contents_request($sFileUrl, $aParams, $sMethod, $aHeaders, 
             ini_set('default_socket_timeout', $iTimeout);
         }
 
-        if ($bPinDns) {
-            $aContext = ['http' => [
+        $rContext = null;
+        if ($bPinDns)
+            $rContext = stream_context_create(['http' => [
                 'follow_location' => 0,
                 'max_redirects' => 0,
                 'timeout' => $iTimeout ?: 10,
-            ]];
-            $sResult = @file_get_contents($sFileUrl, false, stream_context_create($aContext));
+            ]]);
+
+        if ($rSave) {
+            $rRead = $rContext ? @fopen($sFileUrl, 'rb', false, $rContext) : @fopen($sFileUrl, 'rb');
+            $sResult = false;
+            if (false !== $rRead) {
+                $sResult = false !== stream_copy_to_stream($rRead, $rSave);
+                fclose($rRead);
+            }
+        }
+        elseif ($rContext) {
+            $sResult = @file_get_contents($sFileUrl, false, $rContext);
         }
         else {
             $sResult = @file_get_contents($sFileUrl);
@@ -1458,6 +1490,9 @@ function bx_file_get_contents_request($sFileUrl, $aParams, $sMethod, $aHeaders, 
         if (0 !== $iTimeout && false !== $iSaveTimeout)
             ini_set('default_socket_timeout', $iSaveTimeout);
     }
+
+    if ($rSave)
+        fclose($rSave);
 
     return $sResult;
 }
@@ -1476,16 +1511,17 @@ function bx_file_get_contents_request($sFileUrl, $aParams, $sMethod, $aHeaders, 
  * @param string $sHttpCode - HTTP code to return
  * @param array $aBasicAuth - array with 'user' and 'password' for Basic HTTP Auth
  * @param bool $bAllowRestricted - fetch even when the host resolves to a private or reserved address
- * @return string|false the file's contents, or false when the URL is refused.
+ * @param string $sSaveTo - when set, the response body is streamed into this file instead of being returned
+ * @return string|bool|false the file's contents (true when saved to $sSaveTo), or false when the URL is refused.
  */
-function bx_file_get_contents($sFileUrl, $aParams = array(), $sMethod = 'get', $aHeaders = array(), &$sHttpCode = null, $aBasicAuth = array(), $iTimeout = 0, $aCustomCurlParams = array(), $bAllowRestricted = false)
+function bx_file_get_contents($sFileUrl, $aParams = array(), $sMethod = 'get', $aHeaders = array(), &$sHttpCode = null, $aBasicAuth = array(), $iTimeout = 0, $aCustomCurlParams = array(), $bAllowRestricted = false, $sSaveTo = '')
 {
     $bPost = in_array($sMethod, ['post', 'post-raw', 'post-json', 'post-json-object'], true);
     if (!$bPost)
         $sFileUrl = bx_append_url_params($sFileUrl, $aParams);
 
     $bFollow = !isset($aCustomCurlParams[CURLOPT_FOLLOWLOCATION]) || $aCustomCurlParams[CURLOPT_FOLLOWLOCATION];
-    $sOrigin = bx_remote_origin($sFileUrl);
+    $sOrigin = null; // taken from the first normalized URL, so a trailing dot or a Unicode host is not a different origin
     $bLeftOrigin = false;
     $aBody = $bPost ? $aParams : [];
     $iLeft = 5;
@@ -1503,6 +1539,8 @@ function bx_file_get_contents($sFileUrl, $aParams = array(), $sMethod = 'get', $
         }
 
         // once a redirect leaves the original origin (scheme, host or port), credentials are dropped for good
+        if (null === $sOrigin)
+            $sOrigin = bx_remote_origin($sFileUrl);
         if (!$bLeftOrigin && bx_remote_origin($sFileUrl) !== $sOrigin) {
             $bLeftOrigin = true;
             $aHeaders = bx_remote_strip_sensitive_headers($aHeaders);
@@ -1516,7 +1554,7 @@ function bx_file_get_contents($sFileUrl, $aParams = array(), $sMethod = 'get', $
         $sRedirect = '';
         // always capture the status, the redirect loop needs it even when the caller does not ask for it
         $sStatus = 0;
-        $sResult = bx_file_get_contents_request($sFileUrl, $aBody, $sMethod, $aHeaders, $sStatus, $aAuth, $iTimeout, $aCustomCurlParams, $aResolve, !$bAllowRestricted, $sRedirect);
+        $sResult = bx_file_get_contents_request($sFileUrl, $aBody, $sMethod, $aHeaders, $sStatus, $aAuth, $iTimeout, $aCustomCurlParams, $aResolve, !$bAllowRestricted, $sRedirect, (string)$sSaveTo);
         if (NULL !== $sHttpCode)
             $sHttpCode = $sStatus;
 

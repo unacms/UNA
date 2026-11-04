@@ -1561,46 +1561,35 @@ class BxDolStorageHelperUrl extends BxDolStorageHelperPath
         }
 
         if ($sTmpFilename = tempnam(BX_DIRECTORY_PATH_TMP, '')) {
-            $s = '';
+            // the body is streamed into the temporary file, it is never held in memory as a whole
+            $bSaved = false;
             if (!$bAllowRestricted) {
                 $sHttpCode = null;
-                $sBody = bx_file_get_contents($sUrl, [], 'get', [], $sHttpCode, [], 0, [], false);
-                if (is_string($sBody))
-                    $s = $sBody;
+                $bSaved = true === bx_file_get_contents($sUrl, [], 'get', [], $sHttpCode, [], 0, [], false, $sTmpFilename);
             }
-            elseif (!$sExt) {
-                $s = @file_get_contents($sUrl);
+            else {
+                $hRead = @fopen($sUrl, 'rb');
+                $hWrite = fopen($sTmpFilename, 'wb');
+                if (false !== $hRead && false !== $hWrite)
+                    $bSaved = false !== stream_copy_to_stream($hRead, $hWrite);
+                if (false !== $hRead)
+                    fclose($hRead);
+                if (false !== $hWrite)
+                    fclose($hWrite);
             }
 
-            if (!$sExt && $s) {
+            if (!$bSaved)
+                file_put_contents($sTmpFilename, '');
+
+            if (!$sExt && $bSaved && filesize($sTmpFilename) > 0) {
                 $oFinfo = new finfo(FILEINFO_MIME_TYPE);
-                $sMime = $oFinfo->buffer($s);
+                $sMime = $oFinfo->file($sTmpFilename);
                 if (isset($this->aMime2Ext[$sMime]))
                     $sExt = $this->aMime2Ext[$sMime];
             }
 
             $aParams['path'] = $sTmpFilename . '.' . $sExt;
             @rename($sTmpFilename, $aParams['path']);
-
-            if ($s) {
-                file_put_contents($aParams['path'], $s);
-            }
-            elseif ($bAllowRestricted) {
-                $hRead = @fopen($sUrl, "rb");
-                $hWrite = fopen($aParams['path'], "wb");
-                if (false !== $hRead && false !== $hWrite) {
-                    while (!feof($hRead)) {
-                        $data = fread($hRead, 8192);
-                        if (false === fwrite($hWrite, $data)) {
-                            fclose($hWrite);
-                            file_put_contents($aParams['path'], '');
-                            break;
-                        }
-                    }
-                    fclose($hRead);
-                    fclose($hWrite);
-                }
-            }
         }
         parent::__construct($aParams);
     }
