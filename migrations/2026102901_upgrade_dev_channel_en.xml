@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Why Studio's Update is refused on the dev update channel. -->
+<resources name="en" flag="en" title="English">
+    <string_add name="_sys_upgrade_dev_channel"><![CDATA[This site is on the dev update channel: it follows the code repository and gets database changes from periodic/migration.php, so update packs do not run on it.]]></string_add>
+</resources>

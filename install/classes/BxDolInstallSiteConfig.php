@@ -437,6 +437,14 @@ EOF;
                 return array(BX_INSTALL_ERR_GENERAL => $sErrorMessage);
         }
 
+        // This install ran this code's install SQL, which has every migration's change already.
+        try {
+            BxDolMigrations::getInstance()->baseline();
+        }
+        catch (Throwable $e) {
+            return array(BX_INSTALL_ERR_GENERAL => $e->getMessage());
+        }
+
         bx_import('BxDolAccount');
         $oAccount = BxDolAccount::getInstance($a['admin_email']);
         if (!$oAccount)
