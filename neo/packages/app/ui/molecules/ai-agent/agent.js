@@ -1002,7 +1002,7 @@ function AiAgentChat({
                 onRemove={removePendingImage}
             />
             {showHintsRow ? (
-                <View className="mb-2">
+                <View className={cn('pb-2', wash.solid)}>
                     <ChatHints hints={hints} onSend={sendReply} disabled={isLoading || uploading} />
                 </View>
             ) : null}
