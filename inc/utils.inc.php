@@ -1474,12 +1474,16 @@ function bx_file_get_contents($sFileUrl, $aParams = array(), $sMethod = 'get', $
             $aAuth = [];
 
         $sRedirect = '';
-        $sResult = bx_file_get_contents_request($sFileUrl, $aBody, $sMethod, $aHeaders, $sHttpCode, $aAuth, $iTimeout, $aCustomCurlParams, $aResolve, !$bAllowRestricted, $sRedirect);
+        // always capture the status, the redirect loop needs it even when the caller does not ask for it
+        $sStatus = 0;
+        $sResult = bx_file_get_contents_request($sFileUrl, $aBody, $sMethod, $aHeaders, $sStatus, $aAuth, $iTimeout, $aCustomCurlParams, $aResolve, !$bAllowRestricted, $sRedirect);
+        if (NULL !== $sHttpCode)
+            $sHttpCode = $sStatus;
 
         if ($bAllowRestricted || !$bFollow || $sRedirect === '')
             return $sResult;
 
-        $iCode = (int)$sHttpCode;
+        $iCode = (int)$sStatus;
         if ($iCode < 300 || $iCode >= 400)
             return $sResult;
 
