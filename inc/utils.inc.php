@@ -1307,6 +1307,38 @@ function bx_remote_redirect_url($sCurrent, $sLocation)
 }
 
 /**
+ * Origin of a URL as 'scheme://host:port' with the default port filled in, or '' when it can not be parsed.
+ */
+function bx_remote_origin($sUrl)
+{
+    $a = parse_url((string)$sUrl);
+    if (!$a || empty($a['scheme']) || empty($a['host']))
+        return '';
+
+    $sScheme = strtolower($a['scheme']);
+    $iPort = isset($a['port']) ? (int)$a['port'] : ('https' === $sScheme ? 443 : 80);
+    return $sScheme . '://' . strtolower($a['host']) . ':' . $iPort;
+}
+
+/**
+ * Removes headers that carry credentials (Authorization, Cookie, API keys, tokens and similar).
+ *
+ * @param array $aHeaders - list of 'Name: value' strings
+ * @return array
+ */
+function bx_remote_strip_sensitive_headers($aHeaders)
+{
+    return array_values(array_filter((array)$aHeaders, function ($sHeader) {
+        $sName = strtolower(trim((string)strstr((string)$sHeader, ':', true)));
+        if ($sName === '')
+            return true;
+        if (in_array($sName, ['authorization', 'proxy-authorization', 'cookie'], true))
+            return false;
+        return !preg_match('/auth|token|secret|api-?key|session|credential/', $sName);
+    }));
+}
+
+/**
  * One HTTP request. When $bPinDns is set, redirects are not followed and the connection is pinned to $aResolve.
  *
  * @return string|false
@@ -1453,7 +1485,8 @@ function bx_file_get_contents($sFileUrl, $aParams = array(), $sMethod = 'get', $
         $sFileUrl = bx_append_url_params($sFileUrl, $aParams);
 
     $bFollow = !isset($aCustomCurlParams[CURLOPT_FOLLOWLOCATION]) || $aCustomCurlParams[CURLOPT_FOLLOWLOCATION];
-    $sOriginHost = parse_url($sFileUrl, PHP_URL_HOST);
+    $sOrigin = bx_remote_origin($sFileUrl);
+    $bLeftOrigin = false;
     $aBody = $bPost ? $aParams : [];
     $iLeft = 5;
 
@@ -1469,9 +1502,16 @@ function bx_file_get_contents($sFileUrl, $aParams = array(), $sMethod = 'get', $
                 $sFileUrl = $sNormalized;
         }
 
+        // once a redirect leaves the original origin (scheme, host or port), credentials are dropped for good
+        if (!$bLeftOrigin && bx_remote_origin($sFileUrl) !== $sOrigin) {
+            $bLeftOrigin = true;
+            $aHeaders = bx_remote_strip_sensitive_headers($aHeaders);
+            $aBasicAuth = [];
+            foreach (['CURLOPT_USERPWD', 'CURLOPT_COOKIE', 'CURLOPT_XOAUTH2_BEARER'] as $sOpt)
+                if (defined($sOpt))
+                    unset($aCustomCurlParams[constant($sOpt)]);
+        }
         $aAuth = $aBasicAuth;
-        if ($aAuth && $sOriginHost && strcasecmp((string)parse_url($sFileUrl, PHP_URL_HOST), (string)$sOriginHost) !== 0)
-            $aAuth = [];
 
         $sRedirect = '';
         // always capture the status, the redirect loop needs it even when the caller does not ask for it

@@ -95,6 +95,31 @@ class RemoteUrlTest extends BxDolTestCase
         $this->assertFalse(bx_remote_url_is_allowed($sInternal));
     }
 
+    public function testOriginIncludesSchemeHostAndPort()
+    {
+        $this->assertSame('https://example.com:443', bx_remote_origin('https://Example.com/a'));
+        $this->assertSame(bx_remote_origin('https://example.com/a'), bx_remote_origin('https://example.com:443/b'));
+        $this->assertNotSame(bx_remote_origin('https://example.com/'), bx_remote_origin('http://example.com/'));
+        $this->assertNotSame(bx_remote_origin('https://example.com/'), bx_remote_origin('https://example.com:8443/'));
+        $this->assertNotSame(bx_remote_origin('https://example.com/'), bx_remote_origin('https://other.example/'));
+        $this->assertSame('', bx_remote_origin('/relative'));
+    }
+
+    public function testSensitiveHeadersAreStrippedOnOriginChange()
+    {
+        $aHeaders = [
+            'Authorization: Bearer abc',
+            'authorization:Bearer abc',
+            'Proxy-Authorization: Basic abc',
+            'Cookie: a=b',
+            'X-Api-Key: k',
+            'X-Auth-Token: t',
+            'Accept: application/json',
+            'User-Agent: test',
+        ];
+        $this->assertSame(['Accept: application/json', 'User-Agent: test'], bx_remote_strip_sensitive_headers($aHeaders));
+    }
+
     public function testIpv4ObfuscationLandsOnLoopback()
     {
         $this->assertSame('127.0.0.1', bx_host_to_ipv4('2130706433'));
