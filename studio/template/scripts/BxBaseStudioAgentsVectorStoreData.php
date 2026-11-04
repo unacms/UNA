@@ -21,7 +21,10 @@ class BxBaseStudioAgentsVectorStoreData extends BxTemplStudioGridAgents
         $r = $this->_oDb->getVectorStoreDataById($mixedId);
         $oVectorStore = BxDolAIVectorStoreFactory::getVectorStoreInstance($r['vector_store_id']);
         if ($oVectorStore) {
-            $oVectorStore->deleteBySource($r['vector_store_id'], $r['id']);
+            $oVectorStore->delete(
+                NeuronAI\RAG\VectorStore\Filter\Filter::where('sourceType', (string)$r['vector_store_id'])
+                    ->where('sourceName', (string)$r['id'])
+            );
         }
 
         $mixedResult = parent::_delete($mixedId);
@@ -88,10 +91,10 @@ class BxBaseStudioAgentsVectorStoreData extends BxTemplStudioGridAgents
                             ->getDocuments(); 
                         
                         foreach ($documents as $document) {
-                            $document->sourceType = $r['vector_store_id'];
-                            $document->sourceName = $r['id'];
+                            $document->setSourceType((string)$r['vector_store_id']);
+                            $document->setSourceName((string)$r['id']);
                             if (!empty($aMetadata))
-                                $document->metadata = $aMetadata;
+                                $document->setMetadata($aMetadata);
                         }
 
                         $oVectorStore->addDocuments(

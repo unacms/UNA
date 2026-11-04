@@ -470,6 +470,39 @@ class BxDolAiQuery extends BxDolDb
         ]);
     }
 
+    /**
+     * Store the whole message list (JSON) of a thread, creating the row when missing.
+     */
+    public function setChatHistoryMessagesByThreadId($sThreadId, $sJson)
+    {
+        $sThreadId = (string)$sThreadId;
+        if ($sThreadId === '' || $sThreadId === ':')
+            return false;
+
+        return (bool)$this->query("INSERT INTO `sys_agents_chat_history` (`thread_id`, `messages`) VALUES (:t, :m) ON DUPLICATE KEY UPDATE `messages` = VALUES(`messages`)", [
+            't' => $sThreadId,
+            'm' => (string)$sJson,
+        ]);
+    }
+
+    /**
+     * Remember the visitor IP hash of a thread, only when it isn't set yet.
+     */
+    public function setChatHistoryIpByThreadId($sThreadId, $iIp)
+    {
+        return (bool)$this->query("UPDATE `sys_agents_chat_history` SET `ip` = :ip WHERE `thread_id` = :t AND (`ip` = 0 OR `ip` IS NULL)", [
+            'ip' => $iIp,
+            't' => (string)$sThreadId,
+        ]);
+    }
+
+    public function deleteChatHistoryByThreadId($sThreadId)
+    {
+        return (bool)$this->query("DELETE FROM `sys_agents_chat_history` WHERE `thread_id` = :t", [
+            't' => (string)$sThreadId,
+        ]);
+    }
+
     public function getChatHistoryClosedReasonById($iHistoryId)
     {
         $iHistoryId = (int)$iHistoryId;

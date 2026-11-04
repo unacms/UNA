@@ -99,7 +99,8 @@
         "spatie/calendar-links": "^2.2",
         "pusher/pusher-php-server": "^7.2",
         "enshrined/svg-sanitize": "^1.1.1",
-        "neuron-core/neuron-ai": "^3.0",
+        "neuron-core/neuron-ai": "^4.0",
+        "inspector-apm/inspector-php": "^3.19",
         "aws/aws-sdk-php": "^3.371",
         "elasticsearch/elasticsearch": "^9.3",
         "opensearch-project/opensearch-php": "^2.5",
@@ -112,7 +113,7 @@
         "firebase/php-jwt": "^7.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "13.*",
+        "phpunit/phpunit": "12.*",
         "phpmd/phpmd": "@stable",
         "vlucas/phpdotenv": "^5.6"
     },

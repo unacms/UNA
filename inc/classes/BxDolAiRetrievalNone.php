@@ -11,7 +11,7 @@
 
 class BxDolAiRetrievalNone implements NeuronAI\RAG\Retrieval\RetrievalInterface
 {
-    public function retrieve(NeuronAI\Chat\Messages\Message $query): array
+    public function retrieve(NeuronAI\Chat\Messages\Message $query, ?NeuronAI\RAG\VectorStore\Filter\FilterExpression $filters = null): array
     {
         return [];
     }

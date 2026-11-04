@@ -3,34 +3,33 @@
  * Copyright (c) UNA, Inc - https://una.io
  * MIT License - https://opensource.org/licenses/MIT
  *
- * NeuronAI observer that turns every write tool call of an agent into a
- * BxDolAiActivity row. Attached in BxDolAiAgent alongside the debug LogObserver.
+ * NeuronAI listener of the tool-called event that turns every write tool call of an agent into a
+ * BxDolAiActivity row. Attached in BxDolAiAgent alongside the debug log listener.
  *
  * @defgroup    UnaCore UNA Core
  * @{
  */
 
-use NeuronAI\Observability\ObserverInterface;
+use NeuronAI\Agent\Observability\ToolCalled;
 
-class BxDolAiActivityObserver implements ObserverInterface
+class BxDolAiActivityObserver
 {
     public function __construct(protected array $aAgent, protected array $aParams = [])
     {
     }
 
-    public function onEvent(string $event, object $source, mixed $data = null, ?string $branchId = null): void
+    public function __invoke(ToolCalled $oEvent): void
     {
-        if ($event !== 'tool-called' || !is_object($data))
-            return;
-
-        $oTool = $data->tool ?? null;
-        if (!is_object($oTool) || !method_exists($oTool, 'getName'))
+        $oCall = $oEvent->tool;
+        if (!is_object($oCall))
             return;
 
         try {
-            $aInputs = method_exists($oTool, 'getInputs') ? (array)$oTool->getInputs() : [];
-            $mixedResult = method_exists($oTool, 'getResult') ? $oTool->getResult() : null;
-            BxDolAiActivity::record($this->aAgent, $this->aParams, (string)$oTool->getName(), $aInputs, $mixedResult);
+            $aInputs = (array)$oCall->getInputs();
+            $mixedResult = $oCall->hasResult() ? $oCall->getResult() : null;
+            if (is_object($mixedResult))
+                $mixedResult = (string)$mixedResult;
+            BxDolAiActivity::record($this->aAgent, $this->aParams, (string)$oCall->getName(), $aInputs, $mixedResult);
         } catch (Throwable $o) {
             bx_log('sys_agents', 'activity observer: ' . $o->getMessage(), BX_LOG_WARN);
         }
