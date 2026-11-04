@@ -590,15 +590,21 @@ export function menuItemsFilter(items: any, currentUser: any): any {
 }
 
 /** Menu settings: the menu's `config` from UNA, else `menu_items[object]` from settings. */
+/**
+ * The menu's own `menu_items` setting: an array as is, an object as a copy (the name / icon added
+ * by getMenuSettings must not land in the settings), else {}: a menu with no settings (appSetting
+ * gives '') still gets UNA's title and icon, so its section is named.
+ */
+function localMenuSettings(object: string): any {
+    const local = object ? appSetting('menu_items', object) : null;
+    if (Array.isArray(local)) return local;
+    return local && typeof local === 'object' ? { ...local } : {};
+}
+
 export function getMenuSettings(object: string, config?: unknown, menu?: { title?: string; icon?: string }): any {
     let a: any = config ? strToObj(config as string) : null;
-    if (!a) {
-        const local = object ? appSetting('menu_items', object) : null;
-        // A copy: the name / icon below must not land in the settings object. A menu with no settings
-        // (appSetting gives '') still gets UNA's title and icon, so its section is named.
-        if (Array.isArray(local)) a = local;
-        else a = local && typeof local === 'object' ? { ...local } : {};
-    }
+    if (!a)
+        a = localMenuSettings(object);
     if (Array.isArray(a))
         return a;
 
