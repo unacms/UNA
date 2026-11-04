@@ -74,6 +74,7 @@ html.dark {
     #bx-site-search-popup {
         position: fixed !important;
         inset: 0 !important;
+        border-radius: 0;
     }
     #bx-site-search-popup .bx-popup-gap {
         height: 100%;
