@@ -1,6 +1,8 @@
 import { Conductor } from 'app/ui/molecules/sections/conductor';
 import { useState, useEffect, useMemo, memo, useCallback } from 'react';
-import { appSetting, getBlocksFromData, getPageData } from 'app/lib/util';
+import { appSetting, getBlocksFromData, getPageData, isWeb } from 'app/lib/util';
+import { useScreenTier } from 'app/context/measure';
+import { isPageCoverHiddenOn } from 'app/lib/page-cover';
 import { useFocusEffect } from 'app/lib/hooks/router'
 import { useCurrentUser } from 'app/context/user';
 import { subscribe } from 'app/ui/atoms/socket';
@@ -10,6 +12,7 @@ import { withInformerBlock } from 'app/components/elements/informer';
 
 const ConductorMemo = memo(Conductor, (prev, next) => (
     prev.ts === next.ts && prev.data?.timestamp === next.data?.timestamp
+    && prev.isCoverDisabled === next.isCoverDisabled
 ));
 
 // Informers ("This project was archived.") come with the page (data.user.informer) and go
@@ -107,7 +110,11 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
 
     const conductorData = useMemo(() => withInformer(pageData), [pageData]);
 
-    const isCoverDisabled = appSetting('cover', 'view_by_module', pageData.cover_block.profile?.module) == 'none';
+    // No cover where the app's settings turn it off, or where Studio hides the page's cover on this
+    // screen size or in the mobile app ("Cover hidden on"), as UNA does.
+    const screenTier = useScreenTier();
+    const isCoverDisabled = appSetting('cover', 'view_by_module', pageData.cover_block.profile?.module) == 'none'
+        || isPageCoverHiddenOn(pageData.cover_hidden_on, screenTier, !isWeb);
 
     return (
         <ConductorMemo
