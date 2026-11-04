@@ -109,6 +109,19 @@ class UploadTokenTest extends BxDolIntegrationTestCase
         $this->assertFalse(BxDolUploader::checkUploadToken($sToken, 'upload', self::STORAGE, self::UPLOADER));
     }
 
+    public function testTokenLifetimeFollowsTheOption(): void
+    {
+        // A long draft keeps uploading: the token lives as long as the option says.
+        setParam('sys_security_upload_token_lifetime', '21600');
+        BxDolDb::getInstance()->cleanMemoryAll();
+
+        $sToken = $this->newToken();
+        $iExpire = (int)BxDolDb::getInstance()->getOne("SELECT `expire` FROM `sys_keys` WHERE `key` = :key", ['key' => $sToken]);
+
+        $this->assertEqualsWithDelta(time() + 21600, $iExpire, 5);
+        $this->assertIsArray(BxDolUploader::checkUploadToken($sToken, 'upload', self::STORAGE, self::UPLOADER));
+    }
+
     public function testNothingPassesWhenTokensAreDisabled(): void
     {
         $sToken = $this->newToken();

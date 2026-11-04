@@ -25,8 +25,11 @@ export default function Subscriber() {
         });
     }, []);
 
-    const reloadCurrentUser = useCallback(async (userId) => {
+    // isActive() turns false once the subscription for userId is cleaned up (the viewer
+    // switched profile or signed out), so a late reply can't write the old profile back.
+    const reloadCurrentUser = useCallback(async (userId, isActive) => {
         const data = (await fetcher(PROFILE_URL))?.data;
+        if (!isActive()) return;
         // A reply for another profile means the viewer switched while it was on its way.
         if (data?.id != null && data.id == userId) {
             setCurrentUser(data);
@@ -34,7 +37,7 @@ export default function Subscriber() {
     }, [setCurrentUser]);
 
     // Fires when this user's connections change on the server (join/leave, friends, etc.).
-    const onUpdateConnections = useCallback((data, userId) => {
+    const onUpdateConnections = useCallback((data, userId, isActive) => {
         storageClear();
         const oData = JSON.parse(data);
         const oActions = checkActionsOnConnectionsChanged(oData);
@@ -51,7 +54,7 @@ export default function Subscriber() {
             connectionsReloadTimer = null;
 
             if (pending.update_user) {
-                reloadCurrentUser(userId).catch(console.error);
+                reloadCurrentUser(userId, isActive).catch(console.error);
             }
             if (pending.reload_page) {
                 emitter.emit(EVENTS.connections, {
@@ -67,12 +70,15 @@ export default function Subscriber() {
         if (!currentUser?.id) return
 
         const userId = currentUser.id;
-        const sub1 = subscribe('sys_connections_' + userId, 'changed', (data) => onUpdateConnections(data, userId));
+        let active = true;
+        const isActive = () => active;
+        const sub1 = subscribe('sys_connections_' + userId, 'changed', (data) => onUpdateConnections(data, userId, isActive));
         const sub3 = subscribe('profile_' + userId, 'changed', () => {
-            reloadCurrentUser(userId).catch(console.error);
+            reloadCurrentUser(userId, isActive).catch(console.error);
         });
 
         return () => {
+            active = false;
             sub1();
             sub3();
             clearTimeout(connectionsReloadTimer);
