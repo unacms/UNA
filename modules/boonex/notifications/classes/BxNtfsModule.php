@@ -415,9 +415,14 @@ class BxNtfsModule extends BxBaseModNotificationsModule
      */
     public function serviceGetUnreadNotificationsNum($iOwnerId = 0)
     {
-        if (isAdmin() && !$iOwnerId) {
-            $iOwnerId = $this->getUserId();
-        }
+        $iProfileId = (int)$this->getUserId();
+        $iOwnerId = (int)$iOwnerId;
+        if(!$iOwnerId)
+            $iOwnerId = $iProfileId;
+
+        // only administrators can request counters of other profiles
+        if($iOwnerId != $iProfileId && !isAdmin())
+            return 0;
 
         if(!$iOwnerId)
             return 0;

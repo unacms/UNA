@@ -112,6 +112,21 @@ class NotificationsUnreadCountTest extends BxDolIntegrationTestCase
         $this->assertSame(1, $oSpy->iPosts, 'Building the post processes the event.');
     }
 
+    public function testMemberDefaultsToOwnProfileAndCannotReadOthers(): void
+    {
+        $this->bxLoginAsUser();
+        $oModule = $this->module();
+        $iProfileId = (int)$oModule->getUserId();
+        $this->assertGreaterThan(0, $iProfileId);
+
+        // an empty owner means the signed-in profile, the same as passing it explicitly
+        $this->assertSame($oModule->serviceGetUnreadNotificationsNum($iProfileId), $oModule->serviceGetUnreadNotificationsNum());
+        $this->assertSame($oModule->serviceGetUnreadNotificationsNum($iProfileId), $oModule->serviceGetUnreadNotificationsNum(0));
+
+        // another profile is not readable by an ordinary member
+        $this->assertSame(0, $oModule->serviceGetUnreadNotificationsNum($iProfileId + 1000000));
+    }
+
     public function testLiveUpdatesOfOnePollShareTheCount(): void
     {
         $this->bxLoginAsAdmin();
