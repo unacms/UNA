@@ -5071,12 +5071,22 @@ CREATE TABLE IF NOT EXISTS `sys_menu_items` (
   KEY `set_name` (`set_name`)
 );
 
--- site menu
+-- site menu: the modules' items come first (each module adds its own after the last item below 9999), then About and,
+-- for guests on phones (where the header has no buttons for them), Log in and Sign up; More is last
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
 ('sys_site', 'system', 'home', '_sys_menu_item_title_system_home', '_sys_menu_item_title_home', '', '', '', 'home', '', 2147483647, 1, 1, 1),
 ('sys_site', 'system', 'about', '_sys_menu_item_title_system_about', '_sys_menu_item_title_about', 'page.php?i=about', '', '', 'info-circle', '', 2147483647, 1, 1, 2),
 ('sys_site', 'system', 'search', '_sys_menu_item_title_system_search', '_sys_menu_item_title_search', 'javascript:void(0);', 'bx_menu_slide_inline(\'#bx-sliding-menu-search\', this, \'site\');', '', 'search', '', 2147483647, 1, 1, 3),
 ('sys_site', 'system', 'more-auto', '_sys_menu_item_title_system_more_auto', '_sys_menu_item_title_more_auto', 'javascript:void(0)', '', '', 'ellipsis-v', '', 2147483647, 1, 0, 9999);
+
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `hidden_on`, `copyable`, `order`) VALUES
+('sys_site', 'system', 'login', '_sys_menu_item_title_system_login', '_sys_menu_item_title_login', 'page.php?i=login', '', '', 'sign-in-alt', '', 1, '6', 0, 10000),
+('sys_site', 'system', 'create-account', '_sys_menu_item_title_system_join', '_sys_menu_item_title_join', 'page.php?i=create-account', '', '', 'user-plus', '', 1, '6', 0, 10001);
+
+-- the logo is Home on phones; More goes last and About below the modules' items
+UPDATE `sys_menu_items` SET `hidden_on` = '1' WHERE `set_name` = 'sys_site' AND `name` = 'home';
+UPDATE `sys_menu_items` SET `order` = 10010 WHERE `set_name` = 'sys_site' AND `name` = 'more-auto';
+UPDATE `sys_menu_items` SET `order` = 9999 WHERE `set_name` = 'sys_site' AND `name` = 'about';
 
 -- panel menu
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES

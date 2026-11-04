@@ -3718,6 +3718,8 @@
     <string name="_sys_menu_item_title_dashboard"><![CDATA[Dash]]></string>
     <string name="_sys_menu_item_title_home"><![CDATA[Home]]></string>
     <string name="_sys_menu_item_title_invoices"><![CDATA[Invoices]]></string>
+    <string name="_sys_menu_item_title_join"><![CDATA[Sign up]]></string>
+    <string name="_sys_menu_item_title_login"><![CDATA[Log in]]></string>
     <string name="_sys_menu_item_title_logout"><![CDATA[Sign out]]></string>
     <string name="_sys_menu_item_title_more"><![CDATA[More]]></string>
     <string name="_sys_menu_item_title_more_auto"><![CDATA[]]></string>
@@ -3826,6 +3828,7 @@
     <string name="_sys_menu_item_title_system_dashboard"><![CDATA[Dashboard]]></string>
     <string name="_sys_menu_item_title_system_home"><![CDATA[Home]]></string>
     <string name="_sys_menu_item_title_system_invoices"><![CDATA[Invoices]]></string>
+    <string name="_sys_menu_item_title_system_join"><![CDATA[Sign up]]></string>
     <string name="_sys_menu_item_title_system_login"><![CDATA[Log in]]></string>
     <string name="_sys_menu_item_title_system_logout"><![CDATA[Log out]]></string>
     <string name="_sys_menu_item_title_system_main_menu"><![CDATA[Main menu]]></string>
