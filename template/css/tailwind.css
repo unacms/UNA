@@ -2676,11 +2676,11 @@
 .select2-container .select2-selection--single {
     @apply h-10 flex items-center border rounded-md px-3;
 }
-/* Studio: select2 is the same 32px field as its inputs (see "Studio: Inputs"), with the native select's Lucide chevrons-up-down instead of
+/* Studio: select2 is the same field as its inputs (see "Studio: Inputs": 36px, 44px with 16px text and 12px corners in a form or a dialog), with the native select's Lucide chevrons-up-down instead of
    select2's triangle; open, it shows the field's focus ring. The dropdown is a Studio popup: 12px radius, ring + shadow, 4px inset,
    a Studio search field, 32px option rows with a blue/10 highlight and a black/5 (white/5) selected row. */
 .bx-std .select2-container .select2-selection--single {
-    @apply h-8 rounded-lg border-0 text-sm font-medium bg-no-repeat;
+    @apply h-9 rounded-lg border-0 text-sm font-medium bg-no-repeat;
     @apply bg-black/5 dark:bg-white/10 text-gray-900 dark:text-gray-100;
     @apply ring-1 ring-inset ring-black/10 dark:ring-white/15;
     @apply pl-3 pr-9;
@@ -2706,7 +2706,14 @@
     @apply rounded-lg;
 }
 .bx-std .select2-container--default .select2-selection--single .select2-selection__rendered {
-    @apply p-0 leading-8 text-inherit;
+    @apply p-0 leading-9 text-inherit;
+}
+.bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .select2-container .select2-selection--single,
+.bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .select2-container--default.select2-container--open:is(.select2-container--below, .select2-container--above) .select2-selection--single {
+    @apply h-11 rounded-xl text-base;
+}
+.bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .select2-container--default .select2-selection--single .select2-selection__rendered {
+    @apply leading-[2.75rem];
 }
 .dark .bx-std .select2-container--default .select2-selection--single .select2-selection__rendered {
     @apply bg-transparent text-gray-100;

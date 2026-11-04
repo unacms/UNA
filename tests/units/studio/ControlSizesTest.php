@@ -39,7 +39,7 @@ class ControlSizesTest extends BxDolTestCase
 
         $this->assertStringContainsString('@apply h-11 min-h-11 px-4 rounded-xl text-base leading-6;', self::rule($s, '    ' . self::REGULAR . ' .bx-btn' . self::NOT_SIZED));
         $this->assertStringContainsString('@apply h-11 leading-6;', $s);
-        $this->assertSame(8, substr_count($s, self::REGULAR), 'Buttons, icon-only buttons, hit areas, fields, password fields and sets name the same contexts.');
+        $this->assertSame(11, substr_count($s, self::REGULAR), 'Buttons, icon-only buttons, hit areas, fields, password fields, sets and select2 fields name the same contexts.');
     }
 
     public function testThirtySixPixelControlsHave24pxGlyphs(): void
@@ -56,6 +56,26 @@ class ControlSizesTest extends BxDolTestCase
         $sTop = str_replace("\r\n", "\n", file_get_contents(__DIR__ . '/../../../studio/template/css/menu_top.css'));
         $this->assertStringContainsString("/* Launcher button: a 24px glyph in a 36px button, like the toolbar. */", $sTop);
         $this->assertMatchesRegularExpression('/bx-std-header-btn img \{\s*display: block;\s*width: 1\.5rem;\s*height: 1\.5rem;/', $sTop);
+    }
+
+    public function testSelect2FieldsMatchTheNativeOnes(): void
+    {
+        $s = self::css();
+
+        // the Pages builder's page pickers: 36px beside the toolbar's buttons, 44px with 16px text and 12px corners in a form or a dialog
+        $this->assertStringContainsString('    @apply h-9 rounded-lg border-0 text-sm font-medium bg-no-repeat;', $s);
+        $this->assertStringContainsString("    @apply p-0 leading-9 text-inherit;", $s);
+        $this->assertStringContainsString(self::REGULAR . " .select2-container .select2-selection--single,", $s);
+        $this->assertStringContainsString("    @apply h-11 rounded-xl text-base;", $s);
+    }
+
+    public function testPageSettingsSidebarFitsItsTiles(): void
+    {
+        $s = str_replace("\r\n", "\n", file_get_contents(__DIR__ . '/../../../studio/template/css/builder_page.css'));
+
+        // 52px rows round the 36px tiles; the grid row is the sidebar's own height: 7 x 52 + 6 x 2 + 2 x 8 = 392px
+        $this->assertMatchesRegularExpression('/div\.adm-bp-epf-left div\.bx-std-pmen-item \{[^}]*height: 3\.25rem;/', $s);
+        $this->assertStringContainsString('grid-template-rows: minmax(0, 24.5rem) auto;', $s);
     }
 
     public function testExplicitSizesWin(): void
