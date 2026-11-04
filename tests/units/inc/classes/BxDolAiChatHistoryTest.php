@@ -119,6 +119,74 @@ class BxDolAiChatHistoryTest extends BxDolTestCase
         $this->assertTrue($o->replace(self::THREAD, $a[1]));
     }
 
+    /**
+     * Tool calls and results exactly as NeuronAI 3.x serialized them: empty content,
+     * a full tool record (schema `parameters`, `result` null for a call), no `__id`.
+     */
+    public function testToolMessagesStoredByNeuron3AreRead()
+    {
+        $aSchema = ['type' => 'object', 'properties' => ['keyword' => ['type' => 'string']]];
+        $sJson = json_encode([
+            ['role' => 'user', 'content' => [['type' => 'text', 'content' => 'find cats and dogs']]],
+            [
+                'role' => 'assistant',
+                'content' => [['type' => 'text', 'content' => 'Let me look']],
+                'type' => 'tool_call',
+                'tools' => [
+                    ['callId' => 'call_a', 'name' => 'content_search', 'description' => 'Search', 'parameters' => $aSchema, 'inputs' => ['keyword' => 'cats'], 'result' => null],
+                    ['callId' => 'call_b', 'name' => 'profile_get', 'description' => null, 'parameters' => [], 'inputs' => new stdClass(), 'result' => null],
+                ],
+            ],
+            [
+                'role' => 'user',
+                'content' => [],
+                'type' => 'tool_call_result',
+                'tools' => [
+                    ['callId' => 'call_a', 'name' => 'content_search', 'description' => 'Search', 'parameters' => $aSchema, 'inputs' => ['keyword' => 'cats'], 'result' => '[{"id":1}]'],
+                    ['callId' => 'call_b', 'name' => 'profile_get', 'description' => null, 'parameters' => [], 'inputs' => new stdClass(), 'result' => 'no profile'],
+                ],
+            ],
+            ['role' => 'assistant', 'content' => [['type' => 'text', 'content' => 'Found one']]],
+        ]);
+        $this->_oDb->setChatHistoryMessagesByThreadId(self::THREAD, $sJson);
+
+        $o = new BxDolAiChatHistory();
+        $a = $o->loadActive(self::THREAD);
+
+        // nothing is dropped and the order is kept
+        $this->assertCount(4, $a);
+        $this->assertSame('find cats and dogs', $a[0]->getContent());
+        $this->assertInstanceOf(NeuronAI\Chat\Messages\ToolCallMessage::class, $a[1]);
+        $this->assertInstanceOf(NeuronAI\Chat\Messages\ToolResultMessage::class, $a[2]);
+        $this->assertSame('Found one', $a[3]->getContent());
+
+        $aCalls = $a[1]->getToolCalls();
+        $this->assertCount(2, $aCalls);
+        $this->assertSame('Let me look', $a[1]->getContent());
+        $this->assertSame(['content_search', 'profile_get'], array_map(fn ($c) => $c->getName(), $aCalls));
+        $this->assertSame(['call_a', 'call_b'], array_map(fn ($c) => $c->getCallId(), $aCalls));
+        $this->assertSame(['keyword' => 'cats'], $aCalls[0]->getInputs());
+        $this->assertSame([], $aCalls[1]->getInputs());
+
+        $aResults = $a[2]->getToolCalls();
+        $this->assertCount(2, $aResults);
+        $this->assertSame(['content_search', 'profile_get'], array_map(fn ($c) => $c->getName(), $aResults));
+        $this->assertSame(['call_a', 'call_b'], array_map(fn ($c) => $c->getCallId(), $aResults));
+        $this->assertSame(['keyword' => 'cats'], $aResults[0]->getInputs());
+        $this->assertSame([], $aResults[1]->getInputs());
+        $this->assertSame('[{"id":1}]', (string)$aResults[0]->getResult());
+        $this->assertSame('no profile', (string)$aResults[1]->getResult());
+
+        // appending to an old thread rewrites it: the old tool messages must come back unchanged
+        $o->append(self::THREAD, new NeuronAI\Chat\Messages\UserMessage('thanks'));
+        $aAfter = $o->loadActive(self::THREAD);
+        $this->assertCount(5, $aAfter);
+        $this->assertSame(array_map(fn ($m) => $m->getId(), $a), array_map(fn ($m) => $m->getId(), array_slice($aAfter, 0, 4)));
+        $this->assertSame('call_b', $aAfter[2]->getToolCalls()[1]->getCallId());
+        $this->assertSame('no profile', (string)$aAfter[2]->getToolCalls()[1]->getResult());
+        $this->assertSame('thanks', $aAfter[4]->getContent());
+    }
+
     public function testClearRemovesTheThread()
     {
         $o = new BxDolAiChatHistory();
