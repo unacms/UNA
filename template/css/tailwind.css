@@ -1059,6 +1059,11 @@
     .bx-artificer .bx-form-input-wrapper-password .bx-form-input-password {
         @apply ltr:pl-4 rtl:pl-12 ltr:pr-12 rtl:pr-4;
     }
+    /* Show / Hide password on the site: NEO's borderless small (36px) round button, gray-800 (gray-200 in dark), a light fill on hover and press; its place is in Artificer's forms.css. Studio keeps its own. */
+    .bx-artificer .bx-form-input-wrapper-password > .password-show,
+    .bx-artificer .bx-form-input-wrapper-password > .password-hide {
+        @apply flex items-center justify-center w-9 h-9 rounded-full text-gray-800 dark:text-gray-200 hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700/50 dark:active:bg-gray-700 transition-colors duration-200;
+    }
 
     /* Site inputs as NEO's Input (packages/app/settings/theme/inputs.js): a single-line field is 52px, a large button's height, with 16px sides,
        16px regular text, 12px corners, the card's fill and a 1px inset hairline instead of a border. Focus has the ring every focused element has
