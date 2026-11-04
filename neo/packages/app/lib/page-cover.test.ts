@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { isPageCoverShown } from './page-cover.ts';
+import { isPageCoverShown, isPageCoverHiddenOn } from './page-cover.ts';
 
 test('disabled or missing', () => {
     assert.equal(isPageCoverShown(0, false), false);
@@ -27,4 +27,17 @@ test('members only', () => {
 test('set in code as a boolean', () => {
     assert.equal(isPageCoverShown(true, false), true);
     assert.equal(isPageCoverShown(false, true), false);
+});
+
+test('hidden on a screen size', () => {
+    assert.equal(isPageCoverHiddenOn(['phone'], 'phone', false), true);
+    assert.equal(isPageCoverHiddenOn(['phone'], 'desktop', false), false);
+    assert.equal(isPageCoverHiddenOn([], 'phone', false), false);
+    assert.equal(isPageCoverHiddenOn(undefined, 'phone', true), false, 'an older UNA sends nothing');
+});
+
+test('the apps are the mobile app too', () => {
+    assert.equal(isPageCoverHiddenOn(['mobile-app'], 'phone', true), true);
+    assert.equal(isPageCoverHiddenOn(['mobile-app'], 'phone', false), false, 'not on the web');
+    assert.equal(isPageCoverHiddenOn(['tablet'], 'tablet', true), true);
 });

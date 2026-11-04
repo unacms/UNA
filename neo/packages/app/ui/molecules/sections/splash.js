@@ -4,7 +4,7 @@ import { appSetting } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
 import AuthPanel from 'app/ui/molecules/auth/auth'
 import { BlockByName } from 'app/components/block';
-import MenuFooter from 'app/components/nav/menu-footer'
+import { PageFooter } from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Page from 'app/ui/molecules/page/page'
@@ -70,10 +70,10 @@ export default function Splash(props) {
         <Page>
             <PageHeaderOptions band={false} showTitle={false} />
             <View className={`flex-auto items-center justify-center lg:flex-row p-4 sm:p-6 lg:p-12 gap-6 lg:gap-12 w-full mx-auto ${appSetting('layout', 'max_width_landing')}`}>
-                {appStatic('splash_text')}
+                {appStatic('splash_text', { texts: props.data?.texts })}
                 <PageContent {...props} />
             </View>
-            <MenuFooter />
+            <PageFooter />
         </Page>
     )
 }

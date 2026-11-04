@@ -11,7 +11,7 @@ import Cell from 'app/components/cell';
 import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect'
 import Page from 'app/ui/molecules/page/page'
-import MenuFooter from 'app/components/nav/menu-footer'
+import { PageFooter } from 'app/components/nav/menu-footer'
 import { View } from 'app/design/view'
 import { useRef, useEffect, useMemo, useState } from 'react';
 import PageByUrl from 'app/ui/molecules/page/page-by-url'
@@ -120,7 +120,7 @@ function ErrorPage({ type, data }) {
             <Redirect ref={redirectRef} />
             {!redirectUrl && appStatic(staticPageKey)}
             <View className="flex-1" />
-            {!redirectUrl && <MenuFooter />}
+            {!redirectUrl && <PageFooter />}
         </Page>
     );
 }

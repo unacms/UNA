@@ -48,6 +48,9 @@ export const settingsLayout = {
         post_container: ' max-w-3xl w-full flex-1 bg-card text-card-foreground rounded-2xl p-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 
         search: true,
+        // The site footer at the end of pages in the iOS / Android apps (PageFooter). Off: the tab bar
+        // holds the pages and the member menu the footer's links. Web always shows it.
+        native_page_footer: false,
         sidebar_search: true,
         extended_search: true,
         apps: true,

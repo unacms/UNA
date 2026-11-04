@@ -15,27 +15,28 @@ import { Platform } from 'react-native'
 import SvgFile from 'app/ui/molecules/content/svg-file'
 import Logo from 'app/ui/atoms/logo'
 import Illustration from 'app/ui/molecules/content/illustration'
-import MenuFooter from 'app/components/nav/menu-footer'
+import { PageFooter } from 'app/components/nav/menu-footer'
+import { landingText } from 'app/lib/landing-text'
 const isWeb = Platform.OS === 'web'
 
 // Illustration, title and text: one stack with gap-6, no margins or padding of their own
 // (`isfirst` / `islast` turn off the H1's prose spacing). The same stack as the join page.
-const SplashTextComponent = (props) => {
-    const { t } = useTranslation()
+const SplashTextComponent = ({ texts }) => {
+    const { t, i18n } = useTranslation()
     return (
         <View className="items-center lg:items-start gap-6 my-auto flex-auto w-full">
             <View className="h-48 w-48">
                 <Illustration name="splash" />
             </View>
             <H1 isfirst islast className="text-center lg:text-start" fontFamily="font-title">
-                {t('splash_page_title')}
+                {landingText(t, i18n, 'splash_page_title', texts?.title, 'Connect. Share. Create.')}
             </H1>
             <Text
                 accessible={true}
                 accessibilityRole="text"
                 className="max-w-3xl text-secondary-foreground text-center lg:text-start text-base sm:text-lg text-pretty"
             >
-                {t('splash_page_text')}
+                {landingText(t, i18n, 'splash_page_text', texts?.text, 'Join our community now to connect with like-minded people, share exciting news and create inspiring content.')}
             </Text>
         </View>
     )
@@ -324,7 +325,7 @@ const ComponentsLoginContentComponent = (props) => {
 
 const ComponentsFooter = () => {
     return (
-        <MenuFooter />
+        <PageFooter />
     )
 }
 

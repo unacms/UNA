@@ -59,6 +59,8 @@ export default function ElementSearch(oProps) {
                 tooltip={
                     oProps.tooltip === undefined ? 'Search' : oProps.tooltip
                 }
+                // An icon-only button: screen readers read this, not the icon's name ("search").
+                accessibilityLabel={t('Search')}
                 {...toolbarNeoButtonDefaults}
                 {...(oParams?.trigger &&
                     (({ onPress, ...rest }) => rest)(oParams.trigger))}

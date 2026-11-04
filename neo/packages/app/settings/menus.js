@@ -18,6 +18,8 @@ export const settingsMenus = {
             site: 'sys_site',
             // Tab bar (web bottom bar, native tabs) when `menu_tabbar_*` are empty.
             tabbar: 'sys_tabbar',
+            // UNA's member toolbar: guests' header tools (Search) show while it has them for the apps.
+            toolbar: 'sys_toolbar_member',
         },
         // Tabs after Home in a navbar built from `objects.site`; the rest go under More.
         menu_navbar_site_tabs: 5,

@@ -4,7 +4,7 @@ import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
 import AuthPanel from 'app/ui/molecules/auth/auth'
 import Page from 'app/ui/molecules/page/page'
-import MenuFooter from 'app/components/nav/menu-footer'
+import { PageFooter } from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import { getPageContentWidth } from 'app/lib/util'
@@ -66,7 +66,7 @@ export default function PageLayout({ data, children, pageClasses }) {
                     </View>
                 </View>
             </View>
-            <MenuFooter />
+            <PageFooter />
         </Page>
     )
 }

@@ -572,6 +572,7 @@
 	<string name="_adm_bp_txt_block_active"><![CDATA[Активный]]></string>
         <string name="_adm_bp_txt_block_active_api"><![CDATA[Активный (для приложения)]]></string>
         <string name="_adm_bp_txt_block_async"><![CDATA[Асинхронный режим]]></string>
+        <string name="_adm_bp_txt_block_bg_hidden_on"><![CDATA[Фон скрыт на]]></string>
         <string name="_adm_bp_txt_block_cache_lifetime"><![CDATA[Кэш для блока (в секундах)]]></string>
 	<string name="_adm_bp_txt_block_content_attachments_html"><![CDATA[Вложения]]></string>
 	<string name="_adm_bp_txt_block_content_image_align"><![CDATA[Выравнивание]]></string>
@@ -600,10 +601,13 @@
 	<string name="_adm_bp_txt_block_hidden_on_desktop"><![CDATA[настольном компьютере]]></string>
         <string name="_adm_bp_txt_block_hidden_on_mobile"><![CDATA[мобильное приложение]]></string>
         <string name="_adm_bp_txt_block_icon"><![CDATA[Изображение]]></string>
+	<string name="_adm_bp_txt_block_padding_hidden_on"><![CDATA[Отступы скрыты на]]></string>
+	<string name="_adm_bp_txt_block_part_hidden_on_info"><![CDATA[На сайте и в приложениях. Если в оформлении блока этой части нет, она так и не показывается.]]></string>
 	<string name="_adm_bp_txt_block_selected"><![CDATA[блоков выбрано]]></string>
         <string name="_adm_bp_txt_block_submenu"><![CDATA[Подменю блока]]></string>
         <string name="_adm_bp_txt_block_tabs"><![CDATA[Использовать подменю блока в виде вкладок]]></string>
 	<string name="_adm_bp_txt_block_title"><![CDATA[Отображаемое имя]]></string>
+	<string name="_adm_bp_txt_block_title_hidden_on"><![CDATA[Заголовок скрыт на]]></string>
 	<string name="_adm_bp_txt_block_visible_for"><![CDATA[Видимо для]]></string>
 	<string name="_adm_bp_txt_block_visible_for_all"><![CDATA[Всех]]></string>
 	<string name="_adm_bp_txt_block_visible_for_levels"><![CDATA[Выбрать уровни]]></string>
@@ -619,6 +623,8 @@
         <string name="_adm_bp_txt_page_cover_1"><![CDATA[Включен для всех]]></string>
         <string name="_adm_bp_txt_page_cover_2"><![CDATA[Включен только для гостей]]></string>
         <string name="_adm_bp_txt_page_cover_3"><![CDATA[Включен только для пользователей]]></string>
+        <string name="_adm_bp_txt_page_cover_hidden_on"><![CDATA[Обложка скрыта на]]></string>
+        <string name="_adm_bp_txt_page_cover_hidden_on_info"><![CDATA[На выбранных размерах экрана страница показывается без обложки и без названия, на сайте и в приложениях.]]></string>
         <string name="_adm_bp_txt_page_inj_footer"><![CDATA[В основание]]></string>
         <string name="_adm_bp_txt_page_inj_head"><![CDATA[В заголовок]]></string>
 	<string name="_adm_bp_txt_page_layout"><![CDATA[Отображение]]></string>
@@ -4546,6 +4552,10 @@
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Ваш код проверки {0}.]]></string>
     <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[Произошла ошибка, пожалуйста, уведомите о ней администратора сайта.]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Войти]]></string>
+    <string name="_sys_txt_join_text"><![CDATA[Регистрация быстрая и простая. Создайте аккаунт, чтобы начать.]]></string>
+    <string name="_sys_txt_join_text_invite"><![CDATA[Регистрация только по приглашению. Используйте код приглашения.]]></string>
+    <string name="_sys_txt_join_title"><![CDATA[Пора присоединиться!]]></string>
+    <string name="_sys_txt_join_title_invite"><![CDATA[Запросить приглашение]]></string>
     <string name="_sys_txt_login_description_action"><![CDATA[Создать аккаунт]]></string>
     <string name="_sys_txt_login_error"><![CDATA[Введённый email или пароль неправильны. Пожалуйста, попытайтесь снова.]]></string>
     <string name="_sys_txt_login_locked"><![CDATA[Ваш аккаунт заблокирован, для разблокировки, пожалуйста, используйте  <a href="{0}">страницу сброса пароля</a>.]]></string>
@@ -4580,7 +4590,7 @@
 	<string name="_sys_txt_splash_slide03_txt"><![CDATA["Лучший способ завести друзей - быть кому-то другом."]]></string>
         <string name="_sys_txt_splash_slide04_txt"><![CDATA[Уже один из нас?]]></string>
 	<string name="_sys_txt_splash_title"><![CDATA[Присоединяйся. Делись. Создавай.]]></string>
-	<string name="_sys_txt_splash_slogan"><![CDATA[Вступай в наше сообщество сейчас, чтобы найти единомышленников, дулиться захватывающими новостями и создавать вдохновляющий контент.]]></string>
+	<string name="_sys_txt_splash_slogan"><![CDATA[Вступай в наше сообщество сейчас, чтобы найти единомышленников, делиться захватывающими новостями и создавать вдохновляющий контент.]]></string>
         <string name="_sys_txt_splash_login"><![CDATA[Войти]]></string>
         <string name="_sys_txt_splash_join"><![CDATA[Зарегистрироваться]]></string>
 	<string name="_sys_txt_splash_connect"><![CDATA[Присоединяйся]]></string>

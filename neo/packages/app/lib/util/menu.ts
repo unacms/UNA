@@ -322,6 +322,8 @@ export function navbarItemsFromSiteMenu(items: MenuItemList, maxTabs: number): M
             ...item,
             link: normalizeMenuItemHref(item.link),
             icon: findIconFromRemote(item.icon) || (item.name === 'home' ? 'House' : 'Circle'),
+            // The title shows next to the icon unless Studio marks the item "Icon only", as on the site.
+            showTitle: !Number(item.icon_only),
             animated: true,
         };
         // Home leads the bar wherever the site menu puts it, and doesn't count as a tab.
@@ -588,13 +590,21 @@ export function menuItemsFilter(items: any, currentUser: any): any {
 }
 
 /** Menu settings: the menu's `config` from UNA, else `menu_items[object]` from settings. */
+/**
+ * The menu's own `menu_items` setting: an array as is, an object as a copy (the name / icon added
+ * by getMenuSettings must not land in the settings), else {}: a menu with no settings (appSetting
+ * gives '') still gets UNA's title and icon, so its section is named.
+ */
+function localMenuSettings(object: string): any {
+    const local = object ? appSetting('menu_items', object) : null;
+    if (Array.isArray(local)) return local;
+    return local && typeof local === 'object' ? { ...local } : {};
+}
+
 export function getMenuSettings(object: string, config?: unknown, menu?: { title?: string; icon?: string }): any {
     let a: any = config ? strToObj(config as string) : null;
-    if (!a) {
-        const local = object ? appSetting('menu_items', object) : null;
-        // A copy: the name / icon below must not land in the settings object.
-        a = local && typeof local === 'object' && !Array.isArray(local) ? { ...local } : (local ?? {});
-    }
+    if (!a)
+        a = localMenuSettings(object);
     if (Array.isArray(a))
         return a;
 

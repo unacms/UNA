@@ -1,7 +1,7 @@
 import { View } from 'app/design/view';
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { memo, useMemo } from 'react';
-import MenuFooter from 'app/components/nav/menu-footer';
+import { PageFooter } from 'app/components/nav/menu-footer';
 import { Panel, PanelGroup, PanelHandler } from "app/ui/molecules/page/resizable-panels";
 import { useBreakpoint } from 'app/context/measure';
 import Page from 'app/ui/molecules/page/page'
@@ -164,7 +164,7 @@ export default function PageLayoutUniversal({ data, children, layoutName, pageCl
                 {children}
             </PageContentUniversal>
             <View className="flex-1" />
-            <MenuFooter />
+            <PageFooter />
         </Page>
     )
 }

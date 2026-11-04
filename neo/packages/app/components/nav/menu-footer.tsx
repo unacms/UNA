@@ -1,4 +1,5 @@
 import { View } from 'app/design/view'
+import { Platform } from 'react-native'
 import { appSetting, cn, menuItemsByName, menuItemsByNameNew } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
 import { useMemo, memo, type ComponentProps, type ReactNode } from 'react';
@@ -469,4 +470,16 @@ function MenuFooterComponent({
     );
 }
 
-export default memo(MenuFooterComponent);
+const MenuFooter = memo(MenuFooterComponent);
+
+/**
+ * The site footer at the end of a page. Native apps show none by default (the tab bar holds the
+ * pages, and infinite lists would push it away; the member menu has the footer's links); a fork
+ * turns it on with `layout.native_page_footer`.
+ */
+export function PageFooter() {
+    if (Platform.OS !== 'web' && !appSetting('layout', 'native_page_footer')) return null;
+    return <MenuFooter />;
+}
+
+export default MenuFooter;

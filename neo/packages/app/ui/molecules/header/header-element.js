@@ -13,6 +13,7 @@ import { useIsDesktop } from 'app/context/measure';
 import { Platform } from 'react-native'
 import { useRouter } from 'app/lib/hooks/router'
 import { useTranslation } from 'react-i18next'
+import { useMenuData } from 'app/context/menu-data'
 
 // Web: the side of the desktop breakpoint a toolbar item shows on, read from its classes, so its
 // buttons take that tier's style in the server HTML (rendered for desktop) and keep it after
@@ -48,10 +49,16 @@ export default function HeaderElement({ url, uri }) {
         : toolbarConfig?.loggedOut) || []
     const has = (component) => itemsToRender.some(item => item.component === component)
 
-    // Notifications and Messages show while UNA's member toolbar has them for this viewer (`toolbar`, the names
-    // of its items), so a site without the module has no button. Without the list (an older UNA) they show.
+    // Notifications, Messages and Search show while UNA's member toolbar has them for this viewer (`toolbar`, the
+    // names of its items), so a site without the module has no button. Without the list (an older UNA) they show.
+    // Guests have no `toolbar`: their tools (Search) come from that menu itself, each shown once UNA says it is
+    // "Active (for App)" (Studio > Navigation), so switching it off there hides it in the apps too.
     const unaToolbar = currentUser?.toolbar
     const inUnaToolbar = (name) => !Array.isArray(unaToolbar) || unaToolbar.includes(name)
+    const { menuData: guestToolbar } = useMenuData(
+        currentUser === false && has('search') ? appSetting('menu_items', 'objects', 'toolbar') : null
+    )
+    const inGuestToolbar = (name) => Array.isArray(guestToolbar?.items) && guestToolbar.items.some((item) => item?.name === name)
     const addMenu = useMenuAddItems(has('add'))
     const launcherMenu = useMenuLauncherItems(has('launcher'))
 
@@ -59,7 +66,7 @@ export default function HeaderElement({ url, uri }) {
     const isShown = (item) => {
         switch (item.component) {
             case "search":
-                return bSearch
+                return bSearch && (currentUser ? inUnaToolbar('search') : inGuestToolbar('search'))
             case "launcher":
                 return !launcherMenu.empty
             case "add":
