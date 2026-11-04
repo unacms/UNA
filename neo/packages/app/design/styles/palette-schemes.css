@@ -83,9 +83,11 @@
     --primary-foreground: var(--neutral-50);
     --secondary: var(--neutral-800);
     --secondary-foreground: var(--neutral-400);
-    /* 4.5:1 on --accent, cards, popovers and secondary */
-    --accent: var(--accent-950);
-    --accent-foreground: var(--accent-400);
+    /* accent-900 stands off the popover and card (neutral-800, 1.44:1) as accent-100 does off white in light (1.22:1);
+       accent-950 was 1.01:1 there, so a selected row didn't show. accent-300 text on it is 5.74:1, and more on cards,
+       popovers and secondary. */
+    --accent: var(--accent-900);
+    --accent-foreground: var(--accent-300);
     --muted: var(--neutral-700);
     --muted-foreground: var(--neutral-400);
     --destructive: var(--red);

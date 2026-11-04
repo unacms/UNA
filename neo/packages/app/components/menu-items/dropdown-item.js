@@ -25,7 +25,10 @@ const getIcon = (oItem, iconSize = 20, rowHovered) => {
     if (!oItem?.icon) return null;
 
     const selected = !!oItem.selected;
-    const className = [oItem?.class_item_icon, oItem?.addClassName, selected ? (menuSettings.item_icon_selected ?? 'text-accent-foreground') : null]
+    const glyphClass = selected
+        ? (menuSettings.item_icon_selected ?? 'text-accent-foreground')
+        : (menuSettings.item_icon ? menuSettings.item_icon_glyph : null);
+    const className = [oItem?.class_item_icon, oItem?.addClassName, glyphClass]
         .filter(Boolean)
         .join(' ');
 

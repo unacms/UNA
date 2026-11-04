@@ -41,7 +41,7 @@ function GridIcon({ item, hovered }: { item: DropdownGridMenuItem; hovered: bool
     }
     if (!item?.icon) return null;
 
-    const iconClass = item?.class_item_icon || item?.addClassName || '';
+    const iconClass = item?.class_item_icon || item?.addClassName || menuSettings.item_icon_glyph || '';
     if (typeof item.icon === 'string' && isEmoji(item.icon)) {
         return <Text className={iconClass}>{item.icon}</Text>;
     }

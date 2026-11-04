@@ -58,11 +58,17 @@ export const settingsElements = {
         item_cnt: 'items-center w-full min-w-0 flex-row',
         item_text_cnt: 'min-w-0 flex-1 flex flex-col self-center justify-center overflow-hidden',
         item_cnt_tabs_overflow: 'items-center w-full flex-row justify-start flex-1',
-        item_text: ' block w-full text-sm font-semibold text-secondary-foreground web:group-hover:text-foreground px-2',
-        /** Selected item (current tab / page, picked option): the toggled look — `bg-accent` + `text-accent-foreground`. */
+        /** Label, icon glyph and icon circle change colour together, with the row's hover highlight (150ms ease-out,
+            `.neo-menu-highlight` in global.web.css), so nothing in the row swaps ahead of the rest. */
+        item_text: ' block w-full text-sm font-semibold text-secondary-foreground web:group-hover:text-foreground px-2 web:transition-colors web:duration-150 web:ease-out',
+        /** The glyph in an item's icon circle (`item_icon`): the label's colour, so both brighten on hover as one. */
+        item_icon_glyph: 'text-secondary-foreground web:group-hover:text-foreground web:transition-colors web:duration-150 web:ease-out',
+        /** Selected item (current tab / page, picked option): the toggled look — `bg-accent` + `text-accent-foreground`.
+            Its icon circle is the solid primary (`item_icon_active`) with a primary-foreground glyph, so the circle
+            still reads on the accent row. */
         item_selected: ' bg-accent ',
-        item_text_selected: ' block w-full text-sm font-semibold text-accent-foreground px-2',
-        item_icon_selected: 'text-accent-foreground',
+        item_text_selected: ' block w-full text-sm font-semibold text-accent-foreground px-2 web:transition-colors web:duration-150 web:ease-out',
+        item_icon_selected: 'text-primary-foreground',
         item_description: 'block w-full text-xs font-normal leading-tight text-pretty text-muted-foreground px-2 break-words',
         item_group_header: 'px-2 pt-3 pb-1',
         item_group_header_first: 'p-2.5',
@@ -74,15 +80,15 @@ export const settingsElements = {
         /** Apps launcher waffle — icon above label, no description. */
         content_grid: 'w-full',
         item_grid:
-            'group flex w-full min-w-0 min-h-24 flex-col items-center justify-start gap-1.5 rounded-xl px-1 py-2.5 text-secondary-foreground web:hover:bg-muted/80 web:hover:text-foreground web:hover:cursor-pointer web:focus-visible:outline-2 web:duration-200',
+            'group flex w-full min-w-0 min-h-24 flex-col items-center justify-start gap-1.5 rounded-xl px-1 py-2.5 text-secondary-foreground web:hover:bg-muted/80 web:hover:text-foreground web:hover:cursor-pointer web:focus-visible:outline-2 web:transition-colors web:duration-150 web:ease-out',
         item_icon_grid:
-            'flex shrink-0 items-center w-12 h-12 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
+            'flex shrink-0 items-center w-12 h-12 bg-muted/50 web:group-hover:bg-border rounded-full justify-center web:transition-colors web:duration-150 web:ease-out',
         item_text_grid:
-            'w-full text-center text-xs font-medium leading-tight text-secondary-foreground web:group-hover:text-foreground px-0.5',
+            'w-full text-center text-xs font-medium leading-tight text-secondary-foreground web:group-hover:text-foreground px-0.5 web:transition-colors web:duration-150 web:ease-out',
         item_icon:
-            'flex shrink-0 items-center w-9 h-9 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
+            'flex shrink-0 items-center w-9 h-9 bg-muted/50 web:group-hover:bg-border rounded-full justify-center web:transition-colors web:duration-150 web:ease-out',
         item_icon_active:
-            'flex shrink-0 items-center w-9 h-9 bg-accent rounded-full justify-center',
+            'flex shrink-0 items-center w-9 h-9 bg-primary rounded-full justify-center',
         icon_size: 20, // Default icon size for dropdown menu icons
         icon_size_grid: 24,
     },

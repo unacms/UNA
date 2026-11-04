@@ -40,7 +40,7 @@ export function useRichTextColors() {
     ])
     const fallback = useThemeValue(
         { text: 'rgb(82, 82, 91)', link: 'rgb(29, 78, 216)', border: 'rgb(212, 212, 216)', code: 'rgba(10, 10, 12, 0.07)' },
-        { text: 'rgb(161, 161, 170)', link: 'rgb(96, 165, 250)', border: 'rgb(63, 63, 70)', code: 'rgba(250, 250, 252, 0.07)' },
+        { text: 'rgb(161, 161, 170)', link: 'rgb(147, 197, 253)', border: 'rgb(63, 63, 70)', code: 'rgba(250, 250, 252, 0.07)' },
     )
     return {
         text: (text as string) || fallback.text,

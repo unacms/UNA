@@ -861,7 +861,8 @@ webview {
         width 150ms cubic-bezier(0.22, 1, 0.36, 1),
         height 150ms cubic-bezier(0.22, 1, 0.36, 1),
         border-radius 150ms cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 150ms ease-out;
+        /* Tailwind's ease-out, as the label, icon and circle colours of the items (theme.dropdown_menu) */
+        opacity 150ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .neo-menu-highlight.neo-menu-highlight-on::before {
@@ -869,12 +870,12 @@ webview {
 }
 
 .neo-menu-highlight.neo-menu-highlight-jump::before {
-    transition: opacity 150ms ease-out;
+    transition: opacity 150ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
     .neo-menu-highlight::before {
-        transition: opacity 150ms ease-out;
+        transition: opacity 150ms cubic-bezier(0, 0, 0.2, 1);
     }
 }
 
