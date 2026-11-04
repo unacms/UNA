@@ -22,6 +22,7 @@ class ListContextBindingTest extends BxDolIntegrationTestCase
     protected $_aTaskIds = [];
     protected $_aResourceListIds = [];
     protected $_aResourceIds = [];
+    protected $_aProfileIdBackup = [];
 
     protected function setUp(): void
     {
@@ -36,6 +37,16 @@ class ListContextBindingTest extends BxDolIntegrationTestCase
         $this->bxLoginAsAdmin();
         $this->_iOwn = (int)bx_get_logged_profile_id();
         $this->assertGreaterThan(0, $this->_iOwn);
+
+        // A module keeps the profile it was created for, which an earlier test may have logged in as.
+        $aModules = ['bx_persons', 'bx_tasks', 'bx_resources'];
+        foreach ($aModules as $sModule) {
+            if (!$oModules->isEnabledByName($sModule))
+                continue;
+
+            $oModule = BxDolModule::getInstance($sModule);
+            $this->_aProfileIdBackup[$sModule] = $oModule->setProfileId($this->_iOwn);
+        }
 
         $iOther = (int)BxDolProfileQuery::getInstance()->getCurrentProfileByAccount($this->bxAccount('user')->id(), false);
         if ($iOther <= 0 || $iOther === $this->_iOwn)
@@ -60,6 +71,10 @@ class ListContextBindingTest extends BxDolIntegrationTestCase
             if ($this->_aResourceListIds)
                 $oDb->query("DELETE FROM `bx_resources_lists` WHERE `id` IN (" . $this->bxIdList($this->_aResourceListIds) . ")");
         }
+
+        foreach ($this->_aProfileIdBackup as $sModule => $iProfileId)
+            BxDolModule::getInstance($sModule)->setProfileId($iProfileId);
+        $this->_aProfileIdBackup = [];
 
         $_POST = [];
         parent::tearDown();

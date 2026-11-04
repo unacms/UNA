@@ -66,6 +66,12 @@ class TimelineApiParamsTest extends BxDolIntegrationTestCase
         $iProfileId = (int)bx_get_logged_profile_id();
         $this->module()->setProfileId($iProfileId);
 
+        // The profile's own module checks who may post to it as the profile it was created for,
+        // which an earlier test may have logged in as.
+        $oProfile = BxDolProfile::getInstance($iProfileId);
+        if ($oProfile && $oProfile->getModule() !== $this->module()->getName() && BxDolModuleQuery::getInstance()->isEnabledByName($oProfile->getModule()))
+            BxDolModule::getInstance($oProfile->getModule())->setProfileId($iProfileId);
+
         return $iProfileId;
     }
 
