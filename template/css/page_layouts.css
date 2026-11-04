@@ -74,3 +74,9 @@
 .bx-media-desktop .bx-db-hide-padding-desktop .bx-db-content {
     padding: 0 !important;
 }
+/* The title lines up with the content it no longer insets. */
+.bx-media-phone .bx-db-hide-padding-phone .bx-db-header,
+.bx-media-tablet .bx-db-hide-padding-tablet .bx-db-header,
+.bx-media-desktop .bx-db-hide-padding-desktop .bx-db-header {
+    padding-inline: 0 !important;
+}
