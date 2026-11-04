@@ -178,7 +178,7 @@ class BxDolPageQuery extends BxDolDb
                 'content_id' => $iContentId,
                 'content_module' => $sContentModule
             ]);
-            $sWhereClause .= " AND 'content_id' = :content_id AND 'content_module' = :content_module";
+            $sWhereClause .= " AND `content_id` = :content_id AND `content_module` = :content_module";
         }
 
         return $this->getOne("SELECT `data` FROM `sys_pages_blocks_data` WHERE `block_id` = :block_id" . $sWhereClause, $aBindings);

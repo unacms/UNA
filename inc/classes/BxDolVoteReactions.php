@@ -275,8 +275,13 @@ class BxDolVoteReactions extends BxTemplVote
      */
     public static function isEmoji($s)
     {
-        $sPart = '(?:\p{Extended_Pictographic}(?:\x{FE0F}|[\x{1F3FB}-\x{1F3FF}])?)';
-        return preg_match('/^(?:' . $sPart . '(?:\x{200D}' . $sPart . ')*|[#*0-9]\x{FE0F}?\x{20E3}|\p{Regional_Indicator}{2})$/u', (string)$s) === 1;
+        // Explicit ranges instead of \p{Extended_Pictographic} and \p{Regional_Indicator}: PCRE older than 10.40
+        // does not know these properties and fails to compile the pattern. Skin tones (1F3FB-1F3FF) and
+        // regional indicators (1F1E6-1F1FF) are left out of the pictograph ranges.
+        $sPictograph = '\x{00A9}\x{00AE}\x{203C}\x{2049}\x{2122}\x{2139}\x{2194}-\x{21AA}\x{231A}-\x{23FF}\x{24C2}\x{25AA}-\x{27BF}\x{2934}\x{2935}\x{2B05}-\x{2B55}\x{3030}\x{303D}\x{3297}\x{3299}'
+            . '\x{1F000}-\x{1F1E5}\x{1F200}-\x{1F3FA}\x{1F400}-\x{1FAFF}';
+        $sPart = '(?:[' . $sPictograph . '](?:\x{FE0F}|[\x{1F3FB}-\x{1F3FF}])?)';
+        return preg_match('/^(?:' . $sPart . '(?:\x{200D}' . $sPart . ')*|[#*0-9]\x{FE0F}?\x{20E3}|[\x{1F1E6}-\x{1F1FF}]{2})$/u', (string)$s) === 1;
     }
 
     /**
