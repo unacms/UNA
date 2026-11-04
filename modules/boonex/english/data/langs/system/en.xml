@@ -4465,6 +4465,7 @@
     <string name="_sys_select"><![CDATA[Select]]></string>
     <string name="_sys_send"><![CDATA[Send]]></string>
     <string name="_sys_search_placeholder"><![CDATA[Search...]]></string>
+    <string name="_sys_search_see_all_results"><![CDATA[See all results]]></string>
     <string name="_sys_show_less"><![CDATA[Show less]]></string>    
     <string name="_sys_show_more"><![CDATA[Show more]]></string>
     <string name="_sys_skip_to_main_content"><![CDATA[Skip to main content]]></string>
