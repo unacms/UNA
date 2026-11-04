@@ -278,7 +278,8 @@ class BxTasksTemplate extends BxBaseModTextTemplate
                 'tasks' => _t('_bx_tasks_txt_timers_stats_tasks'),
                 'show_more' => _t('_bx_tasks_txt_timers_stats_show_more'),
                 'empty' => _t('_bx_tasks_txt_timers_stats_empty'),
-            ]
+            ],
+            'request_url' => $this->MODULE . '/get_block_timers_stats'
         ];
     }
 
@@ -286,6 +287,7 @@ class BxTasksTemplate extends BxBaseModTextTemplate
     {
         $CNF = &$this->_oConfig->CNF;
 
+        $oModule = $this->getModule();
         $oPermalinks = BxDolPermalinks::getInstance();
 
         $aTracks = $this->_oDb->getTimeTracks([
@@ -303,6 +305,10 @@ class BxTasksTemplate extends BxBaseModTextTemplate
                 continue;
 
             $iTotal += (int)$aTrack['value'];
+
+            //--- The time stays in the total, but a task the viewer can't access any more isn't named.
+            if($oModule->checkAllowedViewForProfile($aContentInfo, $iProfileId) !== CHECK_ACTION_RESULT_ALLOWED)
+                continue;
 
             $iContextId = abs(min(0, (int)$aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']]));
             if($iContextId && !isset($aContexts[$iContextId]))

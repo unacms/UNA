@@ -187,6 +187,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
             'SaveFilter' => '',
             'ApplyFilter' => '',
             'ProcessTimer' => '',
+            'GetBlockTimersStats' => '',
         ]);
     }
 

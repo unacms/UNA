@@ -59,6 +59,7 @@ export default function ElementTasksTimers({ data, blockWrapperProps }) {
         if (!requestUrl) return;
         await fetcher('/api.php?r=' + requestUrl);
         setTimersData((prev) => ({ ...prev, sections: [] }));
+        emitter.emit(EVENTS.taskTimer, { action: item.name });
     };
 
     return (

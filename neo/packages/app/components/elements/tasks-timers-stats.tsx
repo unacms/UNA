@@ -1,12 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { NeoButton, NeoButtonGroup } from 'app/design/controls';
 import { BlockWrapper } from 'app/components/block-wrapper';
 import Link from 'app/ui/atoms/link';
 import Progress from 'app/ui/atoms/progress';
+import { fetcher } from 'app/lib/fetcher';
+import emitter, { EVENTS } from 'app/context/emitter';
 
 const PAGE_SIZE = 10;
+const REFRESH_ACTIONS = ['log', 'log-all'];
 
 type StatsTask = {
     id: number;
@@ -23,11 +26,14 @@ type StatsPeriod = {
     tasks?: StatsTask[];
 };
 
+type StatsData = {
+    periods?: StatsPeriod[];
+    labels?: { total?: string; tasks?: string; show_more?: string; empty?: string };
+    request_url?: string;
+};
+
 type TasksTimersStatsProps = {
-    data?: {
-        periods?: StatsPeriod[];
-        labels?: { total?: string; tasks?: string; show_more?: string; empty?: string };
-    };
+    data?: StatsData;
     blockWrapperProps?: any;
 };
 
@@ -70,8 +76,35 @@ function TaskRow({ task, maxMinutes }: { task: StatsTask; maxMinutes: number }) 
 
 /** Logged time per task for this and the previous month (`bx_tasks:get_block_timers_stats`). */
 export default function TasksTimersStats({ data, blockWrapperProps }: TasksTimersStatsProps) {
-    const periods = Array.isArray(data?.periods) ? data.periods : [];
-    const labels = data?.labels || {};
+    const [stats, setStats] = useState(data);
+
+    // Fresh block data (page reload) replaces the refreshed copy.
+    const [seenData, setSeenData] = useState(data);
+    if (seenData !== data) {
+        setSeenData(data);
+        setStats(data);
+    }
+
+    const requestUrl = stats?.request_url;
+
+    useEffect(() => {
+        if (!requestUrl) return undefined;
+
+        let latestRequest = 0;
+        // Logged time reaches this block without a page reload.
+        const subscription = emitter.addListener(EVENTS.taskTimer, async (event: { action?: string }) => {
+            if (!REFRESH_ACTIONS.includes(String(event.action))) return;
+
+            const request = ++latestRequest;
+            const response = await fetcher('/api.php?r=' + requestUrl);
+            const next = response?.data?.[0]?.data;
+            if (request === latestRequest && next?.periods) setStats(next);
+        });
+        return () => subscription.remove();
+    }, [requestUrl]);
+
+    const periods = Array.isArray(stats?.periods) ? stats.periods : [];
+    const labels = stats?.labels || {};
     const [periodName, setPeriodName] = useState(periods[0]?.name);
     const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 

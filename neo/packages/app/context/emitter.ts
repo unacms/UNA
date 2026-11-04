@@ -119,7 +119,7 @@ export const EVENTS = {
         /* method, url, state */
 
     taskTimer: 'task_timer',
-        /* id, action: log | clear | <menu item name> */
+        /* id, action: log | clear | <menu item name>; no id for log-all | clear-all */
 
     taskTimerSync: 'task_timer_sync',
         /* timer snapshot */
