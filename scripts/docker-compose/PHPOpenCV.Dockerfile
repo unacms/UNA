@@ -26,8 +26,8 @@ RUN apt update && apt install -y \
 RUN add-apt-repository ppa:ondrej/php \
  && apt update \
  && apt install -y \
-    php8.3-dev \
-    php8.3-cli \
+    php8.2-dev \
+    php8.2-cli \
  && rm -rf /var/lib/apt/lists/*
 
 # OpenCV sources
@@ -70,18 +70,18 @@ RUN apt update && apt install -y --no-install-recommends \
 
 # Runtime dependencies only
 RUN apt update && apt install -y --no-install-recommends \
-    php8.3-fpm \
-    php8.3-cli \
-    php8.3-gd \
-    php8.3-curl \
-    php8.3-zip \
-    php8.3-xml \
-    php8.3-mbstring \
-    php8.3-mysql \
-    php8.3-imagick \
-    php8.3-redis \
-    php8.3-intl \
-    php8.3-xdebug \
+    php8.2-fpm \
+    php8.2-cli \
+    php8.2-gd \
+    php8.2-curl \
+    php8.2-zip \
+    php8.2-xml \
+    php8.2-mbstring \
+    php8.2-mysql \
+    php8.2-imagick \
+    php8.2-redis \
+    php8.2-intl \
+    php8.2-xdebug \
     libjpeg-turbo8 \
     libpng16-16 \
     libstdc++6 \
@@ -95,17 +95,17 @@ RUN apt update && apt install -y --no-install-recommends \
 COPY --from=builder /usr/local /usr/local
 
 # Copy PHP extension
-COPY --from=builder /usr/lib/php/20230831/opencv.so /usr/lib/php/20230831/
+COPY --from=builder /usr/lib/php/20220829/opencv.so /usr/lib/php/20220829/
 
 # Enable extension
 RUN echo "extension=opencv.so" \
-    > /etc/php/8.3/cli/conf.d/20-opencv.ini \
+    > /etc/php/8.2/cli/conf.d/20-opencv.ini \
  && echo "extension=opencv.so" \
-    > /etc/php/8.3/fpm/conf.d/20-opencv.ini
+    > /etc/php/8.2/fpm/conf.d/20-opencv.ini
 
 # PHP-FPM config
-RUN sed -i 's|listen = .*|listen = 9000|' /etc/php/8.3/fpm/pool.d/www.conf \
+RUN sed -i 's|listen = .*|listen = 9000|' /etc/php/8.2/fpm/pool.d/www.conf \
  && mkdir -p /var/run/php
 
 EXPOSE 9000
-CMD ["/usr/sbin/php-fpm8.3", "-F"]
+CMD ["/usr/sbin/php-fpm8.2", "-F"]

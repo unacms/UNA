@@ -34,7 +34,7 @@ pipeline {
         COMPOSER_PHAR = "/usr/bin/composer.phar"
         
         // Modules to install
-        MODULES = "bx_posts,bx_timeline,bx_contact,bx_developer,bx_antispam,bx_convos,bx_organizations,bx_notifications,bx_ether,bx_accounts,bx_albums,bx_facebook,bx_tricon,bx_oauth,bx_payment,bx_market,bx_groups,bx_intercom,bx_googlecon,bx_linkedin,bx_twitter,bx_mailchimp,bx_forum,bx_acl,bx_events,bx_files,bx_glossary,bx_googletagman,bx_photos,bx_polls,bx_profiler,bx_quoteofday,bx_smtp,bx_shopify,bx_snipcart,bx_se_migration,bx_spaces,bx_stripe_connect,bx_unacon,bx_videos,bx_charts,bx_dolcon,bx_fontawesome,bx_channels,bx_attendant,bx_massmailer,bx_directory,bx_plyr,bx_ads,bx_decorous,bx_lucid,bx_credits,bx_wiki,bx_tasks,bx_courses,bx_classes,bx_artificer,bx_donations,bx_feedback,bx_help_tours,bx_stream,bx_attendant,bx_messenger,bx_analytics,bx_reputation,bx_ru"
+        MODULES = "bx_posts,bx_timeline,bx_contact,bx_developer,bx_antispam,bx_convos,bx_organizations,bx_notifications,bx_ether,bx_accounts,bx_albums,bx_facebook,bx_tricon,bx_oauth,bx_payment,bx_market,bx_groups,bx_intercom,bx_googlecon,bx_linkedin,bx_twitter,bx_mailchimp,bx_forum,bx_acl,bx_events,bx_files,bx_glossary,bx_googletagman,bx_photos,bx_polls,bx_profiler,bx_quoteofday,bx_smtp,bx_shopify,bx_snipcart,bx_se_migration,bx_spaces,bx_stripe_connect,bx_videos,bx_charts,bx_dolcon,bx_fontawesome,bx_channels,bx_attendant,bx_massmailer,bx_directory,bx_plyr,bx_ads,bx_lucid,bx_credits,bx_wiki,bx_tasks,bx_courses,bx_classes,bx_artificer,bx_donations,bx_feedback,bx_help_tours,bx_stream,bx_attendant,bx_messenger,bx_analytics,bx_reputation,bx_ru"
         
         // Test install parameters
         INSTALL_DB_NAME = "mainsite_virtual"
@@ -125,9 +125,10 @@ pipeline {
                     credentialsId: '0043feeb-9df7-4494-9b2b-d6c8a1b8ca08'
             }
         }
-/*
+        
         stage('Clone additional UNA modules') {
             parallel {
+                /*
                 stage('Clone: Media Manager') {
                     steps {
                         dir('modules/boonex/media') {
@@ -137,7 +138,7 @@ pipeline {
                         }
                     }
                 }
-                
+                */
                 stage('Clone: Messenger') {
                     steps {
                         dir('modules/boonex/messenger') {
@@ -149,14 +150,13 @@ pipeline {
                 }
             }
         }
-*/
+        
         stage('Build messenger') {
             steps {
                 script {
                     dir('modules/boonex/messenger') {
                         echo "Building messenger"
                         sh 'yarn && yarn build'
-                        sh 'rm package.json && rm -rf js/emoji-mart && rm -rf template/css/tailwind'
                     }
                 }
             }
@@ -196,8 +196,8 @@ pipeline {
                 script {
                     echo "Running PHP Unit Tests"
                     def status = sh(
-                        script: "${PHP} plugins/bin/phpunit -c tests/phpunit.xml --testsuite Units",
-                        // returnStatus: true
+                        script: "${PHP} plugins/bin/phpunit -c tests/phpunit.xml",
+                        returnStatus: true
                     )
                     echo "PHPUnit exit code: ${status}"
                 }
@@ -206,41 +206,7 @@ pipeline {
                 always {
                     // Publish test results if they exist
                     archiveArtifacts artifacts: 'logs/junit.xml', allowEmptyArchive: true
-                    // junit checksName: 'Unit-Tests', testResults: 'logs/junit.xml'
-                }
-            }
-        }
-        
-        stage('Integration tests') {
-            steps {
-                script {
-                    echo "Prepare test user for PHP Integration Tests"
-                    sh """${PHP} tests/seed.php"""
-                    //sh """mysql -u ${INSTALL_DB_USER} --password=${INSTALL_DB_PWD} -D ${INSTALL_DB_NAME} << 'EOF'
-                    //        SET sql_mode = '';
-                    //        INSERT INTO sys_accounts (name, email, email_confirmed, receive_updates, receive_news, password, salt, role, added) VALUES
-                    //        ('user', 'user@example.com', 1, 0, 0, SHA1(CONCAT(MD5('${DEMO_USERS_PASS}'), '${DEMO_USERS_SALT}')), '${DEMO_USERS_SALT}', 1, UNIX_TIMESTAMP());
-                    //        SET @iAccountId = LAST_INSERT_ID();
-                    //        INSERT INTO sys_profiles (account_id, type, content_id, status) VALUES
-                    //        (@iAccountId, 'system', @iAccountId, 'active');
-//EOF"""
-
-                    echo "Disable install folder redirect check"
-                    sh """sed -i 's/\\(.*bx_check_redirect_to_remove_install_folder.*\\)/\\/\\/\\1/' inc/header.inc.php"""
-                    
-                    echo "Running PHP Integration Tests"
-                    def status = sh(
-                        script: "${PHP} plugins/bin/phpunit -c tests/phpunit.xml --testsuite Integration --log-junit logs/junit-integration.xml",
-                        // returnStatus: true
-                    )
-                    echo "PHPUnit exit code: ${status}"
-                }
-            }
-            post {
-                always {
-                    // Publish test results if they exist
-                    archiveArtifacts artifacts: 'logs/junit-integration.xml', allowEmptyArchive: true
-                    // junit checksName: 'Integration-Tests', testResults: 'logs/junit-integration.xml'
+                    junit checksName: 'Unit-Tests', testResults: 'logs/junit.xml'
                 }
             }
         }
@@ -742,57 +708,6 @@ EOF
     }
     
     post {
-        always {
-            sh '''
-                python3 scripts/xml_to_csv.py logs/junit.xml logs/unit-tests.csv
-                python3 scripts/xml_to_csv.py logs/junit-integration.xml logs/integration-tests.csv
-                python3 scripts/xml_to_csv.py una-ui-test3/results/results.xml logs/ui-tests.csv
-            '''
-            
-            plot(
-                group: 'Test Results',
-                title: 'Unit Tests',
-                style: 'line',
-                yaxis: 'Tests',
-                csvFileName: 'plot-unit-tests.csv',
-                csvSeries: [[
-                    file: 'logs/unit-tests.csv',
-                    inclusionFlag: 'OFF',
-                    exclusionValues: '',
-                    displayTableFlag: false
-                ]]
-            )
-
-            plot(
-                group: 'Test Results',
-                title: 'Integration Tests',
-                style: 'line',
-                yaxis: 'Tests',
-                csvFileName: 'plot-integration-tests.csv',
-                csvSeries: [[
-                    file: 'logs/integration-tests.csv',
-                    inclusionFlag: 'OFF',
-                    exclusionValues: '',
-                    displayTableFlag: false
-                ]]
-            )
-
-            plot(
-                group: 'Test Results',
-                title: 'UI Tests',
-                style: 'line',
-                yaxis: 'Tests',
-                csvFileName: 'plot-ui-tests.csv',
-                csvSeries: [[
-                    file: 'logs/ui-tests.csv',
-                    inclusionFlag: 'OFF',
-                    exclusionValues: '',
-                    displayTableFlag: false
-                ]]
-            )
-            
-        }
-
 /*
         always {
             xunit checksName: 'UI-Tests', thresholds: [
