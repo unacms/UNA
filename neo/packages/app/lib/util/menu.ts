@@ -293,15 +293,27 @@ export function mergeNavbarMoreWithLauncher(localItems: MenuItemList, launcherIt
 }
 
 /**
+ * The site menu's Home item, which UNA sends with an empty link (its home page is the site root),
+ * as a link to `/`. Other items come back unchanged.
+ */
+export function withSiteMenuHomeLink(item: MenuItem): MenuItem {
+    if (item?.name !== 'home' || normalizeMenuItemHref(item.link)) return item;
+    return { ...item, link: '/' };
+}
+
+/**
  * Navbar from the UNA site menu (`sys_site`), used when the
- * `menu_items.menu_navbar` setting is empty: Home, then the first
- * `maxTabs` items as tabs, the rest under More.
+ * `menu_items.menu_navbar` setting is empty: the first `maxTabs` items
+ * as tabs, the rest under More. Home is the site menu's own item, so
+ * Studio's "Active (for App)" switch shows or hides it like any other.
  */
 export function navbarItemsFromSiteMenu(items: MenuItemList, maxTabs: number): MenuItem[] {
     const tabs: MenuItem[] = [];
     const more: MenuItem[] = [];
-    asMenuItemList(items).forEach((item) => {
-        if (!item || item.name === 'home') return;
+    let home: MenuItem | null = null;
+    asMenuItemList(items).forEach((rawItem) => {
+        if (!rawItem) return;
+        const item = withSiteMenuHomeLink(rawItem);
         if (!isMenuItemNavigable(item)) {
             if (getMenuItemChildren(item).length) more.push(item);
             return;
@@ -309,16 +321,45 @@ export function navbarItemsFromSiteMenu(items: MenuItemList, maxTabs: number): M
         const next: MenuItem = {
             ...item,
             link: normalizeMenuItemHref(item.link),
-            icon: findIconFromRemote(item.icon) || 'Circle',
+            icon: findIconFromRemote(item.icon) || (item.name === 'home' ? 'House' : 'Circle'),
             animated: true,
         };
-        if (tabs.length < maxTabs) tabs.push(next);
+        // Home leads the bar wherever the site menu puts it, and doesn't count as a tab.
+        if (item.name === 'home') home = next;
+        else if (tabs.length < maxTabs) tabs.push(next);
         else more.push(next);
     });
 
-    const out: MenuItem[] = [{ name: 'home', title: 'Home', link: '/', icon: 'House', animated: true }, ...tabs];
+    const out: MenuItem[] = home ? [home, ...tabs] : tabs;
     if (more.length) out.push(navbarMoreItem(more));
     return out;
+}
+
+/** A menu item's whole destination (host, path and query), for telling two links apart. */
+function menuItemDestination(item: MenuItem | null | undefined): string {
+    if (!item || item.type === 'group_header' || item.type === 'separator') return '';
+    const href = normalizeMenuItemHref(item.link || '');
+    return href.length > 1 && href.endsWith('/') ? href.slice(0, -1) : href;
+}
+
+/**
+ * The launcher's items without the ones the navbar already shows as tabs (an app that is also in
+ * the site menu), so More doesn't repeat them. Only the same destination counts: a launcher link
+ * that merely shares a name or a first path segment with a tab stays. Section headers left
+ * without items go too.
+ */
+export function launcherItemsWithoutTabs(launcherItems: MenuItemList, tabs: MenuItemList): MenuItem[] {
+    const tabDestinations = new Set(asMenuItemList(tabs).map(menuItemDestination).filter(Boolean));
+    const rest = flattenMenuItemsForDropdown(launcherItems)
+        .filter((item) => {
+            const destination = menuItemDestination(item);
+            return !destination || !tabDestinations.has(destination);
+        });
+    return rest.filter((item, index) => {
+        if (item.type !== 'group_header') return true;
+        const next = rest[index + 1];
+        return !!next && next.type !== 'group_header';
+    });
 }
 
 /** The navbar's More dropdown holding `items`. */

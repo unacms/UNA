@@ -16,7 +16,7 @@ function PageContent({ children }) {
     const { t } = useTranslation()
 
     return (
-        <View className="w-full justify-center max-w-sm gap-6 mx-auto">
+        <View className="w-full justify-center max-w-md gap-6 mx-auto">
             {children}
             <AuthPanel showSeparator={true} createAccountLink={false} loginLink={false} />
             <Html
@@ -93,7 +93,7 @@ export default function PageLayout({ data, blocks, children }) {
             <PageHeaderOptions band={false} showTitle={false} />
             {/* The same frame as the home splash (ui/molecules/sections/splash.js), on every platform. */}
             <View
-                className={`flex-auto items-center justify-center lg:flex-row p-6 lg:p-12 gap-6 lg:gap-12 w-full mx-auto ${appSetting('layout', 'max_width_landing')}`}
+                className={`flex-auto items-center justify-center lg:flex-row p-4 sm:p-6 lg:p-12 gap-6 lg:gap-12 w-full mx-auto ${appSetting('layout', 'max_width_landing')}`}
             >
                 <View className="items-center lg:items-start gap-6 my-auto flex-auto w-full">
                     {appStatic('join_text')}

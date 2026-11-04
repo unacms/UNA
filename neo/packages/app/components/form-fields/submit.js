@@ -23,6 +23,16 @@ const SIZE_TO_CONTROL = {
 /** Full-width in narrow form containers; hug content when the form is wider (matches legacy Button). */
 const RESPONSIVE_SUBMIT_WIDTH = 'w-full @sm/form-container:w-auto flex-auto web:w-full';
 const RESPONSIVE_SUBMIT_CONTAINER = 'w-full @sm/form-container:w-auto';
+/** `button_full_width` (the sign-in forms, settings/forms.js): full width however wide the form is. */
+const FULL_SUBMIT_WIDTH = 'w-full flex-auto';
+const FULL_SUBMIT_CONTAINER = 'w-full';
+
+/** The submit's width classes: `alwaysFullWidth` keeps it full width, else it hugs its label in a wide form. */
+function submitWidthClassNames(alwaysFullWidth) {
+    return alwaysFullWidth
+        ? { root: FULL_SUBMIT_WIDTH, container: FULL_SUBMIT_CONTAINER }
+        : { root: RESPONSIVE_SUBMIT_WIDTH, container: RESPONSIVE_SUBMIT_CONTAINER };
+}
 
 const VARIANT_TO_STYLE = {
     primary: 'borderedProminent',
@@ -126,9 +136,8 @@ export default function FormFieldSubmit(props) {
         'items-center',
     );
 
-    const responsiveButtonClassNames = fullWidth && !icon_only
-        ? { root: RESPONSIVE_SUBMIT_WIDTH, container: RESPONSIVE_SUBMIT_CONTAINER }
-        : undefined;
+    const widthClassNames = submitWidthClassNames(!!(props.button_full_width ?? formProps.button_full_width));
+    const responsiveButtonClassNames = fullWidth && !icon_only ? widthClassNames : undefined;
 
     const isBusy = isSumbitting || isUploading;
 
@@ -172,7 +181,7 @@ export default function FormFieldSubmit(props) {
     return (
         <Field {...props}>
             <Row className={rowClassName}>
-                <View className={icon_only || notFullWidth ? '' : RESPONSIVE_SUBMIT_CONTAINER}>
+                <View className={icon_only || notFullWidth ? '' : widthClassNames.container}>
                     {submitButton}
                 </View>
                 {saveOnChanges && (
