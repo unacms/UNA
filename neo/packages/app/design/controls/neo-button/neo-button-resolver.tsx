@@ -584,7 +584,7 @@ export function useResolvedNeoButton(props: NeoButtonProps = {}) {
         // quieter fill); its keys replace the style's.
         const roleContainerSlot = isPlainObject(roleConfig.container) ? roleConfig.container[style] : undefined;
         const containerSlot = isPlainObject(roleContainerSlot)
-            ? { ...(styleDef.container || {}), ...roleContainerSlot }
+            ? { ...styleDef.container, ...roleContainerSlot }
             : (styleDef.container || {});
         const textSlot = styleDef.text || {};
         const containerCls = (state: string) => resolveSlot(containerSlot, state, ctx);
