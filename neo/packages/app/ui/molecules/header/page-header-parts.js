@@ -216,8 +216,13 @@ export const TextHeader = memo(({ text }) => {
     // (`layout.header.band_scheme`): white on a dark band, back to the app's own once the
     // header floats over content.
     const colorScheme = useNeoButtonColorScheme();
+    // Native: one line with an ellipsis (web gets it from `truncate`); without it the title
+    // wraps inside the clipped h-16 row and sits above the centre of the buttons.
     const title = (
-        <Text className="font-bold truncate leading-12 text-card-foreground text-2xl tracking-tight">
+        <Text
+            numberOfLines={Platform.OS === 'web' ? undefined : 1}
+            className="font-bold truncate leading-12 text-card-foreground text-2xl tracking-tight"
+        >
             {text}
         </Text>
     );
