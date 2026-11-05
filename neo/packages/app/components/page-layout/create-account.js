@@ -93,7 +93,7 @@ export default function PageLayout({ data, blocks, children }) {
     return (
         <Page data={data}>
             <PageHeaderOptions band={false} showTitle={false} />
-            {/* The same frame as the home splash (ui/molecules/sections/splash.js), on every platform. */}
+            {/* The same frame as the home splash (ui/molecules/sections/splash.tsx), on every platform. */}
             <View
                 className={`flex-auto items-center justify-center lg:flex-row p-4 sm:p-6 lg:p-12 gap-6 lg:gap-12 w-full mx-auto ${appSetting('layout', 'max_width_landing')}`}
             >

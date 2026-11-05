@@ -40,8 +40,23 @@ function hasBlockChild(nodes: SplashNode[]): boolean {
     return nodes.some((node) => node.type === 'element' && (BLOCK_TAGS.has(node.tag) || (!INLINE_TAGS.has(node.tag) && !DROPPED_TAGS.has(node.tag) && hasBlockChild(node.children))))
 }
 
-/** Nodes as HTML the rich text renderer reads; `align` from the elements around them. */
-function toRichText(tree: SplashTree, nodes: SplashNode[], align: Align): string {
+/** Block tags whose content is inline text: containers inside them stay inline. */
+const TEXT_BLOCK_TAGS = new Set(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'pre'])
+
+/** A container (div, section, span ...): its blocks, or its text as a paragraph unless it is inside text. */
+function containerRichText(tree: SplashTree, children: SplashNode[], align: Align, inline: boolean): string {
+    if (inline || hasBlockChild(children)) return toRichText(tree, children, align, inline)
+    const inner = toRichText(tree, children, align, true).trim()
+    if (!inner) return ''
+    const style = align ? ` style="text-align: ${align}"` : ''
+    return `<p${style}>${inner}</p>`
+}
+
+/**
+ * Nodes as HTML the rich text renderer reads; `align` from the elements around them. `inline`: inside a
+ * paragraph, heading, link or inline tag, where containers keep their text without a paragraph of their own.
+ */
+function toRichText(tree: SplashTree, nodes: SplashNode[], align: Align, inline = false): string {
     let out = ''
     for (const node of nodes) {
         if (node.type === 'text') {
@@ -60,22 +75,14 @@ function toRichText(tree: SplashTree, nodes: SplashNode[], align: Align): string
             out += '<br>'
         } else if (tag === 'a') {
             const href = node.attrs.href ? ` href="${escapeHtml(node.attrs.href)}"` : ''
-            out += `<a${href}>${toRichText(tree, node.children, ownAlign)}</a>`
+            out += `<a${href}>${toRichText(tree, node.children, ownAlign, true)}</a>`
         } else if (INLINE_TAGS.has(tag)) {
-            out += `<${tag}>${toRichText(tree, node.children, ownAlign)}</${tag}>`
+            out += `<${tag}>${toRichText(tree, node.children, ownAlign, true)}</${tag}>`
         } else if (BLOCK_TAGS.has(tag)) {
             const style = ownAlign && ALIGNED_TAGS.has(tag) ? ` style="text-align: ${ownAlign}"` : ''
-            out += `<${tag}${style}>${toRichText(tree, node.children, ownAlign)}</${tag}>`
-        } else if (hasBlockChild(node.children)) {
-            // A container of blocks: its blocks.
-            out += toRichText(tree, node.children, ownAlign)
+            out += `<${tag}${style}>${toRichText(tree, node.children, ownAlign, TEXT_BLOCK_TAGS.has(tag))}</${tag}>`
         } else {
-            // A container of text (a div, a span on its own): a paragraph.
-            const inner = toRichText(tree, node.children, ownAlign)
-            if (inner.trim()) {
-                const style = ownAlign ? ` style="text-align: ${ownAlign}"` : ''
-                out += `<p${style}>${inner.trim()}</p>`
-            }
+            out += containerRichText(tree, node.children, ownAlign, inline)
         }
     }
     return out

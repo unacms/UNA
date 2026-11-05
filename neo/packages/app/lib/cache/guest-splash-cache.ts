@@ -1,5 +1,5 @@
-// The guest splash a native app showed last (iOS, Android), kept across launches: the next launch shows it
-// at once while the session and the page load, instead of keeping the launch screen up. It is the guest
+// The guest splash a native app showed last (iOS, Android), kept across launches: at the next launch, once
+// the tabs bootstrap knows the viewer is a guest, the home tab shows it while the home page loads. It is the guest
 // splash only. It is kept while the app's viewer is a guest, and dropped as soon as any page comes back
 // for a signed-in member, so a member never gets it. The OS launch screen (expo-splash-screen, before
 // JS runs) is a different thing and is not touched here.

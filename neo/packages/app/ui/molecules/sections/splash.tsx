@@ -19,11 +19,15 @@ import { SplashLoginForm } from './splash-parts'
  *    the placeholders drawn as NEO components.
  * 3. The built-in splash: illustration, title and text (`splash_text`), and the sign-in form.
  *
- * @param {object} props - `data`: the page data.
  */
-export default function Splash(props) {
+type SplashProps = {
+    /** The page data: `splash` (UNA's code), `texts` (the built-in splash's words), the login form block. */
+    data?: { splash?: { source?: string; code?: string }; texts?: Record<string, string>; [key: string]: any }
+}
+
+export default function Splash(props: Readonly<SplashProps>) {
     const code = props.data?.splash?.code
-    const hasOwnText = staticComponents.splash_text !== SplashTextBuiltIn
+    const hasOwnText = (staticComponents as Record<string, unknown>).splash_text !== SplashTextBuiltIn
     return (
         // Keyboard-aware scroll (Page default): the login form sits low on
         // the screen, and a plain ScrollView leaves the keyboard over it.

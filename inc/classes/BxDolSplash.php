@@ -200,7 +200,9 @@ class BxDolSplash extends BxDolFactory implements iBxDolSingleton
         $bErrors = libxml_use_internal_errors(true);
 
         $oDoc = new DOMDocument('1.0', 'UTF-8');
-        $bLoaded = $oDoc->loadHTML('<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>' . $sHtml . '</body></html>', LIBXML_NONET | LIBXML_HTML_NODEFDTD);
+        // A whole document with its charset, so libxml reads the code as UTF-8 and keeps it all in the body.
+        $sDocument = BxDolTemplate::getInstance()->parseHtmlByName('splash_document.html', ['content' => $sHtml]);
+        $bLoaded = $sDocument !== '' && $oDoc->loadHTML($sDocument, LIBXML_NONET | LIBXML_HTML_NODEFDTD);
 
         libxml_clear_errors();
         libxml_use_internal_errors($bErrors);
@@ -245,7 +247,7 @@ class BxDolSplash extends BxDolFactory implements iBxDolSingleton
             elseif($oChild instanceof DOMComment) {
                 $oNode->removeChild($oChild);
             }
-            elseif($oChild instanceof DOMText && strpos($oChild->nodeValue, self::TOKEN_SITE_TITLE) !== false) {
+            elseif($oChild instanceof DOMText && bx_mb_strpos($oChild->nodeValue, self::TOKEN_SITE_TITLE) !== false) {
                 if($bRawText) {
                     $oChild->nodeValue = str_replace(self::TOKEN_SITE_TITLE, $sSiteTitle, $oChild->nodeValue);
                     continue;
@@ -296,7 +298,7 @@ class BxDolSplash extends BxDolFactory implements iBxDolSingleton
                 continue;
             }
 
-            if(strpos($oAttr->value, self::TOKEN_SITE_TITLE) !== false)
+            if(bx_mb_strpos($oAttr->value, self::TOKEN_SITE_TITLE) !== false)
                 $aSet[$oAttr->nodeName] = str_replace(self::TOKEN_SITE_TITLE, $sSiteTitle, $oAttr->value);
         }
 

@@ -1,4 +1,4 @@
-// The parts of the guest splash: the built-in splash (splash.js) draws them, and so does UNA's splash
+// The parts of the guest splash: the built-in splash (splash.tsx) draws them, and so does UNA's splash
 // code (una-splash*) in place of its `<neo-slot>` placeholders (lib/splash/splash-html.ts).
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'

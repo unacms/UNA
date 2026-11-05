@@ -1,6 +1,6 @@
 'use client'
 // UNA's guest splash code on web (Studio > Designer > Splash; `data.splash.code`).
-// The page around it (header options, footer) is the splash molecule's (splash.js).
+// The page around it (header options, footer) is the splash molecule's (splash.tsx).
 //
 // The code renders as the HTML it is, styles included, inside `.neo-splash` between the app's header and
 // footer. Elements that hold a placeholder are drawn as React elements, so the placeholders can be NEO
@@ -33,6 +33,13 @@ const REACT_ATTRS: Record<string, string> = {
     contenteditable: 'contentEditable',
     spellcheck: 'spellCheck',
 }
+/**
+ * Elements that hold only inline content. One with a placeholder inside renders as a `div`: the
+ * placeholders are blocks (NEO components) and so is the wrapper of the HTML around them, and a block in
+ * a paragraph is markup the browser rewrites before React hydrates it.
+ */
+const PHRASING_TAGS = new Set(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'b', 'strong', 'i', 'em', 'u', 's', 'small', 'label', 'code', 'q', 'sub', 'sup', 'mark', 'abbr', 'cite', 'time', 'del', 'ins', 'strike', 'pre'])
+
 const BOOLEAN_ATTRS = new Set(['hidden', 'inert', 'disabled', 'checked', 'selected', 'required', 'open', 'multiple', 'autofocus'])
 
 /** `a: b; --c: d` as a React style object (custom properties keep their names). */
@@ -72,7 +79,8 @@ function renderNodes(tree: SplashTree, nodes: SplashNode[], data: unknown, keyPr
         }
         const node = run.node
         if (node.type === 'slot') return <SplashSlotPart key={key} name={node.name} data={data} />
-        return createElement(node.tag, reactProps(node, key), ...renderNodes(tree, node.children, data, `${key}.`))
+        const tag = PHRASING_TAGS.has(node.tag) ? 'div' : node.tag
+        return createElement(tag, reactProps(node, key), ...renderNodes(tree, node.children, data, `${key}.`))
     })
 }
 

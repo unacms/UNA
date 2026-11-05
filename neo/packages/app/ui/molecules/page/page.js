@@ -13,6 +13,11 @@ import { PageHeaderBand } from 'app/ui/molecules/header/page-header-parts';
 
 const isWeb = Platform.OS === 'web';
 
+/**
+ * The page scroller (keyboard-aware on native) around a page's content.
+ *
+ * @param {{ children?: import('react').ReactNode, data?: any, page_width?: any, processKeyboard?: boolean, scrollRef?: any }} props
+ */
 export default function Page({ children, data, page_width, processKeyboard=true, scrollRef: scrollRefProp }) {
     const headerHeightFromAtom = useHeaderHeight();
     const footerHeightFromAtom = useFooterHeight();

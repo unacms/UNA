@@ -247,6 +247,8 @@ const Content = memo(({ pagePath, currentUser, tabKey, chromeKey, pushed, refres
     const tabKeyRef = useRef(tabKey);
     const currentUserRef = useRef(currentUser);
     const splashHiddenRef = useRef(false);
+    // The path the server's page came for: the saved guest splash never replaces it.
+    const loadedPathRef = useRef(null);
     pagePathRef.current = pagePath;
     tabKeyRef.current = tabKey;
     currentUserRef.current = currentUser;
@@ -268,21 +270,24 @@ const Content = memo(({ pagePath, currentUser, tabKey, chromeKey, pushed, refres
         );
     }, [tabKey, pagePath, pushed, currentUser?.id, currentUser?.url, historyMode]);
 
-    // A launch while the viewer isn't known yet: the guest splash the app showed last, if it was the last
-    // thing this tab showed a guest, until the page comes (lib/cache/guest-splash-cache). A member never
-    // gets it: a member's page drops the copy, and signing in remounts this with a known viewer.
+    // A launch as a guest (the tabs bootstrap knows the viewer before this mounts): the guest splash the
+    // app showed last, until the home page comes (lib/cache/guest-splash-cache). A member never gets it:
+    // their tabs mount with a known member, and a member's page drops the copy.
     useEffect(() => {
         if (currentUser) {
             forgetGuestSplash();
             return undefined;
         }
-        if (pushed || refreshToken || currentUser !== null || !isFetchablePagePath(pagePath)) return undefined;
+        // Only while this tab has nothing to show yet: not over an in-memory page or the server's page.
+        if (pushed || refreshToken || currentUser !== false || pageData || !isFetchablePagePath(pagePath)) return undefined;
         let cancelled = false;
         const pathAtStart = pagePath;
         readGuestSplash(pagePath).then((props) => {
-            if (!props || cancelled || pagePathRef.current !== pathAtStart) return;
-            setPage((current) => (current && current.path === pathAtStart ? current : { path: pathAtStart, props }));
-        }).catch(() => {});
+            if (!props || cancelled || pagePathRef.current !== pathAtStart || loadedPathRef.current === pathAtStart) return;
+            setPage({ path: pathAtStart, props });
+        }).catch(() => {
+            // No saved splash to show: the page request below draws the tab.
+        });
         return () => {
             cancelled = true;
         };
@@ -317,6 +322,7 @@ const Content = memo(({ pagePath, currentUser, tabKey, chromeKey, pushed, refres
                     );
                     setCachedPageData(tabKey, pagePath, data.props, currentUser?.id, currentUser?.confirmed);
                     if (!pushed) updateGuestSplashCache(pagePath, data.props);
+                    loadedPathRef.current = pathAtStart;
                     setBottomSheetData(false);
                     setPage({ path: pathAtStart, props: data.props });
                 } else {
