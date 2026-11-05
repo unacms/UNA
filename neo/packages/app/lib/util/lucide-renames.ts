@@ -3,7 +3,9 @@
  * (checked against lucide-static 1.66.0, whose icons/ folder still has the old files). UNA, settings and older
  * code keep sending the old names (the Credits app's `copyright`, `History`, `SmilePlus`, `Trash2`), which
  * no Lucide package draws any more: web had no file for them and native no component.
- * `findIconFromRemote` turns them into the new names. Add a row when a Lucide update renames another one.
+ * The Lucide fallbacks turn them into the new names (`Icon` once no custom drawing has the name, `lucideAssetName`
+ * for native assets), so an icons-svg drawing registered under an old name still wins. Add a row when a Lucide update
+ * renames another one.
  */
 export const LUCIDE_RENAMES: Readonly<Record<string, string>> = {
     Album: 'SquareBookmark',

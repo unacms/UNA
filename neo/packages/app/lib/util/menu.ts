@@ -1,5 +1,4 @@
 import { fetcher } from 'app/lib/fetcher';
-import { currentLucideName } from './lucide-renames';
 import { UNA_URL } from 'app/config';
 import { appSetting } from './settings';
 import { strToObj } from './object';
@@ -474,11 +473,12 @@ const KEBAB_ICON_NAME = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 const FA_STYLE_TOKENS = new Set(['fa', 'fas', 'far', 'fab', 'fal', 'fad', 'fat']);
 
 /** Map a UNA / Font Awesome icon string to an icon-set name (PascalCase); returns input if unknown. */
+/**
+ * The icon name for UNA's `s` (a Font Awesome or kebab-case Lucide name). It can be one Lucide has since renamed
+ * (`Copyright`, `Trash2`): custom drawings (icons-svg) may be registered under it, so the rename to the current Lucide
+ * name is left to the Lucide fallbacks (`Icon`, `lucideAssetName`), via `currentLucideName`.
+ */
 export function findIconFromRemote<T extends string | null | undefined>(s: T): T | string {
-    return currentLucideName(iconNameFromRemote(s));
-}
-
-function iconNameFromRemote<T extends string | null | undefined>(s: T): T | string {
     if (!s || /^[A-Z][^\s]*$/.test(s))
         return s;
     const data = appSetting('menu_items', 'iconset');

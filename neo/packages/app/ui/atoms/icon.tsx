@@ -5,6 +5,7 @@ import { useIconClassColor } from 'app/ui/atoms/icon-class-color';
 import { useState, type ComponentType } from 'react';
 import { Platform } from 'react-native';
 import { findIconFromRemote, appSetting } from 'app/lib/util';
+import { currentLucideName } from 'app/lib/util/lucide-renames';
 import SvgIcons from 'app/customization/icons-svg';
 import { animatedIcons } from 'app/customization/animated-icons';
 import { tagGlyphIcons } from 'app/ui/atoms/tag-glyph-icons';
@@ -142,10 +143,12 @@ function getAnimatedIcon(name: string) {
 
 function useIconCore({ icon: origIcon, className, width, height, color, size, strokeWidth, animated, active, selected, hovered, pressed, ...rest }: IconProps) {
     const isXmlSvg = typeof origIcon === 'string' && origIcon.startsWith('<svg');
-    const icon: string | null | undefined = findIconFromRemote(origIcon);
+    const remoteIcon: string | null | undefined = findIconFromRemote(origIcon);
     const _strokeWidth: number | undefined = strokeWidth || appSetting('layout', 'default_icon_stroke_width');
     // The icons-svg registry first (a fork can replace a glyph there), then the tagsets language glyphs.
-    const InlineIcon = icon ? ((SvgIcons as IconRegistry)[icon] ?? (tagGlyphIcons as IconRegistry)[icon]) : undefined;
+    const InlineIcon = remoteIcon ? ((SvgIcons as IconRegistry)[remoteIcon] ?? (tagGlyphIcons as IconRegistry)[remoteIcon]) : undefined;
+    // No custom drawing: Lucide draws it, under its current name if Lucide has renamed it.
+    const icon = InlineIcon ? remoteIcon : currentLucideName(remoteIcon);
     const AnimatedIconComponent = animated && icon && !isXmlSvg && !InlineIcon
         ? getAnimatedIcon(icon)
         : null;
