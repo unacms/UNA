@@ -1035,6 +1035,9 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                         'pass' => 'Xss',
                     ],
                 ],
+                'enabled_web' => $this->getSplashAppSwitch('web'),
+                'enabled_ios' => $this->getSplashAppSwitch('ios'),
+                'enabled_android' => $this->getSplashAppSwitch('android'),
                 'code_section' => [
                     'type' => 'block_header',
                     'name' => 'code_section',
@@ -1061,6 +1064,19 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                         'preview_url' => $sPreviewUrl,
                     ]),
                 ],
+                'apps_section' => [
+                    'type' => 'block_header',
+                    'name' => 'apps_section',
+                    'caption' => _t('_adm_dsg_txt_splash_section_apps'),
+                ],
+                'apps_info' => [
+                    'type' => 'custom',
+                    'name' => 'apps_info',
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_splash_section_apps')]),
+                ],
+                'code_web' => $this->getSplashAppCode('web'),
+                'code_ios' => $this->getSplashAppCode('ios'),
+                'code_android' => $this->getSplashAppCode('android'),
                 'preview_section' => [
                     'type' => 'block_header',
                     'name' => 'preview_section',
@@ -1122,6 +1138,38 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
             ]),
             'js_content' => $this->getPageJsCode(),
         ]);
+    }
+
+    /**
+     * Splash switch of an app: checked where the app shows the splash now, so a switch that was never saved shows what
+     * sys_api_root_page_guest gives.
+     */
+    protected function getSplashAppSwitch($sPlatform)
+    {
+        return [
+            'type' => 'switcher',
+            'name' => 'enabled_' . $sPlatform,
+            'caption' => _t('_adm_dsg_txt_splash_enable_' . $sPlatform),
+            'value' => 'on',
+            'checked' => BxDolSplash::getInstance()->isEnabledForApp($sPlatform),
+            'db' => [
+                'pass' => 'Xss',
+            ],
+        ];
+    }
+
+    /**
+     * Optional code of an app; empty uses the shared code.
+     */
+    protected function getSplashAppCode($sPlatform)
+    {
+        return [
+            'type' => 'textarea',
+            'code' => true,
+            'name' => 'code_' . $sPlatform,
+            'caption' => _t('_adm_dsg_txt_splash_code_' . $sPlatform),
+            'value' => getParam(BxDolSplash::getOptionCode($sPlatform)),
+        ];
     }
 
     protected function getInjections()
