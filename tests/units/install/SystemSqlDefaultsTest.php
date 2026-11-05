@@ -257,15 +257,15 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertGreaterThan(10, $iChecked, 'The modules with a site menu item were found.');
     }
 
-    public function testSiteMenuPutsModulesFirstAndGuestsGetLogInAndSignUpOnPhones(): void
+    public function testSiteMenuGivesGuestsLogInAndSignUpButtonsFirstOnPhones(): void
     {
-        // The site menu (the phone menu and the desktop navbar, on the site and in the apps): modules' items first,
-        // then About, then Log in and Sign up for guests on phones, and More last. Home is the logo on phones.
-        // Every system row of the site menu: name, then the last numbers of the row (levels, ..., order).
-        preg_match_all("/\\('sys_site', 'system', '([^']+)', .*, (\\d+), (?:'([^']*)', )?\\d, (?:\\d, )?(\\d+)\\)[,;]$/m", self::systemSql(), $aRows, PREG_SET_ORDER);
+        // The site menu (the phone menu and the desktop navbar, on the site and in the apps): for guests on phones Log in
+        // and Sign up come first, as buttons; then the modules' items, then About, and More last. Home is the logo on phones.
+        // Every system row of the site menu: name, then from the icon and submenu on (levels, ..., [primary,] order).
+        preg_match_all("/\\('sys_site', 'system', '([^']+)', .*, '[a-z-]*', '[a-z_]*', (\\d+), (?:'([^']*)', )?\\d, (?:(\\d), )?(\\d+)\\)[,;]$/m", self::systemSql(), $aRows, PREG_SET_ORDER);
         $aItems = [];
         foreach ($aRows as $aRow)
-            $aItems[$aRow[1]] = ['levels' => (int)$aRow[2], 'hidden_on' => $aRow[3], 'order' => (int)$aRow[4]];
+            $aItems[$aRow[1]] = ['levels' => (int)$aRow[2], 'hidden_on' => $aRow[3], 'flag' => $aRow[4], 'order' => (int)$aRow[5]];
 
         foreach (['home', 'about', 'login', 'create-account', 'more-auto'] as $sName)
             $this->assertArrayHasKey($sName, $aItems, $sName);
@@ -286,12 +286,19 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
             $this->assertSame(1, $aItems[$sName]['levels'], $sName . ' is for guests only.');
             $this->assertSame('6', $aItems[$sName]['hidden_on'], $sName . ' is hidden on tablets and desktops, where the header has Log in and Sign up.');
         }
-        $this->assertTrue($aItems['about']['order'] < $aItems['login']['order'] && $aItems['login']['order'] < $aItems['create-account']['order'], 'About, Log in, Sign up.');
-        $this->assertGreaterThan($aItems['create-account']['order'], $aItems['more-auto']['order'], 'More is last.');
+        // Log in, Sign up, then every other item but Home (the logo on phones, where only they show).
+        $this->assertLessThan($aItems['create-account']['order'], $aItems['login']['order'], 'Log in, then Sign up.');
+        foreach ($aItems as $sName => $aItem)
+            if (!in_array($sName, ['home', 'login', 'create-account']))
+                $this->assertGreaterThan($aItems['create-account']['order'], $aItem['order'], $sName . ' comes after Log in and Sign up.');
+        $this->assertSame(['0', '1'], [$aItems['login']['flag'], $aItems['create-account']['flag']], 'Sign up is the primary button, Log in is not.');
+        $this->assertStringContainsString("`hidden_on`, `copyable`, `primary`, `order`) VALUES\n('sys_site', 'system', 'login'", str_replace("\r", '', self::systemSql()), 'The last numbers of the Log in and Sign up rows are copyable, primary and order.');
+        $this->assertGreaterThan($aItems['about']['order'], $aItems['more-auto']['order'], 'More is last.');
 
         $sApp = (string)file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-menus.sql');
         foreach (['login', 'create-account'] as $sName)
             $this->assertStringContainsString("SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='system' AND `name`='" . $sName . "';", $sApp, $sName . ' reaches the apps.');
+        $this->assertStringContainsString("SET `config_api`='{\"button\":true}' WHERE `set_name`='sys_site' AND `module`='system' AND `name` IN ('login', 'create-account');", $sApp, 'Log in and Sign up show as buttons.');
     }
 
     public function testSignUpUsesTheLogInLayout(): void

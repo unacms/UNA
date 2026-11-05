@@ -20,7 +20,11 @@ import { useNeoButtonColorScheme } from 'app/design/controls/neo-button/color-sc
 import { getNativeIcon } from 'app/design/controls/neo-button/neo-button-expoui';
 import { lucideAssetName } from 'app/lib/platform/lucide-assets';
 import { appSetting, isExternalUrl, openExternalLink, sanitazeUrl, type MenuItem } from 'app/lib/util';
-import { useMenuNavigationEntries, type MenuNavigationEntry } from 'app/components/nav/menu-header-navigation-entries';
+import {
+    AUTH_BUTTONS,
+    useMenuNavigationEntries,
+    type MenuNavigationEntry,
+} from 'app/components/nav/menu-header-navigation-entries';
 import type { MenuHeaderNavigationProps } from 'app/components/nav/menu-header-navigation.types';
 
 // A `regular` icon-only header button: 44pt circle, 24pt glyph (theme `neo_button.controlSizes`).
@@ -29,15 +33,16 @@ const ICON_PT = 24;
 // Tailwind `sm`: from here the toolbar shows its own Log In / Sign Up.
 const SM_PT = 640;
 
-const LOG_IN: MenuItem = { name: 'login', title: 'Log In', icon: 'LogIn', link: '/login' };
-const SIGN_UP: MenuItem = { name: 'create-account', title: 'Sign Up', icon: 'UserPlus', link: '/create-account' };
-
 /**
  * iOS: the header menu (menu-header-navigation.tsx) as a native SwiftUI pull-down menu on
  * the system Liquid Glass material, opened from a glass circle like the other header
- * buttons. Rows show their Lucide icons (`menuIcon`, else `icon`), groups are listed
- * inline as sections, and with `auth` guests below `sm` get Log In and Sign Up as a
- * control group at the top.
+ * buttons. Rows show their Lucide icons (`menuIcon`, else `icon`) and groups are listed
+ * inline as sections. Items marked as buttons (the site menu's Log In and Sign Up for
+ * guests on phones; with `auth`, these two when the menu has none, below `sm`) come first
+ * as a control group: a menu draws only rows, and a control group is its one way to put
+ * two actions side by side, each a tile with its icon over its title, set off from the
+ * sections below. Neither button styles nor tints reach a menu's items, so Sign Up can't
+ * look primary there.
  */
 export default function MenuHeaderNavigation({
     image,
@@ -49,15 +54,17 @@ export default function MenuHeaderNavigation({
     const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
     const width = useWindowWidth();
-    const { entries, pending } = useMenuNavigationEntries();
+    const { entries, buttons, pending } = useMenuNavigationEntries();
     // The header band's scheme (`layout.header.band_scheme`), as NeoButton's Host takes it.
     const colorScheme = useNeoButtonColorScheme();
     const pressRow = useMenuRowPress();
 
-    // While the site menu loads, keep the button so the header doesn't shift.
-    if (!entries.length && !pending) return null;
+    // The `auth` fallback follows the toolbar, which has its own Log In and Sign Up from `sm`.
+    const authFallback = !buttons.length && auth && !currentUser && width < SM_PT;
+    const shownButtons = authFallback ? AUTH_BUTTONS : buttons;
 
-    const showAuth = auth && !currentUser && width < SM_PT;
+    // While the site menu loads, keep the button so the header doesn't shift.
+    if (!entries.length && !shownButtons.length && !pending) return null;
     const label = t(accessibilityLabel ?? alt);
 
     return (
@@ -83,10 +90,19 @@ export default function MenuHeaderNavigation({
                     ]}
                 >
                     {/* First, as iOS menus place control groups: the menu scrolls, and this stays in view. */}
-                    {showAuth ? (
+                    {shownButtons.length ? (
                         <ControlGroup>
-                            <MenuRow title={t('Log In')} icon={LOG_IN.icon} onPress={() => pressRow.press(LOG_IN)} />
-                            <MenuRow title={t('Sign Up')} icon={SIGN_UP.icon} onPress={() => pressRow.press(SIGN_UP)} />
+                            {shownButtons.map(({ key, item }) => {
+                                const title = authFallback ? t(item.title) : item.title;
+                                return (
+                                    <MenuRow
+                                        key={key}
+                                        title={title}
+                                        icon={item.menuIcon || item.icon}
+                                        onPress={() => pressRow.press({ ...item, title })}
+                                    />
+                                );
+                            })}
                         </ControlGroup>
                     ) : null}
                     {menuSections(entries).map((section) => (
