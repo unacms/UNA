@@ -6,7 +6,7 @@
 // footer. Elements that hold a placeholder are drawn as React elements, so the placeholders can be NEO
 // components (splash-parts.tsx); the HTML between them goes in as markup, in a `display: contents`
 // wrapper that takes no part in the layout. Server and client render the same, so it hydrates.
-import { createElement, useCallback, useMemo, type CSSProperties, type MouseEvent, type ReactNode } from 'react'
+import { createElement, useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from 'react'
 import { View } from 'app/design/view'
 import { useRouter } from 'app/lib/hooks/router'
 import { sanitazeUrl, isExternalUrl } from 'app/lib/util'
@@ -84,23 +84,31 @@ export default function UnaSplash({ code, data }: Readonly<UnaSplashProps>) {
     }, [code, data])
 
     // Links in the code: the app's own pages open in the app, the rest as the browser does (as Html).
-    const handleClick = useCallback((event: MouseEvent<HTMLDivElement>) => {
-        const anchor = (event.target as Element | null)?.closest?.('a')
-        const rawHref = anchor?.getAttribute('href')
-        if (!anchor || !rawHref || event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
-        emitter.emit(EVENTS.link, { action: 'pressed' })
-        const href = normalizeRenderedHref(rawHref)
-        if (/^(mailto:|tel:|#)/i.test(href) || anchor.target === '_blank' || isExternalUrl(href)) return
-        const url = sanitazeUrl(href)
-        if (!url) return
-        event.preventDefault()
-        router.push(url)
+    // One listener on the wrapper for the links in it, which keep their own keyboard handling (Enter
+    // on a link is a click); the wrapper itself is not interactive.
+    const rootRef = useRef<HTMLDivElement>(null)
+    useEffect(() => {
+        const root = rootRef.current
+        if (!root) return undefined
+        const onClick = (event: MouseEvent) => {
+            const anchor = (event.target as Element | null)?.closest?.('a')
+            const rawHref = anchor?.getAttribute('href')
+            if (!anchor || !rawHref || event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
+            emitter.emit(EVENTS.link, { action: 'pressed' })
+            const href = normalizeRenderedHref(rawHref)
+            if (/^(mailto:|tel:|#)/i.test(href) || anchor.target === '_blank' || isExternalUrl(href)) return
+            const url = sanitazeUrl(href)
+            if (!url) return
+            event.preventDefault()
+            router.push(url)
+        }
+        root.addEventListener('click', onClick)
+        return () => root.removeEventListener('click', onClick)
     }, [router])
 
     return (
         <View className="flex-auto w-full">
-            {/* Clicks only steer the code's own links; its controls are NEO components. */}
-            <div className="neo-splash flex flex-auto flex-col w-full" onClick={handleClick}>
+            <div ref={rootRef} className="neo-splash flex flex-auto flex-col w-full">
                 {content}
             </div>
         </View>

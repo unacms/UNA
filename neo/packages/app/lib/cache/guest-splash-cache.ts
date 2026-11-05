@@ -43,9 +43,9 @@ export function forgetGuestSplash(): void {
 }
 
 /** The stored splash for this tab root path, from this UNA site; null when there is none. */
-export async function readGuestSplash(path: string | null | undefined): Promise<any | null> {
+export async function readGuestSplash(path: string | null | undefined): Promise<any> {
     if (!path) return null
     const stored = (await persistedGet(KEY)) as StoredSplash | null
-    if (!stored || stored.path !== path || stored.una !== String(UNA_URL || '') || !isGuestSplash(stored.props?.data)) return null
+    if (stored?.path !== path || stored.una !== String(UNA_URL || '') || !isGuestSplash(stored.props?.data)) return null
     return stored.props
 }

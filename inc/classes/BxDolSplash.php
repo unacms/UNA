@@ -242,10 +242,10 @@ class BxDolSplash extends BxDolFactory implements iBxDolSingleton
                 $this->cleanAttributes($oChild, $sSiteTitle);
                 $this->cleanNode($oDoc, $oChild, $sSiteTitle);
             }
-            else if($oChild instanceof DOMComment) {
+            elseif($oChild instanceof DOMComment) {
                 $oNode->removeChild($oChild);
             }
-            else if($oChild instanceof DOMText && strpos($oChild->nodeValue, self::TOKEN_SITE_TITLE) !== false) {
+            elseif($oChild instanceof DOMText && strpos($oChild->nodeValue, self::TOKEN_SITE_TITLE) !== false) {
                 if($bRawText) {
                     $oChild->nodeValue = str_replace(self::TOKEN_SITE_TITLE, $sSiteTitle, $oChild->nodeValue);
                     continue;

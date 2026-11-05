@@ -92,7 +92,11 @@ function hasLink(nodes: SplashNode[]): boolean {
 function richText(tree: SplashTree, nodes: SplashNode[], align: Align, key: string): ReactNode {
     const html = toRichText(tree, nodes, align).trim()
     if (!html) return null
-    const source = /^<(p|h[1-6]|ul|ol|blockquote|pre)\b/i.test(html) ? html : `<p${align ? ` style="text-align: ${align}"` : ''}>${html}</p>`
+    let source = html
+    if (!/^<(p|h[1-6]|ul|ol|blockquote|pre)\b/i.test(html)) {
+        const style = align ? ` style="text-align: ${align}"` : ''
+        source = `<p${style}>${html}</p>`
+    }
     return (
         <View key={key} className="w-full">
             <Html data={source} />

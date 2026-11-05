@@ -12,7 +12,8 @@ export const SPLASH_SLOTS = ['login_form', 'social_login', 'join_link', 'logo', 
 export type SplashSlotName = (typeof SPLASH_SLOTS)[number];
 
 export type SplashText = { type: 'text'; start: number; end: number };
-export type SplashSlot = { type: 'slot'; name: SplashSlotName; start: number; end: number };
+/** `children`: what the placeholder holds (`site_title` holds UNA's site name). */
+export type SplashSlot = { type: 'slot'; name: SplashSlotName; children: SplashNode[]; start: number; end: number };
 export type SplashElement = {
     type: 'element';
     tag: string;
@@ -38,8 +39,8 @@ const ENTITIES: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"'
 /** Character references in an attribute value or text (named ones UNA's serializer writes, and numeric). */
 export function decodeEntities(s: string): string {
     return s.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (match, ref: string) => {
-        if (ref[0] === '#') {
-            const code = ref[1] === 'x' || ref[1] === 'X' ? parseInt(ref.slice(2), 16) : parseInt(ref.slice(1), 10);
+        if (ref.startsWith('#')) {
+            const code = ref[1] === 'x' || ref[1] === 'X' ? Number.parseInt(ref.slice(2), 16) : Number.parseInt(ref.slice(1), 10);
             return Number.isFinite(code) && code > 0 && code <= 0x10ffff ? String.fromCodePoint(code) : match;
         }
         return ENTITIES[ref.toLowerCase()] ?? match;
@@ -47,7 +48,7 @@ export function decodeEntities(s: string): string {
 }
 
 export function escapeHtml(s: string): string {
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    return s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
 }
 
 function parseAttrs(source: string): Record<string, string> {
@@ -74,7 +75,7 @@ export function sanitizeSplashHtml(html: string): string {
         .replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi, '')
         .replace(/<\/?(script|base|meta)\b[^>]*>/gi, '')
         .replace(/\son[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '')
-        .replace(/\b(href|src|action|formaction|xlink:href)\s*=\s*("|')\s*(javascript|vbscript):[^"']*\2/gi, '$1=$2#$2');
+        .replace(/\b(href|src|action|formaction|xlink:href)\s*=\s*(["'])\s*(javascript|vbscript):[^"']*\2/gi, '$1=$2#$2');
 }
 
 /** Parses splash code; `<neo-slot>` elements with a known name become slots. */
@@ -82,7 +83,7 @@ export function parseSplashHtml(source: string): SplashTree {
     const html = sanitizeSplashHtml(source);
     const root: SplashElement = { type: 'element', tag: '#root', attrs: {}, children: [], start: 0, end: html.length, hasSlot: false };
     const stack: SplashElement[] = [root];
-    const top = () => stack[stack.length - 1]!;
+    const top = () => stack.at(-1)!;
     let pos = 0;
 
     const addText = (start: number, end: number) => {
@@ -95,7 +96,7 @@ export function parseSplashHtml(source: string): SplashTree {
             element.end = end;
             const parent = top();
             if (element.tag === 'neo-slot' && isSlotName(element.attrs.name)) {
-                parent.children.push({ type: 'slot', name: element.attrs.name, start: element.start, end });
+                parent.children.push({ type: 'slot', name: element.attrs.name, children: element.children, start: element.start, end });
                 parent.hasSlot = true;
             } else {
                 parent.children.push(element);
@@ -155,8 +156,8 @@ export function nodeSource(tree: SplashTree, node: SplashNode): string {
 /** The text of a node (a slot's fallback text, `site_title`'s site name), without its tags. */
 export function nodeText(tree: SplashTree, node: SplashNode): string {
     if (node.type === 'text') return decodeEntities(nodeSource(tree, node));
-    const source = nodeSource(tree, node);
-    return decodeEntities(source.replace(/<[^>]*>/g, ''));
+    // The text nodes inside, from the tree: no regex over the markup.
+    return node.children.map((child) => nodeText(tree, child)).join('');
 }
 
 /**
@@ -171,16 +172,13 @@ export function splitRuns(tree: SplashTree, nodes: SplashNode[]): SplashRun[] {
     const flush = () => {
         if (!current.length) return;
         const start = current[0]!.start;
-        const end = current[current.length - 1]!.end;
+        const end = current.at(-1)!.end;
         if (tree.html.slice(start, end).trim()) runs.push({ kind: 'html', nodes: current, start, end });
         current = [];
     };
     for (const node of nodes) {
         // The site title is text: it stays in the run around it.
-        if (node.type === 'slot' && node.name !== 'site_title') {
-            flush();
-            runs.push({ kind: 'node', node });
-        } else if (node.type === 'element' && node.hasSlot && !isOnlySiteTitle(node)) {
+        if ((node.type === 'slot' && node.name !== 'site_title') || (node.type === 'element' && node.hasSlot && !isOnlySiteTitle(node))) {
             flush();
             runs.push({ kind: 'node', node });
         } else {
