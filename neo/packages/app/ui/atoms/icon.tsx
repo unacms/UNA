@@ -1,13 +1,12 @@
 'use client'
 
 import { IconFromSet, XmlIcon } from 'app/ui/atoms/iconset';
-import { useIconClassColor } from 'app/ui/atoms/icon-class-color';
-import { useState, type ComponentType } from 'react';
-import { Platform } from 'react-native';
+import type { ComponentType } from 'react';
 import { findIconFromRemote, appSetting } from 'app/lib/util';
 import { currentLucideName } from 'app/lib/util/lucide-renames';
 import SvgIcons from 'app/customization/icons-svg';
-import { animatedIcons } from 'app/customization/animated-icons';
+import { AnimatedIconHost, findAnimatedIcon } from 'app/ui/atoms/animated-icons/host';
+import { parseIconSceneClasses } from 'app/ui/atoms/animated-icons/scenes';
 import { tagGlyphIcons } from 'app/ui/atoms/tag-glyph-icons';
 
 type IconRegistry = Record<string, ComponentType<any> | undefined>;
@@ -24,7 +23,7 @@ export type IconProps = {
     color?: string;
     strokeWidth?: number;
     fill?: string;
-    /** Use the animated variant when the registry has one (see animated-icons.md). */
+    /** Use the animated variant when the registry has one (see animated-icons.md); hover and focus come from the row's `group` on web. */
     animated?: boolean;
     active?: boolean;
     selected?: boolean;
@@ -37,7 +36,6 @@ export type IconProps = {
 /** Normalized props shared by all icon renderers (see `useIconCore`). */
 export type IconCoreProps = ReturnType<typeof useIconCore> & { fill?: string };
 
-const hasValue = (v: unknown) => v !== undefined && v !== null;
 const isValidLucideIconName = (icon: unknown) =>
     typeof icon === 'string' && /^[A-Z][A-Za-z0-9]*$/.test(icon);
 
@@ -45,100 +43,16 @@ export function Icon(props: IconProps) {
     const { fill, ...rest } = props;
     const iconProps = useIconCore(rest);
     if (iconProps.iconType === 'none') return null;
-    if (iconProps.iconType === 'animated') return <AnimatedIcon {...iconProps} />;
+    if (iconProps.iconType === 'animated') return <AnimatedIconHost {...iconProps} />;
     if (iconProps.iconType === 'inline') return <InlineIcon {...iconProps} />;
     if (iconProps.iconType === 'xml') return <XmlIcon {...iconProps} />;
     if (!isValidLucideIconName(iconProps.icon)) return null;
     return <IconFromSet {...iconProps} fill={fill} />;
 }
 
-export function AnimatedIcon({ AnimatedIconComponent, origIcon, className, animated, color, size, width, height, _strokeWidth, active, selected, hovered, pressed, rest }: IconCoreProps) {
-    const { scenes, cleanedClassName } = animated && typeof origIcon === 'string'
-        ? parseIconSceneClasses(className)
-        : { scenes: {}, cleanedClassName: className };
-
-    const [hoveredLocal, setHoveredLocal] = useState(false);
-    const hoveredMerged = hasValue(hovered) ? hovered : hoveredLocal;
-    const activeResolved = hasValue(active) ? active : selected;
-    const classColor = useIconClassColor(cleanedClassName);
-    const hoverHandlers = animated && scenes.draw && !hasValue(hovered) && Platform.OS === 'web'
-        ? { onMouseEnter: () => setHoveredLocal(true), onMouseLeave: () => setHoveredLocal(false) }
-        : {};
-
-    // Only rendered for iconType 'animated', so the component is always set.
-    if (!AnimatedIconComponent) return null;
-
-    return (
-        <AnimatedIconComponent
-            color={color || classColor}
-            size={size}
-            width={width}
-            height={height}
-            strokeWidth={_strokeWidth}
-            className={cleanedClassName}
-            active={activeResolved}
-            selected={selected}
-            hovered={hoveredMerged}
-            pressed={pressed}
-            scenes={scenes}
-            {...hoverHandlers}
-            {...rest}
-        />
-    );
-}
-
-const DEFAULT_ANIMATED_SCENES = { fill: true, draw: true };
-
-type IconScene = 'fill' | 'draw' | 'morph' | 'smoke' | `custom${1 | 2 | 3 | 4 | 5 | 6}`;
-
-function parseIconSceneClasses(className?: string): { scenes: Partial<Record<IconScene, boolean>>; cleanedClassName: string } {
-    const scenes: Record<IconScene, boolean> = {
-        fill: false,
-        draw: false,
-        morph: false,
-        smoke: false,
-        custom1: false,
-        custom2: false,
-        custom3: false,
-        custom4: false,
-        custom5: false,
-        custom6: false,
-    };
-
-    if (!className || typeof className !== 'string') {
-        return {
-            scenes: { ...scenes, ...DEFAULT_ANIMATED_SCENES },
-            cleanedClassName: className || '',
-        };
-    }
-
-    const parts = className.split(/\s+/).filter(Boolean);
-    let hasExplicitScene = false;
-    for (const tok of parts) {
-        const m = tok.match(/icon-scene-(fill|draw|morph|smoke|custom[1-6])/);
-        const scene = m?.[1];
-        if (scene && scene in scenes) {
-            hasExplicitScene = true;
-            scenes[scene as IconScene] = true;
-        }
-    }
-
-    if (!hasExplicitScene) {
-        Object.assign(scenes, DEFAULT_ANIMATED_SCENES);
-    }
-
-    const cleanedClassName = parts.filter((t) => !t.includes('icon-scene-')).join(' ');
-
-    return { scenes, cleanedClassName };
-}
-
 export function InlineIcon({ InlineIcon: C, width, height, size, color, _strokeWidth, cleanedClassName }: IconCoreProps) {
     if (!C) return null;
     return <C width={width || size} height={height || size} color={color} strokeWidth={_strokeWidth} className={cleanedClassName} />;
-}
-
-function getAnimatedIcon(name: string) {
-    return (animatedIcons as IconRegistry | undefined)?.[name] ?? null;
 }
 
 function useIconCore({ icon: origIcon, className, width, height, color, size, strokeWidth, animated, active, selected, hovered, pressed, ...rest }: IconProps) {
@@ -149,12 +63,15 @@ function useIconCore({ icon: origIcon, className, width, height, color, size, st
     const InlineIcon = remoteIcon ? ((SvgIcons as IconRegistry)[remoteIcon] ?? (tagGlyphIcons as IconRegistry)[remoteIcon]) : undefined;
     // No custom drawing: Lucide draws it, under its current name if Lucide has renamed it.
     const icon = InlineIcon ? remoteIcon : currentLucideName(remoteIcon);
-    const AnimatedIconComponent = animated && icon && !isXmlSvg && !InlineIcon
-        ? getAnimatedIcon(icon)
+    // Web's inline copies of hot Lucide icons (icons-svg.web.js) stay animatable; a fork's own drawing never animates.
+    const lucideCopy = (InlineIcon as { lucideInline?: boolean } | undefined)?.lucideInline === true;
+    // Web decides in the host once the engine has loaded (the static icon draws until then); native looks it up now.
+    const animatedIcon = animated && icon && !isXmlSvg && (!InlineIcon || lucideCopy) && isValidLucideIconName(icon)
+        ? findAnimatedIcon(icon)
         : null;
 
     const iconType = !icon ? 'none'
-        : AnimatedIconComponent ? 'animated'
+        : animatedIcon ? 'animated'
         : InlineIcon ? 'inline'
         : isXmlSvg ? 'xml'
         : 'set';
@@ -165,7 +82,7 @@ function useIconCore({ icon: origIcon, className, width, height, color, size, st
 
     return {
         iconType, origIcon, icon, className, animated,
-        InlineIcon, AnimatedIconComponent,
+        InlineIcon, animatedIcon,
         _strokeWidth, width, height, size, color,
         active, selected, hovered, pressed,
         cleanedClassName, rest,

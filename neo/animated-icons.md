@@ -1,67 +1,69 @@
 # Animated icons (NEO)
 
-This document describes how **Lucide-based animated icons** are wired in NEO so they work on **web and native** without breaking `react-native-svg` on the web.
+Some Lucide icons in menus and tab bars move a little when you point at them (web) or choose them (native), and take a light duotone fill while active. This document covers how that works and how to add an icon.
 
-## When to use this
+## How it works
 
-Use animated icons for nav items, tabs, or buttons where `Icon` is called with `animated={true}` and optional **scene** classes. Static icons keep using [`packages/app/ui/atoms/icon.tsx`](packages/app/ui/atoms/icon.tsx) (with [`iconset.tsx`](packages/app/ui/atoms/iconset.tsx) / [`iconset.web.tsx`](packages/app/ui/atoms/iconset.web.tsx)) as usual.
+One engine draws every animated icon from a small **spec**: the icon's Lucide node data for the 24px grid, split into parts, plus what each part does.
 
-## End-to-end flow
+- **Web** ([`animated-lucide-icon.web.tsx`](packages/app/ui/atoms/animated-icons/animated-lucide-icon.web.tsx)) renders plain SVG with classes and CSS variables. All motion is CSS, in the `.nai` block of [`design/styles/global.web.css`](packages/app/design/styles/global.web.css): hovering the row (its `group` class, or the icon itself) or focusing it from the keyboard starts the motion, `data-active` gives the fill and active shapes, `:active` on the row presses the icon to 0.96. `prefers-reduced-motion: reduce` keeps the state changes (fill, Menu → X) and drops the movement. React never re-renders on hover.
+- **Native** ([`animated-lucide-icon.tsx`](packages/app/ui/atoms/animated-icons/animated-lucide-icon.tsx)) renders the same parts with react-native-svg. There is no hover: the motion plays once when the icon becomes active (a tab is chosen), never on mount, from one `Animated` value; the active fill and shapes switch at once; a `pressed` scale runs on the native driver. Reduce Motion (`useReduceMotion`) turns the motion off. `draw` doesn't play on native, since it would animate path geometry every frame.
+- **Loading on web.** `Icon` ([`ui/atoms/icon.tsx`](packages/app/ui/atoms/icon.tsx)) hands animated icons to [`host.web.tsx`](packages/app/ui/atoms/animated-icons/host.web.tsx), which draws the static icon (the `/lucide/*` mask, or the inline copy from `icons-svg.web.js`) until the engine and specs have loaded, then swaps in the animated SVG. They load in their own chunks once the page is idle after hydration, or on the first pointer or focus move. The static and animated icons have the same geometry, so the swap moves nothing; an active icon's fill fades in. Hydration always renders the static icon, so server and client HTML match. Native ([`host.tsx`](packages/app/ui/atoms/animated-icons/host.tsx)) draws the spec synchronously.
+- **Names.** Lookups take the name `Icon` resolved: `findIconFromRemote`, then `currentLucideName` for icons Lucide renamed, then Lucide aliases (`LUCIDE_ASSET_ALIASES`, so UNA's `Home` finds `House`).
 
-1. **`Icon`** receives `animated`, `className`, and interaction props (`active`, `selected`, `hovered`, `pressed`). When `animated` is true and the icon resolves to a **string** Lucide name, it looks up a component from the registry (see below).
-2. **Scene classes** in `className` are parsed by `parseIconSceneClasses` in [`packages/app/ui/atoms/icon.tsx`](packages/app/ui/atoms/icon.tsx). Tokens like `icon-scene-fill` and `icon-scene-draw` are turned into a `scenes` object and **stripped** from the class string passed to the animated component.
-3. **Web-only hover for draw:** If `scenes.draw` is set and `hovered` is not controlled from the parent, `Icon` attaches `onMouseEnter` / `onMouseLeave` on web so hover-driven animations run without a parent tracking hover.
-4. The animated component receives `scenes`, `active` (often from route/selection), and merged `hovered`.
+## Using it
 
-## Registry (required)
+Set **`animated: true`** on the menu or tab item; the row passes it to `Icon` along with `active`. Navbar items and More (`lib/util/menu.ts`), the main menu's popup rows (`components/nav/menu-header-navigation-entries.ts`; an item can opt out with `animated: false`), the tab bars (`lib/navigation/tab-bar-menu.ts`, footer and native JS tabs) and launcher items that carry it do this. On touch screens (`hover: none`) there is no hover motion, so taps never leave an icon stuck mid-hover. The row must have Tailwind's `group` class (all of these do) for hover to reach the icon on web.
 
-- **Default map:** [`packages/app/default/animated-icons.js`](packages/app/default/animated-icons.js) — exports `animatedIcons` keyed by **Lucide component names** as returned after `findIconFromRemote` (e.g. `House`, `Compass`). Add new entries here for upstream NEO.
-- **Forks / custom apps:** extend via [`packages/app/customization/animated-icons.js`](packages/app/customization/animated-icons.js) by spreading the default `animatedIcons` and adding or overriding keys. Upstream NEO keeps that file a plain re-export (see [Forks and the customization layer](AGENTS.md#forks-and-the-customization-layer)).
+`icon-scene-*` tokens in the icon's `className` turn parts off: `icon-scene-fill` alone gives only the fill, `icon-scene-draw` alone only the motion. Without a token both are on. They are not CSS utilities; `Icon` strips them.
+
+An icon of the same name in a fork's `customization/icons-svg.js` wins over the animated registry, so a fork's own drawing is never animated. Upstream's inline copies of hot Lucide icons in `default/icons-svg.web.js` (Menu, Search, Bell, Plus, Image, Camera, ...) are marked `lucideInline` and do animate.
+
+iOS SwiftUI menus and the native SwiftUI tab bar draw bundled images and can't animate.
+
+## Registry
+
+- **Default:** [`default/animated-icons.ts`](packages/app/default/animated-icons.ts) (native: the specs themselves) and [`default/animated-icons.web.ts`](packages/app/default/animated-icons.web.ts) (web: a loader per name), both keyed by resolved Lucide name. The specs are in [`ui/atoms/animated-icons/specs.ts`](packages/app/ui/atoms/animated-icons/specs.ts); their names are listed in [`names.ts`](packages/app/ui/atoms/animated-icons/names.ts) so the web registry needn't load them (`node --test packages/app/ui/atoms/animated-icons/names.test.ts` checks the two agree).
+- **Forks:** spread the default in [`customization/animated-icons.js`](packages/app/customization/animated-icons.js) and add or override keys. A value can be a spec, a lazy spec, or (as before) a component:
 
 ```javascript
 import { animatedIcons as animatedIconsDefault } from 'app/default/animated-icons';
-import { AnimatedMyIcon } from 'app/ui/atoms/animated-icons/icons/my-icon';
+import { lazyAnimatedIcon } from 'app/ui/atoms/animated-icons/lazy';
 
 export const animatedIcons = {
     ...animatedIconsDefault,
-    MyIcon: AnimatedMyIcon,
+    // Loaded on demand on web; draws statically until then.
+    Rocket: lazyAnimatedIcon(() => import('app/customization/animated-icons/rocket')),
 };
 ```
 
-If a name is missing from the registry, `Icon` falls back to the normal (non-animated) Lucide path. An icon of the same name in `customization/icons-svg.js` wins over the animated registry, so a fork's custom icon is never animated.
+A component value (`MyIcon: AnimatedMyIcon`) still works and gets the props it always had (`active`, `hovered`, `pressed`, `scenes`, ...), but it lands in the first chunk, and rows no longer pass `hovered`: on web it only sees its own mouse events. `animated-icons/shared.tsx` and `fill-props.ts` stay for such components. Prefer a spec.
 
-**Default registry keys (upstream NEO):** `House`, `Compass`, `TvMinimalPlay`, `Store`, `Shapes`, `Calendar`, `Bell`, `Info`, `Mail`, `Menu`, `MessageCircleMore`, `UsersRound` (see [`packages/app/default/animated-icons.js`](packages/app/default/animated-icons.js)).
+**Default keys (upstream):** House, Compass, TvMinimalPlay, Store, Shapes, Calendar, Bell, Info, Mail, Menu, MessageCircleMore, UsersRound, UserRound, File, FileText, MessagesSquare, SquareCheck, LayoutDashboard, Search, Plus, CircleStar, Image, Hash, BookText, Briefcase, ShoppingCart, Building, Camera, Film, BookOpenText, CircleLetterC, Handshake, ShieldCheck, CircleGauge, QrCode.
 
-## Enabling animation in menus / UI
+## Writing a spec
 
-- Set **`animated: true`** on the item (e.g. in [`packages/app/settings/menus.js`](packages/app/settings/menus.js) or tab config) where the row passes props into `Icon`. That enables **fill** (active/selected duotone) and **draw** (hover path / motion on web) by default.
-- Override scenes only when needed via `className` / `addClassName` tokens such as `icon-scene-draw` (draw only) or `icon-scene-fill`. Any explicit `icon-scene-*` token replaces the default set. Do not prefix these with `web:` / `group-hover:` — they are not CSS utilities; hover is driven by the `hovered` prop / mouse handlers in `Icon`.
+Types are in [`types.ts`](packages/app/ui/atoms/animated-icons/types.ts).
 
-Scene names supported by the parser: `fill`, `draw`, `morph`, `smoke`, `custom1`–`custom6` (see `parseIconSceneClasses` in `packages/app/ui/atoms/icon.tsx`).
+```ts
+Bell: {
+    parts: [
+        {
+            nodes: [path('M3.262 15.326A1 1 0 0 0 4 17h16a1 ...'), path('M10.268 21a2 2 0 0 0 3.464 0')],
+            fill: [0],                                               // fill the body, not the clapper
+            motion: { kind: 'wiggle', deg: 10, origin: [12, 2.5] }, // swing from the top
+        },
+    ],
+},
+```
 
-## Implementing a new `Animated*` component
+- **Nodes:** copy them from the installed `lucide-static` `icon-nodes.json` (the version the web masks and the iOS assets come from), in Lucide's order unless a part needs its own group. Recheck them after a Lucide bump.
+- **`fill`:** `true` or node indexes. Closed shapes only; the active fill is 20% `currentColor`.
+- **`motion`:** one quiet movement that says what the icon is.
+  - `rotate` / `shift` hold while hovered and return on leave (Search tilts, Plus turns 90°).
+  - `swing`, `wiggle`, `lift`, `pulse`, `draw` and `appear` play once each time the hover starts (Bell rings, Camera's lens pulses, a check is drawn).
+  - `origin` is the pivot on the 24px grid; `ms` overrides the duration (defaults are 200–500 ms).
+- **`stagger` / `delay`:** delay consecutive moving parts (Calendar's binder rings, Hash's strokes).
+- **`active`:** a part's shape while active (`x`, `y`, `deg`, `origin`, `hide`), as Menu folds into an X; `stillWhenActive` stops the hover motion then.
 
-Reference implementations:
-
-- [`packages/app/ui/atoms/animated-icons/icons/house.tsx`](packages/app/ui/atoms/animated-icons/icons/house.tsx) — fill opacity, scale, and **draw** (stroke dash) on hover.
-- [`packages/app/ui/atoms/animated-icons/icons/compass.tsx`](packages/app/ui/atoms/animated-icons/icons/compass.tsx) — fill opacity, rotation, **paths aligned with Lucide**.
-
-Guidelines:
-
-1. **`'use client'`** — animated icons use React state / `Animated` from `react-native`.
-2. **Paths** — Copy path data from the same Lucide version the app uses (`lucide-react-native` on native, `lucide-static` on web) so geometry matches the static icon.
-3. **Colors** — Use `currentColor` / theme-driven stroke and fill; avoid hardcoded palette colors.
-4. **Active / “duotone”** — Prefer stroked shapes plus `fill` / `fillOpacity` from `getAnimatedFillProps` ([`animated-icons/fill-props.ts`](packages/app/ui/atoms/animated-icons/fill-props.ts)), not ad hoc SVG elements that render differently on web vs native. The fill fades on web only: `react-native-svg` ignores an animated `fillOpacity` on native, so native switches between `fill="none"` and a fixed 0.2 opacity.
-5. **SVG elements** — Use `AnimatedPath`, `AnimatedG`, `AnimatedRect` and `AnimatedCircle` from [`animated-icons/shared.tsx`](packages/app/ui/atoms/animated-icons/shared.tsx). They strip `collapsable` / `onLayout` before the props reach a web DOM `<svg>` element.
-6. **Transforms on web** — Do **not** rely on `originX` / `originY` on `svg` `<G>` for pivot rotation. On web, `react-native-svg` can emit DOM properties that conflict with React 19. Use a **nested group**: translate to the pivot, apply rotation, translate back (see Compass).
-7. **Hover edge** — For one-shot hover effects (e.g. door draw), use a ref to detect **transition from not-hovered to hovered** so the animation does not re-fire every render.
-8. **Timing** — Adjust `duration`, `easing`, or spring `friction` / `tension` inside the icon file; keep durations in a sensible range (roughly hundreds of ms for UI feedback unless intentionally slow).
-
-## Checklist
-
-- [ ] Registry key matches the **resolved** Lucide name (`House`, `Compass`, …).
-- [ ] Menu or parent passes `animated` (fill + draw are default; override with `icon-scene-*` only when needed).
-- [ ] New icon tested on **web** and **native** (or native-only features gated with `Platform.OS`).
-- [ ] No `measureLayout` / layout thrash introduced from the icon itself (icons should stay self-contained).
-
-For general icon and styling rules, see [AGENTS.md](AGENTS.md).
+Motion rules: ease-out or ease-in-out curves without overshoot, colour and fill changes around 200 ms, no hover scale, press 0.96, nothing on mount. Check the icon on web (hover, keyboard focus, reduced motion) and on a native JS tab bar.

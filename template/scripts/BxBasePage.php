@@ -1411,7 +1411,9 @@ class BxBasePage extends BxDolPage
     protected function _getBlockLang ($aBlock)
     {
         if (bx_is_api()){
-            return [bx_api_get_block('lang', ['title' => _t($aBlock['title']), 'content' => bx_process_macros(_t(trim($aBlock['content'])))])];
+            // Markers such as {site_title}, as on the web.
+            $sContent = $this->_replaceMarkers(_t(trim($aBlock['content'])), ['block_id' => $aBlock['id']]);
+            return [bx_api_get_block('lang', ['title' => _t($aBlock['title']), 'content' => bx_process_macros($sContent)])];
         }
     
         $s = '<div class="bx-page-lang-container bx-def-vanilla-html max-w-none">' . _t(trim($aBlock['content'])) . '</div>';

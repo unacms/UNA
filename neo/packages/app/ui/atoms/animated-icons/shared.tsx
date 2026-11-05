@@ -1,5 +1,10 @@
 'use client'
 
+/**
+ * Legacy: helpers for animated icons written as components, as forks registered them before the spec engine
+ * (animated-icons.md). Upstream icons are specs drawn by animated-lucide-icon; nothing in core imports this file.
+ */
+
 import { forwardRef, type ComponentType, type ForwardedRef } from 'react'
 import { Animated, type ViewProps } from 'react-native'
 import { Circle, G, Path, Rect } from 'react-native-svg'

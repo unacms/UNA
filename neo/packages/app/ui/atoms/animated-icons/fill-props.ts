@@ -1,3 +1,7 @@
+/**
+ * Legacy: helpers for animated icons written as components, as forks registered them before the spec engine
+ * (animated-icons.md). Upstream icons are specs drawn by animated-lucide-icon; nothing in core imports this file.
+ */
 import { Platform, type Animated } from 'react-native'
 
 export const ANIMATED_FILL_OPACITY = 0.2

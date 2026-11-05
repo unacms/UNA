@@ -31,7 +31,12 @@ function getBadgeForOverflow(currentUser, overflow = []) {
     );
 }
 
-function TabBarIcon({ tab, tabUrl, currentUser, color, focused, isAvatar }) {
+function TabBarIcon({ tab, tabUrl, currentUser, color, focused, isAvatar, routeName }) {
+    // The tab bar draws a focused and an unfocused copy of every icon and cross-fades them, so the focused copy
+    // is always "focused". It turns active only while its tab is the current one, so its motion plays when
+    // the tab is chosen.
+    const pathname = usePathname();
+    const selected = !!routeName && (pathname === `/${routeName}` || pathname.startsWith(`/${routeName}/`));
     if (isAvatar) {
         return (
             <View className="h-full">
@@ -58,7 +63,7 @@ function TabBarIcon({ tab, tabUrl, currentUser, color, focused, isAvatar }) {
                 height={TAB_ICON_SIZE}
                 color={color}
                 animated={animated}
-                active={animated ? focused : undefined}
+                active={animated ? focused && selected : undefined}
                 className={tab.addClassName}
             />
         </View>
@@ -123,7 +128,7 @@ function getScreenOptions(colors, isShowTabs, tokens) {
     };
 }
 
-function tabScreenOptions({ tab, tabUrl, currentUser, isAvatar, t, extra = {} }) {
+function tabScreenOptions({ tab, tabUrl, currentUser, isAvatar, t, routeName, extra = {} }) {
     const options = {
         tabBarBadge: extra.tabBarBadge ?? getBadgeForTab(currentUser, tab),
         tabBarBadgeAllowFontScaling: false,
@@ -137,6 +142,7 @@ function tabScreenOptions({ tab, tabUrl, currentUser, isAvatar, t, extra = {} })
                 color={color}
                 focused={focused}
                 isAvatar={isAvatar}
+                routeName={routeName}
             />
         )),
         ...extra.screenOptions,
@@ -238,7 +244,7 @@ export default function NativeTabNavigator({
                                 variant: 'js',
                             }),
                         }}
-                        options={tabScreenOptions({ tab, tabUrl, currentUser, isAvatar: isAvatarTab(tab), t })}
+                        options={tabScreenOptions({ tab, tabUrl, currentUser, isAvatar: isAvatarTab(tab), t, routeName: tabRouteName })}
                     />
                 );
             })}

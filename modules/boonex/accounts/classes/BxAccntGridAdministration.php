@@ -566,23 +566,16 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
     	$CNF = &$this->_oModule->_oConfig->CNF;
 
     	$aIds = bx_get('ids');
-        if(!$aIds || !is_array($aIds)) {
-            echoJson([]);
-            return;
-        }
+        if(!$aIds || !is_array($aIds))
+            return echoJson([]);
 
         if(($mixedCheck = $this->_oModule->checkAllowedManage()) !== CHECK_ACTION_RESULT_ALLOWED)
             return echoJson(['msg' => $mixedCheck]);
 
-        $oAccount = BxDolAccount::getInstance();
-
         $aIdsAffected = [];
         foreach($aIds as $iId)
-        	if($this->_enable($iId, $isChecked)) {
+        	if($this->_enable($iId, $isChecked))
         		$aIdsAffected[] = $iId;
-
-                $oAccount->doAudit($iId, '_sys_audit_action_account_' . $isChecked ? 'activated' : 'suspended');
-        	}
 
         echoJson($aIdsAffected ? ['grid' => $this->getCode(false), 'blink' => $aIdsAffected] : ['msg' => _t($CNF['T']['grid_action_err_perform'])]);
     }
@@ -598,13 +591,18 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
         if(!$oProfile->$sMethod($iAction, 0 ,false))
             return false;
 
-        sendMailTemplate('t_ChangeStatusAccount' . ucfirst($sMethod), $oProfile->getAccountObject()->id(), $oProfile->id(), array(), BX_EMAIL_SYSTEM);
+        $oAccount = $oProfile->getAccountObject();
+        $iAccountId = $oAccount->id();
+
+        sendMailTemplate('t_ChangeStatusAccount' . ucfirst($sMethod), $iAccountId, $oProfile->id(), array(), BX_EMAIL_SYSTEM);
         
         $aProfiles = $oProfile->getAccountObject()->getProfiles();
-        foreach($aProfiles as $aProfile){
+        foreach($aProfiles as $aProfile) {
             BxDolProfile::getInstance($aProfile['id'])->$sMethod($iAction, 0 ,false);
         }
-        
+
+        $oAccount->doAudit($iAccountId, '_sys_audit_action_account_' . ($isChecked ? 'activated' : 'suspended'));
+
     	return true;
     }
 
