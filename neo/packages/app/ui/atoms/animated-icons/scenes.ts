@@ -16,7 +16,7 @@ export function parseIconSceneClasses(className?: string): { scenes: Partial<Rec
     const scenes: Partial<Record<IconScene, boolean>> = {};
     let explicit = false;
     for (const token of parts) {
-        const scene = token.match(SCENE_TOKEN)?.[1] as IconScene | undefined;
+        const scene = SCENE_TOKEN.exec(token)?.[1] as IconScene | undefined;
         if (scene) {
             explicit = true;
             scenes[scene] = true;

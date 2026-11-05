@@ -67,7 +67,7 @@ function partRange(frames: [number, number][], delay: number, ms: number, total:
         outputRange.push(v);
     }
     inputRange.push(1);
-    outputRange.push(frames[frames.length - 1]?.[1] ?? 0);
+    outputRange.push(frames.at(-1)?.[1] ?? 0);
     return { inputRange, outputRange, extrapolate: 'clamp' as const };
 }
 
@@ -78,6 +78,48 @@ function renderNodes(part: AnimatedIconPart, fillOn: boolean, color: string): Re
         const filled = fillOn && fillsNode(part.fill, index);
         return <Shape key={index} {...attrs} fill={filled ? color : 'none'} fillOpacity={filled ? ACTIVE_FILL_OPACITY : undefined} />;
     });
+}
+
+/** Wraps a part in the groups its motion animates; draw (and no motion) leaves it as it is. */
+function withMotion(content: ReactNode, motion: IconMotion | undefined, progress: Animated.Value, delay: number, total: number): ReactNode {
+    const kf = motion ? keyframes(motion) : null;
+    if (!motion || !kf) return content;
+    const value = progress.interpolate(partRange(kf.frames, delay, motion.ms ?? MOTION_MS[motion.kind], total));
+    if (kf.prop === 'opacity')
+        return <AnimatedG opacity={value}>{content}</AnimatedG>;
+    if (kf.prop === 'translate') {
+        const m = motion as Extract<IconMotion, { kind: 'lift' | 'shift' }>;
+        const tx = value.interpolate({ inputRange: [0, 1], outputRange: [0, m.x ?? 0] });
+        const ty = value.interpolate({ inputRange: [0, 1], outputRange: [0, m.y ?? (m.kind === 'lift' ? -1.5 : 0)] });
+        return <AnimatedG style={{ transform: [{ translateX: tx }, { translateY: ty }] }}>{content}</AnimatedG>;
+    }
+    // Rotate and scale turn around the motion's origin: translate there, transform, translate back.
+    const [ox, oy] = 'origin' in motion && motion.origin ? motion.origin : [12, 12];
+    const transform = kf.prop === 'rotate'
+        ? [{ rotate: value.interpolate({ inputRange: [-360, 360], outputRange: ['-360deg', '360deg'] }) }]
+        : [{ scale: value }];
+    return (
+        <G transform={`translate(${ox} ${oy})`}>
+            <AnimatedG style={{ transform }}>
+                <G transform={`translate(${-ox} ${-oy})`}>{content}</G>
+            </AnimatedG>
+        </G>
+    );
+}
+
+/** A part's shape while active (Menu → X), switched at once. */
+function withActiveShape(part: AnimatedIconPart, active: boolean, content: ReactNode): ReactNode {
+    const shape = active ? part.active : undefined;
+    if (!shape) return content;
+    const [ox, oy] = shape.origin ?? [12, 12];
+    return (
+        <G
+            opacity={shape.hide ? 0 : 1}
+            transform={`translate(${ox + (shape.x ?? 0)} ${oy + (shape.y ?? 0)}) rotate(${shape.deg ?? 0}) translate(${-ox} ${-oy})`}
+        >
+            {content}
+        </G>
+    );
 }
 
 /**
@@ -98,7 +140,7 @@ export default function AnimatedLucideIcon({
     scenes,
     style,
     ...rest
-}: AnimatedLucideIconProps) {
+}: Readonly<AnimatedLucideIconProps>) {
     const dim = Number(width ?? height ?? size ?? 24) || 24;
     const c = color || 'currentColor';
     const fillActive = active && scenes?.fill !== false;
@@ -142,48 +184,15 @@ export default function AnimatedLucideIcon({
                 strokeLinecap="round"
                 strokeLinejoin="round"
             >
-                {spec.parts.map((part, index) => {
-                    let content: ReactNode = renderNodes(part, fillActive, c);
-                    const motion = motionOn ? part.motion : undefined;
-                    const kf = motion ? keyframes(motion) : null;
-                    if (motion && kf) {
-                        const ms = motion.ms ?? MOTION_MS[motion.kind];
-                        const value = progress.interpolate(partRange(kf.frames, delays[index] ?? 0, ms, total));
-                        const [ox, oy] = 'origin' in motion && motion.origin ? motion.origin : [12, 12];
-                        if (kf.prop === 'opacity') {
-                            content = <AnimatedG opacity={value}>{content}</AnimatedG>;
-                        } else if (kf.prop === 'translate') {
-                            const m = motion as Extract<IconMotion, { kind: 'lift' | 'shift' }>;
-                            const tx = value.interpolate({ inputRange: [0, 1], outputRange: [0, m.x ?? 0] });
-                            const ty = value.interpolate({ inputRange: [0, 1], outputRange: [0, m.y ?? (m.kind === 'lift' ? -1.5 : 0)] });
-                            content = <AnimatedG style={{ transform: [{ translateX: tx }, { translateY: ty }] }}>{content}</AnimatedG>;
-                        } else {
-                            const transform = kf.prop === 'rotate'
-                                ? [{ rotate: value.interpolate({ inputRange: [-360, 360], outputRange: ['-360deg', '360deg'] }) }]
-                                : [{ scale: value }];
-                            content = (
-                                <G transform={`translate(${ox} ${oy})`}>
-                                    <AnimatedG style={{ transform }}>
-                                        <G transform={`translate(${-ox} ${-oy})`}>{content}</G>
-                                    </AnimatedG>
-                                </G>
-                            );
-                        }
-                    }
-                    const shape = active ? part.active : undefined;
-                    if (shape) {
-                        const [ox, oy] = shape.origin ?? [12, 12];
-                        content = (
-                            <G
-                                opacity={shape.hide ? 0 : 1}
-                                transform={`translate(${ox + (shape.x ?? 0)} ${oy + (shape.y ?? 0)}) rotate(${shape.deg ?? 0}) translate(${-ox} ${-oy})`}
-                            >
-                                {content}
-                            </G>
-                        );
-                    }
-                    return <G key={index}>{content}</G>;
-                })}
+                {spec.parts.map((part, index) => (
+                    <G key={index}>
+                        {withActiveShape(
+                            part,
+                            active,
+                            withMotion(renderNodes(part, fillActive, c), motionOn ? part.motion : undefined, progress, delays[index] ?? 0, total)
+                        )}
+                    </G>
+                ))}
             </Svg>
         </Animated.View>
     );

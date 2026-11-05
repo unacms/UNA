@@ -25,7 +25,7 @@ export type DropdownGridMenuItem = {
     [key: string]: unknown;
 };
 
-function GridIcon({ item }: { item: DropdownGridMenuItem }) {
+function GridIcon({ item }: Readonly<{ item: DropdownGridMenuItem }>) {
     const image = item?.image;
     if (typeof image === 'string' && image && /^(https?:|file:|content:|data:)/i.test(image)) {
         return (

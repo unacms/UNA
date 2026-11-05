@@ -1013,11 +1013,11 @@ webview {
         scale: 0.96;
     }
 }
-/* The Menu X holds still while open. */
+/* The Menu X holds still while open (these selectors outrank the motion rules above). */
 .nai[data-still][data-active] .nai-m,
 .nai[data-still][data-active] .nai-m > * {
-    animation: none !important;
-    transform: none !important;
+    animation: none;
+    transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

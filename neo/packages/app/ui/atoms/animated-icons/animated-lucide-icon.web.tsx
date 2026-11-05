@@ -79,7 +79,7 @@ export default function AnimatedLucideIcon({
     style,
     swapped,
     ...rest
-}: AnimatedLucideIconProps & { swapped?: boolean }) {
+}: Readonly<AnimatedLucideIconProps & { swapped?: boolean }>) {
     const w = width || size || 24;
     const h = height || size || 24;
     const delays = motionDelays(spec);
