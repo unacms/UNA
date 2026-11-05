@@ -72,8 +72,23 @@ class ArtificerMenuRowsTest extends \PHPUnit\Framework\TestCase
         $this->assertMatchesRegularExpression('/\.bx-artificer \.bx-popup-menu \.bx-popup-border \{\s*border-radius: 1\.25rem;/', $sCss, 'Menu popups have 20px corners, concentric with the rows\' 12px ones in the 8px inset.');
         $this->assertMatchesRegularExpression('/\.bx-popup \.bx-menu-highlight-list::before \{[^}]*\brounded-xl\b/', $sCss, 'The sliding highlight has the rows\' corners.');
 
+        $sList = '\.bx-artificer \.bx-popup ul:is\(\.bx-menu-ver, \.bx-menu-custom-ver, \[class\*="bx-menu-object-"\]\):not\(\.bx-menu-hor\):not\(\.bx-menu-custom-hor\):not\(\.bx-menu-floating-blocks-wide\)';
+        $this->assertMatchesRegularExpression('/' . $sList . ' \{[^}]*display: flex;\s*flex-direction: column;\s*gap: 0\.25rem;/', $sPopup, 'Rows are 4px apart, as NEO\'s (gap-1).');
+        $this->assertMatchesRegularExpression('/' . $sList . ' > li \{\s*position: relative;\s*margin-top: 0;/', $sPopup, 'Artificer\'s 1px row margins give way to the gap.');
+        $this->assertMatchesRegularExpression('/' . $sList . ' > li:has\(:focus-visible\) \{\s*z-index: 1;/', $sPopup, 'A focused row is above its neighbours, so the current row next to it does not cover its ring.');
+        $this->assertMatchesRegularExpression('/' . $sList . ' > li a:focus-visible \{\s*outline-offset: 0;/', $sPopup, 'The ring is on the row\'s edge, as in NEO.');
+
         $sMenuCss = self::read('modules/boonex/artificer/data/template/system/css/menu.css');
         $this->assertDoesNotMatchRegularExpression('/more-auto \.bx-popup \.bx-menu-custom \.bx-menu-item[^{]*\{\s*border-radius: 0;/', $sMenuCss, 'No legacy rule squares the More rows again.');
+    }
+
+    public function testScrollingMenuPopupsFadeAtTheirEdges(): void
+    {
+        $sCss = self::read('template/css/tailwind.css');
+
+        $this->assertMatchesRegularExpression('/@property --bx-scroll-fade-top \{[^}]*initial-value: 0px;/', $sCss, 'At rest there is no fade.');
+        $this->assertMatchesRegularExpression('/@keyframes bx-scroll-fade-bottom \{\s*from \{ --bx-scroll-fade-bottom: 1\.5rem; \}\s*to \{ --bx-scroll-fade-bottom: 0px; \}/', $sCss, 'The bottom fade goes away as the list reaches its end.');
+        $this->assertMatchesRegularExpression('/@supports \(animation-timeline: scroll\(\)\) \{\s*\.bx-artificer \.bx-popup-menu \.bx-popup-content \{\s*mask-image: linear-gradient\([^;]*var\(--bx-scroll-fade-top\)[^;]*var\(--bx-scroll-fade-bottom\)[^;]*;\s*animation: bx-scroll-fade-top linear both, bx-scroll-fade-bottom linear both;\s*animation-timeline: scroll\(self\), scroll\(self\);/', $sCss, 'Menu popups fade rows into their edges while scrolling, the timeline after the animation shorthand that resets it.');
     }
 
     public function testPopupMenuItemsLookLikeNeos(): void

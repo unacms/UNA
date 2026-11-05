@@ -3,6 +3,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* The fade a scrolling popup menu gives its top and bottom edges (".bx-popup-menu .bx-popup-content" below; NEO's
+   .neo-scroll-fade does the same): the fade at each edge grows in over the first or last 24px of scrolling. */
+@property --bx-scroll-fade-top {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 0px;
+}
+@property --bx-scroll-fade-bottom {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 0px;
+}
+@keyframes bx-scroll-fade-top {
+    from { --bx-scroll-fade-top: 0px; }
+    to { --bx-scroll-fade-top: 1.5rem; }
+}
+@keyframes bx-scroll-fade-bottom {
+    from { --bx-scroll-fade-bottom: 1.5rem; }
+    to { --bx-scroll-fade-bottom: 0px; }
+}
+
 @layer utilities {
     .animation-delay-2000 {
         animation-delay: 2s;
@@ -1638,9 +1659,25 @@
         @apply overflow-y-auto overscroll-contain;
     }
     /*
+     * A menu popup that scrolls fades its rows into its top and bottom edges while there is more to scroll that way,
+     * instead of cutting them off there. A scroll-driven animation sets each fade (keyframes at the top of this file), so
+     * a menu at rest or too short to scroll (its timeline is then inactive) is untouched. Browsers without scroll
+     * timelines keep the plain edge.
+     */
+    @supports (animation-timeline: scroll()) {
+        .bx-artificer .bx-popup-menu .bx-popup-content {
+            mask-image: linear-gradient(to bottom,
+                transparent 0, #000 var(--bx-scroll-fade-top),
+                #000 calc(100% - var(--bx-scroll-fade-bottom)), transparent 100%);
+            animation: bx-scroll-fade-top linear both, bx-scroll-fade-bottom linear both;
+            animation-timeline: scroll(self), scroll(self);
+            animation-range: 0 1.5rem, calc(100% - 1.5rem) 100%;
+        }
+    }
+    /*
      * Menus in popups (More, add content, item menus, language and design switchers) all take the header More list's
      * look: 44px rows like the header tabs and NEO's regular menu items, 16px from the label to either side, 12px corners,
-     * no gaps. The list is inset 8px, so each row's 12px corner sits inside the popup's 20px one. Horizontal menus
+     * 4px apart (NEO's gap-1). The list is inset 8px, so each row's 12px corner sits inside the popup's 20px one. Horizontal menus
      * (share icons and the like) keep their own layout, and the account panel's list pads its own rows (its template).
      * The rows are matched by structure and styled in plain CSS:
      * naming the bx-stl-mil* classes here would make Tailwind's @apply of them circular.
@@ -1648,6 +1685,23 @@
     .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) {
         padding-left: 0.5rem;
         padding-right: 0.5rem;
+        /* A column with a gap rather than Artificer's 1px row margins (menu.css): hidden rows leave no gap, and the
+           sliding highlight (the list's absolute ::before) takes no part in it. */
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li {
+        position: relative;
+        margin-top: 0;
+    }
+    /* A focused row draws its ring on its edge, as NEO's do, and above its neighbours, so the current item's blue row
+       next to it doesn't cover the ring. */
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li:has(:focus-visible) {
+        z-index: 1;
+    }
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li a:focus-visible {
+        outline-offset: 0;
     }
     /* The indent wrapper already gives these popups 8px above and below the list. */
     .bx-artificer .bx-popup .bx-popup-content-indent ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) {

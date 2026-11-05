@@ -1,9 +1,12 @@
 
 export const settingsInputs = {
     dropdown: {
-        // A floating surface: the popover edge and drop (the same as UNA's popups), 8px around its rows, whose 12px
-        // corners (rounded-xl) sit concentric in its 20px ones (`rounded-popover`).
-        cnt: ' rounded-popover overflow-hidden p-2 bg-popover shadow-popover dark:shadow-popover-deep z-50  ',
+        // A floating surface: the popover edge and drop (the same as UNA's popups) with 20px corners (`rounded-popover`).
+        cnt: ' rounded-popover overflow-hidden bg-popover shadow-popover dark:shadow-popover-deep z-50  ',
+        // 8px around the rows, whose 12px corners (rounded-xl) sit concentric in the shell's 20px ones. It pads the
+        // scrolling content, not the shell, so rows scroll to the popup's edge (fading there, `.neo-scroll-fade`) and
+        // focus rings have room inside the scroller instead of being cut off at the padding.
+        inset: ' p-2 ',
     },
     checkbox_set: {
         // Same fill, outline and radius as an input; rows inside are inset 4px with rounded-lg corners.

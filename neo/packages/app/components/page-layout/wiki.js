@@ -287,6 +287,7 @@ function PageContentWiki({ data, scrollRef, url }) {
                             <DropdownPopup
                                 minPopupWidth={256}
                                 contentClasses={isWeb ? 'rounded-xl border border-popover mt-2 bg-popover/60 backdrop-blur shadow-md' : undefined}
+                                inset={!isWeb}
                                 buttonProps={{
                                     style: 'borderless',
                                     controlSize: 'regular',

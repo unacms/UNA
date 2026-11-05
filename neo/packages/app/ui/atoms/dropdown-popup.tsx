@@ -118,6 +118,8 @@ export type DropdownPopupProps = {
     openOnFocus?: boolean;
     /** Merged after `contentClasses` (e.g. `overflow-visible` so focus rings are not clipped). */
     contentClassName?: string;
+    /** 8px around the content (theme `dropdown.inset`), inside the scroller. false for content that runs to the edges. */
+    inset?: boolean;
     /** Accessible name for custom trigger wrappers (when `buttonProps` is omitted). */
     triggerAccessibilityLabel?: string;
     /** Extra classes on the trigger Pressable (e.g. `flex-1` for tab-bar More). */
@@ -140,6 +142,7 @@ export default function DropdownPopup({
     hoverMode = false,
     openOnFocus = false,
     contentClassName = '',
+    inset = true,
     triggerAccessibilityLabel,
     triggerClassName = '',
     triggerStyle,
@@ -525,14 +528,14 @@ export default function DropdownPopup({
                 onLayout={handleScrollLayout}
                 pointerEvents={contentPending ? 'none' : undefined}
                 className={cn(
-                    'web:outline-none',
+                    'web:outline-none neo-scroll-fade',
                     maxPopupWidth && 'w-full min-w-0 max-w-full',
                     // Rows that render while loading stay out of flow and hidden (web:
                     // `visibility: hidden`, so they are out of the Tab order too), and the
                     // popup keeps its one-row height until the whole menu is ready.
                     contentPending && 'absolute left-0 right-0 top-0 opacity-0 web:invisible'
                 )}
-                contentContainerClassName={maxPopupWidth ? 'w-full min-w-0' : undefined}
+                contentContainerClassName={cn(maxPopupWidth && 'w-full min-w-0', inset && dropdownTheme?.inset)}
             >
                 {children}
             </ScrollView>

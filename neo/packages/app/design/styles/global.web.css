@@ -835,6 +835,41 @@ webview {
 }
 
 /*
+ * Popup content that scrolls (`DropdownPopup`) fades into the popup's top and bottom edges while there is more to
+ * scroll that way, instead of being cut off there. A scroll-driven animation moves each fade in over the first and
+ * last 24px of scrolling, so content at rest (or too short to scroll: the timeline is then inactive) is untouched.
+ * Browsers without scroll timelines keep the plain edge.
+ */
+@property --neo-scroll-fade-top {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 0px;
+}
+@property --neo-scroll-fade-bottom {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 0px;
+}
+@keyframes neo-scroll-fade-top {
+    from { --neo-scroll-fade-top: 0px; }
+    to { --neo-scroll-fade-top: 1.5rem; }
+}
+@keyframes neo-scroll-fade-bottom {
+    from { --neo-scroll-fade-bottom: 1.5rem; }
+    to { --neo-scroll-fade-bottom: 0px; }
+}
+@supports (animation-timeline: scroll()) {
+    .neo-scroll-fade {
+        mask-image: linear-gradient(to bottom,
+            transparent 0, #000 var(--neo-scroll-fade-top),
+            #000 calc(100% - var(--neo-scroll-fade-bottom)), transparent 100%);
+        animation: neo-scroll-fade-top linear both, neo-scroll-fade-bottom linear both;
+        animation-timeline: scroll(self), scroll(self);
+        animation-range: 0 1.5rem, calc(100% - 1.5rem) 100%;
+    }
+}
+
+/*
  * Menus: one highlight slides under the items to the one under the pointer, or the one focused from the
  * keyboard (`useMenuHighlight`, ui/atoms/menu-highlight.web.ts), in the ghost-link hover tint, and the items don't
  * light up on their own. It is the list's ::before, placed through CSS variables; it fades in where it first
