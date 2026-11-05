@@ -107,19 +107,38 @@ const getTextClass = (presets, item, classes) => {
     return selectedClass ?? presets[itemTextKey] ?? presets.item_text;
 };
 
-export default function DropdownMenuItem({ item, index, link, handleSelect, classes, className,  counter, handleCounter, mode, size }) {
-    const { t } = useTranslation();
-    const key = item.id ?? index;
-    const presets = { ...menuSettings, ...sizedPresets(size) };
-    const iconSize = presets.icon_size || 16;
+/** Web: rows with an animated icon play it while the pointer is over the row. */
+const useRowHover = (animated) => {
     const [rowHovered, setRowHovered] = useState(false);
     const rowHoverProps =
-        item.animated && Platform.OS === 'web'
+        animated && Platform.OS === 'web'
             ? {
                   onMouseEnter: () => setRowHovered(true),
                   onMouseLeave: () => setRowHovered(false),
               }
             : {};
+    return [rowHovered, rowHoverProps];
+};
+
+/** A string title with its description under it (`resolveMenuItemDescription`). */
+function ItemLabel({ item, textClass }) {
+    const { t } = useTranslation();
+    const description = resolveMenuItemDescription(item);
+    return (
+        <View className={menuSettings.item_text_cnt ?? 'min-w-0 flex-1 flex flex-col self-center justify-center overflow-hidden'}>
+            <Text numberOfLines={2} className={`${textClass} line-clamp-2`}>{item.title}</Text>
+            {!!description && (
+                <Text className={menuSettings.item_description ?? 'text-xs font-normal leading-tight text-pretty text-muted-foreground px-2'}>{t(description)}</Text>
+            )}
+        </View>
+    );
+}
+
+export default function DropdownMenuItem({ item, index, link, handleSelect, classes, className,  counter, handleCounter, mode, size }) {
+    const key = item.id ?? index;
+    const presets = { ...menuSettings, ...sizedPresets(size) };
+    const iconSize = presets.icon_size || 16;
+    const [rowHovered, rowHoverProps] = useRowHover(item.animated);
 
     // A node title renders itself; its onPress is already handled inside MenuItemEx, so no outer Pressable.
     if (typeof item.title !== 'string')
@@ -137,15 +156,8 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
         ? (presets.item_icon_active ?? presets.item_icon)
         : presets.item_icon;
 
-    const itemTextClass = getTextClass(presets, item, classes);
-    const itemDescriptionClass =
-        menuSettings.item_description ?? 'text-xs font-normal leading-tight text-pretty text-muted-foreground px-2';
-    const itemCntKey = classes?.item_cnt_key ?? 'item_cnt';
-    const itemCntClass =
-        menuSettings[itemCntKey] ?? menuSettings.item_cnt;
+    const itemCntClass = menuSettings[classes?.item_cnt_key ?? 'item_cnt'] ?? menuSettings.item_cnt;
     const rowClassName = classes?.item_row ?? 'justify-between items-start';
-    const description = resolveMenuItemDescription(item);
-    const descriptionText = description ? t(description) : '';
 
     // A link row is the child of `<Link asChild>` (below). Web wraps it in an anchor; on
     // native the Link hands its onPress to the child, so the row has to be pressable.
@@ -165,18 +177,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
             <Row className={`${rowClassName} w-full min-w-0`}>
                 <View className={itemCntClass}>
                 {(!!icon && !!menuSettings.item_icon) && <View className={iconWrapClass}>{icon}</View>}
-                {!!item?.title &&
-                    (typeof item.title === 'string' ? (
-                        <View className={menuSettings.item_text_cnt ?? 'min-w-0 flex-1 flex flex-col self-center justify-center overflow-hidden'}>
-                            <Text numberOfLines={2} className={`${itemTextClass} line-clamp-2`}>{item.title}</Text>
-                            {!!descriptionText && (
-                                <Text className={itemDescriptionClass}>{descriptionText}</Text>
-                            )}
-                        </View>
-                    ) : (
-                        item.title
-                    ))
-                }
+                {!!item.title && <ItemLabel item={item} textClass={getTextClass(presets, item, classes)} />}
                 </View>
                 {!!counter && typeof handleCounter === 'function' && (
                     <Pressable className='mr-1'  onPress={(event) => handleCounter(event, item)}>
