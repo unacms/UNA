@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Platform } from 'react-native';
+import { useState, type ReactNode } from 'react';
+import { Platform, type GestureResponderEvent } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
@@ -7,10 +7,64 @@ import { Icon } from 'app/ui/atoms/icon';
 import Image from 'app/ui/atoms/image';
 import { isEmoji, appSetting, resolveMenuItemDescription, cn } from 'app/lib/util';
 import Link from 'app/ui/atoms/link'
-import { cueAttributes } from 'app/lib/sound';
+import { cueAttributes, type PressCue } from 'app/lib/sound';
+import type { DropdownMenuItemSize } from 'app/ui/atoms/dropdown-menu';
+
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
-const getIcon = (oItem, iconSize = 20, rowHovered, imageClass = 'h-8 w-8 rounded-full') => {
+/** A UNA menu item as a dropdown row draws it. */
+export type DropdownRowItem = {
+    id?: string | number;
+    /** A string label, or a node (a custom control) that renders itself. */
+    title?: ReactNode;
+    /** Icon name, emoji, or raw SVG. */
+    icon?: string;
+    /** Image URL; wins over `icon`. */
+    image?: string;
+    icon_size?: number;
+    class_item_icon?: string;
+    addClassName?: string;
+    animated?: boolean;
+    link?: string;
+    target?: string;
+    type?: 'group_header' | 'separator' | string;
+    /** true or false makes the row a radio option; true marks it current. */
+    selected?: boolean;
+    /** First group header of a sectioned menu. */
+    first?: boolean;
+    /** The cue the row plays when pressed (web); false for none. */
+    sound?: PressCue;
+    [key: string]: unknown;
+};
+
+type SelectHandler = (event: GestureResponderEvent, item: DropdownRowItem) => void;
+
+/** Theme keys of `theme.dropdown_menu` (and their `_selected` twins) a variant uses instead of the defaults. */
+export type DropdownRowClasses = {
+    item?: string;
+    item_text_key?: string;
+    item_cnt_key?: string;
+    item_row?: string;
+};
+
+type Presets = Record<string, any>;
+
+export type DropdownMenuItemProps = {
+    item: DropdownRowItem;
+    index: number;
+    /** Wraps the row in a Link. */
+    link?: string;
+    handleSelect?: SelectHandler;
+    classes?: DropdownRowClasses;
+    className?: string;
+    counter?: ReactNode;
+    handleCounter?: SelectHandler;
+    mode?: string;
+    /** Row size of a vertical list (`theme.dropdown_menu.item_sizes`); regular by default. */
+    size?: DropdownMenuItemSize;
+};
+
+const getIcon = (oItem: DropdownRowItem, iconSize: number, rowHovered: boolean, imageClass = 'h-8 w-8 rounded-full') => {
     const image = oItem?.image
     if (typeof image === 'string' && image && /^(https?:|file:|content:|data:)/i.test(image)) {
         return (
@@ -53,7 +107,7 @@ const getIcon = (oItem, iconSize = 20, rowHovered, imageClass = 'h-8 w-8 rounded
  * Classes for a vertical row of `size` (`theme.dropdown_menu.item_sizes`): the size-free base plus that size.
  * Regular, or a size the theme doesn't have, keeps the plain presets (`item_ver`, `item_icon`, `item_text`, ...).
  */
-const sizedPresets = (size) => {
+const sizedPresets = (size?: DropdownMenuItemSize): Presets | null => {
     const sz = size && size !== 'regular' ? menuSettings.item_sizes?.[size] : null;
     if (!sz)
         return null;
@@ -68,7 +122,7 @@ const sizedPresets = (size) => {
     };
 };
 
-function GroupHeader({ item }) {
+function GroupHeader({ item }: { item: DropdownRowItem }) {
     const headerClass = item.first
         ? (menuSettings.item_group_header_first ?? menuSettings.item_group_header)
         : menuSettings.item_group_header;
@@ -86,29 +140,29 @@ function GroupHeader({ item }) {
 }
 
 /** Press handler, plus the radio role when the item is a pickable option (`selected` true or false). */
-const getPressProps = (item, handleSelect) => {
+const getPressProps = (item: DropdownRowItem, handleSelect?: SelectHandler) => {
     if (typeof handleSelect !== 'function')
         return {};
-    const props = { onPress: (event) => handleSelect(event, item) };
+    const props = { onPress: (event: GestureResponderEvent) => handleSelect(event, item) };
     if (item.selected !== true && item.selected !== false)
         return props;
     return {
         ...props,
-        accessibilityRole: 'radio',
+        accessibilityRole: 'radio' as const,
         accessibilityState: { selected: !!item.selected, checked: !!item.selected },
         'aria-checked': !!item.selected,
     };
 };
 
 /** Label classes: the variant's text preset (`classes.item_text_key`), its `_selected` twin for the picked item. */
-const getTextClass = (presets, item, classes) => {
+const getTextClass = (presets: Presets, item: DropdownRowItem, classes?: DropdownRowClasses): string => {
     const itemTextKey = classes?.item_text_key || 'item_text';
     const selectedClass = item.selected ? presets[`${itemTextKey}_selected`] : null;
     return selectedClass ?? presets[itemTextKey] ?? presets.item_text;
 };
 
 /** Web: rows with an animated icon play it while the pointer is over the row. */
-const useRowHover = (animated) => {
+const useRowHover = (animated?: boolean) => {
     const [rowHovered, setRowHovered] = useState(false);
     const rowHoverProps =
         animated && Platform.OS === 'web'
@@ -117,11 +171,11 @@ const useRowHover = (animated) => {
                   onMouseLeave: () => setRowHovered(false),
               }
             : {};
-    return [rowHovered, rowHoverProps];
+    return [rowHovered, rowHoverProps] as const;
 };
 
 /** A string title with its description under it (`resolveMenuItemDescription`). */
-function ItemLabel({ item, textClass }) {
+function ItemLabel({ item, textClass }: { item: DropdownRowItem; textClass: string }) {
     const { t } = useTranslation();
     const description = resolveMenuItemDescription(item);
     return (
@@ -134,15 +188,15 @@ function ItemLabel({ item, textClass }) {
     );
 }
 
-export default function DropdownMenuItem({ item, index, link, handleSelect, classes, className,  counter, handleCounter, mode, size }) {
+export default function DropdownMenuItem({ item, index, link, handleSelect, classes, className, counter, handleCounter, size }: DropdownMenuItemProps) {
     const key = item.id ?? index;
-    const presets = { ...menuSettings, ...sizedPresets(size) };
+    const presets: Presets = { ...menuSettings, ...sizedPresets(size) };
     const iconSize = presets.icon_size || 16;
     const [rowHovered, rowHoverProps] = useRowHover(item.animated);
 
     // A node title renders itself; its onPress is already handled inside MenuItemEx, so no outer Pressable.
     if (typeof item.title !== 'string')
-        return item.title;
+        return <>{item.title}</>;
 
     if (item.type === 'separator') {
         return <View key={key}>{item.title}</View>;
@@ -180,7 +234,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
                 {!!item.title && <ItemLabel item={item} textClass={getTextClass(presets, item, classes)} />}
                 </View>
                 {!!counter && typeof handleCounter === 'function' && (
-                    <Pressable className='mr-1'  onPress={(event) => handleCounter(event, item)}>
+                    <Pressable className='mr-1' onPress={(event: GestureResponderEvent) => handleCounter(event, item)}>
                         <Text className={presets.item_text}>{counter}</Text>
                     </Pressable>
                 )}
@@ -189,7 +243,6 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     );
 
     return (
-
         link ? (
             <Link
                 href={link}
@@ -204,7 +257,5 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
         ) : (
             Content
         )
-
-
     );
 }
