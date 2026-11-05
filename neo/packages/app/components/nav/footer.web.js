@@ -197,7 +197,9 @@ function tabBadgeText({ rootUrl, badge, notifCount, messengerCount, iFrCounter }
 /** The tab's icon, or the viewer's avatar on the avatar tab (`native.tab_avatar`). */
 function TabItemIcon({ isAvatar, currentUser, rootUrl, icon, animated, isActive, className }) {
     if (isAvatar) {
-        return <View className="w-6 h-6"><Profile  {...currentUser} url_avatar = {currentUser.avatar} url={rootUrl} displayType="unit_wo_info" displaySize="xs" /></View>;
+        // No link of its own: the tab is the link, and an <a> inside the tab's <a> breaks the server HTML apart (the
+        // browser closes the outer one early), which squashed the tab to the avatar's width.
+        return <TabAvatar currentUser={currentUser} url={rootUrl} />;
     }
     return <Icon icon={icon} size={24} animated={animated} active={animated ? isActive : undefined} className={className} />;
 }
