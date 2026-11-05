@@ -86,17 +86,11 @@ export default function ElementStripe({ seller_id, items, payment_type }) {
     useEffect(() => {
         let cancelled = false;
         (async () => {
-            const res = await paymentAction('get_provider_options', [seller_id, PROVIDER]);
+            const res = await paymentAction('get_provider_public_options', [seller_id, PROVIDER]);
             const oData = res?.data;
-            if (cancelled || !oData?.name || oData.name !== PROVIDER || !oData?.options) return;
+            if (cancelled || oData?.name !== PROVIDER || !oData?.public_key) return;
 
-            const mode = parseInt(oData.options.strp_v3_mode?.value, 10);
-            const key =
-                mode === 1
-                    ? oData.options.strp_v3_live_pub_key?.value
-                    : oData.options.strp_v3_test_pub_key?.value;
-            if (!key) return;
-            setPublicKey(key);
+            setPublicKey(oData.public_key);
         })();
         return () => {
             cancelled = true;

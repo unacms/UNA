@@ -1,10 +1,7 @@
 <?php
 
 /**
- * Seed the member account integration tests sign in as.
- * The installer only creates admin@example.com (see install/cmd.php).
- *
- * user@example.com / unauna
+ * Seed accounts for integration tests.
  */
 
 if (PHP_SAPI !== 'cli') {

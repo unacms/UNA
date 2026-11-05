@@ -26,15 +26,10 @@ export default function NativeStripe({ seller_id, items, payment_type }) {
 
     useEffect(() => {
         (async () => {
-            const data = await performAction('get_provider_options', [seller_id, 'stripe_v3']);
-            if (data?.name !== 'stripe_v3' || !data.options) return;
+            const data = await performAction('get_provider_public_options', [seller_id, 'stripe_v3']);
+            if (data?.name !== 'stripe_v3' || !data.public_key) return;
 
-            const mode = parseInt(data.options.strp_v3_mode.value, 10);
-            const key = mode === 1
-                ? data.options.strp_v3_live_pub_key.value
-                : data.options.strp_v3_test_pub_key.value;
-
-            if (key) setPublishableKey(key);
+            setPublishableKey(data.public_key);
         })();
     }, [seller_id]);
 

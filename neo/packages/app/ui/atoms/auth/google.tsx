@@ -103,7 +103,11 @@ function AuthGoogleButton({ googleSettings }: { googleSettings: GoogleSettings }
         // Only the access token is sent. UNA verifies it with Google and gets the profile from Google itself,
         // anything else sent by a client can't be trusted.
         const completeSignIn = async (accessToken: string) => {
-            const result: UnaApiResult = await fetcher('/api.php?r=bx_googlecon/handle/&params[]=' + encodeURIComponent(JSON.stringify({ access_token: accessToken })));
+            // The token goes in the POST body, never in the URL: a URL ends up in nginx, Caddy and proxy logs.
+            // api.php reads `params` from the body too (bx_get), the same shape as `params[]=` in a query string.
+            const body = new FormData();
+            body.append('params[]', JSON.stringify({ access_token: accessToken }));
+            const result: UnaApiResult = await fetcher(['/api.php?r=bx_googlecon/handle/', null, body]);
             const uri = redirectUriFromApiResult(result);
             const errorMsg = errorMessageFromApiResult(result);
 

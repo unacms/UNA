@@ -1564,8 +1564,11 @@ class BxDolStorageHelperUrl extends BxDolStorageHelperPath
             // the body is streamed into the temporary file, it is never held in memory as a whole
             $bSaved = false;
             if (!$bAllowRestricted) {
-                $sHttpCode = null;
+                // a non-null value makes the helper report the final HTTP status, error pages are not saved as files
+                $sHttpCode = 0;
                 $bSaved = true === bx_file_get_contents($sUrl, [], 'get', [], $sHttpCode, [], 0, [], false, $sTmpFilename);
+                if ($bSaved && ((int)$sHttpCode < 200 || (int)$sHttpCode >= 300))
+                    $bSaved = false;
             }
             else {
                 $hRead = @fopen($sUrl, 'rb');

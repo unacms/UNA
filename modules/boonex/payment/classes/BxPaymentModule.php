@@ -224,6 +224,7 @@ class BxPaymentModule extends BxBaseModPaymentModule
             'GetClients' => '',
             'GetItems' => '',
             'GetProviderOptions' => '',
+            'GetProviderPublicOptions' => '',
             'InitializeCheckoutApi' => '',
             'StripeV3CreateSessionApi' => '',
             'FinalizeCheckout' => ''
@@ -415,8 +416,53 @@ class BxPaymentModule extends BxBaseModPaymentModule
      */
     public function serviceIsProviderOptions($iVendorId, $sVendorProvider, $sPaymentType = '')
     {
-    	$aProvider = $this->serviceGetProviderOptions($iVendorId, $sVendorProvider, $sPaymentType);
+    	$aProvider = $this->_getProviderOptions($iVendorId, $sVendorProvider, $sPaymentType);
     	return $aProvider !== false;
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_payment Payment
+     * @subsection bx_payment-purchase_processing Purchase Processing
+     * @subsubsection bx_payment-get_provider_public_options get_provider_public_options
+     * 
+     * @code bx_srv('bx_payment', 'get_provider_public_options', [...]); @endcode
+     * 
+     * Get buyer-safe settings (the public key only, never secrets) of the payment provider entered by the specified vendor.
+     * Is available to any buyer, unlike @ref bx_payment-get_provider_options "get_provider_options".
+     *
+     * @param $iVendorId integer value with vendor ID.
+     * @param $sVendorProvider string value with payment provider name.
+     * @param $sPaymentType (optional) string value with payment type.
+     * @return an array with 'name' and 'public_key' or false value if the provider is not supported or not configured.
+     * 
+     * @see BxPaymentModule::serviceGetProviderPublicOptions
+     */
+    /** 
+     * @ref bx_payment-get_provider_public_options "get_provider_public_options"
+     */
+    public function serviceGetProviderPublicOptions($iVendorId, $sVendorProvider, $sPaymentType = '')
+    {
+        //--- Only providers with a client-side public key are exposed, with a fixed list of options.
+        $aPublicOptions = [
+            'stripe_v3' => ['mode' => 'strp_v3_mode', 'live' => 'strp_v3_live_pub_key', 'test' => 'strp_v3_test_pub_key']
+        ];
+        if(!isset($aPublicOptions[$sVendorProvider]))
+            return false;
+
+        $aProvider = $this->_getProviderOptions((int)$iVendorId, $sVendorProvider, $sPaymentType);
+        if(empty($aProvider['options']) || !is_array($aProvider['options']))
+            return false;
+
+        $aMap = $aPublicOptions[$sVendorProvider];
+        $aOptions = $aProvider['options'];
+
+        $iMode = isset($aOptions[$aMap['mode']]['value']) ? (int)$aOptions[$aMap['mode']]['value'] : 1;
+        $sKey = $aMap[$iMode === 1 ? 'live' : 'test'];
+        if(empty($aOptions[$sKey]['value']) || !is_string($aOptions[$sKey]['value']))
+            return false;
+
+        return ['name' => $sVendorProvider, 'public_key' => $aOptions[$sKey]['value']];
     }
 
     /**
@@ -444,6 +490,11 @@ class BxPaymentModule extends BxBaseModPaymentModule
         if((int)$iVendorId !== (int)bx_get_logged_profile_id() && !isAdmin())
             return false;
 
+        return $this->_getProviderOptions($iVendorId, $sVendorProvider, $sPaymentType);
+    }
+
+    protected function _getProviderOptions($iVendorId, $sVendorProvider, $sPaymentType = '')
+    {
     	$aProviders = array();
     	switch($sPaymentType) {
             case BX_PAYMENT_TYPE_SINGLE:
@@ -1258,7 +1309,10 @@ class BxPaymentModule extends BxBaseModPaymentModule
             return $this->_bIsApi ? [bx_api_get_msg($aResult['message'])] : ['error' => $aResult['message']];
 
         $aPending = $this->_oDb->getOrderPending(['type' => 'id', 'id' => (int)$aResult['pending_id']]);
-        if(empty($aPending) || ((int)$aPending['client_id'] && (int)$aPending['client_id'] !== (int)bx_get_logged_profile_id()))
+        //--- Callbacks verified by the provider itself (for example PayPal IPN) have no buyer session, 
+        //--- all other (browser) requests must belong to the owner of the pending order.
+        $bVerified = !empty($aResult['verified']);
+        if(empty($aPending) || (!$bVerified && (int)$aPending['client_id'] && (int)$aPending['client_id'] !== (int)bx_get_logged_profile_id()))
             return ($sMsg = $this->_sLangsPrefix . 'err_incorrect_provider') && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : ['error' => $sMsg];
 
         $bTypeRecurring = $aPending['type'] == BX_PAYMENT_TYPE_RECURRING;

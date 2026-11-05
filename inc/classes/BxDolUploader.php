@@ -108,41 +108,69 @@ abstract class BxDolUploader extends BxDolFactory
         return getParam('sys_security_upload_token_enable') == 'on';
     }
 
-    public static function getUploadToken($sAction, $sStorageObject, $sUploaderObject = '', $aTranscoders = [])
+    /** Max lifetime of a direct upload token, which isn't bound to a session. */
+    const UPLOAD_TOKEN_DIRECT_MAX_LIFETIME = 900;
+
+    public static function getUploadTokenLifetime($bDirect = false)
     {
-        $oSession = BxDolSession::getInstance();
-        $oSession->start(true);
         $iLifetime = max(60, (int)getParam('sys_security_upload_token_lifetime'));
+        return $bDirect ? min($iLifetime, self::UPLOAD_TOKEN_DIRECT_MAX_LIFETIME) : $iLifetime;
+    }
+
+    /**
+     * Issue an upload token.
+     * A regular token is bound to the issuing session (browser forms).
+     * A direct token ($bDirect) is for clients that post the file straight to api.php without cookies
+     * (NEO direct uploads): it is bound to the profile instead of the session, lives shorter,
+     * and is accepted only by the api.php upload service (see checkUploadToken).
+     */
+    public static function getUploadToken($sAction, $sStorageObject, $sUploaderObject = '', $aTranscoders = [], $bDirect = false)
+    {
+        $sSession = '';
+        if (!$bDirect) {
+            $oSession = BxDolSession::getInstance();
+            $oSession->start(true);
+            $sSession = $oSession->getId();
+        }
+
         $aData = [
             'action' => $sAction,
             'storage' => $sStorageObject,
             'uploader' => $sUploaderObject,
-            'session' => $oSession->getId(),
+            'session' => $sSession,
+            'direct' => $bDirect ? 1 : 0,
             'profile_id' => (int)bx_get_logged_profile_id(),
             'transcoders' => array_values($aTranscoders),
         ];
-        return BxDolKey::getInstance()->getNewKey($aData, $iLifetime, self::UPLOAD_TOKEN_SALT);
+        return BxDolKey::getInstance()->getNewKey($aData, self::getUploadTokenLifetime($bDirect), self::UPLOAD_TOKEN_SALT);
     }
 
     /**
      * Check an upload token. The token is not consumed: one form render serves several uploads
      * (multiple files, repeated uploads, editor images), so it works for any number of uploads
      * of its action, storage, uploader and session until it expires.
+     * A direct token carries no session and is accepted only when $bAllowDirect is set.
      * @return token payload (with `profile_id`) or false
      */
-    public static function checkUploadToken($sToken, $sAction, $sStorageObject, $sUploaderObject = '')
+    public static function checkUploadToken($sToken, $sAction, $sStorageObject, $sUploaderObject = '', $bAllowDirect = false)
     {
         if (!self::isUploadTokenEnabled() || !is_string($sToken) || $sToken === '')
             return false;
 
-        $oSession = BxDolSession::getInstance();
-        $oSession->start(true);
         $aData = BxDolKey::getInstance()->getKeyData($sToken, self::UPLOAD_TOKEN_SALT);
         if (!is_array($aData)
             || ($aData['action'] ?? '') !== $sAction
             || ($aData['storage'] ?? '') !== $sStorageObject
-            || ($aData['uploader'] ?? '') !== $sUploaderObject
-            || ($aData['session'] ?? '') !== $oSession->getId())
+            || ($aData['uploader'] ?? '') !== $sUploaderObject)
+            return false;
+
+        if (!empty($aData['direct'])) {
+            return $bAllowDirect ? $aData : false;
+        }
+
+        $oSession = BxDolSession::getInstance();
+        $oSession->start(true);
+        if (($aData['session'] ?? '') !== $oSession->getId())
             return false;
 
         return $aData;
