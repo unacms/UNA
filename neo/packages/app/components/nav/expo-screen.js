@@ -9,6 +9,7 @@ import { ensureTabHistory, applyTabHistory, registerPushedScreen } from 'app/lib
 import { resolveTabPageUrl } from 'app/components/nav/tab-page-url';
 import { getCachedPageData, setCachedPageData } from 'app/lib/cache/native-tab-page-cache';
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
+import { readGuestSplash, updateGuestSplashCache, forgetGuestSplash } from 'app/lib/cache/guest-splash-cache';
 import emitter, { EVENTS } from 'app/context/emitter'
 import * as SplashScreen from 'expo-splash-screen';
 import { TabChromeProvider } from 'app/context/tab-chrome';
@@ -267,6 +268,28 @@ const Content = memo(({ pagePath, currentUser, tabKey, chromeKey, pushed, refres
         );
     }, [tabKey, pagePath, pushed, currentUser?.id, currentUser?.url, historyMode]);
 
+    // A launch while the viewer isn't known yet: the guest splash the app showed last, if it was the last
+    // thing this tab showed a guest, until the page comes (lib/cache/guest-splash-cache). A member never
+    // gets it: a member's page drops the copy, and signing in remounts this with a known viewer.
+    useEffect(() => {
+        if (currentUser) {
+            forgetGuestSplash();
+            return undefined;
+        }
+        if (pushed || refreshToken || currentUser !== null || !isFetchablePagePath(pagePath)) return undefined;
+        let cancelled = false;
+        const pathAtStart = pagePath;
+        readGuestSplash(pagePath).then((props) => {
+            if (!props || cancelled || pagePathRef.current !== pathAtStart) return;
+            setPage((current) => (current && current.path === pathAtStart ? current : { path: pathAtStart, props }));
+        }).catch(() => {});
+        return () => {
+            cancelled = true;
+        };
+    // Once per tab mount and viewer: the fetch below replaces it.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentUser?.id]);
+
     // Stale-while-revalidate: show cache immediately, always refetch from server.
     useEffect(() => {
         if (!isFetchablePagePath(pagePath)) return;
@@ -293,6 +316,7 @@ const Content = memo(({ pagePath, currentUser, tabKey, chromeKey, pushed, refres
                         { forceShellRefresh, hadCache: Boolean(cached) },
                     );
                     setCachedPageData(tabKey, pagePath, data.props, currentUser?.id, currentUser?.confirmed);
+                    if (!pushed) updateGuestSplashCache(pagePath, data.props);
                     setBottomSheetData(false);
                     setPage({ path: pathAtStart, props: data.props });
                 } else {
@@ -308,7 +332,7 @@ const Content = memo(({ pagePath, currentUser, tabKey, chromeKey, pushed, refres
         return () => {
             cancelled = true;
         };
-    }, [pagePath, currentUser?.id, currentUser?.confirmed, tabKey, refreshToken, setBottomSheetData]);
+    }, [pagePath, currentUser?.id, currentUser?.confirmed, tabKey, pushed, refreshToken, setBottomSheetData]);
 
     // Language switch (and other page reloads): drop stale cached JSON and refetch.
     useEffect(() => {

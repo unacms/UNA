@@ -1,78 +1,42 @@
-import { View, Row } from 'app/design/view'
-import { Text } from 'app/design/typography';
+import { View } from 'app/design/view'
 import { appSetting } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
-import AuthPanel from 'app/ui/molecules/auth/auth'
-import { BlockByName } from 'app/components/block';
+import { staticComponents } from 'app/customization/static'
+import { SplashTextBuiltIn } from 'app/default/static'
 import { PageFooter } from 'app/components/nav/menu-footer'
-import { useTranslation } from 'react-i18next'
-import Link from 'app/ui/atoms/link'
 import Page from 'app/ui/molecules/page/page'
-import { BlockDataByName } from 'app/lib/util';
-import { PageHeaderOptions } from 'app/ui/molecules/header/options';
+import { PageHeaderOptions } from 'app/ui/molecules/header/options'
+import UnaSplash from './una-splash'
+import { SplashLoginForm } from './splash-parts'
+
 /**
- * Renders the login splash screen with adaptive layouts for web and mobile platforms.
+ * The guest splash (a guest's home when UNA sends `layout: 'splash'`, see isSplashPage).
  *
- * Displays an illustration, splash text, and a login form with options for password recovery and account creation. Layout and styling adjust based on platform and theme. Footer content is included at the bottom of the screen.
+ * What it shows, first match wins:
+ * 1. A project's own splash: this component replaced in `customization/molecules/_map.js` (then none of
+ *    this runs), or its own `splash_text` in `customization/static.js`, shown here with the sign-in form.
+ * 2. UNA's splash code (Studio > Designer > Splash), `data.splash.code`, through UnaSplash: its HTML with
+ *    the placeholders drawn as NEO components.
+ * 3. The built-in splash: illustration, title and text (`splash_text`), and the sign-in form.
  *
- * @param {object} props - Component properties, including optional login form data.
+ * @param {object} props - `data`: the page data.
  */
-
-function PageContent({ data }) {
-    const { t } = useTranslation()
-
-    const isShowCreateAccount = BlockDataByName(data, 'system:login_form');
-
-    return (
-        <View className="w-full max-w-md gap-6">
-            
-                    <BlockByName
-                        name={isShowCreateAccount ? "system:login_form" : "system:login_form_only"}
-                        data={data}
-                        formProps={{
-                            hide_errors: true,
-                            button_full_width: true,
-                        }}
-                    />
-                    <AuthPanel forgotPasswordLink={true} showSeparator={true} />
-               
-         
-
-            {isShowCreateAccount && <View className="sm:px-6 ">
-                <Row
-                    className="mx-auto gap-1 justify-center items-center text-center"
-                >
-                    <Text
-                        className="text-secondary-foreground text-base"
-                        accessibilityRole="text"
-                    >
-                        {t('splash_page_login2')}
-                    </Text>
-                    <Link
-                        variant="accent"
-                        size="md"
-                        href="/create-account"
-                        haptics="Medium"
-                    >
-                        {t('splash_page_new_account')}
-                    </Link>
-                </Row>
-            </View>}
-
-        </View>
-    )
-}
-
 export default function Splash(props) {
+    const code = props.data?.splash?.code
+    const hasOwnText = staticComponents.splash_text !== SplashTextBuiltIn
     return (
         // Keyboard-aware scroll (Page default): the login form sits low on
         // the screen, and a plain ScrollView leaves the keyboard over it.
         <Page>
             <PageHeaderOptions band={false} showTitle={false} />
-            <View className={`flex-auto items-center justify-center lg:flex-row p-4 sm:p-6 lg:p-12 gap-6 lg:gap-12 w-full mx-auto ${appSetting('layout', 'max_width_landing')}`}>
-                {appStatic('splash_text', { texts: props.data?.texts })}
-                <PageContent {...props} />
-            </View>
+            {code && !hasOwnText ? (
+                <UnaSplash code={code} data={props.data} />
+            ) : (
+                <View className={`flex-auto items-center justify-center lg:flex-row p-4 sm:p-6 lg:p-12 gap-6 lg:gap-12 w-full mx-auto ${appSetting('layout', 'max_width_landing')}`}>
+                    {appStatic('splash_text', { texts: props.data?.texts })}
+                    <SplashLoginForm data={props.data} />
+                </View>
+            )}
             <PageFooter />
         </Page>
     )
