@@ -48,6 +48,20 @@ class BxDolAiAgentRetrievalTest extends \PHPUnit\Framework\TestCase
             $o->resolveRetrieval()
         );
     }
+
+    /**
+     * Trimmed messages are deleted from the stored thread, so a trim must drop only the fewest
+     * oldest messages (NeuronAI 3.x behavior), not half of the context window (4.x default).
+     */
+    public function testHistoryIsTrimmedToTheFewestOldestMessages()
+    {
+        $o = new BxDolAiAgent(['id' => 1, 'vector_store_id' => 0]);
+
+        $oMethod = new ReflectionMethod($o, 'historyTrimRatio');
+        $oMethod->setAccessible(true);
+
+        $this->assertSame(0.0, $oMethod->invoke($o));
+    }
 }
 
 class BxDolAiAgentRetrievalTestEmbeddings implements NeuronAI\RAG\Embeddings\EmbeddingsProviderInterface

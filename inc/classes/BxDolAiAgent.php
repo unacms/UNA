@@ -147,6 +147,15 @@ class BxDolAiAgent extends RAG
     }
 
     /**
+     * Trim only the fewest oldest messages that make the thread fit the context window, as NeuronAI 3.x did.
+     * The 4.x default cuts the thread down to half the window, and trimmed messages are deleted from the stored thread.
+     */
+    protected function historyTrimRatio(): float
+    {
+        return 0.0;
+    }
+
+    /**
      * Save the changed version of a message already stored in the chat history of the agent.
      */
     public function updateStoredMessage(Message $oMessage): bool
