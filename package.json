@@ -35,7 +35,7 @@
     "headroom.js": "^0.12.0",
     "highlight.js": "github:highlightjs/highlight.js",
     "hls.js": "^1.7.4",
-    "htmx.org": "^4.0.0",
+    "htmx.org": "^4.0.1",
     "jekyll-toc": "https://github.com/ghiculescu/jekyll-table-of-contents",
     "jquery": "^3.7.1",
     "jquery-form": "^4.3.0",
