@@ -63,8 +63,9 @@ class BxTemplMenuSidebarSite extends BxTemplMenu
 
     protected function _isMenuItemButton ($a)
     {
-        if(empty($a['config_api']) || !empty($a['submenu_object']))
+        if(empty($a['config_api']) || !empty($a['submenu_object'])) {
             return false;
+        }
 
         $aConfig = json_decode($a['config_api'], true);
         return is_array($aConfig) && !empty($aConfig['button']);
