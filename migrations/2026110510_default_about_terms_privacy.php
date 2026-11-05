@@ -37,25 +37,29 @@ $oDb = BxDolDb::getInstance();
 
 foreach ($aFiles as $sLang => $sFile) {
     $iLanguage = (int)$oDb->getOne($oDb->prepare("SELECT `ID` FROM `sys_localization_languages` WHERE `Name` = ?", $sLang));
-    if (!$iLanguage)
+    if (!$iLanguage) {
         continue;
+    }
 
     $sPath = BX_DIRECTORY_PATH_MODULES . $sFile;
     $oXml = is_file($sPath) ? simplexml_load_file($sPath, 'SimpleXMLElement', LIBXML_NOCDATA) : false;
-    if ($oXml === false)
-        throw new RuntimeException("cannot read $sFile");
+    if ($oXml === false) {
+        throw new UnexpectedValueException("cannot read $sFile");
+    }
 
     foreach ($aOld as $sKey => $aHashes) {
         $aNodes = $oXml->xpath('//string[@name="' . $sKey . '"]');
-        if (count($aNodes) !== 1)
-            throw new RuntimeException("$sFile has no single $sKey");
+        if (count($aNodes) !== 1) {
+            throw new UnexpectedValueException("$sFile has no single $sKey");
+        }
         $sNew = trim((string)$aNodes[0]);
 
         $aRow = $oDb->getRow($oDb->prepare("SELECT `s`.`IDKey`, `s`.`String` FROM `sys_localization_strings` AS `s`
             INNER JOIN `sys_localization_keys` AS `k` ON `k`.`ID` = `s`.`IDKey`
             WHERE `k`.`Key` = ? AND `s`.`IDLanguage` = ?", $sKey, $iLanguage));
-        if (empty($aRow) || !in_array(hash('sha256', trim($aRow['String'])), $aHashes, true))
+        if (empty($aRow) || !in_array(hash('sha256', trim($aRow['String'])), $aHashes, true)) {
             continue;
+        }
 
         $oDb->query($oDb->prepare("UPDATE `sys_localization_strings` SET `String` = ? WHERE `IDKey` = ? AND `IDLanguage` = ? AND `String` = ?",
             $sNew, (int)$aRow['IDKey'], $iLanguage, $aRow['String']));
