@@ -1691,6 +1691,10 @@
         flex-direction: column;
         gap: 0.25rem;
     }
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide)::after,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-highlight-list)::before {
+        display: none; /* bx-clearfix's table boxes would be flex items, with a gap of their own; the highlight's ::before stays */
+    }
     .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li {
         position: relative;
         margin-top: 0;

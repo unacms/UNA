@@ -75,6 +75,7 @@ class ArtificerMenuRowsTest extends \PHPUnit\Framework\TestCase
         $sList = '\.bx-artificer \.bx-popup ul:is\(\.bx-menu-ver, \.bx-menu-custom-ver, \[class\*="bx-menu-object-"\]\):not\(\.bx-menu-hor\):not\(\.bx-menu-custom-hor\):not\(\.bx-menu-floating-blocks-wide\)';
         $this->assertMatchesRegularExpression('/' . $sList . ' \{[^}]*display: flex;\s*flex-direction: column;\s*gap: 0\.25rem;/', $sPopup, 'Rows are 4px apart, as NEO\'s (gap-1).');
         $this->assertMatchesRegularExpression('/' . $sList . ' > li \{\s*position: relative;\s*margin-top: 0;/', $sPopup, 'Artificer\'s 1px row margins give way to the gap.');
+        $this->assertMatchesRegularExpression('/' . $sList . '::after,\s*' . $sList . ':not\(\.bx-menu-highlight-list\)::before \{\s*display: none;/', $sPopup, 'The clearfix boxes take no gap, so the list is inset the same above and below; the highlight\'s ::before stays.');
         $this->assertMatchesRegularExpression('/' . $sList . ' > li:has\(:focus-visible\) \{\s*z-index: 1;/', $sPopup, 'A focused row is above its neighbours, so the current row next to it does not cover its ring.');
         $this->assertMatchesRegularExpression('/' . $sList . ' > li a:focus-visible \{\s*outline-offset: 0;/', $sPopup, 'The ring is on the row\'s edge, as in NEO.');
 
