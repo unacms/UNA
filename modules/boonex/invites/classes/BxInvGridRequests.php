@@ -243,15 +243,19 @@ class BxInvGridRequests extends BxInvGrid
             list($this->_sFilter1Value, $sFilter) = explode($this->_sParamsDivider, $sFilter);
 
         $sFilterSql = "";
-        if(isset($this->_sFilter1Value) && $this->_sFilter1Value != ''){
-            if ($this->_sFilter1Value == BX_INV_FILTER_STATUS_INVITED){
+        if(isset($this->_sFilter1Value) && $this->_sFilter1Value != '') {
+            $this->_sFilter1Value = (int)$this->_sFilter1Value;
+
+            if ($this->_sFilter1Value == BX_INV_FILTER_STATUS_INVITED) {
                 $sFilterSql = " AND " . $sTableRequests . ".`status` IN (" . BX_INV_FILTER_STATUS_INVITED . ', ' . BX_INV_FILTER_STATUS_SEEN . ', ' . BX_INV_FILTER_STATUS_JOINED . ')';
             }
-            else{
-                $sFilterSql = " AND " . $sTableRequests . ".`status` = " . $this->_sFilter1Value;
+            else {
+                $sFilterSql = " AND " . $sTableRequests . ".`status` = " . (int)$this->_sFilter1Value;
             }
         }
+
         $this->_aOptions['source'] .= $this->_oModule->_oDb->prepareAsString($sFilterSql);
+
         return parent::_getDataSql($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage);
     }
 

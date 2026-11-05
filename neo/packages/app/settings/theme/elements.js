@@ -1,4 +1,26 @@
 
+/**
+ * Menu item sizes, the NeoButton heights (`neo_button.controlSizes`): mini 28, small 36, regular 44, large 52,
+ * xlarge 64. A row is 8px from the popup's sides (`px-2`, 10px at xlarge); its icon circle fills the row less the
+ * vertical padding (44 − 2 × 6 = 32 at regular, 52 − 2 × 8 = 36 at large) and its glyph is the button's icon size
+ * one step down. The corners are the button's (`borderShapes.roundedRectangle`). Small and mini rows are meant for
+ * text and inline icons more than circles, but the circle still fits.
+ */
+const MENU_ITEM_SIZES = {
+    mini:    { item: 'min-h-7 px-1.5 py-0.5 rounded-md',  icon: 'w-6 h-6',   icon_size: 14, text: 'text-xs' },
+    small:   { item: 'min-h-9 px-2 py-1 rounded-lg',      icon: 'w-7 h-7',   icon_size: 16, text: 'text-sm' },
+    regular: { item: 'min-h-11 px-2 py-1.5 rounded-xl',   icon: 'w-8 h-8',   icon_size: 20, text: 'text-sm' },
+    large:   { item: 'min-h-13 px-2 py-2 rounded-xl',     icon: 'w-9 h-9',   icon_size: 24, text: 'text-base' },
+    xlarge:  { item: 'min-h-16 px-2.5 py-2.5 rounded-2xl', icon: 'w-11 h-11', icon_size: 28, text: 'text-base' },
+};
+
+// The parts of a row that don't change with its size. `item_ver`, `item_icon`, `item_text` and friends below are
+// these plus the regular size, so code that reads them directly (feed, tasks, dashboard stats) keeps 44px rows.
+const MENU_ITEM_BASE = 'group flex w-full min-w-0 flex-row items-center font-medium web:hover:bg-muted/80 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer';
+const MENU_ICON_BASE = 'flex shrink-0 items-center bg-muted/50 web:group-hover:bg-border rounded-full justify-center web:transition-colors web:duration-150 web:ease-out';
+const MENU_ICON_ACTIVE_BASE = 'flex shrink-0 items-center bg-primary rounded-full justify-center';
+const MENU_TEXT_BASE = 'block w-full font-semibold text-secondary-foreground web:group-hover:text-foreground px-2 web:transition-colors web:duration-150 web:ease-out';
+const MENU_TEXT_SELECTED_BASE = 'block w-full font-semibold text-accent-foreground px-2 web:transition-colors web:duration-150 web:ease-out';
 
 export const settingsElements = {
     conductor: {
@@ -36,8 +58,7 @@ export const settingsElements = {
         content_shadow: ' shadow-lg ',
         content_ver: 'flex-col gap-1',
         content_hor: 'flex-row  ',
-        item_ver:
-            ' group px-2 flex w-full min-w-0 min-h-11 flex-row items-center rounded-xl font-medium web:hover:bg-muted/80 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',
+        item_ver: `${MENU_ITEM_BASE} ${MENU_ITEM_SIZES.regular.item}`,
         item_hor:
             'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-muted-foreground web:duration-200 outline-none ',
         item_np:
@@ -58,11 +79,17 @@ export const settingsElements = {
         item_cnt: 'items-center w-full min-w-0 flex-row',
         item_text_cnt: 'min-w-0 flex-1 flex flex-col self-center justify-center overflow-hidden',
         item_cnt_tabs_overflow: 'items-center w-full flex-row justify-start flex-1',
-        item_text: ' block w-full text-sm font-semibold text-secondary-foreground web:group-hover:text-foreground px-2',
-        /** Selected item (current tab / page, picked option): the toggled look — `bg-accent` + `text-accent-foreground`. */
+        /** Label, icon glyph and icon circle change colour together, with the row's hover highlight (150ms ease-out,
+            `.neo-menu-highlight` in global.web.css), so nothing in the row swaps ahead of the rest. */
+        item_text: `${MENU_TEXT_BASE} ${MENU_ITEM_SIZES.regular.text}`,
+        /** The glyph in an item's icon circle (`item_icon`): the label's colour, so both brighten on hover as one. */
+        item_icon_glyph: 'text-secondary-foreground web:group-hover:text-foreground web:transition-colors web:duration-150 web:ease-out',
+        /** Selected item (current tab / page, picked option): the toggled look — `bg-accent` + `text-accent-foreground`.
+            Its icon circle is the solid primary (`item_icon_active`) with a primary-foreground glyph, so the circle
+            still reads on the accent row. */
         item_selected: ' bg-accent ',
-        item_text_selected: ' block w-full text-sm font-semibold text-accent-foreground px-2',
-        item_icon_selected: 'text-accent-foreground',
+        item_text_selected: `${MENU_TEXT_SELECTED_BASE} ${MENU_ITEM_SIZES.regular.text}`,
+        item_icon_selected: 'text-primary-foreground',
         item_description: 'block w-full text-xs font-normal leading-tight text-pretty text-muted-foreground px-2 break-words',
         item_group_header: 'px-2 pt-3 pb-1',
         item_group_header_first: 'p-2.5',
@@ -74,16 +101,23 @@ export const settingsElements = {
         /** Apps launcher waffle — icon above label, no description. */
         content_grid: 'w-full',
         item_grid:
-            'group flex w-full min-w-0 min-h-24 flex-col items-center justify-start gap-1.5 rounded-xl px-1 py-2.5 text-secondary-foreground web:hover:bg-muted/80 web:hover:text-foreground web:hover:cursor-pointer web:focus-visible:outline-2 web:duration-200',
+            'group flex w-full min-w-0 min-h-24 flex-col items-center justify-start gap-1.5 rounded-xl px-1 py-2.5 text-secondary-foreground web:hover:bg-muted/80 web:hover:text-foreground web:hover:cursor-pointer web:focus-visible:outline-2 web:transition-colors web:duration-150 web:ease-out',
         item_icon_grid:
-            'flex shrink-0 items-center w-12 h-12 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
+            'flex shrink-0 items-center w-12 h-12 bg-muted/50 web:group-hover:bg-border rounded-full justify-center web:transition-colors web:duration-150 web:ease-out',
         item_text_grid:
-            'w-full text-center text-xs font-medium leading-tight text-secondary-foreground web:group-hover:text-foreground px-0.5',
-        item_icon:
-            'flex shrink-0 items-center w-9 h-9 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
-        item_icon_active:
-            'flex shrink-0 items-center w-9 h-9 bg-accent rounded-full justify-center',
-        icon_size: 20, // Default icon size for dropdown menu icons
+            'w-full text-center text-xs font-medium leading-tight text-secondary-foreground web:group-hover:text-foreground px-0.5 web:transition-colors web:duration-150 web:ease-out',
+        item_icon: `${MENU_ICON_BASE} ${MENU_ITEM_SIZES.regular.icon}`,
+        item_icon_active: `${MENU_ICON_ACTIVE_BASE} ${MENU_ITEM_SIZES.regular.icon}`,
+        icon_size: MENU_ITEM_SIZES.regular.icon_size, // Default icon size for dropdown menu icons
+        /** An item's image (avatar) takes the icon circle's size. */
+        item_image: `rounded-full ${MENU_ITEM_SIZES.regular.icon}`,
+        /** `DropdownMenu size` (vertical lists): the size-free parts above plus one of `MENU_ITEM_SIZES`. */
+        item_ver_base: MENU_ITEM_BASE,
+        item_icon_base: MENU_ICON_BASE,
+        item_icon_active_base: MENU_ICON_ACTIVE_BASE,
+        item_text_base: MENU_TEXT_BASE,
+        item_text_selected_base: MENU_TEXT_SELECTED_BASE,
+        item_sizes: MENU_ITEM_SIZES,
         icon_size_grid: 24,
     },
     modal: {

@@ -726,16 +726,17 @@ html[theme="dark"]:root {
         --neo-radius-2xl: calc(1rem * var(--neo-corner-superellipse-factor, 1.25)) !important;
         --neo-radius-3xl: calc(1.5rem * var(--neo-corner-superellipse-factor, 1.25)) !important;
         --neo-radius-4xl: calc(2rem * var(--neo-corner-superellipse-factor, 1.25)) !important;
+        --neo-radius-popover: calc(1.25rem * var(--neo-corner-superellipse-factor, 1.25)) !important;
         --neo-radius-full: calc(9999px * var(--neo-corner-superellipse-full-factor, 1)) !important;
     }
 
     /* Apply superellipse shape to any element with a rounded class */
     .neo-corner-smooth :is([class~="rounded"], [class~="rounded-xs"], [class~="rounded-sm"], [class~="rounded-md"],
         [class~="rounded-lg"], [class~="rounded-xl"], [class~="rounded-2xl"],
-        [class~="rounded-3xl"], [class~="rounded-4xl"],
+        [class~="rounded-3xl"], [class~="rounded-4xl"], [class~="rounded-popover"],
         [class*=":rounded"], [class*=":rounded-xs"], [class*=":rounded-sm"], [class*=":rounded-md"],
         [class*=":rounded-lg"], [class*=":rounded-xl"], [class*=":rounded-2xl"],
-        [class*=":rounded-3xl"], [class*=":rounded-4xl"]) {
+        [class*=":rounded-3xl"], [class*=":rounded-4xl"], [class*=":rounded-popover"]) {
         /* stylelint-disable-next-line property-no-unknown */
         corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1.25));
     }
@@ -834,6 +835,41 @@ webview {
 }
 
 /*
+ * Popup content that scrolls (`DropdownPopup`) fades into the popup's top and bottom edges while there is more to
+ * scroll that way, instead of being cut off there. A scroll-driven animation moves each fade in over the first and
+ * last 24px of scrolling, so content at rest (or too short to scroll: the timeline is then inactive) is untouched.
+ * Browsers without scroll timelines keep the plain edge.
+ */
+@property --neo-scroll-fade-top {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 0px;
+}
+@property --neo-scroll-fade-bottom {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 0px;
+}
+@keyframes neo-scroll-fade-top {
+    from { --neo-scroll-fade-top: 0px; }
+    to { --neo-scroll-fade-top: 1.5rem; }
+}
+@keyframes neo-scroll-fade-bottom {
+    from { --neo-scroll-fade-bottom: 1.5rem; }
+    to { --neo-scroll-fade-bottom: 0px; }
+}
+@supports (animation-timeline: scroll()) {
+    .neo-scroll-fade {
+        mask-image: linear-gradient(to bottom,
+            transparent 0, #000 var(--neo-scroll-fade-top),
+            #000 calc(100% - var(--neo-scroll-fade-bottom)), transparent 100%);
+        animation: neo-scroll-fade-top linear both, neo-scroll-fade-bottom linear both;
+        animation-timeline: scroll(self), scroll(self);
+        animation-range: 0 1.5rem, calc(100% - 1.5rem) 100%;
+    }
+}
+
+/*
  * Menus: one highlight slides under the items to the one under the pointer, or the one focused from the
  * keyboard (`useMenuHighlight`, ui/atoms/menu-highlight.web.ts), in the ghost-link hover tint, and the items don't
  * light up on their own. It is the list's ::before, placed through CSS variables; it fades in where it first
@@ -861,7 +897,8 @@ webview {
         width 150ms cubic-bezier(0.22, 1, 0.36, 1),
         height 150ms cubic-bezier(0.22, 1, 0.36, 1),
         border-radius 150ms cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 150ms ease-out;
+        /* Tailwind's ease-out, as the label, icon and circle colours of the items (theme.dropdown_menu) */
+        opacity 150ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .neo-menu-highlight.neo-menu-highlight-on::before {
@@ -869,12 +906,12 @@ webview {
 }
 
 .neo-menu-highlight.neo-menu-highlight-jump::before {
-    transition: opacity 150ms ease-out;
+    transition: opacity 150ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
     .neo-menu-highlight::before {
-        transition: opacity 150ms ease-out;
+        transition: opacity 150ms cubic-bezier(0, 0, 0.2, 1);
     }
 }
 

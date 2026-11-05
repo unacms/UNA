@@ -49,10 +49,12 @@ export default function AuthPanel({
     return (
         <View className="w-full gap-6">
             {forgotPasswordLink && (
+                // Same size as the "Don't have an account? Sign up" line under it (the splash
+                // and login layouts draw that one at md / text-base).
                 <Link
                     className="mx-auto"
                     variant="accent"
-                    size="sm"
+                    size="md"
                     href="/forgot-password"
                     haptics="Medium"
                 >

@@ -509,8 +509,13 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
         if(!($aInfo = $this->_getContentInfo($iId)) || ($mixedCheck = $this->_oModule->checkAllowedSetOperatorRole($aInfo)) !== CHECK_ACTION_RESULT_ALLOWED)
             return echoJson(['msg' => $mixedCheck ?? $sError]);
 
-        if(!BxDolStudioRolesUtils::getInstance()->setRole($iId, bx_process_input(bx_get('role'), BX_DATA_INT)))
-            return echoJson(array('msg' => _t('_error occured')));
+        $oUtils = BxDolStudioRolesUtils::getInstance();
+
+        $iRole = $oUtils->convertRoleA2I(bx_process_input(bx_get('role'), BX_DATA_INT));
+        if($oUtils->isRoleInSet(BX_DOL_STUDIO_ROLE_MASTER, $iRole) || !$oUtils->setRole($iId, $iRole))
+            return echoJson(['msg' => $sError]);
+
+        BxDolAccount::getInstance()->doAudit($iId, '_sys_audit_action_account_change_role_to_' . ($iRole ? 3 : 1));
 
         echoJson(['grid' => $this->getCode(false), 'blink' => $iId]);
     }

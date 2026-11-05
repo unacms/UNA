@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next'
 import { playCue } from 'app/lib/sound'
 
 // The page header's floating buttons: centred in its h-16 row (10px above a 44px button), inset by
-// its px-4 and spaced by its gap-3 (`layout.header.content_left` / `content_right`).
+// its ps-4 / pe-4 and spaced by its gap-3 (`layout.header.content_left` / `content_right`).
 const COVER_CONTROL_TOP = 10
 
 function getNativeTabsTopInset() {

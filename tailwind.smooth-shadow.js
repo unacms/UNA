@@ -37,7 +37,9 @@ const RING = '0 0 0 var(--smooth-ring-width, 1px) var(--smooth-ring-color)';
 const BORDER_LIGHT = '0 0 0 1px oklch(0 0 0 / 0.06), 0 1px 2px -1px oklch(0 0 0 / 0.06), 0 2px 4px 0 oklch(0 0 0 / 0.04)';
 const BORDER_DARK = '0 0 0 1px oklch(1 0 0 / 0.08)';
 const POPOVER_LIGHT = '0 0 0 1px oklch(0 0 0 / 0.06), 0 4px 6px -2px oklch(0 0 0 / 0.05), 0 12px 24px -4px oklch(0 0 0 / 0.10)';
-const POPOVER_DARK = '0 0 0 1px oklch(1 0 0 / 0.08), 0 12px 24px -4px oklch(0 0 0 / 0.50)';
+// Dark: the edge is inside the surface. A white ring outside it, over the near-black page, came out darker than the
+// surface and didn't show; inside, it lightens the surface's own edge on any page (as NEO's shadow-popover-deep).
+const POPOVER_DARK = 'inset 0 0 0 1px oklch(1 0 0 / 0.10), 0 12px 24px -4px oklch(0 0 0 / 0.50)';
 const MODAL_LIGHT = '0 4px 6px -2px oklch(0 0 0 / 0.05), 0 12px 24px -4px oklch(0 0 0 / 0.10)';
 const MODAL_DARK = '0 12px 24px -4px oklch(0 0 0 / 0.50)';
 

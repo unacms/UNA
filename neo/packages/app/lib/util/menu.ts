@@ -374,9 +374,9 @@ const DROPDOWN_SECTION_MAX = 320; // w-80
 const DROPDOWN_SECTION_GAP = 4; // gap-1
 const DROPDOWN_SECTION_STACK_BELOW = 640; // sm
 const DROPDOWN_POPUP_GUTTER = 32;
-// Theme shell uses `p-1.5` (6px × 2). Must match `theme.dropdown.cnt` — too
+// Theme shell uses `p-2` (8px × 2). Must match `theme.dropdown.cnt` — too
 // small and the last column wraps while the popup still reserves its width.
-const DROPDOWN_POPUP_PAD = 12;
+const DROPDOWN_POPUP_PAD = 16;
 
 /**
  * How many section columns fit, and how wide they should be.
@@ -473,6 +473,11 @@ const KEBAB_ICON_NAME = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 const FA_STYLE_TOKENS = new Set(['fa', 'fas', 'far', 'fab', 'fal', 'fad', 'fat']);
 
 /** Map a UNA / Font Awesome icon string to an icon-set name (PascalCase); returns input if unknown. */
+/**
+ * The icon name for UNA's `s` (a Font Awesome or kebab-case Lucide name). It can be one Lucide has since renamed
+ * (`Copyright`, `Trash2`): custom drawings (icons-svg) may be registered under it, so the rename to the current Lucide
+ * name is left to the Lucide fallbacks (`Icon`, `lucideAssetName`), via `currentLucideName`.
+ */
 export function findIconFromRemote<T extends string | null | undefined>(s: T): T | string {
     if (!s || /^[A-Z][^\s]*$/.test(s))
         return s;

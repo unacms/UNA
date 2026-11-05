@@ -57,20 +57,31 @@ class BxDolStudioRolesUtils extends BxDol implements iBxDolSingleton
 
     public function setRole($iAccountId, $mixedRole)
     {
-        if(is_array($mixedRole)) {
-            if(count($mixedRole) != 1 || current($mixedRole) != 0) {
-                $iAccountRole = 0;
+        return $this->oDb->setRole($iAccountId, $this->convertRoleA2I($mixedRole));
+    }
 
-                foreach($mixedRole as $iRole)
-                    $iAccountRole = $iAccountRole | pow(2, ($iRole - 1));
+    public function isRoleInSet($iRole, $mixedRoles)
+    {
+        $iRoles = $this->convertRoleA2I($mixedRoles);
+        if(!$iRoles)
+            return false;
 
-                $mixedRole = $iAccountRole;
-            }
-            else 
-                $mixedRole = 0;
-        }
+        return (pow(2, $iRole - 1) & $iRoles);
+    }
 
-        return $this->oDb->setRole($iAccountId, $mixedRole);
+    public function convertRoleA2I($mixedRole) 
+    {
+        if(!is_array($mixedRole))
+            return $mixedRole;
+
+        if(count($mixedRole) == 1 && current($mixedRole) == 0) 
+            return 0;
+
+        $iAccountRole = 0;
+        foreach($mixedRole as $iRole)
+            $iAccountRole = $iAccountRole | pow(2, ($iRole - 1));
+
+        return $iAccountRole;
     }
 
     public function isActionAllowed($sAction, $iAccountId = 0)

@@ -468,7 +468,8 @@ export default function TasksFilterSelector({
             <DropdownPopup
                 open={open}
                 onOpenChange={handleOpenChange}
-                contentClassName="p-0 overflow-hidden"
+                contentClassName="overflow-hidden"
+                inset={false}
                 buttonProps={{
                     style: 'glass',
                     controlSize: 'small',

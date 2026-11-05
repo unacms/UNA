@@ -71,15 +71,20 @@ export type DropdownMenuProps = {
     minPopupWidth?: number;
     /** Popup: lay the rows out in this many columns of about the same height. */
     columns?: number;
+    /** Row size of a vertical list, the NeoButton heights: mini 28, small 36, regular 44 (default), large 52, xlarge 64.
+        Popups and the JS bottom sheet (Android) use it; iOS draws text-only sheet rows natively at the system size. */
+    size?: DropdownMenuItemSize;
 };
+
+export type DropdownMenuItemSize = 'mini' | 'small' | 'regular' | 'large' | 'xlarge';
 
 type DropdownMenuPopupProps = Omit<DropdownMenuProps, 'mode' | 'title' | 'cancelable'>;
 
 type DropdownMenuNativeProps = Pick<DropdownMenuProps,
     'items' | 'onSelect' | 'children' | 'defaultOpen' | 'mode' | 'title' | 'cancelable'
-    | 'resolveContent' | 'buttonProps' | 'triggerAccessibilityLabel' | 'variant'>;
+    | 'resolveContent' | 'buttonProps' | 'triggerAccessibilityLabel' | 'variant' | 'size'>;
 
-type MenuBottomSheetProps = Pick<DropdownMenuProps, 'items' | 'onSelect' | 'resolveContent' | 'variant'> & {
+type MenuBottomSheetProps = Pick<DropdownMenuProps, 'items' | 'onSelect' | 'resolveContent' | 'variant' | 'size'> & {
     setBottomSheetData: (data: any) => void;
 };
 
@@ -150,6 +155,7 @@ function DropdownMenuPopup({
     stacked = false,
     minPopupWidth = 256,
     columns = 1,
+    size,
 }: DropdownMenuPopupProps) {
     const DropdownMenuItem = getDropdownMenuItem();
     const redirectdRef = useRef<RedirectHandle | null>(null);
@@ -299,7 +305,7 @@ function DropdownMenuPopup({
                     openOnFocus ?? variant === 'tabs-overflow'
                 }
                 contentClassName={cn(
-                    variant === 'tabs-overflow' && 'overflow-visible p-2',
+                    variant === 'tabs-overflow' && 'overflow-visible',
                     contentClassNameProp
                 )}
                 open={isOpen}
@@ -365,6 +371,7 @@ function DropdownMenuPopup({
                                                 link={navigable ? item.link : undefined}
                                                 classes={classes}
                                                 className={item.className}
+                                                size={size}
                                             />
                                         );
                                     })}
@@ -385,6 +392,7 @@ function DropdownMenuPopup({
                                     link={navigable ? item.link : undefined}
                                     classes={classes}
                                     className={item.className}
+                                    size={size}
                                 />
                             );
                         })}
@@ -444,7 +452,7 @@ function useMenuSheetPress({ onSelect, resolveContent, setBottomSheetData, redir
     );
 }
 
-const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveContent, variant }: MenuBottomSheetProps) => {
+const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveContent, variant, size }: MenuBottomSheetProps) => {
     const DropdownMenuItem = getDropdownMenuItem();
     const redirectdRef = useRef<RedirectHandle | null>(null);
     const isGridLayout = variant === 'grid';
@@ -486,6 +494,7 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveCont
                         item={item}
                         handleSelect={handlePressMenu(item)}
                         classes={classes}
+                        size={size}
                     />
                 </View>
             ))}
@@ -506,6 +515,7 @@ function DropdownMenuNative({
     buttonProps,
     triggerAccessibilityLabel,
     variant,
+    size,
 }: DropdownMenuNativeProps) {
     const { setBottomSheetData } = useBottomSheetData();
     const { t } = useTranslation();
@@ -521,6 +531,7 @@ function DropdownMenuNative({
                 content: (
                     <MenuBottomSheet
                         variant={variant}
+                        size={size}
                         resolveContent={resolveContent}
                         items={items}
                         onSelect={onSelect}
@@ -553,7 +564,7 @@ function DropdownMenuNative({
                 { cancelable: cancelable }
             );
         }
-    }, [cancelable, items, mode, onSelect, pressItem, resolveContent, setBottomSheetData, t, title, variant]);
+    }, [cancelable, items, mode, onSelect, pressItem, resolveContent, setBottomSheetData, size, t, title, variant]);
 
     useEffect(() => {
         if (defaultOpen)
@@ -611,6 +622,7 @@ export default function DropdownMenu({
     stacked = false,
     minPopupWidth,
     columns,
+    size,
 }: DropdownMenuProps) {
     const isWeb = Platform.OS === 'web';
 
@@ -638,6 +650,7 @@ export default function DropdownMenu({
                 stacked={stacked}
                 minPopupWidth={minPopupWidth}
                 columns={columns}
+                size={size}
             />
         );
     }
@@ -655,6 +668,7 @@ export default function DropdownMenu({
             buttonProps={buttonProps}
             triggerAccessibilityLabel={triggerAccessibilityLabel}
             variant={variant}
+            size={size}
         />
     );
 }
