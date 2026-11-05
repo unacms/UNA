@@ -67,8 +67,10 @@ class ArtificerMenuRowsTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('.bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"])', $sPopup, 'One rule styles every vertical menu in a popup.');
         $this->assertStringContainsString(':not(.bx-menu-floating-blocks-wide)', $sPopup, 'The account panel pads its own rows, so links there get no second padding.');
         $this->assertMatchesRegularExpression('/min-height: 2\.75rem;/', $sPopup, 'Popup rows are 44px.');
-        $this->assertMatchesRegularExpression('/border-radius: 0\.5rem;/', $sPopup, 'Popup rows have 8px corners.');
-        $this->assertMatchesRegularExpression('/padding-inline-start: 0\.75rem;/', $sPopup, '12px on the icon side.');
+        $this->assertMatchesRegularExpression('/border-radius: 0\.75rem;/', $sPopup, 'Popup rows have 12px corners, as NEO\'s regular menu items.');
+        $this->assertMatchesRegularExpression('/min-height: 2\.75rem;[^}]*padding-inline-start: 1rem;\s*padding-inline-end: 1rem;/', $sPopup, 'A label is 16px from either side of its row.');
+        $this->assertMatchesRegularExpression('/\.bx-artificer \.bx-popup-menu \.bx-popup-border \{\s*border-radius: 1\.25rem;/', $sCss, 'Menu popups have 20px corners, concentric with the rows\' 12px ones in the 8px inset.');
+        $this->assertMatchesRegularExpression('/\.bx-popup \.bx-menu-highlight-list::before \{[^}]*\brounded-xl\b/', $sCss, 'The sliding highlight has the rows\' corners.');
 
         $sMenuCss = self::read('modules/boonex/artificer/data/template/system/css/menu.css');
         $this->assertDoesNotMatchRegularExpression('/more-auto \.bx-popup \.bx-menu-custom \.bx-menu-item[^{]*\{\s*border-radius: 0;/', $sMenuCss, 'No legacy rule squares the More rows again.');
@@ -86,7 +88,9 @@ class ArtificerMenuRowsTest extends \PHPUnit\Framework\TestCase
 
         $sItem = '/\.bx-popup ul:is\(\.bx-menu-ver, \.bx-menu-custom-ver, \[class\*="bx-menu-object-"\]\):not\(\.bx-menu-hor\):not\(\.bx-menu-custom-hor\):not\(\.bx-menu-floating-blocks-wide\) > li';
         $sCurve = 'cubic-bezier\(0, 0, 0\.2, 1\)';
-        $this->assertMatchesRegularExpression($sItem . ' \.bx-stl-mii:has\(> \*\) \{\s*@apply shrink-0 w-9 h-9 rounded-full [^;]*bg-gray-200\/50 dark:bg-gray-700\/50 text-gray-600 dark:text-gray-400;\s*transition: color 150ms ' . $sCurve . ', background-color 150ms ' . $sCurve . ';/', $s, 'An icon sits in a 36px circle, in the label\'s colour, and both ease with the highlight.');
+        $this->assertMatchesRegularExpression($sItem . ' \.bx-stl-mii:has\(> \*\) \{\s*@apply shrink-0 w-8 h-8 rounded-full [^;]*bg-gray-200\/50 dark:bg-gray-700\/50 text-gray-600 dark:text-gray-400;\s*transition: color 150ms ' . $sCurve . ', background-color 150ms ' . $sCurve . ';/', $s, 'An icon sits in a 32px circle, in the label\'s colour, and both ease with the highlight.');
+        $this->assertMatchesRegularExpression($sItem . ' > a:has\(> \.bx-stl-mii > \*\) \{\s*padding-inline-start: 0\.5rem;/', $s, 'The circle is 8px from the row\'s side (6px above and below in the 44px row).');
+        $this->assertMatchesRegularExpression($sItem . ' \.bx-stl-mii > img \{\s*@apply w-8 h-8 rounded-full/', $s, 'A picture fills the 32px circle.');
         $this->assertMatchesRegularExpression($sItem . ' \.bx-stl-mii > \* \{\s*@apply w-5 h-5 m-0[^;]*;\s*color: inherit;/', $s, 'The glyph is 20px and takes the circle\'s colour.');
         $this->assertMatchesRegularExpression($sItem . ' \.bx-stl-mit \{\s*@apply text-sm font-semibold text-gray-600 dark:text-gray-400;\s*transition: color 150ms ' . $sCurve . ';/', $s, 'Labels are 14px semibold, a step lighter at rest.');
         $this->assertMatchesRegularExpression($sItem . ':hover \.bx-stl-mii:has\(> \*\) \{\s*@apply bg-gray-300 dark:bg-gray-700 text-gray-950 dark:text-gray-50;/', $s, 'On hover the circle darkens and the glyph turns to the text colour.');
