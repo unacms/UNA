@@ -436,7 +436,7 @@ export const settingsButtons = {
                         focused: 'bg-foreground/5',
                         pressed: 'bg-foreground/10',
                         active: 'bg-foreground/5',
-                        pressedToggle: 'bg-accent',
+                        pressedToggle: { default: 'bg-accent', web: 'glass-tint dark:glass-tint-dark' },
                         voted: 'bg-accent/60',
                         disabled: 'opacity-50',
                     },
@@ -687,7 +687,12 @@ export const settingsButtons = {
                     focused: 'bg-popover/80 web:bg-white/30 web:dark:bg-white/15',
                     pressed: 'bg-muted web:bg-white/55 web:dark:bg-white/23',
                     active: 'bg-muted/50 web:bg-white/40 web:dark:bg-white/19',
-                    pressedToggle: 'bg-accent shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    // Selected: tinted glass on web (accent fill over the blur, the glass edge in the tint;
+                    // `glass-tint` in global.css). The native JS fallback keeps the flat accent.
+                    pressedToggle: {
+                        default: 'bg-accent shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                        web: 'glass-tint dark:glass-tint-dark shadow-btn-glass-tinted dark:shadow-btn-glass-tinted-deep',
+                    },
                     disabled: 'bg-muted/50',
                 },
                 text: {

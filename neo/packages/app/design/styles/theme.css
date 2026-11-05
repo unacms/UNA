@@ -177,6 +177,8 @@
     --shadow-btn-glass-deep: var(--neo-shadow-btn-glass-deep);
     --shadow-btn-glass-pressed: var(--neo-shadow-btn-glass-pressed);
     --shadow-btn-glass-pressed-deep: var(--neo-shadow-btn-glass-pressed-deep);
+    --shadow-btn-glass-tinted: var(--neo-shadow-btn-glass-tinted);
+    --shadow-btn-glass-tinted-deep: var(--neo-shadow-btn-glass-tinted-deep);
     --shadow-btn-glass-prominent: var(--neo-shadow-btn-glass-prominent);
     --shadow-btn-glass-prominent-deep: var(--neo-shadow-btn-glass-prominent-deep);
     --shadow-btn-glass-prominent-pressed: var(--neo-shadow-btn-glass-prominent-pressed);
@@ -244,6 +246,14 @@
         --neo-shadow-btn-glass:                        inset 0 3px 1.5px -1.5px rgb(255 255 255 / 1), inset 0 -3px 1.5px -1.5px rgb(255 255 255 / 1), 0 0 0 0.6px rgb(0 0 0 / 0.08), 1px 0 0 -0.4px rgb(0 0 0 / 0.22), -1px 0 0 -0.4px rgb(0 0 0 / 0.22), 0 4px 10px -2px rgb(0 0 0 / 0.03);
         --neo-shadow-btn-glass-deep:                   inset 0 1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 -1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 4px 5px -4px rgb(255 255 255 / 0.08), inset 0 -4px 5px -4px rgb(255 255 255 / 0.08), 0 0 0 0.6px rgb(0 0 0 / 0.5);
        
+        /* Selected (tinted) glass: the same edge, in the tint. Light: the hairline turns accent-400, darker at the
+           sides, and the crescents are thinner, white at 70% over the tint. Dark: the crescents turn accent-400. Measured
+           on the iOS 26 tinted tab (Explore sub-tabs, 3x): light fill 209/228/254, top hairline 185/216/254, side
+           134/188/254, crescent 236/255/255; dark fill 30/58/138, crescent 76/112/216, black hairline. The shadow
+           lists match the untinted ones item for item, so hover to selected animates. */
+        --neo-shadow-btn-glass-tinted:                 inset 0 2px 1px -1px rgb(255 255 255 / 0.7), inset 0 -2px 1px -1px rgb(255 255 255 / 0.7), 0 0 0 0.6px rgb(var(--accent-400) / 0.4), 1px 0 0 -0.4px rgb(var(--accent-400) / 0.45), -1px 0 0 -0.4px rgb(var(--accent-400) / 0.45), 0 4px 10px -2px rgb(0 0 0 / 0.03);
+        --neo-shadow-btn-glass-tinted-deep:            inset 0 1px 1px -0.5px rgb(var(--accent-400) / 0.8), inset 0 -1px 1px -0.5px rgb(var(--accent-400) / 0.8), inset 0 4px 5px -4px rgb(var(--accent-400) / 0.25), inset 0 -4px 5px -4px rgb(var(--accent-400) / 0.25), 0 0 0 0.6px rgb(0 0 0 / 0.5);
+
         --neo-shadow-btn-glass-pressed:                inset 0 0 0 1px rgb(255 255 255 / 0.50), inset 0 1px 0 0 rgb(255 255 255 / 0.50), 0 0 0 1px rgb(0 0 0 / 0.01), 0 1px 4px -1px rgb(0 0 0 / 0.1), 0 2px 8px -2px rgb(0 0 0 / 0.1);;
         --neo-shadow-btn-glass-pressed-deep:           inset 0 0 0 1px rgb(255 255 255 / 0.05), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.5), 0 2px 8px -2px rgb(0 0 0 / 0.5);
       
