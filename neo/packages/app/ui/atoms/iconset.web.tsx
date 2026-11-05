@@ -9,18 +9,18 @@ function maskStrokeWidth(strokeWidth: unknown) {
     return Number.isInteger(num) && num > 0 && num <= 64 ? num : 2;
 }
 
-export function IconFromSet({ icon, InlineIcon, AnimatedIconComponent, width, height, size, _strokeWidth, color, cleanedClassName, rest, fill }: IconCoreProps) {
+export function IconFromSet({ icon, InlineIcon, animatedIcon, width, height, size, _strokeWidth, color, cleanedClassName, rest, fill }: IconCoreProps) {
     // No size in the URL: the mask is a vector scaled by mask-size, so one file
     // serves every size. /lucide/* is static (apps/next/lib/generate-lucide-icons.js);
     // a custom `fill` still needs the dynamic route.
     const maskUrl = useMemo(() => {
-        if (!icon || InlineIcon || AnimatedIconComponent) return null;
+        if (!icon || InlineIcon || animatedIcon) return null;
         const strokeWidth = maskStrokeWidth(_strokeWidth);
         if (fill) return `/api/api.icon?icon=${icon}&strokeWidth=${strokeWidth}&fill=${encodeURIComponent(fill)}`;
         // ?v= marks the URL immutable (next.config.js headers()).
         const version = process.env.NEXT_PUBLIC_LUCIDE_VERSION;
         return `/lucide/${strokeWidth}/${icon}.svg` + (version ? `?v=${version}` : '');
-    }, [icon, InlineIcon, AnimatedIconComponent, _strokeWidth, fill]);
+    }, [icon, InlineIcon, animatedIcon, _strokeWidth, fill]);
 
     if (!maskUrl) return null;
 

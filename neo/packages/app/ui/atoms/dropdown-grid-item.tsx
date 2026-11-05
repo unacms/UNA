@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import type { GestureResponderEvent } from 'react-native';
-import { Platform } from 'react-native';
 import { Pressable, View } from 'app/design/view';
 import { cueAttributes } from 'app/lib/sound';
 import { Text } from 'app/design/typography';
@@ -27,7 +25,7 @@ export type DropdownGridMenuItem = {
     [key: string]: unknown;
 };
 
-function GridIcon({ item, hovered }: { item: DropdownGridMenuItem; hovered: boolean }) {
+function GridIcon({ item }: { item: DropdownGridMenuItem }) {
     const image = item?.image;
     if (typeof image === 'string' && image && /^(https?:|file:|content:|data:)/i.test(image)) {
         return (
@@ -53,7 +51,6 @@ function GridIcon({ item, hovered }: { item: DropdownGridMenuItem; hovered: bool
             icon={item.icon}
             size={item?.icon_size || menuSettings.icon_size_grid || 24}
             animated={useAnimated}
-            hovered={useAnimated && Platform.OS === 'web' ? hovered : undefined}
         />
     );
 }
@@ -70,16 +67,8 @@ type DropdownGridItemProps = {
 export default function DropdownGridItem({ item, index, link, handleSelect, className }: DropdownGridItemProps) {
     const key = item.id ?? index;
     const title = typeof item.title === 'string' ? item.title : '';
-    const [rowHovered, setRowHovered] = useState(false);
-    const rowHoverProps =
-        item.animated && Platform.OS === 'web'
-            ? {
-                onMouseEnter: () => setRowHovered(true),
-                onMouseLeave: () => setRowHovered(false),
-            }
-            : {};
-
-    const icon = <GridIcon item={item} hovered={rowHovered} />;
+    // The icon's hover motion is CSS, keyed on the tile's `group` class (`item_grid`).
+    const icon = <GridIcon item={item} />;
     const Wrapper = handleSelect ? Pressable : View;
     const pressProps =
         typeof handleSelect === 'function'
@@ -93,7 +82,6 @@ export default function DropdownGridItem({ item, index, link, handleSelect, clas
             accessibilityRole={handleSelect ? 'button' : undefined}
             accessibilityLabel={decodeTextNode(title) || undefined}
             {...pressProps}
-            {...rowHoverProps}
             {...(handleSelect || link ? cueAttributes('select') : {})}
         >
             {icon ? <View className={menuSettings.item_icon_grid}>{icon}</View> : null}

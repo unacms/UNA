@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Platform, type GestureResponderEvent } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View, Row } from 'app/design/view';
@@ -65,7 +65,7 @@ export type DropdownMenuItemProps = {
     size?: DropdownMenuItemSize;
 };
 
-const getIcon = (oItem: DropdownRowItem, iconSize: number, rowHovered: boolean, imageClass = 'h-8 w-8 rounded-full') => {
+const getIcon = (oItem: DropdownRowItem, iconSize: number, imageClass = 'h-8 w-8 rounded-full') => {
     const image = oItem?.image
     if (typeof image === 'string' && image && /^(https?:|file:|content:|data:)/i.test(image)) {
         return (
@@ -98,7 +98,6 @@ const getIcon = (oItem: DropdownRowItem, iconSize: number, rowHovered: boolean, 
                 icon={oItem.icon}
                 size={oItem?.icon_size || iconSize}
                 animated={useAnimated}
-                hovered={useAnimated && Platform.OS === 'web' ? rowHovered : undefined}
             />
         );
     }
@@ -163,18 +162,6 @@ const getTextClass = (presets: Presets, item: DropdownRowItem, classes?: Dropdow
 };
 
 /** Web: rows with an animated icon play it while the pointer is over the row. */
-const useRowHover = (animated?: boolean) => {
-    const [rowHovered, setRowHovered] = useState(false);
-    const rowHoverProps =
-        animated && Platform.OS === 'web'
-            ? {
-                  onMouseEnter: () => setRowHovered(true),
-                  onMouseLeave: () => setRowHovered(false),
-              }
-            : {};
-    return [rowHovered, rowHoverProps] as const;
-};
-
 /** A string title with its description under it (`resolveMenuItemDescription`). */
 function ItemLabel({ item, textClass }: Readonly<{ item: DropdownRowItem; textClass: string }>) {
     const { t } = useTranslation();
@@ -193,7 +180,6 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     const key = item.id ?? index;
     const presets: Presets = { ...menuSettings, ...sizedPresets(size) };
     const iconSize = presets.icon_size || 16;
-    const [rowHovered, rowHoverProps] = useRowHover(item.animated);
 
     // A node title renders itself; its onPress is already handled inside MenuItemEx, so no outer Pressable.
     if (typeof item.title !== 'string')
@@ -206,7 +192,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     if (item.type === 'group_header')
         return <GroupHeader key={key} item={item} />;
 
-    const icon = getIcon(item, iconSize, rowHovered, presets.item_image);
+    const icon = getIcon(item, iconSize, presets.item_image);
     const iconWrapClass = item.selected
         ? (presets.item_icon_active ?? presets.item_icon)
         : presets.item_icon;
@@ -224,7 +210,6 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
             className={rowClass}
             key={key}
             {...pressProps}
-            {...rowHoverProps}
             // A menu option (web; native menus are bottom sheets and stay quiet). `item.sound` changes it; false for
             // an option whose choice answers itself (the Sounds level).
             {...(handleSelect || link ? cueAttributes(item.sound ?? 'select') : {})}

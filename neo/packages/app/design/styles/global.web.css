@@ -920,3 +920,136 @@ webview {
 .neo-menu-highlight > * > .group:hover:not(.bg-accent) {
     background-color: transparent;
 }
+
+/* Animated Lucide icons (ui/atoms/animated-icons, animated-icons.md). The engine draws plain SVG; all motion is here.
+ * A row hovered (`group`, or the icon itself) or keyboard-focused sets the trigger variables on `.nai`:
+ * `--nai-on` for motions that hold while hovered (rotate, shift), and a keyframes name per one-shot motion,
+ * which plays once each time the hover starts. `data-active` gives the duotone fill and active shapes (Menu → X).
+ * Reduced motion keeps the state changes and drops the movement. */
+.nai {
+    transition: scale 150ms cubic-bezier(0.2, 0, 0, 1);
+}
+.nai g {
+    transform-box: view-box;
+}
+.nai [data-fill] {
+    fill-opacity: 0;
+    transition: fill-opacity 200ms cubic-bezier(0.2, 0, 0, 1);
+}
+.nai[data-active] [data-fill] {
+    fill-opacity: 0.2;
+}
+/* The swap from the static icon fades the active fill in rather than popping it. */
+@starting-style {
+    .nai[data-active][data-swapped] [data-fill] {
+        fill-opacity: 0;
+    }
+}
+
+.nai-x {
+    transform-origin: var(--nai-ao, 12px 12px);
+    transition: transform 250ms cubic-bezier(0.2, 0, 0, 1), opacity 150ms cubic-bezier(0.2, 0, 0, 1);
+}
+.nai[data-active] .nai-x {
+    transform: translate(var(--nai-ax, 0px), var(--nai-ay, 0px)) rotate(var(--nai-ad, 0deg));
+}
+.nai[data-active] .nai-x[data-hide] {
+    opacity: 0;
+}
+
+.nai-m {
+    transform-origin: var(--nai-o, 12px 12px);
+}
+.nai-m[data-m="rotate"] {
+    transform: rotate(calc(var(--nai-deg, 0deg) * var(--nai-on, 0)));
+    transition: transform var(--nai-t, 300ms) cubic-bezier(0.2, 0, 0, 1) var(--nai-d, 0ms);
+}
+.nai-m[data-m="shift"] {
+    transform: translate(calc(var(--nai-x, 0px) * var(--nai-on, 0)), calc(var(--nai-y, 0px) * var(--nai-on, 0)));
+    transition: transform var(--nai-t, 300ms) cubic-bezier(0.2, 0, 0, 1) var(--nai-d, 0ms);
+}
+.nai-m[data-m="swing"] {
+    animation: var(--nai-swing, none) var(--nai-t, 450ms) cubic-bezier(0.4, 0, 0.2, 1) var(--nai-d, 0ms) both;
+}
+.nai-m[data-m="wiggle"] {
+    animation: var(--nai-wiggle, none) var(--nai-t, 500ms) cubic-bezier(0.4, 0, 0.2, 1) var(--nai-d, 0ms) both;
+}
+.nai-m[data-m="lift"] {
+    animation: var(--nai-lift, none) var(--nai-t, 400ms) cubic-bezier(0.4, 0, 0.2, 1) var(--nai-d, 0ms) both;
+}
+.nai-m[data-m="pulse"] {
+    animation: var(--nai-pulse, none) var(--nai-t, 350ms) cubic-bezier(0.4, 0, 0.2, 1) var(--nai-d, 0ms) both;
+}
+.nai-m[data-m="appear"] {
+    animation: var(--nai-appear, none) var(--nai-t, 200ms) cubic-bezier(0.2, 0, 0, 1) var(--nai-d, 0ms) both;
+}
+.nai-m[data-m="draw"] > * {
+    animation: var(--nai-draw, none) var(--nai-t, 400ms) cubic-bezier(0.2, 0, 0, 1) var(--nai-d, 0ms) both;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .group:hover .nai,
+    .nai:hover {
+        --nai-on: 1;
+        --nai-swing: nai-swing;
+        --nai-wiggle: nai-wiggle;
+        --nai-lift: nai-lift;
+        --nai-pulse: nai-pulse;
+        --nai-appear: nai-appear;
+        --nai-draw: nai-draw;
+    }
+}
+@media (prefers-reduced-motion: no-preference) {
+    :is(a, button, [role="button"], [role="menuitem"], [role="tab"], .group):focus-visible .nai {
+        --nai-on: 1;
+        --nai-swing: nai-swing;
+        --nai-wiggle: nai-wiggle;
+        --nai-lift: nai-lift;
+        --nai-pulse: nai-pulse;
+        --nai-appear: nai-appear;
+        --nai-draw: nai-draw;
+    }
+    .group:active .nai {
+        scale: 0.96;
+    }
+}
+/* The Menu X holds still while open. */
+.nai[data-still][data-active] .nai-m,
+.nai[data-still][data-active] .nai-m > * {
+    animation: none !important;
+    transform: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nai,
+    .nai-m {
+        transition: none;
+    }
+    .nai-x {
+        transition: opacity 150ms cubic-bezier(0.2, 0, 0, 1);
+    }
+}
+
+@keyframes nai-swing {
+    45% { transform: rotate(var(--nai-deg, 0deg)); }
+}
+@keyframes nai-wiggle {
+    20% { transform: rotate(calc(var(--nai-deg, 0deg) * -1)); }
+    45% { transform: rotate(calc(var(--nai-deg, 0deg) * 0.7)); }
+    70% { transform: rotate(calc(var(--nai-deg, 0deg) * -0.35)); }
+    88% { transform: rotate(calc(var(--nai-deg, 0deg) * 0.1)); }
+}
+@keyframes nai-lift {
+    40% { transform: translate(var(--nai-x, 0px), var(--nai-y, -1.5px)); }
+}
+@keyframes nai-pulse {
+    45% { transform: scale(var(--nai-s, 1)); }
+}
+@keyframes nai-appear {
+    from { opacity: 0.15; }
+}
+/* Shapes in a draw part carry pathLength="100". */
+@keyframes nai-draw {
+    from { stroke-dasharray: 100 100; stroke-dashoffset: 100; }
+    to { stroke-dasharray: 100 100; stroke-dashoffset: 0; }
+}
