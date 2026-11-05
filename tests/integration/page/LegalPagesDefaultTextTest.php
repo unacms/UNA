@@ -10,29 +10,24 @@ use PHPUnit\Framework\Attributes\Group;
 #[Group('integration')]
 class LegalPagesDefaultTextTest extends BxDolIntegrationTestCase
 {
-    private const MIGRATION = 'migrations/2026110510_default_about_terms_privacy.sql';
+    private const MIGRATION = 'migrations/2026110510_default_about_terms_privacy.php';
 
-    private const OLD = [
-        'en' => [
-            '_sys_page_lang_block_about' => 'This site is powered by UNA. The rest is a mystery.',
-            '_sys_page_lang_block_terms' => 'Our terms of use.',
-            '_sys_page_lang_block_privacy' => 'Our privacy policy.',
-        ],
-        'ru' => [
-            '_sys_page_lang_block_about' => 'Этот сайт сделан на UNA. Остальное - тайна, покрытая мраком.',
-            '_sys_page_lang_block_terms' => 'Правила пользования нашим сайтом.',
-            '_sys_page_lang_block_privacy' => 'Политика конфиденциальности нашего сайта.',
-        ],
-    ];
+    private const KEYS = ['_sys_page_lang_block_about', '_sys_page_lang_block_terms', '_sys_page_lang_block_privacy'];
 
+    /** The language files of this release, and of the last release, which has the old one-line defaults. */
     private const FILES = [
         'en' => 'modules/boonex/english/data/langs/system/en.xml',
         'ru' => 'modules/boonex/russian/data/langs/system/ru.xml',
+    ];
+    private const FILES_OLD = [
+        'en' => 'modules/boonex/english/updates/15.0.6_15.0.7/source/data/langs/system/en.xml',
+        'ru' => 'modules/boonex/russian/updates/15.0.6_15.0.7/source/data/langs/system/ru.xml',
     ];
 
     private PDO $_oPdo;
     private array $_aBackup = [];
     private array $_aGetBackup = [];
+    private int $_iTempLanguage = 0;
 
     protected function setUp(): void
     {
@@ -45,8 +40,14 @@ class LegalPagesDefaultTextTest extends BxDolIntegrationTestCase
     protected function tearDown(): void
     {
         foreach ($this->_aBackup as $sLang => $aStrings)
-            foreach ($aStrings as $sKey => $sValue)
-                $this->_setString($sLang, $sKey, $sValue);
+            if (!($this->_iTempLanguage && $sLang === 'ru'))
+                foreach ($aStrings as $sKey => $sValue)
+                    $this->_setString($sLang, $sKey, $sValue);
+
+        if ($this->_iTempLanguage) {
+            $this->_oPdo->exec('DELETE FROM `sys_localization_strings` WHERE `IDLanguage` = ' . $this->_iTempLanguage);
+            $this->_oPdo->exec('DELETE FROM `sys_localization_languages` WHERE `ID` = ' . $this->_iTempLanguage);
+        }
 
         $_GET = $this->_aGetBackup;
         unset($GLOBALS['bxDolClasses']['BxDolPage!sys_terms'], $GLOBALS['bxDolClasses']['BxDolPage!sys_privacy']);
@@ -70,14 +71,19 @@ class LegalPagesDefaultTextTest extends BxDolIntegrationTestCase
 
     public function testMigrationReplacesOnlyTheOldDefault(): void
     {
-        foreach (self::OLD as $sLang => $aOld) {
-            if (!$this->_languageId($sLang))
-                continue;
+        // Russian is often not installed on a test site: add it for this test, with the keys' rows.
+        if (!$this->_languageId('ru'))
+            $this->_addTempLanguage('ru');
 
-            foreach ($aOld as $sKey => $sOld) {
-                if ($this->_getString($sLang, $sKey) === null)
-                    continue;
+        // Each run updates every key that still has an old default, so back them all up first.
+        foreach (array_keys(self::FILES) as $sLang)
+            foreach (self::KEYS as $sKey)
                 $this->_backup($sLang, $sKey);
+
+        foreach (array_keys(self::FILES) as $sLang) {
+            foreach (self::KEYS as $sKey) {
+                $sOld = $this->_shipped($sLang, $sKey, self::FILES_OLD);
+                $this->assertNotSame($this->_shipped($sLang, $sKey), $sOld, "$sLang $sKey has a new text");
 
                 $this->_setString($sLang, $sKey, $sOld);
                 $this->_runMigration();
@@ -113,18 +119,31 @@ class LegalPagesDefaultTextTest extends BxDolIntegrationTestCase
 
     private function _runMigration(): void
     {
-        $this->_oPdo->exec("SET SESSION sql_mode = ''");
-        foreach (BxDolMigrations::splitSql((string)file_get_contents(BX_DIRECTORY_PATH_ROOT . self::MIGRATION)) as $sStatement)
-            $this->_oPdo->exec($sStatement);
+        // As BxDolMigrations runs a PHP migration: require, not require_once, so it runs every time.
+        (static function (string $sPath) {
+            return require $sPath; // NOSONAR
+        })(BX_DIRECTORY_PATH_ROOT . self::MIGRATION);
     }
 
-    private function _shipped(string $sLang, string $sKey): string
+    private function _shipped(string $sLang, string $sKey, array $aFiles = self::FILES): string
     {
-        $oXml = simplexml_load_file(BX_DIRECTORY_PATH_ROOT . self::FILES[$sLang], 'SimpleXMLElement', LIBXML_NOCDATA);
+        $oXml = simplexml_load_file(BX_DIRECTORY_PATH_ROOT . $aFiles[$sLang], 'SimpleXMLElement', LIBXML_NOCDATA);
         $aNodes = $oXml->xpath('//string[@name="' . $sKey . '"]');
         $this->assertCount(1, $aNodes, $sKey);
 
-        return (string)$aNodes[0];
+        return trim((string)$aNodes[0]);
+    }
+
+    /** A language row with an empty string for each key, removed in tearDown. */
+    private function _addTempLanguage(string $sLang): void
+    {
+        $this->_oPdo->prepare("INSERT INTO `sys_localization_languages` (`Name`, `Title`, `LanguageCountry`, `Enabled`) VALUES (?, 'PHPUnit', '', 0)")->execute([$sLang]);
+        $this->_iTempLanguage = (int)$this->_oPdo->lastInsertId();
+
+        $oStmt = $this->_oPdo->prepare("INSERT INTO `sys_localization_strings` (`IDKey`, `IDLanguage`, `String`)
+            SELECT `ID`, ?, '' FROM `sys_localization_keys` WHERE `Key` = ?");
+        foreach (self::KEYS as $sKey)
+            $oStmt->execute([$this->_iTempLanguage, $sKey]);
     }
 
     private function _languageId(string $sLang): int
@@ -158,7 +177,7 @@ class LegalPagesDefaultTextTest extends BxDolIntegrationTestCase
 
     private function _backup(string $sLang, string $sKey): void
     {
-        if (!isset($this->_aBackup[$sLang][$sKey]))
+        if (!array_key_exists($sKey, $this->_aBackup[$sLang] ?? []))
             $this->_aBackup[$sLang][$sKey] = $this->_getString($sLang, $sKey);
     }
 
