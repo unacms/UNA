@@ -4840,6 +4840,11 @@ tablesorter@^2.32.0:
   dependencies:
     jquery ">=1.2.6"
 
+tagsets@0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/tagsets/-/tagsets-0.4.0.tgz#492104beede0635033f37dc1a30b310c45e9556a"
+  integrity sha512-EULmSS/4n/KVXWwlTv7zXGMEYljSFv/cK1QMWHnymhd4BfZ64PJWQYmsZGD1cIdWLa7wKDcrde+CZhO/GMdVKg==
+
 tailwindcss@^3.4.17:
   version "3.4.19"
   resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-3.4.19.tgz#af2a0a4ae302d52ebe078b6775e799e132500ee2"

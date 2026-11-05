@@ -3,6 +3,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* The fade a scrolling popup menu gives its top and bottom edges (".bx-popup-menu .bx-popup-content" below; NEO's
+   .neo-scroll-fade does the same): the fade at each edge grows in over the first or last 24px of scrolling. */
+@property --bx-scroll-fade-top {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 0px;
+}
+@property --bx-scroll-fade-bottom {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 0px;
+}
+@keyframes bx-scroll-fade-top {
+    from { --bx-scroll-fade-top: 0px; }
+    to { --bx-scroll-fade-top: 1.5rem; }
+}
+@keyframes bx-scroll-fade-bottom {
+    from { --bx-scroll-fade-bottom: 1.5rem; }
+    to { --bx-scroll-fade-bottom: 0px; }
+}
+
 @layer utilities {
     .animation-delay-2000 {
         animation-delay: 2s;
@@ -1355,6 +1376,10 @@
     .bx-artificer .bx-popup-border {
         @apply m-px ring-0 smooth-shadow-popover rounded-2xl;
     }
+    /* Menu popups: their rows' 12px corners plus the 8px around them, so the corners are concentric (NEO's rounded-popover). */
+    .bx-artificer .bx-popup-menu .bx-popup-border {
+        border-radius: 1.25rem;
+    }
 
     .bx-artificer .bx-popup-width {
         @apply w-full md:w-128;
@@ -1568,28 +1593,28 @@
 
     /* Popup menus: one highlight slides under the items to the one the pointer is on (bx_menu_highlight in
        functions.js) in the items' hover colour, and the items don't light up on their own. It is the list's ::before
-       (only clearfix used it), 8px round inside the popup's 8px inset, so its corners follow the popup's. */
+       (only clearfix used it), 12px round like the rows inside the popup's 8px inset, so its corners follow the popup's. */
     .bx-popup .bx-menu-highlight-list,
     .bx-popup .bx-menu-highlight-list > li {
         @apply relative;
     }
     .bx-popup .bx-menu-highlight-list::before {
         content: '';
-        @apply block absolute top-0 left-0 rounded-lg pointer-events-none opacity-0 bg-gray-200/50 dark:bg-gray-700/50;
+        @apply block absolute top-0 left-0 rounded-xl pointer-events-none opacity-0 bg-gray-200/50 dark:bg-gray-700/50;
         width: var(--bx-menu-highlight-w, 0);
         height: var(--bx-menu-highlight-h, 0);
         transform: translate(var(--bx-menu-highlight-x, 0), var(--bx-menu-highlight-y, 0));
-        transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1), width 150ms cubic-bezier(0.22, 1, 0.36, 1), height 150ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms ease-out;
+        transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1), width 150ms cubic-bezier(0.22, 1, 0.36, 1), height 150ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms cubic-bezier(0, 0, 0.2, 1); /* the items' colours below ease the same */
     }
     .bx-popup .bx-menu-highlight-list.bx-menu-highlight-on::before {
         @apply opacity-100;
     }
     .bx-popup .bx-menu-highlight-list.bx-menu-highlight-jump::before {
-        transition: opacity 150ms ease-out;
+        transition: opacity 150ms cubic-bezier(0, 0, 0.2, 1);
     }
     @media (prefers-reduced-motion: reduce) {
         .bx-popup .bx-menu-highlight-list::before {
-            transition: opacity 150ms ease-out;
+            transition: opacity 150ms cubic-bezier(0, 0, 0.2, 1);
         }
     }
     .bx-popup .bx-menu-highlight-list > li:not(.bx-menu-tab-active):hover,
@@ -1634,9 +1659,25 @@
         @apply overflow-y-auto overscroll-contain;
     }
     /*
+     * A menu popup that scrolls fades its rows into its top and bottom edges while there is more to scroll that way,
+     * instead of cutting them off there. A scroll-driven animation sets each fade (keyframes at the top of this file), so
+     * a menu at rest or too short to scroll (its timeline is then inactive) is untouched. Browsers without scroll
+     * timelines keep the plain edge.
+     */
+    @supports (animation-timeline: scroll()) {
+        .bx-artificer .bx-popup-menu .bx-popup-content {
+            mask-image: linear-gradient(to bottom,
+                transparent 0, #000 var(--bx-scroll-fade-top),
+                #000 calc(100% - var(--bx-scroll-fade-bottom)), transparent 100%);
+            animation: bx-scroll-fade-top linear both, bx-scroll-fade-bottom linear both;
+            animation-timeline: scroll(self), scroll(self);
+            animation-range: 0 1.5rem, calc(100% - 1.5rem) 100%;
+        }
+    }
+    /*
      * Menus in popups (More, add content, item menus, language and design switchers) all take the header More list's
-     * look: 44px rows like the header tabs, 12px on the icon side and 16px on the other, 8px corners, 16px medium labels,
-     * no gaps. The list is inset 8px, so each row's 8px corner sits inside the popup's 16px one. Horizontal menus
+     * look: 44px rows like the header tabs and NEO's regular menu items, 16px from the label to either side, 12px corners,
+     * 4px apart (NEO's gap-1). The list is inset 8px, so each row's 12px corner sits inside the popup's 20px one. Horizontal menus
      * (share icons and the like) keep their own layout, and the account panel's list pads its own rows (its template).
      * The rows are matched by structure and styled in plain CSS:
      * naming the bx-stl-mil* classes here would make Tailwind's @apply of them circular.
@@ -1644,6 +1685,28 @@
     .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) {
         padding-left: 0.5rem;
         padding-right: 0.5rem;
+        /* A column with a gap rather than Artificer's 1px row margins (menu.css): hidden rows leave no gap, and the
+           sliding highlight (the list's absolute ::before) takes no part in it. */
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide)::after,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-highlight-list)::before {
+        display: none; /* bx-clearfix's table boxes would be flex items, with a gap of their own; the highlight's ::before stays */
+    }
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li {
+        position: relative;
+        margin-top: 0;
+        border-width: 0;
+    }
+    /* A focused row draws its ring on its edge, as NEO's do, and above its neighbours, so the current item's blue row
+       next to it doesn't cover the ring. */
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li:has(:focus-visible) {
+        z-index: 1;
+    }
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li a:focus-visible {
+        outline-offset: 0;
     }
     /* The indent wrapper already gives these popups 8px above and below the list. */
     .bx-artificer .bx-popup .bx-popup-content-indent ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) {
@@ -1654,12 +1717,9 @@
     .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > a,
     .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > span > a,
     .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .sys-action-element-holder > a {
-        border-radius: 0.5rem;
+        border-radius: 0.75rem;
         font-size: 1rem;
         line-height: 1.5rem;
-    }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li {
-        border-width: 0;
     }
     .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > a,
     .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > span > a,
@@ -1670,8 +1730,50 @@
         min-height: 2.75rem; /* 44px */
         padding-top: 0;
         padding-bottom: 0;
-        padding-inline-start: 0.75rem; /* 12px on the icon side */
+        padding-inline-start: 1rem;
         padding-inline-end: 1rem;
+    }
+    /*
+     * Popup menu items look and behave like NEO's regular menu items (theme.dropdown_menu in NEO's settings): a 20px
+     * glyph in a 32px circle, 8px from the row's side and from the label and 6px from its top and bottom, and a 14px
+     * semibold label. At rest the label and the
+     * glyph are both a step lighter than the text; on hover they turn to the full text colour while the circle darkens,
+     * all in the sliding highlight's 150ms and curve (Tailwind's ease-out), so nothing swaps ahead of the rest. The current item is the
+     * accent row (blue-100 / blue-900, its label blue-700 / blue-300) with a solid blue-600 circle and a white glyph,
+     * so the circle still shows on the blue row. Rows without an icon only take the label.
+     */
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > a:has(> .bx-stl-mii > *) {
+        padding-inline-start: 0.5rem; /* the circle sits 8px in from the row's side; 6px above and below in the 44px row */
+    }
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .bx-stl-mii:has(> *) {
+        @apply shrink-0 w-8 h-8 rounded-full ltr:mr-2 rtl:ml-2 bg-gray-200/50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-400;
+        transition: color 150ms cubic-bezier(0, 0, 0.2, 1), background-color 150ms cubic-bezier(0, 0, 0.2, 1);
+    }
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .bx-stl-mii > * {
+        @apply w-5 h-5 m-0 text-xl;
+        color: inherit;
+    }
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .bx-stl-mii > img {
+        @apply w-8 h-8 rounded-full object-cover; /* a picture fills the circle */
+    }
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .bx-stl-mit {
+        @apply text-sm font-semibold text-gray-600 dark:text-gray-400;
+        transition: color 150ms cubic-bezier(0, 0, 0.2, 1);
+    }
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li:hover .bx-stl-mii:has(> *) {
+        @apply bg-gray-300 dark:bg-gray-700 text-gray-950 dark:text-gray-50;
+    }
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li:hover .bx-stl-mit {
+        @apply text-gray-950 dark:text-gray-50;
+    }
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li.bx-menu-tab-active {
+        @apply bg-blue-100 dark:bg-blue-900;
+    }
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li.bx-menu-tab-active .bx-stl-mit {
+        @apply text-blue-700 dark:text-blue-300;
+    }
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li.bx-menu-tab-active .bx-stl-mii:has(> *) {
+        @apply bg-blue-600 text-white;
     }
     /* Account panel: its list is inset 8px like the popups (Artificer's menu.css zeroes list padding, so not a class). */
     .bx-artificer ul.bx-menu-floating-blocks-wide {

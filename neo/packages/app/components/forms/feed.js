@@ -74,7 +74,7 @@ function getAttachmentMenuItems(inputs) {
 function AttachmentMenuList({ items, onSelect }) {
     const { t } = useTranslation();
     return (
-        <View className={`mb-2 ${dropdownTheme.cnt}`}>
+        <View className={`mb-2 ${dropdownTheme.cnt} ${dropdownTheme.inset}`}>
             {items.map((item) => (
                 <Pressable
                     key={item.id}

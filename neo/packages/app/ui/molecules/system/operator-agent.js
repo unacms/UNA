@@ -270,7 +270,7 @@ export function OperatorAgentHeaderButton({ buttonProps }) {
             minPopupWidth={384}
             maxPopupWidth={384}
             // No inset: the chat runs to the panel's edges and keeps its margins inside.
-            contentClassName="p-0"
+            inset={false}
             buttonProps={{
                 ...getHeaderToolbarNeoButtonDefaults(isDesktop),
                 tooltip: label,

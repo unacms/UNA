@@ -123,7 +123,7 @@ export function MarkdownTextInput({
             )
 
     const editorTextColor = foregroundToken || colors.default
-    const linkColor = useThemeValue('rgba(29, 78, 216, 1)', 'rgba(96, 165, 250, 1)')
+    const linkColor = useThemeValue('rgba(29, 78, 216, 1)', 'rgba(147, 197, 253, 1)')
 
     const markdownStyle = useMemo(
         () => ({

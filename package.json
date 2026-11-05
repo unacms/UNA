@@ -75,6 +75,7 @@
     "spin.js": "^4.1.2",
     "stackedit-js": "^1.0.7",
     "tablesorter": "^2.32.0",
+    "tagsets": "0.4.0",
     "theia-sticky-sidebar": "^2.0.1",
     "urijs": "^1.19.11"
   },
@@ -116,6 +117,7 @@
     "build:spin.js": "mkdir -p plugins_public/spin.js; cd plugins_public/spin.js; cp -r ../../node_modules/spin.js/spin.* .; grep -v 'export { Spinner };' spin.js > tmp && mv tmp spin.js",
     "build:stackedit.js": "mkdir -p plugins_public/stackedit.js; cd plugins_public/stackedit.js; cp -r ../../node_modules/stackedit-js/docs/lib/* .",
     "build:lucide": "mkdir -p plugins_public/lucide/icons; cp node_modules/lucide-static/icons/*.svg plugins_public/lucide/icons; cp node_modules/lucide/dist/umd/lucide.min.js plugins_public/lucide",
+    "build:tagsets": "mkdir -p plugins_public/tagsets/locales; cp node_modules/tagsets/dist/svg/fixed/locales/*.svg plugins_public/tagsets/locales; cp node_modules/tagsets/LICENSE node_modules/tagsets/LICENSE-lucide plugins_public/tagsets",
     "generate:tailwind-max": "NODE_ENV=production tailwindcss -i ./template/css/tailwind.css -c ./tailwind.config.full.js -o ./scripts/tailwind.max.css --minify",
     "build:tailwind-max": "mkdir -p plugins_public/tailwind/css && cp scripts/tailwind.max.css plugins_public/tailwind/css/tailwind.max.css",
     "build:tailwind-min": "NODE_ENV=production tailwindcss -i ./template/css/tailwind.css -c ./tailwind.config.js -o ./plugins_public/tailwind/css/tailwind.min.css --minify",

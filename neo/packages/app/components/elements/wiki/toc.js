@@ -612,6 +612,7 @@ export function WikiTocDropdown({ items, activeIds, focusedId = null, onPress, l
             // Long headings wrap instead of stretching the menu across the page.
             maxPopupWidth={320}
             contentClasses={isWeb ? 'rounded-xl border border-popover mt-2 bg-popover/60 backdrop-blur shadow-md' : undefined}
+            inset={!isWeb}
             buttonProps={{
                 label: iconOnly ? undefined : label,
                 accessibilityLabel: label,
