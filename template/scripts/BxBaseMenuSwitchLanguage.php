@@ -108,10 +108,12 @@ class BxBaseMenuSwitchLanguage extends BxTemplMenu
         static $aCache = [];
 
         $sCode = strtolower(preg_replace('/[-_].*$/', '', $sName));
-        if(in_array($sCode, ['nb', 'nn']))
+        if(in_array($sCode, ['nb', 'nn'])) {
             $sCode = 'no';
-        if(!preg_match('/^[a-z]{2,3}$/', $sCode))
+        }
+        if(!preg_match('/^[a-z]{2,3}$/', $sCode)) {
             return '';
+        }
 
         if(!isset($aCache[$sCode])) {
             $sPath = BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'tagsets/locales/' . $sCode . '.svg';
