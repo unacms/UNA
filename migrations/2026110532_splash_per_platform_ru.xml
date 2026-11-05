@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Studio > Designer > Splash: per-app switches and code, and clearer names. -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_adm_dsg_txt_splash_enable_web"><![CDATA[Включить заставку веб-приложения]]></string_add>
+    <string_add name="_adm_dsg_txt_splash_enable_ios"><![CDATA[Включить заставку приложения для iOS]]></string_add>
+    <string_add name="_adm_dsg_txt_splash_enable_android"><![CDATA[Включить заставку приложения для Android]]></string_add>
+    <string_add name="_adm_dsg_txt_splash_section_apps"><![CDATA[Код для приложений]]></string_add>
+    <string_add name="_adm_dsg_inf_splash_section_apps"><![CDATA[Код только для одного приложения. Пустое поле использует код страницы выше. Приложения рисуют формы, логотип и иллюстрацию своими компонентами и пропускают скрипты и всё, что отмечено <code>data-site-only</code>. Приложения для iOS и Android показывают текст, заголовки, списки и ссылки без стилей и раскладки. Добавьте <code>&lt;neo-slot name="social_login"&gt;&lt;/neo-slot&gt;</code>, чтобы показать только кнопки входа через соцсети.]]></string_add>
+    <string_add name="_adm_dsg_txt_splash_code_web"><![CDATA[Код для веб-приложения]]></string_add>
+    <string_add name="_adm_dsg_txt_splash_code_ios"><![CDATA[Код для приложения iOS]]></string_add>
+    <string_add name="_adm_dsg_txt_splash_code_android"><![CDATA[Код для приложения Android]]></string_add>
+    <string_upd name="_adm_lmi_cpt_splash"><![CDATA[Заставка]]></string_upd>
+    <string_upd name="_adm_dsg_txt_splash_enable"><![CDATA[Включить заставку сайта]]></string_upd>
+    <string_upd name="_adm_dsg_txt_splash_section_landing"><![CDATA[Заставка для гостей]]></string_upd>
+    <string_upd name="_adm_dsg_inf_splash_section_landing"><![CDATA[Гости, открывшие главную страницу, видят вместо неё заставку. Участники, которые вошли на сайт, по-прежнему видят главную. Включите её для сайта и для каждого приложения. Там, где заставка приложения выключена, гости видят блоки главной страницы из конструктора страниц. Заставка — не экран запуска, который приложения для iOS и Android показывают при старте: он задаётся в разделе «Значок».]]></string_upd>
+    <string_upd name="_adm_dsg_inf_splash_section_code"><![CDATA[HTML заставки. Эти подстановки заменяются при показе: <code>__logo__</code> — логотип сайта, <code>__illustration__</code> — иллюстрация заставки, <code>__join_form_in_box__</code> и <code>__login_form_in_box__</code> — формы регистрации и входа в блоке, <code>__join_form__</code> и <code>__login_form__</code> — те же формы без блока, <code>__join_link__</code> и <code>__login_link__</code> — их адреса, <code>{site_title}</code> — название сайта. Приложения тоже показывают этот код, если в «Коде для приложений» ниже нет своего, и пропускают элементы с атрибутом <code>data-site-only</code>.]]></string_upd>
+    <string_upd name="_adm_dsg_inf_splash_section_preview"><![CDATA[Так заставку видят гости сайта. «Показать изменения» показывает код из редактора до сохранения.]]></string_upd>
+    <string_upd name="_adm_dsg_txt_splash_preview_title"><![CDATA[Предпросмотр заставки]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_api_root_page_guest"><![CDATA[Корневая страница для гостей (по ней работают приложения, чей переключатель в «Дизайнер > Заставка» ещё не сохраняли)]]></string_upd>
+</resources>

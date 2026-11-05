@@ -519,6 +519,12 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
     	setParam('sys_site_splash_code', $oForm->getCleanValue('code'));
         setParam('sys_site_splash_enabled', $oForm->getCleanValue('enabled') == 'on' ? 'on' : '');
 
+        // The apps' switches are saved as 'on' or 'off': '' means never saved, which follows sys_api_root_page_guest.
+        foreach(BxDolSplash::PLATFORMS as $sPlatform) {
+            setParam(BxDolSplash::getOptionEnabled($sPlatform), $oForm->getCleanValue('enabled_' . $sPlatform) == 'on' ? 'on' : 'off');
+            setParam(BxDolSplash::getOptionCode($sPlatform), (string)$oForm->getCleanValue('code_' . $sPlatform));
+        }
+
         return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SPLASH);
     }
 

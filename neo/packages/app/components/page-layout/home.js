@@ -303,7 +303,8 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
             className="flex-auto p-4 gap-0.5 fixed overflow-scroll "
         >
             
-                {appSetting('layout', 'show_profile_info') && (
+                {/* A guest's home without the splash (Studio > Designer > Splash off) has no profile to show. */}
+                {appSetting('layout', 'show_profile_info') && currentUser && (
                     <View className="-mx-2">
                         <NeoButtonLink
                             href={currentUser.url}
@@ -363,7 +364,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
                                     icon={item.icon}
                                     title={t(item.title)}
                                     index={index}
-                                    userUrl={currentUser.url}
+                                    userUrl={currentUser?.url}
                                 />
                             )
                         })}

@@ -835,9 +835,10 @@
 	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Цвет заголовка окна приложения, а на телефонах — строки состояния. По умолчанию — цвет, заданный шаблоном.]]></string>
 	<string name="_adm_dsg_inf_settings_section_layout"><![CDATA[Где вокруг содержимого страницы стоят шапка, меню и подвал. Страницы со своим макетом в разделе <a href="{0}">Страницы</a> сохраняют его, остальные используют макеты ниже.]]></string>
 	<string name="_adm_dsg_inf_settings_section_template"><![CDATA[Шаблон отвечает за весь вид сайта: шапку, меню, цвета и шрифты. Все видят этот шаблон, если сами не выбрали другой включённый.]]></string>
-	<string name="_adm_dsg_inf_splash_section_code"><![CDATA[HTML страницы. Эти подстановки заменяются при показе страницы: <code>__logo__</code> — логотип сайта, <code>__join_form_in_box__</code> и <code>__login_form_in_box__</code> — формы регистрации и входа в блоке, <code>__join_form__</code> и <code>__login_form__</code> — те же формы без блока, <code>__join_link__</code> и <code>__login_link__</code> — их адреса, <code>{site_title}</code> — название сайта.]]></string>
-	<string name="_adm_dsg_inf_splash_section_landing"><![CDATA[Гости, открывшие главную страницу, видят вместо неё эту страницу. Участники, которые вошли на сайт, по-прежнему видят главную.]]></string>
-	<string name="_adm_dsg_inf_splash_section_preview"><![CDATA[Так страницу видят гости. «Показать изменения» показывает код из редактора до сохранения.]]></string>
+	<string name="_adm_dsg_inf_splash_section_apps"><![CDATA[Код только для одного приложения. Пустое поле использует код страницы выше. Приложения рисуют формы, логотип и иллюстрацию своими компонентами и пропускают скрипты и всё, что отмечено <code>data-site-only</code>. Приложения для iOS и Android показывают текст, заголовки, списки и ссылки без стилей и раскладки. Добавьте <code>&lt;neo-slot name="social_login"&gt;&lt;/neo-slot&gt;</code>, чтобы показать только кнопки входа через соцсети.]]></string>
+	<string name="_adm_dsg_inf_splash_section_code"><![CDATA[HTML заставки. Эти подстановки заменяются при показе: <code>__logo__</code> — логотип сайта, <code>__illustration__</code> — иллюстрация заставки, <code>__join_form_in_box__</code> и <code>__login_form_in_box__</code> — формы регистрации и входа в блоке, <code>__join_form__</code> и <code>__login_form__</code> — те же формы без блока, <code>__join_link__</code> и <code>__login_link__</code> — их адреса, <code>{site_title}</code> — название сайта. Приложения тоже показывают этот код, если в «Коде для приложений» ниже нет своего, и пропускают элементы с атрибутом <code>data-site-only</code>.]]></string>
+	<string name="_adm_dsg_inf_splash_section_landing"><![CDATA[Гости, открывшие главную страницу, видят вместо неё заставку. Участники, которые вошли на сайт, по-прежнему видят главную. Включите её для сайта и для каждого приложения. Там, где заставка приложения выключена, гости видят блоки главной страницы из конструктора страниц. Заставка — не экран запуска, который приложения для iOS и Android показывают при старте: он задаётся в разделе «Значок».]]></string>
+	<string name="_adm_dsg_inf_splash_section_preview"><![CDATA[Так заставку видят гости сайта. «Показать изменения» показывает код из редактора до сохранения.]]></string>
 	<string name="_adm_dsg_inf_tmpl_section_list"><![CDATA[Шаблон отвечает за весь вид сайта: шапку, меню, цвета и шрифты. Здесь установленные и включённые шаблоны. Нажмите «Предпросмотр», чтобы увидеть шаблон ниже, или откройте с ним сайт, чтобы посмотреть настоящие страницы.]]></string>
 	<string name="_adm_dsg_inf_tmpl_section_preview"><![CDATA[Настоящий сайт с этим шаблоном, на выбранной странице и при выбранном размере экрана. Вы видите его как вошедший пользователь, а ссылки внутри сохраняют шаблон. Для остальных ничего не меняется.]]></string>
 	<string name="_adm_dsg_lmi_cpt_template"><![CDATA[Шаблон]]></string>
@@ -909,12 +910,19 @@
 	<string name="_adm_dsg_txt_cover_src_default_dark"><![CDATA[Обложка по умолчанию, с версией для тёмной темы. Загрузите свою, чтобы заменить её.]]></string>
 	<string name="_adm_dsg_txt_cover_src_none"><![CDATA[Нет. Страницы показывают простую обложку.]]></string>
 	<string name="_adm_dsg_txt_splash_code"><![CDATA[HTML-код]]></string>
-	<string name="_adm_dsg_txt_splash_enable"><![CDATA[Включить свою главную страницу]]></string>
+	<string name="_adm_dsg_txt_splash_code_android"><![CDATA[Код для приложения Android]]></string>
+	<string name="_adm_dsg_txt_splash_code_ios"><![CDATA[Код для приложения iOS]]></string>
+	<string name="_adm_dsg_txt_splash_code_web"><![CDATA[Код для веб-приложения]]></string>
+	<string name="_adm_dsg_txt_splash_enable"><![CDATA[Включить заставку сайта]]></string>
+	<string name="_adm_dsg_txt_splash_enable_android"><![CDATA[Включить заставку приложения для Android]]></string>
+	<string name="_adm_dsg_txt_splash_enable_ios"><![CDATA[Включить заставку приложения для iOS]]></string>
+	<string name="_adm_dsg_txt_splash_enable_web"><![CDATA[Включить заставку веб-приложения]]></string>
 	<string name="_adm_dsg_txt_splash_enabled"><![CDATA[Включить титульную страницу]]></string>
 	<string name="_adm_dsg_txt_splash_note"><![CDATA[Ошибки в HTML могут сломать страницу. Проверьте её в предпросмотре перед сохранением.]]></string>
-	<string name="_adm_dsg_txt_splash_preview_title"><![CDATA[Предпросмотр лендинга]]></string>
+	<string name="_adm_dsg_txt_splash_preview_title"><![CDATA[Предпросмотр заставки]]></string>
+	<string name="_adm_dsg_txt_splash_section_apps"><![CDATA[Код для приложений]]></string>
 	<string name="_adm_dsg_txt_splash_section_code"><![CDATA[Код страницы]]></string>
-	<string name="_adm_dsg_txt_splash_section_landing"><![CDATA[Лендинг]]></string>
+	<string name="_adm_dsg_txt_splash_section_landing"><![CDATA[Заставка для гостей]]></string>
 	<string name="_adm_dsg_txt_splash_section_preview"><![CDATA[Предпросмотр]]></string>
 	<string name="_adm_dsg_txt_tmpl_default"><![CDATA[По умолчанию]]></string>
 	<string name="_adm_dsg_txt_tmpl_footer"><![CDATA[Все видят шаблон {0}, если сами не выбрали другой.]]></string>
@@ -1391,7 +1399,7 @@
     <string name="_adm_lmi_cpt_search_forms"><![CDATA[Формы поиска]]></string>
     <string name="_adm_lmi_cpt_search_fields"><![CDATA[Поля поиска]]></string>
     <string name="_adm_lmi_cpt_search_sortable_fields"><![CDATA[Поля сортироски поиска]]></string>
-	<string name="_adm_lmi_cpt_splash"><![CDATA[Лендинг]]></string>
+	<string name="_adm_lmi_cpt_splash"><![CDATA[Заставка]]></string>
 	<string name="_adm_lmi_cpt_displays"><![CDATA[Дисплеи]]></string>
 	<string name="_adm_lmi_cpt_downloaded"><![CDATA[Скачано]]></string>
 	<string name="_adm_lmi_cpt_etemplates_text"><![CDATA[Тексты email-ов]]></string>
@@ -2141,7 +2149,7 @@
     <string name="_adm_stg_cpt_option_sys_api_search_sections"><![CDATA[Искать в]]></string>
     <string name="_adm_stg_cpt_option_sys_api_extended_units"><![CDATA[Использовать расширенные юниты]]></string>
     <string name="_adm_stg_cpt_option_sys_api_conn_in_prof_units"><![CDATA[Использовать списки связей в блоках профилей/групп.]]></string>
-    <string name="_adm_stg_cpt_option_sys_api_root_page_guest"><![CDATA[Корневая страница для незарегистрированного пользователя]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_root_page_guest"><![CDATA[Корневая страница для гостей (по ней работают приложения, чей переключатель в «Дизайнер > Заставка» ещё не сохраняли)]]></string>
     <string name="_adm_stg_cpt_option_sys_api_root_page_member"><![CDATA[Корневая страница для авторизованного пользователя]]></string>
     <string name="_adm_stg_cpt_option_sys_api_root_page_home"><![CDATA[Главная страница]]></string>
     <string name="_adm_stg_cpt_option_sys_api_root_page_dashboard"><![CDATA[Панель управления]]></string>

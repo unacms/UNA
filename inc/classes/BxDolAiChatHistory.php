@@ -63,7 +63,9 @@ class BxDolAiChatHistory implements MessageStoreInterface
     }
 
     /**
-     * Messages trimmed out of the context window are dropped from the thread.
+     * Messages trimmed out of the context window are deleted from the thread, not marked as archived:
+     * the stored thread holds only the model context, as it did with NeuronAI 3.x, so loadAll() equals
+     * loadActive(). BxDolAiAgent trims with a ratio of 0, so only the fewest oldest messages are dropped.
      */
     public function archive(string $threadId, int $count): void
     {

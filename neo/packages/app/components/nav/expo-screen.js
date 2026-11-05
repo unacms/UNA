@@ -9,6 +9,7 @@ import { ensureTabHistory, applyTabHistory, registerPushedScreen } from 'app/lib
 import { resolveTabPageUrl } from 'app/components/nav/tab-page-url';
 import { getCachedPageData, setCachedPageData } from 'app/lib/cache/native-tab-page-cache';
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
+import { readGuestSplash, updateGuestSplashCache, forgetGuestSplash } from 'app/lib/cache/guest-splash-cache';
 import emitter, { EVENTS } from 'app/context/emitter'
 import * as SplashScreen from 'expo-splash-screen';
 import { TabChromeProvider } from 'app/context/tab-chrome';
@@ -246,6 +247,8 @@ const Content = memo(({ pagePath, currentUser, tabKey, chromeKey, pushed, refres
     const tabKeyRef = useRef(tabKey);
     const currentUserRef = useRef(currentUser);
     const splashHiddenRef = useRef(false);
+    // The path the server's page came for: the saved guest splash never replaces it.
+    const loadedPathRef = useRef(null);
     pagePathRef.current = pagePath;
     tabKeyRef.current = tabKey;
     currentUserRef.current = currentUser;
@@ -266,6 +269,31 @@ const Content = memo(({ pagePath, currentUser, tabKey, chromeKey, pushed, refres
             historyMode === 'replace' || historyMode === 'reset' ? historyMode : 'push',
         );
     }, [tabKey, pagePath, pushed, currentUser?.id, currentUser?.url, historyMode]);
+
+    // A launch as a guest (the tabs bootstrap knows the viewer before this mounts): the guest splash the
+    // app showed last, until the home page comes (lib/cache/guest-splash-cache). A member never gets it:
+    // their tabs mount with a known member, and a member's page drops the copy.
+    useEffect(() => {
+        if (currentUser) {
+            forgetGuestSplash();
+            return undefined;
+        }
+        // Only while this tab has nothing to show yet: not over an in-memory page or the server's page.
+        if (pushed || refreshToken || currentUser !== false || pageData || !isFetchablePagePath(pagePath)) return undefined;
+        let cancelled = false;
+        const pathAtStart = pagePath;
+        readGuestSplash(pagePath).then((props) => {
+            if (!props || cancelled || pagePathRef.current !== pathAtStart || loadedPathRef.current === pathAtStart) return;
+            setPage({ path: pathAtStart, props });
+        }).catch(() => {
+            // No saved splash to show: the page request below draws the tab.
+        });
+        return () => {
+            cancelled = true;
+        };
+    // Once per tab mount and viewer: the fetch below replaces it.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentUser?.id]);
 
     // Stale-while-revalidate: show cache immediately, always refetch from server.
     useEffect(() => {
@@ -293,6 +321,8 @@ const Content = memo(({ pagePath, currentUser, tabKey, chromeKey, pushed, refres
                         { forceShellRefresh, hadCache: Boolean(cached) },
                     );
                     setCachedPageData(tabKey, pagePath, data.props, currentUser?.id, currentUser?.confirmed);
+                    if (!pushed) updateGuestSplashCache(pagePath, data.props);
+                    loadedPathRef.current = pathAtStart;
                     setBottomSheetData(false);
                     setPage({ path: pathAtStart, props: data.props });
                 } else {
@@ -308,7 +338,7 @@ const Content = memo(({ pagePath, currentUser, tabKey, chromeKey, pushed, refres
         return () => {
             cancelled = true;
         };
-    }, [pagePath, currentUser?.id, currentUser?.confirmed, tabKey, refreshToken, setBottomSheetData]);
+    }, [pagePath, currentUser?.id, currentUser?.confirmed, tabKey, pushed, refreshToken, setBottomSheetData]);
 
     // Language switch (and other page reloads): drop stale cached JSON and refetch.
     useEffect(() => {

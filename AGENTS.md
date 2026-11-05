@@ -38,6 +38,7 @@ These apply to UNA PHP (`inc/`, `modules/`, `studio/`, `template/`, and install 
 - Do not add or edit anything under `upgrade/files/`. That folder records past releases. Do not put new migrations there.
 - A change to install SQL also needs a migration for sites that are already installed. See "Database migrations" below.
 - Set `active_api` in `modules/system/install/sql/enable-app-pages.sql` (page blocks, including their `config_api`) and `modules/system/install/sql/enable-app-menus.sql` (menu items) for core, for modules use `modules/boonex/*/install/sql/enable-app.sql` files. Do not set it in `install.sql`, `enable.sql`, or other common install and enable scripts.
+- Requirements: PHP 8.3 and newer, MySQL 5.7.8/MariaDB 10.2.3 and newer, exactly PHPUnit 12
 
 ## Studio app icons
 

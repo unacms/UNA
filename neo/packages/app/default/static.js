@@ -44,6 +44,12 @@ const SplashTextComponent = ({ texts }) => {
 
 
 
+/**
+ * The built-in splash text, so the splash can tell a project's own `splash_text` (static.js) from it:
+ * a project's own text wins over UNA's splash code (ui/molecules/sections/splash.tsx).
+ */
+export const SplashTextBuiltIn = SplashTextComponent
+
 const JoinTextComponent = (props) => {
     return (
         <View className="h-48 w-48">
