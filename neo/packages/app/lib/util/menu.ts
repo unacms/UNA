@@ -1,4 +1,5 @@
 import { fetcher } from 'app/lib/fetcher';
+import { currentLucideName } from './lucide-renames';
 import { UNA_URL } from 'app/config';
 import { appSetting } from './settings';
 import { strToObj } from './object';
@@ -474,6 +475,10 @@ const FA_STYLE_TOKENS = new Set(['fa', 'fas', 'far', 'fab', 'fal', 'fad', 'fat']
 
 /** Map a UNA / Font Awesome icon string to an icon-set name (PascalCase); returns input if unknown. */
 export function findIconFromRemote<T extends string | null | undefined>(s: T): T | string {
+    return currentLucideName(iconNameFromRemote(s));
+}
+
+function iconNameFromRemote<T extends string | null | undefined>(s: T): T | string {
     if (!s || /^[A-Z][^\s]*$/.test(s))
         return s;
     const data = appSetting('menu_items', 'iconset');

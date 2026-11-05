@@ -70,7 +70,7 @@ class BxBaseMenuSwitchLanguage extends BxTemplMenu
                 'class' => '',
                 'title' => $this->$sMethod($sName, $sLang),
                 'target' => '_self',
-                'icon' => '',
+                'icon' => $this->_sType == 'popup' ? $this->getLanguageGlyph($sName) : '',
                 'link' => bx_html_attribute($oPermalink->permalink(bx_append_url_params($sPageLink, $aPageParams))),
                 'onclick' => ''
             );
@@ -91,10 +91,35 @@ class BxBaseMenuSwitchLanguage extends BxTemplMenu
 
     protected function getItemTitlePopup($sName, $sTitle)
     {
+        // A language with a glyph shows it as the row's icon (above), as NEO's switcher does; others keep the flag.
         return $this->_oTemplate->parseHtmlByName('menu_switch_language_title.html', [
-            'icon' => genFlag($sName),
+            'icon' => $this->getLanguageGlyph($sName) ? '' : genFlag($sName),
             'title' => $sTitle
         ]);
+    }
+
+    /**
+     * The language's code drawn as a glyph ("EN", "RU"), an inline SVG from tagsets
+     * (https://github.com/componext/tagsets, the glyphs NEO's language switcher uses), or '' when tagsets has none.
+     * Region and script subtags are dropped (pt-BR is "PT"), and Norwegian Bokmål and Nynorsk are "NO".
+     */
+    protected function getLanguageGlyph($sName)
+    {
+        static $aCache = [];
+
+        $sCode = strtolower(preg_replace('/[-_].*$/', '', $sName));
+        if(in_array($sCode, ['nb', 'nn']))
+            $sCode = 'no';
+        if(!preg_match('/^[a-z]{2,3}$/', $sCode))
+            return '';
+
+        if(!isset($aCache[$sCode])) {
+            $sPath = BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'tagsets/locales/' . $sCode . '.svg';
+            $sSvg = file_exists($sPath) ? file_get_contents($sPath) : false;
+            $aCache[$sCode] = $sSvg !== false ? trim($sSvg) : '';
+        }
+
+        return $aCache[$sCode];
     }
 
     protected function getItemTitleInline($sName, $sTitle)
