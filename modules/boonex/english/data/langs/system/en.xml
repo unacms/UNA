@@ -841,9 +841,10 @@
 	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Colors the app title bar and, on phones, the status bar. Defaults to the color your template sets.]]></string>
 	<string name="_adm_dsg_inf_settings_section_layout"><![CDATA[Where the header, menus and footer go around the content of a page. Pages with a layout of their own in <a href="{0}">Pages</a> keep it; all the others use the ones below.]]></string>
 	<string name="_adm_dsg_inf_settings_section_template"><![CDATA[The template draws the whole site: its header, menus, colors and fonts. Everyone sees this one unless they pick another enabled template themselves.]]></string>
-	<string name="_adm_dsg_inf_splash_section_code"><![CDATA[HTML for the page. These placeholders are filled in when the page is shown: <code>__logo__</code> the site logo, <code>__join_form_in_box__</code> and <code>__login_form_in_box__</code> the sign-up and sign-in forms in a box, <code>__join_form__</code> and <code>__login_form__</code> the same forms without one, <code>__join_link__</code> and <code>__login_link__</code> their addresses, <code>{site_title}</code> the site name.]]></string>
-	<string name="_adm_dsg_inf_splash_section_landing"><![CDATA[Guests who open the home page see this page instead. Members who are signed in still see the home page.]]></string>
-	<string name="_adm_dsg_inf_splash_section_preview"><![CDATA[How guests see the page. Preview changes shows the code from the editor before you save it.]]></string>
+	<string name="_adm_dsg_inf_splash_section_apps"><![CDATA[Code for one app only. An empty field uses the page code above. The apps draw the forms, the logo and the illustration with their own components, and leave out scripts and anything marked <code>data-site-only</code>. The iOS and Android apps show text, headings, lists and links, without styles or layout. Add <code>&lt;neo-slot name="social_login"&gt;&lt;/neo-slot&gt;</code> for the social sign-in buttons alone.]]></string>
+	<string name="_adm_dsg_inf_splash_section_code"><![CDATA[HTML of the splash. These placeholders are filled in when it is shown: <code>__logo__</code> the site logo, <code>__illustration__</code> the splash illustration, <code>__join_form_in_box__</code> and <code>__login_form_in_box__</code> the sign-up and sign-in forms in a box, <code>__join_form__</code> and <code>__login_form__</code> the same forms without one, <code>__join_link__</code> and <code>__login_link__</code> their addresses, <code>{site_title}</code> the site name. The apps show this code too, unless App code below has their own, and leave out elements with the <code>data-site-only</code> attribute.]]></string>
+	<string name="_adm_dsg_inf_splash_section_landing"><![CDATA[Guests who open the home page see the splash instead. Members who are signed in still see the home page. Turn it on for the site and for each app. Where an app's splash is off, its guests see the home page blocks from Page builder. The splash is not the launch screen the iOS and Android apps show while they start, which comes from Icon.]]></string>
+	<string name="_adm_dsg_inf_splash_section_preview"><![CDATA[How guests see the splash on the site. Preview changes shows the code from the editor before you save it.]]></string>
 	<string name="_adm_dsg_inf_tmpl_section_list"><![CDATA[A template draws the whole site: its header, menus, colors and fonts. These are the templates installed and turned on. Preview one to see it below, or open the site with it to try the real pages.]]></string>
 	<string name="_adm_dsg_inf_tmpl_section_preview"><![CDATA[The real site in the template, on the page and at the screen size you pick. You see it signed in, as yourself, and links in it keep the template. Nothing changes for anyone else.]]></string>
 	<string name="_adm_dsg_lmi_cpt_template"><![CDATA[Template]]></string>
@@ -915,12 +916,19 @@
 	<string name="_adm_dsg_txt_cover_src_default_dark"><![CDATA[Default cover, with a dark mode version. Upload your own to replace it.]]></string>
 	<string name="_adm_dsg_txt_cover_src_none"><![CDATA[None. Pages show a plain cover.]]></string>
 	<string name="_adm_dsg_txt_splash_code"><![CDATA[HTML code]]></string>
-	<string name="_adm_dsg_txt_splash_enable"><![CDATA[Enable custom homepage]]></string>
+	<string name="_adm_dsg_txt_splash_code_android"><![CDATA[Android app code]]></string>
+	<string name="_adm_dsg_txt_splash_code_ios"><![CDATA[iOS app code]]></string>
+	<string name="_adm_dsg_txt_splash_code_web"><![CDATA[Web app code]]></string>
+	<string name="_adm_dsg_txt_splash_enable"><![CDATA[Enable site splash]]></string>
+	<string name="_adm_dsg_txt_splash_enable_android"><![CDATA[Enable Android app splash]]></string>
+	<string name="_adm_dsg_txt_splash_enable_ios"><![CDATA[Enable iOS app splash]]></string>
+	<string name="_adm_dsg_txt_splash_enable_web"><![CDATA[Enable web app splash]]></string>
 	<string name="_adm_dsg_txt_splash_enabled"><![CDATA[Enable splash page]]></string>
 	<string name="_adm_dsg_txt_splash_note"><![CDATA[Mistakes in the HTML can break the page. Check it in the preview before you save.]]></string>
-	<string name="_adm_dsg_txt_splash_preview_title"><![CDATA[Landing page preview]]></string>
+	<string name="_adm_dsg_txt_splash_preview_title"><![CDATA[Splash preview]]></string>
+	<string name="_adm_dsg_txt_splash_section_apps"><![CDATA[App code]]></string>
 	<string name="_adm_dsg_txt_splash_section_code"><![CDATA[Page code]]></string>
-	<string name="_adm_dsg_txt_splash_section_landing"><![CDATA[Landing page]]></string>
+	<string name="_adm_dsg_txt_splash_section_landing"><![CDATA[Guest splash]]></string>
 	<string name="_adm_dsg_txt_splash_section_preview"><![CDATA[Preview]]></string>
 	<string name="_adm_dsg_txt_tmpl_default"><![CDATA[Default]]></string>
 	<string name="_adm_dsg_txt_tmpl_footer"><![CDATA[Everyone sees {0} unless they pick another template themselves.]]></string>
@@ -1411,7 +1419,7 @@
     <string name="_adm_lmi_cpt_search_forms"><![CDATA[Search Forms]]></string>
     <string name="_adm_lmi_cpt_search_fields"><![CDATA[Search Fields]]></string>
     <string name="_adm_lmi_cpt_search_sortable_fields"><![CDATA[Search Sortable Fields]]></string>
-    <string name="_adm_lmi_cpt_splash"><![CDATA[Landing]]></string>
+    <string name="_adm_lmi_cpt_splash"><![CDATA[Splash]]></string>
     <string name="_adm_lmi_cpt_displays"><![CDATA[Displays]]></string>
     <string name="_adm_lmi_cpt_downloaded"><![CDATA[Downloaded]]></string>
     <string name="_adm_lmi_cpt_etemplates_text"><![CDATA[Email Texts]]></string>
@@ -2170,7 +2178,7 @@
     <string name="_adm_stg_cpt_option_sys_api_search_sections"><![CDATA[Search sections]]></string>
     <string name="_adm_stg_cpt_option_sys_api_extended_units"><![CDATA[Use extended units]]></string>
     <string name="_adm_stg_cpt_option_sys_api_conn_in_prof_units"><![CDATA[Use connections lists in profiles/groups units]]></string>
-    <string name="_adm_stg_cpt_option_sys_api_root_page_guest"><![CDATA[Root page for non-logged user]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_root_page_guest"><![CDATA[Root page for guests (apps whose switch in Designer > Splash was never saved follow it)]]></string>
     <string name="_adm_stg_cpt_option_sys_api_root_page_member"><![CDATA[Root page for logged user]]></string>
     <string name="_adm_stg_cpt_option_sys_api_root_page_home"><![CDATA[Home]]></string>
     <string name="_adm_stg_cpt_option_sys_api_root_page_dashboard"><![CDATA[Dashboard]]></string>

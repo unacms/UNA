@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Studio > Designer > Splash: per-app switches and code, and clearer names. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_dsg_txt_splash_enable_web"><![CDATA[Enable web app splash]]></string_add>
+    <string_add name="_adm_dsg_txt_splash_enable_ios"><![CDATA[Enable iOS app splash]]></string_add>
+    <string_add name="_adm_dsg_txt_splash_enable_android"><![CDATA[Enable Android app splash]]></string_add>
+    <string_add name="_adm_dsg_txt_splash_section_apps"><![CDATA[App code]]></string_add>
+    <string_add name="_adm_dsg_inf_splash_section_apps"><![CDATA[Code for one app only. An empty field uses the page code above. The apps draw the forms, the logo and the illustration with their own components, and leave out scripts and anything marked <code>data-site-only</code>. The iOS and Android apps show text, headings, lists and links, without styles or layout. Add <code>&lt;neo-slot name="social_login"&gt;&lt;/neo-slot&gt;</code> for the social sign-in buttons alone.]]></string_add>
+    <string_add name="_adm_dsg_txt_splash_code_web"><![CDATA[Web app code]]></string_add>
+    <string_add name="_adm_dsg_txt_splash_code_ios"><![CDATA[iOS app code]]></string_add>
+    <string_add name="_adm_dsg_txt_splash_code_android"><![CDATA[Android app code]]></string_add>
+    <string_upd name="_adm_lmi_cpt_splash"><![CDATA[Splash]]></string_upd>
+    <string_upd name="_adm_dsg_txt_splash_enable"><![CDATA[Enable site splash]]></string_upd>
+    <string_upd name="_adm_dsg_txt_splash_section_landing"><![CDATA[Guest splash]]></string_upd>
+    <string_upd name="_adm_dsg_inf_splash_section_landing"><![CDATA[Guests who open the home page see the splash instead. Members who are signed in still see the home page. Turn it on for the site and for each app. Where an app's splash is off, its guests see the home page blocks from Page builder. The splash is not the launch screen the iOS and Android apps show while they start, which comes from Icon.]]></string_upd>
+    <string_upd name="_adm_dsg_inf_splash_section_code"><![CDATA[HTML of the splash. These placeholders are filled in when it is shown: <code>__logo__</code> the site logo, <code>__illustration__</code> the splash illustration, <code>__join_form_in_box__</code> and <code>__login_form_in_box__</code> the sign-up and sign-in forms in a box, <code>__join_form__</code> and <code>__login_form__</code> the same forms without one, <code>__join_link__</code> and <code>__login_link__</code> their addresses, <code>{site_title}</code> the site name. The apps show this code too, unless App code below has their own, and leave out elements with the <code>data-site-only</code> attribute.]]></string_upd>
+    <string_upd name="_adm_dsg_inf_splash_section_preview"><![CDATA[How guests see the splash on the site. Preview changes shows the code from the editor before you save it.]]></string_upd>
+    <string_upd name="_adm_dsg_txt_splash_preview_title"><![CDATA[Splash preview]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_api_root_page_guest"><![CDATA[Root page for guests (apps whose switch in Designer > Splash was never saved follow it)]]></string_upd>
+</resources>
