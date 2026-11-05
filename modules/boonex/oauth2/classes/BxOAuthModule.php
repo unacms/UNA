@@ -469,7 +469,10 @@ class BxOAuthModule extends BxDolModule
             return '';
 
         $oSession = BxDolSession::getInstance();
-        $oSession->getUserId(); // starts the session if it isn't started yet
+        // A remembered user (memberID/memberPassword cookies with `sys_session_auth` off) may have no session
+        // cookie, and a plain start() does nothing then, so the session is started explicitly.
+        if (!$oSession->getId())
+            $oSession->start(true);
         if (!($sSessionId = $oSession->getId()))
             return '';
 
