@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import DropdownMenu, { type DropdownMenuItemData } from 'app/ui/atoms/dropdown-menu'
-import { NeoButtonLink } from 'app/design/controls'
+import { NeoButton, NeoButtonLink } from 'app/design/controls'
 import { Row } from 'app/design/view'
 import { cn, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { useTranslation } from 'react-i18next'
 import { useIsDesktop } from 'app/context/measure';
+import { useOpenModalByUrl, useOpenModalWithContent } from 'app/context/jotai/modal'
 import { AUTH_BUTTONS, useMenuNavigationEntries } from 'app/components/nav/menu-header-navigation-entries'
 import type { MenuHeaderNavigationProps } from 'app/components/nav/menu-header-navigation.types'
 
@@ -25,6 +26,8 @@ export default function MenuHeaderNavigation(props: Readonly<MenuHeaderNavigatio
     const { t } = useTranslation()
     const isDesktop = useIsDesktop()
     const [open, setOpen] = useState(false)
+    const openModalByUrl = useOpenModalByUrl()
+    const openModalWithContent = useOpenModalWithContent()
     const { entries, buttons, pending } = useMenuNavigationEntries()
     const items: DropdownMenuItemData[] = entries
         .flatMap(({ key, item, rows }) =>
@@ -72,18 +75,37 @@ export default function MenuHeaderNavigation(props: Readonly<MenuHeaderNavigatio
                             authFallback && 'sm:hidden'
                         )}
                     >
-                        {shownButtons.map(({ key, item, primary }) => (
-                            <NeoButtonLink
-                                key={key}
-                                href={item.link}
-                                label={authFallback ? t(item.title) : item.title}
-                                style={primary ? 'borderedProminent' : 'bordered'}
-                                borderShape="capsule"
-                                width="fill"
-                                classNames={AUTH_BUTTON_CLASSES}
-                                onPress={close}
-                            />
-                        ))}
+                        {shownButtons.map(({ key, item, primary }) => {
+                            const title = authFallback ? t(item.title) : item.title
+                            const look = {
+                                label: title,
+                                style: primary ? 'borderedProminent' : 'bordered',
+                                borderShape: 'capsule',
+                                width: 'fill',
+                                classNames: AUTH_BUTTON_CLASSES,
+                            } as const
+                            // As DropdownMenu runs its rows: a `modal` item opens its content (or link) in a
+                            // modal, a `_blank` / `blank` one opens in a new tab, any other its page.
+                            if (item.target === 'modal') {
+                                const openModal = () => {
+                                    close()
+                                    if (item.content) openModalWithContent({ title, content: item.content })
+                                    else openModalByUrl(item.link)
+                                }
+                                return <NeoButton key={key} {...look} onPress={openModal} />
+                            }
+                            const blank = item.target === '_blank' || item.target === 'blank'
+                            return (
+                                <NeoButtonLink
+                                    key={key}
+                                    {...look}
+                                    href={item.link}
+                                    target={blank ? '_blank' : undefined}
+                                    asExternal={blank}
+                                    onPress={close}
+                                />
+                            )
+                        })}
                     </Row>
                 ) : null
             }
