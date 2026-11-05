@@ -173,6 +173,34 @@
 }
 
 /*
+ * Selected (tinted) glass edge, web only: `shadow-btn-glass-tinted dark:shadow-btn-glass-tinted-deep`.
+ * The untinted glass edge (`--neo-shadow-btn-glass`, theme.css) in the tint. Light: the hairline turns
+ * accent-400, darker at the sides, and the crescents are thinner, white at 70% over the tint. Dark: the
+ * crescents turn accent-400. Measured on the iOS 26 tinted tab (Explore sub-tabs, 3x): light fill
+ * 209/228/254, top hairline 185/216/254, side 134/188/254, crescent 236/255/255; dark fill 30/58/138,
+ * crescent 76/112/216, black hairline.
+ * Here, not in theme.css: Expo imports theme.css, and native can't take CSS-variable colours in a
+ * box-shadow. The utilities build `box-shadow` as Tailwind's shadow utilities do, and the lists match
+ * the untinted ones item for item, so hover to selected animates.
+ */
+@layer base {
+    :root {
+        --neo-shadow-btn-glass-tinted:      inset 0 2px 1px -1px rgb(255 255 255 / 0.7), inset 0 -2px 1px -1px rgb(255 255 255 / 0.7), 0 0 0 0.6px rgb(var(--accent-400) / 0.4), 1px 0 0 -0.4px rgb(var(--accent-400) / 0.45), -1px 0 0 -0.4px rgb(var(--accent-400) / 0.45), 0 4px 10px -2px rgb(0 0 0 / 0.03);
+        --neo-shadow-btn-glass-tinted-deep: inset 0 1px 1px -0.5px rgb(var(--accent-400) / 0.8), inset 0 -1px 1px -0.5px rgb(var(--accent-400) / 0.8), inset 0 4px 5px -4px rgb(var(--accent-400) / 0.25), inset 0 -4px 5px -4px rgb(var(--accent-400) / 0.25), 0 0 0 0.6px rgb(0 0 0 / 0.5);
+    }
+}
+
+@utility shadow-btn-glass-tinted {
+    --tw-shadow: var(--neo-shadow-btn-glass-tinted);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+
+@utility shadow-btn-glass-tinted-deep {
+    --tw-shadow: var(--neo-shadow-btn-glass-tinted-deep);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+
+/*
  * Fallback superellipse factors (overridden on <html> from theme.corner_smoothing
  * via app/design/corner-smoothing.js when enabled). Consumed by global.web.css.
  */
