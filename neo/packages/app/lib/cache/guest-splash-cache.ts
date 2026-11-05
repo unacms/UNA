@@ -20,7 +20,7 @@ function isGuestSplash(pageData: any): boolean {
 
 /**
  * After a tab root page came back from UNA: keep a guest's splash, drop the copy when the page is a
- * member's. Other guest pages leave it as it is.
+ * member's, or a guest's home without the splash (Studio turned it off). Other guest pages leave it.
  */
 export function updateGuestSplashCache(path: string | null | undefined, props: any): void {
     const pageData = props?.data
@@ -32,6 +32,8 @@ export function updateGuestSplashCache(path: string | null | undefined, props: a
     if (path && isGuestSplash(pageData)) {
         lastWrite = 'kept'
         void persistedSet(KEY, { una: String(UNA_URL || ''), path, props } satisfies StoredSplash)
+    } else if (pageData.uri === 'home') {
+        forgetGuestSplash()
     }
 }
 

@@ -104,7 +104,7 @@ export default function UnaSplash({ code, data }: Readonly<UnaSplashProps>) {
             if (!anchor || !rawHref || event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
             emitter.emit(EVENTS.link, { action: 'pressed' })
             const href = normalizeRenderedHref(rawHref)
-            if (/^(mailto:|tel:|#)/i.test(href) || anchor.target === '_blank' || isExternalUrl(href)) return
+            if (/^(mailto:|tel:|#)/i.test(href) || anchor.target === '_blank' || anchor.hasAttribute('download') || isExternalUrl(href)) return
             const url = sanitazeUrl(href)
             if (!url) return
             event.preventDefault()
