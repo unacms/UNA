@@ -52,6 +52,7 @@ function getPageMainCode()
 
     $s = $oTemplate->parseHtmlByContent($sCode, array(
         'logo' => BxTemplFunctions::getInstance()->getMainLogo(array('attrs' => array('class' => 'bx-def-font-color'))),
+        'illustration' => BxDolSplash::getInstance()->getIllustration(),
     	'join_link' => BX_DOL_URL_ROOT . $oPermalink->permalink('page.php?i=create-account'),
         'join_form' => $sJoinForm,
         'join_form_in_box' => DesignBoxContent(_t('_sys_txt_splash_join'), $sJoinForm, BX_DB_PADDING_DEF),

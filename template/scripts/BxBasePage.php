@@ -599,6 +599,10 @@ class BxBasePage extends BxDolPage
             }
         }
 
+        // A guest's home is the splash where Studio > Designer > Splash turns it on for the asking app (X-Neo-Platform).
+        $sSplashPlatform = BxDolSplash::getPlatformFromRequest();
+        $bSplash = !$bLogged && $sUri == 'home' && BxDolSplash::getInstance()->isEnabledForApp($sSplashPlatform);
+
         $a = [
             'id' => $this->_aObject['id'],
             'title' => $sMetaTitle ? $sMetaTitle : $sName,
@@ -619,7 +623,7 @@ class BxBasePage extends BxDolPage
             'added' => $this->_aObject['added'],
             'module' => $sModule,
             'type' => $this->getType (),
-            'layout' => !$bLogged && $sUri == 'home' && ($sReplacement = getParam('sys_api_root_page_guest')) == 'splash' ? $sReplacement : str_replace('.html', '', $this->_aObject['template']),
+            'layout' => $bSplash ? 'splash' : str_replace('.html', '', $this->_aObject['template']),
             'layout_parsed' => !is_numeric(trim(current(array_keys($aElements)), 'cell_')),
             'cover_block' => '',
             'cover' => $this->_aObject['cover'],
@@ -632,6 +636,10 @@ class BxBasePage extends BxDolPage
             'config' => $this->_aObject['config_api'],
             'elements' => $aElements
         ];
+
+        // The splash UNA draws for the app: its code (markers as placeholders, see BxDolSplash), unless there is none.
+        if($bSplash)
+            $a['splash'] = BxDolSplash::getInstance()->getSplashAPI($sSplashPlatform);
 
         $sMenuTop = getParam('sys_api_menu_top');
         if (!empty($sMenuTop) && ($oMenuTop = BxDolMenu::getObjectInstance($sMenuTop)) !== false)
