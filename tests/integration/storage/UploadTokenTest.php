@@ -190,12 +190,70 @@ class UploadTokenTest extends BxDolIntegrationTestCase
         $this->assertNotEmpty($aResult['token'] ?? '');
         $this->_aTokens[] = $aResult['token'];
 
-        $this->assertIsArray(BxDolUploader::checkUploadToken($aResult['token'], 'upload_inline', self::STORAGE, self::UPLOADER));
-        $this->assertFalse(BxDolUploader::checkUploadToken($aResult['token'], 'upload', self::STORAGE, self::UPLOADER));
+        $this->assertIsArray(BxDolUploader::checkUploadToken($aResult['token'], 'upload_inline', self::STORAGE, self::UPLOADER, true));
+        $this->assertFalse(BxDolUploader::checkUploadToken($aResult['token'], 'upload', self::STORAGE, self::UPLOADER, true));
 
         $_GET = ['uo' => self::UPLOADER, 'so' => self::STORAGE];
         $aResult = (new BxBaseUploaderServices())->serviceGetUploadToken();
         $this->_aTokens[] = $aResult['token'];
-        $this->assertIsArray(BxDolUploader::checkUploadToken($aResult['token'], 'upload', self::STORAGE, self::UPLOADER), 'Defaults to upload.');
+        $this->assertIsArray(BxDolUploader::checkUploadToken($aResult['token'], 'upload', self::STORAGE, self::UPLOADER, true), 'Defaults to upload.');
+    }
+
+    private function newDirectToken(string $sAction = 'upload'): string
+    {
+        $sToken = BxDolUploader::getUploadToken($sAction, self::STORAGE, self::UPLOADER, [], true);
+        $this->assertIsString($sToken);
+        $this->_aTokens[] = $sToken;
+
+        return $sToken;
+    }
+
+    public function testDirectTokenWorksWithoutTheIssuingSession(): void
+    {
+        $sToken = $this->newDirectToken();
+
+        // A cookieless request starts another session: the direct token still passes.
+        BxDolSession::getInstance()->destroy();
+        $this->assertIsArray(BxDolUploader::checkUploadToken($sToken, 'upload', self::STORAGE, self::UPLOADER, true));
+
+        $aGet = ['uo' => self::UPLOADER, 'so' => self::STORAGE, 'uid' => 'abc12345', 'a' => 'upload', 'ut' => $sToken];
+        $this->assertNull($this->callService($aGet), 'Direct upload service accepts it.');
+    }
+
+    public function testDirectTokenIsAcceptedOnlyByTheApiUploadService(): void
+    {
+        $sToken = $this->newDirectToken();
+
+        $this->assertFalse(BxDolUploader::checkUploadToken($sToken, 'upload', self::STORAGE, self::UPLOADER), 'Not for storage.php and forms.');
+        $this->assertFalse(BxDolUploader::checkUploadToken($sToken, 'upload_inline', self::STORAGE, self::UPLOADER, true), 'Other action.');
+        $this->assertFalse(BxDolUploader::checkUploadToken($sToken, 'upload', 'sys_images', self::UPLOADER, true), 'Other storage.');
+        $this->assertFalse(BxDolUploader::checkUploadToken($sToken, 'upload', self::STORAGE, 'sys_crop', true), 'Other uploader.');
+    }
+
+    public function testSessionTokenIsStillBoundToItsSession(): void
+    {
+        $sToken = BxDolKey::getInstance()->getNewKey([
+            'action' => 'upload',
+            'storage' => self::STORAGE,
+            'uploader' => self::UPLOADER,
+            'session' => 'some-other-session-id',
+            'direct' => 0,
+            'profile_id' => 0,
+            'transcoders' => [],
+        ], 900, BxDolUploader::UPLOAD_TOKEN_SALT);
+        $this->_aTokens[] = $sToken;
+
+        $this->assertFalse(BxDolUploader::checkUploadToken($sToken, 'upload', self::STORAGE, self::UPLOADER, true), 'Allowing direct tokens does not drop the session check.');
+    }
+
+    public function testDirectTokenLifetimeIsCapped(): void
+    {
+        setParam('sys_security_upload_token_lifetime', '21600');
+        BxDolDb::getInstance()->cleanMemoryAll();
+
+        $sToken = $this->newDirectToken();
+        $iExpire = (int)BxDolDb::getInstance()->getOne("SELECT `expire` FROM `sys_keys` WHERE `key` = :key", ['key' => $sToken]);
+
+        $this->assertEqualsWithDelta(time() + BxDolUploader::UPLOAD_TOKEN_DIRECT_MAX_LIFETIME, $iExpire, 5);
     }
 }

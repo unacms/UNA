@@ -69,7 +69,7 @@ class BxBaseUploaderServices extends BxDol
         if (BxDolUploader::isUploadTokenEnabled() && ($bUpload ? (!$iProfileId || !empty($sUploadToken)) : !empty($sUploadToken))) {
             if (!$bUpload)
                 return ['error' => _t('_Access denied'), 'code' => 403];
-            $aUploadToken = BxDolUploader::checkUploadToken($sUploadToken, $sAction, $sStorageObject, $sUploaderObject);
+            $aUploadToken = BxDolUploader::checkUploadToken($sUploadToken, $sAction, $sStorageObject, $sUploaderObject, true);
             if (!$aUploadToken)
                 return ['error' => _t('_Access denied'), 'code' => 403];
             $iProfileId = (int)$aUploadToken['profile_id'];
@@ -180,8 +180,9 @@ class BxBaseUploaderServices extends BxDol
             $sAction = 'upload';
         if(!$sUploaderObject || !$sStorageObject || !BxDolUploader::getObjectInstance($sUploaderObject, $sStorageObject, 'token'))
             return ['error' => _t('_sys_request_page_not_found_cpt'), 'code' => 404];
-        $iLifetime = max(60, (int)getParam('sys_security_upload_token_lifetime'));
-        $sToken = BxDolUploader::getUploadToken($sAction, $sStorageObject, $sUploaderObject);
+        // NEO posts the file straight to api.php without cookies, so the token can't be bound to a session.
+        $iLifetime = BxDolUploader::getUploadTokenLifetime(true);
+        $sToken = BxDolUploader::getUploadToken($sAction, $sStorageObject, $sUploaderObject, [], true);
         if(!$sToken)
             return ['error' => _t('_error occured'), 'code' => 500];
 

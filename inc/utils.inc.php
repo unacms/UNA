@@ -1315,9 +1315,9 @@ function bx_remote_origin($sUrl)
     if (!$a || empty($a['scheme']) || empty($a['host']))
         return '';
 
-    $sScheme = strtolower($a['scheme']);
+    $sScheme = mb_strtolower($a['scheme']);
     $iPort = isset($a['port']) ? (int)$a['port'] : ('https' === $sScheme ? 443 : 80);
-    $sHost = rtrim(strtolower($a['host']), '.');
+    $sHost = rtrim(mb_strtolower($a['host']), '.');
     if ($sHost !== '' && function_exists('idn_to_ascii')) {
         $sAscii = idn_to_ascii($sHost);
         if (is_string($sAscii) && $sAscii !== '')
