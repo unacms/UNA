@@ -25,12 +25,13 @@ export const settingsHeaderToolbar = {
             ],
             loggedOut: [
                 { component: 'search', className: '' },
-                { component: 'link', className: 'items-center sm:hidden', href: "/login", title: 'Log In', props: { neoButton: true, borderShape: "circle", image: "UserRound", accessibilityLabel: "Log In" } },
                 { component: 'link', className: 'items-center hidden sm:block', href: "/login", title: 'Log In', props: { neoButton: true, borderShape: "capsule", title: 'Log In' } },
                 { component: 'link', className: 'items-center hidden sm:block', href: "/create-account", title: 'Sign Up', props: { neoButton: true, primary: true, borderShape: "capsule", title: 'Sign Up' } },
-                // Web and native (iOS: a SwiftUI pull-down menu). `props.auth: true` also puts
-                // Log In and Sign Up in it below `sm`, for a toolbar without the Log In circle.
-                { component: 'menu_navigation', className: 'items-center lg:hidden', props: { borderShape: 'circle', image: 'Menu', accessibilityLabel: 'Main menu' } },
+                // Web and native (iOS: a SwiftUI pull-down menu). Below `sm` it starts with Log In and Sign Up
+                // as buttons (UNA's site menu marks them `button`), so phones show no Log In circle here.
+                // `auth: true` adds the two when the menu has none (a `menu_items.menu_navigation` override
+                // without them, or an older UNA), so guests on phones always have a way to sign in.
+                { component: 'menu_navigation', className: 'items-center lg:hidden', props: { borderShape: 'circle', image: 'Menu', accessibilityLabel: 'Main menu', auth: true } },
             ],
         },
         mixed: {
