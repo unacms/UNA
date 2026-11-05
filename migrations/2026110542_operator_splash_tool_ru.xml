@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Operator agent: the activity line of splash_update. -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_sys_agents_activity_splash"><![CDATA[Изменил заставку для гостей: {unit}]]></string_add>
+</resources>

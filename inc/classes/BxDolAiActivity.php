@@ -35,6 +35,7 @@ class BxDolAiActivity
         'polyglot' => 'lang',
         'agent_create' => 'agent',
         'mockup_upsert' => 'mockup',
+        'splash_update' => 'splash',
     ];
 
     public static function isTableReady(): bool
@@ -60,6 +61,8 @@ class BxDolAiActivity
         if ($sTool === 'agent_create' && !in_array(strtolower((string)($aInputs['action'] ?? '')), ['create', 'update'], true))
             return 0;
         if ($sTool === 'mockup_upsert' && !empty($aInputs['dry_run']))
+            return 0;
+        if ($sTool === 'splash_update' && (!empty($aInputs['dry_run']) || (!isset($aInputs['enabled']) && !isset($aInputs['code']))))
             return 0;
 
         $aResult = is_array($mixedResult) ? $mixedResult : [];
@@ -212,6 +215,12 @@ class BxDolAiActivity
                 $sTitle = $fText($aBlock['title'] ?? '', 255);
                 $sUrl = (string)($aBlock['url'] ?? '');
                 break;
+
+            case 'splash':
+                $sUnit = (string)($aInputs['platform'] ?? '');
+                $sSummary = $fText($aResult['summary'] ?? '');
+                $sUrl = bx_absolute_url('studio/designer.php?page=splash');
+                break;
         }
 
         return ['unit' => $sUnit, 'object_id' => $iObject, 'object_url' => $sUrl, 'object_title' => $sTitle, 'summary' => $sSummary];
@@ -303,6 +312,7 @@ class BxDolAiActivity
             'lang' => 'Changed language key {unit}',
             'agent' => 'Agent {unit}: #{object}',
             'mockup' => 'Updated page block #{object}',
+            'splash' => 'Updated the guest splash: {unit}',
         ];
         $sKey = '_sys_agents_activity_' . $sAction;
         $sTpl = _t($sKey);

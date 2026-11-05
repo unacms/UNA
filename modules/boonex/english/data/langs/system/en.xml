@@ -2803,6 +2803,7 @@
     <string name="_sys_agents_activity_lang"><![CDATA[Changed language key {unit}]]></string>
     <string name="_sys_agents_activity_agent"><![CDATA[Agent {unit}: #{object}]]></string>
     <string name="_sys_agents_activity_mockup"><![CDATA[Updated page block #{object}]]></string>
+    <string name="_sys_agents_activity_splash"><![CDATA[Updated the guest splash: {unit}]]></string>
     <string name="_sys_page_block_title_ai_agents_admin"><![CDATA[Agents]]></string>
     <string name="_sys_agents_assistants_chats_msg_loading"><![CDATA[I'm thinking. Please wait.]]></string>
     <string name="_sys_agents_assistants_field_kwg_type"><![CDATA[Type]]></string>

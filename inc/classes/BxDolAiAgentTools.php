@@ -21,6 +21,7 @@ class BxDolAiAgentTools
     public const OPERATOR = [
         'agent_create',
         'mockup_upsert',
+        'splash_update',
         'mysql_write_safe',
         'mysql_undo',
     ];

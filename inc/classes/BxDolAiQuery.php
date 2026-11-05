@@ -267,6 +267,35 @@ class BxDolAiQuery extends BxDolDb
         return $this->getPairs($sQuery, 'id', 'title');
     }
 
+    public function getOptionRowByName(string $sName): array|false
+    {
+        return $this->getRow("SELECT * FROM `sys_options` WHERE `name` = :name LIMIT 1", ['name' => $sName]);
+    }
+
+    /**
+     * One snapshot in sys_agents_sql_log, which mysql_undo rolls back.
+     *
+     * @return int the snapshot's id
+     */
+    public function addSqlLog(array $aContext, string $sOp, string $sTable, string $sPk, string $sPkValue, string $sSql, ?string $sBefore, ?string $sAfter): int
+    {
+        $this->query("INSERT INTO `sys_agents_sql_log` SET " . $this->arrayToSQL([
+            'agent_id' => $aContext['agent_id'],
+            'profile_id' => $aContext['profile_id'],
+            'thread_id' => $aContext['thread_id'],
+            'op' => $sOp,
+            'table_name' => $sTable,
+            'pk_name' => $sPk,
+            'pk_value' => $sPkValue,
+            'sql_text' => $sSql,
+            'before_json' => $sBefore,
+            'after_json' => $sAfter,
+            'added' => time(),
+        ]));
+
+        return (int)$this->lastId();
+    }
+
     /**
      * Active tool rows for these types, lowest id first.
      *

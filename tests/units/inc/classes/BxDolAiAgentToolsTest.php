@@ -42,6 +42,7 @@ class BxDolAiAgentToolsTest extends \PHPUnit\Framework\TestCase
             'chat_title',
             'agent_create',
             'mockup_upsert',
+            'splash_update',
             'mysql_write_safe',
             'mysql_undo',
             'mysql_schema',
@@ -120,7 +121,7 @@ class BxDolAiAgentToolsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotContains($this->toolId('mysql_schema'), $aNormal);
 
         $aOperator = BxDolAiAgentTools::resolveIds(['name' => 'una_operator', 'tools' => '']);
-        foreach (['chat_buttons', 'chat_title', 'agent_create', 'mockup_upsert', 'mysql_write_safe', 'mysql_undo', 'mysql_schema', 'mysql_select'] as $sType)
+        foreach (['chat_buttons', 'chat_title', 'agent_create', 'mockup_upsert', 'splash_update', 'mysql_write_safe', 'mysql_undo', 'mysql_schema', 'mysql_select'] as $sType)
             $this->assertContains($this->toolId($sType), $aOperator);
         $this->assertContains($iMysql, $aOperator);
         if ($iWrite > 0)

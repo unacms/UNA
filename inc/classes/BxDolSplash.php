@@ -48,6 +48,9 @@ class BxDolSplash extends BxDolFactory implements iBxDolSingleton
     /** Elements the apps never get. */
     protected const TAGS_REMOVED = ['script', 'base', 'meta'];
 
+    /** Elements an agent may not write: the site page shows the code as it is, to every guest. */
+    protected const TAGS_UNSAFE = ['script', 'base', 'meta', 'link', 'iframe', 'object', 'embed'];
+
     /** Attributes that hold an address. */
     protected const ATTRS_URL = ['href', 'src', 'action', 'formaction', 'xlink:href', 'poster', 'background'];
 
@@ -197,17 +200,8 @@ class BxDolSplash extends BxDolFactory implements iBxDolSingleton
         if(trim($sHtml) === '')
             return '';
 
-        $bErrors = libxml_use_internal_errors(true);
-
         $oDoc = new DOMDocument('1.0', 'UTF-8');
-        // A whole document with its charset, so libxml reads the code as UTF-8 and keeps it all in the body.
-        $sDocument = BxDolTemplate::getInstance()->parseHtmlByName('splash_document.html', ['content' => $sHtml]);
-        $bLoaded = $sDocument !== '' && $oDoc->loadHTML($sDocument, LIBXML_NONET | LIBXML_HTML_NODEFDTD);
-
-        libxml_clear_errors();
-        libxml_use_internal_errors($bErrors);
-
-        $oBody = $bLoaded ? $oDoc->getElementsByTagName('body')->item(0) : null;
+        $oBody = $this->loadBody($oDoc, $sHtml);
         if(!$oBody)
             return '';
 
@@ -218,6 +212,51 @@ class BxDolSplash extends BxDolFactory implements iBxDolSingleton
             $sResult .= $oDoc->saveHTML($oChild);
 
         return trim($sResult);
+    }
+
+    protected function loadBody($oDoc, $sHtml)
+    {
+        $bErrors = libxml_use_internal_errors(true);
+
+        // A whole document with its charset, so libxml reads the code as UTF-8 and keeps it all in the body.
+        $sDocument = BxDolTemplate::getInstance()->parseHtmlByName('splash_document.html', ['content' => $sHtml]);
+        $bLoaded = $sDocument !== '' && $oDoc->loadHTML($sDocument, LIBXML_NONET | LIBXML_HTML_NODEFDTD);
+
+        libxml_clear_errors();
+        libxml_use_internal_errors($bErrors);
+
+        return $bLoaded ? $oDoc->getElementsByTagName('body')->item(0) : null;
+    }
+
+    /**
+     * What an agent may not write in splash code: script elements, frames, inline handlers and script addresses.
+     *
+     * @return string[] one description per kind of problem; empty when the code is clean
+     */
+    public function findUnsafe($sCode)
+    {
+        if(trim($sCode) === '')
+            return [];
+
+        $oDoc = new DOMDocument('1.0', 'UTF-8');
+        $oBody = $this->loadBody($oDoc, $sCode);
+        if(!$oBody)
+            return ['code that cannot be parsed'];
+
+        $aFound = [];
+        foreach($oBody->getElementsByTagName('*') as $oElement) {
+            $sTag = mb_strtolower($oElement->nodeName);
+            if(in_array($sTag, self::TAGS_UNSAFE, true))
+                $aFound['<' . $sTag . '>'] = true;
+
+            foreach($oElement->attributes as $oAttr) {
+                $sName = mb_strtolower($oAttr->nodeName);
+                if(strncmp($sName, 'on', 2) === 0 || $sName == 'srcdoc' || (in_array($sName, self::ATTRS_URL, true) && $this->isUnsafeUrl($oAttr->value)))
+                    $aFound[$sName . ' attribute'] = true;
+            }
+        }
+
+        return array_keys($aFound);
     }
 
     protected function cleanNode($oDoc, $oNode, $sSiteTitle)

@@ -2773,6 +2773,7 @@
         <string name="_sys_agents_activity_lang"><![CDATA[Изменил языковой ключ {unit}]]></string>
         <string name="_sys_agents_activity_agent"><![CDATA[Агент ({unit}): #{object}]]></string>
         <string name="_sys_agents_activity_mockup"><![CDATA[Изменил блок страницы #{object}]]></string>
+        <string name="_sys_agents_activity_splash"><![CDATA[Изменил заставку для гостей: {unit}]]></string>
         <string name="_sys_page_block_title_ai_agents_admin"><![CDATA[Агенты]]></string>
         <string name="_sys_agents_assistants_chats_msg_loading"><![CDATA[Я думаю. Пожалуйста, подождите.]]></string>
         <string name="_sys_agents_assistants_field_kwg_type"><![CDATA[Тип]]></string>

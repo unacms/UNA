@@ -442,23 +442,6 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
 
     protected function _log(string $sOp, string $sTable, string $sPk, string $sPkValue, string $sSql, ?string $sBefore, ?string $sAfter): int
     {
-        $oDb = BxDolDb::getInstance();
-        $aCtx = self::currentLogContext();
-
-        $oDb->query("INSERT INTO `sys_agents_sql_log` SET " . $oDb->arrayToSQL([
-            'agent_id' => $aCtx['agent_id'],
-            'profile_id' => $aCtx['profile_id'],
-            'thread_id' => $aCtx['thread_id'],
-            'op' => $sOp,
-            'table_name' => $sTable,
-            'pk_name' => $sPk,
-            'pk_value' => $sPkValue,
-            'sql_text' => $sSql,
-            'before_json' => $sBefore,
-            'after_json' => $sAfter,
-            'added' => time(),
-        ]));
-
-        return (int)$oDb->lastId();
+        return (new BxDolAiQuery())->addSqlLog(self::currentLogContext(), $sOp, $sTable, $sPk, $sPkValue, $sSql, $sBefore, $sAfter);
     }
 }
