@@ -195,17 +195,17 @@ function tabBadgeText({ rootUrl, badge, notifCount, messengerCount, iFrCounter }
 }
 
 /** The tab's icon, or the viewer's avatar on the avatar tab (`native.tab_avatar`). */
-function TabItemIcon({ isAvatar, currentUser, rootUrl, icon, animated, isActive, hovered, className }) {
+function TabItemIcon({ isAvatar, currentUser, rootUrl, icon, animated, isActive, className }) {
     if (isAvatar) {
         return <View className="w-6 h-6"><Profile  {...currentUser} url_avatar = {currentUser.avatar} url={rootUrl} displayType="unit_wo_info" displaySize="xs" /></View>;
     }
-    return <Icon icon={icon} size={24} animated={animated} active={animated ? isActive : undefined} hovered={animated ? hovered : undefined} className={className} />;
+    return <Icon icon={icon} size={24} animated={animated} active={animated ? isActive : undefined} className={className} />;
 }
 
 function MenuBottomItem({ link, tabKey, rootUrl, title, badge, icon, isActive, iFrCounter, notifCount, animated, addClassName, isAvatar }) {
     const { currentUser } = useCurrentUser();
+    // The icon's hover motion is CSS, keyed on the link's `group` class.
     const useAnimatedIcon = animated === true;
-    const [groupHovered, setGroupHovered] = useState(false);
     const badgeText = tabBadgeText({ rootUrl, badge, notifCount, messengerCount: currentUser?.counters?.bx_messenger_new_messages, iFrCounter });
 
     const handlePress = useCallback(() => {
@@ -227,11 +227,9 @@ function MenuBottomItem({ link, tabKey, rootUrl, title, badge, icon, isActive, i
                 <View
                     {...cueAttributes({ cue: 'navigate', emphasis: 'subtle' })}
                     className={` my-auto items-center rounded-full min-h-12 justify-center p-1.5 text-center gap-1.5 web:hover:bg-muted/50 ${isActive && 'bg-accent/60'}`}
-                    onMouseEnter={useAnimatedIcon ? () => setGroupHovered(true) : undefined}
-                    onMouseLeave={useAnimatedIcon ? () => setGroupHovered(false) : undefined}
                 >
                     <View className="items-center justify-center">
-                        <TabItemIcon isAvatar={isAvatar} currentUser={currentUser} rootUrl={rootUrl} icon={icon} animated={useAnimatedIcon} isActive={isActive} hovered={groupHovered} className={iconClassName} />
+                        <TabItemIcon isAvatar={isAvatar} currentUser={currentUser} rootUrl={rootUrl} icon={icon} animated={useAnimatedIcon} isActive={isActive} className={iconClassName} />
                     </View>
                     {isTabBarLabelsEnabled() && title ? (
                         <Text className={` web:group-hover:text-accent-foreground text-[11px] tracking-tight leading-none font-medium whitespace-nowrap ${isActive ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>{title}</Text>

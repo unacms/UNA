@@ -22,7 +22,7 @@ export * from './icons-svg.js'
 
 const TAGS = { path: Path, circle: Circle, rect: Rect, line: Line, polyline: Polyline, polygon: Polygon, ellipse: Ellipse }
 
-const makeLucideIcon = (nodes) => function LucideInlineIcon({ width, height, size, color, strokeWidth, className }) {
+const makeLucideIcon = (nodes) => Object.assign(function LucideInlineIcon({ width, height, size, color, strokeWidth, className }) {
     const resolvedWidth = width || size || 24
     const resolvedHeight = height || size || 24
     // Mirror the mask path: a wrapping <span> carries the icon's own className
@@ -51,7 +51,10 @@ const makeLucideIcon = (nodes) => function LucideInlineIcon({ width, height, siz
             </Svg>
         </span>
     )
-}
+}, {
+    // An upstream copy of a Lucide icon, not a custom drawing: an animated icon of the same name may replace it.
+    lucideInline: true,
+})
 
 export const Menu = makeLucideIcon([['path', { d: 'M4 5h16' }], ['path', { d: 'M4 12h16' }], ['path', { d: 'M4 19h16' }]])
 export const Search = makeLucideIcon([['path', { d: 'm21 21-4.34-4.34' }], ['circle', { cx: '11', cy: '11', r: '8' }]])

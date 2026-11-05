@@ -1,5 +1,4 @@
-import { useContext, useState } from 'react'
-import { Platform } from 'react-native'
+import { useContext } from 'react'
 import { View, Row } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
@@ -30,15 +29,8 @@ function MenuTopItem_({ title, icon, isTitle, isActive, isPopup, chevron, animat
     const isMenuOpen = useContext(DropdownMenuOpenContext) ?? false;
     const isOpen = isPopup && isMenuOpen;
     const isActiveOrOpen = isActive || isOpen;
+    // The icon's hover motion is CSS, keyed on the link's (or trigger's) `group` class.
     const useAnimatedIcon = animated === true;
-    const [groupHovered, setGroupHovered] = useState(false);
-    const rowHoverProps =
-        useAnimatedIcon && Platform.OS === 'web'
-            ? {
-                onMouseEnter: () => setGroupHovered(true),
-                onMouseLeave: () => setGroupHovered(false),
-            }
-            : {};
     const baseIconClass = isActiveOrOpen
         ? 'text-accent-foreground h-9 w-9 my-auto items-center justify-center flex'
         : 'text-secondary-foreground web:group-hover:text-foreground h-9 w-9 items-center justify-center flex';
@@ -60,7 +52,6 @@ function MenuTopItem_({ title, icon, isTitle, isActive, isPopup, chevron, animat
                     ? '  text-accent-foreground'
                     : ' text-secondary-foreground web:group-hover:text-foreground web:hover:bg-muted/50 web:group-focus:bg-muted/50 web:active:bg-muted '
                     }`}
-                {...rowHoverProps}
             >
                 {[
                     icon ? (
@@ -71,7 +62,6 @@ function MenuTopItem_({ title, icon, isTitle, isActive, isPopup, chevron, animat
                             active={useAnimatedIcon ? isActiveOrOpen : undefined}
                             size={useAnimatedIcon ? 24 : undefined}
                             className={menuIconClassName}
-                            hovered={useAnimatedIcon && Platform.OS === 'web' ? groupHovered : undefined}
                         />
                     ) : null,
                     isTitle ? (
