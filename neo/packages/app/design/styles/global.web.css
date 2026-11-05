@@ -726,16 +726,17 @@ html[theme="dark"]:root {
         --neo-radius-2xl: calc(1rem * var(--neo-corner-superellipse-factor, 1.25)) !important;
         --neo-radius-3xl: calc(1.5rem * var(--neo-corner-superellipse-factor, 1.25)) !important;
         --neo-radius-4xl: calc(2rem * var(--neo-corner-superellipse-factor, 1.25)) !important;
+        --neo-radius-popover: calc(1.25rem * var(--neo-corner-superellipse-factor, 1.25)) !important;
         --neo-radius-full: calc(9999px * var(--neo-corner-superellipse-full-factor, 1)) !important;
     }
 
     /* Apply superellipse shape to any element with a rounded class */
     .neo-corner-smooth :is([class~="rounded"], [class~="rounded-xs"], [class~="rounded-sm"], [class~="rounded-md"],
         [class~="rounded-lg"], [class~="rounded-xl"], [class~="rounded-2xl"],
-        [class~="rounded-3xl"], [class~="rounded-4xl"],
+        [class~="rounded-3xl"], [class~="rounded-4xl"], [class~="rounded-popover"],
         [class*=":rounded"], [class*=":rounded-xs"], [class*=":rounded-sm"], [class*=":rounded-md"],
         [class*=":rounded-lg"], [class*=":rounded-xl"], [class*=":rounded-2xl"],
-        [class*=":rounded-3xl"], [class*=":rounded-4xl"]) {
+        [class*=":rounded-3xl"], [class*=":rounded-4xl"], [class*=":rounded-popover"]) {
         /* stylelint-disable-next-line property-no-unknown */
         corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1.25));
     }

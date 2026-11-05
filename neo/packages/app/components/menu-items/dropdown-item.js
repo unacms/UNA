@@ -10,13 +10,13 @@ import Link from 'app/ui/atoms/link'
 import { cueAttributes } from 'app/lib/sound';
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
-const getIcon = (oItem, iconSize = 20, rowHovered) => {
+const getIcon = (oItem, iconSize = 20, rowHovered, imageClass = 'h-8 w-8 rounded-full') => {
     const image = oItem?.image
     if (typeof image === 'string' && image && /^(https?:|file:|content:|data:)/i.test(image)) {
         return (
             <Image
                 src={image}
-                className="h-9 w-9 rounded-full"
+                className={imageClass}
                 view="cover"
                 sizes="auto"
             />
@@ -49,10 +49,30 @@ const getIcon = (oItem, iconSize = 20, rowHovered) => {
     }
 };
 
-export default function DropdownMenuItem({ item, index, link, handleSelect, classes, className,  counter, handleCounter, mode }) {
+/**
+ * Classes for a vertical row of `size` (`theme.dropdown_menu.item_sizes`): the size-free base plus that size.
+ * Regular, or a size the theme doesn't have, keeps the plain presets (`item_ver`, `item_icon`, `item_text`, ...).
+ */
+const sizedPresets = (size) => {
+    const sz = size && size !== 'regular' ? menuSettings.item_sizes?.[size] : null;
+    if (!sz)
+        return null;
+    return {
+        item_ver: `${menuSettings.item_ver_base} ${sz.item}`,
+        item_icon: `${menuSettings.item_icon_base} ${sz.icon}`,
+        item_icon_active: `${menuSettings.item_icon_active_base} ${sz.icon}`,
+        item_text: `${menuSettings.item_text_base} ${sz.text}`,
+        item_text_selected: `${menuSettings.item_text_selected_base} ${sz.text}`,
+        item_image: `rounded-full ${sz.icon}`,
+        icon_size: sz.icon_size,
+    };
+};
+
+export default function DropdownMenuItem({ item, index, link, handleSelect, classes, className,  counter, handleCounter, mode, size }) {
     const { t } = useTranslation();
     const key = item.id ?? index;
-    const iconSize = menuSettings.icon_size || 16;
+    const presets = { ...menuSettings, ...sizedPresets(size) };
+    const iconSize = presets.icon_size || 16;
     const [rowHovered, setRowHovered] = useState(false);
     const rowHoverProps =
         item.animated && Platform.OS === 'web'
@@ -93,14 +113,14 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
         );
     }
 
-    const icon = getIcon(item, iconSize, rowHovered);
+    const icon = getIcon(item, iconSize, rowHovered, presets.item_image);
     const iconWrapClass = item.selected
-        ? (menuSettings.item_icon_active ?? menuSettings.item_icon)
-        : menuSettings.item_icon;
+        ? (presets.item_icon_active ?? presets.item_icon)
+        : presets.item_icon;
 
     const itemTextKey = classes?.item_text_key || 'item_text';
     const itemTextClass =
-        (item.selected ? menuSettings[`${itemTextKey}_selected`] : null) ?? menuSettings[itemTextKey] ?? menuSettings.item_text;
+        (item.selected ? presets[`${itemTextKey}_selected`] : null) ?? presets[itemTextKey] ?? presets.item_text;
     const itemDescriptionClass =
         menuSettings.item_description ?? 'text-xs font-normal leading-tight text-pretty text-muted-foreground px-2';
     const itemCntKey = classes?.item_cnt_key ?? 'item_cnt';
@@ -131,7 +151,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
             : {};
     const Content = (
         <Wrapper
-            className={`group ${className} ${menuSettings[classes?.item || 'item_ver']}${item.selected ? ` ${menuSettings.item_selected ?? 'bg-accent'}` : ''}`}
+            className={`group ${className} ${presets[classes?.item || 'item_ver']}${item.selected ? ` ${menuSettings.item_selected ?? 'bg-accent'}` : ''}`}
             key={key}
             {...pressProps}
             {...rowHoverProps}
@@ -157,7 +177,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
                 </View>
                 {!!counter && typeof handleCounter === 'function' && (
                     <Pressable className='mr-1'  onPress={(event) => handleCounter(event, item)}>
-                        <Text className={menuSettings.item_text}>{counter}</Text>
+                        <Text className={presets.item_text}>{counter}</Text>
                     </Pressable>
                 )}
             </Row>

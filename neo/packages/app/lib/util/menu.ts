@@ -374,9 +374,9 @@ const DROPDOWN_SECTION_MAX = 320; // w-80
 const DROPDOWN_SECTION_GAP = 4; // gap-1
 const DROPDOWN_SECTION_STACK_BELOW = 640; // sm
 const DROPDOWN_POPUP_GUTTER = 32;
-// Theme shell uses `p-1.5` (6px × 2). Must match `theme.dropdown.cnt` — too
+// Theme shell uses `p-2` (8px × 2). Must match `theme.dropdown.cnt` — too
 // small and the last column wraps while the popup still reserves its width.
-const DROPDOWN_POPUP_PAD = 12;
+const DROPDOWN_POPUP_PAD = 16;
 
 /**
  * How many section columns fit, and how wide they should be.

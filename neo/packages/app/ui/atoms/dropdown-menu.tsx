@@ -71,7 +71,11 @@ export type DropdownMenuProps = {
     minPopupWidth?: number;
     /** Popup: lay the rows out in this many columns of about the same height. */
     columns?: number;
+    /** Row size of a vertical list, the NeoButton heights: mini 28, small 36, regular 44 (default), large 52, xlarge 64. */
+    size?: DropdownMenuItemSize;
 };
+
+export type DropdownMenuItemSize = 'mini' | 'small' | 'regular' | 'large' | 'xlarge';
 
 type DropdownMenuPopupProps = Omit<DropdownMenuProps, 'mode' | 'title' | 'cancelable'>;
 
@@ -150,6 +154,7 @@ function DropdownMenuPopup({
     stacked = false,
     minPopupWidth = 256,
     columns = 1,
+    size,
 }: DropdownMenuPopupProps) {
     const DropdownMenuItem = getDropdownMenuItem();
     const redirectdRef = useRef<RedirectHandle | null>(null);
@@ -365,6 +370,7 @@ function DropdownMenuPopup({
                                                 link={navigable ? item.link : undefined}
                                                 classes={classes}
                                                 className={item.className}
+                                                size={size}
                                             />
                                         );
                                     })}
@@ -385,6 +391,7 @@ function DropdownMenuPopup({
                                     link={navigable ? item.link : undefined}
                                     classes={classes}
                                     className={item.className}
+                                    size={size}
                                 />
                             );
                         })}
@@ -611,6 +618,7 @@ export default function DropdownMenu({
     stacked = false,
     minPopupWidth,
     columns,
+    size,
 }: DropdownMenuProps) {
     const isWeb = Platform.OS === 'web';
 
@@ -638,6 +646,7 @@ export default function DropdownMenu({
                 stacked={stacked}
                 minPopupWidth={minPopupWidth}
                 columns={columns}
+                size={size}
             />
         );
     }
