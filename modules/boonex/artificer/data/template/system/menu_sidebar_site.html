@@ -1,3 +1,10 @@
+<bx_if:show_buttons>
+    <li class="bx-sidebar-buttons flex gap-2 px-2 pb-4 mb-3 border-b border-gray-200 dark:border-gray-700__class_add__">
+        <bx_repeat:buttons>
+            <a class="bx-btn bx-sidebar-button bx-sidebar-button-__name__ flex-1 justify-center__class_add__" href="__link__" <bx_if:onclick>onclick="__onclick__"</bx_if:onclick> __attrs__>__title__</a>
+        </bx_repeat:buttons>
+    </li>
+</bx_if:show_buttons>
 <bx_repeat:menu_items>
     <li class="bx-sidebar-item bx-sidebar-item-__name____class_add__ group flex flex-col text-sm font-medium">
         <a class="bx-stl-mil" href="__link__" <bx_if:onclick>onclick="__onclick__"</bx_if:onclick> __attrs__>

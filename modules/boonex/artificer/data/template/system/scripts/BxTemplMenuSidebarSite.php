@@ -25,6 +25,51 @@ class BxTemplMenuSidebarSite extends BxTemplMenu
         $this->_aHideFromMenu = ['search', 'more-auto'];
     }
 
+    /**
+     * Items whose App config says `"button": true` (the site menu's Log in and Sign up) leave the list
+     * and show as buttons in a row above it, the `primary` one as the primary button.
+     */
+    protected function _getTemplateVars ()
+    {
+        $aVars = parent::_getTemplateVars();
+
+        $aItems = $aButtons = [];
+        $aButtonsHiddenOn = null;
+        foreach($aVars['bx_repeat:menu_items'] as $aItem) {
+            if(!$this->_isMenuItemButton($aItem)) {
+                $aItems[] = $aItem;
+                continue;
+            }
+
+            $aItem['class_add'] .= !empty($aItem['primary']) ? ' bx-btn-primary' : '';
+            $aButtons[] = $aItem;
+
+            // The row hides where all of its buttons are hidden.
+            $aHiddenOn = array_filter(explode(' ', $this->_getVisibilityClass($aItem)));
+            $aButtonsHiddenOn = $aButtonsHiddenOn === null ? $aHiddenOn : array_intersect($aButtonsHiddenOn, $aHiddenOn);
+        }
+
+        $aVars['bx_repeat:menu_items'] = $aItems;
+        $aVars['bx_if:show_buttons'] = [
+            'condition' => !empty($aButtons),
+            'content' => [
+                'class_add' => $aButtonsHiddenOn ? ' ' . implode(' ', $aButtonsHiddenOn) : '',
+                'bx_repeat:buttons' => $aButtons,
+            ],
+        ];
+
+        return $aVars;
+    }
+
+    protected function _isMenuItemButton ($a)
+    {
+        if(empty($a['config_api']) || !empty($a['submenu_object']))
+            return false;
+
+        $aConfig = json_decode($a['config_api'], true);
+        return is_array($aConfig) && !empty($aConfig['button']);
+    }
+
     protected function _getMenuItem ($a)
     {
         if(in_array($a['name'], $this->_aHideFromMenu))

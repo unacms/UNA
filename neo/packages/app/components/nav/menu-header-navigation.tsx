@@ -2,11 +2,11 @@ import { useState } from 'react'
 import DropdownMenu, { type DropdownMenuItemData } from 'app/ui/atoms/dropdown-menu'
 import { NeoButtonLink } from 'app/design/controls'
 import { Row } from 'app/design/view'
-import { getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
+import { cn, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { useTranslation } from 'react-i18next'
 import { useIsDesktop } from 'app/context/measure';
-import { useMenuNavigationEntries } from 'app/components/nav/menu-header-navigation-entries'
+import { AUTH_BUTTONS, useMenuNavigationEntries } from 'app/components/nav/menu-header-navigation-entries'
 import type { MenuHeaderNavigationProps } from 'app/components/nav/menu-header-navigation.types'
 
 // Log In and Sign Up share the row equally, whatever their label widths.
@@ -15,29 +15,35 @@ const AUTH_BUTTON_CLASSES = { root: 'basis-0' }
 /**
  * Header-toolbar menu (`menu_navigation`, else UNA's site menu): icon trigger opens the same style of popup
  * menu as navbar “more” (DropdownMenu + menu_items dropdown rows). A group shows as a
- * section under its title. With `auth`, guests below `sm` also get Log In and Sign Up
- * under the rows. Web and Android; iOS has a native menu (menu-header-navigation.ios.tsx).
+ * section under its title. Items marked as buttons (the site menu's Log In and Sign Up for
+ * guests on phones) come first, as the buttons they are outside the menu, above a divider.
+ * With `auth`, a menu without such items gives guests below `sm` Log In and Sign Up there.
+ * Web and Android; iOS has a native menu (menu-header-navigation.ios.tsx).
  */
 export default function MenuHeaderNavigation(props: Readonly<MenuHeaderNavigationProps>) {
     const { currentUser } = useCurrentUser()
     const { t } = useTranslation()
     const isDesktop = useIsDesktop()
     const [open, setOpen] = useState(false)
-    const { entries, pending } = useMenuNavigationEntries()
+    const { entries, buttons, pending } = useMenuNavigationEntries()
     const items: DropdownMenuItemData[] = entries
         .flatMap(({ key, item, rows }) =>
             rows.length ? [{ type: 'group_header', id: `header-${key}`, name: item.name, title: item.title }, ...rows] : [item]
         )
         .map((item) => (item.description || item.info ? { ...item, description: t(item.description || item.info) } : item))
 
+    // The `auth` fallback follows the toolbar, which has its own Log In and Sign Up from `sm`.
+    const authFallback = !buttons.length && !!props.auth && !currentUser
+    const shownButtons = authFallback ? AUTH_BUTTONS : buttons
+
     // While the site menu loads, keep the button so the header doesn't shift.
-    if (!items.length && !pending) {
+    if (!items.length && !shownButtons.length && !pending) {
         return null
     }
 
     const {
         neoButton: _neoButton,
-        auth = false,
+        auth: _auth,
         rounded = false,
         startDecorator = 'Menu',
         alt = 'Menu',
@@ -57,27 +63,27 @@ export default function MenuHeaderNavigation(props: Readonly<MenuHeaderNavigatio
             items={items}
             open={open}
             onOpenChange={setOpen}
-            footer={
-                auth && !currentUser ? (
-                    <Row className="sm:hidden gap-2 px-2 pt-3 pb-1.5 mt-1.5 border-t border-border/60">
-                        <NeoButtonLink
-                            href="/login"
-                            label={t('Log In')}
-                            style="bordered"
-                            borderShape="capsule"
-                            width="fill"
-                            classNames={AUTH_BUTTON_CLASSES}
-                            onPress={close}
-                        />
-                        <NeoButtonLink
-                            href="/create-account"
-                            label={t('Sign Up')}
-                            style="borderedProminent"
-                            borderShape="capsule"
-                            width="fill"
-                            classNames={AUTH_BUTTON_CLASSES}
-                            onPress={close}
-                        />
+            header={
+                shownButtons.length ? (
+                    <Row
+                        className={cn(
+                            'gap-2 px-2 pt-1.5 pb-3 border-border/60',
+                            items.length && 'mb-1.5 border-b',
+                            authFallback && 'sm:hidden'
+                        )}
+                    >
+                        {shownButtons.map(({ key, item, primary }) => (
+                            <NeoButtonLink
+                                key={key}
+                                href={item.link}
+                                label={authFallback ? t(item.title) : item.title}
+                                style={primary ? 'borderedProminent' : 'bordered'}
+                                borderShape="capsule"
+                                width="fill"
+                                classNames={AUTH_BUTTON_CLASSES}
+                                onPress={close}
+                            />
+                        ))}
                     </Row>
                 ) : null
             }
