@@ -87,10 +87,11 @@ export function useMenuNavigationEntries(): MenuNavigationEntries {
                 const children = getMenuItemChildren(item);
                 return {
                     key: item.name ?? String(index),
-                    item: { ...item, title: t(item.title) },
+                    // Rows animate their icons on hover, as the navbar does; an item may opt out with `animated: false`.
+                    item: { ...item, title: t(item.title), animated: item.animated ?? true },
                     hasChildren: children.length > 0,
                     rows: flattenMenuItemsForDropdown(item.launcher ? mergeNavbarMoreWithLauncher(children, launcherItems) : children)
-                        .map((row) => ({ ...row, title: t(row.title) })),
+                        .map((row) => ({ ...row, title: t(row.title), animated: row.animated ?? true })),
                 };
             })
             // The site menu can hold script-only items and submenus with nothing for this viewer.

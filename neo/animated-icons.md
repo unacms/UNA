@@ -13,7 +13,7 @@ One engine draws every animated icon from a small **spec**: the icon's Lucide no
 
 ## Using it
 
-Set **`animated: true`** on the menu or tab item; the row passes it to `Icon` along with `active`. Navbar items and More (`lib/util/menu.ts`), the tab bars (`lib/navigation/tab-bar-menu.ts`, footer and native JS tabs) and launcher items that carry it do this. The row must have Tailwind's `group` class (all of these do) for hover to reach the icon on web.
+Set **`animated: true`** on the menu or tab item; the row passes it to `Icon` along with `active`. Navbar items and More (`lib/util/menu.ts`), the main menu's popup rows (`components/nav/menu-header-navigation-entries.ts`; an item can opt out with `animated: false`), the tab bars (`lib/navigation/tab-bar-menu.ts`, footer and native JS tabs) and launcher items that carry it do this. On touch screens (`hover: none`) there is no hover motion, so taps never leave an icon stuck mid-hover. The row must have Tailwind's `group` class (all of these do) for hover to reach the icon on web.
 
 `icon-scene-*` tokens in the icon's `className` turn parts off: `icon-scene-fill` alone gives only the fill, `icon-scene-draw` alone only the motion. Without a token both are on. They are not CSS utilities; `Icon` strips them.
 
