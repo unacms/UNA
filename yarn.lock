@@ -2289,10 +2289,10 @@ html-void-elements@^3.0.0:
   resolved "https://registry.yarnpkg.com/html-void-elements/-/html-void-elements-3.0.0.tgz#fc9dbd84af9e747249034d4d62602def6517f1d7"
   integrity sha512-bEqo66MRXsUGxWHV5IP0PUiAWwoEjba4VCzg0LjFJBpchPaTfyfCKTG6bc5F8ucKec3q5y6qOdGyYTSBEvhCrg==
 
-htmx.org@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/htmx.org/-/htmx.org-4.0.0.tgz#72323bd24261364fe3111803c46b80da1fb33445"
-  integrity sha512-T/171FUY93Kdfp8t+DnHdk45QvKRiBhVhhrwSzrXgUi4pHKvhp77dUA/qg8FAjsFWPIHNbmUuIdCrcVHuiZWng==
+htmx.org@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/htmx.org/-/htmx.org-4.0.1.tgz#db4f8322b8d61d5ae21b46011a0be835aaefb6f7"
+  integrity sha512-oF7JgXhDW9UXCy/k1ZYFUQgzu/rm19ORWPSPNL91vPluB2PB9+MV55tyQdH/w7o2EAbTYUG5SDW1R60mdkdqGg==
 
 http-cache-semantics@^4.1.1:
   version "4.3.0"
