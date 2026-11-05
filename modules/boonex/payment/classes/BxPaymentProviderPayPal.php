@@ -156,6 +156,9 @@ class BxPaymentProviderPayPal extends BxBaseModPaymentProvider implements iBxBas
         $aResult['client_name'] = _t($this->_sLangsPrefix . 'txt_buyer_name_mask', bx_process_input($aData['first_name']), bx_process_input($aData['last_name'])); 
 		$aResult['client_email'] = bx_process_input($aData['payer_email']);
 		$aResult['paid'] = true;
+
+        //--- The data was verified with PayPal itself (IPN/PDT), so no buyer session is needed (IPN has none).
+        $aResult['verified'] = true;
         return $aResult;
     }
 
