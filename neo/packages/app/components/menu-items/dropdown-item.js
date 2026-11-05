@@ -5,7 +5,7 @@ import { Pressable, View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { Icon } from 'app/ui/atoms/icon';
 import Image from 'app/ui/atoms/image';
-import { isEmoji, appSetting, resolveMenuItemDescription } from 'app/lib/util';
+import { isEmoji, appSetting, resolveMenuItemDescription, cn } from 'app/lib/util';
 import Link from 'app/ui/atoms/link'
 import { cueAttributes } from 'app/lib/sound';
 const menuSettings = appSetting('theme', 'dropdown_menu');
@@ -68,6 +68,45 @@ const sizedPresets = (size) => {
     };
 };
 
+function GroupHeader({ item }) {
+    const headerClass = item.first
+        ? (menuSettings.item_group_header_first ?? menuSettings.item_group_header)
+        : menuSettings.item_group_header;
+    return (
+        <View className={headerClass || 'px-2 pt-3 pb-1'}>
+            <Text
+                role="heading"
+                aria-level={2}
+                className={menuSettings.item_group_header_text || 'text-xs font-semibold uppercase tracking-wide text-muted-foreground'}
+            >
+                {item.title}
+            </Text>
+        </View>
+    );
+}
+
+/** Press handler, plus the radio role when the item is a pickable option (`selected` true or false). */
+const getPressProps = (item, handleSelect) => {
+    if (typeof handleSelect !== 'function')
+        return {};
+    const props = { onPress: (event) => handleSelect(event, item) };
+    if (item.selected !== true && item.selected !== false)
+        return props;
+    return {
+        ...props,
+        accessibilityRole: 'radio',
+        accessibilityState: { selected: !!item.selected, checked: !!item.selected },
+        'aria-checked': !!item.selected,
+    };
+};
+
+/** Label classes: the variant's text preset (`classes.item_text_key`), its `_selected` twin for the picked item. */
+const getTextClass = (presets, item, classes) => {
+    const itemTextKey = classes?.item_text_key || 'item_text';
+    const selectedClass = item.selected ? presets[`${itemTextKey}_selected`] : null;
+    return selectedClass ?? presets[itemTextKey] ?? presets.item_text;
+};
+
 export default function DropdownMenuItem({ item, index, link, handleSelect, classes, className,  counter, handleCounter, mode, size }) {
     const { t } = useTranslation();
     const key = item.id ?? index;
@@ -82,45 +121,23 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
               }
             : {};
 
-    if (typeof item.title !== 'string') {
-       /* if (item.noAction && typeof handleSelect === 'function') {
-            return <Pressable onPress={(event) => handleSelect(event, item)}>{item.title}</Pressable>;
-        }*/
-            if (typeof item.title !== 'string') {
-                return item.title;  // no outer Pressable — onPress is already handled inside MenuItemEx
-            }
+    // A node title renders itself; its onPress is already handled inside MenuItemEx, so no outer Pressable.
+    if (typeof item.title !== 'string')
         return item.title;
-    }
 
     if (item.type === 'separator') {
         return <View key={key}>{item.title}</View>;
     }
 
-    if (item.type === 'group_header') {
-        const headerClass = item.first
-            ? (menuSettings.item_group_header_first ?? menuSettings.item_group_header)
-            : menuSettings.item_group_header;
-        return (
-            <View key={key} className={headerClass || 'px-2 pt-3 pb-1'}>
-                <Text
-                    role="heading"
-                    aria-level={2}
-                    className={menuSettings.item_group_header_text || 'text-xs font-semibold uppercase tracking-wide text-muted-foreground'}
-                >
-                    {item.title}
-                </Text>
-            </View>
-        );
-    }
+    if (item.type === 'group_header')
+        return <GroupHeader key={key} item={item} />;
 
     const icon = getIcon(item, iconSize, rowHovered, presets.item_image);
     const iconWrapClass = item.selected
         ? (presets.item_icon_active ?? presets.item_icon)
         : presets.item_icon;
 
-    const itemTextKey = classes?.item_text_key || 'item_text';
-    const itemTextClass =
-        (item.selected ? presets[`${itemTextKey}_selected`] : null) ?? presets[itemTextKey] ?? presets.item_text;
+    const itemTextClass = getTextClass(presets, item, classes);
     const itemDescriptionClass =
         menuSettings.item_description ?? 'text-xs font-normal leading-tight text-pretty text-muted-foreground px-2';
     const itemCntKey = classes?.item_cnt_key ?? 'item_cnt';
@@ -133,25 +150,11 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     // A link row is the child of `<Link asChild>` (below). Web wraps it in an anchor; on
     // native the Link hands its onPress to the child, so the row has to be pressable.
     const Wrapper = handleSelect || (link && Platform.OS !== 'web') ? Pressable : View;
-    const isSelectableAction =
-        typeof handleSelect === 'function' &&
-        (item.selected === true || item.selected === false);
-    const pressProps =
-        typeof handleSelect === 'function'
-            ? {
-                  onPress: (event) => handleSelect(event, item),
-                  ...(isSelectableAction
-                      ? {
-                            accessibilityRole: 'radio',
-                            accessibilityState: { selected: !!item.selected, checked: !!item.selected },
-                            'aria-checked': !!item.selected,
-                        }
-                      : {}),
-              }
-            : {};
+    const pressProps = getPressProps(item, handleSelect);
+    const rowClass = cn('group', className, presets[classes?.item || 'item_ver'], item.selected && (menuSettings.item_selected ?? 'bg-accent'));
     const Content = (
         <Wrapper
-            className={`group ${className} ${presets[classes?.item || 'item_ver']}${item.selected ? ` ${menuSettings.item_selected ?? 'bg-accent'}` : ''}`}
+            className={rowClass}
             key={key}
             {...pressProps}
             {...rowHoverProps}
