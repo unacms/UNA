@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_dev_frm_txt_displays_display"><![CDATA[Forms Builder Display]]></string_add>
+
+	<string_upd name="_bx_dev_nav_txt_items_gl_visible"><![CDATA[Visible For]]></string_upd>
+	<string_upd name="_bx_dev_nav_btn_items_gl_visible"><![CDATA[Visible For]]></string_upd>
+	<string_upd name="_bx_dev_txt_disable_before_import_note"><![CDATA[Existing menu items, blocks, etc. will be deactivated site-wide before importing the new ones. This allows custom (different) elements to be hidden.]]></string_upd>
+
+	<string_del name="_bx_dev_frm_txt_displays_diplay" />
+</resources>

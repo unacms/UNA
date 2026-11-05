@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_credits_err_wrong_amont"><![CDATA[The amount of credits must be greater than zero.]]></string_add>
+	<string_add name="_bx_credits_err_withdrawal_already_processed"><![CDATA[Cannot perform the action because the withdrawal request was already processed.]]></string_add>
+	<string_add name="_bx_credits_err_cannot_confirm_withdrawal"><![CDATA[Cannot confirm withdrawal request. Please report.]]></string_add>
+	<string_add name="_bx_credits_txt_analytics_balance"><![CDATA[Held by members]]></string_add>
+	<string_add name="_bx_credits_txt_analytics_bought"><![CDATA[Bought]]></string_add>
+	<string_add name="_bx_credits_txt_analytics_granted"><![CDATA[Granted]]></string_add>
+	<string_add name="_bx_credits_txt_analytics_sent"><![CDATA[Sent to members]]></string_add>
+	<string_add name="_bx_credits_txt_analytics_service_in"><![CDATA[Credited by modules]]></string_add>
+	<string_add name="_bx_credits_txt_analytics_service_out"><![CDATA[Charged by modules]]></string_add>
+	<string_add name="_bx_credits_txt_analytics_spent"><![CDATA[Spent on checkouts]]></string_add>
+	<string_add name="_bx_credits_txt_analytics_top_spenders"><![CDATA[Top spenders]]></string_add>
+	<string_add name="_bx_credits_txt_analytics_withdrawn"><![CDATA[Withdrawn]]></string_add>
+
+	<string_upd name="_bx_credits_et_txt_body_granted"><![CDATA[{email_header}
+<p>Hello, {profile_name}.</p>
+<p>You're granted <b>{amount}</b> credits.</p>
+<p>{message}</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_credits_et_txt_body_received"><![CDATA[{email_header}
+<p>Hello, {profile_name}.</p>
+<p>You've received <b>{amount}</b> credits from <a href="{performer_link}">{performer_name}</a>.<br />The order is <b>{order}</b>.</p>
+<p>{message}</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_credits_et_txt_body_purchased"><![CDATA[{email_header}
+<p>Hello, {client_name}.</p>
+<p>You've purchased <a href="{bundle_url}">{bundle_title}</a> credits bundle.<br />Your order is <b>{order}</b>.</p>
+<p>{notes}</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_credits_et_txt_body_in"><![CDATA[{email_header}
+<p>Hello, {profile_name}.</p>
+<p>You've received <b>{amount}</b> credits from {second_profile_name}.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_credits_et_txt_body_out"><![CDATA[{email_header}
+<p>Hello, {profile_name}.</p>
+<p>You've sent <b>{amount}</b> credits to {second_profile_name}.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_credits_et_txt_body_withdraw_requested"><![CDATA[{email_header}
+<p><a href="{profile_link}">{profile_name}</a> requested to withdraw <b>{amount}</b> credits from his/her balance.</p>
+<p>Current withdrawal conversion rate is <b>{rate}</b></p>
+<p>Withdrawal can be confirmed <a href="{confirm_url}">here</a>.</p>
+<p>Notes from <b>{profile_name}</b>:<br />{message}</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_credits_et_txt_body_withdraw_canceled"><![CDATA[{email_header}
+<p><a href="{profile_link}">{profile_name}</a> canceled his/her withdrawal request for <b>{amount}</b> credits.</p>
+<p>The canceled withdrawal request can be seen <a href="{manage_url}">here</a>.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_credits_et_txt_body_withdraw_sent"><![CDATA[{email_header}
+<p>Hello, {profile_name}.</p>
+<p>The requested amount of credits (<b>{amount}</b>) was withdrawn to you.</p>
+{email_footer}]]></string_upd>
+</resources>
