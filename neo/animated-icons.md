@@ -23,7 +23,7 @@ iOS SwiftUI menus and the native SwiftUI tab bar draw bundled images and can't a
 
 ## Registry
 
-- **Default:** [`default/animated-icons.js`](packages/app/default/animated-icons.js) (native: the specs themselves) and [`default/animated-icons.web.js`](packages/app/default/animated-icons.web.js) (web: a loader per name), both keyed by resolved Lucide name. The specs are in [`ui/atoms/animated-icons/specs.ts`](packages/app/ui/atoms/animated-icons/specs.ts); their names are listed in [`names.ts`](packages/app/ui/atoms/animated-icons/names.ts) so the web registry needn't load them (`node --test packages/app/ui/atoms/animated-icons/names.test.ts` checks the two agree).
+- **Default:** [`default/animated-icons.ts`](packages/app/default/animated-icons.ts) (native: the specs themselves) and [`default/animated-icons.web.ts`](packages/app/default/animated-icons.web.ts) (web: a loader per name), both keyed by resolved Lucide name. The specs are in [`ui/atoms/animated-icons/specs.ts`](packages/app/ui/atoms/animated-icons/specs.ts); their names are listed in [`names.ts`](packages/app/ui/atoms/animated-icons/names.ts) so the web registry needn't load them (`node --test packages/app/ui/atoms/animated-icons/names.test.ts` checks the two agree).
 - **Forks:** spread the default in [`customization/animated-icons.js`](packages/app/customization/animated-icons.js) and add or override keys. A value can be a spec, a lazy spec, or (as before) a component:
 
 ```javascript

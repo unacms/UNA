@@ -63,8 +63,8 @@ export type AnimatedIconSpec = {
 /** A registry entry the engine loads on demand (web): see `lazyAnimatedIcon`. */
 export type LazyAnimatedIconEntry = {
     readonly lazyAnimatedIcon: true;
-    /** Resolves to the spec (or a module whose default export is the spec). */
-    load: () => Promise<AnimatedIconSpec | { default: AnimatedIconSpec }>;
+    /** Resolves to the spec (or a module whose default export is the spec); nothing means no animated icon. */
+    load: () => Promise<AnimatedIconSpec | { default: AnimatedIconSpec } | null | undefined>;
 };
 
 /** Which scenes an `Icon` asked for through `icon-scene-*` classes (all on by default). */

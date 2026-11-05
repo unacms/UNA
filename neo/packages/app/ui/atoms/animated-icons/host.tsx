@@ -24,17 +24,19 @@ const loaded = new Map<LazyAnimatedIconEntry, AnimatedIconSpec | null>();
 
 /** A lazy entry's spec once loaded (a fork may register one on native too); the static icon draws meanwhile. */
 function useLazySpec(entry: LazyAnimatedIconEntry | null) {
-    const [spec, setSpec] = useState(() => (entry ? loaded.get(entry) : undefined));
+    // The loaded spec is kept with its entry, so a changed entry never shows the previous drawing.
+    const [state, setState] = useState<{ entry: LazyAnimatedIconEntry; spec: AnimatedIconSpec | null } | null>(null);
     useEffect(() => {
         if (!entry || loaded.has(entry)) return;
         let alive = true;
         entry.load().then(
-            (value) => { const result = loadedSpec(value); loaded.set(entry, result); if (alive) setSpec(result); },
+            (value) => { const spec = loadedSpec(value); loaded.set(entry, spec); if (alive) setState({ entry, spec }); },
             () => { loaded.set(entry, null); }
         );
         return () => { alive = false; };
     }, [entry]);
-    return entry ? (spec ?? loaded.get(entry)) : undefined;
+    if (!entry) return undefined;
+    return state?.entry === entry ? state.spec : loaded.get(entry);
 }
 
 /** Native host: draws the registry value synchronously (spec engine or legacy component). */

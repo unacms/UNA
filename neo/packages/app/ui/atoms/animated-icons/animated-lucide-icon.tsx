@@ -107,7 +107,8 @@ export default function AnimatedLucideIcon({
     const delays = motionDelays(spec);
     const total = Math.max(1, ...spec.parts.map((part, i) => (part.motion ? (delays[i] ?? 0) + (part.motion.ms ?? MOTION_MS[part.motion.kind]) : 0)));
 
-    const progress = useAnimatedValue(0);
+    // At 1 every part is at rest (appear parts fully drawn); a run resets it to 0 when it starts.
+    const progress = useAnimatedValue(1);
     const scale = useAnimatedValue(1);
     const wasActive = useRef(active);
     const wasPressed = useRef(pressed);
