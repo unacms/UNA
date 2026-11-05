@@ -319,63 +319,197 @@ class BxOAuthModule extends BxDolModule
         $this->_oAPI->$sAction($aToken);
     }
 
+    /**
+     * Authorization endpoint, see processAuthorizeRequest.
+     */
     function actionAuth ()
     {
         $this->initOAuth(bx_get('client_id'));
-        
+
         $oRequest = OAuth2\Request::createFromGlobals();
         $oResponse = new OAuth2\Response();
 
-        // validate the authorize request
-        if (!$this->_oServer->validateAuthorizeRequest($oRequest, $oResponse)) {
-            require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
-            $o = json_decode($oResponse->getResponseBody());
-            $this->_oTemplate->getPage(false, MsgBox($o->error_description));
-            return;
+        switch ($this->processAuthorizeRequest($oRequest, $oResponse)) {
+            case 'error':
+                require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
+                $this->_oTemplate->getPage(false, MsgBox($this->_getAuthorizeError($oResponse)));
+                break;
+
+            case 'login':
+                require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
+                $sForceRelocate = BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'auth/?' . http_build_query($this->getAuthorizeParams());
+                bx_login_form(false, false, $sForceRelocate);
+                break;
+
+            case 'consent':
+                $oPage = BxDolPage::getObjectInstanceByURI('oauth-authorization');
+                $this->_oTemplate->getPage(false, $oPage->getCode());
+                break;
+
+            default: // 'response': a redirect back to the client, with a code or an error
+                $oResponse->send();
         }
-
-        if (!isLogged()) {
-            require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
-            $sForceRelocate = BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'auth/?client_id=' . bx_get('client_id') . '&response_type=' . bx_get('response_type') . '&scope=' . bx_get('scope') . '&state=' . bx_get('state') . '&redirect_uri=' . bx_get('redirect_uri');
-            bx_login_form(false, false, $sForceRelocate);
-            return;
-        }
-
-        $aProfiles = BxDolAccount::getInstance()->getProfiles();
-
-        if (1 == count($aProfiles)) { // in case of one profile, don't display dialog with profiles choice
-            $aProfile = array_pop($aProfiles);
-            $_POST['profile_id'] = $aProfile['id'];
-        }
-
-        if (!($iProfileId = $this->_oDb->getSavedProfile(bx_get('client_id'), $aProfiles)) && empty($_POST)) {
-            $oPage = BxDolPage::getObjectInstanceByURI('oauth-authorization');
-            $this->_oTemplate->getPage(false, $oPage->getCode());
-            return;
-        } 
-
-        if (!$iProfileId)
-            $iProfileId = bx_get('profile_id');
-
-        $this->_oServer->handleAuthorizeRequest($oRequest, $oResponse, (bool)$iProfileId, $iProfileId);
-
-        $oResponse->send();
     }
 
+    /**
+     * Decide on an authorize request. initOAuth must be called before.
+     *
+     * A code is issued only for a profile of the signed-in account, chosen in the consent form
+     * (POST with the consent token). A GET can't approve anything. Without asking, only a
+     * confidential client (one with a secret, so a code is of no use to anyone else) is approved:
+     * for a profile that was connected to it before, or for the only profile of the account.
+     *
+     * @return string 'error' (invalid request), 'login' (guest), 'consent' (show the consent form)
+     *         or 'response' ($oResponse holds the redirect to the client)
+     */
+    public function processAuthorizeRequest($oRequest, $oResponse)
+    {
+        if (!$this->_oServer->validateAuthorizeRequest($oRequest, $oResponse))
+            return 'error';
+
+        if (!isLogged())
+            return 'login';
+
+        $sClientId = $this->_oServer->getAuthorizeController()->getClientId();
+        $aProfiles = $this->_getAuthorizeProfiles();
+
+        if ('POST' == $oRequest->server('REQUEST_METHOD') && null !== ($mixedProfileId = $oRequest->request('profile_id'))) {
+            // the answer from the consent form
+            $iProfileId = is_scalar($mixedProfileId) ? (int)$mixedProfileId : 0;
+
+            // "Cancel", or a profile of another account
+            if (!$iProfileId || !isset($aProfiles[$iProfileId])) {
+                $this->_oServer->handleAuthorizeRequest($oRequest, $oResponse, false);
+                return 'response';
+            }
+
+            if ($this->isConsentTokenValid($oRequest->request('csrf_token'))) {
+                $this->_oServer->handleAuthorizeRequest($oRequest, $oResponse, true, $iProfileId);
+                return 'response';
+            }
+
+            // no valid consent token, so it wasn't sent from the consent form: ask again
+            return 'consent';
+        }
+
+        if ($aProfiles && !$this->_oStorage->isPublicClient($sClientId)) {
+            $iProfileId = (int)$this->_oDb->getSavedProfile($sClientId, $aProfiles);
+            if (!$iProfileId && 1 == count($aProfiles))
+                $iProfileId = (int)array_key_first($aProfiles);
+
+            if ($iProfileId) {
+                $this->_oServer->handleAuthorizeRequest($oRequest, $oResponse, true, $iProfileId);
+                return 'response';
+            }
+        }
+
+        return 'consent';
+    }
+
+    /**
+     * Consent form. The page with it can be opened directly, so the request is validated here too,
+     * and the form carries only the values the OAuth library accepted.
+     */
     function serviceAuthorization ()
     {
-        $sTitle = $this->_oDb->getClientTitle(bx_get('client_id'));
+        if (!isLogged())
+            return MsgBox(_t('_Access denied'));
+
+        $this->initOAuth(bx_get('client_id'));
+
+        $oRequest = OAuth2\Request::createFromGlobals();
+        $oResponse = new OAuth2\Response();
+        if (!$this->_oServer->validateAuthorizeRequest($oRequest, $oResponse))
+            return MsgBox($this->_getAuthorizeError($oResponse));
+
+        $aParams = $this->getAuthorizeParams();
+        $sTitle = $this->_oDb->getClientTitle($aParams['client_id']);
+
         $this->_oTemplate->addCss('main.css');
         return $this->_oTemplate->parseHtmlByName('page_auth.html', array(
-            'text' => _t('_bx_oauth_authorize_app', htmlspecialchars_adv($sTitle)),
+            'text' => _t('_bx_oauth_authorize_app', $this->_escapeAttribute($sTitle)),
             'url' => BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'auth',
-            'client_id' => bx_get('client_id'),
-            'response_type' => bx_get('response_type'),
-            'redirect_uri' => bx_get('redirect_uri'),
-        	'scope' => bx_get('scope'),
-            'state' => bx_get('state'),
+            'csrf_token' => $this->_escapeAttribute($this->getConsentToken()),
+            'client_id' => $this->_escapeAttribute($aParams['client_id']),
+            'response_type' => $this->_escapeAttribute($aParams['response_type']),
+            'redirect_uri' => $this->_escapeAttribute($aParams['redirect_uri']),
+            'scope' => $this->_escapeAttribute($aParams['scope']),
+            'state' => $this->_escapeAttribute($aParams['state']),
             'profiles' => BxDolService::call('system', 'account_profile_switcher', array(getLoggedId(), false, "javascript: $('#bx-auth-profile-id').val('{profile_id}'); $('#bx-auth-form form').submit(); void(0);", true, _t('_bx_oauth_connect'), 'unit_wo_links'), 'TemplServiceProfiles')['content'],
         ));
+    }
+
+    /**
+     * Params of the authorize request validated last, as the OAuth library accepted them.
+     * Call it only after a successful validateAuthorizeRequest.
+     */
+    public function getAuthorizeParams()
+    {
+        $oController = $this->_oServer->getAuthorizeController();
+
+        $aParams = array(
+            'client_id' => (string)$oController->getClientId(),
+            'response_type' => (string)$oController->getResponseType(),
+            'redirect_uri' => (string)$oController->getRedirectUri(),
+            'scope' => (string)$oController->getScope(),
+        );
+        if (($sState = $oController->getState()) !== null && $sState !== '')
+            $aParams['state'] = (string)$sState;
+
+        return $aParams;
+    }
+
+    /**
+     * Token of the consent form, tied to the account and its session. Without it a consent can't be given.
+     */
+    public function getConsentToken()
+    {
+        $iAccountId = (int)getLoggedId();
+        if (!$iAccountId)
+            return '';
+
+        $oSession = BxDolSession::getInstance();
+        // A remembered user (memberID/memberPassword cookies with `sys_session_auth` off) may have no session
+        // cookie, and a plain start() does nothing then, so the session is started explicitly.
+        if (!$oSession->getId())
+            $oSession->start(true);
+        if (!($sSessionId = $oSession->getId()))
+            return '';
+
+        return hash_hmac('sha256', 'bx_oauth_consent|' . $iAccountId . '|' . $sSessionId, BX_DOL_SECRET);
+    }
+
+    public function isConsentTokenValid($sToken)
+    {
+        if (!is_string($sToken) || '' === $sToken)
+            return false;
+
+        $sExpected = $this->getConsentToken();
+        return '' !== $sExpected && hash_equals($sExpected, $sToken);
+    }
+
+    /**
+     * A value for an HTML attribute or text. Underscores are encoded too, so a value can't
+     * make the template engine put another template key (`__csrf_token__`) in its place.
+     */
+    protected function _escapeAttribute($s)
+    {
+        return str_replace('_', '&#95;', htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
+    }
+
+    /**
+     * Profiles a code can be issued for: those of the signed-in account, by id.
+     */
+    protected function _getAuthorizeProfiles()
+    {
+        $oAccount = BxDolAccount::getInstance();
+        return $oAccount ? $oAccount->getProfiles() : array();
+    }
+
+    protected function _getAuthorizeError($oResponse)
+    {
+        $s = $oResponse->getParameter('error_description');
+        return htmlspecialchars_adv($s ? $s : _t('_error occured'));
     }
 
     function serviceGetClientsBy ($aParams = array())
