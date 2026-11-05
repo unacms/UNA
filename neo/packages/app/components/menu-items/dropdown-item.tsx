@@ -27,7 +27,8 @@ export type DropdownRowItem = {
     animated?: boolean;
     link?: string;
     target?: string;
-    type?: 'group_header' | 'separator' | string;
+    /** `group_header` or `separator` structure sectioned menus; anything else is a row. */
+    type?: string;
     /** true or false makes the row a radio option; true marks it current. */
     selected?: boolean;
     /** First group header of a sectioned menu. */
@@ -122,7 +123,7 @@ const sizedPresets = (size?: DropdownMenuItemSize): Presets | null => {
     };
 };
 
-function GroupHeader({ item }: { item: DropdownRowItem }) {
+function GroupHeader({ item }: Readonly<{ item: DropdownRowItem }>) {
     const headerClass = item.first
         ? (menuSettings.item_group_header_first ?? menuSettings.item_group_header)
         : menuSettings.item_group_header;
@@ -175,7 +176,7 @@ const useRowHover = (animated?: boolean) => {
 };
 
 /** A string title with its description under it (`resolveMenuItemDescription`). */
-function ItemLabel({ item, textClass }: { item: DropdownRowItem; textClass: string }) {
+function ItemLabel({ item, textClass }: Readonly<{ item: DropdownRowItem; textClass: string }>) {
     const { t } = useTranslation();
     const description = resolveMenuItemDescription(item);
     return (
@@ -188,7 +189,7 @@ function ItemLabel({ item, textClass }: { item: DropdownRowItem; textClass: stri
     );
 }
 
-export default function DropdownMenuItem({ item, index, link, handleSelect, classes, className, counter, handleCounter, size }: DropdownMenuItemProps) {
+export default function DropdownMenuItem({ item, index, link, handleSelect, classes, className, counter, handleCounter, size }: Readonly<DropdownMenuItemProps>) {
     const key = item.id ?? index;
     const presets: Presets = { ...menuSettings, ...sizedPresets(size) };
     const iconSize = presets.icon_size || 16;
