@@ -481,11 +481,11 @@ class MigrationsDbTest extends BxDolIntegrationTestCase
         $sSuffix = bin2hex(random_bytes(4));
         $fRefresh = function () { return ''; };
 
-        $aResult = (new BxDolMigrations(new BxDolMigrationsQuery($this->_table('ledger_first_' . $sSuffix)), $aSources, null, $sVersion, 'dev'))->run($fRefresh);
+        $aResult = (new BxDolMigrations(new BxDolMigrationsQuery($this->_ledger('ledger_first_' . $sSuffix)), $aSources, null, $sVersion, 'dev'))->run($fRefresh);
         $this->assertSame('', $aResult['failed'], $aResult['failed'] . ': ' . $aResult['error']);
 
         $aBefore = $this->_checksums();
-        $aResult = (new BxDolMigrations(new BxDolMigrationsQuery($this->_table('ledger_second_' . $sSuffix)), $aSources, null, $sVersion, 'dev'))->run($fRefresh);
+        $aResult = (new BxDolMigrations(new BxDolMigrationsQuery($this->_ledger('ledger_second_' . $sSuffix)), $aSources, null, $sVersion, 'dev'))->run($fRefresh);
         $this->assertSame('', $aResult['failed'], 'second run: ' . $aResult['failed'] . ': ' . $aResult['error']);
 
         $aAfter = $this->_checksums();
@@ -517,7 +517,7 @@ class MigrationsDbTest extends BxDolIntegrationTestCase
     {
         $aLog = [];
         return new BxDolMigrations(
-            new BxDolMigrationsQuery($this->_table($sLedger)),
+            new BxDolMigrationsQuery($this->_ledger($sLedger)),
             $aSources ?? [$this->_source('common'), $this->_source('module')],
             function (string $s) use (&$aLog) {
                 $aLog[] = $s;
@@ -546,6 +546,17 @@ class MigrationsDbTest extends BxDolIntegrationTestCase
         $sTable = 'test_migrations_' . $sName . '_' . $this->_sSuffix;
         if (!in_array($sTable, $this->_aTables, true))
             $this->_aTables[] = $sTable;
+
+        return $sTable;
+    }
+
+    /**
+     * A ledger table of its own, shaped like the one install SQL creates.
+     */
+    private function _ledger(string $sName): string
+    {
+        $sTable = $this->_table($sName);
+        $this->_oPdo->exec("CREATE TABLE IF NOT EXISTS `$sTable` LIKE `sys_migrations`");
 
         return $sTable;
     }
