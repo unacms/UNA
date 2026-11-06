@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_add name="_sys_module_googlecon"><![CDATA[Google-соединение]]></string_add>
+	<string_add name="_bx_googlecon"><![CDATA[Google-соединение]]></string_add>
+	<string_add name="_bx_googlecon_settings"><![CDATA[Google-соединение]]></string_add>
+	<string_add name="_bx_googlecon_information_block"><![CDATA[
+        <p>Этот модуль может использоваться для входа на сайт используя Google профиль.</p>
+        <p>Чтобы он заработал, следуйте следующим инструкциям - <a target="_blank" href="https://developers.google.com/identity/sign-in/web/devconsole-project">как создать Google проект</a>, следуя инструкциям укажите слудующие детали:<br />
+            <ul>
+                <li>Redirect URL: <strong>{0}</strong></li>
+            </ul>
+            Затем нужно ввести полученную пару Client ID & Secret в настройках этого модуля.
+        </p>]]></string_add>
+	<string_add name="_bx_googlecon_profile_error_api_keys"><![CDATA[Нужно настроить модуль - указать Google Client ID & Secret]]></string_add>
+	<string_add name="_bx_googlecon_auth_title"><![CDATA[Вход через Google]]></string_add>
+	<string_add name="_bx_googlecon_adm_stg_cpt_type"><![CDATA[Google-соединение]]></string_add>
+	<string_add name="_bx_googlecon_option_app_id"><![CDATA[Client ID]]></string_add>
+	<string_add name="_bx_googlecon_option_app_secret"><![CDATA[Client Secret]]></string_add>
+	<string_add name="_bx_googlecon_option_client_ids"><![CDATA[Дополнительные разрешенные Client ID (через запятую, для веб, iOS и Android приложений NEO)]]></string_add>
+	<string_add name="_bx_googlecon_et_password_generated"><![CDATA[Google-соединение: временный пароль]]></string_add>
+	<string_add name="_bx_googlecon_et_password_generated_subject"><![CDATA[Временный пароль]]></string_add>
+	<string_add name="_bx_googlecon_et_password_generated_body"><![CDATA[{email_header}
+<p>Временный пароль - <b>{password}</b></p>
+<p>Его нужно изменить, после первого захода на сайт.</p>
+{email_footer}]]></string_add>
+</resources>

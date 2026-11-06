@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_googlecon_option_client_ids"><![CDATA[Additional allowed Client IDs (comma separated, for NEO web, iOS and Android apps)]]></string_add>
+</resources>

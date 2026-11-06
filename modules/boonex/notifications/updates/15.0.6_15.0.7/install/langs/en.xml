@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_ntfs_menu_item_title_system_activity"><![CDATA[Activity]]></string_add>
+	<string_add name="_bx_ntfs_menu_item_title_activity"><![CDATA[Activity]]></string_add>
+</resources>
