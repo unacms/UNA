@@ -5,9 +5,17 @@ updates:
     directory: "/" # Root directory
     schedule:
       interval: "daily"
+    ignore:
+      - dependency-name: "tailwindcss"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@tailwindcss/*"
+        update-types: ["version-update:semver-major"]
 
   # Configuration for PHP dependencies
   - package-ecosystem: "composer"
     directory: "/" # Root directory
     schedule:
       interval: "daily"
+    ignore:
+      - dependency-name: "phpunit/phpunit"
+        update-types: ["version-update:semver-major"]
