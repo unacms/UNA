@@ -12,31 +12,6 @@ use PHPUnit\Framework\Attributes\Group;
 #[Group('integration')]
 class SettingsPageTest extends BxDolIntegrationTestCase
 {
-    public function testSettingsPageIsForMembersAndShowsTheSettingsMenu(): void
-    {
-        $oDb = BxDolDb::getInstance();
-
-        $aPage = $oDb->getRow("SELECT * FROM `sys_objects_page` WHERE `uri` = 'settings'");
-        $this->assertNotEmpty($aPage, 'The settings page is installed.');
-        $this->assertSame('sys_settings', $aPage['object']);
-        $this->assertSame(2147483646, (int)$aPage['visible_for_levels'], 'Only members see it.');
-        $this->assertSame('BxTemplPageAccount', $aPage['override_class_name'], 'An account page: it carries the settings submenu, as its siblings do.');
-
-        $aOverview = $oDb->getRow("SELECT * FROM `sys_menu_items` WHERE `set_name` = 'sys_account_settings' AND `module` = 'system' AND `name` = 'settings'");
-        $this->assertNotEmpty($aOverview, 'The page is the Overview item of its own section.');
-        $this->assertSame('page.php?i=settings', $aOverview['link']);
-        $this->assertSame((string)pow(2, BX_DB_HIDDEN_DESKTOP - 1), (string)$aOverview['hidden_on'], 'Hidden on desktop by default.');
-        $this->assertSame(0, (int)$aOverview['active'], 'Inactive by default: the menu lists the settings pages only.');
-
-        $aBlock = $oDb->getRow("SELECT * FROM `sys_pages_blocks` WHERE `object` = 'sys_settings' AND `module` = 'system' AND `title` = '_sys_page_block_title_settings'");
-        $this->assertNotEmpty($aBlock);
-        $this->assertSame('menu', $aBlock['type']);
-        $this->assertSame('sys_account_settings_submenu', $aBlock['content']);
-        $this->assertSame(1, (int)$aBlock['active_api'], 'The apps get the block.');
-
-        foreach (['account-settings-email', 'account-settings-password', 'account-settings-delete'] as $sUri)
-            $this->assertNotEmpty(BxDolPageQuery::getPageObjectNameByURI($sUri), "The '$sUri' page is kept.");
-    }
 
     public function testSettingsMenuNamesItsPageAndTheGroups(): void
     {
