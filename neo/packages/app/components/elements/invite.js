@@ -1,6 +1,6 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { NeoButton, Input, Modal } from 'app/design/controls';
+import { NeoButton, NeoButtonLink, Input, Modal } from 'app/design/controls';
 import { fetcher } from 'app/lib/fetcher';
 import { useState } from 'react';
 import { setClipboard } from 'app/lib/util'
@@ -11,28 +11,32 @@ import { useTranslation } from 'react-i18next'
 export default function ElementInvite({ data, blockWrapperProps }) {
     const { t } = useTranslation();
     const [showModal, setShowModal] = useState(false);
+    const [copied, setCopied] = useState(false);
     const handleClick = async () => {
         const sResponse = await fetcher('/api.php?r=' + data.request_url);
         setShowModal(sResponse.data.link)
     }
 
     const handleCopy = async () => {
-        setClipboard(APP_URL + showModal);
+        await setClipboard(APP_URL + showModal);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
     }
 
     return (
         <BlockWrapper {...blockWrapperProps}>
             <Modal id={'file-preview'} title={t('Invitation link')} onVisible={!!showModal} onClose={() => { setShowModal(null) }}>
-                <Row className='gap-x-4'>
-                    <Input value={APP_URL + showModal} />
-                    <NeoButton style="borderless" borderShape="circle" image="Clipboard" accessibilityLabel={t('Copy link')} onPress={() => handleCopy()} />
+                <Row className='items-center gap-x-2'>
+                    <Input value={APP_URL + showModal} readOnly className="flex-1 min-w-0" />
+                    <NeoButton style="bordered" image={copied ? 'Check' : 'Copy'} accessibilityLabel={t('Copy link')} onPress={() => handleCopy()} />
                 </Row>
             </Modal>
             <View className="p-4">
                 <Text className="text-card-foreground text-center">{t('You can invite your friends to join. You have {{count}} invites to share.', { count: data.remain })}</Text>
-                <View className='mx-auto pt-4'>
+                <Row className='flex-wrap justify-center gap-2 pt-4'>
+                    {!!data.invite_url && <NeoButtonLink borderShape="capsule" label={t('Invite by email')} href={data.invite_url} />}
                     <NeoButton borderShape="capsule" label={"Get invite link"} onPress={() => handleClick()} />
-                </View>
+                </Row>
             </View>
         </BlockWrapper>
     );
