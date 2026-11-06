@@ -159,7 +159,9 @@ function DropdownMenuPopup({
 }: DropdownMenuPopupProps) {
     const DropdownMenuItem = getDropdownMenuItem();
     const redirectdRef = useRef<RedirectHandle | null>(null);
-    const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+    // Always a boolean: DropdownPopup takes `open={undefined}` as "manage it yourself" and then
+    // never calls `onOpenChange`, so callers that load rows on open (MenuAccount) never would.
+    const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen ?? false);
     const isControlled = openProp !== undefined;
     const isOpen = isControlled ? openProp : uncontrolledOpen;
     const openModalByUrl = useOpenModalByUrl();
