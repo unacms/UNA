@@ -4,7 +4,7 @@ import { View } from 'app/design/view'
 import { Card } from 'app/ui/molecules/page/card'
 import { Skeleton } from 'app/ui/atoms/skeleton';
 import { Platform } from 'react-native'
-import { UnitActions, UnitImage, UnitTitle, useUnitActions } from 'app/components/units/helpers'
+import { UnitActions, UnitAuthor, UnitImage, UnitTitle, useUnitActions } from 'app/components/units/helpers'
 
 const PROJECT_COVER_SIZES = '(max-width: 639px) calc(100vw - 32px), (max-width: 767px) calc(50vw - 32px), (max-width: 1023px) calc(33vw - 32px), 256px';
 
@@ -64,6 +64,7 @@ export default function Unit({ data, unitType, module }) {
                         </Text>
                     </Skeleton>}
                 </View>
+                <UnitAuthor authorData={data.author_data} skeleton={isSkeleton} className="flex-row min-w-0" />
                 <UnitActions
                     primaryMenuItem={primaryMenuItem}
                     secondaryMenuItem={secondaryMenuItem}
