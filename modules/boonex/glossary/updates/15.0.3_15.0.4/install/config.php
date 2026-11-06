@@ -26,7 +26,7 @@ $aConfig = array(
     'module_dir' => 'boonex/glossary/',
     'module_uri' => 'glossary',
 
-    'db_prefix' => 'bx_glsr_',
+    'db_prefix' => 'bx_glossary_',
     'class_prefix' => 'BxGlsr',
 
     /**

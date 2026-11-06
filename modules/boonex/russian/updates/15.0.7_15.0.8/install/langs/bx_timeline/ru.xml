@@ -89,7 +89,7 @@
 	<string_upd name="_bx_timeline_menu_item_title_system_item_copy"><![CDATA[Скопировать в буфер]]></string_upd>
 	<string_upd name="_bx_timeline_menu_item_title_item_copy"><![CDATA[Скопировать в буфер]]></string_upd>
 	<string_upd name="_bx_timeline_grid_column_title_adm_active"><![CDATA[Видимые]]></string_upd>
-	<string_upd name="_bx_timeline_txt_object_reposted"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]> (репост)</string>
+	<string_upd name="_bx_timeline_txt_object_reposted"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]> (репост)</string_upd>
 
     <string name="_bx_timeline_txt_poll_view_answers"><![CDATA[опрос]]></string_upd>
 </resources>

@@ -26,7 +26,7 @@ $aConfig = array(
     'module_dir' => 'boonex/oauth2/',
     'module_uri' => 'oauth2',
 
-    'db_prefix' => 'bx_oauth2_',
+    'db_prefix' => 'bx_oauth_',
     'class_prefix' => 'BxOAuth',
 
     /**
