@@ -26,7 +26,7 @@ class SettingsPageTest extends BxDolIntegrationTestCase
         $this->assertNotEmpty($aOverview, 'The page is the Overview item of its own section.');
         $this->assertSame('page.php?i=settings', $aOverview['link']);
         $this->assertSame((string)pow(2, BX_DB_HIDDEN_DESKTOP - 1), (string)$aOverview['hidden_on'], 'Hidden on desktop by default.');
-        $this->assertSame(1, (int)$aOverview['active_api'], 'The apps get it.');
+        $this->assertSame(0, (int)$aOverview['active'], 'Inactive by default: the menu lists the settings pages only.');
 
         $aBlock = $oDb->getRow("SELECT * FROM `sys_pages_blocks` WHERE `object` = 'sys_settings' AND `module` = 'system' AND `title` = '_sys_page_block_title_settings'");
         $this->assertNotEmpty($aBlock);
@@ -49,8 +49,6 @@ class SettingsPageTest extends BxDolIntegrationTestCase
         $this->assertSame(['group' => 'account'], json_decode($aGroups['account-settings-password'], true));
         $this->assertSame(['group' => 'profile'], json_decode($aGroups['profile-settings-cfilter'], true));
         $this->assertSame(['group' => 'danger'], json_decode($aGroups['account-settings-delete'], true));
-
-        $this->assertSame('page.php?i=settings', $oDb->getOne("SELECT `link` FROM `sys_menu_items` WHERE `set_name` = 'sys_account_notifications' AND `module` = 'system' AND `name` = 'account-settings'"), "The member menu's Settings opens the settings page.");
     }
 
     public function testAppsGetTheHubAndEachItemsGroup(): void
@@ -74,8 +72,7 @@ class SettingsPageTest extends BxDolIntegrationTestCase
         $this->assertSame(['hub' => 'settings'], json_decode($aMenu['config'], true));
 
         $aItems = array_column($aMenu['items'], null, 'name');
-        $this->assertArrayHasKey('settings', $aItems);
-        $this->assertSame(['desktop'], $aItems['settings']['hidden_on'], 'The apps hide the Overview on desktop.');
+        $this->assertArrayNotHasKey('settings', $aItems, 'The inactive Overview is not in the menu.');
         $this->assertArrayHasKey('account-settings-email', $aItems);
         $this->assertSame(['group' => 'account'], json_decode($aItems['account-settings-email']['config'], true));
         $this->assertArrayHasKey('account-settings-delete', $aItems);

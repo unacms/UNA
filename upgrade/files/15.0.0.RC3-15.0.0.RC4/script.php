@@ -20,4 +20,17 @@
         $this->oDb->query("ALTER TABLE `sys_menu_items` ADD KEY `set_name` (`set_name`)");
 
 
+    // app related changes
+    $aPathInfo = pathinfo(__FILE__);
+    $mixedResult = $this->oDb->executeSQL($aPathInfo['dirname'] . '/app.sql');
+    if (true !== $mixedResult) {
+        if (!is_array($mixedResult))
+            return $mixedResult;
+
+        $s = '';
+        foreach ($mixedResult as $a)
+            $s .= "<b>{$a['query']}</b>: {$a['error']} <br />";
+        return $s;
+    }
+
     return true;
