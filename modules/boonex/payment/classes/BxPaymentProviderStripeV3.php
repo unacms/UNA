@@ -673,7 +673,6 @@ class BxPaymentProviderStripeV3 extends BxPaymentProviderStripeBasic implements 
         $oSession = null;
         $aSession = array_merge([
             'mode' => $sMode,
-            'payment_method_types' => ['card'],
             'customer_email' => !empty($aClient['email']) ? $aClient['email'] : ''
         ], $aParams);
 
@@ -964,7 +963,7 @@ class BxPaymentProviderStripeV3 extends BxPaymentProviderStripeBasic implements 
         try {
             $oToken = $this->_getStripe()->tokens->create(['card' => $aCard]);
         }
-        catch (Stripe\Error\Base $oException) {
+        catch (\Stripe\Exception\ApiErrorException $oException) {
             return $this->_processException('Create Token Error: ', $oException);
         }
 
@@ -981,7 +980,7 @@ class BxPaymentProviderStripeV3 extends BxPaymentProviderStripeBasic implements 
                 'source' => $sToken
             ]);
         }
-        catch (Stripe\Error\Base $oException) {
+        catch (\Stripe\Exception\ApiErrorException $oException) {
             return $this->_processException('Create Card Error: ', $oException);
         }
 

@@ -279,7 +279,7 @@ class BxPaymentProviderStripe extends BxPaymentProviderStripeBasic implements iB
         try {
             $oToken = Stripe\Token::create(array('card' => $aCard));
         }
-        catch (Stripe\Error\Base $oException) {
+        catch (\Stripe\Exception\ApiErrorException $oException) {
             return $this->_processException('Create Token Error: ', $oException);
         }
 
@@ -473,7 +473,7 @@ class BxPaymentProviderStripe extends BxPaymentProviderStripeBasic implements iB
                 'source' => $sToken
             ));
         }
-        catch (Stripe\Error\Base $oException) {
+        catch (\Stripe\Exception\ApiErrorException $oException) {
             return $this->_processException('Create Card Error: ', $oException);
         }
 
