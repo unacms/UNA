@@ -411,7 +411,7 @@ class BxPaymentProviderStripeV3 extends BxPaymentProviderStripeBasic implements 
             return false;
 
         $aSessionParams = array_merge([
-            'ui_mode' => 'embedded',
+            'ui_mode' => 'embedded_page',
             'return_url' => bx_append_url_params($this->_oModule->_oConfig->getUrl('URL_CART_CHECKOUT'), [
                 'provider' => $this->_sName,
                 'seller_id' => $iSellerId,
