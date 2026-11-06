@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_artificer_stg_cpt_option_header_search"><![CDATA[Open search in a popup]]></string_upd>
+	<string_upd name="_bx_artificer_txt_splash_welcome_a1"><![CDATA[Create account]]></string_upd>
+	<string_upd name="_bx_artificer_txt_splash_welcome_a2"><![CDATA[Log in]]></string_upd>
+	<string_upd name="_bx_artificer_txt_splash_login_join"><![CDATA[Create account]]></string_upd>
+</resources>
+ources>
