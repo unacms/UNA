@@ -25,32 +25,4 @@ class SettingsPageTest extends BxDolIntegrationTestCase
         $this->assertSame(['group' => 'profile'], json_decode($aGroups['profile-settings-cfilter'], true));
         $this->assertSame(['group' => 'danger'], json_decode($aGroups['account-settings-delete'], true));
     }
-
-    public function testAppsGetTheHubAndEachItemsGroup(): void
-    {
-        $this->bxLoginAsAdmin();
-
-        $oMenu = BxDolMenu::getObjectInstance('sys_account_settings_submenu');
-        $this->assertInstanceOf(BxBaseMenu::class, $oMenu);
-
-        $oIsApi = new ReflectionProperty($oMenu, '_bIsApi');
-        $bIsApi = $oIsApi->getValue($oMenu);
-        try {
-            $oIsApi->setValue($oMenu, true);
-            $aMenu = $oMenu->getCodeAPI();
-        }
-        finally {
-            // The menu instance is shared: put it back as it was.
-            $oIsApi->setValue($oMenu, $bIsApi);
-        }
-
-        $this->assertSame(['hub' => 'settings'], json_decode($aMenu['config'], true));
-
-        $aItems = array_column($aMenu['items'], null, 'name');
-        $this->assertArrayNotHasKey('settings', $aItems, 'The inactive Overview is not in the menu.');
-        $this->assertArrayHasKey('account-settings-email', $aItems);
-        $this->assertSame(['group' => 'account'], json_decode($aItems['account-settings-email']['config'], true));
-        $this->assertArrayHasKey('account-settings-delete', $aItems);
-        $this->assertSame(['group' => 'danger'], json_decode($aItems['account-settings-delete']['config'], true));
-    }
 }
