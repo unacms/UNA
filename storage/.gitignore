@@ -1,4 +1,5 @@
 # Ignore everything in this directory
 *
-# Except this file
+# Except this file and the one that closes the folder to direct requests (storage.php serves the files)
 !.gitignore
+!.htaccess

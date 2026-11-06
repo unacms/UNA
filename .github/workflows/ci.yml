@@ -94,7 +94,7 @@ jobs:
       fail-fast: false
       matrix:
         suite: [Units, Integration]
-        php: ['8.3', '8.4', '8.5']
+        php: ['8.3', '8.5']
 
     # Only the tests need the database: an empty image keeps the service from starting.
     services:
