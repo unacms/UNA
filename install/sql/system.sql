@@ -1847,8 +1847,7 @@ CREATE TABLE `sys_modules_relations` (
 );
 
 -- Database migrations applied to this site (BxDolMigrations). InnoDB, so a migration and its
--- record commit together where its tables allow. BxDolMigrationsQuery::createLedger() has the
--- same definition for sites installed before this table.
+-- record commit together where its tables allow.
 CREATE TABLE `sys_migrations` (
   `module` varchar(32) NOT NULL default '',
   `id` varchar(128) NOT NULL,

@@ -342,8 +342,7 @@ class BxDolMigrations
 
     /**
      * Record a module's migrations without running them, when the module is installed: its
-     * install SQL has them. Does nothing on a site without the ledger yet; the first run of
-     * periodic/migration.php creates it.
+     * install SQL has them. Does nothing on a site without the ledger table.
      *
      * @param string $sPath the module's path, as in `sys_modules`: `vendor/module/`
      * @return int number of migrations recorded
@@ -820,8 +819,6 @@ class BxDolMigrations
     protected function _getRows(callable $fFilter): array
     {
         return $this->_oQuery->withExceptions(function () use ($fFilter) {
-            $this->_oQuery->createLedger();
-
             $aResult = [];
             foreach ($this->_oQuery->getRecorded() as $sModule => $aRows)
                 if ($aRows = array_filter($aRows, $fFilter))
@@ -948,7 +945,6 @@ class BxDolMigrations
     protected function _withLock(callable $f): void
     {
         $this->_oQuery->withExceptions(function () use ($f) {
-            $this->_oQuery->createLedger();
             if (!$this->_oQuery->lock())
                 throw new RuntimeException('another run is applying migrations; waited 10 minutes');
 

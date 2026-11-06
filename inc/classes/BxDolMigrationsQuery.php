@@ -38,26 +38,6 @@ class BxDolMigrationsQuery extends BxDolDb
         return $this->_sLedger;
     }
 
-    /**
-     * Installs from before the ledger have no table yet; the command line runner creates it.
-     * Never called on a page load.
-     */
-    public function createLedger(): void
-    {
-        $this->_pdo()->exec("CREATE TABLE IF NOT EXISTS `{$this->_sLedger}` (
-            `module` varchar(32) NOT NULL default '',
-            `id` varchar(128) NOT NULL,
-            `scope` varchar(16) NOT NULL default '',
-            `type` varchar(8) NOT NULL default '',
-            `checksum` char(64) NOT NULL default '',
-            `status` varchar(16) NOT NULL default '',
-            `applied` int(11) unsigned NOT NULL default '0',
-            `attempted` int(11) unsigned NOT NULL default '0',
-            `error` text NOT NULL,
-            PRIMARY KEY (`module`, `id`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
-    }
-
     public function isLedger(): bool
     {
         $oStatement = $this->_pdo()->prepare('SHOW TABLES LIKE ?');
