@@ -332,7 +332,8 @@ class BxTasksTemplate extends BxBaseModTextTemplate
             ];
         }
 
-        if(!$aPeople)
+        //--- Those who see everybody keep the block on a task without time, so it is there for the first log.
+        if(!$aPeople && !$bEverybody)
             return [];
 
         $aPeriod = array_merge($this->_getTimeSummaryTotals(), ['name' => 'all_time', 'title' => '']);
@@ -354,7 +355,7 @@ class BxTasksTemplate extends BxBaseModTextTemplate
         $CNF = &$this->_oConfig->CNF;
 
         $aTracks = $this->_oDb->getTimeTracks(array_merge(['sample' => 'context_id', 'context_id' => $iContextPid], $bEverybody ? [] : ['author_id' => $iProfileId]));
-        if(!$aTracks || !is_array($aTracks))
+        if(!$aTracks && !$bEverybody)
             return [];
 
         $oPermalinks = BxDolPermalinks::getInstance();
