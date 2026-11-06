@@ -60,17 +60,20 @@ export default function MenuAccount({ buttonProps, children }) {
         return promise
     }
 
-    const handleMenuOpenChange = (open) => {
-        if (open && !data) {
-            fetchDataPr()
-        }
-    }
-
     const { t } = useTranslation()
 
     const menu_account_items = useStaticAccount
         ? menuItemsByName('', staticAccount, currentUser)
         : menuItemsByNameNew('menu_post', accountMenuData, currentUser)
+
+    // Profiles are listed only where the menu has a `{switch_profile}` row.
+    const hasProfileSwitcher = menu_account_items.some((item) => item.link === '{switch_profile}')
+
+    const handleMenuOpenChange = (open) => {
+        if (open && !data && hasProfileSwitcher) {
+            fetchDataPr()
+        }
+    }
 
     const menu_footer_items = useStaticFooter
         ? menuItemsByName('', staticFooter, currentUser)
