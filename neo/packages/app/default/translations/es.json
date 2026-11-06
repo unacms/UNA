@@ -559,5 +559,8 @@
     "Activities": "Actividades",
     "Objects": "Objetos",
     "Symbols": "Símbolos",
-    "Flags": "Banderas"
+    "Flags": "Banderas",
+    "Start timer": "Iniciar temporizador",
+    "Pause timer": "Pausar temporizador",
+    "Total logged": "Total registrado"
 }

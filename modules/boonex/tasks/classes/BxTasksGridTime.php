@@ -146,6 +146,11 @@ class BxTasksGridTime extends BxBaseModGeneralGrid
         return parent::_getCellDefault($this->_oModule->_oConfig->timeI2S($mixedValue), $sKey, $aField, $aRow);
     }
 
+    protected function _getCellBillable($mixedValue, $sKey, $aField, $aRow)
+    {
+        return parent::_getCellDefault(_t((int)$mixedValue ? '_bx_tasks_txt_billable' : '_bx_tasks_txt_non_billable'), $sKey, $aField, $aRow);
+    }
+
     protected function _getCellValueDate($mixedValue, $sKey, $aField, $aRow)
     {
         return $this->_bIsApi ? [

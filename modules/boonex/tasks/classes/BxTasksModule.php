@@ -188,6 +188,8 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
             'ApplyFilter' => '',
             'ProcessTimer' => '',
             'GetBlockTimersStats' => '',
+            'GetBlockTimeSummary' => '',
+            'GetBlockTimeSummaryContext' => '',
         ]);
     }
 
@@ -900,6 +902,45 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         return [
             bx_api_get_block('tasks_timers_stats', $this->_oTemplate->getBlockTimersStats($this->_iProfileId))
         ];
+    }
+
+    /**
+     * Who logged what on a task. Those who manage the task see everybody, others only their own time.
+     */
+    public function serviceGetBlockTimeSummary($iContentId = 0)
+    {
+        if(!$this->_bIsApi)
+            return '';
+
+        if(!$iContentId)
+            $iContentId = bx_process_input(bx_get('id'), BX_DATA_INT);
+
+        $aContentInfo = $iContentId ? $this->_oDb->getContentInfoById((int)$iContentId) : false;
+        if(!$this->_iProfileId || !$aContentInfo || !is_array($aContentInfo))
+            return [];
+
+        $aData = $this->_oTemplate->getBlockTimeSummary((int)$iContentId, $this->_iProfileId, $this->isAllowManage($aContentInfo));
+
+        return $aData ? [bx_api_get_block('tasks_time_summary', $aData)] : [];
+    }
+
+    /**
+     * Logged time in a context by person and then by task. Context admins see everybody, others only their own time.
+     */
+    public function serviceGetBlockTimeSummaryContext($iContextPid = 0)
+    {
+        if(!$this->_bIsApi)
+            return '';
+
+        if(!$iContextPid)
+            $iContextPid = bx_process_input(bx_get('profile_id'), BX_DATA_INT);
+
+        if(!$this->_iProfileId || !$iContextPid || BxDolProfile::getInstance((int)$iContextPid) === false)
+            return [];
+
+        $aData = $this->_oTemplate->getBlockTimeSummaryContext((int)$iContextPid, $this->_iProfileId, $this->isAllowManageByContext((int)$iContextPid));
+
+        return $aData ? [bx_api_get_block('tasks_time_summary', $aData)] : [];
     }
 
     public function serviceGetBlockManageBudget($sType = 'administration', $iContextPid = 0)

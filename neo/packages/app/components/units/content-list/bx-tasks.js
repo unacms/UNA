@@ -1,15 +1,22 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Row, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { Modal } from 'app/design/controls';
+import { Modal, NeoButton } from 'app/design/controls';
+import { useResolvedNeoButton } from 'app/design/controls/neo-button/neo-button';
 import { Icon } from 'app/ui/atoms/icon';
 import Menu from 'app/components/menu';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
+import emitter, { EVENTS } from 'app/context/emitter';
+import { useCurrentUser } from 'app/context/user';
+import { fetcher } from 'app/lib/fetcher';
+import { playCue } from 'app/lib/sound';
+import { publishTimerSession, useTaskTimerSession } from 'app/lib/task-timer-sync';
 import { appSetting, cn, decodeTextNode } from 'app/lib/util';
-import { iconForTaskStatus, iconForTaskPriority, normalizeTaskLabel } from 'app/lib/tasks-meta';
+import { formatTaskClock, iconForTaskStatus, iconForTaskPriority, normalizeTaskLabel, parseTaskTime } from 'app/lib/tasks-meta';
 import { UnitTitle } from 'app/components/units/helpers';
 import { runTaskAction } from 'app/components/elements/tasks/actions';
-import { emitTasksListOpen, emitTasksListRefresh } from 'app/components/elements/tasks/helpers';
+import { apiUrl, emitTasksListOpen, emitTasksListRefresh } from 'app/components/elements/tasks/helpers';
 import { TaskPropertySelect } from 'app/components/elements/tasks/property-select';
 import { TaskAssigneeSelect } from 'app/components/elements/tasks/assignee-select';
 import { Timer } from 'app/ui/atoms/timer';
@@ -87,7 +94,118 @@ function TaskStatusIcon({ state }) {
     );
 }
 
-function TaskMeta({ data, module }) {
+/** Time logged on the task by all members, against the estimate. Doesn't tick: see TaskTimerControl. */
+function TaskTotalBadge({ time }) {
+    const { t } = useTranslation();
+    const resolved = useResolvedNeoButton({
+        controlSize: 'mini',
+        borderShape: 'capsule',
+        style: 'bordered',
+    });
+    const { loggedSeconds, estimateSeconds } = parseTaskTime(time);
+
+    if (!loggedSeconds && !estimateSeconds) return null;
+
+    const logged = loggedSeconds ? formatTaskClock(loggedSeconds) : '0';
+    const label = estimateSeconds ? `${logged} / ${formatTaskClock(estimateSeconds)}` : logged;
+    const over = !!estimateSeconds && loggedSeconds > estimateSeconds;
+
+    return (
+        <Row
+            className={cn(
+                'items-center shrink-0 bg-button',
+                resolved.heightCls,
+                resolved.rounded,
+                resolved.paddingXCls,
+                resolved.labelGapCls || 'gap-x-1'
+            )}
+            style={{
+                height: resolved.height,
+                ...(resolved.paddingXCls ? null : { paddingLeft: resolved.paddingX, paddingRight: resolved.paddingX }),
+            }}
+            accessibilityLabel={`${t('Total logged')}: ${label}`}
+        >
+            <Icon icon="Sigma" size={resolved.iconSize} className="shrink-0 text-muted-foreground" />
+            <Text
+                className={cn(
+                    resolved.fontCls,
+                    'font-medium tabular-nums whitespace-nowrap',
+                    over ? 'text-destructive' : 'text-foreground'
+                )}
+            >
+                {label}
+            </Text>
+        </Row>
+    );
+}
+
+/**
+ * The viewer's own timer, the same value as the timers page. The session store only holds
+ * the viewer's timers, so `started` means theirs is running.
+ */
+function TaskTimerControl({ data, module, isCompleted }) {
+    const { t } = useTranslation();
+    const { currentUser } = useCurrentUser();
+    const session = useTaskTimerSession(data?.id);
+    const [busy, setBusy] = useState(false);
+    const isActive = session?.state === 'started';
+
+    if (!currentUser || data?.id == null || (isCompleted && !isActive)) return null;
+
+    const toggle = async () => {
+        // UNA's `start` continues a paused timer, so it covers both a new and a paused one.
+        const action = isActive ? 'pause' : 'start';
+        setBusy(true);
+        try {
+            const response = await fetcher(apiUrl(
+                `${module}/process_timer/&params[]=${action}&params[]=${data.id}&params[]=${currentUser.id}`
+            ));
+            const timer = response?.data;
+            // UNA answers `{ code, msg }` when the viewer may not manage this task.
+            if (timer?.state == null) {
+                playCue('error');
+                return;
+            }
+            publishTimerSession({
+                requestUrl: timer.request_url,
+                timerId: timer.id,
+                state: timer.state,
+                time: timer.time,
+                action,
+            });
+            emitter.emit(EVENTS.taskTimer, { id: timer.id, action });
+        } catch {
+            playCue('error');
+        } finally {
+            setBusy(false);
+        }
+    };
+
+    const label = t(isActive ? 'Pause timer' : 'Start timer');
+
+    return (
+        <TaskRowControl>
+            <Row className="items-center gap-x-1">
+                {isActive ? (
+                    <Timer taskId={data.id} controlSize="mini" />
+                ) : null}
+                <NeoButton
+                    style="borderedProminent"
+                    controlSize="mini"
+                    borderShape="circle"
+                    image={isActive ? 'Pause' : 'Play'}
+                    accessibilityLabel={label}
+                    tooltip={label}
+                    loading={busy}
+                    expoUI={false}
+                    onPress={toggle}
+                />
+            </Row>
+        </TaskRowControl>
+    );
+}
+
+function TaskMeta({ data, module, isCompleted }) {
     const items = META_FIELDS.flatMap((field) => {
         const value = data?.[field.key]
             ?? field.altKeys?.map((key) => data?.[key]).find(Boolean);
@@ -95,9 +213,6 @@ function TaskMeta({ data, module }) {
         const icon = field.iconFor ? field.iconFor(value) : field.icon;
         return [{ key: field.key, icon, variant: field.variant, value: String(value) }];
     });
-    const timeRaw = data?.time ?? data?.estimate;
-
-    if (!items.length && !timeRaw) return null;
 
     return (
         <Row className="items-center gap-x-2.5 shrink-0">
@@ -127,12 +242,8 @@ function TaskMeta({ data, module }) {
                     </Row>
                 )
             ))}
-            <Timer
-                taskId={data?.id}
-                time={timeRaw}
-                timer={data?.timer}
-                controlSize="mini"
-            />
+            <TaskTotalBadge time={data?.time ?? data?.estimate} />
+            <TaskTimerControl data={data} module={module} isCompleted={isCompleted} />
         </Row>
     );
 }
@@ -211,7 +322,7 @@ export default function Unit({ data, module }) {
                             <TaskPriorityIcon priority={data.priority} />
                         </TaskPropertySelect>
                     </Row>
-                    <TaskMeta data={data} module={tasksModule} />
+                    <TaskMeta data={data} module={tasksModule} isCompleted={isCompleted} />
                 </Row>
 
                 <TaskRowControl>

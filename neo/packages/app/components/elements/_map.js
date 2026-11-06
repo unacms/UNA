@@ -49,6 +49,7 @@ const Messenger = dynamic(() => import('./messenger'), { loading: DynamicFallbac
 const TasksMenu = dynamic(() => import('./tasks-menu'), { loading: DynamicFallback });
 const TasksTimers = dynamic(() => import('./tasks-timers'), { loading: DynamicFallback });
 const TasksTimersStats = dynamic(() => import('./tasks-timers-stats'), { loading: DynamicFallback });
+const TasksTimeSummary = dynamic(() => import('./tasks-time-summary'), { loading: DynamicFallback });
 const TasksList = dynamic(() => import('./tasks-list'), { loading: DynamicFallback });
 const TasksBudget = dynamic(() => import('./tasks-budget'), { loading: DynamicFallback });
 const TaskTimer = dynamic(() => import('./task-timer'), { loading: DynamicFallback });
@@ -108,6 +109,7 @@ export const componentsMapDefault = {
     tasks_menu: TasksMenu,
     tasks_timers: TasksTimers,
     tasks_timers_stats: TasksTimersStats,
+    tasks_time_summary: TasksTimeSummary,
     tasks_list: TasksList,
     tasks_budget: TasksBudget,
     task_timer: TaskTimer,

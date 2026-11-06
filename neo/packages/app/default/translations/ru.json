@@ -567,5 +567,8 @@
     "Monthly recurring revenue over time": "Ежемесячная регулярная выручка по времени",
     "New, renewed and cancelled": "Новые, продлённые и отменённые",
     "Credits over time": "Кредиты по времени",
-    "Commission invoices issued in this period": "Счета за комиссию, выставленные за период"
+    "Commission invoices issued in this period": "Счета за комиссию, выставленные за период",
+    "Start timer": "Запустить таймер",
+    "Pause timer": "Приостановить таймер",
+    "Total logged": "Всего залогировано"
 }

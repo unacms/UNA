@@ -98,6 +98,7 @@ class BxTasksTime extends BxTemplReport
                 'value_h' => $iHours,
                 'value_m' => $iMinutes + 1,
                 'text' => '',
+                'billable' => 1,
                 'timer_id' => $aTimer['id']
             ]), $oForm);
         }
@@ -212,7 +213,10 @@ class BxTasksTime extends BxTemplReport
         $sText = ($sKey = 'text') && $this->_bIsApi ? $aParams[$sKey] : ($aParams[$sKey] ?? $oForm->getCleanValue($sKey));
         $sText = bx_process_input($sText);
 
-        $iId = (int)$oForm->insert(['object_id' => $iObjectId, 'author_id' => $iAuthorId, 'author_nip' => $iAuthorNip, 'value' => $iValue,  'text' => $sText,  'date' => time()]);
+        //--- A switcher that wasn't submitted reads as 0, but time is billable unless the viewer says otherwise.
+        $iBillable = (int)(($aParams['billable'] ?? null) ?? ($this->_bIsApi ? 1 : $oForm->getCleanValue('billable')));
+
+        $iId = (int)$oForm->insert(['object_id' => $iObjectId, 'author_id' => $iAuthorId, 'author_nip' => $iAuthorNip, 'value' => $iValue, 'billable' => $iBillable, 'text' => $sText,  'date' => time()]);
         if($iId != 0 && $this->putReport($iObjectId, $iAuthorId, $iId)) {
             $aReport = $this->_getReport($iObjectId, true);
             $aResult = $this->_returnReportData($iObjectId, $iAuthorId, $iId, $aReport, !$bPerformed);
