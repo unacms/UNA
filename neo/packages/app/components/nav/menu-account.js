@@ -11,7 +11,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { useTranslation } from 'react-i18next'
 import Profile from 'app/ui/molecules/profile/profile'
 import ProfileSwitcher from 'app/components/elements/profile-switcher'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Text } from 'app/design/typography'
 import { fetcher } from 'app/lib/fetcher'
 import RadioButton from 'app/ui/atoms/radiobutton'
@@ -36,12 +36,22 @@ export default function MenuAccount({ buttonProps, children }) {
     const profileFetchRef = useRef(null)
     const isDesktop = useIsDesktop();
 
-    const fetchDataPr = () => {
-        if (profileFetchRef.current) {
-            return profileFetchRef.current
-        }
+    const { t } = useTranslation()
 
-        const promise = fetcher(
+    const menu_account_items = useStaticAccount
+        ? menuItemsByName('', staticAccount, currentUser)
+        : menuItemsByNameNew('menu_post', accountMenuData, currentUser)
+
+    // Profiles are listed only where the menu has a `{switch_profile}` row.
+    const hasProfileSwitcher = menu_account_items.some((item) => item.link === '{switch_profile}')
+
+    // Load them on the first open, or when the row arrives while the menu is open
+    // (UNA's menu can still be loading when the menu opens).
+    const [menuOpen, setMenuOpen] = useState(false)
+    useEffect(() => {
+        if (!menuOpen || data || !hasProfileSwitcher || profileFetchRef.current) return
+
+        profileFetchRef.current = fetcher(
             '/api.php?r=system/account_profile_switcher/TemplServiceProfiles'
         )
             .then((sResponse) => {
@@ -55,25 +65,7 @@ export default function MenuAccount({ buttonProps, children }) {
             .finally(() => {
                 profileFetchRef.current = null
             })
-
-        profileFetchRef.current = promise
-        return promise
-    }
-
-    const { t } = useTranslation()
-
-    const menu_account_items = useStaticAccount
-        ? menuItemsByName('', staticAccount, currentUser)
-        : menuItemsByNameNew('menu_post', accountMenuData, currentUser)
-
-    // Profiles are listed only where the menu has a `{switch_profile}` row.
-    const hasProfileSwitcher = menu_account_items.some((item) => item.link === '{switch_profile}')
-
-    const handleMenuOpenChange = (open) => {
-        if (open && !data && hasProfileSwitcher) {
-            fetchDataPr()
-        }
-    }
+    }, [menuOpen, data, hasProfileSwitcher])
 
     const menu_footer_items = useStaticFooter
         ? menuItemsByName('', staticFooter, currentUser)
@@ -157,7 +149,7 @@ export default function MenuAccount({ buttonProps, children }) {
         <>
             <Redirect ref={redirectdRef} />
             <DropdownMenu
-                onOpenChange={handleMenuOpenChange}
+                onOpenChange={setMenuOpen}
                 items={updatedMenu.map((item, index) => {
                     let sTitle = t(item.title)
                     let sType = ''
