@@ -65,6 +65,65 @@ const INCREASE_VIEWPORT_BY = { top: 3000, bottom: 3000 }
  */
 const computeItemKey = (index: number, item: any) => item?.id ?? item?.key ?? index
 
+/**
+ * A window-scrolled list asks for its next page only once its end is this many screens
+ * below the viewport. Virtuoso reports the end as soon as the last row is rendered, and
+ * with INCREASE_VIEWPORT_BY (and while the list sits at zero height under its skeleton)
+ * that happens on load, so a first visit fetched two extra pages before any scroll.
+ */
+const END_AHEAD_SCREENS = 1
+
+/**
+ * `onEndReached` for a window-scrolled list: passed on while the list's end (`endRef`) is
+ * near the viewport, otherwise held until a scroll or resize brings it near. Lists with
+ * their own scroller pass it on as before.
+ */
+function useNearEndReached(
+    onEndReached: ((...args: any[]) => void) | undefined,
+    endRef: { current: HTMLElement | null },
+    enabled: boolean,
+    shown: boolean,
+) {
+    const held = useRef<any[] | null>(null)
+    const latest = useRef({ onEndReached, shown })
+    useEffect(() => {
+        latest.current = { onEndReached, shown }
+    }, [onEndReached, shown])
+
+    const isNearEnd = useCallback(() => {
+        const el = endRef.current
+        if (!el || typeof window === 'undefined') return true
+        const viewport = window.innerHeight || 0
+        return el.getBoundingClientRect().top - viewport <= viewport * END_AHEAD_SCREENS
+    }, [endRef])
+
+    const flush = useCallback(() => {
+        const args = held.current
+        if (!args || !latest.current.shown || !isNearEnd()) return
+        held.current = null
+        latest.current.onEndReached?.(...args)
+    }, [isNearEnd])
+
+    useEffect(() => {
+        if (!enabled || !onEndReached || typeof window === 'undefined') return undefined
+        // The list may have just been revealed (`shown`) with a held request.
+        flush()
+        window.addEventListener('scroll', flush, { passive: true })
+        window.addEventListener('resize', flush)
+        return () => {
+            window.removeEventListener('scroll', flush)
+            window.removeEventListener('resize', flush)
+        }
+    }, [enabled, onEndReached, shown, flush])
+
+    const endReached = useCallback((...args: any[]) => {
+        held.current = args
+        flush()
+    }, [flush])
+
+    return enabled && onEndReached ? endReached : onEndReached
+}
+
 type Overscan = { main: number; reverse: number }
 
 /**
@@ -204,6 +263,9 @@ export default function UniList(props: UniListProps) {
     const waitForGrid = isGrid && !gridReady && rows.length > 0
     const { showContent, skeleton } = useListReveal(preloadComponent, waitForGrid)
 
+    const endRef = useRef<HTMLDivElement | null>(null)
+    const endReached = useNearEndReached(onEndReached, endRef, isWindowScroll, showContent)
+
     const onGridReadyStateChanged = useCallback((ready: boolean) => {
         if (ready) setGridReady(true)
     }, [])
@@ -270,7 +332,7 @@ export default function UniList(props: UniListProps) {
         style: virtuosoStyle,
         ref: refer ?? uniRef,
         startReached: onStartReached,
-        endReached: onEndReached,
+        endReached,
         overscan,
         increaseViewportBy: INCREASE_VIEWPORT_BY,
         components: {
@@ -298,6 +360,7 @@ export default function UniList(props: UniListProps) {
             >
                 {renderSlot(ListHeaderComponent)}
                 <List {...virtuosoProps} />
+                <div ref={endRef} aria-hidden="true" />
             </View>
         </View>
     )

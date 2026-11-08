@@ -37,7 +37,8 @@ export type UniListProps<T = any> = {
     ListHeaderComponent?: UniListSlot
     ListFooterComponent?: UniListSlot
     ListEmptyComponent?: UniListSlot
-    onEndReached?: () => void
+    /** Web passes Virtuoso's last item index. */
+    onEndReached?: (...args: any[]) => void
     onStartReached?: () => void
     onRefresh?: () => void
     refreshing?: boolean
