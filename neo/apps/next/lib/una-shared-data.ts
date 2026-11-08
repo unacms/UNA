@@ -60,7 +60,7 @@ async function fetchUnaData(base: string, apiKey: string, query: string): Promis
     });
     if (!res.ok) return undefined;
     const json = await res.json().catch(() => null);
-    return json && json.status === 200 && json.data != null ? json.data : undefined;
+    return json?.status === 200 && json.data != null ? json.data : undefined;
 }
 
 export function guestMenuObjects(): string[] {

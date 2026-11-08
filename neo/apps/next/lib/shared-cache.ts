@@ -9,10 +9,12 @@
  * - Otherwise the caller waits for the load, at most `waitMs`, and gets `undefined` on a
  *   timeout or a failed load; the load keeps running and fills the cache for the next page.
  *
+ * Loads in flight are kept apart from stored values: eviction never drops a running load (a
+ * second load for the same key would race it), and at most `maxEntries` values are stored.
  * A load that resolves to `undefined` is not stored.
  */
 
-type Entry<T> = { value?: T; expires: number; pending?: Promise<T | undefined> };
+type Stored<T> = { value: T; expires: number };
 
 export type SharedCacheOptions = {
     ttlMs: number;
@@ -23,41 +25,36 @@ export type SharedCacheOptions = {
 };
 
 export function createSharedCache<T>({ ttlMs, staleMs, waitMs, maxEntries, now = Date.now }: SharedCacheOptions) {
-    const entries = new Map<string, Entry<T>>();
+    const values = new Map<string, Stored<T>>();
+    const pending = new Map<string, Promise<T | undefined>>();
 
-    function evict() {
+    function store(key: string, value: T) {
+        values.delete(key);
+        values.set(key, { value, expires: now() + ttlMs });
         const at = now();
-        for (const [key, entry] of entries) {
-            if (!entry.pending && entry.expires + staleMs <= at) entries.delete(key);
+        for (const [k, entry] of values) {
+            if (entry.expires + staleMs <= at) values.delete(k);
         }
-        while (entries.size > maxEntries) {
-            const oldest = entries.keys().next().value;
+        while (values.size > maxEntries) {
+            const oldest = values.keys().next().value;
             if (oldest === undefined) break;
-            entries.delete(oldest);
+            values.delete(oldest);
         }
     }
 
     function refresh(key: string, load: () => Promise<T | undefined>): Promise<T | undefined> {
-        const entry = entries.get(key) ?? { expires: 0 };
-        if (entry.pending) return entry.pending;
-        const pending = Promise.resolve()
+        const running = pending.get(key);
+        if (running) return running;
+        const request = Promise.resolve()
             .then(load)
             .catch(() => undefined)
             .then((value) => {
-                const current = entries.get(key) ?? entry;
-                current.pending = undefined;
-                if (value !== undefined) {
-                    current.value = value;
-                    current.expires = now() + ttlMs;
-                }
-                if (current.value === undefined) entries.delete(key);
-                else entries.set(key, current);
+                pending.delete(key);
+                if (value !== undefined) store(key, value);
                 return value;
             });
-        entry.pending = pending;
-        entries.set(key, entry);
-        evict();
-        return pending;
+        pending.set(key, request);
+        return request;
     }
 
     function within(promise: Promise<T | undefined>): Promise<T | undefined> {
@@ -72,14 +69,15 @@ export function createSharedCache<T>({ ttlMs, staleMs, waitMs, maxEntries, now =
         /** The cached value for `key`, loading it with `load` when missing or stale. */
         get(key: string, load: () => Promise<T | undefined>): Promise<T | undefined> {
             if (ttlMs <= 0) return within(Promise.resolve().then(load).catch(() => undefined));
-            const entry = entries.get(key);
+            const entry = values.get(key);
             const at = now();
-            if (entry?.value !== undefined && entry.expires > at) return Promise.resolve(entry.value);
-            const pending = refresh(key, load);
-            if (entry?.value !== undefined && entry.expires + staleMs > at) return Promise.resolve(entry.value);
-            return within(pending);
+            if (entry && entry.expires > at) return Promise.resolve(entry.value);
+            const request = refresh(key, load);
+            if (entry && entry.expires + staleMs > at) return Promise.resolve(entry.value);
+            return within(request);
         },
-        /** For tests. */
-        size: () => entries.size,
+        /** For tests: stored values and loads in flight. */
+        size: () => values.size,
+        pendingSize: () => pending.size,
     };
 }

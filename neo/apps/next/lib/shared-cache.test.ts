@@ -68,3 +68,22 @@ test('entries are bounded', async () => {
     for (let i = 0; i < 10; i += 1) await cache.get(`k${i}`, async () => i);
     assert.ok(cache.size() <= 3);
 });
+
+test('concurrent loads past the limit: each key loads once and the store stays bounded', async () => {
+    const cache = createSharedCache<number>({ ttlMs: 60_000, staleMs: 0, waitMs: 1000, maxEntries: 2 });
+    const loads = new Map<string, number>();
+    const load = (key: string, n: number) => () => new Promise<number>((resolve) => {
+        loads.set(key, (loads.get(key) ?? 0) + 1);
+        setTimeout(resolve, 10, n);
+    });
+    const keys = ['a', 'b', 'c', 'd', 'e'];
+    // Every key twice while all loads are still running.
+    const first = keys.map((k, i) => cache.get(k, load(k, i)));
+    const second = keys.map((k, i) => cache.get(k, load(k, i)));
+    assert.equal(cache.pendingSize(), keys.length);
+    assert.deepEqual(await Promise.all(first), [0, 1, 2, 3, 4]);
+    assert.deepEqual(await Promise.all(second), [0, 1, 2, 3, 4]);
+    for (const k of keys) assert.equal(loads.get(k), 1, `${k} loaded once`);
+    assert.equal(cache.pendingSize(), 0);
+    assert.ok(cache.size() <= 2);
+});
