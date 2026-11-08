@@ -581,7 +581,7 @@ export default function RftText(props) {
 
     const insertMention = async (user, query) => {
         const html = await editor.getHTML()
-        const mentionLink = buildUnaMentionHtml(user) + '&shy;'
+        const mentionLink = buildUnaMentionHtml(user, query?.charAt(0)) + '&shy;'
         const replacementStringWithNbsp = mentionLink + '&nbsp;'
         const updatedContent = html.replace(query, replacementStringWithNbsp)
         editor.setContent(updatedContent)

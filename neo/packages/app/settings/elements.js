@@ -177,8 +177,8 @@ export const settingsElements = {
                 iconDark: 'rgba(55, 65, 80, 1)',
             },
         },
-        css:'A.bx-mention-link, A.bx-tag{ color: rgba(29, 78, 216, 1)}',
-        css_dark:'A.bx-mention-link, A.bx-tag{ color: rgba(147, 197, 253, 1)}}',
+        css:'A.bx-mention-link, A.bx-tag, A.bx-tag-link{ color: rgba(29, 78, 216, 1)}',
+        css_dark:'A.bx-mention-link, A.bx-tag, A.bx-tag-link{ color: rgba(147, 197, 253, 1)}}',
         // Paste images: upload to the form's default files field (asDefaultStorage
         // or first image/files input). `inline` also inserts <img> into the editor
         // (html=1|2 only; html=3 always attaches).
