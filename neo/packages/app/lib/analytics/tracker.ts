@@ -89,10 +89,20 @@ function toNumber(value: unknown, min: number, max: number, fallback: number): n
     return Number.isFinite(number) ? Math.min(max, Math.max(min, number)) : fallback;
 }
 
+/** Settings the web server sent with the first page (apps/next/lib/una-shared-data), used once. */
+let seededConfig: Record<string, any> | null = null;
+
+/** Web: the analytics settings that came with the page, so the tracker doesn't ask UNA for them. */
+export function seedTrackerConfig(data: Record<string, any> | null | undefined): void {
+    if (data && typeof data === 'object' && state === 'idle') seededConfig = data;
+}
+
 async function loadConfig(): Promise<void> {
     state = 'loading';
     try {
-        const response = await fetcher(
+        const seeded = seededConfig;
+        seededConfig = null;
+        const response = seeded ? { status: 200, data: seeded } : await fetcher(
             `${CONFIG_URL}&params[]=${encodeURIComponent(getClient().platform)}`,
             false,
             { silent: true, maxAttempts: 1, timeoutMs: REQUEST_TIMEOUT_MS },

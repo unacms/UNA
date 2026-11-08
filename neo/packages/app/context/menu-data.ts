@@ -2,7 +2,7 @@
 import { create } from 'zustand';
 import { filterHiddenOn, getDataForMenu } from 'app/lib/util';
 import { useScreenTier } from 'app/context/measure';
-import { useEffect, useCallback } from 'react';
+import { createContext, useCallback, useContext, useEffect } from 'react';
 
 /** Menu object id (string) or a UNA menu request object. */
 export type MenuObject = string | Record<string, unknown>;
@@ -21,6 +21,13 @@ type MenuDataStore = {
     /** Load (or reuse) a menu; `force` refetches. Resolves to the data or `false`. */
     fetchMenu: (object: MenuObject, force?: boolean) => Promise<any>;
 };
+
+/**
+ * Menus the web server fetched with the page (guests only, see apps/next/lib/una-shared-data),
+ * keyed by menu object. Server and first client render read them from here, so both draw the
+ * same menu; `seedMenuData` puts them in the store on the client, so nothing fetches them again.
+ */
+export const InitialMenusContext = createContext<Record<string, any> | null>(null);
 
 export const useMenuDataStore = create<MenuDataStore>()((set, get) => ({
     menus: {},
@@ -74,11 +81,33 @@ export const useMenuDataStore = create<MenuDataStore>()((set, get) => ({
     },
 }));
 
+/** Client only: store menus the server sent with the page. Menus already loaded stay. */
+export function seedMenuData(menus: Record<string, any> | null | undefined): void {
+    if (!menus || typeof window === 'undefined') return;
+    const current = useMenuDataStore.getState().menus;
+    const missing = Object.keys(menus).filter((key) => menus[key] && !current[key]?.data);
+    if (!missing.length) return;
+    useMenuDataStore.setState((state) => {
+        const next = { ...state.menus };
+        missing.forEach((key) => {
+            next[key] = { data: menus[key], fetched: true, loading: false, promise: null };
+        });
+        return { menus: next };
+    });
+}
+
+/** A loaded (or server-sent) menu's data, read outside React; null when there is none yet. */
+export function getLoadedMenuData(object: string): any {
+    return useMenuDataStore.getState().menus[object]?.data || null;
+}
+
 export const useMenuData = (object: MenuObject | null | undefined) => {
     const key = typeof object === 'string' ? object : JSON.stringify(object);
-    const data = useMenuDataStore((state) => state.menus[key]?.data ?? false);
+    const initial = useContext(InitialMenusContext);
+    const seeded = object && typeof object === 'string' ? initial?.[object] : undefined;
+    const data = useMenuDataStore((state) => state.menus[key]?.data ?? false) || seeded || false;
     const isLoading = useMenuDataStore((state) => state.menus[key]?.loading ?? false);
-    const isFetched = useMenuDataStore((state) => state.menus[key]?.fetched ?? false);
+    const isFetched = useMenuDataStore((state) => state.menus[key]?.fetched ?? false) || !!seeded;
     const fetchMenu = useMenuDataStore((state) => state.fetchMenu);
     const tier = useScreenTier();
 

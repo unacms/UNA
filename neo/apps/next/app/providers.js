@@ -13,7 +13,8 @@ import Subscriber from 'app/ui/molecules/system/subscriber'
 import InterfaceSounds from 'app/ui/molecules/system/interface-sounds'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { addI18nResources, changeI18nLanguage } from 'app/lib/i18n-resources'
-import { AnalyticsTracker } from 'app/lib/analytics'
+import { AnalyticsTracker, seedTrackerConfig } from 'app/lib/analytics'
+import { InitialMenusContext, seedMenuData } from 'app/context/menu-data'
 
 // The Google OAuth popup returns to a page of this app: close it and hand the
 // result to the opener. Here, not in the lazily loaded Google button, so it
@@ -59,7 +60,7 @@ function ensureI18n(lang, initialResources) {
     }
 }
 
-export function Providers({ children, initialLang = 'en', initialResources, onVercel = false }) {
+export function Providers({ children, initialLang = 'en', initialResources, initialMenus = null, trackerConfig = null, onVercel = false }) {
     // Must match server-rendered copy before the first child paints (menu aria-labels, etc.).
     ensureI18n(initialLang, initialResources)
 
@@ -74,6 +75,17 @@ export function Providers({ children, initialLang = 'en', initialResources, onVe
         const instance = i18n.createInstance()
         instance.init(i18nOptions(initialLang, initialResources))
         return instance
+    })
+
+    // What the server fetched with the page (lib/una-shared-data): into the client stores before
+    // any child's effect asks UNA for it. The context gives server and first client render the
+    // same menus. Client only: the stores are module singletons shared by every server request.
+    const [menus] = useState(() => {
+        if (typeof window !== 'undefined') {
+            seedMenuData(initialMenus)
+            seedTrackerConfig(trackerConfig)
+        }
+        return initialMenus
     })
 
     // A module-level client would share one cache between every request the
@@ -104,7 +116,9 @@ export function Providers({ children, initialLang = 'en', initialResources, onVe
                     {/* Their scripts are served by Vercel only; elsewhere both 404 on every page load. */}
                     {onVercel ? <Analytics /> : null}
                     {onVercel ? <SpeedInsights /> : null}
-                    {children}
+                    <InitialMenusContext.Provider value={menus}>
+                        {children}
+                    </InitialMenusContext.Provider>
                     <Subscriber />
                     <AnalyticsTracker />
                     <InterfaceSounds />

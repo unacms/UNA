@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { create } from 'zustand';
+import { getLoadedMenuData } from 'app/context/menu-data';
 import { appSetting, filterHiddenOn, findIconFromRemote, getDataForMenu, normalizeMenuItemHref, screenTierOf, strToObj } from 'app/lib/util';
 import { useMeasureStore } from 'app/context/measure';
 import { persistedGet, persistedSet } from 'app/lib/util/storage';
@@ -133,7 +134,10 @@ function loadTabBarMenu(context: TabBarContext, viewerKey: string): Promise<void
             // No saved copy: wait for UNA.
         }
         try {
-            const data = await getDataForMenu({ object: appSetting('menu_items', 'objects', 'tabbar'), params: null });
+            const object = appSetting('menu_items', 'objects', 'tabbar');
+            // A guest's first web page brings the menu along (context/menu-data seedMenuData).
+            const data = (viewerKey === GUEST_KEY ? getLoadedMenuData(object) : null)
+                ?? await getDataForMenu({ object, params: null });
             // Screen tier at load: the list stays for the run, keys follow positions.
             const tier = screenTierOf(useMeasureStore.getState().windowWidth);
             const list = tabBarItemsFromMenu(filterHiddenOn(data?.items, tier));
