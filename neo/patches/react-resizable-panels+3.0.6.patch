@@ -1,0 +1,472 @@
+diff --git a/node_modules/react-resizable-panels/dist/react-resizable-panels.browser.development.js b/node_modules/react-resizable-panels/dist/react-resizable-panels.browser.development.js
+index 4fc935a..8b7c326 100644
+--- a/node_modules/react-resizable-panels/dist/react-resizable-panels.browser.development.js
++++ b/node_modules/react-resizable-panels/dist/react-resizable-panels.browser.development.js
+@@ -68,8 +68,12 @@ function PanelWithForwardedRef({
+     reevaluatePanelConstraints,
+     registerPanel,
+     resizePanel,
++    subscribeToLayout,
+     unregisterPanel
+   } = context;
++  // NEO patch: re-render on layout and drag changes (the group's context no longer changes).
++  const [, onLayoutChange] = useState(0);
++  useIsomorphicLayoutEffect(() => subscribeToLayout(() => onLayoutChange(n => n + 1)), [subscribeToLayout]);
+   const panelId = useUniqueId(idFromProps);
+   const panelDataRef = useRef({
+     callbacks: {
+@@ -1954,10 +1958,33 @@ function PanelGroupWithForwardedRef({
+   }, []);
+ 
+   // This API should never read from committedValuesRef
++  // NEO patch: the context value stays the same object when the layout or drag state
++  // changes (a new value makes React client-render every Suspense boundary under the group
++  // that is still hydrating). Panels re-render through subscribeToLayout instead.
++  const styleValuesRef = useRef({
++    dragState,
++    layout
++  });
++  styleValuesRef.current.dragState = dragState;
++  styleValuesRef.current.layout = layout;
++  const layoutListenersRef = useRef(new Set());
++  const subscribeToLayout = useCallback(listener => {
++    layoutListenersRef.current.add(listener);
++    return () => {
++      layoutListenersRef.current.delete(listener);
++    };
++  }, []);
++  useIsomorphicLayoutEffect(() => {
++    layoutListenersRef.current.forEach(listener => listener());
++  }, [dragState, layout]);
+   const getPanelStyle = useCallback((panelData, defaultSize) => {
+     const {
+       panelDataArray
+     } = eagerValuesRef.current;
++    const {
++      dragState,
++      layout
++    } = styleValuesRef.current;
+     const panelIndex = findPanelDataIndex(panelDataArray, panelData);
+     return computePanelFlexBoxStyle({
+       defaultSize,
+@@ -1966,7 +1993,7 @@ function PanelGroupWithForwardedRef({
+       panelData: panelDataArray,
+       panelIndex
+     });
+-  }, [dragState, layout]);
++  }, []);
+ 
+   // External APIs are safe to memoize via committed values ref
+   const isPanelCollapsed = useCallback(panelData => {
+@@ -2263,7 +2290,6 @@ function PanelGroupWithForwardedRef({
+   const context = useMemo(() => ({
+     collapsePanel,
+     direction,
+-    dragState,
+     expandPanel,
+     getPanelSize,
+     getPanelStyle,
+@@ -2276,9 +2302,10 @@ function PanelGroupWithForwardedRef({
+     resizePanel,
+     startDragging,
+     stopDragging,
++    subscribeToLayout,
+     unregisterPanel,
+     panelGroupElement: panelGroupElementRef.current
+-  }), [collapsePanel, dragState, direction, expandPanel, getPanelSize, getPanelStyle, groupId, isPanelCollapsed, isPanelExpanded, reevaluatePanelConstraints, registerPanel, registerResizeHandle, resizePanel, startDragging, stopDragging, unregisterPanel]);
++  }), [collapsePanel, direction, expandPanel, getPanelSize, getPanelStyle, groupId, isPanelCollapsed, isPanelExpanded, reevaluatePanelConstraints, registerPanel, registerResizeHandle, resizePanel, startDragging, stopDragging, subscribeToLayout, unregisterPanel]);
+   const style = {
+     display: "flex",
+     flexDirection: direction === "horizontal" ? "row" : "column",
+diff --git a/node_modules/react-resizable-panels/dist/react-resizable-panels.browser.js b/node_modules/react-resizable-panels/dist/react-resizable-panels.browser.js
+index ce003a5..6bbb311 100644
+--- a/node_modules/react-resizable-panels/dist/react-resizable-panels.browser.js
++++ b/node_modules/react-resizable-panels/dist/react-resizable-panels.browser.js
+@@ -68,8 +68,12 @@ function PanelWithForwardedRef({
+     reevaluatePanelConstraints,
+     registerPanel,
+     resizePanel,
++    subscribeToLayout,
+     unregisterPanel
+   } = context;
++  // NEO patch: re-render on layout and drag changes (the group's context no longer changes).
++  const [, onLayoutChange] = useState(0);
++  useIsomorphicLayoutEffect(() => subscribeToLayout(() => onLayoutChange(n => n + 1)), [subscribeToLayout]);
+   const panelId = useUniqueId(idFromProps);
+   const panelDataRef = useRef({
+     callbacks: {
+@@ -1848,10 +1852,33 @@ function PanelGroupWithForwardedRef({
+   }, []);
+ 
+   // This API should never read from committedValuesRef
++  // NEO patch: the context value stays the same object when the layout or drag state
++  // changes (a new value makes React client-render every Suspense boundary under the group
++  // that is still hydrating). Panels re-render through subscribeToLayout instead.
++  const styleValuesRef = useRef({
++    dragState,
++    layout
++  });
++  styleValuesRef.current.dragState = dragState;
++  styleValuesRef.current.layout = layout;
++  const layoutListenersRef = useRef(new Set());
++  const subscribeToLayout = useCallback(listener => {
++    layoutListenersRef.current.add(listener);
++    return () => {
++      layoutListenersRef.current.delete(listener);
++    };
++  }, []);
++  useIsomorphicLayoutEffect(() => {
++    layoutListenersRef.current.forEach(listener => listener());
++  }, [dragState, layout]);
+   const getPanelStyle = useCallback((panelData, defaultSize) => {
+     const {
+       panelDataArray
+     } = eagerValuesRef.current;
++    const {
++      dragState,
++      layout
++    } = styleValuesRef.current;
+     const panelIndex = findPanelDataIndex(panelDataArray, panelData);
+     return computePanelFlexBoxStyle({
+       defaultSize,
+@@ -1860,7 +1887,7 @@ function PanelGroupWithForwardedRef({
+       panelData: panelDataArray,
+       panelIndex
+     });
+-  }, [dragState, layout]);
++  }, []);
+ 
+   // External APIs are safe to memoize via committed values ref
+   const isPanelCollapsed = useCallback(panelData => {
+@@ -2157,7 +2184,6 @@ function PanelGroupWithForwardedRef({
+   const context = useMemo(() => ({
+     collapsePanel,
+     direction,
+-    dragState,
+     expandPanel,
+     getPanelSize,
+     getPanelStyle,
+@@ -2170,9 +2196,10 @@ function PanelGroupWithForwardedRef({
+     resizePanel,
+     startDragging,
+     stopDragging,
++    subscribeToLayout,
+     unregisterPanel,
+     panelGroupElement: panelGroupElementRef.current
+-  }), [collapsePanel, dragState, direction, expandPanel, getPanelSize, getPanelStyle, groupId, isPanelCollapsed, isPanelExpanded, reevaluatePanelConstraints, registerPanel, registerResizeHandle, resizePanel, startDragging, stopDragging, unregisterPanel]);
++  }), [collapsePanel, direction, expandPanel, getPanelSize, getPanelStyle, groupId, isPanelCollapsed, isPanelExpanded, reevaluatePanelConstraints, registerPanel, registerResizeHandle, resizePanel, startDragging, stopDragging, subscribeToLayout, unregisterPanel]);
+   const style = {
+     display: "flex",
+     flexDirection: direction === "horizontal" ? "row" : "column",
+diff --git a/node_modules/react-resizable-panels/dist/react-resizable-panels.development.edge-light.js b/node_modules/react-resizable-panels/dist/react-resizable-panels.development.edge-light.js
+index 88cf2f7..bc625f5 100644
+--- a/node_modules/react-resizable-panels/dist/react-resizable-panels.development.edge-light.js
++++ b/node_modules/react-resizable-panels/dist/react-resizable-panels.development.edge-light.js
+@@ -66,8 +66,11 @@ function PanelWithForwardedRef({
+     reevaluatePanelConstraints,
+     registerPanel,
+     resizePanel,
++    subscribeToLayout,
+     unregisterPanel
+   } = context;
++  // NEO patch: re-render on layout and drag changes (the group's context no longer changes).
++  const [, onLayoutChange] = useState(0);
+   const panelId = useUniqueId(idFromProps);
+   const panelDataRef = useRef({
+     callbacks: {
+@@ -1786,10 +1789,30 @@ function PanelGroupWithForwardedRef({
+   }, []);
+ 
+   // This API should never read from committedValuesRef
++  // NEO patch: the context value stays the same object when the layout or drag state
++  // changes (a new value makes React client-render every Suspense boundary under the group
++  // that is still hydrating). Panels re-render through subscribeToLayout instead.
++  const styleValuesRef = useRef({
++    dragState,
++    layout
++  });
++  styleValuesRef.current.dragState = dragState;
++  styleValuesRef.current.layout = layout;
++  const layoutListenersRef = useRef(new Set());
++  const subscribeToLayout = useCallback(listener => {
++    layoutListenersRef.current.add(listener);
++    return () => {
++      layoutListenersRef.current.delete(listener);
++    };
++  }, []);
+   const getPanelStyle = useCallback((panelData, defaultSize) => {
+     const {
+       panelDataArray
+     } = eagerValuesRef.current;
++    const {
++      dragState,
++      layout
++    } = styleValuesRef.current;
+     const panelIndex = findPanelDataIndex(panelDataArray, panelData);
+     return computePanelFlexBoxStyle({
+       defaultSize,
+@@ -1798,7 +1821,7 @@ function PanelGroupWithForwardedRef({
+       panelData: panelDataArray,
+       panelIndex
+     });
+-  }, [dragState, layout]);
++  }, []);
+ 
+   // External APIs are safe to memoize via committed values ref
+   const isPanelCollapsed = useCallback(panelData => {
+@@ -2039,7 +2062,6 @@ function PanelGroupWithForwardedRef({
+   const context = useMemo(() => ({
+     collapsePanel,
+     direction,
+-    dragState,
+     expandPanel,
+     getPanelSize,
+     getPanelStyle,
+@@ -2052,9 +2074,10 @@ function PanelGroupWithForwardedRef({
+     resizePanel,
+     startDragging,
+     stopDragging,
++    subscribeToLayout,
+     unregisterPanel,
+     panelGroupElement: panelGroupElementRef.current
+-  }), [collapsePanel, dragState, direction, expandPanel, getPanelSize, getPanelStyle, groupId, isPanelCollapsed, isPanelExpanded, reevaluatePanelConstraints, registerPanel, registerResizeHandle, resizePanel, startDragging, stopDragging, unregisterPanel]);
++  }), [collapsePanel, direction, expandPanel, getPanelSize, getPanelStyle, groupId, isPanelCollapsed, isPanelExpanded, reevaluatePanelConstraints, registerPanel, registerResizeHandle, resizePanel, startDragging, stopDragging, subscribeToLayout, unregisterPanel]);
+   const style = {
+     display: "flex",
+     flexDirection: direction === "horizontal" ? "row" : "column",
+diff --git a/node_modules/react-resizable-panels/dist/react-resizable-panels.development.js b/node_modules/react-resizable-panels/dist/react-resizable-panels.development.js
+index dff86f0..5ab40ac 100644
+--- a/node_modules/react-resizable-panels/dist/react-resizable-panels.development.js
++++ b/node_modules/react-resizable-panels/dist/react-resizable-panels.development.js
+@@ -70,8 +70,12 @@ function PanelWithForwardedRef({
+     reevaluatePanelConstraints,
+     registerPanel,
+     resizePanel,
++    subscribeToLayout,
+     unregisterPanel
+   } = context;
++  // NEO patch: re-render on layout and drag changes (the group's context no longer changes).
++  const [, onLayoutChange] = useState(0);
++  useIsomorphicLayoutEffect(() => subscribeToLayout(() => onLayoutChange(n => n + 1)), [subscribeToLayout]);
+   const panelId = useUniqueId(idFromProps);
+   const panelDataRef = useRef({
+     callbacks: {
+@@ -1961,10 +1965,33 @@ function PanelGroupWithForwardedRef({
+   }, []);
+ 
+   // This API should never read from committedValuesRef
++  // NEO patch: the context value stays the same object when the layout or drag state
++  // changes (a new value makes React client-render every Suspense boundary under the group
++  // that is still hydrating). Panels re-render through subscribeToLayout instead.
++  const styleValuesRef = useRef({
++    dragState,
++    layout
++  });
++  styleValuesRef.current.dragState = dragState;
++  styleValuesRef.current.layout = layout;
++  const layoutListenersRef = useRef(new Set());
++  const subscribeToLayout = useCallback(listener => {
++    layoutListenersRef.current.add(listener);
++    return () => {
++      layoutListenersRef.current.delete(listener);
++    };
++  }, []);
++  useIsomorphicLayoutEffect(() => {
++    layoutListenersRef.current.forEach(listener => listener());
++  }, [dragState, layout]);
+   const getPanelStyle = useCallback((panelData, defaultSize) => {
+     const {
+       panelDataArray
+     } = eagerValuesRef.current;
++    const {
++      dragState,
++      layout
++    } = styleValuesRef.current;
+     const panelIndex = findPanelDataIndex(panelDataArray, panelData);
+     return computePanelFlexBoxStyle({
+       defaultSize,
+@@ -1973,7 +2000,7 @@ function PanelGroupWithForwardedRef({
+       panelData: panelDataArray,
+       panelIndex
+     });
+-  }, [dragState, layout]);
++  }, []);
+ 
+   // External APIs are safe to memoize via committed values ref
+   const isPanelCollapsed = useCallback(panelData => {
+@@ -2270,7 +2297,6 @@ function PanelGroupWithForwardedRef({
+   const context = useMemo(() => ({
+     collapsePanel,
+     direction,
+-    dragState,
+     expandPanel,
+     getPanelSize,
+     getPanelStyle,
+@@ -2283,9 +2309,10 @@ function PanelGroupWithForwardedRef({
+     resizePanel,
+     startDragging,
+     stopDragging,
++    subscribeToLayout,
+     unregisterPanel,
+     panelGroupElement: panelGroupElementRef.current
+-  }), [collapsePanel, dragState, direction, expandPanel, getPanelSize, getPanelStyle, groupId, isPanelCollapsed, isPanelExpanded, reevaluatePanelConstraints, registerPanel, registerResizeHandle, resizePanel, startDragging, stopDragging, unregisterPanel]);
++  }), [collapsePanel, direction, expandPanel, getPanelSize, getPanelStyle, groupId, isPanelCollapsed, isPanelExpanded, reevaluatePanelConstraints, registerPanel, registerResizeHandle, resizePanel, startDragging, stopDragging, subscribeToLayout, unregisterPanel]);
+   const style = {
+     display: "flex",
+     flexDirection: direction === "horizontal" ? "row" : "column",
+diff --git a/node_modules/react-resizable-panels/dist/react-resizable-panels.edge-light.js b/node_modules/react-resizable-panels/dist/react-resizable-panels.edge-light.js
+index c84d4bf..4837dca 100644
+--- a/node_modules/react-resizable-panels/dist/react-resizable-panels.edge-light.js
++++ b/node_modules/react-resizable-panels/dist/react-resizable-panels.edge-light.js
+@@ -66,8 +66,11 @@ function PanelWithForwardedRef({
+     reevaluatePanelConstraints,
+     registerPanel,
+     resizePanel,
++    subscribeToLayout,
+     unregisterPanel
+   } = context;
++  // NEO patch: re-render on layout and drag changes (the group's context no longer changes).
++  const [, onLayoutChange] = useState(0);
+   const panelId = useUniqueId(idFromProps);
+   const panelDataRef = useRef({
+     callbacks: {
+@@ -1685,10 +1688,30 @@ function PanelGroupWithForwardedRef({
+   }, []);
+ 
+   // This API should never read from committedValuesRef
++  // NEO patch: the context value stays the same object when the layout or drag state
++  // changes (a new value makes React client-render every Suspense boundary under the group
++  // that is still hydrating). Panels re-render through subscribeToLayout instead.
++  const styleValuesRef = useRef({
++    dragState,
++    layout
++  });
++  styleValuesRef.current.dragState = dragState;
++  styleValuesRef.current.layout = layout;
++  const layoutListenersRef = useRef(new Set());
++  const subscribeToLayout = useCallback(listener => {
++    layoutListenersRef.current.add(listener);
++    return () => {
++      layoutListenersRef.current.delete(listener);
++    };
++  }, []);
+   const getPanelStyle = useCallback((panelData, defaultSize) => {
+     const {
+       panelDataArray
+     } = eagerValuesRef.current;
++    const {
++      dragState,
++      layout
++    } = styleValuesRef.current;
+     const panelIndex = findPanelDataIndex(panelDataArray, panelData);
+     return computePanelFlexBoxStyle({
+       defaultSize,
+@@ -1697,7 +1720,7 @@ function PanelGroupWithForwardedRef({
+       panelData: panelDataArray,
+       panelIndex
+     });
+-  }, [dragState, layout]);
++  }, []);
+ 
+   // External APIs are safe to memoize via committed values ref
+   const isPanelCollapsed = useCallback(panelData => {
+@@ -1938,7 +1961,6 @@ function PanelGroupWithForwardedRef({
+   const context = useMemo(() => ({
+     collapsePanel,
+     direction,
+-    dragState,
+     expandPanel,
+     getPanelSize,
+     getPanelStyle,
+@@ -1951,9 +1973,10 @@ function PanelGroupWithForwardedRef({
+     resizePanel,
+     startDragging,
+     stopDragging,
++    subscribeToLayout,
+     unregisterPanel,
+     panelGroupElement: panelGroupElementRef.current
+-  }), [collapsePanel, dragState, direction, expandPanel, getPanelSize, getPanelStyle, groupId, isPanelCollapsed, isPanelExpanded, reevaluatePanelConstraints, registerPanel, registerResizeHandle, resizePanel, startDragging, stopDragging, unregisterPanel]);
++  }), [collapsePanel, direction, expandPanel, getPanelSize, getPanelStyle, groupId, isPanelCollapsed, isPanelExpanded, reevaluatePanelConstraints, registerPanel, registerResizeHandle, resizePanel, startDragging, stopDragging, subscribeToLayout, unregisterPanel]);
+   const style = {
+     display: "flex",
+     flexDirection: direction === "horizontal" ? "row" : "column",
+diff --git a/node_modules/react-resizable-panels/dist/react-resizable-panels.js b/node_modules/react-resizable-panels/dist/react-resizable-panels.js
+index e572ddf..031826c 100644
+--- a/node_modules/react-resizable-panels/dist/react-resizable-panels.js
++++ b/node_modules/react-resizable-panels/dist/react-resizable-panels.js
+@@ -70,8 +70,12 @@ function PanelWithForwardedRef({
+     reevaluatePanelConstraints,
+     registerPanel,
+     resizePanel,
++    subscribeToLayout,
+     unregisterPanel
+   } = context;
++  // NEO patch: re-render on layout and drag changes (the group's context no longer changes).
++  const [, onLayoutChange] = useState(0);
++  useIsomorphicLayoutEffect(() => subscribeToLayout(() => onLayoutChange(n => n + 1)), [subscribeToLayout]);
+   const panelId = useUniqueId(idFromProps);
+   const panelDataRef = useRef({
+     callbacks: {
+@@ -1850,10 +1854,33 @@ function PanelGroupWithForwardedRef({
+   }, []);
+ 
+   // This API should never read from committedValuesRef
++  // NEO patch: the context value stays the same object when the layout or drag state
++  // changes (a new value makes React client-render every Suspense boundary under the group
++  // that is still hydrating). Panels re-render through subscribeToLayout instead.
++  const styleValuesRef = useRef({
++    dragState,
++    layout
++  });
++  styleValuesRef.current.dragState = dragState;
++  styleValuesRef.current.layout = layout;
++  const layoutListenersRef = useRef(new Set());
++  const subscribeToLayout = useCallback(listener => {
++    layoutListenersRef.current.add(listener);
++    return () => {
++      layoutListenersRef.current.delete(listener);
++    };
++  }, []);
++  useIsomorphicLayoutEffect(() => {
++    layoutListenersRef.current.forEach(listener => listener());
++  }, [dragState, layout]);
+   const getPanelStyle = useCallback((panelData, defaultSize) => {
+     const {
+       panelDataArray
+     } = eagerValuesRef.current;
++    const {
++      dragState,
++      layout
++    } = styleValuesRef.current;
+     const panelIndex = findPanelDataIndex(panelDataArray, panelData);
+     return computePanelFlexBoxStyle({
+       defaultSize,
+@@ -1862,7 +1889,7 @@ function PanelGroupWithForwardedRef({
+       panelData: panelDataArray,
+       panelIndex
+     });
+-  }, [dragState, layout]);
++  }, []);
+ 
+   // External APIs are safe to memoize via committed values ref
+   const isPanelCollapsed = useCallback(panelData => {
+@@ -2159,7 +2186,6 @@ function PanelGroupWithForwardedRef({
+   const context = useMemo(() => ({
+     collapsePanel,
+     direction,
+-    dragState,
+     expandPanel,
+     getPanelSize,
+     getPanelStyle,
+@@ -2172,9 +2198,10 @@ function PanelGroupWithForwardedRef({
+     resizePanel,
+     startDragging,
+     stopDragging,
++    subscribeToLayout,
+     unregisterPanel,
+     panelGroupElement: panelGroupElementRef.current
+-  }), [collapsePanel, dragState, direction, expandPanel, getPanelSize, getPanelStyle, groupId, isPanelCollapsed, isPanelExpanded, reevaluatePanelConstraints, registerPanel, registerResizeHandle, resizePanel, startDragging, stopDragging, unregisterPanel]);
++  }), [collapsePanel, direction, expandPanel, getPanelSize, getPanelStyle, groupId, isPanelCollapsed, isPanelExpanded, reevaluatePanelConstraints, registerPanel, registerResizeHandle, resizePanel, startDragging, stopDragging, subscribeToLayout, unregisterPanel]);
+   const style = {
+     display: "flex",
+     flexDirection: direction === "horizontal" ? "row" : "column",
