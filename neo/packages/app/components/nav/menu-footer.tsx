@@ -2,7 +2,7 @@ import { View } from 'app/design/view'
 import { Platform } from 'react-native'
 import { appSetting, cn, menuItemsByName, menuItemsByNameNew } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
-import { useMemo, memo, type ComponentProps, type ReactNode } from 'react';
+import { useMemo, memo, type ReactNode } from 'react';
 import { NeoButtonLink } from 'app/design/controls'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
@@ -128,9 +128,9 @@ const resolveFooterLang = (langs: string[], lang?: string | null, langCode?: str
 
 const menuFooterSkeletonWidths = ['w-12', 'w-12', 'w-12', 'w-12', 'w-12'];
 
-function MenuFooterSkeleton({ cntClasses, children, role }: Readonly<{ cntClasses: string; children?: ReactNode; role: ComponentProps<typeof View>['role'] }>) {
+function MenuFooterSkeleton({ cntClasses, children }: Readonly<{ cntClasses: string; children?: ReactNode }>) {
     return (
-        <View className={cntClasses} role={role}>
+        <View className={cntClasses}>
             <View className={FOOTER_LINKS_CLASSES}>
                 {/* 20px + 2 × 4px: the 28px row of a `mini` link, so the footer keeps its height when the links arrive.
                     No side margin: the section's gap spaces the links too. */}
@@ -450,7 +450,7 @@ function MenuFooterComponent({
 
     if (usesRemoteFooter && (!hydrated || isLoading || !isFetched)) {
         return (
-            <MenuFooterSkeleton cntClasses={cntClasses} role="contentinfo">
+            <MenuFooterSkeleton cntClasses={cntClasses}>
                 <FooterSwitchers {...switchers} visualProps={visualProps} />
             </MenuFooterSkeleton>
         );
@@ -462,8 +462,11 @@ function MenuFooterComponent({
     const badges = menu_launcher_items.filter(isSvgBadge);
     const links = badges.length ? menu_launcher_items.filter((item) => !isSvgBadge(item)) : menu_launcher_items;
 
+    // No `contentinfo` role: every layout draws the page footer inside `<main>`, and the
+    // account menu draws this footer too; a contentinfo landmark inside another landmark
+    // is announced in the wrong place (axe landmark-contentinfo-is-top-level).
     return (
-        <View className={cntClasses} role="contentinfo">
+        <View className={cntClasses}>
             <FooterLinks links={links} visualProps={visualProps} />
             <FooterTools switchers={switchers} badges={badges} visualProps={visualProps} />
         </View>

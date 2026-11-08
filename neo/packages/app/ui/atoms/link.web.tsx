@@ -108,6 +108,8 @@ export default function ElementLink({
     if (emulate === true){
         return (
             <Pressable
+                // It opens a page, so it is a link to assistive technology too, not a button.
+                role={href ? 'link' : undefined}
                 {...rest}
                 className={mode === 'plain' ? className : composedClassName}
                 onPress={handlePress}

@@ -14,6 +14,9 @@ const SUBMENU_MAP = {
     'bx_timeline_menu_item_share': SubmenuShare,
 };
 
+/** The item itself is pressable (a dropdown row, a no-action link, an onclick). */
+const onPressProvided = (oProps) => !!(oProps.onPress || oProps.params?.onclick);
+
 export default function MenuItemButton(oProps) {
     const { showVertical, isTextMode, isDropdown } = getMenuItemFlags(oProps);
 
@@ -40,10 +43,14 @@ export default function MenuItemButton(oProps) {
 
     const sButtonIcon = resolveMenuItemIcon(oProps, { emptyListIcon: 'Users' });
     const hasList = oProps?.list?.length > 0;
+    const formattedLink = oProps.link && !oProps.noAction ? formatMenuHref(oProps.link) : null;
     const listDisplay = hasList ? (
         <View className={oProps.params?.list_className || ''}>
             <ProfilesList
                 data={oProps.list}
+                // The item links to the whole list (friends, followers): avatars that
+                // were links of their own would be controls inside that control.
+                showLinks={!formattedLink && !onPressProvided(oProps)}
                 showEmpty={false}
                 maxCount={oProps.params?.list_max_count || 3}
                 displaySize={oProps.params?.list_display_size || 'sm'}
@@ -51,7 +58,6 @@ export default function MenuItemButton(oProps) {
         </View>
     ) : null;
 
-    const formattedLink = oProps.link && !oProps.noAction ? formatMenuHref(oProps.link) : null;
     const href = isDropdown ? null : formattedLink;
     const onPress = isDropdown
         ? oProps.onPress
