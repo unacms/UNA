@@ -15,7 +15,9 @@ class BxDolDesignsLogoSizeTest extends BxDolTestCase
 
     protected function file(string $sExt, string $sContent): string
     {
-        $sFile = tempnam(sys_get_temp_dir(), 'bxlogo') . '.' . $sExt;
+        $sTemp = tempnam(sys_get_temp_dir(), 'bxlogo');
+        $sFile = $sTemp . '.' . $sExt;
+        rename($sTemp, $sFile);
         file_put_contents($sFile, $sContent);
         return $this->_aFiles[] = $sFile;
     }
