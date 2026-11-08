@@ -24,7 +24,8 @@ class BxDolGzip extends BxDol
     {
         parent::__construct();
 
-        $this->_iExpirationOffset = 3600 * 24 * 30;
+        // Bundle names change with their content (they hash the file list and the revision), so they never go stale.
+        $this->_iExpirationOffset = 3600 * 24 * 365;
 
         $this->_sInFile = BX_DIRECTORY_PATH_CACHE_PUBLIC . $sFile;
         $this->_sOutFile = BX_DIRECTORY_PATH_CACHE_PUBLIC . $sFile . '.gz';
@@ -62,7 +63,10 @@ class BxDolGzip extends BxDol
     {
         header("Content-type: " . $this->_sType);
         header("Vary: Accept-Encoding");
-        header("Cache-control: max-age=" . $this->_iExpirationOffset . ", public");
+        header("Cache-Control: public, max-age=" . $this->_iExpirationOffset . ", immutable");
+        // With an Expires header of its own, Apache's mod_expires leaves the response alone
+        // instead of adding a second max-age.
+        header("Expires: " . gmdate('D, d M Y H:i:s', time() + $this->_iExpirationOffset) . " GMT");
         // A shared cache must not hand one visitor's session cookie to others.
         header_remove('Set-Cookie');
 
