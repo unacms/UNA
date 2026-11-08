@@ -189,6 +189,11 @@ class LogoSourcesTest extends BxDolIntegrationTestCase
                 return BxDolTemplate::getInstance()->getImageUrl($sName);
             }
 
+            public function getImagePath($sName)
+            {
+                return BxDolTemplate::getInstance()->getImagePath($sName);
+            }
+
             public function parseHtmlByName($sName, $aVars)
             {
                 $this->aVars = $aVars;
@@ -206,7 +211,8 @@ class LogoSourcesTest extends BxDolIntegrationTestCase
         $aImage = $oTemplate->aVars['bx_if:show_logo']['content']['bx_repeat:images'][0];
         $this->assertStringContainsString($sDefault, $aImage['src']);
         $this->assertStringContainsString('height:', $aImage['style'], 'the default SVG is sized by its height');
-        $this->assertStringNotContainsString('width:', $aImage['style']);
+        $this->assertDoesNotMatchRegularExpression('/width:\s*[0-9]/', $aImage['style'], 'its width follows the aspect ratio');
+        $this->assertSame('width="335" height="100"', $aImage['size'], 'width/height attributes reserve the space');
     }
 
     public function testDesignerHasAnOptionForEveryLogoImage(): void
