@@ -10,6 +10,7 @@
 import { useCallback, useMemo, type MouseEvent } from 'react'
 import type { HtmlProps } from './html.types'
 import { useRouter } from 'app/lib/hooks/router'
+import { opensInThisTab } from 'app/lib/navigation/same-tab-click'
 import { sanitazeUrl, isExternalUrl } from 'app/lib/util'
 import emitter, { EVENTS } from 'app/context/emitter'
 import { preprocessHtml, sanitizeHtml, flattenNestedAnchors, normalizeRenderedHref } from 'app/lib/html-helpers'
@@ -40,7 +41,10 @@ export default function ElementHtml({ customClassName, data, className = '', inn
         if (!rawHref) return
 
         // A link opened in another tab leaves this page where it is.
-        emitter.emit(EVENTS.link, { action: 'pressed', href: anchor.target === '_blank' ? undefined : rawHref })
+        const sameTab = opensInThisTab(event, anchor.target)
+        emitter.emit(EVENTS.link, { action: 'pressed', href: sameTab ? rawHref : undefined })
+        // Ctrl/Cmd, Shift and Alt clicks are the browser's (new tab, window, download).
+        if (!sameTab && anchor.target !== '_blank') return
 
         const href = normalizeRenderedHref(rawHref)
         // Bare UNA hrefs (email / domain without a scheme) must not be left to
