@@ -8,7 +8,7 @@ import { Platform } from 'react-native'
 import { useEffect, useCallback, useRef } from 'react'
 import { Loading } from 'app/customization/loading'
 import { getModalPostTitle } from 'app/customization/functions'
-import { appSetting } from 'app/lib/util';
+import { appSetting, isExternalUrl } from 'app/lib/util';
 import { useModal, useCloseModal, useOpenModalByUrl } from 'app/context/jotai/modal';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { confirmDiscardUnsavedFormChanges } from 'app/lib/form/form-helpers';
@@ -36,20 +36,39 @@ const getFeedModalUrlFromHash = () => {
     }
 };
 
+// A pressed link the router opens in this tab (not a hash, mail, phone or another site).
+const isInAppNavigation = (href) =>
+    typeof href === 'string' && href !== '' && !/^(#|mailto:|tel:)/i.test(href) && !isExternalUrl(href);
+
 export default function FormModal({ pageData, setPageData, modalView, url, historyUrl }) {
     const { t } = useTranslation()
     const previousUrlRef = useRef(null);
+    // A link pressed inside the modal closes it while the router navigates.
+    const navigatingRef = useRef(false);
 
     const handleModalClose = useCallback(() => {
         Keyboard.dismiss()
     }, [])
 
     const handleClose = useCallback(() => {
-        if (isWeb && previousUrlRef.current) {
+        // Restoring the URL under a navigation in progress makes Next keep the
+        // restored page and drop the navigation, so only restore it otherwise.
+        if (isWeb && previousUrlRef.current && !navigatingRef.current) {
             window.history.replaceState(null, '', previousUrlRef.current);
         }
         setPageData(false);
     }, [setPageData]);
+
+    useEffect(() => {
+        if (!isWeb || !pageData)
+            return;
+        navigatingRef.current = false;
+        const subscription = emitter.addListener(EVENTS.link, (data) => {
+            if (isInAppNavigation(data?.href))
+                navigatingRef.current = true;
+        });
+        return () => subscription.remove();
+    }, [!!pageData]);
 
     const handleRequestClose = useCallback(() => {
         handleModalClose();
