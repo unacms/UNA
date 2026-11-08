@@ -64,7 +64,7 @@ export default function FormModal({ pageData, setPageData, modalView, url, histo
             return;
         navigatingRef.current = false;
         const subscription = emitter.addListener(EVENTS.link, (data) => {
-            if (isInAppNavigation(data?.href))
+            if (!data?.newTab && isInAppNavigation(data?.href))
                 navigatingRef.current = true;
         });
         return () => subscription.remove();

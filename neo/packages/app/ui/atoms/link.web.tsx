@@ -74,7 +74,11 @@ export default function ElementLink({
     // The click event goes to `onClick` so a handler can `preventDefault()`
     // (Next's Link then skips its own navigation).
     const handleLinkClick = useCallback((event?: any) => {
-        emitter.emit(EVENTS.link, { action: 'pressed', href });
+        // A new tab or window (target, Ctrl/Cmd/Shift-click, middle click) leaves this
+        // tab where it is; a modal around the link restores its URL then (form-modal).
+        const newTab = (!!resolvedTarget && resolvedTarget !== '_self')
+            || !!(event && (event.metaKey || event.ctrlKey || event.shiftKey || event.button === 1));
+        emitter.emit(EVENTS.link, { action: 'pressed', href, newTab });
         onClick?.(event);
 
         // Next changes only the hash with pushState, which nobody hears; set it
