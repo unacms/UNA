@@ -261,6 +261,18 @@ class BxDolMenu extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     }
 
     /**
+     * Whether a guest's copy of this menu may be kept by browsers and shared caches (see
+     * bx_api_cache_response): its items depend on nothing but the viewer's cookies, the language
+     * and the menu's own parameters. A menu that reads a request header (Referer, User-Agent, ...)
+     * returns false.
+     * @return boolean
+     */
+    public function isCacheable()
+    {
+        return true;
+    }
+
+    /**
      * Check if the menu is visible. The menu is visible if at least one menu item is visible.
      * @return boolean
      */

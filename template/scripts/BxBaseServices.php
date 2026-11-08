@@ -34,12 +34,30 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
 
     /**
      * @see BxDolModule::serviceIsCacheableService
+     * A menu is cacheable when its object says so (BxDolMenu::isCacheable): some read request headers.
      */
-    public function serviceIsCacheableService($s)
+    public function serviceIsCacheableService($s, $aParams = [])
     {
         $sService = bx_gen_method_name($s);
         $aServices = $this->serviceGetCacheableServices();
-        return isset($aServices[$sService]);
+        if(!isset($aServices[$sService])) {
+            return false;
+        }
+
+        if($sService != 'GetMenu') {
+            return true;
+        }
+
+        $mixedMenu = is_array($aParams) && isset($aParams[0]) ? $aParams[0] : null;
+        if(is_string($mixedMenu)) {
+            $mixedMenu = bx_api_get_browse_params($mixedMenu);
+        }
+        if(!is_array($mixedMenu) || empty($mixedMenu['object']) || !is_string($mixedMenu['object'])) {
+            return false;
+        }
+
+        $oMenu = BxDolMenu::getObjectInstance($mixedMenu['object']);
+        return $oMenu && $oMenu->isCacheable();
     }
 
     public function serviceGetCacheableServices()

@@ -3220,33 +3220,33 @@ function bx_api_check_access()
 }
 
 /**
- * HTTP caching for an API answer. A GET from a guest to a service that answers every guest the same
- * (the module's `is_cacheable_service`, see BxDolModule::serviceGetCacheableServices) may be kept by
- * browsers and shared caches for a minute, with an ETag; a matching If-None-Match gets 304. Anything
- * else is marked private, so no shared cache keeps it. Nothing is cached once the answer has set a cookie.
+ * HTTP caching for an API answer. A guest's GET to a service that answers every guest the same (the
+ * module's `is_cacheable_service` for these parameters, see BxDolModule::serviceIsCacheableService) may
+ * be kept by browsers and shared caches for a minute, with an ETag; a matching If-None-Match gets 304.
+ * Anything else is marked private, so no shared cache keeps it. See bx_api_is_cacheable_response.
  *
  * @return bool true when a 304 was sent and the body must be left out.
  */
-function bx_api_cache_response($sModule, $sMethod, $sClass, $sBody)
+function bx_api_cache_response($sModule, $sMethod, $aParams, $sBody)
 {
-    if(headers_sent())
+    if(headers_sent()) {
         return false;
-
-    $bCookieSet = false;
-    $bCacheControlSet = false;
-    foreach(headers_list() as $sHeader) {
-        if(stripos($sHeader, 'Set-Cookie:') === 0)
-            $bCookieSet = true;
-        elseif(stripos($sHeader, 'Cache-Control:') === 0)
-            $bCacheControlSet = true;
     }
-    if($bCacheControlSet)
-        return false;
 
-    $bCacheable = !$bCookieSet && !isLogged() && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET';
-    if($bCacheable) {
-        $sServicesClass = 'system' == $sModule ? 'TemplServices' : 'Module';
-        $bCacheable = BxDolRequest::serviceExists($sModule, 'is_cacheable_service', $sServicesClass) && BxDolService::call($sModule, 'is_cacheable_service', [$sMethod, $sClass], $sServicesClass);
+    $bCacheable = bx_api_is_cacheable_response([
+        'http_method' => isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '',
+        'logged' => isLogged(),
+        'lang' => bx_get('lang'),
+        'headers' => headers_list(),
+        'service_cacheable' => function() use ($sModule, $sMethod, $aParams) {
+            $sServicesClass = 'system' == $sModule ? 'TemplServices' : 'Module';
+            return BxDolRequest::serviceExists($sModule, 'is_cacheable_service', $sServicesClass)
+                && BxDolService::call($sModule, 'is_cacheable_service', [$sMethod, $aParams], $sServicesClass);
+        },
+    ]);
+
+    if($bCacheable === null) {
+        return false;
     }
 
     if(!$bCacheable) {
@@ -3254,18 +3254,43 @@ function bx_api_cache_response($sModule, $sMethod, $sClass, $sBody)
         return false;
     }
 
-    $sEtag = '"' . md5($sBody) . '"';
+    $sEtag = '"' . hash('xxh128', $sBody) . '"';
     header('Cache-Control: public, max-age=60, stale-while-revalidate=600');
     header('ETag: ' . $sEtag);
     // A member's request for the same URL (cookies) and another site's (origin) get their own answers.
     header('Vary: Cookie, Origin', false);
 
-    if(!empty($_SERVER['HTTP_IF_NONE_MATCH']) && bx_api_etag_matches($_SERVER['HTTP_IF_NONE_MATCH'], $sEtag)) {
+    $bNotModified = !empty($_SERVER['HTTP_IF_NONE_MATCH']) && bx_api_etag_matches($_SERVER['HTTP_IF_NONE_MATCH'], $sEtag);
+    if($bNotModified) {
         header('HTTP/1.1 304 Not Modified');
-        return true;
+    }
+    return $bNotModified;
+}
+
+/**
+ * Whether an API answer may be cached by shared caches:
+ * - null: leave the headers alone (the service set its own Cache-Control);
+ * - true: a guest's GET with the language in the URL (`lang`, so Accept-Language and the lang cookie
+ *   don't pick it), no cookie set while answering, and a service that says the answer is the same
+ *   for every guest;
+ * - false: anything else.
+ *
+ * @param array $a http_method, logged, lang, headers (headers_list()), service_cacheable (callable, called last)
+ */
+function bx_api_is_cacheable_response($a)
+{
+    $bCookieSet = false;
+    foreach($a['headers'] as $sHeader) {
+        if(stripos($sHeader, 'Cache-Control:') === 0) {
+            return null;
+        }
+        if(stripos($sHeader, 'Set-Cookie:') === 0) {
+            $bCookieSet = true;
+        }
     }
 
-    return false;
+    return !$bCookieSet && !$a['logged'] && $a['http_method'] == 'GET' && is_string($a['lang']) && $a['lang'] !== ''
+        && (bool)call_user_func($a['service_cacheable']);
 }
 
 /**
@@ -3274,13 +3299,15 @@ function bx_api_cache_response($sModule, $sMethod, $sClass, $sBody)
  */
 function bx_api_etag_matches($sIfNoneMatch, $sEtag)
 {
+    $bMatches = false;
     foreach(explode(',', (string)$sIfNoneMatch) as $sTag) {
         $sTag = preg_replace('/^W\//', '', trim($sTag));
         $sTag = preg_replace('/-(gzip|br|deflate)"$/', '"', $sTag);
-        if($sTag === $sEtag || $sTag === '*')
-            return true;
+        if($sTag === $sEtag || $sTag === '*') {
+            $bMatches = true;
+        }
     }
-    return false;
+    return $bMatches;
 }
 
 function bx_api_get_base_url()

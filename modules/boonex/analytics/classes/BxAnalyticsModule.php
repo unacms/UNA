@@ -258,8 +258,23 @@ class BxAnalyticsModule extends BxDolModule
     }
 
     /**
-     * The tracker settings are the same for every viewer of a client platform.
+     * The tracker settings are the same for every viewer of a client platform. Without the platform
+     * parameter the service reads it from the request headers, so only a request that names it can
+     * be cached.
      */
+    public function serviceIsCacheableService($s, $aParams = [])
+    {
+        if(!parent::serviceIsCacheableService($s, $aParams)) {
+            return false;
+        }
+
+        if(bx_gen_method_name($s) == 'GetTrackerConfig') {
+            return is_array($aParams) && isset($aParams[0]) && is_string($aParams[0]) && $aParams[0] !== '';
+        }
+
+        return true;
+    }
+
     public function serviceGetCacheableServices()
     {
         return array_merge(parent::serviceGetCacheableServices(), [

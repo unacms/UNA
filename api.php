@@ -156,5 +156,6 @@ $aRv = [
 ];
 
 $sRv = json_encode($aRv);
-if (!bx_api_cache_response($sModule, $sMethod, $sClass, $sRv))
+if (!bx_api_cache_response($sModule, $sMethod, $aParams, $sRv)) {
     echo $sRv;
+}
