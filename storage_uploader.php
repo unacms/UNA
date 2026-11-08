@@ -9,6 +9,14 @@
 
 require_once('./inc/header.inc.php');
 
+// Ghosts of several uploaders at once: one request for all uploaders of a page, see BxDolUploader.js.
+if ('restore_ghosts_batch' == bx_get('a')) {
+    header('Content-Type: application/json; charset=utf-8');
+    $aItems = bx_get('items');
+    echo json_encode(BxDolUploader::getGhostsForMany(is_array($aItems) ? $aItems : [], (int)bx_get_logged_profile_id()));
+    exit;
+}
+
 $sUploaderObject = bx_process_input(bx_get('uo'));
 $sStorageObject = bx_process_input(bx_get('so'));
 $sUniqId = preg_match("/^[\d\w]+$/", bx_get('uid')) ? bx_get('uid') : '';

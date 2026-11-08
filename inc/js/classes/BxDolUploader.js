@@ -149,64 +149,116 @@ BxDolUploaderBase.prototype.cancelAll = function () {
     this.onUploadCompleted(_t('_sys_uploader_upload_canceled'));
 }
 
+/**
+ * Uploaders on one page restore their ghosts (files uploaded but not saved yet) with one
+ * request: calls made in the same tick are queued and sent together, see storage_uploader.php.
+ */
+BxDolUploaderBase._aGhostsQueue = [];
+
 BxDolUploaderBase.prototype.restoreGhosts = function (bInitReordering, onComplete) {
-    var sUrl = this._getUrlWithStandardParams() + '&img_trans=' + this._sImagesTranscoder + '&a=restore_ghosts&f=json' + '&c=' + this._iContentId + '&m=' + (this._isMultiple ? 1 : 0) + '&l=' + (this._isLatest ? 1 : 0) + '&_t=' + escape(new Date());
     var $this = this;
 
     bInitReordering = bInitReordering !== undefined ? bInitReordering : this._isReordering;
 
-    $.getJSON(sUrl, function (aData) {
-
-        if (!$this.isMultiple())
-            $('#' + $this._sResultContainerId + ' .bx-uploader-ghost').remove();
-
-        if ('object' === typeof(aData)) {
-            if('object' === typeof(aData.g) && 'object' === typeof(aData.o)) 
-                for(var i in aData.o) {
-                    var iFileId = aData.o[i];
-                    $this.showGhost(iFileId, aData.g[iFileId]);
-                }
-            else
-                $.each(aData, function(iFileId, oVars) {
-                    $this.showGhost(iFileId, oVars);
-                });
-
-            $('#' + $this._sResultContainerId).bx_show_more_check_overflow().bxProcessHtml();
-
-            if(bInitReordering) {
-                var sClassGhost = 'bx-uploader-ghost';
-                $('#' + $this._sResultContainerId).find('.' + sClassGhost).each(function() {
-                    if($(this).find('.bx-uploader-ghost-reorder').length == 0)
-                        $(this).find('.bx-base-general-uploader-ghost').prepend($this._sTemplateReorder);
-                });
-
-                var fInitReordering = function() {                    
-                    $('#' + $this._sResultContainerId).sortable({
-                        items: '.' + sClassGhost, 
-                        start: function(oEvent, oUi) {
-                            oUi.item.addClass('bx-uploader-ghost-dragging');
-                        },
-                        stop: function(oEvent, oUi) {
-                            oUi.item.removeClass('bx-uploader-ghost-dragging');
-
-                            $this.reorderGhosts(oUi.item);
-                        }
-                    });
-                };
-
-                if($.sortable !== undefined)
-                    fInitReordering();
-                else
-                    setTimeout(fInitReordering, 2000);
-            }
+    var aQueue = BxDolUploaderBase._aGhostsQueue;
+    aQueue.push({
+        uploader: this,
+        callback: function (aData) {
+            $this._showRestoredGhosts(aData, bInitReordering, onComplete);
         }
-
-        if(typeof onComplete === 'function')
-            onComplete(aData);
-
-        if(typeof this._onRestoreGhosts === 'function')
-            this._onRestoreGhosts($this, aData);
     });
+
+    if (aQueue.length == 1)
+        setTimeout(BxDolUploaderBase._restoreGhostsQueued, 0);
+};
+
+BxDolUploaderBase._restoreGhostsQueued = function () {
+    var aQueue = BxDolUploaderBase._aGhostsQueue.splice(0);
+    if (!aQueue.length)
+        return;
+
+    if (aQueue.length == 1) {
+        var oUploader = aQueue[0].uploader;
+        $.getJSON(oUploader._getUrlWithStandardParams() + '&' + $.param(oUploader._getRestoreGhostsParams()) + '&a=restore_ghosts&f=json&_t=' + escape(new Date()), aQueue[0].callback);
+        return;
+    }
+
+    $.post(sUrlRoot + 'storage_uploader.php?a=restore_ghosts_batch&f=json', {
+        items: $.map(aQueue, function (oItem) {
+            return $.extend({
+                uo: oItem.uploader._sUploaderObject,
+                so: oItem.uploader._sStorageObject,
+                uid: oItem.uploader._sUniqId
+            }, oItem.uploader._getRestoreGhostsParams());
+        })
+    }, function (aData) {
+        $.each(aQueue, function (i, oItem) {
+            oItem.callback(aData && aData[i] !== undefined ? aData[i] : []);
+        });
+    }, 'json');
+};
+
+BxDolUploaderBase.prototype._getRestoreGhostsParams = function () {
+    return {
+        img_trans: String(this._sImagesTranscoder),
+        c: String(this._iContentId),
+        m: this._isMultiple ? 1 : 0,
+        l: this._isLatest ? 1 : 0
+    };
+};
+
+BxDolUploaderBase.prototype._showRestoredGhosts = function (aData, bInitReordering, onComplete) {
+    var $this = this;
+
+    if (!$this.isMultiple())
+        $('#' + $this._sResultContainerId + ' .bx-uploader-ghost').remove();
+
+    if ('object' === typeof(aData)) {
+        if('object' === typeof(aData.g) && 'object' === typeof(aData.o)) 
+            for(var i in aData.o) {
+                var iFileId = aData.o[i];
+                $this.showGhost(iFileId, aData.g[iFileId]);
+            }
+        else
+            $.each(aData, function(iFileId, oVars) {
+                $this.showGhost(iFileId, oVars);
+            });
+
+        $('#' + $this._sResultContainerId).bx_show_more_check_overflow().bxProcessHtml();
+
+        if(bInitReordering) {
+            var sClassGhost = 'bx-uploader-ghost';
+            $('#' + $this._sResultContainerId).find('.' + sClassGhost).each(function() {
+                if($(this).find('.bx-uploader-ghost-reorder').length == 0)
+                    $(this).find('.bx-base-general-uploader-ghost').prepend($this._sTemplateReorder);
+            });
+
+            var fInitReordering = function() {                    
+                $('#' + $this._sResultContainerId).sortable({
+                    items: '.' + sClassGhost, 
+                    start: function(oEvent, oUi) {
+                        oUi.item.addClass('bx-uploader-ghost-dragging');
+                    },
+                    stop: function(oEvent, oUi) {
+                        oUi.item.removeClass('bx-uploader-ghost-dragging');
+
+                        $this.reorderGhosts(oUi.item);
+                    }
+                });
+            };
+
+            if($.sortable !== undefined)
+                fInitReordering();
+            else
+                setTimeout(fInitReordering, 2000);
+        }
+    }
+
+    if(typeof onComplete === 'function')
+        onComplete(aData);
+
+    if(typeof $this._onRestoreGhosts === 'function')
+        $this._onRestoreGhosts($this, aData);
 };
 
 BxDolUploaderBase.prototype.reorderGhosts = function(oDraggable) {

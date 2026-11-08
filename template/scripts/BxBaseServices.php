@@ -794,10 +794,12 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         }
 
     	$sJsObject = 'oBxDolCreatePost';
+        $aDefaultModule = $oDbModules->getModuleByName($sDefault);
         $sJsContent = $oTemplate->_wrapInTagJsCode("var " . $sJsObject . " = new BxDolCreatePost(" . json_encode([
             'sObjName' => $sJsObject,
             'sRootUrl' => BX_DOL_URL_ROOT,
             'sDefault' => $sDefault,
+            'sDefaultUri' => !empty($aDefaultModule['uri']) ? $aDefaultModule['uri'] : '',
             'iContextId' => $bContext ? $mixedContextId : 0,
             'oPreloadingList' => $aPreloadingList,
             'oCustom' => $aCustom
@@ -805,16 +807,15 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
 
     	return [
             'title' => $sTitle,
+            /*
+             * The form itself (editor, uploaders and their scripts) isn't rendered here:
+             * BxDolCreatePost.js loads it when the member hovers, focuses or opens the composer.
+             */
             'content' => $oTemplate->parseHtmlByName('create_post_form.html', [
                 'default' => $sDefault,
+                'default_uri' => !empty($aDefaultModule['uri']) ? $aDefaultModule['uri'] : '',
                 'placeholder' => $sPlaceholder,
                 'user_thumb' => $oProfile->getUnit(0, ['template' => 'unit_wo_info_links']),
-                'form' => bx_srv($sDefault, 'get_create_post_form', [[
-                    'context_id' => $mixedContextId, 
-                    'ajax_mode' => true, 
-                    'absolute_action_url' => true, 
-                    'custom' => $aCustom
-                ]]),
                 'js_object' => $sJsObject,
                 'js_content' => $sJsContent
             ]),

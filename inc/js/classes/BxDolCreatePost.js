@@ -10,6 +10,7 @@ function BxDolCreatePost(oOptions) {
     this._sObjName = oOptions.sObjName == undefined ? 'oBxDolCreatePost' : oOptions.sObjName;
     this._sRootUrl = oOptions.sRootUrl == undefined ? sUrlRoot : oOptions.sRootUrl;
     this._sDefault = oOptions.sDefault == undefined ? '' : oOptions.sDefault;
+    this._sDefaultUri = oOptions.sDefaultUri == undefined ? '' : oOptions.sDefaultUri;
     this._iContextId = oOptions.iContextId == undefined ? 0 : oOptions.iContextId;
     this._oPreloadingList = oOptions.oPreloadingList == undefined ? [] : oOptions.oPreloadingList;
     this._oCustom = oOptions.oCustom == undefined ? {} : oOptions.oCustom;
@@ -26,31 +27,69 @@ function BxDolCreatePost(oOptions) {
 }
 
 BxDolCreatePost.prototype.init = function () {
-    var oDate = new Date();
+    var $this = this;
+
+    this._oRequests = {};
+
+    // The form, its editor and uploaders are loaded on demand: when the member is about
+    // to use the composer (pointer over it, focus, touch), and at the latest on click.
+    $('.sys-cpf-form.sys-cpf-default').on('pointerenter focusin touchstart', function() {
+        $this._loadForm($this._sDefault);
+    }).on('keydown', function(oEvent) {
+        if(oEvent.key != 'Enter' && oEvent.key != ' ')
+            return;
+
+        oEvent.preventDefault();
+        $(this).trigger('click');
+    });
 
     for(var sKey in this._oPreloadingList) {
         var sForm = '.sys-cpf-form.sys-cpf-' + sKey;
-        if($(sForm).length != 0)
+        if($(sForm).find('form').length != 0)
             continue;
 
-        $.get(
-            this._sRootUrl + 'modules/?r=' + this._oPreloadingList[sKey] + '/get_create_post_form/', {
-                ajax_mode: true,
-                dynamic_mode: true,
-                absolute_action_url: true,
-                context_id: this._iContextId,
-                custom: this._oCustom,
-                _t:oDate.getTime()
-            },
-            function(oData) {
-                if(!oData || !oData.content) 
-                    return;
+        this._loadForm(sKey, this._oPreloadingList[sKey]).done(function(oData) {
+            if(!oData || !oData.content || $('.sys-cpf-form.sys-cpf-' + oData.module).length != 0) 
+                return;
 
-                $('.sys-cpf-close').before($('<div class="sys-cpf-form sys-cpf-' + oData.module + '">' + oData.content + '</div>').hide());
-            }, 
-            'json'
-        );
+            var oForm = $('<div class="sys-cpf-form sys-cpf-' + oData.module + '"></div>').hide();
+            $('.sys-cpf-close').before(oForm);
+            bx_html_async(oForm, oData.content);
+        });
     }
+};
+
+/**
+ * Request the form of a module once; later calls get the same request.
+ */
+BxDolCreatePost.prototype._loadForm = function (sModuleName, sModuleUri) {
+    if(this._oRequests[sModuleName])
+        return this._oRequests[sModuleName];
+
+    if(!sModuleUri)
+        sModuleUri = sModuleName == this._sDefault ? this._sDefaultUri : '';
+    if(!sModuleUri)
+        return $.Deferred().reject().promise();
+
+    var $this = this;
+    var oRequest = $.get(
+        this._sRootUrl + 'modules/?r=' + sModuleUri + '/get_create_post_form/', {
+            ajax_mode: true,
+            dynamic_mode: true,
+            absolute_action_url: true,
+            context_id: this._iContextId,
+            custom: this._oCustom,
+            _t: (new Date()).getTime()
+        },
+        null,
+        'json'
+    ).fail(function() {
+        // let the next attempt ask again
+        delete $this._oRequests[sModuleName];
+    });
+
+    this._oRequests[sModuleName] = oRequest;
+    return oRequest;
 };
 
 BxDolCreatePost.prototype.getForm = function (sModuleName, sModuleUri, oElement) {
@@ -68,33 +107,33 @@ BxDolCreatePost.prototype.getForm = function (sModuleName, sModuleUri, oElement)
             $('.sys-cpf-close:visible').hide();
 
             if(!$('.sys-cpf-form.sys-cpf-' + sModuleName + ' form').length) {
-                var oDate = new Date();
-
                 $this._placeholderInBlock(oElement, true);
 
-                $.get(
-                    $this._sRootUrl + 'modules/?r=' + sModuleUri + '/get_create_post_form/', {
-                        ajax_mode: true,
-                        dynamic_mode: true,
-                        absolute_action_url: true,
-                        context_id: $this._iContextId,
-                        custom: $this._oCustom,
-                        _t: oDate.getTime()
-                    },
-                    function(oData) {
+                $this._loadForm(sModuleName, sModuleUri).done(function(oData) {
+                    if(!oData || !oData.content) {
                         $this._placeholderInBlock(oElement, false);
+                        return;
+                    }
 
-                        if(!oData || !oData.content) 
-                            return;
+                    var sForm = '.sys-cpf-form.sys-cpf-' + oData.module;
+                    if($(sForm).length == 0)
+                        $('.sys-cpf-close').before($('<div class="sys-cpf-form sys-cpf-' + oData.module + '"></div>').hide());
 
-                        var sForm = '.sys-cpf-form.sys-cpf-' + oData.module;
-                        if($(sForm).length == 0)
-                            $('.sys-cpf-close').before($('<div class="sys-cpf-form sys-cpf-' + oData.module + '"></div>').hide());
+                    if($(sForm).find('form').length) {
+                        $this._placeholderInBlock(oElement, false);
+                        $(sForm).show().bxProcessHtml().siblings('.sys-cpf-close:hidden').show();
+                        return;
+                    }
 
-                        $(sForm).html(oData.content).show().bxProcessHtml().siblings('.sys-cpf-close:hidden').show();
-                    }, 
-                    'json'
-                );
+                    bx_html_async($(sForm), oData.content, function() {
+                        $this._placeholderInBlock(oElement, false);
+                        $(this).show().bxProcessHtml().siblings('.sys-cpf-close:hidden').show();
+                        $(this).find('form :input:visible:first').trigger('focus');
+                    });
+                }).fail(function() {
+                    $this._placeholderInBlock(oElement, false);
+                    $('.sys-cpf-form.sys-cpf-default').show();
+                });
             }
             else 
                 $('.sys-cpf-form.sys-cpf-' + sModuleName).show().bxProcessHtml().siblings('.sys-cpf-close:hidden').show();
