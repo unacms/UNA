@@ -70,24 +70,27 @@ function withTasksListLink(value, href, label) {
 }
 
 function ReadonlyValue({ href, label, children }) {
-    const props = {
-        ...EDITABLE_VALUE_BUTTON,
-        ...(label != null ? { label } : {}),
-    }
     if (href) {
+        const props = {
+            ...EDITABLE_VALUE_BUTTON,
+            ...(label != null ? { label } : {}),
+        }
         return (
             <NeoButtonLink {...props} href={href} target="_blank">
                 {children}
             </NeoButtonLink>
         )
     }
-    if (label != null) {
-        return <NeoButton {...props} disabled />
-    }
+    // A value nobody can change is text, lined up with the editable values'
+    // buttons (small borderless: 36px high, 12px padding). A disabled button
+    // here was dimmed to half opacity, under AA contrast, and announced as a
+    // control that does nothing.
     return (
-        <NeoButton {...props} disabled>
-            {children}
-        </NeoButton>
+        <View className="min-h-9 px-3 justify-center self-start max-w-full min-w-0">
+            {label != null ? (
+                <Text className="text-sm font-semibold tracking-tight text-secondary-foreground">{label}</Text>
+            ) : children}
+        </View>
     )
 }
 

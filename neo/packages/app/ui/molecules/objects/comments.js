@@ -105,6 +105,8 @@ export default function ElementComments(props) {
         : null;
 
     const actionButton = useMemo(() => {
+        // A counter shows only the number; its name says what is counted ("Comment: 2").
+        const counterName = (value) => (title ? `${title}: ${value}` : undefined);
         const actionLabel = showCounter
             ? count > 0
                 ? count
@@ -144,6 +146,7 @@ export default function ElementComments(props) {
                     key="action"
                     startDecorator={iconName}
                     title={count}
+                    accessibilityLabel={counterName(count)}
                     onPress={!isDisabled ? handlePress : undefined}
                     disabled={isDisabled}
                     {...buttonProps}
@@ -169,6 +172,7 @@ export default function ElementComments(props) {
                 key="action"
                 startDecorator={iconName}
                 title={showLabel ? (count > 0 ? count : title) : false}
+                accessibilityLabel={count > 0 ? counterName(count) : undefined}
                 onPress={!isDisabled ? handlePress : undefined}
                 disabled={isDisabled}
                 {...buttonProps}

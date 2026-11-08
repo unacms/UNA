@@ -616,6 +616,25 @@ export default function DropdownPopup({
         );
     }
 
+    // A hover card on web opens on hover (HoverCard's own handlers) around content that
+    // is usually a link (a profile's name or avatar). A button around that link would
+    // nest one control in another, and screen readers announce only the outer one;
+    // the card only previews the page the link opens.
+    if (!buttonTrigger && hoverMode && isWeb) {
+        buttonTrigger = (
+            <DropdownMenuOpenContext.Provider value={isRealOpen}>
+                <View
+                    collapsable={false}
+                    ref={buttonRef}
+                    style={triggerStyle}
+                    className={triggerClassName}
+                >
+                    {trigger}
+                </View>
+            </DropdownMenuOpenContext.Provider>
+        );
+    }
+
     return (
         <>
             {buttonTrigger ?? (

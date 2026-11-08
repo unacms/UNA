@@ -110,6 +110,15 @@ function sanitizeWebTextProps(props: Record<string, any>) {
 // Headings are headings to screen readers on native too (web renders h1-h6); a caller's role wins.
 const NATIVE_HEADING = { accessibilityRole: 'header' } as const;
 
+/**
+ * Makes a `Text` a heading of `level` without the H1-H6 type scale, for a title styled by
+ * its own classes (the profile name on a cover, a sidebar title): `<Text {...headingProps(1)}>`.
+ * Web: `role="heading"` with `aria-level`; native: the header role (native has no levels).
+ */
+export function headingProps(level: 1 | 2 | 3 | 4 | 5 | 6): TextProps {
+    return (isWeb ? { role: 'heading', 'aria-level': level } : NATIVE_HEADING) as TextProps;
+}
+
 const getSpacing = (top: string, bottom: string, isfirst: HeadingProps['isfirst'], islast: HeadingProps['islast']) => {
     if (isfirst === undefined && islast === undefined) {
         return `${top} ${bottom}`

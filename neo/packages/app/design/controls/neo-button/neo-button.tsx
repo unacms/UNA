@@ -130,6 +130,8 @@ const getAccessibleName = (accessibilityLabel: string | undefined, tooltip: unkn
     if (accessibilityLabel) return accessibilityLabel;
     if (tooltip && typeof tooltip === 'string') return tooltip;
     if (label && typeof label === 'string') return label;
+    // A counter (`label={2}`) is named by its number, not by its icon.
+    if (typeof label === 'number') return String(label);
     if (typeof image === 'string') {
         if (ICON_ACCESSIBLE_MAP[image]) return ICON_ACCESSIBLE_MAP[image];
         return image.replace(/([A-Z])/g, ' $1').trim();
@@ -667,7 +669,10 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
                 expanded: !!rest['aria-expanded'],
             });
     const soundAttributes = isWeb && isActive && !loading ? cueAttributes(pressCue) : {};
-    const buttonAttributes = isPressable
+    // A disabled button whose action was taken away (a guest's Comment) is still a
+    // button: it says so and that it's disabled, which is also what exempts its
+    // dimmed label from the contrast minimum (WCAG 1.4.3, inactive components).
+    const buttonAttributes = isPressable || disabled
         ? {
               ...(accessibleName ? { 'aria-label': accessibleName, alt: accessibleName } : {}),
               role: accessibilityRole || 'button',
