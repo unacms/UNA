@@ -11,17 +11,18 @@ const MENTION_TAG_RE = /<mention\b([^>]*)>([\s\S]*?)<\/mention>/gi
 const UNA_LINK_RE = /<a\b([^>]*?\bclass="[^"]*\b(?:bx-mention-link|bx-tag-link|bx-tag)(?![\w-])[^"]*"[^>]*?)>([\s\S]*?)<\/a>/gi
 
 function attr(attrs, name) {
-    const m = attrs.match(new RegExp(`(?:^|\\s)${name}\\s*=\\s*"([^"]*)"`, 'i'))
+    const m = attrs.match(new RegExp(String.raw`(?:^|\s)${name}\s*=\s*"([^"]*)"`, 'i'))
     return m ? m[1] : ''
 }
 
 // Text of a link's inner HTML without tags (UNA renders hashtags as <s>#</s><b>word</b>).
 function innerText(inner) {
-    return inner.replace(/<[^>]*>/g, '').trim()
+    // [^<>] keeps each scan to one tag, so stray "<" can't make it quadratic.
+    return inner.replace(/<[^<>]*>/g, '').trim()
 }
 
 function quoteAttr(s) {
-    return String(s).replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    return String(s).replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
 }
 
 function isTagLink(attrs) {
