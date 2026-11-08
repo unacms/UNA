@@ -20,6 +20,9 @@ function BxDolCreatePost(oOptions) {
 
     this._aHtmlIds = oOptions.aHtmlIds == undefined ? {} : oOptions.aHtmlIds;
 
+    // set here, not in init: init waits for document ready, and a click can come first
+    this._oRequests = {};
+
     var $this = this;
     $(document).ready(function() {
         $this.init();
@@ -28,8 +31,6 @@ function BxDolCreatePost(oOptions) {
 
 BxDolCreatePost.prototype.init = function () {
     var $this = this;
-
-    this._oRequests = {};
 
     // The form, its editor and uploaders are loaded on demand: when the member is about
     // to use the composer (pointer over it, focus, touch), and at the latest on click.
