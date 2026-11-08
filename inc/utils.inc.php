@@ -3219,6 +3219,70 @@ function bx_api_check_access()
     // check_logged();
 }
 
+/**
+ * HTTP caching for an API answer. A GET from a guest to a service that answers every guest the same
+ * (the module's `is_cacheable_service`, see BxDolModule::serviceGetCacheableServices) may be kept by
+ * browsers and shared caches for a minute, with an ETag; a matching If-None-Match gets 304. Anything
+ * else is marked private, so no shared cache keeps it. Nothing is cached once the answer has set a cookie.
+ *
+ * @return bool true when a 304 was sent and the body must be left out.
+ */
+function bx_api_cache_response($sModule, $sMethod, $sClass, $sBody)
+{
+    if(headers_sent())
+        return false;
+
+    $bCookieSet = false;
+    $bCacheControlSet = false;
+    foreach(headers_list() as $sHeader) {
+        if(stripos($sHeader, 'Set-Cookie:') === 0)
+            $bCookieSet = true;
+        elseif(stripos($sHeader, 'Cache-Control:') === 0)
+            $bCacheControlSet = true;
+    }
+    if($bCacheControlSet)
+        return false;
+
+    $bCacheable = !$bCookieSet && !isLogged() && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET';
+    if($bCacheable) {
+        $sServicesClass = 'system' == $sModule ? 'TemplServices' : 'Module';
+        $bCacheable = BxDolRequest::serviceExists($sModule, 'is_cacheable_service', $sServicesClass) && BxDolService::call($sModule, 'is_cacheable_service', [$sMethod, $sClass], $sServicesClass);
+    }
+
+    if(!$bCacheable) {
+        header('Cache-Control: private, no-cache');
+        return false;
+    }
+
+    $sEtag = '"' . md5($sBody) . '"';
+    header('Cache-Control: public, max-age=60, stale-while-revalidate=600');
+    header('ETag: ' . $sEtag);
+    // A member's request for the same URL (cookies) and another site's (origin) get their own answers.
+    header('Vary: Cookie, Origin', false);
+
+    if(!empty($_SERVER['HTTP_IF_NONE_MATCH']) && bx_api_etag_matches($_SERVER['HTTP_IF_NONE_MATCH'], $sEtag)) {
+        header('HTTP/1.1 304 Not Modified');
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Whether an If-None-Match header names the ETag. Weak tags count, and so does the suffix Apache's
+ * mod_deflate adds to the ETag of a compressed answer (-gzip, -br).
+ */
+function bx_api_etag_matches($sIfNoneMatch, $sEtag)
+{
+    foreach(explode(',', (string)$sIfNoneMatch) as $sTag) {
+        $sTag = preg_replace('/^W\//', '', trim($sTag));
+        $sTag = preg_replace('/-(gzip|br|deflate)"$/', '"', $sTag);
+        if($sTag === $sEtag || $sTag === '*')
+            return true;
+    }
+    return false;
+}
+
 function bx_api_get_base_url()
 {
     if(($sResult = getParam('sys_api_url_root_email')) != '')

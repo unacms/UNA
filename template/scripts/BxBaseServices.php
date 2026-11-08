@@ -32,6 +32,23 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         );
     }
 
+    /**
+     * @see BxDolModule::serviceIsCacheableService
+     */
+    public function serviceIsCacheableService($s)
+    {
+        $sService = bx_gen_method_name($s);
+        $aServices = $this->serviceGetCacheableServices();
+        return isset($aServices[$sService]);
+    }
+
+    public function serviceGetCacheableServices()
+    {
+        return array(
+            'GetMenu' => 'BxBaseServices',
+        );
+    }
+
     public function serviceIsSafeService($s)
     {
         $sService = bx_gen_method_name($s);

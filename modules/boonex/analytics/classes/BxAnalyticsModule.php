@@ -258,6 +258,16 @@ class BxAnalyticsModule extends BxDolModule
     }
 
     /**
+     * The tracker settings are the same for every viewer of a client platform.
+     */
+    public function serviceGetCacheableServices()
+    {
+        return array_merge(parent::serviceGetCacheableServices(), [
+            'GetTrackerConfig' => '',
+        ]);
+    }
+
+    /**
      * @page service Service Calls
      * @section bx_analytics Analytics
      * @subsection bx_analytics-tracking Tracking

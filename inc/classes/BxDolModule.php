@@ -223,6 +223,23 @@ class BxDolModule extends BxDol
     {
         return array();
     }
+
+    /**
+     * Whether the API may let browsers and shared caches keep a guest's answer from this service
+     * (see bx_api_cache_response). List only services whose answer depends on nothing but their
+     * parameters and the language: never on the viewer, a cookie, the IP or the time.
+     */
+    public function serviceIsCacheableService($s)
+    {
+        $sService = bx_gen_method_name($s);
+        $aServices = $this->serviceGetCacheableServices();
+        return isset($aServices[$sService]);
+    }
+
+    public function serviceGetCacheableServices()
+    {
+        return array();
+    }
 }
 
 /** @} */
