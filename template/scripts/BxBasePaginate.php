@@ -71,7 +71,7 @@ class BxBasePaginate extends BxDolPaginate
 
             $sName = $aConf['name'];
             $sClassAdd = ' bx-btn-disabled';
-            $sLinkUrl = 'javascript:void(0);';
+            $sLinkUrl = ''; // a disabled button has no href: it isn't a link
             $sLinkClick = '';
             if(($sMethod = bx_gen_method_name($sName)) && $this->{'is' . $sMethod . 'Avail'}()) {
                 $aReplacementLink = $this->{'_getReplacement' . $sMethod}();
@@ -82,7 +82,7 @@ class BxBasePaginate extends BxDolPaginate
             }
 
             $aTmplVarsButtons[$sTmplVar] = $this->_getButton($sName, [
-                'class' => $sClassAdd . $sClassAdd,
+                'class' => $sClassAdd,
                 'href' => $sLinkUrl,
                 'onclick' => $sLinkClick,
             ]);
@@ -183,9 +183,21 @@ class BxBasePaginate extends BxDolPaginate
                 'title' => $this->$sMethodTtl()
             ];
 
+        $aAttrs = [];
+        if(!empty($aParams['href']))
+            $aAttrs['href'] = $aParams['href'];
+        else
+            $aAttrs['aria-disabled'] = 'true';
+
+        // Icon-only buttons are named by their action.
+        if(empty($aTmplVarsTitle) && ($sLabel = $this->_getButtonLabel($sName)) !== '') {
+            $aAttrs['aria-label'] = $sLabel;
+            $aAttrs['title'] = $sLabel;
+        }
+
         return $this->_oTemplate->parseHtmlByName('paginate_btn.html', [
             'class' => 'bx-paginate-btn bx-paginate-btn-' . $sName . (!empty($aParams['class']) ? $aParams['class'] : ''),
-            'href' => !empty($aParams['href']) ? $aParams['href'] : 'javascript:void(0)',
+            'attrs' => bx_convert_array2attrs($aAttrs),
             'onclick' => !empty($aParams['onclick']) ? $aParams['onclick'] : '',
             'bx_if:icon' => [
                 'condition' => $aTmplVarsIcon && is_array($aTmplVarsIcon), 
@@ -196,6 +208,18 @@ class BxBasePaginate extends BxDolPaginate
                 'content' => $aTmplVarsTitle
             ],
         ]);
+    }
+
+    protected function _getButtonLabel($sName)
+    {
+        switch($sName) {
+            case 'prev':
+                return _t('_sys_paginate_prev');
+            case 'next':
+                return _t('_sys_paginate_next');
+        }
+
+        return '';
     }
 
     protected function _getButtonIconPrev()

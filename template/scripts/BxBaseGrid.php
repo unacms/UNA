@@ -830,7 +830,15 @@ class BxBaseGrid extends BxDolGrid
         $sDisabled = ($this->_isCheckboxDisabled($aRow) ? 'disabled="disabled"' : '');
         $sSelected = ($this->_isCheckboxSelected($mixedValue, $sKey, $aField, $aRow) ? 'checked="checked"' : '');
         $sVal = $aRow[$this->_aOptions['field_id']];
-        return '<td ' . $sAttr . '><input type="checkbox" name="'. $this->_sObject . '_check" value="' . $sVal . '" ' . $sDisabled . ' ' . $sSelected . '/></td>';
+        return '<td ' . $sAttr . '><input type="checkbox" name="'. $this->_sObject . '_check" value="' . $sVal . '" aria-label="' . bx_html_attribute($this->_getCheckboxLabel($aRow)) . '" ' . $sDisabled . ' ' . $sSelected . '/></td>';
+    }
+
+    /**
+     * Name of a row's checkbox for screen readers; the row's other cells give its context.
+     */
+    protected function _getCheckboxLabel ($aRow)
+    {
+        return _t('_sys_grid_lbl_select');
     }
 
     protected function _getCellSwitcher ($mixedValue, $sKey, $aField, $aRow)

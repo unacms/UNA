@@ -65,9 +65,17 @@ class BxBaseModGeneralCmtsSearchResult extends BxBaseModGeneralSearchResult
         }
     }
 
+    /**
+     * Comments are list items: the list goes inside the results container, around the comments only.
+     */
+    protected function wrapSearchUnits ($sUnits)
+    {
+        return '<ul class="cmts">' . $sUnits . '</ul>';
+    }
+
     function displayResultBlock ()
     {
-        $sCode = '<ul class="cmts">' . parent::displayResultBlock() . '</ul>';
+        $sCode = parent::displayResultBlock();
 
         if(!empty($this->aCommentsAddons) && is_array($this->aCommentsAddons))
             foreach($this->aCommentsAddons as $sCommentsAddon)

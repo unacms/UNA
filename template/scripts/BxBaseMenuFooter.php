@@ -144,14 +144,16 @@ class BxBaseMenuFooter extends BxTemplMenu
     }
 
     /**
-     * As in the apps' footer: the language in use by its code ("EN"), named in full ("Language: English");
+     * As in the apps' footer: the language in use by its code ("EN"), named by the code and in full ("EN, Language: English");
      * its menu opens above it and marks the current one.
      */
     protected function _getLanguageItem ($a)
     {
         $sLanguage = BxDolLanguages::getInstance()->getCurrentLangName();
         $aLanguages = BxDolLanguagesQuery::getInstance()->getLanguages(false, true);
-        $sLabel = bx_html_attribute(_t('_sys_menu_item_title_switch_language_current', $aLanguages[$sLanguage] ?? $sLanguage));
+        $sLabel = _t('_sys_menu_item_title_switch_language_current', $aLanguages[$sLanguage] ?? $sLanguage);
+        // The name starts with the code it shows, so speech users can say what they see (WCAG 2.5.3 Label in Name).
+        $sName = mb_strtoupper($sLanguage) . ', ' . $sLabel;
         $sTitle = $this->_oTemplate->parseHtmlByName('menu_footer_language.html', [
             'code' => bx_process_output($sLanguage)
         ]);
@@ -159,7 +161,7 @@ class BxBaseMenuFooter extends BxTemplMenu
         $a['title'] = $sTitle;
         $a['bx_if:title']['condition'] = true;
         $a['bx_if:title']['content']['title'] = $sTitle;
-        $a['attrs'] = preg_replace('/ (title|aria-label)="[^"]*"/', '', $a['attrs']) . ' title="' . $sLabel . '" aria-label="' . $sLabel . '" aria-haspopup="menu" aria-expanded="false"';
+        $a['attrs'] = preg_replace('/ (title|aria-label)="[^"]*"/', '', $a['attrs']) . ' title="' . bx_html_attribute($sLabel) . '" aria-label="' . bx_html_attribute($sName) . '" aria-haspopup="menu" aria-expanded="false"';
 
         return $a;
     }
