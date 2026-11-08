@@ -259,37 +259,45 @@ class BxDolDesigns extends BxDolFactory implements iBxDolSingleton
     {
         static $aCache = [];
 
-        if(!is_string($sPath) || $sPath === '')
+        if(!is_string($sPath) || $sPath === '') {
             return [];
-        if(isset($aCache[$sPath]))
-            return $aCache[$sPath];
-
-        $aResult = [];
-        if(is_file($sPath) && is_readable($sPath)) {
-            if(preg_match('/\.svg$/i', $sPath)) {
-                $sHead = (string)file_get_contents($sPath, false, null, 0, 4096);
-                if(preg_match('/<svg\b[^>]*>/i', $sHead, $aMatch)) {
-                    $sTag = $aMatch[0];
-                    $fNumber = function($sAttr) use ($sTag) {
-                        return preg_match('/\s' . $sAttr . '\s*=\s*["\']\s*([0-9]*\.?[0-9]+)\s*(px)?\s*["\']/i', $sTag, $a) ? (float)$a[1] : 0;
-                    };
-
-                    $fWidth = $fNumber('width');
-                    $fHeight = $fNumber('height');
-                    if((!$fWidth || !$fHeight) && preg_match('/\sviewBox\s*=\s*["\']\s*[-0-9.]+[\s,]+[-0-9.]+[\s,]+([0-9.]+)[\s,]+([0-9.]+)\s*["\']/i', $sTag, $a)) {
-                        $fWidth = (float)$a[1];
-                        $fHeight = (float)$a[2];
-                    }
-
-                    if($fWidth > 0 && $fHeight > 0)
-                        $aResult = [(int)round($fWidth), (int)round($fHeight)];
-                }
-            }
-            else if(($a = @getimagesize($sPath)) && $a[0] > 0 && $a[1] > 0)
-                $aResult = [(int)$a[0], (int)$a[1]];
+        }
+        if(!isset($aCache[$sPath])) {
+            $aCache[$sPath] = is_file($sPath) && is_readable($sPath) ? static::_readImageFileSize($sPath) : [];
         }
 
-        return $aCache[$sPath] = $aResult;
+        return $aCache[$sPath];
+    }
+
+    protected static function _readImageFileSize($sPath)
+    {
+        if(!preg_match('/\.svg$/i', $sPath)) {
+            $a = @getimagesize($sPath);
+            return $a && $a[0] > 0 && $a[1] > 0 ? [(int)$a[0], (int)$a[1]] : [];
+        }
+
+        $sHead = (string)file_get_contents($sPath, false, null, 0, 4096);
+        if(!preg_match('/<svg\b[^>]*>/i', $sHead, $aMatch)) {
+            return [];
+        }
+
+        $sTag = $aMatch[0];
+        $fWidth = static::_getSvgLength($sTag, 'width');
+        $fHeight = static::_getSvgLength($sTag, 'height');
+        if((!$fWidth || !$fHeight) && preg_match('/\sviewBox\s*=\s*["\']\s*[-0-9.]+[\s,]+[-0-9.]+[\s,]+([0-9.]+)[\s,]+([0-9.]+)\s*["\']/i', $sTag, $a)) {
+            $fWidth = (float)$a[1];
+            $fHeight = (float)$a[2];
+        }
+
+        return $fWidth > 0 && $fHeight > 0 ? [(int)round($fWidth), (int)round($fHeight)] : [];
+    }
+
+    /**
+     * An absolute length (unitless or px) of an SVG root tag attribute, 0 for none or a relative one.
+     */
+    protected static function _getSvgLength($sTag, $sAttr)
+    {
+        return preg_match('/\s' . $sAttr . '\s*=\s*["\']\s*([0-9]*\.?[0-9]+)\s*(px)?\s*["\']/i', $sTag, $a) ? (float)$a[1] : 0;
     }
 
     /**
@@ -302,15 +310,25 @@ class BxDolDesigns extends BxDolFactory implements iBxDolSingleton
      */
     public static function getLogoSizeAttrs($aIntrinsic, $iWidth, $iHeight)
     {
-        if($iWidth > 0 && $iHeight > 0)
+        if($iWidth > 0 && $iHeight > 0) {
             return ['attrs' => 'width="' . (int)$iWidth . '" height="' . (int)$iHeight . '"', 'style' => ''];
+        }
 
-        if(empty($aIntrinsic) || count($aIntrinsic) != 2 || $aIntrinsic[0] <= 0 || $aIntrinsic[1] <= 0)
+        if(empty($aIntrinsic) || count($aIntrinsic) != 2 || $aIntrinsic[0] <= 0 || $aIntrinsic[1] <= 0) {
             return ['attrs' => '', 'style' => ''];
+        }
+
+        $sStyle = '';
+        if($iWidth > 0) {
+            $sStyle = 'height:auto;';
+        }
+        elseif($iHeight > 0) {
+            $sStyle = 'width:auto;';
+        }
 
         return [
             'attrs' => 'width="' . (int)$aIntrinsic[0] . '" height="' . (int)$aIntrinsic[1] . '"',
-            'style' => $iWidth > 0 ? 'height:auto;' : ($iHeight > 0 ? 'width:auto;' : '')
+            'style' => $sStyle
         ];
     }
 
