@@ -94,3 +94,10 @@ test('a picked hashtag mark shows "#" and carries no profile id', () => {
         class: 'bx-mention-link',
     });
 });
+
+test('a tentap-saved hashtag (Link mark class merged in) loads as a hashtag mark', () => {
+    assert.equal(
+        unaLinksToMentions(`<a target="_blank" rel="noopener noreferrer nofollow" class="bx-mention-link bx-tag-link" href="${TAG_URL}" title="travel">#travel</a>`),
+        `<mention indicator="#" text="#travel" href="${TAG_URL}">#travel</mention>`,
+    );
+});
