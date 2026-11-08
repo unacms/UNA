@@ -42,6 +42,7 @@ class BxBasePaginateLinksTest extends BxDolTestCase
 
         list($sPrev, $sNext) = $aButtons;
         $this->assertStringContainsString('aria-label="' . bx_html_attribute(_t('_sys_paginate_prev')) . '"', $sPrev);
+        $this->assertStringContainsString('role="link"', $sPrev, 'aria-label needs a role on an anchor without href');
         $this->assertStringContainsString('aria-disabled="true"', $sPrev);
         $this->assertStringNotContainsString('href=', $sPrev, 'a disabled button is not a link');
 

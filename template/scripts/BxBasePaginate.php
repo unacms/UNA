@@ -186,8 +186,11 @@ class BxBasePaginate extends BxDolPaginate
         $aAttrs = [];
         if(!empty($aParams['href']))
             $aAttrs['href'] = $aParams['href'];
-        else
+        else {
+            // no href, so not a link to follow; the role keeps it a (disabled) link for screen readers
+            $aAttrs['role'] = 'link';
             $aAttrs['aria-disabled'] = 'true';
+        }
 
         // Icon-only buttons are named by their action.
         if(empty($aTmplVarsTitle) && ($sLabel = $this->_getButtonLabel($sName)) !== '') {

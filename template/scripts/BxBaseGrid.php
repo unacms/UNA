@@ -624,7 +624,7 @@ class BxBaseGrid extends BxDolGrid
             $sHeader = '<span class="sr-only">' . bx_process_output($this->_getCellHeaderFallbackTitle($sKey)) . '</span>';
 
         if (($aSortingFields = $this->_getOrderFields()) && in_array($sKey, $aSortingFields)) {
-            $sHeader = '<a href="javascript:void(0);" class="bx-grid-sort-handle">' . $sHeader . '</a><span class="bx-grid-sort-indi"></span>';
+            $sHeader = '<a href="javascript:void(0);" class="bx-grid-sort-handle" role="button">' . $sHeader . '</a><span class="bx-grid-sort-indi"></span>';
             $aField['attr_head']['bx_grid_sort_head'] = $sKey;
         }
 
