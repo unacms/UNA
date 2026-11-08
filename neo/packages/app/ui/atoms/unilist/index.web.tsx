@@ -74,8 +74,15 @@ const computeItemKey = (index: number, item: any) => item?.id ?? item?.key ?? in
 const END_AHEAD_SCREENS = 1
 
 /**
- * `onEndReached` for a window-scrolled list: passed on while the list's end (`endRef`) is
- * near the viewport, otherwise held until a scroll or resize brings it near. Lists with
+ * The end must stay near the viewport this long before the next page loads: right after a
+ * page arrives its rows can still be empty (their unit chunks load), and the list looks short.
+ */
+const END_SETTLE_MS = 400
+
+/**
+ * `onEndReached` for a window-scrolled list: passed on once the list's end (`endRef`) has
+ * stayed near the viewport for END_SETTLE_MS, otherwise held until a scroll or resize brings
+ * it near. One report is passed on once (Virtuoso can report the same end twice). Lists with
  * their own scroller pass it on as before.
  */
 function useNearEndReached(
@@ -85,6 +92,7 @@ function useNearEndReached(
     shown: boolean,
 ) {
     const held = useRef<any[] | null>(null)
+    const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
     const latest = useRef({ onEndReached, shown })
     useEffect(() => {
         latest.current = { onEndReached, shown }
@@ -94,15 +102,24 @@ function useNearEndReached(
         const el = endRef.current
         if (!el || typeof window === 'undefined') return true
         const viewport = window.innerHeight || 0
-        return el.getBoundingClientRect().top - viewport <= viewport * END_AHEAD_SCREENS
+        return !!latest.current.shown && el.getBoundingClientRect().top - viewport <= viewport * END_AHEAD_SCREENS
     }, [endRef])
 
     const flush = useCallback(() => {
-        const args = held.current
-        if (!args || !latest.current.shown || !isNearEnd()) return
-        held.current = null
-        latest.current.onEndReached?.(...args)
+        if (timer.current || !held.current || !isNearEnd()) return
+        timer.current = setTimeout(() => {
+            timer.current = null
+            const args = held.current
+            if (!args || !isNearEnd()) return
+            held.current = null
+            latest.current.onEndReached?.(...args)
+        }, END_SETTLE_MS)
     }, [isNearEnd])
+
+    useEffect(() => () => {
+        if (timer.current) clearTimeout(timer.current)
+        timer.current = null
+    }, [])
 
     useEffect(() => {
         if (!enabled || !onEndReached || typeof window === 'undefined') return undefined
