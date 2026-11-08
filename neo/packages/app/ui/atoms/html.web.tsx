@@ -39,7 +39,8 @@ export default function ElementHtml({ customClassName, data, className = '', inn
         const rawHref = anchor.getAttribute('href')
         if (!rawHref) return
 
-        emitter.emit(EVENTS.link, { action: 'pressed' })
+        // A link opened in another tab leaves this page where it is.
+        emitter.emit(EVENTS.link, { action: 'pressed', href: anchor.target === '_blank' ? undefined : rawHref })
 
         const href = normalizeRenderedHref(rawHref)
         // Bare UNA hrefs (email / domain without a scheme) must not be left to
