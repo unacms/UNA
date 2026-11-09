@@ -1,13 +1,39 @@
-import { useContext } from 'react'
+import { useContext, type ReactElement } from 'react'
 import { View, Row } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Tooltip from 'app/ui/atoms/tooltip'
-import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu';
+import DropdownMenu, { DropdownMenuOpenContext, type DropdownMenuItemData } from 'app/ui/atoms/dropdown-menu';
 
-export default function MenuTopItem({ link, title, index, icon, isTitle, isActive, stacked, items, chevron, animated, addClassName, columns }) {
-    return items?.length > 0 ?
+/** A tab of the header's site menu (MenuTop). */
+export type MenuTopItemProps = {
+    link?: string;
+    title?: string;
+    index?: number;
+    /** Lucide name (or another icon key `Icon` takes). */
+    icon?: string;
+    /** Show the title as a label; otherwise it is the tab's tooltip. */
+    isTitle?: boolean;
+    isActive?: boolean;
+    /** The bar is too narrow for labels beside icons (MenuTop measures it): labels go under them. */
+    stacked?: boolean;
+    /** A dropdown's items: the tab opens them instead of following `link`. */
+    items?: DropdownMenuItemData[];
+    /** Icon name of a dropdown's arrow; empty for none. */
+    chevron?: string;
+    animated?: boolean;
+    addClassName?: string;
+    columns?: number;
+};
+
+type ItemLookProps = Pick<MenuTopItemProps, 'title' | 'icon' | 'isTitle' | 'isActive' | 'stacked' | 'chevron' | 'animated' | 'addClassName'> & {
+    isPopup: boolean;
+};
+
+export default function MenuTopItem({ link, title, icon, isTitle, isActive, stacked, items, chevron, animated, addClassName, columns }: MenuTopItemProps) {
+    const look = { title, icon, isTitle, isActive, stacked, chevron, animated, addClassName }
+    return items && items.length > 0 ?
         <DropdownMenu
             mode="popup"
             triggerAccessibilityLabel={title}
@@ -16,10 +42,10 @@ export default function MenuTopItem({ link, title, index, icon, isTitle, isActiv
             columns={columns}
             defaultOpen={false}
         >
-            <MenuTopItem_ title={title} icon={icon} isTitle={isTitle} isActive={isActive} stacked={stacked} isPopup={true} chevron={chevron} animated={animated} addClassName={addClassName} />
+            <MenuTopItem_ {...look} isPopup={true} />
         </DropdownMenu>
         : <Link variant="text" size="lg" className=" min-w-16 w-full flex-auto relative group web:active:scale-95 web:duration-100 " href={link} alt={title}>
-            <MenuTopItem_ title={title} icon={icon} isTitle={isTitle} isActive={isActive} stacked={stacked} isPopup={false} chevron={chevron} animated={animated} addClassName={addClassName} />
+            <MenuTopItem_ {...look} isPopup={false} />
         </Link>
 
 }
@@ -47,19 +73,28 @@ const LABEL_TONE = { on: 'text-accent-foreground', off: 'text-secondary-foregrou
 const LABEL_SIZE = { stacked: 'text-xs leading-4 px-1 max-w-full', inline: 'text-sm px-2 leading-5' }
 const CHEVRON_TONE = { on: 'text-accent-foreground', off: 'text-secondary-foreground web:group-hover:text-foreground' }
 
-function rowLayout(stacked, labelled) {
+function rowLayout(stacked: boolean, labelled: boolean): string {
     if (stacked) return ROW_LAYOUT.stacked
     return labelled ? ROW_LAYOUT.labelled : ROW_LAYOUT.plain
 }
 
-function rowState(isOpen, isActive) {
+function rowState(isOpen: boolean, isActive: boolean): string {
     if (isOpen) return ROW_STATE.open
     return isActive ? ROW_STATE.active : ROW_STATE.idle
 }
 
+function iconClassName(on: boolean, addClassName?: string): string {
+    const base = on ? ICON_CLASS.on : ICON_CLASS.off
+    return addClassName ? `${base} ${addClassName}` : base
+}
+
+function labelClassName(on: boolean, stacked: boolean): string {
+    return `${LABEL_BASE} ${on ? LABEL_TONE.on : LABEL_TONE.off} ${stacked ? LABEL_SIZE.stacked : LABEL_SIZE.inline}`
+}
+
 // Sized explicitly: without width and height the SVG is 24 px tall and sits 4 px below the label.
 // A class turns it, because NEO's web View drops React Native transform arrays.
-function MenuTopChevron({ icon, isOpen, on }) {
+function MenuTopChevron({ icon, isOpen, on }: { icon: string; isOpen: boolean; on: boolean }) {
     return (
         <View className={`h-4 w-4 items-center justify-center flex shrink-0 web:transition-transform web:duration-200 ${isOpen ? 'rotate-180' : ''}`}>
             <Icon icon={icon} width={16} height={16} className={`h-4 w-4 ${on ? CHEVRON_TONE.on : CHEVRON_TONE.off}`} />
@@ -68,7 +103,7 @@ function MenuTopChevron({ icon, isOpen, on }) {
 }
 
 // An animated icon plays its active state and is drawn at 24 px; a plain one keeps its own size.
-function MenuTopIcon({ icon, animated, on, className }) {
+function MenuTopIcon({ icon, animated, on, className }: { icon?: string; animated: boolean; on: boolean; className: string }) {
     if (!icon) return null
     if (!animated) return <Icon icon={icon} animated={false} className={className} />
     return <Icon icon={icon} animated active={on} size={24} className={className} />
@@ -76,37 +111,32 @@ function MenuTopIcon({ icon, animated, on, className }) {
 
 // Stacked, a tab is the icon over one line: a dropdown's arrow goes beside its label there, not
 // under it (a third row would not fit the 48 px tab).
-function labelAndArrow(stacked, label, arrow) {
+function labelAndArrow(stacked: boolean, label: ReactElement | null, arrow: ReactElement | null): (ReactElement | null)[] {
     if (stacked && label && arrow) return [<Row key="menu-title-row" className="items-center max-w-full min-w-0">{label}{arrow}</Row>]
     return [label, arrow]
 }
 
-function MenuTopItem_({ title, icon, isTitle, isActive, stacked: stackedBar, isPopup, chevron, animated, addClassName }) {
+function MenuTopItem_({ title, icon, isTitle, isActive = false, stacked: stackedBar, isPopup, chevron, animated, addClassName }: ItemLookProps) {
     const isMenuOpen = useContext(DropdownMenuOpenContext) ?? false;
     const isOpen = isPopup && isMenuOpen;
     const isActiveOrOpen = isActive || isOpen;
-    // The icon's hover motion is CSS, keyed on the link's (or trigger's) `group` class.
-    const useAnimatedIcon = animated === true;
-    const baseIconClass = isActiveOrOpen ? ICON_CLASS.on : ICON_CLASS.off;
-    const menuIconClassName = addClassName ? `${baseIconClass} ${addClassName}` : baseIconClass;
 
     // The hover label exists to name icon-only items. When the title is already
     // rendered next to the icon it just repeats it, so skip the tooltip.
     const showTooltip = !isTitle && !!title;
     const labelled = !!icon && !!isTitle;
     const stacked = !!stackedBar && labelled;
-    const rowClassName = `${ROW_BASE} ${rowLayout(stacked, labelled)} ${rowState(isOpen, isActive)}`;
-    const labelClassName = `${LABEL_BASE} ${isActiveOrOpen ? LABEL_TONE.on : LABEL_TONE.off} ${stacked ? LABEL_SIZE.stacked : LABEL_SIZE.inline}`;
-    const label = isTitle ? <Text key="menu-title" className={labelClassName}>{title}</Text> : null;
+    const label = isTitle ? <Text key="menu-title" className={labelClassName(isActiveOrOpen, stacked)}>{title}</Text> : null;
     const arrow = chevron ? <MenuTopChevron key="menu-chevron" icon={chevron} isOpen={isOpen} on={isActiveOrOpen} /> : null;
 
     return (
         <Tooltip content={title} enabled={showTooltip}>
             {/* The active link's highlight is MenuTop's sliding indicator, which never moves to a
                 dropdown, so an open dropdown draws its own fill behind the accent-foreground label. */}
-            <Row className={rowClassName}>
+            <Row className={`${ROW_BASE} ${rowLayout(stacked, labelled)} ${rowState(isOpen, isActive)}`}>
                 {[
-                    <MenuTopIcon key="menu-icon" icon={icon} animated={useAnimatedIcon} on={isActiveOrOpen} className={menuIconClassName} />,
+                    // The icon's hover motion is CSS, keyed on the link's (or trigger's) `group` class.
+                    <MenuTopIcon key="menu-icon" icon={icon} animated={animated === true} on={isActiveOrOpen} className={iconClassName(isActiveOrOpen, addClassName)} />,
                     ...labelAndArrow(stacked, label, arrow),
                 ]}
             </Row>
