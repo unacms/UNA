@@ -81,7 +81,7 @@ export default function MenuTop({ url, uri }) {
     // The width every item needs with its label beside its icon, measured on a hidden copy of the
     // row. When the bar is narrower, every item puts its label under its icon in small type.
     const [inlineWidth, setInlineWidth] = useState(0);
-    const stacked = containerLayout.width > 0 && inlineWidth > containerLayout.width;
+    const stacked = isStacked(containerLayout.width, inlineWidth);
 
     const handleItemLayout = (index, layout) => {
         setItemLayouts((prev) => {
@@ -188,8 +188,7 @@ export default function MenuTop({ url, uri }) {
                             index={index}
                             link={item.link}
                             icon={item.icon}
-                            // More is the menu icon alone beside labelled tabs, and gets its label under the icon with theirs.
-                            isTitle={item.showTitle || (stacked && item.name === 'more')}
+                            isTitle={showsLabel(item, stacked)}
                             title={t(item.title)}
                             isActive={isActive}
                             stacked={stacked}
@@ -205,6 +204,16 @@ export default function MenuTop({ url, uri }) {
         </Row>
 
     )
+}
+
+/** Labels go under the icons once the bar (measured) is narrower than every label beside its icon needs. */
+function isStacked(barWidth, inlineWidth) {
+    return barWidth > 0 && inlineWidth > barWidth
+}
+
+/** More is the menu icon alone beside labelled tabs; stacked, it gets its label under the icon with theirs. */
+function showsLabel(item, stacked) {
+    return !!item.showTitle || (stacked && item.name === 'more')
 }
 
 /**
