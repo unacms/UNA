@@ -83,6 +83,13 @@ function MenuTopItem_({ title, icon, isTitle, isActive, stacked: stackedBar, isP
     const stacked = !!stackedBar && labelled;
     const rowClassName = `${ROW_BASE} ${rowLayout(stacked, labelled)} ${rowState(isOpen, isActive)}`;
     const labelClassName = `${LABEL_BASE} ${isActiveOrOpen ? LABEL_TONE.on : LABEL_TONE.off} ${stacked ? LABEL_SIZE.stacked : LABEL_SIZE.inline}`;
+    const label = isTitle ? <Text key="menu-title" className={labelClassName}>{title}</Text> : null;
+    const arrow = chevron ? <MenuTopChevron key="menu-chevron" icon={chevron} isOpen={isOpen} on={isActiveOrOpen} /> : null;
+    // Stacked, a tab is the icon over one line: a dropdown's arrow goes beside its label there,
+    // not under it (a third row would not fit the 48 px tab).
+    const labelAndArrow = stacked && label && arrow
+        ? [<Row key="menu-title-row" className="items-center max-w-full min-w-0">{label}{arrow}</Row>]
+        : [label, arrow];
 
     return (
         <Tooltip content={title} enabled={showTooltip}>
@@ -100,8 +107,7 @@ function MenuTopItem_({ title, icon, isTitle, isActive, stacked: stackedBar, isP
                             className={menuIconClassName}
                         />
                     ) : null,
-                    isTitle ? <Text key="menu-title" className={labelClassName}>{title}</Text> : null,
-                    chevron ? <MenuTopChevron key="menu-chevron" icon={chevron} isOpen={isOpen} on={isActiveOrOpen} /> : null,
+                    ...labelAndArrow,
                 ]}
             </Row>
         </Tooltip>
