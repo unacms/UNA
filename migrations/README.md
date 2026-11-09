@@ -157,8 +157,7 @@ language later brings its current strings.
 </resources>
 ```
 
-A key with a space in it (`_Member Login`) cannot be named here: change it with an `UPDATE` of
-`sys_localization_strings` in an SQL migration.
+A key may have spaces inside it (`_Member Login`), not at its ends.
 
 Change the strings in the language's install files too (`install/langs/en.xml`), so new
 installs get them.

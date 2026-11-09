@@ -241,4 +241,5 @@
 	<string_upd name="_sys_request_page_not_found_cpt"><![CDATA[Page not found]]></string_upd>
 	<string_upd name="_sys_txt_login_description_action"><![CDATA[Create account]]></string_upd>
 	<string_upd name="_sys_txt_splash_login"><![CDATA[Log in]]></string_upd>
+	<string_upd name="_Member Login"><![CDATA[Log in]]></string_upd>
 </resources>
