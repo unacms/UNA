@@ -28,11 +28,13 @@ const makeLucideIcon = (nodes) => Object.assign(function LucideInlineIcon({ widt
     // Mirror the mask path: a wrapping <span> carries the icon's own className
     // (text-* colour + layout) while the SVG strokes with `currentColor` so it
     // inherits that colour. An explicit `color` prop overrides via inline style.
+    // The span keeps the icon's box, as the mask does, so a size class such as
+    // `h-9 w-9` doesn't stretch it and move the icon off its line.
     const explicitColor = color && color !== 'currentColor' ? color : undefined
     return (
         <span
             className={className}
-            style={{ display: 'inline-flex', flexShrink: 0, ...(explicitColor ? { color: explicitColor } : null) }}
+            style={{ display: 'inline-flex', width: resolvedWidth, height: resolvedHeight, flexShrink: 0, ...(explicitColor ? { color: explicitColor } : null) }}
         >
             <Svg
                 width={resolvedWidth}

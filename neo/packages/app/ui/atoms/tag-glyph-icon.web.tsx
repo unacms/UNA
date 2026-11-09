@@ -23,7 +23,9 @@ export function makeTagGlyphIcon(glyph: GlyphData): TagGlyphIcon {
         return (
             <span
                 className={className}
-                style={{ display: 'inline-flex', flexShrink: 0, ...(explicitColor ? { color: explicitColor } : null) }}
+                // The icon's own box, as the mask icons have (iconset.web.tsx): a size class such as
+                // `h-9 w-9` would otherwise stretch the span and move the icon off its line.
+                style={{ display: 'inline-flex', width: width || size, height: size, flexShrink: 0, ...(explicitColor ? { color: explicitColor } : null) }}
             >
                 <Svg
                     width={width || size}

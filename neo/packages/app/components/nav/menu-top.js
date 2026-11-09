@@ -1,4 +1,5 @@
 import { View, Row } from 'app/design/view'
+import { Text } from 'app/design/typography'
 import { useCurrentUser } from 'app/context/user'
 import { menuItemsByName, menuItemsByNameNew, appSetting, flattenMenuItemsForDropdown, mergeNavbarMoreWithLauncher, navbarItemsFromSiteMenu, navbarMoreItem, launcherItemsWithoutTabs } from 'app/lib/util'
 import { useTranslation } from 'react-i18next'
@@ -68,14 +69,19 @@ export default function MenuTop({ url, uri }) {
 
     // Track measured layouts for each tab item
     const [itemLayouts, setItemLayouts] = useState({});
-    const [containerLayout, setContainerLayout] = useState({ x: 0, measured: false });
+    const [containerLayout, setContainerLayout] = useState({ x: 0, width: 0, measured: false });
     const handleContainerLayout = (layout) => {
         const x = layout?.x || 0;
+        const width = layout?.width || 0;
         setContainerLayout((prev) => {
-            if (prev.measured && prev.x === x) return prev;
-            return { x, measured: true };
+            if (prev.measured && prev.x === x && prev.width === width) return prev;
+            return { x, width, measured: true };
         });
     };
+    // The width every item needs with its label beside its icon, measured on a hidden copy of the
+    // row. When the bar is narrower, every item puts its label under its icon in small type.
+    const [inlineWidth, setInlineWidth] = useState(0);
+    const stacked = containerLayout.width > 0 && inlineWidth > containerLayout.width;
 
     const handleItemLayout = (index, layout) => {
         setItemLayouts((prev) => {
@@ -173,6 +179,27 @@ export default function MenuTop({ url, uri }) {
                     transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), width 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out'
                 }}
             />
+            {/* The hidden copy sits in a clipped box the nav's size: a copy wider than the bar
+                would otherwise widen the page and add a horizontal scrollbar. */}
+            <View aria-hidden className="absolute inset-0 overflow-hidden invisible pointer-events-none">
+                <Row
+                    className="absolute left-0 top-0 w-max gap-2"
+                    onLayout={(e) => {
+                        const width = Math.ceil(e?.nativeEvent?.layout?.width || 0);
+                        setInlineWidth((prev) => (prev === width ? prev : width));
+                    }}
+                >
+                    {menu_navbar_items.map((item, index) => (
+                        <Row key={`probe-${index}`} className={`items-center justify-center h-12 min-w-16 shrink-0 ${item.icon && item.showTitle ? 'ps-3 pe-2' : 'px-2'}`}>
+                            {item.icon ? <View className="h-6 w-6 shrink-0" /> : null}
+                            {item.showTitle ? (
+                                <Text className="whitespace-nowrap tracking-tight font-medium text-sm px-2 leading-5">{t(item.title)}</Text>
+                            ) : null}
+                            {item.chevron ? <View className="h-4 w-4 shrink-0" /> : null}
+                        </Row>
+                    ))}
+                </Row>
+            </View>
             {menu_navbar_items.map((item, index) => {
                 const isActive = index === activeIndex;
                 return (
@@ -181,9 +208,11 @@ export default function MenuTop({ url, uri }) {
                             index={index}
                             link={item.link}
                             icon={item.icon}
-                            isTitle={item.showTitle}
+                            // More is the menu icon alone beside labelled tabs, and gets its label under the icon with theirs.
+                            isTitle={item.showTitle || (stacked && item.name === 'more')}
                             title={t(item.title)}
                             isActive={isActive}
+                            stacked={stacked}
                             items={flattenMenuItemsForDropdown(item.items)}
                             chevron={item.chevron}
                             animated={item.animated}

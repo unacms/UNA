@@ -6,7 +6,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import Tooltip from 'app/ui/atoms/tooltip'
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu';
 
-export default function MenuTopItem({ link, title, index, icon, isTitle, isActive, items, chevron, animated, addClassName, columns }) {
+export default function MenuTopItem({ link, title, index, icon, isTitle, isActive, stacked, items, chevron, animated, addClassName, columns }) {
     return items?.length > 0 ?
         <DropdownMenu
             mode="popup"
@@ -16,29 +16,32 @@ export default function MenuTopItem({ link, title, index, icon, isTitle, isActiv
             columns={columns}
             defaultOpen={false}
         >
-            <MenuTopItem_ title={title} icon={icon} isTitle={isTitle} isActive={isActive} isPopup={true} chevron={chevron} animated={animated} addClassName={addClassName} />
+            <MenuTopItem_ title={title} icon={icon} isTitle={isTitle} isActive={isActive} stacked={stacked} isPopup={true} chevron={chevron} animated={animated} addClassName={addClassName} />
         </DropdownMenu>
         : <Link variant="text" size="lg" className=" min-w-16 w-full flex-auto relative group web:active:scale-95 web:duration-100 " href={link} alt={title}>
-            <MenuTopItem_ title={title} icon={icon} isTitle={isTitle} isActive={isActive} isPopup={false} chevron={chevron} animated={animated} addClassName={addClassName} />
+            <MenuTopItem_ title={title} icon={icon} isTitle={isTitle} isActive={isActive} stacked={stacked} isPopup={false} chevron={chevron} animated={animated} addClassName={addClassName} />
         </Link>
 
 }
 
 
-function MenuTopItem_({ title, icon, isTitle, isActive, isPopup, chevron, animated, addClassName }) {
+function MenuTopItem_({ title, icon, isTitle, isActive, stacked: stackedBar, isPopup, chevron, animated, addClassName }) {
     const isMenuOpen = useContext(DropdownMenuOpenContext) ?? false;
     const isOpen = isPopup && isMenuOpen;
     const isActiveOrOpen = isActive || isOpen;
     // The icon's hover motion is CSS, keyed on the link's (or trigger's) `group` class.
     const useAnimatedIcon = animated === true;
     const baseIconClass = isActiveOrOpen
-        ? 'text-accent-foreground h-9 w-9 my-auto items-center justify-center flex'
+        ? 'text-accent-foreground h-9 w-9 items-center justify-center flex'
         : 'text-secondary-foreground web:group-hover:text-foreground h-9 w-9 items-center justify-center flex';
     const menuIconClassName = addClassName ? `${baseIconClass} ${addClassName}` : baseIconClass;
 
     // The hover label exists to name icon-only items. When the title is already
     // rendered next to the icon it just repeats it, so skip the tooltip.
     const showTooltip = !isTitle && !!title;
+    // When the bar is too narrow for labels beside icons (MenuTop measures it), the label sits
+    // under the icon in small type.
+    const stacked = !!stackedBar && !!icon && isTitle;
 
     return (
 
@@ -46,7 +49,7 @@ function MenuTopItem_({ title, icon, isTitle, isActive, isPopup, chevron, animat
             {/* The active link's highlight is MenuTop's sliding indicator, which never moves to a
                 dropdown, so an open dropdown draws its own fill behind the accent-foreground label. */}
             <Row
-                className={`items-center content-center justify-center px-2 h-12 min-w-16 flex-auto flex-wrap rounded-xl  ${isOpen
+                className={`items-center content-center justify-center h-12 min-w-16 flex-auto rounded-xl ${stacked ? 'flex-col gap-0.5 px-2' : `flex-wrap ${icon && isTitle ? 'ps-3 pe-2' : 'px-2'}`} ${isOpen
                     ? ' bg-accent text-accent-foreground'
                     : isActive
                     ? '  text-accent-foreground'
@@ -65,7 +68,7 @@ function MenuTopItem_({ title, icon, isTitle, isActive, isPopup, chevron, animat
                         />
                     ) : null,
                     isTitle ? (
-                        <Text key="menu-title" className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActiveOrOpen ? 'text-accent-foreground' : 'text-secondary-foreground'} text-sm lg:text-base px-2 leading-5`}>{title}</Text>
+                        <Text key="menu-title" className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActiveOrOpen ? 'text-accent-foreground' : 'text-secondary-foreground'} ${stacked ? 'text-xs leading-4 px-1 max-w-full' : 'text-sm px-2 leading-5'}`}>{title}</Text>
                     ) : null,
                     chevron ? (
                         // Sized explicitly: without width and height the SVG is 24 px tall and sits
