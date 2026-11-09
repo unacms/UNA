@@ -1053,3 +1053,14 @@ webview {
     from { stroke-dasharray: 100 100; stroke-dashoffset: 100; }
     to { stroke-dasharray: 100 100; stroke-dashoffset: 0; }
 }
+
+/* A resizable panel before hydration (ui/molecules/page/resizable-panels.web.js ssrSizeStyle):
+   the server doesn't know the window, so the size for each breakpoint comes as a variable and
+   the media query picks it. The ranges are LAYOUT_BREAKPOINTS (lib/util/layout.ts), and like
+   resolvePanelProps a breakpoint's size applies at that breakpoint only. */
+.neo-panel-ssr { --neo-panel-grow: var(--neo-panel-grow-base); }
+@media (min-width: 640px) and (max-width: 767.98px) { .neo-panel-ssr { --neo-panel-grow: var(--neo-panel-grow-sm, var(--neo-panel-grow-base)); } }
+@media (min-width: 768px) and (max-width: 1023.98px) { .neo-panel-ssr { --neo-panel-grow: var(--neo-panel-grow-md, var(--neo-panel-grow-base)); } }
+@media (min-width: 1024px) and (max-width: 1279.98px) { .neo-panel-ssr { --neo-panel-grow: var(--neo-panel-grow-lg, var(--neo-panel-grow-base)); } }
+@media (min-width: 1280px) and (max-width: 1535.98px) { .neo-panel-ssr { --neo-panel-grow: var(--neo-panel-grow-xl, var(--neo-panel-grow-base)); } }
+@media (min-width: 1536px) { .neo-panel-ssr { --neo-panel-grow: var(--neo-panel-grow-2xl, var(--neo-panel-grow-base)); } }
