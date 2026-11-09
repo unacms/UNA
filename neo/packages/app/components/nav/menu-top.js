@@ -70,14 +70,7 @@ export default function MenuTop({ url, uri }) {
     // Track measured layouts for each tab item
     const [itemLayouts, setItemLayouts] = useState({});
     const [containerLayout, setContainerLayout] = useState({ x: 0, width: 0, measured: false });
-    const handleContainerLayout = (layout) => {
-        const x = layout?.x || 0;
-        const width = layout?.width || 0;
-        setContainerLayout((prev) => {
-            if (prev.measured && prev.x === x && prev.width === width) return prev;
-            return { x, width, measured: true };
-        });
-    };
+    const handleContainerLayout = (layout) => setContainerLayout((prev) => nextContainerLayout(prev, layout));
     // The width every item needs with its label beside its icon, measured on a hidden copy of the
     // row. When the bar is narrower, every item puts its label under its icon in small type.
     const [inlineWidth, setInlineWidth] = useState(0);
@@ -204,6 +197,14 @@ export default function MenuTop({ url, uri }) {
         </Row>
 
     )
+}
+
+/** The nav's measured position and width; the same object while neither changed (no re-render). */
+function nextContainerLayout(prev, layout) {
+    const x = layout?.x || 0
+    const width = layout?.width || 0
+    if (prev.measured && prev.x === x && prev.width === width) return prev
+    return { x, width, measured: true }
 }
 
 /** Labels go under the icons once the bar (measured) is narrower than every label beside its icon needs. */

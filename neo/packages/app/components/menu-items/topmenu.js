@@ -67,6 +67,20 @@ function MenuTopChevron({ icon, isOpen, on }) {
     )
 }
 
+// An animated icon plays its active state and is drawn at 24 px; a plain one keeps its own size.
+function MenuTopIcon({ icon, animated, on, className }) {
+    if (!icon) return null
+    if (!animated) return <Icon icon={icon} animated={false} className={className} />
+    return <Icon icon={icon} animated active={on} size={24} className={className} />
+}
+
+// Stacked, a tab is the icon over one line: a dropdown's arrow goes beside its label there, not
+// under it (a third row would not fit the 48 px tab).
+function labelAndArrow(stacked, label, arrow) {
+    if (stacked && label && arrow) return [<Row key="menu-title-row" className="items-center max-w-full min-w-0">{label}{arrow}</Row>]
+    return [label, arrow]
+}
+
 function MenuTopItem_({ title, icon, isTitle, isActive, stacked: stackedBar, isPopup, chevron, animated, addClassName }) {
     const isMenuOpen = useContext(DropdownMenuOpenContext) ?? false;
     const isOpen = isPopup && isMenuOpen;
@@ -85,11 +99,6 @@ function MenuTopItem_({ title, icon, isTitle, isActive, stacked: stackedBar, isP
     const labelClassName = `${LABEL_BASE} ${isActiveOrOpen ? LABEL_TONE.on : LABEL_TONE.off} ${stacked ? LABEL_SIZE.stacked : LABEL_SIZE.inline}`;
     const label = isTitle ? <Text key="menu-title" className={labelClassName}>{title}</Text> : null;
     const arrow = chevron ? <MenuTopChevron key="menu-chevron" icon={chevron} isOpen={isOpen} on={isActiveOrOpen} /> : null;
-    // Stacked, a tab is the icon over one line: a dropdown's arrow goes beside its label there,
-    // not under it (a third row would not fit the 48 px tab).
-    const labelAndArrow = stacked && label && arrow
-        ? [<Row key="menu-title-row" className="items-center max-w-full min-w-0">{label}{arrow}</Row>]
-        : [label, arrow];
 
     return (
         <Tooltip content={title} enabled={showTooltip}>
@@ -97,17 +106,8 @@ function MenuTopItem_({ title, icon, isTitle, isActive, stacked: stackedBar, isP
                 dropdown, so an open dropdown draws its own fill behind the accent-foreground label. */}
             <Row className={rowClassName}>
                 {[
-                    icon ? (
-                        <Icon
-                            key="menu-icon"
-                            icon={icon}
-                            animated={useAnimatedIcon}
-                            active={useAnimatedIcon ? isActiveOrOpen : undefined}
-                            size={useAnimatedIcon ? 24 : undefined}
-                            className={menuIconClassName}
-                        />
-                    ) : null,
-                    ...labelAndArrow,
+                    <MenuTopIcon key="menu-icon" icon={icon} animated={useAnimatedIcon} on={isActiveOrOpen} className={menuIconClassName} />,
+                    ...labelAndArrow(stacked, label, arrow),
                 ]}
             </Row>
         </Tooltip>
