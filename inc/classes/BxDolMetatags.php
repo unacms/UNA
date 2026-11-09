@@ -199,7 +199,8 @@ class BxDolMetatags extends BxDolFactory implements iBxDolFactoryObject
     }
 
     /**
-     * Get metatags by term
+     * Get metatags by term. Only metatags of public and active content are returned,
+     * the result doesn't depend on the current viewer.
      * @param string $sMeta - 'keywords' is only supported meta for now
      * @param type $sMetaItem
      * @param type $sTerm
