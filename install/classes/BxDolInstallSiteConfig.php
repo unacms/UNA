@@ -8,6 +8,8 @@
  */
 
 define('BX_INSTALL_ERR_GENERAL', 'general');
+define('BX_INSTALL_FIELD_MODULES', 'modules');
+define('BX_INSTALL_FIRST_MODULE', 'persons'); ///< URI of the module to install before the other modules
 
 class BxDolInstallSiteConfig
 {
@@ -42,6 +44,8 @@ class BxDolInstallSiteConfig
             'Database connect failed' => array ('fields' => array('db_host', 'db_user', 'db_password'), 'msg' => _t('_sys_inst_msg_db_err_connect')),
             'Database select failed' => array ('fields' => array('db_name'), 'msg' => _t('_sys_inst_msg_db_err_select')),
         );
+
+        $aModulesVals = $this->getSelectValues(BX_DOL_MODULE_TYPE_MODULE);
 
         $this->_aConfig = array (
 
@@ -219,12 +223,14 @@ class BxDolInstallSiteConfig
                 'vals' => $this->getSelectValues(BX_DOL_MODULE_TYPE_TEMPLATE),
             ),
 
-            BX_DOL_MODULE_TYPE_MODULE => array(
-                'name' => _t('_sys_inst_conf_field_profiles'),
-                'desc' => _t('_sys_inst_conf_desc_profiles'),
-                'def' => 'persons',
-                'func' => 'rowSelect',
-                'vals' => $this->getSelectValues(BX_DOL_MODULE_TYPE_MODULE),
+            // all modules are preselected, a value from the form, command line or environment replaces the list
+            BX_INSTALL_FIELD_MODULES => array(
+                'name' => _t('_sys_inst_conf_section_modules'),
+                'desc' => '',
+                'def' => implode(',', array_keys($aModulesVals)),
+                'func' => 'rowMultiSelect',
+                'vals' => $aModulesVals,
+                'multiple' => true,
             ),
 
             'section_modules_close' => array(
@@ -428,13 +434,26 @@ EOF;
         require_once(BX_INSTALL_PATH_HEADER);
         require_once(BX_DIRECTORY_PATH_INC . "design.inc.php");
 
-        $aTypes = array (BX_DOL_MODULE_TYPE_LANGUAGE, BX_DOL_MODULE_TYPE_TEMPLATE, BX_DOL_MODULE_TYPE_MODULE);
+        // installing many modules takes longer than a default request
+        @set_time_limit(0);
+
+        $aTypes = array (BX_DOL_MODULE_TYPE_LANGUAGE, BX_DOL_MODULE_TYPE_TEMPLATE);
         foreach ($aTypes as $sModuleType) {
             if (empty($a[$sModuleType]))
                 continue;
             $sErrorMessage = $this->processModuleByUri ($a[$sModuleType], array ('install', 'enable'), $sModuleType);
             if ($sErrorMessage)
                 return array(BX_INSTALL_ERR_GENERAL => $sErrorMessage);
+        }
+
+        if (!empty($a[BX_INSTALL_FIELD_MODULES])) {
+            $oModulesTools = new BxDolInstallModulesTools();
+            $aModules = $oModulesTools->getInstallOrder($oModulesTools->getModules(BX_DOL_MODULE_TYPE_MODULE), $a[BX_INSTALL_FIELD_MODULES], BX_INSTALL_FIRST_MODULE);
+            foreach ($aModules as $aConfig) {
+                $sErrorMessage = $this->processModuleByName ($aConfig['name'], array ('install', 'enable'), BX_DOL_MODULE_TYPE_MODULE);
+                if ($sErrorMessage)
+                    return array(BX_INSTALL_ERR_GENERAL => $sErrorMessage);
+            }
         }
 
         // This install ran this code's install SQL, which has every migration's change already.
@@ -501,8 +520,14 @@ EOF;
 
     protected function processInputData ($a)
     {
-        foreach ($a as $sKey => $mixedValue)
+        $oModulesTools = new BxDolInstallModulesTools();
+        foreach ($a as $sKey => $mixedValue) {
             $a[$sKey] = bx_process_input($mixedValue);
+
+            // multiple choice fields are kept as a comma separated string, as the other fields are used as strings
+            if (!empty($this->_aConfig[$sKey]['multiple']))
+                $a[$sKey] = implode(',', $oModulesTools->parseUris($a[$sKey]));
+        }
         return $a;
     }
 
@@ -576,9 +601,32 @@ EOF;
         return $this->rowWrapper ($aData, $sInput, $sAutoMessage, 'select', $sKey, $a, $isError);
     }
 
+    protected function rowMultiSelect ($aData, $sKey, $a, $isError = false)
+    {
+        $sAutoMessage = '';
+        $oModulesTools = new BxDolInstallModulesTools();
+        $aSelected = $oModulesTools->parseUris($this->def ($aData, $sKey, $a, $sAutoMessage));
+
+        $sItems = '';
+        foreach ($a['vals'] as $sVal => $sTitle) {
+            $sItems .= '<label class="bx-def-margin-sec-right" style="display:block;">'
+                . '<input type="checkbox" name="' . $sKey . '[]" value="' . bx_html_attribute($sVal) . '"' . (in_array($sVal, $aSelected) ? ' checked="checked"' : '') . ' /> '
+                . htmlspecialchars($sTitle, ENT_QUOTES, 'UTF-8')
+                . '</label>';
+        }
+
+        // the empty value keeps the field in the request when nothing is checked, so that it is not reset to the default
+        $sInput = '<input type="hidden" name="' . $sKey . '[]" value="" />'
+            . '<div class="bx-def-font-inputs bx-def-padding-sec" style="max-height:300px; overflow:auto; border:1px solid #ccc;">' . $sItems . '</div>';
+
+        return $this->rowWrapper ($aData, $sInput, $sAutoMessage, 'select', $sKey, $a, $isError);
+    }
+
     protected function rowWrapper ($aData, $sInput, $sAutoMessage, $sType, $sKey, $a, $isError = false)
     {
-        $sDesc = _t('_sys_inst_conf_desc', $sAutoMessage, $a['desc'], isset($a['ex']) ? $a['ex'] : _t('_sys_inst_conf_no_example'));
+        $sDesc = '';
+        if (!empty($a['desc']) || isset($a['ex']))
+            $sDesc = '<div class="bx-form-info bx-def-font-grayed bx-def-font-small">' . _t('_sys_inst_conf_desc', $sAutoMessage, $a['desc'], isset($a['ex']) ? $a['ex'] : _t('_sys_inst_conf_no_example')) . '</div>';
 
         $sError = '';
         if ($isError)
@@ -599,9 +647,7 @@ EOF;
                         $sInput
                     </div>
                     $sError
-                    <div class="bx-form-info bx-def-font-grayed bx-def-font-small">
-                        {$sDesc}
-                    </div>
+                    {$sDesc}
                 </div></div>
 EOF;
     }

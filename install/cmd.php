@@ -48,6 +48,7 @@ class BxDolInstallCmd
             'admin_username' => 'admin',
             'admin_password' => 'unauna',
             'language' => 'en',
+            'modules' => 'persons', // comma separated module URIs, the web installer preselects all modules instead
             'oauth_key' => '',
             'oauth_secret' => '',
         );
@@ -170,7 +171,17 @@ class BxDolInstallCmd
 
         // install custom additional modules
         if (!empty($this->_aAdditionalModules)) {
+            $oModulesTools = new BxDolInstallModulesTools();
+            $aInstalledModules = $oModulesTools->getInstallOrder($oModulesTools->getModules(BX_DOL_MODULE_TYPE_MODULE), $this->_aSiteConfig['modules'], BX_INSTALL_FIRST_MODULE);
+            $aInstalledNames = array();
+            foreach ($aInstalledModules as $aConfig)
+                $aInstalledNames[] = $aConfig['name'];
+
             foreach ($this->_aAdditionalModules as $sModuleName) {
+                if (in_array($sModuleName, $aInstalledNames))
+                    continue; // already installed with the modules from --modules
+
+
                 $sErrorMessage = $oSiteConfig->processModuleByName($sModuleName);
                 if ($sErrorMessage)
                     $this->finish($this->_aReturnCodes['module failed']['code'], $this->_aReturnCodes['module failed']['msg'] . strip_tags($sErrorMessage));
