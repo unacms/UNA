@@ -256,6 +256,21 @@ class MigrationsDbTest extends BxDolIntegrationTestCase
         $this->assertStringContainsString('language zz is not installed', implode("\n", $aLog));
     }
 
+    public function testLanguageStringsSkipMissingCategory(): void
+    {
+        $sKey = $this->_key('nocat');
+        $this->_write('2026110100_nocat.xml', self::XML_HEAD . "<resources name=\"en\" flag=\"gb\" title=\"English\" category=\"No Such Category {$this->_sSuffix}\">
+    <string_add name=\"$sKey\"><![CDATA[Never]]></string_add>
+</resources>");
+
+        $aLog = [];
+        $aResult = $this->_migrations($aLog)->run(function () { return ''; });
+
+        $this->assertSame(['common: 2026110100_nocat.xml'], $aResult['applied']);
+        $this->assertSame([], $this->_strings($sKey));
+        $this->assertStringContainsString('does not exist; nothing to change', implode("\n", $aLog));
+    }
+
     public function testLanguageStringsKeyWithSpaces(): void
     {
         $sKey = $this->_aKeys[] = '_test migrations spaced ' . $this->_sSuffix;

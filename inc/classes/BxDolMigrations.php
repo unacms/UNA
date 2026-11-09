@@ -886,6 +886,11 @@ class BxDolMigrations
 
         $sCategory = $aLanguage['category'] !== '' ? $aLanguage['category'] : $aMigration['lang_category'];
         $iCategory = $sCategory !== '' ? $oLanguages->getLanguageCategory($sCategory) : 0;
+        if ($iCategory === 0 && $aLanguage['category'] !== '') {
+            // A language module's file for a module that is not installed: installing the module brings its strings.
+            ($this->_fLog)("{$aMigration['label']}: category {$aLanguage['category']} does not exist; nothing to change");
+            return;
+        }
         if ($iCategory === 0)
             $iCategory = BX_DOL_LANGUAGE_CATEGORY_SYSTEM;
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
-<resources name="ru" flag="ru" title="Russian">
+<!-- RC3 to RC4: Russian strings of the google_connect module, released with the Russian language module. -->
+<resources name="ru" flag="ru" title="Russian" category="Google Connect">
 	<string_add name="_sys_module_googlecon"><![CDATA[Google-соединение]]></string_add>
 	<string_add name="_bx_googlecon"><![CDATA[Google-соединение]]></string_add>
 	<string_add name="_bx_googlecon_settings"><![CDATA[Google-соединение]]></string_add>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
-<resources name="ru" flag="ru" title="Russian">
+<!-- RC3 to RC4: Russian strings of the credits module, released with the Russian language module. -->
+<resources name="ru" flag="ru" title="Russian" category="Credits">
 	<string_add name="_bx_credits_err_wrong_amont"><![CDATA[Сумма кредитов должна быть больше нуля.]]></string_add>
 	<string_add name="_bx_credits_err_withdrawal_already_processed"><![CDATA[Невозможно выполнить действие, так как запрос на вывод средств уже был обработан.]]></string_add>
 	<string_add name="_bx_credits_err_cannot_confirm_withdrawal"><![CDATA[Невозможно подтвердить запрос на вывод средств. Пожалуйста, оповестите нас об этой проблеме.]]></string_add>

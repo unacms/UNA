@@ -144,8 +144,10 @@ BxDolMigrationsHelper::moduleUpdated('timeline', '15.0.7', '15.0.8');
 The format of update packs' language files. `string_add` adds a key, `string_upd` changes a
 string, and `string_del` deletes a key from every language. Strings go in the language that
 `name` names, in the module's language category (`category="..."` on `<resources>` sets
-another). Where that language is not installed the file changes nothing: installing the
-language later brings its current strings.
+another; a category that does not exist, because its module is not installed, changes
+nothing). Where that language is not installed the file changes nothing either: installing the
+language or module later brings its current strings. That lets a language module carry the
+strings of other modules, one file per module, with `category` set to the module's.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>

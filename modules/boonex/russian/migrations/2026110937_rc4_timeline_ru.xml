@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
-<resources name="ru" flag="ru" title="Russian">
+<!-- RC3 to RC4: Russian strings of the timeline module, released with the Russian language module. -->
+<resources name="ru" flag="ru" title="Russian" category="Timeline">
 	<string_add name="_bx_timeline_options_category_feed_hot"><![CDATA['Горячая' хроника]]></string_add>
 	<string_add name="_bx_timeline_options_category_feed_for_you"><![CDATA[Лента 'Для Вас']]></string_add>
 	<string_add name="_bx_timeline_option_searchable_fields"><![CDATA[Поля для поиска по ключевому слову]]></string_add>
