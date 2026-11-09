@@ -49,6 +49,9 @@ export const settingsConfigs = {
         // list → profile prefetch is reused on click.
         una_page_ttl: 20,
         una_page_profile_ttl: 30,
+        // Next server cache for what every guest's first page needs (guest menus, analytics
+        // settings), per UNA backend and language (seconds). 0 asks UNA on every page.
+        una_shared_ttl: 60,
     },
     dashboard: {
         url: '/dashboard',
