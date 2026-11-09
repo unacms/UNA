@@ -31,7 +31,7 @@ type ItemLookProps = Pick<MenuTopItemProps, 'title' | 'icon' | 'isTitle' | 'isAc
     isPopup: boolean;
 };
 
-export default function MenuTopItem({ link, title, icon, isTitle, isActive, stacked, items, chevron, animated, addClassName, columns }: MenuTopItemProps) {
+export default function MenuTopItem({ link, title, icon, isTitle, isActive, stacked, items, chevron, animated, addClassName, columns }: Readonly<MenuTopItemProps>) {
     const look = { title, icon, isTitle, isActive, stacked, chevron, animated, addClassName }
     return items && items.length > 0 ?
         <DropdownMenu
@@ -42,10 +42,10 @@ export default function MenuTopItem({ link, title, icon, isTitle, isActive, stac
             columns={columns}
             defaultOpen={false}
         >
-            <MenuTopItem_ {...look} isPopup={true} />
+            <MenuTopItemLook {...look} isPopup={true} />
         </DropdownMenu>
         : <Link variant="text" size="lg" className=" min-w-16 w-full flex-auto relative group web:active:scale-95 web:duration-100 " href={link} alt={title}>
-            <MenuTopItem_ {...look} isPopup={false} />
+            <MenuTopItemLook {...look} isPopup={false} />
         </Link>
 
 }
@@ -94,7 +94,7 @@ function labelClassName(on: boolean, stacked: boolean): string {
 
 // Sized explicitly: without width and height the SVG is 24 px tall and sits 4 px below the label.
 // A class turns it, because NEO's web View drops React Native transform arrays.
-function MenuTopChevron({ icon, isOpen, on }: { icon: string; isOpen: boolean; on: boolean }) {
+function MenuTopChevron({ icon, isOpen, on }: Readonly<{ icon: string; isOpen: boolean; on: boolean }>) {
     return (
         <View className={`h-4 w-4 items-center justify-center flex shrink-0 web:transition-transform web:duration-200 ${isOpen ? 'rotate-180' : ''}`}>
             <Icon icon={icon} width={16} height={16} className={`h-4 w-4 ${on ? CHEVRON_TONE.on : CHEVRON_TONE.off}`} />
@@ -103,7 +103,7 @@ function MenuTopChevron({ icon, isOpen, on }: { icon: string; isOpen: boolean; o
 }
 
 // An animated icon plays its active state and is drawn at 24 px; a plain one keeps its own size.
-function MenuTopIcon({ icon, animated, on, className }: { icon?: string; animated: boolean; on: boolean; className: string }) {
+function MenuTopIcon({ icon, animated, on, className }: Readonly<{ icon?: string; animated: boolean; on: boolean; className: string }>) {
     if (!icon) return null
     if (!animated) return <Icon icon={icon} animated={false} className={className} />
     return <Icon icon={icon} animated active={on} size={24} className={className} />
@@ -116,7 +116,7 @@ function labelAndArrow(stacked: boolean, label: ReactElement | null, arrow: Reac
     return [label, arrow]
 }
 
-function MenuTopItem_({ title, icon, isTitle, isActive = false, stacked: stackedBar, isPopup, chevron, animated, addClassName }: ItemLookProps) {
+function MenuTopItemLook({ title, icon, isTitle, isActive = false, stacked: stackedBar, isPopup, chevron, animated, addClassName }: Readonly<ItemLookProps>) {
     const isMenuOpen = useContext(DropdownMenuOpenContext) ?? false;
     const isOpen = isPopup && isMenuOpen;
     const isActiveOrOpen = isActive || isOpen;
