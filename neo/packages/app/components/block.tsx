@@ -139,7 +139,7 @@ export function BlockByName2({ b, name, contentOnly, wrapperClassses = "", fill,
 
 type BlockByNameProps = { data?: PageData | null; name?: BlockName; contentOnly?: boolean; [key: string]: any };
 
-function BlockByNameInner(props: BlockByNameProps) {
+function BlockByNameInner(props: Readonly<BlockByNameProps>) {
     const { data, name, contentOnly, ...rest } = props;
     if (!name) return null;
 

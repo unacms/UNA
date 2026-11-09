@@ -51,11 +51,12 @@ function createPanelComponent({ baseClass, Component = PanelDef, role, ariaLevel
         // blocks flush with the group isn't cut even when the page has no padding; the negative
         // margin and the wider/taller box keep the layout where it was. The group then pokes
         // CLIP_INSET past its parent, so the caller clips horizontal overflow at the page edge.
-        const styleProps = baseClass === 'u-panel-group'
-            ? { style: clipInset ? { overflow: 'hidden', ...clipInsetStyle } : { overflow: 'hidden' } }
-            : baseClass === 'u-panel-base'
-            ? { style: { overflow: 'visible', ...ssrStyle } }
-            : {};
+        let styleProps = {};
+        if (baseClass === 'u-panel-group') {
+            styleProps = { style: clipInset ? { overflow: 'hidden', ...clipInsetStyle } : { overflow: 'hidden' } };
+        } else if (baseClass === 'u-panel-base') {
+            styleProps = { style: { overflow: 'visible', ...ssrStyle } };
+        }
 
         return (
             <Component
