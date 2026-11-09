@@ -1,42 +1,66 @@
-// Convert between <mention> (react-native-enriched-html) and
-// UNA's <a class="bx-mention-link" data-profile-id href> format.
+// Convert between <mention> (react-native-enriched-html) and UNA's links:
+// - a mention: <a class="bx-mention-link" data-profile-id href>Name</a>
+// - a hashtag: <a class="bx-tag-link" dchar="#" title="word" href>#word</a>, the form
+//   UNA's own editor (inc/js/editor.quill.js) writes. BxDolMetatags::keywordsAdd drops
+//   every other <a> with its text before it reads #words, so the "#" and this class are
+//   what get a picked hashtag indexed.
+// Older NEO builds saved hashtags as <a class="bx-tag" href>word</a>; load reads both.
 
 const MENTION_TAG_RE = /<mention\b([^>]*)>([\s\S]*?)<\/mention>/gi
-// UNA links with class bx-mention-link or bx-tag
-const UNA_LINK_RE = /<a\b([^>]*?\bclass="[^"]*\b(?:bx-mention-link|bx-tag)\b[^"]*"[^>]*?)>([\s\S]*?)<\/a>/gi
+// UNA links with class bx-mention-link, bx-tag-link or (old NEO) bx-tag
+const UNA_LINK_RE = /<a\b([^>]*?\bclass="[^"]*\b(?:bx-mention-link|bx-tag-link|bx-tag)(?![\w-])[^"]*"[^>]*?)>([\s\S]*?)<\/a>/gi
 
 function attr(attrs, name) {
-    const m = attrs.match(new RegExp(`${name}\\s*=\\s*"([^"]*)"`, 'i'))
+    const m = attrs.match(new RegExp(String.raw`(?:^|\s)${name}\s*=\s*"([^"]*)"`, 'i'))
     return m ? m[1] : ''
 }
 
-// On save: <mention> -> <a class="bx-mention-link">
+// Text of a link's inner HTML without tags (UNA renders hashtags as <s>#</s><b>word</b>).
+function innerText(inner) {
+    // [^<>] keeps each scan to one tag, so stray "<" can't make it quadratic.
+    return inner.replace(/<[^<>]*>/g, '').trim()
+}
+
+function quoteAttr(s) {
+    return String(s).replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+}
+
+function isTagLink(attrs) {
+    return /(?:^|\s)bx-tag(?:-link)?(?=\s|$)/.test(attr(attrs, 'class')) || attr(attrs, 'dchar') === '#'
+}
+
+// On save: <mention> -> UNA mention / hashtag link
 export function mentionsToUnaLinks(html) {
     if (!html) return html
     return html.replace(MENTION_TAG_RE, (_full, attrs, inner) => {
         const indicator = attr(attrs, 'indicator') || '@'
-        const profileId = attr(attrs, 'data-profile-id')
         const href = attr(attrs, 'href')
-        const cls = indicator === '#' ? 'bx-tag' : 'bx-mention-link'
-        // Store the name without the leading indicator; renderers add it back.
+        const hrefAttr = href ? ` href="${href}"` : ''
         let text = inner.trim()
         if (text.startsWith(indicator)) text = text.slice(indicator.length)
+        if (indicator === '#') {
+            // No data-profile-id: UNA's mentionsAdd reads it from any tag, so a
+            // keyword id there would mention the profile with that id.
+            const word = innerText(text)
+            return `<a class="bx-tag-link" dchar="#" title="${quoteAttr(word)}"${hrefAttr}>#${text}</a>`
+        }
+        const profileId = attr(attrs, 'data-profile-id')
         const idAttr = profileId ? ` data-profile-id="${profileId}"` : ''
-        const hrefAttr = href ? ` href="${href}"` : ''
-        return `<a class="${cls}"${idAttr}${hrefAttr}>${text}</a>`
+        // Store the name without the leading indicator; renderers add it back.
+        return `<a class="bx-mention-link"${idAttr}${hrefAttr}>${text}</a>`
     })
 }
 
-// On load: <a class="bx-mention-link"> -> <mention> (so mentions in existing
-// content become editable mention nodes again)
+// On load: UNA mention / hashtag links -> <mention> (so mentions and hashtags in
+// existing content become editable mention nodes again)
 export function unaLinksToMentions(html) {
     if (!html) return html
     return html.replace(UNA_LINK_RE, (_full, attrs, inner) => {
-        const cls = attr(attrs, 'class')
-        const indicator = /\bbx-tag\b/.test(cls) ? '#' : '@'
-        const profileId = attr(attrs, 'data-profile-id')
+        const isTag = isTagLink(attrs)
+        const indicator = isTag ? '#' : '@'
+        const profileId = isTag ? '' : attr(attrs, 'data-profile-id')
         const href = attr(attrs, 'href')
-        let name = inner.trim()
+        let name = innerText(inner)
         if (name.startsWith(indicator)) name = name.slice(indicator.length)
         // Display the indicator (e.g. "@Name") in both the text attr and the inner
         // content so the editor and the EnrichedText renderer show it consistently.
@@ -44,7 +68,7 @@ export function unaLinksToMentions(html) {
         const idAttr = profileId ? ` data-profile-id="${profileId}"` : ''
         const hrefAttr = href ? ` href="${href}"` : ''
         // double quotes are required for correct parsing (issue #404)
-        return `<mention indicator="${indicator}" text="${display}"${idAttr}${hrefAttr}>${display}</mention>`
+        return `<mention indicator="${indicator}" text="${quoteAttr(display)}"${idAttr}${hrefAttr}>${display}</mention>`
     })
 }
 
