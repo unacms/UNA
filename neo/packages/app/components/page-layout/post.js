@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import { useState, useCallback, useMemo, useEffect, useLayoutEffect, useRef } from 'react';
 import { View } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
 import { LAYOUT_BREAKPOINTS, isNativeTabsEnabled, findElementBySource } from 'app/lib/util';
@@ -210,7 +210,10 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
         }
     }, [])
 
-    const { leftBarBlocks, sideBarBlocks, topBlocks, centerBlocks: cellCenterBlocks } = defineCells(blocks, data);
+    // Memoized: a new block descriptor makes BlockByName re-render its block, and a block that is
+    // still hydrating is then dropped and drawn again (a layout shift right after load).
+    const cellBlocks = useMemo(() => defineCells(blocks, data), [blocks, data]);
+    const { leftBarBlocks, sideBarBlocks, topBlocks, centerBlocks: cellCenterBlocks } = cellBlocks;
 
     // UNA puts some entities' action bars (Discussions) in the top cell, where the
     // web site draws them above the content. Show them after the text, where Posts
@@ -352,7 +355,10 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
         setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)
     }
 
-    useEffect(() => {
+    // Before paint: until hydration the panels take their size from CSS (`sizes`), and the
+    // group's own layout still has the server breakpoint's sizes; one painted frame of those
+    // would shift the columns.
+    useLayoutEffect(() => {
         const layouts = []
         if (isLeftCol) {
             layouts.push(leftPanelProps.defaultSize)
@@ -602,6 +608,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                     <Panel
                         className={`hidden ${leftBreakpoint}:block `}
                         {...leftPanelProps}
+                        sizes={{ base: leftBase, responsive: leftResponsive }}
                     >
                         <View className="h-full w-full">
                             <View
@@ -626,7 +633,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                     />
                 </>
             )}
-            <Panel {...centerPanelProps} className="mt-0.5 sm:m-0 sm:p-3 lg:p-4 ">
+            <Panel {...centerPanelProps} sizes={{ base: centerBase, responsive: centerResponsive }} className="mt-0.5 sm:m-0 sm:p-3 lg:p-4 ">
                 {embedded ? (
                     <View className="w-full mx-auto">
                         <CommentsBrowse
@@ -695,6 +702,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                     <Panel
                         className={`hidden ${rightBreakpoint}:block`}
                         {...rightPanelProps}
+                        sizes={{ base: rightBase, responsive: rightResponsive }}
                     >
                         <View className="h-full w-full">
                             <View

@@ -474,6 +474,9 @@ export function CommentsBrowse({
         ? [...extra, { id: 'block_header', data: header }, ...previous, ...refetchState.visibleItems]
         : (previous.length ? [...previous, ...refetchState.visibleItems] : refetchState.visibleItems);
 
+    // Rows before the comments that exist from the first render (see `initialItemCount` below).
+    const headCount = dataOut.length && dataOut[0]?.id !== 'block_previous' && extra.length ? extra.length + 1 : 0;
+
     function scrollToItemByCommentId(cmtId, options) {
         const itemIndex = dataOut.findIndex(obj => obj.id == cmtId);
         if (itemIndex < 0) return;
@@ -589,6 +592,10 @@ export function CommentsBrowse({
                 height={embedded ? undefined : (height > 0 ? height : undefined)}
                 style={embedded ? undefined : { flex: 1 }}
                 data={dataOut}
+                // Web: the post's own blocks and the comments header are rows of this list. Render
+                // them on the server and in the first client render, so the post doesn't appear
+                // (and push the page) only once Virtuoso has measured the window.
+                initialItemCount={headCount}
                 extraData={marginBottom}
                 refer={flashListRef}
                 onRefresh={refetch}

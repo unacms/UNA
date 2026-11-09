@@ -9,7 +9,8 @@ export const PanelGroup = ({ clipInset, ...props }) => {
     return <View {...props}/>
 };
 
-export const Panel = (props) => {
+// `sizes` only sizes web panels before hydration (resizable-panels.web.js).
+export const Panel = ({ sizes, ...props }) => {
     return <View {...props}/>
 };
 

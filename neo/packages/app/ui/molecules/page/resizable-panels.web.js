@@ -1,6 +1,7 @@
 import { Panel as PanelDef, PanelGroup as PanelGroupDef, PanelResizeHandle } from "react-resizable-panels";
 import { forwardRef, memo } from "react";
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util';
+import { useHydrated } from 'app/context/measure';
 import { View } from 'app/design/view';
 import { appSetting} from 'app/lib/util';
 
@@ -17,8 +18,33 @@ const clipInsetStyle = {
     height: `calc(100% + ${CLIP_INSET * 2}px)`,
 };
 
+/** Breakpoint names in LAYOUT_BREAKPOINTS, for the `--neo-panel-grow-<bp>` variables. */
+const SIZE_BREAKPOINTS = Object.keys(LAYOUT_BREAKPOINTS);
+
+/**
+ * Inline style for a panel before hydration. The server renders with the SSR breakpoint (2xl,
+ * context/measure), so a size that differs per breakpoint (`responsive.<bp>.defaultSize`) would
+ * jump once the client knows the window. Instead every breakpoint's size goes into a CSS
+ * variable and `.neo-panel-ssr` (design/styles/global.web.css) picks one by media query.
+ * Null when the panel has no responsive size.
+ */
+function ssrSizeStyle(sizes) {
+    const base = sizes?.base?.defaultSize;
+    const responsive = sizes?.responsive;
+    if (typeof base !== 'number' || !responsive) return null;
+    const style = { flexGrow: 'var(--neo-panel-grow)', '--neo-panel-grow-base': base };
+    for (const bp of SIZE_BREAKPOINTS) {
+        const size = responsive[bp]?.defaultSize;
+        if (typeof size === 'number') style[`--neo-panel-grow-${bp}`] = size;
+    }
+    return style;
+}
+
 function createPanelComponent({ baseClass, Component = PanelDef, role, ariaLevel }) {
-    function PanelSubComponent({ className = '', clipInset = false, ...props }, ref) {
+    function PanelSubComponent({ className = '', clipInset = false, sizes, ...props }, ref) {
+        // Panels only: until hydration, the size for the real window (see ssrSizeStyle).
+        const hydrated = useHydrated();
+        const ssrStyle = baseClass === 'u-panel-base' && !hydrated ? ssrSizeStyle(sizes) : null;
         // PanelGroup needs overflow: hidden for proper layout containment
         // Panels can have overflow: visible to allow sticky children
         // `clipInset` (PanelGroup): padding moves that clip edge out by CLIP_INSET, so chrome of
@@ -28,13 +54,13 @@ function createPanelComponent({ baseClass, Component = PanelDef, role, ariaLevel
         const styleProps = baseClass === 'u-panel-group'
             ? { style: clipInset ? { overflow: 'hidden', ...clipInsetStyle } : { overflow: 'hidden' } }
             : baseClass === 'u-panel-base'
-            ? { style: { overflow: 'visible' } }
+            ? { style: { overflow: 'visible', ...ssrStyle } }
             : {};
 
         return (
             <Component
                 ref={ref}
-                className={`${panelTheme[baseClass]} ${className}`}
+                className={`${panelTheme[baseClass]} ${className}${ssrStyle ? ' neo-panel-ssr' : ''}`}
                 role={role}
                 aria-level={ariaLevel}
                 {...styleProps}
