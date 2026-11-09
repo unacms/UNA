@@ -12,9 +12,17 @@
  */
 class BxBaseUploaderServices extends BxDol
 {
+    /** Storages the inline editor uploads (`upload_inline`) may write to. */
+    const INLINE_STORAGES = ['sys_images_editor', 'sys_videos_editor'];
+
     public function __construct()
     {
         parent::__construct();
+    }
+
+    public static function isInlineStorage($sStorageObject)
+    {
+        return is_string($sStorageObject) && in_array($sStorageObject, self::INLINE_STORAGES, true);
     }
     
     /**
@@ -107,8 +115,11 @@ class BxBaseUploaderServices extends BxDol
                 break;
 
             case 'upload_inline':
+                // Only editor storages take inline uploads, with or without a token.
                 // The upload token is bound to `so`; the inline storage must be the same one.
                 $sInlineStorage = bx_process_input(bx_get('o'));
+                if(!self::isInlineStorage($sInlineStorage))
+                    return ['error' => _t('_Access denied'), 'code' => 403];
                 if(!empty($sUploadToken) && $sInlineStorage !== $sStorageObject)
                     return ['error' => _t('_Access denied'), 'code' => 403];
                 $sStorageObject = $sInlineStorage;
@@ -180,6 +191,8 @@ class BxBaseUploaderServices extends BxDol
             $sAction = 'upload';
         if(!$sUploaderObject || !$sStorageObject || !BxDolUploader::getObjectInstance($sUploaderObject, $sStorageObject, 'token'))
             return ['error' => _t('_sys_request_page_not_found_cpt'), 'code' => 404];
+        if($sAction == 'upload_inline' && !self::isInlineStorage($sStorageObject))
+            return ['error' => _t('_Access denied'), 'code' => 403];
         // NEO posts the file straight to api.php without cookies, so the token can't be bound to a session.
         $iLifetime = BxDolUploader::getUploadTokenLifetime(true);
         $sToken = BxDolUploader::getUploadToken($sAction, $sStorageObject, $sUploaderObject, [], true);
