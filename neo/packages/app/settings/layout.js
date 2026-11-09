@@ -111,9 +111,9 @@ export const settingsLayout = {
             /** Optional. When set (non-blank), appended to `container` while scrollY > 0 (full-width bar: shadow, border, etc.). */
             container_scrolled: ' ns--header-wrapper-scrolled-- shadow-none ne-- ',
             // The card surface (bg-card/60) like blocks; the blur only once the page scrolls under it.
-            // Each side keeps its own edge inset (content_left ps-4, content_right pe-4); gap-3
+            // Each side keeps its own edge inset (content_left ps-4, content_right pe-4); gap-4
             // spaces the sides from each other, so no two paddings stack between them.
-            content: ' ns--header-content-- items-center justify-between gap-3 h-16 lg:bg-card/60 lg:shadow-border-b dark:lg:shadow-border-b-deep mx-auto w-full ne-- ',
+            content: ' ns--header-content-- items-center justify-between gap-4 h-16 lg:bg-card/60 lg:shadow-border-b dark:lg:shadow-border-b-deep mx-auto w-full ne-- ',
             /** Optional. When set (non-blank), applied to header content only while scrollY > 0. If unset, legacy `content_pinned_fixed` behavior is unchanged. */
             content_scrolled: ' ns--header-content-scrolled-- lg:backdrop-blur-lg ',
             content_pinned_fixed: '  ',
