@@ -259,7 +259,7 @@ abstract class BxDolUploader extends BxDolFactory
      * @param $iProfileId - profile to get orphaned files for
      * @return array of results in the same order as items: ghosts with order (['g' => ..., 'o' => ...]) or an empty array
      */
-    static public function getGhostsForMany($aItems, $iProfileId)
+    public static function getGhostsForMany($aItems, $iProfileId)
     {
         $aResult = [];
         if(!is_array($aItems))
@@ -272,11 +272,11 @@ abstract class BxDolUploader extends BxDolFactory
         return $aResult;
     }
 
-    static protected function _getGhostsForItem($aItem, $iProfileId)
+    protected static function _getGhostsForItem($aItem, $iProfileId)
     {
         $sUploaderObject = bx_process_input($aItem['uo'] ?? '');
         $sStorageObject = bx_process_input($aItem['so'] ?? '');
-        $sUniqId = isset($aItem['uid']) && is_string($aItem['uid']) && preg_match("/^[\d\w]+$/", $aItem['uid']) ? $aItem['uid'] : '';
+        $sUniqId = isset($aItem['uid']) && is_string($aItem['uid']) && preg_match("/^\w+$/", $aItem['uid']) ? $aItem['uid'] : '';
         if(!$sUploaderObject || !$sStorageObject || !$sUniqId || !is_string($sUploaderObject) || !is_string($sStorageObject))
             return [];
 

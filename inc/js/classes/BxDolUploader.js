@@ -172,19 +172,25 @@ BxDolUploaderBase.prototype.restoreGhosts = function (bInitReordering, onComplet
         setTimeout(BxDolUploaderBase._restoreGhostsQueued, 0);
 };
 
+/** Max number of uploaders in one restore_ghosts_batch request, see BxDolUploader::GHOSTS_BATCH_MAX. */
+BxDolUploaderBase._iGhostsBatchMax = 20;
+
 BxDolUploaderBase._restoreGhostsQueued = function () {
     var aQueue = BxDolUploaderBase._aGhostsQueue.splice(0);
-    if (!aQueue.length)
-        return;
 
     if (aQueue.length == 1) {
         var oUploader = aQueue[0].uploader;
-        $.getJSON(oUploader._getUrlWithStandardParams() + '&' + $.param(oUploader._getRestoreGhostsParams()) + '&a=restore_ghosts&f=json&_t=' + escape(new Date()), aQueue[0].callback);
+        $.getJSON(oUploader._getUrlWithStandardParams() + '&' + $.param(oUploader._getRestoreGhostsParams()) + '&a=restore_ghosts&f=json&_t=' + Date.now(), aQueue[0].callback);
         return;
     }
 
+    for (var i = 0; i < aQueue.length; i += BxDolUploaderBase._iGhostsBatchMax)
+        BxDolUploaderBase._restoreGhostsBatch(aQueue.slice(i, i + BxDolUploaderBase._iGhostsBatchMax));
+};
+
+BxDolUploaderBase._restoreGhostsBatch = function (aBatch) {
     $.post(sUrlRoot + 'storage_uploader.php?a=restore_ghosts_batch&f=json', {
-        items: $.map(aQueue, function (oItem) {
+        items: $.map(aBatch, function (oItem) {
             return $.extend({
                 uo: oItem.uploader._sUploaderObject,
                 so: oItem.uploader._sStorageObject,
@@ -192,8 +198,8 @@ BxDolUploaderBase._restoreGhostsQueued = function () {
             }, oItem.uploader._getRestoreGhostsParams());
         })
     }, function (aData) {
-        $.each(aQueue, function (i, oItem) {
-            oItem.callback(aData && aData[i] !== undefined ? aData[i] : []);
+        $.each(aBatch, function (i, oItem) {
+            oItem.callback(aData?.[i] ?? []);
         });
     }, 'json');
 };

@@ -22,6 +22,7 @@ function BxDolCreatePost(oOptions) {
 
     // set here, not in init: init waits for document ready, and a click can come first
     this._oRequests = {};
+    this._oInserts = {};
 
     var $this = this;
     $(document).ready(function() {
@@ -50,12 +51,8 @@ BxDolCreatePost.prototype.init = function () {
             continue;
 
         this._loadForm(sKey, this._oPreloadingList[sKey]).done(function(oData) {
-            if(!oData || !oData.content || $('.sys-cpf-form.sys-cpf-' + oData.module).length != 0) 
-                return;
-
-            var oForm = $('<div class="sys-cpf-form sys-cpf-' + oData.module + '"></div>').hide();
-            $('.sys-cpf-close').before(oForm);
-            bx_html_async(oForm, oData.content);
+            if(oData?.content)
+                $this._insertForm(oData);
         });
     }
 };
@@ -80,7 +77,7 @@ BxDolCreatePost.prototype._loadForm = function (sModuleName, sModuleUri) {
             absolute_action_url: true,
             context_id: this._iContextId,
             custom: this._oCustom,
-            _t: (new Date()).getTime()
+            _t: Date.now()
         },
         null,
         'json'
@@ -91,6 +88,32 @@ BxDolCreatePost.prototype._loadForm = function (sModuleName, sModuleUri) {
 
     this._oRequests[sModuleName] = oRequest;
     return oRequest;
+};
+
+/**
+ * Put a loaded form into its hidden wrapper once (the wrapper of the default module is in
+ * the template already); later calls get the same promise, resolved with the wrapper.
+ */
+BxDolCreatePost.prototype._insertForm = function (oData) {
+    if(this._oInserts[oData.module])
+        return this._oInserts[oData.module];
+
+    var oForm = $('.sys-cpf-form.sys-cpf-' + oData.module);
+    if(oForm.length == 0) {
+        oForm = $('<div class="sys-cpf-form sys-cpf-' + oData.module + '"></div>').hide();
+        $('.sys-cpf-close').before(oForm);
+    }
+
+    var oDeferred = $.Deferred();
+    if(oForm.find('form').length)
+        oDeferred.resolve(oForm);
+    else
+        bx_html_async(oForm, oData.content, function() {
+            oDeferred.resolve(oForm);
+        });
+
+    this._oInserts[oData.module] = oDeferred.promise();
+    return this._oInserts[oData.module];
 };
 
 BxDolCreatePost.prototype.getForm = function (sModuleName, sModuleUri, oElement) {
@@ -111,25 +134,15 @@ BxDolCreatePost.prototype.getForm = function (sModuleName, sModuleUri, oElement)
                 $this._placeholderInBlock(oElement, true);
 
                 $this._loadForm(sModuleName, sModuleUri).done(function(oData) {
-                    if(!oData || !oData.content) {
+                    if(!oData?.content) {
                         $this._placeholderInBlock(oElement, false);
                         return;
                     }
 
-                    var sForm = '.sys-cpf-form.sys-cpf-' + oData.module;
-                    if($(sForm).length == 0)
-                        $('.sys-cpf-close').before($('<div class="sys-cpf-form sys-cpf-' + oData.module + '"></div>').hide());
-
-                    if($(sForm).find('form').length) {
+                    $this._insertForm(oData).done(function(oForm) {
                         $this._placeholderInBlock(oElement, false);
-                        $(sForm).show().bxProcessHtml().siblings('.sys-cpf-close:hidden').show();
-                        return;
-                    }
-
-                    bx_html_async($(sForm), oData.content, function() {
-                        $this._placeholderInBlock(oElement, false);
-                        $(this).show().bxProcessHtml().siblings('.sys-cpf-close:hidden').show();
-                        $(this).find('form :input:visible:first').trigger('focus');
+                        oForm.show().bxProcessHtml().siblings('.sys-cpf-close:hidden').show();
+                        oForm.find('form :input:visible:first').trigger('focus');
                     });
                 }).fail(function() {
                     $this._placeholderInBlock(oElement, false);

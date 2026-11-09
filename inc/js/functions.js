@@ -2258,39 +2258,35 @@ function bx_html_async (oElement, sHtml, fCallback)
  */
 function bx_load_scripts_in_order (aUrls, fCallback)
 {
-    if ('undefined' === typeof(glBxScriptElements))
-        glBxScriptElements = {};
-
-    var fKey = function (sUrl) {
-        return sUrl.replace(/([?&])(rev|_)=[^&]*/g, '$1').replace(/[?&]+$/, '');
-    };
-    var fIsOnPage = function (sUrl) {
-        var sKey = fKey(sUrl);
-        for (var i = 0; i < document.scripts.length; i++)
-            if (document.scripts[i].src && fKey(document.scripts[i].src) == sKey)
-                return true;
-        return 'undefined' !== typeof(aIncludedJs) && $.isArray(aIncludedJs) && $.inArray(sKey, $.map(aIncludedJs, fKey)) != -1;
-    };
+    if (!window.glBxScriptElements)
+        window.glBxScriptElements = {};
+    var oLoading = window.glBxScriptElements;
 
     var aWait = [];
     $.each(aUrls, function (i, sUrl) {
-        var sKey = fKey(sUrl);
-        if (glBxScriptElements[sKey]) {
-            aWait.push(glBxScriptElements[sKey]);
+        var sKey = bx_script_key(sUrl);
+        if (oLoading[sKey]) {
+            aWait.push(oLoading[sKey]);
             return;
         }
-        if (fIsOnPage(sUrl))
+        if (bx_script_is_on_page(sKey))
             return;
 
         var oDeferred = $.Deferred();
         var oScript = document.createElement('script');
         oScript.src = sUrl;
         oScript.async = false; // keeps the order of execution
-        oScript.onload = oScript.onerror = function () {
+        oScript.onload = function () {
             oDeferred.resolve();
         };
-        glBxScriptElements[sKey] = oDeferred.promise();
-        aWait.push(glBxScriptElements[sKey]);
+        oScript.onerror = function () {
+            // forget a failed script, so that the next request for it downloads it again
+            delete oLoading[sKey];
+            oScript.remove();
+            oDeferred.resolve();
+        };
+        oLoading[sKey] = oDeferred.promise();
+        aWait.push(oLoading[sKey]);
         document.head.appendChild(oScript);
     });
 
@@ -2299,7 +2295,32 @@ function bx_load_scripts_in_order (aUrls, fCallback)
         return;
     }
 
-    $.when.apply($, aWait).always(fCallback);
+    $.when(...aWait).always(fCallback);
+}
+
+/**
+ * Script URL without the cache busting parameters (rev, _), to compare scripts.
+ */
+function bx_script_key (sUrl)
+{
+    try {
+        var oUrl = new URL(sUrl, document.baseURI);
+        oUrl.searchParams.delete('rev');
+        oUrl.searchParams.delete('_');
+        return oUrl.href;
+    }
+    catch (e) {
+        return sUrl;
+    }
+}
+
+function bx_script_is_on_page (sKey)
+{
+    for (var oScript of document.scripts)
+        if (oScript.src && bx_script_key(oScript.src) == sKey)
+            return true;
+
+    return 'undefined' !== typeof(aIncludedJs) && Array.isArray(aIncludedJs) && aIncludedJs.map(bx_script_key).indexOf(sKey) != -1;
 }
 
 function bx_get_scripts (aFiles, fCallback)
