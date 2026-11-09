@@ -1,0 +1,96 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Spatie\CalendarLinks\Generators;
+
+use DateTimeZone;
+use Spatie\CalendarLinks\Generator;
+use Spatie\CalendarLinks\Link;
+
+/**
+ * @api
+ * @see https://github.com/InteractionDesignFoundation/add-event-to-calendar-docs/blob/main/services/outlook-web.md
+ * @psalm-type OutlookUrlParameters = array<string, scalar|null|list<scalar|null>>
+ */
+abstract class BaseOutlook implements Generator
+{
+    /** @see https://www.php.net/manual/en/function.date.php */
+    private const string DATE_FORMAT = 'Y-m-d';
+
+    /** @see https://www.php.net/manual/en/function.date.php */
+    private const string DATETIME_FORMAT = 'Y-m-d\TH:i:s\Z';
+
+    /** @psalm-var OutlookUrlParameters */
+    protected array $urlParameters = [];
+
+    /**
+     * Get base URL for links.
+     * @return non-empty-string
+     */
+    abstract protected function baseUrl(): string;
+
+    /** @psalm-param OutlookUrlParameters $urlParameters */
+    public function __construct(array $urlParameters = [])
+    {
+        $this->urlParameters = $urlParameters;
+    }
+
+    /** @inheritDoc */
+    #[\Override]
+    public function generate(Link $link): string
+    {
+        $url = $this->baseUrl();
+
+        if ($link->allDay) {
+            $url .= '&startdt='.$link->from->format(self::DATE_FORMAT);
+            $url .= '&enddt='.$link->to->format(self::DATE_FORMAT);
+            $url .= '&allday=true';
+        } else {
+            $url .= '&startdt='.(clone $link->from)->setTimezone(new DateTimeZone('UTC'))->format(self::DATETIME_FORMAT);
+            $url .= '&enddt='.(clone $link->to)->setTimezone(new DateTimeZone('UTC'))->format(self::DATETIME_FORMAT);
+        }
+
+        $url .= '&subject='.$this->sanitizeString($link->title);
+
+        if ($link->description !== '') {
+            $url .= '&body='.$this->sanitizeString($link->description);
+        }
+
+        if ($link->address !== '') {
+            $url .= '&location='.$this->sanitizeString($link->address);
+        }
+
+        $requiredGuests = [];
+        $optionalGuests = [];
+        foreach ($link->guests as $guest) {
+            if ($guest['optional']) {
+                $optionalGuests[] = $this->sanitizeString($guest['email']);
+            } else {
+                $requiredGuests[] = $this->sanitizeString($guest['email']);
+            }
+        }
+
+        if ($requiredGuests !== []) {
+            $url .= '&to='.implode(',', $requiredGuests);
+        }
+
+        if ($optionalGuests !== []) {
+            $url .= '&cc='.implode(',', $optionalGuests);
+        }
+
+        foreach ($this->urlParameters as $key => $value) {
+            // A list of values is flattened into a repeated parameter.
+            foreach (is_array($value) ? $value : [$value] as $singleValue) {
+                $url .= '&'.urlencode($key).(in_array($singleValue, [null, '', false], true) ? '' : '='.$this->sanitizeString((string) $singleValue));
+            }
+        }
+
+        return $url;
+    }
+
+    protected function sanitizeString(string $input): string
+    {
+        return rawurlencode($input);
+    }
+}

@@ -1,0 +1,25 @@
+div.bx-std-login-form {
+    width: 28.75rem;
+    max-width: calc(100vw - 2rem); /* on a phone the card keeps 1rem from each edge: the popup's own margins sit outside it */
+    height: auto;
+}
+div.bx-std-login-form .bx-form-input-password {
+    padding: 0px;
+}
+
+/* The login box doesn't need to scroll, so let its shadow show instead of clipping it at the popup wrapper... */
+body > #bx-std-login-form-box {
+    overflow: visible;
+}
+/* ...except on a short screen (a phone on its side), where the page behind is locked and the box is taller than the window. */
+@media (max-height: 32rem) {
+    body > #bx-std-login-form-box {
+        max-height: 100dvh;
+        overflow-y: auto;
+    }
+}
+
+/* It stays a card on phones too (login.js keeps it out of the full screen popup rules), and there is nothing to close it to. */
+#bx-std-login-form-box .bx-popup-close-wrapper {
+    display: none;
+}

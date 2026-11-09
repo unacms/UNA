@@ -1,0 +1,313 @@
+---
+name: neuron-tool-approval
+description: Implement human-in-the-loop tool approval flows with Neuron AI agents — gating risky tools behind approve/deny decisions, rendering approval UIs from chat history, submitting decisions, and building a single endpoint that handles both conversation turns and approval continuations. Use this skill whenever the user mentions tool approval, human in the loop (HITL), approve/deny actions, pending approvals, confirming dangerous tool calls, resuming a suspended agent, or building the UI side of an approval workflow.
+---
+
+# Neuron AI Tool Approval
+
+This skill helps you gate agent tool execution behind human approval and build the application around it: the server endpoint, the UI, and the decision round trip.
+
+Use `Agent::submitApprovalDecisions($decisions)` for tool approval and `Agent::submitToolResults($results)` for deferred tool results. Both accept maps keyed by tool call ID and stage a continuation; finish with `run()` for an `AgentState` or `events()` for a stream.
+
+## The Mental Model
+
+**Approval is owned by `ToolNode` and configured on the tools themselves**. There is no middleware to attach: each tool declares whether it needs approval, you override that per instance when you attach it to the agent, and the node suspends the run before executing anything undecided.
+
+**Chat history is what the application reads; the thread is the workflow ID.** Which tools await a decision and why each one is asking live on the **last message of the thread**, written once at suspend time — a client that renders from the message list needs nothing else. A client that keeps approvals apart from messages (AG-UI, CopilotKit) asks the agent instead: `Agent::pendingApprovals()` (see [Rebuilding the UI after a reload](#rebuilding-the-ui-after-a-reload)). Continuing needs no runId either: the run's durable records live in the partition named by the threadId itself, so the approve endpoint rebuilds the agent from the thread ID alone, stages the decisions with `submitApprovalDecisions($decisions)`, and finishes with `run()` or `events()`. No workflow coordination ID is stored on the side.
+
+Two facts shape the UI:
+
+- **History is append-only.** The suspended `tool_call` message keeps its *pending snapshot* forever; the final outcomes (approved/rejected + feedback + results) are recorded on the `tool_call_result` message that follows it. "Is approval pending?" = the thread tail is a `tool_call` with pending tools.
+- **Partial decisions are retained by ToolNode through durable memos.** Each submission can contain only the newest decisions, through `submitApprovalDecisions($decisions)`. Explicit updates to an already-decided action in a still-open batch win.
+
+## Enabling Approval
+
+Two requirements for cross-process flows: **workflow persistence** (the suspension/continuation machinery) and a **durable message store** (the record itself — `InMemoryMessageStore` keeps the safety property but loses the thread across processes).
+
+```php
+use NeuronAI\Chat\History\SQLMessageStore;
+use NeuronAI\Workflow\Persistence\DatabasePersistence;
+
+$agent = MyAgent::make(workflowId: $threadId)
+    ->setMessageStore(new SQLMessageStore($pdo))
+    ->setPersistence(new DatabasePersistence($pdo));
+```
+
+That's all the agent-side setup — the gate itself is always active and asks each tool.
+
+### Who decides which tools are gated
+
+**The tool declares its intrinsic risk** by overriding the protected `approvalPolicy()` hook. Returning a **string counts as `true` and doubles as the approval reason** shown to the approver:
+
+```php
+class TransferMoneyTool extends Tool
+{
+    protected function approvalPolicy(): bool|string
+    {
+        return ($this->inputs['amount'] ?? 0) > 100
+            ? 'Transfers above $100 require a human sign-off'
+            : false;
+    }
+}
+```
+
+**The agent developer overrides the declaration per tool, at attach time** — deployment policy beats tool default, in both directions:
+
+```php
+protected function tools(): array
+{
+    return [
+        DeleteFileTool::make()->requireApproval(),        // force the gate, even if it declares false
+        RiskyThirdPartyTool::make()->suppressApproval(),  // waive a tool that declares true
+        TransferMoneyTool::make()->withApprovalPolicy(    // replace the policy entirely
+            fn (ToolInterface $t): bool|string => ($t->getInputs()['amount'] ?? 0) > 500
+                ? 'Transfers above $500 require a human sign-off'
+                : false
+        ),
+    ];
+}
+```
+
+The last configured override wins (`suppressApproval()` clears an earlier callback and vice versa). A tool with no override falls back to its own `approvalPolicy()` (default: no approval).
+
+## The Suspension
+
+When a gated tool is requested, the run pauses **functionally** — no exception reaches your code:
+
+```php
+$state = $agent->chat(new UserMessage('Delete the old logs file'));
+
+$state->isInterrupted();        // true — the run is suspended
+$state->getMessage();           // the annotated ToolCallMessage (see JSON below)
+$state->getInterruptRequest();  // ApprovalRequest — in-process render source
+```
+
+On a suspended run, `getMessage()` returns the **annotated `ToolCallMessage`**: approval states and reasons, stamped once. Serialize it straight to your client — it is the same message persisted in chat history. (It carries no execution identity: the run is identified by the thread, not by anything in the message.)
+
+## The JSON the UI Deals With
+
+A suspended thread's tail message, serialized (two gated tools awaiting decisions):
+
+```json
+{
+    "role": "assistant",
+    "content": [],
+    "type": "tool_call",
+    "tools": [
+        {
+            "callId": "toolu_01A2B3C4D5E6F7",
+            "name": "delete_file",
+            "description": "Delete a file from the filesystem",
+            "inputs": { "path": "C:/old_logs.txt" },
+            "approval": "pending",
+            "approvalReason": "Deleting a file is irreversible",
+            "rejectReason": null
+        },
+        {
+            "callId": "toolu_08G9H0I1J2K3L4",
+            "name": "send_email",
+            "description": "Send an email to a recipient",
+            "inputs": { "to": "team@example.com", "subject": "Logs cleanup" },
+            "approval": "pending",
+            "approvalReason": "Outbound email reaches people outside this workspace",
+            "rejectReason": null
+        }
+    ]
+}
+```
+
+| Field | Use it for |
+|---|---|
+| `type: "tool_call"` | Discriminator — this message type can carry approvals. |
+| `tools[].approval` | `"pending"` — or **absent** for a non-gated tool (no UI, runs automatically). This message keeps its pending snapshot forever; final outcomes land on the following `tool_call_result`. |
+| `tools[].callId` | **The key of the whole flow** — render by it, submit decisions by it. |
+| `tools[].name`, `tools[].inputs` | What the human is approving: which action, with which arguments. |
+| `tools[].approvalReason` | **Outbound** — why approval is being asked (declared by the tool or its attach-time policy). Show it on the approval card. |
+| `tools[].rejectReason` | **Inbound** — the approver's feedback, rejections only. The model receives it verbatim. |
+
+The two reason fields are a matched pair with opposite authors: `approvalReason` is the *tool talking to the human*; `rejectReason` is the *human talking back to the model*.
+
+### Detecting a pending approval
+
+```js
+const last = thread.messages.at(-1);
+const pendingTools = last?.type === 'tool_call'
+    ? last.tools.filter(t => t.approval === 'pending')
+    : [];
+const isSuspended = pendingTools.length > 0;
+```
+
+If suspended: render one card per `tools[]` entry that **has** an `approval` field (name, `inputs`, `approvalReason`, Approve/Deny actions — Deny with an optional free-text reason), and **lock the message input**. Decide from the tail only — older `tool_call` messages are settled record (read their outcomes from the `tool_call_result` that follows them).
+
+### Rebuilding the UI after a reload
+
+`Agent::pendingApprovals()` returns the `Action[]` still awaiting a decision on the thread's suspended run — an empty array when nothing is pending. It reads the persisted interruption, so it works in a cold process: build the agent from the thread ID and ask.
+
+```php
+/** GET /threads/{threadId}/approvals */
+function pendingApprovalsEndpoint(string $threadId): array
+{
+    return makeAgentForThread($threadId)->pendingApprovals();   // Action is JsonSerializable
+}
+```
+
+```json
+[
+    {
+        "id": "toolu_08G9H0I1J2K3L4",
+        "name": "send_email",
+        "description": "{\n    \"to\": \"team@example.com\", ...}",
+        "decision": "pending",
+        "feedback": null,
+        "reason": "Outbound email reaches people outside this workspace",
+        "inputs": { "to": "team@example.com", "subject": "Logs cleanup" }
+    }
+]
+```
+
+`id` is the `callId` — the key of the decision map. `reason` is the tool's `approvalReason`.
+
+Reach for it when:
+
+- **The client models approvals apart from messages.** AG-UI delivers them as interrupts on `RUN_FINISHED`, not as entries of the message list, so after a page refresh there is no message to restore them from. An AG-UI client gets them back, in the shape the live stream sent, from `AGUIAdapter::hydrate()` (see **neuron-frontend-integration**); any other client can serve `pendingApprovals()` on mount and rebuild the interrupt UI from it.
+- **You submit per click.** Unlike the history tail, the persisted request reflects the decisions delivered so far: an action already approved or rejected is no longer returned, so the reloaded page shows only what is still open.
+
+A client that renders from the message list (the JSON above, or Vercel `approval-requested` parts) can keep reading the tail.
+
+## Submitting Decisions
+
+Decisions travel as a plain map keyed by `callId`. Three value forms are accepted; `submitApprovalDecisions()` rejects other values before execution:
+
+| You send | Meaning | What the model eventually sees |
+|---|---|---|
+| `"approve"` | Run the tool | The tool's real output. Approvals are bare — no comment channel. |
+| `"reject"` | Skip the tool | The rejection template with "No specific instruction provided." |
+| `["reject", "your reason"]` | Skip, with feedback | The rejection template with your reason verbatim. |
+
+The rejection template delivered as the tool result:
+
+> TOOL NOT EXECUTED. The user rejected this action. User instruction: *{reason}*. Do not attempt this tool again. Follow the user's instruction or reconsider your plan.
+
+A good reject reason ("too expensive, find a cheaper option") steers the model's next step; a bare reject only stops this one.
+
+### The contract
+
+1. **Incremental deliveries** — each payload may contain only newly decided actions; the node restores earlier decisions.
+2. **The node accumulates delivered decisions** — durable memos preserve decisions across process restarts; translators handle format conversion and addressing.
+3. **Revisable until complete** — the latest delivered payload wins, so a resubmitted `callId` overwrites its earlier decision while any tool is still pending.
+4. **Completeness is the point of no return** — the moment every gated tool has a decision, the workflow proceeds immediately.
+5. **Silence is never consent** — an incomplete set re-suspends; a tool executes only on explicit `"approve"`.
+6. **Unknown IDs and malformed values fail translation** — no input is staged when validation fails.
+
+### UI submission patterns
+
+- **Batch with confirmation (the natural fit)**: collect decisions locally, submit one complete map on "Confirm". For a review step, **withhold one decision until confirmed** — an incomplete set is your draft state. This is the intended way to build a confirm stage; there is deliberately no built-in one.
+- **Submit-per-click**: send the newest decision on every click. The agent preserves previously delivered decisions, and an incomplete submission re-suspends until the last decision lands.
+
+### Pitfalls
+
+- **Partial decisions survive continuation** — each `submitApprovalDecisions()` call may contain only newly decided actions. Finish with `run()` or `events()` and render any remaining approvals.
+- **A typo'd `callId` is rejected** — native decisions must match an action in the current persisted request.
+- **`["approve", "note"]` doesn't exist** — `submitApprovalDecisions()` rejects it before execution. Only rejections carry text.
+- **The tail message won't show partial progress** — it keeps its pending snapshot (append-only history). Render interim progress from your own accumulated map, or from `pendingApprovals()` after a reload — not from the thread.
+
+## One Endpoint for the Whole Conversation
+
+A normal turn and an approval continuation share the same agent construction: build it from the thread ID, feed it what the client sent, and return the thread's new state. With `decisions`, `submitApprovalDecisions($decisions)` translates and stages the approval inputs and `run()` continues the pending run; with a message, `chat()` starts a fresh run.
+
+```php
+use NeuronAI\Chat\Messages\UserMessage;
+use NeuronAI\Exceptions\RunInFlightException;
+
+/**
+ * POST /threads/{threadId}/chat — body is ONE of:
+ *   { "message": "Delete the old logs file" }
+ *   { "decisions": { "toolu_01...": "approve", "toolu_08...": ["reject", "why"] } }
+ * `decisions` contains new choices or the full set; translation preserves previous choices.
+ */
+function chatEndpoint(string $threadId, array $body): array
+{
+    $agent = makeAgentForThread($threadId);   // MyAgent::make(workflowId: $threadId) + persistence + tools
+
+    try {
+        $state = isset($body['decisions'])
+            ? $agent->submitApprovalDecisions($body['decisions'])->run()  // answer → continue the pending run
+            : $agent->chat(new UserMessage($body['message']));            // message → start a new run
+    } catch (RunInFlightException $e) {
+        // A user message arrived while the thread has a pending tool call
+        // (the UI failed to lock the input). Nothing was executed or persisted;
+        // the exception carries the pending requests so the client can re-render them.
+        return [
+            'status' => 'conflict',
+            'error' => $e->getMessage(),
+            'pending' => $e->interrupt,   // InterruptRequest is JsonSerializable
+        ];   // HTTP 409
+    }
+
+    // Both branches converge: on a suspended run getMessage() IS the annotated
+    // ToolCallMessage; otherwise it is the assistant's reply.
+    return [
+        'status' => $state->isInterrupted() ? 'awaiting_approval' : 'completed',
+        'message' => $state->getMessage()->jsonSerialize(),
+    ];
+}
+```
+
+Why this works as one endpoint:
+
+1. **Same construction** — both paths build the identical agent from the thread id; the thread IS the run's workflow ID, so the decisions branch needs nothing extra.
+2. **Same outcomes** — a fresh turn can end suspended (model called a gated tool) and a continuation can end suspended (incomplete decision set, or the model called another gated tool). One response contract covers both: `awaiting_approval | completed`.
+3. **Same failure containment** — a user message on a suspended thread is refused by the engine with a `RunInFlightException` naming the pending approval, before anything reaches the provider or the durable store; map it to HTTP 409. A failed turn never causes this: the next message supersedes it.
+
+Treat `message` and `decisions` as mutually exclusive in the request body (400 if both). Serialize with `->jsonSerialize()` explicitly — framework serializers (e.g. Symfony's) would otherwise reflect over the object and produce a different shape than documented.
+
+A pending decision has no clock of its own: a suspended run holds no lease, so
+the approval can arrive minutes or days later unless the request carries an
+`expiresAt`. Cancelling is a decline: deliver `reject` decisions and the model
+gets the rejection template as the tool result. `abandon()` refuses while an
+approval is pending, because the next turn would answer the pre-suspend tool call
+with an interruption error instead of the user's decision; `resetConversation()`
+wipes the history and frees the thread instead.
+
+Approving a deferred tool authorizes its execution; it does not provide its result. When the frontend has executed the approved calls, send their outcomes with `submitToolResults(['call_123' => ['result' => $value]])->run()` (or `events()`). Each result entry contains exactly one `result` value or `error` string, and partial results are retained.
+
+For streaming, a new message uses `stream($message)`; an approval continuation uses `submitApprovalDecisions($decisions)->events()`. Drain either generator, emit its chunks, then read the final `AgentState` from `$generator->getReturn()`. Calling `stream()` for the decisions branch would start a new run rather than continue the suspended one. With `AGUIAdapter` a suspended stream ends with `RUN_FINISHED` whose `outcome` lists one `confirmation` interrupt per approval action (its `id` is the callId); with `VercelAIAdapter` it ends with a `tool-approval-request` part per pending call. Map the client's answers to the decision map above and continue the same way.
+
+## A Complete Decision Round Trip
+
+Each submission can carry only newly decided actions. The node preserves earlier deliveries.
+
+```json
+POST /threads/th_42/chat
+{ "decisions": { "toolu_01A2B3C4D5E6F7": "approve" } }
+```
+
+Set incomplete → still `awaiting_approval`. The tail keeps its pending snapshot — the client renders progress from its own accumulated map and keeps collecting:
+
+```json
+{ "status": "awaiting_approval",
+  "message": { "type": "tool_call", "tools": [
+      { "callId": "toolu_01A2B3C4D5E6F7", "approval": "pending", "...": "..." },
+      { "callId": "toolu_08G9H0I1J2K3L4", "approval": "pending", "...": "..." } ] } }
+```
+
+```json
+POST /threads/th_42/chat
+{ "decisions": {
+    "toolu_08G9H0I1J2K3L4": ["reject", "Do not email the whole team"] } }
+```
+
+Set complete → approved tool runs, rejected tool's template becomes its result, model replies:
+
+```json
+{ "status": "completed",
+  "message": { "role": "assistant", "content": [ { "type": "text",
+      "content": "I deleted the file. I didn't send the email — let me know if you'd like to notify someone individually." } ] } }
+```
+
+## Related
+
+- **Stale suspensions / deadlines**: event waits, due timers, payloads keyed by interruption ID, and continuation fences — see the **neuron-workflow** skill.
+- **Declaring tool risk** when creating tools: the **neuron-tool** skill.
+- **Agent setup** (providers, history backends, persistence): the **neuron-agent** skill.
+- **Approvals coming from a frontend library** (Vercel `addToolApprovalResponse`, AG-UI `resume`, CopilotKit `useInterrupt`): the **neuron-frontend-integration** skill.

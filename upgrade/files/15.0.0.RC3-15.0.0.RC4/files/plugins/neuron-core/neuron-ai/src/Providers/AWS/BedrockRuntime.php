@@ -1,0 +1,142 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Providers\AWS;
+
+use Aws\BedrockRuntime\BedrockRuntimeClient;
+use NeuronAI\Chat\Messages\SystemMessage;
+use NeuronAI\Exceptions\ProviderException;
+use NeuronAI\HttpClient\HttpClientInterface;
+use NeuronAI\Providers\AIProviderInterface;
+use NeuronAI\Providers\HandleWithTools;
+use NeuronAI\Providers\MessageMapperInterface;
+use NeuronAI\Providers\ToolMapperInterface;
+use NeuronAI\Tools\ToolCall;
+
+use function array_keys;
+use function array_reverse;
+use function array_values;
+use function count;
+
+class BedrockRuntime implements AIProviderInterface
+{
+    use HandleWithTools;
+    use HandleChat;
+    use HandleStream;
+    use HandleStructured;
+
+    protected const MAX_CACHE_POINTS = 4;
+
+    protected ?string $system = null;
+
+    protected MessageMapperInterface $messageMapper;
+    protected ToolMapperInterface $toolPayloadMapper;
+
+    public function __construct(
+        protected BedrockRuntimeClient $bedrockRuntimeClient,
+        protected string $model,
+        protected array $inferenceConfig = [],
+    ) {
+    }
+
+    public function getModel(): string
+    {
+        return $this->model;
+    }
+
+    public function systemPrompt(SystemMessage|string|null $prompt): AIProviderInterface
+    {
+        $this->system = $prompt instanceof SystemMessage ? $prompt->getContent() : $prompt;
+        return $this;
+    }
+
+    protected function messageMapper(): MessageMapperInterface
+    {
+        return $this->messageMapper ?? $this->messageMapper = new MessageMapper();
+    }
+
+    protected function toolPayloadMapper(): ToolMapperInterface
+    {
+        return $this->toolPayloadMapper ?? $this->toolPayloadMapper = new ToolMapper();
+    }
+
+    protected function createPayLoad(array $messages): array
+    {
+        $payload = [
+            'modelId' => $this->model,
+            'messages' => $this->limitCachePoints($this->messageMapper()->map($messages)),
+        ];
+
+        // The SDK validates locally: an absent or empty text block is refused
+        if ($this->system !== null && $this->system !== '') {
+            $payload['system'] = [['text' => $this->system]];
+        }
+
+        if (count($this->inferenceConfig) > 0) {
+            $payload['inferenceConfig'] = $this->inferenceConfig;
+        }
+
+        $tools = $this->toolPayloadMapper()->map($this->tools);
+
+        if ($tools !== []) {
+            $payload['toolConfig']['tools'] = $tools;
+        }
+
+        return $payload;
+    }
+
+    /**
+     * Converse refuses a request with more cache points than it allows, and the
+     * markers stored with a conversation add up over a long thread: the most
+     * recent ones stay.
+     *
+     * @param array<int, array<string, mixed>> $messages
+     * @return array<int, array<string, mixed>>
+     */
+    protected function limitCachePoints(array $messages): array
+    {
+        $slots = self::MAX_CACHE_POINTS;
+
+        foreach (array_reverse(array_keys($messages)) as $index) {
+            $content = $messages[$index]['content'];
+
+            foreach (array_reverse(array_keys($content)) as $position) {
+                if (!isset($content[$position]['cachePoint'])) {
+                    continue;
+                }
+
+                if ($slots > 0) {
+                    $slots--;
+                } else {
+                    unset($content[$position]);
+                }
+            }
+
+            $messages[$index]['content'] = array_values($content);
+        }
+
+        return $messages;
+    }
+
+    /**
+     * @throws ProviderException
+     */
+    protected function createTool(array $toolContent): ToolCall
+    {
+        $toolUse = $toolContent['toolUse'];
+
+        return $this->newToolCall(
+            $toolUse['name'],
+            $toolUse['toolUseId'],
+            $this->decodeToolArguments($toolUse['name'], $toolUse['input'] ?? null),
+        );
+    }
+
+    public function setHttpClient(HttpClientInterface $client): AIProviderInterface
+    {
+        // AWS BedrockRuntime uses its own BedrockRuntimeClient, not HTTP client
+        // This method is a no-op to satisfy the AIProviderInterface
+        return $this;
+    }
+}

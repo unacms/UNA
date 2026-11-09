@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- RC3 to RC4: Russian strings of the notifications module, released with the Russian language module. -->
+<resources name="ru" flag="ru" title="Russian" category="Notifications">
+	<string_add name="_bx_ntfs_menu_item_title_system_activity"><![CDATA[Активность]]></string_add>
+	<string_add name="_bx_ntfs_menu_item_title_activity"><![CDATA[Активность]]></string_add>
+</resources>

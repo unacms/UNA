@@ -1,0 +1,59 @@
+<svg class="icon v-api-twist-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- glyph: tabler-icons api-app, MIT -->
+<style>
+.v-api-twist-v1 :is(.bx-ai-turn,.bx-ai-core,.bx-ai-ring){transform-box:view-box;transform-origin:36px 36px}
+.v-api-twist-v1 .bx-ai-turn-sh{transform-box:view-box;transform-origin:36px 37px}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-api-twist-v1 [class]{animation:var(--a) 1500ms linear both;animation-delay:var(--d,0ms)}
+.v-api-twist-v1 .bx-ai-h0{--a:at0}
+@keyframes at0{0%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.2,.7,.3,1)}14.67%{transform:translate(-4.5px,0px)}40%{transform:translate(-4.5px,0px);animation-timing-function:cubic-bezier(.55,0,.85,.4)}49.33%{transform:translate(0.5px,0px);animation-timing-function:ease-out}59.33%{transform:translate(0px,0px)}100%{transform:translate(0px,0px)}}
+.v-api-twist-v1 .bx-ai-h1{--a:at1}
+@keyframes at1{0%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.2,.7,.3,1)}14.67%{transform:translate(0px,-4.5px)}40%{transform:translate(0px,-4.5px);animation-timing-function:cubic-bezier(.55,0,.85,.4)}49.33%{transform:translate(0px,0.5px);animation-timing-function:ease-out}59.33%{transform:translate(0px,0px)}100%{transform:translate(0px,0px)}}
+.v-api-twist-v1 .bx-ai-h2{--a:at2}
+@keyframes at2{0%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.2,.7,.3,1)}14.67%{transform:translate(4.5px,0px)}40%{transform:translate(4.5px,0px);animation-timing-function:cubic-bezier(.55,0,.85,.4)}49.33%{transform:translate(-0.5px,0px);animation-timing-function:ease-out}59.33%{transform:translate(0px,0px)}100%{transform:translate(0px,0px)}}
+.v-api-twist-v1 .bx-ai-h3{--a:at3}
+@keyframes at3{0%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.2,.7,.3,1)}14.67%{transform:translate(0px,4.5px)}40%{transform:translate(0px,4.5px);animation-timing-function:cubic-bezier(.55,0,.85,.4)}49.33%{transform:translate(0px,-0.5px);animation-timing-function:ease-out}59.33%{transform:translate(0px,0px)}100%{transform:translate(0px,0px)}}
+.v-api-twist-v1 :is(.bx-ai-turn,.bx-ai-turn-sh){--a:at4}
+@keyframes at4{0%{transform:rotate(0deg)}11.33%{transform:rotate(0deg);animation-timing-function:cubic-bezier(.6,0,.3,1)}42.67%{transform:rotate(90deg)}99.93%{transform:rotate(90deg)}100%{transform:rotate(0deg)}}
+.v-api-twist-v1 .bx-ai-gap{--a:at5}
+@keyframes at5{0%{opacity:1}6.67%{opacity:0}48%{opacity:0}49.33%{opacity:1}100%{opacity:1}}
+.v-api-twist-v1 .bx-ai-flare{--a:at6}
+@keyframes at6{0%{opacity:0}48.67%{opacity:0;animation-timing-function:ease-out}51.33%{opacity:0.95;animation-timing-function:ease-in}70.67%{opacity:0}100%{opacity:0}}
+.v-api-twist-v1 .bx-ai-core{--a:at7}
+@keyframes at7{0%{transform:scale(1)}48.67%{transform:scale(1);animation-timing-function:cubic-bezier(.2,.7,.3,1)}54.67%{transform:scale(1.25);animation-timing-function:ease-in-out}68.67%{transform:scale(1)}100%{transform:scale(1)}}
+.v-api-twist-v1 .bx-ai-ring{--a:at8}
+@keyframes at8{0%{opacity:0;transform:scale(.95)}49.33%{opacity:0;transform:scale(.95)}51.33%{opacity:1;transform:scale(1);animation-timing-function:cubic-bezier(.3,.6,.5,1)}69.87%{opacity:.6;transform:scale(3.68)}86.67%{opacity:0;transform:scale(6.36)}100%{opacity:0;transform:scale(6.36)}}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-api-twist-v1 .bx-ai-qv.bx-ai-qv{animation:q-api-twist-v1 1500ms linear both}
+@keyframes q-api-twist-v1{0%{opacity:1;animation-timing-function:ease-out}9.333%{opacity:0}76%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.v-api-twist-v1 *{animation:none!important}}
+</style>
+<rect width="72" height="72" fill="url(#bg-api-twist-v1)"/>
+<g stroke="white" stroke-width=".8" stroke-linecap="round" opacity="0.14"><path d="M16.444 37.222L0 37.222M22.556 22.556L17.556 22.556L11.556 16.556L0 16.556M34.778 16.444L34.778 0M49.444 22.556L49.444 17.556L55.444 11.556L55.444 0M55.556 34.778L72 34.778M49.444 49.444L54.444 49.444L60.444 55.444L72 55.444M37.222 55.556L37.222 72M22.556 49.444L22.556 54.444L16.556 60.444L16.556 72"/><circle cx="22.556" cy="22.556" r="1.4"/><circle cx="49.444" cy="22.556" r="1.4"/><circle cx="49.444" cy="49.444" r="1.4"/><circle cx="22.556" cy="49.444" r="1.4"/></g><rect width="72" height="72" fill="url(#bg-api-twist-v1)" class="bx-ai-qv" mask="url(#quiet-api-twist-v1)"/>
+<g stroke="white" stroke-width=".8" stroke-linecap="round" opacity="0.7" mask="url(#reveal-api-twist-v1)"><path d="M16.444 37.222L0 37.222M22.556 22.556L17.556 22.556L11.556 16.556L0 16.556M34.778 16.444L34.778 0M49.444 22.556L49.444 17.556L55.444 11.556L55.444 0M55.556 34.778L72 34.778M49.444 49.444L54.444 49.444L60.444 55.444L72 55.444M37.222 55.556L37.222 72M22.556 49.444L22.556 54.444L16.556 60.444L16.556 72"/><circle cx="22.556" cy="22.556" r="1.4"/><circle cx="49.444" cy="22.556" r="1.4"/><circle cx="49.444" cy="49.444" r="1.4"/><circle cx="22.556" cy="49.444" r="1.4"/></g>
+<rect width="72" height="72" fill="url(#body-api-twist-v1)" opacity="0.8" mask="url(#shape-api-twist-v1)"/>
+<g class="bx-ai-core"><circle cx="36" cy="36" r="3.667" fill="url(#red-api-twist-v1)"/><circle class="bx-ai-flare" cx="36" cy="36" r="3.667" fill="url(#flare-api-twist-v1)" opacity="0"/></g>
+<g stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+<g class="bx-ai-turn" stroke="white"><path class="bx-ai-h0" d="M36 43.333L20.111 43.333A6.111 6.111 0 1 1 20.111 31.111L21.333 31.111"/><path class="bx-ai-h1" d="M28.667 36L28.667 20.111A6.111 6.111 0 1 1 40.889 20.111L40.889 21.333"/><path class="bx-ai-h2" d="M36 28.667L51.889 28.667A6.111 6.111 0 1 1 51.889 40.889L50.667 40.889"/><path class="bx-ai-h3" d="M43.333 36L43.333 51.889A6.111 6.111 0 1 1 31.111 51.889L31.111 50.667"/></g>
+<g mask="url(#lit-api-twist-v1)"><g class="bx-ai-turn-sh" stroke="black"><path class="bx-ai-h0" d="M36 44.333L20.111 44.333A6.111 6.111 0 1 1 20.111 32.111L21.333 32.111"/><path class="bx-ai-h1" d="M28.667 37L28.667 21.111A6.111 6.111 0 1 1 40.889 21.111L40.889 22.333"/><path class="bx-ai-h2" d="M36 29.667L51.889 29.667A6.111 6.111 0 1 1 51.889 41.889L50.667 41.889"/><path class="bx-ai-h3" d="M43.333 37L43.333 52.889A6.111 6.111 0 1 1 31.111 52.889L31.111 51.667"/></g></g>
+</g>
+<defs>
+<linearGradient id="bg-api-twist-v1" x1="0" y1="0" x2="0" y2="1">
+<stop stop-color="#71717A"/>
+<stop offset="1" stop-color="#3F3F46"/>
+</linearGradient>
+<linearGradient id="red-api-twist-v1" x1="0" y1="0" x2="0" y2="1">
+<stop stop-color="#F43F5E"/>
+<stop offset="1" stop-color="#BE123C"/>
+</linearGradient>
+<linearGradient id="body-api-twist-v1" x1="36" y1="14" x2="36" y2="58" gradientUnits="userSpaceOnUse">
+<stop stop-color="#52525B"/>
+<stop offset="1" stop-color="#27272A"/>
+</linearGradient>
+<linearGradient id="light-api-twist-v1" x1="36" y1="15" x2="36" y2="59" gradientUnits="userSpaceOnUse">
+<stop stop-color="white" stop-opacity="0.1"/>
+<stop stop-color="white" offset="1" stop-opacity="0.2"/>
+</linearGradient>
+<mask id="shape-api-twist-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><g fill="white"><rect x="28.667" y="28.667" width="14.667" height="14.667" rx="2"/><path class="bx-ai-gap" d="M21.333 29.111L28.667 29.111L28.667 31.611L21.333 31.611Z"/><path class="bx-ai-gap" d="M42.889 21.333L42.889 28.667L40.389 28.667L40.389 21.333Z"/><path class="bx-ai-gap" d="M50.667 42.889L43.333 42.889L43.333 40.389L50.667 40.389Z"/><path class="bx-ai-gap" d="M29.111 50.667L29.111 43.333L31.611 43.333L31.611 50.667Z"/><g class="bx-ai-turn"><path class="bx-ai-h0" d="M29.667 43.333L20.111 43.333A6.111 6.111 0 1 1 20.111 31.111L29.667 31.111Z"/><path class="bx-ai-h1" d="M28.667 29.667L28.667 20.111A6.111 6.111 0 1 1 40.889 20.111L40.889 29.667Z"/><path class="bx-ai-h2" d="M42.333 28.667L51.889 28.667A6.111 6.111 0 1 1 51.889 40.889L42.333 40.889Z"/><path class="bx-ai-h3" d="M43.333 42.333L43.333 51.889A6.111 6.111 0 1 1 31.111 51.889L31.111 42.333Z"/></g></g></mask>
+<mask id="lit-api-twist-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-api-twist-v1)"/></mask>
+<radialGradient id="flare-api-twist-v1"><stop stop-color="#FFD1D9"/><stop offset="1" stop-color="#FB5A6E"/></radialGradient><mask id="reveal-api-twist-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><circle class="bx-ai-ring" cx="36" cy="36" r="8" fill="none" stroke="white" stroke-width="5" opacity="0"/></mask>
+<radialGradient id="quietv-api-twist-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-api-twist-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-api-twist-v1)"/></mask></defs>
+</svg>

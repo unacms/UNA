@@ -1,0 +1,23 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Observability;
+
+/**
+ * @deprecated Implement a PSR-14 listener and register it via
+ *             Workflow::subscribe() instead (subscribe to ObservabilityEvent::class
+ *             to receive every event). Will be removed in the next major version.
+ */
+interface ObserverInterface
+{
+    /**
+     * Handle an event from a component.
+     *
+     * @param string $event The event name (e.g., 'inference-start', 'tool-called')
+     * @param object $source The component that emitted the event
+     * @param mixed $data Additional event data (optional)
+     * @param string|null $branchId The branch ID when the event originates from a parallel branch
+     */
+    public function onEvent(string $event, object $source, mixed $data = null, ?string $branchId = null): void;
+}

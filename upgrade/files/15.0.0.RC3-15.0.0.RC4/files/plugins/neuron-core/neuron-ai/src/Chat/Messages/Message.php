@@ -1,0 +1,220 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Chat\Messages;
+
+use NeuronAI\Chat\Messages\ContentBlocks\AudioContent;
+use NeuronAI\Chat\Messages\ContentBlocks\ContentBlockInterface;
+use NeuronAI\Chat\Messages\ContentBlocks\ImageContent;
+use NeuronAI\Chat\Messages\ContentBlocks\ReasoningContent;
+use NeuronAI\Chat\Messages\ContentBlocks\TextContent;
+use NeuronAI\Chat\Enums\MessageRole;
+use NeuronAI\StaticConstructor;
+use JsonSerializable;
+use NeuronAI\UniqueIdGenerator;
+
+use function array_diff_key;
+use function array_map;
+use function array_replace;
+use function is_string;
+use function array_filter;
+use function implode;
+
+/**
+ * @method static static make(MessageRole $role, string|ContentBlockInterface|ContentBlockInterface[]|null $content = null)
+ */
+class Message implements JsonSerializable
+{
+    use StaticConstructor;
+    use HasMetadata;
+
+    protected ?Usage $usage = null;
+
+    /**
+     * @var ContentBlockInterface[]
+     */
+    protected array $contents = [];
+
+    /**
+     * @param string|ContentBlockInterface|ContentBlockInterface[]|null $content
+     */
+    public function __construct(
+        protected MessageRole $role,
+        string|ContentBlockInterface|array|null $content = null
+    ) {
+        if ($content !== null) {
+            $this->setContents($content);
+        }
+
+        $this->setId(UniqueIdGenerator::generateId('msg_'));
+    }
+
+    // A copy owns its blocks, so in-place edits (cache flags, content)
+    // never reach the message it was cloned from.
+    public function __clone(): void
+    {
+        $this->contents = array_map(
+            static fn (ContentBlockInterface $block): ContentBlockInterface => clone $block,
+            $this->contents
+        );
+    }
+
+    public function getId(): string
+    {
+        return $this->meta['__id'];
+    }
+
+    public function setId(string $id): static
+    {
+        $this->meta['__id'] = $id;
+        return $this;
+    }
+
+    /**
+     * The identity lives in the metadata, so a replacement without one keeps it.
+     *
+     * @param array<string, mixed> $meta
+     */
+    public function setMetadata(array $meta): self
+    {
+        $this->meta = array_replace(['__id' => $this->getId()], $meta);
+        return $this;
+    }
+
+    public function getRole(): string
+    {
+        return $this->role->value;
+    }
+
+    public function setRole(MessageRole|string $role): Message
+    {
+        if (!$role instanceof MessageRole) {
+            $role = MessageRole::from($role);
+        }
+
+        $this->role = $role;
+        return $this;
+    }
+
+    /**
+     * @return ContentBlockInterface[]
+     */
+    public function getContentBlocks(): array
+    {
+        return $this->contents;
+    }
+
+    /**
+     * @param string|ContentBlockInterface|ContentBlockInterface[] $content
+     */
+    public function setContents(string|ContentBlockInterface|array $content): Message
+    {
+        if (is_string($content)) {
+            $this->contents = [new TextContent($content)];
+        } elseif ($content instanceof ContentBlockInterface) {
+            $this->contents = [$content];
+        } else {
+            // Assume it's an array
+            $this->contents = [];
+            foreach ($content as $block) {
+                $this->addContent($block);
+            }
+        }
+
+        return $this;
+    }
+
+    public function addContent(ContentBlockInterface $block): Message
+    {
+        $this->contents[] = $block;
+
+        return $this;
+    }
+
+    /**
+     * Get the text content of the message.
+     */
+    public function getContent(): ?string
+    {
+        $text = implode(' ', array_map(
+            fn (TextContent $block): string => $block->content,
+            array_filter($this->getContentBlocks(), fn (ContentBlockInterface $block): bool => $block instanceof TextContent && !$block instanceof ReasoningContent)
+        ));
+
+        return $text === '' ? null : $text;
+    }
+
+    /**
+     * @return array<TextContent>
+     */
+    public function getTextBlocks(): array
+    {
+        return array_filter($this->getContentBlocks(), fn (ContentBlockInterface $block): bool => $block instanceof TextContent && !$block instanceof ReasoningContent);
+    }
+
+    public function getReasoning(): ?ReasoningContent
+    {
+        foreach ($this->getContentBlocks() as $block) {
+            if ($block instanceof ReasoningContent) {
+                return $block;
+            }
+        }
+
+        return null;
+    }
+
+    public function getAudio(): ?AudioContent
+    {
+        foreach ($this->getContentBlocks() as $block) {
+            if ($block instanceof AudioContent) {
+                return $block;
+            }
+        }
+
+        return null;
+    }
+
+    public function getImage(): ?ImageContent
+    {
+        foreach ($this->getContentBlocks() as $block) {
+            if ($block instanceof ImageContent) {
+                return $block;
+            }
+        }
+
+        return null;
+    }
+
+    public function getUsage(): ?Usage
+    {
+        return $this->usage;
+    }
+
+    public function setUsage(Usage $usage): static
+    {
+        $this->usage = $usage;
+        return $this;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function jsonSerialize(): array
+    {
+        $data = [
+            '__id' => $this->getId(),
+            'role' => $this->getRole(),
+            'content' => array_map(fn (ContentBlockInterface $block): array => $block->toArray(), $this->contents),
+        ];
+
+        if ($this->getUsage() instanceof Usage) {
+            $data['usage'] = $this->getUsage()->jsonSerialize();
+        }
+
+        // The identity lives in the metadata, but stores address it as a message field.
+        $data['__meta'] = array_diff_key($this->meta, ['__id' => true]);
+
+        return $data;
+    }
+}

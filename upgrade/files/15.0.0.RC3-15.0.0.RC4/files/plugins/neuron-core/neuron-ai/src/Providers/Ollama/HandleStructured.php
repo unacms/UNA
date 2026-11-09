@@ -1,0 +1,38 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Providers\Ollama;
+
+use NeuronAI\Chat\Messages\Message;
+use NeuronAI\Exceptions\HttpException;
+use NeuronAI\Exceptions\ProviderException;
+use NeuronAI\Providers\ProviderResponse;
+
+use function array_merge;
+use function is_array;
+
+trait HandleStructured
+{
+    /**
+     * @throws ProviderException
+     * @throws HttpException
+     */
+    public function structured(
+        array|Message $messages,
+        string $class,
+        array $response_format
+    ): ProviderResponse {
+        $originalParameters = $this->parameters;
+
+        try {
+            $this->parameters = array_merge($this->parameters, [
+                'format' => $response_format,
+            ]);
+
+            return $this->chat(...(is_array($messages) ? $messages : [$messages]));
+        } finally {
+            $this->parameters = $originalParameters;
+        }
+    }
+}

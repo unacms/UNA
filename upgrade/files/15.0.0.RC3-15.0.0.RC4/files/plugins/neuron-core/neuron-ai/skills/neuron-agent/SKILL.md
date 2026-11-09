@@ -1,0 +1,734 @@
+---
+name: neuron-agent
+description: Create, configure, and extend Neuron AI agents in PHP using providers, tools, chat history, memory, and custom workflow nodes. Use for Neuron Agent implementation, configuration, conversation lifecycle, and input/output extensions.
+---
+
+# Neuron AI Agent
+
+`Agent` is a composition built on `Workflow`. Extend it when its defaults fit, use its entry/exit hooks for additional stages, or compose a Workflow from the standalone components when control flow differs substantially. This skill covers the current major-version APIs; use the implementation's class names and signatures rather than older examples.
+
+Use `Agent::submitApprovalDecisions($decisions)` for tool approval and `Agent::submitToolResults($results)` for deferred tool results. Both accept maps keyed by tool call ID and stage a continuation; finish with `run()` for an `AgentState` or `events()` for a stream.
+
+## Core Agent Structure
+
+A Neuron agent extends the `Agent` class and implements key methods:
+
+```php
+use NeuronAI\Agent\Agent;
+use NeuronAI\Chat\Messages\SystemMessage;
+use NeuronAI\Chat\Messages\UserMessage;
+use NeuronAI\Providers\AIProviderInterface;
+use NeuronAI\Providers\Anthropic\Anthropic;
+
+class MyAgent extends Agent
+{
+    protected function provider(): AIProviderInterface
+    {
+        return new Anthropic(
+            key: $_ENV['ANTHROPIC_API_KEY'],
+            model: $_ENV['ANTHROPIC_MODEL'],
+        );
+    }
+
+    protected function instructions(): SystemMessage|string
+    {
+        return new SystemMessage("You are a helpful AI assistant.");
+    }
+}
+```
+
+## Workflow Boundaries and Custom Nodes
+
+The default path is:
+
+```text
+AgentStartEvent → AgentStartNode → inference ⇄ tools
+    final response → AgentOutputEvent → AgentEndNode → StopEvent
+```
+
+`ChatNode` handles chat and streaming; `StructuredOutputNode` handles structured inference. Tools may pause for approval or deferred results before returning to inference. `AgentOutputEvent` means the final answer is available for output processing; it is not a terminal event.
+
+- `nodes()` rebuilds the graph from the current configuration each execution segment. `entryNodes()` defaults to `AgentStartNode`; `exitNodes()` defaults to `AgentEndNode`.
+- A node's `__invoke(EventType $event, AgentState $state, AgentResources $resources)` receives one exact routed event type; the third parameter is optional. `addNode()` registers a handler; array order does not connect nodes, and duplicate handlers are rejected.
+- For preprocessing, override `startEvent()` with an `AgentStartEvent` subclass, register a node for it in `entryNodes()`, and return the original `AgentStartEvent` to retain `parent::entryNodes()`. This keeps request initialization and tool-run resets in `AgentStartNode`. Replacing that initialization entirely requires handling those responsibilities yourself.
+- For postprocessing, override `exitNodes()` with a node accepting `AgentOutputEvent`. Return an application event to continue through another node, or `StopEvent` to finish. Replace the default ending: including `parent::exitNodes()` alongside another output handler creates a duplicate.
+- `AgentState::$request` holds instructions, messages, and run options. Events route execution; the segment's provider, chat history, instructions and tools arrive in `AgentResources`, built once per segment, so nodes take no collaborators in their constructors. `getMessage()` reads the provider response, while extra artifacts can use state keys.
+
+For example, an Agent subclass can own speech synthesis without replacing inference nodes:
+
+```php
+protected function exitNodes(): array
+{
+    return [new TextToSpeechNode($this->textToSpeech())];
+}
+```
+
+Read [references/workflow-extension.md](references/workflow-extension.md) when implementing custom output nodes. It contains the complete TTS node, protected provider hook, and an executable example with fake providers, plus input-extension and recovery considerations.
+
+Agent provider, history, instructions, tools and tool-execution settings may change while streaming. Changes configure subsequent segments; the active segment retains its resolved resources, graph and conversation address. Resume still restores recorded input and instructions.
+
+Provider/toolkit hooks are lazy; explicit setters take precedence over their corresponding default hooks. Construct graph collaborators in the hooks so reconstructed runs receive live dependencies. Fluent setters return `static`, so a chain keeps the concrete type, subclass members included.
+
+## Agent Execution Methods
+
+Each verb returns the type its nature produces — the same eager/lazy split a plain
+Workflow uses:
+
+| Method | Returns |
+|--------|---------|
+| `chat($messages)` | `AgentState` — starts a new run and consumes it eagerly |
+| `stream($messages)` | `Generator` — starts a new run; `getReturn()` is the `AgentState` |
+| `structured($messages, $class)` | The typed output — starts a new run and consumes it eagerly |
+| `run()` | `AgentState` — inherited eager Workflow terminal |
+| `events()` | `Generator` — inherited pull-stream Workflow terminal; `getReturn()` is the `AgentState` |
+| `submitApprovalDecisions($decisions)` | Stages tool approval decisions keyed by call ID; finish with `run()` or `events()` |
+| `submitToolResults($results)` | Stages deferred tool results keyed by call ID; finish with `run()` or `events()` |
+
+`chat()` runs eagerly and returns the final state directly (no separate `->run()` step).
+Pass `stream: true` to stream the provider's answer to a configured channel, as a queue
+worker does (see the **neuron-streaming** skill).
+Read the assistant message off it with `getMessage()`, and read an approval pause with
+`isInterrupted()` / `getInterruptRequest()` — the same surface a plain `WorkflowState`
+exposes.
+
+The inherited `run()` / `events()` terminals execute staged intent. Without a
+staged operation they start or recover a failed run. `run(ExecutionRequest::resume($payload, ...))`
+is an explicit continuation. Agent new-turn methods select a fresh execution internally. `run(ExecutionRequest::resume())` is an inputless continuation for due timers
+or crash recovery. To recover a failed turn, call `run()` or `events()`;
+calling `chat()` instead explicitly starts a new turn and supersedes it. Agent tool approval accepts decisions keyed by tool call ID through
+`submitApprovalDecisions($decisions)->run()` or
+`submitApprovalDecisions($decisions)->events()`. Deferred tool results use
+`submitToolResults($results)->run()` or `submitToolResults($results)->events()`.
+Neither method starts a new user turn.
+
+`Agent` specializes the generic `Workflow<AgentState>` contract, so inherited
+`run()`, `events()`, and configured `setState()` seeds retain the concrete
+`AgentState` type without Agent forwarding methods or local type assertions.
+
+### Chat Mode (Synchronous)
+
+For standard back-and-forth conversations:
+
+```php
+$agent = MyAgent::make()->setThreadId('demo');
+
+$response = $agent->chat(
+    new UserMessage("Hello!")
+)->getMessage();
+
+echo $response->getContent();
+```
+
+### Stream Mode (Real-time)
+
+`stream()` returns a `Generator` that yields live output as the run progresses: provider
+chunks (`TextChunk`, `ReasoningChunk`, `ToolCallChunk`, ...) plus portable progress
+events yielded by workflow nodes. Read the final `AgentState` from `getReturn()`.
+
+```php
+use NeuronAI\Chat\Messages\Stream\Chunks\TextChunk;
+
+$stream = $agent->stream(new UserMessage("Hello"));
+
+foreach ($stream as $item) {
+    if ($item instanceof TextChunk) {
+        echo $item->content;
+    }
+}
+
+$state = $stream->getReturn();
+```
+
+To shape the output for a UI protocol (Vercel AI SDK, AG-UI) attach an adapter with
+`setStreamAdapter()`; to push output to a websocket or queue consumer instead of the
+HTTP response attach a channel with `setChannel()`. Both are covered in full by the
+**neuron-streaming** skill.
+
+### Structured Output Mode
+
+For extracting structured data from a natural language:
+
+```php
+use NeuronAI\StructuredOutput\SchemaProperty;
+
+class Person
+{
+    #[SchemaProperty(description: 'The user name', required: true)]
+    public string $name;
+
+    #[SchemaProperty(description: 'What the user loves to eat')]
+    public string $preference;
+}
+
+$person = $agent->structured(
+    new UserMessage("I'm John and I like pizza!"),
+    Person::class
+);
+```
+
+## Providers
+
+`provider()` returns any `AIProviderInterface`; `setAiProvider()` on an instance takes precedence over the hook. Key-based vendors share the shape `new OpenAI(key: $_ENV['OPENAI_API_KEY'], model: $_ENV['OPENAI_MODEL'])` under their own class; Ollama takes a `url` instead of a key. Shipped: Anthropic, OpenAI (Chat Completions and Responses API), Azure OpenAI, Gemini, Anthropic and Gemini on Vertex AI, AWS Bedrock, Mistral, Ollama, Cohere, Deepseek, Grok, HuggingFace, ZAI, Alibaba DashScope, any OpenAI-compatible endpoint through `OpenAILike`, and speech-to-text, text-to-speech, and image providers behind the same interface.
+
+Read [references/providers.md](references/providers.md) when the user names a vendor other than Anthropic or OpenAI, needs vendor request parameters (thinking, temperature, response options), a self-hosted or OpenAI-compatible endpoint, cloud-platform credentials, a custom HTTP client, or a speech or image provider. It lists every class with its namespace and constructor arguments.
+
+## Tools Integration
+
+### Adding Built-in Toolkits
+
+```php
+use NeuronAI\Tools\Toolkits\Calendar\CalendarToolkit;
+use NeuronAI\Tools\Toolkits\Calculator\CalculatorToolkit;
+use NeuronAI\Tools\Toolkits\FileSystem\FileSystemToolkit;
+
+protected function tools(): array
+{
+    return [
+        FileSystemToolkit::make(scope: '/srv/agent-workspace'),
+        CalendarToolkit::make(),
+        CalculatorToolkit::make(),
+    ];
+}
+```
+
+`FileSystemToolkit` is the exact class spelling and namespace. The scope directory must already exist when the tools are built; provision the example directory or supply an existing application workspace. `scope` confines file-tool paths to a directory; `null` leaves them unrestricted. `BashTool` validates its working directory but cannot confine the command itself. Configure process isolation when shell confinement is required, or exclude `BashTool` when shell execution is not needed. `BashTool` runs commands with `bash`, which must be on the `PATH`. It kills a command after 120 seconds and gives the model the first 30,000 bytes of its output: `setTimeout()` (seconds) and `setOutputLimit()` (bytes) change either, as do the constructor's `timeout` and `outputLimit` arguments.
+
+Toolkits contribute their `guidelines()` to Agent instructions. `only()` and `exclude()` take arrays of tool class names; `with()` customizes a provided tool instance:
+
+```php
+use NeuronAI\Tools\ToolInterface;
+use NeuronAI\Tools\Toolkits\FileSystem\BashTool;
+use NeuronAI\Tools\Toolkits\FileSystem\DeleteFileTool;
+
+$files = FileSystemToolkit::make(scope: '/srv/agent-workspace')
+    ->exclude([BashTool::class])
+    ->with(DeleteFileTool::class, fn (DeleteFileTool $tool): ToolInterface => $tool->requireApproval());
+```
+
+### Available Toolkits
+
+- **FileSystemToolkit** — read, write, edit, delete, glob, grep, parse documents, and execute shell commands.
+- **CalendarToolkit** — date/time formatting, arithmetic, comparisons, period boundaries, and timezone conversion. It does not connect to a calendar service or schedule workflow wakeups.
+- **CalculatorToolkit** — expression evaluation, exact integer arithmetic, and statistics. Exact integer tools require `ext-bcmath`.
+- **MySQLToolkit** / **PGSQLToolkit** — schema inspection, selects, and writes for MySQL/PostgreSQL.
+- **TodoPlanningToolkit** — a `write_todos` tool the model uses to plan multi-step work and report progress. The list lives in the conversation, so it survives interruptions and later turns without extra state.
+- **TavilyToolkit** — web search, extraction, and crawling.
+- **JinaToolkit** — web search and URL reading; reranking is a separate RAG component.
+- **SupadataYouTubeToolkit** — video metadata/transcripts and channel/playlist lookup. Deprecated: it will be removed in the next major version.
+- **ZepLongTermMemoryToolkit** — Zep graph search and ingestion exposed as tools; available independently of RAG conversation retrieval. Deprecated: it will be removed in the next major version.
+
+The HTTP toolkits (Tavily, Jina, Supadata, Zep) take an optional `httpClient` as their last constructor argument and pass it to their tools, so tests and framework adapters control the transport.
+
+`NeuronAI\Tools\Toolkits\AWS\SESTool` is a standalone email tool, not a `SESToolkit`. Deprecated: it will be removed in the next major version.
+
+### Creating Custom Tools
+
+Use **neuron-tool** for full tool schemas, deferred execution, and multimodal results. Define tool metadata as properties; the base `Tool` has no constructor:
+
+```php
+use NeuronAI\Tools\Tool;
+use NeuronAI\Tools\ToolProperty;
+use NeuronAI\Tools\PropertyType;
+
+class WeatherTool extends Tool
+{
+    protected string $name = 'get_weather';
+
+    protected ?string $description = 'Get the current weather for a location';
+
+    /**
+     * @return ToolProperty[]
+     */
+    protected function properties(): array
+    {
+        return [
+            new ToolProperty(
+                name: 'location',
+                type: PropertyType::STRING,
+                description: 'The city name',
+                required: true,
+            ),
+        ];
+    }
+
+    public function __invoke(string $location): string
+    {
+        // Call weather API and return result
+        return "The weather in {$location} is sunny, 72°F";
+    }
+}
+```
+
+## Agent Instructions
+
+Agent instructions are a `SystemMessage` (`instructions()` returns `SystemMessage|string` — a plain string is wrapped automatically). A `SystemMessage` carries one or more text blocks; mark a block with `->cache()` to enable provider prompt caching on it:
+
+```php
+use NeuronAI\Chat\Messages\SystemMessage;
+use NeuronAI\Chat\Messages\ContentBlocks\TextContent;
+
+protected function instructions(): SystemMessage|string
+{
+    return new SystemMessage([
+        // Large static context: cache it to reduce cost and latency.
+        (new TextContent("You are a data analyst expert in creating reports. ..."))->cache(),
+        // Changes with the tenant, not with every turn: left out of the cached part.
+        new TextContent("Reports are written for {$this->tenant->name}."),
+    ]);
+}
+```
+
+`SystemMessage::cache()` caches the whole message: it marks the last block, and one breakpoint there covers every block before it. The blocks of a conversation message take the same marker (see Content Blocks), and [references/providers.md](references/providers.md) says how each provider treats it.
+
+Instructions can also be set fluently:
+
+```php
+$agent->setInstructions('You are a helpful assistant.');
+```
+
+## Turn Context
+
+Content that changes from one turn to the next does not belong in the instructions: it would change the start of every request, and a provider caches a request from its start. Return it from the `context()` hook, or pass it to `setContext()` when the Agent is configured from outside:
+
+```php
+use NeuronAI\Chat\Messages\ContentBlocks\TextContent;
+
+protected function context(): array
+{
+    return [new TextContent('Today is ' . date('Y-m-d') . '. The customer is on the Pro plan.')];
+}
+
+// Or, without a subclass:
+$agent->setContext(new TextContent("The user is viewing order {$orderId}."));
+```
+
+The context is read when a turn starts and sent in the user's message, after that message's own content, on every request of the turn. It is never stored in the chat history: the next turn sends the earlier message without it. A middleware adds to it through the state, with a key so that an entry written before every model call replaces itself:
+
+```php
+$state->request->context['page'] = new TextContent("The user is viewing: {$url}");
+```
+
+`setContext()` takes any number of blocks (spread an array of them with `...`), and a named argument is the key of its block: `setContext(page: $block)` sets the entry the line above replaces.
+
+The context is part of the user's turn, so a user can type text that looks like it. When the context decides whether the agent acts, such as a policy that allows a refund tool to run, tell the developer.
+
+To have a provider with cache breakpoints (Anthropic, OpenAI GPT-5.6 and later, Bedrock) reuse the conversation from one turn to the next, mark the user's message. The context comes after the marker and is never written to the cache:
+
+```php
+$agent->chat(new UserMessage((new TextContent($input))->cache()));
+```
+
+A thread that never gets a second turn pays for a cache write nobody reads, so leave the marker out of agents that answer once per thread. [references/providers.md](references/providers.md) has the details for each provider.
+
+## Chat History & Thread Identity
+
+Conversations are stored through a **message store**, and the Agent opens a working history over it for every execution segment. Declare the conversation identity with `make(workflowId:)` or `setThreadId()`, and give the Agent a store:
+
+```php
+use NeuronAI\Chat\History\SQLMessageStore;
+
+$agent = MyAgent::make(workflowId: $threadId);
+$agent->setMessageStore(new SQLMessageStore($pdo));
+$state = $agent->chat(new UserMessage($input));
+```
+
+A store names the thread on every call and keeps no conversation state, so one instance can serve the whole application: bind it once in the container, or return it from the `messageStore()` hook. `getThreadId(): ?string` reads the resolved conversation identity. The framework never makes one up: executing, inspecting or answering an Agent without one, or reading its chat history, throws an `AgentException` naming `setThreadId()`.
+
+An Agent shared by a container (a singleton, a worker-lifetime service) serves each request through a bound copy: `$agent->for($threadId)->chat(...)`. `for()` never modifies the shared agent, so configure that one when it is built and put per-request settings on the copy. Hooks run once per copy, so give a shared agent durable stores with setters: in-memory defaults belong to one copy.
+
+Size the conversation sent to the model to the provider's model with the `contextWindow()` hook (50,000 tokens by default), or with `setContextWindow()` when the Agent is configured from outside:
+
+```php
+protected function contextWindow(): int
+{
+    return 190_000;
+}
+
+// Or, without a subclass:
+$agent->setContextWindow(190_000);
+```
+
+The window covers the whole request: instructions, tool definitions and messages, as the provider's usage reports them. Keep it at least 5% below the model's limit, as 190,000 is for a 200,000-token model: rather than drop a whole turn, the history may keep up to 5% more than the window.
+
+When the conversation outgrows the window, its oldest turns are archived until it fits half the window again. The cut is deep on purpose: providers cache a request from its start, so a history that drops its oldest turn at every message is never served from the prompt cache. The `historyTrimRatio()` hook, or `setHistoryTrimRatio()`, sets the share of the window a cut frees (`0.5` by default, from 0 up to, not including, 1):
+
+```php
+protected function historyTrimRatio(): float
+{
+    return 0.2;
+}
+
+// Or, without a subclass:
+$agent->setHistoryTrimRatio(0.2);
+```
+
+A lower ratio keeps more of the conversation after a cut and moves the first message more often; `0` makes the smallest cut that fits. On a very large window a low ratio is enough: `0.1` of 1,000,000 tokens already frees 100,000.
+
+`getChatHistory()->getMessages()` returns the model context. To render a whole conversation, read its transcript from the store; message IDs are stable, so they serve as UI keys and page cursors:
+
+```php
+$page = $store->loadAll($threadId, limit: 50);
+$older = $store->loadAll($threadId, limit: 50, before: $page[0]->getId());
+```
+
+The default in-memory store lives as long as the Agent instance. For later-process continuation, declare the thread before ignition and configure a durable store and workflow persistence.
+
+### Conversation memory
+
+Conversation memory is a RAG composition: `SemanticMemoryRetrieval` accepts the authorized thread IDs and builds its filters; `CompositeRetrieval` combines it with ordinary document retrieval. Attach `ConversationIngestionNode` through `exitNodes()` to create conversation documents after a completed response, in a dedicated conversation store. Creation and recall are independent opt-ins.
+
+See [conversation memory](references/conversation-memory.md) for complete retrieval, ingestion, recovery and deletion examples. `resetConversation()` clears the working history and pending execution; delete conversation documents explicitly through the vector store.
+
+### Message Stores
+- `InMemoryMessageStore` - Default, process memory
+- `FileMessageStore` - One JSON file per thread, named with the thread ID's letter case: on macOS and Windows, IDs that differ only by case share a file
+- `SQLMessageStore` - Database-backed (PDO). On MySQL and MariaDB, declare `thread_id` and `message_id` as `VARBINARY` (the class docblock shows the table): the default collations ignore case and accents, so `user-Alice` and `user-alice` would share a thread
+- `EloquentMessageStore` - Laravel Eloquent integration. On MySQL and MariaDB, create the ID columns with `$table->binary('thread_id', 255)` and `$table->binary('message_id', 64)` for the same reason; keep `string()` on PostgreSQL and SQLite
+
+## Content Blocks (Multi-modal)
+
+Agents support multiple content types:
+
+```php
+use NeuronAI\Chat\Messages\ContentBlocks\TextContent;
+use NeuronAI\Chat\Messages\ContentBlocks\ImageContent;
+use NeuronAI\Chat\Enums\MediaType;
+use NeuronAI\Chat\Enums\SourceType;
+
+$message = new UserMessage([
+    new TextContent('Analyze this image:'),
+    new ImageContent(
+        content: 'https://example.com/image.jpg',
+        sourceType: SourceType::URL,
+        mediaType: MediaType::JPEG
+    ),
+]);
+```
+
+Use the `MediaType` enum for common MIME types (images, documents, audio, video). The `mediaType` parameter also accepts a plain string (`'image/x-custom'`) for types not covered by the enum.
+
+Any block takes `->cache()`. It asks the provider for a prompt cache breakpoint right after that block, so the requests that follow reuse everything up to it:
+
+```php
+use NeuronAI\Chat\Messages\ContentBlocks\FileContent;
+
+// A long document discussed over several turns
+$message = new UserMessage([
+    (new FileContent($pdf, SourceType::BASE64, 'application/pdf', 'contract.pdf'))->cache(),
+    new TextContent('Summarise clause 4.'),
+]);
+```
+
+The marker covers everything up to its block. Put it on the last block of a message to reuse the conversation on later turns (see Turn Context). Put it on an earlier block, as above, when many conversations start with the same document and differ only in the question. The marker is stored with the message, so it still applies on later turns. It is a request: a provider without cache breakpoints ignores it, see [references/providers.md](references/providers.md).
+
+## CLI Generation
+
+Use the Neuron CLI to generate an agent boilerplate:
+
+```bash
+vendor/bin/neuron make:agent MyCustomAgent
+```
+
+## Common Patterns
+
+### Tool Approval
+Human oversight of tool execution is built into `ToolNode` — nothing to attach.
+Each tool declares its own risk via the protected `approvalPolicy(): bool|string`
+hook (a string counts as `true` and doubles as the approval reason shown to the approver),
+and you override the declaration per tool where you attach it:
+
+```php
+protected function tools(): array
+{
+    return [
+        DeleteFileTool::make()->requireApproval(),        // force the gate
+        RiskyThirdPartyTool::make()->suppressApproval(),  // waive a declared gate
+    ];
+}
+```
+
+Use the **neuron-tool-approval** skill for the complete flow: rendering the approve/deny
+UI from chat history, submitting decisions, and building a single endpoint that handles
+both conversation turns and approval resumes.
+
+### Observability
+
+Subscribe through the PSR-14 event system; a `LogListener` adapts an application-provided PSR-3 logger:
+
+```php
+use NeuronAI\Observability\LogListener;
+use NeuronAI\Observability\ObservabilityEvent;
+
+$agent->subscribe(ObservabilityEvent::class, new LogListener($logger));
+```
+
+Use **neuron-monitoring** for event selection and external dispatchers.
+
+### Parallel Tool Calls
+Execute local tools in parallel (requires `pcntl`, `posix` and `spatie/fork`):
+
+```php
+$agent->parallelToolCalls(true);
+```
+
+Each child process opens its own HTTP connections. Use the `beforeChild` and `afterChild` callbacks for the application's own process-bound resources, such as database connections.
+
+## Persistence and Durability
+
+Agent is built on Workflow, so it inherits the same persistence system. Enable persistence to make agent executions **survive crashes** and **continue after interruptions** (e.g., a tool-approval suspension).
+
+```php
+use NeuronAI\Workflow\Persistence\FilePersistence;
+
+$response = MyAgent::make(workflowId: $threadId)
+    ->setPersistence(new FilePersistence('/path/to/storage'))
+    ->chat(new UserMessage('Hello'))
+    ->getMessage();
+```
+
+When the agent suspends (e.g., waiting for tool approval), no exception is thrown —
+`chat()` returns an `AgentState` marked interrupted. The **thread is the workflow ID**:
+the run's durable records live in the partition named by the threadId itself, so a
+later continuation built from the threadId alone finds the pending run — no
+workflow coordination ID needs to be stored by the application:
+
+```php
+$state = MyAgent::make(workflowId: $threadId)
+    ->setMessageStore(new SQLMessageStore($pdo))
+    ->setPersistence(new FilePersistence('/path/to/storage'))
+    ->chat(new UserMessage('Delete file /tmp/old.log'));
+
+if ($state->isInterrupted()) {
+    // Render the current request/history; a paused run has no final answer yet.
+    // ... user approves/rejects ...
+
+    // A new execution cycle (e.g. the approve endpoint): the thread alone
+    // identifies the run; decisions are keyed by tool callId.
+    $state = MyAgent::make(workflowId: $threadId)
+        ->setMessageStore(new SQLMessageStore($pdo))
+        ->setPersistence(new FilePersistence('/path/to/storage'))
+        ->submitApprovalDecisions(['call_123' => 'approve'])
+        ->run();
+}
+
+$response = $state->getMessage();
+```
+
+`submitApprovalDecisions()` stages decisions for the current approval request,
+so application code needs only the thread ID
+and decisions keyed by tool call ID. Call `events()` instead of `run()` to
+iterate the continued segment's output yourself. Either way, the answer streams
+only if the turn started with `stream()` or `chat(..., stream: true)`.
+
+Deferred tools continue through the same thread identity:
+
+```php
+$state = MyAgent::make(workflowId: $threadId)
+    ->submitToolResults([
+        'call_123' => ['result' => ['title' => 'Example']],
+        'call_456' => ['error' => 'Browser operation cancelled'],
+    ])->run();
+```
+
+Reconstruct the same durable history and persistence as for the original turn.
+Each entry contains exactly one JSON-compatible `result` or string `error`.
+Partial results accumulate; the returned state may be interrupted again.
+As with approvals, `events()` iterates the continuation's output, and the answer
+streams only if the turn started streaming. Raw AG-UI or Vercel payloads use
+`submitInputs($payload, $translator)` as described in **neuron-frontend-integration**.
+
+Other interruption types use the generic Workflow API: application-controlled
+event waits use `run(ExecutionRequest::signal($name, $payload))`, due timers and inputless
+recovery use `run(ExecutionRequest::resume())`, and durable platform SDKs pass run and execution-attempt fences to
+`run(ExecutionRequest::resume($payload, expectedRunId: $runId, expectedExecutionAttempt: $attempt))`, or `events()` with the same request. A background, workflow-ID-first
+continuation uses `make(workflowId:)`; the Agent's thread ID then arrives from
+the ignition record and is bound into history by the framework.
+
+Available backends: `FilePersistence`, `DatabasePersistence`, `EloquentPersistence`, and `RedisPersistence` (optional `ext-redis`, using a connected `\Redis` client). See the **neuron-workflow** skill for full details on persistence and continuation, and the **neuron-tool-approval** skill for the complete approval flow (UI rendering, decision payloads, unified endpoint).
+
+### Failed turns, pending approvals, and the lease
+
+A failed first inference does not commit its inbound message. Later failures can
+leave earlier successful work in history: tool-loop inputs may be committed,
+and a failed output node can leave the completed text exchange in history.
+Failure does not roll back committed writes.
+
+`run()` / `events()` recover a failed turn using committed steps and memos;
+`run(ExecutionRequest::resume())` is an explicit continuation. A new `chat()` supersedes the
+failed run with a new user turn. A failed node may repeat an external operation
+if its result was not durably recorded; use `memoize()` inside custom nodes and
+external idempotency where needed. A tool call does not repeat: recovering a run
+whose process died while a tool ran, or whose tool threw, gives the call an error
+result saying its outcome is unknown, and the model decides what to do. To let
+the model read what went wrong instead, turn the exception into a result with
+`toolErrorHandler()`.
+
+The new turn first closes the turn the failed run left open: a tool call left
+without a result gets an error result saying its outcome is unknown, and a
+question left unanswered gets a short assistant note before the new one. They
+are saved with the new question once its first inference succeeds. To change
+this, extend `AgentStartNode` and return it from `entryNodes()`. Its
+`requestMessages()` returns the messages the turn's request starts with: by
+default it closes the open turn, then adds the start event's messages. Override
+it to start a turn another way, or override only the pieces of the closing:
+
+```php
+use NeuronAI\Agent\Agent;
+use NeuronAI\Agent\AgentResources;
+use NeuronAI\Agent\Events\AgentStartEvent;
+use NeuronAI\Agent\Nodes\AgentStartNode;
+use NeuronAI\Chat\Messages\AssistantMessage;
+use NeuronAI\Tools\ToolCall;
+use NeuronAI\Tools\ToolOutput;
+
+class SupportStartNode extends AgentStartNode
+{
+    // The default: replace it to start a turn another way.
+    protected function requestMessages(AgentStartEvent $event, AgentResources $resources): array
+    {
+        return $this->closeOpenTurn($resources->history, $event->messages);
+    }
+
+    // The result of a tool call that has none.
+    protected function interruptedResult(ToolCall $call): string|ToolOutput
+    {
+        return ToolOutput::error('La chiamata è stata interrotta prima che il risultato fosse registrato: potrebbe essere stata eseguita oppure no.');
+    }
+
+    // The note between an unanswered question and the new one.
+    protected function interruptedAnswer(): AssistantMessage
+    {
+        return new AssistantMessage('La mia risposta precedente è stata interrotta prima di essere completata.');
+    }
+}
+
+class SupportAgent extends Agent
+{
+    protected function entryNodes(): array
+    {
+        return [new SupportStartNode()];
+    }
+}
+```
+
+What `requestMessages()` returns must continue the history in a valid order
+(every tool call answered, then alternating roles), or the turn fails when its
+messages are saved, after the provider call. Its result is saved with the start
+step, so a run recovered with `run()` reuses it. `interruptedResult()` can look
+the real outcome up, for example a payment by its idempotency key: keep it a
+read that can run again, and fall back to `parent::interruptedResult($call)`
+when the lookup fails, because a throw fails every new turn on the thread.
+
+A RAG agent has the same methods on `PreProcessNode`, which takes the agent's
+pre-processors:
+
+```php
+use NeuronAI\RAG\Nodes\PreProcessNode;
+use NeuronAI\RAG\RAG;
+use NeuronAI\Workflow\Node;
+
+class SupportRAG extends RAG
+{
+    protected function entryNodes(): array
+    {
+        // SupportPreProcessNode extends PreProcessNode with the overrides above.
+        return array_map(
+            fn (Node $node): Node => $node instanceof PreProcessNode
+                ? new SupportPreProcessNode($this->preProcessors ?? $this->preProcessors())
+                : $node,
+            parent::entryNodes(),
+        );
+    }
+}
+```
+
+The start node runs after `chat()` has superseded the failed run, so it cannot
+refuse the turn: a throw leaves a new failed run that every retry repeats. To
+finish the failed turn instead of closing it, so its tool results and answer
+land before the new question, decide before `chat()`:
+
+```php
+use NeuronAI\Workflow\Executor\ExecutionRequest;
+use NeuronAI\Workflow\WorkflowStatus;
+
+$run = $agent->inspect();
+$dead = $run?->status === WorkflowStatus::Failed
+    || ($run?->status === WorkflowStatus::Running && $run->leaseExpiresAt !== null && $run->leaseExpiresAt <= time());
+
+if ($dead) {
+    $agent->run(ExecutionRequest::resume(expectedRunId: $run->runId, expectedExecutionAttempt: $run->executionAttempt));
+}
+
+$agent->chat($message);
+```
+
+The fenced resume also takes over the run of a killed process once its lease has
+expired, which a plain `run()` would supersede instead.
+
+A **pending approval** does lock the thread: a `chat()` while the run is
+suspended throws `RunInFlightException`, whose `interrupt` property carries the
+pending `ApprovalRequest`. Catch it
+to re-render the pending decision, and settle it with `submitApprovalDecisions($decisions)`
+(decline decisions are the cancel path).
+
+`abandon()` discards an eligible paused, failed, or dead run without starting
+another and returns `false` when none exists. Agent refuses abandonment while
+the run waits for a tool call's approval or deferred result. Settle that call
+first, or use `resetConversation()` to abandon the run and clear chat history.
+Reset bypasses that check,
+but still respects live execution leases and retained-completion guards.
+
+Every Agent run holds a **ten-minute lease** by default. A process killed with
+no chance to record its failure (memory limit, `max_execution_time`, an
+OOM-killed container) leaves the thread `running`; once the lease deadline
+passes, the next `chat()` supersedes the dead run instead of refusing. Raise it
+above your slowest provider or tool call with `setLeaseTimeout()` or by
+overriding `leaseTimeout()`; `null` disables it, in which case a killed
+process strands the thread until `run(ExecutionRequest::resume())` takes it over. A suspended run holds
+no lease. Default tool approval has no deadline; custom wait deadlines still
+need an inputless continuation to be evaluated.
+
+Successful runs release their persistence partition by default. For durable
+completion delivery, opt into `retainCompletionUntilAcknowledged()`, retrieve
+retained state with `run(ExecutionRequest::resume())`, and release that exact generation with
+`acknowledge($runId)`. Retained completion blocks a new turn until
+acknowledged. File persistence is for controlled single-process use; choose
+`DatabasePersistence`, `EloquentPersistence`, or `RedisPersistence` for
+multi-process coordination. Redis requires persistence and eviction settings that
+preserve active and retained runs. Reconstruct the same history, providers, and
+tools on continuation.
+
+## Key Decisions
+
+When helping users build agents:
+
+1. **Choose execution mode** based on requirements:
+   - `chat()` for standard conversations
+   - `stream()` for real-time streaming
+   - `structured()` for data extraction
+
+2. **Add tools** when the agent needs to:
+   - Access external systems (databases, APIs)
+   - Perform calculations
+   - Search the web
+   - Send emails
+
+3. **Configure chat history** when:
+   - Long-running conversations need persistence
+   - Multiple sessions should share history
+   - Conversation context needs to be shared across agents
+
+4. **Use middleware** to edit the working request, such as summarization or tool selection. Target `InferenceNode::class` to cover both chat/stream and structured inference; matching is subclass-aware. `AgentMiddleware` offers typed hooks for nodes implementing `AgentNodeInterface`, with the segment's provider, history, instructions and tools in `AgentResources`. Register a middleware that adds tools, such as `ToolSearchMiddleware`, with `addGlobalMiddleware()`, so a continuation that starts at the tool node finds the tools the model was offered. `ToolSearchMiddleware` changes the tool list during a turn, and a changed tool list makes a provider's prompt cache start over: [references/providers.md](references/providers.md) says when that costs less than listing every tool. Ordinary custom `Node`s and the boundary nodes need `WorkflowMiddleware` unless they implement that interface. Middleware `after()` returns `void` and cannot replace the routing event.
+
+5. **Use workflow nodes** for I/O and flow control: speech providers, output processing, and interruptions. Tool approval already lives in `ToolNode`. Prefer `entryNodes()` / `exitNodes()` for boundary extensions and **neuron-workflow** for bespoke graphs.
+
+6. **Control tool execution** with `toolMaxRuns($num)` (default 10 per tool across a run, including resumes), or per-tool limits. Escaped tool exceptions fail the run unless a configured `toolErrorHandler()` returns a conversational result; returned `ToolOutput::error()` lets the model handle an expected failure. See **neuron-tool** for input casting, errors, and deferred tools.
+
+## Related Skills
+
+- Use the **neuron-laravel-integration** or **neuron-symfony-integration** skill to wire
+  agents into a Laravel or Symfony app: container, tables, controllers, jobs, tests.
+- Use the **neuron-evaluation** skill to test agents with dataset-driven
+  evaluations, assertions, AI judges, and multi-turn conversation testing.
+- Use the **neuron-monitoring** skill to debug and monitor agents with the
+  observability event system.

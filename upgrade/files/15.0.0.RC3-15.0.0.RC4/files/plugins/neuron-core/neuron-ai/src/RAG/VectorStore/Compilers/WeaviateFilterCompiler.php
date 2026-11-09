@@ -1,0 +1,157 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\RAG\VectorStore\Compilers;
+
+use LogicException;
+use NeuronAI\RAG\Schema\DocumentFieldType;
+use NeuronAI\RAG\Schema\DocumentSchema;
+use NeuronAI\RAG\VectorStore\Filter\Filter;
+use NeuronAI\RAG\VectorStore\Filter\FilterCombinator;
+use NeuronAI\RAG\VectorStore\Filter\FilterExpression;
+use NeuronAI\RAG\VectorStore\Filter\FilterGroup;
+use NeuronAI\RAG\VectorStore\Filter\FilterOperator;
+use NeuronAI\RAG\VectorStore\Filter\RawFilter;
+use NeuronAI\RAG\VectorStore\WeaviateVectorStore;
+
+use function array_is_list;
+use function array_map;
+use function count;
+use function implode;
+use function is_array;
+use function is_bool;
+use function is_int;
+use function is_string;
+use function json_encode;
+use function preg_replace;
+
+class WeaviateFilterCompiler extends FilterCompiler
+{
+    protected const STORE = WeaviateVectorStore::class;
+
+    protected DocumentSchema $schema;
+
+    public function __construct(?DocumentSchema $schema = null)
+    {
+        $this->schema = $schema ?? DocumentSchema::default();
+    }
+
+    /**
+     * Compile to a Weaviate "where" filter in REST format (batch delete).
+     *
+     * https://weaviate.io/developers/weaviate/api/graphql/filters
+     *
+     * @return array<string, mixed>
+     */
+    public function compile(FilterExpression $filters): array
+    {
+        if ($filters instanceof RawFilter) {
+            $this->assertTargetsThisStore($filters);
+            return (array) $filters->fragment;
+        }
+
+        if ($filters instanceof Filter) {
+            return $this->compileCondition($filters);
+        }
+
+        if (!$filters instanceof FilterGroup) {
+            throw new LogicException('Unsupported filter expression.');
+        }
+
+        $conditions = array_map($this->compile(...), $filters->conditions());
+
+        return count($conditions) === 1 ? $conditions[0] : [
+            'operator' => $filters->operator() === FilterCombinator::And ? 'And' : 'Or',
+            'operands' => $conditions,
+        ];
+    }
+
+    /**
+     * The same filter rendered as a GraphQL argument (similarity search).
+     */
+    public function compileGraphQL(FilterExpression $filters): string
+    {
+        return $this->render($this->compile($filters));
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function compileCondition(Filter $condition): array
+    {
+        $operator = match ($condition->operator) {
+            FilterOperator::Eq => 'Equal',
+            FilterOperator::Neq => 'NotEqual',
+            FilterOperator::In => 'ContainsAny',
+            FilterOperator::Gt => 'GreaterThan',
+            FilterOperator::Gte => 'GreaterThanEqual',
+            FilterOperator::Lt => 'LessThan',
+            FilterOperator::Lte => 'LessThanEqual',
+            FilterOperator::ContainsAny => 'ContainsAny',
+            FilterOperator::ContainsAll => 'ContainsAll',
+        };
+
+        return [
+            'path' => [$condition->field],
+            'operator' => $operator,
+            $this->valueKey($condition->field, $condition->value) => $condition->value,
+        ];
+    }
+
+    protected function valueKey(string $field, mixed $value): string
+    {
+        $array = is_array($value);
+
+        // A float field is a Weaviate number, which refuses valueInt even for whole-number values
+        if ($this->schema->getField($field)?->getType() === DocumentFieldType::Float) {
+            return $array ? 'valueNumberArray' : 'valueNumber';
+        }
+
+        if (is_array($value)) {
+            $value = $value[0];
+        }
+
+        if (is_string($value)) {
+            return $array ? 'valueTextArray' : 'valueText';
+        }
+
+        if (is_int($value)) {
+            return $array ? 'valueIntArray' : 'valueInt';
+        }
+
+        if (is_bool($value)) {
+            return $array ? 'valueBooleanArray' : 'valueBoolean';
+        }
+
+        return $array ? 'valueNumberArray' : 'valueNumber';
+    }
+
+    /**
+     * Render the REST-format filter as GraphQL syntax: keys and operator
+     * enums unquoted, everything else JSON-encoded.
+     */
+    protected function render(mixed $value, string $key = ''): string
+    {
+        if (is_array($value)) {
+            if (array_is_list($value)) {
+                return '[' . implode(', ', array_map(fn (mixed $item): string => $this->render($item, $key), $value)) . ']';
+            }
+
+            $pairs = [];
+            foreach ($value as $itemKey => $item) {
+                // GraphQL takes a list through the scalar value field (valueText), REST through valueTextArray
+                $name = preg_replace('/^(value\w+)Array$/', '$1', (string) $itemKey);
+                $pairs[] = $name . ': ' . $this->render($item, (string) $itemKey);
+            }
+
+            return '{' . implode(', ', $pairs) . '}';
+        }
+
+        if ($key === 'operator') {
+            return (string) $value;
+        }
+
+        return (string) json_encode($value);
+    }
+}

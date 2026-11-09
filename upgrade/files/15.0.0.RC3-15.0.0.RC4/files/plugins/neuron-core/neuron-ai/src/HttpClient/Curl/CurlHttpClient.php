@@ -1,0 +1,473 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\HttpClient\Curl;
+
+use Closure;
+use CurlHandle;
+use CurlShareHandle;
+use CURLStringFile;
+use InvalidArgumentException;
+use NeuronAI\Exceptions\HttpException;
+use NeuronAI\HttpClient\HttpClientInterface;
+use NeuronAI\HttpClient\HttpRequest;
+use NeuronAI\HttpClient\HttpResponse;
+use NeuronAI\HttpClient\MergesHttpHeaders;
+use NeuronAI\HttpClient\ResolvesHttpRequest;
+use NeuronAI\HttpClient\StreamInterface;
+use WeakReference;
+
+use function basename;
+use function curl_error;
+use function curl_exec;
+use function curl_init;
+use function curl_multi_add_handle;
+use function curl_multi_init;
+use function curl_reset;
+use function curl_setopt_array;
+use function curl_share_init;
+use function curl_share_setopt;
+use function getmypid;
+use function is_array;
+use function is_resource;
+use function json_encode;
+use function stream_get_contents;
+use function stream_get_meta_data;
+use function strpbrk;
+use function strtolower;
+use function trim;
+
+use const CURL_LOCK_DATA_CONNECT;
+use const CURL_LOCK_DATA_DNS;
+use const CURL_LOCK_DATA_SSL_SESSION;
+use const CURLOPT_CONNECTTIMEOUT_MS;
+use const CURLOPT_CUSTOMREQUEST;
+use const CURLOPT_ENCODING;
+use const CURLOPT_FOLLOWLOCATION;
+use const CURLOPT_HEADERFUNCTION;
+use const CURLOPT_HTTPHEADER;
+use const CURLOPT_MAXREDIRS;
+use const CURLOPT_POSTFIELDS;
+use const CURLOPT_PROTOCOLS;
+use const CURLOPT_REDIR_PROTOCOLS;
+use const CURLOPT_RETURNTRANSFER;
+use const CURLOPT_SHARE;
+use const CURLOPT_TIMEOUT;
+use const CURLOPT_TIMEOUT_MS;
+use const CURLOPT_URL;
+use const CURLOPT_USERAGENT;
+use const CURLOPT_WRITEFUNCTION;
+use const CURLPROTO_HTTP;
+use const CURLPROTO_HTTPS;
+use const CURLSHOPT_SHARE;
+use const JSON_THROW_ON_ERROR;
+
+/**
+ * Default HTTP client built on ext-curl. Dependency-free.
+ *
+ * stream() drives a curl multi handle so response bytes are surfaced
+ * as they arrive — live SSE delivery is guaranteed, not client-dependent.
+ */
+class CurlHttpClient implements HttpClientInterface
+{
+    use ResolvesHttpRequest;
+    use MergesHttpHeaders;
+
+    protected string $baseUri = '';
+
+    protected ?CurlHandle $handle = null;
+
+    protected ?CurlShareHandle $shareHandle = null;
+
+    /**
+     * The process that opened the connections the handles hold.
+     */
+    protected ?int $connectionsProcessId = null;
+
+    /**
+     * Handles inherited from a parent process, never used again (see leaveInheritedConnections()).
+     *
+     * @var array<int, array{?CurlHandle, ?CurlShareHandle}>
+     */
+    protected array $inheritedHandles = [];
+
+    /**
+     * @var array<int, callable(HttpRequest): HttpRequest>
+     */
+    protected array $requestHooks = [];
+
+    /**
+     * @var array<int, callable(HttpResponse, HttpRequest): void>
+     */
+    protected array $responseHooks = [];
+
+    /**
+     * @param array<string, string> $customHeaders
+     * @param array<int, mixed> $curlOptions Raw CURLOPT_* overrides (proxies, custom CA bundles, ...)
+     */
+    public function __construct(
+        protected array $customHeaders = [],
+        protected float $timeout = 300.0, // 5 minutes
+        protected float $connectTimeout = 10.0,
+        protected array $curlOptions = [],
+    ) {
+    }
+
+    public function request(HttpRequest $request): HttpResponse
+    {
+        $request = $this->applyRequestHooks($request);
+        $handle = $this->reusableHandle();
+
+        $headers = new CurlHeaderCollector($this->redirectPolicy($request));
+
+        // The handle keeps its callback after the request, even through curl_reset(), and the
+        // redirect policy of the collector holds this client: a callback holding the collector
+        // would tie the client to its own handle in a cycle, and a released client would keep
+        // its connections open until the cycle collector runs.
+        $weakHeaders = WeakReference::create($headers);
+
+        $options = $this->buildOptions($request) + [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADERFUNCTION => static fn (CurlHandle $curlHandle, string $line): int => (int) $weakHeaders->get()?->ingestLine($line),
+        ];
+
+        curl_setopt_array($handle, $options);
+
+        $body = curl_exec($handle);
+
+        if ($body === false) {
+            throw HttpException::networkError($request, $headers->getRefusal() ?? curl_error($handle));
+        }
+
+        $response = new HttpResponse(
+            statusCode: $headers->getStatusCode(),
+            body: (string) $body,
+            headers: $headers->getHeaders(),
+        );
+
+        $this->fireResponseHooks($response, $request);
+
+        if ($response->statusCode >= 400) {
+            throw HttpException::statusError($request, $response);
+        }
+
+        return $response;
+    }
+
+    public function stream(HttpRequest $request): StreamInterface
+    {
+        $request = $this->applyRequestHooks($request);
+
+        $handle = curl_init();
+        $multiHandle = curl_multi_init();
+        $stream = new CurlStream($multiHandle, $handle, $request, new CurlHeaderCollector($this->redirectPolicy($request)));
+
+        // The handle keeps its callbacks, and the stream keeps the handle: callbacks holding
+        // the stream would tie the two in a cycle, and a released stream would keep its
+        // connection open until the cycle collector runs.
+        $weakStream = WeakReference::create($stream);
+
+        $options = $this->buildOptions($request) + [
+            CURLOPT_WRITEFUNCTION => static fn (CurlHandle $curlHandle, string $data): int => (int) $weakStream->get()?->write($data),
+            CURLOPT_HEADERFUNCTION => static fn (CurlHandle $curlHandle, string $line): int => (int) $weakStream->get()?->writeHeader($line),
+        ];
+
+        curl_setopt_array($handle, $options);
+        curl_multi_add_handle($multiHandle, $handle);
+
+        $stream->awaitHeaders();
+
+        if ($stream->getStatusCode() >= 400) {
+            $response = new HttpResponse(
+                statusCode: $stream->getStatusCode(),
+                body: $stream->drain(),
+                headers: $stream->getHeaders(),
+            );
+            $stream->close();
+
+            $this->fireResponseHooks($response, $request);
+
+            throw HttpException::statusError($request, $response);
+        }
+
+        // The body is a live stream, so response hooks see status and headers only.
+        $this->fireResponseHooks(
+            new HttpResponse(
+                statusCode: $stream->getStatusCode(),
+                body: '',
+                headers: $stream->getHeaders(),
+            ),
+            $request,
+        );
+
+        return $stream;
+    }
+
+    /**
+     * Register a hook that observes the outgoing request and may return
+     * a modified one (dynamic auth headers, signing, logging). Hooks run
+     * in registration order.
+     *
+     * @param callable(HttpRequest): HttpRequest $hook
+     */
+    public function onRequest(callable $hook): static
+    {
+        $this->requestHooks[] = $hook;
+        return $this;
+    }
+
+    /**
+     * Register a hook that observes responses (logging, metrics), including
+     * error responses before they are thrown as HttpException. Observation
+     * only — for retry or caching semantics wrap the client behind
+     * HttpClientInterface instead. For stream() the body is a live stream,
+     * so hooks receive it empty (except on error, where it is drained).
+     *
+     * @param callable(HttpResponse, HttpRequest): void $hook
+     */
+    public function onResponse(callable $hook): static
+    {
+        $this->responseHooks[] = $hook;
+        return $this;
+    }
+
+    protected function applyRequestHooks(HttpRequest $request): HttpRequest
+    {
+        foreach ($this->requestHooks as $hook) {
+            $request = $hook($request);
+        }
+
+        return $request;
+    }
+
+    protected function fireResponseHooks(HttpResponse $response, HttpRequest $request): void
+    {
+        foreach ($this->responseHooks as $hook) {
+            $hook($response, $request);
+        }
+    }
+
+    public function withBaseUri(string $baseUri): static
+    {
+        $this->baseUri = trim($baseUri, '/');
+        return $this;
+    }
+
+    /**
+     * @param array<string, string> $headers
+     */
+    public function withHeaders(array $headers): static
+    {
+        $this->customHeaders = $this->mergeRequestHeaders($this->customHeaders, $headers);
+        return $this;
+    }
+
+    public function withTimeout(float $timeout): static
+    {
+        $this->timeout = $timeout;
+        return $this;
+    }
+
+    /**
+     * Reuse one handle across requests so keep-alive connections survive.
+     */
+    protected function reusableHandle(): CurlHandle
+    {
+        $this->leaveInheritedConnections();
+
+        if ($this->handle instanceof CurlHandle) {
+            curl_reset($this->handle);
+            return $this->handle;
+        }
+
+        return $this->handle = curl_init();
+    }
+
+    /**
+     * Connections, TLS sessions, and DNS results shared across all of this
+     * client's handles, so streamed requests reuse connections just like
+     * the reusable request() handle does.
+     */
+    protected function shareHandle(): CurlShareHandle
+    {
+        $this->leaveInheritedConnections();
+
+        if (!$this->shareHandle instanceof CurlShareHandle) {
+            $this->shareHandle = curl_share_init();
+            curl_share_setopt($this->shareHandle, CURLSHOPT_SHARE, CURL_LOCK_DATA_DNS);
+            curl_share_setopt($this->shareHandle, CURLSHOPT_SHARE, CURL_LOCK_DATA_SSL_SESSION);
+            curl_share_setopt($this->shareHandle, CURLSHOPT_SHARE, CURL_LOCK_DATA_CONNECT);
+        }
+
+        return $this->shareHandle;
+    }
+
+    /**
+     * Connections belong to the process that opened them: a forked child writing to its
+     * parent's sockets interleaves its traffic with the parent's and its siblings', and
+     * reads their responses. A new process sets the inherited handles aside and opens its
+     * own connections. The inherited handles stay referenced: destroying them would close
+     * the parent's connections from the child, shutting down their TLS sessions.
+     */
+    protected function leaveInheritedConnections(): void
+    {
+        $processId = (int) getmypid();
+
+        if ($this->connectionsProcessId !== null && $this->connectionsProcessId !== $processId) {
+            $this->inheritedHandles[] = [$this->handle, $this->shareHandle];
+            $this->handle = null;
+            $this->shareHandle = null;
+        }
+
+        $this->connectionsProcessId = $processId;
+    }
+
+    /**
+     * @return array<int, mixed>
+     */
+    protected function buildOptions(HttpRequest $request): array
+    {
+        $headers = $this->mergeRequestHeaders($this->customHeaders, $request->headers);
+
+        $options = [
+            CURLOPT_URL => $this->resolveUri($request),
+            CURLOPT_CUSTOMREQUEST => $request->method->value,
+            // A User-Agent line in CURLOPT_HTTPHEADER replaces this default.
+            CURLOPT_USERAGENT => HttpClientInterface::USER_AGENT,
+            CURLOPT_CONNECTTIMEOUT_MS => (int) ($this->connectTimeout * 1000),
+            CURLOPT_TIMEOUT_MS => (int) (($request->timeout ?? $this->timeout) * 1000),
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_MAXREDIRS => 5,
+            // libcurl would otherwise serve file://, gopher:// and every other scheme it was built with
+            CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+            CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+            CURLOPT_ENCODING => '',
+            CURLOPT_SHARE => $this->shareHandle(),
+        ];
+
+        if ($request->body !== null) {
+            if (is_array($request->body)) {
+                if ($request->isMultipart()) {
+                    // curl generates the multipart boundary and Content-Type itself.
+                    $options[CURLOPT_POSTFIELDS] = $this->buildMultipartFields($request->body);
+                } else {
+                    $options[CURLOPT_POSTFIELDS] = json_encode($request->body, JSON_THROW_ON_ERROR);
+                    if (!$this->hasHeader($headers, 'Content-Type')) {
+                        $headers['Content-Type'] = 'application/json';
+                    }
+                }
+            } else {
+                $options[CURLOPT_POSTFIELDS] = $request->body;
+            }
+        }
+
+        $headerLines = [];
+        foreach ($headers as $name => $value) {
+            // libcurl sends each line as written: CR or LF would add headers, NUL would cut the line short
+            if (strpbrk("{$name}{$value}", "\r\n\0") !== false) {
+                throw new InvalidArgumentException("Header {$name} must not contain line breaks or NUL bytes");
+            }
+
+            $headerLines[] = "{$name}: {$value}";
+        }
+        // Suppress "Expect: 100-continue" — some API gateways (e.g. Google Vertex) reject it.
+        $headerLines[] = 'Expect:';
+
+        $options[CURLOPT_HTTPHEADER] = $headerLines;
+
+        $overrides = $this->curlOptions;
+        unset($overrides[CURLOPT_URL], $overrides[CURLOPT_HTTPHEADER]);
+        if ($request->timeout !== null) {
+            unset($overrides[CURLOPT_TIMEOUT], $overrides[CURLOPT_TIMEOUT_MS]);
+        }
+
+        return $overrides + $options;
+    }
+
+    protected function resolveUri(HttpRequest $request): string
+    {
+        return $this->resolveRequestUri($request->uri, $this->baseUri);
+    }
+
+    /**
+     * curl drops only Authorization and Cookie when a redirect leaves the origin, while
+     * providers also authenticate through custom headers such as x-api-key.
+     *
+     * @return Closure(string): bool
+     */
+    protected function redirectPolicy(HttpRequest $request): Closure
+    {
+        $uri = $this->resolveUri($request);
+
+        return fn (string $location): bool => $this->isSameOrigin($uri, $location);
+    }
+
+    /**
+     * @param array<string, string> $headers
+     */
+    protected function hasHeader(array $headers, string $name): bool
+    {
+        $name = strtolower($name);
+
+        foreach ($headers as $headerName => $value) {
+            if (strtolower($headerName) === $name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Convert the framework's multipart body shape into curl POSTFIELDS.
+     *
+     * @param array<string, mixed> $body
+     * @return array<string, string|CURLStringFile>
+     */
+    protected function buildMultipartFields(array $body): array
+    {
+        $fields = [];
+
+        foreach ($body as $name => $value) {
+            if (is_resource($value)) {
+                $fields[$name] = $this->fileFromResource($value, $name);
+                continue;
+            }
+
+            if (is_array($value) && isset($value['contents'])) {
+                $filename = $value['filename'] ?? null;
+                $mime = $value['headers']['Content-Type'] ?? 'application/octet-stream';
+
+                $fields[$name] = is_resource($value['contents'])
+                    ? $this->fileFromResource($value['contents'], $name, $filename, $mime)
+                    : new CURLStringFile((string) $value['contents'], $filename ?? $name, $mime);
+                continue;
+            }
+
+            $fields[$name] = (string) $value;
+        }
+
+        return $fields;
+    }
+
+    /**
+     * APIs infer the file format from the extension, so the upload filename
+     * must come from the underlying file when the resource points to one.
+     *
+     * @param resource $resource
+     */
+    protected function fileFromResource(
+        mixed $resource,
+        string $fieldName,
+        ?string $filename = null,
+        string $mime = 'application/octet-stream',
+    ): CURLStringFile {
+        if ($filename === null) {
+            $meta = stream_get_meta_data($resource);
+            $filename = isset($meta['uri']) ? basename($meta['uri']) : $fieldName;
+        }
+
+        return new CURLStringFile((string) stream_get_contents($resource), $filename, $mime);
+    }
+}

@@ -1,0 +1,60 @@
+{
+    "name": "spatie/calendar-links",
+    "description": "Generate add to calendar links for Google, iCal and other calendar systems",
+    "license": "MIT",
+    "keywords": [
+        "spatie",
+        "calendar-links",
+        "ics",
+        "ical",
+        "google-calendar",
+        "outlook",
+        "yahoo"
+    ],
+    "authors": [
+        {
+            "name": "Sebastian De Deyne",
+            "email": "sebastian@spatie.be",
+            "homepage": "https://spatie.be",
+            "role": "Developer"
+        }
+    ],
+    "homepage": "https://github.com/spatie/calendar-links",
+    "require": {
+        "php": "^8.3"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.93",
+        "pestphp/pest": "^4.7",
+        "phpunit/phpunit": "^12.5",
+        "psalm/plugin-phpunit": "^0.19.7",
+        "spatie/phpunit-snapshot-assertions": "^5.3",
+        "vimeo/psalm": "^6.15"
+    },
+    "autoload": {
+        "psr-4": {
+            "Spatie\\CalendarLinks\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Spatie\\CalendarLinks\\Tests\\": "tests"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "format": "vendor/bin/php-cs-fixer fix --allow-risky=yes",
+        "psalm": "vendor/bin/psalm",
+        "psalm:ci": "vendor/bin/psalm --shepherd",
+        "test": "vendor/bin/pest",
+        "test:update-snapshots": [
+            "@putenv UPDATE_SNAPSHOTS=true",
+            "@test"
+        ]
+    }
+}

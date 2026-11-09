@@ -1,0 +1,103 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Providers\Mistral;
+
+use NeuronAI\Chat\Messages\ContentBlocks\ContentBlockInterface;
+use NeuronAI\Chat\Messages\SystemMessage;
+use NeuronAI\Chat\Messages\ToolCallMessage;
+use NeuronAI\Exceptions\ProviderException;
+use NeuronAI\HttpClient\Curl\CurlHttpClient;
+use NeuronAI\HttpClient\HasHttpClient;
+use NeuronAI\HttpClient\HttpClientInterface;
+use NeuronAI\Providers\AIProviderInterface;
+use NeuronAI\Providers\HandleWithTools;
+use NeuronAI\Providers\MessageMapperInterface;
+use NeuronAI\Providers\OpenAI\HandleStructured;
+use NeuronAI\Providers\OpenAI\ToolMapper;
+use NeuronAI\Providers\ToolMapperInterface;
+use NeuronAI\Tools\ToolCall;
+
+use function array_map;
+
+class Mistral implements AIProviderInterface
+{
+    use HasHttpClient;
+    use HandleWithTools;
+    use HandleChat;
+    use HandleStream;
+    use HandleStructured; // From OpenAI
+
+    protected string $baseUri = 'https://api.mistral.ai/v1';
+
+    /**
+     * System instructions.
+     */
+    protected ?string $system = null;
+
+    protected MessageMapperInterface $messageMapper;
+    protected ToolMapperInterface $toolPayloadMapper;
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    public function __construct(
+        protected string $key,
+        protected string $model,
+        protected array $parameters = [],
+        protected bool $strict_response = false,
+        ?HttpClientInterface $httpClient = null,
+    ) {
+        $this->httpClient = $httpClient ?? new CurlHttpClient();
+        $this->httpHeaders = [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $this->key,
+        ];
+    }
+
+    public function getModel(): string
+    {
+        return $this->model;
+    }
+
+    public function systemPrompt(SystemMessage|string|null $prompt): AIProviderInterface
+    {
+        $this->system = $prompt instanceof SystemMessage ? $prompt->getContent() : $prompt;
+        return $this;
+    }
+
+    protected function messageMapper(): MessageMapperInterface
+    {
+        return $this->messageMapper ??= new MessageMapper();
+    }
+
+    protected function toolPayloadMapper(): ToolMapperInterface
+    {
+        return $this->toolPayloadMapper ??= new ToolMapper();
+    }
+
+    /**
+     * @param array<int, array> $toolCalls
+     * @param ContentBlockInterface|ContentBlockInterface[]|null $blocks
+     *
+     * @throws ProviderException
+     */
+    protected function createToolCallMessage(array $toolCalls, array|ContentBlockInterface|null $blocks = null): ToolCallMessage
+    {
+        $tools = array_map(
+            fn (array $item): ToolCall => $this->newToolCall(
+                $item['function']['name'],
+                $item['id'],
+                $this->decodeToolArguments($item['function']['name'], $item['function']['arguments'] ?? null),
+            ),
+            $toolCalls
+        );
+
+        $result = new ToolCallMessage($blocks, $tools);
+        $result->addMetadata('tool_calls', $toolCalls);
+
+        return $result;
+    }
+}

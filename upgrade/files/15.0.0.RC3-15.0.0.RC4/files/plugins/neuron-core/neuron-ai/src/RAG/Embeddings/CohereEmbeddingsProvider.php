@@ -1,0 +1,103 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\RAG\Embeddings;
+
+use NeuronAI\Exceptions\HttpException;
+use NeuronAI\Exceptions\ProviderException;
+use NeuronAI\HttpClient\Curl\CurlHttpClient;
+use NeuronAI\HttpClient\HasHttpClient;
+use NeuronAI\HttpClient\HttpClientInterface;
+use NeuronAI\HttpClient\HttpRequest;
+use NeuronAI\RAG\Document;
+
+use function rtrim;
+use function array_chunk;
+use function array_map;
+use function array_merge;
+
+class CohereEmbeddingsProvider extends AbstractEmbeddingsProvider
+{
+    use HasHttpClient;
+
+    protected string $baseUri = 'https://api.cohere.com/v2';
+
+    public function __construct(
+        protected string $key,
+        protected string $model,
+        protected array $parameters = [],
+        ?HttpClientInterface $httpClient = null,
+    ) {
+        $this->httpClient = $httpClient ?? new CurlHttpClient();
+        $this->httpHeaders = [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $this->key,
+        ];
+    }
+
+    /**
+     * @throws HttpException
+     */
+    public function embedText(string $text): array
+    {
+        $response = $this->httpClient->request(
+            HttpRequest::post(
+                uri: rtrim($this->baseUri, '/') . '/embed',
+                body: [
+                    'model' => $this->model,
+                    'texts' => [$text],
+                    'embedding_types' => ['float'],
+                    ...array_merge([
+                        'input_type' => 'search_query',
+                    ], $this->parameters),
+                ],
+                headers: $this->httpHeaders,
+            )
+        )->json();
+
+        return $response['embeddings']['float'][0];
+    }
+
+    /**
+     * @throws HttpException
+     * @throws ProviderException
+     */
+    public function embedDocuments(array $documents): array
+    {
+        $chunks = array_chunk($documents, 96);
+
+        foreach ($chunks as $chunk) {
+            $response = $this->httpClient->request(
+                HttpRequest::post(
+                    uri: rtrim($this->baseUri, '/') . '/embed',
+                    body: [
+                        'model' => $this->model,
+                        'texts' => array_map(fn (Document $document): string => $document->getContent(), $chunk),
+                        'embedding_types' => ['float'],
+                        ...array_merge([
+                            'input_type' => 'search_document',
+                        ], $this->parameters),
+                    ],
+                    headers: $this->httpHeaders,
+                )
+            )->json();
+
+            $this->assignEmbeddings($chunk, $response['embeddings']['float'] ?? []);
+        }
+
+        return array_merge(...$chunks);
+    }
+
+    /**
+     * A stored document, so it takes the document input type, unlike embedText() at search time.
+     *
+     * @throws HttpException
+     * @throws ProviderException
+     */
+    public function embedDocument(Document $document): Document
+    {
+        return $this->embedDocuments([$document])[0];
+    }
+}

@@ -155,6 +155,35 @@ class BxDolMigrationsTest extends BxDolTestCase
         </resources>'));
     }
 
+    public function testReadLanguageFileKeyWithSpaces(): void
+    {
+        $aResult = BxDolMigrations::readLanguageFile(self::XML_HEAD . '<resources name="en" flag="gb" title="English">
+            <string_upd name="_Member Login">Log in</string_upd>
+            <string_del name="_Old  key"></string_del>
+        </resources>');
+
+        $this->assertSame(['_Member Login' => 'Log in'], $aResult['upd']);
+        $this->assertSame(['_Old  key'], $aResult['del']);
+    }
+
+    #[DataProvider('providerBadLanguageKey')]
+    public function testReadLanguageFileRejectsBadKey(string $sName): void
+    {
+        $this->expectException(UnexpectedValueException::class);
+        BxDolMigrations::readLanguageFile(self::XML_HEAD . '<resources name="en" flag="gb" title="English"><string_add name="' . $sName . '">A</string_add></resources>');
+    }
+
+    public static function providerBadLanguageKey(): array
+    {
+        return [
+            'empty' => [''],
+            'only spaces' => ['   '],
+            'leading space' => [' _a'],
+            'trailing space' => ['_a '],
+            'line break' => ['_a&#10;b'],
+        ];
+    }
+
     public function testFolderRejectsSameSerialTwice(): void
     {
         $this->_files('common', [

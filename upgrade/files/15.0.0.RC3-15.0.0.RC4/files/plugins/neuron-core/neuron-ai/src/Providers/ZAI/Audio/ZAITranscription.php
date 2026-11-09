@@ -1,0 +1,198 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Providers\ZAI\Audio;
+
+use Generator;
+use NeuronAI\Chat\Enums\SourceType;
+use NeuronAI\Chat\Messages\AssistantMessage;
+use NeuronAI\Chat\Messages\ContentBlocks\AudioContent;
+use NeuronAI\Chat\Messages\Message;
+use NeuronAI\Chat\Messages\Stream\Chunks\TextChunk;
+use NeuronAI\Chat\Messages\SystemMessage;
+use NeuronAI\Chat\Messages\Usage;
+use NeuronAI\Exceptions\HttpException;
+use NeuronAI\Exceptions\ProviderException;
+use NeuronAI\HttpClient\Curl\CurlHttpClient;
+use NeuronAI\HttpClient\HasHttpClient;
+use NeuronAI\HttpClient\HttpClientInterface;
+use NeuronAI\HttpClient\HttpRequest;
+use NeuronAI\Providers\AIProviderInterface;
+use NeuronAI\Providers\MessageMapperInterface;
+use NeuronAI\Providers\ProviderResponse;
+use NeuronAI\Providers\SSEParser;
+use NeuronAI\Providers\ToolMapperInterface;
+use NeuronAI\UniqueIdGenerator;
+
+use function rtrim;
+use function end;
+use function fopen;
+
+class ZAITranscription implements AIProviderInterface
+{
+    use HasHttpClient;
+
+    /**
+     * The main URL of the provider API.
+     */
+    protected string $baseUri = 'https://api.z.ai/api/paas/v4';
+
+    /**
+     * System instructions.
+     */
+    protected ?string $system = null;
+
+    /**
+     * @param array<string, mixed> $parameters Extra request fields. A file upload sends them as
+     *        multipart form fields, where every value becomes a string: pass 'true', not true.
+     */
+    public function __construct(
+        protected string $key,
+        protected string $model,
+        protected array $parameters = [],
+        ?HttpClientInterface $httpClient = null
+    ) {
+        $this->httpClient = $httpClient ?? new CurlHttpClient();
+        $this->httpHeaders = [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $this->key,
+        ];
+    }
+
+    public function getModel(): string
+    {
+        return $this->model;
+    }
+
+    public function systemPrompt(SystemMessage|string|null $prompt): AIProviderInterface
+    {
+        $this->system = $prompt instanceof SystemMessage ? $prompt->getContent() : $prompt;
+        return $this;
+    }
+
+    /**
+     * @throws HttpException
+     * @throws ProviderException
+     */
+    public function chat(Message ...$messages): ProviderResponse
+    {
+        $message = end($messages);
+
+        $body = [
+            'model' => $this->model,
+            ...$this->parameters,
+        ];
+
+        $this->addFile($body, $message->getAudio());
+
+        if ($message->getContent() !== null) {
+            $body['prompt'] = $message->getContent();
+        }
+
+        $response = $this->httpClient->request(
+            HttpRequest::post(
+                uri: rtrim($this->baseUri, '/') . '/audio/transcriptions',
+                body: $body,
+                headers: $this->httpHeaders,
+            )
+        )->json();
+
+        $message = new AssistantMessage($response['text']);
+
+        if (isset($response['usage'])) {
+            $message->setUsage(
+                new Usage(
+                    $response['usage']['prompt_tokens'] ?? 0,
+                    $response['usage']['completion_tokens'] ?? 0
+                )
+            );
+        }
+
+        return new ProviderResponse(message: $message);
+    }
+
+    /**
+     * @throws ProviderException
+     * @throws HttpException
+     */
+    public function stream(Message ...$messages): Generator
+    {
+        $message = end($messages);
+
+        $body = [
+            'stream' => true,
+            'model' => $this->model,
+            ...$this->parameters,
+        ];
+
+        $this->addFile($body, $message->getAudio());
+
+        if ($message->getContent() !== null) {
+            $body['prompt'] = $message->getContent();
+        }
+
+        $stream = $this->httpClient->stream(
+            HttpRequest::post(
+                uri: rtrim($this->baseUri, '/') . '/audio/transcriptions',
+                body: $body,
+                headers: $this->httpHeaders,
+            )
+        );
+
+        $content = '';
+        $msgId = UniqueIdGenerator::generateId('msg_');
+        $usage = new Usage(0, 0);
+
+        while (! $stream->eof()) {
+            if (!$line = SSEParser::parseNextSSEEvent($stream)) {
+                continue;
+            }
+
+            if ($line['type'] === 'transcript.text.delta') {
+                $content .= $line['delta'];
+                yield new TextChunk($msgId, $line['delta']);
+            }
+
+            if ($line['type'] === 'transcript.text.done') {
+                $usage->inputTokens = $line['usage']['prompt_tokens'] ?? 0;
+                $usage->outputTokens = $line['usage']['completion_tokens'] ?? 0;
+            }
+        }
+
+        $message = new AssistantMessage($content);
+        $message->setId($msgId)->setUsage($usage);
+        return new ProviderResponse(message: $message);
+    }
+
+    protected function addFile(array &$body, AudioContent $audio): void
+    {
+        if ($audio->sourceType === SourceType::BASE64) {
+            $body['file_base64'] = 'data:'.$audio->mediaType.';base64,'.$audio->content;
+        } elseif ($audio->sourceType === SourceType::URL) {
+            $body['file'] = fopen($audio->content, 'r');
+        } else {
+            throw new ProviderException("Source type not supported: {$audio->sourceType->value}");
+        }
+    }
+
+    public function structured(array|Message $messages, string $class, array $response_schema): ProviderResponse
+    {
+        throw new ProviderException('Structured output is not supported for transcription.');
+    }
+
+    protected function messageMapper(): MessageMapperInterface
+    {
+        throw new ProviderException('Messages are not supported for transcription.');
+    }
+
+    protected function toolPayloadMapper(): ToolMapperInterface
+    {
+        throw new ProviderException('Tools are not supported for transcription.');
+    }
+
+    public function setTools(array $tools): AIProviderInterface
+    {
+        return $this;
+    }
+}

@@ -256,6 +256,37 @@ class MigrationsDbTest extends BxDolIntegrationTestCase
         $this->assertStringContainsString('language zz is not installed', implode("\n", $aLog));
     }
 
+    public function testLanguageStringsSkipMissingCategory(): void
+    {
+        $sKey = $this->_key('nocat');
+        $this->_write('2026110100_nocat.xml', self::XML_HEAD . "<resources name=\"en\" flag=\"gb\" title=\"English\" category=\"No Such Category {$this->_sSuffix}\">
+    <string_add name=\"$sKey\"><![CDATA[Never]]></string_add>
+</resources>");
+
+        $aLog = [];
+        $aResult = $this->_migrations($aLog)->run(function () { return ''; });
+
+        $this->assertSame(['common: 2026110100_nocat.xml'], $aResult['applied']);
+        $this->assertSame([], $this->_strings($sKey));
+        $this->assertStringContainsString('does not exist; nothing to change', implode("\n", $aLog));
+    }
+
+    public function testLanguageStringsKeyWithSpaces(): void
+    {
+        $sKey = $this->_aKeys[] = '_test migrations spaced ' . $this->_sSuffix;
+        $oLanguages = BxDolStudioLanguagesUtils::getInstance();
+        $oLanguages->addLanguageString($sKey, 'Old', 0, $oLanguages->getLanguageCategory('System'), false);
+
+        $this->_write('2026110100_spaces.xml', self::XML_HEAD . "<resources name=\"en\" flag=\"gb\" title=\"English\">
+    <string_upd name=\"$sKey\"><![CDATA[Changed]]></string_upd>
+</resources>");
+
+        $aResult = $this->_migrations()->run(function () { return ''; });
+
+        $this->assertSame(['common: 2026110100_spaces.xml'], $aResult['applied']);
+        $this->assertSame('Changed', $this->_strings($sKey)['en']);
+    }
+
     public function testBaselineRecordsWithoutRunning(): void
     {
         $this->_write('2026110100_would_fail.sql', self::SQL_META . "INSERT INTO `table_that_does_not_exist_{$this->_sSuffix}` VALUES (1);");

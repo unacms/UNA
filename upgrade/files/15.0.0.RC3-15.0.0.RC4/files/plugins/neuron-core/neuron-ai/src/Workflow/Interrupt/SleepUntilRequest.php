@@ -1,0 +1,67 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Workflow\Interrupt;
+
+use DateTimeImmutable;
+use DateTimeInterface;
+use NeuronAI\Exceptions\WorkflowException;
+
+use function time;
+
+/**
+ * Suspends the workflow until a clock time. Every wait is persisted first;
+ * inputless continuation then evaluates the clock and resumes due waits. An
+ * external platform schedules the invocation but never asserts that the timer
+ * elapsed.
+ */
+class SleepUntilRequest extends InterruptRequest
+{
+    /**
+     * @param DateTimeImmutable $wakeAt Earliest time at which continuation may resolve the wait.
+     */
+    public function __construct(
+        protected DateTimeImmutable $wakeAt,
+    ) {
+    }
+
+    public function type(): InterruptType
+    {
+        return InterruptType::SleepUntil;
+    }
+
+    public function getMessage(): string
+    {
+        return 'Sleeping until ' . $this->wakeAt->format(DateTimeInterface::ATOM);
+    }
+
+    public function getWakeAt(): DateTimeImmutable
+    {
+        return $this->wakeAt;
+    }
+
+    public function validate(ResumeInput $input): void
+    {
+        if ($input->kind !== ResumeType::Timer) {
+            throw new WorkflowException(
+                "Resume input '{$input->kind->value}' is incompatible with interrupt {$this->getId()} "
+                . "of type '{$this->type()->value}'."
+            );
+        }
+
+        if ($this->wakeAt->getTimestamp() > time()) {
+            throw new WorkflowException(
+                "Timer input for interrupt {$this->getId()} arrived before its wake time "
+                . $this->wakeAt->format(DateTimeInterface::ATOM) . '.'
+            );
+        }
+    }
+
+    protected function coordinationData(): array
+    {
+        return [
+            'wakeAt' => $this->wakeAt->format(DateTimeInterface::ATOM),
+        ];
+    }
+}

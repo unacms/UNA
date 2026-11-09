@@ -1,0 +1,25 @@
+<svg class="icon v-accounts-write-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- glyph: at-sign, lucide-static v1.47.0, ISC -->
+<style>
+.v-accounts-write-v1 .bx-ai-ring{transform-box:view-box;transform-origin:36px 36px}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-accounts-write-v1 [class]{animation:var(--a) 1700ms linear both;animation-delay:var(--d,0ms)}
+.v-accounts-write-v1 [class]{--a:none}
+.v-accounts-write-v1 :is(.bx-ai-inner,.bx-ai-sh.bx-ai-inner){--a:aw0}
+@keyframes aw0{0%{stroke-dasharray:none;stroke-dashoffset:0}0.06%{stroke-dasharray:55.253 110.505;stroke-dashoffset:0}0.12%{stroke-dasharray:55.253 110.505;stroke-dashoffset:55.253}5.29%{stroke-dasharray:55.253 110.505;stroke-dashoffset:55.253;animation-timing-function:cubic-bezier(.3,0,.2,1)}22.35%{stroke-dasharray:55.253 110.505;stroke-dashoffset:0}99.94%{stroke-dasharray:55.253 110.505;stroke-dashoffset:0}100%{stroke-dasharray:none;stroke-dashoffset:0}}
+.v-accounts-write-v1 :is(.bx-ai-outer,.bx-ai-sh.bx-ai-outer){--a:aw1}
+@keyframes aw1{0%{stroke-dasharray:none;stroke-dashoffset:0}0.06%{stroke-dasharray:151.505 303.01;stroke-dashoffset:0}0.12%{stroke-dasharray:151.505 303.01;stroke-dashoffset:151.505}22.35%{stroke-dasharray:151.505 303.01;stroke-dashoffset:151.505;animation-timing-function:cubic-bezier(.3,0,.2,1)}58.82%{stroke-dasharray:151.505 303.01;stroke-dashoffset:0}99.94%{stroke-dasharray:151.505 303.01;stroke-dashoffset:0}100%{stroke-dasharray:none;stroke-dashoffset:0}}
+.v-accounts-write-v1 .bx-ai-ring{--a:aw2}
+@keyframes aw2{0%{opacity:0;transform:scale(.95)}56.47%{opacity:0;transform:scale(.95)}58.24%{opacity:1;transform:scale(1);animation-timing-function:cubic-bezier(.3,.6,.5,1)}76.53%{opacity:.6;transform:scale(1.66)}92.94%{opacity:0;transform:scale(2.31)}100%{opacity:0;transform:scale(2.31)}}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-accounts-write-v1 .bx-ai-qv.bx-ai-qv{animation:q-accounts-write-v1 1700ms linear both}
+@keyframes q-accounts-write-v1{0%{opacity:1;animation-timing-function:ease-out}8.235%{opacity:0}78.824%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.v-accounts-write-v1 *{animation:none!important}}
+</style>
+<rect width="72" height="72" fill="url(#bg-accounts-write-v1)"/>
+<rect width="72" height="72" fill="url(#dp-accounts-write-v1)" opacity="0.3"/><rect width="72" height="72" fill="url(#bg-accounts-write-v1)" class="bx-ai-qv" mask="url(#quiet-accounts-write-v1)"/><rect width="72" height="72" fill="url(#dpl-accounts-write-v1)" mask="url(#reveal-accounts-write-v1)"/>
+<rect width="72" height="72" fill="url(#inside-accounts-write-v1)" opacity="0.5" mask="url(#insides-accounts-write-v1)"/><g stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><g stroke="white"><path class="bx-ai-inner" d="M27.2 36a8.8 8.8 0 1 0 17.6 0a8.8 8.8 0 1 0 -17.6 0"/><path class="bx-ai-outer" d="M44.8 27.2V38.2A6.6 6.6 0 0 0 58 38.2V36A22 22 0 1 0 49.2 53.6"/></g><g mask="url(#lit-accounts-write-v1)" stroke="black"><path class="bx-ai-sh bx-ai-inner" d="M27.2 37a8.8 8.8 0 1 0 17.6 0a8.8 8.8 0 1 0 -17.6 0"/><path class="bx-ai-sh bx-ai-outer" d="M44.8 28.2V39.2A6.6 6.6 0 0 0 58 39.2V37A22 22 0 1 0 49.2 54.6"/></g></g>
+<defs>
+<linearGradient id="bg-accounts-write-v1" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#D97706"/><stop offset="1" stop-color="#92400E"/></linearGradient><linearGradient id="inside-accounts-write-v1" x1="36" y1="14" x2="36" y2="58" gradientUnits="userSpaceOnUse"><stop stop-color="#92400E"/><stop offset="1" stop-color="#451A03"/></linearGradient><linearGradient id="light-accounts-write-v1" x1="36" y1="15" x2="36" y2="59" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity="0.1"/><stop offset="1" stop-color="white" stop-opacity="0.2"/></linearGradient><mask id="lit-accounts-write-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-accounts-write-v1)"/></mask>
+<pattern id="dp-accounts-write-v1" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r=".6" fill="white"/></pattern><pattern id="dpl-accounts-write-v1" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r=".85" fill="#FDE68A"/></pattern>
+<mask id="insides-accounts-write-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><g fill="white"><path d="M27.2 36a8.8 8.8 0 1 0 17.6 0a8.8 8.8 0 1 0 -17.6 0"/></g></mask><mask id="reveal-accounts-write-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><circle class="bx-ai-ring" cx="36" cy="36" r="22" fill="none" stroke="white" stroke-width="5" opacity="0"/></mask>
+<radialGradient id="quietv-accounts-write-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-accounts-write-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-accounts-write-v1)"/></mask></defs>
+</svg>

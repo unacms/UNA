@@ -1,0 +1,66 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Evaluation;
+
+use function end;
+use function explode;
+use function sprintf;
+
+class AssertionFailure
+{
+    public function __construct(
+        protected readonly string $evaluatorClass,
+        protected readonly string $assertionMethod,
+        protected readonly string $message,
+        protected readonly int $lineNumber,
+        protected readonly array $context = []
+    ) {
+    }
+
+    public function getEvaluatorClass(): string
+    {
+        return $this->evaluatorClass;
+    }
+
+    public function getAssertionMethod(): string
+    {
+        return $this->assertionMethod;
+    }
+
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+
+    public function getLineNumber(): int
+    {
+        return $this->lineNumber;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getContext(): array
+    {
+        return $this->context;
+    }
+
+    public function getShortEvaluatorClass(): string
+    {
+        $parts = explode('\\', $this->evaluatorClass);
+        return end($parts);
+    }
+
+    public function getFullDescription(): string
+    {
+        return sprintf(
+            '%s:%d -> %s: %s',
+            $this->getShortEvaluatorClass(),
+            $this->lineNumber,
+            $this->assertionMethod,
+            $this->message
+        );
+    }
+}

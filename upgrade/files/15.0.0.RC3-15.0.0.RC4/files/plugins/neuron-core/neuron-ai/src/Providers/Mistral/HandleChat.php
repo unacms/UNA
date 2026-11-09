@@ -1,0 +1,127 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Providers\Mistral;
+
+use NeuronAI\Chat\Enums\MessageRole;
+use NeuronAI\Chat\Enums\SourceType;
+use NeuronAI\Chat\Messages\AssistantMessage;
+use NeuronAI\Chat\Messages\ContentBlocks\AudioContent;
+use NeuronAI\Chat\Messages\ContentBlocks\ContentBlockInterface;
+use NeuronAI\Chat\Messages\ContentBlocks\FileContent;
+use NeuronAI\Chat\Messages\ContentBlocks\ImageContent;
+use NeuronAI\Chat\Messages\ContentBlocks\ReasoningContent;
+use NeuronAI\Chat\Messages\ContentBlocks\TextContent;
+use NeuronAI\Chat\Messages\Message;
+use NeuronAI\Chat\Messages\Usage;
+use NeuronAI\Exceptions\HttpException;
+use NeuronAI\Exceptions\ProviderException;
+use NeuronAI\HttpClient\HttpRequest;
+use NeuronAI\Providers\ProviderResponse;
+
+use function rtrim;
+use function array_filter;
+use function array_reduce;
+use function array_unshift;
+use function is_string;
+
+trait HandleChat
+{
+    /**
+     * @throws ProviderException
+     * @throws HttpException
+     */
+    public function chat(Message ...$messages): ProviderResponse
+    {
+        // Include the system prompt
+        if (isset($this->system)) {
+            array_unshift($messages, new Message(MessageRole::SYSTEM, $this->system));
+        }
+
+        $body = [
+            'model' => $this->model,
+            'messages' => $this->messageMapper()->map($messages),
+            ...$this->parameters,
+        ];
+
+        // Attach tools
+        if (!empty($this->tools)) {
+            $body['tools'] = $this->toolPayloadMapper()->map($this->tools);
+        }
+
+        $response = $this->httpClient->request(
+            HttpRequest::post(
+                uri: rtrim($this->baseUri, '/') . '/chat/completions',
+                body: $body,
+                headers: $this->httpHeaders,
+            )
+        );
+
+        return new ProviderResponse(
+            message: $this->processChatResult($response->json()),
+            body: $response->body,
+            headers: $response->headers,
+        );
+    }
+
+    /**
+     * @throws ProviderException
+     */
+    protected function processChatResult(array $result): AssistantMessage
+    {
+        $choice = $result['choices'][0];
+        $blocks = $this->extractContent($choice['message']['content'] ?? null);
+
+        // The calls decide, not the finish reason: a forced tool_choice answers "stop"
+        if (!empty($choice['message']['tool_calls'])) {
+            $response = $this->createToolCallMessage($choice['message']['tool_calls'], $blocks);
+        } else {
+            $response = new AssistantMessage($blocks);
+        }
+
+        if (isset($result['usage'])) {
+            $response->setUsage(
+                new Usage($result['usage']['prompt_tokens'], $result['usage']['completion_tokens'])
+            );
+        }
+
+        $response->setStopReason($choice['finish_reason']);
+
+        return $response;
+    }
+
+    /**
+     * Content is a string, a list of chunks (reasoning models answer with thinking and text chunks) or null.
+     *
+     * @param string|array<int, array<string, mixed>>|null $content
+     * @return ContentBlockInterface[]
+     */
+    protected function extractContent(string|array|null $content): array
+    {
+        if (is_string($content)) {
+            return [new TextContent($content)];
+        }
+
+        $blocks = [];
+        foreach ($content ?? [] as $chunk) {
+            $blocks[] = match ($chunk['type']) {
+                'text' => new TextContent($chunk['text'] ?? ''),
+                'thinking' => new ReasoningContent(array_reduce(array_filter($chunk['thinking'], fn (array $item): bool => $item['type'] === 'text'), fn (string $carry, array $item): string => $carry . $item['text'], '')),
+                'image_url' => new ImageContent(
+                    $chunk['image_url']['url'] ?? '',
+                    SourceType::BASE64
+                ),
+                'document_url' => new FileContent(
+                    content: $chunk['document_url'] ?? '',
+                    sourceType: SourceType::BASE64,
+                    filename: $chunk['document_name'] ?? null
+                ),
+                'input_audio' => new AudioContent($chunk['input_audio'], SourceType::BASE64),
+                default => null
+            };
+        }
+
+        return array_filter($blocks);
+    }
+}

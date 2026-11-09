@@ -1,0 +1,947 @@
+---
+name: neuron-tool
+description: Create custom tools, toolkits, and MCP integrations for Neuron AI agents. Use this skill when the user mentions creating tools, building toolkits, extending Tool class, defining tool properties, implementing tool execution, MCP server integration, Model Context Protocol, connecting external tools, multimodal tool results, or tool guidelines. Also trigger for any task involving ToolOutput, ToolProperty, ArrayProperty, ObjectProperty, AbstractToolkit, McpConnector, or StdioTransport/SseHttpTransport/StreamableHttpTransport.
+---
+
+# Neuron AI Tool
+
+This skill helps you create custom tools, toolkits, and MCP integrations for Neuron AI agents.
+
+## Core Concepts
+
+Tools give agents the ability to:
+- Execute actions (API calls, database queries, file operations)
+- Retrieve information (web search, data lookup)
+- Interact with external systems
+
+Every tool has:
+- **Name**: Unique identifier
+- **Description**: Explains what the tool does (critical for LLM)
+- **Properties**: Input parameters with types and descriptions
+- **`__invoke()`**: The actual logic to run — returns a `ToolOutput` (default), or a plain string/array
+
+## Creating Custom Tools
+
+### Method 1: Extend Tool Class with `__invoke`
+
+The cleanest approach for complex tools:
+
+```php
+use NeuronAI\Tools\Tool;
+use NeuronAI\Tools\ToolOutput;
+use NeuronAI\Tools\ToolProperty;
+use NeuronAI\Tools\PropertyType;
+
+class WeatherTool extends Tool
+{
+    protected string $name = 'get_weather';
+
+    protected ?string $description = 'Get the current weather for a location. Returns temperature, conditions, and humidity.';
+
+    protected function properties(): array
+    {
+        return [
+            ToolProperty::make(
+                name: 'location',
+                type: PropertyType::STRING,
+                description: 'The city and country, e.g., "Paris, France"',
+                required: true
+            ),
+            ToolProperty::make(
+                name: 'units',
+                type: PropertyType::STRING,
+                description: 'Temperature units: "celsius" or "fahrenheit"',
+                required: false,
+                enum: ['celsius', 'fahrenheit']
+            ),
+        ];
+    }
+
+    public function __invoke(string $location, string $units = 'celsius'): ToolOutput
+    {
+        // Your API call or logic here
+        $weatherData = $this->fetchWeather($location, $units);
+
+        return ToolOutput::text(json_encode($weatherData));
+    }
+
+    private function fetchWeather(string $location, string $units): array
+    {
+        // Implementation...
+        return [
+            'location' => $location,
+            'temperature' => 22,
+            'units' => $units,
+            'conditions' => 'sunny',
+        ];
+    }
+}
+```
+
+### Method 2: Class with Dependencies
+
+For tools that need external dependencies (database, API client), keep the constructor for dependencies and set `name`/`description` as class property defaults:
+
+```php
+use NeuronAI\Tools\Tool;
+use NeuronAI\Tools\ToolOutput;
+use NeuronAI\Tools\ToolProperty;
+use NeuronAI\Tools\PropertyType;
+use PDO;
+
+class DatabaseQueryTool extends Tool
+{
+    protected string $name = 'query_users';
+
+    protected ?string $description = 'Query user data from the database';
+
+    public function __construct(protected PDO $pdo)
+    {
+    }
+
+    protected function properties(): array
+    {
+        return [
+            ToolProperty::make(
+                name: 'email',
+                type: PropertyType::STRING,
+                description: 'User email to search for',
+                required: false
+            ),
+            ToolProperty::make(
+                name: 'limit',
+                type: PropertyType::INTEGER,
+                description: 'Maximum number of results',
+                required: false
+            ),
+        ];
+    }
+
+    public function __invoke(?string $email = null, int $limit = 10): ToolOutput
+    {
+        $query = "SELECT * FROM users";
+
+        if ($email) {
+            $query .= " WHERE email LIKE :email";
+        }
+
+        $query .= " LIMIT :limit";
+
+        $stmt = $this->pdo->prepare($query);
+
+        if ($email) {
+            $stmt->bindValue(':email', "%{$email}%");
+        }
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+
+        $stmt->execute();
+        return ToolOutput::text(json_encode($stmt->fetchAll(PDO::FETCH_ASSOC)));
+    }
+}
+```
+
+## Property Types
+
+### Basic Types
+
+```php
+use NeuronAI\Tools\PropertyType;
+
+PropertyType::STRING;   // Text values
+PropertyType::INTEGER;  // Whole numbers
+PropertyType::NUMBER;   // Floats/decimals
+PropertyType::BOOLEAN;  // true/false
+PropertyType::ARRAY;    // Lists
+PropertyType::OBJECT;   // Key-value objects
+```
+
+### ToolProperty (Scalar Values)
+
+```php
+use NeuronAI\Tools\ToolProperty;
+use NeuronAI\Tools\PropertyType;
+
+// Basic property
+new ToolProperty(
+    name: 'query',
+    type: PropertyType::STRING,
+    description: 'Search query',
+    required: true
+);
+
+// Property with enum constraints
+new ToolProperty(
+    name: 'sort_order',
+    type: PropertyType::STRING,
+    description: 'Sort direction',
+    required: false,
+    enum: ['asc', 'desc']
+);
+
+// Integer with description
+new ToolProperty(
+    name: 'limit',
+    type: PropertyType::INTEGER,
+    description: 'Maximum results (1-100)',
+    required: false
+);
+```
+
+### ArrayProperty (Lists)
+
+```php
+use NeuronAI\Tools\ArrayProperty;
+use NeuronAI\Tools\ToolProperty;
+use NeuronAI\Tools\PropertyType;
+
+// Array of strings
+new ArrayProperty(
+    name: 'tags',
+    description: 'List of tags to filter by',
+    required: false,
+    items: new ToolProperty(
+        name: 'tag',
+        type: PropertyType::STRING,
+        description: 'Single tag'
+    )
+);
+
+// Array with constraints
+new ArrayProperty(
+    name: 'ids',
+    description: 'List of user IDs',
+    required: true,
+    items: new ToolProperty(
+        name: 'id',
+        type: PropertyType::INTEGER,
+        description: 'User ID'
+    ),
+    minItems: 1,
+    maxItems: 100
+);
+```
+
+### ObjectProperty (Complex Objects)
+
+```php
+use NeuronAI\Tools\ObjectProperty;
+use NeuronAI\Tools\ToolProperty;
+use NeuronAI\Tools\PropertyType;
+
+// Inline object definition
+new ObjectProperty(
+    name: 'address',
+    description: 'User address',
+    required: true,
+    properties: [
+        new ToolProperty('street', PropertyType::STRING, 'Street name', true),
+        new ToolProperty('city', PropertyType::STRING, 'City name', true),
+        new ToolProperty('zip', PropertyType::STRING, 'Postal code', false),
+    ]
+);
+
+// Object mapped to a PHP class (auto-deserialization)
+new ObjectProperty(
+    name: 'user',
+    description: 'User object',
+    required: true,
+    class: User::class  // Auto-generates schema from class
+);
+```
+
+### Nested Complex Properties
+
+```php
+// Array of objects
+new ArrayProperty(
+    name: 'contacts',
+    description: 'List of contacts',
+    required: true,
+    items: new ObjectProperty(
+        name: 'contact',
+        properties: [
+            new ToolProperty('name', PropertyType::STRING, 'Contact name', true),
+            new ToolProperty('email', PropertyType::STRING, 'Email address', true),
+        ]
+    )
+);
+```
+
+## Tool Execution
+
+### Return Values
+
+The default return type is `ToolOutput` — a multimodal result that wraps content blocks (text, images, files, audio, video) sent back to the model:
+
+```php
+use NeuronAI\Tools\ToolOutput;
+
+// Text output (most common)
+public function __invoke(string $query): ToolOutput
+{
+    return ToolOutput::text("Result: {$query}");
+}
+```
+
+Single-block factory shortcuts: `ToolOutput::text(...)`, `::image(...)`, `::file(...)`, `::audio(...)`, `::video(...)` — plus `::error(...)` for conversational failures (see Error Handling below).
+
+For multi-block outputs, pass the content blocks to the constructor:
+
+```php
+use NeuronAI\Chat\Enums\MediaType;
+use NeuronAI\Chat\Enums\SourceType;
+use NeuronAI\Chat\Messages\ContentBlocks\ImageContent;
+use NeuronAI\Chat\Messages\ContentBlocks\TextContent;
+use NeuronAI\Tools\ToolOutput;
+
+public function __invoke(string $symbol): ToolOutput
+{
+    return new ToolOutput([
+        new TextContent("Price chart for {$symbol}"),
+        new ImageContent($base64, SourceType::BASE64, MediaType::PNG),
+    ]);
+}
+```
+
+Use the `MediaType` enum for common MIME types; `mediaType` parameters (content blocks and `ToolOutput` factories alike) also accept a plain string for custom types.
+
+Providers whose API accepts content blocks in tool results map them natively; text-only providers fall back to `ToolOutput::getText()` — the concatenated text blocks (empty when there are none, so include a `TextContent` in outputs meant to work everywhere).
+
+Plain string and array returns are still supported:
+
+```php
+// String
+public function __invoke(string $query): string
+{
+    return "Result: {$query}";
+}
+
+// Array (auto-converted to JSON)
+public function __invoke(string $query): array
+{
+    return ['status' => 'success', 'data' => []];
+}
+```
+
+### Accessing Inputs Directly
+
+```php
+public function __invoke(string $query, ?string $filter = null): ToolOutput
+{
+    // Access individual input
+    $value = $this->getInput('query');
+
+    // Access all inputs
+    $allInputs = $this->getInputs();
+
+    // Check if input exists
+    if ($this->getInput('filter') !== null) {
+        // ...
+    }
+}
+```
+
+### Error Handling
+
+A failure the model should see and recover from is *returned* as `ToolOutput::error()` — the feedback becomes the tool result, marked as an error for providers with a native flag (Anthropic, Bedrock), and the agent loop continues. An exception that escapes `__invoke()` is treated as a bug: it propagates and aborts the run. Catch your own exceptions at the tool boundary and convert them:
+
+```php
+public function __invoke(string $url): ToolOutput
+{
+    try {
+        $response = $this->httpClient->get($url);
+        return ToolOutput::text((string) $response->getBody());
+    } catch (\Exception $e) {
+        // Conversational failure: the LLM sees this and can recover
+        return ToolOutput::error("Error fetching URL: {$e->getMessage()}");
+    }
+}
+```
+
+For cross-cutting handling of escaped exceptions, the agent-level `toolErrorHandler(fn (Throwable $e, ToolCall $call): string|ToolOutput|null)` can settle a result (string or `ToolOutput`) to continue the loop, or return `null` to decline — the exception then propagates.
+
+## Tool Visibility
+
+A hidden tool is off the agent: it is not offered to the LLM, and a call naming it fails with `ToolException`. Hiding works the same inside a toolkit:
+
+```php
+// Offered to the LLM (default)
+$tool->visible(true);
+
+// Neither offered nor callable
+$tool->visible(false);
+
+// A toolkit tool, hidden the same way
+$toolkit->with(DeleteFileTool::class, fn (ToolInterface $tool): ToolInterface => $tool->visible(false));
+
+// A whole toolkit: none of its tools are offered, and its guidelines are left out
+$toolkit->visible(false);
+```
+
+Use case: attaching a tool only under a condition, such as `DeleteFileTool::make()->visible($user->isAdmin())`.
+
+Toolkits get `visible()` from `AbstractToolkit`. A toolkit that implements `ToolkitInterface` directly is always attached, unless it also implements `ToolkitVisibilityInterface`.
+
+## Max Runs
+
+Limit how many times a tool can be called in a single session:
+
+```php
+$tool->setMaxRuns(5);  // Maximum 5 calls per session
+```
+
+## Declaring Approval Risk
+
+Human oversight of tool execution is built into the agent: before running a tool it asks the tool whether it needs approval. A tool declares its own risk by overriding the protected `approvalPolicy()` hook. Returning a **string counts as `true` and doubles as the reason** shown to the approver:
+
+```php
+class TransferMoneyTool extends Tool
+{
+    protected function approvalPolicy(): bool|string
+    {
+        return ($this->inputs['amount'] ?? 0) > 100
+            ? 'Transfers above $100 require a human sign-off'
+            : false;
+    }
+}
+```
+
+The default is `false` (no approval). Whoever attaches the tool can override the declaration in both directions with `requireApproval()`, `suppressApproval()`, or `withApprovalPolicy()`. The last configured override wins.
+
+Submit approval decisions with `Agent::submitApprovalDecisions($decisions)->run()` and deferred execution outcomes with `Agent::submitToolResults($results)->run()`; use `events()` for streaming. Both accept maps keyed by tool call ID. Use the **neuron-tool-approval** skill for the rest of the flow: enabling persistence, rendering the approve/deny UI from chat history, and submitting decisions.
+
+## Creating Toolkits
+
+Toolkits group related tools together with shared context.
+
+### Basic Toolkit
+
+```php
+use NeuronAI\Tools\Toolkits\AbstractToolkit;
+
+class CalculatorToolkit extends AbstractToolkit
+{
+    public function guidelines(): ?string
+    {
+        return "This toolkit performs mathematical calculations with precision and determinism.
+        Pass whole formulas to the evaluate tool instead of computing intermediate steps yourself.";
+    }
+
+    public function provide(): array
+    {
+        return [
+            EvaluateTool::make(),
+            FactorialTool::make(),
+            MeanTool::make(),
+        ];
+    }
+}
+```
+
+### Toolkit with Dependencies
+
+```php
+use NeuronAI\Tools\Toolkits\AbstractToolkit;
+use PDO;
+
+class MySQLToolkit extends AbstractToolkit
+{
+    public function __construct(protected PDO $pdo)
+    {
+    }
+
+    public function guidelines(): ?string
+    {
+        return "These tools allow you to learn the database structure,
+        getting detailed information about tables, columns, relationships,
+        and constraints to generate and execute precise SQL queries.";
+    }
+
+    public function provide(): array
+    {
+        return [
+            MySQLSchemaTool::make($this->pdo),
+            MySQLSelectTool::make($this->pdo),
+            MySQLWriteTool::make($this->pdo),
+        ];
+    }
+}
+```
+
+### Using Toolkits
+
+```php
+use NeuronAI\Agent\Agent;
+
+class MyAgent extends Agent
+{
+    // Dependencies arrive through the constructor, e.g. when the agent is resolved from a container
+    public function __construct(protected PDO $pdo)
+    {
+        parent::__construct();
+    }
+
+    protected function tools(): array
+    {
+        return [
+            // Use full toolkit
+            CalculatorToolkit::make(),
+
+            // Use toolkit with dependencies
+            MySQLToolkit::make($this->pdo),
+        ];
+    }
+}
+```
+
+### Toolkit Filtering
+
+Control which tools are exposed:
+
+```php
+// Exclude specific tools
+MySQLToolkit::make($pdo)
+    ->exclude([MySQLWriteTool::class]),
+
+// Include only specific tools
+MySQLToolkit::make($pdo)
+    ->only([MySQLSchemaTool::class, MySQLSelectTool::class]),
+
+// Configure tools dynamically
+MyToolkit::make()
+    ->with(ExpensiveTool::class, function (Tool $tool): Tool {
+        $tool->setMaxRuns(1);  // Limit expensive operations
+        return $tool;
+    }),
+```
+
+Tool names must be unique among an agent's tools, or the run fails with a `ToolException` before the first inference. Toolkits can collide: Tavily and Jina both provide `web_search` and `url_reader`. Rename one side, or leave it out:
+
+```php
+JinaToolkit::make($key)
+    ->with(JinaWebSearch::class, fn (ToolInterface $tool): ToolInterface => $tool->setName('jina_web_search'))
+    ->with(JinaUrlReader::class, fn (ToolInterface $tool): ToolInterface => $tool->setName('jina_url_reader')),
+```
+
+### Adding Tools to a Toolkit
+
+`add()` appends tools to the ones a toolkit provides, without subclassing it:
+
+```php
+MySQLToolkit::make($pdo)
+    ->add(new SalesReportTool($pdo), new ExportCsvTool($pdo)),
+```
+
+Added tools follow the provided ones and are covered by the toolkit's guidelines. `only()`, `exclude()` and `with()` apply to them too, so an `only()` list must name an added tool's class to keep it.
+
+## MCP (Model Context Protocol) Integration
+
+MCP allows connecting to external tool servers. Each server tool becomes a regular Neuron tool whose result is a `ToolOutput`: text, image and audio content become content blocks, other content reaches the model as JSON text, and a result the server marks with `isError` is an error output.
+
+### Local MCP Server (Stdio)
+
+```php
+use NeuronAI\MCP\McpConnector;
+
+// Connect to local MCP server
+$mcpTools = McpConnector::make([
+    'command' => 'npx',
+    'args' => ['-y', '@modelcontextprotocol/server-filesystem', '/path/to/dir'],
+])->tools();
+```
+
+`command` is the program to run and `args` holds its arguments. The server starts directly, without a shell, so shell syntax is taken literally and `'command' => 'npx -y server'` fails to start. On Windows, npm shims need their extension: `'command' => 'npx.cmd'`.
+
+### HTTP MCP Server
+
+```php
+use NeuronAI\MCP\McpConnector;
+
+// Streamable HTTP (synchronous, recommended)
+$mcpTools = McpConnector::make([
+    'url' => 'https://mcp.example.com',
+    'timeout' => 30,
+])->tools();
+
+// SSE HTTP (asynchronous)
+$mcpTools = McpConnector::make([
+    'url' => 'https://mcp.example.com/sse',
+    'async' => true,
+    'timeout' => 30,
+])->tools();
+```
+
+### MCP with Authentication
+
+```php
+// Bearer token authentication
+$mcpTools = McpConnector::make([
+    'url' => 'https://mcp.example.com',
+    'token' => 'your-api-token',
+])->tools();
+
+// Custom headers
+$mcpTools = McpConnector::make([
+    'url' => 'https://mcp.example.com',
+    'headers' => [
+        'X-API-Key' => 'your-key',
+        'X-Custom-Header' => 'value',
+    ],
+])->tools();
+```
+
+### MCP with Environment Variables
+
+```php
+$mcpTools = McpConnector::make([
+    'command' => 'node',
+    'args' => ['server.js'],
+    'env' => [
+        'API_KEY' => $_ENV['API_KEY'],
+        'DEBUG' => 'true',
+    ],
+])->tools();
+```
+
+A stdio server inherits only `HOME`, `LOGNAME`, `PATH`, `SHELL`, `TERM` and `USER` from the application (on Windows, their equivalents such as `USERPROFILE`, `APPDATA` and `SYSTEMROOT`), as the official MCP SDKs do. Pass anything else it needs through `env`: API keys and tokens, `HTTPS_PROXY`, `LANG`.
+
+### MCP Tool Filtering and Configuration
+
+```php
+// Exclude specific tools
+$mcpTools = McpConnector::make([
+    'command' => 'npx',
+    'args' => ['-y', '@modelcontextprotocol/server-everything'],
+])
+    ->exclude(['dangerous_tool', 'admin_tool'])
+    ->tools();
+
+// Include only specific tools
+$mcpTools = McpConnector::make([
+    'url' => 'https://mcp.example.com',
+])
+    ->only(['search', 'read', 'write'])
+    ->tools();
+
+// Configure a specific tool by its server-assigned name
+$mcpTools = McpConnector::make([
+    'url' => 'https://mcp.example.com',
+])
+    ->with(
+        name: 'delete_record',
+        callback: fn (Tool $tool): void => $tool->requireApproval()  // Human-in-the-loop on a destructive tool
+    )
+    ->tools();
+```
+
+### Using MCP Tools in Agent
+
+```php
+class MyAgent extends Agent
+{
+    protected function tools(): array
+    {
+        return [
+            // Custom tools
+            new MyCustomTool(),
+
+            // MCP server tools
+            ...McpConnector::make([
+                'command' => 'npx',
+                'args' => ['-y', '@modelcontextprotocol/server-filesystem', '/data'],
+            ])->tools(),
+
+            // HTTP MCP server
+            ...McpConnector::make([
+                'url' => 'https://api.example.com/mcp',
+                'token' => $_ENV['MCP_TOKEN'],
+            ])->tools(),
+        ];
+    }
+}
+```
+
+A connector keeps one session per process and recovers it: an expired HTTP session or a stdio server that exited is replaced on the next request, and a forked child (`parallelToolCalls()`) opens its own. A long-lived connector, such as a container singleton, is safe to reuse.
+
+## Best Practices
+
+### 1. Write Clear Descriptions
+
+The LLM relies on descriptions to understand when and how to use tools:
+
+```php
+// BAD - Vague
+description: 'Search function'
+
+// GOOD - Clear and actionable
+description: 'Search the company knowledge base for documents, FAQs, and policies.
+Returns relevant excerpts with source URLs. Use this when the user asks about
+company procedures, policies, or documented information.'
+```
+
+### 2. Use Property Descriptions
+
+```php
+// BAD
+ToolProperty::make('query', PropertyType::STRING, 'Query', true)
+
+// GOOD
+ToolProperty::make(
+    name: 'query',
+    type: PropertyType::STRING,
+    description: 'Natural language search query. Be specific and include key terms.
+    Example: "vacation policy for remote employees"',
+    required: true
+)
+```
+
+### 3. Use Enums for Constrained Values
+
+```php
+ToolProperty::make(
+    name: 'sort_by',
+    type: PropertyType::STRING,
+    description: 'Field to sort results by',
+    required: false,
+    enum: ['date', 'relevance', 'popularity']
+)
+```
+
+The enum is enforced when inputs are bound: a value outside it never reaches `__invoke()`, and the model receives `Parameter "sort_by" must be one of "date", "relevance", "popularity"; "rating" given.` to correct its call.
+
+### 4. Return Structured Data
+
+```php
+public function __invoke(string $query): ToolOutput
+{
+    $results = $this->search($query);
+
+    // Return structured JSON
+    return ToolOutput::text(json_encode([
+        'success' => true,
+        'query' => $query,
+        'count' => count($results),
+        'results' => $results,
+    ]));
+}
+```
+
+### 5. Handle Errors Gracefully
+
+```php
+public function __invoke(string $url): ToolOutput
+{
+    if (!filter_var($url, FILTER_VALIDATE_URL)) {
+        return ToolOutput::text(json_encode([
+            'success' => false,
+            'error' => 'Invalid URL format',
+            'hint' => 'Please provide a valid URL starting with http:// or https://'
+        ]));
+    }
+
+    // ...
+}
+```
+
+### 6. Validate Inputs
+
+```php
+public function __invoke(string $email, int $limit = 10): ToolOutput
+{
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return ToolOutput::text("Invalid email format: {$email}");
+    }
+
+    if ($limit < 1 || $limit > 100) {
+        return ToolOutput::text("Limit must be between 1 and 100, got: {$limit}");
+    }
+
+    // ...
+}
+```
+
+### 7. Use Type Hints
+
+Declare an optional input's default in the `__invoke()` signature. When the model leaves the input out, or sends `null` where the parameter can't take it, the default applies. Make a parameter nullable only when `null` means something to the tool, because a nullable parameter receives the model's `null` as it is. A required input that is missing, or `null` when the property isn't nullable, goes back to the model as feedback, and `__invoke()` isn't called.
+
+```php
+// Use specific types in __invoke signature
+public function __invoke(
+    string $query,
+    int $limit = 10,
+    bool $includeMetadata = false
+): ToolOutput {
+    // ...
+}
+```
+
+## Available Built-in Toolkits
+
+| Toolkit | Purpose |
+|---------|---------|
+| `CalculatorToolkit` | Math: expression evaluation, exact integer arithmetic, statistics |
+| `MySQLToolkit` | MySQL schema, read-only queries and writes |
+| `PGSQLToolkit` | PostgreSQL schema, read-only queries and writes |
+| `FileSystemToolkit` | File operations (read, write, edit, delete, glob, bash); `make(scope: '/path')` confines the file tools to a directory and anchors bash there |
+| `TavilyToolkit` | Web search and crawling |
+| `JinaToolkit` | URL reading and web search |
+| `SESTool` | AWS SES email sending, a standalone tool. Deprecated: removed in the next major version |
+| `CalendarToolkit` | Date/time operations |
+| `SupadataYouTubeToolkit` | YouTube video metadata and transcripts. Deprecated: removed in the next major version |
+
+`TavilyToolkit`, `JinaToolkit` and `SupadataYouTubeToolkit` take an optional `httpClient` as their last constructor argument and pass it to their tools, so a test can supply a client it controls: `TavilyToolkit::make($key, httpClient: $client)`.
+
+An agent that should only read keeps the schema and select tools: `MySQLToolkit::make($pdo)->only([MySQLSchemaTool::class, MySQLSelectTool::class])`, and the same with the `PGSQL` classes. The select tool runs each query alone in a read-only transaction that it rolls back, so the database refuses any write. It refuses a query that doesn't start with `SELECT`, `WITH`, `SHOW`, `DESCRIBE` or `EXPLAIN` (on PostgreSQL `SELECT`, `WITH`, `EXPLAIN` or `SHOW`) or that has a `;` before its end, and on MySQL one that contains `OUTFILE`, `DUMPFILE` or `LOAD_FILE`. It throws when the connection is already inside a transaction. It can still read everything the connection's user can read, and call functions that don't write, such as sleeps, file reads for privileged users or ending the user's other sessions. A dedicated connection with a user that can only `SELECT` the tables the agent needs, and a statement timeout, closes those gaps: recommend it to the developer as their decision, and never create database users, change grants or edit connection settings without their approval.
+
+## CLI Generation
+
+Generate tool boilerplate:
+
+```bash
+php vendor/bin/neuron make:tool WeatherTool
+```
+
+## Complete Example: API Tool
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Neuron\Tools;
+
+use NeuronAI\Tools\Tool;
+use NeuronAI\Tools\ToolOutput;
+use NeuronAI\Tools\ToolProperty;
+use NeuronAI\Tools\ArrayProperty;
+use NeuronAI\Tools\ObjectProperty;
+use NeuronAI\Tools\PropertyType;
+use GuzzleHttp\Client;
+
+class GitHubSearchTool extends Tool
+{
+    protected string $name = 'github_search';
+
+    protected ?string $description = 'Search GitHub repositories. Returns repository names, descriptions, stars, and URLs.';
+
+    private Client $client;
+
+    public function __construct()
+    {
+        $this->client = new Client([
+            'base_uri' => 'https://api.github.com',
+            'headers' => [
+                'Accept' => 'application/vnd.github.v3+json',
+                'User-Agent' => 'NeuronAI-Agent',
+            ],
+        ]);
+    }
+
+    protected function properties(): array
+    {
+        return [
+            ToolProperty::make(
+                name: 'query',
+                type: PropertyType::STRING,
+                description: 'Search query. Use GitHub search syntax (e.g., "language:php stars:>100")',
+                required: true
+            ),
+            ToolProperty::make(
+                name: 'sort',
+                type: PropertyType::STRING,
+                description: 'Sort field',
+                required: false,
+                enum: ['stars', 'forks', 'updated']
+            ),
+            ToolProperty::make(
+                name: 'limit',
+                type: PropertyType::INTEGER,
+                description: 'Maximum results (1-100)',
+                required: false
+            ),
+        ];
+    }
+
+    public function __invoke(
+        string $query,
+        ?string $sort = 'stars',
+        ?int $limit = 10
+    ): ToolOutput {
+        $limit = min(max($limit ?? 10, 1), 100);
+
+        try {
+            $response = $this->client->get('/search/repositories', [
+                'query' => [
+                    'q' => $query,
+                    'sort' => $sort,
+                    'per_page' => $limit,
+                ],
+            ]);
+
+            $data = json_decode((string) $response->getBody(), true);
+
+            $results = array_map(function ($repo) {
+                return [
+                    'name' => $repo['full_name'],
+                    'description' => $repo['description'] ?? 'No description',
+                    'stars' => $repo['stargazers_count'],
+                    'language' => $repo['language'],
+                    'url' => $repo['html_url'],
+                ];
+            }, $data['items'] ?? []);
+
+            return ToolOutput::text(json_encode([
+                'success' => true,
+                'count' => count($results),
+                'results' => $results,
+            ]));
+
+        } catch (\Exception $e) {
+            return ToolOutput::text(json_encode([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ]));
+        }
+    }
+}
+```
+
+## Testing Tools
+
+```php
+use PHPUnit\Framework\TestCase;
+use NeuronAI\Tools\Tool;
+use NeuronAI\Tools\ToolProperty;
+use NeuronAI\Tools\PropertyType;
+
+class WeatherToolTest extends TestCase
+{
+    public function test_tool_properties(): void
+    {
+        $tool = new WeatherTool();
+
+        $this->assertEquals('get_weather', $tool->getName());
+        $this->assertStringContainsString('weather', $tool->getDescription());
+
+        $properties = $tool->getProperties();
+        $this->assertCount(2, $properties);
+
+        $requiredProps = $tool->getRequiredProperties();
+        $this->assertContains('location', $requiredProps);
+        $this->assertNotContains('units', $requiredProps);
+    }
+
+    public function test_tool_execution(): void
+    {
+        $tool = new WeatherTool();
+        $tool->setInputs(['location' => 'Paris, France']);
+
+        $tool->execute();
+
+        // getResult() returns string|ToolOutput; cast to string for the text projection
+        $result = json_decode((string) $tool->getResult(), true);
+        $this->assertArrayHasKey('temperature', $result);
+        $this->assertEquals('Paris, France', $result['location']);
+    }
+}
+```

@@ -1,0 +1,539 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Agent\Nodes;
+
+use Closure;
+use Generator;
+use NeuronAI\Agent\AgentResources;
+use NeuronAI\Agent\AgentState;
+use NeuronAI\Agent\ChatHistoryHelper;
+use NeuronAI\Agent\Events\AIInferenceEvent;
+use NeuronAI\Agent\Events\AwaitToolResultsEvent;
+use NeuronAI\Agent\Events\ToolCallEvent;
+use NeuronAI\Agent\Interrupt\Action;
+use NeuronAI\Agent\Interrupt\ActionDecision;
+use NeuronAI\Agent\Interrupt\ApprovalRequest;
+use NeuronAI\Agent\Observability\ToolCalled;
+use NeuronAI\Agent\Observability\ToolCalling;
+use NeuronAI\Agent\ReportsInterruptedCall;
+use NeuronAI\Chat\Messages\Stream\Chunks\ToolCallChunk;
+use NeuronAI\Chat\Messages\Stream\Chunks\ToolResultChunk;
+use NeuronAI\Chat\Messages\ToolCallMessage;
+use NeuronAI\Chat\Messages\ToolResultMessage;
+use NeuronAI\Exceptions\ToolException;
+use NeuronAI\Exceptions\ToolRunsExceededException;
+use NeuronAI\Exceptions\WorkflowException;
+use NeuronAI\Tools\ApprovalState;
+use NeuronAI\Tools\ToolCall;
+use NeuronAI\Tools\ToolInterface;
+use NeuronAI\Tools\ToolOutput;
+use NeuronAI\Tools\ToolRegistry;
+use NeuronAI\Workflow\Interrupt\WorkflowInterrupt;
+use NeuronAI\Workflow\Node;
+use Throwable;
+
+use function array_diff_key;
+use function array_filter;
+use function array_key_exists;
+use function array_values;
+use function count;
+use function is_array;
+use function is_string;
+use function json_encode;
+use function ksort;
+use function sprintf;
+
+use const JSON_PRETTY_PRINT;
+
+/**
+ * Executes tool calls, including the human-in-the-loop approval flow.
+ *
+ * The gate asks each tool whether it requires approval and durably accumulates
+ * decisions across deliveries. A tool runs only when explicitly approved;
+ * an incomplete set re-suspends until every gated call has a decision.
+ *
+ * The ToolCallMessage is written before any tool runs, a gated cycle's before
+ * it suspends, and the ToolResultMessage as soon as the batch settles, so the
+ * history records what ran even when a later step fails. Approved deferred
+ * calls pass to a separate durable step, so awaiting results cannot replay
+ * this gate or the completed local executions.
+ */
+class ToolNode extends Node implements AgentNodeInterface
+{
+    use ChatHistoryHelper;
+    use ReportsInterruptedCall;
+
+    /**
+     * @var callable|null fn(Throwable $e, ToolCall $call): string|ToolOutput|null
+     */
+    protected $errorHandler;
+
+    public function __construct(
+        protected int $maxRuns = 10,
+        ?callable $errorHandler = null
+    ) {
+        $this->errorHandler = $errorHandler;
+    }
+
+    /**
+     * @throws ToolRunsExceededException
+     * @throws Throwable
+     */
+    public function __invoke(ToolCallEvent $event, AgentState $state, AgentResources $resources): AIInferenceEvent|AwaitToolResultsEvent|Generator
+    {
+        $calls = $event->toolCallMessage->getToolCalls();
+        $this->assertUniqueCallIds(array_filter($calls, fn (ToolCall $call): bool => $call->isDeferred()));
+
+        $this->resolveToolApprovals($event->toolCallMessage, $state, $resources);
+
+        // Written before any tool runs, so a failure from here on leaves the call in
+        // history and the next run answers it. A gated cycle wrote it before suspending.
+        $this->addToChatHistory($resources->history, $state, $event->toolCallMessage);
+
+        $executed = yield from $this->executeLocalTools($calls, $event->toolCallMessage->getId(), $state, $resources->tools);
+        $deferred = $this->filterDeferredCalls($calls);
+
+        if ($deferred !== []) {
+            // Count each dispatch before suspending. State preserves the run total
+            // across resumes; a replay counts again from the state its step started
+            // with, so the same call consumes no other slot.
+            foreach ($deferred as $index => $call) {
+                try {
+                    $this->checkToolRuns($call, $state, $resources->tools);
+                } catch (Throwable $e) {
+                    $this->handleError($e, $call);
+                    $executed[$index] = $call;
+                    unset($deferred[$index]);
+                    yield new ToolCallChunk($event->toolCallMessage->getId(), $call);
+                    yield new ToolResultChunk($call);
+                    $this->emit(new ToolCalled($call));
+                }
+            }
+
+            if ($deferred !== []) {
+                foreach ($deferred as $call) {
+                    $this->emit(new ToolCalling($call));
+                    yield new ToolCallChunk($event->toolCallMessage->getId(), $call);
+                }
+
+                // Go to the deferred tool management node
+                return new AwaitToolResultsEvent($executed, $deferred);
+            }
+        }
+
+        ksort($executed);
+
+        // Memoized, so a replayed step writes the same result instead of a second one.
+        $result = $this->memoize('tool.result', fn (): ToolResultMessage => new ToolResultMessage(array_values($executed)));
+        $this->addToChatHistory($resources->history, $state, $result);
+        $state->request->messages = [];
+
+        return AIInferenceEvent::fromRequest($state->request);
+    }
+
+    /**
+     * @return bool Whether this cycle required approval.
+     * @throws ToolException
+     * @throws WorkflowException
+     * @throws WorkflowInterrupt
+     */
+    protected function resolveToolApprovals(ToolCallMessage $message, AgentState $state, AgentResources $resources): bool
+    {
+        $gated = $this->filterToolsRequiringApproval($message->getToolCalls(), $resources->tools);
+
+        if ($gated === []) {
+            return false;
+        }
+
+        $this->assertUniqueCallIds($gated);
+
+        foreach ($gated as $call) {
+            $call->setApprovalState(ApprovalState::Pending);
+        }
+
+        // Written with pending states BEFORE any suspend, so a cold
+        // process renders pending approvals from history alone; the history
+        // already holds the message when a resume pass writes it again.
+        $this->addToChatHistory($resources->history, $state, $message);
+
+        // A tool runs if explicitly approved; silence is never consent.
+        // An incomplete decision set loops and re-suspends with the
+        // delivered decisions reflected on the outbound request.
+        $round = 0;
+        while ($this->pendingTools($gated) !== []) {
+            $decisions = $this->memoize(
+                'approval.' . $round++,
+                fn (): array => $this->interrupt($this->buildApprovalRequest($gated, $resources->tools)) ?? [],
+            );
+            $this->applyDecisions($decisions, $gated);
+        }
+
+        foreach ($gated as $call) {
+            if ($call->getApprovalState() === ApprovalState::Rejected) {
+                $this->stampRejectionResult($call);
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * A call waiting for an approval or an external result is matched to its reply
+     * by ID: without one, or with one shared in the batch, the reply cannot reach it.
+     *
+     * @param ToolCall[] $calls
+     * @throws ToolException
+     */
+    protected function assertUniqueCallIds(array $calls): void
+    {
+        $seen = [];
+        foreach ($calls as $call) {
+            $id = $call->getCallId();
+            if ($id === null || $id === '' || isset($seen[$id])) {
+                $returned = $id === null || $id === '' ? 'none' : "'{$id}' twice";
+                throw new ToolException(
+                    "Tool call {$call->getName()} needs a unique call ID to be approved or answered, but the provider returned {$returned}."
+                );
+            }
+            $seen[$id] = true;
+        }
+    }
+
+    /**
+     * @param array<int, ToolCall> $calls
+     * @return array<int, ToolCall>
+     */
+    protected function filterDeferredCalls(array $calls): array
+    {
+        // Deferred tools can require approval too. Rejected calls keep their
+        // rejection result in the local path and are never dispatched externally.
+        return array_filter(
+            $calls,
+            fn (ToolCall $call): bool => $call->isDeferred()
+                && $call->getApprovalState() !== ApprovalState::Rejected,
+        );
+    }
+
+    /**
+     * The single source for resolution is the segment's registry, which is
+     * also what the model is offered: a tool removed from the offering is
+     * removed from execution.
+     *
+     * @throws ToolException
+     */
+    protected function findLiveTool(string $name, ToolRegistry $tools): ToolInterface
+    {
+        return $tools->find($name) ?? throw new ToolException(
+            "The tool {$name} is not registered on this agent: the call cannot be executed."
+        );
+    }
+
+    /**
+     * Bind the call data onto a fresh clone of the live tool: execution
+     * capability never travels with the message, it is re-supplied here.
+     * A tool missing from the registry is a loud error, never a silent skip.
+     *
+     * @throws ToolException
+     */
+    protected function resolveTool(ToolCall $call, ToolRegistry $tools): ToolInterface
+    {
+        $tool = $this->findLiveTool($call->getName(), $tools);
+
+        $tool = clone $tool;
+        $tool->setInputs($call->getInputs());
+        if ($call->getCallId() !== null) {
+            $tool->setCallId($call->getCallId());
+        }
+
+        return $tool;
+    }
+
+    /**
+     * The question is always answered by the LIVE tool, so the answer cannot
+     * drift across a suspend/resume boundary. A string decision counts as
+     * true and doubles as the approval reason shown to the approver. An
+     * unresolvable call is never gated: execution will fail loudly instead.
+     *
+     * @param ToolCall[] $calls
+     * @return ToolCall[]
+     * @throws ToolException
+     */
+    protected function filterToolsRequiringApproval(array $calls, ToolRegistry $tools): array
+    {
+        return array_filter(
+            $calls,
+            function (ToolCall $call) use ($tools): bool {
+                if (!$tools->find($call->getName()) instanceof ToolInterface) {
+                    return false;
+                }
+
+                // Ask a clone with the call's inputs bound, so a policy callback
+                // reading $tool->getInputs() sees this call's arguments.
+                $tool = $this->resolveTool($call, $tools);
+
+                $decision = $tool->requiresApproval();
+
+                if (is_string($decision)) {
+                    $call->setApprovalReason($decision);
+                    return true;
+                }
+
+                return $decision;
+            }
+        );
+    }
+
+    /**
+     * @param ToolCall[] $gated
+     * @return ToolCall[]
+     */
+    protected function pendingTools(array $gated): array
+    {
+        return array_filter(
+            $gated,
+            fn (ToolCall $call): bool => $call->getApprovalState() === ApprovalState::Pending
+        );
+    }
+
+    /**
+     * Apply this delivery to the accumulated decisions; explicit updates win.
+     * Entries for unknown callIds or malformed decisions are ignored.
+     *
+     * @param array<array-key, mixed> $payload Decisions keyed by callId.
+     * @param ToolCall[]           $gated
+     */
+    protected function applyDecisions(array $payload, array $gated): void
+    {
+        $byCallId = [];
+        foreach ($gated as $call) {
+            $id = $call->getCallId();
+            if ($id !== null) {
+                $byCallId[$id] = $call;
+            }
+        }
+
+        foreach ($payload as $callId => $decision) {
+            $callId = (string) $callId;
+            if (!array_key_exists($callId, $byCallId)) {
+                continue;
+            }
+            $call = $byCallId[$callId];
+
+            if ($decision === 'approve') {
+                $call->setApprovalState(ApprovalState::Approved);
+                continue;
+            }
+
+            if ($decision === 'reject') {
+                $call->setApprovalState(ApprovalState::Rejected);
+                continue;
+            }
+
+            if (is_array($decision) && ($decision[0] ?? null) === 'reject') {
+                $reason = isset($decision[1]) && is_string($decision[1]) ? $decision[1] : null;
+                $call->setApprovalState(ApprovalState::Rejected, $reason);
+            }
+            // Anything else: ignore the entry, leave the current state.
+        }
+    }
+
+    /**
+     * The request is outbound-only; the inbound decisions travel as a payload.
+     *
+     * @param ToolCall[] $gated
+     * @throws WorkflowException
+     * @throws ToolException
+     */
+    protected function buildApprovalRequest(array $gated, ToolRegistry $tools): ApprovalRequest
+    {
+        $actions = [];
+        foreach ($gated as $call) {
+            // The approver judges the typed values __invoke() would receive, not the model's raw spelling
+            $inputs = $this->resolveTool($call, $tools)->getInputs();
+
+            $actions[] = new Action(
+                id: (string) $call->getCallId(),
+                name: $call->getName(),
+                description: $inputs === []
+                    ? '(no arguments)'
+                    : json_encode($inputs, JSON_PRETTY_PRINT),
+                decision: $this->mapDecision($call->getApprovalState()),
+                feedback: $call->getRejectReason(),
+                reason: $call->getApprovalReason(),
+                inputs: $inputs,
+            );
+        }
+
+        $count = count($actions);
+
+        return new ApprovalRequest(
+            message: sprintf(
+                '%d tool call%s require%s approval before execution',
+                $count,
+                $count === 1 ? '' : 's',
+                $count === 1 ? 's' : ''
+            ),
+            actions: $actions
+        );
+    }
+
+    protected function mapDecision(?ApprovalState $state): ActionDecision
+    {
+        return match ($state) {
+            ApprovalState::Approved => ActionDecision::Approved,
+            ApprovalState::Rejected => ActionDecision::Rejected,
+            default => ActionDecision::Pending,
+        };
+    }
+
+    /**
+     * The rejection message flows back to the model in place of the tool's
+     * real output (executeSingleTool skips rejected tools).
+     */
+    protected function stampRejectionResult(ToolCall $call): void
+    {
+        $feedback = $call->getRejectReason() ?? 'No specific instruction provided.';
+
+        $call->setResult(sprintf(
+            "TOOL NOT EXECUTED. The user rejected this action. User instruction: %s. Do not attempt this tool again. Follow the user's instruction or reconsider your plan.",
+            $feedback
+        ));
+    }
+
+    /**
+     * Returns locally settled calls, including rejections, with original indexes.
+     *
+     * @param array<int, ToolCall> $calls
+     * @param string $messageId The ToolCallMessage holding the calls, carried by their chunks.
+     * @return Generator<int, ToolCallChunk|ToolResultChunk, mixed, array<int, ToolCall>>
+     * @throws Throwable
+     * @throws ToolRunsExceededException
+     */
+    protected function executeLocalTools(array $calls, string $messageId, AgentState $state, ToolRegistry $tools): Generator
+    {
+        $local = array_diff_key($calls, $this->filterDeferredCalls($calls));
+        foreach ($local as $index => $call) {
+            yield new ToolCallChunk($messageId, $call);
+            $this->executeSingleTool($call, $index, $state, $tools);
+            yield new ToolResultChunk($call);
+        }
+
+        return $local;
+    }
+
+    /**
+     * Execution is wrapped in a durable memo keyed by callId (or name) plus
+     * the call's position, so parallel calls sharing a callId never share a
+     * memo. On crash-replay the recorded result is restored WITHOUT
+     * re-running, and a call that died running settles as interrupted, so
+     * side-effecting tools execute at most once. An error the handler turns
+     * into a result is recorded the same way.
+     *
+     * @throws ToolRunsExceededException If the tool exceeds its maximum retry attempts
+     * @throws Throwable If the tool execution fails and no error handler is set
+     */
+    protected function executeSingleTool(ToolCall $call, int $index, AgentState $state, ToolRegistry $tools): void
+    {
+        // A rejected tool must not run; its rejection result was already stamped.
+        if ($call->getApprovalState() === ApprovalState::Rejected) {
+            return;
+        }
+
+        $this->emit(new ToolCalling($call));
+
+        $memoKey = 'tool.' . ($call->getCallId() ?? $call->getName()) . '.' . $index;
+
+        try {
+            $this->checkToolRuns($call, $state, $tools);
+            $result = $this->memoizeAtMostOnce($memoKey, function () use ($call, $tools): string|ToolOutput {
+                $tool = $this->resolveTool($call, $tools);
+
+                $tool->execute();
+                return $tool->getResult();
+            }, fn (): string|ToolOutput => $this->interruptedResult($call));
+
+            $call->setResult($result);
+        } catch (Throwable $e) {
+            // The batch's result message records this outcome, so a replay must
+            // restore it rather than run the call again.
+            $call->setResult($this->memoize($memoKey, function () use ($e, $call): string|ToolOutput {
+                $this->handleError($e, $call);
+
+                return $call->getResult();
+            }));
+        } finally {
+            $this->emit(new ToolCalled($call));
+        }
+    }
+
+    /**
+     * Neither a call whose process was killed nor one that threw proves the
+     * effect did not land: a database finishes a statement whose client is gone,
+     * a server completes a request its client timed out on. Recording the start
+     * first is what tells such a call from one that never ran, so a replay
+     * settles it with $interrupted instead of running it again under its old
+     * approval. Calling the tool again is the model's choice, and a new call.
+     *
+     * @template T
+     * @param Closure(): T $operation
+     * @param Closure(): T $interrupted
+     * @return T
+     */
+    protected function memoizeAtMostOnce(string $name, Closure $operation, Closure $interrupted): mixed
+    {
+        return $this->memoize($name, function () use ($name, $operation, $interrupted): mixed {
+            $started = $name . '.started';
+
+            if ($this->recallMemo($started) === true) {
+                return $interrupted();
+            }
+
+            $this->memoize($started, fn (): bool => true);
+
+            return $operation();
+        });
+    }
+
+    /**
+     * Accounting is independent of execution-result memos: a replay counts the
+     * batch again from the state its step started with, so a call whose result
+     * is already recorded gets its count back without consuming another slot.
+     * The live tool supplies the key and the limit on every pass, and the count
+     * is taken before the limit is enforced: a refused call consumed its attempt.
+     *
+     * @throws ToolRunsExceededException
+     * @throws ToolException
+     */
+    protected function checkToolRuns(ToolCall $call, AgentState $state, ToolRegistry $tools): void
+    {
+        $tool = $this->resolveTool($call, $tools);
+        $key = $tool->getRunKey();
+        $limit = $tool->getMaxRuns() ?? $this->maxRuns;
+
+        $state->incrementToolRun($key);
+        if ($state->getToolRuns($key) > $limit) {
+            throw new ToolRunsExceededException("Tool {$call->getName()} has been executed too many times - {$limit}");
+        }
+    }
+
+    /**
+     * Escaped exceptions are bugs and propagate by default — a conversational
+     * failure is a RETURNED ToolOutput::error(), never a throw. A handler
+     * returning a string or ToolOutput settles it as the call's result;
+     * returning null declines and the exception propagates.
+     *
+     * @throws Throwable When no handler is set, or the handler declines
+     */
+    protected function handleError(Throwable $e, ToolCall $call): void
+    {
+        $result = $this->errorHandler === null ? null : ($this->errorHandler)($e, $call);
+
+        if ($result === null) {
+            throw $e;
+        }
+
+        $call->setResult($result);
+    }
+}

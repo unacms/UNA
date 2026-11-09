@@ -1,0 +1,126 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Providers\OpenAI;
+
+use NeuronAI\Chat\Messages\AssistantMessage;
+use NeuronAI\Chat\Messages\ContentBlocks\ContentBlockInterface;
+use NeuronAI\Chat\Messages\SystemMessage;
+use NeuronAI\Chat\Messages\ToolCallMessage;
+use NeuronAI\Exceptions\ProviderException;
+use NeuronAI\HttpClient\Curl\CurlHttpClient;
+use NeuronAI\HttpClient\HasHttpClient;
+use NeuronAI\HttpClient\HttpClientInterface;
+use NeuronAI\HttpClient\HttpRequest;
+use NeuronAI\Providers\AIProviderInterface;
+use NeuronAI\Providers\HandleWithTools;
+use NeuronAI\Providers\MessageMapperInterface;
+use NeuronAI\Providers\ToolMapperInterface;
+use NeuronAI\Tools\ToolCall;
+
+use function rtrim;
+use function array_map;
+use function array_values;
+
+class OpenAI implements AIProviderInterface
+{
+    use HasHttpClient;
+    use HandleWithTools;
+    use HandleChat;
+    use HandleStream;
+    use HandleStructured;
+
+    /**
+     * The main URL of the provider API.
+     */
+    protected string $baseUri = 'https://api.openai.com/v1';
+
+    /**
+     * System instructions.
+     */
+    protected ?string $system = null;
+
+    protected MessageMapperInterface $messageMapper;
+    protected ToolMapperInterface $toolPayloadMapper;
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    public function __construct(
+        protected string $key,
+        protected string $model,
+        protected array $parameters = [],
+        protected bool $strict_response = false,
+        ?HttpClientInterface $httpClient = null,
+    ) {
+        $this->httpClient = $httpClient ?? new CurlHttpClient();
+        $this->httpHeaders = [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $this->key,
+        ];
+    }
+
+    protected function createChatHttpRequest(array $payload): HttpRequest
+    {
+        return HttpRequest::post(
+            uri: rtrim($this->baseUri, '/') . '/chat/completions',
+            body: $payload,
+            headers: $this->httpHeaders,
+        );
+    }
+
+    public function getModel(): string
+    {
+        return $this->model;
+    }
+
+    public function systemPrompt(SystemMessage|string|null $prompt): AIProviderInterface
+    {
+        $this->system = $prompt instanceof SystemMessage ? $prompt->getContent() : $prompt;
+        return $this;
+    }
+
+    protected function messageMapper(): MessageMapperInterface
+    {
+        return $this->messageMapper ??= new MessageMapper();
+    }
+
+    protected function toolPayloadMapper(): ToolMapperInterface
+    {
+        return $this->toolPayloadMapper ??= new ToolMapper();
+    }
+
+    /**
+     * @param array<int, array> $toolCalls
+     * @param ContentBlockInterface|ContentBlockInterface[]|null $blocks
+     *
+     * @throws ProviderException
+     */
+    protected function createToolCallMessage(array $toolCalls, array|ContentBlockInterface|null $blocks = null): ToolCallMessage
+    {
+        $tools = array_map(
+            fn (array $item): ToolCall => $this->newToolCall(
+                $item['function']['name'],
+                $item['id'],
+                $this->decodeToolArguments($item['function']['name'], $item['function']['arguments'] ?? null),
+            ),
+            $toolCalls
+        );
+
+        $result = new ToolCallMessage($blocks, array_values($tools));
+        $result->addMetadata('tool_calls', $toolCalls);
+
+        return $result;
+    }
+
+    /**
+     * Hook for enriching messages with provider-specific data.
+     * Override in child classes to add metadata like reasoning_content.
+     */
+    protected function enrichMessage(AssistantMessage $message, ?array $response = null): AssistantMessage
+    {
+        return $message;
+    }
+}

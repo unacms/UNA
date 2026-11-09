@@ -1,0 +1,183 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Providers\OpenAI\Audio;
+
+use Generator;
+use NeuronAI\Chat\Enums\SourceType;
+use NeuronAI\Chat\Messages\AssistantMessage;
+use NeuronAI\Chat\Messages\ContentBlocks\AudioContent;
+use NeuronAI\Chat\Messages\Message;
+use NeuronAI\Chat\Messages\Stream\Chunks\AudioChunk;
+use NeuronAI\Chat\Messages\SystemMessage;
+use NeuronAI\Chat\Messages\Usage;
+use NeuronAI\Exceptions\HttpException;
+use NeuronAI\Exceptions\ProviderException;
+use NeuronAI\HttpClient\Curl\CurlHttpClient;
+use NeuronAI\HttpClient\HasHttpClient;
+use NeuronAI\HttpClient\HttpClientInterface;
+use NeuronAI\HttpClient\HttpRequest;
+use NeuronAI\Providers\AIProviderInterface;
+use NeuronAI\Providers\MessageMapperInterface;
+use NeuronAI\Providers\ProviderResponse;
+use NeuronAI\Providers\SSEParser;
+use NeuronAI\Providers\ToolMapperInterface;
+use NeuronAI\UniqueIdGenerator;
+
+use function rtrim;
+use function base64_decode;
+use function base64_encode;
+use function end;
+
+class OpenAITextToSpeech implements AIProviderInterface
+{
+    use HasHttpClient;
+
+    /**
+     * The main URL of the provider API.
+     */
+    protected string $baseUri = 'https://api.openai.com/v1';
+
+    /**
+     * System instructions.
+     */
+    protected ?string $system = null;
+
+    public function __construct(
+        protected string $key,
+        protected string $model,
+        protected string $voice,
+        protected array $parameters = [],
+        ?HttpClientInterface $httpClient = null
+    ) {
+        $this->httpClient = $httpClient ?? new CurlHttpClient();
+        $this->httpHeaders = [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $this->key,
+        ];
+    }
+
+    public function getModel(): string
+    {
+        return $this->model;
+    }
+
+    public function systemPrompt(SystemMessage|string|null $prompt): AIProviderInterface
+    {
+        $this->system = $prompt instanceof SystemMessage ? $prompt->getContent() : $prompt;
+        return $this;
+    }
+
+    /**
+     * https://platform.openai.com/docs/api-reference/audio/createSpeech
+     *
+     * @throws HttpException
+     */
+    public function chat(Message ...$messages): ProviderResponse
+    {
+        $message = end($messages);
+
+        $json = [
+            'model' => $this->model,
+            'input' => $message->getContent(),
+            'voice' => $this->voice,
+            'instructions' => $this->system ?? '',
+            ...$this->parameters,
+        ];
+
+        $response = $this->httpClient->request(
+            HttpRequest::post(
+                uri: rtrim($this->baseUri, '/') . '/audio/speech',
+                body: $json,
+                headers: $this->httpHeaders,
+            )
+        );
+
+        return new ProviderResponse(
+            message: new AssistantMessage(
+                new AudioContent(base64_encode($response->body), SourceType::BASE64)
+            )
+        );
+    }
+
+    /**
+     * https://platform.openai.com/docs/api-reference/audio/speech-audio-delta-event
+     *
+     * @throws HttpException
+     * @throws ProviderException
+     */
+    public function stream(Message ...$messages): Generator
+    {
+        $message = end($messages);
+
+        $json = [
+            'stream' => true,
+            'model' => $this->model,
+            'input' => $message->getContent(),
+            'voice' => $this->voice,
+            'instructions' => $this->system ?? '',
+            ...$this->parameters,
+        ];
+
+        $stream = $this->httpClient->stream(
+            HttpRequest::post(
+                uri: rtrim($this->baseUri, '/') . '/audio/speech',
+                body: $json,
+                headers: $this->httpHeaders,
+            )
+        );
+
+        $audio = '';
+        $usage = new Usage(0, 0);
+        $msgId = UniqueIdGenerator::generateId('msg_');
+
+        while (! $stream->eof()) {
+            if (!$line = SSEParser::parseNextSSEEvent($stream)) {
+                continue;
+            }
+
+            // Delta
+            // Each delta is base64 on its own: joining the strings would put padding
+            // mid-string, so the bytes are joined and encoded once at the end
+            if ($line['type'] === 'speech.audio.delta') {
+                $audio .= base64_decode($line['audio']);
+
+                yield new AudioChunk($msgId, $line['audio']);
+            }
+
+            // Done
+            if ($line['type'] === 'speech.audio.done') {
+                $usage->inputTokens = $line['usage']['input_tokens'] ?? 0;
+                $usage->outputTokens = $line['usage']['output_tokens'] ?? 0;
+            }
+        }
+
+        $message = new AssistantMessage(
+            new AudioContent(base64_encode($audio), SourceType::BASE64)
+        );
+        $message->setId($msgId)->setUsage($usage);
+        return new ProviderResponse(message: $message);
+    }
+
+    public function structured(array|Message $messages, string $class, array $response_schema): ProviderResponse
+    {
+        throw new ProviderException('Structured output is not supported by OpenAI Text to Speech.');
+    }
+
+    protected function messageMapper(): MessageMapperInterface
+    {
+        throw new ProviderException('Messages are not supported by OpenAI Text to Speech.');
+    }
+
+    protected function toolPayloadMapper(): ToolMapperInterface
+    {
+        throw new ProviderException('Tools are not supported by OpenAI Text to Speech.');
+    }
+
+    public function setTools(array $tools): AIProviderInterface
+    {
+        return $this;
+    }
+}
