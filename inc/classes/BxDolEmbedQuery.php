@@ -58,6 +58,13 @@ class BxDolEmbedQuery extends BxDolFactoryObjectQuery
         return $this->getAll("SELECT * FROM `" . $this->_sTableData . "` WHERE `data` = ''");
     }
 
+    public function getLocalExpired ($iBefore, $iLimit = 500)
+    {
+        return $this->getAll("SELECT * FROM `" . $this->_sTableData . "` WHERE `added` IS NOT NULL AND `added` < :before ORDER BY `id` ASC LIMIT " . max(1, (int)$iLimit), [
+            'before' => (int)$iBefore
+        ]);
+    }
+
     public function insertLocal ($sUrl, $sTheme, $sData = '')
     {
         return (int)$this->query("INSERT INTO `" . $this->_sTableData . "` (`url`, `theme`, `data`, `added`) VALUES (:url, :theme, :data, :added)", [

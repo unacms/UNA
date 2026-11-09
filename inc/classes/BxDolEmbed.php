@@ -38,6 +38,22 @@
  */
 class BxDolEmbed extends BxDolFactoryObject
 {
+    /**
+     * Longest link which is fetched and stored, it is the width of the `url` field of the data table.
+     * A longer link would be cut on insert, would never be found in the table and so would be fetched on every request.
+     */
+    const URL_MAX_LENGTH = 255;
+
+    /**
+     * Fetches of links which are not in the data table yet, per profile and per IP address, in a time window.
+     */
+    const FETCH_WINDOW = 3600;
+    const FETCH_LIMIT_PROFILE = 30;
+    const FETCH_LIMIT_IP = 60;
+
+    const FETCH_REFUSED_GUEST = 'guest';
+    const FETCH_REFUSED_LIMIT = 'limit';
+
     protected $_bAsync = false;
     protected $_sSocketName = 'sys_embed';
 
@@ -46,6 +62,8 @@ class BxDolEmbed extends BxDolFactoryObject
     protected $_iLifetime;
 
     protected $_bCssJsAdded = false;
+
+    protected $_sFetchRefused = '';
         
     public function __construct ($aObject, $oTemplate = null)
     {
@@ -99,19 +117,28 @@ class BxDolEmbed extends BxDolFactoryObject
         // override this function in particular embed provider class
     }
 
+    /**
+     * Get data of a link.
+     * A link which is not in the data table yet is fetched from the remote site (or from the embed API) only
+     * for a signed in profile which is under the fetch limit, otherwise nothing is fetched and stored and
+     * the result has the link and its domain only. Stored data is returned to everybody.
+     */
     public function getData ($sUrl, $sTheme, $bForcedly = false)
     {
         $sUrl = $this->cleanYoutubeUrl($sUrl);
 
+        $this->_sFetchRefused = '';
+
+        if(!is_string($sUrl) || $sUrl === '' || get_mb_len($sUrl) > self::URL_MAX_LENGTH)
+            return json_decode($this->_getDataEmpty((string)$sUrl, $sTheme), true);
+
         if($this->_sTableData) {
             $aLocal = $this->_oDb->getLocalInfo($sUrl, $sTheme);
 
+            // expired data is replaced only when a new one can be fetched, otherwise the old one is still served
             $bRevalidate = false;
-            if($this->_iLifetime && ($iAdded = (int)($aLocal['added'] ?? 0)) && $iAdded + $this->_iLifetime < time()) {
-                $this->_oDb->deleteLocal([
-                    'url' => $sUrl,
-                    'theme' => $sTheme
-                ]);
+            if($this->_iLifetime && ($iAdded = (int)($aLocal['added'] ?? 0)) && $iAdded + $this->_iLifetime < time() && $this->_canFetch()) {
+                $this->deleteLocalWithFiles($aLocal);
 
                 $bRevalidate = true;
             }
@@ -177,8 +204,167 @@ class BxDolEmbed extends BxDolFactoryObject
         return $url;
     }
     
+    /**
+     * Why the last getData call did not fetch a new link: FETCH_REFUSED_GUEST, FETCH_REFUSED_LIMIT or an empty string.
+     */
+    public function getFetchRefused ()
+    {
+        return $this->_sFetchRefused;
+    }
+
+    /**
+     * Check if the current visitor is under the limit of fetches. It doesn't count a fetch.
+     * @param $iProfileId profile id, the logged in profile by default
+     */
+    public function isFetchLimited ($iProfileId = 0)
+    {
+        if(!$iProfileId)
+            $iProfileId = (int)bx_get_logged_profile_id();
+
+        foreach($this->_getFetchScopes($iProfileId) as $sScope => $aScope)
+            if($this->_getFetchCount($sScope, $aScope['id']) >= $aScope['limit'])
+                return true;
+
+        return false;
+    }
+
+    /**
+     * Delete stored data of a link together with the files it has stored.
+     * @param $aLocal row of the data table
+     */
+    public function deleteLocalWithFiles ($aLocal)
+    {
+        if(empty($aLocal) || !is_array($aLocal))
+            return false;
+
+        if(!empty($aLocal['data']) && ($aData = json_decode($aLocal['data'], true)) && is_array($aData))
+            $this->_deleteLocalFiles($aData);
+
+        return $this->_oDb->deleteLocal(!empty($aLocal['id']) ? ['id' => (int)$aLocal['id']] : [
+            'url' => $aLocal['url'] ?? '',
+            'theme' => $aLocal['theme'] ?? ''
+        ]);
+    }
+
+    /**
+     * Delete stored data of links which are older than the embed lifetime, with their files.
+     * It is called on cron. Content which still has such a link fetches it again when it is shown to a signed in member.
+     * @param $iLimit max number of deleted records
+     * @return number of deleted records
+     */
+    public function pruneExpired ($iLimit = 500)
+    {
+        if(!$this->_sTableData || !$this->_iLifetime)
+            return 0;
+
+        $iDeleted = 0;
+        $aLocals = $this->_oDb->getLocalExpired(time() - $this->_iLifetime, $iLimit);
+        foreach($aLocals as $aLocal)
+            if($this->deleteLocalWithFiles($aLocal))
+                $iDeleted += 1;
+
+        return $iDeleted;
+    }
+
+    /**
+     * Clean expired data of the system embed provider, which is the one which stores files.
+     * @return number of deleted records
+     */
+    public static function pruning ()
+    {
+        if(($oEmbed = self::getObjectInstance('sys_system')) === false)
+            return 0;
+
+        return $oEmbed->pruneExpired();
+    }
+
+    /**
+     * Override it to delete files which a provider has stored for a link.
+     * @param $aData decoded data of a link
+     */
+    protected function _deleteLocalFiles ($aData)
+    {
+    }
+
+    /**
+     * New links are fetched for signed in profiles under the limit and on cron, never for guests.
+     */
+    protected function _canFetch ()
+    {
+        if(defined('BX_DOL_CRON_EXECUTE'))
+            return true;
+
+        if(!isLogged()) {
+            $this->_sFetchRefused = self::FETCH_REFUSED_GUEST;
+            return false;
+        }
+
+        if($this->isFetchLimited()) {
+            $this->_sFetchRefused = self::FETCH_REFUSED_LIMIT;
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if a new link can be fetched and count the fetch.
+     */
+    protected function _acquireFetch ()
+    {
+        if(!$this->_canFetch())
+            return false;
+
+        if(!defined('BX_DOL_CRON_EXECUTE'))
+            foreach($this->_getFetchScopes((int)bx_get_logged_profile_id()) as $sScope => $aScope)
+                $this->_setFetchCount($sScope, $aScope['id'], $this->_getFetchCount($sScope, $aScope['id']) + 1);
+
+        return true;
+    }
+
+    protected function _getFetchScopes ($iProfileId)
+    {
+        $aScopes = [
+            'ip' => ['id' => bx_get_ip_hash(getVisitorIP()), 'limit' => self::FETCH_LIMIT_IP]
+        ];
+
+        if($iProfileId)
+            $aScopes['profile'] = ['id' => (string)(int)$iProfileId, 'limit' => self::FETCH_LIMIT_PROFILE];
+
+        return $aScopes;
+    }
+
+    protected function _getFetchCacheKey ($sScope, $sId)
+    {
+        return BxDolDb::getInstance()->genDbCacheKey('embed_fetch_' . $sScope . '_' . $sId);
+    }
+
+    protected function _getFetchCount ($sScope, $sId)
+    {
+        $oCache = BxDolDb::getInstance()->getDbCacheObject();
+        $a = $oCache->getData($this->_getFetchCacheKey($sScope, $sId), self::FETCH_WINDOW);
+        if(!is_array($a) || (int)($a['start'] ?? 0) + self::FETCH_WINDOW <= time())
+            return 0;
+
+        return (int)($a['count'] ?? 0);
+    }
+
+    protected function _setFetchCount ($sScope, $sId, $iCount)
+    {
+        $oCache = BxDolDb::getInstance()->getDbCacheObject();
+        $sKey = $this->_getFetchCacheKey($sScope, $sId);
+
+        $a = $oCache->getData($sKey, self::FETCH_WINDOW);
+        $iStart = is_array($a) && (int)($a['start'] ?? 0) + self::FETCH_WINDOW > time() ? (int)$a['start'] : time();
+
+        $oCache->setData($sKey, ['start' => $iStart, 'count' => $iCount], self::FETCH_WINDOW);
+    }
+
     protected function _getData($sUrl, $sTheme)
     {
+        if(!$this->_acquireFetch())
+            return $this->_getDataEmpty($sUrl, $sTheme);
+
         $sData = $this->getDataFromApi($sUrl, $sTheme);
         if($sData) {
             $iId = $this->_oDb->insertLocal($sUrl, $sTheme, $sData);
@@ -191,6 +377,9 @@ class BxDolEmbed extends BxDolFactoryObject
 
     protected function _getDataAsync($sUrl, $sTheme)
     {
+        if(!$this->_acquireFetch())
+            return $this->_getDataEmpty($sUrl, $sTheme);
+
         $iId = $this->_oDb->insertLocal($sUrl, $sTheme);
 
         if(($sName = 'bx_embed_processing') && ($oCronQuery = BxDolCronQuery::getInstance()) && !$oCronQuery->isTransientJobService($sName))

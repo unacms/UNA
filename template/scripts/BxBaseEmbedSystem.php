@@ -126,6 +126,17 @@ class BxBaseEmbedSystem extends BxDolEmbed
         }
     }
 
+    protected function _deleteLocalFiles ($aData)
+    {
+        $oStorage = BxDolStorage::getObjectInstance($this->_sStorage);
+        if($oStorage === false)
+            return;
+
+        foreach(['image_id', 'logo_id'] as $sKey)
+            if(($iMediaId = (int)($aData[$sKey] ?? 0)))
+                $oStorage->deleteFile($iMediaId);
+    }
+
     protected function _storeImages (&$a)
     {
         $oStorage = BxDolStorage::getObjectInstance($this->_sStorage);
