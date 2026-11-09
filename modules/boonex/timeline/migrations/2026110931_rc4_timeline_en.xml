@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_timeline_txt_file_alt"><![CDATA[File]]></string_add>
+	<string_add name="_bx_timeline_txt_file_alt_n"><![CDATA[File {0} of {1}]]></string_add>
+	<string_add name="_bx_timeline_txt_file_alt_title_n"><![CDATA[{0}, file {1} of {2}]]></string_add>
+	<string_add name="_bx_timeline_txt_image_alt"><![CDATA[Image]]></string_add>
+	<string_add name="_bx_timeline_txt_image_alt_n"><![CDATA[Image {0} of {1}]]></string_add>
+	<string_add name="_bx_timeline_txt_image_alt_title_n"><![CDATA[{0}, image {1} of {2}]]></string_add>
+</resources>

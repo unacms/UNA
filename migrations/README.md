@@ -118,6 +118,27 @@ returned function is called the same way.
 BxDolTranscoder::registerHandlersSystem();
 ```
 
+#### Shorthands: `BxDolMigrationsHelper`
+
+Static helpers for what update packs did in `installer.php` and `config.php`. They work on MySQL
+5.7 too, which has no `ADD COLUMN IF NOT EXISTS`, and a second run changes nothing. They only
+touch the database: a migration never changes files, those come with git. They throw on an
+error, which fails the migration.
+
+```php
+BxDolMigrationsHelper::addColumn('sys_keys', 'scope', "tinyint(4) NOT NULL DEFAULT '0' AFTER `data`");
+BxDolMigrationsHelper::addIndex('bx_timeline_events', 'date_id', ['date', 'id']);
+BxDolMigrationsHelper::moduleUpdated('timeline', '15.0.7', '15.0.8');
+```
+
+- `addColumn($sTable, $sColumn, $sDefinition)` and `addIndex($sTable, $sIndex, $aColumns)` add the
+  column or index only when it is missing and return whether they did. Names are letters, digits
+  and `_` only.
+- `moduleUpdated($sModuleUri, $sFrom, $sTo)` sets `sys_modules`.`version` to `$sTo`, and only when
+  the module has `$sFrom` now (`15.0.0.RC3` and `15.0.0-RC3` are the same version). It also sets
+  the module's `note` from its `install/config.php`, when that defines one. The URI is
+  `sys_modules`.`uri`, `system` for the system module.
+
 ### XML: language strings
 
 The format of update packs' language files. `string_add` adds a key, `string_upd` changes a
@@ -135,6 +156,9 @@ language later brings its current strings.
     <string_del name="_bx_posts_txt_old"></string_del>
 </resources>
 ```
+
+A key with a space in it (`_Member Login`) cannot be named here: change it with an `UPDATE` of
+`sys_localization_strings` in an SQL migration.
 
 Change the strings in the language's install files too (`install/langs/en.xml`), so new
 installs get them.

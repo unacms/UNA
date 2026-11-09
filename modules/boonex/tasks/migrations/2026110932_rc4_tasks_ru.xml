@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<resources name="ru" flag="ru" title="Russian">
+	<string_add name="_bx_tasks_txt_err_delete_list"><![CDATA[Невозможно удалить список.]]></string_add>
+</resources>
