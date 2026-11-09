@@ -27,13 +27,18 @@ class BxBaseEmbedMicrolink extends BxTemplEmbedSystem
         $this->_sEndpointPro = "https://pro.microlink.io/?url=";
     }
 
+    public function getApiUrl ($sUrl, $bPro = false)
+    {
+        return ($bPro ? $this->_sEndpointPro : $this->_sEndpoint) . rawurlencode((string)$sUrl);
+    }
+
     public function getDataFromApi ($sUrl, $sTheme)
     {
         $sResponse = '';
         if(($sApiKey = getParam('sys_embed_microlink_key')) != '')
-            $sResponse = bx_file_get_contents($this->_sEndpointPro . $sUrl, [], 'get', ['x-api-key: ' . $sApiKey]);
+            $sResponse = bx_file_get_contents($this->getApiUrl($sUrl, true), [], 'get', ['x-api-key: ' . $sApiKey]);
         else
-            $sResponse = bx_file_get_contents($this->_sEndpoint . $sUrl);
+            $sResponse = bx_file_get_contents($this->getApiUrl($sUrl));
 
         $aResponse = [];
         if(!$sResponse || !($aResponse = json_decode($sResponse, true)) || empty($aResponse['data']) || !is_array($aResponse['data']))
