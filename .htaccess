@@ -47,4 +47,22 @@ AddType image/svg+xml svg
     <Files "sw.js.php">
         ExpiresActive Off
     </Files>
+
+    # Files whose URL changes when they do get a year: compiled bundles in cache_public/
+    # (named by a hash that includes the revision) and files linked with ?rev=<revision>
+    # (the revision goes up when caches are cleared and on every install or update).
+    # gzip_loader.php sends its own headers.
+    <If "%{REQUEST_URI} =~ m#/cache_public/[^/]+$# || %{QUERY_STRING} =~ /(^|&)rev=[0-9]+(&|$)/">
+        ExpiresByType text/css                  "access plus 1 year"
+        ExpiresByType application/javascript    "access plus 1 year"
+        ExpiresByType text/javascript           "access plus 1 year"
+        ExpiresByType image/svg+xml             "access plus 1 year"
+        ExpiresByType image/png                 "access plus 1 year"
+        ExpiresByType image/jpeg                "access plus 1 year"
+        ExpiresByType image/gif                 "access plus 1 year"
+        ExpiresByType image/webp                "access plus 1 year"
+        <IfModule mod_headers.c>
+            Header merge Cache-Control "immutable"
+        </IfModule>
+    </If>
 </IfModule>

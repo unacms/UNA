@@ -155,4 +155,7 @@ $aRv = [
     'hash' => md5(getParam('sys_api_config')),
 ];
 
-echo json_encode($aRv);
+$sRv = json_encode($aRv);
+if (!bx_api_cache_response($sModule, $sMethod, $aParams, $sRv)) {
+    echo $sRv;
+}

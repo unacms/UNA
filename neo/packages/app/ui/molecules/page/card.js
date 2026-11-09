@@ -35,10 +35,15 @@ function CardSection({
     return <Component className={classes} {...props} />;
 }
 
+/**
+ * A card. It is no landmark unless the caller makes it one (`role="region"`, named by its
+ * `CardTitle`): a list of post cards as regions buried the page's real landmarks, and a
+ * card without a `CardTitle` pointed `aria-labelledby` at an element that isn't there.
+ */
 const Card = ({
     className = '',
     padding = '',
-    role = 'region',
+    role,
     titleId,
     labelledBy,
     ...props
@@ -62,7 +67,7 @@ const Card = ({
                 className={className}
                 padding={padding}
                 role={role}
-                aria-labelledby={resolvedAriaLabelledby}
+                aria-labelledby={role ? resolvedAriaLabelledby : ariaLabelledbyProp}
                 {...restProps}
             />
         </CardContext.Provider>

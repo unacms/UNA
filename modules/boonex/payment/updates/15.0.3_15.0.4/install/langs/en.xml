@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_payment_txt_analytics_invoices_issued"><![CDATA[Issued]]></string_add>
+	<string_add name="_bx_payment_txt_analytics_invoices_overdue"><![CDATA[Overdue]]></string_add>
+	<string_add name="_bx_payment_txt_analytics_invoices_paid"><![CDATA[Paid]]></string_add>
+	<string_add name="_bx_payment_txt_analytics_invoices_unpaid"><![CDATA[Unpaid]]></string_add>
+</resources>

@@ -4381,6 +4381,8 @@
         <string name="_sys_page_type_standard"><![CDATA[Стандартная]]></string>
 	<string name="_sys_page_type_wo_hf"><![CDATA[Без заголовка и основания]]></string>
 	<string name="_sys_paginate_info"><![CDATA[{0}-{1}]]></string>
+        <string name="_sys_paginate_next"><![CDATA[Следующая страница]]></string>
+        <string name="_sys_paginate_prev"><![CDATA[Предыдущая страница]]></string>
         <string name="_sys_paginate_total"><![CDATA[{0}-{1} из {2}]]></string>
 	<string name="_sys_paginate_view_all"><![CDATA[Просмотреть все]]></string>
         <string name="_sys_payments_err_no_payments"><![CDATA[Нет ни одного установленного модуля обработки платежей.]]></string>

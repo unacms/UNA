@@ -580,7 +580,10 @@ export const Author = memo(({ data, url, t }) => {
                   })}
             size="sm"
             variant="secondary"
-            className="font-normal"
+            // At least 24 × 24px to tap (WCAG 2.5.8; "3d" alone is 17 × 20). The padding is
+            // taken back by negative margins, so the row doesn't move, and grows down, away
+            // from the author's name above.
+            className="font-normal web:px-1.5 web:-mx-1.5 web:pb-1 web:-mb-1"
         >
             <Time ts={data.date} className="text-secondary-foreground" />
         </Link>

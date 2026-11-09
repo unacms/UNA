@@ -262,7 +262,44 @@ abstract class BxDolPaginate extends BxDol
 
     protected function _getPageChangeUrl($aMarkers)
     {
-        return bx_replace_markers($this->_sPageUrl, $aMarkers);
+        $sUrl = bx_replace_markers($this->_sPageUrl, $aMarkers);
+
+        // A page changed by JavaScript still links to a real address, for search engines and new tabs.
+        if(!empty($this->_sOnChangePage) && strncasecmp(trim($sUrl), 'javascript:', 11) === 0)
+            $sUrl = $this->_getRequestPageUrl($aMarkers);
+
+        return $sUrl;
+    }
+
+    /**
+     * Address of the requested page with the start and per_page of another page of results.
+     * For a block loaded by AJAX it is the page the block is on, the same address
+     * loadDynamicBlockAutoPaginate builds in the browser.
+     */
+    protected function _getRequestPageUrl($aMarkers)
+    {
+        if(empty($_SERVER['REQUEST_URI']))
+            return '';
+
+        $aUrl = parse_url(bx_get_self_url());
+        if(empty($aUrl['scheme']) || empty($aUrl['host']))
+            return '';
+
+        $aQuery = [];
+        if(!empty($aUrl['query']))
+            parse_str($aUrl['query'], $aQuery);
+        foreach(['dynamic', 'pageBlock', 'searchMode', 'live_search', '_r', '_t', 'start', 'per_page'] as $sParam)
+            unset($aQuery[$sParam]);
+
+        $sPath = isset($aUrl['path']) ? $aUrl['path'] : '/';
+        // keyword search results load from searchKeywordContent.php, their page is searchKeyword.php
+        $sPath = preg_replace('#/searchKeywordContent\.php$#', '/searchKeyword.php', $sPath);
+
+        $aQuery['start'] = (int)$aMarkers['start'];
+        $aQuery['per_page'] = (int)$aMarkers['per_page'];
+
+        $sPort = !empty($aUrl['port']) ? ':' . (int)$aUrl['port'] : '';
+        return $aUrl['scheme'] . '://' . $aUrl['host'] . $sPort . $sPath . '?' . http_build_query($aQuery, '', '&', PHP_QUERY_RFC3986);
     }
 
     protected function _getPageChangeOnClick($aMarkers)

@@ -1,5 +1,5 @@
 import type { ComponentType, ReactNode } from 'react';
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { BlockDataByName, findElementBySource, hasNonEmptyContent } from 'app/lib/util';
 import type { PageData, PageElement } from 'app/lib/util/page-data';
 import { appStatic } from 'app/lib/app-static';
@@ -137,7 +137,9 @@ export function BlockByName2({ b, name, contentOnly, wrapperClassses = "", fill,
     );
 }
 
-export function BlockByName(props: { data?: PageData | null; name?: BlockName; contentOnly?: boolean; [key: string]: any }) {
+type BlockByNameProps = { data?: PageData | null; name?: BlockName; contentOnly?: boolean; [key: string]: any };
+
+function BlockByNameInner(props: Readonly<BlockByNameProps>) {
     const { data, name, contentOnly, ...rest } = props;
     if (!name) return null;
 
@@ -149,6 +151,13 @@ export function BlockByName(props: { data?: PageData | null; name?: BlockName; c
 
     return <Block key={b.id} uri={data?.uri} url={data?.url} block={b} {...optionsFromName(name, contentOnly)} {...rest} />;
 }
+
+/**
+ * Memoized: layouts rebuild their block lists on every render, and a block whose props object
+ * is new while it is still hydrating (its next/dynamic chunk not resolved yet) is dropped and
+ * drawn again from scratch, which shifts the page. With equal props the block isn't touched.
+ */
+export const BlockByName = memo(BlockByNameInner);
 
 export function BlockByData(props: { data?: PageElement | null; name?: BlockName; contentOnly?: boolean; uri?: string; url?: string; [key: string]: any }) {
     const { data, name, contentOnly, uri, url, ...rest } = props;

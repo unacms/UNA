@@ -4,6 +4,7 @@ import { useRouter } from 'app/lib/hooks/router'
 import { useCallback, type CSSProperties } from 'react';
 import { appSetting, cn, sanitazeUrl, isExternalUrl, decodeTextNode } from 'app/lib/util'
 import emitter, { EVENTS } from 'app/context/emitter';
+import { opensInThisTab } from 'app/lib/navigation/same-tab-click';
 import type { LinkProps } from './link.types';
 
 // Variants and sizes from theme
@@ -74,14 +75,15 @@ export default function ElementLink({
     // The click event goes to `onClick` so a handler can `preventDefault()`
     // (Next's Link then skips its own navigation).
     const handleLinkClick = useCallback((event?: any) => {
-        emitter.emit(EVENTS.link, { action: 'pressed', href });
+        // A link opened in another tab leaves this page where it is.
+        const sameTab = opensInThisTab(event, resolvedTarget);
+        emitter.emit(EVENTS.link, { action: 'pressed', href: sameTab ? href : undefined });
         onClick?.(event);
 
         // Next changes only the hash with pushState, which nobody hears; set it
         // on the location instead so the page gets `hashchange` (e.g. #cid= from
         // a notification on the page it points to).
-        const hash = event && !event.defaultPrevented && !resolvedTarget && event.button === 0
-            && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey
+        const hash = event && !event.defaultPrevented && !resolvedTarget && sameTab
             ? samePageHash(href) : '';
         if (hash) {
             event.preventDefault();
@@ -108,6 +110,8 @@ export default function ElementLink({
     if (emulate === true){
         return (
             <Pressable
+                // It opens a page, so it is a link to assistive technology too, not a button.
+                role={href ? 'link' : undefined}
                 {...rest}
                 className={mode === 'plain' ? className : composedClassName}
                 onPress={handlePress}

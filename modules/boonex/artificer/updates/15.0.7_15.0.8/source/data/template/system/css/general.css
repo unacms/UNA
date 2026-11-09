@@ -1,0 +1,358 @@
+/*--
+import url(../../../../../../../template/css/general.css);
+--*/
+
+
+/*--- Page scrollbar: its gutter is always kept, so a page that scrolls and one that doesn't are the same width and the header menu
+      doesn't reflow between them (nor when a popup locks the page's scrolling). It is thin and in the theme's colours; scrollbar-color
+      is inherited, so the page's own scroll boxes match. ---*/
+html {
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+}
+html.dark {
+    scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+
+/*--- Toolbar ---*/
+.bx-toolbar-anim {
+    -webkit-transition: all .25s ease-in-out;
+    -moz-transition: all .25s ease-in-out;
+    -o-transition: all .25s ease-in-out;
+    transition: all .25s ease-in-out
+}
+.bx-toolbar-reset {
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    transform: translateY(0)
+}
+.bx-toolbar-up {
+    -webkit-transform: translateY(-100%);
+    -ms-transform: translateY(-100%);
+    transform: translateY(-100%)
+}
+.bx-toolbar-item.bx-ti-logo a:hover {
+    text-decoration: none;
+}
+.bx-toolbar-item.bx-ti-logo .bx-logo-inline svg {
+    max-height: 100%;
+    width: auto;
+}
+/*--- Search popup, opened by the member toolbar's 'search' item, as the apps' search: a full-screen sheet below 1024px
+      (the apps' desktop breakpoint), from there a 48rem dialog of a fixed height, so it doesn't move as results come ---*/
+#bx-site-search-popup .bx-popup-width {
+    width: 48rem;
+}
+#bx-site-search-popup .bx-popup-content {
+    display: flex;
+    flex-direction: column;
+}
+/* NEO's search modal: its 24px corners, its line under the title (--border, neutral-300 / -700, at 60%) and a quick
+   colour change on Close */
+#bx-site-search-popup .bx-popup {
+    border-radius: 1.5rem;
+}
+#bx-site-search-popup .bx-popup-header {
+    border-bottom-color: rgb(212 212 216 / 0.6);
+}
+.dark #bx-site-search-popup .bx-popup-header {
+    border-bottom-color: rgb(63 63 70 / 0.6);
+}
+#bx-site-search-popup .bx-popup-element-close {
+    transition-property: color, background-color;
+    transition-duration: 100ms;
+    transition-timing-function: ease-out;
+}
+#bx-site-search-popup .bx-site-search-title {
+    padding-inline: 2.5rem; /* clear of Close */
+}
+#bx-site-search-popup .bx-popup-element-close svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+#bx-site-search-popup .bx-site-search-results {
+    height: 20rem;
+    overflow-y: auto;
+}
+#bx-site-search-popup .bx-form-advanced .bx-loading-ajax {
+    top: 0;
+    max-height: 100%;
+}
+#bx-site-search-popup .bx-form-advanced-wrapper .bx-form-section-wrapper:first-child {
+    margin-top: 0;
+}
+#bx-site-search-popup .sys-search-results-quick .bx-btn.sys-agents-ask {
+    display: flex;
+    float: none;
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+@media (max-width: 1023px) {
+    #bx-site-search-popup {
+        position: fixed !important;
+        inset: 0 !important;
+        border-radius: 0;
+    }
+    #bx-site-search-popup .bx-popup-gap {
+        height: 100%;
+        margin: 0;
+    }
+    #bx-site-search-popup .bx-popup {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+    #bx-site-search-popup .bx-popup-content,
+    #bx-site-search-popup .bx-site-search,
+    #bx-site-search-popup .bx-site-search-results {
+        flex: 1 1 auto;
+        min-height: 0;
+    }
+    #bx-site-search-popup .bx-site-search-results {
+        height: auto;
+    }
+}
+
+/*--- Agents: Assistants ---*/
+#bx_agents_assistants_ask .bx-popup.bx-popup-width {
+    width: 42rem;
+}
+.bx-agents-popup .cmts {
+    max-height: calc(0.5 * 100vh);
+    overflow-y: auto;
+}
+.bx-agents-popup .cmt-reply {
+    margin-bottom: 0;
+}
+.cmt.cmt-agents .cmt-body .cmt-agents-loading .bx-loading-ajax {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    width: 2.0rem;
+    height: 2.0rem;
+    left: 0 !important;
+    top: 0 !important;
+    margin-left: 0.5rem;
+}
+.cmt-body.cmt-body-agents .bx-form-value .bx-form-input-files-uploaders .bx-btn {
+    margin: 0 0.5rem 0 0;
+}
+.cmt-body.cmt-body-agents .bx-form-value .bx-form-input-textarea {
+    height: 2.5rem;
+    line-height: 1.25rem;
+}
+
+
+
+/*--- Page Content with Cover ---*/
+#bx-content-with-cover-wrapper {
+    opacity: 1;
+    transition: opacity 400ms ease-out;
+}
+#bx-content-with-cover-wrapper.htmx-added {
+    opacity: 0;
+}
+
+
+/*--- Page Submenu ---*/
+.bx-menu-main-bar-cnt {
+    height: 3.25rem;
+}
+
+.bx-menu-main-bar:not(.bx-menu-more-auto) .bx-menu-main-bar-cnt > div {
+    overflow-x: auto;
+}
+
+.bx-menu-main-bar-gap.bx-menu-main-bar-hidden,
+.bx-menu-main-bar-wrapper.bx-menu-main-bar-hidden,
+.bx-menu-main-bar.bx-menu-main-bar-hidden {
+    display: none;
+}
+
+
+/*--- Page Content ---*/
+/* The page is at least as tall as the window: on a short page the footer stays at the bottom of the screen, on a
+   long one it comes right after the content. The toolbar is fixed, so main and the footer are the flex items. */
+#bx-content-with-toolbar-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+#bx-content-with-toolbar-wrapper > #bx-content-main {
+    flex-grow: 3;
+}
+
+#bx-content-wrapper.htmx-added {
+    opacity: 0;
+}
+
+#bx-content-wrapper.ltr.htmx-swapping:not(.htmx-added) {
+    opacity: 0;
+    transition: opacity 400ms ease-out;
+    animation: slide-to-right 400ms cubic-bezier(0.37, 0.82, 0.2, 1);
+}
+#bx-content-wrapper.ltr.htmx-settling {
+    opacity: 1;
+    animation: slide-from-left 400ms cubic-bezier(0.37, 0.82, 0.2, 1);
+}
+
+#bx-content-wrapper.rtl.htmx-swapping:not(.htmx-added) {
+    opacity: 0;
+    transition: opacity 400ms ease-out;
+    animation: slide-to-left 400ms cubic-bezier(0.37, 0.82, 0.2, 1);
+}
+#bx-content-wrapper.rtl.htmx-settling {
+    opacity: 1;
+    animation: slide-from-right 400ms cubic-bezier(0.37, 0.82, 0.2, 1);
+}
+
+@keyframes slide-from-right {
+    from { transform: translateX(100%); }
+}
+@keyframes slide-to-right {
+    to { transform: translateX(100%); }
+}
+@keyframes slide-from-left {
+    from { transform: translateX(-100%); }
+}
+@keyframes slide-to-left {
+    to { transform: translateX(-100%); }
+}
+
+
+/*--- Profile Avatar ---*/
+.bx-db-content.bx-content-padding-block .bx-profile-avatar-cnt {
+    margin-left: -0.25rem;
+    margin-right: -0.25rem;
+}
+#bx-profile-switcher .bx-pas-list .bx-def-hr:first-child {
+    display: none;
+}
+
+/*--- Profile Stats ---*/
+.bx-menu-vertical-more-less li.bx-psmi-show-more,
+.bx-menu-vertical-more-less li.bx-psmi-show-less {
+    text-transform: uppercase;
+    font-size: 0.875rem;
+}
+
+.bx-menu-vertical-more-less li.bx-psmi-show-more:hover,
+.bx-menu-vertical-more-less li.bx-psmi-show-less:hover {
+    background-color: transparent;
+}
+
+/*--- Author Info ---*/
+.sys-author-profile .bx-menu-custom.bx-menu-custom-hor > li:first-child .bx-base-general-unit-meta-div {
+    display: none;
+}
+
+/*--- Join/Login Forms ---*/
+.sys-jf .bx-form-advanced .bx-form-element .bx-form-input-submit.bx-btn,
+.sys-lf .bx-form-advanced .bx-form-element .bx-form-input-submit.bx-btn,
+#sys_forgot_password.bx-form-advanced .bx-form-element .bx-form-input-submit.bx-btn {
+    width: 100%;
+    -webkit-justify-content: center;
+    justify-content: center;
+    text-align: center;
+}
+#bx-form-element-submit_text .bx-form-value {
+    text-align: right;
+}
+
+/*--- Page Type: Application ---*/
+.bx-menu-panel-item .bx-profile-avatar .bx-profile-avatar-cnt {
+    min-height: 2.5rem;
+}
+
+/*--- Create Post Form ---*/
+.sys-cpf-form:not(.sys-cpf-loading) {
+    -webkit-animation: sys-cpf-scale-in 0.4s cubic-bezier(0.37, 0.82, 0.2, 1);
+    animation: sys-cpf-scale-in 0.4s cubic-bezier(0.37, 0.82, 0.2, 1);
+}
+
+@keyframes sys-cpf-scale-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1.0);
+    }
+}
+
+@-webkit-keyframes sys-cpf-scale-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1.0);
+    }
+}
+
+/* --------------- System objects like Views, Votes, Comments, etc, */
+.sys-action .sys-action-element-holder .sys-action-do-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+.sys-action-counter.sys-ac-hidden {
+    display: none;
+}
+.sys-action-counter.sys-action-counter-iconset .sys-ac-link {
+    padding-left: 0.75rem;
+}
+.bx-dir-rtl .sys-action-counter.sys-action-counter-iconset .sys-ac-link {
+    padding-left: 0;
+    padding-right: 0.75rem;
+}
+.bx-media-phone .sys-action-counter.sys-action-counter-iconset .sys-ac-link,
+.bx-media-tablet .bx-layout-column-thin .sys-action-counter.sys-action-counter-iconset .sys-ac-link,
+.bx-media-tablet .bx-layout-column-half .sys-action-counter.sys-action-counter-iconset .sys-ac-link {
+    padding-left: 1.0rem;
+}
+.bx-media-phone .bx-dir-rtl .sys-action-counter.sys-action-counter-iconset .sys-ac-link,
+.bx-media-tablet .bx-dir-rtl .bx-layout-column-thin .sys-action-counter.sys-action-counter-iconset .sys-ac-link,
+.bx-media-tablet .bx-dir-rtl .bx-layout-column-half .sys-action-counter.sys-action-counter-iconset .sys-ac-link {
+    padding-left: 0;
+    padding-right: 1.0rem;
+}
+.sys-action-counter.sys-action-counter-iconset .bx-def-icon-size {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.sys-action-counter.sys-action-counter-iconset .bx-base-pofile-unit-wo-info,
+.sys-action-counter.sys-action-counter-iconset .sys-action-counter-icon {
+    margin-left: -0.5rem;
+}
+.bx-dir-rtl .sys-action-counter.sys-action-counter-iconset .bx-base-pofile-unit-wo-info,
+.bx-dir-rtl .sys-action-counter.sys-action-counter-iconset .sys-action-counter-icon {
+    margin-left: 0;
+    margin-right: -0.5rem;
+}
+.bx-media-phone .sys-action-counter.sys-action-counter-iconset .bx-base-pofile-unit-wo-info,
+.bx-media-phone .sys-action-counter.sys-action-counter-iconset .sys-action-counter-icon,
+.bx-media-tablet .bx-layout-column-thin .sys-action-counter.sys-action-counter-iconset .bx-base-pofile-unit-wo-info,
+.bx-media-tablet .bx-layout-column-thin .sys-action-counter.sys-action-counter-iconset .sys-action-counter-icon,
+.bx-media-tablet .bx-layout-column-half .sys-action-counter.sys-action-counter-iconset .bx-base-pofile-unit-wo-info,
+.bx-media-tablet .bx-layout-column-half .sys-action-counter.sys-action-counter-iconset .sys-action-counter-icon {
+    margin-left: -0.75rem;
+}
+.bx-media-phone .bx-dir-rtl .sys-action-counter.sys-action-counter-iconset .bx-base-pofile-unit-wo-info,
+.bx-media-phone .bx-dir-rtl .sys-action-counter.sys-action-counter-iconset .sys-action-counter-icon,
+.bx-media-tablet .bx-dir-rtl .bx-layout-column-thin .sys-action-counter.sys-action-counter-iconset .bx-base-pofile-unit-wo-info,
+.bx-media-tablet .bx-dir-rtl .bx-layout-column-thin .sys-action-counter.sys-action-counter-iconset .sys-action-counter-icon,
+.bx-media-tablet .bx-dir-rtl .bx-layout-column-half .sys-action-counter.sys-action-counter-iconset .bx-base-pofile-unit-wo-info,
+.bx-media-tablet .bx-dir-rtl .bx-layout-column-half .sys-action-counter.sys-action-counter-iconset .sys-action-counter-icon {
+    margin-left: 0;
+    margin-right: -0.75rem;
+}

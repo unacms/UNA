@@ -56,8 +56,10 @@ class BxBaseSearchResult extends BxDolSearchResult
         if($this->aCurrent['paginate']['num'] > 0) {
             $sCode .= $this->addCustomParts();
 
+            $sUnits = '';
             foreach ($aData as $aValue)
-                $sCode .= $this->displaySearchUnit($aValue);
+                $sUnits .= $this->displaySearchUnit($aValue);
+            $sCode .= $this->wrapSearchUnits($sUnits);
 
             $sHtmlId = $this->applyContainerId();
             $sClasses = $this->applyContainerClass();
@@ -104,6 +106,16 @@ class BxBaseSearchResult extends BxDolSearchResult
         ]);
 
         return $sCode;
+    }
+
+    /**
+     * Markup around the units inside the results container, e.g. a list for units that are list items.
+     * @param string $sUnits units HTML
+     * @return string
+     */
+    protected function wrapSearchUnits ($sUnits)
+    {
+        return $sUnits;
     }
 
     function displayResultBlockEmpty ()

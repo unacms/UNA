@@ -48,13 +48,20 @@ export function buildMentionSearchUrl({ fieldName, objectPrivacyView, objectId, 
 }
 
 /**
- * UNA mention / tag anchor HTML — tentap inserts this via string replace;
- * enriched converts its <mention> marks to this shape on save.
+ * UNA mention / hashtag anchor HTML — tentap inserts this via string replace;
+ * enriched converts its <mention> marks to the same shapes on save
+ * (components/form-fields/editor-mention-html.js). A hashtag uses UNA's own form
+ * (class bx-tag-link, "#" in the text) so BxDolMetatags::keywordsAdd indexes it,
+ * and no data-profile-id, which UNA would read as a mention of that profile id.
  */
-export function buildUnaMentionHtml(user: any) {
+export function buildUnaMentionHtml(user: any, indicator = '@') {
     const label = escapeHtml((user?.label || '').trim())
-    const id = user?.value
     const href = escapeHtml(user?.url || '')
+    if (indicator === '#') {
+        const word = label.replace(/^#/, '')
+        return `<a class="bx-tag-link" dchar="#" title="${word}" href="${href}">#${word}</a>`
+    }
+    const id = user?.value
     const extraClass = user?.classname || ''
     return (
         `<a class="bx-mention-link data-profile-id=${id} ${extraClass}"` +
@@ -62,13 +69,23 @@ export function buildUnaMentionHtml(user: any) {
     )
 }
 
-/** Attributes stored on enriched <mention> marks / setMention(). */
-export function mentionAttributesForUser(user: any) {
+/**
+ * Attributes stored on enriched <mention> marks / setMention(). A hashtag row's
+ * `value` is a keyword id, not a profile, so it carries no data-profile-id.
+ */
+export function mentionAttributesForUser(user: any, indicator = '@'): Record<string, string> {
+    if (indicator === '#') return { href: user.url || '', class: 'bx-tag-link' }
     return {
         'data-profile-id': String(user.value),
         href: user.url || '',
         class: `bx-mention-link ${user.classname || ''}`.trim(),
     }
+}
+
+/** Text a picked mark shows in the editor: a hashtag keeps its "#", as in UNA's editor. */
+export function mentionDisplayText(user: any, indicator = '@') {
+    const label = (user?.label || '').trim()
+    return indicator === '#' && label ? '#' + label.replace(/^#/, '') : label
 }
 
 /**
@@ -128,13 +145,15 @@ export function insertMentionInTiptap(editor: any, user: any, indicator = '@') {
         to = $from.pos
     }
 
-    const attrs = mentionAttributesForUser(user)
+    const attrs = mentionAttributesForUser(user, ind)
+    const text = mentionDisplayText(user, ind)
+    const idAttr = attrs['data-profile-id'] ? ` data-profile-id="${escapeAttr(attrs['data-profile-id'])}"` : ''
     const html =
-        `<mention indicator="${escapeAttr(ind)}" text="${escapeAttr(label)}"` +
-        ` data-profile-id="${escapeAttr(attrs['data-profile-id'])}"` +
-        ` href="${escapeAttr(attrs.href)}"` +
-        ` class="${escapeAttr(attrs.class)}">` +
-        `${escapeHtml(label)}</mention>&nbsp;`
+        `<mention indicator="${escapeAttr(ind)}" text="${escapeAttr(text)}"` +
+        idAttr +
+        ` href="${escapeAttr(attrs.href || '')}"` +
+        ` class="${escapeAttr(attrs.class || '')}">` +
+        `${escapeHtml(text)}</mention>&nbsp;`
 
     try {
         return editor.chain().focus().insertContentAt({ from, to }, html).run()

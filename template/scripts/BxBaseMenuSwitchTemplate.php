@@ -17,6 +17,14 @@ class BxBaseMenuSwitchTemplate extends BxTemplMenu
         parent::__construct ($aObject, $oTemplate);
     }
 
+    /**
+     * The items link back to the page in the Referer header.
+     */
+    public function isCacheable()
+    {
+        return false;
+    }
+
     public function getMenuItems ()
     {
         $this->loadData();

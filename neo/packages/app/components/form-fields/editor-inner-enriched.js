@@ -20,6 +20,7 @@ import {
     MENTION_INDICATORS,
     insertMentionInTiptap,
     mentionAttributesForUser,
+    mentionDisplayText,
 } from 'app/lib/editor/editor-mention-shared'
 import { useTiptapEditor } from 'app/lib/editor/use-tiptap-editor'
 import { useEnrichedMentionDropdown } from 'app/lib/editor/use-enriched-mention-dropdown'
@@ -220,8 +221,8 @@ export default function RftTextEnriched(props) {
         if (!inserted) {
             editorRef.current?.setMention?.(
                 indicator,
-                user.label.trim(),
-                mentionAttributesForUser(user)
+                mentionDisplayText(user, indicator),
+                mentionAttributesForUser(user, indicator)
             )
         }
         recordMention(user)

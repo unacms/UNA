@@ -1,5 +1,6 @@
 import { Providers } from './providers'
 import { resolveServerLangCode } from '../lib/resolve-lang'
+import { loadUnaSharedData } from '../lib/una-shared-data'
 import { fontVars } from 'app/customization/design/fonts/fonts-web'
 import { getCornerSmoothingHtmlProps } from 'app/design/corner-smoothing'
 import { appSetting } from 'app/config'
@@ -17,6 +18,8 @@ export default async function RootLayout({ children }) {
     // rest load on demand (app/lib/i18n-resources). Server component, so the
     // full `resources` never reach the client bundle from here.
     const initialResources = { en: resources.en, [langCode]: resources[langCode] }
+    // Guests' menus and the analytics settings, so the first page doesn't ask UNA for them.
+    const { menus: initialMenus, trackerConfig } = await loadUnaSharedData(langCode)
 
     return (
         <html
@@ -26,7 +29,7 @@ export default async function RootLayout({ children }) {
             suppressHydrationWarning
         >
             <body className={appSetting('layout', 'body')}>
-                <Providers initialLang={langCode} initialResources={initialResources} onVercel={!!process.env.VERCEL}>{children}</Providers>
+                <Providers initialLang={langCode} initialResources={initialResources} initialMenus={initialMenus} trackerConfig={trackerConfig} onVercel={!!process.env.VERCEL}>{children}</Providers>
             </body>
         </html>
     )

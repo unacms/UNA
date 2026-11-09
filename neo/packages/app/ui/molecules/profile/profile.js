@@ -121,7 +121,7 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
                     fontSize={sSizeFont}
                     href={oProps.href}
                     link_variant="default" 
-                    link_className="flex flex-row items-center shrink min-w-0 overflow-hidden" 
+                    link_className="flex flex-row items-center shrink min-w-0 min-h-6 overflow-hidden" 
                     link_emulate={emulate} 
                     link_haptics="Select" 
                     link_href={oProps.url}

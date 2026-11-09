@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_tasks_page_block_title_system_timers_stats"><![CDATA[Timers Statistics]]></string_add>
+	<string_add name="_bx_tasks_page_block_title_timers_stats"><![CDATA[Logged Time]]></string_add>
+	<string_add name="_bx_tasks_txt_timers_stats_this_month"><![CDATA[This Month]]></string_add>
+	<string_add name="_bx_tasks_txt_timers_stats_last_month"><![CDATA[Last Month]]></string_add>
+	<string_add name="_bx_tasks_txt_timers_stats_total"><![CDATA[Time]]></string_add>
+	<string_add name="_bx_tasks_txt_timers_stats_tasks"><![CDATA[Tasks]]></string_add>
+	<string_add name="_bx_tasks_txt_timers_stats_show_more"><![CDATA[Show more]]></string_add>
+	<string_add name="_bx_tasks_txt_timers_stats_empty"><![CDATA[No time logged in this period]]></string_add>
+	<string_add name="_bx_tasks_txt_err_delete_list"><![CDATA[Cannot delete the list.]]></string_add>
+</resources>

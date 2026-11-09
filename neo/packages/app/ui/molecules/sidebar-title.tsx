@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Text } from 'app/design/typography'
+import { Text, headingProps } from 'app/design/typography'
 import { Row, View } from 'app/design/view'
 import { Icon } from 'app/ui/atoms/icon'
 import { appSetting } from 'app/lib/util'
@@ -31,7 +31,9 @@ export function SidebarTitle({ title, icon, actions }: SidebarTitleProps) {
                     </View>
                 )}
                 {!!title && (
-                    <Text className={appSetting('conductor', 'sidebar_title_text')}>
+                    // The page's heading on desktop, where the header holds the site menu
+                    // instead of the title.
+                    <Text {...headingProps(1)} className={appSetting('conductor', 'sidebar_title_text')}>
                         {title}
                     </Text>
                 )}

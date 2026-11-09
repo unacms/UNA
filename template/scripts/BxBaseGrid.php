@@ -624,7 +624,7 @@ class BxBaseGrid extends BxDolGrid
             $sHeader = '<span class="sr-only">' . bx_process_output($this->_getCellHeaderFallbackTitle($sKey)) . '</span>';
 
         if (($aSortingFields = $this->_getOrderFields()) && in_array($sKey, $aSortingFields)) {
-            $sHeader = '<a href="javascript:void(0);" class="bx-grid-sort-handle">' . $sHeader . '</a><span class="bx-grid-sort-indi"></span>';
+            $sHeader = '<a href="javascript:void(0);" class="bx-grid-sort-handle" role="button">' . $sHeader . '</a><span class="bx-grid-sort-indi"></span>';
             $aField['attr_head']['bx_grid_sort_head'] = $sKey;
         }
 
@@ -830,7 +830,15 @@ class BxBaseGrid extends BxDolGrid
         $sDisabled = ($this->_isCheckboxDisabled($aRow) ? 'disabled="disabled"' : '');
         $sSelected = ($this->_isCheckboxSelected($mixedValue, $sKey, $aField, $aRow) ? 'checked="checked"' : '');
         $sVal = $aRow[$this->_aOptions['field_id']];
-        return '<td ' . $sAttr . '><input type="checkbox" name="'. $this->_sObject . '_check" value="' . $sVal . '" ' . $sDisabled . ' ' . $sSelected . '/></td>';
+        return '<td ' . $sAttr . '><input type="checkbox" name="'. $this->_sObject . '_check" value="' . $sVal . '" aria-label="' . bx_html_attribute($this->_getCheckboxLabel($aRow)) . '" ' . $sDisabled . ' ' . $sSelected . '/></td>';
+    }
+
+    /**
+     * Name of a row's checkbox for screen readers; the row's other cells give its context.
+     */
+    protected function _getCheckboxLabel ($aRow)
+    {
+        return _t('_sys_grid_lbl_select');
     }
 
     protected function _getCellSwitcher ($mixedValue, $sKey, $aField, $aRow)

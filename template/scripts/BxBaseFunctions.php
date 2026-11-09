@@ -733,11 +733,18 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                     $iLogoHeight = 40; // the SVG's own size is 335x100
                 $sHeight = $iLogoHeight > 0 ? 'height:' . round($iLogoHeight/16, 3) . 'rem;' : '';
 
+                // width/height attributes let the browser reserve the space before the image arrives
+                $aSize = BxDolDesigns::getLogoSizeAttrs(
+                    $bDefault ? BxDolDesigns::getImageFileSize($this->_oTemplate->getImagePath(BxDolDesigns::$aLogoBuiltins['logo'])) : [],
+                    $iLogoWidth, $iLogoHeight
+                );
+
                 $aLogoImages[] = [
                     'id' => 'bx-logo', 
                     'src' => $sFileUrl, 
                     'alt' => bx_html_attribute($sAlt, BX_ESCAPE_STR_QUOTE),
-                    'style' => $sWidth . ' ' . $sHeight
+                    'style' => $sWidth . ' ' . $sHeight . $aSize['style'],
+                    'size' => $aSize['attrs'],
                 ];
             }
         }

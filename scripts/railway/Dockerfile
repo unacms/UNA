@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ffmpeg \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd mysqli pdo_mysql zip exif opcache \
-    && a2enmod rewrite deflate expires \
+    && a2enmod rewrite deflate expires headers \
     && rm -rf /var/lib/apt/lists/*
 
 # PHP's built-in default shows errors in the page: a warning before an API response's JSON

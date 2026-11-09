@@ -66,9 +66,20 @@ class BxBaseEmbedIframely extends BxDolEmbed
         ));
     }
     
+    public function getApiUrl ($sUrl, $sTheme)
+    {
+        return 'https://iframe.ly/api/oembed?' . http_build_query([
+            'theme' => (string)$sTheme,
+            'url' => (string)$sUrl,
+            'api_key' => (string)getParam('sys_iframely_api_key'),
+            'card' => 'small',
+            'media' => '0',
+        ], '', '&', PHP_QUERY_RFC3986);
+    }
+
     public function getDataFromApi ($sUrl, $sTheme)
     {
-        return bx_file_get_contents("https://iframe.ly/api/oembed?theme=" . $sTheme . "&url=" . $sUrl . "&api_key=" . getParam('sys_iframely_api_key') . "&card=small&media=0");
+        return bx_file_get_contents($this->getApiUrl($sUrl, $sTheme));
     }
     
     public function getDataHtml ($sUrl, $sTheme)

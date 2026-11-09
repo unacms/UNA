@@ -51,6 +51,7 @@
   },
   "resolutions": {
     "uniwind": "1.12.2",
+    "react-resizable-panels": "3.0.6",
     "tailwindcss": "4.3.2",
     "@tailwindcss/postcss": "4.3.2",
     "@radix-ui/primitive": "1.1.7",
