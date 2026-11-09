@@ -179,27 +179,7 @@ export default function MenuTop({ url, uri }) {
                     transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), width 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out'
                 }}
             />
-            {/* The hidden copy sits in a clipped box the nav's size: a copy wider than the bar
-                would otherwise widen the page and add a horizontal scrollbar. */}
-            <View aria-hidden className="absolute inset-0 overflow-hidden invisible pointer-events-none">
-                <Row
-                    className="absolute left-0 top-0 w-max gap-2"
-                    onLayout={(e) => {
-                        const width = Math.ceil(e?.nativeEvent?.layout?.width || 0);
-                        setInlineWidth((prev) => (prev === width ? prev : width));
-                    }}
-                >
-                    {menu_navbar_items.map((item, index) => (
-                        <Row key={`probe-${index}`} className={`items-center justify-center h-12 min-w-16 shrink-0 ${item.icon && item.showTitle ? 'ps-3 pe-2' : 'px-2'}`}>
-                            {item.icon ? <View className="h-6 w-6 shrink-0" /> : null}
-                            {item.showTitle ? (
-                                <Text className="whitespace-nowrap tracking-tight font-medium text-sm px-2 leading-5">{t(item.title)}</Text>
-                            ) : null}
-                            {item.chevron ? <View className="h-4 w-4 shrink-0" /> : null}
-                        </Row>
-                    ))}
-                </Row>
-            </View>
+            <MenuTopProbe items={menu_navbar_items} t={t} onWidth={setInlineWidth} />
             {menu_navbar_items.map((item, index) => {
                 const isActive = index === activeIndex;
                 return (
@@ -224,5 +204,34 @@ export default function MenuTop({ url, uri }) {
             })}
         </Row>
 
+    )
+}
+
+/**
+ * A hidden copy of the bar with every label beside its icon, so MenuTop knows the width that
+ * needs. It sits in a clipped box the nav's size (a copy wider than the bar would otherwise widen
+ * the page and add a horizontal scrollbar), aria-hidden and invisible, with no links in it.
+ */
+function MenuTopProbe({ items, t, onWidth }) {
+    return (
+        <View aria-hidden className="absolute inset-0 overflow-hidden invisible pointer-events-none">
+            <Row
+                className="absolute left-0 top-0 w-max gap-2"
+                onLayout={(e) => {
+                    const width = Math.ceil(e?.nativeEvent?.layout?.width || 0);
+                    onWidth((prev) => (prev === width ? prev : width));
+                }}
+            >
+                {items.map((item) => (
+                    <Row key={item.name || item.link || item.title} className={`items-center justify-center h-12 min-w-16 shrink-0 ${item.icon && item.showTitle ? 'ps-3 pe-2' : 'px-2'}`}>
+                        {item.icon ? <View className="h-6 w-6 shrink-0" /> : null}
+                        {item.showTitle ? (
+                            <Text className="whitespace-nowrap tracking-tight font-medium text-sm px-2 leading-5">{t(item.title)}</Text>
+                        ) : null}
+                        {item.chevron ? <View className="h-4 w-4 shrink-0" /> : null}
+                    </Row>
+                ))}
+            </Row>
+        </View>
     )
 }
