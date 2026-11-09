@@ -39,17 +39,34 @@ const getFeedModalUrlFromHash = () => {
 export default function FormModal({ pageData, setPageData, modalView, url, historyUrl }) {
     const { t } = useTranslation()
     const previousUrlRef = useRef(null);
+    // A link pressed inside the modal closes it while the router navigates.
+    const navigatingRef = useRef(false);
 
     const handleModalClose = useCallback(() => {
         Keyboard.dismiss()
     }, [])
 
     const handleClose = useCallback(() => {
-        if (isWeb && previousUrlRef.current) {
+        // Restoring the URL under a navigation in progress makes Next keep the
+        // restored page and drop the navigation, so only restore it otherwise.
+        if (isWeb && previousUrlRef.current && !navigatingRef.current) {
             window.history.replaceState(null, '', previousUrlRef.current);
         }
         setPageData(false);
     }, [setPageData]);
+
+    const isOpen = !!pageData;
+    useEffect(() => {
+        if (!isWeb || !isOpen)
+            return;
+        navigatingRef.current = false;
+        const subscription = emitter.addListener(EVENTS.link, (data) => {
+            const href = typeof data?.href === 'string' ? data.href : '';
+            if (href && !/^(#|mailto:|tel:)/i.test(href))
+                navigatingRef.current = true;
+        });
+        return () => subscription.remove();
+    }, [isOpen]);
 
     const handleRequestClose = useCallback(() => {
         handleModalClose();
