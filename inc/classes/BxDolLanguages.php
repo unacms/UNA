@@ -409,7 +409,11 @@ class BxDolLanguages extends BxDolFactory implements iBxDolSingleton
             $oAccountQuery->updateLanguage($iAccountId, $iLangId);
         }
 
-        bx_setcookie('lang', '',     time() - 60*60*24);
+        // API clients send the language with every request (`lang`): a guest's answer sets no cookie, so it can be cached.
+        if(bx_is_api() && !isLogged()) {
+            return;
+        }
+
         bx_setcookie('lang', $sLang, time() + 60*60*24*365);
     }
 }
