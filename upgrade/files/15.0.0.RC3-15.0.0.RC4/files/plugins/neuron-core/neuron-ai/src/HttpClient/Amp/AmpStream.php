@@ -1,0 +1,121 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\HttpClient\Amp;
+
+use Amp\ByteStream\ReadableStream;
+use Amp\ByteStream\StreamException;
+use NeuronAI\Exceptions\HttpException;
+use NeuronAI\HttpClient\HttpRequest;
+use NeuronAI\HttpClient\StreamInterface;
+
+use function strlen;
+use function strpos;
+use function substr;
+
+/**
+ * Adapter for Amp's ReadableStream.
+ *
+ * Wraps Amp's async stream to provide a framework-agnostic interface
+ * for reading streaming HTTP responses in async contexts.
+ */
+class AmpStream implements StreamInterface
+{
+    private bool $eof = false;
+    private string $buffer = '';
+
+    public function __construct(
+        private readonly ReadableStream $stream,
+        protected readonly HttpRequest $request,
+    ) {
+    }
+
+    public function eof(): bool
+    {
+        return $this->eof && $this->buffer === '';
+    }
+
+    public function read(int $length): string
+    {
+        // If we have buffered data, return from buffer first
+        if ($this->buffer !== '') {
+            $result = substr($this->buffer, 0, $length);
+            $this->buffer = substr($this->buffer, $length);
+            return $result;
+        }
+
+        // Once the body has ended or the stream was closed, the connection is never read again
+        if ($this->eof) {
+            return '';
+        }
+
+        // Read from stream
+        $chunk = $this->pull();
+
+        if ($chunk === null) {
+            $this->eof = true;
+            return '';
+        }
+
+        // If chunk is larger than requested, buffer the rest
+        if (strlen($chunk) > $length) {
+            $result = substr($chunk, 0, $length);
+            $this->buffer = substr($chunk, $length);
+            return $result;
+        }
+
+        return $chunk;
+    }
+
+    public function readLine(): string
+    {
+        while (true) {
+            $pos = strpos($this->buffer, "\n");
+
+            if ($pos !== false) {
+                $line = substr($this->buffer, 0, $pos + 1);
+                $this->buffer = substr($this->buffer, $pos + 1);
+                return $line;
+            }
+
+            if ($this->eof) {
+                $line = $this->buffer;
+                $this->buffer = '';
+                return $line;
+            }
+
+            $chunk = $this->pull();
+
+            if ($chunk === null) {
+                $this->eof = true;
+                $line = $this->buffer;
+                $this->buffer = '';
+                return $line;
+            }
+
+            $this->buffer .= $chunk;
+        }
+    }
+
+    public function close(): void
+    {
+        $this->eof = true;
+        $this->buffer = '';
+        $this->stream->close();
+    }
+
+    /**
+     * A connection dropped mid-response must not pass for the end of the body.
+     *
+     * @throws HttpException
+     */
+    protected function pull(): ?string
+    {
+        try {
+            return $this->stream->read();
+        } catch (StreamException $e) {
+            throw HttpException::networkError($this->request, $e->getMessage(), $e);
+        }
+    }
+}

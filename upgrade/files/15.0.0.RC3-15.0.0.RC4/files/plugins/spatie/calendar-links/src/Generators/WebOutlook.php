@@ -1,0 +1,19 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Spatie\CalendarLinks\Generators;
+
+/** @api */
+final class WebOutlook extends BaseOutlook
+{
+    /** @var non-empty-string */
+    private const string BASE_URL = 'https://outlook.live.com/calendar/action/compose?path=/calendar/action/compose&rru=addevent';
+
+    /** @inheritDoc */
+    #[\Override]
+    protected function baseUrl(): string
+    {
+        return static::BASE_URL;
+    }
+}

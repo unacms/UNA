@@ -1,0 +1,190 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Providers\OpenAI\Audio;
+
+use Generator;
+use NeuronAI\Chat\Messages\AssistantMessage;
+use NeuronAI\Chat\Messages\Message;
+use NeuronAI\Chat\Messages\Stream\Chunks\TextChunk;
+use NeuronAI\Chat\Messages\SystemMessage;
+use NeuronAI\Chat\Messages\Usage;
+use NeuronAI\Exceptions\HttpException;
+use NeuronAI\Exceptions\ProviderException;
+use NeuronAI\HttpClient\Curl\CurlHttpClient;
+use NeuronAI\HttpClient\HasHttpClient;
+use NeuronAI\HttpClient\HttpClientInterface;
+use NeuronAI\HttpClient\HttpRequest;
+use NeuronAI\Providers\AIProviderInterface;
+use NeuronAI\Providers\MessageMapperInterface;
+use NeuronAI\Providers\ProviderResponse;
+use NeuronAI\Providers\SSEParser;
+use NeuronAI\Providers\ToolMapperInterface;
+use NeuronAI\Providers\UploadsAudioFile;
+use NeuronAI\UniqueIdGenerator;
+
+use function rtrim;
+use function end;
+
+class OpenAISpeechToText implements AIProviderInterface
+{
+    use HasHttpClient;
+    use UploadsAudioFile;
+
+    /**
+     * The main URL of the provider API.
+     */
+    protected string $baseUri = 'https://api.openai.com/v1';
+
+    /**
+     * System instructions.
+     */
+    protected ?string $system = null;
+
+    /**
+     * @param array<string, mixed> $parameters Extra request fields. A file upload sends them as
+     *        multipart form fields, where every value becomes a string: pass 'true', not true.
+     */
+    public function __construct(
+        protected string $key,
+        protected string $model,
+        protected string $language = 'en',
+        protected array $parameters = [],
+        ?HttpClientInterface $httpClient = null
+    ) {
+        $this->httpClient = $httpClient ?? new CurlHttpClient();
+        $this->httpHeaders = [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $this->key,
+        ];
+    }
+
+    public function getModel(): string
+    {
+        return $this->model;
+    }
+
+    public function systemPrompt(SystemMessage|string|null $prompt): AIProviderInterface
+    {
+        $this->system = $prompt instanceof SystemMessage ? $prompt->getContent() : $prompt;
+        return $this;
+    }
+
+    /**
+     * @throws HttpException
+     */
+    public function chat(Message ...$messages): ProviderResponse
+    {
+        $message = end($messages);
+        $file = $this->audioFilePart($message->getAudio());
+
+        $body = [
+            'file' => $file,
+            'model' => $this->model,
+            'language' => $this->language,
+            'response_format' => 'json',
+            ...$this->parameters,
+        ];
+
+        if ($message->getContent() !== null) {
+            $body['prompt'] = $message->getContent();
+        }
+
+        $response = $this->httpClient->request(
+            HttpRequest::post(
+                uri: rtrim($this->baseUri, '/') . '/audio/transcriptions',
+                body: $body,
+                headers: $this->httpHeaders,
+            )
+        )->json();
+
+        $message = new AssistantMessage($response['text']);
+
+        if (isset($response['usage'])) {
+            $message->setUsage(
+                new Usage(
+                    $response['usage']['input_tokens'],
+                    $response['usage']['output_tokens']
+                )
+            );
+        }
+
+        return new ProviderResponse(message: $message);
+    }
+
+    /**
+     * @throws HttpException
+     * @throws ProviderException
+     */
+    public function stream(Message ...$messages): Generator
+    {
+        $message = end($messages);
+        $file = $this->audioFilePart($message->getAudio());
+
+        $body = [
+            'stream' => true,
+            'file' => $file,
+            'model' => $this->model,
+            'language' => $this->language,
+            'response_format' => 'json',
+            ...$this->parameters,
+        ];
+
+        if ($message->getContent() !== null) {
+            $body['prompt'] = $message->getContent();
+        }
+
+        $stream = $this->httpClient->stream(
+            HttpRequest::post(
+                uri: rtrim($this->baseUri, '/') . '/audio/transcriptions',
+                body: $body,
+                headers: $this->httpHeaders,
+            )
+        );
+
+        $content = '';
+        $usage = new Usage(0, 0);
+        $msgId = UniqueIdGenerator::generateId('msg_');
+
+        while (! $stream->eof()) {
+            if (!$line = SSEParser::parseNextSSEEvent($stream)) {
+                continue;
+            }
+
+            if ($line['type'] === 'transcript.text.delta') {
+                $content .= $line['delta'];
+                yield new TextChunk($msgId, $line['delta']);
+            }
+
+            if ($line['type'] === 'transcript.text.done') {
+                $usage->inputTokens = $line['usage']['input_tokens'] ?? 0;
+                $usage->outputTokens = $line['usage']['output_tokens'] ?? 0;
+            }
+        }
+
+        $message = new AssistantMessage($content);
+        $message->setId($msgId)->setUsage($usage);
+        return new ProviderResponse(message: $message);
+    }
+
+    public function structured(array|Message $messages, string $class, array $response_schema): ProviderResponse
+    {
+        throw new ProviderException('Structured output is not supported by OpenAI Text to Speech.');
+    }
+
+    protected function messageMapper(): MessageMapperInterface
+    {
+        throw new ProviderException('Messages are not supported by OpenAI Text to Speech.');
+    }
+
+    protected function toolPayloadMapper(): ToolMapperInterface
+    {
+        throw new ProviderException('Tools are not supported by OpenAI Text to Speech.');
+    }
+
+    public function setTools(array $tools): AIProviderInterface
+    {
+        return $this;
+    }
+}

@@ -1,0 +1,196 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Providers\Anthropic;
+
+use Generator;
+use NeuronAI\Chat\Messages\AssistantMessage;
+use NeuronAI\Chat\Messages\ContentBlocks\ReasoningContent;
+use NeuronAI\Chat\Messages\ContentBlocks\TextContent;
+use NeuronAI\Chat\Messages\Message;
+use NeuronAI\Chat\Messages\Stream\Chunks\ReasoningChunk;
+use NeuronAI\Chat\Messages\Stream\Chunks\TextChunk;
+use NeuronAI\Chat\Messages\Stream\Chunks\ToolArgumentChunk;
+use NeuronAI\Exceptions\HttpException;
+use NeuronAI\Exceptions\ProviderException;
+use NeuronAI\HttpClient\HttpRequest;
+use NeuronAI\Providers\HandleEarlyStreamEnd;
+use NeuronAI\Providers\ProviderResponse;
+use NeuronAI\Providers\SSEParser;
+
+use function json_encode;
+
+trait HandleStream
+{
+    use HandleEarlyStreamEnd;
+
+    protected StreamState $streamState;
+
+    /**
+     * Stream response from the LLM.
+     *
+     * Yields intermediate chunks during streaming and returns the final complete Message.
+     *
+     * @throws ProviderException
+     * @throws HttpException
+     */
+    public function stream(Message ...$messages): Generator
+    {
+        $stream = $this->httpClient->stream(
+            HttpRequest::post(
+                uri: $this->requestUri(true),
+                body: $this->requestBody($messages, true),
+                headers: $this->requestHeaders(),
+            )
+        );
+
+        $this->streamState = new StreamState();
+
+        // https://docs.anthropic.com/en/api/messages-streaming
+        while (! $stream->eof()) {
+            if (!$line = SSEParser::parseNextSSEEvent($stream)) {
+                continue;
+            }
+
+            $eventType = $line['type'] ?? null;
+
+            if ($eventType === 'error') {
+                throw new ProviderException('Anthropic streaming error: '.($line['error']['message'] ?? json_encode($line)));
+            }
+
+            if ($eventType === 'message_start') {
+                $this->handleMessageStart($line['message']);
+                continue;
+            }
+
+            if ($eventType === 'message_delta') {
+                $this->handleMessageDelta($line);
+                continue;
+            }
+
+            if ($eventType === 'content_block_start') {
+                $this->handleBlockStart($line);
+                continue;
+            }
+
+            if ($eventType === 'content_block_delta') {
+                yield from $this->handleBlockDelta($line);
+            }
+        }
+
+        // message_delta carries the stop reason: without it the stream ended early
+        if ($this->streamState->stopReason() === null) {
+            return $this->earlyEndResponse($stream, $this->streamState->getContentBlocks(), $this->streamState->messageId(), $this->streamState->getUsage());
+        }
+
+        // Build the final message
+        $message = $this->streamState->hasToolCalls()
+            ? $this->createToolCallMessage($this->streamState->getToolCalls(), $this->streamState->getContentBlocks())
+            : new AssistantMessage($this->streamState->getContentBlocks());
+
+        $message->setId($this->streamState->messageId())
+            ->setMetadata($this->streamState->getMetadata())
+            ->setUsage($this->streamState->getUsage())
+            ->addMetadata('cacheWriteTokens', $this->streamState->getCacheWriteTokens())
+            ->addMetadata('cacheReadTokens', $this->streamState->getCacheReadTokens());
+
+        $message->setStopReason($this->streamState->stopReason());
+
+        return new ProviderResponse(message: $message);
+    }
+
+    protected function handleMessageStart(array $message): void
+    {
+        // Capture cache metrics: the total of the cache writes already sums its per-TTL breakdown
+        $cacheCreation = $message['usage']['cache_creation'] ?? [];
+        $cacheWrite = $message['usage']['cache_creation_input_tokens']
+            ?? ($cacheCreation['ephemeral_5m_input_tokens'] ?? 0) + ($cacheCreation['ephemeral_1h_input_tokens'] ?? 0);
+        $cacheRead = $message['usage']['cache_read_input_tokens'] ?? 0;
+
+        // Anthropic reports cache reads and writes apart from `input_tokens`: the whole
+        // prompt adds them back, and the cache-read count is the standard cached metric too.
+        $this->streamState->addInputTokens(($message['usage']['input_tokens'] ?? 0) + $cacheRead + $cacheWrite);
+        $this->streamState->addOutputTokens($message['usage']['output_tokens'] ?? 0);
+        $this->streamState->addCacheWriteTokens($cacheWrite);
+        $this->streamState->addCacheReadTokens($cacheRead);
+        $this->streamState->addCachedInputTokens($cacheRead);
+    }
+
+    protected function handleMessageDelta(array $event): void
+    {
+        // Cumulative: it supersedes the count message_start reported
+        if (isset($event['usage']['output_tokens'])) {
+            $this->streamState->getUsage()->outputTokens = $event['usage']['output_tokens'];
+        }
+        if (isset($event['delta']['stop_reason'])) {
+            $this->streamState->setStopReason($event['delta']['stop_reason']);
+        }
+    }
+
+    protected function handleBlockStart(array $event): void
+    {
+        $index = $event['index'];
+        $type = $event['content_block']['type'] ?? null;
+
+        if ($type === 'text') {
+            $this->streamState->addContentBlock($index, new TextContent(''));
+        } elseif ($type === 'thinking') {
+            $this->streamState->addContentBlock($index, new ReasoningContent(''));
+        } elseif ($type === 'redacted_thinking') {
+            $redactedThinking = $this->streamState->getMetadata('anthropic_redacted_thinking') ?? [];
+            $redactedThinking[$index] = $event['content_block']['data'];
+            $this->streamState->addMetadata('anthropic_redacted_thinking', $redactedThinking);
+        } elseif ($type === 'tool_use') {
+            $toolPositions = $this->streamState->getMetadata('anthropic_tool_positions') ?? [];
+            $toolPositions[] = $index;
+            $this->streamState->addMetadata('anthropic_tool_positions', $toolPositions);
+            $this->streamState->composeToolCalls($event);
+        }
+    }
+
+    protected function handleBlockDelta(array $event): Generator
+    {
+        $index = $event['index'];
+        $delta = $event['delta'];
+
+        if ($delta['type'] === 'text_delta') {
+            $text = $delta['text'];
+            $this->streamState->updateContentBlock($index, $text);
+            yield new TextChunk($this->streamState->messageId(), $text);
+            return;
+        }
+
+        if ($delta['type'] === 'thinking_delta') {
+            $thinking = $delta['thinking'];
+            $this->streamState->updateContentBlock($index, $thinking);
+            if ($thinking !== '') {
+                yield new ReasoningChunk($this->streamState->messageId(), $thinking);
+            }
+            return;
+        }
+
+        if ($delta['type'] === 'signature_delta') {
+            $block = $this->streamState->getContentBlock($index);
+            if ($block instanceof ReasoningContent) {
+                $block->id = $delta['signature'];
+            }
+            return;
+        }
+
+        if ($delta['type'] === 'input_json_delta') {
+            $this->streamState->composeToolCalls($event);
+
+            $partialJson = $delta['partial_json'] ?? '';
+            $toolCall = $this->streamState->getToolCall($index);
+            if ($partialJson !== '' && $toolCall !== null) {
+                yield new ToolArgumentChunk(
+                    $this->streamState->messageId(),
+                    $toolCall['name'],
+                    $partialJson,
+                    $toolCall['id'],
+                );
+            }
+        }
+    }
+}

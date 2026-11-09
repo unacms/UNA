@@ -1,0 +1,53 @@
+{
+    "name": "open-telemetry/api",
+    "description": "API for OpenTelemetry PHP.",
+    "keywords": ["opentelemetry", "otel", "metrics", "tracing", "logging", "apm", "api"],
+    "type": "library",
+    "support": {
+        "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
+        "source": "https://github.com/open-telemetry/opentelemetry-php",
+        "docs": "https://opentelemetry.io/docs/languages/php",
+        "chat": "https://app.slack.com/client/T08PSQ7BQ/C01NFPCV44V"
+    },
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "opentelemetry-php contributors",
+            "homepage": "https://github.com/open-telemetry/opentelemetry-php/graphs/contributors"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "open-telemetry/context": "^1.4",
+        "psr/log": "^1.1|^2.0|^3.0"
+    },
+    "conflict": {
+        "open-telemetry/sdk": "<=1.11",
+        "open-telemetry/sdk-configuration": "<0.10"
+    },
+    "suggest": {
+        "symfony/config": "To implement a ComponentProvider for declarative configuration"
+    },
+    "autoload": {
+        "psr-4": {
+            "OpenTelemetry\\API\\": "."
+        },
+        "files": [
+            "Trace/functions.php"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.11.x-dev"
+        },
+        "spi": {
+            "OpenTelemetry\\API\\Configuration\\Config\\ComponentProvider": [
+                "OpenTelemetry\\API\\Baggage\\Propagation\\Config\\TextMapPropagatorBaggage",
+                "OpenTelemetry\\API\\Trace\\Propagation\\Config\\TextMapPropagatorTraceContext"
+            ],
+            "OpenTelemetry\\API\\Instrumentation\\AutoInstrumentation\\HookManagerInterface": [
+                "OpenTelemetry\\API\\Instrumentation\\AutoInstrumentation\\ExtensionHookManager"
+            ]
+        }
+    }
+}

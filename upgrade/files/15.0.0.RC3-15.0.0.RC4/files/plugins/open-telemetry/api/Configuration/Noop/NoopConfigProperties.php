@@ -1,0 +1,19 @@
+<?php
+
+declare(strict_types=1);
+
+namespace OpenTelemetry\API\Configuration\Noop;
+
+use OpenTelemetry\API\Configuration\ConfigProperties;
+
+/**
+ * @experimental
+ */
+class NoopConfigProperties implements ConfigProperties
+{
+    #[\Override]
+    public function get(string $id): mixed
+    {
+        return null;
+    }
+}

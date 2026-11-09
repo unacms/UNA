@@ -1,0 +1,108 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Providers\Cohere;
+
+use Generator;
+use NeuronAI\Chat\Messages\AssistantMessage;
+use NeuronAI\Chat\Messages\ContentBlocks\ReasoningContent;
+use NeuronAI\Chat\Messages\ContentBlocks\TextContent;
+use NeuronAI\Chat\Messages\Stream\Chunks\ReasoningChunk;
+use NeuronAI\Chat\Messages\Stream\Chunks\TextChunk;
+use NeuronAI\Chat\Messages\Stream\Chunks\ToolArgumentChunk;
+use NeuronAI\Exceptions\ProviderException;
+use NeuronAI\HttpClient\StreamInterface;
+use NeuronAI\Providers\ProviderResponse;
+use NeuronAI\Providers\SSEParser;
+
+use function array_key_exists;
+
+trait HandleStream
+{
+    /**
+     * @throws ProviderException
+     */
+    protected function processStream(StreamInterface $stream): Generator
+    {
+        $this->streamState = new StreamState();
+        $stopReason = null;
+
+        while (! $stream->eof()) {
+            if (!$line = SSEParser::parseNextSSEEvent($stream)) {
+                continue;
+            }
+
+            // Capture usage information, sent by message-end
+            if (!empty($line['delta']['usage'])) {
+                $this->streamState->addInputTokens($line['delta']['usage']['tokens']['input_tokens'] ?? 0);
+                $this->streamState->addOutputTokens($line['delta']['usage']['tokens']['output_tokens'] ?? 0);
+            }
+
+            if ($line['type'] === 'message-end' && isset($line['delta']['finish_reason'])) {
+                $stopReason = $line['delta']['finish_reason'];
+            }
+
+            if ($line['type'] === 'tool-plan-delta') {
+                $this->streamState->composeToolPlan($line['delta']['message']['tool_plan']);
+            }
+
+            // Compile tool calls
+            if ($line['type'] === 'tool-call-start' || $line['type'] === 'tool-call-delta') {
+                $this->streamState->composeToolCalls($line);
+
+                $arguments = $line['delta']['message']['tool_calls']['function']['arguments'] ?? '';
+                $toolCall = $this->streamState->getToolCall($line['index']);
+                if ($arguments !== '' && $toolCall !== null) {
+                    yield new ToolArgumentChunk(
+                        $this->streamState->messageId(),
+                        $toolCall['function']['name'],
+                        $arguments,
+                        $toolCall['id'] ?? null,
+                    );
+                }
+            }
+
+            if ($line['type'] === 'content-delta') {
+                $content = $line['delta']['message']['content'];
+
+                if (array_key_exists('text', $content)) {
+                    $this->streamState->updateContentBlock(
+                        $line['index'],
+                        new TextContent($content['text'])
+                    );
+                    yield new TextChunk($this->streamState->messageId(), $content['text']);
+                } elseif (array_key_exists('thinking', $content)) {
+                    $this->streamState->updateContentBlock(
+                        $line['index'],
+                        new ReasoningContent($content['thinking'])
+                    );
+                    if ($content['thinking'] !== '') {
+                        yield new ReasoningChunk($this->streamState->messageId(), $content['thinking']);
+                    }
+                }
+            }
+        }
+
+        // message-end carries the finish reason: without it the stream ended early
+        if ($stopReason === null) {
+            return $this->earlyEndResponse($stream, $this->streamState->getContentBlocks(), $this->streamState->messageId(), $this->streamState->getUsage());
+        }
+
+        // Built once the stream ends: parallel calls each close with their own tool-call-end
+        $blocks = $this->streamState->getContentBlocks();
+
+        if ($this->streamState->hasToolCalls()) {
+            $blocks[] = new TextContent($this->streamState->getToolPlan());
+            $message = $this->createToolCallMessage($this->streamState->getToolCalls(), $blocks);
+        } else {
+            $message = new AssistantMessage($blocks);
+        }
+
+        $message->setId($this->streamState->messageId())->setUsage($this->streamState->getUsage());
+
+        $message->setStopReason($stopReason);
+
+        return new ProviderResponse(message: $message);
+    }
+}

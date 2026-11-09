@@ -1,0 +1,62 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Tools\Toolkits\FileSystem;
+
+use NeuronAI\Tools\PropertyType;
+use NeuronAI\Tools\ToolOutput;
+use NeuronAI\Tools\ToolProperty;
+
+use function file_get_contents;
+use function is_file;
+use function is_readable;
+use function mb_check_encoding;
+use function mb_strlen;
+
+class ReadFileTool extends FileSystemTool
+{
+    protected string $name = 'read_file';
+    protected ?string $description = 'Read the contents of a text file.';
+
+    protected function properties(): array
+    {
+        return [
+            ToolProperty::make(
+                name: 'file_path',
+                type: PropertyType::STRING,
+                description: 'Path to the file to read.',
+            ),
+        ];
+    }
+
+    public function __invoke(string $file_path): string|ToolOutput
+    {
+        $path = $this->resolve($file_path);
+        if ($path instanceof ToolOutput) {
+            return $path;
+        }
+
+        if (!is_file($path)) {
+            return ToolOutput::error("File '{$file_path}' does not exist.");
+        }
+
+        if (!is_readable($path)) {
+            return ToolOutput::error("File '{$file_path}' is not readable.");
+        }
+
+        $content = file_get_contents($path);
+        if ($content === false) {
+            return ToolOutput::error("Unable to read file '{$file_path}'.");
+        }
+
+        // Invalid UTF-8 in the conversation would make the next provider request impossible to encode
+        if (!mb_check_encoding($content, 'UTF-8')) {
+            return ToolOutput::error("'{$file_path}' is not a UTF-8 text file. Use parse_file for PDF or HTML documents.");
+        }
+
+        $length = mb_strlen($content);
+
+        return $content . "\n\n[File read successfully: {$length} characters]";
+    }
+}

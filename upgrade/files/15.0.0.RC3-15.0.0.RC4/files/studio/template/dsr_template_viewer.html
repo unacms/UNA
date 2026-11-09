@@ -1,0 +1,44 @@
+<div class="adm-dsg-fs-viewer adm-dsg-tmpl-viewer" data-template="__uri__">
+    <div class="adm-dsg-fs-header">
+        <span class="adm-dsg-tmpl-viewer-title">__title__</span>
+        <label class="adm-dsg-fs-width">
+            <span><bx_text:_adm_dsg_txt_tmpl_page /></span>
+            <select class="adm-dsg-tmpl-page" data-other="<bx_text_attribute:_adm_dsg_txt_tmpl_page_other />" onchange="__js_object__.loadTemplatePage(this);">
+<bx_repeat:pages>
+                <option value="__page_url__" __page_selected__>__page_title__</option>
+</bx_repeat:pages>
+            </select>
+        </label>
+        <div class="adm-dsg-fs-viewports" role="group" aria-label="<bx_text_attribute:_adm_dsg_txt_viewport />">
+            <button type="button" class="adm-dsg-fs-vp" aria-pressed="false" data-width="390" onclick="__js_object__.setPreviewViewport(this, 390);"><bx_text:_adm_dsg_txt_viewport_mobile /></button>
+            <button type="button" class="adm-dsg-fs-vp" aria-pressed="false" data-width="768" onclick="__js_object__.setPreviewViewport(this, 768);"><bx_text:_adm_dsg_txt_viewport_tablet /></button>
+            <button type="button" class="adm-dsg-fs-vp" aria-pressed="true" data-width="1280" onclick="__js_object__.setPreviewViewport(this, 1280);"><bx_text:_adm_dsg_txt_viewport_desktop /></button>
+            <button type="button" class="adm-dsg-fs-vp" aria-pressed="false" onclick="__js_object__.setPreviewViewport(this);"><bx_text:_adm_dsg_txt_viewport_custom /></button>
+        </div>
+        <label class="adm-dsg-fs-width">
+            <span><bx_text:_adm_dsg_txt_viewport_width /></span>
+            <input type="number" class="adm-dsg-fs-width-input" min="320" max="3840" step="1" inputmode="numeric" value="1280" onchange="__js_object__.setPreviewViewport(this, this.value);" onkeydown="if(event.key == 'Enter') { event.preventDefault(); __js_object__.setPreviewViewport(this, this.value); }" />
+            <span aria-hidden="true">px</span>
+            <span class="adm-dsg-fs-scale" hidden></span>
+        </label>
+        <div class="adm-dsg-fs-actions">
+            <button type="button" class="bx-btn bx-btn-small" onclick="__js_object__.reloadTemplatePage(this);"><bx_text:_adm_dsg_btn_tmpl_reload /></button>
+            <a class="adm-dsg-tmpl-open" href="__src__" target="_blank" rel="noopener"><bx_text:_adm_dsg_lnk_splash_open /></a>
+            <button type="button" class="bx-btn bx-btn-small adm-dsg-tmpl-fullscreen" aria-haspopup="dialog" onclick="__js_object__.openTemplateFullscreen(this, '__dialog_id__');"><bx_text:_adm_dsg_btn_tmpl_fullscreen /></button>
+            <button type="button" class="bx-btn bx-btn-small bx-btn-primary adm-dsg-tmpl-done" onclick="this.closest('dialog').close();"><bx_text:_adm_dsg_btn_fullscreen_done /></button>
+        </div>
+    </div>
+    <div class="adm-dsg-fs-stage">
+        <div class="adm-dsg-fs-fit">
+            <div class="adm-dsg-fs-viewport">
+                <iframe class="adm-dsg-tmpl-frame" src="__src__" title="<bx_text_attribute:_adm_dsg_txt_tmpl_frame />"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+<dialog id="__dialog_id__" class="adm-dsg-fullscreen" aria-label="<bx_text_attribute:_adm_dsg_txt_tmpl_section_preview />"></dialog>
+<script language="javascript">
+    $(document).ready(function() {
+        __js_object__.initTemplateViewer($('.adm-dsg-tmpl-viewer').get(0));
+    });
+</script>

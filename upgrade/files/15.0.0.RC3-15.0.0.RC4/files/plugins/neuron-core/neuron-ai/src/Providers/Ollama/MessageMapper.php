@@ -1,0 +1,111 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Providers\Ollama;
+
+use NeuronAI\Chat\Enums\MessageRole;
+use NeuronAI\Chat\Enums\SourceType;
+use NeuronAI\Chat\Messages\AssistantMessage;
+use NeuronAI\Chat\Messages\ContentBlocks\ImageContent;
+use NeuronAI\Chat\Messages\ContentBlocks\ReasoningContent;
+use NeuronAI\Chat\Messages\ContentBlocks\TextContent;
+use NeuronAI\Chat\Messages\Message;
+use NeuronAI\Chat\Messages\ToolCallMessage;
+use NeuronAI\Chat\Messages\ToolResultMessage;
+use NeuronAI\Chat\Messages\UserMessage;
+use NeuronAI\Exceptions\ProviderException;
+use NeuronAI\Providers\MessageMapperInterface;
+use NeuronAI\Tools\ToolCall;
+use NeuronAI\Tools\ToolOutput;
+use stdClass;
+
+use function array_map;
+
+class MessageMapper implements MessageMapperInterface
+{
+    protected array $mapping = [];
+
+    /**
+     * @throws ProviderException
+     */
+    public function map(array $messages): array
+    {
+        $this->mapping = [];
+
+        foreach ($messages as $message) {
+            match ($message::class) {
+                Message::class,
+                UserMessage::class,
+                AssistantMessage::class => $this->mapMessage($message),
+                ToolCallMessage::class => $this->mapToolCall($message),
+                ToolResultMessage::class => $this->mapToolsResult($message),
+                default => throw new ProviderException('Could not map message type '.$message::class),
+            };
+        }
+
+        return $this->mapping;
+    }
+
+    public function mapMessage(Message $message): void
+    {
+        $contentBlocks = $message->getContentBlocks();
+        $textContent = '';
+        $images = [];
+
+        foreach ($contentBlocks as $block) {
+            // Earlier reasoning stays out of the history: Ollama messages have no input field for it
+            if ($block instanceof ReasoningContent) {
+                continue;
+            }
+
+            if ($block instanceof TextContent) {
+                $textContent .= $block->content;
+            } elseif ($block instanceof ImageContent) {
+                if ($block->sourceType === SourceType::URL) {
+                    throw new ProviderException('Ollama supports only base64 image type.');
+                }
+                $images[] = $block->content;
+            }
+        }
+
+        $payload = [
+            'role' => $message->getRole(),
+            'content' => $textContent,
+        ];
+
+        if ($images !== []) {
+            $payload['images'] = $images;
+        }
+
+        $this->mapping[] = $payload;
+    }
+
+    protected function mapToolCall(ToolCallMessage $message): void
+    {
+        $this->mapping[] = [
+            'role' => $message->getRole(),
+            'content' => $message->getContent() ?? '',
+            'tool_calls' => array_map(fn (ToolCall $call): array => [
+                'function' => [
+                    'name' => $call->getName(),
+                    // Arguments are a JSON object, even when there are none
+                    'arguments' => $call->getInputs() === [] ? new stdClass() : $call->getInputs(),
+                ],
+            ], $message->getToolCalls()),
+        ];
+    }
+
+    public function mapToolsResult(ToolResultMessage $message): void
+    {
+        foreach ($message->getToolCalls() as $tool) {
+            $this->mapping[] = [
+                'role' => MessageRole::TOOL->value,
+                // Ollama's API is text-only for tool results.
+                'content' => ($result = $tool->getResult()) instanceof ToolOutput
+                    ? $result->getText()
+                    : $result,
+            ];
+        }
+    }
+}

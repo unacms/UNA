@@ -1,0 +1,513 @@
+
+:root {
+  --fc-sticky-header-footer-z: 3;
+  --fc-popover-z: 4;
+}
+
+.fc-5T {
+  z-index: var(--fc-popover-z) !important;
+}
+
+.fc-CJ {
+  isolation: isolate;
+}
+
+/*
+This will prevent all ancestors from customizing their box size unless they use .contentBox
+*/
+.fc-Qg,
+.fc-Qg *,
+.fc-Qg *:before,
+.fc-Qg *:after {
+  box-sizing: border-box !important;
+}
+
+/* classes attached to <body> */
+.fc-5r,
+.fc-5r * {
+  cursor: not-allowed !important;
+}
+
+.fc-Ee {
+  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none !important; /* Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.fc-Ee::-webkit-scrollbar {
+  display: none !important;
+}
+
+.fc-FR {
+  flex-shrink: 0 !important;
+}
+
+.fc-kt .fc-lI {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+}
+
+/* HACK for Safari. Can't do break-inside:avoid with flexbox items, likely b/c it's not standard:
+   https://stackoverflow.com/a/60256345 */
+.fc-DW .fc-lI > * {
+  float: left !important;
+}
+
+[dir=rtl] .fc-DW .fc-lI > *,
+.fc-DW[dir=rtl] .fc-lI > * {
+  float: right !important;
+}
+
+.fc-DW .fc-lI::after {
+  content: "" !important;
+  display: block !important;
+  clear: both !important;
+}
+
+.fc-2a {
+  cursor: pointer !important;
+}
+
+.fc-lW {
+  cursor: n-resize !important;
+}
+
+.fc-x7 {
+  cursor: s-resize !important;
+}
+
+.fc-up {
+  cursor: w-resize !important;
+}
+
+[dir=rtl] .fc-up {
+  cursor: e-resize !important;
+}
+
+.fc-8l {
+  cursor: e-resize !important;
+}
+
+[dir=rtl] .fc-8l {
+  cursor: w-resize !important;
+}
+
+.fc-Xb {
+  cursor: col-resize !important;
+}
+
+.fc-wI,
+.fc-7K,
+.fc-hT {
+  position: absolute !important;
+  box-sizing: content-box !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.fc-wI {
+  padding: 10px !important;
+  margin: -10px !important;
+}
+
+.fc-7K {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  margin-left: -10px !important;
+  margin-right: -10px !important;
+}
+
+.fc-hT {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  margin-top: -10px !important;
+  margin-bottom: -10px !important;
+}
+
+/* QUESTION: why not use -left -right instead of negative margins/padding for ALL? */
+.fc-kd {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -5px;
+  right: -5px;
+}
+
+.fc-rm {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
+.fc-gv {
+  visibility: hidden;
+}
+
+/* Border Utils */
+/* ------------------------------------------------------------------------------------------------- */
+
+.fc-NQ {
+  border: 0 !important;
+}
+
+.fc-VY {
+  border-left: 0 !important;
+  border-right: 0 !important;
+}
+
+.fc-6M {
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+}
+
+.fc-jS {
+  border-top: 0 !important;
+}
+
+.fc-Z5 {
+  border-bottom: 0 !important;
+}
+
+.fc-xm {
+  border-inline-start: 0 !important;
+}
+
+.fc-HA {
+  border-inline-end: 0 !important;
+}
+
+/* Flexbox Utils */
+/* ------------------------------------------------------------------------------------------------- */
+
+.fc-uT {
+  display: flex !important;
+  flex-direction: row !important;
+}
+
+.fc-5N {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.fc-pI {
+  flex-grow: 1 !important;
+}
+
+.fc-I4 {
+  flex-grow: 1 !important;
+  flex-basis: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+}
+
+.fc-fy {
+  min-height: 0 !important;
+}
+
+/*
+TODO: use liquidX/Y elsewhere because frees up min other dimension; less collisions
+*/
+.fc-h7 {
+  flex-grow: 1 !important;
+  flex-basis: 0 !important;
+  min-width: 0 !important;
+}
+
+/* Semantic Print Table */
+/* ------------------------------------------------------------------------------------------------- */
+
+.fc-5w {
+  width: 100% !important;
+  table-layout: fixed !important;
+  border: 0 !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+.fc-5w > thead {
+  /* Both properties are needed for cross-browser repeated headers across printed pages. */
+  -moz-column-break-inside: avoid !important;
+       break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
+
+.fc-5w > tbody {
+  /* Timeline print-layout hack (resource and non-resource): lets shared absolute backgrounds show through. */
+  background: transparent !important;
+}
+
+.fc-5w > thead > tr > th,
+.fc-5w > tbody > tr > th,
+.fc-5w > tbody > tr > td {
+  vertical-align: top !important;
+  font-weight: inherit;
+  text-align: inherit;
+}
+
+/* Table Utils */
+/* ------------------------------------------------------------------------------------------------- */
+
+.fc-Gm {
+  padding: 0 !important;
+}
+
+.fc-qW {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.fc-K4 {
+  margin: 0 !important;
+}
+
+.fc-ZN {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.fc-Qo {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.fc-mO {
+  white-space: nowrap !important;
+}
+
+.fc-ZC {
+  white-space: pre !important;
+}
+
+/* Misc Utils */
+/* ------------------------------------------------------------------------------------------------- */
+
+.fc-vq {
+  overflow-anchor: none;
+}
+
+.fc-OS {
+  pointer-events: none !important;
+}
+
+.fc-Tq {
+  overflow: hidden !important;
+}
+
+/*
+TODO: eventually use this on daygrid/timegrid events' inner, time, and title, FOR PRINT
+Needed to prevent wrapping to multiple lines, increasing height, throwing off print-positioning,
+which can't rely on dynamic height detection after print-flag activated.
+*/
+.fc-zy {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+
+.fc-Yq {
+  position: relative !important;
+}
+
+.fc-Jy {
+  position: absolute !important;
+}
+
+.fc-Sd {
+  inset-inline-start: 0 !important;
+}
+
+.fc-B2 {
+  inset-inline-end: 0 !important;
+}
+
+.fc-Kg {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+}
+
+.fc-Dv,
+.fc-he {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+.fc-kA,
+.fc-eP {
+  position: absolute !important;
+  top: 0 !important;
+  bottom: 0 !important;
+}
+
+.fc-Dv {
+  top: 0 !important;
+}
+
+.fc-eP {
+  left: 0 !important;
+  right: 0 !important;
+  width: 0 !important;
+}
+
+@media not print {
+  .fc-G5 {
+    position: sticky !important;
+  }
+
+  .fc-WE {
+    position: sticky !important;
+    top: 0 !important;
+  }
+
+  /* Sticks to either left or right (the flex "start") depending on ltr/rtl */
+  .fc-z6 {
+    position: sticky !important;
+    inset-inline-start: 0 !important;
+  }
+
+  .fc-ca {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: var(--fc-sticky-header-footer-z) !important;
+  }
+}
+
+/* Only needed when padding/border must be separate from width/height */
+.fc-ck {
+  box-sizing: content-box !important;
+}
+
+/* Out of view but keeps its real size, for measurement probes. For screen-reader text, use .srOnly.
+Hidden also means not focusable, clickable, or read by screen readers */
+.fc-Sc {
+  position: absolute !important;
+  left: -10000px !important;
+  visibility: hidden !important;
+}
+
+/* Visually hidden but read by screen readers. Unlike .offscreen, never causes scroll overflow */
+.fc-ad {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+}
+
+.fc-pr {
+  align-items: center !important;
+}
+
+.fc-2c {
+  align-items: flex-start !important;
+}
+
+.fc-uD {
+  align-items: flex-end !important;
+}
+
+/* Footer Scrollbar */
+/* ------------------------------------------------------------------------------------------------- */
+
+.fc-Cq {
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: var(--fc-sticky-header-footer-z) !important;
+}
+
+.fc-mv > * {
+  margin-top: -1px !important;
+}
+
+.fc-mv > * > * {
+  height: 1px !important;
+}
+
+/* Print Utils */
+/* ------------------------------------------------------------------------------------------------- */
+
+.fc-Ia {
+  -moz-column-break-inside: avoid !important;
+       break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
+
+.fc-5U {
+  min-height: 4em !important;
+}
+
+.fc-mg {
+  display: flow-root !important;
+}
+
+/* Z-index */
+/* ------------------------------------------------------------------------------------------------- */
+
+.fc-s1 {
+  z-index: 0;
+}
+
+.fc-2P {
+  z-index: 1;
+}
+
+.fc-BT {
+  z-index: 2;
+}
+
+.fc-LA {
+  z-index: 3;
+}
+
+.fc-BL {
+  z-index: 4;
+}
+
+.fc-46 {
+  z-index: 5;
+}
+
+.fc-4i {
+  z-index: 1000;
+}
+
+.fc-Dd {
+  z-index: 9999;
+}
+
+.fc-6W:focus-visible {
+  z-index: 2;
+}
+
+/* INTERNAL MARKER -- used to mark an element for internal significance */
+/* ------------------------------------------------------------------------------------------------- */
+
+.fc-HP {}
+
+.fc-Nv {}
+.fc-8X {}
+.fc-uj {}
+.fc-RS {}
+.fc-JU {}
+.fc-aj {}
+.fc-lA {}
+.fc-Dy {}
+
+.fc-qp {}
+
+.fc-EH {}
+
+.fc-UW {}
+
+.fc-d0 {}
+
+.fc-ds {}
+
+.fc-oa {}

@@ -1,0 +1,48 @@
+<svg class="icon v-profiler-record-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- glyph: clipboard-clock, lucide-static v1.47.0, ISC -->
+<style>
+.v-profiler-record-v1 .bx-ai-mh{transform-box:view-box;transform-origin:42.3px 44.82px}
+.v-profiler-record-v1 .bx-ai-sh.bx-ai-mh{transform-origin:42.3px 45.82px}
+.v-profiler-record-v1 .bx-ai-span{transform-box:fill-box;transform-origin:0 50%}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-profiler-record-v1 [class]{animation:var(--a) 1600ms linear both;animation-delay:var(--d,0ms)}
+.v-profiler-record-v1 [class]{--a:none}
+.v-profiler-record-v1 :is(.bx-ai-mh,.bx-ai-sh.bx-ai-mh){--a:pr0}
+@keyframes pr0{0%{transform:rotate(0deg);animation-timing-function:steps(1,end)}12.5%{transform:rotate(30deg);animation-timing-function:steps(1,end)}18.75%{transform:rotate(60deg);animation-timing-function:steps(1,end)}25%{transform:rotate(90deg);animation-timing-function:steps(1,end)}31.25%{transform:rotate(120deg);animation-timing-function:steps(1,end)}37.5%{transform:rotate(150deg);animation-timing-function:steps(1,end)}43.75%{transform:rotate(180deg);animation-timing-function:steps(1,end)}50%{transform:rotate(210deg);animation-timing-function:steps(1,end)}56.25%{transform:rotate(240deg);animation-timing-function:steps(1,end)}62.5%{transform:rotate(270deg);animation-timing-function:steps(1,end)}68.75%{transform:rotate(300deg);animation-timing-function:steps(1,end)}75%{transform:rotate(330deg);animation-timing-function:steps(1,end)}81.25%{transform:rotate(360deg);animation-timing-function:steps(1,end)}99.94%{transform:rotate(360deg)}100%{transform:rotate(0deg)}}
+.v-profiler-record-v1 .bx-ai-span{--a:pr1}
+@keyframes pr1{0%{transform:scaleX(0);animation-timing-function:cubic-bezier(.2,.7,.3,1)}13.75%{transform:scaleX(1)}100%{transform:scaleX(1)}}
+.v-profiler-record-v1 .bx-ai-hot{--a:pr2}
+@keyframes pr2{0%{opacity:0}2.5%{opacity:0;animation-timing-function:ease-out}5%{opacity:0.75;animation-timing-function:ease-in}28.75%{opacity:0}40%{opacity:0;animation-timing-function:ease-out}42.5%{opacity:0.75;animation-timing-function:ease-in}66.25%{opacity:0}81.25%{opacity:0;animation-timing-function:ease-out}83.75%{opacity:0.95;animation-timing-function:ease-in}98.75%{opacity:0}100%{opacity:0}}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-profiler-record-v1 .bx-ai-qv.bx-ai-qv{animation:q-profiler-record-v1 1600ms linear both}
+@keyframes q-profiler-record-v1{0%{opacity:1;animation-timing-function:ease-out}8.75%{opacity:0}77.5%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.v-profiler-record-v1 *{animation:none!important}}
+</style>
+<rect width="72" height="72" fill="url(#bg-profiler-record-v1)"/>
+<path d="M12 0V72M24 0V72M36 0V72M48 0V72M60 0V72" stroke="white" stroke-width=".5" stroke-dasharray="1 2" opacity="0.1"/><g fill="white" opacity="0.1"><rect class="bx-ai-span" style="--d:0ms" x="4" y="5" width="14" height="2.2" rx="1.1"/><rect class="bx-ai-span" style="--d:60ms" x="8" y="10.6" width="22" height="2.2" rx="1.1"/><rect class="bx-ai-span" style="--d:120ms" x="10" y="16.2" width="9" height="2.2" rx="1.1"/><rect class="bx-ai-span" style="--d:180ms" x="18" y="21.8" width="26" height="2.2" rx="1.1"/><rect class="bx-ai-span" style="--d:240ms" x="22" y="27.4" width="12" height="2.2" rx="1.1"/><rect class="bx-ai-span" style="--d:300ms" x="28" y="33" width="30" height="2.2" rx="1.1"/><rect class="bx-ai-span" style="--d:360ms" x="30" y="38.6" width="10" height="2.2" rx="1.1"/><rect class="bx-ai-span" style="--d:420ms" x="36" y="44.2" width="22" height="2.2" rx="1.1"/><rect class="bx-ai-span" style="--d:480ms" x="40" y="49.8" width="16" height="2.2" rx="1.1"/><rect class="bx-ai-span" style="--d:540ms" x="46" y="55.4" width="20" height="2.2" rx="1.1"/><rect class="bx-ai-span" style="--d:600ms" x="50" y="61" width="12" height="2.2" rx="1.1"/><rect class="bx-ai-span" style="--d:660ms" x="54" y="66.6" width="14" height="2.2" rx="1.1"/></g><rect width="72" height="72" fill="url(#bg-profiler-record-v1)" class="bx-ai-qv" mask="url(#quiet-profiler-record-v1)"/>
+<rect width="72" height="72" fill="url(#body-profiler-record-v1)" opacity="0.8" mask="url(#board-profiler-record-v1)"/>
+<g stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M42.3 19.2H46.5A4.2 4.2 0 0 1 50.7 23.4V25.147M25.5 19.2H21.3A4.2 4.2 0 0 0 17.1 23.4V52.8A4.2 4.2 0 0 0 21.3 57H25.5" stroke="white"/><rect x="25.5" y="15" width="16.8" height="8.4" rx="2.1" stroke="white"/>
+<circle cx="42.3" cy="44.4" r="12.6" fill="url(#red-profiler-record-v1)" fill-opacity="0.8"/><circle class="bx-ai-hot" cx="42.3" cy="44.4" r="12.6" fill="url(#flare-profiler-record-v1)" opacity="0"/><circle cx="42.3" cy="44.4" r="12.6" stroke="white"/><path class="bx-ai-mh" d="M42.3 40.2V44.82" stroke="white"/><path d="M42.3 44.82L45.66 46.92" stroke="white"/>
+<g mask="url(#lit-profiler-record-v1)" stroke="black"><path d="M42.3 20.2H46.5A4.2 4.2 0 0 1 50.7 24.4V26.147M25.5 20.2H21.3A4.2 4.2 0 0 0 17.1 24.4V53.8A4.2 4.2 0 0 0 21.3 58H25.5"/><rect x="25.5" y="16" width="16.8" height="8.4" rx="2.1"/><circle cx="42.3" cy="45.4" r="12.6"/><path class="bx-ai-sh bx-ai-mh" d="M42.3 41.2V45.82"/><path d="M42.3 45.82L45.66 47.92"/></g>
+</g>
+<defs>
+<linearGradient id="bg-profiler-record-v1" x1="0" y1="0" x2="0" y2="1">
+<stop stop-color="#71717A"/>
+<stop offset="1" stop-color="#3F3F46"/>
+</linearGradient>
+<linearGradient id="red-profiler-record-v1" x1="0" y1="0" x2="0" y2="1">
+<stop stop-color="#F43F5E"/>
+<stop offset="1" stop-color="#BE123C"/>
+</linearGradient>
+<radialGradient id="flare-profiler-record-v1"><stop stop-color="#FFD1D9"/><stop offset="1" stop-color="#FB5A6E"/></radialGradient>
+<linearGradient id="body-profiler-record-v1" x1="36" y1="15" x2="36" y2="57" gradientUnits="userSpaceOnUse">
+<stop stop-color="#52525B"/>
+<stop offset="1" stop-color="#27272A"/>
+</linearGradient>
+<linearGradient id="light-profiler-record-v1" x1="36" y1="16" x2="36" y2="58" gradientUnits="userSpaceOnUse">
+<stop stop-color="white" stop-opacity="0.1"/>
+<stop stop-color="white" offset="1" stop-opacity="0.2"/>
+</linearGradient>
+<mask id="board-profiler-record-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect x="17.1" y="19.2" width="33.6" height="37.8" rx="4.2" fill="white"/><circle cx="42.3" cy="44.4" r="19" fill="black"/><rect x="25.5" y="15" width="16.8" height="8.4" rx="2.1" fill="white"/></mask>
+<mask id="lit-profiler-record-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-profiler-record-v1)"/></mask>
+<radialGradient id="quietv-profiler-record-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-profiler-record-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-profiler-record-v1)"/></mask></defs>
+</svg>

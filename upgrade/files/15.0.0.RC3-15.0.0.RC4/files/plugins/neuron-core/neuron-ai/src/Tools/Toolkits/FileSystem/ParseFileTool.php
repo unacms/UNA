@@ -1,0 +1,83 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Tools\Toolkits\FileSystem;
+
+use NeuronAI\Tools\PropertyType;
+use NeuronAI\Tools\ToolOutput;
+use NeuronAI\Tools\ToolProperty;
+use NeuronAI\RAG\DataLoader\HtmlReader;
+use NeuronAI\RAG\DataLoader\PdfReader;
+use Exception;
+
+use function is_file;
+use function is_readable;
+use function mb_strlen;
+use function pathinfo;
+use function strtolower;
+
+use const PATHINFO_EXTENSION;
+
+class ParseFileTool extends FileSystemTool
+{
+    protected string $name = 'parse_file';
+    protected ?string $description = 'Parse and return the complete text content of a document file. Use it instead of read_file for documents. Supported formats: PDF, HTML.';
+
+    protected function properties(): array
+    {
+        return [
+            ToolProperty::make(
+                name: 'file_path',
+                type: PropertyType::STRING,
+                description: 'Path to the document file.',
+            ),
+        ];
+    }
+
+    public function __invoke(string $file_path): string|ToolOutput
+    {
+        $path = $this->resolve($file_path);
+        if ($path instanceof ToolOutput) {
+            return $path;
+        }
+
+        if (!is_file($path)) {
+            return ToolOutput::error("File '{$file_path}' does not exist.");
+        }
+
+        if (!is_readable($path)) {
+            return ToolOutput::error("File '{$file_path}' is not readable.");
+        }
+
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+
+        return match ($extension) {
+            'pdf' => $this->parsePdf($path),
+            'htm', 'html' => $this->parseHtml($path),
+            default => ToolOutput::error("Unsupported file format '{$extension}'. Supported formats: PDF, HTML. If the file is already in plain text you can access its content directly with other dedicated tools."),
+        };
+    }
+
+    private function parsePdf(string $file_path): string|ToolOutput
+    {
+        try {
+            $content = (new PdfReader())->read($file_path);
+            $length = mb_strlen($content);
+            return $content . "\n\n[PDF parsed successfully: {$length} characters]";
+        } catch (Exception $e) {
+            return ToolOutput::error("Unable to parse PDF file '{$file_path}'. {$e->getMessage()}");
+        }
+    }
+
+    private function parseHtml(string $file_path): string|ToolOutput
+    {
+        try {
+            $content = (new HtmlReader())->read($file_path);
+            $length = mb_strlen($content);
+            return $content . "\n\n[HTML parsed successfully: {$length} characters]";
+        } catch (Exception $e) {
+            return ToolOutput::error("Unable to parse HTML file '{$file_path}'. {$e->getMessage()}");
+        }
+    }
+}

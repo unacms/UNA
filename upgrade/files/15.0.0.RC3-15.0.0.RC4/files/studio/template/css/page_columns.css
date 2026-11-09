@@ -1,0 +1,221 @@
+/*--- 2 columns ---*/
+.bx-std-pc-stretch {
+    position: relative;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: stretch;
+    align-items: stretch;
+    box-sizing: border-box;
+}
+
+.bx-std-pc-vstretch {
+    width: 100%
+}
+
+div.bx-std-page-columns-cnt {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+
+    padding: 5.75rem 0.75rem 0.75rem 0.75rem; /* top: the header wrapper's height, so the content starts 12px under the bar; 12px sides and bottom, like the header's margins */
+}
+
+/*--- Page Menu ---*/
+.bx-std-page-column.bx-std-page-menu {
+    position: relative;
+    -webkit-flex: 0 0 20rem;
+    flex: 0 0 20rem;
+    border-radius: 1.5rem; /* 24px, like the blocks and the header bar */
+
+    width: 20rem;
+    height: 100%;
+
+    backdrop-filter: blur(40px);
+
+    overflow-y: auto;
+
+    container: bx-std-pmen / inline-size; /* the items switch to the tablet strip by the column's width (general.css), whether a breakpoint or the toggle narrows it */
+}
+@media (prefers-reduced-motion: no-preference) {
+    .bx-std-page-column.bx-std-page-menu {
+        -webkit-transition: flex-basis 0.2s ease, width 0.2s ease;
+        transition: flex-basis 0.2s ease, width 0.2s ease;
+    }
+}
+.bx-std-page-column.bx-std-page-menu::-webkit-scrollbar {
+  display: none;
+}
+.bx-std-page-column.bx-std-page-menu div.bx-std-page-column-cnt {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+}
+
+/*
+ * Page menu toggle (wide screens only): the 12px gap between the columns is a button that narrows the menu to the tablet strip and back.
+ * Its bar shows while the gap is hovered or focused; the hit area spreads 6px into the menu's inset and the content's edge (24px).
+ */
+.bx-std-page-menu-toggle {
+    display: none;
+}
+@media (min-width: 1024px) {
+    .bx-std-page-menu-toggle {
+        position: relative;
+        z-index: 1;
+        display: block;
+        -webkit-flex: 0 0 0.75rem;
+        flex: 0 0 0.75rem;
+
+        width: 0.75rem;
+        margin: 0;
+        padding: 0;
+
+        border: 0;
+        background: transparent;
+        outline: none;
+        cursor: pointer;
+    }
+    .bx-std-page-menu-toggle::before {
+        content: '';
+        position: absolute;
+        inset: 0 -0.375rem;
+    }
+    .bx-std-page-menu-toggle::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        width: 0.25rem;
+        height: 8rem;
+
+        border-radius: 9999px;
+        background-color: rgba(0, 0, 0, 0.45); /* 3:1 on the page background */
+        opacity: 0;
+
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        -webkit-transition: opacity 0.15s ease, background-color 0.15s ease;
+        transition: opacity 0.15s ease, background-color 0.15s ease;
+    }
+    .dark .bx-std-page-menu-toggle::after {
+        background-color: rgba(255, 255, 255, 0.45);
+    }
+    .bx-std-page-menu-toggle:hover::after,
+    .bx-std-page-menu-toggle:focus-visible::after {
+        opacity: 1;
+    }
+    .bx-std-page-menu-toggle:active::after {
+        background-color: rgba(0, 0, 0, 0.6);
+    }
+    .dark .bx-std-page-menu-toggle:active::after {
+        background-color: rgba(255, 255, 255, 0.6);
+    }
+    .bx-std-page-menu-toggle:focus-visible::after {
+        background-color: #3b82f6; /* blue-500, the Studio focus ring */
+    }
+    .dark .bx-std-page-menu-toggle:focus-visible::after {
+        background-color: #60a5fa; /* blue-400 */
+    }
+    html.bx-std-pmen-narrow .bx-std-pmt-collapse,
+    html:not(.bx-std-pmen-narrow) .bx-std-pmt-expand {
+        display: none;
+    }
+
+    /* the toggle is the gap now */
+    .bx-std-page-menu-toggle + .bx-std-page-column.bx-std-page-content div.bx-std-page-column-cnt {
+        padding-left: 0;
+    }
+
+    html.bx-std-pmen-narrow .bx-std-page-column.bx-std-page-menu {
+        -webkit-flex: 0 0 6.5rem;
+        flex: 0 0 6.5rem;
+
+        width: 6.5rem; /* the tablet strip */
+    }
+}
+
+/*--- Page Content ---*/
+.bx-std-page-column.bx-std-page-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    -webkit-flex-grow: 2;
+    flex-grow: 2;
+    min-width: 0;
+
+    height: 100%;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.bx-std-page-column.bx-std-page-content::-webkit-scrollbar {
+  display: none;
+}
+.bx-std-page-column.bx-std-page-content div.bx-std-page-column-cnt {
+    flex: 1 1 auto;
+    /* min-height: 0; */
+    width: 100%;
+    padding: 1px 0 1px 0.75rem; /* 12px from the sidebar column; 1px of room for the blocks' hairline ring inside the scroll box */
+}
+/*
+ * A page with a single block: the block takes the remaining height, its caption and bottom panel stay put
+ * and only its content scrolls. The column itself no longer clips the block's ring and shadow.
+ */
+.bx-std-page-column.bx-std-page-content:has(> .bx-std-page-column-cnt > div.bx-std-block:only-of-type) {
+    overflow: visible;
+}
+.bx-std-page-column.bx-std-page-content div.bx-std-page-column-cnt > div.bx-std-block:only-of-type {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+/* Nothing scrolls around a single block, so it doesn't need the 1px ring room: its top and bottom line up with the sidebar. */
+.bx-std-page-column.bx-std-page-content:has(> .bx-std-page-column-cnt > div.bx-std-block:only-of-type) div.bx-std-page-column-cnt {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/*
+ * Narrow screens. Below 1024px the sidebar collapses to a strip of icon tiles with small labels under them (as the toggle does on
+ * wider screens); below 768px it becomes a horizontal row of tabs above the content. Item styles are in general.css.
+ */
+@media (max-width: 1023px) {
+    .bx-std-page-column.bx-std-page-menu {
+        -webkit-flex: 0 0 6.5rem;
+        flex: 0 0 6.5rem;
+
+        width: 6.5rem; /* 88px items (80px of label room, enough for a semibold "Notifications") + the column's 8px inset */
+    }
+}
+@media (max-width: 767px) {
+    div.bx-std-page-columns-cnt {
+        -webkit-flex-direction: column;
+        flex-direction: column;
+    }
+    .bx-std-page-column.bx-std-page-menu {
+        -webkit-flex: 0 0 auto;
+        flex: 0 0 auto;
+
+        width: auto;
+        height: auto;
+        margin-bottom: 0.75rem; /* the same 12px gap as between the columns on wider screens */
+
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+    .bx-std-page-column.bx-std-page-menu div.bx-std-page-column-cnt {
+        position: static;
+    }
+    .bx-std-page-column.bx-std-page-content {
+        -webkit-flex: 1 1 auto;
+        flex: 1 1 auto;
+        min-height: 0;
+
+        height: auto;
+    }
+    .bx-std-page-column.bx-std-page-content div.bx-std-page-column-cnt {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}

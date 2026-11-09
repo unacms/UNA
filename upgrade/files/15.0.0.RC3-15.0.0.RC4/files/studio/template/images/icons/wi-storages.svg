@@ -1,0 +1,45 @@
+<svg class="icon v-storage-rack-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- glyph: server, lucide-static v1.47.0, ISC -->
+<style>
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-storage-rack-v1 [class]{animation:var(--a) 1500ms linear both;animation-delay:var(--d,0ms)}
+.v-storage-rack-v1 [class]{--a:none}
+.v-storage-rack-v1 :is(.bx-ai-u0,.bx-ai-sh.bx-ai-u0){--a:sr0}
+@keyframes sr0{0%{transform:translateX(0px)}5.33%{transform:translateX(0px);animation-timing-function:cubic-bezier(.3,0,.2,1)}21.33%{transform:translateX(8px);animation-timing-function:ease-in-out}28%{transform:translateX(8px);animation-timing-function:cubic-bezier(.55,0,.85,.4)}46.67%{transform:translateX(-0.8px);animation-timing-function:ease-out}54.67%{transform:translateX(0px)}100%{transform:translateX(0px)}}
+.v-storage-rack-v1 .bx-ai-led0{--a:sr1}
+@keyframes sr1{0%{opacity:0;animation-timing-function:steps(1,end)}56%{opacity:1;animation-timing-function:steps(1,end)}62%{opacity:0;animation-timing-function:steps(1,end)}68%{opacity:1;animation-timing-function:steps(1,end)}74%{opacity:0;animation-timing-function:steps(1,end)}76.67%{opacity:1;animation-timing-function:steps(1,end)}82.67%{opacity:0;animation-timing-function:steps(1,end)}100%{opacity:0}}
+.v-storage-rack-v1 :is(.bx-ai-u1,.bx-ai-sh.bx-ai-u1){--a:sr2}
+@keyframes sr2{0%{transform:translateX(0px)}9.33%{transform:translateX(0px);animation-timing-function:cubic-bezier(.3,0,.2,1)}25.33%{transform:translateX(-8px);animation-timing-function:ease-in-out}32%{transform:translateX(-8px);animation-timing-function:cubic-bezier(.55,0,.85,.4)}50.67%{transform:translateX(0.8px);animation-timing-function:ease-out}58.67%{transform:translateX(0px)}100%{transform:translateX(0px)}}
+.v-storage-rack-v1 .bx-ai-led1{--a:sr3}
+@keyframes sr3{0%{opacity:0;animation-timing-function:steps(1,end)}60%{opacity:1;animation-timing-function:steps(1,end)}66%{opacity:0;animation-timing-function:steps(1,end)}72%{opacity:1;animation-timing-function:steps(1,end)}78%{opacity:0;animation-timing-function:steps(1,end)}80.67%{opacity:1;animation-timing-function:steps(1,end)}86.67%{opacity:0;animation-timing-function:steps(1,end)}100%{opacity:0}}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-storage-rack-v1 .bx-ai-qv.bx-ai-qv{animation:q-storage-rack-v1 1500ms linear both}
+@keyframes q-storage-rack-v1{0%{opacity:1;animation-timing-function:ease-out}9.333%{opacity:0}76%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.v-storage-rack-v1 *{animation:none!important}}
+</style>
+<rect width="72" height="72" fill="url(#bg-storage-rack-v1)"/>
+<g fill="white" opacity="0.1"><rect x="3" width="4" height="72"/><rect x="65" width="4" height="72"/></g><rect width="72" height="72" fill="url(#holes-storage-rack-v1)" opacity="0.5"/><path d="M9 12H63M9 36H63M9 60H63" stroke="white" stroke-width=".5" stroke-dasharray="1 2" opacity="0.2"/><rect width="72" height="72" fill="url(#bg-storage-rack-v1)" class="bx-ai-qv" mask="url(#quiet-storage-rack-v1)"/>
+<rect width="72" height="72" fill="url(#inside-storage-rack-v1)" opacity="0.8" mask="url(#units-storage-rack-v1)"/>
+<g class="bx-ai-led0" opacity="0"><circle cx="29.4" cy="23.4" r="3.2" fill="url(#ledglow-storage-rack-v1)"/><circle cx="29.4" cy="23.4" r="1.5" fill="#FB7185"/></g><g class="bx-ai-led1" opacity="0"><circle cx="29.4" cy="48.6" r="3.2" fill="url(#ledglow-storage-rack-v1)"/><circle cx="29.4" cy="48.6" r="1.5" fill="#FB7185"/></g>
+<g stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+<use class="bx-ai-u0" href="#n0-storage-rack-v1" stroke="white"/><use class="bx-ai-u1" href="#n1-storage-rack-v1" stroke="white"/>
+<g mask="url(#lit-storage-rack-v1)" stroke="black"><use class="bx-ai-sh bx-ai-u0" href="#n0-storage-rack-v1" y="1"/><use class="bx-ai-sh bx-ai-u1" href="#n1-storage-rack-v1" y="1"/></g>
+</g>
+<defs>
+<linearGradient id="bg-storage-rack-v1" x1="0" y1="0" x2="0" y2="1">
+<stop stop-color="#71717A"/>
+<stop offset="1" stop-color="#3F3F46"/>
+</linearGradient>
+<linearGradient id="inside-storage-rack-v1" x1="36" y1="15" x2="36" y2="57" gradientUnits="userSpaceOnUse">
+<stop stop-color="#52525B"/>
+<stop offset="1" stop-color="#27272A"/>
+</linearGradient>
+<linearGradient id="light-storage-rack-v1" x1="36" y1="16" x2="36" y2="58" gradientUnits="userSpaceOnUse">
+<stop stop-color="white" stop-opacity="0.1"/>
+<stop stop-color="white" offset="1" stop-opacity="0.2"/>
+</linearGradient>
+<mask id="lit-storage-rack-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-storage-rack-v1)"/></mask>
+<mask id="units-storage-rack-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><g fill="white"><path class="bx-ai-u0" d="M19.2 15H52.8A4.2 4.2 0 0 1 57 19.2V27.6A4.2 4.2 0 0 1 52.8 31.8H19.2A4.2 4.2 0 0 1 15 27.6V19.2A4.2 4.2 0 0 1 19.2 15Z"/><path class="bx-ai-u1" d="M19.2 40.2H52.8A4.2 4.2 0 0 1 57 44.4V52.8A4.2 4.2 0 0 1 52.8 57H19.2A4.2 4.2 0 0 1 15 52.8V44.4A4.2 4.2 0 0 1 19.2 40.2Z"/></g></mask>
+<g id="n0-storage-rack-v1"><path d="M19.2 15H52.8A4.2 4.2 0 0 1 57 19.2V27.6A4.2 4.2 0 0 1 52.8 31.8H19.2A4.2 4.2 0 0 1 15 27.6V19.2A4.2 4.2 0 0 1 19.2 15Z"/><path d="M23.4 23.4h.021"/></g><g id="n1-storage-rack-v1"><path d="M19.2 40.2H52.8A4.2 4.2 0 0 1 57 44.4V52.8A4.2 4.2 0 0 1 52.8 57H19.2A4.2 4.2 0 0 1 15 52.8V44.4A4.2 4.2 0 0 1 19.2 40.2Z"/><path d="M23.4 48.6h.021"/></g>
+<pattern id="holes-storage-rack-v1" width="72" height="6" patternUnits="userSpaceOnUse"><g fill="#27272A"><rect x="4.2" y="3" width="1.6" height="1.6" rx=".3"/><rect x="66.2" y="3" width="1.6" height="1.6" rx=".3"/></g></pattern>
+<radialGradient id="ledglow-storage-rack-v1"><stop stop-color="#FB7185" stop-opacity=".7"/><stop offset="1" stop-color="#FB7185" stop-opacity="0"/></radialGradient>
+<radialGradient id="quietv-storage-rack-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-storage-rack-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-storage-rack-v1)"/></mask></defs>
+</svg>

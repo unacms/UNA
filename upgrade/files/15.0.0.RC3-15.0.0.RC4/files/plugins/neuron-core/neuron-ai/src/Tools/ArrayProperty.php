@@ -1,0 +1,152 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Tools;
+
+use NeuronAI\Exceptions\ArrayPropertyException;
+use NeuronAI\Exceptions\InvalidToolInput;
+use NeuronAI\StaticConstructor;
+
+use function get_debug_type;
+use function is_array;
+use function is_null;
+
+/**
+ * @method static static make(string $name, string $description, bool $required = false, ?ToolPropertyInterface $items = null, ?int $minItems = null, ?int $maxItems = null, bool $nullable = false)
+ */
+class ArrayProperty implements ToolPropertyInterface
+{
+    use StaticConstructor;
+
+    protected PropertyType $type = PropertyType::ARRAY;
+
+    /**
+     * @throws ArrayPropertyException
+     */
+    public function __construct(
+        protected string $name,
+        protected ?string $description = null,
+        protected bool $required = false,
+        protected ?ToolPropertyInterface $items = null,
+        protected ?int $minItems = null,
+        protected ?int $maxItems = null,
+        protected bool $nullable = false,
+    ) {
+        $this->validateConstraints();
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'name' => $this->name,
+            ...$this->getJsonSchema(),
+            'required' => $this->required,
+            'nullable' => $this->nullable,
+        ];
+    }
+
+    public function getJsonSchema(): array
+    {
+        $schema = [
+            'type' => $this->nullable
+                ? [$this->type->value, 'null']
+                : $this->type->value,
+        ];
+
+        if (!is_null($this->description)) {
+            $schema['description'] = $this->description;
+        }
+
+        if ($this->items instanceof ToolPropertyInterface) {
+            $schema['items'] = $this->items->getJsonSchema();
+        } else {
+            $schema['items'] = ['type' => 'string'];
+        }
+
+        if ($this->minItems !== null && $this->minItems !== 0) {
+            $schema['minItems'] = $this->minItems;
+        }
+
+        if ($this->maxItems !== null) {
+            $schema['maxItems'] = $this->maxItems;
+        }
+
+        return $schema;
+    }
+
+    public function isRequired(): bool
+    {
+        return $this->required;
+    }
+
+    public function isNullable(): bool
+    {
+        return $this->nullable;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getType(): PropertyType
+    {
+        return $this->type;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function getItems(): ?ToolPropertyInterface
+    {
+        return $this->items;
+    }
+
+    public function cast(mixed $input): mixed
+    {
+        if ($input === null) {
+            return null;
+        }
+
+        if (!is_array($input)) {
+            throw new InvalidToolInput('must be of type array, ' . get_debug_type($input) . ' given');
+        }
+
+        if (!$this->items instanceof ToolPropertyInterface) {
+            return $input;
+        }
+
+        foreach ($input as $index => $item) {
+            try {
+                $input[$index] = $this->items->cast($item);
+            } catch (InvalidToolInput $exception) {
+                throw new InvalidToolInput("element {$index} {$exception->getMessage()}", $exception->getCode(), $exception);
+            }
+        }
+
+        return $input;
+    }
+
+    /**
+     * @throws ArrayPropertyException
+     */
+    protected function validateConstraints(): void
+    {
+        if ($this->minItems !== null && $this->minItems < 0) {
+            throw new ArrayPropertyException("minItems must be >= 0, got {$this->minItems}");
+        }
+
+        if ($this->maxItems !== null && $this->maxItems < 0) {
+            throw new ArrayPropertyException("maxItems must be >= 0, got {$this->maxItems}");
+        }
+
+        if ($this->minItems !== null && $this->maxItems !== null && $this->minItems > $this->maxItems) {
+            throw new ArrayPropertyException(
+                "minItems ({$this->minItems}) cannot be greater than maxItems ({$this->maxItems})"
+            );
+        }
+    }
+}

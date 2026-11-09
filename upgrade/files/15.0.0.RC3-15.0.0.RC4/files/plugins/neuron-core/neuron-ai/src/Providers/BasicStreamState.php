@@ -1,0 +1,147 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Providers;
+
+use NeuronAI\Chat\Messages\ContentBlocks\ContentBlockInterface;
+use NeuronAI\Chat\Messages\Usage;
+use NeuronAI\UniqueIdGenerator;
+
+use function array_values;
+
+class BasicStreamState
+{
+    protected string $messageId;
+
+    protected array $toolCalls = [];
+
+    /**
+     * @var array<string|int, ContentBlockInterface>
+     */
+    protected array $blocks = [];
+
+    /**
+     * @var array<string, mixed>
+     */
+    protected array $metadata = [];
+
+    /**
+     * Why this stream stopped: kept per stream, so a stream that ends without
+     * one never reports the previous stream's reason.
+     */
+    protected ?string $stopReason = null;
+
+    public function __construct(
+        protected Usage $usage = new Usage(0, 0),
+    ) {
+    }
+
+    public function addInputTokens(int $tokens): self
+    {
+        $this->usage->inputTokens += $tokens;
+        return $this;
+    }
+
+    public function addOutputTokens(int $tokens): self
+    {
+        $this->usage->outputTokens += $tokens;
+        return $this;
+    }
+
+    public function addCachedInputTokens(int $tokens): self
+    {
+        $this->usage->cachedInputTokens += $tokens;
+        return $this;
+    }
+
+    public function addReasoningTokens(int $tokens): self
+    {
+        $this->usage->reasoningTokens += $tokens;
+        return $this;
+    }
+
+    public function getUsage(): Usage
+    {
+        return $this->usage;
+    }
+
+    /**
+     * One Neuron ID per stream: every chunk carries it and the returned message
+     * takes it. Vendor IDs are not used, because message IDs deduplicate storage.
+     */
+    public function messageId(): string
+    {
+        if (!isset($this->messageId)) {
+            $this->messageId = UniqueIdGenerator::generateId('msg_');
+        }
+
+        return $this->messageId;
+    }
+
+    /**
+     * @return ContentBlockInterface[]
+     */
+    public function getContentBlocks(): array
+    {
+        return array_values($this->blocks);
+    }
+
+    public function hasToolCalls(): bool
+    {
+        return $this->toolCalls !== [];
+    }
+
+    public function getToolCalls(): array
+    {
+        return $this->toolCalls;
+    }
+
+    /**
+     * Raw provider-specific tool call entry as accumulated during streaming.
+     *
+     * @return array<string, mixed>|null
+     */
+    public function getToolCall(int|string $index): ?array
+    {
+        return $this->toolCalls[$index] ?? null;
+    }
+
+    public function addMetadata(string $key, mixed $value): self
+    {
+        $this->metadata[$key] = $value;
+        return $this;
+    }
+
+    public function accumulateMetadata(string $key, string $value): self
+    {
+        $this->metadata[$key] ??= '';
+
+        $this->metadata[$key] .= $value;
+        return $this;
+    }
+
+    public function getMetadata(?string $key = null): mixed
+    {
+        if ($key === null) {
+            return $this->metadata;
+        }
+
+        return $this->metadata[$key] ?? null;
+    }
+
+    public function hasMetadata(string $key): bool
+    {
+        return isset($this->metadata[$key]);
+    }
+
+    public function setStopReason(string $reason): void
+    {
+        $this->stopReason = $reason;
+    }
+
+    public function stopReason(): ?string
+    {
+        return $this->stopReason;
+    }
+}

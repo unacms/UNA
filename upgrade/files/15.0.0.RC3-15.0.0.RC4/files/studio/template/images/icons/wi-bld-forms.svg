@@ -1,0 +1,29 @@
+<svg class="icon v-forms-focus-v1" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- glyph: rectangle-ellipsis, lucide-static v1.47.0, ISC -->
+<style>
+.v-forms-focus-v1 .bx-ai-fld{transform-box:view-box;transform-origin:36px 36px}
+.v-forms-focus-v1 .bx-ai-sh.bx-ai-fld{transform-origin:36px 37px}
+.v-forms-focus-v1 .bx-ai-ring{transform-box:view-box;transform-origin:36px 36px}
+.v-forms-focus-v1 .bx-ai-sh.bx-ai-ring{transform-origin:36px 37px}
+.v-forms-focus-v1 .bx-ai-dt{transform-box:view-box}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-forms-focus-v1 [class]{animation:var(--a) 1500ms linear both;animation-delay:var(--d,0ms)}
+.v-forms-focus-v1 [class]{--a:none}
+.v-forms-focus-v1 :is(.bx-ai-fld,.bx-ai-sh.bx-ai-fld){--a:fo0}
+@keyframes fo0{0%{transform:none}6.67%{transform:scale(1);animation-timing-function:cubic-bezier(.5,0,.8,.5)}13.33%{transform:scale(.95);animation-timing-function:cubic-bezier(.2,.7,.3,1)}28%{transform:scale(1.015);animation-timing-function:ease-in-out}37.33%{transform:scale(1)}100%{transform:none}}
+.v-forms-focus-v1 .bx-ai-ring{--a:fo1}
+@keyframes fo1{0%{opacity:0;transform:scale(.96)}13.33%{opacity:0;transform:scale(.96);animation-timing-function:cubic-bezier(.2,.7,.3,1)}28%{opacity:1;transform:scale(1)}73.33%{opacity:1;transform:scale(1);animation-timing-function:ease-in}90%{opacity:0;transform:scale(1)}100%{opacity:0;transform:scale(.96)}}
+.v-forms-focus-v1 .bx-ai-dt{--a:fo2}
+@keyframes fo2{0%{transform:none}20%{transform:scale(1);animation-timing-function:ease-out}28%{transform:scale(1.5);animation-timing-function:ease-in}41.33%{transform:scale(1)}100%{transform:none}}
+:is(.icon:hover,.tile:hover .icon,.tile:focus-visible .icon).v-forms-focus-v1 .bx-ai-qv.bx-ai-qv{animation:q-forms-focus-v1 1500ms linear both}
+@keyframes q-forms-focus-v1{0%{opacity:1;animation-timing-function:ease-out}9.333%{opacity:0}76%{opacity:0;animation-timing-function:ease-in-out}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.v-forms-focus-v1 *{animation:none!important}}
+</style>
+<rect width="72" height="72" fill="url(#bg-forms-focus-v1)"/>
+<g opacity="0.22"><rect x="8" y="4" width="12" height="1.6" rx=".8" fill="white"/><rect x="24" y="2.4" width="40" height="4.8" rx="1.6" stroke="white" stroke-width=".6"/><rect x="8" y="13" width="9" height="1.6" rx=".8" fill="white"/><rect x="24" y="11.4" width="40" height="4.8" rx="1.6" stroke="white" stroke-width=".6"/><rect x="8" y="55" width="9" height="1.6" rx=".8" fill="white"/><rect x="24" y="53.4" width="40" height="4.8" rx="1.6" stroke="white" stroke-width=".6"/><rect x="8" y="64" width="12" height="1.6" rx=".8" fill="white"/><rect x="24" y="62.4" width="40" height="4.8" rx="1.6" stroke="white" stroke-width=".6"/></g><rect width="72" height="72" fill="url(#bg-forms-focus-v1)" class="bx-ai-qv" mask="url(#quiet-forms-focus-v1)"/>
+<use class="bx-ai-ring" href="#rg-forms-focus-v1" stroke="#FB923C" stroke-width="2.4" opacity="0"/><g opacity=".3"><use class="bx-ai-ring" href="#rg-forms-focus-v1" stroke="#FB923C" stroke-width="7" opacity="0"/></g>
+<g stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><g class="bx-ai-fld"><use href="#bx-forms-focus-v1" fill="url(#inside-forms-focus-v1)" fill-opacity="0.55" stroke="white"/><g stroke="white"><path class="bx-ai-dt" style="--d:0ms;transform-origin:25px 36px" d="M25 36h.022"/><path class="bx-ai-dt" style="--d:90ms;transform-origin:36px 36px" d="M36 36h.022"/><path class="bx-ai-dt" style="--d:180ms;transform-origin:47px 36px" d="M47 36h.022"/></g></g><g mask="url(#lit-forms-focus-v1)" stroke="black"><g class="bx-ai-sh bx-ai-fld"><use href="#bx-forms-focus-v1" y="1"/><path class="bx-ai-sh bx-ai-dt" style="--d:0ms;transform-origin:25px 37px" d="M25 37h.022"/><path class="bx-ai-sh bx-ai-dt" style="--d:90ms;transform-origin:36px 37px" d="M36 37h.022"/><path class="bx-ai-sh bx-ai-dt" style="--d:180ms;transform-origin:47px 37px" d="M47 37h.022"/></g></g></g>
+<defs>
+<linearGradient id="bg-forms-focus-v1" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0284C7"/><stop offset="1" stop-color="#1E40AF"/></linearGradient><linearGradient id="inside-forms-focus-v1" x1="36" y1="22.8" x2="36" y2="49.2" gradientUnits="userSpaceOnUse"><stop stop-color="#1E40AF"/><stop offset="1" stop-color="#172554"/></linearGradient><linearGradient id="light-forms-focus-v1" x1="36" y1="23.8" x2="36" y2="50.2" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity="0.1"/><stop offset="1" stop-color="white" stop-opacity="0.2"/></linearGradient><mask id="lit-forms-focus-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#light-forms-focus-v1)"/></mask>
+<path id="bx-forms-focus-v1" d="M18.4 22.8H53.6A4.4 4.4 0 0 1 58 27.2V44.8A4.4 4.4 0 0 1 53.6 49.2H18.4A4.4 4.4 0 0 1 14 44.8V27.2A4.4 4.4 0 0 1 18.4 22.8Z"/><path id="rg-forms-focus-v1" d="M18.4 18.3H53.6A8.9 8.9 0 0 1 62.5 27.2V44.8A8.9 8.9 0 0 1 53.6 53.7H18.4A8.9 8.9 0 0 1 9.5 44.8V27.2A8.9 8.9 0 0 1 18.4 18.3Z"/>
+<radialGradient id="quietv-forms-focus-v1" cx="36" cy="36" r="51" gradientUnits="userSpaceOnUse"><stop offset="0.4" stop-color="white" stop-opacity="0.8"/><stop offset="1" stop-color="white" stop-opacity="0.3"/></radialGradient><mask id="quiet-forms-focus-v1" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="72"><rect width="72" height="72" fill="url(#quietv-forms-focus-v1)"/></mask></defs>
+</svg>

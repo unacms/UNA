@@ -1,0 +1,108 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\RAG\Embeddings;
+
+use NeuronAI\Exceptions\HttpException;
+use NeuronAI\Exceptions\ProviderException;
+use NeuronAI\HttpClient\Curl\CurlHttpClient;
+use NeuronAI\HttpClient\HasHttpClient;
+use NeuronAI\HttpClient\HttpClientInterface;
+use NeuronAI\HttpClient\HttpRequest;
+use NeuronAI\RAG\Document;
+
+use function rtrim;
+use function array_chunk;
+use function array_map;
+use function array_merge;
+use function count;
+
+class OpenAIEmbeddingsProvider extends AbstractEmbeddingsProvider
+{
+    use HasHttpClient;
+
+    protected string $baseUri = 'https://api.openai.com/v1';
+
+    public function __construct(
+        protected string $key,
+        protected string $model,
+        protected ?int $dimensions = 1024,
+        ?HttpClientInterface $httpClient = null,
+    ) {
+        $this->httpClient = $httpClient ?? new CurlHttpClient();
+        $this->httpHeaders = [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $this->key,
+        ];
+    }
+
+    /**
+     * @throws HttpException
+     * @throws ProviderException
+     */
+    public function embedDocuments(array $documents): array
+    {
+        $chunks = array_chunk($documents, 100);
+
+        foreach ($chunks as $chunk) {
+            $response = $this->httpClient->request(
+                HttpRequest::post(
+                    uri: rtrim($this->baseUri, '/') . '/embeddings',
+                    body: [
+                        'model' => $this->model,
+                        'input' => array_map(fn (Document $document): string => $document->getContent(), $chunk),
+                        'encoding_format' => 'float',
+                        ...($this->dimensions ? ['dimensions' => $this->dimensions] : []),
+                    ],
+                    headers: $this->httpHeaders,
+                )
+            )->json();
+
+            $embeddings = [];
+
+            // Each item names the input it embeds, whatever order the server returns them in
+            foreach ($response['data'] ?? [] as $position => $item) {
+                $index = $item['index'] ?? $position;
+
+                if (isset($embeddings[$index])) {
+                    throw new ProviderException('The embeddings response does not have one embedding for each of the '.count($chunk).' documents sent.');
+                }
+
+                $embeddings[$index] = $item['embedding'];
+            }
+
+            $this->assignEmbeddings($chunk, $embeddings);
+        }
+
+        return array_merge(...$chunks);
+    }
+
+    /**
+     * @throws HttpException
+     */
+    public function embedText(string $text): array
+    {
+        $response = $this->httpClient->request(
+            HttpRequest::post(
+                uri: rtrim($this->baseUri, '/') . '/embeddings',
+                body: [
+                    'model' => $this->model,
+                    'input' => $text,
+                    'encoding_format' => 'float',
+                    ...($this->dimensions ? ['dimensions' => $this->dimensions] : []),
+                ],
+                headers: $this->httpHeaders,
+            )
+        )->json();
+
+        return $response['data'][0]['embedding'];
+    }
+
+    public function withoutDimensions(): self
+    {
+        $this->dimensions = null;
+        return $this;
+    }
+}

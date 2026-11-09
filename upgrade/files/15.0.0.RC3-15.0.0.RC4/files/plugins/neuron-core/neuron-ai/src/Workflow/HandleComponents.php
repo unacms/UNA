@@ -1,0 +1,210 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Workflow;
+
+use NeuronAI\Exceptions\WorkflowException;
+use NeuronAI\Workflow\Executor\BranchRunner;
+use NeuronAI\Workflow\Executor\SequentialBranchRunner;
+use NeuronAI\Workflow\Exporter\ExporterInterface;
+use NeuronAI\Workflow\Exporter\WorkflowGraphBuilder;
+use NeuronAI\Workflow\Persistence\InMemoryPersistence;
+use NeuronAI\Workflow\Persistence\PersistenceInterface;
+use NeuronAI\Workflow\Persistence\PhpSerializer;
+use NeuronAI\Workflow\Persistence\Serializer;
+use NeuronAI\Workflow\Streaming\Adapter\StreamAdapterInterface;
+use NeuronAI\Workflow\Streaming\Channel\StreamingChannelInterface;
+use Closure;
+
+/**
+ * Definitions hold configured services and resource recipes. Persistence and
+ * serializer defaults are shared services; resources and output are built per segment. A branch
+ * runner carries no configuration of its own, so choosing how branches run
+ * never affects where state lives.
+ */
+trait HandleComponents
+{
+    protected ?BranchRunner $branchRunner = null;
+
+    protected ?PersistenceInterface $persistence = null;
+
+    protected ?Serializer $serializer = null;
+
+    protected ?int $leaseTimeout = null;
+
+    protected bool $leaseTimeoutConfigured = false;
+
+    protected ?int $maxSteps = null;
+
+    protected bool $maxStepsConfigured = false;
+
+    protected bool $retainCompletion = false;
+
+    /** @var (Closure(): ?StreamingChannelInterface)|null */
+    protected ?Closure $channel = null;
+
+    /** @var (Closure(): ?StreamAdapterInterface)|null */
+    protected ?Closure $streamAdapter = null;
+
+    /** @var (Closure(): WorkflowResources)|null */
+    protected ?Closure $resources = null;
+
+    protected ExporterInterface $exporter;
+
+    /**
+     * How the branches of a fork run: one after another by default, or
+     * concurrently with an AsyncBranchRunner. It wins over the branchRunner() hook.
+     */
+    public function setBranchRunner(BranchRunner $runner): static
+    {
+        $this->branchRunner = $runner;
+        return $this;
+    }
+
+    final protected function getBranchRunner(): BranchRunner
+    {
+        return $this->branchRunner ?? $this->branchRunner();
+    }
+
+    protected function branchRunner(): BranchRunner
+    {
+        return new SequentialBranchRunner();
+    }
+
+    /**
+     * Built for every call from the persistence and serializer configured at
+     * that moment, and never cached, so a later change applies to the next call.
+     */
+    final protected function getEngine(): WorkflowEngine
+    {
+        return new WorkflowEngine($this->getPersistence(), $this->getSerializer());
+    }
+
+    /**
+     * Enable durability by providing a persistence backend.
+     */
+    public function setPersistence(PersistenceInterface $persistence): static
+    {
+        $this->persistence = $persistence;
+        return $this;
+    }
+
+    final protected function getPersistence(): PersistenceInterface
+    {
+        return $this->persistence ??= $this->persistence();
+    }
+
+    protected function persistence(): PersistenceInterface
+    {
+        return new InMemoryPersistence();
+    }
+
+    /**
+     * The codec for this run's durable records. It must be stable across
+     * suspend/resume: records are read back with the configured codec.
+     */
+    public function setSerializer(Serializer $serializer): static
+    {
+        $this->serializer = $serializer;
+        return $this;
+    }
+
+    final protected function getSerializer(): Serializer
+    {
+        return $this->serializer ??= $this->serializer();
+    }
+
+    protected function serializer(): Serializer
+    {
+        return new PhpSerializer();
+    }
+
+    /**
+     * Where in-flight output is delivered (a websocket, a broadcast, ...).
+     * The factory runs once for every execution segment and builds that
+     * segment's channel; it wins over the channel() hook, and null falls back
+     * to it. Content needs a stream adapter: without one the channel receives
+     * only the segment lifecycle.
+     *
+     * @param (Closure(): ?StreamingChannelInterface)|null $factory
+     */
+    public function setChannel(?Closure $factory): static
+    {
+        $this->channel = $factory;
+        return $this;
+    }
+
+    final protected function resolveChannel(): ?StreamingChannelInterface
+    {
+        return $this->channel instanceof Closure ? ($this->channel)() : $this->channel();
+    }
+
+    protected function channel(): ?StreamingChannelInterface
+    {
+        return null;
+    }
+
+    /**
+     * Attach the stream transform used by both pull iteration and channel
+     * delivery. Adapter and channel compose — the adapter decides the shape,
+     * the channel the destination. The factory runs once for every execution
+     * segment and builds that segment's adapter, which holds the state of one
+     * stream; it wins over the streamAdapter() hook, and null falls back to it.
+     *
+     * @param (Closure(): ?StreamAdapterInterface)|null $factory
+     */
+    public function setStreamAdapter(?Closure $factory): static
+    {
+        $this->streamAdapter = $factory;
+        return $this;
+    }
+
+    final protected function resolveStreamAdapter(): ?StreamAdapterInterface
+    {
+        return $this->streamAdapter instanceof Closure ? ($this->streamAdapter)() : $this->streamAdapter();
+    }
+
+    protected function streamAdapter(): ?StreamAdapterInterface
+    {
+        return null;
+    }
+
+    /**
+     * Build what the run can use. The factory runs once for every execution
+     * segment, so each segment gets fresh resources; it wins over the
+     * resources() hook.
+     *
+     * @param Closure(): WorkflowResources $factory
+     */
+    public function setResources(Closure $factory): static
+    {
+        $this->resources = $factory;
+        return $this;
+    }
+
+    final protected function resolveResources(): WorkflowResources
+    {
+        return $this->resources instanceof Closure ? ($this->resources)() : $this->resources();
+    }
+
+    protected function resources(): WorkflowResources
+    {
+        return new WorkflowResources();
+    }
+
+    /**
+     * @throws WorkflowException
+     */
+    public function export(): string
+    {
+        $start = $this->getStartEvent();
+        return $this->exporter->export((new WorkflowGraphBuilder())->build($start::class, $this->graph($start, $this->newState())->nodes()));
+    }
+
+    public function setExporter(ExporterInterface $exporter): static
+    {
+        $this->exporter = $exporter;
+        return $this;
+    }
+}
