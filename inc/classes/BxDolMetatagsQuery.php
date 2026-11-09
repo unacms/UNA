@@ -90,10 +90,78 @@ class BxDolMetatagsQuery extends BxDolDb
         return $this->getColumn($sQuery);
     }
     
+    /**
+     * Get keywords which start with the term. Only keywords of public and active content are returned,
+     * so the result doesn't depend on the viewer and can't reveal hashtags of private, hidden,
+     * awaiting or draft content. Keywords whose content can't be resolved are skipped.
+     */
     public function keywordsGetByTerm($sTerm)
     {
-        $sQuery = $this->prepare("SELECT `object_id`, `keyword` FROM `{$this->_aObject['table_keywords']}`  WHERE `keyword` LIKE ? ORDER BY CHAR_LENGTH(`keyword`) DESC", $sTerm . '%');
+        $aParts = $this->getPublicContentSQLParts('kw', 'object_id');
+        if(!$aParts)
+            return [];
+
+        $sQuery = $this->prepare("SELECT `kw`.`object_id`, `kw`.`keyword` FROM `{$this->_aObject['table_keywords']}` AS `kw` " . $aParts['join'] . " WHERE `kw`.`keyword` LIKE ?" . $aParts['where'] . " ORDER BY CHAR_LENGTH(`kw`.`keyword`) DESC", $sTerm . '%');
         return $this->getAll($sQuery);
+    }
+
+    /**
+     * Get SQL parts to limit meta records by public and active content only.
+     * Table and field names are taken from the module config, never from the request.
+     *
+     * @param string $sMetaAlias alias of the meta table in the query
+     * @param string $sMetaField field of the meta table with content id
+     * @return array|false array with 'join' and 'where' parts or false if content can't be resolved
+     */
+    protected function getPublicContentSQLParts($sMetaAlias, $sMetaField)
+    {
+        if(empty($this->_aObject['module']))
+            return false;
+
+        $oModule = BxDolModule::getInstance($this->_aObject['module']);
+        if(!$oModule || empty($oModule->_oConfig->CNF) || !is_array($oModule->_oConfig->CNF))
+            return false;
+
+        $CNF = $oModule->_oConfig->CNF;
+        if(empty($CNF['TABLE_ENTRIES']) || empty($CNF['FIELD_ID']))
+            return false;
+
+        $sPrivacyField = '';
+        if(!empty($CNF['FIELD_ALLOW_VIEW_TO']))
+            $sPrivacyField = $CNF['FIELD_ALLOW_VIEW_TO'];
+        else if(!empty($CNF['FIELD_OBJECT_PRIVACY_VIEW']))
+            $sPrivacyField = $CNF['FIELD_OBJECT_PRIVACY_VIEW'];
+        if(!$sPrivacyField)
+            return false;
+
+        $sJoin = '';
+        $sContentLink = "`{$sMetaAlias}`.`{$sMetaField}`";
+
+        // meta of files attached to entries, content is the entry which the file belongs to
+        $aMediaObjects = array_filter([
+            isset($CNF['OBJECT_METATAGS_MEDIA']) ? $CNF['OBJECT_METATAGS_MEDIA'] : '',
+            isset($CNF['OBJECT_METATAGS_MEDIA_CAMERA']) ? $CNF['OBJECT_METATAGS_MEDIA_CAMERA'] : '',
+        ]);
+        if(!empty($CNF['TABLE_FILES2ENTRIES']) && in_array($this->_aObject['object'], $aMediaObjects)) {
+            $sJoin .= " INNER JOIN `{$CNF['TABLE_FILES2ENTRIES']}` AS `cf` ON `cf`.`id` = {$sContentLink}";
+            $sContentLink = '`cf`.`content_id`';
+        }
+
+        $sJoin .= " INNER JOIN `{$CNF['TABLE_ENTRIES']}` AS `ce` ON `ce`.`{$CNF['FIELD_ID']}` = {$sContentLink}";
+
+        $sWhere = $this->prepareAsString(" AND `ce`.`{$sPrivacyField}` = ?", BX_DOL_PG_ALL);
+
+        if(!empty($CNF['FIELD_STATUS']))
+            $sWhere .= " AND `ce`.`{$CNF['FIELD_STATUS']}` = 'active'";
+        else {
+            // profile modules keep status in the profiles table
+            $sJoin .= $this->prepareAsString(" INNER JOIN `sys_profiles` AS `cp` ON `cp`.`type` = ? AND `cp`.`content_id` = `ce`.`{$CNF['FIELD_ID']}` AND `cp`.`status` = 'active'", $this->_aObject['module']);
+        }
+
+        if(!empty($CNF['FIELD_STATUS_ADMIN']))
+            $sWhere .= " AND `ce`.`{$CNF['FIELD_STATUS_ADMIN']}` = 'active'";
+
+        return ['join' => $sJoin, 'where' => $sWhere];
     }
 
     public function keywordsGetSQLParts($sContentTable, $sContentField, $mixedKeyword)

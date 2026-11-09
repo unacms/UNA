@@ -171,6 +171,47 @@ class UploadTokenTest extends BxDolIntegrationTestCase
         $this->assertSame(403, $aResult['code'] ?? null);
     }
 
+    public function testLoggedInProfileCannotInlineUploadToForeignStorage(): void
+    {
+        $this->bxLoginAsUser();
+
+        $_FILES['file'] = ['name' => 'a.png', 'type' => 'image/png', 'tmp_name' => '/nonexistent', 'error' => 0, 'size' => 1];
+
+        try {
+            foreach (['sys_images', 'sys_images_resized', 'bx_files_files', 'no_such_storage', ''] as $sStorage) {
+                $aGet = ['uo' => self::UPLOADER, 'so' => self::STORAGE, 'uid' => 'abc12345', 'a' => 'upload_inline', 'o' => $sStorage];
+                $this->assertSame(403, $this->callService($aGet)['code'] ?? null, 'No token, storage "' . $sStorage . '".');
+
+                $aGet['so'] = $sStorage;
+                $this->assertSame(403, $this->callService($aGet)['code'] ?? null, 'No token, so=o="' . $sStorage . '".');
+            }
+        } finally {
+            unset($_FILES['file']);
+        }
+    }
+
+    public function testLoggedInProfileInlineUploadsToEditorStorages(): void
+    {
+        $this->bxLoginAsUser();
+
+        foreach (BxBaseUploaderServices::INLINE_STORAGES as $sStorage) {
+            $aResult = $this->callService(['uo' => self::UPLOADER, 'so' => $sStorage, 'uid' => 'abc12345', 'a' => 'upload_inline', 'o' => $sStorage]);
+            $this->assertNotSame(403, $aResult['code'] ?? null, $sStorage);
+            $this->assertSame('1', $aResult['error'] ?? null, 'Passes the storage check and stops at the missing file: ' . $sStorage);
+        }
+    }
+
+    public function testUploadTokenServiceIssuesInlineTokenOnlyForEditorStorages(): void
+    {
+        $_GET = ['uo' => self::UPLOADER, 'so' => 'sys_images', 'a' => 'upload_inline'];
+        $this->assertSame(403, (new BxBaseUploaderServices())->serviceGetUploadToken()['code'] ?? null);
+
+        $_GET = ['uo' => self::UPLOADER, 'so' => self::STORAGE, 'a' => 'upload_inline'];
+        $aResult = (new BxBaseUploaderServices())->serviceGetUploadToken();
+        $this->assertNotEmpty($aResult['token'] ?? '');
+        $this->_aTokens[] = $aResult['token'];
+    }
+
     public function testLoggedInProfileUploadsThroughProxyWithoutToken(): void
     {
         $this->bxLoginAsUser();

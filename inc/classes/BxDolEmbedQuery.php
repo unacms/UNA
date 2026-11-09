@@ -58,6 +58,13 @@ class BxDolEmbedQuery extends BxDolFactoryObjectQuery
         return $this->getAll("SELECT * FROM `" . $this->_sTableData . "` WHERE `data` = ''");
     }
 
+    public function getLocalExpired ($iBefore, $iLimit = 500)
+    {
+        return $this->getAll("SELECT * FROM `" . $this->_sTableData . "` WHERE `added` IS NOT NULL AND `added` < :before ORDER BY `id` ASC LIMIT " . max(1, (int)$iLimit), [
+            'before' => (int)$iBefore
+        ]);
+    }
+
     public function insertLocal ($sUrl, $sTheme, $sData = '')
     {
         return (int)$this->query("INSERT INTO `" . $this->_sTableData . "` (`url`, `theme`, `data`, `added`) VALUES (:url, :theme, :data, :added)", [
@@ -66,6 +73,21 @@ class BxDolEmbedQuery extends BxDolFactoryObjectQuery
             'data' => $sData,
             'added' => time(),
         ]) > 0 ? $this->lastId() : false;
+    }
+
+    /**
+     * Take a named lock, waiting up to a number of seconds. MySQL releases it when the connection closes,
+     * so a request that dies can't keep it.
+     * @return bool the lock is held
+     */
+    public function lockFetch ($sName, $iTimeout)
+    {
+        return (int)$this->getOne("SELECT GET_LOCK(:name, :timeout)", ['name' => $sName, 'timeout' => (int)$iTimeout]) === 1;
+    }
+
+    public function unlockFetch ($sName)
+    {
+        return (int)$this->getOne("SELECT RELEASE_LOCK(:name)", ['name' => $sName]) === 1;
     }
 
     public function updateLocal($aParamsSet, $aParamsWhere)

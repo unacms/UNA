@@ -72,6 +72,9 @@ class BxDolCronPruning extends BxDolCron
         $oKey = BxDolKey::getInstance();
         $iDeletedKeys = $oKey ? $oKey->prune() : 0;
 
+        // clean expired link embeds and the pictures they have stored
+        BxDolEmbed::pruning();
+
         // clean background jobs
         $iDeletedJobs = BxDolBackgroundJobs::pruning();
 
