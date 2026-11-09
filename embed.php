@@ -12,13 +12,7 @@ require_once(BX_DIRECTORY_PATH_INC . "design.inc.php");
 bx_import('BxDolEmbed');
 
 if (bx_get('a') == 'get_link'){
-    // the link is fetched and stored on the server, it is for the editors of signed in members only
-    if (!isLogged()) {
-        http_response_code(403);
-        echoJson(['code' => '', 'error' => 'access denied']);
-        exit;
-    }
-
+    // stored embeds are shown to everybody, a new link is fetched for signed in members under the limit only (see BxDolEmbed::_canFetch)
     $sLink = bx_get('l');
     $sLink = is_string($sLink) ? trim($sLink) : '';
     if ($sLink === '' || get_mb_len($sLink) > BxDolEmbed::URL_MAX_LENGTH || !bx_remote_url_is_allowed($sLink)) {

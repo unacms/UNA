@@ -51,6 +51,11 @@ class BxDolEmbed extends BxDolFactoryObject
     const FETCH_LIMIT_PROFILE = 30;
     const FETCH_LIMIT_IP = 60;
 
+    /**
+     * Seconds to wait for the lock of a counter of fetches. A request which doesn't get it is refused as limited.
+     */
+    const FETCH_LOCK_TIMEOUT = 3;
+
     const FETCH_REFUSED_GUEST = 'guest';
     const FETCH_REFUSED_LIMIT = 'limit';
 
@@ -309,17 +314,55 @@ class BxDolEmbed extends BxDolFactoryObject
 
     /**
      * Check if a new link can be fetched and count the fetch.
+     * Checking the limit and counting are done under a lock of every counter, so parallel requests
+     * can't pass the same check and overwrite the increments of each other.
+     * The locks are held for the check and the counting only, not for the fetch itself.
      */
     protected function _acquireFetch ()
     {
-        if(!$this->_canFetch())
-            return false;
+        if(defined('BX_DOL_CRON_EXECUTE'))
+            return true;
 
-        if(!defined('BX_DOL_CRON_EXECUTE'))
-            foreach($this->_getFetchScopes((int)bx_get_logged_profile_id()) as $sScope => $aScope)
+        if(!isLogged()) {
+            $this->_sFetchRefused = self::FETCH_REFUSED_GUEST;
+            return false;
+        }
+
+        $aScopes = $this->_getFetchScopes((int)bx_get_logged_profile_id());
+
+        // locks are taken in the order of scopes, which is always the same, so requests can't deadlock
+        $aLocks = [];
+        try {
+            foreach($aScopes as $sScope => $aScope) {
+                $sLock = $this->_getFetchLockName($sScope, $aScope['id']);
+                if(!$this->_oDb->lockFetch($sLock, self::FETCH_LOCK_TIMEOUT)) {
+                    $this->_sFetchRefused = self::FETCH_REFUSED_LIMIT;
+                    return false;
+                }
+
+                $aLocks[] = $sLock;
+            }
+
+            if(!$this->_canFetch())
+                return false;
+
+            foreach($aScopes as $sScope => $aScope)
                 $this->_setFetchCount($sScope, $aScope['id'], $this->_getFetchCount($sScope, $aScope['id']) + 1);
 
-        return true;
+            return true;
+        }
+        finally {
+            foreach(array_reverse($aLocks) as $sLock)
+                $this->_oDb->unlockFetch($sLock);
+        }
+    }
+
+    /**
+     * MySQL limits a name of a lock to 64 characters, the cache key has the hash of the site in it.
+     */
+    protected function _getFetchLockName ($sScope, $sId)
+    {
+        return 'una_embed_fetch_' . md5($this->_getFetchCacheKey($sScope, $sId));
     }
 
     protected function _getFetchScopes ($iProfileId)

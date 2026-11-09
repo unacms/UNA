@@ -75,6 +75,21 @@ class BxDolEmbedQuery extends BxDolFactoryObjectQuery
         ]) > 0 ? $this->lastId() : false;
     }
 
+    /**
+     * Take a named lock, waiting up to a number of seconds. MySQL releases it when the connection closes,
+     * so a request that dies can't keep it.
+     * @return bool the lock is held
+     */
+    public function lockFetch ($sName, $iTimeout)
+    {
+        return (int)$this->getOne("SELECT GET_LOCK(:name, :timeout)", ['name' => $sName, 'timeout' => (int)$iTimeout]) === 1;
+    }
+
+    public function unlockFetch ($sName)
+    {
+        return (int)$this->getOne("SELECT RELEASE_LOCK(:name)", ['name' => $sName]) === 1;
+    }
+
     public function updateLocal($aParamsSet, $aParamsWhere)
     {
         if(empty($aParamsSet) || empty($aParamsWhere))

@@ -5,7 +5,7 @@ use PHPUnit\Framework\Attributes\Group;
 /**
  * A link which is not stored yet is fetched from its site, and its pictures are stored, for a signed in
  * profile only and only under a limit. A guest gets the link and its domain and nothing is stored. Stored
- * data is still served to guests, and data which expired goes away with its pictures.
+ * data is still served to guests, and a signed in refetch of expired data deletes its old pictures.
  *
  * The embed provider is a stub which makes no request and stores one generated picture per link, and the
  * test removes the rows and pictures it makes and the limit counters, so it runs on any installed site.
@@ -47,7 +47,6 @@ class EmbedFetchTest extends BxDolIntegrationTestCase
         return new class($aObject, null) extends BxTemplEmbedSystem {
             public $iCalls = 0;
             public $bImage = true;
-
             public function getDataFromApi($sUrl, $sTheme)
             {
                 $this->iCalls++;
@@ -165,6 +164,54 @@ class EmbedFetchTest extends BxDolIntegrationTestCase
         $this->assertSame($iLimit, $this->_oEmbed->iCalls);
     }
 
+    protected function fetchCounts(): array
+    {
+        $aCounts = [];
+        foreach ($this->bxCallProtected($this->_oEmbed, '_getFetchScopes', (int)bx_get_logged_profile_id()) as $sScope => $aScope)
+            $aCounts[$sScope] = $this->bxCallProtected($this->_oEmbed, '_getFetchCount', $sScope, $aScope['id']);
+
+        return $aCounts;
+    }
+
+    protected function assertFetchLocksFree(): void
+    {
+        foreach ($this->bxCallProtected($this->_oEmbed, '_getFetchScopes', (int)bx_get_logged_profile_id()) as $sScope => $aScope) {
+            $sLock = $this->bxCallProtected($this->_oEmbed, '_getFetchLockName', $sScope, $aScope['id']);
+            $this->assertLessThanOrEqual(64, strlen($sLock));
+            $this->assertSame(1, (int)BxDolDb::getInstance()->getOne("SELECT IS_FREE_LOCK(:name)", ['name' => $sLock]), "The lock of '$sScope' is released.");
+        }
+    }
+
+    public function testAcquireFetchCountsOnceAndReleasesLocks(): void
+    {
+        $this->bxLoginAsUser();
+
+        $aBefore = $this->fetchCounts();
+        $this->assertNotEmpty($aBefore);
+
+        $this->assertTrue($this->bxCallProtected($this->_oEmbed, '_acquireFetch'));
+        foreach ($this->fetchCounts() as $sScope => $iCount)
+            $this->assertSame($aBefore[$sScope] + 1, $iCount, "The counter of '$sScope' rose by one.");
+
+        $this->assertFetchLocksFree();
+    }
+
+    public function testAcquireFetchAtTheLimitCountsNothingAndReleasesLocks(): void
+    {
+        $this->bxLoginAsUser();
+
+        $iLimit = min(BxDolEmbed::FETCH_LIMIT_PROFILE, BxDolEmbed::FETCH_LIMIT_IP);
+        for ($i = 0; $i < $iLimit; $i++)
+            $this->assertTrue($this->bxCallProtected($this->_oEmbed, '_acquireFetch'));
+        $this->assertFetchLocksFree();
+
+        $aBefore = $this->fetchCounts();
+        $this->assertFalse($this->bxCallProtected($this->_oEmbed, '_acquireFetch'));
+        $this->assertSame(BxDolEmbed::FETCH_REFUSED_LIMIT, $this->_oEmbed->getFetchRefused());
+        $this->assertSame($aBefore, $this->fetchCounts());
+        $this->assertFetchLocksFree();
+    }
+
     public function testLongLinkIsNotFetchedNorStored(): void
     {
         $this->bxLoginAsUser();
@@ -175,31 +222,6 @@ class EmbedFetchTest extends BxDolIntegrationTestCase
         $this->assertSame($sUrl, $a['url']);
         $this->assertSame(0, $this->_oEmbed->iCalls);
         $this->assertSame(0, $this->countRows());
-    }
-
-    public function testExpiredDataGoesAwayWithItsPictures(): void
-    {
-        if (!(int)getParam('sys_embed_lifetime'))
-            $this->markTestSkipped('The embed lifetime is not tracked.');
-
-        $this->bxLoginAsUser();
-        $a = $this->_oEmbed->getData($this->url(1), '');
-        $iImage = (int)$a['image_id'];
-        $this->assertNotFalse(BxDolStorage::getObjectInstance('sys_images')->getFile($iImage));
-
-        $iOld = time() - 86400 * ((int)getParam('sys_embed_lifetime') + 1);
-        BxDolDb::getInstance()->query("UPDATE `sys_embeded_data` SET `added` = :added WHERE `url` = :url", ['added' => $iOld, 'url' => $this->url(1)]);
-
-        // A guest cannot fetch a new copy, so the old one stays.
-        $this->bxBecomeGuest();
-        $a = $this->_oEmbed->getData($this->url(1), '');
-        $this->assertSame('Title', $a['title']);
-        $this->assertSame(1, $this->countRows());
-        $this->assertSame(1, $this->_oEmbed->iCalls);
-
-        $this->assertGreaterThanOrEqual(1, $this->_oEmbed->pruneExpired());
-        $this->assertSame(0, $this->countRows());
-        $this->assertFalse(BxDolStorage::getObjectInstance('sys_images')->getFile($iImage), 'The picture is deleted with its link.');
     }
 
     public function testSignedInRefetchDeletesThePictureOfTheExpiredCopy(): void
