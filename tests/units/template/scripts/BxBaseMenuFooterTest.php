@@ -226,8 +226,9 @@ class BxBaseMenuFooterTest extends BxDolTestCase
         $aItem = $aItems['switch_language'];
 
         $this->assertStringContainsString('>' . $sLanguage . '</span>', $aItem['bx_if:title']['content']['title'], 'The code, as in the apps ("EN" by CSS).');
-        $sLabel = bx_html_attribute(_t('_sys_menu_item_title_switch_language_current', $aLanguages[$sLanguage]));
-        $this->assertStringContainsString('aria-label="' . $sLabel . '"', $aItem['attrs']);
+        $sLabel = _t('_sys_menu_item_title_switch_language_current', $aLanguages[$sLanguage]);
+        $this->assertStringContainsString('aria-label="' . bx_html_attribute(mb_strtoupper($sLanguage) . ', ' . $sLabel) . '"', $aItem['attrs'], 'The name starts with the code it shows (Label in Name).');
+        $this->assertStringContainsString('title="' . bx_html_attribute($sLabel) . '"', $aItem['attrs']);
         $this->assertSame(1, substr_count($aItem['attrs'], 'aria-label='), 'One name.');
         $this->assertStringContainsString('aria-haspopup="menu"', $aItem['attrs']);
     }

@@ -4426,6 +4426,8 @@
     <string name="_sys_page_type_standard"><![CDATA[Standard]]></string>
     <string name="_sys_page_type_wo_hf"><![CDATA[Without header/footer]]></string>
     <string name="_sys_paginate_info"><![CDATA[{0}-{1}]]></string>
+    <string name="_sys_paginate_next"><![CDATA[Next page]]></string>
+    <string name="_sys_paginate_prev"><![CDATA[Previous page]]></string>
     <string name="_sys_paginate_total"><![CDATA[{0}-{1} of {2}]]></string>
     <string name="_sys_paginate_view_all"><![CDATA[View All]]></string>
     <string name="_sys_payments_err_no_payments"><![CDATA[There is no installed payment processing module.]]></string>
