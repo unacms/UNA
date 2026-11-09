@@ -74,12 +74,21 @@ class BxTemplFunctions extends BxBaseFunctions
             $iLogoWidth = $aSource['source'] != BxDolDesigns::LOGO_SOURCE_BUILTIN ? (int)$oDesigns->{'getSite' . $sTypeUc . 'Width'}() : 0;
             $sLogoWidth = $iLogoWidth > 0 ? 'width:' . round($iLogoWidth/16, 3) . 'rem;' : '';
 
+            // width/height attributes let the browser reserve the space before the image arrives
+            $aSize = BxDolDesigns::getLogoSizeAttrs(
+                $aSource['source'] == BxDolDesigns::LOGO_SOURCE_BUILTIN ? BxDolDesigns::getImageFileSize($this->_oTemplate->getImagePath(BxDolDesigns::$aLogoBuiltins[$sType])) : [],
+                $iLogoWidth, $iLogoHeight
+            );
+
             $aTmplVarsImages[$sType] = [
                 'id' => 'bx-' . str_replace('_', '-', $sType),
                 'src' => $aSource['url'],
                 'alt' => $sAltAttr,
                 'class' => '',
-                'style' => $sLogoWidth . ' ' . $sLogoHeight,
+                'style' => $sLogoWidth . ' ' . $sLogoHeight . $aSize['style'],
+                'size' => $aSize['attrs'],
+                // the dark logo and the marks are hidden by CSS in most modes, so they load when shown
+                'loading' => $sType == 'logo' ? '' : 'loading="lazy"',
             ];
 
             ${'b' . $sTypeUc} = true;

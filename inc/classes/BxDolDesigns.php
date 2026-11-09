@@ -249,6 +249,90 @@ class BxDolDesigns extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * Intrinsic size of a local image file, for the width and height attributes of a logo image:
+     * with them the browser reserves the logo's space before the file arrives.
+     * An SVG gives its width and height attributes, else its viewBox; other images their pixel size.
+     * @param string $sPath absolute file path
+     * @return array [width, height] in pixels, [] when it isn't known
+     */
+    public static function getImageFileSize($sPath)
+    {
+        static $aCache = [];
+
+        if(!is_string($sPath) || $sPath === '') {
+            return [];
+        }
+        if(!isset($aCache[$sPath])) {
+            $aCache[$sPath] = is_file($sPath) && is_readable($sPath) ? static::_readImageFileSize($sPath) : [];
+        }
+
+        return $aCache[$sPath];
+    }
+
+    protected static function _readImageFileSize($sPath)
+    {
+        if(!preg_match('/\.svg$/i', $sPath)) {
+            $a = @getimagesize($sPath);
+            return $a && $a[0] > 0 && $a[1] > 0 ? [(int)$a[0], (int)$a[1]] : [];
+        }
+
+        $sHead = (string)file_get_contents($sPath, false, null, 0, 4096);
+        if(!preg_match('/<svg\b[^>]*>/i', $sHead, $aMatch)) {
+            return [];
+        }
+
+        $sTag = $aMatch[0];
+        $fWidth = static::_getSvgLength($sTag, 'width');
+        $fHeight = static::_getSvgLength($sTag, 'height');
+        if((!$fWidth || !$fHeight) && preg_match('/\sviewBox\s*=\s*["\']\s*[-0-9.]+[\s,]+[-0-9.]+[\s,]+([0-9.]+)[\s,]+([0-9.]+)\s*["\']/i', $sTag, $a)) {
+            $fWidth = (float)$a[1];
+            $fHeight = (float)$a[2];
+        }
+
+        return $fWidth > 0 && $fHeight > 0 ? [(int)round($fWidth), (int)round($fHeight)] : [];
+    }
+
+    /**
+     * An absolute length (unitless or px) of an SVG root tag attribute, 0 for none or a relative one.
+     */
+    protected static function _getSvgLength($sTag, $sAttr)
+    {
+        return preg_match('/\s' . $sAttr . '\s*=\s*["\']\s*([0-9]*\.?[0-9]+)\s*(px)?\s*["\']/i', $sTag, $a) ? (float)$a[1] : 0;
+    }
+
+    /**
+     * Width and height attributes for a logo image shown at the given CSS size.
+     * When the CSS sets the height only, the width attribute gives the aspect ratio and the CSS width becomes auto.
+     * @param array $aIntrinsic [width, height] from getImageFileSize, or []
+     * @param int $iWidth CSS width in pixels, 0 when not set
+     * @param int $iHeight CSS height in pixels, 0 when not set
+     * @return array ['attrs' => 'width="" height=""' or '', 'style' => extra CSS]
+     */
+    public static function getLogoSizeAttrs($aIntrinsic, $iWidth, $iHeight)
+    {
+        if($iWidth > 0 && $iHeight > 0) {
+            return ['attrs' => 'width="' . (int)$iWidth . '" height="' . (int)$iHeight . '"', 'style' => ''];
+        }
+
+        if(empty($aIntrinsic) || count($aIntrinsic) != 2 || $aIntrinsic[0] <= 0 || $aIntrinsic[1] <= 0) {
+            return ['attrs' => '', 'style' => ''];
+        }
+
+        $sStyle = '';
+        if($iWidth > 0) {
+            $sStyle = 'height:auto;';
+        }
+        elseif($iHeight > 0) {
+            $sStyle = 'width:auto;';
+        }
+
+        return [
+            'attrs' => 'width="' . (int)$aIntrinsic[0] . '" height="' . (int)$aIntrinsic[1] . '"',
+            'style' => $sStyle
+        ];
+    }
+
+    /**
      * Where each logo image of the current template comes from. See getLogoSources.
      * @param callable|null $fBuiltinUrl the URL of a built-in image by its file name, '' when the template has none
      * @return array

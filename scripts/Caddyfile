@@ -12,11 +12,25 @@
 	# Long-lived caching for real static assets. Storage (/s/*) serves files
 	# through storage.php, which sets its own headers (private files included),
 	# so it is excluded here.
+	# Files whose URL changes when they do (compiled bundles in cache_public/, files linked
+	# with ?rev=<revision>) are cached for a year.
 	@static {
 		path *.woff2 *.woff *.ttf *.otf *.eot *.svg *.png *.jpg *.jpeg *.gif *.webp *.avif *.ico *.css *.js *.mjs *.map
 		not path /s/*
+		not path_regexp /cache_public/[^/]+$
+		not query rev=*
 	}
 	header @static Cache-Control "public, max-age=2592000"
+
+	@staticVersioned {
+		path *.woff2 *.woff *.ttf *.otf *.eot *.svg *.png *.jpg *.jpeg *.gif *.webp *.avif *.ico *.css *.js *.mjs *.map
+		not path /s/*
+		not {
+			not path_regexp /cache_public/[^/]+$
+			not query rev=*
+		}
+	}
+	header @staticVersioned Cache-Control "public, max-age=31536000, immutable"
 
 	# Add trailing slash for directory requests
 	@canonicalPath {
