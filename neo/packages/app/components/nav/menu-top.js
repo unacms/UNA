@@ -19,8 +19,19 @@ const INDICATOR_SETTLE_MS = 500;
 let __menuTopIndicatorAnimates = false;
 let __menuTopIndicatorSettling = false;
 
-const INDICATOR_BG_TRANSITION = 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out';
-const INDICATOR_TRANSITION = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), width 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out';
+// The transitions of the indicator's two layers: its background and the line.
+const INDICATOR_TRANSITIONS = {
+    bg: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out',
+    line: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), width 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out',
+};
+const INDICATOR_NO_TRANSITIONS = { bg: 'none', line: 'none' };
+
+/** Starts the settle window once, when the indicator first shows; transitions apply after it. */
+function startIndicatorSettle() {
+    if (__menuTopIndicatorSettling) return;
+    __menuTopIndicatorSettling = true;
+    setTimeout(() => { __menuTopIndicatorAnimates = true; }, INDICATOR_SETTLE_MS);
+}
 
 export default function MenuTop({ url, uri }) {
     const { currentUser } = useCurrentUser();
@@ -125,7 +136,7 @@ export default function MenuTop({ url, uri }) {
         };
     }
 
-    const animateIndicator = __menuTopIndicatorAnimates;
+    const indicatorTransitions = __menuTopIndicatorAnimates ? INDICATOR_TRANSITIONS : INDICATOR_NO_TRANSITIONS;
 
     // Persist for future remounts
     useEffect(() => {
@@ -135,10 +146,7 @@ export default function MenuTop({ url, uri }) {
             translateX: indicatorStyle.translateX,
             width: indicatorStyle.width,
         };
-        if (!__menuTopIndicatorSettling) {
-            __menuTopIndicatorSettling = true;
-            setTimeout(() => { __menuTopIndicatorAnimates = true; }, INDICATOR_SETTLE_MS);
-        }
+        startIndicatorSettle();
     }, [indicatorStyle.visible, indicatorStyle.translateX, indicatorStyle.width]);
 
     const MenuTopItem = components['menu-item']['topmenu'];
@@ -174,7 +182,7 @@ export default function MenuTop({ url, uri }) {
                     opacity: indicatorStyle.visible ? 1 : 0,
                     pointerEvents: 'none',
                     zIndex: 0,
-                    transition: animateIndicator ? INDICATOR_BG_TRANSITION : 'none'
+                    transition: indicatorTransitions.bg
                 }}
             />
 
@@ -186,7 +194,7 @@ export default function MenuTop({ url, uri }) {
                     opacity: indicatorStyle.visible ? 1 : 0,
                     pointerEvents: 'none',
                     zIndex: 0,
-                    transition: animateIndicator ? INDICATOR_TRANSITION : 'none'
+                    transition: indicatorTransitions.line
                 }}
             />
             <MenuTopProbe items={menu_navbar_items} t={t} onWidth={setInlineWidth} />
