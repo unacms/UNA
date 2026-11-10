@@ -105,7 +105,11 @@ class BxTasksGridTime extends BxBaseModGeneralGrid
 
             $this->_oModule->spendBudgetByContentId($iObjectId, $aValsToAdd['value'] - $aTrack['value']);
 
-            return $this->_bIsApi ? [] : echoJson(['grid' => $this->getCode(false), 'blink' => $iTrackId]);    
+            if($this->_bIsApi)
+                return [];
+
+            echoJson(['grid' => $this->getCode(false), 'blink' => $iTrackId]);
+            return;
         }
 
         if($this->_bIsApi)
@@ -118,7 +122,7 @@ class BxTasksGridTime extends BxBaseModGeneralGrid
             'action' => $sAction
         ]));
 
-        return echoJson(['popup' => ['html' => $sContent, 'options' => ['closeOnOuterClick' => false]]]);
+        echoJson(['popup' => ['html' => $sContent, 'options' => ['closeOnOuterClick' => false]]]);
     }
 
     protected function _getFormObject($sAction, $aTrack = [])
@@ -347,13 +351,29 @@ class BxTasksGridTime extends BxBaseModGeneralGrid
      */
     protected function _isAllowedEdit($aTrack)
     {
+        //--- The entry comes by its id, so it has to be in the context the permission is checked for.
+        if($this->_isContext() && !$this->_isTrackInContext($aTrack))
+            return false;
+
         if(!$this->_isAdministration())
             return (int)$aTrack['author_id'] == bx_get_logged_profile_id();
 
         if($this->_isContext())
-            return $this->_iContextPid && $this->_oModule->isAllowManageByContext($this->_iContextPid);
+            return $this->_oModule->isAllowManageByContext($this->_iContextPid);
 
         return $this->_oModule->_isModerator() || $this->_oModule->_isAdministrator();
+    }
+
+    protected function _isTrackInContext($aTrack)
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        if(!$this->_iContextPid)
+            return false;
+
+        $aTask = $this->_oModule->_oDb->getContentInfoById((int)$aTrack['object_id']);
+
+        return !empty($aTask) && is_array($aTask) && -(int)$aTask[$CNF['FIELD_ALLOW_VIEW_TO']] == $this->_iContextPid;
     }
 
     protected function _isCommon()
