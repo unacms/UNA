@@ -347,7 +347,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
                     $aNarrow = array_intersect($aOfWord, $aOfOther);
                     if ($aNarrow && array_diff($aOfWord, $aNarrow))
                         continue 2; // "simultaneous" in "interpreter simultaneous", "AI" in "AI consulting"
-                    if (!$aOfOther && mb_strlen($sOther) >= 4 && isset($aHintWords[$sOther]))
+                    if (!$aOfOther && isset($aHintWords[$sOther]))
                         continue 2; // "conference" when the hint says conference is Simultaneous
                 }
 
@@ -362,7 +362,8 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
     /**
      * Words of the field's hint sentences that name one of these values ("conference is Simultaneous
      * interpreting" for Simultaneous interpreting). A hint is free text: a sentence about something
-     * else ("do not infer skills from the project title") explains none of them.
+     * else ("do not infer skills from the project title") explains none of them. Words of 4+ letters
+     * and abbreviations only.
      */
     protected function _getHintWordsOf(string $sName, array $aField, array $aKeys): array
     {
@@ -376,12 +377,14 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
                 $aValueWords[$sWord] = true;
 
         $aWords = [];
-        foreach (preg_split('/[.;!?
-]+/u', $sHint, -1, PREG_SPLIT_NO_EMPTY) as $sSentence) {
-            $aSentence = $this->_getWords($sSentence);
-            if (array_intersect_key(array_flip($aSentence), $aValueWords))
-                foreach ($aSentence as $sWord)
-                    $aWords[$sWord] = true;
+        foreach (preg_split('/[.;!?\n]+/u', $sHint, -1, PREG_SPLIT_NO_EMPTY) as $sSentence) {
+            if (!array_intersect_key(array_flip($this->_getWords($sSentence)), $aValueWords))
+                continue;
+
+            // a short word counts only as an abbreviation ("IT", "AI"), not as "in" or "is"
+            foreach (preg_split('/[^\p{L}\p{N}]+/u', $sSentence, -1, PREG_SPLIT_NO_EMPTY) as $sWord)
+                if (mb_strlen($sWord) >= 4 || ($sWord === mb_strtoupper($sWord) && preg_match('/\p{L}/u', $sWord)))
+                    $aWords[mb_strtolower($sWord)] = true;
         }
 
         return $aWords;
@@ -572,8 +575,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
                     $aWords[$sWord] = true;
                 $aField = $this->_aFields[$sName];
                 foreach ($this->_getHintWordsOf($sName, $aField, array_map('strval', (array)$aChip['value'])) as $sWord => $b)
-                    if (mb_strlen($sWord) >= 4)
-                        $aWords[$sWord] = true;
+                    $aWords[$sWord] = true;
             }
         if (!$aWords)
             return;
