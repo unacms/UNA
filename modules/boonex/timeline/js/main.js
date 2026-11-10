@@ -410,7 +410,7 @@ BxTimelineMain.prototype.isLockedForm = function(oForm)
  */
 BxTimelineMain.prototype.onAttachLinkStart = function(oForm)
 {
-    oForm.data('bx_links_pending', (parseInt(oForm.data('bx_links_pending')) || 0) + 1);
+    oForm.data('bx_links_pending', (Number.parseInt(oForm.data('bx_links_pending'), 10) || 0) + 1);
 };
 
 /**
@@ -430,7 +430,7 @@ BxTimelineMain.prototype.onAttachLinkEnd = function(oForm, sUrl, mixedId)
         this._oAttachLinksFailed[sUrl] = 1;
     }
 
-    var iPending = Math.max((parseInt(oForm.data('bx_links_pending')) || 0) - 1, 0);
+    var iPending = Math.max((Number.parseInt(oForm.data('bx_links_pending'), 10) || 0) - 1, 0);
     oForm.data('bx_links_pending', iPending);
     if(iPending == 0) {
         this.unlockForm(oForm);
@@ -460,11 +460,11 @@ BxTimelineMain.prototype.addAttachLink = function(oElement, iId, sUrl)
         timeout: this._iAttachLinkTimeout
     }).done(function(oData) {
         var iEventId = 0;
-        if(oData && oData.event_id != undefined) {
-            iEventId = parseInt(oData.event_id);
+        if(oData?.event_id != undefined) {
+            iEventId = Number.parseInt(oData.event_id, 10);
         }
 
-        if(!oData || !oData.id || !oData.item || !$.trim(oData.item).length) {
+        if(!oData?.id || !oData.item || !String(oData.item).trim().length) {
             $this.onAttachLinkEnd(oForm, sUrl, 0);
             return;
         }
