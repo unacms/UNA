@@ -224,8 +224,18 @@ function DropdownMenuPopup({
     const sectionsMinPopupWidth = sectionsLayout.stacked
         ? 288
         : sectionsLayout.popupWidth ?? undefined;
-    // A plain list's fixed width (`popupWidth`): DropdownPopup takes equal min and max widths as the width.
+    // The popup's width limits; DropdownPopup takes equal ones as the width. A plain list has its `popupWidth`,
+    // or grows from `minPopupWidth` with its rows.
     const listPopupWidth = popupWidth && popupWidth > 0 ? popupWidth : undefined;
+    let popupMinWidth: number | undefined = listPopupWidth ?? minPopupWidth;
+    let popupMaxWidth: number | undefined = listPopupWidth;
+    if (isGridLayout) {
+        popupMinWidth = gridLayout!.popupWidth;
+        popupMaxWidth = gridLayout!.popupWidth;
+    } else if (useSectionsLayout) {
+        popupMinWidth = sectionsMinPopupWidth;
+        popupMaxWidth = sectionsLayout.stacked ? undefined : sectionsMinPopupWidth;
+    }
     const sectionCount = sections?.length || 0;
     const sectionsWrap = sectionCount > (sectionsLayout.cols || 1);
     // Web uses CSS grid props (`display: 'grid'`) that RN style types don't know.
@@ -304,20 +314,8 @@ function DropdownMenuPopup({
                 buttonProps={buttonProps}
                 triggerAccessibilityLabel={triggerAccessibilityLabel}
                 showOnTop={showOnTop}
-                minPopupWidth={
-                    isGridLayout
-                        ? gridLayout!.popupWidth
-                        : useSectionsLayout
-                            ? sectionsMinPopupWidth
-                            : listPopupWidth ?? minPopupWidth
-                }
-                maxPopupWidth={
-                    isGridLayout
-                        ? gridLayout!.popupWidth
-                        : useSectionsLayout
-                            ? (sectionsLayout.stacked ? undefined : sectionsMinPopupWidth)
-                            : listPopupWidth
-                }
+                minPopupWidth={popupMinWidth}
+                maxPopupWidth={popupMaxWidth}
                 openOnFocus={
                     openOnFocus ?? variant === 'tabs-overflow'
                 }
