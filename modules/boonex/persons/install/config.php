@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_persons',
     'title' => 'Persons',
     'note' => 'People, members, users, profiles',
-    'version' => '15.0.6.DEV',
+    'version' => '15.0.7.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
 
