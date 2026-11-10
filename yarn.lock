@@ -12,10 +12,10 @@
   resolved "https://registry.yarnpkg.com/@ag-ui/core/-/core-1.0.0.tgz#b2840ab883713e01ef7f0803f0cab06c2256a0ec"
   integrity sha512-yCRhsQvb4+lmGMrDsi4TOJxqKpm/kb3H64wwL+Z90jNVrkhy17RErfzsNgybfbjNKLM0nenEDYDVJsZHJJSigQ==
 
-"@ag-ui/core@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@ag-ui/core/-/core-1.0.3.tgz#dd7ae90a6850bbacf9964dfe86c1b118a5f97c82"
-  integrity sha512-HdMdZPOqworKlnzLaNktnbNYgIzOPbzt5ow6J4bPhbmHCdpWpCSZQFgkifQkn1zVHgCK1V+pmKc8xtW6FsQZKA==
+"@ag-ui/core@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@ag-ui/core/-/core-1.0.4.tgz#31df1b721e1ad9ebd3616e6023c8280d2cf1b82f"
+  integrity sha512-Z/G3UXYRyZ/1LcOtCCf6RJiFPTjRqaNublW/kQ7wsfiP4Qw5oIVmvO6NkUQYoqCoMXuXggyD3MMH2Td5OVKECQ==
 
 "@alloc/quick-lru@^5.2.0":
   version "5.3.0"

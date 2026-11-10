@@ -30,6 +30,12 @@ export type DropdownMenuItemData = DropdownGridMenuItem & {
     /** Modal body for `target: 'modal'` (see `resolveContent`). */
     content?: unknown;
     className?: string;
+    /**
+     * Popup lists only: the item is a group row that folds these rows (`group_header` titles included) in place
+     * under it, with a chevron and `aria-expanded`. One group is open at a time; all start closed, except the
+     * only item of a menu, and closing the menu closes them.
+     */
+    rows?: DropdownMenuItemData[];
 };
 
 export type DropdownMenuVariant = 'vertical' | 'horizontal' | 'nopad' | 'grid' | 'tabs-overflow';
@@ -69,6 +75,12 @@ export type DropdownMenuProps = {
     stacked?: boolean;
     /** Popup min width (px) of a plain list menu; 256 by default. */
     minPopupWidth?: number;
+    /**
+     * Popup width (px) of a plain list menu, instead of `minPopupWidth`: the popup keeps it whatever its rows
+     * hold (long labels and descriptions wrap), so a group that opens or closes doesn't resize it. Narrower
+     * screens cap it, 16px from each edge.
+     */
+    popupWidth?: number;
     /** Popup: lay the rows out in this many columns of about the same height. */
     columns?: number;
     /** Row size of a vertical list, the NeoButton heights: mini 28, small 36, regular 44 (default), large 52, xlarge 64.
@@ -154,6 +166,7 @@ function DropdownMenuPopup({
     triggerStyle,
     stacked = false,
     minPopupWidth = 256,
+    popupWidth,
     columns = 1,
     size,
 }: DropdownMenuPopupProps) {
@@ -211,6 +224,18 @@ function DropdownMenuPopup({
     const sectionsMinPopupWidth = sectionsLayout.stacked
         ? 288
         : sectionsLayout.popupWidth ?? undefined;
+    // The popup's width limits; DropdownPopup takes equal ones as the width. A plain list has its `popupWidth`,
+    // or grows from `minPopupWidth` with its rows.
+    const listPopupWidth = popupWidth && popupWidth > 0 ? popupWidth : undefined;
+    let popupMinWidth: number | undefined = listPopupWidth ?? minPopupWidth;
+    let popupMaxWidth: number | undefined = listPopupWidth;
+    if (isGridLayout) {
+        popupMinWidth = gridLayout!.popupWidth;
+        popupMaxWidth = gridLayout!.popupWidth;
+    } else if (useSectionsLayout) {
+        popupMinWidth = sectionsMinPopupWidth;
+        popupMaxWidth = sectionsLayout.stacked ? undefined : sectionsMinPopupWidth;
+    }
     const sectionCount = sections?.length || 0;
     const sectionsWrap = sectionCount > (sectionsLayout.cols || 1);
     // Web uses CSS grid props (`display: 'grid'`) that RN style types don't know.
@@ -289,20 +314,8 @@ function DropdownMenuPopup({
                 buttonProps={buttonProps}
                 triggerAccessibilityLabel={triggerAccessibilityLabel}
                 showOnTop={showOnTop}
-                minPopupWidth={
-                    isGridLayout
-                        ? gridLayout!.popupWidth
-                        : useSectionsLayout
-                            ? sectionsMinPopupWidth
-                            : minPopupWidth
-                }
-                maxPopupWidth={
-                    isGridLayout
-                        ? gridLayout!.popupWidth
-                        : useSectionsLayout && !sectionsLayout.stacked
-                            ? sectionsMinPopupWidth
-                            : undefined
-                }
+                minPopupWidth={popupMinWidth}
+                maxPopupWidth={popupMaxWidth}
                 openOnFocus={
                     openOnFocus ?? variant === 'tabs-overflow'
                 }
@@ -382,27 +395,80 @@ function DropdownMenuPopup({
                         ))}
                     </View>
                 ) : (
-                    <View ref={menuHighlightRef} className={listClassName}>
-                        {items.map((item, index) => {
-                            const navigable = isNavigableDropdownItem(item, onSelect);
-                            return (
-                                <DropdownMenuItem
-                                    key={item.id ?? index}
-                                    index={index}
-                                    item={item}
-                                    handleSelect={navigable ? undefined : handleSelect}
-                                    link={navigable ? item.link : undefined}
-                                    classes={classes}
-                                    className={item.className}
-                                    size={size}
-                                />
-                            );
-                        })}
-                    </View>
+                    <DropdownMenuList
+                        items={items}
+                        onSelect={onSelect}
+                        handleSelect={handleSelect}
+                        classes={classes}
+                        size={size}
+                        listRef={menuHighlightRef}
+                        listClassName={listClassName}
+                    />
                 )}
                 {footer}
             </DropdownPopup>
         </>
+    );
+}
+
+type DropdownMenuListProps = Pick<DropdownMenuProps, 'items' | 'onSelect' | 'size'> & {
+    handleSelect: (event: unknown, item: DropdownMenuItemData) => void;
+    classes: Record<string, string>;
+    listRef: ReturnType<typeof useMenuHighlight>;
+    listClassName: string;
+};
+
+/**
+ * A popup's plain list of rows. An item with `rows` is a group row that folds them in place: they follow it as
+ * the list's own children, so the sliding highlight and the focus order treat them as rows of the list. The open
+ * group lives here, inside the popup, which unmounts once the menu has closed, so every opening starts closed.
+ */
+function DropdownMenuList({ items, onSelect, handleSelect, classes, size, listRef, listClassName }: Readonly<DropdownMenuListProps>) {
+    const DropdownMenuItem = getDropdownMenuItem();
+    const groupKey = (item: DropdownMenuItemData, index: number) => item.id ?? `group-${index}`;
+    // A menu that is a single group has nothing else to show: that group starts open.
+    const [expanded, setExpanded] = useState<string | number | null>(() =>
+        items.length === 1 && items[0]?.rows?.length ? groupKey(items[0], 0) : null
+    );
+
+    const row = (item: DropdownMenuItemData, key: string | number, index: number, nested?: boolean) => {
+        const navigable = isNavigableDropdownItem(item, onSelect);
+        return (
+            <DropdownMenuItem
+                key={key}
+                index={index}
+                item={item}
+                handleSelect={navigable ? undefined : handleSelect}
+                link={navigable ? item.link : undefined}
+                classes={classes}
+                className={item.className}
+                size={size}
+                nested={nested}
+            />
+        );
+    };
+
+    return (
+        <View ref={listRef} className={listClassName}>
+            {items.flatMap((item, index) => {
+                if (!item.rows?.length) return [row(item, item.id ?? index, index)];
+                const key = groupKey(item, index);
+                const open = expanded === key;
+                return [
+                    <DropdownMenuItem
+                        key={key}
+                        index={index}
+                        item={item}
+                        expanded={open}
+                        handleSelect={() => setExpanded(open ? null : key)}
+                        classes={classes}
+                        className={item.className}
+                        size={size}
+                    />,
+                    ...(open ? item.rows.map((sub, i) => row(sub, `${key}/${sub.id ?? i}`, i, true)) : []),
+                ];
+            })}
+        </View>
     );
 }
 
@@ -623,6 +689,7 @@ export default function DropdownMenu({
     triggerStyle,
     stacked = false,
     minPopupWidth,
+    popupWidth,
     columns,
     size,
 }: DropdownMenuProps) {
@@ -651,6 +718,7 @@ export default function DropdownMenu({
                 triggerStyle={triggerStyle}
                 stacked={stacked}
                 minPopupWidth={minPopupWidth}
+                popupWidth={popupWidth}
                 columns={columns}
                 size={size}
             />

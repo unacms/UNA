@@ -137,7 +137,24 @@ class BxReviewsFormEntryCheckerHelper extends BxDolFormCheckerHelper {
     public function passVotingOptions ($s) {
         if (!is_array($s))
             return false;
-        return serialize($s);
+
+        /*
+         * Ratings are rendered into HTML attributes later, so keep only
+         * integer option ids mapped to integer ratings within the allowed range.
+         */
+        $iMax = (int)getParam('bx_reviews_voting_max_stars');
+        if ($iMax < 1)
+            $iMax = 5;
+
+        $aClean = [];
+        foreach ($s as $mixedId => $mixedRate) {
+            if (!is_scalar($mixedId) || !is_numeric($mixedId) || !is_scalar($mixedRate) || !is_numeric($mixedRate))
+                continue;
+
+            $aClean[(int)$mixedId] = max(0, min($iMax, (int)$mixedRate));
+        }
+
+        return serialize($aClean);
     }
 
     public function passOneIntArray ($s) {

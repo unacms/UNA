@@ -55,8 +55,11 @@ export default function HeaderElement({ url, uri }) {
     // "Active (for App)" (Studio > Navigation), so switching it off there hides it in the apps too.
     const unaToolbar = currentUser?.toolbar
     const inUnaToolbar = (name) => !Array.isArray(unaToolbar) || unaToolbar.includes(name)
+    // A web guest is `null` on the server and through hydration (seeded only in a layout effect), and
+    // `false` afterwards; the guest toolbar is server-seeded, so fetch it for both so Search is in the
+    // server HTML and doesn't pop in on hydration. A member is an object here and never reaches this.
     const { menuData: guestToolbar } = useMenuData(
-        currentUser === false && has('search') ? appSetting('menu_items', 'objects', 'toolbar') : null
+        !currentUser && has('search') ? appSetting('menu_items', 'objects', 'toolbar') : null
     )
     const inGuestToolbar = (name) => Array.isArray(guestToolbar?.items) && guestToolbar.items.some((item) => item?.name === name)
     const addMenu = useMenuAddItems(has('add'))

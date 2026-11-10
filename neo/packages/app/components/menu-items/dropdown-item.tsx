@@ -63,6 +63,13 @@ export type DropdownMenuItemProps = {
     mode?: string;
     /** Row size of a vertical list (`theme.dropdown_menu.item_sizes`); regular by default. */
     size?: DropdownMenuItemSize;
+    /**
+     * Set (true or false) for a disclosure row, a group that folds its rows in place: a chevron at the
+     * end, turned while open, and `aria-expanded`. `handleSelect` toggles it.
+     */
+    expanded?: boolean;
+    /** A row (or group title) inside an open group, inset by `theme.dropdown_menu.item_nested`. */
+    nested?: boolean;
 };
 
 const getIcon = (oItem: DropdownRowItem, iconSize: number, imageClass = 'h-8 w-8 rounded-full') => {
@@ -122,12 +129,12 @@ const sizedPresets = (size?: DropdownMenuItemSize): Presets | null => {
     };
 };
 
-function GroupHeader({ item }: Readonly<{ item: DropdownRowItem }>) {
+function GroupHeader({ item, nested }: Readonly<{ item: DropdownRowItem; nested?: boolean }>) {
     const headerClass = item.first
         ? (menuSettings.item_group_header_first ?? menuSettings.item_group_header)
         : menuSettings.item_group_header;
     return (
-        <View className={headerClass || 'px-2 pt-3 pb-1'}>
+        <View className={cn(headerClass || 'px-2 pt-3 pb-1', nested && menuSettings.item_nested)}>
             <Text
                 role="heading"
                 aria-level={2}
@@ -139,11 +146,22 @@ function GroupHeader({ item }: Readonly<{ item: DropdownRowItem }>) {
     );
 }
 
-/** Press handler, plus the radio role when the item is a pickable option (`selected` true or false). */
-const getPressProps = (item: DropdownRowItem, handleSelect?: SelectHandler) => {
+/**
+ * Press handler, plus the radio role when the item is a pickable option (`selected` true or false), or the
+ * button role and expanded state of a disclosure row (`expanded` true or false).
+ */
+const getPressProps = (item: DropdownRowItem, handleSelect?: SelectHandler, expanded?: boolean) => {
     if (typeof handleSelect !== 'function')
         return {};
     const props = { onPress: (event: GestureResponderEvent) => handleSelect(event, item) };
+    if (typeof expanded === 'boolean') {
+        return {
+            ...props,
+            accessibilityRole: 'button' as const,
+            accessibilityState: { expanded },
+            'aria-expanded': expanded,
+        };
+    }
     if (item.selected !== true && item.selected !== false)
         return props;
     return {
@@ -176,7 +194,40 @@ function ItemLabel({ item, textClass }: Readonly<{ item: DropdownRowItem; textCl
     );
 }
 
-export default function DropdownMenuItem({ item, index, link, handleSelect, classes, className, counter, handleCounter, size }: Readonly<DropdownMenuItemProps>) {
+/**
+ * The cue a row plays when pressed (web; native menus are bottom sheets and stay quiet). `item.sound` changes it;
+ * false for an option whose choice answers itself (the Sounds level). A disclosure row opens or closes its group.
+ */
+const getPressCue = (item: DropdownRowItem, expanded?: boolean): PressCue => {
+    if (item.sound != null) return item.sound;
+    if (typeof expanded !== 'boolean') return 'select';
+    return expanded ? 'close' : 'open';
+};
+
+/** The row's own classes: the variant's preset, the selected look, the inset of a row inside an open group. */
+const getRowClass = (presets: Presets, item: DropdownRowItem, classes?: DropdownRowClasses, className?: string, nested?: boolean): string =>
+    cn(
+        'group',
+        className,
+        presets[classes?.item || 'item_ver'],
+        item.selected && (menuSettings.item_selected ?? 'bg-accent'),
+        nested && menuSettings.item_nested
+    );
+
+/** The icon circle's classes: the solid one for the selected item. */
+const getIconWrapClass = (presets: Presets, item: DropdownRowItem): string =>
+    item.selected ? (presets.item_icon_active ?? presets.item_icon) : presets.item_icon;
+
+/** A disclosure row's chevron: down while closed, turned up while open. */
+function DisclosureChevron({ expanded, size }: Readonly<{ expanded: boolean; size: number }>) {
+    return (
+        <View className={cn(menuSettings.item_disclosure, expanded && menuSettings.item_disclosure_open)}>
+            <Icon icon="ChevronDown" size={size} className={menuSettings.item_icon_glyph} />
+        </View>
+    );
+}
+
+export default function DropdownMenuItem({ item, index, link, handleSelect, classes, className, counter, handleCounter, size, expanded, nested }: Readonly<DropdownMenuItemProps>) {
     const key = item.id ?? index;
     const presets: Presets = { ...menuSettings, ...sizedPresets(size) };
     const iconSize = presets.icon_size || 16;
@@ -190,12 +241,12 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     }
 
     if (item.type === 'group_header')
-        return <GroupHeader key={key} item={item} />;
+        return <GroupHeader key={key} item={item} nested={nested} />;
+
+    const disclosure = typeof expanded === 'boolean';
 
     const icon = getIcon(item, iconSize, presets.item_image);
-    const iconWrapClass = item.selected
-        ? (presets.item_icon_active ?? presets.item_icon)
-        : presets.item_icon;
+    const iconWrapClass = getIconWrapClass(presets, item);
 
     const itemCntClass = menuSettings[classes?.item_cnt_key ?? 'item_cnt'] ?? menuSettings.item_cnt;
     const rowClassName = classes?.item_row ?? 'justify-between items-start';
@@ -203,19 +254,19 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     // A link row is the child of `<Link asChild>` (below). Web wraps it in an anchor; on
     // native the Link hands its onPress to the child, so the row has to be pressable.
     const Wrapper = handleSelect || (link && Platform.OS !== 'web') ? Pressable : View;
-    const pressProps = getPressProps(item, handleSelect);
-    const rowClass = cn('group', className, presets[classes?.item || 'item_ver'], item.selected && (menuSettings.item_selected ?? 'bg-accent'));
+    const pressProps = getPressProps(item, handleSelect, expanded);
     const Content = (
         <Wrapper
-            className={rowClass}
+            className={getRowClass(presets, item, classes, className, nested)}
             key={key}
             {...pressProps}
-            // A menu option (web; native menus are bottom sheets and stay quiet). `item.sound` changes it; false for
-            // an option whose choice answers itself (the Sounds level).
-            {...(handleSelect || link ? cueAttributes(item.sound ?? 'select') : {})}
+            {...(handleSelect || link ? cueAttributes(getPressCue(item, expanded)) : {})}
         >
             <Row className={`${rowClassName} w-full min-w-0`}>
-                <View className={itemCntClass}>
+                {/* A disclosure's label shares the row with its chevron (views don't shrink by default), and sits at
+                    the chevron's middle: the chevron is taller than a label without an icon, which the row's
+                    `items-start` would leave above the labels of the rows around it. */}
+                <View className={cn(itemCntClass, disclosure && 'flex-1 self-center')}>
                 {(!!icon && !!menuSettings.item_icon) && <View className={iconWrapClass}>{icon}</View>}
                 {!!item.title && <ItemLabel item={item} textClass={getTextClass(presets, item, classes)} />}
                 </View>
@@ -224,6 +275,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
                         <Text className={presets.item_text}>{counter}</Text>
                     </Pressable>
                 )}
+                {disclosure && <DisclosureChevron expanded={expanded} size={iconSize} />}
             </Row>
         </Wrapper>
     );

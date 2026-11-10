@@ -1,4 +1,5 @@
 import { View, Row } from 'app/design/view'
+import { Text } from 'app/design/typography'
 import { useCurrentUser } from 'app/context/user'
 import { menuItemsByName, menuItemsByNameNew, appSetting, flattenMenuItemsForDropdown, mergeNavbarMoreWithLauncher, navbarItemsFromSiteMenu, navbarMoreItem, launcherItemsWithoutTabs } from 'app/lib/util'
 import { useTranslation } from 'react-i18next'
@@ -9,6 +10,28 @@ import { Platform } from 'react-native';
 
 // Persist indicator state across remounts (web/native)
 let __menuTopIndicatorPersist = { initialized: false, translateX: 0, width: 0 };
+// The indicator moves without a transition until it has shown and the bar has settled, then
+// animates. The first time it shows it has no earlier position to move from: with the transitions
+// it would grow from the nav's left edge and slide to its tab on every fresh load. And while the
+// page hydrates the tabs can still shift (their content is swapped in a frame later), which it
+// should follow at once, not slide after.
+const INDICATOR_SETTLE_MS = 500;
+let __menuTopIndicatorSettling = false;
+
+// The transitions of the indicator's two layers: its background and the line.
+const INDICATOR_TRANSITIONS = {
+    bg: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out',
+    line: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), width 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out',
+};
+// The ones in use: none until the settle window has passed.
+let __menuTopIndicatorTransitions = { bg: 'none', line: 'none' };
+
+/** Starts the settle window once, when the indicator first shows; transitions apply after it. */
+function startIndicatorSettle() {
+    if (__menuTopIndicatorSettling) return;
+    __menuTopIndicatorSettling = true;
+    setTimeout(() => { __menuTopIndicatorTransitions = INDICATOR_TRANSITIONS; }, INDICATOR_SETTLE_MS);
+}
 
 export default function MenuTop({ url, uri }) {
     const { currentUser } = useCurrentUser();
@@ -68,14 +91,12 @@ export default function MenuTop({ url, uri }) {
 
     // Track measured layouts for each tab item
     const [itemLayouts, setItemLayouts] = useState({});
-    const [containerLayout, setContainerLayout] = useState({ x: 0, measured: false });
-    const handleContainerLayout = (layout) => {
-        const x = layout?.x || 0;
-        setContainerLayout((prev) => {
-            if (prev.measured && prev.x === x) return prev;
-            return { x, measured: true };
-        });
-    };
+    const [containerLayout, setContainerLayout] = useState({ x: 0, width: 0, measured: false });
+    const handleContainerLayout = (layout) => setContainerLayout((prev) => nextContainerLayout(prev, layout));
+    // The width every item needs with its label beside its icon, measured on a hidden copy of the
+    // row. When the bar is narrower, every item puts its label under its icon in small type.
+    const [inlineWidth, setInlineWidth] = useState(0);
+    const stacked = isStacked(containerLayout.width, inlineWidth);
 
     const handleItemLayout = (index, layout) => {
         setItemLayouts((prev) => {
@@ -115,6 +136,8 @@ export default function MenuTop({ url, uri }) {
         };
     }
 
+    const indicatorTransitions = __menuTopIndicatorTransitions;
+
     // Persist for future remounts
     useEffect(() => {
         if (!indicatorStyle.visible) return;
@@ -123,6 +146,7 @@ export default function MenuTop({ url, uri }) {
             translateX: indicatorStyle.translateX,
             width: indicatorStyle.width,
         };
+        startIndicatorSettle();
     }, [indicatorStyle.visible, indicatorStyle.translateX, indicatorStyle.width]);
 
     const MenuTopItem = components['menu-item']['topmenu'];
@@ -158,7 +182,7 @@ export default function MenuTop({ url, uri }) {
                     opacity: indicatorStyle.visible ? 1 : 0,
                     pointerEvents: 'none',
                     zIndex: 0,
-                    transition: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out'
+                    transition: indicatorTransitions.bg
                 }}
             />
 
@@ -170,9 +194,10 @@ export default function MenuTop({ url, uri }) {
                     opacity: indicatorStyle.visible ? 1 : 0,
                     pointerEvents: 'none',
                     zIndex: 0,
-                    transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), width 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out'
+                    transition: indicatorTransitions.line
                 }}
             />
+            <MenuTopProbe items={menu_navbar_items} t={t} onWidth={setInlineWidth} />
             {menu_navbar_items.map((item, index) => {
                 const isActive = index === activeIndex;
                 return (
@@ -181,9 +206,10 @@ export default function MenuTop({ url, uri }) {
                             index={index}
                             link={item.link}
                             icon={item.icon}
-                            isTitle={item.showTitle}
+                            isTitle={showsLabel(item, stacked)}
                             title={t(item.title)}
                             isActive={isActive}
+                            stacked={stacked}
                             items={flattenMenuItemsForDropdown(item.items)}
                             chevron={item.chevron}
                             animated={item.animated}
@@ -195,5 +221,52 @@ export default function MenuTop({ url, uri }) {
             })}
         </Row>
 
+    )
+}
+
+/** The nav's measured position and width; the same object while neither changed (no re-render). */
+function nextContainerLayout(prev, layout) {
+    const x = layout?.x || 0
+    const width = layout?.width || 0
+    if (prev.measured && prev.x === x && prev.width === width) return prev
+    return { x, width, measured: true }
+}
+
+/** Labels go under the icons once the bar (measured) is narrower than every label beside its icon needs. */
+function isStacked(barWidth, inlineWidth) {
+    return barWidth > 0 && inlineWidth > barWidth
+}
+
+/** More is the menu icon alone beside labelled tabs; stacked, it gets its label under the icon with theirs. */
+function showsLabel(item, stacked) {
+    return !!item.showTitle || (stacked && item.name === 'more')
+}
+
+/**
+ * A hidden copy of the bar with every label beside its icon, so MenuTop knows the width that
+ * needs. It sits in a clipped box the nav's size (a copy wider than the bar would otherwise widen
+ * the page and add a horizontal scrollbar), aria-hidden and invisible, with no links in it.
+ */
+function MenuTopProbe({ items, t, onWidth }) {
+    return (
+        <View aria-hidden className="absolute inset-0 overflow-hidden invisible pointer-events-none">
+            <Row
+                className="absolute left-0 top-0 w-max gap-2"
+                onLayout={(e) => {
+                    const width = Math.ceil(e?.nativeEvent?.layout?.width || 0);
+                    onWidth((prev) => (prev === width ? prev : width));
+                }}
+            >
+                {items.map((item) => (
+                    <Row key={item.name || item.link || item.title} className={`items-center justify-center h-12 min-w-16 shrink-0 ${item.icon && item.showTitle ? 'ps-3 pe-2' : 'px-2'}`}>
+                        {item.icon ? <View className="h-6 w-6 shrink-0" /> : null}
+                        {item.showTitle ? (
+                            <Text className="whitespace-nowrap tracking-tight font-medium text-sm px-2 leading-5">{t(item.title)}</Text>
+                        ) : null}
+                        {item.chevron ? <View className="h-4 w-4 shrink-0" /> : null}
+                    </Row>
+                ))}
+            </Row>
+        </View>
     )
 }

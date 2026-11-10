@@ -2,7 +2,7 @@ import { useState } from 'react'
 import DropdownMenu, { type DropdownMenuItemData } from 'app/ui/atoms/dropdown-menu'
 import { NeoButton, NeoButtonLink } from 'app/design/controls'
 import { Row } from 'app/design/view'
-import { cn, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
+import { appSetting, cn, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { useTranslation } from 'react-i18next'
 import { useIsDesktop } from 'app/context/measure';
@@ -13,12 +13,21 @@ import type { MenuHeaderNavigationProps } from 'app/components/nav/menu-header-n
 // Log In and Sign Up share the row equally, whatever their label widths.
 const AUTH_BUTTON_CLASSES = { root: 'basis-0' }
 
+/** The popup's width (`menu_items.menu_navigation_width`); none for a popup sized to its rows. */
+const getPopupWidth = (): number | undefined => {
+    const width = Number(appSetting('menu_items', 'menu_navigation_width'))
+    return Number.isFinite(width) && width > 0 ? width : undefined
+}
+
 /**
  * Header-toolbar menu (`menu_navigation`, else UNA's site menu): icon trigger opens the same style of popup
- * menu as navbar “more” (DropdownMenu + menu_items dropdown rows). A group shows as a
- * section under its title. Items marked as buttons (the site menu's Log In and Sign Up for
- * guests on phones) come first, as the buttons they are outside the menu, above a divider.
- * With `auth`, a menu without such items gives guests below `sm` Log In and Sign Up there.
+ * menu as navbar “more” (DropdownMenu + menu_items dropdown rows). A group is a row with a
+ * chevron that folds its subitems in place, one group at a time; all start closed unless the
+ * menu is a single group. The popup has one width (`menu_items.menu_navigation_width`), so
+ * opening a group doesn't resize it. Items marked as buttons (the site menu's Log In and
+ * Sign Up for guests on phones) come first, as the buttons they are outside the menu, above
+ * a divider. With `auth`, a menu without such items gives guests below `sm` Log In and
+ * Sign Up there.
  * Web and Android; iOS has a native menu (menu-header-navigation.ios.tsx).
  */
 export default function MenuHeaderNavigation(props: Readonly<MenuHeaderNavigationProps>) {
@@ -29,11 +38,13 @@ export default function MenuHeaderNavigation(props: Readonly<MenuHeaderNavigatio
     const openModalByUrl = useOpenModalByUrl()
     const openModalWithContent = useOpenModalWithContent()
     const { entries, buttons, pending } = useMenuNavigationEntries()
-    const items: DropdownMenuItemData[] = entries
-        .flatMap(({ key, item, rows }) =>
-            rows.length ? [{ type: 'group_header', id: `header-${key}`, name: item.name, title: item.title }, ...rows] : [item]
-        )
-        .map((item) => (item.description || item.info ? { ...item, description: t(item.description || item.info) } : item))
+    const describe = (item: DropdownMenuItemData & { info?: string; description?: string }): DropdownMenuItemData =>
+        item.description || item.info ? { ...item, description: t(item.description || item.info || '') } : item
+    // A group is a row like the others that folds its rows in place (DropdownMenu `rows`): its nested
+    // groups (Products > Software) keep their section titles, so the levels stay apart.
+    const items: DropdownMenuItemData[] = entries.map(({ key, item, rows }) =>
+        rows.length ? { ...describe(item), id: item.id ?? `group-${key}`, rows: rows.map(describe) } : describe(item)
+    )
 
     // The `auth` fallback follows the toolbar, which has its own Log In and Sign Up from `sm`.
     const authFallback = !buttons.length && !!props.auth && !currentUser
@@ -64,6 +75,7 @@ export default function MenuHeaderNavigation(props: Readonly<MenuHeaderNavigatio
         <DropdownMenu
             mode="popup"
             items={items}
+            popupWidth={getPopupWidth()}
             open={open}
             onOpenChange={setOpen}
             header={
