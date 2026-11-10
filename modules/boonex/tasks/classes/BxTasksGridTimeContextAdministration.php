@@ -8,12 +8,11 @@
  * @{
  */
 
+require_once(BX_DOL_DIR_STUDIO_INC . 'utils.inc.php');
 require_once('BxTasksGridTime.php');
 
 class BxTasksGridTimeContextAdministration extends BxTasksGridTime
 {
-    protected $_iContextPid;
-
     public function __construct ($aOptions, $oTemplate = false)
     {
         parent::__construct ($aOptions, $oTemplate);
