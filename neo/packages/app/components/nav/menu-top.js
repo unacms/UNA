@@ -10,6 +10,17 @@ import { Platform } from 'react-native';
 
 // Persist indicator state across remounts (web/native)
 let __menuTopIndicatorPersist = { initialized: false, translateX: 0, width: 0 };
+// The indicator moves without a transition until it has shown and the bar has settled, then
+// animates. The first time it shows it has no earlier position to move from: with the transitions
+// it would grow from the nav's left edge and slide to its tab on every fresh load. And while the
+// page hydrates the tabs can still shift (their content is swapped in a frame later), which it
+// should follow at once, not slide after.
+const INDICATOR_SETTLE_MS = 500;
+let __menuTopIndicatorAnimates = false;
+let __menuTopIndicatorSettling = false;
+
+const INDICATOR_BG_TRANSITION = 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out';
+const INDICATOR_TRANSITION = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), width 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out';
 
 export default function MenuTop({ url, uri }) {
     const { currentUser } = useCurrentUser();
@@ -114,6 +125,8 @@ export default function MenuTop({ url, uri }) {
         };
     }
 
+    const animateIndicator = __menuTopIndicatorAnimates;
+
     // Persist for future remounts
     useEffect(() => {
         if (!indicatorStyle.visible) return;
@@ -122,6 +135,10 @@ export default function MenuTop({ url, uri }) {
             translateX: indicatorStyle.translateX,
             width: indicatorStyle.width,
         };
+        if (!__menuTopIndicatorSettling) {
+            __menuTopIndicatorSettling = true;
+            setTimeout(() => { __menuTopIndicatorAnimates = true; }, INDICATOR_SETTLE_MS);
+        }
     }, [indicatorStyle.visible, indicatorStyle.translateX, indicatorStyle.width]);
 
     const MenuTopItem = components['menu-item']['topmenu'];
@@ -157,7 +174,7 @@ export default function MenuTop({ url, uri }) {
                     opacity: indicatorStyle.visible ? 1 : 0,
                     pointerEvents: 'none',
                     zIndex: 0,
-                    transition: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out'
+                    transition: animateIndicator ? INDICATOR_BG_TRANSITION : 'none'
                 }}
             />
 
@@ -169,7 +186,7 @@ export default function MenuTop({ url, uri }) {
                     opacity: indicatorStyle.visible ? 1 : 0,
                     pointerEvents: 'none',
                     zIndex: 0,
-                    transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), width 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out'
+                    transition: animateIndicator ? INDICATOR_TRANSITION : 'none'
                 }}
             />
             <MenuTopProbe items={menu_navbar_items} t={t} onWidth={setInlineWidth} />
