@@ -70,7 +70,8 @@ class BxReviewsTemplate extends BxBaseModTextTemplate
 
         $aTmplOptions = [];
         foreach ($aOptions as $aOption) {
-            $iRate = isset($aValue[$aOption['id']]) ? $aValue[$aOption['id']] : 0;
+            // cast to int, the value goes into an HTML attribute (also covers already stored data)
+            $iRate = isset($aValue[$aOption['id']]) && is_scalar($aValue[$aOption['id']]) ? (int)$aValue[$aOption['id']] : 0;
             if (!$isAllowedVote && !$iRate) continue;
 
             $aTmplOptions[] = [
