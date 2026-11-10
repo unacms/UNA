@@ -32,11 +32,8 @@ jobs:
         BASE_REF: ${{ github.event.pull_request.base.ref }}
       run: |
         # A site that ran a migration never runs it again, and the next run there stops until an
-        # admin accepts the changed file. A file may be deleted once a baseline covers it, or when
-        # the base has another migration in its folder with the same YYYYMMDDNN: there every run
-        # stops at the clash before running anything, so no site ran either file.
+        # admin accepts the changed file. A file may be deleted once a baseline covers it.
         pattern='^(migrations|modules/[^/]+/migrations|modules/[^/]+/[^/]+/migrations)/[^/]+\.(sql|php|xml)$'
-        base=$(git merge-base "origin/$BASE_REF" HEAD)
         fail=0
         for f in $(git diff --no-renames --name-only --diff-filter=M "origin/$BASE_REF...HEAD" | grep -E "$pattern" || true); do
           echo "::error file=$f::A migration on master is never changed: put the change in a new migration"
@@ -44,11 +41,6 @@ jobs:
         done
         for f in $(git diff --no-renames --name-only --diff-filter=D "origin/$BASE_REF...HEAD" | grep -E "$pattern" || true); do
           id=$(basename "${f%.*}")
-          serial=${id:0:10}
-          if git ls-tree --name-only "$base" "$(dirname "$f")/" | grep -E "$pattern" | grep -vxF -- "$f" \
-            | grep -q -- "/$serial"; then
-            continue
-          fi
           if ! grep -hE '^[^A-Za-z]*UNA-Migration-Baseline-Covers:' "$(dirname "$f")"/*.sql "$(dirname "$f")"/*.php 2>/dev/null | grep -qw -- "$id"; then
             echo "::error file=$f::A migration on master is deleted only when a baseline in its folder covers it"
             fail=1
