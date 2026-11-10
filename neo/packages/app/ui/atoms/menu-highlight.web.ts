@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 
 /** The list class the highlight's CSS hangs on (design/styles/global.web.css). */
 export const MENU_HIGHLIGHT_CLASS = 'neo-menu-highlight';
@@ -13,9 +13,27 @@ const INTERACTIVE = 'a, [tabindex]';
  * at once, as the item itself moved. Native has no hover and gets a no-op (menu-highlight.ts).
  */
 export function useMenuHighlight() {
+    // The lists it is on (a sectioned menu has one per section), each with what takes it off again. A ref passed
+    // through View is called with null when its list unmounts, without saying which, and what the callback returns
+    // is dropped there: so a null drops the lists that have left the page.
+    const attached = useRef<Map<HTMLElement, () => void> | null>(null);
+
     return useCallback((node: unknown) => {
+        const lists = (attached.current ??= new Map<HTMLElement, () => void>());
         const list = node as HTMLElement | null;
-        if (!list || typeof list.addEventListener !== 'function') return undefined;
+        if (!list) {
+            // Once React has removed the unmounted nodes.
+            queueMicrotask(() => {
+                lists.forEach((detach, mounted) => {
+                    if (mounted.isConnected) return;
+                    detach();
+                    lists.delete(mounted);
+                });
+            });
+            return;
+        }
+        if (typeof list.addEventListener !== 'function') return;
+        lists.get(list)?.();
 
         // The list's child that holds the target: an item, unless it has nothing to press (a group header).
         const itemOf = (target: EventTarget | null) => {
@@ -85,13 +103,13 @@ export function useMenuHighlight() {
         list.addEventListener('pointerleave', hide);
         list.addEventListener('focusin', onFocusIn);
         list.addEventListener('focusout', onFocusOut);
-        return () => {
+        lists.set(list, () => {
             rowsObserver?.disconnect();
             sizeObserver?.disconnect();
             list.removeEventListener('pointerover', onPointerOver);
             list.removeEventListener('pointerleave', hide);
             list.removeEventListener('focusin', onFocusIn);
             list.removeEventListener('focusout', onFocusOut);
-        };
+        });
     }, []);
 }
