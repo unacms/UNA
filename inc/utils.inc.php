@@ -678,8 +678,10 @@ function getVisitorIP()
  *
  * X-Forwarded-For is read from the right, see bx_ip_from_forwarded_for. Proxies append to it,
  * so a visitor can't hide their address behind a value they sent themselves.
- * CF-Connecting-IP, True-Client-IP and X-Real-IP count only when X-Forwarded-For is absent:
- * a proxy that doesn't set them passes a visitor's own value through.
+ * It is the only proxy header read. CF-Connecting-IP, True-Client-IP and X-Real-IP are each set
+ * by some proxies only, and a proxy passes the ones it doesn't set through as the visitor sent
+ * them: a trusted proxy's address says nothing about who wrote such a header. Without
+ * X-Forwarded-For the address is the proxy's.
  *
  * @param array $aServer request variables, usually $_SERVER
  * @param array|null $aTrustedProxies addresses and CIDR ranges of public proxies and CDNs,
@@ -700,12 +702,6 @@ function bx_get_visitor_ip($aServer, $aTrustedProxies = null)
 
     if (!empty($aServer['HTTP_X_FORWARDED_FOR']) && is_string($aServer['HTTP_X_FORWARDED_FOR']))
         return bx_ip_from_forwarded_for($aServer['HTTP_X_FORWARDED_FOR'], $aTrustedProxies, $sRemote);
-
-    foreach (['HTTP_CF_CONNECTING_IP', 'HTTP_TRUE_CLIENT_IP', 'HTTP_X_REAL_IP'] as $sHeader) {
-        $sIp = isset($aServer[$sHeader]) && is_string($aServer[$sHeader]) ? bx_ip_normalize($aServer[$sHeader]) : '';
-        if ($sIp !== '')
-            return $sIp;
-    }
 
     return $sRemote;
 }

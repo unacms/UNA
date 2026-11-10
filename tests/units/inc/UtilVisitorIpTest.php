@@ -43,16 +43,19 @@ class UtilVisitorIpTest extends \PHPUnit\Framework\TestCase
             'private address sent by the visitor through a proxy' => [['REMOTE_ADDR' => '100.64.0.2', 'HTTP_X_FORWARDED_FOR' => '10.0.0.9, 81.2.69.142'], [], '81.2.69.142'],
             'CF-Connecting-IP sent by the visitor through a proxy' => [['REMOTE_ADDR' => '100.64.0.2', 'HTTP_CF_CONNECTING_IP' => '8.8.8.8', 'HTTP_X_FORWARDED_FOR' => '81.2.69.142'], [], '81.2.69.142'],
             'X-Real-IP sent by the visitor through a proxy' => [['REMOTE_ADDR' => '172.16.0.2', 'HTTP_X_FORWARDED_FOR' => '93.184.216.34', 'HTTP_X_REAL_IP' => '81.2.69.142'], [], '93.184.216.34'],
-            'X-Real-IP without X-Forwarded-For' => [['REMOTE_ADDR' => '100.64.0.2', 'HTTP_X_REAL_IP' => '93.184.216.34'], [], '93.184.216.34'],
-            'True-Client-IP without X-Forwarded-For' => [['REMOTE_ADDR' => '172.16.0.2', 'HTTP_TRUE_CLIENT_IP' => '81.2.69.142', 'HTTP_X_REAL_IP' => '93.184.216.34'], [], '81.2.69.142'],
-            'CF-Connecting-IP without X-Forwarded-For' => [['REMOTE_ADDR' => '172.16.0.2', 'HTTP_CF_CONNECTING_IP' => '2001:4860:4860::8888', 'HTTP_TRUE_CLIENT_IP' => '81.2.69.142'], [], '2001:4860:4860::8888'],
+            // only X-Forwarded-For is read: a proxy passes the other headers through as the visitor sent them
+            'X-Real-IP without X-Forwarded-For is not read' => [['REMOTE_ADDR' => '100.64.0.2', 'HTTP_X_REAL_IP' => '93.184.216.34'], [], '100.64.0.2'],
+            'True-Client-IP without X-Forwarded-For is not read' => [['REMOTE_ADDR' => '172.16.0.2', 'HTTP_TRUE_CLIENT_IP' => '81.2.69.142', 'HTTP_X_REAL_IP' => '93.184.216.34'], [], '172.16.0.2'],
+            'CF-Connecting-IP without X-Forwarded-For is not read' => [['REMOTE_ADDR' => '172.16.0.2', 'HTTP_CF_CONNECTING_IP' => '2001:4860:4860::8888', 'HTTP_TRUE_CLIENT_IP' => '81.2.69.142'], [], '172.16.0.2'],
+            'a forged CF-Connecting-IP beside the proxy\'s X-Real-IP' => [['REMOTE_ADDR' => '10.0.0.5', 'HTTP_CF_CONNECTING_IP' => '8.8.8.8', 'HTTP_X_REAL_IP' => '93.184.216.34'], [], '10.0.0.5'],
             'Client-IP is not a proxy header' => [['REMOTE_ADDR' => '10.0.0.5', 'HTTP_CLIENT_IP' => '93.184.216.34'], [], '10.0.0.5'],
             'Cloudflare behind a load balancer, ranges listed' => [['REMOTE_ADDR' => '10.0.0.5', 'HTTP_CF_CONNECTING_IP' => '93.184.216.34', 'HTTP_X_FORWARDED_FOR' => '8.8.8.8, 93.184.216.34, 173.245.48.10'], ['173.245.48.0/20'], '93.184.216.34'],
             'Cloudflare behind a load balancer, ranges not listed' => [['REMOTE_ADDR' => '10.0.0.5', 'HTTP_CF_CONNECTING_IP' => '93.184.216.34', 'HTTP_X_FORWARDED_FOR' => '8.8.8.8, 93.184.216.34, 173.245.48.10'], [], '173.245.48.10'],
             'Cloudflare in front of the site' => [['REMOTE_ADDR' => '173.245.48.10', 'HTTP_CF_CONNECTING_IP' => '93.184.216.34', 'HTTP_X_FORWARDED_FOR' => '8.8.8.8, 93.184.216.34'], ['173.245.48.0/20'], '93.184.216.34'],
-            'trusted public proxy' => [['REMOTE_ADDR' => '173.245.48.10', 'HTTP_CF_CONNECTING_IP' => '93.184.216.34'], ['173.245.48.0/20'], '93.184.216.34'],
+            'trusted public proxy' => [['REMOTE_ADDR' => '173.245.48.10', 'HTTP_X_FORWARDED_FOR' => '93.184.216.34'], ['173.245.48.0/20'], '93.184.216.34'],
+            'trusted public proxy without X-Forwarded-For' => [['REMOTE_ADDR' => '173.245.48.10', 'HTTP_CF_CONNECTING_IP' => '93.184.216.34'], ['173.245.48.0/20'], '173.245.48.10'],
             'trusted IPv6 proxy' => [['REMOTE_ADDR' => '2400:cb00::1', 'HTTP_X_FORWARDED_FOR' => '93.184.216.34'], ['2400:cb00::/32'], '93.184.216.34'],
-            'untrusted public proxy' => [['REMOTE_ADDR' => '173.245.48.10', 'HTTP_CF_CONNECTING_IP' => '93.184.216.34'], ['103.21.244.0/22'], '173.245.48.10'],
+            'untrusted public proxy' => [['REMOTE_ADDR' => '173.245.48.10', 'HTTP_X_FORWARDED_FOR' => '93.184.216.34'], ['103.21.244.0/22'], '173.245.48.10'],
             'IPv4 address with a port' => [['REMOTE_ADDR' => '10.0.0.5', 'HTTP_X_FORWARDED_FOR' => '93.184.216.34:51234'], [], '93.184.216.34'],
             'IPv6 address with a port' => [['REMOTE_ADDR' => '10.0.0.5', 'HTTP_X_FORWARDED_FOR' => '[2606:4700:4700::1111]:443'], [], '2606:4700:4700::1111'],
             'trailing comma' => [['REMOTE_ADDR' => '10.0.0.5', 'HTTP_X_FORWARDED_FOR' => '93.184.216.34, '], [], '93.184.216.34'],
@@ -74,7 +77,7 @@ class UtilVisitorIpTest extends \PHPUnit\Framework\TestCase
         $bHad = is_array($aParams) && array_key_exists($sKey, $aParams);
         $sOld = $bHad ? $aParams[$sKey] : null;
 
-        $aServer = ['REMOTE_ADDR' => '173.245.48.10', 'HTTP_CF_CONNECTING_IP' => '93.184.216.34'];
+        $aServer = ['REMOTE_ADDR' => '173.245.48.10', 'HTTP_X_FORWARDED_FOR' => '93.184.216.34'];
         $aServerBehindBalancer = ['REMOTE_ADDR' => '10.0.0.5', 'HTTP_X_FORWARDED_FOR' => '93.184.216.34, 173.245.48.10'];
         try {
             $aParams[$sKey] = "103.21.244.0/22,\n173.245.48.0/20";
