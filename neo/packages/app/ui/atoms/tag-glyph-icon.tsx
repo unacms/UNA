@@ -1,6 +1,6 @@
 import Svg, { Circle, Ellipse, Line, Path, Polygon, Polyline, Rect } from 'react-native-svg';
 import type { ComponentType } from 'react';
-import type { GlyphData } from 'tagsets';
+import type { GlyphData } from 'xymbols';
 import { useTheme } from 'app/design/theme';
 import { useIconClassColor } from 'app/ui/atoms/icon-class-color';
 import type { TagGlyphIcon, TagGlyphIconProps } from './tag-glyph-icon.types';
@@ -8,7 +8,7 @@ import type { TagGlyphIcon, TagGlyphIconProps } from './tag-glyph-icon.types';
 const TAGS: Record<string, ComponentType<any>> = { path: Path, circle: Circle, rect: Rect, line: Line, polyline: Polyline, polygon: Polygon, ellipse: Ellipse };
 
 /**
- * Native: an `Icon` component for one tagsets glyph, drawn like a Lucide icon (24 grid, 2px round strokes).
+ * Native: an `Icon` component for one xymbols glyph, drawn like a Lucide icon (24 grid, 2px round strokes).
  * Uses the square `fixed` form, or `hug` where the glyph has none. Colour comes from `color`, else the
  * `text-*` class, else the theme's default icon colour, as for Lucide icons (`IconFromSet`).
  */
