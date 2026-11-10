@@ -484,6 +484,45 @@ class BxBaseModGeneralFormsEntryHelper extends BxDolProfileForms
         $oForm->aParams['csrf']['disable'] = true;
         $oForm->initChecker($aContentInfo, $aContentInfo);
 
+        /**
+         * Clean every caller-supplied value through its form input's own db
+         * pass before the update (an input without a pass gets 'Xss').
+         * BxDolForm::update() copies values that are "provided manually" into
+         * the SQL AFTER the per-input passes run (see
+         * BxDolFormChecker::serializeDbValues), so a value handed straight to
+         * this method - e.g. through the 'edit_entity' API service - would
+         * otherwise be stored exactly as received and later rendered without
+         * filtering, i.e. stored XSS in any html field (db pass 'XssHtml').
+         */
+        foreach ($aValues as $sFieldKey => $mixedFieldValue) {
+            $aFieldInput = $oForm->aInputs[$sFieldKey];
+            $sFieldPass = $aFieldInput['db']['pass'] ?? '';
+
+            /*
+             * Unix-timestamp date fields (passes DateTs, DateUtc, DateTimeTs,
+             * DateTimeUtc) store an integer, and a service caller sends that
+             * integer - but those passes only parse a form-format date string
+             * and turn a bare number into 0. Keep a value that is already a
+             * timestamp (an int, or a string of digits) as an int; a
+             * form-format string still goes through the pass below. An int
+             * cast can carry no markup, so this keeps the filtering intact.
+             */
+            if (in_array($sFieldPass, array('DateTs', 'DateUtc', 'DateTimeTs', 'DateTimeUtc'), true)
+                    && (is_int($mixedFieldValue) || (is_string($mixedFieldValue) && ctype_digit($mixedFieldValue)))) {
+                $mixedFieldValue = (int)$mixedFieldValue;
+                $oForm->setSpecificValue($sFieldKey, $mixedFieldValue);
+                $aValues[$sFieldKey] = $mixedFieldValue;
+                continue;
+            }
+
+            $aFieldPassParams = !empty($aFieldInput['db']['params']) ? $aFieldInput['db']['params'] : array();
+
+            $oForm->setSpecificValue($sFieldKey, $mixedFieldValue);
+            $mixedFieldValue = $oForm->getCleanValueByPass($sFieldKey, $sFieldPass, $aFieldPassParams);
+            $oForm->setSpecificValue($sFieldKey, $mixedFieldValue);
+            $aValues[$sFieldKey] = $mixedFieldValue;
+        }
+
         // before edit hook
         $aTrackTextFieldsChanges = null;
         $this->onDataEditBefore ($aContentInfo[$CNF['FIELD_ID']], $aContentInfo, $aTrackTextFieldsChanges, $oProfile, $oForm);
