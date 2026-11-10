@@ -38,6 +38,24 @@ class BxDolAiSearchExtParserTestDouble extends BxDolAiSearchExtParser
         $this->_aTokens = $this->_getTopicTokens($sQuery);
     }
 
+    public function setHints(array $aHints)
+    {
+        $this->_aHints = $aHints;
+    }
+
+    public function widenListsByWords(array $aResult): array
+    {
+        $this->_widenListsByWords($aResult);
+        $this->_dropKeywordOfLists($aResult);
+        return $aResult;
+    }
+
+    public function shortenChipLabels(array $aResult): array
+    {
+        $this->_shortenChipLabels($aResult);
+        return $aResult;
+    }
+
     public function keywordToLists(array $aResult): array
     {
         $this->_dropListsOfPlace($aResult);
@@ -404,5 +422,86 @@ class BxDolAiSearchExtParserTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayNotHasKey('title', $a['chips']);
         $this->assertSame('', $a['filters']['title']);
         $this->assertSame('', $a['keyword_field']);
+    }
+
+    private function consultingFields(): array
+    {
+        return [
+            'title' => ['kind' => 'text', 'caption' => 'Title', 'search_type' => 'text', 'operator' => 'like'],
+            'labels' => ['kind' => 'list', 'caption' => 'Skills', 'multi' => true, 'search_type' => 'checkbox_set', 'operator' => 'like', 'values' => [
+                'AI consulting' => 'AI consulting',
+                'Business consulting' => 'Business consulting',
+                'AI prompting' => 'AI prompting',
+            ]],
+        ];
+    }
+
+    public function testKindWordWidensTheModelsChoice()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setFields($this->consultingFields());
+        $o->setQuery('consulting');
+
+        $a = $o->widenListsByWords($this->keywordResult('', [
+            'labels' => ['value' => 'AI consulting', 'label' => 'AI consulting'],
+        ]));
+
+        $this->assertSame(['AI consulting', 'Business consulting'], $a['search_params']['labels']['value']);
+    }
+
+    public function testShortQualifierKeepsTheModelsChoice()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setFields($this->consultingFields());
+        $o->setQuery('AI consulting');
+
+        $a = $o->widenListsByWords($this->keywordResult('', [
+            'labels' => ['value' => 'AI consulting', 'label' => 'AI consulting'],
+        ]));
+
+        $this->assertSame('AI consulting', $a['search_params']['labels']['value']);
+    }
+
+    public function testHintWordKeepsTheModelsChoice()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setFields($this->consultingFields());
+        $o->setHints(['labels' => 'Startups need AI consulting.']);
+        $o->setQuery('startups consulting');
+
+        $a = $o->widenListsByWords($this->keywordResult('startups', [
+            'labels' => ['value' => 'AI consulting', 'label' => 'AI consulting'],
+        ]));
+
+        $this->assertSame('AI consulting', $a['search_params']['labels']['value']);
+        $this->assertArrayNotHasKey('title', $a['search_params']);
+    }
+
+    public function testHintWordOfAChosenValueLeavesTheKeyword()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setFields($this->consultingFields());
+        $o->setHints(['labels' => 'Artificial intelligence is AI prompting. Do not infer skills from the project title.']);
+
+        $a = $o->dropKeywordOfLists($this->keywordResult('artificial intelligence project', [
+            'labels' => ['value' => 'AI prompting', 'label' => 'AI prompting'],
+        ]));
+
+        // the sentence about the title names no chosen value: "project" stays
+        $this->assertSame('project', $a['search_params']['title']['value']);
+    }
+
+    public function testChipOfManyValuesNamesTwoAndCountsTheRest()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setFields($this->taggedFields());
+
+        $aAll = ['Translation', 'Consecutive interpreting', 'Simultaneous interpreting'];
+        $a = $o->shortenChipLabels($this->keywordResult('', ['labels' => ['value' => $aAll, 'label' => implode(', ', $aAll)]]));
+        $this->assertSame(implode(', ', $aAll), $a['chips']['labels']['label']); // one more is named, not "+1"
+
+        $o->setFields(['labels' => ['kind' => 'list', 'values' => ['a' => 'A', 'b' => 'B', 'c' => 'C', 'd' => 'D']]]);
+        $a = $o->shortenChipLabels($this->keywordResult('', ['labels' => ['value' => ['a', 'b', 'c', 'd'], 'label' => 'A, B, C, D']]));
+        $this->assertSame('A, B +2', $a['chips']['labels']['label']);
     }
 }

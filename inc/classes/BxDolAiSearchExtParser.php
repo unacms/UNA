@@ -309,7 +309,8 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
      * a choice question puts most of its weight on one value, so "Several may apply" rarely gives two.
      * Only a word that names their kind widens (_isKindWord).
      * The model's choice stays when another query word names fewer of these values ("simultaneous"),
-     * or when the field's hint explains another query word ("conference" -> Simultaneous). Only a
+     * or when the field's hint explains another query word ("conference" -> Simultaneous). A short
+     * word ("AI" in "AI consulting") can keep the choice, only a word of 4+ letters widens it. Only a
      * field the model filled is widened, and a place word is never a tag ("Turkey" is not Turkish).
      */
     protected function _widenListsByWords(array &$aResult)
@@ -318,7 +319,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         $aTokens = [];
         foreach ($this->_aTokens as $sToken) {
             $sToken = mb_strtolower($sToken);
-            if (mb_strlen($sToken) >= 4 && !isset($aPlace[$sToken]))
+            if (!isset($aPlace[$sToken]))
                 $aTokens[$sToken] = true;
         }
 
@@ -327,7 +328,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
                 continue;
 
             $aChosen = array_map('strval', (array)$aResult['search_params'][$sName]['value']);
-            $aHintWords = array_flip($this->_getWords((string)($this->_aHints[$sName] ?? '')));
+            $aHintWords = $this->_getHintWordsOf($sName, $aField, $aChosen);
 
             $aKeysOfTokens = [];
             foreach ($aTokens as $sToken => $b)
@@ -335,7 +336,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
 
             $aKeys = $aChosen;
             foreach ($aKeysOfTokens as $sToken => $aOfWord) {
-                if (count($aOfWord) < 2 || !array_intersect($aChosen, $aOfWord) || !array_diff($aOfWord, $aChosen))
+                if (mb_strlen($sToken) < 4 || count($aOfWord) < 2 || !array_intersect($aChosen, $aOfWord) || !array_diff($aOfWord, $aChosen))
                     continue;
                 if (!$this->_isKindWord($aField, $aOfWord, $sToken))
                     continue; // "simultaneous" names Simultaneous, not RSI (remote simultaneous interpreting)
@@ -343,8 +344,9 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
                 foreach ($aKeysOfTokens as $sOther => $aOfOther) {
                     if ($sOther === $sToken)
                         continue;
-                    if ($aOfOther && !array_diff($aOfOther, $aOfWord) && array_diff($aOfWord, $aOfOther))
-                        continue 2; // "simultaneous" in "interpreter simultaneous"
+                    $aNarrow = array_intersect($aOfWord, $aOfOther);
+                    if ($aNarrow && array_diff($aOfWord, $aNarrow))
+                        continue 2; // "simultaneous" in "interpreter simultaneous", "AI" in "AI consulting"
                     if (!$aOfOther && isset($aHintWords[$sOther]))
                         continue 2; // "conference" when the hint says conference is Simultaneous
                 }
@@ -355,6 +357,34 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
             if (count($aKeys) > count($aChosen))
                 $this->_setListParam($aResult, $sName, $aKeys, (float)($aResult['confidence'][$sName] ?? self::CONFIDENCE_MIN));
         }
+    }
+
+    /**
+     * Words of the field's hint sentences that name one of these values ("conference is Simultaneous
+     * interpreting" for Simultaneous interpreting). A hint is free text: a sentence about something
+     * else ("do not infer skills from the project title") explains none of them.
+     */
+    protected function _getHintWordsOf(string $sName, array $aField, array $aKeys): array
+    {
+        $sHint = trim($this->_getHint($sName));
+        if ($sHint === '')
+            return [];
+
+        $aValueWords = [];
+        foreach ($aKeys as $sKey)
+            foreach ($this->_getWords((string)($aField['values'][$sKey] ?? $sKey)) as $sWord)
+                $aValueWords[$sWord] = true;
+
+        $aWords = [];
+        foreach (preg_split('/[.;!?
+]+/u', $sHint, -1, PREG_SPLIT_NO_EMPTY) as $sSentence) {
+            $aSentence = $this->_getWords($sSentence);
+            if (array_intersect_key(array_flip($aSentence), $aValueWords))
+                foreach ($aSentence as $sWord)
+                    $aWords[$sWord] = true;
+        }
+
+        return $aWords;
     }
 
     /**
@@ -525,7 +555,8 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
      * A word that already became a list value ("software" -> Expertise: Software) or the place
      * ("vietnam" -> Location: Vietnam) must not also be the keyword: the text condition is ANDed and
      * would drop everything not named "software". So must a word the list field's hint explains
-     * ("artificial intelligence" -> Skills: AI prompting, by the hint "artificial intelligence is AI prompting").
+     * ("artificial intelligence" -> Skills: AI prompting, by the hint "artificial intelligence is AI prompting"),
+     * by a hint sentence that names a chosen value.
      */
     protected function _dropKeywordOfLists(array &$aResult)
     {
@@ -539,7 +570,8 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
             if (($this->_aFields[$sName]['kind'] ?? '') == 'list') {
                 foreach ($this->_getWords((string)$aChip['label']) as $sWord)
                     $aWords[$sWord] = true;
-                foreach ($this->_getWords((string)($this->_aHints[$sName] ?? '')) as $sWord)
+                $aField = $this->_aFields[$sName];
+                foreach ($this->_getHintWordsOf($sName, $aField, array_map('strval', (array)$aChip['value'])) as $sWord => $b)
                     if (mb_strlen($sWord) >= 4)
                         $aWords[$sWord] = true;
             }
