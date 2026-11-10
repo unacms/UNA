@@ -107,6 +107,8 @@ export function ingestTimersFromPage(payload: any) {
 }
 
 let loadPromise: Promise<any> | null = null;
+let loaded = false;
+const loadedListeners = new Set<() => void>();
 
 export async function loadTaskTimerSessions() {
     if (loadPromise) return loadPromise;
@@ -118,9 +120,29 @@ export async function loadTaskTimerSessions() {
             // Browse rows still render from the time string; live state stays unknown.
         } finally {
             loadPromise = null;
+            loaded = true;
+            loadedListeners.forEach((listener) => listener());
         }
     })();
     return loadPromise;
+}
+
+/**
+ * Whether the viewer's timers were loaded in this session. A task row can be the first thing
+ * that shows a timer control (search results), so the first one to mount loads them.
+ */
+export function useTaskTimerSessionsLoaded() {
+    const [isLoaded, setLoaded] = useState(loaded);
+
+    useEffect(() => {
+        if (loaded) return;
+        const listener = () => setLoaded(true);
+        loadedListeners.add(listener);
+        loadTaskTimerSessions();
+        return () => { loadedListeners.delete(listener); };
+    }, []);
+
+    return isLoaded;
 }
 
 export function useTaskTimerSession(taskId: number | string | null | undefined) {

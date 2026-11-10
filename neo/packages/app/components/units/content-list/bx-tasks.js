@@ -11,7 +11,7 @@ import emitter, { EVENTS } from 'app/context/emitter';
 import { useCurrentUser } from 'app/context/user';
 import { fetcher } from 'app/lib/fetcher';
 import { playCue } from 'app/lib/sound';
-import { publishTimerSession, useTaskTimerSession } from 'app/lib/task-timer-sync';
+import { publishTimerSession, useTaskTimerSession, useTaskTimerSessionsLoaded } from 'app/lib/task-timer-sync';
 import { appSetting, cn, decodeTextNode } from 'app/lib/util';
 import { formatTaskClock, iconForTaskStatus, iconForTaskPriority, normalizeTaskLabel, parseTaskTime } from 'app/lib/tasks-meta';
 import { UnitTitle } from 'app/components/units/helpers';
@@ -147,6 +147,8 @@ function TaskTimerControl({ data, module, isCompleted }) {
     const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
     const session = useTaskTimerSession(data?.id);
+    // Until the viewer's timers are known, a running one would show Start and start it again.
+    const isLoaded = useTaskTimerSessionsLoaded();
     const [busy, setBusy] = useState(false);
     const isActive = session?.state === 'started';
 
@@ -196,7 +198,8 @@ function TaskTimerControl({ data, module, isCompleted }) {
                     image={isActive ? 'Pause' : 'Play'}
                     accessibilityLabel={label}
                     tooltip={label}
-                    loading={busy}
+                    loading={busy || !isLoaded}
+                    disabled={!isLoaded}
                     expoUI={false}
                     onPress={toggle}
                 />

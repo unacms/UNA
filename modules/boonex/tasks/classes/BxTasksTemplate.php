@@ -354,29 +354,35 @@ class BxTasksTemplate extends BxBaseModTextTemplate
     {
         $CNF = &$this->_oConfig->CNF;
 
-        $aTracks = $this->_oDb->getTimeTracks(array_merge(['sample' => 'context_id', 'context_id' => $iContextPid], $bEverybody ? [] : ['author_id' => $iProfileId]));
-        if(!$aTracks && !$bEverybody)
+        $aPeriods = array_merge($this->_getTimersPeriods(), [
+            'all_time' => ['title' => _t('_bx_tasks_txt_timers_stats_all_time'), 'from' => 0, 'to' => PHP_INT_MAX]
+        ]);
+
+        //--- One row per person, task and billable flag, with a sum for each period.
+        $aSums = $this->_oDb->getTimeTracks(array_merge([
+            'sample' => 'context_period_sums', 
+            'context_id' => $iContextPid, 
+            'periods' => $aPeriods
+        ], $bEverybody ? [] : ['author_id' => $iProfileId]));
+        if(!$aSums && !$bEverybody)
             return [];
 
         $oPermalinks = BxDolPermalinks::getInstance();
 
         $aProfiles = $aUrls = [];
-        $aPeriods = array_merge($this->_getTimersPeriods(), [
-            'all_time' => ['title' => _t('_bx_tasks_txt_timers_stats_all_time'), 'from' => 0, 'to' => PHP_INT_MAX]
-        ]);
 
         $aResult = [];
         foreach($aPeriods as $sName => $aPeriod) {
             $aPeople = [];
             $aTotals = $this->_getTimeSummaryTotals();
 
-            foreach($aTracks as $aTrack) {
-                $iDate = (int)$aTrack['value_date'] ?: (int)$aTrack['date'];
-                if($iDate < $aPeriod['from'] || $iDate >= $aPeriod['to'])
+            foreach($aSums as $aSum) {
+                if(empty($aSum[$sName]))
                     continue;
 
-                $iAuthorId = (int)$aTrack['author_id'];
-                $iObjectId = (int)$aTrack['object_id'];
+                $aTrack = ['value' => (int)$aSum[$sName], 'billable' => (int)$aSum['billable'], 'object_title' => $aSum['object_title']];
+                $iAuthorId = (int)$aSum['author_id'];
+                $iObjectId = (int)$aSum['object_id'];
 
                 if(!isset($aPeople[$iAuthorId]))
                     $aPeople[$iAuthorId] = array_merge($this->_getTimeSummaryTotals(), [
