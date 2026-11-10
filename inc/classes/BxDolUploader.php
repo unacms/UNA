@@ -103,6 +103,9 @@ abstract class BxDolUploader extends BxDolFactory
 {
     const UPLOAD_TOKEN_SALT = 'uploader';
 
+    /** Max number of uploaders one restore_ghosts_batch request is answered for. */
+    const GHOSTS_BATCH_MAX = 20;
+
     public static function isUploadTokenEnabled()
     {
         return getParam('sys_security_upload_token_enable') == 'on';
@@ -246,6 +249,55 @@ abstract class BxDolUploader extends BxDolFactory
             return false;
 
         return $o;
+    }
+
+    /**
+     * Restore ghosts for several uploaders in one request (storage_uploader.php?a=restore_ghosts_batch).
+     * Each item is what a single restore_ghosts request sends: uo (uploader object), so (storage object),
+     * uid, img_trans, c (content id), m (multiple), l (latest only).
+     * @param $aItems - list of items, at most GHOSTS_BATCH_MAX are processed
+     * @param $iProfileId - profile to get orphaned files for
+     * @return array of results in the same order as items: ghosts with order (['g' => ..., 'o' => ...]) or an empty array
+     */
+    public static function getGhostsForMany($aItems, $iProfileId)
+    {
+        $aResult = [];
+        if(!is_array($aItems))
+            return $aResult;
+
+        foreach(array_slice(array_values($aItems), 0, self::GHOSTS_BATCH_MAX) as $aItem) {
+            $aResult[] = self::_getGhostsForItem(is_array($aItem) ? $aItem : [], $iProfileId);
+        }
+
+        return $aResult;
+    }
+
+    protected static function _getGhostsForItem($aItem, $iProfileId)
+    {
+        $sUploaderObject = bx_process_input($aItem['uo'] ?? '');
+        $sStorageObject = bx_process_input($aItem['so'] ?? '');
+        $sUniqId = isset($aItem['uid']) && is_string($aItem['uid']) && preg_match("/^\w+$/", $aItem['uid']) ? $aItem['uid'] : '';
+        if(!$sUploaderObject || !$sStorageObject || !$sUniqId || !is_string($sUploaderObject) || !is_string($sStorageObject))
+            return [];
+
+        if(!BxDolStorage::getObjectInstance($sStorageObject))
+            return [];
+
+        $oUploader = self::getObjectInstance($sUploaderObject, $sStorageObject, $sUniqId);
+        if(!$oUploader)
+            return [];
+
+        if(isset($aItem['m']))
+            $oUploader->setMultiple((bool)$aItem['m']);
+
+        $mixedContentId = $aItem['c'] ?? '';
+        $mixedContentId = '' === $mixedContentId || !is_scalar($mixedContentId) ? false : bx_process_input($mixedContentId, BX_DATA_INT);
+
+        $sImagesTranscoder = isset($aItem['img_trans']) && is_string($aItem['img_trans']) ? bx_process_input($aItem['img_trans']) : '';
+
+        $mixedGhosts = $oUploader->getGhostsWithOrder($iProfileId, 'array', $sImagesTranscoder, $mixedContentId, !empty($aItem['l']));
+
+        return is_array($mixedGhosts) ? $mixedGhosts : [];
     }
 
     /**

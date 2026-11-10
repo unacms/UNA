@@ -97,24 +97,28 @@ function getHtmlData( elem, url, callback, method, confirmation, values, loading
 	    	});
         }
 
+		// Scripts in the response are loaded without blocking the page, see bx_html_async.
 		if (undefined != method && (method == 'post' || method == 'POST')) {
             if (typeof values == 'undefined')
                 values = {};
 		    $.post(url, values, function(data) {
-		        $block.html(data);
-		        $block.css('position', blockPos).bxProcessHtml();
+		        bx_html_async($block, data, function() {
+		            $block.css('position', blockPos).bxProcessHtml();
 
-		        if (typeof callback == 'function')
-		            callback.apply($block);
+		            if (typeof callback == 'function')
+		                callback.apply($block);
+		        });
 		    });		
 		} 
 		else {
-		    $block.load(url + '&_r=' + Math.random(), function() {
-		        $(this).css('position', blockPos).bxProcessHtml();
+		    $.get(url + '&_r=' + Math.random(), function(data) {
+		        bx_html_async($block, data, function() {
+		            $block.css('position', blockPos).bxProcessHtml();
 
-		        if (typeof callback == 'function')
-		            callback.apply(this);
-		    });
+		            if (typeof callback == 'function')
+		                callback.apply($block.get(0));
+		        });
+		    }, 'html');
 		}
     };
 
@@ -2205,6 +2209,120 @@ function bx_get_style(mixedUrl)
  * In case when this function is called for dynamic loading of the same file but many times (like Plyr video init)
  * it allows to avoid multiply loadings of the same file.
  */
+/**
+ * Put HTML that may carry <script src> tags into an element without blocking the page.
+ * jQuery's .html() fetches such scripts with a synchronous XMLHttpRequest. Here they are
+ * loaded first as script elements (in parallel, run in order), then the rest of the HTML
+ * is inserted and its inline scripts run as before. Scripts already on the page are skipped.
+ * @param oElement - element or selector to put HTML into
+ * @param sHtml - HTML string
+ * @param fCallback - optional, called with the element as `this` after HTML is inserted
+ */
+function bx_html_async (oElement, sHtml, fCallback)
+{
+    var oTarget = $(oElement);
+    var fInsert = function () {
+        oTarget.html(sHtml);
+        if (typeof(fCallback) === 'function')
+            fCallback.apply(oTarget.get(0) || oTarget);
+    };
+
+    if ('string' !== typeof(sHtml) || !/<script[^>]+src\s*=/i.test(sHtml) || !('content' in document.createElement('template'))) {
+        fInsert();
+        return;
+    }
+
+    var oTemplate = document.createElement('template');
+    oTemplate.innerHTML = sHtml;
+
+    var aUrls = [];
+    oTemplate.content.querySelectorAll('script[src]').forEach(function (oScript) {
+        var sType = oScript.getAttribute('type');
+        if (sType && !/^(text|application)\/(java|ecma)script$/i.test(sType))
+            return;
+
+        aUrls.push(oScript.src);
+        oScript.remove();
+    });
+    sHtml = oTemplate.innerHTML;
+
+    bx_load_scripts_in_order(aUrls, fInsert);
+}
+
+/**
+ * Load scripts by adding script elements: downloads run in parallel, scripts run in the
+ * given order, and nothing blocks the page. A script is loaded once per page, a second
+ * request for it waits for the first one.
+ * @param aUrls - script URLs
+ * @param fCallback - called when all of them have run or failed
+ */
+function bx_load_scripts_in_order (aUrls, fCallback)
+{
+    if (!window.glBxScriptElements)
+        window.glBxScriptElements = {};
+    var oLoading = window.glBxScriptElements;
+
+    var aWait = [];
+    $.each(aUrls, function (i, sUrl) {
+        var sKey = bx_script_key(sUrl);
+        if (oLoading[sKey]) {
+            aWait.push(oLoading[sKey]);
+            return;
+        }
+        if (bx_script_is_on_page(sKey))
+            return;
+
+        var oDeferred = $.Deferred();
+        var oScript = document.createElement('script');
+        oScript.src = sUrl;
+        oScript.async = false; // keeps the order of execution
+        oScript.onload = function () {
+            oDeferred.resolve();
+        };
+        oScript.onerror = function () {
+            // forget a failed script, so that the next request for it downloads it again
+            delete oLoading[sKey];
+            oScript.remove();
+            oDeferred.resolve();
+        };
+        oLoading[sKey] = oDeferred.promise();
+        aWait.push(oLoading[sKey]);
+        document.head.appendChild(oScript);
+    });
+
+    if (!aWait.length) {
+        fCallback();
+        return;
+    }
+
+    $.when(...aWait).always(fCallback);
+}
+
+/**
+ * Script URL without the cache busting parameters (rev, _), to compare scripts.
+ */
+function bx_script_key (sUrl)
+{
+    try {
+        var oUrl = new URL(sUrl, document.baseURI);
+        oUrl.searchParams.delete('rev');
+        oUrl.searchParams.delete('_');
+        return oUrl.href;
+    }
+    catch (e) {
+        return sUrl;
+    }
+}
+
+function bx_script_is_on_page (sKey)
+{
+    for (var oScript of document.scripts)
+        if (oScript.src && bx_script_key(oScript.src) == sKey)
+            return true;
+
+    return 'undefined' !== typeof(aIncludedJs) && Array.isArray(aIncludedJs) && aIncludedJs.map(bx_script_key).indexOf(sKey) != -1;
+}
+
 function bx_get_scripts (aFiles, fCallback)
 {
     let iCounter = 0;
