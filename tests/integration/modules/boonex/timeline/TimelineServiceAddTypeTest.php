@@ -52,7 +52,9 @@ class TimelineServiceAddTypeTest extends BxDolIntegrationTestCase
         $aResult = $oModule->serviceAdd([
             'type' => 'post',
             'text' => '<p>TimelineServiceAddTypeTest ' . uniqid() . '</p>',
-            'owner_id' => $iProfile,
+            // the site's own feed: on a fresh install the administrator acts as the account's own
+            // profile, whose timeline nothing is posted on
+            'owner_id' => 0,
             'object_privacy_view' => BX_DOL_PG_ALL,
         ]);
 
