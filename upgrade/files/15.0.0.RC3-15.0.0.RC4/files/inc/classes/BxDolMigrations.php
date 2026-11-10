@@ -577,8 +577,9 @@ class BxDolMigrations
                 throw new UnexpectedValueException("<$sOperation> is not one of <" . implode('>, <', self::LANGUAGE_OPERATIONS) . '>');
 
             $sKey = (string)$oString['name'];
-            if (!preg_match('/^\S+$/', $sKey))
-                throw new UnexpectedValueException("<$sOperation> has no name attribute");
+            // Old keys may have spaces inside (`_Member Login`), but not at the ends.
+            if (!preg_match('/^\S(?:.*\S)?$/s', $sKey) || preg_match('/[\x00-\x1f]/', $sKey))
+                throw new UnexpectedValueException("<$sOperation> has no name attribute, or it has spaces at its ends or line breaks in it");
 
             if ($sOperation === 'string_del')
                 $aResult['del'][] = $sKey;
@@ -885,6 +886,11 @@ class BxDolMigrations
 
         $sCategory = $aLanguage['category'] !== '' ? $aLanguage['category'] : $aMigration['lang_category'];
         $iCategory = $sCategory !== '' ? $oLanguages->getLanguageCategory($sCategory) : 0;
+        if ($iCategory === 0 && $aLanguage['category'] !== '') {
+            // A language module's file for a module that is not installed: installing the module brings its strings.
+            ($this->_fLog)("{$aMigration['label']}: category {$aLanguage['category']} does not exist; nothing to change");
+            return;
+        }
         if ($iCategory === 0)
             $iCategory = BX_DOL_LANGUAGE_CATEGORY_SYSTEM;
 

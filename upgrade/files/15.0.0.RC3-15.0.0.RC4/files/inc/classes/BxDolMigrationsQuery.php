@@ -146,6 +146,90 @@ class BxDolMigrationsQuery extends BxDolDb
         return $aResult ?: null;
     }
 
+    /**
+     * @return array{name: string, path: string, version: string, note: string}|null
+     */
+    public function getModuleByUri(string $sUri): ?array
+    {
+        $oStatement = $this->_pdo()->prepare("SELECT `name`, `path`, `version`, `note` FROM `sys_modules` WHERE `uri` = ? LIMIT 1");
+        $oStatement->execute([$sUri]);
+        $aResult = $oStatement->fetch(PDO::FETCH_ASSOC);
+        $oStatement->closeCursor();
+        return $aResult ?: null;
+    }
+
+    /**
+     * Set a module's version, only while it still has one of $aFrom (compared case-insensitive).
+     *
+     * @param list<string> $aFrom
+     * @return bool whether the version was changed
+     */
+    public function setModuleVersion(string $sUri, array $aFrom, string $sTo): bool
+    {
+        $aFrom = array_values(array_unique(array_map('strtolower', $aFrom)));
+        if (!$aFrom)
+            return false;
+
+        $sMarks = implode(', ', array_fill(0, count($aFrom), '?'));
+        $oStatement = $this->_pdo()->prepare("UPDATE `sys_modules` SET `version` = ?, `updated` = ? WHERE `uri` = ? AND LOWER(`version`) IN ($sMarks)");
+        $oStatement->execute(array_merge([$sTo, time(), $sUri], $aFrom));
+        return $oStatement->rowCount() > 0;
+    }
+
+    public function setModuleNote(string $sUri, string $sNote): void
+    {
+        $oStatement = $this->_pdo()->prepare("UPDATE `sys_modules` SET `note` = ? WHERE `uri` = ? AND `note` <> ?");
+        $oStatement->execute([$sNote, $sUri, $sNote]);
+    }
+
+    public function isColumn(string $sTable, string $sColumn): bool
+    {
+        self::_checkName($sTable);
+        $oStatement = $this->_pdo()->prepare("SHOW COLUMNS FROM `$sTable` WHERE `Field` = ?");
+        $oStatement->execute([$sColumn]);
+        $bResult = $oStatement->fetchColumn() !== false;
+        $oStatement->closeCursor();
+        return $bResult;
+    }
+
+    public function isIndex(string $sTable, string $sIndex): bool
+    {
+        self::_checkName($sTable);
+        $oStatement = $this->_pdo()->prepare("SHOW INDEXES FROM `$sTable` WHERE `Key_name` = ?");
+        $oStatement->execute([$sIndex]);
+        $bResult = $oStatement->fetchColumn() !== false;
+        $oStatement->closeCursor();
+        return $bResult;
+    }
+
+    /**
+     * @param string $sDefinition column type and options, as in install SQL: "tinyint(4) NOT NULL DEFAULT '0' AFTER `data`"
+     */
+    public function addColumn(string $sTable, string $sColumn, string $sDefinition): void
+    {
+        self::_checkName($sTable);
+        self::_checkName($sColumn);
+        if (strpbrk($sDefinition, ';') !== false)
+            throw new InvalidArgumentException('Bad column definition');
+
+        $this->runStatement("ALTER TABLE `$sTable` ADD COLUMN `$sColumn` $sDefinition");
+    }
+
+    /**
+     * @param list<string> $aColumns
+     */
+    public function addIndex(string $sTable, string $sIndex, array $aColumns): void
+    {
+        self::_checkName($sTable);
+        self::_checkName($sIndex);
+        if (!$aColumns)
+            throw new InvalidArgumentException('An index needs columns');
+        foreach ($aColumns as $sColumn)
+            self::_checkName($sColumn);
+
+        $this->runStatement("ALTER TABLE `$sTable` ADD INDEX `$sIndex` (`" . implode('`, `', $aColumns) . '`)');
+    }
+
     public function getSystemVersion(): string
     {
         $oStatement = $this->_pdo()->query("SELECT `version` FROM `sys_modules` WHERE `name` = 'system'");
@@ -225,6 +309,12 @@ class BxDolMigrationsQuery extends BxDolDb
         finally {
             $oPdo->setAttribute(PDO::ATTR_ERRMODE, $iErrorMode);
         }
+    }
+
+    protected static function _checkName(string $sName): void
+    {
+        if (!preg_match('/^[A-Za-z0-9_]+$/', $sName))
+            throw new InvalidArgumentException("Bad table, column or index name: $sName");
     }
 
     protected function _pdo(): PDO

@@ -65,6 +65,7 @@
         <exclude name="CLAUDE.md" />
         <exclude name=".agents/**" />
         <exclude name=".claude/**" />
+        <exclude name=".sonarcloud.properties" />
         <exclude name="build.xml" />
         <exclude name="build.properties" />
         <exclude name="bower.json" />
