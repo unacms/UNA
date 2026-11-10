@@ -135,8 +135,9 @@ class BxCnvFormEntry extends BxBaseModTextFormEntry
             else {
                 // one who is in it already keeps the folder and read count they have: a row in
                 // another folder (Trash, Spam) would get a second one here, unread again
-                if(isset($aRecipientsOld[$iRecipient]) && !in_array($iRecipient, $aRecipientsAdd))
+                if(isset($aRecipientsOld[$iRecipient]) && !in_array($iRecipient, $aRecipientsAdd)) {
                     continue;
+                }
 
                 if($iRecipient != $iSender) {
                     $bCanContact = true;
