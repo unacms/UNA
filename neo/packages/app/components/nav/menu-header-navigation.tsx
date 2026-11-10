@@ -15,8 +15,9 @@ const AUTH_BUTTON_CLASSES = { root: 'basis-0' }
 
 /**
  * Header-toolbar menu (`menu_navigation`, else UNA's site menu): icon trigger opens the same style of popup
- * menu as navbar “more” (DropdownMenu + menu_items dropdown rows). A group shows as a
- * section under its title. Items marked as buttons (the site menu's Log In and Sign Up for
+ * menu as navbar “more” (DropdownMenu + menu_items dropdown rows). A group is a row with a
+ * chevron that folds its subitems in place, one group at a time; all start closed unless the
+ * menu is a single group. Items marked as buttons (the site menu's Log In and Sign Up for
  * guests on phones) come first, as the buttons they are outside the menu, above a divider.
  * With `auth`, a menu without such items gives guests below `sm` Log In and Sign Up there.
  * Web and Android; iOS has a native menu (menu-header-navigation.ios.tsx).
@@ -29,11 +30,13 @@ export default function MenuHeaderNavigation(props: Readonly<MenuHeaderNavigatio
     const openModalByUrl = useOpenModalByUrl()
     const openModalWithContent = useOpenModalWithContent()
     const { entries, buttons, pending } = useMenuNavigationEntries()
-    const items: DropdownMenuItemData[] = entries
-        .flatMap(({ key, item, rows }) =>
-            rows.length ? [{ type: 'group_header', id: `header-${key}`, name: item.name, title: item.title }, ...rows] : [item]
-        )
-        .map((item) => (item.description || item.info ? { ...item, description: t(item.description || item.info) } : item))
+    const describe = (item: DropdownMenuItemData & { info?: string; description?: string }): DropdownMenuItemData =>
+        item.description || item.info ? { ...item, description: t(item.description || item.info || '') } : item
+    // A group is a row like the others that folds its rows in place (DropdownMenu `rows`): its nested
+    // groups (Products > Software) keep their section titles, so the levels stay apart.
+    const items: DropdownMenuItemData[] = entries.map(({ key, item, rows }) =>
+        rows.length ? { ...describe(item), id: item.id ?? `group-${key}`, rows: rows.map(describe) } : describe(item)
+    )
 
     // The `auth` fallback follows the toolbar, which has its own Log In and Sign Up from `sm`.
     const authFallback = !buttons.length && !!props.auth && !currentUser
