@@ -25,6 +25,10 @@ export const settingsMenus = {
         menu_navbar_site_tabs: 5,
         // Columns in the navbar's dropdowns (More); an item's own `columns` wins.
         menu_navbar_more_columns: 2,
+        // Width (px) of the header menu's popup below `lg` (`menu_navigation`, else `objects.site`). It keeps this
+        // width when a group opens or closes; narrower screens cap it, 16px from each edge. 0 sizes the popup to
+        // its rows instead (256px at least).
+        menu_navigation_width: 320,
         iconset: {
             'profile-check-in': 'Check',
             'edit-event-questionnaire': 'List',

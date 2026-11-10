@@ -263,8 +263,10 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
             {...(handleSelect || link ? cueAttributes(getPressCue(item, expanded)) : {})}
         >
             <Row className={`${rowClassName} w-full min-w-0`}>
-                {/* A disclosure's label shares the row with its chevron (views don't shrink by default). */}
-                <View className={cn(itemCntClass, disclosure && 'flex-1')}>
+                {/* A disclosure's label shares the row with its chevron (views don't shrink by default), and sits at
+                    the chevron's middle: the chevron is taller than a label without an icon, which the row's
+                    `items-start` would leave above the labels of the rows around it. */}
+                <View className={cn(itemCntClass, disclosure && 'flex-1 self-center')}>
                 {(!!icon && !!menuSettings.item_icon) && <View className={iconWrapClass}>{icon}</View>}
                 {!!item.title && <ItemLabel item={item} textClass={getTextClass(presets, item, classes)} />}
                 </View>
