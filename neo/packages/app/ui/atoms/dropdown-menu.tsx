@@ -75,6 +75,12 @@ export type DropdownMenuProps = {
     stacked?: boolean;
     /** Popup min width (px) of a plain list menu; 256 by default. */
     minPopupWidth?: number;
+    /**
+     * Popup width (px) of a plain list menu, instead of `minPopupWidth`: the popup keeps it whatever its rows
+     * hold (long labels and descriptions wrap), so a group that opens or closes doesn't resize it. Narrower
+     * screens cap it, 16px from each edge.
+     */
+    popupWidth?: number;
     /** Popup: lay the rows out in this many columns of about the same height. */
     columns?: number;
     /** Row size of a vertical list, the NeoButton heights: mini 28, small 36, regular 44 (default), large 52, xlarge 64.
@@ -160,6 +166,7 @@ function DropdownMenuPopup({
     triggerStyle,
     stacked = false,
     minPopupWidth = 256,
+    popupWidth,
     columns = 1,
     size,
 }: DropdownMenuPopupProps) {
@@ -217,6 +224,18 @@ function DropdownMenuPopup({
     const sectionsMinPopupWidth = sectionsLayout.stacked
         ? 288
         : sectionsLayout.popupWidth ?? undefined;
+    // The popup's width limits; DropdownPopup takes equal ones as the width. A plain list has its `popupWidth`,
+    // or grows from `minPopupWidth` with its rows.
+    const listPopupWidth = popupWidth && popupWidth > 0 ? popupWidth : undefined;
+    let popupMinWidth: number | undefined = listPopupWidth ?? minPopupWidth;
+    let popupMaxWidth: number | undefined = listPopupWidth;
+    if (isGridLayout) {
+        popupMinWidth = gridLayout!.popupWidth;
+        popupMaxWidth = gridLayout!.popupWidth;
+    } else if (useSectionsLayout) {
+        popupMinWidth = sectionsMinPopupWidth;
+        popupMaxWidth = sectionsLayout.stacked ? undefined : sectionsMinPopupWidth;
+    }
     const sectionCount = sections?.length || 0;
     const sectionsWrap = sectionCount > (sectionsLayout.cols || 1);
     // Web uses CSS grid props (`display: 'grid'`) that RN style types don't know.
@@ -295,20 +314,8 @@ function DropdownMenuPopup({
                 buttonProps={buttonProps}
                 triggerAccessibilityLabel={triggerAccessibilityLabel}
                 showOnTop={showOnTop}
-                minPopupWidth={
-                    isGridLayout
-                        ? gridLayout!.popupWidth
-                        : useSectionsLayout
-                            ? sectionsMinPopupWidth
-                            : minPopupWidth
-                }
-                maxPopupWidth={
-                    isGridLayout
-                        ? gridLayout!.popupWidth
-                        : useSectionsLayout && !sectionsLayout.stacked
-                            ? sectionsMinPopupWidth
-                            : undefined
-                }
+                minPopupWidth={popupMinWidth}
+                maxPopupWidth={popupMaxWidth}
                 openOnFocus={
                     openOnFocus ?? variant === 'tabs-overflow'
                 }
@@ -682,6 +689,7 @@ export default function DropdownMenu({
     triggerStyle,
     stacked = false,
     minPopupWidth,
+    popupWidth,
     columns,
     size,
 }: DropdownMenuProps) {
@@ -710,6 +718,7 @@ export default function DropdownMenu({
                 triggerStyle={triggerStyle}
                 stacked={stacked}
                 minPopupWidth={minPopupWidth}
+                popupWidth={popupWidth}
                 columns={columns}
                 size={size}
             />

@@ -461,7 +461,9 @@ export default function DropdownPopup({
 
     const handleContentLayout = (e: { nativeEvent: { layout: { width: number; height: number } } }) => {
         const h = Math.round(e.nativeEvent.layout.height);
-        const w = Math.round(e.nativeEvent.layout.width);
+        // Web reports the box as it is on screen, 3% smaller while the menu grows in (MENU_MOTION_ENTER_CLASS):
+        // the popup's own width places it, or it sits off its place until the next layout and then jumps there.
+        const w = Math.round((isWeb && contentRef.current?.offsetWidth) || e.nativeEvent.layout.width);
         if (h && h !== popupHeight) {
             setPopupHeight(h);
         }

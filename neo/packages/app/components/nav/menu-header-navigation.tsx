@@ -2,7 +2,7 @@ import { useState } from 'react'
 import DropdownMenu, { type DropdownMenuItemData } from 'app/ui/atoms/dropdown-menu'
 import { NeoButton, NeoButtonLink } from 'app/design/controls'
 import { Row } from 'app/design/view'
-import { cn, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
+import { appSetting, cn, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { useTranslation } from 'react-i18next'
 import { useIsDesktop } from 'app/context/measure';
@@ -13,13 +13,21 @@ import type { MenuHeaderNavigationProps } from 'app/components/nav/menu-header-n
 // Log In and Sign Up share the row equally, whatever their label widths.
 const AUTH_BUTTON_CLASSES = { root: 'basis-0' }
 
+/** The popup's width (`menu_items.menu_navigation_width`); none for a popup sized to its rows. */
+const getPopupWidth = (): number | undefined => {
+    const width = Number(appSetting('menu_items', 'menu_navigation_width'))
+    return Number.isFinite(width) && width > 0 ? width : undefined
+}
+
 /**
  * Header-toolbar menu (`menu_navigation`, else UNA's site menu): icon trigger opens the same style of popup
  * menu as navbar “more” (DropdownMenu + menu_items dropdown rows). A group is a row with a
  * chevron that folds its subitems in place, one group at a time; all start closed unless the
- * menu is a single group. Items marked as buttons (the site menu's Log In and Sign Up for
- * guests on phones) come first, as the buttons they are outside the menu, above a divider.
- * With `auth`, a menu without such items gives guests below `sm` Log In and Sign Up there.
+ * menu is a single group. The popup has one width (`menu_items.menu_navigation_width`), so
+ * opening a group doesn't resize it. Items marked as buttons (the site menu's Log In and
+ * Sign Up for guests on phones) come first, as the buttons they are outside the menu, above
+ * a divider. With `auth`, a menu without such items gives guests below `sm` Log In and
+ * Sign Up there.
  * Web and Android; iOS has a native menu (menu-header-navigation.ios.tsx).
  */
 export default function MenuHeaderNavigation(props: Readonly<MenuHeaderNavigationProps>) {
@@ -67,6 +75,7 @@ export default function MenuHeaderNavigation(props: Readonly<MenuHeaderNavigatio
         <DropdownMenu
             mode="popup"
             items={items}
+            popupWidth={getPopupWidth()}
             open={open}
             onOpenChange={setOpen}
             header={
