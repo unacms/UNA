@@ -194,6 +194,30 @@ function ItemLabel({ item, textClass }: Readonly<{ item: DropdownRowItem; textCl
     );
 }
 
+/**
+ * The cue a row plays when pressed (web; native menus are bottom sheets and stay quiet). `item.sound` changes it;
+ * false for an option whose choice answers itself (the Sounds level). A disclosure row opens or closes its group.
+ */
+const getPressCue = (item: DropdownRowItem, expanded?: boolean): PressCue => {
+    if (item.sound != null) return item.sound;
+    if (typeof expanded !== 'boolean') return 'select';
+    return expanded ? 'close' : 'open';
+};
+
+/** The row's own classes: the variant's preset, the selected look, the inset of a row inside an open group. */
+const getRowClass = (presets: Presets, item: DropdownRowItem, classes?: DropdownRowClasses, className?: string, nested?: boolean): string =>
+    cn(
+        'group',
+        className,
+        presets[classes?.item || 'item_ver'],
+        item.selected && (menuSettings.item_selected ?? 'bg-accent'),
+        nested && menuSettings.item_nested
+    );
+
+/** The icon circle's classes: the solid one for the selected item. */
+const getIconWrapClass = (presets: Presets, item: DropdownRowItem): string =>
+    item.selected ? (presets.item_icon_active ?? presets.item_icon) : presets.item_icon;
+
 /** A disclosure row's chevron: down while closed, turned up while open. */
 function DisclosureChevron({ expanded, size }: Readonly<{ expanded: boolean; size: number }>) {
     return (
@@ -222,9 +246,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     const disclosure = typeof expanded === 'boolean';
 
     const icon = getIcon(item, iconSize, presets.item_image);
-    const iconWrapClass = item.selected
-        ? (presets.item_icon_active ?? presets.item_icon)
-        : presets.item_icon;
+    const iconWrapClass = getIconWrapClass(presets, item);
 
     const itemCntClass = menuSettings[classes?.item_cnt_key ?? 'item_cnt'] ?? menuSettings.item_cnt;
     const rowClassName = classes?.item_row ?? 'justify-between items-start';
@@ -233,22 +255,12 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     // native the Link hands its onPress to the child, so the row has to be pressable.
     const Wrapper = handleSelect || (link && Platform.OS !== 'web') ? Pressable : View;
     const pressProps = getPressProps(item, handleSelect, expanded);
-    const rowClass = cn(
-        'group',
-        className,
-        presets[classes?.item || 'item_ver'],
-        item.selected && (menuSettings.item_selected ?? 'bg-accent'),
-        nested && menuSettings.item_nested
-    );
-    // A menu option (web; native menus are bottom sheets and stay quiet). `item.sound` changes it; false for
-    // an option whose choice answers itself (the Sounds level). A disclosure row opens or closes its group.
-    const cue: PressCue = item.sound ?? (disclosure ? (expanded ? 'close' : 'open') : 'select');
     const Content = (
         <Wrapper
-            className={rowClass}
+            className={getRowClass(presets, item, classes, className, nested)}
             key={key}
             {...pressProps}
-            {...(handleSelect || link ? cueAttributes(cue) : {})}
+            {...(handleSelect || link ? cueAttributes(getPressCue(item, expanded)) : {})}
         >
             <Row className={`${rowClassName} w-full min-w-0`}>
                 {/* A disclosure's label shares the row with its chevron (views don't shrink by default). */}
