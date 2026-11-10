@@ -751,7 +751,7 @@ class BxTasksDb extends BxBaseModTextDb
                         'list' => $aParams['list']
                     ];
 
-                    $sSelectClause = "IF(ISNULL(MAX(`tpv`.`value`)), 0, MAX(`tpv`.`value`)) + 1";
+                    $sSelectClause = "IF(ISNULL(MAX(CAST(`tpv`.`value` AS UNSIGNED))), 0, MAX(CAST(`tpv`.`value` AS UNSIGNED))) + 1";
                     $sWhereClause = "AND `tpv`.`context_id` = :context_id AND `tpv`.`list` = :list";
                     break;
 
