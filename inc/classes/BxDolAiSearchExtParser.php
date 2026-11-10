@@ -33,6 +33,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
     const LIST_CHUNK = 200;         // a longer list is asked in parts of this size, one choice per part
     const WORD_SUFFIX_MAX = 3;      // letters an inflected form adds to a word: "politic" -> "politics"
     const LIST_PROBABILITY_MIN = 0.3;
+    const LABEL_TITLES_MAX = 2;     // values named in a list chip, the rest is "+N"
     const BOOL_MIN = 0.6;
     const RADIUS_DEFAULT_KM = 50;   // radius search when the query names a place but no distance
     const RADIUS_MAX_KM = 500;
@@ -187,7 +188,9 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         $this->_applyNumbers($aResult);
         $this->_dropListsOfPlace($aResult);
         $this->_keywordToLists($aResult);
+        $this->_widenListsByWords($aResult);
         $this->_dropKeywordOfLists($aResult);
+        $this->_shortenChipLabels($aResult);
 
         return $aResult;
     }
@@ -296,28 +299,131 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
             $aFieldKeys[$sName] = array_merge($aFieldKeys[$sName] ?? [], $aMatches[$sName]);
         }
 
-        foreach ($aFieldKeys as $sName => $aKeys) {
-            $aKeys = array_values(array_unique(array_merge($aNamedKeys[$sName] ?? [], $aKeys)));
-            $aField = $this->_aFields[$sName];
-            $aParam = $this->_getListParam($aField, $aKeys, (float)($aResult['confidence'][$sField] ?? self::CONFIDENCE_MIN));
+        foreach ($aFieldKeys as $sName => $aKeys)
+            $this->_setListParam($aResult, $sName, array_merge($aNamedKeys[$sName] ?? [], $aKeys), (float)($aResult['confidence'][$sField] ?? self::CONFIDENCE_MIN));
+    }
 
-            $aResult['search_params'][$sName] = [
-                'type' => $aField['search_type'],
-                'value' => $aParam['value'],
-                'operator' => $aField['operator'],
-            ];
-            $aFilters = $this->_getFilters($sName, $aField, $aParam);
-            foreach ($aFilters as $sKey => $mixedValue)
-                $aResult['filters'][$sKey] = $mixedValue;
-            $aResult['chips'][$sName] = [
-                'field' => $sName,
-                'caption' => $aField['caption'],
-                'label' => $aParam['label'],
-                'value' => $aParam['value'],
-                'filter_keys' => array_keys($aFilters),
-            ];
-            $aResult['confidence'][$sName] = $aParam['confidence'];
+    /**
+     * A query word that names several values of a multi-value list ("interpreter" -> Consecutive
+     * interpreting, Simultaneous interpreting) searches all of them when the model chose only some:
+     * a choice question puts most of its weight on one value, so "Several may apply" rarely gives two.
+     * Only a word that names their kind widens (_isKindWord).
+     * The model's choice stays when another query word names fewer of these values ("simultaneous"),
+     * or when the field's hint explains another query word ("conference" -> Simultaneous). Only a
+     * field the model filled is widened, and a place word is never a tag ("Turkey" is not Turkish).
+     */
+    protected function _widenListsByWords(array &$aResult)
+    {
+        $aPlace = $this->_getPlaceWords($aResult);
+        $aTokens = [];
+        foreach ($this->_aTokens as $sToken) {
+            $sToken = mb_strtolower($sToken);
+            if (mb_strlen($sToken) >= 4 && !isset($aPlace[$sToken]))
+                $aTokens[$sToken] = true;
         }
+
+        foreach ($this->_aFields as $sName => $aField) {
+            if ($aField['kind'] != 'list' || !$aField['multi'] || !isset($aResult['search_params'][$sName]))
+                continue;
+
+            $aChosen = array_map('strval', (array)$aResult['search_params'][$sName]['value']);
+            $aHintWords = array_flip($this->_getWords((string)($this->_aHints[$sName] ?? '')));
+
+            $aKeysOfTokens = [];
+            foreach ($aTokens as $sToken => $b)
+                $aKeysOfTokens[$sToken] = $this->_getKeysOfWord($aField, $sToken);
+
+            $aKeys = $aChosen;
+            foreach ($aKeysOfTokens as $sToken => $aOfWord) {
+                if (count($aOfWord) < 2 || !array_intersect($aChosen, $aOfWord) || !array_diff($aOfWord, $aChosen))
+                    continue;
+                if (!$this->_isKindWord($aField, $aOfWord, $sToken))
+                    continue; // "simultaneous" names Simultaneous, not RSI (remote simultaneous interpreting)
+
+                foreach ($aKeysOfTokens as $sOther => $aOfOther) {
+                    if ($sOther === $sToken)
+                        continue;
+                    if ($aOfOther && !array_diff($aOfOther, $aOfWord) && array_diff($aOfWord, $aOfOther))
+                        continue 2; // "simultaneous" in "interpreter simultaneous"
+                    if (!$aOfOther && isset($aHintWords[$sOther]))
+                        continue 2; // "conference" when the hint says conference is Simultaneous
+                }
+
+                $aKeys = array_merge($aKeys, $aOfWord);
+            }
+
+            if (count($aKeys) > count($aChosen))
+                $this->_setListParam($aResult, $sName, $aKeys, (float)($aResult['confidence'][$sName] ?? self::CONFIDENCE_MIN));
+        }
+    }
+
+    /**
+     * The word names the kind all these values are: a role word, another form of a word of theirs
+     * ("interpreter" for "... interpreting"), or the last word of every one of them ("interpreting").
+     * A word one value starts with ("simultaneous") names that value, not every value with it.
+     */
+    protected function _isKindWord(array $aField, array $aKeys, string $sToken): bool
+    {
+        $bExact = false;
+        $bLastOfAll = true;
+        foreach ($aKeys as $sKey) {
+            $aWords = $this->_getWords((string)($aField['values'][$sKey] ?? ''));
+            if (in_array($sToken, $aWords, true))
+                $bExact = true;
+            if (end($aWords) !== $sToken)
+                $bLastOfAll = false;
+        }
+
+        return !$bExact || $bLastOfAll;
+    }
+
+    /**
+     * A chip is one line: a list chip of many values names the first ones and counts the rest
+     * ("Consecutive interpreting, Simultaneous interpreting +5"). Done last: the full labels name the
+     * words the other steps match.
+     */
+    protected function _shortenChipLabels(array &$aResult)
+    {
+        foreach ($aResult['chips'] as $sName => $aChip) {
+            $aField = $this->_aFields[$sName] ?? null;
+            if (!$aField || $aField['kind'] != 'list' || !is_array($aChip['value']))
+                continue;
+
+            $iMore = count($aChip['value']) - self::LABEL_TITLES_MAX;
+            if ($iMore < 2)
+                continue;
+
+            $aTitles = [];
+            foreach (array_slice($aChip['value'], 0, self::LABEL_TITLES_MAX) as $sKey)
+                $aTitles[] = $aField['values'][$sKey] ?? $sKey;
+            $aResult['chips'][$sName]['label'] = implode(', ', $aTitles) . ' +' . $iMore;
+        }
+    }
+
+    /**
+     * Writes the chosen keys of a list field into the result, as _answerList's values are written.
+     */
+    protected function _setListParam(array &$aResult, string $sName, array $aKeys, float $fConfidence)
+    {
+        $aField = $this->_aFields[$sName];
+        $aParam = $this->_getListParam($aField, array_values(array_unique($aKeys)), $fConfidence);
+
+        $aResult['search_params'][$sName] = [
+            'type' => $aField['search_type'],
+            'value' => $aParam['value'],
+            'operator' => $aField['operator'],
+        ];
+        $aFilters = $this->_getFilters($sName, $aField, $aParam);
+        foreach ($aFilters as $sKey => $mixedValue)
+            $aResult['filters'][$sKey] = $mixedValue;
+        $aResult['chips'][$sName] = [
+            'field' => $sName,
+            'caption' => $aField['caption'],
+            'label' => $aParam['label'],
+            'value' => $aParam['value'],
+            'filter_keys' => array_keys($aFilters),
+        ];
+        $aResult['confidence'][$sName] = $aParam['confidence'];
     }
 
     /**
@@ -418,7 +524,8 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
     /**
      * A word that already became a list value ("software" -> Expertise: Software) or the place
      * ("vietnam" -> Location: Vietnam) must not also be the keyword: the text condition is ANDed and
-     * would drop everything not named "software".
+     * would drop everything not named "software". So must a word the list field's hint explains
+     * ("artificial intelligence" -> Skills: AI prompting, by the hint "artificial intelligence is AI prompting").
      */
     protected function _dropKeywordOfLists(array &$aResult)
     {
@@ -429,9 +536,13 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         // a place word leaves the keyword only once the place became a filter
         $aWords = $this->_getPlaceWords($aResult);
         foreach ($aResult['chips'] as $sName => $aChip)
-            if (($this->_aFields[$sName]['kind'] ?? '') == 'list')
+            if (($this->_aFields[$sName]['kind'] ?? '') == 'list') {
                 foreach ($this->_getWords((string)$aChip['label']) as $sWord)
                     $aWords[$sWord] = true;
+                foreach ($this->_getWords((string)($this->_aHints[$sName] ?? '')) as $sWord)
+                    if (mb_strlen($sWord) >= 4)
+                        $aWords[$sWord] = true;
+            }
         if (!$aWords)
             return;
 
