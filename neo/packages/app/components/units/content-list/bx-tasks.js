@@ -148,7 +148,7 @@ function TaskTimerControl({ data, module, isCompleted }) {
     const { currentUser } = useCurrentUser();
     const session = useTaskTimerSession(data?.id);
     // Until the viewer's timers are known, a running one would show Start and start it again.
-    const isLoaded = useTaskTimerSessionsLoaded();
+    const isLoaded = useTaskTimerSessionsLoaded(currentUser?.id);
     const [busy, setBusy] = useState(false);
     const isActive = session?.state === 'started';
 

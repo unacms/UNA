@@ -1,7 +1,5 @@
 -- UNA-Migration-Min-System-Version: 15.0.0-RC4
--- Tasks: billable flag on time entries, its switcher in the Log forms and a column in the time grids.
-ALTER TABLE `bx_tasks_time_track` ADD COLUMN IF NOT EXISTS `billable` tinyint(4) NOT NULL default '1' AFTER `value_date`;
-
+-- Tasks: the switcher for the billable flag of time entries (the column is 2026111003) in the Log forms and a column in the time grids.
 INSERT INTO `sys_form_inputs`(`object`, `module`, `name`, `value`, `values`, `checked`, `type`, `caption_system`, `caption`, `info`, `required`, `collapsed`, `html`, `attrs`, `attrs_tr`, `attrs_wrapper`, `checker_func`, `checker_params`, `checker_error`, `db_pass`, `db_params`, `editable`, `deletable`)
 SELECT 'bx_tasks_time', 'bx_tasks', 'billable', '1', '', 1, 'switcher', '_bx_tasks_form_time_input_sys_billable', '_bx_tasks_form_time_input_billable', '', 0, 0, 0, '', '', '', '', '', '', 'Int', '', 1, 0 FROM DUAL
 WHERE NOT EXISTS (SELECT 1 FROM `sys_form_inputs` WHERE `object` = 'bx_tasks_time' AND `name` = 'billable');
