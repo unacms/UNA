@@ -17,6 +17,7 @@ import {
     buildSearchUrl,
     fetchSearchResults,
     fetchExtResults,
+    PARSE_MIN_LENGTH,
 } from 'app/ui/molecules/search-ai'
 
 /**
@@ -105,7 +106,7 @@ function SearchAiExtended({ blockWrapperProps, block, multiline }) {
 
     // parsed query -> editable field set
     useEffect(() => {
-        if (query.trim().length < 3 || !parsed) {
+        if (query.trim().length < PARSE_MIN_LENGTH || !parsed) {
             setSearchParams(null)
             setFilters(null)
             setChips(null)
@@ -147,7 +148,7 @@ function SearchAiExtended({ blockWrapperProps, block, multiline }) {
         const hasParams = !!searchParams && !!Object.keys(searchParams).length
         // with ranking the query alone is enough: the model judges the candidates by meaning,
         // so a query that matches no field ("реакт", "курс для новичков") still finds items
-        const canSearch = hasParams || (rerank && query.trim().length >= 3 && !!parsed)
+        const canSearch = hasParams || (rerank && query.trim().length >= PARSE_MIN_LENGTH && !!parsed)
 
         if (!canSearch) {
             if (emittedRef.current) {
@@ -219,7 +220,7 @@ function SearchAiExtended({ blockWrapperProps, block, multiline }) {
     useEffect(() => {
         if (usePageResults) return
         const canSearch = (!!searchParams && !!Object.keys(searchParams).length)
-            || (!!block.rerank && query.trim().length >= 3 && !!parsed)
+            || (!!block.rerank && query.trim().length >= PARSE_MIN_LENGTH && !!parsed)
         if (!canSearch) {
             requestRef.current?.abort()
             setResults(null)
@@ -335,7 +336,7 @@ function SearchAiSections({ blockWrapperProps, block, multiline }) {
 
     // typed query -> filter: parsed by the model, or the raw keyword when AI is unavailable
     useEffect(() => {
-        if (query.trim().length < 3) {
+        if (query.trim().length < PARSE_MIN_LENGTH) {
             setFilter(null)
             setResults(null)
             return

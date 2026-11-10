@@ -15,7 +15,8 @@ import { useTranslation } from 'react-i18next'
  */
 
 const PARSE_DEBOUNCE_MS = 350
-const PARSE_MIN_LENGTH = 3
+// two letters are a query too: "AI", "IT", "UX"
+export const PARSE_MIN_LENGTH = 2
 const PARSE_URL = '/api.php?r=system/search_parse/TemplServicesSearch&params='
 const SEARCH_URL = '/api.php?r=system/get_data_search_api/TemplServicesSearch&params='
 const EXT_RESULTS_URL = '/api.php?r=system/search_ai_results/TemplServicesSearch&params='
@@ -239,7 +240,7 @@ export function SearchExtChips({ chips, onRemove, parsing = false }) {
                     accessibilityLabel={t('Remove') + ': ' + chip.caption + ': ' + chip.label}
                     onPress={() => onRemove(chip.field)}
                 >
-                    <Row className="flex-row items-center gap-x-1 min-w-0">
+                    <Row className="flex-row items-center gap-x-1 min-w-0 shrink">
                         <Text numberOfLines={1} className="text-xs font-medium tracking-tight text-button-foreground min-w-0 shrink whitespace-nowrap text-ellipsis overflow-hidden">{chip.caption + ': ' + chip.label}</Text>
                         <Icon icon="X" size={16} className="text-button-foreground shrink-0 pointer-events-none" />
                     </Row>
