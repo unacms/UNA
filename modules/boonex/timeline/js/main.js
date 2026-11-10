@@ -41,6 +41,10 @@ function BxTimelineMain() {
     this._iLimitAttachLinks = 0;
     this._sLimitAttachLinksErr = '';
     this._oAttachedLinks = {};
+    //--- Links whose preview could not be made: they are not asked for again while the form is open.
+    this._oAttachLinksFailed = {};
+    //--- How long a form waits for a link's preview (ms) before it lets the post go without it.
+    this._iAttachLinkTimeout = 15000;
 }
 
 BxTimelineMain.prototype.updateOptions = function(oOptions) {
@@ -312,6 +316,7 @@ BxTimelineMain.prototype.initTrackerInsertSpace = function(sFormId, iEventId)
     var oTextarea = oForm.find('textarea');
 
     this._oAttachedLinks = [];
+    this._oAttachLinksFailed = {};
 
     if (typeof window.glOnSpaceEnterInEditor === 'undefined')
         window.glOnSpaceEnterInEditor = [];    
@@ -365,7 +370,7 @@ BxTimelineMain.prototype.parseContent = function(oForm, iId, sData, bPerformAtta
     oExp = new RegExp(bx_get_regexp('url'), "ig");
     while(aMatch = oExp.exec(sData)) {
         var sUrl = aMatch[0].replace(/^(\s|(&nbsp;))+|(\s|(&nbsp;))+$/gm,'');        
-        if(!sUrl.length || this._oAttachedLinks[sUrl] != undefined || (this._iLimitAttachLinks != 0 && Object.keys(this._oAttachedLinks).length >= this._iLimitAttachLinks))
+        if(!sUrl.length || this._oAttachedLinks[sUrl] != undefined || this._oAttachLinksFailed[sUrl] != undefined || (this._iLimitAttachLinks != 0 && Object.keys(this._oAttachedLinks).length >= this._iLimitAttachLinks))
             continue;
 
         //--- Mark that 'attach link' process was started.
@@ -400,42 +405,81 @@ BxTimelineMain.prototype.isLockedForm = function(oForm)
     return oForm.attr('bx_form_locked') == 1;
 };
 
+/**
+ * A link's preview was asked for: the form waits for it (see parseContent, which locks the form).
+ */
+BxTimelineMain.prototype.onAttachLinkStart = function(oForm)
+{
+    oForm.data('bx_links_pending', (Number.parseInt(oForm.data('bx_links_pending'), 10) || 0) + 1);
+};
+
+/**
+ * A link's preview came, or will not come (no preview for the page, the request failed or took
+ * too long). The form is unlocked once none of its links is waited for, so a failed preview
+ * never keeps a post from being sent, and one preview that came doesn't unlock the form while
+ * another is still on its way.
+ */
+BxTimelineMain.prototype.onAttachLinkEnd = function(oForm, sUrl, mixedId)
+{
+    if(mixedId) {
+        this._oAttachedLinks[sUrl] = mixedId;
+    }
+    else {
+        //--- It takes no place among the attached links, and is not asked for on every Space again.
+        delete this._oAttachedLinks[sUrl];
+        this._oAttachLinksFailed[sUrl] = 1;
+    }
+
+    var iPending = Math.max((Number.parseInt(oForm.data('bx_links_pending'), 10) || 0) - 1, 0);
+    oForm.data('bx_links_pending', iPending);
+    if(iPending == 0) {
+        this.unlockForm(oForm);
+    }
+};
+
 BxTimelineMain.prototype.addAttachLink = function(oElement, iId, sUrl)
 {
     if(!sUrl || (this._iLimitAttachLinks != 0 && Object.keys(this._oAttachedLinks).length > this._iLimitAttachLinks))
         return;
 
     var $this = this;
+    var oForm = $(oElement);
     var oData = this._getDefaultData();
     oData['url'] = sUrl;
     if(iId != undefined)
         oData['event_id'] = iId;
 
-    jQuery.post (
-        this._sActionsUrl + 'add_attach_link/',
-        oData,
-        function(oData) {
-            var iEventId = 0;
-            if(oData && oData.event_id != undefined)
-                iEventId = parseInt(oData.event_id);
-            
-            if(!oData.id || !oData.item || !$.trim(oData.item).length){
-                $this.unlockForm($('#' + $this._aHtmlIds['attach_link_form_field'] + iEventId).parents('form:first'));
-                return;
-            }
+    this.onAttachLinkStart(oForm);
 
-            //--- Mark that 'attach link' process was finished.
-            $this._oAttachedLinks[sUrl] = oData.id;
+    jQuery.ajax({
+        type: 'POST',
+        url: this._sActionsUrl + 'add_attach_link/',
+        data: oData,
+        dataType: 'json',
+        //--- The site reads the linked page, which may answer slowly or never.
+        timeout: this._iAttachLinkTimeout
+    }).done(function(oData) {
+        var iEventId = 0;
+        if(oData?.event_id != undefined) {
+            iEventId = Number.parseInt(oData.event_id, 10);
+        }
 
-            var oItem = $(oData.item).hide();
-            $('#' + $this._aHtmlIds['attach_link_form_field'] + iEventId).prepend(oItem).find('#' + oItem.attr('id')).bx_anim('show', $this._sAnimationEffect, $this._sAnimationSpeed, function() {
-                $(this).bxProcessHtml();
-            });
+        if(!oData?.id || !oData.item || !String(oData.item).trim().length) {
+            $this.onAttachLinkEnd(oForm, sUrl, 0);
+            return;
+        }
 
-            $this.unlockForm($('#' + $this._aHtmlIds['attach_link_form_field'] + iEventId).parents('form:first'));
-        },
-        'json'
-    );
+        var oItem = $(oData.item).hide();
+        $('#' + $this._aHtmlIds['attach_link_form_field'] + iEventId).prepend(oItem).find('#' + oItem.attr('id')).bx_anim('show', $this._sAnimationEffect, $this._sAnimationSpeed, function() {
+            $(this).bxProcessHtml();
+        });
+
+        //--- Mark that 'attach link' process was finished.
+        $this.onAttachLinkEnd(oForm, sUrl, oData.id);
+    }).fail(function() {
+        //--- A network error, an error page, a timeout: the post goes without this preview.
+        $this.onAttachLinkEnd(oForm, sUrl, 0);
+    });
 };
 
 BxTimelineMain.prototype.onFindOverflow = function(oElement) {
