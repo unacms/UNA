@@ -132,14 +132,14 @@ class BxInvModule extends BxDolModule
         echoJson(['popup' => $this->_oTemplate->getCodePopup($sKey, $sLink)]);
     }
 
-    function serviceGetLink($aParams)
+    function serviceGetLink($aParams = [])
     {
         $iProfileId = $this->getProfileId();
         $iAccountId = $this->getAccountId($iProfileId);
 
         $mixedAllowed = $this->isAllowedInvite($iProfileId);
         if($mixedAllowed !== true)
-            return echoJson(array('message' => $mixedAllowed));
+            return $this->_bIsApi ? [bx_api_get_msg($mixedAllowed)] : echoJson(array('message' => $mixedAllowed));
 
         if(!isAdmin($iAccountId)) {
             if($this->_oConfig->getCountPerUser() <= 0)
@@ -355,6 +355,10 @@ class BxInvModule extends BxDolModule
     {
         if(!isset($aParams['aj_action'], $aParams['aj_params']))
             $aParams = array_merge($aParams, $this->_prepareParamsGet());
+
+        // The API form posts its hidden inputs to the service itself, without aja/ajp in the URL.
+        if($this->_bIsApi && empty($aParams['aj_action']) && bx_get('aj_action') === 'invite_to_context' && ($iContextPid = bx_process_input(bx_get('aj_params'), BX_DATA_INT)))
+            $aParams = array_merge($aParams, ['aj_action' => 'invite_to_context', 'aj_params' => $iContextPid]);
 
         $oForm = $this->getFormObjectInvite();
 

@@ -119,7 +119,7 @@ class BxInvTemplate extends BxBaseModGeneralTemplate
             $mInvitesRemain = _t('_bx_invites_txt_unlimited');
 
         if($this->_bIsApi)
-            return [bx_api_get_block('invite', ['remain' => $mInvitesRemain, 'request_url' => 'bx_invites/get_link/'])];
+            return [bx_api_get_block('invite', ['remain' => $mInvitesRemain, 'request_url' => 'bx_invites/get_link/', 'invite_url' => bx_api_get_relative_url(bx_absolute_url($sInviteUrl))])];
 
         $this->getCssJs();
         return $this->parseHtmlByName('block_invite.html', [
