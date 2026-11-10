@@ -108,6 +108,8 @@ export function ingestTimersFromPage(payload: any) {
 
 let loadPromise: Promise<any> | null = null;
 let loadedFor: string | null = null;
+// The viewer of the pending request: a caller that joins it with a viewer id marks that one loaded.
+let pendingFor: string | null = null;
 const loadedListeners = new Set<() => void>();
 
 /** The store holds one viewer's timers: another viewer (a profile switch) starts it again. */
@@ -120,7 +122,10 @@ function resetForViewer(viewerId: string) {
 }
 
 export async function loadTaskTimerSessions(viewerId?: number | string) {
-    if (viewerId != null) resetForViewer(String(viewerId));
+    if (viewerId != null) {
+        resetForViewer(String(viewerId));
+        pendingFor = String(viewerId);
+    }
     if (loadPromise) return loadPromise;
     loadPromise = (async () => {
         try {
@@ -130,7 +135,8 @@ export async function loadTaskTimerSessions(viewerId?: number | string) {
             // Browse rows still render from the time string; live state stays unknown.
         } finally {
             loadPromise = null;
-            if (viewerId != null) loadedFor = String(viewerId);
+            if (pendingFor !== null) loadedFor = pendingFor;
+            pendingFor = null;
             loadedListeners.forEach((listener) => listener());
         }
     })();
