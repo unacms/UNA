@@ -94,6 +94,11 @@ export const settingsElements = {
         item_group_header: 'px-2 pt-3 pb-1',
         item_group_header_first: 'p-2.5',
         item_group_header_text: 'text-xs font-semibold uppercase tracking-wide text-muted-foreground',
+        /** A row or group title inside an open group (a popup row with `rows`, see dropdown-menu): its inset. */
+        item_nested: 'ps-6',
+        /** The chevron at the end of a group row (a disclosure); it turns while the group is open. */
+        item_disclosure: 'shrink-0 self-center items-center justify-center w-8 h-8 web:transition-transform web:duration-200 web:ease-out motion-reduce:transition-none',
+        item_disclosure_open: 'rotate-180',
         /** Sectioned menus (More): column tracks are set in dropdown-menu. */
         content_sections: 'items-stretch gap-1',
         content_sections_stacked: 'flex-col gap-1 w-full',
