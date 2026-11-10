@@ -1564,7 +1564,8 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
         $oConnection = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTION']);
         if($oConnection) {
-            $aProfileIds = $oConnection->getConnectedContent($iContentId);
+            // the assignees: an assignment's initiator is the profile, its content is the task
+            $aProfileIds = $oConnection->getConnectedInitiators($iContentId);
             if(!empty($aProfileIds) && is_array($aProfileIds))
                 foreach($aProfileIds as $iProfileId) {
                     /**
@@ -1687,7 +1688,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         if($aTimers && is_array($aTimers))
             return $sErr;
 
-        return parent::checkAllowedDelete($aDataEntry, $isPerformAction = false);
+        return parent::checkAllowedDelete($aDataEntry, $isPerformAction);
     }
 
     /**
@@ -1745,7 +1746,8 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         ]);
 
         if(($oConnection = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTION'])) !== false) {
-            $aProfileIds = $oConnection->getConnectedContent($iContentId);
+            // the assignees: an assignment's initiator is the profile, its content is the task
+            $aProfileIds = $oConnection->getConnectedInitiators($iContentId);
             if(!empty($aProfileIds) && is_array($aProfileIds))
                 foreach($aProfileIds as $iProfileId) {
                     if($iProfileId == $iContentAuthor)

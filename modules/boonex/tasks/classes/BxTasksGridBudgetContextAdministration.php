@@ -167,7 +167,8 @@ class BxTasksGridBudgetContextAdministration extends BxBaseModGeneralGrid
 
         $bResult = parent::_delete($mixedId);
         if($bResult)
-            $this->_oModule->_oDb->updateBudgetTotal($this->_iContextPid, -(int)$aTrack['value']);
+            // the total is kept in minutes, an entry in hours (as when one is added or changed)
+            $this->_oModule->_oDb->updateBudgetTotal($this->_iContextPid, -60 * (int)$aTrack['value']);
 
         return $bResult;
     }
