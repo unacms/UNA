@@ -99,8 +99,8 @@ class BxBaseMenuSwitchLanguage extends BxTemplMenu
     }
 
     /**
-     * The language's code drawn as a glyph ("EN", "RU"), an inline SVG from tagsets
-     * (https://github.com/componext/tagsets, the glyphs NEO's language switcher uses), or '' when tagsets has none.
+     * The language's code drawn as a glyph ("EN", "RU"), an inline SVG from xymbols
+     * (https://github.com/componext/xymbols, the glyphs NEO's language switcher uses), or '' when xymbols has none.
      * Region and script subtags are dropped (pt-BR is "PT"), and Norwegian Bokmål and Nynorsk are "NO".
      */
     protected function getLanguageGlyph($sName)
@@ -116,7 +116,7 @@ class BxBaseMenuSwitchLanguage extends BxTemplMenu
         }
 
         if(!isset($aCache[$sCode])) {
-            $sPath = BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'tagsets/locales/' . $sCode . '.svg';
+            $sPath = BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'xymbols/locales/' . $sCode . '.svg';
             $sSvg = file_exists($sPath) ? file_get_contents($sPath) : false;
             $aCache[$sCode] = $sSvg !== false ? trim($sSvg) : '';
         }

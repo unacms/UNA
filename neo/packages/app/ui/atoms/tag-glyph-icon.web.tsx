@@ -1,12 +1,12 @@
 import Svg, { Circle, Ellipse, Line, Path, Polygon, Polyline, Rect } from 'react-native-svg';
 import type { ComponentType } from 'react';
-import type { GlyphData } from 'tagsets';
+import type { GlyphData } from 'xymbols';
 import type { TagGlyphIcon, TagGlyphIconProps } from './tag-glyph-icon.types';
 
 const TAGS: Record<string, ComponentType<any>> = { path: Path, circle: Circle, rect: Rect, line: Line, polyline: Polyline, polygon: Polygon, ellipse: Ellipse };
 
 /**
- * Web: an `Icon` component for one tagsets glyph, drawn like a Lucide icon (24 grid, 2px round strokes).
+ * Web: an `Icon` component for one xymbols glyph, drawn like a Lucide icon (24 grid, 2px round strokes).
  * Uses the square `fixed` form, or `hug` where the glyph has none. As with the inline Lucide icons
  * (`default/icons-svg.web.js`), a wrapping span carries the icon's class (`text-*` colour, layout) and the
  * strokes use `currentColor`; an explicit `color` wins.

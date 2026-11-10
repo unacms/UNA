@@ -292,7 +292,7 @@ function FooterLanguageSwitcher({ langs, visualProps }: Readonly<FooterControlPr
             title: language === 'auto' && autoLangCode
                 ? `${t('lang_auto')} (${autoLangCode.toUpperCase()})`
                 : t('lang_' + language),
-            // The language's own glyph (EN, RU, ...); System and languages tagsets has no glyph for keep the generic icon.
+            // The language's own glyph (EN, RU, ...); System and languages xymbols has no glyph for keep the generic icon.
             icon: localeIconName(language) || 'Languages',
             selected: currentLang === language,
         }))

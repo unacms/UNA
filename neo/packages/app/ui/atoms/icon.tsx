@@ -14,7 +14,7 @@ type IconRegistry = Record<string, ComponentType<any> | undefined>;
 type IconSize = number | string;
 
 export type IconProps = {
-    /** Lucide name, remote icon key, inline SVG name, tagsets language glyph (`LocaleEn`), or raw `<svg …>` markup. */
+    /** Lucide name, remote icon key, inline SVG name, xymbols language glyph (`LocaleEn`), or raw `<svg …>` markup. */
     icon?: string | null;
     className?: string;
     width?: IconSize;
@@ -59,7 +59,7 @@ function useIconCore({ icon: origIcon, className, width, height, color, size, st
     const isXmlSvg = typeof origIcon === 'string' && origIcon.startsWith('<svg');
     const remoteIcon: string | null | undefined = findIconFromRemote(origIcon);
     const _strokeWidth: number | undefined = strokeWidth || appSetting('layout', 'default_icon_stroke_width');
-    // The icons-svg registry first (a fork can replace a glyph there), then the tagsets language glyphs.
+    // The icons-svg registry first (a fork can replace a glyph there), then the xymbols language glyphs.
     const InlineIcon = remoteIcon ? ((SvgIcons as IconRegistry)[remoteIcon] ?? (tagGlyphIcons as IconRegistry)[remoteIcon]) : undefined;
     // No custom drawing: Lucide draws it, under its current name if Lucide has renamed it.
     const icon = InlineIcon ? remoteIcon : currentLucideName(remoteIcon);

@@ -4783,11 +4783,6 @@ tablesorter@^2.32.0:
   dependencies:
     jquery ">=1.2.6"
 
-tagsets@0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/tagsets/-/tagsets-0.4.0.tgz#492104beede0635033f37dc1a30b310c45e9556a"
-  integrity sha512-EULmSS/4n/KVXWwlTv7zXGMEYljSFv/cK1QMWHnymhd4BfZ64PJWQYmsZGD1cIdWLa7wKDcrde+CZhO/GMdVKg==
-
 tailwindcss@^3.4.17:
   version "3.4.19"
   resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-3.4.19.tgz#af2a0a4ae302d52ebe078b6775e799e132500ee2"
@@ -5198,6 +5193,11 @@ write-file-atomic@^8.0.0:
   integrity sha512-dYwyZredl67GyLLIHJnRM3h2PcOmN5SkcgC7eM5DPDEOEl6dLFqVrMg3F1Ea32usj4VSVZtd2H4MtKTNOf6nPg==
   dependencies:
     signal-exit "^4.0.1"
+
+xymbols@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/xymbols/-/xymbols-0.1.0.tgz#fb094688b4be3049fe1b9eb67a64adcc526985aa"
+  integrity sha512-Rxx2+9jdR36epXSLaEPXd9wKhWIFwKp9rD+/2NYUv/i8USFHqxW81WgljIcSVNM5vze0Kpte1bF5ZOQw9FZIVg==
 
 yallist@^4.0.0:
   version "4.0.0"
