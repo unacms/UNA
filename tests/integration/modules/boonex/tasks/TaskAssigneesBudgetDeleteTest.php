@@ -12,8 +12,9 @@ use PHPUnit\Framework\Attributes\Group;
  * - Deleting a budget entry took its hours off a total that is kept in minutes.
  * - The delete check never counted the action: it gave its parent `false` whatever it was asked.
  *
- * The test makes its own task, assignments and budget rows and removes them. Alerts of the task
- * go to a recorder only, so nothing is notified or mailed.
+ * The test makes its own task, assignments and budget rows and removes them, with the line
+ * that completing a task writes to its activity. While a test records alerts, no other handler
+ * runs, so nothing is notified or mailed.
  */
 #[Group('integration')]
 class TaskAssigneesBudgetDeleteTest extends BxDolIntegrationTestCase
@@ -48,8 +49,13 @@ class TaskAssigneesBudgetDeleteTest extends BxDolIntegrationTestCase
         $oDb = BxDolDb::getInstance();
         if ($this->_aAssignmentIds)
             $oDb->query("DELETE FROM `bx_tasks_assignments` WHERE `id` IN (" . implode(',', array_map('intval', $this->_aAssignmentIds)) . ")");
-        if ($this->_aTaskIds)
-            $oDb->query("DELETE FROM `bx_tasks_tasks` WHERE `id` IN (" . implode(',', array_map('intval', $this->_aTaskIds)) . ")");
+        if ($this->_aTaskIds) {
+            $sTasks = implode(',', array_map('intval', $this->_aTaskIds));
+            // the lines complete() logs to a task's activity are its comments
+            $oDb->query("DELETE FROM `sys_cmts_ids` WHERE `system_id` IN (SELECT `ID` FROM `sys_objects_cmts` WHERE `Name` = 'bx_tasks') AND `cmt_id` IN (SELECT `cmt_id` FROM `bx_tasks_cmts` WHERE `cmt_object_id` IN (" . $sTasks . "))");
+            $oDb->query("DELETE FROM `bx_tasks_cmts` WHERE `cmt_object_id` IN (" . $sTasks . ")");
+            $oDb->query("DELETE FROM `bx_tasks_tasks` WHERE `id` IN (" . $sTasks . ")");
+        }
         if ($this->_iBudgetContext) {
             $oDb->query("DELETE FROM `bx_tasks_budget_track` WHERE `context_id` = :c", ['c' => $this->_iBudgetContext]);
             $oDb->query("DELETE FROM `bx_tasks_budget` WHERE `context_id` = :c", ['c' => $this->_iBudgetContext]);
@@ -71,29 +77,32 @@ class TaskAssigneesBudgetDeleteTest extends BxDolIntegrationTestCase
 
     public function testAnExpiredTaskTellsItsAssignees(): void
     {
-        $iTask = $this->addTask('expired');
-        $iOther = $this->addTask('another');
-        // assignees are active profiles: the author, and another one where the site has one
-        $aAssignees = [$this->_iAuthor];
-        $iSecond = (int)BxDolDb::getInstance()->getOne("SELECT `id` FROM `sys_profiles` WHERE `status` = 'active' AND `type` <> 'system' AND `id` <> :id ORDER BY `id` LIMIT 1", ['id' => $this->_iAuthor]);
-        if ($iSecond)
-            $aAssignees[] = $iSecond;
-        sort($aAssignees);
+        list($iTask, $aAssignees) = $this->addAssignedTask('expired');
 
-        foreach ($aAssignees as $iAssignee)
-            $this->assign($iAssignee, $iTask);
-        // read the other way round, this row makes the other task a profile to tell: it says
-        // the profile whose id is this task's id is assigned to that task
-        $this->assign($iTask, $iOther);
-
-        $this->recordTaskAlerts(['expired']);
+        $this->recordTaskAlerts();
         BxDolModule::getInstance('bx_tasks')->onExpired($iTask);
 
-        $aTold = array_column(array_filter(BxTestTaskAlertsRecorder::$aSeen, function ($a) use ($iTask) {
-            return $a['action'] === 'expired' && $a['object'] === $iTask;
-        }), 'profile');
-        sort($aTold);
-        $this->assertSame($aAssignees, $aTold);
+        $this->assertSame($aAssignees, $this->toldOf('expired', $iTask));
+    }
+
+    public function testACompletedOrReopenedTaskTellsItsAuthorAndItsAssigneesOnce(): void
+    {
+        // the author is assigned too: told as the author, and not again as an assignee
+        list($iTask, $aAssignees) = $this->addAssignedTask('completed');
+        $this->assertContains($this->_iAuthor, $aAssignees);
+
+        $this->recordTaskAlerts();
+        $oModule = BxDolModule::getInstance('bx_tasks');
+
+        $oModule->complete($iTask, 1);
+        $this->assertSame($aAssignees, $this->toldOf('completed', $iTask));
+        $this->assertSame([], $this->toldOf('reopened', $iTask));
+        $this->assertSame(1, (int)BxDolDb::getInstance()->getOne("SELECT `completed` FROM `bx_tasks_tasks` WHERE `id` = :id", ['id' => $iTask]));
+
+        BxTestTaskAlertsRecorder::$aSeen = [];
+        $oModule->complete($iTask, 0);
+        $this->assertSame($aAssignees, $this->toldOf('reopened', $iTask));
+        $this->assertSame([], $this->toldOf('completed', $iTask));
     }
 
     public function testDeletingABudgetEntryTakesItsHoursOffTheMinutes(): void
@@ -135,6 +144,41 @@ class TaskAssigneesBudgetDeleteTest extends BxDolIntegrationTestCase
         $this->assertContains(true, array_column($oAcl->aChecks, 'perform'), 'a delete is counted');
     }
 
+    /**
+     * A task assigned to active profiles (its author, and another one where the site has one),
+     * with a row that reads as an assignment only the wrong way round: [task id, the assignees' ids in order].
+     */
+    protected function addAssignedTask(string $sTitle): array
+    {
+        $iTask = $this->addTask($sTitle);
+        $iOther = $this->addTask($sTitle . ', another');
+
+        $aAssignees = [$this->_iAuthor];
+        $iSecond = (int)BxDolDb::getInstance()->getOne("SELECT `id` FROM `sys_profiles` WHERE `status` = 'active' AND `type` <> 'system' AND `id` <> :id ORDER BY `id` LIMIT 1", ['id' => $this->_iAuthor]);
+        if ($iSecond)
+            $aAssignees[] = $iSecond;
+        sort($aAssignees);
+
+        foreach ($aAssignees as $iAssignee)
+            $this->assign($iAssignee, $iTask);
+        // read the other way round, this row makes the other task a profile to tell: it says
+        // the profile whose id is this task's id is assigned to that task
+        $this->assign($iTask, $iOther);
+
+        return [$iTask, $aAssignees];
+    }
+
+    /** The profiles the recorded alerts of this action and task were for, in order; one twice if told twice. */
+    protected function toldOf(string $sAction, int $iTask): array
+    {
+        $aTold = array_column(array_filter(BxTestTaskAlertsRecorder::$aSeen, function ($a) use ($sAction, $iTask) {
+            return $a['unit'] === 'bx_tasks' && $a['action'] === $sAction && $a['object'] === $iTask;
+        }), 'profile');
+        sort($aTold);
+
+        return $aTold;
+    }
+
     protected function addTask(string $sTitle): int
     {
         $oDb = BxDolDb::getInstance();
@@ -160,9 +204,11 @@ class TaskAssigneesBudgetDeleteTest extends BxDolIntegrationTestCase
     }
 
     /**
-     * Send the task alerts of these actions to the recorder, and to nothing else.
+     * Send the tasks' alerts about a task (expired, completed, reopened) to the recorder. No
+     * other handler of any alert runs until tearDown: completing a task also adds a line to its
+     * activity, which alerts too.
      */
-    protected function recordTaskAlerts(array $aActions): void
+    protected function recordTaskAlerts(): void
     {
         // the cache is filled by the first alert
         new BxDolAlerts('system', 'phpunit_init', 0, 0);
@@ -179,8 +225,7 @@ class TaskAssigneesBudgetDeleteTest extends BxDolIntegrationTestCase
             'service_call' => '',
             'active' => 1,
         ];
-        foreach ($aActions as $sAction)
-            $aCache['alerts']['bx_tasks'][$sAction] = [$sId];
+        $aCache['alerts'] = ['bx_tasks' => array_fill_keys(['expired', 'completed', 'reopened'], [$sId])];
         $oProp->setValue(null, $aCache);
     }
 
@@ -204,6 +249,7 @@ class BxTestTaskAlertsRecorder
     public function response($oAlert)
     {
         self::$aSeen[] = [
+            'unit' => (string)$oAlert->sUnit,
             'action' => (string)$oAlert->sAction,
             'object' => (int)$oAlert->iObject,
             'profile' => (int)($oAlert->aExtras['object_author_id'] ?? 0),
