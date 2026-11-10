@@ -4030,7 +4030,11 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         if($oForm->isSubmittedAndValid()) {
             $sType = $oForm->getCleanValue('type');
             $sType = $this->_oConfig->getPrefix('common_post') . $sType;
-            BxDolForm::setSubmittedValue('type', $sType, $oForm->aFormAttrs['method']);
+            // a form submitted with given values (serviceAdd) keeps them in the form, not in the request
+            if($oForm->aFormAttrs['method'] == BX_DOL_FORM_METHOD_SPECIFIC)
+                $oForm->setSpecificValue('type', $sType);
+            else
+                BxDolForm::setSubmittedValue('type', $sType, $oForm->aFormAttrs['method']);
 
             $aContent = [];
 
