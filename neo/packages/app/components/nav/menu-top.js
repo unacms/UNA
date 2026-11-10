@@ -16,7 +16,6 @@ let __menuTopIndicatorPersist = { initialized: false, translateX: 0, width: 0 };
 // page hydrates the tabs can still shift (their content is swapped in a frame later), which it
 // should follow at once, not slide after.
 const INDICATOR_SETTLE_MS = 500;
-let __menuTopIndicatorAnimates = false;
 let __menuTopIndicatorSettling = false;
 
 // The transitions of the indicator's two layers: its background and the line.
@@ -24,13 +23,14 @@ const INDICATOR_TRANSITIONS = {
     bg: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out',
     line: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), width 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out',
 };
-const INDICATOR_NO_TRANSITIONS = { bg: 'none', line: 'none' };
+// The ones in use: none until the settle window has passed.
+let __menuTopIndicatorTransitions = { bg: 'none', line: 'none' };
 
 /** Starts the settle window once, when the indicator first shows; transitions apply after it. */
 function startIndicatorSettle() {
     if (__menuTopIndicatorSettling) return;
     __menuTopIndicatorSettling = true;
-    setTimeout(() => { __menuTopIndicatorAnimates = true; }, INDICATOR_SETTLE_MS);
+    setTimeout(() => { __menuTopIndicatorTransitions = INDICATOR_TRANSITIONS; }, INDICATOR_SETTLE_MS);
 }
 
 export default function MenuTop({ url, uri }) {
@@ -136,7 +136,7 @@ export default function MenuTop({ url, uri }) {
         };
     }
 
-    const indicatorTransitions = __menuTopIndicatorAnimates ? INDICATOR_TRANSITIONS : INDICATOR_NO_TRANSITIONS;
+    const indicatorTransitions = __menuTopIndicatorTransitions;
 
     // Persist for future remounts
     useEffect(() => {
