@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `bx_tasks_pre_values` (
   `color` varchar(128) NOT NULL DEFAULT '',
   `active` tinyint(4) NOT NULL DEFAULT '1', 
   PRIMARY KEY (`id`),
-  UNIQUE KEY `list_value` (`list`, `value`(191))
+  UNIQUE KEY `list_value` (`context_id`, `list`, `value`(191))
 );
 
 -- TABLE: filters
