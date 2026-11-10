@@ -51,6 +51,12 @@ class BxDolSplash extends BxDolFactory implements iBxDolSingleton
     /** Elements an agent may not write: the site page shows the code as it is, to every guest. */
     protected const TAGS_UNSAFE = ['script', 'base', 'meta', 'link', 'iframe', 'object', 'embed'];
 
+    /**
+     * Elements whose content libxml and browsers read differently ("<noscript><p title="</noscript><img onerror=...>">"):
+     * the check would pass code that a browser runs, so an agent may not write them at all.
+     */
+    protected const TAGS_PARSED_APART = ['noscript', 'template', 'textarea', 'title', 'xmp', 'plaintext', 'noembed', 'noframes', 'math', 'select'];
+
     /** Attributes that hold an address. */
     protected const ATTRS_URL = ['href', 'src', 'action', 'formaction', 'xlink:href', 'poster', 'background'];
 
@@ -238,12 +244,22 @@ class BxDolSplash extends BxDolFactory implements iBxDolSingleton
         if(trim($sCode) === '')
             return [];
 
+        $aFound = [];
+
+        // The saved code is served as it is, so its text is checked too, not only what libxml makes of it.
+        if(preg_match_all('/<\s*\/?\s*(' . implode('|', array_merge(self::TAGS_UNSAFE, self::TAGS_PARSED_APART)) . ')\b/i', $sCode, $aMatches))
+            foreach($aMatches[1] as $sTag)
+                $aFound['<' . mb_strtolower($sTag) . '>'] = true;
+        if(preg_match('/[\s"\'\/]on[a-z]+\s*=/i', $sCode))
+            $aFound['event handler attribute'] = true;
+        if(preg_match('/(java|vb)script\s*:|srcdoc\s*=/i', $sCode))
+            $aFound['script address'] = true;
+
         $oDoc = new DOMDocument('1.0', 'UTF-8');
         $oBody = $this->loadBody($oDoc, $sCode);
         if(!$oBody)
-            return ['code that cannot be parsed'];
+            return array_merge(array_keys($aFound), ['code that cannot be parsed']);
 
-        $aFound = [];
         foreach($oBody->getElementsByTagName('*') as $oElement) {
             $sTag = mb_strtolower($oElement->nodeName);
             if(in_array($sTag, self::TAGS_UNSAFE, true))
