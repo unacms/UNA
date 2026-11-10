@@ -1049,6 +1049,20 @@ class BxDolForm extends BxDol implements iBxDolReplaceable
         return $oRv;
     }
 
+    /**
+     * Get the submitted value of a field cleaned with an explicitly given db
+     * pass, using the form's own checker helper. Same cleaning the save path
+     * applies in BxDolFormChecker::serializeDbValues() (no API comma-split),
+     * so it's safe to feed the result straight into insert()/update(). An
+     * empty pass falls back to 'Xss'.
+     */
+    function getCleanValueByPass ($sName, $sPass = 'Xss', $aParams = array())
+    {
+        $oChecker = new $this->_sChecker($this->_sCheckerHelper);
+        $oChecker->setFormMethod($this->aFormAttrs['method'], $this->_aSpecificValues);
+        return $oChecker->get($sName, $sPass ? $sPass : 'Xss', $aParams);
+    }
+
     function isSubmitted ()
     {
         $aSubmitName = $this->aParams['db']['submit_name'];
