@@ -10,6 +10,28 @@ import { Platform } from 'react-native';
 
 // Persist indicator state across remounts (web/native)
 let __menuTopIndicatorPersist = { initialized: false, translateX: 0, width: 0 };
+// The indicator moves without a transition until it has shown and the bar has settled, then
+// animates. The first time it shows it has no earlier position to move from: with the transitions
+// it would grow from the nav's left edge and slide to its tab on every fresh load. And while the
+// page hydrates the tabs can still shift (their content is swapped in a frame later), which it
+// should follow at once, not slide after.
+const INDICATOR_SETTLE_MS = 500;
+let __menuTopIndicatorSettling = false;
+
+// The transitions of the indicator's two layers: its background and the line.
+const INDICATOR_TRANSITIONS = {
+    bg: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out',
+    line: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), width 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out',
+};
+// The ones in use: none until the settle window has passed.
+let __menuTopIndicatorTransitions = { bg: 'none', line: 'none' };
+
+/** Starts the settle window once, when the indicator first shows; transitions apply after it. */
+function startIndicatorSettle() {
+    if (__menuTopIndicatorSettling) return;
+    __menuTopIndicatorSettling = true;
+    setTimeout(() => { __menuTopIndicatorTransitions = INDICATOR_TRANSITIONS; }, INDICATOR_SETTLE_MS);
+}
 
 export default function MenuTop({ url, uri }) {
     const { currentUser } = useCurrentUser();
@@ -114,6 +136,8 @@ export default function MenuTop({ url, uri }) {
         };
     }
 
+    const indicatorTransitions = __menuTopIndicatorTransitions;
+
     // Persist for future remounts
     useEffect(() => {
         if (!indicatorStyle.visible) return;
@@ -122,6 +146,7 @@ export default function MenuTop({ url, uri }) {
             translateX: indicatorStyle.translateX,
             width: indicatorStyle.width,
         };
+        startIndicatorSettle();
     }, [indicatorStyle.visible, indicatorStyle.translateX, indicatorStyle.width]);
 
     const MenuTopItem = components['menu-item']['topmenu'];
@@ -157,7 +182,7 @@ export default function MenuTop({ url, uri }) {
                     opacity: indicatorStyle.visible ? 1 : 0,
                     pointerEvents: 'none',
                     zIndex: 0,
-                    transition: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out'
+                    transition: indicatorTransitions.bg
                 }}
             />
 
@@ -169,7 +194,7 @@ export default function MenuTop({ url, uri }) {
                     opacity: indicatorStyle.visible ? 1 : 0,
                     pointerEvents: 'none',
                     zIndex: 0,
-                    transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), width 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out'
+                    transition: indicatorTransitions.line
                 }}
             />
             <MenuTopProbe items={menu_navbar_items} t={t} onWidth={setInlineWidth} />
