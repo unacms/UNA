@@ -477,6 +477,20 @@ class BxDolAiSearchExtParserTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayNotHasKey('title', $a['search_params']);
     }
 
+    public function testShortWordOfTheHintDoesNotKeepTheChoice()
+    {
+        $o = new BxDolAiSearchExtParserTestDouble();
+        $o->setFields($this->consultingFields());
+        $o->setHints(['labels' => 'Startups in technology need AI consulting.']);
+        $o->setQuery('consulting in');
+
+        $a = $o->widenListsByWords($this->keywordResult('', [
+            'labels' => ['value' => 'AI consulting', 'label' => 'AI consulting'],
+        ]));
+
+        $this->assertSame(['AI consulting', 'Business consulting'], $a['search_params']['labels']['value']);
+    }
+
     public function testHintWordOfAChosenValueLeavesTheKeyword()
     {
         $o = new BxDolAiSearchExtParserTestDouble();

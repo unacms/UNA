@@ -347,7 +347,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
                     $aNarrow = array_intersect($aOfWord, $aOfOther);
                     if ($aNarrow && array_diff($aOfWord, $aNarrow))
                         continue 2; // "simultaneous" in "interpreter simultaneous", "AI" in "AI consulting"
-                    if (!$aOfOther && isset($aHintWords[$sOther]))
+                    if (!$aOfOther && mb_strlen($sOther) >= 4 && isset($aHintWords[$sOther]))
                         continue 2; // "conference" when the hint says conference is Simultaneous
                 }
 
