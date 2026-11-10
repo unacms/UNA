@@ -144,6 +144,14 @@ function clockToMinutes(value: any) {
     return seconds == null ? null : seconds / 60;
 }
 
+/** Logged minutes as "3h 19m". */
+export function formatTaskMinutes(minutes: number) {
+    const hours = Math.floor(minutes / 60);
+    const rest = minutes % 60;
+    if (!hours) return `${rest}m`;
+    return rest ? `${hours}h ${rest}m` : `${hours}h`;
+}
+
 export function formatTaskClock(totalSeconds: number, { showSeconds = false }: { showSeconds?: boolean } = {}) {
     const safe = Math.max(0, Math.floor(Number(totalSeconds) || 0));
     const hours = Math.floor(safe / 3600);

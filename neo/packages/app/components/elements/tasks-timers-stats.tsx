@@ -7,6 +7,7 @@ import Link from 'app/ui/atoms/link';
 import Progress from 'app/ui/atoms/progress';
 import { fetcher } from 'app/lib/fetcher';
 import emitter, { EVENTS } from 'app/context/emitter';
+import { formatTaskMinutes } from 'app/lib/tasks-meta';
 
 const PAGE_SIZE = 10;
 const REFRESH_ACTIONS = ['log', 'log-all'];
@@ -37,13 +38,6 @@ type TasksTimersStatsProps = {
     blockWrapperProps?: any;
 };
 
-function formatMinutes(minutes: number) {
-    const hours = Math.floor(minutes / 60);
-    const rest = minutes % 60;
-    if (!hours) return `${rest}m`;
-    return rest ? `${hours}h ${rest}m` : `${hours}h`;
-}
-
 function Metric({ value, label }: { value: string | number; label?: string }) {
     return (
         <View className="gap-0.5">
@@ -67,14 +61,14 @@ function TaskRow({ task, maxMinutes }: { task: StatsTask; maxMinutes: number }) 
                         <Text numberOfLines={1} className="text-xs text-muted-foreground">{task.context.display_name}</Text>
                     ) : null}
                 </View>
-                <Text className="flex-none text-sm font-medium tabular-nums text-foreground">{formatMinutes(task.minutes)}</Text>
+                <Text className="flex-none text-sm font-medium tabular-nums text-foreground">{formatTaskMinutes(task.minutes)}</Text>
             </Row>
             <Progress value={percent} bgColor="bg-muted" progressColor="bg-green" />
         </View>
     );
 }
 
-/** Logged time per task for this and the previous month (`bx_tasks:get_block_timers_stats`). */
+/** Logged time per task per period; the first one UNA sends is the default (`bx_tasks:get_block_timers_stats`). */
 export default function TasksTimersStats({ data, blockWrapperProps }: TasksTimersStatsProps) {
     const [stats, setStats] = useState(data);
 
@@ -124,7 +118,7 @@ export default function TasksTimersStats({ data, blockWrapperProps }: TasksTimer
             <View className="w-full gap-4">
                 <Row className="flex-wrap items-center justify-between gap-3">
                     <Row className="items-center gap-6">
-                        <Metric value={formatMinutes(period.minutes || 0)} label={labels.total} />
+                        <Metric value={formatTaskMinutes(period.minutes || 0)} label={labels.total} />
                         <Metric value={tasks.length} label={labels.tasks} />
                     </Row>
                     <NeoButtonGroup controlSize="small" accessibilityLabel={labels.total}>

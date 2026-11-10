@@ -107,8 +107,25 @@ export function ingestTimersFromPage(payload: any) {
 }
 
 let loadPromise: Promise<any> | null = null;
+let loadedFor: string | null = null;
+// The viewer of the pending request: a caller that joins it with a viewer id marks that one loaded.
+let pendingFor: string | null = null;
+const loadedListeners = new Set<() => void>();
 
-export async function loadTaskTimerSessions() {
+/** The store holds one viewer's timers: another viewer (a profile switch) starts it again. */
+function resetForViewer(viewerId: string) {
+    if (loadedFor === null || loadedFor === viewerId) return;
+    loadedFor = null;
+    const cleared = [...sessions.entries()].filter(([key]) => !key.startsWith('timer:'));
+    sessions.clear();
+    for (const [, session] of cleared) emitSession({ ...session, state: null, seconds: 0 });
+}
+
+export async function loadTaskTimerSessions(viewerId?: number | string) {
+    if (viewerId != null) {
+        resetForViewer(String(viewerId));
+        pendingFor = String(viewerId);
+    }
     if (loadPromise) return loadPromise;
     loadPromise = (async () => {
         try {
@@ -118,9 +135,31 @@ export async function loadTaskTimerSessions() {
             // Browse rows still render from the time string; live state stays unknown.
         } finally {
             loadPromise = null;
+            if (pendingFor !== null) loadedFor = pendingFor;
+            pendingFor = null;
+            loadedListeners.forEach((listener) => listener());
         }
     })();
     return loadPromise;
+}
+
+/**
+ * Whether this viewer's timers were loaded. A task row can be the first thing that shows a
+ * timer control (search results), so the first one to mount loads them.
+ */
+export function useTaskTimerSessionsLoaded(viewerId: number | string | null | undefined) {
+    const key = viewerId == null ? null : String(viewerId);
+    const [loadedKey, setLoadedKey] = useState(() => loadedFor);
+
+    useEffect(() => {
+        if (key === null || loadedFor === key) return;
+        const listener = () => setLoadedKey(loadedFor);
+        loadedListeners.add(listener);
+        void loadTaskTimerSessions(key);
+        return () => { loadedListeners.delete(listener); };
+    }, [key]);
+
+    return key !== null && (loadedKey === key || loadedFor === key);
 }
 
 export function useTaskTimerSession(taskId: number | string | null | undefined) {

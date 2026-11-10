@@ -158,6 +158,8 @@
     <string name="_bx_tasks_form_time_input_value_m_placeholder"><![CDATA[minutes]]></string>
     <string name="_bx_tasks_form_time_input_sys_value_date"><![CDATA[Date]]></string>
     <string name="_bx_tasks_form_time_input_value_date"><![CDATA[Date]]></string>
+    <string name="_bx_tasks_form_time_input_sys_billable"><![CDATA[Billable]]></string>
+    <string name="_bx_tasks_form_time_input_billable"><![CDATA[Billable]]></string>
     <string name="_bx_tasks_form_time_input_sys_text"><![CDATA[Note]]></string>
     <string name="_bx_tasks_form_time_input_text"><![CDATA[Note]]></string>
 
@@ -302,6 +304,8 @@
     <string name="_bx_tasks_page_block_title_system_timers"><![CDATA[Timers]]></string>
     <string name="_bx_tasks_page_block_title_timers"><![CDATA[Timers]]></string>
     <string name="_bx_tasks_page_block_title_system_timers_stats"><![CDATA[Timers Statistics]]></string>
+    <string name="_bx_tasks_page_block_title_system_entry_time_summary"><![CDATA[Task Logged Time by Person]]></string>
+    <string name="_bx_tasks_page_block_title_system_context_time_summary"><![CDATA[Context Logged Time by Person]]></string>
     <string name="_bx_tasks_page_block_title_timers_stats"><![CDATA[Logged Time]]></string>
     <string name="_bx_tasks_page_block_title_popular_keywords"><![CDATA[Popular Hashtags]]></string>
     <string name="_bx_tasks_page_block_title_cats"><![CDATA[Tasks Categories]]></string>
@@ -478,6 +482,7 @@
     <string name="_bx_tasks_grid_column_title_tm_object_id"><![CDATA[Task]]></string>
     <string name="_bx_tasks_grid_column_title_tm_text"><![CDATA[Note]]></string>
     <string name="_bx_tasks_grid_column_title_tm_value"><![CDATA[Time]]></string>
+    <string name="_bx_tasks_grid_column_title_tm_billable"><![CDATA[Billable]]></string>
     <string name="_bx_tasks_grid_column_title_tm_value_date"><![CDATA[Date]]></string>
     <string name="_bx_tasks_grid_action_title_tm_add"><![CDATA[Add]]></string>
     <string name="_bx_tasks_grid_action_title_tm_edit"><![CDATA[Edit]]></string>
@@ -632,8 +637,13 @@
     <string name="_bx_tasks_txt_timer_edit_and_log"><![CDATA[Edit & Log]]></string>
     <string name="_bx_tasks_txt_timers_clear"><![CDATA[Clear All]]></string>
     <string name="_bx_tasks_txt_timers_log"><![CDATA[Log All]]></string>
+    <string name="_bx_tasks_txt_billable"><![CDATA[Billable]]></string>
+    <string name="_bx_tasks_txt_non_billable"><![CDATA[Non-billable]]></string>
+    <string name="_bx_tasks_txt_timers_stats_today"><![CDATA[Today]]></string>
+    <string name="_bx_tasks_txt_timers_stats_this_week"><![CDATA[This Week]]></string>
     <string name="_bx_tasks_txt_timers_stats_this_month"><![CDATA[This Month]]></string>
     <string name="_bx_tasks_txt_timers_stats_last_month"><![CDATA[Last Month]]></string>
+    <string name="_bx_tasks_txt_timers_stats_all_time"><![CDATA[All Time]]></string>
     <string name="_bx_tasks_txt_timers_stats_total"><![CDATA[Time]]></string>
     <string name="_bx_tasks_txt_timers_stats_tasks"><![CDATA[Tasks]]></string>
     <string name="_bx_tasks_txt_timers_stats_show_more"><![CDATA[Show more]]></string>

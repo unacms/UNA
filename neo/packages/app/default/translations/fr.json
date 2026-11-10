@@ -559,5 +559,8 @@
     "Activities": "Activités",
     "Objects": "Objets",
     "Symbols": "Symboles",
-    "Flags": "Drapeaux"
+    "Flags": "Drapeaux",
+    "Start timer": "Démarrer le minuteur",
+    "Pause timer": "Mettre le minuteur en pause",
+    "Total logged": "Total enregistré"
 }

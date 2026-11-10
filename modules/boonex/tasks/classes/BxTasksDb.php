@@ -398,6 +398,47 @@ class BxTasksDb extends BxBaseModTextDb
                     ];
 
                     $sWhereClause = "AND `ttt`.`object_id` = :object_id";
+                    $sOrderClause = "`ttt`.`value_date` DESC, `ttt`.`id` DESC";
+                    break;
+
+                case 'context_id':
+                    $aMethod['params'][1] = [
+                        'context' => -(int)$aParams['context_id']
+                    ];
+
+                    $sSelectClause .= ", `te`.`" . $CNF['FIELD_TITLE'] . "` AS `object_title`";
+                    $sJoinClause = "INNER JOIN `" . $CNF['TABLE_ENTRIES'] . "` AS `te` ON `ttt`.`object_id` = `te`.`" . $CNF['FIELD_ID'] . "`";
+                    $sWhereClause = "AND `te`.`" . $CNF['FIELD_ALLOW_VIEW_TO'] . "` = :context";
+
+                    if(!empty($aParams['author_id'])) {
+                        $aMethod['params'][1]['author_id'] = (int)$aParams['author_id'];
+                        $sWhereClause .= " AND `ttt`.`author_id` = :author_id";
+                    }
+                    break;
+
+                case 'context_period_sums':
+                    $aMethod['params'][1] = [
+                        'context' => -(int)$aParams['context_id']
+                    ];
+
+                    $sDate = "IF(`ttt`.`value_date` > 0, `ttt`.`value_date`, `ttt`.`date`)";
+                    $sSelectClause = "`ttt`.`author_id`, `ttt`.`object_id`, `ttt`.`billable`, `te`.`" . $CNF['FIELD_TITLE'] . "` AS `object_title`";
+                    foreach($aParams['periods'] as $sName => $aPeriod) {
+                        $sName = preg_replace('/[^a-z0-9_]/', '', $sName);
+                        $aMethod['params'][1][$sName . '_from'] = (int)$aPeriod['from'];
+                        $aMethod['params'][1][$sName . '_to'] = (int)$aPeriod['to'];
+                        $sSelectClause .= ", SUM(IF(" . $sDate . " >= :" . $sName . "_from AND " . $sDate . " < :" . $sName . "_to, `ttt`.`value`, 0)) AS `" . $sName . "`";
+                    }
+
+                    $sJoinClause = "INNER JOIN `" . $CNF['TABLE_ENTRIES'] . "` AS `te` ON `ttt`.`object_id` = `te`.`" . $CNF['FIELD_ID'] . "`";
+                    $sWhereClause = "AND `te`.`" . $CNF['FIELD_ALLOW_VIEW_TO'] . "` = :context";
+
+                    if(!empty($aParams['author_id'])) {
+                        $aMethod['params'][1]['author_id'] = (int)$aParams['author_id'];
+                        $sWhereClause .= " AND `ttt`.`author_id` = :author_id";
+                    }
+
+                    $sWhereClause .= " GROUP BY `ttt`.`author_id`, `ttt`.`object_id`, `ttt`.`billable`, `te`.`" . $CNF['FIELD_TITLE'] . "`";
                     break;
 
                 case 'author_period_sum':

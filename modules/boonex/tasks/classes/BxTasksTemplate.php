@@ -261,18 +261,12 @@ class BxTasksTemplate extends BxBaseModTextTemplate
 
     public function getBlockTimersStats ($iProfileId)
     {
-        $iMonth = (int)date('n');
-        $iYear = (int)date('Y');
-
-        $iThisMonth = mktime(0, 0, 0, $iMonth, 1, $iYear);
-        $iLastMonth = mktime(0, 0, 0, $iMonth - 1, 1, $iYear);
-        $iNextMonth = mktime(0, 0, 0, $iMonth + 1, 1, $iYear);
+        $aPeriods = [];
+        foreach($this->_getTimersPeriods() as $sName => $aPeriod)
+            $aPeriods[] = $this->_getTimersStatsPeriod($sName, $aPeriod['title'], $iProfileId, $aPeriod['from'], $aPeriod['to']);
 
         return [
-            'periods' => [
-                $this->_getTimersStatsPeriod('this_month', _t('_bx_tasks_txt_timers_stats_this_month'), $iProfileId, $iThisMonth, $iNextMonth),
-                $this->_getTimersStatsPeriod('last_month', _t('_bx_tasks_txt_timers_stats_last_month'), $iProfileId, $iLastMonth, $iThisMonth),
-            ],
+            'periods' => $aPeriods,
             'labels' => [
                 'total' => _t('_bx_tasks_txt_timers_stats_total'),
                 'tasks' => _t('_bx_tasks_txt_timers_stats_tasks'),
@@ -280,6 +274,181 @@ class BxTasksTemplate extends BxBaseModTextTemplate
                 'empty' => _t('_bx_tasks_txt_timers_stats_empty'),
             ],
             'request_url' => $this->MODULE . '/get_block_timers_stats'
+        ];
+    }
+
+    protected function _getTimersPeriods ()
+    {
+        $iMonth = (int)date('n');
+        $iYear = (int)date('Y');
+        $iDay = (int)date('j');
+        $iWeekDay = (int)date('N');
+
+        $iThisMonth = mktime(0, 0, 0, $iMonth, 1, $iYear);
+
+        return [
+            'today' => [
+                'title' => _t('_bx_tasks_txt_timers_stats_today'),
+                'from' => mktime(0, 0, 0, $iMonth, $iDay, $iYear),
+                'to' => mktime(0, 0, 0, $iMonth, $iDay + 1, $iYear)
+            ],
+            'this_week' => [
+                'title' => _t('_bx_tasks_txt_timers_stats_this_week'),
+                'from' => mktime(0, 0, 0, $iMonth, $iDay - $iWeekDay + 1, $iYear),
+                'to' => mktime(0, 0, 0, $iMonth, $iDay - $iWeekDay + 8, $iYear)
+            ],
+            'this_month' => [
+                'title' => _t('_bx_tasks_txt_timers_stats_this_month'),
+                'from' => $iThisMonth,
+                'to' => mktime(0, 0, 0, $iMonth + 1, 1, $iYear)
+            ],
+            'last_month' => [
+                'title' => _t('_bx_tasks_txt_timers_stats_last_month'),
+                'from' => mktime(0, 0, 0, $iMonth - 1, 1, $iYear),
+                'to' => $iThisMonth
+            ],
+        ];
+    }
+
+    public function getBlockTimeSummary ($iContentId, $iProfileId, $bEverybody)
+    {
+        $aPeople = [];
+        foreach($this->_oDb->getTimeTracks(['sample' => 'object_id', 'object_id' => $iContentId]) as $aTrack) {
+            $iAuthorId = (int)$aTrack['author_id'];
+            if(!$bEverybody && $iAuthorId != $iProfileId)
+                continue;
+
+            if(!isset($aPeople[$iAuthorId]))
+                $aPeople[$iAuthorId] = array_merge($this->_getTimeSummaryTotals(), ['profile' => BxDolProfile::getData($iAuthorId), 'logs' => []]);
+
+            $this->_addTimeSummaryTrack($aPeople[$iAuthorId], $aTrack);
+
+            $aPeople[$iAuthorId]['logs'][] = [
+                'id' => (int)$aTrack['id'],
+                'minutes' => (int)$aTrack['value'],
+                'billable' => (int)($aTrack['billable'] ?? 1),
+                'date' => (int)$aTrack['value_date'] ?: (int)$aTrack['date'],
+                'text' => $aTrack['text'],
+            ];
+        }
+
+        //--- Those who see everybody keep the block on a task without time, so it is there for the first log.
+        if(!$aPeople && !$bEverybody)
+            return [];
+
+        $aPeriod = array_merge($this->_getTimeSummaryTotals(), ['name' => 'all_time', 'title' => '']);
+        foreach($aPeople as $aPerson)
+            foreach(['minutes', 'billable', 'non_billable'] as $sKey)
+                $aPeriod[$sKey] += $aPerson[$sKey];
+
+        $aPeriod['people'] = $this->_sortTimeSummary($aPeople);
+
+        return [
+            'periods' => [$aPeriod],
+            'labels' => $this->_getTimeSummaryLabels(),
+            'request_url' => $this->MODULE . '/get_block_time_summary/&params[]=' . $iContentId
+        ];
+    }
+
+    public function getBlockTimeSummaryContext ($iContextPid, $iProfileId, $bEverybody)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aPeriods = array_merge($this->_getTimersPeriods(), [
+            'all_time' => ['title' => _t('_bx_tasks_txt_timers_stats_all_time'), 'from' => 0, 'to' => PHP_INT_MAX]
+        ]);
+
+        //--- One row per person, task and billable flag, with a sum for each period.
+        $aSums = $this->_oDb->getTimeTracks(array_merge([
+            'sample' => 'context_period_sums', 
+            'context_id' => $iContextPid, 
+            'periods' => $aPeriods
+        ], $bEverybody ? [] : ['author_id' => $iProfileId]));
+        if(!$aSums && !$bEverybody)
+            return [];
+
+        $oPermalinks = BxDolPermalinks::getInstance();
+
+        $aProfiles = $aUrls = [];
+
+        $aResult = [];
+        foreach($aPeriods as $sName => $aPeriod) {
+            $aPeople = [];
+            $aTotals = $this->_getTimeSummaryTotals();
+
+            foreach($aSums as $aSum) {
+                if(empty($aSum[$sName]))
+                    continue;
+
+                $aTrack = ['value' => (int)$aSum[$sName], 'billable' => (int)$aSum['billable'], 'object_title' => $aSum['object_title']];
+                $iAuthorId = (int)$aSum['author_id'];
+                $iObjectId = (int)$aSum['object_id'];
+
+                if(!isset($aPeople[$iAuthorId]))
+                    $aPeople[$iAuthorId] = array_merge($this->_getTimeSummaryTotals(), [
+                        'profile' => $aProfiles[$iAuthorId] ??= BxDolProfile::getData($iAuthorId),
+                        'tasks' => []
+                    ]);
+
+                if(!isset($aPeople[$iAuthorId]['tasks'][$iObjectId]))
+                    $aPeople[$iAuthorId]['tasks'][$iObjectId] = array_merge($this->_getTimeSummaryTotals(), [
+                        'id' => $iObjectId,
+                        'title' => $aTrack['object_title'],
+                        'url' => $aUrls[$iObjectId] ??= bx_api_get_relative_url(bx_absolute_url($oPermalinks->permalink('page.php?i=' . $CNF['URI_VIEW_ENTRY'] . '&id=' . $iObjectId))),
+                    ]);
+
+                $this->_addTimeSummaryTrack($aTotals, $aTrack);
+                $this->_addTimeSummaryTrack($aPeople[$iAuthorId], $aTrack);
+                $this->_addTimeSummaryTrack($aPeople[$iAuthorId]['tasks'][$iObjectId], $aTrack);
+            }
+
+            foreach($aPeople as $iAuthorId => $aPerson)
+                $aPeople[$iAuthorId]['tasks'] = $this->_sortTimeSummary($aPerson['tasks']);
+
+            $aResult[] = array_merge($aTotals, [
+                'name' => $sName,
+                'title' => $aPeriod['title'],
+                'people' => $this->_sortTimeSummary($aPeople)
+            ]);
+        }
+
+        return [
+            'periods' => $aResult,
+            'default_period' => 'this_month',
+            'labels' => $this->_getTimeSummaryLabels(),
+            'request_url' => $this->MODULE . '/get_block_time_summary_context/&params[]=' . $iContextPid
+        ];
+    }
+
+    protected function _getTimeSummaryTotals ()
+    {
+        return ['minutes' => 0, 'billable' => 0, 'non_billable' => 0];
+    }
+
+    protected function _addTimeSummaryTrack (&$aSummary, $aTrack)
+    {
+        $iValue = (int)$aTrack['value'];
+
+        $aSummary['minutes'] += $iValue;
+        $aSummary[(int)($aTrack['billable'] ?? 1) ? 'billable' : 'non_billable'] += $iValue;
+    }
+
+    protected function _sortTimeSummary ($aItems)
+    {
+        usort($aItems, function($aA, $aB) {
+            return $aB['minutes'] <=> $aA['minutes'];
+        });
+
+        return $aItems;
+    }
+
+    protected function _getTimeSummaryLabels ()
+    {
+        return [
+            'total' => _t('_bx_tasks_txt_timers_stats_total'),
+            'billable' => _t('_bx_tasks_txt_billable'),
+            'non_billable' => _t('_bx_tasks_txt_non_billable'),
+            'empty' => _t('_bx_tasks_txt_timers_stats_empty'),
         ];
     }
 

@@ -373,6 +373,7 @@ CREATE TABLE IF NOT EXISTS `bx_tasks_time_track` (
   `author_nip` int(11) unsigned NOT NULL default '0',
   `value` int(11) NOT NULL default '0',
   `value_date` int(11) NOT NULL default '0',
+  `billable` tinyint(4) NOT NULL default '1',
   `text` text NOT NULL default '',
   `date` int(11) NOT NULL default '0',
   PRIMARY KEY (`id`)
@@ -692,6 +693,7 @@ INSERT INTO `sys_form_inputs` (`object`, `module`, `name`, `value`, `values`, `c
 ('bx_tasks_time', 'bx_tasks', 'value_div', '_bx_tasks_form_time_input_value_div', '', 0, 'value', '_bx_tasks_form_time_input_sys_value_div', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', 1, 0),
 ('bx_tasks_time', 'bx_tasks', 'value_m', '', '', 0, 'text', '_bx_tasks_form_time_input_sys_value_m', '', '', 0, 0, 0, 'a:1:{s:11:"placeholder";s:45:"_bx_tasks_form_time_input_value_m_placeholder";}', '', '', '', '', '', '', '', 1, 0),
 ('bx_tasks_time', 'bx_tasks', 'value_date', '', '', 0, 'datepicker', '_bx_tasks_form_time_input_sys_value_date', '_bx_tasks_form_time_input_value_date', '', 0, 0, 0, '', '', '', '', '', '', 'DateUtc', '', 1, 0),
+('bx_tasks_time', 'bx_tasks', 'billable', '1', '', 1, 'switcher', '_bx_tasks_form_time_input_sys_billable', '_bx_tasks_form_time_input_billable', '', 0, 0, 0, '', '', '', '', '', '', 'Int', '', 1, 0),
 ('bx_tasks_time', 'bx_tasks', 'text', '', '', 0, 'textarea', '_bx_tasks_form_time_input_sys_text', '_bx_tasks_form_time_input_text', '', 0, 0, 0, '', '', '', '', '', '', 'Xss', '', 1, 0),
 ('bx_tasks_time', 'bx_tasks', 'submit', '_bx_tasks_form_time_input_submit', '', 0, 'submit', '_bx_tasks_form_time_input_sys_submit', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', 0, 0),
 ('bx_tasks_time', 'bx_tasks', 'cancel', '_bx_tasks_form_time_input_cancel', '', 0, 'button', '_bx_tasks_form_time_input_sys_cancel', '', '', 0, 0, 0, 'a:2:{s:7:"onclick";s:45:"$(''.bx-popup-applied:visible'').dolPopupHide()";s:5:"class";s:22:"bx-def-margin-sec-left";}', '', '', '', '', '', '', '', 1, 0),
@@ -707,9 +709,10 @@ INSERT INTO `sys_form_display_inputs` (`display_name`, `input_name`, `visible_fo
 ('bx_tasks_time_add', 'value_m', 2147483647, 1, 7),
 ('bx_tasks_time_add', 'value_date', 2147483647, 1, 8),
 ('bx_tasks_time_add', 'text', 2147483647, 1, 9),
-('bx_tasks_time_add', 'controls', 2147483647, 1, 10),
-('bx_tasks_time_add', 'submit', 2147483647, 1, 11),
-('bx_tasks_time_add', 'cancel', 2147483647, 1, 12),
+('bx_tasks_time_add', 'billable', 2147483647, 1, 10),
+('bx_tasks_time_add', 'controls', 2147483647, 1, 11),
+('bx_tasks_time_add', 'submit', 2147483647, 1, 12),
+('bx_tasks_time_add', 'cancel', 2147483647, 1, 13),
 
 ('bx_tasks_time_edit', 'value', 2147483647, 1, 1),
 ('bx_tasks_time_edit', 'value_h', 2147483647, 1, 2),
@@ -717,9 +720,10 @@ INSERT INTO `sys_form_display_inputs` (`display_name`, `input_name`, `visible_fo
 ('bx_tasks_time_edit', 'value_m', 2147483647, 1, 4),
 ('bx_tasks_time_edit', 'value_date', 2147483647, 1, 5),
 ('bx_tasks_time_edit', 'text', 2147483647, 1, 6),
-('bx_tasks_time_edit', 'controls', 2147483647, 1, 7),
-('bx_tasks_time_edit', 'submit', 2147483647, 1, 8),
-('bx_tasks_time_edit', 'cancel', 2147483647, 1, 9);
+('bx_tasks_time_edit', 'billable', 2147483647, 1, 7),
+('bx_tasks_time_edit', 'controls', 2147483647, 1, 8),
+('bx_tasks_time_edit', 'submit', 2147483647, 1, 9),
+('bx_tasks_time_edit', 'cancel', 2147483647, 1, 10);
 
 -- FORMS: budget
 INSERT INTO `sys_objects_form` (`object`, `module`, `title`, `action`, `form_attrs`, `submit_name`, `table`, `key`, `uri`, `uri_title`, `params`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES
