@@ -225,9 +225,11 @@ function useListReveal(preloadComponent: UniListSlot, waitForGrid: boolean) {
     // setter would call; pass it through a callback so the slot itself is kept.
     const [heldPreload, setHeldPreload] = useState<UniListSlot>(() => preloadComponent)
 
+    // Hold the latest preload: a blank one first (skeletons wait a moment) gives way to the
+    // skeletons, and those stay until the list shows.
     if (preloadComponent) {
         if (showContent) setShowContent(false)
-        if (!heldPreload) setHeldPreload(() => preloadComponent)
+        if (heldPreload !== preloadComponent) setHeldPreload(() => preloadComponent)
     }
 
     useEffect(() => {
