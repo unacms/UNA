@@ -185,11 +185,26 @@ class EmptyStateApiTest extends BxDolIntegrationTestCase
         bx_import('SearchResult', $oModule->_aModule);
         $o = new BxPostsSearchResult('recent');
 
-        foreach (['favorite' => '_sys_txt_empty_list_text_favorite', 'joined_entries' => '_sys_txt_empty_list_text_joined', 'online' => '_sys_txt_empty_list_text_online'] as $sMode => $sKey) {
+        $iViewer = (int)bx_get_logged_profile_id();
+        $aModes = [
+            'favorite' => ['_sys_txt_empty_list_text_favorite', 'user'],
+            'joined_entries' => ['_sys_txt_empty_list_text_joined', 'joined_profile'],
+            'online' => ['_sys_txt_empty_list_text_online', ''],
+        ];
+        foreach ($aModes as $sMode => [$sKey, $sOwnerParam]) {
             $this->bxSetProtected($o, '_sMode', $sMode, BxDolSearchResult::class);
+            $this->bxSetProtected($o, '_aParams', $sOwnerParam ? [$sOwnerParam => $iViewer] : [], BxBaseModGeneralSearchResult::class);
             $a = BxDolEmptyState::resolve($o->getEmptyStateApi());
             $this->assertSame(_t($sKey), $a['text'], $sMode);
             $this->assertArrayNotHasKey('buttons', $a, $sMode . ': nothing to add there.');
+
+            if ($sOwnerParam) {
+                // Someone else's list: the line about how the viewer's own fills is not for it.
+                $this->bxSetProtected($o, '_aParams', [$sOwnerParam => $iViewer + 1000000], BxBaseModGeneralSearchResult::class);
+                $a = BxDolEmptyState::resolve($o->getEmptyStateApi());
+                $this->assertArrayNotHasKey('text', $a, $sMode . ' of another profile.');
+                $this->assertArrayNotHasKey('buttons', $a, $sMode . ' of another profile.');
+            }
         }
     }
 

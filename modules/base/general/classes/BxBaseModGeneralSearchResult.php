@@ -99,17 +99,21 @@ class BxBaseModGeneralSearchResult extends BxTemplSearchResult
     {
         $aState = parent::getEmptyStateApi();
 
-        // Lists that fill as the viewer joins, follows or favorites, or as people come online: they
-        // say so, and offer no "add" button.
+        // Lists that fill as someone joins, follows or favorites, or as people come online: no "add"
+        // button. The line says how the viewer's own list fills ("What you join shows here"), so it
+        // is only for the viewer's list (its owner param); someone else's list keeps the title.
         $aPersonal = [
-            'joined_entries' => '_sys_txt_empty_list_text_joined',
-            'connections' => '_sys_txt_empty_list_text_connections',
-            'followed_entries' => '_sys_txt_empty_list_text_followed',
-            'favorite' => '_sys_txt_empty_list_text_favorite',
-            'online' => '_sys_txt_empty_list_text_online',
+            'joined_entries' => ['_sys_txt_empty_list_text_joined', 'joined_profile'],
+            'connections' => ['_sys_txt_empty_list_text_connections', 'profile'],
+            'followed_entries' => ['_sys_txt_empty_list_text_followed', 'followed_profile'],
+            'favorite' => ['_sys_txt_empty_list_text_favorite', 'user'],
+            'online' => ['_sys_txt_empty_list_text_online', ''],
         ];
         if (isset($aPersonal[$this->_sMode])) {
-            $aState['text'] = $aPersonal[$this->_sMode];
+            [$sText, $sOwnerParam] = $aPersonal[$this->_sMode];
+            if ($sOwnerParam === '' || $this->isViewersList($sOwnerParam)) {
+                $aState['text'] = $sText;
+            }
             return $aState;
         }
 
@@ -127,6 +131,15 @@ class BxBaseModGeneralSearchResult extends BxTemplSearchResult
         }
 
         return $aState;
+    }
+
+    /**
+     * Whether a list belongs to the signed-in viewer: its owner param (a profile id) is the viewer's.
+     */
+    protected function isViewersList($sOwnerParam)
+    {
+        $iViewer = (int)bx_get_logged_profile_id();
+        return $iViewer > 0 && (int)($this->_aParams[$sOwnerParam] ?? 0) === $iViewer;
     }
 
     function processingAPI ($bForceGetData = false) 
