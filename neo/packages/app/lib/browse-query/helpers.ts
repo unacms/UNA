@@ -6,15 +6,6 @@ import type { QueryClient } from '@tanstack/react-query'
  * Used by browse, browse-list, comments, grid, and conductor — not conductor-specific.
  */
 
-/**
- * The next page's start. None once UNA says the list ends here (`has_more: false`, timeline
- * feeds): a short page would otherwise ask for the next one and show its skeletons under the rows.
- */
-function nextCursor(payload: any, params: any) {
-    if (payload.has_more === false) return undefined
-    return payload.unit == 'notifications' ? params.start : params.start + params.per_page
-}
-
 export async function fetchUniListData({ pageParam, requestUrl, defaultParams }: { pageParam: any; requestUrl: string; defaultParams: any }) {
     const currentParam = pageParam || defaultParams
 
@@ -34,7 +25,14 @@ export async function fetchUniListData({ pageParam, requestUrl, defaultParams }:
         return {
             data: payload.data,
             params: params,
-            cursor: nextCursor(payload, params),
+            cursor:
+                payload.unit != 'notifications'
+                    ? params.start + params.per_page
+                    : params.start,
+            // UNA says the list ends here (`has_more: false`, timeline feeds): no next request, or a
+            // short page would ask for one and show its skeletons under the rows. The cursor stays,
+            // so a live update that brings more rows can turn paging back on.
+            ...(payload.has_more === false ? { hasMore: false } : null),
             // UNA's "nothing to list yet" (a search nobody has run): no "Nothing found" for it.
             ...(payload.hide_empty_msg ? { hideEmptyMsg: true } : null),
         }
@@ -92,7 +90,7 @@ export function showsNextPageSkeleton(rowCount: number, perPage: unknown, loadin
 
 /** Cursor paging (browse, conductor). */
 export function cursorNextPageParam(lastPage: any) {
-    return lastPage?.data?.length > 0 && lastPage?.cursor
+    return lastPage?.data?.length > 0 && lastPage?.cursor && lastPage?.hasMore !== false
         ? { ...lastPage.params, start: lastPage.cursor }
         : undefined
 }
@@ -165,6 +163,19 @@ export function replaceUniListQueryWithFirstPage(queryClient: QueryClient, query
 }
 
 /**
+ * A list that had ended (`hasMore: false` on its last page) pages again when a fresh first
+ * page has more after it: new rows on top may have pushed rows between it and the cached
+ * ones, and the cached cursor is where the next request finds them (repeats are deduped).
+ */
+function resumePagingAfterMerge(pages: any[], freshPage: any): any[] {
+    const last = pages.at(-1)
+    if (freshPage?.hasMore === false || last?.hasMore !== false) return pages
+    const resumed = { ...last }
+    delete resumed.hasMore
+    return [...pages.slice(0, -1), resumed]
+}
+
+/**
  * Put a freshly fetched first page on top of the cached pages: the fresh rows
  * (in server order, pinned rows included), then the old first-page rows that
  * fell out of it. Later pages stay; rows they now repeat are dropped by
@@ -188,19 +199,17 @@ export const mergeFirstPageIntoUniListQueryCache = (queryClient: QueryClient, qu
         const freshIds = new Set(freshItems.map((item) => String(item.id)))
         const [firstPage, ...restPages] = old.pages
         merged = true
-        return {
-            ...old,
-            pages: [
-                {
-                    ...firstPage,
-                    data: [
-                        ...freshItems,
-                        ...(firstPage.data ?? []).filter((item: any) => !freshIds.has(String(item.id))),
-                    ],
-                },
-                ...restPages,
-            ],
-        }
+        const pages = [
+            {
+                ...firstPage,
+                data: [
+                    ...freshItems,
+                    ...(firstPage.data ?? []).filter((item: any) => !freshIds.has(String(item.id))),
+                ],
+            },
+            ...restPages,
+        ]
+        return { ...old, pages: resumePagingAfterMerge(pages, freshPage) }
     })
     return merged
 }

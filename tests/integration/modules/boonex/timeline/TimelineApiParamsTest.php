@@ -508,6 +508,34 @@ class TimelineApiParamsTest extends BxDolIntegrationTestCase
         $this->assertSame([], $aPast['data']);
         $this->assertFalse($aPast['has_more'], 'Nothing follows a page past the end.');
     }
+
+    /**
+     * The last page of a feed says nothing follows it, also when it has posts on it: the case
+     * that kept a client paging after a short feed.
+     */
+    public function testLastFeedPageWithPostsSaysNoMore(): void
+    {
+        $iAuthorId = $this->adminProfileId();
+        $aIds = [$this->addEvent(BX_TIMELINE_STATUS_ACTIVE, $iAuthorId), $this->addEvent(BX_TIMELINE_STATUS_ACTIVE, $iAuthorId)];
+        // The oldest events of the feed, so they are on its last page whatever else it holds.
+        BxDolDb::getInstance()->query("UPDATE `bx_timeline_events` SET `date` = 1, `published` = 1 WHERE `id` IN (" . implode(',', $aIds) . ")");
+
+        $this->setApiModule();
+        $iPerPage = 100;
+        $aPage = null;
+        for ($iStart = 0, $i = 0; $i < 1000; $iStart += $iPerPage, $i++) {
+            $aPage = $this->module()->serviceGetPosts(json_encode(['params' => [
+                'type' => BX_TIMELINE_TYPE_DEFAULT, 'owner_id' => $iAuthorId, 'start' => $iStart, 'per_page' => $iPerPage,
+            ]]))[0]['data'];
+            if (!$aPage['has_more']) {
+                break;
+            }
+        }
+
+        $this->assertFalse($aPage['has_more'], 'The feed ends within 1000 pages.');
+        $aOnPage = array_map('intval', array_column($aPage['data'], 'id'));
+        $this->assertNotEmpty(array_intersect($aIds, $aOnPage), 'The page that says nothing follows holds the oldest posts.');
+    }
 }
 
 /**
