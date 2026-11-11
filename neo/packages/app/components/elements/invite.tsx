@@ -15,31 +15,61 @@ import Form from 'app/components/form';
 // the context (`aja` / `ajp`) already in them. An older UNA sends only `request_url` and the page
 // `invite_url`; the context is then taken from `invite_url`.
 
-function contextQuery(inviteUrl) {
+/** The `invite` block's data (BxInvTemplate::getBlockInvite). */
+interface InviteData {
+    /** Invites left, or the translated "unlimited". */
+    remain?: number | string;
+    request_url?: string;
+    form_url?: string;
+    code_url?: string;
+    invite_url?: string;
+}
+
+interface ElementInviteProps {
+    data: InviteData;
+    blockWrapperProps?: any;
+}
+
+type InviteView = 'link' | 'code' | 'email';
+
+type InviteModal =
+    | { view: InviteView; message: string }
+    | { view: 'email'; form: Record<string, any> }
+    | { view: 'link' | 'code'; link: string; code?: string };
+
+function contextQuery(inviteUrl?: string): string {
     const query = String(inviteUrl || '').split('?')[1] || '';
     const params = new URLSearchParams(query);
     const out = new URLSearchParams();
-    ['aja', 'ajp'].forEach((key) => params.get(key) && out.set(key, params.get(key)));
+    ['aja', 'ajp'].forEach((key) => {
+        const value = params.get(key);
+        if (value)
+            out.set(key, value);
+    });
     return out.toString();
 }
 
-function withContext(url, context) {
+function withContext(url: string | undefined, context: string): string | undefined {
     if (!url || !context || /[?&]aja=/.test(url))
         return url;
     return url + '&' + context;
 }
 
-function responseMessage(data) {
-    const items = Array.isArray(data) ? data : [data];
+function responseMessage(data: unknown): string {
+    const items: any[] = Array.isArray(data) ? data : [data];
     const msg = items.find((item) => item?.type === 'msg');
     return typeof msg?.data === 'string' ? msg.data : '';
 }
 
-function CopyRow({ value, label }) {
-    const { t } = useTranslation();
+function CopyRow({ value, label }: { value: string; label: string }) {
     const [copied, setCopied] = useState(false);
     const handleCopy = async () => {
-        await setClipboard(value);
+        try {
+            await setClipboard(value);
+        } catch {
+            // The value stays selectable in the field: copying by hand still works.
+            return;
+        }
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
     }
@@ -47,24 +77,44 @@ function CopyRow({ value, label }) {
     return (
         <Row className='items-center gap-x-2'>
             <Input value={value} readOnly className="flex-1 min-w-0" />
-            <NeoButton style="bordered" image={copied ? 'Check' : 'Copy'} accessibilityLabel={label || t('Copy')} onPress={handleCopy} />
+            <NeoButton style="bordered" image={copied ? 'Check' : 'Copy'} accessibilityLabel={label} onPress={handleCopy} />
         </Row>
     );
 }
 
-export default function ElementInvite({ data, blockWrapperProps }) {
+function ModalContent({ modal }: { modal: InviteModal | null }) {
     const { t } = useTranslation();
-    // { view: 'link' | 'code' | 'email', link?, code?, form?, message? }
-    const [modal, setModal] = useState(null);
-    const [loading, setLoading] = useState('');
+    if (!modal)
+        return null;
+    if ('message' in modal)
+        return <Text className="text-foreground text-center">{modal.message}</Text>;
+    if ('form' in modal)
+        return <Form {...modal.form} />;
+    if (modal.view === 'code')
+        return (
+            <View className='gap-y-3'>
+                <Text className="text-muted-foreground text-sm">{t('Your invitation code')}</Text>
+                <CopyRow value={modal.code || ''} label={t('Copy')} />
+                <Text className="text-muted-foreground text-sm">{t('Or share it as a link')}</Text>
+                <CopyRow value={APP_URL + modal.link} label={t('Copy link')} />
+            </View>
+        );
+    return <CopyRow value={APP_URL + modal.link} label={t('Copy link')} />;
+}
+
+export default function ElementInvite({ data, blockWrapperProps }: ElementInviteProps) {
+    const { t } = useTranslation();
+    const [modal, setModal] = useState<InviteModal | null>(null);
+    const [loading, setLoading] = useState<InviteView | ''>('');
 
     const context = contextQuery(data.invite_url);
     const linkUrl = withContext(data.request_url, context);
     const codeUrl = withContext(data.code_url, context);
     const formUrl = withContext(data.form_url || 'bx_invites/get_block_form_invite/', context);
+    const failed = t('Something didn’t go as planned. Please try again or reload the page.');
 
-    const open = async (view, url) => {
-        if (loading)
+    const open = async (view: InviteView, url?: string) => {
+        if (loading || !url)
             return;
         setLoading(view);
         try {
@@ -73,23 +123,26 @@ export default function ElementInvite({ data, blockWrapperProps }) {
             const form = Array.isArray(result) ? result.find((item) => item?.type === 'form') : null;
             if (view === 'email' && form)
                 setModal({ view, form });
-            else if (result?.link)
+            else if (view !== 'email' && result?.link)
                 setModal({ view, link: result.link, code: result.code });
             else
-                setModal({ view, message: responseMessage(result) || t('Something didn’t go as planned. Please try again or reload the page.') });
+                setModal({ view, message: responseMessage(result) || failed });
+        }
+        catch {
+            setModal({ view, message: failed });
         }
         finally {
             setLoading('');
         }
     }
 
-    const titles = {
+    const titles: Record<InviteView, string> = {
         link: t('Invitation link'),
         code: t('Invitation code'),
         email: t('Invite by email'),
     };
 
-    const text = t('You can invite your friends to join. You have {{count}} invites to share.', { count: data.remain });
+    const text = t('You can invite your friends to join. You have {{count}} invites to share.', { count: data.remain as number });
     const remain = String(data.remain ?? '');
     const remainAt = remain ? text.indexOf(remain) : -1;
 
@@ -101,20 +154,7 @@ export default function ElementInvite({ data, blockWrapperProps }) {
                 onClose={() => setModal(null)}
                 scrollable={modal?.view === 'email'}
             >
-                {modal?.message ? (
-                    <Text className="text-foreground text-center">{modal.message}</Text>
-                ) : modal?.view === 'email' ? (
-                    <Form {...modal.form} />
-                ) : modal?.view === 'code' ? (
-                    <View className='gap-y-3'>
-                        <Text className="text-muted-foreground text-sm">{t('Your invitation code')}</Text>
-                        <CopyRow value={modal.code} label={t('Copy')} />
-                        <Text className="text-muted-foreground text-sm">{t('Or share it as a link')}</Text>
-                        <CopyRow value={APP_URL + modal.link} label={t('Copy link')} />
-                    </View>
-                ) : modal?.view === 'link' ? (
-                    <CopyRow value={APP_URL + modal.link} label={t('Copy link')} />
-                ) : null}
+                <ModalContent modal={modal} />
             </Modal>
             <View className="p-4">
                 <Text className="text-card-foreground text-center">

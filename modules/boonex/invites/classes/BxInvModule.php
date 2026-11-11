@@ -84,8 +84,13 @@ class BxInvModule extends BxDolModule
         $iAccountId = $this->getAccountId($iProfileId);
 
         $mixedAllowed = $this->isAllowedInvite($iProfileId);
-        if($mixedAllowed !== true)
-            return $this->_bIsApi ? [bx_api_get_msg($mixedAllowed)] : echoJson(['message' => $mixedAllowed]);
+        if($mixedAllowed !== true) {
+            if($this->_bIsApi)
+                return [bx_api_get_msg($mixedAllowed)];
+
+            echoJson(['message' => $mixedAllowed]);
+            return;
+        }
 
         $iKeyLength = 0;
         $iKeyLifetime = $this->_oConfig->getKeyLifetime();
@@ -915,15 +920,15 @@ class BxInvModule extends BxDolModule
         $sBody = str_replace(BX_DOL_URL_ROOT, $sRootUrl, $sBody);
 
         return str_replace([
-            'src="' . $sRootUrl, 
+            'src="' . $sRootUrl,
             "src='" . $sRootUrl
         ], [
-            'src="' . BX_DOL_URL_ROOT, 
+            'src="' . BX_DOL_URL_ROOT,
             "src='" . BX_DOL_URL_ROOT
         ], $sBody);
     }
 
-    public function getSeenImageUrl($sKey)
+public function getSeenImageUrl($sKey)
     {
         return  BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'SetSeenMark/' . $sKey . "/";
     }

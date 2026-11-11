@@ -61,7 +61,8 @@ export async function setClipboard(str: string): Promise<void> {
     }
     else {
         // The Clipboard API exists only in secure contexts (https, localhost); a plain-http host
-        // has no navigator.clipboard, and a denied permission rejects. Copy through a textarea then.
+        // has no navigator.clipboard, and a denied permission rejects. Copy through a textarea then;
+        // that rejects too when the browser refuses the copy.
         try {
             if (navigator.clipboard?.writeText) {
                 await navigator.clipboard.writeText(str);
@@ -91,12 +92,15 @@ function copyWithTextarea(str: string): void {
     host.appendChild(textarea);
     document.addEventListener('copy', onCopy, true);
     textarea.select();
+    let copied = false;
     try {
-        document.execCommand('copy');
+        copied = document.execCommand('copy');
     } finally {
         document.removeEventListener('copy', onCopy, true);
-        host.removeChild(textarea);
+        textarea.remove();
     }
+    if (!copied)
+        throw new Error('Copy failed');
 }
 
 export function clearNotif() {
