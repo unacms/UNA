@@ -486,6 +486,19 @@ class TimelineApiParamsTest extends BxDolIntegrationTestCase
     }
 
     /**
+     * One feed page read the way get_posts reads it, and whether more events follow it. `get`
+     * reads the feed also after another test rendered an API page (BX_API_PAGE), where
+     * get_posts leaves it to the page's block.
+     */
+    protected function feedPage(int $iOwnerId, int $iStart, int $iPerPage): array
+    {
+        $aData = $this->module()->serviceGet(json_encode(['params' => [
+            'type' => BX_TIMELINE_TYPE_DEFAULT, 'owner_id' => $iOwnerId, 'start' => $iStart, 'per_page' => $iPerPage,
+        ]]));
+        return ['data' => $aData, 'has_more' => $this->template()->getPostsHasMore()];
+    }
+
+    /**
      * A feed page says whether more events follow it (the query reads one more than a page),
      * so a client with a short page doesn't ask for the next one to find it empty.
      */
@@ -496,17 +509,21 @@ class TimelineApiParamsTest extends BxDolIntegrationTestCase
         $this->addEvent(BX_TIMELINE_STATUS_ACTIVE, $iAuthorId);
 
         $this->setApiModule();
-        $fPage = fn(int $iStart, int $iPerPage) => $this->module()->serviceGetPosts(json_encode(['params' => [
-            'type' => BX_TIMELINE_TYPE_DEFAULT, 'owner_id' => $iAuthorId, 'start' => $iStart, 'per_page' => $iPerPage,
-        ]]))[0]['data'];
-
-        $aFirst = $fPage(0, 1);
+        $aFirst = $this->feedPage($iAuthorId, 0, 1);
         $this->assertCount(1, $aFirst['data']);
         $this->assertTrue($aFirst['has_more'], 'Another event follows a one-event page of two.');
 
-        $aPast = $fPage(1000000, 10);
+        $aPast = $this->feedPage($iAuthorId, 1000000, 10);
         $this->assertSame([], $aPast['data']);
         $this->assertFalse($aPast['has_more'], 'Nothing follows a page past the end.');
+
+        // The get_posts block carries it as `has_more` (unless an API page leaves the feed to its block).
+        if (!defined('BX_API_PAGE')) {
+            $aBlock = $this->module()->serviceGetPosts(json_encode(['params' => [
+                'type' => BX_TIMELINE_TYPE_DEFAULT, 'owner_id' => $iAuthorId, 'start' => 0, 'per_page' => 1,
+            ]]))[0]['data'];
+            $this->assertTrue($aBlock['has_more']);
+        }
     }
 
     /**
@@ -524,9 +541,7 @@ class TimelineApiParamsTest extends BxDolIntegrationTestCase
         $iPerPage = 100;
         $aPage = null;
         for ($iStart = 0, $i = 0; $i < 1000; $iStart += $iPerPage, $i++) {
-            $aPage = $this->module()->serviceGetPosts(json_encode(['params' => [
-                'type' => BX_TIMELINE_TYPE_DEFAULT, 'owner_id' => $iAuthorId, 'start' => $iStart, 'per_page' => $iPerPage,
-            ]]))[0]['data'];
+            $aPage = $this->feedPage($iAuthorId, $iStart, $iPerPage);
             if (!$aPage['has_more']) {
                 break;
             }
