@@ -47,14 +47,17 @@ function itemOffsets(count: number): { x: number; y: number }[] {
 
 export default function GooeyMenu(props: Readonly<GooeyMenuProps>) {
     const [list, setList] = useState(false);
+    // The dropdown and its trigger go when the list closes: the droplets' trigger, mounted again,
+    // takes the focus back (Escape from the list) unless something else took it (a form dialog).
+    const [refocus, setRefocus] = useState(false);
     if (list) {
-        return <GooeyMenuDropdown {...props} defaultOpen onOpenChange={(isOpen) => { if (!isOpen) setList(false); }} />;
+        return <GooeyMenuDropdown {...props} defaultOpen onOpenChange={(isOpen) => { if (!isOpen) { setList(false); setRefocus(true); } }} />;
     }
     // After the press is done: the list mounting during it would take the same click as a press outside.
-    return <GooeyDroplets {...props} onMore={() => setTimeout(() => setList(true), 0)} />;
+    return <GooeyDroplets {...props} refocus={refocus} onMore={() => setTimeout(() => setList(true), 0)} />;
 }
 
-function GooeyDroplets({ items, label, onSelect, icon = 'Plus', secondary = false, onMore }: Readonly<GooeyMenuProps & { onMore: () => void }>) {
+function GooeyDroplets({ items, label, onSelect, icon = 'Plus', secondary = false, onMore, refocus = false }: Readonly<GooeyMenuProps & { onMore: () => void; refocus?: boolean }>) {
     const { t } = useTranslation();
     const ink = secondary ? 'text-foreground' : 'text-primary-foreground';
     const [open, setOpen] = useState(false);
@@ -72,6 +75,15 @@ function GooeyDroplets({ items, label, onSelect, icon = 'Plus', secondary = fals
     const reachY = Math.max(...offsets.map((o) => -o.y + ITEM / 2), ITEM / 2);
     const width = reachX * 2;
     const height = reachY + ITEM / 2;
+
+    useEffect(() => {
+        if (!refocus) return undefined;
+        const frame = requestAnimationFrame(() => {
+            const active = document.activeElement;
+            if (!active || active === document.body) triggerRef.current?.focus();
+        });
+        return () => cancelAnimationFrame(frame);
+    }, [refocus]);
 
     useEffect(() => {
         if (!open) return undefined;
