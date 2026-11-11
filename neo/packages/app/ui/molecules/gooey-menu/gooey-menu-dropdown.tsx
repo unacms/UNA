@@ -8,10 +8,10 @@ type GooeyMenuDropdownProps = GooeyMenuProps & {
 };
 
 /**
- * Every action as a regular dropdown under the primary "+" capsule: the whole GooeyMenu on iOS
+ * Every action as a regular dropdown under the round glass "+": the whole GooeyMenu on iOS
  * and Android (the liquid effect is web only), and on web the list behind the droplets' "More".
  */
-export default function GooeyMenuDropdown({ items, label, onSelect, icon = 'Plus', secondary = false, defaultOpen, onOpenChange }: Readonly<GooeyMenuDropdownProps>) {
+export default function GooeyMenuDropdown({ items, label, onSelect, icon = 'Plus', defaultOpen, onOpenChange }: Readonly<GooeyMenuDropdownProps>) {
     return (
         <DropdownMenu
             items={items.map((item) => ({ id: item.id, title: item.title, icon: item.icon, link: item.link }))}
@@ -22,9 +22,9 @@ export default function GooeyMenuDropdown({ items, label, onSelect, icon = 'Plus
             defaultOpen={defaultOpen}
             onOpenChange={onOpenChange}
             buttonProps={{
-                style: secondary ? 'bordered' : 'borderedProminent',
+                style: 'glass',
                 controlSize: 'regular',
-                borderShape: 'capsule',
+                borderShape: 'circle',
                 image: icon,
                 accessibilityLabel: label,
                 tooltip: label,

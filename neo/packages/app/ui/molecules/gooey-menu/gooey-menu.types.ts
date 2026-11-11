@@ -15,6 +15,4 @@ export type GooeyMenuProps = {
     onSelect: (item: GooeyMenuItem, event?: unknown) => void;
     /** Lucide icon of the trigger. Default "Plus" (turned into a cross while open on web). */
     icon?: string;
-    /** A secondary action: the neutral button surface instead of the primary colour. */
-    secondary?: boolean;
 };

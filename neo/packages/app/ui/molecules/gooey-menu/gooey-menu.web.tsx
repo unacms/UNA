@@ -1,18 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { Liquid } from 'liquid-gooey';
 import { useTranslation } from 'react-i18next';
-import { Icon } from 'app/ui/atoms/icon';
+import { NeoButtonRef } from 'app/design/controls';
 import GooeyMenuDropdown from './gooey-menu-dropdown';
 import type { GooeyMenuItem, GooeyMenuProps } from './gooey-menu.types';
 
 /**
- * A primary "+" capsule whose actions split off it as liquid droplets (liquid-gooey, the
- * Libraries.dev gooey plus-menu). The actions fan out above the trigger in an arc; the liquid
- * draws behind crisp, real buttons, so focus rings, names and hit areas are untouched.
+ * A round glass "+" whose actions split off it as liquid droplets (liquid-gooey, the
+ * Libraries.dev gooey plus-menu). The actions fan out above the trigger in an arc. Trigger and
+ * actions are glass NeoButton circles; the liquid (the popover surface) only shows where they
+ * part, as the bridge that stretches and snaps between them.
  *
  * Motion is the hand-tuned Libraries.dev Studio setup: 550 ms, cubic-bezier(0.34, 1.56, 0.64, 1),
  * 40 ms stagger, droplets 64 px out. With two actions they land exactly where that setup puts
- * them; more actions spread over a wider arc. Under reduced motion the library snaps instead.
+ * them; more actions spread over a wider arc, GAP apart so neighbours never bridge once open.
+ * Under reduced motion the library snaps instead.
  * At most MAX_DROPLETS droplets: with more actions, the last droplet is "More", which hands over
  * to the whole list as the regular dropdown under the same trigger.
  *
@@ -25,9 +27,9 @@ const TRANSITION = { duration: 550, ease: 'cubic-bezier(0.34, 1.56, 0.64, 1)' };
 const STAGGER_MS = 40;
 /** Droplet size (44 px: the touch target) and the gap kept between neighbours on the arc. */
 const ITEM = 44;
-const GAP = 8;
-const TRIGGER_WIDTH = 56;
-const MAX_DROPLETS = 5;
+const GAP = 24;
+const TRIGGER_WIDTH = ITEM;
+const MAX_DROPLETS = 4;
 const MORE_ID = '__gooey_more__';
 
 /** Where each action lands, relative to the trigger's centre. */
@@ -57,13 +59,12 @@ export default function GooeyMenu(props: Readonly<GooeyMenuProps>) {
     return <GooeyDroplets {...props} refocus={refocus} onMore={() => setTimeout(() => setList(true), 0)} />;
 }
 
-function GooeyDroplets({ items, label, onSelect, icon = 'Plus', secondary = false, onMore, refocus = false }: Readonly<GooeyMenuProps & { onMore: () => void; refocus?: boolean }>) {
+function GooeyDroplets({ items, label, onSelect, icon = 'Plus', onMore, refocus = false }: Readonly<GooeyMenuProps & { onMore: () => void; refocus?: boolean }>) {
     const { t } = useTranslation();
-    const ink = secondary ? 'text-foreground' : 'text-primary-foreground';
     const [open, setOpen] = useState(false);
     const rootRef = useRef<HTMLDivElement>(null);
-    const triggerRef = useRef<HTMLButtonElement>(null);
-    const firstItemRef = useRef<HTMLButtonElement>(null);
+    const triggerRef = useRef<HTMLElement>(null);
+    const firstItemRef = useRef<HTMLElement>(null);
     const droplets: GooeyMenuItem[] = items.length > MAX_DROPLETS
         ? [...items.slice(0, MAX_DROPLETS - 1), { id: MORE_ID, title: t('More'), icon: 'Ellipsis' }]
         : items;
@@ -105,14 +106,14 @@ function GooeyDroplets({ items, label, onSelect, icon = 'Plus', secondary = fals
         };
     }, [open]);
 
-    const toggle = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const toggle = (event?: any) => {
         const opening = !open;
         setOpen(opening);
-        // From the keyboard, focus moves into the opened actions.
-        if (opening && event.detail === 0) requestAnimationFrame(() => firstItemRef.current?.focus());
+        // From the keyboard (a click with no pointer), focus moves into the opened actions.
+        if (opening && !event?.nativeEvent?.detail) requestAnimationFrame(() => firstItemRef.current?.focus());
     };
 
-    const pick = (item: GooeyMenuItem, event: React.MouseEvent<HTMLButtonElement>) => {
+    const pick = (item: GooeyMenuItem, event?: unknown) => {
         setOpen(false);
         if (item.id === MORE_ID) onMore();
         else onSelect(item, event);
@@ -127,7 +128,7 @@ function GooeyDroplets({ items, label, onSelect, icon = 'Plus', secondary = fals
     return (
         <div ref={rootRef} className="relative" style={{ width: TRIGGER_WIDTH, height: ITEM }}>
             <Liquid
-                fill={secondary ? 'var(--color-button-solid)' : 'var(--color-primary)'}
+                fill="var(--color-popover)"
                 className="pointer-events-none"
                 style={{ position: 'absolute', width, height, left: TRIGGER_WIDTH / 2 - width / 2, top: ITEM - height }}
             >
@@ -140,44 +141,47 @@ function GooeyDroplets({ items, label, onSelect, icon = 'Plus', secondary = fals
                             y={open ? offset.y : 0}
                             transition={TRANSITION}
                             delay={index * STAGGER_MS}
+                            radius={ITEM / 2}
                             style={centred(ITEM)}
                         >
-                            <button
-                                ref={index === 0 ? firstItemRef : undefined}
-                                type="button"
-                                aria-label={item.title}
-                                title={item.title}
-                                tabIndex={open ? 0 : -1}
-                                aria-hidden={!open}
-                                onClick={(event) => pick(item, event)}
-                                className={'flex size-11 items-center justify-center rounded-full bg-transparent ' + ink + ' '
-                                    + 'outline-offset-2 focus-visible:outline-2 focus-visible:outline-primary '
-                                    + 'motion-safe:transition-opacity motion-safe:duration-200 '
-                                    // Closed, the droplets sit under the trigger: their icons would show through it.
-                                    + (open ? 'opacity-100 pointer-events-auto cursor-pointer' : 'opacity-0 pointer-events-none')}
+                            {/* Closed, the actions sit under the trigger: inert (no pointer, focus or name) and
+                                invisible, or their icons would show through it. */}
+                            <div
+                                inert={!open}
+                                className={'size-11 rounded-full motion-safe:transition-opacity motion-safe:duration-200 '
+                                    + (open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none')}
                             >
-                                <Icon icon={item.icon || 'Plus'} size={20} className={ink + ' pointer-events-none'} />
-                            </button>
+                                <NeoButtonRef
+                                    ref={index === 0 ? firstItemRef : undefined}
+                                    style="glass"
+                                    borderShape="circle"
+                                    controlSize="regular"
+                                    image={item.icon || 'Plus'}
+                                    accessibilityLabel={item.title}
+                                    tooltip={item.title}
+                                    onPress={(event?: unknown) => pick(item, event)}
+                                />
+                            </div>
                         </Liquid.Item>
                     );
                 })}
-                <Liquid.Item style={centred(TRIGGER_WIDTH)}>
-                    <button
-                        ref={triggerRef}
-                        type="button"
-                        aria-label={label}
-                        title={label}
-                        aria-expanded={open}
-                        onClick={toggle}
-                        className={'pointer-events-auto flex h-11 w-14 cursor-pointer items-center justify-center rounded-full bg-transparent ' + ink + ' outline-offset-2 focus-visible:outline-2 focus-visible:outline-primary'}
+                <Liquid.Item radius={ITEM / 2} style={centred(TRIGGER_WIDTH)}>
+                    <div
+                        className="size-11 rounded-full pointer-events-auto motion-safe:transition-transform motion-safe:duration-300"
+                        style={{ transform: open ? 'rotate(45deg)' : 'none' }}
                     >
-                        <span
-                            className="flex motion-safe:transition-transform motion-safe:duration-300"
-                            style={{ transform: open ? 'rotate(45deg)' : 'none' }}
-                        >
-                            <Icon icon={icon} size={22} className={ink + ' pointer-events-none'} />
-                        </span>
-                    </button>
+                        <NeoButtonRef
+                            ref={triggerRef}
+                            style="glass"
+                            borderShape="circle"
+                            controlSize="regular"
+                            image={icon}
+                            accessibilityLabel={label}
+                            tooltip={label}
+                            aria-expanded={open}
+                            onPress={toggle}
+                        />
+                    </div>
                 </Liquid.Item>
             </Liquid>
         </div>

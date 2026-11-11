@@ -145,9 +145,9 @@ function CreateMenuButton({ button }: Readonly<{ button: EmptyStateButtonData }>
         return (
             <NeoButtonLink
                 href={button.link}
-                style={button.style === 'secondary' ? 'bordered' : 'borderedProminent'}
+                style="glass"
                 controlSize="regular"
-                borderShape="capsule"
+                borderShape="circle"
                 image="Plus"
                 accessibilityLabel={button.title}
                 tooltip={button.title}
@@ -164,7 +164,6 @@ function CreateMenuButton({ button }: Readonly<{ button: EmptyStateButtonData }>
             <GooeyMenu
                 items={actions}
                 label={button.title}
-                secondary={button.style === 'secondary'}
                 onSelect={(item, event) => {
                     setPageData('loading');
                     void handleFormModal(item, event, setPageData, undefined);
