@@ -1,11 +1,14 @@
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Animated, Easing } from 'react-native';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { NeoButtonLink } from 'app/design/controls';
-import { isWeb, hasDropdownActions } from 'app/lib/util';
+import { isWeb, hasDropdownActions, flattenMenuItemsForDropdown } from 'app/lib/util';
 import emitter, { EVENTS } from 'app/context/emitter';
-import MenuAdd, { useMenuAddItems } from 'app/components/nav/menu-add';
+import { useMenuAddItems } from 'app/components/nav/menu-add';
+import GooeyMenu from 'app/ui/molecules/gooey-menu/gooey-menu';
+import type { GooeyMenuItem } from 'app/ui/molecules/gooey-menu/gooey-menu.types';
+import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal';
 import { useReduceMotionSetting } from 'app/lib/hooks/use-reduce-motion';
 import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 
@@ -134,19 +137,39 @@ function EmptyStateButton({ button }: Readonly<{ button: EmptyStateButtonData }>
 }
 
 function CreateMenuButton({ button }: Readonly<{ button: EmptyStateButtonData }>) {
-    // A primary "+" capsule, like the header's: UNA's title is its name for assistive tech and its tooltip.
-    const look = {
-        // Primary as the feed sends it; a button UNA or Studio makes secondary stays secondary.
-        style: button.style === 'secondary' ? 'bordered' : 'borderedProminent',
-        controlSize: 'regular',
-        borderShape: 'capsule',
-        image: 'Plus',
-        accessibilityLabel: button.title,
-        tooltip: button.title,
-    };
     // The menu only once it has something to create: while it loads, when the menu is off or empty,
-    // and when it could not be loaded, the button is its link.
+    // and when it could not be loaded, the button is its link (the same primary "+" capsule).
     const { items, empty } = useMenuAddItems();
-    if (empty || !hasDropdownActions(items)) return <NeoButtonLink href={button.link} {...look} />;
-    return <MenuAdd buttonProps={{ ...look, label: undefined }} />;
+    const [pageData, setPageData] = useState<any>(false);
+    if (empty || !hasDropdownActions(items)) {
+        return (
+            <NeoButtonLink
+                href={button.link}
+                // Primary as the feed sends it; a button UNA or Studio makes secondary stays secondary.
+                style={button.style === 'secondary' ? 'bordered' : 'borderedProminent'}
+                controlSize="regular"
+                borderShape="capsule"
+                image="Plus"
+                accessibilityLabel={button.title}
+                tooltip={button.title}
+            />
+        );
+    }
+    // The header "+" menu's items, as droplets of a gooey "+" (a dropdown on iOS and Android).
+    const actions: GooeyMenuItem[] = flattenMenuItemsForDropdown(items)
+        .filter((item: any) => item && item.type !== 'group_header' && item.type !== 'separator' && item.link)
+        .map((item: any, index: number) => ({ id: String(item.id ?? item.name ?? index), title: item.title, icon: item.icon, link: item.link }));
+    return (
+        <>
+            <FormModal pageData={pageData} setPageData={setPageData} url={pageData?.url} modalView={undefined} historyUrl={undefined} />
+            <GooeyMenu
+                items={actions}
+                label={button.title}
+                onSelect={(item, event) => {
+                    setPageData('loading');
+                    void handleFormModal(item, event, setPageData, undefined);
+                }}
+            />
+        </>
+    );
 }
