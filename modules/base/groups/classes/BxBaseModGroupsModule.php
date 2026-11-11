@@ -162,7 +162,8 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
         if(isset($aParams['template']) && $aParams['template'] == 'unit_wo_info')
             return $aResult;
 
-        if(getParam('sys_api_conn_in_prof_units') == 'on' && ($oConnection = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTIONS'])) !== false) {
+        // A context without members (Channels) has no connection object.
+        if(getParam('sys_api_conn_in_prof_units') == 'on' && !empty($CNF['OBJECT_CONNECTIONS']) && ($oConnection = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTIONS'])) !== false) {
             $oProfile = BxDolProfile::getInstanceByContentAndType($aData[$CNF['FIELD_ID']], $this->_aModule['name']);
 
             $aResult['members_count'] = $oConnection->getConnectedInitiatorsCount($oProfile->id(), false);
