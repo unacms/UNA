@@ -228,4 +228,28 @@ class EmptyStateApiTest extends BxDolIntegrationTestCase
         $aBefore = $o->getResultsAPI([], 0, 10, '');
         $this->assertArrayNotHasKey('empty_state', $aBefore['data'], 'Before any search there is nothing to say.');
     }
+
+    public function testTheAudienceIsNoSearchTermWithTheContentFilterOff(): void
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_groups'))
+            $this->markTestSkipped('Groups is not installed.');
+        if (BxDolContentFilter::getInstance()->isEnabled())
+            $this->markTestSkipped('The content filter is on.');
+
+        $o = BxDolSearchExtended::getObjectInstance('bx_groups');
+        $this->bxSetProtected($o, '_bIsApi', true);
+        $aBackup = $_POST;
+        try {
+            // As an app's filter form sends it: the hidden audience with its default, and a name.
+            $_POST = ['group_name' => 'zz-nothing-zz', 'cf' => 1, 'searchbx_groups' => 'Search'];
+            $aBlock = $o->getResults(['search_params' => ''])[0]['data'];
+        }
+        finally {
+            $_POST = $aBackup;
+            $this->bxSetProtected($o, '_bIsApi', false);
+        }
+
+        $this->assertArrayHasKey('group_name', $aBlock['params']['search_params']);
+        $this->assertArrayNotHasKey('cf', $aBlock['params']['search_params'], 'With the filter off the audience narrows nothing.');
+    }
 }

@@ -28,6 +28,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_events_context' 
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_events_past' AND `module`='bx_events' AND `title_system`='' AND `title`='_bx_events_page_block_title_past_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_events_calendar' AND `module`='bx_events' AND `title_system`='' AND `title`='_bx_events_page_block_title_calendar';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_events_search' AND `module`='bx_events' AND `title_system`='' AND `title`='_bx_events_page_block_title_search_form';
+UPDATE `sys_pages_blocks` SET `config_api`='{"use_as_filter":true}' WHERE `object`='bx_events_search' AND `module`='bx_events' AND `title_system`='' AND `title`='_bx_events_page_block_title_search_form';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_events_search' AND `module`='bx_events' AND `title_system`='' AND `title`='_bx_events_page_block_title_search_results';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_joined_events' AND `module`='bx_events' AND `title_system`='' AND `title`='_bx_events_page_block_title_joined_entries';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_events_manage' AND `module`='bx_events' AND `title_system`='_bx_events_page_block_title_system_manage' AND `title`='_bx_events_page_block_title_manage';

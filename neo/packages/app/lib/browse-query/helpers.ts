@@ -35,6 +35,9 @@ export async function fetchUniListData({ pageParam, requestUrl, defaultParams }:
             ...(payload.has_more === false ? { hasMore: false } : null),
             // UNA's "nothing to list yet" (a search nobody has run): no "Nothing found" for it.
             ...(payload.hide_empty_msg ? { hideEmptyMsg: true } : null),
+            // UNA's words for this answer when it is empty (a search that found nothing), which the
+            // page's own copy can't know.
+            ...(payload.empty_state ? { emptyState: payload.empty_state } : null),
         }
     }
 

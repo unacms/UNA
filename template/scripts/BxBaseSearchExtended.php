@@ -137,6 +137,12 @@ class BxBaseSearchExtended extends BxDolSearchExtended
             if (!BxDolDb::getInstance()->isValidOperator($aField['search_operator'])) {
                 throw new Exception('Invalid operator in foreach loop in getResults method');
             }
+            // The audience field with the content filter off (the form draws it as a hidden input
+            // holding its default) is no search term: browsing ignores the audience then too, and
+            // entries saved before it have none.
+            if($aField['name'] == 'cf' && !BxDolContentFilter::getInstance()->isEnabled())
+                continue;
+
             $mixedValue = $oForm->getCleanValue($aField['name']);
             if(empty($mixedValue) || (is_array($mixedValue) && bx_is_empty_array($mixedValue)))
                 continue;

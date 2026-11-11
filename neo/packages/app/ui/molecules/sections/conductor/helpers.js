@@ -804,15 +804,18 @@ function processParsedUrl(data) {
     const cellRight = cell('cell_right', { browseAsBlocks: true })
     const cellLeft = cell('cell_left')
     const browsePayload = cellCenter.endpoint ?? cellTop.endpoint ?? cellBottom.endpoint
+    // A filter form (block App config `use_as_filter`, e.g. a Search tab's form) belongs with the
+    // left column whichever cell UNA puts it in: beside the list from lg, in the Filters sheet below.
+    const isFilter = (item) => !!item?.data?.config_api?.use_as_filter
+    const centerContent = [...cellTop.content, ...cellCenter.content]
     return {
         content: [
-            ...cellTop.content,
-            ...cellCenter.content,
+            ...centerContent.filter((item) => !isFilter(item)),
             ...cellBottom.content.map((item) => ({ ...item, afterList: true })),
         ],
         endpoint: endpointFromBrowsePayload(browsePayload),
         sidebar: { endpoint: cellRight.endpoint, content: cellRight.content },
-        leftbar: { endpoint: cellLeft.endpoint, content:  cellLeft.content },
+        leftbar: { endpoint: cellLeft.endpoint, content: [...cellLeft.content, ...centerContent.filter(isFilter)] },
     }
 }
 
