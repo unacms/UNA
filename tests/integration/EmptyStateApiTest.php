@@ -174,4 +174,38 @@ class EmptyStateApiTest extends BxDolIntegrationTestCase
         $this->assertSame(_t('_sys_txt_empty_invitations_title'), $aBlock['empty_state']['title']);
         $this->assertArrayNotHasKey('buttons', $aBlock['empty_state']);
     }
+
+    public function testPersonalListsExplainThemselvesWithoutAnAddButton(): void
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_posts'))
+            $this->markTestSkipped('Posts is not installed.');
+
+        $this->bxLoginAsUser();
+        $oModule = BxDolModule::getInstance('bx_posts');
+        bx_import('SearchResult', $oModule->_aModule);
+        $o = new BxPostsSearchResult('recent');
+
+        foreach (['favorite' => '_sys_txt_empty_list_text_favorite', 'joined_entries' => '_sys_txt_empty_list_text_joined', 'online' => '_sys_txt_empty_list_text_online'] as $sMode => $sKey) {
+            $this->bxSetProtected($o, '_sMode', $sMode, BxDolSearchResult::class);
+            $a = BxDolEmptyState::resolve($o->getEmptyStateApi());
+            $this->assertSame(_t($sKey), $a['text'], $sMode);
+            $this->assertArrayNotHasKey('buttons', $a, $sMode . ': nothing to add there.');
+        }
+    }
+
+    public function testASearchThatFoundNothingSaysSo(): void
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_posts'))
+            $this->markTestSkipped('Posts is not installed.');
+
+        $o = BxDolSearchExtended::getObjectInstance('bx_posts');
+        if (!$o)
+            $this->markTestSkipped('Posts has no extended search.');
+
+        $aFound = $o->getResultsAPI([], 0, 10, ['keyword' => 'nothing']);
+        $this->assertSame(_t('_sys_txt_empty_search_title'), $aFound['data']['empty_state']['title']);
+
+        $aBefore = $o->getResultsAPI([], 0, 10, '');
+        $this->assertArrayNotHasKey('empty_state', $aBefore['data'], 'Before any search there is nothing to say.');
+    }
 }

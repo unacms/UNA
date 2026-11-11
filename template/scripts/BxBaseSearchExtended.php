@@ -273,7 +273,7 @@ class BxBaseSearchExtended extends BxDolSearchExtended
 
     public function getResultsAPI($aData, $iStart, $iPerPage, $aParamsSearch = '')
     {
-        return bx_api_get_block('browse', [
+        $aBlock = [
             'nocache' => true,
             'module' => $this->_aObject['module'],
             'unit' => 'general-content-list',
@@ -282,7 +282,17 @@ class BxBaseSearchExtended extends BxDolSearchExtended
             'params' => ['per_page' => $iPerPage, 'start' => $iStart, 'object' => $this->_aObject['module'], 'search_params' => $aParamsSearch],
             // Nothing to search for yet: an empty list is not "nothing found".
             'hide_empty_msg' => !$this->_bFilterMode && empty($aParamsSearch),
-        ]);
+        ];
+
+        // A search that found nothing says so (BxDolEmptyState); before any search there is nothing to say.
+        if (!$aBlock['hide_empty_msg'] && empty($aBlock['data']) && (int)$iStart == 0) {
+            $aBlock['empty_state'] = BxDolEmptyState::forApi([
+                'title' => '_sys_txt_empty_search_title',
+                'text' => '_sys_txt_empty_search_text',
+            ]);
+        }
+
+        return bx_api_get_block('browse', $aBlock);
     }
 
     public function getSorting($aParams = [])

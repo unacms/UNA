@@ -99,6 +99,20 @@ class BxBaseModGeneralSearchResult extends BxTemplSearchResult
     {
         $aState = parent::getEmptyStateApi();
 
+        // Lists that fill as the viewer joins, follows or favorites, or as people come online: they
+        // say so, and offer no "add" button.
+        $aPersonal = [
+            'joined_entries' => '_sys_txt_empty_list_text_joined',
+            'connections' => '_sys_txt_empty_list_text_connections',
+            'followed_entries' => '_sys_txt_empty_list_text_followed',
+            'favorite' => '_sys_txt_empty_list_text_favorite',
+            'online' => '_sys_txt_empty_list_text_online',
+        ];
+        if (isset($aPersonal[$this->_sMode])) {
+            $aState['text'] = $aPersonal[$this->_sMode];
+            return $aState;
+        }
+
         $oModule = $this->getMain();
         $CNF = &$oModule->_oConfig->CNF;
         // Only a module whose members add entries themselves has the 'create entry' action

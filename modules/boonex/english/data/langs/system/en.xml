@@ -4704,6 +4704,13 @@
     <string name="_sys_txt_empty_invitations_title"><![CDATA[No invitations]]></string>
     <string name="_sys_txt_empty_list_add"><![CDATA[Add new]]></string>
     <string name="_sys_txt_empty_list_text_add"><![CDATA[Be the first to add something here.]]></string>
+    <string name="_sys_txt_empty_list_text_connections"><![CDATA[Your connections show here.]]></string>
+    <string name="_sys_txt_empty_list_text_favorite"><![CDATA[What you add to favorites shows here.]]></string>
+    <string name="_sys_txt_empty_list_text_followed"><![CDATA[What you follow shows here.]]></string>
+    <string name="_sys_txt_empty_list_text_joined"><![CDATA[What you join shows here.]]></string>
+    <string name="_sys_txt_empty_list_text_online"><![CDATA[No one is online right now.]]></string>
+    <string name="_sys_txt_empty_search_text"><![CDATA[Try other words or fewer filters.]]></string>
+    <string name="_sys_txt_empty_search_title"><![CDATA[No results]]></string>
     <string name="_sys_txt_error_account_creation"><![CDATA[Account creation failed]]></string>
     <string name="_sys_txt_error_account_delete"><![CDATA[Account delete failed]]></string>
     <string name="_sys_txt_error_account_is_not_defined"><![CDATA[Account is not defined]]></string>
