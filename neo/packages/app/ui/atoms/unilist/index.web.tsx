@@ -244,6 +244,11 @@ function useListReveal(preloadComponent: UniListSlot, waitForGrid: boolean) {
 
 export type { UniListProps } from './shared'
 
+/** The empty slot when there are no rows and one is given, otherwise the list. */
+function listOrEmpty(count: number, empty: UniListProps['ListEmptyComponent'], list: () => ReactNode): ReactNode {
+    return count === 0 && empty ? renderSlot(empty) : list()
+}
+
 export default function UniList(props: UniListProps) {
     const {
         data: rawData,
@@ -415,9 +420,7 @@ export default function UniList(props: UniListProps) {
                 {renderSlot(ListHeaderComponent)}
                 {/* Empty: the message replaces the list below the header (a feed's composer stays), as
                     native's ListEmptyComponent; an empty fixed-height list would push it out of view. */}
-                {rows.length === 0 && ListEmptyComponent
-                    ? renderSlot(ListEmptyComponent)
-                    : <List {...virtuosoProps} />}
+                {listOrEmpty(rows.length, ListEmptyComponent, () => <List {...virtuosoProps} />)}
                 <div ref={endRef} aria-hidden="true" />
             </View>
         </View>
