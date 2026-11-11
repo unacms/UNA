@@ -413,9 +413,11 @@ export default function UniList(props: UniListProps) {
                 style={wrapperStyle}
             >
                 {renderSlot(ListHeaderComponent)}
-                <List {...virtuosoProps} />
-                {/* Below the header, as native's ListEmptyComponent: the header (a feed's composer) stays. */}
-                {rows.length === 0 ? renderSlot(ListEmptyComponent) : null}
+                {/* Empty: the message replaces the list below the header (a feed's composer stays), as
+                    native's ListEmptyComponent; an empty fixed-height list would push it out of view. */}
+                {rows.length === 0 && ListEmptyComponent
+                    ? renderSlot(ListEmptyComponent)
+                    : <List {...virtuosoProps} />}
                 <div ref={endRef} aria-hidden="true" />
             </View>
         </View>
