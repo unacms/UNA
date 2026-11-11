@@ -102,6 +102,16 @@ const URL_TOKEN_RE = new RegExp(
     'gi'
 )
 
+// What the editor links as it is typed (passed as `linkRegex`). The library's default
+// links any word.word ("Next.js", "file.ts") with a bare href; this one takes only
+// http(s):// or www. URLs and bare domains with a known TLD, like linkifyHtml.
+// No lookbehind and not global: iOS rejects variable lookbehinds, the library adds `g`.
+export const EDITOR_LINK_RE = new RegExp(
+    '(?:https?:\\/\\/|www\\.)[^\\s<>"\']+' +
+    '|\\b(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\\.)+(?:' + COMMON_TLDS + ')\\b(?:\\/[^\\s<>"\']*)?',
+    'i'
+)
+
 // Tags whose text content must never be linkified.
 const LINKIFY_SKIP_TAGS = new Set(['a', 'mention', 'code', 'pre', 'codeblock', 'script', 'style'])
 const LINKIFY_VOID_TAGS = new Set(['br', 'img', 'hr', 'input', 'meta', 'link', 'source', 'wbr'])
