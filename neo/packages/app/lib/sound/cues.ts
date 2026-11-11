@@ -91,6 +91,12 @@ const LEGACY_KEY: Partial<Record<Cue, string>> = {
     attention: 'notif',
 };
 
+/** A tab switch (`select` in the navigation group) played `tab` before Cuelume; other selections played `click`. */
+function legacyKey(cue: Cue, options: CueOptions): string | undefined {
+    if (cue === 'select' && options.group === 'navigation') return 'tab';
+    return LEGACY_KEY[cue];
+}
+
 /**
  * `Sounds` keys to try for a variant, best first: exact, without the emphasis, the plain cue, in `set`
  * and then in the default set, and last the old key.
@@ -99,7 +105,7 @@ export function cueKeys(cue: Cue, options: CueOptions = {}, set: SoundSet = 'def
     const sets: SoundSet[] = set === 'default' ? ['default'] : [set, 'default'];
     const keys = [
         ...sets.flatMap((s) => [cueKey(cue, options, s), cueKey(cue, { direction: options.direction }, s), cueKey(cue, {}, s)]),
-        LEGACY_KEY[cue],
+        legacyKey(cue, options),
     ];
     return keys.filter((key, i): key is string => !!key && keys.indexOf(key) === i);
 }
