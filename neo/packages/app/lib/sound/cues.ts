@@ -107,7 +107,7 @@ export function cueKeys(cue: Cue, options: CueOptions = {}, set: SoundSet = 'def
 /** Names `useSound` / `playSound` took before Cuelume, mapped to the cue for their job. */
 export const LEGACY_SOUNDS: Record<string, { cue: Cue } & CueOptions> = {
     click: { cue: 'tap', emphasis: 'subtle' },
-    tab: { cue: 'navigate', emphasis: 'subtle' },
+    tab: { cue: 'select', emphasis: 'subtle', group: 'navigation' },
     success: { cue: 'success', emphasis: 'subtle' },
     notif: { cue: 'ready' },
 };

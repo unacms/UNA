@@ -227,7 +227,7 @@ function MenuBottomItem({ link, tabKey, rootUrl, title, badge, icon, isActive, i
                  onClick={handlePress}
             >
                 <View
-                    {...cueAttributes({ cue: 'navigate', emphasis: 'subtle' })}
+                    {...cueAttributes({ cue: 'select', emphasis: 'subtle', group: 'navigation' })}
                     className={` my-auto items-center rounded-full min-h-12 justify-center p-1.5 text-center gap-1.5 web:hover:bg-muted/50 ${isActive && 'bg-accent/60'}`}
                 >
                     <View className="items-center justify-center">
