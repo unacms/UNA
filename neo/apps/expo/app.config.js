@@ -51,6 +51,12 @@ const expoConfig = {
         "associatedDomains": ["neo.so"],
         "bundleIdentifier": "com.neo.so",
         "backgroundColor": "#111827",
+        // Home screen appearances (iOS 18+). Left out when a fork sets its own `icon` or `ios.icon`.
+        "icon": {
+            "light": "./assets/images/icon.png",
+            "dark": "./assets/images/icon-dark.png",
+            "tinted": "./assets/images/icon-tinted.png"
+        },
         "infoPlist": {
             "NSCameraUsageDescription": "Application uses the camera to take photos for your profile and posts, and for video during calls—for example, a profile picture or a video call.",
             "NSPhotoLibraryUsageDescription": "Application accesses your photo library so you can choose photos and videos for your profile, posts, and messages.",
@@ -210,6 +216,14 @@ if (typeof (expoConfigCustom.android?.intentFilters) !== 'undefined')
 
 if (typeof (expoConfigCustom.plugins) !== 'undefined')
     expoConfig.plugins = [];
+
+// A fork's own app icon wins on every platform: UNA's iOS appearances and Android adaptive icon
+// would otherwise be used instead of the fork's top-level `icon`.
+if (typeof (expoConfigCustom.icon) !== 'undefined' || typeof (expoConfigCustom.ios?.icon) !== 'undefined')
+    delete expoConfig.ios.icon;
+
+if (typeof (expoConfigCustom.icon) !== 'undefined' && typeof (expoConfigCustom.android?.adaptiveIcon) === 'undefined')
+    delete expoConfig.android.adaptiveIcon;
 
 // Applied after the merge so forks that replace `plugins` still get it.
 module.exports = withPinFbjni(merge(expoConfig, expoConfigCustom));

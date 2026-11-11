@@ -59,7 +59,7 @@ Rules for forks:
 | `config/images-allowlist.js` | Extra image hosts, used by `next/image` and at runtime. |
 | `config/package.next.js`, `config/package.expo.js` | Extra npm dependencies. The root `preinstall` script merges them into `apps/next/package.json` and `apps/expo/package.json`; don't commit those rewritten files, and restore them before a sync. |
 | `resources/web/` | Flat files copied into `apps/next/public/static/` (gitignored) whenever the Next config loads: `favicon.svg`, `manifest.json` and every icon the manifest names. |
-| `resources/native/` | App icon, splash and other native assets. Reference them from `config/app.config.js` as `../../packages/app/customization/resources/native/...`. |
+| `resources/native/` | App icon, splash and other native assets. Reference them from `config/app.config.js` as `../../packages/app/customization/resources/native/...`. Setting `icon` there is enough: UNA's iOS appearances (`ios.icon` light, dark and tinted) and Android adaptive icon are then left out, so the fork's icon is used everywhere. Set `ios.icon` and `android.adaptiveIcon` too for your own dark, tinted and adaptive versions. Without any of them the app uses UNA's icon. |
 | `resources/sounds/` | Your own native interface sounds (empty upstream). Core's WAV files are in `packages/app/resources/sounds/`, rendered from Cuelume by `scripts/render-sounds.mjs`; point keys of `sounds.js` at your files instead of replacing core's. See [Interface sounds](#interface-sounds). |
 
 ## Layout and stack
