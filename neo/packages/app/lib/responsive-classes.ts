@@ -1,5 +1,5 @@
 import { appSetting } from 'app/lib/util';
-import { buildBlockBgClasses } from 'app/lib/block-bg-classes';
+import { buildBlockBgClasses, roundedTiersFromClasses } from 'app/lib/block-bg-classes';
 
 /**
  * Build responsive class strings from theme utilities + breakpoint tiers.
@@ -233,12 +233,22 @@ export function normalizeTiers(value: any): boolean | Tier[] {
     return tiers.length ? tiers : false;
 }
 
-/** A block's background (theme `u-block-bg`) on the tiers in `bg`. */
-export function blockBgClasses(bg: any) {
+/**
+ * A block's background (theme `u-block-bg`) on the tiers in `bg`, with its outline shadow
+ * only where the block is rounded (`rounded`: the block's corner tiers; unset, the theme's
+ * `u-block-rounded-default`). A square block runs to the screen edge and gets the fill alone.
+ */
+export function blockBgClasses(bg: any, rounded?: any) {
+    let roundedTiers: boolean | Tier[];
+    if (rounded == null) {
+        roundedTiers = roundedTiersFromClasses(appSetting('theme', 'blocks', 'u-block-rounded-default') || '');
+    } else {
+        roundedTiers = rounded === false ? [] : normalizeTiers(rounded);
+    }
     return buildBlockBgClasses(normalizeTiers(bg), {
         on: appSetting('theme', 'blocks', 'u-block-bg') || '',
         off: PRESETS.bg?.off || '',
-    });
+    }, roundedTiers);
 }
 
 /**

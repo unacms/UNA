@@ -24,8 +24,9 @@ function createBlockComponent({
         const bg = baseClass === 'u-block-base' ? normalizeTiers(isBg) : false
         const pad = normalizeTiers(isPad)
 
-        // Card chrome (fill, outline shadow, radius) only where UNA background is on.
-        const bgClass = bg ? blockBgClasses(bg) : ''
+        // Card chrome (fill, outline shadow, radius) only where UNA background is on; the
+        // outline only where the corners are rounded (a square block runs to the screen edge).
+        const bgClass = bg ? blockBgClasses(bg, rounded) : ''
         const roundedClass = bg ? responsiveClasses('rounded', rounded) : ''
 
         // UNA padding: py on the shell, px on header / content / footer.
