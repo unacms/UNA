@@ -62,7 +62,7 @@ export default function GooeyMenu(props: Readonly<GooeyMenuProps>) {
 
 function GooeyDroplets({ items, label, onSelect, icon = 'Plus', onMore, refocus = false }: Readonly<GooeyMenuProps & { onMore: () => void; refocus?: boolean }>) {
     const { t } = useTranslation();
-    const [open, setOpenState] = useState(false);
+    const [open, setOpen] = useState(false);
     // The liquid shows while droplets travel (the transition, its stagger and a little settling).
     const [moving, setMoving] = useState(false);
     const movingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -74,8 +74,9 @@ function GooeyDroplets({ items, label, onSelect, icon = 'Plus', onMore, refocus 
         : items;
     const offsets = itemOffsets(droplets.length);
     const travelMs = TRANSITION.duration + STAGGER_MS * Math.max(0, droplets.length - 1) + 80;
-    const setOpen = useCallback((next: boolean) => {
-        setOpenState(next);
+    // Open or close, with the liquid shown for the travel.
+    const changeOpen = useCallback((next: boolean) => {
+        setOpen(next);
         setMoving(true);
         if (movingTimer.current) clearTimeout(movingTimer.current);
         movingTimer.current = setTimeout(() => setMoving(false), travelMs);
@@ -103,7 +104,7 @@ function GooeyDroplets({ items, label, onSelect, icon = 'Plus', onMore, refocus 
     useEffect(() => {
         if (!open) return undefined;
         const close = (focusTrigger: boolean) => {
-            setOpen(false);
+            changeOpen(false);
             if (focusTrigger) triggerRef.current?.focus();
         };
         const onKey = (event: KeyboardEvent) => {
@@ -118,17 +119,17 @@ function GooeyDroplets({ items, label, onSelect, icon = 'Plus', onMore, refocus 
             document.removeEventListener('keydown', onKey);
             document.removeEventListener('pointerdown', onPointer);
         };
-    }, [open, setOpen]);
+    }, [open, changeOpen]);
 
     const toggle = (event?: any) => {
         const opening = !open;
-        setOpen(opening);
+        changeOpen(opening);
         // From the keyboard (a click with no pointer), focus moves into the opened actions.
         if (opening && !event?.nativeEvent?.detail) requestAnimationFrame(() => firstItemRef.current?.focus());
     };
 
     const pick = (item: GooeyMenuItem, event?: unknown) => {
-        setOpen(false);
+        changeOpen(false);
         if (item.id === MORE_ID) onMore();
         else onSelect(item, event);
     };
