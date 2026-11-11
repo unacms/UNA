@@ -76,6 +76,8 @@ export default function EmptyState({ preview, fromSkeletons = false, state, fall
         ]).start();
     }, [fromSkeletons, reduceMotion, progress, wordsOpacity]);
 
+    // The create menu's droplets are out (web): the words fade under them.
+    const [menuOpen, setMenuOpen] = useState(false);
     const title = state?.title || fallbackTitle;
     const buttons = state?.buttons ?? [];
 
@@ -105,14 +107,20 @@ export default function EmptyState({ preview, fromSkeletons = false, state, fall
                 </View>
             ) : null}
             <Animated.View style={{ opacity: wordsOpacity }} className="items-center gap-2 px-6 -mt-6">
-                <Text className="text-center text-lg font-semibold text-muted-foreground">{title}</Text>
-                {state?.text ? (
-                    <Text className="text-center text-base text-muted-foreground max-w-105">{state.text}</Text>
-                ) : null}
+                {/* Web: the create menu's droplets fan up over the words, which make way meanwhile. */}
+                <View
+                    className={'items-center gap-2 web:transition-opacity web:duration-200 ' + (menuOpen ? 'opacity-0' : 'opacity-100')}
+                    aria-hidden={menuOpen || undefined}
+                >
+                    <Text className="text-center text-lg font-semibold text-muted-foreground">{title}</Text>
+                    {state?.text ? (
+                        <Text className="text-center text-base text-muted-foreground max-w-105">{state.text}</Text>
+                    ) : null}
+                </View>
                 {buttons.length ? (
                     <Row className="flex-wrap justify-center gap-2 pt-3">
                         {buttons.map((button, index) => (
-                            <EmptyStateButton key={button.link + index} button={button} />
+                            <EmptyStateButton key={button.link + index} button={button} onMenuOpenChange={setMenuOpen} />
                         ))}
                     </Row>
                 ) : null}
@@ -125,9 +133,9 @@ export default function EmptyState({ preview, fromSkeletons = false, state, fall
  * One of UNA's buttons. `create_menu` is a "+" opening the add-content menu (the header's "+":
  * every type the viewer can create); without that menu it is the link.
  */
-function EmptyStateButton({ button }: Readonly<{ button: EmptyStateButtonData }>) {
+function EmptyStateButton({ button, onMenuOpenChange }: Readonly<{ button: EmptyStateButtonData; onMenuOpenChange: (open: boolean) => void }>) {
     const style = button.style === 'secondary' ? 'bordered' : 'borderedProminent';
-    if (button.action === 'create_menu') return <CreateMenuButton button={button} />;
+    if (button.action === 'create_menu') return <CreateMenuButton button={button} onMenuOpenChange={onMenuOpenChange} />;
     return (
         <NeoButtonLink
             href={button.link}
@@ -139,7 +147,7 @@ function EmptyStateButton({ button }: Readonly<{ button: EmptyStateButtonData }>
     );
 }
 
-function CreateMenuButton({ button }: Readonly<{ button: EmptyStateButtonData }>) {
+function CreateMenuButton({ button, onMenuOpenChange }: Readonly<{ button: EmptyStateButtonData; onMenuOpenChange: (open: boolean) => void }>) {
     // The menu only once it has something to create: while it loads, when the menu is off or empty,
     // and when it could not be loaded, the button is its link (the same primary "+" capsule).
     const { items, empty } = useMenuAddItems();
@@ -167,6 +175,7 @@ function CreateMenuButton({ button }: Readonly<{ button: EmptyStateButtonData }>
             <GooeyMenu
                 items={actions}
                 label={button.title}
+                onOpenChange={onMenuOpenChange}
                 onSelect={(item, event) => {
                     setPageData('loading');
                     void handleFormModal(item, event, setPageData, undefined);

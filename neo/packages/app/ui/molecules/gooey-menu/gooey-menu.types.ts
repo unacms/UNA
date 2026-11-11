@@ -15,4 +15,6 @@ export type GooeyMenuProps = {
     onSelect: (item: GooeyMenuItem, event?: unknown) => void;
     /** Lucide icon of the trigger. Default "Plus" (turned into a cross while open on web). */
     icon?: string;
+    /** Web: the droplets fanned out or back in, so what they fan over can make room (fade). */
+    onOpenChange?: (open: boolean) => void;
 };

@@ -60,7 +60,7 @@ export default function GooeyMenu(props: Readonly<GooeyMenuProps>) {
     return <GooeyDroplets {...props} refocus={refocus} onMore={() => setTimeout(() => setList(true), 0)} />;
 }
 
-function GooeyDroplets({ items, label, onSelect, icon = 'Plus', onMore, refocus = false }: Readonly<GooeyMenuProps & { onMore: () => void; refocus?: boolean }>) {
+function GooeyDroplets({ items, label, onSelect, icon = 'Plus', onMore, onOpenChange, refocus = false }: Readonly<GooeyMenuProps & { onMore: () => void; refocus?: boolean }>) {
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     // The liquid shows while droplets travel (the transition, its stagger and a little settling).
@@ -77,10 +77,11 @@ function GooeyDroplets({ items, label, onSelect, icon = 'Plus', onMore, refocus 
     // Open or close, with the liquid shown for the travel.
     const changeOpen = useCallback((next: boolean) => {
         setOpen(next);
+        onOpenChange?.(next);
         setMoving(true);
         if (movingTimer.current) clearTimeout(movingTimer.current);
         movingTimer.current = setTimeout(() => setMoving(false), travelMs);
-    }, [travelMs]);
+    }, [travelMs, onOpenChange]);
     useEffect(() => () => {
         if (movingTimer.current) clearTimeout(movingTimer.current);
     }, []);
