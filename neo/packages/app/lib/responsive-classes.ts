@@ -239,9 +239,12 @@ export function normalizeTiers(value: any): boolean | Tier[] {
  * `u-block-rounded-default`). A square block runs to the screen edge and gets the fill alone.
  */
 export function blockBgClasses(bg: any, rounded?: any) {
-    const roundedTiers = rounded == null
-        ? roundedTiersFromClasses(appSetting('theme', 'blocks', 'u-block-rounded-default') || '')
-        : normalizeTiers(rounded === false ? [] : rounded);
+    let roundedTiers: boolean | Tier[];
+    if (rounded == null) {
+        roundedTiers = roundedTiersFromClasses(appSetting('theme', 'blocks', 'u-block-rounded-default') || '');
+    } else {
+        roundedTiers = rounded === false ? [] : normalizeTiers(rounded);
+    }
     return buildBlockBgClasses(normalizeTiers(bg), {
         on: appSetting('theme', 'blocks', 'u-block-bg') || '',
         off: PRESETS.bg?.off || '',

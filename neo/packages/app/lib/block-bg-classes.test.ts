@@ -60,3 +60,10 @@ test('the tiers a corner class rounds', () => {
     assert.deepEqual(roundedTiersFromClasses('rounded-none lg:rounded-2xl'), ['desktop']);
     assert.deepEqual(roundedTiersFromClasses(''), []);
 });
+
+test('a corner reset squares its tier and the tiers above it', () => {
+    assert.deepEqual(roundedTiersFromClasses('rounded-2xl sm:rounded-none'), ['mobile']);
+    assert.deepEqual(roundedTiersFromClasses('rounded-2xl lg:rounded-none'), ['mobile', 'tablet']);
+    assert.deepEqual(roundedTiersFromClasses('rounded-2xl sm:rounded-none lg:rounded-xl'), ['mobile', 'desktop']);
+    assert.deepEqual(roundedTiersFromClasses('shadow-sm sm:rounded-2xl'), ['tablet', 'desktop']);
+});

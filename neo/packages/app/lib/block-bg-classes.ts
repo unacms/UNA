@@ -21,15 +21,32 @@ function flatOn(on: string): string {
 }
 
 /**
- * The tiers a corner class rounds, read from its prefixes (`sm:rounded-2xl` is tablet
- * and desktop; an unprefixed `rounded-*` is every tier).
+ * The tiers a corner class rounds, read from its prefixes the way the breakpoints cascade:
+ * an unprefixed class sets every tier, `sm:` tablet and up, `lg:` desktop, and `rounded-none`
+ * makes its tiers square (`rounded-2xl sm:rounded-none` rounds only phones).
  */
 export function roundedTiersFromClasses(value: string): BgTier[] {
-    const rounded = tokens(value).filter((token) => /^(?:sm:|lg:)?rounded-/.test(token) && !/rounded-none$/.test(token));
-    if (rounded.some((token) => !token.includes(':'))) return [...TIERS];
-    if (rounded.some((token) => token.startsWith('sm:'))) return ['tablet', 'desktop'];
-    if (rounded.some((token) => token.startsWith('lg:'))) return ['desktop'];
-    return [];
+    const set: Partial<Record<BgTier, boolean>> = {};
+    for (const token of tokens(value)) {
+        const match = /^(sm:|lg:)?rounded(?:-|$)/.exec(token);
+        if (!match) continue;
+        const tier = TIERS.find((t) => PREFIX[t] === (match[1] ?? '')) ?? 'mobile';
+        set[tier] = !token.endsWith('rounded-none');
+    }
+
+    const tiers: BgTier[] = [];
+    let rounded = false;
+    for (const tier of TIERS) {
+        rounded = set[tier] ?? rounded;
+        if (rounded) tiers.push(tier);
+    }
+    return tiers;
+}
+
+/** The classes for one tier: off, the fill and outline, or (square corners) the fill alone. */
+function tierValue(hasBg: boolean, square: boolean, { on, off }: { on: string; off: string }): string {
+    if (!hasBg) return off;
+    return square ? flatOn(on) : tokens(on).join(' ');
 }
 
 /**
@@ -52,7 +69,7 @@ export function buildBlockBgClasses(
     let previous: string | null = null;
     for (const tier of TIERS) {
         const square = rounded !== undefined && !inTiers(rounded, tier);
-        const value = inTiers(bg, tier) ? (square ? flatOn(on) : tokens(on).join(' ')) : off;
+        const value = tierValue(inTiers(bg, tier), square, { on, off });
         if (value !== previous) {
             classes.push(...tokens(value).map((token) => PREFIX[tier] + token));
             previous = value;
