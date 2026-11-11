@@ -43,6 +43,9 @@ export {
     isSameItemsForUniList,
 } from './helpers'
 
+/** An empty list fetched this recently (the first load just now) is not asked again on mount. */
+const EMPTY_RECHECK_MIN_MS = 2000
+
 /** Batch window for timeline `added` events, plus a random spread so clients don't all hit UNA at once. */
 const TIMELINE_BATCH_MS = 1000
 const TIMELINE_JITTER_MS = 2000
@@ -353,9 +356,12 @@ export function useUniListQuery({
         if (frozen) setFrozen(null)
         if (requested) setRequested(false)
     } else if (seen.items !== cacheItems) {
+        // Rows on screen are kept while new ones wait behind "Show New"; an empty list has
+        // nothing to keep, so whatever arrives shows at once.
         const defer =
             deferNewItems &&
             seen.hadData &&
+            seen.items.length > 0 &&
             !frozen &&
             !requested &&
             !isSameItemsForUniList(seen.items, cacheItems)
@@ -367,6 +373,24 @@ export function useUniListQuery({
     const isFrozen = !!frozen && frozen.key === qKeyId
     const listItems = isFrozen ? frozen.items : cacheItems
     const listReady = !queryEnabled || !!pagesData || status === 'error'
+
+    /*
+     * A list the cache holds as empty shows its empty state at once on a revisit, without
+     * skeletons, and is always asked again, even while it is still fresh (stale_time), so
+     * content that came up in between appears in it (shown at once, see `defer` above).
+     */
+    const shownEmptyFromCache = useRef<string | null>(null)
+    useEffect(() => {
+        if (!queryEnabled || !pagesData || cacheItems.length > 0 || isFetching) return
+        if (shownEmptyFromCache.current === qKeyId) return
+        shownEmptyFromCache.current = qKeyId
+        if (queryClient.getQueryState(queryKey)?.isInvalidated) return
+        if (Date.now() - (queryClient.getQueryState(queryKey)?.dataUpdatedAt ?? 0) < EMPTY_RECHECK_MIN_MS) return
+        // Not held behind "Show New": the list is empty (see `defer`).
+        refetch()
+        // Once per list key per mount: the key and the data say when.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [qKeyId, !!pagesData])
 
     // skipToastRef only: on for the first page of a key, off once data landed.
     useEffect(() => {

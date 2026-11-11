@@ -26,7 +26,8 @@ import UniList from 'app/ui/atoms/unilist'
 import { appSetting, isObjectsEqual } from 'app/lib/util'
 import { responsiveClasses } from 'app/lib/responsive-classes'
 import { Text } from 'app/design/typography'
-import { getSkeletonForList } from 'app/lib/skeleton-helpers'
+import { getSkeletonCard, getSkeletonForList } from 'app/lib/skeleton-helpers'
+import { useDelayedFlag } from 'app/lib/hooks/use-delayed-flag'
 import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
 import { layoutForList } from 'app/customization/functions'
@@ -47,6 +48,10 @@ import { useIsDesktop } from 'app/context/measure';
 import { BlockTitle } from 'app/ui/molecules/page/page-block'
 const blockTheme = appSetting('theme', 'blocks');
 const AT_TOP_SCROLL_THRESHOLD = 50;
+/** Skeletons show only when the first page takes longer than this. */
+const SKELETON_DELAY_MS = 250;
+/** Holds the list hidden, drawing nothing, until the skeletons are due. */
+const BLANK_PRELOAD = <View />;
 
 export default function Browse(props) {
 
@@ -228,6 +233,18 @@ export default function Browse(props) {
         () => getSkeletonForList(sSkeleton, numColumns, true, layout, renderItem),
         [sSkeleton, numColumns, layout, renderItem]
     )
+    const skeletonCard = useMemo(() => getSkeletonCard(sSkeleton, renderItem), [sSkeleton, renderItem])
+
+    // Skeletons while the list loads, from SKELETON_DELAY_MS on: a quicker answer shows its rows
+    // or its empty state without them. Once it is done and empty, the empty state goes below the
+    // list's header (a feed's composer), which a preload would hide on web; when skeletons were
+    // on screen, they gather into its stack.
+    const isEmptyList = !data?.hide_empty_msg && listItems.length === 0
+    const isEmptyDone = isEmptyList && listReady && hasNextPage === false
+    const isLoadingEmpty = isEmptyList && !isEmptyDone
+    const showSkeletons = useDelayedFlag(isLoadingEmpty, SKELETON_DELAY_MS)
+    const [sawSkeletons, setSawSkeletons] = useState(false)
+    if (showSkeletons && !sawSkeletons) setSawSkeletons(true)
 
 
     // Bottom-tab reselect (same event as Conductor): scroll to top, or reload if already at top.
@@ -359,13 +376,10 @@ export default function Browse(props) {
 
     const NoContent = components['molecule']['no_content']
 
-    // Skeletons while the list loads; once it is done and empty, the empty state goes below the
-    // list's header (a feed's composer), which a preload would hide on web.
-    const isEmptyList = !data?.hide_empty_msg && dataItems.length === 0
-    const isEmptyDone = isEmptyList && listReady && hasNextPage === false
-    const PreloadComponent = isEmptyList && !isEmptyDone ? Preload : null;
+    // Until the delay passes, a blank preload: the list (and its header) stays hidden as before.
+    const PreloadComponent = isLoadingEmpty ? (showSkeletons ? Preload : BLANK_PRELOAD) : null;
     const EmptyComponent = isEmptyDone
-        ? <NoContent endpoint={{ request_url: data.request_url, params: {} }} />
+        ? <NoContent endpoint={{ request_url: data.request_url, params: {} }} card={skeletonCard} fromSkeletons={sawSkeletons} />
         : null;
 
 

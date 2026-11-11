@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, memo } from 'react'
+import { useCallback, useContext, useMemo, useState, memo } from 'react'
 import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
@@ -10,7 +10,8 @@ import { ItemRenderer } from 'app/components/item-renderer'
 import { NeoButton } from 'app/design/controls'
 import { cueAttributes, PressCueContext } from 'app/lib/sound'
 import { useTranslation } from 'react-i18next'
-import { getSkeletonForList } from 'app/lib/skeleton-helpers'
+import { getSkeletonCard, getSkeletonForList } from 'app/lib/skeleton-helpers'
+import { useDelayedFlag } from 'app/lib/hooks/use-delayed-flag'
 import { layoutForList, paddingForList } from 'app/customization/functions'
 import { usePageListEndpoint } from 'app/ui/molecules/page/page-chrome'
 import {
@@ -478,6 +479,10 @@ export function CompactNav({ routes, index, onSelect }) {
 
 /** Stable default so a missing `listItems` does not re-run every memo. */
 const EMPTY_LIST_ITEMS = []
+/** Skeletons show only when the list takes longer than this (Browse uses the same). */
+const SKELETON_DELAY_MS = 250
+/** Holds the list hidden, drawing nothing, until the skeletons are due. */
+const BLANK_PRELOAD = <View />
 
 /**
  * Shared conductor center-list chrome (native + small web).
@@ -573,6 +578,7 @@ export function useListScene({
         () => getSkeletonForList(skeletonKey, skeletonCount, true, layout, renderItem, paddings),
         [skeletonKey, skeletonCount, layout, renderItem, paddings]
     )
+    const skeletonCard = useMemo(() => getSkeletonCard(skeletonKey, renderItem), [skeletonKey, renderItem])
 
     const feedType = route?.endpoint?.params?.type
 
@@ -650,6 +656,7 @@ export function useListScene({
         renderItem,
         skeletonKey,
         Preload,
+        skeletonCard,
         rows,
         chrome,
         showPreload,
@@ -677,9 +684,18 @@ function ListBody({
     uniListProps = {},
 }) {
     const NoContent = registeredComponent('molecule', 'no_content')
+    // Skeletons only when the list takes longer than SKELETON_DELAY_MS (a blank preload keeps
+    // it hidden until then); when they showed, the empty state gathers them into its stack.
+    const wantsPreload = !!(showListPreload && scene.showPreload)
+    const showSkeletons = useDelayedFlag(wantsPreload, SKELETON_DELAY_MS)
+    const [sawSkeletons, setSawSkeletons] = useState(false)
+    if (showSkeletons && !sawSkeletons) setSawSkeletons(true)
+    const noContent = NoContent
+        ? <NoContent endpoint={route?.endpoint} card={scene.skeletonCard} fromSkeletons={sawSkeletons} />
+        : null
     const emptyFooter =
-        headerInList && scene.showNoContent && NoContent
-            ? <NoContent endpoint={route?.endpoint} />
+        headerInList && scene.showNoContent && noContent
+            ? noContent
             : (uniListProps.ListFooterComponent ?? null)
 
     return (
@@ -695,7 +711,7 @@ function ListBody({
                 layout={scene.layout}
                 renderItem={scene.renderItem}
                 preloadComponent={
-                    showListPreload && scene.showPreload ? scene.Preload : undefined
+                    wantsPreload ? (showSkeletons ? scene.Preload : BLANK_PRELOAD) : undefined
                 }
                 ListFooterComponent={emptyFooter}
                 refer={listRef}
@@ -703,9 +719,7 @@ function ListBody({
                 onRefresh={onRefresh}
                 refreshing={refreshing}
             />
-            {!headerInList && scene.showNoContent && NoContent ? (
-                <NoContent endpoint={route?.endpoint} />
-            ) : null}
+            {!headerInList && scene.showNoContent ? noContent : null}
         </>
     )
 }

@@ -72,3 +72,15 @@ export function getSkeletonForList(name: string, num = 5, isFirst = true, layout
         </View>
     )
 }
+
+/**
+ * One skeleton card of a list, without the list wrapper or its pulse: the empty state stacks
+ * three of them (EmptyStack) when a list that showed skeletons comes back with nothing.
+ */
+export function getSkeletonCard(name: string, renderItem: any) {
+    if (appSetting('browse', 'new_skeletons') && typeof renderItem === 'function') {
+        return renderItem({ item: { module: getSkeletonModuleName(name), skeleton: true }, index: 0 })
+    }
+    const Item = (components as any)['skeleton'][getlegacySkeletonName(name)] || (components as any)['skeleton']['default'];
+    return <Item />
+}
