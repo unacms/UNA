@@ -78,6 +78,6 @@ export function getSkeletonForList(name: string, num = 5, isFirst = true, layout
  * A list's skeletons as its empty state shows them (EmptyState): the same layout and items as
  * the loading skeletons, without their pulse.
  */
-export function getSkeletonPreview(name: string, num = 1, layout: any, renderItem: any, paddings?: any) {
+export function getSkeletonPreview(name: string, num: number, layout: any, renderItem: any, paddings?: any) {
     return getSkeletonForList(name, num, true, layout, renderItem, paddings, true)
 }

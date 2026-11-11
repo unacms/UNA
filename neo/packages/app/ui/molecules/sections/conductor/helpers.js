@@ -721,6 +721,8 @@ function endpointFromBrowsePayload(payload) {
         module: payload.module,
         ...(payload.designbox ? { designbox: payload.designbox } : null),
         ...(payload.bg_hidden_on ? { bg_hidden_on: payload.bg_hidden_on } : null),
+        // As processEndpoint: UNA's words and buttons for the list when it comes back empty.
+        ...(payload.empty_state ? { empty_state: payload.empty_state } : null),
     }
 }
 

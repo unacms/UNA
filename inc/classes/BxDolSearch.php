@@ -677,7 +677,7 @@ class BxDolSearchResult implements iBxDolReplaceable
      * The default empty state of this list for API clients (see BxDolEmptyState): language keys.
      * A module's search result can say more, and add buttons.
      */
-    function getEmptyStateApi()
+    public function getEmptyStateApi()
     {
         return ['title' => '_Empty'];
     }

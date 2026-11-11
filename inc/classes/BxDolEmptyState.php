@@ -34,11 +34,14 @@ class BxDolEmptyState
         $aState = is_array($aDefault) ? $aDefault : [];
 
         $aBlock = BxDolPage::getBlockProcessing();
-        $aConfig = isset($aBlock['config_api']) && is_array($aBlock['config_api']) ? $aBlock['config_api'] : [];
-        if (isset($aConfig['empty']) && is_array($aConfig['empty']))
-            foreach (['title', 'text', 'buttons'] as $sKey)
-                if (array_key_exists($sKey, $aConfig['empty']))
-                    $aState[$sKey] = $aConfig['empty'][$sKey];
+        $aOverride = $aBlock['config_api']['empty'] ?? null;
+        if (is_array($aOverride)) {
+            foreach (['title', 'text', 'buttons'] as $sKey) {
+                if (array_key_exists($sKey, $aOverride)) {
+                    $aState[$sKey] = $aOverride[$sKey];
+                }
+            }
+        }
 
         return self::resolve($aState);
     }
@@ -48,40 +51,59 @@ class BxDolEmptyState
      */
     public static function resolve($aState)
     {
-        if (!is_array($aState))
+        if (!is_array($aState)) {
             return null;
+        }
 
         $aResult = [];
-        foreach (['title', 'text'] as $sKey)
-            if (($s = self::text($aState[$sKey] ?? '')) !== '')
+        foreach (['title', 'text'] as $sKey) {
+            $s = self::text($aState[$sKey] ?? '');
+            if ($s !== '') {
                 $aResult[$sKey] = $s;
+            }
+        }
 
+        $aButtons = self::buttons($aState['buttons'] ?? null);
+        if (!empty($aButtons)) {
+            $aResult['buttons'] = $aButtons;
+        }
+
+        return empty($aResult) ? null : $aResult;
+    }
+
+    /**
+     * Up to MAX_BUTTONS buttons with a title and a link of this site; the first is primary unless
+     * it asks to be secondary, the others are secondary.
+     */
+    protected static function buttons($mButtons)
+    {
         $aButtons = [];
-        foreach (is_array($aState['buttons'] ?? null) ? $aState['buttons'] : [] as $aButton) {
-            if (!is_array($aButton) || count($aButtons) >= self::MAX_BUTTONS)
+        foreach (is_array($mButtons) ? $mButtons : [] as $aButton) {
+            if (count($aButtons) >= self::MAX_BUTTONS) {
+                break;
+            }
+            if (!is_array($aButton)) {
                 continue;
+            }
 
             $sTitle = self::text($aButton['title'] ?? '');
             $sLink = self::link($aButton['link'] ?? '');
-            if ($sTitle === '' || $sLink === '')
+            if ($sTitle === '' || $sLink === '') {
                 continue;
+            }
 
-            $aButtons[] = [
-                'title' => $sTitle,
-                'link' => $sLink,
-                'style' => ($aButton['style'] ?? '') === 'secondary' || count($aButtons) > 0 ? 'secondary' : 'primary',
-            ];
+            $bSecondary = ($aButton['style'] ?? '') === 'secondary' || !empty($aButtons);
+            $aButtons[] = ['title' => $sTitle, 'link' => $sLink, 'style' => $bSecondary ? 'secondary' : 'primary'];
         }
-        if ($aButtons)
-            $aResult['buttons'] = $aButtons;
 
-        return $aResult ?: null;
+        return $aButtons;
     }
 
     protected static function text($mValue)
     {
-        if (!is_string($mValue) || ($mValue = trim($mValue)) === '')
+        if (!is_string($mValue) || ($mValue = trim($mValue)) === '') {
             return '';
+        }
 
         return strip_tags(strncmp($mValue, '_', 1) === 0 ? _t($mValue) : $mValue);
     }
@@ -91,21 +113,28 @@ class BxDolEmptyState
      */
     protected static function link($mValue)
     {
-        if (!is_string($mValue) || ($sLink = trim($mValue)) === '')
+        $sLink = self::sitePath($mValue);
+        if ($sLink === '' || strpbrk($sLink, "<>\"'\\ \t\r\n") !== false) {
             return '';
+        }
+
+        return bx_api_get_relative_url(BxDolPermalinks::getInstance()->permalink($sLink), '');
+    }
+
+    /**
+     * The link's path under the site's root, without the leading slash: '' for an empty link or
+     * one with a scheme or host other than the site's own.
+     */
+    protected static function sitePath($mValue)
+    {
+        $sLink = is_string($mValue) ? trim($mValue) : '';
 
         if (preg_match('/^[a-z][a-z0-9+.-]*:/i', $sLink) || strncmp($sLink, '//', 2) === 0) {
             $iRoot = get_mb_len(BX_DOL_URL_ROOT);
-            if (get_mb_substr($sLink, 0, $iRoot) !== BX_DOL_URL_ROOT)
-                return '';
-            $sLink = get_mb_substr($sLink, $iRoot, get_mb_len($sLink) - $iRoot);
+            $sLink = get_mb_substr($sLink, 0, $iRoot) === BX_DOL_URL_ROOT ? get_mb_substr($sLink, $iRoot, get_mb_len($sLink) - $iRoot) : '';
         }
 
-        $sLink = ltrim($sLink, '/');
-        if ($sLink === '' || strpbrk($sLink, "<>\"'\\ \t\r\n") !== false)
-            return '';
-
-        return bx_api_get_relative_url(BxDolPermalinks::getInstance()->permalink($sLink), '');
+        return ltrim($sLink, '/');
     }
 }
 
