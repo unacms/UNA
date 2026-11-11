@@ -116,12 +116,12 @@ export default function EmptyState({ preview, fromSkeletons = false, state, fall
 }
 
 /**
- * One of UNA's buttons. `create_menu` opens the add-content menu (the header's "+": every type
- * the viewer can create) from the button itself; without that menu it is the link.
+ * One of UNA's buttons. `create_menu` is a "+" opening the add-content menu (the header's "+":
+ * every type the viewer can create); without that menu it is the link.
  */
 function EmptyStateButton({ button }: Readonly<{ button: EmptyStateButtonData }>) {
     const style = button.style === 'secondary' ? 'bordered' : 'borderedProminent';
-    if (button.action === 'create_menu') return <CreateMenuButton button={button} style={style} />;
+    if (button.action === 'create_menu') return <CreateMenuButton button={button} />;
     return (
         <NeoButtonLink
             href={button.link}
@@ -133,15 +133,19 @@ function EmptyStateButton({ button }: Readonly<{ button: EmptyStateButtonData }>
     );
 }
 
-function CreateMenuButton({ button, style }: Readonly<{ button: EmptyStateButtonData; style: string }>) {
+function CreateMenuButton({ button }: Readonly<{ button: EmptyStateButtonData }>) {
+    // A primary "+" capsule, like the header's: UNA's title is its name for assistive tech and its tooltip.
+    const look = {
+        style: 'borderedProminent',
+        controlSize: 'regular',
+        borderShape: 'capsule',
+        image: 'Plus',
+        accessibilityLabel: button.title,
+        tooltip: button.title,
+    };
     // The menu only once it has something to create: while it loads, when the menu is off or empty,
     // and when it could not be loaded, the button is its link.
     const { items, empty } = useMenuAddItems();
-    if (empty || !hasDropdownActions(items)) return <NeoButtonLink href={button.link} label={button.title} style={style} controlSize="regular" />;
-    // The header's own trigger props (a round "+") are replaced: this is a labelled button.
-    return (
-        <MenuAdd
-            buttonProps={{ style, controlSize: 'regular', label: button.title, image: undefined, borderShape: undefined, tooltip: undefined }}
-        />
-    );
+    if (empty || !hasDropdownActions(items)) return <NeoButtonLink href={button.link} {...look} />;
+    return <MenuAdd buttonProps={{ ...look, label: undefined }} />;
 }
