@@ -35,3 +35,19 @@ test('source HTML gets code blocks and table placeholders', () => {
     assert.equal(out, '<p>a</p><p><img alt="19"></p><codeblock><p>l1</p><p>l2</p></codeblock>');
     assert.equal(sourceToEditorHtml('<p>plain</p>', () => 'x'), '<p>plain</p>');
 });
+
+test('plain cell text keeps its meaning: Markdown characters are escaped', () => {
+    assert.equal(
+        htmlTableToMarkdown('<table><tr><th>[Docs](https://x.com) **bold** _x_ a\\b</th></tr></table>'),
+        '| \\[Docs\\](https://x.com) \\*\\*bold\\*\\* \\_x\\_ a\\\\b |\n| --- |',
+    );
+});
+
+test('code spans hold backticks and entities as written', () => {
+    assert.equal(htmlTableToMarkdown('<table><tr><td><code>a`b</code></td><td><code>&lt;b&gt; | x</code></td></tr></table>'),
+        '| ``a`b`` | `<b> \\| x` |\n| --- | --- |');
+});
+
+test('a blank line inside pre is kept as an empty line', () => {
+    assert.equal(preToCodeBlock('<pre>\na\n\nb\n</pre>'), '<codeblock><p>a</p><p>&nbsp;</p><p>b</p></codeblock>');
+});

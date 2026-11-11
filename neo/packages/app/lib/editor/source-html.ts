@@ -11,41 +11,90 @@ const TABLE_RE = /<table\b[^>]*>[\s\S]*?<\/table\s*>/gi
 const ROW_RE = /<tr\b[^>]*>([\s\S]*?)<\/tr\s*>/gi
 const CELL_RE = /<(t[hd])\b([^>]*)>([\s\S]*?)<\/t[hd]\s*>/gi
 
+// One tag. `[^<>]` can't run past the next tag, so splitting on it never backtracks.
+const TAG_RE = /(<[^<>]*>)/
+const tagName = (tag: string) => /^<\/?([a-zA-Z][a-zA-Z0-9]*)/.exec(tag)?.[1]?.toLowerCase() ?? ''
+const isClose = (tag: string) => tag.startsWith('</')
+
+/** Text of an HTML fragment: tags dropped (`<br>` is a newline), entities kept. */
+function fragmentText(html: string) {
+    return html.split(TAG_RE).map((part) => {
+        if (!part.startsWith('<')) return part
+        return tagName(part) === 'br' ? '\n' : ''
+    }).join('')
+}
+
 /** `<pre>` (with or without `<code>`) as a code block, one paragraph per line. */
 export function preToCodeBlock(html: string) {
     return html.replace(PRE_RE, (_, inner: string) => {
-        const text = inner
-            .replace(/^\s*<code\b[^>]*>/i, '')
-            .replace(/<\/code\s*>\s*$/i, '')
-            .replace(/<br\s*\/?>/gi, '\n')
-            // Keep the text, entities included; drop any markup inside the block.
-            .replace(/<[^>]+>/g, '')
-            .replace(/\r\n?/g, '\n')
-            .replace(/^\n|\n$/g, '')
-        const lines = text.split('\n').map((line) => `<p>${line}</p>`)
-        return `<codeblock>${lines.join('')}</codeblock>`
+        const lines = fragmentText(inner).replaceAll('\r\n', '\n').replaceAll('\r', '\n').split('\n')
+        // The newline right after <pre> and the one before </pre> aren't content.
+        if (lines.length > 1 && lines[0] === '') lines.shift()
+        if (lines.length > 1 && lines.at(-1) === '') lines.pop()
+        // A blank line is a no-break space: UNA drops empty paragraphs (and <p><br></p>) from post HTML.
+        return `<codeblock>${lines.map((line) => `<p>${line === '' ? '&nbsp;' : line}</p>`).join('')}</codeblock>`
     })
 }
 
+/** Plain text in a Markdown table cell: characters Markdown would read as syntax are escaped. */
+const escapeMarkdown = (text: string) => text.replace(/[\\`*_[\]|<>~]/g, String.raw`\$&`)
+
+/** Code text from HTML: Markdown shows entities in a code span as written, so decode the basic ones. */
+const decodeCodeEntities = (html: string) => html
+    .replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&quot;', '"').replaceAll('&#39;', "'").replaceAll('&amp;', '&')
+
+/** A code span that holds `html`'s text as it is: a backtick fence longer than any run inside. */
+function codeSpan(html: string) {
+    const text = decodeCodeEntities(html)
+    const longest = Math.max(0, ...(text.match(/`+/g) ?? []).map((run) => run.length))
+    const fence = '`'.repeat(longest + 1)
+    const pad = text.startsWith('`') || text.endsWith('`') ? ' ' : ''
+    // Pipes end a table cell even inside a code span, so they stay escaped there too.
+    return `${fence}${pad}${text.replaceAll('|', String.raw`\|`)}${pad}${fence}`
+}
+
+const INLINE_MARK: Record<string, string> = { strong: '**', b: '**', em: '*', i: '*' }
+
 /** Inline HTML of a table cell as GFM Markdown: bold, italic, code and links kept, other tags dropped. */
 function cellMarkdown(html: string) {
-    return html
-        .replace(/<br\s*\/?>/gi, ' ')
-        .replace(/<(strong|b)\b[^>]*>([\s\S]*?)<\/\1\s*>/gi, '**$2**')
-        .replace(/<(em|i)\b[^>]*>([\s\S]*?)<\/\1\s*>/gi, '*$2*')
-        .replace(/<code\b[^>]*>([\s\S]*?)<\/code\s*>/gi, '`$1`')
-        .replace(/<a\b[^>]*\bhref\s*=\s*("([^"]*)"|'([^']*)')[^>]*>([\s\S]*?)<\/a\s*>/gi,
-            (_, _q, dq: string | undefined, sq: string | undefined, text: string) => `[${text}](${dq ?? sq ?? ''})`)
-        .replace(/<[^>]+>/g, '')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .replace(/\|/g, '\\|')
+    let out = ''
+    let code: string | null = null
+    const links: string[] = []
+    for (const part of html.split(TAG_RE)) {
+        if (!part.startsWith('<')) {
+            if (code === null) out += escapeMarkdown(part)
+            else code += part
+            continue
+        }
+        const name = tagName(part)
+        if (name === 'code') {
+            if (isClose(part) && code !== null) { out += codeSpan(code); code = null }
+            else if (!isClose(part)) code = ''
+        } else if (code !== null) {
+            continue
+        } else if (name === 'br') {
+            out += ' '
+        } else if (INLINE_MARK[name]) {
+            out += INLINE_MARK[name]
+        } else if (name === 'a' && isClose(part)) {
+            const href = links.pop()
+            out += href === undefined ? '' : `](${href})`
+        } else if (name === 'a') {
+            const href = /\bhref\s*=\s*(?:"([^"]*)"|'([^']*)')/i.exec(part)
+            const url = (href?.[1] ?? href?.[2] ?? '').replace(/[()\s]/g, encodeURIComponent)
+            if (url) { links.push(url); out += '[' }
+        }
+    }
+    if (code !== null) out += codeSpan(code)
+    return out.replace(/\s+/g, ' ').trim()
 }
 
 const cellAlign = (attrs: string) => {
-    const align = attrs.match(/text-align\s*:\s*(left|center|right)/i)?.[1] ?? attrs.match(/\balign\s*=\s*["']?(left|center|right)/i)?.[1]
+    const align = /text-align\s*:\s*(left|center|right)/i.exec(attrs)?.[1] ?? /\balign\s*=\s*["']?(left|center|right)/i.exec(attrs)?.[1]
     return align?.toLowerCase() as 'left' | 'center' | 'right' | undefined
 }
+
+const ALIGN_RULE: Record<string, string> = { center: ':---:', right: '---:', left: ':---' }
 
 /** An HTML table as GFM Markdown; the first row is the header. `null` for a table without rows. */
 export function htmlTableToMarkdown(table: string): string | null {
@@ -62,10 +111,9 @@ export function htmlTableToMarkdown(table: string): string | null {
     const [head, ...body] = rows
     if (!head) return null
     const width = Math.max(...rows.map((r) => r.cells.length))
-    const pad = (cells: string[]) => [...cells, ...Array(width - cells.length).fill('')]
+    const pad = (cells: string[]) => [...cells, ...new Array<string>(width - cells.length).fill('')]
     const line = (cells: string[]) => `| ${pad(cells).join(' | ')} |`
-    const rule = pad(head.aligns.map((a) => a ?? '')).map((a) =>
-        a === 'center' ? ':---:' : a === 'right' ? '---:' : a === 'left' ? ':---' : '---')
+    const rule = pad(head.aligns.map((a) => a ?? '')).map((a) => ALIGN_RULE[a] ?? '---')
     return [line(head.cells), `| ${rule.join(' | ')} |`, ...body.map((r) => line(r.cells))].join('\n')
 }
 

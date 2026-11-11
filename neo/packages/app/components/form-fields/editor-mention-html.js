@@ -107,8 +107,8 @@ const URL_TOKEN_RE = new RegExp(
 // http(s):// or www. URLs and bare domains with a known TLD, like linkifyHtml.
 // No lookbehind and not global: iOS rejects variable lookbehinds, the library adds `g`.
 export const EDITOR_LINK_RE = new RegExp(
-    '(?:https?:\\/\\/|www\\.)[^\\s<>"\']+' +
-    '|\\b(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\\.)+(?:' + COMMON_TLDS + ')\\b(?:\\/[^\\s<>"\']*)?',
+    String.raw`(?:https?:\/\/|www\.)[^\s<>"']+` +
+    String.raw`|\b(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+(?:` + COMMON_TLDS + String.raw`)\b(?:\/[^\s<>"']*)?`,
     'i'
 )
 
