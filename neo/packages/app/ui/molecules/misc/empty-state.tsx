@@ -3,7 +3,7 @@ import { Animated, Easing } from 'react-native';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { NeoButtonLink } from 'app/design/controls';
-import { isWeb } from 'app/lib/util';
+import { isWeb, hasDropdownActions } from 'app/lib/util';
 import emitter, { EVENTS } from 'app/context/emitter';
 import MenuAdd, { useMenuAddItems } from 'app/components/nav/menu-add';
 import { useReduceMotionSetting } from 'app/lib/hooks/use-reduce-motion';
@@ -134,8 +134,10 @@ function EmptyStateButton({ button }: Readonly<{ button: EmptyStateButtonData }>
 }
 
 function CreateMenuButton({ button, style }: Readonly<{ button: EmptyStateButtonData; style: string }>) {
-    const { empty } = useMenuAddItems();
-    if (empty) return <NeoButtonLink href={button.link} label={button.title} style={style} controlSize="regular" />;
+    // The menu only once it has something to create: while it loads, when the menu is off or empty,
+    // and when it could not be loaded, the button is its link.
+    const { items, empty } = useMenuAddItems();
+    if (empty || !hasDropdownActions(items)) return <NeoButtonLink href={button.link} label={button.title} style={style} controlSize="regular" />;
     // The header's own trigger props (a round "+") are replaced: this is a labelled button.
     return (
         <MenuAdd
