@@ -27,6 +27,13 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
 
     protected $_aAclId2Name;
 
+    /**
+     * Whether the events query of the last getPosts call found more events after its page
+     * (it reads one more than a page). Null before any call. API clients get it as `has_more`:
+     * a page can be short and still have more, since events the viewer may not see are left out.
+     */
+    protected $_bPostsHasMore = null;
+
     function __construct(&$oConfig, &$oDb)
     {
         parent::__construct($oConfig, $oDb);
@@ -273,11 +280,13 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
 
         $sTitle = _t('_bx_timeline_page_block_title_views_' . $aParams['view']);
 
-        if ($this->_bIsApi)
+        if ($this->_bIsApi) {
+            $aData = $this->getViewBlock($aParams);
             return [
-                'content' => [bx_api_get_block('browse', ['unit' => 'feed', 'data' => $this->getViewBlock($aParams)])],
+                'content' => [bx_api_get_block('browse', array_merge(['unit' => 'feed', 'data' => $aData], $this->getHasMoreApi()))],
                 'menu' => $oMenu->getCodeAPI()
             ];
+        }
 
         $aResult = $this->getViewBlock($aParams);
 
@@ -645,6 +654,9 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
     public function getViewBlock($aParams)
     {
         $oModule = $this->getModule();
+
+        // Set again by getPosts below; a page with several feeds must not take another's.
+        $this->_bPostsHasMore = null;
 
         if($this->_bIsApi) {
             if(defined('BX_API_PAGE'))
@@ -1132,6 +1144,23 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
         return self::$_aMemoryCacheItems[$sMemoryCacheItemsKey];
     }
 
+    /**
+     * Whether the last getPosts call left events after its page (null before any call).
+     */
+    public function getPostsHasMore()
+    {
+        return $this->_bPostsHasMore;
+    }
+
+    /**
+     * `has_more` for an API feed block whose data the last getPosts call read, or nothing when
+     * no call did (a hook supplied the content): clients then page until an empty page.
+     */
+    public function getHasMoreApi()
+    {
+        return $this->_bPostsHasMore === null ? [] : ['has_more' => $this->_bPostsHasMore];
+    }
+
     public function getPostApi($aEvent, $aParams = [])
     {
         return $this->_getPostApi($aEvent, $aParams);
@@ -1186,6 +1215,7 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
             $aEvent = array_pop($aEvents);
             $bNext = true;
         }
+        $this->_bPostsHasMore = $bNext;
 
         $sContent = '';
         $sContent .= $this->getSizer($aParams);

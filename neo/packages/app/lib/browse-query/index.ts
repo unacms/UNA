@@ -27,6 +27,7 @@ import {
  */
 
 export {
+    showsNextPageSkeleton,
     fetchUniListData,
     refetchUniListReducer,
     flattenPagesForUniList,

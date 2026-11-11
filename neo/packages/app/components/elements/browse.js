@@ -40,7 +40,7 @@ import { BlockWrapper } from 'app/components/block-wrapper'
 import { useIsFocused } from 'app/lib/hooks/router'
 import { useGetScrollValue } from 'app/context/jotai/layout'
 import { setListScrollOffset } from 'app/lib/cache/list-scroll-cache'
-import { socketChannelForList, useUniListQuery } from 'app/lib/browse-query'
+import { showsNextPageSkeleton, socketChannelForList, useUniListQuery } from 'app/lib/browse-query'
 import { components } from 'app/components/registry';
 import { BrowseItem } from 'app/lib/common-helpers'
 import { useIsDesktop } from 'app/context/measure';
@@ -427,7 +427,7 @@ export default function Browse(props) {
         onEndReached: handleEndReached,
         ListHeaderComponent: ListHeaderComponent,
         ListEmptyComponent: EmptyComponent,
-        ListFooterComponent: ((hasNextPage && isFetchingNextPage)) ? Preload : null,
+        ListFooterComponent: showsNextPageSkeleton(dataItems.length, defParams?.per_page, !!(hasNextPage && isFetchingNextPage)) ? Preload : null,
     }
 
     if (contentElement === null) {
