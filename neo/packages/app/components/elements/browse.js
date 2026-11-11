@@ -26,7 +26,7 @@ import UniList from 'app/ui/atoms/unilist'
 import { appSetting, isObjectsEqual } from 'app/lib/util'
 import { responsiveClasses } from 'app/lib/responsive-classes'
 import { Text } from 'app/design/typography'
-import { getSkeletonForList, getSkeletonPreview } from 'app/lib/skeleton-helpers'
+import { getSkeletonForList, getSkeletonPreview, skeletonPreviewScale } from 'app/lib/skeleton-helpers'
 import { useDelayedFlag, useShownWhileLoading } from 'app/lib/hooks/use-delayed-flag'
 import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
@@ -382,7 +382,7 @@ export default function Browse(props) {
     let PreloadComponent = null;
     if (isLoadingEmpty) PreloadComponent = showSkeletons ? Preload : BLANK_PRELOAD;
     const EmptyComponent = isEmptyDone
-        ? <NoContent endpoint={{ request_url: data.request_url, params: {} }} preview={skeletonPreview} state={data?.empty_state} fromSkeletons={sawSkeletons} />
+        ? <NoContent endpoint={{ request_url: data.request_url, params: {} }} preview={skeletonPreview} previewScale={skeletonPreviewScale(sSkeleton)} state={data?.empty_state} fromSkeletons={sawSkeletons} />
         : null;
 
 

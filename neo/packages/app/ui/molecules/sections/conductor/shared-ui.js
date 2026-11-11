@@ -10,7 +10,7 @@ import { ItemRenderer } from 'app/components/item-renderer'
 import { NeoButton } from 'app/design/controls'
 import { cueAttributes, PressCueContext } from 'app/lib/sound'
 import { useTranslation } from 'react-i18next'
-import { getSkeletonForList, getSkeletonPreview } from 'app/lib/skeleton-helpers'
+import { getSkeletonForList, getSkeletonPreview, skeletonPreviewScale } from 'app/lib/skeleton-helpers'
 import { useDelayedFlag, useShownWhileLoading } from 'app/lib/hooks/use-delayed-flag'
 import { layoutForList, paddingForList } from 'app/customization/functions'
 import { usePageListEndpoint } from 'app/ui/molecules/page/page-chrome'
@@ -693,7 +693,7 @@ function ListBody({
     let preloadComponent
     if (wantsPreload) preloadComponent = showSkeletons ? scene.Preload : BLANK_PRELOAD
     const noContent = NoContent
-        ? <NoContent endpoint={route?.endpoint} preview={scene.skeletonPreview} state={route?.endpoint?.empty_state} fromSkeletons={sawSkeletons} />
+        ? <NoContent endpoint={route?.endpoint} preview={scene.skeletonPreview} previewScale={skeletonPreviewScale(scene.skeletonKey)} state={route?.endpoint?.empty_state} fromSkeletons={sawSkeletons} />
         : null
     const emptyFooter =
         headerInList && scene.showNoContent && noContent

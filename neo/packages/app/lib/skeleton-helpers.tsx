@@ -78,6 +78,14 @@ export function getSkeletonForList(name: string, num = 5, isFirst = true, layout
  * A list's skeletons as its empty state shows them (EmptyState): the same layout and items as
  * the loading skeletons, without their pulse.
  */
+/**
+ * How far an empty state shrinks the list's preview: a feed's posts to half, so about three show
+ * before they fade out; other lists (tiles, rows) a quarter less.
+ */
+export function skeletonPreviewScale(name: string): number {
+    return getlegacySkeletonName(name) === 'feed' ? 0.5 : 0.75
+}
+
 export function getSkeletonPreview(name: string, num: number, layout: any, renderItem: any, paddings?: any) {
     return getSkeletonForList(name, num, true, layout, renderItem, paddings, true)
 }

@@ -8,10 +8,10 @@ import EmptyState from './empty-state';
  * list's `empty_state`), settled from the loading skeletons when `fromSkeletons`. Without it,
  * the `components_content_empty` static.
  */
-export default function NoContent({ endpoint, preview, state, fromSkeletons }) {
+export default function NoContent({ endpoint, preview, previewScale, state, fromSkeletons }) {
      const { t } = useTranslation();
      if (preview) {
-          return <EmptyState preview={preview} state={state} fromSkeletons={!!fromSkeletons} fallbackTitle={t('Nothing here yet')} />
+          return <EmptyState preview={preview} previewScale={previewScale} state={state} fromSkeletons={!!fromSkeletons} fallbackTitle={t('Nothing here yet')} />
      }
      if (endpoint?.unit == 'feed'){
           return null

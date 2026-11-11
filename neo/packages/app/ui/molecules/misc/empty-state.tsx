@@ -40,10 +40,11 @@ type EmptyStateProps = {
     state?: EmptyStateData | null;
     /** The title when UNA sends none. */
     fallbackTitle: string;
+    /** The preview's size once settled, against the list's (skeletonPreviewScale). */
+    previewScale?: number;
 };
 
 /** How far the preview settles: a quieter, slightly smaller copy of the list. */
-const PREVIEW_SCALE = 0.94;
 const PREVIEW_OPACITY = 0.55;
 const DURATION_MS = 320;
 
@@ -55,7 +56,7 @@ const DURATION_MS = 320;
  * the words fade in under it; with reduce motion it appears at once. The preview is decoration,
  * hidden from assistive tech.
  */
-export default function EmptyState({ preview, fromSkeletons = false, state, fallbackTitle }: Readonly<EmptyStateProps>) {
+export default function EmptyState({ preview, fromSkeletons = false, state, fallbackTitle, previewScale = 0.75 }: Readonly<EmptyStateProps>) {
     // Null until the setting is known: the settle waits for it rather than play for someone who turned motion off.
     const reduceMotion = useReduceMotionSetting();
     // 0: as the loading skeletons showed it; 1: settled.
@@ -92,7 +93,9 @@ export default function EmptyState({ preview, fromSkeletons = false, state, fall
                     <Animated.View
                         style={{
                             opacity: progress.interpolate({ inputRange: [0, 1], outputRange: [1, PREVIEW_OPACITY] }),
-                            transform: [{ scale: progress.interpolate({ inputRange: [0, 1], outputRange: [1, PREVIEW_SCALE] }) }],
+                            // Shrunk from the top, so the list's first items stay in view.
+                            transformOrigin: 'top',
+                            transform: [{ scale: progress.interpolate({ inputRange: [0, 1], outputRange: [1, previewScale] }) }],
                         }}
                     >
                         {preview}
@@ -102,7 +105,7 @@ export default function EmptyState({ preview, fromSkeletons = false, state, fall
                 </View>
             ) : null}
             <Animated.View style={{ opacity: wordsOpacity }} className="items-center gap-2 px-6 -mt-6">
-                <Text className="text-center text-lg font-semibold text-foreground">{title}</Text>
+                <Text className="text-center text-lg font-semibold text-muted-foreground">{title}</Text>
                 {state?.text ? (
                     <Text className="text-center text-base text-muted-foreground max-w-105">{state.text}</Text>
                 ) : null}
