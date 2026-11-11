@@ -69,22 +69,33 @@ class EmptyStateApiTest extends BxDolIntegrationTestCase
         $this->assertArrayNotHasKey('buttons', $a, 'A guest cannot post.');
     }
 
-    public function testBrowseResponseCarriesTheEmptyState(): void
+    public function testBrowseResponseCarriesTheEmptyStateOnlyWhereTheListIsEmpty(): void
     {
         if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_posts'))
             $this->markTestSkipped('Posts is not installed.');
 
         $this->bxBecomeGuest();
+        $aFirst = $this->browsePosts(0);
+        if (empty($aFirst['data'])) {
+            $this->assertSame(_t('_Empty'), $aFirst['empty_state']['title']);
+            $this->assertArrayNotHasKey('buttons', $aFirst['empty_state'], 'A guest is offered no add button.');
+        }
+        else {
+            $this->assertArrayNotHasKey('empty_state', $aFirst, 'A page of items does not work out an empty state.');
+        }
+
+        $this->assertArrayNotHasKey('empty_state', $this->browsePosts(1000000), 'A later page never shows one.');
+    }
+
+    private function browsePosts(int $iStart): array
+    {
         $o = BxDolModule::getInstance('bx_posts');
         $this->bxSetProtected($o, '_bIsApi', true, BxBaseModGeneralModule::class);
         try {
-            $a = $o->serviceBrowse(json_encode(['params' => ['type' => 'recent', 'start' => 0, 'per_page' => 1]]))[0]['data'];
+            return $o->serviceBrowse(json_encode(['params' => ['type' => 'recent', 'start' => $iStart, 'per_page' => 1]]))[0]['data'];
         }
         finally {
             $this->bxSetProtected($o, '_bIsApi', false, BxBaseModGeneralModule::class);
         }
-
-        $this->assertSame(_t('_Empty'), $a['empty_state']['title']);
-        $this->assertArrayNotHasKey('buttons', $a['empty_state'], 'A guest is offered no add button.');
     }
 }

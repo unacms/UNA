@@ -631,7 +631,8 @@ class BxDolSearchResult implements iBxDolReplaceable
         if(in_array($this->sUnitViewDefault, ['showcase', 'gallery']))
             $sUnit = 'card';
         
-        $aData = defined('BX_API_PAGE') && !$bForceGetData ? [] : $this->decodeDataAPI($this->getSearchData());
+        $bDataFetched = !(defined('BX_API_PAGE') && !$bForceGetData);
+        $aData = $bDataFetched ? $this->decodeDataAPI($this->getSearchData()) : [];
 
         $aParams =  [
             'type' => $this->_sMode,
@@ -654,16 +655,22 @@ class BxDolSearchResult implements iBxDolReplaceable
             if(isset($this->_aParams[$sParamAdd]))
                 $aParams[$sParamAdd] = $this->_aParams[$sParamAdd];
 
-        return [
+        $aResult = [
             'module' => $sModule,
             'unit' => 'general-' . $sUnitType . '-' . $sUnit,
             'request_url' => !empty($this->aCurrent['api_request_url']) ? $this->aCurrent['api_request_url'] : '/api.php?r=' . $sModule . '/browse/&params[]=',
             'data' =>  $aData,
             'params' => $aParams,
-            // What the client shows when the list is empty (BxDolEmptyState: the default below,
-            // with the page block's "empty" app config over it).
-            'empty_state' => BxDolEmptyState::forApi($this->getEmptyStateApi()),
         ];
+
+        // What the client shows when the list is empty (BxDolEmptyState: the default below, with
+        // the page block's "empty" app config over it). Only where the list can turn out empty: its
+        // first page, before its items are known (a page's blocks) or when there are none. The
+        // default can check permissions, so a page of items does not pay for it.
+        if((int)$this->aCurrent['paginate']['start'] == 0 && (!$bDataFetched || empty($aData)))
+            $aResult['empty_state'] = BxDolEmptyState::forApi($this->getEmptyStateApi());
+
+        return $aResult;
     }
 
     /**
