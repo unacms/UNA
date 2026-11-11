@@ -484,6 +484,30 @@ class TimelineApiParamsTest extends BxDolIntegrationTestCase
         $this->assertSame($iMemberId, (int)$aRepost['object_owner_id'], 'The repost is by the viewer, not by the author the client sent.');
         $this->assertSame(1, $this->repostsOf($iId));
     }
+
+    /**
+     * A feed page says whether more events follow it (the query reads one more than a page),
+     * so a client with a short page doesn't ask for the next one to find it empty.
+     */
+    public function testFeedPageSaysWhetherMoreFollow(): void
+    {
+        $iAuthorId = $this->adminProfileId();
+        $this->addEvent(BX_TIMELINE_STATUS_ACTIVE, $iAuthorId);
+        $this->addEvent(BX_TIMELINE_STATUS_ACTIVE, $iAuthorId);
+
+        $this->setApiModule();
+        $fPage = fn(int $iStart, int $iPerPage) => $this->module()->serviceGetPosts(json_encode(['params' => [
+            'type' => BX_TIMELINE_TYPE_DEFAULT, 'owner_id' => $iAuthorId, 'start' => $iStart, 'per_page' => $iPerPage,
+        ]]))[0]['data'];
+
+        $aFirst = $fPage(0, 1);
+        $this->assertCount(1, $aFirst['data']);
+        $this->assertTrue($aFirst['has_more'], 'Another event follows a one-event page of two.');
+
+        $aPast = $fPage(1000000, 10);
+        $this->assertSame([], $aPast['data']);
+        $this->assertFalse($aPast['has_more'], 'Nothing follows a page past the end.');
+    }
 }
 
 /**

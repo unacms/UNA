@@ -6,6 +6,15 @@ import type { QueryClient } from '@tanstack/react-query'
  * Used by browse, browse-list, comments, grid, and conductor — not conductor-specific.
  */
 
+/**
+ * The next page's start. None once UNA says the list ends here (`has_more: false`, timeline
+ * feeds): a short page would otherwise ask for the next one and show its skeletons under the rows.
+ */
+function nextCursor(payload: any, params: any) {
+    if (payload.has_more === false) return undefined
+    return payload.unit == 'notifications' ? params.start : params.start + params.per_page
+}
+
 export async function fetchUniListData({ pageParam, requestUrl, defaultParams }: { pageParam: any; requestUrl: string; defaultParams: any }) {
     const currentParam = pageParam || defaultParams
 
@@ -25,10 +34,7 @@ export async function fetchUniListData({ pageParam, requestUrl, defaultParams }:
         return {
             data: payload.data,
             params: params,
-            cursor:
-                payload.unit != 'notifications'
-                    ? params.start + params.per_page
-                    : params.start,
+            cursor: nextCursor(payload, params),
             // UNA's "nothing to list yet" (a search nobody has run): no "Nothing found" for it.
             ...(payload.hide_empty_msg ? { hideEmptyMsg: true } : null),
         }
@@ -73,6 +79,16 @@ export const refetchUniListReducer = (state: UniListRefetchState, action: any): 
 }
 
 export const flattenPagesForUniList = (pagesData: any) => (pagesData?.pages ?? []).flatMap((p: any) => p.data ?? [])
+
+/**
+ * Skeletons under the rows for the next page only once the rows fill a page. A shorter list
+ * has its end in view, so it asks for the next page at once (a feed may hold more events than
+ * the viewer sees); that check shows nothing, and whatever it finds simply appears.
+ */
+export function showsNextPageSkeleton(rowCount: number, perPage: unknown, loadingNext: boolean): boolean {
+    const size = Number(perPage)
+    return loadingNext && rowCount >= (size > 0 ? size : 1)
+}
 
 /** Cursor paging (browse, conductor). */
 export function cursorNextPageParam(lastPage: any) {

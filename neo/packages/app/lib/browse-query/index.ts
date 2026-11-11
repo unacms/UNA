@@ -15,6 +15,7 @@ import {
     firstPageLeavesAGap,
     replaceUniListQueryWithFirstPage,
     cursorNextPageParam,
+    showsNextPageSkeleton,
 } from './helpers'
 
 /*
@@ -27,6 +28,7 @@ import {
  */
 
 export {
+    showsNextPageSkeleton,
     fetchUniListData,
     refetchUniListReducer,
     flattenPagesForUniList,

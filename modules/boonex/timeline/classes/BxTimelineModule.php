@@ -6113,13 +6113,13 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
         $aResult = $this->_oTemplate->getViewBlock($aParams);
 
-        return $this->_bIsApi ? [bx_api_get_block('browse', [
+        return $this->_bIsApi ? [bx_api_get_block('browse', array_merge([
             'unit' => 'feed',  
             'request_url' => '/api.php?r=bx_timeline/get_posts/&params[]=',
             'params' => $aParams,
             'data' => $aResult,
             'filter_form' => $aParams['filter'] == 'panel' ? ['name' => 'filterform', 'data' => $this->_oTemplate->getViewFilters($aParams)]: null
-        ])] : $aResult;
+        ], $this->_oTemplate->getHasMoreApi()))] : $aResult;
     }
 
     protected function _getBlockPost($iProfileId, $aParams = array())
@@ -6200,16 +6200,17 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         $oMenu = new BxTemplMenuInteractive(['template' => 'menu_interactive_vertical.html', 'menu_id'=> $sView . '-view-all', 'menu_items' => $aMenu]);
         $oMenu->setSelected('', $sView . '-view-all');
 
-        if(!$mixedContent)
+        $bRead = !$mixedContent;
+        if($bRead)
             $mixedContent = $this->_oTemplate->getViewBlock($aParams);
 
         if($this->_bIsApi)
-            return [bx_api_get_block('browse', [
+            return [bx_api_get_block('browse', array_merge([
                 'unit' => 'feed',  
                 'request_url' => '/api.php?r=bx_timeline/get_posts/&params[]=',
                 'params' => $aParams,
                 'data' => $mixedContent
-            ])];
+            ], $bRead ? $this->_oTemplate->getHasMoreApi() : []))];
 
         BxDolTemplate::getInstance()->addPageRssLink(_t('_bx_timeline_page_title_view'), $sRssUrl);
 
