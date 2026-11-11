@@ -32,7 +32,8 @@ export function preToCodeBlock(html: string) {
         if (lines.length > 1 && lines[0] === '') lines.shift()
         if (lines.length > 1 && lines.at(-1) === '') lines.pop()
         // A blank line is a no-break space: UNA drops empty paragraphs (and <p><br></p>) from post HTML.
-        return `<codeblock>${lines.map((line) => `<p>${line === '' ? '&nbsp;' : line}</p>`).join('')}</codeblock>`
+        const paragraphs = lines.map((line) => '<p>' + (line === '' ? '&nbsp;' : line) + '</p>')
+        return '<codeblock>' + paragraphs.join('') + '</codeblock>'
     })
 }
 
@@ -50,43 +51,62 @@ function codeSpan(html: string) {
     const fence = '`'.repeat(longest + 1)
     const pad = text.startsWith('`') || text.endsWith('`') ? ' ' : ''
     // Pipes end a table cell even inside a code span, so they stay escaped there too.
-    return `${fence}${pad}${text.replaceAll('|', String.raw`\|`)}${pad}${fence}`
+    const body = text.replaceAll('|', String.raw`\|`)
+    return fence + pad + body + pad + fence
 }
 
 const INLINE_MARK: Record<string, string> = { strong: '**', b: '**', em: '*', i: '*' }
 
+/** Collects a cell's Markdown while walking its tags and text. */
+class CellWriter {
+    out = ''
+    code: string | null = null
+    links: string[] = []
+
+    text(part: string) {
+        if (this.code === null) this.out += escapeMarkdown(part)
+        else this.code += part
+    }
+
+    tag(part: string) {
+        const name = tagName(part)
+        if (name === 'code') this.codeTag(part)
+        else if (this.code !== null) return
+        else if (name === 'br') this.out += ' '
+        else if (INLINE_MARK[name]) this.out += INLINE_MARK[name]
+        else if (name === 'a') this.linkTag(part)
+    }
+
+    private codeTag(part: string) {
+        if (!isClose(part)) this.code = ''
+        else if (this.code !== null) { this.out += codeSpan(this.code); this.code = null }
+    }
+
+    private linkTag(part: string) {
+        if (isClose(part)) {
+            const href = this.links.pop()
+            if (href !== undefined) this.out += '](' + href + ')'
+            return
+        }
+        const href = /\bhref\s*=\s*(?:"([^"]*)"|'([^']*)')/i.exec(part)
+        const url = (href?.[1] ?? href?.[2] ?? '').replace(/[()\s]/g, encodeURIComponent)
+        if (url) { this.links.push(url); this.out += '[' }
+    }
+
+    result() {
+        if (this.code !== null) this.out += codeSpan(this.code)
+        return this.out.replace(/\s+/g, ' ').trim()
+    }
+}
+
 /** Inline HTML of a table cell as GFM Markdown: bold, italic, code and links kept, other tags dropped. */
 function cellMarkdown(html: string) {
-    let out = ''
-    let code: string | null = null
-    const links: string[] = []
+    const writer = new CellWriter()
     for (const part of html.split(TAG_RE)) {
-        if (!part.startsWith('<')) {
-            if (code === null) out += escapeMarkdown(part)
-            else code += part
-            continue
-        }
-        const name = tagName(part)
-        if (name === 'code') {
-            if (isClose(part) && code !== null) { out += codeSpan(code); code = null }
-            else if (!isClose(part)) code = ''
-        } else if (code !== null) {
-            continue
-        } else if (name === 'br') {
-            out += ' '
-        } else if (INLINE_MARK[name]) {
-            out += INLINE_MARK[name]
-        } else if (name === 'a' && isClose(part)) {
-            const href = links.pop()
-            out += href === undefined ? '' : `](${href})`
-        } else if (name === 'a') {
-            const href = /\bhref\s*=\s*(?:"([^"]*)"|'([^']*)')/i.exec(part)
-            const url = (href?.[1] ?? href?.[2] ?? '').replace(/[()\s]/g, encodeURIComponent)
-            if (url) { links.push(url); out += '[' }
-        }
+        if (part.startsWith('<')) writer.tag(part)
+        else writer.text(part)
     }
-    if (code !== null) out += codeSpan(code)
-    return out.replace(/\s+/g, ' ').trim()
+    return writer.result()
 }
 
 const cellAlign = (attrs: string) => {
