@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, useState, memo } from 'react'
+import { useCallback, useContext, useMemo, memo } from 'react'
 import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
@@ -11,7 +11,7 @@ import { NeoButton } from 'app/design/controls'
 import { cueAttributes, PressCueContext } from 'app/lib/sound'
 import { useTranslation } from 'react-i18next'
 import { getSkeletonCard, getSkeletonForList } from 'app/lib/skeleton-helpers'
-import { useDelayedFlag } from 'app/lib/hooks/use-delayed-flag'
+import { useDelayedFlag, useShownWhileLoading } from 'app/lib/hooks/use-delayed-flag'
 import { layoutForList, paddingForList } from 'app/customization/functions'
 import { usePageListEndpoint } from 'app/ui/molecules/page/page-chrome'
 import {
@@ -511,7 +511,6 @@ const BLANK_PRELOAD = <View />
  * @param {boolean} [opts.refreshing=false]
  * @param {boolean} [opts.hasNextPage]
  * @param {boolean} [opts.isPending=false]
- * @param {boolean} [opts.isFetching=false]
  * @param {boolean} [opts.preloadWhenEmpty=false]  Native: keep skeletons until
  *        the first rows land, even when `listReady` is already true.
  * @param {boolean} [opts.hideEmptyMsg=false]  UNA says the list is empty only because
@@ -533,7 +532,6 @@ export function useListScene({
     refreshing = false,
     hasNextPage,
     isPending = false,
-    isFetching = false,
     preloadWhenEmpty = false,
     hideEmptyMsg = false,
 }) {
@@ -635,7 +633,8 @@ export function useListScene({
         ? (!isInited || !!(requestUrl && !listReady && !refreshing && isEmpty))
         : !!(requestUrl && !listReady) || !isInited
     // "No content": the query is fully done, there is no next page, and it
-    // still produced nothing. Every condition guards a false positive.
+    // still produced nothing. Every condition guards a false positive. A background
+    // check of a list the cache holds as empty keeps it: rows it finds show at once.
     // A tab with no list and nothing else either (no blocks, no form, no left-column
     // blocks): Explore for guests on a site without Timeline. Say so instead of a blank page.
     const isBlankTab = !requestUrl && isInited && !rows?.length && !hasForm && !hasLeftColumnItems
@@ -644,7 +643,6 @@ export function useListScene({
             listReady &&
             hasNextPage === false &&
             !isPending &&
-            !isFetching &&
             isEmpty) ||
         isBlankTab
     )
@@ -688,8 +686,9 @@ function ListBody({
     // it hidden until then); when they showed, the empty state gathers them into its stack.
     const wantsPreload = !!(showListPreload && scene.showPreload)
     const showSkeletons = useDelayedFlag(wantsPreload, SKELETON_DELAY_MS)
-    const [sawSkeletons, setSawSkeletons] = useState(false)
-    if (showSkeletons && !sawSkeletons) setSawSkeletons(true)
+    const sawSkeletons = useShownWhileLoading(wantsPreload, showSkeletons)
+    let preloadComponent
+    if (wantsPreload) preloadComponent = showSkeletons ? scene.Preload : BLANK_PRELOAD
     const noContent = NoContent
         ? <NoContent endpoint={route?.endpoint} card={scene.skeletonCard} fromSkeletons={sawSkeletons} />
         : null
@@ -710,9 +709,7 @@ function ListBody({
                 endpoint={route?.endpoint}
                 layout={scene.layout}
                 renderItem={scene.renderItem}
-                preloadComponent={
-                    wantsPreload ? (showSkeletons ? scene.Preload : BLANK_PRELOAD) : undefined
-                }
+                preloadComponent={preloadComponent}
                 ListFooterComponent={emptyFooter}
                 refer={listRef}
                 onEndReached={handleEndReached}

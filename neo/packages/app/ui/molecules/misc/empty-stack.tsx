@@ -3,7 +3,7 @@ import { Animated, Easing } from 'react-native';
 import { View } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { isWeb } from 'app/lib/util';
-import { useReduceMotion } from 'app/lib/hooks/use-reduce-motion';
+import { useReduceMotionSetting } from 'app/lib/hooks/use-reduce-motion';
 import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 
 /** Width the cards are laid out at before they are scaled into the stack. */
@@ -15,9 +15,9 @@ const DURATION_MS = 320;
 
 /** Back to front: offset (px, after scaling), tilt (deg) and opacity of each card. */
 const LAYERS = [
-    { y: -14, rotate: -5, opacity: 0.35 },
-    { y: -7, rotate: 3, opacity: 0.6 },
-    { y: 0, rotate: 0, opacity: 1 },
+    { key: 'back', y: -14, rotate: -5, opacity: 0.35 },
+    { key: 'middle', y: -7, rotate: 3, opacity: 0.6 },
+    { key: 'front', y: 0, rotate: 0, opacity: 1 },
 ];
 
 type EmptyStackProps = {
@@ -37,13 +37,14 @@ type EmptyStackProps = {
  * assistive tech; the message is the content.
  */
 export default function EmptyStack({ card, fromSkeletons = false, message }: Readonly<EmptyStackProps>) {
-    const reduceMotion = useReduceMotion();
+    // Null until the setting is known: the gather waits for it rather than play for someone who turned motion off.
+    const reduceMotion = useReduceMotionSetting();
     // 0: as the skeleton list showed them (full size, straight); 1: stacked.
     const progress = useAnimatedValue(fromSkeletons ? 0 : 1);
     const textOpacity = useAnimatedValue(fromSkeletons ? 0 : 1);
 
     useEffect(() => {
-        if (!fromSkeletons) return;
+        if (!fromSkeletons || reduceMotion === null) return;
         if (reduceMotion) {
             progress.setValue(1);
             textOpacity.setValue(1);
@@ -67,7 +68,7 @@ export default function EmptyStack({ card, fromSkeletons = false, message }: Rea
             >
                 {LAYERS.map((layer, index) => (
                     <Animated.View
-                        key={index}
+                        key={layer.key}
                         style={{
                             position: 'absolute',
                             width: CARD_WIDTH,
