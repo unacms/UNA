@@ -54,8 +54,9 @@ export default function GooeyMenu(props: Readonly<GooeyMenuProps>) {
     return <GooeyDroplets {...props} onMore={() => setTimeout(() => setList(true), 0)} />;
 }
 
-function GooeyDroplets({ items, label, onSelect, icon = 'Plus', onMore }: Readonly<GooeyMenuProps & { onMore: () => void }>) {
+function GooeyDroplets({ items, label, onSelect, icon = 'Plus', secondary = false, onMore }: Readonly<GooeyMenuProps & { onMore: () => void }>) {
     const { t } = useTranslation();
+    const ink = secondary ? 'text-foreground' : 'text-primary-foreground';
     const [open, setOpen] = useState(false);
     const rootRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLButtonElement>(null);
@@ -114,7 +115,7 @@ function GooeyDroplets({ items, label, onSelect, icon = 'Plus', onMore }: Readon
     return (
         <div ref={rootRef} className="relative" style={{ width: TRIGGER_WIDTH, height: ITEM }}>
             <Liquid
-                fill="var(--color-primary)"
+                fill={secondary ? 'var(--color-button-solid)' : 'var(--color-primary)'}
                 className="pointer-events-none"
                 style={{ position: 'absolute', width, height, left: TRIGGER_WIDTH / 2 - width / 2, top: ITEM - height }}
             >
@@ -137,13 +138,13 @@ function GooeyDroplets({ items, label, onSelect, icon = 'Plus', onMore }: Readon
                                 tabIndex={open ? 0 : -1}
                                 aria-hidden={!open}
                                 onClick={(event) => pick(item, event)}
-                                className={'flex size-11 items-center justify-center rounded-full bg-transparent text-primary-foreground '
+                                className={'flex size-11 items-center justify-center rounded-full bg-transparent ' + ink + ' '
                                     + 'outline-offset-2 focus-visible:outline-2 focus-visible:outline-primary '
                                     + 'motion-safe:transition-opacity motion-safe:duration-200 '
                                     // Closed, the droplets sit under the trigger: their icons would show through it.
                                     + (open ? 'opacity-100 pointer-events-auto cursor-pointer' : 'opacity-0 pointer-events-none')}
                             >
-                                <Icon icon={item.icon || 'Plus'} size={20} className="text-primary-foreground pointer-events-none" />
+                                <Icon icon={item.icon || 'Plus'} size={20} className={ink + ' pointer-events-none'} />
                             </button>
                         </Liquid.Item>
                     );
@@ -156,13 +157,13 @@ function GooeyDroplets({ items, label, onSelect, icon = 'Plus', onMore }: Readon
                         title={label}
                         aria-expanded={open}
                         onClick={toggle}
-                        className="pointer-events-auto flex h-11 w-14 cursor-pointer items-center justify-center rounded-full bg-transparent text-primary-foreground outline-offset-2 focus-visible:outline-2 focus-visible:outline-primary"
+                        className={'pointer-events-auto flex h-11 w-14 cursor-pointer items-center justify-center rounded-full bg-transparent ' + ink + ' outline-offset-2 focus-visible:outline-2 focus-visible:outline-primary'}
                     >
                         <span
                             className="flex motion-safe:transition-transform motion-safe:duration-300"
                             style={{ transform: open ? 'rotate(45deg)' : 'none' }}
                         >
-                            <Icon icon={icon} size={22} className="text-primary-foreground pointer-events-none" />
+                            <Icon icon={icon} size={22} className={ink + ' pointer-events-none'} />
                         </span>
                     </button>
                 </Liquid.Item>

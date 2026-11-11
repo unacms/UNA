@@ -145,7 +145,6 @@ function CreateMenuButton({ button }: Readonly<{ button: EmptyStateButtonData }>
         return (
             <NeoButtonLink
                 href={button.link}
-                // Primary as the feed sends it; a button UNA or Studio makes secondary stays secondary.
                 style={button.style === 'secondary' ? 'bordered' : 'borderedProminent'}
                 controlSize="regular"
                 borderShape="capsule"
@@ -165,6 +164,7 @@ function CreateMenuButton({ button }: Readonly<{ button: EmptyStateButtonData }>
             <GooeyMenu
                 items={actions}
                 label={button.title}
+                secondary={button.style === 'secondary'}
                 onSelect={(item, event) => {
                     setPageData('loading');
                     void handleFormModal(item, event, setPageData, undefined);
