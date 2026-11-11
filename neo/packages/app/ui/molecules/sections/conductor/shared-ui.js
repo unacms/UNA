@@ -708,8 +708,12 @@ function ListBody({
     const sawSkeletons = useShownWhileLoading(wantsPreload, showSkeletons)
     let preloadComponent
     if (wantsPreload) preloadComponent = showSkeletons ? scene.Preload : BLANK_PRELOAD
+    // The latest response's empty state (an empty search's "No results") over the page's, unless
+    // the page's comes from the block's Studio override: later requests have no block to ask.
+    const pageEmptyState = route?.endpoint?.empty_state
+    const emptyState = pageEmptyState?.custom ? pageEmptyState : (scene.emptyState ?? pageEmptyState)
     const noContent = NoContent
-        ? <NoContent endpoint={route?.endpoint} preview={scene.skeletonPreview} previewScale={skeletonPreviewScale(scene.skeletonKey)} state={scene.emptyState ?? route?.endpoint?.empty_state} fromSkeletons={sawSkeletons} />
+        ? <NoContent endpoint={route?.endpoint} preview={scene.skeletonPreview} previewScale={skeletonPreviewScale(scene.skeletonKey)} state={emptyState} fromSkeletons={sawSkeletons} />
         : null
     const emptyFooter =
         headerInList && scene.showNoContent && noContent

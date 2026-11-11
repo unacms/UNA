@@ -33,7 +33,9 @@ class BxDolEmptyState
      * The empty state for an API list: the module's default with the processing block's override.
      *
      * @param array $aDefault ['title' => key, 'text' => key, 'buttons' => [['title' => key, 'link' => url, 'style' => 'primary'|'secondary', 'action' => 'compose'|'create_menu'], ...]]
-     * @return array|null the resolved empty state, or null when there is nothing to say
+     * @return array|null the resolved empty state, or null when there is nothing to say. One with
+     * the block's override says `custom`: the list's later requests have no block to ask, and
+     * their module default must not replace what the block chose.
      */
     public static function forApi($aDefault = [])
     {
@@ -49,7 +51,12 @@ class BxDolEmptyState
             }
         }
 
-        return self::resolve($aState);
+        $aResult = self::resolve($aState);
+        if (is_array($aOverride)) {
+            $aResult = array_merge($aResult ?? [], ['custom' => true]);
+        }
+
+        return $aResult;
     }
 
     /**

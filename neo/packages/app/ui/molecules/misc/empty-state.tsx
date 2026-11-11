@@ -17,6 +17,8 @@ export type EmptyStateData = {
     title?: string;
     text?: string;
     buttons?: EmptyStateButtonData[];
+    /** Set by a page block's Studio override: it wins over a later list response's default. */
+    custom?: boolean;
 };
 
 type EmptyStateButtonData = { title: string; link: string; style?: 'primary' | 'secondary'; action?: 'compose' | 'create_menu' };

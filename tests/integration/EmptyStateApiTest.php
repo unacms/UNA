@@ -63,9 +63,12 @@ class EmptyStateApiTest extends BxDolIntegrationTestCase
         $this->assertSame(_t('_Empty'), $a['title'], 'A key the block leaves out keeps the default.');
         $this->assertSame('From Studio', $a['text']);
         $this->assertArrayNotHasKey('buttons', $a, 'An empty list of buttons shows none.');
+        $this->assertTrue($a['custom'], 'The block chose it: a later list response must not replace it.');
 
         BxDolPage::setBlockProcessing(['config_api' => 'not decoded']);
-        $this->assertSame('Default text', BxDolEmptyState::forApi($aDefault)['text'], 'A config that is not JSON leaves the default.');
+        $aPlain = BxDolEmptyState::forApi($aDefault);
+        $this->assertSame('Default text', $aPlain['text'], 'A config that is not JSON leaves the default.');
+        $this->assertArrayNotHasKey('custom', $aPlain, 'The module default is not marked.');
     }
 
     public function testTimelineFeedForAGuestHasNoButton(): void
