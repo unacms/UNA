@@ -281,6 +281,7 @@
     <string name="_bx_classes_txt_added_x"><![CDATA[{0}]]></string>
     <string name="_bx_classes_txt_start_x"><![CDATA[start {0}]]></string>
     <string name="_bx_classes_txt_due_x"><![CDATA[due {0}]]></string>
+    <string name="_bx_classes_txt_empty_title"><![CDATA[No classes yet]]></string>
     <string name="_bx_classes_txt_add_class"><![CDATA[Add Class]]></string>
     <string name="_bx_classes_txt_add_module"><![CDATA[Add Module]]></string>
     <string name="_bx_classes_txt_reorder_modules"><![CDATA[Reorder Modules]]></string>

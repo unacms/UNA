@@ -280,6 +280,7 @@
   <string name="_bx_classes_txt_added_x"><![CDATA[{0}]]></string>
   <string name="_bx_classes_txt_start_x"><![CDATA[от {0}]]></string>
   <string name="_bx_classes_txt_due_x"><![CDATA[до {0}]]></string>
+  <string name="_bx_classes_txt_empty_title"><![CDATA[Занятий пока нет]]></string>
   <string name="_bx_classes_txt_add_class"><![CDATA[Добавить класс]]></string>
   <string name="_bx_classes_txt_add_module"><![CDATA[Добавить модуль]]></string>
   <string name="_bx_classes_txt_reorder_modules"><![CDATA[Заново открыть модули]]></string>

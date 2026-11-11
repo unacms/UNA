@@ -521,6 +521,7 @@
     <string name="_bx_organizations_alert_action_join_request"><![CDATA[join request]]></string>
     <string name="_bx_organizations_alert_action_profile_cover_changed"><![CDATA[cover changed]]></string>
     <string name="_bx_organizations_alert_action_profile_picture_changed"><![CDATA[picture changed]]></string>
+    <string name="_bx_organizations_txt_empty_title"><![CDATA[No organizations yet]]></string>
     <string name="_bx_orgs_txt_ntfs_fan_added"><![CDATA[Organization <b class="bx-ntfs-content-profile">{owner_name}</b> has got a member <b class="bx-ntfs-content-entry">{subentry_sample}</b>]]></string>
     <string name="_bx_orgs_txt_ntfs_join_invitation"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> organization's representative invites <b class="bx-ntfs-content-entry">{subentry_sample}</b> to join organization]]></string>
     <string name="_bx_orgs_txt_ntfs_join_request"><![CDATA[Organization <b class="bx-ntfs-content-profile">{owner_name}</b> has a join request from <b class="bx-ntfs-content-entry">{subentry_sample}</b>]]></string>

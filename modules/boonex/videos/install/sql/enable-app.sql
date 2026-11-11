@@ -27,6 +27,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_videos_favorites
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_videos_context' AND `module`='bx_videos' AND `title_system`='_bx_videos_page_block_title_sys_entries_in_context' AND `title`='_bx_videos_page_block_title_entries_in_context';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_videos_home' AND `module`='bx_videos' AND `title_system`='' AND `title`='_bx_videos_page_block_title_recent_entries_view_extended';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_videos_search' AND `module`='bx_videos' AND `title_system`='' AND `title`='_bx_videos_page_block_title_search_form';
+UPDATE `sys_pages_blocks` SET `config_api`='{"use_as_filter":true}' WHERE `object`='bx_videos_search' AND `module`='bx_videos' AND `title_system`='' AND `title`='_bx_videos_page_block_title_search_form';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_videos_search' AND `module`='bx_videos' AND `title_system`='' AND `title`='_bx_videos_page_block_title_search_results';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_videos_manage' AND `module`='bx_videos' AND `title_system`='_bx_videos_page_block_title_system_manage' AND `title`='_bx_videos_page_block_title_manage';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_videos_administration' AND `module`='bx_videos' AND `title_system`='_bx_videos_page_block_title_system_manage_administration' AND `title`='_bx_videos_page_block_title_manage';

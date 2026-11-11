@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- The empty Invitations list for API clients (BxDolEmptyState). -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_txt_empty_invitations_title"><![CDATA[No invitations]]></string_add>
+    <string_add name="_sys_txt_empty_invitations_text"><![CDATA[When someone invites you to a group, event or other space, it shows here.]]></string_add>
+</resources>

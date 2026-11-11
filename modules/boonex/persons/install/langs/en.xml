@@ -353,6 +353,7 @@
     <string name="_bx_persons_txt_account_pending_moderation"><![CDATA[This <a href="{0}">profile</a> is pending approval.]]></string>
     <string name="_bx_persons_txt_account_suspended"><![CDATA[This profile is suspended.]]></string>
     <string name="_bx_persons_txt_account_suspended_moderation"><![CDATA[This <a href="{0}">profile</a> is suspended.]]></string>
+    <string name="_bx_persons_txt_empty_title"><![CDATA[No people yet]]></string>
     <string name="_bx_persons_txt_N_friends"><![CDATA[{0} friends]]></string>
     <string name="_bx_persons_txt_ntfs_timeline_post_common"><![CDATA[New post <b class="bx-ntfs-content-entry">{subentry_sample}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b> profile timeline]]></string>
     <string name="_bx_persons_txt_sample_single"><![CDATA[person]]></string>

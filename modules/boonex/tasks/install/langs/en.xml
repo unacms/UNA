@@ -618,6 +618,7 @@
     <string name="_bx_tasks_txt_list_inbox"><![CDATA[Inbox]]></string>
     <string name="_bx_tasks_txt_new_task_list"><![CDATA[New Task List]]></string>
     <string name="_bx_tasks_txt_edit_task_list"><![CDATA[Edit Task List]]></string>
+    <string name="_bx_tasks_txt_empty_title"><![CDATA[No tasks yet]]></string>
     <string name="_bx_tasks_txt_delete_task_list"><![CDATA[Delete Task List]]></string>
     <string name="_bx_tasks_txt_new_task"><![CDATA[New Task]]></string>
     <string name="_bx_tasks_txt_total"><![CDATA[Total: {0}]]></string>

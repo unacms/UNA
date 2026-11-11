@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- The title of this module's empty lists for API clients (BxDolEmptyState). -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_bx_files_txt_empty_title"><![CDATA[Файлов пока нет]]></string_add>
+</resources>

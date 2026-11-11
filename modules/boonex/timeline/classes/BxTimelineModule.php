@@ -6106,6 +6106,24 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         return $this->_serviceGetBlockViewByType($aBrowseParams);
     }
 
+    /**
+     * What an API client shows for an empty feed (BxDolEmptyState): a word on how to start, and a
+     * button to the viewer's own feed, where its post form is, for a member who may post. A page
+     * block's "empty" app config can replace any of it.
+     */
+    public function getEmptyStateApi()
+    {
+        $aState = [
+            'title' => '_bx_timeline_txt_empty_feed_title',
+            'text' => isLogged() ? '_bx_timeline_txt_empty_feed_text' : '',
+        ];
+        if (isLogged() && $this->isAllowedPost() === true) {
+            $aState['buttons'] = [['title' => '_bx_timeline_txt_empty_feed_create', 'link' => 'page.php?i=' . $this->_oConfig->CNF['URI_VIEW_LIST'], 'action' => 'create_menu']];
+        }
+
+        return BxDolEmptyState::forApi($aState);
+    }
+
     protected function _serviceGetBlockViewByType($aBrowseParams = array())
     {
         $aParams = $this->_prepareParams($aBrowseParams);
@@ -6119,7 +6137,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
             'params' => $aParams,
             'data' => $aResult,
             'filter_form' => $aParams['filter'] == 'panel' ? ['name' => 'filterform', 'data' => $this->_oTemplate->getViewFilters($aParams)]: null
-        ], $this->_oTemplate->getHasMoreApi()))] : $aResult;
+        ], $this->_oTemplate->getHasMoreApi(), ['empty_state' => $this->getEmptyStateApi()]))] : $aResult;
     }
 
     protected function _getBlockPost($iProfileId, $aParams = array())
@@ -6211,7 +6229,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
                 'request_url' => '/api.php?r=bx_timeline/get_posts/&params[]=',
                 'params' => $aParams,
                 'data' => $mixedContent
-            ], $bRead ? $this->_oTemplate->getHasMoreApi() : []))];
+            ], $bRead ? $this->_oTemplate->getHasMoreApi() : [], ['empty_state' => $this->getEmptyStateApi()]))];
 
         BxDolTemplate::getInstance()->addPageRssLink(_t('_bx_timeline_page_title_view'), $sRssUrl);
 

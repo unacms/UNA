@@ -446,6 +446,7 @@
     <string name="_bx_forum_txt_poll_answer_vote_percent"><![CDATA[({0}%)]]></string>
 
     <string name="_bx_forum_txt_all_entries_in"><![CDATA[<a href="{0}">Все обсуждения в {1} ({2})</a>]]></string>
+    <string name="_bx_forum_txt_empty_title"><![CDATA[Обсуждений пока нет]]></string>
     <string name="_bx_forum_email_new_reply"><![CDATA[Новый ответ]]></string>
     <string name="_bx_forum_email_new_reply_subject"><![CDATA[Новый ответ в "{PageTitle}" дискуссии]]></string>
     <string name="_bx_forum_email_new_reply_body"><![CDATA[{email_header}

@@ -704,6 +704,8 @@ function processEndpoint(acc, b) {
         module: b.data.module,
         ...(b.designbox ? { designbox: b.designbox } : null),
         ...(b.bg_hidden_on ? { bg_hidden_on: b.bg_hidden_on } : null),
+        // UNA's words and buttons for the list when it comes back empty (BxDolEmptyState).
+        ...(b.data.empty_state ? { empty_state: b.data.empty_state } : null),
     }
 }
 
@@ -719,6 +721,8 @@ function endpointFromBrowsePayload(payload) {
         module: payload.module,
         ...(payload.designbox ? { designbox: payload.designbox } : null),
         ...(payload.bg_hidden_on ? { bg_hidden_on: payload.bg_hidden_on } : null),
+        // As processEndpoint: UNA's words and buttons for the list when it comes back empty.
+        ...(payload.empty_state ? { empty_state: payload.empty_state } : null),
     }
 }
 
@@ -800,15 +804,18 @@ function processParsedUrl(data) {
     const cellRight = cell('cell_right', { browseAsBlocks: true })
     const cellLeft = cell('cell_left')
     const browsePayload = cellCenter.endpoint ?? cellTop.endpoint ?? cellBottom.endpoint
+    // A filter form (block App config `use_as_filter`, e.g. a Search tab's form) belongs with the
+    // left column whichever cell UNA puts it in: beside the list from lg, in the Filters sheet below.
+    const isFilter = (item) => !!item?.data?.config_api?.use_as_filter
+    const centerContent = [...cellTop.content, ...cellCenter.content]
     return {
         content: [
-            ...cellTop.content,
-            ...cellCenter.content,
+            ...centerContent.filter((item) => !isFilter(item)),
             ...cellBottom.content.map((item) => ({ ...item, afterList: true })),
         ],
         endpoint: endpointFromBrowsePayload(browsePayload),
         sidebar: { endpoint: cellRight.endpoint, content: cellRight.content },
-        leftbar: { endpoint: cellLeft.endpoint, content:  cellLeft.content },
+        leftbar: { endpoint: cellLeft.endpoint, content: [...cellLeft.content, ...centerContent.filter(isFilter)] },
     }
 }
 

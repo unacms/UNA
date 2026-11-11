@@ -446,6 +446,7 @@
     <string name="_bx_forum_txt_poll_answer_vote_percent"><![CDATA[({0}%)]]></string>
 
     <string name="_bx_forum_txt_all_entries_in"><![CDATA[<a href="{0}">All Discussions in {1} ({2})</a>]]></string>
+    <string name="_bx_forum_txt_empty_title"><![CDATA[No discussions yet]]></string>
     <string name="_bx_forum_email_new_reply"><![CDATA[New reply]]></string>
     <string name="_bx_forum_email_new_reply_subject"><![CDATA[New reply in "{PageTitle}" discussion]]></string>
     <string name="_bx_forum_email_new_reply_body"><![CDATA[{email_header}

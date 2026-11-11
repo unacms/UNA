@@ -238,6 +238,7 @@
 
     <string name="_bx_glossary_txt_all_entries_by"><![CDATA[{0} terms]]></string>
     <string name="_bx_glossary_txt_all_entries_in"><![CDATA[<a href="{0}">All Terms in {1} ({2})</a>]]></string>
+    <string name="_bx_glossary_txt_empty_title"><![CDATA[No terms yet]]></string>
     <string name="_bx_glossary_txt_sample_single"><![CDATA[term]]></string>
     <string name="_bx_glossary_txt_sample_single_with_article"><![CDATA[a term]]></string>
     <string name="_bx_glossary_txt_sample_comment_single"><![CDATA[comment to term]]></string>

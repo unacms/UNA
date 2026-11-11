@@ -10,7 +10,8 @@ import { ItemRenderer } from 'app/components/item-renderer'
 import { NeoButton } from 'app/design/controls'
 import { cueAttributes, PressCueContext } from 'app/lib/sound'
 import { useTranslation } from 'react-i18next'
-import { getSkeletonForList } from 'app/lib/skeleton-helpers'
+import { getSkeletonForList, getSkeletonPreview, skeletonPreviewScale, skeletonSlotsForLayout } from 'app/lib/skeleton-helpers'
+import { useDelayedFlag, useShownWhileLoading } from 'app/lib/hooks/use-delayed-flag'
 import { layoutForList, paddingForList } from 'app/customization/functions'
 import { usePageListEndpoint } from 'app/ui/molecules/page/page-chrome'
 import {
@@ -26,6 +27,7 @@ import {
     resolveConductorSkeletonKey,
     getMobileLeftColumnItems,
     buildConductorListRows,
+    filterConductorPageBlocks,
     conductorListHasEntries,
     registeredComponent,
 } from './helpers'
@@ -478,6 +480,10 @@ export function CompactNav({ routes, index, onSelect }) {
 
 /** Stable default so a missing `listItems` does not re-run every memo. */
 const EMPTY_LIST_ITEMS = []
+/** Skeletons show only when the list takes longer than this (Browse uses the same). */
+const SKELETON_DELAY_MS = 250
+/** Holds the list hidden, drawing nothing, until the skeletons are due. */
+const BLANK_PRELOAD = <View />
 
 /**
  * Shared conductor center-list chrome (native + small web).
@@ -506,7 +512,6 @@ const EMPTY_LIST_ITEMS = []
  * @param {boolean} [opts.refreshing=false]
  * @param {boolean} [opts.hasNextPage]
  * @param {boolean} [opts.isPending=false]
- * @param {boolean} [opts.isFetching=false]
  * @param {boolean} [opts.preloadWhenEmpty=false]  Native: keep skeletons until
  *        the first rows land, even when `listReady` is already true.
  * @param {boolean} [opts.hideEmptyMsg=false]  UNA says the list is empty only because
@@ -528,9 +533,9 @@ export function useListScene({
     refreshing = false,
     hasNextPage,
     isPending = false,
-    isFetching = false,
     preloadWhenEmpty = false,
     hideEmptyMsg = false,
+    emptyState = null,
 }) {
     const unitType = useMemo(
         () => resolveConductorUnitType(route),
@@ -573,6 +578,10 @@ export function useListScene({
         () => getSkeletonForList(skeletonKey, skeletonCount, true, layout, renderItem, paddings),
         [skeletonKey, skeletonCount, layout, renderItem, paddings]
     )
+    const skeletonPreview = useMemo(
+        () => getSkeletonPreview(skeletonKey, skeletonCount, layout, renderItem, paddings),
+        [skeletonKey, skeletonCount, layout, renderItem, paddings]
+    )
 
     const feedType = route?.endpoint?.params?.type
 
@@ -581,25 +590,36 @@ export function useListScene({
         return getMobileLeftColumnItems(route?.leftbar?.content, leftColumnExcludedFromMainIds)
     }, [showMobileLeftColumn, route?.leftbar?.content, leftColumnExcludedFromMainIds])
 
+    // A list of cards lays its rows out as a grid (w-1/2, w-1/3...): the page's own blocks above
+    // it (a search form) would each take one card's width there, so they go above the grid, full width.
+    const isGridList = skeletonSlotsForLayout(layout) > 1
+    const blocksAboveGrid = useMemo(
+        () => (isGridList ? filterConductorPageBlocks(route?.data).filter((item) => !item.afterList) : []),
+        [isGridList, route?.data]
+    )
+
     const rows = useMemo(
         () =>
             buildConductorListRows({
-                pageBlocks: route?.data,
+                pageBlocks: isGridList ? filterConductorPageBlocks(route?.data).filter((item) => item.afterList) : route?.data,
                 listItems,
                 sidebarContent: route?.sidebar?.content,
                 includeSidebar,
                 feedType,
             }),
-        [route?.data, route?.sidebar?.content, listItems, includeSidebar, feedType]
+        [isGridList, route?.data, route?.sidebar?.content, listItems, includeSidebar, feedType]
     )
 
     const hasLeftColumnItems = mobileLeftColumnItems.length > 0
     const hasForm = !!route?.endpoint?.filters
     const chrome = useMemo(() => {
-        if (!hasForm && !hasLeftColumnItems) return null
+        if (!hasForm && !hasLeftColumnItems && !blocksAboveGrid.length) return null
         return (
             <>
-                <ListForm route={route} onChange={onFormChangedValues} />
+                {blocksAboveGrid.map((item) => (
+                    <View key={item.id} className="w-full">{renderItem({ item })}</View>
+                ))}
+                {hasForm ? <ListForm route={route} onChange={onFormChangedValues} /> : null}
                 {hasLeftColumnItems ? (
                     <LeftColumnContent
                         route={route}
@@ -613,6 +633,8 @@ export function useListScene({
     }, [
         hasForm,
         hasLeftColumnItems,
+        blocksAboveGrid,
+        renderItem,
         route,
         mobileLeftColumnItems,
         onFormChangedValues,
@@ -629,7 +651,8 @@ export function useListScene({
         ? (!isInited || !!(requestUrl && !listReady && !refreshing && isEmpty))
         : !!(requestUrl && !listReady) || !isInited
     // "No content": the query is fully done, there is no next page, and it
-    // still produced nothing. Every condition guards a false positive.
+    // still produced nothing. Every condition guards a false positive. A background
+    // check of a list the cache holds as empty keeps it: rows it finds show at once.
     // A tab with no list and nothing else either (no blocks, no form, no left-column
     // blocks): Explore for guests on a site without Timeline. Say so instead of a blank page.
     const isBlankTab = !requestUrl && isInited && !rows?.length && !hasForm && !hasLeftColumnItems
@@ -638,7 +661,6 @@ export function useListScene({
             listReady &&
             hasNextPage === false &&
             !isPending &&
-            !isFetching &&
             isEmpty) ||
         isBlankTab
     )
@@ -650,12 +672,14 @@ export function useListScene({
         renderItem,
         skeletonKey,
         Preload,
+        skeletonPreview,
         rows,
         chrome,
         showPreload,
         showNoContent,
         isEmpty,
         feedType,
+        emptyState,
     }
 }
 
@@ -677,9 +701,23 @@ function ListBody({
     uniListProps = {},
 }) {
     const NoContent = registeredComponent('molecule', 'no_content')
+    // Skeletons only when the list takes longer than SKELETON_DELAY_MS (a blank preload keeps
+    // it hidden until then); when they showed, the empty state gathers them into its stack.
+    const wantsPreload = !!(showListPreload && scene.showPreload)
+    const showSkeletons = useDelayedFlag(wantsPreload, SKELETON_DELAY_MS)
+    const sawSkeletons = useShownWhileLoading(wantsPreload, showSkeletons)
+    let preloadComponent
+    if (wantsPreload) preloadComponent = showSkeletons ? scene.Preload : BLANK_PRELOAD
+    // The latest response's empty state (an empty search's "No results") over the page's, unless
+    // the page's comes from the block's Studio override: later requests have no block to ask.
+    const pageEmptyState = route?.endpoint?.empty_state
+    const emptyState = pageEmptyState?.custom ? pageEmptyState : (scene.emptyState ?? pageEmptyState)
+    const noContent = NoContent
+        ? <NoContent endpoint={route?.endpoint} preview={scene.skeletonPreview} previewScale={skeletonPreviewScale(scene.skeletonKey)} state={emptyState} fromSkeletons={sawSkeletons} />
+        : null
     const emptyFooter =
-        headerInList && scene.showNoContent && NoContent
-            ? <NoContent endpoint={route?.endpoint} />
+        headerInList && scene.showNoContent && noContent
+            ? noContent
             : (uniListProps.ListFooterComponent ?? null)
 
     return (
@@ -694,18 +732,14 @@ function ListBody({
                 endpoint={route?.endpoint}
                 layout={scene.layout}
                 renderItem={scene.renderItem}
-                preloadComponent={
-                    showListPreload && scene.showPreload ? scene.Preload : undefined
-                }
+                preloadComponent={preloadComponent}
                 ListFooterComponent={emptyFooter}
                 refer={listRef}
                 onEndReached={handleEndReached}
                 onRefresh={onRefresh}
                 refreshing={refreshing}
             />
-            {!headerInList && scene.showNoContent && NoContent ? (
-                <NoContent endpoint={route?.endpoint} />
-            ) : null}
+            {!headerInList && scene.showNoContent ? noContent : null}
         </>
     )
 }

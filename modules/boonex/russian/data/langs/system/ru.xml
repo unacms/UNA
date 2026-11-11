@@ -4628,6 +4628,17 @@
     <string name="_sys_txt_delete"><![CDATA[Удалить]]></string>
     <string name="_sys_txt_discard"><![CDATA[Отменить]]></string>
     <string name="_sys_txt_empty"><![CDATA[Пусто]]></string>
+    <string name="_sys_txt_empty_invitations_text"><![CDATA[Когда вас пригласят в группу, событие или другое сообщество, приглашение появится здесь.]]></string>
+    <string name="_sys_txt_empty_invitations_title"><![CDATA[Приглашений нет]]></string>
+    <string name="_sys_txt_empty_list_add"><![CDATA[Добавить]]></string>
+    <string name="_sys_txt_empty_list_text_add"><![CDATA[Добавьте сюда что-нибудь первым.]]></string>
+    <string name="_sys_txt_empty_list_text_connections"><![CDATA[Здесь появятся ваши связи.]]></string>
+    <string name="_sys_txt_empty_list_text_favorite"><![CDATA[Здесь появится то, что вы добавите в избранное.]]></string>
+    <string name="_sys_txt_empty_list_text_followed"><![CDATA[Здесь появится то, на что вы подпишетесь.]]></string>
+    <string name="_sys_txt_empty_list_text_joined"><![CDATA[Здесь появится то, к чему вы присоединитесь.]]></string>
+    <string name="_sys_txt_empty_list_text_online"><![CDATA[Сейчас никого нет в сети.]]></string>
+    <string name="_sys_txt_empty_search_text"><![CDATA[Попробуйте другие слова или меньше фильтров.]]></string>
+    <string name="_sys_txt_empty_search_title"><![CDATA[Ничего не найдено]]></string>
     <string name="_sys_txt_error_account_creation"><![CDATA[Не удалось создать аккаунт]]></string>
     <string name="_sys_txt_error_account_delete"><![CDATA[Не удалось удалить аккаунт]]></string>
     <string name="_sys_txt_error_account_is_not_defined"><![CDATA[Аккаунт не определён]]></string>

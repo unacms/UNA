@@ -23,6 +23,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_fans' AND
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_home' AND `module`='bx_spaces' AND `title_system`='' AND `title`='_bx_spaces_page_block_title_latest_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_top' AND `module`='bx_spaces' AND `title_system`='' AND `title`='_bx_spaces_page_block_title_top_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_search' AND `module`='bx_spaces' AND `title_system`='' AND `title`='_bx_spaces_page_block_title_search_form';
+UPDATE `sys_pages_blocks` SET `config_api`='{"use_as_filter":true}' WHERE `object`='bx_spaces_search' AND `module`='bx_spaces' AND `title_system`='' AND `title`='_bx_spaces_page_block_title_search_form';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_search' AND `module`='bx_spaces' AND `title_system`='' AND `title`='_bx_spaces_page_block_title_search_results';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_joined_spaces' AND `module`='bx_spaces' AND `title_system`='' AND `title`='_bx_spaces_page_block_title_joined_entries';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_manage' AND `module`='bx_spaces' AND `title_system`='_bx_spaces_page_block_title_system_manage' AND `title`='_bx_spaces_page_block_title_manage';

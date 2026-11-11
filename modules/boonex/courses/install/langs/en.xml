@@ -493,6 +493,7 @@
     <string name="_bx_courses_txt_back_step"><![CDATA[Back]]></string>
     <string name="_bx_courses_txt_next_step"><![CDATA[Next]]></string>
     <string name="_bx_courses_txt_download"><![CDATA[Download]]></string>
+    <string name="_bx_courses_txt_empty_title"><![CDATA[No courses yet]]></string>
     <string name="_bx_courses_txt_summary_title"><![CDATA[Study progress]]></string>
     <string name="_bx_courses_txt_summary_joined"><![CDATA[Attended]]></string>
     <string name="_bx_courses_txt_summary_passed"><![CDATA[Passed]]></string>
