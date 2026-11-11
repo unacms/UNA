@@ -161,6 +161,7 @@ jobs:
           bx_analytics \
           bx_antispam \
           bx_api \
+          bx_channels \
           bx_convos \
           bx_developer \
           bx_editor \
