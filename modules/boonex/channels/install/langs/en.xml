@@ -249,6 +249,11 @@
 
 	<string name="_bx_channels_txt_account_pending"><![CDATA[This channel is pending approval, please wait until it is activated.]]></string>
 	<string name="_bx_channels_txt_account_suspended"><![CDATA[This channel is suspended.]]></string>
+	<string name="_bx_channels_txt_empty_text"><![CDATA[A channel appears as soon as someone uses a new hashtag in a post.]]></string>
+	<string name="_bx_channels_txt_empty_text_favorite"><![CDATA[Channels you add to favorites show here.]]></string>
+	<string name="_bx_channels_txt_empty_text_followed"><![CDATA[Channels you follow show here.]]></string>
+	<string name="_bx_channels_txt_empty_text_level"><![CDATA[Top-level channels are named after the site's main labels. They appear once posts use those labels as hashtags.]]></string>
+	<string name="_bx_channels_txt_empty_title"><![CDATA[No channels to show]]></string>
 	<string name="_bx_channels_txt_sample_single"><![CDATA[channel]]></string>
 	<string name="_bx_channels_txt_sample_single_with_article"><![CDATA[a channel]]></string>
 	<string name="_bx_channels_txt_sample_comment_single"><![CDATA[comment to channel]]></string>

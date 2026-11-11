@@ -98,6 +98,28 @@ class EmptyStateApiTest extends BxDolIntegrationTestCase
         $this->assertArrayNotHasKey('empty_state', $this->browsePosts(1000000), 'A later page never shows one.');
     }
 
+    /**
+     * An empty channel list says how channels appear, for the list it is, and offers no button:
+     * channels come from hashtags, not from an add form.
+     */
+    public function testEmptyChannelListExplainsHowChannelsAppear(): void
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_channels'))
+            $this->markTestSkipped('Channels is not installed.');
+
+        BxDolModule::getInstance('bx_channels');
+        bx_import('SearchResult', 'bx_channels');
+        $fState = fn($sMode, $aParams = []) => BxDolEmptyState::resolve((new BxCnlSearchResult($sMode, $aParams))->getEmptyStateApi());
+
+        $aLevel = $fState('level', ['level' => 0]);
+        $this->assertSame(_t('_bx_channels_txt_empty_title'), $aLevel['title']);
+        $this->assertSame(_t('_bx_channels_txt_empty_text_level'), $aLevel['text']);
+        $this->assertArrayNotHasKey('buttons', $aLevel);
+
+        $this->assertSame(_t('_bx_channels_txt_empty_text'), $fState('recent')['text']);
+        $this->assertSame(_t('_bx_channels_txt_empty_text_favorite'), $fState('favorite', ['user' => 0])['text']);
+    }
+
     private function browsePosts(int $iStart): array
     {
         $o = BxDolModule::getInstance('bx_posts');
