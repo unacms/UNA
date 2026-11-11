@@ -15,7 +15,6 @@ import {
     firstPageLeavesAGap,
     replaceUniListQueryWithFirstPage,
     cursorNextPageParam,
-    showsNextPageSkeleton,
 } from './helpers'
 
 /*

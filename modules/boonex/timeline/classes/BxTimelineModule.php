@@ -6201,8 +6201,9 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         $oMenu->setSelected('', $sView . '-view-all');
 
         $bRead = !$mixedContent;
-        if($bRead)
+        if($bRead) {
             $mixedContent = $this->_oTemplate->getViewBlock($aParams);
+        }
 
         if($this->_bIsApi)
             return [bx_api_get_block('browse', array_merge([
