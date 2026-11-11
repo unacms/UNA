@@ -1324,7 +1324,15 @@ class BxBaseCmts extends BxDolCmts
             if ($bRes)
                 $iCmtId = $iEditedCmtId;
         } else {
-            $iCmtId = (int)$oForm->insert(array('cmt_vparent_id' => $iCmtVisualParentId, 'cmt_object_id' => $this->_iId, 'cmt_author_id' => $iCmtAuthorId, 'cmt_level' => $iLevel, 'cmt_time' => time()));
+            $iTime = 0;
+            if(($iTime = $aValues['cmt_time'] ?? false)) {
+                $iTime = (int)$iTime;
+                unset($aValues['cmt_time']);
+            }
+            else
+                $iTime = time();
+
+            $iCmtId = (int)$oForm->insert(array('cmt_vparent_id' => $iCmtVisualParentId, 'cmt_object_id' => $this->_iId, 'cmt_author_id' => $iCmtAuthorId, 'cmt_level' => $iLevel, 'cmt_time' => $iTime));
         }
 
         if(!$iCmtId) {

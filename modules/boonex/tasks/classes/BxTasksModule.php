@@ -171,6 +171,18 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         return echoJson($aResult);
     }
 
+    public function actionImportFrom($sType = 'linear', $iContextId = 0)
+    {
+        $sClass = 'Import' . ucwords($sType);
+        bx_import($sClass, $this->_aModule);
+
+        $sClass = $this->_aModule['class_prefix'] . $sClass;
+        $oImport = new $sClass($this);
+
+        list($iProcessed, $iIssues) = $oImport->perform($iContextId);
+        echo 'Processed: ' . $iProcessed . ', Issues: ' . $iIssues;
+    }
+
     public function serviceGetSafeServices()
     {
         return array_merge(parent::serviceGetSafeServices(), [
