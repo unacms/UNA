@@ -1018,11 +1018,12 @@ class BxBaseServiceProfiles extends BxDol
                     ]
                 ];
                 // What the apps show when there are none (BxDolEmptyState); a page block's app config can change it.
-                if(!$aDataApi)
+                if(!$aDataApi) {
                     $aBlockData['empty_state'] = BxDolEmptyState::forApi([
                         'title' => '_sys_txt_empty_invitations_title',
                         'text' => '_sys_txt_empty_invitations_text',
                     ]);
+                }
 
                 $aDataApi = [bx_api_get_block($sApiContentType, $aBlockData)];
             }

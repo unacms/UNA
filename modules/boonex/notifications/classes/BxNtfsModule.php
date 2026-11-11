@@ -280,8 +280,9 @@ class BxNtfsModule extends BxBaseModNotificationsModule
 
             $aContent = defined('BX_API_PAGE') ? [] : $this->_oTemplate->getPosts($aParams);
             // No events: getPosts gives the site's "Empty" box (HTML), which is no list for an API client.
-            if(!is_array($aContent))
+            if(!is_array($aContent)) {
                 $aContent = [];
+            }
             if(!empty($aContent)) {
                 $iContent = count($aContent);
                 if($iContent > $aParams['per_page'])
@@ -301,11 +302,12 @@ class BxNtfsModule extends BxBaseModNotificationsModule
                 'data' => $aContent
             ];
             // What the apps show when there are none (BxDolEmptyState): only a first page can be empty.
-            if(empty($aContent) && (int)$iStart <= 0)
+            if(empty($aContent) && (int)$iStart <= 0) {
                 $aBlockData['empty_state'] = BxDolEmptyState::forApi([
                     'title' => '_bx_ntfs_txt_empty_title',
                     'text' => '_bx_ntfs_txt_empty_text',
                 ]);
+            }
 
             return [bx_api_get_block('browse', $aBlockData)];
         }
