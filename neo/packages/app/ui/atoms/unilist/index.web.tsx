@@ -251,6 +251,7 @@ export default function UniList(props: UniListProps) {
         preloadComponent,
         ListHeaderComponent,
         ListFooterComponent,
+        ListEmptyComponent,
         onEndReached,
         onStartReached,
         refer,
@@ -413,6 +414,8 @@ export default function UniList(props: UniListProps) {
             >
                 {renderSlot(ListHeaderComponent)}
                 <List {...virtuosoProps} />
+                {/* Below the header, as native's ListEmptyComponent: the header (a feed's composer) stays. */}
+                {rows.length === 0 ? renderSlot(ListEmptyComponent) : null}
                 <div ref={endRef} aria-hidden="true" />
             </View>
         </View>

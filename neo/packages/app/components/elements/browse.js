@@ -359,10 +359,13 @@ export default function Browse(props) {
 
     const NoContent = components['molecule']['no_content']
 
-    const PreloadComponent = !data?.hide_empty_msg && dataItems.length === 0
-        ? (listReady && hasNextPage === false
-            ? <NoContent endpoint={{ request_url: data.request_url, params: {} }} />
-            : Preload)
+    // Skeletons while the list loads; once it is done and empty, the empty state goes below the
+    // list's header (a feed's composer), which a preload would hide on web.
+    const isEmptyList = !data?.hide_empty_msg && dataItems.length === 0
+    const isEmptyDone = isEmptyList && listReady && hasNextPage === false
+    const PreloadComponent = isEmptyList && !isEmptyDone ? Preload : null;
+    const EmptyComponent = isEmptyDone
+        ? <NoContent endpoint={{ request_url: data.request_url, params: {} }} />
         : null;
 
 
@@ -423,6 +426,7 @@ export default function Browse(props) {
         renderItem: renderItem,
         onEndReached: handleEndReached,
         ListHeaderComponent: ListHeaderComponent,
+        ListEmptyComponent: EmptyComponent,
         ListFooterComponent: ((hasNextPage && isFetchingNextPage)) ? Preload : null,
     }
 
