@@ -37,6 +37,16 @@ class EmptyStateApiTest extends BxDolIntegrationTestCase
         $this->assertNull(BxDolEmptyState::resolve(['title' => '', 'buttons' => []]), 'Nothing to say is null.');
     }
 
+    public function testOnlyKnownActionsArePassedOn(): void
+    {
+        $a = BxDolEmptyState::resolve(['buttons' => [
+            ['title' => 'Compose', 'link' => 'page.php?i=create-post', 'action' => 'compose'],
+            ['title' => 'Other', 'link' => 'page.php?i=create-post', 'action' => 'delete_everything'],
+        ]]);
+        $this->assertSame('compose', $a['buttons'][0]['action']);
+        $this->assertArrayNotHasKey('action', $a['buttons'][1], 'An action the apps do not know is dropped; the link stays.');
+    }
+
     public function testAtMostThreeButtons(): void
     {
         $aButtons = array_fill(0, 5, ['title' => 'Add', 'link' => 'page.php?i=create-post']);

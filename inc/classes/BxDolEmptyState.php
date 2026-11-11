@@ -17,16 +17,21 @@
  * Titles and text are language keys (or plain text), so each language gets its own words. A key
  * the block leaves out keeps the module's; `"buttons": []` shows none. Links are the site's own:
  * relative, or absolute under the site's URL; anything else (another host, a script) is dropped.
+ * A button can also name an action the app does in place, with the link as its fallback:
+ * `"action": "compose"` opens the post form of the page's composer block, if the page has one.
  * Sent to the client as `empty_state` beside the list.
  */
 class BxDolEmptyState
 {
     const MAX_BUTTONS = 3;
 
+    /** Actions a button can ask the app for (see the class comment). */
+    const ACTIONS = ['compose'];
+
     /**
      * The empty state for an API list: the module's default with the processing block's override.
      *
-     * @param array $aDefault ['title' => key, 'text' => key, 'buttons' => [['title' => key, 'link' => url, 'style' => 'primary'|'secondary'], ...]]
+     * @param array $aDefault ['title' => key, 'text' => key, 'buttons' => [['title' => key, 'link' => url, 'style' => 'primary'|'secondary', 'action' => 'compose'], ...]]
      * @return array|null the resolved empty state, or null when there is nothing to say
      */
     public static function forApi($aDefault = [])
@@ -93,7 +98,11 @@ class BxDolEmptyState
             }
 
             $bSecondary = ($aButton['style'] ?? '') === 'secondary' || !empty($aButtons);
-            $aButtons[] = ['title' => $sTitle, 'link' => $sLink, 'style' => $bSecondary ? 'secondary' : 'primary'];
+            $aResult = ['title' => $sTitle, 'link' => $sLink, 'style' => $bSecondary ? 'secondary' : 'primary'];
+            if (in_array($aButton['action'] ?? '', self::ACTIONS, true)) {
+                $aResult['action'] = $aButton['action'];
+            }
+            $aButtons[] = $aResult;
         }
 
         return $aButtons;

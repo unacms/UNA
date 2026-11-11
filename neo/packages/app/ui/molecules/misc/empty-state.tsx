@@ -4,6 +4,7 @@ import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { NeoButtonLink } from 'app/design/controls';
 import { isWeb } from 'app/lib/util';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { useReduceMotionSetting } from 'app/lib/hooks/use-reduce-motion';
 import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 
@@ -11,8 +12,18 @@ import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 export type EmptyStateData = {
     title?: string;
     text?: string;
-    buttons?: { title: string; link: string; style?: 'primary' | 'secondary' }[];
+    buttons?: { title: string; link: string; style?: 'primary' | 'secondary'; action?: 'compose' }[];
 };
+
+/**
+ * A button's action, done in place when the page can: `compose` opens the page's post composer
+ * (MultiPostForm listens) instead of following the link. Without a composer the link is followed.
+ */
+function pressAction(action: string | undefined, event?: { preventDefault?: () => void }) {
+    if (action !== 'compose' || emitter.listeners(EVENTS.composer).length === 0) return;
+    event?.preventDefault?.();
+    emitter.emit(EVENTS.composer, { action: 'open' });
+}
 
 type EmptyStateProps = {
     /** The list's skeletons in its own layout (a feed column, tiles...), without their pulse. */
@@ -98,6 +109,7 @@ export default function EmptyState({ preview, fromSkeletons = false, state, fall
                                 label={button.title}
                                 style={button.style === 'secondary' ? 'bordered' : 'borderedProminent'}
                                 controlSize="regular"
+                                {...(button.action ? { onPress: (event?: any) => pressAction(button.action, event) } : null)}
                             />
                         ))}
                     </Row>
