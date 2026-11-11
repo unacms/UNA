@@ -191,6 +191,7 @@ export const TabScene = ({
         listReady,
         skipToastRef,
         hideEmptyMsg,
+        emptyState,
     } = useConductorList({
         route: pageRoute,
         queryKey: qKey,
@@ -275,6 +276,7 @@ export const TabScene = ({
             isPending={isPending}
             isFetching={isFetching}
             hideEmptyMsg={hideEmptyMsg}
+            emptyState={emptyState}
             showListPreload
             listRef={uniRef}
             handleEndReached={handleEndReached}

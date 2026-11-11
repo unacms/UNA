@@ -410,6 +410,7 @@
     <string name="_bx_spaces_txt_n_unit"><![CDATA[{0} ({1})]]></string>
     <string name="_bx_spaces_txt_cart_item_title"><![CDATA[{0}: {1} ({2} {3})]]></string>
     <string name="_bx_spaces_txt_cart_item_title_lifetime"><![CDATA[{0}: {1} (lifetime)]]></string>
+    <string name="_bx_spaces_txt_empty_title"><![CDATA[No spaces yet]]></string>
     <string name="_bx_spaces_txt_vote_starts_counter"><![CDATA[{0} ratings]]></string>
 
     <string name="_bx_spaces_msg_performed"><![CDATA[The action was successfully performed.]]></string>

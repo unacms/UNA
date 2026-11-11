@@ -91,6 +91,70 @@ class BxBaseModGeneralSearchResult extends BxTemplSearchResult
         return parent::rss();
     }
 
+    /**
+     * Empty list: "Nothing here yet", and a button to add the module's first entry for a viewer who
+     * may add one.
+     */
+    public function getEmptyStateApi()
+    {
+        $aState = parent::getEmptyStateApi();
+
+        // The module's own title ("No groups yet") when it has one: `_<module name>_txt_empty_title`.
+        $sTitle = '_' . $this->getMain()->getName() . '_txt_empty_title';
+        if (_t($sTitle) !== $sTitle) {
+            $aState['title'] = $sTitle;
+        }
+
+        // Lists that fill as someone joins, follows or favorites, or as people come online: no "add"
+        // button. The line says how the viewer's own list fills ("What you join shows here"), so it
+        // is only for the viewer's list (its owner param); someone else's list keeps the title.
+        $aPersonal = [
+            'joined_entries' => ['_sys_txt_empty_list_text_joined', 'joined_profile'],
+            'connections' => ['_sys_txt_empty_list_text_connections', 'profile'],
+            'followed_entries' => ['_sys_txt_empty_list_text_followed', 'followed_profile'],
+            'favorite' => ['_sys_txt_empty_list_text_favorite', 'user'],
+            'online' => ['_sys_txt_empty_list_text_online', ''],
+        ];
+        if (isset($aPersonal[$this->_sMode])) {
+            [$sText, $sOwnerParam] = $aPersonal[$this->_sMode];
+            if ($sOwnerParam === '' || $this->isViewersList($sOwnerParam)) {
+                $aState['text'] = $sText;
+            }
+            return $aState;
+        }
+
+        $oModule = $this->getMain();
+        $CNF = &$oModule->_oConfig->CNF;
+        // Only a module whose members add entries themselves has the 'create entry' action
+        // (Channels, made from hashtags, has an add page but no action: asking would stop the request).
+        $aActions = [];
+        if (!empty($CNF['URI_ADD_ENTRY']) && isLogged()) {
+            BxDolAclQuery::getInstance()->getActions(['type' => 'by_names_and_module', 'value' => 'create entry', 'module' => $oModule->getName()], $aActions, false);
+        }
+        if ($aActions && $oModule->checkAllowedAdd() === CHECK_ACTION_RESULT_ALLOWED) {
+            $aState['text'] = '_sys_txt_empty_list_text_add';
+            $aState['buttons'] = [['title' => '_sys_txt_empty_list_add', 'link' => 'page.php?i=' . $CNF['URI_ADD_ENTRY']]];
+        }
+
+        return $aState;
+    }
+
+    /**
+     * Whether a list belongs to the signed-in viewer: its owner param (a profile id) is the viewer's.
+     */
+    protected function isViewersList($sOwnerParam)
+    {
+        $iViewer = (int)bx_get_logged_profile_id();
+        if ($iViewer <= 0) {
+            return false;
+        }
+
+        // As the list finds its owner: a page block's `{profile_id}` marker (or no id) is 0 there,
+        // which BxDolProfile takes as the viewer.
+        $oOwner = BxDolProfile::getInstance((int)($this->_aParams[$sOwnerParam] ?? 0));
+        return $oOwner && (int)$oOwner->id() === $iViewer;
+    }
+
     function processingAPI ($bForceGetData = false) 
     {
         $aResult = parent::processingAPI($bForceGetData);

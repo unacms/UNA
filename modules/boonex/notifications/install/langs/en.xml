@@ -183,6 +183,8 @@
 
     <string name="_bx_ntfs_txt_and"><![CDATA[and]]></string>
     <string name="_bx_ntfs_txt_author_name_wrapped"><![CDATA[<b class="bx-ntfs-content-profile">{author_name}</b>]]></string>
+    <string name="_bx_ntfs_txt_empty_text"><![CDATA[Reactions, comments, mentions and new followers show here.]]></string>
+    <string name="_bx_ntfs_txt_empty_title"><![CDATA[No notifications yet]]></string>
     <string name="_bx_ntfs_txt_owner_name_wrapped"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
     <string name="_bx_ntfs_txt_object_added"><![CDATA[{author_name_wrapped} added a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
     <string name="_bx_ntfs_txt_object_added_in_context"><![CDATA[{author_name_wrapped} added a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>

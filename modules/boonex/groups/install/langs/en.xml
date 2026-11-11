@@ -411,6 +411,7 @@
     <string name="_bx_groups_txt_set_role"><![CDATA[Set Role]]></string>
     <string name="_bx_groups_txt_delete"><![CDATA[Delete]]></string>
     <string name="_bx_groups_txt_delete_and_ban"><![CDATA[Delete and ban]]></string>
+    <string name="_bx_groups_txt_empty_title"><![CDATA[No groups yet]]></string>
     <string name="_bx_groups_txt_private_group"><![CDATA[Private group]]></string>
     <string name="_bx_groups_txt_invite_popup_text"><![CDATA[You have been invited to a group. Click the button below to accept the invitation.]]></string>
     <string name="_bx_groups_txt_invite_popup_title"><![CDATA[Invitation to a group]]></string>

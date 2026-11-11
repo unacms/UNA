@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Empty states of the channel lists for API clients (BxDolEmptyState). -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_bx_channels_txt_empty_title"><![CDATA[Каналов пока нет]]></string_add>
+    <string_add name="_bx_channels_txt_empty_text"><![CDATA[Канал появляется, как только кто-нибудь использует новый хештег в записи.]]></string_add>
+    <string_add name="_bx_channels_txt_empty_text_level"><![CDATA[Каналы верхнего уровня называются по основным меткам сайта. Они появляются, когда записи используют эти метки как хештеги.]]></string_add>
+    <string_add name="_bx_channels_txt_empty_text_followed"><![CDATA[Здесь показываются каналы, на которые вы подписаны.]]></string_add>
+    <string_add name="_bx_channels_txt_empty_text_favorite"><![CDATA[Здесь показываются каналы, добавленные в избранное.]]></string_add>
+</resources>

@@ -261,6 +261,7 @@
 
     <string name="_bx_videos_txt_all_entries_by"><![CDATA[{0} videos]]></string>
     <string name="_bx_videos_txt_all_entries_in"><![CDATA[<a href="{0}">All Videos in {1} ({2})</a>]]></string>
+    <string name="_bx_videos_txt_empty_title"><![CDATA[No videos yet]]></string>
     <string name="_bx_videos_txt_sample_single"><![CDATA[video]]></string>
     <string name="_bx_videos_txt_sample_single_with_article"><![CDATA[a video]]></string>
     <string name="_bx_videos_txt_sample_comment_single"><![CDATA[comment to video]]></string>

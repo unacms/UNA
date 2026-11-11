@@ -347,6 +347,7 @@
     <string name="_bx_posts_txt_all_entries_in"><![CDATA[<a href="{0}">All Posts in {1} ({2})</a>]]></string>
     <string name="_bx_posts_txt_all_categories"><![CDATA[All Categories]]></string>
     <string name="_bx_posts_txt_all_entries_by"><![CDATA[{0} posts]]></string>
+    <string name="_bx_posts_txt_empty_title"><![CDATA[No posts yet]]></string>
     <string name="_bx_posts_txt_sample_single"><![CDATA[post]]></string>
     <string name="_bx_posts_txt_sample_single_with_article"><![CDATA[a post]]></string>
     <string name="_bx_posts_txt_sample_comment_single"><![CDATA[comment to post]]></string>

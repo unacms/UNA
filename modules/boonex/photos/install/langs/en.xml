@@ -255,6 +255,7 @@
     <string name="_bx_photos_txt_previous"><![CDATA[Previous]]></string>
     <string name="_bx_photos_txt_next"><![CDATA[Next]]></string>
     <string name="_bx_photos_txt_camera"><![CDATA[Camera]]></string>
+    <string name="_bx_photos_txt_empty_title"><![CDATA[No photos yet]]></string>
     <string name="_bx_photos_txt_focal_length"><![CDATA[Focal length]]></string>
     <string name="_bx_photos_txt_focal_length_value"><![CDATA[{0}mm]]></string>
     <string name="_bx_photos_txt_aperture"><![CDATA[Aperture]]></string>

@@ -35,6 +35,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_photos_home' AND
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_photos_home' AND `module`='bx_photos' AND `title_system`='' AND `title`='_bx_photos_page_block_title_popular_keywords';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_photos_home' AND `module`='bx_photos' AND `title_system`='' AND `title`='_bx_photos_page_block_title_cats';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_photos_search' AND `module`='bx_photos' AND `title_system`='' AND `title`='_bx_photos_page_block_title_search_form';
+UPDATE `sys_pages_blocks` SET `config_api`='{"use_as_filter":true}' WHERE `object`='bx_photos_search' AND `module`='bx_photos' AND `title_system`='' AND `title`='_bx_photos_page_block_title_search_form';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_photos_search' AND `module`='bx_photos' AND `title_system`='' AND `title`='_bx_photos_page_block_title_search_results';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_photos_manage' AND `module`='bx_photos' AND `title_system`='_bx_photos_page_block_title_system_manage' AND `title`='_bx_photos_page_block_title_manage';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_photos_administration' AND `module`='bx_photos' AND `title_system`='_bx_photos_page_block_title_system_manage_administration' AND `title`='_bx_photos_page_block_title_manage';

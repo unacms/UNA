@@ -248,6 +248,7 @@
 
     <string name="_bx_polls_txt_all_entries_by"><![CDATA[{0} голосований]]></string>
     <string name="_bx_polls_txt_all_entries_in"><![CDATA[<a href="{0}">Все голосования в {1} ({2})</a>]]></string>
+    <string name="_bx_polls_txt_empty_title"><![CDATA[Опросов пока нет]]></string>
     <string name="_bx_polls_txt_sample_single"><![CDATA[голосование]]></string>
     <string name="_bx_polls_txt_sample_single_with_article"><![CDATA[голосование]]></string>
     <string name="_bx_polls_txt_sample_comment_single"><![CDATA[комментарий к голосованию]]></string>

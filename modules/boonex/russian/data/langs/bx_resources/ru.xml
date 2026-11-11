@@ -209,6 +209,7 @@
 
     <string name="_bx_resources_txt_all_entries_in"><![CDATA[<a href="{0}">Все ресурсы в {1} ({2})</a>]]></string>
     <string name="_bx_resources_txt_all_entries_by"><![CDATA[{0} ресурсов]]></string>
+    <string name="_bx_resources_txt_empty_title"><![CDATA[Ресурсов пока нет]]></string>
     <string name="_bx_resources_txt_sample_single"><![CDATA[ресурс]]></string>
     <string name="_bx_resources_txt_sample_single_with_article"><![CDATA[ресурс]]></string>
     <string name="_bx_resources_txt_sample_comment_single"><![CDATA[комментарий к ресурсу]]></string>

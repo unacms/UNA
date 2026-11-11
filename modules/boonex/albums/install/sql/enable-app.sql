@@ -36,6 +36,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_albums_favorites
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_albums_context' AND `module`='bx_albums' AND `title_system`='_bx_albums_page_block_title_sys_entries_in_context' AND `title`='_bx_albums_page_block_title_entries_in_context';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_albums_home' AND `module`='bx_albums' AND `title_system`='' AND `title`='_bx_albums_page_block_title_updated_entries';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_albums_search' AND `module`='bx_albums' AND `title_system`='' AND `title`='_bx_albums_page_block_title_search_form';
+UPDATE `sys_pages_blocks` SET `config_api`='{"use_as_filter":true}' WHERE `object`='bx_albums_search' AND `module`='bx_albums' AND `title_system`='' AND `title`='_bx_albums_page_block_title_search_form';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_albums_search' AND `module`='bx_albums' AND `title_system`='' AND `title`='_bx_albums_page_block_title_search_results';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_albums_manage' AND `module`='bx_albums' AND `title_system`='_bx_albums_page_block_title_system_manage' AND `title`='_bx_albums_page_block_title_manage';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_albums_administration' AND `module`='bx_albums' AND `title_system`='_bx_albums_page_block_title_system_manage_administration' AND `title`='_bx_albums_page_block_title_manage';

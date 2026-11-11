@@ -459,6 +459,7 @@
     <string name="_bx_jobs_txt_view_answers"><![CDATA[Посмотреть заявку]]></string>
     <string name="_bx_jobs_txt_delete"><![CDATA[Удалить]]></string>
     <string name="_bx_jobs_txt_delete_and_ban"><![CDATA[Удалить и забанить]]></string>
+    <string name="_bx_jobs_txt_empty_title"><![CDATA[Вакансий пока нет]]></string>
     <string name="_bx_jobs_txt_private_job"><![CDATA[Приватное задание]]></string>
     <string name="_bx_jobs_txt_invite_popup_text"><![CDATA[Вы были приглашены в это задание.  Нажмите кнопку ниже чтобы принять приглашение.]]></string>
     <string name="_bx_jobs_txt_invite_popup_title"><![CDATA[Приглашение в задание]]></string>

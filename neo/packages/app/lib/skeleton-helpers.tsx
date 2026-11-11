@@ -37,7 +37,8 @@ function getlegacySkeletonName(name: string) {
     return name.join('_')
 }
 
-export function getSkeletonForList(name: string, num = 5, isFirst = true, layout: any, renderItem: any, paddings: any) {
+export function getSkeletonForList(name: string, num = 5, isFirst = true, layout: any, renderItem: any, paddings: any, still = false) {
+    const listClass = still ? LIST_CLASS.replace(' animate-pulse', '') : LIST_CLASS
     const skeletonCount = skeletonCountFor(num, isFirst)
     const slots = Array.from({ length: skeletonCount }, (_, index) => index)
 
@@ -47,7 +48,7 @@ export function getSkeletonForList(name: string, num = 5, isFirst = true, layout
         return (
             <View className='@container/list'>
                 <View className={paddings || ''}>
-                    <View className={LIST_CLASS}>
+                    <View className={listClass}>
                         {slots.map((index) => (
                             <View key={'browse_item' + index} className={layout || 'w-full'}>
                                 {renderItem({ item: { module: module, skeleton: true }, index })}
@@ -62,7 +63,7 @@ export function getSkeletonForList(name: string, num = 5, isFirst = true, layout
     const Item = (components as any)['skeleton'][getlegacySkeletonName(name)] || (components as any)['skeleton']['default'];
     return (
         <View className='@container/list'>
-            <View className={LIST_CLASS}>
+            <View className={listClass}>
                 {slots.map((index) => (
                     <View key={'browse_item' + index} className={layout || 'w-full'}>
                         <Item />
@@ -74,13 +75,17 @@ export function getSkeletonForList(name: string, num = 5, isFirst = true, layout
 }
 
 /**
- * One skeleton card of a list, without the list wrapper or its pulse: the empty state stacks
- * three of them (EmptyStack) when a list that showed skeletons comes back with nothing.
+ * A list's skeletons as its empty state shows them (EmptyState): the same layout and items as
+ * the loading skeletons, without their pulse.
  */
-export function getSkeletonCard(name: string, renderItem: any) {
-    if (appSetting('browse', 'new_skeletons') && typeof renderItem === 'function') {
-        return renderItem({ item: { module: getSkeletonModuleName(name), skeleton: true }, index: 0 })
-    }
-    const Item = (components as any)['skeleton'][getlegacySkeletonName(name)] || (components as any)['skeleton']['default'];
-    return <Item />
+/**
+ * How far an empty state shrinks the list's preview: a feed's posts to half, so about three show
+ * before they fade out; other lists (tiles, rows) a quarter less.
+ */
+export function skeletonPreviewScale(name: string): number {
+    return getlegacySkeletonName(name) === 'feed' ? 0.5 : 0.75
+}
+
+export function getSkeletonPreview(name: string, num: number, layout: any, renderItem: any, paddings?: any) {
+    return getSkeletonForList(name, num, true, layout, renderItem, paddings, true)
 }

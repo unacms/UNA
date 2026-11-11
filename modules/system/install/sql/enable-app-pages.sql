@@ -24,6 +24,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `modu
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_title_sys_recom_friends';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_title_sys_recom_subscriptions';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_title_sys_invitations';
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_ntfs_context_invitations' AND `module`='system' AND `title`='_sys_page_block_title_ntfs_context_invitations';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_system_title_login';
 
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_about' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_about';

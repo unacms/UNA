@@ -210,6 +210,7 @@
 
     <string name="_bx_resources_txt_all_entries_in"><![CDATA[<a href="{0}">All Resources in {1} ({2})</a>]]></string>
     <string name="_bx_resources_txt_all_entries_by"><![CDATA[{0} resources]]></string>
+    <string name="_bx_resources_txt_empty_title"><![CDATA[No resources yet]]></string>
     <string name="_bx_resources_txt_sample_single"><![CDATA[resource]]></string>
     <string name="_bx_resources_txt_sample_single_with_article"><![CDATA[a resource]]></string>
     <string name="_bx_resources_txt_sample_comment_single"><![CDATA[comment to resource]]></string>

@@ -246,6 +246,25 @@ class BxCnlSearchResult extends BxBaseModGroupsSearchResult
         $this->sCenterContentUnitSelector = false;
     }
 
+    /**
+     * Channels come from hashtags, so an empty list says how one appears, for the list it is; no
+     * button, since channels are not added by hand.
+     */
+    public function getEmptyStateApi()
+    {
+        $aTexts = [
+            'level' => '_bx_channels_txt_empty_text_level',
+            'followed_entries' => '_bx_channels_txt_empty_text_followed',
+            'connections' => '_bx_channels_txt_empty_text_followed',
+            'favorite' => '_bx_channels_txt_empty_text_favorite',
+        ];
+
+        return [
+            'title' => '_bx_channels_txt_empty_title',
+            'text' => $aTexts[$this->_sMode] ?? '_bx_channels_txt_empty_text',
+        ];
+    }
+
     function getAlterOrder()
     {
         $aResult = [];

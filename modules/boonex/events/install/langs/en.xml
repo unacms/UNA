@@ -555,6 +555,7 @@
     <string name="_bx_events_txt_n_unit"><![CDATA[{0} ({1})]]></string>
     <string name="_bx_events_txt_cart_item_title"><![CDATA[{0}: {1} ({2} {3})]]></string>
     <string name="_bx_events_txt_cart_item_title_lifetime"><![CDATA[{0}: {1} (lifetime)]]></string>    
+    <string name="_bx_events_txt_empty_title"><![CDATA[No events yet]]></string>
 
     <string name="_bx_events_msg_performed"><![CDATA[The action was successfully performed.]]></string>
     <string name="_bx_events_err_price_duplicate"><![CDATA[Similar pricing plan is already exists.]]></string>

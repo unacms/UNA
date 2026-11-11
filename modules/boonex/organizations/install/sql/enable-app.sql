@@ -31,6 +31,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_organizations_ho
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_organizations_active' AND `module`='bx_organizations' AND `title_system`='' AND `title`='_bx_orgs_page_block_title_active_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_organizations_online' AND `module`='bx_organizations' AND `title_system`='' AND `title`='_bx_orgs_page_block_title_online_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_organizations_search' AND `module`='bx_organizations' AND `title_system`='' AND `title`='_bx_orgs_page_block_title_search_form';
+UPDATE `sys_pages_blocks` SET `config_api`='{"use_as_filter":true}' WHERE `object`='bx_organizations_search' AND `module`='bx_organizations' AND `title_system`='' AND `title`='_bx_orgs_page_block_title_search_form';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_organizations_search' AND `module`='bx_organizations' AND `title_system`='' AND `title`='_bx_orgs_page_block_title_search_results';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_organizations_manage' AND `module`='bx_organizations' AND `title_system`='_bx_orgs_page_block_title_system_manage' AND `title`='_bx_orgs_page_block_title_manage';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_organizations_administration' AND `module`='bx_organizations' AND `title_system`='_bx_orgs_page_block_title_system_manage_administration' AND `title`='_bx_orgs_page_block_title_manage';

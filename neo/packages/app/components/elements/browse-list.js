@@ -23,7 +23,7 @@ import { View, Row } from 'app/design/view'
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
 import { Text } from 'app/design/typography'
-import { getSkeletonCard, getSkeletonForList } from 'app/lib/skeleton-helpers'
+import { getSkeletonForList, getSkeletonPreview, skeletonPreviewScale } from 'app/lib/skeleton-helpers'
 import { useDelayedFlag, useShownWhileLoading } from 'app/lib/hooks/use-delayed-flag'
 import { useCurrentUser } from 'app/context/user'
 import { NeoButton } from 'app/design/controls'
@@ -190,7 +190,10 @@ export default function Browse(props) {
         () => getSkeletonForList(sSkeleton, 1, true, layout, renderItem),
         [sSkeleton, layout, renderItem]
     )
-    const skeletonCard = useMemo(() => getSkeletonCard(sSkeleton, renderItem), [sSkeleton, renderItem])
+    const skeletonPreview = useMemo(
+        () => getSkeletonPreview(sSkeleton, 1, layout, renderItem),
+        [sSkeleton, layout, renderItem]
+    )
 
     // As Browse: skeletons from SKELETON_DELAY_MS on, a blank preload until then, and the empty
     // state below the list's header, gathered from the skeletons when they showed. Every preload
@@ -252,7 +255,7 @@ export default function Browse(props) {
     let PreloadComponent = null;
     if (isLoadingEmpty) PreloadComponent = showSkeletons ? Preload : BLANK_PRELOAD;
     const EmptyComponent = isEmptyDone
-        ? <NoContent endpoint={{ request_url: data.request_url, params: {} }} card={skeletonCard} fromSkeletons={sawSkeletons} />
+        ? <NoContent endpoint={{ request_url: data.request_url, params: {} }} preview={skeletonPreview} previewScale={skeletonPreviewScale(sSkeleton)} state={data?.empty_state} fromSkeletons={sawSkeletons} />
         : null;
 
     const uniListProps = {

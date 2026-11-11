@@ -351,6 +351,7 @@
     <string name="_bx_reviews_form_entry_input_option_name_err"><![CDATA[Имя опции должно быть не короче 3 символов]]></string>
     <string name="_bx_reviews_popup_voting_option_title"><![CDATA[Подробности опции голосования]]></string>
     <string name="_bx_reviews_txt_cancel"><![CDATA[Отменить]]></string>
+    <string name="_bx_reviews_txt_empty_title"><![CDATA[Отзывов пока нет]]></string>
     <string name="_bx_reviews_form_entry_input_sys_voting_options"><![CDATA[Опции голосования]]></string>
     <string name="_bx_reviews_form_entry_input_voting_options"><![CDATA[]]></string>
     <string name="_bx_reviews_page_block_title_entry_voting_options"><![CDATA[Звезды отзыва]]></string>

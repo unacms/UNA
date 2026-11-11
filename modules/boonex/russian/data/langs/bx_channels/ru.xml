@@ -248,6 +248,11 @@
 
     <string name="_bx_channels_txt_account_pending"><![CDATA[Эта канал ожидает одобрения. Пожалуйста, дождитесь ее активации.]]></string>
     <string name="_bx_channels_txt_account_suspended"><![CDATA[Эта канал заблокирован.]]></string>
+    <string name="_bx_channels_txt_empty_text"><![CDATA[Канал появляется, как только кто-нибудь использует новый хештег в записи.]]></string>
+    <string name="_bx_channels_txt_empty_text_favorite"><![CDATA[Здесь показываются каналы, добавленные в избранное.]]></string>
+    <string name="_bx_channels_txt_empty_text_followed"><![CDATA[Здесь показываются каналы, на которые вы подписаны.]]></string>
+    <string name="_bx_channels_txt_empty_text_level"><![CDATA[Каналы верхнего уровня называются по основным меткам сайта. Они появляются, когда записи используют эти метки как хештеги.]]></string>
+    <string name="_bx_channels_txt_empty_title"><![CDATA[Каналов пока нет]]></string>
     <string name="_bx_channels_txt_sample_single"><![CDATA[канал]]></string>
     <string name="_bx_channels_txt_sample_single_with_article"><![CDATA[Канал]]></string>
     <string name="_bx_channels_txt_sample_comment_single"><![CDATA[комментарий к каналу]]></string>

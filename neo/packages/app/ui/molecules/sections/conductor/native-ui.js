@@ -217,6 +217,7 @@ export const TabScene = React.memo(function TabScene({
     isPending = false,
     isFetching = false,
     hideEmptyMsg = false,
+    emptyState = null,
     onFormChangedValues,
 }) {
     // NativeTabs screens run under the tab bar; without this the last rows
@@ -263,6 +264,7 @@ export const TabScene = React.memo(function TabScene({
             isPending={isPending}
             isFetching={isFetching}
             hideEmptyMsg={hideEmptyMsg}
+            emptyState={emptyState}
             preloadWhenEmpty
             headerInList
             showListPreload

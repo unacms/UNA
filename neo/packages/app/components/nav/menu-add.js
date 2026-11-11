@@ -25,6 +25,10 @@ export function useMenuAddItems(load = true) {
     return { items, empty: !bMenu || (!hasDropdownActions(items) && (useStatic || !!menuData)) };
 }
 
+/**
+ * The add-content menu with its trigger: a round "+" (the header's), `buttonProps` over it, or `children`.
+ * @param {{ buttonProps?: Record<string, any>, children?: import('react').ReactNode }} props
+ */
 export default function MenuAdd({ buttonProps, children }) {
     const { items: menu_add_items, empty } = useMenuAddItems();
     const [pageData, setPageData] = useState(false);
