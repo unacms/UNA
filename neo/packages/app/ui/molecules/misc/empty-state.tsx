@@ -5,6 +5,7 @@ import { Text } from 'app/design/typography';
 import { NeoButtonLink } from 'app/design/controls';
 import { isWeb } from 'app/lib/util';
 import emitter, { EVENTS } from 'app/context/emitter';
+import MenuAdd, { useMenuAddItems } from 'app/components/nav/menu-add';
 import { useReduceMotionSetting } from 'app/lib/hooks/use-reduce-motion';
 import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 
@@ -12,8 +13,10 @@ import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 export type EmptyStateData = {
     title?: string;
     text?: string;
-    buttons?: { title: string; link: string; style?: 'primary' | 'secondary'; action?: 'compose' }[];
+    buttons?: EmptyStateButtonData[];
 };
+
+type EmptyStateButtonData = { title: string; link: string; style?: 'primary' | 'secondary'; action?: 'compose' | 'create_menu' };
 
 /**
  * A button's action, done in place when the page can: `compose` opens the page's post composer
@@ -103,18 +106,40 @@ export default function EmptyState({ preview, fromSkeletons = false, state, fall
                 {buttons.length ? (
                     <Row className="flex-wrap justify-center gap-2 pt-3">
                         {buttons.map((button, index) => (
-                            <NeoButtonLink
-                                key={button.link + index}
-                                href={button.link}
-                                label={button.title}
-                                style={button.style === 'secondary' ? 'bordered' : 'borderedProminent'}
-                                controlSize="regular"
-                                {...(button.action ? { onPress: (event?: any) => pressAction(button.action, event) } : null)}
-                            />
+                            <EmptyStateButton key={button.link + index} button={button} />
                         ))}
                     </Row>
                 ) : null}
             </Animated.View>
         </View>
+    );
+}
+
+/**
+ * One of UNA's buttons. `create_menu` opens the add-content menu (the header's "+": every type
+ * the viewer can create) from the button itself; without that menu it is the link.
+ */
+function EmptyStateButton({ button }: Readonly<{ button: EmptyStateButtonData }>) {
+    const style = button.style === 'secondary' ? 'bordered' : 'borderedProminent';
+    if (button.action === 'create_menu') return <CreateMenuButton button={button} style={style} />;
+    return (
+        <NeoButtonLink
+            href={button.link}
+            label={button.title}
+            style={style}
+            controlSize="regular"
+            {...(button.action ? { onPress: (event?: any) => pressAction(button.action, event) } : null)}
+        />
+    );
+}
+
+function CreateMenuButton({ button, style }: Readonly<{ button: EmptyStateButtonData; style: string }>) {
+    const { empty } = useMenuAddItems();
+    if (empty) return <NeoButtonLink href={button.link} label={button.title} style={style} controlSize="regular" />;
+    // The header's own trigger props (a round "+") are replaced: this is a labelled button.
+    return (
+        <MenuAdd
+            buttonProps={{ style, controlSize: 'regular', label: button.title, image: undefined, borderShape: undefined, tooltip: undefined }}
+        />
     );
 }

@@ -41,10 +41,11 @@ class EmptyStateApiTest extends BxDolIntegrationTestCase
     {
         $a = BxDolEmptyState::resolve(['buttons' => [
             ['title' => 'Compose', 'link' => 'page.php?i=create-post', 'action' => 'compose'],
+            ['title' => 'Create', 'link' => 'page.php?i=create-post', 'action' => 'create_menu'],
             ['title' => 'Other', 'link' => 'page.php?i=create-post', 'action' => 'delete_everything'],
         ]]);
-        $this->assertSame('compose', $a['buttons'][0]['action']);
-        $this->assertArrayNotHasKey('action', $a['buttons'][1], 'An action the apps do not know is dropped; the link stays.');
+        $this->assertSame(['compose', 'create_menu'], [$a['buttons'][0]['action'], $a['buttons'][1]['action']]);
+        $this->assertArrayNotHasKey('action', $a['buttons'][2], 'An action the apps do not know is dropped; the link stays.');
     }
 
     public function testAtMostThreeButtons(): void

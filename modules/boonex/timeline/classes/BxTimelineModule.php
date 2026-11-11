@@ -6118,7 +6118,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
             'text' => isLogged() ? '_bx_timeline_txt_empty_feed_text' : '',
         ];
         if (isLogged() && $this->isAllowedPost() === true) {
-            $aState['buttons'] = [['title' => '_bx_timeline_txt_empty_feed_create', 'link' => 'page.php?i=' . $this->_oConfig->CNF['URI_VIEW_LIST'], 'action' => 'compose']];
+            $aState['buttons'] = [['title' => '_bx_timeline_txt_empty_feed_create', 'link' => 'page.php?i=' . $this->_oConfig->CNF['URI_VIEW_LIST'], 'action' => 'create_menu']];
         }
 
         return BxDolEmptyState::forApi($aState);
