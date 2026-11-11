@@ -84,6 +84,21 @@ class ChannelsBrowseApiTest extends BxDolIntegrationTestCase
         $this->assertIsArray($aList['data']);
     }
 
+    /**
+     * What the level list filters by: the level asked for, the top level when none is.
+     */
+    public function testLevelListFiltersByItsLevel(): void
+    {
+        $fLevel = function ($aParams) {
+            $o = new BxCnlSearchResult('level', $aParams);
+            return $o->aCurrent['restriction']['level'];
+        };
+
+        $this->assertSame(['value' => 0, 'field' => 'level', 'operator' => '=', 'table' => 'sys_labels'], $fLevel([]), 'No level is the top level, not null.');
+        $this->assertSame(2, $fLevel(['level' => 2])['value']);
+        $this->assertSame(1, $fLevel(['level' => '1'])['value'], 'A level from the request is an integer.');
+    }
+
     public function testBrowseWithoutTheChoiceStillHidesTheMessage(): void
     {
         $this->assertTrue($this->browse(['type' => 'recent', 'start' => 0, 'per_page' => 24])['hide_empty_msg'], 'Unchanged for a client that does not send it.');
