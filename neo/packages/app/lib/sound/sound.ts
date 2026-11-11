@@ -30,7 +30,11 @@ const POOL_SIZE = 2;
 const pools = new Map<string, { players: AudioPlayer[]; next: number }>();
 
 /** The tab bar's cue: warmed at start so the first tab tap is not late. */
-const warmKeys = () => cueKeys('navigate', { emphasis: 'subtle' }, state.set);
+const TAB_CUE = { emphasis: 'subtle', group: 'navigation' } as const;
+const warmKeys = (): string[] => {
+    const set = cueSet(state, 'select', TAB_CUE);
+    return set === 'off' ? [] : cueKeys('select', TAB_CUE, set);
+};
 
 const playerOptions = {
     /** Default `false` deactivates AVAudioSession when a sound ends: the next play waits ~300–500ms. */

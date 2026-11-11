@@ -48,6 +48,7 @@ const CUES = [
     { cue: 'open', emphasis: 'subtle' },
     { cue: 'close', emphasis: 'subtle' },
     { cue: 'navigate', emphasis: 'subtle' },
+    { cue: 'select', emphasis: 'subtle' },
     { cue: 'success', emphasis: 'subtle' },
     { cue: 'ready' },
     { cue: 'ready', emphasis: 'subtle' },
