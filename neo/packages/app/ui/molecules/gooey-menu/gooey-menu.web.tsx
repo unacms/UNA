@@ -85,6 +85,17 @@ function GooeyDroplets({ items, label, onSelect, icon = 'Plus', onMore, onOpenCh
     useEffect(() => () => {
         if (movingTimer.current) clearTimeout(movingTimer.current);
     }, []);
+    // Removed while open (the page swaps it for its link): tell the parent it is closed, or the
+    // words it fades for the open menu would stay hidden.
+    const openRef = useRef(open);
+    const onOpenChangeRef = useRef(onOpenChange);
+    useEffect(() => {
+        openRef.current = open;
+        onOpenChangeRef.current = onOpenChange;
+    });
+    useEffect(() => () => {
+        if (openRef.current) onOpenChangeRef.current?.(false);
+    }, []);
 
     // The liquid group spans the whole open footprint (the library needs its items' travel
     // inside it) but takes no room in the page: only the trigger does.
