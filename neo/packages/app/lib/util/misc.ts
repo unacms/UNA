@@ -60,7 +60,42 @@ export async function setClipboard(str: string): Promise<void> {
         Clipboard.setString(str);
     }
     else {
-        await navigator.clipboard.writeText(str);
+        // The Clipboard API exists only in secure contexts (https, localhost); a plain-http host
+        // has no navigator.clipboard, and a denied permission rejects. Copy through a textarea then.
+        try {
+            if (navigator.clipboard?.writeText) {
+                await navigator.clipboard.writeText(str);
+                return;
+            }
+        } catch { /* fall through */ }
+        copyWithTextarea(str);
+    }
+}
+
+function copyWithTextarea(str: string): void {
+    // The copy event carries the text itself, so it doesn't depend on the selection, which a
+    // modal's focus trap can take away. The selected textarea is for browsers that fire no copy
+    // event without a selection (Safari).
+    const onCopy = (event: ClipboardEvent) => {
+        event.clipboardData?.setData('text/plain', str);
+        event.preventDefault();
+    };
+    const textarea = document.createElement('textarea');
+    textarea.value = str;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.top = '0';
+    textarea.style.opacity = '0';
+    textarea.style.userSelect = 'text';
+    const host = document.activeElement?.parentElement ?? document.body;
+    host.appendChild(textarea);
+    document.addEventListener('copy', onCopy, true);
+    textarea.select();
+    try {
+        document.execCommand('copy');
+    } finally {
+        document.removeEventListener('copy', onCopy, true);
+        host.removeChild(textarea);
     }
 }
 

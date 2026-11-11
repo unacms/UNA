@@ -71,17 +71,21 @@ class BxInvModule extends BxDolModule
         );
     }
 
-    public function serviceGetCode($aParams)
+    public function serviceGetCode($aParams = [])
     {
         if($this->_bIsApi && is_string($aParams))
             $aParams = bx_api_get_browse_params($aParams);
+
+        // The apps pass the block's params (aja/ajp) in the URL, as the site's JS does.
+        if($this->_bIsApi && !isset($aParams['aj_action']))
+            $aParams = array_merge((array)$aParams, $this->_prepareParamsGet());
 
         $iProfileId = $this->getProfileId();
         $iAccountId = $this->getAccountId($iProfileId);
 
         $mixedAllowed = $this->isAllowedInvite($iProfileId);
         if($mixedAllowed !== true)
-            return echoJson(['message' => $mixedAllowed]);
+            return $this->_bIsApi ? [bx_api_get_msg($mixedAllowed)] : echoJson(['message' => $mixedAllowed]);
 
         $iKeyLength = 0;
         $iKeyLifetime = $this->_oConfig->getKeyLifetime();
@@ -134,6 +138,10 @@ class BxInvModule extends BxDolModule
 
     function serviceGetLink($aParams = [])
     {
+        // The apps pass the block's params (aja/ajp) in the URL, as the site's JS does.
+        if($this->_bIsApi && !isset($aParams['aj_action']))
+            $aParams = array_merge((array)$aParams, $this->_prepareParamsGet());
+
         $iProfileId = $this->getProfileId();
         $iAccountId = $this->getAccountId($iProfileId);
 
@@ -628,6 +636,7 @@ class BxInvModule extends BxDolModule
         $aMessage = BxDolEmailTemplates::getInstance()->parseTemplate($sEmailTemplate, array(
             'text' => $sText
         ), $iAccountId, $iProfileId);
+        $aMessage['Body'] = $this->_getBodyForEmailRoot($aMessage['Body']);
 
         $iEmailUse = !empty($aParams['email_use']) ? (int)$aParams['email_use'] : 0;
         $bLimit = !empty($aParams['limit']) && is_numeric($aParams['limit']);
@@ -640,7 +649,7 @@ class BxInvModule extends BxDolModule
 
             $sKey = $oKeys->getNewKey(false, $iKeyLifetime);
             $aMarkers = [
-                'join_url' => $this->getJoinLink($sKey), 
+                'join_url' => $this->getJoinLinkEmail($sKey), 
                 'seen_image_url' => $this->getSeenImageUrl($sKey)
             ];
 
@@ -876,6 +885,44 @@ class BxInvModule extends BxDolModule
         ]));
     }
     
+    /**
+     * The join link for an invitation email. With the apps' address set (sys_api_url_root_email) it points
+     * to the app, as notifications do. sendMail's own replacement isn't enough here: the email goes through
+     * the queue, and the cron that sends it can run under another host than the request that built the link.
+     */
+    public function getJoinLinkEmail($sKey)
+    {
+        $sLink = $this->getJoinLink($sKey);
+        if(($sRootUrl = getParam('sys_api_url_root_email')) !== '')
+            $sLink = rtrim($sRootUrl, '/') . bx_api_get_relative_url($sLink);
+
+        return $sLink;
+    }
+
+    /**
+     * Links in a parsed email body point to the apps' address (sys_api_url_root_email), images stay on the site.
+     * sendMail does the same, but the queue sends the email later, from a cron whose site URL can differ
+     * from the one the template was parsed under (an API host), and then it finds nothing to replace.
+     */
+    protected function _getBodyForEmailRoot($sBody)
+    {
+        if(($sRootUrl = getParam('sys_api_url_root_email')) === '')
+            return $sBody;
+
+        if(substr(BX_DOL_URL_ROOT, -1) == '/' && substr($sRootUrl, -1) != '/')
+            $sRootUrl .= '/';
+
+        $sBody = str_replace(BX_DOL_URL_ROOT, $sRootUrl, $sBody);
+
+        return str_replace([
+            'src="' . $sRootUrl, 
+            "src='" . $sRootUrl
+        ], [
+            'src="' . BX_DOL_URL_ROOT, 
+            "src='" . BX_DOL_URL_ROOT
+        ], $sBody);
+    }
+
     public function getSeenImageUrl($sKey)
     {
         return  BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'SetSeenMark/' . $sKey . "/";

@@ -38,6 +38,11 @@ class BxInvResponse extends BxDolAlertsResponse
 
     protected function _processAccountAddFormCheck($oAlert)
     {
+        // The apps post the key with the form (see _processAccountAddForm): keep it in this request's session,
+        // so that 'account added' attaches the invitation and 'profile add' processes its action (invite to context).
+        if(bx_is_api() && bx_get($this->_oModule->_oConfig->getKeyCode()) !== false)
+            $this->_oModule->serviceAccountAddFormCheck();
+
         $sKey = $this->_oModule->_oConfig->getKey();
         if($sKey === false)
             return;
@@ -63,6 +68,17 @@ class BxInvResponse extends BxDolAlertsResponse
 
             if(!empty($aInvite) && is_array($aInvite)) {
                 $bGetCode = false;
+
+                // The apps render the join page on the server, where the session cookie with the key never reaches
+                // the browser, and submit the form to the API without the page's URL params. The form carries the key instead.
+                if(bx_is_api()) {
+                    $sKeyCode = $this->_oModule->_oConfig->getKeyCode();
+                    $oAlert->aExtras['form_object']->aInputs[$sKeyCode] = [
+                        'name' => $sKeyCode,
+                        'type' => 'hidden',
+                        'value' => $aInvite['key']
+                    ];
+                }
 
                 if(!empty($aInvite['email_use'])) {
                     $oAlert->aExtras['form_object']->aInputs['email']['value'] = $aInvite['email'];

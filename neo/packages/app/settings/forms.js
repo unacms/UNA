@@ -61,6 +61,11 @@ export const settingsForms = {
             hide_on_msg: true,
         },
 
+        // Invite by email (bx_invites/get_block_form_invite, named after the module): after sending, only the message.
+        bx_invites: {
+            hide_on_msg: true,
+        },
+
         bx_invites_request_send: {
             hide_errors: true,
             button_full_width: true,
