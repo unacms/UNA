@@ -51,12 +51,9 @@ const expoConfig = {
         "associatedDomains": ["neo.so"],
         "bundleIdentifier": "com.neo.so",
         "backgroundColor": "#111827",
-        // Home screen appearances (iOS 18+). Left out when a fork sets its own `icon` or `ios.icon`.
-        "icon": {
-            "light": "./assets/images/icon.png",
-            "dark": "./assets/images/icon-dark.png",
-            "tinted": "./assets/images/icon-tinted.png"
-        },
+        // The Icon Composer file: Xcode compiles its default, dark, clear and tinted versions, and
+        // a flat icon for older iOS. Left out when a fork sets its own `icon` or `ios.icon`.
+        "icon": "./assets/images/AppIcon.icon",
         "infoPlist": {
             "NSCameraUsageDescription": "Application uses the camera to take photos for your profile and posts, and for video during calls—for example, a profile picture or a video call.",
             "NSPhotoLibraryUsageDescription": "Application accesses your photo library so you can choose photos and videos for your profile, posts, and messages.",
