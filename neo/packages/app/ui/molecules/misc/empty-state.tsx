@@ -61,8 +61,9 @@ export default function EmptyState({ preview, fromSkeletons = false, state, fall
     const title = state?.title || fallbackTitle;
     const buttons = state?.buttons ?? [];
 
+    // On web at least the list's share of a tall window (60svh), so the words sit mid-page, not in its top third.
     return (
-        <View className="w-full flex-1 items-center justify-center py-8 min-h-120" role="status">
+        <View className="w-full flex-1 items-center justify-center py-8 min-h-120 web:min-h-[60svh]" role="status">
             {preview ? (
                 <View
                     aria-hidden
