@@ -1478,6 +1478,11 @@ class BxBaseModGeneralModule extends BxDolModule
                 if(($sK = 'class_search_result') && isset($aParams['params'][$sK]))
                     $aParams[$sK] = $aParams['params'][$sK];
 
+                // The block's choice, echoed in its params (_serviceBrowse): an empty list keeps
+                // its "nothing here" message on the next page and on a refetch.
+                if(($sK = 'empty_message') && isset($aParams['params'][$sK]))
+                    $aParams[$sK] = (bool)$aParams['params'][$sK];
+
                 if(isset($aParams['params']['filters']) && is_array($aParams['params']['filters'])) {
                     foreach($aParams['params']['filters'] as $sKey => $sValue) {
                         if(in_array($sKey, ['filter', 'condition', 'filters', 'class_search_result'], true))
@@ -3945,8 +3950,12 @@ class BxBaseModGeneralModule extends BxDolModule
             $bBrowseSimple = $sContentType == 'browse_simple';
 
             $a = $o->processingAPI($bBrowseSimple);
-            if($a && is_array($a))
+            if($a && is_array($a)) {
                 $a['hide_empty_msg'] = !(bool)$bDisplayEmptyMsg;
+                // Sent back with the next request (serviceBrowse), which has no block to ask.
+                if(isset($a['params']) && is_array($a['params']))
+                    $a['params']['empty_message'] = (bool)$bDisplayEmptyMsg;
+            }
 
             return !$bBrowseSimple || $a['data'] ? [bx_api_get_block($sContentType, $a)] : [];
         }

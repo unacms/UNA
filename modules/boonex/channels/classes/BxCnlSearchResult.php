@@ -222,7 +222,9 @@ class BxCnlSearchResult extends BxBaseModGroupsSearchResult
                     'onField' => 'value',
                     'joinFields' => array('value'),
                 );
-                $this->aCurrent['restriction']['level'] = array('value' => $aParams['level'], 'field' => 'level', 'operator' => '=', 'table' => 'sys_labels');
+                // The level a list shows: 0 (top level) when a request doesn't say, as an API client's
+                // next page did before the param was echoed back (addProcessingParamsAPI).
+                $this->aCurrent['restriction']['level'] = array('value' => (int)($aParams['level'] ?? 0), 'field' => 'level', 'operator' => '=', 'table' => 'sys_labels');
                 $this->aCurrent['sorting'] = 'level';
                 $this->sBrowseUrl = 'page.php?i=channels-toplevel';
                 break;
@@ -244,6 +246,16 @@ class BxCnlSearchResult extends BxBaseModGroupsSearchResult
         }
 
         $this->sCenterContentUnitSelector = false;
+    }
+
+    /**
+     * Browse params an API client sends back for the next page: the level of a level list.
+     */
+    function addProcessingParamsAPI()
+    {
+        return array_merge(parent::addProcessingParamsAPI(), [
+            'level'
+        ]);
     }
 
     function getAlterOrder()
