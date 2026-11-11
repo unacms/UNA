@@ -51,6 +51,9 @@ const expoConfig = {
         "associatedDomains": ["neo.so"],
         "bundleIdentifier": "com.neo.so",
         "backgroundColor": "#111827",
+        // The Icon Composer file: Xcode compiles its default, dark, clear and tinted versions, and
+        // a flat icon for older iOS. Left out when a fork sets its own `icon` or `ios.icon`.
+        "icon": "./assets/images/AppIcon.icon",
         "infoPlist": {
             "NSCameraUsageDescription": "Application uses the camera to take photos for your profile and posts, and for video during calls—for example, a profile picture or a video call.",
             "NSPhotoLibraryUsageDescription": "Application accesses your photo library so you can choose photos and videos for your profile, posts, and messages.",
@@ -210,6 +213,14 @@ if (typeof (expoConfigCustom.android?.intentFilters) !== 'undefined')
 
 if (typeof (expoConfigCustom.plugins) !== 'undefined')
     expoConfig.plugins = [];
+
+// A fork's own app icon wins on every platform: UNA's iOS appearances and Android adaptive icon
+// would otherwise be used instead of the fork's top-level `icon`.
+if (expoConfigCustom.icon !== undefined || expoConfigCustom.ios?.icon !== undefined)
+    delete expoConfig.ios.icon;
+
+if (expoConfigCustom.icon !== undefined && expoConfigCustom.android?.adaptiveIcon === undefined)
+    delete expoConfig.android.adaptiveIcon;
 
 // Applied after the merge so forks that replace `plugins` still get it.
 module.exports = withPinFbjni(merge(expoConfig, expoConfigCustom));
