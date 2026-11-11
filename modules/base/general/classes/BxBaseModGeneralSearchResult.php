@@ -99,6 +99,12 @@ class BxBaseModGeneralSearchResult extends BxTemplSearchResult
     {
         $aState = parent::getEmptyStateApi();
 
+        // The module's own title ("No groups yet") when it has one: `_<module name>_txt_empty_title`.
+        $sTitle = '_' . $this->getMain()->getName() . '_txt_empty_title';
+        if (_t($sTitle) !== $sTitle) {
+            $aState['title'] = $sTitle;
+        }
+
         // Lists that fill as someone joins, follows or favorites, or as people come online: no "add"
         // button. The line says how the viewer's own list fills ("What you join shows here"), so it
         // is only for the viewer's list (its owner param); someone else's list keeps the title.
@@ -139,7 +145,14 @@ class BxBaseModGeneralSearchResult extends BxTemplSearchResult
     protected function isViewersList($sOwnerParam)
     {
         $iViewer = (int)bx_get_logged_profile_id();
-        return $iViewer > 0 && (int)($this->_aParams[$sOwnerParam] ?? 0) === $iViewer;
+        if ($iViewer <= 0) {
+            return false;
+        }
+
+        // As the list finds its owner: a page block's `{profile_id}` marker (or no id) is 0 there,
+        // which BxDolProfile takes as the viewer.
+        $oOwner = BxDolProfile::getInstance((int)($this->_aParams[$sOwnerParam] ?? 0));
+        return $oOwner && (int)$oOwner->id() === $iViewer;
     }
 
     function processingAPI ($bForceGetData = false) 

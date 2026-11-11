@@ -629,6 +629,7 @@
     <string name="_bx_ads_txt_display_title_add"><![CDATA[{0}: Add]]></string>
     <string name="_bx_ads_txt_display_title_edit"><![CDATA[{0}: Edit]]></string>
     <string name="_bx_ads_txt_display_title_view"><![CDATA[{0}: View]]></string>
+    <string name="_bx_ads_txt_empty_title"><![CDATA[No ads yet]]></string>
     <string name="_bx_ads_txt_processing_awaiting"><![CDATA[Ad will be published as soon as video is converted]]></string>
     <string name="_bx_ads_txt_processing_failed"><![CDATA[Ad isn't published because video conversion failed, edit video to fix the issue.]]></string>
     <string name="_bx_ads_txt_free"><![CDATA[Free]]></string>

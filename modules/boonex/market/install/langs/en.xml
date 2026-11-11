@@ -470,6 +470,7 @@
     <string name="_bx_market_txt_all_entries_in"><![CDATA[<a href="{0}">All Products in {1} ({2})</a>]]></string>
     <string name="_bx_market_txt_all_categories"><![CDATA[All Categories]]></string>
     <string name="_bx_market_txt_category"><![CDATA[Category:]]></string>
+    <string name="_bx_market_txt_empty_title"><![CDATA[No products yet]]></string>
     <string name="_bx_market_txt_most_current_version"><![CDATA[The most current version]]></string>
     <string name="_bx_market_txt_sample_single"><![CDATA[product]]></string>
     <string name="_bx_market_txt_sample_single_with_article"><![CDATA[a product]]></string>

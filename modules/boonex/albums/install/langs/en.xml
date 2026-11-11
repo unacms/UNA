@@ -289,6 +289,7 @@
 
     <string name="_bx_albums_txt_all_entries_by"><![CDATA[{0} albums]]></string>
     <string name="_bx_albums_txt_all_entries_in"><![CDATA[<a href="{0}">All Albums in {1} ({2})</a>]]></string>
+    <string name="_bx_albums_txt_empty_title"><![CDATA[No albums yet]]></string>
     <string name="_bx_albums_txt_sample_single"><![CDATA[album]]></string>
     <string name="_bx_albums_txt_sample_single_with_article"><![CDATA[an album]]></string>
     <string name="_bx_albums_txt_sample_comment_single"><![CDATA[comment to album]]></string>

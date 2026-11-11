@@ -465,6 +465,7 @@
     <string name="_bx_market_txt_all_entries_in"><![CDATA[<a href="{0}">Все продукты в {1} ({2})</a>]]></string>
     <string name="_bx_market_txt_all_categories"><![CDATA[Все категории]]></string>
     <string name="_bx_market_txt_category"><![CDATA[Категория:]]></string>
+    <string name="_bx_market_txt_empty_title"><![CDATA[Товаров пока нет]]></string>
     <string name="_bx_market_txt_most_current_version"><![CDATA[Самая новая версия]]></string>
     <string name="_bx_market_txt_sample_single"><![CDATA[продукт]]></string>
     <string name="_bx_market_txt_sample_single_with_article"><![CDATA[продукт]]></string>

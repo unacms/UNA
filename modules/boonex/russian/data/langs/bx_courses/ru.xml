@@ -491,6 +491,7 @@
     <string name="_bx_courses_txt_back_step"><![CDATA[Назад]]></string>
     <string name="_bx_courses_txt_next_step"><![CDATA[Вперед]]></string>
     <string name="_bx_courses_txt_download"><![CDATA[Скачать]]></string>
+    <string name="_bx_courses_txt_empty_title"><![CDATA[Курсов пока нет]]></string>
     <string name="_bx_courses_txt_summary_title"><![CDATA[Прогресс обучения]]></string>
     <string name="_bx_courses_txt_summary_joined"><![CDATA[Записан на]]></string>
     <string name="_bx_courses_txt_summary_passed"><![CDATA[Закончено]]></string>

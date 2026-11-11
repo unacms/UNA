@@ -619,6 +619,7 @@
     <string name="_bx_ads_txt_display_title_add"><![CDATA[{0}: Добавить]]></string>
     <string name="_bx_ads_txt_display_title_edit"><![CDATA[{0}: Редактировать]]></string>
     <string name="_bx_ads_txt_display_title_view"><![CDATA[{0}: Просмотреть]]></string>
+    <string name="_bx_ads_txt_empty_title"><![CDATA[Объявлений пока нет]]></string>
     <string name="_bx_ads_txt_processing_awaiting"><![CDATA[Объявление будет опубликована как только сконвертируется видео.]]></string>
     <string name="_bx_ads_txt_processing_failed"><![CDATA[Объявление не было опубликовано, тк произошла ошибка при конвертации видео. Обновите видео, чтобы решить проблему.]]></string>
     <string name="_bx_ads_txt_free"><![CDATA[Бесплатно]]></string>

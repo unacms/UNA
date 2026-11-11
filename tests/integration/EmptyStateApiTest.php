@@ -88,7 +88,7 @@ class EmptyStateApiTest extends BxDolIntegrationTestCase
         $this->bxBecomeGuest();
         $aFirst = $this->browsePosts(0);
         if (empty($aFirst['data'])) {
-            $this->assertSame(_t('_Empty'), $aFirst['empty_state']['title']);
+            $this->assertSame(_t('_bx_posts_txt_empty_title'), $aFirst['empty_state']['title'], 'The module\'s own title.');
             $this->assertArrayNotHasKey('buttons', $aFirst['empty_state'], 'A guest is offered no add button.');
         }
         else {
@@ -195,10 +195,15 @@ class EmptyStateApiTest extends BxDolIntegrationTestCase
             $this->bxSetProtected($o, '_sMode', $sMode, BxDolSearchResult::class);
             $this->bxSetProtected($o, '_aParams', $sOwnerParam ? [$sOwnerParam => $iViewer] : [], BxBaseModGeneralSearchResult::class);
             $a = BxDolEmptyState::resolve($o->getEmptyStateApi());
+            $this->assertSame(_t('_bx_posts_txt_empty_title'), $a['title'], $sMode . ': the module\'s own title.');
             $this->assertSame(_t($sKey), $a['text'], $sMode);
             $this->assertArrayNotHasKey('buttons', $a, $sMode . ': nothing to add there.');
 
             if ($sOwnerParam) {
+                // A page block's `{profile_id}` marker: the list is the viewer's, as the list itself takes it.
+                $this->bxSetProtected($o, '_aParams', [$sOwnerParam => '{profile_id}'], BxBaseModGeneralSearchResult::class);
+                $this->assertSame(_t($sKey), BxDolEmptyState::resolve($o->getEmptyStateApi())['text'], $sMode . ' from a page block.');
+
                 // Someone else's list: the line about how the viewer's own fills is not for it.
                 $this->bxSetProtected($o, '_aParams', [$sOwnerParam => $iViewer + 1000000], BxBaseModGeneralSearchResult::class);
                 $a = BxDolEmptyState::resolve($o->getEmptyStateApi());

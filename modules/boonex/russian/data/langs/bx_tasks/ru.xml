@@ -624,6 +624,7 @@
     <string name="_bx_tasks_txt_budget_spent"><![CDATA[Использовано:]]></string>
     <string name="_bx_tasks_txt_budget_remains"><![CDATA[Осталось:]]></string>
     <string name="_bx_tasks_txt_budget_remains_value"><![CDATA[{0} ({1}%)]]></string>
+    <string name="_bx_tasks_txt_empty_title"><![CDATA[Задач пока нет]]></string>
 
     <string name="_bx_tasks_txt_err_cannot_perform_action"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
     <string name="_bx_tasks_txt_err_empty_pre_list"><![CDATA[Пожалуйста, выберите список, в который хотите добавить элементы.]]></string>

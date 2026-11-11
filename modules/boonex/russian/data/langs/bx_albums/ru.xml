@@ -287,6 +287,7 @@
 
     <string name="_bx_albums_txt_all_entries_by"><![CDATA[{0} альбомов]]></string>
     <string name="_bx_albums_txt_all_entries_in"><![CDATA[<a href="{0}">Все альбомы в {1} ({2})</a>]]></string>
+    <string name="_bx_albums_txt_empty_title"><![CDATA[Альбомов пока нет]]></string>
     <string name="_bx_albums_txt_sample_single"><![CDATA[альбом]]></string>
     <string name="_bx_albums_txt_sample_single_with_article"><![CDATA[альбом]]></string>
     <string name="_bx_albums_txt_sample_comment_single"><![CDATA[комментарий к альбому]]></string>
