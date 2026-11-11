@@ -23,7 +23,8 @@ import { View, Row } from 'app/design/view'
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
 import { Text } from 'app/design/typography'
-import { getSkeletonForList } from 'app/lib/skeleton-helpers'
+import { getSkeletonCard, getSkeletonForList } from 'app/lib/skeleton-helpers'
+import { useDelayedFlag, useShownWhileLoading } from 'app/lib/hooks/use-delayed-flag'
 import { useCurrentUser } from 'app/context/user'
 import { NeoButton } from 'app/design/controls'
 import { useWindowHeight } from 'app/context/measure';
@@ -40,6 +41,10 @@ import { layoutForList } from 'app/customization/functions'
 import { useTranslation } from 'react-i18next'
 
 const AT_TOP_SCROLL_THRESHOLD = 50;
+/** Skeletons show only when the first page takes longer than this (as Browse). */
+const SKELETON_DELAY_MS = 250;
+/** Holds the list hidden, drawing nothing, until the skeletons are due. */
+const BLANK_PRELOAD = <View />;
 
 export default function Browse(props) {
     const isWeb = Platform.OS === 'web'
@@ -185,6 +190,16 @@ export default function Browse(props) {
         () => getSkeletonForList(sSkeleton, 1, true, layout, renderItem),
         [sSkeleton, layout, renderItem]
     )
+    const skeletonCard = useMemo(() => getSkeletonCard(sSkeleton, renderItem), [sSkeleton, renderItem])
+
+    // As Browse: skeletons from SKELETON_DELAY_MS on, a blank preload until then, and the empty
+    // state below the list's header, gathered from the skeletons when they showed. Every preload
+    // is a stable element: the web list holds the latest one it is given.
+    const isEmptyList = !data?.hide_empty_msg && listItems.length === 0
+    const isEmptyDone = isEmptyList && listReady && hasNextPage === false
+    const isLoadingEmpty = isEmptyList && !isEmptyDone
+    const showSkeletons = useDelayedFlag(isLoadingEmpty, SKELETON_DELAY_MS)
+    const sawSkeletons = useShownWhileLoading(isLoadingEmpty, showSkeletons)
 
 
     // Bottom-tab reselect (same event as Conductor / Browse): scroll to top, or reload if already at top.
@@ -234,14 +249,15 @@ export default function Browse(props) {
 
     const NoContent = components['molecule']['no_content']
 
-    const PreloadComponent = !data?.hide_empty_msg && dataItems.length === 0
-        ? (listReady && hasNextPage === false
-            ? <NoContent endpoint={{request_url: data.request_url, params: {} }}/>
-            : Preload)
+    let PreloadComponent = null;
+    if (isLoadingEmpty) PreloadComponent = showSkeletons ? Preload : BLANK_PRELOAD;
+    const EmptyComponent = isEmptyDone
+        ? <NoContent endpoint={{ request_url: data.request_url, params: {} }} card={skeletonCard} fromSkeletons={sawSkeletons} />
         : null;
 
     const uniListProps = {
         preloadComponent: PreloadComponent,
+        ListEmptyComponent: EmptyComponent,
         refer: uniRef,
         mode: 'simple',
         data: dataItems,
