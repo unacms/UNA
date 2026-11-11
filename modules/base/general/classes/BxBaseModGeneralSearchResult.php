@@ -91,6 +91,29 @@ class BxBaseModGeneralSearchResult extends BxTemplSearchResult
         return parent::rss();
     }
 
+    /**
+     * Empty list: "Nothing here yet", and a button to add the module's first entry for a viewer who
+     * may add one.
+     */
+    function getEmptyStateApi()
+    {
+        $aState = parent::getEmptyStateApi();
+
+        $oModule = $this->getMain();
+        $CNF = &$oModule->_oConfig->CNF;
+        // Only a module whose members add entries themselves has the 'create entry' action
+        // (Channels, made from hashtags, has an add page but no action: asking would stop the request).
+        $aActions = [];
+        if (!empty($CNF['URI_ADD_ENTRY']) && isLogged())
+            BxDolAclQuery::getInstance()->getActions(['type' => 'by_names_and_module', 'value' => 'create entry', 'module' => $oModule->getName()], $aActions, false);
+        if ($aActions && $oModule->checkAllowedAdd() === CHECK_ACTION_RESULT_ALLOWED) {
+            $aState['text'] = '_sys_txt_empty_list_text_add';
+            $aState['buttons'] = [['title' => '_sys_txt_empty_list_add', 'link' => 'page.php?i=' . $CNF['URI_ADD_ENTRY']]];
+        }
+
+        return $aState;
+    }
+
     function processingAPI ($bForceGetData = false) 
     {
         $aResult = parent::processingAPI($bForceGetData);

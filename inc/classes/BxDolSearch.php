@@ -659,8 +659,20 @@ class BxDolSearchResult implements iBxDolReplaceable
             'unit' => 'general-' . $sUnitType . '-' . $sUnit,
             'request_url' => !empty($this->aCurrent['api_request_url']) ? $this->aCurrent['api_request_url'] : '/api.php?r=' . $sModule . '/browse/&params[]=',
             'data' =>  $aData,
-            'params' => $aParams
+            'params' => $aParams,
+            // What the client shows when the list is empty (BxDolEmptyState: the default below,
+            // with the page block's "empty" app config over it).
+            'empty_state' => BxDolEmptyState::forApi($this->getEmptyStateApi()),
         ];
+    }
+
+    /**
+     * The default empty state of this list for API clients (see BxDolEmptyState): language keys.
+     * A module's search result can say more, and add buttons.
+     */
+    function getEmptyStateApi()
+    {
+        return ['title' => '_Empty'];
     }
 
     function addProcessingParamsAPI()

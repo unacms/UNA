@@ -4700,6 +4700,8 @@
     <string name="_sys_txt_delete"><![CDATA[Delete]]></string>
     <string name="_sys_txt_discard"><![CDATA[Discard]]></string>
     <string name="_sys_txt_empty"><![CDATA[Empty]]></string>
+    <string name="_sys_txt_empty_list_add"><![CDATA[Add new]]></string>
+    <string name="_sys_txt_empty_list_text_add"><![CDATA[Be the first to add something here.]]></string>
     <string name="_sys_txt_error_account_creation"><![CDATA[Account creation failed]]></string>
     <string name="_sys_txt_error_account_delete"><![CDATA[Account delete failed]]></string>
     <string name="_sys_txt_error_account_is_not_defined"><![CDATA[Account is not defined]]></string>

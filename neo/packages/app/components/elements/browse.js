@@ -26,7 +26,7 @@ import UniList from 'app/ui/atoms/unilist'
 import { appSetting, isObjectsEqual } from 'app/lib/util'
 import { responsiveClasses } from 'app/lib/responsive-classes'
 import { Text } from 'app/design/typography'
-import { getSkeletonCard, getSkeletonForList } from 'app/lib/skeleton-helpers'
+import { getSkeletonForList, getSkeletonPreview } from 'app/lib/skeleton-helpers'
 import { useDelayedFlag, useShownWhileLoading } from 'app/lib/hooks/use-delayed-flag'
 import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
@@ -233,7 +233,10 @@ export default function Browse(props) {
         () => getSkeletonForList(sSkeleton, numColumns, true, layout, renderItem),
         [sSkeleton, numColumns, layout, renderItem]
     )
-    const skeletonCard = useMemo(() => getSkeletonCard(sSkeleton, renderItem), [sSkeleton, renderItem])
+    const skeletonPreview = useMemo(
+        () => getSkeletonPreview(sSkeleton, numColumns, layout, renderItem),
+        [sSkeleton, numColumns, layout, renderItem]
+    )
 
     // Skeletons while the list loads, from SKELETON_DELAY_MS on: a quicker answer shows its rows
     // or its empty state without them. Once it is done and empty, the empty state goes below the
@@ -379,7 +382,7 @@ export default function Browse(props) {
     let PreloadComponent = null;
     if (isLoadingEmpty) PreloadComponent = showSkeletons ? Preload : BLANK_PRELOAD;
     const EmptyComponent = isEmptyDone
-        ? <NoContent endpoint={{ request_url: data.request_url, params: {} }} card={skeletonCard} fromSkeletons={sawSkeletons} />
+        ? <NoContent endpoint={{ request_url: data.request_url, params: {} }} preview={skeletonPreview} state={data?.empty_state} fromSkeletons={sawSkeletons} />
         : null;
 
 

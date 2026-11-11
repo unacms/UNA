@@ -1,16 +1,17 @@
 import { useTranslation } from 'react-i18next';
 import { appStatic } from 'app/lib/app-static';
-import EmptyStack from './empty-stack';
+import EmptyState from './empty-state';
 
 /**
- * A list's empty state. With `card` (one of the list's skeleton cards, getSkeletonCard) it is
- * three of them stacked over "Nothing here yet", gathered from the skeletons when
- * `fromSkeletons`; without it, the `components_content_empty` static.
+ * A list's empty state. With `preview` (the list's skeletons, getSkeletonPreview) it is
+ * EmptyState: that preview fading out, then UNA's words and buttons for the list (`state`, the
+ * list's `empty_state`), settled from the loading skeletons when `fromSkeletons`. Without it,
+ * the `components_content_empty` static.
  */
-export default function NoContent({ endpoint, card, fromSkeletons }) {
+export default function NoContent({ endpoint, preview, state, fromSkeletons }) {
      const { t } = useTranslation();
-     if (card) {
-          return <EmptyStack card={card} fromSkeletons={!!fromSkeletons} message={t('Nothing here yet')} />
+     if (preview) {
+          return <EmptyState preview={preview} state={state} fromSkeletons={!!fromSkeletons} fallbackTitle={t('Nothing here yet')} />
      }
      if (endpoint?.unit == 'feed'){
           return null

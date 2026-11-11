@@ -283,7 +283,7 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
         if ($this->_bIsApi) {
             $aData = $this->getViewBlock($aParams);
             return [
-                'content' => [bx_api_get_block('browse', array_merge(['unit' => 'feed', 'data' => $aData], $this->getHasMoreApi()))],
+                'content' => [bx_api_get_block('browse', array_merge(['unit' => 'feed', 'data' => $aData], $this->getHasMoreApi(), ['empty_state' => $this->getModule()->getEmptyStateApi()]))],
                 'menu' => $oMenu->getCodeAPI()
             ];
         }

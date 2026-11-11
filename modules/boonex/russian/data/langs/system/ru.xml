@@ -4628,6 +4628,8 @@
     <string name="_sys_txt_delete"><![CDATA[Удалить]]></string>
     <string name="_sys_txt_discard"><![CDATA[Отменить]]></string>
     <string name="_sys_txt_empty"><![CDATA[Пусто]]></string>
+    <string name="_sys_txt_empty_list_add"><![CDATA[Добавить]]></string>
+    <string name="_sys_txt_empty_list_text_add"><![CDATA[Добавьте сюда что-нибудь первым.]]></string>
     <string name="_sys_txt_error_account_creation"><![CDATA[Не удалось создать аккаунт]]></string>
     <string name="_sys_txt_error_account_delete"><![CDATA[Не удалось удалить аккаунт]]></string>
     <string name="_sys_txt_error_account_is_not_defined"><![CDATA[Аккаунт не определён]]></string>

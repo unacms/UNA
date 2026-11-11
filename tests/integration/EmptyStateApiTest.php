@@ -1,0 +1,90 @@
+<?php
+
+use PHPUnit\Framework\Attributes\Group;
+
+/**
+ * Empty states for API clients (BxDolEmptyState): a module's default, a page block's "empty" app
+ * config over it, language keys resolved, and only the site's own links.
+ */
+#[Group('integration')]
+class EmptyStateApiTest extends BxDolIntegrationTestCase
+{
+    protected function tearDown(): void
+    {
+        BxDolPage::unsetBlockProcessing();
+        parent::tearDown();
+    }
+
+    public function testKeysAreResolvedAndOnlySiteLinksKept(): void
+    {
+        $a = BxDolEmptyState::resolve([
+            'title' => '_Empty',
+            'text' => 'Plain <b>text</b>',
+            'buttons' => [
+                ['title' => 'Add', 'link' => 'page.php?i=create-post'],
+                ['title' => 'Script', 'link' => 'javascript:alert(1)'],
+                ['title' => 'Elsewhere', 'link' => 'https://elsewhere.example/x'],
+                ['title' => 'Absolute', 'link' => BX_DOL_URL_ROOT . 'page.php?i=create-post'],
+                ['title' => '', 'link' => 'page.php?i=create-post'],
+            ],
+        ]);
+
+        $this->assertSame(_t('_Empty'), $a['title']);
+        $this->assertSame('Plain text', $a['text'], 'Markup is not passed on.');
+        $this->assertSame(['Add', 'Absolute'], array_column($a['buttons'], 'title'), 'Scripts, other hosts and untitled buttons are dropped.');
+        $this->assertSame(['primary', 'secondary'], array_column($a['buttons'], 'style'));
+        $this->assertStringStartsWith('/', $a['buttons'][0]['link'], 'Links are relative to the site, as the apps open them.');
+        $this->assertNull(BxDolEmptyState::resolve(['title' => '', 'buttons' => []]), 'Nothing to say is null.');
+    }
+
+    public function testAtMostThreeButtons(): void
+    {
+        $aButtons = array_fill(0, 5, ['title' => 'Add', 'link' => 'page.php?i=create-post']);
+        $this->assertCount(BxDolEmptyState::MAX_BUTTONS, BxDolEmptyState::resolve(['buttons' => $aButtons])['buttons']);
+    }
+
+    public function testBlockConfigOverridesTheDefaultKeyByKey(): void
+    {
+        $aDefault = ['title' => '_Empty', 'text' => 'Default text', 'buttons' => [['title' => 'Default', 'link' => 'page.php?i=create-post']]];
+
+        BxDolPage::setBlockProcessing(['config_api' => ['empty' => ['text' => 'From Studio', 'buttons' => []]]]);
+        $a = BxDolEmptyState::forApi($aDefault);
+        $this->assertSame(_t('_Empty'), $a['title'], 'A key the block leaves out keeps the default.');
+        $this->assertSame('From Studio', $a['text']);
+        $this->assertArrayNotHasKey('buttons', $a, 'An empty list of buttons shows none.');
+
+        BxDolPage::setBlockProcessing(['config_api' => 'not decoded']);
+        $this->assertSame('Default text', BxDolEmptyState::forApi($aDefault)['text'], 'A config that is not JSON leaves the default.');
+    }
+
+    public function testTimelineFeedForAGuestHasNoButton(): void
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_timeline'))
+            $this->markTestSkipped('Timeline is not installed.');
+
+        $this->bxBecomeGuest();
+        $a = BxDolModule::getInstance('bx_timeline')->getEmptyStateApi();
+        $this->assertSame(_t('_bx_timeline_txt_empty_feed_title'), $a['title']);
+        $this->assertArrayNotHasKey('text', $a);
+        $this->assertArrayNotHasKey('buttons', $a, 'A guest cannot post.');
+    }
+
+    public function testBrowseResponseCarriesTheEmptyState(): void
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_posts'))
+            $this->markTestSkipped('Posts is not installed.');
+
+        $this->bxBecomeGuest();
+        $o = BxDolModule::getInstance('bx_posts');
+        $this->bxSetProtected($o, '_bIsApi', true, BxBaseModGeneralModule::class);
+        try {
+            $a = $o->serviceBrowse(json_encode(['params' => ['type' => 'recent', 'start' => 0, 'per_page' => 1]]))[0]['data'];
+        }
+        finally {
+            $this->bxSetProtected($o, '_bIsApi', false, BxBaseModGeneralModule::class);
+        }
+
+        $this->assertSame(_t('_Empty'), $a['empty_state']['title']);
+        $this->assertArrayNotHasKey('buttons', $a['empty_state'], 'A guest is offered no add button.');
+    }
+}

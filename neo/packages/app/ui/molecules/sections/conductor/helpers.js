@@ -704,6 +704,8 @@ function processEndpoint(acc, b) {
         module: b.data.module,
         ...(b.designbox ? { designbox: b.designbox } : null),
         ...(b.bg_hidden_on ? { bg_hidden_on: b.bg_hidden_on } : null),
+        // UNA's words and buttons for the list when it comes back empty (BxDolEmptyState).
+        ...(b.data.empty_state ? { empty_state: b.data.empty_state } : null),
     }
 }
 

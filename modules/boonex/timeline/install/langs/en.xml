@@ -484,6 +484,9 @@
     <string name="_bx_timeline_txt_do_repost"><![CDATA[Repost]]></string>
     <string name="_bx_timeline_txt_do_repost_with"><![CDATA[Repost with Text]]></string>
     <string name="_bx_timeline_txt_do_repost_to"><![CDATA[Repost to Context]]></string>
+    <string name="_bx_timeline_txt_empty_feed_create"><![CDATA[Create new update]]></string>
+    <string name="_bx_timeline_txt_empty_feed_text"><![CDATA[Write a new post or follow someone to get started.]]></string>
+    <string name="_bx_timeline_txt_empty_feed_title"><![CDATA[Nothing here yet]]></string>
     <string name="_bx_timeline_txt_repost_counter"><![CDATA[{0}]]></string>
     <string name="_bx_timeline_txt_reposted"><![CDATA[Reposted {0}'s {1}.]]></string>
     <string name="_bx_timeline_txt_reposted_by"><![CDATA[Reposted by]]></string>
