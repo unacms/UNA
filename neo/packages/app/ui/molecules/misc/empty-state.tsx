@@ -136,7 +136,8 @@ function EmptyStateButton({ button }: Readonly<{ button: EmptyStateButtonData }>
 function CreateMenuButton({ button }: Readonly<{ button: EmptyStateButtonData }>) {
     // A primary "+" capsule, like the header's: UNA's title is its name for assistive tech and its tooltip.
     const look = {
-        style: 'borderedProminent',
+        // Primary as the feed sends it; a button UNA or Studio makes secondary stays secondary.
+        style: button.style === 'secondary' ? 'bordered' : 'borderedProminent',
         controlSize: 'regular',
         borderShape: 'capsule',
         image: 'Plus',
