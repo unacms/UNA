@@ -4,5 +4,5 @@
 <resources name="ru" flag="ru" title="Russian">
     <string_add name="_bx_timeline_txt_empty_feed_title"><![CDATA[Здесь пока ничего нет]]></string_add>
     <string_add name="_bx_timeline_txt_empty_feed_text"><![CDATA[Напишите новую запись или подпишитесь на кого-нибудь, чтобы начать.]]></string_add>
-    <string_add name="_bx_timeline_txt_empty_feed_create"><![CDATA[Создать запись]]></string_add>
+    <string_add name="_bx_timeline_txt_empty_feed_create"><![CDATA[Создать…]]></string_add>
 </resources>

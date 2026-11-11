@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Liquid } from 'liquid-gooey';
 import { useTranslation } from 'react-i18next';
 import { NeoButtonRef } from 'app/design/controls';
@@ -8,8 +8,9 @@ import type { GooeyMenuItem, GooeyMenuProps } from './gooey-menu.types';
 /**
  * A round glass "+" whose actions split off it as liquid droplets (liquid-gooey, the
  * Libraries.dev gooey plus-menu). The actions fan out above the trigger in an arc. Trigger and
- * actions are glass NeoButton circles; the liquid (the popover surface) only shows where they
- * part, as the bridge that stretches and snaps between them.
+ * actions are glass NeoButton circles. The liquid (the popover surface) shows only while they
+ * move, as the bridge that stretches and snaps between them: the goo filter can only draw an
+ * opaque blob, which at rest would fill the glass in. Under reduced motion it never shows.
  *
  * Motion is the hand-tuned Libraries.dev Studio setup: 550 ms, cubic-bezier(0.34, 1.56, 0.64, 1),
  * 40 ms stagger, droplets 64 px out. With two actions they land exactly where that setup puts
@@ -61,7 +62,10 @@ export default function GooeyMenu(props: Readonly<GooeyMenuProps>) {
 
 function GooeyDroplets({ items, label, onSelect, icon = 'Plus', onMore, refocus = false }: Readonly<GooeyMenuProps & { onMore: () => void; refocus?: boolean }>) {
     const { t } = useTranslation();
-    const [open, setOpen] = useState(false);
+    const [open, setOpenState] = useState(false);
+    // The liquid shows while droplets travel (the transition, its stagger and a little settling).
+    const [moving, setMoving] = useState(false);
+    const movingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const rootRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLElement>(null);
     const firstItemRef = useRef<HTMLElement>(null);
@@ -69,6 +73,16 @@ function GooeyDroplets({ items, label, onSelect, icon = 'Plus', onMore, refocus 
         ? [...items.slice(0, MAX_DROPLETS - 1), { id: MORE_ID, title: t('More'), icon: 'Ellipsis' }]
         : items;
     const offsets = itemOffsets(droplets.length);
+    const travelMs = TRANSITION.duration + STAGGER_MS * Math.max(0, droplets.length - 1) + 80;
+    const setOpen = useCallback((next: boolean) => {
+        setOpenState(next);
+        setMoving(true);
+        if (movingTimer.current) clearTimeout(movingTimer.current);
+        movingTimer.current = setTimeout(() => setMoving(false), travelMs);
+    }, [travelMs]);
+    useEffect(() => () => {
+        if (movingTimer.current) clearTimeout(movingTimer.current);
+    }, []);
 
     // The liquid group spans the whole open footprint (the library needs its items' travel
     // inside it) but takes no room in the page: only the trigger does.
@@ -104,7 +118,7 @@ function GooeyDroplets({ items, label, onSelect, icon = 'Plus', onMore, refocus 
             document.removeEventListener('keydown', onKey);
             document.removeEventListener('pointerdown', onPointer);
         };
-    }, [open]);
+    }, [open, setOpen]);
 
     const toggle = (event?: any) => {
         const opening = !open;
@@ -129,7 +143,9 @@ function GooeyDroplets({ items, label, onSelect, icon = 'Plus', onMore, refocus 
         <div ref={rootRef} className="relative" style={{ width: TRIGGER_WIDTH, height: ITEM }}>
             <Liquid
                 fill="var(--color-popover)"
-                className="pointer-events-none"
+                className={'pointer-events-none [&_[data-gooey-svg]]:transition-opacity [&_[data-gooey-svg]]:duration-150 '
+                    + 'motion-reduce:[&_[data-gooey-svg]]:opacity-0 '
+                    + (moving ? '[&_[data-gooey-svg]]:opacity-100' : '[&_[data-gooey-svg]]:opacity-0')}
                 style={{ position: 'absolute', width, height, left: TRIGGER_WIDTH / 2 - width / 2, top: ITEM - height }}
             >
                 {droplets.map((item, index) => {

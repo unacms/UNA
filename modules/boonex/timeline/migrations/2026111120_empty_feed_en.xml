@@ -4,5 +4,5 @@
 <resources name="en" flag="gb" title="English">
     <string_add name="_bx_timeline_txt_empty_feed_title"><![CDATA[Nothing here yet]]></string_add>
     <string_add name="_bx_timeline_txt_empty_feed_text"><![CDATA[Write a new post or follow someone to get started.]]></string_add>
-    <string_add name="_bx_timeline_txt_empty_feed_create"><![CDATA[Create new update]]></string_add>
+    <string_add name="_bx_timeline_txt_empty_feed_create"><![CDATA[Create new…]]></string_add>
 </resources>
