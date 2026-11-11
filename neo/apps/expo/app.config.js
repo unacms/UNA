@@ -219,10 +219,10 @@ if (typeof (expoConfigCustom.plugins) !== 'undefined')
 
 // A fork's own app icon wins on every platform: UNA's iOS appearances and Android adaptive icon
 // would otherwise be used instead of the fork's top-level `icon`.
-if (typeof (expoConfigCustom.icon) !== 'undefined' || typeof (expoConfigCustom.ios?.icon) !== 'undefined')
+if (expoConfigCustom.icon !== undefined || expoConfigCustom.ios?.icon !== undefined)
     delete expoConfig.ios.icon;
 
-if (typeof (expoConfigCustom.icon) !== 'undefined' && typeof (expoConfigCustom.android?.adaptiveIcon) === 'undefined')
+if (expoConfigCustom.icon !== undefined && expoConfigCustom.android?.adaptiveIcon === undefined)
     delete expoConfig.android.adaptiveIcon;
 
 // Applied after the merge so forks that replace `plugins` still get it.
