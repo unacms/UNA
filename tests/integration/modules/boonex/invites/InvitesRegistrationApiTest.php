@@ -187,6 +187,79 @@ class InvitesRegistrationApiTest extends BxDolIntegrationTestCase
         $this->assertSame('readonly', $aEmail['attrs']['readonly'] ?? null, 'The invitation is for this email only.');
     }
 
+    protected function bxInsertInvite(BxInvModule $oModule, array $aFields = []): void
+    {
+        $this->_sKey = BxDolKey::getInstance()->getNewKey(false, 3600);
+        $this->_iInviteId = (int)$oModule->_oDb->insertInvite(array_merge([
+            'account_id' => 0,
+            'profile_id' => 0,
+            'key' => $this->_sKey,
+            'email' => 'invited-' . bin2hex(random_bytes(4)) . '@example.com',
+            'email_use' => 0,
+            'date' => time(),
+        ], $aFields));
+        $this->assertGreaterThan(0, $this->_iInviteId);
+    }
+
+    /**
+     * Runs the Invites handler of 'account add_form_check', which the join form fires on every request, a submit too.
+     */
+    protected function bxFireAddFormCheck(): void
+    {
+        $oForm = (new BxTemplAccountForms())->getObjectFormAdd();
+        $this->assertNotEmpty($oForm);
+
+        // Alert handlers are loaded by the alerts, not by the class loader.
+        if (!class_exists('BxInvResponse', false))
+            require_once BX_DIRECTORY_PATH_MODULES . 'boonex/invites/classes/BxInvResponse.php';
+
+        (new BxInvResponse())->response(new BxDolAlerts('account', 'add_form_check', 0, 0, [
+            'form_object' => &$oForm,
+        ]));
+    }
+
+    public function testInvitationLinkFormCarriesTheKey(): void
+    {
+        // NEO renders the join page on the server, where the session cookie with the key never reaches the browser,
+        // and sends the form to the API without the page's URL params. The form carries the key instead.
+        $oModule = $this->bxInvites(false, true);
+        $this->bxInsertInvite($oModule);
+        $sKeyCode = $oModule->_oConfig->getKeyCode();
+        $_GET[$sKeyCode] = $this->_sKey;
+
+        $aItems = $this->bxCreateAccountFormApi();
+
+        $this->assertSame('form', $aItems[0]['type']);
+        $aKey = $aItems[0]['data']['inputs'][$sKeyCode] ?? null;
+        $this->assertIsArray($aKey, 'The join form has the key as a hidden input.');
+        $this->assertSame('hidden', $aKey['type']);
+        $this->assertSame($this->_sKey, $aKey['value']);
+    }
+
+    public function testSubmittedKeyIsKeptForTheNewAccount(): void
+    {
+        // The submit comes in a request of its own, with an empty session: 'account added' finds the key there.
+        $oModule = $this->bxInvites(false, true);
+        $this->bxInsertInvite($oModule, ['aj_action' => 'invite_to_context', 'aj_params' => '1']);
+        $oModule->_oConfig->unsetKey();
+        $_GET[$oModule->_oConfig->getKeyCode()] = $this->_sKey;
+
+        $this->bxFireAddFormCheck();
+
+        $this->assertSame($this->_sKey, $oModule->_oConfig->getKey());
+    }
+
+    public function testSubmittedUnknownKeyIsNotKept(): void
+    {
+        $oModule = $this->bxInvites(false, true);
+        $oModule->_oConfig->unsetKey();
+        $_GET[$oModule->_oConfig->getKeyCode()] = 'phpunit-' . bin2hex(random_bytes(8));
+
+        $this->bxFireAddFormCheck();
+
+        $this->assertFalse($oModule->_oConfig->getKey());
+    }
+
     public function testOpenRegistrationShowsTheForm(): void
     {
         $this->bxInvites(false, true);
