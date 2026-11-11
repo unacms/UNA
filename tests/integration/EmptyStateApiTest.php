@@ -131,4 +131,47 @@ class EmptyStateApiTest extends BxDolIntegrationTestCase
             $this->bxSetProtected($o, '_bIsApi', false, BxBaseModGeneralModule::class);
         }
     }
+
+    public function testEmptyNotificationsSayWhatShowsThere(): void
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_notifications'))
+            $this->markTestSkipped('Notifications is not installed.');
+
+        $this->bxLoginAsUser();
+        $o = BxDolModule::getInstance('bx_notifications');
+        $this->bxSetProtected($o, '_bIsApi', true, BxBaseModGeneralModule::class);
+        try {
+            // A module nobody posts from: the first page comes back empty.
+            $aBlock = $o->serviceGetBlockView('', 0, 5, ['bx_no_such_module'])[0]['data'];
+            $aLater = $o->serviceGetBlockView('', 7, 5, ['bx_no_such_module'])[0]['data'];
+        }
+        finally {
+            $this->bxSetProtected($o, '_bIsApi', false, BxBaseModGeneralModule::class);
+        }
+
+        $this->assertSame([], $aBlock['data']);
+        $this->assertSame(_t('_bx_ntfs_txt_empty_title'), $aBlock['empty_state']['title']);
+        $this->assertSame(_t('_bx_ntfs_txt_empty_text'), $aBlock['empty_state']['text']);
+        $this->assertArrayNotHasKey('empty_state', $aLater, 'A later page never shows one.');
+    }
+
+    public function testEmptyInvitationsSayWhatShowsThere(): void
+    {
+        $this->bxLoginAsUser();
+        $o = new BxTemplServiceProfiles();
+        // As a page block calls it (the Invitations tab's block, without an app config).
+        BxDolPage::setBlockProcessing(['config_api' => []]);
+        $this->bxSetProtected($o, '_bIsApi', true, BxBaseServiceProfiles::class);
+        try {
+            $aBlocks = $o->serviceBrowseInvitations(0, ['params' => ['modules' => ['bx_no_such_module']]]);
+        }
+        finally {
+            $this->bxSetProtected($o, '_bIsApi', false, BxBaseServiceProfiles::class);
+        }
+
+        $aBlock = $aBlocks[0]['data'];
+        $this->assertSame([], $aBlock['data']);
+        $this->assertSame(_t('_sys_txt_empty_invitations_title'), $aBlock['empty_state']['title']);
+        $this->assertArrayNotHasKey('buttons', $aBlock['empty_state']);
+    }
 }

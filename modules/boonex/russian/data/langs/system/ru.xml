@@ -4628,6 +4628,8 @@
     <string name="_sys_txt_delete"><![CDATA[Удалить]]></string>
     <string name="_sys_txt_discard"><![CDATA[Отменить]]></string>
     <string name="_sys_txt_empty"><![CDATA[Пусто]]></string>
+    <string name="_sys_txt_empty_invitations_text"><![CDATA[Когда вас пригласят в группу, событие или другое сообщество, приглашение появится здесь.]]></string>
+    <string name="_sys_txt_empty_invitations_title"><![CDATA[Приглашений нет]]></string>
     <string name="_sys_txt_empty_list_add"><![CDATA[Добавить]]></string>
     <string name="_sys_txt_empty_list_text_add"><![CDATA[Добавьте сюда что-нибудь первым.]]></string>
     <string name="_sys_txt_error_account_creation"><![CDATA[Не удалось создать аккаунт]]></string>

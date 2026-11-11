@@ -4700,6 +4700,8 @@
     <string name="_sys_txt_delete"><![CDATA[Delete]]></string>
     <string name="_sys_txt_discard"><![CDATA[Discard]]></string>
     <string name="_sys_txt_empty"><![CDATA[Empty]]></string>
+    <string name="_sys_txt_empty_invitations_text"><![CDATA[When someone invites you to a group, event or other space, it shows here.]]></string>
+    <string name="_sys_txt_empty_invitations_title"><![CDATA[No invitations]]></string>
     <string name="_sys_txt_empty_list_add"><![CDATA[Add new]]></string>
     <string name="_sys_txt_empty_list_text_add"><![CDATA[Be the first to add something here.]]></string>
     <string name="_sys_txt_error_account_creation"><![CDATA[Account creation failed]]></string>

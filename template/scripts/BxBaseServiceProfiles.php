@@ -1006,17 +1006,26 @@ class BxBaseServiceProfiles extends BxDol
                     }
             }
             
-            if(!$bApiBrowseSimple || $aDataApi)
-                $aDataApi = [bx_api_get_block($sApiContentType, [
+            if(!$bApiBrowseSimple || $aDataApi) {
+                $aBlockData = [
                     'module' => 'system',
                     'unit' => 'invitations',
                     'request_url' => '/api.php?r=system/browse_invitations/TemplServiceProfiles&params[]=' . $iProfileId . '&params[]=',
                     'data' =>  $aDataApi,
                     'params' => [
-                        'start' => 0, 
+                        'start' => 0,
                         'per_page' => 999
                     ]
-                ])];
+                ];
+                // What the apps show when there are none (BxDolEmptyState); a page block's app config can change it.
+                if(!$aDataApi)
+                    $aBlockData['empty_state'] = BxDolEmptyState::forApi([
+                        'title' => '_sys_txt_empty_invitations_title',
+                        'text' => '_sys_txt_empty_invitations_text',
+                    ]);
+
+                $aDataApi = [bx_api_get_block($sApiContentType, $aBlockData)];
+            }
 
             return $aDataApi;
         }

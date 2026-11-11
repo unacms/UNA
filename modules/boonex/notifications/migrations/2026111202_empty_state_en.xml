@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- The empty notifications list for API clients (BxDolEmptyState). -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_bx_ntfs_txt_empty_title"><![CDATA[No notifications yet]]></string_add>
+    <string_add name="_bx_ntfs_txt_empty_text"><![CDATA[Reactions, comments, mentions and new followers show here.]]></string_add>
+</resources>
