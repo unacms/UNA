@@ -62,14 +62,14 @@ export default function EmptyState({ preview, fromSkeletons = false, state, fall
     const buttons = state?.buttons ?? [];
 
     return (
-        <View className="w-full flex-1 items-center justify-center py-8 web:min-h-[60vh] native:min-h-[480px]" role="status">
+        <View className="w-full flex-1 items-center justify-center py-8 min-h-120" role="status">
             {preview ? (
                 <View
                     aria-hidden
                     importantForAccessibility="no-hide-descendants"
                     accessibilityElementsHidden
                     pointerEvents="none"
-                    className="relative w-full max-h-[260px] overflow-hidden"
+                    className="relative w-full max-h-65 overflow-hidden"
                 >
                     <Animated.View
                         style={{
@@ -86,7 +86,7 @@ export default function EmptyState({ preview, fromSkeletons = false, state, fall
             <Animated.View style={{ opacity: wordsOpacity }} className="items-center gap-2 px-6 -mt-6">
                 <Text className="text-center text-lg font-semibold text-foreground">{title}</Text>
                 {state?.text ? (
-                    <Text className="text-center text-base text-muted-foreground max-w-[420px]">{state.text}</Text>
+                    <Text className="text-center text-base text-muted-foreground max-w-105">{state.text}</Text>
                 ) : null}
                 {buttons.length ? (
                     <Row className="flex-wrap justify-center gap-2 pt-3">

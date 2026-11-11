@@ -667,8 +667,9 @@ class BxDolSearchResult implements iBxDolReplaceable
         // the page block's "empty" app config over it). Only where the list can turn out empty: its
         // first page, before its items are known (a page's blocks) or when there are none. The
         // default can check permissions, so a page of items does not pay for it.
-        if((int)$this->aCurrent['paginate']['start'] == 0 && (!$bDataFetched || empty($aData)))
+        if((int)$this->aCurrent['paginate']['start'] == 0 && (!$bDataFetched || empty($aData))) {
             $aResult['empty_state'] = BxDolEmptyState::forApi($this->getEmptyStateApi());
+        }
 
         return $aResult;
     }
