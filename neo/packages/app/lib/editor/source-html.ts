@@ -18,8 +18,9 @@ const isClose = (tag: string) => tag.startsWith('</')
 
 /** Text of an HTML fragment: tags dropped (`<br>` is a newline), entities kept. */
 function fragmentText(html: string) {
-    return html.split(TAG_RE).map((part) => {
-        if (!part.startsWith('<')) return part
+    // split() with a capturing group puts the tags at odd indexes; a stray "<" stays text.
+    return html.split(TAG_RE).map((part, i) => {
+        if (i % 2 === 0) return part
         return tagName(part) === 'br' ? '\n' : ''
     }).join('')
 }
@@ -89,7 +90,7 @@ class CellWriter {
             return
         }
         const href = /\bhref\s*=\s*(?:"([^"]*)"|'([^']*)')/i.exec(part)
-        const url = (href?.[1] ?? href?.[2] ?? '').replace(/[()\s]/g, encodeURIComponent)
+        const url = (href?.[1] ?? href?.[2] ?? '').replace(/[()|\s]/g, encodeURIComponent) // | would end the table cell
         if (url) { this.links.push(url); this.out += '[' }
     }
 
@@ -102,10 +103,10 @@ class CellWriter {
 /** Inline HTML of a table cell as GFM Markdown: bold, italic, code and links kept, other tags dropped. */
 function cellMarkdown(html: string) {
     const writer = new CellWriter()
-    for (const part of html.split(TAG_RE)) {
-        if (part.startsWith('<')) writer.tag(part)
+    html.split(TAG_RE).forEach((part, i) => {
+        if (i % 2 === 1) writer.tag(part)
         else writer.text(part)
-    }
+    })
     return writer.result()
 }
 

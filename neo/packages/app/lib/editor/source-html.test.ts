@@ -51,3 +51,13 @@ test('code spans hold backticks and entities as written', () => {
 test('a blank line inside pre is kept as an empty line', () => {
     assert.equal(preToCodeBlock('<pre>\na\n\nb\n</pre>'), '<codeblock><p>a</p><p>&nbsp;</p><p>b</p></codeblock>');
 });
+
+test('a stray "<" in text is kept', () => {
+    assert.equal(preToCodeBlock('<pre>< 5\nnext</pre>'), '<codeblock><p>< 5</p><p>next</p></codeblock>');
+    assert.equal(htmlTableToMarkdown('<table><tr><td>< 5</td></tr></table>'), '| \\< 5 |\n| --- |');
+});
+
+test('a pipe in a link URL does not split the cell', () => {
+    assert.equal(htmlTableToMarkdown('<table><tr><td><a href="https://e.com/?f=a|b">Open</a></td></tr></table>'),
+        '| [Open](https://e.com/?f=a%7Cb) |\n| --- |');
+});
