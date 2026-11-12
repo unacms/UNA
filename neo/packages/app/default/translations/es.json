@@ -570,5 +570,6 @@
     "Flags": "Banderas",
     "Start timer": "Iniciar temporizador",
     "Pause timer": "Pausar temporizador",
-    "Total logged": "Total registrado"
+    "Total logged": "Total registrado",
+    "optional": "opcional"
 }

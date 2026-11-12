@@ -527,3 +527,17 @@ html.dark .bx-artificer .bx-form-element-adaptive .bx-form-caption:not(.bx-form-
         transition: none;
     }
 }
+
+/* The mark after a label (BxBaseFormView::genRequiredMark): an asterisk clear of the label's last letter, or a quiet "(optional)". */
+.bx-artificer .bx-form-required {
+    margin-inline-start: 0.1875rem;
+}
+.bx-artificer .bx-form-optional {
+    margin-inline-start: 0.25rem;
+
+    color: #52525b;
+    font-weight: 400;
+}
+html.dark .bx-artificer .bx-form-optional {
+    color: #a1a1aa;
+}

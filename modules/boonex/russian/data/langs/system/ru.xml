@@ -3495,6 +3495,7 @@
 	<string name="_sys_form_unsubscribe_input_receive_updates"><![CDATA[Получать обновления сайта]]></string>
 	<string name="_sys_form_unsubscribe_input_submit"><![CDATA[Выполнить]]></string>
 	<string name="_sys_form_err_not_unique_value"><![CDATA[Поле должно иметь уникальное значение]]></string>
+	<string name="_sys_form_txt_optional"><![CDATA[(необязательно)]]></string>
 	<string name="_sys_form_txt_select_file"><![CDATA[Выбрать файл]]></string>
     <string name="_sys_form_wiki"><![CDATA[Вики]]></string>
     <string name="_sys_form_display_wiki_edit"><![CDATA[Вики: редактирование]]></string>

@@ -163,6 +163,7 @@ export default function Field({
     use_caption_as_placeholder,
     type,
     label_style,
+    required_mark,
     checker,
     required,
     children,
@@ -232,7 +233,12 @@ export default function Field({
 
     const optionalText = appSetting('forms', 'optional_text')
     const mandatoryIcon = appSetting('forms', 'mandatory_icon')
-    const isShowOptional = optionalText != '' ? '(' + optionalText + ')' : ''
+    // UNA says which fields are marked (`required_mark`, see lib/form/label-style): the optional
+    // ones with "(optional)", the required ones with the icon, or none.
+    const isRequired = !!(checker || required)
+    const optionalLabel = '(' + (optionalText != '' ? optionalText : i18n.t('optional')) + ')'
+    const showOptional = required_mark === 'optional' && !isRequired
+    const showAsterisk = required_mark !== 'none' && required_mark !== 'optional' && isRequired && !!mandatoryIcon
     const isShowCaption =
         !!captionProp &&
         format == 'default' &&
@@ -256,19 +262,16 @@ export default function Field({
                 >
                     {caption}
                 </FieldCaption>
-                {checker || required ? (
-                    <></>
-                ) : (
-                    <Text className="text-sm sm: text-base text-muted-foreground ">
-                        {isShowOptional}
+                {showOptional && (
+                    <Text className="text-sm text-muted-foreground">
+                        {optionalLabel}
                     </Text>
                 )}
-                {!!mandatoryIcon && (checker || required) ? (
-                    <Text className="text-destructive mb-auto leading-5">
-                        <Icon icon={mandatoryIcon} size={12} />
-                    </Text>
-                ) : (
-                    <></>
+                {showAsterisk && (
+                    // A View, not Text: an icon inside a native Text is clipped at the line's top.
+                    <View className="self-start pt-0.5">
+                        <Icon icon={mandatoryIcon} size={12} className="text-destructive" />
+                    </View>
                 )}
             </Row>
         </Text>

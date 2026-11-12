@@ -26,6 +26,14 @@ class BxDolStudioForm extends BxBaseFormView
         return BxDolForm::LABEL_STYLE_REGULAR;
     }
 
+    /**
+     * Studio's own forms keep the asterisk on every required field.
+     */
+    public function getRequiredMark()
+    {
+        return BxDolForm::REQUIRED_MARK_REQUIRED;
+    }
+
     function initChecker($aValues = array (), $aSpecificValues = array())
     {
         parent::initChecker($aValues, $aSpecificValues);

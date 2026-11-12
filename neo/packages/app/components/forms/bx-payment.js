@@ -1,4 +1,5 @@
 'use client'
+import { resolveRequiredMark } from 'app/lib/form/label-style'
 
 import { useEffect } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
@@ -35,6 +36,7 @@ export default function FormBxPayment(props) {
     if (!inputs) return null
 
     const useCaptionAsPlaceholder = appSetting('forms', 'without_captions').includes(name)
+    const requiredMark = resolveRequiredMark(data?.params?.required_mark)
     const visibleKeys = Object.keys(inputs).filter(
         (key) => inputs[key] && inputs[key].type !== 'hidden'
     )
@@ -52,6 +54,7 @@ export default function FormBxPayment(props) {
                         form_name: name,
                         noPadding: key === lastKey,
                         use_caption_as_placeholder: useCaptionAsPlaceholder,
+                        required_mark: requiredMark,
                     }
 
                     // Replace empty UNA custom HTML with interactive items picker

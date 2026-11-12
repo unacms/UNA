@@ -3524,6 +3524,7 @@
 	<string name="_sys_form_unsubscribe_input_receive_updates"><![CDATA[Receive Site Updates]]></string>
 	<string name="_sys_form_unsubscribe_input_submit"><![CDATA[Submit]]></string>
 	<string name="_sys_form_err_not_unique_value"><![CDATA[The field should have unique value]]></string>
+	<string name="_sys_form_txt_optional"><![CDATA[(optional)]]></string>
 	<string name="_sys_form_txt_select_file"><![CDATA[Select a file]]></string>
 	<string name="_sys_form_wiki"><![CDATA[Wiki]]></string>
 	<string name="_sys_form_display_wiki_edit"><![CDATA[Wiki Edit]]></string>

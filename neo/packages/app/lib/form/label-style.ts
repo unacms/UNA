@@ -32,3 +32,15 @@ export function hasAdaptiveLabel(props: {
     if (!props.caption || props.format === 'notitle' || props.use_caption_as_placeholder) return false;
     return typeof props.type === 'string' && ADAPTIVE_LABEL_TYPES.has(props.type);
 }
+
+/** Which fields of a form carry a mark after their label (UNA's `params.required_mark`). */
+export type FormRequiredMark = 'none' | 'optional' | 'required';
+
+/**
+ * UNA marks the fewer: nothing when every field is required (login, sign-up) or none is,
+ * "(optional)" on the optional fields, or an asterisk on the required ones. A UNA that sends
+ * no mode keeps the asterisk on required fields.
+ */
+export function resolveRequiredMark(unaMark?: unknown): FormRequiredMark {
+    return unaMark === 'none' || unaMark === 'optional' ? unaMark : 'required';
+}

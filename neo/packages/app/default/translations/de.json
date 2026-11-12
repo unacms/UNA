@@ -570,5 +570,6 @@
     "Flags": "Flaggen",
     "Start timer": "Timer starten",
     "Pause timer": "Timer pausieren",
-    "Total logged": "Insgesamt erfasst"
+    "Total logged": "Insgesamt erfasst",
+    "optional": "optional"
 }

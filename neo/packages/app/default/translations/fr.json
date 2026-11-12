@@ -570,5 +570,6 @@
     "Flags": "Drapeaux",
     "Start timer": "Démarrer le minuteur",
     "Pause timer": "Mettre le minuteur en pause",
-    "Total logged": "Total enregistré"
+    "Total logged": "Total enregistré",
+    "optional": "facultatif"
 }
