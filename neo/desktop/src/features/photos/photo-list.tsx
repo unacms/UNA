@@ -11,7 +11,7 @@ import { useNavigation, useRoute } from '../../lib/navigation';
 import { useOpenInWindow } from '../../lib/open-in-window';
 import { emptyListText, useFillEmptyPages } from '../../lib/paging';
 import { PhotoGrid } from './photo-grid';
-import { fetchPhotos, type MediaOf, photoKey, photoListKey } from './photos';
+import { fetchPhotos, type MediaOf, type Photo, photoKey, photoListKey } from './photos';
 
 /** The button that loads a list's next page. */
 export function MoreButton({ shown, busy, onMore, children }: { shown: boolean; busy: boolean; onMore: () => void; children: ReactNode }) {
@@ -32,23 +32,14 @@ export function MoreButton({ shown, busy, onMore, children }: { shown: boolean; 
 }
 
 /**
- * A grid of photos, the newest first, a page at a time: one opens beside it (Cmd+Enter, Cmd+click
- * or a double-click: in a window of its own), the open one marked.
+ * Photos as the grid a list draws: one opens beside it (Cmd+Enter, Cmd+click or a double-click:
+ * in a window of its own), the open one marked. A list's own photos, or a search's.
  */
-export function PhotosPages({ of, label, empty, hint, action }: { of: MediaOf; label: string; empty: string; hint?: string; action?: ReactNode }) {
-    const { api } = useApp();
+export function PhotoTiles({ items, label, ownerId }: { items: readonly Photo[]; label: string; ownerId?: string }) {
     const route = useRoute();
     const { openDetail } = useNavigation();
     const openInWindow = useOpenInWindow();
     const queryClient = useQueryClient();
-    const query = useInfiniteQuery({
-        queryKey: photoListKey(of),
-        queryFn: async ({ pageParam }) => fetchPhotos(api, of, pageParam as string | undefined),
-        getNextPageParam: (last) => last.next_cursor ?? undefined,
-    });
-    useFillEmptyPages(query);
-    const items = query.data?.pages.flatMap((p) => p.items) ?? [];
-    const emptyText = emptyListText(query, items.length, empty);
     const open = (i: number) => {
         const p = items[i];
         if (!p) return;
@@ -57,27 +48,41 @@ export function PhotosPages({ of, label, empty, hint, action }: { of: MediaOf; l
         openDetail({ kind: 'photo', id: p.id });
     };
     return (
+        <PhotoGrid
+            items={items}
+            label={label}
+            ownerId={ownerId}
+            selectedId={route.detail?.kind === 'photo' ? route.detail.id : null}
+            onOpen={open}
+            onOpenWindow={
+                openInWindow
+                    ? (i) => {
+                          const p = items[i];
+                          if (p) openInWindow({ kind: 'photo', id: p.id });
+                      }
+                    : undefined
+            }
+        />
+    );
+}
+
+/** A grid of photos, the newest first, a page at a time. */
+export function PhotosPages({ of, label, empty, hint, action }: { of: MediaOf; label: string; empty: string; hint?: string; action?: ReactNode }) {
+    const { api } = useApp();
+    const query = useInfiniteQuery({
+        queryKey: photoListKey(of),
+        queryFn: async ({ pageParam }) => fetchPhotos(api, of, pageParam as string | undefined),
+        getNextPageParam: (last) => last.next_cursor ?? undefined,
+    });
+    useFillEmptyPages(query);
+    const items = query.data?.pages.flatMap((p) => p.items) ?? [];
+    const emptyText = emptyListText(query, items.length, empty);
+    return (
         <>
             <SkeletonRows loading={query.isLoading} />
             {query.isError ? <InlineError message={errorMessage(query.error)} onRetry={() => void query.refetch()} busy={query.isFetching} /> : null}
             <EmptyState shown={!!emptyText} icon="image" title={emptyText || empty} hint={emptyText === empty ? hint : undefined} actions={emptyText === empty ? action : undefined} />
-            {items.length ? (
-                <PhotoGrid
-                    items={items}
-                    label={label}
-                    ownerId={'author' in of ? of.author : undefined}
-                    selectedId={route.detail?.kind === 'photo' ? route.detail.id : null}
-                    onOpen={open}
-                    onOpenWindow={
-                        openInWindow
-                            ? (i) => {
-                                  const p = items[i];
-                                  if (p) openInWindow({ kind: 'photo', id: p.id });
-                              }
-                            : undefined
-                    }
-                />
-            ) : null}
+            {items.length ? <PhotoTiles items={items} label={label} ownerId={'author' in of ? of.author : undefined} /> : null}
             <MoreButton shown={!!query.hasNextPage} busy={query.isFetchingNextPage} onMore={() => void query.fetchNextPage()}>
                 {t('More photos')}
             </MoreButton>

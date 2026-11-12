@@ -1253,9 +1253,12 @@ img.cover { box-shadow: none; border-block-end: 1px solid var(--image-outline); 
 .pane-list :is(.column, .inbox) { width: 100%; max-width: var(--column-max); margin-inline: auto; }
 .pane-list .column { padding: 0 0 var(--space-6); gap: 0; }
 .pane-list .search-form { padding: var(--space-2) var(--space-4) 0; }
-/* Search's four tabs with counts are wider than the narrowest list (340px) and than the pane at
-   200% zoom: the track wraps to a second row there instead of scrolling the pane sideways */
+/* a track straight in a column, and one that is too wide for the narrowest list (340px) or the
+   pane at 200% zoom, wraps to a second row instead of scrolling the pane sideways */
 .pane-list .column > .segmented { margin: var(--space-2) var(--space-4); justify-self: start; flex-wrap: wrap; row-gap: 2px; }
+/* Search's tabs with counts, up to thirteen: a row as wide as the pane, whose padding is the
+   room the tabs are fitted to; those that don't fit are in More (SegmentedTabs `fit`) */
+.pane-list .search-tabs { display: flex; min-width: 0; padding: var(--space-2) var(--space-4); }
 .pane-list .search-panel { gap: 0; }
 /* what is not a row (one's profile card, a closed group's note) keeps the pane's margins */
 .pane-list .column > :is(.card, .section-title) { margin: var(--space-4) var(--space-4) 0; }

@@ -1,10 +1,13 @@
 /**
- * Search (the list pane): one field and four tabs of results, People, Posts, Groups and
- * Discussions. The
+ * Search (the list pane): one field and tabs of results: People, Posts, Groups, Spaces, Events
+ * and Discussions, then the content modules the site has (the Posts module's posts, photos,
+ * albums, videos, files, polls, tasks: module-results.tsx). The
  * words and the tab are in the route (/search?q=lily&tab=posts), so Back and Forward return to a
  * search; typing replaces the route instead of adding to history. People and groups are the
  * site's best matches (up to 50); posts are a feed, newest first, that loads page by page, and
- * discussions the module's keyword search, newest first (one page of 50).
+ * discussions the module's keyword search, newest first (one page of 50). On a site with the
+ * Posts module the feed's tab is Feed and the module's is Posts, as on a profile. The tabs that
+ * don't fit the pane are in a More menu (SegmentedTabs `fit`).
  */
 import { useQuery } from '@tanstack/react-query';
 import { createContext, type FormEvent, type KeyboardEvent, useContext, useEffect, useMemo, useState } from 'react';
@@ -21,7 +24,7 @@ import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
 import { num, t, tn } from '../../lib/i18n';
 import { useNavigation, useRoute } from '../../lib/navigation';
-import { SEARCH_MAX, SEARCH_TABS, type SearchTab } from '../../lib/router';
+import { SEARCH_MAX, SEARCH_MODULE_TABS, type SearchModuleTab, SEARCH_TABS, type SearchTab } from '../../lib/router';
 import { platform } from '../../lib/platform';
 import { command } from '../../lib/shortcuts';
 import { Pane, paneHeadingId } from '../../shell/pane';
@@ -33,6 +36,7 @@ import type { Event } from '../events/events';
 import { DiscussionRow } from '../discussions/discussion-list';
 import { type Discussion, useHasDiscussions } from '../discussions/discussions';
 import { useSiteHasTag } from '../../lib/site-modules';
+import { isModuleTab, moduleCount, moduleFoundText, ModuleResults, moduleTabName, useModuleSearches } from './module-results';
 
 type Profile = Schema<'Profile'>;
 
@@ -43,13 +47,16 @@ export const SEARCH_TYPING_MS = 300;
 /** People and groups shown at most (the API's limit). */
 export const PEOPLE_LIMIT = 50;
 
-const TAB_NAMES: Record<SearchTab, string> = { people: t('People'), posts: t('Posts'), groups: t('Groups'), spaces: t('Spaces'), events: t('Events'), discussions: t('Discussions') };
+const TAB_NAMES: Record<Exclude<SearchTab, SearchModuleTab>, string> = { people: t('People'), posts: t('Posts'), groups: t('Groups'), spaces: t('Spaces'), events: t('Events'), discussions: t('Discussions') };
 const PANEL_ID = 'search-results';
 export const searchTabId = (tab: SearchTab) => `search-tab-${tab}`;
 
-/** A tab's label with how many results it has, once known: "People 3", "Posts 20+". */
-export function tabLabel(tab: SearchTab, count: number | undefined, more = false): string {
-    return count === undefined ? TAB_NAMES[tab] : `${TAB_NAMES[tab]} ${num(count)}${more ? '+' : ''}`;
+/**
+ * A tab's label with how many results it has, once known: "People 3", "Posts 20+". `name`: what
+ * the tab is called here when not by its own name (the feed's posts next to the Posts module's).
+ */
+export function tabLabel(tab: SearchTab, count: number | undefined, more = false, name: string = isModuleTab(tab) ? moduleTabName(tab) : TAB_NAMES[tab]): string {
+    return count === undefined ? name : `${name} ${num(count)}${more ? '+' : ''}`;
 }
 
 /** What the live region says once a tab's results are in. */
@@ -73,6 +80,8 @@ export function foundText(tab: SearchTab, count: number, more = false): string {
         case 'discussions':
             if (count === 0) return t('No discussions found');
             return more ? tn(count, '{{count}} or more discussion found', '{{count}} or more discussions found') : tn(count, '{{count}} discussion found', '{{count}} discussions found');
+        default:
+            return moduleFoundText(tab, count, more);
     }
 }
 
@@ -239,7 +248,15 @@ export function SearchView() {
     // a site without Discussions has no such tab (the sidebar has no row for it either)
     const hasDiscussions = useHasDiscussions();
     const noDiscussions = discussions.data === null || hasDiscussions === false;
-    const tabs = useMemo(() => SEARCH_TABS.filter((kind) => (kind !== 'discussions' || !noDiscussions) && (kind !== 'spaces' || hasSpaces) && (kind !== 'events' || hasEvents)), [noDiscussions, hasSpaces, hasEvents]);
+    // the content modules' own searches: a tab for each the site has, asked when it is shown
+    const modules = useModuleSearches(q, tab);
+    const moduleTabs = SEARCH_MODULE_TABS.filter((kind) => modules[kind].available === true).join(' ');
+    const tabs = useMemo(
+        () => SEARCH_TABS.filter((kind) => (isModuleTab(kind) ? moduleTabs.split(' ').includes(kind) : (kind !== 'discussions' || !noDiscussions) && (kind !== 'spaces' || hasSpaces) && (kind !== 'events' || hasEvents))),
+        [noDiscussions, hasSpaces, hasEvents, moduleTabs],
+    );
+    // next to the Posts module's posts the feed's are Feed, as in a profile's tabs
+    const feedName = modules.articles.available === true ? t('Feed') : undefined;
 
     const source = useMemo<FeedSource>(
         () => ({
@@ -262,13 +279,21 @@ export function SearchView() {
         spaces: { count: hasSpaces ? spaces.data?.length : 0, more: false },
         events: { count: hasEvents ? events.data?.length : 0, more: false },
         discussions: { count: noDiscussions ? 0 : discussions.data?.items.length, more: !!discussions.data?.more },
+        articles: moduleCount(modules.articles),
+        photos: moduleCount(modules.photos),
+        albums: moduleCount(modules.albums),
+        videos: moduleCount(modules.videos),
+        files: moduleCount(modules.files),
+        polls: moduleCount(modules.polls),
+        tasks: moduleCount(modules.tasks),
     };
 
     // The tab's results, said once they are in (a new search or another tab), not each time more
     // posts load. An empty first page of posts with more to come (hits the viewer may not see
     // were left out) is not "No posts found": the list loads on, and what it finds is said then.
     const shown = counts[tab];
-    const loadingOn = tab === 'posts' && (!!posts.query.hasNextPage || posts.query.isFetchingNextPage);
+    const paged = isModuleTab(tab) ? modules[tab].query : tab === 'posts' ? posts.query : null;
+    const loadingOn = !!paged && (!!paged.hasNextPage || paged.isFetchingNextPage);
     const phase = shown.count === undefined ? 'unknown' : shown.count > 0 ? 'some' : loadingOn ? 'pending' : 'none';
     useEffect(() => {
         if (!q || shown.count === undefined || phase === 'pending') return;
@@ -276,14 +301,14 @@ export function SearchView() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [q, tab, phase]);
 
-    const labels = Object.fromEntries(SEARCH_TABS.map((kind) => [kind, tabLabel(kind, q ? counts[kind].count : undefined, counts[kind].more)])) as Record<SearchTab, string>;
+    const labels = Object.fromEntries(SEARCH_TABS.map((kind) => [kind, tabLabel(kind, q ? counts[kind].count : undefined, counts[kind].more, kind === 'posts' ? feedName : undefined)])) as Record<SearchTab, string>;
     const selected = route.detail?.kind === 'post' ? route.detail.id : null;
     const openProfile = route.detail?.kind === 'profile' ? route.detail.id : null;
     const openContext = route.detail?.kind === 'group' || route.detail?.kind === 'space' ? route.detail.id : null;
     const openDiscussion = route.detail?.kind === 'discussion' ? route.detail.id : null;
 
     return (
-        <Pane pane="list" title={t('Search')} subtitle={q ? t('for “{{words}}”', { words: q }) : undefined} ready={!q || tab !== 'posts' || !posts.query.isLoading} busy={!!q && (people.isLoading || (tab === 'posts' && posts.query.isLoading))}>
+        <Pane pane="list" title={t('Search')} subtitle={q ? t('for “{{words}}”', { words: q }) : undefined} ready={!q || tab !== 'posts' || !posts.query.isLoading} busy={!!q && (people.isLoading || (tab === 'posts' && posts.query.isLoading) || (isModuleTab(tab) && modules[tab].available === true && modules[tab].query.isLoading))}>
             <div className="column">
                 <p className="sr-only" role="status" aria-live="polite">
                     {announcement.text ? <span key={announcement.seq}>{announcement.text}</span> : null}
@@ -291,7 +316,10 @@ export function SearchView() {
                 {sidebarField ? null : <SearchField variant="pane" />}
                 {q ? (
                     <>
-                        <SegmentedTabs label={t('Results')} values={tabs} labels={labels} current={tab} onChange={(kind) => showSearch(q, kind)} panelId={PANEL_ID} tabId={searchTabId} />
+                        {/* as wide as the pane: the tabs that don't fit it are in More */}
+                        <div className="search-tabs">
+                            <SegmentedTabs label={t('Results')} values={tabs} labels={labels} current={tab} onChange={(kind) => showSearch(q, kind)} panelId={PANEL_ID} tabId={searchTabId} fit />
+                        </div>
                         <div id={PANEL_ID} role="tabpanel" aria-labelledby={searchTabId(tab)} className="search-panel">
                             {tab === 'posts' ? (
                                 <FeedList
@@ -303,6 +331,8 @@ export function SearchView() {
                                     selectedId={selected}
                                     tabId={searchTabId('posts')}
                                 />
+                            ) : isModuleTab(tab) ? (
+                                <ModuleResults kind={tab} q={q} searches={modules} announce={announce} />
                             ) : tab === 'events' ? (
                                 <EventResults q={q} query={events} unavailable={!hasEvents} />
                             ) : tab === 'discussions' ? (
