@@ -85,6 +85,21 @@ class BxSpacesDb extends BxBaseModGroupsDb
             'type' => $this->_oConfig->getName()
         ]);
     }
+
+    /**
+     * API v2: how many rows of a search result's query are in each parent space, in one
+     * query: the result's main table, its joins and its WHERE (BxDolSearchResult::getJoins(false)
+     * and getRestriction(), the module's own conditions and privacy), grouped by the parent.
+     * @return array parent space's profile id => count
+     */
+    public function getApiV2ChildCounts($sTable, $sJoin, $sWhere)
+    {
+        $CNF = &$this->_oConfig->CNF;
+        $sEntries = '`' . $CNF['TABLE_ENTRIES'] . '`';
+        $sParent = $sEntries . '.`' . $CNF['FIELD_PARENT'] . '`';
+        $sQuery = "SELECT " . $sParent . " AS `parent`, COUNT(DISTINCT " . $sEntries . ".`" . $CNF['FIELD_ID'] . "`) AS `num` FROM `" . $sTable . "` " . $sJoin . " " . $sWhere . " GROUP BY " . $sParent;
+        return $this->getPairs($sQuery, 'parent', 'num');
+    }
 }
 
 /** @} */

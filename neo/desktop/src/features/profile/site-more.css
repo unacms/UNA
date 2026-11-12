@@ -1,0 +1,12 @@
+/* Report a profile or a context (site-more.tsx ReportDialog): the site's reasons as a radio
+   group, a note, Cancel and Report */
+.report-dialog { width: min(420px, calc(100% - 32px)); }
+.report-form { display: grid; }
+.report-reasons { margin: 0; padding: 0; border: 0; display: grid; gap: var(--space-1); }
+.report-reasons > legend { padding: 0; margin-block-end: var(--space-1); font-size: var(--text-ui); line-height: var(--leading-ui); font-weight: 500; }
+.report-reason { display: flex; align-items: center; gap: var(--space-2); min-height: 28px; font-size: var(--text-ui); line-height: var(--leading-ui); cursor: pointer; }
+.report-reason > input { margin: 0; }
+.report-field { display: grid; gap: var(--space-1); font-size: var(--text-ui); line-height: var(--leading-ui); font-weight: 500; }
+.report-field textarea { width: 100%; font-weight: normal; }
+.report-form .error { margin: 0; }
+.report-form-actions { display: flex; justify-content: flex-end; gap: var(--space-2); }

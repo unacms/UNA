@@ -32,6 +32,8 @@ class BxBaseModGeneralFormEntry extends BxTemplFormView
     
     protected $_bAllowChangeUserForAdmins;
 
+    protected $_bFilesAsStored = false; ///< @see setFilesAsStored
+
     public function __construct($aInfo, $oTemplate = false)
     {
         if (!isset($this->_bAllowChangeUserForAdmins))
@@ -860,6 +862,17 @@ class BxBaseModGeneralFormEntry extends BxTemplFormView
         return $this->_oModule->_isModerator();
     }
 
+    /**
+     * How processFiles reads a file field's single value (what the entry stores, in an edit with
+     * values taken from the entry): off, every ghost of the entry is processed, as the site and
+     * API v1 do; on, only that file, so the edit does not take the entry's other files for its
+     * picture. API v2 turns it on for its edits (BxDolApiV2Forms::editEntity) and off after.
+     */
+    public function setFilesAsStored ($bFilesAsStored)
+    {
+        $this->_bFilesAsStored = (bool)$bFilesAsStored;
+    }
+
     public function processFiles ($sFieldFile, $iContentId = 0, $isAssociateWithContent = false)
     {
         if(!isset($this->aInputs[$sFieldFile]))
@@ -868,6 +881,15 @@ class BxBaseModGeneralFormEntry extends BxTemplFormView
         $mixedFileIds = $this->getCleanValue($sFieldFile);
         if(!$mixedFileIds)
             return true;
+
+        /*
+         * A submitted form sends a list of ghost ids. A single value is what the entry stores
+         * already (an edit with values taken from the entry, as edit_entity does). The site and
+         * API v1 take every ghost of the entry then, as they always did; a caller that asked for
+         * it (setFilesAsStored: API v2) gets that file only.
+         */
+        if($this->_bFilesAsStored && !is_array($mixedFileIds))
+            $mixedFileIds = [(int)$mixedFileIds];
 
         $oStorage = BxDolStorage::getObjectInstance($this->aInputs[$sFieldFile]['storage_object']);
         if (!$oStorage)

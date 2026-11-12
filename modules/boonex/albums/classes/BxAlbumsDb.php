@@ -156,6 +156,99 @@ class BxAlbumsDb extends BxBaseModTextDb
 		return call_user_func_array(array($this, $aMethod['name']), $aMethod['params']);
     }
     
+    /**
+     * The ORDER BY of an album's media as its page shows them: by their ghosts' order (when the
+     * module orders so) or their own, the id breaking ties; with the JOIN that order needs.
+     * @return array [join clause, order clause]
+     */
+    protected function _mediaOrder()
+    {
+        $CNF = &$this->_oConfig->CNF;
+        if (empty($CNF['PARAM_ORDER_BY_GHOSTS']))
+            return ['', "`f2e`.`order` ASC, `f2e`.`id` ASC"];
+        return [$this->prepareAsString("INNER JOIN `sys_storage_ghosts` AS `g` ON `g`.`id` = `f2e`.`file_id` AND `g`.`content_id` = `f2e`.`content_id` AND `g`.`object` = ?", $CNF['OBJECT_STORAGE']), "`g`.`order` ASC, `f2e`.`id` ASC"];
+    }
+
+    /**
+     * A page of an album's media in its order (API v2): rows of files2albums with the file's
+     * `added`.
+     */
+    public function getMediaPage($iContentId, $iStart, $iLimit)
+    {
+        $CNF = &$this->_oConfig->CNF;
+        list($sJoin, $sOrder) = $this->_mediaOrder();
+        $sQuery = "SELECT `f2e`.*, `f`.`added` FROM `" . $CNF['TABLE_FILES2ENTRIES'] . "` AS `f2e` INNER JOIN `" . $CNF['TABLE_FILES'] . "` AS `f` ON (`f`.`id` = `f2e`.`file_id`) " . $sJoin . " WHERE `f2e`.`content_id` = :content_id ORDER BY " . $sOrder . " LIMIT :start, :limit";
+        return $this->getAll($sQuery, ['content_id' => (int)$iContentId, 'start' => (int)$iStart, 'limit' => (int)$iLimit]);
+    }
+
+    /**
+     * The first $iPer media of each of these albums, in their order (API v2: a list's previews),
+     * in one query: album id => rows.
+     */
+    public function getMediaPreviews($aContentIds, $iPer)
+    {
+        $CNF = &$this->_oConfig->CNF;
+        $aContentIds = array_values(array_unique(array_filter(array_map('intval', (array)$aContentIds))));
+        if (!$aContentIds || (int)$iPer <= 0)
+            return [];
+
+        list($sJoin, $sOrder) = $this->_mediaOrder();
+        $aParts = [];
+        foreach ($aContentIds as $iContentId)
+            $aParts[] = "(SELECT `f2e`.*, `f`.`added` FROM `" . $CNF['TABLE_FILES2ENTRIES'] . "` AS `f2e` INNER JOIN `" . $CNF['TABLE_FILES'] . "` AS `f` ON (`f`.`id` = `f2e`.`file_id`) " . $sJoin . $this->prepareAsString(" WHERE `f2e`.`content_id` = ? ORDER BY " . $sOrder . " LIMIT ?)", $iContentId, (int)$iPer);
+
+        $aResult = array_fill_keys($aContentIds, []);
+        foreach ($this->getAll(implode(' UNION ALL ', $aParts)) as $aRow)
+            $aResult[(int)$aRow['content_id']][] = $aRow;
+        return $aResult;
+    }
+
+    /**
+     * How many media each of these albums has, in one query: album id => count.
+     */
+    public function getMediaCounts($aContentIds)
+    {
+        $aContentIds = array_values(array_unique(array_filter(array_map('intval', (array)$aContentIds))));
+        if (!$aContentIds)
+            return [];
+        $aCounts = $this->getPairs("SELECT `content_id`, COUNT(*) AS `n` FROM `" . $this->_oConfig->CNF['TABLE_FILES2ENTRIES'] . "` WHERE `content_id` IN (" . $this->implode_escape($aContentIds) . ") GROUP BY `content_id`", 'content_id', 'n');
+        return array_map('intval', $aCounts + array_fill_keys($aContentIds, 0));
+    }
+
+    /**
+     * The media of these files in an album, with the file's `added` (API v2: what an addition
+     * added).
+     */
+    public function getMediaByFileIds($iContentId, $aFileIds)
+    {
+        $CNF = &$this->_oConfig->CNF;
+        $aFileIds = array_values(array_filter(array_map('intval', (array)$aFileIds)));
+        if (!$aFileIds)
+            return [];
+        $sQuery = $this->prepare("SELECT `f2e`.*, `f`.`added` FROM `" . $CNF['TABLE_FILES2ENTRIES'] . "` AS `f2e` INNER JOIN `" . $CNF['TABLE_FILES'] . "` AS `f` ON (`f`.`id` = `f2e`.`file_id`) WHERE `f2e`.`content_id` = ? AND `f2e`.`file_id` IN (" . $this->implode_escape($aFileIds) . ")", (int)$iContentId);
+        return $this->getAll($sQuery);
+    }
+
+    /**
+     * Puts these files of an album after its others in the order its page shows (their ghosts'
+     * order), in this order (API v2: photos added to an album).
+     */
+    public function setGhostsOrderLast($iContentId, $aFileIds)
+    {
+        $CNF = &$this->_oConfig->CNF;
+        $aFileIds = array_values(array_filter(array_map('intval', (array)$aFileIds)));
+        if (!$aFileIds)
+            return;
+
+        $aBindings = ['object' => $CNF['OBJECT_STORAGE'], 'content_id' => (int)$iContentId];
+        $sIn = $this->implode_escape($aFileIds);
+        $iNext = 1 + (int)$this->getOne("SELECT MAX(`order`) FROM `sys_storage_ghosts` WHERE `object` = :object AND `content_id` = :content_id AND `id` NOT IN (" . $sIn . ")", $aBindings);
+        $sCase = '';
+        foreach ($aFileIds as $i => $iFileId)
+            $sCase .= $this->prepareAsString(" WHEN ? THEN ?", $iFileId, $iNext + $i);
+        $this->query("UPDATE `sys_storage_ghosts` SET `order` = CASE `id`" . $sCase . " END WHERE `object` = :object AND `content_id` = :content_id AND `id` IN (" . $sIn . ")", $aBindings);
+    }
+
     public function updateMedia($aParamsSet, $aParamsWhere)
     {
         $CNF = &$this->_oConfig->CNF;

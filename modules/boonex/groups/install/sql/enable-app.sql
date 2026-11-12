@@ -48,6 +48,7 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_homepage' AND `
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_add_content_links' AND `module`='bx_groups' AND `name`='create-group-profile';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='bx_groups' AND `name`='profile-stats-my-groups';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_followings' AND `module`='bx_groups' AND `name`='groups';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_memberships' AND `module`='bx_groups' AND `name`='groups';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_dashboard_manage_tools' AND `module`='bx_groups' AND `name`='groups-administration';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_groups_view_actions' AND `module`='bx_groups' AND `name`='join-group-profile';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_groups_view_actions' AND `module`='bx_groups' AND `name`='profile-fan-add';

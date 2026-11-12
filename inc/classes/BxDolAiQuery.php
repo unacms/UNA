@@ -231,6 +231,15 @@ class BxDolAiQuery extends BxDolDb
         return $this->getRow("SELECT * FROM `sys_agents_agents` WHERE `trigger` = 'webhook' AND `webhook_key` = :key AND `active` = :active", ['key' => $sKey, 'active' => $bActiveOnly ? 1 : 0]);
     }
     
+    /**
+     * Active agents people may chat with (trigger `manual` or `message`), by id: API v2's
+     * GET /agents, which then keeps those the viewer may interact with (BxDolAi::canChatDirectly).
+     */
+    public function getChatAgents()
+    {
+        return $this->getAll("SELECT * FROM `sys_agents_agents` WHERE `active` = 1 AND `trigger` IN ('manual', 'message') ORDER BY `id` ASC");
+    }
+
     public function getAgentsByTriggerType($sTrigger, $bActiveOnly = true)
     {
         return $this->getAll("SELECT * FROM `sys_agents_agents` WHERE `trigger` = :trigger AND `active` = :active", ['trigger' => $sTrigger, 'active' => $bActiveOnly ? 1 : 0]);

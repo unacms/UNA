@@ -465,6 +465,29 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         return $this->_bIsApi ? [] : true;
     }
 
+    /**
+     * API v2 only: set a task's labels (stickers, a set), for who manages the task, as
+     * set_property sets a property. It is no service and set_property does not take labels: the
+     * site and API v1 change them in the edit form only, as they always did.
+     * @param $mixedValue the set as it is stored (bit value - 1 for each label)
+     * @return true when set, otherwise what set_property answers ([] not allowed, ['msg' => ...] not saved)
+     */
+    public function setStickers($iContentId, $mixedValue)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
+        if(!$aContentInfo || !$this->isAllowManage($iContentId))
+            return [];
+
+        if(!$this->_oDb->updateEntriesBy([$CNF['FIELD_STICKERS'] => $mixedValue], [$CNF['FIELD_ID'] => $iContentId]))
+            return ['msg' => _t('_bx_tasks_txt_err_cannot_perform_action')];
+
+        $this->_logStickersEdit($aContentInfo, $mixedValue);
+
+        return true;
+    }
+
     public function serviceSetCompleted($iContentId, $iCompleted)
     {
         if(!$this->isAllowManage($iContentId) || !$this->complete($iContentId, $iCompleted))
@@ -2058,6 +2081,32 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
             $this->ghUpdateIssue($aContentInfo, [
                 $sPropRepo => _t($mixedValue)
             ]);        
+    }
+
+    /**
+     * Labels (stickers, a set) as setStickers set them: their titles in the task's activity.
+     */
+    protected function _logStickersEdit($aContentInfo, $mixedValue)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $iContentId = (int)$aContentInfo[$CNF['FIELD_ID']];
+        $iContextId = ($iPrivacy = (int)$aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']]) < 0 ? -$iPrivacy : 0;
+
+        // the set's values: bit (value - 1) for each
+        $aValues = [];
+        if(is_array($mixedValue))
+            $aValues = $mixedValue;
+        else
+            for($i = 1; $i <= 31; $i++)
+                if((int)$mixedValue & (1 << ($i - 1)))
+                    $aValues[] = $i;
+
+        $aTitles = [];
+        foreach($aValues ? $this->getStickers($aValues, $iContextId) : [] as $aSticker)
+            $aTitles[] = _t($aSticker['title']);
+
+        $this->logActivity($iContentId, $aTitles ? ['key' => '_bx_tasks_txt_msg_edit_stickers', 'markers' => ['value' => implode(', ', $aTitles)]] : ['key' => '_bx_tasks_txt_msg_edit_stickers_none']);
     }
 
     protected function _onEditState($aContentInfo, $iState)

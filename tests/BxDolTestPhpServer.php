@@ -61,9 +61,10 @@ class BxDolTestPhpServer
     /**
      * Send a request and read the whole response.
      * @param $aHeaders header name => value
+     * @param $sBody request body, sent with its Content-Length
      * @return array with 'status' (int), 'headers' (lowercase name => list of values) and 'body'
      */
-    public function request(string $sMethod, string $sUri, array $aHeaders = []): array
+    public function request(string $sMethod, string $sUri, array $aHeaders = [], string $sBody = ''): array
     {
         $r = stream_socket_client('tcp://127.0.0.1:' . $this->_iPort, $iErr, $sErr, 5);
         if (!$r)
@@ -73,7 +74,9 @@ class BxDolTestPhpServer
         $s = $sMethod . ' ' . $sUri . " HTTP/1.1\r\nHost: " . $this->_sHost . "\r\nConnection: close\r\n";
         foreach ($aHeaders as $sName => $sValue)
             $s .= $sName . ': ' . $sValue . "\r\n";
-        fwrite($r, $s . "\r\n");
+        if ($sBody !== '')
+            $s .= 'Content-Length: ' . strlen($sBody) . "\r\n";
+        fwrite($r, $s . "\r\n" . $sBody);
 
         $sResponse = stream_get_contents($r);
         fclose($r);

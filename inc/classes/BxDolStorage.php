@@ -772,7 +772,42 @@ abstract class BxDolStorage extends BxDolFactory implements iBxDolFactoryObject
      * @param $iFileId file id
      * @return file url or false on error
      */
-    public function getFileUrlById($iFileId) { }
+    public function getFileUrlById($iFileId) { return null; } // an engine that makes no links: null, as the empty body gave
+
+    /**
+     * Get a file url that may be given out again: for a private file a token is reused for a
+     * period of half the token's life instead of a new one each time, so the same answer (an
+     * API page and its ETag) keeps the same link for a while and reading it writes at most one
+     * token row per period. Engines that cannot reuse a link give a new one (getFileUrlById).
+     * @param $iFileId file id
+     * @return file url or false on error
+     */
+    public function getFileUrlByIdShared($iFileId)
+    {
+        return $this->getFileUrlById($iFileId);
+    }
+
+    /**
+     * In an open file rows scope (BxDolStorageQuery::openFileRowsScope): what getFileUrlByIdShared
+     * of each of these files reads or writes (their reused tokens), done for all of them at once,
+     * so a page of private files given to their owner costs no query per file. Engines whose
+     * links need no rows do nothing.
+     * @param $aIds file ids
+     * @param $bMake false: only the tokens there are, a file without one gets it when its link is asked for
+     */
+    public function primeFileUrlsShared($aIds, $bMake = true)
+    {
+    }
+
+    /**
+     * What primeFileUrlsShared of these files would prime, for priming them with other storages'
+     * (BxDolStorageQuery::primeTokensSinceOfStorages): [query object, private file ids, period
+     * start], or null for engines whose links need no rows.
+     */
+    public function getSharedTokensToPrime($aIds)
+    {
+        return null;
+    }
 
     /**
      * Get the absolute local filesystem path of a stored file. Only local storage
@@ -782,6 +817,41 @@ abstract class BxDolStorage extends BxDolFactory implements iBxDolFactoryObject
      * @return string absolute path on success, false otherwise
      */
     public function getFileLocalPath($mixedHandler) { return false; }
+
+    /**
+     * In an open file rows scope (BxDolStorageQuery::openFileRowsScope): these files' rows in one
+     * query, so getFile of each reads none.
+     */
+    public function primeFileRows($aIds)
+    {
+        $this->_oDb->primeFileRows($aIds);
+    }
+
+    /**
+     * In an open file rows scope: the ghosts of these contents in one query, so getGhosts of an
+     * author's files of each reads none (@see BxDolStorageQuery::primeGhostsByContents).
+     * @return array the ids of their files
+     */
+    public function primeGhostsByContents($aContentIds)
+    {
+        return $this->_oDb->primeGhostsByContents($aContentIds);
+    }
+
+    /**
+     * As primeGhostsByContents for several storages, their ghosts in one query (and their files'
+     * rows in one per storage that has some).
+     * @param array $aObjects storage objects
+     * @return array storage object => the ids of its files of these contents' ghosts
+     */
+    public static function primeGhostsOfStorages($aObjects, $aContentIds)
+    {
+        $aQueries = [];
+        foreach (array_unique((array)$aObjects) as $sObject)
+            if (($oStorage = self::getObjectInstance($sObject)))
+                $aQueries[$sObject] = $oStorage->_oDb;
+
+        return $aQueries ? BxDolStorageQuery::primeGhostsOfStorages($aQueries, $aContentIds) : [];
+    }
 
     /**
      * Get file info array by file id.
@@ -1298,10 +1368,9 @@ abstract class BxDolStorage extends BxDolFactory implements iBxDolFactoryObject
         $sRandName = strtolower(genRndPwd(32, false));
         if ($isCheckForUniq) {
             $iTries = 10;
-            do {
-                $aFile = $this->_oDb->getFileByRemoteId($sRandName);
-                $bExist = is_array($aFile) && $aFile;
-            } while (--$iTries && $bExist);
+            // a name that is taken is made again
+            while (--$iTries && ($aFile = $this->_oDb->getFileByRemoteId($sRandName)) && is_array($aFile))
+                $sRandName = strtolower(genRndPwd(32, false));
         }
         return $sRandName;
     }

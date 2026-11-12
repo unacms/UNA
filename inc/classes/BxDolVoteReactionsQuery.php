@@ -91,6 +91,39 @@ class BxDolVoteReactionsQuery extends BxDolVoteQuery
     }
 
     /**
+     * The author's first reaction (as getReactionsBy()[0]) to each of the objects that has one:
+     * object id => reaction, for a page of objects in one query.
+     */
+    public function getFirstReactionsByObjects($aObjectIds, $iAuthorId)
+    {
+        $aObjectIds = array_values(array_unique(array_filter(array_map('intval', (array)$aObjectIds))));
+        if(empty($aObjectIds))
+            return [];
+
+        $aResult = [];
+        $aRows = $this->getAll("SELECT `object_id`, `reaction` FROM `{$this->_sTableTrack}` WHERE `author_id` = :author_id AND `object_id` IN (" . $this->implode_escape($aObjectIds) . ") ORDER BY `id` ASC", [
+            'author_id' => $iAuthorId
+        ]);
+        foreach($aRows as $aRow)
+            if(!isset($aResult[(int)$aRow['object_id']]))
+                $aResult[(int)$aRow['object_id']] = (string)$aRow['reaction'];
+
+        return $aResult;
+    }
+
+    /**
+     * The reactions of track rows by their ids: track id => reaction, for the rows that exist.
+     */
+    public function getReactionsByTrackIds($aTrackIds)
+    {
+        $aTrackIds = array_values(array_unique(array_filter(array_map('intval', (array)$aTrackIds))));
+        if(empty($aTrackIds))
+            return [];
+
+        return $this->getPairs("SELECT `id`, `reaction` FROM `{$this->_sTableTrack}` WHERE `id` IN (" . $this->implode_escape($aTrackIds) . ")", 'id', 'reaction');
+    }
+
+    /**
      * The author's latest reaction to the object (what the do-button shows).
      * No LIMIT on purpose: with LIMIT 1 the server can choose to walk the whole table
      * backwards by `id` instead of using the object index. getRow takes the first row.

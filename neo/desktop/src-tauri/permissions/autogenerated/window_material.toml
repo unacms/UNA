@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-window-material"
+description = "Enables the window_material command without any pre-configured scope."
+commands.allow = ["window_material"]
+
+[[permission]]
+identifier = "deny-window-material"
+description = "Denies the window_material command without any pre-configured scope."
+commands.deny = ["window_material"]

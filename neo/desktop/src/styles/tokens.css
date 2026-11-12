@@ -1,0 +1,437 @@
+/*
+ * Design tokens (tmp/research/desktop-design-spec.md section 1). Primitives are NEO's palette
+ * (packages/app/design/styles/palette.css), light and dark; components use only the semantic
+ * tokens. Every ratio named here is WCAG 2.x, measured on the exact values (each translucent
+ * fill alpha-blended over its surface). The theme follows the OS (prefers-color-scheme), which
+ * the web view takes from the window, unless the person chose light or dark (data-theme on
+ * <html>, lib/theme.ts).
+ */
+:root {
+    /* NEO palette */
+    --neutral-0: 255 255 255;
+    --neutral-50: 250 250 252;
+    --neutral-100: 244 244 245;
+    --neutral-200: 228 228 231;
+    --neutral-300: 212 212 216;
+    --neutral-400: 161 161 170;
+    --neutral-500: 113 113 122;
+    --neutral-600: 82 82 91;
+    --neutral-700: 63 63 70;
+    --neutral-800: 39 39 42;
+    --neutral-900: 24 24 27;
+    --neutral-950: 10 10 12;
+    --accent-50: 239 246 255;
+    --accent-100: 219 234 254;
+    --accent-300: 147 197 253;
+    --accent-400: 96 165 250;
+    --accent-500: 59 130 246;
+    --accent-600: 37 99 235;
+    --accent-700: 29 78 216;
+    --accent-900: 30 58 138;
+    --red: 225 29 72;
+    /* NEO's light and dark --trend-bad, its light --chart-5, Tailwind green-400 */
+    --red-700: 190 18 60;
+    --red-300: 253 164 175;
+    --green-600: 22 163 74;
+    --green-400: 74 222 128;
+
+    /* monogram and cover-band hues (components/avatar.tsx, [data-hue] below): bg / text 6.4:1 or more */
+    --mono-0-bg: #ffe4e6; --mono-0-text: #9f1239;
+    --mono-1-bg: #ffedd5; --mono-1-text: #9a3412;
+    --mono-2-bg: #fef3c7; --mono-2-text: #92400e;
+    --mono-3-bg: #d1fae5; --mono-3-text: #065f46;
+    --mono-4-bg: #ccfbf1; --mono-4-text: #115e59;
+    --mono-5-bg: #e0f2fe; --mono-5-text: #075985;
+    --mono-6-bg: #e0e7ff; --mono-6-text: #3730a3;
+    --mono-7-bg: #ede9fe; --mono-7-text: #5b21b6;
+    /* notification kinds: the same in both themes (white on them is measured) */
+    --kind-heart: #e11d48;
+    --kind-green: #047857;
+    --kind-violet: #7c3aed;
+    --kind-amber: #b45309;
+
+    --ink: rgb(var(--neutral-950));
+
+    /* surfaces */
+    --bg-window: rgb(var(--neutral-100));
+    --bg-sidebar: color-mix(in oklab, rgb(var(--neutral-100)) 85%, transparent);
+    --bg-sidebar-solid: rgb(var(--neutral-100));
+    /* the content pane: half its white over the window's grey (opaque, so text contrast never
+       depends on the desktop behind a translucent window); cards, blocks and fields on it are
+       --bg-card, the solid white, and stand off it */
+    --bg-content: color-mix(in oklab, rgb(var(--neutral-0)) 50%, rgb(var(--neutral-100)));
+    --bg-card: rgb(var(--neutral-0));
+    --bg-raised: rgb(var(--neutral-0));
+    --bg-grouped: color-mix(in oklab, var(--ink) 3.5%, transparent);
+
+    /* text */
+    --text-primary: rgb(var(--neutral-950));
+    --text-secondary: rgb(var(--neutral-600));
+    --text-sidebar-secondary: rgb(var(--neutral-600));
+    --text-on-accent: rgb(var(--neutral-0));
+
+    /*
+     * accent: the network's theme colour where it has one (lib/accent.ts writes the
+     * --site-* shades on <html>, each measured for the pairs it is used in), else NEO's blue
+     */
+    --accent-fill: var(--site-fill, rgb(var(--accent-600)));
+    --accent-fill-hover: var(--site-fill-hover, rgb(var(--accent-700)));
+    --accent-text: var(--site-text-light, rgb(var(--accent-700)));
+    --accent-icon: var(--site-icon-light, rgb(var(--accent-600)));
+
+    /* fills: translucent ink, so they stack */
+    --fill-control: color-mix(in oklab, var(--ink) 7%, transparent);
+    --fill-control-hover: color-mix(in oklab, var(--ink) 10%, transparent);
+    /* the same fills over the content's surface, opaque: a ring or an edge that must match them */
+    --fill-control-solid: color-mix(in oklab, var(--ink) 7%, var(--bg-content));
+    --fill-control-hover-solid: color-mix(in oklab, var(--ink) 10%, var(--bg-content));
+    --fill-control-pressed: color-mix(in oklab, var(--ink) 14%, transparent);
+    --fill-row-hover: color-mix(in oklab, var(--ink) 4%, transparent);
+    --fill-selected: color-mix(in oklab, var(--site-fill, rgb(var(--accent-600))) 12%, transparent);
+    --fill-selected-inactive: color-mix(in oklab, var(--ink) 8%, transparent);
+    --selection-bar: var(--site-fill, rgb(var(--accent-600)));
+    --selection-bar-inactive: rgb(var(--neutral-500));
+
+    /* lines and controls */
+    --separator: color-mix(in oklab, var(--ink) 10%, transparent);
+    /* a card's edge and the lines inside it (comment threads): quieter than --separator */
+    --separator-card: color-mix(in oklab, var(--ink) 6%, transparent);
+    /* text on a fill over a card (a post's capsules): the secondary text in light */
+    --text-on-fill: var(--text-secondary);
+    --control-border: rgb(var(--neutral-500));
+    --control-border-sidebar: rgb(var(--neutral-500));
+    /* a text field's edge: quiet, as NEO's inputs draw it (the label and the field's place name
+       it); it darkens on hover and the focus ring marks the field being typed in */
+    --field-border: color-mix(in oklab, var(--ink) 16%, transparent);
+    --field-border-hover: color-mix(in oklab, var(--ink) 28%, transparent);
+    --focus-ring: var(--site-fill, rgb(var(--accent-600)));
+    --unread: var(--site-fill, rgb(var(--accent-600)));
+    --switch-on: var(--site-fill, rgb(var(--accent-600)));
+
+    /* status */
+    --danger: rgb(var(--red));
+    --danger-text: rgb(var(--red-700));
+    --success-icon: rgb(var(--green-600));
+
+    --image-outline: oklch(0 0 0 / 0.1);
+    --scrim: rgb(0 0 0 / 0.25);
+    /* a ring on the lightbox's near-black scrim, in either theme: the dark accent text */
+    --focus-ring-on-dark: var(--site-text-dark, rgb(var(--accent-300)));
+
+    /* elevation: shadows for what floats, hairlines for structure */
+    --shadow-raised: 0 0 0 0.5px rgb(0 0 0 / 0.14), 0 1px 2px rgb(0 0 0 / 0.08), 0 12px 32px rgb(0 0 0 / 0.16);
+    --shadow-segment: 0 0 0 0.5px rgb(0 0 0 / 0.12), 0 1px 2px rgb(0 0 0 / 0.10);
+    --shadow-avatar-ring: 0 0 0 4px var(--bg-content);
+
+    /* type: the system UI font, no letter-spacing (SF Pro and Segoe UI Variable track by size) */
+    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI Variable Text', 'Segoe UI', Roboto, Cantarell, sans-serif;
+    --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
+    --text-xs: 11px;
+    --leading-xs: 14px;
+    --text-sm: 12px;
+    --leading-sm: 16px;
+    /* single-line controls; multi-line UI text takes --leading-ui-multi */
+    --text-ui: 13px;
+    --leading-ui: 16px;
+    --leading-ui-multi: 18px;
+    --text-body: 14px;
+    --leading-body: 20px;
+    --text-read: 15px;
+    --leading-read: 22px;
+    --text-title: 15px;
+    --leading-title: 20px;
+    --text-h2: 17px;
+    --leading-h2: 22px;
+    --text-h1: 22px;
+    --leading-h1: 28px;
+
+    /* spacing: a 4 px base; 8 within a group, 16 or more between groups */
+    --space-0-5: 2px;
+    --space-1: 4px;
+    --space-1-5: 6px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+
+    /* controls: every pointer target is at least 24 (WCAG 2.5.8) */
+    --control-sm: 24px;
+    --control: 28px;
+    --control-lg: 32px;
+    --segment-track: 28px;
+    --segment: 24px;
+    /* the sidebar's rows, its search, switcher and profile button, the bars' tabs and buttons: UNA's and NEO's small step */
+    --row-sidebar: 36px;
+    /* a sidebar section's heading and a task context's lists under it */
+    --row-sidebar-sm: 32px;
+    /* text fields on UNA's and NEO's size steps (36 small, 44 regular, 52 large): a field may
+       hold a button, and is never smaller than the small step */
+    --field: 36px;
+    --field-lg: 44px;
+    --radius-field: 8px;
+    --icon: 16px;
+    --icon-lg: 20px;
+    --icon-empty: 32px;
+    /* focus ring and selection bars (1.10, 3.2): wider under Increase Contrast */
+    --focus-width: 2px;
+    --bar-width: 3px;
+    /* one corner radius for every rectangular control, tab and row, 28px or 36px tall */
+    --radius-control: 8px;
+    --radius-row: 8px;
+    --radius-media: 8px;
+    --radius-card: 10px;
+    --radius-sheet: 12px;
+    --radius-bubble: 18px;
+    --radius-round: 999px;
+    --radius-place: 22%;
+
+    /* frame */
+    --sidebar-width: 220px;
+    --list-width: 420px;
+    --list-min: 340px;
+    --detail-min: 420px;
+    --reading-width: 640px;
+    /* the content pane's column while nothing is open beside it (a feed, a list) */
+    --column-max: 680px;
+    --toolbar-height: 52px;
+    --pane-head-height: var(--toolbar-height);
+    /* the window's chrome (shell/top-bar.tsx, bottom-bar.tsx): the bars around the content,
+       which sits inset in a rounded container */
+    /* the bars hold the 36px tabs and buttons with 8px above and below */
+    --chrome-top: 44px;
+    --chrome-bottom: 52px;
+    --chrome-inset: 8px;
+    --radius-content: 10px;
+    /* the bars' tabs and buttons are the sidebar's rows: their height, corners and gap */
+    --tab-height: var(--row-sidebar);
+    /* the top bar's tabs and buttons: 28px with 16px icons (the bottom bar's stay --tab-height) */
+    --chrome-control: 28px;
+    --chrome-gap: 2px;
+    --tab-min: 96px;
+    --tab-max: 220px;
+    /* room for the macOS traffic lights where the page draws under the title bar */
+    --traffic-lights: 0px;
+
+    /* motion: colour changes are instant; turned off under prefers-reduced-motion (styles.css) */
+    --duration-fast: 150ms;
+    --duration: 220ms;
+    --ease-out: cubic-bezier(0.2, 0, 0, 1);
+
+    color-scheme: light dark;
+}
+
+:root[data-titlebar='overlay'] {
+    --traffic-lights: 72px;
+}
+
+:root[data-fullscreen='true'] {
+    --traffic-lights: 0px;
+}
+
+/* Windows: Fluent's sizes */
+:root[data-platform='windows'] {
+    --text-xs: 12px;
+    --leading-xs: 16px;
+    --text-ui: 14px;
+    --leading-ui: 20px;
+    --leading-ui-multi: 20px;
+    --text-title: 14px;
+    --text-h2: 20px;
+    --leading-h2: 28px;
+    --text-h1: 28px;
+    --leading-h1: 36px;
+    --toolbar-height: 48px;
+    --chrome-top: 44px;
+    --chrome-bottom: 52px;
+    --radius-content: 8px;
+    --control-sm: 28px;
+    --control: 32px;
+    --control-lg: 36px;
+    --segment-track: 32px;
+    --segment: 28px;
+    --row-sidebar: 36px;
+    --sidebar-width: 240px;
+    --radius-control: 4px;
+    --radius-field: 4px;
+    --radius-row: 4px;
+    --radius-card: 8px;
+    --radius-sheet: 8px;
+}
+
+/* the material shows through the window (data-material, set from Rust in a later step) */
+:root[data-material='sidebar'],
+:root[data-material='mica'] {
+    --bg-window: transparent;
+}
+
+/* dark: the system's, unless the theme says light (lib/theme.ts), or the theme says dark */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+        --mono-0-bg: #881337; --mono-0-text: #fecdd3;
+        --mono-1-bg: #7c2d12; --mono-1-text: #fed7aa;
+        --mono-2-bg: #78350f; --mono-2-text: #fde68a;
+        --mono-3-bg: #064e3b; --mono-3-text: #a7f3d0;
+        --mono-4-bg: #134e4a; --mono-4-text: #99f6e4;
+        --mono-5-bg: #0c4a6e; --mono-5-text: #bae6fd;
+        --mono-6-bg: #312e81; --mono-6-text: #c7d2fe;
+        --mono-7-bg: #4c1d95; --mono-7-text: #ddd6fe;
+
+        --ink: rgb(var(--neutral-50));
+        /* NEO's dark order: the chrome (sidebar, title and tab bars, bottom bar) is the darkest,
+           NEO's page background; the content sits above it, lighter; cards, fields and buttons on
+           the content lighter again (as NEO's cards and bubbles, and Linear's panes). Each step
+           is 1.12:1. Over the window's material the chrome is mostly this dark, a little of the
+           desktop showing through. Text on them: secondary 7.72 / 6.91 / 6.18, the accent fill
+           3.83 / 3.43 / 3.07 */
+        --bg-window: rgb(var(--neutral-950));
+        --bg-sidebar: color-mix(in oklab, rgb(var(--neutral-950)) 82%, transparent);
+        --bg-sidebar-solid: rgb(var(--neutral-950));
+        --bg-content: rgb(var(--neutral-900));
+        --bg-card: color-mix(in oklab, rgb(var(--neutral-800)) 70%, rgb(var(--neutral-900)));
+        /* not neutral-800: an accent-filled option there is 2.88:1, here 3.43 */
+        --bg-raised: rgb(var(--neutral-900));
+        --bg-grouped: color-mix(in oklab, var(--ink) 6%, transparent);
+        --text-primary: rgb(var(--neutral-50));
+        --text-secondary: rgb(var(--neutral-400));
+        /* neutral-400 is 4.58 on the material: too close */
+        --text-sidebar-secondary: rgb(var(--neutral-300));
+        /* neutral-400 on a capsule over a dark card is 4.28:1; neutral-300 is 7.43 */
+        --text-on-fill: rgb(var(--neutral-300));
+        --accent-text: var(--site-text-dark, rgb(var(--accent-300)));
+        --accent-icon: var(--site-icon-dark, rgb(var(--accent-400)));
+        --fill-control: color-mix(in oklab, var(--ink) 12%, transparent);
+        --fill-control-hover: color-mix(in oklab, var(--ink) 15%, transparent);
+        --fill-control-solid: color-mix(in oklab, var(--ink) 12%, var(--bg-content));
+        --fill-control-hover-solid: color-mix(in oklab, var(--ink) 15%, var(--bg-content));
+        --fill-control-pressed: color-mix(in oklab, var(--ink) 20%, transparent);
+        --fill-row-hover: color-mix(in oklab, var(--ink) 5%, transparent);
+        --fill-selected: color-mix(in oklab, var(--site-icon-dark, rgb(var(--accent-400))) 18%, transparent);
+        --fill-selected-inactive: color-mix(in oklab, var(--ink) 10%, transparent);
+        --selection-bar: var(--site-icon-dark, rgb(var(--accent-400)));
+        --selection-bar-inactive: rgb(var(--neutral-400));
+        /* neutral-500 on the dark material is 2.43 */
+        --control-border-sidebar: rgb(var(--neutral-400));
+        --focus-ring: var(--site-icon-dark, rgb(var(--accent-400)));
+        --unread: var(--site-icon-dark, rgb(var(--accent-400)));
+        /* accent-600 on the dark grouped box is 2.94 */
+        --switch-on: var(--site-switch-dark, rgb(var(--accent-500)));
+        /* red-600 was 3.77 on neutral-900; red-300 is 9.37 */
+        --danger-text: rgb(var(--red-300));
+        --success-icon: rgb(var(--green-400));
+        --image-outline: oklch(1 0 0 / 0.1);
+        --scrim: rgb(0 0 0 / 0.5);
+        --shadow-raised: 0 0 0 0.5px rgb(255 255 255 / 0.12), inset 0 1px 0 rgb(255 255 255 / 0.04), 0 12px 32px rgb(0 0 0 / 0.5);
+        --shadow-segment: 0 0 0 0.5px rgb(255 255 255 / 0.10), 0 1px 2px rgb(0 0 0 / 0.4);
+    }
+    :root:not([data-theme='light'])[data-material='sidebar'],
+    :root:not([data-theme='light'])[data-material='mica'] {
+        --bg-window: transparent;
+    }
+}
+
+:root[data-theme='dark'] {
+    --mono-0-bg: #881337; --mono-0-text: #fecdd3;
+    --mono-1-bg: #7c2d12; --mono-1-text: #fed7aa;
+    --mono-2-bg: #78350f; --mono-2-text: #fde68a;
+    --mono-3-bg: #064e3b; --mono-3-text: #a7f3d0;
+    --mono-4-bg: #134e4a; --mono-4-text: #99f6e4;
+    --mono-5-bg: #0c4a6e; --mono-5-text: #bae6fd;
+    --mono-6-bg: #312e81; --mono-6-text: #c7d2fe;
+    --mono-7-bg: #4c1d95; --mono-7-text: #ddd6fe;
+
+    --ink: rgb(var(--neutral-50));
+    /* as in the system's dark mode above */
+    --bg-window: rgb(var(--neutral-950));
+    --bg-sidebar: color-mix(in oklab, rgb(var(--neutral-950)) 82%, transparent);
+    --bg-sidebar-solid: rgb(var(--neutral-950));
+    --bg-content: rgb(var(--neutral-900));
+    --bg-card: color-mix(in oklab, rgb(var(--neutral-800)) 70%, rgb(var(--neutral-900)));
+    --bg-raised: rgb(var(--neutral-900));
+    --bg-grouped: color-mix(in oklab, var(--ink) 6%, transparent);
+    --text-primary: rgb(var(--neutral-50));
+    --text-secondary: rgb(var(--neutral-400));
+    --text-sidebar-secondary: rgb(var(--neutral-300));
+    /* neutral-400 on a capsule over a dark card is 4.28:1; neutral-300 is 7.43 */
+    --text-on-fill: rgb(var(--neutral-300));
+    --accent-text: var(--site-text-dark, rgb(var(--accent-300)));
+    --accent-icon: var(--site-icon-dark, rgb(var(--accent-400)));
+    --fill-control: color-mix(in oklab, var(--ink) 12%, transparent);
+    --fill-control-hover: color-mix(in oklab, var(--ink) 15%, transparent);
+    --fill-control-solid: color-mix(in oklab, var(--ink) 12%, var(--bg-content));
+    --fill-control-hover-solid: color-mix(in oklab, var(--ink) 15%, var(--bg-content));
+    --fill-control-pressed: color-mix(in oklab, var(--ink) 20%, transparent);
+    --fill-row-hover: color-mix(in oklab, var(--ink) 5%, transparent);
+    --fill-selected: color-mix(in oklab, var(--site-icon-dark, rgb(var(--accent-400))) 18%, transparent);
+    --fill-selected-inactive: color-mix(in oklab, var(--ink) 10%, transparent);
+    --selection-bar: var(--site-icon-dark, rgb(var(--accent-400)));
+    --selection-bar-inactive: rgb(var(--neutral-400));
+    --control-border-sidebar: rgb(var(--neutral-400));
+    --focus-ring: var(--site-icon-dark, rgb(var(--accent-400)));
+    --unread: var(--site-icon-dark, rgb(var(--accent-400)));
+    --switch-on: var(--site-switch-dark, rgb(var(--accent-500)));
+    --danger-text: rgb(var(--red-300));
+    --success-icon: rgb(var(--green-400));
+    --image-outline: oklch(1 0 0 / 0.1);
+    --scrim: rgb(0 0 0 / 0.5);
+    --shadow-raised: 0 0 0 0.5px rgb(255 255 255 / 0.12), inset 0 1px 0 rgb(255 255 255 / 0.04), 0 12px 32px rgb(0 0 0 / 0.5);
+    --shadow-segment: 0 0 0 0.5px rgb(255 255 255 / 0.10), 0 1px 2px rgb(0 0 0 / 0.4);
+    color-scheme: dark;
+}
+
+:root[data-theme='dark'][data-material='sidebar'],
+:root[data-theme='dark'][data-material='mica'] {
+    --bg-window: transparent;
+}
+
+:root[data-theme='light'] {
+    color-scheme: light;
+}
+
+/* Increase Contrast (macOS, Windows): stronger lines and secondary text, solid sidebar */
+@media (prefers-contrast: more) {
+    /* listed with the dark selectors, so it wins over them too (same specificity, later) */
+    :root,
+    :root:not([data-theme='light']),
+    :root[data-theme='dark'] {
+        --bg-sidebar: var(--bg-sidebar-solid);
+        --separator: color-mix(in oklab, var(--ink) 35%, transparent);
+        --separator-card: var(--separator);
+    }
+    :root {
+        --text-secondary: rgb(var(--neutral-700));
+        --focus-width: 3px;
+        --bar-width: 4px;
+    }
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+            --text-secondary: rgb(var(--neutral-300));
+        }
+    }
+    :root[data-theme='dark'] {
+        --text-secondary: rgb(var(--neutral-300));
+    }
+    :root[data-theme='light'] {
+        --text-secondary: rgb(var(--neutral-700));
+    }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+    :root,
+    :root:not([data-theme='light']),
+    :root[data-theme='dark'] {
+        --bg-sidebar: var(--bg-sidebar-solid);
+    }
+}
+
+/* the eight monogram hues: CSS can't build a variable name from N */
+[data-hue='0'] { --hue-bg: var(--mono-0-bg); --hue-text: var(--mono-0-text); }
+[data-hue='1'] { --hue-bg: var(--mono-1-bg); --hue-text: var(--mono-1-text); }
+[data-hue='2'] { --hue-bg: var(--mono-2-bg); --hue-text: var(--mono-2-text); }
+[data-hue='3'] { --hue-bg: var(--mono-3-bg); --hue-text: var(--mono-3-text); }
+[data-hue='4'] { --hue-bg: var(--mono-4-bg); --hue-text: var(--mono-4-text); }
+[data-hue='5'] { --hue-bg: var(--mono-5-bg); --hue-text: var(--mono-5-text); }
+[data-hue='6'] { --hue-bg: var(--mono-6-bg); --hue-text: var(--mono-6-text); }
+[data-hue='7'] { --hue-bg: var(--mono-7-bg); --hue-text: var(--mono-7-text); }

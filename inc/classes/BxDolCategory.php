@@ -129,6 +129,15 @@ class BxDolCategory extends BxDolFactory implements iBxDolFactoryObject
     {
         return BxDolCategoryQuery::getItemsNumInCategory ($this->_aObject, $sCategoryValue, true, $aParams);
     }
+
+    /**
+     * Get number of items in every category at once (one query)
+     * @return array category value => number, categories without items left out
+     */
+    public function getItemsNums($aParams = [])
+    {
+        return BxDolCategoryQuery::getItemsNumsInCategories ($this->_aObject, true, $aParams);
+    }
 }
 
 /** @} */

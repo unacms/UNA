@@ -127,6 +127,21 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
         $sSql = $this->prepare("SELECT `id` FROM `sys_modules` WHERE `name`=? AND `enabled`='1' LIMIT 1", $sName);
         return (int)$this->fromMemory('sys_module_enabled_' . $sName, 'getOne', $sSql) > 0;
     }
+
+    /**
+     * What isEnabledByName answers for every module, read in one query and kept in memory where
+     * it keeps it: for a page that asks about many modules (a feed of many modules' content).
+     */
+    public function primeEnabledByName()
+    {
+        if(array_key_exists('sys_module_enabled_by_name_primed', self::$_aDbCacheData))
+            return;
+        self::$_aDbCacheData['sys_module_enabled_by_name_primed'] = true;
+
+        foreach($this->getAll("SELECT `id`, `name`, `enabled` FROM `sys_modules`") as $aRow)
+            if(!array_key_exists('sys_module_enabled_' . $aRow['name'], self::$_aDbCacheData))
+                self::$_aDbCacheData['sys_module_enabled_' . $aRow['name']] = (int)$aRow['enabled'] === 1 ? $aRow['id'] : false;
+    }
     function getModules()
     {
         $sSql = "SELECT * FROM `sys_modules` ORDER BY `title`";

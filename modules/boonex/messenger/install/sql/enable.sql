@@ -110,6 +110,11 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
 ('sys_tabbar', @sName, 'messenger', '_sys_mobile_mail', '_sys_mobile_mail', 'page.php?i=messenger', '', '', 'message-circle-more', '', 2147483646, 1, 1, 3);
 
+-- MENU: Messages in the apps' menu (sys_apps_menu: the first section of the apps' sidebar, GET /api/v2/navigation),
+-- between Profile and Notifications. Conversations' Messages item steps aside while Messenger is enabled.
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
+('sys_apps_menu', @sName, 'messenger-messages', '_bx_messenger_menu_item_title_system_messages', '_bx_messenger_menu_item_title_messages', 'page.php?i=messenger', '', '', 'message-circle-more', 'a:2:{s:6:"module";s:12:"bx_messenger";s:6:"method";s:20:"get_updated_lots_num";}', '', 2147483646, 1, 1, 4);
+
 SET @iMIOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name` = 'sys_account_notifications' AND `order` < 9999);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`, `visibility_custom`, `hidden_on`) VALUES
 ('sys_account_notifications', @sName, 'notifications-messenger', '_bx_messenger_menu_notifications_item_sys_title', '_bx_messenger_menu_notifications_item_title', 'page.php?i=messenger', '', '', 'comments col-green1', 'a:2:{s:6:"module";s:12:"bx_messenger";s:6:"method";s:20:"get_updated_lots_num";}', '', 2147483646, 1, 1, @iMIOrder + 2, '', 6);

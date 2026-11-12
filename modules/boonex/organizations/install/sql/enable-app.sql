@@ -62,6 +62,7 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' 
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='bx_organizations' AND `name`='profile-stats-relations';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='bx_organizations' AND `name`='profile-stats-related-me';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_followings' AND `module`='bx_organizations' AND `name`='organizations';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_memberships' AND `module`='bx_organizations' AND `name`='organizations';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_dashboard_manage_tools' AND `module`='bx_organizations' AND `name`='organizations-administration';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_view_actions' AND `module`='bx_organizations' AND `name`='join-organization-profile';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_view_actions' AND `module`='bx_organizations' AND `name`='profile-fan-add';

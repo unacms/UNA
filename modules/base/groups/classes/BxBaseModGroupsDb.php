@@ -32,6 +32,8 @@ class BxBaseModGroupsDb extends BxBaseModProfileDb
 
     public function toAdmins ($iGroupProfileId, $mixedFansIds)
     {
+        self::$_aPrimedRoles = [];
+
         if (is_array($mixedFansIds)) {
             foreach ($mixedFansIds as $iFanId)
                 $this->toAdmins ($iGroupProfileId, $iFanId);
@@ -55,6 +57,8 @@ class BxBaseModGroupsDb extends BxBaseModProfileDb
 
     public function fromAdmins ($iGroupProfileId, $mixedFansIds)
     {
+        self::$_aPrimedRoles = [];
+
         if (is_array($mixedFansIds)) {
             foreach ($mixedFansIds as $iFanId)
                 $this->fromAdmins ($iGroupProfileId, $iFanId);
@@ -77,6 +81,8 @@ class BxBaseModGroupsDb extends BxBaseModProfileDb
 
     public function deleteAdminsByGroupId ($iGroupProfileId, $iProfileId = 0)
     {
+        self::$_aPrimedRoles = [];
+
         if ($iProfileId != 0)
             $sQuery = $this->prepare("DELETE FROM `" . $this->_oConfig->CNF['TABLE_ADMINS'] . "` WHERE `group_profile_id` = ? AND `fan_id` = ?", $iGroupProfileId, $iProfileId);
         else
@@ -87,6 +93,8 @@ class BxBaseModGroupsDb extends BxBaseModProfileDb
 
     public function deleteAdminsByProfileId ($iProfileId)
     {
+        self::$_aPrimedRoles = [];
+
         $sQuery = $this->prepare("DELETE FROM `" . $this->_oConfig->CNF['TABLE_ADMINS'] . "` WHERE `fan_id` = ?", $iProfileId);
         return $this->res($sQuery);
     }
@@ -133,6 +141,12 @@ class BxBaseModGroupsDb extends BxBaseModProfileDb
     {
         $CNF = &$this->_oConfig->CNF;
 
+        $sPrimed = 'admins#' . ($CNF['TABLE_ADMINS'] ?? '') . '#' . (int)$iGroupProfileId;
+        if ($iStart == 0 && $iLimit == 0 && !array_key_exists($sPrimed, self::$_aPrimedRoles) && $this->_isPending($iGroupProfileId))
+            $this->_readAdmins($this->_pending('admins#' . $CNF['TABLE_ADMINS'] . '#'));
+        if ($iStart == 0 && $iLimit == 0 && array_key_exists($sPrimed, self::$_aPrimedRoles))
+            return self::$_aPrimedRoles[$sPrimed];
+
         $aBindings = array('group_profile_id' => $iGroupProfileId, 'role' => BX_BASE_MOD_GROUPS_ROLE_COMMON);
         $sWhereClause = " AND `group_profile_id` = :group_profile_id AND `role` <> :role";
 
@@ -143,8 +157,107 @@ class BxBaseModGroupsDb extends BxBaseModProfileDb
         return $this->getColumn("SELECT `fan_id` FROM `" . $CNF['TABLE_ADMINS'] . "` INNER JOIN `sys_profiles` as `p` ON (`p`.`id` = `fan_id` AND `p`.`status` = 'active') WHERE 1" . $sWhereClause . $sLimitClause, $aBindings);
     }
 
+    /**
+     * Read the roles of a profile in each of many contexts in one query, so that getRole of
+     * those pairs needs no query of its own in this request (until a role changes here): for
+     * a page of content from many contexts and the profile who views it.
+     */
+    public function primeRoles($iProfileId, $aGroupProfileIds)
+    {
+        $CNF = &$this->_oConfig->CNF;
+        $iProfileId = (int)$iProfileId;
+        $aIds = array_values(array_unique(array_filter(array_map('intval', (array)$aGroupProfileIds))));
+        if ($iProfileId <= 0 || !$aIds || empty($CNF['TABLE_ADMINS']))
+            return;
+
+        $aRoles = $this->getPairs("SELECT `group_profile_id`, `role` FROM `" . $CNF['TABLE_ADMINS'] . "` WHERE `fan_id` = :fan_id AND `group_profile_id` IN (" . $this->implode_escape($aIds) . ")", 'group_profile_id', 'role', ['fan_id' => $iProfileId]);
+        foreach ($aIds as $iId)
+            self::$_aPrimedRoles[$CNF['TABLE_ADMINS'] . '#' . $iId . '#' . $iProfileId] = (int)($aRoles[$iId] ?? 0);
+    }
+
+    /**
+     * Names contexts a page shows (a page of content from many contexts), so that the first
+     * getAdmins of one of them reads the admins, their roles and their fan connections of all
+     * of them in a query each, and the first getInviteByInvited of one reads that profile's
+     * invitations to all of them in one: nothing is read until a check asks (a moderator's
+     * checks never ask who manages a context's content).
+     */
+    public function primeContextsLater($aGroupProfileIds)
+    {
+        $sTable = ($this->_oConfig->CNF['TABLE_ADMINS'] ?? '') . '|' . ($this->_oConfig->CNF['TABLE_INVITES'] ?? '');
+        foreach ((array)$aGroupProfileIds as $iId)
+            if ((int)$iId > 0)
+                self::$_aPending[$sTable][(int)$iId] = true;
+    }
+
+    /** The contexts primeContextsLater named: tables => group profile id => true. */
+    protected static $_aPending = [];
+
+    protected function _isPending($iGroupProfileId)
+    {
+        $sTable = ($this->_oConfig->CNF['TABLE_ADMINS'] ?? '') . '|' . ($this->_oConfig->CNF['TABLE_INVITES'] ?? '');
+        return isset(self::$_aPending[$sTable][(int)$iGroupProfileId]);
+    }
+
+    /** The named contexts with nothing read under this key prefix yet. */
+    protected function _pending($sPrefix)
+    {
+        $sTable = ($this->_oConfig->CNF['TABLE_ADMINS'] ?? '') . '|' . ($this->_oConfig->CNF['TABLE_INVITES'] ?? '');
+        return array_values(array_filter(array_keys(self::$_aPending[$sTable] ?? []), function ($iId) use ($sPrefix) { return !array_key_exists($sPrefix . $iId, self::$_aPrimedRoles); }));
+    }
+
+    /**
+     * The admins (getAdmins of the whole list) of many contexts, their roles there and whether
+     * each is still a fan (the role check asks), in a query each.
+     */
+    protected function _readAdmins($aIds)
+    {
+        $CNF = &$this->_oConfig->CNF;
+        if (!$aIds || empty($CNF['TABLE_ADMINS']))
+            return;
+
+        $aRows = $this->getAll("SELECT `ta`.`group_profile_id`, `ta`.`fan_id`, `ta`.`role` FROM `" . $CNF['TABLE_ADMINS'] . "` AS `ta` INNER JOIN `sys_profiles` AS `p` ON (`p`.`id` = `ta`.`fan_id` AND `p`.`status` = 'active') WHERE `ta`.`group_profile_id` IN (" . $this->implode_escape($aIds) . ") AND `ta`.`role` <> :role ORDER BY `ta`.`id`", ['role' => BX_BASE_MOD_GROUPS_ROLE_COMMON]);
+        $aAdmins = array_fill_keys($aIds, []);
+        $aPairs = [];
+        foreach ($aRows as $aRow) {
+            $aAdmins[(int)$aRow['group_profile_id']][] = $aRow['fan_id'];
+            self::$_aPrimedRoles[$CNF['TABLE_ADMINS'] . '#' . (int)$aRow['group_profile_id'] . '#' . (int)$aRow['fan_id']] = (int)$aRow['role'];
+            $aPairs[] = [(int)$aRow['fan_id'], (int)$aRow['group_profile_id']];
+        }
+        foreach ($aAdmins as $iId => $aList)
+            self::$_aPrimedRoles['admins#' . $CNF['TABLE_ADMINS'] . '#' . $iId] = $aList;
+        if ($aPairs && !empty($CNF['OBJECT_CONNECTIONS']) && ($oFans = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTIONS'])))
+            $oFans->primeConnectionPairs($aPairs);
+    }
+
+    /** A profile's invitations to many contexts, in one query. */
+    protected function _readInvites($iInvitedPid, $aIds)
+    {
+        $CNF = &$this->_oConfig->CNF;
+        if (!$aIds || empty($CNF['TABLE_INVITES']))
+            return;
+
+        $aFound = [];
+        foreach ($this->getAll("SELECT `ti`.* FROM `" . $CNF['TABLE_INVITES'] . "` AS `ti` WHERE `ti`.`invited_profile_id` = :invited_pid AND `ti`.`group_profile_id` IN (" . $this->implode_escape($aIds) . ") ORDER BY `ti`.`id`", ['invited_pid' => (int)$iInvitedPid]) as $aRow)
+            if (!isset($aFound[(int)$aRow['group_profile_id']]))
+                $aFound[(int)$aRow['group_profile_id']] = $aRow;
+        foreach ($aIds as $iId)
+            self::$_aPrimedRoles['invite#' . $CNF['TABLE_INVITES'] . '#' . (int)$iInvitedPid . '#' . $iId] = $aFound[$iId] ?? [];
+    }
+
+    /**
+     * What primeRoles, _readAdmins and _readInvites read: table#group#profile => role,
+     * admins#table#group => admins, invite#table#invited#group => invitation; forgotten when a
+     * role or an invitation changes here.
+     */
+    protected static $_aPrimedRoles = [];
+
     public function getRole($iGroupProfileId, $iProfileId)
     {
+        $sKey = ($this->_oConfig->CNF['TABLE_ADMINS'] ?? '') . '#' . (int)$iGroupProfileId . '#' . (int)$iProfileId;
+        if (array_key_exists($sKey, self::$_aPrimedRoles))
+            return self::$_aPrimedRoles[$sKey];
+
         return (int)$this->getRoles(array('type' => 'by_gf_id', 'group_profile_id' => $iGroupProfileId, 'fan_id' => $iProfileId, 'role_only' => true));
     }
 
@@ -200,6 +313,19 @@ class BxBaseModGroupsDb extends BxBaseModProfileDb
                     $sLimitClause = $aParams['start'] . ', ' . $aParams['limit'];
                 break;
 
+            case 'roles_by_group_pid_fan_ids':
+                // fan id => role of the listed fans (a page of members), in one query
+                $aMethod['name'] = 'getPairs';
+                $aMethod['params'][1] = 'fan_id';
+                $aMethod['params'][2] = 'role';
+                $aMethod['params'][3] = [
+                    'group_profile_id' => $aParams['group_profile_id'],
+                ];
+
+                $sSelectClause = "`ta`.`fan_id`, `ta`.`role`";
+                $sWhereClause = "AND `ta`.`group_profile_id` = :group_profile_id AND `ta`.`fan_id` IN (" . $this->implode_escape(array_map('intval', $aParams['fan_ids'])) . ")";
+                break;
+
             case 'group_pids_by_fan_id':
                 $aMethod['name'] = 'getColumn';
                 $aMethod['params'][1] = [
@@ -235,6 +361,8 @@ class BxBaseModGroupsDb extends BxBaseModProfileDb
 
     public function updateRoles($aSet, $aWhere)
     {
+        self::$_aPrimedRoles = [];
+
         $sWhereClause = 1;
         if(!empty($aWhere))
             $sWhereClause = $this->arrayToSQL($aWhere, ' AND ');
@@ -244,6 +372,8 @@ class BxBaseModGroupsDb extends BxBaseModProfileDb
     
     public function deleteRoles($aWhere)
     {
+        self::$_aPrimedRoles = [];
+
     	if(empty($aWhere))
             return false;
 
@@ -252,6 +382,8 @@ class BxBaseModGroupsDb extends BxBaseModProfileDb
 
     public function setRole ($iGroupProfileId, $iProfileId, $mixedRole, $mixedPeriod = false, $sOrder = '')
     {
+        self::$_aPrimedRoles = [];
+
         $CNF = &$this->_oConfig->CNF;
 
         if($this->_oConfig->isMultiRoles() && is_array($mixedRole)) {
@@ -419,7 +551,8 @@ class BxBaseModGroupsDb extends BxBaseModProfileDb
             'invited_profile_id' => $iInvitedProfileId,
             'added' => time()
         );
-        $CNF = $this->_oConfig->CNF; 
+        self::$_aPrimedRoles = [];
+        $CNF = $this->_oConfig->CNF;
         $this->query("INSERT `" . $CNF["TABLE_INVITES"] . "` (`key`, `group_profile_id`, `author_profile_id`, `invited_profile_id`, `added`) VALUES (:key, :group_profile_id, :author_profile_id, :invited_profile_id, :added)", $aBindings);
         return (int)$this->lastId();
     }
@@ -482,6 +615,13 @@ class BxBaseModGroupsDb extends BxBaseModProfileDb
 
     public function getInviteByInvited($iInvitedPid, $iContextPid)
     {
+        $sPrefix = 'invite#' . ($this->_oConfig->CNF['TABLE_INVITES'] ?? '') . '#' . (int)$iInvitedPid . '#';
+        $sPrimed = $sPrefix . (int)$iContextPid;
+        if (!array_key_exists($sPrimed, self::$_aPrimedRoles) && $this->_isPending($iContextPid))
+            $this->_readInvites((int)$iInvitedPid, $this->_pending($sPrefix));
+        if (array_key_exists($sPrimed, self::$_aPrimedRoles))
+            return self::$_aPrimedRoles[$sPrimed];
+
         return $this->getInvites(['sample' => 'invited_pid_and_context_pid', 'invited_pid' => $iInvitedPid, 'context_pid' => $iContextPid]);
     }
 
@@ -497,7 +637,8 @@ class BxBaseModGroupsDb extends BxBaseModProfileDb
            'value' => $sValue,
            'group_profile_id' => $iGroupProfileId
        );
-        $CNF = $this->_oConfig->CNF; 
+        self::$_aPrimedRoles = [];
+        $CNF = $this->_oConfig->CNF;
         return $this->query("UPDATE `" . $CNF["TABLE_INVITES"] . "` SET `" . $sColumn . "` = :value WHERE `key` = :key AND group_profile_id = :group_profile_id", $aBindings);
     }
     
@@ -507,7 +648,8 @@ class BxBaseModGroupsDb extends BxBaseModProfileDb
            'key' => $sKey,
            'group_profile_id' => $iGroupProfileId
        );
-        $CNF = $this->_oConfig->CNF; 
+        self::$_aPrimedRoles = [];
+        $CNF = $this->_oConfig->CNF;
         return $this->query("DELETE FROM `" . $CNF["TABLE_INVITES"] . "` WHERE `key` = :key AND group_profile_id = :group_profile_id", $aBindings);
     }
     
@@ -516,7 +658,8 @@ class BxBaseModGroupsDb extends BxBaseModProfileDb
         $aBindings = array(
            'id' => $iId
        );
-        $CNF = $this->_oConfig->CNF; 
+        self::$_aPrimedRoles = [];
+        $CNF = $this->_oConfig->CNF;
         return $this->query("DELETE FROM `" . $CNF["TABLE_INVITES"] . "` WHERE `id` = :id", $aBindings);
     }
 

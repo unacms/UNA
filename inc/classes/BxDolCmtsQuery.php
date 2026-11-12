@@ -418,6 +418,9 @@ class BxDolCmtsQuery extends BxDolDb
 
     /**
      * Get comments list. With $bIdsOnly it returns the comment IDs only, in the same order.
+     * API v2 only: $aOrder may also have 'before' (a comment id): only comments older than it,
+     * for keyset pages; ordered by date, comments of the same second follow their ids then. The
+     * site and API v1 order by date alone, as they always did.
      */
     public function getComments ($iId, $iCmtVParentId = 0, $iAuthorId = 0, $sFilter = '', $aOrder = array(), $iStart = 0, $iCount = -1, $bIdsOnly = false)
     {
@@ -455,6 +458,12 @@ class BxDolCmtsQuery extends BxDolDb
         if(($oCf = $this->_oMain->getObjectContentFilter()) !== false)
             $sWhereCf = $oCf->getSQLParts($this->_sTable, 'cmt_cf');
 
+        if(!empty($aOrder['before'])) {
+            $aBindings['cmt_before_id'] = (int)$aOrder['before'];
+
+            $sWhereFilter .= " AND `{$this->_sTable}`.`cmt_id` < :cmt_before_id";
+        }
+
         $sOrder = " ORDER BY `{$this->_sTable}`.`cmt_pinned` DESC, `{$this->_sTable}`.`cmt_time` ASC";
         if(isset($aOrder['by']) && isset($aOrder['way'])) {
             $aOrder['way'] = strtoupper(in_array($aOrder['way'], array(BX_CMT_ORDER_WAY_ASC, BX_CMT_ORDER_WAY_DESC)) ? $aOrder['way'] : BX_CMT_ORDER_WAY_ASC);
@@ -462,6 +471,9 @@ class BxDolCmtsQuery extends BxDolDb
             switch($aOrder['by']) {
                 case BX_CMT_ORDER_BY_DATE:
                     $sOrder = " ORDER BY `{$this->_sTable}`.`cmt_time` " . $aOrder['way'];
+                    // API v2 only: the id breaks ties of the same second (its pages are keyset pages)
+                    if(bx_is_api_v2() || !empty($aOrder['before']))
+                        $sOrder .= ", `{$this->_sTable}`.`cmt_id` " . $aOrder['way'];
                     break;
 
                 case BX_CMT_ORDER_BY_POPULAR:
@@ -711,6 +723,20 @@ class BxDolCmtsQuery extends BxDolDb
             $sJoin
             WHERE `{$this->_sTable}`.`cmt_object_id` = ? AND `{$this->_sTable}`.`cmt_id` = ?
             LIMIT 1", $this->_oMain->getSystemId(), $iId, $iCmtId);
+        return $this->getRow($sQuery);
+    }
+
+    /**
+     * A comment by its id alone, with its unique id: for code that knows a comment (a
+     * notification about it) but not the object it is on.
+     */
+    public function getCommentById ($iCmtId)
+    {
+        $sQuery = $this->prepare("SELECT `c`.*, `i`.`id` AS `cmt_unique_id`
+            FROM `{$this->_sTable}` AS `c`
+            LEFT JOIN `{$this->_sTableIds}` AS `i` ON (`c`.`cmt_id` = `i`.`cmt_id` AND `i`.`system_id` = ?)
+            WHERE `c`.`cmt_id` = ?
+            LIMIT 1", $this->_oMain->getSystemId(), $iCmtId);
         return $this->getRow($sQuery);
     }
 

@@ -390,7 +390,9 @@
     <string name="_bx_orgs_menu_item_title_system_relations"><![CDATA[Relationships]]></string>
     <string name="_bx_orgs_menu_item_title_relations"><![CDATA[Relationships]]></string>
     <string name="_bx_orgs_menu_item_title_system_manage_my_organizations"><![CDATA[My organizations]]></string>
+    <string name="_bx_orgs_menu_item_title_system_memberships"><![CDATA[Organizations (member of)]]></string>
     <string name="_bx_orgs_menu_item_title_manage_my_organizations"><![CDATA[Organizations]]></string>
+    <string name="_bx_orgs_menu_item_title_memberships"><![CDATA[Your organizations]]></string>
     <string name="_bx_orgs_menu_item_title_system_favorites"><![CDATA[Favorite Organizations]]></string>
     <string name="_bx_orgs_menu_item_title_favorites"><![CDATA[Favorite organizations]]></string>
     <string name="_bx_orgs_menu_item_title_system_subscriptions"><![CDATA[Following]]></string>

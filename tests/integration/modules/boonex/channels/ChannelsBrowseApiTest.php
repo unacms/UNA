@@ -104,4 +104,21 @@ class ChannelsBrowseApiTest extends BxDolIntegrationTestCase
         $this->assertTrue($this->browse(['type' => 'recent', 'start' => 0, 'per_page' => 24])['hide_empty_msg'], 'Unchanged for a client that does not send it.');
         $this->assertFalse($this->browse(['type' => 'recent', 'start' => 0, 'per_page' => 24, 'empty_message' => true])['hide_empty_msg']);
     }
+
+    /**
+     * An empty channel list says how channels appear, for the list it is, and offers no button:
+     * channels come from hashtags, not from an add form.
+     */
+    public function testEmptyListExplainsHowChannelsAppear(): void
+    {
+        $fState = fn($sMode, $aParams = []) => BxDolEmptyState::resolve((new BxCnlSearchResult($sMode, $aParams))->getEmptyStateApi());
+
+        $aLevel = $fState('level');
+        $this->assertSame(_t('_bx_channels_txt_empty_title'), $aLevel['title']);
+        $this->assertSame(_t('_bx_channels_txt_empty_text_level'), $aLevel['text']);
+        $this->assertArrayNotHasKey('buttons', $aLevel);
+
+        $this->assertSame(_t('_bx_channels_txt_empty_text'), $fState('recent')['text']);
+        $this->assertSame(_t('_bx_channels_txt_empty_text_favorite'), $fState('favorite', ['user' => 0])['text']);
+    }
 }

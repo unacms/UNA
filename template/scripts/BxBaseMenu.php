@@ -201,6 +201,63 @@ class BxBaseMenu extends BxDolMenu
     }
 
     /**
+     * The items the apps get, for API v2's GET /navigation (BxBaseApiV2Navigation), which has no
+     * API mode of its own (api_v2.php is not api.php): the items as getCodeAPI() builds them in
+     * the API mode of api.php, so the same checks decide, the menu's own included (Studio's
+     * "Active in apps" (`active_api`), "Visible for", the custom visibility and what a class adds
+     * to _isVisible() or _getMenuItem()), and with the markers replaced. Each item also has its
+     * `module`, its icon code and link as Studio has them (`icon_code`, the API mode's `icon` is the
+     * icon set's name; `link_code`, before the markers and permalinks) and its counter's service call (`addon_call`) instead of the counter, which
+     * BxBaseApiV2Navigation reads for the viewer each time.
+     * @param bool $bAddons also read the counters (`addon`), as getCodeAPI() does
+     * @return array
+     */
+    public function getMenuItemsForApps($bAddons = false)
+    {
+        $bIsApi = $this->_bIsApi;
+        $bDisplayAddons = $this->_bDisplayAddons;
+        $this->_bIsApi = true;
+        $this->_bDisplayAddons = $bDisplayAddons && $bAddons;
+        try {
+            $aItems = $this->getMenuItems();
+        }
+        finally {
+            $this->_bIsApi = $bIsApi;
+            $this->_bDisplayAddons = $bDisplayAddons;
+        }
+
+        $aRaw = [];
+        $this->_getMenuItemsRawById(isset($this->_aObject['menu_items']) ? $this->_aObject['menu_items'] : [], $aRaw);
+
+        return $this->_getMenuItemsForAppsRaw(is_array($aItems) ? $aItems : [], $aRaw, $bDisplayAddons);
+    }
+
+    protected function _getMenuItemsRawById($aItems, &$aResult)
+    {
+        foreach ((array)$aItems as $a) {
+            if (!is_array($a) || !isset($a['id']))
+                continue;
+            $aResult[(string)$a['id']] = $a;
+            if (!empty($a['subitems']))
+                $this->_getMenuItemsRawById($a['subitems'], $aResult);
+        }
+    }
+
+    protected function _getMenuItemsForAppsRaw($aItems, $aRaw, $bDisplayAddons)
+    {
+        foreach ($aItems as $i => $a) {
+            $aRow = isset($a['id']) && isset($aRaw[(string)$a['id']]) ? $aRaw[(string)$a['id']] : [];
+            $aItems[$i]['module'] = isset($aRow['module']) ? $aRow['module'] : '';
+            $aItems[$i]['icon_code'] = isset($aRow['icon']) ? (string)$aRow['icon'] : '';
+            $aItems[$i]['link_code'] = isset($aRow['link']) ? (string)$aRow['link'] : '';
+            $aItems[$i]['addon_call'] = $bDisplayAddons && !empty($aRow['addon']) ? $aRow['addon'] : '';
+            if (!empty($a['subitems']) && is_array($a['subitems']))
+                $aItems[$i]['subitems'] = $this->_getMenuItemsForAppsRaw($a['subitems'], $aRaw, $bDisplayAddons);
+        }
+        return $aItems;
+    }
+
+    /**
      * Get menu short code API.
      * @return array
      */

@@ -169,7 +169,44 @@ class BxDolImageResize extends BxDolFactory implements iBxDolSingleton
             $this->_sError = $e->getMessage();
             return false;
         }
+
+        // API v2 only: the size the image is shown at. Resized copies are orientate()d (see
+        // _resize), so a photo whose EXIF Orientation turns it a quarter (5 to 8) is shown with
+        // its sides swapped. The site and API v1 get (and store) the file's own size, as they
+        // always did.
+        if (bx_is_api_v2() && self::isQuarterTurn($this->_getOrientation($o)))
+            return array ('w' => $o->height(), 'h' => $o->width());
+
         return array ('w' => $o->width(), 'h' => $o->height());
+    }
+
+    /**
+     * Whether an EXIF Orientation value turns the image a quarter, so that it is shown with its
+     * width and height swapped.
+     */
+    public static function isQuarterTurn($iOrientation)
+    {
+        return $iOrientation >= 5 && $iOrientation <= 8;
+    }
+
+    /**
+     * The image's EXIF Orientation, 0 when it has none or it can't be read (no exif extension,
+     * not a JPEG). Only of a local file (an upload being stored): an image read from a URL has
+     * no file to read EXIF from, the library would encode it again to look, and its size stays
+     * the one it always was.
+     */
+    protected function _getOrientation($o)
+    {
+        if (empty($o->dirname) || empty($o->basename))
+            return 0;
+        if (!in_array($o->mime(), array('image/jpeg', 'image/pjpeg', 'image/tiff')))
+            return 0;
+        try {
+            return (int)$o->exif('Orientation');
+        }
+        catch (Exception $e) {
+            return 0;
+        }
     }
 
     function getExifInfo($sSrcImage, $bCreateLocalFileIfUrl = true)

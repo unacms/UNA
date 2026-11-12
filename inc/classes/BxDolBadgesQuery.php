@@ -135,6 +135,29 @@ class BxDolBadgesQuery extends BxDolDb
         $aItems = $oRv;   
     }
     
+    /**
+     * The badges of many profiles in one query: rows of `profile_id` and the badge's `id`,
+     * `text`, `icon`, `color`, `fontcolor` and `is_icon_only`, each profile's in the order its
+     * module's get_badges lists them (by when the badge was made). A profile's badges are those
+     * of its module given to its content entry, as get_badges reads them for one profile.
+     */
+    public function getByProfileIds($aProfileIds)
+    {
+        $aIds = [];
+        foreach ((array)$aProfileIds as $mId)
+            if ((int)$mId > 0)
+                $aIds[(int)$mId] = (int)$mId;
+        if (!$aIds)
+            return [];
+
+        return $this->getAll("SELECT `p`.`id` AS `profile_id`, `sc`.`id`, `sc`.`text`, `sc`.`icon`, `sc`.`color`, `sc`.`fontcolor`, `sc`.`is_icon_only`
+            FROM `sys_profiles` AS `p`
+            INNER JOIN `sys_badges2objects` AS `soc` ON `soc`.`object_id` = `p`.`content_id`
+            INNER JOIN `" . $this->_sTableBadges . "` AS `sc` ON `sc`.`id` = `soc`.`badge_id` AND `sc`.`module` = `p`.`type`
+            WHERE `p`.`id` IN (" . $this->implode_escape(array_values($aIds)) . ")
+            ORDER BY `p`.`id` ASC, `sc`.`added` ASC, `sc`.`id` ASC");
+    }
+
     function update($iId, $aFields)
     {
         $sSql = "UPDATE `sys_badges` SET `" . implode("`=?, `", array_keys($aFields)) . "`=?  WHERE `id`=?";

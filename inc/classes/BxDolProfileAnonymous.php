@@ -81,7 +81,10 @@ class BxDolProfileAnonymous extends BxDolProfileUndefined
         $this->_isShowRealProfile = $bValue;
     }
 
-    protected function isShowRealProfile() 
+    /**
+     * Whether the viewer may see who the anonymous author is: the author, admins and moderators.
+     */
+    public function isShowRealProfile()
     {
         if (null !== $this->_isShowRealProfile)
             return $this->_isShowRealProfile;

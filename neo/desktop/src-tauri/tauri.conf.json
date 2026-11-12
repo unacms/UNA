@@ -1,0 +1,101 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "UNA",
+  "version": "0.1.0",
+  "identifier": "app.unacms.desktop",
+  "build": {
+    "beforeDevCommand": "yarn dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "yarn build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "UNA",
+        "width": 1280,
+        "height": 840,
+        "minWidth": 760,
+        "minHeight": 520,
+        "visible": false,
+        "transparent": true,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
+        "trafficLightPosition": {
+          "x": 18,
+          "y": 24
+        }
+      }
+    ],
+    "security": {
+      "csp": {
+        "default-src": "'self'",
+        "script-src": "'self'",
+        "style-src": "'self' 'unsafe-inline'",
+        "connect-src": "ipc: http://ipc.localhost",
+        "img-src": "'self' data: blob: https: una-media: http://una-media.localhost",
+        "media-src": "'self' blob: https: una-media: http://una-media.localhost",
+        "font-src": "'self' data:",
+        "frame-src": "'none'",
+        "object-src": "'none'",
+        "base-uri": "'none'",
+        "form-action": "'none'"
+      },
+      "devCsp": {
+        "default-src": "'self'",
+        "script-src": "'self'",
+        "style-src": "'self' 'unsafe-inline'",
+        "connect-src": "ipc: http://ipc.localhost ws://localhost:1420",
+        "img-src": "'self' data: blob: https: una-media: http://una-media.localhost",
+        "media-src": "'self' blob: https: una-media: http://una-media.localhost",
+        "font-src": "'self' data:",
+        "frame-src": "'none'",
+        "object-src": "'none'",
+        "base-uri": "'none'",
+        "form-action": "'none'"
+      },
+      "freezePrototype": true
+    }
+  },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": [
+          "una"
+        ]
+      }
+    },
+    "updater": {
+      "requireSignedVersion": true,
+      "windows": {
+        "installMode": "passive"
+      },
+      "endpoints": [
+        "https://github.com/unacms/UNA/releases/download/desktop-latest/latest.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEI5QjAxMjI3NTRCNjVBQTIKUldTaVdyWlVKeEt3dVMrOTQxT2I4akQ3NUlETktzRnlleUlGUHE5UmlHbVJaWTV2WEdzVHdtM1cK"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "category": "SocialNetworking",
+    "macOS": {
+      "minimumSystemVersion": "14.0",
+      "hardenedRuntime": true,
+      "signingIdentity": null,
+      "files": {
+        "Resources/Assets.car": "../brand/icons/Assets.car"
+      }
+    },
+    "shortDescription": "UNA network app",
+    "icon": [
+      "../brand/icons/32x32.png",
+      "../brand/icons/128x128.png",
+      "../brand/icons/128x128@2x.png",
+      "../brand/icons/icon.icns",
+      "../brand/icons/icon.ico"
+    ]
+  }
+}

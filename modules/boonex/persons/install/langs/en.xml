@@ -289,7 +289,9 @@
     <string name="_bx_persons_menu_item_title_system_friend_requests"><![CDATA[Friend requests number]]></string>
     <string name="_bx_persons_menu_item_title_friend_requests"><![CDATA[Friend requests]]></string>
     <string name="_bx_persons_menu_item_title_system_manage_my_profiles"><![CDATA[My profiles]]></string>
+    <string name="_bx_persons_menu_item_title_system_memberships"><![CDATA[Friends]]></string>
     <string name="_bx_persons_menu_item_title_manage_my_profiles"><![CDATA[Profiles]]></string>
+    <string name="_bx_persons_menu_item_title_memberships"><![CDATA[Your friends]]></string>
     <string name="_bx_persons_menu_item_title_system_favorites"><![CDATA[Favorite Persons]]></string>
     <string name="_bx_persons_menu_item_title_favorites"><![CDATA[Favorite persons]]></string>    
     <string name="_bx_persons_menu_item_title_system_subscriptions"><![CDATA[Following]]></string>

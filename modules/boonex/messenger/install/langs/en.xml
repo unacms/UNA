@@ -27,6 +27,7 @@
 	<string name="_bx_messenger_jot_number_default"><![CDATA[Messages number in messenger history by default]]></string>
 	<string name="_bx_messenger_what_do_think"><![CDATA[Leave a first message]]></string>
 	<string name="_bx_messenger_post_button_title"><![CDATA[Send]]></string>
+	<string name="_bx_messenger_menu_item_title_system_messages"><![CDATA[Messages (apps)]]></string>
 	<string name="_bx_messenger_menu_item_title_system_messenger"><![CDATA[Messenger]]></string>	
 	<string name="_bx_messenger_menu_notifications_item_sys_title"><![CDATA[Messenger]]></string>
 	<string name="_bx_messenger_menu_notifications_item_title"><![CDATA[Messenger]]></string>	
@@ -291,6 +292,7 @@ name="_bx_ntfs_alert_action_got_broadcast_ntfs_personal"><![CDATA[Broadcast mess
 	<string name="_bx_messenger_jot_replies"><![CDATA[replies]]></string>
 	<string name="_bx_messenger_view_replies"><![CDATA[View replies]]></string>
 	<string name="_bx_messenger_menu_item_title_group_list"><![CDATA[Talks list]]></string>
+	<string name="_bx_messenger_menu_item_title_messages"><![CDATA[Messages]]></string>
 	<string name="_bx_messenger_groups_talks_title"><![CDATA[Talks list]]></string>
 	<string name="_bx_messenger_list_area_inbox"><![CDATA[Inbox]]></string>
 	<string name="_bx_messenger_text_area_topic_title"><![CDATA[Title]]></string>

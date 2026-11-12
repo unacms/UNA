@@ -1596,6 +1596,15 @@ class BxBaseServiceProfiles extends BxDol
     }
 
     /**
+     * Whether the viewer may see whom a profile follows (PARAM_PUBLIC_SBSN) or who follows it
+     * (PARAM_PUBLIC_SBSD), as the site's browse blocks decide; for API endpoints.
+     */
+    public function canBrowseFollowList($iProfileId, $sParamKey)
+    {
+        return $this->_canBrowseFollowList($iProfileId, $sParamKey);
+    }
+
+    /**
      * Following and followers are private unless the profile module turns the list on.
      */
     protected function _canBrowseFollowList($iProfileId, $sParamKey)

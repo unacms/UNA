@@ -29,9 +29,93 @@ class BxBaseModGeneralDb extends BxDolModuleDb
         if(empty($CNF['TABLE_ENTRIES']) || empty($CNF['FIELD_ID']))
             return [];
 
+        // a row primed in the open scope (@see primeContentInfos)
+        $aRow = [];
+        if(!$bForceGet && $this->_getScopedRow($CNF['TABLE_ENTRIES'], $CNF['FIELD_ID'], $iContentId, $aRow))
+            return $aRow;
+
         return $this->getRow("SELECT * FROM `" . $CNF['TABLE_ENTRIES'] . "` WHERE `" . $CNF['FIELD_ID'] . "` = :id", [
             'id' => $iContentId
         ]);
+    }
+
+    /**
+     * In the open row scope (BxDolDb::openRowScope): the rows of these entries as
+     * getContentInfoById of this class reads them, in one query (an empty one for an entry there
+     * is not), so getContentInfoById of each reads none (unless forced to). The site's timeline
+     * pipeline reads an entry's row several times on its way; an API page of many entries primes
+     * them at once. A change of the entries here forgets the table's rows. Does nothing outside
+     * of a scope, or for a module whose getContentInfoById reads its rows otherwise.
+     */
+    public function primeContentInfos($aContentIds)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        if(!self::$_aRowScopes || empty($CNF['TABLE_ENTRIES']) || empty($CNF['FIELD_ID']))
+            return;
+
+        $sTable = $CNF['TABLE_ENTRIES'];
+        $aIds = [];
+        $aRow = [];
+        foreach((array)$aContentIds as $mId)
+            if(($iId = (int)$mId) > 0 && !$this->_getScopedRow($sTable, $CNF['FIELD_ID'], $iId, $aRow))
+                $aIds[$iId] = $iId;
+        if(!$aIds)
+            return;
+
+        $aRows = $this->getAllWithKey("SELECT * FROM `" . $sTable . "` WHERE `" . $CNF['FIELD_ID'] . "` IN (" . $this->implode_escape(array_values($aIds)) . ")", $CNF['FIELD_ID']);
+        $aPrimed = [];
+        foreach($aIds as $iId)
+            $aPrimed[$iId] = $aRows[$iId] ?? [];
+        $this->_setScopedRows($sTable, $CNF['FIELD_ID'], $aPrimed);
+    }
+
+    /**
+     * In the open scope: what getPolls of these entries (by content id) gives, in one query.
+     * Does nothing outside of a scope.
+     */
+    public function primePollsByContents($aContentIds)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        if(!self::$_aRowScopes || empty($CNF['TABLE_POLLS']))
+            return;
+
+        $iScope = count(self::$_aRowScopes) - 1;
+        $sKey = '#polls#' . $CNF['TABLE_POLLS'];
+        $aIds = [];
+        foreach((array)$aContentIds as $mId)
+            if(($iId = (int)$mId) > 0 && !isset(self::$_aRowScopes[$iScope][$sKey][$iId]))
+                $aIds[$iId] = $iId;
+        if(!$aIds)
+            return;
+
+        $aByContent = array_fill_keys(array_values($aIds), []);
+        // in the order getPolls of one entry reads them (its content_id key)
+        foreach($this->getAll("SELECT `tp`.* FROM `" . $CNF['TABLE_POLLS'] . "` AS `tp` WHERE `tp`.`content_id` IN (" . $this->implode_escape(array_values($aIds)) . ") ORDER BY `tp`.`content_id`, `tp`.`id`") as $aRow)
+            $aByContent[(int)$aRow['content_id']][] = $aRow;
+        foreach($aByContent as $iId => $aRows)
+            self::$_aRowScopes[$iScope][$sKey][$iId] = $aRows;
+    }
+
+    protected function _forgetScopedContentInfos()
+    {
+        $this->_forgetScopedRows($this->_oConfig->CNF['TABLE_ENTRIES'] ?? '');
+    }
+
+    /**
+     * The rows of several entries in one query, as getContentInfoById reads each one: id => row,
+     * without the ids that have none.
+     */
+    public function getContentInfoByIds($aIds)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aIds = array_values(array_unique(array_filter(array_map('intval', (array)$aIds))));
+        if(empty($CNF['TABLE_ENTRIES']) || empty($CNF['FIELD_ID']) || empty($aIds))
+            return [];
+
+        return $this->getAllWithKey("SELECT * FROM `" . $CNF['TABLE_ENTRIES'] . "` WHERE `" . $CNF['FIELD_ID'] . "` IN (" . $this->implode_escape($aIds) . ")", $CNF['FIELD_ID']);
     }
 
     function getEntriesBy($aParams = array())
@@ -186,6 +270,7 @@ class BxBaseModGeneralDb extends BxDolModuleDb
         if(empty($CNF['TABLE_ENTRIES']) || empty($aParamsSet) || empty($aParamsWhere))
             return false;
 
+        $this->_forgetScopedContentInfos();
         return $this->query("UPDATE `" . $CNF['TABLE_ENTRIES'] . "` SET " . $this->arrayToSQL($aParamsSet) . " WHERE " . $this->arrayToSQL($aParamsWhere, " AND "));
     }
 
@@ -196,6 +281,7 @@ class BxBaseModGeneralDb extends BxDolModuleDb
             return false;
         
         $sQuery = $this->prepare("UPDATE `" . $CNF['TABLE_ENTRIES'] . "` SET `" . $CNF['FIELD_STATUS_ADMIN'] . "` = ? WHERE `" . $CNF['FIELD_ID'] . "` = ?", $isActive ? 'active' : 'hidden', $iContentId);
+        $this->_forgetScopedContentInfos();
         return $this->query($sQuery);
     }
     
@@ -362,6 +448,10 @@ class BxBaseModGeneralDb extends BxDolModuleDb
                 break;
 
             case 'content_id':
+                // primed in the open scope (@see primePollsByContents)
+                if(self::$_aRowScopes && is_numeric($aParams['content_id']) && isset(self::$_aRowScopes[count(self::$_aRowScopes) - 1]['#polls#' . $CNF['TABLE_POLLS']][(int)$aParams['content_id']]))
+                    return self::$_aRowScopes[count(self::$_aRowScopes) - 1]['#polls#' . $CNF['TABLE_POLLS']][(int)$aParams['content_id']];
+
                 $aMethod['params'][1] = array(
                     'content_id' => $aParams['content_id']
                 );

@@ -993,6 +993,121 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
 		return true;
     }
 
+    /**
+     * Open row scopes (@see openRowScope): what classes of tables primed in them, by their keys.
+     */
+    protected static $_aRowScopes = [];
+
+    /**
+     * While a scope is open, rows primed in it are read from memory by the classes that primed
+     * them: a whole row of a table by its id field (@see _setScopedRows, _getScopedRow), and what
+     * else a class keeps there under keys of its own. For an API page whose items are prepared
+     * by code that reads them one by one. A change through such a class forgets what it keeps.
+     * Scopes nest, a nested one starts empty; outside of one rows are always read.
+     * @return the scope to give to @see closeRowScope
+     */
+    public static function openRowScope ()
+    {
+        self::$_aRowScopes[] = [];
+        return count(self::$_aRowScopes);
+    }
+
+    /**
+     * Close the scope and any scope opened inside it that was left open.
+     */
+    public static function closeRowScope ($iScope)
+    {
+        array_splice(self::$_aRowScopes, max(0, (int)$iScope - 1));
+    }
+
+    /**
+     * In the open scope: rows of a table as "SELECT * FROM table WHERE field = id" reads each,
+     * by id (an empty array for an id with none).
+     */
+    protected function _setScopedRows ($sTable, $sField, $aRows)
+    {
+        if(!self::$_aRowScopes)
+            return;
+        $sKey = 'rows#' . $sTable . '#' . $sField;
+        $iScope = count(self::$_aRowScopes) - 1;
+        foreach($aRows as $iId => $aRow)
+            self::$_aRowScopes[$iScope][$sKey][(int)$iId] = $aRow;
+    }
+
+    /**
+     * A row primed in the open scope (@see _setScopedRows): true with the row in $aRow, false
+     * when it was not primed.
+     */
+    protected function _getScopedRow ($sTable, $sField, $mixedId, &$aRow)
+    {
+        if(!self::$_aRowScopes || !is_numeric($mixedId))
+            return false;
+        $sKey = 'rows#' . $sTable . '#' . $sField;
+        $iScope = count(self::$_aRowScopes) - 1;
+        if(!isset(self::$_aRowScopes[$iScope][$sKey]) || !array_key_exists((int)$mixedId, self::$_aRowScopes[$iScope][$sKey]))
+            return false;
+        $aRow = self::$_aRowScopes[$iScope][$sKey][(int)$mixedId];
+        return true;
+    }
+
+    /**
+     * Forget the primed rows of a table in every scope (it was changed).
+     */
+    protected function _forgetScopedRows ($sTable)
+    {
+        $sPrefix = 'rows#' . $sTable . '#';
+        foreach(array_keys(self::$_aRowScopes) as $iScope)
+            foreach(array_keys(self::$_aRowScopes[$iScope]) as $sKey)
+                if(strncmp($sKey, $sPrefix, strlen($sPrefix)) === 0)
+                    unset(self::$_aRowScopes[$iScope][$sKey]);
+    }
+
+    /**
+     * The row of an object of a small system table of objects (sys_objects_transcoder ...) by
+     * its name: "SELECT * FROM table WHERE field = name", one query for each call, as the site
+     * and API v1 always read it.
+     *
+     * Only in an API v2 request (bx_is_api_v2) the table's rows are read in one query, once per
+     * request, as its pages ask for many objects one by one, also for ones there are not. That
+     * is not the same read: the names are matched here without case only (the database also
+     * matches without accents and trailing spaces), and a row added later in the request is not
+     * seen. So nothing but API v2 reads this way, nor do install and cron, which don't keep rows
+     * in memory.
+     * @return array the row, empty when there is none
+     */
+    public function getObjectRow ($sTable, $sField, $sValue)
+    {
+        if(!bx_is_api_v2() || defined('BX_DOL_INSTALL') || defined('BX_DOL_CRON_EXECUTE'))
+            return $this->getRow($this->prepare("SELECT * FROM `" . $sTable . "` WHERE `" . $sField . "` = ?", $sValue));
+
+        $sValue = (string)$sValue;
+        $aRows = $this->getObjectRows($sTable, $sField);
+        if(isset($aRows[$sValue]))
+            return $aRows[$sValue];
+
+        // the names are compared as the database compares them (without case)
+        foreach($aRows as $sName => $aRow)
+            if(strcasecmp((string)$sName, $sValue) === 0)
+                return $aRow;
+
+        return [];
+    }
+
+    /**
+     * All the rows of a small system table of objects, by their name (@see getObjectRow), read
+     * once per request, for API v2; none in any other request, nor during install and cron,
+     * which don't keep rows in memory.
+     * @return array name => row
+     */
+    public function getObjectRows ($sTable, $sField)
+    {
+        if(!bx_is_api_v2() || defined('BX_DOL_INSTALL') || defined('BX_DOL_CRON_EXECUTE'))
+            return [];
+
+        $aRows = $this->fromMemory('BxDolDb::getObjectRow' . $sTable . '#' . $sField, 'getAllWithKey', "SELECT * FROM `" . $sTable . "`", $sField);
+        return is_array($aRows) ? $aRows : [];
+    }
+
     public function cleanMemoryAll ()
     {
         self::$_aDbCacheData = array();

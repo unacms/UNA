@@ -2159,6 +2159,14 @@
     <string name="_adm_stg_cpt_option_sys_api_root_page_splash"><![CDATA[Заставка]]></string>
     <string name="_adm_stg_cpt_option_sys_api_url_root_email"><![CDATA[Основной URL-адрес сайта в уведомлениях по электронной почте]]></string>
     <string name="_adm_stg_cpt_option_sys_api_url_root_push"><![CDATA[Основной URL-адрес сайта в push-уведомлениях]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_enable"><![CDATA[API v2 (предварительная версия, не для рабочих сайтов): включить /api/v2, который использует настольное приложение]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit"><![CDATA[API v2: ограничивать число запросов]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_agent"><![CDATA[API v2: сообщений ИИ-агентам в минуту (0 — без ограничения)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_general"><![CDATA[API v2: запросов в минуту от одного участника или с одного адреса гостя (0 — без ограничения)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_preview"><![CDATA[API v2: предпросмотров ссылок в минуту (0 — без ограничения)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_search"><![CDATA[API v2: поисковых запросов в минуту (0 — без ограничения)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_upload"><![CDATA[API v2: загрузок файлов в минуту (0 — без ограничения)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_write"><![CDATA[API v2: изменений в минуту — публикации, правки, удаления, реакции (0 — без ограничения)]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_inspector_key"><![CDATA[Ключ Inspector]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_inspector_key_info"><![CDATA[Получить ключ на https://app.inspector.dev/]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_operator_agent"><![CDATA[Агент оператора]]></string>
@@ -3680,6 +3688,7 @@
     <string name="_sys_menu_item_title_account_settings_overview"><![CDATA[Обзор]]></string>
     <string name="_sys_menu_item_title_account_settings_pwd"><![CDATA[Пароль]]></string>
     <string name="_sys_menu_item_title_profile_settings_cfilter"><![CDATA[Фильтр контента]]></string>
+    <string name="_sys_menu_item_title_public_menu"><![CDATA[Обзор]]></string>
     <string name="_sys_menu_item_title_add_content"><![CDATA[Добавить...]]></string>
     <string name="_sys_menu_item_title_cart"><![CDATA[Корзина]]></string>
     <string name="_sys_menu_item_title_cmts_administration"><![CDATA[Комментарии]]></string>
@@ -3701,6 +3710,8 @@
     <string name="_sys_menu_item_title_join"><![CDATA[Присоединиться]]></string>
     <string name="_sys_menu_item_title_login"><![CDATA[Вход]]></string>
     <string name="_sys_menu_item_title_logout"><![CDATA[Выйти]]></string>
+    <string name="_sys_menu_item_title_member_followings"><![CDATA[Подписки]]></string>
+    <string name="_sys_menu_item_title_member_menu"><![CDATA[Вы]]></string>
     <string name="_sys_menu_item_title_more"><![CDATA[Ещё]]></string>
     <string name="_sys_menu_item_title_more_auto"><![CDATA[]]></string>
     <string name="_sys_menu_item_title_orders"><![CDATA[Заказы]]></string>
@@ -3784,6 +3795,7 @@
     <string name="_sys_menu_item_title_system_profile_settings_cfilter"><![CDATA[Фильтр контента]]></string>
     <string name="_sys_menu_item_title_system_add_content"><![CDATA[Добавить Содержимое]]></string>
     <string name="_sys_menu_item_title_system_apps"><![CDATA[Приложения]]></string>
+    <string name="_sys_menu_item_title_system_apps_menu"><![CDATA[Меню приложений]]></string>
     <string name="_sys_menu_item_title_system_cart"><![CDATA[Корзина]]></string>
     <string name="_sys_menu_item_title_system_cmts_administration"><![CDATA[Комментарии]]></string>
     <string name="_sys_menu_item_title_system_audit_administration"><![CDATA[Аудит]]></string>
@@ -3809,6 +3821,7 @@
     <string name="_sys_menu_item_title_system_main_menu"><![CDATA[Главное меню]]></string>
     <string name="_sys_menu_item_title_system_member_avatar"><![CDATA[Аватар пользователя]]></string>
     <string name="_sys_menu_item_title_system_member_followings"><![CDATA[Отслеживаемые контексты пользователя]]></string>
+    <string name="_sys_menu_item_title_system_member_memberships"><![CDATA[Членство участника]]></string>
     <string name="_sys_menu_item_title_system_member_menu"><![CDATA[Меню пользователя]]></string>
     <string name="_sys_menu_item_title_system_more"><![CDATA[Ещё]]></string>
     <string name="_sys_menu_item_title_system_more_auto"><![CDATA[Ещё]]></string>
@@ -3902,9 +3915,12 @@
     <string name="_sys_menu_set_title_footer"><![CDATA[Основание]]></string>
     <string name="_sys_menu_set_title_profile_create_links"><![CDATA[Профиль - Создание]]></string>
     <string name="_sys_menu_set_title_profile_followings"><![CDATA[Отслеживаемые контексты]]></string>
+    <string name="_sys_menu_set_title_profile_memberships"><![CDATA[Членство профиля]]></string>
     <string name="_sys_menu_set_title_profile_stats"><![CDATA[Профиль - Статистика]]></string>
     <string name="_sys_menu_set_title_site"><![CDATA[Сайт]]></string>
     <string name="_sys_menu_set_title_application"><![CDATA[Приложение]]></string>
+    <string name="_sys_menu_set_title_apps_menu"><![CDATA[Меню приложений]]></string>
+    <string name="_sys_menu_set_title_apps_sidebar"><![CDATA[Боковая панель приложений]]></string>
     <string name="_sys_menu_set_title_panel"><![CDATA[Панель]]></string>
     <string name="_sys_menu_set_title_homepage"><![CDATA[Модули с содержимым]]></string>
     <string name="_sys_menu_set_title_toolbar_member"><![CDATA[Панель инструментов - Пользователь]]></string>
@@ -3963,6 +3979,8 @@
     <string name="_sys_menu_title_main"><![CDATA[Навигация по сайту]]></string>
     <string name="_sys_menu_title_main_in_panel"><![CDATA[Навигация по сайту - Панель]]></string>
     <string name="_sys_menu_title_application"><![CDATA[Навигация в режиме 'Приложение']]></string>
+    <string name="_sys_menu_title_apps_menu"><![CDATA[Меню приложений]]></string>
+    <string name="_sys_menu_title_apps_sidebar"><![CDATA[Боковая панель приложений]]></string>
     <string name="_sys_menu_title_homepage"><![CDATA[Меню на главной странице]]></string>
     <string name="_sys_menu_title_homepage_submenu"><![CDATA[Подменю на главной странице]]></string>
     <string name="_sys_menu_title_public_homepage_submenu"><![CDATA[Исследовать]]></string>
@@ -3975,6 +3993,7 @@
     <string name="_sys_menu_item_title_trends"><![CDATA[Тренды]]></string>
     <string name="_sys_menu_title_profiles_create"><![CDATA[Профиль - Создание]]></string>
     <string name="_sys_menu_title_profile_followings"><![CDATA[Профиль - Подписки]]></string>
+    <string name="_sys_menu_title_profile_memberships"><![CDATA[Членство профиля]]></string>
     <string name="_sys_menu_title_profile_stats"><![CDATA[Профиль - Статистика]]></string>
     <string name="_sys_menu_title_tags_cloud"><![CDATA[Облако тегов]]></string>
     <string name="_sys_menu_title_rss"><![CDATA[RSS]]></string>

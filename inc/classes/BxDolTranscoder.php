@@ -32,6 +32,7 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
     protected $_sQueueTable = ''; ///< table with queued files for transcoding
     protected $_sQueueStorage = ''; ///< storage object to storage temporary files
     protected $_iDevicePixelRatio = false; ///< force device pixel ratio, 1 or 2
+    protected $_bOrigFileUrlFresh = false; ///< the original's link gets a token of its own even in an API v2 request (@see getOrigFileUrl_Storage)
 
     /**
      * constructor
@@ -473,6 +474,124 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
     }
 
     /**
+     * Inside an open handlers scope (BxDolTranscoderQuery::openHandlersScope) and file rows scope
+     * (BxDolStorageQuery::openFileRowsScope): the copies these transcoders made of these files,
+     * and the rows of those copies, read in a query per table and storage, so isFileReady and
+     * getFileUrl of each read them from memory. For a page of an API that shows many files.
+     * @param $aObjects transcoder objects
+     * @param $aHandlers file handlers (ids of the originals)
+     */
+    public static function primeFiles($aObjects, $aHandlers)
+    {
+        $aHandlers = array_values(array_filter((array)$aHandlers));
+        if (!$aHandlers)
+            return;
+
+        // one query per files table, one per storage of the copies
+        $aGroups = [];
+        foreach (array_unique(array_filter((array)$aObjects)) as $sObject) {
+            $o = self::getObjectInstance($sObject);
+            if ($o)
+                $aGroups[get_class($o->_oDb)][] = $o;
+        }
+
+        $aFilesByStorage = [];
+        foreach ($aGroups as $aTranscoders) {
+            $oFirst = $aTranscoders[0];
+            $aFileIds = $oFirst->_oDb->primeHandlers($aHandlers, array_map(function ($o) { return $o->_aObject['object']; }, $aTranscoders));
+            foreach ($aTranscoders as $o)
+                $aFilesByStorage[$o->_aObject['storage_object']] = [$o->_oStorage, $aFileIds];
+        }
+        foreach ($aFilesByStorage as list($oStorage, $aFileIds))
+            if ($oStorage && $aFileIds)
+                $oStorage->primeFileRows($aFileIds);
+    }
+
+    /**
+     * Inside the scopes primeFiles needs: what showing these files of a storage reads, at once:
+     * their rows, the tokens their shared links reuse (only the ones there are) and the copies
+     * every transcoder of the storage made of them, with those copies' rows. For a page that
+     * shows many files of a storage through code that asks for them one by one.
+     * @param $sStorage storage object of the files
+     * @param $aFileIds file ids
+     */
+    public static function primeFilesOfStorage($sStorage, $aFileIds)
+    {
+        $aFileIds = array_values(array_unique(array_filter(array_map('intval', (array)$aFileIds))));
+        if (!$aFileIds)
+            return;
+
+        // gathered to be read with the other storages' (@see primeFilesLater)
+        if (self::$_aPrimeLater !== null) {
+            self::$_aPrimeLater[$sStorage] = array_merge(self::$_aPrimeLater[$sStorage] ?? [], $aFileIds);
+            return;
+        }
+
+        self::_primeFilesOfStorages([$sStorage => $aFileIds]);
+    }
+
+    /**
+     * Files primeFilesOfStorage is given until primeFilesNow: storage => file ids. Null when they
+     * are read at once.
+     */
+    protected static $_aPrimeLater = null;
+
+    /**
+     * From now until primeFilesNow, primeFilesOfStorage gathers the files of every storage, and
+     * primeFilesNow reads them together: the copies of all of them in a query per files table
+     * instead of one per storage. For a page that primes files of many modules.
+     */
+    public static function primeFilesLater()
+    {
+        if (self::$_aPrimeLater === null)
+            self::$_aPrimeLater = [];
+    }
+
+    /**
+     * Read what primeFilesOfStorage gathered since primeFilesLater, and read files at once again.
+     */
+    public static function primeFilesNow()
+    {
+        $aFiles = self::$_aPrimeLater;
+        self::$_aPrimeLater = null;
+        if ($aFiles)
+            self::_primeFilesOfStorages($aFiles);
+    }
+
+    protected static function _primeFilesOfStorages($aFilesByStorage)
+    {
+        $aObjects = $aHandlers = $aTokens = [];
+        foreach ($aFilesByStorage as $sStorage => $aFileIds) {
+            $aFileIds = array_values(array_unique(array_filter(array_map('intval', (array)$aFileIds))));
+            if (!$aFileIds || !($oStorage = BxDolStorage::getObjectInstance($sStorage)))
+                continue;
+
+            $oStorage->primeFileRows($aFileIds);
+            if (($a = $oStorage->getSharedTokensToPrime($aFileIds)))
+                $aTokens[] = $a;
+
+            $bTranscoded = false;
+            foreach (BxDolDb::getInstance()->getObjectRows('sys_objects_transcoder', 'object') as $sObject => $aRow) {
+                $aSource = !empty($aRow['source_params']) && is_string($aRow['source_params']) ? @unserialize($aRow['source_params']) : [];
+                if (($aRow['source_type'] ?? '') === 'Storage' && is_array($aSource) && ($aSource['object'] ?? '') === $sStorage) {
+                    $aObjects[] = (string)$sObject;
+                    $bTranscoded = true;
+                }
+            }
+            if ($bTranscoded)
+                $aHandlers = array_merge($aHandlers, $aFileIds);
+        }
+
+        // the shared links' tokens, one made for each file without one
+        BxDolStorageQuery::primeTokensSinceOfStorages($aTokens);
+
+        // the copies by any of these transcoders of any of these files: that a transcoder of one
+        // storage has no copy of a file of another is so, and is kept as so
+        if ($aObjects && $aHandlers)
+            self::primeFiles(array_values(array_unique($aObjects)), array_values(array_unique($aHandlers)));
+    }
+
+    /**
      * Check if transcoded data is available. No need to call it directly, it is called automatically when it is needed.
      * @param $mixedHandler - file handler
      * @param $isCheckOutdated - check if transcoded file is outdated
@@ -659,6 +778,10 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
         return $iRet;
     }
 
+    /**
+     * The original's url. In an API v2 request a private original's token is shared with other
+     * calls for a while (@see getOrigFileUrl_Storage); everywhere else each call makes a new one.
+     */
     public function getOrigFileUrl ($mixedHandler)
     {
         $sMethodStoreFile = 'getOrigFileUrl_' . $this->_aObject['source_type'];
@@ -812,7 +935,14 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
     {
         if ($this->_oDb->getFromQueue($mixedHandler))
             return true;
-        $sFileUrl = $this->getOrigFileUrl($mixedHandler);
+        // a link that is kept to be used later: its token is its own, valid for its whole life
+        $this->_bOrigFileUrlFresh = true;
+        try {
+            $sFileUrl = $this->getOrigFileUrl($mixedHandler);
+        }
+        finally {
+            $this->_bOrigFileUrlFresh = false;
+        }
         return $this->_oDb->addToQueue ($mixedHandler, $sFileUrl, $iProfileId);
     }
 
@@ -1042,6 +1172,12 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
             bx_log('sys_transcoder', "[{$this->_aObject['object']}] ERROR: getOrigFileUrl_Storage failed, source storage ({$this->_aObject['source_params']['object']}) doesn't exist", BX_LOG_ERR);
             return false;
         }
+
+        // API v2 only: every getFileUrl of an image copy asks for this link (BxDolTranscoderImage
+        // looks at the file's type in it), so in a page of files a private original's token is
+        // reused, not made each time. The site and API v1 get a new token with each link.
+        if (bx_is_api_v2() && !$this->_bOrigFileUrlFresh)
+            return $oStorageOriginal->getFileUrlByIdShared($mixedHandler);
 
         return $oStorageOriginal->getFileUrlById($mixedHandler);
     }

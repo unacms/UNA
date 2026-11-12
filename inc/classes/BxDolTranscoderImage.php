@@ -138,6 +138,22 @@ class BxDolTranscoderImage extends BxDolTranscoder implements iBxDolFactoryObjec
         return parent::getFileUrl($mixedHandler);
     }
 
+    /**
+     * The copy's url, as getFileUrl gives it, for a caller that has read the source file's type
+     * already (a page of files: API v2 lists): an SVG image is its own copy, any other image
+     * gets its copy without getFileUrl's look at the original (whose url of a private file costs
+     * a token).
+     * @param $mixedHandler - file handler
+     * @param $sSourceMimeType - the source file's mime type
+     */
+    public function getCopyUrl($mixedHandler, $sSourceMimeType)
+    {
+        if(bx_is_api() || $this->isMimeTypeSvg($sSourceMimeType))
+            return $this->getOrigFileUrl($mixedHandler);
+
+        return BxDolTranscoder::getFileUrl($mixedHandler);
+    }
+
     public function getFileMimeType($mixedHandler)
     {
         return $this->_oStorage->getMimeTypeByFileName($this->getFileUrl($mixedHandler));

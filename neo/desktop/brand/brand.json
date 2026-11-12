@@ -1,0 +1,10 @@
+{
+    "$comment": "The app's brand: what a client project changes to ship its own app. See brand/README.md. After a change, run `node brand/apply.mjs` (it writes these into src-tauri/tauri.conf.json and index.html); src/lib/brand.test.ts fails until they agree.",
+    "name": "UNA",
+    "identifier": "app.unacms.desktop",
+    "scheme": "una",
+    "description": "UNA network app",
+    "issuesUrl": "https://github.com/unacms/UNA/issues",
+    "updatesUrl": "https://github.com/unacms/UNA/releases/download/desktop-latest/latest.json",
+    "updatesPubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEI5QjAxMjI3NTRCNjVBQTIKUldTaVdyWlVKeEt3dVMrOTQxT2I4akQ3NUlETktzRnlleUlGUHE5UmlHbVJaWTV2WEdzVHdtM1cK"
+}

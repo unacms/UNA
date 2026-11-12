@@ -129,6 +129,9 @@ define('BX_CONNECTIONS_TRIGGER_TYPE_CONTENT', 'content');
  */
 class BxDolConnection extends BxDolFactory implements iBxDolFactoryObject
 {
+    /** The sockets channels of connections: this name, '_' and a profile id, which hears 'changed'. */
+    const SOCKET_NAME = 'sys_connections';
+
     protected $_oQuery;
 
     protected $_bIsApi;
@@ -460,8 +463,8 @@ class BxDolConnection extends BxDolFactory implements iBxDolFactoryObject
                 'content' => $iContent,
             ]);
 
-            $oSockets->sendEvent('sys_connections', $iInitiator , 'changed', $sMessage);
-            $oSockets->sendEvent('sys_connections', $iContent , 'changed', $sMessage);
+            $oSockets->sendEvent(self::SOCKET_NAME, $iInitiator , 'changed', $sMessage);
+            $oSockets->sendEvent(self::SOCKET_NAME, $iContent , 'changed', $sMessage);
         }
 
         $bMutual = false;
@@ -563,8 +566,8 @@ class BxDolConnection extends BxDolFactory implements iBxDolFactoryObject
                 'action' => 'deleted',
             ]);
 
-            $oSockets->sendEvent('sys_connections', $iInitiator , 'changed', $sMessage);
-            $oSockets->sendEvent('sys_connections', $iContent , 'changed', $sMessage);
+            $oSockets->sendEvent(self::SOCKET_NAME, $iInitiator , 'changed', $sMessage);
+            $oSockets->sendEvent(self::SOCKET_NAME, $iContent , 'changed', $sMessage);
         }
     }
 
@@ -640,6 +643,45 @@ class BxDolConnection extends BxDolFactory implements iBxDolFactoryObject
     }
 
     /**
+     * getConnectedContentCount of many initiators: initiator id => count, read in one query
+     * (one per initiator where the count is kept in a trigger field, as that method reads it).
+     * @param $aInitiators initiators of the connections
+     * @param $isMutual get mutual connections only
+     */
+    public function getConnectedContentCounts ($aInitiators, $isMutual = false)
+    {
+        if($this->_isTriggerable($isMutual) && !empty($this->_aObject['tt_' . BX_CONNECTIONS_TRIGGER_TYPE_INITIATOR])) {
+            $aCounts = [];
+            foreach(array_unique(array_map('intval', (array)$aInitiators)) as $iInitiator)
+                $aCounts[$iInitiator] = (int)$this->getConnectedContentCount($iInitiator, $isMutual);
+            return $aCounts;
+        }
+
+        return $this->_oQuery->getConnectedContentCounts($aInitiators, $isMutual);
+    }
+
+    /**
+     * Read the connections between a profile and each of many in one query, so that
+     * isConnected of those pairs, both ways, needs no query of its own in this request.
+     * @param $iProfile the profile on one side of each pair
+     * @param $aOthers the profiles (or content ids) on the other side
+     */
+    public function primeConnections ($iProfile, $aOthers)
+    {
+        $this->_oQuery->primeConnections($iProfile, $aOthers);
+    }
+
+    /**
+     * Read the connections of these initiator => content pairs (one way) in one query, so that
+     * isConnected of each needs no query of its own in this request.
+     * @param $aPairs [[initiator, content], ...]
+     */
+    public function primeConnectionPairs ($aPairs)
+    {
+        $this->_oQuery->primeConnectionPairs($aPairs);
+    }
+
+    /**
      * Get connected initiators count
      * @param $iContent content of the connection
      * @param $isMutual get mutual connections only
@@ -677,9 +719,33 @@ class BxDolConnection extends BxDolFactory implements iBxDolFactoryObject
     }
 
     /**
+     * Get connected content IDs with the date each connection was made, in one query
+     * @param $iInitiator initiator of the connection
+     * @param $isMutual get mutual connections only
+     * @param $mixedType false for any profile type, otherwise a type or an array of types
+     * @return array of content id => the connection's `added` timestamp, in the asked order
+     */
+    public function getConnectedContentWithDates ($iInitiator, $isMutual = false, $iStart = 0, $iLimit = BX_CONNECTIONS_LIST_LIMIT, $iOrder = BX_CONNECTIONS_ORDER_NONE, $mixedType = false)
+    {
+        return $this->_oQuery->getConnectedContentWithDates($iInitiator, $isMutual, $iStart, $iLimit, $iOrder, $mixedType);
+    }
+
+    /**
+     * Get connected initiator IDs with the date each connection was made, in one query
+     * @param $iContent content of the connection
+     * @param $isMutual get mutual connections only
+     * @param $mixedType false for any profile type, otherwise a type or an array of types
+     * @return array of initiator id => the connection's `added` timestamp, in the asked order
+     */
+    public function getConnectedInitiatorsWithDates ($iContent, $isMutual = false, $iStart = 0, $iLimit = BX_CONNECTIONS_LIST_LIMIT, $iOrder = BX_CONNECTIONS_ORDER_NONE, $mixedType = false)
+    {
+        return $this->_oQuery->getConnectedInitiatorsWithDates($iContent, $isMutual, $iStart, $iLimit, $iOrder, $mixedType);
+    }
+
+    /**
      * Get connected content IDs for specified type
      * @param $iInitiator initiator of the connection
-     * @param $iDate get connections appeared since this date 
+     * @param $iDate get connections appeared since this date
      * @param $isMutual get mutual connections only
      * @return array of available connections
      */

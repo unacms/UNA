@@ -186,3 +186,4 @@ require_once dirname(__FILE__) . '/units/modules/boonex/posts/BxPostsTestCase.ph
 require_once dirname(__FILE__) . '/units/modules/boonex/persons/BxPersonsTestCase.php';
 require_once dirname(__FILE__) . '/integration/BxDolIntegrationTestCase.php';
 require_once dirname(__FILE__) . '/integration/account/BxDolAccountTestCase.php';
+require_once dirname(__FILE__) . '/integration/api/ApiV2TestCase.php';

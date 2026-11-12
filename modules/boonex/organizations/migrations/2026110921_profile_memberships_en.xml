@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Your organizations: the bx_organizations item of the menu Profile Memberships (API v2 GET /navigation). -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_bx_orgs_menu_item_title_system_memberships"><![CDATA[Organizations (member of)]]></string_add>
+    <string_add name="_bx_orgs_menu_item_title_memberships"><![CDATA[Your organizations]]></string_add>
+</resources>
