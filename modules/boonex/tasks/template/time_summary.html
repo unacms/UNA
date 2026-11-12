@@ -1,0 +1,24 @@
+<div class="bx-tasks-time-summary">
+    <bx_if:show_periods>
+        <div class="bx-tasks-ts-periods">
+            <select class="bx-def-font-inputs bx-form-input-select" onchange="$(this).parents('.bx-tasks-time-summary:first').find('.bx-tasks-ts-period').hide().filter('[data-period=' + this.value + ']').show();">
+                <bx_repeat:options><option value="__value__"__selected__>__title__</option></bx_repeat:options>
+            </select>
+        </div>
+    </bx_if:show_periods>
+    <bx_repeat:periods>
+        <div class="bx-tasks-ts-period" data-period="__name__"__style__>
+            <bx_if:show_empty>
+                <div class="bx-tasks-ts-empty">__empty__</div>
+            </bx_if:show_empty>
+            <bx_if:show_table>
+                <div class="bx-tasks-ts-scroll">
+                    <table class="bx-tasks-ts-table">
+                        <thead><tr><bx_repeat:head><th class="__ts_h_class__">__ts_h_value__</th></bx_repeat:head></tr></thead>
+                        <tbody><bx_repeat:rows><tr class="__ts_r_class__"><bx_repeat:cells><td class="__ts_c_class__">__ts_c_value__</td></bx_repeat:cells></tr></bx_repeat:rows></tbody>
+                    </table>
+                </div>
+            </bx_if:show_table>
+        </div>
+    </bx_repeat:periods>
+</div>

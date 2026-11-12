@@ -981,19 +981,16 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
      */
     public function serviceGetBlockTimeSummary($iContentId = 0)
     {
-        if(!$this->_bIsApi)
-            return '';
-
         if(!$iContentId)
             $iContentId = bx_process_input(bx_get('id'), BX_DATA_INT);
 
         $aContentInfo = $iContentId ? $this->_oDb->getContentInfoById((int)$iContentId) : false;
         if(!$this->_iProfileId || !$aContentInfo || !is_array($aContentInfo))
-            return [];
+            return $this->_bIsApi ? [] : '';
 
         $aData = $this->_oTemplate->getBlockTimeSummary((int)$iContentId, $this->_iProfileId, $this->getTimeRightsByContentId((int)$iContentId));
 
-        return $aData ? [bx_api_get_block('tasks_time_summary', $aData)] : [];
+        return $this->_getBlockTimeSummary($aData);
     }
 
     /**
@@ -1004,19 +1001,16 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
      */
     public function serviceGetBlockTimeSummaryContext($iContextPid = 0, $sType = '')
     {
-        if(!$this->_bIsApi)
-            return '';
-
         if(!$iContextPid)
             $iContextPid = bx_process_input(bx_get('profile_id'), BX_DATA_INT);
 
         if(!$this->_iProfileId || !$iContextPid || BxDolProfile::getInstance((int)$iContextPid) === false)
-            return [];
+            return $this->_bIsApi ? [] : '';
 
         $sType = $sType == 'my' ? $sType : '';
         $aData = $this->_oTemplate->getBlockTimeSummaryContext((int)$iContextPid, $this->_iProfileId, $this->getTimeRights((int)$iContextPid), 'get_block_time_summary_context', $sType);
 
-        return $aData ? [bx_api_get_block('tasks_time_summary', $aData)] : [];
+        return $this->_getBlockTimeSummary($aData);
     }
 
     /**
@@ -1024,18 +1018,26 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
      */
     public function serviceGetBlockBillingSummary($iContextPid = 0)
     {
-        if(!$this->_bIsApi)
-            return '';
-
         if(!$iContextPid)
             $iContextPid = bx_process_input(bx_get('profile_id'), BX_DATA_INT);
 
         if(!$this->_iProfileId || !$iContextPid || BxDolProfile::getInstance((int)$iContextPid) === false || !$this->getTimeRights((int)$iContextPid)['view_billed'])
-            return [];
+            return $this->_bIsApi ? [] : '';
 
         $aData = $this->_oTemplate->getBlockTimeSummaryContext((int)$iContextPid, $this->_iProfileId, ['view_billed' => true], 'get_block_billing_summary');
 
-        return $aData ? [bx_api_get_block('tasks_time_summary', $aData)] : [];
+        return $this->_getBlockTimeSummary($aData);
+    }
+
+    /**
+     * A time summary block: the app's block with the data, or the site's tables.
+     */
+    protected function _getBlockTimeSummary($aData)
+    {
+        if($this->_bIsApi)
+            return $aData ? [bx_api_get_block('tasks_time_summary', $aData)] : [];
+
+        return $aData ? $this->_oTemplate->getBlockTimeSummaryHtml($aData) : '';
     }
 
     /**

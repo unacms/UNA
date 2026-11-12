@@ -507,6 +507,105 @@ class BxTasksTemplate extends BxBaseModTextTemplate
         return $fFilter($aData);
     }
 
+    /**
+     * The site's time summary (the app draws its own): the data of getBlockTimeSummary / getBlockTimeSummaryContext
+     * as plain tables, one per period with a select between them, each person and then their tasks.
+     */
+    public function getBlockTimeSummaryHtml ($aData)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        if(empty($aData['periods']) || !is_array($aData['periods']))
+            return '';
+
+        $this->addCss(['time-summary.css']);
+
+        $aLabels = $aData['labels'];
+        $bLogged = !empty($aData['columns']['logged']);
+        $bBilled = !empty($aData['columns']['billed']);
+
+        $aHead = [['ts_h_class' => 'bx-tasks-ts-name', 'ts_h_value' => '']];
+        if($bLogged)
+            $aHead = array_merge($aHead, [
+                ['ts_h_class' => 'bx-tasks-ts-time', 'ts_h_value' => bx_process_output($aLabels['logged'])],
+                ['ts_h_class' => 'bx-tasks-ts-time', 'ts_h_value' => bx_process_output($aLabels['by_timer'])],
+                ['ts_h_class' => 'bx-tasks-ts-time', 'ts_h_value' => bx_process_output($aLabels['by_hand'])],
+            ]);
+        if($bBilled)
+            $aHead[] = ['ts_h_class' => 'bx-tasks-ts-time', 'ts_h_value' => bx_process_output($aLabels['billed'])];
+
+        $fTime = function($iMinutes, $bSign = false) {
+            return ($iMinutes < 0 ? '-' : ($bSign && $iMinutes > 0 ? '+' : '')) . $this->_oConfig->timeI2S(abs($iMinutes));
+        };
+
+        $fRow = function($sName, $aItem, $sClass) use ($bLogged, $bBilled, $fTime) {
+            $aCells = [['ts_c_class' => 'bx-tasks-ts-name', 'ts_c_value' => $sName]];
+            if($bLogged) {
+                $iMinutes = (int)($aItem['minutes'] ?? 0);
+                $iTimer = (int)($aItem['timer'] ?? 0);
+                $aCells = array_merge($aCells, [
+                    ['ts_c_class' => 'bx-tasks-ts-time', 'ts_c_value' => $fTime($iMinutes)],
+                    ['ts_c_class' => 'bx-tasks-ts-time', 'ts_c_value' => $fTime($iTimer)],
+                    ['ts_c_class' => 'bx-tasks-ts-time', 'ts_c_value' => $fTime($iMinutes - $iTimer, true)],
+                ]);
+            }
+            if($bBilled)
+                $aCells[] = ['ts_c_class' => 'bx-tasks-ts-time', 'ts_c_value' => $fTime((int)($aItem['billed'] ?? 0))];
+
+            return ['ts_r_class' => $sClass, 'bx_repeat:cells' => $aCells];
+        };
+
+        $fLink = function($sUrl, $sTitle) {
+            $sTitle = bx_process_output($sTitle);
+            return $sUrl ? '<a href="' . bx_html_attribute($sUrl) . '">' . $sTitle . '</a>' : $sTitle;
+        };
+
+        $oPermalinks = BxDolPermalinks::getInstance();
+        $sDefault = $aData['default_period'] ?? $aData['periods'][0]['name'];
+
+        $aOptions = $aPeriods = [];
+        foreach($aData['periods'] as $aPeriod) {
+            $bDefault = $aPeriod['name'] == $sDefault;
+            $aOptions[] = [
+                'value' => bx_html_attribute($aPeriod['name']),
+                'selected' => $bDefault ? ' selected="selected"' : '',
+                'title' => bx_process_output($aPeriod['title'])
+            ];
+
+            $aRows = [];
+            foreach($aPeriod['people'] as $aPerson) {
+                $oProfile = BxDolProfile::getInstanceMagic((int)$aPerson['profile']['id']);
+                $aRows[] = $fRow($fLink($oProfile->getUrl(), $oProfile->getDisplayName()), $aPerson, 'bx-tasks-ts-person');
+
+                foreach($aPerson['tasks'] ?? [] as $aTask)
+                    $aRows[] = $fRow($fLink(bx_absolute_url($oPermalinks->permalink('page.php?i=' . $CNF['URI_VIEW_ENTRY'] . '&id=' . (int)$aTask['id'])), $aTask['title']), $aTask, 'bx-tasks-ts-task');
+            }
+            if($aRows && count($aPeriod['people']) > 1)
+                $aRows[] = $fRow(bx_process_output($aLabels['total']), $aPeriod, 'bx-tasks-ts-total');
+
+            $aPeriods[] = [
+                'name' => bx_html_attribute($aPeriod['name']),
+                'style' => $bDefault ? '' : ' style="display:none"',
+                'bx_if:show_empty' => [
+                    'condition' => !$aRows,
+                    'content' => ['empty' => bx_process_output($aLabels['empty'])]
+                ],
+                'bx_if:show_table' => [
+                    'condition' => (bool)$aRows,
+                    'content' => ['bx_repeat:head' => $aHead, 'bx_repeat:rows' => $aRows]
+                ]
+            ];
+        }
+
+        return $this->parseHtmlByName('time_summary.html', [
+            'bx_if:show_periods' => [
+                'condition' => count($aPeriods) > 1,
+                'content' => ['bx_repeat:options' => $aOptions]
+            ],
+            'bx_repeat:periods' => $aPeriods
+        ]);
+    }
+
     protected function _getTimeSummaryLabels ()
     {
         return [
