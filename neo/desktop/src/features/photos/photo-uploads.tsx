@@ -3,6 +3,7 @@ import { type DragEvent, useCallback, useEffect, useMemo, useRef, useState } fro
 
 import { Icon, type IconName } from '../../components/icon';
 import { useApp } from '../../lib/context';
+import { saysNothingOfFirstSending } from '../../lib/idempotency';
 import { t, tn } from '../../lib/i18n';
 import { inApp } from '../../lib/native';
 import { isOverDropTarget } from '../../components/rich-editor/images';
@@ -16,13 +17,12 @@ import { MAX_ALBUM_PHOTOS, MAX_PHOTOS } from './photos';
  * Whether an answer says nothing of what the site took of the uploads its request names: the
  * first sending still runs (409), the rate limit answered before the Idempotency-Key was looked
  * at (429: a first sending with this key may still run), or a server error (a gateway's 502 or
- * 504 while the site works on, a 500 after part of the work). Wider than when a form keeps its
- * key (`settleIdempotency`: only 409, the one answer the same key gets another after), because
- * a mistake costs more here: a key let go early sends a write again, an upload deleted under a
- * running request loses the file.
+ * 504 while the site works on, a 500 after part of the work). The same answers a form keeps its
+ * Idempotency-Key on (`settleIdempotency`), by one rule: what says nothing of the first sending
+ * says nothing of its uploads, and an upload deleted under a running request loses the file.
  */
 export function saysNothingOfUploads(status: number): boolean {
-    return status === 409 || status === 429 || status >= 500;
+    return saysNothingOfFirstSending(status);
 }
 
 /**
