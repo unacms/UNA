@@ -470,3 +470,9 @@ import url(../../../../../../../template/css/forms.css);
     cursor: pointer;
 }
 
+/* A label above its field, and a link on the label's line ("Forgot password?"), sit 2px in from the field's edges and
+   2px further from it, so they balance against the field's rounded corners. Labels beside a control (checkbox, switch) don't. */
+.bx-artificer .bx-form-caption:not(.bx-form-caption-oneline),
+.bx-artificer #bx-form-element-submit_text .bx-form-value {
+    padding: 0.125rem;
+}
