@@ -201,22 +201,22 @@ export const settingsElements = {
         // line of description (20px) together.
         'u-block-header-icon': 'items-center justify-center w-11 h-11 rounded-lg bg-muted/50 flex-none',
         'u-block-header-icon-size': 24,
-        // Title icon (UNA's block "Title icon", `icon`): a 28px tile before the title, on its line.
-        'u-block-title-icon': 'items-center justify-center w-7 h-7 rounded-md bg-muted/50 flex-none',
-        'u-block-title-icon-size': 16,
+        // Title icon (UNA's block "Title icon", `icon`): a 24px icon in a 28px box, no background, before the title on its line.
+        'u-block-title-icon': 'items-center justify-center w-7 h-7 flex-none',
+        'u-block-title-icon-size': 24,
         // Before the header icon: kept for forks that draw BlockIcon themselves.
         'u-block-icon': ' items-center w-9 h-9 justify-center bg-muted/50 rounded-lg text-card-foreground flex-none',
         'u-block-icon-size': 20,
         'u-block-name': ' flex-auto gap-1 ',
         // text-lg on every screen size; line height = the mini (legacy xs) button height, 28px, so the title lines up with header buttons.
         'u-block-title':
-            'text-card-foreground px-0.5 text-lg leading-7 font-semibold tracking-tight',
+            'text-card-foreground text-lg leading-7 font-semibold tracking-tight',
         // The title over a description: no gap, the title on a 24px line.
         'u-block-name-stacked': 'flex-auto min-w-0',
         'u-block-title-stacked':
-            'text-card-foreground px-0.5 text-lg leading-6 font-semibold tracking-tight',
+            'text-card-foreground text-lg leading-6 font-semibold tracking-tight',
         // 14px on a 20px line; it may wrap.
-        'u-block-description': 'text-card-foreground text-sm leading-5 px-0.5',
+        'u-block-description': 'text-card-foreground text-sm leading-5',
         'u-block-content': 'gap-0.5 ',  
         'u-block-footer':
             'flex text-card-foreground gap-4 pt-2',

@@ -249,7 +249,7 @@ UNA picks how forms label their text fields: above the field (regular, the defau
 A block's header (`BlockWrapper`, parts in `ui/molecules/page/page-block.js`, classes in `theme.blocks`) is a row, in shadcn/ui's Card terms: the icon, CardTitle over CardDescription, CardAction.
 
 - `BlockHeaderIcon` draws the block's `header_icon` (Studio > Pages > block > "Header icon"): a 44px tile, as tall as the title (a 24px line) and one line of description (14px on 20px, may wrap) together.
-- `BlockTitleIcon` draws the block's `icon` ("Title icon"): a 28px tile with a 16px icon, before the title on its line. A block can have either, both or none.
+- `BlockTitleIcon` draws the block's `icon` ("Title icon"): a 24px icon in a 28px box with no background, before the title on its line. A block can have either, both or none.
 - With a description the title and description stack with no gap (`BlockNameStacked`, `BlockTitleStacked`, `BlockDescription`); without one the title keeps its own line height (`BlockName`, `BlockTitle`).
 - `BlockActions` close the row; `BlockContent` and `BlockFooter` follow. UNA's design boxes use the same composition (Artificer `general.css`).
 

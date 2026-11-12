@@ -814,10 +814,10 @@
         @apply bg-gray-100 dark:bg-gray-700;
     }
 
-    /* A block's title is NEO's (theme.blocks u-block-title): 18px on a 28px line, semibold, tight, 2px in from the header's
+    /* A block's title is NEO's (theme.blocks u-block-title): 18px on a 28px line, semibold, tight, flush with the header's
        16px padding. The header (designbox_*.html) is 16px from the block's top and sides, the content 16px under it. */
     .bx-db-title {
-        @apply px-0.5 text-lg leading-7 font-semibold tracking-tight text-gray-900 dark:text-gray-100 align-middle;
+        @apply text-lg leading-7 font-semibold tracking-tight text-gray-900 dark:text-gray-100 align-middle;
     }
 
     /* Common Elements: HR */
