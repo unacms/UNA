@@ -685,7 +685,7 @@ export function withMenuButtonParams(
     const result = { ...base };
     if (addStyle && una) {
         result.button_style = una.style;
-        if (result.button_primary_style == null) result.button_primary_style = una.primaryStyle;
+        result.button_primary_style ??= una.primaryStyle;
     }
     if (addSize) result.button_size = size;
     return result;
