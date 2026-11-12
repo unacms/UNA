@@ -178,8 +178,10 @@ export function EditPost({ post, uploader, announce, onDone }: { post: Post; upl
     const submit = async (e?: FormEvent) => {
         e?.preventDefault();
         if (saving) return;
-        // saved now, the text would go without the picture, or the form would close as unchanged
-        if (images.busy()) {
+        // saved now, the text would go without the picture, or the form would close as unchanged;
+        // `busy()` for a press before the upload is drawn, `uploading` for one before the picture is
+        // (the upload is over, and `value` here is still the text without it)
+        if (uploading || images.busy()) {
             announce?.(uploadsHold());
             return;
         }

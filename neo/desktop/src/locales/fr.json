@@ -2186,5 +2186,6 @@
     "The network’s API answers again": "L’API du réseau répond de nouveau",
     "{{site}} has API v2 (a preview) turned off. Its administrator can turn it on in Studio > API > Settings.": "L’API v2 (un aperçu) est désactivée sur {{site}}. Son administrateur peut l’activer dans Studio > API > Settings.",
     "{{site}} has its API turned off": "L’API est désactivée sur {{site}}",
-    "Not a network the app is signed in to": "L’app n’est pas connectée à ce réseau"
+    "Not a network the app is signed in to": "L’app n’est pas connectée à ce réseau",
+    "Pictures can’t be added while the text is being sent.": "Impossible d’ajouter des images pendant l’envoi du texte."
 }

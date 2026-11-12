@@ -13,7 +13,9 @@
  *   at the start and the end;
  * - what the editor writes its own way: `target` and `rel` of a link, a URL as plain text or as
  *   the link to it (linkifyText), a mention or a hashtag in any of the ways readMention and
- *   readHashtag take, the words inside an embed, `ql-syntax` and highlighting inside a `<pre>`.
+ *   readHashtag take, the words inside an embed, `ql-syntax` and highlighting inside a `<pre>`,
+ *   code as `<pre>` or as `<pre><code>`;
+ * - what the site puts on every link it stores, and puts there again (clear_xss): the class `bx-link`.
  */
 import { type EditorMode, escapeAttr, escapeText, linkifyText, readAlign, readHashtag, readMention } from '../../lib/rich-html';
 import { normalizeHtml } from './schema';
@@ -26,6 +28,8 @@ const ALIGN_STYLE = /(^|;)\s*text-align\s*:\s*(center|right|justify)\s*(;|$)/i;
 /** What a mention or a hashtag link is read from (readMention, readHashtag) and written as again. */
 const ATOM_ATTRS = ['href', 'title', 'dchar', 'data-profile-id', 'target', 'rel'];
 const ATOM_CLASS = /^bx-(mention|tag)(-link)?$|^bx-link$/;
+/** The class the site puts on every link of a member's text when it stores it (BX_DOL_LINK_CLASS). */
+const LINK_CLASS = /^bx-link$/;
 
 /**
  * An element's attributes, sorted: all of them but `skip` and the classes `skipClass` takes.
@@ -85,7 +89,7 @@ function inlineOf(runs: readonly Run[]): string {
 /** A link the editor makes of its own text anyway (linkifyText): the same as the text without it. */
 function isAutoLink(a: Element): boolean {
     const only = a.childNodes.length === 1 ? a.firstChild : null;
-    if (only?.nodeType !== Node.TEXT_NODE || a.closest('code, pre') || attrsOf(a, ['href', 'target', 'rel'])) return false;
+    if (only?.nodeType !== Node.TEXT_NODE || a.closest('code, pre') || attrsOf(a, ['href', 'target', 'rel'], LINK_CLASS)) return false;
     const text = only.textContent ?? '';
     return linkifyText(text) === `<a href="${escapeAttr((a.getAttribute('href') ?? '').trim())}">${escapeText(text)}</a>`;
 }
@@ -98,7 +102,7 @@ function linkOf(a: Element, marks: readonly string[]): Run | string | null {
     if (tag) return tag.href ? { marks: marks.join(''), text: `<hashtag ${escapeAttr(JSON.stringify(tag))}${rest}>`, atom: true } : { marks: marks.join(''), text: `#${tag.tag}`, atom: false };
     const mention = readMention(a);
     if (mention) return { marks: marks.join(''), text: `<mention ${escapeAttr(JSON.stringify(mention))}${rest}>`, atom: true };
-    return isAutoLink(a) ? null : `[a${attrsOf(a, ['target', 'rel'])}]`;
+    return isAutoLink(a) ? null : `[a${attrsOf(a, ['target', 'rel'], LINK_CLASS)}]`;
 }
 
 /** An element's content, piece by piece: its blocks, and the inline content between them (a `<p>` where it is loose). */
@@ -132,7 +136,8 @@ function pieces(parent: Element, loose: boolean): string[] {
                 walk(el, within(tag === 'span' && !attrs ? null : `[${MARKS[tag]}${attrs}]`));
             } else {
                 flush();
-                out.push(blockOf(el));
+                // formatting around a block is not the editor's to keep: it stays in the form, as a difference
+                out.push(marks.length ? `<m${marks.join('')}>${blockOf(el)}</m>` : blockOf(el));
             }
         }
     };
@@ -146,13 +151,17 @@ function blockOf(el: Element): string {
     // the site shows an embed's card from its `source`, whatever the element holds
     if (tag === 'div' && el.classList.contains('bx-embed-link')) return `<embed${attrsOf(el, [], /^bx-embed-link$/)}>`;
     // code is its text: the site's editor marks and highlights it again
-    if (tag === 'pre' && Array.from(el.querySelectorAll('*')).every((e) => e.localName === 'span')) return `<pre${attrsOf(el, ['spellcheck'], /^ql-syntax$/)}>${escapeText(el.textContent ?? '')}</pre>`;
+    // (and as `<pre><code>` with nothing on the `<code>` it is the same text)
+    const only = el.children.length === 1 ? el.firstElementChild : null;
+    const code = only?.localName === 'code' && !only.attributes.length && only.textContent === el.textContent ? only : el;
+    if (tag === 'pre' && Array.from(code.querySelectorAll('*')).every((e) => e.localName === 'span')) return `<pre${attrsOf(el, ['spellcheck'], /^ql-syntax$/)}>${escapeText(el.textContent ?? '')}</pre>`;
     const inner = pieces(el, tag === 'li' || tag === 'blockquote').join('');
-    const skip = tag === 'ol' && Number(el.getAttribute('start')) <= 1 ? ['start'] : [];
+    const skip = tag === 'ol' && Number(el.getAttribute('start')) === 1 ? ['start'] : [];
     return `<${tag}${attrsOf(el, skip)}>${inner || (tag === 'p' ? '<br>' : '')}</${tag}>`;
 }
 
-const EMPTY_PARAGRAPH = /^<p[^>]*>(<br>)*<\/p>$/;
+/** A paragraph with nothing to read in it: line breaks and spaces, the ones that do not break too. */
+const EMPTY_PARAGRAPH = /^<p[^>]*>(?:<br>|[\s\u00a0])*<\/p>$/;
 
 /** HTML in the form two texts are compared in (see the top of the file). */
 export function canonicalHtml(html: string): string {

@@ -180,6 +180,12 @@ export function RichEditor(props: Props) {
             }
             const upload = sink.uploadInline;
             if (!upload) return;
+            // a text that is being sent takes nothing (readOnlyGuard): no upload is started for it
+            const held = t('Pictures can’t be added while the text is being sent.');
+            if (readOnlyRef.current) {
+                if (staging.files.length || staging.refused.length) say(held);
+                return;
+            }
             const pictures = staging.files.filter((f) => f.kind === 'image');
             if (staging.refused.length || pictures.length < staging.files.length) say(t('Only pictures go in the text.'));
             for (const file of pictures) {
@@ -188,6 +194,10 @@ export function RichEditor(props: Props) {
                     (img) => {
                         const editor = editorRef.current;
                         if (!editor || editor.isDestroyed) return;
+                        if (readOnlyRef.current) {
+                            say(held);
+                            return;
+                        }
                         editor.chain().focus().insertContent({ type: 'image', attrs: { src: img.src, alt: img.alt ?? null, width: img.width ?? null, height: img.height ?? null } }).run();
                         say(t('{{name}} added to the text', { name: file.name }));
                     },

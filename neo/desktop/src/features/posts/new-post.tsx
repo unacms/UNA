@@ -354,8 +354,10 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
     const submit = async (e?: FormEvent) => {
         e?.preventDefault();
         if (sending) return;
-        // a picture on its way is not in the text yet: sent now, the post would go without it
-        if (images.busy()) {
+        // a picture on its way is not in the text yet: sent now, the post would go without it;
+        // `busy()` for a press before the upload is drawn, `uploading` for one before the picture is
+        // (the upload is over, and `content` here is still the text without it)
+        if (uploading || images.busy()) {
             announce(uploadsHold());
             return;
         }

@@ -15,7 +15,7 @@ import { opensInWindow } from '../../lib/open-in-window';
 import { parseRoute, type Route, RouteHistory, routeToPath } from '../../lib/router';
 import { setSiteModules } from '../../lib/site-modules';
 import { contextTabs, tabLabel } from '../groups/group-view';
-import { isEditableText, mayBeCutSummary, postChanges, postChangesBlocker, postSummary, postValue, SAVE_ANSWER_MS } from './edit-post';
+import { EditPost, isEditableText, mayBeCutSummary, postChanges, postChangesBlocker, postSummary, postValue, SAVE_ANSWER_MS } from './edit-post';
 import { NewPost, newPostBlocker, newPostFieldError } from './new-post';
 import { Posts, PostsOfTab } from './post-list';
 import { PostPane } from './post-pane';
@@ -371,6 +371,40 @@ describe('New post', () => {
         expect((JSON.parse(calls.find((c) => c.path === '/posts' && c.method === 'POST')?.body ?? '{}') as { body_html: string }).body_html).toContain('<img src=');
     });
 
+    it('holds a Post pressed when the picture has come and the form is not drawn with it yet', async () => {
+        setSiteModules(MODULES);
+        const upload = later();
+        const { api, calls } = site((c) => {
+            if (c.path === '/uploads/inline' && c.method === 'POST') return upload.answer;
+            if (c.path === '/posts' && c.method === 'POST') return { status: 201, body: post({ id: '61', title: 'With a map' }) };
+            return null;
+        });
+        renderWith(<NewPost />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+        const text = screen.getByRole('textbox', { name: 'Text' });
+        setRichText(text, 'See the map');
+        fireEvent.change(screen.getByRole('textbox', { name: 'Title' }), { target: { value: 'With a map' } });
+        const send = screen.getByRole('button', { name: 'Post' });
+        pastePicture(text);
+        await waitFor(() => expect(calls.some((c) => c.path === '/uploads/inline')).toBe(true));
+        // pressed the moment the picture is in the text: the form still has the text without it
+        let pressed = false;
+        const seen = new MutationObserver(() => {
+            if (pressed || !text.querySelector('img')) return;
+            pressed = true;
+            fireEvent.click(send);
+        });
+        seen.observe(text, { childList: true, subtree: true });
+        upload.give(PICTURE_ANSWER);
+        await waitFor(() => expect(pressed).toBe(true));
+        seen.disconnect();
+        await waitFor(() => expect(send.getAttribute('aria-disabled')).toBeNull());
+        fireEvent.click(send);
+        await waitFor(() => expect(calls.some((c) => c.path === '/posts' && c.method === 'POST')).toBe(true));
+        const sent = calls.filter((c) => c.path === '/posts' && c.method === 'POST').map((c) => (JSON.parse(c.body) as { body_html: string }).body_html);
+        expect(sent).toHaveLength(1);
+        expect(sent[0]).toContain('<img src=');
+    });
+
     it('writes a post through POST /posts, with the same key again after an answer that never came, and opens it', async () => {
         setSiteModules(MODULES);
         let posts = 0;
@@ -511,6 +545,33 @@ describe('Editing a post', () => {
         expect(isEditableText(quill)).toBe(true);
         // a list nested as HTML has it, without classes
         expect(isEditableText('<ul><li>a<ul><li>b</li></ul></li></ul>')).toBe(true);
+    });
+
+    it('edits a text as the site stores it: its class on every link, a URL it linked, a mention, a hashtag, a picture, an embed', () => {
+        // what clear_xss and bx_process_input make of a member's text (BxDolHTMLPurifierFilterAddBxLinksClass, HTML.Nofollow, bx_linkify_html)
+        const stored = [
+            '<p>See <a href="https://example.com/x" class="bx-link" rel="nofollow">this page</a>.</p>',
+            '<p><strong>See <a href="https://community.example/page/about" class="bx-link">about us</a></strong></p>',
+            // a URL the editor linked itself, and one the site linked when it stored the text
+            '<p>See <a href="https://example.com/x" class="bx-link" rel="nofollow">https://example.com/x</a> and <a href="http://www.example.org" class="bx-link" rel="nofollow">www.example.org</a></p>',
+            '<p>See <a class="bx-link" target="_blank" rel="nofollow" href="https://example.com/x">https://example.com/x</a> now</p>',
+            '<p>Hi <a href="https://community.example/u/lily" title="Lily Carter" dchar="@" data-profile-id="4" class="bx-mention-link bx-link">@Lily Carter</a></p>',
+            '<p>Going <a class="bx-tag-link bx-link" dchar="#" href="https://community.example/tags/hiking">#hiking</a></p>',
+            '<p>Going <a class="bx-tag-link bx-link" rel="tag" href="https://community.example/tags/hiking">#hiking</a></p>',
+            '<p><img src="https://community.example/s/1.jpg" width="640" height="480" alt="1.jpg" /></p>',
+            '<div class="bx-embed-link" source="https://video.example/1">https://video.example/1</div>',
+        ];
+        for (const html of stored) expect(isEditableText(html), html).toBe(true);
+        expect(isEditableText(stored.join(''))).toBe(true);
+        // the form starts from it as the editor writes it, so nothing counts as changed
+        expect(postValue(mine({ body_html: stored[0] })).html).toBe('<p>See <a href="https://example.com/x">this page</a>.</p>');
+        // another class on a link is not the site's, and the editor would drop it
+        expect(isEditableText('<p><a href="https://example.com/x" class="bx-link button">this page</a></p>')).toBe(false);
+    });
+
+    it('leaves to the site formatting around a block and a list that starts elsewhere, and edits an empty paragraph of a space and code in a code element', () => {
+        for (const html of ['<span style="color: red"><p>text</p></span>', '<span class="note"><ul><li>a</li></ul></span>', '<ol start="0"><li>a</li></ol>', '<ol start="-2"><li>a</li></ol>', '<pre><code class="language-js">let a = 1;</code></pre>']) expect(isEditableText(html), html).toBe(false);
+        for (const html of ['<span><p>text</p></span>', '<ol start="1"><li>a</li></ol>', '<ol start="3"><li>a</li></ol>', '<p>a</p><p>&nbsp;</p>', '<p>&nbsp;</p><p>a</p>', '<p>&nbsp;</p>', '<p>a</p><p>&nbsp;</p><p>b</p>', '<pre><code>let a = 1;\n  a &lt; 2;</code></pre>']) expect(isEditableText(html), html).toBe(true);
     });
 
     it('takes a summary that is the start of the text as none, and leaves one the API cut alone', () => {
@@ -1060,6 +1121,66 @@ describe('Editing a post', () => {
         expect(sent).toHaveLength(1);
         expect(sent[0]?.title).toBe('One lens');
         expect(sent[0]?.body_html).toContain('<img src=');
+    });
+
+    it('holds a Save pressed when the picture has come and the form is not drawn with it yet', async () => {
+        const upload = later();
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine() };
+            if (c.path === '/uploads/inline' && c.method === 'POST') return upload.answer;
+            if (c.path === '/posts/37' && c.method === 'PATCH') return { status: 200, body: mine({ body_html: (JSON.parse(c.body) as Schema<'PostChanges'>).body_html ?? '' }) };
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        await openForm();
+        const save = screen.getByRole('button', { name: 'Save' });
+        const text = screen.getByRole('textbox', { name: 'Text' });
+        pastePicture(text);
+        await waitFor(() => expect(calls.some((c) => c.path === '/uploads/inline')).toBe(true));
+        // pressed the moment the picture is in the text: the form still has the text without it
+        let pressed = false;
+        const seen = new MutationObserver(() => {
+            if (pressed || !text.querySelector('img')) return;
+            pressed = true;
+            fireEvent.click(save);
+        });
+        seen.observe(text, { childList: true, subtree: true });
+        upload.give(PICTURE_ANSWER);
+        await waitFor(() => expect(pressed).toBe(true));
+        seen.disconnect();
+        // not closed as unchanged, with the picture lost
+        expect(screen.getByRole('form', { name: 'Edit the post' })).toBeTruthy();
+        expect(calls.some((c) => c.method === 'PATCH')).toBe(false);
+        await waitFor(() => expect(save.getAttribute('aria-disabled')).toBeNull());
+        fireEvent.click(save);
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        const sent = calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body) as Schema<'PostChanges'>);
+        expect(sent).toHaveLength(1);
+        expect(sent[0]?.body_html).toContain('<img src=');
+    });
+
+    it('takes no picture pasted while it is being saved: no upload is started, and it says why', async () => {
+        const answer = later();
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/37' && c.method === 'PATCH') return answer.answer;
+            return null;
+        });
+        const said: string[] = [];
+        const done = vi.fn();
+        renderWith(<EditPost post={mine()} announce={(text) => said.push(text)} onDone={done} />, api, route);
+        fireEvent.change(screen.getByRole('textbox', { name: 'Title' }), { target: { value: 'One lens' } });
+        const save = screen.getByRole('button', { name: 'Save' });
+        fireEvent.click(save);
+        await waitFor(() => expect(save.getAttribute('aria-busy')).toBe('true'));
+        const text = screen.getByRole('textbox', { name: 'Text' });
+        pastePicture(text);
+        await waitFor(() => expect(said).toEqual(['Pictures can’t be added while the text is being sent.']));
+        await act(async () => {});
+        expect(calls.some((c) => c.path === '/uploads/inline')).toBe(false);
+        answer.give({ status: 200, body: mine({ title: 'One lens' }) });
+        await waitFor(() => expect(done).toHaveBeenCalledTimes(1));
+        expect(text.querySelector('img')).toBeNull();
+        expect(said).toHaveLength(1);
     });
 
     it('asks before Esc or Cancel throws changes away, and sends nothing when nothing changed', async () => {
