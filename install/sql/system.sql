@@ -6476,11 +6476,11 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
 
-('sys_about', 1, 'system', '', '_sys_page_block_title_about', 11, 0, 0, 2147483647, 'lang', '_sys_page_lang_block_about', 0, 1, 1, 1),
+('sys_about', 1, 'system', '', '_sys_page_block_title_about', 13, 0, 0, 2147483647, 'lang', '_sys_page_lang_block_about', 0, 1, 1, 1),
 
-('sys_terms', 1, 'system', '', '_sys_page_block_title_terms', 11, 0, 0, 2147483647, 'lang', '_sys_page_lang_block_terms', 0, 1, 1, 1),
+('sys_terms', 1, 'system', '', '_sys_page_block_title_terms', 13, 0, 0, 2147483647, 'lang', '_sys_page_lang_block_terms', 0, 1, 1, 1),
 
-('sys_privacy', 1, 'system', '', '_sys_page_block_title_privacy', 11, 0, 0, 2147483647, 'lang', '_sys_page_lang_block_privacy', 0, 1, 1, 1),
+('sys_privacy', 1, 'system', '', '_sys_page_block_title_privacy', 13, 0, 0, 2147483647, 'lang', '_sys_page_lang_block_privacy', 0, 1, 1, 1),
 
 ('sys_dashboard', 3, 'system', '', '_sys_page_block_title_profile_stats', 3, 0, 0, 2147483644, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:13:"profile_stats";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 0, 1),
 ('sys_dashboard', 3, 'system', '', '_sys_page_block_title_profile_membership', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"profile_membership";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 0, 0),
