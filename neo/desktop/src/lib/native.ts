@@ -273,6 +273,44 @@ export function closeThisWindow(): void {
     else window.close();
 }
 
+const closeQuestions = new Set<() => Promise<boolean>>();
+let closeWatched = false;
+
+/**
+ * Ask before this window goes while something in it is unsaved (lib/leave-guard.ts), until the
+ * returned function is called; `confirm` answers true to let it go. A window of its own asks
+ * when it is closed (its close button, Cmd+W): the one listener stays for the window's life and
+ * closes it itself when nothing asks (the window API's onCloseRequested then destroys it), so
+ * a form that just went never leaves a close unanswered. The main window is not asked: its
+ * close is Rust's (it hides to the tray, or the app quits: lib.rs). In a plain browser the tab
+ * warns before it unloads, in the browser's own words.
+ */
+export function guardWindowClose(confirm: () => Promise<boolean>): () => void {
+    if (!inApp) {
+        const warn = (e: BeforeUnloadEvent) => e.preventDefault();
+        window.addEventListener('beforeunload', warn);
+        return () => window.removeEventListener('beforeunload', warn);
+    }
+    if (!isSecondaryWindow) return () => {};
+    closeQuestions.add(confirm);
+    if (!closeWatched) {
+        closeWatched = true;
+        void getCurrentWindow()
+            .onCloseRequested(async (event) => {
+                for (const ask of [...closeQuestions]) {
+                    if (await ask()) continue;
+                    event.preventDefault();
+                    return;
+                }
+            })
+            .catch((e: unknown) => {
+                closeWatched = false;
+                console.error('close requests', e);
+            });
+    }
+    return () => void closeQuestions.delete(confirm);
+}
+
 /** What a download did: saved under this name, or nothing (the person cancelled the dialog). */
 export type Saved = { saved: boolean; name: string };
 

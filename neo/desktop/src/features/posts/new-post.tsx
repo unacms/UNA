@@ -128,6 +128,7 @@ export function PostTextFields({
     html,
     textEditable = true,
     summaryEditable = true,
+    readOnly = false,
     fieldError,
     editor,
     images,
@@ -143,6 +144,8 @@ export function PostTextFields({
     html: string;
     textEditable?: boolean;
     summaryEditable?: boolean;
+    /** While the form is being saved: the fields show what they hold, keep focus and take no change. */
+    readOnly?: boolean;
     fieldError: FieldError | null;
     editor: RefObject<RichEditorHandle | null>;
     images: ReturnType<typeof usePostImages>;
@@ -155,7 +158,7 @@ export function PostTextFields({
         <>
             <div className="settings-field">
                 <label htmlFor={`${id}-title`}>{t('Title')}</label>
-                <input id={`${id}-title`} value={title} dir="auto" autoFocus aria-invalid={fieldError?.field === 'title' || undefined} aria-describedby={describedBy(id, fieldError, 'title')} onChange={(e) => onTitle(e.target.value)} />
+                <input id={`${id}-title`} value={title} dir="auto" autoFocus readOnly={readOnly} aria-invalid={fieldError?.field === 'title' || undefined} aria-describedby={describedBy(id, fieldError, 'title')} onChange={(e) => onTitle(e.target.value)} />
                 <FieldMessage id={id} fieldError={fieldError} field="title" />
             </div>
             {summaryEditable ? (
@@ -166,6 +169,7 @@ export function PostTextFields({
                         rows={2}
                         value={summary}
                         dir="auto"
+                        readOnly={readOnly}
                         aria-invalid={fieldError?.field === 'summary' || undefined}
                         aria-describedby={describedBy(id, fieldError, 'summary', `${id}-summary-hint`)}
                         onChange={(e) => onSummary(e.target.value)}
@@ -184,7 +188,7 @@ export function PostTextFields({
                         {summary}
                     </p>
                     <p id={`${id}-summary-hint`} className="small muted">
-                        {t('The app has only the start of this summary, so it is edited on the network’s site.')}
+                        {t('This summary ends with “…”, so the app may have only its start: it is edited on the network’s site.')}
                     </p>
                 </div>
             )}
@@ -204,6 +208,7 @@ export function PostTextFields({
                         label={t('Text')}
                         labelledBy={`${id}-text-label`}
                         invalid={fieldError?.field === 'text'}
+                        readOnly={readOnly}
                         describedBy={describedBy(id, fieldError, 'text', `${id}-text-hint`)}
                         images={images}
                         windowDrops
@@ -239,6 +244,7 @@ export function PostCategoryField({
     categories,
     category,
     required = true,
+    disabled = false,
     fieldError,
     onCategory,
 }: {
@@ -246,6 +252,8 @@ export function PostCategoryField({
     categories: readonly Schema<'PostCategory'>[];
     category: string;
     required?: boolean;
+    /** While the form is being saved. */
+    disabled?: boolean;
     fieldError: FieldError | null;
     onCategory: (id: string) => void;
 }) {
@@ -253,7 +261,7 @@ export function PostCategoryField({
     return (
         <div className="settings-field">
             <label htmlFor={`${id}-category`}>{t('Category')}</label>
-            <select id={`${id}-category`} value={category} required={required} aria-invalid={fieldError?.field === 'category' || undefined} aria-describedby={describedBy(id, fieldError, 'category')} onChange={(e) => onCategory(e.target.value)}>
+            <select id={`${id}-category`} value={category} required={required} disabled={disabled} aria-invalid={fieldError?.field === 'category' || undefined} aria-describedby={describedBy(id, fieldError, 'category')} onChange={(e) => onCategory(e.target.value)}>
                 <option value="" disabled>
                     {t('Choose a category')}
                 </option>

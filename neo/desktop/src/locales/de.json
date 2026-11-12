@@ -298,7 +298,7 @@
     "Each line is a paragraph; links and #hashtags are kept as typed.": "Jede Zeile ist ein Absatz; Links und #Hashtags bleiben wie eingegeben erhalten.",
     "This text has links or formatting, so it is edited on the network’s site.": "Dieser Text enthält Links oder Formatierungen und wird daher auf der Website des Netzwerks bearbeitet.",
     "This text has formatting that editing here would remove, so it is edited on the network’s site.": "Dieser Text enthält Formatierungen, die beim Bearbeiten hier verloren gingen, und wird daher auf der Website des Netzwerks bearbeitet.",
-    "The app has only the start of this summary, so it is edited on the network’s site.": "Die App hat nur den Anfang dieser Zusammenfassung, sie wird daher auf der Website des Netzwerks bearbeitet.",
+    "This summary ends with “…”, so the app may have only its start: it is edited on the network’s site.": "Diese Zusammenfassung endet mit „…“, die App hat also vielleicht nur ihren Anfang: Sie wird auf der Website des Netzwerks bearbeitet.",
     "Active": "Aktiv",
     "New": "Neu",
     "No replies": "Keine Antworten",

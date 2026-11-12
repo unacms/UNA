@@ -53,7 +53,26 @@ function seenAsItsPlaceText(noun: string, context: ReturnType<typeof useFormCont
  * Who will see it: the context's members, or the audience picked from those the site offers for
  * the module of `tag` (GET /api/v2's `modules`: a privacy group the site turned off is not one).
  */
-export function AudienceField({ id, tag, contextId, context, audience, onAudience, noun }: { id: string; tag: string; contextId?: string; context: ReturnType<typeof useFormContext>; audience: Audience; onAudience: (a: Audience) => void; noun: string }) {
+export function AudienceField({
+    id,
+    tag,
+    contextId,
+    context,
+    audience,
+    disabled = false,
+    onAudience,
+    noun,
+}: {
+    id: string;
+    tag: string;
+    contextId?: string;
+    context: ReturnType<typeof useFormContext>;
+    audience: Audience;
+    /** While the form is being saved. */
+    disabled?: boolean;
+    onAudience: (a: Audience) => void;
+    noun: string;
+}) {
     const offered = useAudiences(tag);
     const options = AUDIENCES.filter((a) => offered.includes(a.value));
     // the one picked is always one the site offers (the first, when the default is not)
@@ -70,7 +89,7 @@ export function AudienceField({ id, tag, contextId, context, audience, onAudienc
     return (
         <div className="settings-field">
             <label htmlFor={`${id}-audience`}>{noun === 'them' ? t('Who can see them') : t('Who can see it')}</label>
-            <select id={`${id}-audience`} value={value} onChange={(e) => onAudience(e.target.value as Audience)}>
+            <select id={`${id}-audience`} value={value} disabled={disabled} onChange={(e) => onAudience(e.target.value as Audience)}>
                 {options.map((a) => (
                     <option key={a.value} value={a.value}>
                         {a.label}

@@ -8,6 +8,7 @@ import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
 import { t } from '../../lib/i18n';
 import { idempotencyKeyFor, type IdempotencySlot, settleIdempotency } from '../../lib/idempotency';
+import { useLeaveGuard } from '../../lib/leave-guard';
 import { confirmAction } from '../../lib/native';
 import { isMac } from '../../lib/platform';
 import { useAudiences } from '../../lib/site-modules';
@@ -46,18 +47,35 @@ export function isEditableText(html: string): boolean {
 /** A text without its white space: how a summary is compared with the start of the post's text. */
 const squeezed = (text: string) => text.replace(/\s+/g, '');
 
-/** The longest summary the API answers with (the site's abstract may be longer): one cut ends in "…". */
+/** The longest summary the API answers with, in characters (the site's abstract may be longer). */
 const SUMMARY_SHOWN = 300;
+
+/** What the site trims from the end of the start it keeps, before the "…" (PHP's rtrim). */
+const SITE_SPACE = /[ \t\n\r\0\v]/;
+
+/**
+ * Whether the summary may be only the start of what the author wrote. The API answers with the
+ * first 299 characters of a longer one, white space trimmed from their end, and a "…"
+ * (BxDolApiV2Map::text), so a cut one is any length up to 300: all that tells it is the "…"
+ * right after a character that is not white space, which one written whole can end with too.
+ * Only one that could not have come out of that cut is known to be whole.
+ */
+export function mayBeCutSummary(summary: string): boolean {
+    const chars = [...summary.trim()];
+    if (chars.length < 2 || chars.length > SUMMARY_SHOWN || chars[chars.length - 1] !== '…') return false;
+    return !SITE_SPACE.test(chars[chars.length - 2] ?? '');
+}
 
 /**
  * What the form may do with `Post.summary`, which is not always what the author wrote: the API
  * cuts it at 300 characters with a "…", and answers with the start of the text when the post has
  * no summary. One that is the start of the text is taken as none (the field starts empty); one
- * that was cut is not edited here, since saving it would replace the whole with its start.
+ * that may have been cut (mayBeCutSummary) is not edited here, since saving it would replace the
+ * whole with its start.
  */
 export function postSummary(post: Pick<Post, 'summary' | 'body_html'>): { editable: boolean; text: string } {
     const summary = post.summary.trim();
-    const cut = summary.endsWith('…') && [...summary].length >= SUMMARY_SHOWN - 10;
+    const cut = mayBeCutSummary(summary);
     const start = squeezed(cut ? summary.slice(0, -1) : summary);
     const body = squeezed(new DOMParser().parseFromString(post.body_html ?? '', 'text/html').body.textContent ?? '');
     if (start && (cut ? body.startsWith(start) : body === start)) return { editable: true, text: '' };
@@ -77,8 +95,8 @@ export function postValue(post: Post): PostValue {
 /**
  * What PATCH /posts/{id} is sent: only the fields that differ from what the form started with
  * (PostChanges; the ones left out stay), and of those only the ones the form offered
- * (`editable`): never a text the editor would lose something of, a summary the app has only the
- * start of, or the audience of a post in a context, which the site refuses.
+ * (`editable`): never a text the editor would lose something of, a summary the app may have only
+ * the start of, or the audience of a post in a context, which the site refuses.
  */
 export function postChanges(initial: PostValue, value: PostValue, editable: PostEditable): PostChanges {
     const body: PostChanges = {};
@@ -102,10 +120,14 @@ export function postChangesBlocker(body: PostChanges, plain: string): FieldError
  * A post of the Posts module edited in place: the fields of the new post form that
  * PATCH /posts/{id} takes (title, summary, text, category, and who sees it for a post outside a
  * context); its cover, photos and videos change on the site. A text written on the site with
- * what the editor would lose, and a summary the app has only the start of, are shown and left
+ * what the editor would lose, and a summary the app may have only the start of, are shown and left
  * alone. Only what changed is sent, and only that is checked; a field the site refuses (422)
  * says why under it; Esc and Cancel ask first when that throws changes
- * away; Cmd+Enter (Ctrl+Enter) saves. Like the new post form it keeps no draft.
+ * away, and so does whatever else takes the form away (the pane's Close, another post, the
+ * sidebar, Back, another tab, the window closing: useLeaveGuard); Cmd+Enter (Ctrl+Enter) saves.
+ * While it is being saved nothing in it can change, since what is typed then is not in what was
+ * sent and the form goes when the site answers; when it was not saved the fields take changes
+ * again, with what they held. Like the new post form it keeps no draft.
  */
 export function EditPost({ post, uploader, announce, onDone }: { post: Post; uploader?: Uploader; announce?: (text: string) => void; onDone: (saved: Post | null) => void }) {
     const { api } = useApp();
@@ -177,10 +199,18 @@ export function EditPost({ post, uploader, announce, onDone }: { post: Post; upl
         onDone(result.data);
     };
 
+    const discard = () => confirmAction({ title: t('Discard your changes?'), message: t('The post stays as it was.'), okLabel: t('Discard') });
+    useLeaveGuard(changed, discard);
+
     const cancel = async () => {
         if (saving) return;
-        if (changed && !(await confirmAction({ title: t('Discard your changes?'), message: t('The post stays as it was.'), okLabel: t('Discard') }))) return;
+        if (changed && !(await discard())) return;
         onDone(null);
+    };
+
+    // while it is saved a change is refused, not only by the fields: an update that was already on its way
+    const edit = (change: (v: PostValue) => PostValue) => {
+        if (!saving) setValue(change);
     };
 
     return (
@@ -209,20 +239,22 @@ export function EditPost({ post, uploader, announce, onDone }: { post: Post; upl
                 html={value.html}
                 textEditable={editable.text}
                 summaryEditable={editable.summary}
+                readOnly={saving}
                 fieldError={fieldError}
                 editor={editor}
                 images={images}
                 announce={announce}
-                onTitle={(title) => setValue((v) => ({ ...v, title }))}
-                onSummary={(summary) => setValue((v) => ({ ...v, summary }))}
+                onTitle={(title) => edit((v) => ({ ...v, title }))}
+                onSummary={(summary) => edit((v) => ({ ...v, summary }))}
                 onContent={(content) => {
+                    if (saving) return;
                     setPlain(content.text);
                     setValue((v) => ({ ...v, html: content.html }));
                 }}
             />
-            <PostCategoryField id={id} categories={categories} category={value.category} required={false} fieldError={fieldError} onCategory={(category) => setValue((v) => ({ ...v, category }))} />
+            <PostCategoryField id={id} categories={categories} category={value.category} required={false} disabled={saving} fieldError={fieldError} onCategory={(category) => edit((v) => ({ ...v, category }))} />
             {contextId || withAudience ? (
-                <AudienceField id={id} tag="posts" contextId={contextId} context={place} audience={value.audience as Audience} onAudience={(audience) => setValue((v) => ({ ...v, audience }))} noun="it" />
+                <AudienceField id={id} tag="posts" contextId={contextId} context={place} audience={value.audience as Audience} disabled={saving} onAudience={(audience) => edit((v) => ({ ...v, audience }))} noun="it" />
             ) : null}
             {error ? (
                 <p className="error" role="alert">

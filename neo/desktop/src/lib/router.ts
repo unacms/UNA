@@ -624,11 +624,32 @@ export function sameRoute(a: Route, b: Route): boolean {
 
 type Listener = () => void;
 
-/** Back/forward over routes, newest last. Pushing after going back drops the forward entries. */
+/**
+ * Something open in a detail that would be lost by leaving it (an edit form with changes):
+ * whether it has any now, and the question that lets the person keep them (true: discard).
+ */
+export type LeaveGuard = { dirty: () => boolean; confirm: () => Promise<boolean> };
+
+/** Whether two routes show the same detail: what an open form lives in. */
+function sameDetail(a: Route, b: Route): boolean {
+    return (a.detail ? detailPath(a.detail) : null) === (b.detail ? detailPath(b.detail) : null);
+}
+
+/**
+ * Back/forward over routes, newest last. Pushing after going back drops the forward entries.
+ *
+ * A form with unsaved changes guards the history it is shown in (guard, lib/leave-guard.ts): a
+ * push, Back or Forward that would show another detail, or none, then happens only once the
+ * person agreed to discard them. So does whatever else takes the view away and asks through
+ * leaveThen (another tab: lib/tabs.ts). replace, reset and forget are not asked: they follow
+ * something that already happened (a conversation that now exists, another profile, a delete).
+ */
 export class RouteHistory {
     private entries: Route[];
     private index = 0;
     private listeners = new Set<Listener>();
+    private guards = new Set<LeaveGuard>();
+    private asking = false;
 
     /**
      * `normalize` gives each route its form in this window before it is kept: the main window's
@@ -659,8 +680,52 @@ export class RouteHistory {
         return { paths: this.entries.map(routeToPath), index: this.index };
     }
 
+    /** Ask this before leaving what the history shows, until the returned function is called. */
+    guard(guard: LeaveGuard): () => void {
+        this.guards.add(guard);
+        return () => this.guards.delete(guard);
+    }
+
+    /**
+     * Do something that takes the shown detail away: at once (true) when nothing in it is
+     * unsaved, else once the person agreed to discard it (false: not done yet, perhaps never).
+     * While one question is open another leave is dropped.
+     */
+    leaveThen(run: () => void): boolean {
+        const unsaved = [...this.guards].filter((g) => g.dirty());
+        if (!unsaved.length) {
+            run();
+            return true;
+        }
+        if (this.asking) return false;
+        this.asking = true;
+        void (async () => {
+            let discard = false;
+            try {
+                // each form asks about its own changes
+                for (const g of unsaved) {
+                    discard = await g.confirm();
+                    if (!discard) break;
+                }
+            } catch (e) {
+                console.error('leave guard', e);
+                discard = false;
+            } finally {
+                this.asking = false;
+            }
+            if (discard) run();
+        })();
+        return false;
+    }
+
     push(next: Route): void {
         const route = this.normalize(next);
+        if (sameRoute(route, this.current)) return;
+        if (sameDetail(route, this.current)) this.pushNow(route);
+        else this.leaveThen(() => this.pushNow(route));
+    }
+
+    private pushNow(route: Route): void {
         if (sameRoute(route, this.current)) return;
         this.entries = [...this.entries.slice(0, this.index + 1), route];
         if (this.entries.length > this.limit) this.entries = this.entries.slice(this.entries.length - this.limit);
@@ -708,17 +773,25 @@ export class RouteHistory {
         else if (this.entries[this.index] !== before) this.entries[this.index] = before;
     }
 
+    /** False when there is nothing to go back to; true also while a form's question is open. */
     back(): boolean {
-        if (!this.canGoBack) return false;
-        this.index--;
-        this.emit();
-        return true;
+        return this.step(-1);
     }
 
     forward(): boolean {
-        if (!this.canGoForward) return false;
-        this.index++;
-        this.emit();
+        return this.step(1);
+    }
+
+    private step(by: 1 | -1): boolean {
+        const to = this.entries[this.index + by];
+        if (!to) return false;
+        const go = () => {
+            if (!this.entries[this.index + by]) return;
+            this.index += by;
+            this.emit();
+        };
+        if (sameDetail(to, this.current)) go();
+        else this.leaveThen(go);
         return true;
     }
 

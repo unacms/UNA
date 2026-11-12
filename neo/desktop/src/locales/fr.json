@@ -298,7 +298,7 @@
     "Each line is a paragraph; links and #hashtags are kept as typed.": "Chaque ligne est un paragraphe ; les liens et les #hashtags sont conservés tels que saisis.",
     "This text has links or formatting, so it is edited on the network’s site.": "Ce texte contient des liens ou une mise en forme : il se modifie donc sur le site du réseau.",
     "This text has formatting that editing here would remove, so it is edited on the network’s site.": "Ce texte contient une mise en forme que la modification ici supprimerait : il se modifie donc sur le site du réseau.",
-    "The app has only the start of this summary, so it is edited on the network’s site.": "L’application n’a que le début de ce résumé : il se modifie donc sur le site du réseau.",
+    "This summary ends with “…”, so the app may have only its start: it is edited on the network’s site.": "Ce résumé se termine par « … » : l’application n’en a peut-être que le début, il se modifie donc sur le site du réseau.",
     "Active": "Activité",
     "New": "Nouvelles",
     "No replies": "Aucune réponse",

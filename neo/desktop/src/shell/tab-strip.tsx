@@ -137,9 +137,10 @@ export function TabStrip() {
 
     const close = (tab: Tab) => {
         const inStrip = !!document.activeElement?.closest('.tab-strip');
-        if (!tabs.close(tab.id)) return;
-        announce(t('Closed {{title}}', { title: tabTitle(tab) }));
-        if (inStrip) focusTab(tabs.active.id);
+        tabs.close(tab.id, () => {
+            announce(t('Closed {{title}}', { title: tabTitle(tab) }));
+            if (inStrip) focusTab(tabs.active.id);
+        });
     };
 
     const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>, tab: Tab, i: number) => {

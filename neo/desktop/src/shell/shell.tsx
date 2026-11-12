@@ -619,8 +619,7 @@ function ShellFrame({ siteUrl, items, requests = 0, profile, commands }: Props) 
                 case 'close-tab': {
                     if (!tabs) return;
                     const tab = tabs.active;
-                    if (tabs.close(tab.id)) announce(t('Closed {{title}}', { title: tabTitle(tab) }));
-                    else announce(t('The last tab stays open'));
+                    if (!tabs.close(tab.id, () => announce(t('Closed {{title}}', { title: tabTitle(tab) })))) announce(t('The last tab stays open'));
                     return;
                 }
                 case 'reopen-tab':

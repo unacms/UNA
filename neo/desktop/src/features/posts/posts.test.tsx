@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -10,12 +10,12 @@ import { MenuHost } from '../../components/menu-popover';
 import { ago } from '../../lib/api';
 import { AnnounceContext } from '../../lib/announce';
 import { AppContext, type AppContextValue } from '../../lib/context';
-import { RouterProvider } from '../../lib/navigation';
+import { RouterProvider, useRoute } from '../../lib/navigation';
 import { opensInWindow } from '../../lib/open-in-window';
 import { parseRoute, type Route, RouteHistory, routeToPath } from '../../lib/router';
 import { setSiteModules } from '../../lib/site-modules';
 import { contextTabs, tabLabel } from '../groups/group-view';
-import { isEditableText, postChanges, postChangesBlocker, postSummary, postValue } from './edit-post';
+import { isEditableText, mayBeCutSummary, postChanges, postChangesBlocker, postSummary, postValue } from './edit-post';
 import { NewPost, newPostBlocker, newPostFieldError } from './new-post';
 import { Posts, PostsOfTab } from './post-list';
 import { PostPane } from './post-pane';
@@ -63,7 +63,9 @@ function post(over: Partial<Post> = {}): Post {
 
 type Call = { method: string; path: string; query: string; body: string; key?: string | null };
 
-function site(answer: (c: Call) => { status: number; body?: unknown } | 'lost' | null = () => null) {
+type Answer = { status: number; body?: unknown } | 'lost' | null;
+
+function site(answer: (c: Call) => Answer | Promise<Answer> = () => null) {
     const calls: Call[] = [];
     const api: UnaApi = createUnaApi({
         siteUrl: 'https://community.example',
@@ -72,7 +74,7 @@ function site(answer: (c: Call) => { status: number; body?: unknown } | 'lost' |
             const url = new URL(request.url);
             const c = { method: request.method, path: url.pathname.replace(/^\/api\/v2/, '') || '/', query: url.search, body: request.method === 'GET' ? '' : await request.text(), key: request.headers.get('Idempotency-Key') };
             calls.push(c);
-            const a = c.path === '/' ? { status: 200, body: { modules: MODULES } } : c.path === '/me/groups' || c.path === '/me/spaces' ? { status: 200, body: [] } : answer(c);
+            const a = c.path === '/' ? { status: 200, body: { modules: MODULES } } : c.path === '/me/groups' || c.path === '/me/spaces' ? { status: 200, body: [] } : await answer(c);
             if (a === 'lost') throw new TypeError('Load failed');
             if (!a) return new Promise<Response>(() => {});
             return a.body === undefined ? new Response(null, { status: a.status }) : new Response(JSON.stringify(a.body), { status: a.status, headers: { 'Content-Type': 'application/json' } });
@@ -99,6 +101,12 @@ function renderWith(node: ReactNode, api: UnaApi, route: Route = { list: { secti
         </QueryClientProvider>,
     );
     return { client, history };
+}
+
+/** The post the route shows, as the detail pane keys it: another post is another pane. */
+function Shown() {
+    const d = useRoute().detail;
+    return d?.kind === 'article' ? <PostPane key={d.id} id={d.id} /> : null;
 }
 
 afterEach(() => {
@@ -409,7 +417,26 @@ describe('Editing a post', () => {
         expect(postSummary({ summary: cut, body_html: `<p>${long}</p>` })).toEqual({ editable: true, text: '' });
         // an abstract longer than the API shows: its start is not the summary
         expect(postSummary({ summary: cut, body_html: '<p>Another text.</p>' })).toEqual({ editable: false, text: cut });
-        expect(postSummary({ summary: 'To be continued…', body_html: '<p>Another text.</p>' }).editable).toBe(true);
+    });
+
+    it('takes any summary that may be the API’s cut as one, whatever its length', () => {
+        // BxDolApiV2Map::text: the first 299 characters, white space trimmed from their end, and "…"
+        const served = (whole: string) => ([...whole.trim()].length > 300 ? `${[...whole.trim()].slice(0, 299).join('').trimEnd()}…` : whole.trim());
+        // blank lines where the API cuts: what comes back is far shorter than 300 characters
+        const whole = `The short start.${'\n'.repeat(290)}And the ending that must not be lost.`;
+        const cut = served(whole);
+        expect(cut).toBe('The short start.…');
+        expect(mayBeCutSummary(cut)).toBe(true);
+        expect(postSummary({ summary: cut, body_html: '<p>Another text.</p>' })).toEqual({ editable: false, text: cut });
+        // one written whole that ends the same way reads the same, so it is left alone too
+        expect(postSummary({ summary: 'To be continued…', body_html: '<p>Another text.</p>' })).toEqual({ editable: false, text: 'To be continued…' });
+        // known whole: no "…" at its end, a space before it (the API trims there), longer than the API serves, or nothing else
+        for (const summary of ['Why I left the zoom at home.', 'To be continued …', 'An aside…\n…', `${'é'.repeat(300)}…`, '…']) {
+            expect(mayBeCutSummary(summary), summary).toBe(false);
+            expect(postSummary({ summary, body_html: '<p>Another text.</p>' }), summary).toEqual({ editable: true, text: summary });
+        }
+        // 300 characters with the "…" is the longest the API cuts to
+        expect(mayBeCutSummary(`${'é'.repeat(299)}…`)).toBe(true);
     });
 
     it('checks only the fields that are sent, and takes a picture as a text', () => {
@@ -481,7 +508,7 @@ describe('Editing a post', () => {
         expect(screen.queryByRole('textbox', { name: 'Summary' })).toBeNull();
         const shown = screen.getByRole('group', { name: 'Summary' });
         expect(within(shown).getByText(cut)).toBeTruthy();
-        expect(within(shown).getByText('The app has only the start of this summary, so it is edited on the network’s site.')).toBeTruthy();
+        expect(within(shown).getByText('This summary ends with “…”, so the app may have only its start: it is edited on the network’s site.')).toBeTruthy();
         fireEvent.change(title, { target: { value: 'One lens' } });
         fireEvent.click(screen.getByRole('button', { name: 'Save' }));
         expect(await screen.findByText('Post saved')).toBeTruthy();
@@ -623,6 +650,95 @@ describe('Editing a post', () => {
         expect(sent.map((c) => JSON.parse(c.body))).toEqual([{ title: 'A taken title' }, { title: 'Another title' }, { title: 'Another title' }]);
         expect(sent[2]?.key).toBe(sent[1]?.key);
         expect(sent[1]?.key).not.toBe(sent[0]?.key);
+    });
+
+    it('takes no change while it is being saved, and takes them again with what was typed when it was not saved', async () => {
+        setSiteModules(MODULES);
+        let answer: (a: Answer) => void = () => {};
+        let patches = 0;
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/categories') return { status: 200, body: CATEGORIES };
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine() };
+            if (c.path === '/posts/37' && c.method === 'PATCH') {
+                patches++;
+                return patches === 1 ? new Promise<Answer>((resolve) => (answer = resolve)) : { status: 200, body: mine({ title: 'One lens' }) };
+            }
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        const title = await openForm();
+        const summary = screen.getByRole('textbox', { name: 'Summary' }) as HTMLTextAreaElement;
+        const text = screen.getByRole('textbox', { name: 'Text' });
+        const category = (await screen.findByRole('combobox', { name: 'Category' })) as HTMLSelectElement;
+        const who = (await screen.findByRole('combobox', { name: 'Who can see it' })) as HTMLSelectElement;
+        fireEvent.change(title, { target: { value: 'One lens' } });
+        const save = screen.getByRole('button', { name: 'Save' });
+        fireEvent.click(save);
+        await waitFor(() => expect(save.getAttribute('aria-busy')).toBe('true'));
+        // the site has not answered: nothing in the form takes a change
+        expect(title.readOnly).toBe(true);
+        expect(summary.readOnly).toBe(true);
+        expect(text.getAttribute('aria-readonly')).toBe('true');
+        expect(category.disabled).toBe(true);
+        expect(who.disabled).toBe(true);
+        fireEvent.change(title, { target: { value: 'One lens, typed while it saved' } });
+        fireEvent.change(summary, { target: { value: 'Typed while it saved' } });
+        expect(title.value).toBe('One lens');
+        expect(summary.value).toBe('Why I left the zoom at home for a month.');
+        // it was not saved: the form stays, with what was typed, and takes changes again
+        answer('lost');
+        await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('It was not saved: Load failed'));
+        expect(title.value).toBe('One lens');
+        expect(title.readOnly).toBe(false);
+        expect(summary.readOnly).toBe(false);
+        expect(text.getAttribute('aria-readonly')).toBeNull();
+        expect(category.disabled).toBe(false);
+        expect(who.disabled).toBe(false);
+        fireEvent.click(save);
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        expect(calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body))).toEqual([{ title: 'One lens' }, { title: 'One lens' }]);
+    });
+
+    it('asks before anything else takes a changed form away: the pane closing, another post, Back', async () => {
+        const { api } = site((c) => (/^\/posts\/\d+$/.test(c.path) && c.method === 'GET' ? { status: 200, body: mine({ id: c.path.slice(7) }) } : null));
+        const here: Route = { list: { section: 'posts' }, detail: { kind: 'article', id: '38' } };
+        const other = route;
+        const { history } = renderWith(<Shown />, api, { list: { section: 'posts' }, detail: null });
+        act(() => history.push(other));
+        const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+        await openForm();
+        // nothing changed: leaving asks nothing
+        act(() => history.push(here));
+        expect(confirm).not.toHaveBeenCalled();
+        expect(history.current).toEqual(here);
+        await waitFor(() => expect(screen.queryByRole('form', { name: 'Edit the post' })).toBeNull());
+        const title = await openForm();
+        fireEvent.change(title, { target: { value: 'Changed' } });
+        // the pane's Close and Esc on the toolbar (closeDetail), another row (openDetail), Back, the sidebar
+        const leaves = [() => history.push({ list: here.list, detail: null }), () => history.push(other), () => void history.back(), () => history.push({ list: { section: 'home' }, detail: null })];
+        for (const [i, leave] of leaves.entries()) {
+            act(leave);
+            await waitFor(() => expect(confirm).toHaveBeenCalledTimes(i + 1));
+            await act(async () => {});
+            expect(history.current).toEqual(here);
+            expect((screen.getByRole('textbox', { name: 'Title' }) as HTMLInputElement).value).toBe('Changed');
+        }
+        // another list beside the same post takes nothing away
+        act(() => history.push({ list: { section: 'posts', feed: 'mine' }, detail: here.detail }));
+        expect(confirm).toHaveBeenCalledTimes(leaves.length);
+        expect((screen.getByRole('textbox', { name: 'Title' }) as HTMLInputElement).value).toBe('Changed');
+        // a browser tab warns before it unloads while the changes are there
+        const unload = new Event('beforeunload', { cancelable: true });
+        window.dispatchEvent(unload);
+        expect(unload.defaultPrevented).toBe(true);
+        // agreed: the other post shows
+        confirm.mockReturnValue(true);
+        act(() => history.push(other));
+        await waitFor(() => expect(history.current).toEqual(other));
+        await waitFor(() => expect(screen.queryByRole('form', { name: 'Edit the post' })).toBeNull());
+        const quiet = new Event('beforeunload', { cancelable: true });
+        window.dispatchEvent(quiet);
+        expect(quiet.defaultPrevented).toBe(false);
     });
 
     it('asks before Esc or Cancel throws changes away, and sends nothing when nothing changed', async () => {
