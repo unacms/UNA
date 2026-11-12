@@ -99,7 +99,7 @@ export default function ElementMenu({ data, blockWrapperProps, url, itemsClassNa
             const canNavigate = hasItemPath(item);
 
             return (
-                <View key={`lmenu-${itemId}`} className="w-full">
+                <View key={`lmenu-${itemId}`} className="w-full gap-0.5">
                     {/* Indent on a wrapper: on the button it loses to the inline contentInsets padding. */}
                     <View className={getDepthClassName(depth)}>
                     <MenuItemSidebarWithWrapper

@@ -182,7 +182,7 @@ export function MenuWiki({ onNavigate, block, url, className = 'gap-0.5 lg:-mx-2
                 handlePress = () => toggleExpanded(itemId)
             }
             return (
-                <View key={`lmenu-${itemId}`} className="w-full">
+                <View key={`lmenu-${itemId}`} className="w-full gap-0.5">
                     {/* Same item as the conductor sidebar (menu-item/sidebar_with_wrapper),
                         so wiki and section menus look alike and forks style both at once.
                         Indent on a wrapper: on the button it loses to the inline contentInsets padding. */}
