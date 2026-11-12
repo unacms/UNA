@@ -3,13 +3,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 /**
  * The window as Tauri gives it to a page (2.12): while the page listens for close requests,
  * close() is handed to its listener, which destroys the window unless it prevented that
- * (@tauri-apps/api window.js onCloseRequested); with no listener close() closes it, and
- * destroy() never asks anyone.
+ * (@tauri-apps/api window.js onCloseRequested); with no listener close() closes it as the
+ * window's own close does (`closed`: the one the window-state plugin hears), and destroy()
+ * never asks anyone. What stops a listener answers once it is gone in Rust too.
  */
 const win = vi.hoisted(() => {
     type CloseEvent = { preventDefault: () => void };
     const listeners = new Set<(event: CloseEvent) => Promise<void>>();
-    const state = { destroyed: 0, prevented: 0, listening: () => listeners.size };
+    const state = { destroyed: 0, closed: 0, prevented: 0, listening: () => listeners.size };
     const destroy = () => {
         state.destroyed += 1;
         return Promise.resolve();
@@ -17,7 +18,10 @@ const win = vi.hoisted(() => {
     const api = {
         destroy,
         close: async () => {
-            if (!listeners.size) return destroy();
+            if (!listeners.size) {
+                state.closed += 1;
+                return destroy();
+            }
             for (const handler of [...listeners]) {
                 let prevented = false;
                 await handler({
@@ -31,7 +35,11 @@ const win = vi.hoisted(() => {
         },
         onCloseRequested: (handler: (event: CloseEvent) => Promise<void>) => {
             listeners.add(handler);
-            return Promise.resolve(() => void listeners.delete(handler));
+            return Promise.resolve(async () => {
+                // Rust is told, and answers later
+                await new Promise((resolve) => setTimeout(resolve, 0));
+                listeners.delete(handler);
+            });
         },
     };
     return { api, state, listeners };
@@ -50,12 +58,16 @@ async function inOwnWindow(): Promise<Native> {
     return import('./native');
 }
 
-/** The listener is taken up and put down in promise callbacks. */
-const settled = () => new Promise((resolve) => setTimeout(resolve, 0));
+/** The listener is taken up in promise callbacks, and put down once Rust answered. */
+const settled = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+};
 
 beforeEach(() => {
     win.listeners.clear();
     win.state.destroyed = 0;
+    win.state.closed = 0;
     win.state.prevented = 0;
 });
 
@@ -131,6 +143,47 @@ describe('a window of its own with unsaved changes in it', () => {
         expect(win.state.listening()).toBe(1);
     });
 
+    it('does not ask a question that the answer to another took back: the window goes', async () => {
+        const native = await inOwnWindow();
+        const forget: { second: () => void } = { second: () => {} };
+        const second = vi.fn(() => Promise.resolve(false));
+        // the first one's answer takes the second away before it lets the window go
+        const first = vi.fn(() => {
+            forget.second();
+            return Promise.resolve(true);
+        });
+        native.guardWindowClose(first);
+        forget.second = native.guardWindowClose(second);
+        await settled();
+        native.closeThisWindow();
+        await settled();
+        expect(first).toHaveBeenCalledTimes(1);
+        expect(second).not.toHaveBeenCalled();
+        expect(win.state.prevented).toBe(0);
+        expect(win.state.destroyed).toBe(1);
+    });
+
+    it('closes as the window itself does once what it showed is closed: no question again, and not destroyed past the window', async () => {
+        const native = await inOwnWindow();
+        const keep = vi.fn(() => Promise.resolve(false));
+        native.guardWindowClose(keep);
+        await settled();
+        await native.closeThisWindowAsked();
+        // the page stopped listening before it closed, so the close was the window's own
+        expect(win.state.listening()).toBe(0);
+        expect(keep).not.toHaveBeenCalled();
+        expect(win.state.prevented).toBe(0);
+        expect(win.state.closed).toBe(1);
+        expect(win.state.destroyed).toBe(1);
+    });
+
+    it('closes as the window itself does when nothing in it had a question', async () => {
+        const native = await inOwnWindow();
+        await native.closeThisWindowAsked();
+        expect(win.state.closed).toBe(1);
+        expect(win.state.destroyed).toBe(1);
+    });
+
     it('stops listening when the question went before the listener was there', async () => {
         const native = await inOwnWindow();
         native.guardWindowClose(() => Promise.resolve(false))();
@@ -146,6 +199,7 @@ describe('a window of its own with unsaved changes in it', () => {
         native.forceCloseThisWindow();
         await settled();
         expect(keep).not.toHaveBeenCalled();
+        expect(win.state.closed).toBe(0);
         expect(win.state.prevented).toBe(0);
         expect(win.state.destroyed).toBe(1);
     });

@@ -15,7 +15,7 @@ import { opensInWindow } from '../../lib/open-in-window';
 import { parseRoute, type Route, RouteHistory, routeToPath } from '../../lib/router';
 import { setSiteModules } from '../../lib/site-modules';
 import { contextTabs, tabLabel } from '../groups/group-view';
-import { isEditableText, mayBeCutSummary, postChanges, postChangesBlocker, postSummary, postValue } from './edit-post';
+import { isEditableText, mayBeCutSummary, postChanges, postChangesBlocker, postSummary, postValue, SAVE_ANSWER_MS } from './edit-post';
 import { NewPost, newPostBlocker, newPostFieldError } from './new-post';
 import { Posts, PostsOfTab } from './post-list';
 import { PostPane } from './post-pane';
@@ -74,9 +74,12 @@ function site(answer: (c: Call) => Answer | Promise<Answer> = () => null) {
             const url = new URL(request.url);
             const c = { method: request.method, path: url.pathname.replace(/^\/api\/v2/, '') || '/', query: url.search, body: request.method === 'GET' ? '' : await request.text(), key: request.headers.get('Idempotency-Key') };
             calls.push(c);
-            const a = c.path === '/' ? { status: 200, body: { modules: MODULES } } : c.path === '/me/groups' || c.path === '/me/spaces' ? { status: 200, body: [] } : await answer(c);
+            // a request that is stopped fails as fetch has it, answered or not
+            const stopped = new Promise<never>((_, reject) => request.signal.addEventListener('abort', () => reject(request.signal.reason as Error), { once: true }));
+            stopped.catch(() => {});
+            const a = c.path === '/' ? { status: 200, body: { modules: MODULES } } : c.path === '/me/groups' || c.path === '/me/spaces' ? { status: 200, body: [] } : await Promise.race([answer(c), stopped]);
             if (a === 'lost') throw new TypeError('Load failed');
-            if (!a) return new Promise<Response>(() => {});
+            if (!a) return stopped;
             return a.body === undefined ? new Response(null, { status: a.status }) : new Response(JSON.stringify(a.body), { status: a.status, headers: { 'Content-Type': 'application/json' } });
         },
     });
@@ -733,6 +736,9 @@ describe('Editing a post', () => {
         const save = screen.getByRole('button', { name: 'Save' });
         await waitFor(() => expect(save.getAttribute('aria-busy')).toBe('true'));
         expect(document.activeElement).toBe(category);
+        // jsdom leaves focus on a control that becomes disabled, so focus alone would not tell
+        expect(category.disabled).toBe(false);
+        expect(category.getAttribute('aria-disabled')).toBe('true');
         answer('lost');
         await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('It was not saved: Load failed'));
         // still in the list, so the form's own keys still reach it
@@ -781,6 +787,55 @@ describe('Editing a post', () => {
         await waitFor(() => expect(history.current).toEqual(other));
         expect(confirm).not.toHaveBeenCalled();
         expect(calls.filter((c) => c.method === 'PATCH')).toHaveLength(2);
+    });
+
+    it('stops a save the site never answers: it was not saved, a leave that waited is dropped, Cancel asks again, and saving again sends the same key', async () => {
+        vi.useFakeTimers({ shouldAdvanceTime: true });
+        try {
+            let patches = 0;
+            const { api, calls } = site((c) => {
+                if (/^\/posts\/\d+$/.test(c.path) && c.method === 'GET') return { status: 200, body: mine({ id: c.path.slice(7) }) };
+                // the first save is taken and never answered
+                if (c.path === '/posts/37' && c.method === 'PATCH') return ++patches === 1 ? null : { status: 200, body: mine({ title: 'One lens' }) };
+                return null;
+            });
+            const here = route;
+            const other: Route = { list: { section: 'posts' }, detail: { kind: 'article', id: '38' } };
+            const { history } = renderWith(<Shown />, api, here);
+            const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+            const title = await openForm();
+            fireEvent.change(title, { target: { value: 'One lens' } });
+            const save = screen.getByRole('button', { name: 'Save' });
+            fireEvent.click(save);
+            await waitFor(() => expect(save.getAttribute('aria-busy')).toBe('true'));
+            // a leave and Cancel wait for the answer
+            act(() => history.push(other));
+            fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+            await act(async () => vi.advanceTimersByTimeAsync(SAVE_ANSWER_MS - 1000));
+            expect(save.getAttribute('aria-busy')).toBe('true');
+            expect(history.current).toEqual(here);
+            // no answer in time: the save is stopped and said as not saved, and the leave is dropped
+            await act(async () => vi.advanceTimersByTimeAsync(1000));
+            await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('It was not saved: the site did not answer in time'));
+            expect(save.getAttribute('aria-busy')).toBeNull();
+            expect(confirm).not.toHaveBeenCalled();
+            expect(history.current).toEqual(here);
+            expect((screen.getByRole('textbox', { name: 'Title' }) as HTMLInputElement).value).toBe('One lens');
+            // the form is the person's again: Cancel asks, and so does a leave
+            fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+            await waitFor(() => expect(confirm).toHaveBeenCalledTimes(1));
+            act(() => history.push(other));
+            await waitFor(() => expect(confirm).toHaveBeenCalledTimes(2));
+            expect(history.current).toEqual(here);
+            // saved again with the key it went with, so the site answers for the first one if it took it
+            fireEvent.click(save);
+            await waitFor(() => expect(screen.queryByRole('form', { name: 'Edit the post' })).toBeNull());
+            const sent = calls.filter((c) => c.method === 'PATCH');
+            expect(sent).toHaveLength(2);
+            expect(sent[1]?.key).toBe(sent[0]?.key);
+        } finally {
+            vi.useRealTimers();
+        }
     });
 
     it('asks before anything else takes a changed form away: the pane closing, another post, Back', async () => {

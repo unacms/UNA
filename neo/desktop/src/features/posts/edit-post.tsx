@@ -117,6 +117,13 @@ export function postChangesBlocker(body: PostChanges, plain: string): FieldError
 }
 
 /**
+ * How long a save waits for the site's answer. The API client gives up only on a site it can't
+ * reach (api.rs CONNECT_TIMEOUT), and whatever would leave the form waits for the save, so one
+ * the site never answers is stopped here: it is then not saved, as far as the app knows.
+ */
+export const SAVE_ANSWER_MS = 60_000;
+
+/**
  * A post of the Posts module edited in place: the fields of the new post form that
  * PATCH /posts/{id} takes (title, summary, text, category, and who sees it for a post outside a
  * context); its cover, photos and videos change on the site. A text written on the site with
@@ -129,6 +136,8 @@ export function postChangesBlocker(body: PostChanges, plain: string): FieldError
  * sent and the form goes when the site answers; when it was not saved the fields take changes
  * again, with what they held. Whatever would leave the form while it is being saved waits for
  * that answer, without a question: it leaves once the post was saved, and stays when it was not.
+ * The wait has an end (SAVE_ANSWER_MS): a save the site does not answer by then is stopped and
+ * said as not saved, so the form, its Cancel and Esc, and a leave are never held for good.
  * The fields keep the keyboard meanwhile (the lists are aria-disabled, not disabled), so
  * Cmd+Enter and Esc still reach the form after a save that failed. Like the new post form it keeps no draft.
  */
@@ -191,15 +200,20 @@ export function EditPost({ post, uploader, announce, onDone }: { post: Post; upl
             if (pending.current === save) pending.current = null;
             settle(saved);
         };
+        // a site that never answers must not hold the form, or a leave that waits for this save
+        const stop = new AbortController();
+        const limit = setTimeout(() => stop.abort(), SAVE_ANSWER_MS);
         let result;
         try {
-            result = await api.PATCH('/posts/{id}', { params: { path: { id: post.id }, header: { 'Idempotency-Key': idempotencyKeyFor(sent, [`/posts/${post.id}`, body]) } }, body });
+            result = await api.PATCH('/posts/{id}', { params: { path: { id: post.id }, header: { 'Idempotency-Key': idempotencyKeyFor(sent, [`/posts/${post.id}`, body]) } }, body, signal: stop.signal });
         } catch (err) {
             // no answer came: the key stays, so saving it again gets the site's answer to this one
             setSaving(false);
-            setError(t('It was not saved: {{reason}}', { reason: errorMessage(err) }));
+            setError(t('It was not saved: {{reason}}', { reason: stop.signal.aborted ? t('the site did not answer in time') : errorMessage(err) }));
             settled(false);
             return;
+        } finally {
+            clearTimeout(limit);
         }
         settleIdempotency(sent, result.response.status);
         setSaving(false);
@@ -220,6 +234,8 @@ export function EditPost({ post, uploader, announce, onDone }: { post: Post; upl
     // not, with the form and why still there
     useLeaveGuard(changed, () => pending.current ?? discard());
 
+    // while it is being saved Cancel and Esc wait too: the form goes when the post was saved, and
+    // takes them again once it was not (SAVE_ANSWER_MS at the latest)
     const cancel = async () => {
         if (saving) return;
         if (changed && !(await discard())) return;

@@ -15,7 +15,7 @@ import { AppContext, type AppContextValue, useApp } from './lib/context';
 import { errorMessage } from './lib/errors';
 import { t } from './lib/i18n';
 import { makeLinkOpener } from './lib/link-opener';
-import { captureLinks, closeThisWindow, forceCloseThisWindow, getSession, inApp, type LinkOpener, sameSession, type Session, setNavState, tokenRefused } from './lib/native';
+import { captureLinks, closeThisWindow, closeThisWindowAsked, forceCloseThisWindow, getSession, inApp, type LinkOpener, sameSession, type Session, setNavState, tokenRefused } from './lib/native';
 import { RouterProvider, useNavigation, useRoute } from './lib/navigation';
 import { platform } from './lib/platform';
 import { parseRoute, type Route, RouteHistory, ScrollMemory } from './lib/router';
@@ -159,9 +159,10 @@ function SecondaryWindow({ session, onLinkError }: { session: Session; onLinkErr
     const { history } = useNavigation();
 
     // closed (Esc, Close): the window goes. Unsaved changes in it were asked about before the
-    // detail went (the history's guard), so this close asks nothing
+    // detail went (the history's guard), so this close asks nothing; it is still an ordinary
+    // close, so the window's place and size are kept as for its close button
     useEffect(() => {
-        if (!route.detail) forceCloseThisWindow();
+        if (!route.detail) void closeThisWindowAsked();
     }, [route.detail]);
 
     // until the detail names itself (shell/pane.tsx; its effect runs after this one)

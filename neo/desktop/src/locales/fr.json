@@ -288,6 +288,7 @@
     "Write what it is about.": "Écrivez de quoi il s’agit.",
     "It was not saved": "L’enregistrement a échoué",
     "It was not saved: {{reason}}": "L’enregistrement a échoué : {{reason}}",
+    "the site did not answer in time": "le site n’a pas répondu à temps",
     "The discussion stays as it was.": "La discussion reste telle quelle.",
     "Edit the discussion": "Modifier la discussion",
     "Pictures can’t be added to a discussion’s text here.": "Les images ne peuvent pas être ajoutées au texte d’une discussion ici.",
