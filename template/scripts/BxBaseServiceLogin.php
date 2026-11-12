@@ -219,7 +219,32 @@ class BxBaseServiceLogin extends BxDol
                 $oForm->aInputs['relocate']['value'] = BX_DOL_URL_ROOT;
         }
 
+        $bAuthButtons = strpos($sParams, 'no_auth_buttons') === false;
+        $bJoinText = strpos($sParams, 'no_join_text') === false;
+        $bFormShown = !(bool)getParam('sys_account_disable_login_form');
+
         if ($bApi) {
+            // With the form go the parts the block shows around it, for the apps to draw inside the block as the site
+            // does: whether other sign-in methods are offered here, the link to the join form and the block's footer.
+            $aFormExt = [
+                'request' => ['url' => '/api.php?r=system/login_form/TemplServiceLogin', 'immutable' => true],
+                'auth' => [
+                    'methods' => $bAuthButtons,
+                    'separator' => $bFormShown,
+                    // for an app that doesn't draw "Forgot password?" by the Password field
+                    'forgot' => !$bFormShown ? null : [
+                        'action' => _t('_sys_txt_forgot_pasword'),
+                        'url' => bx_api_get_relative_url($oPemalink->permalink('page.php?i=forgot-password')),
+                    ],
+                    'switch' => !$bJoinText ? null : [
+                        'text' => _t('_sys_txt_login_description'),
+                        'action' => _t('_sys_txt_login_description_action'),
+                        'url' => bx_api_get_relative_url($oPemalink->permalink('page.php?i=create-account')),
+                    ],
+                ],
+                'footer' => $this->_getAgreement('_sys_txt_login_agreement', true),
+            ];
+
             $oForm->initChecker();
             if ($oForm->isSubmittedAndValid()) {
                 $oAccount = BxDolAccount::getInstance(trim($oForm->getCleanValue('ID')));
@@ -240,26 +265,26 @@ class BxBaseServiceLogin extends BxDol
                 return [
                     //bx_api_get_block('login', ['session' => BxDolSession::getInstance()->getId()], ['id' => 2]),
                     bx_api_get_block('redirect', ['uri' => '/']),
-                    bx_api_get_block('form', $oForm->getCodeAPI(), ['ext' => ['request' => ['url' => '/api.php?r=system/login_form/TemplServiceLogin', 'immutable' => true]]]),
+                    bx_api_get_block('form', $oForm->getCodeAPI(), ['ext' => $aFormExt]),
                 ];
             } 
             else {
                 return getParam('sys_account_disable_login_form') ? null : [
-                     bx_api_get_block('form', $oForm->getCodeAPI(), ['ext' => ['request' => ['url' => '/api.php?r=system/login_form/TemplServiceLogin', 'immutable' => true]]]),
+                     bx_api_get_block('form', $oForm->getCodeAPI(), ['ext' => $aFormExt]),
                 ];
             }
         }
 
         $aTmplVarsForm = [];
-        if(!(bool)getParam('sys_account_disable_login_form'))
+        if($bFormShown)
             $aTmplVarsForm['content'] = $oForm->getCode();
 
         $aTmplVarsAuth = [];
-        if(strpos($sParams, 'no_auth_buttons') === false)
+        if($bAuthButtons)
             $aTmplVarsAuth['content'] = $this->serviceMemberAuthCode([], !empty($aTmplVarsForm)); // under the form, after an "or"
 
         $aTmplVarsJoin = [];
-        if(strpos($sParams, 'no_join_text') === false)
+        if($bJoinText)
             $aTmplVarsJoin['url'] = bx_absolute_url($oPemalink->permalink('page.php?i=create-account'));
 
         $oTemplate = BxDolTemplate::getInstance();
@@ -282,11 +307,37 @@ class BxBaseServiceLogin extends BxDol
             'bx_if:show_js_code' => [
                 'condition' => strpos($sParams, 'ajax_form') !== false,
                 'content' => []
-            ]
+            ],
+            'footer' => BxTemplFunctions::getInstance()->designBoxFooter($this->_getAgreement('_sys_txt_login_agreement')),
         ]);
 
     }
     
+    /**
+     * The terms notice under a sign-in or join form, with links to the Terms and Privacy pages. An operator who doesn't
+     * want it empties the language string.
+     * @param $sKey language key with {0} (terms URL) and {1} (privacy URL)
+     * @param $bApi links relative to the site, for the apps
+     */
+    public function serviceGetAgreement($sKey, $bApi = false)
+    {
+        return $this->_getAgreement($sKey, $bApi);
+    }
+
+    protected function _getAgreement($sKey, $bApi = false)
+    {
+        $oPermalink = BxDolPermalinks::getInstance();
+
+        $aUrls = [];
+        foreach(['terms', 'privacy'] as $sPage) {
+            $sUrl = $oPermalink->permalink('page.php?i=' . $sPage);
+            $aUrls[] = $bApi ? bx_api_get_relative_url($sUrl) : bx_absolute_url($sUrl);
+        }
+
+        $sText = _t($sKey, $aUrls[0], $aUrls[1]);
+        return $sText == $sKey ? '' : trim($sText);
+    }
+
     public function serviceLoginFormStep2 ()
     {
         if(isLogged()){

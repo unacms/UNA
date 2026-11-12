@@ -8,6 +8,7 @@ import { PageFooter } from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import { appSetting, getPageContentWidth } from 'app/lib/util'
+import { pageHasAuthPart } from 'app/lib/util/page-data'
 import { PageHeaderOptions } from 'app/ui/molecules/header/options'
 import { PageChromeProvider } from 'app/ui/molecules/page/page-chrome'
 // `withAuthLinks`: the login page's own extras (forgot password, social sign-in, sign up).
@@ -61,7 +62,8 @@ export default function PageLayout({ data, children, pageClasses }) {
                         : null}
                     <View className={`w-full mx-auto ${contentWidth}`}>
                         <PageChromeProvider inset={paddingTiers}>
-                            <PageContent withAuthLinks={data?.uri === 'login'}>{children}</PageContent>
+                            {/* A UNA that sends the parts with the form has the block draw them (AuthBlockPart). */}
+                            <PageContent withAuthLinks={data?.uri === 'login' && !pageHasAuthPart(data)}>{children}</PageContent>
                         </PageChromeProvider>
                     </View>
                 </View>

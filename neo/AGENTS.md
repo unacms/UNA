@@ -244,6 +244,23 @@ UNA picks how forms label their text fields: above the field (regular, the defau
 - Required marks follow UNA too (`params.required_mark`, "mark the fewer"): `none` when every labelled field is required or none is (login, sign-up), `optional` puts "(optional)" on the optional fields, `required` puts the `forms.mandatory_icon` on the required ones. A UNA that sends no mode keeps the icon. `forms.optional_text` replaces the word "optional".
 - The sign-in form's "Forgot password?" is drawn by the Password field (`forms.sys_login.forgot_password_link`, `fieldLink` on `Field`): at the end of the label's line, or under the field (on the description's line) when the label floats. Emptied, `AuthPanel` shows the centred link under the form again.
 
+### Block header
+
+A block's header (`BlockWrapper`, parts in `ui/molecules/page/page-block.js`, classes in `theme.blocks`) is a row, in shadcn/ui's Card terms: the icon, CardTitle over CardDescription, CardAction.
+
+- `BlockHeaderIcon` draws the block's `header_icon` (Studio > Pages > block > "Header icon"): a 44px tile, as tall as the title (a 24px line) and one line of description (14px on 20px, may wrap) together.
+- `BlockTitleIcon` draws the block's `icon` ("Title icon"): a 24px icon in a 28px box with no background, before the title on its line. A block can have either, both or none.
+- With a description the title and description stack with no gap (`BlockNameStacked`, `BlockTitleStacked`, `BlockDescription`); without one the title keeps its own line height (`BlockName`, `BlockTitle`).
+- `BlockActions` close the row; `BlockContent` and `BlockFooter` follow. UNA's design boxes use the same composition (Artificer `general.css`).
+
+### Sign-in and join blocks
+
+UNA's sign-in and join blocks are ordinary page blocks, so their icon, title and description come from the block (Studio > Pages) and `BlockWrapper` draws them. With the form UNA also sends the parts the site shows around it, on the form's content item:
+
+- `auth`: `methods` (other sign-in methods are offered in this block), `separator` (the form is shown, so an "or" goes first) and `switch` (`text`, `action`, `url`: "Don't have an account? Sign up"). `BlockWrapper` draws them inside the block, under the form (`AuthBlockPart`); the methods themselves are the app's own (`AuthPanel`, `auth` settings).
+- `footer`: the block's footer, a notice with links (the terms). `BlockWrapper` draws it in `BlockFooter` through `BlockNotice` (small, muted, centred).
+- A UNA that sends neither keeps the old layout: the login page layout and the splash draw the methods and the link under the block (`pageHasAuthPart`, `blockAuthPart` in `lib/util/page-data.ts`).
+
 ### Interface sounds
 
 Sounds are [Cuelume](https://cuelume.dev/agents.md)'s cues, one per interface job. Pick a cue by its job from Cuelume's "Which cue?" table: subtle emphasis for frequent actions, strong only for rare ones that matter. Never play one on hover, on page load, per item of a burst, or for a number that updates constantly. Everything is in `app/lib/sound`.

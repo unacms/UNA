@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The sign-in and join blocks: the line under the title, and the terms notice back under the sign-in form. Page blocks: the header icon; the icon is the title icon. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_page_block_desc_login"><![CDATA[Enter your details to continue.]]></string_add>
+    <string_add name="_sys_page_block_desc_create_account"><![CDATA[Create an account to join the community.]]></string_add>
+    <string_add name="_sys_txt_login_agreement"><![CDATA[By logging in, you agree to the <a href="{0}">Terms of Service</a> and <a href="{1}">Privacy Policy</a>.]]></string_add>
+    <string_add name="_adm_bp_txt_block_header_icon"><![CDATA[Header icon]]></string_add>
+    <string_add name="_adm_bp_dsc_block_header_icon"><![CDATA[A larger icon (font icon, SVG or Emoji code) in a tile before the block's title and description.]]></string_add>
+    <string_upd name="_adm_bp_txt_block_icon"><![CDATA[Title icon]]></string_upd>
+    <string_upd name="_adm_bp_dsc_block_icon"><![CDATA[A small icon (font icon, SVG or Emoji code) before the block's title, on its line.]]></string_upd>
+</resources>

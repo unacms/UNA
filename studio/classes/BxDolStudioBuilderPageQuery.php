@@ -390,6 +390,7 @@ class BxDolStudioBuilderPageQuery extends BxDolStudioPageQuery
             `tpb`.`title` AS `title`,
             `tpb`.`description` AS `description`,
             `tpb`.`icon` AS `icon`,
+            `tpb`.`header_icon` AS `header_icon`,
             `tpb`.`designbox_id` AS `designbox_id`,
             `tpb`.`class` AS `class`,
             `tpb`.`async` AS `async`,

@@ -14,7 +14,7 @@ export default function AuthGitHub() {
                 onPress={handleGitHubLogin}
                 label={t('Continue with GitHub')}
                 image="GitHubIcon"
-                controlSize="large"
+                controlSize="regular"
                 width="fill"
                 classNames={{ root: 'flex-none' }}
             />

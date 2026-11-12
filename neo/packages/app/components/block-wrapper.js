@@ -1,9 +1,13 @@
 import { View } from 'app/design/view'
+import { Text } from 'app/design/typography'
 import Html from 'app/ui/atoms/html'
 import { stripTags, appSetting, isUrl } from 'app/lib/util';
 import { useState } from 'react';
 import { Platform } from 'react-native';
-import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader, BlockTitle, BlockDescription, BlockIcon } from 'app/ui/molecules/page/page-block'
+import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader, BlockTitle, BlockDescription, BlockHeaderIcon, BlockTitleIcon, BlockNameStacked, BlockTitleStacked, BlockFooter } from 'app/ui/molecules/page/page-block'
+import AuthBlockPart from 'app/ui/molecules/auth/auth-block-part'
+import BlockNotice from 'app/ui/molecules/page/block-notice'
+import { blockAuthPart } from 'app/lib/util/page-data'
 import { useTranslation } from 'react-i18next'
 import { Modal, NeoButton, NeoButtonLink } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon'
@@ -25,6 +29,18 @@ function pathComparable(path) {
 function roundedFromInset(inset) {
     if (inset == null) return undefined
     return inset === false ? [] : inset
+}
+
+/**
+ * A block's icon as UNA sends it: an icon name, inline SVG, or an Emoji, which comes wrapped as
+ * `<i class="sys-icon sys-icon-emoji">…</i>` and is drawn as text (Icon has no glyph for it).
+ */
+function BlockIconGlyph({ icon, size }) {
+    if (typeof icon === 'string' && icon.includes('sys-icon-emoji')) {
+        const emoji = stripTags(icon).trim()
+        return emoji ? <Text style={{ fontSize: size, lineHeight: Math.round(size * 1.2) }}>{emoji}</Text> : null
+    }
+    return <Icon icon={icon} size={size} />
 }
 
 function BlockHeaderMenu({ menu, pathname }) {
@@ -179,15 +195,34 @@ function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg
     // Title on some tiers only: hidden where it's off.
     const titleTiersClass = Array.isArray(bIsShowTitle) ? responsiveClasses('title', bIsShowTitle) : ''
 
+    // The header icon (UNA's block "Header icon") is a 44px tile before the title and the description;
+    // the title icon (the block's "Title icon") is small and bare, on the title's line.
+    const blockTheme = appSetting('theme', 'blocks')
+    const title = stripTags(block.title)
+    const titleIcon = block.icon ? (
+        <BlockTitleIcon>
+            <BlockIconGlyph icon={block.icon} size={blockTheme['u-block-title-icon-size']} />
+        </BlockTitleIcon>
+    ) : null
+    const stacked = !!block.description
+    const Name = stacked ? BlockNameStacked : BlockName
+    const Title = stacked ? BlockTitleStacked : BlockTitle
     const headerName = (
-        <BlockName>
-            <View className="flex-row items-center gap-2">
-                {!!block.icon && <BlockIcon>
-                    <Icon icon={block.icon} size={appSetting('theme', 'blocks')['u-block-icon-size']}/>
-                </BlockIcon>}
-                <BlockTitle>{stripTags(block.title)}</BlockTitle></View>
-            {!!block.description && <BlockDescription>{block.description}</BlockDescription>}
-        </BlockName>
+        <>
+            {!!block.header_icon && (
+                <BlockHeaderIcon>
+                    <BlockIconGlyph icon={block.header_icon} size={blockTheme['u-block-header-icon-size']} />
+                </BlockHeaderIcon>
+            )}
+            {/* Beside a header icon a title without a description is centred on the tile. */}
+            <Name className={block.header_icon && !stacked ? 'justify-center' : undefined}>
+                <View className="flex-row items-center gap-2">
+                    {titleIcon}
+                    <Title>{title}</Title>
+                </View>
+                {stacked && <BlockDescription>{block.description}</BlockDescription>}
+            </Name>
+        </>
     )
     const headerActions = (
         <>
@@ -219,6 +254,9 @@ function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg
             {headerActions}
         </BlockHeader>
     ) : null
+
+    const authPart = blockAuthPart(block)
+    const footerHtml = typeof authPart?.footer === 'string' ? authPart.footer.trim() : ''
 
     return (
         <View className={`${wrapperClassses || 'w-full'} ${fillClass}`}>
@@ -264,7 +302,15 @@ function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg
                     >
                         {/* Background on some tiers only counts as a card: it is where it shows most. */}
                         {renderChildren(overlayHeaderNode, bIsShowBg ? 'card' : 'background')}
+                        {/* A sign-in or join block: the other sign-in methods and the link to the other form, under the form. */}
+                        {authPart?.auth ? <AuthBlockPart auth={authPart.auth} /> : null}
                     </BlockContent>
+                    {/* The block's footer: UNA's notice under the content (the terms a form's visitor agrees to). */}
+                    {footerHtml ? (
+                        <BlockFooter isPad={bIsShowPadding} className="mt-4 border-t border-border pt-4 items-center justify-center">
+                            <BlockNotice html={footerHtml} />
+                        </BlockFooter>
+                    ) : null}
                 </PageBlock>
             </View>
         </View>

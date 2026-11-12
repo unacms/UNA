@@ -529,7 +529,8 @@
 	<string name="_adm_bp_dsc_block_content_rss_url"><![CDATA[Введите здесь URL RSS-ресурса]]></string>
         <string name="_adm_bp_dsc_block_content_empty"><![CDATA[Оставьте пустым, чтобы использовать значение по умолчанию.]]></string>
         <string name="_adm_bp_dsc_block_description"><![CDATA[Короткое описание блока, отображаемое в заголовке блока.]]></string>
-        <string name="_adm_bp_dsc_block_icon"><![CDATA[Изображение (шрифтовая иконка, SVG код или эмодзи) для блока, отображаемое в заголовке блока.]]></string>
+        <string name="_adm_bp_dsc_block_header_icon"><![CDATA[Крупная иконка (шрифтовая иконка, SVG код или эмодзи) в плитке перед заголовком и описанием блока.]]></string>
+        <string name="_adm_bp_dsc_block_icon"><![CDATA[Небольшая иконка (шрифтовая иконка, SVG код или эмодзи) перед заголовком блока, в его строке.]]></string>
 	<string name="_adm_bp_dsc_block_title"><![CDATA[Короткое название для блока, отображаемое в заголовке блока.]]></string>
 	<string name="_adm_bp_dsc_block_visible_for_levels"><![CDATA[Выбрать уровни пользователей, которые могут видеть этот блок]]></string>
 	<string name="_adm_bp_dsc_page_cache_lifetime"><![CDATA[Сохранять страницу в кэше в течение данного количества секунд]]></string>
@@ -593,6 +594,7 @@
         <string name="_adm_bp_txt_block_description"><![CDATA[Описание]]></string>
 	<string name="_adm_bp_txt_block_designbox"><![CDATA[Отображение блока]]></string>
 	<string name="_adm_bp_txt_block_designbox_empty"><![CDATA[Выбрать отображение...]]></string>
+        <string name="_adm_bp_txt_block_header_icon"><![CDATA[Иконка шапки]]></string>
         <string name="_adm_bp_txt_block_class"><![CDATA[CSS класс]]></string>
         <string name="_adm_bp_txt_block_help"><![CDATA[Помощь]]></string>
 	<string name="_adm_bp_txt_block_hidden_on"><![CDATA[Скрыть на]]></string>
@@ -600,7 +602,7 @@
 	<string name="_adm_bp_txt_block_hidden_on_tablet"><![CDATA[планшете]]></string>
 	<string name="_adm_bp_txt_block_hidden_on_desktop"><![CDATA[настольном компьютере]]></string>
         <string name="_adm_bp_txt_block_hidden_on_mobile"><![CDATA[мобильное приложение]]></string>
-        <string name="_adm_bp_txt_block_icon"><![CDATA[Изображение]]></string>
+        <string name="_adm_bp_txt_block_icon"><![CDATA[Иконка заголовка]]></string>
 	<string name="_adm_bp_txt_block_padding_hidden_on"><![CDATA[Отступы скрыты на]]></string>
 	<string name="_adm_bp_txt_block_part_hidden_on_info"><![CDATA[На сайте и в приложениях. Если в оформлении блока этой части нет, она так и не показывается.]]></string>
 	<string name="_adm_bp_txt_block_selected"><![CDATA[блоков выбрано]]></string>
@@ -4152,6 +4154,8 @@
         <string name="_sys_page_block_title_search_ai"><![CDATA[Поиск]]></string>
         <string name="_sys_page_block_title_membership_stats"><![CDATA[Лимиты членства]]></string>
 	<string name="_sys_page_block_desc_account_profile_create"><![CDATA[У вашей учётной записи ещё нет профиля. Выберите тип профиля, чтобы начать.]]></string>
+	<string name="_sys_page_block_desc_create_account"><![CDATA[Создайте аккаунт, чтобы присоединиться к сообществу.]]></string>
+	<string name="_sys_page_block_desc_login"><![CDATA[Введите данные, чтобы продолжить.]]></string>
 	<string name="_sys_page_block_system_title_login"><![CDATA[Вход с линкой регистрации]]></string>
 	<string name="_sys_page_block_system_title_login_step2"><![CDATA[Вход - шаг 2]]></string>
 	<string name="_sys_page_block_system_title_login_step3"><![CDATA[Вход - шаг 3]]></string>
@@ -4704,6 +4708,7 @@
     <string name="_sys_txt_login_2fa_description_phone"><![CDATA[Включена двухфакторная аутентификация: мы отправим код подтверждения на телефон ниже.]]></string>
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Ваш код проверки {0}.]]></string>
     <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[Произошла ошибка, пожалуйста, уведомите о ней администратора сайта.]]></string>
+    <string name="_sys_txt_login_agreement"><![CDATA[Заходя, Вы соглашаетесь с <a href="{0}">Правилами пользования</a> и <a href="{1}">Политикой конфиденциальности</a>.]]></string>
     <string name="_sys_txt_join_description"><![CDATA[Уже есть аккаунт?]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Войти]]></string>
     <string name="_sys_txt_join_text"><![CDATA[Регистрация быстрая и простая. Создайте аккаунт, чтобы начать.]]></string>

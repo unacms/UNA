@@ -660,6 +660,19 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                     ),
                     'attrs' => array('class' => 'bx-form-input-textarea-small'),
                 ),
+                'header_icon' => array(
+                    'type' => 'textarea',
+                    'name' => 'header_icon',
+                    'caption' => _t('_adm_bp_txt_block_header_icon'),
+                    'info' => _t('_adm_bp_dsc_block_header_icon'),
+                    'value' => $aBlock['header_icon'] ?? '',
+                    'code' => 1,
+                    'required' => '0',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                    'attrs' => array('class' => 'bx-form-input-textarea-small'),
+                ),
                 'designbox_id' => array(
                     'type' => 'select',
                     'name' => 'designbox_id',
