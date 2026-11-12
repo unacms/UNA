@@ -52,25 +52,23 @@ class BxTasksCmts extends BxTemplCmts
         if(empty($aCmts) || !is_array($aCmts))
             return $aCmts;
 
-        $iViewerId = bx_get_logged_profile_id();
-        $bLoggedAny = $this->_oModule->getTimeRightsByContentId($this->getId(), $iViewerId)['view_logged_any'];
-        if($bLoggedAny)
-            return $aCmts;
-
-        return array_values(array_filter($aCmts, function($aCmt) use ($iViewerId) {
+        return array_values(array_filter($aCmts, function($aCmt) {
             if(!isset($aCmt['cmt_author_id'], $aCmt['cmt_text']))
                 $aCmt = $this->getCommentRow((int)$aCmt['cmt_id']) ?: $aCmt;
 
-            if(!$this->_isAutoComment($aCmt))
-                return true;
-
-            $aText = json_decode($aCmt['cmt_text'] ?? '', true);
-            if(($aText['key'] ?? '') != '_bx_tasks_txt_msg_report_time_for_date')
-                return true;
-
-            //--- Entries logged before the logger's id was stored are hidden from everybody here.
-            return !empty($aText['markers']['author_id']) && (int)$aText['markers']['author_id'] == $iViewerId;
+            return !$this->_isTimeCommentHidden($aCmt);
         }));
+    }
+
+    /**
+     * A comment asked for by its id (the app's comment_id, a link to it) is hidden as in the list.
+     */
+    public function getCommentStructure($iCmtId, $aBp = [], $aDp = [])
+    {
+        if($this->_isTimeCommentHidden($this->getCommentRow((int)$iCmtId)))
+            return false;
+
+        return parent::getCommentStructure($iCmtId, $aBp, $aDp);
     }
 
     public function getViewText($mixedItem)
@@ -90,7 +88,7 @@ class BxTasksCmts extends BxTemplCmts
     public function getComment($mixedCmt, $aBp = [], $aDp = [])
     {
         $aCmt = !is_array($mixedCmt) ? $this->getCommentRow((int)$mixedCmt) : $mixedCmt;
-        if(!$aCmt)
+        if(!$aCmt || $this->_isTimeCommentHidden($aCmt))
             return '';
 
         if($this->_isAutoComment($aCmt))
@@ -127,6 +125,27 @@ class BxTasksCmts extends BxTemplCmts
         }
 
         return $aResult;
+    }
+
+    /**
+     * The task's activity on logged time ("X reported that 1:20 was spent") holds Logged time: only the one who
+     * logged it and those who see everybody's Logged time get it. Entries logged before the logger's id was stored
+     * are hidden from everybody else.
+     */
+    protected function _isTimeCommentHidden($aCmt)
+    {
+        if(empty($aCmt) || !is_array($aCmt) || !$this->_isAutoComment($aCmt))
+            return false;
+
+        $aText = json_decode($aCmt['cmt_text'] ?? '', true);
+        if(($aText['key'] ?? '') != '_bx_tasks_txt_msg_report_time_for_date')
+            return false;
+
+        $iViewerId = bx_get_logged_profile_id();
+        if(!empty($aText['markers']['author_id']) && (int)$aText['markers']['author_id'] == $iViewerId)
+            return false;
+
+        return !$this->_oModule->getTimeRightsByContentId($this->getId(), $iViewerId)['view_logged_any'];
     }
 
     protected function _getHeaderBox(&$aCmt, $aBp = [], $aDp = [])

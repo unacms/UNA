@@ -210,9 +210,13 @@ class BxTasksGridTime extends BxBaseModGeneralGrid
 
             $this->_setTimeInputValue($oForm, 'value', (int)$aTrack['value']);
 
-            //--- Logged time, its date and note are the logger's: the others see them, read only.
-            if(!$bEditLogged)
+            //--- Logged time, its date and note are the logger's: the others see them, read only,
+            //--- and who may not see others' Logged time (edits Billed time only) doesn't get it.
+            if(!$bEditLogged) {
                 $this->_setInputsReadOnly($oForm, ['value', 'value_date', 'text']);
+                if(!$this->_oModule->getTimeRightsByContentId((int)$aTrack['object_id'])['view_logged_any'])
+                    unset($oForm->aInputs['value']);
+            }
         }
 
         //--- Replaced by the Billed time (value_billed).

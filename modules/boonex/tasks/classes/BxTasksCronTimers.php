@@ -34,9 +34,10 @@ class BxTasksCronTimers extends BxDolCron
         if($iHours <= 0)
             return;
 
+        $iStartedBefore = time() - 3600 * $iHours;
         $aTimers = $this->_oModule->_oDb->getTimers([
             'sample' => 'running_since',
-            'started_before' => time() - 3600 * $iHours
+            'started_before' => $iStartedBefore
         ]);
         if(empty($aTimers) || !is_array($aTimers))
             return;
@@ -45,7 +46,8 @@ class BxTasksCronTimers extends BxDolCron
             $iContentId = (int)$aTimer['content_id'];
             $iProfileId = (int)$aTimer['profile_id'];
 
-            if(!$this->_oModule->pauseTimer($iContentId, $iProfileId))
+            //--- A timer paused and resumed since it was selected runs anew: it stays.
+            if(!$this->_oModule->pauseTimer($iContentId, $iProfileId, $iStartedBefore))
                 continue;
 
             $this->_oModule->sendTimersEvent($iProfileId, 'pause');

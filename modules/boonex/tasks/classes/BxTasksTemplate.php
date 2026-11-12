@@ -509,7 +509,7 @@ class BxTasksTemplate extends BxBaseModTextTemplate
 
     /**
      * The site's time summary (the app draws its own): the data of getBlockTimeSummary / getBlockTimeSummaryContext
-     * as plain tables, one per period with a select between them, each person and then their tasks.
+     * as plain tables, one per period with a select between them: each person, then their tasks or entries.
      */
     public function getBlockTimeSummaryHtml ($aData)
     {
@@ -524,40 +524,48 @@ class BxTasksTemplate extends BxBaseModTextTemplate
         $bLogged = !empty($aData['columns']['logged']);
         $bBilled = !empty($aData['columns']['billed']);
 
-        $aHead = [['ts_h_class' => 'bx-tasks-ts-name', 'ts_h_value' => '']];
+        $aHead = [];
         if($bLogged)
-            $aHead = array_merge($aHead, [
-                ['ts_h_class' => 'bx-tasks-ts-time', 'ts_h_value' => bx_process_output($aLabels['logged'])],
-                ['ts_h_class' => 'bx-tasks-ts-time', 'ts_h_value' => bx_process_output($aLabels['by_timer'])],
-                ['ts_h_class' => 'bx-tasks-ts-time', 'ts_h_value' => bx_process_output($aLabels['by_hand'])],
-            ]);
+            foreach(['logged', 'by_timer', 'by_hand'] as $sKey)
+                $aHead[] = ['ts_h_value' => bx_process_output($aLabels[$sKey])];
         if($bBilled)
-            $aHead[] = ['ts_h_class' => 'bx-tasks-ts-time', 'ts_h_value' => bx_process_output($aLabels['billed'])];
+            $aHead[] = ['ts_h_value' => bx_process_output($aLabels['billed'])];
 
         $fTime = function($iMinutes, $bSign = false) {
             return ($iMinutes < 0 ? '-' : ($bSign && $iMinutes > 0 ? '+' : '')) . $this->_oConfig->timeI2S(abs($iMinutes));
         };
 
-        $fRow = function($sName, $aItem, $sClass) use ($bLogged, $bBilled, $fTime) {
-            $aCells = [['ts_c_class' => 'bx-tasks-ts-name', 'ts_c_value' => $sName]];
+        //--- $aName: the first cell, a link (url, title), a text (text) or an entry (date, note).
+        $fRow = function($aName, $aItem, $sClass) use ($bLogged, $bBilled, $fTime) {
+            $aCells = [];
             if($bLogged) {
                 $iMinutes = (int)($aItem['minutes'] ?? 0);
                 $iTimer = (int)($aItem['timer'] ?? 0);
-                $aCells = array_merge($aCells, [
-                    ['ts_c_class' => 'bx-tasks-ts-time', 'ts_c_value' => $fTime($iMinutes)],
-                    ['ts_c_class' => 'bx-tasks-ts-time', 'ts_c_value' => $fTime($iTimer)],
-                    ['ts_c_class' => 'bx-tasks-ts-time', 'ts_c_value' => $fTime($iMinutes - $iTimer, true)],
-                ]);
+                foreach([$fTime($iMinutes), $fTime($iTimer), $fTime($iMinutes - $iTimer, true)] as $sValue)
+                    $aCells[] = ['ts_c_value' => $sValue];
             }
             if($bBilled)
-                $aCells[] = ['ts_c_class' => 'bx-tasks-ts-time', 'ts_c_value' => $fTime((int)($aItem['billed'] ?? 0))];
+                $aCells[] = ['ts_c_value' => $fTime((int)($aItem['billed'] ?? 0))];
 
-            return ['ts_r_class' => $sClass, 'bx_repeat:cells' => $aCells];
-        };
+            $bLink = !empty($aName['url']);
+            $bLog = isset($aName['date']);
 
-        $fLink = function($sUrl, $sTitle) {
-            $sTitle = bx_process_output($sTitle);
-            return $sUrl ? '<a href="' . bx_html_attribute($sUrl) . '">' . $sTitle . '</a>' : $sTitle;
+            return [
+                'ts_r_class' => $sClass,
+                'bx_if:ts_link' => [
+                    'condition' => $bLink,
+                    'content' => ['ts_l_url' => bx_html_attribute($aName['url'] ?? ''), 'ts_l_title' => bx_process_output($aName['title'] ?? '')]
+                ],
+                'bx_if:ts_text' => [
+                    'condition' => !$bLink && !$bLog,
+                    'content' => ['ts_t_value' => bx_process_output($aName['title'] ?? '')]
+                ],
+                'bx_if:ts_log' => [
+                    'condition' => $bLog,
+                    'content' => ['ts_g_date' => $bLog ? bx_time_js($aName['date'], BX_FORMAT_DATE, true) : '', 'ts_g_text' => bx_process_output($aName['text'] ?? '')]
+                ],
+                'bx_repeat:cells' => $aCells
+            ];
         };
 
         $oPermalinks = BxDolPermalinks::getInstance();
@@ -575,13 +583,27 @@ class BxTasksTemplate extends BxBaseModTextTemplate
             $aRows = [];
             foreach($aPeriod['people'] as $aPerson) {
                 $oProfile = BxDolProfile::getInstanceMagic((int)$aPerson['profile']['id']);
-                $aRows[] = $fRow($fLink($oProfile->getUrl(), $oProfile->getDisplayName()), $aPerson, 'bx-tasks-ts-person');
+                $aRows[] = $fRow(['url' => $oProfile->getUrl(), 'title' => $oProfile->getDisplayName()], $aPerson, 'bx-tasks-ts-person');
 
+                //--- A context's summary: the person's tasks.
                 foreach($aPerson['tasks'] ?? [] as $aTask)
-                    $aRows[] = $fRow($fLink(bx_absolute_url($oPermalinks->permalink('page.php?i=' . $CNF['URI_VIEW_ENTRY'] . '&id=' . (int)$aTask['id'])), $aTask['title']), $aTask, 'bx-tasks-ts-task');
+                    $aRows[] = $fRow([
+                        'url' => bx_absolute_url($oPermalinks->permalink('page.php?i=' . $CNF['URI_VIEW_ENTRY'] . '&id=' . (int)$aTask['id'])),
+                        'title' => $aTask['title']
+                    ], $aTask, 'bx-tasks-ts-task');
+
+                //--- A task's summary: the person's entries, with their dates and notes, as the app shows them.
+                foreach($aPerson['logs'] ?? [] as $aLog) {
+                    $iMinutes = (int)($aLog['minutes'] ?? 0);
+                    $aRows[] = $fRow(['date' => (int)$aLog['date'], 'text' => (string)($aLog['text'] ?? '')], [
+                        'minutes' => $iMinutes,
+                        'timer' => !empty($aLog['by_timer']) ? (int)($aLog['original'] ?? $iMinutes) : 0,
+                        'billed' => (int)($aLog['billed'] ?? 0)
+                    ], 'bx-tasks-ts-task');
+                }
             }
             if($aRows && count($aPeriod['people']) > 1)
-                $aRows[] = $fRow(bx_process_output($aLabels['total']), $aPeriod, 'bx-tasks-ts-total');
+                $aRows[] = $fRow(['title' => $aLabels['total']], $aPeriod, 'bx-tasks-ts-total');
 
             $aPeriods[] = [
                 'name' => bx_html_attribute($aPeriod['name']),
@@ -876,9 +898,11 @@ class BxTasksTemplate extends BxBaseModTextTemplate
 
             $bTasksAllowManage = $bContext ? $bAllowManage : $oModule->isAllowManageByContext($iTasksContextId);
 
-            //--- Those who see Billed time but not everybody's Logged time (clients) get the Billed total.
+            //--- Those who see Billed time but not everybody's Logged time (clients) get the Billed total,
+            //--- those who see neither their own Logged time only.
             $aTimeRights = $oModule->getTimeRights($iTasksContextId);
             $bTotalBilled = $aTimeRights['view_billed'] && !$aTimeRights['view_logged_any'];
+            $bTotalOwn = !$aTimeRights['view_billed'] && !$aTimeRights['view_logged_any'];
 
             $aTasks = $this->_oDb->getTasks($iTasksContextId, $bContext ? $aList['id'] : false, $aParams);
             if((!$aTasks || !is_array($aTasks)) && (($bContext && !$aList['id']) || !$bTasksAllowManage))
@@ -892,6 +916,10 @@ class BxTasksTemplate extends BxBaseModTextTemplate
                 if($bTotalBilled) {
                     if(!empty($aTask['time_billed']))
                         $sTime = _t('_bx_tasks_txt_total', $this->_oConfig->timeI2S($aTask['time_billed']));
+                }
+                else if($bTotalOwn) {
+                    if(!empty($aTask['time']))
+                        $sTime = _t('_bx_tasks_txt_total', $this->_oConfig->timeI2S($aTask['time']));
                 }
                 else if(!empty($aTask['time_total']))
                     $sTime = _t('_bx_tasks_txt_total', $this->_oConfig->timeI2S($aTask['time_total']) . (!empty($aTask['time']) ? ' (' . $this->_oConfig->timeI2S($aTask['time']) . ')' : ''));

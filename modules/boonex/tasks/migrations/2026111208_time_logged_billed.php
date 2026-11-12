@@ -19,6 +19,16 @@ $oDb = BxDolDb::getInstance();
 $oDb->query("UPDATE `bx_tasks_time_track` SET `value_original` = `value` WHERE `value_original` = 0 AND `value` <> 0");
 
 if($oDb->isFieldExists('bx_tasks_time_track', 'billable')) {
+    //--- The budget is spent by Billed time now, but a non-billable entry spent its Logged time: give that back
+    //--- to the budget of the task's context (allow_view_to < 0) before it is billed for nothing.
+    $oDb->query("UPDATE `bx_tasks_budget` AS `b` INNER JOIN (
+            SELECT -`t`.`allow_view_to` AS `context_id`, SUM(`tt`.`value`) AS `spent`
+            FROM `bx_tasks_time_track` AS `tt` INNER JOIN `bx_tasks_tasks` AS `t` ON `t`.`id` = `tt`.`object_id`
+            WHERE `tt`.`billable` = 0 AND `tt`.`value_billed` IS NULL AND `t`.`allow_view_to` < 0
+            GROUP BY `t`.`allow_view_to`
+        ) AS `n` ON `n`.`context_id` = `b`.`context_id`
+        SET `b`.`value_spent` = `b`.`value_spent` - `n`.`spent`");
+
     $oDb->query("UPDATE `bx_tasks_time_track` SET `value_billed` = 0 WHERE `billable` = 0 AND `value_billed` IS NULL");
     $oDb->query("ALTER TABLE `bx_tasks_time_track` DROP COLUMN `billable`");
 }

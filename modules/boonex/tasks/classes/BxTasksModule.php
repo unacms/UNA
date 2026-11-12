@@ -1639,11 +1639,15 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
     /**
      * Pause the timer of one task only, so logging it leaves the author's other timers alone.
+     * $iStartedBefore: only a run started then or earlier (the cron's, so a run resumed since stays).
      */
-    public function pauseTimer($iContentId, $iProfileId)
+    public function pauseTimer($iContentId, $iProfileId, $iStartedBefore = 0)
     {
         $aTimer = $this->getTimer($iContentId, $iProfileId);
         if(!$aTimer || !is_array($aTimer) || empty($aTimer['started']))
+            return false;
+
+        if($iStartedBefore && (int)$aTimer['started'] > $iStartedBefore)
             return false;
 
         return $this->updateTimerById($aTimer['id'], [
