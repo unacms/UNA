@@ -32,7 +32,7 @@ export default function FormFieldPassword(props) {
     // The sign-in form's "Forgot password?" (`forms.sys_login.forgot_password_link`), drawn by Field.
     const forgotHref = props.form_name ? appSetting('forms', props.form_name)?.forgot_password_link : '';
     const fieldLink = forgotHref ? (
-        <Link variant="accent" size="sm" href={forgotHref} haptics="Medium">
+        <Link variant="accent" size="xs" href={forgotHref} haptics="Medium">
             {t('Forgot password?')}
         </Link>
     ) : null;
