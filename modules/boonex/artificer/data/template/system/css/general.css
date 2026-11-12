@@ -628,3 +628,49 @@ html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
     letter-spacing: normal;
     white-space: normal;
 }
+
+/* Glass buttons: a regular button over a picture or any backdrop that varies.
+   The regular button is a translucent fill of the text ink (see "Common elements: Buttons" in template/css/tailwind.css), which needs a plain
+   surface under it: over a cover picture it all but disappears. There the button is NEO's glass button (NeoButton `glass`, web): a white fill
+   over a blurred backdrop whose contrast is flattened, so a photo stays apart from the label (light lifts black under the dark label, dark
+   dims white under the light one), with the glass rim as its edge.
+   Applies by itself inside a cover (.bx-cover-wrapper) and to the buttons that edit a picture in place (.bx-image-edit-buttons); add
+   .bx-btn-glass to a button anywhere else it sits over a picture. Primary and disabled buttons keep their own fill. */
+.bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled) {
+    background-color: rgb(255 255 255 / 0.3);
+    color: #0a0a0c;
+
+    -webkit-backdrop-filter: blur(12px) saturate(150%) contrast(50%) brightness(130%);
+    backdrop-filter: blur(12px) saturate(150%) contrast(50%) brightness(130%);
+
+    /* --tw-shadow, not box-shadow: the focus ring is drawn by the same box-shadow and stays. */
+    --tw-shadow: inset 0 3px 1.5px -1.5px rgb(255 255 255 / 1), inset 0 -3px 1.5px -1.5px rgb(255 255 255 / 1), 0 0 0 0.6px rgb(0 0 0 / 0.08), 1px 0 0 -0.4px rgb(0 0 0 / 0.22), -1px 0 0 -0.4px rgb(0 0 0 / 0.22), 0 4px 10px -2px rgb(0 0 0 / 0.03);
+}
+.bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled):hover {
+    background-color: rgb(255 255 255 / 0.4);
+    color: #0a0a0c;
+}
+.bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled):active {
+    background-color: rgb(255 255 255 / 0.55);
+    color: #0a0a0c;
+}
+.bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled) i:not(.sys-colored) {
+    color: inherit;
+}
+.dark .bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled) {
+    background-color: rgb(255 255 255 / 0.15);
+    color: #fafafc;
+
+    -webkit-backdrop-filter: blur(12px) saturate(150%) brightness(35%);
+    backdrop-filter: blur(12px) saturate(150%) brightness(35%);
+
+    --tw-shadow: inset 0 1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 -1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 4px 5px -4px rgb(255 255 255 / 0.08), inset 0 -4px 5px -4px rgb(255 255 255 / 0.08), 0 0 0 0.6px rgb(0 0 0 / 0.5);
+}
+.dark .bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled):hover {
+    background-color: rgb(255 255 255 / 0.19);
+    color: #fafafc;
+}
+.dark .bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled):active {
+    background-color: rgb(255 255 255 / 0.23);
+    color: #fafafc;
+}
