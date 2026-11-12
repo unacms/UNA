@@ -61,8 +61,10 @@ export function useMenuHighlight() {
             // to theirs. One that follows its item (`inPlace`) is there at once, as the item is.
             const jump = inPlace || !list.classList.contains('neo-menu-highlight-on');
             list.classList.toggle('neo-menu-highlight-jump', jump);
-            // Boxes are on screen, so scaled while the menu grows in: back to the list's own pixels.
-            const scale = list.offsetWidth ? listBox.width / list.offsetWidth : 1;
+            // Boxes are on screen, so scaled while the menu grows in: back to the list's own pixels. offsetWidth is a
+            // whole number, so a list 189.8px wide is under a pixel off it without being scaled: taking that for a
+            // scale would put the highlight further off its item the lower the item is.
+            const scale = list.offsetWidth && Math.abs(listBox.width - list.offsetWidth) >= 1 ? listBox.width / list.offsetWidth : 1;
             list.style.setProperty('--neo-menu-highlight-x', `${(box.left - listBox.left) / scale - list.clientLeft}px`);
             list.style.setProperty('--neo-menu-highlight-y', `${(box.top - listBox.top) / scale - list.clientTop}px`);
             list.style.setProperty('--neo-menu-highlight-w', `${box.width / scale}px`);

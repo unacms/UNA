@@ -3105,8 +3105,10 @@ function bx_menu_highlight_list(eList)
         var bJump = !oList.hasClass('bx-menu-highlight-on');
         oList.toggleClass('bx-menu-highlight-jump', bJump);
 
-        // boxes are on screen, so scaled while the popup grows in: back to the list's own pixels
-        var fScale = eList.offsetWidth ? oListBox.width / eList.offsetWidth : 1;
+        // boxes are on screen, so scaled while the popup grows in: back to the list's own pixels. offsetWidth is a whole
+        // number, so a list 189.8px wide is under a pixel off it without being scaled: taking that for a scale would
+        // put the highlight further off its item the lower the item is.
+        var fScale = eList.offsetWidth && Math.abs(oListBox.width - eList.offsetWidth) >= 1 ? oListBox.width / eList.offsetWidth : 1;
         eList.style.setProperty('--bx-menu-highlight-x', ((oBox.left - oListBox.left) / fScale - eList.clientLeft) + 'px');
         eList.style.setProperty('--bx-menu-highlight-y', ((oBox.top - oListBox.top) / fScale - eList.clientTop) + 'px');
         eList.style.setProperty('--bx-menu-highlight-w', (oBox.width / fScale) + 'px');
