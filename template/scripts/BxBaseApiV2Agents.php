@@ -304,7 +304,7 @@ class BxBaseApiV2Agents
                 if (is_array($aPart) && ($aPart['type'] ?? '') === 'text' && is_string($aPart['content'] ?? null))
                     $aTexts[] = $aPart['content'];
             $sText = trim(implode("\n\n", $aTexts));
-            if ($sText === '' || ($sRole === 'user' && strpos($oUi->uiChatMessagePlainText($aMessage), '[page opened') === 0))
+            if ($sText === '' || ($sRole === 'user' && bx_mb_strpos($oUi->uiChatMessagePlainText($aMessage), '[page opened') === 0))
                 continue;
             $aResult[] = [
                 'id' => (string)($aMessage['id'] ?? ('m' . $i)),

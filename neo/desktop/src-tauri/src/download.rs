@@ -172,12 +172,121 @@ fn suggested_name(raw: &str) -> String {
     }
 }
 
-/// Where a download is written until it is whole: beside the chosen file, so the rename at the
-/// end never crosses disks.
-fn part_path(path: &Path) -> PathBuf {
-    let mut name = path.file_name().map(|n| n.to_os_string()).unwrap_or_default();
-    name.push(".download");
-    path.with_file_name(name)
+/// How much of the chosen file's name its temporary file keeps: with the suffix it stays under
+/// the 255 bytes (or UTF-16 units) a file system gives a name.
+const PART_NAME_BYTES: usize = 120;
+const PART_TRIES: usize = 16;
+
+/// The name of the file a download is written to until it is whole: the start of the chosen
+/// file's name, then `tag`, which no other download of that file has.
+fn part_name(path: &Path, tag: u32) -> std::ffi::OsString {
+    let name = path.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
+    let mut kept = String::new();
+    for c in name.chars() {
+        if kept.len() + c.len_utf8() > PART_NAME_BYTES {
+            break;
+        }
+        kept.push(c);
+    }
+    format!("{kept}.{tag:08x}.download").into()
+}
+
+/// The temporary file of one download. It is removed when this is dropped, however the download
+/// ended (an error, or the command's future dropped part-way), unless it became the chosen file.
+struct Part {
+    path: PathBuf,
+    keep: bool,
+}
+
+impl Drop for Part {
+    fn drop(&mut self) {
+        if !self.keep {
+            let _ = std::fs::remove_file(&self.path);
+        }
+    }
+}
+
+/// A new, empty temporary file for a download to `path`, beside it, so the rename at the end
+/// never crosses disks. Every download gets its own (`create_new`: never a file that exists, so
+/// two downloads to one place never write the same file).
+async fn create_part(path: &Path) -> std::io::Result<(Part, tokio::fs::File)> {
+    let mut tries = 0;
+    loop {
+        let part = path.with_file_name(part_name(path, rand::random()));
+        match tokio::fs::OpenOptions::new().write(true).create_new(true).open(&part).await {
+            Ok(file) => return Ok((Part { path: part, keep: false }, file)),
+            Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists && tries < PART_TRIES => tries += 1,
+            Err(e) => return Err(e),
+        }
+    }
+}
+
+/// Whether Windows refused a rename because another program holds one of the two files open
+/// without sharing it: access denied for the file being replaced, ERROR_SHARING_VIOLATION (32,
+/// which has no `ErrorKind` of its own) for the one being moved.
+fn held_open(e: &std::io::Error) -> bool {
+    cfg!(windows) && (e.kind() == std::io::ErrorKind::PermissionDenied || e.raw_os_error() == Some(32))
+}
+
+/// Puts a whole download where it was asked for, in one step: who opens `path` sees the file
+/// that was there or the new one, never a part of either. Windows refuses while another program
+/// holds the old file or the new one open without sharing it (a virus scanner reading what was
+/// just written, a viewer), so it is asked again for a second.
+async fn replace(part: &Path, path: &Path) -> std::io::Result<()> {
+    let mut tries = 0;
+    loop {
+        match tokio::fs::rename(part, path).await {
+            Err(e) if held_open(&e) && tries < 10 => {
+                tries += 1;
+                tokio::time::sleep(Duration::from_millis(100)).await;
+            }
+            other => return other,
+        }
+    }
+}
+
+/// Writes `body` to `path`: into a temporary file of its own beside it, which takes the place of
+/// `path` once it is whole and marked as downloaded. Of two downloads to one place the one that
+/// ends last stays, whole. A download that fails or is dropped leaves `path` as it was and no
+/// temporary file.
+async fn write_download<S, B, E>(path: &Path, body: S, total: u64, progress: impl Fn(DownloadProgress)) -> Result<(), DownloadError>
+where
+    S: futures_util::Stream<Item = Result<B, E>>,
+    B: AsRef<[u8]>,
+    E: std::fmt::Display,
+{
+    let unwritable = |e: std::io::Error| DownloadError::local("unwritable", tr_vars("Can't write the file: {{reason}}", &[("reason", &e.to_string())]));
+    let (mut part, mut file) = create_part(path).await.map_err(|e| {
+        DownloadError::local("unwritable", tr_vars("Can't write {{path}}: {{reason}}", &[("path", &path.display().to_string()), ("reason", &e.to_string())]))
+    })?;
+    let mut body = std::pin::pin!(body);
+    let mut received = 0u64;
+    let mut last = Instant::now();
+    progress(DownloadProgress { received, total });
+    loop {
+        let next = tokio::time::timeout(STALL_TIMEOUT, body.next()).await.map_err(|_| DownloadError::local("unreachable", tr("The download stalled")))?;
+        let Some(chunk) = next else { break };
+        let chunk = chunk.map_err(|e| DownloadError::local("unreachable", tr_vars("The download broke off: {{reason}}", &[("reason", &e.to_string())])))?;
+        let chunk = chunk.as_ref();
+        file.write_all(chunk).await.map_err(unwritable)?;
+        received += chunk.len() as u64;
+        if last.elapsed() >= PROGRESS_EVERY {
+            progress(DownloadProgress { received, total });
+            last = Instant::now();
+        }
+    }
+    file.flush().await.map_err(unwritable)?;
+    drop(file);
+    progress(DownloadProgress { received, total: total.max(received) });
+    // from the Internet, as a browser's download: before the rename, so the file is never
+    // where it was asked for without the mark
+    quarantine(&part.path)
+        .map_err(|e| DownloadError::local("unwritable", tr_vars("Can't mark the file as downloaded: {{reason}}", &[("reason", &e.to_string())])))?;
+    replace(&part.path, path).await.map_err(|e| {
+        DownloadError::local("unwritable", tr_vars("Can't save {{path}}: {{reason}}", &[("path", &path.display().to_string()), ("reason", &e.to_string())]))
+    })?;
+    part.keep = true;
+    Ok(())
 }
 
 /// Ask where to save `name` (the save dialog, a sheet on the window), then download `url` there.
@@ -232,47 +341,10 @@ pub async fn save_download(
     }
     let total = response.content_length().unwrap_or(0);
 
-    let part = part_path(&path);
-    let mut file = tokio::fs::File::create(&part).await.map_err(|e| {
-        DownloadError::local("unwritable", tr_vars("Can't write {{path}}: {{reason}}", &[("path", &path.display().to_string()), ("reason", &e.to_string())]))
-    })?;
-    let result = async {
-        let mut received = 0u64;
-        let mut last = Instant::now();
-        let _ = on_progress.send(DownloadProgress { received, total });
-        let mut body = response.bytes_stream();
-        loop {
-            let next = tokio::time::timeout(STALL_TIMEOUT, body.next()).await.map_err(|_| DownloadError::local("unreachable", tr("The download stalled")))?;
-            let Some(chunk) = next else { break };
-            let chunk = chunk.map_err(|e| DownloadError::local("unreachable", tr_vars("The download broke off: {{reason}}", &[("reason", &e.to_string())])))?;
-            file.write_all(&chunk)
-                .await
-                .map_err(|e| DownloadError::local("unwritable", tr_vars("Can't write the file: {{reason}}", &[("reason", &e.to_string())])))?;
-            received += chunk.len() as u64;
-            if last.elapsed() >= PROGRESS_EVERY {
-                let _ = on_progress.send(DownloadProgress { received, total });
-                last = Instant::now();
-            }
-        }
-        file.flush().await.map_err(|e| DownloadError::local("unwritable", tr_vars("Can't write the file: {{reason}}", &[("reason", &e.to_string())])))?;
-        let _ = on_progress.send(DownloadProgress { received, total: total.max(received) });
-        Ok::<(), DownloadError>(())
-    }
-    .await;
-    drop(file);
-    // from the Internet, as a browser's download: before the rename, so the file is never
-    // where it was asked for without the mark
-    let result = result.and_then(|()| {
-        quarantine(&part)
-            .map_err(|e| DownloadError::local("unwritable", tr_vars("Can't mark the file as downloaded: {{reason}}", &[("reason", &e.to_string())])))
-    });
-    if let Err(e) = result {
-        let _ = tokio::fs::remove_file(&part).await;
-        return Err(e);
-    }
-    tokio::fs::rename(&part, &path).await.map_err(|e| {
-        DownloadError::local("unwritable", tr_vars("Can't save {{path}}: {{reason}}", &[("path", &path.display().to_string()), ("reason", &e.to_string())]))
-    })?;
+    write_download(&path, response.bytes_stream(), total, |progress| {
+        let _ = on_progress.send(progress);
+    })
+    .await?;
     let saved = path.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or(suggested);
     Ok(Saved { saved: true, name: saved })
 }
@@ -361,12 +433,36 @@ mod tests {
         assert!(format!("{error:?}").contains("off the network"), "{error:?}");
     }
 
+    /// A folder of one test, empty.
+    fn test_dir(name: &str) -> PathBuf {
+        let dir = std::env::temp_dir().join(format!("una-download-test-{}-{name}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        dir
+    }
+
+    fn names_in(dir: &Path) -> Vec<String> {
+        let mut names: Vec<String> = std::fs::read_dir(dir).unwrap().map(|e| e.unwrap().file_name().to_string_lossy().into_owned()).collect();
+        names.sort();
+        names
+    }
+
+    /// A body of `chunks` chunks of `byte`, which lets other tasks run between them.
+    fn slow_body(byte: u8, chunks: usize) -> impl futures_util::Stream<Item = Result<Vec<u8>, String>> {
+        futures_util::stream::unfold(0, move |sent| async move {
+            if sent == chunks {
+                return None;
+            }
+            tokio::task::yield_now().await;
+            Some((Ok(vec![byte; 4096]), sent + 1))
+        })
+    }
+
     #[cfg(target_os = "macos")]
     #[test]
     fn a_download_is_marked_as_from_the_internet() {
-        let dir = std::env::temp_dir().join(format!("una-download-test-{}", std::process::id()));
-        std::fs::create_dir_all(&dir).unwrap();
-        let part = part_path(&dir.join("a.pdf"));
+        let dir = test_dir("quarantine");
+        let part = dir.join("a.pdf.download");
         std::fs::write(&part, b"%PDF").unwrap();
         quarantine(&part).unwrap();
         let output = std::process::Command::new("/usr/bin/xattr").args(["-p", "com.apple.quarantine"]).arg(&part).output().unwrap();
@@ -377,6 +473,91 @@ mod tests {
 
     #[test]
     fn a_download_is_written_beside_where_it_goes() {
-        assert_eq!(part_path(Path::new("/Users/me/Downloads/a.pdf")), PathBuf::from("/Users/me/Downloads/a.pdf.download"));
+        assert_eq!(part_name(Path::new("/Users/me/Downloads/a.pdf"), 0x2a), "a.pdf.0000002a.download");
+        // a long name is cut on a character, so the temporary name still fits a file system
+        let long = part_name(&Path::new("/tmp").join("ж".repeat(200)), 1).to_string_lossy().into_owned();
+        assert_eq!(long, format!("{}.00000001.download", "ж".repeat(60)));
+        assert!(part_name(&Path::new("/tmp").join("文".repeat(200)), u32::MAX).len() <= 255);
+    }
+
+    #[tokio::test]
+    async fn every_download_has_its_own_temporary_file() {
+        let dir = test_dir("own-part");
+        let path = dir.join("a.pdf");
+        let (first, first_file) = create_part(&path).await.unwrap();
+        let (second, second_file) = create_part(&path).await.unwrap();
+        assert_ne!(first.path, second.path);
+        assert_eq!(first.path.parent(), Some(dir.as_path()));
+        assert_eq!(names_in(&dir).len(), 2);
+        // closed first, as write_download does: Windows lists a removed file until it is closed
+        drop((first_file.into_std().await, second_file.into_std().await));
+        drop((first, second));
+        assert!(names_in(&dir).is_empty(), "dropped: removed");
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[tokio::test]
+    async fn a_download_takes_the_place_of_the_file_that_was_there() {
+        let dir = test_dir("replace");
+        let path = dir.join("a.bin");
+        std::fs::write(&path, b"old").unwrap();
+        let seen = std::sync::Mutex::new(Vec::new());
+        write_download(&path, slow_body(b'n', 3), 3 * 4096, |p| seen.lock().unwrap().push((p.received, p.total))).await.unwrap();
+        assert_eq!(std::fs::read(&path).unwrap(), vec![b'n'; 3 * 4096]);
+        assert_eq!(names_in(&dir), ["a.bin"]);
+        let seen = seen.into_inner().unwrap();
+        assert_eq!((seen.first(), seen.last()), (Some(&(0, 3 * 4096)), Some(&(3 * 4096, 3 * 4096))));
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    /// Two windows save to one place at once: each writes its own file, and what stays is the
+    /// whole of one of them.
+    #[tokio::test]
+    async fn two_downloads_to_one_place_do_not_mix() {
+        let dir = test_dir("two");
+        let path = dir.join("a.bin");
+        for round in 0..20 {
+            // of different sizes, so each ends last in some rounds
+            let (a_chunks, b_chunks) = (8 + round % 5, 10 - round % 5);
+            let (a, b) = tokio::join!(write_download(&path, slow_body(b'a', a_chunks), 0, |_| {}), write_download(&path, slow_body(b'b', b_chunks), 0, |_| {}));
+            assert_eq!((a, b), (Ok(()), Ok(())));
+            let saved = std::fs::read(&path).unwrap();
+            assert!(saved == vec![b'a'; a_chunks * 4096] || saved == vec![b'b'; b_chunks * 4096], "round {round}: {} bytes, mixed or cut", saved.len());
+            assert_eq!(names_in(&dir), ["a.bin"], "no temporary file stays");
+        }
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    /// One of two downloads to a place breaks off: the other is saved whole, and the broken
+    /// one removes only its own temporary file.
+    #[tokio::test]
+    async fn a_failed_download_leaves_the_other_one_alone() {
+        let dir = test_dir("one-fails");
+        let path = dir.join("a.bin");
+        let broken = futures_util::stream::iter([Ok(vec![b'x'; 4096]), Err("reset".to_string())]);
+        let (bad, good) = tokio::join!(write_download(&path, broken, 0, |_| {}), write_download(&path, slow_body(b'g', 6), 0, |_| {}));
+        assert_eq!(bad.unwrap_err().code, "unreachable");
+        assert_eq!(good, Ok(()));
+        assert_eq!(std::fs::read(&path).unwrap(), vec![b'g'; 6 * 4096]);
+        assert_eq!(names_in(&dir), ["a.bin"]);
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[tokio::test]
+    async fn a_failed_or_dropped_download_leaves_what_was_there() {
+        let dir = test_dir("fails");
+        let path = dir.join("a.bin");
+        std::fs::write(&path, b"old").unwrap();
+        let broken = futures_util::stream::iter([Ok(vec![b'x'; 4096]), Err("reset".to_string())]);
+        assert_eq!(write_download(&path, broken, 0, |_| {}).await.unwrap_err().code, "unreachable");
+        assert_eq!(names_in(&dir), ["a.bin"]);
+        // dropped part-way (the window closed): a chunk came, then nothing
+        let stuck = futures_util::stream::iter([Ok::<_, String>(vec![b'x'; 4096])]).chain(futures_util::stream::pending());
+        assert!(tokio::time::timeout(Duration::from_millis(200), write_download(&path, stuck, 0, |_| {})).await.is_err());
+        assert_eq!(names_in(&dir), ["a.bin"]);
+        assert_eq!(std::fs::read(&path).unwrap(), b"old");
+        // a folder that is not there: nothing to write to
+        assert_eq!(write_download(&dir.join("none").join("a.bin"), slow_body(b'x', 1), 0, |_| {}).await.unwrap_err().code, "unwritable");
+        let _ = std::fs::remove_dir_all(&dir);
     }
 }

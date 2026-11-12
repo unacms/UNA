@@ -44,13 +44,18 @@ export const LANGUAGE_NAMES: Record<string, string> = { en: 'English', ru: 'Ру
 
 const KEY = 'una-desktop-language';
 
-export function isLanguageChoice(value: unknown): value is LanguageChoice {
-    return value === 'system' || (typeof value === 'string' && (LANGUAGES as readonly string[]).includes(value));
+/**
+ * The app's own copy of a language choice: 'system' or the entry of LANGUAGES that equals the
+ * value, undefined for anything else. What is kept (localStorage, Settings) is this copy, never
+ * the string that came in: a select's value or a stored string can be made to hold anything.
+ */
+export function knownLanguageChoice(value: unknown): LanguageChoice | undefined {
+    if (value === 'system') return 'system';
+    return LANGUAGES.find((code) => code === value);
 }
 
 export function savedLanguage(): LanguageChoice {
-    const value = readStored(KEY);
-    return isLanguageChoice(value) ? value : 'system';
+    return knownLanguageChoice(readStored(KEY)) ?? 'system';
 }
 
 /**
@@ -150,8 +155,9 @@ export function list(items: readonly string[], type: 'conjunction' | 'disjunctio
  * nothing changes.
  */
 export function chooseLanguage(choice: LanguageChoice, reload: () => void = () => window.location.reload()): boolean {
-    if (choice === savedLanguage()) return false;
-    writeStored(KEY, choice === 'system' ? null : choice);
+    const known = knownLanguageChoice(choice);
+    if (known === undefined || known === savedLanguage()) return false;
+    writeStored(KEY, known === 'system' ? null : known);
     reload();
     return true;
 }

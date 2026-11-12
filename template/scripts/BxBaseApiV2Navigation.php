@@ -572,8 +572,8 @@ class BxBaseApiV2Navigation
     public function target(array $aItem, $sLinkCode = '')
     {
         $aPage = $this->_pageOf($aItem['link']);
-        if ($aPage && ($i = strpos($sLinkCode, '#')) !== false)
-            $aPage['fragment'] = substr($sLinkCode, $i + 1);
+        if ($aPage && ($i = bx_mb_strpos($sLinkCode, '#')) !== false)
+            $aPage['fragment'] = get_mb_substr($sLinkCode, $i + 1, null);
         $aItem['viewer_id'] = (int)$this->_oReq->viewerId();
         $aItem['link_code'] = $sLinkCode;
 
@@ -711,13 +711,13 @@ class BxBaseApiV2Navigation
         if ($sLink === null || $sLink === '')
             return [];
         $sRoot = BX_DOL_URL_ROOT;
-        if (strncmp($sLink, $sRoot, strlen($sRoot)) !== 0)
+        if (!str_starts_with($sLink, $sRoot))
             return [];
-        $sRest = substr($sLink, strlen($sRoot));
+        $sRest = get_mb_substr($sLink, get_mb_len($sRoot), null);
         $sFragment = '';
-        if (($i = strpos($sRest, '#')) !== false) {
-            $sFragment = substr($sRest, $i + 1);
-            $sRest = substr($sRest, 0, $i);
+        if (($i = bx_mb_strpos($sRest, '#')) !== false) {
+            $sFragment = get_mb_substr($sRest, $i + 1, null);
+            $sRest = get_mb_substr($sRest, 0, $i);
         }
 
         try {

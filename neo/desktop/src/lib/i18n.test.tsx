@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import i18next from 'i18next';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
-import { chooseLanguage, isLanguageChoice, language, LANGUAGES, list, locale, num, resolveLanguage, savedLanguage, setLanguageForTest, t, tn } from './i18n';
+import { chooseLanguage, knownLanguageChoice, language, LANGUAGES, list, locale, num, resolveLanguage, savedLanguage, setLanguageForTest, t, tn } from './i18n';
 import { rich } from './i18n-rich';
 
 beforeAll(() => {
@@ -52,10 +52,19 @@ describe('the language', () => {
     it('takes only the system or a language it has as a choice', () => {
         expect(LANGUAGES).toContain('en');
         expect(LANGUAGES).toContain('ru');
-        expect(isLanguageChoice('system')).toBe(true);
-        expect(isLanguageChoice('ru')).toBe(true);
-        expect(isLanguageChoice('xx')).toBe(false);
-        expect(isLanguageChoice(null)).toBe(false);
+        expect(knownLanguageChoice('system')).toBe('system');
+        expect(knownLanguageChoice('ru')).toBe('ru');
+        expect(knownLanguageChoice('xx')).toBeUndefined();
+        expect(knownLanguageChoice('RU')).toBeUndefined();
+        expect(knownLanguageChoice(null)).toBeUndefined();
+    });
+
+    it('keeps nothing and loads nothing again for a choice that is not a language', () => {
+        const reload = vi.fn();
+        expect(chooseLanguage('xx', reload)).toBe(false);
+        expect(chooseLanguage('<script>', reload)).toBe(false);
+        expect(reload).not.toHaveBeenCalled();
+        expect(localStorage.length).toBe(0);
     });
 
     it('is kept, and the window is loaded again when it changes', () => {

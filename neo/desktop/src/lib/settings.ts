@@ -9,10 +9,10 @@
 import { invoke } from '@tauri-apps/api/core';
 import { useSyncExternalStore } from 'react';
 
-import { chooseLanguage, isLanguageChoice, type LanguageChoice, savedLanguage } from './i18n';
+import { chooseLanguage, knownLanguageChoice, type LanguageChoice, savedLanguage } from './i18n';
 import { inApp } from './native';
 import { readStoredJson, writeStoredJson } from './storage';
-import { applyTheme, isTheme, savedTheme, type Theme } from './theme';
+import { applyTheme, knownTheme, savedTheme, type Theme } from './theme';
 
 export type Settings = {
     theme: Theme;
@@ -39,11 +39,23 @@ export function defaultSettings(os: { mac: boolean; windows: boolean }): Setting
     return { theme: 'system', singleKeyShortcuts: true, osNotifications: true, closeToTray: os.mac || os.windows, sendWithCmdEnter: false, language: 'system', checkForUpdates: true };
 }
 
-/** A stored value of a setting, or undefined when it is not one (missing, of another type). */
+function knownBoolean(value: unknown): boolean | undefined {
+    if (value === true) return true;
+    if (value === false) return false;
+    return undefined;
+}
+
+/**
+ * A value of a setting, or undefined when it is not one (missing, of another type, a theme or
+ * language the app has not). What comes back is the app's own copy of the value (a literal, an
+ * entry of THEMES or LANGUAGES), so nothing that came from a form control or from storage is
+ * kept as it came.
+ */
 export function settingValue<K extends SettingKey>(key: K, value: unknown): Settings[K] | undefined {
-    if (key === 'theme') return (isTheme(value) ? value : undefined) as Settings[K] | undefined;
-    if (key === 'language') return (isLanguageChoice(value) ? value : undefined) as Settings[K] | undefined;
-    return (typeof value === 'boolean' ? value : undefined) as Settings[K] | undefined;
+    if (!KEYS.includes(key)) return undefined;
+    if (key === 'theme') return knownTheme(value) as Settings[K] | undefined;
+    if (key === 'language') return knownLanguageChoice(value) as Settings[K] | undefined;
+    return knownBoolean(value) as Settings[K] | undefined;
 }
 
 /** Where settings are kept: one key each. */
@@ -76,7 +88,11 @@ export function localStorageSettingsBackend(prefix = 'una-setting:'): SettingsBa
     return {
         get: async (key) => readStoredJson(prefix + key),
         // with nowhere to keep it, a setting lasts until the page goes
-        set: async (key, value) => writeStoredJson(prefix + key, value),
+        set: async (key, value) => {
+            const known = settingValue(key, value);
+            if (known === undefined) throw new TypeError(`Not a value of the setting ${key}`);
+            writeStoredJson(prefix + key, known);
+        },
     };
 }
 
@@ -121,9 +137,11 @@ export class SettingsStore {
 
     /** Change one setting: at once here, then kept. Rejects when it could not be kept. */
     async set<K extends SettingKey>(key: K, value: Settings[K]): Promise<void> {
-        if (this.value[key] === value) return;
-        this.replace({ ...this.value, [key]: value });
-        await this.backend.set(key, value);
+        const known = settingValue(key, value);
+        if (known === undefined) throw new TypeError(`Not a value of the setting ${key}`);
+        if (this.value[key] === known) return;
+        this.replace({ ...this.value, [key]: known });
+        await this.backend.set(key, known);
     }
 
     subscribe(listener: Listener): () => void {
@@ -166,8 +184,10 @@ export function chooseTheme(theme: Theme, store: SettingsStore = appSettings): P
 
 /** Choose the language of the app's words: kept in both places, then the window loads again in it. */
 export async function chooseAppLanguage(language: LanguageChoice, store: SettingsStore = appSettings): Promise<void> {
-    await store.set('language', language);
-    chooseLanguage(language);
+    const known = knownLanguageChoice(language);
+    if (known === undefined) throw new TypeError('Not a language of the app');
+    await store.set('language', known);
+    chooseLanguage(known);
 }
 
 /** The current settings, kept current. */

@@ -15,13 +15,13 @@ export type Theme = (typeof THEMES)[number];
 
 const KEY = 'una-desktop-theme';
 
-export function isTheme(value: unknown): value is Theme {
-    return typeof value === 'string' && (THEMES as readonly string[]).includes(value);
+/** The entry of THEMES that equals the value: the app's own copy, undefined for anything else. */
+export function knownTheme(value: unknown): Theme | undefined {
+    return THEMES.find((theme) => theme === value);
 }
 
 export function savedTheme(): Theme {
-    const value = readStored(KEY);
-    return isTheme(value) ? value : 'system';
+    return knownTheme(readStored(KEY)) ?? 'system';
 }
 
 /** Use a theme now (on <html> and the window) and remember it. */

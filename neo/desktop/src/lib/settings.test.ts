@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { defaultSettings, localStorageSettingsBackend, tauriSettingsBackend, type SettingKey, type SettingsBackend, settingValue, SettingsStore } from './settings';
+import { chooseAppLanguage, defaultSettings, localStorageSettingsBackend, tauriSettingsBackend, type SettingKey, type SettingsBackend, settingValue, SettingsStore } from './settings';
 
 function memory(initial: Partial<Record<SettingKey, unknown>> = {}): SettingsBackend & { data: Map<SettingKey, unknown> } {
     const data = new Map<SettingKey, unknown>(Object.entries(initial) as [SettingKey, unknown][]);
@@ -92,5 +92,38 @@ describe('settings', () => {
         const b = new SettingsStore(localStorageSettingsBackend('test:'), defaults);
         expect((await b.load()).osNotifications).toBe(false);
         localStorage.clear();
+    });
+
+    it('keeps no value that is not one of the setting: nothing changes and nothing is written', async () => {
+        localStorage.clear();
+        const backend = memory();
+        const store = new SettingsStore(backend, defaults);
+        await expect(store.set('language', 'klingon')).rejects.toThrow(TypeError);
+        await expect(store.set('theme', '<img>' as never)).rejects.toThrow(TypeError);
+        await expect(store.set('osNotifications', 'yes' as never)).rejects.toThrow(TypeError);
+        expect(store.current).toEqual(defaults);
+        expect(backend.data.size).toBe(0);
+
+        const local = localStorageSettingsBackend('test:');
+        await expect(local.set('language', '{"a":1}')).rejects.toThrow(TypeError);
+        await expect(local.set('nope' as never, true)).rejects.toThrow(TypeError);
+        expect(localStorage.length).toBe(0);
+        await local.set('language', 'ru');
+        await local.set('theme', 'dark');
+        await local.set('closeToTray', false);
+        expect(localStorage.getItem('test:language')).toBe('"ru"');
+        expect(localStorage.getItem('test:theme')).toBe('"dark"');
+        expect(localStorage.getItem('test:closeToTray')).toBe('false');
+        localStorage.clear();
+    });
+
+    it('chooses a language the app has, and refuses any other', async () => {
+        localStorage.clear();
+        const backend = memory();
+        const store = new SettingsStore(backend, defaults);
+        await expect(chooseAppLanguage('klingon', store)).rejects.toThrow(TypeError);
+        expect(backend.data.size).toBe(0);
+        expect(localStorage.length).toBe(0);
+        expect(store.current.language).toBe('system');
     });
 });

@@ -42,7 +42,7 @@ class BxCnvApiV2
      */
     public function apiV2NavigationTarget(array $aItem, array $aPage)
     {
-        if ($aItem['module'] !== $this->_oModule->getName() || strpos((string)($aItem['link_code'] ?? ''), 'r=convos/folder') === false)
+        if ($aItem['module'] !== $this->_oModule->getName() || bx_mb_strpos((string)($aItem['link_code'] ?? ''), 'r=convos/folder') === false)
             return null;
         return ['kind' => BxBaseApiV2Navigation::TARGET_SECTION, 'section' => 'conversations'];
     }
