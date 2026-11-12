@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sign-in methods under the form: the "or" between them. -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_sys_txt_auth_or"><![CDATA[или]]></string_add>
+</resources>

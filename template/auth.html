@@ -1,12 +1,20 @@
-<div class="sys-auth-block __class_container__ grid gap-2 mb-4">
+<bx_if:show_or>
+    <div class="sys-auth-or flex items-center gap-3 my-4 text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">
+        <span class="flex-1 h-px bg-gray-200 dark:bg-gray-700"></span>
+        <span>__text__</span>
+        <span class="flex-1 h-px bg-gray-200 dark:bg-gray-700"></span>
+    </div>
+</bx_if:show_or>
+<div class="sys-auth-block flex flex-col gap-2">
     <bx_repeat:buttons>
-        <div class="sys-auth __class__ flex">
-            <a class="group inline-flex items-center justify-start w-full px-4 py-2 border border-gray-300 dark:border-gray-700 shadow-sm hover:shadow-md text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 dark:hover:text-white hover:text-gray-800 bg-white dark:bg-gray-800 dark:hover:bg-gray-700 hover:bg-gray-50" href="__href__" <bx_if:show_onclick> onclick="__onclick__"</bx_if:show_onclick> title="__title_alt__">
-                <bx_if:show_icon>
-                    <span class="sys-auth-icon flex items-center justify-center h-5 w-5"><i class="sys-icon __icon__ sys-colored"></i></span>
-                </bx_if:show_icon>
-                <bx_if:show_title><span class="sys-auth-text ml-2 truncate">__title__</span></bx_if:show_title>
-            </a>
-        </div>
+        <a class="sys-auth __class__ bx-btn w-full justify-center" href="__href__" <bx_if:show_onclick> onclick="__onclick__"</bx_if:show_onclick>>
+            <bx_if:show_brand>
+                <span class="sys-auth-icon flex-none flex items-center justify-center h-5 w-5 ltr:mr-2 rtl:ml-2">__svg__</span>
+            </bx_if:show_brand>
+            <bx_if:show_icon>
+                <span class="sys-auth-icon flex-none flex items-center justify-center h-5 w-5 ltr:mr-2 rtl:ml-2"><i class="sys-icon __icon__"></i></span>
+            </bx_if:show_icon>
+            <span class="sys-auth-text truncate">__title__</span>
+        </a>
     </bx_repeat:buttons>
 </div>

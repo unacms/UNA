@@ -842,7 +842,6 @@ INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `or
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
-(@iCategoryId, 'site_login_social_compact', '_adm_stg_cpt_option_site_login_social_compact', 'on', 'checkbox', '', '', '', 1),
 (@iCategoryId, 'sys_a2a_enable', '_adm_stg_cpt_option_sys_a2a_enable', '', 'checkbox', '', '', '', 10),
 (@iCategoryId, 'sys_a2a_code', '_adm_stg_cpt_option_sys_a2a_code', '', 'code', '', '', '', 11);
 

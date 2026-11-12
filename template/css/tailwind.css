@@ -1973,12 +1973,6 @@
 
 
     /* Common elements: Auth */
-    .sys-auth-block {
-        @apply grid-cols-2;
-    }
-    .sys-auth-block.sys-auth-compact-container {
-        @apply grid-cols-4;
-    }
 
 
     /* Common elements: Votes */

@@ -57,57 +57,76 @@ class BxBaseServiceLogin extends BxDol
     /** 
      * @ref bx_system_general-member_auth_code "member_auth_code"
      */
-    public function serviceMemberAuthCode($aAuthTypes = array())
+    public function serviceMemberAuthCode($aAuthTypes = array(), $bSeparator = false)
     {
-        // The argument is ignored: a caller-supplied Style is unserialized and OnClick is written into the page.
+        // The first argument is ignored: a caller-supplied OnClick would be written into the page.
         $aAuthTypes = BxDolDb::getInstance()->fromCache('sys_objects_auths', 'getAll', 'SELECT * FROM `sys_objects_auths`');
 
-        $bCompact = getParam('site_login_social_compact') == 'on';
+        $oTemplate = BxDolTemplate::getInstance();
 
+        // One full-width button per sign-in method, its logo before its name. The buttons are plain: a provider's
+        // colours are in its logo, as the providers' sign-in guidelines ask.
         $aTmplButtons = array();
         foreach($aAuthTypes as $iKey => $aItems) {
-            $sTitle = _t($aItems['Title']);
+            $sIcon = !empty($aItems['Icon']) ? $aItems['Icon'] : '';
+            $sSvg = $this->_getAuthBrandIcon($sIcon);
 
             $aTmplButtons[] = array( 
-            	'class' => ($bCompact ? 'sys-auth-compact ' : '') . $aItems['Name'],
+                'class' => 'sys-auth-' . $aItems['Name'],
                 'href' => !empty($aItems['Link']) ? BX_DOL_URL_ROOT . $aItems['Link'] : 'javascript:void(0)',
-                'title_alt' => bx_html_attribute($sTitle),
+                'title' => _t($aItems['Title']),
                 'bx_if:show_onclick' => array(
                     'condition' => !empty($aItems['OnClick']),
                     'content' => array(
                         'onclick' => 'javascript:' . $aItems['OnClick']
                     )
                 ),
-                'bx_if:show_icon' => array(
-                    'condition' => !empty($aItems['Icon']),
+                'bx_if:show_brand' => array(
+                    'condition' => $sSvg !== '',
                     'content' => array(
-                        'icon' => $aItems['Icon']
+                        'svg' => $sSvg
                     )
                 ),
-                'bx_if:show_title' => array(
-                    'condition' => !$bCompact || empty($aItems['Icon']),
+                'bx_if:show_icon' => array(
+                    'condition' => $sSvg === '' && $sIcon !== '',
                     'content' => array(
-                		'title' => $sTitle
+                        'icon' => $sIcon
                     )
-                )
+                ),
             );
-            if ($aItems['Style'] != ""){
-                $aStyles = unserialize($aItems['Style']);
-                foreach($aStyles as $sKey => $aValues) {
-                    BxDolTemplate::getInstance()->addCssStyle('.'. $aItems['Name'] .' ' . $sKey, $aValues);
-                }
-            }
         }
 
-        if(empty($aTmplButtons) || !is_array($aTmplButtons))
+        if(empty($aTmplButtons))
+            return '';
+
+        return $oTemplate->parseHtmlByName('auth.html', array(
+            'bx_if:show_or' => array(
+                'condition' => (bool)$bSeparator,
+                'content' => array(
+                    'text' => _t('_sys_txt_auth_or')
+                )
+            ),
+            'bx_repeat:buttons' => $aTmplButtons,
+        ));
+    }
+
+    /**
+     * The logo of a sign-in method whose icon is a brand ("fab google", "fab facebook-square" ...): the icon set
+     * in use may have no brand glyphs (Lucide has none), so brands are drawn from template/images/icons/auth-<name>.svg.
+     * @return string inline SVG, or an empty string when the icon isn't a brand or has no logo file
+     */
+    protected function _getAuthBrandIcon($sIcon)
+    {
+        if(!preg_match('/^fab ([a-z0-9-]+)$/', trim($sIcon), $aMatch))
             return '';
 
         $oTemplate = BxDolTemplate::getInstance();
-        $oTemplate->addCss(array('auth.css'));
-        return $oTemplate->parseHtmlByName('auth.html', array(
-            'bx_repeat:buttons' => $aTmplButtons,
-            'class_container' => ($bCompact ? 'sys-auth-compact-container' : '')
-        ));
+        $sName = 'auth-' . $aMatch[1] . '.svg';
+        if(!$oTemplate->getIconPath($sName))
+            return '';
+
+        $sSvg = $oTemplate->getIconContent($sName);
+        return $sSvg ? trim(preg_replace('/<!--.*?-->/s', '', $sSvg)) : '';
     }
 
     /**
@@ -237,7 +256,7 @@ class BxBaseServiceLogin extends BxDol
 
         $aTmplVarsAuth = [];
         if(strpos($sParams, 'no_auth_buttons') === false)
-            $aTmplVarsAuth['content'] = $this->serviceMemberAuthCode();
+            $aTmplVarsAuth['content'] = $this->serviceMemberAuthCode([], !empty($aTmplVarsForm)); // under the form, after an "or"
 
         $aTmplVarsJoin = [];
         if(strpos($sParams, 'no_join_text') === false)
