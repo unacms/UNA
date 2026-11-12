@@ -318,4 +318,39 @@ describe('pasting', () => {
         await waitFor(() => expect(onHtml).toHaveBeenLastCalledWith('<p><img src="https://community.example/storage.php?o=sys_images_editor&amp;f=1.png" width="320" height="200"></p>', ''));
         expect(uploadInline.mock.calls[0]![0]).toMatchObject({ name: 'shot.png', kind: 'image' });
     });
+
+    const HELD = 'Pictures can’t be added while the text is being sent.';
+
+    it('makes nothing ready of a picture pasted while the text is being sent, and says why', async () => {
+        const announce = vi.fn();
+        const base = uploader();
+        const fromFiles = vi.fn(base.fromFiles);
+        const uploadInline = vi.fn(async (_file: Picked) => ({ src: 'https://community.example/1.png' }));
+        render(<Box mode="full" label="Text" readOnly announce={announce} images={{ uploader: { ...base, fromFiles }, uploadInline }} />, { wrapper: wrapper(fakeApi([])) });
+        pasteFiles([png()]);
+        await waitFor(() => expect(announce).toHaveBeenCalledWith(HELD));
+        await act(async () => {});
+        // nothing is staged: the app keeps no bytes of a picture it refused
+        expect(fromFiles).not.toHaveBeenCalled();
+        expect(uploadInline).not.toHaveBeenCalled();
+    });
+
+    it('releases a pasted picture made ready while the text began to be sent', async () => {
+        const announce = vi.fn();
+        const base = uploader();
+        let ready: (staging: Staging) => void = () => {};
+        const staged: Picked = { handle: 'h1', name: 'shot.png', size: 1, mime: 'image/png', kind: 'image' };
+        const fromFiles = vi.fn(() => new Promise<Staging>((resolve) => (ready = resolve)));
+        const release = vi.fn();
+        const uploadInline = vi.fn(async (_file: Picked) => ({ src: 'https://community.example/1.png' }));
+        const images = { uploader: { ...base, fromFiles, release }, uploadInline };
+        const { rerender } = render(<Box mode="full" label="Text" announce={announce} images={images} />, { wrapper: wrapper(fakeApi([])) });
+        pasteFiles([png()]);
+        expect(fromFiles).toHaveBeenCalledTimes(1);
+        rerender(<Box mode="full" label="Text" readOnly announce={announce} images={images} />);
+        await act(async () => ready({ files: [staged], refused: [] }));
+        expect(release).toHaveBeenCalledWith(staged);
+        expect(uploadInline).not.toHaveBeenCalled();
+        expect(announce).toHaveBeenCalledWith(HELD);
+    });
 });

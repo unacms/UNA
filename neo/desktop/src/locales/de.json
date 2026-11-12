@@ -287,6 +287,8 @@
     "Give it a title.": "Geben Sie einen Titel ein.",
     "Write what it is about.": "Schreiben Sie, worum es geht.",
     "It was not saved": "Nicht gespeichert",
+    "It was not saved: {{reason}}": "Nicht gespeichert: {{reason}}",
+    "the site did not answer in time": "die Website hat nicht rechtzeitig geantwortet",
     "The discussion stays as it was.": "Die Diskussion bleibt unverändert.",
     "Edit the discussion": "Diskussion bearbeiten",
     "Pictures can’t be added to a discussion’s text here.": "Bilder können dem Text einer Diskussion hier nicht hinzugefügt werden.",
@@ -296,6 +298,8 @@
     "{{bold}}, {{italic}} and {{underline}} format the selected words, {{link}} adds a link.": "{{bold}}, {{italic}} und {{underline}} formatieren die markierten Wörter, {{link}} fügt einen Link ein.",
     "Each line is a paragraph; links and #hashtags are kept as typed.": "Jede Zeile ist ein Absatz; Links und #Hashtags bleiben wie eingegeben erhalten.",
     "This text has links or formatting, so it is edited on the network’s site.": "Dieser Text enthält Links oder Formatierungen und wird daher auf der Website des Netzwerks bearbeitet.",
+    "This text has formatting that editing here would remove, so it is edited on the network’s site.": "Dieser Text enthält Formatierungen, die beim Bearbeiten hier verloren gingen, und wird daher auf der Website des Netzwerks bearbeitet.",
+    "This summary ends with “…”, so the app may have only its start: it is edited on the network’s site.": "Diese Zusammenfassung endet mit „…“, die App hat also vielleicht nur ihren Anfang: Sie wird auf der Website des Netzwerks bearbeitet.",
     "Active": "Aktiv",
     "New": "Neu",
     "No replies": "Keine Antworten",
@@ -2066,5 +2070,6 @@
     "The network’s API answers again": "Die API des Netzwerks antwortet wieder",
     "{{site}} has API v2 (a preview) turned off. Its administrator can turn it on in Studio > API > Settings.": "Auf {{site}} ist API v2 (eine Vorschau) ausgeschaltet. Der Administrator der Website kann sie unter Studio > API > Settings einschalten.",
     "{{site}} has its API turned off": "Auf {{site}} ist die API ausgeschaltet",
-    "Not a network the app is signed in to": "Die App ist bei diesem Netzwerk nicht angemeldet"
+    "Not a network the app is signed in to": "Die App ist bei diesem Netzwerk nicht angemeldet",
+    "Pictures can’t be added while the text is being sent.": "Während der Text gesendet wird, können keine Bilder hinzugefügt werden."
 }

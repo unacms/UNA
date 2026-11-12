@@ -637,6 +637,29 @@ then send an event to `bx_timeline_0`.
   the editor (`data-own-keys`, `lib/shortcuts.ts`). Without a text box, focus goes to "Who can
   see it" (or the note, in a group). A post's text can't be emptied here: Save is off and says
   so, since the site keeps the old text.
+- Editing a post of the Posts module (`src/features/posts/edit-post.tsx`): "Edit Post" in the
+  post's More menu, for who may (`viewer.can_edit`) and only once the site has answered in this
+  view (not on a list's row, which has no text, nor on a copy kept from before, which may be
+  older than the site's), puts a form in place of the post with the new post form's fields that
+  `PATCH /posts/{id}` takes (`PostTextFields` and `PostCategoryField` of `new-post.tsx`): title,
+  summary, text (the rich editor on the post's HTML), category, and who can see it for a post
+  outside a group whose audience the site offers. The cover, photos and videos change on the
+  site, so the form has no field for them. The API keeps no revisions, so the form never sends
+  what it could not have whole. A text the editor would lose something of (`isEditableText`: a
+  heading of another level, a table, an iframe or a video, a colour or another style) is shown
+  as it reads with a note that it is edited on the site, and is never sent. `Post.summary` is
+  not always the author's: the API cuts it at 300 characters with a "…" and answers with the
+  start of the text when there is none (`postSummary`). One that is the start of the text
+  starts the field empty; one that was cut is shown without a field and is never sent. The
+  post's own category stays in the list when the site no longer offers it, and none is
+  required. Only what changed is sent, and only that is checked (a post with a short title can
+  change its category; a text of pictures only is a text, as on the site), with an
+  Idempotency-Key that is used again after an answer that never came; a field a 422 names says
+  why under it. Cmd/Ctrl+Enter saves, Esc or Cancel puts the form away (asking first when that
+  throws changes away), focus goes back to More and "Post saved" is announced. Saved, the
+  post's view has the answer, its rows in the lists take it (as lists have a post: without its
+  text), and the Posts lists, the feeds and its feed item are read again. Like the new post
+  form it keeps no draft.
 
 ## Groups
 

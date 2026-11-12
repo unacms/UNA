@@ -287,6 +287,8 @@
     "Give it a title.": "Ponle un título.",
     "Write what it is about.": "Escribe de qué trata.",
     "It was not saved": "No se guardó",
+    "It was not saved: {{reason}}": "No se guardó: {{reason}}",
+    "the site did not answer in time": "el sitio no respondió a tiempo",
     "The discussion stays as it was.": "La discusión se queda como estaba.",
     "Edit the discussion": "Editar la discusión",
     "Pictures can’t be added to a discussion’s text here.": "Aquí no se pueden añadir imágenes al texto de una discusión.",
@@ -296,6 +298,8 @@
     "{{bold}}, {{italic}} and {{underline}} format the selected words, {{link}} adds a link.": "{{bold}}, {{italic}} y {{underline}} dan formato a las palabras seleccionadas; {{link}} añade un enlace.",
     "Each line is a paragraph; links and #hashtags are kept as typed.": "Cada línea es un párrafo; los enlaces y los #hashtags se conservan tal como se escriben.",
     "This text has links or formatting, so it is edited on the network’s site.": "Este texto tiene enlaces o formato, así que se edita en el sitio de la red.",
+    "This text has formatting that editing here would remove, so it is edited on the network’s site.": "Este texto tiene formato que se perdería al editarlo aquí, así que se edita en el sitio de la red.",
+    "This summary ends with “…”, so the app may have only its start: it is edited on the network’s site.": "Este resumen termina en «…», así que la aplicación puede tener solo su principio: se edita en el sitio de la red.",
     "Active": "Con actividad",
     "New": "Novedades",
     "No replies": "Sin respuestas",
@@ -2182,5 +2186,6 @@
     "The network’s API answers again": "La API de la red vuelve a responder",
     "{{site}} has API v2 (a preview) turned off. Its administrator can turn it on in Studio > API > Settings.": "{{site}} tiene la API v2 (una versión preliminar) desactivada. Su administrador puede activarla en Studio > API > Settings.",
     "{{site}} has its API turned off": "{{site}} tiene la API desactivada",
-    "Not a network the app is signed in to": "La aplicación no ha iniciado sesión en esta red"
+    "Not a network the app is signed in to": "La aplicación no ha iniciado sesión en esta red",
+    "Pictures can’t be added while the text is being sent.": "No se pueden añadir imágenes mientras se envía el texto."
 }
