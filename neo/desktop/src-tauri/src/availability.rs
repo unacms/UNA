@@ -10,21 +10,26 @@
 //! problem and never sent (api.rs), but for one every `RECHECK`, which finds out when the API is
 //! back; the sync poll keeps asking at its usual interval (sync.rs) and the sockets wait
 //! (realtime.rs). Any other answer of the API clears it. Every change is told to the windows
-//! (`EVENT`: `{ site, code }`, the code null once the API answers again), which show it and load
-//! again what failed (src/lib/api-availability.ts).
+//! (`EVENT`: `{ site, code, seq }`, the code null once the API answers again), which show it and
+//! load again what failed (src/lib/api-availability.ts).
+//!
+//! The changes are numbered (`seq`, counted under the lock that makes them). Two answers taken
+//! on two threads are told after the lock is let go, so in either order, and what a command
+//! answers reaches the page by another way than an event: the number is how the page knows
+//! which is the later, and it leaves the older (`Standing`).
 
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::json;
 use tauri::State;
 
 use crate::auth::AuthState;
 use crate::i18n::{tr, tr_vars};
 
-/// The windows' event with each change: `{ site, code }`.
+/// The windows' event with each change: `{ site, code, seq }`.
 pub const EVENT: &str = "api-availability";
 
 /// API v2 (a preview) is turned off on the site.
@@ -85,13 +90,35 @@ struct Off {
     asked: Instant,
 }
 
-type Listener = Arc<dyn Fn(&str, Option<&'static str>) + Send + Sync>;
+/// How a site stands for the page: the code while its API is off, and how many changes there
+/// had been when that was read (the number of the last one, of any site).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub struct Standing {
+    pub code: Option<&'static str>,
+    pub seq: u64,
+}
+
+type Listener = Arc<dyn Fn(&str, Option<&'static str>, u64) + Send + Sync>;
+
+#[derive(Default)]
+struct Known {
+    off: HashMap<String, Off>,
+    /// The number of the last change.
+    seq: u64,
+}
+
+impl Known {
+    fn changed(&mut self) -> u64 {
+        self.seq += 1;
+        self.seq
+    }
+}
 
 /// The sites that said their API is off (part of `AuthState`, so it is at hand wherever a
 /// request is sent).
 #[derive(Default)]
 pub struct Availability {
-    off: Mutex<HashMap<String, Off>>,
+    known: Mutex<Known>,
     listener: Mutex<Option<Listener>>,
 }
 
@@ -100,25 +127,32 @@ fn key(site: &str) -> &str {
 }
 
 impl Availability {
-    fn lock(&self) -> std::sync::MutexGuard<'_, HashMap<String, Off>> {
-        self.off.lock().unwrap_or_else(|e| e.into_inner())
+    fn lock(&self) -> std::sync::MutexGuard<'_, Known> {
+        self.known.lock().unwrap_or_else(|e| e.into_inner())
     }
 
-    /// Who hears each change (lib.rs: the windows, the sync poll and the sockets).
-    pub fn listen(&self, listener: impl Fn(&str, Option<&'static str>) + Send + Sync + 'static) {
+    /// Who hears each change, with its number (lib.rs: the windows, the sync poll and the
+    /// sockets). Not under the lock, so two changes may be heard in either order.
+    pub fn listen(&self, listener: impl Fn(&str, Option<&'static str>, u64) + Send + Sync + 'static) {
         *self.listener.lock().unwrap_or_else(|e| e.into_inner()) = Some(Arc::new(listener));
     }
 
-    fn tell(&self, site: &str, code: Option<&'static str>) {
+    fn tell(&self, site: &str, code: Option<&'static str>, seq: u64) {
         let listener = self.listener.lock().unwrap_or_else(|e| e.into_inner()).clone();
         if let Some(listener) = listener {
-            listener(key(site), code);
+            listener(key(site), code, seq);
         }
     }
 
     /// What the site said of its API, when it said it is off.
     pub fn code(&self, site: &str) -> Option<&'static str> {
-        self.lock().get(key(site)).map(|off| off.code)
+        self.lock().off.get(key(site)).map(|off| off.code)
+    }
+
+    /// The same for the page, with the number of the last change: read as one.
+    pub fn standing(&self, site: &str) -> Standing {
+        let known = self.lock();
+        Standing { code: known.off.get(key(site)).map(|off| off.code), seq: known.seq }
     }
 
     /// The code to answer a request of the page with instead of sending it: the site is off and
@@ -129,8 +163,8 @@ impl Availability {
     }
 
     fn held_back_at(&self, site: &str, now: Instant) -> Option<&'static str> {
-        let mut off = self.lock();
-        let entry = off.get_mut(key(site))?;
+        let mut known = self.lock();
+        let entry = known.off.get_mut(key(site))?;
         if now.saturating_duration_since(entry.asked) >= RECHECK {
             entry.asked = now;
             return None;
@@ -140,17 +174,24 @@ impl Availability {
 
     /// The site said its API is off.
     pub fn turned_off(&self, site: &str, code: &'static str) {
-        let before = self.lock().insert(key(site).to_string(), Off { code, asked: Instant::now() }).map(|off| off.code);
-        if before != Some(code) {
-            self.tell(site, Some(code));
+        let seq = {
+            let mut known = self.lock();
+            let before = known.off.insert(key(site).to_string(), Off { code, asked: Instant::now() }).map(|off| off.code);
+            (before != Some(code)).then(|| known.changed())
+        };
+        if let Some(seq) = seq {
+            self.tell(site, Some(code), seq);
         }
     }
 
     /// The site's API answered something else: it is on, as far as is known.
     pub fn answers(&self, site: &str) {
-        let was = self.lock().remove(key(site)).is_some();
-        if was {
-            self.tell(site, None);
+        let seq = {
+            let mut known = self.lock();
+            known.off.remove(key(site)).is_some().then(|| known.changed())
+        };
+        if let Some(seq) = seq {
+            self.tell(site, None, seq);
         }
     }
 
@@ -202,21 +243,22 @@ pub async fn ask(site: &str) -> Result<(u16, Vec<u8>), String> {
 /// off. A 503 that says nothing (maintenance, a proxy) leaves a site held as off as it was, and
 /// that is what is answered. `Err` when it could not be reached: nothing is known and nothing
 /// changes.
-pub async fn probe(availability: &Availability, site: &str) -> Result<Option<&'static str>, String> {
+pub async fn probe(availability: &Availability, site: &str) -> Result<Standing, String> {
     let (status, body) = ask(site).await?;
     availability.saw(site, status, &body);
-    Ok(availability.code(site))
+    Ok(availability.standing(site))
 }
 
-/// What is known of a network's API, for a page that (re)loads: the code while it is off.
+/// What is known of a network's API, for a page that (re)loads: the code while it is off, and
+/// the number of the last change (the page leaves this answer when it heard a later one).
 #[tauri::command]
-pub fn api_availability(auth: State<'_, AuthState>, site_url: String) -> Option<&'static str> {
-    auth.availability.code(&site_url)
+pub fn api_availability(auth: State<'_, AuthState>, site_url: String) -> Standing {
+    auth.availability.standing(&site_url)
 }
 
 /// The page's Retry: ask the site now. Only a network signed in to is asked.
 #[tauri::command]
-pub async fn api_check(auth: State<'_, AuthState>, site_url: String) -> Result<Option<&'static str>, String> {
+pub async fn api_check(auth: State<'_, AuthState>, site_url: String) -> Result<Standing, String> {
     if !auth.summaries().iter().any(|s| key(s.site_url()) == key(&site_url)) {
         return Err(tr("Not a network the app is signed in to"));
     }
@@ -264,7 +306,7 @@ mod tests {
     fn heard(availability: &Availability) -> Heard {
         let heard = Arc::new(Mutex::new(Vec::new()));
         let kept = heard.clone();
-        availability.listen(move |site, code| kept.lock().unwrap().push((site.to_string(), code)));
+        availability.listen(move |site, code, _| kept.lock().unwrap().push((site.to_string(), code)));
         heard
     }
 
@@ -290,6 +332,35 @@ mod tests {
         assert_eq!(availability.code(SITE), None);
 
         assert_eq!(*heard.lock().unwrap(), vec![(SITE.to_string(), Some(V2_OFF)), (SITE.to_string(), Some(API_OFF)), (SITE.to_string(), None)]);
+    }
+
+    #[test]
+    fn each_change_has_the_next_number_and_an_answer_says_the_last() {
+        let availability = Availability::default();
+        let numbers = Arc::new(Mutex::new(Vec::new()));
+        let kept = numbers.clone();
+        availability.listen(move |site, code, seq| kept.lock().unwrap().push((site.to_string(), code, seq)));
+        assert_eq!(availability.standing(SITE), Standing { code: None, seq: 0 });
+
+        availability.turned_off(SITE, V2_OFF);
+        // read while it is off: older than the change that follows, which is how the page knows
+        let read_while_off = availability.standing("https://community.example/");
+        assert_eq!(read_while_off, Standing { code: Some(V2_OFF), seq: 1 });
+        // said again, a maintenance page: no change, no number
+        availability.turned_off(SITE, V2_OFF);
+        availability.saw(SITE, 503, b"<html>");
+        assert_eq!(availability.standing(SITE).seq, 1);
+
+        availability.turned_off("https://other.example", API_OFF);
+        availability.answers(SITE);
+        availability.answers(SITE);
+        assert_eq!(availability.standing(SITE), Standing { code: None, seq: 3 });
+        assert!(read_while_off.seq < 3);
+        assert_eq!(
+            *numbers.lock().unwrap(),
+            vec![(SITE.to_string(), Some(V2_OFF), 1), ("https://other.example".to_string(), Some(API_OFF), 2), (SITE.to_string(), None, 3)]
+        );
+        assert_eq!(serde_json::to_value(read_while_off).unwrap(), json!({ "code": V2_OFF, "seq": 1 }));
     }
 
     #[test]
@@ -335,11 +406,11 @@ mod tests {
         let url = site(vec![answer("503 Service Unavailable", V2_OFF_BODY), answer("503 Service Unavailable", "down"), answer("200 OK", "{}")]).await;
         let availability = Availability::default();
         let heard = heard(&availability);
-        assert_eq!(probe(&availability, &url).await, Ok(Some(V2_OFF)));
+        assert_eq!(probe(&availability, &url).await, Ok(Standing { code: Some(V2_OFF), seq: 1 }));
         // a 503 that says nothing: still off, as last heard, and that is the answer
-        assert_eq!(probe(&availability, &url).await, Ok(Some(V2_OFF)));
+        assert_eq!(probe(&availability, &url).await, Ok(Standing { code: Some(V2_OFF), seq: 1 }));
         assert_eq!(availability.code(&url), Some(V2_OFF));
-        assert_eq!(probe(&availability, &url).await, Ok(None));
+        assert_eq!(probe(&availability, &url).await, Ok(Standing { code: None, seq: 2 }));
         assert_eq!(availability.code(&url), None);
         assert_eq!(*heard.lock().unwrap(), vec![(url.clone(), Some(V2_OFF)), (url.clone(), None)]);
     }

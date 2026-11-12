@@ -138,10 +138,11 @@ pub fn run() {
                 log::error!("tray: {e}");
             }
             // a site's API turned off, or answering again (availability.rs): every window hears
-            // it, and the poll and the sockets look again as soon as it is back
+            // it, with the change's number (two may be told out of order; the page keeps the
+            // later), and the poll and the sockets look again as soon as it is back
             let handle = app.handle().clone();
-            app.state::<auth::AuthState>().availability.listen(move |site, code| {
-                if let Err(e) = handle.emit(availability::EVENT, serde_json::json!({ "site": site, "code": code })) {
+            app.state::<auth::AuthState>().availability.listen(move |site, code, seq| {
+                if let Err(e) = handle.emit(availability::EVENT, serde_json::json!({ "site": site, "code": code, "seq": seq })) {
                     log::error!("api availability event: {e}");
                 }
                 if code.is_none() {
