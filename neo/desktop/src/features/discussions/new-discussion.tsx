@@ -1,10 +1,13 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { type FormEvent, useEffect, useId, useState } from 'react';
+import { type FormEvent, useEffect, useId, useRef, useState } from 'react';
 
 import { problemMessage, type Schema } from 'una-api';
 
 import { useApp } from '../../lib/context';
+import { errorMessage } from '../../lib/errors';
+import { heldSelect } from '../../lib/held-select';
 import { t } from '../../lib/i18n';
+import { idempotencyKeyFor, type IdempotencySlot, settleIdempotency } from '../../lib/idempotency';
 import { BODY_HTML_FOR_COMMENTS_AND_DISCUSSIONS } from '../../lib/rich-html';
 import { useDraft, useDraftKey } from '../../lib/drafts';
 import { useNavigation } from '../../lib/navigation';
@@ -33,7 +36,10 @@ const isAudience = (v: unknown): v is Audience => AUDIENCES.some((a) => a.value 
  * lasting draft (lib/drafts.ts, one per profile and group), so closing the pane, going elsewhere
  * or quitting throws nothing away; started, it becomes the discussion, and the lists show it.
  * While a picture pasted or dropped in the text is uploading, Start discussion is held and says
- * why: started then, it would go without the picture.
+ * why: started then, it would go without the picture. While it is being sent the form takes no
+ * change (what was typed then would not be in the discussion, and the form starts over once it
+ * is), for as long as the site takes to answer (a start that was stopped at a time limit and
+ * sent again could make the discussion twice); it takes them again when it was not started.
  */
 export function NewDiscussion({ groupId }: { groupId?: string }) {
     const { api } = useApp();
@@ -56,6 +62,7 @@ export function NewDiscussion({ groupId }: { groupId?: string }) {
     const [fieldError, setFieldError] = useState<FieldError | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [sending, setSending] = useState(false);
+    const sent = useRef<IdempotencySlot['current']>(null);
 
     // the lasting draft, once read; another group starts over with its own
     const draftKey = useDraftKey(groupId ? `discussion-new:${groupId}` : 'discussion-new');
@@ -105,7 +112,18 @@ export function NewDiscussion({ groupId }: { groupId?: string }) {
         const from = history.current;
         setSending(true);
         setError(null);
-        const result = await api.POST('/discussions', { body });
+        // no time limit, unlike a save of the edit form: a discussion the site is still making would
+        // be said to be "not started", and started again changed (another key) it would be there twice
+        let result;
+        try {
+            result = await api.POST('/discussions', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/discussions', body]) } }, body });
+        } catch (err) {
+            // no answer came: the key stays, so starting it again gets the site's answer to this one
+            setSending(false);
+            setError(t('The discussion was not started: {{reason}}', { reason: errorMessage(err) }));
+            return;
+        }
+        settleIdempotency(sent, result.response.status);
         if (result.error !== undefined || !result.data) {
             setSending(false);
             setError(problemMessage(result.error, t('The discussion was not started')));
@@ -145,11 +163,11 @@ export function NewDiscussion({ groupId }: { groupId?: string }) {
                         }}
                         noValidate
                     >
-                        <DiscussionFields id={id} value={value} onChange={setValue} categories={categories} error={fieldError} autoFocus images={images} />
+                        <DiscussionFields id={id} value={value} onChange={(change) => (sending ? undefined : setValue(change))} held={sending} categories={categories} error={fieldError} autoFocus images={images} />
                         {groupId ? null : (
                             <div className="settings-field">
                                 <label htmlFor={`${id}-audience`}>{t('Who can see it')}</label>
-                                <select id={`${id}-audience`} value={audience} onChange={(e) => setAudience(e.target.value as Audience)}>
+                                <select id={`${id}-audience`} value={audience} {...heldSelect(sending, (e) => setAudience(e.target.value as Audience))}>
                                     {AUDIENCES.map((a) => (
                                         <option key={a.value} value={a.value}>
                                             {a.label}

@@ -5,6 +5,7 @@ import { problemMessage, type Schema } from 'una-api';
 import { type RichEditorHandle } from '../../components/rich-editor/rich-editor';
 import { survivesEditor } from '../../components/rich-editor/round-trip';
 import { normalizeHtml } from '../../components/rich-editor/schema';
+import { SAVE_ANSWER_MS } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
 import { t } from '../../lib/i18n';
@@ -110,13 +111,6 @@ export function postChanges(initial: PostValue, value: PostValue, editable: Post
 export function postChangesBlocker(body: PostChanges, plain: string): FieldError | null {
     return (typeof body.title === 'string' ? titleBlocker(body.title) : null) ?? (typeof body.summary === 'string' ? summaryBlocker(body.summary) : null) ?? (typeof body.body_html === 'string' ? textBlocker(plain, body.body_html) : null);
 }
-
-/**
- * How long a save waits for the site's answer. The API client gives up only on a site it can't
- * reach (api.rs CONNECT_TIMEOUT), and whatever would leave the form waits for the save, so one
- * the site never answers is stopped here: it is then not saved, as far as the app knows.
- */
-export const SAVE_ANSWER_MS = 60_000;
 
 /**
  * A post of the Posts module edited in place: the fields of the new post form that

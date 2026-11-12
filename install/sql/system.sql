@@ -4970,6 +4970,8 @@ CREATE TABLE IF NOT EXISTS `sys_objects_menu` (
   `set_name` varchar(64) NOT NULL,
   `module` varchar(32) NOT NULL,
   `template_id` int(11) NOT NULL,
+  `button_style` varchar(16) NOT NULL DEFAULT '',
+  `button_size` varchar(16) NOT NULL DEFAULT '',
   `config_api` text NOT NULL,
   `persistent` tinyint(4) NOT NULL DEFAULT '0',
   `cache` enum('off','guest','global','per_user','per_acl') NOT NULL DEFAULT 'off',

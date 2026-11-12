@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, createEvent, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -7,20 +7,21 @@ import { createUnaApi, type Schema, type UnaApi } from 'una-api';
 
 import { ActivityCard } from '../../components/activity-card';
 import { MenuHost } from '../../components/menu-popover';
-import { ago } from '../../lib/api';
+import { ago, SAVE_ANSWER_MS } from '../../lib/api';
 import { AnnounceContext } from '../../lib/announce';
 import { AppContext, type AppContextValue } from '../../lib/context';
 import { RouterProvider, useRoute } from '../../lib/navigation';
 import { opensInWindow } from '../../lib/open-in-window';
 import { parseRoute, type Route, RouteHistory, routeToPath } from '../../lib/router';
 import { setSiteModules } from '../../lib/site-modules';
+import type { Uploader } from '../../lib/uploads';
 import { contextTabs, tabLabel } from '../groups/group-view';
-import { EditPost, isEditableText, mayBeCutSummary, postChanges, postChangesBlocker, postSummary, postValue, SAVE_ANSWER_MS } from './edit-post';
+import { EditPost, isEditableText, mayBeCutSummary, postChanges, postChangesBlocker, postSummary, postValue } from './edit-post';
 import { NewPost, newPostBlocker, newPostFieldError } from './new-post';
 import { Posts, PostsOfTab } from './post-list';
 import { PostPane } from './post-pane';
 import { activityDetail, type Post, postKey, postListKey, postRowText, readingText, stateText } from './posts';
-import { setRichText } from '../../components/rich-editor/test-utils';
+import { richText, setRichText, typeRich } from '../../components/rich-editor/test-utils';
 import { docToHtml } from '../../lib/rich-html';
 
 const lily: Schema<'Profile'> = { id: '4', kind: 'person', module: 'bx_persons', display_name: 'Lily Carter', status: 'active', about: '', created_at: '2026-01-01T00:00:00Z' };
@@ -66,7 +67,7 @@ type Call = { method: string; path: string; query: string; body: string; key?: s
 
 type Answer = { status: number; body?: unknown } | 'lost' | null;
 
-function site(answer: (c: Call) => Answer | Promise<Answer> = () => null) {
+function site(answer: (c: Call) => Answer | Promise<Answer> = () => null, groups: unknown[] = []) {
     const calls: Call[] = [];
     const api: UnaApi = createUnaApi({
         siteUrl: 'https://community.example',
@@ -78,7 +79,7 @@ function site(answer: (c: Call) => Answer | Promise<Answer> = () => null) {
             // a request that is stopped fails as fetch has it, answered or not
             const stopped = new Promise<never>((_, reject) => request.signal.addEventListener('abort', () => reject(request.signal.reason as Error), { once: true }));
             stopped.catch(() => {});
-            const a = c.path === '/' ? { status: 200, body: { modules: MODULES } } : c.path === '/me/groups' || c.path === '/me/spaces' ? { status: 200, body: [] } : await Promise.race([answer(c), stopped]);
+            const a = c.path === '/' ? { status: 200, body: { modules: MODULES } } : c.path === '/me/groups' ? { status: 200, body: groups } : c.path === '/me/spaces' ? { status: 200, body: [] } : await Promise.race([answer(c), stopped]);
             if (a === 'lost') throw new TypeError('Load failed');
             if (!a) return stopped;
             return a.body === undefined ? new Response(null, { status: a.status }) : new Response(JSON.stringify(a.body), { status: a.status, headers: { 'Content-Type': 'application/json' } });
@@ -457,6 +458,260 @@ describe('New post', () => {
         expect(JSON.parse(calls.find((c) => c.method === 'POST')?.body ?? '{}').category_id).toBe('2');
         expect((await screen.findByRole('alert')).textContent).toBe('A post needs text.');
         expect(document.activeElement).toBe(screen.getByRole('textbox', { name: 'Text' }));
+    });
+    it('takes no change while it is being sent, and takes them again with what was typed when it was not sent', async () => {
+        setSiteModules(MODULES);
+        const first = later();
+        let posts = 0;
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/categories') return { status: 200, body: [{ id: '1', slug: '1', name: 'Animals & Pets' }, { id: '2', slug: '2', name: 'Architecture' }] };
+            if (c.path === '/posts' && c.method === 'POST') return ++posts === 1 ? first.answer : { status: 201, body: post({ id: '60', title: 'Notes from the meetup' }) };
+            return null;
+        });
+        const pick = vi.fn(async () => ({ files: [{ handle: 'h-cover', name: 'cover.jpg', size: 100, mime: 'image/jpeg', kind: 'image' as const }], refused: [] }));
+        const uploader: Uploader = {
+            pick,
+            fromFiles: async () => ({ files: [], refused: [] }),
+            fromPaths: async () => ({ files: [], refused: [] }),
+            upload: async () => ({ id: '91', kind: 'image', mime: 'image/jpeg', size: 100, state: 'ready', original_name: 'cover.jpg', url: '', download_url: '', variants: {}, width: 4, height: 3 }),
+            cancel: () => {},
+            release: () => {},
+        };
+        const { history } = renderWith(<NewPost uploader={uploader} />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+        const title = screen.getByRole('textbox', { name: 'Title' }) as HTMLInputElement;
+        const summary = screen.getByRole('textbox', { name: 'Summary' }) as HTMLTextAreaElement;
+        const text = screen.getByRole('textbox', { name: 'Text' });
+        const category = (await screen.findByRole('combobox', { name: 'Category' })) as HTMLSelectElement;
+        const who = screen.getByRole('combobox', { name: 'Who can see it' }) as HTMLSelectElement;
+        fireEvent.change(title, { target: { value: 'Notes from the meetup' } });
+        fireEvent.change(summary, { target: { value: 'The short version.' } });
+        setRichText(text, 'First.');
+        fireEvent.change(category, { target: { value: '2' } });
+        await waitFor(() => expect(who.value).toBe('public'));
+        fireEvent.click(screen.getByRole('button', { name: 'Choose a cover…' }));
+        const remove = await screen.findByRole('button', { name: 'Remove Photo cover.jpg' });
+        await screen.findByText(/^Ready/);
+        const choose = screen.getByRole('button', { name: 'Choose another…' }) as HTMLButtonElement;
+        const send = screen.getByRole('button', { name: 'Post' });
+        const look = [choose.className, remove.className];
+        fireEvent.click(send);
+        await waitFor(() => expect(send.getAttribute('aria-busy')).toBe('true'));
+        // the site has not answered: nothing in the form takes a change
+        expect(title.readOnly).toBe(true);
+        expect(summary.readOnly).toBe(true);
+        expect(text.getAttribute('aria-readonly')).toBe('true');
+        // the lists take none either, and keep the keyboard: disabled would drop focus to the page
+        for (const list of [category, who]) {
+            expect(list.getAttribute('aria-disabled')).toBe('true');
+            expect(list.disabled).toBe(false);
+            expect(fireEvent.mouseDown(list)).toBe(false);
+            expect(fireEvent.keyDown(list, { key: 'ArrowDown' })).toBe(false);
+            expect(fireEvent.keyDown(list, { key: 'Tab' })).toBe(true);
+        }
+        fireEvent.change(title, { target: { value: 'Typed while it was sent' } });
+        fireEvent.change(summary, { target: { value: 'Typed while it was sent' } });
+        fireEvent.change(category, { target: { value: '1' } });
+        fireEvent.change(who, { target: { value: 'friends' } });
+        typeRich(text, ' Typed while it was sent');
+        expect(title.value).toBe('Notes from the meetup');
+        expect(summary.value).toBe('The short version.');
+        expect(category.value).toBe('2');
+        expect(who.value).toBe('public');
+        expect(richText(text)).toBe('First.');
+        // the cover stays the one that went: its buttons are the same buttons, and do nothing
+        for (const button of [choose, remove as HTMLButtonElement]) {
+            expect(button.getAttribute('aria-disabled')).toBe('true');
+            expect(button.disabled).toBe(false);
+        }
+        expect([choose.className, remove.className]).toEqual(look);
+        fireEvent.click(choose);
+        fireEvent.click(remove);
+        expect(pick).toHaveBeenCalledTimes(1);
+        expect(screen.getByRole('button', { name: 'Remove Photo cover.jpg' })).toBe(remove);
+        // no picture goes in the text, and it is not sent a second time
+        pastePicture(text);
+        fireEvent.click(send);
+        await act(async () => {});
+        expect(calls.some((c) => c.path === '/uploads/inline')).toBe(false);
+        expect(calls.filter((c) => c.method === 'POST' && c.path === '/posts')).toHaveLength(1);
+        // it was not sent: the form stays, with what was typed, and takes changes again
+        first.give('lost');
+        await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('The post was not sent: Load failed'));
+        expect(title.value).toBe('Notes from the meetup');
+        expect(richText(text)).toBe('First.');
+        expect(title.readOnly).toBe(false);
+        expect(summary.readOnly).toBe(false);
+        expect(text.getAttribute('aria-readonly')).toBeNull();
+        for (const control of [category, who, choose, remove]) expect(control.getAttribute('aria-disabled')).toBeNull();
+        fireEvent.change(summary, { target: { value: 'The shorter version.' } });
+        expect(summary.value).toBe('The shorter version.');
+        fireEvent.change(summary, { target: { value: 'The short version.' } });
+        fireEvent.click(send);
+        await waitFor(() => expect(history.current.detail).toEqual({ kind: 'article', id: '60' }));
+        const sent = calls.filter((c) => c.method === 'POST' && c.path === '/posts');
+        expect(sent.map((c) => JSON.parse(c.body))).toEqual(Array(2).fill({ title: 'Notes from the meetup', body_html: '<p>First.</p>', summary: 'The short version.', category_id: '2', cover_media_id: '91', audience: 'public' }));
+        expect(sent[1]?.key).toBe(sent[0]?.key);
+    });
+
+    it('waits for an answer that takes longer than a save may: the post is not said to be unsent, is sent once, and opens', async () => {
+        vi.useFakeTimers({ shouldAdvanceTime: true });
+        try {
+            setSiteModules(MODULES);
+            const first = later();
+            const { api, calls } = site((c) => (c.path === '/posts' && c.method === 'POST' ? first.answer : null));
+            const { history } = renderWith(<NewPost />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+            const title = screen.getByRole('textbox', { name: 'Title' }) as HTMLInputElement;
+            fireEvent.change(title, { target: { value: 'Notes from the meetup' } });
+            setRichText(screen.getByRole('textbox', { name: 'Text' }), 'First.');
+            await waitFor(() => expect((screen.getByRole('combobox', { name: 'Who can see it' }) as HTMLSelectElement).value).toBe('public'));
+            const send = screen.getByRole('button', { name: 'Post' });
+            fireEvent.click(send);
+            await waitFor(() => expect(send.getAttribute('aria-busy')).toBe('true'));
+            // the site is still making it: stopped here and sent again changed, it would be there twice
+            await act(async () => vi.advanceTimersByTimeAsync(SAVE_ANSWER_MS + 5000));
+            expect(screen.queryByRole('alert')).toBeNull();
+            expect(send.getAttribute('aria-busy')).toBe('true');
+            expect(title.readOnly).toBe(true);
+            fireEvent.click(send);
+            first.give({ status: 201, body: post({ id: '60', title: 'Notes from the meetup' }) });
+            await waitFor(() => expect(history.current.detail).toEqual({ kind: 'article', id: '60' }));
+            expect(calls.filter((c) => c.method === 'POST' && c.path === '/posts')).toHaveLength(1);
+        } finally {
+            vi.useRealTimers();
+        }
+    });
+
+    const COVER_FILE = { handle: 'h-cover', name: 'cover.jpg', size: 100, mime: 'image/jpeg', kind: 'image' as const };
+    const COVER_MEDIA: Schema<'Media'> = { id: '91', kind: 'image', mime: 'image/jpeg', size: 100, state: 'ready', original_name: 'cover.jpg', url: '', download_url: '', variants: {}, width: 4, height: 3 };
+    /** An uploader of one cover. */
+    const coverUploader = (over: Partial<Uploader> = {}): Uploader => ({
+        pick: async () => ({ files: [COVER_FILE], refused: [] }),
+        fromFiles: async () => ({ files: [COVER_FILE], refused: [] }),
+        fromPaths: async () => ({ files: [], refused: [] }),
+        upload: async () => COVER_MEDIA,
+        cancel: () => {},
+        release: () => {},
+        ...over,
+    });
+    const dropped = () => ({ dataTransfer: { types: ['Files'], files: [new File([new Uint8Array([255, 216])], 'cover.jpg', { type: 'image/jpeg' })] } });
+    const fill = async () => {
+        fireEvent.change(screen.getByRole('textbox', { name: 'Title' }), { target: { value: 'Notes from the meetup' } });
+        setRichText(screen.getByRole('textbox', { name: 'Text' }), 'First.');
+        await waitFor(() => expect((screen.getByRole('combobox', { name: 'Who can see it' }) as HTMLSelectElement).value).toBe('public'));
+        return screen.getByRole('button', { name: 'Post' });
+    };
+
+    it('holds Post while a cover is being made ready, and sends the post with it once it is uploaded', async () => {
+        setSiteModules(MODULES);
+        const { api, calls } = site((c) => (c.path === '/posts' && c.method === 'POST' ? { status: 201, body: post({ id: '60', title: 'Notes from the meetup' }) } : null));
+        let ready: (staging: { files: (typeof COVER_FILE)[]; refused: string[] }) => void = () => {};
+        const uploader = coverUploader({ pick: () => new Promise((resolve) => (ready = resolve)) });
+        const { history } = renderWith(<NewPost uploader={uploader} />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+        const send = await fill();
+        const choose = screen.getByRole('button', { name: 'Choose a cover…' });
+        fireEvent.click(choose);
+        // chosen, and not in the form yet: sent now, the post would go without it
+        fireEvent.click(send);
+        expect((await screen.findByRole('alert')).textContent).toBe('Wait until the uploads are done.');
+        expect(document.activeElement).toBe(choose);
+        fireEvent.keyDown(screen.getByRole('textbox', { name: 'Title' }), { key: 'Enter', metaKey: true, ctrlKey: true });
+        await act(async () => {});
+        expect(calls.some((c) => c.method === 'POST' && c.path === '/posts')).toBe(false);
+        await act(async () => ready({ files: [COVER_FILE], refused: [] }));
+        await screen.findByText(/^Ready/);
+        fireEvent.click(send);
+        await waitFor(() => expect(history.current.detail).toEqual({ kind: 'article', id: '60' }));
+        const sent = calls.filter((c) => c.method === 'POST' && c.path === '/posts');
+        expect(sent).toHaveLength(1);
+        expect(JSON.parse(sent[0]?.body ?? '{}').cover_media_id).toBe('91');
+    });
+
+    it('holds a Post pressed when the cover is in the tray and the form is not drawn with it yet', async () => {
+        setSiteModules(MODULES);
+        const { api, calls } = site((c) => (c.path === '/posts' && c.method === 'POST' ? { status: 201, body: post({ id: '60', title: 'Notes from the meetup' }) } : null));
+        let ready: (staging: { files: (typeof COVER_FILE)[]; refused: string[] }) => void = () => {};
+        const upload = vi.fn(async () => COVER_MEDIA);
+        const uploader = coverUploader({ pick: () => new Promise((resolve) => (ready = resolve)), upload });
+        const { history } = renderWith(<NewPost uploader={uploader} />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+        const send = await fill();
+        fireEvent.click(screen.getByRole('button', { name: 'Choose a cover…' }));
+        await act(async () => {
+            ready({ files: [COVER_FILE], refused: [] });
+            // made ready and added (its upload has started), and React has not drawn the form with it
+            for (let i = 0; i < 20 && !upload.mock.calls.length; i++) await Promise.resolve();
+            expect(upload).toHaveBeenCalledTimes(1);
+            // nothing is being made ready any more: only the tray knows of the cover
+            for (let i = 0; i < 5; i++) await Promise.resolve();
+            expect(screen.queryByRole('button', { name: 'Remove Photo cover.jpg' })).toBeNull();
+            fireEvent.click(send);
+        });
+        expect(calls.some((c) => c.method === 'POST' && c.path === '/posts')).toBe(false);
+        await screen.findByText(/^Ready/);
+        fireEvent.click(send);
+        await waitFor(() => expect(history.current.detail).toEqual({ kind: 'article', id: '60' }));
+        const sent = calls.filter((c) => c.method === 'POST' && c.path === '/posts');
+        expect(sent).toHaveLength(1);
+        expect(JSON.parse(sent[0]?.body ?? '{}').cover_media_id).toBe('91');
+    });
+
+    it('is no place to drop a cover on while it is being sent: no highlight, the drop is not taken, and nothing is made ready', async () => {
+        setSiteModules(MODULES);
+        const first = later();
+        const { api } = site((c) => (c.path === '/posts' && c.method === 'POST' ? first.answer : null));
+        const fromFiles = vi.fn(async () => ({ files: [COVER_FILE], refused: [] }));
+        renderWith(<NewPost uploader={coverUploader({ fromFiles })} />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+        const send = await fill();
+        const zone = screen.getByRole('button', { name: 'Choose a cover…' }).parentElement as HTMLElement;
+        // before it is sent the zone takes a file dragged over it
+        expect(fireEvent.dragOver(zone, dropped())).toBe(false);
+        expect(zone.getAttribute('data-dragging')).toBe('true');
+        fireEvent.dragLeave(zone);
+        expect(zone.getAttribute('data-dragging')).toBeNull();
+        fireEvent.dragOver(zone, dropped());
+        fireEvent.click(send);
+        await waitFor(() => expect(send.getAttribute('aria-busy')).toBe('true'));
+        // sent while a file was over it: the highlight goes, and the file dragged on is left alone
+        expect(zone.getAttribute('data-dragging')).toBeNull();
+        // (still the zone's, with a cursor that refuses: left to the browser, the file would open in place of the app)
+        const over = createEvent.dragOver(zone, dropped());
+        expect(fireEvent(zone, over)).toBe(false);
+        expect((over as unknown as DragEvent).dataTransfer?.dropEffect).toBe('none');
+        expect(zone.getAttribute('data-dragging')).toBeNull();
+        expect(fireEvent.drop(zone, dropped())).toBe(false);
+        await act(async () => {});
+        expect(fromFiles).not.toHaveBeenCalled();
+        expect(screen.queryByRole('button', { name: 'Remove Photo cover.jpg' })).toBeNull();
+        // not sent: it takes a cover again
+        first.give('lost');
+        await waitFor(() => expect(send.getAttribute('aria-busy')).toBeNull());
+        fireEvent.drop(zone, dropped());
+        expect(await screen.findByRole('button', { name: 'Remove Photo cover.jpg' })).toBeTruthy();
+        expect(fromFiles).toHaveBeenCalledTimes(1);
+    });
+
+    it('holds the list of where it goes while it is being sent', async () => {
+        setSiteModules(MODULES);
+        const first = later();
+        const hikers = { id: '12', kind: 'group', module: 'bx_groups', handle: 'hikers', display_name: 'Hikers', about: '', status: 'active', avatar: null, cover: null, url: 'https://community.example/view-group-profile/12', created_at: '2026-01-01T00:00:00Z', visibility: 'public', join_policy: 'open', member_count: 3, content_visible: true, content_kinds: ['posts'], viewer: { status: 'active', role: 'member', can_join: false, join_on_site: false, can_leave: true, can_post: true, can_edit: false } };
+        const { api, calls } = site((c) => (c.path === '/posts' && c.method === 'POST' ? first.answer : null), [hikers]);
+        const { history } = renderWith(<NewPost />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+        const where = (await screen.findByRole('combobox', { name: 'Where' })) as HTMLSelectElement;
+        expect(within(where).getByRole('option', { name: 'Hikers' })).toBeTruthy();
+        const send = await fill();
+        fireEvent.click(send);
+        await waitFor(() => expect(send.getAttribute('aria-busy')).toBe('true'));
+        expect(where.getAttribute('aria-disabled')).toBe('true');
+        expect(where.disabled).toBe(false);
+        expect(fireEvent.mouseDown(where)).toBe(false);
+        expect(fireEvent.keyDown(where, { key: 'ArrowDown' })).toBe(false);
+        expect(fireEvent.keyDown(where, { key: 'Tab' })).toBe(true);
+        fireEvent.change(where, { target: { value: '12' } });
+        await act(async () => {});
+        expect(where.value).toBe('');
+        expect(screen.getByRole('combobox', { name: 'Who can see it' })).toBeTruthy();
+        first.give({ status: 201, body: post({ id: '60', title: 'Notes from the meetup' }) });
+        await waitFor(() => expect(history.current.detail).toEqual({ kind: 'article', id: '60' }));
+        expect(JSON.parse(calls.find((c) => c.method === 'POST' && c.path === '/posts')?.body ?? '{}')).toEqual({ title: 'Notes from the meetup', body_html: '<p>First.</p>', audience: 'public' });
     });
 });
 
