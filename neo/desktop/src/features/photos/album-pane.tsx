@@ -35,8 +35,9 @@ import { afterAddedToAlbum, type Album, albumFromLists, albumItemsKey, albumKey,
  * Adding photos to the album: they upload as they are picked or dropped, then go in at its end.
  * Esc or Cancel closes it (the uploads nothing took are deleted). Photos still being made ready
  * hold Add as ones that are uploading; while they are being added it takes no photo and lets
- * none go (Esc and Cancel wait too: closing would delete the uploads the request names), and a
- * request that got no answer leaves it as it was, to send again.
+ * none go (Esc and Cancel wait too, as the other forms' fields do), and a request that got no
+ * answer leaves it as it was, to send again. Left through the pane meanwhile (Close, another
+ * album), the request keeps its uploads and its answer does nothing to what is shown then.
  */
 function AddPhotos({ album, uploader, onDone, announce }: { album: Album; uploader?: Uploader; onDone: (added: number) => void; announce: (text: string) => void }) {
     const { api } = useApp();
@@ -66,21 +67,24 @@ function AddPhotos({ album, uploader, onDone, announce }: { album: Album; upload
         setError(null);
         let result;
         try {
-            result = await api.POST('/albums/{id}/items', { params: { path: { id: album.id } }, body: { media_ids: uploads.ids } });
+            result = await uploads.claim(api.POST('/albums/{id}/items', { params: { path: { id: album.id } }, body: { media_ids: uploads.ids } }), (r) => r.error === undefined && !!r.data);
         } catch (e) {
+            if (uploads.gone()) return;
             setSending(false);
             setError(t('The photos were not added: {{reason}}', { reason: errorMessage(e) }));
             return;
         }
         if (result.error !== undefined || !result.data) {
+            if (uploads.gone()) return;
             setSending(false);
             setError(problemMessage(result.error, t('The photos were not added')));
             return;
         }
-        // still held while the album is read again: closed now, it would be closed twice
-        uploads.markTaken();
-        await afterAddedToAlbum(queryClient, album.id);
-        onDone(result.data.length);
+        // the album is read again without the panel waiting for it (nor being there: the pane may
+        // show another album by now): the photos are in it, and a site slow to answer the reading
+        // would keep a panel that Cancel and Esc can't close
+        void afterAddedToAlbum(queryClient, album.id);
+        if (!uploads.gone()) onDone(result.data.length);
     };
 
     const cancel = () => {

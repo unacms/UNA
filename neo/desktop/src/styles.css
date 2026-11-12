@@ -141,12 +141,13 @@ select[aria-disabled='true'] { opacity: 0.5; cursor: default; }
 select[aria-disabled='true']:hover:not(:focus-visible) { box-shadow: 0 0 0 1px var(--field-border); }
 /* the buttons of a form's photos (choose, retry, remove) held with it look as its held lists; a
    form's own button that is busy keeps its look */
-:is(.video-drop, .attachments) .btn[aria-disabled='true'] { opacity: 0.5; }
-:is(.video-drop, .attachments) .btn[aria-disabled='true']:hover { background: var(--fill-control); }
+/* so does a held button beside a form's own (Cancel while it is sent) */
+:is(.video-drop, .attachments) .btn[aria-disabled='true'], :is(.settings-actions, .message-editor-row) .btn[aria-disabled='true']:not(.btn-primary, [aria-busy='true']) { opacity: 0.5; }
+:is(.video-drop, .attachments) .btn[aria-disabled='true']:hover, :is(.settings-actions, .message-editor-row) .btn[aria-disabled='true']:not(.btn-primary, [aria-busy='true']):hover { background: var(--fill-control); }
 :is(.video-drop, .attachments) .btn-quiet[aria-disabled='true']:hover { background: transparent; }
 @media (forced-colors: active) {
     select[aria-disabled='true'] { opacity: 1; color: GrayText; }
-    :is(.video-drop, .attachments) .btn[aria-disabled='true'] { opacity: 1; color: GrayText; }
+    :is(.video-drop, .attachments) .btn[aria-disabled='true'], :is(.settings-actions, .message-editor-row) .btn[aria-disabled='true']:not(.btn-primary, [aria-busy='true']) { opacity: 1; color: GrayText; }
 }
 textarea { width: 100%; resize: vertical; line-height: var(--leading-body); }
 

@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import { type ReactNode, useRef } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { createUnaApi, type Schema, type UnaApi } from 'una-api';
@@ -23,7 +23,7 @@ import { AlbumPane } from './album-pane';
 import { NewAlbum, NewPhotos } from './new-media';
 import { PhotoGrid } from './photo-grid';
 import { attachmentsReducer } from '../compose/attachments';
-import { addedText, type Album, albumCardText, gridMove, itemsText, type Photo, photoListKey, photoSiblings, tileName, tileSrc, viewerLabel } from './photos';
+import { addedText, type Album, albumCardText, albumItemsKey, albumKey, gridMove, itemsText, type Photo, photoKey, photoListKey, photoSiblings, tileName, tileSrc, viewerLabel } from './photos';
 
 vi.mock('../../lib/native', async (importOriginal) => ({ ...(await importOriginal<typeof import('../../lib/native')>()), confirmAction: vi.fn(async () => true) }));
 
@@ -744,5 +744,153 @@ describe('adding photos and albums', () => {
         fireEvent.click(add);
         expect(await screen.findByText('A photo was added to the album')).toBeTruthy();
         expect(sentTo(calls, '/albums/18/items').map((c) => JSON.parse(c.body))).toEqual([{ media_ids: ['96'] }, { media_ids: ['96'] }]);
+    });
+
+    const deleted = (calls: Call[]) => calls.filter((c) => c.method === 'DELETE').map((c) => c.path);
+    /** New photos with Harbour (upload 91) and Pier (92) uploaded and its request on its way. */
+    const sendTwoPhotos = async (first: Promise<Held>) => {
+        const { api, calls } = site({ over: firstOf('POST /photos', first) });
+        const { base, pending } = fakeUploader(['Harbour.jpg', 'Pier.jpg']);
+        const { history, client } = renderApp({ list: { section: 'media', feed: 'photos' }, detail: { kind: 'new-photos' } }, api, <NewPhotos uploader={base} />);
+        fireEvent.click(await screen.findByRole('button', { name: 'Choose photos…' }));
+        await waitFor(() => expect(pending.size).toBe(2));
+        await act(async () => {
+            pending.get('h-Harbour.jpg')?.resolve(media('91'));
+            pending.get('h-Pier.jpg')?.resolve(media('92'));
+        });
+        fireEvent.click(await screen.findByRole('button', { name: 'Add 2 photos' }));
+        await waitFor(() => expect(sentTo(calls, '/photos')).toHaveLength(1));
+        return { calls, history, client };
+    };
+
+    it('keeps the uploads its request names when the form goes while it is on its way, and deletes then only those the answer did not take', async () => {
+        const first = later();
+        const { calls, history, client } = await sendTwoPhotos(first.answer);
+        // the form goes (Close, another item, another tab): the request still names both uploads
+        cleanup();
+        await act(async () => {});
+        expect(deleted(calls)).toEqual([]);
+        // the site took one: the other is deleted, once
+        first.give({ status: 201, body: [photo('1', 'Harbour', { media: media('91') })] });
+        await waitFor(() => expect(deleted(calls)).toEqual(['/uploads/92']));
+        await act(async () => {});
+        expect(deleted(calls)).toEqual(['/uploads/92']);
+        // the photo it made is known, and nothing is opened in place of what is shown now
+        expect(client.getQueryData(photoKey('1'))).toBeTruthy();
+        expect(history.current.detail).toEqual({ kind: 'new-photos' });
+    });
+
+    it('deletes the uploads of a request that got no answer once the form is gone, each once', async () => {
+        const first = later();
+        const { calls } = await sendTwoPhotos(first.answer);
+        cleanup();
+        await act(async () => {});
+        expect(deleted(calls)).toEqual([]);
+        first.give('lost');
+        await waitFor(() => expect(deleted(calls)).toEqual(['/uploads/91', '/uploads/92']));
+        await act(async () => {});
+        expect(deleted(calls)).toHaveLength(2);
+    });
+
+    it('keeps a new album\u2019s uploads when the form goes while it is being made, and does not open it over what is shown then', async () => {
+        const first = later();
+        const { api, calls } = site({ over: firstOf('POST /albums', first.answer) });
+        const { base, pending } = fakeUploader(['One.jpg']);
+        const { history, client } = renderApp({ list: { section: 'media', feed: 'albums' }, detail: { kind: 'new-album' } }, api, <NewAlbum uploader={base} />);
+        fireEvent.change(await screen.findByLabelText('Title'), { target: { value: 'Ridge walk weekend' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Choose photos…' }));
+        await waitFor(() => expect(pending.size).toBe(1));
+        await act(async () => pending.get('h-One.jpg')?.resolve(media('95')));
+        await screen.findByText(/^Ready/);
+        fireEvent.click(screen.getByRole('button', { name: 'Make album' }));
+        await waitFor(() => expect(sentTo(calls, '/albums')).toHaveLength(1));
+        cleanup();
+        first.give({ status: 201, body: album('18', 'Ridge walk weekend') });
+        await waitFor(() => expect(client.getQueryData(albumKey('18'))).toBeTruthy());
+        await act(async () => {});
+        expect(deleted(calls)).toEqual([]);
+        expect(history.current.detail).toEqual({ kind: 'new-album' });
+    });
+
+    it('adds the photos of a panel left for another album, and its answer does nothing in the album shown then', async () => {
+        const first = later();
+        const add = firstOf('POST /albums/18/items', first.answer);
+        const other = album('19', 'Empty one', { preview: [], stats: { items: 0, comments: 0, reactions: 0, views: 0 } });
+        const { api, calls } = site({ over: (c) => (c.path === '/albums/19' ? Promise.resolve({ status: 200, body: other }) : c.path === '/albums/19/items' ? Promise.resolve({ status: 200, body: { items: [], next_cursor: null } }) : add(c)) });
+        const { base, pending } = fakeUploader(['Sunset.jpg']);
+        // the pane as the app keys it: another album is another pane
+        function Albums() {
+            const [id, setId] = useState('18');
+            return (
+                <>
+                    <button type="button" onClick={() => setId('19')}>
+                        Other album
+                    </button>
+                    <AlbumPane key={id} id={id} uploader={base} />
+                </>
+            );
+        }
+        const { client } = renderApp({ list: { section: 'media', feed: 'albums' }, detail: { kind: 'album', id: '18' } }, api, <Albums />);
+        fireEvent.click(await screen.findByRole('button', { name: 'Add Photos' }));
+        const panel = screen.getByRole('region', { name: 'Add photos to Ridge walk weekend' });
+        fireEvent.click(within(panel).getByRole('button', { name: 'Choose photos…' }));
+        await waitFor(() => expect(pending.size).toBe(1));
+        await act(async () => pending.get('h-Sunset.jpg')?.resolve(media('96')));
+        await within(panel).findByText(/^Ready/);
+        fireEvent.click(within(panel).getByRole('button', { name: 'Add to album' }));
+        await waitFor(() => expect(sentTo(calls, '/albums/18/items')).toHaveLength(1));
+        const switcher = screen.getByRole('button', { name: 'Other album' });
+        fireEvent.click(switcher);
+        await screen.findByRole('button', { name: 'Add Photos' });
+        switcher.focus();
+        expect(deleted(calls)).toEqual([]);
+        await act(async () => {
+            first.give({ status: 201, body: [photo('104', 'Sunset', { module: 'bx_albums', album_id: '18' })] });
+        });
+        // the album they went in is read again when it is next shown
+        await waitFor(() => expect(client.getQueryState(albumItemsKey('18'))?.isInvalidated).toBe(true));
+        await act(async () => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+        // nothing is said or focused in the other album, and the upload is the album's now
+        expect(screen.queryByText('A photo was added to the album')).toBeNull();
+        expect(document.activeElement).toBe(switcher);
+        expect(deleted(calls)).toEqual([]);
+    });
+
+    it('closes the Add photos panel once the photos are added, without waiting for the album to be read again', async () => {
+        let added = false;
+        const { api, calls } = site({
+            over: (c) => {
+                if (c.method === 'POST' && c.path === '/albums/18/items') added = true;
+                // the site does not answer the reading after them
+                return added && c.method === 'GET' ? new Promise<Held>(() => {}) : null;
+            },
+        });
+        const { base, pending } = fakeUploader(['Sunset.jpg']);
+        renderApp({ list: { section: 'media', feed: 'albums' }, detail: { kind: 'album', id: '18' } }, api, <AlbumPane id="18" uploader={base} />);
+        fireEvent.click(await screen.findByRole('button', { name: 'Add Photos' }));
+        const panel = screen.getByRole('region', { name: 'Add photos to Ridge walk weekend' });
+        fireEvent.click(within(panel).getByRole('button', { name: 'Choose photos…' }));
+        await waitFor(() => expect(pending.size).toBe(1));
+        await act(async () => pending.get('h-Sunset.jpg')?.resolve(media('96')));
+        await within(panel).findByText(/^Ready/);
+        fireEvent.click(within(panel).getByRole('button', { name: 'Add to album' }));
+        expect(await screen.findByText('A photo was added to the album')).toBeTruthy();
+        expect(screen.queryByRole('region', { name: 'Add photos to Ridge walk weekend' })).toBeNull();
+        expect(calls.some((c) => c.method === 'GET' && c.path === '/albums/18/items' && added)).toBe(true);
+        expect(deleted(calls)).toEqual([]);
+    });
+
+    it('draws a held button beside a form\u2019s own as held, and leaves the busy one its look', () => {
+        // the stylesheet as written (vitest hands CSS imports over empty)
+        const file = ['src/styles.css', 'desktop/src/styles.css'].find((f) => existsSync(f)) ?? 'src/styles.css';
+        const css = readFileSync(file, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+        const rules = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((m) => ({ selectors: m[1]!.split(/,(?![^(]*\))/).map((x) => x.trim()), body: m[2]! }));
+        const dimmed = rules.filter((r) => /opacity:\s*0\.5/.test(r.body)).flatMap((r) => r.selectors);
+        // Cancel of Add photos (.settings-actions) as the buttons of the photos above it
+        const held = dimmed.find((x) => x.includes('.settings-actions') && x.includes(".btn[aria-disabled='true']"));
+        expect(held).toBeTruthy();
+        expect(dimmed.some((x) => x.includes('.video-drop') && x.endsWith(".btn[aria-disabled='true']"))).toBe(true);
+        // not the form's own button, which is busy then
+        expect(held).toMatch(/:not\([^)]*\[aria-busy='true'\][^)]*\)/);
     });
 });

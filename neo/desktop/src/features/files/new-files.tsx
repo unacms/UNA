@@ -66,8 +66,12 @@ export function NewFiles({ contextId, uploader }: { contextId?: string; uploader
         setError(null);
         let result;
         try {
-            result = await api.POST('/files', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/files', body]) } }, body });
+            // the site stops adding once the membership level's limit is reached: what it did not take stays here
+            result = await uploads.claim(api.POST('/files', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/files', body]) } }, body }), (r) =>
+                r.error !== undefined || !r.data ? false : r.data.length < body.media_ids.length ? r.data.flatMap((f) => (f.media ? [f.media.id] : [])) : true,
+            );
         } catch (e) {
+            if (uploads.gone()) return;
             // no answer came: the key stays, so sending it again gets the site's answer to this one
             setSending(false);
             setError(t('The files were not added: {{reason}}', { reason: errorMessage(e) }));
@@ -75,15 +79,15 @@ export function NewFiles({ contextId, uploader }: { contextId?: string; uploader
         }
         settleIdempotency(sent, result.response.status);
         if (result.error !== undefined || !result.data) {
+            if (uploads.gone()) return;
             setSending(false);
             setError(problemMessage(result.error, t('The files were not added')));
             return;
         }
-        // the site stops adding once the membership level's limit is reached: what it did not take stays here
         const asked = body.media_ids.length;
         const partial = result.data.length < asked;
-        uploads.markTaken(partial ? result.data.flatMap((f) => (f.media ? [f.media.id] : [])) : undefined);
         await afterFilesAdded(queryClient, result.data);
+        if (uploads.gone()) return;
         if (partial) {
             setSending(false);
             const left = asked - result.data.length;

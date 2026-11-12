@@ -689,6 +689,38 @@ describe('New post', () => {
         expect(fromFiles).toHaveBeenCalledTimes(1);
     });
 
+    it('keeps the cover its request names when the form goes while the post is being sent, and does not open the post over what is shown then', async () => {
+        setSiteModules(MODULES);
+        for (const taken of [true, false]) {
+            const first = later();
+            const { api, calls } = site((c) => (c.path === '/posts' && c.method === 'POST' ? first.answer : null));
+            const { history, client } = renderWith(<NewPost uploader={coverUploader()} />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+            const send = await fill();
+            fireEvent.click(screen.getByRole('button', { name: 'Choose a cover…' }));
+            await screen.findByText(/^Ready/);
+            fireEvent.click(send);
+            await waitFor(() => expect(calls.filter((c) => c.method === 'POST' && c.path === '/posts')).toHaveLength(1));
+            // the form goes (Close, another item, another tab): the request still names the cover
+            cleanup();
+            await act(async () => {});
+            const deleted = () => calls.filter((c) => c.method === 'DELETE').map((c) => c.path);
+            expect(deleted()).toEqual([]);
+            if (taken) {
+                first.give({ status: 201, body: post({ id: '60', title: 'Notes from the meetup' }) });
+                await waitFor(() => expect(client.getQueryData(postKey('60'))).toBeTruthy());
+                await act(async () => {});
+                expect(deleted()).toEqual([]);
+            } else {
+                // not sent: nothing took the cover, and it is deleted once
+                first.give('lost');
+                await waitFor(() => expect(deleted()).toEqual(['/uploads/91']));
+                await act(async () => {});
+                expect(deleted()).toHaveLength(1);
+            }
+            expect(history.current.detail).toEqual({ kind: 'new-article' });
+        }
+    });
+
     it('holds the list of where it goes while it is being sent', async () => {
         setSiteModules(MODULES);
         const first = later();

@@ -17,7 +17,7 @@ import type { NavItem } from '../../shell/sidebar';
 import { contextTabs } from '../groups/group-view';
 import { mediaTabs } from '../media/media-browse';
 import { navigationEntries } from '../palette/commands';
-import { downloadName, extensionOf, type FileEntry, filePreview, fileRowText, fileSizeText, filesAddedText, fileType, rowThumb } from './files';
+import { downloadName, extensionOf, type FileEntry, fileKey, filePreview, fileRowText, fileSizeText, filesAddedText, fileType, rowThumb } from './files';
 import { NewFiles } from './new-files';
 
 vi.mock('../../lib/native', async (importOriginal) => ({
@@ -545,5 +545,40 @@ describe('adding files', () => {
         const body = { media_ids: ['91'], title: 'Agenda', text_html: '<p>For Saturday</p>', audience: 'public' };
         expect(sent.map((c) => JSON.parse(c.body))).toEqual([body, body]);
         expect(sent[1]!.key).toBe(sent[0]!.key);
+    });
+
+    it('keeps the uploads its request names when the form goes while it is on its way: kept when the site took them, deleted once when it refused', async () => {
+        for (const taken of [true, false]) {
+            const first = later();
+            const { api, calls } = site(MODULES, firstOf('POST /files', first.answer));
+            const { base, pending } = fakeUploader([AGENDA, ZINES]);
+            const { history, client } = renderApp({ list: { section: 'media', feed: 'files' }, detail: { kind: 'new-files' } }, api, <NewFiles uploader={base} />);
+            fireEvent.click(await screen.findByRole('button', { name: 'Choose files…' }));
+            await waitFor(() => expect(pending.size).toBe(2));
+            await act(async () => {
+                pending.get('h-a')?.resolve(media('91'));
+                pending.get('h-z')?.resolve(media('92', { original_name: 'zines.zip' }));
+            });
+            fireEvent.click(await screen.findByRole('button', { name: 'Add 2 files' }));
+            await waitFor(() => expect(sentFiles(calls)).toHaveLength(1));
+            // the form goes (Close, another item, another tab): the request still names both uploads
+            cleanup();
+            await act(async () => {});
+            const deleted = () => calls.filter((c) => c.method === 'DELETE').map((c) => c.path);
+            expect(deleted()).toEqual([]);
+            if (taken) {
+                first.give({ status: 201, body: [file('1', 'Agenda'), file('3', 'Zine archive')] });
+                await waitFor(() => expect(client.getQueryData(fileKey('1'))).toBeTruthy());
+                await act(async () => {});
+                expect(deleted()).toEqual([]);
+            } else {
+                first.give({ status: 500, body: { type: 'urn:una:problem:server_error', title: 'Server error', status: 500, code: 'server_error' } });
+                await waitFor(() => expect(deleted()).toEqual(['/uploads/91', '/uploads/92']));
+                await act(async () => {});
+                expect(deleted()).toHaveLength(2);
+            }
+            // nothing is opened in place of what is shown now
+            expect(history.current.detail).toEqual({ kind: 'new-files' });
+        }
     });
 });

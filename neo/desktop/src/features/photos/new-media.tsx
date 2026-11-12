@@ -156,8 +156,13 @@ export function NewPhotos({ contextId, uploader }: { contextId?: string; uploade
         setError(null);
         let result;
         try {
-            result = await api.POST('/photos', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/photos', body]) } }, body });
+            // the site stops adding once the membership level's limit is reached: what it did not take stays here
+            // (a photo's media id is the upload's: the ones no photo has are those left)
+            result = await uploads.claim(api.POST('/photos', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/photos', body]) } }, body }), (r) =>
+                r.error !== undefined || !r.data ? false : r.data.length < body.media_ids.length ? r.data.flatMap((p) => (p.media ? [p.media.id] : [])) : true,
+            );
         } catch (e) {
+            if (uploads.gone()) return;
             // no answer came: the key stays, so sending it again gets the site's answer to this one
             setSending(false);
             setError(t('The photos were not added: {{reason}}', { reason: errorMessage(e) }));
@@ -165,16 +170,15 @@ export function NewPhotos({ contextId, uploader }: { contextId?: string; uploade
         }
         settleIdempotency(sent, result.response.status);
         if (result.error !== undefined || !result.data) {
+            if (uploads.gone()) return;
             setSending(false);
             setError(problemMessage(result.error, t('The photos were not added')));
             return;
         }
-        // the site stops adding once the membership level's limit is reached: what it did not take stays here
-        // (a photo's media id is the upload's: the ones no photo has are those left)
         const asked = body.media_ids.length;
         const partial = result.data.length < asked;
-        uploads.markTaken(partial ? result.data.flatMap((p) => (p.media ? [p.media.id] : [])) : undefined);
         await afterPhotosAdded(queryClient, result.data);
+        if (uploads.gone()) return;
         if (partial) {
             setSending(false);
             const left = asked - result.data.length;
@@ -291,8 +295,9 @@ export function NewAlbum({ contextId, uploader }: { contextId?: string; uploader
         setError(null);
         let result;
         try {
-            result = await api.POST('/albums', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/albums', body]) } }, body });
+            result = await uploads.claim(api.POST('/albums', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/albums', body]) } }, body }), (r) => r.error === undefined && !!r.data);
         } catch (e) {
+            if (uploads.gone()) return;
             // no answer came: the key stays, so sending it again gets the site's answer to this one
             setSending(false);
             setError(t('The album was not made: {{reason}}', { reason: errorMessage(e) }));
@@ -300,6 +305,7 @@ export function NewAlbum({ contextId, uploader }: { contextId?: string; uploader
         }
         settleIdempotency(sent, result.response.status);
         if (result.error !== undefined || !result.data) {
+            if (uploads.gone()) return;
             setSending(false);
             const problem = result.error as { errors?: { field?: string; message?: string }[] } | undefined;
             const message = problemMessage(result.error, t('The album was not made'));
@@ -307,8 +313,8 @@ export function NewAlbum({ contextId, uploader }: { contextId?: string; uploader
             else setError(message);
             return;
         }
-        uploads.markTaken();
         await afterAlbumAdded(queryClient, result.data);
+        if (uploads.gone()) return;
         if (!replaceDetail({ kind: 'album', id: result.data.id }, from)) setSending(false);
     };
 
