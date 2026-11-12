@@ -3,7 +3,14 @@
 -- the grids get Total, Manual and Billed columns (their rows are the ones of enable.sql), the Billing page and tab are added,
 -- the budget summary moves, My Time gets the viewer's own time, and a cron pauses the timers left running.
 
--- forms: Billed time is set per entry in the time grids
+-- forms: Billed time is set per entry in the time grids. While the switcher is there (2026111000 ran, now or before),
+-- the controls get the places of install.sql, so a second run of both leaves them where they are.
+UPDATE `sys_form_display_inputs` SET `order` = CASE `input_name` WHEN 'controls' THEN 11 WHEN 'submit' THEN 12 ELSE 13 END
+WHERE `display_name` = 'bx_tasks_time_add' AND `input_name` IN ('controls', 'submit', 'cancel')
+AND EXISTS (SELECT 1 FROM (SELECT `id` FROM `sys_form_display_inputs` WHERE `display_name` = 'bx_tasks_time_add' AND `input_name` = 'billable') AS `t`);
+UPDATE `sys_form_display_inputs` SET `order` = CASE `input_name` WHEN 'controls' THEN 8 WHEN 'submit' THEN 9 ELSE 10 END
+WHERE `display_name` = 'bx_tasks_time_edit' AND `input_name` IN ('controls', 'submit', 'cancel')
+AND EXISTS (SELECT 1 FROM (SELECT `id` FROM `sys_form_display_inputs` WHERE `display_name` = 'bx_tasks_time_edit' AND `input_name` = 'billable') AS `t`);
 DELETE FROM `sys_form_display_inputs` WHERE `display_name` IN ('bx_tasks_time_add', 'bx_tasks_time_edit') AND `input_name` = 'billable';
 DELETE FROM `sys_form_inputs` WHERE `object` = 'bx_tasks_time' AND `name` = 'billable';
 
