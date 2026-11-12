@@ -165,6 +165,14 @@ export function RichEditor(props: Props) {
         [hashtags, say],
     );
 
+    // a text that is being sent takes no picture (readOnlyGuard): said, and true, when that is so now
+    const heldNow = useCallback((): boolean => {
+        const sink = latest.current.images;
+        if (!readOnlyRef.current || placementOf(latest.current.mode, sink) !== 'inline') return false;
+        say(t('Pictures can’t be added while the text is being sent.'));
+        return true;
+    }, [say]);
+
     // pictures: the composer's attachments, the text (phase 2), or a refusal
     const placeImages = useCallback(
         (staging: Staging) => {
@@ -180,10 +188,11 @@ export function RichEditor(props: Props) {
             }
             const upload = sink.uploadInline;
             if (!upload) return;
-            // a text that is being sent takes nothing (readOnlyGuard): no upload is started for it
-            const held = t('Pictures can’t be added while the text is being sent.');
+            // sent while they were made ready (or given by the composer): no upload is started
+            // for them, and nothing keeps them (a pasted one is its bytes, held by the app)
             if (readOnlyRef.current) {
-                if (staging.files.length || staging.refused.length) say(held);
+                for (const file of staging.files) sink.uploader?.release(file);
+                if (staging.files.length || staging.refused.length) heldNow();
                 return;
             }
             const pictures = staging.files.filter((f) => f.kind === 'image');
@@ -194,10 +203,7 @@ export function RichEditor(props: Props) {
                     (img) => {
                         const editor = editorRef.current;
                         if (!editor || editor.isDestroyed) return;
-                        if (readOnlyRef.current) {
-                            say(held);
-                            return;
-                        }
+                        if (heldNow()) return;
                         editor.chain().focus().insertContent({ type: 'image', attrs: { src: img.src, alt: img.alt ?? null, width: img.width ?? null, height: img.height ?? null } }).run();
                         say(t('{{name}} added to the text', { name: file.name }));
                     },
@@ -205,7 +211,7 @@ export function RichEditor(props: Props) {
                 );
             }
         },
-        [say],
+        [say, heldNow],
     );
 
     const takeFiles = useCallback(
@@ -215,9 +221,11 @@ export function RichEditor(props: Props) {
                 say(sink?.refusal ?? DEFAULT_REFUSAL);
                 return;
             }
+            // before anything is made ready: a refused picture is not kept by the app
+            if (heldNow()) return;
             void sink.uploader.fromFiles(files).then(placeImages);
         },
-        [placeImages, say],
+        [placeImages, say, heldNow],
     );
 
     // the editor, made once per mode (mounted in the box by the effect below)
@@ -437,6 +445,7 @@ export function RichEditor(props: Props) {
                     say(sink?.refusal ?? DEFAULT_REFUSAL);
                     return;
                 }
+                if (heldNow()) return;
                 void sink.uploader.fromPaths(p.paths).then(placeImages);
             })
             .then(
@@ -451,7 +460,7 @@ export function RichEditor(props: Props) {
             release();
             stop?.();
         };
-    }, [windowDrops, placeImages, say]);
+    }, [windowDrops, placeImages, say, heldNow]);
 
     useImperativeHandle(
         ref,
