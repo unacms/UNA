@@ -387,7 +387,7 @@ html.dark {
     width: var(--bx-menu-highlight-w, 0);
     height: var(--bx-menu-highlight-h, 0);
 
-    border-radius: 0.5rem; /* the items' own corners */
+    border-radius: 0.75rem; /* the items' own corners: 12px, 8px inside their block's 20px */
     background-color: rgba(228, 228, 231, 0.5); /* gray-200 at 50%, the items' hover */
     opacity: 0;
     pointer-events: none;
@@ -397,9 +397,6 @@ html.dark {
 }
 #bx-toolbar .bx-menu-main.bx-menu-highlight-list::before {
     border-radius: 9999px;
-}
-.bx-menu-object-sys_profile_stats.bx-menu-highlight-list::before {
-    border-radius: 0.75rem;
 }
 html.dark #bx-toolbar .bx-menu-main.bx-menu-highlight-list::before,
 html.dark .bx-menu-object-sys_homepage.bx-menu-highlight-list::before,

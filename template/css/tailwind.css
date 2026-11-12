@@ -795,13 +795,17 @@
     .bx-popup-border {
         @apply ring-1 ring-gray-300/50 dark:ring-gray-600/50;
     }
+    /* Blocks and cards have the menu popups' 20px corners: a row or tile with 12px corners 8px inside them runs parallel (NEO's rounded-popover). */
     .bx-def-border-radius-block,
-    .bx-def-box-round-corners,
+    .bx-def-box-round-corners {
+        border-radius: 1.25rem;
+    }
     .bx-popup-border {
         @apply rounded-2xl;
     }
+    /* 16px on every screen size, as NEO's blocks (theme.blocks u-block-pad). */
     .bx-content-padding-block {
-        @apply p-3 md:p-4;
+        @apply p-4;
     }
     .bx-def-color-bg-box-hover {
         @apply hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200;
@@ -810,8 +814,10 @@
         @apply bg-gray-100 dark:bg-gray-700;
     }
 
+    /* A block's title is NEO's (theme.blocks u-block-title): 18px on a 28px line, semibold, tight, 2px in from the header's
+       16px padding. The header (designbox_*.html) is 16px from the block's top and sides, the content 16px under it. */
     .bx-db-title {
-        @apply text-lg xl:text-xl font-bold text-gray-900 dark:text-gray-100 align-middle;
+        @apply px-0.5 text-lg leading-7 font-semibold tracking-tight text-gray-900 dark:text-gray-100 align-middle;
     }
 
     /* Common Elements: HR */
