@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useEffect, useId, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 
 import { problemMessage } from 'una-api';
 
@@ -143,6 +143,9 @@ export function AlbumPane({ id, uploader }: { id: string; uploader?: Uploader })
     // the album photos were just added to, until it is read again: what is shown of it meanwhile
     // is from before them, and must not say it has none
     const [reading, setReading] = useState<string | null>(null);
+    // which reading that is: one from an earlier add ends (or is given up for the next) while
+    // the latest is still on its way
+    const rereads = useRef(0);
 
     const album = useQuery({
         queryKey: albumKey(id),
@@ -275,7 +278,10 @@ export function AlbumPane({ id, uploader }: { id: string; uploader?: Uploader })
                                     onDone={(added, read) => {
                                         setAdding(false);
                                         if (added && read) {
-                                            const done = () => setReading((now) => (now === id ? null : now));
+                                            const mine = ++rereads.current;
+                                            const done = () => {
+                                                if (rereads.current === mine) setReading(null);
+                                            };
                                             setReading(id);
                                             void read.then(done, done);
                                         }
@@ -284,7 +290,7 @@ export function AlbumPane({ id, uploader }: { id: string; uploader?: Uploader })
                                     }}
                                 />
                             ) : null}
-                            <section className="album-photos" aria-label={t('Photos in {{name}}', { name: a.title })}>
+                            <section className="album-photos" aria-label={t('Photos in {{name}}', { name: a.title })} aria-busy={items.isLoading || awaited || undefined}>
                                 <SkeletonRows loading={items.isLoading || awaited} />
                                 {items.isError ? (
                                     <p className="error small" role="alert">

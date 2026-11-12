@@ -19,7 +19,15 @@ export type IdempotencySlot = { current: { body: string; key: string } | null };
  * gets later. A write whose answer never came keeps its key: do not call this then.
  */
 export function settleIdempotency(slot: IdempotencySlot, status: number): void {
-    if (status !== 409) slot.current = null;
+    if (!stillRunning(status)) slot.current = null;
+}
+
+/**
+ * Whether an answer says the first request with this key still runs (409
+ * `idempotency_in_progress`): it tells nothing of what that one makes or takes.
+ */
+export function stillRunning(status: number): boolean {
+    return status === 409;
 }
 
 export function idempotencyKeyFor(slot: IdempotencySlot, body: unknown): string {

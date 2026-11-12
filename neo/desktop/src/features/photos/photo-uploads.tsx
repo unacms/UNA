@@ -3,6 +3,7 @@ import { type DragEvent, useCallback, useEffect, useMemo, useRef, useState } fro
 
 import { Icon, type IconName } from '../../components/icon';
 import { useApp } from '../../lib/context';
+import { stillRunning } from '../../lib/idempotency';
 import { t, tn } from '../../lib/i18n';
 import { inApp } from '../../lib/native';
 import { isOverDropTarget } from '../../components/rich-editor/images';
@@ -16,7 +17,8 @@ import { MAX_ALBUM_PHOTOS, MAX_PHOTOS } from './photos';
  * The photos a form uploads (new photos, a new album, photos added to an album), or the files of
  * new files (`file`: any type): each upload starts as it is picked or dropped, with the form's
  * purpose; Retry and Remove as in a post's tray. Uploads nothing took are deleted on the site
- * when the form goes, but for those a request in flight names (`claim`).
+ * when the form goes, but for those a request names that is in flight or was never answered
+ * (`claim`).
  */
 export function usePhotoUploads({ purpose, uploader: given, announce }: { purpose: 'photo' | 'album' | 'file' | 'post_cover'; uploader?: Uploader; announce: (text: string) => void }) {
     const { api } = useApp();
@@ -38,22 +40,35 @@ export function usePhotoUploads({ purpose, uploader: given, announce }: { purpos
     // request's answer says which it took), and whether the form is gone
     const claimed = useRef<readonly string[]>([]);
     const gone = useRef(false);
+    // the uploads whose last request said nothing of what the site took (no answer, or its first
+    // sending still runs): the site may be taking them, so nothing here deletes them
+    const unknown = useRef<ReadonlySet<string>>(new Set());
     const drop = useCallback((id: string) => void api.DELETE('/uploads/{id}', { params: { path: { id } } }).catch(() => undefined), [api]);
     useEffect(() => {
         gone.current = false;
         return () => {
             gone.current = true;
-            for (const a of latest.current) if (a.status === 'done' && a.media && !claimed.current.includes(a.media.id)) drop(a.media.id);
+            for (const a of latest.current) if (a.status === 'done' && a.media && !claimed.current.includes(a.media.id) && !unknown.current.has(a.media.id)) drop(a.media.id);
         };
     }, [drop]);
 
     const { add, reset } = uploads;
     const claim = useCallback(
-        <T,>(request: Promise<T>, took: (answer: T) => boolean | readonly string[]): Promise<T> => {
+        <T extends { response: { status: number } }>(request: Promise<T>, took: (answer: T) => boolean | readonly string[]): Promise<T> => {
             const named = mediaIds(latest.current);
             claimed.current = named;
-            const settle = (answer: boolean | readonly string[]) => {
+            // null: the request said nothing of what the site took
+            const settle = (answer: boolean | readonly string[] | null) => {
                 claimed.current = [];
+                const open = new Set(unknown.current);
+                for (const id of named) {
+                    if (answer === null) open.add(id);
+                    else open.delete(id);
+                }
+                unknown.current = open;
+                // they stay as they are: in the tray to send again (with the same key), and not
+                // deleted when the form goes or is gone
+                if (answer === null) return;
                 const taken = answer === true ? named : answer === false ? [] : answer;
                 // the form went meanwhile: what the request named and did not take is deleted now
                 if (gone.current) {
@@ -67,11 +82,11 @@ export function usePhotoUploads({ purpose, uploader: given, announce }: { purpos
             };
             return request.then(
                 (answer) => {
-                    settle(took(answer));
+                    settle(stillRunning(answer.response.status) ? null : took(answer));
                     return answer;
                 },
                 (e: unknown) => {
-                    settle(false);
+                    settle(null);
                     throw e;
                 },
             );
@@ -116,9 +131,13 @@ export function usePhotoUploads({ purpose, uploader: given, announce }: { purpos
         /**
          * The request that takes the uploads (`ids`), from when it is sent: until it is answered
          * the form going does not delete them. `took` says what its answer took: all it named
-         * (true), none (false; a request that threw took none), or those of these upload ids. Those
-         * it took leave the tray and are never deleted here; those it did not take stay, to send
-         * again or remove, or are deleted once when the form is gone by then.
+         * (true), none (false: the site refused it), or those of these upload ids. Those it took
+         * leave the tray and are never deleted here; those it did not take stay, to send again or
+         * remove, or are deleted once when the form is gone by then. A request that threw (no
+         * answer) or was told its first sending still runs (409) says nothing of what the site
+         * took, and `took` is not asked: its uploads stay in the tray and are not deleted here,
+         * with the form or after it, until a later request that names them is answered (Remove
+         * still deletes one; the site deletes those nothing took after its ghost lifetime).
          */
         claim,
         /**

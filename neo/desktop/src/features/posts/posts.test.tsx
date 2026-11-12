@@ -691,7 +691,7 @@ describe('New post', () => {
 
     it('keeps the cover its request names when the form goes while the post is being sent, and does not open the post over what is shown then', async () => {
         setSiteModules(MODULES);
-        for (const taken of [true, false]) {
+        for (const outcome of ['taken', 'refused', 'unknown'] as const) {
             const first = later();
             const { api, calls } = site((c) => (c.path === '/posts' && c.method === 'POST' ? first.answer : null));
             const { history, client } = renderWith(<NewPost uploader={coverUploader()} />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
@@ -705,17 +705,23 @@ describe('New post', () => {
             await act(async () => {});
             const deleted = () => calls.filter((c) => c.method === 'DELETE').map((c) => c.path);
             expect(deleted()).toEqual([]);
-            if (taken) {
+            if (outcome === 'taken') {
                 first.give({ status: 201, body: post({ id: '60', title: 'Notes from the meetup' }) });
                 await waitFor(() => expect(client.getQueryData(postKey('60'))).toBeTruthy());
                 await act(async () => {});
                 expect(deleted()).toEqual([]);
-            } else {
-                // not sent: nothing took the cover, and it is deleted once
-                first.give('lost');
+            } else if (outcome === 'refused') {
+                // the site refused it: nothing took the cover, and it is deleted once
+                first.give({ status: 403, body: { type: 'urn:una:problem:forbidden', title: 'Forbidden', status: 403, code: 'forbidden' } });
                 await waitFor(() => expect(deleted()).toEqual(['/uploads/91']));
                 await act(async () => {});
                 expect(deleted()).toHaveLength(1);
+            } else {
+                // no answer: the site may be making the post with it, so it is not deleted
+                first.give('lost');
+                await act(async () => new Promise<void>((resolve) => setTimeout(resolve, 0)));
+                await act(async () => new Promise<void>((resolve) => setTimeout(resolve, 0)));
+                expect(deleted()).toEqual([]);
             }
             expect(history.current.detail).toEqual({ kind: 'new-article' });
         }
