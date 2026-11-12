@@ -5043,4 +5043,9 @@
     <string name="_sys_recom_friends_empty_action"><![CDATA[Find people]]></string>
     <string name="_sys_recom_friends_empty_text"><![CDATA[Suggestions appear as you connect with people.]]></string>
     <string name="_sys_recom_friends_empty_title"><![CDATA[No suggestions yet]]></string>
+    <string name="_adm_form_txt_groups_role_time_log"><![CDATA[Log time]]></string>
+    <string name="_adm_form_txt_groups_role_time_view_logged_any"><![CDATA[View logged time of everybody]]></string>
+    <string name="_adm_form_txt_groups_role_time_view_billed"><![CDATA[View billable time]]></string>
+    <string name="_adm_form_txt_groups_role_time_edit_billed"><![CDATA[Edit billable time]]></string>
+    <string name="_adm_form_txt_groups_role_manage_properties"><![CDATA[Manage properties]]></string>
 </resources>

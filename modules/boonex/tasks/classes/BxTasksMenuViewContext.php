@@ -37,10 +37,24 @@ class BxTasksMenuViewContext extends BxBaseModTextMenuView
 
         $bResult = true;
         switch ($a['name']) {
+            case 'tasks-context-time':
+                $bResult = $this->_oModule->getTimeRights($this->_iContextId)['log'];
+                break;
+
             case 'tasks-context-time-administration':
+                $bResult = $this->_oModule->getTimeRights($this->_iContextId)['view_logged_any'];
+                break;
+
+            case 'tasks-context-billing':
+                $bResult = $this->_oModule->isAllowViewBilling($this->_iContextId);
+                break;
+
             case 'tasks-context-budget-administration':
+                $bResult = $this->_oModule->isAdministratorByContext($this->_iContextId);
+                break;
+
             case 'tasks-context-values':
-                $bResult = $this->_oModule->isAllowManageByContext($this->_iContextId);
+                $bResult = $this->_oModule->getTimeRights($this->_iContextId)['manage_properties'];
                 break;
         }
 

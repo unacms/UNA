@@ -126,6 +126,9 @@ class BxTasksConfig extends BxBaseModTextConfig
             'PARAM_EXPORT_TIME_TO' => 'bx_tasks_export_time_to',
             'PARAM_EXPORT_TIME_FIELDS' => 'bx_tasks_export_time_fields',
 
+            // hours a timer runs without a pause before the cron pauses it (BxTasksCronTimers), 0 for never
+            'PARAM_TIMER_RUNNING_LIMIT' => 'bx_tasks_timer_running_limit',
+
             // objects
             'OBJECT_STORAGE' => 'bx_tasks_covers',
             'OBJECT_STORAGE_FILES' => 'bx_tasks_files',
@@ -315,6 +318,7 @@ class BxTasksConfig extends BxBaseModTextConfig
             'filter_popup' => $sPrefix . '-filter-popup',
             'timer' => $sPrefix . '-timer-',
             'timer_actions' => $sPrefix . '-timer-actions',
+            'time_summary_period' => $sPrefix . '-time-summary-period-',
             'timers_actions' => $sPrefix . '-timers-actions',
             'pre_values_popup' => $sPrefix . '-pv-popup-',
         ]);

@@ -734,6 +734,7 @@ class BxTasksApiV2 extends BxBaseModTextApiV2
             'author_id' => $iViewerId,
             'author_nip' => bx_get_ip_hash(getVisitorIP()),
             'value' => $iValue,
+            'value_original' => $iValue,
             'text' => bx_process_input($sText),
             'date' => time(),
         ]);

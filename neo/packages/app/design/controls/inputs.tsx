@@ -66,6 +66,8 @@ const getInputStyleProps = (style: any, multiline?: boolean) =>
 export const Input = forwardRef<TextInputInstance, CustomInputProps>(
     ({ className, style, rounded = InputRounded.default, size = DEFAULT_SIZE, ...props }, ref) => {
         const labelInside = useContext(InputLabelInsideContext) && isLabelInsideSize(size);
+        // A read only field takes no focus either, and looks it.
+        const locked = !!props.readOnly || props.editable === false;
         return (
             <TextInputDef
                 className={cn(
@@ -73,10 +75,12 @@ export const Input = forwardRef<TextInputInstance, CustomInputProps>(
                     inputSettings.size[size] ?? inputSettings.size.regular,
                     labelInside && inputSettings.adaptive_input_inside,
                     rounded === InputRounded.full && inputSettings.rounded.full,
+                    locked && inputSettings.locked,
                     className,
                 )}
                 {...getInputStyleProps(style, props.multiline)}
                 {...props}
+                {...(locked ? { editable: false } : null)}
                 ref={ref}
             />
         );

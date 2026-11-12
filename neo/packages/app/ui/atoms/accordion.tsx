@@ -5,7 +5,7 @@ import * as AccordionPrimitive from 'app/ui/primitives/accordion';
 import { cn } from 'app/lib/util';
 import { Icon } from 'app/ui/atoms/icon';
 import { Text } from 'app/design/typography';
-import { appSetting, FeedbackHaptics } from 'app/lib/util';
+import { appSetting, FeedbackHaptics, isWeb } from 'app/lib/util';
 import { cueAttributes, playPressCue } from 'app/lib/sound';
 
 const accordionTheme = appSetting('theme', 'accordion') ?? {};
@@ -129,15 +129,12 @@ export function AccordionTrigger({
                                     accordionTheme.chevron_container ??
                                     'transition-transform duration-200'
                                 }
+                                // Web's View is a div that takes the style as it is: a CSS string there, React Native's array on native.
                                 style={{
-                                    transform: [
-                                        {
-                                            rotate: isExpanded
-                                                ? '180deg'
-                                                : '0deg',
-                                        },
-                                    ],
-                                }}
+                                    transform: isWeb
+                                        ? `rotate(${isExpanded ? 180 : 0}deg)`
+                                        : [{ rotate: isExpanded ? '180deg' : '0deg' }],
+                                } as any}
                             >
                                 <Icon
                                     icon="ChevronDown"

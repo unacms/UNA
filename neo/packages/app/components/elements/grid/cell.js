@@ -1,13 +1,15 @@
 import { Text } from 'app/design/typography';
 import { View, Row } from 'app/design/view';
 import Link from 'app/ui/atoms/link';
-import Time from 'app/ui/atoms/time';
 import Profile from 'app/ui/molecules/profile/profile';
 import Switch from 'app/ui/atoms/switcher';
 import CheckBox from 'app/ui/atoms/checkbox';
 import { Icon } from 'app/ui/atoms/icon';
-import { stripTags } from 'app/lib/util';
-import RowGridButton from './row-grid-button';
+import { stripTags, formatDate, useDateLocaleTag } from 'app/lib/util';
+import RowGridButton, { RowActionsOverflow, getRowActions } from './row-grid-button';
+
+/** Row action buttons the actions column fits (its width in context.js). */
+const ROW_ACTIONS_VISIBLE = 2;
 import { useTranslation } from 'react-i18next';
 import { dedupeGridRowActions } from './actions';
 import { useGrid } from './context';
@@ -15,7 +17,7 @@ import { useGrid } from './context';
 const isSwitcherOn = (data) => data == 'active' || data == '1';
 
 /** Columns have fixed tracks, so every textual cell truncates instead of wrapping. */
-const CELL_TEXT_CLASS = 'block max-w-full min-w-0 overflow-hidden truncate text-secondary-foreground';
+const CELL_TEXT_CLASS = 'block max-w-full min-w-0 overflow-hidden truncate text-sm text-secondary-foreground';
 
 function TextCell({ children }) {
     return <Text className={CELL_TEXT_CLASS} numberOfLines={1}>{children}</Text>;
@@ -29,14 +31,17 @@ const CELL_TEXT_VALUE = {
 };
 
 /**
- * `time` renders a relative date, `datetime` adds the clock — `Time` switches on
- * the `datetime` string, so the cell type is passed straight through.
- * Empty stamps stay blank.
+ * A table is read across rows, so dates are absolute (`Nov 12`, `Nov 12, 2025` for another year),
+ * not relative as in feeds; `datetime` adds the clock. Empty stamps stay blank.
  */
 function TimeCell({ ts, format }) {
+    const { t } = useTranslation();
+    const locale = useDateLocaleTag();
+
     if (!Number(ts)) return null;
 
-    return <Time ts={ts} format={format} stylesName='text-sm text-secondary-foreground' />;
+    const text = formatDate(new Date(Number(ts) * 1000), t, { showTime: format === 'datetime', locale });
+    return <Text className="text-sm text-secondary-foreground" numberOfLines={1}>{text}</Text>;
 }
 
 /** Interactive cells subscribe to the store themselves — plain cells stay pure. */
@@ -85,7 +90,7 @@ export default function Cell({ cell, id, label }) {
         case 'datetime':
             return <TimeCell ts={cell.data} format={cell.type} />
         case 'link':
-            return <Link href={cell.data.url}><Text className="text-primary">{cell.data.text}</Text></Link>
+            return <Link href={cell.data.url}><Text className="text-sm text-primary">{cell.data.text}</Text></Link>
         case 'text':
         case 'price':
         case 'period':
@@ -101,21 +106,34 @@ export default function Cell({ cell, id, label }) {
         case 'checkbox':
             return <SelectCell rowId={cell.data} />
         case 'profile':
-            return <Profile {...cell.data} displaySize="sm" />
-        case 'actions':
+            // Bounded to the column, so a long name ends in an ellipsis (Profile truncates it) instead of running over the next one.
+            return (
+                <View className="w-full min-w-0 overflow-hidden">
+                    <Profile {...cell.data} displaySize="sm" />
+                </View>
+            )
+        case 'actions': {
+            // Two buttons fit the column; with more, the first stays and the others go to a "…" menu.
+            // A menu action (`type: menu`) is its own "…" already, so it stays a button.
+            const actions = getRowActions(dedupeGridRowActions(cell.data));
+            const canFold = actions.length > ROW_ACTIONS_VISIBLE && !actions.some((itemAction) => itemAction.type === 'menu');
+            const visible = canFold ? actions.slice(0, ROW_ACTIONS_VISIBLE - 1) : actions;
+            const folded = canFold ? actions.slice(ROW_ACTIONS_VISIBLE - 1) : [];
             return (
                 <View className="w-full items-end justify-center">
                     <Row className="gap-1.5 items-center justify-end flex-nowrap">
-                        {dedupeGridRowActions(cell.data).map((itemAction, index) => (
+                        {visible.map((itemAction, index) => (
                             <RowGridButton
                                 key={"ab" + index}
                                 itemAction={itemAction}
                                 id={id}
                             />
                         ))}
+                        {folded.length ? <RowActionsOverflow id={id} actions={folded} /> : null}
                     </Row>
                 </View>
             )
+        }
 
     }
     return <TextCell>{JSON.stringify(cell)}</TextCell>
