@@ -6,6 +6,7 @@ import { problemMessage, type Schema } from 'una-api';
 import { retryOnce } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
+import { heldSelect } from '../../lib/held-select';
 import { t, tn } from '../../lib/i18n';
 import { idempotencyKeyFor, type IdempotencySlot, settleIdempotency } from '../../lib/idempotency';
 import { useNavigation } from '../../lib/navigation';
@@ -53,7 +54,26 @@ function seenAsItsPlaceText(noun: string, context: ReturnType<typeof useFormCont
  * Who will see it: the context's members, or the audience picked from those the site offers for
  * the module of `tag` (GET /api/v2's `modules`: a privacy group the site turned off is not one).
  */
-export function AudienceField({ id, tag, contextId, context, audience, onAudience, noun }: { id: string; tag: string; contextId?: string; context: ReturnType<typeof useFormContext>; audience: Audience; onAudience: (a: Audience) => void; noun: string }) {
+export function AudienceField({
+    id,
+    tag,
+    contextId,
+    context,
+    audience,
+    held = false,
+    onAudience,
+    noun,
+}: {
+    id: string;
+    tag: string;
+    contextId?: string;
+    context: ReturnType<typeof useFormContext>;
+    audience: Audience;
+    /** While the form is being saved: it takes no change and keeps the keyboard (heldSelect). */
+    held?: boolean;
+    onAudience: (a: Audience) => void;
+    noun: string;
+}) {
     const offered = useAudiences(tag);
     const options = AUDIENCES.filter((a) => offered.includes(a.value));
     // the one picked is always one the site offers (the first, when the default is not)
@@ -70,7 +90,7 @@ export function AudienceField({ id, tag, contextId, context, audience, onAudienc
     return (
         <div className="settings-field">
             <label htmlFor={`${id}-audience`}>{noun === 'them' ? t('Who can see them') : t('Who can see it')}</label>
-            <select id={`${id}-audience`} value={value} onChange={(e) => onAudience(e.target.value as Audience)}>
+            <select id={`${id}-audience`} value={value} {...heldSelect(held, (e) => onAudience(e.target.value as Audience))}>
                 {options.map((a) => (
                     <option key={a.value} value={a.value}>
                         {a.label}

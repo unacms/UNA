@@ -66,11 +66,13 @@ pub fn state_label(label: &str) -> &str {
 }
 
 /// Close every window of its own: what they show belongs to a session that is over (sign-out,
-/// or another sign-in: auth.rs).
+/// or another sign-in: auth.rs). destroy, not close: a close is handed to a page that listens for
+/// it (a form with unsaved changes asks before its window goes: native.ts guardWindowClose), and
+/// its answer could keep a window of an ended session open.
 pub fn close_all<R: Runtime>(app: &AppHandle<R>) {
     for (label, window) in app.webview_windows() {
         if label.starts_with(LABEL_PREFIX) {
-            if let Err(e) = window.close() {
+            if let Err(e) = window.destroy() {
                 log::warn!("closing {label}: {e}");
             }
         }

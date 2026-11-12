@@ -777,21 +777,29 @@
     .bx-def-box.bx-def-box-hor {
         @apply flex-row;
     }
-    .bx-def-color-bg-block {
-        @apply bg-white dark:bg-gray-800;
+    /* Blocks and cards are NEO's surfaces (bg-card/60, shadow-block-outline / shadow-card-outline in NEO's theme.css): the card
+       colour at 60% over the page, so a field or a button on its solid fill stands out from the block it is in, in light and
+       in dark. Popups float over content and stay solid. */
+    .bx-def-color-bg-block,
+    .bx-def-color-bg-box {
+        @apply bg-white/60 dark:bg-gray-800/60;
     }
-    .bx-def-color-bg-box,
     .bx-popup-color-bg {
         @apply bg-white dark:bg-gray-800 shadow-md;
     }
+    /* The fade over cut-off text ends in the block's colour as it shows on the page (white at 60% over gray-100, gray-800 at 60% over gray-950). */
     .bx-def-color-bg-box-overflow {
-        @apply bg-gradient-to-b from-transparent to-white dark:to-gray-800;
+        @apply bg-gradient-to-b from-transparent to-[#fbfbfb] dark:to-[#1b1b1e];
     }
-    /* Blocks: a shadow in place of a border (see tailwind.smooth-shadow.js), never border + shadow. */
-    .bx-def-border-block {
-        @apply smooth-shadow-border;
+    /* Their edge is NEO's outline: a light hairline inside the surface and one soft drop under it, never a border. Studio draws
+       its own (.bx-std rules below). */
+    /* A Tailwind shadow at a single class's weight (:where adds none), so a card's own hover:shadow-lg still lifts it. */
+    .bx-def-border-block,
+    .bx-def-color-bg-box:where(:not(.bx-std *)),
+    .bx-def-box:where(:not(.bx-std *)) {
+        @apply shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5),0_2px_8px_-2px_rgb(0_0_0/0.1)] dark:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_2px_8px_-2px_rgb(0_0_0/0.2)];
     }
-    .bx-def-box,
+    .bx-std .bx-def-box,
     .bx-popup-border {
         @apply ring-1 ring-gray-300/50 dark:ring-gray-600/50;
     }

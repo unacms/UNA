@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { parseRoute, routeToPath, sectionRoute } from './router';
 import { CLOSED_MAX, TabsModel, TABS_MAX, tabsStorageKey } from './tabs';
@@ -86,6 +86,109 @@ describe('tabs', () => {
         tabs.closeOthers(copy.id);
         expect(tabs.tabs.map((t) => t.id)).toEqual([copy.id]);
         expect(tabs.active.id).toBe(copy.id);
+    });
+
+    it('says a tab is shown, or a copy made, only once it is: not while unsaved changes are asked about, nor when they are kept', async () => {
+        const settled = () => new Promise((resolve) => setTimeout(resolve, 0));
+        const tabs = new TabsModel(home, null, null);
+        const first = tabs.active;
+        const second = tabs.open(route('/messages'), { background: true })!;
+        const shown = vi.fn();
+        const added = vi.fn();
+        // nothing unsaved: at once, and for the tab already shown too
+        tabs.select(first.id, shown);
+        expect(shown).toHaveBeenCalledTimes(1);
+        tabs.select(second.id, shown);
+        expect(shown).toHaveBeenCalledTimes(2);
+        tabs.select(first.id);
+        const copy = tabs.duplicate(second.id, added)!;
+        expect(added).toHaveBeenCalledTimes(1);
+        expect(tabs.active.id).toBe(copy.id);
+        tabs.close(copy.id);
+        tabs.select(first.id);
+
+        let discard = false;
+        const confirm = vi.fn(() => Promise.resolve(discard));
+        first.history.guard({ dirty: () => true, confirm });
+        shown.mockClear();
+        added.mockClear();
+        // kept: neither happens, and neither is said
+        tabs.select(second.id, shown);
+        expect(shown).not.toHaveBeenCalled();
+        await settled();
+        const refused = tabs.duplicate(first.id, added)!;
+        expect(refused).not.toBeNull();
+        await settled();
+        expect(confirm).toHaveBeenCalledTimes(2);
+        expect(shown).not.toHaveBeenCalled();
+        expect(added).not.toHaveBeenCalled();
+        expect(tabs.active.id).toBe(first.id);
+        expect(tabs.indexOf(refused.id)).toBe(-1);
+        // discarded: said once it happened, not before the answer
+        discard = true;
+        const agreed = tabs.duplicate(first.id, added)!;
+        expect(added).not.toHaveBeenCalled();
+        await settled();
+        expect(added).toHaveBeenCalledTimes(1);
+        expect(tabs.active.id).toBe(agreed.id);
+        tabs.select(first.id);
+        tabs.select(second.id, shown);
+        expect(shown).not.toHaveBeenCalled();
+        await settled();
+        expect(shown).toHaveBeenCalledTimes(1);
+        expect(tabs.active.id).toBe(second.id);
+    });
+
+    it('asks before unsaved changes in the tab shown go: another tab shown, a new one, the tab closed', async () => {
+        const settled = () => new Promise((resolve) => setTimeout(resolve, 0));
+        const tabs = new TabsModel(home, null, null);
+        const first = tabs.active;
+        const second = tabs.open(route('/messages'), { background: true })!;
+        let discard = false;
+        const confirm = vi.fn(() => Promise.resolve(discard));
+        first.history.guard({ dirty: () => true, confirm });
+        const closed = vi.fn();
+
+        tabs.select(second.id);
+        await settled();
+        expect(tabs.selectNumber(2)).toBe(true);
+        await settled();
+        const refused = tabs.open(route('/explore'))!;
+        await settled();
+        expect(tabs.close(first.id, closed)).toBe(true);
+        await settled();
+        tabs.closeOthers(second.id);
+        await settled();
+        expect(confirm).toHaveBeenCalledTimes(5);
+        expect(tabs.active.id).toBe(first.id);
+        expect(tabs.tabs.map((t) => t.id)).toEqual([first.id, second.id]);
+        expect(tabs.indexOf(refused.id)).toBe(-1);
+        expect(closed).not.toHaveBeenCalled();
+        // what leaves the shown tab where it is asks nothing
+        const behind = tabs.open(route('/explore'), { background: true })!;
+        expect(tabs.close(behind.id, closed)).toBe(true);
+        expect(closed).toHaveBeenCalledTimes(1);
+        tabs.move(second.id, 0);
+        tabs.move(second.id, 1);
+        expect(confirm).toHaveBeenCalledTimes(5);
+
+        discard = true;
+        const opened = tabs.open(route('/notifications'))!;
+        expect(tabs.active.id).toBe(first.id);
+        await settled();
+        expect(tabs.active.id).toBe(opened.id);
+        // the tab now shown has nothing unsaved
+        tabs.select(first.id);
+        expect(tabs.active.id).toBe(first.id);
+        expect(confirm).toHaveBeenCalledTimes(6);
+        expect(tabs.close(first.id, closed)).toBe(true);
+        expect(closed).toHaveBeenCalledTimes(1);
+        await settled();
+        expect(closed).toHaveBeenCalledTimes(2);
+        expect(tabs.indexOf(first.id)).toBe(-1);
+        // reopened, it is a tab of its own history: the form went with the old one
+        expect(tabs.reopen()).not.toBeNull();
+        expect(confirm).toHaveBeenCalledTimes(7);
     });
 
     it('holds at most TABS_MAX tabs and CLOSED_MAX closed ones', () => {

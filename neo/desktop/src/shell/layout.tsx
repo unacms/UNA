@@ -91,7 +91,7 @@ type Props = {
     sidebarMode?: SidebarMode;
     /** The overlay sidebar closes (Esc, a click beside it). */
     onCloseOverlay?: () => void;
-    /** Above the panes (the offline banner). */
+    /** Above the panes (the status banner: offline, or the network's API turned off). */
     banner?: ReactNode;
     /** The window's top bar (shell/top-bar.tsx): above the sidebar and the content. */
     top?: ReactNode;

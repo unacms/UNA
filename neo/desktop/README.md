@@ -1,8 +1,10 @@
 # UNA desktop app
 
 > **Preview, not for production.** The app and the API it uses (v2) are still changing. A site
-> has to turn API v2 on for it (Studio > API > Settings, "API v2 (preview)"; off as installed);
-> until then the app says the site has it turned off. NEO's web and mobile apps do not use v2.
+> has to turn API v2 on for it (Studio > API > Settings, "API v2 (preview)"; off as installed).
+> Until then the app says that the site has API v2 turned off and where its administrator turns
+> it on, which it tells apart from a site with no API v2 at all (below, "A site with its API
+> turned off"). NEO's web and mobile apps do not use v2.
 
 A Tauri 2 app for any UNA network, on [API v2](../../docs/api-v2.md): feeds, posting with photos and videos,
 comments, reactions, profiles with follows and friends, notifications (with OS notifications)
@@ -37,7 +39,8 @@ and conversations.
   `Set-Cookie` back. A redirect is followed only into the API again. The answer's status and
   headers come back at once and the body in pieces on a channel, so a streamed reply reads as
   it is written; aborting a request stops it in Rust (`api_abort`). A session that is over gets
-  no request at all, and a 401 renews the session in Rust before the page hears of it. Rust
+  no request at all, and a 401 renews the session in Rust before the page hears of it. A site
+  that says its API is turned off is not asked again by every request (below). Rust
   looks the site up itself before sign-in (`discover_site`). There is no HTTP plugin and no
   cookie jar; the CSP's `connect-src` is IPC only (`devCsp` adds Vite's HMR socket). Images and media load over https, `data:`,
   `blob:` and the app's own `una-media` scheme, in `csp` and `devCsp` alike (no plain http, so
@@ -58,6 +61,43 @@ and conversations.
   `data-tauri-drag-region`). A picture refused or failing to load
   shows the profile's monogram or a generated cover band, never a broken image. Links open in the browser (opener scoped to
   http and https), and a link that can't open shows a message.
+- A site with its API turned off (`src-tauri/src/availability.rs`, `src/lib/api-availability.ts`).
+  With API v2 off a site answers every `/api/v2` request 503 with a problem whose `code` is
+  `api_v2_disabled`, and `api_disabled` when its whole API is off; the app reads that body and
+  takes nothing else for it (a 503 of a proxy or a maintenance page, a 404 where no rewrite rule
+  is, a page of the site), and it reads no more of a failed answer than a problem is long
+  (`problem_of`: only a 503, at most 64 KB). Adding or signing in to a network (`discover_site`,
+  and `/me` after the browser): "{site} has API v2 (a preview) turned off. Its administrator can
+  turn it on in Studio > API > Settings.", or "{site} has its API turned off"; any other answer
+  keeps "{site} has no UNA API v2 (the site answered {status})". The token endpoint is
+  `/m/oauth2/token`, not under `/api/v2`, so it never answers 503: with API v2 off the site no
+  longer has the app as a client, refuses the browser's code with `invalid_client` and a
+  refresh with `unsupported_grant_type`. So when the code is refused the app asks `/api/v2`,
+  and says the same "{site} has API v2 (a preview) turned off…" when that is why
+  (`exchange_refused`). A network already signed in to whose site turns its API off is not
+  signed out and nothing of it is deleted: Rust remembers what the site said, per site, so
+  other networks keep working. While a site is held as off its tokens are not renewed at all
+  (`current_token`: the access token goes as it is, since every `/api/v2` request is answered
+  503 before the token is looked at; once the API is back the first 401 renews it). A refresh
+  refused with `invalid_client`, `unauthorized_client` or `unsupported_grant_type` when nothing
+  is known yet (a start with a token that ran out) ends the sign-in only when `/api/v2` answers:
+  when it says the API is off the tokens are kept, and when it cannot be reached or says
+  nothing (maintenance) nothing changes either. `invalid_grant` ends it as before. Until the
+  site answers again the page's requests get that problem from Rust and are not sent, but one
+  every 30 s; the sync poll keeps its usual interval instead of backing off (it is what finds
+  out that the API is back) and the sockets wait. The shell's status banner, the one that says
+  the computer is offline (`src/shell/status-banner.tsx`), says "API v2 is turned off on this
+  network" (or "The API is turned off on this network") with Try again, which asks the site at
+  once (`api_check`: its discovery document, only a network signed in to) and answers how Rust
+  holds the site after that, so a maintenance page in place of the problem leaves the banner
+  up. The banner is not in the way of anything, and it goes by itself when the API answers;
+  when Try again goes while the keyboard is on it, focus moves to the list pane. Every window
+  hears the change (the `api-availability` event) and loads again what it shows
+  (`useReloadWhenApiBack`, mounted with the window's session): the main window on any screen,
+  its full-screen "could not load" one included, and windows of their own, which only listen
+  (they have no `api_check`; their Try again asks through Rust's one request every 30 s). The
+  main window's "could not load" screen asks the site first when it is held as off
+  (`useRetryWithCheck`). Queries do not retry such an answer (`retryOnce`).
 - The keychain is read after the window shows (`AuthState::pending`, `ensure_loaded`): the page
   shows "Signing in…" and asks for the session, and only that first command reads it, off the
   main thread, once for every caller. A read that fails (access denied, locked) deletes nothing:
@@ -297,6 +337,23 @@ in Studio"; the server's side is `template/scripts/BxBaseApiV2Navigation.php`.
   groups are lists of names that open the profile in the detail pane; posts are a feed
   (FeedList: virtualized, j and k, page by page) that does not poll for new ones
   (`FeedSource.poll`). Cmd+F again focuses the field and selects its words.
+- After those come the tabs of the content modules that have a search of their own
+  (`module-results.tsx`): Posts (the Posts module's, `tab=articles`; the feed's tab is Feed
+  next to it, as on a profile), Photos, Albums, Videos, Files, Polls and Tasks, from
+  `GET /search/posts`, `/search/photos`, `/search/albums`, `/search/videos`, `/search/files`,
+  `/search/polls` and `/search/tasks` (cursor pages, More at the end). A tab is there only for
+  a module `GET /api/v2` lists, and is asked only once it is shown, so a search costs no
+  request per module; its count shows from then on. A 404 (the module turned off since) takes
+  the tab away and says "This network has no …" where a link named it, with no error. The
+  results are the module's own rows and cards (`PostRow`, `PhotoTiles`, `AlbumCard`,
+  `VideoRow`, `FileRow`, `PollRow`, `TaskRow`) and open as in its lists: beside the list;
+  Cmd+click or Cmd+Enter in a new tab behind this one; Cmd+Option+click, Cmd+Option+Enter or a
+  double-click in a window of its own. They are kept under the
+  module's list keys (`moduleSearchKey`), so an edit, a vote, a completed task or a delete in
+  the detail shows in the results. With up to thirteen tabs, those that don't fit the pane go
+  into a More menu (`SegmentedTabs fit`); the arrow keys, Home and End still go through all.
+  The palette does not ask these searches: it asks its three per key typed, and its last entry
+  opens the full search, where they are.
 
 ## Feeds
 
@@ -580,6 +637,29 @@ then send an event to `bx_timeline_0`.
   the editor (`data-own-keys`, `lib/shortcuts.ts`). Without a text box, focus goes to "Who can
   see it" (or the note, in a group). A post's text can't be emptied here: Save is off and says
   so, since the site keeps the old text.
+- Editing a post of the Posts module (`src/features/posts/edit-post.tsx`): "Edit Post" in the
+  post's More menu, for who may (`viewer.can_edit`) and only once the site has answered in this
+  view (not on a list's row, which has no text, nor on a copy kept from before, which may be
+  older than the site's), puts a form in place of the post with the new post form's fields that
+  `PATCH /posts/{id}` takes (`PostTextFields` and `PostCategoryField` of `new-post.tsx`): title,
+  summary, text (the rich editor on the post's HTML), category, and who can see it for a post
+  outside a group whose audience the site offers. The cover, photos and videos change on the
+  site, so the form has no field for them. The API keeps no revisions, so the form never sends
+  what it could not have whole. A text the editor would lose something of (`isEditableText`: a
+  heading of another level, a table, an iframe or a video, a colour or another style) is shown
+  as it reads with a note that it is edited on the site, and is never sent. `Post.summary` is
+  not always the author's: the API cuts it at 300 characters with a "…" and answers with the
+  start of the text when there is none (`postSummary`). One that is the start of the text
+  starts the field empty; one that was cut is shown without a field and is never sent. The
+  post's own category stays in the list when the site no longer offers it, and none is
+  required. Only what changed is sent, and only that is checked (a post with a short title can
+  change its category; a text of pictures only is a text, as on the site), with an
+  Idempotency-Key that is used again after an answer that never came; a field a 422 names says
+  why under it. Cmd/Ctrl+Enter saves, Esc or Cancel puts the form away (asking first when that
+  throws changes away), focus goes back to More and "Post saved" is announced. Saved, the
+  post's view has the answer, its rows in the lists take it (as lists have a post: without its
+  text), and the Posts lists, the feeds and its feed item are read again. Like the new post
+  form it keeps no draft.
 
 ## Groups
 
@@ -837,8 +917,8 @@ with a development certificate). The release workflow runs it on every macOS bui
   come from the 30 s poll, and reaction counts from the feed's poll. Deep links from the site's own pages (a site link as `una://`) and "Copy app link".
 - Settings for sounds, density and reading size. Deep links on macOS work only from an installed
   bundle.
-- Windows and Linux have not been run. The shell's checks pass on Linux and its Windows code
-  type-checks (2026-11-11, from a Mac: see Tests); untested at run time: the Windows overlay
-  badge, Mica, the tray on both, deep-link and autostart registration, the Mark of the Web on
-  downloads, the keychain (Credential Manager, Secret Service), and updates (the NSIS and MSI
-  installers in passive mode; an AppImage replacing itself; a .deb asking for pkexec).
+- Windows and Linux have not been run by a person. CI builds, lints and tests the shell on
+  macOS, Linux and Windows (the MSVC target) on every pull request; untested at run time: the
+  Windows overlay badge, Mica, the tray on both, deep-link and autostart registration, the Mark
+  of the Web on downloads, the keychain (Credential Manager, Secret Service), and updates (the
+  NSIS and MSI installers in passive mode; an AppImage replacing itself; a .deb asking for pkexec).
