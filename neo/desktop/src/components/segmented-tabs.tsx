@@ -77,7 +77,8 @@ export function fittingTabs<T extends string>(
  * once (automatic activation: each list is cached, so it is quick). Tab goes from the selected
  * tab into the panel, past a More button when they don't all fit: More lists the tabs left out
  * as a menu, and the chosen one takes a place in the row (the selected tab is always shown).
- * The arrows still go through every tab, shown or not.
+ * The arrows still go through every tab, shown or not. When the shown tab is none of them, the
+ * first one is the row's tab stop.
  */
 export function SegmentedTabs<T extends string>({ label, values, labels, current, onChange, panelId, tabId, counts, className, fit: ownFit, look: ownLook }: Props<T>) {
     const around = useContext(TabsLookContext);
@@ -122,7 +123,10 @@ export function SegmentedTabs<T extends string>({ label, values, labels, current
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [key, current, fit, look]);
 
-    const visible = fit && shown.includes(current) ? shown : values;
+    // fitted too when the shown tab is none of these (a search tab the site turned off): no
+    // tab is selected then, and the row must still not be wider than the pane
+    const stray = !values.includes(current);
+    const visible = fit && (stray || shown.includes(current)) ? shown.filter((v) => values.includes(v)) : values;
     const hidden = values.filter((v) => !visible.includes(v));
 
     const select = (v: T) => {
@@ -142,7 +146,7 @@ export function SegmentedTabs<T extends string>({ label, values, labels, current
                 next = (i + 1) % values.length;
                 break;
             case 'ArrowLeft':
-                next = (i - 1 + values.length) % values.length;
+                next = i < 0 ? values.length - 1 : (i - 1 + values.length) % values.length;
                 break;
             case 'Home':
                 next = 0;
@@ -191,7 +195,7 @@ export function SegmentedTabs<T extends string>({ label, values, labels, current
                         className="segment"
                         aria-selected={v === current}
                         aria-controls={panelId}
-                        tabIndex={v === current ? 0 : -1}
+                        tabIndex={v === current || (stray && v === visible[0]) ? 0 : -1}
                         onClick={() => onChange(v)}
                     >
                         {name(v)}

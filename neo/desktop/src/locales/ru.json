@@ -816,6 +816,7 @@
     "their photos": "фото этого автора",
     "photos in {{name}}": "фото в {{name}}",
     "the photos here": "фото из этого раздела",
+    "photos matching “{{words}}”": "фото по запросу «{{words}}»",
     "Voted for {{answer}}.": "Ваш голос: {{answer}}.",
     "Voted for your answer.": "Ваш голос учтён.",
     "You had already voted in this poll.": "Вы уже голосовали в этом опросе.",

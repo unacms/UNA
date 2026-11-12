@@ -412,8 +412,8 @@ describe('Search’s module tabs', () => {
         expect(routeToPath(history.current)).toBe('/search?q=lily');
     });
 
-    it('puts the tabs that don’t fit the pane in a More menu, the shown one always in the row', async () => {
-        // a row 320px wide, each tab 70px and More 60px: the shown tab and two more fit
+    // a row 320px wide, each tab 70px and More 60px
+    const narrowRow = () => {
         const real = Element.prototype.getBoundingClientRect;
         vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
             if (!this.parentElement?.classList.contains('segmented-measure')) return real.call(this);
@@ -424,6 +424,26 @@ describe('Search’s module tabs', () => {
         vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(function (this: HTMLElement) {
             return this.classList.contains('search-tabs') ? 320 : (width.call(this) as number);
         });
+    };
+
+    it('keeps the row fitted, with a tab stop, when the shown tab is one the site has not', async () => {
+        narrowRow();
+        const { history } = renderSearch({ list: searchRoute('lily', 'polls'), detail: null }, { off: ['/search/polls'] });
+        expect(await screen.findByText('This network has no polls.')).toBeTruthy();
+        // no tab is the shown one: three and More fit, and Tab stops on the first
+        await waitFor(() => expect(tabNames()).toEqual(['People 1', 'Feed 0', 'Groups 0']));
+        expect(screen.getByRole('button', { name: /^More Results: Posts, Photos, Albums, Videos, Files, Tasks$/ })).toBeTruthy();
+        const row = tabs().getAllByRole('tab');
+        expect(row.map((tab) => tab.tabIndex)).toEqual([0, -1, -1]);
+        expect(row.map((tab) => tab.getAttribute('aria-selected'))).toEqual(['false', 'false', 'false']);
+        // the arrows start from the ends
+        fireEvent.keyDown(row[0]!, { key: 'ArrowLeft' });
+        expect(routeToPath(history.current)).toBe('/search?q=lily&tab=tasks');
+    });
+
+    it('puts the tabs that don’t fit the pane in a More menu, the shown one always in the row', async () => {
+        // the shown tab and two more fit
+        narrowRow();
         const { history } = renderSearch({ list: searchRoute('lily', 'tasks'), detail: null });
         await screen.findByRole('list', { name: 'Tasks matching “lily”' });
         await waitFor(() => expect(tabNames()).toEqual(['People 1', 'Feed 0', 'Tasks 1']));

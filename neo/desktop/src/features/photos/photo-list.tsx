@@ -32,8 +32,9 @@ export function MoreButton({ shown, busy, onMore, children }: { shown: boolean; 
 }
 
 /**
- * Photos as the grid a list draws: one opens beside it (Cmd+Enter, Cmd+click or a double-click:
- * in a window of its own), the open one marked. A list's own photos, or a search's.
+ * Photos as the grid a list draws: one opens beside it (Cmd+click or Cmd+Enter: in a new tab
+ * behind this one; Cmd+Option+click, Cmd+Option+Enter or a double-click: in a window of its
+ * own), the open one marked. A list's own photos, or a search's.
  */
 export function PhotoTiles({ items, label, ownerId }: { items: readonly Photo[]; label: string; ownerId?: string }) {
     const route = useRoute();

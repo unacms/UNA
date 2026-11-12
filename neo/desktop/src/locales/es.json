@@ -816,6 +816,7 @@
     "their photos": "sus fotos",
     "photos in {{name}}": "las fotos en {{name}}",
     "the photos here": "las fotos de aquí",
+    "photos matching “{{words}}”": "fotos que coinciden con «{{words}}»",
     "Voted for {{answer}}.": "Has votado por {{answer}}.",
     "Voted for your answer.": "Has votado por tu respuesta.",
     "You had already voted in this poll.": "Ya habías votado en esta encuesta.",

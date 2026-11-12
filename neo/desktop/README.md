@@ -306,8 +306,9 @@ in Studio"; the server's side is `template/scripts/BxBaseApiV2Navigation.php`.
   request per module; its count shows from then on. A 404 (the module turned off since) takes
   the tab away and says "This network has no …" where a link named it, with no error. The
   results are the module's own rows and cards (`PostRow`, `PhotoTiles`, `AlbumCard`,
-  `VideoRow`, `FileRow`, `PollRow`, `TaskRow`) and open as in its lists (beside the list;
-  Cmd+click, Cmd+Enter or a double-click in a window of its own). They are kept under the
+  `VideoRow`, `FileRow`, `PollRow`, `TaskRow`) and open as in its lists: beside the list;
+  Cmd+click or Cmd+Enter in a new tab behind this one; Cmd+Option+click, Cmd+Option+Enter or a
+  double-click in a window of its own. They are kept under the
   module's list keys (`moduleSearchKey`), so an edit, a vote, a completed task or a delete in
   the detail shows in the results. With up to thirteen tabs, those that don't fit the pane go
   into a More menu (`SegmentedTabs fit`); the arrow keys, Home and End still go through all.
