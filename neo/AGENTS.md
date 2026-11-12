@@ -244,6 +244,14 @@ UNA picks how forms label their text fields: above the field (regular, the defau
 - Required marks follow UNA too (`params.required_mark`, "mark the fewer"): `none` when every labelled field is required or none is (login, sign-up), `optional` puts "(optional)" on the optional fields, `required` puts the `forms.mandatory_icon` on the required ones. A UNA that sends no mode keeps the icon. `forms.optional_text` replaces the word "optional".
 - The sign-in form's "Forgot password?" is drawn by the Password field (`forms.sys_login.forgot_password_link`, `fieldLink` on `Field`): at the end of the label's line, or under the field (on the description's line) when the label floats. Emptied, `AuthPanel` shows the centred link under the form again.
 
+### Block header
+
+A block's header (`BlockWrapper`, parts in `ui/molecules/page/page-block.js`, classes in `theme.blocks`) is a row, in shadcn/ui's Card terms: the icon, CardTitle over CardDescription, CardAction.
+
+- With a description the icon is `BlockHeaderIcon`: a 44px tile, as tall as the title (`BlockTitleStacked`, a 24px line) and one line of `BlockDescription` (14px on 20px, may wrap) together, with no gap between them (`BlockNameStacked`).
+- Without a description it is `BlockTitleIcon`: the bare icon on the title's line (`BlockName`, `BlockTitle`).
+- `BlockActions` close the row; `BlockContent` and `BlockFooter` follow. UNA's design boxes use the same composition (Artificer `general.css`).
+
 ### Sign-in and join blocks
 
 UNA's sign-in and join blocks are ordinary page blocks, so their icon, title and description come from the block (Studio > Pages) and `BlockWrapper` draws them. With the form UNA also sends the parts the site shows around it, on the form's content item:

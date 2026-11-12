@@ -96,7 +96,7 @@ class AuthBlocksTest extends BxDolIntegrationTestCase
     {
         $oDb = BxDolDb::getInstance();
         foreach (['sys_login' => '_sys_page_block_title_login', 'sys_create_account' => '_sys_page_block_title_create_account'] as $sObject => $sTitle) {
-            $aBlocks = $oDb->getAll("SELECT `icon`, `description` FROM `sys_pages_blocks` WHERE `object` = :object AND `title` = :title", ['object' => $sObject, 'title' => $sTitle]);
+            $aBlocks = $oDb->getAll("SELECT `icon`, `description` FROM `sys_pages_blocks` WHERE `object` IN (:object, 'sys_home') AND `title` = :title", ['object' => $sObject, 'title' => $sTitle]);
             $this->assertNotEmpty($aBlocks, $sObject);
             foreach ($aBlocks as $aBlock) {
                 $this->assertNotSame('', $aBlock['icon'], $sObject);

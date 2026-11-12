@@ -3,7 +3,7 @@ import Html from 'app/ui/atoms/html'
 import { stripTags, appSetting, isUrl } from 'app/lib/util';
 import { useState } from 'react';
 import { Platform } from 'react-native';
-import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader, BlockTitle, BlockDescription, BlockIcon, BlockFooter } from 'app/ui/molecules/page/page-block'
+import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader, BlockTitle, BlockDescription, BlockHeaderIcon, BlockTitleIcon, BlockNameStacked, BlockTitleStacked, BlockFooter } from 'app/ui/molecules/page/page-block'
 import AuthBlockPart from 'app/ui/molecules/auth/auth-block-part'
 import BlockNotice from 'app/ui/molecules/page/block-notice'
 import { blockAuthPart } from 'app/lib/util/page-data'
@@ -182,14 +182,32 @@ function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg
     // Title on some tiers only: hidden where it's off.
     const titleTiersClass = Array.isArray(bIsShowTitle) ? responsiveClasses('title', bIsShowTitle) : ''
 
-    const headerName = (
+    // With a description: the header icon (a 44px tile), then the title over the description.
+    // Without one: the bare icon on the title's line.
+    const blockTheme = appSetting('theme', 'blocks')
+    const title = stripTags(block.title)
+    const headerName = block.description ? (
+        <>
+            {!!block.icon && (
+                <BlockHeaderIcon>
+                    <Icon icon={block.icon} size={blockTheme['u-block-header-icon-size']} />
+                </BlockHeaderIcon>
+            )}
+            <BlockNameStacked>
+                <BlockTitleStacked>{title}</BlockTitleStacked>
+                <BlockDescription>{block.description}</BlockDescription>
+            </BlockNameStacked>
+        </>
+    ) : (
         <BlockName>
             <View className="flex-row items-center gap-2">
-                {!!block.icon && <BlockIcon>
-                    <Icon icon={block.icon} size={appSetting('theme', 'blocks')['u-block-icon-size']}/>
-                </BlockIcon>}
-                <BlockTitle>{stripTags(block.title)}</BlockTitle></View>
-            {!!block.description && <BlockDescription>{block.description}</BlockDescription>}
+                {!!block.icon && (
+                    <BlockTitleIcon>
+                        <Icon icon={block.icon} size={blockTheme['u-block-title-icon-size']} />
+                    </BlockTitleIcon>
+                )}
+                <BlockTitle>{title}</BlockTitle>
+            </View>
         </BlockName>
     )
     const headerActions = (

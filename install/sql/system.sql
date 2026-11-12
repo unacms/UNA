@@ -6595,9 +6595,9 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 
 ('sys_ntfs_context_invitations', 1, 'system', '', '_sys_page_block_title_ntfs_context_invitations', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"browse_invitations";s:6:"params";a:2:{i:0;s:19:"{logged_profile_id}";i:1;a:1:{s:13:"empty_message";b:1;}}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 1);
 
--- The sign-in and join blocks: an icon and a line under the title
-UPDATE `sys_pages_blocks` SET `icon`='log-in', `description`='_sys_page_block_desc_login' WHERE `object`='sys_login' AND `module`='system' AND `title`='_sys_page_block_title_login';
-UPDATE `sys_pages_blocks` SET `icon`='user-plus', `description`='_sys_page_block_desc_create_account' WHERE `object`='sys_create_account' AND `module`='system' AND `title`='_sys_page_block_title_create_account';
+-- The sign-in and join blocks, on their pages and on the home page: an icon and a line under the title
+UPDATE `sys_pages_blocks` SET `icon`='log-in', `description`='_sys_page_block_desc_login' WHERE `object` IN ('sys_login', 'sys_home') AND `module`='system' AND `title`='_sys_page_block_title_login';
+UPDATE `sys_pages_blocks` SET `icon`='user-plus', `description`='_sys_page_block_desc_create_account' WHERE `object` IN ('sys_create_account', 'sys_home') AND `module`='system' AND `title`='_sys_page_block_title_create_account';
 
 -- The "create profile" block describes itself: title, description and icon are shown by
 -- API clients (NEO) in the block header and can be changed in Studio.
