@@ -58,6 +58,19 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         return self::getInstanceWithTemplate(null);
     }
 
+    /**
+     * A block's footer: a quiet line under the block's content, ruled off from it (designbox_footer.html), for a notice
+     * such as the terms a form's visitor agrees to. A block's content ends with it.
+     * @param $sContent HTML of the footer; an empty one gives no footer
+     */
+    public function designBoxFooter($sContent)
+    {
+        if(trim((string)$sContent) === '')
+            return '';
+
+        return $this->_oTemplate->parseHtmlByName('designbox_footer.html', ['content' => $sContent]);
+    }
+
     function TemplPageAddComponent($sKey)
     {
         $mixedResult = false; // if you have not such component, return false!

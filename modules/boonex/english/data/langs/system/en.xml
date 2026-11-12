@@ -4195,6 +4195,8 @@
     <string name="_sys_page_block_title_search_ai"><![CDATA[Search]]></string>
     <string name="_sys_page_block_title_membership_stats"><![CDATA[Membership Limits]]></string>
     <string name="_sys_page_block_desc_account_profile_create"><![CDATA[Your account doesn’t have a profile yet. Choose a profile type to get started.]]></string>
+    <string name="_sys_page_block_desc_create_account"><![CDATA[Create an account to join the community.]]></string>
+    <string name="_sys_page_block_desc_login"><![CDATA[Enter your details to continue.]]></string>
     <string name="_sys_page_block_system_title_login"><![CDATA[Log in with Sign up link]]></string>
     <string name="_sys_page_block_system_title_login_step2"><![CDATA[Log in - step2]]></string>
     <string name="_sys_page_block_system_title_login_step3"><![CDATA[Log in - step3]]></string>
@@ -4780,6 +4782,7 @@
 	
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Your verification code is {0}.]]></string>
     <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[An error occurred, please report error to the site administrator.]]></string>
+    <string name="_sys_txt_login_agreement"><![CDATA[By logging in, you agree to the <a href="{0}">Terms of Service</a> and <a href="{1}">Privacy Policy</a>.]]></string>
     <string name="_sys_txt_join_description"><![CDATA[Already have an account?]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Log in]]></string>
     <string name="_sys_txt_join_text"><![CDATA[Joining is quick and easy. Create your own community account to get started.]]></string>

@@ -26,7 +26,7 @@ function hasGoogleAuth() {
     })
 }
 
-function hasAltAuth() {
+export function hasAltAuth() {
     return !!(
         hasGoogleAuth() ||
         appSetting('auth', 'github') ||

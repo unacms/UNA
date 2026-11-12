@@ -244,6 +244,14 @@ UNA picks how forms label their text fields: above the field (regular, the defau
 - Required marks follow UNA too (`params.required_mark`, "mark the fewer"): `none` when every labelled field is required or none is (login, sign-up), `optional` puts "(optional)" on the optional fields, `required` puts the `forms.mandatory_icon` on the required ones. A UNA that sends no mode keeps the icon. `forms.optional_text` replaces the word "optional".
 - The sign-in form's "Forgot password?" is drawn by the Password field (`forms.sys_login.forgot_password_link`, `fieldLink` on `Field`): at the end of the label's line, or under the field (on the description's line) when the label floats. Emptied, `AuthPanel` shows the centred link under the form again.
 
+### Sign-in and join blocks
+
+UNA's sign-in and join blocks are ordinary page blocks, so their icon, title and description come from the block (Studio > Pages) and `BlockWrapper` draws them. With the form UNA also sends the parts the site shows around it, on the form's content item:
+
+- `auth`: `methods` (other sign-in methods are offered in this block), `separator` (the form is shown, so an "or" goes first) and `switch` (`text`, `action`, `url`: "Don't have an account? Sign up"). `BlockWrapper` draws them inside the block, under the form (`AuthBlockPart`); the methods themselves are the app's own (`AuthPanel`, `auth` settings).
+- `footer`: the block's footer, a notice with links (the terms). `BlockWrapper` draws it in `BlockFooter` through `BlockNotice` (small, muted, centred).
+- A UNA that sends neither keeps the old layout: the login page layout and the splash draw the methods and the link under the block (`pageHasAuthPart`, `blockAuthPart` in `lib/util/page-data.ts`).
+
 ### Interface sounds
 
 Sounds are [Cuelume](https://cuelume.dev/agents.md)'s cues, one per interface job. Pick a cue by its job from Cuelume's "Which cue?" table: subtle emphasis for frequent actions, strong only for rare ones that matter. Never play one on hover, on page load, per item of a burst, or for a number that updates constantly. Everything is in `app/lib/sound`.

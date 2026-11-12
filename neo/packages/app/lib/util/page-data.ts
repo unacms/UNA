@@ -172,6 +172,19 @@ export function BlockDataByName(data: PageData | null | undefined, name: string 
     return findElementBySource(data, name);
 }
 
+/** The sign-in / join parts UNA sends with a block's form (`auth`, `footer` on a content item), or null. */
+export function blockAuthPart(block: any): { auth?: any; footer?: string } | null {
+    const items = Array.isArray(block?.content) ? block.content : [];
+    return items.find((el: any) => el && (el.auth || el.footer)) || null;
+}
+
+/** Whether a page has a block that carries those parts: then the block draws them, not the page layout. */
+export function pageHasAuthPart(data: PageData | null | undefined): boolean {
+    return Object.values(data?.elements ?? {})
+        .flatMap((level: any) => Array.isArray(level) ? level : Object.values(level ?? {}))
+        .some((block: any) => !!blockAuthPart(block));
+}
+
 export function BlockDataByType(data: PageData | null | undefined, type: string | null | undefined): any {
     if (!type) return null;
 

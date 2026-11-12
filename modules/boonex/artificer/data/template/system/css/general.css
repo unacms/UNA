@@ -550,3 +550,44 @@ html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-m
 #sys-form-login #bx-form-element-Password.bx-form-element-adaptive > .bx-form-info ~ .bx-form-warn {
     padding-inline-end: 9.5rem;
 }
+
+/* A block's footer (designbox_footer.html, BxBaseFunctions::designBoxFooter): a quiet, centred notice under the block's
+   content, ruled off from it edge to edge. Wrapped lines are balanced. */
+.bx-artificer .bx-db-footer {
+    margin: 1rem -1rem 0;
+    padding: 1rem 1rem 0;
+    border-top: 1px solid rgba(10, 10, 12, 0.08);
+
+    color: #52525b;
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+    text-align: center;
+    text-wrap: balance;
+}
+.bx-artificer .bx-db-footer a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+html.dark .bx-artificer .bx-db-footer {
+    border-top-color: rgba(250, 250, 252, 0.08);
+    color: #a1a1aa;
+}
+
+/* A block's icon sits on a quiet tile beside the title, as in NEO (36px, 8px corners). */
+.bx-artificer .bx-db-title > .bx-dbt-ic {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+
+    border-radius: 0.5rem;
+    background: rgba(10, 10, 12, 0.045);
+}
+html.dark .bx-artificer .bx-db-title > .bx-dbt-ic {
+    background: rgba(250, 250, 252, 0.06);
+}
+.bx-artificer .bx-db-title > .bx-dbt-ic + .bx-dbt-cnt {
+    margin-inline-start: 0.75rem;
+}

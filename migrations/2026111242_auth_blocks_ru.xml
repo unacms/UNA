@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The sign-in and join blocks: the line under the title, and the terms notice back under the sign-in form. -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_sys_page_block_desc_login"><![CDATA[Введите данные, чтобы продолжить.]]></string_add>
+    <string_add name="_sys_page_block_desc_create_account"><![CDATA[Создайте аккаунт, чтобы присоединиться к сообществу.]]></string_add>
+    <string_add name="_sys_txt_login_agreement"><![CDATA[Заходя, Вы соглашаетесь с <a href="{0}">Правилами пользования</a> и <a href="{1}">Политикой конфиденциальности</a>.]]></string_add>
+</resources>

@@ -3,7 +3,10 @@ import Html from 'app/ui/atoms/html'
 import { stripTags, appSetting, isUrl } from 'app/lib/util';
 import { useState } from 'react';
 import { Platform } from 'react-native';
-import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader, BlockTitle, BlockDescription, BlockIcon } from 'app/ui/molecules/page/page-block'
+import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader, BlockTitle, BlockDescription, BlockIcon, BlockFooter } from 'app/ui/molecules/page/page-block'
+import AuthBlockPart from 'app/ui/molecules/auth/auth-block-part'
+import BlockNotice from 'app/ui/molecules/page/block-notice'
+import { blockAuthPart } from 'app/lib/util/page-data'
 import { useTranslation } from 'react-i18next'
 import { Modal, NeoButton, NeoButtonLink } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon'
@@ -220,6 +223,9 @@ function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg
         </BlockHeader>
     ) : null
 
+    const authPart = blockAuthPart(block)
+    const footerHtml = typeof authPart?.footer === 'string' ? authPart.footer.trim() : ''
+
     return (
         <View className={`${wrapperClassses || 'w-full'} ${fillClass}`}>
             {(isHelp && !isHelpLink) && <Modal title={t('Help')} onVisible={!!showHelp} onClose={() => { setShowHelp(false) }} transparent={false}>
@@ -264,7 +270,15 @@ function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg
                     >
                         {/* Background on some tiers only counts as a card: it is where it shows most. */}
                         {renderChildren(overlayHeaderNode, bIsShowBg ? 'card' : 'background')}
+                        {/* A sign-in or join block: the other sign-in methods and the link to the other form, under the form. */}
+                        {authPart?.auth ? <AuthBlockPart auth={authPart.auth} /> : null}
                     </BlockContent>
+                    {/* The block's footer: UNA's notice under the content (the terms a form's visitor agrees to). */}
+                    {footerHtml ? (
+                        <BlockFooter isPad={bIsShowPadding} className="mt-4 border-t border-border pt-4 items-center justify-center">
+                            <BlockNotice html={footerHtml} />
+                        </BlockFooter>
+                    ) : null}
                 </PageBlock>
             </View>
         </View>
