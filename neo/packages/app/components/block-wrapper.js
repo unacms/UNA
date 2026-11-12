@@ -182,33 +182,34 @@ function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg
     // Title on some tiers only: hidden where it's off.
     const titleTiersClass = Array.isArray(bIsShowTitle) ? responsiveClasses('title', bIsShowTitle) : ''
 
-    // With a description: the header icon (a 44px tile), then the title over the description.
-    // Without one: the bare icon on the title's line.
+    // The header icon (UNA's block "Header icon") is a 44px tile before the title and the description;
+    // the title icon (the block's "Title icon") is small and bare, on the title's line.
     const blockTheme = appSetting('theme', 'blocks')
     const title = stripTags(block.title)
-    const headerName = block.description ? (
+    const titleIcon = block.icon ? (
+        <BlockTitleIcon>
+            <Icon icon={block.icon} size={blockTheme['u-block-title-icon-size']} />
+        </BlockTitleIcon>
+    ) : null
+    const stacked = !!block.description
+    const Name = stacked ? BlockNameStacked : BlockName
+    const Title = stacked ? BlockTitleStacked : BlockTitle
+    const headerName = (
         <>
-            {!!block.icon && (
+            {!!block.header_icon && (
                 <BlockHeaderIcon>
-                    <Icon icon={block.icon} size={blockTheme['u-block-header-icon-size']} />
+                    <Icon icon={block.header_icon} size={blockTheme['u-block-header-icon-size']} />
                 </BlockHeaderIcon>
             )}
-            <BlockNameStacked>
-                <BlockTitleStacked>{title}</BlockTitleStacked>
-                <BlockDescription>{block.description}</BlockDescription>
-            </BlockNameStacked>
+            {/* Beside a header icon a title without a description is centred on the tile. */}
+            <Name className={block.header_icon && !stacked ? 'justify-center' : undefined}>
+                <View className="flex-row items-center gap-2">
+                    {titleIcon}
+                    <Title>{title}</Title>
+                </View>
+                {stacked && <BlockDescription>{block.description}</BlockDescription>}
+            </Name>
         </>
-    ) : (
-        <BlockName>
-            <View className="flex-row items-center gap-2">
-                {!!block.icon && (
-                    <BlockTitleIcon>
-                        <Icon icon={block.icon} size={blockTheme['u-block-title-icon-size']} />
-                    </BlockTitleIcon>
-                )}
-                <BlockTitle>{title}</BlockTitle>
-            </View>
-        </BlockName>
     )
     const headerActions = (
         <>

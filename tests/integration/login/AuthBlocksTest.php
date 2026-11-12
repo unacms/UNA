@@ -32,6 +32,23 @@ class AuthBlocksTest extends BxDolIntegrationTestCase
         $this->assertMatchesRegularExpression('/^<div class="bx-db-footer [^"]*">Note<\/div>$/', $oFunctions->designBoxFooter('Note'));
     }
 
+    public function testDesignBoxDrawsTheHeaderIconAndTheTitleIcon(): void
+    {
+        $oFunctions = BxTemplFunctions::getInstance();
+
+        $sBoth = $oFunctions->designBoxContent(['Title', 'About it', 'user', 'log-in'], 'content', BX_DB_PADDING_DEF);
+        $this->assertSame(1, substr_count($sBoth, 'class="bx-dbt-hic'), 'the header icon, a tile before the title and description');
+        $this->assertSame(1, substr_count($sBoth, 'class="bx-dbt-ic'), 'the title icon, on the title line');
+        $this->assertLessThan(strpos($sBoth, 'bx-dbt-cnt'), strpos($sBoth, 'bx-dbt-hic'));
+        $this->assertGreaterThan(strpos($sBoth, 'bx-dbt-row'), strpos($sBoth, 'bx-dbt-ic '));
+
+        $sTitleIcon = $oFunctions->designBoxContent(['Title', '', 'user'], 'content', BX_DB_PADDING_DEF);
+        $this->assertStringNotContainsString('bx-dbt-hic', $sTitleIcon);
+        $this->assertSame(1, substr_count($sTitleIcon, 'class="bx-dbt-ic'));
+
+        $this->assertStringNotContainsString('bx-dbt-ic', $oFunctions->designBoxContent('Title', 'content', BX_DB_PADDING_DEF));
+    }
+
     public function testAgreementLinksToTermsAndPrivacy(): void
     {
         $oService = new BxTemplServiceLogin();
@@ -92,14 +109,14 @@ class AuthBlocksTest extends BxDolIntegrationTestCase
         $this->assertNotSame('', $aJoin[0]['footer']);
     }
 
-    public function testBlocksHaveAnIconAndADescription(): void
+    public function testBlocksHaveAHeaderIconAndADescription(): void
     {
         $oDb = BxDolDb::getInstance();
         foreach (['sys_login' => '_sys_page_block_title_login', 'sys_create_account' => '_sys_page_block_title_create_account'] as $sObject => $sTitle) {
-            $aBlocks = $oDb->getAll("SELECT `icon`, `description` FROM `sys_pages_blocks` WHERE `object` IN (:object, 'sys_home') AND `title` = :title", ['object' => $sObject, 'title' => $sTitle]);
+            $aBlocks = $oDb->getAll("SELECT `header_icon`, `description` FROM `sys_pages_blocks` WHERE `object` IN (:object, 'sys_home') AND `title` = :title", ['object' => $sObject, 'title' => $sTitle]);
             $this->assertNotEmpty($aBlocks, $sObject);
             foreach ($aBlocks as $aBlock) {
-                $this->assertNotSame('', $aBlock['icon'], $sObject);
+                $this->assertNotSame('', $aBlock['header_icon'], $sObject);
                 $this->assertNotSame('', $aBlock['description'], $sObject);
             }
         }

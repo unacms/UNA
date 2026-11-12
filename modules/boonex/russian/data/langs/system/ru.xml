@@ -529,7 +529,8 @@
 	<string name="_adm_bp_dsc_block_content_rss_url"><![CDATA[Введите здесь URL RSS-ресурса]]></string>
         <string name="_adm_bp_dsc_block_content_empty"><![CDATA[Оставьте пустым, чтобы использовать значение по умолчанию.]]></string>
         <string name="_adm_bp_dsc_block_description"><![CDATA[Короткое описание блока, отображаемое в заголовке блока.]]></string>
-        <string name="_adm_bp_dsc_block_icon"><![CDATA[Изображение (шрифтовая иконка, SVG код или эмодзи) для блока, отображаемое в заголовке блока.]]></string>
+        <string name="_adm_bp_dsc_block_header_icon"><![CDATA[Крупная иконка (шрифтовая иконка, SVG код или эмодзи) в плитке перед заголовком и описанием блока.]]></string>
+        <string name="_adm_bp_dsc_block_icon"><![CDATA[Небольшая иконка (шрифтовая иконка, SVG код или эмодзи) перед заголовком блока, в его строке.]]></string>
 	<string name="_adm_bp_dsc_block_title"><![CDATA[Короткое название для блока, отображаемое в заголовке блока.]]></string>
 	<string name="_adm_bp_dsc_block_visible_for_levels"><![CDATA[Выбрать уровни пользователей, которые могут видеть этот блок]]></string>
 	<string name="_adm_bp_dsc_page_cache_lifetime"><![CDATA[Сохранять страницу в кэше в течение данного количества секунд]]></string>
@@ -593,6 +594,7 @@
         <string name="_adm_bp_txt_block_description"><![CDATA[Описание]]></string>
 	<string name="_adm_bp_txt_block_designbox"><![CDATA[Отображение блока]]></string>
 	<string name="_adm_bp_txt_block_designbox_empty"><![CDATA[Выбрать отображение...]]></string>
+        <string name="_adm_bp_txt_block_header_icon"><![CDATA[Иконка шапки]]></string>
         <string name="_adm_bp_txt_block_class"><![CDATA[CSS класс]]></string>
         <string name="_adm_bp_txt_block_help"><![CDATA[Помощь]]></string>
 	<string name="_adm_bp_txt_block_hidden_on"><![CDATA[Скрыть на]]></string>
@@ -600,7 +602,7 @@
 	<string name="_adm_bp_txt_block_hidden_on_tablet"><![CDATA[планшете]]></string>
 	<string name="_adm_bp_txt_block_hidden_on_desktop"><![CDATA[настольном компьютере]]></string>
         <string name="_adm_bp_txt_block_hidden_on_mobile"><![CDATA[мобильное приложение]]></string>
-        <string name="_adm_bp_txt_block_icon"><![CDATA[Изображение]]></string>
+        <string name="_adm_bp_txt_block_icon"><![CDATA[Иконка заголовка]]></string>
 	<string name="_adm_bp_txt_block_padding_hidden_on"><![CDATA[Отступы скрыты на]]></string>
 	<string name="_adm_bp_txt_block_part_hidden_on_info"><![CDATA[На сайте и в приложениях. Если в оформлении блока этой части нет, она так и не показывается.]]></string>
 	<string name="_adm_bp_txt_block_selected"><![CDATA[блоков выбрано]]></string>

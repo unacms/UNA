@@ -532,7 +532,8 @@
 	<string name="_adm_bp_dsc_block_content_rss_url"><![CDATA[Enter URL to RSS resource here]]></string>
         <string name="_adm_bp_dsc_block_content_empty"><![CDATA[Leave empty to use default one]]></string>
         <string name="_adm_bp_dsc_block_description"><![CDATA[Short description for the block, visible in block header.]]></string>
-        <string name="_adm_bp_dsc_block_icon"><![CDATA[An icon (font icon, SVG or Emoji code) for the block, visible in block header.]]></string>
+        <string name="_adm_bp_dsc_block_header_icon"><![CDATA[A larger icon (font icon, SVG or Emoji code) in a tile before the block's title and description.]]></string>
+        <string name="_adm_bp_dsc_block_icon"><![CDATA[A small icon (font icon, SVG or Emoji code) before the block's title, on its line.]]></string>
 	<string name="_adm_bp_dsc_block_title"><![CDATA[Short name for the block, visible in block header.]]></string>
 	<string name="_adm_bp_dsc_block_visible_for_levels"><![CDATA[Select user levels that can see this block]]></string>
 	<string name="_adm_bp_dsc_page_cache_lifetime"><![CDATA[Store page in cache for this number of seconds]]></string>
@@ -596,6 +597,7 @@
         <string name="_adm_bp_txt_block_description"><![CDATA[Description]]></string>
 	<string name="_adm_bp_txt_block_designbox"><![CDATA[Block Layout]]></string>
 	<string name="_adm_bp_txt_block_designbox_empty"><![CDATA[Select layout...]]></string>
+        <string name="_adm_bp_txt_block_header_icon"><![CDATA[Header icon]]></string>
         <string name="_adm_bp_txt_block_class"><![CDATA[CSS Class]]></string>
         <string name="_adm_bp_txt_block_help"><![CDATA[Help]]></string>
 	<string name="_adm_bp_txt_block_hidden_on"><![CDATA[Hidden on]]></string>
@@ -603,7 +605,7 @@
 	<string name="_adm_bp_txt_block_hidden_on_tablet"><![CDATA[tablet]]></string>
 	<string name="_adm_bp_txt_block_hidden_on_desktop"><![CDATA[desktop]]></string>
         <string name="_adm_bp_txt_block_hidden_on_mobile"><![CDATA[mobile app]]></string>
-        <string name="_adm_bp_txt_block_icon"><![CDATA[Icon]]></string>
+        <string name="_adm_bp_txt_block_icon"><![CDATA[Title icon]]></string>
 	<string name="_adm_bp_txt_block_padding_hidden_on"><![CDATA[Padding hidden on]]></string>
 	<string name="_adm_bp_txt_block_part_hidden_on_info"><![CDATA[On the site and in the apps. A part the block's design box doesn't have stays off.]]></string>
 	<string name="_adm_bp_txt_block_selected"><![CDATA[blocks selected]]></string>

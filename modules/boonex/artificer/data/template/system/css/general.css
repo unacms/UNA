@@ -574,24 +574,15 @@ html.dark .bx-artificer .bx-db-footer {
     color: #a1a1aa;
 }
 
-/* A block's header, as in NEO (theme.blocks): a row of the icon, the title over the description, the actions.
-   With a description the icon is a header icon: a 44px tile, as tall as the title (24px) and one line of the
-   description (14px on 20px, which may wrap) together, with no gap between them. Without a description it is a title
-   icon: bare, on the title's line. */
-.bx-artificer .bx-db-title > .bx-dbt-ic {
+/* A block's header, as in NEO (theme.blocks): a row of the header icon, the title over the description, the actions.
+   The header icon (a block's "Header icon") is a 44px tile, as tall as the title (24px) and one line of the description
+   (14px on 20px, which may wrap) together, with no gap between them. The title icon (a block's "Title icon") is small
+   and bare, before the title on its line. */
+.bx-artificer .bx-db-title > .bx-dbt-hic {
     display: flex;
     flex: none;
     align-items: center;
     justify-content: center;
-}
-.bx-artificer .bx-db-title > .bx-dbt-ic + .bx-dbt-cnt {
-    margin-inline-start: 0.5rem;
-    min-width: 0;
-}
-.bx-artificer .bx-db-title:has(.bx-dbt-dsc) {
-    align-items: flex-start;
-}
-.bx-artificer .bx-db-title:has(.bx-dbt-dsc) > .bx-dbt-ic {
     width: 2.75rem;
     height: 2.75rem;
 
@@ -599,11 +590,26 @@ html.dark .bx-artificer .bx-db-footer {
     background: rgba(10, 10, 12, 0.045);
     font-size: 1.5rem;
 }
-html.dark .bx-artificer .bx-db-title:has(.bx-dbt-dsc) > .bx-dbt-ic {
+html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
     background: rgba(250, 250, 252, 0.06);
 }
-.bx-artificer .bx-db-title:has(.bx-dbt-dsc) > .bx-dbt-ic + .bx-dbt-cnt {
+.bx-artificer .bx-db-title > .bx-dbt-hic + .bx-dbt-cnt {
     margin-inline-start: 0.75rem;
+}
+.bx-artificer .bx-db-title > .bx-dbt-cnt {
+    min-width: 0;
+}
+.bx-artificer .bx-db-title .bx-dbt-row > .bx-dbt-ic {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    margin-inline-end: 0.5rem;
+
+    font-size: 1.25rem;
+}
+.bx-artificer .bx-db-title:has(.bx-dbt-dsc) {
+    align-items: flex-start;
 }
 .bx-artificer .bx-db-title:has(.bx-dbt-dsc) .bx-dbt-ttl {
     line-height: 1.5rem;

@@ -197,11 +197,11 @@ export const settingsElements = {
         'u-block-header':
             ' flex-row gap-3  ',
         // A block's header is a row: the header icon, the title over the description, the actions.
-        // Header icon (a block with a description): a 44px tile, as tall as the title (24px) and one
+        // Header icon (UNA's block "Header icon"): a 44px tile, as tall as the title (24px) and one
         // line of description (20px) together.
         'u-block-header-icon': 'items-center justify-center w-11 h-11 rounded-lg bg-muted/50 flex-none',
         'u-block-header-icon-size': 24,
-        // Title icon (a block without a description): the bare icon before the title, on its line.
+        // Title icon (UNA's block "Title icon", `icon`): the bare icon before the title, on its line.
         'u-block-title-icon': 'items-center justify-center flex-none',
         'u-block-title-icon-size': 20,
         // Before the header icon: kept for forks that draw BlockIcon themselves.

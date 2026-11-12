@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
-<!-- The sign-in and join blocks: the line under the title, and the terms notice back under the sign-in form. -->
+<!-- The sign-in and join blocks: the line under the title, and the terms notice back under the sign-in form. Page blocks: the header icon; the icon is the title icon. -->
 <resources name="ru" flag="ru" title="Russian">
     <string_add name="_sys_page_block_desc_login"><![CDATA[Введите данные, чтобы продолжить.]]></string_add>
     <string_add name="_sys_page_block_desc_create_account"><![CDATA[Создайте аккаунт, чтобы присоединиться к сообществу.]]></string_add>
     <string_add name="_sys_txt_login_agreement"><![CDATA[Заходя, Вы соглашаетесь с <a href="{0}">Правилами пользования</a> и <a href="{1}">Политикой конфиденциальности</a>.]]></string_add>
+    <string_add name="_adm_bp_txt_block_header_icon"><![CDATA[Иконка шапки]]></string_add>
+    <string_add name="_adm_bp_dsc_block_header_icon"><![CDATA[Крупная иконка (шрифтовая иконка, SVG код или эмодзи) в плитке перед заголовком и описанием блока.]]></string_add>
+    <string_upd name="_adm_bp_txt_block_icon"><![CDATA[Иконка заголовка]]></string_upd>
+    <string_upd name="_adm_bp_dsc_block_icon"><![CDATA[Небольшая иконка (шрифтовая иконка, SVG код или эмодзи) перед заголовком блока, в его строке.]]></string_upd>
 </resources>
