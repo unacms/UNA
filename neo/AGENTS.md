@@ -235,6 +235,14 @@ Use `NeoButton`, `NeoButtonLink` or `NeoButtonRef` from `app/design/controls`. T
 - `NeoButtonGroup` joins buttons into one control with the same `style`, `controlSize`, `borderShape`, `role` / `tint` and `width` axes. The group paints the style's surface once (no border: outline and glass are shadow rings); each NeoButton inside becomes a segment through context, with the group's style and size, only the state washes, square inner corners and no hit area over its neighbours. Segments always use the JS surface; a `glass` group on iOS 26+ draws native liquid glass behind them. Recipes are `neo_button.group` in `settings/theme/buttons.js`. Object menus (reactions, likes, scores) build theirs through `ButtonsGroupMenu`, which uses `group.defaultStyle`.
 - `/pg` is a playground for every axis (`apps/next/app/pg/page.js`, `apps/expo/app/pg/`). It isn't gated, so production builds serve it too.
 
+### Menu button style and size
+
+UNA says per menu how its buttons look and how big they are: Studio > Navigation > a menu > "Button style" (Automatic, Regular, Glass, Plain) and "Button size" (Automatic, Mini, Small, Regular, Large). The menu's API carries them as `button_style` and `button_size` (empty for Automatic).
+
+- `components/menu.js` fills them into the menu's `params` with `withMenuButtonParams` (`lib/util/menu.ts`): `regular` is NeoButton `bordered`, `glass` is `glass`, `plain` is `plain`; the sizes are NeoButton's control sizes of the same names.
+- They are the default, not an override: a call site that passes `button_style`, the legacy `button_variant` or `button_size` keeps its own. To let UNA decide for a menu, leave those out at the call site.
+- Glass is for a menu over a picture or another backdrop that varies (a cover, a header without chrome). Prefer setting it on the menu in UNA over hard-coding `glass` at a call site, so the site and the apps agree.
+
 ### Form labels
 
 UNA picks how forms label their text fields: above the field (regular, the default) or floating inside it (adaptive). It is one setting for the site and the apps, Studio > Designer > Settings, and a form display can have its own (Studio > Forms > Displays). Every form's API carries the resolved style as `params.label_style`.

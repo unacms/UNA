@@ -108,6 +108,7 @@ class BxBaseMenuCustom extends BxTemplMenuMoreAuto
             $sClass .= ' bx-menu-tab-active';
 
         $sClass .= $this->_getVisibilityClass($aItem);
+        $sClass .= $this->getButtonClasses();
 
         return [
             'name' => $aItem['name'],

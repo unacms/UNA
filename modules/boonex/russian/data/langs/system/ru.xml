@@ -1495,6 +1495,8 @@
 	<string name="_adm_nav_dsc_items_title_system"><![CDATA[Имя элемента, отображаемое только в Студии.]]></string>
         <string name="_adm_nav_dsc_items_info"><![CDATA[Значение может быть отображено под названием ссылки в виде краткого описания.]]></string>
 	<string name="_adm_nav_dsc_items_visible_for_levels"><![CDATA[Выбрать членства, разрешённые для просмотра элемента данного меню]]></string>
+        <string name="_adm_nav_dsc_menus_button_size"><![CDATA[Размер всех кнопок этого меню на сайте и в приложениях. «Автоматически» оставляет каждой кнопке размер, заданный стилем меню.]]></string>
+        <string name="_adm_nav_dsc_menus_button_style"><![CDATA[Как выглядят кнопки этого меню на сайте и в приложениях. «Автоматически» оставляет кнопку стиля меню и делает её стеклянной поверх обложки. Выберите «Стекло» для меню поверх изображения, «Обычные» для меню на ровном фоне.]]></string>
         <string name="_adm_nav_dsc_menus_persistent"><![CDATA[Количество постоянных пунктов меню. Применимо только для авто-перестраиваемых меню.]]></string>
 	<string name="_adm_nav_dsc_menus_set_name"><![CDATA[Назначить набор для элемента меню]]></string>
 	<string name="_adm_nav_dsc_menus_set_title"><![CDATA[Описательное имя для использования только в Студии. Используйте как минимум 3 символа.]]></string>
@@ -1568,6 +1570,16 @@
 	<string name="_adm_nav_txt_items_visible_for_selected"><![CDATA[Выбранные уровни]]></string>
 	<string name="_adm_nav_txt_manage_items"><![CDATA[Управление элементами]]></string>
 	<string name="_adm_nav_txt_manage_visibility"><![CDATA[Управление настройками видимости]]></string>
+	<string name="_adm_nav_txt_menus_button_auto"><![CDATA[Автоматически]]></string>
+	<string name="_adm_nav_txt_menus_button_size"><![CDATA[Размер кнопок]]></string>
+	<string name="_adm_nav_txt_menus_button_size_large"><![CDATA[Большие]]></string>
+	<string name="_adm_nav_txt_menus_button_size_mini"><![CDATA[Мини]]></string>
+	<string name="_adm_nav_txt_menus_button_size_regular"><![CDATA[Обычные]]></string>
+	<string name="_adm_nav_txt_menus_button_size_small"><![CDATA[Маленькие]]></string>
+	<string name="_adm_nav_txt_menus_button_style"><![CDATA[Стиль кнопок]]></string>
+	<string name="_adm_nav_txt_menus_button_style_glass"><![CDATA[Стекло]]></string>
+	<string name="_adm_nav_txt_menus_button_style_plain"><![CDATA[Без фона]]></string>
+	<string name="_adm_nav_txt_menus_button_style_regular"><![CDATA[Обычные]]></string>
 	<string name="_adm_nav_txt_menus_create_popup"><![CDATA[Добавить новое меню]]></string>
 	<string name="_adm_nav_txt_menus_edit_popup"><![CDATA[Редактировать "{0}" меню]]></string>
 	<string name="_adm_nav_txt_menus_gl_items"><![CDATA[Элементы]]></string>

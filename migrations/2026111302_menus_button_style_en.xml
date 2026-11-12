@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Navigation: the button style and the button size of a menu. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_nav_txt_menus_button_style"><![CDATA[Button style]]></string_add>
+    <string_add name="_adm_nav_dsc_menus_button_style"><![CDATA[How the buttons in this menu look, on the site and in the apps. Automatic keeps the button of the menu's style and makes it glass over a cover picture. Choose Glass for a menu that sits over a picture, Regular for one on a plain surface.]]></string_add>
+    <string_add name="_adm_nav_txt_menus_button_auto"><![CDATA[Automatic]]></string_add>
+    <string_add name="_adm_nav_txt_menus_button_style_regular"><![CDATA[Regular]]></string_add>
+    <string_add name="_adm_nav_txt_menus_button_style_glass"><![CDATA[Glass]]></string_add>
+    <string_add name="_adm_nav_txt_menus_button_style_plain"><![CDATA[Plain]]></string_add>
+    <string_add name="_adm_nav_txt_menus_button_size"><![CDATA[Button size]]></string_add>
+    <string_add name="_adm_nav_dsc_menus_button_size"><![CDATA[The size of every button in this menu, on the site and in the apps. Automatic leaves each button the size the menu's style gives it.]]></string_add>
+    <string_add name="_adm_nav_txt_menus_button_size_mini"><![CDATA[Mini]]></string_add>
+    <string_add name="_adm_nav_txt_menus_button_size_small"><![CDATA[Small]]></string_add>
+    <string_add name="_adm_nav_txt_menus_button_size_regular"><![CDATA[Regular]]></string_add>
+    <string_add name="_adm_nav_txt_menus_button_size_large"><![CDATA[Large]]></string_add>
+</resources>

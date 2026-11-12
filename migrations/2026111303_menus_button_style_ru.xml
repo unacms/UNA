@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Navigation: the button style and the button size of a menu. -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_adm_nav_txt_menus_button_style"><![CDATA[Стиль кнопок]]></string_add>
+    <string_add name="_adm_nav_dsc_menus_button_style"><![CDATA[Как выглядят кнопки этого меню на сайте и в приложениях. «Автоматически» оставляет кнопку стиля меню и делает её стеклянной поверх обложки. Выберите «Стекло» для меню поверх изображения, «Обычные» для меню на ровном фоне.]]></string_add>
+    <string_add name="_adm_nav_txt_menus_button_auto"><![CDATA[Автоматически]]></string_add>
+    <string_add name="_adm_nav_txt_menus_button_style_regular"><![CDATA[Обычные]]></string_add>
+    <string_add name="_adm_nav_txt_menus_button_style_glass"><![CDATA[Стекло]]></string_add>
+    <string_add name="_adm_nav_txt_menus_button_style_plain"><![CDATA[Без фона]]></string_add>
+    <string_add name="_adm_nav_txt_menus_button_size"><![CDATA[Размер кнопок]]></string_add>
+    <string_add name="_adm_nav_dsc_menus_button_size"><![CDATA[Размер всех кнопок этого меню на сайте и в приложениях. «Автоматически» оставляет каждой кнопке размер, заданный стилем меню.]]></string_add>
+    <string_add name="_adm_nav_txt_menus_button_size_mini"><![CDATA[Мини]]></string_add>
+    <string_add name="_adm_nav_txt_menus_button_size_small"><![CDATA[Маленькие]]></string_add>
+    <string_add name="_adm_nav_txt_menus_button_size_regular"><![CDATA[Обычные]]></string_add>
+    <string_add name="_adm_nav_txt_menus_button_size_large"><![CDATA[Большие]]></string_add>
+</resources>

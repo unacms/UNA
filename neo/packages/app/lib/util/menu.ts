@@ -649,3 +649,44 @@ export function getMenuItemTitleForUri(menu: MenuWithItems | null | undefined, u
     const item = (menu?.items || []).find((i) => String(i?.link || '').replace(/^\/+/, '') === uri);
     return item?.title || '';
 }
+
+/**
+ * UNA's button style of a menu (`button_style` in the menu's API; Studio > Navigation > a menu > Button style,
+ * `BxDolMenu::BUTTON_STYLE_*`) as NeoButton's style and the style of the menu's primary items.
+ */
+const UNA_MENU_BUTTON_STYLES: Readonly<Record<string, { style: string; primaryStyle: string }>> = {
+    regular: { style: 'bordered', primaryStyle: 'borderedProminent' },
+    glass: { style: 'glass', primaryStyle: 'glassProminent' },
+    plain: { style: 'plain', primaryStyle: 'borderedProminent' },
+};
+
+/** UNA's button sizes of a menu (`button_size`, `BxDolMenu::BUTTON_SIZE_*`): NeoButton's control sizes of the same names. */
+const UNA_MENU_BUTTON_SIZES = new Set(['mini', 'small', 'regular', 'large']);
+
+/**
+ * A menu's `params` with UNA's choice of button style and size filled in.
+ *
+ * UNA says per menu how its buttons look (`button_style`) and how big they are (`button_size`); empty is automatic.
+ * They are the default: a call site that names a style (`button_style`, or the legacy `button_variant`) or a size
+ * (`button_size`) keeps it. Returns `params` itself when there is nothing to add.
+ */
+export function withMenuButtonParams(
+    params: Record<string, any> | null | undefined,
+    menu: { button_style?: unknown; button_size?: unknown } | null | undefined
+): Record<string, any> {
+    const base = params || {};
+    const una = typeof menu?.button_style === 'string' ? UNA_MENU_BUTTON_STYLES[menu.button_style] : undefined;
+    const size = typeof menu?.button_size === 'string' && UNA_MENU_BUTTON_SIZES.has(menu.button_size) ? menu.button_size : undefined;
+
+    const addStyle = !!una && base.button_style == null && base.button_variant == null;
+    const addSize = !!size && base.button_size == null;
+    if (!addStyle && !addSize) return base;
+
+    const result = { ...base };
+    if (addStyle && una) {
+        result.button_style = una.style;
+        if (result.button_primary_style == null) result.button_primary_style = una.primaryStyle;
+    }
+    if (addSize) result.button_size = size;
+    return result;
+}
