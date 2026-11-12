@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- The menu Profile Memberships and the Apps Sidebar's item Member Memberships (API v2 GET /navigation). -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_sys_menu_title_profile_memberships"><![CDATA[Членство профиля]]></string_add>
+    <string_add name="_sys_menu_set_title_profile_memberships"><![CDATA[Членство профиля]]></string_add>
+    <string_add name="_sys_menu_item_title_system_member_memberships"><![CDATA[Членство участника]]></string_add>
+</resources>

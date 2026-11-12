@@ -166,7 +166,9 @@ class EmptyStateApiTest extends BxDolIntegrationTestCase
         BxDolPage::setBlockProcessing(['config_api' => []]);
         $this->bxSetProtected($o, '_bIsApi', true, BxBaseServiceProfiles::class);
         try {
-            $aBlocks = $o->serviceBrowseInvitations(0, ['params' => ['modules' => ['bx_no_such_module']]]);
+            // As an API client sends params: JSON. No module to look in, so the list is empty whatever
+            // the account has been invited to.
+            $aBlocks = $o->serviceBrowseInvitations(0, json_encode(['params' => ['modules' => ['bx_no_such_module']]]));
         }
         finally {
             $this->bxSetProtected($o, '_bIsApi', false, BxBaseServiceProfiles::class);

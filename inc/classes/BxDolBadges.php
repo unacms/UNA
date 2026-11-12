@@ -37,6 +37,17 @@ class BxDolBadges extends BxDolFactory implements iBxDolSingleton
         return $this->_oDb->getData($aParams, $aItems);
     }
     
+    /**
+     * The badges of many profiles in one query, by profile id (see BxDolBadgesQuery::getByProfileIds).
+     */
+    public function getByProfileIds($aProfileIds)
+    {
+        $aResult = [];
+        foreach ($this->_oDb->getByProfileIds($aProfileIds) as $aRow)
+            $aResult[(int)$aRow['profile_id']][] = $aRow;
+        return $aResult;
+    }
+
     public function add($iBadgeId, $iObjectId, $sModule)
     {
         return $this->_oDb->add($iBadgeId, $iObjectId, $sModule);

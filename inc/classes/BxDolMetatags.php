@@ -246,6 +246,61 @@ class BxDolMetatags extends BxDolFactory implements iBxDolFactoryObject
         return $aValues;
     }
 
+    /**
+     * Hashtags that start with a term, the most used first, at most $iLimit: what an editor
+     * suggests after `#`. As getMetatagsDataByTerm (the site's own suggestions), it reads the
+     * keywords of public and active content of every metatags object (of enabled modules here),
+     * leaves out labels where only hashtags are keywords and keywords that are no hashtag;
+     * unlike it, it reads them in one bounded query and counts how often each is used.
+     * @return array of ['keyword' => string, 'count' => int, 'url' => the hashtag's page on the site]
+     */
+    static public function getHashtagsByTerm($sTerm, $iLimit)
+    {
+        $iLimit = (int)$iLimit;
+        if ($iLimit < 1 || $sTerm === '')
+            return [];
+
+        // the enabled modules at once (a query for each would be one per metatags object)
+        $aEnabled = [];
+        foreach (BxDolModuleQuery::getInstance()->getModulesBy(['type' => 'modules', 'active' => 1]) as $aModule)
+            $aEnabled[$aModule['name']] = true;
+
+        // of enabled modules: only their content can be told public from private
+        $aObjects = [];
+        foreach ((array)BxDolMetatagsQuery::getMetatagsObjects() as $aObject)
+            if (!empty($aObject['table_keywords']) && !empty($aObject['module']) && isset($aEnabled[$aObject['module']]))
+                $aObjects[$aObject['object']] = $aObject;
+        if (!$aObjects)
+            return [];
+
+        $aLabels = [];
+        if (getParam('sys_metatags_hashtags_only') == 'on')
+            $aLabels = array_map(function ($sValue) { return mb_strtolower($sValue); }, BxDolLabel::getInstance()->getLabels(['type' => 'values']));
+
+        $aResult = [];
+        // some may be left out: read a few more than are asked for
+        foreach (BxDolMetatagsQuery::keywordsGetByTermAll($aObjects, $sTerm, $iLimit * 2) as $aRow) {
+            $sKeyword = (string)$aRow['keyword'];
+            if ($aLabels && in_array(mb_strtolower($sKeyword), $aLabels))
+                continue;
+
+            $aMatch = [];
+            if (!preg_match(self::$_sKeywordPattern, ' #' . $sKeyword, $aMatch) || !isset($aMatch[1]) || mb_strtolower($aMatch[1]) !== mb_strtolower($sKeyword))
+                continue;
+
+            $oObject = self::getObjectInstance($aRow['object']);
+            $aResult[] = [
+                'keyword' => $sKeyword,
+                'count' => (int)$aRow['count'],
+                'url' => $oObject ? $oObject->keywordsGetHashTagUrl($sKeyword, (int)$aRow['object_id']) : '',
+            ];
+            if (count($aResult) >= $iLimit)
+                break;
+        }
+
+        return $aResult;
+    }
+
     public function getModule()
     {
         return $this->_aObject['module'];
@@ -580,6 +635,15 @@ class BxDolMetatags extends BxDolFactory implements iBxDolFactoryObject
     }
 
     /**
+     * Read the keywords of many contents at once, for keywordsGet of each (@see BxDolMetatagsQuery::primeKeywords).
+     */
+    public function keywordsPrime($aIds)
+    {
+        if($this->keywordsIsEnabled())
+            $this->_oQuery->primeKeywords($aIds);
+    }
+
+    /**
      * Set condition for search results object for meta keyword
      * @param $oSearchResult search results object
      * @param $sKeyword keyword
@@ -674,9 +738,20 @@ class BxDolMetatags extends BxDolFactory implements iBxDolFactoryObject
     /**
      * Checks if locations enabled for current metatags object
      */
-    public function locationsIsEnabled() 
+    public function locationsIsEnabled()
     {
         return empty($this->_aObject['table_locations']) ? false : true;
+    }
+
+    /**
+     * The locations of many entries, read in one query: content id => location array as
+     * locationGet returns it (none for an entry without one), for locationsStringFromArray.
+     */
+    public function locationsGetMultiple($aContentIds)
+    {
+        if (!$this->locationsIsEnabled())
+            return [];
+        return $this->_oQuery->locationsGetByIds($aContentIds);
     }
 
     /**

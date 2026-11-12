@@ -78,6 +78,9 @@ class BxDolCronPruning extends BxDolCron
         // clean background jobs
         $iDeletedJobs = BxDolBackgroundJobs::pruning();
 
+        // clean what API v2 keeps (only while it is on)
+        $this->cleanApiV2();
+
         // reset Alert counters
         BxDolAlerts::resetAlertsCounter24h();
 
@@ -88,6 +91,30 @@ class BxDolCronPruning extends BxDolCron
             $iDeletedAccounts,
             $iViewTracks, $iVoteTracks, $iScoreTracks, $iFavoriteTracks, $iReportTracks
         ]);
+    }
+
+    /**
+     * Clean what API v2 keeps: Idempotency-Key answers older than a day and rate limit counts of
+     * windows that have passed. Only while API v2 is on: with it off the site prunes what it
+     * always did. A failure here (a table a site does not have yet) is logged and never stops the
+     * rest of the pruning.
+     * @return bool whether it ran
+     */
+    public function cleanApiV2()
+    {
+        if(!getParam(BxDolApiV2Router::OPTION_ENABLE))
+            return false;
+
+        foreach(['BxDolApiV2Idempotency', 'BxDolApiV2RateLimit'] as $sClass) {
+            try {
+                $sClass::prune();
+            }
+            catch(Throwable $e) {
+                error_log('UNA pruning: ' . $sClass . ': ' . $e->getMessage());
+            }
+        }
+
+        return true;
     }
 
     /**

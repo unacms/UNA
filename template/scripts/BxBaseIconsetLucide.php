@@ -193,6 +193,40 @@ class BxBaseIconsetLucide extends BxBaseIconset
     }
 
     /**
+     * The Lucide icon an icon code of the site draws (a Lucide name, or a Font Awesome one this
+     * set maps, with or without its classes: `shield-alt`, `fas fa-star col-red`), false when it
+     * names no Lucide icon (an image, an emoji, HTML, an unknown name).
+     */
+    public function getLucideName($sIcon)
+    {
+        $sIcon = trim((string)$sIcon);
+        if($sIcon === '' || !preg_match('/^[a-z0-9\s_-]+$/i', $sIcon))
+            return false;
+
+        $sName = '';
+        foreach(preg_split('/\s+/', mb_strtolower($sIcon)) as $sPart)
+            if(!in_array($sPart, ['sys-icon', 'sys-icon-bigger', 'fa', 'fas', 'far', 'fab', 'fa-fw'], true) && strncmp($sPart, 'col-', 4) !== 0) {
+                $sName = $sPart;
+                break;
+            }
+
+        $aNames = [$sName];
+        if(strncmp($sName, 'fa-', 3) === 0)
+            $aNames[] = mb_substr($sName, 3);
+
+        foreach($aNames as $s) {
+            if($s === '')
+                continue;
+            if(isset($this->_aMap[$s]))
+                $s = $this->_aMap[$s];
+            if(preg_match('/^[a-z0-9-]+$/', $s) && file_exists(BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'lucide/icons/' . $s . '.svg'))
+                return $s;
+        }
+
+        return false;
+    }
+
+    /**
      * Get Lucide icon name (kebab-case) by Font Awesome or Lucide icon name.
      */
     protected function _getIconName($sIcon)

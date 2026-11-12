@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Headings for the groups of the apps' sidebar (API v2 GET /navigation, the menu Apps Sidebar): Following heads Member Following; You is there for an owner to head a group with. -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_sys_menu_item_title_member_menu"><![CDATA[Вы]]></string_add>
+    <string_add name="_sys_menu_item_title_member_followings"><![CDATA[Подписки]]></string_add>
+</resources>

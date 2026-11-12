@@ -24,8 +24,8 @@ class BxDolCategoryQuery extends BxDolDb
     static public function getCategoryObject ($sObject)
     {
         $oDb = BxDolDb::getInstance();
-        $sQuery = $oDb->prepare("SELECT * FROM `sys_objects_category` WHERE `object` = ?", $sObject);
-        $aObject = $oDb->getRow($sQuery);
+        // all the objects at once, once per request: a page asks for many, some a module has not
+        $aObject = $oDb->getObjectRow('sys_objects_category', 'object', $sObject);
         if (!$aObject || !is_array($aObject))
             return false;
 
@@ -44,6 +44,26 @@ class BxDolCategoryQuery extends BxDolDb
     }
 
     static public function getItemsNumInCategory ($aObject, $sCategoryValue, $bPublicOnly = true, $aParams = [])
+    {
+        $oDb = BxDolDb::getInstance();
+        return $oDb->getOne("SELECT COUNT(*) FROM `" . $aObject['table'] . "` " . $aObject['join'] . " WHERE `" . $aObject['field'] . "` = :cat " . $aObject['where'] . self::_itemsWhere($aObject, $bPublicOnly, $aParams), array('cat' => $sCategoryValue));
+    }
+
+    /**
+     * The number of items in each category at once, as getItemsNumInCategory counts them, in
+     * one query: category value => number, categories without items left out.
+     */
+    static public function getItemsNumsInCategories ($aObject, $bPublicOnly = true, $aParams = [])
+    {
+        $oDb = BxDolDb::getInstance();
+        $aPairs = $oDb->getPairs("SELECT `" . $aObject['field'] . "` AS `value`, COUNT(*) AS `num` FROM `" . $aObject['table'] . "` " . $aObject['join'] . " WHERE 1 " . $aObject['where'] . self::_itemsWhere($aObject, $bPublicOnly, $aParams) . " GROUP BY `" . $aObject['field'] . "`", 'value', 'num');
+        return array_map('intval', is_array($aPairs) ? $aPairs : []);
+    }
+
+    /**
+     * The condition on the items that count: public ones (or a context's), active ones.
+     */
+    static protected function _itemsWhere ($aObject, $bPublicOnly, $aParams)
     {
         $oDb = BxDolDb::getInstance();
         $sWhere = '';
@@ -67,7 +87,7 @@ class BxDolCategoryQuery extends BxDolDb
             if(isset($CNF['FIELD_STATUS_ADMIN']))
                 $sWhere .= ' AND `' . $aObject['table'] . '`.`' . $CNF['FIELD_STATUS_ADMIN'] . '` = \'active\' ';
         }
-        return $oDb->getOne("SELECT COUNT(*) FROM `" . $aObject['table'] . "` " . $aObject['join'] . " WHERE `" . $aObject['field'] . "` = :cat " . $aObject['where'] . $sWhere, array('cat' => $sCategoryValue));
+        return $sWhere;
     }
 }
 

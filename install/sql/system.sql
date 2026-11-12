@@ -4,7 +4,7 @@
 
 -- --------------------------------------------------------
 
-DROP TABLE IF EXISTS `sys_keys`, `sys_objects_editor`, `sys_objects_iconset`, `sys_objects_player`, `sys_objects_push`, `sys_objects_sms`, `sys_objects_embeds`, `sys_objects_file_handlers`, `sys_objects_captcha`, `sys_objects_cmts`, `sys_cmts_images`, `sys_cmts_images_preview`, `sys_cmts_images2entries`, `sys_cmts_ids`, `sys_cmts_meta_keywords`, `sys_cmts_meta_mentions`, `sys_cmts_votes`, `sys_cmts_votes_track`, `sys_cmts_reactions`, `sys_cmts_reactions_track`, `sys_cmts_reports`, `sys_cmts_reports_track`, `sys_cmts_scores`, `sys_cmts_scores_track`, `sys_email_templates`, `sys_queue_push`, `sys_queue_email`, `sys_options`, sys_options_types, `sys_options_categories`, `sys_options_mixes`, `sys_options_mixes2options`,  `sys_localization_categories`, `sys_localization_keys`, `sys_localization_languages`, `sys_localization_strings`, `sys_acl_actions`, `sys_acl_actions_track`, `sys_acl_matrix`, `sys_acl_levels`, `sys_sessions`, `sys_acl_levels_members`, `sys_objects_rss`, `sys_objects_search`, `sys_objects_search_extended`, `sys_search_extended_fields`, `sys_search_extended_sorting_fields`, `sys_statistics`, `sys_audit`, `sys_alerts`, `sys_alerts_cache_triggers`, `sys_alerts_log`, `sys_alerts_desc`, `sys_alerts_handlers`, `sys_injections`, `sys_injections_admin`, `sys_modules`, `sys_modules_file_tracks`, `sys_modules_relations`, `sys_migrations`, `sys_permalinks`, `sys_objects_privacy`, `sys_privacy_defaults`, `sys_privacy_groups`, `sys_privacy_groups_custom`, `sys_privacy_groups_custom_members`, `sys_privacy_groups_custom_memberships`, `sys_objects_recommendation`, `sys_recommendation_criteria`, `sys_recommendation_data`, `sys_objects_auths`, `sys_objects_score`, `sys_objects_vote`, `sys_objects_report`, `sys_objects_view`, `sys_objects_favorite`, `sys_objects_feature`, `sys_objects_chart`, `sys_objects_content_info`, `sys_content_info_grids`, `sys_background_jobs`, `sys_cron_jobs`, `sys_objects_storage`, `sys_objects_uploader`, `sys_storage_user_quotas`, `sys_storage_tokens`, `sys_storage_ghosts`, `sys_storage_deletions`, `sys_storage_mime_types`, `sys_objects_transcoder`, `sys_transcoder_images_files`, `sys_transcoder_videos_files`, `sys_transcoder_audio_files`, `sys_transcoder_filters`, `sys_transcoder_queue`, `sys_transcoder_queue_files`, `sys_accounts`, `sys_accounts_password`, `sys_accounts_pictures`, `sys_accounts_pictures_resized`, `sys_profiles`, `sys_profiles_track`, `sys_objects_form`, `sys_form_displays`, `sys_form_inputs`, `sys_form_inputs_privacy`, `sys_form_display_inputs`, `sys_form_pre_lists`, `sys_form_pre_values`, `sys_menu_templates`, `sys_objects_menu`, `sys_menu_sets`, `sys_menu_items`, `sys_objects_grid`, `sys_grid_fields`, `sys_grid_actions`, `sys_objects_connection`, `sys_profiles_conn_bans`, `sys_profiles_conn_relations`, `sys_profiles_conn_subscriptions`, `sys_profiles_conn_friends`, `sys_objects_page`, `sys_pages_types`, `sys_pages_layouts`, `sys_pages_layout_columns`, `sys_pages_design_boxes`, `sys_pages_content_placeholders`, `sys_pages_blocks`, `sys_pages_blocks_data`, `sys_labels`, `sys_objects_metatags`, `sys_objects_category`, `sys_objects_live_updates`, `sys_objects_payments`, `sys_files`, `sys_images`, `sys_images_custom`, `sys_images_resized`, `sys_images_editor`, `sys_images_editor_resized`, `sys_videos_editor`, `sys_videos_editor_resized`, `sys_wiki_files`, `sys_wiki_images_resized`, `sys_rewrite_rules`, `sys_seo_links`, `sys_seo_uri_rewrites`, `sys_api_keys`, `sys_api_origins`, `sys_agents_models`, `sys_agents_vector_store`, `sys_agents_vector_store_data`, `sys_agents_agents`, `sys_agents_tools`, `sys_agents_chat_history`, `sys_agents_chat_artifacts`, `sys_agents_chat_images`, `sys_agents_sql_log`, `sys_agents_prompt_feedback`, `sys_preloader`, `sys_std_roles`, `sys_std_roles_actions`, `sys_std_roles_actions2roles`, `sys_std_roles_members`, `sys_std_pages`, `sys_std_widgets`, `sys_std_widgets_bookmarks`, `sys_std_pages_widgets`, `sys_categories`, `sys_categories2objects`, `sys_objects_logs`, `sys_objects_location_field`, `sys_objects_location_map`, `sys_objects_wiki`, `sys_pages_wiki_blocks`, `sys_badges`, `sys_badges2objects`, `sys_form_fields_reaction`, `sys_form_fields_reaction_track`, `sys_form_fields_votes`, `sys_form_fields_votes_track`, `sys_form_fields_ids`, `sys_iframely_data`, `sys_embeded_data`, `sys_logger`;
+DROP TABLE IF EXISTS `sys_keys`, `sys_objects_editor`, `sys_objects_iconset`, `sys_objects_player`, `sys_objects_push`, `sys_objects_sms`, `sys_objects_embeds`, `sys_objects_file_handlers`, `sys_objects_captcha`, `sys_objects_cmts`, `sys_cmts_images`, `sys_cmts_images_preview`, `sys_cmts_images2entries`, `sys_cmts_ids`, `sys_cmts_meta_keywords`, `sys_cmts_meta_mentions`, `sys_cmts_votes`, `sys_cmts_votes_track`, `sys_cmts_reactions`, `sys_cmts_reactions_track`, `sys_cmts_reports`, `sys_cmts_reports_track`, `sys_cmts_scores`, `sys_cmts_scores_track`, `sys_email_templates`, `sys_queue_push`, `sys_queue_email`, `sys_options`, sys_options_types, `sys_options_categories`, `sys_options_mixes`, `sys_options_mixes2options`,  `sys_localization_categories`, `sys_localization_keys`, `sys_localization_languages`, `sys_localization_strings`, `sys_acl_actions`, `sys_acl_actions_track`, `sys_acl_matrix`, `sys_acl_levels`, `sys_sessions`, `sys_acl_levels_members`, `sys_objects_rss`, `sys_objects_search`, `sys_objects_search_extended`, `sys_search_extended_fields`, `sys_search_extended_sorting_fields`, `sys_statistics`, `sys_audit`, `sys_alerts`, `sys_alerts_cache_triggers`, `sys_alerts_log`, `sys_alerts_desc`, `sys_alerts_handlers`, `sys_injections`, `sys_injections_admin`, `sys_modules`, `sys_modules_file_tracks`, `sys_modules_relations`, `sys_migrations`, `sys_permalinks`, `sys_objects_privacy`, `sys_privacy_defaults`, `sys_privacy_groups`, `sys_privacy_groups_custom`, `sys_privacy_groups_custom_members`, `sys_privacy_groups_custom_memberships`, `sys_objects_recommendation`, `sys_recommendation_criteria`, `sys_recommendation_data`, `sys_objects_auths`, `sys_objects_score`, `sys_objects_vote`, `sys_objects_report`, `sys_objects_view`, `sys_objects_favorite`, `sys_objects_feature`, `sys_objects_chart`, `sys_objects_content_info`, `sys_content_info_grids`, `sys_background_jobs`, `sys_cron_jobs`, `sys_objects_storage`, `sys_objects_uploader`, `sys_storage_user_quotas`, `sys_storage_tokens`, `sys_storage_ghosts`, `sys_storage_deletions`, `sys_storage_mime_types`, `sys_objects_transcoder`, `sys_transcoder_images_files`, `sys_transcoder_videos_files`, `sys_transcoder_audio_files`, `sys_transcoder_filters`, `sys_transcoder_queue`, `sys_transcoder_queue_files`, `sys_accounts`, `sys_accounts_password`, `sys_accounts_pictures`, `sys_accounts_pictures_resized`, `sys_profiles`, `sys_profiles_track`, `sys_objects_form`, `sys_form_displays`, `sys_form_inputs`, `sys_form_inputs_privacy`, `sys_form_display_inputs`, `sys_form_pre_lists`, `sys_form_pre_values`, `sys_menu_templates`, `sys_objects_menu`, `sys_menu_sets`, `sys_menu_items`, `sys_objects_grid`, `sys_grid_fields`, `sys_grid_actions`, `sys_objects_connection`, `sys_profiles_conn_bans`, `sys_profiles_conn_relations`, `sys_profiles_conn_subscriptions`, `sys_profiles_conn_friends`, `sys_objects_page`, `sys_pages_types`, `sys_pages_layouts`, `sys_pages_layout_columns`, `sys_pages_design_boxes`, `sys_pages_content_placeholders`, `sys_pages_blocks`, `sys_pages_blocks_data`, `sys_labels`, `sys_objects_metatags`, `sys_objects_category`, `sys_objects_live_updates`, `sys_objects_payments`, `sys_files`, `sys_images`, `sys_images_custom`, `sys_images_resized`, `sys_images_editor`, `sys_images_editor_resized`, `sys_videos_editor`, `sys_videos_editor_resized`, `sys_wiki_files`, `sys_wiki_images_resized`, `sys_rewrite_rules`, `sys_seo_links`, `sys_seo_uri_rewrites`, `sys_api_keys`, `sys_api_origins`, `sys_api_idempotency`, `sys_api_rate_limits`, `sys_agents_models`, `sys_agents_vector_store`, `sys_agents_vector_store_data`, `sys_agents_agents`, `sys_agents_tools`, `sys_agents_chat_history`, `sys_agents_chat_artifacts`, `sys_agents_chat_images`, `sys_agents_sql_log`, `sys_agents_prompt_feedback`, `sys_preloader`, `sys_std_roles`, `sys_std_roles_actions`, `sys_std_roles_actions2roles`, `sys_std_roles_members`, `sys_std_pages`, `sys_std_widgets`, `sys_std_widgets_bookmarks`, `sys_std_pages_widgets`, `sys_categories`, `sys_categories2objects`, `sys_objects_logs`, `sys_objects_location_field`, `sys_objects_location_map`, `sys_objects_wiki`, `sys_pages_wiki_blocks`, `sys_badges`, `sys_badges2objects`, `sys_form_fields_reaction`, `sys_form_fields_reaction_track`, `sys_form_fields_votes`, `sys_form_fields_votes_track`, `sys_form_fields_ids`, `sys_iframely_data`, `sys_embeded_data`, `sys_logger`;
 
 ALTER DATABASE DEFAULT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
 SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
@@ -919,7 +919,15 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_api_cookie_secure', '_adm_stg_cpt_option_sys_api_cookie_secure', '', 'checkbox', '', '', '', 42),
 (@iCategoryId, 'sys_api_cookie_samesite', '_adm_stg_cpt_option_sys_api_cookie_samesite', 'Lax', 'select', 'None,Lax,Strict', '', '', 44),
 (@iCategoryId, 'sys_api_url_root_email', '_adm_stg_cpt_option_sys_api_url_root_email', '', 'digit', '', '', '', 50),
-(@iCategoryId, 'sys_api_url_root_push', '_adm_stg_cpt_option_sys_api_url_root_push', '', 'digit', '', '', '', 51);
+(@iCategoryId, 'sys_api_url_root_push', '_adm_stg_cpt_option_sys_api_url_root_push', '', 'digit', '', '', '', 51),
+(@iCategoryId, 'sys_api_v2_enable', '_adm_stg_cpt_option_sys_api_v2_enable', '', 'checkbox', '', '', '', 59),
+(@iCategoryId, 'sys_api_v2_rate_limit', '_adm_stg_cpt_option_sys_api_v2_rate_limit', 'on', 'checkbox', '', '', '', 60),
+(@iCategoryId, 'sys_api_v2_rate_limit_general', '_adm_stg_cpt_option_sys_api_v2_rate_limit_general', '600', 'digit', '', '', '', 61),
+(@iCategoryId, 'sys_api_v2_rate_limit_write', '_adm_stg_cpt_option_sys_api_v2_rate_limit_write', '120', 'digit', '', '', '', 62),
+(@iCategoryId, 'sys_api_v2_rate_limit_search', '_adm_stg_cpt_option_sys_api_v2_rate_limit_search', '120', 'digit', '', '', '', 63),
+(@iCategoryId, 'sys_api_v2_rate_limit_preview', '_adm_stg_cpt_option_sys_api_v2_rate_limit_preview', '30', 'digit', '', '', '', 64),
+(@iCategoryId, 'sys_api_v2_rate_limit_agent', '_adm_stg_cpt_option_sys_api_v2_rate_limit_agent', '20', 'digit', '', '', '', 65),
+(@iCategoryId, 'sys_api_v2_rate_limit_upload', '_adm_stg_cpt_option_sys_api_v2_rate_limit_upload', '120', 'digit', '', '', '', 66);
 
 
 --
@@ -4992,6 +5000,9 @@ INSERT INTO `sys_objects_menu` (`object`, `title`, `title_public`, `set_name`, `
 ('sys_profile_stats', '_sys_menu_title_profile_stats', '', 'sys_profile_stats', 'system', 21, 0, 1, 'BxTemplMenuProfileStats', ''),
 ('sys_tags_cloud', '_sys_menu_title_tags_cloud', '', '', 'system', 21, 0, 1, 'BxTemplMenuTagsCloud', ''),
 ('sys_profile_followings', '_sys_menu_title_profile_followings', '', 'sys_profile_followings', 'system', 27, 0, 1, 'BxTemplMenuProfileFollowings', ''),
+('sys_profile_memberships', '_sys_menu_title_profile_memberships', '', 'sys_profile_memberships', 'system', 27, 0, 1, 'BxTemplMenuProfileMemberships', ''),
+('sys_apps_sidebar', '_sys_menu_title_apps_sidebar', '', 'sys_apps_sidebar', 'system', 30, 0, 1, 'BxTemplMenuAppsSidebar', ''),
+('sys_apps_menu', '_sys_menu_title_apps_menu', '', 'sys_apps_menu', 'system', 6, 0, 1, 'BxTemplMenuAppsMenu', ''),
 ('sys_switch_language_popup', '_sys_menu_title_switch_language_popup', '', 'sys_switch_language', 'system', 6, 0, 1, 'BxTemplMenuSwitchLanguage', ''),
 ('sys_switch_language_inline', '_sys_menu_title_switch_language_inline', '', 'sys_switch_language', 'system', 3, 0, 1, 'BxTemplMenuSwitchLanguage', ''),
 ('sys_switch_template', '_sys_menu_title_switch_template', '', 'sys_switch_template', 'system', 6, 0, 1, 'BxTemplMenuSwitchTemplate', ''),
@@ -5012,6 +5023,8 @@ INSERT INTO `sys_objects_menu` (`object`, `title`, `title_public`, `set_name`, `
 
 UPDATE `sys_objects_menu` SET `cache` = 'per_acl' WHERE `object` IN('sys_site', 'sys_account_notifications', 'sys_add_content', 'sys_toolbar_site', 'sys_footer', 'sys_site_submenu', 'sys_homepage_submenu', 'sys_homepage', 'sys_application', 'sys_site_in_panel');
 UPDATE `sys_objects_menu` SET `cache` = 'per_user' WHERE `object` IN('sys_toolbar_member', 'sys_profile_stats');
+-- the apps' menu has the viewer's own profile link: its items for API v2 GET /navigation are kept per profile
+UPDATE `sys_objects_menu` SET `cache` = 'per_user' WHERE `object` = 'sys_apps_menu';
 
 CREATE TABLE IF NOT EXISTS `sys_menu_sets` (
   `set_name` varchar(64) NOT NULL,
@@ -5044,6 +5057,9 @@ INSERT INTO `sys_menu_sets` (`set_name`, `module`, `title`, `deletable`) VALUES
 ('sys_profiles_create', 'system', '_sys_menu_set_title_profile_create_links', 0),
 ('sys_profile_stats', 'system', '_sys_menu_set_title_profile_stats', 0),
 ('sys_profile_followings', 'system', '_sys_menu_set_title_profile_followings', 0),
+('sys_profile_memberships', 'system', '_sys_menu_set_title_profile_memberships', 0),
+('sys_apps_sidebar', 'system', '_sys_menu_set_title_apps_sidebar', 0),
+('sys_apps_menu', 'system', '_sys_menu_set_title_apps_menu', 0),
 ('sys_cmts_item_manage', 'system', '_sys_menu_set_title_cmts_item_manage', 0),
 ('sys_cmts_item_actions', 'system', '_sys_menu_set_title_cmts_item_actions', 0),
 ('sys_cmts_item_counters', 'system', '_sys_menu_set_title_cmts_item_counters', 0),
@@ -5122,6 +5138,25 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_site_panel', 'system', 'public-menu', '_sys_menu_item_title_system_public_menu', '', '', '', '', '', 'sys_site_in_panel', 2147483647, 0, 0, 2),
 ('sys_site_panel', 'system', 'member-menu', '_sys_menu_item_title_system_member_menu', '', '', '', '', '', 'sys_profile_stats', 2147483646, 1, 0, 3),
 ('sys_site_panel', 'system', 'member-followings', '_sys_menu_item_title_system_member_followings', '', '', '', '', '', 'sys_profile_followings', 2147483646, 1, 0, 4);
+
+-- the apps' sidebar (API v2 GET /navigation, BxBaseApiV2Navigation): menus of its own, which the site does not draw and
+-- API v1 is not asked for. Each item of Apps Sidebar is a group: its submenu's items for the apps, under its title when
+-- it has one. Apps Menu is the first: one's main places (the modules add Messages and Notifications). Public Menu is
+-- the site menu as the site has it. Member Menu (the site's Profile Stats) and Member Following are there for an
+-- owner to turn on (enable-app-menus.sql turns the others on).
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
+('sys_apps_sidebar', 'system', 'member-avatar', '_sys_menu_item_title_system_member_avatar', '', '', '', '', '', '', 2147483646, 1, 0, 1),
+('sys_apps_sidebar', 'system', 'apps-menu', '_sys_menu_item_title_system_apps_menu', '', '', '', '', '', 'sys_apps_menu', 2147483647, 1, 0, 2),
+('sys_apps_sidebar', 'system', 'public-menu', '_sys_menu_item_title_system_public_menu', '_sys_menu_item_title_public_menu', '', '', '', '', 'sys_site_in_panel', 2147483647, 1, 0, 3),
+('sys_apps_sidebar', 'system', 'member-menu', '_sys_menu_item_title_system_member_menu', '', '', '', '', '', 'sys_profile_stats', 2147483646, 0, 0, 4),
+('sys_apps_sidebar', 'system', 'member-followings', '_sys_menu_item_title_system_member_followings', '_sys_menu_item_title_member_followings', '', '', '', '', 'sys_profile_followings', 2147483646, 0, 0, 5),
+('sys_apps_sidebar', 'system', 'member-memberships', '_sys_menu_item_title_system_member_memberships', '', '', '', '', '', 'sys_profile_memberships', 2147483646, 1, 0, 6);
+
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
+('sys_apps_menu', 'system', 'home', '_sys_menu_item_title_system_home', '_sys_menu_item_title_home', 'page.php?i=home', '', '', 'home', '', '', 2147483647, 1, 0, 1),
+('sys_apps_menu', 'system', 'explore', '_sys_menu_item_title_system_explore', '_sys_menu_item_title_explore', 'page.php?i=explore', '', '', 'compass', '', '', 2147483647, 1, 0, 2),
+('sys_apps_menu', 'system', 'profile', '_sys_menu_item_title_system_profile', '_sys_menu_item_title_profile', '{member_url}', '', '', 'user', '', '', 2147483646, 1, 0, 3),
+('sys_apps_menu', 'system', 'connections', '_sys_menu_item_title_system_connections', '_sys_menu_item_title_connections', 'page.php?i=friend-suggestions', '', '', 'users', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:31:"get_unconfirmed_connections_num";s:6:"params";a:1:{i:0;s:20:"sys_profiles_friends";}s:5:"class";s:23:"TemplServiceConnections";}', '', 2147483646, 1, 0, 6);
 
 -- application menu
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
@@ -6865,6 +6900,31 @@ CREATE TABLE `sys_api_origins` (
   `order` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 );
+
+-- API v2 Idempotency-Key (BxDolApiV2Idempotency): the first answer to a signed-in write, replayed for a day.
+-- scope: sha256 of the credential; fingerprint: sha256 of the request; status NULL while it runs.
+CREATE TABLE `sys_api_idempotency` (
+  `scope` binary(32) NOT NULL,
+  `key` varchar(255) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  `fingerprint` binary(32) NOT NULL,
+  `status` smallint(5) unsigned DEFAULT NULL,
+  `headers` text,
+  `body` mediumblob,
+  `added` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`scope`, `key`),
+  KEY `added` (`added`)
+) ENGINE=InnoDB;
+
+-- API v2 rate limits (BxDolApiV2RateLimit): the requests of a subject counted in a bucket's current window.
+-- subject: a keyed sha256 of the profile or of a guest's address; started: when the window began; hits stops one above the limit.
+CREATE TABLE `sys_api_rate_limits` (
+  `subject` binary(32) NOT NULL,
+  `bucket` varchar(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  `started` int(10) unsigned NOT NULL,
+  `hits` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`subject`, `bucket`),
+  KEY `started` (`started`)
+) ENGINE=InnoDB;
 
 -- --------------------------------------------------------
 

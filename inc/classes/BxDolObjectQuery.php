@@ -95,6 +95,21 @@ class BxDolObjectQuery extends BxDolDb
         return (int)$this->getOne($sQuery) != 0;
     }
 
+    /**
+     * Which of the objects the author performed the action on (isPerformed for a page of
+     * objects in one query): their ids.
+     */
+    public function getPerformedObjects($aObjectIds, $iAuthorId)
+    {
+        $aObjectIds = array_values(array_unique(array_filter(array_map('intval', (array)$aObjectIds))));
+        if(empty($aObjectIds) || empty($this->_sTableTrack))
+            return [];
+
+        return array_map('intval', $this->getColumn("SELECT DISTINCT `object_id` FROM `{$this->_sTableTrack}` WHERE `author_id` = :author_id AND `object_id` IN (" . $this->implode_escape($aObjectIds) . ")", [
+            'author_id' => $iAuthorId
+        ]));
+    }
+
     public function getPerformedBy($iObjectId, $iStart = 0, $iPerPage = 0)
     {
         $sLimitClause = "";
@@ -190,6 +205,11 @@ class BxDolObjectQuery extends BxDolDb
     {
         if(empty($this->_sTriggerFieldId))
             return [];
+
+        // the row primed in the open row scope (an API page of entries: BxDolDb::openRowScope)
+        $aRow = [];
+        if($this->_getScopedRow($this->_sTriggerTable, $this->_sTriggerFieldId, $iId, $aRow))
+            return $aRow;
 
         return $this->getRow("SELECT * FROM `{$this->_sTriggerTable}` WHERE `{$this->_sTriggerFieldId}` = :id LIMIT 1", [
             'id' => $iId

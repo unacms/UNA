@@ -60,6 +60,19 @@ class BxDolSocketsSoketi extends BxDolSockets
         return $this->_oPusher;
     }
 
+    public function getClientConfig()
+    {
+        if(!$this->isEnabled() || !$this->_sKey || !$this->_sHost)
+            return null;
+
+        return [
+            'scheme' => $this->_sScheme,
+            'host' => $this->_sHost,
+            'port' => $this->_sPort,
+            'key' => $this->_sKey,
+        ];
+    }
+
     public function getJsCode()
     {
         // Without a sockets server (a fresh install) the client would try Pusher's own hosts on every page.

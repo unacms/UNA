@@ -73,6 +73,51 @@ class BxDolPrivacyQuery extends BxDolDb
         return $this->fromMemory($sCacheKey, 'getRow', $sQuery);
     }
 
+    /**
+     * What getObjectInfo reads of each of these objects for an action, read in one query and
+     * kept in memory where getObjectInfo keeps it, so a page that checks many of them reads it
+     * once. One there is not is left to getObjectInfo.
+     */
+    public function primeObjectInfos($sAction, $aObjectIds)
+    {
+        if(empty($this->_sTable) || empty($this->_sFieldId) || empty($this->_sFieldOwnerId))
+            return;
+
+        $aIds = [];
+        foreach((array)$aObjectIds as $mId)
+            if(($iId = (int)$mId) > 0 && !array_key_exists($this->_sCacheTestedObject . $this->_sTable . '_' . $this->_aObject['action'] . '_' . $iId, self::$_aDbCacheData))
+                $aIds[$iId] = $iId;
+        if(!$aIds)
+            return;
+
+        $aRows = $this->getAll("SELECT `" . $this->_sFieldId . "` AS `id`, `" . $this->_sFieldOwnerId . "` AS `owner_id`, `" . $sAction . "` AS `group_id` FROM `" . $this->_sTable . "` WHERE `" . $this->_sFieldId . "` IN (" . $this->implode_escape(array_values($aIds)) . ")");
+        foreach($aRows as $aRow)
+            self::$_aDbCacheData[$this->_sCacheTestedObject . $this->_sTable . '_' . $this->_aObject['action'] . '_' . (int)$aRow['id']] = $aRow;
+    }
+
+    /**
+     * What primeObjectInfos would read, taken from whole rows of the objects' table read already
+     * (SELECT * of the same table): false, and nothing kept, when they are of another table or
+     * lack the fields.
+     * @param array $aRows rows of the table, each with all its fields
+     */
+    public function primeObjectInfosFromRows($sAction, $sTable, $aRows)
+    {
+        if(empty($this->_sTable) || $sTable !== $this->_sTable || empty($this->_sFieldId) || empty($this->_sFieldOwnerId))
+            return false;
+
+        foreach($aRows as $aRow) {
+            if(!is_array($aRow) || !$aRow)
+                continue;
+            if(!array_key_exists($this->_sFieldId, $aRow) || !array_key_exists($this->_sFieldOwnerId, $aRow) || !array_key_exists($sAction, $aRow))
+                return false;
+            $sKey = $this->_sCacheTestedObject . $this->_sTable . '_' . $this->_aObject['action'] . '_' . (int)$aRow[$this->_sFieldId];
+            if(!array_key_exists($sKey, self::$_aDbCacheData))
+                self::$_aDbCacheData[$sKey] = ['id' => $aRow[$this->_sFieldId], 'owner_id' => $aRow[$this->_sFieldOwnerId], 'group_id' => $aRow[$sAction]];
+        }
+        return true;
+    }
+
     function getGroupsBy($aParams)
     {
         $sSelectClause = "`id`, `title`, `check`, `active`";

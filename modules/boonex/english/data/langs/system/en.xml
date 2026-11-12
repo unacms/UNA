@@ -2188,6 +2188,14 @@
     <string name="_adm_stg_cpt_option_sys_api_root_page_splash"><![CDATA[Splash]]></string>
     <string name="_adm_stg_cpt_option_sys_api_url_root_email"><![CDATA[Site main URL in email notifications]]></string>
     <string name="_adm_stg_cpt_option_sys_api_url_root_push"><![CDATA[Site main URL in push notifications]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_enable"><![CDATA[API v2 (preview, not for production): turn on /api/v2, which the desktop app uses]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit"><![CDATA[API v2: limit the number of requests]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_agent"><![CDATA[API v2: messages to AI agents a minute (0 for no limit)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_general"><![CDATA[API v2: requests a minute from one member or one guest address (0 for no limit)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_preview"><![CDATA[API v2: link previews a minute (0 for no limit)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_search"><![CDATA[API v2: searches a minute (0 for no limit)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_upload"><![CDATA[API v2: file uploads a minute (0 for no limit)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_write"><![CDATA[API v2: changes a minute, such as posts, edits, deletions and reactions (0 for no limit)]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_inspector_key"><![CDATA[Inspector key]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_inspector_key_info"><![CDATA[Get key at https://app.inspector.dev/]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_operator_agent"><![CDATA[Operator agent]]></string>
@@ -3713,6 +3721,7 @@
     <string name="_sys_menu_item_title_account_settings_overview"><![CDATA[Overview]]></string>
     <string name="_sys_menu_item_title_account_settings_pwd"><![CDATA[Password]]></string>
     <string name="_sys_menu_item_title_profile_settings_cfilter"><![CDATA[Content Filter]]></string>
+    <string name="_sys_menu_item_title_public_menu"><![CDATA[Browse]]></string>
     <string name="_sys_menu_item_title_add_content"><![CDATA[Add...]]></string>
     <string name="_sys_menu_item_title_cart"><![CDATA[Shopping Cart]]></string>
     <string name="_sys_menu_item_title_cmts_administration"><![CDATA[Comments]]></string>
@@ -3734,6 +3743,8 @@
     <string name="_sys_menu_item_title_join"><![CDATA[Sign up]]></string>
     <string name="_sys_menu_item_title_login"><![CDATA[Log in]]></string>
     <string name="_sys_menu_item_title_logout"><![CDATA[Sign out]]></string>
+    <string name="_sys_menu_item_title_member_followings"><![CDATA[Following]]></string>
+    <string name="_sys_menu_item_title_member_menu"><![CDATA[You]]></string>
     <string name="_sys_menu_item_title_more"><![CDATA[More]]></string>
     <string name="_sys_menu_item_title_more_auto"><![CDATA[]]></string>
     <string name="_sys_menu_item_title_orders"><![CDATA[Orders]]></string>
@@ -3822,6 +3833,7 @@
     <string name="_sys_menu_item_title_system_profile_settings_cfilter"><![CDATA[Content Filter]]></string>
     <string name="_sys_menu_item_title_system_add_content"><![CDATA[Add Content]]></string>
     <string name="_sys_menu_item_title_system_apps"><![CDATA[Apps]]></string>
+    <string name="_sys_menu_item_title_system_apps_menu"><![CDATA[Apps Menu]]></string>
     <string name="_sys_menu_item_title_system_cart"><![CDATA[Shopping Cart]]></string>
     <string name="_sys_menu_item_title_system_cmts_administration"><![CDATA[Comments]]></string>
     <string name="_sys_menu_item_title_system_audit_administration"><![CDATA[Audit]]></string>
@@ -3847,6 +3859,7 @@
     <string name="_sys_menu_item_title_system_main_menu"><![CDATA[Main menu]]></string>
     <string name="_sys_menu_item_title_system_member_avatar"><![CDATA[Member Avatar]]></string>
     <string name="_sys_menu_item_title_system_member_followings"><![CDATA[Member Following]]></string>
+    <string name="_sys_menu_item_title_system_member_memberships"><![CDATA[Member Memberships]]></string>
     <string name="_sys_menu_item_title_system_member_menu"><![CDATA[Member Menu]]></string>
     <string name="_sys_menu_item_title_system_more"><![CDATA[More]]></string>
     <string name="_sys_menu_item_title_system_more_auto"><![CDATA[More]]></string>
@@ -3942,9 +3955,12 @@
     <string name="_sys_menu_set_title_footer"><![CDATA[Footer]]></string>
     <string name="_sys_menu_set_title_profile_create_links"><![CDATA[Create Profile Links]]></string>
     <string name="_sys_menu_set_title_profile_followings"><![CDATA[Followed Contexts]]></string>
+    <string name="_sys_menu_set_title_profile_memberships"><![CDATA[Profile Memberships]]></string>
     <string name="_sys_menu_set_title_profile_stats"><![CDATA[Profile Stats]]></string>
     <string name="_sys_menu_set_title_site"><![CDATA[Site]]></string>
     <string name="_sys_menu_set_title_application"><![CDATA[Application]]></string>
+    <string name="_sys_menu_set_title_apps_menu"><![CDATA[Apps Menu]]></string>
+    <string name="_sys_menu_set_title_apps_sidebar"><![CDATA[Apps Sidebar]]></string>
     <string name="_sys_menu_set_title_panel"><![CDATA[Panel]]></string>
     <string name="_sys_menu_set_title_homepage"><![CDATA[Content modules]]></string>
     <string name="_sys_menu_set_title_toolbar_member"><![CDATA[Toolbar Member]]></string>
@@ -4003,6 +4019,8 @@
     <string name="_sys_menu_title_main"><![CDATA[Site Navigation]]></string>
     <string name="_sys_menu_title_main_in_panel"><![CDATA[Site Navigation in Panel]]></string>
     <string name="_sys_menu_title_application"><![CDATA[Application Navigation]]></string>
+    <string name="_sys_menu_title_apps_menu"><![CDATA[Apps Menu]]></string>
+    <string name="_sys_menu_title_apps_sidebar"><![CDATA[Apps Sidebar]]></string>
     <string name="_sys_menu_title_homepage"><![CDATA[Homepage Menu]]></string>
     <string name="_sys_menu_title_homepage_submenu"><![CDATA[Homepage Submenu]]></string>
     <string name="_sys_menu_title_public_homepage_submenu"><![CDATA[Explore]]></string>
@@ -4015,6 +4033,7 @@
     <string name="_sys_menu_item_title_trends"><![CDATA[Trends]]></string>
     <string name="_sys_menu_title_profiles_create"><![CDATA[Create Profiles]]></string>
     <string name="_sys_menu_title_profile_followings"><![CDATA[Profile Following]]></string>
+    <string name="_sys_menu_title_profile_memberships"><![CDATA[Profile Memberships]]></string>
     <string name="_sys_menu_title_profile_stats"><![CDATA[Profile Stats]]></string>
     <string name="_sys_menu_title_tags_cloud"><![CDATA[Tags Cloud]]></string>
     <string name="_sys_menu_title_rss"><![CDATA[RSS]]></string>

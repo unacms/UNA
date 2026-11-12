@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Browse: the heading of the site menu's group in the apps' sidebar (API v2 GET /navigation, the Apps Sidebar's item Public Menu). -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_sys_menu_item_title_public_menu"><![CDATA[Обзор]]></string_add>
+</resources>

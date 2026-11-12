@@ -157,8 +157,12 @@ class BxDolAclQuery extends BxDolDb implements iBxDolSingleton
                     'module' => $aParams['module']
                 );
 
-                $sWhereClause .= " AND `taa`.`Name` IN(" . $this->implode_escape($aParams['value']) . ") AND `taa`.`Module` = :module ";
-                $sMemoryKey = 'BxDolAclQuery::getActions' . $aParams['type'] . $aParams['module'] . $sWhereClause;
+                $sWhereClause .= $this->_actionsByNamesWhere($aParams['value']);
+                $sMemoryKey = $this->_actionsByNamesKey($aParams['module'], $aParams['value']);
+                // API v2 only: the other actions are asked for too (each check of a page asks for
+                // one), so they are all read at once; the site and API v1 read each as it is asked for
+                if(bx_is_api_v2() && is_string($aParams['value']) && !array_key_exists($sMemoryKey, self::$_aDbCacheData))
+                    $this->_primeActions();
                 break;
 
             case 'by_names':
@@ -288,8 +292,98 @@ class BxDolAclQuery extends BxDolDb implements iBxDolSingleton
         return $this->fromCache('sys_acl_levels' . $iLevel, 'getRow', $sQuery);
     }
 
+    /**
+     * The where clause and the memory key of getActions by_names_and_module.
+     */
+    protected function _actionsByNamesWhere($mixedNames)
+    {
+        return " AND `taa`.`Name` IN(" . $this->implode_escape($mixedNames) . ") AND `taa`.`Module` = :module ";
+    }
+
+    protected function _actionsByNamesKey($sModule, $mixedNames)
+    {
+        return 'BxDolAclQuery::getActionsby_names_and_module' . $sModule . $this->_actionsByNamesWhere($mixedNames);
+    }
+
+    /**
+     * Each action as getActions by_names_and_module of its name and module reads it, all in one
+     * query kept in memory where getActions keeps it: an action's id is looked up by its name
+     * once for every check, and a page checks many actions of many modules (the table is small).
+     */
+    protected function _primeActions()
+    {
+        $sPrimed = 'BxDolAclQuery::actionsByNamePrimed';
+        if(array_key_exists($sPrimed, self::$_aDbCacheData))
+            return;
+        self::$_aDbCacheData[$sPrimed] = true;
+
+        $aByName = [];
+        foreach($this->getAll("SELECT
+                `taa`.`ID` AS `id`,
+                `taa`.`Module` AS `module`,
+                `taa`.`Name` AS `name`,
+                `taa`.`Title` AS `title`,
+                `taa`.`Countable` AS `countable`,
+                `taa`.`DisabledForLevels` AS `disabled_for_levels`
+            FROM `sys_acl_actions` AS `taa`
+            ORDER BY `taa`.`Title` ASC") as $aRow)
+            $aByName[$aRow['module']][$aRow['name']][] = $aRow;
+
+        foreach($aByName as $sActionsModule => $aNames)
+            foreach($aNames as $sName => $aRows) {
+                $sKey = $this->_actionsByNamesKey((string)$sActionsModule, (string)$sName);
+                if(!array_key_exists($sKey, self::$_aDbCacheData))
+                    self::$_aDbCacheData[$sKey] = $aRows;
+            }
+    }
+
+    /**
+     * The rights of a level for every action, in one query, kept in memory where getAction
+     * keeps each one: a page checks many actions of many modules (the tables are small).
+     */
+    protected function _primeActionsForLevel($iMembershipId)
+    {
+        $sPrimed = 'BxDolAclQuery::actionsForLevelPrimed' . (int)$iMembershipId;
+        if(array_key_exists($sPrimed, self::$_aDbCacheData))
+            return;
+        self::$_aDbCacheData[$sPrimed] = true;
+
+        $aRows = $this->getAll("SELECT
+                `taa`.`ID` AS `action_id`,
+                `tam`.`IDAction` AS `id`,
+                `taa`.`Name` AS `name`,
+                `taa`.`Title` AS `title`,
+                `tam`.`AllowedCount` AS `allowed_count`,
+                `tam`.`AllowedPeriodLen` AS `allowed_period_len`,
+                UNIX_TIMESTAMP(`tam`.`AllowedPeriodStart`) as `allowed_period_start`,
+                UNIX_TIMESTAMP(`tam`.`AllowedPeriodEnd`) as `allowed_period_end`,
+                `tam`.`AdditionalParamValue` AS `additional_param_value`
+            FROM `sys_acl_actions` AS `taa`
+            LEFT JOIN `sys_acl_matrix` AS `tam` ON `tam`.`IDAction` = `taa`.`ID` AND `tam`.`IDLevel` = :level", [
+            'level' => (int)$iMembershipId,
+        ]);
+        foreach($aRows as $aRow) {
+            $sKey = 'BxDolAclQuery::getAction' . (int)$iMembershipId . '_' . (int)$aRow['action_id'];
+            unset($aRow['action_id']);
+            if(!array_key_exists($sKey, self::$_aDbCacheData))
+                self::$_aDbCacheData[$sKey] = $aRow;
+        }
+    }
+
     function getAction($iMembershipId, $iActionId)
     {
+        // the site and API v1 keep a level's action under the key they always had
+        $sKey = 'BxDolAclQuery::getAction' . $iMembershipId . $iActionId;
+        if(bx_is_api_v2()) {
+            // API v2 only: the level and the action apart (without the '_' level 1 with action 23
+            // and level 12 with action 3 are kept under one key, and the second one asked for
+            // gets the first one's rights), and the level's rights for every action read at once
+            // (a page checks many)
+            $sKey = 'BxDolAclQuery::getAction' . (int)$iMembershipId . '_' . (int)$iActionId;
+            if(!array_key_exists($sKey, self::$_aDbCacheData))
+                $this->_primeActionsForLevel($iMembershipId);
+        }
+
         $sQuery = $this->prepare("SELECT
                 `tam`.`IDAction` AS `id`,
                 `taa`.`Name` AS `name`,
@@ -302,7 +396,7 @@ class BxDolAclQuery extends BxDolDb implements iBxDolSingleton
             FROM `sys_acl_actions` AS `taa`
             LEFT JOIN `sys_acl_matrix` AS `tam` ON `tam`.`IDAction` = `taa`.`ID` AND `tam`.`IDLevel` = ?
             WHERE `taa`.`ID` = ?", $iMembershipId, $iActionId);
-        return $this->fromMemory('BxDolAclQuery::getAction' . $iMembershipId . $iActionId, 'getRow', $sQuery);
+        return $this->fromMemory($sKey, 'getRow', $sQuery);
     }
 
     function getActionTrack($iActionId, $iProfileId)

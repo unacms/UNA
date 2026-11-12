@@ -24,8 +24,8 @@ class BxDolMetatagsQuery extends BxDolDb
     static public function getMetatagsObject ($sObject)
     {
         $oDb = BxDolDb::getInstance();
-        $sQuery = $oDb->prepare("SELECT * FROM `sys_objects_metatags` WHERE `object` = ?", $sObject);
-        $aObject = $oDb->getRow($sQuery);
+        // all the objects at once, once per request: a page asks for many
+        $aObject = $oDb->getObjectRow('sys_objects_metatags', 'object', $sObject);
         if (!$aObject || !is_array($aObject))
             return false;
 
@@ -84,8 +84,45 @@ class BxDolMetatagsQuery extends BxDolDb
         return $mixedResult;
     }
 
+    /**
+     * Keywords primed for this request: keywords table => content id => keywords (@see primeKeywords).
+     */
+    protected static $_aKeywordsPrimed = [];
+
+    /**
+     * What keywordsGet of each of these contents gives, read in one query and kept for the
+     * request (a change of a content's keywords here forgets them): for a page that shows many
+     * contents' texts with their hashtags.
+     */
+    public function primeKeywords($aContentIds)
+    {
+        $sTable = $this->_aObject['table_keywords'] ?? '';
+        if($sTable === '')
+            return;
+
+        $aIds = [];
+        foreach((array)$aContentIds as $mId)
+            if(($iId = (int)$mId) > 0 && !isset(self::$_aKeywordsPrimed[$sTable][$iId]))
+                $aIds[$iId] = $iId;
+        if(!$aIds)
+            return;
+
+        $iMax = (int)getParam('sys_metatags_hashtags_max');
+        $aByContent = array_fill_keys(array_values($aIds), []);
+        // in keywordsGet's order: the longest first, as many as it takes
+        foreach($this->getAll("SELECT `object_id`, `keyword` FROM `" . $sTable . "` WHERE `object_id` IN (" . $this->implode_escape(array_values($aIds)) . ") ORDER BY `object_id`, CHAR_LENGTH(`keyword`) DESC") as $aRow)
+            if(count($aByContent[(int)$aRow['object_id']]) < $iMax)
+                $aByContent[(int)$aRow['object_id']][] = $aRow['keyword'];
+        foreach($aByContent as $iId => $aKeywords)
+            self::$_aKeywordsPrimed[$sTable][$iId] = $aKeywords;
+    }
+
     public function keywordsGet($mixedContentId)
     {
+        $sTable = $this->_aObject['table_keywords'];
+        if(is_numeric($mixedContentId) && isset(self::$_aKeywordsPrimed[$sTable][(int)$mixedContentId]))
+            return self::$_aKeywordsPrimed[$sTable][(int)$mixedContentId];
+
         $sQuery = $this->prepare("SELECT `keyword` FROM `{$this->_aObject['table_keywords']}` WHERE `object_id` = ? ORDER BY CHAR_LENGTH(`keyword`) DESC LIMIT ?", $mixedContentId, (int)getParam('sys_metatags_hashtags_max'));
         return $this->getColumn($sQuery);
     }
@@ -164,6 +201,46 @@ class BxDolMetatagsQuery extends BxDolDb
         return ['join' => $sJoin, 'where' => $sWhere];
     }
 
+    /**
+     * Keywords of several metatags objects that start with a term, the most used first: one
+     * query for all of them. The term is matched as typed (LIKE wildcards in it are text).
+     * As keywordsGetByTerm, only keywords of public and active content are read
+     * (getPublicContentSQLParts), so the answer is the same for every viewer and shows no hashtag
+     * of private, hidden, awaiting or draft content; an object whose content can't be resolved
+     * is left out.
+     * @param array $aObjects metatags object => its row of `sys_objects_metatags`
+     * @return array of ['keyword', 'count', 'object' (of the first row met), 'object_id']
+     */
+    static public function keywordsGetByTermAll($aObjects, $sTerm, $iLimit)
+    {
+        $oDb = BxDolDb::getInstance();
+        $sLike = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $sTerm) . '%';
+
+        // BX_DOL_PG_ALL, which getPublicContentSQLParts reads, is declared with this class
+        bx_import('BxDolPrivacy');
+
+        $aParts = [];
+        $aBindings = [];
+        $i = 0;
+        foreach ($aObjects as $sObject => $aObject) {
+            $sTable = (string)($aObject['table_keywords'] ?? '');
+            if (!preg_match('/^[A-Za-z0-9_]+$/', $sTable))
+                continue;
+            $aPublic = (new self($aObject))->getPublicContentSQLParts('kw', 'object_id');
+            if (!$aPublic)
+                continue;
+            $aParts[] = "SELECT `kw`.`keyword`, COUNT(*) AS `n`, :o{$i} AS `object`, MIN(`kw`.`object_id`) AS `object_id` FROM `{$sTable}` AS `kw` " . $aPublic['join'] . " WHERE `kw`.`keyword` LIKE :t{$i}" . $aPublic['where'] . " GROUP BY `kw`.`keyword`";
+            $aBindings['o' . $i] = $sObject;
+            $aBindings['t' . $i] = $sLike;
+            $i++;
+        }
+        if (!$aParts)
+            return [];
+
+        $aBindings['limit'] = (int)$iLimit;
+        return $oDb->getAll("SELECT `keyword`, SUM(`n`) AS `count`, MIN(`object`) AS `object`, MIN(`object_id`) AS `object_id` FROM (" . implode(' UNION ALL ', $aParts) . ") AS `k` GROUP BY `keyword` ORDER BY `count` DESC, CHAR_LENGTH(`keyword`) ASC LIMIT :limit", $aBindings);
+    }
+
     public function keywordsGetSQLParts($sContentTable, $sContentField, $mixedKeyword)
     {
         if(!is_array($mixedKeyword))
@@ -214,6 +291,18 @@ class BxDolMetatagsQuery extends BxDolDb
         return $this->getRow($sQuery);
     }
 
+    /**
+     * locationGet of many entries in one query: content id => location row (none for an entry
+     * without one).
+     */
+    public function locationsGetByIds($aContentIds)
+    {
+        $aIds = array_values(array_unique(array_filter(array_map('intval', (array)$aContentIds))));
+        if (!$aIds)
+            return [];
+        return $this->getAllWithKey("SELECT * FROM `{$this->_aObject['table_locations']}` WHERE `object_id` IN (" . $this->implode_escape($aIds) . ")", 'object_id');
+    }
+
     public function locationsGetSQLParts($sContentTable, $sContentField, $sCountry = false, $sState = false, $sCity = false, $sZip = false, $aBounds = array())
     {
         $aFields = array('country' => 'sCountry', 'state' => 'sState', 'city' => 'sCity', 'zip' => 'sZip', 'bounds' => 'aBounds');
@@ -240,12 +329,14 @@ class BxDolMetatagsQuery extends BxDolDb
 
     protected function metaDelete($sTable, $mixedContentId)
     {
+        unset(self::$_aKeywordsPrimed[$sTable]);
         $sQuery = $this->prepare("DELETE FROM `{$sTable}` WHERE `object_id` = ?", $mixedContentId);
         return $this->query($sQuery);
     }
 
     protected function metaAdd($mixedContentId, $aMetas, $bDeletePrevious, $sFuncDelete, $sTable, $sField)
     {
+        unset(self::$_aKeywordsPrimed[$sTable]);
         if ($bDeletePrevious)
             $this->$sFuncDelete($mixedContentId);
 
