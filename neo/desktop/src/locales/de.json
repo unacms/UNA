@@ -2016,5 +2016,11 @@
     "The new version could not be installed: {{reason}}": "Die neue Version konnte nicht installiert werden: {{reason}}",
     "Check for updates again: the version found is no longer there": "Suchen Sie erneut nach Updates: Die gefundene Version ist nicht mehr da",
     "The new version is being installed already": "Die neue Version wird bereits installiert",
-    "Look for a new version of the app": "Nach einer neuen Version der App suchen"
+    "Look for a new version of the app": "Nach einer neuen Version der App suchen",
+    "API v2 is turned off on this network": "API v2 ist in diesem Netzwerk ausgeschaltet",
+    "The API is turned off on this network": "Die API ist in diesem Netzwerk ausgeschaltet",
+    "The network’s API answers again": "Die API des Netzwerks antwortet wieder",
+    "{{site}} has API v2 (a preview) turned off. Its administrator can turn it on in Studio > API > Settings.": "Auf {{site}} ist API v2 (eine Vorschau) ausgeschaltet. Der Administrator der Website kann sie unter Studio > API > Settings einschalten.",
+    "{{site}} has its API turned off": "Auf {{site}} ist die API ausgeschaltet",
+    "Not a network the app is signed in to": "Die App ist bei diesem Netzwerk nicht angemeldet"
 }

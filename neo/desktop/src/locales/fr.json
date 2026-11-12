@@ -2120,5 +2120,11 @@
     "The new version could not be installed: {{reason}}": "Impossible d’installer la nouvelle version : {{reason}}",
     "Check for updates again: the version found is no longer there": "Recherchez à nouveau les mises à jour : la version trouvée n’est plus là",
     "The new version is being installed already": "La nouvelle version est déjà en cours d’installation",
-    "Look for a new version of the app": "Chercher une nouvelle version de l’app"
+    "Look for a new version of the app": "Chercher une nouvelle version de l’app",
+    "API v2 is turned off on this network": "L’API v2 est désactivée sur ce réseau",
+    "The API is turned off on this network": "L’API est désactivée sur ce réseau",
+    "The network’s API answers again": "L’API du réseau répond de nouveau",
+    "{{site}} has API v2 (a preview) turned off. Its administrator can turn it on in Studio > API > Settings.": "L’API v2 (un aperçu) est désactivée sur {{site}}. Son administrateur peut l’activer dans Studio > API > Settings.",
+    "{{site}} has its API turned off": "L’API est désactivée sur {{site}}",
+    "Not a network the app is signed in to": "L’app n’est pas connectée à ce réseau"
 }
