@@ -104,6 +104,34 @@ class MenuButtonStyleTest extends BxDolIntegrationTestCase
         $this->assertSame('', $oMenu->getButtonClasses(), 'Only the known values reach the markup.');
     }
 
+    /**
+     * A custom menu (BxBaseMenuCustom) gives the classes in the item's `class`, and on their own as `class_button`
+     * for a template that wraps the item itself: the account popup prints no `class`, and would lose them.
+     */
+    public function testCustomMenuAndAccountPopupCarryTheClasses(): void
+    {
+        $this->bxLoginAsAdmin();
+
+        $oMenu = BxDolMenu::getObjectInstance('sys_account_popup');
+        if(!$oMenu)
+            $this->markTestSkipped('The account popup menu is not active.');
+        $oMenu = clone $oMenu;
+
+        $oProp = new ReflectionProperty($oMenu, '_aObject');
+        $oProp->setValue($oMenu, array_merge($oProp->getValue($oMenu), ['button_style' => BxDolMenu::BUTTON_STYLE_GLASS, 'button_size' => BxDolMenu::BUTTON_SIZE_SMALL, 'cache' => 'off']));
+
+        $aItems = $oMenu->getMenuItems();
+        $this->assertNotEmpty($aItems);
+        foreach($aItems as $aItem) {
+            $this->assertSame(' bx-menu-btn-style-glass bx-menu-btn-size-small', $aItem['class_button']);
+            $this->assertStringContainsString($aItem['class_button'], $aItem['class']);
+        }
+
+        $sCode = $oMenu->getCode();
+        $this->assertStringContainsString('bx-menu-btn-style-glass bx-menu-btn-size-small', $sCode, 'The account popup prints the classes on its items.');
+        $this->assertStringNotContainsString('__class_button__', $sCode);
+    }
+
     public function testApiCarriesTheFieldsAndNoClasses(): void
     {
         $this->bxLoginAsAdmin();

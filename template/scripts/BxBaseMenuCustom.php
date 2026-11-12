@@ -108,11 +108,16 @@ class BxBaseMenuCustom extends BxTemplMenuMoreAuto
             $sClass .= ' bx-menu-tab-active';
 
         $sClass .= $this->_getVisibilityClass($aItem);
-        $sClass .= $this->getButtonClasses();
+
+        // The menu's button style and size: in `class` for the templates that print it on the item, and on their
+        // own (`class_button`) for a template that wraps the item itself and prints no `class` (the account popup).
+        $sClassButton = $this->getButtonClasses();
+        $sClass .= $sClassButton;
 
         return [
             'name' => $aItem['name'],
             'class' => $sClass,
+            'class_button' => $sClassButton,
             'item' => $sItem
         ];
     }
