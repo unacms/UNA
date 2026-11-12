@@ -45,6 +45,21 @@ function FieldCaption({ htmlFor, className, children }) {
     return label
 }
 
+/**
+ * A floating label's text with the form's mark (`required_mark`): "(optional)" on an optional
+ * field, or an asterisk on a required one. A label above the field draws its mark beside it.
+ */
+export function adaptiveCaption({ caption, required_mark, required, checker }) {
+    if (!caption) return caption
+    const isRequired = !!(checker || required)
+    if (required_mark === 'optional' && !isRequired) {
+        const optionalText = appSetting('forms', 'optional_text')
+        return caption + ' (' + (optionalText != '' ? optionalText : i18n.t('optional')) + ')'
+    }
+    if (required_mark === 'required' && isRequired) return caption + ' *'
+    return caption
+}
+
 /** Whether the adaptive label of an input of this size floats inside it (`theme.inputs.adaptive_label_inside_sizes`). */
 export function isAdaptiveLabelInside(size) {
     return insideSizes.includes(size || inputSettings.default_size || 'regular')
@@ -295,7 +310,7 @@ export default function Field({
             {!isShowCaption && captionAccessory}
             {!isShowCaption && isAdaptiveLabel && caption ? (
                 <AdaptiveLabel
-                    caption={caption}
+                    caption={adaptiveCaption({ caption, required_mark, required, checker })}
                     value={value}
                     focused={focused}
                     htmlFor={inputId}
