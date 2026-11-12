@@ -80,6 +80,7 @@ export type ModuleSearches = { [K in SearchModuleTab]: ModuleSearch<Found[K]> };
 function useModuleSearch<K extends SearchModuleTab>(kind: K, q: string, tab: SearchTab): ModuleSearch<Found[K]> {
     const { api } = useApp();
     const listed = useSiteHasTag(MODULE_TAGS[kind]);
+    const shown = !!q && listed === true && tab === kind;
     const query = useInfiniteQuery({
         queryKey: moduleSearchKey(kind, q),
         queryFn: async ({ pageParam }): Promise<SearchPage<Found[K]>> => {
@@ -92,10 +93,11 @@ function useModuleSearch<K extends SearchModuleTab>(kind: K, q: string, tab: Sea
         },
         getNextPageParam: (last) => last.next_cursor ?? undefined,
         // asked once its tab is shown; the answer (and its count on the tab) stays after that
-        enabled: !!q && listed === true && tab === kind,
+        enabled: shown,
         staleTime: 30_000,
     });
-    useFillEmptyPages(query);
+    // and only then asked for the pages after an empty one, which `enabled` does not hold back
+    useFillEmptyPages(query, shown);
     return { available: listed === null ? null : listed && !query.data?.pages[0]?.missing, query };
 }
 

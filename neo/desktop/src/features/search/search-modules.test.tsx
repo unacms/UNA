@@ -187,8 +187,8 @@ const ALL: ModuleInfo[] = SEARCH_MODULE_TABS.map((kind) => ({ module: `bx_${MODU
 
 const NOT_FOUND = { type: 'about:blank', title: 'Not Found', status: 404, code: 'no_such_endpoint' };
 
-/** What each module's search finds for "lily"; `off`: paths that answer 404, `broken`: 500. */
-function fakeApi(calls: string[], { modules = ALL, off = [], broken = [] }: { modules?: ModuleInfo[]; off?: string[]; broken?: string[] } = {}): UnaApi {
+/** What each module's search finds for "lily"; `off`: paths that answer 404, `broken`: 500, `gaps`: two empty pages first. */
+function fakeApi(calls: string[], { modules = ALL, off = [], broken = [], gaps = [] }: { modules?: ModuleInfo[]; off?: string[]; broken?: string[]; gaps?: string[] } = {}): UnaApi {
     const found: Record<string, unknown[]> = {
         '/search/posts': [post],
         '/search/photos': [fileItem('31', 'photo', 'Lily on the ridge'), fileItem('32', 'photo', 'Lily’s garden')],
@@ -217,6 +217,8 @@ function fakeApi(calls: string[], { modules = ALL, off = [], broken = [] }: { mo
                 if (nothing) return json(200, { items: [], next_cursor: null });
                 return json(200, url.searchParams.get('cursor') === 'p2' ? { items: [older], next_cursor: null } : { items: [video], next_cursor: 'p2' });
             }
+            // pages the viewer may see nothing of, before the one with the results
+            if (gaps.includes(path) && url.searchParams.get('cursor') !== 'g3') return json(200, { items: [], next_cursor: url.searchParams.get('cursor') === 'g2' ? 'g3' : 'g2' });
             const items = found[path];
             if (items) return json(200, { items: nothing ? [] : items, next_cursor: null });
             if (path.startsWith('/search/') || path === '/navigation' || path === '/agents' || path === '/me/groups') return json(404, NOT_FOUND);
@@ -230,11 +232,12 @@ const nav: NavItem[] = [
     { section: 'search', label: 'Search', command: 'go-search' },
 ];
 
-function renderSearch(route: Route, site: Parameters<typeof fakeApi>[1] = {}) {
+function renderSearch(route: Route, site: Parameters<typeof fakeApi>[1] = {}, restore?: (client: QueryClient) => void) {
     const calls: string[] = [];
     const api = fakeApi(calls, site);
     const history = new RouteHistory(route);
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } }, logger: { log: () => {}, warn: () => {}, error: () => {} } });
+    restore?.(client);
     function Harness() {
         const commands = useRef<CommandHandler | null>(null);
         const ctx: AppContextValue = { api, siteUrl: 'https://community.example', me, signOut: () => {}, signingOut: false, messageTo: () => {} };
@@ -384,6 +387,32 @@ describe('Search’s module tabs', () => {
         expect(tabNames()).toEqual(['People 1', 'Feed 0', 'Groups 0', 'Posts', 'Photos', 'Albums', 'Videos', 'Files', 'Tasks']);
         // Refresh asks every list again and fails on none
         await expect(client.refetchQueries({ queryKey: ['polls'] }, { throwOnError: true })).resolves.toBeUndefined();
+    });
+
+    it('fetches past empty pages for the shown tab only, a restored one waiting until it is opened', async () => {
+        // kept from the last session: one page with nothing the viewer may see, and a next one
+        const restored = (client: QueryClient) => client.setQueryData(moduleSearchKey('files', 'lily'), { pages: [{ items: [], next_cursor: 'g2' }], pageParams: [undefined] });
+        const { calls } = renderSearch({ list: searchRoute('lily'), detail: null }, { gaps: ['/search/files', '/search/polls'] }, restored);
+        await screen.findByRole('tab', { name: 'Files 0+' });
+        await new Promise((resolve) => setTimeout(resolve, 20));
+        expect(moduleCalls(calls)).toEqual([]);
+
+        // shown: the pages after it are asked for, up to the one with a result
+        fireEvent.click(screen.getByRole('tab', { name: 'Files 0+' }));
+        const list = await screen.findByRole('list', { name: 'Files matching “lily”' });
+        expect(within(list).getByRole('button', { name: /^Lily’s agenda/ })).toBeTruthy();
+        expect(moduleCalls(calls)).toEqual(['GET /search/files?q=lily&cursor=g2&limit=30', 'GET /search/files?q=lily&cursor=g3&limit=30']);
+
+        // left while its first page is on the way: the empty page that arrives asks for nothing more
+        fireEvent.click(screen.getByRole('tab', { name: 'Polls' }));
+        fireEvent.click(screen.getByRole('tab', { name: /^People/ }));
+        await screen.findByRole('tab', { name: 'Polls 0+' });
+        await new Promise((resolve) => setTimeout(resolve, 20));
+        expect(moduleCalls(calls).filter((c) => c.includes('/search/polls'))).toEqual(['GET /search/polls?q=lily&limit=20']);
+        // and goes on when the tab is shown again
+        fireEvent.click(screen.getByRole('tab', { name: 'Polls 0+' }));
+        expect(await screen.findByRole('list', { name: 'Polls matching “lily”' })).toBeTruthy();
+        expect(moduleCalls(calls).filter((c) => c.includes('/search/polls'))).toHaveLength(3);
     });
 
     it('says when nothing matches, and offers to try again when the search fails', async () => {
