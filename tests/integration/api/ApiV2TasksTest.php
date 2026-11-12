@@ -671,6 +671,57 @@ class ApiV2TasksTest extends ApiV2TestCase
         $this->assertSame(404, $this->http('GET', 'task-contexts/' . $iSecret . '/budget', $this->auth($iOutsider))['status']);
     }
 
+    public function testBudgetTotalFollowsEntriesChangedAtTheSameTime(): void
+    {
+        list($iGroup, $iOwner) = $this->groupWithMember();
+        $aOwner = $this->json($this->auth($iOwner));
+        $oDb = BxDolModule::getInstance('bx_tasks')->_oDb;
+        $fTotal = function () use ($oDb, $iGroup) {
+            return (int)BxDolDb::getInstance()->getOne("SELECT `value_total` FROM `bx_tasks_budget` WHERE `context_id` = :c", ['c' => $iGroup]);
+        };
+        $fHours = function ($iId) {
+            return (int)BxDolDb::getInstance()->getOne("SELECT `value` FROM `bx_tasks_budget_track` WHERE `id` = :i", ['i' => (int)$iId]);
+        };
+
+        $iEntry = (int)$this->addBudgetEntry($aOwner, $iGroup, ['hours' => 10, 'note' => 'Shared'])['id'];
+        $iOther = (int)$this->addBudgetEntry($aOwner, $iGroup, ['hours' => 5])['id'];
+        $this->assertSame(15 * 60, $fTotal());
+
+        // two requests read the entry as 10 hours and change it to 20 and to 30: the second
+        // change is refused, since the entry no longer has what it read, and the total has
+        // the one difference that was made (it had both, 40 with the other entry's 5 = 45)
+        $this->assertTrue($oDb->changeBudgetTrackValue($iEntry, 10, 20));
+        $this->assertFalse($oDb->changeBudgetTrackValue($iEntry, 10, 30), 'a change from hours it no longer has');
+        $this->assertSame([20, 25 * 60], [$fHours($iEntry), $fTotal()]);
+        // read again, as the endpoint does, it goes through, and the total is the entries' sum
+        $this->assertTrue($oDb->changeBudgetTrackValue($iEntry, 20, 30));
+        $this->assertSame([30, 35 * 60], [$fHours($iEntry), $fTotal()]);
+
+        // the endpoint itself: the entry changed (by the site, or another request) after a
+        // client read it; its change is made from what the entry has now
+        $a = $this->http('PATCH', 'task-budget-entries/' . $iEntry, $aOwner, '{"hours":12,"note":"Again"}');
+        $this->assertSame([200, 12, 'Again'], [$a['status'], $a['json']['hours'] ?? null, $a['json']['note'] ?? null], $a['body']);
+        $this->assertSame(17 * 60, $fTotal());
+        // a change of the note alone leaves the hours to whoever changes them
+        $a = $this->http('PATCH', 'task-budget-entries/' . $iEntry, $aOwner, '{"note":"Note only"}');
+        $this->assertSame([200, 12, 'Note only', 17 * 60], [$a['status'], $a['json']['hours'] ?? null, $a['json']['note'] ?? null, $fTotal()], $a['body']);
+
+        // a delete that read 12 hours, after the entry became 8: refused, nothing taken off
+        $this->assertTrue($oDb->changeBudgetTrackValue($iEntry, 12, 8));
+        $this->assertFalse($oDb->deleteBudgetTrackByValue($iEntry, 12));
+        $this->assertSame([8, 13 * 60], [$fHours($iEntry), $fTotal()]);
+        $this->assertSame(204, $this->http('DELETE', 'task-budget-entries/' . $iEntry, $aOwner)['status']);
+        $this->assertSame(5 * 60, $fTotal(), 'the hours it had when it was deleted are taken off');
+        $this->assertFalse($oDb->changeBudgetTrackValue($iEntry, 8, 9), 'a deleted entry changes nothing');
+        $this->assertSame(5 * 60, $fTotal());
+
+        // a context whose total has no row (entries older than it): the endpoint makes one
+        BxDolDb::getInstance()->query("DELETE FROM `bx_tasks_budget` WHERE `context_id` = :c", ['c' => $iGroup]);
+        $a = $this->http('PATCH', 'task-budget-entries/' . $iOther, $aOwner, '{"hours":7}');
+        $this->assertSame([200, 7], [$a['status'], $a['json']['hours'] ?? null], $a['body']);
+        $this->assertSame(2 * 60, $fTotal(), 'the difference, on a total that starts now');
+    }
+
     protected function addBudgetEntry(array $aAuth, int $iGroup, array $aBody): array
     {
         $a = $this->http('POST', 'task-contexts/' . $iGroup . '/budget/entries', $aAuth, json_encode($aBody));

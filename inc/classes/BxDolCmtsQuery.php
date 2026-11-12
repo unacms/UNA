@@ -730,7 +730,7 @@ class BxDolCmtsQuery extends BxDolDb
      * A comment by its id alone, with its unique id: for code that knows a comment (a
      * notification about it) but not the object it is on.
      */
-    function getCommentById ($iCmtId)
+    public function getCommentById ($iCmtId)
     {
         $sQuery = $this->prepare("SELECT `c`.*, `i`.`id` AS `cmt_unique_id`
             FROM `{$this->_sTable}` AS `c`

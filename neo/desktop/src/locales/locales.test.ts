@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 import { LANGUAGE_NAMES, LANGUAGES } from '../lib/i18n';
-import { expectedKeys, extract, extractFrom, pluralForms, slots, untranslated, untranslatedIn, type Extracted } from './extract';
+import { expectedKeys, extract, extractFrom, localeFile, pluralForms, slots, untranslated, untranslatedIn, type Extracted } from './extract';
 
 const DIR = dirname(fileURLToPath(import.meta.url));
 const files = readdirSync(DIR).filter((f) => f.endsWith('.json'));
@@ -72,6 +72,12 @@ describe('reading the source for its words', () => {
     it('knows what varies in a text', () => {
         expect(slots('Read the <a>terms</a>, {{name}}: {{ count }} of {{count}}')).toEqual({ vars: ['count', 'name'], marks: ['a'] });
         expect(slots('Plain. 1 < 2')).toEqual({ vars: [], marks: [] });
+    });
+
+    it('reads only a language file of its own folder', () => {
+        expect(localeFile('ru')).toBe(join(DIR, 'ru.json'));
+        expect(localeFile('pt-BR')).toBe(join(DIR, 'pt-BR.json'));
+        for (const name of ['../package', '../../package', '/etc/passwd', 'ru/../../x', 'ru.json', '..', '', 'ru\\..\\x']) expect(() => localeFile(name), name).toThrow('not a language');
     });
 
     it('asks a language for each of its count forms', () => {

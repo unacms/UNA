@@ -107,7 +107,11 @@ export class Realtime {
         this.pending = true;
         queueMicrotask(() => {
             this.pending = false;
-            this.backend.watch([...this.handlers.keys()].sort(), this.viewer).then(
+            // by code unit, as a bare sort() orders: the same set of channels is always the same list
+            this.backend.watch(
+                [...this.handlers.keys()].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)),
+                this.viewer,
+            ).then(
                 (s) => {
                     if (s) this.setStatus(s);
                 },

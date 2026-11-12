@@ -818,7 +818,7 @@ class BxBaseModTextApiV2
     {
         $this->_bFull = true;
         try {
-            return $this->_item($aContent, $iViewerId);
+            return $this->_itemOrFail($aContent, $iViewerId);
         }
         finally {
             $this->_bFull = false;
@@ -892,7 +892,7 @@ class BxBaseModTextApiV2
             $this->_bFull = (bool)$bFull;
             $aItems = [];
             foreach ($aContents as $aContent)
-                $aItems[] = $this->_item($aContent, $iViewerId);
+                $aItems[] = $this->_itemOrFail($aContent, $iViewerId);
             return $aItems;
         }
         finally {
@@ -922,11 +922,24 @@ class BxBaseModTextApiV2
 
     /**
      * One entry in the module's shape (FileItem for files, Album for albums ...), with
-     * its text where _bFull says so. The module's class (or its base) maps it.
+     * its text where _bFull says so. The module's class (or its base) maps it: this one maps
+     * none and gives an empty array, which _itemOrFail refuses.
      */
     protected function _item($aContent, $iViewerId)
     {
-        throw new LogicException(static::class . ' maps no entries');
+        return [];
+    }
+
+    /**
+     * _item of an entry; a class that maps no entries (it has no _item of its own) is a mistake
+     * in the code, not something to answer with.
+     */
+    protected function _itemOrFail($aContent, $iViewerId)
+    {
+        $aItem = $this->_item($aContent, $iViewerId);
+        if (!$aItem)
+            throw new LogicException(static::class . ' maps no entries');
+        return $aItem;
     }
 }
 

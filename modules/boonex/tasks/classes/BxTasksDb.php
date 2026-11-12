@@ -955,6 +955,38 @@ class BxTasksDb extends BxBaseModTextDb
         return (int)$this->query("DELETE FROM `" . $CNF['TABLE_BUDGET_TRACK'] . "` WHERE `id` = :id", ['id' => (int)$iId]) > 0;
     }
 
+    /**
+     * Change a budget entry's hours from $iFrom to $iTo and its context's total (minutes) by the
+     * difference, in one statement: the entry changes only while it still has $iFrom hours, so
+     * of two changes made from the same reading one is refused and the total never gets a
+     * difference that was not made. False when nothing changed: the entry is gone, has other
+     * hours by now, or its context has no budget row.
+     */
+    public function changeBudgetTrackValue($iId, $iFrom, $iTo)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        // the difference is a number, not read from the row: a multi-table UPDATE sets its
+        // columns in no promised order
+        return (int)$this->query("UPDATE `" . $CNF['TABLE_BUDGET_TRACK'] . "` AS `tbt` INNER JOIN `" . $CNF['TABLE_BUDGET'] . "` AS `tb` ON `tb`.`context_id` = `tbt`.`context_id` SET `tbt`.`value` = :to, `tb`.`value_total` = `tb`.`value_total` + :delta WHERE `tbt`.`id` = :id AND `tbt`.`value` = :from", [
+            'id' => (int)$iId,
+            'from' => (int)$iFrom,
+            'to' => (int)$iTo,
+            'delta' => 60 * ((int)$iTo - (int)$iFrom),
+        ]) > 0;
+    }
+
+    /**
+     * Delete a budget entry only while it still has $iValue hours (what the caller takes off the
+     * total); false when it is gone or has other hours by now.
+     */
+    public function deleteBudgetTrackByValue($iId, $iValue)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        return (int)$this->query("DELETE FROM `" . $CNF['TABLE_BUDGET_TRACK'] . "` WHERE `id` = :id AND `value` = :value", ['id' => (int)$iId, 'value' => (int)$iValue]) > 0;
+    }
+
     public function getBudget($aParams = [])
     {
         $CNF = &$this->_oConfig->CNF;

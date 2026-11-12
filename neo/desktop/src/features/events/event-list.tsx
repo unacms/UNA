@@ -91,7 +91,7 @@ export function EventRow({ event: e }: { event: Event }) {
     const state = going ? t('Going') : e.viewer?.status === 'pending' ? t('Request sent') : e.viewer?.status === 'invited' ? t('Invited') : '';
     return (
         <li className="list-row event-row" onDoubleClick={onDoubleClick}>
-            <span className="avatar-link" onClick={(m) => open(m)}>
+            <span className="avatar-link" aria-hidden="true" onClick={(m) => open(m)}>
                 <DateTile event={e} />
             </span>
             <div className="list-main">

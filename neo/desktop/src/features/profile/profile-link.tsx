@@ -73,7 +73,7 @@ export function ProfileAvatar({ profile, size }: { profile: Summary | null | und
     if (!profile || !open) return <Avatar profile={profile} size={size} />;
     return (
         // a pointer shortcut only: the name beside it is the control
-        <span className="avatar-link" onClick={() => open(profile)}>
+        <span className="avatar-link" aria-hidden="true" onClick={() => open(profile)}>
             <Avatar profile={profile} size={size} />
         </span>
     );

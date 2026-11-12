@@ -72,7 +72,7 @@ export function VideoRow({ video: v, selected }: { video: Video; selected: boole
     };
     return (
         <li className="list-row video-row" data-selected={selected || undefined} onDoubleClick={onDoubleClick}>
-            <span className="video-thumb-link" onClick={(m) => open(m)}>
+            <span className="video-thumb-link" aria-hidden="true" onClick={(m) => open(m)}>
                 <Thumbnail video={v} />
             </span>
             <div className="list-main">

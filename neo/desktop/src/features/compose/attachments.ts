@@ -216,7 +216,7 @@ export function useAttachments({
                 total: picked.size,
             }));
             if (added.length) dispatch({ type: 'add', items: added, max });
-            added.forEach(start);
+            added.forEach((item) => start(item));
 
             const notes: string[] = [];
             if (added.length) notes.push(added.length === 1 ? t('Uploading {{name}}', { name: added[0]?.name ?? '' }) : tn(added.length, 'Uploading {{count}} file', 'Uploading {{count}} files'));

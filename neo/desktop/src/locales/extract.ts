@@ -14,7 +14,7 @@
  * lists English still written straight into what is drawn (`untranslatedIn`).
  */
 import { readdirSync, readFileSync } from 'node:fs';
-import { dirname, join, relative } from 'node:path';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import ts from 'typescript';
@@ -218,11 +218,28 @@ export function expectedKeys(extracted: Extracted, language: string): Map<string
 const PLACEHOLDER = /\{\{\s*([\w.]+)\s*\}\}/g;
 const MARK = /<\/?([a-z][a-z0-9]*)>/g;
 
+/** The order of a bare sort(): the same in every locale, so two texts' slots compare as lists. */
+function byCodeUnit(a: string, b: string): number {
+    return a < b ? -1 : a > b ? 1 : 0;
+}
+
+/**
+ * The file of a language named on the command line: a language tag (`ru`, `pt-BR`) and nothing
+ * else, so the name can't lead out of src/locales.
+ */
+export function localeFile(language: string): string {
+    if (!/^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$/.test(language)) throw new Error(`not a language: ${language}`);
+    const folder = resolve(SRC, 'locales');
+    const file = resolve(folder, `${language}.json`);
+    if (!file.startsWith(folder + sep) || dirname(file) !== folder) throw new Error(`not a language: ${language}`);
+    return file;
+}
+
 /** What varies in a text: its `{{names}}` and its `<marks>`. */
 export function slots(text: string): { vars: string[]; marks: string[] } {
     return {
-        vars: [...new Set([...text.matchAll(PLACEHOLDER)].map((m) => m[1] ?? ''))].sort(),
-        marks: [...new Set([...text.matchAll(MARK)].map((m) => m[1] ?? ''))].sort(),
+        vars: [...new Set([...text.matchAll(PLACEHOLDER)].map((m) => m[1] ?? ''))].sort(byCodeUnit),
+        marks: [...new Set([...text.matchAll(MARK)].map((m) => m[1] ?? ''))].sort(byCodeUnit),
     };
 }
 
@@ -239,7 +256,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     } else if (!language) {
         console.log(JSON.stringify({ plain: extracted.plain.size, plural: extracted.plural.size, problems: extracted.problems.length }));
     } else {
-        const have = JSON.parse(readFileSync(join(SRC, 'locales', `${language}.json`), 'utf8')) as Record<string, string>;
+        const have = JSON.parse(readFileSync(localeFile(language), 'utf8')) as Record<string, string>;
         const expected = expectedKeys(extracted, language);
         const missing: Record<string, string> = {};
         for (const [key, english] of expected) if (!(key in have)) missing[key] = english;

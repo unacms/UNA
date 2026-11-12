@@ -7,12 +7,14 @@
   "types": "src/index.ts",
   "scripts": {
     "fetch-spec": "node scripts/fetch-spec.mjs",
+    "lint-spec": "redocly lint openapi.json",
     "generate": "openapi-typescript openapi.json --empty-objects-unknown --default-non-nullable=false --output src/schema.ts"
   },
   "dependencies": {
     "openapi-fetch": "^0.13.0"
   },
   "devDependencies": {
+    "@redocly/cli": "2.77.0",
     "openapi-typescript": "^7.4.0"
   }
 }

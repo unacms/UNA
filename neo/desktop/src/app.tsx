@@ -347,7 +347,7 @@ export function App() {
             void takeDeepLinks().then((list) => {
                 // before the session is known, they wait for it
                 if (current.current.session === undefined) waitingLinks.current.push(...list);
-                else list.forEach(openLink);
+                else list.forEach((link) => openLink(link));
             });
         };
         take();

@@ -73,7 +73,9 @@ jobs:
 
     - name: Lint the OpenAPI file
       working-directory: neo/desktop/una-api
-      run: npx --yes @redocly/cli@2.77.0 lint openapi.json
+      # @redocly/cli is a pinned devDependency of una-api, installed above with the rest (no
+      # install scripts): nothing is fetched or run on demand here
+      run: yarn --silent lint-spec
 
     - name: Typecheck
       working-directory: neo/desktop

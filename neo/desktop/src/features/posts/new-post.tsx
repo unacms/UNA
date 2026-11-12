@@ -210,8 +210,8 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
                         ) : null}
                     </div>
                     <div className="settings-field">
-                        {/* a label for the text box, which is no form control: a click puts the caret in it */}
-                        <label id={`${id}-text-label`} htmlFor={`${id}-text`} onClick={() => editor.current?.focus()}>
+                        {/* a label for the text box, which is no form control: a click puts the caret in it (RichEditor, labelledBy) */}
+                        <label id={`${id}-text-label`} htmlFor={`${id}-text`}>
                             {t('Text')}
                         </label>
                         <RichEditor

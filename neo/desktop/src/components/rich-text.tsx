@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify';
-import { type MouseEvent, useContext, useEffect, useMemo, useRef } from 'react';
+import { useContext, useEffect, useMemo, useRef } from 'react';
 
 import type { Schema, UnaApi } from 'una-api';
 
@@ -7,6 +7,7 @@ import { unwrap } from '../lib/api';
 import { AppContext } from '../lib/context';
 import { mediaSrc } from '../lib/media';
 import { useOptionalNavigation } from '../lib/navigation';
+import { useClick } from '../lib/use-click';
 import { isAllowedHref, readAlign, readHashtag, readMention, SAFE_URI } from '../lib/rich-html';
 import './rich-text.css';
 
@@ -279,10 +280,11 @@ export function RichText({ html, className }: { html: string; className?: string
     }, [clean, api, site]);
 
     // a mention opens the profile here, a hashtag the search for it; other links as anywhere
-    const onClick = (e: MouseEvent<HTMLDivElement>) => {
+    // (a listener on the box: the links are the controls, and Enter on one is a click too)
+    useClick(box, (e, el) => {
         if (!nav || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
         const a = (e.target as Element).closest('a');
-        if (!a || !e.currentTarget.contains(a)) return;
+        if (!a || !el.contains(a)) return;
         const profile = a.getAttribute('data-profile-id');
         const tag = a.getAttribute('data-hashtag');
         if (!profile && !tag) return;
@@ -291,7 +293,7 @@ export function RichText({ html, className }: { html: string; className?: string
         e.stopPropagation();
         if (profile) nav.openDetail({ kind: 'profile', id: profile });
         else if (tag) nav.showSearch(`#${tag}`, 'posts');
-    };
+    });
 
-    return <div ref={box} className={`rich-text${className ? ' ' + className : ''}`} onClick={onClick} dangerouslySetInnerHTML={{ __html: clean }} />;
+    return <div ref={box} className={`rich-text${className ? ' ' + className : ''}`} dangerouslySetInnerHTML={{ __html: clean }} />;
 }

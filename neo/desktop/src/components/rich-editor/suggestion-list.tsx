@@ -22,6 +22,13 @@ export function SuggestionList({ id, items, active, char, onPick, onHover, posit
                     onMouseDown={(e) => e.preventDefault()}
                     onMouseEnter={() => onHover(i)}
                     onClick={() => onPick(item)}
+                    // focus stays in the text, whose keys move through the list and pick; this is
+                    // for assistive technology that sends the key to the option itself
+                    onKeyDown={(e) => {
+                        if (e.key !== 'Enter' && e.key !== ' ') return;
+                        e.preventDefault();
+                        onPick(item);
+                    }}
                 >
                     {item.kind === 'profile' ? (
                         <>

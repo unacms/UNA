@@ -103,6 +103,32 @@ class BxDolApiQuery extends BxDolDb implements iBxDolSingleton
         ]);
     }
 
+    /**
+     * The name of the lock a request holds while it runs with an Idempotency-Key. Lock names are
+     * the database server's, not a database's, so it carries this site's database; 64 characters
+     * at most (MySQL), so 40 hex digits of the digest: a name, not a secret.
+     */
+    public function idempotencyLockName($sScope, $sKey)
+    {
+        return 'bx_api_idem_' . substr(hash('sha256', BX_DATABASE_NAME . "\0" . $sScope . "\0" . $sKey), 0, 40);
+    }
+
+    /**
+     * Take the key's lock for this connection: the server lets it go when the connection ends,
+     * however the request ended, so another request that gets it knows the first is not running.
+     * @param int $iWait seconds to wait for it
+     * @return bool whether this connection holds it now (also when it already did)
+     */
+    public function lockIdempotencyKey($sScope, $sKey, $iWait = 0)
+    {
+        return (int)$this->getOne("SELECT GET_LOCK(:name, :wait)", ['name' => $this->idempotencyLockName($sScope, $sKey), 'wait' => (int)$iWait]) === 1;
+    }
+
+    public function unlockIdempotencyKey($sScope, $sKey)
+    {
+        return (int)$this->getOne("SELECT RELEASE_LOCK(:name)", ['name' => $this->idempotencyLockName($sScope, $sKey)]) === 1;
+    }
+
     public function pruneIdempotencyKeys($iBefore)
     {
         return $this->query("DELETE FROM `sys_api_idempotency` WHERE `added` < :before", ['before' => (int)$iBefore]);

@@ -1,4 +1,4 @@
--- UNA-Migration-Min-System-Version: 15.0.0-RC3
+-- UNA-Migration-Min-System-Version: 15.0.0-RC4
 -- The new menu Profile Memberships (sys_profile_memberships, BxTemplMenuProfileMemberships) lists the contexts the
 -- viewer belongs to, by module (Your friends, Your groups, Your spaces ...): a module's confirmed members, friends for
 -- a module without a members connection. The apps' sidebar reads it (API v2 GET /navigation: the Apps Sidebar's item

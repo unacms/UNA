@@ -146,7 +146,7 @@ class ApiV2Test extends ApiV2TestCase
         $a = $this->http('GET', '');
         $this->assertSame(200, $a['status']);
         $this->assertSchema('ApiInfo', $a['json']);
-        $this->assertSame('*', BxDolTestPhpServer::header($a, 'access-control-allow-origin'));
+        $this->assertNull(BxDolTestPhpServer::header($a, 'access-control-allow-origin'), 'no Origin sent, no CORS header; never `*`');
 
         $a = $this->http('GET', 'openapi.json');
         $this->assertSame(200, $a['status']);
@@ -173,11 +173,27 @@ class ApiV2Test extends ApiV2TestCase
         $this->assertSame(401, $a['status']);
         $this->assertSame('invalid_token', $a['json']['code']);
 
-        $a = $this->http('OPTIONS', 'feeds/public', ['Origin' => 'https://elsewhere.example', 'Access-Control-Request-Method' => 'GET']);
+        // CORS: an allowed origin (here the desktop app's page) is named back, never `*`
+        $a = $this->http('OPTIONS', 'feeds/public', ['Origin' => 'tauri://localhost', 'Access-Control-Request-Method' => 'GET']);
         $this->assertSame(204, $a['status']);
+        $this->assertSame('tauri://localhost', BxDolTestPhpServer::header($a, 'access-control-allow-origin'));
         $this->assertNull(BxDolTestPhpServer::header($a, 'access-control-allow-credentials'), 'no cookies across origins');
         $this->assertStringContainsString('Idempotency-Key', BxDolTestPhpServer::header($a, 'access-control-allow-headers'));
         $this->assertStringContainsString('Idempotent-Replayed', BxDolTestPhpServer::header($a, 'access-control-expose-headers'));
+
+        $a = $this->http('GET', '', ['Origin' => 'http://localhost:1420']);
+        $this->assertSame(200, $a['status']);
+        $this->assertSame('http://localhost:1420', BxDolTestPhpServer::header($a, 'access-control-allow-origin'));
+        $this->assertStringContainsString('Origin', (string)BxDolTestPhpServer::header($a, 'vary'));
+
+        // a page of an origin that is not allowed gets the answer but no CORS header, so its browser keeps it from the page
+        foreach (['OPTIONS' => 204, 'GET' => 200] as $sMethod => $iStatus) {
+            $a = $this->http($sMethod, '', ['Origin' => 'https://elsewhere.example', 'Access-Control-Request-Method' => 'GET']);
+            $this->assertSame($iStatus, $a['status'], $sMethod);
+            foreach (['access-control-allow-origin', 'access-control-allow-methods', 'access-control-allow-headers', 'access-control-allow-credentials'] as $sHeader)
+                $this->assertNull(BxDolTestPhpServer::header($a, $sHeader), $sMethod . ' ' . $sHeader);
+            $this->assertStringContainsString('Origin', (string)BxDolTestPhpServer::header($a, 'vary'), $sMethod);
+        }
     }
 
     public function testBrandingIsTheSitesOwn(): void
@@ -241,7 +257,14 @@ class ApiV2Test extends ApiV2TestCase
             $aBranding = $this->http('GET', '')['json']['branding'];
             $this->assertSame(bx_absolute_url($oStorage->getFileUrlById($iFileId)), $aBranding['mark']);
             $this->assertMatchesRegularExpression('#^https?://#', $aBranding['mark']);
-            $this->assertSame(200, $this->raw('GET', parse_url($aBranding['mark'], PHP_URL_PATH) . (parse_url($aBranding['mark'], PHP_URL_QUERY) ? '?' . parse_url($aBranding['mark'], PHP_URL_QUERY) : ''))['status'], 'it serves');
+            // PHP's built-in server has no rewrite rules (a path it does not have is index.php, or
+            // 404 before PHP 8.4), so the storage's permalink is asked for as .htaccess rewrites it
+            $sUri = substr($aBranding['mark'], strlen(rtrim(BX_DOL_URL_ROOT, '/')));
+            $sUri = preg_replace('#^/s/([a-zA-Z0-9_]+)/([a-zA-Z0-9\.]+)\??#', '/storage.php?o=$1&f=$2&', $sUri);
+            $this->assertStringStartsWith('/storage.php?o=sys_images_custom&f=', $sUri, 'a link to the storage: ' . $aBranding['mark']);
+            $aFile = $this->raw('GET', rtrim($sUri, '&'));
+            $this->assertSame(200, $aFile['status'], 'it serves');
+            $this->assertSame(self::png(8, 8), $aFile['body'], 'the image that was uploaded');
 
             // the theme colour as #RRGGBB, or null
             foreach (['#0f766e' => '#0F766E', '#AbC' => '#AABBCC', '#0f766e80' => '#0F766E', 'teal' => null, '' => null] as $sColour => $mAccent) {
@@ -445,7 +468,9 @@ class ApiV2Test extends ApiV2TestCase
         $a = $this->http('PUT', 'content/' . $sItem . '/reaction', $aAuth + ['Idempotency-Key' => $sReactKey], $sLike);
         $this->assertSame([204, 'true', ''], [$a['status'], BxDolTestPhpServer::header($a, 'idempotent-replayed'), $a['body']]);
 
-        // one still running: 409 with Retry-After; one that died over a minute ago runs again
+        // one still running: 409 with Retry-After, however long it has run (its request holds the
+        // key's lock: here this process's connection does, as the one of a slow first request);
+        // one that died over a minute ago (the lock is free) runs again
         $sPendingKey = 'ApiV2Test-' . bin2hex(random_bytes(8));
         $sDelete = 'DELETE';
         $sPrint = BxDolApiV2Idempotency::fingerprint($sDelete, '/content/' . $sItem . '/reaction', '', '');
@@ -455,10 +480,25 @@ class ApiV2Test extends ApiV2TestCase
         $this->assertSame('idempotency_in_progress', $a['json']['code']);
         $this->assertSame('1', BxDolTestPhpServer::header($a, 'retry-after'));
         $oDb->query("UPDATE `sys_api_idempotency` SET `added` = :a WHERE `scope` = UNHEX(:s) AND `key` = :k", ['s' => $sScope, 'k' => $sPendingKey, 'a' => time() - 61]);
+        $oApiDb = BxDolApiQuery::getInstance();
+        $this->assertTrue($oApiDb->lockIdempotencyKey($sScope, $sPendingKey));
+        try {
+            $a = $this->http($sDelete, 'content/' . $sItem . '/reaction', ['Authorization' => 'Bearer ' . $sToken, 'Idempotency-Key' => $sPendingKey]);
+            $this->assertSame([409, 'idempotency_in_progress'], [$a['status'], $a['json']['code'] ?? null], 'a claim over a minute old whose request still runs is not taken over: ' . $a['body']);
+            $oDb->query("UPDATE `sys_api_idempotency` SET `added` = :a WHERE `scope` = UNHEX(:s) AND `key` = :k", ['s' => $sScope, 'k' => $sPendingKey, 'a' => time() - 3600]);
+            $this->assertSame(409, $this->http($sDelete, 'content/' . $sItem . '/reaction', ['Authorization' => 'Bearer ' . $sToken, 'Idempotency-Key' => $sPendingKey])['status'], 'nor one an hour old');
+            $this->assertSame(1, (int)$oDb->getOne("SELECT COUNT(*) FROM `sys_api_idempotency` WHERE `scope` = UNHEX(:s) AND `key` = :k AND `status` IS NULL AND `added` < :a", ['s' => $sScope, 'k' => $sPendingKey, 'a' => time() - 3000]), 'the claim is still the first request\'s');
+        }
+        finally {
+            $this->assertTrue($oApiDb->unlockIdempotencyKey($sScope, $sPendingKey));
+        }
         $a = $this->http($sDelete, 'content/' . $sItem . '/reaction', ['Authorization' => 'Bearer ' . $sToken, 'Idempotency-Key' => $sPendingKey]);
         $this->assertSame(204, $a['status'], $a['body']);
         $this->assertNull(BxDolTestPhpServer::header($a, 'idempotent-replayed'), 'it ran');
         $this->assertSame(0, (int)$oDb->getOne("SELECT COUNT(*) FROM `sys_api_idempotency` WHERE `scope` = UNHEX(:s) AND `key` = :k AND `status` IS NULL", ['s' => $sScope, 'k' => $sPendingKey]), 'and its answer is kept');
+        // and the request that ran let the lock go: this connection gets it at once
+        $this->assertTrue($oApiDb->lockIdempotencyKey($sScope, $sPendingKey), 'the lock is let go when the request ends');
+        $oApiDb->unlockIdempotencyKey($sScope, $sPendingKey);
 
         // keys are pruned after a day
         $oDb->query("UPDATE `sys_api_idempotency` SET `added` = :a WHERE `scope` = UNHEX(:s) AND `key` = :k", ['s' => $sScope, 'k' => $sKey, 'a' => time() - 86401]);

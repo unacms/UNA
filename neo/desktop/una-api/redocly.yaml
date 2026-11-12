@@ -1,4 +1,4 @@
-# `npx @redocly/cli lint openapi.json` from this folder.
+# `yarn lint-spec` from this folder.
 extends:
   - recommended
 rules:

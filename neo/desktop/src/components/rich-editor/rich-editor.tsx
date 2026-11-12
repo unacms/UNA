@@ -13,6 +13,7 @@ import { t, tn } from '../../lib/i18n';
 import { mediaSrc } from '../../lib/media';
 import { inApp } from '../../lib/native';
 import { isMac } from '../../lib/platform';
+import { useClick } from '../../lib/use-click';
 import { docToHtml, docToText, type EditorMode } from '../../lib/rich-html';
 import type { Staging } from '../../lib/uploads';
 import { DEFAULT_REFUSAL, type ImageSink, placementOf, registerDropTarget } from './images';
@@ -454,19 +455,25 @@ export function RichEditor(props: Props) {
         [placeImages],
     );
 
+    // a link in the text is edited, not followed (the app opens links on any click)
+    useClick(host, (e) => {
+        if ((e.target as Element).closest('a') && mount.current?.contains(e.target as Node)) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    });
+    // the visible label names a text box that is no form control, so the browser does nothing
+    // for a click on it: the caret goes into the text, as a label's click does for a field
+    useClick(labelledBy, () => {
+        if (editorRef.current && !readOnly) focusNow(editorRef.current, 'end');
+    });
+
     return (
         <div
             ref={host}
             className={`rich-editor rich-editor-${mode}${readOnly ? ' is-readonly' : ''}${invalid ? ' is-invalid' : ''}${className ? ` ${className}` : ''}`}
             style={{ ['--rich-rows' as string]: rows }}
             onFocus={props.onFocus}
-            // a link in the text is edited, not followed (the app opens links on any click)
-            onClick={(e) => {
-                if ((e.target as Element).closest('a') && mount.current?.contains(e.target as Node)) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-            }}
         >
             {mode === 'full' ? <Toolbar editor={editor} controls={id} onLink={() => setLinking(true)} /> : null}
             <div ref={mount} className="rich-editor-body" />

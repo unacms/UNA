@@ -59,6 +59,14 @@ class ApiV2SpecFileTest extends BxDolTestCase
                     $aDiffers[] = $sName . ' (' . implode(', ', self::differingKeys($aFile['paths'][$sPath][$sMethod], $aOperation)) . ')';
             }
 
+        // the OAuth endpoints are the site's own addresses: only their paths are compared
+        foreach ([&$aFile, &$aSite] as &$aDocument)
+            foreach ($aDocument['components']['securitySchemes']['oauth2']['flows'] ?? [] as $sFlow => $aFlow)
+                foreach (['authorizationUrl', 'tokenUrl', 'refreshUrl'] as $sKey)
+                    if (isset($aFlow[$sKey]))
+                        $aDocument['components']['securitySchemes']['oauth2']['flows'][$sFlow][$sKey] = self::pathInSite($aFlow[$sKey]);
+        unset($aDocument);
+
         foreach ($aSite['components'] as $sSection => $aEntries)
             foreach ($aEntries as $sEntry => $aEntry) {
                 $sName = 'components.' . $sSection . '.' . $sEntry;
@@ -90,6 +98,17 @@ class ApiV2SpecFileTest extends BxDolTestCase
                     $aGone[] = 'components.' . $sSection . '.' . $sEntry;
             $this->assertSame([], $aGone, self::FILE . ' has what the code no longer serves.' . $sHow);
         }
+    }
+
+    /**
+     * A URL of a site as its path from the site's root: the part from /m/ on (a module's
+     * page, as the OAuth endpoints are), whatever host and folder the site is at.
+     */
+    protected static function pathInSite(string $sUrl): string
+    {
+        $sPath = (string)parse_url($sUrl, PHP_URL_PATH);
+        $i = strpos($sPath, '/m/');
+        return $i === false ? $sUrl : substr($sPath, $i);
     }
 
     /**

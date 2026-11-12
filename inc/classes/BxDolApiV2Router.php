@@ -462,7 +462,8 @@ class BxDolApiV2Router
     public static function tableCacheName(array $aModules, $sRevision)
     {
         sort($aModules);
-        return 'sys_api_v2_routes_' . md5(implode(',', $aModules) . '|' . $sRevision . '|' . self::TABLE_FORMAT . '|' . implode(',', self::$_aSystemEndpoints));
+        // 32 hex digits of the digest: a name, not a secret
+        return 'sys_api_v2_routes_' . substr(hash('sha256', implode(',', $aModules) . '|' . $sRevision . '|' . self::TABLE_FORMAT . '|' . implode(',', self::$_aSystemEndpoints)), 0, 32);
     }
 
     /**
@@ -696,11 +697,68 @@ class BxDolApiV2Router
         return $mBody;
     }
 
+    /**
+     * The origins of the desktop app's own page: the Tauri shell's (macOS and Linux, then
+     * Windows and Android, with and without its https scheme).
+     */
+    const CORS_APP_ORIGINS = ['tauri://localhost', 'http://tauri.localhost', 'https://tauri.localhost'];
+
+    /**
+     * The value of Access-Control-Allow-Origin for a request's Origin header, null when a page
+     * of that origin may not read the answers. Allowed, and named back as sent: the site's own
+     * origin, the origins listed in Studio > API > Origins (sys_api_origins), the desktop app's
+     * page and a page served from this computer (localhost, 127.0.0.1, [::1], any port: an app
+     * in development). A request with no Origin header (every client that is not a page in a
+     * browser) needs no CORS header.
+     */
+    public static function corsOrigin($sOrigin)
+    {
+        $sOrigin = trim((string)$sOrigin);
+        // an origin is scheme://host[:port] and nothing else: no path, no spaces, no header breaks
+        if ($sOrigin === '' || !preg_match('~^[a-z][a-z0-9+.-]*://[A-Za-z0-9.\\-\\[\\]:]+$~', $sOrigin))
+            return null;
+
+        if (in_array($sOrigin, self::CORS_APP_ORIGINS, true))
+            return $sOrigin;
+
+        $sNormalized = BxDolApiV2Auth::origin($sOrigin);
+        if ($sNormalized === null)
+            return null;
+
+        if (in_array(strtolower((string)parse_url($sOrigin, PHP_URL_HOST)), ['localhost', '127.0.0.1', '[::1]'], true))
+            return $sOrigin;
+
+        if ($sNormalized === BxDolApiV2Auth::origin(BX_DOL_URL_ROOT))
+            return $sOrigin;
+
+        return BxDolApiQuery::getInstance()->getOrigin($sOrigin) ? $sOrigin : null;
+    }
+
+    /**
+     * A Vary header's value with Origin in it: the CORS headers depend on the request's origin.
+     */
+    public static function varyByOrigin($sVary)
+    {
+        $a = array_filter(array_map('trim', explode(',', (string)$sVary)), 'strlen');
+        if (!in_array('origin', array_map('strtolower', $a), true))
+            $a[] = 'Origin';
+        return implode(', ', $a);
+    }
+
     protected function _sendCors()
     {
-        // Bearer-token API: any origin may call it, but never with the visitor's cookies
-        // (no Access-Control-Allow-Credentials), so a cookie session stays same-site.
-        header('Access-Control-Allow-Origin: *');
+        // The answer differs by origin whether this one is allowed or not
+        header('Vary: Origin');
+
+        // Bearer-token API: a page of an allowed origin may call it, but never with the visitor's
+        // cookies (no Access-Control-Allow-Credentials), so a cookie session stays same-site.
+        // Other origins get no CORS header, so their pages can't read the answer; clients that
+        // are not pages in a browser send no Origin and need none.
+        $sAllowed = self::corsOrigin($_SERVER['HTTP_ORIGIN'] ?? '');
+        if ($sAllowed === null)
+            return;
+
+        header('Access-Control-Allow-Origin: ' . $sAllowed);
         header('Access-Control-Allow-Methods: GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS');
         header('Access-Control-Allow-Headers: Authorization, Content-Type, Accept, Accept-Language, If-None-Match, Idempotency-Key');
         header('Access-Control-Expose-Headers: ETag, Location, Retry-After, WWW-Authenticate, Idempotent-Replayed');
@@ -744,7 +802,8 @@ class BxDolApiV2Router
      */
     public static function etag($sBody)
     {
-        return 'W/"' . md5($sBody) . '"';
+        // 32 hex digits of the digest: enough to tell two bodies apart, and a short header
+        return 'W/"' . substr(hash('sha256', $sBody), 0, 32) . '"';
     }
 
     /**
@@ -792,7 +851,7 @@ class BxDolApiV2Router
         // headers first: PHP turns the status into 401 for WWW-Authenticate and into 302 for
         // Location, and the status set after them is the one sent
         foreach ($aAnswer['headers'] as $sName => $sValue)
-            header($sName . ': ' . $sValue);
+            header($sName . ': ' . (strcasecmp($sName, 'Vary') === 0 ? self::varyByOrigin($sValue) : $sValue));
         http_response_code($aAnswer['status']);
 
         if ($aAnswer['body'] === null) {
@@ -821,7 +880,7 @@ class BxDolApiV2Router
             ob_end_clean();
 
         foreach ($oResponse->aHeaders + ['Vary' => 'Authorization, Cookie, Accept-Language'] as $sName => $sValue)
-            header($sName . ': ' . $sValue);
+            header($sName . ': ' . (strcasecmp($sName, 'Vary') === 0 ? self::varyByOrigin($sValue) : $sValue));
         http_response_code($oResponse->iStatus);
 
         $fWrite = function ($s) {

@@ -47,8 +47,26 @@ fn brand() {
     }
 }
 
+/// Windows, MSVC: the application manifest (windows-app-manifest.xml, Tauri's default: Common
+/// Controls 6) goes into everything the linker makes, not only the app. Tauri's build script puts
+/// it in a resource file that only binaries link, so the unit tests' executable had none, got
+/// comctl32 5, which has no TaskDialogIndirect (the dialogs import it), and Windows refused to
+/// start it: STATUS_ENTRYPOINT_NOT_FOUND. An executable takes one manifest, so Tauri's is left out.
+fn windows_attributes() -> tauri_build::WindowsAttributes {
+    let env = |name: &str| std::env::var(name).unwrap_or_default();
+    if env("CARGO_CFG_TARGET_OS") != "windows" || env("CARGO_CFG_TARGET_ENV") != "msvc" {
+        return tauri_build::WindowsAttributes::new();
+    }
+    let manifest = std::path::Path::new(&env("CARGO_MANIFEST_DIR")).join("windows-app-manifest.xml");
+    assert!(manifest.is_file(), "windows-app-manifest.xml is next to Cargo.toml");
+    println!("cargo:rerun-if-changed={}", manifest.display());
+    println!("cargo:rustc-link-arg=/MANIFEST:EMBED");
+    println!("cargo:rustc-link-arg=/MANIFESTINPUT:{}", manifest.display());
+    tauri_build::WindowsAttributes::new_without_app_manifest()
+}
+
 fn main() {
     brand();
-    tauri_build::try_build(tauri_build::Attributes::new().app_manifest(tauri_build::AppManifest::new().commands(COMMANDS)))
-        .expect("failed to run the Tauri build script");
+    let attributes = tauri_build::Attributes::new().windows_attributes(windows_attributes()).app_manifest(tauri_build::AppManifest::new().commands(COMMANDS));
+    tauri_build::try_build(attributes).expect("failed to run the Tauri build script");
 }

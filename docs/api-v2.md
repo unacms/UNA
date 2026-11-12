@@ -1241,8 +1241,9 @@ what the site is and how to sign in.
     no output buffer or compression. It has no ETag and is never kept for an `Idempotency-Key`
     (the key is let go). The stream reports its own errors: the status is out by then.
 - Caching: a JSON answer of 200 to GET (or HEAD) of at most 1 MiB carries a weak
-  `ETag: W/"<hex>"` (md5 of the body) and `Cache-Control: private, no-cache`, for guests too,
-  with `Vary: Authorization, Cookie, Accept-Language` (texts are in the viewer's language).
+  `ETag: W/"<hex>"` (32 hex digits of the body's SHA-256) and `Cache-Control: private, no-cache`,
+  for guests too, with `Vary: Authorization, Cookie, Accept-Language, Origin` (texts are in the
+  viewer's language, the CORS headers follow the request's origin).
   `If-None-Match` is compared weakly (`W/` ignored on both sides) and may be a list or `*`; a
   match is 304 with no body and no Content-Type, its ETag, Cache-Control and Vary kept.
   Problems, writes, other statuses and larger bodies carry no ETag
@@ -1255,7 +1256,10 @@ what the site is and how to sign in.
   (Content-Type, Location, ETag, Cache-Control, Vary, Retry-After, WWW-Authenticate) and body,
   with `Idempotent-Replayed: true`; the same key with another request
   is 422 `idempotency_key_reused`; one while the first still runs is 409
-  `idempotency_in_progress` with `Retry-After: 1`, and a claim left pending for a minute (a
+  `idempotency_in_progress` with `Retry-After: 1`, however long the first runs: it holds a
+  named lock on its key in the database (`GET_LOCK`), which the server lets go when the
+  request's connection ends, and which the request lets go itself when it ends in any way PHP
+  can see. A claim left pending for a minute whose lock is free (a
   request that died) runs again; the first request, should it end after that, changes nothing
   (its answer is kept, or its key let go, only while the claim is still its own). A key is 1 to
   255 visible ASCII characters (400 `invalid_idempotency_key` otherwise, checked only where a
@@ -1268,9 +1272,18 @@ what the site is and how to sign in.
   not retry writes.
 - Requests are rate limited: one over its limit is 429 `rate_limited` with `Retry-After`. See
   "Rate limits" below.
-- CORS allows any origin without credentials: bearer-token clients can call it from anywhere,
-  while a cookie session stays same-site. Only while the API and API v2 are on: with either off
-  no CORS header is sent and OPTIONS is a 503 like any other method.
+- CORS names the request's origin back (`Access-Control-Allow-Origin: <origin>`, never `*`,
+  with `Vary: Origin`) when it is an allowed one, and never allows credentials, so a cookie
+  session stays same-site. Allowed (`BxDolApiV2Router::corsOrigin`): the site's own origin, the
+  origins listed in Studio > API > Origins (`sys_api_origins`: a web app of another origin that
+  calls the API with a bearer token is added there), the desktop app's page
+  (`tauri://localhost`, `http://tauri.localhost`, `https://tauri.localhost`) and a page served
+  from the same computer (`localhost`, `127.0.0.1`, `[::1]`, any port: an app in development).
+  A page of any other origin gets no CORS header, so its browser keeps the answer from it; a
+  preflight is 204 either way. Clients that are not pages in a browser (the desktop app, whose
+  requests go out from Rust, servers, scripts, mobile apps) send no `Origin` and are not
+  affected. Only while the API and API v2 are on: with either off no CORS header is sent and
+  OPTIONS is a 503 like any other method.
 
 ## Navigation: how the apps' sidebar is built and edited in Studio
 
@@ -1802,7 +1815,7 @@ within an hour or when the cache is cleared.
   Idempotency-Key; everything through while the switch is off or a bucket's limit is 0; the
   counter window by window; 429 in the document for every operation. `ApiV2TestCase` switches
   the limits off while a test class runs, since tests send more in a minute than a client may.
-- `npx @redocly/cli lint` on the document.
+- `yarn lint-spec` (`@redocly/cli`, a pinned devDependency) on the document.
 
 PHPUnit 13 needs PHP 8.4. Member cases use `UNA_TEST_USER_EMAIL` and skip without it.
 

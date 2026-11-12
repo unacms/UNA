@@ -392,7 +392,7 @@ class BxDolStorageQuery extends BxDolDb
         $iTime = time();
         $aValues = $aTokens = [];
         foreach($aMissing as $iId) {
-            $aTokens[$iId] = md5($iTime . mt_rand() . BX_DOL_SECRET . $iId);
+            $aTokens[$iId] = self::_newToken();
             $aValues[] = $this->prepareAsString("(?, ?, ?, ?)", $iId, $this->_aObject['object'], $aTokens[$iId], $iTime);
         }
         $bAdded = (bool)$this->query("INSERT INTO `sys_storage_tokens` (`id`, `object`, `hash`, `created`) VALUES " . implode(', ', $aValues));
@@ -445,7 +445,7 @@ class BxDolStorageQuery extends BxDolDb
         foreach($aMissing as $iSince => $aByObject)
             foreach($aByObject as $sObject => $aObjectIds)
                 foreach($aObjectIds as $iId => $oQuery) {
-                    $sToken = md5($iTime . mt_rand() . BX_DOL_SECRET . $iId);
+                    $sToken = self::_newToken();
                     $aTokens[] = [$oQuery->_tokenScopeKey($iId, $iSince), $sToken];
                     $aValues[] = $oDb->prepareAsString("(?, ?, ?, ?)", $iId, $sObject, $sToken, $iTime);
                 }
@@ -454,6 +454,15 @@ class BxDolStorageQuery extends BxDolDb
         $bAdded = (bool)$oDb->query("INSERT INTO `sys_storage_tokens` (`id`, `object`, `hash`, `created`) VALUES " . implode(', ', $aValues));
         foreach($aTokens as list($sKey, $sToken))
             self::$_aFileRowsScopes[$iScope][$sKey] = $bAdded ? $sToken : false;
+    }
+
+    /**
+     * A token for a private file's link made here: 32 hex digits, as genToken's are (the
+     * `hash` column holds as many), from the system's random source.
+     */
+    protected static function _newToken()
+    {
+        return bin2hex(random_bytes(16));
     }
 
     protected function _tokenScopeKey($iFileId, $iSince)

@@ -184,7 +184,7 @@ class BxDolImageResize extends BxDolFactory implements iBxDolSingleton
      * Whether an EXIF Orientation value turns the image a quarter, so that it is shown with its
      * width and height swapped.
      */
-    static function isQuarterTurn($iOrientation)
+    public static function isQuarterTurn($iOrientation)
     {
         return $iOrientation >= 5 && $iOrientation <= 8;
     }

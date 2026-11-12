@@ -85,7 +85,9 @@ class BxTasksApiV2 extends BxBaseModTextApiV2
     public function __construct()
     {
         parent::__construct('bx_tasks');
-        // the stickers set's helpers (BxDolFormCheckerHelper) are in its file
+        // not for the class BxDolForm, which is autoloaded: for what else its file defines and
+        // the autoloader cannot find by name, BxDolFormCheckerHelper (the stickers set's helpers,
+        // used by reads that make no form) and the BX_DOL_FORM_* constants
         bx_import('BxDolForm');
     }
 
@@ -815,21 +817,39 @@ class BxTasksApiV2 extends BxBaseModTextApiV2
         $oReq->requireViewer();
         list($aEntry, $iContextId) = $this->_existingBudgetEntry($oReq->id());
         $aBody = $oReq->body();
-        $iBefore = (int)$aEntry['value'];
-        $iHours = array_key_exists('hours', $aBody) ? $this->_budgetHours($aBody['hours']) : $iBefore;
-        $sNote = array_key_exists('note', $aBody) ? $this->_budgetNote($aBody['note']) : (string)$aEntry['text'];
+        $iId = (int)$aEntry['id'];
+        $oDb = $this->_oModule->_oDb;
 
         $CNF = &$this->_oModule->_oConfig->CNF;
-        $iId = (int)$aEntry['id'];
-        if ($iHours !== $iBefore || $sNote !== (string)$aEntry['text']) {
+        for ($iTry = 0; ; $iTry++) {
+            $iBefore = (int)$aEntry['value'];
+            $iHours = array_key_exists('hours', $aBody) ? $this->_budgetHours($aBody['hours']) : $iBefore;
+            $sNote = array_key_exists('note', $aBody) ? $this->_budgetNote($aBody['note']) : (string)$aEntry['text'];
+            if ($iHours === $iBefore && $sNote === (string)$aEntry['text'])
+                break;
+
             $oForm = $this->_budgetForm($CNF['OBJECT_FORM_BUDGET_DISPLAY_EDIT'], $aEntry, $iHours, $sNote);
-            if (!$oForm->update($iId))
-                throw BxDolApiV2Problem::validation([['field' => '(body)', 'code' => 'rejected', 'message' => 'The entry was not changed']], 'It was not saved');
-            if ($iHours !== $iBefore)
-                $this->_oModule->_oDb->updateBudgetTotal($iContextId, 60 * ($iHours - $iBefore));
+            // the hours and the total change together, and only while the entry still has the
+            // hours read above: another change of it made meanwhile is not counted twice
+            if ($iHours === $iBefore || $oDb->changeBudgetTrackValue($iId, $iBefore, $iHours)) {
+                // the form writes the note: the hours are written, and are not its to write back
+                unset($oForm->aInputs['value']['db']);
+                if (!$oForm->update($iId) && $iHours === $iBefore)
+                    throw BxDolApiV2Problem::validation([['field' => '(body)', 'code' => 'rejected', 'message' => 'The entry was not changed']], 'It was not saved');
+                break;
+            }
+
+            // someone changed or deleted it since it was read: again, from what it is now
+            list($aNow, $iContextId) = $this->_existingBudgetEntry($iId);
+            if ((int)$aNow['value'] === $iBefore)
+                // or its context has no row for the total yet
+                $oDb->insertBudget($iContextId, 0);
+            if ($iTry >= 3)
+                throw new BxDolApiV2Problem(409, 'conflict', 'The entry is being changed by someone else; try again', [], ['Retry-After' => '1']);
+            $aEntry = $aNow;
         }
 
-        return $this->_budgetEntry($this->_oModule->_oDb->getBudgetTrackById($iId));
+        return $this->_budgetEntry($oDb->getBudgetTrackById($iId));
     }
 
     #[BxDolApiV2Operation(method: 'DELETE', path: '/task-budget-entries/{id}', id: 'deleteTaskBudgetEntry', tag: 'tasks', auth: 'required',
@@ -840,8 +860,13 @@ class BxTasksApiV2 extends BxBaseModTextApiV2
     {
         $oReq->requireViewer();
         list($aEntry, $iContextId) = $this->_existingBudgetEntry($oReq->id());
-        if (!$this->_oModule->_oDb->deleteBudgetTrack((int)$aEntry['id']))
-            throw BxDolApiV2Problem::notFound();
+        // it is deleted only with the hours that are taken off the total: when its hours were
+        // changed since it was read, it is read again (404 when someone else deleted it)
+        for ($iTry = 0; !$this->_oModule->_oDb->deleteBudgetTrackByValue((int)$aEntry['id'], (int)$aEntry['value']); $iTry++) {
+            if ($iTry >= 3)
+                throw new BxDolApiV2Problem(409, 'conflict', 'The entry is being changed by someone else; try again', [], ['Retry-After' => '1']);
+            list($aEntry, $iContextId) = $this->_existingBudgetEntry((int)$aEntry['id']);
+        }
         $this->_oModule->_oDb->updateBudgetTotal($iContextId, -60 * (int)$aEntry['value']);
         return BxDolApiV2Response::noContent();
     }

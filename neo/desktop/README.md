@@ -731,7 +731,7 @@ comparison, unlike NEO's lint and typecheck). To run the same checks before a pu
 | Check | Command | From |
 |---|---|---|
 | Client types match the OpenAPI file | `yarn generate`, then `git diff --exit-code src/schema.ts` | `neo/desktop/una-api` |
-| The OpenAPI file is valid | `npx @redocly/cli lint openapi.json` | `neo/desktop/una-api` |
+| The OpenAPI file is valid | `yarn lint-spec` | `neo/desktop/una-api` |
 | Types | `yarn typecheck` | `neo/desktop` |
 | Lint, no warnings (the app and `una-api`; `eslint.config.mjs` here) | `yarn lint` | `neo/desktop` |
 | Tests | `yarn test` | `neo/desktop` |

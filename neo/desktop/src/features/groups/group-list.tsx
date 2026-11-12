@@ -72,7 +72,7 @@ export function ContextRow({ context: g, kind, announce, acted, onAction }: { co
     };
     return (
         <li className="list-row group-row" onDoubleClick={onDoubleClick}>
-            <span className="avatar-link" onClick={(e) => open(e)}>
+            <span className="avatar-link" aria-hidden="true" onClick={(e) => open(e)}>
                 <Avatar profile={g} size={40} shape="square" />
             </span>
             <div className="list-main">

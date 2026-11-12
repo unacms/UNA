@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
 <!-- The menu Profile Memberships and the Apps Sidebar's item Member Memberships (API v2 GET /navigation). -->
 <resources name="en" flag="gb" title="English">
     <string_add name="_sys_menu_title_profile_memberships"><![CDATA[Profile Memberships]]></string_add>

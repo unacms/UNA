@@ -772,7 +772,7 @@ abstract class BxDolStorage extends BxDolFactory implements iBxDolFactoryObject
      * @param $iFileId file id
      * @return file url or false on error
      */
-    public function getFileUrlById($iFileId) { }
+    public function getFileUrlById($iFileId) { return null; } // an engine that makes no links: null, as the empty body gave
 
     /**
      * Get a file url that may be given out again: for a private file a token is reused for a

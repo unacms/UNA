@@ -1,4 +1,4 @@
--- UNA-Migration-Min-System-Version: 15.0.0-RC3
+-- UNA-Migration-Min-System-Version: 15.0.0-RC4
 -- Messages in the apps' menu (sys_apps_menu: the first section of the apps' sidebar, API v2 GET /navigation), between
 -- Profile and Notifications, with the count of updated talks. The site and API v1 do not read that menu.
 -- sys_menu_items has no unique key on the name, so INSERT IGNORE would add it again on every run.

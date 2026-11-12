@@ -75,7 +75,9 @@ class ApiV2RateLimitTest extends ApiV2TestCase
         $sRetry = (string)BxDolTestPhpServer::header($a, 'retry-after');
         $this->assertMatchesRegularExpression('/^[1-9][0-9]*$/', $sRetry, 'Retry-After is seconds');
         $this->assertLessThanOrEqual(BxDolApiV2RateLimit::WINDOW, (int)$sRetry);
-        $this->assertStringContainsString('Retry-After', (string)BxDolTestPhpServer::header($a, 'access-control-expose-headers'), 'a page of another origin may read it');
+        // a request from a page of an allowed origin (it sent Origin): the page may read the header
+        if (BxDolTestPhpServer::header($a, 'access-control-allow-origin') !== null)
+            $this->assertStringContainsString('Retry-After', (string)BxDolTestPhpServer::header($a, 'access-control-expose-headers'), 'a page of another origin may read it');
     }
 
     public function testABucketLetsItsLimitThroughAndRefusesTheNext(): void
@@ -86,6 +88,9 @@ class ApiV2RateLimitTest extends ApiV2TestCase
         for ($i = 1; $i <= 3; $i++)
             $this->assertSame(200, $this->http('GET', 'hashtags?q=te')['status'], 'request ' . $i . ' of 3');
         $this->assertRefused($this->http('GET', 'hashtags?q=te'), 'the fourth');
+        $aFromApp = $this->http('GET', 'hashtags?q=te', ['Origin' => 'tauri://localhost']);
+        $this->assertSame('tauri://localhost', BxDolTestPhpServer::header($aFromApp, 'access-control-allow-origin'));
+        $this->assertRefused($aFromApp, 'from a page of an allowed origin');
         $this->assertRefused($this->http('GET', 'search/profiles?q=te'), 'another operation of the same bucket');
         $this->assertSame(429, $this->http('HEAD', 'hashtags?q=te')['status'], 'HEAD is counted as GET');
 

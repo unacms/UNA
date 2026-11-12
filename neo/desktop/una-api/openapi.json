@@ -24941,9 +24941,9 @@
         "description": "OAuth 2 authorization code flow with PKCE (S256). Native apps use a public client and a loopback redirect (RFC 8252); the port may vary.",
         "flows": {
           "authorizationCode": {
-            "authorizationUrl": "http://desktop.localhost:8090/m/oauth2/auth",
-            "tokenUrl": "http://desktop.localhost:8090/m/oauth2/token",
-            "refreshUrl": "http://desktop.localhost:8090/m/oauth2/token",
+            "authorizationUrl": "/m/oauth2/auth",
+            "tokenUrl": "/m/oauth2/token",
+            "refreshUrl": "/m/oauth2/token",
             "scopes": {
               "api": "Act as the signed-in profile through API v2"
             }

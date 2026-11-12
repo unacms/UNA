@@ -16,6 +16,10 @@ const xymbolsDist = dirname(createRequire(import.meta.url).resolve('xymbols'));
 
 export default defineConfig({
     plugins: [react()],
+    // One tsconfig for every file Vite transforms. Left to look for the nearest one, it walks up
+    // from una-api/ (outside this file's "include") and from the NEO file a test reads to
+    // neo/tsconfig.json, which extends expo/tsconfig.base: a package of NEO's install, not this one's.
+    tsconfig: 'tsconfig.json',
     resolve: { alias: { 'xymbols-dist': xymbolsDist } },
     // Settings > About
     define: { __APP_VERSION__: JSON.stringify(pkg.version) },

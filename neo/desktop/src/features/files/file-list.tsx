@@ -55,7 +55,7 @@ export function FileRow({ file: f, selected }: { file: FileEntry; selected: bool
     };
     return (
         <li className="list-row file-row" data-selected={selected || undefined} onDoubleClick={onDoubleClick}>
-            <span className="file-icon-link" onClick={(m) => open(m)}>
+            <span className="file-icon-link" aria-hidden="true" onClick={(m) => open(m)}>
                 <FileTypeIcon file={f} />
             </span>
             <div className="list-main">

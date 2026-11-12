@@ -121,14 +121,21 @@ class BxDolApiV2Map
      * HTML for plain text a client sent, for a field the site stores as HTML: the text is
      * escaped, so a literal `<` stays text, and each line is a paragraph, as the site's editor
      * writes them. text() turns it back into the same lines (blank lines are dropped).
+     *
+     * The paragraphs are the template api_v2_text_paragraphs.html. Its key is written
+     * `<bx_api_v2:text />`, not `__text__`: without the templates cache the parser looks for
+     * system keys (`__lang__`, `__main_logo__`) in the filled template too, so in what a member
+     * wrote, and escaped text has no `<` for it to find.
      */
     public static function htmlFromText($sText)
     {
-        $sHtml = '';
+        $aLines = [];
         foreach (preg_split('/\r\n|\r|\n/', (string)$sText) as $sLine)
             if (trim($sLine) !== '')
-                $sHtml .= '<p>' . htmlspecialchars(rtrim($sLine), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</p>';
-        return $sHtml;
+                $aLines[] = ['text' => htmlspecialchars(rtrim($sLine), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')];
+        if (!$aLines)
+            return '';
+        return BxDolTemplate::getInstance()->parseHtmlByName('api_v2_text_paragraphs.html', ['bx_repeat:lines' => $aLines], ['<bx_api_v2:', ' />']);
     }
 
     /**

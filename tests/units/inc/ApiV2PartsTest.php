@@ -126,6 +126,46 @@ class ApiV2PartsTest extends BxDolTestCase
         $this->assertSame($sOrigin, BxDolApiV2Auth::origin($sUrl));
     }
 
+    public static function corsOrigins(): array
+    {
+        return [
+            'the desktop app, macOS and Linux' => ['tauri://localhost', true],
+            'the desktop app, Windows' => ['http://tauri.localhost', true],
+            'the desktop app, Windows over https' => ['https://tauri.localhost', true],
+            'a dev server' => ['http://localhost:1420', true],
+            'loopback by address' => ['http://127.0.0.1:5173', true],
+            'loopback, IPv6' => ['http://[::1]:3000', true],
+            'another site' => ['https://elsewhere.example', false],
+            'a host that only starts like loopback' => ['http://localhost.elsewhere.example', false],
+            'the scheme of the app, another host' => ['tauri://elsewhere.example', false],
+            'another scheme' => ['file://localhost', false],
+            'null, a sandboxed page' => ['null', false],
+            'no origin' => ['', false],
+            'not an origin: a path' => ['http://localhost/path', false],
+            'not an origin: a header break' => ["http://localhost\r\nX-Injected: 1", false],
+            'any' => ['*', false],
+        ];
+    }
+
+    #[DataProvider('corsOrigins')]
+    public function testCorsNamesOnlyAllowedOrigins(string $sOrigin, bool $bAllowed): void
+    {
+        $this->assertSame($bAllowed ? $sOrigin : null, BxDolApiV2Router::corsOrigin($sOrigin));
+    }
+
+    public function testCorsAllowsTheSitesOwnOrigin(): void
+    {
+        $sSite = BxDolApiV2Auth::origin(BX_DOL_URL_ROOT);
+        $this->assertSame($sSite, BxDolApiV2Router::corsOrigin($sSite));
+    }
+
+    public function testVaryNamesTheOriginOnce(): void
+    {
+        $this->assertSame('Authorization, Cookie, Accept-Language, Origin', BxDolApiV2Router::varyByOrigin('Authorization, Cookie, Accept-Language'));
+        $this->assertSame('Accept-Language, origin', BxDolApiV2Router::varyByOrigin('Accept-Language, origin'));
+        $this->assertSame('Origin', BxDolApiV2Router::varyByOrigin(''));
+    }
+
     public function testOnlyTheBearerSchemeIsAToken(): void
     {
         $this->assertTrue(BxDolApiV2Auth::isBearer('Bearer abc'));
@@ -193,6 +233,25 @@ class ApiV2PartsTest extends BxDolTestCase
         $this->assertSame("1 < 2 & <b>x</b> \"q\" 'a'\nGrüße 日本\nlast", BxDolApiV2Map::text($sHtml), 'blank lines go, the rest comes back');
         $this->assertSame($sHtml, BxDolApiV2Map::htmlFromText(BxDolApiV2Map::text($sHtml)), 'stable once round');
         $this->assertSame('', BxDolApiV2Map::htmlFromText(" \n\t\n"));
+
+        // what the site's templates read as their own (keys, includes, replacement references)
+        // is text like any other, with the templates cache on or off
+        $sText = '__lang__ __main_logo__ <bx_text:_sys_txt_btn_cancel /> <bx_url_root /> <bx_api_v2:text /> __text__ $1 \\1 ${1} <?php echo 1; ?>';
+        $sExpected = '<p>' . htmlspecialchars($sText, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</p>';
+        $oTemplate = BxDolTemplate::getInstance();
+        $oCache = new ReflectionProperty('BxDolTemplate', '_bCacheEnable');
+        $bCache = $oCache->getValue($oTemplate);
+        try {
+            foreach ([false, true] as $bOn) {
+                $oCache->setValue($oTemplate, $bOn);
+                $this->assertSame($sExpected, BxDolApiV2Map::htmlFromText($sText), 'templates cache ' . ($bOn ? 'on' : 'off'));
+                $this->assertSame($sExpected . $sExpected, BxDolApiV2Map::htmlFromText($sText . "\n" . $sText), 'two lines, templates cache ' . ($bOn ? 'on' : 'off'));
+                $this->assertSame($sText, BxDolApiV2Map::text(BxDolApiV2Map::htmlFromText($sText)));
+            }
+        }
+        finally {
+            $oCache->setValue($oTemplate, $bCache);
+        }
     }
 
     public static function commentHtml(): array

@@ -132,7 +132,7 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
      * What isEnabledByName answers for every module, read in one query and kept in memory where
      * it keeps it: for a page that asks about many modules (a feed of many modules' content).
      */
-    function primeEnabledByName()
+    public function primeEnabledByName()
     {
         if(array_key_exists('sys_module_enabled_by_name_primed', self::$_aDbCacheData))
             return;

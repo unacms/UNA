@@ -16,8 +16,10 @@
  *   keys are ignored, and so are multipart requests (uploads), whose bodies are not read here.
  * - A repeat with the same method, path, query and body replays the stored answer with
  *   `Idempotent-Replayed: true`; one with a different request is 422 `idempotency_key_reused`;
- *   one while the first still runs is 409 `idempotency_in_progress` (Retry-After: 1). A claim
- *   left pending for a minute belongs to a request that died, and a repeat runs again.
+ *   one while the first still runs is 409 `idempotency_in_progress` (Retry-After: 1), however
+ *   long it runs: a request holds a lock on its key in the database (GET_LOCK), which the
+ *   server lets go when the request's connection ends. A claim left pending for a minute whose
+ *   lock is free belongs to a request that died, and a repeat runs again.
  * - Server errors, 408, 409, 425, 429, answers that set a cookie and answers larger than 1 MiB
  *   are not stored, so the client can retry them; the key is let go. Other problems (403, 404,
  *   422) are answers like any other and are replayed.
@@ -34,8 +36,10 @@ class BxDolApiV2Idempotency
 
     /** Answers larger than this (bytes) run normally but are not stored. */
     const MAX_STORED = 1048576;
-    /** A pending claim older than this (seconds) belongs to a request that died. */
+    /** A pending claim older than this (seconds) whose lock is free belongs to a request that died. */
     const ABANDONED = 60;
+    /** How long a new claim waits (seconds) for the lock of a request that is just ending. */
+    const LOCK_WAIT = 1;
     /** How long an answer is replayed (seconds). */
     const LIFETIME = 86400;
 
@@ -48,6 +52,10 @@ class BxDolApiV2Idempotency
     protected $_oDb;
     /** When this request's claim was made (or taken over): finish() changes the row only while it is still that claim. */
     protected $_iAdded = null;
+    /** How many times this request took the key's lock (a connection may take its own again). */
+    protected $_iLocks = 0;
+    /** The claims of this process that hold a lock, let go when it ends (connections are kept). */
+    protected static $_aLocked = null;
 
     /**
      * @param string $sScope hex sha256 of the credential (scope())
@@ -123,6 +131,8 @@ class BxDolApiV2Idempotency
         $iNow = $iNow ?? time();
         if ($this->_oDb->claimIdempotencyKey($this->_sScope, $this->_sKey, $this->_sFingerprint, $iNow)) {
             $this->_iAdded = $iNow;
+            // the lock's last holder may be ending just now (it lets the row go first)
+            $this->_lock(self::LOCK_WAIT);
             return null;
         }
 
@@ -134,6 +144,7 @@ class BxDolApiV2Idempotency
         if ((int)$aRow['added'] < $iNow - self::LIFETIME) {
             if ($this->_oDb->takeOverIdempotencyKey($this->_sScope, $this->_sKey, $this->_sFingerprint, $iNow, (int)$aRow['added'], false)) {
                 $this->_iAdded = $iNow;
+                $this->_lock(self::LOCK_WAIT);
                 return null;
             }
             throw self::inProgress();
@@ -145,11 +156,16 @@ class BxDolApiV2Idempotency
         if ($aRow['status'] === null) {
             if ((int)$aRow['added'] >= $iNow - self::ABANDONED)
                 throw self::inProgress();
+            // its age alone does not say that it died (a post that fetches its links may take
+            // minutes): the request that made it holds the key's lock for as long as it runs
+            if (!$this->_lock(0))
+                throw self::inProgress();
             // only while still pending: a first request that ends now keeps its answer
             if ($this->_oDb->takeOverIdempotencyKey($this->_sScope, $this->_sKey, $this->_sFingerprint, $iNow, (int)$aRow['added'], true)) {
                 $this->_iAdded = $iNow;
                 return null;
             }
+            $this->_unlock();
             throw self::inProgress();
         }
 
@@ -179,7 +195,14 @@ class BxDolApiV2Idempotency
     {
         if ($this->_iAdded === null)
             return false;
-        return (bool)$this->_oDb->releaseIdempotencyKey($this->_sScope, $this->_sKey, $this->_iAdded);
+        // the row first, the lock after it: a repeat never finds a pending row with a free lock
+        // while this request still has something to do with it
+        try {
+            return (bool)$this->_oDb->releaseIdempotencyKey($this->_sScope, $this->_sKey, $this->_iAdded);
+        }
+        finally {
+            $this->_unlock();
+        }
     }
 
     /**
@@ -187,22 +210,79 @@ class BxDolApiV2Idempotency
      */
     public function finish(array $aAnswer, $bSetsCookie)
     {
-        // a claim taken over by a retry (this request ran past ABANDONED) is the retry's now:
-        // the row is changed only while it is still this request's pending claim
+        // a claim taken over by a retry (this request lost its lock: its connection to the
+        // database was made again) is the retry's now: the row is changed only while it is still
+        // this request's pending claim
         if ($this->_iAdded === null)
             return false;
 
-        if (!self::isStorable($aAnswer, $bSetsCookie)) {
-            $this->_oDb->releaseIdempotencyKey($this->_sScope, $this->_sKey, $this->_iAdded);
+        try {
+            if (!self::isStorable($aAnswer, $bSetsCookie)) {
+                $this->_oDb->releaseIdempotencyKey($this->_sScope, $this->_sKey, $this->_iAdded);
+                return false;
+            }
+
+            $aHeaders = [];
+            foreach (self::$_aStoredHeaders as $sName)
+                if (isset($aAnswer['headers'][$sName]))
+                    $aHeaders[$sName] = (string)$aAnswer['headers'][$sName];
+
+            return (bool)$this->_oDb->storeIdempotentAnswer($this->_sScope, $this->_sKey, $this->_iAdded, (int)$aAnswer['status'], json_encode($aHeaders, JSON_UNESCAPED_SLASHES), (string)($aAnswer['body'] ?? ''));
+        }
+        finally {
+            // after the row has its answer (or is gone), as in release()
+            $this->_unlock();
+        }
+    }
+
+    /**
+     * Take the key's lock for this request, at once or within $iWait seconds. Without it (the
+     * server has no such locks, or another connection kept one) the claim still stands, and is
+     * told from an abandoned one by its age alone.
+     */
+    protected function _lock($iWait)
+    {
+        try {
+            if (!$this->_oDb->lockIdempotencyKey($this->_sScope, $this->_sKey, $iWait))
+                return false;
+        }
+        catch (Throwable $e) {
             return false;
         }
 
-        $aHeaders = [];
-        foreach (self::$_aStoredHeaders as $sName)
-            if (isset($aAnswer['headers'][$sName]))
-                $aHeaders[$sName] = (string)$aAnswer['headers'][$sName];
+        $this->_iLocks++;
+        // connections to the database outlive requests (PDO::ATTR_PERSISTENT), and their locks
+        // with them: a request that ends without finish() (a fatal error, a time limit, exit)
+        // lets its locks go here
+        if (self::$_aLocked === null) {
+            self::$_aLocked = [];
+            register_shutdown_function([__CLASS__, 'unlockAll']);
+        }
+        self::$_aLocked[spl_object_id($this)] = $this;
+        return true;
+    }
 
-        return (bool)$this->_oDb->storeIdempotentAnswer($this->_sScope, $this->_sKey, $this->_iAdded, (int)$aAnswer['status'], json_encode($aHeaders, JSON_UNESCAPED_SLASHES), (string)($aAnswer['body'] ?? ''));
+    protected function _unlock()
+    {
+        for (; $this->_iLocks > 0; $this->_iLocks--) {
+            try {
+                $this->_oDb->unlockIdempotencyKey($this->_sScope, $this->_sKey);
+            }
+            catch (Throwable $e) {
+                // the connection is gone, and its locks with it
+            }
+        }
+        if (self::$_aLocked !== null)
+            unset(self::$_aLocked[spl_object_id($this)]);
+    }
+
+    /**
+     * Let go of every lock this process still holds for a claim (when it ends).
+     */
+    public static function unlockAll()
+    {
+        foreach ((array)self::$_aLocked as $oClaim)
+            $oClaim->_unlock();
     }
 
     /**

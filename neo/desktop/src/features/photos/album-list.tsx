@@ -70,7 +70,7 @@ export function AlbumCard({ album: a, selected }: { album: Album; selected: bool
     };
     return (
         <li className="album-card" data-selected={selected || undefined} onDoubleClick={onDoubleClick}>
-            <span className="album-cover-link" onClick={(m) => open(m)}>
+            <span className="album-cover-link" aria-hidden="true" onClick={(m) => open(m)}>
                 <AlbumCover preview={a.preview} />
             </span>
             <div className="album-card-text">

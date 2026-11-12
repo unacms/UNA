@@ -6,6 +6,7 @@ import type { Schema } from 'una-api';
 import { unwrap } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { t, tn } from '../../lib/i18n';
+import { useClick } from '../../lib/use-click';
 import { Avatar } from '../../components/avatar';
 
 type Profile = Schema<'Profile'>;
@@ -47,6 +48,11 @@ export function RecipientField({ id, label, value, onChange, exclude, autoFocus,
     const [open, setOpen] = useState(false);
     const [active, setActive] = useState(0);
     const field = useRef<HTMLInputElement>(null);
+    const box = useRef<HTMLDivElement>(null);
+    // a click on the box around the field, beside the chips, puts the caret in the field
+    useClick(box, (e, el) => {
+        if (e.target === el) field.current?.focus();
+    });
 
     useEffect(() => {
         const q = words.trim();
@@ -125,7 +131,7 @@ export function RecipientField({ id, label, value, onChange, exclude, autoFocus,
             <label className="recipient-label" htmlFor={id}>
                 {label}
             </label>
-            <div className="recipient-box" onClick={(e) => e.target === e.currentTarget && field.current?.focus()}>
+            <div ref={box} className="recipient-box">
                 {value.length ? (
                     <ul className="recipient-chips" aria-label={tn(value.length, '{{count}} recipient', '{{count}} recipients')}>
                         {value.map((p) => (
@@ -175,6 +181,13 @@ export function RecipientField({ id, label, value, onChange, exclude, autoFocus,
                         // keep focus in the field: a mousedown on an option would blur it first
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => choose(p)}
+                        // focus stays in the field, whose keys move through the list and choose;
+                        // this is for assistive technology that sends the key to the option itself
+                        onKeyDown={(e) => {
+                            if (e.key !== 'Enter' && e.key !== ' ') return;
+                            e.preventDefault();
+                            choose(p);
+                        }}
                         onMouseEnter={() => setActive(i)}
                     >
                         <Avatar profile={p} size={24} />

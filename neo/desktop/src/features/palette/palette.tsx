@@ -13,6 +13,7 @@ import { closeModal, openModal } from '../../components/dialog';
 import { ApiError, isGone, unwrap } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { t } from '../../lib/i18n';
+import { useClick } from '../../lib/use-click';
 import { useHasDiscussions } from '../discussions/discussions';
 import { useTaskAddShown } from '../tasks/tasks';
 import { useSiteHasTag } from '../../lib/site-modules';
@@ -242,8 +243,13 @@ export function CommandPalette({ open, onClose, onChoose, recent }: Props) {
 
     const status = open ? resultsText(entries.length, searching) : '';
 
+    // a click beside the palette, on its backdrop, closes it as Esc does
+    useClick(dialog, (e, el) => {
+        if (e.target === el) finish();
+    });
+
     return (
-        <dialog ref={dialog} className="palette" aria-label={t('Command palette')} onClick={(e) => e.target === e.currentTarget && finish()}>
+        <dialog ref={dialog} className="palette" aria-label={t('Command palette')}>
             <div className="palette-field">
                 <span className="palette-icon" aria-hidden="true">⌕</span>
                 <input
@@ -287,6 +293,14 @@ export function CommandPalette({ open, onClose, onChoose, recent }: Props) {
                                     onMouseDown={(e) => e.preventDefault()}
                                     onMouseMove={() => !selected && setActiveKey(entry.key)}
                                     onClick={() => finish(entry)}
+                                    // focus stays in the field, whose keys move through the list and
+                                    // run; this is for assistive technology that sends the key to
+                                    // the option itself
+                                    onKeyDown={(e) => {
+                                        if (e.key !== 'Enter' && e.key !== ' ') return;
+                                        e.preventDefault();
+                                        finish(entry);
+                                    }}
                                 >
                                     {entry.profile ? <Avatar profile={entry.profile} size={24} /> : <span className="palette-glyph" aria-hidden="true" />}
                                     <span className="palette-text">

@@ -456,8 +456,8 @@ export function DiscussionFields({
             ) : null}
             {textEditable ? (
                 <div className="settings-field">
-                    {/* names the text box, which is no form control: a click puts the caret in it */}
-                    <label id={`${id}-body-label`} htmlFor={`${id}-body`} onClick={() => document.getElementById(`${id}-body`)?.focus()}>
+                    {/* names the text box, which is no form control: a click puts the caret in it (RichEditor, labelledBy) */}
+                    <label id={`${id}-body-label`} htmlFor={`${id}-body`}>
                         {t('Text')}
                     </label>
                     <RichEditor
