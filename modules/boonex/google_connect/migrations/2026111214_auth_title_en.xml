@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The sign-in button reads "Continue with ...", as on the login form's other methods and in NEO. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_googlecon_auth_title"><![CDATA[Continue with Google]]></string_upd>
+</resources>

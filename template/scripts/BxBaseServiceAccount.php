@@ -134,13 +134,14 @@ class BxBaseServiceAccount extends BxDol
                 BxDolSession::getInstance()->setValue('join-referrer', $sJoinReferrer);
         }
 
-        $aTmplVarsAuth = [];
-        if(!isset($aParams['no_auth_buttons']) || false === (bool)$aParams['no_auth_buttons'])
-            $aTmplVarsAuth['content'] = BxDolService::call('system', 'member_auth_code', array(), 'TemplServiceLogin');
-
         $aTmplVarsForm = [];
         if(!(bool)getParam('sys_account_disable_join_form'))
             $aTmplVarsForm['content'] = $this->_oAccountForms->createAccountForm($aParams);
+
+        // Other sign-in methods go under the form, after an "or".
+        $aTmplVarsAuth = [];
+        if(!isset($aParams['no_auth_buttons']) || false === (bool)$aParams['no_auth_buttons'])
+            $aTmplVarsAuth['content'] = BxDolService::call('system', 'member_auth_code', array(array(), !empty($aTmplVarsForm)), 'TemplServiceLogin');
 
         $aTmplVarsLogin = [];
         if(!isset($aParams['no_login_text']) || false === (bool)$aParams['no_login_text'])

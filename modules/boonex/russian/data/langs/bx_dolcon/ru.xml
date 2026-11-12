@@ -10,7 +10,7 @@
 Затем нужно ввести полученные ключ и секретный код в настройках этого модуля.]]></string>
 	<string name="_bx_dolcon_profile_error_api_keys"><![CDATA[Пожалуйста, настройте модуль в административной панели (невозможно определить ключи)]]></string>
 	<string name="_bx_dolcon_chart"><![CDATA[Dolphin профили]]></string>
-	<string name="_bx_dolcon_auth_title"><![CDATA[Вход через Dolphin]]></string>
+	<string name="_bx_dolcon_auth_title"><![CDATA[Продолжить с Dolphin]]></string>
 
     <string name="_bx_dolcon_adm_stg_cpt_type"><![CDATA[Dolphin-соединение]]></string>
     <string name="_bx_dolcon_option_app_id"><![CDATA[Dolphin App Key]]></string>

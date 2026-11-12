@@ -15,7 +15,7 @@
         </p>]]></string>
     
     <string name="_bx_linkedin_profile_error_api_keys"><![CDATA[Нужно настроить модуль - указать LinkedIn Client ID & Secret]]></string>
-	<string name="_bx_linkedin_auth_title"><![CDATA[Вход через LinkedIn]]></string>
+	<string name="_bx_linkedin_auth_title"><![CDATA[Продолжить с LinkedIn]]></string>
 
     <string name="_bx_linkedin_adm_stg_cpt_type"><![CDATA[LinkedIn-соединение]]></string>
     <string name="_bx_linkedin_option_app_id"><![CDATA[Client ID]]></string>

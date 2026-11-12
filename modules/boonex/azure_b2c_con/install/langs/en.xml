@@ -18,7 +18,7 @@
         </p>]]></string>
 	<string name="_bx_azrb2c_profile_error_api_keys"><![CDATA[Please configure the module in admin panel (can't define Client ID & Secret)]]></string>
 	<string name="_bx_azrb2c_error_not_member_of_group"><![CDATA[Sorry, you aren't allowed to join]]></string>
-	<string name="_bx_azrb2c_auth_title"><![CDATA[Login with Azure AD B2C]]></string>
+	<string name="_bx_azrb2c_auth_title"><![CDATA[Continue with Azure AD B2C]]></string>
 
     <string name="_bx_azrb2c_adm_stg_cpt_type"><![CDATA[Azure AD B2C Connect]]></string>
     <string name="_bx_azrb2c_option_domain"><![CDATA[Domain]]></string>

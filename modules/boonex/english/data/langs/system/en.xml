@@ -1892,7 +1892,6 @@
     <string name="_adm_stg_inf_option_site_email_notify"><![CDATA[Email address used as "sender" in transactional emails.]]></string>
     <string name="_adm_stg_cpt_option_site_email_html_template_header"><![CDATA[Email template header]]></string>
     <string name="_adm_stg_cpt_option_site_email_html_template_footer"><![CDATA[Email template footer]]></string>
-    <string name="_adm_stg_cpt_option_site_login_social_compact"><![CDATA[Enable compact view for social login]]></string>
     <string name="_adm_stg_cpt_option_site_title"><![CDATA[Community name]]></string>
     <string name="_adm_stg_inf_option_site_title"><![CDATA[The default name used to refer to your site in site texts, meta tags, emails and notifications.]]></string>
     <string name="_adm_stg_cpt_option_site_tour_home"><![CDATA[User Tour]]></string>
@@ -3374,7 +3373,6 @@
 	<string name="_sys_form_login_input_caption_system_sendsms"><![CDATA[Send SMS]]></string>
 	<string name="_sys_form_login_input_caption_system_submit"><![CDATA[Submit]]></string>
 	<string name="_sys_form_login_input_caption_system_submit_text"><![CDATA[Submit Text]]></string>
-        <string name="_sys_form_login_input_agreement_value"><![CDATA[By logging in, you agree to the <a href="{0}">Terms of Service</a> and <a href="{1}">Privacy Policy</a>.]]></string>
 	<string name="_sys_form_login_input_code"><![CDATA[Code from SMS]]></string>
 	<string name="_sys_form_login_input_back"><![CDATA[You didn't receive an SMS? <a href="{0}">Send SMS again</a>.]]></string>
 	<string name="_sys_form_login_input_checkcode"><![CDATA[Submit]]></string>
@@ -4675,6 +4673,7 @@
     <string name="_sys_tour_homepage_account_menu_txt"><![CDATA[Switch profiles, check notifications and open your account settings here. You can start this tour again from this menu.]]></string>
 
     <string name="_sys_txt_api_key"><![CDATA[API Key]]></string>
+    <string name="_sys_txt_auth_or"><![CDATA[or]]></string>
     <string name="_sys_txt_access_denied"><![CDATA[Access denied]]></string>
     <string name="_sys_txt_account_pending"><![CDATA[Your account is pending approval, please wait until it is activated.]]></string>
     <string name="_sys_txt_account_profile_context_change_suggestion"><![CDATA[This is your profile, you can <a href="{0}">change your current profile</a> to this profile]]></string>
@@ -4772,12 +4771,14 @@
 	
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Your verification code is {0}.]]></string>
     <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[An error occurred, please report error to the site administrator.]]></string>
+    <string name="_sys_txt_join_description"><![CDATA[Already have an account?]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Log in]]></string>
     <string name="_sys_txt_join_text"><![CDATA[Joining is quick and easy. Create your own community account to get started.]]></string>
     <string name="_sys_txt_join_text_invite"><![CDATA[Registration is by invitation only. Use your invitation code to join.]]></string>
     <string name="_sys_txt_join_title"><![CDATA[Time to join!]]></string>
     <string name="_sys_txt_join_title_invite"><![CDATA[Request an invitation]]></string>
-    <string name="_sys_txt_login_description_action"><![CDATA[Create account]]></string>
+    <string name="_sys_txt_login_description"><![CDATA[Don't have an account?]]></string>
+    <string name="_sys_txt_login_description_action"><![CDATA[Sign up]]></string>
     <string name="_sys_txt_login_error"><![CDATA[Entered email or password is incorrect. Please try again.]]></string>
     <string name="_sys_txt_login_locked"><![CDATA[Your account is locked and needs to be unlocked using <a href="{0}">forgot password page</a>.]]></string>
   

@@ -1864,7 +1864,6 @@
     <string name="_adm_stg_inf_option_site_email_notify"><![CDATA[Адрес электронной почты, используемый в качестве «отправителя» в транзакционных электронных письмах.]]></string>
     <string name="_adm_stg_cpt_option_site_email_html_template_header"><![CDATA[Заголовок HTML шаблона email сообщения]]></string>
     <string name="_adm_stg_cpt_option_site_email_html_template_footer"><![CDATA[Основание HTML шаблона email сообщения]]></string>
-    <string name="_adm_stg_cpt_option_site_login_social_compact"><![CDATA[Задействовать компактный вид входа через соц. сети]]></string>
     <string name="_adm_stg_cpt_option_site_title"><![CDATA[Имя сообщества]]></string>
     <string name="_adm_stg_inf_option_site_title"><![CDATA[Имя по умолчанию, используемое для ссылки на ваш сайт в текстах сайта, метатегах, электронных письмах и уведомлениях.]]></string>
     <string name="_adm_stg_cpt_option_site_tour_home"><![CDATA[Пользовательский тур]]></string>
@@ -3345,7 +3344,6 @@
 	<string name="_sys_form_login_input_caption_system_sendsms"><![CDATA[Отправить SMS]]></string>
 	<string name="_sys_form_login_input_caption_system_submit"><![CDATA[Выполнить]]></string>
 	<string name="_sys_form_login_input_caption_system_submit_text"><![CDATA[Текст отправки]]></string>
-        <string name="_sys_form_login_input_agreement_value"><![CDATA[Заходя, Вы соглашаетесь с <a href="{0}">Правилами пользования</a> и <a href="{1}">Политикой конфиденциальности</a>.]]></string>
 	<string name="_sys_form_login_input_checkcode"><![CDATA[Выполнить]]></string>
 	<string name="_sys_form_login_input_code"><![CDATA[Код из SMS]]></string>
 	<string name="_sys_form_login_input_back"><![CDATA[Вы не получили SMS? <a href="{0}">Отправить SMS ещё раз</a>]]></string>
@@ -4605,6 +4603,7 @@
     <string name="_sys_tour_homepage_account_menu_txt"><![CDATA[Здесь можно переключать профили, смотреть уведомления и открывать настройки аккаунта. Из этого меню можно запустить этот тур снова.]]></string>
 
     <string name="_sys_txt_api_key"><![CDATA[Ключ API]]></string>
+    <string name="_sys_txt_auth_or"><![CDATA[или]]></string>
     <string name="_sys_txt_access_denied"><![CDATA[Доступ запрещён]]></string>
     <string name="_sys_txt_account_pending"><![CDATA[Ваш аккаунт ожидает одобрения, пожалуйста, дождитесь его активации.]]></string>
     <string name="_sys_txt_account_profile_context_change_suggestion"><![CDATA[Это Ваш профиль, Вы можете <a href="{0}">изменить свой текущий профиль</a> на этот]]></string>
@@ -4696,12 +4695,14 @@
     <string name="_sys_txt_login_2fa_description_phone"><![CDATA[Включена двухфакторная аутентификация: мы отправим код подтверждения на телефон ниже.]]></string>
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Ваш код проверки {0}.]]></string>
     <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[Произошла ошибка, пожалуйста, уведомите о ней администратора сайта.]]></string>
+    <string name="_sys_txt_join_description"><![CDATA[Уже есть аккаунт?]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Войти]]></string>
     <string name="_sys_txt_join_text"><![CDATA[Регистрация быстрая и простая. Создайте аккаунт, чтобы начать.]]></string>
     <string name="_sys_txt_join_text_invite"><![CDATA[Регистрация только по приглашению. Используйте код приглашения.]]></string>
     <string name="_sys_txt_join_title"><![CDATA[Пора присоединиться!]]></string>
     <string name="_sys_txt_join_title_invite"><![CDATA[Запросить приглашение]]></string>
-    <string name="_sys_txt_login_description_action"><![CDATA[Создать аккаунт]]></string>
+    <string name="_sys_txt_login_description"><![CDATA[Нет аккаунта?]]></string>
+    <string name="_sys_txt_login_description_action"><![CDATA[Зарегистрироваться]]></string>
     <string name="_sys_txt_login_error"><![CDATA[Введённый email или пароль неправильны. Пожалуйста, попытайтесь снова.]]></string>
     <string name="_sys_txt_login_locked"><![CDATA[Ваш аккаунт заблокирован, для разблокировки, пожалуйста, используйте  <a href="{0}">страницу сброса пароля</a>.]]></string>
     <string name="_sys_txt_following_counter"><![CDATA[Подписки: {0}]]></string>
