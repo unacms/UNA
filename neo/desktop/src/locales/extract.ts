@@ -19,8 +19,6 @@ import { fileURLToPath } from 'node:url';
 
 import ts from 'typescript';
 
-import { byCodeUnit } from '../lib/compare';
-
 const SRC = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 export type Extracted = {
@@ -219,6 +217,11 @@ export function expectedKeys(extracted: Extracted, language: string): Map<string
 
 const PLACEHOLDER = /\{\{\s*([\w.]+)\s*\}\}/g;
 const MARK = /<\/?([a-z][a-z0-9]*)>/g;
+
+/** The order of a bare sort(): the same in every locale, so two texts' slots compare as lists. */
+function byCodeUnit(a: string, b: string): number {
+    return a < b ? -1 : a > b ? 1 : 0;
+}
 
 /**
  * The file of a language named on the command line: a language tag (`ru`, `pt-BR`) and nothing
