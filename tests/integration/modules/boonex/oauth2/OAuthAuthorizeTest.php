@@ -84,6 +84,7 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
         $this->assertSame(200, $a['status'], $a['body']);
         $this->assertNull(BxDolTestPhpServer::header($a, 'location'));
         $this->assertConsentPageAsItWas($a['body']);
+        $this->assertConsentButtons($a['body'], $iProfile);
 
         $sCode = $this->approve($this->consentForm($a['body']), $iProfile, $sCookie, $sRedirect);
         $this->assertNull($this->codeChallenge($sCode));
@@ -229,9 +230,13 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
         // S256: the consent page, always, which says what the app may do and where the browser goes back to
         $a = $this->auth('GET', $aQuery + ['code_challenge' => $sChallenge, 'code_challenge_method' => 'S256'], $sCookie);
         $this->assertSame(200, $a['status'], $a['body']);
-        $this->assertSame(2, substr_count($a['body'], 'class="bx-auth-form-info"'));
-        $this->assertStringContainsString(substr(_t('_bx_oauth_authorize_scope_api'), 0, 40), $a['body']);
+        $this->assertSame(4, substr_count($a['body'], '<li class="bx-auth-scope">'));
+        foreach (['read', 'write', 'messages', 'profiles'] as $sScope)
+            $this->assertStringContainsString(_t('_bx_oauth_authorize_can_' . $sScope), $a['body']);
         $this->assertStringContainsString('<strong>127.0.0.1:47031</strong>', $a['body']);
+        $this->assertConsentButtons($a['body'], $iProfile);
+        // the terms notice, in the block's footer
+        $this->assertMatchesRegularExpression('#<div class="bx-db-footer[^"]*">[^<]*<a href="[^"]*terms[^"]*">#', $a['body']);
         $aForm = $this->consentForm($a['body']);
         $this->assertSame($sChallenge, $aForm['code_challenge'] ?? '');
         $this->assertSame('S256', $aForm['code_challenge_method'] ?? '');
@@ -492,17 +497,29 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
     }
 
     /**
-     * The consent page of a client that is no native app: the fields it always had, and nothing
-     * between its heading and its form.
+     * The consent page of a client that is no native app: the fields it always had (the profile is
+     * the pressed button's value), and nothing between its first line and its form.
      */
     private function assertConsentPageAsItWas(string $sHtml): void
     {
-        $this->assertSame(['profile_id', 'csrf_token', 'client_id', 'response_type', 'redirect_uri', 'scope', 'state'], array_keys($this->consentForm($sHtml)));
-        $this->assertStringNotContainsString('bx-auth-form-info', $sHtml);
+        $this->assertSame(['csrf_token', 'client_id', 'response_type', 'redirect_uri', 'scope', 'state'], array_keys($this->consentForm($sHtml)));
+        $this->assertStringNotContainsString('bx-auth-scope', $sHtml);
+        $this->assertStringNotContainsString('bx-auth-note', $sHtml);
         $this->assertStringNotContainsString('code_challenge', $sHtml);
         $this->assertStringNotContainsString('bx_if:', $sHtml);
-        $this->assertMatchesRegularExpression('#</h3>\r?\n    <form method="post"#', $sHtml);
-        $this->assertMatchesRegularExpression('#name="state" value="[^"]*" />\r?\n        <div class="bx-auth-form-profiles">#', $sHtml);
+        $this->assertStringNotContainsString('bx_repeat:', $sHtml);
+        $this->assertMatchesRegularExpression('#<p class="bx-auth-lead">[^\r\n]*</p>\r?\n    <form method="post"#', $sHtml);
+    }
+
+    /**
+     * The consent form is answered with its own buttons, no script: one per profile, and Cancel (profile 0).
+     */
+    private function assertConsentButtons(string $sHtml, int $iProfileId): void
+    {
+        $this->assertSame(1, preg_match('#<div id="bx-auth-form".*?</form>#s', $sHtml, $m), 'the consent form');
+        $this->assertMatchesRegularExpression('#<button type="submit" name="profile_id" value="' . $iProfileId . '" class="[^"]*bx-btn-primary[^"]*"#', $m[0]);
+        $this->assertSame(1, preg_match_all('#<button type="submit" name="profile_id" value="0"#', $m[0]));
+        $this->assertStringNotContainsString('onclick', $m[0]);
     }
 
     /**

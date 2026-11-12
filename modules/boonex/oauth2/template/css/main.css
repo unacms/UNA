@@ -1,13 +1,86 @@
-#bx-auth-form h3,
-#bx-auth-form .bx-auth-form-buttons {
-    text-align:center;
+.bx-auth-lead {
+    margin: 0;
 }
 
-.bx-auth-form-buttons .bx-btn {
+.bx-auth-section {
+    margin-top: 1.25rem;
+}
+
+.bx-auth-label {
+    margin: 0 0 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.bx-auth-scopes,
+.bx-auth-profiles {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.bx-auth-scope {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    padding: 0.25rem 0;
+}
+
+.bx-auth-scope-icon {
+    flex: none;
+    margin-top: 0.125rem;
+    color: #16a34a;
+}
+
+.bx-auth-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 10px;
+}
+
+.bx-auth-profile + .bx-auth-profile {
+    margin-top: 0.5rem;
+}
+
+.bx-auth-profile-unit {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.bx-auth-profile-unit .bx-base-pofile-unit {
+    width: auto;
+    margin: 0;
+}
+
+.bx-auth-profile-unit .bx-def-unit-info {
+    min-width: 0;
+    max-width: none;
+    font-weight: 600;
+}
+
+.bx-auth-profile .bx-btn.bx-auth-connect {
+    flex: none;
     float: none;
-    display: inline-block;
+    margin: 0;
 }
 
-.bx-auth-form-info {
+.bx-auth-note {
+    margin: 1rem 0 0;
+}
+
+.bx-auth-buttons {
+    margin-top: 1rem;
+}
+
+.bx-auth-buttons .bx-btn.bx-auth-cancel {
+    float: none;
+    display: flex;
+    width: 100%;
+    margin: 0;
+    justify-content: center;
     text-align: center;
 }
