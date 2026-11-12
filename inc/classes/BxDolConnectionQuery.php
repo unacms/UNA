@@ -247,6 +247,42 @@ class BxDolConnectionQuery extends BxDolDb
         ]);
     }
 
+    public function getConnectedContentWithDates ($iInitiator, $isMutual = false, $iStart = 0, $iLimit = BX_CONNECTIONS_LIST_LIMIT, $iOrder = BX_CONNECTIONS_ORDER_NONE, $mixedType = false)
+    {
+        $sWhere = " AND `c`.`initiator` = :initiator";
+
+        $sJoin = '';
+        if($this->_aObject['profile_content']) {
+            $sJoin = "INNER JOIN `sys_profiles` `p` ON `p`.`id` = `c`.`content` AND `p`.`status` = 'active'";
+            if($mixedType !== false)
+                $sJoin .= ' AND `p`.`type` IN (' . $this->implode_escape(is_array($mixedType) ? $mixedType : [$mixedType]) . ')';
+        }
+
+        $sQuery = $this->_getConnectionsQuery($sWhere, $sJoin, '`c`.`content`, `c`.`added`', $isMutual, $iStart, $iLimit, $iOrder);
+
+        return $this->getPairs($sQuery, 'content', 'added', [
+            'initiator' => $iInitiator
+        ]);
+    }
+
+    public function getConnectedInitiatorsWithDates ($iContent, $isMutual = false, $iStart = 0, $iLimit = BX_CONNECTIONS_LIST_LIMIT, $iOrder = BX_CONNECTIONS_ORDER_NONE, $mixedType = false)
+    {
+        $sWhere = " AND `c`.`content` = :content";
+
+        $sJoin = '';
+        if($this->_aObject['profile_initiator']) {
+            $sJoin = "INNER JOIN `sys_profiles` `p` ON `p`.`id` = `c`.`initiator` AND `p`.`status` = 'active'";
+            if($mixedType !== false)
+                $sJoin .= ' AND `p`.`type` IN (' . $this->implode_escape(is_array($mixedType) ? $mixedType : [$mixedType]) . ')';
+        }
+
+        $sQuery = $this->_getConnectionsQuery($sWhere, $sJoin, '`c`.`initiator`, `c`.`added`', $isMutual, $iStart, $iLimit, $iOrder);
+
+        return $this->getPairs($sQuery, 'initiator', 'added', [
+            'content' => $iContent
+        ]);
+    }
+
     protected function _getConnectionsQuery ($sWhere, $sJoin = '', $sFields = '*', $isMutual = false, $iStart = 0, $iLimit = BX_CONNECTIONS_LIST_LIMIT, $iOrder = BX_CONNECTIONS_ORDER_NONE)
     {
         $sOrder = $this->_getOrderClause($iOrder, '`c`');
@@ -303,6 +339,91 @@ class BxDolConnectionQuery extends BxDolDb
         return $this->getOne($sQuery);
     }
 
+    /**
+     * getConnectedContentCountExt of many initiators in one query: initiator id => count (0
+     * for one with none).
+     */
+    public function getConnectedContentCounts ($aInitiators, $isMutual = false)
+    {
+        $aIds = array_values(array_unique(array_filter(array_map('intval', (array)$aInitiators))));
+        if (!$aIds)
+            return [];
+
+        $sJoin = $this->_aObject['profile_content'] ? 'INNER JOIN `sys_profiles` `p` ON `p`.`id` = `c`.`content` AND `p`.`status` = \'active\'' : '';
+        $sWhere = " AND `c`.`initiator` IN (" . $this->implode_escape($aIds) . ")";
+        if (false !== $isMutual)
+            $sWhere .= $this->prepareAsString(" AND `c`.`mutual` = ?", $isMutual);
+
+        $aCounts = array_fill_keys($aIds, 0);
+        foreach ($this->getPairs("SELECT `c`.`initiator`, COUNT(`c`.`id`) AS `count` FROM `" . $this->_sTable . "` AS `c` $sJoin WHERE 1 $sWhere GROUP BY `c`.`initiator`", 'initiator', 'count') as $iId => $iCount)
+            $aCounts[(int)$iId] = (int)$iCount;
+        return $aCounts;
+    }
+
+    /**
+     * Read the connections between a profile and each of $aOthers, both ways, in one query, and
+     * keep them where getConnection keeps what it reads (a pair with none as none), so that
+     * isConnected of those pairs needs no query of its own in this request: for a page of
+     * contexts and the profile who views them.
+     */
+    public function primeConnections ($iProfile, $aOthers)
+    {
+        $iProfile = (int)$iProfile;
+        $aIds = array_values(array_unique(array_filter(array_map('intval', (array)$aOthers))));
+        if ($iProfile < 0 || !$aIds)
+            return;
+        // a guest is connected to nothing: known without a query (a guest's id is 0, or false
+        // from bx_get_logged_profile_id, which the cache key makes '')
+        if ($iProfile === 0) {
+            foreach ($aIds as $iId)
+                foreach (['0_' . $iId, $iId . '_0', '_' . $iId, $iId . '_'] as $sPair)
+                    self::$_aDbCacheData['BxDolConnectionQuery::getConnection' . $this->_sTable . $sPair] = [];
+            return;
+        }
+
+        $sIds = $this->implode_escape($aIds);
+        $aRows = $this->getAll("SELECT * FROM `" . $this->_sTable . "` WHERE (`initiator` = :initiator AND `content` IN ($sIds)) OR (`content` = :content AND `initiator` IN ($sIds))", [
+            'initiator' => $iProfile,
+            'content' => $iProfile,
+        ]);
+
+        $aFound = [];
+        foreach ($aRows as $aRow)
+            $aFound[(int)$aRow['initiator'] . '_' . (int)$aRow['content']] = $aRow;
+        foreach ($aIds as $iId)
+            foreach ([$iProfile . '_' . $iId, $iId . '_' . $iProfile] as $sPair)
+                self::$_aDbCacheData['BxDolConnectionQuery::getConnection' . $this->_sTable . $sPair] = $aFound[$sPair] ?? [];
+    }
+
+    /**
+     * Read the connections of these initiator => content pairs (one way) in one query, and keep
+     * them where getConnection keeps what it reads (a pair with none as none): for the admins of
+     * a page's contexts and those contexts.
+     * @param $aPairs [[initiator, content], ...]
+     */
+    public function primeConnectionPairs ($aPairs)
+    {
+        $aKeys = [];
+        foreach ((array)$aPairs as $aPair) {
+            $iInitiator = (int)($aPair[0] ?? 0);
+            $iContent = (int)($aPair[1] ?? 0);
+            $sKey = 'BxDolConnectionQuery::getConnection' . $this->_sTable . $iInitiator . '_' . $iContent;
+            if ($iInitiator > 0 && $iContent > 0 && !array_key_exists($sKey, self::$_aDbCacheData))
+                $aKeys[$iInitiator . '_' . $iContent] = [$iInitiator, $iContent, $sKey];
+        }
+        if (!$aKeys)
+            return;
+
+        $aWhere = [];
+        foreach ($aKeys as $a)
+            $aWhere[] = '(' . $a[0] . ', ' . $a[1] . ')';
+        $aFound = [];
+        foreach ($this->getAll("SELECT * FROM `" . $this->_sTable . "` WHERE (`initiator`, `content`) IN (" . implode(', ', $aWhere) . ")") as $aRow)
+            $aFound[(int)$aRow['initiator'] . '_' . (int)$aRow['content']] = $aRow;
+        foreach ($aKeys as $sPair => $a)
+            self::$_aDbCacheData[$a[2]] = $aFound[$sPair] ?? [];
+    }
+
     public function getConnectedInitiatorsCount ($iContent, $isMutual = false)
     {
         $sJoin = $this->_aObject['profile_initiator'] ? 'INNER JOIN `sys_profiles` `p` ON `p`.`id` = `c`.`initiator` AND `p`.`status` = \'active\'' : ''; 
@@ -322,13 +443,18 @@ class BxDolConnectionQuery extends BxDolDb
         if ($sTable)
             $sTable .= '.';
 
+        // API v2 only: the id breaks ties of connections added in the same second, so pages of a
+        // list (LIMIT offset, count) neither repeat nor skip a row. The site and API v1 order by
+        // the date alone, as they always did.
+        $bById = bx_is_api_v2();
+
         $sOrder = '';
         switch ($iOrder) {
             case BX_CONNECTIONS_ORDER_ADDED_ASC:
-                $sOrder = "ORDER BY {$sTable}`added` ASC";
+                $sOrder = "ORDER BY {$sTable}`added` ASC" . ($bById ? ", {$sTable}`id` ASC" : '');
                 break;
             case BX_CONNECTIONS_ORDER_ADDED_DESC:
-                $sOrder = "ORDER BY {$sTable}`added` DESC";
+                $sOrder = "ORDER BY {$sTable}`added` DESC" . ($bById ? ", {$sTable}`id` DESC" : '');
                 break;
         }
 

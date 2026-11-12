@@ -856,6 +856,27 @@ class BxDolPrivacy extends BxDolFactory implements iBxDolFactoryObject
         $this->_oDb->init($this->_aObject);
     }
 
+    /**
+     * Read what the checks of these objects need in one query (@see BxDolPrivacyQuery::primeObjectInfos),
+     * for a page that checks many of them.
+     */
+    public function primeObjects($aObjectIds)
+    {
+        $this->_oDb->primeObjectInfos($this->convertActionToField($this->_aObject['action']), $aObjectIds);
+    }
+
+    /**
+     * As primeObjects, from whole rows of the objects' table read already: no query. Objects
+     * whose rows are not given (or of another table) are primed with a query.
+     * @param string $sTable the table the rows are of
+     * @param array $aRows id => row
+     */
+    public function primeObjectsFromRows($sTable, $aRows)
+    {
+        if(!$this->_oDb->primeObjectInfosFromRows($this->convertActionToField($this->_aObject['action']), $sTable, $aRows))
+            $this->primeObjects(array_keys($aRows));
+    }
+
     protected function getObjectInfo($sAction, $iObjectId)
     {
         return $this->_oDb->getObjectInfo($sAction, $iObjectId);

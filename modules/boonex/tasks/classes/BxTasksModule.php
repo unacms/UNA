@@ -19,8 +19,10 @@ define('BX_TASKS_STATE_CANCELLED', 5);
 define('BX_TASKS_STATE_DUPLICATE', 6);
 define('BX_TASKS_STATE_DONE', 7);
 
-class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService 
+class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 {
+    protected $_aTimeRights = [];
+
     function __construct(&$aModule)
     {
         parent::__construct($aModule);
@@ -171,6 +173,25 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         return echoJson($aResult);
     }
 
+    public function actionImportFrom($sType = 'linear', $iContextId = 0)
+    {
+        if(!isAdmin() && !bx_acl_is_administrator())
+            return;
+
+        $sClass = 'Import' . ucwords($sType);
+        bx_import($sClass, $this->_aModule);
+
+        $sClass = $this->_aModule['class_prefix'] . $sClass;
+        $oImport = new $sClass($this);
+
+        $mixedResult = $oImport->perform($iContextId);
+        if($mixedResult === false || !is_array($mixedResult))
+            return;
+
+        list($iProcessed, $iIssues) = $mixedResult;
+        echo 'Processed: ' . $iProcessed . ', Issues: ' . $iIssues;
+    }
+
     public function serviceGetSafeServices()
     {
         return array_merge(parent::serviceGetSafeServices(), [
@@ -187,9 +208,11 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
             'SaveFilter' => '',
             'ApplyFilter' => '',
             'ProcessTimer' => '',
+            'GetBlockTimers' => '',
             'GetBlockTimersStats' => '',
             'GetBlockTimeSummary' => '',
             'GetBlockTimeSummaryContext' => '',
+            'GetBlockBillingSummary' => '',
         ]);
     }
 
@@ -453,6 +476,29 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         return $this->_bIsApi ? [] : true;
     }
 
+    /**
+     * API v2 only: set a task's labels (stickers, a set), for who manages the task, as
+     * set_property sets a property. It is no service and set_property does not take labels: the
+     * site and API v1 change them in the edit form only, as they always did.
+     * @param $mixedValue the set as it is stored (bit value - 1 for each label)
+     * @return true when set, otherwise what set_property answers ([] not allowed, ['msg' => ...] not saved)
+     */
+    public function setStickers($iContentId, $mixedValue)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
+        if(!$aContentInfo || !$this->isAllowManage($iContentId))
+            return [];
+
+        if(!$this->_oDb->updateEntriesBy([$CNF['FIELD_STICKERS'] => $mixedValue], [$CNF['FIELD_ID'] => $iContentId]))
+            return ['msg' => _t('_bx_tasks_txt_err_cannot_perform_action')];
+
+        $this->_logStickersEdit($aContentInfo, $mixedValue);
+
+        return true;
+    }
+
     public function serviceSetCompleted($iContentId, $iCompleted)
     {
         if(!$this->isAllowManage($iContentId) || !$this->complete($iContentId, $iCompleted))
@@ -604,6 +650,9 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         if(!$iProfileId || !$this->isAllowManage($iContentId))
             return $aResult;
 
+        if(in_array($sAction, ['start', 'resume', 'log']) && !$this->getTimeRightsByContentId($iContentId, $iProfileId)['log'])
+            return $aResult;
+
         $iNow = time();
         switch($sAction) {
             case 'start':
@@ -645,7 +694,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
                 break;
 
             case 'log':
-                $this->pauseTimerByAuthor($iProfileId);
+                $this->pauseTimer($iContentId, $iProfileId);
 
                 $aTimer = $this->getTimer($iContentId, $iProfileId);
                 if(!$aTimer || !is_array($aTimer) || !$aTimer['duration'])
@@ -660,6 +709,8 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
                     'author_id' => $iProfileId,
                     'author_nip' => $iProfileId == $this->_iProfileId ? bx_get_ip_hash(getVisitorIP()) : 0,
                     'value' => $iSpent,
+                    'value_original' => $iSpent,
+                    'by_timer' => 1,
                     'value_date' => $iNow,
                     'date' => $iNow
                 ]);
@@ -717,7 +768,22 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
                 break;
         }
 
+        if($sAction != 'reload' && ($aResult['code'] ?? 0) === 0)
+            $this->sendTimersEvent($iProfileId, $sAction);
+
         return $aResult;
+    }
+
+    /**
+     * Tell the author's other screens and devices that the timers changed. The channel is public,
+     * so the event carries the action only and clients reload the timers through the API.
+     */
+    public function sendTimersEvent($iProfileId, $sAction)
+    {
+        if(!($oSockets = BxDolSockets::getInstance()) || !$oSockets->isEnabled())
+            return;
+
+        $oSockets->sendEvent($this->_oConfig->getName() . '_timers', $iProfileId, 'changed', json_encode(['action' => $sAction]));
     }
 
     public function serviceManageTools($sType = 'common')
@@ -766,11 +832,12 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
     {
         $CNF = &$this->_oConfig->CNF;
 
-        if(!$this->isAllowManageByContext($iContextPid))
+        //--- Site-wide properties (no context) are for site administrators.
+        if(!($iContextPid ? $this->getTimeRights($iContextPid)['manage_properties'] : isAdmin()))
             return $this->_bIsApi ? [] : '';
 
         $bContextPid = !empty($iContextPid);
-        
+
         $sGrid = $CNF['OBJECT_GRID_PRE_VALUES'];
         $oGrid = BxDolGrid::getObjectInstance($sGrid);
         if(!$oGrid)
@@ -852,7 +919,12 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
         $bContextPid = !empty($iContextPid);
 
-        if($sType == 'administration' && (($bContextPid && !$this->isAllowManageByContext($iContextPid)) || (!$bContextPid && !($this->_isModerator() || $this->_isAdministrator()))))
+        //--- Everybody's time in a context: those who see everybody's Logged time.
+        if($sType == 'administration' && (($bContextPid && !$this->getTimeRights($iContextPid)['view_logged_any']) || (!$bContextPid && !($this->_isModerator() || $this->_isAdministrator()))))
+            return ($sMsg = _t('_sys_txt_access_denied')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : MsgBox($sMsg);
+
+        //--- My Time in a context: those who log time there.
+        if($sType == 'common' && $bContextPid && !$this->getTimeRights($iContextPid)['log'])
             return ($sMsg = _t('_sys_txt_access_denied')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : MsgBox($sMsg);
 
         $sGrid = $CNF['OBJECT_GRID_TIME_' . ($bContextPid ? 'CONTEXT_' : '') . strtoupper($sType)];
@@ -909,38 +981,71 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
      */
     public function serviceGetBlockTimeSummary($iContentId = 0)
     {
-        if(!$this->_bIsApi)
-            return '';
-
         if(!$iContentId)
             $iContentId = bx_process_input(bx_get('id'), BX_DATA_INT);
 
         $aContentInfo = $iContentId ? $this->_oDb->getContentInfoById((int)$iContentId) : false;
         if(!$this->_iProfileId || !$aContentInfo || !is_array($aContentInfo))
-            return [];
+            return $this->_bIsApi ? [] : '';
 
-        $aData = $this->_oTemplate->getBlockTimeSummary((int)$iContentId, $this->_iProfileId, $this->isAllowManage($aContentInfo));
+        $aData = $this->_oTemplate->getBlockTimeSummary((int)$iContentId, $this->_iProfileId, $this->getTimeRightsByContentId((int)$iContentId));
 
-        return $aData ? [bx_api_get_block('tasks_time_summary', $aData)] : [];
+        return $this->_getBlockTimeSummary($aData);
     }
 
     /**
-     * Logged time in a context by person and then by task. Context admins see everybody, others only their own time.
+     * Time in a context by person and then by task. Who sees whose time, and which of Logged and Billed, comes from getTimeRights.
      */
-    public function serviceGetBlockTimeSummaryContext($iContextPid = 0)
+    /**
+     * $sType 'my' (the My Time tab): the viewer's own time only; otherwise (All Time) whose time the rights allow.
+     */
+    public function serviceGetBlockTimeSummaryContext($iContextPid = 0, $sType = '')
     {
-        if(!$this->_bIsApi)
-            return '';
-
         if(!$iContextPid)
             $iContextPid = bx_process_input(bx_get('profile_id'), BX_DATA_INT);
 
         if(!$this->_iProfileId || !$iContextPid || BxDolProfile::getInstance((int)$iContextPid) === false)
-            return [];
+            return $this->_bIsApi ? [] : '';
 
-        $aData = $this->_oTemplate->getBlockTimeSummaryContext((int)$iContextPid, $this->_iProfileId, $this->isAllowManageByContext((int)$iContextPid));
+        $sType = $sType == 'my' ? $sType : '';
+        $aData = $this->_oTemplate->getBlockTimeSummaryContext((int)$iContextPid, $this->_iProfileId, $this->getTimeRights((int)$iContextPid), 'get_block_time_summary_context', $sType);
 
-        return $aData ? [bx_api_get_block('tasks_time_summary', $aData)] : [];
+        return $this->_getBlockTimeSummary($aData);
+    }
+
+    /**
+     * The Billing tab: everybody's Billed time in a context, Billed time only (admins too), for those who see Billed time.
+     */
+    public function serviceGetBlockBillingSummary($iContextPid = 0)
+    {
+        if(!$iContextPid)
+            $iContextPid = bx_process_input(bx_get('profile_id'), BX_DATA_INT);
+
+        if(!$this->_iProfileId || !$iContextPid || BxDolProfile::getInstance((int)$iContextPid) === false || !$this->getTimeRights((int)$iContextPid)['view_billed'])
+            return $this->_bIsApi ? [] : '';
+
+        $aData = $this->_oTemplate->getBlockTimeSummaryContext((int)$iContextPid, $this->_iProfileId, ['view_billed' => true], 'get_block_billing_summary');
+
+        return $this->_getBlockTimeSummary($aData);
+    }
+
+    /**
+     * A time summary block: the app's block with the data, or the site's tables.
+     */
+    protected function _getBlockTimeSummary($aData)
+    {
+        if($this->_bIsApi)
+            return $aData ? [bx_api_get_block('tasks_time_summary', $aData)] : [];
+
+        return $aData ? $this->_oTemplate->getBlockTimeSummaryHtml($aData) : '';
+    }
+
+    /**
+     * Who opens the Billing tab: every member of the context (the budget), and those who see Billed time.
+     */
+    public function isAllowViewBilling($iContextPid)
+    {
+        return $this->isMemberByContext($iContextPid) || $this->isAdministratorByContext($iContextPid) || $this->getTimeRights($iContextPid)['view_billed'];
     }
 
     public function serviceGetBlockManageBudget($sType = 'administration', $iContextPid = 0)
@@ -951,7 +1056,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         if(!$bContextPid)
             return $this->_bIsApi ? [] : '';
 
-        if($sType == 'administration' && (($bContextPid && !$this->isAllowManageByContext($iContextPid)) || (!$bContextPid && !($this->_isModerator() || $this->_isAdministrator()))))
+        if($sType == 'administration' && (($bContextPid && !$this->isAdministratorByContext($iContextPid)) || (!$bContextPid && !($this->_isModerator() || $this->_isAdministrator()))))
             return ($sMsg = _t('_sys_txt_access_denied')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : MsgBox($sMsg);
 
         $sGrid = $CNF['OBJECT_GRID_BUDGET_' . ($bContextPid ? 'CONTEXT_' : '') . strtoupper($sType)];
@@ -986,7 +1091,8 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
     public function serviceGetBlockBudget($iContextPid = 0)
     {
-        if(!$iContextPid || !$this->isAllowManageByContext($iContextPid))
+        //--- Every member of the context sees the budget, those who see Billed time too; changing it is for administrators (the budget grid).
+        if(!$iContextPid || !($this->isMemberByContext($iContextPid) || $this->getTimeRights($iContextPid)['view_billed']))
             return $this->_bIsApi ? [] : '';
 
         $aBudget = $this->_oDb->getBudget(['sample'=> 'context_id', 'context_id' => $iContextPid]);
@@ -1090,6 +1196,8 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
             array('group' => $sModule . '_assign', 'type' => 'insert', 'alert_unit' => $sModule, 'alert_action' => 'assigned', 'module_name' => $sModule, 'module_method' => 'get_notifications_assigned', 'module_class' => 'Module', 'module_event_privacy' => $sEventPrivacy),
             array('group' => $sModule . '_assign', 'type' => 'delete', 'alert_unit' => $sModule, 'alert_action' => 'unassigned'),
+
+            array('group' => $sModule . '_timer_stopped', 'type' => 'insert', 'alert_unit' => $sModule, 'alert_action' => 'timer_stopped', 'module_name' => $sModule, 'module_method' => 'get_notifications_timer_stopped', 'module_class' => 'Module', 'module_event_privacy' => $sEventPrivacy),
         ));
 
         $aResult['settings'] = array_merge($aResult['settings'], array(
@@ -1097,6 +1205,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
             array('group' => 'content', 'unit' => $sModule, 'action' => 'reopened', 'types' => array('personal', 'follow_member', 'follow_context')),
             array('group' => 'content', 'unit' => $sModule, 'action' => 'expired', 'types' => array('personal')),
             array('group' => 'content', 'unit' => $sModule, 'action' => 'assigned', 'types' => array('personal')),
+            array('group' => 'content', 'unit' => $sModule, 'action' => 'timer_stopped', 'types' => array('personal')),
         ));
 
         $aResult['alerts'] = array_merge($aResult['alerts'], array(
@@ -1106,6 +1215,8 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
             array('unit' => $sModule, 'action' => 'assigned'),
             array('unit' => $sModule, 'action' => 'unassigned'),
+
+            array('unit' => $sModule, 'action' => 'timer_stopped'),
         ));
 
         return $aResult; 
@@ -1129,6 +1240,22 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
     public function serviceGetNotificationsAssigned($aEvent)
     {
         return $this->_serviceGetNotificationsByAction($aEvent, 'assigned');
+    }
+
+    /**
+     * The one notified is the event's object owner, the one whose timer it is comes as `subobject_id`.
+     */
+    public function serviceGetNotificationsTimerStopped($aEvent)
+    {
+        $aResult = $this->_serviceGetNotificationsByAction($aEvent, 'timer_stopped');
+        if(empty($aResult) || !is_array($aResult))
+            return $aResult;
+
+        $iTimerProfileId = (int)$aEvent['subobject_id'];
+        $aResult['entry_author'] = $iTimerProfileId;
+        $aResult['entry_author_name'] = ($oProfile = BxDolProfile::getInstance($iTimerProfileId)) !== false ? $oProfile->getDisplayName() : '';
+
+        return $aResult;
     }
 
     protected function _serviceGetNotificationsByAction($aEvent, $sAction)
@@ -1263,6 +1390,8 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
             return false;
 
         $mixedResult = $this->_oTemplate->entryTimer($iContentId, $this->_iProfileId);
+        if(empty($mixedResult))
+            return $this->_bIsApi ? [] : '';
 
         return $this->_bIsApi ? [
             bx_api_get_block('task_timer', $mixedResult)
@@ -1508,6 +1637,29 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         ]);
     }
 
+    /**
+     * Pause the timer of one task only, so logging it leaves the author's other timers alone.
+     * $iStartedBefore: only a run started then or earlier (the cron's, so a run resumed since stays).
+     */
+    public function pauseTimer($iContentId, $iProfileId, $iStartedBefore = 0)
+    {
+        $aTimer = $this->getTimer($iContentId, $iProfileId);
+        if(!$aTimer || !is_array($aTimer) || empty($aTimer['started']))
+            return false;
+
+        if($iStartedBefore && (int)$aTimer['started'] > $iStartedBefore)
+            return false;
+
+        //--- Only the run read here: a timer paused or resumed since has another `started`, and stays as it is.
+        return (int)$this->_oDb->updateTimer([
+            'started' => 0,
+            'duration' => $aTimer['duration'] + (time() - $aTimer['started']),
+        ], [
+            'id' => (int)$aTimer['id'],
+            'started' => (int)$aTimer['started'],
+        ]) > 0;
+    }
+
     public function updateTimerById($iId, $aSet)
     {
         return $this->_oDb->updateTimer($aSet, ['id' => (int)$iId]) !== false;
@@ -1631,7 +1783,62 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
                 }
         }
     }
-    
+
+    /**
+     * A timer that ran too long was paused (BxTasksCronTimers): the one whose timer it is and the context administrators
+     * (its author and the members with the Administrator role) get a personal notification each.
+     */
+    public function onTimerStopped($iContentId, $iTimerProfileId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
+        if(!$aContentInfo)
+            return;
+
+        $aRecipients = [(int)$iTimerProfileId];
+        if(($iContextPid = $this->_oDb->getContextId($iContentId)) && ($oContext = BxDolProfile::getInstance($iContextPid)) && ($oContextModule = BxDolModule::getInstance($oContext->getModule()))) {
+            $aRecipients[] = (int)$this->getContextAuthorId($iContextPid);
+
+            if(method_exists($oContextModule->_oDb, 'getAdmins'))
+                foreach($oContextModule->_oDb->getAdmins($iContextPid) as $iAdminId)
+                    if($this->isAdministratorByContext($iContextPid, (int)$iAdminId))
+                        $aRecipients[] = (int)$iAdminId;
+        }
+        $aRecipients = array_unique(array_filter($aRecipients));
+
+        $sModule = $this->getName();
+        $sAction = 'timer_stopped';
+
+        $iPerformer = getParam('sys_profile_bot');
+        $sSource = $sModule . '_' . $sAction . '_' . $iContentId . '_' . $iTimerProfileId;
+        $sSourceMac = $sModule . '_' . $sAction . '_' . $iPerformer . '_' . time();
+
+        foreach($aRecipients as $iRecipientId) {
+            /**
+             * @hooks
+             * @hookdef hook-bx_tasks-timer_stopped 'bx_tasks', 'timer_stopped' - hook on a timer paused for running too long
+             * - $unit_name - equals `bx_tasks`
+             * - $action - equals `timer_stopped`
+             * - $object_id - task id
+             * - $sender_id - the bot profile
+             * - $extra_params - array of additional params with the following array keys:
+             *      - `object_author_id` - [int] profile_id to notify
+             *      - `subobject_id` - [int] profile_id whose timer it is
+             *      - `privacy_view` - [string] privacy view value
+             * @hook @ref hook-bx_tasks-timer_stopped
+             */
+            bx_alert($sModule, $sAction, $iContentId, $iPerformer, [
+                'object_author_id' => $iRecipientId,
+                'subobject_id' => (int)$iTimerProfileId,
+                'privacy_view' => $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']],
+
+                'source' => $sSource,
+                'source_mac' => $sSourceMac,
+            ]);
+        }
+    }
+
     /**
      * A list id from the request has to belong to the context that passed the permission check.
      * Zero is a new list, or no list, and is not looked up.
@@ -1669,16 +1876,194 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         return true;
     }
 
-    public function isAllowManageByContext($iContextId)
+    /**
+     * Managing the tasks of a context (lists, filters for all, completing, assigning, the context's settings):
+     * the `edit_any` permission of the viewer's role there (Studio > Forms > Groups Roles > Tasks > Edit any entry).
+     * A role without saved permissions for the module gets Studio's default: the Administrator and Moderator roles.
+     * Site administrators and the context's author always. Not the context's `is_admin`, which is any role but the common one.
+     */
+    public function isAllowManageByContext($iContextId, $iProfileId = 0)
     {
         if(isAdmin())
             return true;
-      
-        $oProfileContext = BxDolProfile::getInstance($iContextId);
-        if(BxDolService::call($oProfileContext->getModule(), 'is_admin', array($iContextId)))
+
+        if(!$iProfileId)
+            $iProfileId = bx_get_logged_profile_id();
+
+        if(!$iProfileId || !($oContext = BxDolProfile::getInstance($iContextId)) || !($oContextModule = BxDolModule::getInstance($oContext->getModule())))
+            return false;
+
+        if($this->isAuthorByContext($iContextId, $iProfileId))
             return true;
-        
-        return false;
+
+        if(!method_exists($oContextModule, 'isFanByGroupProfileId') || !$oContextModule->isFanByGroupProfileId($iContextId, $iProfileId))
+            return false;
+
+        //--- A context without roles: its admins, as before.
+        if(!method_exists($oContextModule, 'isRole') || !method_exists($oContextModule->_oConfig, 'isRoles') || !$oContextModule->_oConfig->isRoles())
+            return (bool)BxDolService::call($oContext->getModule(), 'is_admin', [$iContextId, $iProfileId]);
+
+        $iRole = (int)$oContextModule->_oDb->getRole($iContextId, $iProfileId);
+        $bAllowed = $oContextModule->isAllowedModuleActionByRole($this->getName(), 'edit_any', $iRole);
+        if($bAllowed !== null)
+            return $bAllowed;
+
+        $iRoleAdministrator = defined('BX_BASE_MOD_GROUPS_ROLE_ADMINISTRATOR') ? BX_BASE_MOD_GROUPS_ROLE_ADMINISTRATOR : 1;
+        $iRoleModerator = defined('BX_BASE_MOD_GROUPS_ROLE_MODERATOR') ? BX_BASE_MOD_GROUPS_ROLE_MODERATOR : 2;
+        return $oContextModule->isRole($iRole, $iRoleAdministrator) || $oContextModule->isRole($iRole, $iRoleModerator);
+    }
+
+    public function isMemberByContext($iContextId, $iProfileId = 0)
+    {
+        if(!$iProfileId)
+            $iProfileId = bx_get_logged_profile_id();
+
+        if(!$iProfileId || !($oContext = BxDolProfile::getInstance($iContextId)) || !($oContextModule = BxDolModule::getInstance($oContext->getModule())))
+            return false;
+
+        return method_exists($oContextModule, 'isFanByGroupProfileId') && $oContextModule->isFanByGroupProfileId($iContextId, $iProfileId);
+    }
+
+    /**
+     * The context's author or a member with the Administrator role, and site administrators.
+     * Unlike isAllowManageByContext: a context's `is_admin` is true for any role but the common one
+     * (moderators, clients and other custom roles too).
+     */
+    public function isAdministratorByContext($iContextId, $iProfileId = 0)
+    {
+        if(isAdmin())
+            return true;
+
+        if(!$iProfileId)
+            $iProfileId = bx_get_logged_profile_id();
+
+        if(!$iProfileId || !($oContext = BxDolProfile::getInstance($iContextId)) || !($oContextModule = BxDolModule::getInstance($oContext->getModule())))
+            return false;
+
+        if($this->isAuthorByContext($iContextId, $iProfileId))
+            return true;
+
+        if(!method_exists($oContextModule, 'isRole') || !method_exists($oContextModule, 'isFanByGroupProfileId') || !$oContextModule->isFanByGroupProfileId($iContextId, $iProfileId))
+            return false;
+
+        return $oContextModule->isRole((int)$oContextModule->_oDb->getRole($iContextId, $iProfileId), defined('BX_BASE_MOD_GROUPS_ROLE_ADMINISTRATOR') ? BX_BASE_MOD_GROUPS_ROLE_ADMINISTRATOR : 1);
+    }
+
+    /**
+     * The one who created the context: often a member with the common role there, but its owner.
+     */
+    public function isAuthorByContext($iContextId, $iProfileId = 0)
+    {
+        if(!$iProfileId)
+            $iProfileId = bx_get_logged_profile_id();
+
+        if(!$iProfileId || !($oContext = BxDolProfile::getInstance($iContextId)) || !($oContextModule = BxDolModule::getInstance($oContext->getModule())))
+            return false;
+
+        $aContextInfo = $oContextModule->_oDb->getContentInfoById($oContext->getContentId());
+        $sFieldAuthor = $oContextModule->_oConfig->CNF['FIELD_AUTHOR'] ?? '';
+
+        return $sFieldAuthor && !empty($aContextInfo[$sFieldAuthor]) && (int)$aContextInfo[$sFieldAuthor] == (int)$iProfileId;
+    }
+
+    /**
+     * What a profile may do with time in a context, from the context roles (Studio > Forms > Groups Roles):
+     * - log - log time (timers, Log, Add time); everybody edits the Logged time they logged;
+     * - view_logged_any - see everybody's Logged time;
+     * - view_billed - see Billed time (the time the client sees);
+     * - edit_billed - change Billed time;
+     * - manage_properties - change the context's task properties (types, priorities, states...).
+     * A role without saved permissions for the module gets the defaults: context admins get everything,
+     * other members log time only. UNA operators and the context's author get everything, whatever their role.
+     */
+    public function getTimeRights($iContextPid, $iProfileId = 0)
+    {
+        if(!$iProfileId)
+            $iProfileId = $this->_iProfileId;
+
+        $sKey = (int)$iContextPid . '_' . (int)$iProfileId;
+        if(isset($this->_aTimeRights[$sKey]))
+            return $this->_aTimeRights[$sKey];
+
+        //--- Right => the action in the context roles.
+        $aActions = [
+            'log' => 'time_log',
+            'view_logged_any' => 'time_view_logged_any',
+            'view_billed' => 'time_view_billed',
+            'edit_billed' => 'time_edit_billed',
+            'manage_properties' => 'manage_properties',
+        ];
+
+        $aAll = array_fill_keys(array_keys($aActions), true);
+        $aNone = array_fill_keys(array_keys($aAll), false);
+        $aMember = array_merge($aNone, ['log' => true]);
+
+        if(!$iProfileId)
+            $aResult = $aNone;
+        else if($iProfileId == bx_get_logged_profile_id() && ($this->_isAdministrator() || $this->_isModerator()))
+            $aResult = $aAll;
+        else if(!$iContextPid)
+            $aResult = $aMember; //--- Tasks outside of contexts have nobody to bill.
+        else if($this->isAuthorByContext($iContextPid, $iProfileId))
+            $aResult = $aAll;
+        else if(!($oContext = BxDolProfile::getInstance($iContextPid)) || !($oContextModule = BxDolModule::getInstance($oContext->getModule())))
+            $aResult = $aNone;
+        else {
+            $bFan = method_exists($oContextModule, 'isFanByGroupProfileId') && $oContextModule->isFanByGroupProfileId($iContextPid, $iProfileId);
+            $bAdmin = $this->isAdministratorByContext($iContextPid, $iProfileId);
+
+            $aDefaults = $bAdmin ? $aAll : ($bFan ? $aMember : $aNone);
+
+            $aResult = $aDefaults;
+            if($bFan && method_exists($oContextModule->_oConfig, 'isRoles') && $oContextModule->_oConfig->isRoles()) {
+                $iRole = (int)$oContextModule->_oDb->getRole($iContextPid, $iProfileId);
+                foreach($aDefaults as $sRight => $bDefault)
+                    $aResult[$sRight] = $this->_getTimeRightByRole($oContextModule, $aActions[$sRight], $iRole) ?? $bDefault;
+            }
+        }
+
+        return $this->_aTimeRights[$sKey] = $aResult;
+    }
+
+    public function getTimeRightsByContentId($iContentId, $iProfileId = 0)
+    {
+        return $this->getTimeRights($this->_oDb->getContextId((int)$iContentId), $iProfileId);
+    }
+
+    /**
+     * The lookup of BxBaseModGroupsModule::isAllowedModuleActionByRole, null (the default applies, as Studio shows it)
+     * when the role's permissions for the module were saved before these actions existed: Studio marks
+     * them `time_rights_saved` since. Once marked, an action that isn't there is off: Studio doesn't send switchers that are off.
+     */
+    protected function _getTimeRightByRole($oContextModule, $sAction, $iProfileRole)
+    {
+        if(!method_exists($oContextModule, 'isRole') || !($aRoles = $oContextModule->_oConfig->getRolesData()) || !is_array($aRoles))
+            return null;
+
+        $sModule = $this->getName();
+        foreach($aRoles as $iRole => $aRoleData) {
+            if(!(($iRole == 0 && $iProfileRole == 0) || ($iRole > 0 && $oContextModule->isRole($iProfileRole, $iRole))))
+                continue;
+
+            $aPermissions = !empty($aRoleData['Data']) ? unserialize($aRoleData['Data']) : false;
+            if(!$aPermissions || !isset($aPermissions[$sModule]))
+                continue;
+
+            if(empty($aPermissions[$sModule]['time_rights_saved']))
+                return null;
+
+            return !empty($aPermissions[$sModule][$sAction]);
+        }
+
+        return null;
+    }
+
+    /**
+     * Billed time of a time track: it follows the Logged time until somebody sets it.
+     */
+    public function getTrackBilled($aTrack)
+    {
+        return isset($aTrack['value_billed']) && $aTrack['value_billed'] !== null ? (int)$aTrack['value_billed'] : (int)$aTrack['value'];
     }
 
     public function isAllowEdit($mixedContent)
@@ -1829,6 +2214,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
         if(($oAuthor = BxDolProfile::getInstance()) !== false)
             $aMessage['markers'] = array_merge($aMessage['markers'] ?? [], [
+                'author_id' => $oAuthor->id(), //--- who may see it (BxTasksCmts::getCommentsArray)
                 'author_link' => $oAuthor->getUrl(),
                 'author_name' => $oAuthor->getDisplayName(),
             ]);
@@ -2046,6 +2432,32 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
             $this->ghUpdateIssue($aContentInfo, [
                 $sPropRepo => _t($mixedValue)
             ]);        
+    }
+
+    /**
+     * Labels (stickers, a set) as setStickers set them: their titles in the task's activity.
+     */
+    protected function _logStickersEdit($aContentInfo, $mixedValue)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $iContentId = (int)$aContentInfo[$CNF['FIELD_ID']];
+        $iContextId = ($iPrivacy = (int)$aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']]) < 0 ? -$iPrivacy : 0;
+
+        // the set's values: bit (value - 1) for each
+        $aValues = [];
+        if(is_array($mixedValue))
+            $aValues = $mixedValue;
+        else
+            for($i = 1; $i <= 31; $i++)
+                if((int)$mixedValue & (1 << ($i - 1)))
+                    $aValues[] = $i;
+
+        $aTitles = [];
+        foreach($aValues ? $this->getStickers($aValues, $iContextId) : [] as $aSticker)
+            $aTitles[] = _t($aSticker['title']);
+
+        $this->logActivity($iContentId, $aTitles ? ['key' => '_bx_tasks_txt_msg_edit_stickers', 'markers' => ['value' => implode(', ', $aTitles)]] : ['key' => '_bx_tasks_txt_msg_edit_stickers_none']);
     }
 
     protected function _onEditState($aContentInfo, $iState)

@@ -315,6 +315,44 @@ class BxDolProfileQuery extends BxDolDb implements iBxDolSingleton
     }
 
     /**
+     * The rows of these profiles read in one query and kept in memory where getInfoById,
+     * getIdById and getProfileByContentAndType keep each one, for a page of many profiles.
+     */
+    public function primeInfos($aIds)
+    {
+        $aIds = array_values(array_unique(array_filter(array_map('intval', (array)$aIds), function ($i) { return $i > 0 && !array_key_exists('sys_profiles_id_' . $i, self::$_aDbCacheData); })));
+        if (!$aIds)
+            return;
+
+        foreach ($this->getAll("SELECT * FROM `sys_profiles` WHERE `id` IN (" . $this->implode_escape($aIds) . ")") as $aRow) {
+            self::$_aDbCacheData['sys_profiles_id_' . (int)$aRow['id']] = $aRow;
+            self::$_aDbCacheData['BxDolProfileQuery::getIdById' . (int)$aRow['id']] = $aRow['id'];
+            self::$_aDbCacheData['BxDolProfileQuery::getProfileByContentAndType' . $aRow['content_id'] . $aRow['type']] = $aRow;
+        }
+    }
+
+    /**
+     * The profile ids of a module's entries (content id => profile id), their rows read in one
+     * query and kept in memory as primeInfos keeps them, for a page of many profiles.
+     */
+    public function primeByContentAndType($aContentIds, $sType)
+    {
+        $aContentIds = array_values(array_unique(array_filter(array_map('intval', (array)$aContentIds), function ($i) { return $i > 0; })));
+        if (!$aContentIds)
+            return [];
+
+        $aResult = [];
+        $aRows = $this->getAll("SELECT * FROM `sys_profiles` WHERE `type` = :type AND `content_id` IN (" . $this->implode_escape($aContentIds) . ")", ['type' => $sType]);
+        foreach ($aRows as $aRow) {
+            self::$_aDbCacheData['sys_profiles_id_' . (int)$aRow['id']] = $aRow;
+            self::$_aDbCacheData['BxDolProfileQuery::getIdById' . (int)$aRow['id']] = $aRow['id'];
+            self::$_aDbCacheData['BxDolProfileQuery::getProfileByContentAndType' . $aRow['content_id'] . $aRow['type']] = $aRow;
+            $aResult[(int)$aRow['content_id']] = (int)$aRow['id'];
+        }
+        return $aResult;
+    }
+
+    /**
      * get profile id by id
      */
     public function getIdById($iId, $bClearCache = false)

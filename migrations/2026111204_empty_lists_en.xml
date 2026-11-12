@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Empty states of personal lists and search results for API clients (BxDolEmptyState). -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_txt_empty_list_text_joined"><![CDATA[What you join shows here.]]></string_add>
+    <string_add name="_sys_txt_empty_list_text_connections"><![CDATA[Your connections show here.]]></string_add>
+    <string_add name="_sys_txt_empty_list_text_followed"><![CDATA[What you follow shows here.]]></string_add>
+    <string_add name="_sys_txt_empty_list_text_favorite"><![CDATA[What you add to favorites shows here.]]></string_add>
+    <string_add name="_sys_txt_empty_list_text_online"><![CDATA[No one is online right now.]]></string_add>
+    <string_add name="_sys_txt_empty_search_title"><![CDATA[No results]]></string_add>
+    <string_add name="_sys_txt_empty_search_text"><![CDATA[Try other words or fewer filters.]]></string_add>
+</resources>

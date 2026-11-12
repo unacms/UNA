@@ -54,9 +54,38 @@ class BxBaseModProfileDb extends BxBaseModGeneralDb
         return $aInfo;
     }
 
+    /**
+     * The rows of these entries as getContentInfoById reads them, in one query, kept in memory
+     * where getContentInfoById keeps each one (its hook still runs on each read), for a page of
+     * many profiles.
+     */
+    public function primeContentInfos($aContentIds)
+    {
+        $sPrefix = "profile_content_info_" . $this->_oConfig->getName();
+        $aIds = array_values(array_unique(array_filter(array_map('intval', (array)$aContentIds), function ($i) use ($sPrefix) { return $i > 0 && !array_key_exists($sPrefix . $i, self::$_aDbCacheData); })));
+        if (!$aIds)
+            return;
+
+        $aRows = $this->getAll("SELECT `c`.*, `p`.`account_id`, `p`.`id` AS `profile_id`, `a`.`email` AS `profile_email`, `a`.`active` AS `profile_last_active`, `a`.`ip` AS `profile_ip`, `p`.`status` AS `profile_status` FROM `" . $this->_oConfig->CNF['TABLE_ENTRIES'] . "` AS `c` INNER JOIN `sys_profiles` AS `p` ON (`p`.`content_id` = `c`.`id` AND `p`.`type` = :type) INNER JOIN `sys_accounts` AS `a` ON (`p`.`account_id` = `a`.`id`) WHERE `c`.`id` IN (" . $this->implode_escape($aIds) . ")", [
+            'type' => $this->_oConfig->getName(),
+        ]);
+        foreach ($aRows as $aRow) {
+            self::$_aDbCacheData[$sPrefix . (int)$aRow['id']] = $aRow;
+            self::$_aPrimedByProfileId[$this->_oConfig->getName() . '#' . (int)$aRow['profile_id']] = $sPrefix . (int)$aRow['id'];
+        }
+    }
+
+    /** Profile ids of the rows primeContentInfos read: module#profile id => their memory key. */
+    protected static $_aPrimedByProfileId = [];
+
     public function getContentInfoByProfileId ($iProfileId)
     {
-        $aInfo = $this->getRow("SELECT `c`.*, `p`.`account_id`, `p`.`id` AS `profile_id`, `a`.`email` AS `profile_email`, `a`.`active` AS `profile_last_active`, `a`.`ip` AS `profile_ip`, `p`.`status` AS `profile_status` FROM `" . $this->_oConfig->CNF['TABLE_ENTRIES'] . "` AS `c` INNER JOIN `sys_profiles` AS `p` ON (`p`.`content_id` = `c`.`id` AND `p`.`type` = :type) INNER JOIN `sys_accounts` AS `a` ON (`p`.`account_id` = `a`.`id`) WHERE `p`.`id` = :profile_id", [
+        // a row primeContentInfos read in this request (its hook still runs)
+        $sPrimed = self::$_aPrimedByProfileId[$this->_oConfig->getName() . '#' . (int)$iProfileId] ?? null;
+        if ($sPrimed !== null && !empty(self::$_aDbCacheData[$sPrimed]))
+            $aInfo = self::$_aDbCacheData[$sPrimed];
+        else
+            $aInfo = $this->getRow("SELECT `c`.*, `p`.`account_id`, `p`.`id` AS `profile_id`, `a`.`email` AS `profile_email`, `a`.`active` AS `profile_last_active`, `a`.`ip` AS `profile_ip`, `p`.`status` AS `profile_status` FROM `" . $this->_oConfig->CNF['TABLE_ENTRIES'] . "` AS `c` INNER JOIN `sys_profiles` AS `p` ON (`p`.`content_id` = `c`.`id` AND `p`.`type` = :type) INNER JOIN `sys_accounts` AS `a` ON (`p`.`account_id` = `a`.`id`) WHERE `p`.`id` = :profile_id", [
             'type' => $this->_oConfig->getName(),
             'profile_id' => $iProfileId
         ]);

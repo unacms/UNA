@@ -529,7 +529,8 @@
 	<string name="_adm_bp_dsc_block_content_rss_url"><![CDATA[Введите здесь URL RSS-ресурса]]></string>
         <string name="_adm_bp_dsc_block_content_empty"><![CDATA[Оставьте пустым, чтобы использовать значение по умолчанию.]]></string>
         <string name="_adm_bp_dsc_block_description"><![CDATA[Короткое описание блока, отображаемое в заголовке блока.]]></string>
-        <string name="_adm_bp_dsc_block_icon"><![CDATA[Изображение (шрифтовая иконка, SVG код или эмодзи) для блока, отображаемое в заголовке блока.]]></string>
+        <string name="_adm_bp_dsc_block_header_icon"><![CDATA[Крупная иконка (шрифтовая иконка, SVG код или эмодзи) в плитке перед заголовком и описанием блока.]]></string>
+        <string name="_adm_bp_dsc_block_icon"><![CDATA[Небольшая иконка (шрифтовая иконка, SVG код или эмодзи) перед заголовком блока, в его строке.]]></string>
 	<string name="_adm_bp_dsc_block_title"><![CDATA[Короткое название для блока, отображаемое в заголовке блока.]]></string>
 	<string name="_adm_bp_dsc_block_visible_for_levels"><![CDATA[Выбрать уровни пользователей, которые могут видеть этот блок]]></string>
 	<string name="_adm_bp_dsc_page_cache_lifetime"><![CDATA[Сохранять страницу в кэше в течение данного количества секунд]]></string>
@@ -593,6 +594,7 @@
         <string name="_adm_bp_txt_block_description"><![CDATA[Описание]]></string>
 	<string name="_adm_bp_txt_block_designbox"><![CDATA[Отображение блока]]></string>
 	<string name="_adm_bp_txt_block_designbox_empty"><![CDATA[Выбрать отображение...]]></string>
+        <string name="_adm_bp_txt_block_header_icon"><![CDATA[Иконка шапки]]></string>
         <string name="_adm_bp_txt_block_class"><![CDATA[CSS класс]]></string>
         <string name="_adm_bp_txt_block_help"><![CDATA[Помощь]]></string>
 	<string name="_adm_bp_txt_block_hidden_on"><![CDATA[Скрыть на]]></string>
@@ -600,7 +602,7 @@
 	<string name="_adm_bp_txt_block_hidden_on_tablet"><![CDATA[планшете]]></string>
 	<string name="_adm_bp_txt_block_hidden_on_desktop"><![CDATA[настольном компьютере]]></string>
         <string name="_adm_bp_txt_block_hidden_on_mobile"><![CDATA[мобильное приложение]]></string>
-        <string name="_adm_bp_txt_block_icon"><![CDATA[Изображение]]></string>
+        <string name="_adm_bp_txt_block_icon"><![CDATA[Иконка заголовка]]></string>
 	<string name="_adm_bp_txt_block_padding_hidden_on"><![CDATA[Отступы скрыты на]]></string>
 	<string name="_adm_bp_txt_block_part_hidden_on_info"><![CDATA[На сайте и в приложениях. Если в оформлении блока этой части нет, она так и не показывается.]]></string>
 	<string name="_adm_bp_txt_block_selected"><![CDATA[блоков выбрано]]></string>
@@ -833,6 +835,7 @@
 	<string name="_adm_dsg_inf_pwa_sw_enable"><![CDATA[Когда вы меняете стили или скрипты сайта, посетители получают новые при следующем открытии сайта.]]></string>
 	<string name="_adm_dsg_inf_pwa_sw_offline"><![CDATA[Показывается вместо ошибки браузера, когда нет связи: адрес на этом сайте, например page.php?i=about. Оставьте пустым, чтобы показывать страницу браузера.]]></string>
 	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Цвет заголовка окна приложения, а на телефонах — строки состояния. По умолчанию — цвет, заданный шаблоном.]]></string>
+	<string name="_adm_dsg_inf_settings_section_forms"><![CDATA[Как формы подписывают однострочные текстовые поля на сайте и в приложениях. Отдельному виду формы можно задать свой стиль в разделе <a href="{0}">Формы</a>. Приложение без плавающих подписей показывает их над полями.]]></string>
 	<string name="_adm_dsg_inf_settings_section_layout"><![CDATA[Где вокруг содержимого страницы стоят шапка, меню и подвал. Страницы со своим макетом в разделе <a href="{0}">Страницы</a> сохраняют его, остальные используют макеты ниже.]]></string>
 	<string name="_adm_dsg_inf_settings_section_template"><![CDATA[Шаблон отвечает за весь вид сайта: шапку, меню, цвета и шрифты. Все видят этот шаблон, если сами не выбрали другой включённый.]]></string>
 	<string name="_adm_dsg_inf_splash_section_apps"><![CDATA[Код только для одного приложения. Пустое поле использует код страницы выше. Приложения рисуют формы, логотип и иллюстрацию своими компонентами и пропускают скрипты и всё, что отмечено <code>data-site-only</code>. Приложения для iOS и Android показывают текст, заголовки, списки и ссылки без стилей и раскладки. Добавьте <code>&lt;neo-slot name="social_login"&gt;&lt;/neo-slot&gt;</code>, чтобы показать только кнопки входа через соцсети.]]></string>
@@ -890,9 +893,12 @@
 	<string name="_adm_dsg_txt_pwa_sw_enable"><![CDATA[Использовать service worker]]></string>
 	<string name="_adm_dsg_txt_pwa_sw_offline"><![CDATA[Офлайн-страница]]></string>
 	<string name="_adm_dsg_txt_pwa_theme_color"><![CDATA[Цвет окна]]></string>
+	<string name="_adm_dsg_txt_settings_label_style_adaptive"><![CDATA[Плавающие: в пустом поле, на верхней границе после заполнения]]></string>
+	<string name="_adm_dsg_txt_settings_label_style_regular"><![CDATA[Над полем]]></string>
 	<string name="_adm_dsg_txt_settings_layout_member"><![CDATA[Для участников]]></string>
 	<string name="_adm_dsg_txt_settings_layout_visitor"><![CDATA[Для гостей]]></string>
 	<string name="_adm_dsg_txt_settings_note"><![CDATA[Макет без шапки и подвала не оставляет меню для перехода по сайту. Задавайте его отдельным страницам в разделе Страницы, а не по умолчанию.]]></string>
+	<string name="_adm_dsg_txt_settings_section_forms"><![CDATA[Формы]]></string>
 	<string name="_adm_dsg_txt_settings_section_layout"><![CDATA[Макет страниц]]></string>
 	<string name="_adm_dsg_txt_settings_section_template"><![CDATA[Шаблон сайта]]></string>
 	<string name="_adm_dsg_txt_settings_template_current"><![CDATA[Используется]]></string>
@@ -1063,6 +1069,7 @@
     <string name="_adm_form_btn_search_forms_sortable_fields_reset"><![CDATA[Сбросить]]></string>
     <string name="_adm_form_btn_search_forms_save"><![CDATA[Сохранить]]></string>
     <string name="_adm_form_btn_search_forms_cancel"><![CDATA[Отменить]]></string>
+    <string name="_adm_form_dsc_displays_label_style"><![CDATA[Плавающие подписи применяются к однострочным текстовым полям. У остальных полей подписи остаются сверху.]]></string>
     <string name="_adm_form_dsc_displays_title"><![CDATA[Название режима отображения Формы. Видимо только в Студии.]]></string>
     <string name="_adm_form_dsc_field_area_label"><![CDATA[Доступное имя для поля. Полезно, когда видимое текстовое содержимое поля недостаточно описательно или отсутствует.]]></string>
     <string name="_adm_form_dsc_field_attrs_max"><![CDATA[Введите числовое значение]]></string>
@@ -1187,6 +1194,8 @@
 	<string name="_adm_form_txt_displays_gl_form"><![CDATA[Форма]]></string>
 	<string name="_adm_form_txt_displays_gl_module"><![CDATA[Модуль]]></string>
 	<string name="_adm_form_txt_displays_gl_title"><![CDATA[Системное имя]]></string>
+	<string name="_adm_form_txt_displays_label_style"><![CDATA[Подписи полей]]></string>
+	<string name="_adm_form_txt_displays_label_style_default"><![CDATA[Как на сайте]]></string>
 	<string name="_adm_form_txt_displays_manage_fields"><![CDATA[Управление полями]]></string>
 	<string name="_adm_form_txt_displays_title"><![CDATA[Системное имя]]></string>
 	<string name="_adm_form_txt_field_add_popup"><![CDATA[Добавить новое Поле]]></string>
@@ -1864,7 +1873,6 @@
     <string name="_adm_stg_inf_option_site_email_notify"><![CDATA[Адрес электронной почты, используемый в качестве «отправителя» в транзакционных электронных письмах.]]></string>
     <string name="_adm_stg_cpt_option_site_email_html_template_header"><![CDATA[Заголовок HTML шаблона email сообщения]]></string>
     <string name="_adm_stg_cpt_option_site_email_html_template_footer"><![CDATA[Основание HTML шаблона email сообщения]]></string>
-    <string name="_adm_stg_cpt_option_site_login_social_compact"><![CDATA[Задействовать компактный вид входа через соц. сети]]></string>
     <string name="_adm_stg_cpt_option_site_title"><![CDATA[Имя сообщества]]></string>
     <string name="_adm_stg_inf_option_site_title"><![CDATA[Имя по умолчанию, используемое для ссылки на ваш сайт в текстах сайта, метатегах, электронных письмах и уведомлениях.]]></string>
     <string name="_adm_stg_cpt_option_site_tour_home"><![CDATA[Пользовательский тур]]></string>
@@ -1947,6 +1955,7 @@
     <string name="_adm_stg_cpt_option_sys_player_default_quality"><![CDATA[Качество видео по умолчанию]]></string>
     <string name="_adm_stg_cpt_option_sys_pt_default_visitor"><![CDATA[Тип страницы, используемый по умолчанию для посетителя]]></string>
     <string name="_adm_stg_cpt_option_sys_pt_default_member"><![CDATA[Тип страницы, используемый по умолчанию для пользователя]]></string>
+    <string name="_adm_stg_cpt_option_sys_form_label_style"><![CDATA[Подписи полей]]></string>
     <string name="_adm_stg_cpt_option_sys_form_lpc_enable"><![CDATA[Включить подтверждение ухода со страницы для страниц с формами]]></string>
     <string name="_adm_stg_cpt_option_sys_format_date"><![CDATA[<a target="_blank" href="https://momentjs.com/docs/#/displaying/format/">Формат даты</a>]]></string>
     <string name="_adm_stg_cpt_option_sys_format_datetime"><![CDATA[<a target="_blank" href="https://momentjs.com/docs/#/displaying/format/">Формат даты и времени</a>]]></string>
@@ -2159,6 +2168,14 @@
     <string name="_adm_stg_cpt_option_sys_api_root_page_splash"><![CDATA[Заставка]]></string>
     <string name="_adm_stg_cpt_option_sys_api_url_root_email"><![CDATA[Основной URL-адрес сайта в уведомлениях по электронной почте]]></string>
     <string name="_adm_stg_cpt_option_sys_api_url_root_push"><![CDATA[Основной URL-адрес сайта в push-уведомлениях]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_enable"><![CDATA[API v2 (предварительная версия, не для рабочих сайтов): включить /api/v2, который использует настольное приложение]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit"><![CDATA[API v2: ограничивать число запросов]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_agent"><![CDATA[API v2: сообщений ИИ-агентам в минуту (0 — без ограничения)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_general"><![CDATA[API v2: запросов в минуту от одного участника или с одного адреса гостя (0 — без ограничения)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_preview"><![CDATA[API v2: предпросмотров ссылок в минуту (0 — без ограничения)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_search"><![CDATA[API v2: поисковых запросов в минуту (0 — без ограничения)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_upload"><![CDATA[API v2: загрузок файлов в минуту (0 — без ограничения)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_write"><![CDATA[API v2: изменений в минуту — публикации, правки, удаления, реакции (0 — без ограничения)]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_inspector_key"><![CDATA[Ключ Inspector]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_inspector_key_info"><![CDATA[Получить ключ на https://app.inspector.dev/]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_operator_agent"><![CDATA[Агент оператора]]></string>
@@ -2620,10 +2637,6 @@
         <string name="_sys_agents_agents_txt_search"><![CDATA[Поиск по чатам...]]></string>
         <string name="_sys_agents_agents_txt_search_empty"><![CDATA[Чаты не найдены]]></string>
         <string name="_sys_agents_agents_popup_add"><![CDATA[Добавить агента]]></string>
-        <string name="_sys_agents_agents_empty"><![CDATA[Пока нет агентов]]></string>
-        <string name="_sys_agents_agents_empty_info"><![CDATA[Агенты выполняют автоматические задачи на сайте. Добавьте первого, чтобы начать.]]></string>
-        <string name="_sys_agents_builder_view_list"><![CDATA[Список]]></string>
-        <string name="_sys_agents_builder_view_grid"><![CDATA[Таблица]]></string>
 
         <string name="_Run"><![CDATA[Запустить]]></string>
 
@@ -3341,7 +3354,6 @@
 	<string name="_sys_form_login_input_caption_system_sendsms"><![CDATA[Отправить SMS]]></string>
 	<string name="_sys_form_login_input_caption_system_submit"><![CDATA[Выполнить]]></string>
 	<string name="_sys_form_login_input_caption_system_submit_text"><![CDATA[Текст отправки]]></string>
-        <string name="_sys_form_login_input_agreement_value"><![CDATA[Заходя, Вы соглашаетесь с <a href="{0}">Правилами пользования</a> и <a href="{1}">Политикой конфиденциальности</a>.]]></string>
 	<string name="_sys_form_login_input_checkcode"><![CDATA[Выполнить]]></string>
 	<string name="_sys_form_login_input_code"><![CDATA[Код из SMS]]></string>
 	<string name="_sys_form_login_input_back"><![CDATA[Вы не получили SMS? <a href="{0}">Отправить SMS ещё раз</a>]]></string>
@@ -3485,6 +3497,7 @@
 	<string name="_sys_form_unsubscribe_input_receive_updates"><![CDATA[Получать обновления сайта]]></string>
 	<string name="_sys_form_unsubscribe_input_submit"><![CDATA[Выполнить]]></string>
 	<string name="_sys_form_err_not_unique_value"><![CDATA[Поле должно иметь уникальное значение]]></string>
+	<string name="_sys_form_txt_optional"><![CDATA[(необязательно)]]></string>
 	<string name="_sys_form_txt_select_file"><![CDATA[Выбрать файл]]></string>
     <string name="_sys_form_wiki"><![CDATA[Вики]]></string>
     <string name="_sys_form_display_wiki_edit"><![CDATA[Вики: редактирование]]></string>
@@ -3672,6 +3685,7 @@
     <string name="_sys_menu_item_title_switch_template"><![CDATA[Дизайн]]></string>
     <string name="_sys_menu_item_title_switch_template_mask"><![CDATA[{0}]]></string>
     <string name="_sys_menu_item_title_terms"><![CDATA[Правила]]></string>
+    <string name="_sys_menu_item_title_tour"><![CDATA[Вводный тур]]></string>
     <string name="_sys_menu_item_title_account_menu"><![CDATA[{member_display_name}]]></string>
     <string name="_sys_menu_item_title_account_profile_context"><![CDATA[Профили]]></string>
     <string name="_sys_menu_item_title_account_dashboard"><![CDATA[Панель]]></string>
@@ -3683,6 +3697,7 @@
     <string name="_sys_menu_item_title_account_settings_overview"><![CDATA[Обзор]]></string>
     <string name="_sys_menu_item_title_account_settings_pwd"><![CDATA[Пароль]]></string>
     <string name="_sys_menu_item_title_profile_settings_cfilter"><![CDATA[Фильтр контента]]></string>
+    <string name="_sys_menu_item_title_public_menu"><![CDATA[Обзор]]></string>
     <string name="_sys_menu_item_title_add_content"><![CDATA[Добавить...]]></string>
     <string name="_sys_menu_item_title_cart"><![CDATA[Корзина]]></string>
     <string name="_sys_menu_item_title_cmts_administration"><![CDATA[Комментарии]]></string>
@@ -3704,6 +3719,8 @@
     <string name="_sys_menu_item_title_join"><![CDATA[Присоединиться]]></string>
     <string name="_sys_menu_item_title_login"><![CDATA[Вход]]></string>
     <string name="_sys_menu_item_title_logout"><![CDATA[Выйти]]></string>
+    <string name="_sys_menu_item_title_member_followings"><![CDATA[Подписки]]></string>
+    <string name="_sys_menu_item_title_member_menu"><![CDATA[Вы]]></string>
     <string name="_sys_menu_item_title_more"><![CDATA[Ещё]]></string>
     <string name="_sys_menu_item_title_more_auto"><![CDATA[]]></string>
     <string name="_sys_menu_item_title_orders"><![CDATA[Заказы]]></string>
@@ -3761,6 +3778,7 @@
     <string name="_sys_menu_item_title_system_switch_language"><![CDATA[Язык]]></string>
     <string name="_sys_menu_item_title_system_switch_template"><![CDATA[Тема]]></string>
     <string name="_sys_menu_item_title_system_terms"><![CDATA[Правила]]></string>
+    <string name="_sys_menu_item_title_system_tour"><![CDATA[Вводный тур]]></string>
     <string name="_sys_menu_item_title_system_account_menu"><![CDATA[Аккаунт]]></string>
     <string name="_sys_menu_item_title_system_account_profile_context"><![CDATA[Профили]]></string>
     <string name="_sys_menu_item_title_system_account_dashboard"><![CDATA[Панель]]></string>
@@ -3786,6 +3804,7 @@
     <string name="_sys_menu_item_title_system_profile_settings_cfilter"><![CDATA[Фильтр контента]]></string>
     <string name="_sys_menu_item_title_system_add_content"><![CDATA[Добавить Содержимое]]></string>
     <string name="_sys_menu_item_title_system_apps"><![CDATA[Приложения]]></string>
+    <string name="_sys_menu_item_title_system_apps_menu"><![CDATA[Меню приложений]]></string>
     <string name="_sys_menu_item_title_system_cart"><![CDATA[Корзина]]></string>
     <string name="_sys_menu_item_title_system_cmts_administration"><![CDATA[Комментарии]]></string>
     <string name="_sys_menu_item_title_system_audit_administration"><![CDATA[Аудит]]></string>
@@ -3811,6 +3830,7 @@
     <string name="_sys_menu_item_title_system_main_menu"><![CDATA[Главное меню]]></string>
     <string name="_sys_menu_item_title_system_member_avatar"><![CDATA[Аватар пользователя]]></string>
     <string name="_sys_menu_item_title_system_member_followings"><![CDATA[Отслеживаемые контексты пользователя]]></string>
+    <string name="_sys_menu_item_title_system_member_memberships"><![CDATA[Членство участника]]></string>
     <string name="_sys_menu_item_title_system_member_menu"><![CDATA[Меню пользователя]]></string>
     <string name="_sys_menu_item_title_system_more"><![CDATA[Ещё]]></string>
     <string name="_sys_menu_item_title_system_more_auto"><![CDATA[Ещё]]></string>
@@ -3904,9 +3924,12 @@
     <string name="_sys_menu_set_title_footer"><![CDATA[Основание]]></string>
     <string name="_sys_menu_set_title_profile_create_links"><![CDATA[Профиль - Создание]]></string>
     <string name="_sys_menu_set_title_profile_followings"><![CDATA[Отслеживаемые контексты]]></string>
+    <string name="_sys_menu_set_title_profile_memberships"><![CDATA[Членство профиля]]></string>
     <string name="_sys_menu_set_title_profile_stats"><![CDATA[Профиль - Статистика]]></string>
     <string name="_sys_menu_set_title_site"><![CDATA[Сайт]]></string>
     <string name="_sys_menu_set_title_application"><![CDATA[Приложение]]></string>
+    <string name="_sys_menu_set_title_apps_menu"><![CDATA[Меню приложений]]></string>
+    <string name="_sys_menu_set_title_apps_sidebar"><![CDATA[Боковая панель приложений]]></string>
     <string name="_sys_menu_set_title_panel"><![CDATA[Панель]]></string>
     <string name="_sys_menu_set_title_homepage"><![CDATA[Модули с содержимым]]></string>
     <string name="_sys_menu_set_title_toolbar_member"><![CDATA[Панель инструментов - Пользователь]]></string>
@@ -3965,6 +3988,8 @@
     <string name="_sys_menu_title_main"><![CDATA[Навигация по сайту]]></string>
     <string name="_sys_menu_title_main_in_panel"><![CDATA[Навигация по сайту - Панель]]></string>
     <string name="_sys_menu_title_application"><![CDATA[Навигация в режиме 'Приложение']]></string>
+    <string name="_sys_menu_title_apps_menu"><![CDATA[Меню приложений]]></string>
+    <string name="_sys_menu_title_apps_sidebar"><![CDATA[Боковая панель приложений]]></string>
     <string name="_sys_menu_title_homepage"><![CDATA[Меню на главной странице]]></string>
     <string name="_sys_menu_title_homepage_submenu"><![CDATA[Подменю на главной странице]]></string>
     <string name="_sys_menu_title_public_homepage_submenu"><![CDATA[Исследовать]]></string>
@@ -3977,6 +4002,7 @@
     <string name="_sys_menu_item_title_trends"><![CDATA[Тренды]]></string>
     <string name="_sys_menu_title_profiles_create"><![CDATA[Профиль - Создание]]></string>
     <string name="_sys_menu_title_profile_followings"><![CDATA[Профиль - Подписки]]></string>
+    <string name="_sys_menu_title_profile_memberships"><![CDATA[Членство профиля]]></string>
     <string name="_sys_menu_title_profile_stats"><![CDATA[Профиль - Статистика]]></string>
     <string name="_sys_menu_title_tags_cloud"><![CDATA[Облако тегов]]></string>
     <string name="_sys_menu_title_rss"><![CDATA[RSS]]></string>
@@ -4128,6 +4154,8 @@
         <string name="_sys_page_block_title_search_ai"><![CDATA[Поиск]]></string>
         <string name="_sys_page_block_title_membership_stats"><![CDATA[Лимиты членства]]></string>
 	<string name="_sys_page_block_desc_account_profile_create"><![CDATA[У вашей учётной записи ещё нет профиля. Выберите тип профиля, чтобы начать.]]></string>
+	<string name="_sys_page_block_desc_create_account"><![CDATA[Создайте аккаунт, чтобы присоединиться к сообществу.]]></string>
+	<string name="_sys_page_block_desc_login"><![CDATA[Введите данные, чтобы продолжить.]]></string>
 	<string name="_sys_page_block_system_title_login"><![CDATA[Вход с линкой регистрации]]></string>
 	<string name="_sys_page_block_system_title_login_step2"><![CDATA[Вход - шаг 2]]></string>
 	<string name="_sys_page_block_system_title_login_step3"><![CDATA[Вход - шаг 3]]></string>
@@ -4552,39 +4580,43 @@
     <string name="_sys_subscribe"><![CDATA[Получать уведомления]]></string>
     <string name="_sys_template_mixed_mask"><![CDATA[{0} ({1})]]></string>
 
-    <string name="_sys_tour_launcher_welcome_title"><![CDATA[Добро пожаловать в UNA Студию!]]></string>
-    <string name="_sys_tour_launcher_welcome_txt"><![CDATA[Студия это место, где можно настроить свой сайт: добавлять приложения и управлять ими; управлять языками и изменять дизайн; контролировать уровни доступа для пользователей; настраивать страницы и навигацию, а также многое другое. Текущая страница - стартовый экран Студии.]]></string>
-    <string name="_sys_tour_launcher_apps_title"><![CDATA[Добавь новые приложения]]></string>
-    <string name="_sys_tour_launcher_apps_txt"><![CDATA[Приложения это модули, языковые переводы, инструменты, различные дизайны сайта - кирпичики из которых складывается твой уникальный сайт. После скачивания и установки проложения, оно появляется на этой страничке. Приложения дополняют и изменяют функциональность сайта.]]></string>
-    <string name="_sys_tour_launcher_designer_title"><![CDATA[Сделай сайт особенным]]></string>
-    <string name="_sys_tour_launcher_designer_txt"><![CDATA[Дизайнер - это лучшее место, чтобы начать изменять свой сайт. Поменяйте логотоп сайта, выберете дизайн и отредактируйте "Обложку сайта". Сайт сейчас показывает "Обложку" для всех гостей сайта. Можно отредактировать её, или просто отключить, тогда гостям будет показываться полноценная главная страница, как для зарегестрированных пользователей.]]></string>
-    <string name="_sys_tour_launcher_accounts_title"><![CDATA[Больше чем администратор]]></string>
-    <string name="_sys_tour_launcher_accounts_txt"><![CDATA[Администраторы и модераторы могут управлять профилями и их содержимым, это не обязательно должно быть в Студии, куда имеет доступ только оператор сайта. Все что нужно, это назначить права для администраторов и модераторов в "Разрешениях". Чтобы назначить профилю права администратора или модератора, нужно перейти в профиль и нажать "Назначить членство".]]></string>    
-    <string name="_sys_tour_launcher_dashboard_title"><![CDATA[Основная информация под рукой]]></string>
-    <string name="_sys_tour_launcher_dashboard_txt"><![CDATA["Приборная панель" показывает основную информацию о сайте: версию UNA, использование места, инструменты хостинга и кэш. Различные проложения могут добавлять свои блоки на эту страничку.]]></string>
-    <string name="_sys_tour_launcher_builder_page_title"><![CDATA[Перестрой свой сайт под себя]]></string>
-    <string name="_sys_tour_launcher_builder_page_txt"><![CDATA[Построитель страниц позволяет редактировать страницы перемещая, удаляя и добавляя секции на конкретной странице. Можно даже создавать новые страницы различного вида. Также можно контролировать доступ к странице, поисковую оптимизацию, кэш и дизайн страницы.]]></string>
-    <string name="_sys_tour_launcher_builder_permissions_title"><![CDATA[Определи уровни доступа пользователей]]></string>
-    <string name="_sys_tour_launcher_builder_permissions_txt"><![CDATA[Возможно редактировать уровни доступа для членств и создавать новые членства.]]></string>
-    <string name="_sys_tour_launcher_builder_forms_title"><![CDATA[Формируй и переформируй формы]]></string>
-    <string name="_sys_tour_launcher_builder_forms_txt"><![CDATA[Построитель форм это мощный инструмент, который позволяет менять формы сайта и базы данных. Возможно создавать списки, новые поля для форм и различные представления одной и той-же формы (такие как добавление, редактирование и др.). Формы определяют структуру и тему Вашего сайта.]]></string>
-    <string name="_sys_tour_launcher_builder_menus_title"><![CDATA[Показывай что угодно]]></string>
-    <string name="_sys_tour_launcher_builder_menus_txt"><![CDATA[Добавляй новые пункты в навигационное меню и меняй существующие. Возможно редактировать ссылки, передвигать их, менять иконки, а также контролировать видимость пунктов в зависимости от членства пользователя.]]></string>
-    <string name="_sys_tour_launcher_polyglot_title"><![CDATA[Говори на их языке]]></string>
-    <string name="_sys_tour_launcher_polyglot_txt"><![CDATA["Величайшее богатство народа — его язык". Полиглот позволяет поменять язык сайта, формат даты и времени, редактировать слова и фразы для всех языков и даже редактировать шаблоны писем.]]></string>
-    <string name="_sys_tour_launcher_reorganize_title"><![CDATA[<i class="sys-icon move"></i> Реорганизуй приложения]]></string>
-    <string name="_sys_tour_launcher_reorganize_txt"><![CDATA[Активируй этот режим, чтобы передвигать приложения и удалять неактивные.]]></string>
-    <string name="_sys_tour_launcher_favourites_title"><![CDATA[Держи приложения в доке]]></string>
-    <string name="_sys_tour_launcher_favourites_txt"><![CDATA[Док в шапке держит под рукой недавно открытые приложения. В режиме реорганизации откройте настройки приложения, чтобы оставить его в доке для себя или для всех операторов.]]></string>
-    <string name="_sys_tour_launcher_add_apps_title"><![CDATA[<i class="sys-icon plus"></i> А сейчас, добавь новые приложения!]]></string>
-    <string name="_sys_tour_launcher_add_apps_txt"><![CDATA[В UNA уже входят самые необходимые приложения. Выбери нужные, скачай и затем проинсталлируй приложения, чтобы добавить разные виды профайлов, модулей, системных утилит, языков и дизайнов. Проинсталлированные приложения можно активировать и деактивировать. UNA очень гибкий и имеет модульную архитектуру, тем самым позволяя создать сайт мечты выбрав нужную функциональность, настройки и структуру базы данных. Но даже не меняя ничего вы получите прекрасно фунционирующий сайт!]]></string>
+    <string name="_sys_tour_launcher_welcome_title"><![CDATA[Добро пожаловать в Студию]]></string>
+    <string name="_sys_tour_launcher_welcome_txt"><![CDATA[В Студии настраивается сайт: приложения, дизайн, страницы, меню, формы, права и языки. Этот короткий тур покажет, что где находится.]]></string>
+    <string name="_sys_tour_launcher_apps_title"><![CDATA[Ваши приложения]]></string>
+    <string name="_sys_tour_launcher_apps_txt"><![CDATA[Каждая плитка это приложение: модуль, инструмент, язык или шаблон. Установленные приложения появляются здесь.]]></string>
+    <string name="_sys_tour_launcher_designer_title"><![CDATA[Дизайнер]]></string>
+    <string name="_sys_tour_launcher_designer_txt"><![CDATA[Задайте логотип, выберите шаблон и измените обложку, которую гости видят первой.]]></string>
+    <string name="_sys_tour_launcher_accounts_title"><![CDATA[Аккаунты]]></string>
+    <string name="_sys_tour_launcher_accounts_txt"><![CDATA[Управляйте аккаунтами участников и выбирайте администраторов и модераторов. Они следят за контентом и профилями на самом сайте, не в Студии.]]></string>    
+    <string name="_sys_tour_launcher_dashboard_title"><![CDATA[Панель]]></string>
+    <string name="_sys_tour_launcher_dashboard_txt"><![CDATA[Состояние сайта: версия UNA, занятое место, проверки сервера и кэш.]]></string>
+    <string name="_sys_tour_launcher_builder_page_title"><![CDATA[Страницы]]></string>
+    <string name="_sys_tour_launcher_builder_page_txt"><![CDATA[Добавляйте, удаляйте и переставляйте блоки на любой странице или создавайте новые страницы. Здесь же настройки видимости и SEO.]]></string>
+    <string name="_sys_tour_launcher_builder_permissions_title"><![CDATA[Права]]></string>
+    <string name="_sys_tour_launcher_builder_permissions_txt"><![CDATA[Создавайте уровни членства и выбирайте, что разрешено каждому уровню.]]></string>
+    <string name="_sys_tour_launcher_builder_forms_title"><![CDATA[Формы]]></string>
+    <string name="_sys_tour_launcher_builder_forms_txt"><![CDATA[Меняйте поля любой формы, их списки значений и то, как форма показывается.]]></string>
+    <string name="_sys_tour_launcher_builder_menus_title"><![CDATA[Навигация]]></string>
+    <string name="_sys_tour_launcher_builder_menus_txt"><![CDATA[Редактируйте меню: добавляйте, переставляйте и скрывайте ссылки, меняйте иконки и выбирайте, кто видит каждый пункт.]]></string>
+    <string name="_sys_tour_launcher_polyglot_title"><![CDATA[Полиглот]]></string>
+    <string name="_sys_tour_launcher_polyglot_txt"><![CDATA[Выберите языки сайта и измените любой текст на сайте, включая тексты этого тура.]]></string>
+    <string name="_sys_tour_launcher_reorganize_title"><![CDATA[Порядок приложений]]></string>
+    <string name="_sys_tour_launcher_reorganize_txt"><![CDATA[Откройте это меню и выберите «Управление приложениями», чтобы переставить приложения или убрать ненужные. Отсюда же можно запустить этот тур снова.]]></string>
+    <string name="_sys_tour_launcher_favourites_title"><![CDATA[Док]]></string>
+    <string name="_sys_tour_launcher_favourites_txt"><![CDATA[Недавно открытые приложения остаются здесь, в одном клике. В режиме редактирования приложение можно закрепить в доке.]]></string>
+    <string name="_sys_tour_launcher_add_apps_title"><![CDATA[Магазин приложений]]></string>
+    <string name="_sys_tour_launcher_add_apps_txt"><![CDATA[В UNA сразу есть основные приложения. Остальные берите здесь: модули, шаблоны, языки и интеграции.]]></string>
+    <string name="_sys_tour_step"><![CDATA[{0} из {1}]]></string>
 
-    <string name="_sys_tour_homepage_welcome_title"><![CDATA[Это главная страница сайта]]></string>
-    <string name="_sys_tour_homepage_welcome_txt"><![CDATA[В самом начале, тут не много информации, но после инсталляции нескольких модулей, добавлении дополнительных секций на страницу из Студии и добавлении содержимого - сайт оживёт!]]></string>
-    <string name="_sys_tour_homepage_account_menu_title"><![CDATA[Узнай меню своей учётной записи]]></string>
-    <string name="_sys_tour_homepage_account_menu_txt"><![CDATA[Здесь можно добавлять и управлять профилями, следить за уведомлениями, открывать настройки своей учётной записи. Администраторы и модераторы сайта могут использовать это меню, чтобы открыть приборную панель со ссылками по администрации сайта.]]></string>
+    <string name="_sys_tour_back"><![CDATA[Назад]]></string>
+    <string name="_sys_tour_close"><![CDATA[Закрыть тур]]></string>
+    <string name="_sys_tour_homepage_welcome_title"><![CDATA[Это главная страница]]></string>
+    <string name="_sys_tour_homepage_welcome_txt"><![CDATA[Она наполняется вместе с сайтом. Добавьте приложения и расставьте блоки страницы в Студии, затем пригласите людей и опубликуйте что-нибудь.]]></string>
+    <string name="_sys_tour_homepage_account_menu_title"><![CDATA[Меню аккаунта]]></string>
+    <string name="_sys_tour_homepage_account_menu_txt"><![CDATA[Здесь можно переключать профили, смотреть уведомления и открывать настройки аккаунта. Из этого меню можно запустить этот тур снова.]]></string>
 
     <string name="_sys_txt_api_key"><![CDATA[Ключ API]]></string>
+    <string name="_sys_txt_auth_or"><![CDATA[или]]></string>
     <string name="_sys_txt_access_denied"><![CDATA[Доступ запрещён]]></string>
     <string name="_sys_txt_account_pending"><![CDATA[Ваш аккаунт ожидает одобрения, пожалуйста, дождитесь его активации.]]></string>
     <string name="_sys_txt_account_profile_context_change_suggestion"><![CDATA[Это Ваш профиль, Вы можете <a href="{0}">изменить свой текущий профиль</a> на этот]]></string>
@@ -4628,6 +4660,17 @@
     <string name="_sys_txt_delete"><![CDATA[Удалить]]></string>
     <string name="_sys_txt_discard"><![CDATA[Отменить]]></string>
     <string name="_sys_txt_empty"><![CDATA[Пусто]]></string>
+    <string name="_sys_txt_empty_invitations_text"><![CDATA[Когда вас пригласят в группу, событие или другое сообщество, приглашение появится здесь.]]></string>
+    <string name="_sys_txt_empty_invitations_title"><![CDATA[Приглашений нет]]></string>
+    <string name="_sys_txt_empty_list_add"><![CDATA[Добавить]]></string>
+    <string name="_sys_txt_empty_list_text_add"><![CDATA[Добавьте сюда что-нибудь первым.]]></string>
+    <string name="_sys_txt_empty_list_text_connections"><![CDATA[Здесь появятся ваши связи.]]></string>
+    <string name="_sys_txt_empty_list_text_favorite"><![CDATA[Здесь появится то, что вы добавите в избранное.]]></string>
+    <string name="_sys_txt_empty_list_text_followed"><![CDATA[Здесь появится то, на что вы подпишетесь.]]></string>
+    <string name="_sys_txt_empty_list_text_joined"><![CDATA[Здесь появится то, к чему вы присоединитесь.]]></string>
+    <string name="_sys_txt_empty_list_text_online"><![CDATA[Сейчас никого нет в сети.]]></string>
+    <string name="_sys_txt_empty_search_text"><![CDATA[Попробуйте другие слова или меньше фильтров.]]></string>
+    <string name="_sys_txt_empty_search_title"><![CDATA[Ничего не найдено]]></string>
     <string name="_sys_txt_error_account_creation"><![CDATA[Не удалось создать аккаунт]]></string>
     <string name="_sys_txt_error_account_delete"><![CDATA[Не удалось удалить аккаунт]]></string>
     <string name="_sys_txt_error_account_is_not_defined"><![CDATA[Аккаунт не определён]]></string>
@@ -4665,12 +4708,15 @@
     <string name="_sys_txt_login_2fa_description_phone"><![CDATA[Включена двухфакторная аутентификация: мы отправим код подтверждения на телефон ниже.]]></string>
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Ваш код проверки {0}.]]></string>
     <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[Произошла ошибка, пожалуйста, уведомите о ней администратора сайта.]]></string>
+    <string name="_sys_txt_login_agreement"><![CDATA[Заходя, Вы соглашаетесь с <a href="{0}">Правилами пользования</a> и <a href="{1}">Политикой конфиденциальности</a>.]]></string>
+    <string name="_sys_txt_join_description"><![CDATA[Уже есть аккаунт?]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Войти]]></string>
     <string name="_sys_txt_join_text"><![CDATA[Регистрация быстрая и простая. Создайте аккаунт, чтобы начать.]]></string>
     <string name="_sys_txt_join_text_invite"><![CDATA[Регистрация только по приглашению. Используйте код приглашения.]]></string>
     <string name="_sys_txt_join_title"><![CDATA[Пора присоединиться!]]></string>
     <string name="_sys_txt_join_title_invite"><![CDATA[Запросить приглашение]]></string>
-    <string name="_sys_txt_login_description_action"><![CDATA[Создать аккаунт]]></string>
+    <string name="_sys_txt_login_description"><![CDATA[Нет аккаунта?]]></string>
+    <string name="_sys_txt_login_description_action"><![CDATA[Зарегистрироваться]]></string>
     <string name="_sys_txt_login_error"><![CDATA[Введённый email или пароль неправильны. Пожалуйста, попытайтесь снова.]]></string>
     <string name="_sys_txt_login_locked"><![CDATA[Ваш аккаунт заблокирован, для разблокировки, пожалуйста, используйте  <a href="{0}">страницу сброса пароля</a>.]]></string>
     <string name="_sys_txt_following_counter"><![CDATA[Подписки: {0}]]></string>
@@ -4898,4 +4944,9 @@
   <string name="_sys_recom_friends_empty_action"><![CDATA[Найти людей]]></string>
   <string name="_sys_recom_friends_empty_text"><![CDATA[Предложения появятся, когда вы начнёте общаться с людьми.]]></string>
   <string name="_sys_recom_friends_empty_title"><![CDATA[Пока нет предложений]]></string>
+  <string name="_adm_form_txt_groups_role_time_log"><![CDATA[Логировать время]]></string>
+  <string name="_adm_form_txt_groups_role_time_view_logged_any"><![CDATA[Видеть залогированное время всех]]></string>
+  <string name="_adm_form_txt_groups_role_time_view_billed"><![CDATA[Видеть оплачиваемое время]]></string>
+  <string name="_adm_form_txt_groups_role_time_edit_billed"><![CDATA[Править оплачиваемое время]]></string>
+  <string name="_adm_form_txt_groups_role_manage_properties"><![CDATA[Управлять свойствами]]></string>
 </resources>

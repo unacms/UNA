@@ -15,6 +15,8 @@
     <string name="_bx_oauth_clients"><![CDATA[Клиенты OAuth2]]></string>
     <string name="_bx_oauth_authorization"><![CDATA[Авторизация]]></string>
     <string name="_bx_oauth_authorize_app"><![CDATA[Выбери профайл, для использования на "{0}":]]></string>
+    <string name="_bx_oauth_authorize_redirect"><![CDATA[После выбора браузер вернётся на <strong>{0}</strong>. Продолжайте, только если вы сами начали этот вход.]]></string>
+    <string name="_bx_oauth_authorize_scope_api"><![CDATA[Оно сможет читать, публиковать, комментировать, ставить реакции и отправлять сообщения от имени вашего аккаунта, от того из ваших профилей, который в этот момент используется на сайте. Переключение профиля в приложении переключает его и на сайте.]]></string>
     <string name="_bx_oauth_form_valid_url"><![CDATA[Нужно ввести правильный URL]]></string>
     <string name="_bx_oauth_url"><![CDATA[URL]]></string>
     <string name="_bx_oauth_connect"><![CDATA[Связать]]></string>

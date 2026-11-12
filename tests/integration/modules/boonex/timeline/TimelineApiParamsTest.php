@@ -484,6 +484,73 @@ class TimelineApiParamsTest extends BxDolIntegrationTestCase
         $this->assertSame($iMemberId, (int)$aRepost['object_owner_id'], 'The repost is by the viewer, not by the author the client sent.');
         $this->assertSame(1, $this->repostsOf($iId));
     }
+
+    /**
+     * One feed page read the way get_posts reads it, and whether more events follow it. `get`
+     * reads the feed also after another test rendered an API page (BX_API_PAGE), where
+     * get_posts leaves it to the page's block.
+     */
+    protected function feedPage(int $iOwnerId, int $iStart, int $iPerPage): array
+    {
+        $aData = $this->module()->serviceGet(json_encode(['params' => [
+            'type' => BX_TIMELINE_TYPE_DEFAULT, 'owner_id' => $iOwnerId, 'start' => $iStart, 'per_page' => $iPerPage,
+        ]]));
+        return ['data' => $aData, 'has_more' => $this->template()->getPostsHasMore()];
+    }
+
+    /**
+     * A feed page says whether more events follow it (the query reads one more than a page),
+     * so a client with a short page doesn't ask for the next one to find it empty.
+     */
+    public function testFeedPageSaysWhetherMoreFollow(): void
+    {
+        $iAuthorId = $this->adminProfileId();
+        $this->addEvent(BX_TIMELINE_STATUS_ACTIVE, $iAuthorId);
+        $this->addEvent(BX_TIMELINE_STATUS_ACTIVE, $iAuthorId);
+
+        $this->setApiModule();
+        $aFirst = $this->feedPage($iAuthorId, 0, 1);
+        $this->assertCount(1, $aFirst['data']);
+        $this->assertTrue($aFirst['has_more'], 'Another event follows a one-event page of two.');
+
+        $aPast = $this->feedPage($iAuthorId, 1000000, 10);
+        $this->assertSame([], $aPast['data']);
+        $this->assertFalse($aPast['has_more'], 'Nothing follows a page past the end.');
+
+        // The get_posts block carries it as `has_more` (unless an API page leaves the feed to its block).
+        if (!defined('BX_API_PAGE')) {
+            $aBlock = $this->module()->serviceGetPosts(json_encode(['params' => [
+                'type' => BX_TIMELINE_TYPE_DEFAULT, 'owner_id' => $iAuthorId, 'start' => 0, 'per_page' => 1,
+            ]]))[0]['data'];
+            $this->assertTrue($aBlock['has_more']);
+        }
+    }
+
+    /**
+     * The last page of a feed says nothing follows it, also when it has posts on it: the case
+     * that kept a client paging after a short feed.
+     */
+    public function testLastFeedPageWithPostsSaysNoMore(): void
+    {
+        $iAuthorId = $this->adminProfileId();
+        $aIds = [$this->addEvent(BX_TIMELINE_STATUS_ACTIVE, $iAuthorId), $this->addEvent(BX_TIMELINE_STATUS_ACTIVE, $iAuthorId)];
+        // The oldest events of the feed, so they are on its last page whatever else it holds.
+        BxDolDb::getInstance()->query("UPDATE `bx_timeline_events` SET `date` = 1, `published` = 1 WHERE `id` IN (" . implode(',', $aIds) . ")");
+
+        $this->setApiModule();
+        $iPerPage = 100;
+        $aPage = null;
+        for ($iStart = 0, $i = 0; $i < 1000; $iStart += $iPerPage, $i++) {
+            $aPage = $this->feedPage($iAuthorId, $iStart, $iPerPage);
+            if (!$aPage['has_more']) {
+                break;
+            }
+        }
+
+        $this->assertFalse($aPage['has_more'], 'The feed ends within 1000 pages.');
+        $aOnPage = array_map('intval', array_column($aPage['data'], 'id'));
+        $this->assertNotEmpty(array_intersect($aIds, $aOnPage), 'The page that says nothing follows holds the oldest posts.');
+    }
 }
 
 /**

@@ -80,3 +80,9 @@ div.bx-form-input-language-current {
     top: auto;
     bottom: -1.75rem;
 }
+
+/* A short code field (bx-form-input-textarea-small: a block's icon name, emoji or inline SVG): about four lines,
+   scrolling beyond that, in place of CodeMirror's 300px. */
+textarea.bx-form-input-textarea-small + .CodeMirror {
+    height: 6rem;
+}

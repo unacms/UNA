@@ -213,14 +213,15 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
     }
 
     /**
+     * The reply to a chat turn as Server-Sent Events (AG-UI), straight to the client: sets the
+     * headers, streams (streamTo) and ends the request.
+     *
      * @param string|NeuronAI\Chat\Messages\UserMessage $mixedPrompt plain text, or a ready user message (text + images)
      */
     public function stream($iAgentId, $mixedPrompt, $aParams = [], $sThreadId = null)
     {
-        $oChat = BxDolAiChat::getInstance();
-        $oLimits = BxDolAiChatLimits::getInstance();
         if (!isset($aParams['chat_history_subindex']))
-            $aParams = array_merge($oChat->resolveChatHistoryParams($iAgentId), $aParams);
+            $aParams = array_merge(BxDolAiChat::getInstance()->resolveChatHistoryParams($iAgentId), $aParams);
 
         // Staging header.inc.php dumps HTML on fatals and warns on null error_get_last().
         // Any HTML after SSE is parsed by TanStack as "unterminated trailing data".
@@ -235,21 +236,60 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
         // UNA BxDolDb::pdoExceptionHandler dumps HTML 503 on uncaught PDOException.
         restore_exception_handler();
 
-        $aAgent = BxDolAiQuery::getAgentObject((int)$iAgentId);
-
-        $oAdapter = new BxDolAiAguiAdapter((string)($sThreadId ?: ($aAgent ? BxDolAiChat::threadId($aAgent, $aParams) : $iAgentId)));
+        $oAdapter = $this->chatAdapter($iAgentId, $aParams, $sThreadId);
 
         http_response_code(200);
         foreach ($oAdapter->getHeaders() as $sName => $sValue)
             header($sName . ': ' . $sValue);
 
-        $fEmit = function ($sEvent) {
-            if ($sEvent instanceof NeuronAI\Workflow\Streaming\ProtocolEvent)
-                $sEvent = NeuronAI\Workflow\Streaming\SSEEncoder::frame($sEvent);
-            echo $sEvent;
+        $this->streamTo($iAgentId, $mixedPrompt, $aParams, $sThreadId, function ($sFrame) {
+            echo $sFrame;
             if (ob_get_level())
                 ob_flush();
             flush();
+        }, $oAdapter);
+
+        error_clear_last();
+        @ini_set('display_errors', '0');
+        exit;
+    }
+
+    /**
+     * The AG-UI adapter of a chat turn: its thread is the one given, or the agent's thread for
+     * these history params.
+     */
+    public function chatAdapter($iAgentId, $aParams = [], $sThreadId = null)
+    {
+        $aAgent = BxDolAiQuery::getAgentObject((int)$iAgentId);
+        return new BxDolAiAguiAdapter((string)($sThreadId ?: ($aAgent ? BxDolAiChat::threadId($aAgent, $aParams) : $iAgentId)));
+    }
+
+    /**
+     * A chat turn: the person's message to the agent and its reply, as SSE frames (AG-UI:
+     * RUN_STARTED, TEXT_MESSAGE_START, TEXT_MESSAGE_CONTENT deltas, TEXT_MESSAGE_END, the
+     * CUSTOM chat_actions and chat_session events, RUN_FINISHED, or RUN_ERROR) given to $fEmit as
+     * they come; the history keeps both. Session and turn limits answer with their own events.
+     * Sends no headers and returns when the run ends: stream() and API v2 (BxBaseApiV2Agents)
+     * send the frames on.
+     *
+     * @param string|NeuronAI\Chat\Messages\UserMessage $mixedPrompt plain text, or a ready user message (text + images)
+     * @param callable $fEmit takes one SSE frame (a string)
+     */
+    public function streamTo($iAgentId, $mixedPrompt, $aParams, $sThreadId, callable $fEmit, $oAdapter = null)
+    {
+        $oChat = BxDolAiChat::getInstance();
+        $oLimits = BxDolAiChatLimits::getInstance();
+        if (!isset($aParams['chat_history_subindex']))
+            $aParams = array_merge($oChat->resolveChatHistoryParams($iAgentId), $aParams);
+
+        $aAgent = BxDolAiQuery::getAgentObject((int)$iAgentId);
+        if (!$oAdapter)
+            $oAdapter = $this->chatAdapter($iAgentId, $aParams, $sThreadId);
+
+        $fEmit = function ($sEvent) use ($fEmit) {
+            if ($sEvent instanceof NeuronAI\Workflow\Streaming\ProtocolEvent)
+                $sEvent = NeuronAI\Workflow\Streaming\SSEEncoder::frame($sEvent);
+            $fEmit((string)$sEvent);
         };
 
         if ($aAgent)
@@ -257,9 +297,7 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
 
         if ($aAgent && $oLimits->isChatSessionRateLimited($aAgent, $aParams)) {
             $this->emitErrorSse($oAdapter, $fEmit, $oLimits->getChatSessionRateLimitError());
-            error_clear_last();
-            @ini_set('display_errors', '0');
-            exit;
+            return;
         }
 
         if ($aAgent)
@@ -269,9 +307,7 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
         if ($aAgent && $oLimits->isChatTurnLimitReached($aAgent, $oLimits->getChatUserTurnCount((int)$iAgentId, $aParams), $iRequestTurns)) {
             $oChat->emitConversationClosed('limit', '', $aAgent, $aParams);
             $this->emitLimitSse($oAdapter, $fEmit, $oLimits->getChatLimitMessage($aAgent));
-            error_clear_last();
-            @ini_set('display_errors', '0');
-            exit;
+            return;
         }
 
         $oUserMessage = $mixedPrompt instanceof NeuronAI\Chat\Messages\UserMessage
@@ -321,10 +357,6 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
             foreach ($oAdapter->error($oException) as $sEvent)
                 $fEmit($sEvent);
         }
-
-        error_clear_last();
-        @ini_set('display_errors', '0');
-        exit;
     }
 
     protected function hydrate($iAgentId)

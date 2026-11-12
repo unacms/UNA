@@ -16,7 +16,7 @@ export default function AuthX() {
                 onPress={handleXLogin}
                 label={t('Continue with X')}
                 image="XIcon"
-                controlSize="large"
+                controlSize="regular"
                 width="fill"
                 classNames={{ root: 'flex-none' }}
             />

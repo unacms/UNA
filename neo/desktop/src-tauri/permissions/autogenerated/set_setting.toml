@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-set-setting"
+description = "Enables the set_setting command without any pre-configured scope."
+commands.allow = ["set_setting"]
+
+[[permission]]
+identifier = "deny-set-setting"
+description = "Denies the set_setting command without any pre-configured scope."
+commands.deny = ["set_setting"]

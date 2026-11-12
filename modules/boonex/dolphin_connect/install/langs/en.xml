@@ -10,7 +10,7 @@ To make it work, go to the master site, install "OAuth2 Server" module and add n
 Then enter generated on the master site the Key & Server pair in this module settings.]]></string>
 	<string name="_bx_dolcon_profile_error_api_keys"><![CDATA[Please configure the module in admin panel (can't define API key, secret & URL)]]></string>
 	<string name="_bx_dolcon_chart"><![CDATA[Dolphin Profiles]]></string>
-	<string name="_bx_dolcon_auth_title"><![CDATA[Login with Dolphin]]></string>
+	<string name="_bx_dolcon_auth_title"><![CDATA[Continue with Dolphin]]></string>
 
     <string name="_bx_dolcon_adm_stg_cpt_type"><![CDATA[Dolphin Connect]]></string>
     <string name="_bx_dolcon_option_app_id"><![CDATA[Dolphin App Key]]></string>

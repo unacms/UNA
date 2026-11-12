@@ -44,6 +44,61 @@ class BxDolStorageLocal extends BxDolStorage
     }
 
     /**
+     * @see BxDolStorage::getFileUrlByIdShared
+     */
+    public function getFileUrlByIdShared($iFileId)
+    {
+        $aFile = $this->_oDb->getFileById($iFileId);
+        if (!$aFile)
+            return false;
+
+        if (!$aFile['private'])
+            return $this->getFileUrlById($iFileId);
+
+        $iSince = $this->_sharedTokenPeriod();
+        $sToken = $this->_oDb->getTokenSince($iFileId, $iSince);
+        if ($sToken === false && ($sToken = $this->_oDb->genToken($iFileId)) !== false)
+            $this->_oDb->rememberTokenSince($iFileId, $iSince, $sToken);
+        if ($sToken === false)
+            return false;
+
+        return bx_append_url_params($this->getObjectBaseUrl(true) . $aFile['remote_id'] . '.' . $aFile['ext'], array('t' => $sToken));
+    }
+
+    /**
+     * @see BxDolStorage::primeFileUrlsShared
+     */
+    public function primeFileUrlsShared($aIds, $bMake = true)
+    {
+        if (($a = $this->getSharedTokensToPrime($aIds)))
+            $this->_oDb->primeTokensSince($a[1], $a[2], $bMake);
+    }
+
+    /**
+     * @see BxDolStorage::getSharedTokensToPrime
+     */
+    public function getSharedTokensToPrime($aIds)
+    {
+        $aPrivate = [];
+        foreach ((array)$aIds as $iFileId)
+            if (($aFile = $this->_oDb->getFileById((int)$iFileId)) && !empty($aFile['private']))
+                $aPrivate[] = (int)$iFileId;
+        return $aPrivate ? [$this->_oDb, $aPrivate, $this->_sharedTokenPeriod()] : null;
+    }
+
+    /**
+     * Time goes in periods of half the token's life; a shared link uses the first token made in
+     * the current period, so it is the same link for the whole period and is still valid for at
+     * least half the token's life after it ends. The start of the current period.
+     */
+    protected function _sharedTokenPeriod()
+    {
+        $iNow = time();
+        $iHalf = max(1, (int)floor($this->_aObject['token_life'] / 2));
+        return $iNow - $iNow % $iHalf;
+    }
+
+    /**
      * Start file downloading by remote id. If file is private then token is checked.
      */
     public function download ($sRemoteId, $sToken = false, $mixedForceDownloadDialog = 'auto')

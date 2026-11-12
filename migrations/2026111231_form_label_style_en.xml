@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Form label style: the Designer setting and the form display field. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_stg_cpt_option_sys_form_label_style"><![CDATA[Field labels]]></string_add>
+    <string_add name="_adm_dsg_txt_settings_section_forms"><![CDATA[Forms]]></string_add>
+    <string_add name="_adm_dsg_inf_settings_section_forms"><![CDATA[How forms label their one-line text fields, on the site and in the apps. A form display can use a style of its own, set in <a href="{0}">Forms</a>. An app without floating labels shows them above the fields.]]></string_add>
+    <string_add name="_adm_dsg_txt_settings_label_style_regular"><![CDATA[Above the field]]></string_add>
+    <string_add name="_adm_dsg_txt_settings_label_style_adaptive"><![CDATA[Floating: in the empty field, on its top edge once filled]]></string_add>
+    <string_add name="_adm_form_txt_displays_label_style"><![CDATA[Field labels]]></string_add>
+    <string_add name="_adm_form_dsc_displays_label_style"><![CDATA[Floating labels apply to one-line text fields. Other fields keep their labels above them.]]></string_add>
+    <string_add name="_adm_form_txt_displays_label_style_default"><![CDATA[As on the site]]></string_add>
+</resources>

@@ -307,6 +307,14 @@
     "Enter 5-digit code": "Введите 5-значный код",
     "Continue": "Продолжить",
     "Invitation link": "Ссылка-приглашение",
+    "Invite by email": "Пригласить по email",
+    "Get invitation link": "Получить ссылку-приглашение",
+    "Invite by code": "Пригласить по коду",
+    "Invitation code": "Код приглашения",
+    "Your invitation code": "Ваш код приглашения",
+    "Or share it as a link": "Или отправьте ссылкой",
+    "Copy": "Копировать",
+    "Copy link": "Копировать ссылку",
     "Enter your group code to join a community and start connecting.": "Введите код группы, чтобы присоединиться к сообществу.",
     "You can invite your friends to join. You have {{count}} invites to share.": "Вы можете пригласить друзей. У вас {{count}} приглашений.",
     "Switch": "Переключить",
@@ -570,5 +578,6 @@
     "Commission invoices issued in this period": "Счета за комиссию, выставленные за период",
     "Start timer": "Запустить таймер",
     "Pause timer": "Приостановить таймер",
-    "Total logged": "Всего залогировано"
+    "Total logged": "Всего залогировано",
+    "optional": "необязательно"
 }

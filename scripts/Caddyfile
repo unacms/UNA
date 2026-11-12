@@ -56,6 +56,10 @@
 	@unastorage path_regexp ^/s/([a-zA-Z0-9_]+)/([a-zA-Z0-9\.]+)
 	rewrite @unastorage /storage.php?o={re.unastorage.1}&f={re.unastorage.2}
 
+	# API v2 (a preview, off as installed): the same rule as .htaccess and the nginx file.
+	@unaApiV2 path_regexp unaApiV2 ^/api/v2(/(.*))?$
+	rewrite @unaApiV2 /api_v2.php?_q={re.unaApiV2.2}&{query}
+
     @unaMissing {
 	    not file
         not path */

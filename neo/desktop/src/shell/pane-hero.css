@@ -1,0 +1,34 @@
+/* A hero pane (shell/pane.tsx `hero`: a profile's, group's, space's or event's page). A page in
+   the main window has no toolbar while its hero is in view: the cover is at the top. Its toolbar
+   is a bar over the content, there only once the hero's name or actions are under it: the
+   toolbar's look and height, its hairline, the picture and the name, the hero's actions and More. */
+.pane[data-hero-bar] { position: relative; }
+.pane[data-hero-bar] > .pane-head.pane-head-floating {
+    position: absolute; inset-block-start: 0; inset-inline: 0; z-index: 3;
+    grid-template-rows: var(--toolbar-height);
+    background: var(--bg-content);
+}
+/* until then it holds only the pane's heading, out of sight (as .sr-only), for screen readers and focus */
+.pane[data-hero-bar] > .pane-head.pane-head-floating[data-bar-hidden] {
+    inset-inline: auto; width: 1px; height: 1px; min-height: 0; padding: 0; margin: -1px;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap; box-shadow: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+    .pane[data-hero-bar] > .pane-head.pane-head-floating:not([data-bar-hidden]) { animation: pane-head-in var(--duration-fast) var(--ease-out); }
+}
+@keyframes pane-head-in {
+    from { opacity: 0; }
+}
+@media (forced-colors: active) {
+    .pane[data-hero-bar] > .pane-head.pane-head-floating { border-block-end: 1px solid CanvasText; }
+}
+/* a hero's errors while its actions are in the bar: under the bar, over the content */
+.pane[data-hero-bar] > .pane-hero-errors { position: absolute; inset-block-start: var(--toolbar-height); inset-inline: 0; z-index: 3; }
+
+/* the picture before the name in the toolbar (24px, centred on the title's line) */
+.pane-title-picture { display: inline-flex; vertical-align: middle; margin-inline-end: var(--space-2); position: relative; inset-block-start: -1px; }
+.pane-title-picture > .avatar { display: block; }
+
+/* More next to a hero's actions: a 36px square icon button, the hero's buttons' corners */
+.hero-actions .btn.btn-menu { width: var(--row-sidebar); min-width: var(--row-sidebar); padding: 0; }
+.hero-actions .btn.btn-menu > .icon { width: 20px; height: 20px; }

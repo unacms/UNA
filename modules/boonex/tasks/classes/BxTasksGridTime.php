@@ -25,6 +25,8 @@ class BxTasksGridTime extends BxBaseModGeneralGrid
 
     protected $_iContextPid = 0;
 
+    protected $_aFieldsAll = null; //--- the fields as sys_grid_fields lists them
+
     public function __construct ($aOptions, $oTemplate = false)
     {
         $this->_sModule = 'bx_tasks';
@@ -40,6 +42,22 @@ class BxTasksGridTime extends BxBaseModGeneralGrid
          */
         $this->_sFilter3Name = 'filter3';
         $this->_sFilter4Name = 'filter4';
+
+        //--- Site grids: only UNA operators see Billed time there; context grids decide in setContextPid.
+        $this->_setColumnBilled($this->_oModule->_isAdministrator() || $this->_oModule->_isModerator());
+    }
+
+    /**
+     * The Billed column (`value_billed` in sys_grid_fields) is there only for those who see Billed time.
+     */
+    protected function _setColumnBilled($bShow)
+    {
+        if($this->_aFieldsAll === null)
+            $this->_aFieldsAll = $this->_aOptions['fields'];
+
+        $this->_aOptions['fields'] = $this->_aFieldsAll;
+        if(!$bShow)
+            unset($this->_aOptions['fields']['value_billed']);
     }
 
     public function getFormCallBackUrlAPI($sAction, $iId = 0)
@@ -80,30 +98,42 @@ class BxTasksGridTime extends BxBaseModGeneralGrid
 
         $iTrackId = array_shift($aIds);
         $aTrack = $this->_oModule->_oDb->getTimeTracks(['sample' => 'id', 'id' => $iTrackId]);
+
         if(empty($aTrack) || !is_array($aTrack))
             return $this->_getActionResult([]);
 
         if(!$this->_isAllowedEdit($aTrack))
             return $this->_getActionResult([]);
 
+        list($bEditLogged, $bEditBilled) = $this->_getEditRights($aTrack);
+
         $oForm = $this->_getFormObject($sAction, $aTrack);
         $oForm->initChecker($aTrack);
         if($oForm->isSubmittedAndValid()) {
-            $aValsToAdd = [
-                'value' => $this->_oModule->_oConfig->timeA2I([(int)$oForm->getCleanValue('value_h'), (int)$oForm->getCleanValue('value_m')]),
-            ];
+            $oConfig = $this->_oModule->_oConfig;
 
-            if(!$oForm->update($iTrackId, $aValsToAdd))
+            //--- The original time stays, the Logged time changes; Billed time follows it until it's set.
+            $aValsToAdd = [];
+            if($bEditLogged)
+                $aValsToAdd['value'] = $oConfig->timeA2I([(int)$oForm->getCleanValue('value_h'), (int)$oForm->getCleanValue('value_m')]);
+
+            $iBilledOld = $this->_oModule->getTrackBilled($aTrack);
+            if($bEditBilled && ($iBilled = $oConfig->timeA2I([(int)$oForm->getCleanValue('billed_h'), (int)$oForm->getCleanValue('billed_m')])) != $iBilledOld)
+                $aValsToAdd['value_billed'] = $iBilled;
+
+            $bResult = $bEditLogged ? $oForm->update($iTrackId, $aValsToAdd) : (!$aValsToAdd || $this->_oModule->_oDb->updateTimeTrack($aValsToAdd, ['id' => $iTrackId]));
+            if(!$bResult)
                 return $this->_getActionResult(['msg' => _t('_bx_tasks_txt_err_cannot_perform_action')]);
 
             $iObjectId = (int)$aTrack['object_id'];
             $iAuthorId = (int)$aTrack['author_id'];
-            if(($oTime = BxDolReport::getObjectInstance($CNF['OBJECT_REPORTS_TIME'], $iObjectId)) && $oTime->isEnabled()) {
+            if($bEditLogged && ($oTime = BxDolReport::getObjectInstance($CNF['OBJECT_REPORTS_TIME'], $iObjectId)) && $oTime->isEnabled()) {
                 $oTime->putReport($iObjectId, $iAuthorId, $aTrack, true); //--- Revoke old value
                 $oTime->putReport($iObjectId, $iAuthorId, $iTrackId); //--- Process new value
             }
 
-            $this->_oModule->spendBudgetByContentId($iObjectId, $aValsToAdd['value'] - $aTrack['value']);
+            //--- The budget is spent by Billed time.
+            $this->_oModule->spendBudgetByContentId($iObjectId, $this->_oModule->getTrackBilled(array_merge($aTrack, $aValsToAdd)) - $iBilledOld);
 
             if($this->_bIsApi)
                 return [];
@@ -171,34 +201,110 @@ class BxTasksGridTime extends BxBaseModGeneralGrid
                 ];
             }
         }
-        else if($bActionEdit) {
-            if($bTrack) {
-                list($value_h, $value_m) = $this->_oModule->_oConfig->timeI2A($aTrack['value']);
+        else if($bActionEdit && $bTrack) {
+            list($bEditLogged, $bEditBilled) = $this->_getEditRights($aTrack);
 
-                foreach($oForm->aInputs['value'] as $mixedKey => $mixedValue) {
-                    if(!is_numeric($mixedKey) || !is_array($mixedValue))
-                        continue;
+            //--- Billed time is made of the Logged time's inputs, so they are added before those may go.
+            if($bEditBilled)
+                $this->_addTimeInputBilled($oForm, $this->_oModule->getTrackBilled($aTrack));
 
-                    if(($iValue = ${$mixedValue['name']} ?? false) !== false)
-                        $oForm->aInputs['value'][$mixedKey]['value'] = (int)$iValue;
-                }
+            $this->_setTimeInputValue($oForm, 'value', (int)$aTrack['value']);
+
+            //--- Logged time, its date and note are the logger's: the others see them, read only,
+            //--- and who may not see others' Logged time (edits Billed time only) doesn't get it.
+            if(!$bEditLogged) {
+                $this->_setInputsReadOnly($oForm, ['value', 'value_date', 'text']);
+                if(!$this->_oModule->getTimeRightsByContentId((int)$aTrack['object_id'])['view_logged_any'])
+                    unset($oForm->aInputs['value']);
             }
         }
-        
-        if($this->_bIsApi && ($sK = 'value') && isset($oForm->aInputs[$sK])) {
-            foreach($oForm->aInputs[$sK] as $mixedKey => $mixedValue) 
-                if(($sName = $mixedValue['name'] ?? false) && in_array($sName, ['value_h', 'value_m']) && ($sCaptionSrc = '_bx_tasks_form_time_input_' . $sName))
-                    $oForm->aInputs = bx_array_insert_before([$sName => array_merge(
-                        $mixedValue, [
-                            'caption_src' => $sCaptionSrc,
-                            'caption' => _t($sCaptionSrc)
-                        ]
-                    )], $oForm->aInputs, 'value_date');
 
-            unset($oForm->aInputs[$sK]);
-        }
+        //--- Replaced by the Billed time (value_billed).
+        unset($oForm->aInputs['billable']);
 
+        //--- Hours and minutes stay one input set, which NEO shows in a row too.
         return $oForm;
+    }
+
+    /**
+     * Read only inputs, also the inputs of an input set; not required, since the values aren't taken from them.
+     */
+    protected function _setInputsReadOnly(&$oForm, $aKeys)
+    {
+        foreach($aKeys as $sKey) {
+            if(!isset($oForm->aInputs[$sKey]))
+                continue;
+
+            $aInput = &$oForm->aInputs[$sKey];
+            $aInput['required'] = false;
+            unset($aInput['checker']);
+
+            //--- `disabled`: NEO gets it with the form (a `readonly` one doesn't reach it), and the site greys the input out.
+            if($aInput['type'] == 'input_set') {
+                foreach($aInput as $mixedKey => $mixedValue)
+                    if(is_numeric($mixedKey) && is_array($mixedValue))
+                        $aInput[$mixedKey]['attrs'] = array_merge($mixedValue['attrs'] ?? [], ['disabled' => 'disabled']);
+            }
+            else
+                $aInput['attrs'] = array_merge($aInput['attrs'] ?? [], ['disabled' => 'disabled']);
+
+            unset($aInput);
+        }
+    }
+
+    /**
+     * Logged time is edited by the one who logged it only, nobody else (operators neither);
+     * those with `time_edit_billed` (UNA operators always) edit Billed time.
+     */
+    protected function _getEditRights($aTrack)
+    {
+        $bOwn = (int)$aTrack['author_id'] == bx_get_logged_profile_id();
+
+        $aRights = $this->_oModule->getTimeRightsByContentId((int)$aTrack['object_id']);
+
+        return [$bOwn, $aRights['edit_billed']];
+    }
+
+    protected function _setTimeInputValue(&$oForm, $sKey, $iValue)
+    {
+        if(!isset($oForm->aInputs[$sKey]))
+            return;
+
+        list($iH, $iM) = $this->_oModule->_oConfig->timeI2A($iValue);
+
+        foreach($oForm->aInputs[$sKey] as $mixedKey => $mixedValue) {
+            if(!is_numeric($mixedKey) || !is_array($mixedValue) || empty($mixedValue['name']))
+                continue;
+
+            if(str_ends_with($mixedValue['name'], '_h'))
+                $oForm->aInputs[$sKey][$mixedKey]['value'] = $iH;
+            else if(str_ends_with($mixedValue['name'], '_m'))
+                $oForm->aInputs[$sKey][$mixedKey]['value'] = $iM;
+        }
+    }
+
+    /**
+     * Billed time takes the hours and minutes inputs of the Logged time (value), renamed billed_h and billed_m.
+     */
+    protected function _addTimeInputBilled(&$oForm, $iValue)
+    {
+        $aValue = $oForm->aInputs['value'] ?? false;
+        if(!$aValue)
+            return;
+
+        $sKey = 'value_billed';
+        $aBilled = array_merge($aValue, [
+            'name' => $sKey,
+            'caption' => _t('_bx_tasks_form_time_input_value_billed')
+        ]);
+        foreach($aBilled as $mixedKey => $mixedValue)
+            if(is_numeric($mixedKey) && is_array($mixedValue) && !empty($mixedValue['name']))
+                $aBilled[$mixedKey]['name'] = str_replace('value_', 'billed_', $mixedValue['name']);
+
+        $sBefore = isset($oForm->aInputs['value_date']) ? 'value_date' : (isset($oForm->aInputs['text']) ? 'text' : 'controls');
+        $oForm->aInputs = bx_array_insert_before([$sKey => $aBilled], $oForm->aInputs, $sBefore);
+
+        $this->_setTimeInputValue($oForm, $sKey, $iValue);
     }
 
     public function performActionCalculate()
@@ -249,7 +355,7 @@ class BxTasksGridTime extends BxBaseModGeneralGrid
         if($bResult && ($oTime = BxDolReport::getObjectInstance($CNF['OBJECT_REPORTS_TIME'], $iObjectId)) && $oTime->isEnabled())
             $oTime->putReport($iObjectId, $iAuthorId, $aTrack, true);
 
-        $this->_oModule->spendBudgetByContentId($iObjectId, -$aTrack['value']);
+        $this->_oModule->spendBudgetByContentId($iObjectId, -$this->_oModule->getTrackBilled($aTrack));
 
         return $bResult;
     }
@@ -291,9 +397,22 @@ class BxTasksGridTime extends BxBaseModGeneralGrid
         return parent::_getCellDefault($this->_oModule->_oConfig->timeI2S($mixedValue), $sKey, $aField, $aRow);
     }
 
-    protected function _getCellBillable($mixedValue, $sKey, $aField, $aRow)
+    /**
+     * What hands added to or took from the timer's time, + or -: an entry entered by hand is manual as a whole,
+     * a timer's one by its changes; empty when there are none.
+     */
+    protected function _getCellValueManual($mixedValue, $sKey, $aField, $aRow)
     {
-        return parent::_getCellDefault(_t((int)$mixedValue ? '_bx_tasks_txt_billable' : '_bx_tasks_txt_non_billable'), $sKey, $aField, $aRow);
+        $iManual = (int)$aRow['value'] - (!empty($aRow['by_timer']) ? (int)($aRow['value_original'] ?? $aRow['value']) : 0);
+
+        $sValue = $iManual != 0 ? ($iManual > 0 ? '+' : "\u{2212}") . $this->_oModule->_oConfig->timeI2S(abs($iManual)) : '';
+
+        return parent::_getCellDefault($sValue, $sKey, $aField, $aRow);
+    }
+
+    protected function _getCellValueBilled($mixedValue, $sKey, $aField, $aRow)
+    {
+        return parent::_getCellDefault($this->_oModule->_oConfig->timeI2S($this->_oModule->getTrackBilled($aRow)), $sKey, $aField, $aRow);
     }
 
     protected function _getCellValueDate($mixedValue, $sKey, $aField, $aRow)
@@ -347,7 +466,7 @@ class BxTasksGridTime extends BxBaseModGeneralGrid
     }
 
     /**
-     * Administrators edit any entry in their scope (the site, or the context for the context grids), the others only their own.
+     * Own entries everywhere; others' only in the administration grids and only for their Billed time.
      */
     protected function _isAllowedEdit($aTrack)
     {
@@ -355,13 +474,11 @@ class BxTasksGridTime extends BxBaseModGeneralGrid
         if($this->_isContext() && !$this->_isTrackInContext($aTrack))
             return false;
 
-        if(!$this->_isAdministration())
-            return (int)$aTrack['author_id'] == bx_get_logged_profile_id();
+        list($bEditLogged, $bEditBilled) = $this->_getEditRights($aTrack);
+        if($bEditLogged)
+            return true;
 
-        if($this->_isContext())
-            return $this->_oModule->isAllowManageByContext($this->_iContextPid);
-
-        return $this->_oModule->_isModerator() || $this->_oModule->_isAdministrator();
+        return $this->_isAdministration() && $bEditBilled;
     }
 
     protected function _isTrackInContext($aTrack)

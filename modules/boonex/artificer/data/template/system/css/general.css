@@ -356,3 +356,321 @@ html.dark {
     margin-left: 0;
     margin-right: -0.75rem;
 }
+
+/* The header's More list: an item's icon is centred in its 32px circle. The 8px between icon and label that the header tabs put on the
+   icon itself (tailwind.css, #bx-toolbar .bx-menu-main .bx-stl-mii) is on the circle here. */
+#bx-toolbar .bx-menu-main .bx-menu-item-more-popup .bx-popup .bx-stl-mii > *,
+#bx-toolbar .bx-menu-main .bx-popup .bx-menu-item-more-popup .bx-stl-mii > * {
+    margin: 0;
+}
+
+/* Menus on the page: one highlight slides under the items to the one the pointer is on (bx_menu_highlight_list in
+   functions.js), as in popup menus, in the items' own hover colour, and the items don't light up on their own. It is
+   the list's ::before. On the header's main menu (a capsule like its tabs; the current tab keeps its own background),
+   the homepage's apps grid and the profile menu beside the feed. */
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list,
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list > li,
+.bx-menu-object-sys_homepage.bx-menu-highlight-list,
+.bx-menu-object-sys_homepage.bx-menu-highlight-list > li,
+.bx-menu-object-sys_profile_stats.bx-menu-highlight-list,
+.bx-menu-object-sys_profile_stats.bx-menu-highlight-list > li {
+    position: relative;
+}
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list::before,
+.bx-menu-object-sys_homepage.bx-menu-highlight-list::before,
+.bx-menu-object-sys_profile_stats.bx-menu-highlight-list::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--bx-menu-highlight-w, 0);
+    height: var(--bx-menu-highlight-h, 0);
+
+    border-radius: 0.75rem; /* the items' own corners: 12px, 8px inside their block's 20px */
+    background-color: rgba(228, 228, 231, 0.5); /* gray-200 at 50%, the items' hover */
+    opacity: 0;
+    pointer-events: none;
+
+    transform: translate(var(--bx-menu-highlight-x, 0), var(--bx-menu-highlight-y, 0));
+    transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1), width 150ms cubic-bezier(0.22, 1, 0.36, 1), height 150ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list::before {
+    border-radius: 9999px;
+}
+html.dark #bx-toolbar .bx-menu-main.bx-menu-highlight-list::before,
+html.dark .bx-menu-object-sys_homepage.bx-menu-highlight-list::before,
+html.dark .bx-menu-object-sys_profile_stats.bx-menu-highlight-list::before {
+    background-color: rgba(63, 63, 70, 0.5); /* gray-700 at 50% */
+}
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list.bx-menu-highlight-on::before,
+.bx-menu-object-sys_homepage.bx-menu-highlight-list.bx-menu-highlight-on::before,
+.bx-menu-object-sys_profile_stats.bx-menu-highlight-list.bx-menu-highlight-on::before {
+    opacity: 1;
+}
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list.bx-menu-highlight-jump::before,
+.bx-menu-object-sys_homepage.bx-menu-highlight-list.bx-menu-highlight-jump::before,
+.bx-menu-object-sys_profile_stats.bx-menu-highlight-list.bx-menu-highlight-jump::before {
+    transition: opacity 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+    #bx-toolbar .bx-menu-main.bx-menu-highlight-list::before,
+    .bx-menu-object-sys_homepage.bx-menu-highlight-list::before,
+    .bx-menu-object-sys_profile_stats.bx-menu-highlight-list::before {
+        transition: opacity 150ms cubic-bezier(0, 0, 0.2, 1);
+    }
+}
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list > li:not(.bx-menu-tab-active) > .bx-stl-mil:hover,
+.bx-menu-object-sys_homepage.bx-menu-highlight-list > li > a:hover,
+.bx-menu-object-sys_profile_stats.bx-menu-highlight-list > li:not(.bx-menu-tab-active) > .bx-stl-mil-wo-gaps:hover {
+    background-color: transparent;
+}
+
+/* The profile menu beside the feed has the popup menus' rows (tailwind.css, "Popup menu items look and behave like
+   NEO's regular menu items"): 12px corners, 4px apart, a 20px glyph in a 32px circle 8px from the row's side and from
+   the label, and a 14px semibold label. At rest the label and the glyph are a step lighter than the text; on hover
+   they turn to the full text colour while the circle darkens, in the sliding highlight's 150ms. The profile row above
+   the list has the same corners. */
+.bx-artificer ul.bx-menu-object-sys_profile_stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li {
+    margin-top: 0;
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li,
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li > div,
+.bx-artificer .bx-profile-stats .bx-profile-avatar-cnt {
+    border-radius: 0.75rem;
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li > div > a:has(> .bx-stl-mii > *) {
+    padding-inline-start: 0.5rem;
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li .bx-stl-mii:has(> *) {
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    margin-inline-end: 0.5rem;
+
+    border-radius: 9999px;
+    background-color: rgba(228, 228, 231, 0.5); /* gray-200 at 50% */
+    color: #52525b; /* gray-600 */
+
+    transition: color 150ms cubic-bezier(0, 0, 0.2, 1), background-color 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li .bx-stl-mii > * {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+
+    font-size: 1.25rem;
+    color: inherit;
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li .bx-stl-mit {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    color: #52525b;
+
+    transition: color 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-mii:has(> *) {
+    background-color: #d4d4d8; /* gray-300 */
+    color: #0a0a0c; /* gray-950 */
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-mit {
+    color: #0a0a0c;
+}
+html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li .bx-stl-mii:has(> *) {
+    background-color: rgba(63, 63, 70, 0.5); /* gray-700 at 50% */
+    color: #a1a1aa; /* gray-400 */
+}
+html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li .bx-stl-mit {
+    color: #a1a1aa;
+}
+html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-mii:has(> *) {
+    background-color: #3f3f46; /* gray-700 */
+    color: #fafafc; /* gray-50 */
+}
+html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-mit {
+    color: #fafafc;
+}
+
+/* Login form: "Forgot password?" sits on the Password label's line, at its end. The link's row comes after the field
+   in the page (so Tab goes Email, Password, the link), is ordered before it and takes no height: the link drops into
+   the label's line of the Password row under it. Only while the form has both rows. */
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-Password):has(> #bx-form-element-submit_text) {
+    display: flex;
+    flex-direction: column;
+}
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-submit_text) > #bx-form-element-Password {
+    order: 2;
+    margin-top: 0;
+}
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-submit_text) > #bx-form-element-Password ~ * {
+    order: 3;
+}
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-Password) > #bx-form-element-submit_text {
+    position: relative;
+    z-index: 1;
+    order: 1;
+    align-self: flex-end;
+    height: 0;
+}
+/* The link is a size under the labels, the size of a field's description. */
+#sys-form-login #bx-form-element-submit_text .bx-form-value {
+    font-size: 0.75rem;
+    line-height: 1.25rem; /* centred on the label's line */
+}
+/* A floating label leaves no label line: the link goes under the field, at its end. With a description or an error
+   under the field it shares their line: the row takes no height and the link is lifted onto it, and the text keeps
+   clear of the link. */
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-submit_text) > #bx-form-element-Password.bx-form-element-adaptive {
+    order: 1;
+    margin-top: 1rem;
+}
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-Password.bx-form-element-adaptive) > #bx-form-element-submit_text {
+    order: 2;
+    height: auto;
+    margin-top: 0.25rem;
+}
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-Password.bx-form-element-adaptive > .bx-form-info) > #bx-form-element-submit_text {
+    height: 0;
+    margin-top: 0;
+}
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-Password.bx-form-element-adaptive > .bx-form-info) > #bx-form-element-submit_text .bx-form-element {
+    position: absolute;
+    inset-inline-end: 0;
+    bottom: -0.25rem; /* onto the description's last line */
+
+    white-space: nowrap;
+}
+#sys-form-login #bx-form-element-Password.bx-form-element-adaptive > .bx-form-info,
+#sys-form-login #bx-form-element-Password.bx-form-element-adaptive > .bx-form-info ~ .bx-form-warn {
+    padding-inline-end: 9.5rem;
+}
+
+/* A block's footer (designbox_footer.html, BxBaseFunctions::designBoxFooter): a quiet, centred notice under the block's
+   content, ruled off from it edge to edge. Wrapped lines are balanced. The template's own bx-def-* classes give other
+   templates the rule, the spacing and the small grey text; these set Artificer's. */
+.bx-artificer .bx-db-footer {
+    margin: 1rem -1rem 0;
+    padding: 1rem 1rem 0;
+    border-top: 1px solid rgba(10, 10, 12, 0.08);
+
+    color: #52525b;
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+    text-align: center;
+    text-wrap: balance;
+}
+.bx-artificer .bx-db-footer a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+html.dark .bx-artificer .bx-db-footer {
+    border-top-color: rgba(250, 250, 252, 0.08);
+    color: #a1a1aa;
+}
+
+/* A block's header, as in NEO (theme.blocks): a row of the header icon, the title over the description, the actions.
+   The header icon (a block's "Header icon") is a 44px tile, as tall as the title (24px) and one line of the description
+   (14px on 20px, which may wrap) together, with no gap between them. The title icon (a block's "Title icon") is a 24px
+   icon in a 28px box with no background, before the title on its line. */
+.bx-artificer .bx-db-title > .bx-dbt-hic {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+
+    border-radius: 0.5rem;
+    background: rgba(10, 10, 12, 0.045);
+    font-size: 1.5rem;
+}
+html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
+    background: rgba(250, 250, 252, 0.06);
+}
+.bx-artificer .bx-db-title > .bx-dbt-hic + .bx-dbt-cnt {
+    margin-inline-start: 0.75rem;
+}
+.bx-artificer .bx-db-title > .bx-dbt-cnt {
+    min-width: 0;
+}
+.bx-artificer .bx-db-title .bx-dbt-row > .bx-dbt-ic {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-inline-end: 0.5rem;
+
+    font-size: 1.5rem;
+}
+/* A 24px glyph in the 28px box, no background, as NEO's title icon (theme.blocks u-block-title-icon). */
+.bx-artificer .bx-db-title .bx-dbt-row > .bx-dbt-ic :is(svg, .sys-icon) {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.bx-artificer .bx-db-title:has(.bx-dbt-dsc) {
+    align-items: flex-start;
+}
+.bx-artificer .bx-db-title:has(.bx-dbt-dsc) .bx-dbt-ttl {
+    line-height: 1.5rem;
+}
+.bx-artificer .bx-db-title .bx-dbt-dsc {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+    letter-spacing: normal;
+    white-space: normal;
+}
+
+/* Glass buttons: a regular button over a picture or any backdrop that varies.
+   The regular button is a translucent fill of the text ink (see "Common elements: Buttons" in template/css/tailwind.css), which needs a plain
+   surface under it: over a cover picture it all but disappears. There the button is NEO's glass button (NeoButton `glass`, web): a white fill
+   over a blurred backdrop whose contrast is flattened, so a photo stays apart from the label (light lifts black under the dark label, dark
+   dims white under the light one), with the glass rim as its edge.
+   Applies by itself inside a cover (.bx-cover-wrapper) and to the buttons that edit a picture in place (.bx-image-edit-buttons); add
+   .bx-btn-glass to a button anywhere else it sits over a picture. Primary and disabled buttons keep their own fill. */
+.bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled) {
+    background-color: rgb(255 255 255 / 0.3);
+    color: #0a0a0c;
+
+    -webkit-backdrop-filter: blur(12px) saturate(150%) contrast(50%) brightness(130%);
+    backdrop-filter: blur(12px) saturate(150%) contrast(50%) brightness(130%);
+
+    /* --tw-shadow, not box-shadow: the focus ring is drawn by the same box-shadow and stays. */
+    --tw-shadow: inset 0 3px 1.5px -1.5px rgb(255 255 255 / 1), inset 0 -3px 1.5px -1.5px rgb(255 255 255 / 1), 0 0 0 0.6px rgb(0 0 0 / 0.08), 1px 0 0 -0.4px rgb(0 0 0 / 0.22), -1px 0 0 -0.4px rgb(0 0 0 / 0.22), 0 4px 10px -2px rgb(0 0 0 / 0.03);
+}
+.bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled):hover {
+    background-color: rgb(255 255 255 / 0.4);
+    color: #0a0a0c;
+}
+.bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled):active {
+    background-color: rgb(255 255 255 / 0.55);
+    color: #0a0a0c;
+}
+.bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled) i:not(.sys-colored) {
+    color: inherit;
+}
+.dark .bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled) {
+    background-color: rgb(255 255 255 / 0.15);
+    color: #fafafc;
+
+    -webkit-backdrop-filter: blur(12px) saturate(150%) brightness(35%);
+    backdrop-filter: blur(12px) saturate(150%) brightness(35%);
+
+    --tw-shadow: inset 0 1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 -1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 4px 5px -4px rgb(255 255 255 / 0.08), inset 0 -4px 5px -4px rgb(255 255 255 / 0.08), 0 0 0 0.6px rgb(0 0 0 / 0.5);
+}
+.dark .bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled):hover {
+    background-color: rgb(255 255 255 / 0.19);
+    color: #fafafc;
+}
+.dark .bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled):active {
+    background-color: rgb(255 255 255 / 0.23);
+    color: #fafafc;
+}

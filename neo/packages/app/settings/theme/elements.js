@@ -145,14 +145,15 @@ export const settingsElements = {
     cards: {
         // The card surface (bg-card/60) on every size: edge to edge with no outline shadow on
         // mobile, detached and rounded with the outline shadow from sm. Overlays use bg-popover.
-        'u-card-list': ' u-card-list bg-card/60 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl ',
-        'u-card-list-padding': 'p-4 sm:rounded-2xl',
+        // Corners: 20px (`rounded-popover`), as blocks, menus and UNA's blocks and cards.
+        'u-card-list': ' u-card-list bg-card/60 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-popover ',
+        'u-card-list-padding': 'p-4 sm:rounded-popover',
         // Profile listings: photo + meta + actions on mobile, card chrome from sm (grid).
         // Mobile: edge-to-edge rows on the card surface, 1px apart (feed cards are 2px), like
         // the Messages and Notifications rows.
-        'u-card-list-flush': ' u-card-list u-flush-nav relative isolate mt-px sm:mt-0 bg-card/60 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
-        'u-card-list-flush-padding': 'px-4 py-2 sm:p-4 sm:rounded-2xl',
-        'u-card-base': 'u-card-base rounded-2xl bg-card/60 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
+        'u-card-list-flush': ' u-card-list u-flush-nav relative isolate mt-px sm:mt-0 bg-card/60 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-popover transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
+        'u-card-list-flush-padding': 'px-4 py-2 sm:p-4 sm:rounded-popover',
+        'u-card-base': 'u-card-base rounded-popover bg-card/60 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
         'u-card-padding': 'py-4 ',
         'u-card-header': 'px-4',
         'u-card-icon': ' ',
@@ -185,23 +186,43 @@ export const settingsElements = {
             ' py-4 ',
         'u-block-pad-x':
             ' px-4 ',
-        'u-block-rounded': 'rounded-2xl',
+        // 20px (`rounded-popover`), as menus and UNA's blocks: a row or tile with 12px corners 8px inside runs parallel.
+        // Blocks take these per breakpoint (lib/responsive-classes.ts), so every prefixed form is named here for
+        // Tailwind to find: rounded-popover sm:rounded-popover lg:rounded-popover.
+        'u-block-rounded': 'rounded-popover',
         // Corners of a block that doesn't set `designbox.rounded`, in layouts that don't say
         // where their padding is (home, profile, post ...). Elsewhere corners follow the page
         // padding: rounded where it keeps the block off the screen edge (block-wrapper.js).
-        'u-block-rounded-default': 'sm:rounded-2xl',
+        'u-block-rounded-default': 'sm:rounded-popover',
         'u-block-header':
             ' flex-row gap-3  ',
+        // A block's header is a row: the header icon, the title over the description, the actions.
+        // Header icon (UNA's block "Header icon"): a 44px tile, as tall as the title (24px) and one
+        // line of description (20px) together.
+        'u-block-header-icon': 'items-center justify-center w-11 h-11 rounded-lg bg-muted/50 flex-none',
+        'u-block-header-icon-size': 24,
+        // Title icon (UNA's block "Title icon", `icon`): a 24px icon in a 28px box, no background, before the title on its line.
+        'u-block-title-icon': 'items-center justify-center w-7 h-7 flex-none',
+        'u-block-title-icon-size': 24,
+        // Before the header icon: kept for forks that draw BlockIcon themselves.
         'u-block-icon': ' items-center w-9 h-9 justify-center bg-muted/50 rounded-lg text-card-foreground flex-none',
-        'u-block-icon-size': 20, // Default icon size for block header icons
+        'u-block-icon-size': 20,
         'u-block-name': ' flex-auto gap-1 ',
         // text-lg on every screen size; line height = the mini (legacy xs) button height, 28px, so the title lines up with header buttons.
         'u-block-title':
-            'text-card-foreground px-0.5 text-lg leading-7 font-semibold tracking-tight',
-        'u-block-description': 'text-muted-foreground text-xs lg:text-sm leading-5 px-px',
+            'text-card-foreground text-lg leading-7 font-semibold tracking-tight',
+        // The title over a description: no gap, the title on a 24px line.
+        'u-block-name-stacked': 'flex-auto min-w-0',
+        'u-block-title-stacked':
+            'text-card-foreground text-lg leading-6 font-semibold tracking-tight',
+        // 14px on a 20px line; it may wrap.
+        'u-block-description': 'text-card-foreground text-sm leading-5',
         'u-block-content': 'gap-0.5 ',  
         'u-block-footer':
             'flex text-card-foreground gap-4 pt-2',
+        // A footer's notice (the terms under a sign-in or join form): small, muted, centred.
+        'u-block-notice': 'w-full text-center web:text-balance text-xs leading-4 text-muted-foreground',
+        'u-block-notice-link': 'text-xs leading-4 text-muted-foreground underline',
         'u-block-actions':
             'flex flex-row text-card-foreground gap-2  ',
         // Header "View all" link (small, 36px). -my-1 centres it on the 28px title line without making

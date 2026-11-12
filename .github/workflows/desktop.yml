@@ -1,0 +1,159 @@
+name: Desktop app
+
+# The desktop app (neo/desktop), its Tauri shell (neo/desktop/src-tauri) and the API
+# client it is built on (neo/desktop/una-api). The folder is a yarn workspace root of its own,
+# not part of NEO's workspaces, so this installs and checks it alone. Unlike "NEO lint and
+# typecheck" in ci.yml, which fails only on errors a PR adds, everything here is clean and must
+# stay clean.
+#
+# The other half of the API client's check is in ci.yml: ApiV2SpecFileTest (PHPUnit, Integration)
+# requires neo/desktop/una-api/openapi.json to be what the PHP code serves.
+
+on:
+  push:
+    branches: [ "master" ]
+    paths:
+    - 'neo/desktop/**'
+    # one NEO file a test of the app reads (src/lib/rich-html.test.ts)
+    - 'neo/packages/app/components/form-fields/editor-mention-html.js'
+    - '.github/workflows/desktop.yml'
+  pull_request:
+    branches: [ "master" ]
+    paths:
+    - 'neo/desktop/**'
+    # one NEO file a test of the app reads (src/lib/rich-html.test.ts)
+    - 'neo/packages/app/components/form-fields/editor-mention-html.js'
+    - '.github/workflows/desktop.yml'
+  # By hand, from the Actions tab, for any branch.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-${{ github.event.pull_request.number && format('pr-{0}', github.event.pull_request.number) || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  app:
+    name: Desktop app and API client
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Setup Node
+      uses: actions/setup-node@v6
+      with:
+        node-version: '24'
+
+    - name: Install the app's dependencies
+      working-directory: neo/desktop
+      # As in ci.yml: yarn.lock isn't committed, install scripts stay off, and the registry's
+      # occasional 502 gets a retry.
+      run: |
+        for attempt in 1 2 3; do
+          if yarn install --ignore-scripts --non-interactive --network-timeout 600000; then
+            exit 0
+          fi
+          echo "yarn install failed (attempt $attempt of 3)"
+          sleep 15
+        done
+        exit 1
+
+    # src/schema.ts is generated from openapi.json; a spec change without `yarn generate`
+    # leaves the client typed for the old API.
+    - name: API client types match the OpenAPI file
+      working-directory: neo/desktop/una-api
+      run: |
+        yarn --silent generate
+        if ! git diff --exit-code -- src/schema.ts; then
+          echo "::error file=neo/desktop/una-api/src/schema.ts::src/schema.ts is not what openapi.json generates. Run \`yarn generate\` in neo/desktop/una-api and commit the result."
+          exit 1
+        fi
+
+    - name: Lint the OpenAPI file
+      working-directory: neo/desktop/una-api
+      # @redocly/cli is a pinned devDependency of una-api, installed above with the rest (no
+      # install scripts): nothing is fetched or run on demand here
+      run: yarn --silent lint-spec
+
+    - name: Typecheck
+      working-directory: neo/desktop
+      run: yarn --silent typecheck
+
+    - name: Lint
+      working-directory: neo/desktop
+      run: yarn --silent lint
+
+    - name: Tests
+      working-directory: neo/desktop
+      run: yarn --silent test
+
+    - name: Build
+      working-directory: neo/desktop
+      run: yarn --silent build
+
+  shell:
+    name: Shell (${{ matrix.name }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - { name: macOS, os: macos-latest }
+        - { name: Linux, os: ubuntu-latest }
+        - { name: Windows, os: windows-latest }
+    env:
+      # A new stable Rust brings new clippy lints; move this on purpose, not by surprise.
+      RUST_VERSION: '1.99.1'
+      CARGO_TERM_COLOR: always
+    defaults:
+      run:
+        shell: bash
+        working-directory: neo/desktop/src-tauri
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Setup Rust
+      run: |
+        rustup toolchain install "$RUST_VERSION" --profile minimal --component clippy,rustfmt
+        rustup default "$RUST_VERSION"
+
+    - name: Install Linux libraries
+      if: runner.os == 'Linux'
+      # Tauri's list for Debian (https://v2.tauri.app/start/prerequisites/), and libdbus for the
+      # keyring's Secret Service client.
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends \
+          libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev \
+          libssl-dev libdbus-1-dev pkg-config
+
+    - name: Cache Cargo
+      uses: actions/cache@v6
+      with:
+        path: |
+          ~/.cargo/registry/index
+          ~/.cargo/registry/cache
+          ~/.cargo/git/db
+          neo/desktop/src-tauri/target
+        key: desktop-shell-${{ runner.os }}-${{ env.RUST_VERSION }}-${{ hashFiles('neo/desktop/src-tauri/Cargo.lock') }}
+        restore-keys: |
+          desktop-shell-${{ runner.os }}-${{ env.RUST_VERSION }}-
+
+    # tauri::generate_context! reads the built web app (frontendDist) at compile time. The shell's
+    # checks need the folder, not the app: the "app" job builds that.
+    - name: Stand in for the built web app
+      run: |
+        mkdir -p ../dist
+        : > ../dist/index.html
+
+    - name: Format
+      if: runner.os == 'Linux'
+      run: cargo fmt --check
+
+    - name: Clippy
+      run: cargo clippy --all-targets --locked -- -D warnings
+
+    - name: Tests
+      run: cargo test --locked

@@ -432,7 +432,9 @@
     <string name="_bx_events_menu_item_title_system_friends"><![CDATA[Friends]]></string>
     <string name="_bx_events_menu_item_title_friends"><![CDATA[Friends]]></string>
     <string name="_bx_events_menu_item_title_system_manage_my_groups"><![CDATA[My events]]></string>
+    <string name="_bx_events_menu_item_title_system_memberships"><![CDATA[Events (participant of)]]></string>
     <string name="_bx_events_menu_item_title_manage_my_groups"><![CDATA[Events]]></string>
+    <string name="_bx_events_menu_item_title_memberships"><![CDATA[Your events]]></string>
     <string name="_bx_events_menu_item_title_system_followings"><![CDATA[Events]]></string>
     <string name="_bx_events_menu_item_title_followings"><![CDATA[Events]]></string>
     <string name="_bx_events_menu_item_title_system_entries_recent"><![CDATA[New]]></string>
@@ -555,6 +557,7 @@
     <string name="_bx_events_txt_n_unit"><![CDATA[{0} ({1})]]></string>
     <string name="_bx_events_txt_cart_item_title"><![CDATA[{0}: {1} ({2} {3})]]></string>
     <string name="_bx_events_txt_cart_item_title_lifetime"><![CDATA[{0}: {1} (lifetime)]]></string>    
+    <string name="_bx_events_txt_empty_title"><![CDATA[No events yet]]></string>
 
     <string name="_bx_events_msg_performed"><![CDATA[The action was successfully performed.]]></string>
     <string name="_bx_events_err_price_duplicate"><![CDATA[Similar pricing plan is already exists.]]></string>

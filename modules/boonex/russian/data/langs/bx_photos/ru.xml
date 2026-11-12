@@ -257,6 +257,7 @@
     <string name="_bx_photos_txt_previous"><![CDATA[Предыдущее фото]]></string>
     <string name="_bx_photos_txt_next"><![CDATA[Следующее фото]]></string>
     <string name="_bx_photos_txt_camera"><![CDATA[Камера]]></string>
+    <string name="_bx_photos_txt_empty_title"><![CDATA[Фотографий пока нет]]></string>
     <string name="_bx_photos_txt_focal_length"><![CDATA[Фокусное расстояние]]></string>
     <string name="_bx_photos_txt_focal_length_value"><![CDATA[{0} мм]]></string>
     <string name="_bx_photos_txt_aperture"><![CDATA[Диафрагма]]></string>

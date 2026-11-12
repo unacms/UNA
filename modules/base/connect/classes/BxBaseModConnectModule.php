@@ -76,7 +76,7 @@ class BxBaseModConnectModule extends BxBaseModGeneralModule
             // another way to redirect with "Please wait" message
             BxDolTemplate::getInstance()->setPageNameIndex (BX_PAGE_TRANSITION);
             BxDolTemplate::getInstance()->setPageHeader (_t('_Please Wait'));
-            BxDolTemplate::getInstance()->setPageContent ('page_main_code', MsgBox(_t('_Please Wait')));
+            BxDolTemplate::getInstance()->setPageContent ('page_main_code', BxDolTemplate::getInstance()->parseHtmlByName('transition_wait.html', ['text' => _t('_Please Wait')]));
             BxDolTemplate::getInstance()->setPageContent ('url_relocate', bx_html_attribute($sCallbackUrl, BX_ESCAPE_STR_QUOTE));
 
             BxDolTemplate::getInstance()->getPageCode();

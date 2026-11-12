@@ -532,7 +532,8 @@
 	<string name="_adm_bp_dsc_block_content_rss_url"><![CDATA[Enter URL to RSS resource here]]></string>
         <string name="_adm_bp_dsc_block_content_empty"><![CDATA[Leave empty to use default one]]></string>
         <string name="_adm_bp_dsc_block_description"><![CDATA[Short description for the block, visible in block header.]]></string>
-        <string name="_adm_bp_dsc_block_icon"><![CDATA[An icon (font icon, SVG or Emoji code) for the block, visible in block header.]]></string>
+        <string name="_adm_bp_dsc_block_header_icon"><![CDATA[A larger icon (font icon, SVG or Emoji code) in a tile before the block's title and description.]]></string>
+        <string name="_adm_bp_dsc_block_icon"><![CDATA[A small icon (font icon, SVG or Emoji code) before the block's title, on its line.]]></string>
 	<string name="_adm_bp_dsc_block_title"><![CDATA[Short name for the block, visible in block header.]]></string>
 	<string name="_adm_bp_dsc_block_visible_for_levels"><![CDATA[Select user levels that can see this block]]></string>
 	<string name="_adm_bp_dsc_page_cache_lifetime"><![CDATA[Store page in cache for this number of seconds]]></string>
@@ -596,6 +597,7 @@
         <string name="_adm_bp_txt_block_description"><![CDATA[Description]]></string>
 	<string name="_adm_bp_txt_block_designbox"><![CDATA[Block Layout]]></string>
 	<string name="_adm_bp_txt_block_designbox_empty"><![CDATA[Select layout...]]></string>
+        <string name="_adm_bp_txt_block_header_icon"><![CDATA[Header icon]]></string>
         <string name="_adm_bp_txt_block_class"><![CDATA[CSS Class]]></string>
         <string name="_adm_bp_txt_block_help"><![CDATA[Help]]></string>
 	<string name="_adm_bp_txt_block_hidden_on"><![CDATA[Hidden on]]></string>
@@ -603,7 +605,7 @@
 	<string name="_adm_bp_txt_block_hidden_on_tablet"><![CDATA[tablet]]></string>
 	<string name="_adm_bp_txt_block_hidden_on_desktop"><![CDATA[desktop]]></string>
         <string name="_adm_bp_txt_block_hidden_on_mobile"><![CDATA[mobile app]]></string>
-        <string name="_adm_bp_txt_block_icon"><![CDATA[Icon]]></string>
+        <string name="_adm_bp_txt_block_icon"><![CDATA[Title icon]]></string>
 	<string name="_adm_bp_txt_block_padding_hidden_on"><![CDATA[Padding hidden on]]></string>
 	<string name="_adm_bp_txt_block_part_hidden_on_info"><![CDATA[On the site and in the apps. A part the block's design box doesn't have stays off.]]></string>
 	<string name="_adm_bp_txt_block_selected"><![CDATA[blocks selected]]></string>
@@ -839,6 +841,7 @@
 	<string name="_adm_dsg_inf_pwa_sw_enable"><![CDATA[When you change the site styles or scripts, visitors get the new ones the next time they open the site.]]></string>
 	<string name="_adm_dsg_inf_pwa_sw_offline"><![CDATA[Shown instead of the browser error when there is no connection: an address on this site, such as page.php?i=about. Leave it empty to use the browser page.]]></string>
 	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Colors the app title bar and, on phones, the status bar. Defaults to the color your template sets.]]></string>
+	<string name="_adm_dsg_inf_settings_section_forms"><![CDATA[How forms label their one-line text fields, on the site and in the apps. A form display can use a style of its own, set in <a href="{0}">Forms</a>. An app without floating labels shows them above the fields.]]></string>
 	<string name="_adm_dsg_inf_settings_section_layout"><![CDATA[Where the header, menus and footer go around the content of a page. Pages with a layout of their own in <a href="{0}">Pages</a> keep it; all the others use the ones below.]]></string>
 	<string name="_adm_dsg_inf_settings_section_template"><![CDATA[The template draws the whole site: its header, menus, colors and fonts. Everyone sees this one unless they pick another enabled template themselves.]]></string>
 	<string name="_adm_dsg_inf_splash_section_apps"><![CDATA[Code for one app only. An empty field uses the page code above. The apps draw the forms, the logo and the illustration with their own components, and leave out scripts and anything marked <code>data-site-only</code>. The iOS and Android apps show text, headings, lists and links, without styles or layout. Add <code>&lt;neo-slot name="social_login"&gt;&lt;/neo-slot&gt;</code> for the social sign-in buttons alone.]]></string>
@@ -896,9 +899,12 @@
 	<string name="_adm_dsg_txt_pwa_sw_enable"><![CDATA[Use a service worker]]></string>
 	<string name="_adm_dsg_txt_pwa_sw_offline"><![CDATA[Offline page]]></string>
 	<string name="_adm_dsg_txt_pwa_theme_color"><![CDATA[Window color]]></string>
+	<string name="_adm_dsg_txt_settings_label_style_adaptive"><![CDATA[Floating: in the empty field, on its top edge once filled]]></string>
+	<string name="_adm_dsg_txt_settings_label_style_regular"><![CDATA[Above the field]]></string>
 	<string name="_adm_dsg_txt_settings_layout_member"><![CDATA[For members]]></string>
 	<string name="_adm_dsg_txt_settings_layout_visitor"><![CDATA[For visitors]]></string>
 	<string name="_adm_dsg_txt_settings_note"><![CDATA[Without header/footer leaves no menus for moving around the site. Set it for single pages in Pages rather than as a default.]]></string>
+	<string name="_adm_dsg_txt_settings_section_forms"><![CDATA[Forms]]></string>
 	<string name="_adm_dsg_txt_settings_section_layout"><![CDATA[Page layout]]></string>
 	<string name="_adm_dsg_txt_settings_section_template"><![CDATA[Site template]]></string>
 	<string name="_adm_dsg_txt_settings_template_current"><![CDATA[In use]]></string>
@@ -1074,6 +1080,7 @@
     <string name="_adm_form_btn_search_forms_sortable_fields_reset"><![CDATA[Reset]]></string>
     <string name="_adm_form_btn_search_forms_save"><![CDATA[Save]]></string>
     <string name="_adm_form_btn_search_forms_cancel"><![CDATA[Cancel]]></string>
+    <string name="_adm_form_dsc_displays_label_style"><![CDATA[Floating labels apply to one-line text fields. Other fields keep their labels above them.]]></string>
     <string name="_adm_form_dsc_displays_title"><![CDATA[Name of the form display mode. Displayed in Studio only.]]></string>
     <string name="_adm_form_dsc_field_area_label"><![CDATA[Accessible name for the field. It is useful when the visible text content of the field is not descriptive enough or absent.]]></string>
     <string name="_adm_form_dsc_field_attrs_max"><![CDATA[Enter numeric value]]></string>
@@ -1199,6 +1206,8 @@
 	<string name="_adm_form_txt_displays_gl_form"><![CDATA[Form]]></string>
 	<string name="_adm_form_txt_displays_gl_module"><![CDATA[Module]]></string>
 	<string name="_adm_form_txt_displays_gl_title"><![CDATA[System Name]]></string>
+	<string name="_adm_form_txt_displays_label_style"><![CDATA[Field labels]]></string>
+	<string name="_adm_form_txt_displays_label_style_default"><![CDATA[As on the site]]></string>
 	<string name="_adm_form_txt_displays_manage_fields"><![CDATA[Manage fields]]></string>
 	<string name="_adm_form_txt_displays_title"><![CDATA[System Name]]></string>
 	<string name="_adm_form_txt_field_add_popup"><![CDATA[Add New Field]]></string>
@@ -1892,7 +1901,6 @@
     <string name="_adm_stg_inf_option_site_email_notify"><![CDATA[Email address used as "sender" in transactional emails.]]></string>
     <string name="_adm_stg_cpt_option_site_email_html_template_header"><![CDATA[Email template header]]></string>
     <string name="_adm_stg_cpt_option_site_email_html_template_footer"><![CDATA[Email template footer]]></string>
-    <string name="_adm_stg_cpt_option_site_login_social_compact"><![CDATA[Enable compact view for social login]]></string>
     <string name="_adm_stg_cpt_option_site_title"><![CDATA[Community name]]></string>
     <string name="_adm_stg_inf_option_site_title"><![CDATA[The default name used to refer to your site in site texts, meta tags, emails and notifications.]]></string>
     <string name="_adm_stg_cpt_option_site_tour_home"><![CDATA[User Tour]]></string>
@@ -1976,6 +1984,7 @@
     <string name="_adm_stg_cpt_option_sys_player_default_quality"><![CDATA[Default video quality]]></string>
     <string name="_adm_stg_cpt_option_sys_pt_default_visitor"><![CDATA[Default page type for visitor]]></string>
     <string name="_adm_stg_cpt_option_sys_pt_default_member"><![CDATA[Default page type for member]]></string>
+    <string name="_adm_stg_cpt_option_sys_form_label_style"><![CDATA[Field labels]]></string>
     <string name="_adm_stg_cpt_option_sys_form_lpc_enable"><![CDATA[Enable leave page confirmation for pages with forms]]></string>
     <string name="_adm_stg_cpt_option_sys_format_date"><![CDATA[<a target="_blank" href="https://momentjs.com/docs/#/displaying/format/">Date Format</a>]]></string>
     <string name="_adm_stg_cpt_option_sys_format_datetime"><![CDATA[<a target="_blank" href="https://momentjs.com/docs/#/displaying/format/">Date And Time Format</a>]]></string>
@@ -2188,6 +2197,14 @@
     <string name="_adm_stg_cpt_option_sys_api_root_page_splash"><![CDATA[Splash]]></string>
     <string name="_adm_stg_cpt_option_sys_api_url_root_email"><![CDATA[Site main URL in email notifications]]></string>
     <string name="_adm_stg_cpt_option_sys_api_url_root_push"><![CDATA[Site main URL in push notifications]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_enable"><![CDATA[API v2 (preview, not for production): turn on /api/v2, which the desktop app uses]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit"><![CDATA[API v2: limit the number of requests]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_agent"><![CDATA[API v2: messages to AI agents a minute (0 for no limit)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_general"><![CDATA[API v2: requests a minute from one member or one guest address (0 for no limit)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_preview"><![CDATA[API v2: link previews a minute (0 for no limit)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_search"><![CDATA[API v2: searches a minute (0 for no limit)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_upload"><![CDATA[API v2: file uploads a minute (0 for no limit)]]></string>
+    <string name="_adm_stg_cpt_option_sys_api_v2_rate_limit_write"><![CDATA[API v2: changes a minute, such as posts, edits, deletions and reactions (0 for no limit)]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_inspector_key"><![CDATA[Inspector key]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_inspector_key_info"><![CDATA[Get key at https://app.inspector.dev/]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_operator_agent"><![CDATA[Operator agent]]></string>
@@ -2649,10 +2666,6 @@
     <string name="_sys_agents_agents_txt_search"><![CDATA[Search chats...]]></string>
     <string name="_sys_agents_agents_txt_search_empty"><![CDATA[No chats found]]></string>
     <string name="_sys_agents_agents_popup_add"><![CDATA[Add agent]]></string>
-    <string name="_sys_agents_agents_empty"><![CDATA[No agents yet]]></string>
-    <string name="_sys_agents_agents_empty_info"><![CDATA[Agents run automated tasks on your site. Add one to get started.]]></string>
-    <string name="_sys_agents_builder_view_list"><![CDATA[List view]]></string>
-    <string name="_sys_agents_builder_view_grid"><![CDATA[Grid view]]></string>
 
     <string name="_Run"><![CDATA[Run]]></string>
 
@@ -3370,7 +3383,6 @@
 	<string name="_sys_form_login_input_caption_system_sendsms"><![CDATA[Send SMS]]></string>
 	<string name="_sys_form_login_input_caption_system_submit"><![CDATA[Submit]]></string>
 	<string name="_sys_form_login_input_caption_system_submit_text"><![CDATA[Submit Text]]></string>
-        <string name="_sys_form_login_input_agreement_value"><![CDATA[By logging in, you agree to the <a href="{0}">Terms of Service</a> and <a href="{1}">Privacy Policy</a>.]]></string>
 	<string name="_sys_form_login_input_code"><![CDATA[Code from SMS]]></string>
 	<string name="_sys_form_login_input_back"><![CDATA[You didn't receive an SMS? <a href="{0}">Send SMS again</a>.]]></string>
 	<string name="_sys_form_login_input_checkcode"><![CDATA[Submit]]></string>
@@ -3514,6 +3526,7 @@
 	<string name="_sys_form_unsubscribe_input_receive_updates"><![CDATA[Receive Site Updates]]></string>
 	<string name="_sys_form_unsubscribe_input_submit"><![CDATA[Submit]]></string>
 	<string name="_sys_form_err_not_unique_value"><![CDATA[The field should have unique value]]></string>
+	<string name="_sys_form_txt_optional"><![CDATA[(optional)]]></string>
 	<string name="_sys_form_txt_select_file"><![CDATA[Select a file]]></string>
 	<string name="_sys_form_wiki"><![CDATA[Wiki]]></string>
 	<string name="_sys_form_display_wiki_edit"><![CDATA[Wiki Edit]]></string>
@@ -3702,6 +3715,7 @@
     <string name="_sys_menu_item_title_switch_template"><![CDATA[Design]]></string>
     <string name="_sys_menu_item_title_switch_template_mask"><![CDATA[{0}]]></string>
     <string name="_sys_menu_item_title_terms"><![CDATA[Terms]]></string>
+    <string name="_sys_menu_item_title_tour"><![CDATA[Introduction Tour]]></string>
     <string name="_sys_menu_item_title_account_menu"><![CDATA[{member_display_name}]]></string>
     <string name="_sys_menu_item_title_account_profile_context"><![CDATA[Profiles]]></string>
     <string name="_sys_menu_item_title_account_dashboard"><![CDATA[Dashboard]]></string>
@@ -3713,6 +3727,7 @@
     <string name="_sys_menu_item_title_account_settings_overview"><![CDATA[Overview]]></string>
     <string name="_sys_menu_item_title_account_settings_pwd"><![CDATA[Password]]></string>
     <string name="_sys_menu_item_title_profile_settings_cfilter"><![CDATA[Content Filter]]></string>
+    <string name="_sys_menu_item_title_public_menu"><![CDATA[Browse]]></string>
     <string name="_sys_menu_item_title_add_content"><![CDATA[Add...]]></string>
     <string name="_sys_menu_item_title_cart"><![CDATA[Shopping Cart]]></string>
     <string name="_sys_menu_item_title_cmts_administration"><![CDATA[Comments]]></string>
@@ -3734,6 +3749,8 @@
     <string name="_sys_menu_item_title_join"><![CDATA[Sign up]]></string>
     <string name="_sys_menu_item_title_login"><![CDATA[Log in]]></string>
     <string name="_sys_menu_item_title_logout"><![CDATA[Sign out]]></string>
+    <string name="_sys_menu_item_title_member_followings"><![CDATA[Following]]></string>
+    <string name="_sys_menu_item_title_member_menu"><![CDATA[You]]></string>
     <string name="_sys_menu_item_title_more"><![CDATA[More]]></string>
     <string name="_sys_menu_item_title_more_auto"><![CDATA[]]></string>
     <string name="_sys_menu_item_title_orders"><![CDATA[Orders]]></string>
@@ -3797,6 +3814,7 @@
     <string name="_sys_menu_item_title_system_switch_language"><![CDATA[Language]]></string>
     <string name="_sys_menu_item_title_system_switch_template"><![CDATA[Template]]></string>
     <string name="_sys_menu_item_title_system_terms"><![CDATA[Terms]]></string>
+    <string name="_sys_menu_item_title_system_tour"><![CDATA[Introduction Tour]]></string>
     <string name="_sys_menu_item_title_system_account_menu"><![CDATA[Account]]></string>
     <string name="_sys_menu_item_title_system_account_profile_context"><![CDATA[Profiles]]></string>
     <string name="_sys_menu_item_title_system_account_dashboard"><![CDATA[Dashboard]]></string>
@@ -3822,6 +3840,7 @@
     <string name="_sys_menu_item_title_system_profile_settings_cfilter"><![CDATA[Content Filter]]></string>
     <string name="_sys_menu_item_title_system_add_content"><![CDATA[Add Content]]></string>
     <string name="_sys_menu_item_title_system_apps"><![CDATA[Apps]]></string>
+    <string name="_sys_menu_item_title_system_apps_menu"><![CDATA[Apps Menu]]></string>
     <string name="_sys_menu_item_title_system_cart"><![CDATA[Shopping Cart]]></string>
     <string name="_sys_menu_item_title_system_cmts_administration"><![CDATA[Comments]]></string>
     <string name="_sys_menu_item_title_system_audit_administration"><![CDATA[Audit]]></string>
@@ -3847,6 +3866,7 @@
     <string name="_sys_menu_item_title_system_main_menu"><![CDATA[Main menu]]></string>
     <string name="_sys_menu_item_title_system_member_avatar"><![CDATA[Member Avatar]]></string>
     <string name="_sys_menu_item_title_system_member_followings"><![CDATA[Member Following]]></string>
+    <string name="_sys_menu_item_title_system_member_memberships"><![CDATA[Member Memberships]]></string>
     <string name="_sys_menu_item_title_system_member_menu"><![CDATA[Member Menu]]></string>
     <string name="_sys_menu_item_title_system_more"><![CDATA[More]]></string>
     <string name="_sys_menu_item_title_system_more_auto"><![CDATA[More]]></string>
@@ -3942,9 +3962,12 @@
     <string name="_sys_menu_set_title_footer"><![CDATA[Footer]]></string>
     <string name="_sys_menu_set_title_profile_create_links"><![CDATA[Create Profile Links]]></string>
     <string name="_sys_menu_set_title_profile_followings"><![CDATA[Followed Contexts]]></string>
+    <string name="_sys_menu_set_title_profile_memberships"><![CDATA[Profile Memberships]]></string>
     <string name="_sys_menu_set_title_profile_stats"><![CDATA[Profile Stats]]></string>
     <string name="_sys_menu_set_title_site"><![CDATA[Site]]></string>
     <string name="_sys_menu_set_title_application"><![CDATA[Application]]></string>
+    <string name="_sys_menu_set_title_apps_menu"><![CDATA[Apps Menu]]></string>
+    <string name="_sys_menu_set_title_apps_sidebar"><![CDATA[Apps Sidebar]]></string>
     <string name="_sys_menu_set_title_panel"><![CDATA[Panel]]></string>
     <string name="_sys_menu_set_title_homepage"><![CDATA[Content modules]]></string>
     <string name="_sys_menu_set_title_toolbar_member"><![CDATA[Toolbar Member]]></string>
@@ -4003,6 +4026,8 @@
     <string name="_sys_menu_title_main"><![CDATA[Site Navigation]]></string>
     <string name="_sys_menu_title_main_in_panel"><![CDATA[Site Navigation in Panel]]></string>
     <string name="_sys_menu_title_application"><![CDATA[Application Navigation]]></string>
+    <string name="_sys_menu_title_apps_menu"><![CDATA[Apps Menu]]></string>
+    <string name="_sys_menu_title_apps_sidebar"><![CDATA[Apps Sidebar]]></string>
     <string name="_sys_menu_title_homepage"><![CDATA[Homepage Menu]]></string>
     <string name="_sys_menu_title_homepage_submenu"><![CDATA[Homepage Submenu]]></string>
     <string name="_sys_menu_title_public_homepage_submenu"><![CDATA[Explore]]></string>
@@ -4015,6 +4040,7 @@
     <string name="_sys_menu_item_title_trends"><![CDATA[Trends]]></string>
     <string name="_sys_menu_title_profiles_create"><![CDATA[Create Profiles]]></string>
     <string name="_sys_menu_title_profile_followings"><![CDATA[Profile Following]]></string>
+    <string name="_sys_menu_title_profile_memberships"><![CDATA[Profile Memberships]]></string>
     <string name="_sys_menu_title_profile_stats"><![CDATA[Profile Stats]]></string>
     <string name="_sys_menu_title_tags_cloud"><![CDATA[Tags Cloud]]></string>
     <string name="_sys_menu_title_rss"><![CDATA[RSS]]></string>
@@ -4171,6 +4197,8 @@
     <string name="_sys_page_block_title_search_ai"><![CDATA[Search]]></string>
     <string name="_sys_page_block_title_membership_stats"><![CDATA[Membership Limits]]></string>
     <string name="_sys_page_block_desc_account_profile_create"><![CDATA[Your account doesn’t have a profile yet. Choose a profile type to get started.]]></string>
+    <string name="_sys_page_block_desc_create_account"><![CDATA[Create an account to join the community.]]></string>
+    <string name="_sys_page_block_desc_login"><![CDATA[Enter your details to continue.]]></string>
     <string name="_sys_page_block_system_title_login"><![CDATA[Log in with Sign up link]]></string>
     <string name="_sys_page_block_system_title_login_step2"><![CDATA[Log in - step2]]></string>
     <string name="_sys_page_block_system_title_login_step3"><![CDATA[Log in - step3]]></string>
@@ -4622,39 +4650,43 @@
     <string name="_sys_subscribe"><![CDATA[Follow]]></string>
     <string name="_sys_template_mixed_mask"><![CDATA[{0} ({1})]]></string>
 
-    <string name="_sys_tour_launcher_welcome_title"><![CDATA[Welcome to UNA Studio!]]></string>
-    <string name="_sys_tour_launcher_welcome_txt"><![CDATA[Studio is where you customise your site; add and manage apps; control languages and design; set membership levels and permissions; build pages and navigation, and a lot more. You are now in Studio Launcher.]]></string>
-    <string name="_sys_tour_launcher_apps_title"><![CDATA[Add and manage Apps]]></string>
-    <string name="_sys_tour_launcher_apps_txt"><![CDATA[Apps are modules, languages, tools, templates - all the bits and pieces that make your site unique. You can download and install Apps and they will appear in Studio Launcher. Apps add and change functionality of your site.]]></string>
-    <string name="_sys_tour_launcher_designer_title"><![CDATA[Start making your site special]]></string>
-    <string name="_sys_tour_launcher_designer_txt"><![CDATA[Designer is the best place to start customisation. Change the site logo, choose design template and manage the “Cover Page”. Your site now shows Cover Page to all guest visitors. You can either customise it to turn it off to display a full homepage with content of your choice.]]></string>
-    <string name="_sys_tour_launcher_accounts_title"><![CDATA[You are more than Admin]]></string>
-    <string name="_sys_tour_launcher_accounts_txt"><![CDATA[UNA content and profiles are controlled by Admins and Moderators right on the site front-end, so you don’t have to worry about that in Studio. You do need to appoint your Admins and Moderators, though. And this is where you do it. If you also want to be the site Admin, just create your profile use “Set Membership” to upgrade it.]]></string>
-    <string name="_sys_tour_launcher_dashboard_title"><![CDATA[One look and you know it]]></string>
-    <string name="_sys_tour_launcher_dashboard_txt"><![CDATA[Dashboard gives a quick overview of the site status. UNA version, space usage, hosting tools and cache.  Different Apps will add their blocks to Dashboard.]]></string>
-    <string name="_sys_tour_launcher_builder_page_title"><![CDATA[Build your site the way you want it]]></string>
-    <string name="_sys_tour_launcher_builder_page_txt"><![CDATA[Pages allow you to edit the site by rearranging, adding and removing blocks on site pages. You can even create new custom pages of different types. You can also control visibility settings, SEO data, cacheing and page layouts.]]></string>
-    <string name="_sys_tour_launcher_builder_permissions_title"><![CDATA[Define who can do what]]></string>
-    <string name="_sys_tour_launcher_builder_permissions_txt"><![CDATA[Create and edit Membership Levels and associated Actions permissions.]]></string>
-    <string name="_sys_tour_launcher_builder_forms_title"><![CDATA[Form and re-form your forms]]></string>
-    <string name="_sys_tour_launcher_builder_forms_txt"><![CDATA[Forms builder is a powerful tool that allows deep customisation of site database and forms. You can create and manage data lists, form fields and even display types (like Add/Edit/Delete). Your Forms will define the structure and theme of the site.]]></string>
-    <string name="_sys_tour_launcher_builder_menus_title"><![CDATA[Show them around]]></string>
-    <string name="_sys_tour_launcher_builder_menus_txt"><![CDATA[Add and manage site navigation menus. You can edit links, re-order them, add new ones, change icons and control visibility according to membership permissions.]]></string>
-    <string name="_sys_tour_launcher_polyglot_title"><![CDATA[Speak their language]]></string>
-    <string name="_sys_tour_launcher_polyglot_txt"><![CDATA["If you talk to a man in a language he understands, that goes to his head. If you talk to him in his language, that goes to his heart." Polyglot allows you to set site language and data format, edit site texts in all installed languages and even translate email templates.]]></string>
-    <string name="_sys_tour_launcher_reorganize_title"><![CDATA[Move the Apps around]]></string>
-    <string name="_sys_tour_launcher_reorganize_txt"><![CDATA[Activate reorganisation mode to rearrange Apps in Launcher or delete inactive ones altogether.]]></string>
-    <string name="_sys_tour_launcher_favourites_title"><![CDATA[Keep Apps in the Dock]]></string>
-    <string name="_sys_tour_launcher_favourites_txt"><![CDATA[The Dock in the header keeps your recently opened Apps one click away. In reorganisation mode, open an App's settings to keep it in the Dock for you, or for every operator.]]></string>
-    <string name="_sys_tour_launcher_add_apps_title"><![CDATA[Now DO add new Apps!]]></string>
-    <string name="_sys_tour_launcher_add_apps_txt"><![CDATA[UNA comes with only a handful of core Apps. Choose, download and install Apps to add profiles types, modules, system tools, plugins, languages and design templates. You can activate and deactivate installed Apps. UNA is super-modular and incredibly flexible, letting you choose your own combination of functionality, settings and database structure to make the social site of your dreams real. Even without changing anything you will have the perfectly functioning social site!]]></string>
+    <string name="_sys_tour_launcher_welcome_title"><![CDATA[Welcome to Studio]]></string>
+    <string name="_sys_tour_launcher_welcome_txt"><![CDATA[Studio is where you set up your site: apps, design, pages, menus, forms, permissions and languages. This short tour shows where things are.]]></string>
+    <string name="_sys_tour_launcher_apps_title"><![CDATA[Your apps]]></string>
+    <string name="_sys_tour_launcher_apps_txt"><![CDATA[Each tile is an app: a module, a tool, a language or a template. Apps you install show up here.]]></string>
+    <string name="_sys_tour_launcher_designer_title"><![CDATA[Designer]]></string>
+    <string name="_sys_tour_launcher_designer_txt"><![CDATA[Set the logo, pick a template and edit the cover page that guests see first.]]></string>
+    <string name="_sys_tour_launcher_accounts_title"><![CDATA[Accounts]]></string>
+    <string name="_sys_tour_launcher_accounts_txt"><![CDATA[Manage member accounts and choose who is an administrator or a moderator. They look after content and profiles on the site itself, not in Studio.]]></string>
+    <string name="_sys_tour_launcher_dashboard_title"><![CDATA[Dashboard]]></string>
+    <string name="_sys_tour_launcher_dashboard_txt"><![CDATA[See how the site is doing: the UNA version, storage use, server checks and cache.]]></string>
+    <string name="_sys_tour_launcher_builder_page_title"><![CDATA[Pages]]></string>
+    <string name="_sys_tour_launcher_builder_page_txt"><![CDATA[Add, remove and rearrange blocks on any page, or create new pages. Visibility and SEO settings are here too.]]></string>
+    <string name="_sys_tour_launcher_builder_permissions_title"><![CDATA[Permissions]]></string>
+    <string name="_sys_tour_launcher_builder_permissions_txt"><![CDATA[Create membership levels and choose what each level can do.]]></string>
+    <string name="_sys_tour_launcher_builder_forms_title"><![CDATA[Forms]]></string>
+    <string name="_sys_tour_launcher_builder_forms_txt"><![CDATA[Change the fields of any form, the lists they use and how each form is shown.]]></string>
+    <string name="_sys_tour_launcher_builder_menus_title"><![CDATA[Navigation]]></string>
+    <string name="_sys_tour_launcher_builder_menus_txt"><![CDATA[Edit the menus: add, reorder and hide links, change icons and choose who sees each item.]]></string>
+    <string name="_sys_tour_launcher_polyglot_title"><![CDATA[Polyglot]]></string>
+    <string name="_sys_tour_launcher_polyglot_txt"><![CDATA[Choose the site languages and edit any text on the site, including the texts of this tour.]]></string>
+    <string name="_sys_tour_launcher_reorganize_title"><![CDATA[Rearrange apps]]></string>
+    <string name="_sys_tour_launcher_reorganize_txt"><![CDATA[Open this menu and choose Manage Apps to move apps around or remove the ones you do not use. You can start this tour again from here.]]></string>
+    <string name="_sys_tour_launcher_favourites_title"><![CDATA[The Dock]]></string>
+    <string name="_sys_tour_launcher_favourites_txt"><![CDATA[Apps you opened recently stay here, one click away. In edit mode you can keep an app in the Dock.]]></string>
+    <string name="_sys_tour_launcher_add_apps_title"><![CDATA[App Store]]></string>
+    <string name="_sys_tour_launcher_add_apps_txt"><![CDATA[UNA starts with the core apps. Get more here: modules, templates, languages and integrations.]]></string>
+    <string name="_sys_tour_step"><![CDATA[{0} of {1}]]></string>
 
-    <string name="_sys_tour_homepage_welcome_title"><![CDATA[This is the Homepage]]></string>
-    <string name="_sys_tour_homepage_welcome_txt"><![CDATA[At first there isn't much here. Install more Apps via Studio, add more blocks via Studio > Pages > Homepage, create profiles, appoint admins, post some content and your site will come alive!]]></string>
-    <string name="_sys_tour_homepage_account_menu_title"><![CDATA[Get to know your Account Menu]]></string>
-    <string name="_sys_tour_homepage_account_menu_txt"><![CDATA[Add and manage profiles, check notifications, access account settings. Admins and Moderators can use it to access Dash with links to site content and profiles management.]]></string>
+    <string name="_sys_tour_back"><![CDATA[Back]]></string>
+    <string name="_sys_tour_close"><![CDATA[Close tour]]></string>
+    <string name="_sys_tour_homepage_welcome_title"><![CDATA[This is your homepage]]></string>
+    <string name="_sys_tour_homepage_welcome_txt"><![CDATA[It fills up as your site grows. Add apps and arrange page blocks in Studio, then invite people and post something.]]></string>
+    <string name="_sys_tour_homepage_account_menu_title"><![CDATA[Your account menu]]></string>
+    <string name="_sys_tour_homepage_account_menu_txt"><![CDATA[Switch profiles, check notifications and open your account settings here. You can start this tour again from this menu.]]></string>
 
     <string name="_sys_txt_api_key"><![CDATA[API Key]]></string>
+    <string name="_sys_txt_auth_or"><![CDATA[or]]></string>
     <string name="_sys_txt_access_denied"><![CDATA[Access denied]]></string>
     <string name="_sys_txt_account_pending"><![CDATA[Your account is pending approval, please wait until it is activated.]]></string>
     <string name="_sys_txt_account_profile_context_change_suggestion"><![CDATA[This is your profile, you can <a href="{0}">change your current profile</a> to this profile]]></string>
@@ -4700,6 +4732,17 @@
     <string name="_sys_txt_delete"><![CDATA[Delete]]></string>
     <string name="_sys_txt_discard"><![CDATA[Discard]]></string>
     <string name="_sys_txt_empty"><![CDATA[Empty]]></string>
+    <string name="_sys_txt_empty_invitations_text"><![CDATA[When someone invites you to a group, event or other space, it shows here.]]></string>
+    <string name="_sys_txt_empty_invitations_title"><![CDATA[No invitations]]></string>
+    <string name="_sys_txt_empty_list_add"><![CDATA[Add new]]></string>
+    <string name="_sys_txt_empty_list_text_add"><![CDATA[Be the first to add something here.]]></string>
+    <string name="_sys_txt_empty_list_text_connections"><![CDATA[Your connections show here.]]></string>
+    <string name="_sys_txt_empty_list_text_favorite"><![CDATA[What you add to favorites shows here.]]></string>
+    <string name="_sys_txt_empty_list_text_followed"><![CDATA[What you follow shows here.]]></string>
+    <string name="_sys_txt_empty_list_text_joined"><![CDATA[What you join shows here.]]></string>
+    <string name="_sys_txt_empty_list_text_online"><![CDATA[No one is online right now.]]></string>
+    <string name="_sys_txt_empty_search_text"><![CDATA[Try other words or fewer filters.]]></string>
+    <string name="_sys_txt_empty_search_title"><![CDATA[No results]]></string>
     <string name="_sys_txt_error_account_creation"><![CDATA[Account creation failed]]></string>
     <string name="_sys_txt_error_account_delete"><![CDATA[Account delete failed]]></string>
     <string name="_sys_txt_error_account_is_not_defined"><![CDATA[Account is not defined]]></string>
@@ -4741,12 +4784,15 @@
 	
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Your verification code is {0}.]]></string>
     <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[An error occurred, please report error to the site administrator.]]></string>
+    <string name="_sys_txt_login_agreement"><![CDATA[By logging in, you agree to the <a href="{0}">Terms of Service</a> and <a href="{1}">Privacy Policy</a>.]]></string>
+    <string name="_sys_txt_join_description"><![CDATA[Already have an account?]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Log in]]></string>
     <string name="_sys_txt_join_text"><![CDATA[Joining is quick and easy. Create your own community account to get started.]]></string>
     <string name="_sys_txt_join_text_invite"><![CDATA[Registration is by invitation only. Use your invitation code to join.]]></string>
     <string name="_sys_txt_join_title"><![CDATA[Time to join!]]></string>
     <string name="_sys_txt_join_title_invite"><![CDATA[Request an invitation]]></string>
-    <string name="_sys_txt_login_description_action"><![CDATA[Create account]]></string>
+    <string name="_sys_txt_login_description"><![CDATA[Don't have an account?]]></string>
+    <string name="_sys_txt_login_description_action"><![CDATA[Sign up]]></string>
     <string name="_sys_txt_login_error"><![CDATA[Entered email or password is incorrect. Please try again.]]></string>
     <string name="_sys_txt_login_locked"><![CDATA[Your account is locked and needs to be unlocked using <a href="{0}">forgot password page</a>.]]></string>
   
@@ -4985,4 +5031,9 @@
     <string name="_sys_recom_friends_empty_action"><![CDATA[Find people]]></string>
     <string name="_sys_recom_friends_empty_text"><![CDATA[Suggestions appear as you connect with people.]]></string>
     <string name="_sys_recom_friends_empty_title"><![CDATA[No suggestions yet]]></string>
+    <string name="_adm_form_txt_groups_role_time_log"><![CDATA[Log time]]></string>
+    <string name="_adm_form_txt_groups_role_time_view_logged_any"><![CDATA[View logged time of everybody]]></string>
+    <string name="_adm_form_txt_groups_role_time_view_billed"><![CDATA[View billable time]]></string>
+    <string name="_adm_form_txt_groups_role_time_edit_billed"><![CDATA[Edit billable time]]></string>
+    <string name="_adm_form_txt_groups_role_manage_properties"><![CDATA[Manage properties]]></string>
 </resources>

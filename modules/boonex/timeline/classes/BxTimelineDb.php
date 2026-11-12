@@ -237,6 +237,25 @@ class BxTimelineDb extends BxBaseModNotificationsDb
     	return (int)$this->getOne($sQuery) > 0;
     }
 
+    /**
+     * Which of the events the author reposted to the owner's timeline (isReposted for a page
+     * of events in one query): their ids.
+     */
+    public function getRepostedIds($aRepostedIds, $iOwnerId, $iAuthorId)
+    {
+        $aRepostedIds = array_values(array_unique(array_filter(array_map('intval', (array)$aRepostedIds))));
+        if(empty($aRepostedIds))
+            return [];
+
+        return array_map('intval', $this->getColumn("SELECT DISTINCT `tst`.`reposted_id`
+            FROM `{$this->_sTableRepostsTrack}` AS `tst`
+            INNER JOIN `{$this->_sTable}` AS `te` ON `tst`.`event_id`=`te`.`id`
+            WHERE `tst`.`author_id`=:author_id AND `te`.`owner_id`=:owner_id AND `tst`.`reposted_id` IN (" . $this->implode_escape($aRepostedIds) . ")", [
+                'author_id' => $iAuthorId,
+                'owner_id' => $iOwnerId
+            ]));
+    }
+
     //--- Photo uploader related methods ---//
     public function saveMedia($sType, $iEventId, $iItemId)
     {
@@ -268,8 +287,54 @@ class BxTimelineDb extends BxBaseModNotificationsDb
         return $bResult;
     }
 
+    /**
+     * In the open row scope (BxDolDb::openRowScope): the links, photos,
+     * videos and files attached to these events, as getLinks and getMedia of each event give
+     * them, and their polls (primePollsByContents), a query each, so that preparing the events
+     * reads none of them. Does nothing outside of a scope.
+     */
+    public function primeEventAttachments($aEventIds)
+    {
+        if(!self::$_aRowScopes)
+            return;
+
+        $iScope = count(self::$_aRowScopes) - 1;
+        $aIds = [];
+        foreach((array)$aEventIds as $mId)
+            if(($iId = (int)$mId) > 0 && !isset(self::$_aRowScopes[$iScope]['#links'][$iId]))
+                $aIds[$iId] = $iId;
+        if(!$aIds)
+            return;
+        $aIds = array_values($aIds);
+        $sIds = $this->implode_escape($aIds);
+
+        $aLinks = array_fill_keys($aIds, []);
+        foreach($this->getAll("SELECT `tl`.*, `tle`.`event_id` AS `bx_event_id` FROM `" . $this->_sPrefix . "links` AS `tl` LEFT JOIN `" . $this->_sPrefix . "links2events` AS `tle` ON `tl`.`id`=`tle`.`link_id` WHERE `tle`.`event_id` IN (" . $sIds . ") ORDER BY `tl`.`id`") as $aRow) {
+            $iEventId = (int)$aRow['bx_event_id'];
+            unset($aRow['bx_event_id']);
+            $aLinks[$iEventId][] = $aRow;
+        }
+        foreach($aLinks as $iId => $aRows)
+            self::$_aRowScopes[$iScope]['#links'][$iId] = $aRows;
+
+        // in the order getMedia of one event reads them (its event_id, media_id key)
+        foreach($this->_aTablesMedia2Events as $sType => $sTable) {
+            $aMedia = array_fill_keys($aIds, []);
+            foreach($this->getAll("SELECT `tme`.`event_id`, `tme`.`media_id` FROM `" . $sTable . "` AS `tme` LEFT JOIN `" . $this->_aTablesMedia[$sType] . "` AS `tm` ON `tme`.`media_id`=`tm`.`id` WHERE `tme`.`event_id` IN (" . $sIds . ") ORDER BY `tme`.`event_id`, `tme`.`media_id`") as $aRow)
+                $aMedia[(int)$aRow['event_id']][] = $aRow['media_id'];
+            foreach($aMedia as $iId => $aRows)
+                self::$_aRowScopes[$iScope]['#media#' . $sType][$iId] = $aRows;
+        }
+
+        $this->primePollsByContents($aIds);
+    }
+
     public function getMedia($sType, $iEventId, $iOffset = 0, $bFullInfo = false)
     {
+        // primed in the open scope (@see primeEventAttachments)
+        if(!$iOffset && !$bFullInfo && self::$_aRowScopes && isset(self::$_aRowScopes[count(self::$_aRowScopes) - 1]['#media#' . $sType][(int)$iEventId]))
+            return self::$_aRowScopes[count(self::$_aRowScopes) - 1]['#media#' . $sType][(int)$iEventId];
+
     	$sTableMedia = $this->_aTablesMedia[$sType];
     	$sTableMedia2Events = $this->_aTablesMedia2Events[$sType];
 
@@ -357,6 +422,10 @@ class BxTimelineDb extends BxBaseModNotificationsDb
 
     public function getLinks($iEventId)
     {
+        // primed in the open scope (@see primeEventAttachments)
+        if(self::$_aRowScopes && isset(self::$_aRowScopes[count(self::$_aRowScopes) - 1]['#links'][(int)$iEventId]))
+            return self::$_aRowScopes[count(self::$_aRowScopes) - 1]['#links'][(int)$iEventId];
+
         return $this->getLinksBy(array('type' => 'event_id', 'event_id' => $iEventId));
     }
 
@@ -672,6 +741,24 @@ class BxTimelineDb extends BxBaseModNotificationsDb
         return $this->query("INSERT INTO `" . $this->_sTableSlice . "` SELECT * FROM `" . $this->_sTable . "` WHERE " . implode(" OR ", $aWhereConditions));
     }
 
+    /**
+     * API v2: the events of several pieces of a module's content at once, as getEvents' descriptor
+     * finds one: action => [object id => the lowest event id], for these actions.
+     */
+    public function getApiV2EventIdsByContents($sType, $aActions, $aObjectIds)
+    {
+        $aObjectIds = array_values(array_unique(array_filter(array_map('intval', (array)$aObjectIds))));
+        if(empty($aObjectIds) || empty($aActions))
+            return [];
+
+        $aRows = $this->getAll("SELECT `action`, `object_id`, MIN(`id`) AS `id` FROM `" . $this->_sTable . "` WHERE `type`=:type AND `action` IN (" . $this->implode_escape(array_values($aActions)) . ") AND `object_id` IN (" . $this->implode_escape($aObjectIds) . ") GROUP BY `action`, `object_id`", ['type' => $sType]);
+
+        $aResult = [];
+        foreach($aRows as $aRow)
+            $aResult[$aRow['action']][(int)$aRow['object_id']] = (int)$aRow['id'];
+        return $aResult;
+    }
+
     public function getEvents($aParams)
     {
         /**
@@ -808,6 +895,38 @@ class BxTimelineDb extends BxBaseModNotificationsDb
         return $this->query("INSERT IGNORE INTO `" . $aTablesEventFlags[$sType] . "` (`event_id`) VALUES (:event_id)", [
             'event_id' => $iEventId,
         ]) !== false;
+    }
+
+    /**
+     * The media flags of many events (updateEventFlagsByType of each): the flags they have are
+     * read in one query and only missing ones are added, a statement per type, so a page whose
+     * events have their flags writes nothing.
+     * @param array $aEventIdsByType type => event ids
+     */
+    public function addEventsFlags($aEventIdsByType)
+    {
+        $aTablesEventFlags = $this->_oConfig->getFiltersMedia(false);
+
+        $aSelects = $aIds = [];
+        foreach($aEventIdsByType as $sType => $aEventIds) {
+            if(empty($aTablesEventFlags[$sType]))
+                continue;
+            $aIds[$sType] = array_values(array_unique(array_filter(array_map('intval', (array)$aEventIds))));
+            if($aIds[$sType])
+                $aSelects[] = $this->prepareAsString("SELECT ? AS `type`, `event_id` FROM `" . $aTablesEventFlags[$sType] . "` WHERE `event_id` IN (" . $this->implode_escape($aIds[$sType]) . ")", $sType);
+        }
+        if(!$aSelects)
+            return;
+
+        $aHave = [];
+        foreach($this->getAll(implode(" UNION ALL ", $aSelects)) as $aRow)
+            $aHave[$aRow['type']][(int)$aRow['event_id']] = true;
+
+        foreach($aIds as $sType => $aEventIds) {
+            $aMissing = array_values(array_filter($aEventIds, function ($iId) use ($aHave, $sType) { return !isset($aHave[$sType][$iId]); }));
+            if($aMissing)
+                $this->query("INSERT IGNORE INTO `" . $aTablesEventFlags[$sType] . "` (`event_id`) VALUES (" . implode("), (", $aMissing) . ")");
+        }
     }
 
     public function deleteEventFlagsByType($sType, $iEventId)

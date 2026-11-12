@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-api-availability"
+description = "Enables the api_availability command without any pre-configured scope."
+commands.allow = ["api_availability"]
+
+[[permission]]
+identifier = "deny-api-availability"
+description = "Denies the api_availability command without any pre-configured scope."
+commands.deny = ["api_availability"]

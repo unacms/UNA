@@ -25,6 +25,15 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `modu
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site_panel' AND `module`='system' AND `name`='member-avatar';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site_panel' AND `module`='system' AND `name`='member-menu';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site_panel' AND `module`='system' AND `name`='member-followings';
+-- the apps' sidebar (API v2 GET /navigation): its groups and the Apps Menu's items; Member Menu and Member Following stay off as installed
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_apps_sidebar' AND `module`='system' AND `name`='member-avatar';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_apps_sidebar' AND `module`='system' AND `name`='apps-menu';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_apps_sidebar' AND `module`='system' AND `name`='public-menu';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_apps_sidebar' AND `module`='system' AND `name`='member-memberships';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_apps_menu' AND `module`='system' AND `name`='home';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_apps_menu' AND `module`='system' AND `name`='explore';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_apps_menu' AND `module`='system' AND `name`='profile';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_apps_menu' AND `module`='system' AND `name`='connections';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_application' AND `module`='system' AND `name`='home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_application' AND `module`='system' AND `name`='about';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_application' AND `module`='system' AND `name`='more-auto';

@@ -322,7 +322,9 @@
     <string name="_bx_groups_menu_item_title_system_friends"><![CDATA[Друзья]]></string>
     <string name="_bx_groups_menu_item_title_friends"><![CDATA[Друзья]]></string>
     <string name="_bx_groups_menu_item_title_system_manage_my_groups"><![CDATA[Мои группы]]></string>
+    <string name="_bx_groups_menu_item_title_system_memberships"><![CDATA[Группы (участник)]]></string>
     <string name="_bx_groups_menu_item_title_manage_my_groups"><![CDATA[Групп]]></string>
+    <string name="_bx_groups_menu_item_title_memberships"><![CDATA[Ваши группы]]></string>
     <string name="_bx_groups_menu_item_title_system_followings"><![CDATA[Группы]]></string>
     <string name="_bx_groups_menu_item_title_followings"><![CDATA[Группы]]></string>
     <string name="_bx_groups_menu_item_title_system_entries_recent"><![CDATA[Новые]]></string>
@@ -408,6 +410,7 @@
     <string name="_bx_groups_txt_set_role"><![CDATA[Задать роль]]></string>
     <string name="_bx_groups_txt_delete"><![CDATA[Удалить]]></string>
     <string name="_bx_groups_txt_delete_and_ban"><![CDATA[Удалить и забанить]]></string>
+    <string name="_bx_groups_txt_empty_title"><![CDATA[Групп пока нет]]></string>
     <string name="_bx_groups_txt_private_group"><![CDATA[Приватная группа]]></string>
     <string name="_bx_groups_txt_invite_popup_text"><![CDATA[Вы были приглашены в эту группу.  Нажмите кнопку ниже чтобы принять приглашение.]]></string>
     <string name="_bx_groups_txt_invite_popup_title"><![CDATA[Приглашение в группу]]></string>

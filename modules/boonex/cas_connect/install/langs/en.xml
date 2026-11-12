@@ -11,7 +11,7 @@
         </p>
     ]]></string>
 	<string name="_bx_cas_profile_error_config"><![CDATA[Please configure the module in admin panel]]></string>
-	<string name="_bx_cas_auth_title"><![CDATA[Login with SSO]]></string>
+	<string name="_bx_cas_auth_title"><![CDATA[Continue with SSO]]></string>
 
     <string name="_bx_cas_adm_stg_cpt_type"><![CDATA[CAS Connect]]></string>
     <string name="_bx_cas_option_path_simplesamlphp"><![CDATA[Path to SimpleSAMLphp library]]></string>

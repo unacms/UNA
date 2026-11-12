@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- The menus Apps Sidebar and Apps Menu, the apps' own (API v2 GET /navigation), as Studio > Navigation names them. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_menu_title_apps_sidebar"><![CDATA[Apps Sidebar]]></string_add>
+    <string_add name="_sys_menu_set_title_apps_sidebar"><![CDATA[Apps Sidebar]]></string_add>
+    <string_add name="_sys_menu_title_apps_menu"><![CDATA[Apps Menu]]></string_add>
+    <string_add name="_sys_menu_set_title_apps_menu"><![CDATA[Apps Menu]]></string_add>
+    <string_add name="_sys_menu_item_title_system_apps_menu"><![CDATA[Apps Menu]]></string_add>
+</resources>

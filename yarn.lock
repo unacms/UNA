@@ -2205,7 +2205,8 @@ headroom.js@^0.12.0:
 
 "highlight.js@github:highlightjs/highlight.js":
   version "11.12.0"
-  resolved "https://codeload.github.com/highlightjs/highlight.js/tar.gz/60e092057673595fa542db0bc2b13a99df5d0551"
+  uid "35f98874f935d3e4b98dbbbef9895c5fbc7d9b4c"
+  resolved "https://codeload.github.com/highlightjs/highlight.js/tar.gz/35f98874f935d3e4b98dbbbef9895c5fbc7d9b4c"
 
 highlight.js@~11.11.0:
   version "11.11.2"
@@ -4845,6 +4846,11 @@ thenify-all@^1.0.0:
   integrity sha512-RVZSIV5IG10Hk3enotrhvz0T9em6cyHBLkH/YAZuKqd8hRkKhSfCGIcP2KUY0EPxndzANBmNllzWPwak+bheSw==
   dependencies:
     any-promise "^1.0.0"
+
+thinking-orbs@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/thinking-orbs/-/thinking-orbs-0.3.2.tgz#1a976c933f7a9975a88445d71d821106547d8a61"
+  integrity sha512-QZFeBaPEzqhjiZoXy961EvDgaXk2WgXacF3Rbz+Sj5IfzDzBvTC86vdREUHniBffYibJFKSwbfllxLUdI/Xv6g==
 
 tiny-emitter@^2.0.0:
   version "2.1.0"

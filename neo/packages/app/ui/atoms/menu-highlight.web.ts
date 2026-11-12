@@ -3,12 +3,18 @@ import { useCallback, useRef } from 'react';
 /** The list class the highlight's CSS hangs on (design/styles/global.web.css). */
 export const MENU_HIGHLIGHT_CLASS = 'neo-menu-highlight';
 
+/**
+ * The same highlight for a bar of tabs (the header's main menu), whose row places children of its own: this class
+ * leaves the children's positions alone. The row itself has to be positioned.
+ */
+export const MENU_HIGHLIGHT_BAR_CLASS = 'neo-menu-highlight-bar';
+
 const INTERACTIVE = 'a, [tabindex]';
 
 /**
  * One highlight that slides under a menu's items to the one under the pointer, or the one focused from the
  * keyboard, as UNA's popup menus do (bx_menu_highlight). Returns a ref for the list, whose children are the items;
- * the list also needs MENU_HIGHLIGHT_CLASS. Touch has no hover: taps don't move it. When the list's rows or its
+ * the list also needs MENU_HIGHLIGHT_CLASS (or MENU_HIGHLIGHT_BAR_CLASS). Touch has no hover: taps don't move it. When the list's rows or its
  * width change under a lit item (a group opens, another closes above it), the highlight is put back on that item
  * at once, as the item itself moved. Native has no hover and gets a no-op (menu-highlight.ts).
  */
@@ -55,8 +61,10 @@ export function useMenuHighlight() {
             // to theirs. One that follows its item (`inPlace`) is there at once, as the item is.
             const jump = inPlace || !list.classList.contains('neo-menu-highlight-on');
             list.classList.toggle('neo-menu-highlight-jump', jump);
-            // Boxes are on screen, so scaled while the menu grows in: back to the list's own pixels.
-            const scale = list.offsetWidth ? listBox.width / list.offsetWidth : 1;
+            // Boxes are on screen, so scaled while the menu grows in: back to the list's own pixels. offsetWidth is a
+            // whole number, so a list 189.8px wide is under a pixel off it without being scaled: taking that for a
+            // scale would put the highlight further off its item the lower the item is.
+            const scale = list.offsetWidth && Math.abs(listBox.width - list.offsetWidth) >= 1 ? listBox.width / list.offsetWidth : 1;
             list.style.setProperty('--neo-menu-highlight-x', `${(box.left - listBox.left) / scale - list.clientLeft}px`);
             list.style.setProperty('--neo-menu-highlight-y', `${(box.top - listBox.top) / scale - list.clientTop}px`);
             list.style.setProperty('--neo-menu-highlight-w', `${box.width / scale}px`);

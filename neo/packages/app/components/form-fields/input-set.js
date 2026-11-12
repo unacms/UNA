@@ -1,6 +1,8 @@
 import Field from './_field';
 import { useFormContext } from 'react-hook-form';
 import { View, Row } from 'app/design/view';
+import { Text } from 'app/design/typography';
+import { stripTags } from 'app/lib/util';
 import { getFormFieldByData } from 'app/lib/form/form-helpers';
 import Submit from './submit';
 
@@ -39,6 +41,15 @@ export default function FormFieldControls(props) {
             <Row className="items-end gap-2 flex-wrap w-full">
                 {children.map((child, index) => {
                     const childKey = `${props.name || 'input_set'}_${child.name || child.type || 'field'}_${index}`
+                    // A text between inputs (the `:` between hours and minutes): as wide as itself, centred on the inputs.
+                    if (child.type == 'value') {
+                        const text = stripTags(String(child.value ?? '')).trim();
+                        return text ? (
+                            <View key={childKey} className="flex-none self-center">
+                                <Text className="text-base text-muted-foreground">{text}</Text>
+                            </View>
+                        ) : null;
+                    }
                     return (
                     <View
                         key={childKey}

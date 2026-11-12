@@ -384,7 +384,9 @@
     <string name="_bx_orgs_menu_item_title_system_relations"><![CDATA[Связи]]></string>
     <string name="_bx_orgs_menu_item_title_relations"><![CDATA[Связи]]></string>
     <string name="_bx_orgs_menu_item_title_system_manage_my_organizations"><![CDATA[Мои организации]]></string>
+    <string name="_bx_orgs_menu_item_title_system_memberships"><![CDATA[Организации (участник)]]></string>
     <string name="_bx_orgs_menu_item_title_manage_my_organizations"><![CDATA[Организации]]></string>
+    <string name="_bx_orgs_menu_item_title_memberships"><![CDATA[Ваши организации]]></string>
     <string name="_bx_orgs_menu_item_title_system_favorites"><![CDATA[Избранные организации]]></string>
     <string name="_bx_orgs_menu_item_title_favorites"><![CDATA[Избранные организации]]></string>
     <string name="_bx_orgs_menu_item_title_system_subscriptions"><![CDATA[Подписки]]></string>
@@ -515,6 +517,7 @@
     <string name="_bx_organizations_alert_action_join_request"><![CDATA[запрос на присоединение к организации]]></string>
     <string name="_bx_organizations_alert_action_profile_cover_changed"><![CDATA[обложка изменена]]></string>
     <string name="_bx_organizations_alert_action_profile_picture_changed"><![CDATA[картинка изменена]]></string>
+    <string name="_bx_organizations_txt_empty_title"><![CDATA[Организаций пока нет]]></string>
     <string name="_bx_orgs_txt_ntfs_fan_added"><![CDATA[В организацию <b class="bx-ntfs-content-profile">{owner_name}</b> вступил <b class="bx-ntfs-content-entry">{subentry_sample}</b>]]></string>
     <string name="_bx_orgs_txt_ntfs_join_invitation"><![CDATA[Представитель организации <b class="bx-ntfs-content-profile">{owner_name}</b> пригласил <b class="bx-ntfs-content-entry">{subentry_sample}</b> вступить в организацию]]></string>
     <string name="_bx_orgs_txt_ntfs_join_request"><![CDATA[В организацию <b class="bx-ntfs-content-profile">{owner_name}</b> хочет вступить <b class="bx-ntfs-content-entry">{subentry_sample}</b>]]></string>

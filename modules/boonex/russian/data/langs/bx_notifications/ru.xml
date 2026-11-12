@@ -182,6 +182,8 @@
     <string name="_bx_ntfs_txt_err_cannot_perform"><![CDATA[Невозможно выполнить действие.]]></string>
 
     <string name="_bx_ntfs_txt_and"><![CDATA[и]]></string>
+    <string name="_bx_ntfs_txt_empty_text"><![CDATA[Здесь появятся реакции, комментарии, упоминания и новые подписчики.]]></string>
+    <string name="_bx_ntfs_txt_empty_title"><![CDATA[Уведомлений пока нет]]></string>
     <string name="_bx_ntfs_txt_object_added"><![CDATA[{author_name_wrapped} - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
     <string name="_bx_ntfs_txt_object_added_in_context"><![CDATA[{author_name_wrapped} - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> в <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
     <string name="_bx_ntfs_txt_object_post_common"><![CDATA[{author_name_wrapped} - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>

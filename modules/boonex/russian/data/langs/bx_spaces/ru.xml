@@ -316,7 +316,9 @@
     <string name="_bx_spaces_menu_item_title_system_friends"><![CDATA[Друзья]]></string>
     <string name="_bx_spaces_menu_item_title_friends"><![CDATA[Друзья]]></string>
     <string name="_bx_spaces_menu_item_title_system_manage_my_spaces"><![CDATA[Мои пространства]]></string>
+    <string name="_bx_spaces_menu_item_title_system_memberships"><![CDATA[Пространства (участник)]]></string>
     <string name="_bx_spaces_menu_item_title_manage_my_spaces"><![CDATA[Пространства]]></string>
+    <string name="_bx_spaces_menu_item_title_memberships"><![CDATA[Ваши пространства]]></string>
     <string name="_bx_spaces_menu_item_title_system_followings"><![CDATA[Пространства]]></string>
     <string name="_bx_spaces_menu_item_title_followings"><![CDATA[Пространства]]></string>
     <string name="_bx_spaces_menu_item_title_system_entries_recent"><![CDATA[Новые]]></string>
@@ -406,6 +408,7 @@
     <string name="_bx_spaces_txt_n_unit"><![CDATA[{0} ({1})]]></string>
     <string name="_bx_spaces_txt_cart_item_title"><![CDATA[{0}: {1} ({2} {3})]]></string>
     <string name="_bx_spaces_txt_cart_item_title_lifetime"><![CDATA[{0}: {1} (пожизненно)]]></string>
+    <string name="_bx_spaces_txt_empty_title"><![CDATA[Пространств пока нет]]></string>
     <string name="_bx_spaces_txt_vote_starts_counter"><![CDATA[{0} голосов]]></string>
 
     <string name="_bx_spaces_msg_performed"><![CDATA[Действие было успешно выполнено.]]></string>

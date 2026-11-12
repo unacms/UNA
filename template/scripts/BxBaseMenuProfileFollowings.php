@@ -57,6 +57,63 @@ class BxBaseMenuProfileFollowings extends BxTemplMenu
         return echoJson($aResult);
     }
 
+    /**
+     * The modules' items for the apps (API v2 GET /navigation), each with the ids of the contexts
+     * the viewer follows in that module (`contexts`, newest first, the same connection and order
+     * as the web's submenu) and whether there are more (`contexts_more`); a module the viewer
+     * follows nothing in is left out, as on the web. Its items are active in the apps
+     * (`active_api`) and visible to the viewer. BxBaseApiV2Navigation reads the contexts' profiles
+     * at once instead of a profile at a time.
+     * @param bool $bAddons not used: the items have no counters
+     * @param int $iPerModule how many contexts of a module at most
+     */
+    public function getMenuItemsForApps($bAddons = false, $iPerModule = 0)
+    {
+        $iProfile = (int)bx_get_logged_profile_id();
+        if (!$iProfile)
+            return [];
+
+        if ($iPerModule <= 0)
+            $iPerModule = $this->_iPerPageDefault;
+
+        $bIsApi = $this->_bIsApi;
+        $this->_bIsApi = true;
+        try {
+            $aResult = [];
+            foreach (parent::getMenuItemsRaw() as $a) {
+                if (!$this->_isActive($a) || !$this->_isVisible($a) || empty($a['module']))
+                    continue;
+
+                $aIds = $this->_getContextIds($iProfile, $a['module'], 0, $iPerModule + 1);
+                if (empty($aIds) || !is_array($aIds))
+                    continue;
+
+                $bMore = count($aIds) > $iPerModule;
+                if ($bMore)
+                    $aIds = array_slice($aIds, 0, $iPerModule);
+
+                if (empty($a['icon']) && bx_is_srv($a['module'], 'module_icon'))
+                    $a['icon'] = bx_srv($a['module'], 'module_icon');
+
+                $a = $this->_replaceMarkers($a);
+                $a['title'] = !empty($a['title']) ? _t($a['title']) : '';
+                $a['icon_code'] = isset($a['icon']) ? (string)$a['icon'] : '';
+                $a['link_code'] = isset($a['link']) ? (string)$a['link'] : '';
+                $a['addon_call'] = '';
+                $a['submenu'] = '';
+                $a['contexts'] = array_map('intval', array_values($aIds));
+                $a['contexts_more'] = $bMore;
+                $this->_updateVisibilityParamsAPI($a);
+                $aResult[] = $a;
+            }
+        }
+        finally {
+            $this->_bIsApi = $bIsApi;
+        }
+
+        return $aResult;
+    }
+
     protected function getMenuItemsRaw ()
     {
         $aMenuItems = parent::getMenuItemsRaw();
@@ -83,12 +140,26 @@ class BxBaseMenuProfileFollowings extends BxTemplMenu
         return $aMenuItems;
     }
     
+    /**
+     * The ids of a module's contexts the profile is connected with, newest first: here the ones
+     * it follows (sys_profiles_subscriptions). BxBaseMenuProfileMemberships lists the ones it is a
+     * member or a friend of instead.
+     */
+    protected function _getContextIds($iProfile, $sContextModule, $iStart, $iLimit)
+    {
+        if (!$this->_oConnection)
+            return [];
+
+        $aIds = $this->_oConnection->getConnectedContentByType($iProfile, [$sContextModule], false, $iStart, $iLimit, BX_CONNECTIONS_ORDER_ADDED_DESC);
+        return is_array($aIds) ? $aIds : [];
+    }
+
     protected function _getMenuSubitems($iProfile, $sContextModule, $iStart = 0, $iPerPage = 0)
     {
         if(!$iPerPage)
             $iPerPage = $this->_iPerPageDefault;
 
-        $aIds = $this->_oConnection->getConnectedContentByType($iProfile, [$sContextModule], false, $iStart, $iPerPage + 1, BX_CONNECTIONS_ORDER_ADDED_DESC);
+        $aIds = $this->_getContextIds($iProfile, $sContextModule, $iStart, $iPerPage + 1);
 
         $bNext = false;
         if(count($aIds) > $iPerPage) {

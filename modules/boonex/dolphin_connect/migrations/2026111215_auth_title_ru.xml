@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The sign-in button reads "Continue with ...". -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_upd name="_bx_dolcon_auth_title"><![CDATA[Продолжить с Dolphin]]></string_upd>
+</resources>

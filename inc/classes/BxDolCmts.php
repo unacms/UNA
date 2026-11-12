@@ -734,7 +734,16 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
 
     public function getSocketName()
     {
-        return 'cmts_' . $this->_sSystem;
+        return self::getSocketNameOf($this->_sSystem);
+    }
+
+    /**
+     * The name of a comments system's sockets channels, without making its object: a channel is
+     * this name, '_' and the commented entry's id (sendEvent).
+     */
+    public static function getSocketNameOf($sSystem)
+    {
+        return 'cmts_' . $sSystem;
     }
 
     /**

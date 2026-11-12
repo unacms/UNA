@@ -75,6 +75,11 @@ export const EVENTS = {
          *     reset_to_first
          */
 
+    composer: 'composer',
+        /* The page's post composer (MultiPostForm).
+         *     open — opens its first form, as its "Create new …" trigger does
+         */
+
     dynamicMenu: 'dynamic_menu',
         /* hide */
 
@@ -104,6 +109,11 @@ export const EVENTS = {
 
     notifications: 'notifications',
         /* arrived */
+
+    // ************************ grids *****************************************
+
+    gridChanged: 'grid_changed',
+        /* object — a row was added, changed or deleted in that UNA grid (after its action) */
 
     // ************************ tasks *****************************************
 

@@ -3285,6 +3285,23 @@ function bx_is_api()
     return defined('BX_API') || bx_get('api') ? true : false;
 }
 
+/**
+ * Whether this request is an API v2 one: api_v2.php with API v2 turned on (BxDolApiV2Router::run
+ * marks it). Code the site and API v1 share asks this before it does what only API v2 wants
+ * (reading small tables whole, reusing a private file's link), so with API v2 off they work as
+ * they always did.
+ * @param bool|null $mixedSet mark the request (the router, a test); null only asks
+ */
+function bx_is_api_v2($mixedSet = null)
+{
+    static $bApiV2 = false;
+
+    if ($mixedSet !== null)
+        $bApiV2 = (bool)$mixedSet;
+
+    return $bApiV2;
+}
+
 function bx_api_get_sql($q)
 {
     $sql = false;

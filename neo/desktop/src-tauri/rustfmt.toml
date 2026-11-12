@@ -1,0 +1,3 @@
+# The width the shell was written to; "Max" keeps short calls and struct literals on one line.
+max_width = 160
+use_small_heuristics = "Max"

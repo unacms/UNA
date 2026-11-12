@@ -327,6 +327,20 @@ class BxBaseFormView extends BxDolForm
         return (bool)($this->aParams['view_mode'] ?? 0);
     }
 
+    /**
+     * How the form labels its fields: the form display's own style (`sys_form_displays`.`label_style`, or 'label_style' in
+     * the form params), otherwise the site's (Studio > Designer > Settings, `sys_form_label_style`). Anything else is regular.
+     * @return string BxDolForm::LABEL_STYLE_REGULAR or BxDolForm::LABEL_STYLE_ADAPTIVE
+     */
+    public function getLabelStyle()
+    {
+        $sStyle = $this->aParams['label_style'] ?? '';
+        if(!is_string($sStyle) || $sStyle === '')
+            $sStyle = getParam('sys_form_label_style');
+
+        return $sStyle == BxDolForm::LABEL_STYLE_ADAPTIVE ? BxDolForm::LABEL_STYLE_ADAPTIVE : BxDolForm::LABEL_STYLE_REGULAR;
+    }
+
     function setAbsoluteActionUrl($sUrl)
     {
         if(empty($sUrl))
@@ -593,10 +607,11 @@ class BxBaseFormView extends BxDolForm
             $aInputs[$sKey] = $aInput;
         }
 
+        // Apps draw the labels and the required marks the way the site does: the resolved style, never ''. An app that has no floating labels shows regular ones.
         return [
             'inputs' => $aInputs, 
             'attrs' => $this->aFormAttrs, 
-            'params' => $this->aParams
+            'params' => array_merge($this->aParams, ['label_style' => $this->getLabelStyle(), 'required_mark' => $this->getRequiredMark()])
         ];
     }
 
@@ -1217,7 +1232,10 @@ BLAH;
     {
         $sCaption = isset($aInput['caption']) ? bx_process_output($aInput['caption'], BX_DATA_HTML) : '';
 
-        $sRequired = !empty($aInput['required']) ? '<span class="bx-form-required">*</span>' : '';
+        // Not while the form is built for the API: the row's markup would reach the apps in the input's attrs.
+        $bAdaptive = !$isOneLine && !$this->_bGenFormApi && $sCaption && $this->isLabelAdaptive($aInput);
+
+        $sRequired = $this->genRequiredMark($aInput, $isOneLine);
         
         $sHelp = !empty($aInput['help']) ? ' <a href="javascript:void(0)" onclick="javascript:' . $this->getJsObjectName() . '.showHelp(this, \'' . $aInput['name'] . '\')"><i class="sys-icon question-circle"></i></a> ' : '';
 
@@ -1236,6 +1254,29 @@ BLAH;
                 $aInput['tr_attrs'] = [];
             $aInput['tr_attrs']['id'] = "bx-form-element-" . $aInput['name'];
         }
+
+        /*
+         * A floating label (forms.css): the caption rests in the empty field and moves to its top edge once the field
+         * has focus or a value, which CSS reads from :placeholder-shown. A field with a placeholder of its own keeps
+         * the caption on the edge, so the two never overlap.
+         */
+        if ($bAdaptive) {
+            if (!isset($aInput['attrs']) || !is_array($aInput['attrs']))
+                $aInput['attrs'] = [];
+            $aInput['attrs']['id'] = $this->getInputId($aInput);
+
+            $sClassWrapper .= ' bx-form-element-adaptive';
+            if (isset($aInput['attrs']['placeholder']) && trim((string)$aInput['attrs']['placeholder']) !== '')
+                $sClassWrapper .= ' bx-form-element-adaptive-floated';
+            else
+                $aInput['attrs']['placeholder'] = ' ';
+
+            $sCaption = $this->oTemplate->parseHtmlByName('form_row_label.html', [
+                'for' => bx_html_attribute($aInput['attrs']['id']),
+                'caption' => $sCaption,
+            ]);
+        }
+
         $sTrAttrs = bx_convert_array2attrs(isset($aInput['tr_attrs']) && is_array($aInput['tr_attrs']) ? $aInput['tr_attrs'] : array(), $sClassWrapper);
 
         $sClassOneLineCaption = '';
@@ -1287,6 +1328,67 @@ BLAH;
         ));
     }
 
+    /**
+     * Which fields of the form carry a mark, by the rule "mark the fewer": nothing when every field is required (a login
+     * or sign-up form) or none is, "(optional)" on the optional fields when they are the fewer or as many, an asterisk
+     * on the required ones otherwise. Only fields with a label above them count: not checkboxes, switches or buttons.
+     * @return string BxDolForm::REQUIRED_MARK_*
+     */
+    public function getRequiredMark()
+    {
+        $iRequired = $iOptional = 0;
+        foreach($this->aInputs as $aInput) {
+            if(!$this->_isRequiredMarkInput($aInput))
+                continue;
+
+            if(!empty($aInput['required']))
+                $iRequired++;
+            else
+                $iOptional++;
+        }
+
+        if(!$iRequired || !$iOptional)
+            return BxDolForm::REQUIRED_MARK_NONE;
+
+        return $iOptional <= $iRequired ? BxDolForm::REQUIRED_MARK_OPTIONAL : BxDolForm::REQUIRED_MARK_REQUIRED;
+    }
+
+    protected function _isRequiredMarkInput($aInput)
+    {
+        if(!is_array($aInput) || empty($aInput['caption']))
+            return false;
+
+        return !in_array($aInput['type'] ?? '', ['hidden', 'submit', 'reset', 'button', 'image', 'block_header', 'block_end', 'input_set', 'custom', 'value', 'checkbox', 'switcher']);
+    }
+
+    /**
+     * The mark after a row's caption: an asterisk, "(optional)" or nothing (see getRequiredMark).
+     */
+    public function genRequiredMark($aInput, $isOneLine = false)
+    {
+        $sMark = $this->getRequiredMark();
+        $bRequired = !empty($aInput['required']);
+
+        if($sMark == BxDolForm::REQUIRED_MARK_REQUIRED && $bRequired)
+            return $this->oTemplate->parseHtmlByName('form_row_required.html', []);
+
+        if($sMark == BxDolForm::REQUIRED_MARK_OPTIONAL && !$bRequired && !$isOneLine && $this->_isRequiredMarkInput($aInput))
+            return $this->oTemplate->parseHtmlByName('form_row_optional.html', ['text' => _t('_sys_form_txt_optional')]);
+
+        return '';
+    }
+
+    /**
+     * Whether a row gets a floating label: only one-line text fields, and only in a form whose label style is adaptive.
+     */
+    public function isLabelAdaptive($aInput)
+    {
+        if($this->getLabelStyle() != BxDolForm::LABEL_STYLE_ADAPTIVE)
+            return false;
+
+        return in_array($aInput['type'] ?? '', ['text', 'password']) && empty($aInput['html']) && !empty($aInput['name']);
+    }
+
     function genWrapperInput($aInput, $sContent)
     {
         $aAttrs = $this->_genWrapperInputAttrs($aInput);
@@ -1317,7 +1419,7 @@ BLAH;
     {
         $sCaption = isset($aInput['caption']) ? bx_process_output($aInput['caption']) : '';
 
-        $sRequired = !empty($aInput['required']) ? '<span class="bx-form-required">*</span>' : '';
+        $sRequired = $this->genRequiredMark($aInput);
         
         $sHelp = !empty($aInput['help']) ? ' <a href="javascript:void(0)" onclick="javascript:' . $this->getJsObjectName() . '.showHelp(this, \'' . $aInput['name'] . '\')"><i class="sys-icon question-circle"></i></a> ' : '';
 

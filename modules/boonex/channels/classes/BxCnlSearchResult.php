@@ -222,7 +222,9 @@ class BxCnlSearchResult extends BxBaseModGroupsSearchResult
                     'onField' => 'value',
                     'joinFields' => array('value'),
                 );
-                $this->aCurrent['restriction']['level'] = array('value' => $aParams['level'], 'field' => 'level', 'operator' => '=', 'table' => 'sys_labels');
+                // The level a list shows: 0 (top level) when a request doesn't say, as an API client's
+                // next page could.
+                $this->aCurrent['restriction']['level'] = array('value' => (int)($aParams['level'] ?? 0), 'field' => 'level', 'operator' => '=', 'table' => 'sys_labels');
                 $this->aCurrent['sorting'] = 'level';
                 $this->sBrowseUrl = 'page.php?i=channels-toplevel';
                 break;
@@ -244,6 +246,25 @@ class BxCnlSearchResult extends BxBaseModGroupsSearchResult
         }
 
         $this->sCenterContentUnitSelector = false;
+    }
+
+    /**
+     * Channels come from hashtags, so an empty list says how one appears, for the list it is; no
+     * button, since channels are not added by hand.
+     */
+    public function getEmptyStateApi()
+    {
+        $aTexts = [
+            'level' => '_bx_channels_txt_empty_text_level',
+            'followed_entries' => '_bx_channels_txt_empty_text_followed',
+            'connections' => '_bx_channels_txt_empty_text_followed',
+            'favorite' => '_bx_channels_txt_empty_text_favorite',
+        ];
+
+        return [
+            'title' => '_bx_channels_txt_empty_title',
+            'text' => $aTexts[$this->_sMode] ?? '_bx_channels_txt_empty_text',
+        ];
     }
 
     function getAlterOrder()

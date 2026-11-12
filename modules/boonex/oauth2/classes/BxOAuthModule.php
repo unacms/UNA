@@ -11,6 +11,70 @@
 
 class BxOAuthUserCredentialsStorage extends OAuth2\Storage\Pdo implements OAuth2\Storage\UserCredentialsInterface
 {
+    /**
+     * Clients of native apps (RFC 8252), by their ids. They sign in for API v2 and are the only
+     * clients with rules of their own (PKCE, loopback redirects, see BxOAuthAuthorizeController).
+     * They are built in: none has a row in bx_oauth_clients, so a site without API v2 has the
+     * clients it always had, in Studio and for every endpoint that looks a client up. None has a
+     * secret. Its `api` scope is its own: it is not in bx_oauth_scopes.
+     */
+    const NATIVE_APP_CLIENTS = array(
+        'una-desktop' => array(
+            'title' => 'UNA Desktop',
+            'redirect_uri' => 'http://127.0.0.1/callback',
+            'grant_types' => 'authorization_code,refresh_token',
+            'scope' => 'api',
+        ),
+    );
+
+    /**
+     * A native app's client as a row of bx_oauth_clients, false when the id is not one or API v2
+     * is off. Native apps are clients of API v2, a preview that is off as installed: while it is
+     * off the server doesn't know them (the id is like any other then, and a site's own client of
+     * that id works as it always did); while it is on the id is the native app's, whatever the
+     * table has. The id is matched as it is written, letter case too.
+     * @return array|false
+     */
+    public static function getNativeAppClient($sClientId)
+    {
+        if (!is_string($sClientId) || !isset(self::NATIVE_APP_CLIENTS[$sClientId]) || !getParam(BxDolApiV2Router::OPTION_ENABLE))
+            return false;
+
+        return array('id' => 0, 'client_id' => $sClientId, 'client_secret' => null, 'parent_id' => 0, 'user_id' => 0) + self::NATIVE_APP_CLIENTS[$sClientId];
+    }
+
+    public function isNativeAppClient($sClientId)
+    {
+        return self::getNativeAppClient($sClientId) !== false;
+    }
+
+    // what the library asks about a client: a native app's is answered here, any other by the library, as it always was
+
+    public function getClientDetails($sClientId)
+    {
+        if (($aClient = self::getNativeAppClient($sClientId)) !== false)
+            return $aClient;
+
+        return parent::getClientDetails($sClientId);
+    }
+
+    public function isPublicClient($sClientId)
+    {
+        if (self::getNativeAppClient($sClientId) !== false)
+            return true;
+
+        return parent::isPublicClient($sClientId);
+    }
+
+    public function checkClientCredentials($sClientId, $sClientSecret = null)
+    {
+        // a native app has no secret: it is never the one who knows it
+        if (self::getNativeAppClient($sClientId) !== false)
+            return false;
+
+        return parent::checkClientCredentials($sClientId, $sClientSecret);
+    }
+
     public function checkUserCredentials($sLogin, $sPassword)
     {
         return ($sErrorMsg = bx_check_password($sLogin, $sPassword)) ? false : true;
@@ -102,7 +166,7 @@ class BxOAuthModule extends BxDolModule
         // get the client data if it wasn't set before
         
         if (empty($aClient))
-            $aClient = $sClientId ? $this->_oDb->getClientsBy(array('type' => 'client_id', 'client_id' => $sClientId)) : false;
+            $aClient = $sClientId ? $this->getClient($sClientId) : false;
         
         if (!$aClient)
             $aClient = array('grant_types' => 'authorization_code');
@@ -114,24 +178,25 @@ class BxOAuthModule extends BxDolModule
 
 
         // configure OAuth storage and server
-                
-        $aConfig = array (
-            'client_table' => 'bx_oauth_clients',
-            'access_token_table' => 'bx_oauth_access_tokens',
-            'refresh_token_table' => 'bx_oauth_refresh_tokens',
-            'code_table' => 'bx_oauth_authorization_codes',
-            'user_table' => 'sys_accounts',
-            'jwt_table'  => '',
-            'jti_table'  => '',
-            'scope_table'  => 'bx_oauth_scopes',
-            'public_key_table'  => '',
-        );
-        $this->_oStorage = new BxOAuthUserCredentialsStorage(BxDolDb::getLink(), $aConfig);
+
+        $this->_oStorage = $this->getStorage();
 
         $iRefreshTokenLifetime = (int)getParam('bx_oauth2_refresh_token_lifetime');
-        $this->_oServer = new OAuth2\Server($this->_oStorage, array(
+        $aServerConfig = array(
             'require_exact_redirect_uri' => false,
             'refresh_token_lifetime' => $iRefreshTokenLifetime ? $iRefreshTokenLifetime : 7779000, // set lifetime to 90 days
+        );
+        $this->_oServer = new OAuth2\Server($this->_oStorage, $aServerConfig);
+
+        // The library's authorize controller, set up as the server sets up its own, plus the rules of native apps
+        // (PKCE, loopback redirects), see BxOAuthAuthorizeController. It is there for every request, whatever
+        // client the lines above found: the client the request itself names decides which rules apply.
+        bx_import('AuthorizeController', $this->_aModule);
+        $this->_oServer->setAuthorizeController(new BxOAuthAuthorizeController(
+            $this->_oStorage,
+            array('code' => new OAuth2\ResponseType\AuthorizationCode($this->_oStorage)),
+            $aServerConfig,
+            new OAuth2\Scope($this->_oStorage)
         ));
 
         // add grand types
@@ -154,7 +219,62 @@ class BxOAuthModule extends BxDolModule
                 'always_issue_new_refresh_token' => getParam('bx_oauth2_always_issue_new_refresh_token') ? true : false,
                 // 'unset_refresh_token_after_use' => false,
             )));
-    }    
+    }
+
+    /**
+     * A client by its id: a native app's built-in one while API v2 is on
+     * (BxOAuthUserCredentialsStorage::getNativeAppClient), otherwise its row of bx_oauth_clients,
+     * as it always was.
+     * @return array the client, empty when there is none
+     */
+    public function getClient($sClientId)
+    {
+        if (($aClient = BxOAuthUserCredentialsStorage::getNativeAppClient($sClientId)) !== false)
+            return $aClient;
+
+        return $this->_oDb->getClientsBy(array('type' => 'client_id', 'client_id' => $sClientId));
+    }
+
+    public function getStorage()
+    {
+        if ($this->_oStorage)
+            return $this->_oStorage;
+
+        return new BxOAuthUserCredentialsStorage(BxDolDb::getLink(), array (
+            'client_table' => 'bx_oauth_clients',
+            'access_token_table' => 'bx_oauth_access_tokens',
+            'refresh_token_table' => 'bx_oauth_refresh_tokens',
+            'code_table' => 'bx_oauth_authorization_codes',
+            'user_table' => 'sys_accounts',
+            'jwt_table'  => '',
+            'jti_table'  => '',
+            'scope_table'  => 'bx_oauth_scopes',
+            'public_key_table'  => '',
+        ));
+    }
+
+    /**
+     * An access token that hasn't expired, for resource servers such as API v2.
+     * No origin check and no output: the caller decides how to answer.
+     * @param string $sToken bearer token
+     * @return array|false ['profile_id' => int, 'client_id' => string, 'scopes' => [string], 'expires' => int]
+     */
+    public function serviceGetAccessTokenData($sToken)
+    {
+        if (!is_string($sToken) || !preg_match('/^[A-Za-z0-9]{20,80}$/', $sToken))
+            return false;
+
+        $aToken = $this->getStorage()->getAccessToken($sToken);
+        if (empty($aToken) || empty($aToken['user_id']) || (int)$aToken['expires'] < time())
+            return false;
+
+        return array(
+            'profile_id' => (int)$aToken['user_id'],
+            'client_id' => (string)$aToken['client_id'],
+            'scopes' => preg_split('/[\s,]+/', trim((string)$aToken['scope']), -1, PREG_SPLIT_NO_EMPTY),
+            'expires' => (int)$aToken['expires'],
+        );
+    }
 
     /**
      * @page public_api API Public
@@ -331,6 +451,12 @@ class BxOAuthModule extends BxDolModule
 
         switch ($this->processAuthorizeRequest($oRequest, $oResponse)) {
             case 'error':
+                // a native app waits for its redirect, so with a valid redirect_uri the error goes back to it
+                // (RFC 6749 4.1.2.1); every other client gets the site's error page, as before
+                if ($oResponse->isRedirection() && $this->_isNativeAppRequest()) {
+                    $oResponse->send();
+                    break;
+                }
                 require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
                 $this->_oTemplate->getPage(false, MsgBox($this->_getAuthorizeError($oResponse)));
                 break;
@@ -423,11 +549,30 @@ class BxOAuthModule extends BxDolModule
             return MsgBox($this->_getAuthorizeError($oResponse));
 
         $aParams = $this->getAuthorizeParams();
-        $sTitle = $this->_oDb->getClientTitle($aParams['client_id']);
 
-        $this->_oTemplate->addCss('main.css');
-        return $this->_oTemplate->parseHtmlByName('page_auth.html', array(
+        // A native app: what it asks for, and where the browser goes back to, so a person can tell an app on
+        // this computer from a website. Its PKCE challenge is in the form too: the form's POST is validated as
+        // the request was. Every other client gets the page as it always was.
+        $bNativeApp = $this->_isNativeAppRequest();
+        $aNativeApp = $bNativeApp ? BxOAuthUserCredentialsStorage::getNativeAppClient($aParams['client_id']) : false;
+        $sTitle = $aNativeApp ? $aNativeApp['title'] : $this->_oDb->getClientTitle($aParams['client_id']);
+        $sRedirectHost = $bNativeApp ? $this->_getRedirectHost($aParams) : '';
+
+        $aVars = array(
             'text' => _t('_bx_oauth_authorize_app', $this->_escapeAttribute($sTitle)),
+            'bx_if:native_app' => array(
+                'condition' => $bNativeApp,
+                'content' => array(
+                    'bx_if:scope_api' => array(
+                        'condition' => $bNativeApp && in_array('api', preg_split('/[\s,]+/', $aParams['scope'], -1, PREG_SPLIT_NO_EMPTY), true),
+                        'content' => array('scope_api_text' => _t('_bx_oauth_authorize_scope_api')),
+                    ),
+                    'bx_if:redirect' => array(
+                        'condition' => $sRedirectHost !== '',
+                        'content' => array('redirect_text' => _t('_bx_oauth_authorize_redirect', $this->_escapeAttribute($sRedirectHost))),
+                    ),
+                ),
+            ),
             'url' => BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'auth',
             'csrf_token' => $this->_escapeAttribute($this->getConsentToken()),
             'client_id' => $this->_escapeAttribute($aParams['client_id']),
@@ -435,8 +580,18 @@ class BxOAuthModule extends BxDolModule
             'redirect_uri' => $this->_escapeAttribute($aParams['redirect_uri']),
             'scope' => $this->_escapeAttribute($aParams['scope']),
             'state' => $this->_escapeAttribute($aParams['state']),
+            'bx_if:pkce' => array(
+                'condition' => isset($aParams['code_challenge']),
+                'content' => array(
+                    'code_challenge' => $this->_escapeAttribute($aParams['code_challenge'] ?? ''),
+                    'code_challenge_method' => $this->_escapeAttribute($aParams['code_challenge_method'] ?? ''),
+                ),
+            ),
             'profiles' => BxDolService::call('system', 'account_profile_switcher', array(getLoggedId(), false, "javascript: $('#bx-auth-profile-id').val('{profile_id}'); $('#bx-auth-form form').submit(); void(0);", true, _t('_bx_oauth_connect'), 'unit_wo_links'), 'TemplServiceProfiles')['content'],
-        ));
+        );
+
+        $this->_oTemplate->addCss('main.css');
+        return $this->_oTemplate->parseHtmlByName('page_auth.html', $aVars);
     }
 
     /**
@@ -455,6 +610,13 @@ class BxOAuthModule extends BxDolModule
         );
         if (($sState = $oController->getState()) !== null && $sState !== '')
             $aParams['state'] = (string)$sState;
+
+        // PKCE of a native app (BxOAuthAuthorizeController): the challenge goes through the sign-in and the consent form with the rest
+        $sChallenge = method_exists($oController, 'getCodeChallenge') ? (string)$oController->getCodeChallenge() : '';
+        if ($sChallenge !== '') {
+            $aParams['code_challenge'] = $sChallenge;
+            $aParams['code_challenge_method'] = 'S256';
+        }
 
         return $aParams;
     }
@@ -504,6 +666,34 @@ class BxOAuthModule extends BxDolModule
     {
         $oAccount = BxDolAccount::getInstance();
         return $oAccount ? $oAccount->getProfiles() : array();
+    }
+
+    /**
+     * Whether the authorize request validated last names a native app, see BxOAuthAuthorizeController.
+     */
+    protected function _isNativeAppRequest()
+    {
+        $oController = $this->_oServer->getAuthorizeController();
+        return method_exists($oController, 'isNativeAppRequest') && $oController->isNativeAppRequest();
+    }
+
+    /**
+     * Where the browser goes back to after the consent page: host[:port] of the redirect in the
+     * request, or of the registered one when the request has none.
+     */
+    protected function _getRedirectHost($aParams)
+    {
+        $sUri = $aParams['redirect_uri'];
+        if ($sUri === '') {
+            $aClient = $this->_oStorage->getClientDetails($aParams['client_id']);
+            $sUri = is_array($aClient) ? (string)$aClient['redirect_uri'] : '';
+        }
+
+        $aUri = $sUri !== '' ? parse_url($sUri) : false;
+        if (!is_array($aUri) || empty($aUri['host']))
+            return '';
+
+        return $aUri['host'] . (isset($aUri['port']) ? ':' . (int)$aUri['port'] : '');
     }
 
     protected function _getAuthorizeError($oResponse)

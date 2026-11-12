@@ -289,7 +289,9 @@
     <string name="_bx_persons_menu_item_title_system_friend_requests"><![CDATA[Friend requests number]]></string>
     <string name="_bx_persons_menu_item_title_friend_requests"><![CDATA[Friend requests]]></string>
     <string name="_bx_persons_menu_item_title_system_manage_my_profiles"><![CDATA[My profiles]]></string>
+    <string name="_bx_persons_menu_item_title_system_memberships"><![CDATA[Friends]]></string>
     <string name="_bx_persons_menu_item_title_manage_my_profiles"><![CDATA[Profiles]]></string>
+    <string name="_bx_persons_menu_item_title_memberships"><![CDATA[Your friends]]></string>
     <string name="_bx_persons_menu_item_title_system_favorites"><![CDATA[Favorite Persons]]></string>
     <string name="_bx_persons_menu_item_title_favorites"><![CDATA[Favorite persons]]></string>    
     <string name="_bx_persons_menu_item_title_system_subscriptions"><![CDATA[Following]]></string>
@@ -353,6 +355,7 @@
     <string name="_bx_persons_txt_account_pending_moderation"><![CDATA[This <a href="{0}">profile</a> is pending approval.]]></string>
     <string name="_bx_persons_txt_account_suspended"><![CDATA[This profile is suspended.]]></string>
     <string name="_bx_persons_txt_account_suspended_moderation"><![CDATA[This <a href="{0}">profile</a> is suspended.]]></string>
+    <string name="_bx_persons_txt_empty_title"><![CDATA[No people yet]]></string>
     <string name="_bx_persons_txt_N_friends"><![CDATA[{0} friends]]></string>
     <string name="_bx_persons_txt_ntfs_timeline_post_common"><![CDATA[New post <b class="bx-ntfs-content-entry">{subentry_sample}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b> profile timeline]]></string>
     <string name="_bx_persons_txt_sample_single"><![CDATA[person]]></string>

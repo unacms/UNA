@@ -14,7 +14,7 @@ export default function AuthPasskey() {
                 onPress={handlePasskeyLogin}
                 label={t('Use Passkey')}
                 image="KeySquare"
-                controlSize="large"
+                controlSize="regular"
                 width="fill"
                 classNames={{ root: 'flex-none' }}
             />

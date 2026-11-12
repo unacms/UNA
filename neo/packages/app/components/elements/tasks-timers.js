@@ -7,6 +7,11 @@ import { NeoButton } from 'app/design/controls';
 import { components } from 'app/components/registry';
 import { fetcher } from 'app/lib/fetcher';
 import emitter, { EVENTS } from 'app/context/emitter';
+import { useCurrentUser } from 'app/context/user';
+import { subscribe } from 'app/ui/atoms/socket';
+
+/** Log All sends one event per timer: wait for the burst before reloading. */
+const RELOAD_DELAY_MS = 300;
 
 /** Payload is either `{ sections: [...] }` or a bare sections array. */
 function getSections(data) {
@@ -25,13 +30,17 @@ function removeTimer(prev, timerId) {
     return { ...prev, sections };
 }
 
-/** Rows keep their own timer state, so a row must not take over its removed neighbour's instance. */
+/**
+ * Rows keep their own timer state, so a row must not take over its removed neighbour's instance.
+ * The state is part of the key: a timer paused or resumed elsewhere remounts with the reloaded data.
+ */
 function getTimerKey(item) {
-    return item?.timer?.id;
+    return `${item?.timer?.id}:${item?.timer?.state}`;
 }
 
 export default function ElementTasksTimers({ data, blockWrapperProps }) {
     const NoContent = components['molecule']['no_content'];
+    const { currentUser } = useCurrentUser();
     const [timersData, setTimersData] = useState(data);
 
     // Fresh block data (page reload) replaces the locally pruned copy.
@@ -50,6 +59,34 @@ export default function ElementTasksTimers({ data, blockWrapperProps }) {
         });
         return () => subscription.remove();
     }, []);
+
+    const requestUrl = timersData?.request_url || data?.request_url;
+    const profileId = currentUser?.id;
+
+    useEffect(() => {
+        if (!requestUrl) return undefined;
+
+        let timeout = null;
+        let latestRequest = 0;
+        // A timer started, paused or logged on this screen, another page or another device.
+        const reload = () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(async () => {
+                const request = ++latestRequest;
+                const response = await fetcher('/api.php?r=' + requestUrl, false, { silent: true });
+                const next = response?.data?.[0]?.data;
+                if (request === latestRequest && next && typeof next === 'object') setTimersData(next);
+            }, RELOAD_DELAY_MS);
+        };
+
+        const subscription = emitter.addListener(EVENTS.taskTimer, reload);
+        const unsubscribe = profileId ? subscribe(`bx_tasks_timers_${profileId}`, 'changed', reload) : null;
+        return () => {
+            clearTimeout(timeout);
+            subscription.remove();
+            if (unsubscribe) unsubscribe();
+        };
+    }, [requestUrl, profileId]);
 
     const sections = getSections(timersData).filter((section) => section?.timers?.length > 0);
     const globalActions = timersData?.actions?.items || [];

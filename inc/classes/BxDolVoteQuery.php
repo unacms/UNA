@@ -53,11 +53,40 @@ class BxDolVoteQuery extends BxDolObjectQuery
         return (int)$this->getOne("SELECT `object_id` FROM `" . $this->_sTableTrack . "` WHERE 1" . $sWhereClause, $aBindings) == 0;
     }
 
+    /**
+     * In the open row scope (BxDolDb::openRowScope): what getVote of each of these objects
+     * reads, in one query, so getVote of each reads none.
+     */
+    public function primeVotes($aObjectIds)
+    {
+        if(!self::$_aRowScopes)
+            return;
+
+        $aIds = [];
+        $aRow = [];
+        foreach((array)$aObjectIds as $mId)
+            if(($iId = (int)$mId) > 0 && !$this->_getScopedRow($this->_sTable, '#vote', $iId, $aRow))
+                $aIds[$iId] = $iId;
+        if(!$aIds)
+            return;
+
+        $aPrimed = array_fill_keys(array_values($aIds), []);
+        foreach($this->getAll("SELECT `object_id`, `count` as `count`, `sum` as `sum`, ROUND(`sum` / `count`, 2) AS `rate` FROM {$this->_sTable} WHERE `object_id` IN (" . $this->implode_escape(array_values($aIds)) . ")") as $aRow) {
+            $iId = (int)$aRow['object_id'];
+            unset($aRow['object_id']);
+            if(isset($aPrimed[$iId]) && !$aPrimed[$iId])
+                $aPrimed[$iId] = $aRow;
+        }
+        $this->_setScopedRows($this->_sTable, '#vote', $aPrimed);
+    }
+
     public function getVote($iObjectId)
     {
         $sQuery = $this->prepare("SELECT `count` as `count`, `sum` as `sum`, ROUND(`sum` / `count`, 2) AS `rate` FROM {$this->_sTable} WHERE `object_id` = ? LIMIT 1", $iObjectId);
 
-        $aResult = $this->getRow($sQuery);
+        $aResult = [];
+        if(!$this->_getScopedRow($this->_sTable, '#vote', $iObjectId, $aResult))
+            $aResult = $this->getRow($sQuery);
         if(empty($aResult) || !is_array($aResult))
             $aResult = array('count' => 0, 'sum' => 0, 'rate' => 0);
 
@@ -66,6 +95,7 @@ class BxDolVoteQuery extends BxDolObjectQuery
 
     public function putVote($iObjectId, $iAuthorId, $sAuthorIp, $aData, $bUndo = false)
     {
+        $this->_forgetScopedRows($this->_sTable);
         $sQuery = $this->prepare("SELECT `object_id` FROM `{$this->_sTable}` WHERE `object_id` = ? LIMIT 1", $iObjectId);
         $bExists = (int)$this->getOne($sQuery) != 0;
         if(!$bExists && $bUndo)

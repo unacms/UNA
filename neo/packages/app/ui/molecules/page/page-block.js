@@ -24,8 +24,9 @@ function createBlockComponent({
         const bg = baseClass === 'u-block-base' ? normalizeTiers(isBg) : false
         const pad = normalizeTiers(isPad)
 
-        // Card chrome (fill, outline shadow, radius) only where UNA background is on.
-        const bgClass = bg ? blockBgClasses(bg) : ''
+        // Card chrome (fill, outline shadow, radius) only where UNA background is on; the
+        // outline only where the corners are rounded (a square block runs to the screen edge).
+        const bgClass = bg ? blockBgClasses(bg, rounded) : ''
         const roundedClass = bg ? responsiveClasses('rounded', rounded) : ''
 
         // UNA padding: py on the shell, px on header / content / footer.
@@ -54,10 +55,24 @@ const Block = createBlockComponent({
     animate: true,
 })
 const BlockHeader = createBlockComponent({ baseClass: 'u-block-header' })
+// The header's parts, in shadcn/ui's Card terms: BlockHeader (CardHeader) is a row of BlockHeaderIcon,
+// BlockName (BlockTitle over BlockDescription: CardTitle, CardDescription) and BlockActions (CardAction).
+// A block with no description draws its icon as BlockTitleIcon, bare, on the title's line.
+const BlockHeaderIcon = createBlockComponent({ baseClass: 'u-block-header-icon' })
+const BlockTitleIcon = createBlockComponent({ baseClass: 'u-block-title-icon' })
+/** @deprecated the 36px tile before the title: BlockHeaderIcon or BlockTitleIcon instead. */
 const BlockIcon = createBlockComponent({ baseClass: 'u-block-icon' })
 const BlockName = createBlockComponent({ baseClass: 'u-block-name' })
+const BlockNameStacked = createBlockComponent({ baseClass: 'u-block-name-stacked' })
 const BlockTitle = createBlockComponent({
     baseClass: 'u-block-title',
+    Component: Text,
+    role: 'heading',
+    ariaLevel: 2,
+})
+
+const BlockTitleStacked = createBlockComponent({
+    baseClass: 'u-block-title-stacked',
     Component: Text,
     role: 'heading',
     ariaLevel: 2,
@@ -79,6 +94,10 @@ export {
     Block,
     BlockHeader,
     BlockIcon,
+    BlockHeaderIcon,
+    BlockTitleIcon,
+    BlockNameStacked,
+    BlockTitleStacked,
     BlockName,
     BlockTitle,
     BlockDescription,

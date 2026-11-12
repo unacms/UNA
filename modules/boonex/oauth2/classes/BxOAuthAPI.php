@@ -85,7 +85,8 @@ class BxOAuthAPI extends BxDol
             return;
         }
 
-        $aClient = $this->_oDb->getClientsBy(array('type' => 'client_id', 'client_id' => $aToken['client_id']));
+        // a native app's client is built in (no row, nobody's own), any other is read as it always was
+        $aClient = $this->_oModule->getClient($aToken['client_id']);
 
         $aProfile = $this->_prepareProfileArray($oProfile, false);
         $aProfile['owner'] = (int)$aProfile['id'] == (int)$aClient['user_id'];

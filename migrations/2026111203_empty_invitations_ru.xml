@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- The empty Invitations list for API clients (BxDolEmptyState). -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_sys_txt_empty_invitations_title"><![CDATA[Приглашений нет]]></string_add>
+    <string_add name="_sys_txt_empty_invitations_text"><![CDATA[Когда вас пригласят в группу, событие или другое сообщество, приглашение появится здесь.]]></string_add>
+</resources>

@@ -17,6 +17,9 @@ class BxDolTranscoderQuery extends BxDolDb
 {
     const TABLE_QUEUE = 'sys_transcoder_queue';
 
+    /** Open handler scopes, the last one in use: "table#transcoder#handler" => file id (@see openHandlersScope). */
+    protected static $_aHandlerScopes = [];
+
     protected $_aObject;
     protected $_sTableQueue;
     protected $_sTableFiles;
@@ -36,8 +39,8 @@ class BxDolTranscoderQuery extends BxDolDb
     static public function getTranscoderObject ($sObject)
     {
         $oDb = BxDolDb::getInstance();
-        $sQuery = $oDb->prepare("SELECT * FROM `sys_objects_transcoder` WHERE `object` = ?", $sObject);
-        return $oDb->getRow($sQuery);
+        // all the objects at once, once per request: a page asks for many, some a module has not
+        return $oDb->getObjectRow('sys_objects_transcoder', 'object', $sObject);
     }
 
     static public function getTranscoderObjects ()
@@ -75,13 +78,125 @@ class BxDolTranscoderQuery extends BxDolDb
             $sUpdateATime = ", `atime` = :atime";
         }
 
+        $this->_forgetScopedHandlers();
         return $this->query("INSERT INTO {$this->_sTableFiles} SET `transcoder_object` = :transcoder, `file_id` = :file_id, `handler` = :handler $sUpdateATime ON DUPLICATE KEY UPDATE `file_id` = :file_id $sUpdateATime", $aBindings);
     }
 
     public function getFileIdByHandler ($mixedHandler)
     {
+        $sKey = $this->_handlerKey($this->_aObject['object'], $mixedHandler);
+        $iScope = count(self::$_aHandlerScopes) - 1;
+        if ($iScope >= 0 && array_key_exists($sKey, self::$_aHandlerScopes[$iScope]))
+            return self::$_aHandlerScopes[$iScope][$sKey];
+
+        // in a scope: the copies of this file by every transcoder of its storage with this
+        // one's files table, at once (a page shows the same file in several sizes)
+        if ($iScope >= 0 && count($aSiblings = $this->_siblingObjects()) > 1) {
+            $this->primeHandlers([(string)$mixedHandler], $aSiblings);
+            if (array_key_exists($sKey, self::$_aHandlerScopes[$iScope]))
+                return self::$_aHandlerScopes[$iScope][$sKey];
+        }
+
         $sQuery = $this->prepare("SELECT `file_id` FROM {$this->_sTableFiles} WHERE `transcoder_object` = ? AND `handler` = ? LIMIT 1", $this->_aObject['object'], (string)$mixedHandler);
-        return $this->getOne($sQuery);
+        $mixedFileId = $this->getOne($sQuery);
+        if ($iScope >= 0)
+            self::$_aHandlerScopes[$iScope][$sKey] = $mixedFileId;
+        return $mixedFileId;
+    }
+
+    /**
+     * The transcoders that make copies of the same originals as this one (the same source
+     * storage) and keep them in the same table (the same class), this one with them.
+     */
+    protected function _siblingObjects()
+    {
+        static $aSiblings = [];
+
+        $sObject = $this->_aObject['object'];
+        if (isset($aSiblings[$sObject]))
+            return $aSiblings[$sObject];
+
+        $aSiblings[$sObject] = [$sObject];
+        $fSource = function ($aObject) {
+            $m = $aObject['source_params'] ?? '';
+            if (is_string($m))
+                $m = $m !== '' ? @unserialize($m) : [];
+            return ($aObject['source_type'] ?? '') . '#' . (is_array($m) ? (string)($m['object'] ?? '') : '');
+        };
+        $sSource = $fSource($this->_aObject);
+        if ($sSource === '#' || substr($sSource, -1) === '#')
+            return $aSiblings[$sObject];
+
+        foreach (BxDolDb::getInstance()->getObjectRows('sys_objects_transcoder', 'object') as $sName => $aRow)
+            if ((string)$sName !== $sObject && (string)($aRow['override_class_name'] ?? '') === (string)($this->_aObject['override_class_name'] ?? '') && $fSource($aRow) === $sSource)
+                $aSiblings[$sObject][] = (string)$sName;
+
+        return $aSiblings[$sObject];
+    }
+
+    /**
+     * While a scope is open, the transcoded file of a transcoder and a handler is looked up once:
+     * a page of an API that shows many files primes them (primeHandlers) and reads each copy's
+     * readiness and url from memory. A write here (a new copy, a deleted one) forgets the scope's
+     * rows of the table. Scopes nest, a nested one starts empty; outside of one, rows are always read.
+     * @return the scope to give to @see closeHandlersScope
+     */
+    public static function openHandlersScope()
+    {
+        self::$_aHandlerScopes[] = [];
+        return count(self::$_aHandlerScopes);
+    }
+
+    /**
+     * Close the scope and any scope opened inside it that was left open.
+     */
+    public static function closeHandlersScope($iScope)
+    {
+        array_splice(self::$_aHandlerScopes, max(0, (int)$iScope - 1));
+    }
+
+    /**
+     * In the open scope: the transcoded files of these handlers, for this transcoder and the
+     * others of $aObjects that keep theirs in the same table, read in one query (0 for a handler
+     * with none yet). Does nothing outside of a scope.
+     * @return array the file ids found, of every transcoder
+     */
+    public function primeHandlers($aHandlers, $aObjects = [])
+    {
+        $iScope = count(self::$_aHandlerScopes) - 1;
+        $aHandlers = array_values(array_unique(array_map('strval', (array)$aHandlers)));
+        $aObjects = array_values(array_unique(array_merge([$this->_aObject['object']], (array)$aObjects)));
+        if ($iScope < 0 || !$aHandlers)
+            return [];
+
+        foreach ($aObjects as $sObject)
+            foreach ($aHandlers as $sHandler)
+                self::$_aHandlerScopes[$iScope][$this->_handlerKey($sObject, $sHandler)] = false;
+
+        $aRows = $this->getAll("SELECT `transcoder_object`, `handler`, `file_id`, `atime` FROM {$this->_sTableFiles} WHERE `transcoder_object` IN (" . $this->implode_escape($aObjects) . ") AND `handler` IN (" . $this->implode_escape($aHandlers) . ")");
+        $aFileIds = [];
+        foreach ($aRows as $aRow) {
+            $sKey = $this->_handlerKey($aRow['transcoder_object'], $aRow['handler']);
+            self::$_aHandlerScopes[$iScope][$sKey] = $aRow['file_id'];
+            // the last access too, so updateAccessTime of a copy seen lately reads nothing
+            self::$_aHandlerScopes[$iScope][$sKey . '#atime'] = (int)$aRow['atime'];
+            $aFileIds[] = (int)$aRow['file_id'];
+        }
+        return $aFileIds;
+    }
+
+    protected function _handlerKey($sObject, $mixedHandler)
+    {
+        return $this->_sTableFiles . '#' . $sObject . '#' . (string)$mixedHandler;
+    }
+
+    protected function _forgetScopedHandlers()
+    {
+        $sPrefix = $this->_sTableFiles . '#';
+        foreach (array_keys(self::$_aHandlerScopes) as $iScope)
+            foreach (array_keys(self::$_aHandlerScopes[$iScope]) as $sKey)
+                if (strncmp($sKey, $sPrefix, strlen($sPrefix)) === 0)
+                    unset(self::$_aHandlerScopes[$iScope][$sKey]);
     }
 
     public function updateObjectModificationTime($iTime = 0)
@@ -94,11 +209,19 @@ class BxDolTranscoderQuery extends BxDolDb
     {
         $iTime = time();
 
+        // a copy primed in the open handlers scope (@see primeHandlers) knows its last access
+        $sKey = $this->_handlerKey($this->_aObject['object'], $mixedHandler) . '#atime';
+        $iScope = count(self::$_aHandlerScopes) - 1;
+        if ($iScope >= 0 && isset(self::$_aHandlerScopes[$iScope][$sKey]) && self::$_aHandlerScopes[$iScope][$sKey] > $iTime - BX_DOL_SKIP_ATIME_UPDATE)
+            return true;
+
         if ($this->getOne("SELECT `atime` FROM {$this->_sTableFiles} WHERE `transcoder_object` = :obj AND `handler` = :hndl AND `atime` > :ts LIMIT 1", array('obj' => $this->_aObject['object'], 'hndl' => (string)$mixedHandler, 'ts' => $iTime - BX_DOL_SKIP_ATIME_UPDATE))) // avoid deadlocks by making changes less frequent
             return true;
 
         $sQuery = $this->prepare("UPDATE {$this->_sTableFiles} SET `atime` = ? WHERE `transcoder_object` = ? AND `handler` = ? LIMIT 1", $iTime, $this->_aObject['object'], (string)$mixedHandler);
         $mixedRes = $this->res($sQuery);
+        if ($iScope >= 0)
+            self::$_aHandlerScopes[$iScope][$sKey] = $iTime;
 
         $this->setReadOnlyMode(true);
 
@@ -107,6 +230,7 @@ class BxDolTranscoderQuery extends BxDolDb
 
     public function deleteFileTraces($iFileId)
     {
+        $this->_forgetScopedHandlers();
         $sQuery = $this->prepare("DELETE FROM {$this->_sTableFiles} WHERE `transcoder_object` = ? AND `file_id` = ?", $this->_aObject['object'], $iFileId);
         return $this->res($sQuery);
     }
@@ -209,6 +333,7 @@ class BxDolTranscoderQuery extends BxDolDb
 
     public function deleteFromQueue ($mixedId)
     {
+        self::$_aQueueStatus = [];
         if (!$this->_sTableQueue)
             return false;
 
@@ -225,16 +350,48 @@ class BxDolTranscoderQuery extends BxDolDb
         return $this->getRow($sQuery);
     }
 
-    public function addToQueue ($mixedId, $sFileUrl, $iProfileId)
+    /**
+     * Where these files are in this transcoder's queue (pending, processing, complete, failed,
+     * delete; null for none), read in one query and kept for this request, so getQueueStatus of
+     * each reads nothing: for a page of an API that says which videos are being converted.
+     */
+    public function primeQueue ($aHandlers)
+    {
+        $aHandlers = array_values(array_unique(array_map('strval', array_filter((array)$aHandlers))));
+        if (!$this->_sTableQueue || !$aHandlers)
+            return;
+
+        $aStatus = $this->getPairs("SELECT `file_id_source`, `status` FROM `" . $this->_sTableQueue . "` WHERE `transcoder_object` = :object AND `file_id_source` IN (" . $this->implode_escape($aHandlers) . ")", 'file_id_source', 'status', ['object' => $this->_aObject['object']]);
+        foreach ($aHandlers as $sHandler)
+            self::$_aQueueStatus[$this->_aObject['object'] . '#' . $sHandler] = isset($aStatus[$sHandler]) ? (string)$aStatus[$sHandler] : null;
+    }
+
+    /** Where a file is in this transcoder's queue (see primeQueue), null for nowhere. */
+    public function getQueueStatus ($mixedId)
     {
         if (!$this->_sTableQueue)
-            return false;        
+            return null;
+        $sKey = $this->_aObject['object'] . '#' . (string)$mixedId;
+        if (!array_key_exists($sKey, self::$_aQueueStatus))
+            self::$_aQueueStatus[$sKey] = ($s = $this->getOne("SELECT `status` FROM `" . $this->_sTableQueue . "` WHERE `transcoder_object` = :object AND `file_id_source` = :id", ['object' => $this->_aObject['object'], 'id' => (string)$mixedId])) !== false && $s !== null && $s !== '' ? (string)$s : null;
+        return self::$_aQueueStatus[$sKey];
+    }
+
+    /** What primeQueue and getQueueStatus read: object#handler => status or null; forgotten when the queue changes here. */
+    protected static $_aQueueStatus = [];
+
+    public function addToQueue ($mixedId, $sFileUrl, $iProfileId)
+    {
+        self::$_aQueueStatus = [];
+        if (!$this->_sTableQueue)
+            return false;
         $sQuery = $this->prepare("INSERT INTO `" . $this->_sTableQueue . "` SET `transcoder_object` = ?, `profile_id` = ?, `file_url_source` = ?, `file_id_source` = ?, `status` = ?, `added` = ?, changed = ?", $this->_aObject['object'], $iProfileId, $sFileUrl, $mixedId, BX_DOL_QUEUE_PENDING, time(), time());
         return $this->query($sQuery);
     }
 
     public function updateQueueStatus ($mixedId, $sStatus, $sLog = '', $sServer = '', $mixedIdResult = '', $sFileUrlResult = '', $sFileExtResult = '', $iPID = 0)
     {
+        self::$_aQueueStatus = [];
         if (!$this->_sTableQueue)
             return false;
 

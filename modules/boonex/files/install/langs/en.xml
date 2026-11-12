@@ -241,6 +241,7 @@
 
     <string name="_bx_files_txt_all_entries_by"><![CDATA[{0} files]]></string>
     <string name="_bx_files_txt_all_entries_in"><![CDATA[<a href="{0}">All Files in {1} ({2})</a>]]></string>
+    <string name="_bx_files_txt_empty_title"><![CDATA[No files yet]]></string>
     <string name="_bx_files_txt_preview_not_available"><![CDATA[Preview isn't available, please download this file to view it]]></string>
     <string name="_bx_files_txt_sample_single"><![CDATA[file]]></string>
     <string name="_bx_files_txt_sample_single_with_article"><![CDATA[a file]]></string>

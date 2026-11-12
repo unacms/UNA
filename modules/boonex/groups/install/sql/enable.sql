@@ -431,6 +431,11 @@ SET @iFollowingsMenuOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `collapsed`, `active`, `copyable`, `order`) VALUES 
 ('sys_profile_followings', 'bx_groups', 'groups', '_bx_groups_menu_item_title_system_followings', '_bx_groups_menu_item_title_followings', 'javascript:void(0)', '', '_self', 'users', '', '', 2147483647, 0, 1, 0, @iFollowingsMenuOrder + 1);
 
+-- MENU: profile memberships (the contexts one belongs to)
+SET @iMembershipsMenuOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name`='sys_profile_memberships' LIMIT 1);
+INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `collapsed`, `active`, `copyable`, `order`) VALUES 
+('sys_profile_memberships', 'bx_groups', 'groups', '_bx_groups_menu_item_title_system_memberships', '_bx_groups_menu_item_title_memberships', 'javascript:void(0)', '', '_self', 'users', '', '', 2147483646, 0, 1, 0, @iMembershipsMenuOrder + 1);
+
 -- MENU: manage tools submenu
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
 ('bx_groups_menu_manage_tools', '_bx_groups_menu_title_manage_tools', 'bx_groups_menu_manage_tools', 'bx_groups', 6, 0, 1, 'BxGroupsMenuManageTools', 'modules/boonex/groups/classes/BxGroupsMenuManageTools.php');

@@ -25,6 +25,15 @@ class BxBaseServiceAccount extends BxDol
     }
 
     /**
+     * Whether an introduction tour is there for the viewer to start: the "Introduction Tour" menu items use it.
+     * @param $sTour BxDolTours::HOME or BxDolTours::STUDIO
+     */
+    public function serviceIsTourAvailable($sTour = BxDolTours::HOME)
+    {
+        return BxDolTours::getInstance()->isAvailable($sTour);
+    }
+
+    /**
      * @page service Service Calls
      * @section bx_system_general System Services 
      * @subsection bx_system_general-account Account
@@ -58,17 +67,32 @@ class BxBaseServiceAccount extends BxDol
                 ];
         }
 
+        $bAuthButtons = !isset($aParams['no_auth_buttons']) || false === (bool)$aParams['no_auth_buttons'];
+        $bLoginText = !isset($aParams['no_login_text']) || false === (bool)$aParams['no_login_text'];
+        $bFormShown = !(bool)getParam('sys_account_disable_join_form');
+
         if($bApi) {
+            // With the form go the parts the block shows around it, as with the login form (BxBaseServiceLogin::serviceLoginForm).
+            $aFormExt = [
+                'request' => ['url' => '/api.php?r=system/create_account_form/TemplServiceAccount', 'immutable' => true],
+                'auth' => [
+                    'methods' => $bAuthButtons,
+                    'separator' => $bFormShown,
+                    'switch' => !$bLoginText ? null : [
+                        'text' => _t('_sys_txt_join_description'),
+                        'action' => _t('_sys_txt_join_description_action'),
+                        'url' => bx_api_get_relative_url(BxDolPermalinks::getInstance()->permalink('page.php?i=login')),
+                    ],
+                ],
+                'footer' => BxDolService::call('system', 'get_agreement', ['_sys_form_account_input_agreement_value', true], 'TemplServiceLogin'),
+            ];
+
             $mixedResult = $this->_oAccountForms->createAccountForm($aParams);
             // A list of blocks comes from a module which replaced the form, e.g. Invites when registration is by invitation only.
             if(is_array($mixedResult) && array_is_list($mixedResult))
                 return $mixedResult;
             else if(is_array($mixedResult))
-                return [bx_api_get_block('form', $mixedResult, [
-                    'ext' => [
-                        'request' => ['url' => '/api.php?r=system/create_account_form/TemplServiceAccount', 'immutable' => true]
-                    ]
-                ])];
+                return [bx_api_get_block('form', $mixedResult, ['ext' => $aFormExt])];
             else if($mixedResult === true){
                 $sRedirectUrl = BxDolForm::getSubmittedValue('relocate','post');
                 if(empty($sRedirectUrl)){
@@ -125,16 +149,17 @@ class BxBaseServiceAccount extends BxDol
                 BxDolSession::getInstance()->setValue('join-referrer', $sJoinReferrer);
         }
 
-        $aTmplVarsAuth = [];
-        if(!isset($aParams['no_auth_buttons']) || false === (bool)$aParams['no_auth_buttons'])
-            $aTmplVarsAuth['content'] = BxDolService::call('system', 'member_auth_code', array(), 'TemplServiceLogin');
-
         $aTmplVarsForm = [];
-        if(!(bool)getParam('sys_account_disable_join_form'))
+        if($bFormShown)
             $aTmplVarsForm['content'] = $this->_oAccountForms->createAccountForm($aParams);
 
+        // Other sign-in methods go under the form, after an "or".
+        $aTmplVarsAuth = [];
+        if($bAuthButtons)
+            $aTmplVarsAuth['content'] = BxDolService::call('system', 'member_auth_code', array(array(), !empty($aTmplVarsForm)), 'TemplServiceLogin');
+
         $aTmplVarsLogin = [];
-        if(!isset($aParams['no_login_text']) || false === (bool)$aParams['no_login_text'])
+        if($bLoginText)
             $aTmplVarsLogin['url'] = bx_absolute_url($oPemalink->permalink('page.php?i=login'));
         
         return BxDolTemplate::getInstance()->parseHtmlByName('block_join.html', [
@@ -150,7 +175,7 @@ class BxBaseServiceAccount extends BxDol
                 'condition' => !empty($aTmplVarsLogin),
                 'content' => $aTmplVarsLogin
             ],
-            'agreement' => _t('_sys_form_account_input_agreement_value', bx_absolute_url($oPemalink->permalink('page.php?i=terms')), bx_absolute_url($oPemalink->permalink('page.php?i=privacy'))),
+            'footer' => BxTemplFunctions::getInstance()->designBoxFooter(BxDolService::call('system', 'get_agreement', ['_sys_form_account_input_agreement_value'], 'TemplServiceLogin')),
         ]);
     }
 

@@ -1,6 +1,6 @@
 import { View } from 'app/design/view'
 import { Platform } from 'react-native'
-import { appSetting, cn, menuItemsByName, menuItemsByNameNew } from 'app/lib/util'
+import { appSetting, cn, getMenuItemChildren, isExternalUrl, isMenuItemNavigable, menuItemsByName, menuItemsByNameNew } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
 import { useMemo, memo, type ReactNode } from 'react';
 import { NeoButtonLink } from 'app/design/controls'
@@ -16,6 +16,7 @@ import { useScreenPagePath } from 'app/lib/navigation/screen-page-path';
 
 /** A footer item as UNA sends it (BxBaseMenuFooter::_getMenuItemAPI), or as a caller passes it in `menu_items`. */
 type FooterMenuItem = {
+    id?: string | number;
     name?: string;
     title?: string;
     /** The accessible name of an item without a title (the Powered by badge). */
@@ -30,6 +31,8 @@ type FooterMenuItem = {
     text_short?: string;
     /** `switch_language`: the site's languages (UNA sends the item while it has two or more). */
     languages?: string[];
+    /** The item's children (Navigation: items whose parent it is). With any, the item is a menu of them, not a link. */
+    subitems?: FooterMenuItem[];
 };
 
 /** The look every footer control takes (MenuFooterComponent). */
@@ -337,7 +340,42 @@ function footerVisualProps(btnStyle: FooterButtonStyle | undefined, variant?: st
     };
 }
 
-// The links and text lines. The page you're on stays in the foreground colour and says so to screen readers.
+// The links a parent item opens: its children, and theirs, that have a link. UNA and the menu helpers have
+// already dropped the ones this viewer or this screen doesn't get (menuItemsFilter, filterHiddenOn).
+function footerSubmenuItems(item: FooterMenuItem, t: (key: string) => string): DropdownMenuItemData[] {
+    return (getMenuItemChildren(item) as FooterMenuItem[]).flatMap((child, index): DropdownMenuItemData[] => {
+        const nested = footerSubmenuItems(child, t);
+        if (nested.length) return nested;
+        if (child.display_type === 'text' || !isMenuItemNavigable(child)) return [];
+        const link = normalizeFooterHref(child.link);
+        // Another website opens in the browser, as the footer's own links to one do (the native sheet reads `target`).
+        const target = isExternalUrl(link) ? '_blank' : undefined;
+        return [{ id: child.id ?? child.name ?? `${index}-${link}`, name: child.name, title: t(child.title ?? ''), link, target }];
+    });
+}
+
+// A parent item: a trigger that looks like the footer's links, with a chevron, and its children in a menu that
+// opens upward (the footer ends the page). Native opens them in a bottom sheet, as the footer's switchers do.
+function FooterSubmenu({ title, items, isCurrent, visualProps }: Readonly<FooterControlProps & { title: string; items: DropdownMenuItemData[]; isCurrent: boolean }>) {
+    return (
+        <DropdownMenu
+            items={items}
+            showOnTop
+            buttonProps={{
+                label: title,
+                image: 'ChevronUp',
+                imagePlacement: 'trailing',
+                style: visualProps.style,
+                controlSize: visualProps.controlSize,
+                contentInsets: visualProps.contentInsets,
+                className: visualProps.className,
+                textClassName: isCurrent ? `${visualProps.textClassName} text-foreground` : visualProps.textClassName,
+            }}
+        />
+    );
+}
+
+// The links, submenus and text lines. The page you're on stays in the foreground colour and says so to screen readers.
 function FooterLinks({ links, visualProps }: Readonly<FooterControlProps & { links: FooterMenuItem[] }>) {
     const { t } = useTranslation();
     const pagePath = useScreenPagePath();
@@ -347,6 +385,20 @@ function FooterLinks({ links, visualProps }: Readonly<FooterControlProps & { lin
     return (
         <View className={FOOTER_LINKS_CLASSES}>
             {links.map((item, index) => {
+                // Before the text check: UNA sends a parent without a link of its own as text.
+                const subitems = footerSubmenuItems(item, t);
+                if (subitems.length) {
+                    return (
+                        <FooterSubmenu
+                            key={item.name || index}
+                            title={t(item.title ?? '')}
+                            items={subitems}
+                            isCurrent={subitems.some((subitem) => subitem.link === pagePath)}
+                            visualProps={visualProps}
+                        />
+                    );
+                }
+
                 if (item.display_type === 'text')
                     return <FooterTextItem key={item.name || index} item={item} visualProps={visualProps} />;
 

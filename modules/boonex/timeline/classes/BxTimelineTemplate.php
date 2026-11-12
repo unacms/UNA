@@ -27,6 +27,24 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
 
     protected $_aAclId2Name;
 
+    /**
+     * API v2 reads items without the item cache, like API v1 does (items carry the viewer's data).
+     */
+    protected $_bNoItemCache = false;
+
+    /**
+     * While a page of API v2 is prepared (getApiV2Posts): type => ids of the events whose media
+     * flags getData found, added at the page's end in one go. Null otherwise: added one by one.
+     */
+    protected $_aFlagsDeferred = null;
+
+    /**
+     * Whether the events query of the last getPosts call found more events after its page
+     * (it reads one more than a page). Null before any call. API clients get it as `has_more`:
+     * a page can be short and still have more, since events the viewer may not see are left out.
+     */
+    protected $_bPostsHasMore = null;
+
     function __construct(&$oConfig, &$oDb)
     {
         parent::__construct($oConfig, $oDb);
@@ -273,11 +291,13 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
 
         $sTitle = _t('_bx_timeline_page_block_title_views_' . $aParams['view']);
 
-        if ($this->_bIsApi)
+        if ($this->_bIsApi) {
+            $aData = $this->getViewBlock($aParams);
             return [
-                'content' => [bx_api_get_block('browse', ['unit' => 'feed', 'data' => $this->getViewBlock($aParams)])],
+                'content' => [bx_api_get_block('browse', array_merge(['unit' => 'feed', 'data' => $aData], $this->getHasMoreApi(), ['empty_state' => $this->getModule()->getEmptyStateApi()]))],
                 'menu' => $oMenu->getCodeAPI()
             ];
+        }
 
         $aResult = $this->getViewBlock($aParams);
 
@@ -645,6 +665,9 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
     public function getViewBlock($aParams)
     {
         $oModule = $this->getModule();
+
+        // Set again by getPosts below; a page with several feeds must not take another's.
+        $this->_bPostsHasMore = null;
 
         if($this->_bIsApi) {
             if(defined('BX_API_PAGE'))
@@ -1128,8 +1151,57 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
             return 'OK';
         }
 
+        /**
+         * API v2 (getApiV2Posts, getApiV2Event) maps the prepared event, not its HTML. The checks
+         * above decide whether it is shown: _getPost gives HTML for every event that passed them.
+         * Rendering it would only cost queries (menus, author units, repost buttons), so it is
+         * skipped; the view it counts is counted all the same.
+         */
+        if(!empty($aBrowseParams['api_v2']) && bx_is_api_v2()) {
+            $this->_countViewOnPost($aEvent, $aBrowseParams);
+            self::$_aMemoryCacheItems[$sMemoryCacheItemsKey] = 'OK';
+            return 'OK';
+        }
+
         self::$_aMemoryCacheItems[$sMemoryCacheItemsKey] = $this->_getPost($aEvent['content_type'], $aEvent, $aBrowseParams);
         return self::$_aMemoryCacheItems[$sMemoryCacheItemsKey];
+    }
+
+    public function setNoItemCache($b)
+    {
+        $this->_bNoItemCache = (bool)$b;
+    }
+
+    /**
+     * Forget what this request prepared for an event (every view of it), so that it is read
+     * again after a change in the same request (API v2 answers an edit with the edited post).
+     * @param integer $iEventId event id
+     */
+    public function forgetMemoryCacheItem($iEventId)
+    {
+        $sSuffix = '_' . (int)$iEventId;
+        foreach ([&self::$_aMemoryCacheItems, &self::$_aMemoryCacheItemsData] as &$aCache)
+            foreach (array_keys((array)$aCache) as $sKey)
+                if (str_ends_with((string)$sKey, $sSuffix))
+                    unset($aCache[$sKey]);
+        unset(self::$_aMemoryCacheItemsUrl[(int)$iEventId]);
+    }
+
+    /**
+     * Whether the last getPosts call left events after its page (null before any call).
+     */
+    public function getPostsHasMore()
+    {
+        return $this->_bPostsHasMore;
+    }
+
+    /**
+     * `has_more` for an API feed block whose data the last getPosts call read, or nothing when
+     * no call did (a hook supplied the content): clients then page until an empty page.
+     */
+    public function getHasMoreApi()
+    {
+        return $this->_bPostsHasMore === null ? [] : ['has_more' => $this->_bPostsHasMore];
     }
 
     public function getPostApi($aEvent, $aParams = [])
@@ -1186,6 +1258,7 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
             $aEvent = array_pop($aEvents);
             $bNext = true;
         }
+        $this->_bPostsHasMore = $bNext;
 
         $sContent = '';
         $sContent .= $this->getSizer($aParams);
@@ -1269,6 +1342,114 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
         $sEmpty = $this->getEmpty(!$bEvents);
 
         return [$sContent, $sLoadMore, $sBack, $sEmpty, $iFirst, $bNext];
+    }
+
+    /**
+     * API v2 (BxTimelineApiV2): a page of the events the viewer may see, paged on database rows.
+     *
+     * Rows go through the same checks as on the site (getPost), and some are left out. So rows
+     * are read in batches until there is one visible event past the limit, or no rows are left:
+     * a page with hidden events in it doesn't end the feed early. The next page starts at the
+     * row of that extra event, so nothing is repeated or skipped.
+     *
+     * @param array $aParams browse params (BxTimelineModule::getApiV2BrowseParams); 'start' is the row to start at
+     * @param int $iLimit events on the page
+     * @param int $iMaxRows rows to read at most for one page; past that the page is shorter and 'next' goes on from there
+     * @param callable|null $fVisible further check of a prepared event, false leaves it out like a hidden one
+     * @param callable|null $fPrime called with each batch of rows before they are checked, to read what their checks need at once
+     * @return array ['events' => up to $iLimit prepared events, 'next' => row the next page starts at, null after the last one]
+     */
+    public function getApiV2Posts($aParams, $iLimit, $iMaxRows, $fVisible = null, $fPrime = null)
+    {
+        // the media flags of the page's events are added at its end, at once (getData)
+        $this->_aFlagsDeferred = [];
+        try {
+            return $this->_getApiV2Posts($aParams, $iLimit, $iMaxRows, $fVisible, $fPrime);
+        }
+        finally {
+            $aFlags = $this->_aFlagsDeferred;
+            $this->_aFlagsDeferred = null;
+            if($aFlags)
+                $this->_oDb->addEventsFlags($aFlags);
+        }
+    }
+
+    protected function _getApiV2Posts($aParams, $iLimit, $iMaxRows, $fVisible = null, $fPrime = null)
+    {
+        $iStart = max(0, (int)$aParams['start']);
+        $iRow = $iStart;
+        $iBatch = $iLimit + 1;
+        $aResult = [];
+        $aParamsPost = array_merge($aParams, ['api_v2' => true]);
+
+        /*
+         * Without the cache table a batch's rows are read with the next batches' (the first time
+         * with the next two, then with the next one), which is the same rows as a read for each,
+         * so what they need is primed once for all of them. The batches are checked as before.
+         * Only for the feeds whose rows are each one event row in an order that is total (it
+         * ends with the id): a feed mixed with hot posts (For You, Hot) has rows whose order
+         * depends on how many are read.
+         */
+        $bAhead = !$this->_oConfig->isCacheTable() && in_array($aParams['type'], [BX_BASE_MOD_NTFS_TYPE_PUBLIC, BX_BASE_MOD_NTFS_TYPE_OWNER, BX_TIMELINE_TYPE_FEED], true);
+        $iAheadBatches = 3;
+        $aAhead = [];
+
+        while(true) {
+            $aParamsDb = array_merge($aParams, ['start' => $iRow, 'per_page' => $iBatch]);
+            if($aAhead) {
+                $aEvents = array_shift($aAhead);
+            }
+            else if($bAhead) {
+                $aSizes = [$iBatch];
+                for($i = 1; $i < $iAheadBatches; $i++)
+                    $aSizes[] = min(2 * end($aSizes), 100);
+                $iAheadBatches = 2;
+
+                $aRows = $this->_oDb->getEvents(array_merge($aParamsDb, ['per_page' => array_sum($aSizes)]));
+                $aRows = is_array($aRows) ? array_values($aRows) : [];
+                if($fPrime !== null && $aRows)
+                    $fPrime($aRows);
+
+                // the batches' rows; after one that is not whole the feed ends
+                foreach($aSizes as $iSize) {
+                    $aAhead[] = array_splice($aRows, 0, $iSize);
+                    if(count(end($aAhead)) < $iSize)
+                        break;
+                }
+                $aEvents = array_shift($aAhead);
+            }
+            else if($this->_oConfig->isCacheTable()) {
+                $aEvents = $this->_oDb->getEvents(array_merge($aParamsDb, ['from_cache' => true]));
+                if(count($aEvents) < $iBatch)
+                    $aEvents = $this->_oDb->getEvents(array_merge($aParamsDb, ['from_cache' => false]));
+            }
+            else
+                $aEvents = $this->_oDb->getEvents($aParamsDb);
+
+            $aEvents = is_array($aEvents) ? array_values($aEvents) : [];
+            if($fPrime !== null && $aEvents && !$bAhead)
+                $fPrime($aEvents);
+
+            foreach($aEvents as $iIndex => $aEvent) {
+                $aEvent['index'] = $iRow + $iIndex + 1;
+                if(empty($this->getPost($aEvent, $aParamsPost)) || ($fVisible !== null && !$fVisible($aEvent)))
+                    continue;
+
+                if(count($aResult) >= $iLimit)
+                    return ['events' => $aResult, 'next' => $iRow + $iIndex];
+
+                $aResult[] = $aEvent;
+            }
+
+            $iRow += count($aEvents);
+            if(count($aEvents) < $iBatch)
+                return ['events' => $aResult, 'next' => null];
+
+            if($iRow - $iStart >= $iMaxRows)
+                return ['events' => $aResult, 'next' => $iRow];
+
+            $iBatch = min(2 * $iBatch, 100);
+        }
     }
 
     public function getEmpty($bVisible)
@@ -1885,8 +2066,12 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
         $aContent = &$aResult['content'];
         $aFlagTypes = $this->_oConfig->getFiltersMedia();
         foreach($aFlagTypes as $sFt)
-            if((!empty($aContent[$sFt]) && is_array($aContent[$sFt])) || (!empty($aContent[$sFt . '_attach']) && is_array($aContent[$sFt .'_attach'])))
-                $this->_oDb->updateEventFlagsByType($sFt, $aEvent['id']);
+            if((!empty($aContent[$sFt]) && is_array($aContent[$sFt])) || (!empty($aContent[$sFt . '_attach']) && is_array($aContent[$sFt .'_attach']))) {
+                if(is_array($this->_aFlagsDeferred))
+                    $this->_aFlagsDeferred[$sFt][] = (int)$aEvent['id'];
+                else
+                    $this->_oDb->updateEventFlagsByType($sFt, $aEvent['id']);
+            }
 
         return $aResult;
     }
@@ -1894,10 +2079,10 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
     public function getDataCached($aEvent, $aBrowseParams = array())
     {
         /**
-         * Item Cache is disabled for API calls to avoid issues with personalized 
+         * Item Cache is disabled for API calls to avoid issues with personalized
          * content in items (like attched polls, etc).
          */
-        if($this->_bIsApi || !$this->_oConfig->isCacheItem())
+        if($this->_bIsApi || $this->_bNoItemCache || bx_is_api_v2() || !$this->_oConfig->isCacheItem())
             return $this->getData($aEvent, $aBrowseParams);
 
         /**
@@ -2093,8 +2278,7 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
         else
             $sAuthorAction = _t($aEvent['sample_action'], _t($aEvent['sample']));
 
-        if(($bViewItem || $this->_oConfig->isCountAllViews()) && !empty($aEvent['views']) && is_array($aEvent['views']) && isset($aEvent['views']['system']))
-            $oModule->getViewObject($aEvent['views']['system'], $aEvent['views']['object_id'])->doView();
+        $this->_countViewOnPost($aEvent, $aBrowseParams);
 
         $aTmplVarsNote = $this->_getTmplVarsNote($aEvent);
         $aTmplVarsMenuItemCounters = $this->_getTmplVarsMenuItemCounters($aEvent, $aBrowseParams);
@@ -2412,6 +2596,16 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
         return array_intersect_key($aEvent, array_flip([
             'id', 'type', 'object_privacy_view', 'content', 'labels', 'date', 'menu_actions', 'menu_counters', 'menu_manage', 'author_data', 'author_badges', 'author_actions', 'context_data', 'url', 'owners', 'cmts', 'module', 'title', 'pinned', 'sticked', 'promoted'
         ]));
+    }
+
+    /**
+     * A shown post counts a view of it: in the item view, and everywhere when all views are counted.
+     */
+    protected function _countViewOnPost($aEvent, $aBrowseParams = array())
+    {
+        $bViewItem = isset($aBrowseParams['view']) && $aBrowseParams['view'] == BX_TIMELINE_VIEW_ITEM;
+        if(($bViewItem || $this->_oConfig->isCountAllViews()) && !empty($aEvent['views']) && is_array($aEvent['views']) && isset($aEvent['views']['system']))
+            $this->getModule()->getViewObject($aEvent['views']['system'], $aEvent['views']['object_id'])->doView();
     }
 
     protected function _getContent($sType, $aEvent, $aBrowseParams = array())

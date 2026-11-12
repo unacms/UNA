@@ -35,6 +35,10 @@ class BxAnalyticsVitalsTest extends \PHPUnit\Framework\TestCase
 
         $aZeros = array_merge(array_fill(0, 90, 0), range(1, 10));
 
+        // the seed made the sets the same each run; the rest of the run (data providers run
+        // before any test) gets random numbers again, or random names repeat from run to run
+        mt_srand();
+
         return [
             'uniform' => [$aUniform],
             'lognormal' => [$aLognormal],

@@ -13,6 +13,10 @@
  */
 class BxDolPageQuery extends BxDolDb
 {
+    protected static $_aSeoLinksScopes = []; ///< open SEO links scopes, the last one is in use, @see openSeoLinksScope
+    /** Links to prime in the open scope at the first one asked for (@see primeSeoLinksLater): scope => module and page => param values. */
+    protected static $_aSeoLinksPending = [];
+
     protected $_aObject;
 
     public function __construct($aObject)
@@ -133,6 +137,43 @@ class BxDolPageQuery extends BxDolDb
         ]);
     }
 
+    /**
+     * The columns of every layout, by layout id and then by index (sys_pages_layout_columns: `name`
+     * top, left, center, right or bottom, and `width`), from the database cache: layouts come with
+     * installs only.
+     */
+    static public function getLayoutColumnsAll()
+    {
+        $aRows = BxDolDb::getInstance()->fromCache('sys_pages_layout_columns_all', 'getAll', "SELECT `layout_id`, `index`, `name`, `width` FROM `sys_pages_layout_columns` ORDER BY `layout_id`, `index`");
+
+        $aLayouts = [];
+        foreach (is_array($aRows) ? $aRows : [] as $aRow)
+            $aLayouts[(int)$aRow['layout_id']][(int)$aRow['index']] = $aRow;
+        return $aLayouts;
+    }
+
+    /**
+     * The blocks of a page the apps show (`active_api`), in its cells (cell_id 1 and up, cell 0
+     * holds the blocks taken off the page) and their order, in one query.
+     */
+    static public function getPageBlocksApi($sObject)
+    {
+        return BxDolDb::getInstance()->getAll("SELECT `id`, `cell_id`, `module`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `hidden_on`, `title_hidden_on`, `bg_hidden_on`, `padding_hidden_on` FROM `sys_pages_blocks` WHERE `object` = :object AND `cell_id` > 0 AND `active_api` = 1 ORDER BY `cell_id`, `order`, `id`", [
+            'object' => $sObject,
+        ]);
+    }
+
+    /**
+     * One block shown in the apps (`active_api`), with its page's visibility, for API v2's
+     * text blocks (BxBaseApiV2Layout::blockText); false for none.
+     */
+    static public function getPageBlockApi($iBlockId)
+    {
+        return BxDolDb::getInstance()->getRow("SELECT `b`.`id`, `b`.`object`, `b`.`module`, `b`.`title`, `b`.`visible_for_levels`, `b`.`type`, `b`.`content`, `b`.`hidden_on`, `p`.`visible_for_levels` AS `page_visible_for_levels` FROM `sys_pages_blocks` AS `b` INNER JOIN `sys_objects_page` AS `p` ON `p`.`object` = `b`.`object` WHERE `b`.`id` = :id AND `b`.`cell_id` > 0 AND `b`.`active_api` = 1", [
+            'id' => (int)$iBlockId,
+        ]);
+    }
+
     public function getPageBlocks($bIsApi = false)
     {
         $sActiveClause = $bIsApi ? "`active_api` = 1" : "`active` = 1";
@@ -232,6 +273,16 @@ class BxDolPageQuery extends BxDolDb
             }
         }
 
+        // a link primed in the open scope (@see primeSeoLinks, primeSeoLinksLater)
+        if (self::$_aSeoLinksScopes && array_keys($aCond) === ['param_value']) {
+            if (!empty(self::$_aSeoLinksPending[count(self::$_aSeoLinksScopes) - 1]))
+                self::_primeSeoLinksPending();
+            $sKey = self::_seoLinkKey($sModule, $sPageUri, $aCond['param_value']);
+            $iScope = count(self::$_aSeoLinksScopes) - 1;
+            if (isset(self::$_aSeoLinksScopes[$iScope][$sKey]))
+                return self::$_aSeoLinksScopes[$iScope][$sKey];
+        }
+
         if ($aCond)
             $sWhere = $oDb->arrayToSQL($aCond, " AND ");
         return $oDb->getRow("SELECT `uri`, `param_name`, `param_value` FROM `sys_seo_links` WHERE " . $sWhere . " AND `module` = :module AND `page_uri` = :page_uri", [
@@ -240,8 +291,113 @@ class BxDolPageQuery extends BxDolDb
         ]);
     }
 
+    /**
+     * While a scope is open, the SEO links of the pages of many entries are read in one query
+     * (@see primeSeoLinks) and getSeoLink of one of them by its param value reads none. For an
+     * API page that links many entries and their authors. Only links that exist are kept: one
+     * that is missing is read (and made) as before, and a change to the links forgets them.
+     * @return the scope to give to @see closeSeoLinksScope
+     */
+    public static function openSeoLinksScope()
+    {
+        self::$_aSeoLinksScopes[] = [];
+
+        return count(self::$_aSeoLinksScopes);
+    }
+
+    /**
+     * Close the scope and any scope opened inside it that was left open.
+     */
+    public static function closeSeoLinksScope($iScope)
+    {
+        array_splice(self::$_aSeoLinksScopes, max(0, (int)$iScope - 1));
+        foreach (array_keys(self::$_aSeoLinksPending) as $i)
+            if ($i >= count(self::$_aSeoLinksScopes))
+                unset(self::$_aSeoLinksPending[$i]);
+    }
+
+    /**
+     * In the open scope: the SEO links of a module's page for these param values (entry ids) in
+     * one query. Does nothing outside of a scope.
+     */
+    public static function primeSeoLinks($sModule, $sPageUri, $aParamValues)
+    {
+        if (!self::$_aSeoLinksScopes || $sModule === '' || $sPageUri === '')
+            return;
+
+        $iScope = count(self::$_aSeoLinksScopes) - 1;
+        $aValues = [];
+        foreach ((array)$aParamValues as $v) {
+            $v = get_mb_substr((string)$v, 0, 32);
+            if ($v !== '' && !isset(self::$_aSeoLinksScopes[$iScope][self::_seoLinkKey($sModule, $sPageUri, $v)]))
+                $aValues[$v] = $v;
+        }
+        if (!$aValues)
+            return;
+
+        $oDb = BxDolDb::getInstance();
+        $aRows = $oDb->getAll("SELECT `uri`, `param_name`, `param_value` FROM `sys_seo_links` WHERE `module` = :module AND `page_uri` = :page_uri AND `param_value` IN (" . $oDb->implode_escape(array_values($aValues)) . ")", [
+            'module' => $sModule,
+            'page_uri' => $sPageUri,
+        ]);
+        foreach ($aRows as $aRow)
+            self::$_aSeoLinksScopes[$iScope][self::_seoLinkKey($sModule, $sPageUri, $aRow['param_value'])] = $aRow;
+    }
+
+    /**
+     * In the open scope: the SEO links of these modules' pages to be primed as primeSeoLinks does,
+     * all in one query when the first link is asked for (a page of many modules' entries asks
+     * for links of a few of each).
+     */
+    public static function primeSeoLinksLater($sModule, $sPageUri, $aParamValues)
+    {
+        if (!self::$_aSeoLinksScopes || $sModule === '' || $sPageUri === '')
+            return;
+
+        $iScope = count(self::$_aSeoLinksScopes) - 1;
+        foreach ((array)$aParamValues as $v) {
+            $v = get_mb_substr((string)$v, 0, 32);
+            if ($v !== '' && !isset(self::$_aSeoLinksScopes[$iScope][self::_seoLinkKey($sModule, $sPageUri, $v)]))
+                self::$_aSeoLinksPending[$iScope][$sModule . "\n" . $sPageUri][$v] = $v;
+        }
+    }
+
+    protected static function _primeSeoLinksPending()
+    {
+        $iScope = count(self::$_aSeoLinksScopes) - 1;
+        $aPending = self::$_aSeoLinksPending[$iScope] ?? [];
+        unset(self::$_aSeoLinksPending[$iScope]);
+        if (!$aPending)
+            return;
+
+        $oDb = BxDolDb::getInstance();
+        $aWhere = [];
+        foreach ($aPending as $sGroup => $aValues) {
+            list($sModule, $sPageUri) = explode("\n", $sGroup, 2);
+            $aWhere[] = $oDb->prepareAsString("(`module` = ? AND `page_uri` = ?", $sModule, $sPageUri) . " AND `param_value` IN (" . $oDb->implode_escape(array_values($aValues)) . "))";
+        }
+        foreach ($oDb->getAll("SELECT `uri`, `param_name`, `param_value`, `module` AS `bx_module`, `page_uri` AS `bx_page_uri` FROM `sys_seo_links` WHERE " . implode(" OR ", $aWhere)) as $aRow) {
+            $sKey = self::_seoLinkKey($aRow['bx_module'], $aRow['bx_page_uri'], $aRow['param_value']);
+            unset($aRow['bx_module'], $aRow['bx_page_uri']);
+            self::$_aSeoLinksScopes[$iScope][$sKey] = $aRow;
+        }
+    }
+
+    protected static function _seoLinkKey($sModule, $sPageUri, $sParamValue)
+    {
+        return $sModule . "\n" . $sPageUri . "\n" . $sParamValue;
+    }
+
+    protected static function _forgetSeoLinks()
+    {
+        foreach (array_keys(self::$_aSeoLinksScopes) as $iScope)
+            self::$_aSeoLinksScopes[$iScope] = [];
+        self::$_aSeoLinksPending = [];
+    }
+
     static public function insertSeoLink($sModule, $sPageUri, $sSeoParamName, $sSeoParamValue, $sUri)
     {
+        self::_forgetSeoLinks();
         return BxDolDb::getInstance()->query("INSERT INTO `sys_seo_links` SET `module` = :module, `page_uri` = :page_uri, `param_name` = :param_name, `param_value` = :param_value, `uri` = :uri, `added` = :ts", [
             'module' => $sModule,
             'page_uri' => $sPageUri,
@@ -254,6 +410,7 @@ class BxDolPageQuery extends BxDolDb
 
     static public function deleteSeoLink($sModule, $sContentInfoObject, $sId)
     {
+        self::_forgetSeoLinks();
         return BxDolDb::getInstance()->query("DELETE FROM `sys_seo_links` WHERE `module` = :module AND `page_uri` IN (SELECT `uri` FROM `sys_objects_page` WHERE `module` = :content_info OR `content_info` = :content_info) AND `param_value` = :param_value", [
             'module' => $sModule,
             'content_info' => $sContentInfoObject,
@@ -263,6 +420,7 @@ class BxDolPageQuery extends BxDolDb
 
     static public function deleteSeoLinkByParam($sParamName, $sId)
     {
+        self::_forgetSeoLinks();
         return BxDolDb::getInstance()->query("DELETE FROM `sys_seo_links` WHERE `param_name` = :param_name AND `param_value` = :param_value", [
             'param_name' => $sParamName,
             'param_value' => $sId,
@@ -271,6 +429,7 @@ class BxDolPageQuery extends BxDolDb
 
     static public function deleteSeoLinkByModule($sModule)
     {
+        self::_forgetSeoLinks();
         return BxDolDb::getInstance()->query("DELETE FROM `sys_seo_links` WHERE `module` = :module", [
             'module' => $sModule,
         ]);

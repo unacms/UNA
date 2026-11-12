@@ -59,7 +59,7 @@ Rules for forks:
 | `config/images-allowlist.js` | Extra image hosts, used by `next/image` and at runtime. |
 | `config/package.next.js`, `config/package.expo.js` | Extra npm dependencies. The root `preinstall` script merges them into `apps/next/package.json` and `apps/expo/package.json`; don't commit those rewritten files, and restore them before a sync. |
 | `resources/web/` | Flat files copied into `apps/next/public/static/` (gitignored) whenever the Next config loads: `favicon.svg`, `manifest.json` and every icon the manifest names. |
-| `resources/native/` | App icon, splash and other native assets. Reference them from `config/app.config.js` as `../../packages/app/customization/resources/native/...`. |
+| `resources/native/` | App icon, splash and other native assets. Reference them from `config/app.config.js` as `../../packages/app/customization/resources/native/...`. Setting `icon` there is enough: UNA's iOS icon (`ios.icon`, an Icon Composer `.icon` file with its dark, clear and tinted versions) and Android adaptive icon are then left out, so the fork's icon is used everywhere. Set `ios.icon` (your own `.icon` file, or a PNG) and `android.adaptiveIcon` too for your own versions. Without any of them the app uses UNA's icon. |
 | `resources/sounds/` | Your own native interface sounds (empty upstream). Core's WAV files are in `packages/app/resources/sounds/`, rendered from Cuelume by `scripts/render-sounds.mjs`; point keys of `sounds.js` at your files instead of replacing core's. See [Interface sounds](#interface-sounds). |
 
 ## Layout and stack
@@ -234,6 +234,32 @@ Use `NeoButton`, `NeoButtonLink` or `NeoButtonRef` from `app/design/controls`. T
 - On iOS and Android, `native.expo_ui_buttons` (`settings/configs.js`) renders buttons with native Expo UI (SwiftUI / Compose) views; the `expoUI` prop controls it per button.
 - `NeoButtonGroup` joins buttons into one control with the same `style`, `controlSize`, `borderShape`, `role` / `tint` and `width` axes. The group paints the style's surface once (no border: outline and glass are shadow rings); each NeoButton inside becomes a segment through context, with the group's style and size, only the state washes, square inner corners and no hit area over its neighbours. Segments always use the JS surface; a `glass` group on iOS 26+ draws native liquid glass behind them. Recipes are `neo_button.group` in `settings/theme/buttons.js`. Object menus (reactions, likes, scores) build theirs through `ButtonsGroupMenu`, which uses `group.defaultStyle`.
 - `/pg` is a playground for every axis (`apps/next/app/pg/page.js`, `apps/expo/app/pg/`). It isn't gated, so production builds serve it too.
+
+### Form labels
+
+UNA picks how forms label their text fields: above the field (regular, the default) or floating inside it (adaptive). It is one setting for the site and the apps, Studio > Designer > Settings, and a form display can have its own (Studio > Forms > Displays). Every form's API carries the resolved style as `params.label_style`.
+
+- `Form` passes it to each field as `label_style`; `hasAdaptiveLabel` (`lib/form/label-style.ts`) floats the label only for field types that can (text, password, phone, embed). Every other field, and every form of a UNA that sends no style, shows regular labels.
+- `forms.adaptive_labels` overrides UNA for the whole app: `null` follows UNA, `false` never floats labels, `true` always does. `forms.without_captions` (empty by default) lists forms that show captions as placeholders instead of labels.
+- Required marks follow UNA too (`params.required_mark`, "mark the fewer"): `none` when every labelled field is required or none is (login, sign-up), `optional` puts "(optional)" on the optional fields, `required` puts the `forms.mandatory_icon` on the required ones. A UNA that sends no mode keeps the icon. `forms.optional_text` replaces the word "optional".
+- The sign-in form's "Forgot password?" is drawn by the Password field (`forms.sys_login.forgot_password_link`, `fieldLink` on `Field`): at the end of the label's line, or under the field (on the description's line) when the label floats. Emptied, `AuthPanel` shows the centred link under the form again.
+
+### Block header
+
+A block's header (`BlockWrapper`, parts in `ui/molecules/page/page-block.js`, classes in `theme.blocks`) is a row, in shadcn/ui's Card terms: the icon, CardTitle over CardDescription, CardAction.
+
+- `BlockHeaderIcon` draws the block's `header_icon` (Studio > Pages > block > "Header icon"): a 44px tile, as tall as the title (a 24px line) and one line of description (14px on 20px, may wrap) together.
+- `BlockTitleIcon` draws the block's `icon` ("Title icon"): a 24px icon in a 28px box with no background, before the title on its line. A block can have either, both or none.
+- With a description the title and description stack with no gap (`BlockNameStacked`, `BlockTitleStacked`, `BlockDescription`); without one the title keeps its own line height (`BlockName`, `BlockTitle`).
+- `BlockActions` close the row; `BlockContent` and `BlockFooter` follow. UNA's design boxes use the same composition (Artificer `general.css`).
+
+### Sign-in and join blocks
+
+UNA's sign-in and join blocks are ordinary page blocks, so their icon, title and description come from the block (Studio > Pages) and `BlockWrapper` draws them. With the form UNA also sends the parts the site shows around it, on the form's content item:
+
+- `auth`: `methods` (other sign-in methods are offered in this block), `separator` (the form is shown, so an "or" goes first) and `switch` (`text`, `action`, `url`: "Don't have an account? Sign up"). `BlockWrapper` draws them inside the block, under the form (`AuthBlockPart`); the methods themselves are the app's own (`AuthPanel`, `auth` settings).
+- `footer`: the block's footer, a notice with links (the terms). `BlockWrapper` draws it in `BlockFooter` through `BlockNotice` (small, muted, centred).
+- A UNA that sends neither keeps the old layout: the login page layout and the splash draw the methods and the link under the block (`pageHasAuthPart`, `blockAuthPart` in `lib/util/page-data.ts`).
 
 ### Interface sounds
 

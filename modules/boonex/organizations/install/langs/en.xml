@@ -390,7 +390,9 @@
     <string name="_bx_orgs_menu_item_title_system_relations"><![CDATA[Relationships]]></string>
     <string name="_bx_orgs_menu_item_title_relations"><![CDATA[Relationships]]></string>
     <string name="_bx_orgs_menu_item_title_system_manage_my_organizations"><![CDATA[My organizations]]></string>
+    <string name="_bx_orgs_menu_item_title_system_memberships"><![CDATA[Organizations (member of)]]></string>
     <string name="_bx_orgs_menu_item_title_manage_my_organizations"><![CDATA[Organizations]]></string>
+    <string name="_bx_orgs_menu_item_title_memberships"><![CDATA[Your organizations]]></string>
     <string name="_bx_orgs_menu_item_title_system_favorites"><![CDATA[Favorite Organizations]]></string>
     <string name="_bx_orgs_menu_item_title_favorites"><![CDATA[Favorite organizations]]></string>
     <string name="_bx_orgs_menu_item_title_system_subscriptions"><![CDATA[Following]]></string>
@@ -521,6 +523,7 @@
     <string name="_bx_organizations_alert_action_join_request"><![CDATA[join request]]></string>
     <string name="_bx_organizations_alert_action_profile_cover_changed"><![CDATA[cover changed]]></string>
     <string name="_bx_organizations_alert_action_profile_picture_changed"><![CDATA[picture changed]]></string>
+    <string name="_bx_organizations_txt_empty_title"><![CDATA[No organizations yet]]></string>
     <string name="_bx_orgs_txt_ntfs_fan_added"><![CDATA[Organization <b class="bx-ntfs-content-profile">{owner_name}</b> has got a member <b class="bx-ntfs-content-entry">{subentry_sample}</b>]]></string>
     <string name="_bx_orgs_txt_ntfs_join_invitation"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> organization's representative invites <b class="bx-ntfs-content-entry">{subentry_sample}</b> to join organization]]></string>
     <string name="_bx_orgs_txt_ntfs_join_request"><![CDATA[Organization <b class="bx-ntfs-content-profile">{owner_name}</b> has a join request from <b class="bx-ntfs-content-entry">{subentry_sample}</b>]]></string>

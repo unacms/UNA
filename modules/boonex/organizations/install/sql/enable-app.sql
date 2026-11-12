@@ -31,6 +31,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_organizations_ho
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_organizations_active' AND `module`='bx_organizations' AND `title_system`='' AND `title`='_bx_orgs_page_block_title_active_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_organizations_online' AND `module`='bx_organizations' AND `title_system`='' AND `title`='_bx_orgs_page_block_title_online_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_organizations_search' AND `module`='bx_organizations' AND `title_system`='' AND `title`='_bx_orgs_page_block_title_search_form';
+UPDATE `sys_pages_blocks` SET `config_api`='{"use_as_filter":true}' WHERE `object`='bx_organizations_search' AND `module`='bx_organizations' AND `title_system`='' AND `title`='_bx_orgs_page_block_title_search_form';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_organizations_search' AND `module`='bx_organizations' AND `title_system`='' AND `title`='_bx_orgs_page_block_title_search_results';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_organizations_manage' AND `module`='bx_organizations' AND `title_system`='_bx_orgs_page_block_title_system_manage' AND `title`='_bx_orgs_page_block_title_manage';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_organizations_administration' AND `module`='bx_organizations' AND `title_system`='_bx_orgs_page_block_title_system_manage_administration' AND `title`='_bx_orgs_page_block_title_manage';
@@ -61,6 +62,7 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' 
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='bx_organizations' AND `name`='profile-stats-relations';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='bx_organizations' AND `name`='profile-stats-related-me';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_followings' AND `module`='bx_organizations' AND `name`='organizations';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_memberships' AND `module`='bx_organizations' AND `name`='organizations';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_dashboard_manage_tools' AND `module`='bx_organizations' AND `name`='organizations-administration';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_view_actions' AND `module`='bx_organizations' AND `name`='join-organization-profile';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_view_actions' AND `module`='bx_organizations' AND `name`='profile-fan-add';

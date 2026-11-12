@@ -160,6 +160,7 @@ class BxDolStudioFormsQuery extends BxDolDb
             `td`.`display_name` AS `display_name`,
             `td`.`module` AS `module`,
             `td`.`view_mode` AS `view_mode`,
+            `td`.`label_style` AS `label_style`,
             `td`.`title` AS `title`";
         $sJoinClause = $sWhereClause = $sGroupClause = $sOrderClause = $sLimitClause = "";
 

@@ -8,6 +8,7 @@ Options -MultiViews -Indexes
 
 <IfModule mod_rewrite.c>
     RewriteEngine on
+    RewriteRule ^api/v2(/(.*))?$  api_v2.php?_q=$2 [QSA,L]
     RewriteRule ^m/(.*)$  modules/index.php?r=$1 [QSA,L]
     RewriteRule ^page/(.*)$  page.php?i=$1 [QSA,L]
     RewriteRule ^s/([a-zA-Z0-9_]+)/([a-zA-Z0-9\.]+)  storage.php?o=$1&f=$2   [QSA,L]

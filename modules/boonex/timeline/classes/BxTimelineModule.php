@@ -100,6 +100,12 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
     protected $_sCmtTemplate;
 
     /**
+     * Set while an edit leaves the post's location alone (editApiV2Post): _processMetas then
+     * does not read the location from the request.
+     */
+    protected $_bKeepLocation = false;
+
+    /**
      * The most events a client (API or live update) gets per page, and the furthest it can page.
      */
     protected static $_iClientPerPageMax = 100;
@@ -3883,6 +3889,133 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         ));
     }
 
+    /**
+     * API v2 (BxTimelineApiV2): browse params a client sent, cleaned as for the API.
+     */
+    public function getApiV2BrowseParams($aClientParams)
+    {
+        return $this->_prepareParams($this->_prepareParamsClient($aClientParams));
+    }
+
+    /**
+     * API v2: an event prepared for output, or false when it doesn't exist or the viewer may not see it.
+     * @param int $iCode set to 0 when shown, 1 when there is no such event, 2 when the viewer may not see it
+     */
+    public function getApiV2Event($iId, &$iCode = null)
+    {
+        // the event as getPosts prepares it, without its HTML (BxTimelineTemplate::getPost)
+        $aParams = $this->_prepareParams([
+            'view' => BX_TIMELINE_VIEW_ITEM,
+            'type' => BX_TIMELINE_TYPE_ITEM
+        ]);
+        $aParams['api_v2'] = true;
+        $aItemData = $this->getItemData((int)$iId, $aParams);
+        $iCode = isset($aItemData['code']) ? (int)$aItemData['code'] : 1;
+        if ($iCode === 0 && empty($aItemData['event']))
+            $iCode = 1;
+        return $iCode === 0 ? $aItemData['event'] : false;
+    }
+
+    /**
+     * API v2: ids of the events that may show the comments of a comments object: the event
+     * itself for the timeline's own comments, otherwise the events another module's content
+     * was added with (the insert handlers of that module). The caller checks which one shows
+     * these comments (the prepared event's 'comments') and whether the viewer may see it.
+     */
+    public function getApiV2EventIdsByComments($sSystem, $iObjectId)
+    {
+        $iObjectId = (int)$iObjectId;
+        if ($iObjectId <= 0)
+            return [];
+
+        if ($sSystem === $this->_oConfig->getObject('comment'))
+            return [$iObjectId];
+
+        $aSystems = BxDolCmts::getSystems();
+        $sModule = $aSystems[$sSystem]['module'] ?? '';
+        if ($sModule === '')
+            return [];
+
+        return $this->getApiV2EventIdsByContent($sModule, $iObjectId);
+    }
+
+    /**
+     * API v2: ids of the events another module's content entry was added with (the insert
+     * handlers of that module), oldest handler first. The caller checks whether the viewer may
+     * see them.
+     */
+    public function getApiV2EventIdsByContent($sModule, $iContentId)
+    {
+        $iContentId = (int)$iContentId;
+        if ($sModule === '' || $iContentId <= 0)
+            return [];
+
+        $aIds = [];
+        foreach ($this->_oConfig->getHandlers() as $aHandler) {
+            if (!is_array($aHandler) || $aHandler['type'] !== BX_BASE_MOD_NTFS_HANDLER_TYPE_INSERT || $aHandler['alert_unit'] !== $sModule)
+                continue;
+
+            $aEvent = $this->_oDb->getEvents(['browse' => 'descriptor', 'type' => $sModule, 'action' => $aHandler['alert_action'], 'object_id' => $iContentId]);
+            if (!empty($aEvent['id']))
+                $aIds[] = (int)$aEvent['id'];
+        }
+
+        return array_values(array_unique($aIds));
+    }
+
+    /**
+     * API v2: whether the viewer may post on this timeline (a profile's own, or a context's),
+     * the check the post form makes before it saves.
+     */
+    public function isAllowedApiV2PostDestination($iOwnerId)
+    {
+        return $this->_isAllowedPostDestination($iOwnerId);
+    }
+
+    /**
+     * API v2: add a post through the post form, in the form's API mode, which returns the
+     * result instead of printing it (the form is an Ajax form otherwise).
+     * @return array ['id' => event id] or ['form_object' => form with errors] or a message block
+     */
+    public function addApiV2Post($aValues)
+    {
+        $bIsApi = $this->_bIsApi;
+        $this->_bIsApi = true;
+        try {
+            return $this->getFormPost(['values' => $aValues]);
+        }
+        finally {
+            $this->_bIsApi = $bIsApi;
+        }
+    }
+
+    /**
+     * API v2: edit a post through the edit form, as serviceEdit does, keeping its media. The
+     * edit form links again only the media it is given and unlinks the rest, so a change of the
+     * text or the audience alone names the media the post has. The post's location stays as it
+     * is: the form would read it from the request (locationsAddFromForm), which an API edit
+     * does not carry, and so delete it.
+     * @return array ['id' => event id] when saved, ['message' => ...] when refused, [] when there
+     * is no such event, or one with 'form' when the values were not valid
+     */
+    public function editApiV2Post($iId, $aValues)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        foreach ([$CNF['FIELD_PHOTO'], $CNF['FIELD_VIDEO'], $CNF['FIELD_FILE']] as $sField)
+            if (!isset($aValues[$sField]))
+                $aValues[$sField] = $this->_oDb->getMedia($sField, (int)$iId);
+
+        $bKeepLocation = $this->_bKeepLocation;
+        $this->_bKeepLocation = true;
+        try {
+            return $this->serviceEdit((int)$iId, $aValues);
+        }
+        finally {
+            $this->_bKeepLocation = $bKeepLocation;
+        }
+    }
+
     public function serviceEdit($iId, $aValues)
     {
         return $this->getFormEdit($iId, array(
@@ -5707,6 +5840,10 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
         $oTranscoder = BxDolTranscoderImage::getObjectInstance($this->_oConfig->getObject('transcoder_photos_preview'));
 
+        // API v2 only: the link's id (it edits a post's links by them); the site and API v1 get
+        // the link as they always did
+        $bApiV2 = bx_is_api_v2();
+
         $aResult = array();
         foreach($aLinks as $aLink)
             $aResult[] = array(
@@ -5714,7 +5851,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
                 'title' => $aLink['title'],
                 'text' => $aLink['text'],
                 'thumbnail' => (int)$aLink['media_id'] != 0 ? $oTranscoder->getFileUrl($aLink['media_id']) : ''
-            );
+            ) + ($bApiV2 ? array('id' => (int)$aLink['id']) : array());
 
         return $aResult;
     }
@@ -5757,7 +5894,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
                 'src_small' => $sPhotoSrcSm,
                 'src_medium' => $sPhotoSrcMd,
                 'src_orig' => $sPhotoSrcLg,
-            ];
+            ] + $this->_getTimelineMediaApiV2($sStorage);
         }
 
         return $aResult;
@@ -5798,7 +5935,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
                     'src_poster' => $oTranscoderPoster->getFileUrl($iMediaId),
                     'src_mp4' => $oTranscoderMp4->getFileUrl($iMediaId),
                     'src_mp4_hd' => $sVideoUrlHd,
-                ];
+                ] + $this->_getTimelineMediaApiV2($sStorage);
             }
 
             $bImageFile = strncmp('image/', $aMediaFile['mime_type'], 6) === 0 && $oTranscoderPhoto->isMimeTypeSupported($aMediaFile['mime_type']);
@@ -6106,6 +6243,24 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         return $this->_serviceGetBlockViewByType($aBrowseParams);
     }
 
+    /**
+     * What an API client shows for an empty feed (BxDolEmptyState): a word on how to start, and a
+     * button to the viewer's own feed, where its post form is, for a member who may post. A page
+     * block's "empty" app config can replace any of it.
+     */
+    public function getEmptyStateApi()
+    {
+        $aState = [
+            'title' => '_bx_timeline_txt_empty_feed_title',
+            'text' => isLogged() ? '_bx_timeline_txt_empty_feed_text' : '',
+        ];
+        if (isLogged() && $this->isAllowedPost() === true) {
+            $aState['buttons'] = [['title' => '_bx_timeline_txt_empty_feed_create', 'link' => 'page.php?i=' . $this->_oConfig->CNF['URI_VIEW_LIST'], 'action' => 'create_menu']];
+        }
+
+        return BxDolEmptyState::forApi($aState);
+    }
+
     protected function _serviceGetBlockViewByType($aBrowseParams = array())
     {
         $aParams = $this->_prepareParams($aBrowseParams);
@@ -6113,13 +6268,13 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
         $aResult = $this->_oTemplate->getViewBlock($aParams);
 
-        return $this->_bIsApi ? [bx_api_get_block('browse', [
+        return $this->_bIsApi ? [bx_api_get_block('browse', array_merge([
             'unit' => 'feed',  
             'request_url' => '/api.php?r=bx_timeline/get_posts/&params[]=',
             'params' => $aParams,
             'data' => $aResult,
             'filter_form' => $aParams['filter'] == 'panel' ? ['name' => 'filterform', 'data' => $this->_oTemplate->getViewFilters($aParams)]: null
-        ])] : $aResult;
+        ], $this->_oTemplate->getHasMoreApi(), ['empty_state' => $this->getEmptyStateApi()]))] : $aResult;
     }
 
     protected function _getBlockPost($iProfileId, $aParams = array())
@@ -6200,16 +6355,18 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         $oMenu = new BxTemplMenuInteractive(['template' => 'menu_interactive_vertical.html', 'menu_id'=> $sView . '-view-all', 'menu_items' => $aMenu]);
         $oMenu->setSelected('', $sView . '-view-all');
 
-        if(!$mixedContent)
+        $bRead = !$mixedContent;
+        if($bRead) {
             $mixedContent = $this->_oTemplate->getViewBlock($aParams);
+        }
 
         if($this->_bIsApi)
-            return [bx_api_get_block('browse', [
+            return [bx_api_get_block('browse', array_merge([
                 'unit' => 'feed',  
                 'request_url' => '/api.php?r=bx_timeline/get_posts/&params[]=',
                 'params' => $aParams,
                 'data' => $mixedContent
-            ])];
+            ], $bRead ? $this->_oTemplate->getHasMoreApi() : [], ['empty_state' => $this->getEmptyStateApi()]))];
 
         BxDolTemplate::getInstance()->addPageRssLink(_t('_bx_timeline_page_title_view'), $sRssUrl);
 
@@ -6412,7 +6569,9 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
             }
         }
 
-        $oMetatags->locationsAddFromForm($iId, $CNF['FIELD_LOCATION_PREFIX']);
+        // an edit that carries no location fields (editApiV2Post) keeps the stored one
+        if(!$this->_bKeepLocation)
+            $oMetatags->locationsAddFromForm($iId, $CNF['FIELD_LOCATION_PREFIX']);
     }
 
     /**

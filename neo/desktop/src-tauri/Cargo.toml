@@ -1,0 +1,88 @@
+[package]
+name = "una-desktop"
+version = "0.1.0"
+description = "UNA desktop app"
+edition = "2021"
+rust-version = "1.90"
+license = "MIT"
+
+[lib]
+name = "una_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.5", features = [] }
+# reads ../brand/brand.json (build.rs)
+serde_json = "1"
+
+[dependencies]
+# 2.11.6 fixes GHSA-w28w-mhc8-qvjv (IPC channel access control); 2.11.1 fixes GHSA-7gmj-67g7-phm9
+# tray-icon: the tray with the unread count (tray.rs)
+tauri = { version = "2.12.5", features = ["tray-icon"] }
+tauri-plugin-opener = "2.7"
+tauri-plugin-notification = "2.8"
+tauri-plugin-log = "2.10"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+log = "0.4"
+# Every request goes out from Rust (api.rs for the page's API requests): no CORS, http dev sites
+# work (a tauri:// page counts as secure), and the token never enters the web view.
+# No "cookies" feature: a cookie jar saved next to the tokens would keep site sessions past sign-out.
+# multipart + stream: uploads stream the file from disk with the token attached here (upload.rs)
+# http2, charset and system-proxy: what the HTTP plugin switched on while the page's requests went through it
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "multipart", "stream", "http2", "charset", "system-proxy"] }
+tokio = { version = "1", features = ["net", "io-util", "time", "sync", "rt", "macros", "fs"] }
+futures-util = { version = "0.3", default-features = false, features = ["std", "sink"] }
+keyring = { version = "3", features = ["apple-native", "windows-native", "sync-secret-service"] }
+sha2 = "0.10"
+base64 = "0.22"
+rand = "0.8"
+url = "2"
+# native confirmation dialogs (ask) before deleting; the capability grants ask only. File
+# pickers for uploads open from Rust (upload.rs), so the web view gets no open permission.
+tauri-plugin-dialog = "2.8.4"
+# lasting drafts (src/lib/drafts.ts): a JSON file in the app's data folder
+tauri-plugin-store = "2.5.0"
+tauri-plugin-clipboard-manager = "2.5.0"
+# new versions (updater.rs): from brand.json updatesUrl, signed with the key brand.json updatesPubkey names
+tauri-plugin-updater = "2.14"
+# the release date of an update, as the page shows it (updater.rs)
+time = { version = "0.3", features = ["formatting"] }
+# live events from the site's sockets server (realtime.rs): Pusher's protocol over a WebSocket,
+# with the same TLS and root certificates as reqwest
+tokio-tungstenite = { version = "0.30", default-features = false, features = ["connect", "rustls-tls-webpki-roots"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+# the system's languages, for the language of the menu bar and the tray (i18n.rs)
+sys-locale = "0.3.2"
+
+[dev-dependencies]
+tauri = { version = "2.12.5", features = ["test", "tray-icon"] }
+# Tauri's own menu crate: its accelerator parser checks commands.json (menu.rs tests)
+muda = { version = "0.20", default-features = false }
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+# deep-link: a una:// link that starts a second instance reaches this one (lib.rs, deep_link.rs)
+tauri-plugin-single-instance = { version = "2.5", features = ["deep-link"] }
+tauri-plugin-window-state = "2.5"
+# Start at login (Settings), with --hidden so the window stays closed (lib.rs)
+tauri-plugin-autostart = "2.7"
+# una:// links open in the app (deep_link.rs)
+tauri-plugin-deep-link = "2.6"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+# setxattr: a download gets com.apple.quarantine, as a browser's would (download.rs)
+libc = "0.2"
+# whether a menu item was chosen by its key equivalent (menu.rs key_equivalent): the versions Tauri uses
+objc2 = "0.6"
+objc2-app-kit = { version = "0.3", default-features = false, features = ["std", "NSApplication", "NSEvent", "NSResponder"] }
+
+[target.'cfg(windows)'.dependencies]
+# Mica only from Windows 11 (build 22000): material.rs
+windows-version = "0.1"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

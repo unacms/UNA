@@ -118,8 +118,22 @@ class BxInvTemplate extends BxBaseModGeneralTemplate
         if($mInvitesRemain === true)
             $mInvitesRemain = _t('_bx_invites_txt_unlimited');
 
-        if($this->_bIsApi)
-            return [bx_api_get_block('invite', ['remain' => $mInvitesRemain, 'request_url' => 'bx_invites/get_link/', 'invite_url' => bx_api_get_relative_url(bx_absolute_url($sInviteUrl))])];
+        if($this->_bIsApi) {
+            // The apps open each action in a popup: the link, the email form and (when allowed) the code, with the same params as the site's JS.
+            $sName = $this->_oModule->getName();
+            $sRequestParams = $aRequestParams ? '&' . http_build_query($aRequestParams) : '';
+
+            $aData = [
+                'remain' => $mInvitesRemain,
+                'request_url' => $sName . '/get_link/' . $sRequestParams,
+                'form_url' => $sName . '/get_block_form_invite/' . $sRequestParams,
+                'invite_url' => bx_api_get_relative_url(bx_absolute_url($sInviteUrl))
+            ];
+            if(!empty($aTmplVarsShowByCode))
+                $aData['code_url'] = $sName . '/get_code/' . $sRequestParams;
+
+            return [bx_api_get_block('invite', $aData)];
+        }
 
         $this->getCssJs();
         return $this->parseHtmlByName('block_invite.html', [

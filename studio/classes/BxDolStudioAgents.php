@@ -62,20 +62,6 @@ class BxDolStudioAgents extends BxTemplStudioWidget
                     'name' => $sNameVal ?: uriGenerate($sValue, 'sys_agents_agents', $sNameFld, ['lowercase' => true])
                 ];
                 break;
-                
-            case 'agent-activate':
-                $iValue = 0;
-                if(($iValue = bx_get('agt_value')) !== false)
-                    $iValue = bx_process_input($iValue, BX_DATA_TEXT);
-                else
-                    break;
-                
-                $aAgent = $this->oDbAi->getAgentById($iValue);
-                if(!$aAgent || !$this->oDbAi->updateAgentField($iValue, 'active', 1 - (int)$aAgent['active']))
-                    $aResult = ['coed' => 2, 'message' => _t('_sys_txt_error_occured')];
-                else
-                    $aResult = ['coed' => 0];
-                break;
         }
 
         return $aResult;

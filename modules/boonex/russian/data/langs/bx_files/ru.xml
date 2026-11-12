@@ -241,6 +241,7 @@
 
     <string name="_bx_files_txt_all_entries_by"><![CDATA[{0} файлов]]></string>
     <string name="_bx_files_txt_all_entries_in"><![CDATA[<a href="{0}">Все файлы в {1} ({2})</a>]]></string>
+    <string name="_bx_files_txt_empty_title"><![CDATA[Файлов пока нет]]></string>
     <string name="_bx_files_txt_preview_not_available"><![CDATA[Предварительный просмотр недоступен, пожалуйста скачайте этот файл, чтобы его посмотреть]]></string>
     <string name="_bx_files_txt_sample_single"><![CDATA[файл]]></string>
     <string name="_bx_files_txt_sample_single_with_article"><![CDATA[файл]]></string>

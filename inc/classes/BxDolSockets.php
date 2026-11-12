@@ -61,6 +61,15 @@ class BxDolSockets extends BxDolFactory implements iBxDolSingleton
         return '';
     }
 
+    /**
+     * What an app needs to listen to this site's events: the sockets server's scheme, host and
+     * port and the app key (never the secret). Null when there is no sockets server.
+     */
+    public function getClientConfig()
+    {
+        return null;
+    }
+
     public function writeLog($sString)
     {
         bx_log('sys_sockets', $sString);

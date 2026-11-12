@@ -14,7 +14,7 @@ export default function AuthSAML() {
                 onPress={handleSAMLLogin}
                 label={t('Use SAML SSO')}
                 image="Lock"
-                controlSize="large"
+                controlSize="regular"
                 width="fill"
                 classNames={{ root: 'flex-none' }}
             />

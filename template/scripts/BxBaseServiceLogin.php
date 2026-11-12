@@ -57,57 +57,76 @@ class BxBaseServiceLogin extends BxDol
     /** 
      * @ref bx_system_general-member_auth_code "member_auth_code"
      */
-    public function serviceMemberAuthCode($aAuthTypes = array())
+    public function serviceMemberAuthCode($aAuthTypes = array(), $bSeparator = false)
     {
-        // The argument is ignored: a caller-supplied Style is unserialized and OnClick is written into the page.
+        // The first argument is ignored: a caller-supplied OnClick would be written into the page.
         $aAuthTypes = BxDolDb::getInstance()->fromCache('sys_objects_auths', 'getAll', 'SELECT * FROM `sys_objects_auths`');
 
-        $bCompact = getParam('site_login_social_compact') == 'on';
+        $oTemplate = BxDolTemplate::getInstance();
 
+        // One full-width button per sign-in method, its logo before its name. The buttons are plain: a provider's
+        // colours are in its logo, as the providers' sign-in guidelines ask.
         $aTmplButtons = array();
         foreach($aAuthTypes as $iKey => $aItems) {
-            $sTitle = _t($aItems['Title']);
+            $sIcon = !empty($aItems['Icon']) ? $aItems['Icon'] : '';
+            $sSvg = $this->_getAuthBrandIcon($sIcon);
 
             $aTmplButtons[] = array( 
-            	'class' => ($bCompact ? 'sys-auth-compact ' : '') . $aItems['Name'],
+                'class' => 'sys-auth-' . $aItems['Name'],
                 'href' => !empty($aItems['Link']) ? BX_DOL_URL_ROOT . $aItems['Link'] : 'javascript:void(0)',
-                'title_alt' => bx_html_attribute($sTitle),
+                'title' => _t($aItems['Title']),
                 'bx_if:show_onclick' => array(
                     'condition' => !empty($aItems['OnClick']),
                     'content' => array(
                         'onclick' => 'javascript:' . $aItems['OnClick']
                     )
                 ),
-                'bx_if:show_icon' => array(
-                    'condition' => !empty($aItems['Icon']),
+                'bx_if:show_brand' => array(
+                    'condition' => $sSvg !== '',
                     'content' => array(
-                        'icon' => $aItems['Icon']
+                        'svg' => $sSvg
                     )
                 ),
-                'bx_if:show_title' => array(
-                    'condition' => !$bCompact || empty($aItems['Icon']),
+                'bx_if:show_icon' => array(
+                    'condition' => $sSvg === '' && $sIcon !== '',
                     'content' => array(
-                		'title' => $sTitle
+                        'icon' => $sIcon
                     )
-                )
+                ),
             );
-            if ($aItems['Style'] != ""){
-                $aStyles = unserialize($aItems['Style']);
-                foreach($aStyles as $sKey => $aValues) {
-                    BxDolTemplate::getInstance()->addCssStyle('.'. $aItems['Name'] .' ' . $sKey, $aValues);
-                }
-            }
         }
 
-        if(empty($aTmplButtons) || !is_array($aTmplButtons))
+        if(empty($aTmplButtons))
+            return '';
+
+        return $oTemplate->parseHtmlByName('auth.html', array(
+            'bx_if:show_or' => array(
+                'condition' => (bool)$bSeparator,
+                'content' => array(
+                    'text' => _t('_sys_txt_auth_or')
+                )
+            ),
+            'bx_repeat:buttons' => $aTmplButtons,
+        ));
+    }
+
+    /**
+     * The logo of a sign-in method whose icon is a brand ("fab google", "fab facebook-square" ...): the icon set
+     * in use may have no brand glyphs (Lucide has none), so brands are drawn from template/images/icons/auth-<name>.svg.
+     * @return string inline SVG, or an empty string when the icon isn't a brand or has no logo file
+     */
+    protected function _getAuthBrandIcon($sIcon)
+    {
+        if(!preg_match('/^fab ([a-z0-9-]+)$/', trim($sIcon), $aMatch))
             return '';
 
         $oTemplate = BxDolTemplate::getInstance();
-        $oTemplate->addCss(array('auth.css'));
-        return $oTemplate->parseHtmlByName('auth.html', array(
-            'bx_repeat:buttons' => $aTmplButtons,
-            'class_container' => ($bCompact ? 'sys-auth-compact-container' : '')
-        ));
+        $sName = 'auth-' . $aMatch[1] . '.svg';
+        if(!$oTemplate->getIconPath($sName))
+            return '';
+
+        $sSvg = $oTemplate->getIconContent($sName);
+        return $sSvg ? trim(preg_replace('/<!--.*?-->/s', '', $sSvg)) : '';
     }
 
     /**
@@ -200,7 +219,32 @@ class BxBaseServiceLogin extends BxDol
                 $oForm->aInputs['relocate']['value'] = BX_DOL_URL_ROOT;
         }
 
+        $bAuthButtons = strpos($sParams, 'no_auth_buttons') === false;
+        $bJoinText = strpos($sParams, 'no_join_text') === false;
+        $bFormShown = !(bool)getParam('sys_account_disable_login_form');
+
         if ($bApi) {
+            // With the form go the parts the block shows around it, for the apps to draw inside the block as the site
+            // does: whether other sign-in methods are offered here, the link to the join form and the block's footer.
+            $aFormExt = [
+                'request' => ['url' => '/api.php?r=system/login_form/TemplServiceLogin', 'immutable' => true],
+                'auth' => [
+                    'methods' => $bAuthButtons,
+                    'separator' => $bFormShown,
+                    // for an app that doesn't draw "Forgot password?" by the Password field
+                    'forgot' => !$bFormShown ? null : [
+                        'action' => _t('_sys_txt_forgot_pasword'),
+                        'url' => bx_api_get_relative_url($oPemalink->permalink('page.php?i=forgot-password')),
+                    ],
+                    'switch' => !$bJoinText ? null : [
+                        'text' => _t('_sys_txt_login_description'),
+                        'action' => _t('_sys_txt_login_description_action'),
+                        'url' => bx_api_get_relative_url($oPemalink->permalink('page.php?i=create-account')),
+                    ],
+                ],
+                'footer' => $this->_getAgreement('_sys_txt_login_agreement', true),
+            ];
+
             $oForm->initChecker();
             if ($oForm->isSubmittedAndValid()) {
                 $oAccount = BxDolAccount::getInstance(trim($oForm->getCleanValue('ID')));
@@ -221,26 +265,26 @@ class BxBaseServiceLogin extends BxDol
                 return [
                     //bx_api_get_block('login', ['session' => BxDolSession::getInstance()->getId()], ['id' => 2]),
                     bx_api_get_block('redirect', ['uri' => '/']),
-                    bx_api_get_block('form', $oForm->getCodeAPI(), ['ext' => ['request' => ['url' => '/api.php?r=system/login_form/TemplServiceLogin', 'immutable' => true]]]),
+                    bx_api_get_block('form', $oForm->getCodeAPI(), ['ext' => $aFormExt]),
                 ];
             } 
             else {
                 return getParam('sys_account_disable_login_form') ? null : [
-                     bx_api_get_block('form', $oForm->getCodeAPI(), ['ext' => ['request' => ['url' => '/api.php?r=system/login_form/TemplServiceLogin', 'immutable' => true]]]),
+                     bx_api_get_block('form', $oForm->getCodeAPI(), ['ext' => $aFormExt]),
                 ];
             }
         }
 
         $aTmplVarsForm = [];
-        if(!(bool)getParam('sys_account_disable_login_form'))
+        if($bFormShown)
             $aTmplVarsForm['content'] = $oForm->getCode();
 
         $aTmplVarsAuth = [];
-        if(strpos($sParams, 'no_auth_buttons') === false)
-            $aTmplVarsAuth['content'] = $this->serviceMemberAuthCode();
+        if($bAuthButtons)
+            $aTmplVarsAuth['content'] = $this->serviceMemberAuthCode([], !empty($aTmplVarsForm)); // under the form, after an "or"
 
         $aTmplVarsJoin = [];
-        if(strpos($sParams, 'no_join_text') === false)
+        if($bJoinText)
             $aTmplVarsJoin['url'] = bx_absolute_url($oPemalink->permalink('page.php?i=create-account'));
 
         $oTemplate = BxDolTemplate::getInstance();
@@ -260,15 +304,40 @@ class BxBaseServiceLogin extends BxDol
                 'condition' => !empty($aTmplVarsJoin),
                 'content' => $aTmplVarsJoin
             ],
-            'agreement' => _t('_sys_form_login_input_agreement_value', bx_absolute_url($oPemalink->permalink('page.php?i=terms')), bx_absolute_url($oPemalink->permalink('page.php?i=privacy'))),
             'bx_if:show_js_code' => [
                 'condition' => strpos($sParams, 'ajax_form') !== false,
                 'content' => []
-            ]
+            ],
+            'footer' => BxTemplFunctions::getInstance()->designBoxFooter($this->_getAgreement('_sys_txt_login_agreement')),
         ]);
 
     }
     
+    /**
+     * The terms notice under a sign-in or join form, with links to the Terms and Privacy pages. An operator who doesn't
+     * want it empties the language string.
+     * @param $sKey language key with {0} (terms URL) and {1} (privacy URL)
+     * @param $bApi links relative to the site, for the apps
+     */
+    public function serviceGetAgreement($sKey, $bApi = false)
+    {
+        return $this->_getAgreement($sKey, $bApi);
+    }
+
+    protected function _getAgreement($sKey, $bApi = false)
+    {
+        $oPermalink = BxDolPermalinks::getInstance();
+
+        $aUrls = [];
+        foreach(['terms', 'privacy'] as $sPage) {
+            $sUrl = $oPermalink->permalink('page.php?i=' . $sPage);
+            $aUrls[] = $bApi ? bx_api_get_relative_url($sUrl) : bx_absolute_url($sUrl);
+        }
+
+        $sText = _t($sKey, $aUrls[0], $aUrls[1]);
+        return $sText == $sKey ? '' : trim($sText);
+    }
+
     public function serviceLoginFormStep2 ()
     {
         if(isLogged()){
@@ -407,7 +476,7 @@ class BxBaseServiceLogin extends BxDol
 
             BxDolTemplate::getInstance()->setPageNameIndex (BX_PAGE_TRANSITION);
             BxDolTemplate::getInstance()->setPageHeader (_t('_Please Wait'));
-            BxDolTemplate::getInstance()->setPageContent ('page_main_code', MsgBox(_t('_Please Wait')));
+            BxDolTemplate::getInstance()->setPageContent ('page_main_code', BxDolTemplate::getInstance()->parseHtmlByName('transition_wait.html', ['text' => _t('_Please Wait')]));
             BxDolTemplate::getInstance()->setPageContent ('url_relocate', bx_html_attribute($sUrlRelocate, BX_ESCAPE_STR_QUOTE));
             
             header('Location: ' . $sUrlRelocate);

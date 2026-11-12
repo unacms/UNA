@@ -1,0 +1,8 @@
+# `yarn lint-spec` from this folder.
+extends:
+  - recommended
+rules:
+  # /profiles/by-handle/{handle} next to /profiles/{id}/connections and the
+  # like: an Id is digits only (its pattern), and the router tries literal segments first, so
+  # the two never meet.
+  no-ambiguous-paths: off

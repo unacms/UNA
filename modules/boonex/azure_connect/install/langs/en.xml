@@ -15,7 +15,7 @@
             For more info please refer to <a target="_blank" href="https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app">official documentation</a>.
         </p>]]></string>
 	<string name="_bx_azrcon_profile_error_api_keys"><![CDATA[Please configure the module in admin panel (can't define Client ID & Secret)]]></string>
-	<string name="_bx_azrcon_auth_title"><![CDATA[Login with Azure AD]]></string>
+	<string name="_bx_azrcon_auth_title"><![CDATA[Continue with Azure AD]]></string>
 
     <string name="_bx_azrcon_adm_stg_cpt_type"><![CDATA[Azure AD Connect]]></string>
     <string name="_bx_azrcon_option_tenant_id"><![CDATA[Directory (Tenant) ID]]></string>

@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-name-network"
+description = "Enables the name_network command without any pre-configured scope."
+commands.allow = ["name_network"]
+
+[[permission]]
+identifier = "deny-name-network"
+description = "Denies the name_network command without any pre-configured scope."
+commands.deny = ["name_network"]

@@ -29,8 +29,15 @@ export async function fetchUniListData({ pageParam, requestUrl, defaultParams }:
                 payload.unit != 'notifications'
                     ? params.start + params.per_page
                     : params.start,
+            // UNA says the list ends here (`has_more: false`, timeline feeds): no next request, or a
+            // short page would ask for one and show its skeletons under the rows. The cursor stays,
+            // so a live update that brings more rows can turn paging back on.
+            ...(payload.has_more === false ? { hasMore: false } : null),
             // UNA's "nothing to list yet" (a search nobody has run): no "Nothing found" for it.
             ...(payload.hide_empty_msg ? { hideEmptyMsg: true } : null),
+            // UNA's words for this answer when it is empty (a search that found nothing), which the
+            // page's own copy can't know.
+            ...(payload.empty_state ? { emptyState: payload.empty_state } : null),
         }
     }
 
@@ -74,9 +81,19 @@ export const refetchUniListReducer = (state: UniListRefetchState, action: any): 
 
 export const flattenPagesForUniList = (pagesData: any) => (pagesData?.pages ?? []).flatMap((p: any) => p.data ?? [])
 
+/**
+ * Skeletons under the rows for the next page only once the rows fill a page. A shorter list
+ * has its end in view, so it asks for the next page at once (a feed may hold more events than
+ * the viewer sees); that check shows nothing, and whatever it finds simply appears.
+ */
+export function showsNextPageSkeleton(rowCount: number, perPage: unknown, loadingNext: boolean): boolean {
+    const size = Number(perPage)
+    return loadingNext && rowCount >= (size > 0 ? size : 1)
+}
+
 /** Cursor paging (browse, conductor). */
 export function cursorNextPageParam(lastPage: any) {
-    return lastPage?.data?.length > 0 && lastPage?.cursor
+    return lastPage?.data?.length > 0 && lastPage?.cursor && lastPage?.hasMore !== false
         ? { ...lastPage.params, start: lastPage.cursor }
         : undefined
 }
@@ -149,6 +166,19 @@ export function replaceUniListQueryWithFirstPage(queryClient: QueryClient, query
 }
 
 /**
+ * A list that had ended (`hasMore: false` on its last page) pages again when a fresh first
+ * page has more after it: new rows on top may have pushed rows between it and the cached
+ * ones, and the cached cursor is where the next request finds them (repeats are deduped).
+ */
+function resumePagingAfterMerge(pages: any[], freshPage: any): any[] {
+    const last = pages.at(-1)
+    if (freshPage?.hasMore === false || last?.hasMore !== false) return pages
+    const resumed = { ...last }
+    delete resumed.hasMore
+    return [...pages.slice(0, -1), resumed]
+}
+
+/**
  * Put a freshly fetched first page on top of the cached pages: the fresh rows
  * (in server order, pinned rows included), then the old first-page rows that
  * fell out of it. Later pages stay; rows they now repeat are dropped by
@@ -172,19 +202,17 @@ export const mergeFirstPageIntoUniListQueryCache = (queryClient: QueryClient, qu
         const freshIds = new Set(freshItems.map((item) => String(item.id)))
         const [firstPage, ...restPages] = old.pages
         merged = true
-        return {
-            ...old,
-            pages: [
-                {
-                    ...firstPage,
-                    data: [
-                        ...freshItems,
-                        ...(firstPage.data ?? []).filter((item: any) => !freshIds.has(String(item.id))),
-                    ],
-                },
-                ...restPages,
-            ],
-        }
+        const pages = [
+            {
+                ...firstPage,
+                data: [
+                    ...freshItems,
+                    ...(firstPage.data ?? []).filter((item: any) => !freshIds.has(String(item.id))),
+                ],
+            },
+            ...restPages,
+        ]
+        return { ...old, pages: resumePagingAfterMerge(pages, freshPage) }
     })
     return merged
 }

@@ -2487,7 +2487,7 @@ class BxAdsModule extends BxBaseModTextModule
         return new $aSource['class_name']($this->_iProfileId, $aSource, $this);
     }
 
-    public function offerAccept($iId) 
+    public function offerAccept($iId, $bSkipAclCheck = false) 
     {
         $CNF = &$this->_oConfig->CNF;
 
@@ -2495,7 +2495,7 @@ class BxAdsModule extends BxBaseModTextModule
         if(empty($aOfferInfo) || !is_array($aOfferInfo))
             return false;
 
-        if($this->checkAllowedOfferAccept($aOfferInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+        if(!$bSkipAclCheck && $this->checkAllowedOfferAccept($aOfferInfo) !== CHECK_ACTION_RESULT_ALLOWED)
             return false;
 
         $iContentId = (int)$aOfferInfo[$CNF['FIELD_OFR_CONTENT']];
@@ -2515,11 +2515,11 @@ class BxAdsModule extends BxBaseModTextModule
         return true;
     }
 
-    public function offerDecline($iId) 
+    public function offerDecline($iId, $bSkipAclCheck = false) 
     {
         $CNF = &$this->_oConfig->CNF;
 
-        if($this->checkAllowedOfferDecline($iId) !== CHECK_ACTION_RESULT_ALLOWED)
+        if(!$bSkipAclCheck && $this->checkAllowedOfferDecline($iId) !== CHECK_ACTION_RESULT_ALLOWED)
             return false;
 
         if(!$this->_oDb->updateOffer([$CNF['FIELD_OFR_STATUS'] => BX_ADS_OFFER_STATUS_DECLINED], [$CNF['FIELD_OFR_ID'] => $iId]))
@@ -2529,11 +2529,11 @@ class BxAdsModule extends BxBaseModTextModule
         return true;        
     }
 
-    public function offerCancel($iId)
+    public function offerCancel($iId, $bSkipAclCheck = false)
     {
         $CNF = &$this->_oConfig->CNF;
 
-        if($this->checkAllowedOfferCancel($iId) !== CHECK_ACTION_RESULT_ALLOWED)
+        if(!$bSkipAclCheck && $this->checkAllowedOfferCancel($iId) !== CHECK_ACTION_RESULT_ALLOWED)
             return false;
 
         if(!$this->_oDb->updateOffer([$CNF['FIELD_OFR_STATUS'] => BX_ADS_OFFER_STATUS_CANCELED], [$CNF['FIELD_OFR_ID'] => $iId]))

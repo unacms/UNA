@@ -1478,6 +1478,12 @@ class BxBaseModGeneralModule extends BxDolModule
                 if(($sK = 'class_search_result') && isset($aParams['params'][$sK]))
                     $aParams[$sK] = $aParams['params'][$sK];
 
+                // The block's choice, echoed in its params (_serviceBrowse): an empty list keeps
+                // its "nothing here" message on the next page and on a refetch.
+                if(($sK = 'empty_message') && isset($aParams['params'][$sK])) {
+                    $aParams[$sK] = (bool)$aParams['params'][$sK];
+                }
+
                 if(isset($aParams['params']['filters']) && is_array($aParams['params']['filters'])) {
                     foreach($aParams['params']['filters'] as $sKey => $sValue) {
                         if(in_array($sKey, ['filter', 'condition', 'filters', 'class_search_result'], true))
@@ -3216,6 +3222,61 @@ class BxBaseModGeneralModule extends BxDolModule
     }
 
     /**
+     * Read at once what serviceGetTimelinePost of these entries reads one by one, for an API
+     * page of many of them (the Timeline's feeds), inside the scopes it opens
+     * (BxDolDb::openRowScope, BxDolStorageQuery::openFileRowsScope,
+     * BxDolTranscoderQuery::openHandlersScope, BxDolPageQuery::openSeoLinksScope): the entries'
+     * rows, their privacy, their pages' SEO links, their keywords and their images' files.
+     * @param $aContentIds entry ids
+     * @return array the ids of the entries it shows (there and active), which the rest is read for
+     */
+    public function primeTimelinePosts($aContentIds)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aIds = array_values(array_unique(array_filter(array_map('intval', (array)$aContentIds), function ($i) { return $i > 0; })));
+        if(!$aIds)
+            return [];
+
+        // the rows, and only the entries serviceGetTimelinePost shows (there and active) further
+        $this->_oDb->primeContentInfos($aIds);
+        $aRows = [];
+        foreach($aIds as $iId) {
+            $aContentInfo = $this->_oDb->getContentInfoById($iId);
+            if(empty($aContentInfo) || !is_array($aContentInfo))
+                continue;
+            if((!empty($CNF['FIELD_STATUS']) && $aContentInfo[$CNF['FIELD_STATUS']] != 'active') || (!empty($CNF['FIELD_STATUS_ADMIN']) && $aContentInfo[$CNF['FIELD_STATUS_ADMIN']] != 'active'))
+                continue;
+            $aRows[$iId] = $aContentInfo;
+        }
+        if(!$aRows)
+            return [];
+        $aIds = array_keys($aRows);
+
+        // their privacy is in their rows
+        if(!empty($CNF['OBJECT_PRIVACY_VIEW']) && ($oPrivacy = BxDolPrivacy::getObjectInstance($CNF['OBJECT_PRIVACY_VIEW'])))
+            $oPrivacy->primeObjectsFromRows($CNF['TABLE_ENTRIES'] ?? '', $aRows);
+
+        if(!empty($CNF['URI_VIEW_ENTRY']) && getParam('permalinks_seo_links'))
+            BxDolPageQuery::primeSeoLinksLater($this->getName(), $CNF['URI_VIEW_ENTRY'], $aIds);
+
+        if(!empty($CNF['OBJECT_METATAGS']) && ($oMetatags = BxDolMetatags::getObjectInstance($CNF['OBJECT_METATAGS'])))
+            $oMetatags->keywordsPrime($aIds);
+
+        // the cover, thumb and picture of each
+        if(!empty($CNF['OBJECT_STORAGE'])) {
+            $aFiles = [];
+            foreach($aRows as $aContentInfo)
+                foreach(['FIELD_COVER', 'FIELD_THUMB', 'FIELD_PICTURE'] as $sField)
+                    if(!empty($CNF[$sField]) && !empty($aContentInfo[$CNF[$sField]]))
+                        $aFiles[] = (int)$aContentInfo[$CNF[$sField]];
+            BxDolTranscoder::primeFilesOfStorage($CNF['OBJECT_STORAGE'], $aFiles);
+        }
+
+        return $aIds;
+    }
+
+    /**
      * Entry post for Timeline module
      */
     public function serviceGetTimelinePost($aEvent, $aBrowseParams = array())
@@ -3945,8 +4006,13 @@ class BxBaseModGeneralModule extends BxDolModule
             $bBrowseSimple = $sContentType == 'browse_simple';
 
             $a = $o->processingAPI($bBrowseSimple);
-            if($a && is_array($a))
+            if($a && is_array($a)) {
                 $a['hide_empty_msg'] = !(bool)$bDisplayEmptyMsg;
+                // Sent back with the next request (serviceBrowse), which has no block to ask.
+                if(isset($a['params']) && is_array($a['params'])) {
+                    $a['params']['empty_message'] = (bool)$bDisplayEmptyMsg;
+                }
+            }
 
             return !$bBrowseSimple || $a['data'] ? [bx_api_get_block($sContentType, $a)] : [];
         }
@@ -4924,7 +4990,17 @@ class BxBaseModGeneralModule extends BxDolModule
             'src_small' => $sImageSm, 
             'src_medium' => $sImageMd, 
             'src_orig' => $sImageXl
-        ]];
+        ] + $this->_getTimelineMediaApiV2($CNF['OBJECT_STORAGE'] ?? '')];
+    }
+
+    /**
+     * What an API v2 request adds to an image or a video of a timeline post: `storage`, where the
+     * file is (v2 reads its dimensions there). Nothing in any other request, so the site and API
+     * v1 get the item as they always did.
+     */
+    protected function _getTimelineMediaApiV2($sStorage)
+    {
+        return bx_is_api_v2() ? ['storage' => (string)$sStorage] : [];
     }
 
     protected function _getImagesForTimelinePostAttach($aEvent, $aContentInfo, $sUrl, $aBrowseParams = array())

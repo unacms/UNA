@@ -279,7 +279,11 @@ class BxNtfsModule extends BxBaseModNotificationsModule
             $aParams['start_from_item'] = true;
 
             $aContent = defined('BX_API_PAGE') ? [] : $this->_oTemplate->getPosts($aParams);
-            if(!empty($aContent) && is_array($aContent)) {
+            // No events: getPosts gives the site's "Empty" box (HTML), which is no list for an API client.
+            if(!is_array($aContent)) {
+                $aContent = [];
+            }
+            if(!empty($aContent)) {
                 $iContent = count($aContent);
                 if($iContent > $aParams['per_page'])
                     $aContent = array_slice($aContent, 0, -($iContent - $aParams['per_page']));
@@ -290,13 +294,22 @@ class BxNtfsModule extends BxBaseModNotificationsModule
             //if($aParams['start'] == 0)
             //    $this->markAsRead($iOwnerId, $aParams);
 
-            return [bx_api_get_block('browse', [
-                'unit' => 'notifications',  
+            $aBlockData = [
+                'unit' => 'notifications',
                 'request_url' => '/api.php?r=bx_notifications/get_data/&params[]=',
                 'params' => $aParams,
                 'id' => $iOwnerId,
-                'data' => $aContent]),
+                'data' => $aContent
             ];
+            // What the apps show when there are none (BxDolEmptyState): only a first page can be empty.
+            if(empty($aContent) && (int)$iStart <= 0) {
+                $aBlockData['empty_state'] = BxDolEmptyState::forApi([
+                    'title' => '_bx_ntfs_txt_empty_title',
+                    'text' => '_bx_ntfs_txt_empty_text',
+                ]);
+            }
+
+            return [bx_api_get_block('browse', $aBlockData)];
         }
 
         $sContent = $this->_oTemplate->getViewBlock($aParams);
@@ -769,6 +782,101 @@ class BxNtfsModule extends BxBaseModNotificationsModule
         $iOwnerId = bx_get_logged_profile_id();
         $aParams = $this->_prepareParams(BX_NTFS_TYPE_OBJECT_OWNER_AND_CONNECTIONS, $iOwnerId);
         $this->markAsRead($iOwnerId, $aParams);
+    }
+
+    /**
+     * API v2 (BxNtfsApiV2): the profile's notifications, newest first, each prepared as for the
+     * site: privacy checked, grouped like on the site, text in the viewer's language.
+     * Some events are left out by those checks, so rows are read in batches until there is one
+     * visible event past the limit or no rows are left: hidden events never end the list early.
+     * Grouping looks at every row read for the page.
+     *
+     * @param int $iBeforeId only notifications older than this id; 0 starts from the newest
+     * @param int $iMaxRows rows to read at most for one page (0: ten pages' worth, at most 500); past that the page is shorter
+     * @return array ['events' => up to $iLimit prepared events, 'before' => id the next page starts before (0 after the last page), 'last_read' => id of the last read one]
+     */
+    public function getApiV2Notifications($iOwnerId, $iBeforeId, $iLimit, $iMaxRows = 0)
+    {
+        $aParams = $this->_prepareParams(BX_NTFS_TYPE_DEFAULT, $iOwnerId, $iBeforeId, $iLimit);
+        $aParams['start_from_item'] = true;
+        if($iMaxRows <= 0)
+            $iMaxRows = min(10 * ($iLimit + 1), 500);
+
+        $bGrouped = $this->_oConfig->isEventsGrouped();
+        $aParamsPost = array_merge($aParams, ['return_parsed_content' => true]);
+
+        $iBefore = (int)$iBeforeId;
+        $iBatch = 3 * ($iLimit + 1);
+        $aScanned = [];
+        $aPrepared = [];
+        while(true) {
+            $aBatch = $this->_oDb->getEvents(array_merge($aParams, ['start' => $iBefore, 'per_page' => $iBatch]));
+            $aBatch = is_array($aBatch) ? array_values($aBatch) : [];
+            $bLast = count($aBatch) < $iBatch;
+            if(!empty($aBatch)) {
+                $aScanned = array_merge($aScanned, $aBatch);
+                $iBefore = (int)$aBatch[count($aBatch) - 1]['id'];
+            }
+
+            $aEvents = $aScanned;
+            if($bGrouped && !empty($aEvents))
+                $this->groupEvents($aEvents);
+
+            $aResult = [];
+            foreach($aEvents as $aEvent) {
+                $iId = (int)$aEvent['id'];
+                if(!array_key_exists($iId, $aPrepared)) {
+                    $mixedEvent = $this->_oTemplate->getPost($aEvent, $aParamsPost);
+                    $aPrepared[$iId] = !empty($mixedEvent) && is_array($mixedEvent) ? $mixedEvent : false;
+                }
+                if($aPrepared[$iId] === false)
+                    continue;
+
+                if(count($aResult) >= $iLimit)
+                    return ['events' => $aResult, 'before' => (int)$aResult[count($aResult) - 1]['id'], 'last_read' => (int)$aParams['last_read']];
+
+                $aResult[] = $aPrepared[$iId];
+            }
+
+            if($bLast)
+                return ['events' => $aResult, 'before' => 0, 'last_read' => (int)$aParams['last_read']];
+
+            //--- read enough for one request: the next page goes on from the last row read
+            if(count($aScanned) >= $iMaxRows)
+                return ['events' => $aResult, 'before' => $iBefore, 'last_read' => (int)$aParams['last_read']];
+
+            $iBatch = min(2 * $iBatch, 200);
+        }
+    }
+
+    /**
+     * API v2: mark everything up to and including the given event as read (0: everything).
+     */
+    public function markApiV2NotificationsRead($iOwnerId, $iUpToId = 0)
+    {
+        if($iUpToId > 0) {
+            if($iUpToId <= $this->_oDb->getLastRead($iOwnerId))
+                return true;
+
+            //--- never past the newest one, so notifications that come later stay unread
+            $iNewest = $this->getApiV2NewestId($iOwnerId);
+            if(!$iNewest)
+                return true;
+
+            return $this->_oDb->markAsRead($iOwnerId, min($iUpToId, $iNewest)) !== false;
+        }
+
+        return $this->markAsRead($iOwnerId, $this->_prepareParams(BX_NTFS_TYPE_DEFAULT, $iOwnerId));
+    }
+
+    /**
+     * API v2: the id of the profile's newest notification event (0 when there is none), one
+     * query: GET /sync prepares notifications only when this moved past what the client has.
+     */
+    public function getApiV2NewestId($iOwnerId)
+    {
+        $aNewest = $this->_oDb->getEvents(array_merge($this->_prepareParams(BX_NTFS_TYPE_DEFAULT, $iOwnerId), ['browse' => 'first']));
+        return !empty($aNewest['id']) ? (int)$aNewest['id'] : 0;
     }
 
     public function markAsRead($iOwnerId, $aParams)

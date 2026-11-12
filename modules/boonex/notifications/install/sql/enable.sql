@@ -64,6 +64,10 @@ SET @iMIOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `markers`, `submenu_object`, `submenu_popup`, `visible_for_levels`, `hidden_on`, `active`, `copyable`, `order`) VALUES
 ('sys_ntfs_submenu', @sName, 'notifications-view', '_bx_ntfs_menu_item_title_system_notifications', '_bx_ntfs_menu_item_title_notifications', 'page.php?i=notifications-view', '', '', 'bell', 'a:2:{s:6:"module";s:16:"bx_notifications";s:6:"method";s:28:"get_unread_notifications_num";}', '', 'bx_notifications_preview', 1, 2147483646, 0, 1, 1, @iMIOrder + 1);
 
+-- MENU: the apps' menu (sys_apps_menu: the first section of the apps' sidebar, GET /api/v2/navigation), between Messages and Connections
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
+('sys_apps_menu', @sName, 'notifications-view', '_bx_ntfs_menu_item_title_system_notifications', '_bx_ntfs_menu_item_title_notifications', 'page.php?i=notifications-view', '', '', 'bell', 'a:2:{s:6:"module";s:16:"bx_notifications";s:6:"method";s:28:"get_unread_notifications_num";}', '', 2147483646, 1, 1, 5);
+
 -- MENU: app tab bar (NEO)
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
 ('sys_tabbar', @sName, 'notifications-view', '_bx_ntfs_menu_item_title_system_activity', '_bx_ntfs_menu_item_title_activity', 'page.php?i=notifications-view', '', '', 'bell', '', 2147483646, 1, 1, 4);

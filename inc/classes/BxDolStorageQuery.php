@@ -229,6 +229,29 @@ class BxDolStorageQuery extends BxDolDb
     }
 
     /**
+     * In the open file rows scope: the rows of these files read in one query (an empty row for
+     * one there is not), so getFileById of each reads none. Does nothing outside of a scope.
+     */
+    public function primeFileRows($aIds)
+    {
+        if(empty(self::$_aFileRowsScopes))
+            return;
+
+        $iScope = count(self::$_aFileRowsScopes) - 1;
+        $aIds = array_values(array_unique(array_filter(array_map('intval', (array)$aIds))));
+        $aMissing = [];
+        foreach($aIds as $iId)
+            if(!array_key_exists($this->_sTableFiles . '#' . $iId, self::$_aFileRowsScopes[$iScope]))
+                $aMissing[] = $iId;
+        if(!$aMissing)
+            return;
+
+        $aRows = $this->getAllWithKey("SELECT * FROM " . $this->_sTableFiles . " WHERE `id` IN (" . $this->implode_escape($aMissing) . ")", 'id');
+        foreach($aMissing as $iId)
+            self::$_aFileRowsScopes[$iScope][$this->_sTableFiles . '#' . $iId] = $aRows[$iId] ?? [];
+    }
+
+    /**
      * While a scope is open a file row is read once. bx_api_get_image opens one: the
      * file's url, its info and its local path all read the same row. A row changed or
      * deleted here (BxDolStorage::getFile fills in missing dimensions, for one) is read
@@ -275,6 +298,13 @@ class BxDolStorageQuery extends BxDolDb
      */
     protected function _getMimeTypeField($sExt, $sField)
     {
+        // API v2 only: what is not an extension has no row (a link's query string comes with the
+        // name of a private file's link: getFileExt of '...jpg?t=...'), so there is nothing to
+        // read. The site and API v1 ask the database, as they always did (it matches without
+        // accents and trailing spaces, which this check does not).
+        if(bx_is_api_v2() && is_string($sExt) && !preg_match('/^[A-Za-z0-9_.+-]*$/', $sExt))
+            return false;
+
         $sQuery = $this->prepare("SELECT `mime_type`, `icon`, `icon_font` FROM `sys_storage_mime_types` WHERE `ext` = ?", $sExt);
         $aRow = is_string($sExt) ? $this->fromMemory($this->_getMimeTypeMemoryKey($sExt), 'getRow', $sQuery) : $this->getRow($sQuery);
 
@@ -293,6 +323,153 @@ class BxDolStorageQuery extends BxDolDb
         return $this->getOne($sQuery) ? true : false;
     }
 
+    /**
+     * The first token of a private file made at or after $iSince, false when there is none: for
+     * a link that is given out again while its token has life left (getFileUrlByIdShared). The
+     * first one, so that tokens made later in the same period (by other links) don't change it.
+     */
+    public function getTokenSince($iFileId, $iSince)
+    {
+        // a page's links read at once (primeTokensSince)
+        $sKey = $this->_tokenScopeKey($iFileId, $iSince);
+        if(!empty(self::$_aFileRowsScopes) && array_key_exists($sKey, self::$_aFileRowsScopes[count(self::$_aFileRowsScopes) - 1]))
+            return self::$_aFileRowsScopes[count(self::$_aFileRowsScopes) - 1][$sKey];
+
+        $sQuery = $this->prepare("SELECT `hash` FROM `sys_storage_tokens` WHERE `id` = ? AND `object` = ? AND `created` >= ? ORDER BY `created` ASC, `iid` ASC", $iFileId, $this->_aObject['object'], (int)$iSince);
+        $sToken = $this->getOne($sQuery);
+        $sToken = is_string($sToken) && $sToken !== '' ? $sToken : false;
+        // in a scope the first one is the first one for the rest of it (a page links a file in several sizes)
+        if($sToken !== false)
+            $this->rememberTokenSince($iFileId, $iSince, $sToken);
+        return $sToken;
+    }
+
+    /**
+     * In the open file rows scope: the first token of a file made at or after $iSince, which
+     * getTokenSince then gives without reading it (one just made for a file that had none).
+     */
+    public function rememberTokenSince($iFileId, $iSince, $sToken)
+    {
+        if(!empty(self::$_aFileRowsScopes) && is_string($sToken) && $sToken !== '')
+            self::$_aFileRowsScopes[count(self::$_aFileRowsScopes) - 1][$this->_tokenScopeKey($iFileId, $iSince)] = $sToken;
+    }
+
+    /**
+     * In the open file rows scope: the first token made at or after $iSince of each of these
+     * files (getTokenSince) read in one query, and one made in one more for each file that has
+     * none, so getTokenSince of each reads and writes nothing: for a page of private files that
+     * their owner gets the links of. Does nothing outside of a scope. $bMake false: only the
+     * tokens there are (a file with none gets one when its link is asked for, as without priming).
+     */
+    public function primeTokensSince($aIds, $iSince, $bMake = true)
+    {
+        if(empty(self::$_aFileRowsScopes))
+            return;
+
+        $iScope = count(self::$_aFileRowsScopes) - 1;
+        $aMissing = [];
+        foreach(array_values(array_unique(array_filter(array_map('intval', (array)$aIds)))) as $iId)
+            if(!array_key_exists($this->_tokenScopeKey($iId, $iSince), self::$_aFileRowsScopes[$iScope]))
+                $aMissing[$iId] = $iId;
+        if(!$aMissing)
+            return;
+
+        $aRows = $this->getAll("SELECT `id`, `hash` FROM `sys_storage_tokens` WHERE `object` = :object AND `created` >= :since AND `id` IN (" . $this->implode_escape(array_values($aMissing)) . ") ORDER BY `created` ASC, `iid` ASC", [
+            'object' => $this->_aObject['object'],
+            'since' => (int)$iSince,
+        ]);
+        foreach($aRows as $aRow) {
+            $iId = (int)$aRow['id'];
+            if(!isset($aMissing[$iId]) || (string)$aRow['hash'] === '')
+                continue;
+            self::$_aFileRowsScopes[$iScope][$this->_tokenScopeKey($iId, $iSince)] = (string)$aRow['hash'];
+            unset($aMissing[$iId]);
+        }
+        if(!$aMissing || !$bMake)
+            return;
+
+        // the files with none get one each, in one statement
+        $iTime = time();
+        $aValues = $aTokens = [];
+        foreach($aMissing as $iId) {
+            $aTokens[$iId] = self::_newToken();
+            $aValues[] = $this->prepareAsString("(?, ?, ?, ?)", $iId, $this->_aObject['object'], $aTokens[$iId], $iTime);
+        }
+        $bAdded = (bool)$this->query("INSERT INTO `sys_storage_tokens` (`id`, `object`, `hash`, `created`) VALUES " . implode(', ', $aValues));
+        foreach($aTokens as $iId => $sToken)
+            self::$_aFileRowsScopes[$iScope][$this->_tokenScopeKey($iId, $iSince)] = $bAdded ? $sToken : false;
+    }
+
+    /**
+     * As primeTokensSince for the files of several storages, in a query per period start (one,
+     * when the storages' tokens live as long) and one statement for the tokens made.
+     * @param array $aItems [query object, file ids, period start] of each storage
+     */
+    public static function primeTokensSinceOfStorages($aItems, $bMake = true)
+    {
+        if(empty(self::$_aFileRowsScopes) || !$aItems)
+            return;
+
+        $iScope = count(self::$_aFileRowsScopes) - 1;
+        $aMissing = []; // period start => object => id => [query, id]
+        foreach($aItems as list($oQuery, $aIds, $iSince))
+            foreach(array_unique(array_filter(array_map('intval', (array)$aIds))) as $iId)
+                if(!array_key_exists($oQuery->_tokenScopeKey($iId, $iSince), self::$_aFileRowsScopes[$iScope]))
+                    $aMissing[(int)$iSince][$oQuery->_aObject['object']][$iId] = $oQuery;
+        if(!$aMissing)
+            return;
+
+        $oDb = BxDolDb::getInstance();
+        foreach($aMissing as $iSince => $aByObject) {
+            $aIds = [];
+            foreach($aByObject as $aObjectIds)
+                $aIds += array_combine(array_keys($aObjectIds), array_keys($aObjectIds));
+            $aRows = $oDb->getAll("SELECT `id`, `object`, `hash` FROM `sys_storage_tokens` WHERE `object` IN (" . $oDb->implode_escape(array_keys($aByObject)) . ") AND `created` >= :since AND `id` IN (" . $oDb->implode_escape(array_values($aIds)) . ") ORDER BY `created` ASC, `iid` ASC", [
+                'since' => $iSince,
+            ]);
+            foreach($aRows as $aRow) {
+                $iId = (int)$aRow['id'];
+                if(!isset($aMissing[$iSince][$aRow['object']][$iId]) || (string)$aRow['hash'] === '')
+                    continue;
+                $oQuery = $aMissing[$iSince][$aRow['object']][$iId];
+                self::$_aFileRowsScopes[$iScope][$oQuery->_tokenScopeKey($iId, $iSince)] = (string)$aRow['hash'];
+                unset($aMissing[$iSince][$aRow['object']][$iId]);
+            }
+        }
+        if(!$bMake)
+            return;
+
+        // the files with none get one each, in one statement
+        $iTime = time();
+        $aValues = $aTokens = [];
+        foreach($aMissing as $iSince => $aByObject)
+            foreach($aByObject as $sObject => $aObjectIds)
+                foreach($aObjectIds as $iId => $oQuery) {
+                    $sToken = self::_newToken();
+                    $aTokens[] = [$oQuery->_tokenScopeKey($iId, $iSince), $sToken];
+                    $aValues[] = $oDb->prepareAsString("(?, ?, ?, ?)", $iId, $sObject, $sToken, $iTime);
+                }
+        if(!$aValues)
+            return;
+        $bAdded = (bool)$oDb->query("INSERT INTO `sys_storage_tokens` (`id`, `object`, `hash`, `created`) VALUES " . implode(', ', $aValues));
+        foreach($aTokens as list($sKey, $sToken))
+            self::$_aFileRowsScopes[$iScope][$sKey] = $bAdded ? $sToken : false;
+    }
+
+    /**
+     * A token for a private file's link made here: 32 hex digits, as genToken's are (the
+     * `hash` column holds as many), from the system's random source.
+     */
+    protected static function _newToken()
+    {
+        return bin2hex(random_bytes(16));
+    }
+
+    protected function _tokenScopeKey($iFileId, $iSince)
+    {
+        return 'token#' . $this->_aObject['object'] . '#' . (int)$iFileId . '#' . (int)$iSince;
+    }
+
     public function genToken($iFileId)
     {
         $iTime = time();
@@ -306,6 +483,7 @@ class BxDolStorageQuery extends BxDolDb
 
     public function insertGhosts($mixedFileIds, $iProfileId, $iContentId = 0)
     {
+        $this->_forgetScopedGhosts();
         $iTime = time();
         if (!is_array($mixedFileIds))
             $mixedFileIds = array($mixedFileIds);
@@ -322,6 +500,7 @@ class BxDolStorageQuery extends BxDolDb
 
     public function updateGhostOrder($iProfileId, $iContentId, $iFileId, $iOrder)
     {
+        $this->_forgetScopedGhosts();
         $aBindings = array(
             'object' => $this->_aObject['object'],
             'content_id' => $iContentId,
@@ -342,6 +521,7 @@ class BxDolStorageQuery extends BxDolDb
 
     public function updateGhostsContentId($mixedFileIds, $iProfileId, $iContentId, $aProfiles = array(), $isAdmin = false)
     {
+        $this->_forgetScopedGhosts();
         $aBindings = array(
             'content' => $iContentId,
     		'profile' => $iProfileId,
@@ -361,6 +541,7 @@ class BxDolStorageQuery extends BxDolDb
     
     public function updateGhostsUploaderId($mixedFileIds, $iUploaderId)
     {
+        $this->_forgetScopedGhosts();
         return $this->query("UPDATE `sys_storage_ghosts` SET `uploader_id` = :uploader_id WHERE `object` = :object AND `id` IN (" . $this->implode_escape($mixedFileIds) . ")", [
             'object' => $this->_aObject['object'],
             'uploader_id' => $iUploaderId
@@ -369,6 +550,7 @@ class BxDolStorageQuery extends BxDolDb
 
     public function deleteGhosts($mixedFileIds, $iProfileId, $iContentId = false)
     {
+        $this->_forgetScopedGhosts();
     	$aBindings = array(
     		'profile_id' => $iProfileId,
     		'object' => $this->_aObject['object']
@@ -396,8 +578,140 @@ class BxDolStorageQuery extends BxDolDb
         return $this->getRow($sQuery);
     }
 
+    /**
+     * In the open file rows scope: the ghosts of these contents (getGhosts of an author's
+     * files of one content), read in one query, so getGhosts of each reads none. Does nothing
+     * outside of a scope.
+     * @return array the ids of the files of these contents' ghosts (of every author)
+     */
+    public function primeGhostsByContents($aContentIds)
+    {
+        if(empty(self::$_aFileRowsScopes))
+            return [];
+
+        $iScope = count(self::$_aFileRowsScopes) - 1;
+        $aAll = $aIds = [];
+        foreach((array)$aContentIds as $mId)
+            if(($iId = (int)$mId) > 0) {
+                $aAll[$iId] = $iId;
+                if(!array_key_exists($this->_ghostsScopeKey($iId), self::$_aFileRowsScopes[$iScope]))
+                    $aIds[$iId] = $iId;
+            }
+        if($aIds)
+            $this->_primeGhosts($iScope, $aIds);
+
+        $aFileIds = [];
+        foreach($aAll as $iId)
+            foreach(self::$_aFileRowsScopes[$iScope][$this->_ghostsScopeKey($iId)] ?? [] as $aRow)
+                $aFileIds[] = (int)$aRow['id'];
+        return $aFileIds;
+    }
+
+    protected function _primeGhosts($iScope, $aIds)
+    {
+        $aByContent = array_fill_keys(array_values($aIds), []);
+        // as getFiles reads the ghosts of one content, in its order, with whose and which content
+        // each is; ghosts in the same place keep the order they were added in, as getFiles reads
+        // them by its profile, object and content key
+        $aRows = $this->getAll("SELECT `f`.*, `g`.`uploader_id`, `g`.`created`, `g`.`content_id` AS `bx_ghost_content_id`, `g`.`profile_id` AS `bx_ghost_profile_id` FROM " . $this->_sTableFiles . " AS `f`  INNER JOIN `sys_storage_ghosts` AS `g` ON (`f`.`id` = `g`.`id` AND `g`.`object` = :object  AND `g`.`content_id` IN (" . $this->implode_escape(array_values($aIds)) . ")) ORDER BY `g`.`content_id`, `g`.`order` ASC, `g`.`created` DESC, `g`.`iid` ASC", [
+            'object' => $this->_aObject['object'],
+        ]);
+        foreach($aRows as $aRow)
+            $aByContent[(int)$aRow['bx_ghost_content_id']][] = $aRow;
+        foreach($aByContent as $iId => $aGhosts)
+            self::$_aFileRowsScopes[$iScope][$this->_ghostsScopeKey($iId)] = $aGhosts;
+    }
+
+    /**
+     * @see BxDolStorage::primeGhostsOfStorages
+     * @param array $aQueries storage object => its query object
+     */
+    public static function primeGhostsOfStorages($aQueries, $aContentIds)
+    {
+        if(empty(self::$_aFileRowsScopes) || !$aQueries)
+            return [];
+
+        $iScope = count(self::$_aFileRowsScopes) - 1;
+        $aIds = $aMissing = [];
+        foreach((array)$aContentIds as $mId)
+            if(($iId = (int)$mId) > 0) {
+                $aIds[$iId] = $iId;
+                foreach($aQueries as $sObject => $oQuery)
+                    if(!array_key_exists($oQuery->_ghostsScopeKey($iId), self::$_aFileRowsScopes[$iScope]))
+                        $aMissing[$sObject][$iId] = $iId;
+            }
+
+        if($aMissing) {
+            $oDb = BxDolDb::getInstance();
+            $aContents = [];
+            foreach($aMissing as $aObjectIds)
+                $aContents += $aObjectIds;
+            // in getFiles's order of one content's ghosts, the ones in the same place in the order they were added
+            $aGhosts = [];
+            foreach($oDb->getAll("SELECT * FROM `sys_storage_ghosts` WHERE `object` IN (" . $oDb->implode_escape(array_keys($aMissing)) . ") AND `content_id` IN (" . $oDb->implode_escape(array_values($aContents)) . ") ORDER BY `content_id`, `order` ASC, `created` DESC, `iid` ASC") as $aGhost)
+                $aGhosts[$aGhost['object']][] = $aGhost;
+
+            foreach($aMissing as $sObject => $aObjectIds) {
+                $oQuery = $aQueries[$sObject];
+                $aByContent = array_fill_keys(array_values($aObjectIds), []);
+                $aOwn = array_filter($aGhosts[$sObject] ?? [], function ($aGhost) use ($aByContent) { return isset($aByContent[(int)$aGhost['content_id']]); });
+                if($aOwn)
+                    $oQuery->primeFileRows(array_column($aOwn, 'id'));
+                // a row as getFiles joins it: the file's, with the ghost's uploader and time (an INNER JOIN: a ghost without its file is none)
+                foreach($aOwn as $aGhost) {
+                    $aRow = $oQuery->getFileById($aGhost['id']);
+                    if(empty($aRow) || !is_array($aRow))
+                        continue;
+                    $aRow['uploader_id'] = $aGhost['uploader_id'];
+                    $aRow['created'] = $aGhost['created'];
+                    $aRow['bx_ghost_content_id'] = $aGhost['content_id'];
+                    $aRow['bx_ghost_profile_id'] = $aGhost['profile_id'];
+                    $aByContent[(int)$aGhost['content_id']][] = $aRow;
+                }
+                foreach($aByContent as $iId => $aRows)
+                    self::$_aFileRowsScopes[$iScope][$oQuery->_ghostsScopeKey($iId)] = $aRows;
+            }
+        }
+
+        $aResult = [];
+        foreach($aQueries as $sObject => $oQuery)
+            foreach($aIds as $iId)
+                foreach(self::$_aFileRowsScopes[$iScope][$oQuery->_ghostsScopeKey($iId)] ?? [] as $aRow)
+                    $aResult[$sObject][] = (int)$aRow['id'];
+        return $aResult;
+    }
+
+    protected function _ghostsScopeKey($iContentId)
+    {
+        return 'ghosts#' . $this->_aObject['object'] . '#' . (int)$iContentId;
+    }
+
+    protected function _forgetScopedGhosts()
+    {
+        $sPrefix = 'ghosts#' . $this->_aObject['object'] . '#';
+        foreach(array_keys(self::$_aFileRowsScopes) as $iScope)
+            foreach(array_keys(self::$_aFileRowsScopes[$iScope]) as $sKey)
+                if(strncmp($sKey, $sPrefix, strlen($sPrefix)) === 0)
+                    unset(self::$_aFileRowsScopes[$iScope][$sKey]);
+    }
+
     public function getFiles($mixedProfileId, $isGhostsOnly = false, $mixedContent = false, $isAdmin = false)
     {
+        // an author's ghosts of one content primed in the open scope (@see primeGhostsByContents)
+        if($isGhostsOnly && !$isAdmin && !empty(self::$_aFileRowsScopes) && is_numeric($mixedProfileId) && is_numeric($mixedContent)) {
+            $sKey = $this->_ghostsScopeKey($mixedContent);
+            $iScope = count(self::$_aFileRowsScopes) - 1;
+            if(array_key_exists($sKey, self::$_aFileRowsScopes[$iScope])) {
+                $aResult = [];
+                foreach(self::$_aFileRowsScopes[$iScope][$sKey] as $aRow)
+                    if((int)$aRow['bx_ghost_profile_id'] === (int)$mixedProfileId) {
+                        unset($aRow['bx_ghost_content_id'], $aRow['bx_ghost_profile_id']);
+                        $aResult[] = $aRow;
+                    }
+                return $aResult;
+            }
+        }
+
         $aBindings = [];
 
         $sSelect = '`f`.*';

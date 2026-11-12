@@ -305,6 +305,14 @@
     "Enter 5-digit code": "Introduce el código de 5 dígitos",
     "Continue": "Continuar",
     "Invitation link": "Enlace de invitación",
+    "Invite by email": "Invitar por correo",
+    "Get invitation link": "Obtener enlace de invitación",
+    "Invite by code": "Invitar con código",
+    "Invitation code": "Código de invitación",
+    "Your invitation code": "Tu código de invitación",
+    "Or share it as a link": "O compártelo como enlace",
+    "Copy": "Copiar",
+    "Copy link": "Copiar enlace",
     "Enter your group code to join a community and start connecting.": "Introduce el código del grupo para unirte a una comunidad.",
     "You can invite your friends to join. You have {{count}} invites to share.": "Puedes invitar a tus amigos. Tienes {{count}} invitaciones.",
     "Switch": "Cambiar",
@@ -562,5 +570,6 @@
     "Flags": "Banderas",
     "Start timer": "Iniciar temporizador",
     "Pause timer": "Pausar temporizador",
-    "Total logged": "Total registrado"
+    "Total logged": "Total registrado",
+    "optional": "opcional"
 }

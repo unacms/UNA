@@ -618,6 +618,7 @@
     <string name="_bx_tasks_txt_list_inbox"><![CDATA[Inbox]]></string>
     <string name="_bx_tasks_txt_new_task_list"><![CDATA[New Task List]]></string>
     <string name="_bx_tasks_txt_edit_task_list"><![CDATA[Edit Task List]]></string>
+    <string name="_bx_tasks_txt_empty_title"><![CDATA[No tasks yet]]></string>
     <string name="_bx_tasks_txt_delete_task_list"><![CDATA[Delete Task List]]></string>
     <string name="_bx_tasks_txt_new_task"><![CDATA[New Task]]></string>
     <string name="_bx_tasks_txt_total"><![CDATA[Total: {0}]]></string>
@@ -670,6 +671,8 @@
     <string name="_bx_tasks_txt_msg_edit_estimate"><![CDATA[<a href="{author_link}">{author_name}</a> changed estimate to <b>{value}</b>]]></string>
     <string name="_bx_tasks_txt_msg_edit_due_date"><![CDATA[<a href="{author_link}">{author_name}</a> changed due date to <b>{value}</b>]]></string>
     <string name="_bx_tasks_txt_msg_edit_state"><![CDATA[<a href="{author_link}">{author_name}</a> changed state to <b>{value}</b>]]></string>
+    <string name="_bx_tasks_txt_msg_edit_stickers"><![CDATA[<a href="{author_link}">{author_name}</a> changed labels to <b>{value}</b>]]></string>
+    <string name="_bx_tasks_txt_msg_edit_stickers_none"><![CDATA[<a href="{author_link}">{author_name}</a> removed the labels]]></string>
     <string name="_bx_tasks_txt_msg_edit_initial_members"><![CDATA[<a href="{author_link}">{author_name}</a> assigned to <b>{value}</b>]]></string>
     <string name="_bx_tasks_txt_msg_edit_title"><![CDATA[<a href="{author_link}">{author_name}</a> changed title to <b>{value}</b>]]></string>
     <string name="_bx_tasks_txt_msg_edit_text"><![CDATA[<a href="{author_link}">{author_name}</a> changed text]]></string>
@@ -699,4 +702,24 @@
     <!-- Timeline -->
     <string name="_bx_tasks_alert_action_completed"><![CDATA[completed]]></string>
     <string name="_bx_tasks_alert_action_reopened"><![CDATA[reopened]]></string>
+    <string name="_bx_tasks_txt_time_logged"><![CDATA[Logged]]></string>
+    <string name="_bx_tasks_txt_time_billed"><![CDATA[Billable]]></string>
+    <string name="_bx_tasks_txt_time_original"><![CDATA[Original]]></string>
+    <string name="_bx_tasks_txt_time_by_timer"><![CDATA[Timer]]></string>
+    <string name="_bx_tasks_txt_time_by_hand"><![CDATA[Manual]]></string>
+    <string name="_bx_tasks_grid_column_title_tm_value_total"><![CDATA[Total]]></string>
+    <string name="_bx_tasks_grid_column_title_tm_value_manual"><![CDATA[Manual]]></string>
+    <string name="_bx_tasks_grid_column_title_tm_value_billed"><![CDATA[Billable]]></string>
+    <string name="_bx_tasks_form_time_input_value_billed"><![CDATA[Billable time]]></string>
+    <string name="_bx_tasks_page_title_sys_entries_billing_in_context"><![CDATA[Tasks Billing in Context]]></string>
+    <string name="_bx_tasks_page_title_entries_billing_in_context"><![CDATA[Billing]]></string>
+    <string name="_bx_tasks_page_block_title_system_context_billing_summary"><![CDATA[Context Billable Time by Person]]></string>
+    <string name="_bx_tasks_page_block_title_context_billing_summary"><![CDATA[Billable Time]]></string>
+    <string name="_bx_tasks_menu_item_title_system_view_context_billing"><![CDATA[Billing in Context]]></string>
+    <string name="_bx_tasks_menu_item_title_view_context_billing"><![CDATA[Billing]]></string>
+    <string name="_bx_tasks_alert_action_timer_stopped_personal"><![CDATA[Pause a timer that ran for too long]]></string>
+    <string name="_bx_tasks_txt_notification_timer_stopped"><![CDATA[The timer of <b class="bx-ntfs-content-profile">{entry_author_name}</b> on <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} was paused: it ran for too long]]></string>
+    <string name="_bx_tasks_txt_notification_timer_stopped_in_context"><![CDATA[The timer of <b class="bx-ntfs-content-profile">{entry_author_name}</b> on <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} in <b class="bx-ntfs-content-profile">{owner_name}</b> was paused: it ran for too long]]></string>
+    <string name="_bx_tasks_option_timer_running_limit"><![CDATA[Pause a timer that runs without a pause for longer than, hours (0 for never)]]></string>
+    <string name="_bx_tasks_txt_time_period"><![CDATA[Period]]></string>
 </resources>

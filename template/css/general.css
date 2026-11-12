@@ -705,3 +705,25 @@ video.bx-player-embed {
 .bx-embeded-image{
     display: none;
 }
+
+/* Login form: "Forgot password?" sits on the Password label's line, at its end. The link's row comes after the field
+   in the page (so Tab goes Email, Password, the link), is ordered before it and takes no height: the link drops into
+   the label's line of the Password row under it. Only while the form has both rows. */
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-Password):has(> #bx-form-element-submit_text) {
+    display: flex;
+    flex-direction: column;
+}
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-submit_text) > #bx-form-element-Password {
+    order: 2;
+    margin-top: 0;
+}
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-submit_text) > #bx-form-element-Password ~ * {
+    order: 3;
+}
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-Password) > #bx-form-element-submit_text {
+    position: relative;
+    z-index: 1;
+    order: 1;
+    align-self: flex-end;
+    height: 0;
+}

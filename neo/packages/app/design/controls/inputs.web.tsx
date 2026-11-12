@@ -112,7 +112,11 @@ const sanitizeInputProps = ({
     if (accessibilityLabel && !domProps['aria-label']) domProps['aria-label'] = accessibilityLabel;
     if (accessibilityRole && !domProps.role) domProps.role = accessibilityRole;
     if (accessibilityHint && !domProps['aria-description']) domProps['aria-description'] = accessibilityHint;
-    if (editable === false) domProps.disabled = true;
+    // A read only field takes no focus and no caret either: `disabled`, not the DOM's `readonly`.
+    if (editable === false || domProps.readOnly) {
+        domProps.disabled = true;
+        delete domProps.readOnly;
+    }
     if (keyboardType === 'email-address') domProps.type = 'email';
     if (keyboardType === 'numeric' || keyboardType === 'number-pad') domProps.type = 'number';
     if (secureTextEntry) domProps.type = 'password';
@@ -158,6 +162,7 @@ export const Input = forwardRef<any, CustomInputProps>(
                     inputSettings.size[size] ?? inputSettings.size.regular,
                     labelInside && inputSettings.adaptive_input_inside,
                     rounded === InputRounded.full && inputSettings.rounded.full,
+                    (props.readOnly || props.editable === false) && inputSettings.locked,
                     className,
                 )}
                 style={style}

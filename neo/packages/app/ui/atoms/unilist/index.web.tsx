@@ -225,9 +225,11 @@ function useListReveal(preloadComponent: UniListSlot, waitForGrid: boolean) {
     // setter would call; pass it through a callback so the slot itself is kept.
     const [heldPreload, setHeldPreload] = useState<UniListSlot>(() => preloadComponent)
 
+    // Hold the latest preload: a blank one first (skeletons wait a moment) gives way to the
+    // skeletons, and those stay until the list shows.
     if (preloadComponent) {
         if (showContent) setShowContent(false)
-        if (!heldPreload) setHeldPreload(() => preloadComponent)
+        if (heldPreload !== preloadComponent) setHeldPreload(() => preloadComponent)
     }
 
     useEffect(() => {
@@ -244,6 +246,11 @@ function useListReveal(preloadComponent: UniListSlot, waitForGrid: boolean) {
 
 export type { UniListProps } from './shared'
 
+/** The empty slot when there are no rows and one is given, otherwise the list. */
+function listOrEmpty(count: number, empty: UniListProps['ListEmptyComponent'], list: () => ReactNode): ReactNode {
+    return count === 0 && empty ? renderSlot(empty) : list()
+}
+
 export default function UniList(props: UniListProps) {
     const {
         data: rawData,
@@ -251,6 +258,7 @@ export default function UniList(props: UniListProps) {
         preloadComponent,
         ListHeaderComponent,
         ListFooterComponent,
+        ListEmptyComponent,
         onEndReached,
         onStartReached,
         refer,
@@ -412,7 +420,9 @@ export default function UniList(props: UniListProps) {
                 style={wrapperStyle}
             >
                 {renderSlot(ListHeaderComponent)}
-                <List {...virtuosoProps} />
+                {/* Empty: the message replaces the list below the header (a feed's composer stays), as
+                    native's ListEmptyComponent; an empty fixed-height list would push it out of view. */}
+                {listOrEmpty(rows.length, ListEmptyComponent, () => <List {...virtuosoProps} />)}
                 <div ref={endRef} aria-hidden="true" />
             </View>
         </View>

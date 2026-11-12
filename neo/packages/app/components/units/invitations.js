@@ -10,12 +10,15 @@ import ProfilesList from 'app/ui/molecules/profile/profile-list'
 import { useTranslation } from 'react-i18next';
 import { CardList } from 'app/ui/molecules/page/card'
 import { tp } from 'app/lib/util'
+import { Skeleton } from 'app/ui/atoms/skeleton'
 
 export default function Unit(props) {
     const { t } = useTranslation();
     const [state, setState] = useState(false);
 
     const data = props.data
+    // A loading list or an empty state's preview: the card's shape without its words and actions.
+    const isSkeleton = !!data?.skeleton
     const friendsLabel = data.members_count > 0 ? tp("members", data?.members_count) : ''
 
     const processInvitation = async (request_url) => {
@@ -43,10 +46,12 @@ export default function Unit(props) {
                         </View>
                         <View className="p-3  flex-auto items-between justify-between ">
                             <View>
-                            <Text numberOfLines={2} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-tight font-semibold">
-
+                            <Skeleton visible={isSkeleton} className="h-4 w-3/4" rounded="rounded-md">
+                                <Text numberOfLines={2} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-tight font-semibold">
                                     {data.title}
                                 </Text>
+                            </Skeleton>
+                                {isSkeleton ? <Skeleton visible className="h-6 w-1/2 my-3" rounded="rounded-md" /> : (
                                 <Row className="items-center h-6 my-3">
                                     <View className="mr-2  h-6">
                                         <ProfilesList
@@ -67,9 +72,10 @@ export default function Unit(props) {
                                         {data.visibility != "3" ? t('Private') : t('Public')}
                                     </Text>
                                 </Row>
+                                )}
                             </View>
                             <View className="flex-row w-full gap-x-2">
-
+                                {isSkeleton ? <Skeleton visible className="h-9 flex-1" rounded="rounded-lg" /> : null}
                                 {!!data.callback_accept && <NeoButton style="borderedProminent" controlSize="small" width="fill" label={t('Accept')} expoUI={false} onPress={() => { processInvitation(data.callback_accept) }} />}
                                 {!!data.callback_decline && <NeoButton controlSize="small" width="fill" label={t('Decline')} expoUI={false} onPress={() => { processInvitation(data.callback_decline) }} />}
                                 {!!data.redirect_url && <NeoButtonLink href={data.redirect_url} controlSize="small" width="fill" label={data.redirect_title} />}
@@ -93,9 +99,11 @@ export default function Unit(props) {
                     display_name={data.title}
                 />
                 <View className="flex-row justify-between flex-auto items-center">
-                    <Text numberOfLines={2} className="text-sm leading-tight font-semibold text-card-foreground web:group-hover:text-foreground ">
-                        {data.title}
-                    </Text>
+                    <Skeleton visible={isSkeleton} className="h-4 w-1/2" rounded="rounded-md">
+                        <Text numberOfLines={2} className="text-sm leading-tight font-semibold text-card-foreground web:group-hover:text-foreground ">
+                            {data.title}
+                        </Text>
+                    </Skeleton>
                     <View className="flex-none">
                         <Row className='gap-2'>
                             {!!data.callback_accept && <NeoButton style="borderedProminent" controlSize="mini" borderShape="capsule" label={t('Accept')} expoUI={false} onPress={() => { processInvitation(data.callback_accept) }} />}

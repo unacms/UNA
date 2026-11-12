@@ -7,6 +7,7 @@ import { components } from 'app/components/registry';
 import { useMenuData } from 'app/context/menu-data';
 import { useEffect, useMemo, useState } from 'react';
 import { Platform } from 'react-native';
+import { MENU_HIGHLIGHT_BAR_CLASS, useMenuHighlight } from 'app/ui/atoms/menu-highlight';
 
 // Persist indicator state across remounts (web/native)
 let __menuTopIndicatorPersist = { initialized: false, translateX: 0, width: 0 };
@@ -36,6 +37,8 @@ function startIndicatorSettle() {
 export default function MenuTop({ url, uri }) {
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation()
+    // Web: one hover highlight slides from tab to tab, as in the dropdown menus.
+    const highlightRef = useMenuHighlight();
     // The launcher's apps join More when `layout.apps` is on: the `menu_launcher`
     // setting if set, else UNA's launcher menu.
     const showApps = !!appSetting('layout', 'apps');
@@ -169,7 +172,8 @@ export default function MenuTop({ url, uri }) {
 
     return (
         <Row
-            className={`${appSetting('layout', 'header', 'content_center')} relative`}
+            ref={highlightRef}
+            className={`${appSetting('layout', 'header', 'content_center')} relative ${MENU_HIGHLIGHT_BAR_CLASS}`}
             role="navigation"
             aria-label="Primary"
             onLayout={(e) => handleContainerLayout(e?.nativeEvent?.layout)}

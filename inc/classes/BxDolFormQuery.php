@@ -112,6 +112,7 @@ class BxDolFormQuery extends BxDolDb
             'object' => $sObject,
             'display' => $sDisplayName,
             'view_mode' => $aDisplay['view_mode'],
+            'label_style' => $aDisplay['label_style'] ?? '', // '' follows the site's style (sys_form_label_style)
         );
 
         $aForm['params'] = array_merge_recursive($aDefaultsFormParams, !empty($aAddFormParams) && is_array($aAddFormParams) ? $aAddFormParams : array());

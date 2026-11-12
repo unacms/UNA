@@ -414,7 +414,9 @@
     <string name="_bx_events_menu_item_title_system_friends"><![CDATA[Друзья]]></string>
     <string name="_bx_events_menu_item_title_friends"><![CDATA[Друзья]]></string>
     <string name="_bx_events_menu_item_title_system_manage_my_groups"><![CDATA[Мои события]]></string>
+    <string name="_bx_events_menu_item_title_system_memberships"><![CDATA[События (участник)]]></string>
     <string name="_bx_events_menu_item_title_manage_my_groups"><![CDATA[Cобытий]]></string>
+    <string name="_bx_events_menu_item_title_memberships"><![CDATA[Ваши события]]></string>
     <string name="_bx_events_menu_item_title_system_followings"><![CDATA[Cобытий]]></string>
     <string name="_bx_events_menu_item_title_followings"><![CDATA[Cобытий]]></string>
     <string name="_bx_events_menu_item_title_system_entries_recent"><![CDATA[Новые]]></string>
@@ -519,6 +521,7 @@
     <string name="_bx_events_txt_n_unit"><![CDATA[{0} ({1})]]></string>
     <string name="_bx_events_txt_cart_item_title"><![CDATA[{0}: {1} ({2} {3})]]></string>
     <string name="_bx_events_txt_cart_item_title_lifetime"><![CDATA[{0}: {1} (пожизненно)]]></string>
+    <string name="_bx_events_txt_empty_title"><![CDATA[Событий пока нет]]></string>
 
     <string name="_bx_events_alert_action_fan_added"><![CDATA[присоединение нового участника]]></string>
     <string name="_bx_events_txt_ntfs_fan_added"><![CDATA[У события <b class="bx-ntfs-content-profile">{owner_name}</b> новый участник <b class="bx-ntfs-content-entry">{subentry_sample}</b>]]></string>

@@ -777,31 +777,43 @@
     .bx-def-box.bx-def-box-hor {
         @apply flex-row;
     }
-    .bx-def-color-bg-block {
-        @apply bg-white dark:bg-gray-800;
+    /* Blocks and cards are NEO's surfaces (bg-card/60, shadow-block-outline / shadow-card-outline in NEO's theme.css): the card
+       colour at 60% over the page, so a field or a button on its solid fill stands out from the block it is in, in light and
+       in dark. Popups float over content and stay solid. */
+    .bx-def-color-bg-block,
+    .bx-def-color-bg-box {
+        @apply bg-white/60 dark:bg-gray-800/60;
     }
-    .bx-def-color-bg-box,
     .bx-popup-color-bg {
         @apply bg-white dark:bg-gray-800 shadow-md;
     }
+    /* The fade over cut-off text ends in the block's colour as it shows on the page (white at 60% over gray-100, gray-800 at 60% over gray-950). */
     .bx-def-color-bg-box-overflow {
-        @apply bg-gradient-to-b from-transparent to-white dark:to-gray-800;
+        @apply bg-gradient-to-b from-transparent to-[#fbfbfb] dark:to-[#1b1b1e];
     }
-    /* Blocks: a shadow in place of a border (see tailwind.smooth-shadow.js), never border + shadow. */
-    .bx-def-border-block {
-        @apply smooth-shadow-border;
+    /* Their edge is NEO's outline: a light hairline inside the surface and one soft drop under it, never a border. Studio draws
+       its own (.bx-std rules below). */
+    /* A Tailwind shadow at a single class's weight (:where adds none), so a card's own hover:shadow-lg still lifts it. */
+    .bx-def-border-block,
+    .bx-def-color-bg-box:where(:not(.bx-std *)),
+    .bx-def-box:where(:not(.bx-std *)) {
+        @apply shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5),0_2px_8px_-2px_rgb(0_0_0/0.1)] dark:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_2px_8px_-2px_rgb(0_0_0/0.2)];
     }
-    .bx-def-box,
+    .bx-std .bx-def-box,
     .bx-popup-border {
         @apply ring-1 ring-gray-300/50 dark:ring-gray-600/50;
     }
+    /* Blocks and cards have the menu popups' 20px corners: a row or tile with 12px corners 8px inside them runs parallel (NEO's rounded-popover). */
     .bx-def-border-radius-block,
-    .bx-def-box-round-corners,
+    .bx-def-box-round-corners {
+        border-radius: 1.25rem;
+    }
     .bx-popup-border {
         @apply rounded-2xl;
     }
+    /* 16px on every screen size, as NEO's blocks (theme.blocks u-block-pad). */
     .bx-content-padding-block {
-        @apply p-3 md:p-4;
+        @apply p-4;
     }
     .bx-def-color-bg-box-hover {
         @apply hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200;
@@ -810,8 +822,10 @@
         @apply bg-gray-100 dark:bg-gray-700;
     }
 
+    /* A block's title is NEO's (theme.blocks u-block-title): 18px on a 28px line, semibold, tight, flush with the header's
+       16px padding. The header (designbox_*.html) is 16px from the block's top and sides, the content 16px under it. */
     .bx-db-title {
-        @apply text-lg xl:text-xl font-bold text-gray-900 dark:text-gray-100 align-middle;
+        @apply text-lg leading-7 font-semibold tracking-tight text-gray-900 dark:text-gray-100 align-middle;
     }
 
     /* Common Elements: HR */
@@ -846,25 +860,27 @@
         min-width: 1rem;
     }
 
-    /* Common elements: Buttons */
+    /* Common elements: Buttons
+       The regular button is NEO's bordered button: a flat translucent fill of the text ink (gray-950 at 7%, 10% hovered; gray-50 at 12% and 15% in
+       the dark scheme: --button-fill in neo/packages/app/design/styles/palette-schemes.css), so it reads on the page, a block or a popup alike. No
+       outline and no shadow: the 1px border stays, transparent, only to keep every button's size and to carry the focus colour. Studio paints its
+       own buttons (see "Studio: Buttons" below) and takes none of this. */
     .bx-btn-shadow {
-        @apply shadow-sm hover:shadow active:shadow-none;
+        @apply shadow-none;
     }
     .bx-btn-border {
-        @apply border border-gray-300 dark:border-gray-600 rounded-md;
+        @apply border border-transparent rounded-md;
     }
     .bx-btn-bg {
-        @apply bg-gray-100 dark:bg-gray-700;
+        @apply bg-gray-950/[0.07] dark:bg-gray-50/[0.12];
     }
     .bx-btn-text {
         @apply text-sm text-gray-800 dark:text-gray-200 font-medium ;
     }
     .bx-btn-hover {
-        @apply hover:bg-gray-200 dark:hover:bg-gray-600;
-        @apply hover:border-gray-300 dark:hover:border-gray-500;
+        @apply hover:bg-gray-950/10 dark:hover:bg-gray-50/[0.15];
         @apply hover:text-gray-900 dark:hover:text-white;
         @apply hover:no-underline;
-        @apply hover:-translate-y-px;
     }
     .bx-btn-focus {
         @apply focus:outline-none;
@@ -872,8 +888,7 @@
     }
     
     .bx-btn-active {
-        @apply active:bg-gray-300 dark:active:bg-gray-800;
-        @apply active:border-gray-400 dark:active:border-gray-700;
+        @apply active:bg-gray-950/10 dark:active:bg-gray-50/[0.15];
         @apply active:text-gray-900 dark:active:text-gray-200;
         @apply active:translate-y-px;
     }
@@ -881,7 +896,7 @@
         @apply relative inline-flex items-center min-h-11 px-4 py-2 touch-manipulation;
         @apply bx-btn-shadow;
         @apply bx-btn-bg;
-        @apply bx-btn-border rounded-[10px];
+        @apply bx-btn-border rounded-xl; /* 12px, as NEO's regular button and the rows of a dropdown menu */
         @apply bx-btn-text;
         @apply transform-gpu transition duration-150;
         @apply cursor-pointer;
@@ -940,7 +955,7 @@
     }
     
     .bx-btn.bx-btn-disabled {
-        @apply bg-gray-50 dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-400 dark:hover:text-gray-400 focus:ring-0 focus:ring-offset-0 shadow-none cursor-default !important;
+        @apply bg-gray-950/[0.035] dark:bg-gray-50/[0.06] hover:bg-gray-950/[0.035] dark:hover:bg-gray-50/[0.06] text-gray-400 hover:text-gray-400 dark:hover:text-gray-400 focus:ring-0 focus:ring-offset-0 shadow-none cursor-default !important;
     }
 
     /* Help tour (Shepherd): the vendored plugins_public/shepherd/css/shepherd.css paints the primary button #3288e6 with 75% white text (#cce1f9, 2.71:1) and is
@@ -985,8 +1000,7 @@
     }
 
     .bx-artificer form a:not(.bx-btn),
-    .bx-artificer .sys-jf-agreement a:not(.bx-btn), 
-    .bx-artificer .sys-lf-agreement a:not(.bx-btn) {
+    .bx-artificer .sys-jf-agreement a:not(.bx-btn) {
         @apply font-normal text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
     }
 
@@ -1967,12 +1981,6 @@
 
 
     /* Common elements: Auth */
-    .sys-auth-block {
-        @apply grid-cols-2;
-    }
-    .sys-auth-block.sys-auth-compact-container {
-        @apply grid-cols-4;
-    }
 
 
     /* Common elements: Votes */

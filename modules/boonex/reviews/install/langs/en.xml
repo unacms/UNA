@@ -351,6 +351,7 @@
     <string name="_bx_reviews_form_entry_input_option_name_err"><![CDATA[Option title is required and must be at least 3 characters length]]></string>
     <string name="_bx_reviews_popup_voting_option_title"><![CDATA[Voting Option details]]></string>
     <string name="_bx_reviews_txt_cancel"><![CDATA[Cancel]]></string>
+    <string name="_bx_reviews_txt_empty_title"><![CDATA[No reviews yet]]></string>
     <string name="_bx_reviews_form_entry_input_sys_voting_options"><![CDATA[Voting Options]]></string>
     <string name="_bx_reviews_form_entry_input_voting_options"><![CDATA[]]></string>
     <string name="_bx_reviews_page_block_title_entry_voting_options"><![CDATA[Review stars]]></string>

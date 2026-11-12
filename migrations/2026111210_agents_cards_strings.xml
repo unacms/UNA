@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Agents: the card view and its switch are gone, with their strings. -->
+<resources name="en" flag="gb" title="English">
+    <string_del name="_sys_agents_agents_empty"></string_del>
+    <string_del name="_sys_agents_agents_empty_info"></string_del>
+    <string_del name="_sys_agents_builder_view_list"></string_del>
+    <string_del name="_sys_agents_builder_view_grid"></string_del>
+</resources>

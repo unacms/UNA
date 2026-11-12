@@ -26,7 +26,8 @@ import UniList from 'app/ui/atoms/unilist'
 import { appSetting, isObjectsEqual } from 'app/lib/util'
 import { responsiveClasses } from 'app/lib/responsive-classes'
 import { Text } from 'app/design/typography'
-import { getSkeletonForList } from 'app/lib/skeleton-helpers'
+import { getSkeletonForList, getSkeletonPreview, skeletonPreviewScale } from 'app/lib/skeleton-helpers'
+import { useDelayedFlag, useShownWhileLoading } from 'app/lib/hooks/use-delayed-flag'
 import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
 import { layoutForList } from 'app/customization/functions'
@@ -40,13 +41,17 @@ import { BlockWrapper } from 'app/components/block-wrapper'
 import { useIsFocused } from 'app/lib/hooks/router'
 import { useGetScrollValue } from 'app/context/jotai/layout'
 import { setListScrollOffset } from 'app/lib/cache/list-scroll-cache'
-import { socketChannelForList, useUniListQuery } from 'app/lib/browse-query'
+import { showsNextPageSkeleton, socketChannelForList, useUniListQuery } from 'app/lib/browse-query'
 import { components } from 'app/components/registry';
 import { BrowseItem } from 'app/lib/common-helpers'
 import { useIsDesktop } from 'app/context/measure';
 import { BlockTitle } from 'app/ui/molecules/page/page-block'
 const blockTheme = appSetting('theme', 'blocks');
 const AT_TOP_SCROLL_THRESHOLD = 50;
+/** Skeletons show only when the first page takes longer than this. */
+const SKELETON_DELAY_MS = 250;
+/** Holds the list hidden, drawing nothing, until the skeletons are due. */
+const BLANK_PRELOAD = <View />;
 
 export default function Browse(props) {
 
@@ -228,6 +233,20 @@ export default function Browse(props) {
         () => getSkeletonForList(sSkeleton, numColumns, true, layout, renderItem),
         [sSkeleton, numColumns, layout, renderItem]
     )
+    const skeletonPreview = useMemo(
+        () => getSkeletonPreview(sSkeleton, numColumns, layout, renderItem),
+        [sSkeleton, numColumns, layout, renderItem]
+    )
+
+    // Skeletons while the list loads, from SKELETON_DELAY_MS on: a quicker answer shows its rows
+    // or its empty state without them. Once it is done and empty, the empty state goes below the
+    // list's header (a feed's composer), which a preload would hide on web; when skeletons were
+    // on screen, they gather into its stack.
+    const isEmptyList = !data?.hide_empty_msg && listItems.length === 0
+    const isEmptyDone = isEmptyList && listReady && hasNextPage === false
+    const isLoadingEmpty = isEmptyList && !isEmptyDone
+    const showSkeletons = useDelayedFlag(isLoadingEmpty, SKELETON_DELAY_MS)
+    const sawSkeletons = useShownWhileLoading(isLoadingEmpty, showSkeletons)
 
 
     // Bottom-tab reselect (same event as Conductor): scroll to top, or reload if already at top.
@@ -359,10 +378,11 @@ export default function Browse(props) {
 
     const NoContent = components['molecule']['no_content']
 
-    const PreloadComponent = !data?.hide_empty_msg && dataItems.length === 0
-        ? (listReady && hasNextPage === false
-            ? <NoContent endpoint={{ request_url: data.request_url, params: {} }} />
-            : Preload)
+    // Until the delay passes, a blank preload: the list (and its header) stays hidden as before.
+    let PreloadComponent = null;
+    if (isLoadingEmpty) PreloadComponent = showSkeletons ? Preload : BLANK_PRELOAD;
+    const EmptyComponent = isEmptyDone
+        ? <NoContent endpoint={{ request_url: data.request_url, params: {} }} preview={skeletonPreview} previewScale={skeletonPreviewScale(sSkeleton)} state={data?.empty_state} fromSkeletons={sawSkeletons} />
         : null;
 
 
@@ -423,7 +443,8 @@ export default function Browse(props) {
         renderItem: renderItem,
         onEndReached: handleEndReached,
         ListHeaderComponent: ListHeaderComponent,
-        ListFooterComponent: ((hasNextPage && isFetchingNextPage)) ? Preload : null,
+        ListEmptyComponent: EmptyComponent,
+        ListFooterComponent: showsNextPageSkeleton(dataItems.length, defParams?.per_page, !!(hasNextPage && isFetchingNextPage)) ? Preload : null,
     }
 
     if (contentElement === null) {

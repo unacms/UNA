@@ -3,11 +3,11 @@ import { playCue } from 'app/lib/sound';
 
 let lastAt = 0;
 
-/** Tab press: impact haptic + a subtle `navigate` (route change; tabs are pressed often). */
+/** Tab press: impact haptic + a subtle `select` (Cuelume's cue for tabs; pressed often), in the navigation sounds group. */
 export function playTabFeedback() {
     const now = Date.now();
     if (now - lastAt < 80) return;
     lastAt = now;
     FeedbackHaptics('Light');
-    playCue('navigate', { emphasis: 'subtle' });
+    playCue('select', { emphasis: 'subtle', group: 'navigation' });
 }

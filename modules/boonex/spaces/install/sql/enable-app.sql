@@ -23,6 +23,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_fans' AND
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_home' AND `module`='bx_spaces' AND `title_system`='' AND `title`='_bx_spaces_page_block_title_latest_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_top' AND `module`='bx_spaces' AND `title_system`='' AND `title`='_bx_spaces_page_block_title_top_profiles';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_search' AND `module`='bx_spaces' AND `title_system`='' AND `title`='_bx_spaces_page_block_title_search_form';
+UPDATE `sys_pages_blocks` SET `config_api`='{"use_as_filter":true}' WHERE `object`='bx_spaces_search' AND `module`='bx_spaces' AND `title_system`='' AND `title`='_bx_spaces_page_block_title_search_form';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_search' AND `module`='bx_spaces' AND `title_system`='' AND `title`='_bx_spaces_page_block_title_search_results';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_joined_spaces' AND `module`='bx_spaces' AND `title_system`='' AND `title`='_bx_spaces_page_block_title_joined_entries';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_spaces_manage' AND `module`='bx_spaces' AND `title_system`='_bx_spaces_page_block_title_system_manage' AND `title`='_bx_spaces_page_block_title_manage';
@@ -46,6 +47,7 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_homepage' AND `
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_add_content_links' AND `module`='bx_spaces' AND `name`='create-space-profile';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='bx_spaces' AND `name`='profile-stats-my-spaces';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_followings' AND `module`='bx_spaces' AND `name`='spaces';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_memberships' AND `module`='bx_spaces' AND `name`='spaces';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_dashboard_manage_tools' AND `module`='bx_spaces' AND `name`='spaces-administration';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_spaces_view_actions' AND `module`='bx_spaces' AND `name`='join-space-profile';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_spaces_view_actions' AND `module`='bx_spaces' AND `name`='profile-fan-add';

@@ -100,6 +100,305 @@ class BxTasksDb extends BxBaseModTextDb
         ]) > 0;
     }
 
+    /**
+     * The lists of these ids (API v2: a page of tasks reads its lists at once).
+     * @return array list id => row
+     */
+    public function getListsByIds($aIds)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aIds = array_values(array_unique(array_filter(array_map('intval', (array)$aIds))));
+        if(!$aIds)
+            return [];
+
+        return $this->getAllWithKey("SELECT * FROM `" . $CNF['TABLE_LISTS'] . "` WHERE `id` IN (" . $this->implode_escape($aIds) . ")", 'id');
+    }
+
+    /**
+     * How many active tasks of a context each of its lists has (0 is its inbox: tasks in no
+     * list), and how many of them are not completed (API v2's TaskList counts).
+     * @return array list id => ['total' => int, 'open' => int]
+     */
+    public function getListCounts($iContextId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aRows = $this->getAll("SELECT `" . $CNF['FIELD_TASKLIST'] . "` AS `list_id`, COUNT(*) AS `total`, SUM(`" . $CNF['FIELD_COMPLETED'] . "` = 0) AS `open`
+            FROM `" . $CNF['TABLE_ENTRIES'] . "`
+            WHERE `" . $CNF['FIELD_ALLOW_VIEW_TO'] . "` = :privacy AND `" . $CNF['FIELD_STATUS'] . "` = 'active' AND `" . $CNF['FIELD_STATUS_ADMIN'] . "` = 'active'
+            GROUP BY `" . $CNF['FIELD_TASKLIST'] . "`", [
+            'privacy' => (string)(-(int)$iContextId)
+        ]);
+
+        $aResult = [];
+        foreach($aRows as $aRow)
+            $aResult[(int)$aRow['list_id']] = ['total' => (int)$aRow['total'], 'open' => (int)$aRow['open']];
+
+        return $aResult;
+    }
+
+    /**
+     * Who is assigned to each of these tasks, the first assigned first (API v2: a page of tasks
+     * reads its assignees at once).
+     * @return array task id => profile ids
+     */
+    public function getAssigneesByTasks($aIds)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aIds = array_values(array_unique(array_filter(array_map('intval', (array)$aIds))));
+        if(!$aIds)
+            return [];
+
+        $aResult = [];
+        foreach($this->getAll("SELECT `content`, `initiator` FROM `" . $CNF['TABLE_ASSIGNMENTS'] . "` WHERE `content` IN (" . $this->implode_escape($aIds) . ") ORDER BY `added`, `id`") as $aRow)
+            $aResult[(int)$aRow['content']][] = (int)$aRow['initiator'];
+
+        return $aResult;
+    }
+
+    /**
+     * The privacy values (a context's negative profile id, or a privacy group) of the tasks
+     * assigned to a profile and/or added by one, each once (API v2: which of those a viewer
+     * may see is decided per value, so a page reads only tasks it may show).
+     * @return array of int
+     */
+    public function getPrivacyValuesOfTasks($mixedAssignees, $iAuthor)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aBindings = [];
+        $sJoin = $sWhere = '';
+        $aAssignees = array_values(array_filter(array_map('intval', (array)$mixedAssignees)));
+        if($aAssignees)
+            $sJoin = " INNER JOIN `" . $CNF['TABLE_ASSIGNMENTS'] . "` AS `ta` ON `ta`.`content` = `te`.`" . $CNF['FIELD_ID'] . "` AND `ta`.`initiator` IN (" . $this->implode_escape($aAssignees) . ")";
+        if((int)$iAuthor) {
+            $sWhere = " AND `te`.`" . $CNF['FIELD_AUTHOR'] . "` = :author";
+            $aBindings['author'] = (int)$iAuthor;
+        }
+
+        return array_map('intval', $this->getColumn("SELECT DISTINCT `te`.`" . $CNF['FIELD_ALLOW_VIEW_TO'] . "` FROM `" . $CNF['TABLE_ENTRIES'] . "` AS `te`" . $sJoin . " WHERE 1" . $sWhere, $aBindings));
+    }
+
+    /**
+     * The conditions of a tasks filter as SQL for a WHERE clause ("" for none, else starting
+     * with " AND "), on the tasks table under the name or alias $sTable (API v2: a list of tasks
+     * and its counts read the same conditions). $aFilter: `lists` (list ids, 0 the Inbox),
+     * `completed` (0 or 1), `types`, `priorities`, `estimates`, `states` (pre-values),
+     * `labels` (sticker values: a task with any of them), `assignees` (profile ids: a task
+     * assigned to any of them), `author` (a profile id) and `filter` (a saved filter's row, as
+     * getFilterById reads it: its conditions as the site's Tasks page applies them).
+     */
+    public function getTasksFilterSql($aFilter, $sTable)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $sT = "`" . $sTable . "`";
+        $aParts = [];
+
+        $aIn = [
+            'lists' => $CNF['FIELD_TASKLIST'],
+            'types' => $CNF['FIELD_TYPE'],
+            'priorities' => $CNF['FIELD_PRIORITY'],
+            'estimates' => $CNF['FIELD_ESTIMATE'],
+            'states' => $CNF['FIELD_STATE'],
+        ];
+        foreach($aIn as $sKey => $sField)
+            if(isset($aFilter[$sKey]) && is_array($aFilter[$sKey]) && $aFilter[$sKey])
+                $aParts[] = $sT . ".`" . $sField . "` IN (" . $this->implode_escape(array_map('intval', $aFilter[$sKey])) . ")";
+
+        if(isset($aFilter['completed']) && $aFilter['completed'] !== null)
+            $aParts[] = $sT . ".`" . $CNF['FIELD_COMPLETED'] . "` = " . ((int)$aFilter['completed'] ? 1 : 0);
+
+        if(!empty($aFilter['labels']) && is_array($aFilter['labels'])) {
+            // stickers are a set: bit (value - 1) for each value
+            $iMask = 0;
+            foreach($aFilter['labels'] as $iValue)
+                if((int)$iValue >= 1 && (int)$iValue <= 31)
+                    $iMask |= 1 << ((int)$iValue - 1);
+            $aParts[] = "(" . $sT . ".`" . $CNF['FIELD_STICKERS'] . "` & " . $iMask . ") <> 0";
+        }
+
+        if(!empty($aFilter['assignees']) && is_array($aFilter['assignees']))
+            $aParts[] = $sT . ".`" . $CNF['FIELD_ID'] . "` IN (SELECT `content` FROM `" . $CNF['TABLE_ASSIGNMENTS'] . "` WHERE `initiator` IN (" . $this->implode_escape(array_map('intval', $aFilter['assignees'])) . "))";
+
+        if(!empty($aFilter['author']))
+            $aParts[] = $sT . ".`" . $CNF['FIELD_AUTHOR'] . "` = " . (int)$aFilter['author'];
+
+        if(!empty($aFilter['filter']) && is_array($aFilter['filter'])) {
+            // the saved filter's own SQL, as getTasks applies it, over the tasks it keeps
+            $this->_aSqlMarkers['logged_pid'] = (int)bx_get_logged_profile_id();
+            $aConditions = $aFilter['filter']['conditions'] ?? [];
+            $sJoin = ($aJoin = $aConditions['join'] ?? false) ? $this->_getSqlJoinFrom($aJoin) : '';
+            $sWhere = ($aWhere = $aConditions['where'] ?? false) ? $this->_getSqlWhereFrom($aWhere) : '';
+            $aParts[] = $sT . ".`" . $CNF['FIELD_ID'] . "` IN (SELECT `te`.`" . $CNF['FIELD_ID'] . "` FROM `" . $CNF['TABLE_ENTRIES'] . "` AS `te` " . $sJoin . " WHERE " . ($sWhere !== '' ? $sWhere : '1') . ")";
+        }
+
+        return $aParts ? " AND " . implode(" AND ", $aParts) : "";
+    }
+
+    /**
+     * How many active tasks with these privacy values (a context's negative profile id, a
+     * privacy group) and the conditions of getTasksFilterSql (on the alias `te`) there are by
+     * each state, priority, type, estimate, list ("privacy:list"), sticker set, context and assignee, and how many
+     * of those are open, in one query (API v2's task counts).
+     * @return array facet => value => ['total' => int, 'open' => int]
+     */
+    public function getTaskFacets($aPrivacy, $sFilterSql)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aPrivacy = array_values(array_unique(array_map('strval', array_map('intval', (array)$aPrivacy))));
+        if(!$aPrivacy)
+            return [];
+
+        $sWhere = "`te`.`" . $CNF['FIELD_ALLOW_VIEW_TO'] . "` IN (" . $this->implode_escape($aPrivacy) . ") AND `te`.`" . $CNF['FIELD_STATUS'] . "` = 'active' AND `te`.`" . $CNF['FIELD_STATUS_ADMIN'] . "` = 'active'" . $sFilterSql;
+        if(($oCf = BxDolContentFilter::getInstance()) && $oCf->isEnabled())
+            $sWhere .= $oCf->getSQLParts('te', $CNF['FIELD_CF']);
+
+        $sFrom = " FROM `" . $CNF['TABLE_ENTRIES'] . "` AS `te`";
+        $sCount = ", COUNT(*) AS `total`, SUM(`te`.`" . $CNF['FIELD_COMPLETED'] . "` = 0) AS `open`";
+        $aSelects = [];
+        foreach([
+            'state' => $CNF['FIELD_STATE'],
+            'priority' => $CNF['FIELD_PRIORITY'],
+            'type' => $CNF['FIELD_TYPE'],
+            'estimate' => $CNF['FIELD_ESTIMATE'],
+            'stickers' => $CNF['FIELD_STICKERS'],
+            'privacy' => $CNF['FIELD_ALLOW_VIEW_TO'],
+        ] as $sFacet => $sField)
+            $aSelects[] = "(SELECT '" . $sFacet . "' AS `facet`, `te`.`" . $sField . "` AS `value`" . $sCount . $sFrom . " WHERE " . $sWhere . " GROUP BY `te`.`" . $sField . "`)";
+        // a list is a context's (each one's Inbox is 0): "privacy:list"
+        $aSelects[] = "(SELECT 'list' AS `facet`, CONCAT(`te`.`" . $CNF['FIELD_ALLOW_VIEW_TO'] . "`, ':', `te`.`" . $CNF['FIELD_TASKLIST'] . "`) AS `value`" . $sCount . $sFrom . " WHERE " . $sWhere . " GROUP BY `te`.`" . $CNF['FIELD_ALLOW_VIEW_TO'] . "`, `te`.`" . $CNF['FIELD_TASKLIST'] . "`)";
+        $aSelects[] = "(SELECT 'assignee' AS `facet`, `ta`.`initiator` AS `value`" . $sCount . $sFrom . " INNER JOIN `" . $CNF['TABLE_ASSIGNMENTS'] . "` AS `ta` ON `ta`.`content` = `te`.`" . $CNF['FIELD_ID'] . "` WHERE " . $sWhere . " GROUP BY `ta`.`initiator`)";
+
+        $aResult = [];
+        foreach($this->getAll(implode(" UNION ALL ", $aSelects)) as $aRow)
+            $aResult[$aRow['facet']][(string)$aRow['value']] = ['total' => (int)$aRow['total'], 'open' => (int)$aRow['open']];
+
+        return $aResult;
+    }
+
+    /**
+     * The contexts a profile added tasks in or has tasks assigned in, as the Tasks page's
+     * context menus read them (getContextsIdsByType), of every kind at once.
+     * @return array of context profile ids
+     */
+    public function getTaskContextIdsOfProfile($iProfileId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        return array_map('intval', $this->getColumn("SELECT DISTINCT -CAST(`te`.`" . $CNF['FIELD_ALLOW_VIEW_TO'] . "` AS SIGNED) AS `context_id`
+            FROM `" . $CNF['TABLE_ENTRIES'] . "` AS `te`
+            LEFT JOIN `" . $CNF['TABLE_ASSIGNMENTS'] . "` AS `ta` ON `ta`.`content` = `te`.`" . $CNF['FIELD_ID'] . "` AND `ta`.`initiator` = :profile
+            WHERE CAST(`te`.`" . $CNF['FIELD_ALLOW_VIEW_TO'] . "` AS SIGNED) < 0 AND (`te`.`" . $CNF['FIELD_AUTHOR'] . "` = :profile OR `ta`.`initiator` IS NOT NULL)
+            ORDER BY `context_id`", [
+            'profile' => (int)$iProfileId
+        ]));
+    }
+
+    /**
+     * The lists of these contexts, each context's in the order they were made.
+     * @return array context id => list rows
+     */
+    public function getListsByContexts($aIds)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aIds = array_values(array_unique(array_filter(array_map('intval', (array)$aIds))));
+        if(!$aIds)
+            return [];
+
+        $aResult = [];
+        foreach($this->getAll("SELECT * FROM `" . $CNF['TABLE_LISTS'] . "` WHERE `" . $CNF['FIELD_LIST_CONTEXT_ID'] . "` IN (" . $this->implode_escape($aIds) . ") ORDER BY `" . $CNF['FIELD_LIST_ID'] . "`") as $aRow)
+            $aResult[(int)$aRow[$CNF['FIELD_LIST_CONTEXT_ID']]][] = $aRow;
+
+        return $aResult;
+    }
+
+    /**
+     * getListCounts of several contexts in one query.
+     * @return array context id => list id => ['total' => int, 'open' => int]
+     */
+    public function getListCountsByContexts($aIds)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aIds = array_values(array_unique(array_filter(array_map('intval', (array)$aIds))));
+        if(!$aIds)
+            return [];
+
+        $aPrivacy = array_map(function ($iId) { return (string)(-$iId); }, $aIds);
+        $aRows = $this->getAll("SELECT `" . $CNF['FIELD_ALLOW_VIEW_TO'] . "` AS `privacy`, `" . $CNF['FIELD_TASKLIST'] . "` AS `list_id`, COUNT(*) AS `total`, SUM(`" . $CNF['FIELD_COMPLETED'] . "` = 0) AS `open`
+            FROM `" . $CNF['TABLE_ENTRIES'] . "`
+            WHERE `" . $CNF['FIELD_ALLOW_VIEW_TO'] . "` IN (" . $this->implode_escape($aPrivacy) . ") AND `" . $CNF['FIELD_STATUS'] . "` = 'active' AND `" . $CNF['FIELD_STATUS_ADMIN'] . "` = 'active'
+            GROUP BY `" . $CNF['FIELD_ALLOW_VIEW_TO'] . "`, `" . $CNF['FIELD_TASKLIST'] . "`");
+
+        $aResult = [];
+        foreach($aRows as $aRow)
+            $aResult[-(int)$aRow['privacy']][(int)$aRow['list_id']] = ['total' => (int)$aRow['total'], 'open' => (int)$aRow['open']];
+
+        return $aResult;
+    }
+
+    /**
+     * The contexts' own values of these pre-lists (`type`, `sticker`), in their order.
+     * @return array context id => list => value => row
+     */
+    public function getPreValuesByContexts($aIds, $aLists)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aIds = array_values(array_unique(array_filter(array_map('intval', (array)$aIds))));
+        if(!$aIds || !$aLists)
+            return [];
+
+        $aResult = [];
+        foreach($this->getAll("SELECT * FROM `" . $CNF['TABLE_PRE_VALUES'] . "` WHERE `context_id` IN (" . $this->implode_escape($aIds) . ") AND `list` IN (" . $this->implode_escape(array_values($aLists)) . ") ORDER BY `order` ASC, `id` ASC") as $aRow)
+            $aResult[(int)$aRow['context_id']][$aRow['list']][(string)$aRow['value']] = $aRow;
+
+        return $aResult;
+    }
+
+    /**
+     * A profile's timers on these tasks (all of its timers for null).
+     * @return array task id => timer row
+     */
+    public function getTimersOfProfile($iProfileId, $aTaskIds = null)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $sWhere = '';
+        if($aTaskIds !== null) {
+            $aTaskIds = array_values(array_unique(array_filter(array_map('intval', (array)$aTaskIds))));
+            if(!$aTaskIds)
+                return [];
+            $sWhere = " AND `content_id` IN (" . $this->implode_escape($aTaskIds) . ")";
+        }
+
+        return $this->getAllWithKey("SELECT * FROM `" . $CNF['TABLE_TIMERS'] . "` WHERE `profile_id` = :profile_id" . $sWhere . " ORDER BY `started` DESC, `id` DESC", 'content_id', [
+            'profile_id' => (int)$iProfileId
+        ]);
+    }
+
+    /**
+     * A task's time records, the latest first, at most $iLimit.
+     */
+    public function getTimeTracksByTask($iTaskId, $iLimit)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        return $this->getAll("SELECT * FROM `" . $CNF['TABLE_TIME_TRACK'] . "` WHERE `object_id` = :object_id ORDER BY `value_date` DESC, `id` DESC LIMIT " . (int)$iLimit, [
+            'object_id' => (int)$iTaskId
+        ]);
+    }
+
+    public function getTimeTrackById($iId)
+    {
+        return $this->getTimeTracks(['sample' => 'id', 'id' => (int)$iId]);
+    }
+
     public function getTasks ($iContextId = 0, $iListId = false, $aParams = [])
     {
         $CNF = &$this->_oConfig->CNF;
@@ -137,6 +436,7 @@ class BxTasksDb extends BxBaseModTextDb
 
         if(($aParams['with_stats'] ?? false)) {
             $sSelectClause .= $this->prepareAsString(", (SELECT SUM(`value`) FROM `" . $CNF['TABLE_TIME_TRACK'] . "` WHERE `object_id`=`te`.`id` AND `author_id`=?) AS `time`, `tt`.`sum` AS `time_total`", bx_get_logged_profile_id());
+            $sSelectClause .= ", (SELECT SUM(IFNULL(`value_billed`, `value`)) FROM `" . $CNF['TABLE_TIME_TRACK'] . "` WHERE `object_id`=`te`.`id`) AS `time_billed`";
 
             $sJoinClause .= " LEFT JOIN `" . $CNF['TABLE_TIME'] . "` AS `tt` ON `te`.`id`=`tt`.`object_id`";
         }
@@ -422,12 +722,17 @@ class BxTasksDb extends BxBaseModTextDb
                     ];
 
                     $sDate = "IF(`ttt`.`value_date` > 0, `ttt`.`value_date`, `ttt`.`date`)";
-                    $sSelectClause = "`ttt`.`author_id`, `ttt`.`object_id`, `ttt`.`billable`, `te`.`" . $CNF['FIELD_TITLE'] . "` AS `object_title`";
+                    $sBilled = "IFNULL(`ttt`.`value_billed`, `ttt`.`value`)";
+                    $sSelectClause = "`ttt`.`author_id`, `ttt`.`object_id`, `te`.`" . $CNF['FIELD_TITLE'] . "` AS `object_title`";
                     foreach($aParams['periods'] as $sName => $aPeriod) {
                         $sName = preg_replace('/[^a-z0-9_]/', '', $sName);
                         $aMethod['params'][1][$sName . '_from'] = (int)$aPeriod['from'];
                         $aMethod['params'][1][$sName . '_to'] = (int)$aPeriod['to'];
-                        $sSelectClause .= ", SUM(IF(" . $sDate . " >= :" . $sName . "_from AND " . $sDate . " < :" . $sName . "_to, `ttt`.`value`, 0)) AS `" . $sName . "`";
+
+                        $sInPeriod = $sDate . " >= :" . $sName . "_from AND " . $sDate . " < :" . $sName . "_to";
+                        $sSelectClause .= ", SUM(IF(" . $sInPeriod . ", `ttt`.`value`, 0)) AS `" . $sName . "`";
+                        $sSelectClause .= ", SUM(IF(" . $sInPeriod . ", " . $sBilled . ", 0)) AS `" . $sName . "_billed`";
+                        $sSelectClause .= ", SUM(IF(" . $sInPeriod . " AND `ttt`.`by_timer` = 1, `ttt`.`value_original`, 0)) AS `" . $sName . "_timer`";
                     }
 
                     $sJoinClause = "INNER JOIN `" . $CNF['TABLE_ENTRIES'] . "` AS `te` ON `ttt`.`object_id` = `te`.`" . $CNF['FIELD_ID'] . "`";
@@ -438,7 +743,7 @@ class BxTasksDb extends BxBaseModTextDb
                         $sWhereClause .= " AND `ttt`.`author_id` = :author_id";
                     }
 
-                    $sWhereClause .= " GROUP BY `ttt`.`author_id`, `ttt`.`object_id`, `ttt`.`billable`, `te`.`" . $CNF['FIELD_TITLE'] . "`";
+                    $sWhereClause .= " GROUP BY `ttt`.`author_id`, `ttt`.`object_id`, `te`.`" . $CNF['FIELD_TITLE'] . "`";
                     break;
 
                 case 'author_period_sum':
@@ -479,6 +784,16 @@ class BxTasksDb extends BxBaseModTextDb
             return false;
 
         return $this->query("INSERT INTO `" . $CNF['TABLE_TIME_TRACK'] . "` SET " . $this->arrayToSQL($aParamsSet)) ? $this->lastId() : false;
+    }
+
+    public function updateTimeTrack($aParamsSet, $aParamsWhere)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        if(empty($aParamsSet) || empty($aParamsWhere))
+            return false;
+
+        return $this->query("UPDATE `" . $CNF['TABLE_TIME_TRACK'] . "` SET " . $this->arrayToSQL($aParamsSet) . " WHERE " . $this->arrayToSQL($aParamsWhere, " AND ")) !== false;
     }
 
     public function getTimers($aParams = []) 
@@ -537,13 +852,22 @@ class BxTasksDb extends BxBaseModTextDb
                         $sWhereClause .= " AND `tt`.`started` <> '0'";
                     }
                     break;
+
+                //--- Timers running without a pause since `started_before` or earlier.
+                case 'running_since':
+                    $aMethod['params'][1] = [
+                        'started_before' => (int)$aParams['started_before']
+                    ];
+
+                    $sWhereClause = "AND `tt`.`started` <> '0' AND `tt`.`started` <= :started_before";
+                    break;
             }
 
         if(!empty($sOrderClause))
             $sOrderClause = "ORDER BY " . $sOrderClause;
 
-        $aMethod['params'][0] = "SELECT 
-                " . $sSelectClause . " 
+        $aMethod['params'][0] = "SELECT
+                " . $sSelectClause . "
             FROM `" . $CNF['TABLE_TIMERS'] . "` AS `tt` " . $sJoinClause . " 
             WHERE 1 " . $sWhereClause . " " . $sOrderClause;
 
@@ -622,7 +946,73 @@ class BxTasksDb extends BxBaseModTextDb
         return call_user_func_array([$this, $aMethod['name']], $aMethod['params']);
     }
 
-    public function getBudget($aParams = []) 
+    public function getBudgetTrackById($iId)
+    {
+        return $this->getBudgetTracks(['sample' => 'id', 'id' => (int)$iId]);
+    }
+
+    /**
+     * A context's budget entries, the newest first: those before an entry (0: from the newest)
+     * whose note has $sText (HTML-escaped as notes are kept; empty: any), up to $iLimit.
+     */
+    public function getBudgetTracksByContext($iContextId, $iBeforeId, $iLimit, $sText = '')
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aBindings = ['context_id' => (int)$iContextId];
+        $sWhereClause = '';
+        if ((int)$iBeforeId > 0) {
+            $sWhereClause .= " AND `id` < :before_id";
+            $aBindings['before_id'] = (int)$iBeforeId;
+        }
+        if ($sText !== '') {
+            $sWhereClause .= " AND `text` LIKE :text";
+            $aBindings['text'] = '%' . addcslashes($sText, '%_\\') . '%';
+        }
+
+        return $this->getAll("SELECT * FROM `" . $CNF['TABLE_BUDGET_TRACK'] . "` WHERE `context_id` = :context_id" . $sWhereClause . " ORDER BY `id` DESC LIMIT " . (int)$iLimit, $aBindings);
+    }
+
+    public function deleteBudgetTrack($iId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        return (int)$this->query("DELETE FROM `" . $CNF['TABLE_BUDGET_TRACK'] . "` WHERE `id` = :id", ['id' => (int)$iId]) > 0;
+    }
+
+    /**
+     * Change a budget entry's hours from $iFrom to $iTo and its context's total (minutes) by the
+     * difference, in one statement: the entry changes only while it still has $iFrom hours, so
+     * of two changes made from the same reading one is refused and the total never gets a
+     * difference that was not made. False when nothing changed: the entry is gone, has other
+     * hours by now, or its context has no budget row.
+     */
+    public function changeBudgetTrackValue($iId, $iFrom, $iTo)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        // the difference is a number, not read from the row: a multi-table UPDATE sets its
+        // columns in no promised order
+        return (int)$this->query("UPDATE `" . $CNF['TABLE_BUDGET_TRACK'] . "` AS `tbt` INNER JOIN `" . $CNF['TABLE_BUDGET'] . "` AS `tb` ON `tb`.`context_id` = `tbt`.`context_id` SET `tbt`.`value` = :to, `tb`.`value_total` = `tb`.`value_total` + :delta WHERE `tbt`.`id` = :id AND `tbt`.`value` = :from", [
+            'id' => (int)$iId,
+            'from' => (int)$iFrom,
+            'to' => (int)$iTo,
+            'delta' => 60 * ((int)$iTo - (int)$iFrom),
+        ]) > 0;
+    }
+
+    /**
+     * Delete a budget entry only while it still has $iValue hours (what the caller takes off the
+     * total); false when it is gone or has other hours by now.
+     */
+    public function deleteBudgetTrackByValue($iId, $iValue)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        return (int)$this->query("DELETE FROM `" . $CNF['TABLE_BUDGET_TRACK'] . "` WHERE `id` = :id AND `value` = :value", ['id' => (int)$iId, 'value' => (int)$iValue]) > 0;
+    }
+
+    public function getBudget($aParams = [])
     {
         $CNF = &$this->_oConfig->CNF;
 

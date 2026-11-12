@@ -58,6 +58,19 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         return self::getInstanceWithTemplate(null);
     }
 
+    /**
+     * A block's footer: a quiet line under the block's content, ruled off from it (designbox_footer.html), for a notice
+     * such as the terms a form's visitor agrees to. A block's content ends with it.
+     * @param $sContent HTML of the footer; an empty one gives no footer
+     */
+    public function designBoxFooter($sContent)
+    {
+        if(trim((string)$sContent) === '')
+            return '';
+
+        return $this->_oTemplate->parseHtmlByName('designbox_footer.html', ['content' => $sContent]);
+    }
+
     function TemplPageAddComponent($sKey)
     {
         $mixedResult = false; // if you have not such component, return false!
@@ -461,8 +474,11 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                 'caption_item' => $sMenu
             ];
 
-        $sDescription = $sIcon = $sIconHtml = '';
+        // A title given as an array is [title, description, title icon, header icon]: the title icon is small, on the
+        // title's line; the header icon is a 44px tile before the title and the description.
+        $sDescription = $sIcon = $sIconHtml = $sHeaderIcon = $sHeaderIconHtml = '';
         if(is_array($sTitle)) {
+            $sHeaderIcon = $sTitle[3] ?? '';
             list($sTitle, $sDescription, $sIcon) = $sTitle;
 
             if($sIcon) {
@@ -471,9 +487,28 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                 if($sIcon)
                     $sIcon = BxDolIconset::getObjectInstance()->getIcon($sIcon);
             }
+
+            if($sHeaderIcon) {
+                list($sHeaderIcon, $sIconUrl, $sIconA, $sHeaderIconHtml) = $this->getIcon($sHeaderIcon);
+
+                if($sHeaderIcon)
+                    $sHeaderIcon = BxDolIconset::getObjectInstance()->getIcon($sHeaderIcon);
+            }
         }
 
         return $this->_oTemplate->parseHtmlByName('designbox_' . (int)$iTemplateNum . '.html', array_merge([
+                'bx_if:show_db_header_icon' => [
+                    'condition' => !empty($sHeaderIcon),
+                    'content' =>  [
+                        'icon' => $sHeaderIcon,
+                    ]
+                ],
+                'bx_if:show_db_header_icon_html' => [
+                    'condition' => !empty($sHeaderIconHtml),
+                    'content' =>  [
+                        'icon_html' => $sHeaderIconHtml,
+                    ]
+                ],
                 'bx_if:show_db_icon' => [
                     'condition' => !empty($sIcon),
                     'content' =>  [

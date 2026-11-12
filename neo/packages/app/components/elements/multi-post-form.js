@@ -1,7 +1,9 @@
 import { Row, View, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { NeoButton } from 'app/design/controls'
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
+import emitter, { EVENTS } from 'app/context/emitter'
+import { useIsFocused } from 'app/lib/hooks/router'
 import { useWindowDimensions } from 'react-native'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { menuItemsByNameNew, cloneObject, getBreakpoint, isWeb } from 'app/lib/util'
@@ -88,6 +90,23 @@ export default function MultiPostForm({ data, blockWrapperProps, trigger_label: 
         opens.current += 1;
         setPageData({ ...cloneObject(form || {}), ts: opens.current });
     }
+
+    // Other parts of the page open the form too: an empty feed's "Create new update" (EmptyState).
+    // Only while this screen is in front: native tabs and screens stay mounted behind it, and their
+    // composers must not open (EmptyState follows its link when no composer listens).
+    const isFocused = useIsFocused();
+    const openFirstForm = useRef(getFirstForm);
+    useEffect(() => {
+        openFirstForm.current = getFirstForm;
+    });
+    const hasForm = !!firstForm;
+    useEffect(() => {
+        if (!hasForm || !isFocused) return undefined;
+        const subscription = emitter.addListener(EVENTS.composer, (payload) => {
+            if (payload?.action === 'open') void openFirstForm.current();
+        });
+        return () => subscription.remove();
+    }, [hasForm, isFocused]);
 
     if (menu_add_items.length == 0 && !firstForm)
         return;

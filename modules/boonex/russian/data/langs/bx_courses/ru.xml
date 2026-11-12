@@ -339,7 +339,9 @@
     <string name="_bx_courses_menu_item_title_system_friends"><![CDATA[Друзья]]></string>
     <string name="_bx_courses_menu_item_title_friends"><![CDATA[Друзья]]></string>
     <string name="_bx_courses_menu_item_title_system_manage_my_entries"><![CDATA[Мои курсы]]></string>
+    <string name="_bx_courses_menu_item_title_system_memberships"><![CDATA[Курсы (участник)]]></string>
     <string name="_bx_courses_menu_item_title_manage_my_entries"><![CDATA[Курсы]]></string>
+    <string name="_bx_courses_menu_item_title_memberships"><![CDATA[Ваши курсы]]></string>
     <string name="_bx_courses_menu_item_title_system_followings"><![CDATA[Курсы]]></string>
     <string name="_bx_courses_menu_item_title_followings"><![CDATA[Курсы]]></string>
     <string name="_bx_courses_menu_item_title_system_entries_recent"><![CDATA[Новые]]></string>
@@ -491,6 +493,7 @@
     <string name="_bx_courses_txt_back_step"><![CDATA[Назад]]></string>
     <string name="_bx_courses_txt_next_step"><![CDATA[Вперед]]></string>
     <string name="_bx_courses_txt_download"><![CDATA[Скачать]]></string>
+    <string name="_bx_courses_txt_empty_title"><![CDATA[Курсов пока нет]]></string>
     <string name="_bx_courses_txt_summary_title"><![CDATA[Прогресс обучения]]></string>
     <string name="_bx_courses_txt_summary_joined"><![CDATA[Записан на]]></string>
     <string name="_bx_courses_txt_summary_passed"><![CDATA[Закончено]]></string>

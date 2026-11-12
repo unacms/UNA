@@ -459,6 +459,7 @@
     <string name="_bx_jobs_txt_view_answers"><![CDATA[View application]]></string>
     <string name="_bx_jobs_txt_delete"><![CDATA[Reject]]></string>
     <string name="_bx_jobs_txt_delete_and_ban"><![CDATA[Reject and ban]]></string>
+    <string name="_bx_jobs_txt_empty_title"><![CDATA[No jobs yet]]></string>
     <string name="_bx_jobs_txt_private_job"><![CDATA[Private job]]></string>
     <string name="_bx_jobs_txt_invite_popup_text"><![CDATA[You have been invited to a job. Click the button below to accept the invitation.]]></string>
     <string name="_bx_jobs_txt_invite_popup_title"><![CDATA[Invitation to a job]]></string>

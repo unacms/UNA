@@ -106,6 +106,11 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_account_notifications', 'bx_convos', 'notifications-convos', '_bx_cnv_menu_item_title_system_convos', '_bx_cnv_menu_item_title_convos', 'modules/?r=convos/folder/1', '', '', 'comments', 'a:2:{s:6:"module";s:9:"bx_convos";s:6:"method";s:23:"get_unread_messages_num";}', '', 2147483646, 1, 0, @iMIOrder + 1);
 
 
+-- MENU: the apps' menu (sys_apps_menu: the first section of the apps' sidebar, GET /api/v2/navigation), between Profile and Notifications.
+-- Hidden while Messenger is enabled, whose own Messages item takes its place.
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
+('sys_apps_menu', 'bx_convos', 'convos-messages', '_bx_cnv_menu_item_title_system_messages', '_bx_cnv_menu_item_title_messages', 'modules/?r=convos/folder/1', '', '', 'comment', 'a:2:{s:6:"module";s:9:"bx_convos";s:6:"method";s:23:"get_unread_messages_num";}', '', 2147483646, 'a:2:{s:6:"module";s:9:"bx_convos";s:6:"method";s:27:"is_messages_menu_item_shown";}', 1, 1, 4);
+
 -- MENU: profile stats
 
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
