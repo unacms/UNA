@@ -21,6 +21,7 @@ import { Posts, PostsOfTab } from './post-list';
 import { PostPane } from './post-pane';
 import { activityDetail, type Post, postKey, postListKey, postRowText, readingText, stateText } from './posts';
 import { setRichText } from '../../components/rich-editor/test-utils';
+import { docToHtml } from '../../lib/rich-html';
 
 const lily: Schema<'Profile'> = { id: '4', kind: 'person', module: 'bx_persons', display_name: 'Lily Carter', status: 'active', about: '', created_at: '2026-01-01T00:00:00Z' };
 const mila: Schema<'Profile'> = { id: '8', kind: 'person', module: 'bx_persons', display_name: 'Mila Novak', status: 'active', about: '', created_at: '2026-01-01T00:00:00Z', badges: [{ id: '9', name: 'Photographer', color: null, icon: null }] };
@@ -111,6 +112,19 @@ function Shown() {
     const d = useRoute().detail;
     return d?.kind === 'article' ? <PostPane key={d.id} id={d.id} /> : null;
 }
+
+/** An answer the test gives when it chooses: until then the request is on its way. */
+function later() {
+    let give: (answer: Answer) => void = () => {};
+    const answer = new Promise<Answer>((resolve) => (give = resolve));
+    return { answer, give };
+}
+
+const PICTURE = 'https://community.example/image_transcoder.php?o=sys_images_editor&h=7&s=abc';
+const PICTURE_ANSWER: Answer = { status: 201, body: { url: PICTURE, width: 640, height: 480, mime_type: 'image/png' } };
+const pastePicture = (box: HTMLElement) => fireEvent.paste(box, { clipboardData: { files: [new File([new Uint8Array([137, 80, 78, 71])], 'map.png', { type: 'image/png' })], getData: () => '' } });
+/** What a held button says of itself: the words its aria-describedby points to. */
+const heldFor = (button: HTMLElement) => document.getElementById(button.getAttribute('aria-describedby') ?? '')?.textContent ?? null;
 
 afterEach(() => {
     cleanup();
@@ -323,6 +337,40 @@ describe('New post', () => {
         expect(body.body_html).toContain('<img src="https://community.example/image_transcoder.php?o=sys_images_editor&amp;h=7&amp;s=abc" width="640" height="480">');
     });
 
+    it('holds Post while a picture of the text is uploading, and sends the post with it once it is in the text', async () => {
+        setSiteModules(MODULES);
+        const upload = later();
+        const { api, calls } = site((c) => {
+            if (c.path === '/uploads/inline' && c.method === 'POST') return upload.answer;
+            if (c.path === '/posts' && c.method === 'POST') return { status: 201, body: post({ id: '61', title: 'With a map' }) };
+            return null;
+        });
+        renderWith(<NewPost />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+        const text = screen.getByRole('textbox', { name: 'Text' });
+        const title = screen.getByRole('textbox', { name: 'Title' });
+        setRichText(text, 'See the map');
+        fireEvent.change(title, { target: { value: 'With a map' } });
+        const send = screen.getByRole('button', { name: 'Post' });
+        expect(send.getAttribute('aria-disabled')).toBeNull();
+        pastePicture(text);
+        // from the paste on, not only once the upload has started
+        await waitFor(() => expect(send.getAttribute('aria-disabled')).toBe('true'));
+        expect(heldFor(send)).toBe('Wait until the uploads are done.');
+        await waitFor(() => expect(calls.some((c) => c.path === '/uploads/inline')).toBe(true));
+        expect(send.getAttribute('aria-disabled')).toBe('true');
+        fireEvent.click(send);
+        fireEvent.keyDown(title, { key: 'Enter', metaKey: true, ctrlKey: true });
+        await act(async () => {});
+        expect(calls.some((c) => c.path === '/posts' && c.method === 'POST')).toBe(false);
+        upload.give(PICTURE_ANSWER);
+        await waitFor(() => expect(send.getAttribute('aria-disabled')).toBeNull());
+        expect(send.getAttribute('aria-describedby')).toBeNull();
+        expect(text.querySelector('img')).toBeTruthy();
+        fireEvent.click(send);
+        await waitFor(() => expect(calls.some((c) => c.path === '/posts' && c.method === 'POST')).toBe(true));
+        expect((JSON.parse(calls.find((c) => c.path === '/posts' && c.method === 'POST')?.body ?? '{}') as { body_html: string }).body_html).toContain('<img src=');
+    });
+
     it('writes a post through POST /posts, with the same key again after an answer that never came, and opens it', async () => {
         setSiteModules(MODULES);
         let posts = 0;
@@ -409,6 +457,60 @@ describe('Editing a post', () => {
         // such a text is the form's as the site has it, not as the editor would rewrite it
         const html = '<h1>Big heading</h1><p>End.</p>';
         expect(postValue(mine({ body_html: html })).html).toBe(html);
+    });
+
+    it('leaves to the site a text whose formatting is in classes or attributes the editor does not write back', () => {
+        // the site's editor: indentation and list nesting, direction; and whatever else a class or an attribute says
+        const lost = [
+            '<p class="ql-indent-1">Set in.</p>',
+            '<p class="ql-direction-rtl">Right to left.</p>',
+            '<ul><li>One</li><li class="ql-indent-1">Under one</li></ul>',
+            '<ol class="steps"><li>One<ol><li class="ql-indent-2">Under one</li></ol></li></ol>',
+            '<p class="lead">An opening.</p>',
+            '<p style="margin-left: 30px;">Set in.</p>',
+            '<p style="direction: rtl; text-align: right;">Right to left.</p>',
+            '<ul><li style="text-align: center">Mid</li></ul>',
+            '<p dir="rtl">Right to left.</p>',
+            '<p>H<sub>2</sub>O</p>',
+            '<p><img src="data:image/png;base64,AAAA"></p>',
+            '<p><img src="https://community.example/s/1.jpg" style="float: left"></p>',
+        ];
+        for (const html of lost) {
+            expect(isEditableText(html), html).toBe(false);
+            expect(postValue(mine({ body_html: html })).html, html).toBe(html);
+        }
+        // a class the editor keeps as it is written, or writes its own way, loses nothing
+        expect(isEditableText('<p class="ql-align-center">Mid</p><p class="text-right">End</p>')).toBe(true);
+    });
+
+    it('edits a text the editor itself wrote, and one the site’s editor wrote with what the editor keeps', () => {
+        const own = docToHtml(
+            {
+                type: 'doc',
+                content: [
+                    { type: 'heading', attrs: { level: 2, align: 'ql-align-center' }, content: [{ type: 'text', text: 'Part' }] },
+                    { type: 'paragraph', content: [{ type: 'text', text: 'One ' }, { type: 'text', text: 'bold', marks: [{ type: 'bold' }, { type: 'italic' }] }, { type: 'text', text: ' and example.com, ' }, { type: 'mention', attrs: { id: '4', label: 'Lily Carter', href: 'https://community.example/u/lily' } }, { type: 'hardBreak' }, { type: 'image', attrs: { src: 'https://community.example/s/1.jpg', width: 640, height: 480 } }] },
+                    { type: 'paragraph' },
+                    { type: 'bulletList', content: [{ type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'a' }] }, { type: 'orderedList', attrs: { start: 3 }, content: [{ type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'b' }] }] }] }] }] },
+                    { type: 'blockquote', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Said.' }] }] },
+                    { type: 'codeBlock', content: [{ type: 'text', text: 'let a = 1;\n  a < 2;' }] },
+                    { type: 'embed', attrs: { url: 'https://video.example/1' } },
+                ],
+            },
+            'full',
+        );
+        expect(own).toContain('<ul><li><p>a</p><ol start="3"><li>b</li></ol></li></ul>');
+        expect(isEditableText(own)).toBe(true);
+        expect(postValue(mine({ body_html: own })).html).toBe(own);
+        // as the site's editor writes the same things
+        const quill =
+            '<p>Hello <em><strong>both</strong></em> <s><u>struck</u></s> <a href="https://example.com/x" rel="noopener noreferrer" target="_blank">a link</a> and example.com.</p><p><br></p>' +
+            '<h3 style="text-align: right;">Part</h3><ol><li>one</li><li>two</li></ol><blockquote>quote</blockquote><pre class="ql-syntax" spellcheck="false">let a = 1;\n</pre>' +
+            '<p><img src="https://community.example/s/1.jpg" width="320"></p><div class="bx-embed-link" source="https://video.example/1">embed&nbsp;</div>' +
+            '<p>Hi <a href="https://community.example/u/lily" title="Lily Carter" dchar="@" data-profile-id="4" class="bx-mention-link">@Lily Carter</a></p><p><br></p>';
+        expect(isEditableText(quill)).toBe(true);
+        // a list nested as HTML has it, without classes
+        expect(isEditableText('<ul><li>a<ul><li>b</li></ul></li></ul>')).toBe(true);
     });
 
     it('takes a summary that is the start of the text as none, and leaves one the API cut alone', () => {
@@ -878,6 +980,86 @@ describe('Editing a post', () => {
         const quiet = new Event('beforeunload', { cancelable: true });
         window.dispatchEvent(quiet);
         expect(quiet.defaultPrevented).toBe(false);
+    });
+
+    it('holds Save while a picture of the text is uploading and nothing else changed: the form stays, a leave asks, and the picture is saved once it is in the text', async () => {
+        const upload = later();
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine() };
+            if (c.path === '/uploads/inline' && c.method === 'POST') return upload.answer;
+            if (c.path === '/posts/37' && c.method === 'PATCH') return { status: 200, body: mine({ body_html: (JSON.parse(c.body) as Schema<'PostChanges'>).body_html ?? '' }) };
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        const title = await openForm();
+        const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+        const save = screen.getByRole('button', { name: 'Save' });
+        expect(save.getAttribute('aria-disabled')).toBeNull();
+        pastePicture(screen.getByRole('textbox', { name: 'Text' }));
+        await waitFor(() => expect(save.getAttribute('aria-disabled')).toBe('true'));
+        expect(heldFor(save)).toBe('Wait until the uploads are done.');
+        await waitFor(() => expect(calls.some((c) => c.path === '/uploads/inline')).toBe(true));
+        // Save and its keys: the form neither closes as unchanged nor sends
+        fireEvent.click(save);
+        fireEvent.keyDown(title, { key: 'Enter', metaKey: true, ctrlKey: true });
+        await act(async () => {});
+        expect(screen.getByRole('form', { name: 'Edit the post' })).toBeTruthy();
+        expect(calls.some((c) => c.method === 'PATCH')).toBe(false);
+        // the picture on its way is a change: Esc asks, and a browser tab warns before it unloads
+        fireEvent.keyDown(title, { key: 'Escape' });
+        await waitFor(() => expect(confirm).toHaveBeenCalledTimes(1));
+        expect(screen.getByRole('form', { name: 'Edit the post' })).toBeTruthy();
+        const unload = new Event('beforeunload', { cancelable: true });
+        window.dispatchEvent(unload);
+        expect(unload.defaultPrevented).toBe(true);
+        upload.give(PICTURE_ANSWER);
+        await waitFor(() => expect(save.getAttribute('aria-disabled')).toBeNull());
+        expect(save.getAttribute('aria-describedby')).toBeNull();
+        fireEvent.click(save);
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        const sent = calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body) as Schema<'PostChanges'>);
+        expect(sent).toHaveLength(1);
+        expect(Object.keys(sent[0] ?? {})).toEqual(['body_html']);
+        expect(sent[0]?.body_html).toContain('<img src="https://community.example/image_transcoder.php?o=sys_images_editor&amp;h=7&amp;s=abc" width="640" height="480">');
+    });
+
+    it('holds Save while a picture is uploading beside other changes, and sends them together', async () => {
+        const uploads = [later(), later()];
+        let asked = 0;
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine() };
+            if (c.path === '/uploads/inline' && c.method === 'POST') return uploads[asked++]?.answer ?? null;
+            if (c.path === '/posts/37' && c.method === 'PATCH') return { status: 200, body: mine({ title: 'One lens' }) };
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        const title = await openForm();
+        fireEvent.change(title, { target: { value: 'One lens' } });
+        const save = screen.getByRole('button', { name: 'Save' });
+        const text = screen.getByRole('textbox', { name: 'Text' });
+        pastePicture(text);
+        await waitFor(() => expect(calls.some((c) => c.path === '/uploads/inline')).toBe(true));
+        expect(save.getAttribute('aria-disabled')).toBe('true');
+        // an upload the site refuses holds nothing any longer
+        uploads[0]?.give({ status: 413, body: { type: 'urn:una:problem:too_large', title: 'Too large', status: 413, code: 'too_large' } });
+        await waitFor(() => expect(save.getAttribute('aria-disabled')).toBeNull());
+        pastePicture(text);
+        await waitFor(() => expect(calls.filter((c) => c.path === '/uploads/inline')).toHaveLength(2));
+        expect(save.getAttribute('aria-disabled')).toBe('true');
+        fireEvent.click(save);
+        fireEvent.keyDown(title, { key: 'Enter', metaKey: true, ctrlKey: true });
+        await act(async () => {});
+        // not the title alone, with the form gone before the picture came
+        expect(calls.some((c) => c.method === 'PATCH')).toBe(false);
+        expect(screen.getByRole('form', { name: 'Edit the post' })).toBeTruthy();
+        uploads[1]?.give(PICTURE_ANSWER);
+        await waitFor(() => expect(save.getAttribute('aria-disabled')).toBeNull());
+        fireEvent.click(save);
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        const sent = calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body) as Schema<'PostChanges'>);
+        expect(sent).toHaveLength(1);
+        expect(sent[0]?.title).toBe('One lens');
+        expect(sent[0]?.body_html).toContain('<img src=');
     });
 
     it('asks before Esc or Cancel throws changes away, and sends nothing when nothing changed', async () => {

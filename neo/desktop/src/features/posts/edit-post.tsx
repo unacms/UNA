@@ -3,6 +3,7 @@ import { type FormEvent, useId, useMemo, useRef, useState } from 'react';
 import { problemMessage, type Schema } from 'una-api';
 
 import { type RichEditorHandle } from '../../components/rich-editor/rich-editor';
+import { survivesEditor } from '../../components/rich-editor/round-trip';
 import { normalizeHtml } from '../../components/rich-editor/schema';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
@@ -13,9 +14,8 @@ import { confirmAction } from '../../lib/native';
 import { isMac } from '../../lib/platform';
 import { useAudiences } from '../../lib/site-modules';
 import type { Uploader } from '../../lib/uploads';
-import { isEditableHtml } from '../compose/post-text';
 import { type Audience, AudienceField, useFormContext } from '../photos/new-media';
-import { type FieldError, focusPostField, newPostFieldError, PostCategoryField, PostTextFields, summaryBlocker, textBlocker, titleBlocker, usePostCategories, usePostImages } from './new-post';
+import { type FieldError, focusPostField, newPostFieldError, PostCategoryField, PostTextFields, summaryBlocker, textBlocker, titleBlocker, uploadsHold, usePostCategories, usePostImages } from './new-post';
 import type { Post } from './posts';
 
 type PostChanges = Schema<'PostChanges'>;
@@ -26,22 +26,16 @@ export type PostValue = { title: string; summary: string; html: string; category
 /** Which of a post's fields the form may send: the others stay as the site has them. */
 export type PostEditable = { text: boolean; summary: boolean; audience: boolean };
 
-/** Whether anything is styled beyond the alignment the editor keeps (a colour, a size, a width). */
-function hasLossyStyle(html: string): boolean {
-    for (const m of html.matchAll(/\sstyle\s*=\s*(?:"([^"]*)"|'([^']*)')/gi)) {
-        if (!/^\s*text-align\s*:[^;]*;?\s*$/i.test(m[1] ?? m[2] ?? '')) return true;
-    }
-    return false;
-}
-
 /**
- * Whether a post's text can be edited here without losing anything: every tag is one the
- * editor's full mode keeps (isEditableHtml: no h1 or h4 to h6, table, iframe or video), and
- * nothing is styled beyond its alignment. The API keeps no revisions, so a text the editor would
- * rewrite with less is edited on the site.
+ * Whether a post's text can be edited here without losing anything: the editor's full mode
+ * writes it back whole (survivesEditor: the stored text and what the editor would save for it
+ * are the same but for how it is written). So a heading at a level the editor has none for, a
+ * table, a colour, or a class of indentation, list nesting or direction from the site's editor
+ * each leave the text to the site. The API keeps no revisions, so a text the editor would
+ * rewrite with less is edited there.
  */
 export function isEditableText(html: string): boolean {
-    return isEditableHtml(html, 'full') && !hasLossyStyle(html);
+    return survivesEditor(html, 'full');
 }
 
 /** A text without its white space: how a summary is compared with the start of the post's text. */
@@ -132,6 +126,8 @@ export const SAVE_ANSWER_MS = 60_000;
  * says why under it; Esc and Cancel ask first when that throws changes
  * away, and so does whatever else takes the form away (the pane's Close, another post, the
  * sidebar, Back, another tab, the window closing: useLeaveGuard); Cmd+Enter (Ctrl+Enter) saves.
+ * A picture pasted or dropped in the text is in it only once it is uploaded: until then Save is
+ * held and says why (Cmd+Enter with it), and the upload counts as a change that leaving throws away.
  * While it is being saved nothing in it can change, since what is typed then is not in what was
  * sent and the form goes when the site answers; when it was not saved the fields take changes
  * again, with what they held. Whatever would leave the form while it is being saved waits for
@@ -170,7 +166,9 @@ export function EditPost({ post, uploader, announce, onDone }: { post: Post; upl
     const sent = useRef<IdempotencySlot['current']>(null);
     // the save on its way, for whatever would leave the form meanwhile: true once it was saved
     const pending = useRef<Promise<boolean> | null>(null);
-    const changed = Object.keys(postChanges(initial, value, fields)).length > 0;
+    // a picture of the text still on its way: it is a change that is not in the text yet
+    const uploading = images.pending > 0;
+    const changed = uploading || Object.keys(postChanges(initial, value, fields)).length > 0;
 
     const showError = (blocker: FieldError) => {
         setFieldError(blocker);
@@ -180,6 +178,11 @@ export function EditPost({ post, uploader, announce, onDone }: { post: Post; upl
     const submit = async (e?: FormEvent) => {
         e?.preventDefault();
         if (saving) return;
+        // saved now, the text would go without the picture, or the form would close as unchanged
+        if (images.busy()) {
+            announce?.(uploadsHold());
+            return;
+        }
         const body = postChanges(initial, value, fields);
         const blocker = postChangesBlocker(body, plain ?? '');
         if (blocker) {
@@ -296,13 +299,19 @@ export function EditPost({ post, uploader, announce, onDone }: { post: Post; upl
                 </p>
             ) : null}
             <div className="settings-actions">
-                <span className="muted small" aria-hidden="true">
-                    {t('{{keys}} to save', { keys: isMac ? '⌘↩' : 'Ctrl+Enter' })}
-                </span>
+                {uploading ? (
+                    <span id={`${id}-held`} className="muted small">
+                        {uploadsHold()}
+                    </span>
+                ) : (
+                    <span className="muted small" aria-hidden="true">
+                        {t('{{keys}} to save', { keys: isMac ? '⌘↩' : 'Ctrl+Enter' })}
+                    </span>
+                )}
                 <button type="button" className="btn" onClick={() => void cancel()}>
                     {t('Cancel')}
                 </button>
-                <button type="submit" className="btn btn-primary" aria-disabled={saving || undefined} aria-busy={saving || undefined} aria-keyshortcuts={isMac ? 'Meta+Enter' : 'Control+Enter'}>
+                <button type="submit" className="btn btn-primary" aria-disabled={saving || uploading || undefined} aria-busy={saving || undefined} aria-describedby={uploading ? `${id}-held` : undefined} aria-keyshortcuts={isMac ? 'Meta+Enter' : 'Control+Enter'}>
                     {t('Save')}
                 </button>
             </div>

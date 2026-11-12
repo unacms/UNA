@@ -100,13 +100,36 @@ function FieldMessage({ id, fieldError, field }: { id: string; fieldError: Field
     );
 }
 
-/** The pictures of a post's text: the site's editor storage (POST /uploads/inline). */
+/** Said where a form is held for a picture of its text. */
+export const uploadsHold = () => `${t('Wait until the uploads are done')}.`;
+
+/**
+ * The pictures of a post's text: the site's editor storage (POST /uploads/inline). The editor
+ * puts a picture in the text only when its upload is done, so the form is told while one is on
+ * its way (`pending` for what it shows, `busy()` for a press before it is drawn again): from the
+ * paste or the drop being made ready until the editor has had the site's answer. A form that
+ * sent its text meanwhile would send it without the picture.
+ */
 export function usePostImages(uploader?: Uploader) {
     const { api } = useApp();
-    return useMemo(() => {
+    const count = useRef(0);
+    const [pending, setPending] = useState(0);
+    const sink = useMemo(() => {
         const base = uploader ?? makeUploader(api);
-        return { uploader: base, uploadInline: inlineUploader(base) };
+        const counted =
+            <A extends unknown[], R>(run: (...args: A) => Promise<R>) =>
+            (...args: A): Promise<R> => {
+                setPending(++count.current);
+                const done = run(...args);
+                const over = () => setPending(--count.current);
+                // one turn later than who waits for it (the editor, which then starts the upload or puts the picture in)
+                const settled = () => undefined;
+                void done.then(settled, settled).then(over);
+                return done;
+            };
+        return { uploader: { ...base, fromFiles: counted((...args: Parameters<Uploader['fromFiles']>) => base.fromFiles(...args)), fromPaths: counted((...args: Parameters<Uploader['fromPaths']>) => base.fromPaths(...args)) }, uploadInline: counted(inlineUploader(base)), busy: () => count.current > 0 };
     }, [uploader, api]);
+    return useMemo(() => ({ ...sink, pending }), [sink, pending]);
 }
 
 /** Moves focus to the field a form refused (the text box is the editor's, the cover its Choose button). */
@@ -289,7 +312,8 @@ function usePostContexts(fixed: string | undefined) {
  * Writing a post of the Posts module in the detail pane: its title (3 to 160 characters, as the
  * site takes it), its text, a cover (one photo, uploading as it is picked or dropped), and who can
  * see it, or where it goes: a context it was started from, or one of one's groups and spaces that
- * take posts. Sent, it opens; the lists show it. The site's refusal (a membership level that may
+ * take posts. While a picture pasted or dropped in the text is uploading, Post is held and says
+ * why, since the picture is in the text only once it is there. Sent, it opens; the lists show it. The site's refusal (a membership level that may
  * not write posts) is said in the form.
  */
 export function NewPost({ contextId, uploader }: { contextId?: string; uploader?: Uploader }) {
@@ -300,6 +324,8 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
     const [announcement, announce] = useAnnouncer();
     const cover = usePhotoUploads({ purpose: 'post_cover', uploader, announce });
     const images = usePostImages(uploader);
+    // a picture of the text still on its way holds Post, and ⌘↩ with it
+    const uploading = images.pending > 0;
     const [title, setTitle] = useState('');
     const [summary, setSummary] = useState('');
     // the text as the site keeps it (full mode's HTML) and as plain text (whether there is any)
@@ -328,6 +354,11 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
     const submit = async (e?: FormEvent) => {
         e?.preventDefault();
         if (sending) return;
+        // a picture on its way is not in the text yet: sent now, the post would go without it
+        if (images.busy()) {
+            announce(uploadsHold());
+            return;
+        }
         const blocker = newPostBlocker({ title, summary, text, html: content.html, coverBlocker: cover.blocker, categoryMissing: categories.length > 0 && !category });
         if (blocker) {
             showError(blocker);
@@ -413,10 +444,16 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
                         </p>
                     ) : null}
                     <div className="settings-actions">
-                        <span className="muted small" aria-hidden="true">
-                            {t('{{keys}} to post', { keys: isMac ? '⌘↩' : 'Ctrl+Enter' })}
-                        </span>
-                        <button type="submit" className="btn btn-primary" aria-disabled={sending || undefined} aria-busy={sending || undefined}>
+                        {uploading ? (
+                            <span id={`${id}-held`} className="muted small">
+                                {uploadsHold()}
+                            </span>
+                        ) : (
+                            <span className="muted small" aria-hidden="true">
+                                {t('{{keys}} to post', { keys: isMac ? '⌘↩' : 'Ctrl+Enter' })}
+                            </span>
+                        )}
+                        <button type="submit" className="btn btn-primary" aria-disabled={sending || uploading || undefined} aria-busy={sending || undefined} aria-describedby={uploading ? `${id}-held` : undefined}>
                             {t('Post', { context: 'verb' })}
                         </button>
                     </div>
