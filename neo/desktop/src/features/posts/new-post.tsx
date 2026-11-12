@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { type FormEvent, useId, useMemo, useRef, useState } from 'react';
+import { type FormEvent, type RefObject, useId, useMemo, useRef, useState } from 'react';
 
 import { isProblem, problemMessage, type Schema } from 'una-api';
 
@@ -21,8 +21,8 @@ import { RichEditor, type RichEditorHandle } from '../../components/rich-editor/
 import { textToRichHtml } from '../../lib/rich-html';
 import { postCategoriesKey, postKey, SUMMARY_MAX, TEXT_MAX, TITLE_MAX, TITLE_MIN } from './posts';
 
-type Field = 'title' | 'summary' | 'text' | 'cover' | 'category';
-type FieldError = { field: Field; text: string };
+export type Field = 'title' | 'summary' | 'text' | 'cover' | 'category';
+export type FieldError = { field: Field; text: string };
 
 /** The form's field of each field the API names in a 422. */
 const API_FIELDS: Record<string, Field> = { title: 'title', summary: 'summary', body_html: 'text', cover_media_id: 'cover', category_id: 'category' };
@@ -61,6 +61,140 @@ export function usePostCategories() {
     return useQuery({ queryKey: postCategoriesKey, queryFn: async () => unwrap(await api.GET('/posts/categories')), staleTime: 10 * 60_000 });
 }
 
+/** What a field is described by: its hint, and its error while it has one. */
+function describedBy(id: string, fieldError: FieldError | null, field: Field, hint?: string): string | undefined {
+    return [hint, fieldError?.field === field ? `${id}-${field}-error` : undefined].filter(Boolean).join(' ') || undefined;
+}
+
+/** What a field was refused for, under it. */
+function FieldMessage({ id, fieldError, field }: { id: string; fieldError: FieldError | null; field: Field }) {
+    if (fieldError?.field !== field) return null;
+    return (
+        <p id={`${id}-${field}-error`} className="error small" role="alert">
+            {fieldError.text}
+        </p>
+    );
+}
+
+/** The pictures of a post's text: the site's editor storage (POST /uploads/inline). */
+export function usePostImages(uploader?: Uploader) {
+    const { api } = useApp();
+    return useMemo(() => {
+        const base = uploader ?? makeUploader(api);
+        return { uploader: base, uploadInline: inlineUploader(base) };
+    }, [uploader, api]);
+}
+
+/** Moves focus to the field a form refused (the text box is the editor's, the cover its Choose button). */
+export function focusPostField(id: string, field: Field, editor: RichEditorHandle | null): void {
+    if (field === 'text') editor?.focus();
+    else document.getElementById(field === 'cover' ? `${id}-pick` : `${id}-${field}`)?.focus();
+}
+
+/**
+ * A post's title, summary and text, as the new post form and the edit form have them: each
+ * labelled, and marked invalid and described by the reason when it is the one refused.
+ */
+export function PostTextFields({
+    id,
+    title,
+    summary,
+    html,
+    fieldError,
+    editor,
+    images,
+    announce,
+    onTitle,
+    onSummary,
+    onContent,
+}: {
+    id: string;
+    title: string;
+    summary: string;
+    /** The text as the site keeps it (the editor's full mode). */
+    html: string;
+    fieldError: FieldError | null;
+    editor: RefObject<RichEditorHandle | null>;
+    images: ReturnType<typeof usePostImages>;
+    announce?: (text: string) => void;
+    onTitle: (title: string) => void;
+    onSummary: (summary: string) => void;
+    onContent: (content: { html: string; text: string }) => void;
+}) {
+    return (
+        <>
+            <div className="settings-field">
+                <label htmlFor={`${id}-title`}>{t('Title')}</label>
+                <input id={`${id}-title`} value={title} dir="auto" autoFocus aria-invalid={fieldError?.field === 'title' || undefined} aria-describedby={describedBy(id, fieldError, 'title')} onChange={(e) => onTitle(e.target.value)} />
+                <FieldMessage id={id} fieldError={fieldError} field="title" />
+            </div>
+            <div className="settings-field">
+                <label htmlFor={`${id}-summary`}>{t('Summary')}</label>
+                <textarea
+                    id={`${id}-summary`}
+                    rows={2}
+                    value={summary}
+                    dir="auto"
+                    aria-invalid={fieldError?.field === 'summary' || undefined}
+                    aria-describedby={describedBy(id, fieldError, 'summary', `${id}-summary-hint`)}
+                    onChange={(e) => onSummary(e.target.value)}
+                />
+                <p id={`${id}-summary-hint`} className="small muted">
+                    {t('Optional. Lists show it under the title; without one they show the start of the text.')}
+                </p>
+                <FieldMessage id={id} fieldError={fieldError} field="summary" />
+            </div>
+            <div className="settings-field">
+                {/* a label for the text box, which is no form control: a click puts the caret in it (RichEditor, labelledBy) */}
+                <label id={`${id}-text-label`} htmlFor={`${id}-text`}>
+                    {t('Text')}
+                </label>
+                <RichEditor
+                    ref={editor}
+                    mode="full"
+                    id={`${id}-text`}
+                    className="article-text-input"
+                    rows={12}
+                    value={html}
+                    label={t('Text')}
+                    labelledBy={`${id}-text-label`}
+                    invalid={fieldError?.field === 'text'}
+                    describedBy={describedBy(id, fieldError, 'text', `${id}-text-hint`)}
+                    images={images}
+                    windowDrops
+                    announce={announce}
+                    onChange={(value, plain) => onContent({ html: value, text: plain })}
+                />
+                <p id={`${id}-text-hint`} className="small muted">
+                    {t('{{bold}}, {{italic}} and {{underline}} format the selected words, {{link}} adds a link.', { bold: isMac ? '⌘B' : 'Ctrl+B', italic: isMac ? '⌘I' : 'Ctrl+I', underline: isMac ? '⌘U' : 'Ctrl+U', link: isMac ? '⌘K' : 'Ctrl+K' })}
+                </p>
+                <FieldMessage id={id} fieldError={fieldError} field="text" />
+            </div>
+        </>
+    );
+}
+
+/** The category of a post, one of the site's (nothing where the site has none): none is chosen until one is. */
+export function PostCategoryField({ id, categories, category, fieldError, onCategory }: { id: string; categories: readonly Schema<'PostCategory'>[]; category: string; fieldError: FieldError | null; onCategory: (id: string) => void }) {
+    if (!categories.length) return null;
+    return (
+        <div className="settings-field">
+            <label htmlFor={`${id}-category`}>{t('Category')}</label>
+            <select id={`${id}-category`} value={category} required aria-invalid={fieldError?.field === 'category' || undefined} aria-describedby={describedBy(id, fieldError, 'category')} onChange={(e) => onCategory(e.target.value)}>
+                <option value="" disabled>
+                    {t('Choose a category')}
+                </option>
+                {categories.map((c) => (
+                    <option key={c.id} value={c.id}>
+                        {c.name}
+                    </option>
+                ))}
+            </select>
+            <FieldMessage id={id} fieldError={fieldError} field="category" />
+        </div>
+    );
+}
+
 /** The contexts one may write a post in: one's groups and spaces that take posts and let one post. */
 function usePostContexts(fixed: string | undefined) {
     const groups = useMyGroups();
@@ -83,11 +217,7 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
     const id = useId();
     const [announcement, announce] = useAnnouncer();
     const cover = usePhotoUploads({ purpose: 'post_cover', uploader, announce });
-    // pictures in the text: the site's editor storage (POST /uploads/inline)
-    const images = useMemo(() => {
-        const base = uploader ?? makeUploader(api);
-        return { uploader: base, uploadInline: inlineUploader(base) };
-    }, [uploader, api]);
+    const images = usePostImages(uploader);
     const [title, setTitle] = useState('');
     const [summary, setSummary] = useState('');
     // the text as the site keeps it (full mode's HTML) and as plain text (whether there is any)
@@ -110,8 +240,7 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
 
     const showError = (blocker: FieldError) => {
         setFieldError(blocker);
-        if (blocker.field === 'text') editor.current?.focus();
-        else document.getElementById(blocker.field === 'cover' ? `${id}-pick` : `${id}-${blocker.field}`)?.focus();
+        focusPostField(id, blocker.field, editor.current);
     };
 
     const submit = async (e?: FormEvent) => {
@@ -164,7 +293,6 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
     };
 
     const errorFor = (field: FieldError['field']) => (fieldError?.field === field ? fieldError.text : null);
-    const describe = (field: FieldError['field'], hint?: string) => [hint, fieldError?.field === field ? `${id}-${field}-error` : undefined].filter(Boolean).join(' ') || undefined;
     return (
         <Pane pane="detail" title={context ? t('New post in {{name}}', { name: context.display_name }) : t('New post')} actions={<CloseDetailButton />}>
             <div className="column settings">
@@ -172,73 +300,7 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
                     {announcement.text ? <span key={announcement.seq}>{announcement.text}</span> : null}
                 </p>
                 <form className="settings-form discussion-form new-article" aria-labelledby="detail-title" onSubmit={(e) => void submit(e)} onKeyDown={(e) => submitKeys(() => void submit())(e)} noValidate>
-                    <div className="settings-field">
-                        <label htmlFor={`${id}-title`}>{t('Title')}</label>
-                        <input
-                            id={`${id}-title`}
-                            value={title}
-                            dir="auto"
-                            autoFocus
-                            aria-invalid={fieldError?.field === 'title' || undefined}
-                            aria-describedby={describe('title')}
-                            onChange={(e) => setTitle(e.target.value)}
-                        />
-                        {errorFor('title') ? (
-                            <p id={`${id}-title-error`} className="error small" role="alert">
-                                {errorFor('title')}
-                            </p>
-                        ) : null}
-                    </div>
-                    <div className="settings-field">
-                        <label htmlFor={`${id}-summary`}>{t('Summary')}</label>
-                        <textarea
-                            id={`${id}-summary`}
-                            rows={2}
-                            value={summary}
-                            dir="auto"
-                            aria-invalid={fieldError?.field === 'summary' || undefined}
-                            aria-describedby={describe('summary', `${id}-summary-hint`)}
-                            onChange={(e) => setSummary(e.target.value)}
-                        />
-                        <p id={`${id}-summary-hint`} className="small muted">
-                            {t('Optional. Lists show it under the title; without one they show the start of the text.')}
-                        </p>
-                        {errorFor('summary') ? (
-                            <p id={`${id}-summary-error`} className="error small" role="alert">
-                                {errorFor('summary')}
-                            </p>
-                        ) : null}
-                    </div>
-                    <div className="settings-field">
-                        {/* a label for the text box, which is no form control: a click puts the caret in it (RichEditor, labelledBy) */}
-                        <label id={`${id}-text-label`} htmlFor={`${id}-text`}>
-                            {t('Text')}
-                        </label>
-                        <RichEditor
-                            ref={editor}
-                            mode="full"
-                            id={`${id}-text`}
-                            className="article-text-input"
-                            rows={12}
-                            value={content.html}
-                            label={t('Text')}
-                            labelledBy={`${id}-text-label`}
-                            invalid={fieldError?.field === 'text'}
-                            describedBy={describe('text', `${id}-text-hint`)}
-                            images={images}
-                            windowDrops
-                            announce={announce}
-                            onChange={(html, plain) => setContent({ html, text: plain })}
-                        />
-                        <p id={`${id}-text-hint`} className="small muted">
-                            {t('{{bold}}, {{italic}} and {{underline}} format the selected words, {{link}} adds a link.', { bold: isMac ? '⌘B' : 'Ctrl+B', italic: isMac ? '⌘I' : 'Ctrl+I', underline: isMac ? '⌘U' : 'Ctrl+U', link: isMac ? '⌘K' : 'Ctrl+K' })}
-                        </p>
-                        {errorFor('text') ? (
-                            <p id={`${id}-text-error`} className="error small" role="alert">
-                                {errorFor('text')}
-                            </p>
-                        ) : null}
-                    </div>
+                    <PostTextFields id={id} title={title} summary={summary} html={content.html} fieldError={fieldError} editor={editor} images={images} announce={announce} onTitle={setTitle} onSummary={setSummary} onContent={setContent} />
                     <fieldset className="settings-field settings-fieldset photo-field">
                         <legend>{t('Cover')}</legend>
                         <PhotoDropZone uploads={cover} pickId={`${id}-pick`} describedBy={fieldError?.field === 'cover' ? `${id}-cover-error` : undefined} label={cover.items.length ? t('Choose another…') : t('Choose a cover…')} dropHint={t('or drop a photo here')} />
@@ -248,33 +310,7 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
                             </p>
                         ) : null}
                     </fieldset>
-                    {categories.length ? (
-                        <div className="settings-field">
-                            <label htmlFor={`${id}-category`}>{t('Category')}</label>
-                            <select
-                                id={`${id}-category`}
-                                value={category}
-                                required
-                                aria-invalid={fieldError?.field === 'category' || undefined}
-                                aria-describedby={describe('category')}
-                                onChange={(e) => setCategory(e.target.value)}
-                            >
-                                <option value="" disabled>
-                                    {t('Choose a category')}
-                                </option>
-                                {categories.map((c) => (
-                                    <option key={c.id} value={c.id}>
-                                        {c.name}
-                                    </option>
-                                ))}
-                            </select>
-                            {errorFor('category') ? (
-                                <p id={`${id}-category-error`} className="error small" role="alert">
-                                    {errorFor('category')}
-                                </p>
-                            ) : null}
-                        </div>
-                    ) : null}
+                    <PostCategoryField id={id} categories={categories} category={category} fieldError={fieldError} onCategory={setCategory} />
                     {!contextId && contexts.length ? (
                         <div className="settings-field">
                             <label htmlFor={`${id}-where`}>{t('Where')}</label>

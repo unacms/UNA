@@ -69,6 +69,20 @@ export function postFromLists(queryClient: QueryClient, id: string): Post | unde
     return undefined;
 }
 
+/**
+ * A post as the site has it now (saved): in its view's cache whole, and in every list that shows
+ * it as lists have one (no text, photos or link previews). The lists and the feeds are read again
+ * too: its category may have moved it between lists, and its feed item shows its title and summary.
+ */
+export function putPost(queryClient: QueryClient, fresh: Post): void {
+    queryClient.setQueryData(postKey(fresh.id), fresh);
+    const row: Post = { ...fresh, body_html: null, media: [], links: [] };
+    queryClient.setQueriesData<InfiniteData<PostPage>>(['posts', 'list'], (data) => (data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.map((x) => (x.id === fresh.id ? row : x)) })) } : data));
+    void queryClient.invalidateQueries(['posts', 'list']);
+    void queryClient.invalidateQueries(['feed']);
+    if (fresh.content_id) void queryClient.invalidateQueries(['activity', fresh.content_id]);
+}
+
 /** A post gone (deleted): out of its view's cache and every list. */
 export function dropPost(queryClient: QueryClient, id: string): void {
     queryClient.removeQueries(postKey(id), { exact: true });

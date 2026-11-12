@@ -580,6 +580,18 @@ then send an event to `bx_timeline_0`.
   the editor (`data-own-keys`, `lib/shortcuts.ts`). Without a text box, focus goes to "Who can
   see it" (or the note, in a group). A post's text can't be emptied here: Save is off and says
   so, since the site keeps the old text.
+- Editing a post of the Posts module (`src/features/posts/edit-post.tsx`): "Edit Post" in the
+  post's More menu, for who may (`viewer.can_edit`) and once the post's own answer has brought
+  its text, puts a form in place of the post with the new post form's fields that
+  `PATCH /posts/{id}` takes (`PostTextFields` and `PostCategoryField` of `new-post.tsx`): title,
+  summary, text (the rich editor on the post's HTML), category, and who can see it for a post
+  outside a group whose audience the site offers. The cover, photos and videos change on the
+  site, so the form has no field for them. Only what changed is sent, with an Idempotency-Key
+  that is used again after an answer that never came; a field a 422 names says why under it.
+  Cmd/Ctrl+Enter saves, Esc or Cancel puts the form away (asking first when that throws changes
+  away), focus goes back to More and "Post saved" is announced. Saved, the post's view has the
+  answer, its rows in the lists take it (as lists have a post: without its text), and the Posts
+  lists, the feeds and its feed item are read again. Like the new post form it keeps no draft.
 
 ## Groups
 

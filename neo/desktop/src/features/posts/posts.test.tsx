@@ -1,11 +1,12 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import type { ReactNode } from 'react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { createUnaApi, type Schema, type UnaApi } from 'una-api';
 
 import { ActivityCard } from '../../components/activity-card';
+import { MenuHost } from '../../components/menu-popover';
 import { ago } from '../../lib/api';
 import { AnnounceContext } from '../../lib/announce';
 import { AppContext, type AppContextValue } from '../../lib/context';
@@ -14,10 +15,11 @@ import { opensInWindow } from '../../lib/open-in-window';
 import { parseRoute, type Route, RouteHistory, routeToPath } from '../../lib/router';
 import { setSiteModules } from '../../lib/site-modules';
 import { contextTabs, tabLabel } from '../groups/group-view';
+import { postChanges, postValue } from './edit-post';
 import { NewPost, newPostBlocker, newPostFieldError } from './new-post';
 import { Posts, PostsOfTab } from './post-list';
 import { PostPane } from './post-pane';
-import { activityDetail, type Post, postRowText, readingText, stateText } from './posts';
+import { activityDetail, type Post, postKey, postListKey, postRowText, readingText, stateText } from './posts';
 import { setRichText } from '../../components/rich-editor/test-utils';
 
 const lily: Schema<'Profile'> = { id: '4', kind: 'person', module: 'bx_persons', display_name: 'Lily Carter', status: 'active', about: '', created_at: '2026-01-01T00:00:00Z' };
@@ -87,7 +89,10 @@ function renderWith(node: ReactNode, api: UnaApi, route: Route = { list: { secti
         <QueryClientProvider client={client}>
             <AppContext.Provider value={ctx}>
                 <AnnounceContext.Provider value={() => {}}>
-                    <RouterProvider history={history}>{node}</RouterProvider>
+                    <RouterProvider history={history}>
+                        {node}
+                        <MenuHost />
+                    </RouterProvider>
                 </AnnounceContext.Provider>
             </AppContext.Provider>
         </QueryClientProvider>,
@@ -97,6 +102,7 @@ function renderWith(node: ReactNode, api: UnaApi, route: Route = { list: { secti
 
 afterEach(() => {
     cleanup();
+    vi.restoreAllMocks();
     localStorage.clear();
     setSiteModules(null);
 });
@@ -357,5 +363,128 @@ describe('New post', () => {
         expect(JSON.parse(calls.find((c) => c.method === 'POST')?.body ?? '{}').category_id).toBe('2');
         expect((await screen.findByRole('alert')).textContent).toBe('A post needs text.');
         expect(document.activeElement).toBe(screen.getByRole('textbox', { name: 'Text' }));
+    });
+});
+
+describe('Editing a post', () => {
+    const mine = (over: Partial<Post> = {}) => post({ body_html: '<p>A 35mm lens makes you walk.</p>', viewer: { reaction: null, favorited: false, can_react: true, can_comment: true, can_edit: true, can_delete: true }, ...over });
+    const route: Route = { list: { section: 'posts' }, detail: { kind: 'article', id: '37' } };
+    const CATEGORIES = [{ id: '3', slug: '3', name: 'Art' }, { id: '5', slug: '5', name: 'Travel' }];
+    const openForm = async () => {
+        fireEvent.click(await screen.findByRole('button', { name: 'More for the post' }));
+        fireEvent.click(screen.getByRole('menuitem', { name: 'Edit Post' }));
+        return (await screen.findByRole('textbox', { name: 'Title' })) as HTMLInputElement;
+    };
+
+    it('sends only what changed, and never the audience of a post in a context', () => {
+        const initial = postValue(mine());
+        expect(initial).toEqual({ title: 'A slow walk with one lens', summary: 'Why I left the zoom at home for a month.', html: '<p>A 35mm lens makes you walk.</p>', category: '3', audience: 'public' });
+        expect(postChanges(initial, initial, true)).toEqual({});
+        expect(postChanges(initial, { ...initial, title: ' One lens ', audience: 'friends' }, true)).toEqual({ title: 'One lens', audience: 'friends' });
+        expect(postChanges(initial, { ...initial, summary: '', html: '<p>New.</p>', category: '5', audience: 'friends' }, false)).toEqual({ summary: '', body_html: '<p>New.</p>', category_id: '5' });
+    });
+
+    it('is offered only to who may edit, once the post’s text is there', async () => {
+        const { api } = site((c) => (c.path === '/posts/37' ? { status: 200, body: mine({ viewer: { reaction: null, favorited: false, can_react: true, can_comment: true, can_edit: false, can_delete: true } }) } : null));
+        renderWith(<PostPane id="37" />, api, route);
+        await screen.findByText('A 35mm lens makes you walk.');
+        fireEvent.click(screen.getByRole('button', { name: 'More for the post' }));
+        expect(screen.getByRole('menuitem', { name: 'Delete Post…' })).toBeTruthy();
+        expect(screen.queryByRole('menuitem', { name: 'Edit Post' })).toBeNull();
+    });
+
+    it('saves the changed fields through PATCH /posts/{id}, then shows the post as saved in its view and the lists', async () => {
+        setSiteModules(MODULES);
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/categories') return { status: 200, body: CATEGORIES };
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine() };
+            if (c.path === '/posts/37' && c.method === 'PATCH') {
+                const body = JSON.parse(c.body) as Schema<'PostChanges'>;
+                return { status: 200, body: mine({ title: body.title ?? '', body_html: body.body_html ?? '', category: CATEGORIES[1] ?? null }) };
+            }
+            return null;
+        });
+        const { client } = renderWith(<PostPane id="37" />, api, route);
+        client.setQueryData(postListKey({ feed: 'latest' }), { pages: [{ items: [post()], next_cursor: null }], pageParams: [undefined] });
+        const title = await openForm();
+        expect(screen.getByRole('form', { name: 'Edit the post' })).toBeTruthy();
+        expect(title.value).toBe('A slow walk with one lens');
+        expect((screen.getByRole('textbox', { name: 'Summary' }) as HTMLTextAreaElement).value).toBe('Why I left the zoom at home for a month.');
+        const category = (await screen.findByRole('combobox', { name: 'Category' })) as HTMLSelectElement;
+        expect(category.value).toBe('3');
+        await waitFor(() => expect((screen.getByRole('combobox', { name: 'Who can see it' }) as HTMLSelectElement).value).toBe('public'));
+        // the cover changes on the site: the form has no field for it
+        expect(screen.queryByRole('group', { name: 'Cover' })).toBeNull();
+
+        fireEvent.change(title, { target: { value: 'One lens, one month' } });
+        setRichText(screen.getByRole('textbox', { name: 'Text' }), 'It makes you walk.\nA lot.');
+        fireEvent.change(category, { target: { value: '5' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(calls.some((c) => c.method === 'PATCH')).toBe(true));
+        const patch = calls.find((c) => c.method === 'PATCH');
+        expect(JSON.parse(patch?.body ?? '{}')).toEqual({ title: 'One lens, one month', body_html: '<p>It makes you walk.</p><p>A lot.</p>', category_id: '5' });
+        expect(patch?.key).toBeTruthy();
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        expect(screen.queryByRole('form', { name: 'Edit the post' })).toBeNull();
+        expect(screen.getByText('A lot.')).toBeTruthy();
+        expect(client.getQueryData<Post>(postKey('37'))?.title).toBe('One lens, one month');
+        // the list's row is the saved post, as lists have one: without its text
+        const list = client.getQueryData<{ pages: { items: Post[] }[] }>(postListKey({ feed: 'latest' }));
+        expect([list?.pages[0]?.items[0]?.title, list?.pages[0]?.items[0]?.body_html]).toEqual(['One lens, one month', null]);
+    });
+
+    it('says a 422 at its field, saves again with the same key after an answer that never came, and leaves who sees a post in a group alone', async () => {
+        let patches = 0;
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine({ context_id: '12', audience: 'context' }) };
+            if (c.path === '/posts/37' && c.method === 'PATCH') {
+                patches++;
+                if (patches === 1) return { status: 422, body: { type: 'urn:una:problem:validation', title: 'Invalid', status: 422, code: 'validation', errors: [{ field: 'title', code: 'invalid', message: 'This title is taken' }] } };
+                return patches === 2 ? 'lost' : { status: 200, body: mine({ title: 'Another title', context_id: '12', audience: 'context' }) };
+            }
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        const title = await openForm();
+        expect(screen.queryByRole('combobox', { name: 'Who can see it' })).toBeNull();
+        fireEvent.change(title, { target: { value: 'ab' } });
+        const save = screen.getByRole('button', { name: 'Save' });
+        fireEvent.click(save);
+        expect((await screen.findByRole('alert')).textContent).toBe('A title has at least 3 characters.');
+        expect(calls.some((c) => c.method === 'PATCH')).toBe(false);
+        fireEvent.change(title, { target: { value: 'A taken title' } });
+        fireEvent.click(save);
+        await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('This title is taken.'));
+        expect(document.activeElement).toBe(title);
+        expect(title.getAttribute('aria-invalid')).toBe('true');
+        fireEvent.change(title, { target: { value: 'Another title' } });
+        fireEvent.click(save);
+        await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('It was not saved: Load failed'));
+        fireEvent.click(save);
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        const sent = calls.filter((c) => c.method === 'PATCH');
+        expect(sent.map((c) => JSON.parse(c.body))).toEqual([{ title: 'A taken title' }, { title: 'Another title' }, { title: 'Another title' }]);
+        expect(sent[2]?.key).toBe(sent[1]?.key);
+        expect(sent[1]?.key).not.toBe(sent[0]?.key);
+    });
+
+    it('asks before Esc or Cancel throws changes away, and sends nothing when nothing changed', async () => {
+        const { api, calls } = site((c) => (c.path === '/posts/37' && c.method === 'GET' ? { status: 200, body: mine() } : null));
+        renderWith(<PostPane id="37" />, api, route);
+        let title = await openForm();
+        const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+        fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(screen.queryByRole('form', { name: 'Edit the post' })).toBeNull());
+        expect(confirm).not.toHaveBeenCalled();
+        title = await openForm();
+        fireEvent.change(title, { target: { value: 'Changed' } });
+        fireEvent.keyDown(title, { key: 'Escape' });
+        await waitFor(() => expect(confirm).toHaveBeenCalledTimes(1));
+        expect(screen.getByRole('form', { name: 'Edit the post' })).toBeTruthy();
+        confirm.mockReturnValue(true);
+        fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+        await waitFor(() => expect(screen.queryByRole('form', { name: 'Edit the post' })).toBeNull());
+        expect(screen.getByText('A 35mm lens makes you walk.')).toBeTruthy();
+        expect(calls.some((c) => c.method === 'PATCH')).toBe(false);
     });
 });

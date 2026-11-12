@@ -287,6 +287,7 @@
     "Give it a title.": "Geben Sie einen Titel ein.",
     "Write what it is about.": "Schreiben Sie, worum es geht.",
     "It was not saved": "Nicht gespeichert",
+    "It was not saved: {{reason}}": "Nicht gespeichert: {{reason}}",
     "The discussion stays as it was.": "Die Diskussion bleibt unverändert.",
     "Edit the discussion": "Diskussion bearbeiten",
     "Pictures can’t be added to a discussion’s text here.": "Bilder können dem Text einer Diskussion hier nicht hinzugefügt werden.",

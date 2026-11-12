@@ -1,4 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 
 import { audienceText, longTime, useContextGroup } from '../../components/activity-card';
 import { Icon } from '../../components/icon';
@@ -13,7 +14,7 @@ import { rich } from '../../lib/i18n-rich';
 import { useMediaSrc, usePicture } from '../../lib/media';
 import { confirmAction } from '../../lib/native';
 import { useNavigation } from '../../lib/navigation';
-import { DetailShell } from '../../shell/detail-shell';
+import { DetailShell, focusMoreButton } from '../../shell/detail-shell';
 import { useCopyLink } from '../../lib/copy-link';
 import { paneHeadingId } from '../../shell/pane';
 import { dropFromFeeds } from '../feed/cache';
@@ -21,7 +22,8 @@ import { useAnnouncer } from '../feed/feed-list';
 import { MediaGrid } from '../feed/media';
 import { EntryActions, EntryComments, useEntryItem } from '../photos/entry-item';
 import { ProfileAvatar, ProfileName } from '../profile/profile-link';
-import { dropPost, isWebUrl, type Post, postFromLists, postKey, postTime, readingText, stateText } from './posts';
+import { EditPost } from './edit-post';
+import { dropPost, isWebUrl, type Post, postFromLists, postKey, postTime, putPost, readingText, stateText } from './posts';
 
 /** The cover across the top of the post: its large copy, else a smaller one. */
 function PostCover({ post }: { post: Post }) {
@@ -39,7 +41,8 @@ function PostCover({ post }: { post: Post }) {
  * (the hero the toolbar title follows), who wrote it with their badges after the name, when, how
  * long it reads, where it is and who sees it, its whole text, its photos and videos, and the
  * reactions and comments of its Item (the same thread as a feed post's). More has Open in New
- * Window, Copy Link and, for who may, Delete.
+ * Window, Copy Link and, for who may (`viewer.can_edit`, `viewer.can_delete`), Edit Post, which
+ * puts the form in place of the post (edit-post.tsx), and Delete.
  */
 export function PostPane({ id }: { id: string }) {
     const { api } = useApp();
@@ -47,6 +50,7 @@ export function PostPane({ id }: { id: string }) {
     const { forget } = useNavigation();
     const announceInWindow = useWindowAnnounce();
     const [announcement, announce] = useAnnouncer();
+    const [editing, setEditing] = useState(false);
     const post = useQuery({
         queryKey: postKey(id),
         queryFn: async () => unwrap(await api.GET('/posts/{id}', { params: { path: { id } } })),
@@ -99,9 +103,32 @@ export function PostPane({ id }: { id: string }) {
             announcement={announcement}
             announce={announce}
             className="thread article-detail"
-            more={(shown) => ({ link: shown.url, own: shown.viewer?.can_delete ? [{ text: t('Delete Post…'), run: () => void remove() }] : [] })}
+            // while it is edited the hero's title is gone, so the toolbar's shows
+            heroTitle={!editing}
+            more={(shown) => ({
+                link: shown.url,
+                own: [
+                    // its text comes with its own answer: a post a list had is not edited before that
+                    ...(shown.viewer?.can_edit && shown.body_html !== null ? [{ text: t('Edit Post'), run: () => setEditing(true) }] : []),
+                    ...(shown.viewer?.can_delete ? [{ text: t('Delete Post…'), run: () => void remove() }] : []),
+                ],
+            })}
         >
-            {(p) => (
+            {(p) =>
+                editing ? (
+                    <EditPost
+                        post={p}
+                        announce={announce}
+                        onDone={(saved) => {
+                            setEditing(false);
+                            if (saved) {
+                                putPost(queryClient, saved);
+                                announce(t('Post saved'));
+                            }
+                            focusMoreButton('post');
+                        }}
+                    />
+                ) : (
                     <>
                         <article className="video-post article-post" aria-labelledby={paneHeadingId('detail')}>
                             <PostCover post={p} />
@@ -161,7 +188,8 @@ export function PostPane({ id }: { id: string }) {
                         </article>
                         <EntryComments itemId={itemId} activity={activity.data} error={activity.error} loading={activity.isLoading} />
                     </>
-            )}
+                )
+            }
         </DetailShell>
     );
 }
