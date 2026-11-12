@@ -476,6 +476,10 @@ import url(../../../../../../../template/css/forms.css);
 .bx-artificer #bx-form-element-submit_text .bx-form-value {
     padding: 0.125rem;
 }
+/* A field's description under it starts where its label does. */
+.bx-artificer .bx-form-element-wrapper > .bx-form-info {
+    padding-inline: 0.125rem;
+}
 
 /*
  * Floating labels (the adaptive label style, BxBaseFormView::isLabelAdaptive): as in NEO's 52px fields, the label rests in
