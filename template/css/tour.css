@@ -1,0 +1,228 @@
+/*
+ * Introduction tours (bx_tour in inc/js/functions.js), on the site and in Studio.
+ * Loaded after plugins_public/shepherd/css/shepherd.css, whose look it replaces: a card on
+ * the popup surface in the theme's neutrals (gray = NEO neutrals), small buttons (36px, 8px
+ * corners), light and dark (html.dark).
+ */
+
+/* --- the step --- */
+.shepherd-element.bx-tour {
+    width: calc(100vw - 2rem);
+    max-width: 23.5rem;
+
+    border-radius: 1rem;
+    background: #fff;
+    box-shadow: 0 0 0 1px rgba(10, 10, 12, 0.06), 0 12px 32px -8px rgba(10, 10, 12, 0.22), 0 4px 12px -4px rgba(10, 10, 12, 0.12);
+
+    font-size: 0.9375rem;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+.shepherd-element.bx-tour .shepherd-content {
+    border-radius: 1rem;
+    padding: 1.25rem;
+}
+
+.shepherd-element.bx-tour .shepherd-header,
+.shepherd-element.bx-tour.shepherd-has-title .shepherd-content .shepherd-header {
+    align-items: flex-start;
+    gap: 0.75rem;
+
+    padding: 0;
+    border-radius: 0;
+    background: none;
+
+    line-height: 1.5rem;
+}
+.shepherd-element.bx-tour .shepherd-title {
+    flex: 1 1 auto;
+
+    color: #0a0a0c;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+    letter-spacing: -0.01em;
+}
+
+/* Close: on every step. A 32px button with the hit area extended to 44px. */
+.shepherd-element.bx-tour .shepherd-cancel-icon,
+.shepherd-element.bx-tour.shepherd-has-title .shepherd-content .shepherd-cancel-icon {
+    position: relative;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    margin: -0.25rem -0.375rem 0 0;
+
+    border-radius: 0.5rem;
+    color: #71717a;
+    font-size: 1.5rem;
+    line-height: 1;
+    transition: color 0.15s ease, background-color 0.15s ease;
+}
+.shepherd-element.bx-tour .shepherd-cancel-icon::after {
+    content: '';
+    position: absolute;
+    inset: -0.375rem;
+}
+.shepherd-element.bx-tour .shepherd-cancel-icon:hover,
+.shepherd-element.bx-tour.shepherd-has-title .shepherd-content .shepherd-cancel-icon:hover {
+    background: #f4f4f5;
+    color: #0a0a0c;
+}
+
+.shepherd-element.bx-tour .shepherd-text {
+    padding: 0.5rem 0 0;
+
+    color: #52525b;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+}
+
+.shepherd-element.bx-tour .shepherd-footer {
+    align-items: center;
+    gap: 0.5rem;
+
+    padding: 1.25rem 0 0;
+    border-radius: 0;
+}
+.shepherd-element.bx-tour .bx-tour-progress {
+    margin-right: auto;
+
+    color: #71717a;
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.shepherd-element.bx-tour .shepherd-button {
+    min-height: 2.25rem;
+    margin: 0;
+    padding: 0.25rem 0.875rem;
+
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+.shepherd-element.bx-tour .shepherd-button.shepherd-button-primary,
+.shepherd-element.bx-tour .shepherd-button.shepherd-button-primary:not(:disabled):hover {
+    background: #2563eb;
+    color: #fff;
+}
+.shepherd-element.bx-tour .shepherd-button.shepherd-button-primary:not(:disabled):hover {
+    background: #1d4ed8;
+}
+.shepherd-element.bx-tour .shepherd-button.shepherd-button-secondary,
+.shepherd-element.bx-tour .shepherd-button.shepherd-button-secondary:not(:disabled):hover {
+    background: #f4f4f5;
+    color: #18181b;
+}
+.shepherd-element.bx-tour .shepherd-button.shepherd-button-secondary:not(:disabled):hover {
+    background: #e4e4e7;
+}
+
+.shepherd-element.bx-tour .shepherd-button:focus-visible,
+.shepherd-element.bx-tour .shepherd-cancel-icon:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+.shepherd-element.bx-tour > .shepherd-arrow::before,
+.shepherd-element.bx-tour.shepherd-has-title[data-popper-placement^=bottom] > .shepherd-arrow::before {
+    background-color: #fff;
+    border-radius: 2px;
+}
+
+/* The step keeps clear of the opening around its element (12px wider than the element, soft edges). */
+.shepherd-element.bx-tour[data-popper-placement^=bottom] {
+    margin-top: 1.25rem;
+}
+.shepherd-element.bx-tour[data-popper-placement^=top] {
+    margin-top: -1.25rem;
+}
+.shepherd-element.bx-tour[data-popper-placement^=right] {
+    margin-left: 1.25rem;
+}
+.shepherd-element.bx-tour[data-popper-placement^=left] {
+    margin-left: -1.25rem;
+}
+
+/* --- dark --- */
+html.dark .shepherd-element.bx-tour {
+    background: #18181b;
+    box-shadow: 0 0 0 1px rgba(250, 250, 252, 0.1), 0 12px 32px -8px rgba(0, 0, 0, 0.6), 0 4px 12px -4px rgba(0, 0, 0, 0.4);
+}
+html.dark .shepherd-element.bx-tour .shepherd-title {
+    color: #fafafc;
+}
+html.dark .shepherd-element.bx-tour .shepherd-text,
+html.dark .shepherd-element.bx-tour .bx-tour-progress,
+html.dark .shepherd-element.bx-tour .shepherd-cancel-icon,
+html.dark .shepherd-element.bx-tour.shepherd-has-title .shepherd-content .shepherd-cancel-icon {
+    color: #a1a1aa;
+}
+html.dark .shepherd-element.bx-tour .shepherd-cancel-icon:hover,
+html.dark .shepherd-element.bx-tour.shepherd-has-title .shepherd-content .shepherd-cancel-icon:hover {
+    background: #27272a;
+    color: #fafafc;
+}
+html.dark .shepherd-element.bx-tour .shepherd-button.shepherd-button-secondary,
+html.dark .shepherd-element.bx-tour .shepherd-button.shepherd-button-secondary:not(:disabled):hover {
+    background: #27272a;
+    color: #fafafc;
+}
+html.dark .shepherd-element.bx-tour .shepherd-button.shepherd-button-secondary:not(:disabled):hover {
+    background: #3f3f46;
+}
+html.dark .shepherd-element.bx-tour .shepherd-button:focus-visible,
+html.dark .shepherd-element.bx-tour .shepherd-cancel-icon:focus-visible {
+    outline-color: #60a5fa;
+}
+html.dark .shepherd-element.bx-tour > .shepherd-arrow::before,
+html.dark .shepherd-element.bx-tour.shepherd-has-title[data-popper-placement^=bottom] > .shepherd-arrow::before {
+    background-color: #18181b;
+}
+
+/* --- the dimmed page ---
+ * The tour's own overlay (bx_tour_spotlight): the step's element shows through an opening
+ * with soft edges. Shepherd's overlay stays under it, unseen, to keep clicks off the page.
+ */
+.bx-tour-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9998;
+    width: 100vw;
+    height: 100vh;
+
+    pointer-events: none;
+    animation: bx-tour-overlay-in 0.25s ease-out;
+}
+.bx-tour-overlay .bx-tour-dim {
+    fill: rgba(10, 10, 12, 0.5);
+}
+html.dark .bx-tour-overlay .bx-tour-dim {
+    fill: rgba(0, 0, 0, 0.68);
+}
+body.bx-tour-on .shepherd-modal-overlay-container.shepherd-modal-is-visible {
+    opacity: 0;
+}
+
+@keyframes bx-tour-overlay-in {
+    from {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bx-tour-overlay {
+        animation: none;
+    }
+    .shepherd-element.bx-tour,
+    .shepherd-element.bx-tour .shepherd-button,
+    .shepherd-element.bx-tour .shepherd-cancel-icon {
+        transition: none;
+    }
+}

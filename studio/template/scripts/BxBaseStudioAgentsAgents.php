@@ -407,7 +407,12 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
 
     protected function _getCellProfileId($mixedValue, $sKey, $aField, $aRow)
     {
-        $mixedValue = BxDolProfile::getInstanceMagic($mixedValue)->getUnit(0, ['template' => 'unit_wo_info']);
+        // A 36px avatar with the profile's name beside it.
+        $oProfile = BxDolProfile::getInstanceMagic($mixedValue);
+        $mixedValue = BxDolStudioTemplate::getInstance()->parseHtmlByName('agents_agents_profile.html', [
+            'unit' => $oProfile->getUnit(0, ['template' => 'unit_wo_info']),
+            'name' => bx_process_output($oProfile->getDisplayName()),
+        ]);
         return parent::_getCellDefault($mixedValue, $sKey, $aField, $aRow);
     }
 

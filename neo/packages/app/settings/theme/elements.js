@@ -145,14 +145,15 @@ export const settingsElements = {
     cards: {
         // The card surface (bg-card/60) on every size: edge to edge with no outline shadow on
         // mobile, detached and rounded with the outline shadow from sm. Overlays use bg-popover.
-        'u-card-list': ' u-card-list bg-card/60 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl ',
-        'u-card-list-padding': 'p-4 sm:rounded-2xl',
+        // Corners: 20px (`rounded-popover`), as blocks, menus and UNA's blocks and cards.
+        'u-card-list': ' u-card-list bg-card/60 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-popover ',
+        'u-card-list-padding': 'p-4 sm:rounded-popover',
         // Profile listings: photo + meta + actions on mobile, card chrome from sm (grid).
         // Mobile: edge-to-edge rows on the card surface, 1px apart (feed cards are 2px), like
         // the Messages and Notifications rows.
-        'u-card-list-flush': ' u-card-list u-flush-nav relative isolate mt-px sm:mt-0 bg-card/60 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
-        'u-card-list-flush-padding': 'px-4 py-2 sm:p-4 sm:rounded-2xl',
-        'u-card-base': 'u-card-base rounded-2xl bg-card/60 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
+        'u-card-list-flush': ' u-card-list u-flush-nav relative isolate mt-px sm:mt-0 bg-card/60 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-popover transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
+        'u-card-list-flush-padding': 'px-4 py-2 sm:p-4 sm:rounded-popover',
+        'u-card-base': 'u-card-base rounded-popover bg-card/60 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
         'u-card-padding': 'py-4 ',
         'u-card-header': 'px-4',
         'u-card-icon': ' ',
@@ -185,11 +186,14 @@ export const settingsElements = {
             ' py-4 ',
         'u-block-pad-x':
             ' px-4 ',
-        'u-block-rounded': 'rounded-2xl',
+        // 20px (`rounded-popover`), as menus and UNA's blocks: a row or tile with 12px corners 8px inside runs parallel.
+        // Blocks take these per breakpoint (lib/responsive-classes.ts), so every prefixed form is named here for
+        // Tailwind to find: rounded-popover sm:rounded-popover lg:rounded-popover.
+        'u-block-rounded': 'rounded-popover',
         // Corners of a block that doesn't set `designbox.rounded`, in layouts that don't say
         // where their padding is (home, profile, post ...). Elsewhere corners follow the page
         // padding: rounded where it keeps the block off the screen edge (block-wrapper.js).
-        'u-block-rounded-default': 'sm:rounded-2xl',
+        'u-block-rounded-default': 'sm:rounded-popover',
         'u-block-header':
             ' flex-row gap-3  ',
         'u-block-icon': ' items-center w-9 h-9 justify-center bg-muted/50 rounded-lg text-card-foreground flex-none',

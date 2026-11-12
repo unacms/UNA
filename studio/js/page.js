@@ -106,13 +106,105 @@ $(document).ready(function() {
     if(!window.matchMedia('(max-width: 767px)').matches)
         return;
 
-    var oMenu = document.querySelector('.bx-std-page-column.bx-std-page-menu');
+    var oMenu = document.querySelector('.bx-std-page-column.bx-std-page-menu > .bx-std-page-column-cnt');
     var oActive = oMenu ? oMenu.querySelector('.bx-std-pmen-item.bx-menu-tab-active') : null;
     if(!oActive || oMenu.scrollWidth <= oMenu.clientWidth)
         return;
 
     // the row scrolls on its own; scrollIntoView would move every scrollable ancestor, the page included
     oMenu.scrollLeft += oActive.getBoundingClientRect().left - oMenu.getBoundingClientRect().left - (oMenu.clientWidth - oActive.offsetWidth) / 2;
+});
+
+/**
+ * Phone layout: the row of tabs fades out towards an edge that has more tabs beyond it (page_columns.css). The row is marked
+ * with data-bx-fade-left / data-bx-fade-right as it scrolls and as its width changes.
+ */
+function bx_std_pmen_fades() {
+    var oRow = document.querySelector('.bx-std-page-column.bx-std-page-menu > .bx-std-page-column-cnt');
+    if(!oRow)
+        return;
+
+    var iMax = oRow.scrollWidth - oRow.clientWidth;
+    var iScroll = oRow.scrollLeft; // from 0 down to -iMax in a right-to-left row
+    var bRtl = window.getComputedStyle(oRow).direction == 'rtl';
+
+    oRow.toggleAttribute('data-bx-fade-left', iMax > 1 && (bRtl ? iMax + iScroll > 1 : iScroll > 1));
+    oRow.toggleAttribute('data-bx-fade-right', iMax > 1 && (bRtl ? -iScroll > 1 : iMax - iScroll > 1));
+}
+$(document).ready(function() {
+    var oRow = document.querySelector('.bx-std-page-column.bx-std-page-menu > .bx-std-page-column-cnt');
+    if(!oRow)
+        return;
+
+    oRow.addEventListener('scroll', bx_std_pmen_fades, {passive: true});
+    if(typeof ResizeObserver != 'undefined')
+        new ResizeObserver(bx_std_pmen_fades).observe(oRow);
+
+    bx_std_pmen_fades();
+});
+
+/**
+ * Page menu tooltips: where an item shows its tile alone (the strip, the phone tabs), its name shows in a tooltip while the item
+ * is hovered with a mouse or has keyboard focus: beside the tile in the strip, under it in the row of tabs. The link's own title
+ * is put aside meanwhile, so the browser doesn't show a second one.
+ */
+function bx_std_pmen_tip(oLink) {
+    var oTip = document.getElementById('bx-std-pmen-tip');
+
+    $('.bx-std-pmen-item > a[data-bx-title]').each(function() {
+        this.setAttribute('title', this.getAttribute('data-bx-title'));
+        this.removeAttribute('data-bx-title');
+    });
+    if(oTip)
+        oTip.hidden = true;
+
+    var oLabel = oLink ? oLink.querySelector('.bx-std-pmen-ic-title') : null;
+    var oTile = oLink ? oLink.querySelector('.bx-std-pmen-ic-icon') : null;
+    var sText = oLink ? (oLink.getAttribute('aria-label') || oLink.getAttribute('title') || (oLabel ? oLabel.textContent : '')).trim() : '';
+    if(!oLabel || !oTile || !sText || oLabel.getClientRects().length)
+        return;
+
+    if(!oTip) {
+        oTip = document.createElement('div');
+        oTip.id = 'bx-std-pmen-tip';
+        oTip.className = 'bx-std-pmen-tip';
+        oTip.setAttribute('aria-hidden', 'true'); // the link already has this name
+        document.body.appendChild(oTip);
+    }
+
+    if(oLink.hasAttribute('title')) {
+        oLink.setAttribute('data-bx-title', oLink.getAttribute('title'));
+        oLink.removeAttribute('title');
+    }
+
+    oTip.textContent = sText;
+    oTip.hidden = false;
+
+    var oBox = oTile.getBoundingClientRect(), iGap = 14;
+    var iLeft, iTop;
+    if(window.matchMedia('(max-width: 767px)').matches) {
+        iLeft = oBox.left + (oBox.width - oTip.offsetWidth) / 2;
+        iTop = oBox.bottom + iGap;
+    }
+    else {
+        iLeft = window.getComputedStyle(oLink).direction == 'rtl' ? oBox.left - iGap - oTip.offsetWidth : oBox.right + iGap;
+        iTop = oBox.top + (oBox.height - oTip.offsetHeight) / 2;
+    }
+
+    oTip.style.left = Math.round(Math.max(8, Math.min(iLeft, window.innerWidth - oTip.offsetWidth - 8))) + 'px';
+    oTip.style.top = Math.round(Math.max(8, Math.min(iTop, window.innerHeight - oTip.offsetHeight - 8))) + 'px';
+}
+$(document).on('mouseenter', '.bx-std-page-menu .bx-std-pmen-item > a', function() {
+    if(window.matchMedia('(hover: hover)').matches)
+        bx_std_pmen_tip(this);
+}).on('focusin', '.bx-std-page-menu .bx-std-pmen-item > a', function() {
+    if(this.matches(':focus-visible'))
+        bx_std_pmen_tip(this);
+}).on('mouseleave focusout click', '.bx-std-page-menu .bx-std-pmen-item > a', function() {
+    bx_std_pmen_tip(null);
+});
+$(window).on('scroll resize', function() {
+    bx_std_pmen_tip(null);
 });
 
 /**

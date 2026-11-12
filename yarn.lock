@@ -4846,6 +4846,11 @@ thenify-all@^1.0.0:
   dependencies:
     any-promise "^1.0.0"
 
+thinking-orbs@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/thinking-orbs/-/thinking-orbs-0.3.2.tgz#1a976c933f7a9975a88445d71d821106547d8a61"
+  integrity sha512-QZFeBaPEzqhjiZoXy961EvDgaXk2WgXacF3Rbz+Sj5IfzDzBvTC86vdREUHniBffYibJFKSwbfllxLUdI/Xv6g==
+
 tiny-emitter@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/tiny-emitter/-/tiny-emitter-2.1.0.tgz#1d1a56edfc51c43e863cbb5382a72330e3555423"

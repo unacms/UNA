@@ -459,47 +459,6 @@ BxDolStudioPageAgents.prototype.destroyAgentChat = function(bKeepBox) {
     }
 };
 
-BxDolStudioPageAgents.prototype.agentActions = function(oSource) {
-    var iId = $(oSource).parents('.bx-agt-agent:first').attr('data-id');
-    bx_menu_popup_inline('#bx-agt-agent-actions-' + iId, oSource);
-};
-
-BxDolStudioPageAgents.prototype.agentAction = function(sAction, iId, iConfirm, iResetPaginate) {
-    $('.bx-popup-applied:visible').dolPopupHide();
-    if (typeof(glGrids) == 'undefined' || !this.sObjNameGrid || !glGrids[this.sObjNameGrid])
-        return;
-
-    glGrids[this.sObjNameGrid].actionSingle(sAction, iId, {
-        confirm: iConfirm,
-        reset_paginate: iResetPaginate
-    });
-};
-
-BxDolStudioPageAgents.prototype.agentAdd = function() {
-    if (typeof(glGrids) == 'undefined' || !this.sObjNameGrid || !glGrids[this.sObjNameGrid])
-        return;
-
-    glGrids[this.sObjNameGrid].action('add', {}, '', false, 0);
-};
-
-BxDolStudioPageAgents.prototype.agentActivate = function(oSource) {
-    var oDate = new Date();
-    var oAgent = $(oSource).parents('.bx-agt-agent:first');
-
-    jQuery.get(
-        this.sActionUrl,
-        {
-            agt_action: 'agent-activate',
-            agt_value: parseInt(oAgent.attr('data-id')),
-            _t: oDate.getTime()
-        },
-        function(oData) {
-            processJsonData(oData);
-        },
-        'json'
-    );
-};
-
 BxDolStudioPageAgents.prototype.agentCheckName = function(oSource, sTitleId, sNameId, iId) {
     var oDate = new Date();
     var oForm = jQuery(oSource).parents('.bx-form-advanced:first');

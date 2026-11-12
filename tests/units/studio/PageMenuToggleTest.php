@@ -86,7 +86,7 @@ class PageMenuToggleTest extends BxDolTestCase
         $iTablet = strpos($s, '@media (max-width: 1023px) {');
         $this->assertNotFalse($iNarrow);
         $this->assertTrue($iWide < $iNarrow && $iNarrow < $iTablet, 'The narrow width is set inside the wide-screen media query.');
-        $this->assertMatchesRegularExpression('/html\.' . self::CLASS_NARROW . ' \.bx-std-page-column\.bx-std-page-menu \{[^}]*width: 6\.5rem;/', $s, 'Narrowed, the menu is as wide as the tablet strip.');
+        $this->assertMatchesRegularExpression('/html\.' . self::CLASS_NARROW . ' \.bx-std-page-column\.bx-std-page-menu \{[^}]*width: 4\.25rem;/', $s, 'Narrowed, the menu is as wide as the tablet strip: 68px, the header bar\'s height.');
         $this->assertMatchesRegularExpression('/\.bx-std-page-column\.bx-std-page-menu \{[^}]*container: bx-std-pmen \/ inline-size;/', $s);
     }
 

@@ -128,10 +128,10 @@ div.bx-std-page-columns-cnt {
     }
 
     html.bx-std-pmen-narrow .bx-std-page-column.bx-std-page-menu {
-        -webkit-flex: 0 0 6.5rem;
-        flex: 0 0 6.5rem;
+        -webkit-flex: 0 0 4.25rem;
+        flex: 0 0 4.25rem;
 
-        width: 6.5rem; /* the tablet strip */
+        width: 4.25rem; /* the tablet strip */
     }
 }
 
@@ -176,15 +176,15 @@ div.bx-std-page-columns-cnt {
 }
 
 /*
- * Narrow screens. Below 1024px the sidebar collapses to a strip of icon tiles with small labels under them (as the toggle does on
- * wider screens); below 768px it becomes a horizontal row of tabs above the content. Item styles are in general.css.
+ * Narrow screens. Below 1024px the sidebar collapses to a strip of icon tiles (as the toggle does on wider screens), as wide as
+ * the header bar is tall; below 768px it becomes a horizontal row of tabs above the content. Item styles are in general.css.
  */
 @media (max-width: 1023px) {
     .bx-std-page-column.bx-std-page-menu {
-        -webkit-flex: 0 0 6.5rem;
-        flex: 0 0 6.5rem;
+        -webkit-flex: 0 0 4.25rem;
+        flex: 0 0 4.25rem;
 
-        width: 6.5rem; /* 88px items (80px of label room, enough for a semibold "Notifications") + the column's 8px inset */
+        width: 4.25rem; /* 68px, the header bar's height: 52px items (the 36px tile with 8px round it) + the column's 8px inset; the tile sits 16px from the edges, like the header's */
     }
 }
 @media (max-width: 767px) {
@@ -200,12 +200,33 @@ div.bx-std-page-columns-cnt {
         height: auto;
         margin-bottom: 0.75rem; /* the same 12px gap as between the columns on wider screens */
 
+        overflow: hidden;
+    }
+    /*
+     * The row scrolls inside the bar. Tabs fade out towards an edge that has more of them beyond it: page.js marks
+     * the row with data-bx-fade-left / data-bx-fade-right as it scrolls.
+     */
+    .bx-std-page-column.bx-std-page-menu div.bx-std-page-column-cnt {
+        position: static;
+
         overflow-x: auto;
         overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+
+        --bx-std-pmen-fade-left: 0px;
+        --bx-std-pmen-fade-right: 0px;
+        -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--bx-std-pmen-fade-left), #000 calc(100% - var(--bx-std-pmen-fade-right)), transparent 100%);
+        mask-image: linear-gradient(to right, transparent 0, #000 var(--bx-std-pmen-fade-left), #000 calc(100% - var(--bx-std-pmen-fade-right)), transparent 100%);
     }
-    .bx-std-page-column.bx-std-page-menu div.bx-std-page-column-cnt {
-        position: static;
+    .bx-std-page-column.bx-std-page-menu div.bx-std-page-column-cnt::-webkit-scrollbar {
+        display: none;
+    }
+    .bx-std-page-column.bx-std-page-menu div.bx-std-page-column-cnt[data-bx-fade-left] {
+        --bx-std-pmen-fade-left: 3rem;
+    }
+    .bx-std-page-column.bx-std-page-menu div.bx-std-page-column-cnt[data-bx-fade-right] {
+        --bx-std-pmen-fade-right: 3rem;
     }
     .bx-std-page-column.bx-std-page-content {
         -webkit-flex: 1 1 auto;

@@ -27,8 +27,8 @@ class HomePageLayoutTest extends BxDolTestCase
     {
         $sTmpl = self::read('modules/boonex/artificer/data/template/system/menu_floating_blocks.html');
         $this->assertDoesNotMatchRegularExpression('/\bw-(20|24)\b/', $sTmpl, 'No fixed tile width: the grid sizes the tiles.');
-        $this->assertStringContainsString('__class_add__ rounded-lg">', $sTmpl, '8px corners, as the menu rows have.');
-        $this->assertMatchesRegularExpression('/class="bx-stl-mil-hover [^"]*\bh-full\b[^"]*\brounded-lg"/', $sTmpl, 'The link fills its tile, so the hover shape is the whole tile.');
+        $this->assertStringContainsString('__class_add__ rounded-xl">', $sTmpl, '12px corners, as the popup menu rows have: 8px inside the block\'s 20px corners.');
+        $this->assertMatchesRegularExpression('/class="bx-stl-mil-hover [^"]*\bh-full\b[^"]*\brounded-xl"/', $sTmpl, 'The link fills its tile, so the hover shape is the whole tile.');
 
         $s = self::read('modules/boonex/artificer/data/template/system/css/menu.css');
         $this->assertMatchesRegularExpression('/\nul\.bx-menu-floating-blocks \{\s*display: grid;\s*grid-template-columns: repeat\(auto-fill, minmax\(6\.5rem, 1fr\)\);\s*margin: -0\.5rem;\s*\}/', $s, 'Tiles stretch to fill the row, at least 6.5rem (wider than a tile is tall), 8px from the card edge.');

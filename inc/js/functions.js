@@ -378,6 +378,189 @@ function bx_loading_animate (e, aOptions) {
     return new Spinner(aOptions).spin(e.get(0));
 }
 
+/*
+ * The loading indicator is the "connecting" Thinking orb (thinking-orbs by Libraries.dev, MIT,
+ * plugins_public/thinking-orbs): a constellation of dots that wires itself, drawn on a canvas
+ * by the package's framework-free engine. The engine has hand-tuned designs for 64, 32 and
+ * 20px; each orb takes the largest one its box fits (bx_loading_orb_size) or the size in its
+ * data-bx-orb-size attribute.
+ *
+ * Its ink is the canvas's CSS color, the theme's neutral foreground (.bx-loading-orb in
+ * common.css). Near dots take that colour and far ones fade towards the background: white
+ * on a light page, black on a dark one (html.dark). Orbs repaint when the colour scheme
+ * changes. With reduced motion the orb is one still frame.
+ *
+ * The engine loads only when the first orb is shown (bx_loading_orb_load).
+ */
+var glBxOrbs = {module: null, loading: null, items: [], raf: 0, observer: null};
+
+function bx_loading_orb(iSize)
+{
+    return '<canvas class="bx-loading-orb" aria-hidden="true"' + (iSize ? ' data-bx-orb-size="' + iSize + '"' : '') + '></canvas>';
+}
+
+/**
+ * Start every orb inside the element (or the element itself) that isn't running yet.
+ */
+function bx_loading_orb_start(oElement)
+{
+    $(oElement).find('canvas.bx-loading-orb').addBack('canvas.bx-loading-orb').each(function() {
+        var oCanvas = this;
+        if(oCanvas.getAttribute('data-bx-orb-on'))
+            return;
+
+        oCanvas.setAttribute('data-bx-orb-on', 1);
+
+        // An engine that fails to load leaves the box empty; nothing else depends on it.
+        bx_loading_orb_load().then(function(oModule) {
+            bx_loading_orb_add(oCanvas, oModule);
+        }).catch(function() {});
+    });
+}
+
+function bx_loading_orb_load()
+{
+    if(!glBxOrbs.loading)
+        // Transition pages have no sUrlRoot; their <base> is the site root.
+        glBxOrbs.loading = import(new URL('plugins_public/thinking-orbs/thinking-orbs.min.js', typeof sUrlRoot != 'undefined' ? sUrlRoot : document.baseURI).href).then(function(oModule) {
+            glBxOrbs.module = oModule;
+            return oModule;
+        }, function(oError) {
+            glBxOrbs.loading = null;
+            throw oError;
+        });
+
+    return glBxOrbs.loading;
+}
+
+/**
+ * The largest tuned size that fits the orb's box, 64 at most.
+ */
+function bx_loading_orb_size(oCanvas)
+{
+    var iSize = parseInt(oCanvas.getAttribute('data-bx-orb-size'), 10);
+    if(iSize == 64 || iSize == 32 || iSize == 20)
+        return iSize;
+
+    var oBox = oCanvas.parentNode;
+    var iFit = oBox ? Math.min(oBox.clientWidth || 64, oBox.clientHeight || 64) : 64;
+    return iFit >= 64 ? 64 : (iFit >= 32 ? 32 : 20);
+}
+
+function bx_loading_orb_add(oCanvas, oModule)
+{
+    if(!oCanvas.isConnected)
+        return;
+
+    var iSize = bx_loading_orb_size(oCanvas);
+    var oPreset = oModule.resolvePreset('connecting', iSize);
+    var fDpr = Math.min(2, window.devicePixelRatio || 1);
+
+    oCanvas.width = Math.round(iSize * fDpr);
+    oCanvas.height = Math.round(iSize * fDpr);
+    oCanvas.style.width = oCanvas.style.height = iSize + 'px';
+
+    var oOrb = {
+        canvas: oCanvas,
+        context: oCanvas.getContext('2d'),
+        size: iSize,
+        dpr: fDpr,
+        frame: oModule.MODE_FRAMES[oPreset.mode],
+        opts: oPreset.opts,
+        speed: oPreset.speed,
+        dark: false,
+        tint: null
+    };
+    if(!oOrb.context)
+        return;
+
+    bx_loading_orb_theme(oOrb);
+
+    // Orbs whose canvas has left the page go here as well: with reduced motion no loop runs to drop them.
+    glBxOrbs.items = glBxOrbs.items.filter(function(oItem) {
+        return oItem.canvas.isConnected;
+    });
+    glBxOrbs.items.push(oOrb);
+    bx_loading_orb_watch();
+
+    if(bx_loading_orb_still())
+        bx_loading_orb_paint(oOrb, 0.6);
+    else if(!glBxOrbs.raf)
+        glBxOrbs.raf = requestAnimationFrame(bx_loading_orb_tick);
+}
+
+function bx_loading_orb_still()
+{
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+/**
+ * The scheme and ink of an orb: html.dark, and the canvas's CSS color as the engine's tint.
+ */
+function bx_loading_orb_theme(oOrb)
+{
+    oOrb.dark = document.documentElement.classList.contains('dark');
+
+    var aRgb = (window.getComputedStyle(oOrb.canvas).color || '').match(/rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/);
+    oOrb.tint = aRgb ? {r: Number(aRgb[1]), g: Number(aRgb[2]), b: Number(aRgb[3])} : undefined;
+}
+
+function bx_loading_orb_paint(oOrb, fTime)
+{
+    var oContext = oOrb.context;
+    oContext.setTransform(oOrb.dpr, 0, 0, oOrb.dpr, 0, 0);
+    oContext.clearRect(0, 0, oOrb.size, oOrb.size);
+    glBxOrbs.module.paintFrame(oContext, oOrb.frame(oOrb.size, fTime, oOrb.opts), oOrb.dark, oOrb.tint);
+}
+
+/**
+ * One animation loop for all orbs. Orbs whose canvas has left the page are dropped, and the
+ * loop stops when none are left. Browsers pause it in hidden tabs.
+ */
+function bx_loading_orb_tick()
+{
+    glBxOrbs.raf = 0;
+    glBxOrbs.items = glBxOrbs.items.filter(function(oOrb) {
+        return oOrb.canvas.isConnected;
+    });
+    if(!glBxOrbs.items.length || bx_loading_orb_still())
+        return;
+
+    var fNow = performance.now() / 1000;
+    glBxOrbs.items.forEach(function(oOrb) {
+        bx_loading_orb_paint(oOrb, fNow * oOrb.speed);
+    });
+
+    glBxOrbs.raf = requestAnimationFrame(bx_loading_orb_tick);
+}
+
+/**
+ * Repaint in the new colours when html.dark comes or goes.
+ */
+function bx_loading_orb_watch()
+{
+    if(glBxOrbs.observer || typeof MutationObserver == 'undefined')
+        return;
+
+    glBxOrbs.observer = new MutationObserver(function() {
+        glBxOrbs.items.forEach(function(oOrb) {
+            bx_loading_orb_theme(oOrb);
+            if(bx_loading_orb_still() && oOrb.canvas.isConnected)
+                bx_loading_orb_paint(oOrb, 0.6);
+        });
+    });
+    glBxOrbs.observer.observe(document.documentElement, {attributes: true, attributeFilter: ['class']});
+}
+
+/**
+ * The template's SVG loading indicator instead of the orb (bUseSvgLoading in _header_js_spinner.html,
+ * which pages such as Studio's login don't include).
+ */
+function bx_loading_use_svg()
+{
+    return typeof bUseSvgLoading != 'undefined' && bUseSvgLoading;
+}
+
 function bx_loading_btn (oElement, bEnable) {
     var oButton = $(oElement);
     var sClassHeight = oButton.hasClass('bx-btn-small') ? 'bx-btn-small-height' : 'bx-btn-height';
@@ -387,17 +570,18 @@ function bx_loading_btn (oElement, bEnable) {
 
     if(!bEnable)
     	oButton.find('.bx-loading-ajax-btn').remove();
-    else if (!oButton.find('.bx-loading-ajax-btn').length)
-    	oButton.append('<b class="bx-loading-ajax-btn ' + sClassHeight + '">' + (bUseSvgLoading ? bx_loading_svg('colored', sClassHeight) : '') + '</b>');
+    else if (!oButton.find('.bx-loading-ajax-btn').length) {
+    	oButton.append('<b class="bx-loading-ajax-btn ' + sClassHeight + '">' + (bx_loading_use_svg() ? bx_loading_svg('colored', sClassHeight) : bx_loading_orb(20)) + '</b>');
 
-    if(!bUseSvgLoading)
-    	bx_loading_animate(oButton.find('.bx-loading-ajax-btn'), aSpinnerSmallOpts);    
+        if(!bx_loading_use_svg())
+            bx_loading_orb_start(oButton.find('.bx-loading-ajax-btn'));
+    }
 }
 
 function bx_loading_content (oElement, bEnable, isReplace) {
     var oBlock = $(oElement);
-    var oLoading = $('<div class="bx-loading-ajax bx-def-z-index-front">' + (bUseSvgLoading ? bx_loading_svg('colored') : '') + '</div>');
-    
+    var oLoading = $('<div class="bx-loading-ajax bx-def-z-index-front">' + (bx_loading_use_svg() ? bx_loading_svg('colored') : bx_loading_orb()) + '</div>');
+
     if(!bEnable)
     	oBlock.find(".bx-loading-ajax").remove();
     else if(!oBlock.find('.bx-loading-ajax').length) {
@@ -406,9 +590,9 @@ function bx_loading_content (oElement, bEnable, isReplace) {
         else
             oBlock.append(oLoading);
 
-        if(!bUseSvgLoading)
-        	bx_loading_animate(oBlock.find('.bx-loading-ajax'), aSpinnerOpts);
-    } 
+        if(!bx_loading_use_svg())
+            bx_loading_orb_start(oLoading);
+    }
 }
 
 function bx_loading (elem, b) {
@@ -1748,6 +1932,184 @@ function bx_set_color_scheme_html()
 }
 
 /*
+ * Introduction tours (BxDolTours): the homepage tour for operators and the Studio tour, both
+ * built on Shepherd (plugins_public/shepherd) and styled by template/css/tour.css.
+ *
+ * bx_tour(oOptions) returns the Shepherd tour:
+ *   name       'home' or 'studio', as BxDolTours knows it
+ *   steps      [{id, title, text, element, on}]; a step whose element is missing is left out
+ *   autostart  start now (the account hasn't closed or finished this tour yet)
+ *   inert      selector of the page behind the overlay: inert while a step is open, so Tab
+ *              and screen readers stay inside the step
+ *   labels     {back, next, done, close, step} with step as "{0} of {1}"
+ *
+ * Every step can be closed (its X button or Esc). Closing or finishing the tour is kept for
+ * the account (tour.php), so it doesn't start by itself again; ?tour=1 in the address and
+ * the "Introduction Tour" menu items start it.
+ *
+ * The page is dimmed by the tour's own overlay (bx_tour_spotlight): the step's element shows
+ * through a rounded opening with soft edges, a little wider than the element. Shepherd's
+ * overlay is kept, unseen, to keep clicks off the page.
+ */
+function bx_tour(oOptions)
+{
+    var oLabels = oOptions.labels || {};
+    var bStill = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var oTour = new Shepherd.Tour({
+        useModalOverlay: true,
+        exitOnEsc: true,
+        keyboardNavigation: true,
+        defaultStepOptions: {
+            classes: 'bx-tour bx-def-z-index-modal',
+            cancelIcon: {enabled: true, label: oLabels.close || ''},
+            canClickTarget: false,
+            scrollTo: {behavior: bStill ? 'auto' : 'smooth', block: 'center'},
+            modalOverlayOpeningPadding: 12,
+            modalOverlayOpeningRadius: 20
+        }
+    });
+
+    var aSteps = (oOptions.steps || []).filter(function(oStep) {
+        return oStep.element === undefined || (oStep.element && $(oStep.element).length);
+    });
+
+    aSteps.forEach(function(oStep, iIndex) {
+        var bLast = iIndex == aSteps.length - 1;
+
+        var aButtons = [];
+        if(iIndex > 0)
+            aButtons.push({text: oLabels.back, action: oTour.back, classes: 'shepherd-button-secondary'});
+        aButtons.push({text: bLast ? oLabels.done : oLabels.next, action: bLast ? oTour.complete : oTour.next, classes: 'shepherd-button-primary'});
+
+        oTour.addStep({
+            id: oStep.id,
+            title: oStep.title,
+            text: oStep.text,
+            attachTo: oStep.element === undefined ? undefined : {element: $(oStep.element).get(0), on: oStep.on || 'bottom'},
+            buttons: aButtons,
+            when: {
+                show: function() {
+                    // "2 of 5" at the start of the step's footer.
+                    var oFooter = this.getElement() && this.getElement().querySelector('.shepherd-footer');
+                    if(!oFooter || aSteps.length < 2 || oFooter.querySelector('.bx-tour-progress'))
+                        return;
+
+                    var oProgress = document.createElement('span');
+                    oProgress.className = 'bx-tour-progress';
+                    oProgress.textContent = (oLabels.step || '{0} / {1}').replace('{0}', iIndex + 1).replace('{1}', aSteps.length);
+                    oFooter.insertBefore(oProgress, oFooter.firstChild);
+                }
+            }
+        });
+    });
+
+    var fInert = function(bOn) {
+        var oPage = oOptions.inert ? document.querySelector(oOptions.inert) : null;
+        if(oPage)
+            oPage.inert = bOn;
+    };
+    var fEnd = function() {
+        fInert(false);
+        bx_tour_spotlight(null);
+
+        $.post(sUrlRoot + 'tour.php', {action: 'seen', tour: oOptions.name});
+    };
+
+    oTour.on('show', function(oEvent) {
+        fInert(true);
+        bx_tour_spotlight(oEvent.step);
+    });
+    oTour.on('cancel', fEnd);
+    oTour.on('complete', fEnd);
+
+    var bForced = /[?&]tour=1(&|$)/.test(window.location.search);
+    if(bForced && window.history.replaceState)
+        window.history.replaceState(null, '', window.location.pathname);
+
+    if(aSteps.length && (bForced || oOptions.autostart))
+        oTour.start();
+
+    return oTour;
+}
+
+var glBxTourSpotlight = {svg: null, hole: null, step: null, raf: 0, from: null, rect: null, start: 0};
+
+/**
+ * Dim the page around the step's element, or all of it for a step without one; null removes the overlay.
+ * The opening follows its element as the page scrolls and glides from one step's element to the next.
+ */
+function bx_tour_spotlight(oStep)
+{
+    var o = glBxTourSpotlight;
+
+    if(!oStep) {
+        cancelAnimationFrame(o.raf);
+        if(o.svg)
+            o.svg.remove();
+        document.body.classList.remove('bx-tour-on');
+        o.svg = o.hole = o.step = o.rect = o.from = null;
+        o.raf = 0;
+        return;
+    }
+
+    if(!o.svg) {
+        var sNs = 'http://www.w3.org/2000/svg';
+        o.svg = document.createElementNS(sNs, 'svg');
+        o.svg.setAttribute('class', 'bx-tour-overlay');
+        o.svg.setAttribute('aria-hidden', 'true');
+        o.svg.innerHTML = '<defs>'
+            + '<filter id="bx-tour-soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7" /></filter>'
+            + '<mask id="bx-tour-mask"><rect width="100%" height="100%" fill="#fff" /><rect class="bx-tour-hole" fill="#000" filter="url(#bx-tour-soft)" /></mask>'
+            + '</defs>'
+            + '<rect class="bx-tour-dim" width="100%" height="100%" mask="url(#bx-tour-mask)" />';
+        o.hole = o.svg.querySelector('.bx-tour-hole');
+        document.body.appendChild(o.svg);
+        document.body.classList.add('bx-tour-on');
+    }
+
+    o.step = oStep;
+    o.from = o.rect;
+    o.start = performance.now();
+
+    if(!o.raf)
+        o.raf = requestAnimationFrame(bx_tour_spotlight_tick);
+}
+
+function bx_tour_spotlight_tick(fNow)
+{
+    var o = glBxTourSpotlight;
+    o.raf = 0;
+    if(!o.svg || !o.step)
+        return;
+
+    // Where the opening belongs now: around the step's element, or nothing in the middle of the screen.
+    var iPad = 12, oElement = o.step.getTarget && o.step.getTarget();
+    var oTo = {x: window.innerWidth / 2, y: window.innerHeight / 2, w: 0, h: 0};
+    if(oElement && oElement.isConnected) {
+        var oBox = oElement.getBoundingClientRect();
+        oTo = {x: oBox.left - iPad, y: oBox.top - iPad, w: oBox.width + 2 * iPad, h: oBox.height + 2 * iPad};
+    }
+
+    var bStill = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var f = o.from && !bStill ? Math.min(1, (fNow - o.start) / 260) : 1;
+    f = 1 - Math.pow(1 - f, 3);
+
+    var oFrom = o.from || oTo;
+    o.rect = {x: oFrom.x + (oTo.x - oFrom.x) * f, y: oFrom.y + (oTo.y - oFrom.y) * f, w: oFrom.w + (oTo.w - oFrom.w) * f, h: oFrom.h + (oTo.h - oFrom.h) * f};
+    if(f >= 1)
+        o.from = null;
+
+    o.hole.setAttribute('x', o.rect.x);
+    o.hole.setAttribute('y', o.rect.y);
+    o.hole.setAttribute('width', Math.max(0, o.rect.w));
+    o.hole.setAttribute('height', Math.max(0, o.rect.h));
+    o.hole.setAttribute('rx', Math.min(20, o.rect.w / 2, o.rect.h / 2));
+
+    o.raf = requestAnimationFrame(bx_tour_spotlight_tick);
+}
+
+/*
  * Interface sounds are Cuelume's cues (plugins_public/cuelume, MIT): one cue per
  * interface job, picked by the "Which cue?" table at https://cuelume.dev/agents.md.
  * Controls carry data-cuelume-* attributes, which Cuelume's bind() plays as they
@@ -2549,7 +2911,8 @@ function bx_clicked_stack_pop()
  * @param oScroller - the element that scrolls (overflow-y: auto)
  * @param oFrame - the rounded element the bar is drawn over: the scroller itself or an ancestor
  * @param oClasses - class names, to keep a caller's own styles: svg, track, thumb, scroller (hides the native bar), scrolling (on the
- *                   frame while the box scrolls), hover (on the frame, shows the bar on hover); an empty name adds nothing
+ *                   frame while the box scrolls), hover (on the frame, shows the bar on hover); an empty name adds nothing.
+ *                   Also inset: how far the bar's centre line is from the frame's edge, 6px unless given (the 4px bar with a 4px gap).
  */
 function bx_scrollbar_overlay(oScroller, oFrame, oClasses)
 {
@@ -2562,7 +2925,8 @@ function bx_scrollbar_overlay(oScroller, oFrame, oClasses)
         thumb: 'bx-scrollbar-thumb',
         scroller: 'bx-scrollbar-scroller',
         scrolling: 'bx-scrollbar-scrolling',
-        hover: 'bx-scrollbar-hover'
+        hover: 'bx-scrollbar-hover',
+        inset: 6
     }, oClasses || {});
 
     var sNs = 'http://www.w3.org/2000/svg';
@@ -2585,7 +2949,7 @@ function bx_scrollbar_overlay(oScroller, oFrame, oClasses)
     $(oFrame).addClass(c.hover);
     $(oScroller).addClass(c.scroller);
 
-    var oState = {scroller: oScroller, frame: oFrame, svg: oSvg, track: oTrack, thumb: oThumb, timer: null, mutation: null};
+    var oState = {scroller: oScroller, frame: oFrame, svg: oSvg, track: oTrack, thumb: oThumb, timer: null, mutation: null, inset: c.inset};
     oScroller.bxScrollbar = oState;
 
     var oResize = null, oMutation = null;
@@ -2652,7 +3016,9 @@ function bx_scrollbar_overlay_update(o)
     var fRadiusT = fTop < 1 ? (Number.parseFloat(oCss.borderTopRightRadius) || Number.parseFloat(oCssFrame.borderTopRightRadius) || 0) : 0;
     var fRadiusB = Number.parseFloat(oCss.borderBottomRightRadius) || (fBottom > fH - 1 ? Number.parseFloat(oCssFrame.borderBottomRightRadius) || 0 : 0);
 
-    var fInset = 6; // the bar's centre line, 6px in from the edge: 4px wide with a 4px gap
+    // The bar's centre line, in from the edge (6px: 4px wide with a 4px gap). The corners' radii are the frame's less this inset, so the
+    // bar runs parallel to the frame's edge round them.
+    var fInset = o.inset || 6;
     var fRt = Math.max(fRadiusT - fInset, 0), fRb = Math.max(fRadiusB - fInset, 0);
     var fX = fRight - fInset;
 
@@ -2682,15 +3048,18 @@ function bx_scrollbar_overlay_popups(oContext)
     $(oContext).not('.bx-std *').find('.bx-popup-content').each(function() {
         var sOverflow = getComputedStyle(this).overflowY;
         if(sOverflow === 'auto' || sOverflow === 'scroll')
-            bx_scrollbar_overlay(this, $(this).closest('.bx-popup').get(0) || this);
+            // 2px from the popup's edge: menu items end 8px from it, so 2px stay clear between the 4px bar and a highlighted item.
+            bx_scrollbar_overlay(this, $(this).closest('.bx-popup').get(0) || this, {inset: 4});
     });
 }
 
 /**
- * Popup menus: one highlight follows the pointer from item to item instead of each item lighting up on its own. It is
- * the list's ::before (.bx-menu-highlight-list in tailwind.css), set to the item under the pointer, or the one focused
- * from the keyboard, through CSS variables; it slides between items and fades out when the pointer leaves the list.
- * Touch has no hover: taps don't move it.
+ * Menus: one highlight follows the pointer from item to item instead of each item lighting up on its own. It is
+ * the list's ::before (.bx-menu-highlight-list: tailwind.css for popups, Artificer's general.css for the header's
+ * main menu), set to the item under the pointer, or the one focused from the keyboard, through CSS variables; it
+ * slides between items and fades out when the pointer leaves the list. Touch has no hover: taps don't move it.
+ *
+ * Popup menus get it as they open (jquery.dolPopup.js), the menus on the page on load.
  * @param oContext - a popup, or an element with popups in it
  */
 function bx_menu_highlight(oContext)
@@ -2699,52 +3068,77 @@ function bx_menu_highlight(oContext)
         var oList = $(this);
         return !oList.is('.bx-menu-hor, .bx-menu-custom-hor, .bx-menu-floating-blocks-wide, .bx-menu-highlight-list') && oList.children('li').find('a').length > 1;
     }).each(function(iIndex, eList) {
-        var oList = $(eList).addClass('bx-menu-highlight-list');
+        bx_menu_highlight_list(eList);
+    });
+}
 
-        var fItem = function(eTarget) {
-            var oItem = $(eTarget).closest(oList.children('li'));
-            return oItem.length && oItem.is(':visible') && oItem.find('a').length ? oItem.get(0) : null;
-        };
+$(document).ready(function() {
+    // The header's main menu, the homepage's apps grid and the profile menu beside the feed (styled in Artificer's general.css).
+    $('#bx-toolbar ul.bx-menu-main, ul.bx-menu-object-sys_homepage, ul.bx-menu-object-sys_profile_stats').not('.bx-std *, .bx-popup *, .bx-menu-highlight-list').each(function(iIndex, eList) {
+        bx_menu_highlight_list(eList);
+    });
+});
 
-        var fMove = function(eItem) {
-            var oListBox = eList.getBoundingClientRect(), oBox = eItem.getBoundingClientRect();
+function bx_menu_highlight_list(eList)
+{
+    var oList = $(eList).addClass('bx-menu-highlight-list');
 
-            // the first item it lights fades in where it is (.bx-menu-highlight-jump transitions only the opacity), later
-            // ones slide to theirs
-            var bJump = !oList.hasClass('bx-menu-highlight-on');
-            oList.toggleClass('bx-menu-highlight-jump', bJump);
+    // Inside a popup that hangs from this list (the row's More item holds its list): not this list's to light.
+    var fHanging = function(eTarget) {
+        var ePopup = $(eTarget).closest('.bx-popup').get(0);
+        return !!ePopup && $.contains(eList, ePopup);
+    };
 
-            // boxes are on screen, so scaled while the popup grows in: back to the list's own pixels
-            var fScale = eList.offsetWidth ? oListBox.width / eList.offsetWidth : 1;
-            eList.style.setProperty('--bx-menu-highlight-x', ((oBox.left - oListBox.left) / fScale - eList.clientLeft) + 'px');
-            eList.style.setProperty('--bx-menu-highlight-y', ((oBox.top - oListBox.top) / fScale - eList.clientTop) + 'px');
-            eList.style.setProperty('--bx-menu-highlight-w', (oBox.width / fScale) + 'px');
-            eList.style.setProperty('--bx-menu-highlight-h', (oBox.height / fScale) + 'px');
+    var fItem = function(eTarget) {
+        if(fHanging(eTarget))
+            return null;
 
-            if(bJump) {
-                // laid out at its first item before it shows: otherwise the next move, which ends the jump, doesn't slide
-                eList.getBoundingClientRect();
-                oList.addClass('bx-menu-highlight-on');
-            }
-        };
+        var oItem = $(eTarget).closest(oList.children('li'));
+        return oItem.length && oItem.is(':visible') && oItem.find('a').length ? oItem.get(0) : null;
+    };
 
-        oList.on('pointerover', function(oEvent) {
-            if(oEvent.originalEvent?.pointerType === 'touch')
-                return;
+    var fMove = function(eItem) {
+        var oListBox = eList.getBoundingClientRect(), oBox = eItem.getBoundingClientRect();
 
-            var eItem = fItem(oEvent.target);
-            if(eItem)
-                fMove(eItem);
-        }).on('pointerleave', function() {
+        // the first item it lights fades in where it is (.bx-menu-highlight-jump transitions only the opacity), later
+        // ones slide to theirs
+        var bJump = !oList.hasClass('bx-menu-highlight-on');
+        oList.toggleClass('bx-menu-highlight-jump', bJump);
+
+        // boxes are on screen, so scaled while the popup grows in: back to the list's own pixels. offsetWidth is a whole
+        // number, so a list 189.8px wide is under a pixel off it without being scaled: taking that for a scale would
+        // put the highlight further off its item the lower the item is.
+        var fScale = eList.offsetWidth && Math.abs(oListBox.width - eList.offsetWidth) >= 1 ? oListBox.width / eList.offsetWidth : 1;
+        eList.style.setProperty('--bx-menu-highlight-x', ((oBox.left - oListBox.left) / fScale - eList.clientLeft) + 'px');
+        eList.style.setProperty('--bx-menu-highlight-y', ((oBox.top - oListBox.top) / fScale - eList.clientTop) + 'px');
+        eList.style.setProperty('--bx-menu-highlight-w', (oBox.width / fScale) + 'px');
+        eList.style.setProperty('--bx-menu-highlight-h', (oBox.height / fScale) + 'px');
+
+        if(bJump) {
+            // laid out at its first item before it shows: otherwise the next move, which ends the jump, doesn't slide
+            eList.getBoundingClientRect();
+            oList.addClass('bx-menu-highlight-on');
+        }
+    };
+
+    oList.on('pointerover', function(oEvent) {
+        if(oEvent.originalEvent?.pointerType === 'touch')
+            return;
+
+        var eItem = fItem(oEvent.target);
+        if(eItem)
+            fMove(eItem);
+        else if(fHanging(oEvent.target))
             oList.removeClass('bx-menu-highlight-on');
-        }).on('focusin', function(oEvent) {
-            var eItem = fItem(oEvent.target);
-            if(eItem && $(oEvent.target).is(':focus-visible'))
-                fMove(eItem);
-        }).on('focusout', function(oEvent) {
-            if(!oEvent.relatedTarget || !$.contains(eList, oEvent.relatedTarget))
-                oList.removeClass('bx-menu-highlight-on');
-        });
+    }).on('pointerleave', function() {
+        oList.removeClass('bx-menu-highlight-on');
+    }).on('focusin', function(oEvent) {
+        var eItem = fItem(oEvent.target);
+        if(eItem && $(oEvent.target).is(':focus-visible'))
+            fMove(eItem);
+    }).on('focusout', function(oEvent) {
+        if(!oEvent.relatedTarget || !$.contains(eList, oEvent.relatedTarget))
+            oList.removeClass('bx-menu-highlight-on');
     });
 }
 
