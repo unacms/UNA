@@ -1,6 +1,6 @@
 import { View } from 'app/design/view'
 import { Platform } from 'react-native'
-import { appSetting, cn, getMenuItemChildren, isMenuItemNavigable, menuItemsByName, menuItemsByNameNew } from 'app/lib/util'
+import { appSetting, cn, getMenuItemChildren, isExternalUrl, isMenuItemNavigable, menuItemsByName, menuItemsByNameNew } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
 import { useMemo, memo, type ReactNode } from 'react';
 import { NeoButtonLink } from 'app/design/controls'
@@ -348,7 +348,9 @@ function footerSubmenuItems(item: FooterMenuItem, t: (key: string) => string): D
         if (nested.length) return nested;
         if (child.display_type === 'text' || !isMenuItemNavigable(child)) return [];
         const link = normalizeFooterHref(child.link);
-        return [{ id: child.id ?? child.name ?? `${index}-${link}`, name: child.name, title: t(child.title ?? ''), link }];
+        // Another website opens in the browser, as the footer's own links to one do (the native sheet reads `target`).
+        const target = isExternalUrl(link) ? '_blank' : undefined;
+        return [{ id: child.id ?? child.name ?? `${index}-${link}`, name: child.name, title: t(child.title ?? ''), link, target }];
     });
 }
 
