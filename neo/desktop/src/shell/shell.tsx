@@ -513,6 +513,11 @@ function ShellFrame({ siteUrl, items, requests = 0, profile, commands }: Props) 
         [detailOpen],
     );
 
+    // the banner's Try again went while the keyboard was on it: on to what it was about
+    const retryGone = useCallback(() => {
+        if (!focusPane('list')) focusPane('sidebar');
+    }, [focusPane]);
+
     const cyclePane = useCallback(
         (step: 1 | -1) => {
             const current = (document.activeElement?.closest<HTMLElement>('[data-pane]')?.dataset.pane ?? 'sidebar') as AnyPane;
@@ -840,7 +845,7 @@ function ShellFrame({ siteUrl, items, requests = 0, profile, commands }: Props) 
                             detailOpen={!!route.detail}
                             sidebarMode={sidebarMode}
                             onCloseOverlay={closeOverlay}
-                            banner={<StatusBanner siteUrl={app.siteUrl} announce={announce} />}
+                            banner={<StatusBanner siteUrl={app.siteUrl} announce={announce} onRetryGone={retryGone} />}
                             tabId={activeTabId}
                             top={<TopBar rail={rail} hidden={hidden} onToggle={toggleSidebar} />}
                             bottom={<BottomBar siteUrl={siteUrl} onGo={goList} agents={<AgentDock />} />}

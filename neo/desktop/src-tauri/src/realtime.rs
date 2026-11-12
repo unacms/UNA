@@ -308,7 +308,7 @@ async fn info(client: &reqwest::Client, site: &str, token: &str, availability: &
         .map_err(|e| format!("could not reach the site: {e}"))?;
     let status = response.status();
     if !status.is_success() {
-        let body = response.bytes().await.unwrap_or_default();
+        let body = crate::availability::problem_of(response).await;
         if availability.saw(site, status.as_u16(), &body).is_some() {
             return Ok(None);
         }

@@ -167,9 +167,26 @@ impl Availability {
     }
 }
 
-/// Ask the site now (its discovery document, which needs no token): the code while it is off.
-/// `Err` when it could not be reached, and then nothing is known and nothing changes.
-pub async fn probe(availability: &Availability, site: &str) -> Result<Option<&'static str>, String> {
+/// What a failed answer says of the API, for `off_code`: the body of a 503 no longer than a
+/// problem, and nothing of any other answer. A long or endless page (maintenance, a proxy) is
+/// never read into memory: it is left once it is known to be longer.
+pub async fn problem_of(mut response: reqwest::Response) -> Vec<u8> {
+    if response.status().as_u16() != 503 || response.content_length().is_some_and(|length| length > MAX_PROBLEM as u64) {
+        return Vec::new();
+    }
+    let mut body = Vec::new();
+    while let Ok(Some(chunk)) = response.chunk().await {
+        if body.len() + chunk.len() > MAX_PROBLEM {
+            return Vec::new();
+        }
+        body.extend_from_slice(&chunk);
+    }
+    body
+}
+
+/// Ask the site now (its discovery document, which needs no token): the status, and the problem
+/// when it is a 503. `Err` when it could not be reached.
+pub async fn ask(site: &str) -> Result<(u16, Vec<u8>), String> {
     let client = reqwest::Client::builder().timeout(HTTP_TIMEOUT).build().map_err(|e| e.to_string())?;
     let response = client
         .get(format!("{}/api/v2", key(site)))
@@ -178,9 +195,17 @@ pub async fn probe(availability: &Availability, site: &str) -> Result<Option<&'s
         .await
         .map_err(|e| tr_vars("Could not reach the network: {{reason}}", &[("reason", &e.to_string())]))?;
     let status = response.status().as_u16();
-    // only a 503 can say it; the body of any other answer is not needed
-    let body = if status == 503 { response.bytes().await.map(|b| b.to_vec()).unwrap_or_default() } else { Vec::new() };
-    Ok(availability.saw(site, status, &body))
+    Ok((status, problem_of(response).await))
+}
+
+/// Ask the site now and take its answer: what is known of it after that, the code while it is
+/// off. A 503 that says nothing (maintenance, a proxy) leaves a site held as off as it was, and
+/// that is what is answered. `Err` when it could not be reached: nothing is known and nothing
+/// changes.
+pub async fn probe(availability: &Availability, site: &str) -> Result<Option<&'static str>, String> {
+    let (status, body) = ask(site).await?;
+    availability.saw(site, status, &body);
+    Ok(availability.code(site))
 }
 
 /// What is known of a network's API, for a page that (re)loads: the code while it is off.
@@ -311,8 +336,8 @@ mod tests {
         let availability = Availability::default();
         let heard = heard(&availability);
         assert_eq!(probe(&availability, &url).await, Ok(Some(V2_OFF)));
-        // a 503 that says nothing: still off, as last heard
-        assert_eq!(probe(&availability, &url).await, Ok(None));
+        // a 503 that says nothing: still off, as last heard, and that is the answer
+        assert_eq!(probe(&availability, &url).await, Ok(Some(V2_OFF)));
         assert_eq!(availability.code(&url), Some(V2_OFF));
         assert_eq!(probe(&availability, &url).await, Ok(None));
         assert_eq!(availability.code(&url), None);
@@ -329,5 +354,24 @@ mod tests {
         availability.turned_off(&url, API_OFF);
         assert!(probe(&availability, &url).await.is_err());
         assert_eq!(availability.code(&url), Some(API_OFF));
+    }
+
+    #[tokio::test]
+    async fn only_a_503_no_longer_than_a_problem_is_read() {
+        let long = "x".repeat(MAX_PROBLEM + 1);
+        // one without a length that goes on: left as soon as it is longer than a problem
+        let endless = format!("HTTP/1.1 503 Service Unavailable\r\ncontent-type: text/html\r\nconnection: close\r\n\r\n{}", "y".repeat(3 * MAX_PROBLEM));
+        let url = site(vec![
+            answer("503 Service Unavailable", V2_OFF_BODY),
+            answer("503 Service Unavailable", &long),
+            endless,
+            answer("500 Internal Server Error", V2_OFF_BODY),
+        ])
+        .await;
+        let get = || async { reqwest::get(format!("{url}/api/v2")).await.unwrap() };
+        assert_eq!(problem_of(get().await).await, V2_OFF_BODY.as_bytes());
+        assert!(problem_of(get().await).await.is_empty(), "a page longer than a problem");
+        assert!(problem_of(get().await).await.is_empty(), "a page without a length");
+        assert!(problem_of(get().await).await.is_empty(), "another status");
     }
 }

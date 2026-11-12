@@ -7,12 +7,18 @@
  * change; this is the page's copy of it, per site, for the shell's status banner
  * (shell/status-banner.tsx), which also asks again when the person says so.
  *
+ * Every window loads again what it shows when Rust says a site's API answers again
+ * (useReloadWhenApiBack): the main window and windows of their own, whichever screen is up,
+ * the full-screen "could not load" one included. A window of its own only hears the event: it
+ * has no command to ask how a site stands or to check it (capabilities/secondary.json).
+ *
  * In a plain browser tab nothing says (there is no Rust): a request fails with the site's
  * problem, as any other failure.
  */
+import { useQueryClient } from '@tanstack/react-query';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
-import { useEffect, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 
 import { inApp } from './native';
 
@@ -38,11 +44,13 @@ export interface AvailabilityBackend {
     onChange(cb: (change: { site?: unknown; code?: unknown }) => void): Promise<() => void>;
 }
 
+const hearRust: AvailabilityBackend['onChange'] = (cb) => listen<{ site?: unknown; code?: unknown }>(API_AVAILABILITY_EVENT, (e) => cb(e.payload ?? {}));
+
 export function tauriAvailabilityBackend(): AvailabilityBackend {
     return {
         get: (site) => invoke('api_availability', { siteUrl: site }),
         check: (site) => invoke('api_check', { siteUrl: site }),
-        onChange: (cb) => listen<{ site?: unknown; code?: unknown }>(API_AVAILABILITY_EVENT, (e) => cb(e.payload ?? {})),
+        onChange: hearRust,
     };
 }
 
@@ -107,7 +115,11 @@ export class ApiAvailability {
         for (const l of [...this.listeners]) l();
     }
 
-    /** Ask the site now (Try again): how it stands. Rejects when it could not be reached. */
+    /**
+     * Ask the site now (Try again): how it stands after that, as Rust holds it. A site held as
+     * off whose answer says nothing either way (a maintenance page) is off still. Rejects when
+     * it could not be reached.
+     */
     async check(site: string): Promise<OffCode | null> {
         const code = offCode(await this.backend.check(siteKey(site)));
         this.set(site, code);
@@ -124,4 +136,60 @@ export function useApiOff(siteUrl: string, availability: ApiAvailability = appAv
         (l) => availability.subscribe(l),
         () => availability.codeOf(siteUrl),
     );
+}
+
+const appChanges: AvailabilityBackend['onChange'] = inApp ? hearRust : NO_BACKEND.onChange;
+
+/**
+ * Load again what this window shows once the API of `siteUrl` answers again: Rust says so to
+ * every window (`{ site, code: null }`, only when it was off before). Wherever the window's
+ * session is mounted, so a screen without the status banner (the "could not load" one of the
+ * main window, a window of its own) comes back by itself too.
+ */
+export function useReloadWhenApiBack(siteUrl: string, changes: AvailabilityBackend['onChange'] = appChanges): void {
+    const queryClient = useQueryClient();
+    useEffect(() => {
+        const key = siteKey(siteUrl);
+        let gone = false;
+        let stop: (() => void) | null = null;
+        changes((change) => {
+            if (typeof change.site !== 'string' || siteKey(change.site) !== key || change.code !== null) return;
+            void queryClient.invalidateQueries();
+        }).then(
+            (unlisten) => {
+                if (gone) unlisten();
+                else stop = unlisten;
+            },
+            (e: unknown) => console.error('api availability', e),
+        );
+        return () => {
+            gone = true;
+            stop?.();
+        };
+    }, [siteUrl, changes, queryClient]);
+}
+
+/**
+ * Try again of a screen that shows a request of `siteUrl` that failed: while the site is held
+ * as off, Rust answers the page's requests itself, so the site is asked first (`check`) and
+ * then the request is made again. `checking` while the site is being asked.
+ */
+export function useRetryWithCheck(siteUrl: string, again: () => void, availability: ApiAvailability = appAvailability): { retry: () => void; checking: boolean } {
+    const off = useApiOff(siteUrl, availability);
+    const [checking, setChecking] = useState(false);
+    const retry = useCallback(() => {
+        if (checking) return;
+        if (!off) {
+            again();
+            return;
+        }
+        setChecking(true);
+        const done = () => {
+            setChecking(false);
+            again();
+        };
+        // a site that cannot be reached: the request says so itself
+        availability.check(siteUrl).then(done, done);
+    }, [checking, off, again, availability, siteUrl]);
+    return { retry, checking };
 }

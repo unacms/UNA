@@ -1,4 +1,3 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -21,15 +20,16 @@ function setup(siteUrl = SITE) {
     };
     const availability = new ApiAvailability(backend);
     const announce = vi.fn();
-    const queryClient = new QueryClient();
-    const invalidate = vi.spyOn(queryClient, 'invalidateQueries');
+    // where the shell sends the keyboard when Try again goes while it has it: the list pane
+    const retryGone = vi.fn(() => document.querySelector<HTMLElement>('[data-pane="list"]')?.focus());
     const ui = (site: string) => (
-        <QueryClientProvider client={queryClient}>
-            <StatusBanner siteUrl={site} announce={announce} availability={availability} />
-        </QueryClientProvider>
+        <>
+            <StatusBanner siteUrl={site} announce={announce} onRetryGone={retryGone} availability={availability} />
+            <section data-pane="list" tabIndex={-1} />
+        </>
     );
     const view = render(ui(siteUrl));
-    return { availability, announce, invalidate, answers, checked, show: (site: string) => view.rerender(ui(site)) };
+    return { availability, announce, retryGone, answers, checked, show: (site: string) => view.rerender(ui(site)) };
 }
 
 /** The banner's words (its icon's markup has white space of its own). */
@@ -59,14 +59,14 @@ describe('the status banner', () => {
         act(() => s.availability.set(SITE, 'api_v2_disabled'));
         expect(said()).toBe('API v2 is turned off on this network');
         expect(screen.getByRole('button', { name: 'Try again' })).toBeTruthy();
-        expect(s.invalidate).not.toHaveBeenCalled();
 
         act(() => s.availability.set(SITE, null));
         expect(said()).toBe('');
         expect(screen.queryByRole('button')).toBeNull();
-        // what failed meanwhile is loaded again, and the change is said
-        expect(s.invalidate).toHaveBeenCalledTimes(1);
+        // the change is said (the window's session loads again what failed: useReloadWhenApiBack)
         expect(s.announce).toHaveBeenCalledWith('The network’s API answers again');
+        // nobody was on the button: the keyboard is left where it is
+        expect(s.retryGone).not.toHaveBeenCalled();
     });
 
     it('says the whole API is turned off in its own words', () => {
@@ -80,12 +80,11 @@ describe('the status banner', () => {
         act(() => s.availability.set(OTHER, 'api_v2_disabled'));
         expect(said()).toBe('');
 
-        // switched to the one that is off, and back: nothing of this one is loaded again for that
+        // switched to the one that is off, and back: nothing is said of this one for that
         s.show(OTHER);
         expect(said()).toBe('API v2 is turned off on this network');
         s.show(SITE);
         expect(said()).toBe('');
-        expect(s.invalidate).not.toHaveBeenCalled();
         expect(s.announce).not.toHaveBeenCalled();
     });
 
@@ -119,7 +118,39 @@ describe('the status banner', () => {
         s.answers.push(() => Promise.resolve(null));
         fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
         await waitFor(() => expect(screen.queryByRole('button')).toBeNull());
-        expect(s.invalidate).toHaveBeenCalledTimes(1);
+        expect(s.announce).toHaveBeenCalledWith('The network’s API answers again');
+    });
+
+    it('keeps the banner when the site, held as off, answers Try again with something that says nothing', async () => {
+        const s = setup();
+        act(() => s.availability.set(SITE, 'api_v2_disabled'));
+        // a maintenance page: Rust holds the site as off still, and says so
+        s.answers.push(() => Promise.resolve('api_v2_disabled'));
+        fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+        await waitFor(() => expect(s.announce).toHaveBeenCalledWith('API v2 is turned off on this network'));
+        expect(said()).toBe('API v2 is turned off on this network');
+        expect(screen.getByRole('button', { name: 'Try again' })).toBeTruthy();
+        expect(s.announce).not.toHaveBeenCalledWith('The network’s API answers again');
+    });
+
+    it('moves the keyboard on when Try again goes while it has it', async () => {
+        const s = setup();
+        act(() => s.availability.set(SITE, 'api_v2_disabled'));
+        const button = screen.getByRole('button', { name: 'Try again' });
+        button.focus();
+        s.answers.push(() => Promise.resolve(null));
+        fireEvent.click(button);
+        await waitFor(() => expect(screen.queryByRole('button')).toBeNull());
+        expect(s.retryGone).toHaveBeenCalledTimes(1);
+        expect(document.activeElement).toBe(document.querySelector('[data-pane="list"]'));
+
+        // and when the computer goes offline under it
+        act(() => s.availability.set(SITE, 'api_disabled'));
+        screen.getByRole('button', { name: 'Try again' }).focus();
+        goOffline(true);
+        expect(screen.queryByRole('button')).toBeNull();
+        expect(s.retryGone).toHaveBeenCalledTimes(2);
+        expect(document.activeElement).toBe(document.querySelector('[data-pane="list"]'));
     });
 
     it('says offline first, with nothing to ask the site', () => {

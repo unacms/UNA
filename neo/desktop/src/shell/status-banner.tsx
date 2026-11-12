@@ -1,5 +1,4 @@
-import { useQueryClient } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { Icon } from '../components/icon';
 import { type ApiAvailability, appAvailability, type OffCode, useApiOff } from '../lib/api-availability';
@@ -12,8 +11,36 @@ type Props = {
     siteUrl: string;
     /** Says something in the window's live region. */
     announce: (text: string) => void;
+    /**
+     * Try again left the page while the keyboard was on it (the API answers again, the computer
+     * went offline): where the keyboard goes instead of nowhere.
+     */
+    onRetryGone?: () => void;
     availability?: ApiAvailability;
 };
+
+type RetryProps = { checking: boolean; onClick: () => void; onGone?: () => void };
+
+/** Try again. It says so when it is taken off the page while it has the keyboard's focus. */
+function RetryButton({ checking, onClick, onGone }: RetryProps) {
+    const button = useRef<HTMLButtonElement>(null);
+    const gone = useRef(onGone);
+    useEffect(() => {
+        gone.current = onGone;
+    });
+    // a layout effect's cleanup runs while the button is still in the page, so its focus can be read
+    useLayoutEffect(() => {
+        const el = button.current;
+        return () => {
+            if (el && document.activeElement === el) gone.current?.();
+        };
+    }, []);
+    return (
+        <button ref={button} type="button" className="btn small" onClick={onClick} aria-disabled={checking || undefined} data-busy={checking || undefined}>
+            <span>{t('Try again')}</span>
+        </button>
+    );
+}
 
 function offText(code: OffCode): string {
     return code === 'api_disabled' ? t('The API is turned off on this network') : t('API v2 is turned off on this network');
@@ -24,27 +51,26 @@ function offText(code: OffCode): string {
  * no network, or the network's site has its API turned off (lib/api-availability.ts). Neither
  * is in the way of anything, and neither signs anyone out. A site with its API off can be asked
  * again from here (Try again); Rust keeps asking too, and once the API answers the banner goes
- * by itself and what failed meanwhile is loaded again.
+ * by itself and says so. What failed meanwhile is loaded again by the window's session
+ * (useReloadWhenApiBack), which is there on screens without this banner too.
  */
-export function StatusBanner({ siteUrl, announce, availability = appAvailability }: Props) {
+export function StatusBanner({ siteUrl, announce, onRetryGone, availability = appAvailability }: Props) {
     const online = useOnline();
     const off = useApiOff(siteUrl, availability);
-    const queryClient = useQueryClient();
     const [checking, setChecking] = useState(false);
     const latest = useRef(announce);
     useEffect(() => {
         latest.current = announce;
     });
 
-    // back: what failed while it was off is asked again (per network: another site's state is not this one's)
+    // back: said (per network: another site's state is not this one's)
     const was = useRef<{ site: string; off: boolean }>({ site: siteUrl, off: off !== null });
     useEffect(() => {
         const before = was.current;
         was.current = { site: siteUrl, off: off !== null };
         if (before.site !== siteUrl || !before.off || off !== null) return;
         latest.current(t('The network’s API answers again'));
-        void queryClient.invalidateQueries();
-    }, [off, siteUrl, queryClient]);
+    }, [off, siteUrl]);
 
     const retry = () => {
         if (checking) return;
@@ -77,11 +103,7 @@ export function StatusBanner({ siteUrl, announce, availability = appAvailability
                         </>
                     ) : null}
                 </div>
-                {canRetry ? (
-                    <button type="button" className="btn small" onClick={retry} aria-disabled={checking || undefined} data-busy={checking || undefined}>
-                        <span>{t('Try again')}</span>
-                    </button>
-                ) : null}
+                {canRetry ? <RetryButton checking={checking} onClick={retry} onGone={onRetryGone} /> : null}
             </div>
         </div>
     );

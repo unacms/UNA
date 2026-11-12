@@ -356,7 +356,7 @@ async fn poll<R: Runtime>(app: &AppHandle<R>, client: &reqwest::Client) -> Resul
     if status == reqwest::StatusCode::SERVICE_UNAVAILABLE {
         // the site may say its API is turned off (availability.rs): the session is kept, the
         // page is told, and this poll is what finds out when it is back
-        let body = response.bytes().await.unwrap_or_default();
+        let body = crate::availability::problem_of(response).await;
         return Err(match auth.availability.saw(&site, status.as_u16(), &body) {
             Some(code) => format!("the site answered {status} ({code})"),
             None => format!("the site answered {status}"),
