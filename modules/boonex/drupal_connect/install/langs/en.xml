@@ -6,7 +6,7 @@
 	<string name="_bx_drupal_information_block"><![CDATA[
         <p>This module can be used to login to this site using Drupal credentials.</p>]]></string>
 	<string name="_bx_drupal_profile_error_api_keys"><![CDATA[Please configure the module in admin panel (can't define Client ID and Secret)]]></string>
-    <string name="_bx_drupal_auth_title"><![CDATA[Login with Drupal]]></string>
+    <string name="_bx_drupal_auth_title"><![CDATA[Continue with Drupal]]></string>
     <string name="_bx_drupal_json_decode_failed"><![CDATA[JSON decode failed]]></string>	
     <string name="_bx_drupal_wrong_username_or_pass"><![CDATA[Wrong username or password]]></string>	
 

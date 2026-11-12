@@ -11,7 +11,7 @@
 Затем нужно ввести полученные ключ и секретный код в настройках этого модуля]]></string>
 	<string name="_bx_unacon_profile_error_api_keys"><![CDATA[Пожалуйста, настройте модуль в административной панели (невозможно определить ключи)]]></string>
 	<string name="_bx_unacon_chart"><![CDATA[UNA профили]]></string>
-	<string name="_bx_unacon_auth_title"><![CDATA[Вход через UNA]]></string>
+	<string name="_bx_unacon_auth_title"><![CDATA[Продолжить с UNA]]></string>
 
     <string name="_bx_unacon_adm_stg_cpt_type"><![CDATA[UNA-соединение]]></string>
     <string name="_bx_unacon_option_app_id"><![CDATA[UNA App ID]]></string>
