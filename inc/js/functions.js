@@ -378,6 +378,184 @@ function bx_loading_animate (e, aOptions) {
     return new Spinner(aOptions).spin(e.get(0));
 }
 
+/*
+ * The loading indicator is the "connecting" Thinking orb (thinking-orbs by Libraries.dev, MIT,
+ * plugins_public/thinking-orbs): a constellation of dots that wires itself, drawn on a canvas
+ * by the package's framework-free engine. The engine has hand-tuned designs for 64, 32 and
+ * 20px; each orb takes the largest one its box fits (bx_loading_orb_size) or the size in its
+ * data-bx-orb-size attribute.
+ *
+ * Its ink is the canvas's CSS color, the theme's neutral foreground (.bx-loading-orb in
+ * common.css). Near dots take that colour and far ones fade towards the background: white
+ * on a light page, black on a dark one (html.dark). Orbs repaint when the colour scheme
+ * changes. With reduced motion the orb is one still frame.
+ *
+ * The engine loads only when the first orb is shown (bx_loading_orb_load).
+ */
+var glBxOrbs = {module: null, loading: null, items: [], raf: 0, observer: null};
+
+function bx_loading_orb(iSize)
+{
+    return '<canvas class="bx-loading-orb" aria-hidden="true"' + (iSize ? ' data-bx-orb-size="' + iSize + '"' : '') + '></canvas>';
+}
+
+/**
+ * Start every orb inside the element (or the element itself) that isn't running yet.
+ */
+function bx_loading_orb_start(oElement)
+{
+    $(oElement).find('canvas.bx-loading-orb').addBack('canvas.bx-loading-orb').each(function() {
+        var oCanvas = this;
+        if(oCanvas.getAttribute('data-bx-orb-on'))
+            return;
+
+        oCanvas.setAttribute('data-bx-orb-on', 1);
+
+        // An engine that fails to load leaves the box empty; nothing else depends on it.
+        bx_loading_orb_load().then(function(oModule) {
+            bx_loading_orb_add(oCanvas, oModule);
+        }).catch(function() {});
+    });
+}
+
+function bx_loading_orb_load()
+{
+    if(!glBxOrbs.loading)
+        // Transition pages have no sUrlRoot; their <base> is the site root.
+        glBxOrbs.loading = import(new URL('plugins_public/thinking-orbs/thinking-orbs.min.js', typeof sUrlRoot != 'undefined' ? sUrlRoot : document.baseURI).href).then(function(oModule) {
+            glBxOrbs.module = oModule;
+            return oModule;
+        }, function(oError) {
+            glBxOrbs.loading = null;
+            throw oError;
+        });
+
+    return glBxOrbs.loading;
+}
+
+/**
+ * The largest tuned size that fits the orb's box, 64 at most.
+ */
+function bx_loading_orb_size(oCanvas)
+{
+    var iSize = parseInt(oCanvas.getAttribute('data-bx-orb-size'), 10);
+    if(iSize == 64 || iSize == 32 || iSize == 20)
+        return iSize;
+
+    var oBox = oCanvas.parentNode;
+    var iFit = oBox ? Math.min(oBox.clientWidth || 64, oBox.clientHeight || 64) : 64;
+    return iFit >= 64 ? 64 : (iFit >= 32 ? 32 : 20);
+}
+
+function bx_loading_orb_add(oCanvas, oModule)
+{
+    if(!oCanvas.isConnected)
+        return;
+
+    var iSize = bx_loading_orb_size(oCanvas);
+    var oPreset = oModule.resolvePreset('connecting', iSize);
+    var fDpr = Math.min(2, window.devicePixelRatio || 1);
+
+    oCanvas.width = Math.round(iSize * fDpr);
+    oCanvas.height = Math.round(iSize * fDpr);
+    oCanvas.style.width = oCanvas.style.height = iSize + 'px';
+
+    var oOrb = {
+        canvas: oCanvas,
+        context: oCanvas.getContext('2d'),
+        size: iSize,
+        dpr: fDpr,
+        frame: oModule.MODE_FRAMES[oPreset.mode],
+        opts: oPreset.opts,
+        speed: oPreset.speed,
+        dark: false,
+        tint: null
+    };
+    if(!oOrb.context)
+        return;
+
+    bx_loading_orb_theme(oOrb);
+    glBxOrbs.items.push(oOrb);
+    bx_loading_orb_watch();
+
+    if(bx_loading_orb_still())
+        bx_loading_orb_paint(oOrb, 0.6);
+    else if(!glBxOrbs.raf)
+        glBxOrbs.raf = requestAnimationFrame(bx_loading_orb_tick);
+}
+
+function bx_loading_orb_still()
+{
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+/**
+ * The scheme and ink of an orb: html.dark, and the canvas's CSS color as the engine's tint.
+ */
+function bx_loading_orb_theme(oOrb)
+{
+    oOrb.dark = document.documentElement.classList.contains('dark');
+
+    var aRgb = (window.getComputedStyle(oOrb.canvas).color || '').match(/rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/);
+    oOrb.tint = aRgb ? {r: Number(aRgb[1]), g: Number(aRgb[2]), b: Number(aRgb[3])} : undefined;
+}
+
+function bx_loading_orb_paint(oOrb, fTime)
+{
+    var oContext = oOrb.context;
+    oContext.setTransform(oOrb.dpr, 0, 0, oOrb.dpr, 0, 0);
+    oContext.clearRect(0, 0, oOrb.size, oOrb.size);
+    glBxOrbs.module.paintFrame(oContext, oOrb.frame(oOrb.size, fTime, oOrb.opts), oOrb.dark, oOrb.tint);
+}
+
+/**
+ * One animation loop for all orbs. Orbs whose canvas has left the page are dropped, and the
+ * loop stops when none are left. Browsers pause it in hidden tabs.
+ */
+function bx_loading_orb_tick()
+{
+    glBxOrbs.raf = 0;
+    glBxOrbs.items = glBxOrbs.items.filter(function(oOrb) {
+        return oOrb.canvas.isConnected;
+    });
+    if(!glBxOrbs.items.length || bx_loading_orb_still())
+        return;
+
+    var fNow = performance.now() / 1000;
+    glBxOrbs.items.forEach(function(oOrb) {
+        bx_loading_orb_paint(oOrb, fNow * oOrb.speed);
+    });
+
+    glBxOrbs.raf = requestAnimationFrame(bx_loading_orb_tick);
+}
+
+/**
+ * Repaint in the new colours when html.dark comes or goes.
+ */
+function bx_loading_orb_watch()
+{
+    if(glBxOrbs.observer || typeof MutationObserver == 'undefined')
+        return;
+
+    glBxOrbs.observer = new MutationObserver(function() {
+        glBxOrbs.items.forEach(function(oOrb) {
+            bx_loading_orb_theme(oOrb);
+            if(bx_loading_orb_still() && oOrb.canvas.isConnected)
+                bx_loading_orb_paint(oOrb, 0.6);
+        });
+    });
+    glBxOrbs.observer.observe(document.documentElement, {attributes: true, attributeFilter: ['class']});
+}
+
+/**
+ * The template's SVG loading indicator instead of the orb (bUseSvgLoading in _header_js_spinner.html,
+ * which pages such as Studio's login don't include).
+ */
+function bx_loading_use_svg()
+{
+    return typeof bUseSvgLoading != 'undefined' && bUseSvgLoading;
+}
+
 function bx_loading_btn (oElement, bEnable) {
     var oButton = $(oElement);
     var sClassHeight = oButton.hasClass('bx-btn-small') ? 'bx-btn-small-height' : 'bx-btn-height';
@@ -387,17 +565,18 @@ function bx_loading_btn (oElement, bEnable) {
 
     if(!bEnable)
     	oButton.find('.bx-loading-ajax-btn').remove();
-    else if (!oButton.find('.bx-loading-ajax-btn').length)
-    	oButton.append('<b class="bx-loading-ajax-btn ' + sClassHeight + '">' + (bUseSvgLoading ? bx_loading_svg('colored', sClassHeight) : '') + '</b>');
+    else if (!oButton.find('.bx-loading-ajax-btn').length) {
+    	oButton.append('<b class="bx-loading-ajax-btn ' + sClassHeight + '">' + (bx_loading_use_svg() ? bx_loading_svg('colored', sClassHeight) : bx_loading_orb(20)) + '</b>');
 
-    if(!bUseSvgLoading)
-    	bx_loading_animate(oButton.find('.bx-loading-ajax-btn'), aSpinnerSmallOpts);    
+        if(!bx_loading_use_svg())
+            bx_loading_orb_start(oButton.find('.bx-loading-ajax-btn'));
+    }
 }
 
 function bx_loading_content (oElement, bEnable, isReplace) {
     var oBlock = $(oElement);
-    var oLoading = $('<div class="bx-loading-ajax bx-def-z-index-front">' + (bUseSvgLoading ? bx_loading_svg('colored') : '') + '</div>');
-    
+    var oLoading = $('<div class="bx-loading-ajax bx-def-z-index-front">' + (bx_loading_use_svg() ? bx_loading_svg('colored') : bx_loading_orb()) + '</div>');
+
     if(!bEnable)
     	oBlock.find(".bx-loading-ajax").remove();
     else if(!oBlock.find('.bx-loading-ajax').length) {
@@ -406,9 +585,9 @@ function bx_loading_content (oElement, bEnable, isReplace) {
         else
             oBlock.append(oLoading);
 
-        if(!bUseSvgLoading)
-        	bx_loading_animate(oBlock.find('.bx-loading-ajax'), aSpinnerOpts);
-    } 
+        if(!bx_loading_use_svg())
+            bx_loading_orb_start(oLoading);
+    }
 }
 
 function bx_loading (elem, b) {

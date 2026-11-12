@@ -23,7 +23,14 @@
 </head>
 <body class="bx-def-font bx-def-color-bg-page" dir="__lang_direction__" <bx_injection:injection_body /> >
 
-    __page_main_code__
+    <div class="bx-transition" role="status">
+        <canvas class="bx-loading-orb" aria-hidden="true"></canvas>
+        <div class="sr-only">__page_main_code__</div>
+    </div>
+    <script language="javascript">
+        bx_set_color_scheme_html();
+        bx_loading_orb_start($('.bx-transition'));
+    </script>
 
 </body>
 </html>
