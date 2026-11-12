@@ -1,4 +1,5 @@
 import { View } from 'app/design/view'
+import { Text } from 'app/design/typography'
 import Html from 'app/ui/atoms/html'
 import { stripTags, appSetting, isUrl } from 'app/lib/util';
 import { useState } from 'react';
@@ -28,6 +29,18 @@ function pathComparable(path) {
 function roundedFromInset(inset) {
     if (inset == null) return undefined
     return inset === false ? [] : inset
+}
+
+/**
+ * A block's icon as UNA sends it: an icon name, inline SVG, or an Emoji, which comes wrapped as
+ * `<i class="sys-icon sys-icon-emoji">…</i>` and is drawn as text (Icon has no glyph for it).
+ */
+function BlockIconGlyph({ icon, size }) {
+    if (typeof icon === 'string' && icon.includes('sys-icon-emoji')) {
+        const emoji = stripTags(icon).trim()
+        return emoji ? <Text style={{ fontSize: size, lineHeight: Math.round(size * 1.2) }}>{emoji}</Text> : null
+    }
+    return <Icon icon={icon} size={size} />
 }
 
 function BlockHeaderMenu({ menu, pathname }) {
@@ -188,7 +201,7 @@ function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg
     const title = stripTags(block.title)
     const titleIcon = block.icon ? (
         <BlockTitleIcon>
-            <Icon icon={block.icon} size={blockTheme['u-block-title-icon-size']} />
+            <BlockIconGlyph icon={block.icon} size={blockTheme['u-block-title-icon-size']} />
         </BlockTitleIcon>
     ) : null
     const stacked = !!block.description
@@ -198,7 +211,7 @@ function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg
         <>
             {!!block.header_icon && (
                 <BlockHeaderIcon>
-                    <Icon icon={block.header_icon} size={blockTheme['u-block-header-icon-size']} />
+                    <BlockIconGlyph icon={block.header_icon} size={blockTheme['u-block-header-icon-size']} />
                 </BlockHeaderIcon>
             )}
             {/* Beside a header icon a title without a description is centred on the tile. */}
