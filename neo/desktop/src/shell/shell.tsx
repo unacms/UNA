@@ -44,7 +44,6 @@ import { TaskBoard } from '../features/tasks/task-board';
 import { TaskBudgetView } from '../features/tasks/task-budget';
 import { MyTimers } from '../features/tasks/task-timers';
 import { SidebarTasks } from '../features/tasks/sidebar-tasks';
-import { Icon } from '../components/icon';
 import { MenuHost } from '../components/menu-popover';
 import { useSiteAccent, useSiteInfo } from '../lib/branding';
 import { setSidebarShown, setWindowTitle, useDetailTitle, windowTitle } from '../lib/chrome';
@@ -52,7 +51,6 @@ import { errorMessage } from '../lib/errors';
 import { t } from '../lib/i18n';
 import { sectionRoute, settingsRoute } from '../lib/router';
 import { useMediaQuery } from '../lib/use-media-query';
-import { useOnline } from '../lib/use-online';
 import { DetailPane } from './detail-pane';
 import { FULL_SIDEBAR, Layout, type SidebarMode } from './layout';
 import { paneHeadingId, type PaneName, SectionIconContext } from './pane';
@@ -61,6 +59,7 @@ import { BottomBar } from './bottom-bar';
 import { AgentChatsContext, AgentChatsStore, agentChatsStorageKey } from '../features/agents/agents';
 import { AgentDock } from '../features/agents/agent-dock';
 import { AgentPanels } from '../features/agents/agent-panel';
+import { StatusBanner } from './status-banner';
 import { TopBar } from './top-bar';
 import { tabTitle } from './tab-strip';
 import { SidebarNavigation } from './sidebar-navigation';
@@ -157,21 +156,6 @@ function savedRail(): boolean {
 
 function saveRail(rail: boolean): void {
     writeStored(SIDEBAR_KEY, rail ? 'rail' : null);
-}
-
-/** Said, and shown, while the computer has no network: what is on screen is what was saved. */
-function OfflineBanner() {
-    const online = useOnline();
-    return (
-        <div className="offline-status" role="status">
-            {online ? null : (
-                <p className="offline-banner">
-                    <Icon name="cloud-off" size={16} />
-                    <span>{t('You’re offline. Showing what was saved; new posts and changes wait for the network.')}</span>
-                </p>
-            )}
-        </div>
-    );
 }
 
 function paneElement(name: AnyPane): HTMLElement | null {
@@ -856,7 +840,7 @@ function ShellFrame({ siteUrl, items, requests = 0, profile, commands }: Props) 
                             detailOpen={!!route.detail}
                             sidebarMode={sidebarMode}
                             onCloseOverlay={closeOverlay}
-                            banner={<OfflineBanner />}
+                            banner={<StatusBanner siteUrl={app.siteUrl} announce={announce} />}
                             tabId={activeTabId}
                             top={<TopBar rail={rail} hidden={hidden} onToggle={toggleSidebar} />}
                             bottom={<BottomBar siteUrl={siteUrl} onGo={goList} agents={<AgentDock />} />}

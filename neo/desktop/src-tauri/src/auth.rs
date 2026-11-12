@@ -35,6 +35,7 @@ use tokio::net::{TcpListener, TcpStream};
 use tokio::sync::{mpsc, oneshot};
 use url::Url;
 
+use crate::availability::{off_at, off_code, off_here, Availability};
 use crate::i18n::{tr, tr_vars, trn};
 
 const KEYRING_SERVICE: &str = crate::brand::IDENTIFIER;
@@ -124,6 +125,10 @@ pub struct SessionSummary {
 }
 
 impl SessionSummary {
+    pub fn site_url(&self) -> &str {
+        &self.site_url
+    }
+
     /// What the menu and the switcher call it.
     pub fn label(&self) -> String {
         let site = if self.site_name.is_empty() {
@@ -278,6 +283,9 @@ pub struct AuthState {
     // the session whose refused token was renewed at once (token_refused), and when: a token
     // refused again that soon is the site signing it out, not its clock
     forced: Mutex<Option<(String, std::time::Instant)>>,
+    /// The sites that said their API is turned off (availability.rs): kept here so it is at
+    /// hand wherever a request is sent with a session's token.
+    pub availability: Availability,
 }
 
 impl AuthState {
@@ -299,6 +307,7 @@ impl AuthState {
             previewed: Mutex::new(None),
             menu_stale: AtomicBool::new(false),
             forced: Mutex::new(None),
+            availability: Availability::default(),
         }
     }
 
@@ -800,8 +809,13 @@ async fn whose(site_url: &str, token: &str) -> Result<(String, String), String> 
         .send()
         .await
         .map_err(|e| tr_vars("Could not reach the site: {{reason}}", &[("reason", &e.to_string())]))?;
-    if !response.status().is_success() {
-        return Err(tr_vars("The site did not say whose account this is ({{status}})", &[("status", &response.status().to_string())]));
+    let status = response.status();
+    if !status.is_success() {
+        let body = response.bytes().await.unwrap_or_default();
+        return Err(match off_code(status.as_u16(), &body) {
+            Some(code) => off_at(site_url, code),
+            None => tr_vars("The site did not say whose account this is ({{status}})", &[("status", &status.to_string())]),
+        });
     }
     let me: Me = response.json().await.map_err(|_| tr("The site sent an unexpected account"))?;
     let name = me.profiles.iter().find(|p| p.id == me.active_profile_id).map(|p| p.display_name.clone()).unwrap_or_default();
@@ -811,6 +825,17 @@ async fn whose(site_url: &str, token: &str) -> Result<(String, String), String> 
 /// What discover_site answers for an address whose /api/v2 is not a discovery document.
 fn not_a_discovery_document(site_url: &str) -> String {
     tr_vars("{{site}} has no UNA API v2 (not a discovery document)", &[("site", site_url)])
+}
+
+/// What discover_site answers for a site that did not give its discovery document: a site that
+/// says its API v2 (a preview, off as installed) or its whole API is turned off has one, and its
+/// administrator can turn it on; any other answer (no rewrite rule, maintenance, a page of the
+/// site) is all the app knows.
+fn not_available(site_url: &str, status: reqwest::StatusCode, body: &[u8]) -> String {
+    match off_code(status.as_u16(), body) {
+        Some(code) => off_at(site_url, code),
+        None => tr_vars("{{site}} has no UNA API v2 (the site answered {{status}})", &[("site", site_url), ("status", &status.to_string())]),
+    }
 }
 
 /// What a site is and how to sign in to it: its API v2 discovery document (GET /api/v2).
@@ -824,8 +849,10 @@ pub async fn discover_site(state: State<'_, AuthState>, site_url: String) -> Res
         .send()
         .await
         .map_err(|e| tr_vars("Could not reach that address: {{reason}}", &[("reason", &e.to_string())]))?;
-    if !response.status().is_success() {
-        return Err(tr_vars("{{site}} has no UNA API v2 (the site answered {{status}})", &[("site", &site_url), ("status", &response.status().to_string())]));
+    let status = response.status();
+    if !status.is_success() {
+        let body = response.bytes().await.unwrap_or_default();
+        return Err(not_available(&site_url, status, &body));
     }
     let info: serde_json::Value = response.json().await.map_err(|_| not_a_discovery_document(&site_url))?;
     if !info.get("name").is_some_and(|v| v.is_string()) || !info.get("api_version").is_some_and(|v| v.is_string()) {
@@ -1052,8 +1079,9 @@ fn ends_sign_in(status: reqwest::StatusCode, body: &str) -> bool {
 
 /// Ask the site for new tokens with the session's refresh token. `Err` when the site could not
 /// be reached or gave an answer that does not say the sign-in is over (ends_sign_in): nothing is
-/// known, nothing changes, and the next request tries again.
-async fn refresh(session: &StoredSession) -> Result<Refreshed, String> {
+/// known, nothing changes, and the next request tries again. A site that says its API is turned
+/// off is remembered as such (availability.rs), and the sign-in is kept.
+async fn refresh(session: &StoredSession, availability: &Availability) -> Result<Refreshed, String> {
     let Some(refresh_token) = session.refresh_token.clone() else { return Ok(Refreshed::Refused) };
     let response = http_client()?
         .post(&session.token_endpoint)
@@ -1065,6 +1093,11 @@ async fn refresh(session: &StoredSession) -> Result<Refreshed, String> {
     let body = response.text().await.map_err(|e| e.to_string())?;
     if ends_sign_in(status, &body) {
         return Ok(Refreshed::Refused);
+    }
+    // the site turned its API off: the sign-in is as good as it was, and is kept
+    if let Some(code) = off_code(status.as_u16(), body.as_bytes()) {
+        availability.turned_off(&session.site_url, code);
+        return Err(off_here(code));
     }
     let tokens = parse_tokens(status, &body)?;
     Ok(Refreshed::Renewed(Box::new(StoredSession {
@@ -1078,7 +1111,7 @@ async fn refresh(session: &StoredSession) -> Result<Refreshed, String> {
 /// Renew a session (the refresh lock held): its new token, or None when the site refused the
 /// refresh, and then the session stays in the list, signed out (refuse), never forgotten.
 async fn renew_session(state: &AuthState, session: StoredSession, generation: u64) -> Result<Option<SessionToken>, String> {
-    match refresh(&session).await? {
+    match refresh(&session, &state.availability).await? {
         Refreshed::Renewed(renewed) => {
             let token = SessionToken { site: renewed.site_url.clone(), token: renewed.access_token.clone(), generation };
             state.renew(*renewed)?;
@@ -1221,6 +1254,9 @@ async fn read_tokens(response: reqwest::Response) -> Result<TokenResponse, Strin
 /// A token endpoint's answer: its tokens, or what it said went wrong.
 fn parse_tokens(status: reqwest::StatusCode, body: &str) -> Result<TokenResponse, String> {
     if !status.is_success() {
+        if let Some(code) = off_code(status.as_u16(), body.as_bytes()) {
+            return Err(off_here(code));
+        }
         let err: Option<OAuthError> = serde_json::from_str(body).ok();
         let message =
             err.and_then(|e| e.error_description.or(e.error)).unwrap_or_else(|| tr_vars("The site answered {{status}}", &[("status", &status.to_string())]));
@@ -1872,6 +1908,8 @@ mod tests {
         assert!(!ends_sign_in(S::NOT_FOUND, ""));
         assert!(!ends_sign_in(S::TOO_MANY_REQUESTS, r#"{"error":"slow_down"}"#));
         assert!(!ends_sign_in(S::SERVICE_UNAVAILABLE, ""));
+        assert!(!ends_sign_in(S::SERVICE_UNAVAILABLE, r#"{"status":503,"code":"api_v2_disabled"}"#));
+        assert!(!ends_sign_in(S::SERVICE_UNAVAILABLE, r#"{"status":503,"code":"api_disabled"}"#));
     }
 
     #[tokio::test]
@@ -2099,6 +2137,12 @@ mod tests {
         let app = tauri::test::mock_builder().build(crate::context()).unwrap();
         app.manage(state);
         app.manage(crate::api::ApiCalls::default());
+        let (answer, body) = ask_page(&app, request).await;
+        (app, answer, body)
+    }
+
+    /// A request of the page of an app that is running (page_request starts one).
+    async fn ask_page(app: &tauri::App<tauri::test::MockRuntime>, request: serde_json::Value) -> (Result<serde_json::Value, serde_json::Value>, Vec<Vec<u8>>) {
         let (tx, rx) = std::sync::mpsc::channel();
         let on_body = tauri::ipc::Channel::new(move |body| {
             if let tauri::ipc::InvokeResponseBody::Raw(bytes) = body {
@@ -2119,7 +2163,109 @@ mod tests {
                 }
             }
         }
-        (app, answer, body)
+        (answer, body)
+    }
+
+    /// The data of an answer's body messages as text.
+    fn body_text(messages: &[Vec<u8>]) -> String {
+        let data: Vec<u8> = messages.iter().filter(|m| m.first() == Some(&0)).flat_map(|m| m[1..].to_vec()).collect();
+        String::from_utf8_lossy(&data).to_string()
+    }
+
+    /// What a site answers every /api/v2 request with while its API is turned off (BxDolApiV2Router).
+    fn turned_off(code: &str) -> &'static str {
+        let body = format!(r#"{{"type":"about:blank","title":"Service Unavailable","status":503,"code":"{code}","detail":"Turned off on this site"}}"#);
+        let answer = format!(
+            "HTTP/1.1 503 Service Unavailable\r\ncontent-type: application/problem+json\r\ncontent-length: {}\r\nconnection: close\r\n\r\n{body}",
+            body.len()
+        );
+        Box::leak(answer.into_boxed_str())
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn a_site_with_its_api_turned_off_is_told_apart_from_one_without_api_v2() {
+        let (url, _) = site(vec![
+            turned_off("api_v2_disabled"),
+            turned_off("api_disabled"),
+            "HTTP/1.1 503 Service Unavailable\r\ncontent-type: text/html\r\ncontent-length: 22\r\nconnection: close\r\n\r\n<html>Maintenance</html>",
+            "HTTP/1.1 404 Not Found\r\ncontent-type: text/html\r\ncontent-length: 16\r\nconnection: close\r\n\r\n<html>404</html>",
+        ])
+        .await;
+        let app = tauri::test::mock_builder().build(crate::context()).unwrap();
+        app.manage(test_state());
+
+        let v2_off = discover_site(app.state(), url.clone()).await.unwrap_err();
+        assert!(v2_off.contains("has API v2 (a preview) turned off"), "{v2_off}");
+        assert!(v2_off.contains("Studio > API > Settings"), "{v2_off}");
+        assert!(v2_off.contains(&url), "{v2_off}");
+
+        let api_off = discover_site(app.state(), url.clone()).await.unwrap_err();
+        assert!(api_off.contains("has its API turned off"), "{api_off}");
+
+        // maintenance and a site without the route: all the app knows is the status
+        let maintenance = discover_site(app.state(), url.clone()).await.unwrap_err();
+        assert!(maintenance.contains("has no UNA API v2 (the site answered 503"), "{maintenance}");
+        let missing = discover_site(app.state(), url.clone()).await.unwrap_err();
+        assert!(missing.contains("has no UNA API v2 (the site answered 404"), "{missing}");
+    }
+
+    #[tokio::test]
+    async fn a_refresh_answered_with_the_api_turned_off_keeps_the_sign_in() {
+        let (endpoint, hits) = token_server(vec![(503, r#"{"status":503,"code":"api_v2_disabled"}"#)]).await;
+        let state = test_state();
+        state.add(session_at(&endpoint, true)).unwrap();
+        let said = current_token(&state).await.err().expect("no token while the API is off");
+        assert_eq!(said, "API v2 is turned off on this network");
+        assert_eq!(hits.load(Ordering::SeqCst), 1);
+        let info = state.info().unwrap();
+        assert!(!info.needs_sign_in, "a site that turned its API off did not sign anyone out");
+        assert_eq!(state.summaries().len(), 1);
+        assert_eq!(state.availability.code("http://desktop.localhost:8090"), Some("api_v2_disabled"));
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn a_site_that_turns_its_api_off_keeps_the_session_and_is_not_asked_over_and_over() {
+        let (url, seen) =
+            site(vec![turned_off("api_v2_disabled"), "HTTP/1.1 200 OK\r\ncontent-type: application/json\r\ncontent-length: 2\r\nconnection: close\r\n\r\n{}"])
+                .await;
+        let (state, generation) = signed_in(&url, "lily-token");
+        let request = |id: &str| serde_json::json!({ "id": id, "siteUrl": url, "generation": generation, "method": "GET", "url": format!("{url}/api/v2/me") });
+
+        // the site's own answer reaches the page, and is remembered
+        let (app, answer, body) = page_request(state, request("a")).await;
+        assert_eq!(answer.unwrap()["status"], 503);
+        assert!(body_text(&body).contains("api_v2_disabled"));
+        let state = app.state::<AuthState>();
+        assert_eq!(state.availability.code(&url), Some("api_v2_disabled"));
+
+        // the next ones get the same problem from here: nothing is sent
+        for id in ["b", "c"] {
+            let (answer, body) = ask_page(&app, request(id)).await;
+            let head = answer.unwrap();
+            assert_eq!(head["status"], 503);
+            let problem: serde_json::Value = serde_json::from_str(&body_text(&body)).unwrap();
+            assert_eq!(problem["code"], "api_v2_disabled");
+            assert_eq!(problem["detail"], "API v2 is turned off on this network");
+        }
+        assert_eq!(seen.lock().unwrap().len(), 1, "the site was asked once");
+
+        // nobody was signed out, and the token is the session's still
+        assert!(!state.info().unwrap().needs_sign_in);
+        assert_eq!(state.summaries().len(), 1);
+        assert_eq!(token_for(&state, &url, generation).await.unwrap().as_deref(), Some("lily-token"));
+
+        // a window of a session that is over still hears that, not the site's state
+        let (answer, _) =
+            ask_page(&app, serde_json::json!({ "id": "d", "siteUrl": url, "generation": generation + 1, "method": "GET", "url": format!("{url}/api/v2/me") }))
+                .await;
+        assert_eq!(answer.unwrap_err()["code"], "session_over");
+
+        // once the site is asked again and answers, requests go out as before
+        state.availability.answers(&url);
+        let (answer, _) = ask_page(&app, request("e")).await;
+        assert_eq!(answer.unwrap()["status"], 200);
+        assert_eq!(seen.lock().unwrap().len(), 2);
+        assert_eq!(state.availability.code(&url), None);
     }
 
     fn signed_in(site_url: &str, token: &str) -> (AuthState, u64) {

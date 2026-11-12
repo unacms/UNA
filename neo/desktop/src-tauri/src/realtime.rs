@@ -28,6 +28,7 @@ use tokio_tungstenite::tungstenite::Message;
 use url::Url;
 
 use crate::auth;
+use crate::availability::Availability;
 
 /// The windows' event with each live event: `{ channel, event, data }`.
 pub const REALTIME_EVENT: &str = "realtime";
@@ -91,6 +92,11 @@ pub struct RealtimeState {
 impl RealtimeState {
     fn lock(&self) -> std::sync::MutexGuard<'_, Inner> {
         self.inner.lock().unwrap_or_else(|e| e.into_inner())
+    }
+
+    /// Look again now (the site's API answers again, availability.rs).
+    pub fn wake(&self) {
+        self.changed.notify_one();
     }
 
     /// A window closed: its channels go.
@@ -290,8 +296,8 @@ pub fn start<R: Runtime>(app: AppHandle<R>) {
     });
 }
 
-/// GET /realtime of the session's site.
-async fn info(client: &reqwest::Client, site: &str, token: &str) -> Result<Info, String> {
+/// GET /realtime of the session's site; None when the site says its API is turned off.
+async fn info(client: &reqwest::Client, site: &str, token: &str, availability: &Availability) -> Result<Option<Info>, String> {
     let url = format!("{}/api/v2/realtime", site.trim_end_matches('/'));
     let response = client
         .get(url)
@@ -300,22 +306,36 @@ async fn info(client: &reqwest::Client, site: &str, token: &str) -> Result<Info,
         .send()
         .await
         .map_err(|e| format!("could not reach the site: {e}"))?;
-    if !response.status().is_success() {
-        return Err(format!("GET /realtime: {}", response.status()));
+    let status = response.status();
+    if !status.is_success() {
+        let body = response.bytes().await.unwrap_or_default();
+        if availability.saw(site, status.as_u16(), &body).is_some() {
+            return Ok(None);
+        }
+        return Err(format!("GET /realtime: {status}"));
     }
-    response.json::<Info>().await.map_err(|e| format!("GET /realtime: {e}"))
+    response.json::<Info>().await.map(Some).map_err(|e| format!("GET /realtime: {e}"))
 }
 
 /// One connection, from asking the site where to its end. `Ok(None)`: nothing to connect to.
 async fn connect_once<R: Runtime>(app: &AppHandle<R>, client: &reqwest::Client) -> Result<Option<Ended>, String> {
     let auth_state = app.state::<auth::AuthState>();
     let state = app.state::<RealtimeState>();
+    // a site that said its API is turned off is not asked from here: the sync poll finds out
+    // when it is back, and this is woken then (`wake`)
+    if auth_state.site_url().is_some_and(|site| auth_state.availability.code(&site).is_some()) {
+        set_status(app, Status::default());
+        return Ok(None);
+    }
     let Some(auth::SessionToken { site, token, generation }) = auth::session_token(&auth_state).await? else {
         set_status(app, Status::default());
         return Ok(None);
     };
     let viewer = state.viewer();
-    let info = info(client, &site, &token).await?;
+    let Some(info) = info(client, &site, &token, &auth_state.availability).await? else {
+        set_status(app, Status::default());
+        return Ok(None);
+    };
     let Some(url) = info.enabled.then(|| socket_url(&info)).flatten() else {
         set_status(app, Status::default());
         return Ok(None);

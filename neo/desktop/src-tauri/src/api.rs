@@ -7,6 +7,10 @@
 //! pieces as they arrive (an agent's reply streams). A session that is over gets no request at
 //! all. A 401 renews the session here (auth.rs `refused`) before the page hears of it.
 //!
+//! A site that says its API is turned off (503 `api_v2_disabled` or `api_disabled`,
+//! availability.rs) is remembered: until it answers again the page's requests get that problem
+//! from here and are not sent, but one every half minute. The session is kept as it is.
+//!
 //! What a page can and cannot do with it: it chooses the method, the path under the API, a few
 //! headers (`REQUEST_HEADERS`) and the body. It cannot set `Authorization` or `Cookie`, reach
 //! another origin or another path of the site, or follow a redirect out of the API: a redirect
@@ -19,9 +23,10 @@ use futures_util::future::{AbortHandle, Abortable};
 use futures_util::StreamExt;
 use serde::{Deserialize, Serialize};
 use tauri::ipc::{Channel, InvokeResponseBody};
-use tauri::{AppHandle, Runtime, State};
+use tauri::{AppHandle, Manager, Runtime, State};
 
 use crate::auth::{self, AuthState};
+use crate::availability::{self, MAX_PROBLEM};
 use crate::i18n::tr_vars;
 
 /// Request headers a page may set. Everything else is dropped: the token is this module's to
@@ -204,6 +209,21 @@ fn body_message(kind: u8, bytes: &[u8]) -> InvokeResponseBody {
     InvokeResponseBody::Raw(message)
 }
 
+/// The answer to a request that is not sent, because the site said its API is turned off: the
+/// 503 and the problem the site itself would give.
+fn off_answer(code: &str, on_body: &Channel<InvokeResponseBody>) -> ApiHead {
+    let _ = on_body.send(body_message(BODY_DATA, &availability::problem_body(code)));
+    let _ = on_body.send(body_message(BODY_END, &[]));
+    ApiHead { status: 503, headers: vec![("content-type".into(), "application/problem+json".into())] }
+}
+
+/// Whether the session a request names is the one signed in (read without the keychain or the
+/// site: `page_token` is what decides, this only says when it would).
+fn names_the_session(auth_state: &AuthState, request: &ApiRequest) -> bool {
+    auth_state.generation() == request.generation
+        && auth_state.site_url().is_some_and(|site| site.trim_end_matches('/') == request.site_url.trim_end_matches('/'))
+}
+
 /// Send a request of the page to the site's API with its session's token, and answer the status
 /// and headers. The body follows on `on_body`: messages of raw bytes whose first byte says what
 /// the rest is (`BODY_DATA`, then one `BODY_END`, or `BODY_FAILED` with the reason as text).
@@ -222,11 +242,24 @@ pub async fn api_request<R: Runtime>(
     if request.body.as_ref().is_some_and(|b| b.len() > MAX_BODY) {
         return Err(ApiFailure::invalid("The request is too big"));
     }
-    let auth::SessionToken { site, token, .. } = auth::page_token(&auth_state, &request.site_url, request.generation)
-        .await
-        .map_err(|e| ApiFailure::new("unreachable", e))?
+    // the site said its API is turned off and was asked lately: its answer again, nothing sent
+    // (a session that is over still hears that it is, below)
+    if names_the_session(&auth_state, &request) {
+        if let Some(code) = auth_state.availability.held_back(&request.site_url) {
+            return Ok(off_answer(code, &on_body));
+        }
+    }
+    let auth::SessionToken { site, token, .. } = match auth::page_token(&auth_state, &request.site_url, request.generation).await {
         // the page says this in its own words (lib/api.ts SessionOverError)
-        .ok_or_else(|| ApiFailure::new("session_over", "The session is over"))?;
+        Ok(token) => token.ok_or_else(|| ApiFailure::new("session_over", "The session is over"))?,
+        Err(e) => {
+            // the token could not be renewed because the API is off: that, not "unreachable"
+            return match auth_state.availability.code(&request.site_url) {
+                Some(code) => Ok(off_answer(code, &on_body)),
+                None => Err(ApiFailure::new("unreachable", e)),
+            };
+        }
+    };
     let url = api_url(&request.url, &site).ok_or_else(|| ApiFailure::invalid("Not an address of the network's API"))?;
 
     let mut builder = calls.client(&site)?.request(method, url).bearer_auth(&token);
@@ -256,6 +289,10 @@ pub async fn api_request<R: Runtime>(
             log::warn!("api: a refused token was not renewed: {e}");
         }
     }
+    // any answer but a 503 is the API speaking; a 503 says which it is in its body (below)
+    if status != 503 {
+        auth_state.availability.answers(&site);
+    }
     let head = ApiHead { status, headers: response_headers(response.headers()) };
 
     // from here `api_abort` stops the body; an abort that came since the answer did is seen now
@@ -266,13 +303,22 @@ pub async fn api_request<R: Runtime>(
         calls.finish(&id);
         return Err(cancelled());
     }
+    let app = app.clone();
+    let reader = app.clone();
     let pump = Abortable::new(
         async move {
+            // a 503's body is kept too (up to a problem's size), to read what it says
+            let mut problem = (status == 503).then(Vec::new);
             let mut body = response.bytes_stream();
             while let Some(chunk) = body.next().await {
                 let sent = match chunk {
                     Ok(bytes) if bytes.is_empty() => Ok(()),
-                    Ok(bytes) => on_body.send(body_message(BODY_DATA, &bytes)),
+                    Ok(bytes) => {
+                        if let Some(kept) = problem.as_mut().filter(|kept| kept.len() <= MAX_PROBLEM) {
+                            kept.extend_from_slice(&bytes);
+                        }
+                        on_body.send(body_message(BODY_DATA, &bytes))
+                    }
                     Err(e) => {
                         let _ = on_body.send(body_message(BODY_FAILED, e.to_string().as_bytes()));
                         return;
@@ -283,14 +329,16 @@ pub async fn api_request<R: Runtime>(
                     return;
                 }
             }
+            if let Some(kept) = problem {
+                // turned off: remembered before the page reads the end of the answer
+                reader.state::<AuthState>().availability.saw(&site, 503, &kept);
+            }
             let _ = on_body.send(body_message(BODY_END, &[]));
         },
         registration,
     );
-    let app = app.clone();
     tauri::async_runtime::spawn(async move {
         let _ = pump.await;
-        use tauri::Manager;
         if let Some(calls) = app.try_state::<ApiCalls>() {
             calls.finish(&id);
         }

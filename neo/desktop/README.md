@@ -1,8 +1,10 @@
 # UNA desktop app
 
 > **Preview, not for production.** The app and the API it uses (v2) are still changing. A site
-> has to turn API v2 on for it (Studio > API > Settings, "API v2 (preview)"; off as installed);
-> until then the app says the site has it turned off. NEO's web and mobile apps do not use v2.
+> has to turn API v2 on for it (Studio > API > Settings, "API v2 (preview)"; off as installed).
+> Until then the app says that the site has API v2 turned off and where its administrator turns
+> it on, which it tells apart from a site with no API v2 at all (below, "A site with its API
+> turned off"). NEO's web and mobile apps do not use v2.
 
 A Tauri 2 app for any UNA network, on [API v2](../../docs/api-v2.md): feeds, posting with photos and videos,
 comments, reactions, profiles with follows and friends, notifications (with OS notifications)
@@ -37,7 +39,8 @@ and conversations.
   `Set-Cookie` back. A redirect is followed only into the API again. The answer's status and
   headers come back at once and the body in pieces on a channel, so a streamed reply reads as
   it is written; aborting a request stops it in Rust (`api_abort`). A session that is over gets
-  no request at all, and a 401 renews the session in Rust before the page hears of it. Rust
+  no request at all, and a 401 renews the session in Rust before the page hears of it. A site
+  that says its API is turned off is not asked again by every request (below). Rust
   looks the site up itself before sign-in (`discover_site`). There is no HTTP plugin and no
   cookie jar; the CSP's `connect-src` is IPC only (`devCsp` adds Vite's HMR socket). Images and media load over https, `data:`,
   `blob:` and the app's own `una-media` scheme, in `csp` and `devCsp` alike (no plain http, so
@@ -58,6 +61,25 @@ and conversations.
   `data-tauri-drag-region`). A picture refused or failing to load
   shows the profile's monogram or a generated cover band, never a broken image. Links open in the browser (opener scoped to
   http and https), and a link that can't open shows a message.
+- A site with its API turned off (`src-tauri/src/availability.rs`, `src/lib/api-availability.ts`).
+  With API v2 off a site answers every `/api/v2` request 503 with a problem whose `code` is
+  `api_v2_disabled`, and `api_disabled` when its whole API is off; the app reads that body and
+  takes nothing else for it (a 503 of a proxy or a maintenance page, a 404 where no rewrite rule
+  is, a page of the site). Adding or signing in to a network (`discover_site`, and the token
+  exchange and `/me` after the browser): "{site} has API v2 (a preview) turned off. Its
+  administrator can turn it on in Studio > API > Settings.", or "{site} has its API turned off";
+  any other answer keeps "{site} has no UNA API v2 (the site answered {status})". A network
+  already signed in to that starts answering so is not signed out and nothing of it is deleted
+  (a refresh answered that way keeps the tokens too): Rust remembers what the site said, per
+  site, so other networks keep working. Until it answers again the page's requests get that
+  problem from Rust and are not sent, but one every 30 s; the sync poll keeps its usual interval
+  instead of backing off (it is what finds out that the API is back) and the sockets wait. The
+  shell's status banner, the one that says the computer is offline (`src/shell/status-banner.tsx`),
+  says "API v2 is turned off on this network" (or "The API is turned off on this network") with
+  Try again, which asks the site at once (`api_check`: its discovery document, only a network
+  signed in to). The banner is not in the way of anything, and it goes by itself when the API
+  answers: every window hears the change (`api-availability`), says so and loads again what
+  failed. Queries do not retry such an answer (`retryOnce`).
 - The keychain is read after the window shows (`AuthState::pending`, `ensure_loaded`): the page
   shows "Signing in…" and asks for the session, and only that first command reads it, off the
   main thread, once for every caller. A read that fails (access denied, locked) deletes nothing:

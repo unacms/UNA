@@ -1,5 +1,6 @@
 mod api;
 mod auth;
+mod availability;
 mod badge;
 mod brand;
 mod deep_link;
@@ -19,7 +20,7 @@ mod windows;
 
 use std::time::Duration;
 
-use tauri::{window::Color, DragDropEvent, Manager, RunEvent, Theme, WebviewWindow, WindowEvent};
+use tauri::{window::Color, DragDropEvent, Emitter, Manager, RunEvent, Theme, WebviewWindow, WindowEvent};
 
 /// The app's config and ACL, built once (a second generate_context! would embed Info.plist twice).
 pub(crate) fn context<R: tauri::Runtime>() -> tauri::Context<R> {
@@ -136,6 +137,18 @@ pub fn run() {
             if let Err(e) = tray::build(app.handle()) {
                 log::error!("tray: {e}");
             }
+            // a site's API turned off, or answering again (availability.rs): every window hears
+            // it, and the poll and the sockets look again as soon as it is back
+            let handle = app.handle().clone();
+            app.state::<auth::AuthState>().availability.listen(move |site, code| {
+                if let Err(e) = handle.emit(availability::EVENT, serde_json::json!({ "site": site, "code": code })) {
+                    log::error!("api availability event: {e}");
+                }
+                if code.is_none() {
+                    handle.state::<sync::SyncState>().wake();
+                    handle.state::<realtime::RealtimeState>().wake();
+                }
+            });
             sync::listen_for_clicks(app.handle());
             sync::start(app.handle().clone());
             // live events from the network's sockets server, when it has one (realtime.rs)
@@ -193,6 +206,8 @@ pub fn run() {
             auth::cancel_sign_in,
             api::api_request,
             api::api_abort,
+            availability::api_availability,
+            availability::api_check,
             auth::sign_out,
             auth::token_refused,
             auth::list_sessions,

@@ -105,6 +105,7 @@ import pin from 'lucide-static/icons/pin.svg?raw';
 import play from 'lucide-static/icons/play.svg?raw';
 import plus from 'lucide-static/icons/plus.svg?raw';
 import power from 'lucide-static/icons/power.svg?raw';
+import powerOff from 'lucide-static/icons/power-off.svg?raw';
 import repeat2 from 'lucide-static/icons/repeat-2.svg?raw';
 import refreshCw from 'lucide-static/icons/refresh-cw.svg?raw';
 import rotateCw from 'lucide-static/icons/rotate-cw.svg?raw';
@@ -236,6 +237,7 @@ const ICONS = {
     play,
     plus,
     power,
+    'power-off': powerOff,
     'repeat-2': repeat2,
     'refresh-cw': refreshCw,
     'rotate-cw': rotateCw,

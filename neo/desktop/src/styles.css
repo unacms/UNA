@@ -670,12 +670,15 @@ a[href], .rich-text a, .link-button,
 .icon svg :is(path, circle, rect, line, polyline, polygon, ellipse) { vector-effect: non-scaling-stroke; }
 :dir(rtl) .icon-flip { scale: -1 1; }
 
-/* offline (shell.tsx OfflineBanner): above the panes, not in the way of their headers */
+/* offline, or the network's API turned off (shell/status-banner.tsx): above the panes, not in
+   the way of their headers; only its button takes the pointer */
 .offline-status { position: absolute; z-index: 3; inset-block-end: var(--space-4); inset-inline: 0; display: flex; justify-content: center; pointer-events: none; }
 .offline-banner {
     margin: 0; display: flex; align-items: center; gap: var(--space-2); max-width: min(560px, calc(100% - 32px));
     padding: var(--space-2) var(--space-4); border-radius: var(--radius-card); background: var(--bg-raised); color: var(--text-primary); box-shadow: var(--shadow-raised);
 }
+.offline-text { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+.offline-banner .btn { flex: none; pointer-events: auto; }
 
 /* Settings (features/settings/) */
 .settings { gap: var(--space-5); }

@@ -14,7 +14,8 @@
 //! (the `SyncResponse`); changes of other types are skipped.
 //!
 //! It polls every 30 s while the window has focus and every 60 s otherwise, backs off up to
-//! 10 minutes while the site fails, and polls at once when the page asks (`sync_now`: after
+//! 10 minutes while the site fails (but not while it says its API is turned off: then it keeps
+//! the usual interval, and its first other answer clears that, availability.rs), and polls at once when the page asks (`sync_now`: after
 //! sign-in, a refresh, marking notifications read) and when the window gets focus.
 //!
 //! A click on a notification brings the window back and asks the page to open what it is about
@@ -281,7 +282,9 @@ pub fn start<R: Runtime>(app: AppHandle<R>) {
                 Ok(false) => 0,
                 Err(e) => {
                     log::warn!("sync: {e}");
-                    1
+                    // a site whose API is turned off is asked again at the usual interval, not
+                    // less and less often: this is how the app learns that it is back
+                    u32::from(!api_is_off(&app))
                 }
             };
             let state = app.state::<SyncState>();
@@ -297,6 +300,12 @@ pub fn start<R: Runtime>(app: AppHandle<R>) {
             }
         }
     });
+}
+
+/// Whether the signed-in site said its API is turned off (availability.rs).
+fn api_is_off<R: Runtime>(app: &AppHandle<R>) -> bool {
+    let auth = app.state::<auth::AuthState>();
+    auth.site_url().is_some_and(|site| auth.availability.code(&site).is_some())
 }
 
 /// A round that worked: no back-off for the next.
@@ -344,6 +353,16 @@ async fn poll<R: Runtime>(app: &AppHandle<R>, client: &reqwest::Client) -> Resul
     }
     let response = request.send().await.map_err(|e| format!("could not reach the site: {e}"))?;
     let status = response.status();
+    if status == reqwest::StatusCode::SERVICE_UNAVAILABLE {
+        // the site may say its API is turned off (availability.rs): the session is kept, the
+        // page is told, and this poll is what finds out when it is back
+        let body = response.bytes().await.unwrap_or_default();
+        return Err(match auth.availability.saw(&site, status.as_u16(), &body) {
+            Some(code) => format!("the site answered {status} ({code})"),
+            None => format!("the site answered {status}"),
+        });
+    }
+    auth.availability.answers(&site);
     if status == reqwest::StatusCode::NOT_MODIFIED {
         return Ok(false);
     }
