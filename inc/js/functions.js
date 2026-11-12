@@ -475,6 +475,11 @@ function bx_loading_orb_add(oCanvas, oModule)
         return;
 
     bx_loading_orb_theme(oOrb);
+
+    // Orbs whose canvas has left the page go here as well: with reduced motion no loop runs to drop them.
+    glBxOrbs.items = glBxOrbs.items.filter(function(oItem) {
+        return oItem.canvas.isConnected;
+    });
     glBxOrbs.items.push(oOrb);
     bx_loading_orb_watch();
 

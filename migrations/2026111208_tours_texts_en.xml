@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
 <!-- Introduction tours: shorter texts, and the strings of the new controls and menu item (BxDolTours). -->
 <resources name="en" flag="gb" title="English">
     <string_add name="_sys_tour_back"><![CDATA[Back]]></string_add>

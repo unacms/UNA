@@ -871,11 +871,13 @@ html.dark .bx-loading-ajax-btn .bx-loading-orb {
     color: inherit;
 }
 
-/* Transition pages ("Please wait" after signing in): the orb alone in the middle of the screen, the message for screen readers. */
+/* Transition pages: the orb in the middle of the screen with the page's message under it. A plain "Please wait"
+   (transition_wait.html, after signing in) is for screen readers only: the orb says it. */
 .bx-transition {
     position: fixed;
     inset: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }

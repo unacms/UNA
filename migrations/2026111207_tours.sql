@@ -1,4 +1,4 @@
--- UNA-Migration-Min-System-Version: 15.0.0-RC3
+-- UNA-Migration-Min-System-Version: 15.0.0-RC4
 -- Introduction tours: what an account has closed or finished is kept in the database (BxDolTours), and operators
 -- get an "Introduction Tour" item in the site's account menu to start the homepage tour again.
 CREATE TABLE IF NOT EXISTS `sys_accounts_tours` (
