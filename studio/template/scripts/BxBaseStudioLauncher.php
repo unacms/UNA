@@ -31,6 +31,7 @@ class BxBaseStudioLauncher extends BxDolStudioLauncher
             'launcher.css',
             BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'flag-icon-css/css/|flag-icon.min.css',
             BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'shepherd/css/|shepherd.css',
+            BX_DIRECTORY_PATH_BASE . 'css/|tour.css',
         );
         foreach($this->aIncludes as $sName => $oInclude)
             $aCss = array_merge($aCss, $oInclude->getCss());
@@ -97,8 +98,9 @@ class BxBaseStudioLauncher extends BxDolStudioLauncher
             'edit_done' => _t('_sys_done'),
         ));
 
-        if (getParam('site_tour_studio') == 'on')
-            $sResult .= $oTemplate->parseHtmlByName('launcher_tour.html', array());
+        $oTours = BxDolTours::getInstance();
+        if ($oTours->isAvailable(BxDolTours::STUDIO))
+            $sResult .= $oTemplate->parseHtmlByName('launcher_tour.html', $oTours->getTemplateVars(BxDolTours::STUDIO));
 
         $sResult .= BxDolInformer::getInstance($oTemplate)->display();
         

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Introduction tours: shorter texts, and the strings of the new controls and menu item (BxDolTours). -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_sys_tour_back"><![CDATA[Назад]]></string_add>
+    <string_add name="_sys_tour_close"><![CDATA[Закрыть тур]]></string_add>
+    <string_add name="_sys_tour_step"><![CDATA[{0} из {1}]]></string_add>
+    <string_add name="_sys_menu_item_title_system_tour"><![CDATA[Вводный тур]]></string_add>
+    <string_add name="_sys_menu_item_title_tour"><![CDATA[Вводный тур]]></string_add>
+    <string_upd name="_sys_tour_launcher_welcome_title"><![CDATA[Добро пожаловать в Студию]]></string_upd>
+    <string_upd name="_sys_tour_launcher_welcome_txt"><![CDATA[В Студии настраивается сайт: приложения, дизайн, страницы, меню, формы, права и языки. Этот короткий тур покажет, что где находится.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_apps_title"><![CDATA[Ваши приложения]]></string_upd>
+    <string_upd name="_sys_tour_launcher_apps_txt"><![CDATA[Каждая плитка это приложение: модуль, инструмент, язык или шаблон. Установленные приложения появляются здесь.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_designer_title"><![CDATA[Дизайнер]]></string_upd>
+    <string_upd name="_sys_tour_launcher_designer_txt"><![CDATA[Задайте логотип, выберите шаблон и измените обложку, которую гости видят первой.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_accounts_title"><![CDATA[Аккаунты]]></string_upd>
+    <string_upd name="_sys_tour_launcher_accounts_txt"><![CDATA[Управляйте аккаунтами участников и выбирайте администраторов и модераторов. Они следят за контентом и профилями на самом сайте, не в Студии.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_dashboard_title"><![CDATA[Панель]]></string_upd>
+    <string_upd name="_sys_tour_launcher_dashboard_txt"><![CDATA[Состояние сайта: версия UNA, занятое место, проверки сервера и кэш.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_builder_page_title"><![CDATA[Страницы]]></string_upd>
+    <string_upd name="_sys_tour_launcher_builder_page_txt"><![CDATA[Добавляйте, удаляйте и переставляйте блоки на любой странице или создавайте новые страницы. Здесь же настройки видимости и SEO.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_builder_permissions_title"><![CDATA[Права]]></string_upd>
+    <string_upd name="_sys_tour_launcher_builder_permissions_txt"><![CDATA[Создавайте уровни членства и выбирайте, что разрешено каждому уровню.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_builder_forms_title"><![CDATA[Формы]]></string_upd>
+    <string_upd name="_sys_tour_launcher_builder_forms_txt"><![CDATA[Меняйте поля любой формы, их списки значений и то, как форма показывается.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_builder_menus_title"><![CDATA[Навигация]]></string_upd>
+    <string_upd name="_sys_tour_launcher_builder_menus_txt"><![CDATA[Редактируйте меню: добавляйте, переставляйте и скрывайте ссылки, меняйте иконки и выбирайте, кто видит каждый пункт.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_polyglot_title"><![CDATA[Полиглот]]></string_upd>
+    <string_upd name="_sys_tour_launcher_polyglot_txt"><![CDATA[Выберите языки сайта и измените любой текст на сайте, включая тексты этого тура.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_reorganize_title"><![CDATA[Порядок приложений]]></string_upd>
+    <string_upd name="_sys_tour_launcher_reorganize_txt"><![CDATA[Откройте это меню и выберите «Управление приложениями», чтобы переставить приложения или убрать ненужные. Отсюда же можно запустить этот тур снова.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_favourites_title"><![CDATA[Док]]></string_upd>
+    <string_upd name="_sys_tour_launcher_favourites_txt"><![CDATA[Недавно открытые приложения остаются здесь, в одном клике. В режиме редактирования приложение можно закрепить в доке.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_add_apps_title"><![CDATA[Магазин приложений]]></string_upd>
+    <string_upd name="_sys_tour_launcher_add_apps_txt"><![CDATA[В UNA сразу есть основные приложения. Остальные берите здесь: модули, шаблоны, языки и интеграции.]]></string_upd>
+    <string_upd name="_sys_tour_homepage_welcome_title"><![CDATA[Это главная страница]]></string_upd>
+    <string_upd name="_sys_tour_homepage_welcome_txt"><![CDATA[Она наполняется вместе с сайтом. Добавьте приложения и расставьте блоки страницы в Студии, затем пригласите людей и опубликуйте что-нибудь.]]></string_upd>
+    <string_upd name="_sys_tour_homepage_account_menu_title"><![CDATA[Меню аккаунта]]></string_upd>
+    <string_upd name="_sys_tour_homepage_account_menu_txt"><![CDATA[Здесь можно переключать профили, смотреть уведомления и открывать настройки аккаунта. Из этого меню можно запустить этот тур снова.]]></string_upd>
+</resources>

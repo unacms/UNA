@@ -1927,6 +1927,184 @@ function bx_set_color_scheme_html()
 }
 
 /*
+ * Introduction tours (BxDolTours): the homepage tour for operators and the Studio tour, both
+ * built on Shepherd (plugins_public/shepherd) and styled by template/css/tour.css.
+ *
+ * bx_tour(oOptions) returns the Shepherd tour:
+ *   name       'home' or 'studio', as BxDolTours knows it
+ *   steps      [{id, title, text, element, on}]; a step whose element is missing is left out
+ *   autostart  start now (the account hasn't closed or finished this tour yet)
+ *   inert      selector of the page behind the overlay: inert while a step is open, so Tab
+ *              and screen readers stay inside the step
+ *   labels     {back, next, done, close, step} with step as "{0} of {1}"
+ *
+ * Every step can be closed (its X button or Esc). Closing or finishing the tour is kept for
+ * the account (tour.php), so it doesn't start by itself again; ?tour=1 in the address and
+ * the "Introduction Tour" menu items start it.
+ *
+ * The page is dimmed by the tour's own overlay (bx_tour_spotlight): the step's element shows
+ * through a rounded opening with soft edges, a little wider than the element. Shepherd's
+ * overlay is kept, unseen, to keep clicks off the page.
+ */
+function bx_tour(oOptions)
+{
+    var oLabels = oOptions.labels || {};
+    var bStill = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var oTour = new Shepherd.Tour({
+        useModalOverlay: true,
+        exitOnEsc: true,
+        keyboardNavigation: true,
+        defaultStepOptions: {
+            classes: 'bx-tour bx-def-z-index-modal',
+            cancelIcon: {enabled: true, label: oLabels.close || ''},
+            canClickTarget: false,
+            scrollTo: {behavior: bStill ? 'auto' : 'smooth', block: 'center'},
+            modalOverlayOpeningPadding: 12,
+            modalOverlayOpeningRadius: 20
+        }
+    });
+
+    var aSteps = (oOptions.steps || []).filter(function(oStep) {
+        return oStep.element === undefined || (oStep.element && $(oStep.element).length);
+    });
+
+    aSteps.forEach(function(oStep, iIndex) {
+        var bLast = iIndex == aSteps.length - 1;
+
+        var aButtons = [];
+        if(iIndex > 0)
+            aButtons.push({text: oLabels.back, action: oTour.back, classes: 'shepherd-button-secondary'});
+        aButtons.push({text: bLast ? oLabels.done : oLabels.next, action: bLast ? oTour.complete : oTour.next, classes: 'shepherd-button-primary'});
+
+        oTour.addStep({
+            id: oStep.id,
+            title: oStep.title,
+            text: oStep.text,
+            attachTo: oStep.element === undefined ? undefined : {element: $(oStep.element).get(0), on: oStep.on || 'bottom'},
+            buttons: aButtons,
+            when: {
+                show: function() {
+                    // "2 of 5" at the start of the step's footer.
+                    var oFooter = this.getElement() && this.getElement().querySelector('.shepherd-footer');
+                    if(!oFooter || aSteps.length < 2 || oFooter.querySelector('.bx-tour-progress'))
+                        return;
+
+                    var oProgress = document.createElement('span');
+                    oProgress.className = 'bx-tour-progress';
+                    oProgress.textContent = (oLabels.step || '{0} / {1}').replace('{0}', iIndex + 1).replace('{1}', aSteps.length);
+                    oFooter.insertBefore(oProgress, oFooter.firstChild);
+                }
+            }
+        });
+    });
+
+    var fInert = function(bOn) {
+        var oPage = oOptions.inert ? document.querySelector(oOptions.inert) : null;
+        if(oPage)
+            oPage.inert = bOn;
+    };
+    var fEnd = function() {
+        fInert(false);
+        bx_tour_spotlight(null);
+
+        $.post(sUrlRoot + 'tour.php', {action: 'seen', tour: oOptions.name});
+    };
+
+    oTour.on('show', function(oEvent) {
+        fInert(true);
+        bx_tour_spotlight(oEvent.step);
+    });
+    oTour.on('cancel', fEnd);
+    oTour.on('complete', fEnd);
+
+    var bForced = /[?&]tour=1(&|$)/.test(window.location.search);
+    if(bForced && window.history.replaceState)
+        window.history.replaceState(null, '', window.location.pathname);
+
+    if(aSteps.length && (bForced || oOptions.autostart))
+        oTour.start();
+
+    return oTour;
+}
+
+var glBxTourSpotlight = {svg: null, hole: null, step: null, raf: 0, from: null, rect: null, start: 0};
+
+/**
+ * Dim the page around the step's element, or all of it for a step without one; null removes the overlay.
+ * The opening follows its element as the page scrolls and glides from one step's element to the next.
+ */
+function bx_tour_spotlight(oStep)
+{
+    var o = glBxTourSpotlight;
+
+    if(!oStep) {
+        cancelAnimationFrame(o.raf);
+        if(o.svg)
+            o.svg.remove();
+        document.body.classList.remove('bx-tour-on');
+        o.svg = o.hole = o.step = o.rect = o.from = null;
+        o.raf = 0;
+        return;
+    }
+
+    if(!o.svg) {
+        var sNs = 'http://www.w3.org/2000/svg';
+        o.svg = document.createElementNS(sNs, 'svg');
+        o.svg.setAttribute('class', 'bx-tour-overlay');
+        o.svg.setAttribute('aria-hidden', 'true');
+        o.svg.innerHTML = '<defs>'
+            + '<filter id="bx-tour-soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7" /></filter>'
+            + '<mask id="bx-tour-mask"><rect width="100%" height="100%" fill="#fff" /><rect class="bx-tour-hole" fill="#000" filter="url(#bx-tour-soft)" /></mask>'
+            + '</defs>'
+            + '<rect class="bx-tour-dim" width="100%" height="100%" mask="url(#bx-tour-mask)" />';
+        o.hole = o.svg.querySelector('.bx-tour-hole');
+        document.body.appendChild(o.svg);
+        document.body.classList.add('bx-tour-on');
+    }
+
+    o.step = oStep;
+    o.from = o.rect;
+    o.start = performance.now();
+
+    if(!o.raf)
+        o.raf = requestAnimationFrame(bx_tour_spotlight_tick);
+}
+
+function bx_tour_spotlight_tick(fNow)
+{
+    var o = glBxTourSpotlight;
+    o.raf = 0;
+    if(!o.svg || !o.step)
+        return;
+
+    // Where the opening belongs now: around the step's element, or nothing in the middle of the screen.
+    var iPad = 12, oElement = o.step.getTarget && o.step.getTarget();
+    var oTo = {x: window.innerWidth / 2, y: window.innerHeight / 2, w: 0, h: 0};
+    if(oElement && oElement.isConnected) {
+        var oBox = oElement.getBoundingClientRect();
+        oTo = {x: oBox.left - iPad, y: oBox.top - iPad, w: oBox.width + 2 * iPad, h: oBox.height + 2 * iPad};
+    }
+
+    var bStill = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var f = o.from && !bStill ? Math.min(1, (fNow - o.start) / 260) : 1;
+    f = 1 - Math.pow(1 - f, 3);
+
+    var oFrom = o.from || oTo;
+    o.rect = {x: oFrom.x + (oTo.x - oFrom.x) * f, y: oFrom.y + (oTo.y - oFrom.y) * f, w: oFrom.w + (oTo.w - oFrom.w) * f, h: oFrom.h + (oTo.h - oFrom.h) * f};
+    if(f >= 1)
+        o.from = null;
+
+    o.hole.setAttribute('x', o.rect.x);
+    o.hole.setAttribute('y', o.rect.y);
+    o.hole.setAttribute('width', Math.max(0, o.rect.w));
+    o.hole.setAttribute('height', Math.max(0, o.rect.h));
+    o.hole.setAttribute('rx', Math.min(20, o.rect.w / 2, o.rect.h / 2));
+
+    o.raf = requestAnimationFrame(bx_tour_spotlight_tick);
+}
+
+/*
  * Interface sounds are Cuelume's cues (plugins_public/cuelume, MIT): one cue per
  * interface job, picked by the "Which cue?" table at https://cuelume.dev/agents.md.
  * Controls carry data-cuelume-* attributes, which Cuelume's bind() plays as they

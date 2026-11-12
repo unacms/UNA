@@ -3672,6 +3672,7 @@
     <string name="_sys_menu_item_title_switch_template"><![CDATA[Дизайн]]></string>
     <string name="_sys_menu_item_title_switch_template_mask"><![CDATA[{0}]]></string>
     <string name="_sys_menu_item_title_terms"><![CDATA[Правила]]></string>
+    <string name="_sys_menu_item_title_tour"><![CDATA[Вводный тур]]></string>
     <string name="_sys_menu_item_title_account_menu"><![CDATA[{member_display_name}]]></string>
     <string name="_sys_menu_item_title_account_profile_context"><![CDATA[Профили]]></string>
     <string name="_sys_menu_item_title_account_dashboard"><![CDATA[Панель]]></string>
@@ -3761,6 +3762,7 @@
     <string name="_sys_menu_item_title_system_switch_language"><![CDATA[Язык]]></string>
     <string name="_sys_menu_item_title_system_switch_template"><![CDATA[Тема]]></string>
     <string name="_sys_menu_item_title_system_terms"><![CDATA[Правила]]></string>
+    <string name="_sys_menu_item_title_system_tour"><![CDATA[Вводный тур]]></string>
     <string name="_sys_menu_item_title_system_account_menu"><![CDATA[Аккаунт]]></string>
     <string name="_sys_menu_item_title_system_account_profile_context"><![CDATA[Профили]]></string>
     <string name="_sys_menu_item_title_system_account_dashboard"><![CDATA[Панель]]></string>
@@ -4552,37 +4554,40 @@
     <string name="_sys_subscribe"><![CDATA[Получать уведомления]]></string>
     <string name="_sys_template_mixed_mask"><![CDATA[{0} ({1})]]></string>
 
-    <string name="_sys_tour_launcher_welcome_title"><![CDATA[Добро пожаловать в UNA Студию!]]></string>
-    <string name="_sys_tour_launcher_welcome_txt"><![CDATA[Студия это место, где можно настроить свой сайт: добавлять приложения и управлять ими; управлять языками и изменять дизайн; контролировать уровни доступа для пользователей; настраивать страницы и навигацию, а также многое другое. Текущая страница - стартовый экран Студии.]]></string>
-    <string name="_sys_tour_launcher_apps_title"><![CDATA[Добавь новые приложения]]></string>
-    <string name="_sys_tour_launcher_apps_txt"><![CDATA[Приложения это модули, языковые переводы, инструменты, различные дизайны сайта - кирпичики из которых складывается твой уникальный сайт. После скачивания и установки проложения, оно появляется на этой страничке. Приложения дополняют и изменяют функциональность сайта.]]></string>
-    <string name="_sys_tour_launcher_designer_title"><![CDATA[Сделай сайт особенным]]></string>
-    <string name="_sys_tour_launcher_designer_txt"><![CDATA[Дизайнер - это лучшее место, чтобы начать изменять свой сайт. Поменяйте логотоп сайта, выберете дизайн и отредактируйте "Обложку сайта". Сайт сейчас показывает "Обложку" для всех гостей сайта. Можно отредактировать её, или просто отключить, тогда гостям будет показываться полноценная главная страница, как для зарегестрированных пользователей.]]></string>
-    <string name="_sys_tour_launcher_accounts_title"><![CDATA[Больше чем администратор]]></string>
-    <string name="_sys_tour_launcher_accounts_txt"><![CDATA[Администраторы и модераторы могут управлять профилями и их содержимым, это не обязательно должно быть в Студии, куда имеет доступ только оператор сайта. Все что нужно, это назначить права для администраторов и модераторов в "Разрешениях". Чтобы назначить профилю права администратора или модератора, нужно перейти в профиль и нажать "Назначить членство".]]></string>    
-    <string name="_sys_tour_launcher_dashboard_title"><![CDATA[Основная информация под рукой]]></string>
-    <string name="_sys_tour_launcher_dashboard_txt"><![CDATA["Приборная панель" показывает основную информацию о сайте: версию UNA, использование места, инструменты хостинга и кэш. Различные проложения могут добавлять свои блоки на эту страничку.]]></string>
-    <string name="_sys_tour_launcher_builder_page_title"><![CDATA[Перестрой свой сайт под себя]]></string>
-    <string name="_sys_tour_launcher_builder_page_txt"><![CDATA[Построитель страниц позволяет редактировать страницы перемещая, удаляя и добавляя секции на конкретной странице. Можно даже создавать новые страницы различного вида. Также можно контролировать доступ к странице, поисковую оптимизацию, кэш и дизайн страницы.]]></string>
-    <string name="_sys_tour_launcher_builder_permissions_title"><![CDATA[Определи уровни доступа пользователей]]></string>
-    <string name="_sys_tour_launcher_builder_permissions_txt"><![CDATA[Возможно редактировать уровни доступа для членств и создавать новые членства.]]></string>
-    <string name="_sys_tour_launcher_builder_forms_title"><![CDATA[Формируй и переформируй формы]]></string>
-    <string name="_sys_tour_launcher_builder_forms_txt"><![CDATA[Построитель форм это мощный инструмент, который позволяет менять формы сайта и базы данных. Возможно создавать списки, новые поля для форм и различные представления одной и той-же формы (такие как добавление, редактирование и др.). Формы определяют структуру и тему Вашего сайта.]]></string>
-    <string name="_sys_tour_launcher_builder_menus_title"><![CDATA[Показывай что угодно]]></string>
-    <string name="_sys_tour_launcher_builder_menus_txt"><![CDATA[Добавляй новые пункты в навигационное меню и меняй существующие. Возможно редактировать ссылки, передвигать их, менять иконки, а также контролировать видимость пунктов в зависимости от членства пользователя.]]></string>
-    <string name="_sys_tour_launcher_polyglot_title"><![CDATA[Говори на их языке]]></string>
-    <string name="_sys_tour_launcher_polyglot_txt"><![CDATA["Величайшее богатство народа — его язык". Полиглот позволяет поменять язык сайта, формат даты и времени, редактировать слова и фразы для всех языков и даже редактировать шаблоны писем.]]></string>
-    <string name="_sys_tour_launcher_reorganize_title"><![CDATA[<i class="sys-icon move"></i> Реорганизуй приложения]]></string>
-    <string name="_sys_tour_launcher_reorganize_txt"><![CDATA[Активируй этот режим, чтобы передвигать приложения и удалять неактивные.]]></string>
-    <string name="_sys_tour_launcher_favourites_title"><![CDATA[Держи приложения в доке]]></string>
-    <string name="_sys_tour_launcher_favourites_txt"><![CDATA[Док в шапке держит под рукой недавно открытые приложения. В режиме реорганизации откройте настройки приложения, чтобы оставить его в доке для себя или для всех операторов.]]></string>
-    <string name="_sys_tour_launcher_add_apps_title"><![CDATA[<i class="sys-icon plus"></i> А сейчас, добавь новые приложения!]]></string>
-    <string name="_sys_tour_launcher_add_apps_txt"><![CDATA[В UNA уже входят самые необходимые приложения. Выбери нужные, скачай и затем проинсталлируй приложения, чтобы добавить разные виды профайлов, модулей, системных утилит, языков и дизайнов. Проинсталлированные приложения можно активировать и деактивировать. UNA очень гибкий и имеет модульную архитектуру, тем самым позволяя создать сайт мечты выбрав нужную функциональность, настройки и структуру базы данных. Но даже не меняя ничего вы получите прекрасно фунционирующий сайт!]]></string>
+    <string name="_sys_tour_launcher_welcome_title"><![CDATA[Добро пожаловать в Студию]]></string>
+    <string name="_sys_tour_launcher_welcome_txt"><![CDATA[В Студии настраивается сайт: приложения, дизайн, страницы, меню, формы, права и языки. Этот короткий тур покажет, что где находится.]]></string>
+    <string name="_sys_tour_launcher_apps_title"><![CDATA[Ваши приложения]]></string>
+    <string name="_sys_tour_launcher_apps_txt"><![CDATA[Каждая плитка это приложение: модуль, инструмент, язык или шаблон. Установленные приложения появляются здесь.]]></string>
+    <string name="_sys_tour_launcher_designer_title"><![CDATA[Дизайнер]]></string>
+    <string name="_sys_tour_launcher_designer_txt"><![CDATA[Задайте логотип, выберите шаблон и измените обложку, которую гости видят первой.]]></string>
+    <string name="_sys_tour_launcher_accounts_title"><![CDATA[Аккаунты]]></string>
+    <string name="_sys_tour_launcher_accounts_txt"><![CDATA[Управляйте аккаунтами участников и выбирайте администраторов и модераторов. Они следят за контентом и профилями на самом сайте, не в Студии.]]></string>    
+    <string name="_sys_tour_launcher_dashboard_title"><![CDATA[Панель]]></string>
+    <string name="_sys_tour_launcher_dashboard_txt"><![CDATA[Состояние сайта: версия UNA, занятое место, проверки сервера и кэш.]]></string>
+    <string name="_sys_tour_launcher_builder_page_title"><![CDATA[Страницы]]></string>
+    <string name="_sys_tour_launcher_builder_page_txt"><![CDATA[Добавляйте, удаляйте и переставляйте блоки на любой странице или создавайте новые страницы. Здесь же настройки видимости и SEO.]]></string>
+    <string name="_sys_tour_launcher_builder_permissions_title"><![CDATA[Права]]></string>
+    <string name="_sys_tour_launcher_builder_permissions_txt"><![CDATA[Создавайте уровни членства и выбирайте, что разрешено каждому уровню.]]></string>
+    <string name="_sys_tour_launcher_builder_forms_title"><![CDATA[Формы]]></string>
+    <string name="_sys_tour_launcher_builder_forms_txt"><![CDATA[Меняйте поля любой формы, их списки значений и то, как форма показывается.]]></string>
+    <string name="_sys_tour_launcher_builder_menus_title"><![CDATA[Навигация]]></string>
+    <string name="_sys_tour_launcher_builder_menus_txt"><![CDATA[Редактируйте меню: добавляйте, переставляйте и скрывайте ссылки, меняйте иконки и выбирайте, кто видит каждый пункт.]]></string>
+    <string name="_sys_tour_launcher_polyglot_title"><![CDATA[Полиглот]]></string>
+    <string name="_sys_tour_launcher_polyglot_txt"><![CDATA[Выберите языки сайта и измените любой текст на сайте, включая тексты этого тура.]]></string>
+    <string name="_sys_tour_launcher_reorganize_title"><![CDATA[Порядок приложений]]></string>
+    <string name="_sys_tour_launcher_reorganize_txt"><![CDATA[Откройте это меню и выберите «Управление приложениями», чтобы переставить приложения или убрать ненужные. Отсюда же можно запустить этот тур снова.]]></string>
+    <string name="_sys_tour_launcher_favourites_title"><![CDATA[Док]]></string>
+    <string name="_sys_tour_launcher_favourites_txt"><![CDATA[Недавно открытые приложения остаются здесь, в одном клике. В режиме редактирования приложение можно закрепить в доке.]]></string>
+    <string name="_sys_tour_launcher_add_apps_title"><![CDATA[Магазин приложений]]></string>
+    <string name="_sys_tour_launcher_add_apps_txt"><![CDATA[В UNA сразу есть основные приложения. Остальные берите здесь: модули, шаблоны, языки и интеграции.]]></string>
+    <string name="_sys_tour_step"><![CDATA[{0} из {1}]]></string>
 
-    <string name="_sys_tour_homepage_welcome_title"><![CDATA[Это главная страница сайта]]></string>
-    <string name="_sys_tour_homepage_welcome_txt"><![CDATA[В самом начале, тут не много информации, но после инсталляции нескольких модулей, добавлении дополнительных секций на страницу из Студии и добавлении содержимого - сайт оживёт!]]></string>
-    <string name="_sys_tour_homepage_account_menu_title"><![CDATA[Узнай меню своей учётной записи]]></string>
-    <string name="_sys_tour_homepage_account_menu_txt"><![CDATA[Здесь можно добавлять и управлять профилями, следить за уведомлениями, открывать настройки своей учётной записи. Администраторы и модераторы сайта могут использовать это меню, чтобы открыть приборную панель со ссылками по администрации сайта.]]></string>
+    <string name="_sys_tour_back"><![CDATA[Назад]]></string>
+    <string name="_sys_tour_close"><![CDATA[Закрыть тур]]></string>
+    <string name="_sys_tour_homepage_welcome_title"><![CDATA[Это главная страница]]></string>
+    <string name="_sys_tour_homepage_welcome_txt"><![CDATA[Она наполняется вместе с сайтом. Добавьте приложения и расставьте блоки страницы в Студии, затем пригласите людей и опубликуйте что-нибудь.]]></string>
+    <string name="_sys_tour_homepage_account_menu_title"><![CDATA[Меню аккаунта]]></string>
+    <string name="_sys_tour_homepage_account_menu_txt"><![CDATA[Здесь можно переключать профили, смотреть уведомления и открывать настройки аккаунта. Из этого меню можно запустить этот тур снова.]]></string>
 
     <string name="_sys_txt_api_key"><![CDATA[Ключ API]]></string>
     <string name="_sys_txt_access_denied"><![CDATA[Доступ запрещён]]></string>
