@@ -16,7 +16,7 @@
                 <div class="bx-tasks-ts-scroll">
                     <table class="bx-tasks-ts-table">
                         <tbody>
-                            <tr class="bx-tasks-ts-head"><th class="bx-tasks-ts-name"></th><bx_repeat:head><th class="bx-tasks-ts-time">__ts_h_value__</th></bx_repeat:head></tr>
+                            <tr class="bx-tasks-ts-head" role="row"><td class="bx-tasks-ts-name" role="columnheader"></td><bx_repeat:head><td class="bx-tasks-ts-time" role="columnheader">__ts_h_value__</td></bx_repeat:head></tr>
                             <bx_repeat:rows>
                                 <tr class="__ts_r_class__">
                                     <td class="bx-tasks-ts-name"><bx_if:ts_link><a href="__ts_l_url__">__ts_l_title__</a></bx_if:ts_link><bx_if:ts_text>__ts_t_value__</bx_if:ts_text><bx_if:ts_log><span class="bx-tasks-ts-date">__ts_g_date__</span> <span class="bx-tasks-ts-note">__ts_g_text__</span></bx_if:ts_log></td>
