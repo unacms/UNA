@@ -327,6 +327,20 @@ class BxBaseFormView extends BxDolForm
         return (bool)($this->aParams['view_mode'] ?? 0);
     }
 
+    /**
+     * How the form labels its fields: the form display's own style (`sys_form_displays`.`label_style`, or 'label_style' in
+     * the form params), otherwise the site's (Studio > Designer > Settings, `sys_form_label_style`). Anything else is regular.
+     * @return string BX_DOL_FORM_LABEL_STYLE_REGULAR or BX_DOL_FORM_LABEL_STYLE_ADAPTIVE
+     */
+    function getLabelStyle()
+    {
+        $sStyle = $this->aParams['label_style'] ?? '';
+        if(!is_string($sStyle) || $sStyle === '')
+            $sStyle = getParam('sys_form_label_style');
+
+        return $sStyle == BX_DOL_FORM_LABEL_STYLE_ADAPTIVE ? BX_DOL_FORM_LABEL_STYLE_ADAPTIVE : BX_DOL_FORM_LABEL_STYLE_REGULAR;
+    }
+
     function setAbsoluteActionUrl($sUrl)
     {
         if(empty($sUrl))
@@ -593,10 +607,11 @@ class BxBaseFormView extends BxDolForm
             $aInputs[$sKey] = $aInput;
         }
 
+        // Apps draw the labels the way the site does: the resolved style, never ''. An app that has no floating labels shows regular ones.
         return [
             'inputs' => $aInputs, 
             'attrs' => $this->aFormAttrs, 
-            'params' => $this->aParams
+            'params' => array_merge($this->aParams, ['label_style' => $this->getLabelStyle()])
         ];
     }
 
@@ -1217,6 +1232,9 @@ BLAH;
     {
         $sCaption = isset($aInput['caption']) ? bx_process_output($aInput['caption'], BX_DATA_HTML) : '';
 
+        // Not while the form is built for the API: the row's markup would reach the apps in the input's attrs.
+        $bAdaptive = !$isOneLine && !$this->_bGenFormApi && $sCaption && $this->isLabelAdaptive($aInput);
+
         $sRequired = !empty($aInput['required']) ? '<span class="bx-form-required">*</span>' : '';
         
         $sHelp = !empty($aInput['help']) ? ' <a href="javascript:void(0)" onclick="javascript:' . $this->getJsObjectName() . '.showHelp(this, \'' . $aInput['name'] . '\')"><i class="sys-icon question-circle"></i></a> ' : '';
@@ -1236,6 +1254,26 @@ BLAH;
                 $aInput['tr_attrs'] = [];
             $aInput['tr_attrs']['id'] = "bx-form-element-" . $aInput['name'];
         }
+
+        /*
+         * A floating label (forms.css): the caption rests in the empty field and moves to its top edge once the field
+         * has focus or a value, which CSS reads from :placeholder-shown. A field with a placeholder of its own keeps
+         * the caption on the edge, so the two never overlap.
+         */
+        if ($bAdaptive) {
+            if (!isset($aInput['attrs']) || !is_array($aInput['attrs']))
+                $aInput['attrs'] = [];
+            $aInput['attrs']['id'] = $this->getInputId($aInput);
+
+            $sClassWrapper .= ' bx-form-element-adaptive';
+            if (isset($aInput['attrs']['placeholder']) && trim((string)$aInput['attrs']['placeholder']) !== '')
+                $sClassWrapper .= ' bx-form-element-adaptive-floated';
+            else
+                $aInput['attrs']['placeholder'] = ' ';
+
+            $sCaption = '<label for="' . bx_html_attribute($aInput['attrs']['id']) . '">' . $sCaption . '</label>';
+        }
+
         $sTrAttrs = bx_convert_array2attrs(isset($aInput['tr_attrs']) && is_array($aInput['tr_attrs']) ? $aInput['tr_attrs'] : array(), $sClassWrapper);
 
         $sClassOneLineCaption = '';
@@ -1285,6 +1323,17 @@ BLAH;
             'info' => $sInfoIcon,
             'error' => $sErrorIcon
         ));
+    }
+
+    /**
+     * Whether a row gets a floating label: only one-line text fields, and only in a form whose label style is adaptive.
+     */
+    public function isLabelAdaptive($aInput)
+    {
+        if($this->getLabelStyle() != BX_DOL_FORM_LABEL_STYLE_ADAPTIVE)
+            return false;
+
+        return in_array($aInput['type'] ?? '', ['text', 'password']) && empty($aInput['html']) && !empty($aInput['name']);
     }
 
     function genWrapperInput($aInput, $sContent)

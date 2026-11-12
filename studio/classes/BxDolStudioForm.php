@@ -18,6 +18,14 @@ class BxDolStudioForm extends BxBaseFormView
         $this->_sCheckerHelper = isset($this->aParams['checker_helper']) ? $this->aParams['checker_helper'] : 'BxDolStudioFormCheckerHelper';
     }
 
+    /**
+     * Studio's own forms keep their labels above the fields, whatever the site's forms use.
+     */
+    function getLabelStyle()
+    {
+        return BX_DOL_FORM_LABEL_STYLE_REGULAR;
+    }
+
     function initChecker($aValues = array (), $aSpecificValues = array())
     {
         parent::initChecker($aValues, $aSpecificValues);

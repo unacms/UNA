@@ -11,6 +11,7 @@ import i18n from 'i18next'
 import { queueFormEnsureVisible } from 'app/lib/form/form-ensure-visible'
 import { nativeDriver } from 'app/lib/platform/animation'
 import { InputLabelInsideContext } from 'app/design/controls/input-label-context'
+import { hasAdaptiveLabel } from 'app/lib/form/label-style'
 
 const isWeb = Platform.OS === 'web'
 const inputSettings = appSetting('theme', 'inputs')
@@ -161,6 +162,7 @@ export default function Field({
     classes,
     use_caption_as_placeholder,
     type,
+    label_style,
     checker,
     required,
     children,
@@ -235,6 +237,8 @@ export default function Field({
         !!captionProp &&
         format == 'default' &&
         !use_caption_as_placeholder &&
+        // a floating label is the field's caption (drawn below, or by the field itself: phone)
+        !hasAdaptiveLabel({ label_style, caption: captionProp, format, type }) &&
         ['switcher', 'checkbox'].includes(type) == false
 
     // Wide form container: caption column 1/4, control column 3/4.

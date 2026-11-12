@@ -7,6 +7,8 @@
  * @{
  */
 
+bx_import('BxDolForm'); // BX_DOL_FORM_LABEL_STYLE_* are defined with the class
+
 define('BX_DOL_STUDIO_DSG_TYPE_GENERAL', 'general');
 define('BX_DOL_STUDIO_DSG_TYPE_LOGO', 'logo');
 define('BX_DOL_STUDIO_DSG_TYPE_ICON', 'icon');
@@ -546,6 +548,10 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
                 $aValues[$sName] = $iType;
         }
 
+        $sLabelStyle = bx_process_input(bx_get('sys_form_label_style'));
+        if(array_key_exists($sLabelStyle, $this->getSettingsLabelStyleList()))
+            $aValues['sys_form_label_style'] = $sLabelStyle;
+
         // As Studio's settings forms save (BxDolStudioOptions::saveChanges): an alert per changed option, then fresh caches.
         $aCategory = [];
         BxDolStudioOptionsQuery::getInstance()->getCategories(['type' => 'by_name', 'value' => 'templates'], $aCategory, false); // BX_DOL_STUDIO_STG_CATEGORY_TEMPLATES, defined with BxDolStudioOptions, which this page doesn't load
@@ -566,6 +572,25 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         $this->clearSettingsCache();
 
         return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SETTINGS);
+    }
+
+    /**
+     * The label styles a form can use, by value.
+     */
+    public function getSettingsLabelStyleList()
+    {
+        return [
+            BX_DOL_FORM_LABEL_STYLE_REGULAR => _t('_adm_dsg_txt_settings_label_style_regular'),
+            BX_DOL_FORM_LABEL_STYLE_ADAPTIVE => _t('_adm_dsg_txt_settings_label_style_adaptive'),
+        ];
+    }
+
+    /**
+     * The site's label style; regular unless adaptive is saved.
+     */
+    public function getSettingsLabelStyle()
+    {
+        return getParam('sys_form_label_style') == BX_DOL_FORM_LABEL_STYLE_ADAPTIVE ? BX_DOL_FORM_LABEL_STYLE_ADAPTIVE : BX_DOL_FORM_LABEL_STYLE_REGULAR;
     }
 
     /**

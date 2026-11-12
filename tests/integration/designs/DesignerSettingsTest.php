@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\Group;
 #[Group('integration')]
 class DesignerSettingsTest extends BxDolIntegrationTestCase
 {
-    private const OPTIONS = ['template', 'sys_pt_default_visitor', 'sys_pt_default_member'];
+    private const OPTIONS = ['template', 'sys_pt_default_visitor', 'sys_pt_default_member', 'sys_form_label_style'];
 
     private array $_aOptionsBackup = [];
     private array $_aGetBackup = [];
@@ -74,6 +74,23 @@ class DesignerSettingsTest extends BxDolIntegrationTestCase
         $this->assertSame($sTemplate, getParam('template'), 'an unknown template is not saved');
         $this->assertSame((string)BX_PAGE_TYPE_STANDARD, (string)getParam('sys_pt_default_visitor'), 'Default is not a default');
         $this->assertSame((string)BX_PAGE_TYPE_APPLICATION, (string)getParam('sys_pt_default_member'), 'an unknown layout is not saved');
+    }
+
+    public function testSavesTheLabelStyleAndIgnoresAnUnknownOne(): void
+    {
+        setParam('sys_form_label_style', BX_DOL_FORM_LABEL_STYLE_REGULAR);
+
+        $_GET = ['sys_form_label_style' => BX_DOL_FORM_LABEL_STYLE_ADAPTIVE];
+        $this->designer()->submitSettings();
+        $this->assertSame(BX_DOL_FORM_LABEL_STYLE_ADAPTIVE, getParam('sys_form_label_style'));
+
+        $_GET = ['sys_form_label_style' => 'no-such-style'];
+        $this->designer()->submitSettings();
+        $this->assertSame(BX_DOL_FORM_LABEL_STYLE_ADAPTIVE, getParam('sys_form_label_style'), 'an unknown style is not saved');
+
+        $_GET = ['sys_form_label_style' => BX_DOL_FORM_LABEL_STYLE_REGULAR];
+        $this->designer()->submitSettings();
+        $this->assertSame(BX_DOL_FORM_LABEL_STYLE_REGULAR, getParam('sys_form_label_style'));
     }
 
     private function designer(): BxDolStudioDesigner

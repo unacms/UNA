@@ -839,6 +839,7 @@
 	<string name="_adm_dsg_inf_pwa_sw_enable"><![CDATA[When you change the site styles or scripts, visitors get the new ones the next time they open the site.]]></string>
 	<string name="_adm_dsg_inf_pwa_sw_offline"><![CDATA[Shown instead of the browser error when there is no connection: an address on this site, such as page.php?i=about. Leave it empty to use the browser page.]]></string>
 	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Colors the app title bar and, on phones, the status bar. Defaults to the color your template sets.]]></string>
+	<string name="_adm_dsg_inf_settings_section_forms"><![CDATA[How forms label their one-line text fields, on the site and in the apps. A form display can use a style of its own, set in <a href="{0}">Forms</a>. An app without floating labels shows them above the fields.]]></string>
 	<string name="_adm_dsg_inf_settings_section_layout"><![CDATA[Where the header, menus and footer go around the content of a page. Pages with a layout of their own in <a href="{0}">Pages</a> keep it; all the others use the ones below.]]></string>
 	<string name="_adm_dsg_inf_settings_section_template"><![CDATA[The template draws the whole site: its header, menus, colors and fonts. Everyone sees this one unless they pick another enabled template themselves.]]></string>
 	<string name="_adm_dsg_inf_splash_section_apps"><![CDATA[Code for one app only. An empty field uses the page code above. The apps draw the forms, the logo and the illustration with their own components, and leave out scripts and anything marked <code>data-site-only</code>. The iOS and Android apps show text, headings, lists and links, without styles or layout. Add <code>&lt;neo-slot name="social_login"&gt;&lt;/neo-slot&gt;</code> for the social sign-in buttons alone.]]></string>
@@ -896,9 +897,12 @@
 	<string name="_adm_dsg_txt_pwa_sw_enable"><![CDATA[Use a service worker]]></string>
 	<string name="_adm_dsg_txt_pwa_sw_offline"><![CDATA[Offline page]]></string>
 	<string name="_adm_dsg_txt_pwa_theme_color"><![CDATA[Window color]]></string>
+	<string name="_adm_dsg_txt_settings_label_style_adaptive"><![CDATA[Floating: in the empty field, on its top edge once filled]]></string>
+	<string name="_adm_dsg_txt_settings_label_style_regular"><![CDATA[Above the field]]></string>
 	<string name="_adm_dsg_txt_settings_layout_member"><![CDATA[For members]]></string>
 	<string name="_adm_dsg_txt_settings_layout_visitor"><![CDATA[For visitors]]></string>
 	<string name="_adm_dsg_txt_settings_note"><![CDATA[Without header/footer leaves no menus for moving around the site. Set it for single pages in Pages rather than as a default.]]></string>
+	<string name="_adm_dsg_txt_settings_section_forms"><![CDATA[Forms]]></string>
 	<string name="_adm_dsg_txt_settings_section_layout"><![CDATA[Page layout]]></string>
 	<string name="_adm_dsg_txt_settings_section_template"><![CDATA[Site template]]></string>
 	<string name="_adm_dsg_txt_settings_template_current"><![CDATA[In use]]></string>
@@ -1074,6 +1078,7 @@
     <string name="_adm_form_btn_search_forms_sortable_fields_reset"><![CDATA[Reset]]></string>
     <string name="_adm_form_btn_search_forms_save"><![CDATA[Save]]></string>
     <string name="_adm_form_btn_search_forms_cancel"><![CDATA[Cancel]]></string>
+    <string name="_adm_form_dsc_displays_label_style"><![CDATA[Floating labels apply to one-line text fields. Other fields keep their labels above them.]]></string>
     <string name="_adm_form_dsc_displays_title"><![CDATA[Name of the form display mode. Displayed in Studio only.]]></string>
     <string name="_adm_form_dsc_field_area_label"><![CDATA[Accessible name for the field. It is useful when the visible text content of the field is not descriptive enough or absent.]]></string>
     <string name="_adm_form_dsc_field_attrs_max"><![CDATA[Enter numeric value]]></string>
@@ -1199,6 +1204,8 @@
 	<string name="_adm_form_txt_displays_gl_form"><![CDATA[Form]]></string>
 	<string name="_adm_form_txt_displays_gl_module"><![CDATA[Module]]></string>
 	<string name="_adm_form_txt_displays_gl_title"><![CDATA[System Name]]></string>
+	<string name="_adm_form_txt_displays_label_style"><![CDATA[Field labels]]></string>
+	<string name="_adm_form_txt_displays_label_style_default"><![CDATA[As on the site]]></string>
 	<string name="_adm_form_txt_displays_manage_fields"><![CDATA[Manage fields]]></string>
 	<string name="_adm_form_txt_displays_title"><![CDATA[System Name]]></string>
 	<string name="_adm_form_txt_field_add_popup"><![CDATA[Add New Field]]></string>
@@ -1975,6 +1982,7 @@
     <string name="_adm_stg_cpt_option_sys_player_default_quality"><![CDATA[Default video quality]]></string>
     <string name="_adm_stg_cpt_option_sys_pt_default_visitor"><![CDATA[Default page type for visitor]]></string>
     <string name="_adm_stg_cpt_option_sys_pt_default_member"><![CDATA[Default page type for member]]></string>
+    <string name="_adm_stg_cpt_option_sys_form_label_style"><![CDATA[Field labels]]></string>
     <string name="_adm_stg_cpt_option_sys_form_lpc_enable"><![CDATA[Enable leave page confirmation for pages with forms]]></string>
     <string name="_adm_stg_cpt_option_sys_format_date"><![CDATA[<a target="_blank" href="https://momentjs.com/docs/#/displaying/format/">Date Format</a>]]></string>
     <string name="_adm_stg_cpt_option_sys_format_datetime"><![CDATA[<a target="_blank" href="https://momentjs.com/docs/#/displaying/format/">Date And Time Format</a>]]></string>

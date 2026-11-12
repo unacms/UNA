@@ -10,19 +10,18 @@ export const settingsForms = {
         field_padding: ' gap-1 ',
         caption_classes:
             'font-semibold text-sm text-card-foreground',
-        without_captions: [
-            // OLD appSetting('forms', 'form_without_captions')
-            'sys_login',
-            'sys_account_create',
-            'sys_forgot_password',
-            'bx_invites_request_send',
-        ],
         /**
-         * When true, forms in `without_captions` use floating “eyebrow” labels:
-         * caption rests inside the field like a placeholder, then moves onto the
-         * top edge when the field is focused or has a value.
+         * Forms (by display name) that show each caption as the field's placeholder, with no label.
+         * Empty by default: labels follow UNA's label style (see `adaptive_labels`).
          */
-        adaptive_labels: true,
+        without_captions: [],
+        /**
+         * Floating labels: the caption rests inside the field like a placeholder, then moves to
+         * its top once the field is focused or has a value. `null` follows UNA (Studio > Designer >
+         * Settings, or a form display's own style; regular labels unless UNA says adaptive).
+         * `false` never floats labels, `true` floats them in every form.
+         */
+        adaptive_labels: null,
         visibility_control_names: [
             // appSetting('layout', 'form_' + name + '_control_names')
             '*_allow_view_to',

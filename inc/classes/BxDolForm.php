@@ -12,6 +12,9 @@ define('BX_DOL_FORM_METHOD_POST', 'post');
 define('BX_DOL_FORM_METHOD_SPECIFIC', 'specific');
 define('BX_DOL_FORM_METHOD_DEFAULT', BX_DOL_FORM_METHOD_POST);
 
+define('BX_DOL_FORM_LABEL_STYLE_REGULAR', 'regular'); ///< a field's label above it
+define('BX_DOL_FORM_LABEL_STYLE_ADAPTIVE', 'adaptive'); ///< a floating label: in the empty field, on its top edge once it has focus or a value
+
 define('BX_DATA_LISTS_KEY_PREFIX', '#!');
 define('BX_DATA_VALUES_DEFAULT', 'LKey'); ///< Use default values for data items, @see BxDolForm::getDataItems
 define('BX_DATA_VALUES_ADDITIONAL', 'LKey2'); ///< Use additional values for data items, @see BxDolForm::getDataItems

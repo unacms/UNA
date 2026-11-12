@@ -17,6 +17,7 @@ import { useDebouncer } from '@tanstack/react-pacer'
 import { NeoButton } from 'app/design/controls';
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import { FormError } from 'app/components/form-fields/_field'
+import { resolveLabelStyle } from 'app/lib/form/label-style'
 import { useTranslation } from 'react-i18next'
 import { useRouter, usePathname, redirectTo, useIsFocused } from 'app/lib/hooks/router'
 import { getTabKeyFromPathname } from 'app/lib/navigation/tab-history'
@@ -674,11 +675,15 @@ function FormContent({
 
         const lastNonHiddenIndex = lastNonHiddenIndexFromEnd === -1 ? -1 : inputs.length - 1 - lastNonHiddenIndexFromEnd;
 
+        // One style for the whole form, set in UNA; fields that can't float a label keep it above.
+        const labelStyle = resolveLabelStyle(formBundle.form?.params?.label_style);
+
         inputs = inputs.map((input, index) => ({
             ...input,
             props: {
                 ...input.props,
                 form_layout: layout,
+                label_style: labelStyle,
                 use_caption_as_placeholder:
                     input.props.use_caption_as_placeholder ??
                     appSetting('forms', 'without_captions').includes(name),

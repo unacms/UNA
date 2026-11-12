@@ -518,3 +518,13 @@ html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-m
     align-self: flex-end;
     height: 0;
 }
+/* A floating label leaves no label line: the link keeps a row of its own under the field. */
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-submit_text) > #bx-form-element-Password.bx-form-element-adaptive {
+    order: 1;
+    margin-top: 1rem;
+}
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-Password.bx-form-element-adaptive) > #bx-form-element-submit_text {
+    order: 2;
+    height: auto;
+    margin-top: 0.25rem;
+}
