@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-page-ready"
+description = "Enables the page_ready command without any pre-configured scope."
+commands.allow = ["page_ready"]
+
+[[permission]]
+identifier = "deny-page-ready"
+description = "Denies the page_ready command without any pre-configured scope."
+commands.deny = ["page_ready"]

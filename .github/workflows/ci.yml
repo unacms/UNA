@@ -32,14 +32,16 @@ jobs:
         fetch-depth: ${{ github.event_name == 'pull_request' && '0' || '1' }}
 
     # A PR that changes only neo/ skips PHPUnit; the PHP 8.5 Units leg still builds the package
-    # for the preview deploy. Pushes to master always run the tests.
+    # for the preview deploy. Pushes to master always run the tests. The API client's OpenAPI
+    # file is the exception: ApiV2SpecFileTest compares it with what the PHP code serves.
     - name: Check for changes outside neo/
       id: changes
       env:
         BASE_REF: ${{ github.event.pull_request.base.ref }}
       run: |
         if [ "${{ github.event_name }}" = "pull_request" ] \
-          && git diff --quiet "origin/$BASE_REF...HEAD" -- . ':(exclude)neo/'; then
+          && git diff --quiet "origin/$BASE_REF...HEAD" -- . ':(exclude)neo/' \
+          && git diff --quiet "origin/$BASE_REF...HEAD" -- neo/desktop/una-api/openapi.json; then
           echo "una=false" >> "$GITHUB_OUTPUT"
           echo "Only neo/ changed, PHPUnit is skipped."
         else

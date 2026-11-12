@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-token-refused"
+description = "Enables the token_refused command without any pre-configured scope."
+commands.allow = ["token_refused"]
+
+[[permission]]
+identifier = "deny-token-refused"
+description = "Denies the token_refused command without any pre-configured scope."
+commands.deny = ["token_refused"]

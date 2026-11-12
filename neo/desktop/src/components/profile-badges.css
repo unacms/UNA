@@ -1,0 +1,66 @@
+/* Profile badges after a name (components/profile-badges.tsx). Each pill, "+N" too, sets its own
+   tint and text colours per theme (lib/badge-colors.ts: 4.5:1 or more on the tint, 7:1 under
+   Increase Contrast). The tint is opaque, so a row's hover or selection behind it changes nothing. */
+.badges { display: inline-flex; align-items: center; flex: none; min-width: 0; vertical-align: middle; }
+.badges-pills { display: inline-flex; align-items: center; gap: 4px; }
+.badge {
+    display: inline-flex; align-items: center; gap: 3px; flex: none;
+    height: 16px; padding: 0 6px; border-radius: var(--radius-round);
+    background: var(--badge-bg); color: var(--badge-fg);
+    font-size: var(--text-xs); line-height: 16px; font-weight: 500; white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+.badge-icon-only { padding: 0 3px; }
+/* a picture in place of the icon: a 16px circle at the pill's round start */
+.badge-image { flex: none; width: 16px; height: 16px; border-radius: var(--radius-round); object-fit: cover; }
+/* a picture waiting to be tried again keeps its place: an empty circle a shade off the tint */
+.badge-image-pending { display: inline-block; background: color-mix(in srgb, currentColor 18%, transparent); }
+.badge-pictured { padding-left: 0; }
+.badge-pictured.badge-icon-only { padding-right: 0; }
+/* an icon-only badge: a round chip of its icon (on the tint) or its picture (filling it), no text */
+.badge-chip { justify-content: center; width: 16px; padding: 0; }
+.badge-text { max-width: 14em; overflow: hidden; text-overflow: ellipsis; }
+.badge .icon { flex: none; }
+.badges .tooltip-anchor { display: inline-flex; }
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .badge { background: var(--badge-bg-dark); color: var(--badge-fg-dark); }
+}
+:root[data-theme='dark'] .badge { background: var(--badge-bg-dark); color: var(--badge-fg-dark); }
+
+/* Increase Contrast: the text darkens (lightens in dark) to 7:1, as the app's secondary text does */
+@media (prefers-contrast: more) {
+    .badge { color: var(--badge-fg-more); }
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) .badge { color: var(--badge-fg-dark-more); }
+    }
+    :root[data-theme='dark'] .badge { color: var(--badge-fg-dark-more); }
+}
+
+@media (forced-colors: active) {
+    .badge { border: 1px solid CanvasText; background: Canvas; color: CanvasText; }
+    /* the border takes 1px a side of the 16px pill: the picture fits inside it */
+    .badge-image { width: 14px; height: 14px; }
+}
+
+/* A name and its badges on one line (feed rows, the post's head, comments, Messages and
+   Notifications rows, a chat's name line). The badges give way first:
+   the name keeps its width (only a name longer than the whole line ends in an ellipsis), the
+   badges get what is left, and their pills wrap onto a second line that is cut off, so a pill
+   that does not fit drops out whole ("+N", the last, first). In a row a badge's text is cut
+   sooner, so one long badge does not take the line. Screen readers hear every badge either way. */
+.with-badges { display: flex; align-items: center; gap: var(--space-1-5); min-width: 0; }
+.with-badges > .profile-link,
+.with-badges > strong,
+.with-badges > bdi { flex: none; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.with-badges > .badges { flex: 0 1 auto; overflow: hidden; }
+.with-badges .badges-pills { display: flex; flex-wrap: wrap; height: 16px; min-width: 0; overflow: hidden; }
+.with-badges .badge-text { max-width: 8em; }
+/* a pill alone on its line and still too wide (a long badge in a narrow row) ends its text in an ellipsis */
+.with-badges .badge { flex-shrink: 1; min-width: 0; }
+/* a chip has no text to cut: it keeps its circle */
+.with-badges .badge-chip { flex-shrink: 0; }
+
+/* heroes show every badge, on as many lines as they need */
+.hero-name-line { display: flex; flex-wrap: wrap; align-items: center; column-gap: var(--space-2); row-gap: var(--space-1); min-width: 0; }
+.hero-name-line .badges-pills { flex-wrap: wrap; }

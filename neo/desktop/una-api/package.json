@@ -1,0 +1,18 @@
+{
+  "name": "una-api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Typed client for UNA API v2 (/api/v2, a preview), generated from its OpenAPI document",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "fetch-spec": "node scripts/fetch-spec.mjs",
+    "generate": "openapi-typescript openapi.json --empty-objects-unknown --default-non-nullable=false --output src/schema.ts"
+  },
+  "dependencies": {
+    "openapi-fetch": "^0.13.0"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.4.0"
+  }
+}

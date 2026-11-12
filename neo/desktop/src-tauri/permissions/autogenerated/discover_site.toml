@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-discover-site"
+description = "Enables the discover_site command without any pre-configured scope."
+commands.allow = ["discover_site"]
+
+[[permission]]
+identifier = "deny-discover-site"
+description = "Denies the discover_site command without any pre-configured scope."
+commands.deny = ["discover_site"]

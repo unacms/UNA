@@ -1,0 +1,24 @@
+/* What the rich editor writes, as RichText shows it (the rest of .rich-text is in styles.css). */
+.rich-text img { max-inline-size: 100%; block-size: auto; vertical-align: bottom; border-radius: var(--radius-media); outline: 1px solid var(--image-outline); outline-offset: -1px; }
+.rich-text :is(.rich-mention, .rich-hashtag) { font-weight: 500; text-decoration: none; }
+.rich-text :is(.rich-mention, .rich-hashtag):hover { text-decoration: underline; }
+.rich-text .rich-embed-card {
+    display: grid; gap: 2px; margin-block: 0 8px; padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-card); background: var(--bg-grouped); color: var(--text-primary); text-decoration: none;
+    box-shadow: inset 0 0 0 1px var(--separator);
+}
+.rich-text .rich-embed-card:hover { background: var(--fill-row-hover); }
+.rich-text .rich-embed-card.is-filled { grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: var(--space-3); }
+.rich-text .rich-embed-card.is-filled:not(:has(.rich-embed-image)) { grid-template-columns: minmax(0, 1fr); }
+.rich-text .rich-embed-image { inline-size: 72px; block-size: 72px; object-fit: cover; border-radius: var(--radius-media); outline: 1px solid var(--image-outline); outline-offset: -1px; }
+.rich-text .rich-embed-text { display: grid; gap: 2px; min-inline-size: 0; }
+.rich-text .rich-embed-host { font-size: var(--text-sm); line-height: var(--leading-sm); color: var(--text-secondary); }
+.rich-text .rich-embed-title { font-weight: 600; color: var(--text-primary); }
+.rich-text .rich-embed-description { color: var(--text-secondary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.rich-text .rich-embed-url { color: var(--accent-text); overflow-wrap: anywhere; }
+.rich-text .rich-align-center { text-align: center; }
+.rich-text .rich-align-right { text-align: right; }
+.rich-text .rich-align-justify { text-align: justify; }
+@media (forced-colors: active) {
+    .rich-text .rich-embed-card { border: 1px solid CanvasText; }
+}

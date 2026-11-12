@@ -1,0 +1,70 @@
+name: Desktop update feed
+
+# The desktop app looks for new versions at brand.json `updatesUrl`: for UNA, latest.json of the
+# release tagged desktop-latest, a fixed address. When a person publishes a desktop-v<version>
+# release (drafted by desktop-release.yml), this puts its latest.json there, with the notes the
+# release was published with, and the apps offer that version from then on. Nothing is installed
+# without each person's say-so in the app.
+#
+# An older version published after a newer one does not replace it in the feed.
+
+on:
+  release:
+    types: [ published ]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: desktop-update-feed
+  cancel-in-progress: false
+
+jobs:
+  feed:
+    name: Point the apps at the release
+    if: startsWith(github.event.release.tag_name, 'desktop-v') && !github.event.release.prerelease
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ github.event.release.tag_name }}
+      FEED: desktop-latest
+    steps:
+    - name: The release's feed, with its published notes
+      env:
+        NOTES: ${{ github.event.release.body }}
+        PUBLISHED: ${{ github.event.release.published_at }}
+      run: |
+        gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern latest.json --dir release
+        node -e "
+          const fs = require('fs');
+          const feed = JSON.parse(fs.readFileSync('release/latest.json', 'utf8'));
+          if (feed.version !== process.env.TAG.replace(/^desktop-v/, '')) throw new Error('latest.json is of ' + feed.version + ', the release ' + process.env.TAG);
+          if (process.env.NOTES.trim()) feed.notes = process.env.NOTES.trim();
+          feed.pub_date = process.env.PUBLISHED;
+          fs.writeFileSync('latest.json', JSON.stringify(feed, null, 2) + '\n');
+        "
+        cat latest.json
+
+    - name: Only a newer version moves the feed
+      id: newer
+      run: |
+        current=$(gh release download "$FEED" --repo "$GITHUB_REPOSITORY" --pattern latest.json --output - 2>/dev/null | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{console.log(JSON.parse(s).version)}catch{console.log('')}})")
+        next=$(node -p "require('./latest.json').version")
+        newer=$(node -e "
+          const parse = (v) => (v || '0.0.0').split('-')[0].split('.').map(Number);
+          const [a, b] = [parse(process.argv[1]), parse(process.argv[2])];
+          const cmp = a.map((x, i) => x - b[i]).find((d) => d !== 0) ?? 0;
+          console.log(cmp > 0 || !process.argv[2]);
+        " "$next" "$current")
+        echo "feed has ${current:-nothing}, the release is $next: newer=$newer"
+        echo "newer=$newer" >> "$GITHUB_OUTPUT"
+
+    - name: Publish the feed
+      if: steps.newer.outputs.newer == 'true'
+      run: |
+        gh release upload "$TAG" latest.json --clobber --repo "$GITHUB_REPOSITORY"
+        if ! gh release view "$FEED" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+          gh release create "$FEED" --repo "$GITHUB_REPOSITORY" --prerelease --latest=false --title "Desktop app update feed" \
+            --notes "The desktop app reads latest.json here to find its newest version (see .github/workflows/desktop-update-feed.yml). Do not delete this release or its tag."
+        fi
+        gh release upload "$FEED" latest.json --clobber --repo "$GITHUB_REPOSITORY"

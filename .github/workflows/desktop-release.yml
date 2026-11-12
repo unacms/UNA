@@ -1,0 +1,299 @@
+name: Desktop release build
+
+# Builds the desktop app's installers for macOS, Windows and Linux, signs them, and keeps them as
+# the run's artifacts, with the update packages and their signatures. Nothing is published.
+#
+# A tag desktop-v<version> (the version of tauri.conf.json, package.json and Cargo.toml) builds a
+# release, which must be signed: without the signing secrets it fails. It also makes a draft
+# GitHub release of that tag with the installers, the update packages and latest.json; a person
+# checks it and publishes it, and desktop-update-feed.yml then points the apps at it. Run by hand
+# from the Actions tab, it builds unsigned when the secrets are not there, for a look at the
+# installers, and drafts nothing.
+#
+# Secrets (Settings > Secrets and variables > Actions), see neo/desktop/README.md "Releases":
+#   macOS   APPLE_CERTIFICATE (a Developer ID Application certificate with its key, .p12, base64),
+#           APPLE_CERTIFICATE_PASSWORD, APPLE_SIGNING_IDENTITY ("Developer ID Application: Name (TEAMID)"),
+#           APPLE_API_ISSUER, APPLE_API_KEY (the key id) and APPLE_API_PRIVATE_KEY (the .p8 text) of
+#           an App Store Connect API key, for notarisation
+#   Windows AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID, AZURE_SIGNING_ENDPOINT,
+#           AZURE_SIGNING_ACCOUNT, AZURE_SIGNING_PROFILE (Azure Trusted Signing)
+#   Updates TAURI_SIGNING_PRIVATE_KEY (the private key of brand.json updatesPubkey, as
+#           `tauri signer generate` wrote it) and TAURI_SIGNING_PRIVATE_KEY_PASSWORD: every
+#           update package is signed with it, and the apps install nothing else
+
+on:
+  push:
+    tags: [ "desktop-v*" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        # one app for Apple silicon and Intel
+        - { name: macOS, os: macos-latest, target: universal-apple-darwin, bundles: 'app,dmg', rust-targets: 'aarch64-apple-darwin,x86_64-apple-darwin' }
+        - { name: Windows, os: windows-latest, target: x86_64-pc-windows-msvc, bundles: 'nsis,msi', rust-targets: 'x86_64-pc-windows-msvc' }
+        - { name: Linux, os: ubuntu-22.04, target: x86_64-unknown-linux-gnu, bundles: 'deb,appimage', rust-targets: 'x86_64-unknown-linux-gnu' }
+    env:
+      RUST_VERSION: '1.99.1'
+      RELEASE: ${{ startsWith(github.ref, 'refs/tags/desktop-v') }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: The tag is the app's version
+      if: env.RELEASE == 'true'
+      working-directory: neo/desktop
+      run: |
+        tag="${GITHUB_REF_NAME#desktop-v}"
+        conf=$(node -p "require('./src-tauri/tauri.conf.json').version")
+        pkg=$(node -p "require('./package.json').version")
+        cargo=$(sed -n 's/^version = "\(.*\)"/\1/p' src-tauri/Cargo.toml | head -1)
+        echo "tag $tag, tauri.conf.json $conf, package.json $pkg, Cargo.toml $cargo"
+        if [ "$tag" != "$conf" ] || [ "$tag" != "$pkg" ] || [ "$tag" != "$cargo" ]; then
+          echo "::error::The tag says $tag; tauri.conf.json, package.json and Cargo.toml must all say it too."
+          exit 1
+        fi
+
+    - name: Signing secrets
+      id: signing
+      env:
+        APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+        APPLE_API_PRIVATE_KEY: ${{ secrets.APPLE_API_PRIVATE_KEY }}
+        AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+      run: |
+        # the update packages: signed with the updater key on every system, or not made
+        if [ -n "$TAURI_SIGNING_PRIVATE_KEY" ]; then updates=true; else updates=false; fi
+        echo "updates=$updates" >> "$GITHUB_OUTPUT"
+        if [ "$updates" = false ]; then
+          if [ "$RELEASE" = true ]; then
+            echo "::error::A release has update packages: TAURI_SIGNING_PRIVATE_KEY is not set (see the top of this workflow)."
+            exit 1
+          fi
+          echo "::warning::No TAURI_SIGNING_PRIVATE_KEY: no update packages in this build."
+        fi
+        case "${{ runner.os }}" in
+          macOS) [ -n "$APPLE_CERTIFICATE" ] && [ -n "$APPLE_API_PRIVATE_KEY" ] && have=true || have=false ;;
+          Windows) [ -n "$AZURE_CLIENT_SECRET" ] && have=true || have=false ;;
+          *) have=none ;;
+        esac
+        echo "sign=$have" >> "$GITHUB_OUTPUT"
+        if [ "$have" = false ]; then
+          if [ "$RELEASE" = true ]; then
+            echo "::error::A release is signed: the ${{ runner.os }} signing secrets are not set (see the top of this workflow)."
+            exit 1
+          fi
+          echo "::warning::No ${{ runner.os }} signing secrets: this build is unsigned and only for a look."
+        fi
+
+    - name: Setup Node
+      uses: actions/setup-node@v6
+      with:
+        node-version: '24'
+
+    - name: Install the app's dependencies
+      working-directory: neo/desktop
+      run: |
+        for attempt in 1 2 3; do
+          if yarn install --ignore-scripts --non-interactive --network-timeout 600000; then
+            exit 0
+          fi
+          echo "yarn install failed (attempt $attempt of 3)"
+          sleep 15
+        done
+        exit 1
+
+    - name: The brand is applied
+      working-directory: neo/desktop
+      run: node brand/apply.mjs --check
+
+    - name: Setup Rust
+      run: |
+        rustup toolchain install "$RUST_VERSION" --profile minimal --target "${{ matrix.rust-targets }}"
+        rustup default "$RUST_VERSION"
+
+    - name: Install Linux libraries
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends \
+          libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev \
+          libssl-dev libdbus-1-dev pkg-config
+
+    - name: App Store Connect key
+      if: runner.os == 'macOS' && steps.signing.outputs.sign == 'true'
+      env:
+        APPLE_API_PRIVATE_KEY: ${{ secrets.APPLE_API_PRIVATE_KEY }}
+      run: |
+        key="$RUNNER_TEMP/AuthKey.p8"
+        printf '%s\n' "$APPLE_API_PRIVATE_KEY" > "$key"
+        chmod 600 "$key"
+        echo "APPLE_API_KEY_PATH=$key" >> "$GITHUB_ENV"
+
+    - name: Azure Trusted Signing
+      if: runner.os == 'Windows' && steps.signing.outputs.sign == 'true'
+      env:
+        AZURE_SIGNING_ENDPOINT: ${{ secrets.AZURE_SIGNING_ENDPOINT }}
+        AZURE_SIGNING_ACCOUNT: ${{ secrets.AZURE_SIGNING_ACCOUNT }}
+        AZURE_SIGNING_PROFILE: ${{ secrets.AZURE_SIGNING_PROFILE }}
+      run: |
+        cargo install trusted-signing-cli --version 0.11.0 --locked
+        # Tauri signs every binary and installer with this command (%1 is the file)
+        echo "WINDOWS_SIGN_COMMAND=trusted-signing-cli -e $AZURE_SIGNING_ENDPOINT -a $AZURE_SIGNING_ACCOUNT -c $AZURE_SIGNING_PROFILE %1" >> "$GITHUB_ENV"
+
+    - name: Build config
+      env:
+        UPDATES: ${{ steps.signing.outputs.updates }}
+      run: |
+        # what this build adds to tauri.conf.json: the update packages (with the key), the
+        # Windows sign command (with the Azure account)
+        node -e "
+          const extra = { bundle: {} };
+          if (process.env.UPDATES === 'true') extra.bundle.createUpdaterArtifacts = true;
+          if (process.env.WINDOWS_SIGN_COMMAND) extra.bundle.windows = { signCommand: process.env.WINDOWS_SIGN_COMMAND };
+          require('fs').writeFileSync(process.env.RUNNER_TEMP + '/extra.json', JSON.stringify(extra));
+          console.log(JSON.stringify({ ...extra, bundle: { ...extra.bundle, windows: extra.bundle.windows && { signCommand: '(set)' } } }));
+        "
+        echo "TAURI_EXTRA_CONFIG=--config $RUNNER_TEMP/extra.json" >> "$GITHUB_ENV"
+
+    - name: Build
+      working-directory: neo/desktop
+      env:
+        # macOS: Tauri imports the certificate into a temporary keychain, signs with the hardened
+        # runtime and notarises with the API key, then staples the ticket
+        APPLE_CERTIFICATE: ${{ steps.signing.outputs.sign == 'true' && secrets.APPLE_CERTIFICATE || '' }}
+        APPLE_CERTIFICATE_PASSWORD: ${{ steps.signing.outputs.sign == 'true' && secrets.APPLE_CERTIFICATE_PASSWORD || '' }}
+        APPLE_SIGNING_IDENTITY: ${{ steps.signing.outputs.sign == 'true' && secrets.APPLE_SIGNING_IDENTITY || '' }}
+        APPLE_API_ISSUER: ${{ steps.signing.outputs.sign == 'true' && secrets.APPLE_API_ISSUER || '' }}
+        APPLE_API_KEY: ${{ steps.signing.outputs.sign == 'true' && secrets.APPLE_API_KEY || '' }}
+        # Windows: read by trusted-signing-cli
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        # the update packages' signatures (.sig beside each)
+        TAURI_SIGNING_PRIVATE_KEY: ${{ steps.signing.outputs.updates == 'true' && secrets.TAURI_SIGNING_PRIVATE_KEY || '' }}
+        TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ steps.signing.outputs.updates == 'true' && secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD || '' }}
+      run: yarn tauri build --target ${{ matrix.target }} --bundles ${{ matrix.bundles }} $TAURI_EXTRA_CONFIG
+
+    - name: Check the macOS signature as Gatekeeper will
+      if: runner.os == 'macOS'
+      working-directory: neo/desktop
+      run: |
+        app=$(ls -d src-tauri/target/${{ matrix.target }}/release/bundle/macos/*.app | head -1)
+        if [ "${{ steps.signing.outputs.sign }}" = true ]; then
+          scripts/check-signature.sh "$app"
+        else
+          echo "unsigned: not checked"
+        fi
+
+    - name: Check the Windows signatures
+      if: runner.os == 'Windows' && steps.signing.outputs.sign == 'true'
+      shell: pwsh
+      working-directory: neo/desktop/src-tauri/target/${{ matrix.target }}/release
+      run: |
+        $files = @(Get-ChildItem -Path bundle -Recurse -Include *.exe,*.msi) + @(Get-ChildItem -Filter *.exe)
+        foreach ($f in $files) {
+          $s = Get-AuthenticodeSignature $f.FullName
+          if ($s.Status -ne 'Valid') { throw "$($f.Name): $($s.Status) $($s.StatusMessage)" }
+          Write-Output "✓ $($f.Name): $($s.SignerCertificate.Subject)"
+        }
+
+    - name: Collect the update packages
+      if: steps.signing.outputs.updates == 'true'
+      working-directory: neo/desktop/src-tauri/target/${{ matrix.target }}/release/bundle
+      run: |
+        out="$GITHUB_WORKSPACE/updates"
+        mkdir -p "$out"
+        version=$(node -p "require('$GITHUB_WORKSPACE/neo/desktop/src-tauri/tauri.conf.json').version")
+        take() { cp "$1" "$out/$2"; cp "$1.sig" "$out/$2.sig"; echo "$2"; }
+        shopt -s nullglob
+        case "${{ runner.os }}" in
+          # macOS's package has no version or architecture in its name
+          macOS) for f in macos/*.app.tar.gz; do take "$f" "$(basename "$f" .app.tar.gz)_${version}_universal.app.tar.gz"; done ;;
+          Windows) for f in nsis/*.exe msi/*.msi; do take "$f" "$(basename "$f")"; done ;;
+          Linux) for f in appimage/*.AppImage deb/*.deb; do [ -f "$f.sig" ] && take "$f" "$(basename "$f")"; done ;;
+        esac
+        ls "$out"/*.sig > /dev/null
+
+    - name: Keep the update packages
+      if: steps.signing.outputs.updates == 'true'
+      uses: actions/upload-artifact@v7
+      with:
+        name: desktop-updates-${{ matrix.name }}${{ steps.signing.outputs.sign == 'false' && '-unsigned' || '' }}
+        if-no-files-found: error
+        path: updates/
+
+    - name: Keep the installers
+      uses: actions/upload-artifact@v7
+      with:
+        name: desktop-${{ matrix.name }}${{ steps.signing.outputs.sign == 'false' && '-unsigned' || '' }}
+        if-no-files-found: error
+        path: |
+          neo/desktop/src-tauri/target/${{ matrix.target }}/release/bundle/dmg/*.dmg
+          neo/desktop/src-tauri/target/${{ matrix.target }}/release/bundle/nsis/*.exe
+          neo/desktop/src-tauri/target/${{ matrix.target }}/release/bundle/msi/*.msi
+          neo/desktop/src-tauri/target/${{ matrix.target }}/release/bundle/deb/*.deb
+          neo/desktop/src-tauri/target/${{ matrix.target }}/release/bundle/appimage/*.AppImage
+
+  # A tag: a draft release with everything the builds made and the update feed. A person checks
+  # and publishes it; desktop-update-feed.yml then makes it the one the apps update to.
+  draft:
+    name: Draft release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/desktop-v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        sparse-checkout: neo/desktop
+
+    - uses: actions/setup-node@v6
+      with:
+        node-version: '24'
+
+    - uses: actions/download-artifact@v7
+      with:
+        path: artifacts
+
+    - name: The update feed
+      run: |
+        version="${GITHUB_REF_NAME#desktop-v}"
+        base="https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}"
+        mapfile -t packages < <(find artifacts/desktop-updates-* -type f ! -name '*.sig' | sort)
+        node neo/desktop/scripts/update-manifest.mjs --version "$version" --base-url "$base" \
+          --notes-file "neo/desktop/release-notes/$version.md" --out latest.json "${packages[@]}"
+        cat latest.json
+
+    - name: Draft the release
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        version="${GITHUB_REF_NAME#desktop-v}"
+        notes="neo/desktop/release-notes/$version.md"
+        [ -f "$notes" ] || { echo "UNA desktop $version" > "$RUNNER_TEMP/notes.md"; notes="$RUNNER_TEMP/notes.md"; }
+        # Windows' installers are also its update packages: each file once
+        mapfile -t files < <(find artifacts -type f | sort | awk -F/ '!seen[$NF]++')
+        if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+          gh release upload "$GITHUB_REF_NAME" "${files[@]}" latest.json --clobber
+        else
+          gh release create "$GITHUB_REF_NAME" --draft --verify-tag --title "UNA desktop $version" --notes-file "$notes" "${files[@]}" latest.json
+        fi

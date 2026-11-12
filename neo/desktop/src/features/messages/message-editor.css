@@ -1,0 +1,13 @@
+/* One's own reply edited in place (message-editor.tsx), and its Edit button beside the bubble. */
+.bubble:has(.message-editor) { inline-size: min(90%, 640px); max-inline-size: none; }
+.message-editor { display: grid; gap: var(--space-1-5); min-inline-size: 0; }
+.message-editor .rich-editor-text { min-block-size: calc(2 * var(--leading-body) + 12px); max-block-size: 40vh; }
+.message-editor-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1); }
+.message-editor-row > :first-child { margin-inline-end: auto; }
+.bubble-row.mine > .bubble-edit { grid-column: 1; }
+.bubble-row > .bubble-edit { grid-column: 2; min-block-size: 24px; opacity: 0; }
+/* shown on the row's hover and whenever it has focus: keyboard users reach it as it shows */
+.bubble-row:hover > .bubble-edit, .bubble-row > .bubble-edit:focus-visible { opacity: 1; }
+@media (hover: none) {
+    .bubble-row > .bubble-edit { opacity: 1; }
+}

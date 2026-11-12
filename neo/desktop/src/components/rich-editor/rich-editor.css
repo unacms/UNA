@@ -1,0 +1,102 @@
+/* The rich text box (components/rich-editor): drawn as the text fields it replaces (styles.css
+   `input, textarea`), with the composers' own sizes below. */
+.rich-editor { position: relative; display: grid; gap: var(--space-1); min-width: 0; font-size: var(--text-body); line-height: var(--leading-body); }
+.rich-editor-body { min-width: 0; }
+.rich-editor-text {
+    min-block-size: calc(var(--rich-rows, 3) * 1lh + 2 * var(--space-1-5));
+    max-block-size: 50vh;
+    overflow-y: auto;
+    padding: var(--space-1-5) var(--space-3);
+    color: var(--text-primary);
+    background: var(--bg-content);
+    border-radius: var(--radius-field);
+    box-shadow: 0 0 0 1px var(--field-border);
+    cursor: text;
+    /* what ProseMirror needs (Tiptap's own sheet is not injected) */
+    position: relative;
+    white-space: pre-wrap;
+    white-space: break-spaces;
+    overflow-wrap: anywhere;
+    font-variant-ligatures: none;
+}
+.rich-editor.is-invalid .rich-editor-text { box-shadow: 0 0 0 1px var(--danger); }
+.rich-editor.is-readonly .rich-editor-text { color: var(--text-secondary); }
+:root[data-platform='windows'] .rich-editor-text { box-shadow: inset 0 0 0 1px var(--separator), inset 0 -1px 0 var(--control-border); }
+:root[data-platform='windows'] .rich-editor-text:focus-visible { box-shadow: inset 0 0 0 1px var(--separator), inset 0 -2px 0 var(--selection-bar); }
+
+.rich-editor-text :is(p, h2, h3, ul, ol, blockquote, pre) { margin: 0; }
+/* full mode reads as it will be shown (.rich-text) */
+.rich-editor-full .rich-editor-text :is(p, ul, ol, blockquote, pre) { margin-block-end: 8px; }
+.rich-editor-full .rich-editor-text > :last-child { margin-block-end: 0; }
+.rich-editor-text :is(h2, h3) { font-size: 15px; line-height: 20px; font-weight: 600; margin-block-end: 4px; }
+.rich-editor-text h2 { font-size: 17px; line-height: 22px; }
+.rich-editor-text :is(ul, ol) { padding-inline-start: 20px; }
+.rich-editor-text li > p { margin: 0; }
+.rich-editor-text blockquote { padding-inline-start: 12px; border-inline-start: 2px solid var(--separator); color: var(--text-secondary); }
+.rich-editor-text code { font-family: var(--font-mono); font-size: 0.92em; background: var(--fill-control); border-radius: 4px; padding: 0 4px; }
+.rich-editor-text pre { font-family: var(--font-mono); font-size: 0.92em; background: var(--fill-control); border-radius: var(--radius-control); padding: var(--space-2) var(--space-3); white-space: pre-wrap; }
+.rich-editor-text pre code { background: none; padding: 0; }
+.rich-editor-text a, .rich-editor-text :is(.rich-mention, .rich-hashtag) { color: var(--accent-text); }
+.rich-editor-text a { text-decoration: underline; text-decoration-thickness: from-font; text-underline-offset: 2px; }
+.rich-editor-text :is(.rich-mention, .rich-hashtag) { font-weight: 500; }
+.rich-editor-text img { max-inline-size: 100%; block-size: auto; vertical-align: bottom; border-radius: var(--radius-media); outline: 1px solid var(--image-outline); outline-offset: -1px; }
+.rich-editor-text .rich-embed { display: block; margin-block-end: 8px; padding: var(--space-2) var(--space-3); border-radius: var(--radius-card); background: var(--bg-grouped); color: var(--text-secondary); overflow-wrap: anywhere; }
+.rich-editor-text .ProseMirror-selectednode { outline: var(--focus-width) solid var(--focus-ring); outline-offset: 2px; }
+.rich-editor-text p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: inline-start;
+    block-size: 0;
+    color: var(--text-secondary);
+    pointer-events: none;
+}
+.rich-editor-text .ProseMirror-gapcursor { display: none; pointer-events: none; position: absolute; }
+.rich-editor-text.ProseMirror-focused .ProseMirror-gapcursor { display: block; }
+.rich-editor-text .ProseMirror-gapcursor::after { content: ''; display: block; position: absolute; top: -2px; inline-size: 20px; border-top: 1px solid var(--text-primary); }
+.rich-editor-text img.ProseMirror-separator { display: inline !important; border: none !important; margin: 0 !important; }
+
+/* full mode's toolbar: 28px buttons (WCAG 2.5.8 asks 24) */
+.rich-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; }
+.rich-tool {
+    display: inline-grid; place-items: center; inline-size: var(--control); block-size: var(--control);
+    padding: 0; border: 0; border-radius: var(--radius-control); background: transparent; color: var(--text-secondary);
+}
+.rich-tool:hover { background: var(--fill-control-hover); color: var(--text-primary); }
+.rich-tool[aria-pressed='true'] { background: var(--fill-control-pressed); color: var(--text-primary); }
+.rich-tool-group { margin-inline-start: var(--space-2); }
+@media (forced-colors: active) {
+    .rich-tool[aria-pressed='true'] { outline: 2px solid Highlight; outline-offset: -2px; }
+}
+
+/* @ and # suggestions, under what is typed */
+.rich-suggestions {
+    position: absolute; z-index: 30; inset-inline-start: 0; inset-block-start: 100%;
+    min-inline-size: 220px; max-inline-size: min(320px, 100%);
+    margin: 0; padding: var(--space-1); list-style: none;
+    background: var(--bg-raised); border-radius: var(--radius-card); box-shadow: var(--shadow-raised);
+}
+.rich-suggestion { display: flex; align-items: center; gap: var(--space-2); min-block-size: 32px; padding: var(--space-1) var(--space-2); border-radius: var(--radius-row); cursor: pointer; }
+.rich-suggestion[aria-selected='true'] { background: var(--fill-selected); }
+.rich-suggestion-name { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.rich-suggestion-meta { margin-inline-start: auto; color: var(--text-secondary); font-size: var(--text-sm); white-space: nowrap; }
+@media (forced-colors: active) {
+    .rich-suggestion[aria-selected='true'] { outline: 2px solid Highlight; outline-offset: -2px; }
+}
+
+/* ⌘K's form */
+.rich-link-form { display: grid; gap: var(--space-1); padding: var(--space-2); border-radius: var(--radius-card); background: var(--bg-grouped); }
+.rich-link-buttons { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+.rich-link-form .error { margin: 0; }
+
+/* the composers' sizes, as their text boxes had them */
+.compose-sheet .rich-editor { font-size: var(--text-read); line-height: var(--leading-read); }
+.compose-sheet .rich-editor-text { min-block-size: calc(5 * var(--leading-read) + 2 * var(--space-1-5)); max-block-size: 40vh; }
+.comment-composer:not(.docked) .rich-editor-text { border-radius: 8px; padding: 8px 10px; min-block-size: calc(2 * var(--leading-body) + 16px); }
+.comment-composer.docked .rich-editor, .message-composer-row .rich-editor { flex: 1; min-inline-size: 0; }
+.comment-composer.docked .rich-editor-text, .message-composer-row .rich-editor-text {
+    min-block-size: 36px; max-block-size: calc(6 * var(--leading-body) + 16px);
+    padding: 7px 14px; border-radius: var(--radius-bubble);
+}
+/* in the bubble the suggestions open upwards: the box sits at the pane's bottom */
+.comment-composer.docked .rich-suggestions, .message-composer-row .rich-suggestions { inset-block-start: auto !important; inset-block-end: 100%; }
+.post-editor .rich-editor-text { min-block-size: calc(3 * var(--leading-body) + 12px); max-block-size: 50vh; }
+.discussion-form .rich-editor-full .rich-editor-text, .new-article .rich-editor-full .rich-editor-text { min-block-size: calc(10 * var(--leading-body) + 12px); max-block-size: 60vh; }

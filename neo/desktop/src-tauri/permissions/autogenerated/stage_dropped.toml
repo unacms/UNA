@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-stage-dropped"
+description = "Enables the stage_dropped command without any pre-configured scope."
+commands.allow = ["stage_dropped"]
+
+[[permission]]
+identifier = "deny-stage-dropped"
+description = "Denies the stage_dropped command without any pre-configured scope."
+commands.deny = ["stage_dropped"]

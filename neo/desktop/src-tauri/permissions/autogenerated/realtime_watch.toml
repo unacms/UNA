@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-realtime-watch"
+description = "Enables the realtime_watch command without any pre-configured scope."
+commands.allow = ["realtime_watch"]
+
+[[permission]]
+identifier = "deny-realtime-watch"
+description = "Denies the realtime_watch command without any pre-configured scope."
+commands.deny = ["realtime_watch"]
