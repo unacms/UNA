@@ -16,13 +16,14 @@
     width: 100%;
     border-collapse: collapse;
 }
+.bx-tasks-ts-table th,
 .bx-tasks-ts-table td {
     padding: 0.375rem 0.5rem;
     border-bottom: 1px solid rgba(128, 128, 128, 0.2);
     text-align: left;
     vertical-align: top;
 }
-.bx-tasks-ts-table tr.bx-tasks-ts-head td {
+.bx-tasks-ts-table th {
     font-weight: normal;
     opacity: 0.7;
 }

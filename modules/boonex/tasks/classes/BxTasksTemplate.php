@@ -614,7 +614,7 @@ class BxTasksTemplate extends BxBaseModTextTemplate
                 ],
                 'bx_if:show_table' => [
                     'condition' => (bool)$aRows,
-                    'content' => ['bx_repeat:head' => $aHead, 'bx_repeat:rows' => $aRows]
+                    'content' => ['bx_repeat:columns' => $aHead, 'bx_repeat:rows' => $aRows]
                 ]
             ];
         }
