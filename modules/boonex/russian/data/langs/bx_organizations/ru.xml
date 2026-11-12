@@ -384,7 +384,9 @@
     <string name="_bx_orgs_menu_item_title_system_relations"><![CDATA[Связи]]></string>
     <string name="_bx_orgs_menu_item_title_relations"><![CDATA[Связи]]></string>
     <string name="_bx_orgs_menu_item_title_system_manage_my_organizations"><![CDATA[Мои организации]]></string>
+    <string name="_bx_orgs_menu_item_title_system_memberships"><![CDATA[Организации (участник)]]></string>
     <string name="_bx_orgs_menu_item_title_manage_my_organizations"><![CDATA[Организации]]></string>
+    <string name="_bx_orgs_menu_item_title_memberships"><![CDATA[Ваши организации]]></string>
     <string name="_bx_orgs_menu_item_title_system_favorites"><![CDATA[Избранные организации]]></string>
     <string name="_bx_orgs_menu_item_title_favorites"><![CDATA[Избранные организации]]></string>
     <string name="_bx_orgs_menu_item_title_system_subscriptions"><![CDATA[Подписки]]></string>

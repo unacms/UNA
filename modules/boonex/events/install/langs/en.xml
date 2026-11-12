@@ -432,7 +432,9 @@
     <string name="_bx_events_menu_item_title_system_friends"><![CDATA[Friends]]></string>
     <string name="_bx_events_menu_item_title_friends"><![CDATA[Friends]]></string>
     <string name="_bx_events_menu_item_title_system_manage_my_groups"><![CDATA[My events]]></string>
+    <string name="_bx_events_menu_item_title_system_memberships"><![CDATA[Events (participant of)]]></string>
     <string name="_bx_events_menu_item_title_manage_my_groups"><![CDATA[Events]]></string>
+    <string name="_bx_events_menu_item_title_memberships"><![CDATA[Your events]]></string>
     <string name="_bx_events_menu_item_title_system_followings"><![CDATA[Events]]></string>
     <string name="_bx_events_menu_item_title_followings"><![CDATA[Events]]></string>
     <string name="_bx_events_menu_item_title_system_entries_recent"><![CDATA[New]]></string>

@@ -414,7 +414,9 @@
     <string name="_bx_events_menu_item_title_system_friends"><![CDATA[Друзья]]></string>
     <string name="_bx_events_menu_item_title_friends"><![CDATA[Друзья]]></string>
     <string name="_bx_events_menu_item_title_system_manage_my_groups"><![CDATA[Мои события]]></string>
+    <string name="_bx_events_menu_item_title_system_memberships"><![CDATA[События (участник)]]></string>
     <string name="_bx_events_menu_item_title_manage_my_groups"><![CDATA[Cобытий]]></string>
+    <string name="_bx_events_menu_item_title_memberships"><![CDATA[Ваши события]]></string>
     <string name="_bx_events_menu_item_title_system_followings"><![CDATA[Cобытий]]></string>
     <string name="_bx_events_menu_item_title_followings"><![CDATA[Cобытий]]></string>
     <string name="_bx_events_menu_item_title_system_entries_recent"><![CDATA[Новые]]></string>

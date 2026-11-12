@@ -21,3 +21,5 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_notifications_pr
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_notifications_settings' AND `module`='bx_notifications' AND `name`='notifications-site';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_notifications_settings' AND `module`='bx_notifications' AND `name`='notifications-email';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_notifications_settings' AND `module`='bx_notifications' AND `name`='notifications-push';
+-- Notifications in the apps' menu (sys_apps_menu: the first section of the apps' sidebar, GET /api/v2/navigation)
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_apps_menu' AND `module`='bx_notifications' AND `name`='notifications-view';

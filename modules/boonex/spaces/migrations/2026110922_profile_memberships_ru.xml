@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Your spaces: the bx_spaces item of the menu Profile Memberships (API v2 GET /navigation). -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_bx_spaces_menu_item_title_system_memberships"><![CDATA[Пространства (участник)]]></string_add>
+    <string_add name="_bx_spaces_menu_item_title_memberships"><![CDATA[Ваши пространства]]></string_add>
+</resources>

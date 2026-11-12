@@ -742,6 +742,31 @@ class BxBaseModTextModule extends BxBaseModGeneralModule implements iBxDolConten
         return $aResults;
     }
 
+    /**
+     * @see BxBaseModGeneralModule::primeTimelinePosts; and the photos, videos and files attached
+     * to the entries and their polls.
+     */
+    public function primeTimelinePosts($aContentIds)
+    {
+        $aIds = parent::primeTimelinePosts($aContentIds);
+
+        $CNF = &$this->_oConfig->CNF;
+        if(!$aIds || !$this->_oConfig->isAttachmentsInTimeline())
+            return $aIds;
+
+        $aStorages = [];
+        foreach(['OBJECT_STORAGE_PHOTOS', 'OBJECT_STORAGE_VIDEOS', 'OBJECT_STORAGE_FILES'] as $sKey)
+            if(!empty($CNF[$sKey]))
+                $aStorages[] = $CNF[$sKey];
+        foreach(BxDolStorage::primeGhostsOfStorages($aStorages, $aIds) as $sStorage => $aFiles)
+            BxDolTranscoder::primeFilesOfStorage($sStorage, $aFiles);
+
+        if(!empty($CNF['PARAM_POLL_ENABLED']))
+            $this->_oDb->primePollsByContents($aIds);
+
+        return $aIds;
+    }
+
     protected function _getImagesForTimelinePostAttach($aEvent, $aContentInfo, $sUrl, $aBrowseParams = array())
     {
         $CNF = &$this->_oConfig->CNF;

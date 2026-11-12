@@ -320,7 +320,9 @@
     <string name="_bx_spaces_menu_item_title_system_friends"><![CDATA[Friends]]></string>
     <string name="_bx_spaces_menu_item_title_friends"><![CDATA[Friends]]></string>
     <string name="_bx_spaces_menu_item_title_system_manage_my_spaces"><![CDATA[My spaces]]></string>
+    <string name="_bx_spaces_menu_item_title_system_memberships"><![CDATA[Spaces (member of)]]></string>
     <string name="_bx_spaces_menu_item_title_manage_my_spaces"><![CDATA[Spaces]]></string>
+    <string name="_bx_spaces_menu_item_title_memberships"><![CDATA[Your spaces]]></string>
     <string name="_bx_spaces_menu_item_title_system_followings"><![CDATA[Spaces]]></string>
     <string name="_bx_spaces_menu_item_title_followings"><![CDATA[Spaces]]></string>
     <string name="_bx_spaces_menu_item_title_system_entries_recent"><![CDATA[New]]></string>

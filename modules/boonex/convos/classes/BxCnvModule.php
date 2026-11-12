@@ -286,6 +286,16 @@ class BxCnvModule extends BxBaseModTextModule
     }
 
     /**
+     * Whether the apps' menu's Messages item (sys_apps_menu) is Conversations': not while Messenger is enabled,
+     * whose own Messages item takes its place (menu item visibility_custom).
+     * @return boolean
+     */
+    public function serviceIsMessagesMenuItemShown()
+    {
+        return !BxDolModuleQuery::getInstance()->isEnabledByName('bx_messenger');
+    }
+
+    /**
      * Get number of unread messages for spme profile
      * @param $iProfileId - profile to get unread messages for, if omitted then currently logged is profile is used
      * @return integer

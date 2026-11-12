@@ -59,6 +59,7 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_homepage' AND `
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_add_content_links' AND `module`='bx_events' AND `name`='create-event-profile';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='bx_events' AND `name`='profile-stats-my-events';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_followings' AND `module`='bx_events' AND `name`='events';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_memberships' AND `module`='bx_events' AND `name`='events';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_dashboard_manage_tools' AND `module`='bx_events' AND `name`='events-administration';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_events_view_actions' AND `module`='bx_events' AND `name`='join-event-profile';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_events_view_actions' AND `module`='bx_events' AND `name`='profile-fan-add';

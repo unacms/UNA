@@ -49,6 +49,7 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' 
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='bx_persons' AND `name`='profile-stats-relations';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='bx_persons' AND `name`='profile-stats-related-me';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_followings' AND `module`='bx_persons' AND `name`='persons';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_memberships' AND `module`='bx_persons' AND `name`='persons';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_view_actions' AND `module`='bx_persons' AND `name`='profile-friend-add';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_view_actions' AND `module`='bx_persons' AND `name`='profile-subscribe-add';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_view_actions' AND `module`='bx_persons' AND `name`='profile-set-acl-level';

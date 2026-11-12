@@ -145,6 +145,53 @@ class BxCnvDb extends BxBaseModTextDb
             LIMIT ?, ?", $iProfileId, $iFolderId, $iStart, $iLimit);
         return $this->getAll($sQuery);
     }
+
+    /**
+     * The newest reply of each of these conversations that the viewer may see, for a page of
+     * them at once, keyed by the conversation id; a conversation without such a reply has no
+     * row. A reply counts as BxDolCmtsQuery::getComments lists it: approved (`status_admin`
+     * active) unless the viewer wrote it or moderates ($bModerator), its author's profile
+     * active unless it has replies, and passing the content filter ($oContentFilter, false when
+     * the site filters no comments). With each reply, how many files it has (`files`) and how
+     * many of them are not images (`other_files`). The comments object says where its rows and
+     * files are: $aTables has `cmts` (getCommentsTableName), `ids` (BxDolCmts::$sTableIds),
+     * `files2entries` (getTableNameImages2Entries) and `files` (getTableNameImages).
+     */
+    public function getLastReplies($aConversationIds, $aTables, $iSystemId, $iViewerId, $bModerator, $oContentFilter = false)
+    {
+        $aConversationIds = array_values(array_unique(array_filter(array_map('intval', (array)$aConversationIds))));
+        if (!$aConversationIds)
+            return [];
+
+        $aBindings = ['system_id' => (int)$iSystemId, 'ids_system_id' => (int)$iSystemId];
+        $sWhere = '';
+        if (!$bModerator) {
+            $aBindings['viewer_id'] = (int)$iViewerId;
+            $aBindings['status_active'] = BX_CMT_STATUS_ACTIVE;
+            $sWhere .= " AND (`m`.`cmt_author_id` = :viewer_id OR `ti`.`status_admin` = :status_active)";
+        }
+        if ($oContentFilter)
+            $sWhere .= $oContentFilter->getSQLParts('m', 'cmt_cf', (int)$iViewerId);
+
+        $sTableCmts = $aTables['cmts'];
+        $sQuery = "SELECT `c`.`cmt_object_id` AS `conv_id`, `c`.`cmt_id`, `c`.`cmt_author_id`, `c`.`cmt_text`, `c`.`cmt_time`,
+                COUNT(`f2e`.`image_id`) AS `files`,
+                SUM(`f2e`.`image_id` IS NOT NULL AND IFNULL(`f`.`mime_type`, '') NOT LIKE 'image/%') AS `other_files`
+            FROM (
+                SELECT `m`.`cmt_object_id`, MAX(`m`.`cmt_id`) AS `cmt_id`
+                FROM `" . $sTableCmts . "` AS `m`
+                LEFT JOIN `" . $aTables['ids'] . "` AS `ti` ON (`ti`.`cmt_id` = `m`.`cmt_id` AND `ti`.`system_id` = :ids_system_id)
+                LEFT JOIN `sys_profiles` AS `p` ON (`p`.`id` = `m`.`cmt_author_id`)
+                WHERE `m`.`cmt_object_id` IN(" . $this->implode_escape($aConversationIds) . ")
+                    AND (`p`.`status` IS NULL OR `p`.`status` = 'active' OR `m`.`cmt_replies` != 0)" . $sWhere . "
+                GROUP BY `m`.`cmt_object_id`
+            ) AS `l`
+            INNER JOIN `" . $sTableCmts . "` AS `c` ON (`c`.`cmt_id` = `l`.`cmt_id`)
+            LEFT JOIN `" . $aTables['files2entries'] . "` AS `f2e` ON (`f2e`.`system_id` = :system_id AND `f2e`.`cmt_id` = `c`.`cmt_id`)
+            LEFT JOIN `" . $aTables['files'] . "` AS `f` ON (`f`.`id` = `f2e`.`image_id`)
+            GROUP BY `c`.`cmt_id`";
+        return $this->getAllWithKey($sQuery, 'conv_id', $aBindings);
+    }
 }
 
 /** @} */

@@ -14,6 +14,7 @@ UPDATE `sys_menu_items` SET `config_api`='{"badge":"messenger"}' WHERE `set_name
 
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_tabbar' AND `module`='bx_messenger' AND `name`='messenger';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='bx_messenger' AND `name`='notifications-messenger';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_apps_menu' AND `module`='bx_messenger' AND `name`='messenger-messages';
 
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_messenger_nav_menu' AND `module`='bx_messenger' AND `name`='saved';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_messenger_nav_menu' AND `module`='bx_messenger' AND `name`='reply';

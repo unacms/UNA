@@ -326,7 +326,9 @@
     <string name="_bx_groups_menu_item_title_system_friends"><![CDATA[Friends]]></string>
     <string name="_bx_groups_menu_item_title_friends"><![CDATA[Friends]]></string>
     <string name="_bx_groups_menu_item_title_system_manage_my_groups"><![CDATA[My groups]]></string>
+    <string name="_bx_groups_menu_item_title_system_memberships"><![CDATA[Groups (member of)]]></string>
     <string name="_bx_groups_menu_item_title_manage_my_groups"><![CDATA[Groups]]></string>
+    <string name="_bx_groups_menu_item_title_memberships"><![CDATA[Your groups]]></string>
     <string name="_bx_groups_menu_item_title_system_followings"><![CDATA[Groups]]></string>
     <string name="_bx_groups_menu_item_title_followings"><![CDATA[Groups]]></string>
     <string name="_bx_groups_menu_item_title_system_entries_recent"><![CDATA[New]]></string>

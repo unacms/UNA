@@ -341,7 +341,9 @@
     <string name="_bx_courses_menu_item_title_system_friends"><![CDATA[Friends]]></string>
     <string name="_bx_courses_menu_item_title_friends"><![CDATA[Friends]]></string>
     <string name="_bx_courses_menu_item_title_system_manage_my_entries"><![CDATA[My courses]]></string>
+    <string name="_bx_courses_menu_item_title_system_memberships"><![CDATA[Courses (member of)]]></string>
     <string name="_bx_courses_menu_item_title_manage_my_entries"><![CDATA[Courses]]></string>
+    <string name="_bx_courses_menu_item_title_memberships"><![CDATA[Your courses]]></string>
     <string name="_bx_courses_menu_item_title_system_followings"><![CDATA[Courses]]></string>
     <string name="_bx_courses_menu_item_title_followings"><![CDATA[Courses]]></string>
     <string name="_bx_courses_menu_item_title_system_entries_recent"><![CDATA[New]]></string>

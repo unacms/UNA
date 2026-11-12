@@ -197,6 +197,27 @@ class BxPollsModule extends BxBaseModTextModule
     }
     
     /**
+     * @see BxBaseModTextModule::primeTimelinePosts; and the polls' answers, their votes and
+     * whether the viewer answered each.
+     */
+    public function primeTimelinePosts($aContentIds)
+    {
+        $aIds = parent::primeTimelinePosts($aContentIds);
+
+        $CNF = &$this->_oConfig->CNF;
+        $this->_oDb->primeSubentriesByEntries($aIds, bx_get_logged_profile_id());
+
+        $aSubentries = [];
+        foreach($aIds as $iId)
+            $aSubentries = array_merge($aSubentries, array_keys($this->_oDb->getSubentries(['type' => 'entry_id_pairs', 'entry_id' => (int)$iId])));
+        // the votes object of an answer (primed above) reads the votes of all of them
+        if($aSubentries && !empty($CNF['OBJECT_VOTES_SUBENTRIES']) && ($oVotes = BxDolVote::getObjectInstance($CNF['OBJECT_VOTES_SUBENTRIES'], (int)$aSubentries[0])))
+            $oVotes->getQueryObject()->primeVotes($aSubentries);
+
+        return $aIds;
+    }
+
+    /**
      * PERMISSION METHODS
      */
     public function isAllowedVote($isPerformAction = false)

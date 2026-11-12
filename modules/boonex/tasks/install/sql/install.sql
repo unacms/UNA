@@ -407,7 +407,8 @@ CREATE TABLE IF NOT EXISTS `bx_tasks_budget_track` (
   `value` int(11) NOT NULL default '0',
   `text` text NOT NULL default '',
   `date` int(11) NOT NULL default '0',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `context_id` (`context_id`, `id`)
 );
 
 -- TABLE: favorites

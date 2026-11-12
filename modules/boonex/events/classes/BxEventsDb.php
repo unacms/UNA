@@ -31,12 +31,48 @@ class BxEventsDb extends BxBaseModGroupsDb
 
     public function getContentInfoById ($iContentId, $bForceGet = false)
     {
-        $sQuery = $this->prepare ("SELECT `c`.*, `p`.`account_id`, `p`.`id` AS `profile_id`, `p`.`status` AS `profile_status`, MAX(`i`.`repeat_stop`) AS `repeat_stop` FROM `" . $this->_oConfig->CNF['TABLE_ENTRIES'] . "` AS `c` 
-            INNER JOIN `sys_profiles` AS `p` ON (`p`.`content_id` = `c`.`id` AND `p`.`type` = ?) 
+        // a row primed in the open row scope (@see primeContentInfos)
+        $aRow = [];
+        if (!$bForceGet && $this->_getScopedRow($this->_oConfig->CNF['TABLE_ENTRIES'] . '#info', 'id', $iContentId, $aRow))
+            return $aRow;
+
+        $sQuery = $this->prepare ("SELECT `c`.*, `p`.`account_id`, `p`.`id` AS `profile_id`, `p`.`status` AS `profile_status`, MAX(`i`.`repeat_stop`) AS `repeat_stop` FROM `" . $this->_oConfig->CNF['TABLE_ENTRIES'] . "` AS `c`
+            INNER JOIN `sys_profiles` AS `p` ON (`p`.`content_id` = `c`.`id` AND `p`.`type` = ?)
             LEFT JOIN `bx_events_intervals` as `i` ON (`c`.`id` = `i`.`event_id`)
             WHERE `c`.`id` = ?
             GROUP BY `c`.`id`", $this->_oConfig->getName(), $iContentId);
         return $this->getRow($sQuery);
+    }
+
+    /**
+     * In the open row scope (BxDolDb::openRowScope): these events' rows as getContentInfoById
+     * reads them, in one query, so getContentInfoById of each reads none; and what the profile
+     * base primes (getContentInfoByProfileId of their profiles).
+     */
+    public function primeContentInfos($aContentIds)
+    {
+        parent::primeContentInfos($aContentIds);
+        if (!self::$_aRowScopes)
+            return;
+
+        $sTable = $this->_oConfig->CNF['TABLE_ENTRIES'];
+        $aIds = [];
+        $aRow = [];
+        foreach ((array)$aContentIds as $mId)
+            if (($iId = (int)$mId) > 0 && !$this->_getScopedRow($sTable . '#info', 'id', $iId, $aRow))
+                $aIds[$iId] = $iId;
+        if (!$aIds)
+            return;
+
+        $aRows = $this->getAllWithKey("SELECT `c`.*, `p`.`account_id`, `p`.`id` AS `profile_id`, `p`.`status` AS `profile_status`, MAX(`i`.`repeat_stop`) AS `repeat_stop` FROM `" . $sTable . "` AS `c`
+            INNER JOIN `sys_profiles` AS `p` ON (`p`.`content_id` = `c`.`id` AND `p`.`type` = :type)
+            LEFT JOIN `bx_events_intervals` as `i` ON (`c`.`id` = `i`.`event_id`)
+            WHERE `c`.`id` IN (" . $this->implode_escape(array_values($aIds)) . ")
+            GROUP BY `c`.`id`", 'id', ['type' => $this->_oConfig->getName()]);
+        $aPrimed = [];
+        foreach ($aIds as $iId)
+            $aPrimed[$iId] = $aRows[$iId] ?? [];
+        $this->_setScopedRows($sTable . '#info', 'id', $aPrimed);
     }
 
     public function deleteIntervalById ($iIntervalId)

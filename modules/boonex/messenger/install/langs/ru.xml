@@ -28,6 +28,7 @@
 	<string name="_bx_messenger_jot_number_default"><![CDATA[Количество сообщений в списке сообщений]]></string>
 	<string name="_bx_messenger_what_do_think"><![CDATA[Что вы об этом думаете?]]></string>
 	<string name="_bx_messenger_post_button_title"><![CDATA[Оправить]]></string>
+	<string name="_bx_messenger_menu_item_title_system_messages"><![CDATA[Сообщения (приложения)]]></string>
 	<string name="_bx_messenger_menu_item_title_system_messenger"><![CDATA[Болталка]]></string>
 	<string name="_bx_messenger_menu_notifications_item_sys_title"><![CDATA[Болталка]]></string>
 	<string name="_bx_messenger_menu_notifications_item_title"><![CDATA[Болталка]]></string>
@@ -332,6 +333,7 @@
 	<string name="_bx_messenger_jot_replies"><![CDATA[Ответы]]></string>
 	<string name="_bx_messenger_view_replies"><![CDATA[Посмотреть ответы]]></string>
 	<string name="_bx_messenger_menu_item_title_group_list"><![CDATA[Список разговоров]]></string>
+	<string name="_bx_messenger_menu_item_title_messages"><![CDATA[Сообщения]]></string>
 	<string name="_bx_messenger_groups_talks_title"><![CDATA[Список разговоров]]></string>
 	<string name="_bx_messenger_list_area_inbox"><![CDATA[Сообщения]]></string>
 	<string name="_bx_messenger_text_area_topic_title"><![CDATA[Заголовок]]></string>
