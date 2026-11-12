@@ -1,7 +1,8 @@
 <div class="bx-tasks-time-summary">
     <bx_if:show_periods>
         <div class="bx-tasks-ts-periods">
-            <select class="bx-def-font-inputs bx-form-input-select" onchange="$(this).parents('.bx-tasks-time-summary:first').find('.bx-tasks-ts-period').hide().filter('[data-period=' + this.value + ']').show();">
+            <label class="bx-tasks-ts-label" for="__select_id__"><bx_text:_bx_tasks_txt_time_period /></label>
+            <select id="__select_id__" class="bx-def-font-inputs bx-form-input-select" onchange="$(this).parents('.bx-tasks-time-summary:first').find('.bx-tasks-ts-period').hide().filter('[data-period=' + this.value + ']').show();">
                 <bx_repeat:options><option value="__value__"__selected__>__title__</option></bx_repeat:options>
             </select>
         </div>
@@ -14,8 +15,8 @@
             <bx_if:show_table>
                 <div class="bx-tasks-ts-scroll">
                     <table class="bx-tasks-ts-table">
-                        <thead><tr><th class="bx-tasks-ts-name"></th><bx_repeat:head><th class="bx-tasks-ts-time">__ts_h_value__</th></bx_repeat:head></tr></thead>
                         <tbody>
+                            <tr class="bx-tasks-ts-head"><th class="bx-tasks-ts-name"></th><bx_repeat:head><th class="bx-tasks-ts-time">__ts_h_value__</th></bx_repeat:head></tr>
                             <bx_repeat:rows>
                                 <tr class="__ts_r_class__">
                                     <td class="bx-tasks-ts-name"><bx_if:ts_link><a href="__ts_l_url__">__ts_l_title__</a></bx_if:ts_link><bx_if:ts_text>__ts_t_value__</bx_if:ts_text><bx_if:ts_log><span class="bx-tasks-ts-date">__ts_g_date__</span> <span class="bx-tasks-ts-note">__ts_g_text__</span></bx_if:ts_log></td>

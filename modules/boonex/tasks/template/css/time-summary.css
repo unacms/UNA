@@ -5,6 +5,10 @@
 .bx-tasks-ts-periods select {
     width: auto;
 }
+.bx-tasks-ts-label {
+    margin-right: 0.5rem;
+    opacity: 0.7;
+}
 .bx-tasks-ts-scroll {
     overflow-x: auto;
 }

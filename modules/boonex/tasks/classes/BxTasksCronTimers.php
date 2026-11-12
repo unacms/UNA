@@ -26,7 +26,7 @@ class BxTasksCronTimers extends BxDolCron
     	$this->_oModule = BxDolModule::getInstance($this->_sModule);
     }
 
-    function processing()
+    public function processing()
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
 

@@ -1650,10 +1650,14 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         if($iStartedBefore && (int)$aTimer['started'] > $iStartedBefore)
             return false;
 
-        return $this->updateTimerById($aTimer['id'], [
+        //--- Only the run read here: a timer paused or resumed since has another `started`, and stays as it is.
+        return (int)$this->_oDb->updateTimer([
             'started' => 0,
             'duration' => $aTimer['duration'] + (time() - $aTimer['started']),
-        ]);
+        ], [
+            'id' => (int)$aTimer['id'],
+            'started' => (int)$aTimer['started'],
+        ]) > 0;
     }
 
     public function updateTimerById($iId, $aSet)

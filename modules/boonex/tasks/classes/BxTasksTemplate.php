@@ -622,7 +622,7 @@ class BxTasksTemplate extends BxBaseModTextTemplate
         return $this->parseHtmlByName('time_summary.html', [
             'bx_if:show_periods' => [
                 'condition' => count($aPeriods) > 1,
-                'content' => ['bx_repeat:options' => $aOptions]
+                'content' => ['select_id' => $this->_oConfig->getHtmlIds('time_summary_period') . uniqid(), 'bx_repeat:options' => $aOptions]
             ],
             'bx_repeat:periods' => $aPeriods
         ]);

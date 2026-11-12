@@ -21,4 +21,5 @@
     <string_add name="_bx_tasks_txt_notification_timer_stopped"><![CDATA[The timer of <b class="bx-ntfs-content-profile">{entry_author_name}</b> on <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} was paused: it ran for too long]]></string_add>
     <string_add name="_bx_tasks_txt_notification_timer_stopped_in_context"><![CDATA[The timer of <b class="bx-ntfs-content-profile">{entry_author_name}</b> on <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} in <b class="bx-ntfs-content-profile">{owner_name}</b> was paused: it ran for too long]]></string_add>
     <string_add name="_bx_tasks_option_timer_running_limit"><![CDATA[Pause a timer that runs without a pause for longer than, hours (0 for never)]]></string_add>
+    <string_add name="_bx_tasks_txt_time_period"><![CDATA[Period]]></string_add>
 </resources>

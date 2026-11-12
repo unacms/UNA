@@ -21,4 +21,5 @@
     <string_add name="_bx_tasks_txt_notification_timer_stopped"><![CDATA[Таймер <b class="bx-ntfs-content-profile">{entry_author_name}</b> по <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} остановлен: он работал слишком долго]]></string_add>
     <string_add name="_bx_tasks_txt_notification_timer_stopped_in_context"><![CDATA[Таймер <b class="bx-ntfs-content-profile">{entry_author_name}</b> по <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} в <b class="bx-ntfs-content-profile">{owner_name}</b> остановлен: он работал слишком долго]]></string_add>
     <string_add name="_bx_tasks_option_timer_running_limit"><![CDATA[Ставить на паузу таймер, который идёт без паузы дольше, часов (0 - никогда)]]></string_add>
+    <string_add name="_bx_tasks_txt_time_period"><![CDATA[Период]]></string_add>
 </resources>

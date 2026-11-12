@@ -248,10 +248,10 @@ export default function TasksTimeSummary({ data, blockWrapperProps }: TasksTimeS
 
         // Logged time reaches this block without a page reload: a Log, or a change in a time grid.
         const timerSubscription = emitter.addListener(EVENTS.taskTimer, (event: { action?: string }) => {
-            if (REFRESH_ACTIONS.includes(String(event.action))) reload();
+            if (REFRESH_ACTIONS.includes(String(event.action))) void reload();
         });
         const gridSubscription = emitter.addListener(EVENTS.gridChanged, (event: { object?: string }) => {
-            if (TIME_GRIDS.includes(String(event.object))) reload();
+            if (TIME_GRIDS.includes(String(event.object))) void reload();
         });
         return () => {
             timerSubscription.remove();

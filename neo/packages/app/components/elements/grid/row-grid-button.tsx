@@ -132,7 +132,7 @@ export default function RowGridButton({ id, itemAction }: RowGridButtonProps) {
                                 ...itemAction,
                                 items: [{ name: 'loader' }],
                             })
-                        getDataForMenu(itemAction, setMenuData)
+                        void getDataForMenu(itemAction, setMenuData)
                     }}
                 /> : <DropdownMenu
                     mode="popup"

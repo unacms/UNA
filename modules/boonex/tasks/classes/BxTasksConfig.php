@@ -318,6 +318,7 @@ class BxTasksConfig extends BxBaseModTextConfig
             'filter_popup' => $sPrefix . '-filter-popup',
             'timer' => $sPrefix . '-timer-',
             'timer_actions' => $sPrefix . '-timer-actions',
+            'time_summary_period' => $sPrefix . '-time-summary-period-',
             'timers_actions' => $sPrefix . '-timers-actions',
             'pre_values_popup' => $sPrefix . '-pv-popup-',
         ]);
