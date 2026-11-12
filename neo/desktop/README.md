@@ -837,8 +837,8 @@ with a development certificate). The release workflow runs it on every macOS bui
   come from the 30 s poll, and reaction counts from the feed's poll. Deep links from the site's own pages (a site link as `una://`) and "Copy app link".
 - Settings for sounds, density and reading size. Deep links on macOS work only from an installed
   bundle.
-- Windows and Linux have not been run. The shell's checks pass on Linux and its Windows code
-  type-checks (2026-11-11, from a Mac: see Tests); untested at run time: the Windows overlay
-  badge, Mica, the tray on both, deep-link and autostart registration, the Mark of the Web on
-  downloads, the keychain (Credential Manager, Secret Service), and updates (the NSIS and MSI
-  installers in passive mode; an AppImage replacing itself; a .deb asking for pkexec).
+- Windows and Linux have not been run by a person. CI builds, lints and tests the shell on
+  macOS, Linux and Windows (the MSVC target) on every pull request; untested at run time: the
+  Windows overlay badge, Mica, the tray on both, deep-link and autostart registration, the Mark
+  of the Web on downloads, the keychain (Credential Manager, Secret Service), and updates (the
+  NSIS and MSI installers in passive mode; an AppImage replacing itself; a .deb asking for pkexec).
