@@ -17,8 +17,6 @@ export default function Unit({ data }) {
                     data={data}
                     params={{
                         button_full_width: true,
-                        button_variant: 'default',
-                        button_size: 'xs',
                     }}
                 />
             }
