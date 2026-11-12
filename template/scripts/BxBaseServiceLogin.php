@@ -231,6 +231,11 @@ class BxBaseServiceLogin extends BxDol
                 'auth' => [
                     'methods' => $bAuthButtons,
                     'separator' => $bFormShown,
+                    // for an app that doesn't draw "Forgot password?" by the Password field
+                    'forgot' => !$bFormShown ? null : [
+                        'action' => _t('_sys_txt_forgot_pasword'),
+                        'url' => bx_api_get_relative_url($oPemalink->permalink('page.php?i=forgot-password')),
+                    ],
                     'switch' => !$bJoinText ? null : [
                         'text' => _t('_sys_txt_login_description'),
                         'action' => _t('_sys_txt_login_description_action'),

@@ -206,6 +206,9 @@ export const settingsElements = {
         'u-block-content': 'gap-0.5 ',  
         'u-block-footer':
             'flex text-card-foreground gap-4 pt-2',
+        // A footer's notice (the terms under a sign-in or join form): small, muted, centred.
+        'u-block-notice': 'w-full text-center web:text-balance text-xs leading-4 text-muted-foreground',
+        'u-block-notice-link': 'text-xs leading-4 text-muted-foreground underline',
         'u-block-actions':
             'flex flex-row text-card-foreground gap-2  ',
         // Header "View all" link (small, 36px). -my-1 centres it on the 28px title line without making

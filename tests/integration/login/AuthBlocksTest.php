@@ -29,7 +29,7 @@ class AuthBlocksTest extends BxDolIntegrationTestCase
 
         $this->assertSame('', $oFunctions->designBoxFooter(''));
         $this->assertSame('', $oFunctions->designBoxFooter("  \n"));
-        $this->assertSame('<div class="bx-db-footer">Note</div>', $oFunctions->designBoxFooter('Note'));
+        $this->assertMatchesRegularExpression('/^<div class="bx-db-footer [^"]*">Note<\/div>$/', $oFunctions->designBoxFooter('Note'));
     }
 
     public function testAgreementLinksToTermsAndPrivacy(): void
@@ -53,7 +53,7 @@ class AuthBlocksTest extends BxDolIntegrationTestCase
     {
         $sHtml = (new BxTemplServiceLogin())->serviceLoginForm();
 
-        $this->assertSame(1, substr_count($sHtml, 'class="bx-db-footer"'));
+        $this->assertSame(1, substr_count($sHtml, 'class="bx-db-footer '));
         $this->assertGreaterThan(strpos($sHtml, 'sys-lf-join'), strpos($sHtml, 'bx-db-footer'), 'after the link to the join form');
     }
 
@@ -61,7 +61,7 @@ class AuthBlocksTest extends BxDolIntegrationTestCase
     {
         $sHtml = (new BxTemplServiceAccount())->serviceCreateAccountForm();
 
-        $this->assertSame(1, substr_count($sHtml, 'class="bx-db-footer"'));
+        $this->assertSame(1, substr_count($sHtml, 'class="bx-db-footer '));
         $this->assertStringNotContainsString('sys-jf-agreement', $sHtml);
     }
 
@@ -76,6 +76,7 @@ class AuthBlocksTest extends BxDolIntegrationTestCase
         $this->assertTrue($aForm['auth']['methods']);
         $this->assertSame(_t('_sys_txt_login_description_action'), $aForm['auth']['switch']['action']);
         $this->assertStringContainsString('create-account', $aForm['auth']['switch']['url']);
+        $this->assertStringContainsString('forgot-password', $aForm['auth']['forgot']['url']);
         $this->assertStringContainsString('<a href="', $aForm['footer']);
         $this->assertStringNotContainsString(BX_DOL_URL_ROOT, $aForm['footer']);
 
@@ -87,6 +88,7 @@ class AuthBlocksTest extends BxDolIntegrationTestCase
         $this->assertIsArray($aJoin);
         $this->assertSame(_t('_sys_txt_join_description_action'), $aJoin[0]['auth']['switch']['action']);
         $this->assertStringContainsString('login', $aJoin[0]['auth']['switch']['url']);
+        $this->assertArrayNotHasKey('forgot', $aJoin[0]['auth'], 'only the sign-in form has a password to forget');
         $this->assertNotSame('', $aJoin[0]['footer']);
     }
 

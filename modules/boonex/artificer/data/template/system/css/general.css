@@ -552,7 +552,8 @@ html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-m
 }
 
 /* A block's footer (designbox_footer.html, BxBaseFunctions::designBoxFooter): a quiet, centred notice under the block's
-   content, ruled off from it edge to edge. Wrapped lines are balanced. */
+   content, ruled off from it edge to edge. Wrapped lines are balanced. The template's own bx-def-* classes give other
+   templates the rule, the spacing and the small grey text; these set Artificer's. */
 .bx-artificer .bx-db-footer {
     margin: 1rem -1rem 0;
     padding: 1rem 1rem 0;
