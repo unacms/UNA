@@ -884,26 +884,24 @@ describe('a discussion form that is being sent', () => {
         expect(sent[1]?.key).toBe(sent[0]?.key);
     });
 
-    it('stops the start of one the site never answers: it was not started, and starting it again goes with the same key', async () => {
+    it('waits for an answer that takes longer than a save may: the discussion is not said to be unstarted, is sent once, and opens', async () => {
         vi.useFakeTimers({ shouldAdvanceTime: true });
         try {
+            const first = later();
             const sent: Sent[] = [];
-            const { history } = renderWith(newRoute, newRoutes(sent, new Promise<Answer>(() => {})), (h) => <DetailPane route={h.current} />);
+            const { history } = renderWith(newRoute, newRoutes(sent, first.answer), (h) => <DetailPane route={h.current} />);
             const { title, text, category, who, start } = await fillNew();
             fireEvent.click(start);
             await waitFor(() => expect(start.getAttribute('aria-busy')).toBe('true'));
-            await act(async () => vi.advanceTimersByTimeAsync(SAVE_ANSWER_MS - 1000));
+            // the site is still making it: stopped here and started again changed, it would be there twice
+            await act(async () => vi.advanceTimersByTimeAsync(SAVE_ANSWER_MS + 5000));
+            expect(screen.queryByRole('alert')).toBeNull();
             expect(start.getAttribute('aria-busy')).toBe('true');
             expectHeld(title, text, [category, who]);
-            await act(async () => vi.advanceTimersByTimeAsync(1000));
-            await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('The discussion was not started: the site did not answer in time'));
-            expect(start.getAttribute('aria-busy')).toBeNull();
-            expectFree(title, text, [category, who]);
-            expect(title.value).toBe('Hike pace');
             fireEvent.click(start);
+            first.give({ status: 201, body: discussion('21', { title: 'Hike pace', author: andrey }) });
             await waitFor(() => expect(routeToPath(history.current)).toBe('/discussions/discussion/21'));
-            expect(sent).toHaveLength(2);
-            expect(sent[1]?.key).toBe(sent[0]?.key);
+            expect(sent).toHaveLength(1);
         } finally {
             vi.useRealTimers();
         }

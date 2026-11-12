@@ -3,7 +3,7 @@ import { type FormEvent, type RefObject, useId, useRef, useState } from 'react';
 
 import { isProblem, problemMessage, type Schema } from 'una-api';
 
-import { saveLimit, unwrap } from '../../lib/api';
+import { unwrap } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
 import { heldSelect } from '../../lib/held-select';
@@ -284,7 +284,8 @@ function usePostContexts(fixed: string | undefined) {
  * why, since the picture is in the text only once it is there. Sent, it opens; the lists show it. The site's refusal (a membership level that may
  * not write posts) is said in the form. While it is being sent the form takes no change, as the
  * edit form (what was typed then would not be in the post): the fields are read-only, the lists
- * and the cover held, and a send the site never answers is stopped (SAVE_ANSWER_MS).
+ * and the cover held, for as long as the site takes to answer (a send that was stopped at a time
+ * limit and sent again could make the post twice).
  */
 export function NewPost({ contextId, uploader }: { contextId?: string; uploader?: Uploader }) {
     const { api } = useApp();
@@ -331,7 +332,9 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
             announce(uploadsHold());
             return;
         }
-        const blocker = newPostBlocker({ title, summary, text, html: content.html, coverBlocker: cover.blocker, categoryMissing: categories.length > 0 && !category });
+        // a cover that is being made ready (picked or dropped, not in the tray yet) holds it as one
+        // that is uploading: sent now, the post would go without it
+        const blocker = newPostBlocker({ title, summary, text, html: content.html, coverBlocker: cover.staging() ? t('Wait until the uploads are done') : cover.blocker, categoryMissing: categories.length > 0 && !category });
         if (blocker) {
             showError(blocker);
             return;
@@ -346,18 +349,16 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
         const from = history.current;
         setSending(true);
         setError(null);
-        // a site that never answers must not hold the form
-        const limit = saveLimit();
+        // no time limit, unlike a save of the edit form: a post the site is still making would be
+        // said to be "not sent", and sent again changed (another key) it would be there twice
         let result;
         try {
-            result = await api.POST('/posts', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/posts', body]) } }, body, signal: limit.signal });
+            result = await api.POST('/posts', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/posts', body]) } }, body });
         } catch (err) {
             // no answer came: the key stays, so sending it again gets the site's answer to this one
             setSending(false);
-            setError(t('The post was not sent: {{reason}}', { reason: limit.signal.aborted ? t('the site did not answer in time') : errorMessage(err) }));
+            setError(t('The post was not sent: {{reason}}', { reason: errorMessage(err) }));
             return;
-        } finally {
-            limit.done();
         }
         settleIdempotency(sent, result.response.status);
         if (result.error !== undefined || !result.data) {
