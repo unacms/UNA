@@ -43,6 +43,17 @@ function splitPersistentItems(items, persistentCount) {
     return { outside, overflow };
 }
 
+// How the cover's action buttons look and how big they are. UNA decides (Studio > Navigation > the actions
+// menu > "Button style" / "Button size"; `Menu` reads them from the menu's API). These are only the defaults
+// for a menu UNA leaves on Automatic: glass where the actions sit over the cover picture (phone and tablet),
+// bordered on the desktop's plain bar. A `size` the call site passes is fixed (the hover card's small buttons).
+function coverButtonParams(isDesktop, size) {
+    return {
+        button_style_default: isDesktop ? 'bordered' : 'glass',
+        ...(size ? { button_size: size } : { button_size_default: 'regular' }),
+    }
+}
+
 export function CoverMenuSmall(props) {
     const [ntfsOpen, setNtfsOpen] = useState(false)
     return (
@@ -111,8 +122,7 @@ export function CoverMenu(props) {
         return aItem;
     });
 
-    const buttonStyle = isDesktop ? 'bordered' : 'glass'
-    const buttonSize = props.size || (isDesktop ? 'regular' : 'regular')
+    const buttonParams = coverButtonParams(isDesktop, props.size)
 
     return (
         <Menu
@@ -126,9 +136,7 @@ export function CoverMenu(props) {
                 show_action: true,
                 show_counter: true,
                 show_combined: true,
-                button_style: buttonStyle,
-                button_size: buttonSize,
-                button_primary_style: buttonStyle == 'bordered' ? 'borderedProminent' : 'glassProminent',
+                ...buttonParams,
                 button_border_shape: 'capsule',
                 button_full_width: props?.params?.button_full_width ?? false,
                 // Prefer items-center over my-auto — on native Yoga, my-auto in a
@@ -166,9 +174,7 @@ export function CoverMenuMore(props) {
         return aItem;
     });
 
-   
-    const buttonStyle = isDesktop ? 'bordered' : 'glass'
-    const buttonSize = isDesktop ? 'regular' : 'regular'
+    const buttonParams = coverButtonParams(isDesktop)
 
     return (
         <Menu
@@ -185,9 +191,7 @@ export function CoverMenuMore(props) {
                 show_action: true,
                 show_counter: true,
                 show_combined: true,
-                button_style: buttonStyle,
-                button_size: buttonSize,
-                button_primary_style: buttonStyle == 'bordered' ? 'borderedProminent' : 'glassProminent',
+                ...buttonParams,
                 button_border_shape: 'circle',
                 button_full_width: props?.params?.button_full_width ?? false,
                 className: '  gap-2  ',
