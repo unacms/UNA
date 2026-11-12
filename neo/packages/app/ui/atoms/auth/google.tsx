@@ -175,7 +175,7 @@ function AuthGoogleButton({ googleSettings }: { googleSettings: GoogleSettings }
                     label={t("Continue with Google")}
                     onPress={() => promptAsync()}
                     width="fill"
-                    controlSize="large"
+                    controlSize="regular"
                     style="bordered"
                     image="Google"
                 />

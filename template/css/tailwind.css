@@ -887,7 +887,7 @@
         @apply relative inline-flex items-center min-h-11 px-4 py-2 touch-manipulation;
         @apply bx-btn-shadow;
         @apply bx-btn-bg;
-        @apply bx-btn-border rounded-[10px];
+        @apply bx-btn-border rounded-xl; /* 12px, as NEO's regular button and the rows of a dropdown menu */
         @apply bx-btn-text;
         @apply transform-gpu transition duration-150;
         @apply cursor-pointer;

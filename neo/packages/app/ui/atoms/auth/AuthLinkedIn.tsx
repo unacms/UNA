@@ -12,7 +12,7 @@ export default function AuthLinkedIn() {
             onPress={handleLinkedInLogin}
             label={t('Continue with LinkedIn')}
             image="LinkedInIcon"
-            controlSize="large"
+            controlSize="regular"
             width="fill"
         />
     );
