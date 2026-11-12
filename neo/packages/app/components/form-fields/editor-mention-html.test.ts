@@ -2,7 +2,7 @@
 // Run with `node --test packages/app/components/form-fields/editor-mention-html.test.ts` from the NEO root.
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { mentionsToUnaLinks, unaLinksToMentions } from './editor-mention-html.js';
+import { mentionsToUnaLinks, unaLinksToMentions, EDITOR_LINK_RE } from './editor-mention-html.js';
 import { buildUnaMentionHtml, mentionAttributesForUser, mentionDisplayText } from '../../lib/editor/editor-mention-shared.ts';
 
 const TAG_URL = 'https://example.com/searchKeyword.php?keyword=travel';
@@ -100,4 +100,14 @@ test('a tentap-saved hashtag (Link mark class merged in) loads as a hashtag mark
         unaLinksToMentions(`<a target="_blank" rel="noopener noreferrer nofollow" class="bx-mention-link bx-tag-link" href="${TAG_URL}" title="travel">#travel</a>`),
         `<mention indicator="#" text="#travel" href="${TAG_URL}">#travel</mention>`,
     );
+});
+
+test('the editor links URLs and known domains as you type, not file names', () => {
+    const links = (word: string) => [...word.matchAll(new RegExp(EDITOR_LINK_RE.source, 'gi'))].map((m) => m[0]);
+    assert.deepEqual(links('Next.js'), []);
+    assert.deepEqual(links('editor-inner.js'), []);
+    assert.deepEqual(links('config.ts'), []);
+    assert.deepEqual(links('unacms.com'), ['unacms.com']);
+    assert.deepEqual(links('https://github.com/unacms/UNA/issues'), ['https://github.com/unacms/UNA/issues']);
+    assert.deepEqual(links('www.example.org/x'), ['www.example.org/x']);
 });

@@ -24,12 +24,20 @@ function openAnchorsInNewTab(html: string) {
     return html.replace(/<a\b(?![^>]*\btarget\s*=)([^>]*)>/gi, '<a target="_blank" rel="noopener noreferrer"$1>')
 }
 
+/**
+ * The editor's code block (`<codeblock>` of paragraphs, one per line) as a `div` the
+ * post styles can target (`.u-codeblock` in utilities.css); browsers know no such element.
+ */
+function codeBlocksToDivs(html: string) {
+    return html.replace(/<codeblock\b/gi, '<div class="u-codeblock"').replace(/<\/codeblock\s*>/gi, '</div>')
+}
+
 export default function ElementHtml({ customClassName, data, className = '', innerRef, linksInNewTab = false, preprocess = true }: HtmlProps) {
     const router = useRouter()
 
     const html = useMemo(() => {
         if (!data) return ''
-        const clean = sanitizeHtml(flattenNestedAnchors(preprocess ? preprocessHtml(data) : data))
+        const clean = codeBlocksToDivs(sanitizeHtml(flattenNestedAnchors(preprocess ? preprocessHtml(data) : data)))
         return linksInNewTab ? openAnchorsInNewTab(clean) : clean
     }, [data, linksInNewTab, preprocess])
 

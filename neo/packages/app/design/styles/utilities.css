@@ -419,6 +419,24 @@
         -webkit-overflow-scrolling: touch;
     }
 
+    /* The editor's code block in the post view: html.web.tsx draws each <codeblock> as
+     * div.u-codeblock (also inside a quote or list); each paragraph is one line. The
+     * editor itself styles its code block through the library's CSS. */
+    .u-vanilla-html .u-codeblock,
+    .u-vanilla-html-small .u-codeblock {
+        @variant web {
+            @apply my-3 block overflow-x-auto rounded-lg bg-code px-4 py-3 font-mono text-sm not-italic text-foreground;
+        }
+    }
+
+    .u-vanilla-html .u-codeblock > p,
+    .u-vanilla-html-small .u-codeblock > p {
+        @variant web {
+            /* Lines, not paragraphs: no paragraph gap between them. */
+            @apply m-0! min-h-lh whitespace-pre;
+        }
+    }
+
     /* Links are underlined: the accent is as light as the body text, so colour alone
      * doesn't mark them (WCAG 1.4.1). Mentions and tags (.bx-mention-link, .bx-tag)
      * keep their own style. */

@@ -12,7 +12,7 @@ import { appSetting, cn } from 'app/lib/util'
 import { commitEditorHtml, normalizeEditorHtml } from 'app/lib/editor/editor-form'
 import { useEditorFormField } from 'app/lib/form/use-form-field'
 import emitter, { EVENTS } from 'app/context/emitter'
-import { mentionsToUnaLinks, unaLinksToMentions, linkifyHtml } from './editor-mention-html'
+import { mentionsToUnaLinks, unaLinksToMentions, linkifyHtml, EDITOR_LINK_RE } from './editor-mention-html'
 import { alignClassesToStyles } from 'app/lib/html-helpers'
 import { useEditorMentions } from 'app/lib/editor/use-editor-mentions'
 import { MentionSuggestionsDropdown } from 'app/lib/editor/mention-suggestions-dropdown'
@@ -35,6 +35,8 @@ import { trackFormUploadStart, trackFormUploadEnd } from 'app/lib/form/form-help
 import { useFormInstanceId } from 'app/context/form-instance'
 import { useEnrichedHtmlStyle } from 'app/lib/editor/enriched-html-style'
 import { useMarkdownPaste } from 'app/lib/editor/markdown-paste'
+import { sourceToEditorHtml } from 'app/lib/editor/source-html'
+import { tableImageHtml } from 'app/lib/editor/markdown-table'
 
 const isWeb = Platform.OS === 'web'
 const inputSettings = appSetting('theme', 'inputs')
@@ -429,7 +431,9 @@ export default function RftTextEnriched(props) {
     const isSource = sourceHtml !== null
     const onChangeSource = useCallback((text) => {
         setSourceHtml(text)
-        const next = normalizeEditorHtml(text, { isLimitedHtml })
+        // Code blocks keep their lines and tables become table placeholders, as the
+        // editor will hold them once the source view is left.
+        const next = normalizeEditorHtml(sourceToEditorHtml(text, tableImageHtml), { isLimitedHtml })
         field.onChange(next)
         lastSetValue.current = next
     }, [field, isLimitedHtml])
@@ -440,7 +444,7 @@ export default function RftTextEnriched(props) {
             return
         }
         sourceOpenRef.current = false
-        callEditor(editorRef, 'setValue', alignClassesToStyles(unaLinksToMentions(sourceHtml)))
+        callEditor(editorRef, 'setValue', alignClassesToStyles(unaLinksToMentions(sourceToEditorHtml(sourceHtml, tableImageHtml))))
         setSourceHtml(null)
         setTimeout(() => callEditor(editorRef, 'focus'), 0)
     }, [sourceHtml, field.value])
@@ -513,6 +517,7 @@ export default function RftTextEnriched(props) {
                     <EnrichedEditorBoundary>
                         <EnrichedTextInput
                             ref={editorRef}
+                            linkRegex={EDITOR_LINK_RE}
                             defaultValue={initialDefaultValue}
                             placeholder={placeholder}
                             placeholderTextColor="rgba(120,130,145,1)"
