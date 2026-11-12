@@ -201,9 +201,9 @@ export const settingsElements = {
         // line of description (20px) together.
         'u-block-header-icon': 'items-center justify-center w-11 h-11 rounded-lg bg-muted/50 flex-none',
         'u-block-header-icon-size': 24,
-        // Title icon (UNA's block "Title icon", `icon`): the bare icon before the title, on its line.
-        'u-block-title-icon': 'items-center justify-center flex-none',
-        'u-block-title-icon-size': 20,
+        // Title icon (UNA's block "Title icon", `icon`): a 28px tile before the title, on its line.
+        'u-block-title-icon': 'items-center justify-center w-7 h-7 rounded-md bg-muted/50 flex-none',
+        'u-block-title-icon-size': 16,
         // Before the header icon: kept for forks that draw BlockIcon themselves.
         'u-block-icon': ' items-center w-9 h-9 justify-center bg-muted/50 rounded-lg text-card-foreground flex-none',
         'u-block-icon-size': 20,
