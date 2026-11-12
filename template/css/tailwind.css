@@ -860,25 +860,27 @@
         min-width: 1rem;
     }
 
-    /* Common elements: Buttons */
+    /* Common elements: Buttons
+       The regular button is NEO's bordered button: a flat translucent fill of the text ink (gray-950 at 7%, 10% hovered; gray-50 at 12% and 15% in
+       the dark scheme: --button-fill in neo/packages/app/design/styles/palette-schemes.css), so it reads on the page, a block or a popup alike. No
+       outline and no shadow: the 1px border stays, transparent, only to keep every button's size and to carry the focus colour. Studio paints its
+       own buttons (see "Studio: Buttons" below) and takes none of this. */
     .bx-btn-shadow {
-        @apply shadow-sm hover:shadow active:shadow-none;
+        @apply shadow-none;
     }
     .bx-btn-border {
-        @apply border border-gray-300 dark:border-gray-600 rounded-md;
+        @apply border border-transparent rounded-md;
     }
     .bx-btn-bg {
-        @apply bg-gray-100 dark:bg-gray-700;
+        @apply bg-gray-950/[0.07] dark:bg-gray-50/[0.12];
     }
     .bx-btn-text {
         @apply text-sm text-gray-800 dark:text-gray-200 font-medium ;
     }
     .bx-btn-hover {
-        @apply hover:bg-gray-200 dark:hover:bg-gray-600;
-        @apply hover:border-gray-300 dark:hover:border-gray-500;
+        @apply hover:bg-gray-950/10 dark:hover:bg-gray-50/[0.15];
         @apply hover:text-gray-900 dark:hover:text-white;
         @apply hover:no-underline;
-        @apply hover:-translate-y-px;
     }
     .bx-btn-focus {
         @apply focus:outline-none;
@@ -886,8 +888,7 @@
     }
     
     .bx-btn-active {
-        @apply active:bg-gray-300 dark:active:bg-gray-800;
-        @apply active:border-gray-400 dark:active:border-gray-700;
+        @apply active:bg-gray-950/10 dark:active:bg-gray-50/[0.15];
         @apply active:text-gray-900 dark:active:text-gray-200;
         @apply active:translate-y-px;
     }
@@ -954,7 +955,7 @@
     }
     
     .bx-btn.bx-btn-disabled {
-        @apply bg-gray-50 dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-400 dark:hover:text-gray-400 focus:ring-0 focus:ring-offset-0 shadow-none cursor-default !important;
+        @apply bg-gray-950/[0.035] dark:bg-gray-50/[0.06] hover:bg-gray-950/[0.035] dark:hover:bg-gray-50/[0.06] text-gray-400 hover:text-gray-400 dark:hover:text-gray-400 focus:ring-0 focus:ring-offset-0 shadow-none cursor-default !important;
     }
 
     /* Help tour (Shepherd): the vendored plugins_public/shepherd/css/shepherd.css paints the primary button #3288e6 with 75% white text (#cce1f9, 2.71:1) and is
