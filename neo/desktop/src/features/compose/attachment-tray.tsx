@@ -26,17 +26,20 @@ function statusText(a: Attachment): string {
  * site's), its upload's progress, Retry for one that failed and Remove. The site keeps no alt
  * text, so there is no field for one; the name says which file it is.
  * Removing one moves focus to the next one's Remove, or to `fallbackFocusId` after the last.
+ * While `held` (the form is being sent) Retry and Remove do nothing, and keep the keyboard.
  */
 export function AttachmentTray({
     items,
     onRemove,
     onRetry,
     fallbackFocusId,
+    held = false,
 }: {
     items: readonly Attachment[];
     onRemove: (key: string) => void;
     onRetry: (key: string) => void;
     fallbackFocusId: string;
+    held?: boolean;
 }) {
     const allowed = useMediaSrc();
     const focusAfter = useRef<string | null>(null);
@@ -71,7 +74,7 @@ export function AttachmentTray({
                         </div>
                         <div className="attachment-buttons">
                             {a.status === 'failed' && a.picked ? (
-                                <button type="button" className="btn btn-quiet small" onClick={() => onRetry(a.key)} aria-label={retryLabel(a.kind, a.name)}>
+                                <button type="button" className="btn btn-quiet small" aria-disabled={held || undefined} onClick={() => (held ? undefined : onRetry(a.key))} aria-label={retryLabel(a.kind, a.name)}>
                                     {t('Retry')}
                                 </button>
                             ) : null}
@@ -80,7 +83,9 @@ export function AttachmentTray({
                                 id={removeId(a.key)}
                                 className="btn btn-quiet small"
                                 aria-label={removeLabel(a.kind, a.name)}
+                                aria-disabled={held || undefined}
                                 onClick={() => {
+                                    if (held) return;
                                     const next = items[i + 1] ?? items[i - 1];
                                     focusAfter.current = next ? removeId(next.key) : fallbackFocusId;
                                     onRemove(a.key);

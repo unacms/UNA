@@ -59,15 +59,19 @@ type Uploads = ReturnType<typeof usePhotoUploads>;
 
 /**
  * Where a form takes its photos (or files): a button for the system's dialog (photos only, or any file), a drop zone
- * (the app window's drops come here while it is shown), and the tray of uploads.
+ * (the app window's drops come here while it is shown), and the tray of uploads. While `held`
+ * (the form is being sent) it takes no photo and lets none go: the buttons keep their place and
+ * the keyboard (aria-disabled), and a drop does nothing.
  */
-export function PhotoDropZone({ uploads, pickId, describedBy, label = t('Choose photos…'), icon = 'image-plus', dropHint = t('or drop them here') }: { uploads: Uploads; pickId: string; describedBy?: string; label?: string; icon?: IconName; dropHint?: string }) {
+export function PhotoDropZone({ uploads, pickId, describedBy, label = t('Choose photos…'), icon = 'image-plus', dropHint = t('or drop them here'), held = false }: { uploads: Uploads; pickId: string; describedBy?: string; label?: string; icon?: IconName; dropHint?: string; held?: boolean }) {
     const [dragging, setDragging] = useState(false);
     const { uploader, add } = uploads;
 
     const addRef = useRef(add);
+    const heldRef = useRef(held);
     useEffect(() => {
         addRef.current = add;
+        heldRef.current = held;
     });
     useEffect(() => {
         if (!inApp) return;
@@ -82,7 +86,7 @@ export function PhotoDropZone({ uploads, pickId, describedBy, label = t('Choose 
                 else if (p.type === 'drop') {
                     setDragging(false);
                     // a drop on a text box that takes pictures itself (a post's text) is the box's
-                    if (isOverDropTarget(p.position)) return;
+                    if (isOverDropTarget(p.position) || heldRef.current) return;
                     void uploader.fromPaths(p.paths).then((s) => addRef.current(s));
                 }
             })
@@ -115,6 +119,7 @@ export function PhotoDropZone({ uploads, pickId, describedBy, label = t('Choose 
                   if (!e.dataTransfer.files.length) return;
                   e.preventDefault();
                   setDragging(false);
+                  if (held) return;
                   void uploader.fromFiles(Array.from(e.dataTransfer.files)).then(add);
               },
           };
@@ -123,14 +128,14 @@ export function PhotoDropZone({ uploads, pickId, describedBy, label = t('Choose 
         <>
             <div className="video-drop" data-dragging={dragging || undefined} {...dropProps}>
                 <Icon name={icon} size={20} />
-                <button type="button" id={pickId} className="btn" onClick={() => void uploader.pick().then(add)} aria-describedby={[describedBy, `${pickId}-hint`].filter(Boolean).join(' ')}>
+                <button type="button" id={pickId} className="btn" aria-disabled={held || undefined} onClick={() => (held ? undefined : void uploader.pick().then(add))} aria-describedby={[describedBy, `${pickId}-hint`].filter(Boolean).join(' ')}>
                     {label}
                 </button>
                 <span id={`${pickId}-hint`} className="small muted">
                     {dropHint}
                 </span>
             </div>
-            <AttachmentTray items={uploads.items} onRemove={uploads.remove} onRetry={uploads.retry} fallbackFocusId={pickId} />
+            <AttachmentTray items={uploads.items} onRemove={uploads.remove} onRetry={uploads.retry} fallbackFocusId={pickId} held={held} />
         </>
     );
 }
