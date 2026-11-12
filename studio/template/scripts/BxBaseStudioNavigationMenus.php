@@ -348,6 +348,41 @@ class BxBaseStudioNavigationMenus extends BxDolStudioNavigationMenus
                         'error' => _t('_adm_nav_err_menus_style'),
                     ),
                 ),
+                'button_style' => array(
+                    'type' => 'select',
+                    'name' => 'button_style',
+                    'caption' => _t('_adm_nav_txt_menus_button_style'),
+                    'info' => _t('_adm_nav_dsc_menus_button_style'),
+                    'value' => isset($aMenu['button_style']) ? $aMenu['button_style'] : BxDolMenu::BUTTON_STYLE_AUTO,
+                    'values' => array(
+                        array('key' => BxDolMenu::BUTTON_STYLE_AUTO, 'value' => _t('_adm_nav_txt_menus_button_auto')),
+                        array('key' => BxDolMenu::BUTTON_STYLE_REGULAR, 'value' => _t('_adm_nav_txt_menus_button_style_regular')),
+                        array('key' => BxDolMenu::BUTTON_STYLE_GLASS, 'value' => _t('_adm_nav_txt_menus_button_style_glass')),
+                        array('key' => BxDolMenu::BUTTON_STYLE_PLAIN, 'value' => _t('_adm_nav_txt_menus_button_style_plain')),
+                    ),
+                    'required' => '0',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                ),
+                'button_size' => array(
+                    'type' => 'select',
+                    'name' => 'button_size',
+                    'caption' => _t('_adm_nav_txt_menus_button_size'),
+                    'info' => _t('_adm_nav_dsc_menus_button_size'),
+                    'value' => isset($aMenu['button_size']) ? $aMenu['button_size'] : BxDolMenu::BUTTON_SIZE_AUTO,
+                    'values' => array(
+                        array('key' => BxDolMenu::BUTTON_SIZE_AUTO, 'value' => _t('_adm_nav_txt_menus_button_auto')),
+                        array('key' => BxDolMenu::BUTTON_SIZE_MINI, 'value' => _t('_adm_nav_txt_menus_button_size_mini')),
+                        array('key' => BxDolMenu::BUTTON_SIZE_SMALL, 'value' => _t('_adm_nav_txt_menus_button_size_small')),
+                        array('key' => BxDolMenu::BUTTON_SIZE_REGULAR, 'value' => _t('_adm_nav_txt_menus_button_size_regular')),
+                        array('key' => BxDolMenu::BUTTON_SIZE_LARGE, 'value' => _t('_adm_nav_txt_menus_button_size_large')),
+                    ),
+                    'required' => '0',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                ),
                 'persistent' => array(
                     'type' => 'text',
                     'name' => 'persistent',

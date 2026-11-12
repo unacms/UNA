@@ -1516,6 +1516,8 @@
 	<string name="_adm_nav_dsc_items_title_system"><![CDATA[Item name, displayed in Studio only.]]></string>
         <string name="_adm_nav_dsc_items_info"><![CDATA[The value can be shown below the link name as short description.]]></string>
 	<string name="_adm_nav_dsc_items_visible_for_levels"><![CDATA[Select user levels that can see this menu item]]></string>
+	<string name="_adm_nav_dsc_menus_button_size"><![CDATA[The size of every button in this menu, on the site and in the apps. Automatic leaves each button the size the menu's style gives it.]]></string>
+	<string name="_adm_nav_dsc_menus_button_style"><![CDATA[How the buttons in this menu look, on the site and in the apps. Automatic keeps the button of the menu's style and makes it glass over a cover picture. Choose Glass for a menu that sits over a picture, Regular for one on a plain surface.]]></string>
 	<string name="_adm_nav_dsc_menus_persistent"><![CDATA[Number of persistent menu items. Applicable for menus with 'Auto More' mechanism only.]]></string>
         <string name="_adm_nav_dsc_menus_set_name"><![CDATA[Assign a Set of menu Items]]></string>
 	<string name="_adm_nav_dsc_menus_set_title"><![CDATA[Descriptive name displayed in Studio only. Use at least 3 characters.]]></string>
@@ -1590,6 +1592,16 @@
 	<string name="_adm_nav_txt_items_visible_for_selected"><![CDATA[Selected levels]]></string>
 	<string name="_adm_nav_txt_manage_items"><![CDATA[Manage items]]></string>
 	<string name="_adm_nav_txt_manage_visibility"><![CDATA[Manage visibility settings]]></string>
+	<string name="_adm_nav_txt_menus_button_auto"><![CDATA[Automatic]]></string>
+	<string name="_adm_nav_txt_menus_button_size"><![CDATA[Button size]]></string>
+	<string name="_adm_nav_txt_menus_button_size_large"><![CDATA[Large]]></string>
+	<string name="_adm_nav_txt_menus_button_size_mini"><![CDATA[Mini]]></string>
+	<string name="_adm_nav_txt_menus_button_size_regular"><![CDATA[Regular]]></string>
+	<string name="_adm_nav_txt_menus_button_size_small"><![CDATA[Small]]></string>
+	<string name="_adm_nav_txt_menus_button_style"><![CDATA[Button style]]></string>
+	<string name="_adm_nav_txt_menus_button_style_glass"><![CDATA[Glass]]></string>
+	<string name="_adm_nav_txt_menus_button_style_plain"><![CDATA[Plain]]></string>
+	<string name="_adm_nav_txt_menus_button_style_regular"><![CDATA[Regular]]></string>
 	<string name="_adm_nav_txt_menus_create_popup"><![CDATA[Add New Menu]]></string>
 	<string name="_adm_nav_txt_menus_edit_popup"><![CDATA[Edit "{0}" Menu]]></string>
 	<string name="_adm_nav_txt_menus_gl_items"><![CDATA[Items]]></string>

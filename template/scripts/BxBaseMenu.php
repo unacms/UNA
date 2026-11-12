@@ -195,6 +195,9 @@ class BxBaseMenu extends BxDolMenu
             'title' => _t($this->_aObject['title_public']),
             'config' => $this->_aObject['config_api'],
             'persistent' => $this->_aObject['persistent'],
+            // How the menu's buttons look and how big they are: BxDolMenu::BUTTON_STYLE_* and BUTTON_SIZE_*, empty for automatic.
+            'button_style' => $this->getButtonStyle(),
+            'button_size' => $this->getButtonSize(),
             'params' => $this->getContentParams(),
             'items' => $aItems
         ];
@@ -499,6 +502,8 @@ class BxBaseMenu extends BxDolMenu
         if($bIsSelected)
             $a['class_add'] .= ' bx-menu-tab-active';
         $a['class_add'] .= $this->_getVisibilityClass($a);
+        if(!$this->_bIsApi)
+            $a['class_add'] .= $this->getButtonClasses();
         $a['class_link'] = '';
 
         $a['link'] = isset($a['link']) ? $this->_oPermalinks->permalink($a['link']) : 'javascript:void(0);';

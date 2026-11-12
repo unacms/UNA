@@ -634,9 +634,14 @@ html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
    surface under it: over a cover picture it all but disappears. There the button is NEO's glass button (NeoButton `glass`, web): a white fill
    over a blurred backdrop whose contrast is flattened, so a photo stays apart from the label (light lifts black under the dark label, dark
    dims white under the light one), with the glass rim as its edge.
-   Applies by itself inside a cover (.bx-cover-wrapper) and to the buttons that edit a picture in place (.bx-image-edit-buttons); add
-   .bx-btn-glass to a button anywhere else it sits over a picture. Primary and disabled buttons keep their own fill. */
-.bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled) {
+   Where it applies:
+   - a menu whose Button style is Glass (Studio > Navigation > a menu; BxDolMenu::BUTTON_STYLE_GLASS), which puts .bx-menu-btn-style-glass on
+     each of its items. This is the way to choose it for a menu, and the apps get the same choice through the menu's API;
+   - by itself inside a cover (.bx-cover-wrapper) and on the buttons that edit a picture in place (.bx-image-edit-buttons), unless the menu's
+     Button style says Regular or Plain;
+   - .bx-btn-glass on a button that is in no menu and sits over a picture.
+   Primary and disabled buttons keep their own fill. */
+.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) {
     background-color: rgb(255 255 255 / 0.3);
     color: #0a0a0c;
 
@@ -646,18 +651,18 @@ html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
     /* --tw-shadow, not box-shadow: the focus ring is drawn by the same box-shadow and stays. */
     --tw-shadow: inset 0 3px 1.5px -1.5px rgb(255 255 255 / 1), inset 0 -3px 1.5px -1.5px rgb(255 255 255 / 1), 0 0 0 0.6px rgb(0 0 0 / 0.08), 1px 0 0 -0.4px rgb(0 0 0 / 0.22), -1px 0 0 -0.4px rgb(0 0 0 / 0.22), 0 4px 10px -2px rgb(0 0 0 / 0.03);
 }
-.bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled):hover {
+.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):hover {
     background-color: rgb(255 255 255 / 0.4);
     color: #0a0a0c;
 }
-.bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled):active {
+.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):active {
     background-color: rgb(255 255 255 / 0.55);
     color: #0a0a0c;
 }
-.bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled) i:not(.sys-colored) {
+.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) i:not(.sys-colored) {
     color: inherit;
 }
-.dark .bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled) {
+.dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) {
     background-color: rgb(255 255 255 / 0.15);
     color: #fafafc;
 
@@ -666,11 +671,21 @@ html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
 
     --tw-shadow: inset 0 1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 -1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 4px 5px -4px rgb(255 255 255 / 0.08), inset 0 -4px 5px -4px rgb(255 255 255 / 0.08), 0 0 0 0.6px rgb(0 0 0 / 0.5);
 }
-.dark .bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled):hover {
+.dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):hover {
     background-color: rgb(255 255 255 / 0.19);
     color: #fafafc;
 }
-.dark .bx-btn:is(.bx-btn-glass, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled):active {
+.dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):active {
     background-color: rgb(255 255 255 / 0.23);
     color: #fafafc;
+}
+
+/* A menu whose Button style is Plain (BxDolMenu::BUTTON_STYLE_PLAIN; NeoButton `plain`): no fill in any state, the label alone. */
+.bx-menu-btn-style-plain .bx-btn:not(.bx-btn-primary, .bx-btn-disabled),
+.bx-menu-btn-style-plain .bx-btn:not(.bx-btn-primary, .bx-btn-disabled):hover,
+.bx-menu-btn-style-plain .bx-btn:not(.bx-btn-primary, .bx-btn-disabled):active,
+.dark .bx-menu-btn-style-plain .bx-btn:not(.bx-btn-primary, .bx-btn-disabled),
+.dark .bx-menu-btn-style-plain .bx-btn:not(.bx-btn-primary, .bx-btn-disabled):hover,
+.dark .bx-menu-btn-style-plain .bx-btn:not(.bx-btn-primary, .bx-btn-disabled):active {
+    background-color: transparent;
 }
