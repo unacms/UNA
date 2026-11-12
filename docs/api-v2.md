@@ -12,6 +12,13 @@ what the site is and how to sign in.
 > the same with v2 on or off. The desktop app is the first client of v2 and the only one that
 > needs it; NEO moves to v2 once it covers what v1 does.
 >
+> The web server must send `/api/v2` and everything under it to `api_v2.php` with the rest of
+> the path in `_q`. The `.htaccess` in the package, `scripts/docker-compose/nginx.conf` and
+> `scripts/Caddyfile` have the rule. A site with its own nginx or Caddy configuration, or an
+> `.htaccess` kept from before 15.0.0, needs it added by hand before v2 answers:
+> `RewriteRule ^api/v2(/(.*))?$ api_v2.php?_q=$2 [QSA,L]` (Apache), or
+> `rewrite "^/api/v2(/(.*))?$" /api_v2.php?_q=$2 last;` (nginx).
+>
 > Code that v2 shares with the site and API v1 asks `bx_is_api_v2()` (true only in an `/api/v2`
 > request with v2 on) before it does anything v2 wants differently: reading small tables whole,
 > reusing a private file's link, breaking ties of a second by id in lists of comments and
@@ -666,7 +673,7 @@ what the site is and how to sign in.
   the privacy rows the view check reads (`BxDolPrivacy::primeObjects`), the pages' SEO links
   (`BxDolPageQuery::primeSeoLinks` in its SEO links scope) and its authors' profile rows,
   entries, privacy, avatar copies and page links (`BxDolApiV2Map::primeProfiles`) at once.
-  Measured with `tmp/seed/count-queries.php` on the local site, a page of 20 videos costs 46
+  Measured with a query counter on a local site, a page of 20 videos costs 46
   queries for a guest, 56 for the admin (profile 1) and 53 for a member (profile 4, 18 videos):
   205, 203 and 197 before the profiles, privacy and links were read at once, 679 when each
   file was read on its own.
@@ -695,7 +702,7 @@ what the site is and how to sign in.
   (`_primeMedia`), and a copy's link no longer looks at the original
   (`BxDolTranscoderImage::getCopyUrl`, for a caller that knows the source's type: getFileUrl
   read a token for each private original and each copy). Measured with
-  `tmp/seed/count-queries.php` on the local site, a page of 20 photos costs 38 queries for a
+  a query counter on a local site, a page of 20 photos costs 38 queries for a
   guest, 45 for the admin (profile 1) and 47 for a member (profile 4, 18 photos); one photo
   costs the same, and the token lookups made it 94 for 14 photos before. An owner's originals
   are private files whose links are reused tokens: a page reads them in one query and makes
@@ -746,7 +753,7 @@ what the site is and how to sign in.
   the category is the upload form's first; `comments_enabled` false is 422.
   A page reads its files' rows, copies and links at once (`_primeMedia`, with
   `BxDolStorage::primeFileUrlsShared` for every file, since every viewer gets the original's
-  link). Measured with `tmp/seed/count-queries.php` on the local site, a page of 20 files is
+  link). Measured with a query counter on a local site, a page of 20 files is
   40 queries for a guest, 42 for the admin (profile 65) and 47 for a member (profile 4), the
   same as a page of 1 (40) or 5 (41 to 46); a profile's own list of 17 is 43, a search page
   of 16 hits 40, a space's list 52 for 1 and 55 for 3 (an image whose copies are not made yet
@@ -853,7 +860,7 @@ what the site is and how to sign in.
   service, which its own app client uses, lets whoever manages the task set them; v2 follows the
   service. A state the site counts as done completes the task and another reopens it, as on the
   site; completing it leaves its state as it is. Assignment, completion and expiry notifications
-  stay kind `other` with their `source`. Measured with `tmp/seed/count-queries.php` on the
+  stay kind `other` with their `source`. Measured with a query counter on a
   local site, a context's page costs the same for 1 task, 10 or 20 (66, 67 and 67 queries for a
   member, profile 4, 62 for a guest with 20), a page of 20 search hits 86 for the admin and 122
   for a member (18 hits): what grows is the number of different contexts on the page (a group
@@ -960,7 +967,7 @@ what the site is and how to sign in.
   poll has `kind` `poll` and `Item.poll` (left out on other items): the Timeline reads the Polls of a page at once through the hook `apiV2ItemPolls`, and
   `Item.version` changes with a vote (a poll's view count is left out of it). `Poll` is in
   `BxDolApiV2Map::pollSchemas()`, which the Timeline's schemas give too, since `Item` names it
-  on a site without Polls. Measured with `tmp/seed/count-queries.php` on the local site, a page
+  on a site without Polls. Measured with a query counter on a local site, a page
   of 20 polls is 48 queries for a member (profile 4), 45 for the admin and 39 for a guest;
   `GET /polls/{id}` 65 (the view count, the viewer's reaction, favourite and comment rights).
   `apiV2ItemKind` makes a poll's Item `poll`, and `apiV2ContextContent` puts `polls` in
@@ -995,7 +1002,7 @@ what the site is and how to sign in.
   link previews, one query per storage). An anonymous post names its author to its author only.
   A page reads its covers' rows and copies at once and its categories from the site's cached
   list (the add form only for writing and `GET /posts/categories`), so its cost does not grow
-  with the page: measured with `tmp/seed/count-queries.php` on the local site, a page of 20
+  with the page: measured with a query counter on a local site, a page of 20
   posts is 47 queries for a member (profile 4), 43 for the admin and 39 for a guest (5 posts:
   47 too); `GET /posts/{id}` 65 (the view count, two photos' storages, the links, the viewer's
   reaction, favourite and comment rights); `/me/posts` 59 for 4 posts; `GET /search/posts` 85
@@ -1447,7 +1454,7 @@ clearing of a menu's caches clears it, and has a digest of `sys_menu_items`, `sy
 even straight in the database, makes a new one; an entry lasts an hour at most (a language
 string changed in Studio shows within it). A per-profile menu's counters are kept 60 seconds;
 the followed contexts are read each time. The answer has an ETag, so an unchanged sidebar is a
-304. Queries (`tmp/seed/count-queries.php`, `platform=desktop-app`): a guest 5; a member about 120 to
+304. Queries (counted on a local site, `platform=desktop-app`): a guest 5; a member about 120 to
 140 with the menus kept (most of it the followed contexts' names and pictures, and the counters
 once a minute), a few hundred once after a change.
 
@@ -1572,7 +1579,7 @@ release, and until then anything may change. From 2.0.0 on:
 from it. `ApiV2SpecFileTest` fails when the code serves anything the file does not say, or says
 differently, so a change to the API always shows as a change to that file in the pull request,
 where it is read against the rules above. To take the file again after a change that is meant,
-from a site with every module that has an API enabled:
+from a site with API v2 turned on and every module that has an API enabled:
 
 ```bash
 cd neo/desktop/una-api && UNA_URL=http://localhost:8088 node scripts/fetch-spec.mjs && yarn generate
