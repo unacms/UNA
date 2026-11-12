@@ -177,6 +177,37 @@ describe('a window of its own with unsaved changes in it', () => {
         expect(win.state.destroyed).toBe(1);
     });
 
+    it('closes as the window itself does when the form went first: its stop is waited for, not raced', async () => {
+        const native = await inOwnWindow();
+        const keep = vi.fn(() => Promise.resolve(false));
+        const forget = native.guardWindowClose(keep);
+        await settled();
+        // what the window showed closes: the form unmounts and takes its question back, then the window closes
+        forget();
+        expect(win.state.listening()).toBe(1);
+        await native.closeThisWindowAsked();
+        expect(win.state.listening()).toBe(0);
+        expect(keep).not.toHaveBeenCalled();
+        expect(win.state.prevented).toBe(0);
+        expect(win.state.closed).toBe(1);
+        expect(win.state.destroyed).toBe(1);
+    });
+
+    it('closes all the same when the listener could not be stopped', async () => {
+        const native = await inOwnWindow();
+        const errors = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const listen = win.api.onCloseRequested;
+        win.api.onCloseRequested = () => Promise.resolve(() => Promise.reject(new Error('no unlisten')));
+        native.guardWindowClose(() => Promise.resolve(false));
+        await settled();
+        await native.closeThisWindowAsked();
+        win.api.onCloseRequested = listen;
+        expect(errors).toHaveBeenCalledWith('close requests', expect.any(Error));
+        expect(win.state.closed).toBe(1);
+        expect(win.state.destroyed).toBe(1);
+        errors.mockRestore();
+    });
+
     it('closes as the window itself does when nothing in it had a question', async () => {
         const native = await inOwnWindow();
         await native.closeThisWindowAsked();

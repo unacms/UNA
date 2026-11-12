@@ -288,8 +288,9 @@ export async function closeThisWindowAsked(): Promise<void> {
         window.close();
         return;
     }
+    // also the stop a form already began when it went (its guard's cleanup), and whether or not it worked
+    await unwatchClose();
     try {
-        await unwatchClose();
         await getCurrentWindow().close();
     } catch (e) {
         console.error('close window', e);
@@ -333,19 +334,31 @@ function watchClose(): void {
     });
 }
 
-/** Stop listening for close requests: settled once Rust no longer hands a close to the page. */
+/** The last stop of that listener, while Rust has not answered it yet: settled once it has, never rejected. */
+let closeUnwatched: Promise<void> = Promise.resolve();
+
+/**
+ * Stop listening for close requests: settled once Rust no longer hands a close to the page, also
+ * for a stop begun earlier (a call with no listener left waits for that one).
+ */
 function unwatchClose(): Promise<void> {
     const watch = closeWatch;
-    if (!watch) return Promise.resolve();
+    if (!watch) return closeUnwatched;
     closeWatch = null;
-    return watch.then(
-        // what stops it answers once the listener is gone in Rust too (the event API's unlisten)
-        async (stop) => {
-            const stopped: unknown = stop();
-            await stopped;
-        },
-        () => undefined,
-    );
+    const earlier = closeUnwatched;
+    closeUnwatched = watch
+        .then(
+            // what stops it answers once the listener is gone in Rust too (the event API's unlisten)
+            async (stop) => {
+                const stopped: unknown = stop();
+                await stopped;
+            },
+            // it never listened: watchClose said why
+            () => undefined,
+        )
+        .catch((e: unknown) => console.error('close requests', e))
+        .then(() => earlier);
+    return closeUnwatched;
 }
 
 /**
@@ -372,7 +385,7 @@ export function guardWindowClose(confirm: () => Promise<boolean>): () => void {
     watchClose();
     return () => {
         closeQuestions.delete(confirm);
-        if (!closeQuestions.size) void unwatchClose().catch((e: unknown) => console.error('close requests', e));
+        if (!closeQuestions.size) void unwatchClose();
     };
 }
 
