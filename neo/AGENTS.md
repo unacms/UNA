@@ -242,7 +242,12 @@ UNA says per menu how its buttons look and how big they are: Studio > Navigation
 - `components/menu.js` fills them into the menu's `params` with `withMenuButtonParams` (`lib/util/menu.ts`): `regular` is NeoButton `bordered`, `glass` is `glass`, `plain` is `plain`; the sizes are NeoButton's control sizes of the same names.
 - They are the default, not an override: a call site that passes `button_style`, the legacy `button_variant` or `button_size` keeps its own. To let UNA decide for a menu, leave those out at the call site.
 - A call site that needs a look for a menu UNA leaves on Automatic passes `button_style_default` / `button_size_default` instead: UNA's choice wins over them, and they apply when UNA has none. The order is fixed value, UNA, default (`lib/menu-button-params.ts`, with tests).
-- The cover's actions menu (`CoverMenu`, `CoverMenuMore` in `components/elements/covers/menu-cover.js`) follows UNA this way. Its defaults are glass on phone and tablet, where the actions sit over the cover picture, and bordered on desktop.
+- A menu that still draws its buttons through the legacy adapter passes `button_variant_default` (a legacy variant) as its default look.
+- UNA's style is set as `button_style` and also as `button_variant`, because the items drawn by the legacy adapter (likes, favorites, reports and the like) read only the variant. The adapter and `ButtonsGroupMenu` take a NeoButton style name there.
+- Menus that follow UNA this way, with their defaults for Automatic:
+  - the cover's actions (`CoverMenu`, `CoverMenuMore` in `components/elements/covers/menu-cover.js`): glass on phone and tablet, where the actions sit over the cover picture, bordered on desktop;
+  - a content page's actions (`components/elements/entity-actions.js`): the legacy default variant (bordered), small;
+  - the action button of a people or groups card (`UnitRecommendation` in `components/units/helpers.js`), from the card's snippet meta menu: borderless, small.
 - Glass is for a menu over a picture or another backdrop that varies (a cover, a header without chrome). Prefer setting it on the menu in UNA over hard-coding `glass` at a call site, so the site and the apps agree.
 
 ### Form labels
