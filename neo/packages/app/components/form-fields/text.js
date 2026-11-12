@@ -16,6 +16,11 @@ function getTextFieldInputMode(props) {
         name === 'username' ||
         /user\s*name/i.test(caption);
 
+    // UNA marks number inputs `attrs.type = number` (hours and minutes of time): digits only.
+    if (attrType === 'number') {
+        return { keyboardType: 'number-pad', autoComplete: 'off', textContentType: 'none' };
+    }
+
     if (looksEmail || looksUsername) {
         const useEmail = looksEmail && !looksUsername;
         return {

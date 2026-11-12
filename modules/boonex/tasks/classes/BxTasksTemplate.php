@@ -165,7 +165,7 @@ class BxTasksTemplate extends BxBaseModTextTemplate
     public function entryTimer ($iContentId, $iProfileId)
     {
         $mixedResult = $this->getTimer($iContentId, $iProfileId);
-        if($this->_bIsApi)
+        if($this->_bIsApi || empty($mixedResult))
             return $mixedResult;
 
         $this->addCss(['timer.css']);
@@ -184,9 +184,12 @@ class BxTasksTemplate extends BxBaseModTextTemplate
         $oModule = $this->getModule();
         $sJsObject = $this->_oConfig->getJsObject('timer');
 
+        //--- NEO reloads the block from here when a timer changes on another screen.
+        $sRequestUrl = $this->MODULE . '/get_block_timers';
+
         $aTimers = $this->_oDb->getTimers(['sample' => 'profile_id', 'profile_id' => $iProfileId]);
         if(!$aTimers || !is_array($aTimers))
-            return $this->_bIsApi ? [] : MsgBox(_t('_Empty'));
+            return $this->_bIsApi ? ['sections' => [], 'request_url' => $sRequestUrl] : MsgBox(_t('_Empty'));
 
         $oPermalinks = BxDolPermalinks::getInstance();
 
@@ -197,6 +200,11 @@ class BxTasksTemplate extends BxBaseModTextTemplate
         foreach($aTimers as $aTimer) {
             $aContentInfo = $this->_oDb->getContentInfoById($aTimer['content_id']);
             if(!$aContentInfo || !is_array($aContentInfo))
+                continue;
+
+            //--- A timer left from a role that could log time in that context.
+            $mixedTimer = $this->getTimer($aTimer['content_id'], $iProfileId, $sTimerName);
+            if(empty($mixedTimer))
                 continue;
 
             $sContextType = '';
@@ -220,7 +228,7 @@ class BxTasksTemplate extends BxBaseModTextTemplate
             $aTmplVarsSections[$sContextType][$sTimersKey][] = array_merge([
                 'content_title' => $aContentInfo[$CNF['FIELD_TITLE']],
                 'content_url' => $this->_bIsApi ? bx_api_get_relative_url($sUrl) : $sUrl,
-                'timer' => $this->getTimer($aTimer['content_id'], $iProfileId, $sTimerName),
+                'timer' => $mixedTimer,
             ], $this->_bIsApi ? [
                 'context' => $aTmplVarsContext,
             ] : [
@@ -244,7 +252,8 @@ class BxTasksTemplate extends BxBaseModTextTemplate
         if($this->_bIsApi)
             return [
                 'sections' => $aTmplVarsSections,
-                'actions' => $oActions->getCodeAPI()
+                'actions' => $oActions->getCodeAPI(),
+                'request_url' => $sRequestUrl
             ];
 
         $this->addCss(['forms.css', 'timer.css']);
@@ -310,8 +319,11 @@ class BxTasksTemplate extends BxBaseModTextTemplate
         ];
     }
 
-    public function getBlockTimeSummary ($iContentId, $iProfileId, $bEverybody)
+    public function getBlockTimeSummary ($iContentId, $iProfileId, $aRights)
     {
+        $oModule = $this->getModule();
+        list($bEverybody, $bLogged, $bBilled) = $this->_getTimeSummaryScope($aRights);
+
         $aPeople = [];
         foreach($this->_oDb->getTimeTracks(['sample' => 'object_id', 'object_id' => $iContentId]) as $aTrack) {
             $iAuthorId = (int)$aTrack['author_id'];
@@ -321,12 +333,16 @@ class BxTasksTemplate extends BxBaseModTextTemplate
             if(!isset($aPeople[$iAuthorId]))
                 $aPeople[$iAuthorId] = array_merge($this->_getTimeSummaryTotals(), ['profile' => BxDolProfile::getData($iAuthorId), 'logs' => []]);
 
-            $this->_addTimeSummaryTrack($aPeople[$iAuthorId], $aTrack);
+            $aSummaryTrack = ['value' => (int)$aTrack['value'], 'billed' => $oModule->getTrackBilled($aTrack), 'timer' => !empty($aTrack['by_timer']) ? (int)$aTrack['value_original'] : 0];
+            $this->_addTimeSummaryTrack($aPeople[$iAuthorId], $aSummaryTrack);
 
+            $iOriginal = (int)($aTrack['value_original'] ?? $aTrack['value']);
             $aPeople[$iAuthorId]['logs'][] = [
                 'id' => (int)$aTrack['id'],
-                'minutes' => (int)$aTrack['value'],
-                'billable' => (int)($aTrack['billable'] ?? 1),
+                'minutes' => $aSummaryTrack['value'],
+                'original' => $iOriginal != $aSummaryTrack['value'] ? $iOriginal : null,
+                'by_timer' => !empty($aTrack['by_timer']),
+                'billed' => $aSummaryTrack['billed'],
                 'date' => (int)$aTrack['value_date'] ?: (int)$aTrack['date'],
                 'text' => $aTrack['text'],
             ];
@@ -338,19 +354,24 @@ class BxTasksTemplate extends BxBaseModTextTemplate
 
         $aPeriod = array_merge($this->_getTimeSummaryTotals(), ['name' => 'all_time', 'title' => '']);
         foreach($aPeople as $aPerson)
-            foreach(['minutes', 'billable', 'non_billable'] as $sKey)
+            foreach(array_keys($this->_getTimeSummaryTotals()) as $sKey)
                 $aPeriod[$sKey] += $aPerson[$sKey];
 
-        $aPeriod['people'] = $this->_sortTimeSummary($aPeople);
+        $aPeriod['people'] = $this->_sortTimeSummary($aPeople, $bLogged);
 
-        return [
+        return $this->_filterTimeSummary([
             'periods' => [$aPeriod],
+            'columns' => ['logged' => $bLogged, 'billed' => $bBilled],
             'labels' => $this->_getTimeSummaryLabels(),
             'request_url' => $this->MODULE . '/get_block_time_summary/&params[]=' . $iContentId
-        ];
+        ], $bLogged, $bBilled);
     }
 
-    public function getBlockTimeSummaryContext ($iContextPid, $iProfileId, $bEverybody)
+    /**
+     * $sMethod is the service the block reloads from: the Billing tab's block (Billed time only) comes the same way.
+     * $sType 'my' (the My Time tab) is the viewer's own time only, whatever they may see of the others'.
+     */
+    public function getBlockTimeSummaryContext ($iContextPid, $iProfileId, $aRights, $sMethod = 'get_block_time_summary_context', $sType = '')
     {
         $CNF = &$this->_oConfig->CNF;
 
@@ -358,7 +379,13 @@ class BxTasksTemplate extends BxBaseModTextTemplate
             'all_time' => ['title' => _t('_bx_tasks_txt_timers_stats_all_time'), 'from' => 0, 'to' => PHP_INT_MAX]
         ]);
 
-        //--- One row per person, task and billable flag, with a sum for each period.
+        list($bEverybody, $bLogged, $bBilled) = $this->_getTimeSummaryScope($aRights);
+        if($sType == 'my') {
+            $bEverybody = false;
+            $bLogged = true;
+        }
+
+        //--- One row per person and task, with the Logged and Billed sums for each period.
         $aSums = $this->_oDb->getTimeTracks(array_merge([
             'sample' => 'context_period_sums', 
             'context_id' => $iContextPid, 
@@ -377,10 +404,10 @@ class BxTasksTemplate extends BxBaseModTextTemplate
             $aTotals = $this->_getTimeSummaryTotals();
 
             foreach($aSums as $aSum) {
-                if(empty($aSum[$sName]))
+                if(empty($aSum[$sName]) && empty($aSum[$sName . '_billed']))
                     continue;
 
-                $aTrack = ['value' => (int)$aSum[$sName], 'billable' => (int)$aSum['billable'], 'object_title' => $aSum['object_title']];
+                $aTrack = ['value' => (int)$aSum[$sName], 'billed' => (int)$aSum[$sName . '_billed'], 'timer' => (int)$aSum[$sName . '_timer'], 'object_title' => $aSum['object_title']];
                 $iAuthorId = (int)$aSum['author_id'];
                 $iObjectId = (int)$aSum['object_id'];
 
@@ -403,51 +430,213 @@ class BxTasksTemplate extends BxBaseModTextTemplate
             }
 
             foreach($aPeople as $iAuthorId => $aPerson)
-                $aPeople[$iAuthorId]['tasks'] = $this->_sortTimeSummary($aPerson['tasks']);
+                $aPeople[$iAuthorId]['tasks'] = $this->_sortTimeSummary($aPerson['tasks'], $bLogged);
 
             $aResult[] = array_merge($aTotals, [
                 'name' => $sName,
                 'title' => $aPeriod['title'],
-                'people' => $this->_sortTimeSummary($aPeople)
+                'people' => $this->_sortTimeSummary($aPeople, $bLogged)
             ]);
         }
 
-        return [
+        return $this->_filterTimeSummary([
             'periods' => $aResult,
             'default_period' => 'this_month',
+            'columns' => ['logged' => $bLogged, 'billed' => $bBilled],
             'labels' => $this->_getTimeSummaryLabels(),
-            'request_url' => $this->MODULE . '/get_block_time_summary_context/&params[]=' . $iContextPid
-        ];
+            'request_url' => $this->MODULE . '/' . $sMethod . '/&params[]=' . $iContextPid . ($sType ? '&params[]=' . $sType : '')
+        ], $bLogged, $bBilled);
+    }
+
+    /**
+     * Whose time a viewer sees and which of it: those who see Logged or Billed time of everybody get everybody,
+     * the others their own Logged time.
+     */
+    protected function _getTimeSummaryScope ($aRights)
+    {
+        $bEverybody = !empty($aRights['view_logged_any']) || !empty($aRights['view_billed']);
+        $bLogged = !empty($aRights['view_logged_any']) || !$bEverybody;
+        $bBilled = !empty($aRights['view_billed']);
+
+        return [$bEverybody, $bLogged, $bBilled];
     }
 
     protected function _getTimeSummaryTotals ()
     {
-        return ['minutes' => 0, 'billable' => 0, 'non_billable' => 0];
+        //--- `timer` is the time timers logged (as first logged); the Logged time (`minutes`) less it is what was entered or changed by hand, + or -.
+        return ['minutes' => 0, 'timer' => 0, 'billed' => 0];
     }
 
     protected function _addTimeSummaryTrack (&$aSummary, $aTrack)
     {
-        $iValue = (int)$aTrack['value'];
-
-        $aSummary['minutes'] += $iValue;
-        $aSummary[(int)($aTrack['billable'] ?? 1) ? 'billable' : 'non_billable'] += $iValue;
+        $aSummary['minutes'] += (int)$aTrack['value'];
+        $aSummary['timer'] += (int)($aTrack['timer'] ?? 0);
+        $aSummary['billed'] += (int)$aTrack['billed'];
     }
 
-    protected function _sortTimeSummary ($aItems)
+    protected function _sortTimeSummary ($aItems, $bLogged = true)
     {
-        usort($aItems, function($aA, $aB) {
-            return $aB['minutes'] <=> $aA['minutes'];
+        $sKey = $bLogged ? 'minutes' : 'billed';
+        usort($aItems, function($aA, $aB) use ($sKey) {
+            return $aB[$sKey] <=> $aA[$sKey];
         });
 
         return $aItems;
+    }
+
+    /**
+     * Time the viewer may not see doesn't leave the server: Logged (`minutes`, `original`) or Billed (`billed`).
+     */
+    protected function _filterTimeSummary ($aData, $bLogged, $bBilled)
+    {
+        $aRemove = array_merge($bLogged ? [] : ['minutes', 'original', 'timer', 'by_timer'], $bBilled ? [] : ['billed']);
+        if(!$aRemove)
+            return $aData;
+
+        $fFilter = function($aNode) use (&$fFilter, $aRemove) {
+            foreach($aNode as $sKey => $mixedValue) {
+                if(in_array($sKey, $aRemove, true))
+                    unset($aNode[$sKey]);
+                else if(is_array($mixedValue) && !in_array($sKey, ['profile', 'labels', 'columns'], true))
+                    $aNode[$sKey] = $fFilter($mixedValue);
+            }
+
+            return $aNode;
+        };
+
+        return $fFilter($aData);
+    }
+
+    /**
+     * The site's time summary (the app draws its own): the data of getBlockTimeSummary / getBlockTimeSummaryContext
+     * as plain tables, one per period with a select between them: each person, then their tasks or entries.
+     */
+    public function getBlockTimeSummaryHtml ($aData)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        if(empty($aData['periods']) || !is_array($aData['periods']))
+            return '';
+
+        $this->addCss(['time-summary.css']);
+
+        $aLabels = $aData['labels'];
+        $bLogged = !empty($aData['columns']['logged']);
+        $bBilled = !empty($aData['columns']['billed']);
+
+        $aHead = [];
+        if($bLogged)
+            foreach(['logged', 'by_timer', 'by_hand'] as $sKey)
+                $aHead[] = ['ts_h_value' => bx_process_output($aLabels[$sKey])];
+        if($bBilled)
+            $aHead[] = ['ts_h_value' => bx_process_output($aLabels['billed'])];
+
+        $fTime = function($iMinutes, $bSign = false) {
+            return ($iMinutes < 0 ? '-' : ($bSign && $iMinutes > 0 ? '+' : '')) . $this->_oConfig->timeI2S(abs($iMinutes));
+        };
+
+        //--- $aName: the first cell, a link (url, title), a text (text) or an entry (date, note).
+        $fRow = function($aName, $aItem, $sClass) use ($bLogged, $bBilled, $fTime) {
+            $aCells = [];
+            if($bLogged) {
+                $iMinutes = (int)($aItem['minutes'] ?? 0);
+                $iTimer = (int)($aItem['timer'] ?? 0);
+                foreach([$fTime($iMinutes), $fTime($iTimer), $fTime($iMinutes - $iTimer, true)] as $sValue)
+                    $aCells[] = ['ts_c_value' => $sValue];
+            }
+            if($bBilled)
+                $aCells[] = ['ts_c_value' => $fTime((int)($aItem['billed'] ?? 0))];
+
+            $bLink = !empty($aName['url']);
+            $bLog = isset($aName['date']);
+
+            return [
+                'ts_r_class' => $sClass,
+                'bx_if:ts_link' => [
+                    'condition' => $bLink,
+                    'content' => ['ts_l_url' => bx_html_attribute($aName['url'] ?? ''), 'ts_l_title' => bx_process_output($aName['title'] ?? '')]
+                ],
+                'bx_if:ts_text' => [
+                    'condition' => !$bLink && !$bLog,
+                    'content' => ['ts_t_value' => bx_process_output($aName['title'] ?? '')]
+                ],
+                'bx_if:ts_log' => [
+                    'condition' => $bLog,
+                    'content' => ['ts_g_date' => $bLog ? bx_time_js($aName['date'], BX_FORMAT_DATE, true) : '', 'ts_g_text' => bx_process_output($aName['text'] ?? '')]
+                ],
+                'bx_repeat:cells' => $aCells
+            ];
+        };
+
+        $oPermalinks = BxDolPermalinks::getInstance();
+        $sDefault = $aData['default_period'] ?? $aData['periods'][0]['name'];
+
+        $aOptions = $aPeriods = [];
+        foreach($aData['periods'] as $aPeriod) {
+            $bDefault = $aPeriod['name'] == $sDefault;
+            $aOptions[] = [
+                'value' => bx_html_attribute($aPeriod['name']),
+                'selected' => $bDefault ? ' selected="selected"' : '',
+                'title' => bx_process_output($aPeriod['title'])
+            ];
+
+            $aRows = [];
+            foreach($aPeriod['people'] as $aPerson) {
+                $oProfile = BxDolProfile::getInstanceMagic((int)$aPerson['profile']['id']);
+                $aRows[] = $fRow(['url' => $oProfile->getUrl(), 'title' => $oProfile->getDisplayName()], $aPerson, 'bx-tasks-ts-person');
+
+                //--- A context's summary: the person's tasks.
+                foreach($aPerson['tasks'] ?? [] as $aTask)
+                    $aRows[] = $fRow([
+                        'url' => bx_absolute_url($oPermalinks->permalink('page.php?i=' . $CNF['URI_VIEW_ENTRY'] . '&id=' . (int)$aTask['id'])),
+                        'title' => $aTask['title']
+                    ], $aTask, 'bx-tasks-ts-task');
+
+                //--- A task's summary: the person's entries, with their dates and notes, as the app shows them.
+                foreach($aPerson['logs'] ?? [] as $aLog) {
+                    $iMinutes = (int)($aLog['minutes'] ?? 0);
+                    $aRows[] = $fRow(['date' => (int)$aLog['date'], 'text' => (string)($aLog['text'] ?? '')], [
+                        'minutes' => $iMinutes,
+                        'timer' => !empty($aLog['by_timer']) ? (int)($aLog['original'] ?? $iMinutes) : 0,
+                        'billed' => (int)($aLog['billed'] ?? 0)
+                    ], 'bx-tasks-ts-task');
+                }
+            }
+            if($aRows && count($aPeriod['people']) > 1)
+                $aRows[] = $fRow(['title' => $aLabels['total']], $aPeriod, 'bx-tasks-ts-total');
+
+            $aPeriods[] = [
+                'name' => bx_html_attribute($aPeriod['name']),
+                'style' => $bDefault ? '' : ' style="display:none"',
+                'bx_if:show_empty' => [
+                    'condition' => !$aRows,
+                    'content' => ['empty' => bx_process_output($aLabels['empty'])]
+                ],
+                'bx_if:show_table' => [
+                    'condition' => (bool)$aRows,
+                    'content' => ['bx_repeat:columns' => $aHead, 'bx_repeat:rows' => $aRows]
+                ]
+            ];
+        }
+
+        return $this->parseHtmlByName('time_summary.html', [
+            'bx_if:show_periods' => [
+                'condition' => count($aPeriods) > 1,
+                'content' => ['select_id' => $this->_oConfig->getHtmlIds('time_summary_period') . uniqid(), 'bx_repeat:options' => $aOptions]
+            ],
+            'bx_repeat:periods' => $aPeriods
+        ]);
     }
 
     protected function _getTimeSummaryLabels ()
     {
         return [
             'total' => _t('_bx_tasks_txt_timers_stats_total'),
-            'billable' => _t('_bx_tasks_txt_billable'),
-            'non_billable' => _t('_bx_tasks_txt_non_billable'),
+            'logged' => _t('_bx_tasks_txt_time_logged'),
+            'billed' => _t('_bx_tasks_txt_time_billed'),
+            'original' => _t('_bx_tasks_txt_time_original'),
+            'by_timer' => _t('_bx_tasks_txt_time_by_timer'),
+            'by_hand' => _t('_bx_tasks_txt_time_by_hand'),
             'empty' => _t('_bx_tasks_txt_timers_stats_empty'),
         ];
     }
@@ -506,6 +695,10 @@ class BxTasksTemplate extends BxBaseModTextTemplate
 
         $sPrefix = str_replace('_', '-', $this->_oConfig->getName());
         $sJsObject = $this->_oConfig->getJsObject('timer');
+
+        //--- No timer for those who may not log time here (clients).
+        if(!$this->getModule()->getTimeRightsByContentId($iContentId, $iProfileId)['log'])
+            return $this->_bIsApi ? [] : '';
 
         $aTimer = $this->_oDb->getTimers(['sample' => 'content_profile_ids', 'content_id' => $iContentId, 'profile_id' => $iProfileId]);
         $bTimer = $aTimer && is_array($aTimer);
@@ -705,6 +898,12 @@ class BxTasksTemplate extends BxBaseModTextTemplate
 
             $bTasksAllowManage = $bContext ? $bAllowManage : $oModule->isAllowManageByContext($iTasksContextId);
 
+            //--- Those who see Billed time but not everybody's Logged time (clients) get the Billed total,
+            //--- those who see neither their own Logged time only.
+            $aTimeRights = $oModule->getTimeRights($iTasksContextId);
+            $bTotalBilled = $aTimeRights['view_billed'] && !$aTimeRights['view_logged_any'];
+            $bTotalOwn = !$aTimeRights['view_billed'] && !$aTimeRights['view_logged_any'];
+
             $aTasks = $this->_oDb->getTasks($iTasksContextId, $bContext ? $aList['id'] : false, $aParams);
             if((!$aTasks || !is_array($aTasks)) && (($bContext && !$aList['id']) || !$bTasksAllowManage))
                 continue;
@@ -714,7 +913,15 @@ class BxTasksTemplate extends BxBaseModTextTemplate
                 $iTaskId = (int)$aTask[$CNF['FIELD_ID']];
 
                 $sTime = '';
-                if(!empty($aTask['time_total']))
+                if($bTotalBilled) {
+                    if(!empty($aTask['time_billed']))
+                        $sTime = _t('_bx_tasks_txt_total', $this->_oConfig->timeI2S($aTask['time_billed']));
+                }
+                else if($bTotalOwn) {
+                    if(!empty($aTask['time']))
+                        $sTime = _t('_bx_tasks_txt_total', $this->_oConfig->timeI2S($aTask['time']));
+                }
+                else if(!empty($aTask['time_total']))
                     $sTime = _t('_bx_tasks_txt_total', $this->_oConfig->timeI2S($aTask['time_total']) . (!empty($aTask['time']) ? ' (' . $this->_oConfig->timeI2S($aTask['time']) . ')' : ''));
                 if(!empty($aTask['estimate']))
                     $sTime .= ' ' . _t('_bx_tasks_txt_estimate', $this->_oConfig->timeI2S(60 * (int)$aTask['estimate']));
@@ -754,6 +961,7 @@ class BxTasksTemplate extends BxBaseModTextTemplate
                 ], $this->_bIsApi ? [
                     'url' => bx_api_get_relative_url($sUrl),
                     'completed' => $bCompleted ? 1 : 0,
+                    'allow_log_time' => $aTimeRights['log'],
                     'members' => $aTmplVarsMembers,
                     'actions' => $aActions
                 ] : [

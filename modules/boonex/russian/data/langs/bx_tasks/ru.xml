@@ -671,4 +671,24 @@
     <!-- Timeline -->
     <string name="_bx_tasks_alert_action_completed"><![CDATA[завершено]]></string>
     <string name="_bx_tasks_alert_action_reopened"><![CDATA[открыто заново]]></string>
+    <string name="_bx_tasks_txt_time_logged"><![CDATA[Залогировано]]></string>
+    <string name="_bx_tasks_txt_time_billed"><![CDATA[К оплате]]></string>
+    <string name="_bx_tasks_txt_time_original"><![CDATA[Исходное]]></string>
+    <string name="_bx_tasks_txt_time_by_timer"><![CDATA[Таймер]]></string>
+    <string name="_bx_tasks_txt_time_by_hand"><![CDATA[Вручную]]></string>
+    <string name="_bx_tasks_grid_column_title_tm_value_total"><![CDATA[Всего]]></string>
+    <string name="_bx_tasks_grid_column_title_tm_value_manual"><![CDATA[Вручную]]></string>
+    <string name="_bx_tasks_grid_column_title_tm_value_billed"><![CDATA[К оплате]]></string>
+    <string name="_bx_tasks_form_time_input_value_billed"><![CDATA[Оплачиваемое время]]></string>
+    <string name="_bx_tasks_page_title_sys_entries_billing_in_context"><![CDATA[Биллинг задач в контексте]]></string>
+    <string name="_bx_tasks_page_title_entries_billing_in_context"><![CDATA[Биллинг]]></string>
+    <string name="_bx_tasks_page_block_title_system_context_billing_summary"><![CDATA[Оплачиваемое время контекста по участникам]]></string>
+    <string name="_bx_tasks_page_block_title_context_billing_summary"><![CDATA[Оплачиваемое время]]></string>
+    <string name="_bx_tasks_menu_item_title_system_view_context_billing"><![CDATA[Биллинг в контексте]]></string>
+    <string name="_bx_tasks_menu_item_title_view_context_billing"><![CDATA[Биллинг]]></string>
+    <string name="_bx_tasks_alert_action_timer_stopped_personal"><![CDATA[Остановка слишком долгого таймера]]></string>
+    <string name="_bx_tasks_txt_notification_timer_stopped"><![CDATA[Таймер <b class="bx-ntfs-content-profile">{entry_author_name}</b> по <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} остановлен: он работал слишком долго]]></string>
+    <string name="_bx_tasks_txt_notification_timer_stopped_in_context"><![CDATA[Таймер <b class="bx-ntfs-content-profile">{entry_author_name}</b> по <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} в <b class="bx-ntfs-content-profile">{owner_name}</b> остановлен: он работал слишком долго]]></string>
+    <string name="_bx_tasks_option_timer_running_limit"><![CDATA[Ставить на паузу таймер, который идёт без паузы дольше, часов (0 - никогда)]]></string>
+    <string name="_bx_tasks_txt_time_period"><![CDATA[Период]]></string>
 </resources>

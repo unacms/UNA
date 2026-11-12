@@ -4944,4 +4944,9 @@
   <string name="_sys_recom_friends_empty_action"><![CDATA[Найти людей]]></string>
   <string name="_sys_recom_friends_empty_text"><![CDATA[Предложения появятся, когда вы начнёте общаться с людьми.]]></string>
   <string name="_sys_recom_friends_empty_title"><![CDATA[Пока нет предложений]]></string>
+  <string name="_adm_form_txt_groups_role_time_log"><![CDATA[Логировать время]]></string>
+  <string name="_adm_form_txt_groups_role_time_view_logged_any"><![CDATA[Видеть залогированное время всех]]></string>
+  <string name="_adm_form_txt_groups_role_time_view_billed"><![CDATA[Видеть оплачиваемое время]]></string>
+  <string name="_adm_form_txt_groups_role_time_edit_billed"><![CDATA[Править оплачиваемое время]]></string>
+  <string name="_adm_form_txt_groups_role_manage_properties"><![CDATA[Управлять свойствами]]></string>
 </resources>

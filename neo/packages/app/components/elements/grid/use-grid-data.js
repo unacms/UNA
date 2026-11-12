@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { flattenPagesForUniList } from 'app/lib/browse-query';
+import emitter, { EVENTS } from 'app/context/emitter';
 import {
     getDropdownFilterKeys,
     getNumberedFilterKeys,
@@ -88,9 +89,16 @@ export function useGridData(data) {
         initialPageParam: { start: 0 }
     });
 
-    /** Store handlers read these through `get()` — nothing subscribes to them. */
+    /**
+     * Store handlers read these through `get()` — nothing subscribes to them.
+     * The store reloads only after an action changed rows, so other blocks hear of it (EVENTS.gridChanged).
+     */
     useEffect(() => {
-        gridStore.setState({ settings, queryAppend, queryClient, queryKey, reloadGrid, t });
+        const reloadAfterChange = () => {
+            emitter.emit(EVENTS.gridChanged, { object: settings.object });
+            return reloadGrid();
+        };
+        gridStore.setState({ settings, queryAppend, queryClient, queryKey, reloadGrid: reloadAfterChange, t });
     }, [gridStore, settings, queryAppend, queryClient, queryKey, reloadGrid, t]);
 
     const rows = useMemo(() => flattenPagesForUniList(pagesData), [pagesData]);

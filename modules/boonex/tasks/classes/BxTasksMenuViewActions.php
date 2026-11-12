@@ -54,6 +54,10 @@ class BxTasksMenuViewActions extends BxBaseModTextMenuViewActions
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
 
+        //--- No Log time for those who may not log time in the task's context (clients).
+        if(!$this->_oModule->getTimeRightsByContentId($this->_iContentId)['log'])
+            return $this->_bIsApi ? [] : '';
+
         return parent::_getMenuItemReport($aItem, array_merge($aParams, [
             'object' => $CNF['OBJECT_REPORTS_TIME']
         ]));
