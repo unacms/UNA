@@ -12,6 +12,7 @@ import { AttachmentTray } from '../compose/attachment-tray';
 import { mediaIds, postBlocker, useAttachments } from '../compose/attachments';
 import { MAX_FILES } from '../files/files';
 import { MAX_ALBUM_PHOTOS, MAX_PHOTOS } from './photos';
+import { takenOf } from './upload-answers';
 
 /**
  * Whether an answer says nothing of what the site took of the uploads its request names: the
@@ -79,7 +80,7 @@ export function usePhotoUploads({ purpose, uploader: given, announce }: { purpos
                     unknown.current = new Set([...unknown.current, ...named]);
                     return;
                 }
-                const taken = answer === true ? named : answer === false ? [] : answer;
+                const taken = takenOf(answer, named);
                 // the form went meanwhile: what the request named and did not take is deleted now
                 if (gone.current) {
                     for (const id of named) if (!taken.includes(id) && !unknown.current.has(id)) drop(id);

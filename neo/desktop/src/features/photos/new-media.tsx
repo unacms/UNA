@@ -18,6 +18,7 @@ import { useAnnouncer } from '../feed/feed-list';
 import { contextKind, fetchAnyContext, groupKey } from '../groups/groups';
 import { textToHtml } from '../videos/videos';
 import { PhotoDropZone, usePhotoUploads } from './photo-uploads';
+import { sendBlocker, tookAll, tookSome } from './upload-answers';
 import { addedText, afterAlbumAdded, afterPhotosAdded } from './photos';
 
 export type Audience = NonNullable<Schema<'NewPhotos'>['audience']>;
@@ -109,6 +110,29 @@ export const submitKeys = (submit: () => void) => (e: KeyboardEvent) => {
 };
 
 /**
+ * What POST /photos (and POST /files, of the same shape) is sent: the uploads, one title and text
+ * for all of them when given, and the place they go in, or who can see them when in none.
+ */
+export function mediaBody(ids: string[], title: string, text: string, contextId: string | undefined, audience: Audience): Schema<'NewPhotos'> {
+    const body: Schema<'NewPhotos'> = { media_ids: ids };
+    if (title.trim()) body.title = title.trim();
+    if (text.trim()) body.text_html = textToHtml(text);
+    if (contextId) body.context_id = contextId;
+    else body.audience = audience;
+    return body;
+}
+
+/** What POST /albums is sent: its title, the text and the uploads when there are any, and the place it goes in, or who can see it when in none. */
+function albumBody(ids: string[], title: string, text: string, contextId: string | undefined, audience: Audience): Schema<'NewAlbum'> {
+    const body: Schema<'NewAlbum'> = { title: title.trim() };
+    if (text.trim()) body.text_html = textToHtml(text);
+    if (ids.length) body.media_ids = ids;
+    if (contextId) body.context_id = contextId;
+    else body.audience = audience;
+    return body;
+}
+
+/**
  * Adding photos in the detail pane: photos picked in the system's dialog or dropped on the window
  * (each uploading at once, with its progress, Retry and Remove), one title and text for all of
  * them (each file's name when no title is given), and who can see them, or the group they go in
@@ -137,20 +161,14 @@ export function NewPhotos({ contextId, uploader }: { contextId?: string; uploade
     const submit = async (e?: FormEvent) => {
         e?.preventDefault();
         if (sending) return;
-        // files being made ready (picked or dropped, not in the tray yet) hold it as ones that are
-        // uploading: sent now, it would go without them
-        const blocker = uploads.staging() ? t('Wait until the uploads are done') : (uploads.blocker ?? (uploads.ids.length ? null : t('Choose the photos to add.')));
+        const blocker = sendBlocker(uploads, t('Choose the photos to add.'));
         if (blocker) {
             setFieldError(blocker);
             document.getElementById(`${id}-pick`)?.focus();
             return;
         }
         setFieldError(null);
-        const body: Schema<'NewPhotos'> = { media_ids: uploads.ids };
-        if (title.trim()) body.title = title.trim();
-        if (text.trim()) body.text_html = textToHtml(text);
-        if (contextId) body.context_id = contextId;
-        else body.audience = audience;
+        const body = mediaBody(uploads.ids, title, text, contextId, audience);
         const from = history.current;
         setSending(true);
         setError(null);
@@ -158,9 +176,7 @@ export function NewPhotos({ contextId, uploader }: { contextId?: string; uploade
         try {
             // the site stops adding once the membership level's limit is reached: what it did not take stays here
             // (a photo's media id is the upload's: the ones no photo has are those left)
-            result = await uploads.claim(api.POST('/photos', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/photos', body]) } }, body }), (r) =>
-                r.error !== undefined || !r.data ? false : r.data.length < body.media_ids.length ? r.data.flatMap((p) => (p.media ? [p.media.id] : [])) : true,
-            );
+            result = await uploads.claim(api.POST('/photos', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/photos', body]) } }, body }), (r) => tookSome(r, body.media_ids.length));
         } catch (e) {
             if (uploads.gone()) return;
             // no answer came: the key stays, so sending it again gets the site's answer to this one
@@ -276,26 +292,21 @@ export function NewAlbum({ contextId, uploader }: { contextId?: string; uploader
             document.getElementById(`${id}-title`)?.focus();
             return;
         }
-        // files being made ready (picked or dropped, not in the tray yet) hold it as ones that are
-        // uploading: sent now, it would go without them
-        const blocker = uploads.staging() ? t('Wait until the uploads are done') : uploads.blocker;
+        // it can go with no photo: only ones on their way (or failed) hold it
+        const blocker = sendBlocker(uploads);
         if (blocker) {
             setFieldError({ field: 'photos', text: blocker });
             document.getElementById(`${id}-pick`)?.focus();
             return;
         }
         setFieldError(null);
-        const body: Schema<'NewAlbum'> = { title: title.trim() };
-        if (text.trim()) body.text_html = textToHtml(text);
-        if (uploads.ids.length) body.media_ids = uploads.ids;
-        if (contextId) body.context_id = contextId;
-        else body.audience = audience;
+        const body = albumBody(uploads.ids, title, text, contextId, audience);
         const from = history.current;
         setSending(true);
         setError(null);
         let result;
         try {
-            result = await uploads.claim(api.POST('/albums', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/albums', body]) } }, body }), (r) => r.error === undefined && !!r.data);
+            result = await uploads.claim(api.POST('/albums', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/albums', body]) } }, body }), tookAll);
         } catch (e) {
             if (uploads.gone()) return;
             // no answer came: the key stays, so sending it again gets the site's answer to this one

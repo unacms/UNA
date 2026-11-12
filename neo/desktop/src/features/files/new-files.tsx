@@ -12,9 +12,9 @@ import { isMac } from '../../lib/platform';
 import type { Uploader } from '../../lib/uploads';
 import { CloseDetailButton, Pane } from '../../shell/pane';
 import { useAnnouncer } from '../feed/feed-list';
-import { type Audience, AudienceField, submitKeys, useFormContext } from '../photos/new-media';
+import { type Audience, AudienceField, mediaBody, submitKeys, useFormContext } from '../photos/new-media';
 import { PhotoDropZone, usePhotoUploads } from '../photos/photo-uploads';
-import { textToHtml } from '../videos/videos';
+import { sendBlocker, tookSome } from '../photos/upload-answers';
 import { afterFilesAdded, filesAddedText } from './files';
 
 /**
@@ -47,29 +47,21 @@ export function NewFiles({ contextId, uploader }: { contextId?: string; uploader
     const submit = async (e?: FormEvent) => {
         e?.preventDefault();
         if (sending) return;
-        // files being made ready (picked or dropped, not in the tray yet) hold it as ones that are
-        // uploading: sent now, it would go without them
-        const blocker = uploads.staging() ? t('Wait until the uploads are done') : (uploads.blocker ?? (uploads.ids.length ? null : t('Choose the files to add.')));
+        const blocker = sendBlocker(uploads, t('Choose the files to add.'));
         if (blocker) {
             setFieldError(blocker);
             document.getElementById(`${id}-pick`)?.focus();
             return;
         }
         setFieldError(null);
-        const body: Schema<'NewFiles'> = { media_ids: uploads.ids };
-        if (title.trim()) body.title = title.trim();
-        if (text.trim()) body.text_html = textToHtml(text);
-        if (contextId) body.context_id = contextId;
-        else body.audience = audience;
+        const body: Schema<'NewFiles'> = mediaBody(uploads.ids, title, text, contextId, audience);
         const from = history.current;
         setSending(true);
         setError(null);
         let result;
         try {
             // the site stops adding once the membership level's limit is reached: what it did not take stays here
-            result = await uploads.claim(api.POST('/files', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/files', body]) } }, body }), (r) =>
-                r.error !== undefined || !r.data ? false : r.data.length < body.media_ids.length ? r.data.flatMap((f) => (f.media ? [f.media.id] : [])) : true,
-            );
+            result = await uploads.claim(api.POST('/files', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/files', body]) } }, body }), (r) => tookSome(r, body.media_ids.length));
         } catch (e) {
             if (uploads.gone()) return;
             // no answer came: the key stays, so sending it again gets the site's answer to this one

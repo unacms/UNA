@@ -30,6 +30,7 @@ import { EntryActions, EntryComments, useEntryItem } from './entry-item';
 import { PhotoGrid } from './photo-grid';
 import { MoreButton } from './photo-list';
 import { PhotoDropZone, usePhotoUploads } from './photo-uploads';
+import { sendBlocker, tookAll } from './upload-answers';
 import { afterAddedToAlbum, type Album, albumFromLists, albumItemsKey, albumKey, dropAlbum, fetchAlbumItems, itemsText, putAlbum } from './photos';
 
 /**
@@ -40,7 +41,7 @@ import { afterAddedToAlbum, type Album, albumFromLists, albumItemsKey, albumKey,
  * answer leaves it as it was, to send again. Left through the pane meanwhile (Close, another
  * album), the request keeps its uploads and its answer does nothing to what is shown then.
  */
-function AddPhotos({ album, uploader, onDone, announce }: { album: Album; uploader?: Uploader; onDone: (added: number, read?: Promise<void>) => void; announce: (text: string) => void }) {
+function AddPhotos({ album, uploader, onDone, announce }: Readonly<{ album: Album; uploader?: Uploader; onDone: (added: number, read?: Promise<void>) => void; announce: (text: string) => void }>) {
     const { api } = useApp();
     const queryClient = useQueryClient();
     const id = useId();
@@ -59,9 +60,7 @@ function AddPhotos({ album, uploader, onDone, announce }: { album: Album; upload
 
     const submit = async () => {
         if (sending) return;
-        // files being made ready (picked or dropped, not in the tray yet) hold it as ones that are
-        // uploading: sent now, it would go without them
-        const blocker = uploads.staging() ? t('Wait until the uploads are done') : (uploads.blocker ?? (n ? null : t('Choose the photos to add.')));
+        const blocker = sendBlocker(uploads, t('Choose the photos to add.'));
         if (blocker) {
             setError(blocker);
             document.getElementById(`${id}-pick`)?.focus();
@@ -72,7 +71,7 @@ function AddPhotos({ album, uploader, onDone, announce }: { album: Album; upload
         let result;
         try {
             const body = { media_ids: uploads.ids };
-            result = await uploads.claim(api.POST('/albums/{id}/items', { params: { path: { id: album.id }, header: { 'Idempotency-Key': idempotencyKeyFor(sent, [`/albums/${album.id}/items`, body]) } }, body }), (r) => r.error === undefined && !!r.data);
+            result = await uploads.claim(api.POST('/albums/{id}/items', { params: { path: { id: album.id }, header: { 'Idempotency-Key': idempotencyKeyFor(sent, [`/albums/${album.id}/items`, body]) } }, body }), tookAll);
         } catch (e) {
             if (uploads.gone()) return;
             // no answer came: the key stays, so sending it again gets the site's answer to this one
