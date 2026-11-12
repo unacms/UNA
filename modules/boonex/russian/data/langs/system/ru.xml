@@ -3336,7 +3336,6 @@
 	<string name="_sys_form_login_input_caption_system_sendsms"><![CDATA[Отправить SMS]]></string>
 	<string name="_sys_form_login_input_caption_system_submit"><![CDATA[Выполнить]]></string>
 	<string name="_sys_form_login_input_caption_system_submit_text"><![CDATA[Текст отправки]]></string>
-        <string name="_sys_form_login_input_agreement_value"><![CDATA[Заходя, Вы соглашаетесь с <a href="{0}">Правилами пользования</a> и <a href="{1}">Политикой конфиденциальности</a>.]]></string>
 	<string name="_sys_form_login_input_checkcode"><![CDATA[Выполнить]]></string>
 	<string name="_sys_form_login_input_code"><![CDATA[Код из SMS]]></string>
 	<string name="_sys_form_login_input_back"><![CDATA[Вы не получили SMS? <a href="{0}">Отправить SMS ещё раз</a>]]></string>

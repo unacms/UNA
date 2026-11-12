@@ -279,7 +279,6 @@ class BxBaseServiceLogin extends BxDol
                 'condition' => !empty($aTmplVarsJoin),
                 'content' => $aTmplVarsJoin
             ],
-            'agreement' => _t('_sys_form_login_input_agreement_value', bx_absolute_url($oPemalink->permalink('page.php?i=terms')), bx_absolute_url($oPemalink->permalink('page.php?i=privacy'))),
             'bx_if:show_js_code' => [
                 'condition' => strpos($sParams, 'ajax_form') !== false,
                 'content' => []

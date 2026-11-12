@@ -3365,7 +3365,6 @@
 	<string name="_sys_form_login_input_caption_system_sendsms"><![CDATA[Send SMS]]></string>
 	<string name="_sys_form_login_input_caption_system_submit"><![CDATA[Submit]]></string>
 	<string name="_sys_form_login_input_caption_system_submit_text"><![CDATA[Submit Text]]></string>
-        <string name="_sys_form_login_input_agreement_value"><![CDATA[By logging in, you agree to the <a href="{0}">Terms of Service</a> and <a href="{1}">Privacy Policy</a>.]]></string>
 	<string name="_sys_form_login_input_code"><![CDATA[Code from SMS]]></string>
 	<string name="_sys_form_login_input_back"><![CDATA[You didn't receive an SMS? <a href="{0}">Send SMS again</a>.]]></string>
 	<string name="_sys_form_login_input_checkcode"><![CDATA[Submit]]></string>
