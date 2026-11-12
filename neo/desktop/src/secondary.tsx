@@ -15,7 +15,7 @@ import { AppContext, type AppContextValue, useApp } from './lib/context';
 import { errorMessage } from './lib/errors';
 import { t } from './lib/i18n';
 import { makeLinkOpener } from './lib/link-opener';
-import { captureLinks, closeThisWindow, getSession, inApp, type LinkOpener, sameSession, type Session, setNavState, tokenRefused } from './lib/native';
+import { captureLinks, closeThisWindow, forceCloseThisWindow, getSession, inApp, type LinkOpener, sameSession, type Session, setNavState, tokenRefused } from './lib/native';
 import { RouterProvider, useNavigation, useRoute } from './lib/navigation';
 import { platform } from './lib/platform';
 import { parseRoute, type Route, RouteHistory, ScrollMemory } from './lib/router';
@@ -95,14 +95,14 @@ function Notice({ text }: { text: string }) {
 
 function SecondarySignedIn({ session, route, onLinkError }: { session: Session; route: Route; onLinkError: (message: string) => void }) {
     // signed out in the main window meanwhile, or by the site: this window has nothing left to
-    // show. A refused token renewed at once (native.ts tokenRefused) keeps it open and loads again.
+    // show, and goes without asking about anything unsaved in it. A refused token renewed at once (native.ts tokenRefused) keeps it open and loads again.
     const refusedQueries = useQueryClient();
     const api = useMemo(
         () =>
             makeApi(session, () => {
                 void tokenRefused().then(
                     (next) => {
-                        if (!next || !sameSession(next, session) || next.needsSignIn) closeThisWindow();
+                        if (!next || !sameSession(next, session) || next.needsSignIn) forceCloseThisWindow();
                         else void refusedQueries.invalidateQueries({ predicate: (q) => q.state.status === 'error' });
                     },
                     () => undefined,
@@ -158,9 +158,10 @@ function SecondaryWindow({ session, onLinkError }: { session: Session; onLinkErr
     const route = useRoute();
     const { history } = useNavigation();
 
-    // closed (Esc, Close): the window goes
+    // closed (Esc, Close): the window goes. Unsaved changes in it were asked about before the
+    // detail went (the history's guard), so this close asks nothing
     useEffect(() => {
-        if (!route.detail) closeThisWindow();
+        if (!route.detail) forceCloseThisWindow();
     }, [route.detail]);
 
     // until the detail names itself (shell/pane.tsx; its effect runs after this one)
@@ -169,12 +170,13 @@ function SecondaryWindow({ session, onLinkError }: { session: Session; onLinkErr
     }, [route.detail?.kind]);
 
     // back to this window: still the session it opened under? (a sign-out or another sign-in
-    // closes it from Rust too; this covers a window that missed that)
+    // closes it from Rust too; this covers a window that missed that). Nothing unsaved in it
+    // can be saved under another session, so it goes without a question
     useEffect(() => {
         const check = () =>
             void getSession().then(
                 (now) => {
-                    if (!sameSession(now, session)) closeThisWindow();
+                    if (!sameSession(now, session)) forceCloseThisWindow();
                 },
                 () => undefined,
             );

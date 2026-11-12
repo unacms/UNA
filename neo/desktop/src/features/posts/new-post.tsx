@@ -6,6 +6,7 @@ import { isProblem, problemMessage, type Schema } from 'una-api';
 import { unwrap } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
+import { heldSelect } from '../../lib/held-select';
 import { t, tn } from '../../lib/i18n';
 import { idempotencyKeyFor, type IdempotencySlot, settleIdempotency } from '../../lib/idempotency';
 import { useNavigation } from '../../lib/navigation';
@@ -244,7 +245,7 @@ export function PostCategoryField({
     categories,
     category,
     required = true,
-    disabled = false,
+    held = false,
     fieldError,
     onCategory,
 }: {
@@ -252,8 +253,8 @@ export function PostCategoryField({
     categories: readonly Schema<'PostCategory'>[];
     category: string;
     required?: boolean;
-    /** While the form is being saved. */
-    disabled?: boolean;
+    /** While the form is being saved: it takes no change and keeps the keyboard (heldSelect). */
+    held?: boolean;
     fieldError: FieldError | null;
     onCategory: (id: string) => void;
 }) {
@@ -261,7 +262,7 @@ export function PostCategoryField({
     return (
         <div className="settings-field">
             <label htmlFor={`${id}-category`}>{t('Category')}</label>
-            <select id={`${id}-category`} value={category} required={required} disabled={disabled} aria-invalid={fieldError?.field === 'category' || undefined} aria-describedby={describedBy(id, fieldError, 'category')} onChange={(e) => onCategory(e.target.value)}>
+            <select id={`${id}-category`} value={category} required={required} aria-invalid={fieldError?.field === 'category' || undefined} aria-describedby={describedBy(id, fieldError, 'category')} {...heldSelect(held, (e) => onCategory(e.target.value))}>
                 <option value="" disabled>
                     {t('Choose a category')}
                 </option>

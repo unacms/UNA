@@ -136,6 +136,12 @@ input, textarea, select {
     padding: var(--space-1-5) var(--space-3);
 }
 :is(input:not([type='checkbox'], [type='radio'], [type='range']), textarea, select):hover:not(:disabled, :focus-visible) { box-shadow: 0 0 0 1px var(--field-border-hover); }
+/* a list that takes no change while its form is saved keeps focus (lib/held-select.ts), and looks disabled */
+select[aria-disabled='true'] { opacity: 0.5; cursor: default; }
+select[aria-disabled='true']:hover:not(:focus-visible) { box-shadow: 0 0 0 1px var(--field-border); }
+@media (forced-colors: active) {
+    select[aria-disabled='true'] { opacity: 1; color: GrayText; }
+}
 textarea { width: 100%; resize: vertical; line-height: var(--leading-body); }
 
 /* Controls (3.6): buttons keep their size, weight 500, scale a little when pressed */

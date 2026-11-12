@@ -8,7 +8,11 @@
  * it closes, and a browser tab warns before it unloads (guardWindowClose in native.ts).
  *
  * Not asked: quitting the app or closing its main window, signing out, and switching the
- * profile or the network, which start everything over.
+ * profile or the network, which start everything over; a window of its own whose session is
+ * over goes the same way (windows.rs close_all and forceCloseThisWindow destroy it).
+ *
+ * A form that is being saved answers with what the site says, not with a question (see
+ * EditPost): the leave waits, happens when it was saved, and is dropped when it was not.
  */
 import { useEffect, useRef } from 'react';
 

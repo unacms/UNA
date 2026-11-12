@@ -679,12 +679,23 @@ describe('Editing a post', () => {
         expect(title.readOnly).toBe(true);
         expect(summary.readOnly).toBe(true);
         expect(text.getAttribute('aria-readonly')).toBe('true');
-        expect(category.disabled).toBe(true);
-        expect(who.disabled).toBe(true);
+        // the lists take none either, and keep the keyboard: disabled would drop focus to the page
+        for (const list of [category, who]) {
+            expect(list.getAttribute('aria-disabled')).toBe('true');
+            expect(list.disabled).toBe(false);
+            expect(fireEvent.mouseDown(list)).toBe(false);
+            expect(fireEvent.keyDown(list, { key: 'ArrowDown' })).toBe(false);
+            expect(fireEvent.keyDown(list, { key: ' ' })).toBe(false);
+            expect(fireEvent.keyDown(list, { key: 'Tab' })).toBe(true);
+        }
         fireEvent.change(title, { target: { value: 'One lens, typed while it saved' } });
         fireEvent.change(summary, { target: { value: 'Typed while it saved' } });
+        fireEvent.change(category, { target: { value: '5' } });
+        fireEvent.change(who, { target: { value: 'friends' } });
         expect(title.value).toBe('One lens');
         expect(summary.value).toBe('Why I left the zoom at home for a month.');
+        expect(category.value).toBe('3');
+        expect(who.value).toBe('public');
         // it was not saved: the form stays, with what was typed, and takes changes again
         answer('lost');
         await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('It was not saved: Load failed'));
@@ -692,11 +703,84 @@ describe('Editing a post', () => {
         expect(title.readOnly).toBe(false);
         expect(summary.readOnly).toBe(false);
         expect(text.getAttribute('aria-readonly')).toBeNull();
-        expect(category.disabled).toBe(false);
-        expect(who.disabled).toBe(false);
+        expect(category.getAttribute('aria-disabled')).toBeNull();
+        expect(who.getAttribute('aria-disabled')).toBeNull();
+        expect(fireEvent.keyDown(category, { key: 'ArrowDown' })).toBe(true);
         fireEvent.click(save);
         expect(await screen.findByText('Post saved')).toBeTruthy();
         expect(calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body))).toEqual([{ title: 'One lens' }, { title: 'One lens' }]);
+    });
+
+    it('keeps the keyboard in a list the save started from, so the form still hears its keys after a save that failed', async () => {
+        setSiteModules(MODULES);
+        let answer: (a: Answer) => void = () => {};
+        let patches = 0;
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/categories') return { status: 200, body: CATEGORIES };
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine() };
+            if (c.path === '/posts/37' && c.method === 'PATCH') {
+                patches++;
+                return patches === 1 ? new Promise<Answer>((resolve) => (answer = resolve)) : { status: 200, body: mine({ title: 'One lens' }) };
+            }
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        const title = await openForm();
+        const category = (await screen.findByRole('combobox', { name: 'Category' })) as HTMLSelectElement;
+        fireEvent.change(title, { target: { value: 'One lens' } });
+        category.focus();
+        fireEvent.keyDown(category, { key: 'Enter', metaKey: true, ctrlKey: true });
+        const save = screen.getByRole('button', { name: 'Save' });
+        await waitFor(() => expect(save.getAttribute('aria-busy')).toBe('true'));
+        expect(document.activeElement).toBe(category);
+        answer('lost');
+        await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('It was not saved: Load failed'));
+        // still in the list, so the form's own keys still reach it
+        expect(document.activeElement).toBe(category);
+        fireEvent.keyDown(document.activeElement!, { key: 'Enter', metaKey: true, ctrlKey: true });
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        expect(calls.filter((c) => c.method === 'PATCH')).toHaveLength(2);
+    });
+
+    it('holds a leave while it is being saved, without a question: it leaves once the post was saved and stays when it was not', async () => {
+        let answer: (a: Answer) => void = () => {};
+        const { api, calls } = site((c) => {
+            if (/^\/posts\/\d+$/.test(c.path) && c.method === 'GET') return { status: 200, body: mine({ id: c.path.slice(7) }) };
+            if (c.path === '/posts/37' && c.method === 'PATCH') return new Promise<Answer>((resolve) => (answer = resolve));
+            return null;
+        });
+        const here = route;
+        const other: Route = { list: { section: 'posts' }, detail: { kind: 'article', id: '38' } };
+        const { history } = renderWith(<Shown />, api, here);
+        const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
+        const title = await openForm();
+        fireEvent.change(title, { target: { value: 'One lens' } });
+        const save = screen.getByRole('button', { name: 'Save' });
+        fireEvent.click(save);
+        await waitFor(() => expect(save.getAttribute('aria-busy')).toBe('true'));
+        // the site has not answered: the leave waits, and nobody is told the post stays as it was
+        act(() => history.push(other));
+        await act(async () => {});
+        expect(confirm).not.toHaveBeenCalled();
+        expect(history.current).toEqual(here);
+        expect(screen.getByRole('form', { name: 'Edit the post' })).toBeTruthy();
+        // it was not saved: the leave is dropped, the form stays with why
+        await act(async () => answer('lost'));
+        await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('It was not saved: Load failed'));
+        await act(async () => {});
+        expect(confirm).not.toHaveBeenCalled();
+        expect(history.current).toEqual(here);
+        expect((screen.getByRole('textbox', { name: 'Title' }) as HTMLInputElement).value).toBe('One lens');
+        // saved while a leave waited: the leave happens, still without a question
+        fireEvent.click(save);
+        await waitFor(() => expect(save.getAttribute('aria-busy')).toBe('true'));
+        act(() => history.push(other));
+        await act(async () => {});
+        expect(history.current).toEqual(here);
+        await act(async () => answer({ status: 200, body: mine({ title: 'One lens' }) }));
+        await waitFor(() => expect(history.current).toEqual(other));
+        expect(confirm).not.toHaveBeenCalled();
+        expect(calls.filter((c) => c.method === 'PATCH')).toHaveLength(2);
     });
 
     it('asks before anything else takes a changed form away: the pane closing, another post, Back', async () => {

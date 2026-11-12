@@ -83,7 +83,13 @@ export function tabMenu(tabs: TabsModel, tab: Tab, announce: (text: string) => v
     const route = windowRoute(tab);
     const many = tabs.tabs.length > 1;
     return [
-        { text: t('Duplicate Tab'), run: () => void (tabs.duplicate(tab.id) ? announce(t('Duplicated {{title}}', { title: tabTitle(tab) })) : announce(t('Too many tabs open: close one first'))) },
+        {
+            text: t('Duplicate Tab'),
+            // said once the copy is there: with unsaved changes in the tab shown it is not yet, and may never be
+            run: () => {
+                if (!tabs.duplicate(tab.id, () => announce(t('Duplicated {{title}}', { title: tabTitle(tab) })))) announce(t('Too many tabs open: close one first'));
+            },
+        },
         {
             text: t('Move Tab to New Window'),
             enabled: !!route,
@@ -147,8 +153,8 @@ export function TabStrip() {
         const move = (to: number) => {
             const next = list[(to + list.length) % list.length];
             if (!next) return;
-            tabs.select(next.id);
-            focusTab(next.id);
+            // focus follows the tab once it is shown: not while a form in the one shown asks, nor when it keeps its changes
+            tabs.select(next.id, () => focusTab(next.id));
         };
         if (e.altKey && e.shiftKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
             e.preventDefault();

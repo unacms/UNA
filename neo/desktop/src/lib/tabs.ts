@@ -144,9 +144,21 @@ export class TabsModel {
         return () => this.listeners.delete(listener);
     }
 
-    select(id: string): void {
-        if (id === this.activeId || !this.list.some((t) => t.id === id)) return;
-        this.leave(() => this.show(id));
+    /**
+     * Show a tab: at once, or, when the one shown has unsaved changes, once the person agreed to
+     * discard them. `shown` runs when it is the tab shown (at once for the one that already is),
+     * and never when the leave is refused.
+     */
+    select(id: string, shown?: () => void): void {
+        if (!this.list.some((t) => t.id === id)) return;
+        if (id === this.activeId) {
+            shown?.();
+            return;
+        }
+        this.leave(() => {
+            this.show(id);
+            if (this.activeId === id) shown?.();
+        });
     }
 
     /** What takes the shown tab's view away: at once, or once its unsaved changes may go. */
@@ -160,14 +172,15 @@ export class TabsModel {
         this.changed();
     }
 
-    /** A tab made elsewhere put after the one shown (or after `after`), and shown unless in the background. */
-    private insert(tab: Tab, background: boolean, after = this.activeId): void {
+    /** A tab made elsewhere put after the one shown (or after `after`), and shown unless in the background; `added` runs once it is among the tabs. */
+    private insert(tab: Tab, background: boolean, after = this.activeId, added?: () => void): void {
         const add = () => {
             if (this.list.length >= TABS_MAX) return;
             this.list.splice(this.indexOf(after) + 1, 0, tab);
             this.watch(tab);
             if (!background) this.activeId = tab.id;
             this.changed();
+            added?.();
         };
         if (background) add();
         else this.leave(add);
@@ -200,13 +213,17 @@ export class TabsModel {
         return tab;
     }
 
-    /** A copy of a tab beside it, with its history, shown. */
-    duplicate(id: string): Tab | null {
+    /**
+     * A copy of a tab beside it, with its history, shown. Null when there is no such tab or the
+     * window holds TABS_MAX already. Like a new tab that is shown, the copy joins the tabs only
+     * once unsaved changes in the tab shown may go: `added` runs when it has, never otherwise.
+     */
+    duplicate(id: string, added?: () => void): Tab | null {
         const from = this.list.find((t) => t.id === id);
         if (!from || this.list.length >= TABS_MAX) return null;
         const kept = keep(from);
         const tab = this.make(historyFrom(kept.paths, kept.index, this.initial), undefined, from.title, from.icon);
-        this.insert(tab, false, id);
+        this.insert(tab, false, id, added);
         return tab;
     }
 

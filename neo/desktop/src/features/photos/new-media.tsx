@@ -6,6 +6,7 @@ import { problemMessage, type Schema } from 'una-api';
 import { retryOnce } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
+import { heldSelect } from '../../lib/held-select';
 import { t, tn } from '../../lib/i18n';
 import { idempotencyKeyFor, type IdempotencySlot, settleIdempotency } from '../../lib/idempotency';
 import { useNavigation } from '../../lib/navigation';
@@ -59,7 +60,7 @@ export function AudienceField({
     contextId,
     context,
     audience,
-    disabled = false,
+    held = false,
     onAudience,
     noun,
 }: {
@@ -68,8 +69,8 @@ export function AudienceField({
     contextId?: string;
     context: ReturnType<typeof useFormContext>;
     audience: Audience;
-    /** While the form is being saved. */
-    disabled?: boolean;
+    /** While the form is being saved: it takes no change and keeps the keyboard (heldSelect). */
+    held?: boolean;
     onAudience: (a: Audience) => void;
     noun: string;
 }) {
@@ -89,7 +90,7 @@ export function AudienceField({
     return (
         <div className="settings-field">
             <label htmlFor={`${id}-audience`}>{noun === 'them' ? t('Who can see them') : t('Who can see it')}</label>
-            <select id={`${id}-audience`} value={value} disabled={disabled} onChange={(e) => onAudience(e.target.value as Audience)}>
+            <select id={`${id}-audience`} value={value} {...heldSelect(held, (e) => onAudience(e.target.value as Audience))}>
                 {options.map((a) => (
                     <option key={a.value} value={a.value}>
                         {a.label}

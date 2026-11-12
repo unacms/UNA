@@ -127,7 +127,10 @@ export function postChangesBlocker(body: PostChanges, plain: string): FieldError
  * sidebar, Back, another tab, the window closing: useLeaveGuard); Cmd+Enter (Ctrl+Enter) saves.
  * While it is being saved nothing in it can change, since what is typed then is not in what was
  * sent and the form goes when the site answers; when it was not saved the fields take changes
- * again, with what they held. Like the new post form it keeps no draft.
+ * again, with what they held. Whatever would leave the form while it is being saved waits for
+ * that answer, without a question: it leaves once the post was saved, and stays when it was not.
+ * The fields keep the keyboard meanwhile (the lists are aria-disabled, not disabled), so
+ * Cmd+Enter and Esc still reach the form after a save that failed. Like the new post form it keeps no draft.
  */
 export function EditPost({ post, uploader, announce, onDone }: { post: Post; uploader?: Uploader; announce?: (text: string) => void; onDone: (saved: Post | null) => void }) {
     const { api } = useApp();
@@ -156,6 +159,8 @@ export function EditPost({ post, uploader, announce, onDone }: { post: Post; upl
     const [error, setError] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
     const sent = useRef<IdempotencySlot['current']>(null);
+    // the save on its way, for whatever would leave the form meanwhile: true once it was saved
+    const pending = useRef<Promise<boolean> | null>(null);
     const changed = Object.keys(postChanges(initial, value, fields)).length > 0;
 
     const showError = (blocker: FieldError) => {
@@ -179,6 +184,13 @@ export function EditPost({ post, uploader, announce, onDone }: { post: Post; upl
         }
         setSaving(true);
         setError(null);
+        let settle: (saved: boolean) => void = () => {};
+        const save = new Promise<boolean>((resolve) => (settle = resolve));
+        pending.current = save;
+        const settled = (saved: boolean) => {
+            if (pending.current === save) pending.current = null;
+            settle(saved);
+        };
         let result;
         try {
             result = await api.PATCH('/posts/{id}', { params: { path: { id: post.id }, header: { 'Idempotency-Key': idempotencyKeyFor(sent, [`/posts/${post.id}`, body]) } }, body });
@@ -186,6 +198,7 @@ export function EditPost({ post, uploader, announce, onDone }: { post: Post; upl
             // no answer came: the key stays, so saving it again gets the site's answer to this one
             setSaving(false);
             setError(t('It was not saved: {{reason}}', { reason: errorMessage(err) }));
+            settled(false);
             return;
         }
         settleIdempotency(sent, result.response.status);
@@ -194,13 +207,18 @@ export function EditPost({ post, uploader, announce, onDone }: { post: Post; upl
             const refused = result.response.status === 422 ? newPostFieldError(result.error) : null;
             if (refused) showError(refused);
             else setError(problemMessage(result.error, t('It was not saved')));
+            settled(false);
             return;
         }
         onDone(result.data);
+        settled(true);
     };
 
     const discard = () => confirmAction({ title: t('Discard your changes?'), message: t('The post stays as it was.'), okLabel: t('Discard') });
-    useLeaveGuard(changed, discard);
+    // a leave while it is being saved is not asked about (the post may no longer stay as it was):
+    // it waits for the site's answer, happens when the post was saved, and is dropped when it was
+    // not, with the form and why still there
+    useLeaveGuard(changed, () => pending.current ?? discard());
 
     const cancel = async () => {
         if (saving) return;
@@ -252,9 +270,9 @@ export function EditPost({ post, uploader, announce, onDone }: { post: Post; upl
                     setValue((v) => ({ ...v, html: content.html }));
                 }}
             />
-            <PostCategoryField id={id} categories={categories} category={value.category} required={false} disabled={saving} fieldError={fieldError} onCategory={(category) => edit((v) => ({ ...v, category }))} />
+            <PostCategoryField id={id} categories={categories} category={value.category} required={false} held={saving} fieldError={fieldError} onCategory={(category) => edit((v) => ({ ...v, category }))} />
             {contextId || withAudience ? (
-                <AudienceField id={id} tag="posts" contextId={contextId} context={place} audience={value.audience as Audience} disabled={saving} onAudience={(audience) => edit((v) => ({ ...v, audience }))} noun="it" />
+                <AudienceField id={id} tag="posts" contextId={contextId} context={place} audience={value.audience as Audience} held={saving} onAudience={(audience) => edit((v) => ({ ...v, audience }))} noun="it" />
             ) : null}
             {error ? (
                 <p className="error" role="alert">

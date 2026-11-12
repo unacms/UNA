@@ -267,23 +267,74 @@ export async function openWindow(route: string): Promise<void> {
     await invoke<void>('open_window', { route });
 }
 
-/** Close this window (a window of its own, when what it showed is closed). */
+/**
+ * Close this window as the person does (a Close button in a window of its own): a form in it
+ * with unsaved changes is asked about first (guardWindowClose).
+ */
 export function closeThisWindow(): void {
     if (inApp) void getCurrentWindow().close().catch((e: unknown) => console.error('close window', e));
     else window.close();
 }
 
+/**
+ * Close this window whatever is in it, asking nothing: what it showed is gone (closed, with any
+ * question already answered by the history's guard) or its session is over (a refused token,
+ * another sign-in), so no answer could keep it. destroy() never reaches the page's close listener.
+ */
+export function forceCloseThisWindow(): void {
+    if (inApp) void getCurrentWindow().destroy().catch((e: unknown) => console.error('close window', e));
+    else window.close();
+}
+
 const closeQuestions = new Set<() => Promise<boolean>>();
-let closeWatched = false;
+/** The listener for close requests, while a question is there to ask: what stops it, once it listens. */
+let closeWatch: Promise<() => void> | null = null;
+
+function watchClose(): void {
+    if (closeWatch) return;
+    const watch = getCurrentWindow().onCloseRequested(async (event) => {
+        for (const ask of [...closeQuestions]) {
+            // one that went while another was open is not asked
+            if (!closeQuestions.has(ask)) continue;
+            let leave = false;
+            try {
+                leave = await ask();
+            } catch (e) {
+                console.error('close question', e);
+            }
+            if (leave) continue;
+            event.preventDefault();
+            return;
+        }
+    });
+    closeWatch = watch;
+    watch.catch((e: unknown) => {
+        if (closeWatch === watch) closeWatch = null;
+        console.error('close requests', e);
+    });
+}
+
+function unwatchClose(): void {
+    const watch = closeWatch;
+    if (!watch) return;
+    closeWatch = null;
+    void watch.then(
+        (stop) => stop(),
+        () => undefined,
+    );
+}
 
 /**
  * Ask before this window goes while something in it is unsaved (lib/leave-guard.ts), until the
  * returned function is called; `confirm` answers true to let it go. A window of its own asks
- * when it is closed (its close button, Cmd+W): the one listener stays for the window's life and
- * closes it itself when nothing asks (the window API's onCloseRequested then destroys it), so
- * a form that just went never leaves a close unanswered. The main window is not asked: its
- * close is Rust's (it hides to the tray, or the app quits: lib.rs). In a plain browser the tab
- * warns before it unloads, in the browser's own words.
+ * when the person closes it (its close button, Cmd+W, closeThisWindow): while a listener is
+ * there Tauri hands every close() to the page, which closes the window itself when no answer
+ * refuses (the window API's onCloseRequested then destroys it). The listener is there only
+ * while a question is, so a window with nothing unsaved closes as any other does; a close that
+ * must not be asked about (the session is over: windows.rs close_all, forceCloseThisWindow)
+ * destroys the window and never reaches it. The main window is not asked: its close is Rust's
+ * (it hides to the tray, or the app quits: lib.rs). In a plain browser the tab warns before it
+ * unloads, in the browser's own words.
  */
 export function guardWindowClose(confirm: () => Promise<boolean>): () => void {
     if (!inApp) {
@@ -293,22 +344,11 @@ export function guardWindowClose(confirm: () => Promise<boolean>): () => void {
     }
     if (!isSecondaryWindow) return () => {};
     closeQuestions.add(confirm);
-    if (!closeWatched) {
-        closeWatched = true;
-        void getCurrentWindow()
-            .onCloseRequested(async (event) => {
-                for (const ask of [...closeQuestions]) {
-                    if (await ask()) continue;
-                    event.preventDefault();
-                    return;
-                }
-            })
-            .catch((e: unknown) => {
-                closeWatched = false;
-                console.error('close requests', e);
-            });
-    }
-    return () => void closeQuestions.delete(confirm);
+    watchClose();
+    return () => {
+        closeQuestions.delete(confirm);
+        if (!closeQuestions.size) unwatchClose();
+    };
 }
 
 /** What a download did: saved under this name, or nothing (the person cancelled the dialog). */
