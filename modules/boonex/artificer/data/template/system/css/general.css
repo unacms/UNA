@@ -356,3 +356,10 @@ html.dark {
     margin-left: 0;
     margin-right: -0.75rem;
 }
+
+/* The header's More list: an item's icon is centred in its 32px circle. The 8px between icon and label that the header tabs put on the
+   icon itself (tailwind.css, #bx-toolbar .bx-menu-main .bx-stl-mii) is on the circle here. */
+#bx-toolbar .bx-menu-main .bx-menu-item-more-popup .bx-popup .bx-stl-mii > *,
+#bx-toolbar .bx-menu-main .bx-popup .bx-menu-item-more-popup .bx-stl-mii > * {
+    margin: 0;
+}

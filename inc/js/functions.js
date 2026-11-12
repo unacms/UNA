@@ -2911,7 +2911,8 @@ function bx_clicked_stack_pop()
  * @param oScroller - the element that scrolls (overflow-y: auto)
  * @param oFrame - the rounded element the bar is drawn over: the scroller itself or an ancestor
  * @param oClasses - class names, to keep a caller's own styles: svg, track, thumb, scroller (hides the native bar), scrolling (on the
- *                   frame while the box scrolls), hover (on the frame, shows the bar on hover); an empty name adds nothing
+ *                   frame while the box scrolls), hover (on the frame, shows the bar on hover); an empty name adds nothing.
+ *                   Also inset: how far the bar's centre line is from the frame's edge, 6px unless given (the 4px bar with a 4px gap).
  */
 function bx_scrollbar_overlay(oScroller, oFrame, oClasses)
 {
@@ -2924,7 +2925,8 @@ function bx_scrollbar_overlay(oScroller, oFrame, oClasses)
         thumb: 'bx-scrollbar-thumb',
         scroller: 'bx-scrollbar-scroller',
         scrolling: 'bx-scrollbar-scrolling',
-        hover: 'bx-scrollbar-hover'
+        hover: 'bx-scrollbar-hover',
+        inset: 6
     }, oClasses || {});
 
     var sNs = 'http://www.w3.org/2000/svg';
@@ -2947,7 +2949,7 @@ function bx_scrollbar_overlay(oScroller, oFrame, oClasses)
     $(oFrame).addClass(c.hover);
     $(oScroller).addClass(c.scroller);
 
-    var oState = {scroller: oScroller, frame: oFrame, svg: oSvg, track: oTrack, thumb: oThumb, timer: null, mutation: null};
+    var oState = {scroller: oScroller, frame: oFrame, svg: oSvg, track: oTrack, thumb: oThumb, timer: null, mutation: null, inset: c.inset};
     oScroller.bxScrollbar = oState;
 
     var oResize = null, oMutation = null;
@@ -3014,7 +3016,9 @@ function bx_scrollbar_overlay_update(o)
     var fRadiusT = fTop < 1 ? (Number.parseFloat(oCss.borderTopRightRadius) || Number.parseFloat(oCssFrame.borderTopRightRadius) || 0) : 0;
     var fRadiusB = Number.parseFloat(oCss.borderBottomRightRadius) || (fBottom > fH - 1 ? Number.parseFloat(oCssFrame.borderBottomRightRadius) || 0 : 0);
 
-    var fInset = 6; // the bar's centre line, 6px in from the edge: 4px wide with a 4px gap
+    // The bar's centre line, in from the edge (6px: 4px wide with a 4px gap). The corners' radii are the frame's less this inset, so the
+    // bar runs parallel to the frame's edge round them.
+    var fInset = o.inset || 6;
     var fRt = Math.max(fRadiusT - fInset, 0), fRb = Math.max(fRadiusB - fInset, 0);
     var fX = fRight - fInset;
 
@@ -3044,7 +3048,8 @@ function bx_scrollbar_overlay_popups(oContext)
     $(oContext).not('.bx-std *').find('.bx-popup-content').each(function() {
         var sOverflow = getComputedStyle(this).overflowY;
         if(sOverflow === 'auto' || sOverflow === 'scroll')
-            bx_scrollbar_overlay(this, $(this).closest('.bx-popup').get(0) || this);
+            // 2px from the popup's edge: menu items end 8px from it, so 2px stay clear between the 4px bar and a highlighted item.
+            bx_scrollbar_overlay(this, $(this).closest('.bx-popup').get(0) || this, {inset: 4});
     });
 }
 
