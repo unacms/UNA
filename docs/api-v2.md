@@ -15,7 +15,8 @@ what the site is and how to sign in.
 > The web server must send `/api/v2` and everything under it to `api_v2.php` with the rest of
 > the path in `_q`. The `.htaccess` in the package, `scripts/docker-compose/nginx.conf` and
 > `scripts/Caddyfile` have the rule. A site with its own nginx or Caddy configuration, or an
-> `.htaccess` kept from before 15.0.0, needs it added by hand before v2 answers:
+> `.htaccess` kept from before 15.0.0, needs it added by hand before v2 answers,
+> placed before the catch-all rewrite to `r.php` as in those files:
 > `RewriteRule ^api/v2(/(.*))?$ api_v2.php?_q=$2 [QSA,L]` (Apache), or
 > `rewrite "^/api/v2(/(.*))?$" /api_v2.php?_q=$2 last;` (nginx).
 >
