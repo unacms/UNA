@@ -30,7 +30,7 @@ class BxAdsCronOffers extends BxDolCron
 
         $aOffers = $this->_oModule->_oDb->getOffersBy(['type' => 'expired', 'hours' => (int)getParam($CNF['PARAM_LIFETIME_OFFERS'])]);
         foreach($aOffers as $aOffer)
-            $this->_oModule->offerDecline($aOffer[$CNF['FIELD_OFR_ID']]);
+            $this->_oModule->offerDecline($aOffer[$CNF['FIELD_OFR_ID']], true);
     }
 }
 

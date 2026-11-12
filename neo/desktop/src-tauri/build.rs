@@ -8,6 +8,8 @@ const COMMANDS: &[&str] = &[
     "cancel_sign_in",
     "api_request",
     "api_abort",
+    "api_availability",
+    "api_check",
     "sign_out",
     "token_refused",
     "list_sessions",

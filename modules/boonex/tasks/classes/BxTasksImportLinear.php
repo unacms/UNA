@@ -21,7 +21,13 @@ class BxTasksImportLinear extends BxDol
 
     public function perform($iContextId = 0)
     {
+        if(!isAdmin() && !bx_acl_is_administrator())
+            return false;
+
         $sReqApiKey = bx_get('lk') ?: '';
+        if(!$sReqApiKey || !BxDolProfile::getInstance($iContextId))
+            return false;
+
         $aReqParams = ($sP = bx_get('lp')) !== false && is_string($sP) ? json_decode($sP, true) : [];
 
         $sEndpoint = 'https://api.linear.app/graphql';

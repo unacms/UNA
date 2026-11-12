@@ -2060,5 +2060,11 @@
     "{{count}} or more task found_other": "{{count}} oder mehr Aufgaben gefunden",
     "{{count}} task found_one": "{{count}} Aufgabe gefunden",
     "{{count}} task found_other": "{{count}} Aufgaben gefunden",
-    "This network has no posts.": "Dieses Netzwerk hat keine Beiträge."
+    "This network has no posts.": "Dieses Netzwerk hat keine Beiträge.",
+    "API v2 is turned off on this network": "API v2 ist in diesem Netzwerk ausgeschaltet",
+    "The API is turned off on this network": "Die API ist in diesem Netzwerk ausgeschaltet",
+    "The network’s API answers again": "Die API des Netzwerks antwortet wieder",
+    "{{site}} has API v2 (a preview) turned off. Its administrator can turn it on in Studio > API > Settings.": "Auf {{site}} ist API v2 (eine Vorschau) ausgeschaltet. Der Administrator der Website kann sie unter Studio > API > Settings einschalten.",
+    "{{site}} has its API turned off": "Auf {{site}} ist die API ausgeschaltet",
+    "Not a network the app is signed in to": "Die App ist bei diesem Netzwerk nicht angemeldet"
 }

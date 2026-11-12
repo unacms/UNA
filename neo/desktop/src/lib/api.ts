@@ -1,5 +1,6 @@
 import { createUnaApi, problemMessage, type UnaApi } from 'una-api';
 
+import { offCode } from './api-availability';
 import { EtagCache, withEtags } from './etag-fetch';
 import { locale, t } from './i18n';
 import { inApp, type Session } from './native';
@@ -97,9 +98,21 @@ export function isGone(error: unknown): boolean {
     return error instanceof ApiError && (error.status === 404 || error.status === 403 || error.status === 410);
 }
 
-/** Retry a failed query once, but not when the site refused it (4xx): asking again gets the same answer. */
+/**
+ * The site said its API is turned off (503 `api_v2_disabled`, or `api_disabled` for the whole
+ * API): not a failure of the request, and nobody was signed out (lib/api-availability.ts).
+ */
+export function isApiOff(error: unknown): boolean {
+    return error instanceof ApiError && error.status === 503 && offCode(error.code) !== null;
+}
+
+/**
+ * Retry a failed query once, but not when the site refused it (4xx) or said its API is turned
+ * off: asking again gets the same answer.
+ */
 export function retryOnce(failureCount: number, error: unknown): boolean {
     if (error instanceof ApiError && error.status >= 400 && error.status < 500) return false;
+    if (isApiOff(error)) return false;
     return failureCount < 1;
 }
 
