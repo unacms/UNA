@@ -398,6 +398,9 @@ html.dark {
 #bx-toolbar .bx-menu-main.bx-menu-highlight-list::before {
     border-radius: 9999px;
 }
+.bx-menu-object-sys_profile_stats.bx-menu-highlight-list::before {
+    border-radius: 0.75rem;
+}
 html.dark #bx-toolbar .bx-menu-main.bx-menu-highlight-list::before,
 html.dark .bx-menu-object-sys_homepage.bx-menu-highlight-list::before,
 html.dark .bx-menu-object-sys_profile_stats.bx-menu-highlight-list::before {
@@ -424,4 +427,75 @@ html.dark .bx-menu-object-sys_profile_stats.bx-menu-highlight-list::before {
 .bx-menu-object-sys_homepage.bx-menu-highlight-list > li > a:hover,
 .bx-menu-object-sys_profile_stats.bx-menu-highlight-list > li:not(.bx-menu-tab-active) > .bx-stl-mil-wo-gaps:hover {
     background-color: transparent;
+}
+
+/* The profile menu beside the feed has the popup menus' rows (tailwind.css, "Popup menu items look and behave like
+   NEO's regular menu items"): 12px corners, 4px apart, a 20px glyph in a 32px circle 8px from the row's side and from
+   the label, and a 14px semibold label. At rest the label and the glyph are a step lighter than the text; on hover
+   they turn to the full text colour while the circle darkens, in the sliding highlight's 150ms. The profile row above
+   the list has the same corners. */
+.bx-artificer ul.bx-menu-object-sys_profile_stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li {
+    margin-top: 0;
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li,
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li > div,
+.bx-artificer .bx-profile-stats .bx-profile-avatar-cnt {
+    border-radius: 0.75rem;
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li > div > a:has(> .bx-stl-mii > *) {
+    padding-inline-start: 0.5rem;
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li .bx-stl-mii:has(> *) {
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    margin-inline-end: 0.5rem;
+
+    border-radius: 9999px;
+    background-color: rgba(228, 228, 231, 0.5); /* gray-200 at 50% */
+    color: #52525b; /* gray-600 */
+
+    transition: color 150ms cubic-bezier(0, 0, 0.2, 1), background-color 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li .bx-stl-mii > * {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+
+    font-size: 1.25rem;
+    color: inherit;
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li .bx-stl-mit {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    color: #52525b;
+
+    transition: color 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-mii:has(> *) {
+    background-color: #d4d4d8; /* gray-300 */
+    color: #0a0a0c; /* gray-950 */
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-mit {
+    color: #0a0a0c;
+}
+html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li .bx-stl-mii:has(> *) {
+    background-color: rgba(63, 63, 70, 0.5); /* gray-700 at 50% */
+    color: #a1a1aa; /* gray-400 */
+}
+html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li .bx-stl-mit {
+    color: #a1a1aa;
+}
+html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-mii:has(> *) {
+    background-color: #3f3f46; /* gray-700 */
+    color: #fafafc; /* gray-50 */
+}
+html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-mit {
+    color: #fafafc;
 }
