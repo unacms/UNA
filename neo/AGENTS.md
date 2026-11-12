@@ -242,6 +242,7 @@ UNA picks how forms label their text fields: above the field (regular, the defau
 - `Form` passes it to each field as `label_style`; `hasAdaptiveLabel` (`lib/form/label-style.ts`) floats the label only for field types that can (text, password, phone, embed). Every other field, and every form of a UNA that sends no style, shows regular labels.
 - `forms.adaptive_labels` overrides UNA for the whole app: `null` follows UNA, `false` never floats labels, `true` always does. `forms.without_captions` (empty by default) lists forms that show captions as placeholders instead of labels.
 - Required marks follow UNA too (`params.required_mark`, "mark the fewer"): `none` when every labelled field is required or none is (login, sign-up), `optional` puts "(optional)" on the optional fields, `required` puts the `forms.mandatory_icon` on the required ones. A UNA that sends no mode keeps the icon. `forms.optional_text` replaces the word "optional".
+- The sign-in form's "Forgot password?" is drawn by the Password field (`forms.sys_login.forgot_password_link`, `fieldLink` on `Field`): at the end of the label's line, or under the field (on the description's line) when the label floats. Emptied, `AuthPanel` shows the centred link under the form again.
 
 ### Interface sounds
 

@@ -52,7 +52,13 @@ export const settingsForms = {
             },
         },
 
-        sys_login: { hide_errors: true, button_full_width: true },
+        sys_login: {
+            hide_errors: true,
+            button_full_width: true,
+            // "Forgot password?" by the Password field: on its label's line, or under the field
+            // when the label floats. Empty: the link is centred under the form instead.
+            forgot_password_link: '/forgot-password',
+        },
 
         sys_forgot_password: {
             hide_errors: true,

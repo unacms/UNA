@@ -4,6 +4,8 @@ import { View } from 'app/design/view'
 import { useState } from 'react';
 import { appSetting, cn } from 'app/lib/util';
 import { useFormField } from 'app/lib/form/use-form-field';
+import Link from 'app/ui/atoms/link';
+import { useTranslation } from 'react-i18next';
 
 export default function FormFieldPassword(props) {
     const [isVisible, setIsVisible] = useState(true)
@@ -26,13 +28,22 @@ export default function FormFieldPassword(props) {
     // UNA says which password it is (`new-password` on sign-up and password change), so managers offer to make one.
     const autoComplete = props.attrs?.autocomplete || 'current-password';
 
+    const { t } = useTranslation();
+    // The sign-in form's "Forgot password?" (`forms.sys_login.forgot_password_link`), drawn by Field.
+    const forgotHref = props.form_name ? appSetting('forms', props.form_name)?.forgot_password_link : '';
+    const fieldLink = forgotHref ? (
+        <Link variant="accent" size="sm" href={forgotHref} haptics="Medium">
+            {t('Forgot password?')}
+        </Link>
+    ) : null;
+
     const eyeButton = appSetting('forms', 'password_eye_button');
     const eyeIcon = isVisible ? eyeButton?.image?.visible : eyeButton?.image?.hidden;
     const size = props.size || appSetting('theme', 'inputs', 'default_size') || 'regular';
     const eyePosition = eyeButton?.position?.[size] ?? 'right-1.5';
 
     return (
-        <Field {...props} value={field.value} focused={focused} isAdaptiveLabel={isAdaptiveLabel}>
+        <Field {...props} value={field.value} focused={focused} isAdaptiveLabel={isAdaptiveLabel} fieldLink={fieldLink}>
             <View className="relative w-full">
                 <Input
                     ref={inputRef}

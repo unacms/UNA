@@ -518,7 +518,9 @@ html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-m
     align-self: flex-end;
     height: 0;
 }
-/* A floating label leaves no label line: the link keeps a row of its own under the field. */
+/* A floating label leaves no label line: the link goes under the field, at its end. With a description or an error
+   under the field it shares their line: the row takes no height and the link is lifted onto it, and the text keeps
+   clear of the link. */
 #sys-form-login .bx-form-section-content:has(> #bx-form-element-submit_text) > #bx-form-element-Password.bx-form-element-adaptive {
     order: 1;
     margin-top: 1rem;
@@ -527,4 +529,19 @@ html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-m
     order: 2;
     height: auto;
     margin-top: 0.25rem;
+}
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-Password.bx-form-element-adaptive > .bx-form-info) > #bx-form-element-submit_text {
+    height: 0;
+    margin-top: 0;
+}
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-Password.bx-form-element-adaptive > .bx-form-info) > #bx-form-element-submit_text .bx-form-element {
+    position: absolute;
+    inset-inline-end: 0;
+    bottom: -0.25rem; /* onto the description's last line */
+
+    white-space: nowrap;
+}
+#sys-form-login #bx-form-element-Password.bx-form-element-adaptive > .bx-form-info,
+#sys-form-login #bx-form-element-Password.bx-form-element-adaptive > .bx-form-info ~ .bx-form-warn {
+    padding-inline-end: 9.5rem;
 }

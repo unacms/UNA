@@ -190,7 +190,8 @@ export default function Field({
     isAdaptiveLabel,
     info,
     size,
-    captionAccessory,
+    captionAccessory: captionAccessoryProp,
+    fieldLink,
 }) {
     const caption = format === 'notitle' ? '' : captionProp
     const wrapRef = useRef(null)
@@ -269,6 +270,11 @@ export default function Field({
     // forms keep the flat full-width layout.
     const isGrid = form_layout !== 'hor' && !use_caption_as_placeholder
 
+    // `fieldLink` (the sign-in form's "Forgot password?") shares the label's line, at its end. With no
+    // label line (a floating label) it goes under the control, at the end of the description's line.
+    const captionAccessory = captionAccessoryProp ?? (isShowCaption ? fieldLink : null)
+    const linkUnderControl = !isShowCaption && !captionAccessoryProp ? fieldLink : null
+
     const captionLabel = isShowCaption ? (
         <Text className={cn('text-secondary-foreground block px-0.5', !captionAccessory && 'w-full')}>
             <Row className="items-center gap-0.5">
@@ -332,7 +338,14 @@ export default function Field({
             {!!error && !Array.isArray(error) && (
                 <FormError errorText={error} errorId={errorId} />
             )}
-            {!!info && (
+            {linkUnderControl ? (
+                <Row className="mt-1 items-start justify-between gap-3">
+                    <Text className="flex-1 px-1 text-xs text-muted-foreground">
+                        {info ? stripTags(info) : ''}
+                    </Text>
+                    {linkUnderControl}
+                </Row>
+            ) : !!info && (
                 <View className="label">
                     <Text className="mt-1 px-1 text-xs text-muted-foreground">
                         {stripTags(info)}
