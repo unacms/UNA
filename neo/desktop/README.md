@@ -337,6 +337,23 @@ in Studio"; the server's side is `template/scripts/BxBaseApiV2Navigation.php`.
   groups are lists of names that open the profile in the detail pane; posts are a feed
   (FeedList: virtualized, j and k, page by page) that does not poll for new ones
   (`FeedSource.poll`). Cmd+F again focuses the field and selects its words.
+- After those come the tabs of the content modules that have a search of their own
+  (`module-results.tsx`): Posts (the Posts module's, `tab=articles`; the feed's tab is Feed
+  next to it, as on a profile), Photos, Albums, Videos, Files, Polls and Tasks, from
+  `GET /search/posts`, `/search/photos`, `/search/albums`, `/search/videos`, `/search/files`,
+  `/search/polls` and `/search/tasks` (cursor pages, More at the end). A tab is there only for
+  a module `GET /api/v2` lists, and is asked only once it is shown, so a search costs no
+  request per module; its count shows from then on. A 404 (the module turned off since) takes
+  the tab away and says "This network has no …" where a link named it, with no error. The
+  results are the module's own rows and cards (`PostRow`, `PhotoTiles`, `AlbumCard`,
+  `VideoRow`, `FileRow`, `PollRow`, `TaskRow`) and open as in its lists: beside the list;
+  Cmd+click or Cmd+Enter in a new tab behind this one; Cmd+Option+click, Cmd+Option+Enter or a
+  double-click in a window of its own. They are kept under the
+  module's list keys (`moduleSearchKey`), so an edit, a vote, a completed task or a delete in
+  the detail shows in the results. With up to thirteen tabs, those that don't fit the pane go
+  into a More menu (`SegmentedTabs fit`); the arrow keys, Home and End still go through all.
+  The palette does not ask these searches: it asks its three per key typed, and its last entry
+  opens the full search, where they are.
 
 ## Feeds
 

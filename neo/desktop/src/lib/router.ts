@@ -62,8 +62,15 @@ export type FeedName = (typeof SECTION_FEEDS)[keyof typeof SECTION_FEEDS][number
 export const LIST_FILTERS = { notifications: ['unread'] } as const satisfies Partial<Record<Section, readonly string[]>>;
 export type ListFilter = (typeof LIST_FILTERS)['notifications'][number];
 
+/**
+ * The result tabs of a search a module of the site has a search of its own for (GET
+ * /search/posts ... /search/tasks): `articles` are the Posts module's posts, as in a profile's
+ * tabs (`posts` is the feed's).
+ */
+export const SEARCH_MODULE_TABS = ['articles', 'photos', 'albums', 'videos', 'files', 'polls', 'tasks'] as const;
+export type SearchModuleTab = (typeof SEARCH_MODULE_TABS)[number];
 /** The result tabs of a search; People is the default. */
-export const SEARCH_TABS = ['people', 'posts', 'groups', 'spaces', 'events', 'discussions'] as const;
+export const SEARCH_TABS = ['people', 'posts', 'groups', 'spaces', 'events', 'discussions', ...SEARCH_MODULE_TABS] as const;
 export type SearchTab = (typeof SEARCH_TABS)[number];
 
 /** The longest query a search takes (the API's limit). */
