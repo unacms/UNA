@@ -39,7 +39,7 @@ export default function BlockNotice({ html }: Readonly<{ html: string }>) {
 
     const open = (href: string) => {
         if (isExternalUrl(href)) {
-            openExternalLink(href)
+            void openExternalLink(href)
             return
         }
         router.push(nativeTabPageHref(href.replace(/^https?:\/\/[^/]+/, '') || href, tabPath))
