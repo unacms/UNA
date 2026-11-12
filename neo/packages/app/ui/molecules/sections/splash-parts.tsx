@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Logo from 'app/ui/atoms/logo'
 import Illustration from 'app/ui/molecules/content/illustration'
-import { BlockDataByName } from 'app/lib/util'
+import { appSetting, BlockDataByName } from 'app/lib/util'
 import type { SplashSlotName } from 'app/lib/splash/splash-html'
 
 type SplashPartProps = { data: any }
@@ -52,7 +52,7 @@ export function SplashLoginForm({ data }: Readonly<SplashPartProps>) {
                     button_full_width: true,
                 }}
             />
-            <AuthPanel forgotPasswordLink={true} showSeparator={true} />
+            <AuthPanel forgotPasswordLink={!appSetting('forms', 'sys_login')?.forgot_password_link} showSeparator={true} />
             <SplashJoinLink data={data} />
         </View>
     )

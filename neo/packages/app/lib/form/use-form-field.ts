@@ -3,7 +3,7 @@ import { get, useController, useFormContext } from 'react-hook-form';
 import { useGoogleAutocomplete } from '@appandflow/react-native-google-autocomplete';
 import { getValidationRules, getFormFieldDomId, getFormFieldErrorDomId } from 'app/components/form-fields/_field';
 import { fetcher } from 'app/lib/fetcher';
-import { appSetting } from 'app/lib/util';
+import { hasAdaptiveLabel } from 'app/lib/form/label-style';
 import { useNativeReturnKeyNav } from 'app/context/form-focus-chain';
 import {
     LOCATION_SUFFIX_FIELDS,
@@ -16,7 +16,6 @@ import {
 export const PLACEHOLDER_TEXT_COLOR = '#6b7280';
 
 const EMPTY_RULES = {};
-const adaptiveEnabled = Boolean(appSetting('forms', 'adaptive_labels'));
 
 /**
  * Shared RHF wiring for UNA form fields.
@@ -122,8 +121,8 @@ export function useFormField(props: any, options: FormFieldOptions = {}) {
     const { field } = useFieldController({ name, rules, defaultValue });
     const { onBlur: fieldOnBlur } = field;
 
-    const isAdaptiveLabel =
-        !!props.use_caption_as_placeholder && adaptiveEnabled && !!props.caption;
+    // The form's label style comes from UNA (`label_style`, added by Form); regular unless it says adaptive.
+    const isAdaptiveLabel = hasAdaptiveLabel(props);
     const placeholder = isAdaptiveLabel
         ? ''
         : props.use_caption_as_placeholder

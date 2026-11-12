@@ -578,5 +578,6 @@
     "Commission invoices issued in this period": "Счета за комиссию, выставленные за период",
     "Start timer": "Запустить таймер",
     "Pause timer": "Приостановить таймер",
-    "Total logged": "Всего залогировано"
+    "Total logged": "Всего залогировано",
+    "optional": "необязательно"
 }

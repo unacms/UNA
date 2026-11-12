@@ -1536,6 +1536,29 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 'content' => $this->getSettingsLayouts('sys_pt_default_' . $sWho, _t('_adm_dsg_txt_settings_layout_' . $sWho)),
             ];
 
+        // One style for the site's forms and the apps', which read it from the form API (BxBaseFormView::getLabelStyle).
+        $aForm['inputs'] += [
+            'forms_section' => [
+                'type' => 'block_header',
+                'name' => 'forms_section',
+                'caption' => _t('_adm_dsg_txt_settings_section_forms'),
+            ],
+            'forms_info' => [
+                'type' => 'custom',
+                'name' => 'forms_info',
+                'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', [
+                    'text' => _t('_adm_dsg_inf_settings_section_forms', BX_DOL_URL_STUDIO . 'builder_forms.php?page=displays')
+                ]),
+            ],
+            'sys_form_label_style' => [
+                'type' => 'select',
+                'name' => 'sys_form_label_style',
+                'caption' => _t('_adm_stg_cpt_option_sys_form_label_style'),
+                'values' => $this->getSettingsLabelStyleList(),
+                'value' => $this->getSettingsLabelStyle(),
+            ],
+        ];
+
         $aForm['inputs'] += [
             'header_note' => [ // the note under the sections, in a section of its own
                 'type' => 'block_header',

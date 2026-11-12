@@ -833,6 +833,7 @@
 	<string name="_adm_dsg_inf_pwa_sw_enable"><![CDATA[Когда вы меняете стили или скрипты сайта, посетители получают новые при следующем открытии сайта.]]></string>
 	<string name="_adm_dsg_inf_pwa_sw_offline"><![CDATA[Показывается вместо ошибки браузера, когда нет связи: адрес на этом сайте, например page.php?i=about. Оставьте пустым, чтобы показывать страницу браузера.]]></string>
 	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Цвет заголовка окна приложения, а на телефонах — строки состояния. По умолчанию — цвет, заданный шаблоном.]]></string>
+	<string name="_adm_dsg_inf_settings_section_forms"><![CDATA[Как формы подписывают однострочные текстовые поля на сайте и в приложениях. Отдельному виду формы можно задать свой стиль в разделе <a href="{0}">Формы</a>. Приложение без плавающих подписей показывает их над полями.]]></string>
 	<string name="_adm_dsg_inf_settings_section_layout"><![CDATA[Где вокруг содержимого страницы стоят шапка, меню и подвал. Страницы со своим макетом в разделе <a href="{0}">Страницы</a> сохраняют его, остальные используют макеты ниже.]]></string>
 	<string name="_adm_dsg_inf_settings_section_template"><![CDATA[Шаблон отвечает за весь вид сайта: шапку, меню, цвета и шрифты. Все видят этот шаблон, если сами не выбрали другой включённый.]]></string>
 	<string name="_adm_dsg_inf_splash_section_apps"><![CDATA[Код только для одного приложения. Пустое поле использует код страницы выше. Приложения рисуют формы, логотип и иллюстрацию своими компонентами и пропускают скрипты и всё, что отмечено <code>data-site-only</code>. Приложения для iOS и Android показывают текст, заголовки, списки и ссылки без стилей и раскладки. Добавьте <code>&lt;neo-slot name="social_login"&gt;&lt;/neo-slot&gt;</code>, чтобы показать только кнопки входа через соцсети.]]></string>
@@ -890,9 +891,12 @@
 	<string name="_adm_dsg_txt_pwa_sw_enable"><![CDATA[Использовать service worker]]></string>
 	<string name="_adm_dsg_txt_pwa_sw_offline"><![CDATA[Офлайн-страница]]></string>
 	<string name="_adm_dsg_txt_pwa_theme_color"><![CDATA[Цвет окна]]></string>
+	<string name="_adm_dsg_txt_settings_label_style_adaptive"><![CDATA[Плавающие: в пустом поле, на верхней границе после заполнения]]></string>
+	<string name="_adm_dsg_txt_settings_label_style_regular"><![CDATA[Над полем]]></string>
 	<string name="_adm_dsg_txt_settings_layout_member"><![CDATA[Для участников]]></string>
 	<string name="_adm_dsg_txt_settings_layout_visitor"><![CDATA[Для гостей]]></string>
 	<string name="_adm_dsg_txt_settings_note"><![CDATA[Макет без шапки и подвала не оставляет меню для перехода по сайту. Задавайте его отдельным страницам в разделе Страницы, а не по умолчанию.]]></string>
+	<string name="_adm_dsg_txt_settings_section_forms"><![CDATA[Формы]]></string>
 	<string name="_adm_dsg_txt_settings_section_layout"><![CDATA[Макет страниц]]></string>
 	<string name="_adm_dsg_txt_settings_section_template"><![CDATA[Шаблон сайта]]></string>
 	<string name="_adm_dsg_txt_settings_template_current"><![CDATA[Используется]]></string>
@@ -1063,6 +1067,7 @@
     <string name="_adm_form_btn_search_forms_sortable_fields_reset"><![CDATA[Сбросить]]></string>
     <string name="_adm_form_btn_search_forms_save"><![CDATA[Сохранить]]></string>
     <string name="_adm_form_btn_search_forms_cancel"><![CDATA[Отменить]]></string>
+    <string name="_adm_form_dsc_displays_label_style"><![CDATA[Плавающие подписи применяются к однострочным текстовым полям. У остальных полей подписи остаются сверху.]]></string>
     <string name="_adm_form_dsc_displays_title"><![CDATA[Название режима отображения Формы. Видимо только в Студии.]]></string>
     <string name="_adm_form_dsc_field_area_label"><![CDATA[Доступное имя для поля. Полезно, когда видимое текстовое содержимое поля недостаточно описательно или отсутствует.]]></string>
     <string name="_adm_form_dsc_field_attrs_max"><![CDATA[Введите числовое значение]]></string>
@@ -1187,6 +1192,8 @@
 	<string name="_adm_form_txt_displays_gl_form"><![CDATA[Форма]]></string>
 	<string name="_adm_form_txt_displays_gl_module"><![CDATA[Модуль]]></string>
 	<string name="_adm_form_txt_displays_gl_title"><![CDATA[Системное имя]]></string>
+	<string name="_adm_form_txt_displays_label_style"><![CDATA[Подписи полей]]></string>
+	<string name="_adm_form_txt_displays_label_style_default"><![CDATA[Как на сайте]]></string>
 	<string name="_adm_form_txt_displays_manage_fields"><![CDATA[Управление полями]]></string>
 	<string name="_adm_form_txt_displays_title"><![CDATA[Системное имя]]></string>
 	<string name="_adm_form_txt_field_add_popup"><![CDATA[Добавить новое Поле]]></string>
@@ -1946,6 +1953,7 @@
     <string name="_adm_stg_cpt_option_sys_player_default_quality"><![CDATA[Качество видео по умолчанию]]></string>
     <string name="_adm_stg_cpt_option_sys_pt_default_visitor"><![CDATA[Тип страницы, используемый по умолчанию для посетителя]]></string>
     <string name="_adm_stg_cpt_option_sys_pt_default_member"><![CDATA[Тип страницы, используемый по умолчанию для пользователя]]></string>
+    <string name="_adm_stg_cpt_option_sys_form_label_style"><![CDATA[Подписи полей]]></string>
     <string name="_adm_stg_cpt_option_sys_form_lpc_enable"><![CDATA[Включить подтверждение ухода со страницы для страниц с формами]]></string>
     <string name="_adm_stg_cpt_option_sys_format_date"><![CDATA[<a target="_blank" href="https://momentjs.com/docs/#/displaying/format/">Формат даты</a>]]></string>
     <string name="_adm_stg_cpt_option_sys_format_datetime"><![CDATA[<a target="_blank" href="https://momentjs.com/docs/#/displaying/format/">Формат даты и времени</a>]]></string>
@@ -3487,6 +3495,7 @@
 	<string name="_sys_form_unsubscribe_input_receive_updates"><![CDATA[Получать обновления сайта]]></string>
 	<string name="_sys_form_unsubscribe_input_submit"><![CDATA[Выполнить]]></string>
 	<string name="_sys_form_err_not_unique_value"><![CDATA[Поле должно иметь уникальное значение]]></string>
+	<string name="_sys_form_txt_optional"><![CDATA[(необязательно)]]></string>
 	<string name="_sys_form_txt_select_file"><![CDATA[Выбрать файл]]></string>
     <string name="_sys_form_wiki"><![CDATA[Вики]]></string>
     <string name="_sys_form_display_wiki_edit"><![CDATA[Вики: редактирование]]></string>

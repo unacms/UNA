@@ -12,6 +12,7 @@ define('BX_DOL_FORM_METHOD_POST', 'post');
 define('BX_DOL_FORM_METHOD_SPECIFIC', 'specific');
 define('BX_DOL_FORM_METHOD_DEFAULT', BX_DOL_FORM_METHOD_POST);
 
+
 define('BX_DATA_LISTS_KEY_PREFIX', '#!');
 define('BX_DATA_VALUES_DEFAULT', 'LKey'); ///< Use default values for data items, @see BxDolForm::getDataItems
 define('BX_DATA_VALUES_ADDITIONAL', 'LKey2'); ///< Use additional values for data items, @see BxDolForm::getDataItems
@@ -712,6 +713,13 @@ bx_import('BxDolPrivacy');
  */
 class BxDolForm extends BxDol implements iBxDolReplaceable
 {
+    const LABEL_STYLE_REGULAR = 'regular'; ///< a field's label above it
+    const LABEL_STYLE_ADAPTIVE = 'adaptive'; ///< a floating label: in the empty field, on its top edge once it has focus or a value
+
+    const REQUIRED_MARK_NONE = 'none'; ///< no marks: every field is required, or none is
+    const REQUIRED_MARK_OPTIONAL = 'optional'; ///< "(optional)" on the optional fields, which are the fewer
+    const REQUIRED_MARK_REQUIRED = 'required'; ///< an asterisk on the required fields, which are the fewer
+
     static $TYPES_SKIP = array('files' => 1, 'location' => 1, 'nested_form' => 1);
     static $TYPES_CHECKBOX = array('checkbox' => 1, 'switcher' => 1);
     static $TYPES_TEXT = array('text' => 1, 'textarea' => 1);

@@ -5,6 +5,7 @@ import React from 'react'
 import BlockByUrl from 'app/ui/molecules/page/block'
 import AuthPanel from 'app/ui/molecules/auth/auth'
 import { useTranslation } from 'react-i18next'
+import { appSetting } from 'app/lib/util'
 
 export default function () {
     const { t } = useTranslation()
@@ -29,12 +30,15 @@ export default function () {
             <View className="gap-y-2 w-full">
                 <Row className="flex-row gap-y-2 flex-wrap gap-x-2 w-full items-center justify-center"><AuthPanel /></Row>
                
-                    <NeoButtonLink
-                        label={t('login_modal_fp')}
-                        image="RotateCcw"
-                        width="fill"
-                        href="/forgot-password"
-                    />
+                    {/* Only when the Password field doesn't carry the link itself (forms.sys_login.forgot_password_link). */}
+                    {!appSetting('forms', 'sys_login')?.forgot_password_link && (
+                        <NeoButtonLink
+                            label={t('login_modal_fp')}
+                            image="RotateCcw"
+                            width="fill"
+                            href="/forgot-password"
+                        />
+                    )}
                 
                     <NeoButtonLink
                         label={t('login_modal_new_account')}
