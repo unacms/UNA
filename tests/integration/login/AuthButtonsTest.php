@@ -52,20 +52,31 @@ class AuthButtonsTest extends BxDolIntegrationTestCase
 
         $this->bxBecomeGuest();
 
-        $aForms = [
-            'login' => (string)(new BxTemplServiceLogin())->serviceLoginForm(),
-            'join' => (string)(new BxTemplServiceAccount())->serviceCreateAccountForm(),
-        ];
-        foreach($aForms as $sName => $sHtml) {
-            $iForm = strpos($sHtml, '<form');
-            $iOr = strpos($sHtml, 'sys-auth-or');
-            $iList = strpos($sHtml, 'sys-auth-block');
+        // Both forms on for this test, whatever the site has set.
+        $aParams = ['sys_account_disable_login_form' => getParam('sys_account_disable_login_form'), 'sys_account_disable_join_form' => getParam('sys_account_disable_join_form')];
+        try {
+            foreach($aParams as $sParam => $sValue)
+                setParam($sParam, '');
 
-            $this->assertNotFalse($iForm, $sName . ': the form is there.');
-            $this->assertNotFalse($iOr, $sName . ': the "or" is there.');
-            $this->assertNotFalse($iList, $sName . ': the list is there.');
-            $this->assertLessThan($iOr, $iForm, $sName . ': the form comes before the "or".');
-            $this->assertLessThan($iList, $iOr, $sName . ': the "or" comes before the list.');
+            $aForms = [
+                'login' => (string)(new BxTemplServiceLogin())->serviceLoginForm(),
+                'join' => (string)(new BxTemplServiceAccount())->serviceCreateAccountForm(),
+            ];
+            foreach($aForms as $sName => $sHtml) {
+                $iForm = strpos($sHtml, '<form');
+                $iOr = strpos($sHtml, 'sys-auth-or');
+                $iList = strpos($sHtml, 'sys-auth-block');
+
+                $this->assertNotFalse($iForm, $sName . ': the form is there.');
+                $this->assertNotFalse($iOr, $sName . ': the "or" is there.');
+                $this->assertNotFalse($iList, $sName . ': the list is there.');
+                $this->assertLessThan($iOr, $iForm, $sName . ': the form comes before the "or".');
+                $this->assertLessThan($iList, $iOr, $sName . ': the "or" comes before the list.');
+            }
+        }
+        finally {
+            foreach($aParams as $sParam => $sValue)
+                setParam($sParam, $sValue);
         }
     }
 
