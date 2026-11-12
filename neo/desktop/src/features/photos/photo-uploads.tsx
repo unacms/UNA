@@ -143,10 +143,12 @@ export function PhotoDropZone({ uploads, pickId, describedBy, label = t('Choose 
         ? {}
         : {
               onDragOver: (e: DragEvent) => {
-                  // held: no place to drop on (no copy cursor, no highlight)
-                  if (held || !e.dataTransfer.types.includes('Files')) return;
+                  if (!e.dataTransfer.types.includes('Files')) return;
+                  // always the zone's: left to the browser, a file dropped here opens in place of the app
                   e.preventDefault();
-                  setDragging(true);
+                  // held: no place to drop on (the cursor says so, no highlight)
+                  if (held) e.dataTransfer.dropEffect = 'none';
+                  else setDragging(true);
               },
               onDragLeave: (e: DragEvent) => {
                   if (e.currentTarget === e.target) setDragging(false);

@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, createEvent, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -626,6 +626,34 @@ describe('New post', () => {
         expect(JSON.parse(sent[0]?.body ?? '{}').cover_media_id).toBe('91');
     });
 
+    it('holds a Post pressed when the cover is in the tray and the form is not drawn with it yet', async () => {
+        setSiteModules(MODULES);
+        const { api, calls } = site((c) => (c.path === '/posts' && c.method === 'POST' ? { status: 201, body: post({ id: '60', title: 'Notes from the meetup' }) } : null));
+        let ready: (staging: { files: (typeof COVER_FILE)[]; refused: string[] }) => void = () => {};
+        const upload = vi.fn(async () => COVER_MEDIA);
+        const uploader = coverUploader({ pick: () => new Promise((resolve) => (ready = resolve)), upload });
+        const { history } = renderWith(<NewPost uploader={uploader} />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+        const send = await fill();
+        fireEvent.click(screen.getByRole('button', { name: 'Choose a cover…' }));
+        await act(async () => {
+            ready({ files: [COVER_FILE], refused: [] });
+            // made ready and added (its upload has started), and React has not drawn the form with it
+            for (let i = 0; i < 20 && !upload.mock.calls.length; i++) await Promise.resolve();
+            expect(upload).toHaveBeenCalledTimes(1);
+            // nothing is being made ready any more: only the tray knows of the cover
+            for (let i = 0; i < 5; i++) await Promise.resolve();
+            expect(screen.queryByRole('button', { name: 'Remove Photo cover.jpg' })).toBeNull();
+            fireEvent.click(send);
+        });
+        expect(calls.some((c) => c.method === 'POST' && c.path === '/posts')).toBe(false);
+        await screen.findByText(/^Ready/);
+        fireEvent.click(send);
+        await waitFor(() => expect(history.current.detail).toEqual({ kind: 'article', id: '60' }));
+        const sent = calls.filter((c) => c.method === 'POST' && c.path === '/posts');
+        expect(sent).toHaveLength(1);
+        expect(JSON.parse(sent[0]?.body ?? '{}').cover_media_id).toBe('91');
+    });
+
     it('is no place to drop a cover on while it is being sent: no highlight, the drop is not taken, and nothing is made ready', async () => {
         setSiteModules(MODULES);
         const first = later();
@@ -644,9 +672,12 @@ describe('New post', () => {
         await waitFor(() => expect(send.getAttribute('aria-busy')).toBe('true'));
         // sent while a file was over it: the highlight goes, and the file dragged on is left alone
         expect(zone.getAttribute('data-dragging')).toBeNull();
-        expect(fireEvent.dragOver(zone, dropped())).toBe(true);
+        // (still the zone's, with a cursor that refuses: left to the browser, the file would open in place of the app)
+        const over = createEvent.dragOver(zone, dropped());
+        expect(fireEvent(zone, over)).toBe(false);
+        expect((over as unknown as DragEvent).dataTransfer?.dropEffect).toBe('none');
         expect(zone.getAttribute('data-dragging')).toBeNull();
-        fireEvent.drop(zone, dropped());
+        expect(fireEvent.drop(zone, dropped())).toBe(false);
         await act(async () => {});
         expect(fromFiles).not.toHaveBeenCalled();
         expect(screen.queryByRole('button', { name: 'Remove Photo cover.jpg' })).toBeNull();
