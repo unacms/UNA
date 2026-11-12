@@ -2649,10 +2649,6 @@
     <string name="_sys_agents_agents_txt_search"><![CDATA[Search chats...]]></string>
     <string name="_sys_agents_agents_txt_search_empty"><![CDATA[No chats found]]></string>
     <string name="_sys_agents_agents_popup_add"><![CDATA[Add agent]]></string>
-    <string name="_sys_agents_agents_empty"><![CDATA[No agents yet]]></string>
-    <string name="_sys_agents_agents_empty_info"><![CDATA[Agents run automated tasks on your site. Add one to get started.]]></string>
-    <string name="_sys_agents_builder_view_list"><![CDATA[List view]]></string>
-    <string name="_sys_agents_builder_view_grid"><![CDATA[Grid view]]></string>
 
     <string name="_Run"><![CDATA[Run]]></string>
 

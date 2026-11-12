@@ -2620,10 +2620,6 @@
         <string name="_sys_agents_agents_txt_search"><![CDATA[Поиск по чатам...]]></string>
         <string name="_sys_agents_agents_txt_search_empty"><![CDATA[Чаты не найдены]]></string>
         <string name="_sys_agents_agents_popup_add"><![CDATA[Добавить агента]]></string>
-        <string name="_sys_agents_agents_empty"><![CDATA[Пока нет агентов]]></string>
-        <string name="_sys_agents_agents_empty_info"><![CDATA[Агенты выполняют автоматические задачи на сайте. Добавьте первого, чтобы начать.]]></string>
-        <string name="_sys_agents_builder_view_list"><![CDATA[Список]]></string>
-        <string name="_sys_agents_builder_view_grid"><![CDATA[Таблица]]></string>
 
         <string name="_Run"><![CDATA[Запустить]]></string>
 
