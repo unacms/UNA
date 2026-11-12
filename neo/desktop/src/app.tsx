@@ -9,6 +9,7 @@ import { UpdateDialog } from './components/update-dialog';
 import { Splash } from './components/splash';
 import { AnnounceContext } from './lib/announce';
 import { makeApi, type Refusal, unwrap } from './lib/api';
+import { useReloadWhenApiBack, useRetryWithCheck } from './lib/api-availability';
 import { listenForCommands } from './lib/command-bus';
 import { AppContext, type AppContextValue, useApp } from './lib/context';
 import { deepLinkTarget, parseDeepLink } from './lib/deep-link';
@@ -582,6 +583,14 @@ function SignedIn({ session, sessions, openAt, onSignOut, onRefused, signingOut,
     }, [history, tabs, setNavigator]);
 
     const me = useQuery({ queryKey: ['me'], queryFn: async () => unwrap(await api.GET('/me')), enabled: restored });
+    // the network's API was turned off and answers again: whatever is on screen loads again,
+    // the "could not load" screen below included (it has no status banner)
+    useReloadWhenApiBack(session.siteUrl);
+    const refetchMe = me.refetch;
+    const meAgain = useRetryWithCheck(
+        session.siteUrl,
+        useCallback(() => void refetchMe(), [refetchMe]),
+    );
 
     const messageTo = useCallback(
         (profile: Schema<'Profile'>) => {
@@ -600,7 +609,7 @@ function SignedIn({ session, sessions, openAt, onSignOut, onRefused, signingOut,
                     <p className="error" role="alert">
                         {errorMessage(me.error)}
                     </p>
-                    <button className="btn btn-primary" onClick={() => void me.refetch()} disabled={me.isFetching} aria-busy={me.isFetching}>
+                    <button className="btn btn-primary" onClick={meAgain.retry} disabled={me.isFetching || meAgain.checking} aria-busy={me.isFetching || meAgain.checking}>
                         {t('Try again')}
                     </button>
                     <button className="btn" onClick={signOut} disabled={signingOut} aria-busy={signingOut}>

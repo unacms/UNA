@@ -2228,5 +2228,11 @@
     "The new version could not be installed: {{reason}}": "Не удалось установить новую версию: {{reason}}",
     "Check for updates again: the version found is no longer there": "Проверьте обновления ещё раз: найденной версии больше нет",
     "The new version is being installed already": "Новая версия уже устанавливается",
-    "Look for a new version of the app": "Найти новую версию приложения"
+    "Look for a new version of the app": "Найти новую версию приложения",
+    "API v2 is turned off on this network": "В этой сети отключён API v2",
+    "The API is turned off on this network": "В этой сети отключён API",
+    "The network’s API answers again": "API сети снова отвечает",
+    "{{site}} has API v2 (a preview) turned off. Its administrator can turn it on in Studio > API > Settings.": "На {{site}} отключён API v2 (предварительная версия). Администратор сайта может включить его в Studio > API > Settings.",
+    "{{site}} has its API turned off": "На {{site}} отключён API",
+    "Not a network the app is signed in to": "Приложение не вошло в эту сеть"
 }

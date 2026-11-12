@@ -1,8 +1,10 @@
 # UNA desktop app
 
 > **Preview, not for production.** The app and the API it uses (v2) are still changing. A site
-> has to turn API v2 on for it (Studio > API > Settings, "API v2 (preview)"; off as installed);
-> until then the app says the site has it turned off. NEO's web and mobile apps do not use v2.
+> has to turn API v2 on for it (Studio > API > Settings, "API v2 (preview)"; off as installed).
+> Until then the app says that the site has API v2 turned off and where its administrator turns
+> it on, which it tells apart from a site with no API v2 at all (below, "A site with its API
+> turned off"). NEO's web and mobile apps do not use v2.
 
 A Tauri 2 app for any UNA network, on [API v2](../../docs/api-v2.md): feeds, posting with photos and videos,
 comments, reactions, profiles with follows and friends, notifications (with OS notifications)
@@ -37,7 +39,8 @@ and conversations.
   `Set-Cookie` back. A redirect is followed only into the API again. The answer's status and
   headers come back at once and the body in pieces on a channel, so a streamed reply reads as
   it is written; aborting a request stops it in Rust (`api_abort`). A session that is over gets
-  no request at all, and a 401 renews the session in Rust before the page hears of it. Rust
+  no request at all, and a 401 renews the session in Rust before the page hears of it. A site
+  that says its API is turned off is not asked again by every request (below). Rust
   looks the site up itself before sign-in (`discover_site`). There is no HTTP plugin and no
   cookie jar; the CSP's `connect-src` is IPC only (`devCsp` adds Vite's HMR socket). Images and media load over https, `data:`,
   `blob:` and the app's own `una-media` scheme, in `csp` and `devCsp` alike (no plain http, so
@@ -58,6 +61,43 @@ and conversations.
   `data-tauri-drag-region`). A picture refused or failing to load
   shows the profile's monogram or a generated cover band, never a broken image. Links open in the browser (opener scoped to
   http and https), and a link that can't open shows a message.
+- A site with its API turned off (`src-tauri/src/availability.rs`, `src/lib/api-availability.ts`).
+  With API v2 off a site answers every `/api/v2` request 503 with a problem whose `code` is
+  `api_v2_disabled`, and `api_disabled` when its whole API is off; the app reads that body and
+  takes nothing else for it (a 503 of a proxy or a maintenance page, a 404 where no rewrite rule
+  is, a page of the site), and it reads no more of a failed answer than a problem is long
+  (`problem_of`: only a 503, at most 64 KB). Adding or signing in to a network (`discover_site`,
+  and `/me` after the browser): "{site} has API v2 (a preview) turned off. Its administrator can
+  turn it on in Studio > API > Settings.", or "{site} has its API turned off"; any other answer
+  keeps "{site} has no UNA API v2 (the site answered {status})". The token endpoint is
+  `/m/oauth2/token`, not under `/api/v2`, so it never answers 503: with API v2 off the site no
+  longer has the app as a client, refuses the browser's code with `invalid_client` and a
+  refresh with `unsupported_grant_type`. So when the code is refused the app asks `/api/v2`,
+  and says the same "{site} has API v2 (a preview) turned off…" when that is why
+  (`exchange_refused`). A network already signed in to whose site turns its API off is not
+  signed out and nothing of it is deleted: Rust remembers what the site said, per site, so
+  other networks keep working. While a site is held as off its tokens are not renewed at all
+  (`current_token`: the access token goes as it is, since every `/api/v2` request is answered
+  503 before the token is looked at; once the API is back the first 401 renews it). A refresh
+  refused with `invalid_client`, `unauthorized_client` or `unsupported_grant_type` when nothing
+  is known yet (a start with a token that ran out) ends the sign-in only when `/api/v2` answers:
+  when it says the API is off the tokens are kept, and when it cannot be reached or says
+  nothing (maintenance) nothing changes either. `invalid_grant` ends it as before. Until the
+  site answers again the page's requests get that problem from Rust and are not sent, but one
+  every 30 s; the sync poll keeps its usual interval instead of backing off (it is what finds
+  out that the API is back) and the sockets wait. The shell's status banner, the one that says
+  the computer is offline (`src/shell/status-banner.tsx`), says "API v2 is turned off on this
+  network" (or "The API is turned off on this network") with Try again, which asks the site at
+  once (`api_check`: its discovery document, only a network signed in to) and answers how Rust
+  holds the site after that, so a maintenance page in place of the problem leaves the banner
+  up. The banner is not in the way of anything, and it goes by itself when the API answers;
+  when Try again goes while the keyboard is on it, focus moves to the list pane. Every window
+  hears the change (the `api-availability` event) and loads again what it shows
+  (`useReloadWhenApiBack`, mounted with the window's session): the main window on any screen,
+  its full-screen "could not load" one included, and windows of their own, which only listen
+  (they have no `api_check`; their Try again asks through Rust's one request every 30 s). The
+  main window's "could not load" screen asks the site first when it is held as off
+  (`useRetryWithCheck`). Queries do not retry such an answer (`retryOnce`).
 - The keychain is read after the window shows (`AuthState::pending`, `ensure_loaded`): the page
   shows "Signing in…" and asks for the session, and only that first command reads it, off the
   main thread, once for every caller. A read that fails (access denied, locked) deletes nothing:
@@ -860,8 +900,8 @@ with a development certificate). The release workflow runs it on every macOS bui
   come from the 30 s poll, and reaction counts from the feed's poll. Deep links from the site's own pages (a site link as `una://`) and "Copy app link".
 - Settings for sounds, density and reading size. Deep links on macOS work only from an installed
   bundle.
-- Windows and Linux have not been run. The shell's checks pass on Linux and its Windows code
-  type-checks (2026-11-11, from a Mac: see Tests); untested at run time: the Windows overlay
-  badge, Mica, the tray on both, deep-link and autostart registration, the Mark of the Web on
-  downloads, the keychain (Credential Manager, Secret Service), and updates (the NSIS and MSI
-  installers in passive mode; an AppImage replacing itself; a .deb asking for pkexec).
+- Windows and Linux have not been run by a person. CI builds, lints and tests the shell on
+  macOS, Linux and Windows (the MSVC target) on every pull request; untested at run time: the
+  Windows overlay badge, Mica, the tray on both, deep-link and autostart registration, the Mark
+  of the Web on downloads, the keychain (Credential Manager, Secret Service), and updates (the
+  NSIS and MSI installers in passive mode; an AppImage replacing itself; a .deb asking for pkexec).

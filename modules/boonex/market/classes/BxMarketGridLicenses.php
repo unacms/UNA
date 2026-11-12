@@ -22,6 +22,16 @@ class BxMarketGridLicenses extends BxMarketGridLicensesAdministration
             $this->_aQueryAppend['profile_id'] = (int)$iProfileId;
     }
 
+    public function performActionEdit()
+    {
+        return $this->_bIsApi ? [] : echoJson([]);
+    }
+
+    public function performActionDelete()
+    {
+        return $this->_bIsApi ? [] : echoJson([]);
+    }
+
     protected function _getDataSql($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage)
     {
         if(empty($this->_aQueryAppend['profile_id']))
