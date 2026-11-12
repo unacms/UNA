@@ -10,6 +10,55 @@ import { useGrid } from './context';
 /** Row actions UNA should not render as icon buttons. */
 const EXCLUDED_ROW_ACTIONS = new Set(['clear_reports', 'set_acl_level']);
 
+/** The actions a row shows as buttons: those it doesn't drop. */
+export function getRowActions(actions) {
+    return (actions || []).filter((itemAction) => itemAction && !EXCLUDED_ROW_ACTIONS.has(itemAction.name));
+}
+
+/**
+ * The row's actions that don't fit (see `ROW_ACTIONS_VISIBLE` in cell.js) in one "…" menu:
+ * links open, modals and objects open their form, callbacks run, as their buttons do.
+ */
+export function RowActionsOverflow({ id, actions }) {
+    const redirectRef = useRef();
+
+    const openRowAction = useGrid((state) => state.openRowAction);
+    const runRowCallback = useGrid((state) => state.runRowCallback);
+
+    const items = actions.map((itemAction) => ({
+        name: itemAction.name,
+        title: itemAction.title,
+        icon: getActionButtonIcon(itemAction.name, itemAction.icon) || undefined,
+    }));
+
+    const onSelect = (oItem) => {
+        const itemAction = actions.find((action) => action.name === oItem?.name);
+        if (!itemAction) return;
+
+        if (itemAction.type === 'link')
+            redirectRef.current?.redirect(itemAction.url);
+        else if (itemAction.type === 'modal' || itemAction.type === 'object')
+            openRowAction(itemAction);
+        else if (itemAction.type === 'callback')
+            runRowCallback(itemAction, id, redirectRef);
+    };
+
+    return (
+        <>
+            <Redirect ref={redirectRef} />
+            <DropdownMenu mode="popup" items={items} onSelect={onSelect}>
+                <NeoButton
+                    style="borderless"
+                    controlSize="small"
+                    image="Ellipsis"
+                    accessibilityLabel="Actions"
+                    interactive
+                />
+            </DropdownMenu>
+        </>
+    );
+}
+
 /**
  * One control in a grid row's actions cell (link / modal / menu / callback / object).
  * Everything it needs comes from the grid store, so rows pass ids only.

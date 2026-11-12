@@ -126,6 +126,9 @@ class BxTasksConfig extends BxBaseModTextConfig
             'PARAM_EXPORT_TIME_TO' => 'bx_tasks_export_time_to',
             'PARAM_EXPORT_TIME_FIELDS' => 'bx_tasks_export_time_fields',
 
+            // seconds a timer runs without a pause before the cron pauses it (BxTasksCronTimers)
+            'TIMER_RUNNING_LIMIT' => 8 * 3600,
+
             // objects
             'OBJECT_STORAGE' => 'bx_tasks_covers',
             'OBJECT_STORAGE_FILES' => 'bx_tasks_files',

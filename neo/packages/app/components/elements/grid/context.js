@@ -348,8 +348,9 @@ const CONTROL_COL_STYLE = {
     checkbox: { flexGrow: 0, flexShrink: 0, width: 44, minWidth: 44 },
     order: { flexGrow: 0, flexShrink: 0, width: 36, minWidth: 36 },
     switcher: { flexGrow: 0, flexShrink: 0, width: 64, minWidth: 64 },
-    // Fixed track for row actions (right-aligned); header label stays empty.
-    actions: { flexGrow: 0, flexShrink: 0, width: 168, minWidth: 168 },
+    // Fixed track for row actions (right-aligned), two small buttons (ROW_ACTIONS_VISIBLE in cell.js):
+    // more fold into a "…" menu. Header label stays empty.
+    actions: { flexGrow: 0, flexShrink: 0, width: 88, minWidth: 88 },
 };
 
 /**
@@ -360,6 +361,13 @@ const FLEX_NONE_NAME_RE = /date|time|added|created|changed|^(period|price|amount
 const META_COL_WIDTH = 108;
 
 const TEXT_COL_MIN_WIDTH = 72;
+/** A profile column (avatar + name) keeps room for a name besides the avatar. */
+const PROFILE_COL_MIN_WIDTH = 160;
+/**
+ * Profile columns by their field name: the columns are laid out before the rows come
+ * (UNA sends a page's grid without rows), so the cell type can't tell them then.
+ */
+const PROFILE_NAME_RE = /^(author|profile|owner|fan|member|initiator|performer|reporter)(_id)?$/i;
 const ROW_GAP = 8;
 const ROW_PAD_X = 16; // px-2 each side
 
@@ -367,7 +375,7 @@ const ROW_PAD_X = 16; // px-2 each side
  * Text columns (title, provider, …): flex-auto — share leftover space.
  * Controls / date / actions: flex-none — fixed tracks.
  */
-const getColumnStyle = (name) => {
+const getColumnStyle = (name, cellType) => {
     if (CONTROL_COL_STYLE[name]) {
         return CONTROL_COL_STYLE[name];
     }
@@ -385,7 +393,7 @@ const getColumnStyle = (name) => {
         flexGrow: 1,
         flexShrink: 1,
         flexBasis: 0,
-        minWidth: TEXT_COL_MIN_WIDTH,
+        minWidth: cellType === 'profile' || PROFILE_NAME_RE.test(name) ? PROFILE_COL_MIN_WIDTH : TEXT_COL_MIN_WIDTH,
     };
 };
 
@@ -419,7 +427,8 @@ const buildGridColumns = (rawHeader, sampleRow) => {
 
         return {
             name,
-            style: getColumnStyle(name),
+            // The first row's cell tells a profile column, whatever the field is called.
+            style: getColumnStyle(name, sampleRow?.[name]?.type),
             align: isActions ? 'items-end' : 'items-start',
             // Actions keeps a blank label so date/meta columns stay on their tracks;
             // the checkbox column has no label at all.

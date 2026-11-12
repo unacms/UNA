@@ -67,6 +67,8 @@ export const settingsInputs = {
         },
         base: 
         'text-card-foreground placeholder:text-muted-foreground  bg-card shadow-input-outline dark:shadow-input-outline-deep text-base placeholder-muted-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring/80 web:focus-visible:border web:focus-visible:shadow-none web:overflow-hidden',
+        // A read only / disabled input: no focus, and it shows it.
+        locked: 'bg-muted text-muted-foreground shadow-none dark:shadow-none web:cursor-not-allowed',
         // Height/padding come from `size` (same as Input) so select stays in sync.
         select: ' pr-10 bg-card shadow-input-outline dark:shadow-input-outline-deep web:focus:bg-card flex-auto text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
 

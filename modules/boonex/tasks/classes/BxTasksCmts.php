@@ -42,6 +42,37 @@ class BxTasksCmts extends BxTemplCmts
         return $this->add($aValues);
     }
     
+    /**
+     * The task's activity on logged time ("X reported that 1:20 was spent") holds Logged time:
+     * only the one who logged it and those who see everybody's Logged time get it, clients and other members don't.
+     */
+    public function getCommentsArray ($iVParentId, $sFilter, $aOrder, $iStart = 0, $iCount = -1)
+    {
+        $aCmts = parent::getCommentsArray($iVParentId, $sFilter, $aOrder, $iStart, $iCount);
+        if(empty($aCmts) || !is_array($aCmts))
+            return $aCmts;
+
+        $iViewerId = bx_get_logged_profile_id();
+        $bLoggedAny = $this->_oModule->getTimeRightsByContentId($this->getId(), $iViewerId)['view_logged_any'];
+        if($bLoggedAny)
+            return $aCmts;
+
+        return array_values(array_filter($aCmts, function($aCmt) use ($iViewerId) {
+            if(!isset($aCmt['cmt_author_id'], $aCmt['cmt_text']))
+                $aCmt = $this->getCommentRow((int)$aCmt['cmt_id']) ?: $aCmt;
+
+            if(!$this->_isAutoComment($aCmt))
+                return true;
+
+            $aText = json_decode($aCmt['cmt_text'] ?? '', true);
+            if(($aText['key'] ?? '') != '_bx_tasks_txt_msg_report_time_for_date')
+                return true;
+
+            //--- Entries logged before the logger's id was stored are hidden from everybody here.
+            return !empty($aText['markers']['author_id']) && (int)$aText['markers']['author_id'] == $iViewerId;
+        }));
+    }
+
     public function getViewText($mixedItem)
     {
         if(!is_array($mixedItem))

@@ -28,6 +28,8 @@ class BxTasksGridTimeContextAdministration extends BxTasksGridTime
         $this->_iContextPid = (int)$iContextPid;
         $this->_aQueryAppend['context_pid'] = $this->_iContextPid;
 
+        $this->_setColumnBilled($this->_oModule->getTimeRights($this->_iContextPid)['view_billed']);
+
         /*
          * Filter by author_id
          */
@@ -117,7 +119,8 @@ class BxTasksGridTimeContextAdministration extends BxTasksGridTime
         if(!$iContextPid)
             return false;
 
-        return $this->_oModule->isAllowManageByContext($this->_iContextPid);
+        //--- The grid lists everybody's time in the context.
+        return $this->_oModule->getTimeRights($iContextPid)['view_logged_any'];
     }
 
     protected function _getFilterControls()

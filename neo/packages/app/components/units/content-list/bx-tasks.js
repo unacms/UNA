@@ -152,7 +152,8 @@ function TaskTimerControl({ data, module, isCompleted }) {
     const [busy, setBusy] = useState(false);
     const isActive = session?.state === 'started';
 
-    if (!currentUser || data?.id == null || (isCompleted && !isActive)) return null;
+    // UNA sends `allow_log_time: false` to those whose role may not log time here (clients).
+    if (!currentUser || data?.id == null || data?.allow_log_time === false || (isCompleted && !isActive)) return null;
 
     const toggle = async () => {
         // UNA's `start` continues a paused timer, so it covers both a new and a paused one.

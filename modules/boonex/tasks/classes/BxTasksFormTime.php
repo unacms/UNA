@@ -30,11 +30,18 @@ class BxTasksFormTime extends BxTemplFormView
 
                 if(!empty($mixedValue['attrs']['placeholder']))
                     $this->aInputs[$sKey][$mixedKey]['attrs']['placeholder'] = _t($mixedValue['attrs']['placeholder']);
+
+                //--- Hours and minutes take digits only.
+                if(($mixedValue['type'] ?? '') == 'text')
+                    $this->aInputs[$sKey][$mixedKey]['attrs'] = array_merge($this->aInputs[$sKey][$mixedKey]['attrs'] ?? [], ['type' => 'number', 'min' => 0]);
             }
         }
 
         if(($sKey = 'value_date') && isset($this->aInputs[$sKey]))
             $this->aInputs[$sKey]['value'] ??= time();
+
+        //--- Replaced by the Billed time of an entry, which those allowed to change it set in the time grids.
+        unset($this->aInputs['billable']);
     }
     
     public function initChecker ($aValues = [], $aSpecificValues = [])

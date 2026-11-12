@@ -42,7 +42,7 @@ export default function GridTable({ rows, query }) {
                             className={`justify-center py-1 min-w-0 ${column.align}`}
                         >
                             <Text
-                                className="font-bold text-secondary-foreground text-left"
+                                className="text-sm font-semibold text-muted-foreground text-left"
                                 numberOfLines={1}
                             >
                                 {column.label}

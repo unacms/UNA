@@ -109,7 +109,7 @@ INSERT INTO `sys_objects_page`(`object`, `uri`, `title_system`, `title`, `module
 
 INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES 
 ('bx_tasks_context_time', 2, 'bx_tasks', '_bx_tasks_page_block_title_sys_menu_in_context', '_bx_tasks_page_block_title_menu_in_context', 13, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_tasks";s:6:"method";s:22:"get_block_menu_context";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}}', 0, 0, 1, 1),
-('bx_tasks_context_time', 3, 'bx_tasks', '_bx_tasks_page_block_title_system_context_time_summary', '_bx_tasks_page_block_title_timers_stats', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_tasks";s:6:"method";s:30:"get_block_time_summary_context";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}}', 0, 1, 1, 0),
+('bx_tasks_context_time', 3, 'bx_tasks', '_bx_tasks_page_block_title_system_context_time_summary', '_bx_tasks_page_block_title_timers_stats', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_tasks";s:6:"method";s:30:"get_block_time_summary_context";s:6:"params";a:2:{i:0;s:12:"{profile_id}";i:1;s:2:"my";}}', 0, 1, 1, 0),
 ('bx_tasks_context_time', 3, 'bx_tasks', '_bx_tasks_page_block_title_sys_entries_time_in_context', '_bx_tasks_page_block_title_entries_time_in_context', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_tasks";s:6:"method";s:21:"get_block_manage_time";s:6:"params";a:2:{i:0;s:6:"common";i:1;s:12:"{profile_id}";}}', 0, 0, 1, 1);
 
 -- PAGE: entries' time in context (all)
@@ -118,7 +118,6 @@ INSERT INTO `sys_objects_page`(`object`, `uri`, `title_system`, `title`, `module
 
 INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES 
 ('bx_tasks_context_time_administration', 2, 'bx_tasks', '_bx_tasks_page_block_title_sys_menu_in_context', '_bx_tasks_page_block_title_menu_in_context', 13, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_tasks";s:6:"method";s:22:"get_block_menu_context";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}}', 0, 0, 1, 1),
-('bx_tasks_context_time_administration', 2, 'bx_tasks', '_bx_tasks_page_block_title_sys_entries_budget_in_context_summary', '_bx_tasks_page_block_title_entries_budget_in_context_summary', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_tasks";s:6:"method";s:16:"get_block_budget";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}}', 0, 0, 1, 2),
 ('bx_tasks_context_time_administration', 3, 'bx_tasks', '_bx_tasks_page_block_title_sys_entries_time_in_context_administration', '_bx_tasks_page_block_title_entries_time_in_context_administration', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_tasks";s:6:"method";s:21:"get_block_manage_time";s:6:"params";a:2:{i:0;s:14:"administration";i:1;s:12:"{profile_id}";}}', 0, 0, 1, 1),
 ('bx_tasks_context_time_administration', 3, 'bx_tasks', '_bx_tasks_page_block_title_system_context_time_summary', '_bx_tasks_page_block_title_timers_stats', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_tasks";s:6:"method";s:30:"get_block_time_summary_context";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}}', 0, 1, 1, 0);
 
@@ -128,8 +127,17 @@ INSERT INTO `sys_objects_page`(`object`, `uri`, `title_system`, `title`, `module
 
 INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES 
 ('bx_tasks_context_budget_administration', 2, 'bx_tasks', '_bx_tasks_page_block_title_sys_menu_in_context', '_bx_tasks_page_block_title_menu_in_context', 13, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_tasks";s:6:"method";s:22:"get_block_menu_context";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}}', 0, 0, 1, 1),
-('bx_tasks_context_budget_administration', 2, 'bx_tasks', '_bx_tasks_page_block_title_sys_entries_budget_in_context_summary', '_bx_tasks_page_block_title_entries_budget_in_context_summary', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_tasks";s:6:"method";s:16:"get_block_budget";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}}', 0, 0, 1, 2),
-('bx_tasks_context_budget_administration', 3, 'bx_tasks', '_bx_tasks_page_block_title_sys_entries_budget_in_context_administration', '_bx_tasks_page_block_title_entries_budget_in_context_administration', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_tasks";s:6:"method";s:23:"get_block_manage_budget";s:6:"params";a:2:{i:0;s:14:"administration";i:1;s:12:"{profile_id}";}}', 0, 0, 1, 1);
+('bx_tasks_context_budget_administration', 3, 'bx_tasks', '_bx_tasks_page_block_title_sys_entries_budget_in_context_summary', '_bx_tasks_page_block_title_entries_budget_in_context_summary', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_tasks";s:6:"method";s:16:"get_block_budget";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}}', 0, 0, 1, 1),
+('bx_tasks_context_budget_administration', 3, 'bx_tasks', '_bx_tasks_page_block_title_sys_entries_budget_in_context_administration', '_bx_tasks_page_block_title_entries_budget_in_context_administration', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_tasks";s:6:"method";s:23:"get_block_manage_budget";s:6:"params";a:2:{i:0;s:14:"administration";i:1;s:12:"{profile_id}";}}', 0, 0, 1, 2);
+
+-- PAGE: entries' billing in context (the budget for every member, Billed time for those who see it)
+INSERT INTO `sys_objects_page`(`object`, `uri`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`) VALUES 
+('bx_tasks_context_billing', 'tasks-context-billing', '_bx_tasks_page_title_sys_entries_billing_in_context', '_bx_tasks_page_title_entries_billing_in_context', 'bx_tasks', 13, 510, 1, '', '', '', '', 0, 1, 0, 'BxTasksPageAuthor', 'modules/boonex/tasks/classes/BxTasksPageAuthor.php');
+
+INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES 
+('bx_tasks_context_billing', 2, 'bx_tasks', '_bx_tasks_page_block_title_sys_menu_in_context', '_bx_tasks_page_block_title_menu_in_context', 13, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_tasks";s:6:"method";s:22:"get_block_menu_context";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}}', 0, 0, 1, 1),
+('bx_tasks_context_billing', 3, 'bx_tasks', '_bx_tasks_page_block_title_sys_entries_budget_in_context_summary', '_bx_tasks_page_block_title_entries_budget_in_context_summary', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_tasks";s:6:"method";s:16:"get_block_budget";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}}', 0, 0, 1, 1),
+('bx_tasks_context_billing', 3, 'bx_tasks', '_bx_tasks_page_block_title_system_context_billing_summary', '_bx_tasks_page_block_title_context_billing_summary', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_tasks";s:6:"method";s:25:"get_block_billing_summary";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}}', 0, 0, 1, 2);
 
 -- PAGE: pre lists and values in context
 INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `uri`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`) VALUES 
@@ -295,7 +303,8 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_tasks_view_context_submenu', 'bx_tasks', 'tasks-context-time-administration', '_bx_tasks_menu_item_title_system_view_context_time_administration', '_bx_tasks_menu_item_title_view_context_time_administration', 'page.php?i=tasks-context-time-administration&profile_id={profile_id}', '', '', '', '', 2147483647, '', 1, 0, 3),
 ('bx_tasks_view_context_submenu', 'bx_tasks', 'tasks-context-budget-administration', '_bx_tasks_menu_item_title_system_view_context_budget_administration', '_bx_tasks_menu_item_title_view_context_budget_administration', 'page.php?i=tasks-context-budget-administration&profile_id={profile_id}', '', '', '', '', 2147483647, '', 1, 0, 4),
 ('bx_tasks_view_context_submenu', 'bx_tasks', 'tasks-context-values', '_bx_tasks_menu_item_title_system_manage_context_pre_values', '_bx_tasks_menu_item_title_manage_context_pre_values', 'page.php?i=tasks-context-values&profile_id={profile_id}', '', '', '', '', 2147483647, '', 1, 0, 5),
-('bx_tasks_view_context_submenu', 'bx_tasks', 'tasks-context-settings', '_bx_tasks_menu_item_title_system_manage_context_settings', '_bx_tasks_menu_item_title_manage_context_settings', 'page.php?i=tasks-context-settings&profile_id={profile_id}', '', '', '', '', 2147483647, '', 1, 0, 6);
+('bx_tasks_view_context_submenu', 'bx_tasks', 'tasks-context-settings', '_bx_tasks_menu_item_title_system_manage_context_settings', '_bx_tasks_menu_item_title_manage_context_settings', 'page.php?i=tasks-context-settings&profile_id={profile_id}', '', '', '', '', 2147483647, '', 1, 0, 6),
+('bx_tasks_view_context_submenu', 'bx_tasks', 'tasks-context-billing', '_bx_tasks_menu_item_title_system_view_context_billing', '_bx_tasks_menu_item_title_view_context_billing', 'page.php?i=tasks-context-billing&profile_id={profile_id}', '', '', '', '', 2147483647, '', 1, 0, 7);
 
 -- MENU: use tools submenu
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
@@ -499,39 +508,39 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('bx_tasks_time_administration', 'checkbox', '_sys_select', '2%', 0, 0, '', 1),
 ('bx_tasks_time_administration', 'author_id', '_bx_tasks_grid_column_title_tm_author_id', '12%', 0, 0, '', 2),
 ('bx_tasks_time_administration', 'context_module', '_bx_tasks_grid_column_title_tm_context_module', '10%', 0, 0, '', 3),
-('bx_tasks_time_administration', 'context_id', '_bx_tasks_grid_column_title_tm_context_id', '12%', 0, 0, '', 4),
-('bx_tasks_time_administration', 'object_id', '_bx_tasks_grid_column_title_tm_object_id', '12%', 0, 0, '', 5),
-('bx_tasks_time_administration', 'text', '_bx_tasks_grid_column_title_tm_text', '11%', 0, 16, '', 6),
-('bx_tasks_time_administration', 'value', '_bx_tasks_grid_column_title_tm_value', '10%', 0, 0, '', 7),
-('bx_tasks_time_administration', 'billable', '_bx_tasks_grid_column_title_tm_billable', '8%', 0, 0, '', 8),
-('bx_tasks_time_administration', 'value_date', '_bx_tasks_grid_column_title_tm_value_date', '15%', 0, 0, '', 9),
+('bx_tasks_time_administration', 'context_id', '_bx_tasks_grid_column_title_tm_context_id', '14%', 0, 0, '', 4),
+('bx_tasks_time_administration', 'object_id', '_bx_tasks_grid_column_title_tm_object_id', '18%', 0, 0, '', 5),
+('bx_tasks_time_administration', 'value', '_bx_tasks_grid_column_title_tm_value_total', '8%', 0, 0, '', 6),
+('bx_tasks_time_administration', 'value_manual', '_bx_tasks_grid_column_title_tm_value_manual', '8%', 0, 0, '', 7),
+('bx_tasks_time_administration', 'value_billed', '_bx_tasks_grid_column_title_tm_value_billed', '8%', 0, 0, '', 8),
+('bx_tasks_time_administration', 'value_date', '_bx_tasks_grid_column_title_tm_value_date', '12%', 0, 0, '', 9),
 ('bx_tasks_time_administration', 'actions', '', '8%', 0, '', '', 10),
 
 ('bx_tasks_time_common', 'checkbox', '_sys_select', '2%', 0, 0, '', 1),
 ('bx_tasks_time_common', 'context_module', '_bx_tasks_grid_column_title_tm_context_module', '10%', 0, 0, '', 2),
-('bx_tasks_time_common', 'context_id', '_bx_tasks_grid_column_title_tm_context_id', '16%', 0, 0, '', 3),
-('bx_tasks_time_common', 'object_id', '_bx_tasks_grid_column_title_tm_object_id', '15%', 0, 0, '', 4),
-('bx_tasks_time_common', 'text', '_bx_tasks_grid_column_title_tm_text', '16%', 0, 32, '', 5),
-('bx_tasks_time_common', 'value', '_bx_tasks_grid_column_title_tm_value', '10%', 0, 0, '', 6),
-('bx_tasks_time_common', 'billable', '_bx_tasks_grid_column_title_tm_billable', '8%', 0, 0, '', 7),
-('bx_tasks_time_common', 'value_date', '_bx_tasks_grid_column_title_tm_value_date', '15%', 0, 0, '', 8),
-('bx_tasks_time_common', 'actions', '', '8%', 0, '', '', 9),
+('bx_tasks_time_common', 'context_id', '_bx_tasks_grid_column_title_tm_context_id', '18%', 0, 0, '', 3),
+('bx_tasks_time_common', 'object_id', '_bx_tasks_grid_column_title_tm_object_id', '22%', 0, 0, '', 4),
+('bx_tasks_time_common', 'value', '_bx_tasks_grid_column_title_tm_value_total', '8%', 0, 0, '', 5),
+('bx_tasks_time_common', 'value_manual', '_bx_tasks_grid_column_title_tm_value_manual', '8%', 0, 0, '', 6),
+('bx_tasks_time_common', 'value_billed', '_bx_tasks_grid_column_title_tm_value_billed', '8%', 0, 0, '', 7),
+('bx_tasks_time_common', 'value_date', '_bx_tasks_grid_column_title_tm_value_date', '14%', 0, 0, '', 8),
+('bx_tasks_time_common', 'actions', '', '10%', 0, '', '', 9),
 
 ('bx_tasks_time_context_administration', 'checkbox', '_sys_select', '2%', 0, 0, '', 1),
 ('bx_tasks_time_context_administration', 'author_id', '_bx_tasks_grid_column_title_tm_author_id', '20%', 0, 0, '', 2),
-('bx_tasks_time_context_administration', 'object_id', '_bx_tasks_grid_column_title_tm_object_id', '22%', 0, 0, '', 3),
-('bx_tasks_time_context_administration', 'text', '_bx_tasks_grid_column_title_tm_text', '15%', 0, 16, '', 4),
-('bx_tasks_time_context_administration', 'value', '_bx_tasks_grid_column_title_tm_value', '10%', 0, 0, '', 5),
-('bx_tasks_time_context_administration', 'billable', '_bx_tasks_grid_column_title_tm_billable', '8%', 0, 0, '', 6),
-('bx_tasks_time_context_administration', 'value_date', '_bx_tasks_grid_column_title_tm_value_date', '15%', 0, 0, '', 7),
+('bx_tasks_time_context_administration', 'object_id', '_bx_tasks_grid_column_title_tm_object_id', '35%', 0, 0, '', 3),
+('bx_tasks_time_context_administration', 'value', '_bx_tasks_grid_column_title_tm_value_total', '8%', 0, 0, '', 4),
+('bx_tasks_time_context_administration', 'value_manual', '_bx_tasks_grid_column_title_tm_value_manual', '8%', 0, 0, '', 5),
+('bx_tasks_time_context_administration', 'value_billed', '_bx_tasks_grid_column_title_tm_value_billed', '8%', 0, 0, '', 6),
+('bx_tasks_time_context_administration', 'value_date', '_bx_tasks_grid_column_title_tm_value_date', '11%', 0, 0, '', 7),
 ('bx_tasks_time_context_administration', 'actions', '', '8%', 0, '', '', 8),
 
 ('bx_tasks_time_context_common', 'checkbox', '_sys_select', '2%', 0, 0, '', 1),
-('bx_tasks_time_context_common', 'object_id', '_bx_tasks_grid_column_title_tm_object_id', '26%', 0, 0, '', 2),
-('bx_tasks_time_context_common', 'text', '_bx_tasks_grid_column_title_tm_text', '21%', 0, 32, '', 3),
-('bx_tasks_time_context_common', 'value', '_bx_tasks_grid_column_title_tm_value', '10%', 0, 0, '', 4),
-('bx_tasks_time_context_common', 'billable', '_bx_tasks_grid_column_title_tm_billable', '8%', 0, 0, '', 5),
-('bx_tasks_time_context_common', 'value_date', '_bx_tasks_grid_column_title_tm_value_date', '15%', 0, 0, '', 6),
+('bx_tasks_time_context_common', 'object_id', '_bx_tasks_grid_column_title_tm_object_id', '40%', 0, 0, '', 2),
+('bx_tasks_time_context_common', 'value', '_bx_tasks_grid_column_title_tm_value_total', '9%', 0, 0, '', 3),
+('bx_tasks_time_context_common', 'value_manual', '_bx_tasks_grid_column_title_tm_value_manual', '9%', 0, 0, '', 4),
+('bx_tasks_time_context_common', 'value_billed', '_bx_tasks_grid_column_title_tm_value_billed', '9%', 0, 0, '', 5),
+('bx_tasks_time_context_common', 'value_date', '_bx_tasks_grid_column_title_tm_value_date', '13%', 0, 0, '', 6),
 ('bx_tasks_time_context_common', 'actions', '', '18%', 0, '', '', 7);
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
@@ -618,4 +627,5 @@ INSERT INTO `sys_alerts` (`unit`, `action`, `handler_id`) VALUES
 -- CRON
 INSERT INTO `sys_cron_jobs` (`name`, `time`, `class`, `file`, `service_call`) VALUES
 ('bx_tasks_publishing', '* * * * *', 'BxTasksCronPublishing', 'modules/boonex/tasks/classes/BxTasksCronPublishing.php', ''),
-('bx_tasks_expiring', '* * * * *', 'BxTasksCronExpiring', 'modules/boonex/tasks/classes/BxTasksCronExpiring.php', '');
+('bx_tasks_expiring', '* * * * *', 'BxTasksCronExpiring', 'modules/boonex/tasks/classes/BxTasksCronExpiring.php', ''),
+('bx_tasks_timers', '0 * * * *', 'BxTasksCronTimers', 'modules/boonex/tasks/classes/BxTasksCronTimers.php', '');

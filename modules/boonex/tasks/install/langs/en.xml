@@ -702,4 +702,22 @@
     <!-- Timeline -->
     <string name="_bx_tasks_alert_action_completed"><![CDATA[completed]]></string>
     <string name="_bx_tasks_alert_action_reopened"><![CDATA[reopened]]></string>
+    <string name="_bx_tasks_txt_time_logged"><![CDATA[Logged]]></string>
+    <string name="_bx_tasks_txt_time_billed"><![CDATA[Billed]]></string>
+    <string name="_bx_tasks_txt_time_original"><![CDATA[Original]]></string>
+    <string name="_bx_tasks_txt_time_by_timer"><![CDATA[Timer]]></string>
+    <string name="_bx_tasks_txt_time_by_hand"><![CDATA[Manual]]></string>
+    <string name="_bx_tasks_grid_column_title_tm_value_total"><![CDATA[Total]]></string>
+    <string name="_bx_tasks_grid_column_title_tm_value_manual"><![CDATA[Manual]]></string>
+    <string name="_bx_tasks_grid_column_title_tm_value_billed"><![CDATA[Billed]]></string>
+    <string name="_bx_tasks_form_time_input_value_billed"><![CDATA[Billed time]]></string>
+    <string name="_bx_tasks_page_title_sys_entries_billing_in_context"><![CDATA[Tasks Billing in Context]]></string>
+    <string name="_bx_tasks_page_title_entries_billing_in_context"><![CDATA[Billing]]></string>
+    <string name="_bx_tasks_page_block_title_system_context_billing_summary"><![CDATA[Context Billed Time by Person]]></string>
+    <string name="_bx_tasks_page_block_title_context_billing_summary"><![CDATA[Billed Time]]></string>
+    <string name="_bx_tasks_menu_item_title_system_view_context_billing"><![CDATA[Billing in Context]]></string>
+    <string name="_bx_tasks_menu_item_title_view_context_billing"><![CDATA[Billing]]></string>
+    <string name="_bx_tasks_alert_action_timer_stopped_personal"><![CDATA[Pause a timer that ran for too long]]></string>
+    <string name="_bx_tasks_txt_notification_timer_stopped"><![CDATA[The timer of <b class="bx-ntfs-content-profile">{entry_author_name}</b> on <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} was paused: it ran for too long]]></string>
+    <string name="_bx_tasks_txt_notification_timer_stopped_in_context"><![CDATA[The timer of <b class="bx-ntfs-content-profile">{entry_author_name}</b> on <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} in <b class="bx-ntfs-content-profile">{owner_name}</b> was paused: it ran for too long]]></string>
 </resources>

@@ -57,6 +57,7 @@ class BxBaseStudioFormsGroupsRoles extends BxDolStudioFormsGroupsRoles
             $aAllActions = $this->_getDefaultActionsArray(0);
             foreach ($aAllActions as $sModule => $aActions)
                 if (!isset($aData[$sModule])) $aData[$sModule] = [];
+            $this->_markTasksRights($aData);
 
             $mixedResult = $oForm->insert([
                 'LKey2' => '',
@@ -115,6 +116,7 @@ class BxBaseStudioFormsGroupsRoles extends BxDolStudioFormsGroupsRoles
             $aAllActions = $this->_getDefaultActionsArray($aItem['Value']);
             foreach ($aAllActions as $sModule => $aActions)
                 if (!isset($aData[$sModule])) $aData[$sModule] = [];
+            $this->_markTasksRights($aData);
 
             $mixedResult = $oForm->update($iId, ['Data' => serialize($aData)]);
             if(is_numeric($mixedResult))  {
@@ -219,7 +221,7 @@ class BxBaseStudioFormsGroupsRoles extends BxDolStudioFormsGroupsRoles
             foreach ($aActionsList as $sAction => $bAllowedByDefault) {
                 $bChecked = false;
                 // if pemission is not set explicitly then consider the default value
-                if ((empty($aRole) || !is_array($aRole['Data']) || !isset($aRole['Data'][$sModule])) && $bAllowedByDefault) $bChecked = true;
+                if ((empty($aRole) || !is_array($aRole['Data']) || !isset($aRole['Data'][$sModule]) || $this->_isTasksRightUnsaved($aRole['Data'], $sModule, $sAction)) && $bAllowedByDefault) $bChecked = true;
 
                 // if pemission is set explicitly then use the value set
                 if (!empty($aRole) && is_array($aRole['Data']) && isset($aRole['Data'][$sModule]) && isset($aRole['Data'][$sModule][$sAction]) && $aRole['Data'][$sModule][$sAction]) $bChecked = true;
@@ -405,7 +407,33 @@ class BxBaseStudioFormsGroupsRoles extends BxDolStudioFormsGroupsRoles
             }
         }
 
+        // tasks: time tracking, the defaults are the same as BxTasksModule::getTimeRights uses
+        if (isset($aDefaultActions['bx_tasks'])) {
+            $aDefaultActions['bx_tasks'] = array_merge($aDefaultActions['bx_tasks'], [
+                'time_log' => 1,
+                'time_view_logged_any' => $iRole == BX_DOL_MOD_GROUPS_ROLE_ADMINISTRATOR,
+                'time_view_billed' => $iRole == BX_DOL_MOD_GROUPS_ROLE_ADMINISTRATOR,
+                'time_edit_billed' => $iRole == BX_DOL_MOD_GROUPS_ROLE_ADMINISTRATOR,
+                'manage_properties' => $iRole == BX_DOL_MOD_GROUPS_ROLE_ADMINISTRATOR,
+            ]);
+        }
+
         return $aDefaultActions;
+    }
+
+    /**
+     * Roles saved before the tasks actions existed keep `bx_tasks` without them, which would read as "off".
+     * The mark tells a role saved with them from such a role, whose tasks actions take their defaults.
+     */
+    protected function _markTasksRights(&$aData)
+    {
+        if (isset($aData['bx_tasks']) && is_array($aData['bx_tasks']))
+            $aData['bx_tasks']['time_rights_saved'] = 1;
+    }
+
+    protected function _isTasksRightUnsaved($aData, $sModule, $sAction)
+    {
+        return $sModule == 'bx_tasks' && in_array($sAction, ['time_log', 'time_view_logged_any', 'time_view_billed', 'time_edit_billed', 'manage_properties']) && empty($aData[$sModule]['time_rights_saved']);
     }
 
     protected function _getAvailableSetValue($sList)

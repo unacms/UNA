@@ -8,22 +8,26 @@ import Link from 'app/ui/atoms/link';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from 'app/ui/atoms/accordion';
 import Profile from 'app/ui/molecules/profile/profile';
 import { fetcher } from 'app/lib/fetcher';
-import { decodeTextNode } from 'app/lib/util';
+import { cn, decodeTextNode } from 'app/lib/util';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { formatTaskMinutes } from 'app/lib/tasks-meta';
 
 const REFRESH_ACTIONS = ['log', 'log-all'];
 
+/** Only the time the viewer may see comes: Logged (`minutes`, `original`), Billed (`billed`) or both. */
 type Totals = {
-    minutes: number;
-    billable: number;
-    non_billable: number;
+    minutes?: number;
+    /** The part of `minutes` logged from timers; the rest was entered by hand. */
+    timer?: number;
+    billed?: number;
 };
 
-type SummaryLog = {
+type SummaryLog = Totals & {
     id: number;
-    minutes: number;
-    billable: number;
+    /** The time first logged, when the Logged time was changed later. */
+    original?: number | null;
+    /** Logged from a timer, or entered by hand. */
+    by_timer?: boolean;
     date: number;
     text?: string;
 };
@@ -47,11 +51,14 @@ type SummaryPeriod = Totals & {
     people?: SummaryPerson[];
 };
 
-type Labels = { total?: string; billable?: string; non_billable?: string; empty?: string };
+type Labels = { total?: string; logged?: string; billed?: string; original?: string; by_timer?: string; by_hand?: string; empty?: string };
+
+type Columns = { logged?: boolean; billed?: boolean };
 
 type SummaryData = {
     periods?: SummaryPeriod[];
     default_period?: string;
+    columns?: Columns;
     labels?: Labels;
     request_url?: string;
 };
@@ -60,6 +67,11 @@ type TasksTimeSummaryProps = {
     data?: SummaryData;
     blockWrapperProps?: any;
 };
+
+/** Rows show Logged time; those who see Billed time only (clients) get that instead. */
+function mainMinutes(totals: Totals, columns: Columns) {
+    return (columns.logged ? totals.minutes : totals.billed) || 0;
+}
 
 function Metric({ value, label }: { value: string; label?: string }) {
     return (
@@ -70,42 +82,80 @@ function Metric({ value, label }: { value: string; label?: string }) {
     );
 }
 
-/** Green is billable, amber non-billable; the whole bar's length is relative to `maxMinutes`. */
-function SplitBar({ totals, maxMinutes }: { totals: Totals; maxMinutes: number }) {
-    const share = (minutes: number) => (maxMinutes > 0 ? `${(minutes / maxMinutes) * 100}%` : '0%') as `${number}%`;
+/**
+ * The bar's length is relative to `maxMinutes`. Logged time is split: solid for timers, lighter for time added by hand
+ * (time taken away by hand shortens the solid part).
+ */
+function TimeBar({ totals, columns, maxMinutes }: { totals: Totals; columns: Columns; maxMinutes: number }) {
+    const share = (value: number) => (maxMinutes > 0 ? `${Math.min(100, (value / maxMinutes) * 100)}%` : '0%') as `${number}%`;
+    const minutes = mainMinutes(totals, columns);
+    const timer = columns.logged && totals.timer != null ? Math.min(totals.timer, minutes) : minutes;
 
     return (
         <Row className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-            <View className="h-full bg-green" style={{ width: share(totals.billable) }} />
-            <View className="h-full bg-alert-warning" style={{ width: share(totals.non_billable) }} />
+            <View className="h-full bg-green" style={{ width: share(timer) }} />
+            <View className="h-full bg-green/40" style={{ width: share(minutes - timer) }} />
         </Row>
     );
 }
 
-function SplitText({ totals, labels }: { totals: Totals; labels: Labels }) {
+/**
+ * Under the Logged time: its timer part, the manual part when there is one (it stands out),
+ * and, for those who see both, the Billed time (it stands out when it differs from the Logged one).
+ */
+function SplitText({ totals, columns, labels }: { totals: Totals; columns: Columns; labels: Labels }) {
+    if (!columns.logged) return null;
+
+    const minutes = totals.minutes || 0;
+    // Manual is what hands added to or took from the timers' time: entries and changes, + or -.
+    const manual = minutes - (totals.timer || 0);
+    const billed = totals.billed || 0;
+
+    // A part that is zero (or the same as Logged) says nothing.
+    const parts = [
+        totals.timer ? { key: 'timer', text: `${labels.by_timer} ${formatTaskMinutes(totals.timer)}`, className: '' } : null,
+        totals.timer != null && manual !== 0
+            ? { key: 'manual', text: `${labels.by_hand} ${manual < 0 ? '−' : '+'}${formatTaskMinutes(Math.abs(manual))}`, className: 'font-medium text-foreground' }
+            : null,
+        // Billed always shows for those who see both; it stands out when it differs from the Logged time.
+        columns.billed
+            ? { key: 'billed', text: `${labels.billed} ${formatTaskMinutes(billed)}`, className: billed !== minutes ? 'font-medium text-primary' : '' }
+            : null,
+    ].filter(Boolean) as { key: string; text: string; className: string }[];
+    if (!parts.length) return null;
+
     return (
         <Text numberOfLines={1} className="text-xs text-muted-foreground">
-            {`${labels.billable} ${formatTaskMinutes(totals.billable)} · ${labels.non_billable} ${formatTaskMinutes(totals.non_billable)}`}
+            {parts.map((part, index) => (
+                <Text key={part.key} className={cn('text-xs', part.className || 'text-muted-foreground')}>
+                    {index ? ' · ' : ''}{part.text}
+                </Text>
+            ))}
         </Text>
     );
 }
 
-function LogRow({ log, labels }: { log: SummaryLog; labels: Labels }) {
+function LogRow({ log, columns, labels }: { log: SummaryLog; columns: Columns; labels: Labels }) {
     const { i18n } = useTranslation();
     // `value_date` is a date picked in UTC, so it must not shift a day with the viewer's time zone.
     const date = log.date
         ? new Date(log.date * 1000).toLocaleDateString(i18n.language, { timeZone: 'UTC', day: 'numeric', month: 'short', year: 'numeric' })
         : '';
 
+    // The same Timer · Manual ± split as the person and task rows: a timer's entry is its first logged time plus the changes.
+    const totals: Totals = {
+        minutes: log.minutes,
+        timer: log.by_timer == null ? undefined : (log.by_timer ? (log.original ?? log.minutes ?? 0) : 0),
+        billed: log.billed,
+    };
+
     return (
         <View className="gap-0.5">
             <Row className="items-center gap-2">
                 <Text numberOfLines={1} className="flex-auto min-w-0 text-sm text-foreground">{date}</Text>
-                {log.billable ? null : (
-                    <Text className="flex-none text-xs text-alert-warning">{labels.non_billable}</Text>
-                )}
-                <Text className="flex-none text-sm font-medium tabular-nums text-foreground">{formatTaskMinutes(log.minutes)}</Text>
+                <Text className="flex-none text-sm font-medium tabular-nums text-foreground">{formatTaskMinutes(mainMinutes(log, columns))}</Text>
             </Row>
+            <SplitText totals={totals} columns={columns} labels={labels} />
             {log.text ? (
                 <Text className="text-xs text-muted-foreground">{decodeTextNode(log.text)}</Text>
             ) : null}
@@ -113,7 +163,9 @@ function LogRow({ log, labels }: { log: SummaryLog; labels: Labels }) {
     );
 }
 
-function TaskRow({ task, labels, maxMinutes }: { task: SummaryTask; labels: Labels; maxMinutes: number }) {
+function TaskRow({ task, columns, labels, maxMinutes }: { task: SummaryTask; columns: Columns; labels: Labels; maxMinutes: number }) {
+    const minutes = mainMinutes(task, columns);
+
     return (
         <View className="gap-1">
             <Row className="items-center gap-3">
@@ -122,18 +174,20 @@ function TaskRow({ task, labels, maxMinutes }: { task: SummaryTask; labels: Labe
                         <Text numberOfLines={1} className="text-sm font-medium text-foreground">{decodeTextNode(task.title)}</Text>
                     </Link>
                 </View>
-                <Text className="flex-none text-sm font-medium tabular-nums text-foreground">{formatTaskMinutes(task.minutes)}</Text>
+                <Text className="flex-none text-sm font-medium tabular-nums text-foreground">{formatTaskMinutes(minutes)}</Text>
             </Row>
-            <SplitBar totals={task} maxMinutes={maxMinutes} />
-            <SplitText totals={task} labels={labels} />
+            <TimeBar totals={task} columns={columns} maxMinutes={maxMinutes} />
+            <SplitText totals={task} columns={columns} labels={labels} />
         </View>
     );
 }
 
-function PersonItem({ person, labels, maxMinutes }: { person: SummaryPerson; labels: Labels; maxMinutes: number }) {
+function PersonItem({ person, columns, labels, maxMinutes }: { person: SummaryPerson; columns: Columns; labels: Labels; maxMinutes: number }) {
     const profile = person.profile || {};
     const tasks = person.tasks || [];
     const logs = person.logs || [];
+    const minutes = mainMinutes(person, columns);
+    const firstTask = tasks[0];
 
     return (
         <AccordionItem value={String(profile.id)}>
@@ -147,25 +201,26 @@ function PersonItem({ person, labels, maxMinutes }: { person: SummaryPerson; lab
                             displaySize="xs"
                         />
                         <Text numberOfLines={1} className="flex-auto min-w-0 text-sm font-medium text-foreground">{profile.display_name}</Text>
-                        <Text className="flex-none text-sm font-medium tabular-nums text-foreground">{formatTaskMinutes(person.minutes)}</Text>
+                        <Text className="flex-none text-sm font-medium tabular-nums text-foreground">{formatTaskMinutes(minutes)}</Text>
                     </Row>
-                    <SplitBar totals={person} maxMinutes={maxMinutes} />
-                    <SplitText totals={person} labels={labels} />
+                    <TimeBar totals={person} columns={columns} maxMinutes={maxMinutes} />
+                    <SplitText totals={person} columns={columns} labels={labels} />
                 </View>
             </AccordionTrigger>
-            <AccordionContent innerClassName="gap-3 pb-3 pt-1">
+            {/* Indented under the person: in from the avatar on the left, ending with the person's bar (before the chevron) on the right. */}
+            <AccordionContent innerClassName="gap-3 pb-3 pt-1 pl-8 pr-9">
                 {tasks.map((task) => (
-                    <TaskRow key={task.id} task={task} labels={labels} maxMinutes={tasks[0]?.minutes || 0} />
+                    <TaskRow key={task.id} task={task} columns={columns} labels={labels} maxMinutes={firstTask ? mainMinutes(firstTask, columns) : 0} />
                 ))}
                 {logs.map((log) => (
-                    <LogRow key={log.id} log={log} labels={labels} />
+                    <LogRow key={log.id} log={log} columns={columns} labels={labels} />
                 ))}
             </AccordionContent>
         </AccordionItem>
     );
 }
 
-/** Logged time by person, billable and non-billable, on a task or a project (`bx_tasks:get_block_time_summary*`). */
+/** Logged and Billed time by person, on a task or a project, as the viewer's role allows (`bx_tasks:get_block_time_summary*`). */
 export default function TasksTimeSummary({ data, blockWrapperProps }: TasksTimeSummaryProps) {
     const [summary, setSummary] = useState(data);
 
@@ -196,21 +251,27 @@ export default function TasksTimeSummary({ data, blockWrapperProps }: TasksTimeS
 
     const periods = Array.isArray(summary?.periods) ? summary.periods : [];
     const labels = summary?.labels || {};
+    // Older servers send no columns: their time is Logged time.
+    const columns: Columns = summary?.columns || { logged: true };
     const [periodName, setPeriodName] = useState(summary?.default_period);
 
     const period = periods.find((item) => item.name === periodName) || periods[0];
     if (!period) return null;
 
     const people = Array.isArray(period.people) ? period.people : [];
+    const firstPerson = people[0];
 
     return (
         <BlockWrapper {...blockWrapperProps}>
             <View className="w-full gap-4">
                 <Row className="flex-wrap items-center justify-between gap-3">
                     <Row className="flex-wrap items-center gap-x-6 gap-y-2">
-                        <Metric value={formatTaskMinutes(period.minutes)} label={labels.total} />
-                        <Metric value={formatTaskMinutes(period.billable)} label={labels.billable} />
-                        <Metric value={formatTaskMinutes(period.non_billable)} label={labels.non_billable} />
+                        {columns.logged ? (
+                            <Metric value={formatTaskMinutes(period.minutes || 0)} label={labels.logged || labels.total} />
+                        ) : null}
+                        {columns.billed ? (
+                            <Metric value={formatTaskMinutes(period.billed || 0)} label={labels.billed} />
+                        ) : null}
                     </Row>
                     {periods.length > 1 ? (
                         <NeoButtonGroup controlSize="small" accessibilityLabel={labels.total}>
@@ -234,8 +295,9 @@ export default function TasksTimeSummary({ data, blockWrapperProps }: TasksTimeS
                             <PersonItem
                                 key={person.profile?.id}
                                 person={person}
+                                columns={columns}
                                 labels={labels}
-                                maxMinutes={people[0]?.minutes || 0}
+                                maxMinutes={firstPerson ? mainMinutes(firstPerson, columns) : 0}
                             />
                         ))}
                     </Accordion>

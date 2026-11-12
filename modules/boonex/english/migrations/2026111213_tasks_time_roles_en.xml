@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The time and properties actions of the Tasks module in the context roles (Studio > Forms > Groups Roles). -->
+<resources name="en" flag="gb" title="English" category="System">
+	<string_add name="_adm_form_txt_groups_role_time_log"><![CDATA[Log time]]></string_add>
+	<string_add name="_adm_form_txt_groups_role_time_view_logged_any"><![CDATA[View logged time of everybody]]></string_add>
+	<string_add name="_adm_form_txt_groups_role_time_view_billed"><![CDATA[View billed time]]></string_add>
+	<string_add name="_adm_form_txt_groups_role_time_edit_billed"><![CDATA[Edit billed time]]></string_add>
+	<string_add name="_adm_form_txt_groups_role_manage_properties"><![CDATA[Manage properties]]></string_add>
+</resources>
