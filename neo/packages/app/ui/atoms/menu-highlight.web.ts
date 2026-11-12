@@ -3,12 +3,18 @@ import { useCallback, useRef } from 'react';
 /** The list class the highlight's CSS hangs on (design/styles/global.web.css). */
 export const MENU_HIGHLIGHT_CLASS = 'neo-menu-highlight';
 
+/**
+ * The same highlight for a bar of tabs (the header's main menu), whose row places children of its own: this class
+ * leaves the children's positions alone. The row itself has to be positioned.
+ */
+export const MENU_HIGHLIGHT_BAR_CLASS = 'neo-menu-highlight-bar';
+
 const INTERACTIVE = 'a, [tabindex]';
 
 /**
  * One highlight that slides under a menu's items to the one under the pointer, or the one focused from the
  * keyboard, as UNA's popup menus do (bx_menu_highlight). Returns a ref for the list, whose children are the items;
- * the list also needs MENU_HIGHLIGHT_CLASS. Touch has no hover: taps don't move it. When the list's rows or its
+ * the list also needs MENU_HIGHLIGHT_CLASS (or MENU_HIGHLIGHT_BAR_CLASS). Touch has no hover: taps don't move it. When the list's rows or its
  * width change under a lit item (a group opens, another closes above it), the highlight is put back on that item
  * at once, as the item itself moved. Native has no hover and gets a no-op (menu-highlight.ts).
  */
