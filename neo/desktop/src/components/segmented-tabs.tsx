@@ -78,7 +78,8 @@ export function fittingTabs<T extends string>(
  * tab into the panel, past a More button when they don't all fit: More lists the tabs left out
  * as a menu, and the chosen one takes a place in the row (the selected tab is always shown).
  * The arrows still go through every tab, shown or not. When the shown tab is none of them, the
- * first one is the row's tab stop.
+ * first one is the row's tab stop, and takes focus when the tab that had it is taken away (a
+ * search tab the site turned off): focus is not left on nothing, where the arrows do nothing.
  */
 export function SegmentedTabs<T extends string>({ label, values, labels, current, onChange, panelId, tabId, counts, className, fit: ownFit, look: ownLook }: Props<T>) {
     const around = useContext(TabsLookContext);
@@ -128,6 +129,21 @@ export function SegmentedTabs<T extends string>({ label, values, labels, current
     const stray = !values.includes(current);
     const visible = fit && (stray || shown.includes(current)) ? shown.filter((v) => values.includes(v)) : values;
     const hidden = values.filter((v) => !visible.includes(v));
+
+    // The tab that has focus, by id. A tab taken out of the row while it has focus leaves focus
+    // on the document (no blur is sent for it): the row's tab stop takes it then. Focus that
+    // went elsewhere first (the search field, the results) is left where it is.
+    const focused = useRef<string | null>(null);
+    const row = visible.join('|');
+    useLayoutEffect(() => {
+        const id = focused.current;
+        const el = wrap.current;
+        if (!id || !el || el.querySelector(`#${CSS.escape(id)}`)) return;
+        focused.current = null;
+        const active = document.activeElement;
+        if (active && active !== document.body) return;
+        el.querySelector<HTMLElement>('[role="tab"][tabindex="0"]')?.focus();
+    }, [row]);
 
     const select = (v: T) => {
         onChange(v);
@@ -185,7 +201,17 @@ export function SegmentedTabs<T extends string>({ label, values, labels, current
 
     return (
         <div ref={wrap} className={`${look === 'pills' ? 'tab-pills' : 'segmented'} segmented-fit${className ? ` ${className}` : ''}`}>
-            <div className="segmented-tabs" role="tablist" aria-label={label} onKeyDown={onKeyDown}>
+            <div
+                className="segmented-tabs"
+                role="tablist"
+                aria-label={label}
+                onKeyDown={onKeyDown}
+                onFocus={(e) => (focused.current = e.target.closest('[role="tab"]')?.id ?? null)}
+                // a tab that is being taken away keeps its mark: the effect above moves focus on
+                onBlur={(e) => {
+                    if (e.target.isConnected) focused.current = null;
+                }}
+            >
                 {visible.map((v) => (
                     <button
                         key={v}

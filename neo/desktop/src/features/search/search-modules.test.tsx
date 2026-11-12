@@ -389,6 +389,35 @@ describe('Search’s module tabs', () => {
         await expect(client.refetchQueries({ queryKey: ['polls'] }, { throwOnError: true })).resolves.toBeUndefined();
     });
 
+    it('moves focus to the first tab when the focused tab is taken away, and leaves focus in the field', async () => {
+        const { history } = renderSearch({ list: searchRoute('lily'), detail: null }, { off: ['/search/polls'] });
+        // reached with the keyboard: the tab has focus when its search answers 404
+        const polls = await screen.findByRole('tab', { name: 'Polls' });
+        polls.focus();
+        fireEvent.click(polls);
+        expect(document.activeElement).toBe(screen.getByRole('tab', { name: 'Polls' }));
+        expect(await screen.findByText('This network has no polls.')).toBeTruthy();
+        expect(tabs().queryByRole('tab', { name: /^Polls/ })).toBeNull();
+        const first = tabs().getAllByRole('tab')[0]!;
+        expect(first.textContent).toBe('People 1');
+        expect(document.activeElement).toBe(first);
+        // the arrows switch tabs again
+        fireEvent.keyDown(first, { key: 'ArrowRight' });
+        expect(routeToPath(history.current)).toBe('/search?q=lily');
+        fireEvent.keyDown(document.activeElement!, { key: 'ArrowRight' });
+        expect(routeToPath(history.current)).toBe('/search?q=lily&tab=posts');
+        expect(document.activeElement).toBe(screen.getByRole('tab', { selected: true }));
+
+        // focus in the search field stays there
+        cleanup();
+        renderSearch({ list: searchRoute('lily'), detail: null }, { off: ['/search/polls'] });
+        const field = screen.getAllByRole('searchbox')[0]!;
+        field.focus();
+        fireEvent.click(await screen.findByRole('tab', { name: 'Polls' }));
+        expect(await screen.findByText('This network has no polls.')).toBeTruthy();
+        expect(document.activeElement).toBe(field);
+    });
+
     it('fetches past empty pages for the shown tab only, a restored one waiting until it is opened', async () => {
         // kept from the last session: one page with nothing the viewer may see, and a next one
         const restored = (client: QueryClient) => client.setQueryData(moduleSearchKey('files', 'lily'), { pages: [{ items: [], next_cursor: 'g2' }], pageParams: [undefined] });

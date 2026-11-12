@@ -126,3 +126,42 @@ describe('SegmentedTabs with fit', () => {
         expect(onChange).toHaveBeenCalledWith('videos');
     });
 });
+
+describe('SegmentedTabs when a tab is taken away', () => {
+    const LABELS = { posts: 'Posts', members: 'Members', events: 'Events', videos: 'Videos', photos: 'Photos', about: 'About' };
+    const row = (values: readonly Tab[], onChange = vi.fn()) => (
+        <>
+            <input aria-label="Search" />
+            <SegmentedTabs label="Results" values={values} labels={LABELS} current="videos" onChange={onChange} panelId="panel" tabId={(t) => `tab-${t}`} />
+        </>
+    );
+    const left = TABS.filter((t) => t !== 'videos');
+
+    it('moves focus from the removed tab to the first one, where the arrows work again', () => {
+        const onChange = vi.fn();
+        const { rerender } = render(row(TABS, onChange));
+        screen.getByRole('tab', { name: 'Videos' }).focus();
+        rerender(row(left, onChange));
+        const first = screen.getByRole('tab', { name: 'Posts' });
+        expect(first.tabIndex).toBe(0);
+        expect(document.activeElement).toBe(first);
+        fireEvent.keyDown(first, { key: 'ArrowLeft' });
+        expect(onChange).toHaveBeenCalledWith('about');
+    });
+
+    it('leaves focus that was not on the removed tab where it is', () => {
+        const { rerender } = render(row(TABS));
+        // in a field outside the row
+        const field = screen.getByRole('textbox', { name: 'Search' });
+        screen.getByRole('tab', { name: 'Videos' }).focus();
+        field.focus();
+        rerender(row(left));
+        expect(document.activeElement).toBe(field);
+
+        // on nothing: it was never in the row
+        cleanup();
+        const again = render(row(TABS));
+        again.rerender(row(left));
+        expect(document.activeElement).toBe(document.body);
+    });
+});
