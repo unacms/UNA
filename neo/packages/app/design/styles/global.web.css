@@ -922,13 +922,14 @@ webview {
 }
 
 /* The header's tabs: the highlight has their rows' corners (`rounded-xl`, menu-items/topmenu.tsx), and a tab's own
- * hover fill gives way to it; the pressed and the open (More) fills stay. */
+ * hover fill gives way to it; the pressed and the open (More) fills stay. The row (`h-12`) is the tab's child, or one
+ * level deeper where a tooltip or a menu trigger wraps it (icon-only tabs, More). */
 .neo-menu-highlight-bar::before {
     border-radius: var(--radius-xl);
 }
 
-.neo-menu-highlight-bar > * > .group > :hover:not(:active):not(.bg-accent),
-.neo-menu-highlight-bar > * > .group:hover > :not(:active):not(.bg-accent) {
+.neo-menu-highlight-bar > * > .group:hover > .h-12:not(:active):not(.bg-accent),
+.neo-menu-highlight-bar > * > .group:hover > * > .h-12:not(:active):not(.bg-accent) {
     background-color: transparent;
 }
 

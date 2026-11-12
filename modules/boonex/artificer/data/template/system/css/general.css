@@ -421,6 +421,7 @@ html.dark .bx-menu-object-sys_profile_stats.bx-menu-highlight-list::before {
     }
 }
 #bx-toolbar .bx-menu-main.bx-menu-highlight-list > li:not(.bx-menu-tab-active) > .bx-stl-mil:hover,
-.bx-menu-object-sys_homepage.bx-menu-highlight-list > li > a:hover {
+.bx-menu-object-sys_homepage.bx-menu-highlight-list > li > a:hover,
+.bx-menu-object-sys_profile_stats.bx-menu-highlight-list > li:not(.bx-menu-tab-active) > .bx-stl-mil-wo-gaps:hover {
     background-color: transparent;
 }
