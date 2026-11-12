@@ -793,15 +793,11 @@
     }
     /* Their edge is NEO's outline: a light hairline inside the surface and one soft drop under it, never a border. Studio draws
        its own (.bx-std rules below). */
+    /* A Tailwind shadow at a single class's weight (:where adds none), so a card's own hover:shadow-lg still lifts it. */
     .bx-def-border-block,
-    .bx-def-color-bg-box:not(.bx-std .bx-def-color-bg-box),
-    .bx-def-box:not(.bx-std .bx-def-box) {
-        box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.5), 0 2px 8px -2px rgb(0 0 0 / 0.1);
-    }
-    .dark .bx-def-border-block,
-    .dark .bx-def-color-bg-box:not(.bx-std .bx-def-color-bg-box),
-    .dark .bx-def-box:not(.bx-std .bx-def-box) {
-        box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 2px 8px -2px rgb(0 0 0 / 0.2);
+    .bx-def-color-bg-box:where(:not(.bx-std *)),
+    .bx-def-box:where(:not(.bx-std *)) {
+        @apply shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5),0_2px_8px_-2px_rgb(0_0_0/0.1)] dark:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_2px_8px_-2px_rgb(0_0_0/0.2)];
     }
     .bx-std .bx-def-box,
     .bx-popup-border {
