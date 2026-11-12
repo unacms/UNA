@@ -363,3 +363,45 @@ html.dark {
 #bx-toolbar .bx-menu-main .bx-popup .bx-menu-item-more-popup .bx-stl-mii > * {
     margin: 0;
 }
+
+/* The header's main menu: one highlight slides under the tabs to the one the pointer is on (bx_menu_highlight_list in
+   functions.js), as in popup menus, in the tabs' own hover colour, and the tabs don't light up on their own. It is the
+   row's ::before, a capsule like the tabs. The current tab keeps its own background. */
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list,
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list > li {
+    position: relative;
+}
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--bx-menu-highlight-w, 0);
+    height: var(--bx-menu-highlight-h, 0);
+
+    border-radius: 9999px;
+    background-color: rgba(228, 228, 231, 0.5); /* gray-200 at 50%, the tabs' hover */
+    opacity: 0;
+    pointer-events: none;
+
+    transform: translate(var(--bx-menu-highlight-x, 0), var(--bx-menu-highlight-y, 0));
+    transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1), width 150ms cubic-bezier(0.22, 1, 0.36, 1), height 150ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+html.dark #bx-toolbar .bx-menu-main.bx-menu-highlight-list::before {
+    background-color: rgba(63, 63, 70, 0.5); /* gray-700 at 50% */
+}
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list.bx-menu-highlight-on::before {
+    opacity: 1;
+}
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list.bx-menu-highlight-jump::before {
+    transition: opacity 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+    #bx-toolbar .bx-menu-main.bx-menu-highlight-list::before {
+        transition: opacity 150ms cubic-bezier(0, 0, 0.2, 1);
+    }
+}
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list > li:not(.bx-menu-tab-active) > .bx-stl-mil:hover {
+    background-color: transparent;
+}
