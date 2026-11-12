@@ -23,7 +23,7 @@ import { AlbumPane } from './album-pane';
 import { NewAlbum, NewPhotos } from './new-media';
 import { PhotoGrid } from './photo-grid';
 import { attachmentsReducer } from '../compose/attachments';
-import { addedText, type Album, albumCardText, gridMove, itemsText, type Photo, tileName, tileSrc, viewerLabel } from './photos';
+import { addedText, type Album, albumCardText, gridMove, itemsText, type Photo, photoListKey, photoSiblings, tileName, tileSrc, viewerLabel } from './photos';
 
 vi.mock('../../lib/native', async (importOriginal) => ({ ...(await importOriginal<typeof import('../../lib/native')>()), confirmAction: vi.fn(async () => true) }));
 
@@ -149,7 +149,25 @@ describe('what photos and albums show', () => {
         expect(viewerLabel({ context: '70' }, p, 'Makers club')).toBe('photos in Makers club');
         expect(viewerLabel(null, p)).toBe('Ridge');
         expect(viewerLabel(null, photo('2', ''))).toBe('the photo');
+        expect(viewerLabel({ search: 'lily' }, p)).toBe('photos matching “lily”');
         expect([addedText(3, 8), addedText(1, 2), addedText(0, 2)]).toEqual(['3 of 8 photos were added.', '1 of 2 photos was added.', 'No photos were added.']);
+    });
+
+    it('steps through the list a photo is in before a search’s results that hold it', () => {
+        const client = new QueryClient();
+        const pages = (...items: Photo[]) => ({ pages: [{ items, next_cursor: null }], pageParams: [undefined] });
+        // the search came first (an earlier one, or one restored from the last session)
+        client.setQueryData(['photos', 'list', 'search', 'lily'], pages(photo('3', 'Lily'), photo('9', 'Lily pond'), photo('8', 'Water lily')));
+        client.setQueryData(photoListKey({ all: true }), pages(photo('1', 'Ridge'), photo('3', 'Lily')));
+        const fromGrid = photoSiblings(client, '3');
+        expect(fromGrid.photos.map((x) => x.id)).toEqual(['1', '3']);
+        expect(fromGrid.of).toEqual({ all: true });
+        // only the search holds this one: its results, called by what was searched
+        const fromSearch = photoSiblings(client, '9');
+        expect(fromSearch.photos.map((x) => x.id)).toEqual(['3', '9', '8']);
+        expect(fromSearch.of).toEqual({ search: 'lily' });
+        expect(viewerLabel(fromSearch.of, photo('9', 'Lily pond'))).toBe('photos matching “lily”');
+        expect(photoSiblings(client, '77')).toEqual({ photos: [], of: null });
     });
 
     it('lets a tray take as many as its request does', () => {
