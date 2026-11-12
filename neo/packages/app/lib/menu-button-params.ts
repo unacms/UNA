@@ -36,32 +36,44 @@ export function withMenuButtonParams(
     menu: { button_style?: unknown; button_size?: unknown } | null | undefined
 ): Record<string, any> {
     const base = params || {};
-    const una = typeof menu?.button_style === 'string' ? UNA_MENU_BUTTON_STYLES[menu.button_style] : undefined;
-    const unaSize = typeof menu?.button_size === 'string' && UNA_MENU_BUTTON_SIZES.has(menu.button_size) ? menu.button_size : undefined;
-    const {
-        button_style_default: defaultStyle,
-        button_variant_default: defaultVariant,
-        button_size_default: defaultSize,
-        ...rest
-    } = base;
+    const add = { ...styleParams(base, menu), ...sizeParams(base, menu) };
+    const hasDefaults = DEFAULT_KEYS.some((key) => key in base);
+    if (!hasDefaults && Object.keys(add).length === 0) return base;
 
-    const fixedStyle = base.button_style != null || base.button_variant != null;
-    const style = fixedStyle ? undefined : (una?.style ?? defaultStyle ?? undefined);
-    const variant = fixedStyle || style != null ? undefined : (defaultVariant ?? undefined);
-    const size = base.button_size != null ? undefined : (unaSize ?? defaultSize ?? undefined);
-
-    const hasDefaults = 'button_style_default' in base || 'button_variant_default' in base || 'button_size_default' in base;
-    if (style == null && variant == null && size == null && !hasDefaults) return base;
-
-    const result = hasDefaults ? rest : { ...base };
-    if (style != null) {
-        result.button_style = style;
-        result.button_primary_style ??= una ? una.primaryStyle : primaryStyleFor(style);
-        // Items that draw through the legacy adapter (likes, favorites, reports…) read `button_variant`, which
-        // takes a NeoButton style too: without it they would keep the app's default look in a menu UNA styles.
-        if (una) result.button_variant = una.style;
-    }
-    if (variant != null) result.button_variant = variant;
-    if (size != null) result.button_size = size;
+    const result: Record<string, any> = { ...base, ...add };
+    for (const key of DEFAULT_KEYS) delete result[key];
     return result;
+}
+
+/** The call site's keys for a menu UNA leaves on Automatic. They are settled here and do not stay in the result. */
+const DEFAULT_KEYS = ['button_style_default', 'button_variant_default', 'button_size_default'] as const;
+
+/** The style params to set: none when the call site fixes a style, else UNA's, else the call site's default. */
+function styleParams(base: Record<string, any>, menu: { button_style?: unknown } | null | undefined): Record<string, any> {
+    if (base.button_style != null || base.button_variant != null) return {};
+
+    const una = typeof menu?.button_style === 'string' ? UNA_MENU_BUTTON_STYLES[menu.button_style] : undefined;
+    if (una) {
+        return {
+            button_style: una.style,
+            // Items that draw through the legacy adapter (likes, favorites, reports…) read `button_variant`, which
+            // takes a NeoButton style too: without it they would keep the app's default look in a menu UNA styles.
+            button_variant: una.style,
+            button_primary_style: base.button_primary_style ?? una.primaryStyle,
+        };
+    }
+
+    const style = base.button_style_default;
+    if (style != null) return { button_style: style, button_primary_style: base.button_primary_style ?? primaryStyleFor(style) };
+
+    return base.button_variant_default == null ? {} : { button_variant: base.button_variant_default };
+}
+
+/** The size param to set: none when the call site fixes a size, else UNA's, else the call site's default. */
+function sizeParams(base: Record<string, any>, menu: { button_size?: unknown } | null | undefined): Record<string, any> {
+    if (base.button_size != null) return {};
+
+    const una = typeof menu?.button_size === 'string' && UNA_MENU_BUTTON_SIZES.has(menu.button_size) ? menu.button_size : undefined;
+    const size = una ?? base.button_size_default;
+    return size == null ? {} : { button_size: size };
 }

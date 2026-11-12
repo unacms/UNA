@@ -108,14 +108,14 @@ export function ButtonMenuGroupItem({
  * (`glass`, `bordered`, `plain`: the style UNA sets for the menu, see `withMenuButtonParams`) is the group's
  * style when no `style` is passed.
  */
-export function ButtonsGroupMenu({ size, style, variant, className, children }: {
+export function ButtonsGroupMenu({ size, style, variant, className, children }: Readonly<{
     size?: string;
     style?: string;
     variant?: unknown;
     className?: string;
     children?: ReactNode;
     [key: string]: unknown;
-}) {
+}>) {
     const neoVariant = typeof variant === 'string' && NEO_STYLES.has(variant) && !LEGACY_VARIANT_TO_NEO[variant] ? variant : undefined;
     return (
         <NeoButtonGroup style={style ?? neoVariant} controlSize={adapterControlSize(size)} className={className}>
