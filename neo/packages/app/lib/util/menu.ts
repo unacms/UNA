@@ -1,8 +1,10 @@
+import { Platform } from 'react-native';
 import { fetcher } from 'app/lib/fetcher';
 import { UNA_URL } from 'app/config';
 import { appSetting } from './settings';
 import { strToObj } from './object';
 import { getURI } from './url';
+import { isHiddenOn } from 'app/lib/hidden-on';
 
 /** UNA / settings menu item: `name`, `title`, `link`, `icon`, `type`, nested `items` / `subitems`, visibility flags… */
 export type MenuItem = { [key: string]: any };
@@ -83,14 +85,15 @@ export function isMenuItemNavigable(item: MenuItem | null | undefined): boolean 
 
 /**
  * Drop the items UNA hides on this screen tier (an item's "Hidden on" in
- * Studio, sent as `hidden_on`: `phone`, `tablet`, `desktop`), submenus too.
+ * Studio, sent as `hidden_on`: `phone`, `tablet`, `desktop`, `mobile-app`), submenus too.
+ * The iOS and Android apps (`isApp`) also drop the items hidden on the mobile app.
  */
-export function filterHiddenOn(items: MenuItemList, tier: string): MenuItem[] {
+export function filterHiddenOn(items: MenuItemList, tier: string, isApp: boolean = Platform.OS !== 'web'): MenuItem[] {
     return asMenuItemList(items)
-        .filter((item) => item && !(Array.isArray(item.hidden_on) && item.hidden_on.includes(tier)))
+        .filter((item) => item && !isHiddenOn(item.hidden_on, tier, isApp))
         .map((item) => {
             const key = getMenuItemChildrenKey(item);
-            return key ? { ...item, [key]: filterHiddenOn(item[key], tier) } : item;
+            return key ? { ...item, [key]: filterHiddenOn(item[key], tier, isApp) } : item;
         });
 }
 
