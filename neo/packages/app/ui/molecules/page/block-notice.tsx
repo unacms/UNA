@@ -1,5 +1,6 @@
 import { Platform } from 'react-native'
 import { Text } from 'app/design/typography'
+import Link from 'app/ui/atoms/link'
 import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router'
 import { nativeTabPageHref } from 'app/lib/navigation/tab-history'
 import { appSetting, isExternalUrl, openExternalLink, stripTags } from 'app/lib/util'
@@ -50,10 +51,17 @@ export default function BlockNotice({ html }: Readonly<{ html: string }>) {
             {noticeParts(html).map((part, i) => {
                 const { href } = part
                 if (!href) return part.text
-                // Web: a real link. Native: the app's router.
-                const linkProps = isWeb ? { href } : { onPress: () => open(href) }
+                // Web: the Link atom, a real anchor that navigates in the app. Native: text with a press,
+                // which stays in the line.
+                if (isWeb) {
+                    return (
+                        <Link key={i} href={href} hitarea={false} className={blockTheme['u-block-notice-link']}>
+                            {part.text}
+                        </Link>
+                    )
+                }
                 return (
-                    <Text key={i} className={blockTheme['u-block-notice-link']} accessibilityRole="link" {...linkProps}>
+                    <Text key={i} className={blockTheme['u-block-notice-link']} accessibilityRole="link" onPress={() => open(href)}>
                         {part.text}
                     </Text>
                 )
