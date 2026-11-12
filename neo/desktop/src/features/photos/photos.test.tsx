@@ -727,11 +727,20 @@ describe('adding photos and albums', () => {
         await act(async () => {});
         expect(within(panel).getByText('Sunset.jpg')).toBeTruthy();
         expect(sentTo(calls, '/albums/18/items')).toHaveLength(1);
+        // Cancel and Esc wait for the answer: closing would delete the upload the request names
+        const cancel = within(panel).getByRole('button', { name: 'Cancel' });
+        expect(cancel.getAttribute('aria-disabled')).toBe('true');
+        fireEvent.click(cancel);
+        fireEvent.keyDown(add, { key: 'Escape' });
+        await act(async () => {});
+        expect(screen.getByRole('region', { name: 'Add photos to Ridge walk weekend' })).toBe(panel);
+        expect(calls.filter((c) => c.method === 'DELETE')).toHaveLength(0);
         // no answer came: the panel is as it was, and says why
         first.give('lost');
         await waitFor(() => expect(within(panel).getByRole('alert').textContent).toBe('The photos were not added: Load failed'));
         expect(add.getAttribute('aria-busy')).toBeNull();
         expect(choose.getAttribute('aria-disabled')).toBeNull();
+        expect(cancel.getAttribute('aria-disabled')).toBeNull();
         fireEvent.click(add);
         expect(await screen.findByText('A photo was added to the album')).toBeTruthy();
         expect(sentTo(calls, '/albums/18/items').map((c) => JSON.parse(c.body))).toEqual([{ media_ids: ['96'] }, { media_ids: ['96'] }]);

@@ -35,7 +35,8 @@ import { afterAddedToAlbum, type Album, albumFromLists, albumItemsKey, albumKey,
  * Adding photos to the album: they upload as they are picked or dropped, then go in at its end.
  * Esc or Cancel closes it (the uploads nothing took are deleted). Photos still being made ready
  * hold Add as ones that are uploading; while they are being added it takes no photo and lets
- * none go, and a request that got no answer leaves it as it was, to send again.
+ * none go (Esc and Cancel wait too: closing would delete the uploads the request names), and a
+ * request that got no answer leaves it as it was, to send again.
  */
 function AddPhotos({ album, uploader, onDone, announce }: { album: Album; uploader?: Uploader; onDone: (added: number) => void; announce: (text: string) => void }) {
     const { api } = useApp();
@@ -71,14 +72,20 @@ function AddPhotos({ album, uploader, onDone, announce }: { album: Album; upload
             setError(t('The photos were not added: {{reason}}', { reason: errorMessage(e) }));
             return;
         }
-        setSending(false);
         if (result.error !== undefined || !result.data) {
+            setSending(false);
             setError(problemMessage(result.error, t('The photos were not added')));
             return;
         }
+        // still held while the album is read again: closed now, it would be closed twice
         uploads.markTaken();
         await afterAddedToAlbum(queryClient, album.id);
         onDone(result.data.length);
+    };
+
+    const cancel = () => {
+        if (sending) return;
+        onDone(0);
     };
 
     return (
@@ -89,7 +96,7 @@ function AddPhotos({ album, uploader, onDone, announce }: { album: Album; upload
                 if (e.key !== 'Escape') return;
                 e.preventDefault();
                 e.stopPropagation();
-                onDone(0);
+                cancel();
             }}
         >
             <h3 id={`${id}-heading`} className="section-title">
@@ -102,7 +109,7 @@ function AddPhotos({ album, uploader, onDone, announce }: { album: Album; upload
                 </p>
             ) : null}
             <div className="settings-actions">
-                <button type="button" className="btn" onClick={() => onDone(0)}>
+                <button type="button" className="btn" onClick={cancel} aria-disabled={sending || undefined}>
                     {t('Cancel')}
                 </button>
                 <button type="button" className="btn btn-primary" onClick={() => void submit()} aria-disabled={sending || undefined} aria-busy={sending || undefined}>
