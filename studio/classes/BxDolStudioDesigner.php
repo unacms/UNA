@@ -7,8 +7,6 @@
  * @{
  */
 
-bx_import('BxDolForm'); // BX_DOL_FORM_LABEL_STYLE_* are defined with the class
-
 define('BX_DOL_STUDIO_DSG_TYPE_GENERAL', 'general');
 define('BX_DOL_STUDIO_DSG_TYPE_LOGO', 'logo');
 define('BX_DOL_STUDIO_DSG_TYPE_ICON', 'icon');
@@ -580,8 +578,8 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
     public function getSettingsLabelStyleList()
     {
         return [
-            BX_DOL_FORM_LABEL_STYLE_REGULAR => _t('_adm_dsg_txt_settings_label_style_regular'),
-            BX_DOL_FORM_LABEL_STYLE_ADAPTIVE => _t('_adm_dsg_txt_settings_label_style_adaptive'),
+            BxDolForm::LABEL_STYLE_REGULAR => _t('_adm_dsg_txt_settings_label_style_regular'),
+            BxDolForm::LABEL_STYLE_ADAPTIVE => _t('_adm_dsg_txt_settings_label_style_adaptive'),
         ];
     }
 
@@ -590,7 +588,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
      */
     public function getSettingsLabelStyle()
     {
-        return getParam('sys_form_label_style') == BX_DOL_FORM_LABEL_STYLE_ADAPTIVE ? BX_DOL_FORM_LABEL_STYLE_ADAPTIVE : BX_DOL_FORM_LABEL_STYLE_REGULAR;
+        return getParam('sys_form_label_style') == BxDolForm::LABEL_STYLE_ADAPTIVE ? BxDolForm::LABEL_STYLE_ADAPTIVE : BxDolForm::LABEL_STYLE_REGULAR;
     }
 
     /**

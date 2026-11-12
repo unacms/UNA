@@ -21,9 +21,9 @@ class BxDolStudioForm extends BxBaseFormView
     /**
      * Studio's own forms keep their labels above the fields, whatever the site's forms use.
      */
-    function getLabelStyle()
+    public function getLabelStyle()
     {
-        return BX_DOL_FORM_LABEL_STYLE_REGULAR;
+        return BxDolForm::LABEL_STYLE_REGULAR;
     }
 
     function initChecker($aValues = array (), $aSpecificValues = array())

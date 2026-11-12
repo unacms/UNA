@@ -4,7 +4,8 @@ import { appSetting } from 'app/lib/util';
 export type FormLabelStyle = 'regular' | 'adaptive';
 
 /** Field types that can draw a floating label; every other field keeps its label above it. */
-const ADAPTIVE_LABEL_TYPES = new Set(['text', 'password', 'phone', 'price', 'embed']);
+// Not price: its currency sits where a resting label would.
+const ADAPTIVE_LABEL_TYPES = new Set(['text', 'password', 'phone', 'embed']);
 
 /**
  * The label style of a form. UNA sends it with every form as `params.label_style`
@@ -27,7 +28,7 @@ export function hasAdaptiveLabel(props: {
     type?: unknown;
     use_caption_as_placeholder?: unknown;
 } | null | undefined): boolean {
-    if (!props || props.label_style !== 'adaptive') return false;
+    if (props?.label_style !== 'adaptive') return false;
     if (!props.caption || props.format === 'notitle' || props.use_caption_as_placeholder) return false;
     return typeof props.type === 'string' && ADAPTIVE_LABEL_TYPES.has(props.type);
 }

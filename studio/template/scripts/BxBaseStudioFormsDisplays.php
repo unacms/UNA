@@ -96,8 +96,8 @@ class BxBaseStudioFormsDisplays extends BxDolStudioFormsDisplays
                     'info' => _t('_adm_form_dsc_displays_label_style'),
                     'values' => array(
                         '' => _t('_adm_form_txt_displays_label_style_default'),
-                        BX_DOL_FORM_LABEL_STYLE_REGULAR => _t('_adm_dsg_txt_settings_label_style_regular'),
-                        BX_DOL_FORM_LABEL_STYLE_ADAPTIVE => _t('_adm_dsg_txt_settings_label_style_adaptive'),
+                        BxDolForm::LABEL_STYLE_REGULAR => _t('_adm_dsg_txt_settings_label_style_regular'),
+                        BxDolForm::LABEL_STYLE_ADAPTIVE => _t('_adm_dsg_txt_settings_label_style_adaptive'),
                     ),
                     'value' => $aDisplay['label_style'] ?? '',
                     'db' => array (

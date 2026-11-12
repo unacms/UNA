@@ -49,29 +49,29 @@ class FormLabelStyleTest extends BxDolIntegrationTestCase
 
     public function testRegularByDefaultAndForAnUnknownValue(): void
     {
-        setParam('sys_form_label_style', BX_DOL_FORM_LABEL_STYLE_REGULAR);
-        $this->assertSame(BX_DOL_FORM_LABEL_STYLE_REGULAR, $this->form()->getLabelStyle());
+        setParam('sys_form_label_style', BxDolForm::LABEL_STYLE_REGULAR);
+        $this->assertSame(BxDolForm::LABEL_STYLE_REGULAR, $this->form()->getLabelStyle());
 
         setParam('sys_form_label_style', 'no-such-style');
-        $this->assertSame(BX_DOL_FORM_LABEL_STYLE_REGULAR, $this->form()->getLabelStyle());
+        $this->assertSame(BxDolForm::LABEL_STYLE_REGULAR, $this->form()->getLabelStyle());
 
         $this->assertStringNotContainsString('bx-form-element-adaptive', $this->form()->getCode());
     }
 
     public function testTheFormDisplayWinsOverTheSite(): void
     {
-        setParam('sys_form_label_style', BX_DOL_FORM_LABEL_STYLE_ADAPTIVE);
-        $this->assertSame(BX_DOL_FORM_LABEL_STYLE_ADAPTIVE, $this->form()->getLabelStyle());
-        $this->assertSame(BX_DOL_FORM_LABEL_STYLE_ADAPTIVE, $this->form(['label_style' => ''])->getLabelStyle(), "'' follows the site");
-        $this->assertSame(BX_DOL_FORM_LABEL_STYLE_REGULAR, $this->form(['label_style' => BX_DOL_FORM_LABEL_STYLE_REGULAR])->getLabelStyle());
+        setParam('sys_form_label_style', BxDolForm::LABEL_STYLE_ADAPTIVE);
+        $this->assertSame(BxDolForm::LABEL_STYLE_ADAPTIVE, $this->form()->getLabelStyle());
+        $this->assertSame(BxDolForm::LABEL_STYLE_ADAPTIVE, $this->form(['label_style' => ''])->getLabelStyle(), "'' follows the site");
+        $this->assertSame(BxDolForm::LABEL_STYLE_REGULAR, $this->form(['label_style' => BxDolForm::LABEL_STYLE_REGULAR])->getLabelStyle());
 
-        setParam('sys_form_label_style', BX_DOL_FORM_LABEL_STYLE_REGULAR);
-        $this->assertSame(BX_DOL_FORM_LABEL_STYLE_ADAPTIVE, $this->form(['label_style' => BX_DOL_FORM_LABEL_STYLE_ADAPTIVE])->getLabelStyle());
+        setParam('sys_form_label_style', BxDolForm::LABEL_STYLE_REGULAR);
+        $this->assertSame(BxDolForm::LABEL_STYLE_ADAPTIVE, $this->form(['label_style' => BxDolForm::LABEL_STYLE_ADAPTIVE])->getLabelStyle());
     }
 
     public function testAdaptiveFloatsOnlyOneLineTextFields(): void
     {
-        setParam('sys_form_label_style', BX_DOL_FORM_LABEL_STYLE_ADAPTIVE);
+        setParam('sys_form_label_style', BxDolForm::LABEL_STYLE_ADAPTIVE);
         $sHtml = $this->form()->getCode();
 
         $this->assertStringContainsString('bx-form-element-adaptive', $this->row($sHtml, 'name'));
@@ -90,24 +90,24 @@ class FormLabelStyleTest extends BxDolIntegrationTestCase
 
     public function testStudioFormsStayRegular(): void
     {
-        setParam('sys_form_label_style', BX_DOL_FORM_LABEL_STYLE_ADAPTIVE);
+        setParam('sys_form_label_style', BxDolForm::LABEL_STYLE_ADAPTIVE);
 
-        $oForm = $this->form(['label_style' => BX_DOL_FORM_LABEL_STYLE_ADAPTIVE], 'BxTemplStudioFormView');
-        $this->assertSame(BX_DOL_FORM_LABEL_STYLE_REGULAR, $oForm->getLabelStyle());
+        $oForm = $this->form(['label_style' => BxDolForm::LABEL_STYLE_ADAPTIVE], 'BxTemplStudioFormView');
+        $this->assertSame(BxDolForm::LABEL_STYLE_REGULAR, $oForm->getLabelStyle());
         $this->assertStringNotContainsString('bx-form-element-adaptive', $oForm->getCode());
     }
 
     public function testTheApiCarriesTheResolvedStyle(): void
     {
-        setParam('sys_form_label_style', BX_DOL_FORM_LABEL_STYLE_REGULAR);
-        $this->assertSame(BX_DOL_FORM_LABEL_STYLE_REGULAR, $this->form()->getCodeAPI()['params']['label_style']);
+        setParam('sys_form_label_style', BxDolForm::LABEL_STYLE_REGULAR);
+        $this->assertSame(BxDolForm::LABEL_STYLE_REGULAR, $this->form()->getCodeAPI()['params']['label_style']);
 
-        setParam('sys_form_label_style', BX_DOL_FORM_LABEL_STYLE_ADAPTIVE);
+        setParam('sys_form_label_style', BxDolForm::LABEL_STYLE_ADAPTIVE);
         $aApi = $this->form()->getCodeAPI();
-        $this->assertSame(BX_DOL_FORM_LABEL_STYLE_ADAPTIVE, $aApi['params']['label_style']);
+        $this->assertSame(BxDolForm::LABEL_STYLE_ADAPTIVE, $aApi['params']['label_style']);
         $this->assertArrayNotHasKey('placeholder', $aApi['inputs']['name']['attrs'] ?? [], 'the site markup does not leak into the API');
 
-        $this->assertSame(BX_DOL_FORM_LABEL_STYLE_REGULAR, $this->form(['label_style' => BX_DOL_FORM_LABEL_STYLE_REGULAR])->getCodeAPI()['params']['label_style']);
+        $this->assertSame(BxDolForm::LABEL_STYLE_REGULAR, $this->form(['label_style' => BxDolForm::LABEL_STYLE_REGULAR])->getCodeAPI()['params']['label_style']);
     }
 
     public function testAFormDisplayReadsItsOwnStyle(): void

@@ -330,15 +330,15 @@ class BxBaseFormView extends BxDolForm
     /**
      * How the form labels its fields: the form display's own style (`sys_form_displays`.`label_style`, or 'label_style' in
      * the form params), otherwise the site's (Studio > Designer > Settings, `sys_form_label_style`). Anything else is regular.
-     * @return string BX_DOL_FORM_LABEL_STYLE_REGULAR or BX_DOL_FORM_LABEL_STYLE_ADAPTIVE
+     * @return string BxDolForm::LABEL_STYLE_REGULAR or BxDolForm::LABEL_STYLE_ADAPTIVE
      */
-    function getLabelStyle()
+    public function getLabelStyle()
     {
         $sStyle = $this->aParams['label_style'] ?? '';
         if(!is_string($sStyle) || $sStyle === '')
             $sStyle = getParam('sys_form_label_style');
 
-        return $sStyle == BX_DOL_FORM_LABEL_STYLE_ADAPTIVE ? BX_DOL_FORM_LABEL_STYLE_ADAPTIVE : BX_DOL_FORM_LABEL_STYLE_REGULAR;
+        return $sStyle == BxDolForm::LABEL_STYLE_ADAPTIVE ? BxDolForm::LABEL_STYLE_ADAPTIVE : BxDolForm::LABEL_STYLE_REGULAR;
     }
 
     function setAbsoluteActionUrl($sUrl)
@@ -1271,7 +1271,10 @@ BLAH;
             else
                 $aInput['attrs']['placeholder'] = ' ';
 
-            $sCaption = '<label for="' . bx_html_attribute($aInput['attrs']['id']) . '">' . $sCaption . '</label>';
+            $sCaption = $this->oTemplate->parseHtmlByName('form_row_label.html', [
+                'for' => bx_html_attribute($aInput['attrs']['id']),
+                'caption' => $sCaption,
+            ]);
         }
 
         $sTrAttrs = bx_convert_array2attrs(isset($aInput['tr_attrs']) && is_array($aInput['tr_attrs']) ? $aInput['tr_attrs'] : array(), $sClassWrapper);
@@ -1330,7 +1333,7 @@ BLAH;
      */
     public function isLabelAdaptive($aInput)
     {
-        if($this->getLabelStyle() != BX_DOL_FORM_LABEL_STYLE_ADAPTIVE)
+        if($this->getLabelStyle() != BxDolForm::LABEL_STYLE_ADAPTIVE)
             return false;
 
         return in_array($aInput['type'] ?? '', ['text', 'password']) && empty($aInput['html']) && !empty($aInput['name']);

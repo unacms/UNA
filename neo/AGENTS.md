@@ -239,7 +239,7 @@ Use `NeoButton`, `NeoButtonLink` or `NeoButtonRef` from `app/design/controls`. T
 
 UNA picks how forms label their text fields: above the field (regular, the default) or floating inside it (adaptive). It is one setting for the site and the apps, Studio > Designer > Settings, and a form display can have its own (Studio > Forms > Displays). Every form's API carries the resolved style as `params.label_style`.
 
-- `Form` passes it to each field as `label_style`; `hasAdaptiveLabel` (`lib/form/label-style.ts`) floats the label only for field types that can (text, password, phone, price, embed). Every other field, and every form of a UNA that sends no style, shows regular labels.
+- `Form` passes it to each field as `label_style`; `hasAdaptiveLabel` (`lib/form/label-style.ts`) floats the label only for field types that can (text, password, phone, embed). Every other field, and every form of a UNA that sends no style, shows regular labels.
 - `forms.adaptive_labels` overrides UNA for the whole app: `null` follows UNA, `false` never floats labels, `true` always does. `forms.without_captions` (empty by default) lists forms that show captions as placeholders instead of labels.
 
 ### Interface sounds
