@@ -207,7 +207,7 @@ describe('photo and album routes', () => {
     });
 });
 
-type Call = { method: string; path: string; query: string; body: string };
+type Call = { method: string; path: string; query: string; body: string; key: string | null };
 
 type Held = { status: number; body?: unknown } | 'lost';
 
@@ -263,7 +263,7 @@ function site({ modules = MODULES, albumVideo = false, created, over }: { module
         fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
             const request = input instanceof Request ? input : new Request(input, init);
             const url = new URL(request.url);
-            const c = { method: request.method, path: url.pathname.replace(/^\/api\/v2/, '') || '/', query: url.search, body: request.method === 'GET' ? '' : await request.text() };
+            const c = { method: request.method, path: url.pathname.replace(/^\/api\/v2/, '') || '/', query: url.search, body: request.method === 'GET' ? '' : await request.text(), key: request.headers.get('Idempotency-Key') };
             calls.push(c);
             const held = await over?.(c);
             if (held === 'lost') throw new TypeError('Load failed');
@@ -743,7 +743,11 @@ describe('adding photos and albums', () => {
         expect(cancel.getAttribute('aria-disabled')).toBeNull();
         fireEvent.click(add);
         expect(await screen.findByText('A photo was added to the album')).toBeTruthy();
-        expect(sentTo(calls, '/albums/18/items').map((c) => JSON.parse(c.body))).toEqual([{ media_ids: ['96'] }, { media_ids: ['96'] }]);
+        const sent = sentTo(calls, '/albums/18/items');
+        expect(sent.map((c) => JSON.parse(c.body))).toEqual([{ media_ids: ['96'] }, { media_ids: ['96'] }]);
+        // with the key of the first, so the site answers what the first one did
+        expect(sent[0]!.key).toMatch(/^[0-9a-f-]{32,36}$/);
+        expect(sent[1]!.key).toBe(sent[0]!.key);
     });
 
     const deleted = (calls: Call[]) => calls.filter((c) => c.method === 'DELETE').map((c) => c.path);
@@ -782,6 +786,7 @@ describe('adding photos and albums', () => {
 
     const settled = () => act(async () => new Promise<void>((resolve) => setTimeout(resolve, 0)));
     const running: Held = { status: 409, body: { type: 'urn:una:problem:idempotency_in_progress', title: 'A request with this Idempotency-Key is still running; try again in a moment', status: 409, code: 'idempotency_in_progress' } };
+    const problem = (status: number, code: string): Held => ({ status, body: { type: `urn:una:problem:${code}`, title: code, status, code } });
     const refused: Held = { status: 403, body: { type: 'urn:una:problem:forbidden', title: 'You can’t add photos', status: 403, code: 'forbidden' } };
 
     it('deletes none of the uploads of a request that got no answer after the form was gone: the site may be taking them', async () => {
@@ -799,6 +804,10 @@ describe('adding photos and albums', () => {
     it.each([
         ['got no answer', 'lost' as Held],
         ['was told its first sending still runs', running],
+        ['was told it asks too often (before its key was looked at)', problem(429, 'rate_limited')],
+        ['was answered a server error', problem(500, 'internal_error')],
+        ['was answered by a gateway that gave up on the site (502)', { status: 502 }],
+        ['was answered by a gateway that stopped waiting for the site (504)', { status: 504 }],
     ])('keeps the uploads in the tray after a request that %s, and does not delete them when the form goes', async (_what, answer) => {
         const first = later();
         const { calls } = await sendTwoPhotos(firstOf('POST /photos', first.answer));
@@ -826,19 +835,38 @@ describe('adding photos and albums', () => {
         expect(deleted(calls)).toEqual([]);
     });
 
-    it('lets Remove delete an upload whose request got no answer, and deletes the rest once a later request that names them was refused', async () => {
+    it('lets Remove delete an upload whose request got no answer, and deletes none of the rest when a later request that names them was refused', async () => {
         const answers: Held[] = ['lost', refused];
         const { calls } = await sendTwoPhotos((c) => (c.method === 'POST' && c.path === '/photos' && answers.length ? Promise.resolve(answers.shift()!) : null));
         await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('The photos were not added: Load failed'));
         fireEvent.click(screen.getByRole('button', { name: 'Remove Photo Pier.jpg' }));
         await waitFor(() => expect(deleted(calls)).toEqual(['/uploads/92']));
-        // sent again, and answered: the site took none, so the one left goes with the form
+        // sent again without it: another body, so another key, and its refusal says nothing of
+        // the first request, which may still be taking the one left
         fireEvent.click(await screen.findByRole('button', { name: 'Add photos' }));
         await waitFor(() => expect(screen.getByRole('alert').textContent).not.toBe('The photos were not added: Load failed'));
-        expect(sentTo(calls, '/photos')).toHaveLength(2);
+        const sent = sentTo(calls, '/photos');
+        expect(sent).toHaveLength(2);
+        expect(sent[1]!.key).not.toBe(sent[0]!.key);
         expect(screen.getByText('Harbour.jpg')).toBeTruthy();
         cleanup();
-        await waitFor(() => expect(deleted(calls)).toEqual(['/uploads/92', '/uploads/91']));
+        await settled();
+        await settled();
+        expect(deleted(calls)).toEqual(['/uploads/92']);
+    });
+
+    it('deletes none of the uploads a request got no answer for when a later one is refused, the form gone by then', async () => {
+        const again = later();
+        const answers: Promise<Held>[] = [Promise.resolve('lost'), again.answer];
+        const { calls } = await sendTwoPhotos((c) => (c.method === 'POST' && c.path === '/photos' ? (answers.shift() ?? null) : null));
+        await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('The photos were not added: Load failed'));
+        fireEvent.click(screen.getByRole('button', { name: 'Add 2 photos' }));
+        await waitFor(() => expect(sentTo(calls, '/photos')).toHaveLength(2));
+        cleanup();
+        again.give(refused);
+        await settled();
+        await settled();
+        expect(deleted(calls)).toEqual([]);
     });
 
     it('keeps a new album\u2019s uploads when the form goes while it is being made, and does not open it over what is shown then', async () => {

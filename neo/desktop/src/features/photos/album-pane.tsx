@@ -12,6 +12,7 @@ import { ApiError, ensureOk, isGone, retryOnce, unwrap } from '../../lib/api';
 import { useWindowAnnounce } from '../../lib/announce';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
+import { idempotencyKeyFor, type IdempotencySlot, settleIdempotency } from '../../lib/idempotency';
 import { t, tn } from '../../lib/i18n';
 import { confirmAction } from '../../lib/native';
 import { useNavigation } from '../../lib/navigation';
@@ -47,6 +48,9 @@ function AddPhotos({ album, uploader, onDone, announce }: { album: Album; upload
     const [error, setError] = useState<string | null>(null);
     const [sending, setSending] = useState(false);
     const n = uploads.ids.length;
+    // the Idempotency-Key it went with: sending the same again after an answer that never came
+    // gets the site's first answer, not the photos a second time
+    const sent = useRef<IdempotencySlot['current']>(null);
 
     // the button that opened it is gone (it shows only while this is closed): focus goes to choosing the photos
     useEffect(() => {
@@ -67,13 +71,16 @@ function AddPhotos({ album, uploader, onDone, announce }: { album: Album; upload
         setError(null);
         let result;
         try {
-            result = await uploads.claim(api.POST('/albums/{id}/items', { params: { path: { id: album.id } }, body: { media_ids: uploads.ids } }), (r) => r.error === undefined && !!r.data);
+            const body = { media_ids: uploads.ids };
+            result = await uploads.claim(api.POST('/albums/{id}/items', { params: { path: { id: album.id }, header: { 'Idempotency-Key': idempotencyKeyFor(sent, [`/albums/${album.id}/items`, body]) } }, body }), (r) => r.error === undefined && !!r.data);
         } catch (e) {
             if (uploads.gone()) return;
+            // no answer came: the key stays, so sending it again gets the site's answer to this one
             setSending(false);
             setError(t('The photos were not added: {{reason}}', { reason: errorMessage(e) }));
             return;
         }
+        settleIdempotency(sent, result.response.status);
         if (result.error !== undefined || !result.data) {
             if (uploads.gone()) return;
             setSending(false);

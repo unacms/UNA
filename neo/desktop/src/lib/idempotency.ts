@@ -15,19 +15,13 @@ export type IdempotencySlot = { current: { body: string; key: string } | null };
  */
 /**
  * After an answer came: the write is settled (its key is let go, so sending it again is a write
- * of its own), unless the site said the first one still runs (409), whose answer the same key
- * gets later. A write whose answer never came keeps its key: do not call this then.
+ * of its own), unless the site said the first one still runs (409 `idempotency_in_progress`),
+ * whose answer the same key gets later. A write whose answer never came keeps its key: do not
+ * call this then. (What an answer says of the uploads a request names is a wider question, with
+ * its own rule: `saysNothingOfUploads` in photo-uploads.)
  */
 export function settleIdempotency(slot: IdempotencySlot, status: number): void {
-    if (!stillRunning(status)) slot.current = null;
-}
-
-/**
- * Whether an answer says the first request with this key still runs (409
- * `idempotency_in_progress`): it tells nothing of what that one makes or takes.
- */
-export function stillRunning(status: number): boolean {
-    return status === 409;
+    if (status !== 409) slot.current = null;
 }
 
 export function idempotencyKeyFor(slot: IdempotencySlot, body: unknown): string {

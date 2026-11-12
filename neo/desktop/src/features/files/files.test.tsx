@@ -572,7 +572,8 @@ describe('adding files', () => {
                 await act(async () => {});
                 expect(deleted()).toEqual([]);
             } else {
-                first.give({ status: 500, body: { type: 'urn:una:problem:server_error', title: 'Server error', status: 500, code: 'server_error' } });
+                // a refusal that says the site took none (a server error would not: it says nothing of them)
+                first.give({ status: 403, body: { type: 'urn:una:problem:forbidden', title: 'You can’t add files', status: 403, code: 'forbidden' } });
                 await waitFor(() => expect(deleted()).toEqual(['/uploads/91', '/uploads/92']));
                 await act(async () => {});
                 expect(deleted()).toHaveLength(2);

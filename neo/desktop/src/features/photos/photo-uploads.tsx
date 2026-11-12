@@ -3,7 +3,6 @@ import { type DragEvent, useCallback, useEffect, useMemo, useRef, useState } fro
 
 import { Icon, type IconName } from '../../components/icon';
 import { useApp } from '../../lib/context';
-import { stillRunning } from '../../lib/idempotency';
 import { t, tn } from '../../lib/i18n';
 import { inApp } from '../../lib/native';
 import { isOverDropTarget } from '../../components/rich-editor/images';
@@ -14,11 +13,24 @@ import { MAX_FILES } from '../files/files';
 import { MAX_ALBUM_PHOTOS, MAX_PHOTOS } from './photos';
 
 /**
+ * Whether an answer says nothing of what the site took of the uploads its request names: the
+ * first sending still runs (409), the rate limit answered before the Idempotency-Key was looked
+ * at (429: a first sending with this key may still run), or a server error (a gateway's 502 or
+ * 504 while the site works on, a 500 after part of the work). Wider than when a form keeps its
+ * key (`settleIdempotency`: only 409, the one answer the same key gets another after), because
+ * a mistake costs more here: a key let go early sends a write again, an upload deleted under a
+ * running request loses the file.
+ */
+export function saysNothingOfUploads(status: number): boolean {
+    return status === 409 || status === 429 || status >= 500;
+}
+
+/**
  * The photos a form uploads (new photos, a new album, photos added to an album), or the files of
  * new files (`file`: any type): each upload starts as it is picked or dropped, with the form's
  * purpose; Retry and Remove as in a post's tray. Uploads nothing took are deleted on the site
- * when the form goes, but for those a request names that is in flight or was never answered
- * (`claim`).
+ * when the form goes, but for those a request names that is in flight, or named and said nothing
+ * of (`claim`).
  */
 export function usePhotoUploads({ purpose, uploader: given, announce }: { purpose: 'photo' | 'album' | 'file' | 'post_cover'; uploader?: Uploader; announce: (text: string) => void }) {
     const { api } = useApp();
@@ -40,8 +52,10 @@ export function usePhotoUploads({ purpose, uploader: given, announce }: { purpos
     // request's answer says which it took), and whether the form is gone
     const claimed = useRef<readonly string[]>([]);
     const gone = useRef(false);
-    // the uploads whose last request said nothing of what the site took (no answer, or its first
-    // sending still runs): the site may be taking them, so nothing here deletes them
+    // the uploads a request named that said nothing of what the site took (no answer, or one
+    // that tells nothing): the site may be taking them, now or later, so nothing here deletes
+    // them again, whatever a later request is told (only Remove does, which the site refuses for
+    // one it took)
     const unknown = useRef<ReadonlySet<string>>(new Set());
     const drop = useCallback((id: string) => void api.DELETE('/uploads/{id}', { params: { path: { id } } }).catch(() => undefined), [api]);
     useEffect(() => {
@@ -60,19 +74,15 @@ export function usePhotoUploads({ purpose, uploader: given, announce }: { purpos
             // null: the request said nothing of what the site took
             const settle = (answer: boolean | readonly string[] | null) => {
                 claimed.current = [];
-                const open = new Set(unknown.current);
-                for (const id of named) {
-                    if (answer === null) open.add(id);
-                    else open.delete(id);
+                // they stay as they are: in the tray to send again, and never deleted here
+                if (answer === null) {
+                    unknown.current = new Set([...unknown.current, ...named]);
+                    return;
                 }
-                unknown.current = open;
-                // they stay as they are: in the tray to send again (with the same key), and not
-                // deleted when the form goes or is gone
-                if (answer === null) return;
                 const taken = answer === true ? named : answer === false ? [] : answer;
                 // the form went meanwhile: what the request named and did not take is deleted now
                 if (gone.current) {
-                    for (const id of named) if (!taken.includes(id)) drop(id);
+                    for (const id of named) if (!taken.includes(id) && !unknown.current.has(id)) drop(id);
                     return;
                 }
                 if (!taken.length) return;
@@ -82,7 +92,7 @@ export function usePhotoUploads({ purpose, uploader: given, announce }: { purpos
             };
             return request.then(
                 (answer) => {
-                    settle(stillRunning(answer.response.status) ? null : took(answer));
+                    settle(saysNothingOfUploads(answer.response.status) ? null : took(answer));
                     return answer;
                 },
                 (e: unknown) => {
@@ -134,10 +144,13 @@ export function usePhotoUploads({ purpose, uploader: given, announce }: { purpos
          * (true), none (false: the site refused it), or those of these upload ids. Those it took
          * leave the tray and are never deleted here; those it did not take stay, to send again or
          * remove, or are deleted once when the form is gone by then. A request that threw (no
-         * answer) or was told its first sending still runs (409) says nothing of what the site
-         * took, and `took` is not asked: its uploads stay in the tray and are not deleted here,
-         * with the form or after it, until a later request that names them is answered (Remove
-         * still deletes one; the site deletes those nothing took after its ghost lifetime).
+         * answer) or whose answer tells nothing (`saysNothingOfUploads`) says nothing of what
+         * the site took, and `took` is not asked: its uploads stay in the tray and are never
+         * deleted here again, with the form, after it, or when a later request that names them
+         * is refused (that one's answer tells nothing of the first, which may still run). They
+         * leave the tray when a later request takes them, or by Remove, which still deletes one
+         * (the site refuses for one it took, and deletes those nothing took after its ghost
+         * lifetime).
          */
         claim,
         /**
