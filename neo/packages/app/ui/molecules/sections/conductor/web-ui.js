@@ -821,7 +821,7 @@ export function SidebarNav({ routes, index, onSelect }) {
         const icon = route.image || route.icon || ''
 
         return (
-            <View key={`lmenu-${route.index}`} className="w-full">
+            <View key={`lmenu-${route.index}`} className="w-full gap-0.5">
                 {/* Indent on a wrapper: on the button it loses to the inline contentInsets padding. */}
                 <View className={getConductorDepthClassName(route.depth)}>
                 <MenuItemSidebarWithWrapper

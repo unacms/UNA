@@ -285,7 +285,10 @@ function PageContentWiki({ data, scrollRef, url }) {
                     <View className={`flex-row items-center gap-1.5 min-w-0 ${showBothMobilePanels ? 'flex-auto' : 'flex-1'}`}>
                         <View className="shrink-0">
                             <DropdownPopup
-                                minPopupWidth={256}
+                                // One width (equal limits): a section that opens with longer labels wraps them
+                                // instead of widening the menu, as the main menu does (menu_navigation_width).
+                                minPopupWidth={320}
+                                maxPopupWidth={320}
                                 contentClasses={isWeb ? 'rounded-xl border border-popover mt-2 bg-popover/60 backdrop-blur shadow-md' : undefined}
                                 inset={!isWeb}
                                 buttonProps={{
@@ -392,7 +395,10 @@ function PageContentWiki({ data, scrollRef, url }) {
                     </Panel>
                     <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} panelLine={cellsCustomConfig['panel-line']} />
                     <Panel id="wiki-center" order={2} className={`native:w-full   ${currentBreakpointName}:w-full`} {...centerPanelLayoutProps}>
-                        <View ref={centerContentRef} className="sm:p-4 lg:px-6 lg:py-6 xl:px-8 2xl:px-12 gap-6 lg:gap-8">
+                        {/* 16px sides up to xl, the header's inset and the phone padding: the "On this page"
+                            trigger on the breadcrumb row ends on the line of the header's buttons. Wider from
+                            xl, where the TOC column sits on the right. */}
+                        <View ref={centerContentRef} className="sm:p-4 lg:py-6 xl:px-8 2xl:px-12 gap-6 lg:gap-8">
                             {(breadcrumbs.length > 0 || showTocMenu) ? (
                                 <View className={`gap-3 hidden ${leftBreakpoint}:flex ${BREADCRUMB_ROW_PULL[leftBreakpoint] ?? ''}`}>
                                     {/* CSS visibility only — do not gate on useBreakpoint (SSR mismatch).
