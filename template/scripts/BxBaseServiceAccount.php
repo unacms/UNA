@@ -25,6 +25,15 @@ class BxBaseServiceAccount extends BxDol
     }
 
     /**
+     * Whether an introduction tour is there for the viewer to start: the "Introduction Tour" menu items use it.
+     * @param $sTour BxDolTours::HOME or BxDolTours::STUDIO
+     */
+    public function serviceIsTourAvailable($sTour = BxDolTours::HOME)
+    {
+        return BxDolTours::getInstance()->isAvailable($sTour);
+    }
+
+    /**
      * @page service Service Calls
      * @section bx_system_general System Services 
      * @subsection bx_system_general-account Account

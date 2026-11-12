@@ -65,7 +65,7 @@ class BxDrupalModule extends BxBaseModConnectModule
 
             BxDolTemplate::getInstance()->setPageNameIndex (BX_PAGE_TRANSITION);
             BxDolTemplate::getInstance()->setPageHeader (_t('_Please Wait'));
-            BxDolTemplate::getInstance()->setPageContent ('page_main_code', MsgBox(_t('_Please Wait')));
+            BxDolTemplate::getInstance()->setPageContent ('page_main_code', BxDolTemplate::getInstance()->parseHtmlByName('transition_wait.html', ['text' => _t('_Please Wait')]));
             BxDolTemplate::getInstance()->setPageContent ('url_relocate', bx_html_attribute($sUrlRelocate, BX_ESCAPE_STR_QUOTE));
 
             BxDolTemplate::getInstance()->getPageCode();

@@ -39,7 +39,7 @@
     "@vis.gl/react-google-maps": "^1.10.2",
     "app": "*",
     "blueimp-md5": "^2.19.0",
-    "eslint-config-next": "16.4.4",
+    "eslint-config-next": "16.4.6",
     "expo-auth-session": "~58.0.16",
     "expo-document-picker": "~58.0.4",
     "expo-image-manipulator": "~58.0.16",
@@ -49,7 +49,7 @@
     "jotai": "^2.16.0",
     "lexical": "^0.48.0",
     "lucide-static": "1.66.0",
-    "next": "16.4.3",
+    "next": "16.4.6",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-grid-layout": "^1.4.4",
@@ -70,12 +70,12 @@
     "zustand": "^4.5.5"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "16.4.4",
+    "@next/bundle-analyzer": "16.4.6",
     "@tailwindcss/postcss": "^4.2.4",
     "@tailwindcss/typography": "^0.5.9",
     "@types/node": "26.6.6",
     "cross-env": "^7.0.3",
-    "eslint-config-next": "16.4.4",
+    "eslint-config-next": "16.4.6",
     "postcss": "^8.5.32",
     "tailwindcss": "^4.2.4"
   },

@@ -874,13 +874,16 @@ webview {
  * keyboard (`useMenuHighlight`, ui/atoms/menu-highlight.web.ts), in the ghost-link hover tint, and the items don't
  * light up on their own. It is the list's ::before, placed through CSS variables; it fades in where it first
  * appears and out when the pointer leaves. UNA's popup menus do the same (bx_menu_highlight).
+ * `.neo-menu-highlight-bar` is the same highlight on the header's main menu (components/nav/menu-top.js): that row
+ * places its own children (the active tab's indicator, a hidden probe), so it doesn't make them `relative`.
  */
 .neo-menu-highlight,
 .neo-menu-highlight > * {
     position: relative;
 }
 
-.neo-menu-highlight::before {
+.neo-menu-highlight::before,
+.neo-menu-highlight-bar::before {
     content: '';
     position: absolute;
     top: 0;
@@ -901,18 +904,33 @@ webview {
         opacity 150ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.neo-menu-highlight.neo-menu-highlight-on::before {
+.neo-menu-highlight.neo-menu-highlight-on::before,
+.neo-menu-highlight-bar.neo-menu-highlight-on::before {
     opacity: 1;
 }
 
-.neo-menu-highlight.neo-menu-highlight-jump::before {
+.neo-menu-highlight.neo-menu-highlight-jump::before,
+.neo-menu-highlight-bar.neo-menu-highlight-jump::before {
     transition: opacity 150ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .neo-menu-highlight::before {
+    .neo-menu-highlight::before,
+    .neo-menu-highlight-bar::before {
         transition: opacity 150ms cubic-bezier(0, 0, 0.2, 1);
     }
+}
+
+/* The header's tabs: the highlight has their rows' corners (`rounded-xl`, menu-items/topmenu.tsx), and a tab's own
+ * hover fill gives way to it; the pressed and the open (More) fills stay. The row (`h-12`) is the tab's child, or one
+ * level deeper where a tooltip or a menu trigger wraps it (icon-only tabs, More). */
+.neo-menu-highlight-bar::before {
+    border-radius: var(--radius-xl);
+}
+
+.neo-menu-highlight-bar > * > .group:hover > .h-12:not(:active):not(.bg-accent),
+.neo-menu-highlight-bar > * > .group:hover > * > .h-12:not(:active):not(.bg-accent) {
+    background-color: transparent;
 }
 
 /* The item's own hover fill (`item_ver`); the selected item keeps its fill. */

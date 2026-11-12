@@ -221,6 +221,50 @@ div.bx-std-pmen-item .sys-icon {
     color: #ffffff;
 }
 
+/*
+ * Page menu tooltip (page.js): the name of an item whose label is hidden (the strip, the phone tabs), beside or under its tile.
+ */
+.bx-std-pmen-tip {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+
+    max-width: 16rem;
+    padding: 0.375rem 0.625rem;
+
+    border-radius: 0.5rem;
+    background: rgb(24 24 27); /* gray-900 */
+    box-shadow: 0 4px 12px -2px rgba(10, 10, 12, 0.25);
+    color: #ffffff;
+
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    pointer-events: none;
+}
+.bx-std-pmen-tip[hidden] {
+    display: none;
+}
+.dark .bx-std-pmen-tip {
+    background: rgb(244 244 245); /* gray-100 */
+    color: rgb(24 24 27);
+}
+@media (prefers-reduced-motion: no-preference) {
+    .bx-std-pmen-tip {
+        animation: bx-std-pmen-tip-in 0.12s ease-out;
+    }
+}
+@keyframes bx-std-pmen-tip-in {
+    from {
+        opacity: 0;
+    }
+}
+
 /*--- Icons ---*/
 img.bx-item-icon,
 svg.bx-item-icon{
@@ -259,44 +303,22 @@ img.bx-std-api {
 
 /*
  * Page menu on narrow screens (the columns themselves are in page_columns.css).
- * Strip (the column narrowed to 104px, below 1024px or by its toggle): a vertical strip of square tiles (as wide as the strip's items, 88px),
- * the 36px icon and a small label centred in each (8 + 36 + 4 + two 16px lines + 8 = 88px).
+ * Strip (the column narrowed to 68px, below 1024px or by its toggle): a vertical strip of 52px items, each its 36px tile alone. The link's
+ * aria-label names it, and page.js shows that name in a tooltip beside the tile on hover and keyboard focus.
  * Phone: a horizontal, scrollable row of 52px tabs, each its 36px tile alone (the link's aria-label names it); the active tab shows its
  * label beside the tile, so the row stays one even line whatever the labels' length.
  */
 @container bx-std-pmen (max-width: 10rem) {
-    div.bx-std-pmen-item {
-        height: 5.5rem; /* square: the item is 88px wide (page_columns.css) */
-    }
-    div.bx-std-pmen-item > a {
-        display: block;
-        height: 100%;
-    }
     div.bx-std-pmen-item-cnt {
-        -webkit-flex-direction: column;
-        flex-direction: column;
         -webkit-justify-content: center;
         justify-content: center;
-
-        height: 100%;
-        padding: 0.5rem; /* the 8px inset all round, as beside the tile on wide screens; the label wraps to two lines under the tile */
     }
     div.bx-std-pmen-item .bx-std-pmen-ic-icon,
     .bx-dir-rtl div.bx-std-pmen-item .bx-std-pmen-ic-icon {
         margin: 0;
     }
     div.bx-std-pmen-item .bx-std-pmen-ic-title {
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2; /* wraps to two lines, then cuts with an ellipsis */
-        max-width: 100%;
-        margin-top: 0.25rem;
-
-        font-size: 0.75rem;
-        line-height: 1rem;
-        text-align: center;
-        white-space: normal;
-        overflow-wrap: anywhere;
+        display: none; /* icon only */
     }
 }
 @media (max-width: 767px) {

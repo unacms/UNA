@@ -76,6 +76,7 @@
     "stackedit-js": "^1.0.7",
     "tablesorter": "^2.32.0",
     "theia-sticky-sidebar": "^2.0.1",
+    "thinking-orbs": "^0.3.2",
     "urijs": "^1.19.11",
     "xymbols": "0.1.0"
   },
@@ -121,6 +122,7 @@
     "generate:tailwind-max": "NODE_ENV=production tailwindcss -i ./template/css/tailwind.css -c ./tailwind.config.full.js -o ./scripts/tailwind.max.css --minify",
     "build:tailwind-max": "mkdir -p plugins_public/tailwind/css && cp scripts/tailwind.max.css plugins_public/tailwind/css/tailwind.max.css",
     "build:tailwind-min": "NODE_ENV=production tailwindcss -i ./template/css/tailwind.css -c ./tailwind.config.js -o ./plugins_public/tailwind/css/tailwind.min.css --minify",
+    "build:thinking-orbs": "mkdir -p plugins_public/thinking-orbs; rollup node_modules/thinking-orbs/dist/engine.es.js --file=plugins_public/thinking-orbs/thinking-orbs.js --format es; uglifyjs plugins_public/thinking-orbs/thinking-orbs.js --module -c -m > plugins_public/thinking-orbs/thinking-orbs.min.js; cp node_modules/thinking-orbs/LICENSE plugins_public/thinking-orbs/LICENSE",
     "build:theia-sticky-sidebar": "mkdir -p plugins_public/theia-sticky-sidebar; cd plugins_public/theia-sticky-sidebar; cp -r ../../node_modules/theia-sticky-sidebar/dist/* .",
     "build:timepicker-addon": "mkdir -p plugins_public/timepicker-addon; cd plugins_public/timepicker-addon; cp -r ../../node_modules/jquery-ui-timepicker-addon/dist/* .",
     "build:autosize": "cp node_modules/autosize/dist/autosize.min.js plugins_public",

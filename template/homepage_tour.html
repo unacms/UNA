@@ -1,47 +1,25 @@
 <script defer language="javascript">
-<!--    
-    glTour = new Shepherd.Tour({
-        useModalOverlay: true,
-        defaultStepOptions: {
-            classes: 'bx-def-z-index-modal',
-            showCancelLink: true,
-            scrollTo: true
+    // The homepage introduction tour, for operators (BxDolTours, bx_tour in inc/js/functions.js).
+    var glTour = bx_tour({
+        name: '__name__',
+        autostart: __autostart__,
+        inert: '.bx-main',
+        steps: [{
+            id: 'tour-homepage',
+            title: '<bx_text_js:_sys_tour_homepage_welcome_title />',
+            text: '<bx_text_js:_sys_tour_homepage_welcome_txt />'
+        },{
+            id: 'tour-account-menu',
+            title: '<bx_text_js:_sys_tour_homepage_account_menu_title />',
+            text: '<bx_text_js:_sys_tour_homepage_account_menu_txt />',
+            element: '#bx-menu-toolbar-item-account'
+        }],
+        labels: {
+            back: '<bx_text_js:_sys_tour_back />',
+            next: '<bx_text_js:_sys_next />',
+            done: '<bx_text_js:_sys_done />',
+            close: '<bx_text_js:_sys_tour_close />',
+            step: '<bx_text_js:_sys_tour_step />'
         }
     });
-
-    Shepherd.on('cancel', function () {
-        $.cookie('homepage-tour-hidden', 1, {expires: 9999});
-    });
-
-    glTour.addStep({
-        id: 'tour-homepage',
-        title: '<bx_text_js:_sys_tour_homepage_welcome_title />',
-        text: '<bx_text_js:_sys_tour_homepage_welcome_txt />',
-        buttons: [{
-            text: '<bx_text_js:_sys_exit />',
-            action: glTour.cancel,
-            classes: 'shepherd-button-secondary'
-        },{
-            text: '<bx_text_js:_sys_next />',
-            action: glTour.next,
-            classes: 'shepherd-button-primary'
-        }]
-    });
-
-    glTour.addStep({
-        id: 'tour-account-menu',
-        title: '<bx_text_js:_sys_tour_homepage_account_menu_title />',
-        text: '<bx_text_js:_sys_tour_homepage_account_menu_txt />',
-        attachTo: { element: '#bx-menu-toolbar-item-account', on: 'bottom'},
-        canClickTarget: false,
-        buttons: [{
-            text: '<bx_text_js:_sys_done />',
-            action: glTour.cancel,
-            classes: 'shepherd-button-primary'
-        }]
-    });
-
-    if (!$.cookie('homepage-tour-hidden'))
-        glTour.start();
--->
 </script>

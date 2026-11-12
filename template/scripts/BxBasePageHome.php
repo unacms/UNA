@@ -49,8 +49,9 @@ class BxBasePageHome extends BxTemplPage
     public function getCode ()
     {
         $s = parent::getCode ();
-        if (isAdmin() && getParam('site_tour_home') == 'on')
-            $s .= $this->_oTemplate->parseHtmlByName('homepage_tour.html', array());
+        $oTours = BxDolTours::getInstance();
+        if ($oTours->isAvailable(BxDolTours::HOME))
+            $s .= $this->_oTemplate->parseHtmlByName('homepage_tour.html', $oTours->getTemplateVars(BxDolTours::HOME));
 
         if($this->_sCanonicalUrl)
             BxDolTemplate::getInstance()->setPageUrl($this->_sCanonicalUrl);
@@ -92,7 +93,8 @@ class BxBasePageHome extends BxTemplPage
             ));
             $this->_oTemplate->addCss(array(
                 'homepage.css',
-                BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'shepherd/css/|shepherd.css'
+                BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'shepherd/css/|shepherd.css',
+                'tour.css',
             ));
         }
     }

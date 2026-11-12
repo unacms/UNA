@@ -834,6 +834,54 @@ button.bx-btn:focus:not(:focus-visible) .bx-loading-ajax-btn {
     height: 4rem;
 }
 
+/* The "connecting" orb (bx_loading_orb in inc/js/functions.js) sits in the middle of its box. */
+.bx-loading-ajax,
+.bx-loading-ajax-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.bx-loading-ajax-btn {
+    display: inline-flex;
+}
+
+/* Its ink is the theme's neutral foreground (gray-950 / gray-50); far dots fade towards the page. */
+.bx-loading-orb {
+    display: block;
+    flex: none;
+    width: 64px;
+    height: 64px;
+    color: #0a0a0c;
+}
+html.dark .bx-loading-orb {
+    color: #fafafc;
+}
+.bx-loading-orb[data-bx-orb-size="32"] {
+    width: 32px;
+    height: 32px;
+}
+.bx-loading-orb[data-bx-orb-size="20"] {
+    width: 20px;
+    height: 20px;
+}
+
+/* In a button the orb takes the button's text colour, so it shows on primary buttons too. */
+.bx-loading-ajax-btn .bx-loading-orb,
+html.dark .bx-loading-ajax-btn .bx-loading-orb {
+    color: inherit;
+}
+
+/* Transition pages: the orb in the middle of the screen with the page's message under it. A plain "Please wait"
+   (transition_wait.html, after signing in) is for screen readers only: the orb says it. */
+.bx-transition {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 
 /* --------------- SVG loading indicator */
 svg .outer, 
