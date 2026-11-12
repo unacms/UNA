@@ -880,6 +880,42 @@ describe('adding photos and albums', () => {
         expect(deleted(calls)).toEqual([]);
     });
 
+    it('does not say an album has no photos while it is read again after its first ones were added', async () => {
+        let added = false;
+        const read = later();
+        const empty = album('19', 'Empty one', { preview: [], stats: { items: 0, comments: 0, reactions: 0, views: 0 } });
+        const { api } = site({
+            over: (c) => {
+                if (c.path === '/albums/19') return Promise.resolve({ status: 200, body: empty });
+                if (c.path !== '/albums/19/items') return null;
+                if (c.method === 'POST') {
+                    added = true;
+                    return Promise.resolve({ status: 201, body: [photo('201', 'Sunset', { module: 'bx_albums', album_id: '19' })] });
+                }
+                // the reading after them is answered when the test says so
+                return added ? read.answer : Promise.resolve({ status: 200, body: { items: [], next_cursor: null } });
+            },
+        });
+        const { base, pending } = fakeUploader(['Sunset.jpg']);
+        renderApp({ list: { section: 'media', feed: 'albums' }, detail: { kind: 'album', id: '19' } }, api, <AlbumPane id="19" uploader={base} />);
+        expect(await screen.findByText('No photos in this album yet')).toBeTruthy();
+        fireEvent.click(screen.getByRole('button', { name: 'Add photos' }));
+        const panel = screen.getByRole('region', { name: 'Add photos to Empty one' });
+        fireEvent.click(within(panel).getByRole('button', { name: 'Choose photos…' }));
+        await waitFor(() => expect(pending.size).toBe(1));
+        await act(async () => pending.get('h-Sunset.jpg')?.resolve(media('96')));
+        await within(panel).findByText(/^Ready/);
+        fireEvent.click(within(panel).getByRole('button', { name: 'Add to album' }));
+        expect(await screen.findByText('A photo was added to the album')).toBeTruthy();
+        expect(screen.queryByRole('region', { name: 'Add photos to Empty one' })).toBeNull();
+        // read again and still on its way: what is cached is the album before them
+        expect(screen.queryByText('No photos in this album yet')).toBeNull();
+        expect(screen.queryByRole('button', { name: 'Add photos' })).toBeNull();
+        // an answer with none after all says so again
+        await act(async () => read.give({ status: 200, body: { items: [], next_cursor: null } }));
+        expect(await screen.findByText('No photos in this album yet')).toBeTruthy();
+    });
+
     it('draws a held button beside a form\u2019s own as held, and leaves the busy one its look', () => {
         // the stylesheet as written (vitest hands CSS imports over empty)
         const file = ['src/styles.css', 'desktop/src/styles.css'].find((f) => existsSync(f)) ?? 'src/styles.css';

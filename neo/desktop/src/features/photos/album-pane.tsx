@@ -39,7 +39,7 @@ import { afterAddedToAlbum, type Album, albumFromLists, albumItemsKey, albumKey,
  * answer leaves it as it was, to send again. Left through the pane meanwhile (Close, another
  * album), the request keeps its uploads and its answer does nothing to what is shown then.
  */
-function AddPhotos({ album, uploader, onDone, announce }: { album: Album; uploader?: Uploader; onDone: (added: number) => void; announce: (text: string) => void }) {
+function AddPhotos({ album, uploader, onDone, announce }: { album: Album; uploader?: Uploader; onDone: (added: number, read?: Promise<void>) => void; announce: (text: string) => void }) {
     const { api } = useApp();
     const queryClient = useQueryClient();
     const id = useId();
@@ -83,8 +83,8 @@ function AddPhotos({ album, uploader, onDone, announce }: { album: Album; upload
         // the album is read again without the panel waiting for it (nor being there: the pane may
         // show another album by now): the photos are in it, and a site slow to answer the reading
         // would keep a panel that Cancel and Esc can't close
-        void afterAddedToAlbum(queryClient, album.id);
-        if (!uploads.gone()) onDone(result.data.length);
+        const read = afterAddedToAlbum(queryClient, album.id);
+        if (!uploads.gone()) onDone(result.data.length, read);
     };
 
     const cancel = () => {
@@ -140,6 +140,9 @@ export function AlbumPane({ id, uploader }: { id: string; uploader?: Uploader })
     const [editing, setEditing] = useState(false);
     const [adding, setAdding] = useState(false);
     const [viewing, setViewing] = useState<number | null>(null);
+    // the album photos were just added to, until it is read again: what is shown of it meanwhile
+    // is from before them, and must not say it has none
+    const [reading, setReading] = useState<string | null>(null);
 
     const album = useQuery({
         queryKey: albumKey(id),
@@ -160,6 +163,7 @@ export function AlbumPane({ id, uploader }: { id: string; uploader?: Uploader })
     useFillEmptyPages(items);
     const photos = items.data?.pages.flatMap((p) => p.items) ?? [];
     const shown = photos.filter((p) => p.media);
+    const awaited = reading === id && !photos.length;
 
     const itemId = a?.content_id ?? null;
     const activity = useEntryItem(itemId, a?.stats.comments, albumKey(id));
@@ -268,21 +272,26 @@ export function AlbumPane({ id, uploader }: { id: string; uploader?: Uploader })
                                     album={a}
                                     uploader={uploader}
                                     announce={announce}
-                                    onDone={(added) => {
+                                    onDone={(added, read) => {
                                         setAdding(false);
+                                        if (added && read) {
+                                            const done = () => setReading((now) => (now === id ? null : now));
+                                            setReading(id);
+                                            void read.then(done, done);
+                                        }
                                         if (added) announce(tn(added, 'A photo was added to the album', '{{count}} photos were added to the album'));
                                         focusMoreButton('album');
                                     }}
                                 />
                             ) : null}
                             <section className="album-photos" aria-label={t('Photos in {{name}}', { name: a.title })}>
-                                <SkeletonRows loading={items.isLoading} />
+                                <SkeletonRows loading={items.isLoading || awaited} />
                                 {items.isError ? (
                                     <p className="error small" role="alert">
                                         {t('Its photos can’t be shown: {{reason}}', { reason: errorMessage(items.error) })}
                                     </p>
                                 ) : null}
-                                {!items.isLoading && !items.isError && !photos.length ? (
+                                {!items.isLoading && !items.isError && !photos.length && !awaited ? (
                                     <EmptyState
                                         icon="images"
                                         title={t('No photos in this album yet')}
