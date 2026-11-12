@@ -110,6 +110,11 @@ export const EVENTS = {
     notifications: 'notifications',
         /* arrived */
 
+    // ************************ grids *****************************************
+
+    gridChanged: 'grid_changed',
+        /* object — a row was added, changed or deleted in that UNA grid (after its action) */
+
     // ************************ tasks *****************************************
 
     tasksList: 'tasks_list',

@@ -90,3 +90,8 @@ WHERE NOT EXISTS (SELECT 1 FROM `sys_menu_items` WHERE `set_name` = 'bx_tasks_vi
 INSERT INTO `sys_cron_jobs` (`name`, `time`, `class`, `file`, `service_call`)
 SELECT 'bx_tasks_timers', '0 * * * *', 'BxTasksCronTimers', 'modules/boonex/tasks/classes/BxTasksCronTimers.php', '' FROM DUAL
 WHERE NOT EXISTS (SELECT 1 FROM `sys_cron_jobs` WHERE `name` = 'bx_tasks_timers');
+
+-- setting: hours a timer runs without a pause before the cron pauses it, 0 for never
+INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `check`, `check_error`, `extra`, `order`)
+SELECT 'bx_tasks_timer_running_limit', '8', `id`, '_bx_tasks_option_timer_running_limit', 'digit', '', '', '', 40 FROM `sys_options_categories`
+WHERE `name` = 'bx_tasks' AND NOT EXISTS (SELECT 1 FROM `sys_options` WHERE `name` = 'bx_tasks_timer_running_limit');

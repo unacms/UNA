@@ -9,8 +9,9 @@
  */
 
 /**
- * Pauses timers left running without a pause for longer than TIMER_RUNNING_LIMIT
- * and tells their authors and the context administrators.
+ * Pauses timers left running without a pause for longer than the module's setting
+ * (bx_tasks_timer_running_limit, hours; 0 pauses none) and tells their authors and the context administrators.
+ * The time they ran stays in them, to be logged or cleared by their authors.
  */
 class BxTasksCronTimers extends BxDolCron
 {
@@ -29,9 +30,13 @@ class BxTasksCronTimers extends BxDolCron
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
 
+        $iHours = (int)getParam($CNF['PARAM_TIMER_RUNNING_LIMIT']);
+        if($iHours <= 0)
+            return;
+
         $aTimers = $this->_oModule->_oDb->getTimers([
             'sample' => 'running_since',
-            'started_before' => time() - (int)$CNF['TIMER_RUNNING_LIMIT']
+            'started_before' => time() - 3600 * $iHours
         ]);
         if(empty($aTimers) || !is_array($aTimers))
             return;

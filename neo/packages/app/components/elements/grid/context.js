@@ -2,6 +2,7 @@ import { createContext, useContext, useRef } from 'react';
 import { createStore, useStore } from 'zustand';
 import { flattenPagesForUniList } from 'app/lib/browse-query';
 import { handleFormModal } from 'app/ui/molecules/dialogs/form-modal';
+import emitter, { EVENTS } from 'app/context/emitter';
 import {
     applyGridActionCallback,
     applyMenuManageCallback,
@@ -70,6 +71,7 @@ const createGridStore = (initial) => createStore((set, get) => ({
         patchCachedRows(get(), (rows) => rows.filter(
             (item) => !idsToRemove.some((id) => item.id == id)
         ));
+        emitter.emit(EVENTS.gridChanged, { object: get().settings.object });
     },
 
     /** Patch one row in the visible list (processed display cells only). */
@@ -78,6 +80,7 @@ const createGridStore = (initial) => createStore((set, get) => ({
 
         const next = { ...rowData, id: rowData.id ?? rowId };
         patchCachedRows(get(), (rows) => rows.map((item) => (item.id == rowId ? next : item)));
+        emitter.emit(EVENTS.gridChanged, { object: get().settings.object });
     },
 
     toggleSelected: (id) => set((state) => {

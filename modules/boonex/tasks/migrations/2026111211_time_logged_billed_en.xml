@@ -3,21 +3,22 @@
 <!-- Tasks: Logged and Billed time, the Billing page, the timer notification. -->
 <resources name="en" flag="gb" title="English">
     <string_add name="_bx_tasks_txt_time_logged"><![CDATA[Logged]]></string_add>
-    <string_add name="_bx_tasks_txt_time_billed"><![CDATA[Billed]]></string_add>
+    <string_add name="_bx_tasks_txt_time_billed"><![CDATA[Billable]]></string_add>
     <string_add name="_bx_tasks_txt_time_original"><![CDATA[Original]]></string_add>
     <string_add name="_bx_tasks_txt_time_by_timer"><![CDATA[Timer]]></string_add>
     <string_add name="_bx_tasks_txt_time_by_hand"><![CDATA[Manual]]></string_add>
     <string_add name="_bx_tasks_grid_column_title_tm_value_total"><![CDATA[Total]]></string_add>
     <string_add name="_bx_tasks_grid_column_title_tm_value_manual"><![CDATA[Manual]]></string_add>
-    <string_add name="_bx_tasks_grid_column_title_tm_value_billed"><![CDATA[Billed]]></string_add>
-    <string_add name="_bx_tasks_form_time_input_value_billed"><![CDATA[Billed time]]></string_add>
+    <string_add name="_bx_tasks_grid_column_title_tm_value_billed"><![CDATA[Billable]]></string_add>
+    <string_add name="_bx_tasks_form_time_input_value_billed"><![CDATA[Billable time]]></string_add>
     <string_add name="_bx_tasks_page_title_sys_entries_billing_in_context"><![CDATA[Tasks Billing in Context]]></string_add>
     <string_add name="_bx_tasks_page_title_entries_billing_in_context"><![CDATA[Billing]]></string_add>
-    <string_add name="_bx_tasks_page_block_title_system_context_billing_summary"><![CDATA[Context Billed Time by Person]]></string_add>
-    <string_add name="_bx_tasks_page_block_title_context_billing_summary"><![CDATA[Billed Time]]></string_add>
+    <string_add name="_bx_tasks_page_block_title_system_context_billing_summary"><![CDATA[Context Billable Time by Person]]></string_add>
+    <string_add name="_bx_tasks_page_block_title_context_billing_summary"><![CDATA[Billable Time]]></string_add>
     <string_add name="_bx_tasks_menu_item_title_system_view_context_billing"><![CDATA[Billing in Context]]></string_add>
     <string_add name="_bx_tasks_menu_item_title_view_context_billing"><![CDATA[Billing]]></string_add>
     <string_add name="_bx_tasks_alert_action_timer_stopped_personal"><![CDATA[Pause a timer that ran for too long]]></string_add>
     <string_add name="_bx_tasks_txt_notification_timer_stopped"><![CDATA[The timer of <b class="bx-ntfs-content-profile">{entry_author_name}</b> on <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} was paused: it ran for too long]]></string_add>
     <string_add name="_bx_tasks_txt_notification_timer_stopped_in_context"><![CDATA[The timer of <b class="bx-ntfs-content-profile">{entry_author_name}</b> on <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} in <b class="bx-ntfs-content-profile">{owner_name}</b> was paused: it ran for too long]]></string_add>
+    <string_add name="_bx_tasks_option_timer_running_limit"><![CDATA[Pause a timer that runs without a pause for longer than, hours (0 for never)]]></string_add>
 </resources>

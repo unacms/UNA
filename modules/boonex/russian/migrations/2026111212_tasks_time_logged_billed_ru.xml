@@ -3,21 +3,22 @@
 <!-- Russian strings of the tasks module: Logged and Billed time, the Billing page, the timer notification. -->
 <resources name="ru" flag="ru" title="Russian" category="Tasks">
     <string_add name="_bx_tasks_txt_time_logged"><![CDATA[Залогировано]]></string_add>
-    <string_add name="_bx_tasks_txt_time_billed"><![CDATA[Выставлено]]></string_add>
+    <string_add name="_bx_tasks_txt_time_billed"><![CDATA[К оплате]]></string_add>
     <string_add name="_bx_tasks_txt_time_original"><![CDATA[Исходное]]></string_add>
     <string_add name="_bx_tasks_txt_time_by_timer"><![CDATA[Таймер]]></string_add>
     <string_add name="_bx_tasks_txt_time_by_hand"><![CDATA[Вручную]]></string_add>
     <string_add name="_bx_tasks_grid_column_title_tm_value_total"><![CDATA[Всего]]></string_add>
     <string_add name="_bx_tasks_grid_column_title_tm_value_manual"><![CDATA[Вручную]]></string_add>
-    <string_add name="_bx_tasks_grid_column_title_tm_value_billed"><![CDATA[Выставлено]]></string_add>
-    <string_add name="_bx_tasks_form_time_input_value_billed"><![CDATA[Выставленное время]]></string_add>
+    <string_add name="_bx_tasks_grid_column_title_tm_value_billed"><![CDATA[К оплате]]></string_add>
+    <string_add name="_bx_tasks_form_time_input_value_billed"><![CDATA[Оплачиваемое время]]></string_add>
     <string_add name="_bx_tasks_page_title_sys_entries_billing_in_context"><![CDATA[Биллинг задач в контексте]]></string_add>
     <string_add name="_bx_tasks_page_title_entries_billing_in_context"><![CDATA[Биллинг]]></string_add>
-    <string_add name="_bx_tasks_page_block_title_system_context_billing_summary"><![CDATA[Выставленное время контекста по участникам]]></string_add>
-    <string_add name="_bx_tasks_page_block_title_context_billing_summary"><![CDATA[Выставленное время]]></string_add>
+    <string_add name="_bx_tasks_page_block_title_system_context_billing_summary"><![CDATA[Оплачиваемое время контекста по участникам]]></string_add>
+    <string_add name="_bx_tasks_page_block_title_context_billing_summary"><![CDATA[Оплачиваемое время]]></string_add>
     <string_add name="_bx_tasks_menu_item_title_system_view_context_billing"><![CDATA[Биллинг в контексте]]></string_add>
     <string_add name="_bx_tasks_menu_item_title_view_context_billing"><![CDATA[Биллинг]]></string_add>
     <string_add name="_bx_tasks_alert_action_timer_stopped_personal"><![CDATA[Остановка слишком долгого таймера]]></string_add>
     <string_add name="_bx_tasks_txt_notification_timer_stopped"><![CDATA[Таймер <b class="bx-ntfs-content-profile">{entry_author_name}</b> по <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} остановлен: он работал слишком долго]]></string_add>
     <string_add name="_bx_tasks_txt_notification_timer_stopped_in_context"><![CDATA[Таймер <b class="bx-ntfs-content-profile">{entry_author_name}</b> по <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} в <b class="bx-ntfs-content-profile">{owner_name}</b> остановлен: он работал слишком долго]]></string_add>
+    <string_add name="_bx_tasks_option_timer_running_limit"><![CDATA[Ставить на паузу таймер, который идёт без паузы дольше, часов (0 - никогда)]]></string_add>
 </resources>

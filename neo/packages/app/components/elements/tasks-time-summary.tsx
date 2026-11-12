@@ -13,6 +13,8 @@ import emitter, { EVENTS } from 'app/context/emitter';
 import { formatTaskMinutes } from 'app/lib/tasks-meta';
 
 const REFRESH_ACTIONS = ['log', 'log-all'];
+/** The module's time grids (`bx_tasks_time_*`): adding, changing or deleting time there changes the summary. */
+const TIME_GRIDS = ['bx_tasks_time_administration', 'bx_tasks_time_common', 'bx_tasks_time_context_administration', 'bx_tasks_time_context_common'];
 
 /** Only the time the viewer may see comes: Logged (`minutes`, `original`), Billed (`billed`) or both. */
 type Totals = {
@@ -237,16 +239,24 @@ export default function TasksTimeSummary({ data, blockWrapperProps }: TasksTimeS
         if (!requestUrl) return undefined;
 
         let latestRequest = 0;
-        // Logged time reaches this block without a page reload.
-        const subscription = emitter.addListener(EVENTS.taskTimer, async (event: { action?: string }) => {
-            if (!REFRESH_ACTIONS.includes(String(event.action))) return;
-
+        const reload = async () => {
             const request = ++latestRequest;
             const response = await fetcher('/api.php?r=' + requestUrl);
             const next = response?.data?.[0]?.data;
             if (request === latestRequest && next?.periods) setSummary(next);
+        };
+
+        // Logged time reaches this block without a page reload: a Log, or a change in a time grid.
+        const timerSubscription = emitter.addListener(EVENTS.taskTimer, (event: { action?: string }) => {
+            if (REFRESH_ACTIONS.includes(String(event.action))) reload();
         });
-        return () => subscription.remove();
+        const gridSubscription = emitter.addListener(EVENTS.gridChanged, (event: { object?: string }) => {
+            if (TIME_GRIDS.includes(String(event.object))) reload();
+        });
+        return () => {
+            timerSubscription.remove();
+            gridSubscription.remove();
+        };
     }, [requestUrl]);
 
     const periods = Array.isArray(summary?.periods) ? summary.periods : [];
