@@ -241,6 +241,8 @@ UNA says per menu how its buttons look and how big they are: Studio > Navigation
 
 - `components/menu.js` fills them into the menu's `params` with `withMenuButtonParams` (`lib/util/menu.ts`): `regular` is NeoButton `bordered`, `glass` is `glass`, `plain` is `plain`; the sizes are NeoButton's control sizes of the same names.
 - They are the default, not an override: a call site that passes `button_style`, the legacy `button_variant` or `button_size` keeps its own. To let UNA decide for a menu, leave those out at the call site.
+- A call site that needs a look for a menu UNA leaves on Automatic passes `button_style_default` / `button_size_default` instead: UNA's choice wins over them, and they apply when UNA has none. The order is fixed value, UNA, default (`lib/menu-button-params.ts`, with tests).
+- The cover's actions menu (`CoverMenu`, `CoverMenuMore` in `components/elements/covers/menu-cover.js`) follows UNA this way. Its defaults are glass on phone and tablet, where the actions sit over the cover picture, and bordered on desktop.
 - Glass is for a menu over a picture or another backdrop that varies (a cover, a header without chrome). Prefer setting it on the menu in UNA over hard-coding `glass` at a call site, so the site and the apps agree.
 
 ### Form labels
