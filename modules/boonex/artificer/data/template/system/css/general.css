@@ -608,6 +608,11 @@ html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
 
     font-size: 1.25rem;
 }
+/* 20px, as NEO's title icon (theme.blocks u-block-title-icon-size). */
+.bx-artificer .bx-db-title .bx-dbt-row > .bx-dbt-ic :is(svg, .sys-icon) {
+    width: 1.25rem;
+    height: 1.25rem;
+}
 .bx-artificer .bx-db-title:has(.bx-dbt-dsc) {
     align-items: flex-start;
 }
