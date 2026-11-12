@@ -15,7 +15,8 @@ import { isMac } from '../../lib/platform';
 import { useAudiences } from '../../lib/site-modules';
 import type { Uploader } from '../../lib/uploads';
 import { type Audience, AudienceField, useFormContext } from '../photos/new-media';
-import { type FieldError, focusPostField, newPostFieldError, PostCategoryField, PostTextFields, summaryBlocker, textBlocker, titleBlocker, uploadsHold, usePostCategories, usePostImages } from './new-post';
+import { type FieldError, focusPostField, newPostFieldError, PostCategoryField, PostTextFields, summaryBlocker, textBlocker, titleBlocker, usePostCategories } from './new-post';
+import { uploadsHold, useTextImages } from '../../components/rich-editor/text-images';
 import type { Post } from './posts';
 
 type PostChanges = Schema<'PostChanges'>;
@@ -140,7 +141,7 @@ export const SAVE_ANSWER_MS = 60_000;
 export function EditPost({ post, uploader, announce, onDone }: { post: Post; uploader?: Uploader; announce?: (text: string) => void; onDone: (saved: Post | null) => void }) {
     const { api } = useApp();
     const id = useId();
-    const images = usePostImages(uploader);
+    const images = useTextImages(uploader);
     const listed = usePostCategories().data;
     // the post's own category stays choosable when the site no longer lists it
     const categories = useMemo(() => {

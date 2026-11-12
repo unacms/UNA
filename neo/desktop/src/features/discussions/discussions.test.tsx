@@ -600,3 +600,189 @@ describe('a new discussion’s draft', () => {
         await waitFor(async () => expect(await draftStore().get(key)).toBeUndefined());
     });
 });
+
+describe('a picture of a discussion’s text that is still uploading', () => {
+    const PICTURE = 'https://community.example/image_transcoder.php?o=sys_images_editor&h=7&s=abc';
+    const PICTURE_ANSWER: Answer = { status: 201, body: { url: PICTURE, width: 640, height: 480, mime_type: 'image/png' } };
+    const HOLD = 'Wait until the uploads are done.';
+    const later = () => {
+        let give: (answer: Answer) => void = () => {};
+        const answer = new Promise<Answer>((resolve) => (give = resolve));
+        return { answer, give };
+    };
+    const pastePicture = (box: HTMLElement) => fireEvent.paste(box, { clipboardData: { files: [new File([new Uint8Array([137, 80, 78, 71])], 'map.png', { type: 'image/png' })], getData: () => '' } });
+    /** What a held button says of itself: the words its aria-describedby points to. */
+    const heldFor = (button: HTMLElement) => document.getElementById(button.getAttribute('aria-describedby') ?? '')?.textContent ?? null;
+    /** Presses the button the moment the picture is in the text: the form is not drawn with it yet. */
+    const pressWhenPictured = (text: HTMLElement, button: HTMLElement) => {
+        const state = { pressed: false };
+        const seen = new MutationObserver(() => {
+            if (state.pressed || !text.querySelector('img')) return;
+            state.pressed = true;
+            fireEvent.click(button);
+        });
+        seen.observe(text, { childList: true, subtree: true });
+        return { state, stop: () => seen.disconnect() };
+    };
+
+    const newRoute: Route = { list: { section: 'discussions' }, detail: { kind: 'new-discussion' } };
+    const newRoutes = (upload: Promise<Answer>, sent: { title: string; body_html?: string }[]): Record<string, Handler> => ({
+        'GET /discussions/categories': setup(),
+        'GET /me/groups': () => ({ status: 200, body: [] }),
+        'POST /uploads/inline': () => upload,
+        'POST /discussions': async (r) => {
+            sent.push((await r.json()) as { title: string; body_html?: string });
+            return { status: 201, body: discussion('21', { title: 'With a map', author: andrey }) };
+        },
+    });
+
+    it('holds Start discussion from the paste until it is in the text, and starts it with the picture', async () => {
+        const upload = later();
+        const sent: { title: string; body_html?: string }[] = [];
+        const { calls } = renderWith(newRoute, newRoutes(upload.answer, sent), (h) => <DetailPane route={h.current} />);
+        const title = await screen.findByRole('textbox', { name: 'Title' });
+        fireEvent.change(title, { target: { value: 'With a map' } });
+        const text = screen.getByRole('textbox', { name: 'Text' });
+        setRichText(text, 'See the map');
+        const start = screen.getByRole('button', { name: 'Start discussion' });
+        expect(start.getAttribute('aria-disabled')).toBeNull();
+        expect(heldFor(start)).toMatch(/^What you type is kept/);
+        const look = start.className;
+        pastePicture(text);
+        // from the paste on, not only once the upload has started
+        await waitFor(() => expect(start.getAttribute('aria-disabled')).toBe('true'));
+        expect(heldFor(start)).toBe(HOLD);
+        // the same button, as it was: a real one that still takes focus and the press
+        expect((start as HTMLButtonElement).disabled).toBe(false);
+        expect(start.className).toBe(look);
+        await waitFor(() => expect(calls).toContain('POST /uploads/inline'));
+        expect(start.getAttribute('aria-disabled')).toBe('true');
+        fireEvent.click(start);
+        fireEvent.keyDown(title, { key: 'Enter', metaKey: true, ctrlKey: true });
+        await act(async () => {});
+        expect(sent).toEqual([]);
+        upload.give(PICTURE_ANSWER);
+        await waitFor(() => expect(start.getAttribute('aria-disabled')).toBeNull());
+        expect(heldFor(start)).toMatch(/^What you type is kept/);
+        expect(text.querySelector('img')).toBeTruthy();
+        fireEvent.click(start);
+        await waitFor(() => expect(sent).toHaveLength(1));
+        expect(sent[0]?.body_html).toContain('<img src=');
+    });
+
+    it('holds a Start discussion pressed when the picture has come and the form is not drawn with it yet', async () => {
+        const upload = later();
+        const sent: { title: string; body_html?: string }[] = [];
+        const { calls } = renderWith(newRoute, newRoutes(upload.answer, sent), (h) => <DetailPane route={h.current} />);
+        fireEvent.change(await screen.findByRole('textbox', { name: 'Title' }), { target: { value: 'With a map' } });
+        const text = screen.getByRole('textbox', { name: 'Text' });
+        setRichText(text, 'See the map');
+        const start = screen.getByRole('button', { name: 'Start discussion' });
+        pastePicture(text);
+        await waitFor(() => expect(calls).toContain('POST /uploads/inline'));
+        const press = pressWhenPictured(text, start);
+        upload.give(PICTURE_ANSWER);
+        await waitFor(() => expect(press.state.pressed).toBe(true));
+        press.stop();
+        await waitFor(() => expect(start.getAttribute('aria-disabled')).toBeNull());
+        // not started with the text as it was before the picture
+        expect(sent).toEqual([]);
+        fireEvent.click(start);
+        await waitFor(() => expect(sent).toHaveLength(1));
+        expect(sent[0]?.body_html).toContain('<img src=');
+    });
+
+    const route: Route = { list: { section: 'discussions' }, detail: { kind: 'discussion', id: '15' } };
+    const own = discussion('15', { author: andrey, body: 'Old text', body_html: '<p>Old text</p>', viewer: { can_edit: true, can_edit_text: true, can_delete: true, can_reply: true } });
+    const editRoutes = (upload: () => Promise<Answer>, patched: { title?: string; body_html?: string }[]): Record<string, Handler> => ({
+        'GET /discussions/15': () => ({ status: 200, body: own }),
+        'GET /activities/9015': () => ({ status: 200, body: activity('9015') }),
+        'GET /content/9015/comments': () => ({ status: 200, body: { items: [], next_cursor: null } }),
+        'GET /discussions/categories': setup(),
+        'POST /uploads/inline': upload,
+        'PATCH /discussions/15': async (r) => {
+            const body = (await r.json()) as { title?: string; body_html?: string };
+            patched.push(body);
+            return { status: 200, body: { ...own, body_html: body.body_html ?? own.body_html } };
+        },
+    });
+    const openEditor = async () => {
+        fireEvent.click(await screen.findByRole('button', { name: 'More for the discussion' }));
+        fireEvent.click(screen.getByRole('menuitem', { name: 'Edit Discussion' }));
+        return screen.findByRole('textbox', { name: 'Title' });
+    };
+
+    it('holds Save while it uploads, counts it as a change for Esc and Cancel, and saves the text with it', async () => {
+        const uploads = [later(), later()];
+        let asked = 0;
+        const patched: { title?: string; body_html?: string }[] = [];
+        const { calls } = renderWith(
+            route,
+            editRoutes(() => uploads[asked++]!.answer, patched),
+            (h) => <DetailPane route={h.current} />,
+        );
+        const title = await openEditor();
+        const save = screen.getByRole('button', { name: 'Save' });
+        const text = screen.getByRole('textbox', { name: 'Text' });
+        expect(save.getAttribute('aria-disabled')).toBeNull();
+        expect(save.getAttribute('aria-describedby')).toBeNull();
+        pastePicture(text);
+        await waitFor(() => expect(save.getAttribute('aria-disabled')).toBe('true'));
+        expect(heldFor(save)).toBe(HOLD);
+        expect((save as HTMLButtonElement).disabled).toBe(false);
+        await waitFor(() => expect(calls).toContain('POST /uploads/inline'));
+        // nothing else changed: Esc and Cancel still ask, for the picture on its way
+        const ask = vi.spyOn(window, 'confirm').mockReturnValue(false);
+        fireEvent.keyDown(title, { key: 'Escape' });
+        await waitFor(() => expect(ask).toHaveBeenCalledTimes(1));
+        fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+        await waitFor(() => expect(ask).toHaveBeenCalledTimes(2));
+        expect(screen.getByRole('form', { name: 'Edit the discussion' })).toBeTruthy();
+        // an upload the site refuses holds nothing any longer
+        uploads[0]?.give({ status: 413, body: { type: 'urn:una:problem:too_large', title: 'Too large', status: 413, code: 'too_large' } });
+        await waitFor(() => expect(save.getAttribute('aria-disabled')).toBeNull());
+        pastePicture(text);
+        await waitFor(() => expect(calls.filter((c) => c === 'POST /uploads/inline')).toHaveLength(2));
+        expect(save.getAttribute('aria-disabled')).toBe('true');
+        fireEvent.click(save);
+        fireEvent.keyDown(title, { key: 'Enter', metaKey: true, ctrlKey: true });
+        await act(async () => {});
+        // not closed as unchanged, with the picture lost
+        expect(patched).toEqual([]);
+        expect(screen.getByRole('form', { name: 'Edit the discussion' })).toBeTruthy();
+        uploads[1]?.give(PICTURE_ANSWER);
+        await waitFor(() => expect(save.getAttribute('aria-disabled')).toBeNull());
+        expect(save.getAttribute('aria-describedby')).toBeNull();
+        fireEvent.click(save);
+        expect(await screen.findByText('Discussion saved')).toBeTruthy();
+        expect(patched).toHaveLength(1);
+        expect(patched[0]?.body_html).toContain('<img src=');
+    });
+
+    it('holds a Save pressed when the picture has come and the form is not drawn with it yet', async () => {
+        const upload = later();
+        const patched: { title?: string; body_html?: string }[] = [];
+        const { calls } = renderWith(
+            route,
+            editRoutes(() => upload.answer, patched),
+            (h) => <DetailPane route={h.current} />,
+        );
+        await openEditor();
+        const save = screen.getByRole('button', { name: 'Save' });
+        const text = screen.getByRole('textbox', { name: 'Text' });
+        pastePicture(text);
+        await waitFor(() => expect(calls).toContain('POST /uploads/inline'));
+        const press = pressWhenPictured(text, save);
+        upload.give(PICTURE_ANSWER);
+        await waitFor(() => expect(press.state.pressed).toBe(true));
+        press.stop();
+        // not closed as unchanged, with the picture lost
+        expect(screen.getByRole('form', { name: 'Edit the discussion' })).toBeTruthy();
+        expect(patched).toEqual([]);
+        await waitFor(() => expect(save.getAttribute('aria-disabled')).toBeNull());
+        fireEvent.click(save);
+        expect(await screen.findByText('Discussion saved')).toBeTruthy();
+        expect(patched).toHaveLength(1);
+        expect(patched[0]?.body_html).toContain('<img src=');
+    });
+});

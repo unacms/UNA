@@ -10,6 +10,8 @@ import { useDraft, useDraftKey } from '../../lib/drafts';
 import { useNavigation } from '../../lib/navigation';
 import { isMac } from '../../lib/platform';
 import { CloseDetailButton, Pane } from '../../shell/pane';
+import { uploadsHold, useTextImages } from '../../components/rich-editor/text-images';
+import { useWindowAnnounce } from '../../lib/announce';
 import { useMyGroups, useMySpaces } from '../groups/groups';
 import { type Changes, DiscussionFields, type FieldError, isSubmitKey } from './discussion-pane';
 import { discussionKey, useDiscussionSetup } from './discussions';
@@ -30,9 +32,16 @@ const isAudience = (v: unknown): v is Audience => AUDIENCES.some((a) => a.value 
  * and who can see it, or the group it goes in when it was started from one. What is typed is a
  * lasting draft (lib/drafts.ts, one per profile and group), so closing the pane, going elsewhere
  * or quitting throws nothing away; started, it becomes the discussion, and the lists show it.
+ * While a picture pasted or dropped in the text is uploading, Start discussion is held and says
+ * why: started then, it would go without the picture.
  */
 export function NewDiscussion({ groupId }: { groupId?: string }) {
     const { api } = useApp();
+    // said where the text box says its own (the window's live region)
+    const announce = useWindowAnnounce();
+    const images = useTextImages();
+    // a picture of the text still on its way holds Start discussion, and ⌘↩ with it
+    const uploading = images.pending > 0;
     const queryClient = useQueryClient();
     const { history, replaceDetail } = useNavigation();
     const setup = useDiscussionSetup();
@@ -68,6 +77,13 @@ export function NewDiscussion({ groupId }: { groupId?: string }) {
     const submit = async (e?: FormEvent) => {
         e?.preventDefault();
         if (sending) return;
+        // a picture on its way is not in the text yet: started now, it would go without it;
+        // `busy()` for a press before the upload is drawn, `uploading` for one before the picture is
+        // (the upload is over, and `value` here is still the text without it)
+        if (uploading || images.busy()) {
+            announce(uploadsHold());
+            return;
+        }
         if (!value.title.trim()) {
             setFieldError({ field: 'title', text: t('Give it a title.') });
             document.getElementById(`${id}-title`)?.focus();
@@ -129,7 +145,7 @@ export function NewDiscussion({ groupId }: { groupId?: string }) {
                         }}
                         noValidate
                     >
-                        <DiscussionFields id={id} value={value} onChange={setValue} categories={categories} error={fieldError} autoFocus />
+                        <DiscussionFields id={id} value={value} onChange={setValue} categories={categories} error={fieldError} autoFocus images={images} />
                         {groupId ? null : (
                             <div className="settings-field">
                                 <label htmlFor={`${id}-audience`}>{t('Who can see it')}</label>
@@ -148,15 +164,21 @@ export function NewDiscussion({ groupId }: { groupId?: string }) {
                             </p>
                         ) : null}
                         <div className="settings-actions">
-                            <span className="muted small" id={`${id}-kept`}>
-                                {t('What you type is kept until you start it. {{keys}} starts it.', { keys: isMac ? '⌘↩' : 'Ctrl+Enter' })}
-                            </span>
+                            {uploading ? (
+                                <span id={`${id}-held`} className="muted small">
+                                    {uploadsHold()}
+                                </span>
+                            ) : (
+                                <span className="muted small" id={`${id}-kept`}>
+                                    {t('What you type is kept until you start it. {{keys}} starts it.', { keys: isMac ? '⌘↩' : 'Ctrl+Enter' })}
+                                </span>
+                            )}
                             <button
                                 type="submit"
                                 className="btn btn-primary"
-                                aria-disabled={sending || undefined}
+                                aria-disabled={sending || uploading || undefined}
                                 aria-busy={sending || undefined}
-                                aria-describedby={`${id}-kept`}
+                                aria-describedby={uploading ? `${id}-held` : `${id}-kept`}
                                 aria-keyshortcuts={isMac ? 'Meta+Enter' : 'Control+Enter'}
                             >
                                 {t('Start discussion')}

@@ -111,15 +111,22 @@ export function NewVideo({ contextId, uploader: given }: { contextId?: string; u
     });
 
     // the form goes: an upload nothing took goes with it
-    useEffect(
-        () => () => {
+    const gone = useRef(false);
+    useEffect(() => {
+        gone.current = false;
+        return () => {
+            gone.current = true;
             const u = latest.current;
             if (u && !added.current) dropRef.current(u);
-        },
-        [],
-    );
+        };
+    }, []);
 
     const start = (staging: Staging) => {
+        // the form went while the file was made ready (the dialog, a drop): nothing sends it
+        if (gone.current) {
+            for (const f of staging.files) uploader.release(f);
+            return;
+        }
         const [picked, ...extra] = staging.files;
         for (const f of extra) uploader.release(f);
         if (!picked) {
@@ -131,7 +138,10 @@ export function NewVideo({ contextId, uploader: given }: { contextId?: string; u
         const was = latest.current;
         if (was) drop(was, was.picked === picked);
         setFieldError(null);
-        setUpload({ status: 'uploading', picked, sent: 0, total: picked.size });
+        const next: VideoUpload = { status: 'uploading', picked, sent: 0, total: picked.size };
+        // known at once (not only after the render): the form going before it is drawn lets it go too
+        latest.current = next;
+        setUpload(next);
         setNote(extra.length ? t('Uploading {{name}}. A video takes one file: the others were left out', { name: picked.name }) : t('Uploading {{name}}', { name: picked.name }));
         if (!title.trim()) setTitle(titleFromName(picked.name));
         uploader.upload(picked, (sent, total) => setUpload((u) => (u && u.status === 'uploading' && u.picked === picked ? { ...u, sent, total } : u))).then(

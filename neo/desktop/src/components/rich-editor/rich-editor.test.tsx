@@ -353,4 +353,86 @@ describe('pasting', () => {
         expect(uploadInline).not.toHaveBeenCalled();
         expect(announce).toHaveBeenCalledWith(HELD);
     });
+
+    // a file made ready is kept by the app until it is uploaded or let go: each one the text does not take is let go
+    const shot: Picked = { handle: 'h1', name: 'shot.png', size: 1, mime: 'image/png', kind: 'image' };
+    const clip: Picked = { handle: 'h2', name: 'clip.mp4', size: 9, mime: 'video/mp4', kind: 'video' };
+
+    it('lets go a picture whose upload failed, and says why', async () => {
+        const announce = vi.fn();
+        const release = vi.fn();
+        const uploadInline = vi.fn(async (_file: Picked): Promise<{ src: string }> => {
+            throw new Error('Too large');
+        });
+        render(<Box mode="full" label="Text" announce={announce} images={{ uploader: { ...uploader(), fromFiles: async () => ({ files: [shot], refused: [] }), release }, uploadInline }} />, { wrapper: wrapper(fakeApi([])) });
+        pasteFiles([png()]);
+        await waitFor(() => expect(announce).toHaveBeenCalledWith('shot.png was not added: Too large'));
+        expect(release.mock.calls).toEqual([[shot]]);
+    });
+
+    it('lets go a video made ready with a picture: only the picture is uploaded', async () => {
+        const announce = vi.fn();
+        const release = vi.fn();
+        const uploadInline = vi.fn(async (_file: Picked) => ({ src: 'https://community.example/1.png' }));
+        render(<Box mode="full" label="Text" announce={announce} images={{ uploader: { ...uploader(), fromFiles: async () => ({ files: [clip, shot], refused: [] }), release }, uploadInline }} />, { wrapper: wrapper(fakeApi([])) });
+        pasteFiles([png()]);
+        await waitFor(() => expect(uploadInline).toHaveBeenCalledTimes(1));
+        expect(uploadInline.mock.calls[0]![0]).toBe(shot);
+        expect(announce).toHaveBeenCalledWith('Only pictures go in the text.');
+        await act(async () => {});
+        // the picture was uploaded (the app lets that one go itself); the video is let go here
+        expect(release.mock.calls).toEqual([[clip]]);
+    });
+
+    it('stops and lets go a picture still uploading when the box goes away, once', async () => {
+        const announce = vi.fn();
+        const release = vi.fn();
+        const cancel = vi.fn();
+        let fail: (e: unknown) => void = () => {};
+        const uploadInline = vi.fn((_file: Picked) => new Promise<{ src: string }>((_, reject) => (fail = reject)));
+        const { unmount } = render(<Box mode="full" label="Text" announce={announce} images={{ uploader: { ...uploader(), fromFiles: async () => ({ files: [shot], refused: [] }), cancel, release }, uploadInline }} />, { wrapper: wrapper(fakeApi([])) });
+        pasteFiles([png()]);
+        await waitFor(() => expect(uploadInline).toHaveBeenCalledTimes(1));
+        expect(release).not.toHaveBeenCalled();
+        announce.mockClear();
+        unmount();
+        expect(cancel.mock.calls).toEqual([[shot]]);
+        expect(release.mock.calls).toEqual([[shot]]);
+        // the stopped upload's answer lets nothing go a second time, and says nothing to a box that is gone
+        await act(async () => fail(new Error('The upload was stopped')));
+        expect(release).toHaveBeenCalledTimes(1);
+        expect(announce).not.toHaveBeenCalled();
+    });
+
+    it('lets go a picture made ready after the box went away, and starts no upload', async () => {
+        const release = vi.fn();
+        let ready: (staging: Staging) => void = () => {};
+        const fromFiles = vi.fn(() => new Promise<Staging>((resolve) => (ready = resolve)));
+        const uploadInline = vi.fn(async (_file: Picked) => ({ src: 'https://community.example/1.png' }));
+        const { unmount } = render(<Box mode="full" label="Text" images={{ uploader: { ...uploader(), fromFiles, release }, uploadInline }} />, { wrapper: wrapper(fakeApi([])) });
+        pasteFiles([png()]);
+        expect(fromFiles).toHaveBeenCalledTimes(1);
+        unmount();
+        await act(async () => ready({ files: [shot, clip], refused: [] }));
+        expect(release.mock.calls).toEqual([[shot], [clip]]);
+        expect(uploadInline).not.toHaveBeenCalled();
+    });
+
+    it('lets go pictures the composer stopped taking while they were made ready', async () => {
+        const announce = vi.fn();
+        const release = vi.fn();
+        let ready: (staging: Staging) => void = () => {};
+        const fromFiles = vi.fn(() => new Promise<Staging>((resolve) => (ready = resolve)));
+        const attach = vi.fn();
+        const taking = { ...uploader(), fromFiles, release };
+        // a feed post that became a poll: its text box refuses pictures from then on
+        const { rerender } = render(<Box announce={announce} images={{ uploader: taking, attach }} />, { wrapper: wrapper(fakeApi([])) });
+        pasteFiles([png()]);
+        expect(fromFiles).toHaveBeenCalledTimes(1);
+        rerender(<Box announce={announce} images={{ uploader: taking, refusal: 'A poll takes no photos or videos here.' }} />);
+        await act(async () => ready({ files: [shot], refused: [] }));
+        expect(release.mock.calls).toEqual([[shot]]);
+        expect(attach).not.toHaveBeenCalled();
+        expect(announce).toHaveBeenCalledWith('A poll takes no photos or videos here.');
+    });
 });

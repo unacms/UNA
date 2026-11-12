@@ -10,7 +10,7 @@ import { RouterProvider } from '../../lib/navigation';
 import { opensInWindow } from '../../lib/open-in-window';
 import { feedRoute, parseRoute, type Route, RouteHistory, routeToPath, sectionRoute } from '../../lib/router';
 import { setSiteModules } from '../../lib/site-modules';
-import { type Picked, UploadError, type Uploader, videoUploader } from '../../lib/uploads';
+import { type Picked, type Staging, UploadError, type Uploader, videoUploader } from '../../lib/uploads';
 import { type CommandHandler, Shell } from '../../shell/shell';
 import type { NavItem } from '../../shell/sidebar';
 import { contextTabs } from '../groups/group-view';
@@ -371,6 +371,40 @@ describe('adding a video', () => {
         expect(released.has('h-clip')).toBe(false);
         await act(async () => pending.get('h-clip')?.resolve(media({ id: '99' })));
         expect(await screen.findByText('Uploaded and ready.')).toBeTruthy();
+    });
+
+    it('lets go a video picked after the form went away, and uploads nothing', async () => {
+        const { api } = site();
+        const { base, pending } = fakeUploader();
+        const released: string[] = [];
+        let picked: (staging: Staging) => void = () => {};
+        const uploader: Uploader = { ...base, pick: () => new Promise<Staging>((resolve) => (picked = resolve)), release: (f) => void released.push(f.handle ?? '') };
+        renderApp({ list: { section: 'media' }, detail: { kind: 'new-video' } }, api, <NewVideo uploader={uploader} />);
+        fireEvent.click(await screen.findByRole('button', { name: 'Choose a video…' }));
+        // the form closes while the system's dialog is open
+        cleanup();
+        await act(async () => picked({ files: [{ handle: 'h-clip', name: 'Harbour at dawn.mp4', size: 2_000_000, mime: 'video/mp4', kind: 'video' }], refused: [] }));
+        expect(released).toEqual(['h-clip']);
+        expect(pending.size).toBe(0);
+    });
+
+    it('stops and lets go a video the moment the form goes away, before it was drawn', async () => {
+        const { api } = site();
+        const { base } = fakeUploader();
+        const released: string[] = [];
+        const cancelled: string[] = [];
+        let picked: (staging: Staging) => void = () => {};
+        const uploader: Uploader = { ...base, pick: () => new Promise<Staging>((resolve) => (picked = resolve)), cancel: (f) => void cancelled.push(f.handle ?? ''), release: (f) => void released.push(f.handle ?? '') };
+        renderApp({ list: { section: 'media' }, detail: { kind: 'new-video' } }, api, <NewVideo uploader={uploader} />);
+        fireEvent.click(await screen.findByRole('button', { name: 'Choose a video…' }));
+        await act(async () => {
+            picked({ files: [{ handle: 'h-clip', name: 'Harbour at dawn.mp4', size: 2_000_000, mime: 'video/mp4', kind: 'video' }], refused: [] });
+            await Promise.resolve();
+            await Promise.resolve();
+            cleanup();
+        });
+        expect(cancelled).toEqual(['h-clip']);
+        expect(released).toEqual(['h-clip']);
     });
 
     it('deletes an upload left behind when a link is added instead', async () => {
