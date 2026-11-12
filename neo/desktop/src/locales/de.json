@@ -2071,5 +2071,6 @@
     "{{site}} has API v2 (a preview) turned off. Its administrator can turn it on in Studio > API > Settings.": "Auf {{site}} ist API v2 (eine Vorschau) ausgeschaltet. Der Administrator der Website kann sie unter Studio > API > Settings einschalten.",
     "{{site}} has its API turned off": "Auf {{site}} ist die API ausgeschaltet",
     "Not a network the app is signed in to": "Die App ist bei diesem Netzwerk nicht angemeldet",
-    "Pictures can’t be added while the text is being sent.": "Während der Text gesendet wird, können keine Bilder hinzugefügt werden."
+    "Pictures can’t be added while the text is being sent.": "Während der Text gesendet wird, können keine Bilder hinzugefügt werden.",
+    "The discussion was not started: {{reason}}": "Die Diskussion wurde nicht gestartet: {{reason}}"
 }

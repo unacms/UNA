@@ -282,7 +282,10 @@ function usePostContexts(fixed: string | undefined) {
  * see it, or where it goes: a context it was started from, or one of one's groups and spaces that
  * take posts. While a picture pasted or dropped in the text is uploading, Post is held and says
  * why, since the picture is in the text only once it is there. Sent, it opens; the lists show it. The site's refusal (a membership level that may
- * not write posts) is said in the form.
+ * not write posts) is said in the form. While it is being sent the form takes no change, as the
+ * edit form (what was typed then would not be in the post): the fields are read-only, the lists
+ * and the cover held, for as long as the site takes to answer (a send that was stopped at a time
+ * limit and sent again could make the post twice).
  */
 export function NewPost({ contextId, uploader }: { contextId?: string; uploader?: Uploader }) {
     const { api } = useApp();
@@ -329,7 +332,9 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
             announce(uploadsHold());
             return;
         }
-        const blocker = newPostBlocker({ title, summary, text, html: content.html, coverBlocker: cover.blocker, categoryMissing: categories.length > 0 && !category });
+        // a cover that is being made ready (picked or dropped, not in the tray yet) holds it as one
+        // that is uploading: sent now, the post would go without it
+        const blocker = newPostBlocker({ title, summary, text, html: content.html, coverBlocker: cover.staging() ? t('Wait until the uploads are done') : cover.blocker, categoryMissing: categories.length > 0 && !category });
         if (blocker) {
             showError(blocker);
             return;
@@ -344,6 +349,8 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
         const from = history.current;
         setSending(true);
         setError(null);
+        // no time limit, unlike a save of the edit form: a post the site is still making would be
+        // said to be "not sent", and sent again changed (another key) it would be there twice
         let result;
         try {
             result = await api.POST('/posts', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/posts', body]) } }, body });
@@ -375,6 +382,13 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
         if (!replaceDetail({ kind: 'article', id: created.id }, from)) setSending(false);
     };
 
+    // while it is sent a change is refused, not only by the fields: an update that was already on its way
+    const edit =
+        <T,>(set: (value: T) => void) =>
+        (value: T) => {
+            if (!sending) set(value);
+        };
+
     const errorFor = (field: FieldError['field']) => (fieldError?.field === field ? fieldError.text : null);
     return (
         <Pane pane="detail" title={context ? t('New post in {{name}}', { name: context.display_name }) : t('New post')} actions={<CloseDetailButton />}>
@@ -383,21 +397,21 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
                     {announcement.text ? <span key={announcement.seq}>{announcement.text}</span> : null}
                 </p>
                 <form className="settings-form discussion-form new-article" aria-labelledby="detail-title" onSubmit={(e) => void submit(e)} onKeyDown={(e) => submitKeys(() => void submit())(e)} noValidate>
-                    <PostTextFields id={id} title={title} summary={summary} html={content.html} fieldError={fieldError} editor={editor} images={images} announce={announce} onTitle={setTitle} onSummary={setSummary} onContent={setContent} />
+                    <PostTextFields id={id} title={title} summary={summary} html={content.html} readOnly={sending} fieldError={fieldError} editor={editor} images={images} announce={announce} onTitle={edit(setTitle)} onSummary={edit(setSummary)} onContent={edit(setContent)} />
                     <fieldset className="settings-field settings-fieldset photo-field">
                         <legend>{t('Cover')}</legend>
-                        <PhotoDropZone uploads={cover} pickId={`${id}-pick`} describedBy={fieldError?.field === 'cover' ? `${id}-cover-error` : undefined} label={cover.items.length ? t('Choose another…') : t('Choose a cover…')} dropHint={t('or drop a photo here')} />
+                        <PhotoDropZone uploads={cover} pickId={`${id}-pick`} describedBy={fieldError?.field === 'cover' ? `${id}-cover-error` : undefined} label={cover.items.length ? t('Choose another…') : t('Choose a cover…')} dropHint={t('or drop a photo here')} held={sending} />
                         {errorFor('cover') ? (
                             <p id={`${id}-cover-error`} className="error small" role="alert">
                                 {errorFor('cover')}
                             </p>
                         ) : null}
                     </fieldset>
-                    <PostCategoryField id={id} categories={categories} category={category} fieldError={fieldError} onCategory={setCategory} />
+                    <PostCategoryField id={id} categories={categories} category={category} held={sending} fieldError={fieldError} onCategory={edit(setCategory)} />
                     {!contextId && contexts.length ? (
                         <div className="settings-field">
                             <label htmlFor={`${id}-where`}>{t('Where')}</label>
-                            <select id={`${id}-where`} value={chosen} onChange={(e) => setChosen(e.target.value)}>
+                            <select id={`${id}-where`} value={chosen} {...heldSelect(sending, (e) => setChosen(e.target.value))}>
                                 <option value="">{t('On your own (choose who sees it)')}</option>
                                 {contexts.map((g) => (
                                     <option key={g.id} value={g.id}>
@@ -407,7 +421,7 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
                             </select>
                         </div>
                     ) : null}
-                    <AudienceField id={id} tag="posts" contextId={where} context={context} audience={audience} onAudience={setAudience} noun="it" />
+                    <AudienceField id={id} tag="posts" contextId={where} context={context} audience={audience} held={sending} onAudience={edit(setAudience)} noun="it" />
                     {error ? (
                         <p className="error" role="alert">
                             {error}
