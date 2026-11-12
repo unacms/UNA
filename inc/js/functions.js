@@ -3059,7 +3059,7 @@ function bx_scrollbar_overlay_popups(oContext)
  * main menu), set to the item under the pointer, or the one focused from the keyboard, through CSS variables; it
  * slides between items and fades out when the pointer leaves the list. Touch has no hover: taps don't move it.
  *
- * Popup menus get it as they open (jquery.dolPopup.js), the header's main menu row on load.
+ * Popup menus get it as they open (jquery.dolPopup.js), the menus on the page on load.
  * @param oContext - a popup, or an element with popups in it
  */
 function bx_menu_highlight(oContext)
@@ -3073,7 +3073,8 @@ function bx_menu_highlight(oContext)
 }
 
 $(document).ready(function() {
-    $('#bx-toolbar ul.bx-menu-main').not('.bx-menu-highlight-list').each(function(iIndex, eList) {
+    // The header's main menu, the homepage's apps grid and the profile menu beside the feed (styled in Artificer's general.css).
+    $('#bx-toolbar ul.bx-menu-main, ul.bx-menu-object-sys_homepage, ul.bx-menu-object-sys_profile_stats').not('.bx-std *, .bx-popup *, .bx-menu-highlight-list').each(function(iIndex, eList) {
         bx_menu_highlight_list(eList);
     });
 });
