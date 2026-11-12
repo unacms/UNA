@@ -88,3 +88,50 @@ describe('a picture dropped on the window over a text that is being sent', () =>
         expect(announce).toHaveBeenCalledWith(HELD);
     });
 });
+
+describe('files dropped on the window over a text that takes pictures', () => {
+    const video: Picked = { handle: 'h2', name: 'clip.mp4', size: 9, mime: 'video/mp4', kind: 'video' };
+
+    it('lets go a video (Rust made it ready as a drop takes videos): only the picture is uploaded', async () => {
+        const announce = vi.fn();
+        const fromPaths = vi.fn(async (): Promise<Staging> => ({ files: [video, staged], refused: [] }));
+        const release = vi.fn();
+        const uploadInline = vi.fn(async (_file: Picked) => ({ src: `${SITE}/1.png` }));
+        render(<RichEditor mode="full" label="Text" value="" onChange={() => {}} windowDrops announce={announce} images={{ uploader: uploader(fromPaths, release), uploadInline }} />, { wrapper: Wrapper });
+        await waitFor(() => expect(webview.handlers).toHaveLength(1));
+        await drop();
+        await waitFor(() => expect(uploadInline).toHaveBeenCalledTimes(1));
+        expect(uploadInline.mock.calls[0]![0]).toBe(staged);
+        expect(announce).toHaveBeenCalledWith('Only pictures go in the text.');
+        expect(release.mock.calls).toEqual([[video]]);
+    });
+
+    it('lets go a picture whose upload failed', async () => {
+        const announce = vi.fn();
+        const fromPaths = vi.fn(async (): Promise<Staging> => ({ files: [staged], refused: [] }));
+        const release = vi.fn();
+        const uploadInline = vi.fn(async (_file: Picked): Promise<{ src: string }> => {
+            throw new Error('The connection was lost');
+        });
+        render(<RichEditor mode="full" label="Text" value="" onChange={() => {}} windowDrops announce={announce} images={{ uploader: uploader(fromPaths, release), uploadInline }} />, { wrapper: Wrapper });
+        await waitFor(() => expect(webview.handlers).toHaveLength(1));
+        await drop();
+        await waitFor(() => expect(announce).toHaveBeenCalledWith('map.png was not added: The connection was lost'));
+        expect(release.mock.calls).toEqual([[staged]]);
+    });
+
+    it('lets go what was made ready after the box went away', async () => {
+        let ready: (staging: Staging) => void = () => {};
+        const fromPaths = vi.fn(() => new Promise<Staging>((resolve) => (ready = resolve)));
+        const release = vi.fn();
+        const uploadInline = vi.fn(async (_file: Picked) => ({ src: `${SITE}/1.png` }));
+        const { unmount } = render(<RichEditor mode="full" label="Text" value="" onChange={() => {}} windowDrops images={{ uploader: uploader(fromPaths, release), uploadInline }} />, { wrapper: Wrapper });
+        await waitFor(() => expect(webview.handlers).toHaveLength(1));
+        await drop();
+        expect(fromPaths).toHaveBeenCalledTimes(1);
+        unmount();
+        await act(async () => ready({ files: [staged], refused: [] }));
+        expect(release.mock.calls).toEqual([[staged]]);
+        expect(uploadInline).not.toHaveBeenCalled();
+    });
+});

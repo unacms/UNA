@@ -615,6 +615,19 @@ then send an event to `bx_timeline_0`.
   for two minutes, or the site does not answer five minutes after the body is out. reqwest's
   `read_timeout` is not used: it is one timer from the request to the response headers. Outside the app (`vite dev` in a browser) the page picks with a file input and sends the
   file itself.
+- A file made ready stays with Rust (`UploadState.files`; a pasted one as its bytes) until it
+  is uploaded or let go (`release_file`), so whatever made it ready ends it one way or the
+  other. The tray (`useAttachments`) lets go what is taken off, what is over its limit, what
+  leaves it unsent when it starts over, and everything when it goes away, including files still
+  being made ready then. A text that takes pictures (`rich-editor.tsx`, `placeImages`) lets go
+  a file that is no picture, a picture whose upload failed (nothing sends it again), one the
+  box no longer takes, and stops and lets go those still on their way when the box goes away.
+  The new video form does the same for a file picked or dropped as it closes.
+- Pictures in a text (`useTextImages`, `components/rich-editor/text-images.ts`: a post's and a
+  discussion's forms) go to POST /uploads/inline and are in the text only once uploaded, so
+  from the paste or drop until then the form's Post, Save or Start discussion is held
+  (`aria-disabled`, described by "Wait until the uploads are done.", Cmd/Ctrl+Enter too), and
+  an edit form counts the picture as a change for Esc and Cancel.
 - Lasting drafts (`src/lib/drafts.ts`): the new post (text, audience, context and its finished
   uploads), the comment box and reply boxes of a post, and a conversation's reply or a new
   message are kept as they are typed (300 ms after the last key, and at once when the box goes),

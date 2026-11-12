@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { type FormEvent, type RefObject, useId, useMemo, useRef, useState } from 'react';
+import { type FormEvent, type RefObject, useId, useRef, useState } from 'react';
 
 import { isProblem, problemMessage, type Schema } from 'una-api';
 
@@ -11,14 +11,14 @@ import { t, tn } from '../../lib/i18n';
 import { idempotencyKeyFor, type IdempotencySlot, settleIdempotency } from '../../lib/idempotency';
 import { useNavigation } from '../../lib/navigation';
 import { isMac } from '../../lib/platform';
-import { makeUploader, type Uploader } from '../../lib/uploads';
+import type { Uploader } from '../../lib/uploads';
 import { CloseDetailButton, Pane } from '../../shell/pane';
 import { useAnnouncer } from '../feed/feed-list';
 import { useMyGroups, useMySpaces } from '../groups/groups';
 import { type Audience, AudienceField, submitKeys, useFormContext } from '../photos/new-media';
 import { PhotoDropZone, usePhotoUploads } from '../photos/photo-uploads';
-import { inlineUploader } from '../../components/rich-editor/images';
 import { RichEditor, type RichEditorHandle } from '../../components/rich-editor/rich-editor';
+import { type TextImages, uploadsHold, useTextImages } from '../../components/rich-editor/text-images';
 import { RichText } from '../../components/rich-text';
 import { textToRichHtml } from '../../lib/rich-html';
 import { postCategoriesKey, postKey, SUMMARY_MAX, TEXT_MAX, TITLE_MAX, TITLE_MIN } from './posts';
@@ -100,38 +100,6 @@ function FieldMessage({ id, fieldError, field }: { id: string; fieldError: Field
     );
 }
 
-/** Said where a form is held for a picture of its text. */
-export const uploadsHold = () => `${t('Wait until the uploads are done')}.`;
-
-/**
- * The pictures of a post's text: the site's editor storage (POST /uploads/inline). The editor
- * puts a picture in the text only when its upload is done, so the form is told while one is on
- * its way (`pending` for what it shows, `busy()` for a press before it is drawn again): from the
- * paste or the drop being made ready until the editor has had the site's answer. A form that
- * sent its text meanwhile would send it without the picture.
- */
-export function usePostImages(uploader?: Uploader) {
-    const { api } = useApp();
-    const count = useRef(0);
-    const [pending, setPending] = useState(0);
-    const sink = useMemo(() => {
-        const base = uploader ?? makeUploader(api);
-        const counted =
-            <A extends unknown[], R>(run: (...args: A) => Promise<R>) =>
-            (...args: A): Promise<R> => {
-                setPending(++count.current);
-                const done = run(...args);
-                const over = () => setPending(--count.current);
-                // one turn later than who waits for it (the editor, which then starts the upload or puts the picture in)
-                const settled = () => undefined;
-                void done.then(settled, settled).then(over);
-                return done;
-            };
-        return { uploader: { ...base, fromFiles: counted((...args: Parameters<Uploader['fromFiles']>) => base.fromFiles(...args)), fromPaths: counted((...args: Parameters<Uploader['fromPaths']>) => base.fromPaths(...args)) }, uploadInline: counted(inlineUploader(base)), busy: () => count.current > 0 };
-    }, [uploader, api]);
-    return useMemo(() => ({ ...sink, pending }), [sink, pending]);
-}
-
 /** Moves focus to the field a form refused (the text box is the editor's, the cover its Choose button). */
 export function focusPostField(id: string, field: Field, editor: RichEditorHandle | null): void {
     if (field === 'text') editor?.focus();
@@ -172,7 +140,7 @@ export function PostTextFields({
     readOnly?: boolean;
     fieldError: FieldError | null;
     editor: RefObject<RichEditorHandle | null>;
-    images: ReturnType<typeof usePostImages>;
+    images: TextImages;
     announce?: (text: string) => void;
     onTitle: (title: string) => void;
     onSummary: (summary: string) => void;
@@ -323,7 +291,7 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
     const id = useId();
     const [announcement, announce] = useAnnouncer();
     const cover = usePhotoUploads({ purpose: 'post_cover', uploader, announce });
-    const images = usePostImages(uploader);
+    const images = useTextImages(uploader);
     // a picture of the text still on its way holds Post, and ⌘↩ with it
     const uploading = images.pending > 0;
     const [title, setTitle] = useState('');

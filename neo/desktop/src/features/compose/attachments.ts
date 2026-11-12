@@ -159,10 +159,14 @@ export function useAttachments({
     useEffect(() => {
         uploaderRef.current = uploader;
     }, [uploader]);
+    // gone: files made ready for it after that (a paste or a drop still on its way) are let go
+    const gone = useRef(false);
     useEffect(() => {
         const all = latest;
         const up = uploaderRef;
+        gone.current = false;
         return () => {
+            gone.current = true;
             for (const a of all.current) {
                 revoke(a.preview);
                 if (!a.picked) continue;
@@ -201,6 +205,11 @@ export function useAttachments({
     /** Add what was picked, dropped or pasted; says what was left out. */
     const add = useCallback(
         (staging: Staging) => {
+            // the tray is gone: nothing shows them, takes them off or sends them
+            if (gone.current) {
+                for (const file of staging.files) uploader.release(file);
+                return 0;
+            }
             const room = max - latest.current.length;
             const taken = staging.files.slice(0, Math.max(0, room));
             for (const extra of staging.files.slice(taken.length)) uploader.release(extra);
@@ -215,7 +224,11 @@ export function useAttachments({
                 sent: 0,
                 total: picked.size,
             }));
-            if (added.length) dispatch({ type: 'add', items: added, max });
+            if (added.length) {
+                dispatch({ type: 'add', items: added, max });
+                // known at once (not only after the render): the tray going before it is drawn lets them go too
+                latest.current = [...latest.current, ...added].slice(0, max);
+            }
             added.forEach((item) => start(item));
 
             const notes: string[] = [];
@@ -259,13 +272,25 @@ export function useAttachments({
         [start],
     );
 
-    /** Start over with these (a draft's uploads), or none once the post is sent. */
-    const reset = useCallback((next: Attachment[] = []) => {
-        for (const a of latest.current) revoke(a.preview);
-        dispatch({ type: 'reset', items: next });
-        // known at once (not only after the render): a check of these may answer first
-        latest.current = next;
-    }, []);
+    /**
+     * Start over with these (a draft's uploads, or those a request did not take), or none once
+     * the post is sent. A file of one that leaves the tray unsent (on its way, or failed) is let go.
+     */
+    const reset = useCallback(
+        (next: Attachment[] = []) => {
+            for (const a of latest.current) {
+                if (next.some((x) => x.key === a.key)) continue;
+                revoke(a.preview);
+                if (!a.picked) continue;
+                if (a.status === 'uploading') uploader.cancel(a.picked);
+                uploader.release(a.picked);
+            }
+            dispatch({ type: 'reset', items: next });
+            // known at once (not only after the render): a check of these may answer first
+            latest.current = next;
+        },
+        [uploader],
+    );
 
     /**
      * Ask the site about a finished upload: 'gone' when it deleted it (an upload no post took

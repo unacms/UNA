@@ -161,6 +161,47 @@ describe('the attachment tray', () => {
         expect(result.current.items).toHaveLength(0);
         await waitFor(() => expect(calls.some((c) => c.method === 'DELETE' && c.path === '/uploads/42')).toBe(true));
     });
+
+    // a file made ready is kept by the app until it is uploaded or let go
+    const file = (handle: string): Picked => ({ handle, name: `${handle}.png`, size: 10, mime: 'image/png', kind: 'image' });
+
+    it('lets go files made ready after the tray went away, and starts no upload', () => {
+        const api = fakeApi([]);
+        const { uploader, pending, released } = fakeUploader();
+        const { result, unmount } = renderHook(() => useAttachments({ uploader, api, announce: () => {} }), { wrapper: wrapper(api) });
+        const { add } = result.current;
+        unmount();
+        // a paste or a drop that was still being made ready when the composer closed
+        expect(add({ files: [file('a'), file('b')], refused: [] })).toBe(0);
+        expect(released).toEqual(['a', 'b']);
+        expect(pending.size).toBe(0);
+    });
+
+    it('lets go a file added the moment the tray goes away, before it was drawn', () => {
+        const api = fakeApi([]);
+        const { uploader, released, cancelled } = fakeUploader();
+        const { result, unmount } = renderHook(() => useAttachments({ uploader, api, announce: () => {} }), { wrapper: wrapper(api) });
+        act(() => {
+            result.current.add({ files: [file('a')], refused: [] });
+            unmount();
+        });
+        expect(cancelled).toEqual(['a']);
+        expect(released).toEqual(['a']);
+    });
+
+    it('lets go a failed or unfinished upload when the tray starts over, and keeps those that stay', async () => {
+        const api = fakeApi([]);
+        const { uploader, pending, released, cancelled } = fakeUploader();
+        const { result } = renderHook(() => useAttachments({ uploader, api, announce: () => {} }), { wrapper: wrapper(api) });
+        act(() => void result.current.add({ files: [file('a'), file('b'), file('c')], refused: [] }));
+        await act(async () => pending.get('a')?.reject(new UploadError('Too large', 413, 'file_too_big')));
+        expect(result.current.items.map((a) => a.status)).toEqual(['failed', 'uploading', 'uploading']);
+        // the third stays (a request that took the others): nothing of it is stopped or let go
+        act(() => result.current.reset([result.current.items[2]!]));
+        expect(cancelled).toEqual(['b']);
+        expect(released).toEqual(['a', 'b']);
+        expect(result.current.items.map((a) => a.name)).toEqual(['c.png']);
+    });
 });
 
 describe('post text', () => {
