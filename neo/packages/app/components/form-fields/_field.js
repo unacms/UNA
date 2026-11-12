@@ -56,7 +56,8 @@ export function adaptiveCaption({ caption, required_mark, required, checker }) {
         const optionalText = appSetting('forms', 'optional_text')
         return caption + ' (' + (optionalText != '' ? optionalText : i18n.t('optional')) + ')'
     }
-    if (required_mark === 'required' && isRequired) return caption + ' *'
+    // No asterisk where a fork turned the mandatory icon off, as beside a label above the field.
+    if (required_mark === 'required' && isRequired && appSetting('forms', 'mandatory_icon')) return caption + ' *'
     return caption
 }
 
