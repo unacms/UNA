@@ -59,6 +59,7 @@ export function PostPane({ id }: { id: string }) {
         initialDataUpdatedAt: 0,
         retry: retryOnce,
     });
+    const fresh = post.isSuccess && post.isFetchedAfterMount && !post.isFetching;
     const gone = post.isError && isGone(post.error);
     const p = gone ? undefined : post.data;
     const itemId = p?.content_id ?? null;
@@ -108,8 +109,9 @@ export function PostPane({ id }: { id: string }) {
             more={(shown) => ({
                 link: shown.url,
                 own: [
-                    // its text comes with its own answer: a post a list had is not edited before that
-                    ...(shown.viewer?.can_edit && shown.body_html !== null ? [{ text: t('Edit Post'), run: () => setEditing(true) }] : []),
+                    // edited only as the site answered in this view: a list's row has no text, and a copy
+                    // kept from before (the cache is persisted) may be older than what the site has
+                    ...(shown.viewer?.can_edit && shown.body_html !== null && fresh ? [{ text: t('Edit Post'), run: () => setEditing(true) }] : []),
                     ...(shown.viewer?.can_delete ? [{ text: t('Delete Post…'), run: () => void remove() }] : []),
                 ],
             })}

@@ -18,6 +18,7 @@ import { type Audience, AudienceField, submitKeys, useFormContext } from '../pho
 import { PhotoDropZone, usePhotoUploads } from '../photos/photo-uploads';
 import { inlineUploader } from '../../components/rich-editor/images';
 import { RichEditor, type RichEditorHandle } from '../../components/rich-editor/rich-editor';
+import { RichText } from '../../components/rich-text';
 import { textToRichHtml } from '../../lib/rich-html';
 import { postCategoriesKey, postKey, SUMMARY_MAX, TEXT_MAX, TITLE_MAX, TITLE_MIN } from './posts';
 
@@ -27,19 +28,41 @@ export type FieldError = { field: Field; text: string };
 /** The form's field of each field the API names in a 422. */
 const API_FIELDS: Record<string, Field> = { title: 'title', summary: 'summary', body_html: 'text', cover_media_id: 'cover', category_id: 'category' };
 
-/**
- * Why a new post can't be sent yet, by its field, or null. Lengths are counted in characters, as
- * the site counts them: the title and the summary as typed, the text as the HTML it is sent as
- * (`html`, the editor's; plain `text` as paragraphs when there is none).
- */
-export function newPostBlocker({ title, summary = '', text, html, coverBlocker, categoryMissing = false }: { title: string; summary?: string; text: string; html?: string; coverBlocker: string | null; categoryMissing?: boolean }): FieldError | null {
+/** Why a title can't be sent, or null: 3 to 160 characters, counted as the site counts them. */
+export function titleBlocker(title: string): FieldError | null {
     const trimmed = title.trim();
     if (!trimmed) return { field: 'title', text: t('Give it a title.') };
     if ([...trimmed].length < TITLE_MIN) return { field: 'title', text: tn(TITLE_MIN, 'A title has at least {{count}} character.', 'A title has at least {{count}} characters.') };
     if ([...trimmed].length > TITLE_MAX) return { field: 'title', text: tn(TITLE_MAX, 'A title has at most {{count}} character (this one has {{length}}).', 'A title has at most {{count}} characters (this one has {{length}}).', { length: [...trimmed].length }) };
-    if ([...summary.trim()].length > SUMMARY_MAX) return { field: 'summary', text: tn(SUMMARY_MAX, 'A summary has at most {{count}} character.', 'A summary has at most {{count}} characters.') };
-    if (!text.trim()) return { field: 'text', text: t('Write the post.') };
+    return null;
+}
+
+/** Why a summary can't be sent, or null. */
+export function summaryBlocker(summary: string): FieldError | null {
+    return [...summary.trim()].length > SUMMARY_MAX ? { field: 'summary', text: tn(SUMMARY_MAX, 'A summary has at most {{count}} character.', 'A summary has at most {{count}} characters.') } : null;
+}
+
+/** A picture, a video or an embed in the text: content without a word, as the site takes it. */
+const MEDIA_IN_TEXT = /<(img|iframe|video)\b|\bbx-embed-link\b/i;
+
+/**
+ * Why a text can't be sent, or null: it has words, or a picture or an embed, and its HTML
+ * (`html`, the editor's; plain `text` as paragraphs when there is none) is no longer than the
+ * site keeps.
+ */
+export function textBlocker(text: string, html?: string): FieldError | null {
+    if (!text.trim() && !MEDIA_IN_TEXT.test(html ?? '')) return { field: 'text', text: t('Write the post.') };
     if ([...(html ?? textToRichHtml(text))].length > TEXT_MAX) return { field: 'text', text: tn(TEXT_MAX, 'The text is too long: the site keeps at most {{count}} character, its paragraphs included.', 'The text is too long: the site keeps at most {{count}} characters, its paragraphs included.') };
+    return null;
+}
+
+/**
+ * Why a new post can't be sent yet, by its field, or null. Lengths are counted in characters, as
+ * the site counts them: the title and the summary as typed, the text as the HTML it is sent as.
+ */
+export function newPostBlocker({ title, summary = '', text, html, coverBlocker, categoryMissing = false }: { title: string; summary?: string; text: string; html?: string; coverBlocker: string | null; categoryMissing?: boolean }): FieldError | null {
+    const blocker = titleBlocker(title) ?? summaryBlocker(summary) ?? textBlocker(text, html);
+    if (blocker) return blocker;
     if (categoryMissing) return { field: 'category', text: t('Choose a category.') };
     if (coverBlocker) return { field: 'cover', text: `${coverBlocker}.` };
     return null;
@@ -93,13 +116,18 @@ export function focusPostField(id: string, field: Field, editor: RichEditorHandl
 
 /**
  * A post's title, summary and text, as the new post form and the edit form have them: each
- * labelled, and marked invalid and described by the reason when it is the one refused.
+ * labelled, and marked invalid and described by the reason when it is the one refused. A text
+ * the editor would lose something of (`textEditable` false) and a summary the app has only the
+ * start of (`summaryEditable` false) are shown as they read, in a grouped box, with a note that
+ * they are edited on the site.
  */
 export function PostTextFields({
     id,
     title,
     summary,
     html,
+    textEditable = true,
+    summaryEditable = true,
     fieldError,
     editor,
     images,
@@ -113,6 +141,8 @@ export function PostTextFields({
     summary: string;
     /** The text as the site keeps it (the editor's full mode). */
     html: string;
+    textEditable?: boolean;
+    summaryEditable?: boolean;
     fieldError: FieldError | null;
     editor: RefObject<RichEditorHandle | null>;
     images: ReturnType<typeof usePostImages>;
@@ -128,59 +158,102 @@ export function PostTextFields({
                 <input id={`${id}-title`} value={title} dir="auto" autoFocus aria-invalid={fieldError?.field === 'title' || undefined} aria-describedby={describedBy(id, fieldError, 'title')} onChange={(e) => onTitle(e.target.value)} />
                 <FieldMessage id={id} fieldError={fieldError} field="title" />
             </div>
-            <div className="settings-field">
-                <label htmlFor={`${id}-summary`}>{t('Summary')}</label>
-                <textarea
-                    id={`${id}-summary`}
-                    rows={2}
-                    value={summary}
-                    dir="auto"
-                    aria-invalid={fieldError?.field === 'summary' || undefined}
-                    aria-describedby={describedBy(id, fieldError, 'summary', `${id}-summary-hint`)}
-                    onChange={(e) => onSummary(e.target.value)}
-                />
-                <p id={`${id}-summary-hint`} className="small muted">
-                    {t('Optional. Lists show it under the title; without one they show the start of the text.')}
-                </p>
-                <FieldMessage id={id} fieldError={fieldError} field="summary" />
-            </div>
-            <div className="settings-field">
-                {/* a label for the text box, which is no form control: a click puts the caret in it (RichEditor, labelledBy) */}
-                <label id={`${id}-text-label`} htmlFor={`${id}-text`}>
-                    {t('Text')}
-                </label>
-                <RichEditor
-                    ref={editor}
-                    mode="full"
-                    id={`${id}-text`}
-                    className="article-text-input"
-                    rows={12}
-                    value={html}
-                    label={t('Text')}
-                    labelledBy={`${id}-text-label`}
-                    invalid={fieldError?.field === 'text'}
-                    describedBy={describedBy(id, fieldError, 'text', `${id}-text-hint`)}
-                    images={images}
-                    windowDrops
-                    announce={announce}
-                    onChange={(value, plain) => onContent({ html: value, text: plain })}
-                />
-                <p id={`${id}-text-hint`} className="small muted">
-                    {t('{{bold}}, {{italic}} and {{underline}} format the selected words, {{link}} adds a link.', { bold: isMac ? '⌘B' : 'Ctrl+B', italic: isMac ? '⌘I' : 'Ctrl+I', underline: isMac ? '⌘U' : 'Ctrl+U', link: isMac ? '⌘K' : 'Ctrl+K' })}
-                </p>
-                <FieldMessage id={id} fieldError={fieldError} field="text" />
-            </div>
+            {summaryEditable ? (
+                <div className="settings-field">
+                    <label htmlFor={`${id}-summary`}>{t('Summary')}</label>
+                    <textarea
+                        id={`${id}-summary`}
+                        rows={2}
+                        value={summary}
+                        dir="auto"
+                        aria-invalid={fieldError?.field === 'summary' || undefined}
+                        aria-describedby={describedBy(id, fieldError, 'summary', `${id}-summary-hint`)}
+                        onChange={(e) => onSummary(e.target.value)}
+                    />
+                    <p id={`${id}-summary-hint`} className="small muted">
+                        {t('Optional. Lists show it under the title; without one they show the start of the text.')}
+                    </p>
+                    <FieldMessage id={id} fieldError={fieldError} field="summary" />
+                </div>
+            ) : (
+                <div className="settings-field" role="group" aria-labelledby={`${id}-summary-label`} aria-describedby={`${id}-summary-hint`}>
+                    <span id={`${id}-summary-label`} className="discussion-text-label">
+                        {t('Summary')}
+                    </span>
+                    <p className="discussion-text-preview" dir="auto">
+                        {summary}
+                    </p>
+                    <p id={`${id}-summary-hint`} className="small muted">
+                        {t('The app has only the start of this summary, so it is edited on the network’s site.')}
+                    </p>
+                </div>
+            )}
+            {textEditable ? (
+                <div className="settings-field">
+                    {/* a label for the text box, which is no form control: a click puts the caret in it (RichEditor, labelledBy) */}
+                    <label id={`${id}-text-label`} htmlFor={`${id}-text`}>
+                        {t('Text')}
+                    </label>
+                    <RichEditor
+                        ref={editor}
+                        mode="full"
+                        id={`${id}-text`}
+                        className="article-text-input"
+                        rows={12}
+                        value={html}
+                        label={t('Text')}
+                        labelledBy={`${id}-text-label`}
+                        invalid={fieldError?.field === 'text'}
+                        describedBy={describedBy(id, fieldError, 'text', `${id}-text-hint`)}
+                        images={images}
+                        windowDrops
+                        announce={announce}
+                        onChange={(value, plain) => onContent({ html: value, text: plain })}
+                    />
+                    <p id={`${id}-text-hint`} className="small muted">
+                        {t('{{bold}}, {{italic}} and {{underline}} format the selected words, {{link}} adds a link.', { bold: isMac ? '⌘B' : 'Ctrl+B', italic: isMac ? '⌘I' : 'Ctrl+I', underline: isMac ? '⌘U' : 'Ctrl+U', link: isMac ? '⌘K' : 'Ctrl+K' })}
+                    </p>
+                    <FieldMessage id={id} fieldError={fieldError} field="text" />
+                </div>
+            ) : (
+                <div className="settings-field" role="group" aria-labelledby={`${id}-text-label`} aria-describedby={`${id}-text-hint`}>
+                    <span id={`${id}-text-label`} className="discussion-text-label">
+                        {t('Text')}
+                    </span>
+                    <RichText html={html} className="discussion-text-preview" />
+                    <p id={`${id}-text-hint`} className="small muted">
+                        {t('This text has formatting that editing here would remove, so it is edited on the network’s site.')}
+                    </p>
+                </div>
+            )}
         </>
     );
 }
 
-/** The category of a post, one of the site's (nothing where the site has none): none is chosen until one is. */
-export function PostCategoryField({ id, categories, category, fieldError, onCategory }: { id: string; categories: readonly Schema<'PostCategory'>[]; category: string; fieldError: FieldError | null; onCategory: (id: string) => void }) {
+/**
+ * The category of a post, one of the site's (nothing where the site has none): none is chosen
+ * until one is. A new post needs one (`required`); a post that is edited keeps what it has.
+ */
+export function PostCategoryField({
+    id,
+    categories,
+    category,
+    required = true,
+    fieldError,
+    onCategory,
+}: {
+    id: string;
+    categories: readonly Schema<'PostCategory'>[];
+    category: string;
+    required?: boolean;
+    fieldError: FieldError | null;
+    onCategory: (id: string) => void;
+}) {
     if (!categories.length) return null;
     return (
         <div className="settings-field">
             <label htmlFor={`${id}-category`}>{t('Category')}</label>
-            <select id={`${id}-category`} value={category} required aria-invalid={fieldError?.field === 'category' || undefined} aria-describedby={describedBy(id, fieldError, 'category')} onChange={(e) => onCategory(e.target.value)}>
+            <select id={`${id}-category`} value={category} required={required} aria-invalid={fieldError?.field === 'category' || undefined} aria-describedby={describedBy(id, fieldError, 'category')} onChange={(e) => onCategory(e.target.value)}>
                 <option value="" disabled>
                     {t('Choose a category')}
                 </option>

@@ -297,6 +297,8 @@
     "{{bold}}, {{italic}} and {{underline}} format the selected words, {{link}} adds a link.": "{{bold}}, {{italic}} и {{underline}} форматируют выделенный текст, {{link}} добавляет ссылку.",
     "Each line is a paragraph; links and #hashtags are kept as typed.": "Каждая строка — отдельный абзац; ссылки и #хештеги сохраняются как введены.",
     "This text has links or formatting, so it is edited on the network’s site.": "В этом тексте есть ссылки или форматирование, поэтому изменить его можно только на сайте сети.",
+    "This text has formatting that editing here would remove, so it is edited on the network’s site.": "В этом тексте есть форматирование, которое при редактировании здесь пропадёт, поэтому изменить его можно только на сайте сети.",
+    "The app has only the start of this summary, so it is edited on the network’s site.": "В приложении есть только начало этого краткого описания, поэтому изменить его можно только на сайте сети.",
     "Active": "Активные",
     "New": "Новые",
     "No replies": "Нет ответов",

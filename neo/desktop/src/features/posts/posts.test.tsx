@@ -15,7 +15,7 @@ import { opensInWindow } from '../../lib/open-in-window';
 import { parseRoute, type Route, RouteHistory, routeToPath } from '../../lib/router';
 import { setSiteModules } from '../../lib/site-modules';
 import { contextTabs, tabLabel } from '../groups/group-view';
-import { postChanges, postValue } from './edit-post';
+import { isEditableText, postChanges, postChangesBlocker, postSummary, postValue } from './edit-post';
 import { NewPost, newPostBlocker, newPostFieldError } from './new-post';
 import { Posts, PostsOfTab } from './post-list';
 import { PostPane } from './post-pane';
@@ -81,8 +81,9 @@ function site(answer: (c: Call) => { status: number; body?: unknown } | 'lost' |
     return { api, calls };
 }
 
-function renderWith(node: ReactNode, api: UnaApi, route: Route = { list: { section: 'posts' }, detail: null }) {
+function renderWith(node: ReactNode, api: UnaApi, route: Route = { list: { section: 'posts' }, detail: null }, seed?: (client: QueryClient) => void) {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } }, logger: { log: () => {}, warn: () => {}, error: () => {} } });
+    seed?.(client);
     const ctx: AppContextValue = { api, siteUrl: 'https://community.example', me, signOut: () => {}, signingOut: false, messageTo: () => {} };
     const history = new RouteHistory(route);
     render(
@@ -379,18 +380,169 @@ describe('Editing a post', () => {
     it('sends only what changed, and never the audience of a post in a context', () => {
         const initial = postValue(mine());
         expect(initial).toEqual({ title: 'A slow walk with one lens', summary: 'Why I left the zoom at home for a month.', html: '<p>A 35mm lens makes you walk.</p>', category: '3', audience: 'public' });
-        expect(postChanges(initial, initial, true)).toEqual({});
-        expect(postChanges(initial, { ...initial, title: ' One lens ', audience: 'friends' }, true)).toEqual({ title: 'One lens', audience: 'friends' });
-        expect(postChanges(initial, { ...initial, summary: '', html: '<p>New.</p>', category: '5', audience: 'friends' }, false)).toEqual({ summary: '', body_html: '<p>New.</p>', category_id: '5' });
+        const all = { text: true, summary: true, audience: true };
+        expect(postChanges(initial, initial, all)).toEqual({});
+        expect(postChanges(initial, { ...initial, title: ' One lens ', audience: 'friends' }, all)).toEqual({ title: 'One lens', audience: 'friends' });
+        const changed = { ...initial, summary: '', html: '<p>New.</p>', category: '5', audience: 'friends' as const };
+        expect(postChanges(initial, changed, { ...all, audience: false })).toEqual({ summary: '', body_html: '<p>New.</p>', category_id: '5' });
+        // a text or a summary the form does not offer is never sent, whatever the form holds
+        expect(postChanges(initial, changed, { text: false, summary: false, audience: false })).toEqual({ category_id: '5' });
     });
 
-    it('is offered only to who may edit, once the post’s text is there', async () => {
+    it('edits only a text the editor keeps whole', () => {
+        expect(isEditableText('<p>One <strong>bold</strong> <a href="https://example.com">link</a>.</p><h2>Part</h2><ul><li>a</li></ul><p style="text-align: center">mid</p>')).toBe(true);
+        expect(isEditableText('<h1>Big heading</h1><p>End.</p>')).toBe(false);
+        expect(isEditableText('<p>Clip</p><iframe src="https://video.example/1"></iframe>')).toBe(false);
+        expect(isEditableText('<table><tr><td>cell</td></tr></table>')).toBe(false);
+        expect(isEditableText('<p><span style="color: rgb(230, 0, 0);">Red text</span></p>')).toBe(false);
+        // such a text is the form's as the site has it, not as the editor would rewrite it
+        const html = '<h1>Big heading</h1><p>End.</p>';
+        expect(postValue(mine({ body_html: html })).html).toBe(html);
+    });
+
+    it('takes a summary that is the start of the text as none, and leaves one the API cut alone', () => {
+        expect(postSummary({ summary: 'Why I left the zoom at home.', body_html: '<p>A 35mm lens makes you walk.</p>' })).toEqual({ editable: true, text: 'Why I left the zoom at home.' });
+        // no summary of its own: the API answers with the start of the text
+        expect(postSummary({ summary: 'First line.\nSecond & last.', body_html: '<p>First line.</p><p>Second &amp; last.</p>' })).toEqual({ editable: true, text: '' });
+        const long = 'word '.repeat(100).trim();
+        const cut = `${long.slice(0, 299).trimEnd()}…`;
+        expect(postSummary({ summary: cut, body_html: `<p>${long}</p>` })).toEqual({ editable: true, text: '' });
+        // an abstract longer than the API shows: its start is not the summary
+        expect(postSummary({ summary: cut, body_html: '<p>Another text.</p>' })).toEqual({ editable: false, text: cut });
+        expect(postSummary({ summary: 'To be continued…', body_html: '<p>Another text.</p>' }).editable).toBe(true);
+    });
+
+    it('checks only the fields that are sent, and takes a picture as a text', () => {
+        expect(postChangesBlocker({ category_id: '5' }, '')).toBeNull();
+        expect(postChangesBlocker({ title: 'Hi' }, 'Text')?.field).toBe('title');
+        expect(postChangesBlocker({ summary: 'é'.repeat(5001) }, 'Text')?.field).toBe('summary');
+        expect(postChangesBlocker({ body_html: '<p></p>' }, '')).toEqual({ field: 'text', text: 'Write the post.' });
+        expect(postChangesBlocker({ body_html: '<p><img src="https://community.example/s/1.jpg"></p>' }, '')).toBeNull();
+        expect(newPostBlocker({ title: 'A title', text: '', html: '<p><img src="https://community.example/s/1.jpg"></p>', coverBlocker: null })).toBeNull();
+    });
+
+    it('is offered only to who may edit', async () => {
         const { api } = site((c) => (c.path === '/posts/37' ? { status: 200, body: mine({ viewer: { reaction: null, favorited: false, can_react: true, can_comment: true, can_edit: false, can_delete: true } }) } : null));
         renderWith(<PostPane id="37" />, api, route);
         await screen.findByText('A 35mm lens makes you walk.');
         fireEvent.click(screen.getByRole('button', { name: 'More for the post' }));
         expect(screen.getByRole('menuitem', { name: 'Delete Post…' })).toBeTruthy();
         expect(screen.queryByRole('menuitem', { name: 'Edit Post' })).toBeNull();
+    });
+
+    it('is not offered on a list’s row or a copy kept from before, until the site has answered here', async () => {
+        // the site never answers: what shows is what the app had
+        const { api } = site(() => null);
+        const row = mine({ body_html: null });
+        renderWith(<PostPane id="37" />, api, route, (client) => client.setQueryData(postListKey({ feed: 'latest' }), { pages: [{ items: [row], next_cursor: null }], pageParams: [undefined] }));
+        fireEvent.click(await screen.findByRole('button', { name: 'More for the post' }));
+        expect(screen.getByRole('menuitem', { name: 'Delete Post…' })).toBeTruthy();
+        expect(screen.queryByRole('menuitem', { name: 'Edit Post' })).toBeNull();
+        cleanup();
+
+        // a whole copy kept from before (the cache is persisted) may be older than the site's
+        const kept = site(() => null);
+        renderWith(<PostPane id="37" />, kept.api, route, (client) => client.setQueryData(postKey('37'), mine()));
+        expect(await screen.findByText('A 35mm lens makes you walk.')).toBeTruthy();
+        fireEvent.click(screen.getByRole('button', { name: 'More for the post' }));
+        expect(screen.getByRole('menuitem', { name: 'Delete Post…' })).toBeTruthy();
+        expect(screen.queryByRole('menuitem', { name: 'Edit Post' })).toBeNull();
+    });
+
+    it('shows a text written on the site with what the editor would lose, and never sends it', async () => {
+        const html = '<h1>Big heading</h1><p>End.</p><iframe src="https://video.example/1"></iframe>';
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine({ body_html: html }) };
+            if (c.path === '/posts/37' && c.method === 'PATCH') return { status: 200, body: mine({ title: 'One lens', body_html: html }) };
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        const title = await openForm();
+        expect(screen.queryByRole('textbox', { name: 'Text' })).toBeNull();
+        const shown = screen.getByRole('group', { name: 'Text' });
+        expect(within(shown).getByText('Big heading')).toBeTruthy();
+        expect(within(shown).getByText('This text has formatting that editing here would remove, so it is edited on the network’s site.')).toBeTruthy();
+        fireEvent.change(title, { target: { value: 'One lens' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        expect(calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body))).toEqual([{ title: 'One lens' }]);
+    });
+
+    it('shows a summary the API cut without a field for it, and starts empty for one that is the start of the text', async () => {
+        const long = 'word '.repeat(100).trim();
+        const cut = `${long.slice(0, 299).trimEnd()}…`;
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine({ summary: cut }) };
+            if (c.path === '/posts/37' && c.method === 'PATCH') return { status: 200, body: mine({ title: 'One lens', summary: cut }) };
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        const title = await openForm();
+        expect(screen.queryByRole('textbox', { name: 'Summary' })).toBeNull();
+        const shown = screen.getByRole('group', { name: 'Summary' });
+        expect(within(shown).getByText(cut)).toBeTruthy();
+        expect(within(shown).getByText('The app has only the start of this summary, so it is edited on the network’s site.')).toBeTruthy();
+        fireEvent.change(title, { target: { value: 'One lens' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        expect(calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body))).toEqual([{ title: 'One lens' }]);
+        cleanup();
+
+        const derived = site((c) => (c.path === '/posts/37' && c.method === 'GET' ? { status: 200, body: mine({ summary: 'A 35mm lens makes you walk.' }) } : null));
+        renderWith(<PostPane id="37" />, derived.api, route);
+        await openForm();
+        expect((screen.getByRole('textbox', { name: 'Summary' }) as HTMLTextAreaElement).value).toBe('');
+    });
+
+    it('keeps a category the site no longer lists, and lets a post with a short title change its category', async () => {
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/categories') return { status: 200, body: CATEGORIES };
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine({ title: 'Hi', category: { id: '9', slug: '9', name: 'Retired' } }) };
+            if (c.path === '/posts/37' && c.method === 'PATCH') return { status: 200, body: mine({ title: 'Hi', category: CATEGORIES[1] ?? null }) };
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        await openForm();
+        const category = (await screen.findByRole('combobox', { name: 'Category' })) as HTMLSelectElement;
+        await waitFor(() => expect(within(category).getAllByRole('option').map((o) => o.textContent)).toEqual(['Choose a category', 'Retired', 'Art', 'Travel']));
+        expect(category.value).toBe('9');
+        expect(category.required).toBe(false);
+        fireEvent.change(category, { target: { value: '5' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        expect(calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body))).toEqual([{ category_id: '5' }]);
+    });
+
+    it('changes who sees it through the form, and leaves an audience the site does not offer alone', async () => {
+        setSiteModules(MODULES);
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine() };
+            if (c.path === '/posts/37' && c.method === 'PATCH') return { status: 200, body: mine({ audience: 'friends' }) };
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        await openForm();
+        const who = (await screen.findByRole('combobox', { name: 'Who can see it' })) as HTMLSelectElement;
+        await waitFor(() => expect(who.value).toBe('public'));
+        fireEvent.change(who, { target: { value: 'friends' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        expect(calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body))).toEqual([{ audience: 'friends' }]);
+        cleanup();
+
+        // 'members' is not one of the audiences the site offers for posts: the form has no field for it
+        const other = site((c) => {
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine({ audience: 'members' }) };
+            if (c.path === '/posts/37' && c.method === 'PATCH') return { status: 200, body: mine({ title: 'One lens', audience: 'members' }) };
+            return null;
+        });
+        renderWith(<PostPane id="37" />, other.api, route);
+        const title = await openForm();
+        await waitFor(() => expect(screen.queryByRole('combobox', { name: 'Who can see it' })).toBeNull());
+        fireEvent.change(title, { target: { value: 'One lens' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        expect(other.calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body))).toEqual([{ title: 'One lens' }]);
     });
 
     it('saves the changed fields through PATCH /posts/{id}, then shows the post as saved in its view and the lists', async () => {
@@ -406,6 +558,7 @@ describe('Editing a post', () => {
         });
         const { client } = renderWith(<PostPane id="37" />, api, route);
         client.setQueryData(postListKey({ feed: 'latest' }), { pages: [{ items: [post()], next_cursor: null }], pageParams: [undefined] });
+        const invalidate = vi.spyOn(client, 'invalidateQueries');
         const title = await openForm();
         expect(screen.getByRole('form', { name: 'Edit the post' })).toBeTruthy();
         expect(title.value).toBe('A slow walk with one lens');
@@ -431,6 +584,10 @@ describe('Editing a post', () => {
         // the list's row is the saved post, as lists have one: without its text
         const list = client.getQueryData<{ pages: { items: Post[] }[] }>(postListKey({ feed: 'latest' }));
         expect([list?.pages[0]?.items[0]?.title, list?.pages[0]?.items[0]?.body_html]).toEqual(['One lens, one month', null]);
+        // the lists, the feeds and its feed item are read again
+        expect(invalidate.mock.calls.map((c) => c[0])).toEqual(expect.arrayContaining([['posts', 'list'], ['feed'], ['activity', '7700']]));
+        // focus is back where the form was opened from
+        await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('button', { name: 'More for the post' })));
     });
 
     it('says a 422 at its field, saves again with the same key after an answer that never came, and leaves who sees a post in a group alone', async () => {
@@ -485,6 +642,7 @@ describe('Editing a post', () => {
         fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
         await waitFor(() => expect(screen.queryByRole('form', { name: 'Edit the post' })).toBeNull());
         expect(screen.getByText('A 35mm lens makes you walk.')).toBeTruthy();
+        await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('button', { name: 'More for the post' })));
         expect(calls.some((c) => c.method === 'PATCH')).toBe(false);
     });
 });
