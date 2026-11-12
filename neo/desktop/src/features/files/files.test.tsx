@@ -11,7 +11,7 @@ import { RouterProvider } from '../../lib/navigation';
 import { opensInWindow } from '../../lib/open-in-window';
 import { feedRoute, parseRoute, type Route, RouteHistory, routeToPath } from '../../lib/router';
 import { setSiteModules } from '../../lib/site-modules';
-import { fileUploader, type Picked, type Uploader } from '../../lib/uploads';
+import { fileUploader, type Picked, type Staging, type Uploader } from '../../lib/uploads';
 import { type CommandHandler, Shell } from '../../shell/shell';
 import type { NavItem } from '../../shell/sidebar';
 import { contextTabs } from '../groups/group-view';
@@ -150,7 +150,28 @@ describe('file routes', () => {
 
 type Call = { method: string; path: string; query: string; body: string; key: string | null };
 
-function site(modules: Schema<'ModuleInfo'>[] = MODULES) {
+type Held = { status: number; body?: unknown } | 'lost';
+
+/** An answer the test gives when it chooses: until then the request is on its way. */
+function later() {
+    let give: (answer: Held) => void = () => {};
+    const answer = new Promise<Held>((resolve) => (give = resolve));
+    return { answer, give };
+}
+
+/** A pick whose files are made ready when the test says so. */
+function slowPick() {
+    let ready: (staging: Staging) => void = () => {};
+    return { pick: () => new Promise<Staging>((resolve) => (ready = resolve)), ready: (files: Picked[]) => ready({ files, refused: [] }) };
+}
+
+/** The first request of this kind is answered by `first`; the site answers the ones after it. */
+const firstOf = (request: string, first: Promise<Held>) => {
+    let asked = 0;
+    return (c: Call) => (`${c.method} ${c.path}` === request && !asked++ ? first : null);
+};
+
+function site(modules: Schema<'ModuleInfo'>[] = MODULES, over?: (c: Call) => Promise<Held> | null) {
     const files: FileEntry[] = [file('1', 'Agenda'), file('2', 'Ridge route map', { media: image, author: lily }), file('3', 'Zine archive', { media: media('z', { original_name: 'zine-archive.zip', mime: 'application/zip', size: 2048 }) })];
     // opened by id only, not in the list
     const others: FileEntry[] = [
@@ -191,7 +212,9 @@ function site(modules: Schema<'ModuleInfo'>[] = MODULES) {
                 lose.splice(lost, 1);
                 throw new TypeError('Load failed');
             }
-            const a = answer(c);
+            const held = await over?.(c);
+            if (held === 'lost') throw new TypeError('Load failed');
+            const a = held ?? answer(c);
             if (!a) return new Promise<Response>(() => {});
             return a.body === undefined ? new Response(null, { status: a.status }) : new Response(JSON.stringify(a.body), { status: a.status, headers: { 'Content-Type': 'application/json' } });
         },
@@ -437,5 +460,90 @@ describe('adding files', () => {
         expect(options).toEqual([{ anyFiles: true }, { anyFiles: true }]);
         void up.upload(staged.files[0]!, () => undefined);
         expect(pending.get('h')?.purpose).toBe('file');
+    });
+
+    const AGENDA: Picked = { handle: 'h-a', name: 'Agenda.pdf', size: 13264, mime: 'application/pdf', kind: 'file' };
+    const ZINES: Picked = { handle: 'h-z', name: 'zines.zip', size: 2048, mime: 'application/zip', kind: 'file' };
+    const sentFiles = (calls: Call[]) => calls.filter((c) => c.method === 'POST' && c.path === '/files');
+
+    it('holds Add while a file is being made ready, and adds them all once it is uploaded', async () => {
+        const { api, calls } = site();
+        const { base, pending } = fakeUploader([AGENDA]);
+        const slow = slowPick();
+        const picks = [base.pick, slow.pick];
+        const { history } = renderApp({ list: { section: 'media', feed: 'files' }, detail: { kind: 'new-files' } }, api, <NewFiles uploader={{ ...base, pick: (o) => picks.shift()!(o) }} />);
+        fireEvent.click(await screen.findByRole('button', { name: 'Choose files…' }));
+        await waitFor(() => expect(pending.size).toBe(1));
+        await act(async () => pending.get('h-a')?.resolve(media('91')));
+        const more = await screen.findByRole('button', { name: 'Add more files…' });
+        fireEvent.click(more);
+        // chosen, and not in the form yet: sent now, the files would go without it
+        const add = screen.getByRole('button', { name: 'Add files' });
+        fireEvent.click(add);
+        expect((await screen.findByRole('alert')).textContent).toBe('Wait until the uploads are done');
+        expect(document.activeElement).toBe(more);
+        expect(add.hasAttribute('disabled')).toBe(false);
+        fireEvent.keyDown(screen.getByLabelText('Title'), { key: 'Enter', metaKey: true, ctrlKey: true });
+        await act(async () => {});
+        expect(sentFiles(calls)).toHaveLength(0);
+        await act(async () => slow.ready([ZINES]));
+        await waitFor(() => expect(pending.size).toBe(2));
+        await act(async () => pending.get('h-z')?.resolve(media('92', { original_name: 'zines.zip' })));
+        fireEvent.click(await screen.findByRole('button', { name: 'Add 2 files' }));
+        await waitFor(() => expect(history.current.detail).toEqual({ kind: 'file', id: '1' }));
+        expect(sentFiles(calls).map((c) => JSON.parse(c.body))).toEqual([{ media_ids: ['91', '92'], audience: 'public' }]);
+    });
+
+    it('takes no change while files are being added, and takes them again with what it held when they were not', async () => {
+        const first = later();
+        const { api, calls } = site(MODULES, firstOf('POST /files', first.answer));
+        const { base, pending } = fakeUploader([AGENDA]);
+        const { history } = renderApp({ list: { section: 'media', feed: 'files' }, detail: { kind: 'new-files' } }, api, <NewFiles uploader={base} />);
+        const choose = await screen.findByRole('button', { name: 'Choose files…' });
+        fireEvent.click(choose);
+        await waitFor(() => expect(pending.size).toBe(1));
+        await act(async () => pending.get('h-a')?.resolve(media('91')));
+        const title = screen.getByLabelText('Title') as HTMLInputElement;
+        const text = screen.getByLabelText('Description') as HTMLTextAreaElement;
+        const who = screen.getByLabelText('Who can see them') as HTMLSelectElement;
+        fireEvent.change(title, { target: { value: 'Agenda' } });
+        fireEvent.change(text, { target: { value: 'For Saturday' } });
+        await waitFor(() => expect(who.value).toBe('public'));
+        const add = screen.getByRole('button', { name: 'Add files' });
+        const remove = screen.getByRole('button', { name: 'Remove File Agenda.pdf' });
+        fireEvent.click(add);
+        await waitFor(() => expect(add.getAttribute('aria-busy')).toBe('true'));
+        expect(title.readOnly).toBe(true);
+        expect(text.readOnly).toBe(true);
+        expect(who.getAttribute('aria-disabled')).toBe('true');
+        expect(who.disabled).toBe(false);
+        expect(choose.getAttribute('aria-disabled')).toBe('true');
+        expect(remove.getAttribute('aria-disabled')).toBe('true');
+        fireEvent.change(title, { target: { value: 'Typed while it was sent' } });
+        fireEvent.change(text, { target: { value: 'Typed while it was sent' } });
+        fireEvent.click(remove);
+        fireEvent.click(choose);
+        fireEvent.click(add);
+        await act(async () => {});
+        expect(title.value).toBe('Agenda');
+        expect(text.value).toBe('For Saturday');
+        expect(screen.getByText('Agenda.pdf')).toBeTruthy();
+        expect(pending.size).toBe(1);
+        expect(sentFiles(calls)).toHaveLength(1);
+        // they were not added: the form stays, with what it held, and takes changes again
+        first.give('lost');
+        await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('The files were not added: Load failed'));
+        expect(add.getAttribute('aria-busy')).toBeNull();
+        expect(title.readOnly).toBe(false);
+        expect(text.readOnly).toBe(false);
+        expect(who.getAttribute('aria-disabled')).toBeNull();
+        expect(choose.getAttribute('aria-disabled')).toBeNull();
+        expect(title.value).toBe('Agenda');
+        fireEvent.click(add);
+        await waitFor(() => expect(history.current.detail).toEqual({ kind: 'file', id: '1' }));
+        const sent = sentFiles(calls);
+        const body = { media_ids: ['91'], title: 'Agenda', text_html: '<p>For Saturday</p>', audience: 'public' };
+        expect(sent.map((c) => JSON.parse(c.body))).toEqual([body, body]);
+        expect(sent[1]!.key).toBe(sent[0]!.key);
     });
 });

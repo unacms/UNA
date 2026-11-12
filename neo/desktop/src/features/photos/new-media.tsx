@@ -113,7 +113,8 @@ export const submitKeys = (submit: () => void) => (e: KeyboardEvent) => {
  * (each uploading at once, with its progress, Retry and Remove), one title and text for all of
  * them (each file's name when no title is given), and who can see them, or the group they go in
  * when it was started from one. Added, the first one opens; uploads nothing took are deleted
- * when the form goes.
+ * when the form goes. Photos still being made ready hold Add as ones that are uploading; while it
+ * is being sent the form takes no change, as the new post form (NewPost).
  */
 export function NewPhotos({ contextId, uploader }: { contextId?: string; uploader?: Uploader }) {
     const { api } = useApp();
@@ -136,7 +137,9 @@ export function NewPhotos({ contextId, uploader }: { contextId?: string; uploade
     const submit = async (e?: FormEvent) => {
         e?.preventDefault();
         if (sending) return;
-        const blocker = uploads.blocker ?? (uploads.ids.length ? null : t('Choose the photos to add.'));
+        // files being made ready (picked or dropped, not in the tray yet) hold it as ones that are
+        // uploading: sent now, it would go without them
+        const blocker = uploads.staging() ? t('Wait until the uploads are done') : (uploads.blocker ?? (uploads.ids.length ? null : t('Choose the photos to add.')));
         if (blocker) {
             setFieldError(blocker);
             document.getElementById(`${id}-pick`)?.focus();
@@ -183,6 +186,13 @@ export function NewPhotos({ contextId, uploader }: { contextId?: string; uploade
         if (!first || !replaceDetail({ kind: 'photo', id: first.id }, from)) setSending(false);
     };
 
+    // while it is sent a change is refused, not only by the fields: an update that was already on its way
+    const edit =
+        <T,>(set: (value: T) => void) =>
+        (value: T) => {
+            if (!sending) set(value);
+        };
+
     return (
         <Pane pane="detail" title={context ? t('Add photos to {{name}}', { name: context.display_name }) : t('Add photos')} actions={<CloseDetailButton />}>
             <div className="column settings">
@@ -192,7 +202,7 @@ export function NewPhotos({ contextId, uploader }: { contextId?: string; uploade
                 <form className="settings-form discussion-form new-photos" aria-labelledby="detail-title" onSubmit={(e) => void submit(e)} onKeyDown={(e) => submitKeys(() => void submit())(e)} noValidate>
                     <fieldset className="settings-field settings-fieldset photo-field">
                         <legend>{t('Photos')}</legend>
-                        <PhotoDropZone uploads={uploads} pickId={`${id}-pick`} describedBy={fieldError ? `${id}-photos-error` : undefined} label={uploads.items.length ? t('Add more photos…') : t('Choose photos…')} />
+                        <PhotoDropZone uploads={uploads} pickId={`${id}-pick`} describedBy={fieldError ? `${id}-photos-error` : undefined} label={uploads.items.length ? t('Add more photos…') : t('Choose photos…')} held={sending} />
                         {fieldError ? (
                             <p id={`${id}-photos-error`} className="error small" role="alert">
                                 {fieldError}
@@ -201,16 +211,16 @@ export function NewPhotos({ contextId, uploader }: { contextId?: string; uploade
                     </fieldset>
                     <div className="settings-field">
                         <label htmlFor={`${id}-title`}>{t('Title')}</label>
-                        <input id={`${id}-title`} value={title} maxLength={255} dir="auto" aria-describedby={`${id}-title-hint`} onChange={(e) => setTitle(e.target.value)} />
+                        <input id={`${id}-title`} value={title} maxLength={255} dir="auto" readOnly={sending} aria-describedby={`${id}-title-hint`} onChange={(e) => edit(setTitle)(e.target.value)} />
                         <p id={`${id}-title-hint`} className="small muted">
                             {t('Every photo’s title. Leave it empty to title each with its file’s name, which whoever can see the photo sees.')}
                         </p>
                     </div>
                     <div className="settings-field">
                         <label htmlFor={`${id}-text`}>{t('Description')}</label>
-                        <textarea id={`${id}-text`} rows={4} value={text} maxLength={50000} dir="auto" onChange={(e) => setText(e.target.value)} />
+                        <textarea id={`${id}-text`} rows={4} value={text} maxLength={50000} dir="auto" readOnly={sending} onChange={(e) => edit(setText)(e.target.value)} />
                     </div>
-                    <AudienceField id={id} tag="photos" contextId={contextId} context={context} audience={audience} onAudience={setAudience} noun="them" />
+                    <AudienceField id={id} tag="photos" contextId={contextId} context={context} audience={audience} held={sending} onAudience={edit(setAudience)} noun="them" />
                     {error ? (
                         <p className="error" role="alert">
                             {error}
@@ -233,6 +243,8 @@ export function NewPhotos({ contextId, uploader }: { contextId?: string; uploade
 /**
  * Making an album in the detail pane: its title (needed), description, who can see it (or the
  * group it goes in), and photos to put in it now (more can be added later). Made, it opens.
+ * Photos still being made ready hold Make album as ones that are uploading; while it is being
+ * made the form takes no change, as the new post form (NewPost).
  */
 export function NewAlbum({ contextId, uploader }: { contextId?: string; uploader?: Uploader }) {
     const { api } = useApp();
@@ -260,8 +272,11 @@ export function NewAlbum({ contextId, uploader }: { contextId?: string; uploader
             document.getElementById(`${id}-title`)?.focus();
             return;
         }
-        if (uploads.blocker) {
-            setFieldError({ field: 'photos', text: uploads.blocker });
+        // files being made ready (picked or dropped, not in the tray yet) hold it as ones that are
+        // uploading: sent now, it would go without them
+        const blocker = uploads.staging() ? t('Wait until the uploads are done') : uploads.blocker;
+        if (blocker) {
+            setFieldError({ field: 'photos', text: blocker });
             document.getElementById(`${id}-pick`)?.focus();
             return;
         }
@@ -297,6 +312,13 @@ export function NewAlbum({ contextId, uploader }: { contextId?: string; uploader
         if (!replaceDetail({ kind: 'album', id: result.data.id }, from)) setSending(false);
     };
 
+    // while it is sent a change is refused, not only by the fields: an update that was already on its way
+    const edit =
+        <T,>(set: (value: T) => void) =>
+        (value: T) => {
+            if (!sending) set(value);
+        };
+
     return (
         <Pane pane="detail" title={context ? t('New album in {{name}}', { name: context.display_name }) : t('New album')} actions={<CloseDetailButton />}>
             <div className="column settings">
@@ -313,9 +335,10 @@ export function NewAlbum({ contextId, uploader }: { contextId?: string; uploader
                             required
                             dir="auto"
                             autoFocus
+                            readOnly={sending}
                             aria-invalid={fieldError?.field === 'title' || undefined}
                             aria-describedby={fieldError?.field === 'title' ? `${id}-title-error` : undefined}
-                            onChange={(e) => setTitle(e.target.value)}
+                            onChange={(e) => edit(setTitle)(e.target.value)}
                         />
                         {fieldError?.field === 'title' ? (
                             <p id={`${id}-title-error`} className="error small" role="alert">
@@ -325,12 +348,12 @@ export function NewAlbum({ contextId, uploader }: { contextId?: string; uploader
                     </div>
                     <div className="settings-field">
                         <label htmlFor={`${id}-text`}>{t('Description')}</label>
-                        <textarea id={`${id}-text`} rows={3} value={text} maxLength={50000} dir="auto" onChange={(e) => setText(e.target.value)} />
+                        <textarea id={`${id}-text`} rows={3} value={text} maxLength={50000} dir="auto" readOnly={sending} onChange={(e) => edit(setText)(e.target.value)} />
                     </div>
-                    <AudienceField id={id} tag="albums" contextId={contextId} context={context} audience={audience} onAudience={setAudience} noun="it" />
+                    <AudienceField id={id} tag="albums" contextId={contextId} context={context} audience={audience} held={sending} onAudience={edit(setAudience)} noun="it" />
                     <fieldset className="settings-field settings-fieldset photo-field">
                         <legend>{t('Photos')}</legend>
-                        <PhotoDropZone uploads={uploads} pickId={`${id}-pick`} describedBy={fieldError?.field === 'photos' ? `${id}-photos-error` : undefined} label={uploads.items.length ? t('Add more photos…') : t('Choose photos…')} />
+                        <PhotoDropZone uploads={uploads} pickId={`${id}-pick`} describedBy={fieldError?.field === 'photos' ? `${id}-photos-error` : undefined} label={uploads.items.length ? t('Add more photos…') : t('Choose photos…')} held={sending} />
                         {fieldError?.field === 'photos' ? (
                             <p id={`${id}-photos-error`} className="error small" role="alert">
                                 {fieldError.text}

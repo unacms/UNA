@@ -33,7 +33,9 @@ import { afterAddedToAlbum, type Album, albumFromLists, albumItemsKey, albumKey,
 
 /**
  * Adding photos to the album: they upload as they are picked or dropped, then go in at its end.
- * Esc or Cancel closes it (the uploads nothing took are deleted).
+ * Esc or Cancel closes it (the uploads nothing took are deleted). Photos still being made ready
+ * hold Add as ones that are uploading; while they are being added it takes no photo and lets
+ * none go, and a request that got no answer leaves it as it was, to send again.
  */
 function AddPhotos({ album, uploader, onDone, announce }: { album: Album; uploader?: Uploader; onDone: (added: number) => void; announce: (text: string) => void }) {
     const { api } = useApp();
@@ -51,7 +53,9 @@ function AddPhotos({ album, uploader, onDone, announce }: { album: Album; upload
 
     const submit = async () => {
         if (sending) return;
-        const blocker = uploads.blocker ?? (n ? null : t('Choose the photos to add.'));
+        // files being made ready (picked or dropped, not in the tray yet) hold it as ones that are
+        // uploading: sent now, it would go without them
+        const blocker = uploads.staging() ? t('Wait until the uploads are done') : (uploads.blocker ?? (n ? null : t('Choose the photos to add.')));
         if (blocker) {
             setError(blocker);
             document.getElementById(`${id}-pick`)?.focus();
@@ -59,7 +63,14 @@ function AddPhotos({ album, uploader, onDone, announce }: { album: Album; upload
         }
         setSending(true);
         setError(null);
-        const result = await api.POST('/albums/{id}/items', { params: { path: { id: album.id } }, body: { media_ids: uploads.ids } });
+        let result;
+        try {
+            result = await api.POST('/albums/{id}/items', { params: { path: { id: album.id } }, body: { media_ids: uploads.ids } });
+        } catch (e) {
+            setSending(false);
+            setError(t('The photos were not added: {{reason}}', { reason: errorMessage(e) }));
+            return;
+        }
         setSending(false);
         if (result.error !== undefined || !result.data) {
             setError(problemMessage(result.error, t('The photos were not added')));
@@ -84,7 +95,7 @@ function AddPhotos({ album, uploader, onDone, announce }: { album: Album; upload
             <h3 id={`${id}-heading`} className="section-title">
                 {t('Add photos to {{name}}', { name: album.title })}
             </h3>
-            <PhotoDropZone uploads={uploads} pickId={`${id}-pick`} describedBy={error ? `${id}-error` : undefined} />
+            <PhotoDropZone uploads={uploads} pickId={`${id}-pick`} describedBy={error ? `${id}-error` : undefined} held={sending} />
             {error ? (
                 <p id={`${id}-error`} className="error small" role="alert">
                     {error}
