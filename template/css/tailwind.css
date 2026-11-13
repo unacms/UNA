@@ -993,14 +993,39 @@
         @apply w-4 h-4 leading-4;
     }
 
-    /* Label type, as NeoButton's: the regular (44px) button's label is 16px, the other sizes keep theirs (12 / 14 / 16 / 18px), and every
-       label is set tight (-0.025em). Not in Studio, whose buttons keep their own type. Before the menu sizes, which have the same weight
-       and so win where a menu sets the size. */
+    /* The site's buttons take NeoButton's label and size scale (neo/packages/app/settings/theme/buttons.js, `controlSizes` and
+       `borderShapes`): a semibold label at the default spacing, and per size
+           height / side padding / label / icon / corner
+           mini    28 / 10 / 12 / 16 /  6
+           small   36 / 12 / 14 / 20 /  8
+           regular 44 / 16 / 16 / 24 / 12
+           large   52 / 24 / 16 / 24 / 12
+           xlarge  64 / 32 / 18 / 28 / 16
+       The rules above keep the older values (regular label 14px, icons 16 and 20px, large padding 20px, xlarge 60px) for Studio, whose
+       buttons do not change. Before the menu sizes, which have the same weight and so win where a menu sets the size. */
     body:not(.bx-std) .bx-btn {
-        @apply tracking-tight;
+        @apply font-semibold;
     }
     body:not(.bx-std) .bx-btn:not(.bx-btn-mini, .bx-btn-small, .bx-btn-large, .bx-btn-xlarge) {
         @apply text-base;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-large {
+        @apply px-6;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-xlarge {
+        @apply min-h-16 px-8 rounded-2xl;
+    }
+    body:not(.bx-std) .bx-btn :is(i, img, svg) {
+        @apply w-6 h-6 leading-6;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-mini :is(i, img, svg) {
+        @apply w-4 h-4 leading-4;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-small :is(i, img, svg) {
+        @apply w-5 h-5 leading-5;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-xlarge :is(i, img, svg) {
+        @apply w-7 h-7 leading-7;
     }
 
     /* A menu's button size (Studio > Navigation > a menu > Button size; BxDolMenu::BUTTON_SIZE_*): the menu puts .bx-menu-btn-size-* on each of
@@ -1018,15 +1043,17 @@
         @apply min-h-11 px-4 py-2 text-base rounded-xl;
     }
     body:not(.bx-std) .bx-menu-btn-size-large .bx-btn {
-        @apply min-h-[3.25rem] px-5 py-2 text-base rounded-xl;
+        @apply min-h-[3.25rem] px-6 py-2 text-base rounded-xl;
     }
-    body:not(.bx-std) .bx-menu-btn-size-mini .bx-btn :is(i, img, svg),
-    body:not(.bx-std) .bx-menu-btn-size-small .bx-btn :is(i, img, svg) {
+    body:not(.bx-std) .bx-menu-btn-size-mini .bx-btn :is(i, img, svg) {
         @apply w-4 h-4 leading-4;
+    }
+    body:not(.bx-std) .bx-menu-btn-size-small .bx-btn :is(i, img, svg) {
+        @apply w-5 h-5 leading-5;
     }
     body:not(.bx-std) .bx-menu-btn-size-regular .bx-btn :is(i, img, svg),
     body:not(.bx-std) .bx-menu-btn-size-large .bx-btn :is(i, img, svg) {
-        @apply w-5 h-5 leading-5;
+        @apply w-6 h-6 leading-6;
     }
 
     /* Common elements: Forms */

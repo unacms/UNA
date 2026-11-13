@@ -648,7 +648,6 @@ html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
     /* No border: the rim is an inset shadow, which starts inside a border, so the 1px transparent one of a regular button would push the rim
        1px in and leave a line of plain fill around it. The height is a min-height, so only the width loses 2px, as NeoButton's has none. */
     border-width: 0;
-    letter-spacing: normal; /* NeoButton sets its glass label loose, the others tight */
 
     -webkit-backdrop-filter: blur(12px) saturate(150%) contrast(50%) brightness(130%);
     backdrop-filter: blur(12px) saturate(150%) contrast(50%) brightness(130%);

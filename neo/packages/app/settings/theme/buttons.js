@@ -509,7 +509,7 @@ export const settingsButtons = {
                     disabled: 'opacity-50',
                 },
                 text: {
-                    base: 'font-medium',
+                    base: 'font-semibold',
                     default: 'text-card-foreground',
                     hovered: 'text-card-foreground',
                     focused: 'text-card-foreground',
@@ -539,7 +539,7 @@ export const settingsButtons = {
                     disabled: 'bg-button/50 ',
                 },
                 text: {
-                    base: 'font-medium tracking-tight',
+                    base: 'font-semibold',
                     default: 'text-button-foreground',
                     hovered: 'text-button-foreground',
                     focused: 'text-button-foreground',
@@ -565,7 +565,7 @@ export const settingsButtons = {
                     disabled: 'bg-primary opacity-50',
                 },
                 text: {
-                    base: 'font-medium tracking-tight',
+                    base: 'font-semibold',
                     default: 'text-primary-foreground',
                     hovered: 'text-primary-foreground',
                     focused: 'text-primary-foreground',
@@ -590,7 +590,7 @@ export const settingsButtons = {
                     disabled: 'opacity-50',
                 },
                 text: {
-                    base: 'font-semibold tracking-tight',
+                    base: 'font-semibold',
                     default: 'text-card-foreground',
                     hovered: 'text-foreground',
                     focused: 'text-foreground',
@@ -617,7 +617,7 @@ export const settingsButtons = {
                     disabled: 'opacity-50',
                 },
                 text: {
-                    base: 'font-medium tracking-tight',
+                    base: 'font-semibold',
                     default: 'text-card-foreground',
                     hovered: 'text-foreground',
                     focused: 'text-foreground',
@@ -640,7 +640,7 @@ export const settingsButtons = {
                             pressedToggle: 'bg-button-hover',
                             disabled: 'opacity-50' },
                 text: {
-                    base: 'font-medium tracking-tight text-accent-foreground',
+                    base: 'font-medium text-accent-foreground',
                     default: ' ',
                     hovered: ' ',
                     focused: ' ',
@@ -699,7 +699,7 @@ export const settingsButtons = {
                     disabled: 'bg-muted/50',
                 },
                 text: {
-                    base: 'font-medium',
+                    base: 'font-semibold',
                     // Native glass draws its label black / white: the foreground, not card text.
                     default: 'text-foreground',
                     hovered: 'text-foreground',
@@ -754,7 +754,7 @@ export const settingsButtons = {
                     disabled: { default: 'bg-primary opacity-50', web: 'glass-prominent opacity-50' },
                 },
                 text: {
-                    base: 'font-medium tracking-tight',
+                    base: 'font-semibold',
                     default: 'text-primary-foreground',
                     hovered: 'text-primary-foreground',
                     focused: 'text-primary-foreground',
