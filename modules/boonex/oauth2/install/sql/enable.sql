@@ -35,8 +35,8 @@ INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `c
 -- Pages
 
 INSERT INTO `sys_objects_page`(`object`, `uri`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`) VALUES 
-('bx_oauth_authorization', 'oauth-authorization', '_bx_oauth_authorization', '_bx_oauth_authorization', 'bx_oauth', 5, 2147483647, 0, '', '', '', '', 0, 1, 0, 'BxOAuthPage', 'modules/boonex/oauth2/classes/BxOAuthPage.php');
+('bx_oauth_authorization', 'oauth-authorization', '_bx_oauth_authorization', '_bx_oauth_authorization', 'bx_oauth', 18, 2147483647, 0, '', '', '', '', 0, 1, 0, 'BxOAuthPage', 'modules/boonex/oauth2/classes/BxOAuthPage.php');
 
-INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES 
-('bx_oauth_authorization', 1, 'bx_oauth', '_bx_oauth_authorization', 11, 2147483647, 'service', 'a:2:{s:6:\"module\";s:8:\"bx_oauth\";s:6:\"method\";s:13:\"authorization\";}', 0, 0, 1, 1);
+INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title`, `icon`, `description`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES 
+('bx_oauth_authorization', 1, 'bx_oauth', '_bx_oauth_authorization', 'key-round', '_bx_oauth_authorization_desc', 11, 2147483647, 'service', 'a:2:{s:6:\"module\";s:8:\"bx_oauth\";s:6:\"method\";s:13:\"authorization\";}', 0, 0, 1, 1);
 

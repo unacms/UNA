@@ -1,13 +1,120 @@
-#bx-auth-form h3,
-#bx-auth-form .bx-auth-form-buttons {
-    text-align:center;
+.bx-auth-lead,
+.bx-auth-choose {
+    margin: 0;
 }
 
-.bx-auth-form-buttons .bx-btn {
+.bx-auth-scopes,
+.bx-auth-profiles {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.bx-auth-scopes {
+    margin-top: 0.75rem;
+}
+
+.bx-auth-scope {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+}
+
+.bx-auth-scope + .bx-auth-scope {
+    margin-top: 0.5rem;
+}
+
+/* The mark sits in a circle, as an item's icon does in a dropdown menu. */
+.bx-auth-scope-icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 9999px;
+    background-color: rgba(228, 228, 231, 0.5);
+}
+
+html.dark .bx-auth-scope-icon {
+    background-color: rgba(82, 82, 91, 0.5);
+}
+
+.bx-auth-scope-icon > * {
+    width: 1rem;
+    height: 1rem;
+    margin: 0;
+    color: inherit;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.bx-auth-scope-title {
+    padding-top: 0.125rem;
+}
+
+.bx-auth-choose {
+    margin-top: 1.25rem;
+}
+
+.bx-auth-profiles {
+    margin-top: 0.5rem;
+}
+
+/* The chip's corners are the block's, so the button inside follows them. */
+.bx-auth-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 1rem;
+}
+
+.bx-auth-profile + .bx-auth-profile {
+    margin-top: 0.5rem;
+}
+
+.bx-auth-profile-unit {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.bx-auth-profile-unit .bx-base-pofile-unit {
+    width: auto;
+    margin: 0;
+}
+
+.bx-auth-profile-unit .bx-def-unit-img,
+.bx-auth-profile-unit .bx-base-pofile-unit-thumb {
+    width: 2.75rem;
+    height: 2.75rem;
+}
+
+.bx-auth-profile-unit .bx-def-unit-info {
+    min-width: 0;
+    max-width: none;
+    font-weight: 600;
+}
+
+.bx-auth-profile .bx-btn.bx-auth-connect {
+    flex: none;
     float: none;
-    display: inline-block;
+    margin: 0;
 }
 
-.bx-auth-form-info {
+.bx-auth-note {
+    margin: 1rem 0 0;
+}
+
+.bx-auth-buttons {
+    margin-top: 1rem;
+}
+
+.bx-auth-buttons .bx-btn.bx-auth-cancel {
+    float: none;
+    display: flex;
+    width: 100%;
+    margin: 0;
+    justify-content: center;
     text-align: center;
 }
