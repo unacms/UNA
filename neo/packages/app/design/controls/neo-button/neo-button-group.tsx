@@ -45,7 +45,18 @@ const SEGMENT_ROUNDED: Record<string, Record<SegmentPosition, string>> = {
     'rounded-full': { only: 'rounded-full', first: 'rounded-s-full', middle: 'rounded-none', last: 'rounded-e-full' },
 };
 
-const PLATFORM: 'web' | 'ios' | 'android' = Platform.OS === 'web' ? 'web' : Platform.OS === 'ios' ? 'ios' : 'android';
+/** Inline fill of a prominent group: a `tint` colour, or on web glass prominent the variable its CSS mixes from. */
+function groupFillStyle(tintFill: string | null, glassFill: string | null): Record<string, string> | undefined {
+    if (glassFill) return { '--neo-gp-fill': glassFill };
+    return tintFill ? { backgroundColor: tintFill } : undefined;
+}
+
+function currentPlatform(): 'web' | 'ios' | 'android' {
+    if (Platform.OS === 'web') return 'web';
+    return Platform.OS === 'ios' ? 'ios' : 'android';
+}
+
+const PLATFORM = currentPlatform();
 
 const PROMINENT_STYLES = new Set(['borderedProminent', 'glassProminent']);
 
@@ -118,11 +129,13 @@ export function NeoButtonGroup({
     // A prominent group is filled with its tint: a role's fill class (it may
     // be a CSS variable, which native can't read inline), or a `tint` colour.
     const prominent = PROMINENT_STYLES.has(style);
-    const roleFill = prominent && !tint ? appSetting('theme', 'neo_button', 'roles')?.[role ?? '']?.fillClass : null;
-    const tintFill = prominent && !roleFill && resolved.tint ? resolved.tint : null;
-    // Web glass prominent mixes its rim and hairline from the fill (`--neo-gp`,
-    // global.css), so a tinted or destructive group names its fill for them.
-    const fillVar = PLATFORM === 'web' && prominent && resolved.tint ? { '--neo-gp-fill': resolved.tint } : null;
+    // Web glass prominent mixes its fill, rim and hairline from `--neo-gp-fill`
+    // (global.css): a tinted or destructive group names its colour there and
+    // the container paints it, at 90% over the blurred backdrop like the
+    // untinted one. A fill class or an inline colour would make it opaque.
+    const glassFill = PLATFORM === 'web' && style === 'glassProminent' && resolved.tint ? resolved.tint : null;
+    const roleFill = prominent && !tint && !glassFill ? appSetting('theme', 'neo_button', 'roles')?.[role ?? '']?.fillClass : null;
+    const tintFill = prominent && !roleFill && !glassFill && resolved.tint ? resolved.tint : null;
     // A container may differ per platform (`{ default, web }`), like the segments' states.
     const containerCls = resolveScoped(liquidGlass ? groupStyle.liquidContainer : groupStyle.container, { platform: PLATFORM });
     const fill = width === 'fill';
@@ -143,7 +156,7 @@ export function NeoButtonGroup({
                         roleFill,
                         className,
                     )}
-                    style={tintFill || fillVar ? { ...(tintFill ? { backgroundColor: tintFill } : null), ...fillVar } : undefined}
+                    style={groupFillStyle(tintFill, glassFill)}
                 >
                     {liquidGlass ? <GlassSurface rounded={resolved.rounded} /> : null}
                     {items.map((child, i) => {
