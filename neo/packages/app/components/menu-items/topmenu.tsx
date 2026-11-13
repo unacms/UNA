@@ -1,4 +1,4 @@
-import { useContext, type ReactElement } from 'react'
+import { useContext } from 'react'
 import { View, Row } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
@@ -16,8 +16,6 @@ export type MenuTopItemProps = {
     /** Show the title as a label; otherwise it is the tab's tooltip. */
     isTitle?: boolean;
     isActive?: boolean;
-    /** The bar is too narrow for labels beside icons (MenuTop measures it): labels go under them. */
-    stacked?: boolean;
     /** A dropdown's items: the tab opens them instead of following `link`. */
     items?: DropdownMenuItemData[];
     /** Icon name of a dropdown's arrow; empty for none. */
@@ -27,54 +25,60 @@ export type MenuTopItemProps = {
     columns?: number;
 };
 
-type ItemLookProps = Pick<MenuTopItemProps, 'title' | 'icon' | 'isTitle' | 'isActive' | 'stacked' | 'chevron' | 'animated' | 'addClassName'> & {
+type ItemLookProps = Pick<MenuTopItemProps, 'title' | 'icon' | 'isTitle' | 'isActive' | 'chevron' | 'animated' | 'addClassName'> & {
     isPopup: boolean;
 };
 
-export default function MenuTopItem({ link, title, icon, isTitle, isActive, stacked, items, chevron, animated, addClassName, columns }: Readonly<MenuTopItemProps>) {
-    const look = { title, icon, isTitle, isActive, stacked, chevron, animated, addClassName }
+export default function MenuTopItem({ link, title, icon, isTitle, isActive, items, chevron, animated, addClassName, columns }: Readonly<MenuTopItemProps>) {
+    const look = { title, icon, isTitle, isActive, chevron, animated, addClassName }
     return items && items.length > 0 ?
         <DropdownMenu
             mode="popup"
             triggerAccessibilityLabel={title}
-            triggerClassName="group"
+            triggerClassName="group rounded-full"
             items={items}
             columns={columns}
             defaultOpen={false}
         >
             <MenuTopItemLook {...look} isPopup={true} />
         </DropdownMenu>
-        : <Link variant="text" size="lg" className=" min-w-16 w-full flex-auto relative group web:active:scale-95 web:duration-100 " href={link} alt={title}>
+        : <Link variant="text" size="lg" className=" min-w-11 w-full flex-auto relative group rounded-full web:active:scale-95 web:duration-100 " href={link} alt={title}>
             <MenuTopItemLook {...look} isPopup={false} />
         </Link>
 
 }
 
 // Class strings written out in full (Tailwind sees only static classes), picked by the helpers below.
-const ROW_BASE = 'items-center content-center justify-center h-12 min-w-16 flex-auto rounded-xl'
+// A tab is a capsule at the header's control height (44 px), as the tabs of UNA's main menu.
+// The link (or a dropdown's trigger) around it is a capsule too, for its focus ring. The bar's
+// sliding hover highlight is a capsule in CSS, which also finds this row by its `h-11`
+// (`.neo-menu-highlight-bar` in design/styles/global.web.css): change them together.
+const ROW_BASE = 'items-center content-center justify-center h-11 min-w-11 flex-auto rounded-full'
 const ROW_LAYOUT = {
-    // the bar is too narrow for labels beside icons (MenuTop measures it): the label under the icon
-    stacked: 'flex-col gap-0.5 px-2',
     // icon and label side by side: 12 px before the icon, 8 px after the label's own padding
     labelled: 'flex-wrap ps-3 pe-2',
+    // the icon alone (an icon-only item, or a bar too narrow for labels): a 44 px circle
     plain: 'flex-wrap px-2',
 }
 const ROW_STATE = {
     open: 'bg-accent text-accent-foreground',
     active: 'text-accent-foreground',
-    idle: 'text-secondary-foreground web:group-hover:text-foreground web:hover:bg-muted/50 web:group-focus:bg-muted/50 web:active:bg-muted',
+    // The focus fill is for keyboard focus only: a dropdown hands focus back to its tab when it
+    // closes, and after a click that would leave More looking hovered.
+    idle: 'text-secondary-foreground web:group-hover:text-foreground web:hover:bg-muted/50 web:group-focus-visible:bg-muted/50 web:active:bg-muted',
 }
 const ICON_CLASS = {
     on: 'text-accent-foreground h-9 w-9 items-center justify-center flex',
     off: 'text-secondary-foreground web:group-hover:text-foreground h-9 w-9 items-center justify-center flex',
 }
-const LABEL_BASE = 'whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium'
+// The label is UNA's main menu label: 16 px medium at the default spacing. MenuTop's hidden probe
+// (components/nav/menu-top.js) repeats these classes to measure the bar: change them together.
+const LABEL_BASE = 'whitespace-nowrap text-ellipsis overflow-hidden font-medium'
 const LABEL_TONE = { on: 'text-accent-foreground', off: 'text-secondary-foreground' }
-const LABEL_SIZE = { stacked: 'text-xs leading-4 px-1 max-w-full', inline: 'text-sm px-2 leading-5' }
+const LABEL_SIZE = 'text-base px-2 leading-6'
 const CHEVRON_TONE = { on: 'text-accent-foreground', off: 'text-secondary-foreground web:group-hover:text-foreground' }
 
-function rowLayout(stacked: boolean, labelled: boolean): string {
-    if (stacked) return ROW_LAYOUT.stacked
+function rowLayout(labelled: boolean): string {
     return labelled ? ROW_LAYOUT.labelled : ROW_LAYOUT.plain
 }
 
@@ -88,8 +92,8 @@ function iconClassName(on: boolean, addClassName?: string): string {
     return addClassName ? `${base} ${addClassName}` : base
 }
 
-function labelClassName(on: boolean, stacked: boolean): string {
-    return `${LABEL_BASE} ${on ? LABEL_TONE.on : LABEL_TONE.off} ${stacked ? LABEL_SIZE.stacked : LABEL_SIZE.inline}`
+function labelClassName(on: boolean): string {
+    return `${LABEL_BASE} ${on ? LABEL_TONE.on : LABEL_TONE.off} ${LABEL_SIZE}`
 }
 
 // Sized explicitly: without width and height the SVG is 24 px tall and sits 4 px below the label.
@@ -109,35 +113,29 @@ function MenuTopIcon({ icon, animated, on, className }: Readonly<{ icon?: string
     return <Icon icon={icon} animated active={on} size={24} className={className} />
 }
 
-// Stacked, a tab is the icon over one line: a dropdown's arrow goes beside its label there, not
-// under it (a third row would not fit the 48 px tab).
-function labelAndArrow(stacked: boolean, label: ReactElement | null, arrow: ReactElement | null): (ReactElement | null)[] {
-    if (stacked && label && arrow) return [<Row key="menu-title-row" className="items-center max-w-full min-w-0">{label}{arrow}</Row>]
-    return [label, arrow]
-}
-
-function MenuTopItemLook({ title, icon, isTitle, isActive = false, stacked: stackedBar, isPopup, chevron, animated, addClassName }: Readonly<ItemLookProps>) {
+function MenuTopItemLook({ title, icon, isTitle, isActive = false, isPopup, chevron, animated, addClassName }: Readonly<ItemLookProps>) {
     const isMenuOpen = useContext(DropdownMenuOpenContext) ?? false;
     const isOpen = isPopup && isMenuOpen;
     const isActiveOrOpen = isActive || isOpen;
 
-    // The hover label exists to name icon-only items. When the title is already
-    // rendered next to the icon it just repeats it, so skip the tooltip.
+    // The hover label exists to name icon-only items (an item Studio marks "Icon only", or every
+    // item while the bar is too narrow for labels). When the title is already rendered next to
+    // the icon it just repeats it, so skip the tooltip.
     const showTooltip = !isTitle && !!title;
     const labelled = !!icon && !!isTitle;
-    const stacked = !!stackedBar && labelled;
-    const label = isTitle ? <Text key="menu-title" className={labelClassName(isActiveOrOpen, stacked)}>{title}</Text> : null;
+    const label = isTitle ? <Text key="menu-title" className={labelClassName(isActiveOrOpen)}>{title}</Text> : null;
     const arrow = chevron ? <MenuTopChevron key="menu-chevron" icon={chevron} isOpen={isOpen} on={isActiveOrOpen} /> : null;
 
     return (
         <Tooltip content={title} enabled={showTooltip}>
             {/* The active link's highlight is MenuTop's sliding indicator, which never moves to a
                 dropdown, so an open dropdown draws its own fill behind the accent-foreground label. */}
-            <Row className={`${ROW_BASE} ${rowLayout(stacked, labelled)} ${rowState(isOpen, isActive)}`}>
+            <Row className={`${ROW_BASE} ${rowLayout(labelled)} ${rowState(isOpen, isActive)}`}>
                 {[
                     // The icon's hover motion is CSS, keyed on the link's (or trigger's) `group` class.
                     <MenuTopIcon key="menu-icon" icon={icon} animated={animated === true} on={isActiveOrOpen} className={iconClassName(isActiveOrOpen, addClassName)} />,
-                    ...labelAndArrow(stacked, label, arrow),
+                    label,
+                    arrow,
                 ]}
             </Row>
         </Tooltip>
