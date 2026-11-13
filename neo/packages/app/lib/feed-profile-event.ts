@@ -12,10 +12,14 @@ type FeedEntry = {
 /** A UNA link as a path to compare: no origin, query, hash or slashes around it. */
 function linkPath(url?: string): string {
     if (!url) return ''
-    return url
-        .replace(/^[a-z][a-z0-9+.-]*:\/\/[^/]+/i, '')
-        .replace(/[?#].*$/, '')
-        .replace(/^\/+|\/+$/g, '')
+    const ends = [url.indexOf('?'), url.indexOf('#')].filter((i) => i >= 0)
+    let path = ends.length ? url.slice(0, Math.min(...ends)) : url
+    const scheme = path.indexOf('://')
+    if (scheme > 0) {
+        const slash = path.indexOf('/', scheme + 3)
+        path = slash < 0 ? '' : path.slice(slash)
+    }
+    return path.split('/').filter(Boolean).join('/')
 }
 
 export function isProfileFeedEntry(entry?: FeedEntry | null): boolean {

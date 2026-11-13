@@ -257,7 +257,9 @@ export function Modal({
     const styles = { maxHeight: heightActual - offset - dialogInset }
     // The panel never grows past the room inside the fog (`max-h-full`), so its body shrinks to
     // fit whatever the header really takes; `offset` above is only the header's minimum.
-    const dialogHeight = isDialog ? (fillHeight ? heightActual - dialogInset : 'auto') : heightActual;
+    let dialogHeight: number | 'auto' = heightActual;
+    if (isDialog) dialogHeight = fillHeight ? heightActual - dialogInset : 'auto';
+    const dialogClass = isDialog ? maxWidth + ' max-h-full ' + modalSettings.dialog : '';
     const animationType = animation || (isDesktop ? 'fade' : 'slide');
     const isOuterClose = (typeof onClose === 'function' && outerClickClose !== false);
     const positionClasses = {
@@ -472,7 +474,7 @@ export function Modal({
                     onPress={handleWebOuterPress}
                 >
                     <RemoveScroll className={`flex-1  flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
-                        <View ref={panelRef} style={{paddingBottom: isKeyboardOpen ? 96 : 0, height: dialogHeight }} className={`w-full ${isDialog ? `${maxWidth} max-h-full` : ''} left-0 right-0 z-50 w-full mx-auto ${modalSettings.container} ${isDialog ? modalSettings.dialog : ''} `}>
+                        <View ref={panelRef} style={{paddingBottom: isKeyboardOpen ? 96 : 0, height: dialogHeight }} className={`w-full left-0 right-0 z-50 mx-auto ${modalSettings.container} ${dialogClass}`}>
                        
                             {content}
 
