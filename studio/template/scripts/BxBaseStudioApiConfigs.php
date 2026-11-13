@@ -26,10 +26,10 @@ class BxBaseStudioApiConfigs extends BxDolStudioApiConfigs
     public function performActionApply()
     {
         $iId = $this->_getIds();
-        
+
         $mixedResult = $this->_performActionApply($iId);
         if($mixedResult === true)
-            $mixedResult = ['code' => 0, 'toast' => _t('_adm_api_msg_applied')];
+            $mixedResult = ['code' => 0, 'toast' => _t('_adm_api_msg_applied'), 'grid' => $this->getCode(false), 'blink' => $iId];
         else
             $mixedResult = ['code' => 1, 'msg' => is_string($mixedResult) ? $mixedResult : _t('_adm_err_operation_failed')];
 
@@ -42,7 +42,7 @@ class BxBaseStudioApiConfigs extends BxDolStudioApiConfigs
 
         $aResult = [];
         if($this->_performActionRemove($iId))
-            $aResult = ['code' => 0, 'toast' => _t('_adm_api_msg_removed')];
+            $aResult = ['code' => 0, 'toast' => _t('_adm_api_msg_removed'), 'grid' => $this->getCode(false), 'blink' => $iId];
         else
             $aResult = ['code' => 1, 'msg' => _t('_adm_err_operation_failed')];
 
@@ -262,6 +262,11 @@ class BxBaseStudioApiConfigs extends BxDolStudioApiConfigs
         }
 
         return $mixedResult ? [true, $sFile] : [false, '_adm_err_operation_failed'];
+    }
+
+    protected function _isRowDisabled($aRow)
+    {
+        return false;
     }
 }
 

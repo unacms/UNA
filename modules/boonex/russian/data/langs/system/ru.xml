@@ -488,6 +488,7 @@
         <string name="_adm_api_msg_removed_for"><![CDATA[Настройки всех приложений были удалены.]]></string>
         <string name="_adm_api_popup_import"><![CDATA[Импортировать настройки]]></string>
         <string name="_adm_api_ttl_module"><![CDATA[Приложение]]></string>
+        <string name="_adm_api_ttl_sync_api"><![CDATA[Синхр.]]></string>
 	<string name="_adm_block_cpt_categories"><![CDATA[Категории]]></string>
 	<string name="_adm_block_cpt_category"><![CDATA[Категория: {0}]]></string>
 	<string name="_adm_block_cpt_checkout"><![CDATA[Оплата]]></string>

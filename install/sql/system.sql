@@ -5852,11 +5852,12 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 -- GRID: API Configs
 
 INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `override_class_name`, `override_class_file`) VALUES
-('sys_studio_api_configs', 'Sql', 'SELECT * FROM `sys_modules` WHERE 1 ', 'sys_modules', 'id', '', '', '', 100, NULL, 'start', '', 'name,title,vendor', '', 'like', '', '', 'BxTemplStudioApiConfigs', '');
+('sys_studio_api_configs', 'Sql', 'SELECT * FROM `sys_modules` WHERE 1 ', 'sys_modules', 'id', '', 'sync_app', '', 100, NULL, 'start', '', 'name,title,vendor', '', 'like', '', '', 'BxTemplStudioApiConfigs', '');
 
 INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `hidden_on`, `order`) VALUES
-('sys_studio_api_configs', 'title', '_adm_api_ttl_module', '20%', 0, 0, '', '', 1),
-('sys_studio_api_configs', 'actions', '', '80%', 0, 0, '', '', 2);
+('sys_studio_api_configs', 'switcher', '_adm_api_ttl_sync_api', '10%', 0, 0, '', '', 1),
+('sys_studio_api_configs', 'title', '_adm_api_ttl_module', '20%', 0, 0, '', '', 2),
+('sys_studio_api_configs', 'actions', '', '70%', 0, 0, '', '', 3);
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
 ('sys_studio_api_configs', 'single', 'apply', '_adm_api_btn_apply', 'recycle', 1, 1, 1),
