@@ -1,7 +1,7 @@
 import { View, Row } from 'app/design/view';
 import Image, { POST_ENTRY_COVER_SIZES, POST_ENTRY_COVER_WIDTH_CAP } from 'app/ui/atoms/image';
 import { getCoverAspectClass } from 'app/lib/image/upload-settings';
-import { Text, H1 } from 'app/design/typography';
+import { Text, H1C } from 'app/design/typography';
 import { appSetting, getYouTubeVideoId } from 'app/lib/util'
 import Video from 'app/ui/atoms/video';
 import Youtube from 'app/ui/molecules/content/youtube'
@@ -148,7 +148,8 @@ export default function ElementEntityPoll({ data, block, blockWrapperProps }) {
                     </View>
                 )}
                 <View className={"mx-auto w-full"}>
-                    <H1 className="font-bold tracking-tight  text-popover-foreground  ">{data.title}</H1>
+                    {/* The content title, as a post's. */}
+                    <H1C>{data.title}</H1C>
                 </View>
                 <PollItem data={data} />
             </View>

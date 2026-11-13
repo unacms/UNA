@@ -39,6 +39,8 @@ const getFeedModalUrlFromHash = () => {
 export default function FormModal({ pageData, setPageData, modalView, url, historyUrl }) {
     const { t } = useTranslation()
     const previousUrlRef = useRef(null);
+    // The address the modal put in the address bar, until it is taken back.
+    const pushedUrlRef = useRef(null);
     // A link pressed inside the modal closes it while the router navigates.
     const navigatingRef = useRef(false);
 
@@ -52,10 +54,22 @@ export default function FormModal({ pageData, setPageData, modalView, url, histo
         if (isWeb && previousUrlRef.current && !navigatingRef.current) {
             window.history.replaceState(null, '', previousUrlRef.current);
         }
+        pushedUrlRef.current = null;
         setPageData(false);
     }, [setPageData]);
 
     const isOpen = !!pageData;
+    // A page that fails to load closes the modal without `handleClose`: take the page's address
+    // back out of the address bar, or the feed would stay under a post's URL.
+    useEffect(() => {
+        if (!isWeb || isOpen || !pushedUrlRef.current)
+            return;
+        const current = window.location.pathname + window.location.search + window.location.hash;
+        if (!navigatingRef.current && previousUrlRef.current && current === pushedUrlRef.current)
+            window.history.replaceState(null, '', previousUrlRef.current);
+        pushedUrlRef.current = null;
+    }, [isOpen]);
+
     useEffect(() => {
         if (!isWeb || !isOpen)
             return;
@@ -83,6 +97,7 @@ export default function FormModal({ pageData, setPageData, modalView, url, histo
         // reopened after reload (or url updated while open): the history entry is already there
         if (window.location.pathname + window.location.search + window.location.hash !== normalizedUrl)
             window.history.pushState({ modal: true }, '', normalizedUrl);
+        pushedUrlRef.current = normalizedUrl;
 
         const handlePopState = async () => {
             const proceed = await confirmDiscardUnsavedFormChanges();
@@ -119,6 +134,8 @@ export default function FormModal({ pageData, setPageData, modalView, url, histo
                 padding=""
                 outerClickClose={isWeb}
                 usePadding={true}
+                // The page layout measures the room it gets and gives it to its list.
+                fillHeight
             >
                 <Component url={url} isModal={true} layoutName={'post'} data={pageData} blocks={layoutBlocks1} />
             </Modal>

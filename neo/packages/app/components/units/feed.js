@@ -22,7 +22,9 @@ import { CardList, CardHeader, CardTitle } from 'app/ui/molecules/page/card';
 import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { components } from 'app/components/registry'
 import Scroll from 'app/ui/molecules/page/scroll'
-import { useOpenModalByUrl } from 'app/context/jotai/modal';
+import { useOpenModalByUrl, useOpenModalWithContent } from 'app/context/jotai/modal';
+import { isProfileFeedEntry } from 'app/lib/feed-profile-event';
+import FeedProfileComments from 'app/components/elements/feed-profile-comments';
 import { isFeedModalHash, getFeedModalHistoryUrl } from 'app/ui/molecules/dialogs/form-modal';
 import { Skeleton } from 'app/ui/atoms/skeleton';
 
@@ -92,6 +94,7 @@ function DefaultFeedUnit({ data }) {
     const { t } = useTranslation()
     const [viewState, setViewState] = useState({ view: '' })
     const openModalByUrl = useOpenModalByUrl();
+    const openModalWithContent = useOpenModalWithContent();
 
     const isCommentsModal = appSetting('browse', 'show_in_modal', 'bx_timeline') // && isWeb
     const { url, commentsData, isShowMoreComments } = useMemo(
@@ -100,10 +103,19 @@ function DefaultFeedUnit({ data }) {
     )
 
     const showCommentsModal = useCallback((initFormData) => {
+        // An entry about a profile ("Muha joined"): its page is the profile, which is no content
+        // page to draw in the post modal. Its comments open next to a small card of the profile.
+        if (isProfileFeedEntry(data)) {
+            openModalWithContent({
+                title: data.author_data?.display_name || ' ',
+                content: <FeedProfileComments data={data} />,
+            });
+            return;
+        }
         const url2 = (url.startsWith('/') ? url.slice(1) : url) + (initFormData?.cmt_id > 0 ? '#cmt_id=' + initFormData?.cmt_id : '#cmts');
         // #cmts (scroll + focus the comment form) is only for the click, not for reopening after reload
         openModalByUrl(url2, isFeedModalHash() ? getFeedModalHistoryUrl(url2.replace(/#cmts$/, '')) : '');
-    }, [url, openModalByUrl])
+    }, [url, data, openModalByUrl, openModalWithContent])
 
     const menuActions = useMemo(
         () => isCommentsModal ? withCommentCallback(data?.menu_actions, showCommentsModal) : data?.menu_actions,

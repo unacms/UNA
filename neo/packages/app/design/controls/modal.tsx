@@ -36,6 +36,8 @@ const isIPadWeb =
         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
     );
 const modalSettings = appSetting('theme', 'modal');
+// Space between a web dialog and the viewport's edges, in px: the fog's `p-4`. Change them together.
+const DIALOG_INSET = 16;
 // Topmost modal wins Escape. Menus that preventDefault on the same keydown run first.
 const webModalEscapeStack: symbol[] = [];
 
@@ -92,6 +94,12 @@ export type ModalProps = {
     /** Tailwind padding class for the body. */
     padding?: string;
     autoHeight?: boolean;
+    /**
+     * Web dialog: as tall as the viewport allows, whatever its content. For a body that sizes
+     * itself from the room it gets (a list that scrolls inside); without it a dialog is as tall
+     * as its content.
+     */
+    fillHeight?: boolean;
     scrollable?: boolean;
     /** Skip the "discard unsaved form changes?" confirm on close. */
     skipUnsavedGuard?: boolean;
@@ -112,6 +120,7 @@ export function Modal({
     children,
     padding = 'p-4',
     autoHeight = false,
+    fillHeight = false,
     scrollable = false,
     skipUnsavedGuard = false,
 }: ModalProps) {
@@ -238,8 +247,19 @@ export function Modal({
     }, []);*/
 
 
+    // A dialog over the page (desktop, or a small centred one) has its width, corners and outline; a
+    // modal that fills the screen has none of them.
+    const isDialog = isWeb ? (isDesktop && !isIPadWeb) || autoHeight : autoHeight;
+    // On web a dialog never touches the viewport: the fog keeps DIALOG_INSET around it (`p-4`).
+    const dialogInset = isWeb && isDialog ? DIALOG_INSET * 2 : 0;
+
     const offset = (title ? 56 : isIos ? insets?.bottom + insets?.top : 0);
-    const styles = { maxHeight: heightActual - offset - (isDesktop ? 0 : 0) }
+    const styles = { maxHeight: heightActual - offset - dialogInset }
+    // The panel never grows past the room inside the fog (`max-h-full`), so its body shrinks to
+    // fit whatever the header really takes; `offset` above is only the header's minimum.
+    let dialogHeight: number | 'auto' = heightActual;
+    if (isDialog) dialogHeight = fillHeight ? heightActual - dialogInset : 'auto';
+    const dialogClass = isDialog ? maxWidth + ' max-h-full ' + modalSettings.dialog : '';
     const animationType = animation || (isDesktop ? 'fade' : 'slide');
     const isOuterClose = (typeof onClose === 'function' && outerClickClose !== false);
     const positionClasses = {
@@ -444,21 +464,17 @@ export function Modal({
             </Pressable>
         </Cnt></>
 
-    // A dialog over the page (desktop, or a small centred one) has its width, corners and outline; a
-    // modal that fills the screen has none of them.
-    const isDialog = isWeb ? (isDesktop && !isIPadWeb) || autoHeight : autoHeight;
-
     if (isWeb) {
         return (
             <ModalDef visible={onVisible} animationType={animationType} transparent={true} onRequestClose={handleRequestClose}>
                 <Pressable
                     ref={fogRef}
                     style={undefined}
-                    className={`pointerEvents cursor-default flex justify-start w-full h-full sm:items-center items-start overflow-hidden ${modalSettings.fog} `}/* justify-start for post form small web */
+                    className={`pointerEvents cursor-default flex justify-start w-full h-full sm:items-center items-start overflow-hidden ${isDialog ? 'p-4' : ''} ${modalSettings.fog} `}/* justify-start for post form small web */
                     onPress={handleWebOuterPress}
                 >
                     <RemoveScroll className={`flex-1  flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
-                        <View ref={panelRef} style={{paddingBottom: isKeyboardOpen ? 96 : 0, height: isDialog ? 'auto' : heightActual }} className={`w-full ${isDialog ? maxWidth : ''} left-0 right-0 z-50 w-full mx-auto ${modalSettings.container} ${isDialog ? modalSettings.dialog : ''} `}>
+                        <View ref={panelRef} style={{paddingBottom: isKeyboardOpen ? 96 : 0, height: dialogHeight }} className={`w-full left-0 right-0 z-50 mx-auto ${modalSettings.container} ${dialogClass}`}>
                        
                             {content}
 

@@ -74,6 +74,8 @@ export function CommentsBrowse({
     marginBottom = 0,
     useCustomScrollHandler,
     embedded = false,
+    // The list sits inside a padded container (a page block): rows add no side padding of their own.
+    flush = false,
 }) {
     const UnitComments = components['unit']['comments'];
     const { t } = useTranslation();
@@ -558,7 +560,7 @@ export function CommentsBrowse({
         }
         return (
             <TouchableWithoutFeedback onPress={dismissComposerIfIdle}>
-                <View className="px-4" key={index}>
+                <View className={flush ? undefined : 'px-4'} key={index}>
                     <UnitComments
                         selectedId={scrollToIndex}
                         hideActions={hideActions}
@@ -572,7 +574,7 @@ export function CommentsBrowse({
                 </View>
             </TouchableWithoutFeedback>
         );
-    }, [scrollToIndex, hideActions, replyId, browseParams.module, browseParams.max_level, viewMode, dismissComposerIfIdle]);
+    }, [scrollToIndex, hideActions, replyId, browseParams.module, browseParams.max_level, viewMode, dismissComposerIfIdle, flush]);
 
     return (
         <>
@@ -853,14 +855,17 @@ export function parseData(browse, dynamicData) {
  * to transparent at the top, so comments passing behind stay partly visible.
  * Omit it when the composer is in normal flow (desktop full page) — there is
  * nothing behind it to reveal.
+ *
+ * `flush` — the composer sits inside a padded container (a page block), so it adds
+ * no side padding of its own and lines up with the block's content.
  */
-export function CommentsForm({ form: initialForm, requestUrl, module, objectId, isModal = false, fadeSurface }) {
+export function CommentsForm({ form: initialForm, requestUrl, module, objectId, isModal = false, fadeSurface, flush = false }) {
     if (!initialForm?.data?.inputs)
         return <></>
-    return <CommentsFormInner form={initialForm} requestUrl={requestUrl} module={module} objectId={objectId} isModal={isModal} fadeSurface={fadeSurface} />
+    return <CommentsFormInner form={initialForm} requestUrl={requestUrl} module={module} objectId={objectId} isModal={isModal} fadeSurface={fadeSurface} flush={flush} />
 }
 
-function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, isModal = false, fadeSurface }) {
+function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, isModal = false, fadeSurface, flush = false }) {
     const { t } = useTranslation();
     const [formData, setFormData] = useState({});
 
@@ -1007,7 +1012,8 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
         <EdgeBlurView
             edge="bottom"
             config={fadeSurface ? edgeBlurConfig('footer') : null}
-            className=" p-2 sm:p-4 "
+            // 16px from the sides on every size, as the content above it.
+            className={flush ? 'py-2 sm:py-4' : 'px-4 py-2 sm:py-4'}
             washClassName={FADE_SURFACE_CLASS[fadeSurface] || ''}
             style={fadeSurface ? { paddingTop: FADE_RUN_UP } : undefined}
         >

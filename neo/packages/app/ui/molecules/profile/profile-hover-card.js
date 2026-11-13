@@ -6,6 +6,7 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from 'app/ui/atoms/hove
 import Profile from 'app/ui/molecules/profile/profile';
 import Link from 'app/ui/atoms/link';
 import { fetcher } from 'app/lib/fetcher';
+import { useQuery } from '@tanstack/react-query';
 import {
     CoverMenuMeta,
     CoverMenu,
@@ -16,12 +17,12 @@ const isWeb = Platform.OS === 'web';
 /**
  * Simple static content - no data fetching to avoid re-renders
  */
-const ProfileCardContent = memo(function ProfileCardContent({ profileData, cover }) {
+const ProfileCardContent = memo(function ProfileCardContent({ profileData, cover, className = 'p-2' }) {
     const displayName = profileData?.display_name || '';
     const avatarUrl = profileData?.url_avatar;
     const profileUrl = profileData?.url;
     return (
-            <View className="w-full min-w-0 max-w-full p-2">
+            <View className={`w-full min-w-0 max-w-full ${className}`}>
                 <Row className="w-full min-w-0 gap-3 items-start">
                     <View className="flex-none">
                         <Profile
@@ -81,6 +82,27 @@ function ProfileHoverCard_({ profileData, children, disabled = false }) {
     return <ProfileHoverCardContent profileData={profileData}>{children}</ProfileHoverCardContent>;
 }
 
+// The profile's cover alone (description, meta and actions menus), not its page.
+function fetchProfileCover(profileId) {
+    return fetcher(`/api.php?r=system/profile_cover/TemplServiceProfiles&params[]=${profileId}`)
+        .then((oResponse) => oResponse?.data || null);
+}
+
+/**
+ * The hover card's content as a block of its own (web and native): the avatar, name and link from
+ * `profileData` at once, the description and the meta and action menus once the cover has loaded.
+ */
+export function ProfileMiniCard({ profileData, className = '' }) {
+    const profileId = profileData?.id;
+    const { data: cover } = useQuery({
+        queryKey: ['profile_cover', profileId],
+        queryFn: () => fetchProfileCover(profileId),
+        enabled: !!profileId,
+    });
+
+    return <ProfileCardContent profileData={profileData} cover={cover} className={className} />;
+}
+
 function ProfileHoverCardContent({ profileData, children }) {
     const [cover, setCover] = useState(null);
     const profileId = profileData?.id;
@@ -89,10 +111,9 @@ function ProfileHoverCardContent({ profileData, children }) {
     // callback, so identity is not important (React Compiler memoizes it anyway).
     const handleOpenChange = (open) => {
         if (!open || cover || !profileId) return;
-        // The profile's cover alone (description, meta and actions menus), not its page.
-        fetcher(`/api.php?r=system/profile_cover/TemplServiceProfiles&params[]=${profileId}`)
-            .then((oResponse) => {
-                if (oResponse?.data) setCover(oResponse.data);
+        fetchProfileCover(profileId)
+            .then((data) => {
+                if (data) setCover(data);
             })
             // A failed request leaves the card unloaded; the next open asks again.
             .catch(() => {});
