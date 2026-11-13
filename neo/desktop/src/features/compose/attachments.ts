@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useRef } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 
 import type { Schema, UnaApi } from 'una-api';
 
@@ -149,8 +149,13 @@ export function useAttachments({
 }) {
     const [items, dispatch] = useReducer(attachmentsReducer, []);
     const latest = useRef(items);
+    // files being made ready (picked, pasted or dropped, not in the tray yet), and whether some
+    // were added that the composer is not drawn with yet: what it sends now would go without them
+    const making = useRef(0);
+    const undrawn = useRef(false);
     useEffect(() => {
         latest.current = items;
+        undrawn.current = false;
     }, [items]);
 
     // The sheet goes away (another profile, sign-out): uploads on their way stop, and files
@@ -225,6 +230,7 @@ export function useAttachments({
                 total: picked.size,
             }));
             if (added.length) {
+                undrawn.current = true;
                 dispatch({ type: 'add', items: added, max });
                 // known at once (not only after the render): the tray going before it is drawn lets them go too
                 latest.current = [...latest.current, ...added].slice(0, max);
@@ -367,5 +373,47 @@ export function useAttachments({
         };
     }, [converting, check, announce]);
 
-    return { items, add, remove, retry, reset, restore };
+    // how many times files on their way stopped being so: who said "wait" for them stops saying
+    // it then, the tray changed or not (a dialog closed with nothing chosen, files it refused)
+    const [settled, setSettled] = useState(0);
+
+    /**
+     * Counts files as on their way while they are made ready (`staging`), until what the caller
+     * does with them at once (its own `then` on this promise: `add`) is done, so nothing is
+     * between "made ready" and "added, not drawn yet". Answers the same promise.
+     */
+    const wait = useCallback(<T>(made: Promise<T>): Promise<T> => {
+        making.current++;
+        const done = () =>
+            // after the caller's reactions to the same promise, which are queued behind this one
+            queueMicrotask(() => {
+                making.current--;
+                if (!making.current && !gone.current) setSettled((n) => n + 1);
+            });
+        made.then(done, done);
+        return made;
+    }, []);
+
+    /**
+     * Takes files that are being made ready (a pick, a paste, a drop) once they are: into the
+     * tray, or let go when the form is `held` by then (it began to be sent: its request left
+     * without them, so no upload is started and nothing keeps them).
+     */
+    const stage = useCallback(
+        (made: Promise<Staging>, held: () => boolean = () => false) => {
+            void wait(made).then((staging) => {
+                if (held()) for (const file of staging.files) uploader.release(file);
+                else add(staging);
+            });
+        },
+        [wait, add, uploader],
+    );
+
+    /**
+     * Whether files are on their way into the tray: being made ready, or added and not drawn
+     * yet. What is sent now would go without them (`postBlocker` says nothing of them yet).
+     */
+    const staging = useCallback(() => making.current > 0 || undrawn.current, []);
+
+    return { items, add, remove, retry, reset, restore, wait, stage, staging, settled };
 }

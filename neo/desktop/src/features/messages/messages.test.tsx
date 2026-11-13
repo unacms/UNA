@@ -12,7 +12,7 @@ import { platform } from '../../lib/platform';
 import { isWindowGesture, isWindowKey, opensInWindow } from '../../lib/open-in-window';
 import { parseRoute, type Route, RouteHistory, routeToPath } from '../../lib/router';
 import { appSettings } from '../../lib/settings';
-import { photoUploader, type Picked, type Uploader } from '../../lib/uploads';
+import { photoUploader, type Picked, type Staging, type Uploader } from '../../lib/uploads';
 import { Messages } from '../../screens/messages';
 import { secondaryRoute } from '../../secondary';
 import { DetailPane } from '../../shell/detail-pane';
@@ -514,6 +514,78 @@ describe('Conversation', () => {
         } finally {
             await appSettings.set('sendWithCmdEnter', false);
         }
+    });
+
+    // photos on their way into the tray (being made ready): a message sent now would go without them
+    const WAIT = 'Wait until the uploads are done';
+    const beach: Picked = { handle: 'h-beach', name: 'beach.png', size: 3, mime: 'image/png', kind: 'image' };
+    /** A conversation with "Hello" typed, whose uploader makes files ready, and uploads them, when the test says so. */
+    async function typedWithSlowUploads() {
+        const sent: unknown[] = [];
+        const api = fakeApi({
+            'GET /conversations/7': () => ({ status: 200, body: { ...conversation, unread: 0 } }),
+            'GET /conversations/7/messages': () => ({ status: 200, body: { items: [msg(3)], next_cursor: null } }),
+            'POST /conversations/7/messages': async (r) => {
+                sent.push(await r.json());
+                return { status: 201, body: msg(9, { author: lily, mine: true }) };
+            },
+        });
+        const made: ((staging: Staging) => void)[] = [];
+        const uploaded: ((media: Schema<'Media'>) => void)[] = [];
+        const make = () => new Promise<Staging>((resolve) => made.push(resolve));
+        const uploader: Uploader = { ...noUploads, pick: make, fromFiles: make, fromPaths: make, upload: () => new Promise((resolve) => uploaded.push(resolve)) };
+        renderIn(<Conversation id="7" uploader={uploader} />, api, { list: { section: 'messages' }, detail: { kind: 'conversation', id: '7' } });
+        const box = await screen.findByRole('textbox', { name: 'Write a message' });
+        setRichText(box, 'Hello');
+        return {
+            sent,
+            box,
+            hint: () => document.getElementById(box.getAttribute('aria-describedby') ?? '')?.textContent,
+            enter: () => act(async () => void fireEvent.keyDown(box, { key: 'Enter' })),
+            ready: (files: Picked[]) => act(async () => made.shift()?.({ files, refused: [] })),
+            finish: (id: string) => act(async () => uploaded.shift()?.({ id, kind: 'image', mime: 'image/png', size: 3, state: 'ready', original_name: 'beach.png', url: '', download_url: '', variants: {}, width: 4, height: 3 })),
+        };
+    }
+
+    for (const way of ['picked in the dialog', 'pasted in the box'] as const)
+        it(`does not send while a photo ${way} is on its way into the tray, says to wait, and sends with it once it is up`, async () => {
+            const { sent, box, hint, enter, ready, finish } = await typedWithSlowUploads();
+            if (way === 'picked in the dialog') fireEvent.click(screen.getByRole('button', { name: 'Add photos' }));
+            else fireEvent.paste(box, { clipboardData: { files: [new File([new Uint8Array([1, 2, 3])], 'beach.png', { type: 'image/png' })], getData: () => '' } });
+            // the keyboard, then the button: neither sends, and the line under the box says why
+            await enter();
+            expect(sent).toHaveLength(0);
+            expect(hint()).toBe(WAIT);
+            await act(async () => void fireEvent.click(screen.getByRole('button', { name: 'Send' })));
+            expect(sent).toHaveLength(0);
+            expect(richText(box)).toBe('Hello');
+
+            // made ready: the tray shows it, and Send waits for its upload as for any other
+            await ready([beach]);
+            expect(await screen.findByRole('list', { name: '1 attachment' })).toBeTruthy();
+            expect(hint()).toBe(WAIT);
+            await enter();
+            expect(sent).toHaveLength(0);
+            await finish('77');
+            await waitFor(() => expect(screen.getByRole('button', { name: 'Send' }).getAttribute('aria-disabled')).toBeNull());
+            expect(hint()).toBe(sendHint(false));
+            await enter();
+            await waitFor(() => expect(sent).toHaveLength(1));
+            expect(sent[0]).toEqual({ body: '<p>Hello</p>', media_ids: ['77'] });
+        });
+
+    it('stops saying to wait when nothing came of the photos on their way (the dialog closed with none), and sends then', async () => {
+        const { sent, hint, enter, ready } = await typedWithSlowUploads();
+        fireEvent.click(screen.getByRole('button', { name: 'Add photos' }));
+        await enter();
+        expect(sent).toHaveLength(0);
+        expect(hint()).toBe(WAIT);
+        // nothing was chosen: the tray does not change, and there is nothing to wait for
+        await ready([]);
+        expect(hint()).toBe(sendHint(false));
+        await enter();
+        await waitFor(() => expect(sent).toHaveLength(1));
+        expect(sent[0]).toEqual({ body: '<p>Hello</p>' });
     });
 
     it('shows badges after the sender\'s name over a run, and in the People panel', async () => {

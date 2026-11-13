@@ -9,7 +9,8 @@ import { retryOnce, unwrap } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
 import { t } from '../../lib/i18n';
-import { idempotencyKeyFor, type IdempotencySlot, settleIdempotency } from '../../lib/idempotency';
+import { heldSelect } from '../../lib/held-select';
+import { idempotencyKeyFor, type IdempotencySlot, saysNothingOfFirstSending, settleIdempotency } from '../../lib/idempotency';
 import { inApp } from '../../lib/native';
 import { useNavigation } from '../../lib/navigation';
 import { isMac } from '../../lib/platform';
@@ -65,7 +66,8 @@ export function isVideoLink(s: string): boolean {
  * (GET /uploads/{id}, asked less and less often), or a link to a video on another site; its
  * title (the file's name by default), description and who can see it, or the group it goes in
  * when it was started from one. Added, it opens as the video; an upload nothing took is
- * deleted when the form goes.
+ * deleted when the form goes, but not the one a request names that is in flight, or named and
+ * said nothing of. While it is being sent the form takes no change.
  */
 export function NewVideo({ contextId, uploader: given }: { contextId?: string; uploader?: Uploader }) {
     const { api } = useApp();
@@ -97,13 +99,24 @@ export function NewVideo({ contextId, uploader: given }: { contextId?: string; u
         latest.current = upload;
     }, [upload]);
     const added = useRef(false);
+    // being sent, known before the render (a pick or a drop landing meanwhile is let go)
+    const inFlight = useRef(false);
+    // the upload the request in flight names: the form going does not delete it under the
+    // request, whose answer says whether the site took it
+    const claimed = useRef<string | null>(null);
+    // uploads a request named that said nothing of what the site did (no answer, or one that
+    // tells nothing: saysNothingOfFirstSending): the site may be taking them, now or later, so
+    // the form going never deletes them (the site deletes what nothing took, in its own time).
+    // Choosing another file still does: that is the person's own doing, as Remove is elsewhere.
+    const unknown = useRef<ReadonlySet<string>>(new Set());
 
     // an upload the form no longer needs: stopped on its way, its staged file let go (kept for a
-    // retry of the same file), deleted on the site once it arrived (its converting is queued then)
-    const drop = (u: VideoUpload, keepFile = false) => {
+    // retry of the same file), deleted on the site once it arrived (its converting is queued
+    // then), unless it is to be kept there (`keepOnSite`)
+    const drop = (u: VideoUpload, keepFile = false, keepOnSite = false) => {
         if (u.status === 'uploading') uploader.cancel(u.picked);
         if (!keepFile) uploader.release(u.picked);
-        if (u.status === 'done') void api.DELETE('/uploads/{id}', { params: { path: { id: u.media.id } } }).catch(() => undefined);
+        if (u.status === 'done' && !keepOnSite) void api.DELETE('/uploads/{id}', { params: { path: { id: u.media.id } } }).catch(() => undefined);
     };
     const dropRef = useRef(drop);
     useEffect(() => {
@@ -117,13 +130,16 @@ export function NewVideo({ contextId, uploader: given }: { contextId?: string; u
         return () => {
             gone.current = true;
             const u = latest.current;
-            if (u && !added.current) dropRef.current(u);
+            if (!u || added.current) return;
+            const id = u.status === 'done' ? u.media.id : null;
+            dropRef.current(u, false, id !== null && (claimed.current === id || unknown.current.has(id)));
         };
     }, []);
 
     const start = (staging: Staging) => {
-        // the form went while the file was made ready (the dialog, a drop): nothing sends it
-        if (gone.current) {
+        // the form went while the file was made ready (the dialog, a drop): nothing sends it.
+        // Or it is being sent: its request left with the upload it had, which stays
+        if (gone.current || inFlight.current) {
             for (const f of staging.files) uploader.release(f);
             return;
         }
@@ -243,11 +259,11 @@ export function NewVideo({ contextId, uploader: given }: { contextId?: string; u
               },
           };
 
-    const pick = () => uploader.pick().then(start, (e: unknown) => setError(errorMessage(e)));
+    const pick = () => (inFlight.current ? undefined : uploader.pick().then(start, (e: unknown) => setError(errorMessage(e))));
 
     const submit = async (e?: FormEvent) => {
         e?.preventDefault();
-        if (sending) return;
+        if (sending || inFlight.current) return;
         const body: Schema<'NewVideo'> = {};
         if (source === 'upload') {
             if (upload?.status !== 'done') {
@@ -275,19 +291,41 @@ export function NewVideo({ contextId, uploader: given }: { contextId?: string; u
         if (contextId) body.context_id = contextId;
         else body.audience = audience;
         const from = history.current;
+        const named = body.media_id ?? null;
+        // the upload the request named, as the form had it (for after the form went)
+        const namedUpload = named ? upload : null;
+        inFlight.current = true;
+        claimed.current = named;
         setSending(true);
         setError(null);
+        // the request said nothing of what the site did with the upload it named
+        const saidNothing = () => {
+            if (named) unknown.current = new Set([...unknown.current, named]);
+        };
         let result;
         try {
             result = await api.POST('/videos', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/videos', body]) } }, body });
         } catch (e) {
+            inFlight.current = false;
+            claimed.current = null;
+            saidNothing();
+            // the form went meanwhile: nothing of it is left to say so
+            if (gone.current) return;
             // no answer came: the key stays, so sending it again gets the site's answer to this one
             setSending(false);
             setError(t('The video was not added: {{reason}}', { reason: errorMessage(e) }));
             return;
         }
+        inFlight.current = false;
+        claimed.current = null;
         settleIdempotency(sent, result.response.status);
         if (result.error !== undefined || !result.data) {
+            if (saysNothingOfFirstSending(result.response.status)) saidNothing();
+            if (gone.current) {
+                // the site refused it and the form is gone: nothing takes the upload now
+                if (namedUpload && named && !unknown.current.has(named)) drop(namedUpload, true);
+                return;
+            }
             setSending(false);
             const problem = result.error as { errors?: { field?: string; message?: string }[] } | undefined;
             const field = problem?.errors?.[0]?.field;
@@ -297,14 +335,22 @@ export function NewVideo({ contextId, uploader: given }: { contextId?: string; u
             return;
         }
         added.current = true;
-        // a file uploaded before the link was chosen instead: nothing takes it now
+        const created = unwrap(result);
+        // the form went meanwhile: the video is in the lists, and nothing opens in place of a form
+        // that is not there (an upload a link was added instead of went with the form)
+        if (gone.current) {
+            await afterVideoAdded(queryClient, created);
+            return;
+        }
+        // a file uploaded before the link was chosen instead: nothing takes it now, unless a
+        // request named it and said nothing of what the site did (it may be a video's by now)
         if (source === 'link' && upload) {
-            drop(upload);
+            drop(upload, false, upload.status === 'done' && unknown.current.has(upload.media.id));
             latest.current = null;
             setUpload(null);
         }
-        const created = unwrap(result);
         await afterVideoAdded(queryClient, created);
+        if (gone.current) return;
         if (!replaceDetail({ kind: 'video', id: created.id }, from)) setSending(false);
     };
 
@@ -336,20 +382,21 @@ export function NewVideo({ contextId, uploader: given }: { contextId?: string; u
                     <fieldset className="settings-field video-source">
                         <legend>{t('Video')}</legend>
                         <label>
-                            <input type="radio" name={`${id}-source`} value="upload" checked={source === 'upload'} onChange={() => setSource('upload')} /> {t('Upload a file')}
+                            <input type="radio" name={`${id}-source`} value="upload" checked={source === 'upload'} aria-disabled={sending || undefined} onChange={() => (sending ? undefined : setSource('upload'))} /> {t('Upload a file')}
                         </label>
                         <label>
-                            <input type="radio" name={`${id}-source`} value="link" checked={source === 'link'} onChange={() => setSource('link')} /> {t('Link to a video on another site')}
+                            <input type="radio" name={`${id}-source`} value="link" checked={source === 'link'} aria-disabled={sending || undefined} onChange={() => (sending ? undefined : setSource('link'))} /> {t('Link to a video on another site')}
                         </label>
                     </fieldset>
                     {source === 'upload' ? (
                         <div className="settings-field">
-                            <div className="video-drop" data-dragging={dragging || undefined} {...dropProps}>
+                            <div className="video-drop" data-dragging={(dragging && !sending) || undefined} {...dropProps}>
                                 <Icon name="upload" size={20} />
                                 <button
                                     type="button"
                                     id={`${id}-pick`}
                                     className="btn"
+                                    aria-disabled={sending || undefined}
                                     onClick={() => void pick()}
                                     aria-describedby={fieldError?.field === 'file' ? `${id}-file-error ${id}-drop-hint` : `${id}-drop-hint`}
                                 >
@@ -366,7 +413,7 @@ export function NewVideo({ contextId, uploader: given }: { contextId?: string; u
                                     {upload.status === 'uploading' ? <progress max={upload.total || 1} value={upload.sent} aria-label={t('Uploading {{name}}', { name: upload.picked.name })} /> : null}
                                     <span className={`small${upload.status === 'failed' ? ' error' : ' muted'}`}>{uploadStatusText(upload)}</span>
                                     {upload.status === 'failed' ? (
-                                        <button type="button" className="btn" onClick={() => start({ files: [upload.picked], refused: [] })}>
+                                        <button type="button" className="btn" aria-disabled={sending || undefined} onClick={() => (sending ? undefined : start({ files: [upload.picked], refused: [] }))}>
                                             {t('Try again')}
                                         </button>
                                     ) : null}
@@ -385,9 +432,10 @@ export function NewVideo({ contextId, uploader: given }: { contextId?: string; u
                                 // i18n-ok: the start of an address
                                 placeholder="https://"
                                 autoFocus
+                                readOnly={sending}
                                 aria-invalid={invalid('link')}
                                 aria-describedby={fieldError?.field === 'link' ? `${id}-link-error` : undefined}
-                                onChange={(e) => setLink(e.target.value)}
+                                onChange={(e) => (sending ? undefined : setLink(e.target.value))}
                             />
                             {message('link')}
                         </div>
@@ -399,15 +447,16 @@ export function NewVideo({ contextId, uploader: given }: { contextId?: string; u
                             value={title}
                             maxLength={255}
                             dir="auto"
+                            readOnly={sending}
                             aria-invalid={invalid('title')}
                             aria-describedby={fieldError?.field === 'title' ? `${id}-title-error` : undefined}
-                            onChange={(e) => setTitle(e.target.value)}
+                            onChange={(e) => (sending ? undefined : setTitle(e.target.value))}
                         />
                         {message('title')}
                     </div>
                     <div className="settings-field">
                         <label htmlFor={`${id}-text`}>{t('Description')}</label>
-                        <textarea id={`${id}-text`} rows={4} value={text} maxLength={50000} dir="auto" onChange={(e) => setText(e.target.value)} />
+                        <textarea id={`${id}-text`} rows={4} value={text} maxLength={50000} dir="auto" readOnly={sending} onChange={(e) => (sending ? undefined : setText(e.target.value))} />
                     </div>
                     {contextId ? (
                         <p className="settings-field small muted">
@@ -422,7 +471,7 @@ export function NewVideo({ contextId, uploader: given }: { contextId?: string; u
                     ) : (
                         <div className="settings-field">
                             <label htmlFor={`${id}-audience`}>{t('Who can see it')}</label>
-                            <select id={`${id}-audience`} value={audience} onChange={(e) => setAudience(e.target.value as Audience)}>
+                            <select id={`${id}-audience`} value={audience} {...heldSelect(sending, (e) => setAudience(e.target.value as Audience))}>
                                 {AUDIENCES.map((a) => (
                                     <option key={a.value} value={a.value}>
                                         {a.label}
