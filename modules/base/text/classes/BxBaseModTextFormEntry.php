@@ -14,6 +14,7 @@
  */
 class BxBaseModTextFormEntry extends BxBaseModGeneralFormEntry
 {
+    protected $_sGhostTemplateCover = 'form_ghost_template_cover.html';
     protected $_sGhostTemplateVideo = 'form_ghost_template_video.html';
     protected $_sGhostTemplateSound = 'form_ghost_template_sound.html';
     protected $_sGhostTemplateFile = 'form_ghost_template_file.html';
