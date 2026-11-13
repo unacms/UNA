@@ -353,8 +353,9 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
         // said to be "not sent", and sent again changed (another key) it would be there twice
         let result;
         try {
-            result = await api.POST('/posts', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/posts', body]) } }, body });
+            result = await cover.claim(api.POST('/posts', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/posts', body]) } }, body }), (r) => r.error === undefined && !!r.data);
         } catch (err) {
+            if (cover.gone()) return;
             // no answer came: the key stays, so sending it again gets the site's answer to this one
             setSending(false);
             setError(t('The post was not sent: {{reason}}', { reason: errorMessage(err) }));
@@ -362,6 +363,7 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
         }
         settleIdempotency(sent, result.response.status);
         if (result.error !== undefined || !result.data) {
+            if (cover.gone()) return;
             setSending(false);
             const fieldBlocker = result.response.status === 422 ? newPostFieldError(result.error) : null;
             if (fieldBlocker) {
@@ -374,11 +376,11 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
             else setError(where ? t('You can’t write posts there: {{reason}}', { reason: problemMessage(result.error) }) : t('You can’t write posts in this network: {{reason}}', { reason: problemMessage(result.error) }));
             return;
         }
-        cover.markTaken();
         const created = result.data;
         queryClient.setQueryData(postKey(created.id), created);
         void queryClient.invalidateQueries(['posts', 'list']);
         void queryClient.invalidateQueries(['feed']);
+        if (cover.gone()) return;
         if (!replaceDetail({ kind: 'article', id: created.id }, from)) setSending(false);
     };
 

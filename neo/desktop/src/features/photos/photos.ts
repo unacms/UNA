@@ -193,9 +193,14 @@ export async function afterAlbumAdded(queryClient: QueryClient, album: Album): P
     await queryClient.invalidateQueries({ queryKey: ['albums', 'list'] });
 }
 
-/** After photos were added to an album: its items and its count (the card's preview too) load again. */
-export async function afterAddedToAlbum(queryClient: QueryClient, albumId: string): Promise<void> {
-    await Promise.all([queryClient.invalidateQueries({ queryKey: albumItemsKey(albumId) }), queryClient.invalidateQueries({ queryKey: albumKey(albumId) }), queryClient.invalidateQueries({ queryKey: ['albums', 'list'] })]);
+/**
+ * After photos were added to an album: its items and its count (the card's preview too) load
+ * again. Settles once its items were read again, however long the album and the lists take.
+ */
+export function afterAddedToAlbum(queryClient: QueryClient, albumId: string): Promise<void> {
+    void queryClient.invalidateQueries({ queryKey: albumKey(albumId) });
+    void queryClient.invalidateQueries({ queryKey: ['albums', 'list'] });
+    return queryClient.invalidateQueries({ queryKey: albumItemsKey(albumId) });
 }
 
 /**
