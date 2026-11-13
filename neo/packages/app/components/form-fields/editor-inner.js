@@ -64,16 +64,14 @@ export default function RftText(props) {
     const suggestionsHeight = 130
     const [inputKey, setInputKey] = useState(0);
 
-    // Shared mention pipeline (same fetch/recents/UI as enriched).
+    // Shared mention pipeline (same fetch/UI as enriched).
     const {
         suggestions,
         setTrigger,
         clearTrigger,
         moveSelected,
         selectedSuggestion,
-        recordMention,
         queryToken,
-        armConnections,
     } = useEditorMentions({ fieldName: name, mentions: props.mentions })
     // Layout coords from iframe mention messages: [left, bottom]
     const [mentionCoords, setMentionCoords] = useState([0, 0])
@@ -585,7 +583,6 @@ export default function RftText(props) {
         const replacementStringWithNbsp = mentionLink + '&nbsp;'
         const updatedContent = html.replace(query, replacementStringWithNbsp)
         editor.setContent(updatedContent)
-        recordMention(user)
         clearTrigger()
     }
 
@@ -616,7 +613,6 @@ export default function RftText(props) {
             }
 
             if (message?.type == 'focus') {
-                armConnections()
                 if (onFocus) onFocus()
             }
 
@@ -992,7 +988,6 @@ export default function RftText(props) {
                 autoCorrect={false}
                 spellCheck={false}
                 onFocus={() => {
-                    armConnections()
                     // Keyboard is open — forward IME to WebView
                     setTimeout(() => {
                         editor.focus();
