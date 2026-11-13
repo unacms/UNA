@@ -259,7 +259,7 @@ function MenuTopProbe({ items, t, onWidth }) {
                     <Row key={item.name || item.link || item.title} className={`items-center justify-center h-11 min-w-11 shrink-0 ${item.icon && item.showTitle ? 'ps-3 pe-2' : 'px-2'}`}>
                         {item.icon ? <View className="h-6 w-6 shrink-0" /> : null}
                         {item.showTitle ? (
-                            <Text className="whitespace-nowrap tracking-tight font-medium text-sm px-2 leading-5">{t(item.title)}</Text>
+                            <Text className="whitespace-nowrap font-medium text-base px-2 leading-6">{t(item.title)}</Text>
                         ) : null}
                         {item.chevron ? <View className="h-4 w-4 shrink-0" /> : null}
                     </Row>

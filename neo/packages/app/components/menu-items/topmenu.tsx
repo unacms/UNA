@@ -71,9 +71,11 @@ const ICON_CLASS = {
     on: 'text-accent-foreground h-9 w-9 items-center justify-center flex',
     off: 'text-secondary-foreground web:group-hover:text-foreground h-9 w-9 items-center justify-center flex',
 }
-const LABEL_BASE = 'whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium'
+// The label is UNA's main menu label: 16 px medium at the default spacing. MenuTop's hidden probe
+// (components/nav/menu-top.js) repeats these classes to measure the bar: change them together.
+const LABEL_BASE = 'whitespace-nowrap text-ellipsis overflow-hidden font-medium'
 const LABEL_TONE = { on: 'text-accent-foreground', off: 'text-secondary-foreground' }
-const LABEL_SIZE = 'text-sm px-2 leading-5'
+const LABEL_SIZE = 'text-base px-2 leading-6'
 const CHEVRON_TONE = { on: 'text-accent-foreground', off: 'text-secondary-foreground web:group-hover:text-foreground' }
 
 function rowLayout(labelled: boolean): string {

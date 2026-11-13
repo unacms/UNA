@@ -118,9 +118,11 @@ export const settingsLayout = {
             content_scrolled: ' ns--header-content-scrolled-- lg:backdrop-blur-lg ',
             content_pinned_fixed: '  ',
             // Shrinks (the page title truncates) so the actions on the right keep their room.
-            content_left: 'min-w-0 shrink 2xl:w-full 2xl:max-w-1/4 ps-4 gap-3',
-            content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl ',
-            content_right: ' items-end flex-none 2xl:w-full 2xl:max-w-1/4 pe-4 gap-3',
+            content_left: 'min-w-0 shrink 2xl:w-full 2xl:max-w-1/5 ps-4 gap-3',
+            // Up to 896px: Home, five tabs with 16px labels and More need about 770px, so 768 (3xl) left them no
+            // room and one longer title turned the bar to icons on any screen.
+            content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-4xl ',
+            content_right: ' items-end flex-none 2xl:w-full 2xl:max-w-1/5 pe-4 gap-3',
             // 10px under the 44px tabs: on the bottom edge of the 64px header.
             active_item_indicator: 'absolute -bottom-2.5 left-0 h-0.5 rounded-full flex-none bg-ring',
             active_item_indicator_bg: 'absolute bottom-0 left-0 h-11 w-full overflow-hidden rounded-full flex-none',
