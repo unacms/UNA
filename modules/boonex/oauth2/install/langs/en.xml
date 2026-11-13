@@ -14,12 +14,20 @@ Specify the following "Main UNA Site URL" on the client sites:<br />
     <string name="_bx_oauth_add"><![CDATA[Add new client]]></string>
     <string name="_bx_oauth_clients"><![CDATA[OAuth2 clients]]></string>
     <string name="_bx_oauth_authorization"><![CDATA[Authorization]]></string>
-    <string name="_bx_oauth_authorize_app"><![CDATA[Choose which profile to connect with "{0}":]]></string>
     <string name="_bx_oauth_form_valid_url"><![CDATA[Valid URL is required]]></string>
     <string name="_bx_oauth_url"><![CDATA[URL]]></string>
     <string name="_bx_oauth_connect"><![CDATA[Connect]]></string>
-    <string name="_bx_oauth_authorize_scope_api"><![CDATA[It will be able to read, post, comment, react and send messages for your account, as whichever of your profiles you are using on the site at the time. Switching profiles in the app switches them on the site too.]]></string>
     <string name="_bx_oauth_authorize_redirect"><![CDATA[After you choose, your browser goes back to <strong>{0}</strong>. Continue only if you started this sign-in yourself.]]></string>
+    <string name="_bx_oauth_authorization_desc"><![CDATA[Connect an app to your account.]]></string>
+    <string name="_bx_oauth_authorize_lead"><![CDATA[<strong>{0}</strong> wants to connect to your account on {1}.]]></string>
+    <string name="_bx_oauth_authorize_can"><![CDATA[It will be able to:]]></string>
+    <string name="_bx_oauth_authorize_can_read"><![CDATA[Read everything you can see on the site]]></string>
+    <string name="_bx_oauth_authorize_can_write"><![CDATA[Post, comment and react for you]]></string>
+    <string name="_bx_oauth_authorize_can_messages"><![CDATA[Read and send your messages]]></string>
+    <string name="_bx_oauth_authorize_can_profiles"><![CDATA[Act as whichever of your profiles you are using on the site. Switching profiles in the app switches them on the site too]]></string>
+    <string name="_bx_oauth_authorize_choose"><![CDATA[Connect as:]]></string>
+    <string name="_bx_oauth_connect_as"><![CDATA[Connect as {0}]]></string>
+    <string name="_bx_oauth_authorize_agreement"><![CDATA[By connecting, you agree to the <a href="{0}">Terms of Service</a> and <a href="{1}">Privacy Policy</a>.]]></string>
 
     <string name="_bx_oauth_lmi_cpt_keys"><![CDATA[Keys]]></string>
 

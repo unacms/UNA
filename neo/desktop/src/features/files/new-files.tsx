@@ -12,9 +12,9 @@ import { isMac } from '../../lib/platform';
 import type { Uploader } from '../../lib/uploads';
 import { CloseDetailButton, Pane } from '../../shell/pane';
 import { useAnnouncer } from '../feed/feed-list';
-import { type Audience, AudienceField, submitKeys, useFormContext } from '../photos/new-media';
+import { type Audience, AudienceField, mediaBody, submitKeys, useFormContext } from '../photos/new-media';
 import { PhotoDropZone, usePhotoUploads } from '../photos/photo-uploads';
-import { textToHtml } from '../videos/videos';
+import { sendBlocker, tookSome } from '../photos/upload-answers';
 import { afterFilesAdded, filesAddedText } from './files';
 
 /**
@@ -23,7 +23,8 @@ import { afterFilesAdded, filesAddedText } from './files';
  * storage decides which types and sizes it takes), one title and description for all of them
  * (each file's name when no title is given), and who can see them, or the group they go in when
  * it was started from one. Added, the first one opens; uploads nothing took are deleted when the
- * form goes.
+ * form goes. Files still being made ready hold Add as ones that are uploading; while it is being
+ * sent the form takes no change, as the new post form (NewPost).
  */
 export function NewFiles({ contextId, uploader }: { contextId?: string; uploader?: Uploader }) {
     const { api } = useApp();
@@ -46,25 +47,23 @@ export function NewFiles({ contextId, uploader }: { contextId?: string; uploader
     const submit = async (e?: FormEvent) => {
         e?.preventDefault();
         if (sending) return;
-        const blocker = uploads.blocker ?? (uploads.ids.length ? null : t('Choose the files to add.'));
+        const blocker = sendBlocker(uploads, t('Choose the files to add.'));
         if (blocker) {
             setFieldError(blocker);
             document.getElementById(`${id}-pick`)?.focus();
             return;
         }
         setFieldError(null);
-        const body: Schema<'NewFiles'> = { media_ids: uploads.ids };
-        if (title.trim()) body.title = title.trim();
-        if (text.trim()) body.text_html = textToHtml(text);
-        if (contextId) body.context_id = contextId;
-        else body.audience = audience;
+        const body: Schema<'NewFiles'> = mediaBody(uploads.ids, title, text, contextId, audience);
         const from = history.current;
         setSending(true);
         setError(null);
         let result;
         try {
-            result = await api.POST('/files', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/files', body]) } }, body });
+            // the site stops adding once the membership level's limit is reached: what it did not take stays here
+            result = await uploads.claim(api.POST('/files', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/files', body]) } }, body }), (r) => tookSome(r, body.media_ids.length));
         } catch (e) {
+            if (uploads.gone()) return;
             // no answer came: the key stays, so sending it again gets the site's answer to this one
             setSending(false);
             setError(t('The files were not added: {{reason}}', { reason: errorMessage(e) }));
@@ -72,15 +71,15 @@ export function NewFiles({ contextId, uploader }: { contextId?: string; uploader
         }
         settleIdempotency(sent, result.response.status);
         if (result.error !== undefined || !result.data) {
+            if (uploads.gone()) return;
             setSending(false);
             setError(problemMessage(result.error, t('The files were not added')));
             return;
         }
-        // the site stops adding once the membership level's limit is reached: what it did not take stays here
         const asked = body.media_ids.length;
         const partial = result.data.length < asked;
-        uploads.markTaken(partial ? result.data.flatMap((f) => (f.media ? [f.media.id] : [])) : undefined);
         await afterFilesAdded(queryClient, result.data);
+        if (uploads.gone()) return;
         if (partial) {
             setSending(false);
             const left = asked - result.data.length;
@@ -92,6 +91,13 @@ export function NewFiles({ contextId, uploader }: { contextId?: string; uploader
         if (!first || !replaceDetail({ kind: 'file', id: first.id }, from)) setSending(false);
     };
 
+    // while it is sent a change is refused, not only by the fields: an update that was already on its way
+    const edit =
+        <T,>(set: (value: T) => void) =>
+        (value: T) => {
+            if (!sending) set(value);
+        };
+
     return (
         <Pane pane="detail" title={context ? t('Add files to {{name}}', { name: context.display_name }) : t('Add files')} actions={<CloseDetailButton />}>
             <div className="column settings">
@@ -101,7 +107,7 @@ export function NewFiles({ contextId, uploader }: { contextId?: string; uploader
                 <form className="settings-form discussion-form new-files" aria-labelledby="detail-title" onSubmit={(e) => void submit(e)} onKeyDown={(e) => submitKeys(() => void submit())(e)} noValidate>
                     <fieldset className="settings-field settings-fieldset photo-field">
                         <legend>{t('Files')}</legend>
-                        <PhotoDropZone uploads={uploads} pickId={`${id}-pick`} describedBy={fieldError ? `${id}-files-error` : undefined} label={uploads.items.length ? t('Add more files…') : t('Choose files…')} icon="file-up" />
+                        <PhotoDropZone uploads={uploads} pickId={`${id}-pick`} describedBy={fieldError ? `${id}-files-error` : undefined} label={uploads.items.length ? t('Add more files…') : t('Choose files…')} icon="file-up" held={sending} />
                         {fieldError ? (
                             <p id={`${id}-files-error`} className="error small" role="alert">
                                 {fieldError}
@@ -110,16 +116,16 @@ export function NewFiles({ contextId, uploader }: { contextId?: string; uploader
                     </fieldset>
                     <div className="settings-field">
                         <label htmlFor={`${id}-title`}>{t('Title')}</label>
-                        <input id={`${id}-title`} value={title} maxLength={255} dir="auto" aria-describedby={`${id}-title-hint`} onChange={(e) => setTitle(e.target.value)} />
+                        <input id={`${id}-title`} value={title} maxLength={255} dir="auto" readOnly={sending} aria-describedby={`${id}-title-hint`} onChange={(e) => edit(setTitle)(e.target.value)} />
                         <p id={`${id}-title-hint`} className="small muted">
                             {t('Every file’s title. Leave it empty to title each with its file’s name, which whoever can see the file sees.')}
                         </p>
                     </div>
                     <div className="settings-field">
                         <label htmlFor={`${id}-text`}>{t('Description')}</label>
-                        <textarea id={`${id}-text`} rows={4} value={text} maxLength={50000} dir="auto" onChange={(e) => setText(e.target.value)} />
+                        <textarea id={`${id}-text`} rows={4} value={text} maxLength={50000} dir="auto" readOnly={sending} onChange={(e) => edit(setText)(e.target.value)} />
                     </div>
-                    <AudienceField id={id} tag="files" contextId={contextId} context={context} audience={audience} onAudience={setAudience} noun="them" />
+                    <AudienceField id={id} tag="files" contextId={contextId} context={context} audience={audience} held={sending} onAudience={edit(setAudience)} noun="them" />
                     <p className="small muted">{t('Whoever can see a file can download it.')}</p>
                     {error ? (
                         <p className="error" role="alert">

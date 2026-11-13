@@ -19,6 +19,7 @@ import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
 import { heldSelect } from '../../lib/held-select';
 import { idempotencyKeyFor, type IdempotencySlot, settleIdempotency } from '../../lib/idempotency';
+import { useLeaveGuard } from '../../lib/leave-guard';
 import { confirmAction } from '../../lib/native';
 import { useNavigation } from '../../lib/navigation';
 import { DetailShell, focusMoreButton } from '../../shell/detail-shell';
@@ -282,11 +283,14 @@ function DiscussionHead({ discussion: d, groupName, replies, actions }: { discus
  * Its title, text and category in place. A text with links or formatting is edited on the site
  * (the API takes plain text, which would lose them): then only the title and category change
  * here, and the text is shown as it reads. Esc and Cancel ask first when that throws changes
- * away; Cmd+Enter (Ctrl+Enter) saves. While a picture pasted or dropped in the text is
- * uploading, Save is held and says why (saved then, the text would go without it), and the
+ * away, and so does whatever else takes the form away (the pane's Close, another discussion, the
+ * sidebar, Back, another tab, the window closing: useLeaveGuard); Cmd+Enter (Ctrl+Enter) saves.
+ * While a picture pasted or dropped in the text is uploading, Save is held and says why (saved then, the text would go without it), and the
  * picture counts as a change. While it is being saved the form takes no change (what was typed
  * then would not be saved, and the form would close on it); it takes them again when it was not
- * saved, which a save the site never answers is after SAVE_ANSWER_MS.
+ * saved, which a save the site never answers is after SAVE_ANSWER_MS. Whatever would leave the
+ * form while it is being saved waits for that answer, without a question, as Cancel and Esc do:
+ * it leaves once the discussion was saved, and stays when it was not (as EditPost).
  */
 function EditDiscussion({ discussion: d, onDone }: { discussion: Discussion; onDone: (saved: Discussion | null) => void }) {
     const { api } = useApp();
@@ -305,6 +309,8 @@ function EditDiscussion({ discussion: d, onDone }: { discussion: Discussion; onD
     const [error, setError] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
     const sent = useRef<IdempotencySlot['current']>(null);
+    // the save on its way, for whatever would leave the form meanwhile: true once it was saved
+    const pending = useRef<Promise<boolean> | null>(null);
     const formId = useId();
     const textChanged = BODY_HTML_FOR_COMMENTS_AND_DISCUSSIONS ? value.bodyHtml !== initial.bodyHtml : value.body !== initial.body;
     const changed = uploading || value.title !== initial.title || (textEditable && textChanged) || value.categoryId !== initial.categoryId;
@@ -341,7 +347,14 @@ function EditDiscussion({ discussion: d, onDone }: { discussion: Discussion; onD
         }
         setSaving(true);
         setError(null);
-        // a site that never answers must not hold the form
+        let settle: (saved: boolean) => void = () => {};
+        const save = new Promise<boolean>((resolve) => (settle = resolve));
+        pending.current = save;
+        const settled = (saved: boolean) => {
+            if (pending.current === save) pending.current = null;
+            settle(saved);
+        };
+        // a site that never answers must not hold the form, or a leave that waits for this save
         const limit = saveLimit();
         let result;
         try {
@@ -350,6 +363,7 @@ function EditDiscussion({ discussion: d, onDone }: { discussion: Discussion; onD
             // no answer came: the key stays, so saving it again gets the site's answer to this one
             setSaving(false);
             setError(t('It was not saved: {{reason}}', { reason: limit.signal.aborted ? t('the site did not answer in time') : errorMessage(err) }));
+            settled(false);
             return;
         } finally {
             limit.done();
@@ -358,17 +372,21 @@ function EditDiscussion({ discussion: d, onDone }: { discussion: Discussion; onD
         setSaving(false);
         if (result.error !== undefined || !result.data) {
             setError(problemMessage(result.error, t('It was not saved')));
+            settled(false);
             return;
         }
         onDone(result.data);
+        settled(true);
     };
+
+    const discard = () => confirmAction({ title: t('Discard your changes?'), message: t('The discussion stays as it was.'), okLabel: t('Discard') });
+    // a leave while it is being saved is not asked about (the discussion may no longer stay as it
+    // was): it waits for the site's answer, happens when it was saved, and is dropped when it was not
+    useLeaveGuard(changed, () => pending.current ?? discard());
 
     const cancel = async () => {
         if (saving) return;
-        if (changed) {
-            const discard = await confirmAction({ title: t('Discard your changes?'), message: t('The discussion stays as it was.'), okLabel: t('Discard') });
-            if (!discard) return;
-        }
+        if (changed && !(await discard())) return;
         onDone(null);
     };
 

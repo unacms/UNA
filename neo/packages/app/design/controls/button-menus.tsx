@@ -10,7 +10,7 @@ import { appSetting } from 'app/lib/util';
 import { NeoButton } from 'app/design/controls/neo-button/neo-button';
 import { NeoButtonGroup, useNeoButtonGroupItem } from 'app/design/controls/neo-button/neo-button-group';
 import { legacyToNeoButtonProps } from 'app/design/controls/neo-button/legacy-button-map';
-import { LEGACY_TO_CONTROL_SIZE, NEO_CONTROL_SIZES } from 'app/design/controls/neo-button/control-scale';
+import { LEGACY_TO_CONTROL_SIZE, LEGACY_VARIANT_TO_NEO, NEO_CONTROL_SIZES, NEO_STYLES } from 'app/design/controls/neo-button/control-scale';
 import type { NeoButtonProps, NeoControlSize } from 'app/design/controls/neo-button/neo-button.types';
 
 type ButtonMenuProps = Record<string, any>;
@@ -104,17 +104,21 @@ export function ButtonMenuGroupItem({
  * Group of `ButtonMenuGroupItem`s (object menus: reactions, likes, scores…).
  * `style` is the group's button style (default: theme
  * `neo_button.group.defaultStyle`); `size` is its control size (default `sm`
- * → small). Legacy `variant`, `fullWidth` and `rounded` are ignored.
+ * → small). A legacy `variant`, `fullWidth` and `rounded` are ignored; a `variant` that names a NeoButton style
+ * (`glass`, `bordered`, `plain`: the style UNA sets for the menu, see `withMenuButtonParams`) is the group's
+ * style when no `style` is passed.
  */
-export function ButtonsGroupMenu({ size, style, className, children }: {
+export function ButtonsGroupMenu({ size, style, variant, className, children }: Readonly<{
     size?: string;
     style?: string;
+    variant?: unknown;
     className?: string;
     children?: ReactNode;
     [key: string]: unknown;
-}) {
+}>) {
+    const neoVariant = typeof variant === 'string' && NEO_STYLES.has(variant) && !LEGACY_VARIANT_TO_NEO[variant] ? variant : undefined;
     return (
-        <NeoButtonGroup style={style} controlSize={adapterControlSize(size)} className={className}>
+        <NeoButtonGroup style={style ?? neoVariant} controlSize={adapterControlSize(size)} className={className}>
             {children}
         </NeoButtonGroup>
     );

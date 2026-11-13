@@ -640,7 +640,7 @@ html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
    - by itself inside a cover (.bx-cover-wrapper) and on the buttons that edit a picture in place (.bx-image-edit-buttons), unless the menu's
      Button style says Regular or Plain;
    - .bx-btn-glass on a button that is in no menu and sits over a picture.
-   Primary and disabled buttons keep their own fill. */
+   A primary button there is the glass prominent one (below); a disabled button keeps its own fill. */
 .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) {
     background-color: rgb(255 255 255 / 0.3);
     color: #0a0a0c;
@@ -678,6 +678,23 @@ html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
 .dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):active {
     background-color: rgb(255 255 255 / 0.23);
     color: #fafafc;
+}
+
+/* Glass prominent: the primary button wherever a regular one is glass (NeoButton `glassProminent`, web; NEO maps a menu's primary items
+   to it the same way, `button_primary_style`). It keeps the primary fill, which is opaque, so a picture cannot wash the colour out; what
+   makes it glass is the edge: a faint light rim with a brighter top line, and a soft shadow that lifts it off the picture and shrinks
+   when pressed. */
+.bx-btn.bx-btn-primary:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) {
+    --tw-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.1), inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 0 0 1px rgb(0 0 0 / 0.01), 0 2px 8px -2px rgb(0 0 0 / 0.1), 0 4px 16px -4px rgb(0 0 0 / 0.1);
+}
+.bx-btn.bx-btn-primary:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):active {
+    --tw-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.1), inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 0 0 1px rgb(0 0 0 / 0.01), 0 1px 4px -1px rgb(0 0 0 / 0.1), 0 2px 8px -2px rgb(0 0 0 / 0.1);
+}
+.dark .bx-btn.bx-btn-primary:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) {
+    --tw-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.1), inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 8px -2px rgb(0 0 0 / 0.5), 0 4px 16px -4px rgb(0 0 0 / 0.5);
+}
+.dark .bx-btn.bx-btn-primary:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):active {
+    --tw-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.1), inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 0 0 1px rgb(0 0 0 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.5), 0 2px 8px -2px rgb(0 0 0 / 0.5);
 }
 
 /* A menu whose Button style is Plain (BxDolMenu::BUTTON_STYLE_PLAIN; NeoButton `plain`): no fill in any state, the label alone. */

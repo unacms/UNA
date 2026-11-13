@@ -983,4 +983,72 @@ describe('a discussion form that is being sent', () => {
             vi.useRealTimers();
         }
     });
+
+    it('asks before anything else takes a changed edit form away: the pane closing, another discussion, the sidebar', async () => {
+        const sent: Sent[] = [];
+        const { history } = renderWith(route, editRoutes(sent, new Promise<Answer>(() => {})), (h) => <DetailPane route={h.current} />);
+        const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+        const { title } = await openEditor();
+        const leaves: Route[] = [{ list: route.list, detail: null }, { list: route.list, detail: { kind: 'discussion', id: '16' } }, { list: { section: 'home' }, detail: null }];
+        for (const [i, leave] of leaves.entries()) {
+            act(() => history.push(leave));
+            await waitFor(() => expect(confirm).toHaveBeenCalledTimes(i + 1));
+            await act(async () => {});
+            expect(confirm.mock.calls[i]?.[0]).toContain('Discard your changes?');
+            expect(history.current).toEqual(route);
+            expect(title.value).toBe('A better title');
+        }
+        // a browser tab warns before it unloads while the changes are there
+        const unload = new Event('beforeunload', { cancelable: true });
+        window.dispatchEvent(unload);
+        expect(unload.defaultPrevented).toBe(true);
+        // nothing changed any more: leaving asks nothing
+        fireEvent.change(title, { target: { value: own.title } });
+        const quiet = new Event('beforeunload', { cancelable: true });
+        window.dispatchEvent(quiet);
+        expect(quiet.defaultPrevented).toBe(false);
+        act(() => history.push(leaves[0]!));
+        await act(async () => {});
+        expect(confirm).toHaveBeenCalledTimes(leaves.length);
+        expect(history.current).toEqual(leaves[0]);
+        expect(sent).toHaveLength(0);
+    });
+
+    it('holds a leave while one is being saved, without a question: it leaves once it was saved and stays when it was not', async () => {
+        const first = later();
+        const second = later();
+        const sent: Sent[] = [];
+        const routes = editRoutes(sent, first.answer);
+        const patch = routes['PATCH /discussions/15']!;
+        // the second save is answered when the test says so, too
+        routes['PATCH /discussions/15'] = async (r) => (sent.length ? (sent.push({ key: r.headers.get('Idempotency-Key'), body: await r.json() }), second.answer) : patch(r));
+        const { history } = renderWith(route, routes, (h) => <DetailPane route={h.current} />);
+        const other: Route = { list: route.list, detail: null };
+        const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
+        const { title, save } = await openEditor();
+        fireEvent.click(save);
+        await waitFor(() => expect(save.getAttribute('aria-busy')).toBe('true'));
+        // the site has not answered: the leave waits, and nobody is told the discussion stays as it was
+        act(() => history.push(other));
+        await act(async () => {});
+        expect(confirm).not.toHaveBeenCalled();
+        expect(history.current).toEqual(route);
+        // it was not saved: the leave is dropped, the form stays with why
+        first.lose();
+        await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('It was not saved: Load failed'));
+        await act(async () => {});
+        expect(confirm).not.toHaveBeenCalled();
+        expect(history.current).toEqual(route);
+        expect(title.value).toBe('A better title');
+        // saved while a leave waited: the leave happens, still without a question
+        fireEvent.click(save);
+        await waitFor(() => expect(save.getAttribute('aria-busy')).toBe('true'));
+        act(() => history.push(other));
+        await act(async () => {});
+        expect(history.current).toEqual(route);
+        second.give({ status: 200, body: { ...own, title: 'A better title' } });
+        await waitFor(() => expect(history.current).toEqual(other));
+        expect(confirm).not.toHaveBeenCalled();
+        expect(sent).toHaveLength(2);
+    });
 });

@@ -26,10 +26,12 @@ export default function ElementEntityActions({ data, blockWrapperProps }) {
                    // showMatched={true}
                     autoSize={true}
                     autoFilter={false}
+                    // The look of the buttons is UNA's (Studio > Navigation > the actions menu > "Button style" /
+                    // "Button size"). The defaults are for a menu UNA leaves on Automatic.
                     params={{
                         className: 'gap-x-2',
-                        button_variant: 'default',
-                        button_size: 'sm',
+                        button_variant_default: 'default',
+                        button_size_default: 'small',
                         button_rounded: false,
                         button_full_width: false, show_action: true, show_counter: true, show_combined: true
                     }}

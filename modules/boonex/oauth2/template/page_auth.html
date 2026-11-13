@@ -1,9 +1,12 @@
-<div id="bx-auth-form" class="controlsDiv">
-    <h3>__text__</h3>
-<bx_if:native_app><bx_if:scope_api>    <p class="bx-auth-form-info">__scope_api_text__</p>
-</bx_if:scope_api><bx_if:redirect>    <p class="bx-auth-form-info">__redirect_text__</p>
-</bx_if:redirect></bx_if:native_app>    <form method="post" action="__url__">
-        <input type="hidden" name="profile_id" id="bx-auth-profile-id" value="0" />
+<div id="bx-auth-form" class="bx-auth">
+    <p class="bx-auth-lead">__text__</p>
+<bx_if:scopes>    <ul class="bx-auth-scopes">
+<bx_repeat:items>        <li class="bx-auth-scope">
+            <span class="bx-auth-scope-icon" aria-hidden="true">__icon__</span>
+            <span class="bx-auth-scope-title">__title__</span>
+        </li>
+</bx_repeat:items>    </ul>
+</bx_if:scopes>    <form method="post" action="__url__">
         <input type="hidden" name="csrf_token" value="__csrf_token__" />
         <input type="hidden" name="client_id" value="__client_id__" />
         <input type="hidden" name="response_type" value="__response_type__" />
@@ -12,11 +15,17 @@
         <input type="hidden" name="state" value="__state__" />
 <bx_if:pkce>        <input type="hidden" name="code_challenge" value="__code_challenge__" />
         <input type="hidden" name="code_challenge_method" value="__code_challenge_method__" />
-</bx_if:pkce>        <div class="bx-auth-form-profiles">
-            __profiles__
-        </div>
-        <div class="bx-auth-form-buttons bx-def-margin-top">
-            <button class="bx-btn" onclick="$('#bx-auth-profile-id').val(0); $('#bx-auth-form form').submit(); return false;"><bx_text:_Cancel /></button>
+</bx_if:pkce>        <p class="bx-auth-choose" id="bx-auth-profiles-label"><bx_text:_bx_oauth_authorize_choose /></p>
+        <ul class="bx-auth-profiles" aria-labelledby="bx-auth-profiles-label">
+<bx_repeat:profiles>            <li class="bx-auth-profile bx-def-border">
+                <div class="bx-auth-profile-unit">__unit__</div>
+                <button type="submit" name="profile_id" value="__id__" class="bx-btn bx-btn-primary bx-auth-connect" aria-label="__connect_label__"><bx_text:_bx_oauth_connect /></button>
+            </li>
+</bx_repeat:profiles>        </ul>
+<bx_if:redirect>        <p class="bx-auth-note bx-def-font-small bx-def-font-grayed">__redirect_text__</p>
+</bx_if:redirect>        <div class="bx-auth-buttons">
+            <button type="submit" name="profile_id" value="0" class="bx-btn bx-auth-cancel"><bx_text:_Cancel /></button>
         </div>
     </form>
+    __footer__
 </div>

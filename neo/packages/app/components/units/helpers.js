@@ -11,7 +11,7 @@ import Badge from 'app/ui/molecules/profile/badge';
 import { Skeleton } from 'app/ui/atoms/skeleton';
 import { components } from 'app/components/registry';
 import { fetcher } from 'app/lib/fetcher';
-import { appSetting, cn, tp, sanitazeUrl } from 'app/lib/util';
+import { appSetting, cn, tp, sanitazeUrl, withMenuButtonParams } from 'app/lib/util';
 import { getUnitMenuItems } from 'app/customization/functions';
 import { UnitActionWidthContext } from 'app/components/units/unit-action-width';
 import { useRouter, useCurrentTabPath, useFocusEffect } from 'app/lib/hooks/router';
@@ -608,14 +608,21 @@ export function UnitRecommendation({ data, params, primary = false }) {
 
     const isIgnore = itemData.a === 'ignore';
     const Recommendation = components['molecule']['recommendation'];
+    // The button is the first item of the unit's meta menu, so its look is that menu's in UNA (Studio >
+    // Navigation > the snippet meta menu > "Button style" / "Button size"). Borderless and small are the
+    // defaults for a menu UNA leaves on Automatic.
+    const buttonParams = withMenuButtonParams(
+        { button_style_default: 'borderless', button_size_default: 'small', ...params },
+        data.meta
+    );
     return (
         <Recommendation
             {...itemData}
             primary={primary}
             params={{
-                ...params,
-                button_style: params?.button_style ?? 'borderless',
-                button_size: recommendationControlSize(params?.button_size),
+                ...buttonParams,
+                button_style: buttonParams.button_style ?? 'borderless',
+                button_size: recommendationControlSize(buttonParams.button_size),
                 button_full_width: false,
                 only_icon: params?.only_icon ?? isIgnore,
                 button_border_shape: params?.button_border_shape ?? (isIgnore ? 'circle' : undefined),
