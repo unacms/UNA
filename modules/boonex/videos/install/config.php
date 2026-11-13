@@ -60,7 +60,8 @@ $aConfig = array(
      * Note. Don't add storage objects used in transcoder objects.
      */
     'storages' => array(
-    	'bx_videos_files'
+    	'bx_videos_photos',
+        'bx_videos_videos'
     ),
 
     /**
