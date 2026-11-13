@@ -137,6 +137,27 @@ class BxDolDesigns extends BxDolFactory implements iBxDolSingleton
         return !empty($sFileUrl) ? $sFileUrl : false;
     }
     
+    /**
+     * Public, signed URL of a logo image scaled to a height, for places a private file's link
+     * would expire (emails): Designer stores the originals as private files.
+     * @param $iFileId logo file id
+     * @param $iHeight height in pixels, the width follows
+     * @return string|false
+     */
+    public function getSiteLogoUrlScaled($iFileId, $iHeight)
+    {
+        $oTranscoder = BxDolTranscoder::getObjectInstance($this->sLogoTranscoder);
+        if(!$iFileId || !$oTranscoder)
+            return false;
+
+        return BX_DOL_URL_ROOT . bx_append_url_params('image_transcoder.php', [
+            'o' => $this->sLogoTranscoder,
+            'h' => (int)$iFileId,
+            'y' => (int)$iHeight,
+            's' => $oTranscoder->getHandlerSignature($iFileId)
+        ]);
+    }
+
     public function getSiteLogoDarkUrl($iFileId = 0, $bOriginal = true)
     {
         if(!$iFileId && !($iFileId = (int)$this->getSiteLogoDark()))

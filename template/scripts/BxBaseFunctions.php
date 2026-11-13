@@ -1050,20 +1050,21 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     /**
      * Site logo for the email header ({site_logo} marker): the logo uploaded in Designer when
      * it is a PNG, JPEG or GIF, otherwise the site title as text, since email clients block SVG.
+     * The dark-mode logo goes next to it, hidden; the default header shows it in dark mode.
      * @return string HTML
      */
     public function getEmailLogo()
     {
         $sTitle = trim(html_entity_decode((string)getParam('site_title'), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
 
-        $sUrl = '';
         $oDesigns = BxDolDesigns::getInstance();
-        if(($iLogo = (int)$oDesigns->getSiteLogo()) && ($aLogo = $oDesigns->getSiteLogoInfo($iLogo)) && in_array($aLogo['mime_type'] ?? '', ['image/png', 'image/jpeg', 'image/gif']))
-            $sUrl = (string)$oDesigns->getSiteLogoUrl($iLogo);
+        $sUrl = $this->_getEmailLogoUrl((int)$oDesigns->getSiteLogo());
+        $sUrlDark = $sUrl !== '' ? $this->_getEmailLogoUrl((int)$oDesigns->getSiteLogoDark()) : '';
 
         $sAlt = trim(html_entity_decode((string)$oDesigns->getSiteLogoAlt(), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
         if($sAlt === '')
             $sAlt = $sTitle;
+        $sAlt = bx_html_attribute($sAlt);
 
         $bUrl = $sUrl !== '';
         return $this->_oTemplate->parseHtmlByName('et_site_logo.html', [
@@ -1071,7 +1072,14 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                 'condition' => $bUrl,
                 'content' => [
                     'url' => bx_html_attribute($sUrl),
-                    'alt' => bx_html_attribute($sAlt),
+                    'alt' => $sAlt,
+                    'bx_if:show_image_dark' => [
+                        'condition' => $sUrlDark !== '',
+                        'content' => [
+                            'url_dark' => bx_html_attribute($sUrlDark),
+                            'alt' => $sAlt,
+                        ]
+                    ],
                 ]
             ],
             'bx_if:show_title' => [
@@ -1081,6 +1089,24 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                 ]
             ],
         ]);
+    }
+
+    /**
+     * A Designer logo's URL that lasts in an email: a public transcoded copy, since Designer
+     * stores the original as a private file whose links expire. Empty unless it is a PNG, JPEG or GIF.
+     */
+    protected function _getEmailLogoUrl($iFileId)
+    {
+        if(!$iFileId)
+            return '';
+
+        $oDesigns = BxDolDesigns::getInstance();
+        $aFile = $oDesigns->getSiteLogoInfo($iFileId);
+        if(empty($aFile) || !in_array($aFile['mime_type'] ?? '', ['image/png', 'image/jpeg', 'image/gif']))
+            return '';
+
+        // 80px for 40px at 2x
+        return (string)$oDesigns->getSiteLogoUrlScaled($iFileId, 80);
     }
 
     /**
