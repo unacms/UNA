@@ -993,6 +993,16 @@
         @apply w-4 h-4 leading-4;
     }
 
+    /* Label type, as NeoButton's: the regular (44px) button's label is 16px, the other sizes keep theirs (12 / 14 / 16 / 18px), and every
+       label is set tight (-0.025em). Not in Studio, whose buttons keep their own type. Before the menu sizes, which have the same weight
+       and so win where a menu sets the size. */
+    body:not(.bx-std) .bx-btn {
+        @apply tracking-tight;
+    }
+    body:not(.bx-std) .bx-btn:not(.bx-btn-mini, .bx-btn-small, .bx-btn-large, .bx-btn-xlarge) {
+        @apply text-base;
+    }
+
     /* A menu's button size (Studio > Navigation > a menu > Button size; BxDolMenu::BUTTON_SIZE_*): the menu puts .bx-menu-btn-size-* on each of
        its items, and every button inside takes that size, whatever size class its template gave it. The same scale as the size classes above.
        Not in Studio, whose buttons have their own scale (see "Studio: Buttons" below). The button styles (.bx-menu-btn-style-*) are in Artificer's
@@ -1005,7 +1015,7 @@
         @apply min-h-9 px-3 py-1 text-sm rounded-lg;
     }
     body:not(.bx-std) .bx-menu-btn-size-regular .bx-btn {
-        @apply min-h-11 px-4 py-2 text-sm rounded-xl;
+        @apply min-h-11 px-4 py-2 text-base rounded-xl;
     }
     body:not(.bx-std) .bx-menu-btn-size-large .bx-btn {
         @apply min-h-[3.25rem] px-5 py-2 text-base rounded-xl;

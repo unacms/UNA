@@ -645,6 +645,11 @@ html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
     background-color: rgb(255 255 255 / 0.3);
     color: #0a0a0c;
 
+    /* No border: the rim is an inset shadow, which starts inside a border, so the 1px transparent one of a regular button would push the rim
+       1px in and leave a line of plain fill around it. The height is a min-height, so only the width loses 2px, as NeoButton's has none. */
+    border-width: 0;
+    letter-spacing: normal; /* NeoButton sets its glass label loose, the others tight */
+
     -webkit-backdrop-filter: blur(12px) saturate(150%) contrast(50%) brightness(130%);
     backdrop-filter: blur(12px) saturate(150%) contrast(50%) brightness(130%);
 
@@ -685,8 +690,7 @@ html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
    tuned to the iOS button: the primary fill at 90% over a blurred backdrop, so a picture behind tints it a little (the backdrop is dimmed
    first: over white the label would drop under 4.5:1); a rim of lighter tint along the top and the bottom with a soft glow inside it; a
    hairline of darker tint, darker still at the sides (black on dark); a faint drop below.
-   Rim, glow and hairline are mixed from the fill (--bx-gp), so hover and active only change that one colour. The 1px border goes
-   transparent, as on a regular button: an opaque one would ring the translucent fill. */
+   Rim, glow and hairline are mixed from the fill (--bx-gp), so hover and active only change that one colour. */
 .bx-btn.bx-btn-primary:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) {
     --bx-gp: rgb(37 99 235);
     --bx-gp-rim: color-mix(in oklab, var(--bx-gp) 75%, white);
@@ -695,7 +699,7 @@ html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
     --bx-gp-side: color-mix(in oklab, var(--bx-gp) 78%, black);
 
     background-color: color-mix(in srgb, var(--bx-gp) 90%, transparent);
-    border-color: transparent;
+    border-width: 0; /* as the glass button above: the rim has to sit on the edge */
 
     -webkit-backdrop-filter: blur(12px) saturate(180%) brightness(70%);
     backdrop-filter: blur(12px) saturate(180%) brightness(70%);
