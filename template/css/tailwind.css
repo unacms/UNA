@@ -1548,6 +1548,15 @@
     .bx-stl-mil-wo-gaps-sm.bx-stl-mib {
         @apply border border-gray-300 dark:border-gray-700;
     }
+    /* On the site a bordered menu item (.bx-stl-mib: the actions beside a profile's name) is a regular button, as .bx-btn and NeoButton
+       `bordered`: the flat translucent fill instead of the outline, a semibold label, the small size's 8px corner (its 36px height comes from
+       the paddings in Artificer's mod_profile/css/main.css). Not the items the menu moves into its "more" popup, which are rows there. */
+    body:not(.bx-std) .bx-stl-mib:is(.bx-stl-mil, .bx-stl-mil-sm, .bx-stl-mil-wo-gaps, .bx-stl-mil-wo-gaps-sm):not(.bx-popup *) {
+        @apply border-transparent rounded-lg font-semibold;
+        @apply bg-gray-950/[0.07] dark:bg-gray-50/[0.12] text-gray-800 dark:text-gray-200;
+        @apply hover:bg-gray-950/10 dark:hover:bg-gray-50/[0.15] hover:text-gray-900 dark:hover:text-white;
+        @apply active:border-transparent active:bg-gray-950/10 dark:active:bg-gray-50/[0.15];
+    }
     .bx-stl-mil-sm,
     .bx-stl-mil-wo-gaps-sm {
         @apply text-sm;
