@@ -632,14 +632,49 @@ class BxDolStudioInstaller extends BxDolInstallerUtils
                 if(!is_file($sPath . $sFile) || substr($sFile, 0, strlen($sOperation) + 1) != $sOperation . '-')
                     continue;
 
-                if(($mixedResult = $this->oDb->executeSQL($sPath . $sFile, $aMarkers)) !== true)
+                $sMethod = 'actionExecuteSqlAddon' . bx_gen_method_name(substr($sFile, 0, strpos($sFile, '.')), ['_', '-']);
+                $mixedResult = ($sAp = $sPath . $sFile) && method_exists($this, $sMethod) ? $this->$sMethod($sOperation, $sAp, $aMarkers, false) : $this->oDb->executeSQL($sAp, $aMarkers);
+                if($mixedResult !== true && is_array($mixedResult))
                     $aErrors += $mixedResult;
             }
+
             closedir($rHandle);
         }
 
         return !$aErrors ? BX_DOL_STUDIO_INSTALLER_SUCCESS : array('code' => BX_DOL_STUDIO_INSTALLER_FAILED, 'content' => $aErrors);
     }
+
+    protected function actionExecuteSqlAddonEnableApp($sOperation, $sAbsolutePath = '', $aMarkersForDb = [], $bForcePerform = true)
+    {
+        if($sOperation != 'enable')
+            return false;
+
+        if(!$bForcePerform && !$this->oDb->isSystemSyncApp())
+            return false;
+
+        $sAbsolutePath = $sAbsolutePath ?: $this->_sHomePath . 'install/sql/enable-app.sql';
+        $aMarkersForDb = $aMarkersForDb ?: $this->getMarkersForDb();
+
+        if(($mixedResult = $this->oDb->executeSQL($sAbsolutePath, $aMarkersForDb)) !== true)
+            return $mixedResult;
+
+        return $this->oDb->setSyncAppByName($this->_aConfig['name']);
+    }
+
+    protected function actionExecuteSqlAddonEnableAppMenus($sOperation, $sAbsolutePath = '', $aMarkersForDb = [], $bForcePerform = true)
+    {
+        $sAbsolutePath = $sAbsolutePath ?: $this->_sHomePath . 'install/sql/enable-app-menus.sql';
+
+        return $this->actionExecuteSqlAddonEnableApp($sOperation, $sAbsolutePath, $aMarkersForDb, $bForcePerform);
+    }
+
+    protected function actionExecuteSqlAddonEnableAppPages($sOperation, $sAbsolutePath = '', $aMarkersForDb = [], $bForcePerform = true)
+    {
+        $sAbsolutePath = $sAbsolutePath ?: $this->_sHomePath . 'install/sql/enable-app-pages.sql';
+
+        return $this->actionExecuteSqlAddonEnableApp($sOperation, $sAbsolutePath, $aMarkersForDb, $bForcePerform);
+    }
+
     protected function actionExecuteSqlFailed($mixedResult)
     {
     	if(is_int($mixedResult))

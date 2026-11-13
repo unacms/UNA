@@ -164,6 +164,7 @@ class BxDolStudioUpdater extends BxDolStudioInstaller
 
     	$sPathInstall = $this->_sHomePath . 'install/sql/install.sql';
     	$sPathEnable = $this->_sHomePath . 'install/sql/enable.sql';
+        $sPathEnableApp = $this->_sHomePath . 'install/sql/enable-app.sql';
 
     	$mixedResult = true;
     	if(file_exists($sPathInstall))
@@ -172,7 +173,10 @@ class BxDolStudioUpdater extends BxDolStudioInstaller
 		if($mixedResult === true && (int)$aModule['enabled'] == 1 && file_exists($sPathEnable))
 			$mixedResult = $this->oDb->executeSQL($sPathEnable, $this->getMarkersForDb());
 
-        return $mixedResult === true ? BX_DOL_STUDIO_INSTALLER_SUCCESS : array('code' => BX_DOL_STUDIO_INSTALLER_FAILED, 'content' => $mixedResult);
+        if($mixedResult === true && (int)$aModule['sync_app'] == 1 && file_exists($sPathEnableApp))
+			$mixedResult = $this->oDb->executeSQL($sPathEnableApp, $this->getMarkersForDb());
+
+        return $mixedResult === true ? BX_DOL_STUDIO_INSTALLER_SUCCESS : ['code' => BX_DOL_STUDIO_INSTALLER_FAILED, 'content' => $mixedResult];
     }
 
     protected function actionUpdateLanguages($bInstall = true)
