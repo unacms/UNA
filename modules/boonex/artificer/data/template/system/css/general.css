@@ -640,8 +640,10 @@ html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
    - by itself inside a cover (.bx-cover-wrapper) and on the buttons that edit a picture in place (.bx-image-edit-buttons), unless the menu's
      Button style says Regular or Plain;
    - .bx-btn-glass on a button that is in no menu and sits over a picture.
+   A bordered menu item (.bx-stl-mib, the actions beside a profile's name) of a menu whose Button style is Glass takes the same look.
    A primary button there is the glass prominent one (below); a disabled button keeps its own fill. Inside a cover all of them are capsules. */
-.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) {
+.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *),
+body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *) {
     background-color: rgb(255 255 255 / 0.3);
     color: #0a0a0c;
 
@@ -655,18 +657,25 @@ html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
     /* --tw-shadow, not box-shadow: the focus ring is drawn by the same box-shadow and stays. */
     --tw-shadow: inset 0 3px 1.5px -1.5px rgb(255 255 255 / 1), inset 0 -3px 1.5px -1.5px rgb(255 255 255 / 1), 0 0 0 0.6px rgb(0 0 0 / 0.08), 1px 0 0 -0.4px rgb(0 0 0 / 0.22), -1px 0 0 -0.4px rgb(0 0 0 / 0.22), 0 4px 10px -2px rgb(0 0 0 / 0.03);
 }
-.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):hover {
+.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):hover,
+body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *):hover {
     background-color: rgb(255 255 255 / 0.4);
     color: #0a0a0c;
 }
-.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):active {
+.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):active,
+body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *):active {
     background-color: rgb(255 255 255 / 0.55);
     color: #0a0a0c;
 }
-.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) i:not(.sys-colored) {
+.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) i:not(.sys-colored),
+body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *) :is(.sys-action-do-icon, .bx-mi-icon) {
     color: inherit;
 }
-.dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) {
+body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *) {
+    box-shadow: var(--tw-shadow); /* a menu item has no shadow utility to carry --tw-shadow, as .bx-btn has */
+}
+.dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *),
+.dark body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *) {
     background-color: rgb(255 255 255 / 0.15);
     color: #fafafc;
 
@@ -675,11 +684,13 @@ html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
 
     --tw-shadow: inset 0 1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 -1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 4px 5px -4px rgb(255 255 255 / 0.08), inset 0 -4px 5px -4px rgb(255 255 255 / 0.08), 0 0 0 0.6px rgb(0 0 0 / 0.5);
 }
-.dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):hover {
+.dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):hover,
+.dark body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *):hover {
     background-color: rgb(255 255 255 / 0.19);
     color: #fafafc;
 }
-.dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):active {
+.dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):active,
+.dark body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *):active {
     background-color: rgb(255 255 255 / 0.23);
     color: #fafafc;
 }
