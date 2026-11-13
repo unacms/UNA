@@ -28,7 +28,7 @@ class BxBaseConfig extends BxDol implements iBxDolSingleton
 
             'bx-size-avatar-big' => '192px',
             'bx-size-avatar' => '96px',
-            'bx-size-thumb' => '48px',
+            'bx-size-thumb' => '44px',
             'bx-size-icon' => '32px',
 
             'bx-size-gallery-img-width' => '300px',
