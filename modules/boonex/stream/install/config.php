@@ -62,6 +62,7 @@ $aConfig = array(
      */
     'storages' => array(
         'bx_stream_covers',
+        'bx_stream_recordings'
     ),
 
     /**

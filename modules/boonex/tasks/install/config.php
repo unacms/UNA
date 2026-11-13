@@ -59,7 +59,8 @@ $aConfig = array(
         'bx_tasks_covers',
     	'bx_tasks_photos',
         'bx_tasks_videos',
-        'bx_tasks_files'
+        'bx_tasks_files',
+        'bx_tasks_files_cmts'
     ),
 
     /**
