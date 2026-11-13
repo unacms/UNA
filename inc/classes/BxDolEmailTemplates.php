@@ -208,6 +208,9 @@ class BxDolEmailTemplates extends BxDolFactory implements iBxDolSingleton
             'email_footer' => getParam('site_email_html_template_footer'),
         ), $aKeyWrapper);
 
+        if(!isset($aResultKeys['site_logo']) && bx_mb_strpos($sContent, '{site_logo}') !== false)
+            $aResultKeys['site_logo'] = BxTemplFunctions::getInstance()->getEmailLogo();
+
         return BxDolTemplate::getInstance()->parseHtmlByContent($sContent, $aResultKeys, $aKeyWrapper);
     }
 }
