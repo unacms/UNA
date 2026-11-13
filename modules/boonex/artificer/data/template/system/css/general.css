@@ -668,7 +668,7 @@ body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *):active {
     color: #0a0a0c;
 }
 .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) i:not(.sys-colored),
-body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *) :is(.sys-action-do-icon, .bx-mi-icon) {
+body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass :is(.sys-action-do-icon, .bx-mi-icon):not(.bx-popup *) {
     color: inherit;
 }
 body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *) {

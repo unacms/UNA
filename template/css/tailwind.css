@@ -1553,8 +1553,9 @@
        popup, which are rows there.
        It follows the menu's Button style and size (Studio > Navigation > a menu), which the menu puts on the item itself
        (.bx-menu-btn-style-* / .bx-menu-btn-size-*): Regular or automatic is the fill, Plain has none, Glass is in Artificer's general.css
-       beside the glass button. The size is the buttons' scale, small when the menu sets none: label and corner here, icon below, height
-       and side padding with the links' paddings in Artificer's mod_profile/css/main.css. */
+       beside the glass button. The size is the buttons' scale, small when the menu sets none: label and corner here, icon below (the popup exclusion
+       is on the icon there: the "more" item is itself such an item and holds the popup), height and side padding with the links'
+       paddings in Artificer's mod_profile/css/main.css. */
     body:not(.bx-std) .bx-stl-mib:is(.bx-stl-mil, .bx-stl-mil-sm, .bx-stl-mil-wo-gaps, .bx-stl-mil-wo-gaps-sm):not(.bx-popup *) {
         @apply border-0 rounded-lg font-semibold;
         @apply text-gray-800 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white;
@@ -1574,14 +1575,14 @@
     body:not(.bx-std) .bx-stl-mib.bx-menu-btn-size-large:is(.bx-stl-mil, .bx-stl-mil-sm, .bx-stl-mil-wo-gaps, .bx-stl-mil-wo-gaps-sm):not(.bx-popup *) {
         @apply text-base rounded-xl;
     }
-    body:not(.bx-std) .bx-stl-mib.bx-menu-btn-size-mini:not(.bx-popup *) .bx-mi-icon,
-    body:not(.bx-std) .bx-stl-mib.bx-menu-btn-size-mini:not(.bx-popup *) :is(.sys-action-do-icon, .bx-mi-icon) > * {
+    body:not(.bx-std) .bx-stl-mib.bx-menu-btn-size-mini .bx-mi-icon:not(.bx-popup *),
+    body:not(.bx-std) .bx-stl-mib.bx-menu-btn-size-mini :is(.sys-action-do-icon, .bx-mi-icon):not(.bx-popup *) > * {
         @apply h-4 w-4;
     }
-    body:not(.bx-std) .bx-stl-mib.bx-menu-btn-size-regular:not(.bx-popup *) .bx-mi-icon,
-    body:not(.bx-std) .bx-stl-mib.bx-menu-btn-size-regular:not(.bx-popup *) :is(.sys-action-do-icon, .bx-mi-icon) > *,
-    body:not(.bx-std) .bx-stl-mib.bx-menu-btn-size-large:not(.bx-popup *) .bx-mi-icon,
-    body:not(.bx-std) .bx-stl-mib.bx-menu-btn-size-large:not(.bx-popup *) :is(.sys-action-do-icon, .bx-mi-icon) > * {
+    body:not(.bx-std) .bx-stl-mib.bx-menu-btn-size-regular .bx-mi-icon:not(.bx-popup *),
+    body:not(.bx-std) .bx-stl-mib.bx-menu-btn-size-regular :is(.sys-action-do-icon, .bx-mi-icon):not(.bx-popup *) > *,
+    body:not(.bx-std) .bx-stl-mib.bx-menu-btn-size-large .bx-mi-icon:not(.bx-popup *),
+    body:not(.bx-std) .bx-stl-mib.bx-menu-btn-size-large :is(.sys-action-do-icon, .bx-mi-icon):not(.bx-popup *) > * {
         @apply h-6 w-6;
     }
     .bx-stl-mil-sm,
