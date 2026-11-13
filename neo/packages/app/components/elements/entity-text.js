@@ -270,21 +270,21 @@ function EntryCover({ data, module, edit }) {
     const { image, isUploading, pick, modal } = useEntryImageEdit({
         kind: 'cover', edit, module, contentId: data?.id, image: data?.image,
     })
-    if (!image?.src && !edit) return null
+    // No cover, nothing to show: an empty box with a camera is not content. The entry's edit form is
+    // where a first cover is added; the camera here replaces one that exists.
+    if (!image?.src) return null
 
     return (
         <>
-            <View className={`w-full ${image?.src ? getCoverAspectClass(module) : 'h-24 bg-accent/50'} mb-4 sm:rounded-xl overflow-hidden`}>
-                {image?.src ? (
-                    <Image
-                        {...image}
-                        alt={data.title}
-                        className="u-cover"
-                        view="cover"
-                        sizes={POST_ENTRY_COVER_SIZES}
-                        optimizedWidthCap={POST_ENTRY_COVER_WIDTH_CAP}
-                    />
-                ) : null}
+            <View className={`w-full ${getCoverAspectClass(module)} mb-4 sm:rounded-xl overflow-hidden`}>
+                <Image
+                    {...image}
+                    alt={data.title}
+                    className="u-cover"
+                    view="cover"
+                    sizes={POST_ENTRY_COVER_SIZES}
+                    optimizedWidthCap={POST_ENTRY_COVER_WIDTH_CAP}
+                />
                 {isUploading ? (
                     <View className="absolute inset-0 opacity-60 bg-card justify-center items-center">
                         <Loading />

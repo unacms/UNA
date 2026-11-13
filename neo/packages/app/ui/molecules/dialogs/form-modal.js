@@ -119,6 +119,8 @@ export default function FormModal({ pageData, setPageData, modalView, url, histo
                 padding=""
                 outerClickClose={isWeb}
                 usePadding={true}
+                // The page layout measures the room it gets and gives it to its list.
+                fillHeight
             >
                 <Component url={url} isModal={true} layoutName={'post'} data={pageData} blocks={layoutBlocks1} />
             </Modal>
