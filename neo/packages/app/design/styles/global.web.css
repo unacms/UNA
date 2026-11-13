@@ -727,7 +727,8 @@ html[theme="dark"]:root {
         --neo-radius-3xl: calc(1.5rem * var(--neo-corner-superellipse-factor, 1.25)) !important;
         --neo-radius-4xl: calc(2rem * var(--neo-corner-superellipse-factor, 1.25)) !important;
         --neo-radius-popover: calc(1.25rem * var(--neo-corner-superellipse-factor, 1.25)) !important;
-        --neo-radius-control-sm: calc(0.625rem * var(--neo-corner-superellipse-factor, 1.25)) !important;
+        /* No !important: this block is unlayered and theme.css sets the plain value in @layer base, so this one wins. */
+        --neo-radius-control-sm: calc(0.625rem * var(--neo-corner-superellipse-factor, 1.25));
         --neo-radius-full: calc(9999px * var(--neo-corner-superellipse-full-factor, 1)) !important;
     }
 
