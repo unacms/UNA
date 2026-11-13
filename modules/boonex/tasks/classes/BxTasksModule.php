@@ -178,18 +178,21 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         if(!isAdmin() && !bx_acl_is_administrator())
             return;
 
-        $sClass = 'Import' . ucwords($sType);
-        bx_import($sClass, $this->_aModule);
+        $aParams = [];
+        switch($sType) {
+            case 'linear':
+                $aParams = [
+                    'req_api_key' => bx_get('lk') ?: '',
+                    'req_params' => ($sP = bx_get('lp')) !== false && is_string($sP) ? json_decode($sP, true) : []
+                ];
+                break;
+        }
 
-        $sClass = $this->_aModule['class_prefix'] . $sClass;
-        $oImport = new $sClass($this);
-
-        $mixedResult = $oImport->perform($iContextId);
+        $mixedResult = $this->serviceImportFrom($sType, $iContextId, $aParams);
         if($mixedResult === false || !is_array($mixedResult))
             return;
 
-        list($iProcessed, $iIssues) = $mixedResult;
-        echo 'Processed: ' . $iProcessed . ', Issues: ' . $iIssues;
+        echo call_user_func_array('sprintf', array_merge(["Processed: %s, Issues: %s"], $mixedResult));
     }
 
     public function serviceGetSafeServices()
@@ -1532,6 +1535,17 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         return $this->_bIsApi ? [
             bx_api_get_block('tasks_list', $mixedResult)
         ] : $mixedResult;
+    }
+
+    public function serviceImportFrom($sType = 'linear', $iContextId = 0, $aParams = [])
+    {
+        $sClass = 'Import' . ucwords($sType);
+        bx_import($sClass, $this->_aModule);
+
+        $sClass = $this->_aModule['class_prefix'] . $sClass;
+        $oImport = new $sClass($this);
+
+        return $oImport->perform($iContextId, $aParams);
     }
 
     /**

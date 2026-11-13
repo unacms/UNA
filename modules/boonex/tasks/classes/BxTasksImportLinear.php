@@ -19,16 +19,13 @@ class BxTasksImportLinear extends BxDol
         $this->_oModule = $oModule;
     }
 
-    public function perform($iContextId = 0)
+    public function perform($iContextId = 0, $aParams = [])
     {
-        if(!isAdmin() && !bx_acl_is_administrator())
-            return false;
-
-        $sReqApiKey = bx_get('lk') ?: '';
+        $sReqApiKey = $aParams['req_api_key'] ?? '';
         if(!$sReqApiKey || !BxDolProfile::getInstance($iContextId))
             return false;
 
-        $aReqParams = ($sP = bx_get('lp')) !== false && is_string($sP) ? json_decode($sP, true) : [];
+        $aReqParams = $aParams['req_params'] ?? [];
 
         $sEndpoint = 'https://api.linear.app/graphql';
         $aRequest = [
@@ -41,6 +38,7 @@ class BxTasksImportLinear extends BxDol
                         description 
                         priority 
                         estimate 
+                        dueDate 
                         createdAt 
                         updatedAt 
                         state { name type }
@@ -127,9 +125,13 @@ class BxTasksImportLinear extends BxDol
                 if(($sLabel = $aLabel['name'] ?? false) && isset($aLabelCnv[$sLabel]))
                     $aStikers[] = $aLabelCnv[$sLabel];
 
+        $iAdded = strtotime($aData['createdAt'] ?? 0);
+        $iChanged = strtotime($aData['updatedAt'] ?? 0);
+
         $aEntry = [
-            $CNF['FIELD_ADDED'] => strtotime($aData['createdAt'] ?? 0),
-            $CNF['FIELD_CHANGED'] => strtotime($aData['updatedAt'] ?? 0),
+            $CNF['FIELD_ADDED'] => $iAdded,
+            $CNF['FIELD_CHANGED'] => $iChanged,
+            $CNF['FIELD_PUBLISHED'] => $iAdded,
             $CNF['FIELD_TITLE'] => (($sIdentifier = $aData['identifier'] ?? false) ? $sIdentifier . ': ' : '') . $aData['title'] ?? '',
             $CNF['FIELD_TEXT'] => $aData['description'] ?? '',
             $CNF['FIELD_PRIORITY'] => $aData['priority'] ?? 0,
@@ -137,6 +139,7 @@ class BxTasksImportLinear extends BxDol
             $CNF['FIELD_STATE'] => $aStateCnv[$aData['state']['name'] ?? ''] ?? BX_TASKS_STATE_TODO,
             $CNF['FIELD_ESTIMATE'] => $aData['estimate'] ?? 0,
             $CNF['FIELD_INITIAL_MEMBERS'] => [$this->getProfile($aData['assignee'] ?? [], 0)],
+            $CNF['FIELD_DUE_DATE'] => $aData['dueDate'] ?? '',
             $CNF['FIELD_ALLOW_VIEW_TO'] => -$iContextId,
             'do_submit' => 'submit'
         ];
@@ -146,6 +149,8 @@ class BxTasksImportLinear extends BxDol
 
         if($bResult && ($aContentInfo = $aResult['content'] ?? false) && is_array($aContentInfo)) {
             $iContentId = (int)$aContentInfo[$CNF['FIELD_ID']];
+
+            //--- Process comments
             if($iContentId && ($aComments = $aData['comments']['nodes'] ?? false) && is_array($aComments)) {
                 $aCommentsById = [];
                 foreach ($aComments as $aComment)
@@ -168,6 +173,10 @@ class BxTasksImportLinear extends BxDol
                             $this->addComment($aCommentsById[$sChildId], $iContentId, $iCmtId);
                 }
             }
+
+            //--- Process statuses
+            if(in_array($aContentInfo[$CNF['FIELD_STATE']], [BX_TASKS_STATE_CANCELLED, BX_TASKS_STATE_DUPLICATE, BX_TASKS_STATE_DONE]))
+                $this->_oModule->_oDb->updateEntriesBy([$CNF['FIELD_COMPLETED'] => 1], [$CNF['FIELD_ID'] => (int)$iContentId]);
         }
 
         return $bResult;
