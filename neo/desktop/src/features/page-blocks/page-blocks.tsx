@@ -500,8 +500,8 @@ function DiscussionsBlock({ block, screen }: { block: ResolvedBlock; screen: Scr
  * blocks about it (Info, Friends, Members) go beside its timeline from any cell (complementary).
  * No path (a profile without a page on the site): its content alone.
  */
-/** The page's padding and the gap between its columns (styles.css .page-columns[data-columns='side']): 24 + 16 + 24. */
-const ASIDE_CHROME = 64;
+/** The page's padding and the gap between its columns (styles.css .page-columns[data-columns='side']): 16 + 24 + 16. */
+const ASIDE_CHROME = 56;
 
 export function PageColumns({ path, title, ended, about = false, children }: { path: string | null; title: string; ended: boolean; about?: boolean; children: ReactNode }) {
     const body = usePaneBody();

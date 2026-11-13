@@ -1295,7 +1295,10 @@ img.cover { box-shadow: none; border-block-end: 1px solid var(--image-outline); 
    resizes the side column (lib/aside-width.ts); the line shows on hover and focus. A page's
    end padding is --side-end (a section's page: 16px; features/page-blocks/side-columns.tsx) */
 .resize-slot-aside { inset-inline-end: calc(var(--side-end, var(--space-4)) + var(--aside-width) + var(--space-6) / 2 - 4px); }
-.page-side { position: sticky; align-self: start; padding-block: var(--space-1) var(--space-6); }
+/* the content starts as far under the tab row as it is from the pane's sides (16px): the side
+   column by its own padding, the feed by 12px here and the 4px its first card is inside its row */
+.page-columns[data-columns='side'] > .page-main { padding-block-start: var(--space-3); }
+.page-side { position: sticky; align-self: start; padding-block: var(--space-4); }
 .page-aside { display: grid; gap: var(--space-3); align-content: start; }
 .pane-list .page-main > :is(.page-aside-top, .page-aside-below) { margin: var(--space-4) var(--space-4) 0; }
 .page-block[data-bg] { background: var(--bg-card); border-radius: var(--radius-sheet); box-shadow: 0 0 0 1px var(--separator-card); }
