@@ -786,6 +786,9 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
         ...(insetLeft != null ? { paddingLeft: insetLeft } : null),
         ...(insetRight != null ? { paddingRight: insetRight } : null),
         ...(tintFillsSurface ? { backgroundColor: resolved.tint } : null),
+        // Web glass prominent mixes its rim and hairline from the fill
+        // (`--neo-gp`, global.css): name the tint for them.
+        ...(tintFillsSurface && isWeb && resolved.style === 'glassProminent' ? { '--neo-gp-fill': resolved.tint } : null),
         ...(customHit ? {
             '--neo-hit-t': hitInsets.top ?? 0,
             '--neo-hit-r': hitInsets.right ?? 0,

@@ -18,6 +18,7 @@
  * No `overflow-hidden`: it would clip the segments' focus rings.
  */
 import React, { createContext, useContext, Fragment, type ReactNode } from 'react';
+import { Platform } from 'react-native';
 import { Row, View } from 'app/design/view';
 import { GlassSurface } from 'app/ui/atoms/glass-surface';
 import { appSetting, cn, hasLiquidGlass } from 'app/lib/util';
@@ -25,6 +26,7 @@ import {
     NeoButtonStyleProvider,
     NeoControlSizeProvider,
     normalizeStyleProp,
+    resolveScoped,
     useNeoButtonStyle,
     useResolvedNeoButton,
 } from 'app/design/controls/neo-button/neo-button-resolver';
@@ -42,6 +44,8 @@ const SEGMENT_ROUNDED: Record<string, Record<SegmentPosition, string>> = {
     'rounded-2xl':  { only: 'rounded-2xl',  first: 'rounded-s-2xl',  middle: 'rounded-none', last: 'rounded-e-2xl' },
     'rounded-full': { only: 'rounded-full', first: 'rounded-s-full', middle: 'rounded-none', last: 'rounded-e-full' },
 };
+
+const PLATFORM: 'web' | 'ios' | 'android' = Platform.OS === 'web' ? 'web' : Platform.OS === 'ios' ? 'ios' : 'android';
 
 const PROMINENT_STYLES = new Set(['borderedProminent', 'glassProminent']);
 
@@ -116,6 +120,11 @@ export function NeoButtonGroup({
     const prominent = PROMINENT_STYLES.has(style);
     const roleFill = prominent && !tint ? appSetting('theme', 'neo_button', 'roles')?.[role ?? '']?.fillClass : null;
     const tintFill = prominent && !roleFill && resolved.tint ? resolved.tint : null;
+    // Web glass prominent mixes its rim and hairline from the fill (`--neo-gp`,
+    // global.css), so a tinted or destructive group names its fill for them.
+    const fillVar = PLATFORM === 'web' && prominent && resolved.tint ? { '--neo-gp-fill': resolved.tint } : null;
+    // A container may differ per platform (`{ default, web }`), like the segments' states.
+    const containerCls = resolveScoped(liquidGlass ? groupStyle.liquidContainer : groupStyle.container, { platform: PLATFORM });
     const fill = width === 'fill';
     const corners = SEGMENT_ROUNDED[resolved.rounded] ?? SEGMENT_ROUNDED['rounded-xl']!;
 
@@ -130,11 +139,11 @@ export function NeoButtonGroup({
                         'relative flex-row items-stretch',
                         fill ? 'w-full' : 'self-start max-w-full',
                         resolved.rounded,
-                        liquidGlass ? groupStyle.liquidContainer : groupStyle.container,
+                        containerCls,
                         roleFill,
                         className,
                     )}
-                    style={tintFill ? { backgroundColor: tintFill } : undefined}
+                    style={tintFill || fillVar ? { ...(tintFill ? { backgroundColor: tintFill } : null), ...fillVar } : undefined}
                 >
                     {liquidGlass ? <GlassSurface rounded={resolved.rounded} /> : null}
                     {items.map((child, i) => {

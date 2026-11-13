@@ -247,6 +247,8 @@
         --neo-shadow-btn-glass-pressed:                inset 0 0 0 1px rgb(255 255 255 / 0.50), inset 0 1px 0 0 rgb(255 255 255 / 0.50), 0 0 0 1px rgb(0 0 0 / 0.01), 0 1px 4px -1px rgb(0 0 0 / 0.1), 0 2px 8px -2px rgb(0 0 0 / 0.1);;
         --neo-shadow-btn-glass-pressed-deep:           inset 0 0 0 1px rgb(255 255 255 / 0.05), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.5), 0 2px 8px -2px rgb(0 0 0 / 0.5);
       
+        /* Glass prominent, native JS fallback only: web draws `shadow-glass-prominent` (global.css), whose
+           colours follow the fill and so need CSS variables, which native can't take in a box-shadow. */
         --neo-shadow-btn-glass-prominent:              inset 0 1px 0 0 rgb(255 255 255 / 0.10), inset 0 0 0 1px rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.01), 0 2px 8px -2px rgb(0 0 0 / 0.1), 0 4px 16px -4px rgb(0 0 0 / 0.1);
         --neo-shadow-btn-glass-prominent-deep:         inset 0 1px 0 0 rgb(255 255 255 / 0.10), inset 0 0 0 1px rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 8px -2px rgb(0 0 0 / 0.5), 0 4px 16px -4px rgb(0 0 0 / 0.5);
 
