@@ -40,6 +40,7 @@ const SEGMENT_ROUNDED: Record<string, Record<SegmentPosition, string>> = {
     'rounded-none': { only: 'rounded-none', first: 'rounded-none',   middle: 'rounded-none', last: 'rounded-none' },
     'rounded-md':   { only: 'rounded-md',   first: 'rounded-s-md',   middle: 'rounded-none', last: 'rounded-e-md' },
     'rounded-lg':   { only: 'rounded-lg',   first: 'rounded-s-lg',   middle: 'rounded-none', last: 'rounded-e-lg' },
+    'rounded-control-sm': { only: 'rounded-control-sm', first: 'rounded-s-control-sm', middle: 'rounded-none', last: 'rounded-e-control-sm' },
     'rounded-xl':   { only: 'rounded-xl',   first: 'rounded-s-xl',   middle: 'rounded-none', last: 'rounded-e-xl' },
     'rounded-2xl':  { only: 'rounded-2xl',  first: 'rounded-s-2xl',  middle: 'rounded-none', last: 'rounded-e-2xl' },
     'rounded-full': { only: 'rounded-full', first: 'rounded-s-full', middle: 'rounded-none', last: 'rounded-e-full' },

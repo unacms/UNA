@@ -997,7 +997,7 @@
        `borderShapes`): a semibold label at the default spacing, and per size
            height / side padding / label / icon / corner
            mini    28 / 10 / 12 / 16 /  6
-           small   36 / 12 / 14 / 20 /  8
+           small   36 / 12 / 14 / 20 / 10
            regular 44 / 16 / 16 / 24 / 12
            large   52 / 24 / 16 / 24 / 12
            xlarge  64 / 32 / 18 / 28 / 16
@@ -1008,6 +1008,9 @@
     }
     body:not(.bx-std) .bx-btn:not(.bx-btn-mini, .bx-btn-small, .bx-btn-large, .bx-btn-xlarge) {
         @apply text-base;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-small {
+        @apply rounded-[10px];
     }
     body:not(.bx-std) .bx-btn.bx-btn-large {
         @apply px-6;
@@ -1037,7 +1040,7 @@
         @apply after:content-[''] after:absolute after:-inset-y-2 after:-inset-x-1;
     }
     body:not(.bx-std) .bx-menu-btn-size-small .bx-btn {
-        @apply min-h-9 px-3 py-1 text-sm rounded-lg;
+        @apply min-h-9 px-3 py-1 text-sm rounded-[10px];
     }
     body:not(.bx-std) .bx-menu-btn-size-regular .bx-btn {
         @apply min-h-11 px-4 py-2 text-base rounded-xl;
@@ -1557,7 +1560,7 @@
        is on the icon there: the "more" item is itself such an item and holds the popup), height and side padding with the links'
        paddings in Artificer's mod_profile/css/main.css. */
     body:not(.bx-std) .bx-stl-mib:is(.bx-stl-mil, .bx-stl-mil-sm, .bx-stl-mil-wo-gaps, .bx-stl-mil-wo-gaps-sm):not(.bx-popup *) {
-        @apply border-0 rounded-lg font-semibold;
+        @apply border-0 rounded-[10px] font-semibold;
         @apply text-gray-800 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white;
     }
     body:not(.bx-std) .bx-stl-mib:is(.bx-stl-mil, .bx-stl-mil-sm, .bx-stl-mil-wo-gaps, .bx-stl-mil-wo-gaps-sm):not(.bx-popup *, .bx-menu-btn-style-glass, .bx-menu-btn-style-plain) {

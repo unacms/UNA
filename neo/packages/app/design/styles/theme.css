@@ -135,6 +135,7 @@
     --radius-4xl: var(--neo-radius-4xl);
     --radius-full: var(--neo-radius-full);
     --radius-popover: var(--neo-radius-popover);
+    --radius-control-sm: var(--neo-radius-control-sm);
     --radius-default: var(--neo-radius-default);
     --radius: var(--neo-radius-default);
 
@@ -213,6 +214,9 @@
         /* Menus and dropdowns (`theme.dropdown.cnt`): their rows' 12px corners (rounded-xl) plus the 8px around
            them (p-2), so the corners are concentric. */
         --neo-radius-popover: 1.25rem;
+        /* Small (36px) controls, `rounded-control-sm`: a small NeoButton and a small input. 10px: 8 (rounded-lg) reads
+           square at that height, 12 is the regular control's. */
+        --neo-radius-control-sm: 0.625rem;
 
         --neo-shadow-card-outline:        inset 0 0 0 1px rgb(255 255 255 / 0.5), 0 2px 8px -2px rgb(0 0 0 / 0.1);
         --neo-shadow-card-outline-deep:  inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 2px 8px -2px rgb(0 0 0 / 0.2);

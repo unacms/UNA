@@ -332,13 +332,13 @@ export const settingsButtons = {
         borderShapes: {
             capsule:   { rounded: 'rounded-full', iconOnlyPadded: true },
             rectangle: { rounded: 'rounded-none' },
-            // 6 / 8 / 12 / 12 / 16px; inputs match (12 at regular and large), cards and blocks
+            // 6 / 10 / 12 / 12 / 16px (small is `rounded-control-sm`, theme.css); inputs match (12 at regular and large), cards and blocks
             // are 16. Native iOS and Android buttons read this too.
             roundedRectangle: {
                 rounded: {
                     default: 'rounded-xl',
                     mini:    'rounded-md',
-                    small:   'rounded-lg',
+                    small:   'rounded-control-sm',
                     regular: 'rounded-xl',
                     large:   'rounded-xl',
                     xlarge:  'rounded-2xl',
