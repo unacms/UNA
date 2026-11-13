@@ -158,6 +158,11 @@ export function MessageComposer({ id, placeholder, submitLabel = t('Send'), purp
         }
     }, [canSend, onSend, text, content.html, ids, reset, lasting, staging, announce, attachments.items, attachments.settled]);
 
+    // the line under the box: why it can't be sent, that it waits for photos on their way, or how to send
+    let hint = sendHint(sendWithCmdEnter);
+    if (blocker && (text.trim() || ids.length)) hint = blocker;
+    else if (waiting) hint = t('Wait until the uploads are done');
+
     const onKeyDown = (e: globalThis.KeyboardEvent): boolean => {
         if (!isSendKey(e, sendWithCmdEnter)) return false;
         if (canSend) void send();
@@ -202,7 +207,7 @@ export function MessageComposer({ id, placeholder, submitLabel = t('Send'), purp
                 </button>
             </div>
             <p id={hintId} className="message-composer-hint">
-                {blocker && (text.trim() || ids.length) ? blocker : waiting ? t('Wait until the uploads are done') : sendHint(sendWithCmdEnter)}
+                {hint}
             </p>
             {error ? (
                 <p className="error" role="alert">
