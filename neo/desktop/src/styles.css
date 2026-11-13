@@ -2540,6 +2540,8 @@ button.task-prop-chip:hover .task-assignees .avatar { box-shadow: 0 0 0 1.5px va
 /* More stays at the card's top right. It is placed from the card now: across, from the grid's
    columns it spans (inside the card's side padding); down, from the row's top edge */
 .feed .activity-list > .activity-main > .tooltip-anchor:has(.act-more-top), .feed .activity-list > .activity-main > .act-more-top { inset-block-start: 16px; inset-inline-end: 0; }
+/* under a "reposted" line it moves down by that line (its height and the 4px under it), so it stays beside the author */
+.feed .activity-list:has(> .activity-above) > .activity-main > .tooltip-anchor:has(.act-more-top), .feed .activity-list:has(> .activity-above) > .activity-main > .act-more-top { inset-block-start: calc(16px + var(--leading-sm) + var(--space-1)); }
 .feed .activity-list::before {
     background: linear-gradient(var(--row-fill, transparent), var(--row-fill, transparent)), var(--bg-card);
     box-shadow: 0 0 0 1px var(--separator-card);
