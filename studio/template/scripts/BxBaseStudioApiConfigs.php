@@ -29,7 +29,7 @@ class BxBaseStudioApiConfigs extends BxDolStudioApiConfigs
         
         $mixedResult = $this->_performActionApply($iId);
         if($mixedResult === true)
-            $mixedResult = ['code' => 0, 'msg' => _t('_adm_api_msg_applied')];
+            $mixedResult = ['code' => 0, 'toast' => _t('_adm_api_msg_applied')];
         else
             $mixedResult = ['code' => 1, 'msg' => is_string($mixedResult) ? $mixedResult : _t('_adm_err_operation_failed')];
 
@@ -42,7 +42,7 @@ class BxBaseStudioApiConfigs extends BxDolStudioApiConfigs
 
         $aResult = [];
         if($this->_performActionRemove($iId))
-            $aResult = ['code' => 0, 'msg' => _t('_adm_api_msg_removed')];
+            $aResult = ['code' => 0, 'toast' => _t('_adm_api_msg_removed')];
         else
             $aResult = ['code' => 1, 'msg' => _t('_adm_err_operation_failed')];
 
@@ -79,7 +79,7 @@ class BxBaseStudioApiConfigs extends BxDolStudioApiConfigs
             $iAffected += ($this->_performActionApply($aModule['id']) === true ? 1 : 0);
         }
 
-        return echoJson(['code' => 0, 'msg' => _t('_adm_api_msg_applied_for', $iAffected)]);
+        return echoJson(['code' => 0, 'toast' => _t('_adm_api_msg_applied_for', $iAffected)]);
     }
 
     public function performActionRemoveAll()
@@ -94,7 +94,7 @@ class BxBaseStudioApiConfigs extends BxDolStudioApiConfigs
             $iAffected += ($this->_performActionRemove($aModule['id']) === true ? 1 : 0);
         }
 
-        return echoJson(['code' => 0, 'msg' => _t('_adm_api_msg_removed_for', $iAffected)]);
+        return echoJson(['code' => 0, 'toast' => _t('_adm_api_msg_removed_for', $iAffected)]);
     }
 
     public function performActionExportAll()
@@ -171,7 +171,7 @@ class BxBaseStudioApiConfigs extends BxDolStudioApiConfigs
 
             BxDolCacheUtilities::getInstance()->clear('db');
 
-            return echoJson(['code' => 0, 'msg' => _t('_adm_api_msg_imported')]);
+            return echoJson(['code' => 0, 'toast' => _t('_adm_api_msg_imported')]);
         }
 
         $sFormId = $oForm->getId();
@@ -203,11 +203,19 @@ class BxBaseStudioApiConfigs extends BxDolStudioApiConfigs
 
         $sClassName = $aModule['class_prefix'] . 'Installer';
         $oInstaller = new $sClassName($aConfig);
-        $mixedResult = $oInstaller->callAction('enable', 'execute_sql_addons');
 
-        return $mixedResult == BX_DOL_STUDIO_INSTALLER_SUCCESS ? true : ($mixedResult['msg'] ?? false);
+        $mixedResult = true;
+        if($aModule['name'] == 'system') {
+            $mixedResultMenus = $oInstaller->callAction('enable', 'execute_sql_addon_enable_app_menus');
+            $mixedResultPages = $oInstaller->callAction('enable', 'execute_sql_addon_enable_app_pages');
+            $mixedResult = $mixedResultMenus === true && $mixedResultPages === true;
+        }
+        else
+            $mixedResult = $oInstaller->callAction('enable', 'execute_sql_addon_enable_app');
+
+        return $mixedResult === true ? true : ($mixedResult['msg'] ?? false);
     }
-    
+
     protected function _performActionRemove($iId)
     {
         $aModule = $this->oDb->getModuleById($iId);
@@ -222,9 +230,9 @@ class BxBaseStudioApiConfigs extends BxDolStudioApiConfigs
             'module' => $aModule['name']
         ]);
 
-        return true;
+        return $this->oDb->unsetSyncAppByName($aModule['name']);
     }
-    
+
     protected function _performActionExport($iId = 0)
     {
         $sModule = '';

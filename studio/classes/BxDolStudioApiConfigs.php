@@ -21,6 +21,16 @@ class BxDolStudioApiConfigs extends BxTemplStudioGrid
         return parent::_getDataSql($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage);
     }
 
+    protected function _getDataSqlOrderClause ($sOrderByFilter, $sOrderField, $sOrderDir, $bFieldsOnly = false)
+    {
+        $sOrderClause = parent::_getDataSqlOrderClause ($sOrderByFilter, $sOrderField, $sOrderDir, $bFieldsOnly);
+
+        if(!$sOrderByFilter && !$sOrderField)
+            $sOrderClause = " ORDER BY (IF(`name`='system', 1, 0)) DESC, `" . ($this->_aOptions['field_order'] ?: 'title') . "` " . $this->_sDefaultSortingOrder;
+
+        return $sOrderClause;
+    }
+
     protected function _getQueriesPagesConfigApi($sModule = '')
     {
         $sResult = '';

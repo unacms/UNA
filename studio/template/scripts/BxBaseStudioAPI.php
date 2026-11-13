@@ -77,12 +77,12 @@ class BxBaseStudioAPI extends BxDolStudioAPI
         $this->aPageJs = array_merge($this->aPageJs, $oOptions->getJs());
 
         return [[
-            'caption' => '_adm_api_page_block_title_config_system',
-            'content' => $oOptions->getCode() . $this->getPageJsCode()
-        ], [
             'caption' => '_adm_api_page_block_title_config_modules',
             'content' => $this->getGrid($this->aGridObjects['configs'])
             
+        ], [
+            'caption' => '_adm_api_page_block_title_config_system',
+            'content' => $oOptions->getCode() . $this->getPageJsCode()
         ]];
     }
 

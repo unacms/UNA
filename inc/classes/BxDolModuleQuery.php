@@ -128,6 +128,21 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
         return (int)$this->fromMemory('sys_module_enabled_' . $sName, 'getOne', $sSql) > 0;
     }
 
+    function isSystemSyncApp()
+    {
+        return ($aSystem = $this->getModuleByName('system')) && is_array($aSystem) && (int)($aSystem['sync_app'] ?? 0) != 0;
+    }
+
+    function setSyncAppByName($sName, $iValue = 1)
+    {
+        return $this->updateModule(['sync_app' => $iValue], ['name' => $sName]) !== false;
+    }
+
+    function unsetSyncAppByName($sName)
+    {
+        return $this->setSyncAppByName($sName, 0);
+    }
+
     /**
      * What isEnabledByName answers for every module, read in one query and kept in memory where
      * it keeps it: for a page that asks about many modules (a feed of many modules' content).
