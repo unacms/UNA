@@ -1295,9 +1295,14 @@ img.cover { box-shadow: none; border-block-end: 1px solid var(--image-outline); 
    resizes the side column (lib/aside-width.ts); the line shows on hover and focus. A page's
    end padding is --side-end (a section's page: 16px; features/page-blocks/side-columns.tsx) */
 .resize-slot-aside { inset-inline-end: calc(var(--side-end, var(--space-4)) + var(--aside-width) + var(--space-6) / 2 - 4px); }
-/* the content starts as far under the tab row as it is from the pane's sides (16px): the side
-   column by its own padding, the feed by 12px here and the 4px its first card is inside its row */
-.page-columns[data-columns='side'] > .page-main { padding-block-start: var(--space-3); }
+/* A feed of cards starts as far under the tab row as it is from the pane's sides (16px), with
+   or without a side column: the side column by its own padding, the feed by 12px here and the
+   4px its first card is inside its row. Without a side column the feed's column is centred and
+   keeps at least the page's inset at its sides (16px; a profile's or a group's: the hero's), so
+   a card never touches the pane's edge; the blocks over and under the feed are as wide as it. */
+.page-columns > .page-main:has(.feed-panel) { padding-block-start: var(--space-3); }
+.page-columns:not([data-columns]):has(.feed-panel) { padding-inline: var(--hero-inset, var(--space-4)); }
+.pane-list .page-columns:not([data-columns]):has(.feed-panel) > .page-main > :is(.page-aside-top, .page-aside-below) { margin-inline: 0; }
 .page-side { position: sticky; align-self: start; padding-block: var(--space-4); }
 .page-aside { display: grid; gap: var(--space-3); align-content: start; }
 .pane-list .page-main > :is(.page-aside-top, .page-aside-below) { margin: var(--space-4) var(--space-4) 0; }
@@ -1337,7 +1342,10 @@ img.cover { box-shadow: none; border-block-end: 1px solid var(--image-outline); 
    pane while it has one, the timeline in the reading column */
 .profile-view > .profile-panel:has(> .page-columns[data-columns='side']) { max-inline-size: none; }
 .profile-panel > .page-columns[data-columns='side'] { padding-inline: var(--hero-inset); --side-end: var(--hero-inset); }
-.profile-panel > .page-columns > .page-main { max-width: var(--reading-width); }
+.profile-view > .profile-panel:has(> .page-columns) { max-inline-size: none; }
+.profile-panel > .page-columns > .page-main { max-width: var(--column-max); }
+.profile-panel > .page-columns > .page-main:has(.feed-panel) { padding-block-start: 0; margin-block-start: calc(-1 * var(--space-1)); }
+.profile-panel > .page-columns > .page-side { padding-block-start: 0; }
 .profile-panel > .page-columns:not([data-columns]) > .page-main > :is(.page-aside-top, .page-aside-below) { margin: var(--space-4) var(--space-4) 0; }
 @media (forced-colors: active) {
     .page-block[data-bg] { border: 1px solid CanvasText; }
