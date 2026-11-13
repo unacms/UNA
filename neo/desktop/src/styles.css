@@ -1289,17 +1289,17 @@ img.cover { box-shadow: none; border-block-end: 1px solid var(--image-outline); 
 .page-columns[data-columns='side'] {
     position: relative;
     display: grid; grid-template-columns: minmax(0, 1fr) var(--aside-width); align-items: start;
-    column-gap: var(--space-6); padding-inline: var(--space-6) var(--space-4);
+    column-gap: var(--space-6); padding-inline: var(--space-4);
 }
 /* the divider between the main column and the side column, in the middle of the gap: it
    resizes the side column (lib/aside-width.ts); the line shows on hover and focus. A page's
    end padding is --side-end (a section's page: 16px; features/page-blocks/side-columns.tsx) */
 .resize-slot-aside { inset-inline-end: calc(var(--side-end, var(--space-4)) + var(--aside-width) + var(--space-6) / 2 - 4px); }
-.page-side { position: sticky; align-self: start; padding-block: var(--space-3) var(--space-6); }
+.page-side { position: sticky; align-self: start; padding-block: var(--space-1) var(--space-6); }
 .page-aside { display: grid; gap: var(--space-3); align-content: start; }
 .pane-list .page-main > :is(.page-aside-top, .page-aside-below) { margin: var(--space-4) var(--space-4) 0; }
-.page-block[data-bg] { background: var(--bg-card); border-radius: var(--radius-card); box-shadow: 0 0 0 1px var(--separator); }
-.page-block[data-padding] { padding: var(--space-3) var(--space-2) var(--space-2); }
+.page-block[data-bg] { background: var(--bg-card); border-radius: var(--radius-sheet); box-shadow: 0 0 0 1px var(--separator-card); }
+.page-block[data-padding] { padding: var(--space-4) var(--space-2) 10px; }
 .page-block-title { margin: 0 var(--space-2) var(--space-1); font-size: var(--text-ui); line-height: var(--leading-ui); font-weight: 600; }
 .page-block-list { list-style: none; margin: 0; padding: 0; display: grid; }
 .page-block-row {
@@ -2524,9 +2524,19 @@ button.task-prop-chip:hover .task-assignees .avatar { box-shadow: 0 0 0 1.5px va
 /* Posts in a feed are cards, as in NEO: a card's own surface (lighter than the content in dark
    mode, white in light) with a faint ring, 9px apart, its fill the row's ::before (so hover and
    selection tint the card itself), and no hairline between them. Inside, 16px from the card's
-   edges. Keyboard focus rings the card. */
-.feed .activity-list { padding: 16px 24px 13px; }
+   edges on every side (the card is the row less 4px above and 5px below). Keyboard focus rings
+   the card. As in NEO and on the site, the author's picture, name and the line under it are a
+   row at the top, and what was posted starts under the picture, at the card's edge: the
+   content's wrapper (.activity-main) is not a box here, so its children sit in the card's grid. */
+.feed .activity-list { padding: 20px 24px 21px; justify-items: start; }
 .panes[data-detail='closed'] .feed .activity-list { padding-inline: 16px; }
+.feed .activity-list > .activity-main { display: contents; }
+.feed .activity-list > .activity-above, .feed .activity-list > .activity-main > * { grid-column: 1 / -1; }
+.feed .activity-list > .activity-avatar { margin-block-end: var(--space-2); }
+.feed .activity-list > .activity-main > .activity-head { grid-column: 2; align-self: center; margin-block-end: var(--space-2); }
+/* More stays at the card's top right. It is placed from the card now: across, from the grid's
+   columns it spans (inside the card's side padding); down, from the row's top edge */
+.feed .activity-list > .activity-main > .tooltip-anchor:has(.act-more-top), .feed .activity-list > .activity-main > .act-more-top { inset-block-start: 16px; inset-inline-end: 0; }
 .feed .activity-list::before {
     background: linear-gradient(var(--row-fill, transparent), var(--row-fill, transparent)), var(--bg-card);
     box-shadow: 0 0 0 1px var(--separator-card);
