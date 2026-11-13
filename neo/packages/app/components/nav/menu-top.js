@@ -97,9 +97,9 @@ export default function MenuTop({ url, uri }) {
     const [containerLayout, setContainerLayout] = useState({ x: 0, width: 0, measured: false });
     const handleContainerLayout = (layout) => setContainerLayout((prev) => nextContainerLayout(prev, layout));
     // The width every item needs with its label beside its icon, measured on a hidden copy of the
-    // row. When the bar is narrower, every item puts its label under its icon in small type.
+    // row. When the bar is narrower, the items are their icons alone, named by tooltips.
     const [inlineWidth, setInlineWidth] = useState(0);
-    const stacked = isStacked(containerLayout.width, inlineWidth);
+    const compact = isCompact(containerLayout.width, inlineWidth);
 
     const handleItemLayout = (index, layout) => {
         setItemLayouts((prev) => {
@@ -161,7 +161,7 @@ export default function MenuTop({ url, uri }) {
             <Row className={`${appSetting('layout', 'header', 'content_center')} relative`} role="navigation" aria-label="Primary" aria-busy>
                 {Array.from({ length: siteTabs + 2 }, (_, index) => (
                     <View key={`menu-top-skeleton-${index}`} className="flex-auto relative z-10">
-                        <Row className="items-center justify-center px-2 h-12 min-w-16">
+                        <Row className="items-center justify-center px-2 h-11 min-w-11">
                             <View className="h-6 w-6 rounded-full bg-muted animate-pulse" />
                         </Row>
                     </View>
@@ -205,15 +205,14 @@ export default function MenuTop({ url, uri }) {
             {menu_navbar_items.map((item, index) => {
                 const isActive = index === activeIndex;
                 return (
-                    <View key={`wrap-${index}`} onLayout={(e) => handleItemLayout(index, e?.nativeEvent?.layout)} className="flex-auto relative z-10">
+                    <View key={`wrap-${index}`} onLayout={(e) => handleItemLayout(index, e?.nativeEvent?.layout)} className={`${compact ? 'flex-none' : 'flex-auto'} relative z-10`}>
                         <MenuTopItem
                             index={index}
                             link={item.link}
                             icon={item.icon}
-                            isTitle={showsLabel(item, stacked)}
+                            isTitle={!compact && !!item.showTitle}
                             title={t(item.title)}
                             isActive={isActive}
-                            stacked={stacked}
                             items={flattenMenuItemsForDropdown(item.items)}
                             chevron={item.chevron}
                             animated={item.animated}
@@ -236,14 +235,9 @@ function nextContainerLayout(prev, layout) {
     return { x, width, measured: true }
 }
 
-/** Labels go under the icons once the bar (measured) is narrower than every label beside its icon needs. */
-function isStacked(barWidth, inlineWidth) {
+/** The labels go once the bar (measured) is narrower than every label beside its icon needs: icons alone, with tooltips. */
+function isCompact(barWidth, inlineWidth) {
     return barWidth > 0 && inlineWidth > barWidth
-}
-
-/** More is the menu icon alone beside labelled tabs; stacked, it gets its label under the icon with theirs. */
-function showsLabel(item, stacked) {
-    return !!item.showTitle || (stacked && item.name === 'more')
 }
 
 /**
@@ -262,7 +256,7 @@ function MenuTopProbe({ items, t, onWidth }) {
                 }}
             >
                 {items.map((item) => (
-                    <Row key={item.name || item.link || item.title} className={`items-center justify-center h-12 min-w-16 shrink-0 ${item.icon && item.showTitle ? 'ps-3 pe-2' : 'px-2'}`}>
+                    <Row key={item.name || item.link || item.title} className={`items-center justify-center h-11 min-w-11 shrink-0 ${item.icon && item.showTitle ? 'ps-3 pe-2' : 'px-2'}`}>
                         {item.icon ? <View className="h-6 w-6 shrink-0" /> : null}
                         {item.showTitle ? (
                             <Text className="whitespace-nowrap tracking-tight font-medium text-sm px-2 leading-5">{t(item.title)}</Text>

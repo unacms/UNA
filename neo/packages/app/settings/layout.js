@@ -121,8 +121,9 @@ export const settingsLayout = {
             content_left: 'min-w-0 shrink 2xl:w-full 2xl:max-w-1/4 ps-4 gap-3',
             content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl ',
             content_right: ' items-end flex-none 2xl:w-full 2xl:max-w-1/4 pe-4 gap-3',
-            active_item_indicator: 'absolute -bottom-2 left-0 h-0.5 rounded-full flex-none bg-ring',
-            active_item_indicator_bg: 'absolute bottom-0 left-0 h-12 w-full overflow-hidden rounded-lg flex-none',
+            // 10px under the 44px tabs: on the bottom edge of the 64px header.
+            active_item_indicator: 'absolute -bottom-2.5 left-0 h-0.5 rounded-full flex-none bg-ring',
+            active_item_indicator_bg: 'absolute bottom-0 left-0 h-11 w-full overflow-hidden rounded-full flex-none',
             /**
              * Band behind the header at rest on phones and tablets (below lg): part of the
              * content, so it scrolls away with it while the header's glass buttons stay.
