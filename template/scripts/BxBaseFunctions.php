@@ -1023,6 +1023,92 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         ), $bDynamicMode);
     }
 
+    /**
+     * Letter avatar for an email, for a profile without a picture: the first letter of the
+     * display name on the profile's colour (as on the site), drawn with inline styles only,
+     * since email clients block SVG, so the no-picture image shows as broken there.
+     * @param $oProfile profile object (BxDolProfile, BxDolProfileUndefined or BxDolProfileAnonymous)
+     * @return string HTML, empty when no profile is given
+     */
+    public function getEmailLetterAvatar($oProfile)
+    {
+        if(!is_object($oProfile))
+            return '';
+
+        $sTitle = trim(html_entity_decode((string)$oProfile->getDisplayName(), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+
+        $sLetter = mb_strtoupper(get_mb_substr($sTitle, 0, 1), 'UTF-8');
+        if($sLetter === '')
+            $sLetter = '?';
+
+        return $this->_oTemplate->parseHtmlByName('et_letter_avatar.html', [
+            'color' => $this->_getEmailAvatarColor((int)$oProfile->id()),
+            'letter' => htmlspecialchars($sLetter, ENT_QUOTES, 'UTF-8'),
+        ]);
+    }
+
+    /**
+     * Site logo for the email header ({site_logo} marker): the logo uploaded in Designer when
+     * it is a PNG, JPEG or GIF, otherwise the site title as text, since email clients block SVG.
+     * @return string HTML
+     */
+    public function getEmailLogo()
+    {
+        $sTitle = trim(html_entity_decode((string)getParam('site_title'), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+
+        $sUrl = '';
+        $oDesigns = BxDolDesigns::getInstance();
+        if(($iLogo = (int)$oDesigns->getSiteLogo()) && ($aLogo = $oDesigns->getSiteLogoInfo($iLogo)) && in_array($aLogo['mime_type'] ?? '', ['image/png', 'image/jpeg', 'image/gif']))
+            $sUrl = (string)$oDesigns->getSiteLogoUrl($iLogo);
+
+        $sAlt = trim(html_entity_decode((string)$oDesigns->getSiteLogoAlt(), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        if($sAlt === '')
+            $sAlt = $sTitle;
+
+        $bUrl = $sUrl !== '';
+        return $this->_oTemplate->parseHtmlByName('et_site_logo.html', [
+            'bx_if:show_image' => [
+                'condition' => $bUrl,
+                'content' => [
+                    'url' => bx_html_attribute($sUrl),
+                    'alt' => bx_html_attribute($sAlt),
+                ]
+            ],
+            'bx_if:show_title' => [
+                'condition' => !$bUrl,
+                'content' => [
+                    'title' => htmlspecialchars($sTitle, ENT_QUOTES, 'UTF-8'),
+                ]
+            ],
+        ]);
+    }
+
+    /**
+     * The profile's letter avatar colour (BxDolTemplate::getColorCode, as on the site) as hex,
+     * since some email clients ignore rgba(). Darkened just enough to keep the white letter
+     * at 3:1, the WCAG AA level for large bold text.
+     */
+    protected function _getEmailAvatarColor($iProfileId)
+    {
+        $aRgb = array_map('intval', array_slice(BxDolTemplate::getColorCode($iProfileId), 0, 3));
+
+        $fnLuminance = function($aRgb) {
+            $aLinear = array_map(function($i) {
+                $f = $i / 255;
+                return $f <= 0.04045 ? $f / 12.92 : pow(($f + 0.055) / 1.055, 2.4);
+            }, $aRgb);
+
+            return 0.2126 * $aLinear[0] + 0.7152 * $aLinear[1] + 0.0722 * $aLinear[2];
+        };
+
+        for($i = 0; $i < 20 && 1.05 / ($fnLuminance($aRgb) + 0.05) < 3; $i++)
+            $aRgb = array_map(function($c) {
+                return (int)floor($c * 0.95);
+            }, $aRgb);
+
+        return sprintf('#%02x%02x%02x', $aRgb[0], $aRgb[1], $aRgb[2]);
+    }
+
     protected function getInjection($sPrefix)
     {
         $sContent = '';

@@ -387,7 +387,23 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
     {
         $aContent = &$aEvent['content'];
 
-        $sIconUrl = ($_sIconUrl = $aContent['author_icon'] ?? false) || ($_sIconUrl = $aContent['owner_icon'] ?? false) ? $_sIconUrl : $this->getIconUrl('std-icon.svg');
+        $iIconProfile = 0;
+        if(($_sIconUrl = $aContent['author_icon'] ?? false))
+            $iIconProfile = (int)($aEvent['author_id'] ?? 0);
+        else if(($_sIconUrl = $aContent['owner_icon'] ?? false))
+            $iIconProfile = (int)($aEvent['owner_id'] ?? 0);
+        $sIconUrl = $_sIconUrl ? $_sIconUrl : $this->getIconUrl('std-icon.svg');
+
+        /**
+         * Email clients block SVG, so the no-picture image of a profile without
+         * a picture shows as broken: draw a letter avatar for it instead.
+         * getPost has already set up anonymous authors for this email,
+         * BxDolProfileAnonymous keeps one instance per profile.
+         */
+        $sIconLetter = '';
+        if($_sIconUrl && ($oIconProfile = $this->getModule()->getObjectUser($iIconProfile)) && !$oIconProfile->hasImage())
+            $sIconLetter = BxTemplFunctions::getInstance()->getEmailLetterAvatar($oIconProfile);
+
         $sContentUrl = bx_absolute_url($this->_getContentLink($aEvent, getParam('sys_api_url_root_email') != ''));
         $sContent = is_array($aEvent['content_parsed']) && isset($aEvent['content_parsed']['email']) ? $aEvent['content_parsed']['email'] : $aEvent['content_parsed'];
         $sSummary = (($sK = 'subentry_summary') && ($sV = $aContent[$sK] ?? false)) || (($sK = 'entry_summary') && ($sV = $aContent[$sK] ?? false)) ? $sV : '';
@@ -417,7 +433,18 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
         else {
             $sSubject = $sContent;
             $sBody = $this->parseHtmlByName('et_new_event.html', [
-                'icon_url' => $sIconUrl,
+                'bx_if:show_icon_image' => [
+                    'condition' => !$sIconLetter,
+                    'content' => [
+                        'icon_url' => $sIconUrl
+                    ]
+                ],
+                'bx_if:show_icon_letter' => [
+                    'condition' => (bool)$sIconLetter,
+                    'content' => [
+                        'icon_letter' => $sIconLetter
+                    ]
+                ],
                 'content_url' => $sContentUrl,
                 'content' => $sContent,
                 'date' => $sDate,
