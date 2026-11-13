@@ -145,7 +145,17 @@ function ComposeSheet({ ref, open, onClose, uploader: given, sayOutside, onDropF
     }
 
     const attachments = useAttachments({ uploader, api, announce: say });
-    const { add, reset, restore } = attachments;
+    const { add, reset, restore, stage, wait, staging } = attachments;
+    // Post was pressed while files were on their way into the tray (being made ready, or added
+    // and not drawn yet): it waits for them, and says so until the tray shows them
+    const [waitingWith, setWaitingWith] = useState<{ items: typeof attachments.items; settled: number } | null>(null);
+    const waiting = waitingWith?.items === attachments.items && waitingWith.settled === attachments.settled;
+    // the text box makes pasted and dropped files ready with this one: they count as on their
+    // way into the tray from then too (`staging`), as those of the sheet's own paste and drop do
+    const boxUploader = useMemo<Uploader>(
+        () => ({ ...uploader, fromFiles: (...args: Parameters<Uploader['fromFiles']>) => wait(uploader.fromFiles(...args)), fromPaths: (...args: Parameters<Uploader['fromPaths']>) => wait(uploader.fromPaths(...args)) }),
+        [uploader, wait],
+    );
     // a poll instead of a post: the text is its question, with its answers (POST /polls), where
     // the site has Polls and the chosen context takes them
     const sitePolls = useSiteHasTag('polls') === true;
@@ -254,8 +264,8 @@ function ComposeSheet({ ref, open, onClose, uploader: given, sayOutside, onDropF
                 else if (p.type === 'leave') setDragging(false);
                 else if (p.type === 'drop') {
                     setDragging(false);
-                    void uploader.fromPaths(p.paths).then((staging) => {
-                        if (staging.files.length || staging.refused.length) onDropFiles(staging);
+                    void wait(uploader.fromPaths(p.paths)).then((made) => {
+                        if (made.files.length || made.refused.length) onDropFiles(made);
                     });
                 }
             })
@@ -270,11 +280,11 @@ function ComposeSheet({ ref, open, onClose, uploader: given, sayOutside, onDropF
             live = false;
             stop?.();
         };
-    }, [uploader, onDropFiles]);
+    }, [uploader, onDropFiles, wait]);
 
     const addFiles = (files: File[]) => {
         if (!files.length) return;
-        void uploader.fromFiles(files).then(add);
+        stage(uploader.fromFiles(files));
     };
 
     const onPaste = (e: ClipboardEvent) => {
@@ -305,7 +315,7 @@ function ComposeSheet({ ref, open, onClose, uploader: given, sayOutside, onDropF
           };
 
     const pick = () => {
-        uploader.pick().then(add, (e: unknown) => setError(errorMessage(e)));
+        wait(uploader.pick()).then(add, (e: unknown) => setError(errorMessage(e)));
     };
 
     const chosenContext = contextId ? (contexts.find((c) => c.id === contextId) as (Schema<'Profile'> & { content_kinds?: string[] }) | undefined) : undefined;
@@ -361,6 +371,12 @@ function ComposeSheet({ ref, open, onClose, uploader: given, sayOutside, onDropF
 
     const send = async () => {
         if (!canPost || sending.current) return;
+        // files on their way into the tray: the post would go without them
+        if (!pollMode && staging()) {
+            setWaitingWith({ items: attachments.items, settled: attachments.settled });
+            say(t('Wait until the uploads are done'));
+            return;
+        }
         sending.current = true;
         setBusy(true);
         setError(null);
@@ -443,7 +459,7 @@ function ComposeSheet({ ref, open, onClose, uploader: given, sayOutside, onDropF
                     describedBy={links.length && !pollMode ? 'compose-hint compose-links' : 'compose-hint'}
                     // a poll's question is plain text
                     mentions={!pollMode}
-                    images={pollMode ? { uploader, refusal: t('A poll takes no photos or videos here.') } : { uploader, attach: add }}
+                    images={pollMode ? { uploader, refusal: t('A poll takes no photos or videos here.') } : { uploader: boxUploader, attach: add }}
                     announce={say}
                     onChange={setText}
                     onKeyDown={(e) => {
@@ -539,9 +555,9 @@ function ComposeSheet({ ref, open, onClose, uploader: given, sayOutside, onDropF
                     <span id="compose-hint" className="muted small compose-hint">
                         {t('{{keys}} to post; paste or drop photos to attach them', { keys: isMac ? '⌘↩' : 'Ctrl+Enter' })}
                     </span>
-                    {blocker ? (
+                    {blocker || waiting ? (
                         <span id={blockerId} className="muted small">
-                            {blocker}
+                            {blocker ?? t('Wait until the uploads are done')}
                         </span>
                     ) : null}
                     <button
@@ -549,7 +565,7 @@ function ComposeSheet({ ref, open, onClose, uploader: given, sayOutside, onDropF
                         className="btn btn-primary"
                         disabled={!canPost}
                         aria-busy={busy}
-                        aria-describedby={blocker ? blockerId : undefined}
+                        aria-describedby={blocker || waiting ? blockerId : undefined}
                         aria-keyshortcuts="Meta+Enter Control+Enter"
                     >
                         {pollMode ? t('Post poll') : t('Post', { context: 'verb' })}

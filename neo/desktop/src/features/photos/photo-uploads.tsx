@@ -7,7 +7,7 @@ import { saysNothingOfFirstSending } from '../../lib/idempotency';
 import { t, tn } from '../../lib/i18n';
 import { inApp } from '../../lib/native';
 import { isOverDropTarget } from '../../components/rich-editor/images';
-import { claimWindowDrops, fileUploader, makeUploader, photoUploader, type Staging, type Uploader } from '../../lib/uploads';
+import { claimWindowDrops, fileUploader, makeUploader, photoUploader, type Uploader } from '../../lib/uploads';
 import { AttachmentTray } from '../compose/attachment-tray';
 import { mediaIds, postBlocker, useAttachments } from '../compose/attachments';
 import { MAX_FILES } from '../files/files';
@@ -41,13 +41,8 @@ export function usePhotoUploads({ purpose, uploader: given, announce }: { purpos
     const uploads = useAttachments({ uploader, api, announce, forMessage: purpose !== 'file', max, limitText: purpose === 'post_cover' ? t('A post has one cover: remove this one to choose another') : purpose === 'file' ? tn(max, 'Up to {{count}} file at a time', 'Up to {{count}} files at a time') : tn(max, 'Up to {{count}} photo at a time', 'Up to {{count}} photos at a time'), refusedText: purpose === 'file' ? t('Can’t be added') : undefined });
 
     const latest = useRef(uploads.items);
-    // files being made ready (picked or dropped, not in the tray yet), and whether some were added
-    // that the form is not drawn with yet: its `blocker` does not know of either
-    const making = useRef(0);
-    const undrawn = useRef(false);
     useEffect(() => {
         latest.current = uploads.items;
-        undrawn.current = false;
     }, [uploads.items]);
     // the uploads a request in flight names: the form going does not delete them under it (the
     // request's answer says which it took), and whether the form is gone
@@ -67,7 +62,7 @@ export function usePhotoUploads({ purpose, uploader: given, announce }: { purpos
         };
     }, [drop]);
 
-    const { add, reset } = uploads;
+    const { reset } = uploads;
     const claim = useCallback(
         <T extends { response: { status: number } }>(request: Promise<T>, took: (answer: T) => boolean | readonly string[]): Promise<T> => {
             const named = mediaIds(latest.current);
@@ -105,36 +100,9 @@ export function usePhotoUploads({ purpose, uploader: given, announce }: { purpos
         [drop, reset],
     );
 
-    const stage = useCallback(
-        (made: Promise<Staging>, held: () => boolean) => {
-            making.current++;
-            void made
-                .then((staging) => {
-                    // the form began to be sent while they were made ready: its request left without
-                    // them, so no upload is started and nothing keeps them
-                    if (held()) for (const file of staging.files) uploader.release(file);
-                    else if (add(staging)) undrawn.current = true;
-                })
-                .finally(() => {
-                    making.current--;
-                });
-        },
-        [add, uploader],
-    );
-
     return {
         ...uploads,
         uploader,
-        /**
-         * Takes files that are being made ready (a pick, a drop) once they are: into the tray, or
-         * let go when the form is `held` by then.
-         */
-        stage,
-        /**
-         * Whether files are on their way into the tray: being made ready, or added and not drawn
-         * yet. A form sent now would go without them (`blocker` says nothing of them yet).
-         */
-        staging: () => making.current > 0 || undrawn.current,
         /** The uploads the request takes, in their order. */
         ids: mediaIds(uploads.items),
         /** Why the request can't go yet (uploads on their way or failed), or null. */
