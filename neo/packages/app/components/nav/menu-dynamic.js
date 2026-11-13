@@ -29,6 +29,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
     
     const itemRefs = useRef([]);
     const itemRefsMore = useRef();
+    const itemsRowRef = useRef(null);
     // `allowZeroPersistant` wins on every viewport so a "more" menu paired with a
     // sibling that renders the persistent buttons can collapse fully (0 inline).
     // Otherwise desktop shows the full persistent count inline and mobile caps at 1.
@@ -49,11 +50,20 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
             const menuWidth = width;
             let visibleWidth = offsetWidth + (itemRefsMore?.current ? itemRefsMore?.current?.offsetWidth : 0);
             let visibleCount = 0;
+            // The row's gap takes room between the items too: without it a row that only just
+            // fits by its items' widths runs past its container by the gaps.
+            const row = itemsRowRef.current;
+            const gap = isWeb && row && typeof getComputedStyle === 'function'
+                ? parseFloat(getComputedStyle(row).columnGap) || 0
+                : 0;
+            let shown = 0;
             for (let i = 0; i < itemRefs.current.length; i++) {
                 const itemWidth = itemRefs.current[i] ? itemRefs.current[i].offsetWidth : 80;
                 if (!itemRefs?.current[i]?.className?.includes('hidden')) {
-                    if (visibleWidth + itemWidth > menuWidth) break;
-                    visibleWidth += itemWidth;
+                    const need = itemWidth + (shown > 0 ? gap : 0);
+                    if (visibleWidth + need > menuWidth) break;
+                    visibleWidth += need;
+                    shown++;
                     visibleCount++;
                 }
                 else {
@@ -147,7 +157,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
                 horizontal={true}
                 onLayout={handleLayout}
             >
-                <View className={menuClasses} >
+                <View ref={itemsRowRef} className={menuClasses} >
                     {
 
                         items.map((aItem, iKey) => {

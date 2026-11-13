@@ -1012,7 +1012,8 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
         <EdgeBlurView
             edge="bottom"
             config={fadeSurface ? edgeBlurConfig('footer') : null}
-            className={flush ? 'py-2 sm:py-4' : 'p-2 sm:p-4'}
+            // 16px from the sides on every size, as the content above it.
+            className={flush ? 'py-2 sm:py-4' : 'px-4 py-2 sm:py-4'}
             washClassName={FADE_SURFACE_CLASS[fadeSurface] || ''}
             style={fadeSurface ? { paddingTop: FADE_RUN_UP } : undefined}
         >

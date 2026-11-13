@@ -31,17 +31,25 @@ const JS_TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 52 : 56;
 // JS tab bar bounds the screen; the composer just needs breathing room above it.
 const COMPOSER_FOOTER_GAP = 4;
 
+// A cell of the page comes as a list or as an object keyed by block.
+const cellItems = (cell) => (Array.isArray(cell) ? cell : Object.values(cell || {}));
+
 const mapLayoutBlocks = (items) =>
-    (Array.isArray(items) ? items : []).map(({ source }) => ({
+    cellItems(items).map(({ source }) => ({
         name: source,
         block: { name: source },
     }));
 
-const getCommentsData = (data, blocks) => {
-    const bottomCell = data?.elements?.cell_bottom;
+const hasContentType = (element, type) =>
+    Array.isArray(element?.content) && element.content.some((c) => c?.type === type);
 
-    if (data?.layout_parsed && Array.isArray(bottomCell) && bottomCell.length > 0) {
-        return bottomCell[0];
+// The page's own comments are the comments block of its bottom cell. Other blocks can share that
+// cell (a glossary term's actions come first), so look for the comments, not for the first block.
+const getCommentsData = (data, blocks) => {
+    const bottomCell = cellItems(data?.elements?.cell_bottom);
+
+    if (data?.layout_parsed && bottomCell.length > 0) {
+        return bottomCell.find((block) => hasContentType(block, 'comments')) || bottomCell[0];
     }
 
     return DataByName(data, blocks?.comments);
@@ -59,8 +67,7 @@ function blockSource(item) {
 }
 
 function blockHasContentType(item, data, type) {
-    const el = findElementBySource(data, blockSource(item));
-    return Array.isArray(el?.content) && el.content.some((c) => c?.type === type);
+    return hasContentType(findElementBySource(data, blockSource(item)), type);
 }
 
 function isOwnedCommentsThreadItem(item, data, commentsData, commentsName) {
@@ -79,8 +86,9 @@ const defineCells = (blocks, data) => {
         const centerBlocks = mapLayoutBlocks(elements.cell_center);
         const leftBarBlocks = mapLayoutBlocks(elements.cell_left);
         const topBlocks = mapLayoutBlocks(elements.cell_top);
+        const bottomBlocks = mapLayoutBlocks(elements.cell_bottom);
 
-        return { sideBarBlocks, topBlocks, centerBlocks, leftBarBlocks };
+        return { sideBarBlocks, topBlocks, centerBlocks, leftBarBlocks, bottomBlocks };
     }
 
     // No layout config for this page (e.g. a plain UNA page such as
@@ -213,17 +221,22 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
     // Memoized: a new block descriptor makes BlockByName re-render its block, and a block that is
     // still hydrating is then dropped and drawn again (a layout shift right after load).
     const cellBlocks = useMemo(() => defineCells(blocks, data), [blocks, data]);
-    const { leftBarBlocks, sideBarBlocks, topBlocks, centerBlocks: cellCenterBlocks } = cellBlocks;
+    const { leftBarBlocks, sideBarBlocks, topBlocks, centerBlocks: cellCenterBlocks, bottomBlocks = [] } = cellBlocks;
+
+    // A page with an empty centre cell keeps its content in the top and bottom cells (a glossary
+    // term: the text on top, the actions and comments below). Draw those, or nothing would show.
+    const isOuterOnly = cellCenterBlocks.length === 0;
+    const contentBlocks = isOuterOnly ? [...topBlocks, ...bottomBlocks] : cellCenterBlocks;
 
     // UNA puts some entities' action bars (Discussions) in the top cell, where the
     // web site draws them above the content. Show them after the text, where Posts
     // keep theirs. Other top blocks stay off this layout.
-    const topActionBlocks = topBlocks.filter((item) => blockHasContentType(item, data, 'entity_actions'));
-    const textIndex = cellCenterBlocks.findIndex((item) => blockHasContentType(item, data, 'entity_text'));
+    const topActionBlocks = isOuterOnly ? [] : topBlocks.filter((item) => blockHasContentType(item, data, 'entity_actions'));
+    const textIndex = contentBlocks.findIndex((item) => blockHasContentType(item, data, 'entity_text'));
     const actionsAt = textIndex < 0 ? 0 : textIndex + 1;
     const centerBlocks = topActionBlocks.length
-        ? [...cellCenterBlocks.slice(0, actionsAt), ...topActionBlocks, ...cellCenterBlocks.slice(actionsAt)]
-        : cellCenterBlocks;
+        ? [...contentBlocks.slice(0, actionsAt), ...topActionBlocks, ...contentBlocks.slice(actionsAt)]
+        : contentBlocks;
 
     // Desktop page keeps INFO in the right column. When that column folds
     // (mobile, or the post modal) those blocks used to append after the body.
@@ -249,8 +262,17 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
         )
         : null;
 
+    // Folded side blocks read in the page's order, not after its comments: the author opens the
+    // column (where Posts keep theirs), the rest goes before a comments block the centre holds.
+    const hasAuthorBlock = centerBlocks.some((item) => blockHasContentType(item, data, 'entity_author'));
+    const isFoldedAuthor = (item) => !hasAuthorBlock && blockHasContentType(item, data, 'entity_author');
+    const foldedAuthorBlocks = otherFoldedBlocks.filter(isFoldedAuthor);
+    const foldedRestBlocks = otherFoldedBlocks.filter((item) => !isFoldedAuthor(item));
+    const commentsAt = centerBlocks.findIndex((item) => blockHasContentType(item, data, 'comments'));
+    const beforeComments = commentsAt < 0 ? centerBlocks : centerBlocks.slice(0, commentsAt);
+    const fromComments = commentsAt < 0 ? [] : centerBlocks.slice(commentsAt);
     const mainBlocks = foldSidebars
-        ? [...centerBlocks, ...(hasTextBlock ? [] : infoBlocks), ...otherFoldedBlocks]
+        ? [...foldedAuthorBlocks, ...beforeComments, ...(hasTextBlock ? [] : infoBlocks), ...foldedRestBlocks, ...fromComments]
         : centerBlocks;
     const ownsPageComments = !!(commentsBrowse || commentsForm);
     const commentsBlockName = blocks?.comments?.name;

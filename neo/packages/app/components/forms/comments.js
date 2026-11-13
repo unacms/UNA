@@ -103,7 +103,13 @@ export default function FormComments(props) {
     // Comment storage decides: images-only modules keep the photo icon, others get a generic attachment.
     const attachIcon = getStoragePickerKind(imageInput.ext_allow) === 'any' ? 'Paperclip' : 'Image'
 
-    const hasContent = !!hasText || !!imagesValue || props.data.inputs['cmt_text'].html == 2 || props.data.inputs['cmt_text'].html == 1
+    // UNA's editor with a toolbar (Discussions): the composer is one box with the text on top and
+    // one bar under it, the toolbar from the left and attach and send at the right end. The editor
+    // draws no box of its own (`bg: 'transparent'`), and the avatar, which had a row to itself
+    // there, is left out. With rating stars the actions need their own row, as before.
+    const isRich = props.data.inputs['cmt_text'].html == 2 || props.data.inputs['cmt_text'].html == 1
+    const isRichBar = isRich && !hasMood
+    const hasContent = !!hasText || !!imagesValue || isRich
     // The mood stars sit on the composer toolbar so the empty pill stays a single
     // line — same row as the placeholder and attach button — then drop to the
     // bottom with attach/send once the composer expands.
@@ -149,7 +155,9 @@ export default function FormComments(props) {
                     <View className="relative items-stretch">
                         <Row className={moodInline ? 'items-center' : undefined}>
                             <View
-                                className={`p-3 min-h-12 flex-auto min-w-0 items-center ${shouldGrowFromBottom ? 'justify-center' : 'justify-start'} ${hasContent ? 'mb-10 w-full' : 'ms-10'}`}
+                                className={isRichBar
+                                    ? 'px-4 pt-3 pb-2 min-h-12 flex-auto min-w-0 w-full'
+                                    : `p-3 min-h-12 flex-auto min-w-0 items-center ${shouldGrowFromBottom ? 'justify-center' : 'justify-start'} ${hasContent ? 'mb-10 w-full' : 'ms-10'}`}
                                 style={{
                                     ...(isWeb && { transition: 'height 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), padding-bottom 0.1s cubic-bezier(0.25, 0.1, 0.25, 1)' }),
                                 }}
@@ -164,6 +172,8 @@ export default function FormComments(props) {
                                         classes: 'text-card-foreground tiptap-comments',
                                         autofocus: isAutoFocus,
                                         bg: 'transparent',
+                                        // Room at the end of the toolbar for attach and send (and the camera on native).
+                                        toolbarClassName: isRichBar ? (isWeb ? 'pe-20' : 'pe-28') : undefined,
                                         placeholder: t('Leave a comment...'),
                                         noPadding: true,
                                         initialHeight: minHeightEditor,
@@ -175,7 +185,7 @@ export default function FormComments(props) {
                                     }
                                 )}
                             </View>
-                            <View className={moodInline ? 'pe-1.5' : 'absolute bottom-1.5 right-1.5'}>
+                            <View className={moodInline ? 'pe-1.5' : (isRichBar ? 'absolute bottom-1 right-1.5' : 'absolute bottom-1.5 right-1.5')}>
                                 <Row className="items-center justify-center gap-1.5">
                                     {hasMood ? (
                                         <StarsAction
@@ -216,7 +226,7 @@ export default function FormComments(props) {
                                 </Row>
                             </View>
                         </Row>
-                        {currentUser ? (
+                        {currentUser && !isRichBar ? (
                             <View className="absolute flex bottom-1.5 left-1.5 items-center justify-center">
                                 <Profile
                                     {...currentUser}

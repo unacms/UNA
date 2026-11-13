@@ -39,6 +39,7 @@ export default function RftText(props) {
         onFocus,
         html,
         bg,
+        toolbarClassName,
         enableSubmitOnEnter = false,
         placeholder,
         form_name,
@@ -927,9 +928,13 @@ export default function RftText(props) {
     return (
         <View
             onLayout={handleLayout}
-            className={`relative flex-auto ${isToolBar
-                ? ' px-4 py-2 bg-card shadow-input-outline dark:shadow-input-outline-deep rounded-xl focus:bg-card focus:ring-border flex-auto overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-100 '
-                : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.size.regular))
+            // `bg="transparent"`: the host draws the field's surface (the comment composer's box),
+            // so the editor adds none of its own, with a toolbar too.
+            className={`relative flex-auto ${bg == 'transparent'
+                ? ''
+                : (isToolBar
+                    ? ' px-4 py-2 bg-card shadow-input-outline dark:shadow-input-outline-deep rounded-xl focus:bg-card focus:ring-border flex-auto overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-100 '
+                    : cn(inputSettings.base, inputSettings.size.regular))
                 }`}
         >
             <MentionSuggestionsDropdown
@@ -982,7 +987,7 @@ export default function RftText(props) {
             </Pressable>
 
             {isToolBar ? (
-                <EditorToolbar items={toolbarItems} linkBar={linkBar} />
+                <EditorToolbar items={toolbarItems} linkBar={linkBar} className={toolbarClassName} />
             ) : null}
             <TextInput
                 key={inputKey}
