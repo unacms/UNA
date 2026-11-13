@@ -6,7 +6,7 @@ ul.cmts {
 ul.cmts-margin,
 div.cmt-reply-margin {
     margin-top: 1.0rem;
-    padding-left: 3.5rem;
+    padding-left: 3.75rem; /* the avatar (2.75rem) and the gap beside it */
 }
 
 /*--- Minified Post Form ---*/

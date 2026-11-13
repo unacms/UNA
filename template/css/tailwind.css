@@ -1962,8 +1962,9 @@
     .bx-artificer .bx-profile-stats .bx-ps-user .bx-def-thumb-size {
         @apply h-8 w-8;
     }
+    /* The default avatar is as high as a regular button (44px), as in NEO. */
     .bx-artificer .bx-def-thumb-size {
-        @apply h-10 w-10;
+        @apply h-11 w-11;
     }
     .bx-artificer .bx-def-ava-size {
         @apply h-24 w-24;
