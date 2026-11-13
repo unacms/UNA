@@ -99,9 +99,13 @@ export function photoFromLists(queryClient: QueryClient, id: string): Photo | un
     return undefined;
 }
 
-/** Whose photos a list's query key holds (photoListKey), or null for another key. */
-function ofListKey(key: readonly unknown[]): MediaOf | null {
+/** What a viewer's photos are: a list's (whose it is), or a search's results. */
+export type ViewerOf = MediaOf | { search: string };
+
+/** Whose photos a list's query key holds (photoListKey; a search's results), or null for another key. */
+function ofListKey(key: readonly unknown[]): ViewerOf | null {
     const [, , kind, id] = key;
+    if (kind === 'search' && typeof id === 'string') return { search: id };
     if (kind === 'all') return { all: true };
     if (kind === 'context' && typeof id === 'string') return { context: id };
     if (kind === 'author' && typeof id === 'string') return { author: id };
@@ -110,22 +114,28 @@ function ofListKey(key: readonly unknown[]): MediaOf | null {
 
 /**
  * The photos a list holds around one (the list it was opened from, else none) and whose list
- * that is: what the viewer goes through, and what it is called.
+ * that is: what the viewer goes through, and what it is called. A search's results (kept among
+ * the lists, and for days offline) only when no list holds the photo, so a photo opened from a
+ * grid never steps through an old search.
  */
-export function photoSiblings(queryClient: QueryClient, id: string): { photos: Photo[]; of: MediaOf | null } {
+export function photoSiblings(queryClient: QueryClient, id: string): { photos: Photo[]; of: ViewerOf | null } {
+    let found: { photos: Photo[]; of: ViewerOf | null } | null = null;
     for (const [key, data] of queryClient.getQueriesData<PhotoPages>(['photos', 'list'])) {
         const all = (data?.pages ?? []).flatMap((p) => p.items);
-        if (all.some((p) => p.id === id)) return { photos: all, of: ofListKey(key) };
+        if (!all.some((p) => p.id === id)) continue;
+        if (key[2] !== 'search') return { photos: all, of: ofListKey(key) };
+        found ??= { photos: all, of: ofListKey(key) };
     }
-    return { photos: [], of: null };
+    return found ?? { photos: [], of: null };
 }
 
 /**
  * What the viewer's photos are called after their place ("Photo 2 of 5, …"): the list they
- * came from (the network's, a context's, a profile's), or the one photo alone.
+ * came from (the network's, a context's, a profile's, a search's), or the one photo alone.
  */
-export function viewerLabel(of: MediaOf | null, photo: Pick<Photo, 'title' | 'author' | 'context_id'>, contextName?: string | null): string {
+export function viewerLabel(of: ViewerOf | null, photo: Pick<Photo, 'title' | 'author' | 'context_id'>, contextName?: string | null): string {
     if (!of) return photo.title.trim() || t('the photo');
+    if ('search' in of) return t('photos matching “{{words}}”', { words: of.search });
     if ('all' in of) return t('the network’s photos, newest first');
     if ('author' in of) return photo.author && photo.author.id === of.author ? t('{{name}}’s photos', { name: photo.author.display_name }) : t('their photos');
     return contextName && photo.context_id === of.context ? t('photos in {{name}}', { name: contextName }) : t('the photos here');
@@ -183,9 +193,14 @@ export async function afterAlbumAdded(queryClient: QueryClient, album: Album): P
     await queryClient.invalidateQueries({ queryKey: ['albums', 'list'] });
 }
 
-/** After photos were added to an album: its items and its count (the card's preview too) load again. */
-export async function afterAddedToAlbum(queryClient: QueryClient, albumId: string): Promise<void> {
-    await Promise.all([queryClient.invalidateQueries({ queryKey: albumItemsKey(albumId) }), queryClient.invalidateQueries({ queryKey: albumKey(albumId) }), queryClient.invalidateQueries({ queryKey: ['albums', 'list'] })]);
+/**
+ * After photos were added to an album: its items and its count (the card's preview too) load
+ * again. Settles once its items were read again, however long the album and the lists take.
+ */
+export function afterAddedToAlbum(queryClient: QueryClient, albumId: string): Promise<void> {
+    void queryClient.invalidateQueries({ queryKey: albumKey(albumId) });
+    void queryClient.invalidateQueries({ queryKey: ['albums', 'list'] });
+    return queryClient.invalidateQueries({ queryKey: albumItemsKey(albumId) });
 }
 
 /**

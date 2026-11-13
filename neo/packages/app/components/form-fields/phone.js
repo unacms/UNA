@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Row, View } from 'app/design/view';
 import { NeoButton, Input, Modal } from 'app/design/controls';
 import RbList from 'app/ui/molecules/form-controls/radio-list';
-import Field, { AdaptiveLabel, isAdaptiveLabelInside } from './_field';
+import Field, { AdaptiveLabel, adaptiveCaption, isAdaptiveLabelInside } from './_field';
 import { useFormField } from 'app/lib/form/use-form-field';
 
 const DEFAULT_COUNTRY = 'us';
@@ -123,7 +123,7 @@ export default function FormFieldPhone(props) {
                 {/* Field hides the caption for `notitle` (grouped fields in an input set); so does this label. */}
                 {isAdaptiveLabel && props.caption && props.format !== 'notitle' ? (
                     <AdaptiveLabel
-                        caption={props.caption}
+                        caption={adaptiveCaption(props)}
                         value={nationalNumber}
                         focused={focused}
                         inside={isAdaptiveLabelInside(props.size)}

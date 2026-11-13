@@ -17,11 +17,14 @@ type PagedQuery = {
  * The API reads a bounded number of rows per page and leaves out what the viewer may not see,
  * so a page can be empty and still have a next one. While nothing has shown yet, fetch on (a
  * few pages at most) instead of showing an empty list next to a "Load more" button.
+ *
+ * `active` is false for a list that is not on screen (a tab that is not the shown one): asking
+ * for a next page is not held back by the query's `enabled`, so the list waits here until shown.
  */
-export function useFillEmptyPages(query: PagedQuery): void {
+export function useFillEmptyPages(query: PagedQuery, active = true): void {
     const pages = query.data?.pages ?? [];
     const shown = pages.some((p) => p.items.length > 0);
-    const more = query.isSuccess && !shown && !!query.hasNextPage && !query.isFetchingNextPage && pages.length < MAX_EMPTY_PAGES;
+    const more = active && query.isSuccess && !shown && !!query.hasNextPage && !query.isFetchingNextPage && pages.length < MAX_EMPTY_PAGES;
     const { fetchNextPage } = query;
 
     useEffect(() => {

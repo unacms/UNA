@@ -1,5 +1,5 @@
 import { View, Pressable } from 'app/design/view'
-import { appSetting, menuItemsByName } from 'app/lib/util';
+import { appSetting, menuItemsByName, withMenuButtonParams } from 'app/lib/util';
 import { components } from 'app/components/registry';
 import { useCurrentUser } from 'app/context/user'
 import { useMemo, memo, useContext } from "react";
@@ -87,11 +87,22 @@ export default function ElementMenu(oProps) {
     const aExcept = oProps?.except || [''];
     const aExceptTitle = oProps?.except_title || ['BxTemplView', 'BxTemplFavorite', 'BxTemplFeature', 'BxTemplReport', 'BxTimelineModule'];
 
-    let sClassName = oProps?.params?.className || 'bx-menu ';
+    // The call site's params, with UNA's button style and size for this menu (`button_style` / `button_size`
+    // in the menu's API) where the call site names none.
+    // The iconset (the app's, then this menu's own) rides along for the items.
+    const { params: oCallParams, object: sObject, button_style: sUnaButtonStyle, button_size: sUnaButtonSize } = oProps;
+    const oParams = useMemo(
+        () => ({
+            ...withMenuButtonParams(oCallParams, { button_style: sUnaButtonStyle, button_size: sUnaButtonSize }),
+            iconset: { ...appSetting('menu_items', 'iconset'), ...appSetting('menu_items', sObject, 'iconset') },
+        }),
+        [oCallParams, sObject, sUnaButtonStyle, sUnaButtonSize]
+    );
+
+    let sClassName = oParams.className || 'bx-menu ';
 
     //--- show vertical
-    const bShowVertical = oProps?.params?.showVertical === true;
-    const oParams = oProps?.params || {};
+    const bShowVertical = oParams.showVertical === true;
 
     // Horizontal gap keeps neighbouring buttons' 44px hit areas apart (mini needs 8px, small 4px).
     // `menu_gap` is a class literal from settings; items with their own `menu_item_spacing` get none.
@@ -110,9 +121,6 @@ export default function ElementMenu(oProps) {
     //--- show menu's content only
     const bShowContent = oParams.showContent === 'true';
 
-    //--- use iconset if available
-    let iconset = { ...appSetting('menu_items', 'iconset'), ...appSetting('menu_items', oProps.object, 'iconset') };
-    if (iconset) oParams.iconset = iconset;
 
     const sortedItems = [...(oProps.items || [])].sort((a, b) => {
         
@@ -183,8 +191,8 @@ export default function ElementMenu(oProps) {
         isUseStaticWidth = true;
     }
 
-    if (oProps?.params?.menu_width) {
-        sClassName += ` ${oProps.params.menu_width}`;
+    if (oParams.menu_width) {
+        sClassName += ` ${oParams.menu_width}`;
     }
 
     if (isUseStaticWidth) {
@@ -192,7 +200,7 @@ export default function ElementMenu(oProps) {
         const preparedItems = filteredItems
             .map((item, originalIndex) => {
                 const ItemType = components['menu-item'][item.display_type || sDisplayType];
-                const element = <ItemType object={oProps.object} key={item.id ? item.id : item.name} {...item} params={oProps.params} />
+                const element = <ItemType object={oProps.object} key={item.id ? item.id : item.name} {...item} params={oParams} />
                 return { item, element, originalIndex };
             })
             .filter(({ element }) => element != null);
@@ -208,10 +216,10 @@ export default function ElementMenu(oProps) {
             let spacingClass = '';
             if (bShowVertical) {
                 spacingClass = 'w-full  ';
-            } else if (oProps?.params?.button_full_width === true) {
+            } else if (oParams.button_full_width === true) {
                 spacingClass = ' flex-1 ';
             } else {
-                spacingClass = oProps?.params?.menu_item_spacing != null ? ` ${oProps.params.menu_item_spacing} ` : '';
+                spacingClass = oParams.menu_item_spacing != null ? ` ${oParams.menu_item_spacing} ` : '';
             }
 
             return (
@@ -250,8 +258,8 @@ export default function ElementMenu(oProps) {
     return <DynamicMenu
         name="menu"
         object={oProps.object}
-        ButtonEx={({ visibleItemsCount }) => <ButtonEx visibleItemsCount={visibleItemsCount} params={oProps.params} />}
-        MenuItemEx={({ item, index }) => <MenuItemEx object={oProps.object} item={item} index={index} sDisplayType={sDisplayType} params={oProps.params} />}
+        ButtonEx={({ visibleItemsCount }) => <ButtonEx visibleItemsCount={visibleItemsCount} params={oParams} />}
+        MenuItemEx={({ item, index }) => <MenuItemEx object={oProps.object} item={item} index={index} sDisplayType={sDisplayType} params={oParams} />}
         MenuItem={({ item, itemRefs, visibleItemsCount, index }) => {
 
             return <MenuItem object={oProps.object} item={item} index={index} visibleItemsCount={visibleItemsCount}
@@ -260,9 +268,9 @@ export default function ElementMenu(oProps) {
                 itemRefs={itemRefs}
                 sAlignItems={sAlignItems}
                 isUseStaticWidth={isUseStaticWidth}
-                sDisplayType={sDisplayType} params={oProps.params} />
+                sDisplayType={sDisplayType} params={oParams} />
         }}
-        isFixedCount={oProps?.params?.isFixedCount}
+        isFixedCount={oParams.isFixedCount}
         persistent={oProps.persistent}
         allowZeroPersistant={oProps.allowZeroPersistant}
         containerClasses={oProps.containerClasses || "w-full "}
@@ -271,6 +279,6 @@ export default function ElementMenu(oProps) {
         isButtonOutside={false}
         menuExClasses="mr-auto ml-3 sm:ml-4 items-end gap-y-2"
         triggerAccessibilityLabel={t('More options')}
-        triggerClassName={TRIGGER_HOST_CLASS[toControlSize(oProps?.params?.button_size)] ?? 'u-neo-btn-link'}
+        triggerClassName={TRIGGER_HOST_CLASS[toControlSize(oParams.button_size)] ?? 'u-neo-btn-link'}
     />
 }

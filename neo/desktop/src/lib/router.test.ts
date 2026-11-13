@@ -27,6 +27,79 @@ describe('search routes', () => {
 
 const post = (id: string): Route => ({ list: { section: 'home' }, detail: { kind: 'post', id } });
 
+describe('unsaved changes in the detail shown', () => {
+    const settled = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+    it('are asked about before another detail, or none, is shown, by push, Back and Forward', async () => {
+        const history = new RouteHistory(post('1'));
+        history.push(post('2'));
+        let dirty = false;
+        let discard = false;
+        const confirm = vi.fn(() => Promise.resolve(discard));
+        const off = history.guard({ dirty: () => dirty, confirm });
+        // nothing unsaved: nothing is asked
+        history.push(post('3'));
+        expect(routeToPath(history.current)).toBe('/home/post/3');
+        expect(confirm).not.toHaveBeenCalled();
+
+        dirty = true;
+        const seen = vi.fn();
+        history.subscribe(seen);
+        history.push(post('4'));
+        history.push({ list: { section: 'home' }, detail: null });
+        expect(history.back()).toBe(true);
+        await settled();
+        // one question at a time, answered no: it stays
+        expect(confirm).toHaveBeenCalledTimes(1);
+        expect(routeToPath(history.current)).toBe('/home/post/3');
+        expect(seen).not.toHaveBeenCalled();
+        // another list beside the same detail takes nothing away
+        history.push({ list: { section: 'explore' }, detail: post('3').detail });
+        expect(routeToPath(history.current)).toBe('/explore/post/3');
+        expect(confirm).toHaveBeenCalledTimes(1);
+
+        discard = true;
+        history.back();
+        expect(routeToPath(history.current)).toBe('/home/post/3');
+        expect(confirm).toHaveBeenCalledTimes(1);
+        history.back();
+        await settled();
+        expect(confirm).toHaveBeenCalledTimes(2);
+        expect(routeToPath(history.current)).toBe('/home/post/2');
+        history.forward();
+        await settled();
+        expect(routeToPath(history.current)).toBe('/home/post/3');
+        history.push(post('5'));
+        await settled();
+        expect(routeToPath(history.current)).toBe('/home/post/5');
+        expect(confirm).toHaveBeenCalledTimes(4);
+
+        // the form went: nothing is asked any more
+        off();
+        history.push(post('6'));
+        expect(routeToPath(history.current)).toBe('/home/post/6');
+        expect(confirm).toHaveBeenCalledTimes(4);
+    });
+
+    it('stay when the question fails, and are not asked about by what follows something done', async () => {
+        const history = new RouteHistory(post('1'));
+        const confirm = vi.fn(() => Promise.reject(new Error('no dialog')));
+        history.guard({ dirty: () => true, confirm });
+        const logged = vi.spyOn(console, 'error').mockImplementation(() => {});
+        history.push(post('2'));
+        await settled();
+        expect(routeToPath(history.current)).toBe('/home/post/1');
+        expect(logged).toHaveBeenCalled();
+        logged.mockRestore();
+        // a deleted post is closed, another profile starts over: nobody is asked
+        history.forget({ kind: 'post', id: '1' });
+        expect(routeToPath(history.current)).toBe('/home');
+        history.reset(post('9'));
+        expect(routeToPath(history.current)).toBe('/home/post/9');
+        expect(confirm).toHaveBeenCalledTimes(1);
+    });
+});
+
 describe('pages: profiles and groups in the content pane', () => {
     it('are list routes with their tab, one string form each', () => {
         const cases: [Route, string][] = [

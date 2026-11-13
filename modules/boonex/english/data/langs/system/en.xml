@@ -533,7 +533,8 @@
 	<string name="_adm_bp_dsc_block_content_rss_url"><![CDATA[Enter URL to RSS resource here]]></string>
         <string name="_adm_bp_dsc_block_content_empty"><![CDATA[Leave empty to use default one]]></string>
         <string name="_adm_bp_dsc_block_description"><![CDATA[Short description for the block, visible in block header.]]></string>
-        <string name="_adm_bp_dsc_block_icon"><![CDATA[An icon (font icon, SVG or Emoji code) for the block, visible in block header.]]></string>
+        <string name="_adm_bp_dsc_block_header_icon"><![CDATA[A larger icon (font icon, SVG or Emoji code) in a tile before the block's title and description.]]></string>
+        <string name="_adm_bp_dsc_block_icon"><![CDATA[A small icon (font icon, SVG or Emoji code) before the block's title, on its line.]]></string>
 	<string name="_adm_bp_dsc_block_title"><![CDATA[Short name for the block, visible in block header.]]></string>
 	<string name="_adm_bp_dsc_block_visible_for_levels"><![CDATA[Select user levels that can see this block]]></string>
 	<string name="_adm_bp_dsc_page_cache_lifetime"><![CDATA[Store page in cache for this number of seconds]]></string>
@@ -597,6 +598,7 @@
         <string name="_adm_bp_txt_block_description"><![CDATA[Description]]></string>
 	<string name="_adm_bp_txt_block_designbox"><![CDATA[Block Layout]]></string>
 	<string name="_adm_bp_txt_block_designbox_empty"><![CDATA[Select layout...]]></string>
+        <string name="_adm_bp_txt_block_header_icon"><![CDATA[Header icon]]></string>
         <string name="_adm_bp_txt_block_class"><![CDATA[CSS Class]]></string>
         <string name="_adm_bp_txt_block_help"><![CDATA[Help]]></string>
 	<string name="_adm_bp_txt_block_hidden_on"><![CDATA[Hidden on]]></string>
@@ -604,7 +606,7 @@
 	<string name="_adm_bp_txt_block_hidden_on_tablet"><![CDATA[tablet]]></string>
 	<string name="_adm_bp_txt_block_hidden_on_desktop"><![CDATA[desktop]]></string>
         <string name="_adm_bp_txt_block_hidden_on_mobile"><![CDATA[mobile app]]></string>
-        <string name="_adm_bp_txt_block_icon"><![CDATA[Icon]]></string>
+        <string name="_adm_bp_txt_block_icon"><![CDATA[Title icon]]></string>
 	<string name="_adm_bp_txt_block_padding_hidden_on"><![CDATA[Padding hidden on]]></string>
 	<string name="_adm_bp_txt_block_part_hidden_on_info"><![CDATA[On the site and in the apps. A part the block's design box doesn't have stays off.]]></string>
 	<string name="_adm_bp_txt_block_selected"><![CDATA[blocks selected]]></string>
@@ -840,6 +842,7 @@
 	<string name="_adm_dsg_inf_pwa_sw_enable"><![CDATA[When you change the site styles or scripts, visitors get the new ones the next time they open the site.]]></string>
 	<string name="_adm_dsg_inf_pwa_sw_offline"><![CDATA[Shown instead of the browser error when there is no connection: an address on this site, such as page.php?i=about. Leave it empty to use the browser page.]]></string>
 	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Colors the app title bar and, on phones, the status bar. Defaults to the color your template sets.]]></string>
+	<string name="_adm_dsg_inf_settings_section_forms"><![CDATA[How forms label their one-line text fields, on the site and in the apps. A form display can use a style of its own, set in <a href="{0}">Forms</a>. An app without floating labels shows them above the fields.]]></string>
 	<string name="_adm_dsg_inf_settings_section_layout"><![CDATA[Where the header, menus and footer go around the content of a page. Pages with a layout of their own in <a href="{0}">Pages</a> keep it; all the others use the ones below.]]></string>
 	<string name="_adm_dsg_inf_settings_section_template"><![CDATA[The template draws the whole site: its header, menus, colors and fonts. Everyone sees this one unless they pick another enabled template themselves.]]></string>
 	<string name="_adm_dsg_inf_splash_section_apps"><![CDATA[Code for one app only. An empty field uses the page code above. The apps draw the forms, the logo and the illustration with their own components, and leave out scripts and anything marked <code>data-site-only</code>. The iOS and Android apps show text, headings, lists and links, without styles or layout. Add <code>&lt;neo-slot name="social_login"&gt;&lt;/neo-slot&gt;</code> for the social sign-in buttons alone.]]></string>
@@ -897,9 +900,12 @@
 	<string name="_adm_dsg_txt_pwa_sw_enable"><![CDATA[Use a service worker]]></string>
 	<string name="_adm_dsg_txt_pwa_sw_offline"><![CDATA[Offline page]]></string>
 	<string name="_adm_dsg_txt_pwa_theme_color"><![CDATA[Window color]]></string>
+	<string name="_adm_dsg_txt_settings_label_style_adaptive"><![CDATA[Floating: in the empty field, on its top edge once filled]]></string>
+	<string name="_adm_dsg_txt_settings_label_style_regular"><![CDATA[Above the field]]></string>
 	<string name="_adm_dsg_txt_settings_layout_member"><![CDATA[For members]]></string>
 	<string name="_adm_dsg_txt_settings_layout_visitor"><![CDATA[For visitors]]></string>
 	<string name="_adm_dsg_txt_settings_note"><![CDATA[Without header/footer leaves no menus for moving around the site. Set it for single pages in Pages rather than as a default.]]></string>
+	<string name="_adm_dsg_txt_settings_section_forms"><![CDATA[Forms]]></string>
 	<string name="_adm_dsg_txt_settings_section_layout"><![CDATA[Page layout]]></string>
 	<string name="_adm_dsg_txt_settings_section_template"><![CDATA[Site template]]></string>
 	<string name="_adm_dsg_txt_settings_template_current"><![CDATA[In use]]></string>
@@ -1075,6 +1081,7 @@
     <string name="_adm_form_btn_search_forms_sortable_fields_reset"><![CDATA[Reset]]></string>
     <string name="_adm_form_btn_search_forms_save"><![CDATA[Save]]></string>
     <string name="_adm_form_btn_search_forms_cancel"><![CDATA[Cancel]]></string>
+    <string name="_adm_form_dsc_displays_label_style"><![CDATA[Floating labels apply to one-line text fields. Other fields keep their labels above them.]]></string>
     <string name="_adm_form_dsc_displays_title"><![CDATA[Name of the form display mode. Displayed in Studio only.]]></string>
     <string name="_adm_form_dsc_field_area_label"><![CDATA[Accessible name for the field. It is useful when the visible text content of the field is not descriptive enough or absent.]]></string>
     <string name="_adm_form_dsc_field_attrs_max"><![CDATA[Enter numeric value]]></string>
@@ -1200,6 +1207,8 @@
 	<string name="_adm_form_txt_displays_gl_form"><![CDATA[Form]]></string>
 	<string name="_adm_form_txt_displays_gl_module"><![CDATA[Module]]></string>
 	<string name="_adm_form_txt_displays_gl_title"><![CDATA[System Name]]></string>
+	<string name="_adm_form_txt_displays_label_style"><![CDATA[Field labels]]></string>
+	<string name="_adm_form_txt_displays_label_style_default"><![CDATA[As on the site]]></string>
 	<string name="_adm_form_txt_displays_manage_fields"><![CDATA[Manage fields]]></string>
 	<string name="_adm_form_txt_displays_title"><![CDATA[System Name]]></string>
 	<string name="_adm_form_txt_field_add_popup"><![CDATA[Add New Field]]></string>
@@ -1508,6 +1517,8 @@
 	<string name="_adm_nav_dsc_items_title_system"><![CDATA[Item name, displayed in Studio only.]]></string>
         <string name="_adm_nav_dsc_items_info"><![CDATA[The value can be shown below the link name as short description.]]></string>
 	<string name="_adm_nav_dsc_items_visible_for_levels"><![CDATA[Select user levels that can see this menu item]]></string>
+	<string name="_adm_nav_dsc_menus_button_size"><![CDATA[The size of every button in this menu, on the site and in the apps. Automatic leaves each button the size the menu's style gives it.]]></string>
+	<string name="_adm_nav_dsc_menus_button_style"><![CDATA[How the buttons in this menu look, on the site and in the apps. Automatic keeps the button of the menu's style and makes it glass over a cover picture. Choose Glass for a menu that sits over a picture, Regular for one on a plain surface.]]></string>
 	<string name="_adm_nav_dsc_menus_persistent"><![CDATA[Number of persistent menu items. Applicable for menus with 'Auto More' mechanism only.]]></string>
         <string name="_adm_nav_dsc_menus_set_name"><![CDATA[Assign a Set of menu Items]]></string>
 	<string name="_adm_nav_dsc_menus_set_title"><![CDATA[Descriptive name displayed in Studio only. Use at least 3 characters.]]></string>
@@ -1582,6 +1593,16 @@
 	<string name="_adm_nav_txt_items_visible_for_selected"><![CDATA[Selected levels]]></string>
 	<string name="_adm_nav_txt_manage_items"><![CDATA[Manage items]]></string>
 	<string name="_adm_nav_txt_manage_visibility"><![CDATA[Manage visibility settings]]></string>
+	<string name="_adm_nav_txt_menus_button_auto"><![CDATA[Automatic]]></string>
+	<string name="_adm_nav_txt_menus_button_size"><![CDATA[Button size]]></string>
+	<string name="_adm_nav_txt_menus_button_size_large"><![CDATA[Large]]></string>
+	<string name="_adm_nav_txt_menus_button_size_mini"><![CDATA[Mini]]></string>
+	<string name="_adm_nav_txt_menus_button_size_regular"><![CDATA[Regular]]></string>
+	<string name="_adm_nav_txt_menus_button_size_small"><![CDATA[Small]]></string>
+	<string name="_adm_nav_txt_menus_button_style"><![CDATA[Button style]]></string>
+	<string name="_adm_nav_txt_menus_button_style_glass"><![CDATA[Glass]]></string>
+	<string name="_adm_nav_txt_menus_button_style_plain"><![CDATA[Plain]]></string>
+	<string name="_adm_nav_txt_menus_button_style_regular"><![CDATA[Regular]]></string>
 	<string name="_adm_nav_txt_menus_create_popup"><![CDATA[Add New Menu]]></string>
 	<string name="_adm_nav_txt_menus_edit_popup"><![CDATA[Edit "{0}" Menu]]></string>
 	<string name="_adm_nav_txt_menus_gl_items"><![CDATA[Items]]></string>
@@ -1976,6 +1997,7 @@
     <string name="_adm_stg_cpt_option_sys_player_default_quality"><![CDATA[Default video quality]]></string>
     <string name="_adm_stg_cpt_option_sys_pt_default_visitor"><![CDATA[Default page type for visitor]]></string>
     <string name="_adm_stg_cpt_option_sys_pt_default_member"><![CDATA[Default page type for member]]></string>
+    <string name="_adm_stg_cpt_option_sys_form_label_style"><![CDATA[Field labels]]></string>
     <string name="_adm_stg_cpt_option_sys_form_lpc_enable"><![CDATA[Enable leave page confirmation for pages with forms]]></string>
     <string name="_adm_stg_cpt_option_sys_format_date"><![CDATA[<a target="_blank" href="https://momentjs.com/docs/#/displaying/format/">Date Format</a>]]></string>
     <string name="_adm_stg_cpt_option_sys_format_datetime"><![CDATA[<a target="_blank" href="https://momentjs.com/docs/#/displaying/format/">Date And Time Format</a>]]></string>
@@ -3517,6 +3539,7 @@
 	<string name="_sys_form_unsubscribe_input_receive_updates"><![CDATA[Receive Site Updates]]></string>
 	<string name="_sys_form_unsubscribe_input_submit"><![CDATA[Submit]]></string>
 	<string name="_sys_form_err_not_unique_value"><![CDATA[The field should have unique value]]></string>
+	<string name="_sys_form_txt_optional"><![CDATA[(optional)]]></string>
 	<string name="_sys_form_txt_select_file"><![CDATA[Select a file]]></string>
 	<string name="_sys_form_wiki"><![CDATA[Wiki]]></string>
 	<string name="_sys_form_display_wiki_edit"><![CDATA[Wiki Edit]]></string>
@@ -4187,6 +4210,8 @@
     <string name="_sys_page_block_title_search_ai"><![CDATA[Search]]></string>
     <string name="_sys_page_block_title_membership_stats"><![CDATA[Membership Limits]]></string>
     <string name="_sys_page_block_desc_account_profile_create"><![CDATA[Your account doesn’t have a profile yet. Choose a profile type to get started.]]></string>
+    <string name="_sys_page_block_desc_create_account"><![CDATA[Create an account to join the community.]]></string>
+    <string name="_sys_page_block_desc_login"><![CDATA[Enter your details to continue.]]></string>
     <string name="_sys_page_block_system_title_login"><![CDATA[Log in with Sign up link]]></string>
     <string name="_sys_page_block_system_title_login_step2"><![CDATA[Log in - step2]]></string>
     <string name="_sys_page_block_system_title_login_step3"><![CDATA[Log in - step3]]></string>
@@ -4772,6 +4797,7 @@
 	
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Your verification code is {0}.]]></string>
     <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[An error occurred, please report error to the site administrator.]]></string>
+    <string name="_sys_txt_login_agreement"><![CDATA[By logging in, you agree to the <a href="{0}">Terms of Service</a> and <a href="{1}">Privacy Policy</a>.]]></string>
     <string name="_sys_txt_join_description"><![CDATA[Already have an account?]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Log in]]></string>
     <string name="_sys_txt_join_text"><![CDATA[Joining is quick and easy. Create your own community account to get started.]]></string>
@@ -5018,4 +5044,9 @@
     <string name="_sys_recom_friends_empty_action"><![CDATA[Find people]]></string>
     <string name="_sys_recom_friends_empty_text"><![CDATA[Suggestions appear as you connect with people.]]></string>
     <string name="_sys_recom_friends_empty_title"><![CDATA[No suggestions yet]]></string>
+    <string name="_adm_form_txt_groups_role_time_log"><![CDATA[Log time]]></string>
+    <string name="_adm_form_txt_groups_role_time_view_logged_any"><![CDATA[View logged time of everybody]]></string>
+    <string name="_adm_form_txt_groups_role_time_view_billed"><![CDATA[View billable time]]></string>
+    <string name="_adm_form_txt_groups_role_time_edit_billed"><![CDATA[Edit billable time]]></string>
+    <string name="_adm_form_txt_groups_role_manage_properties"><![CDATA[Manage properties]]></string>
 </resources>

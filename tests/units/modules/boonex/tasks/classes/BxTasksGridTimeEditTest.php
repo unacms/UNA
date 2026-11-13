@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Who can edit an entry of the time grids. An entry comes by its id, so the context
- * administrator of one context must not edit the time of another.
+ * Who can edit an entry of the time grids. The Logged time of an entry is edited by the one who logged it, nobody else;
+ * those whose role allows it (`edit_billed`) edit the Billed time of the entries of the administration grids.
+ * An entry comes by its id, so the one with that right in one context must not edit the time of another.
  */
 class BxTasksGridTimeEditTest extends BxDolTestCase
 {
@@ -15,9 +16,9 @@ class BxTasksGridTimeEditTest extends BxDolTestCase
             require_once(BX_DIRECTORY_PATH_MODULES . 'boonex/tasks/classes/BxTasksGridTime.php');
     }
 
-    public function testSiteAdministrationGridEditsEverythingForModerators()
+    public function testSiteAdministrationGridEditsBilledOfEverythingForThoseWithTheRight()
     {
-        $oGrid = $this->grid('bx_tasks_time_administration', 0, ['moderator' => true]);
+        $oGrid = $this->grid('bx_tasks_time_administration', 0, ['billed' => [10]]);
 
         $this->assertTrue($this->isAllowed($oGrid, $this->track(1, 10)));
     }
@@ -29,6 +30,13 @@ class BxTasksGridTimeEditTest extends BxDolTestCase
         $this->assertFalse($this->isAllowed($oGrid, $this->track(1, 10)));
     }
 
+    public function testOwnEntryIsEditedWithoutTheBilledRight()
+    {
+        $oGrid = $this->grid('bx_tasks_time_administration', 0, []);
+
+        $this->assertTrue($this->isAllowed($oGrid, $this->track(bx_get_logged_profile_id(), 10)));
+    }
+
     public function testSiteCommonGridEditsOnlyOwnEntries()
     {
         $oGrid = $this->grid('bx_tasks_time_common', 0, []);
@@ -37,24 +45,31 @@ class BxTasksGridTimeEditTest extends BxDolTestCase
         $this->assertFalse($this->isAllowed($oGrid, $this->track(bx_get_logged_profile_id() + 1, 10)));
     }
 
-    public function testContextAdministratorEditsEntriesOfTheContext()
+    public function testCommonGridsNeverEditOthersEvenWithTheBilledRight()
     {
-        $oGrid = $this->grid('bx_tasks_time_context_administration', 79198, ['manages' => [79198]], [10 => -79198]);
+        $oGrid = $this->grid('bx_tasks_time_common', 0, ['billed' => [10]]);
+
+        $this->assertFalse($this->isAllowed($oGrid, $this->track(bx_get_logged_profile_id() + 1, 10)));
+    }
+
+    public function testContextAdministrationEditsBilledOfTheContextEntries()
+    {
+        $oGrid = $this->grid('bx_tasks_time_context_administration', 79198, ['billed' => [10]], [10 => -79198]);
 
         $this->assertTrue($this->isAllowed($oGrid, $this->track(bx_get_logged_profile_id() + 1, 10)));
     }
 
-    public function testContextAdministratorCannotEditEntriesOfAnotherContext()
+    public function testContextAdministrationCannotEditEntriesOfAnotherContext()
     {
-        //--- The context in the request is the one the viewer manages, the entry is a task of another context.
-        $oGrid = $this->grid('bx_tasks_time_context_administration', 79198, ['manages' => [79198]], [11 => -5]);
+        //--- The context in the request is the one the viewer has the right in, the entry is a task of another context.
+        $oGrid = $this->grid('bx_tasks_time_context_administration', 79198, ['billed' => [10, 11]], [11 => -5]);
 
         $this->assertFalse($this->isAllowed($oGrid, $this->track(bx_get_logged_profile_id() + 1, 11)));
     }
 
     public function testContextAdministrationGridRefusesWithoutContext()
     {
-        $oGrid = $this->grid('bx_tasks_time_context_administration', 0, ['manages' => [79198]], [10 => -79198]);
+        $oGrid = $this->grid('bx_tasks_time_context_administration', 0, ['billed' => [10]], [10 => -79198]);
 
         $this->assertFalse($this->isAllowed($oGrid, $this->track(1, 10)));
     }
@@ -84,7 +99,7 @@ class BxTasksGridTimeEditTest extends BxDolTestCase
     /**
      * @param string $sObject grid object
      * @param int $iContextPid context of the grid
-     * @param array $aViewer 'moderator' => bool, 'manages' => ids of the contexts the viewer administers
+     * @param array $aViewer 'billed' => ids of the tasks whose Billed time the viewer's role lets them edit
      * @param array $aTasks task id => allow_view_to of the task
      */
     protected function grid($sObject, $iContextPid, $aViewer, $aTasks = [])
@@ -116,9 +131,10 @@ class BxTasksGridTimeEditTest extends BxDolTestCase
                 };
             }
 
-            public function _isModerator() { return !empty($this->_aViewer['moderator']); }
-            public function _isAdministrator() { return false; }
-            public function isAllowManageByContext($iContextPid) { return in_array($iContextPid, $this->_aViewer['manages'] ?? []); }
+            public function getTimeRightsByContentId($iContentId)
+            {
+                return ['edit_billed' => in_array($iContentId, $this->_aViewer['billed'] ?? [])];
+            }
         };
 
         $oGrid = (new ReflectionClass('BxTasksGridTime'))->newInstanceWithoutConstructor();

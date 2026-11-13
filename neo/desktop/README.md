@@ -337,6 +337,23 @@ in Studio"; the server's side is `template/scripts/BxBaseApiV2Navigation.php`.
   groups are lists of names that open the profile in the detail pane; posts are a feed
   (FeedList: virtualized, j and k, page by page) that does not poll for new ones
   (`FeedSource.poll`). Cmd+F again focuses the field and selects its words.
+- After those come the tabs of the content modules that have a search of their own
+  (`module-results.tsx`): Posts (the Posts module's, `tab=articles`; the feed's tab is Feed
+  next to it, as on a profile), Photos, Albums, Videos, Files, Polls and Tasks, from
+  `GET /search/posts`, `/search/photos`, `/search/albums`, `/search/videos`, `/search/files`,
+  `/search/polls` and `/search/tasks` (cursor pages, More at the end). A tab is there only for
+  a module `GET /api/v2` lists, and is asked only once it is shown, so a search costs no
+  request per module; its count shows from then on. A 404 (the module turned off since) takes
+  the tab away and says "This network has no …" where a link named it, with no error. The
+  results are the module's own rows and cards (`PostRow`, `PhotoTiles`, `AlbumCard`,
+  `VideoRow`, `FileRow`, `PollRow`, `TaskRow`) and open as in its lists: beside the list;
+  Cmd+click or Cmd+Enter in a new tab behind this one; Cmd+Option+click, Cmd+Option+Enter or a
+  double-click in a window of its own. They are kept under the
+  module's list keys (`moduleSearchKey`), so an edit, a vote, a completed task or a delete in
+  the detail shows in the results. With up to thirteen tabs, those that don't fit the pane go
+  into a More menu (`SegmentedTabs fit`); the arrow keys, Home and End still go through all.
+  The palette does not ask these searches: it asks its three per key typed, and its last entry
+  opens the full search, where they are.
 
 ## Feeds
 
@@ -598,6 +615,19 @@ then send an event to `bx_timeline_0`.
   for two minutes, or the site does not answer five minutes after the body is out. reqwest's
   `read_timeout` is not used: it is one timer from the request to the response headers. Outside the app (`vite dev` in a browser) the page picks with a file input and sends the
   file itself.
+- A file made ready stays with Rust (`UploadState.files`; a pasted one as its bytes) until it
+  is uploaded or let go (`release_file`), so whatever made it ready ends it one way or the
+  other. The tray (`useAttachments`) lets go what is taken off, what is over its limit, what
+  leaves it unsent when it starts over, and everything when it goes away, including files still
+  being made ready then. A text that takes pictures (`rich-editor.tsx`, `placeImages`) lets go
+  a file that is no picture, a picture whose upload failed (nothing sends it again), one the
+  box no longer takes, and stops and lets go those still on their way when the box goes away.
+  The new video form does the same for a file picked or dropped as it closes.
+- Pictures in a text (`useTextImages`, `components/rich-editor/text-images.ts`: a post's and a
+  discussion's forms) go to POST /uploads/inline and are in the text only once uploaded, so
+  from the paste or drop until then the form's Post, Save or Start discussion is held
+  (`aria-disabled`, described by "Wait until the uploads are done.", Cmd/Ctrl+Enter too), and
+  an edit form counts the picture as a change for Esc and Cancel.
 - Lasting drafts (`src/lib/drafts.ts`): the new post (text, audience, context and its finished
   uploads), the comment box and reply boxes of a post, and a conversation's reply or a new
   message are kept as they are typed (300 ms after the last key, and at once when the box goes),
@@ -620,6 +650,29 @@ then send an event to `bx_timeline_0`.
   the editor (`data-own-keys`, `lib/shortcuts.ts`). Without a text box, focus goes to "Who can
   see it" (or the note, in a group). A post's text can't be emptied here: Save is off and says
   so, since the site keeps the old text.
+- Editing a post of the Posts module (`src/features/posts/edit-post.tsx`): "Edit Post" in the
+  post's More menu, for who may (`viewer.can_edit`) and only once the site has answered in this
+  view (not on a list's row, which has no text, nor on a copy kept from before, which may be
+  older than the site's), puts a form in place of the post with the new post form's fields that
+  `PATCH /posts/{id}` takes (`PostTextFields` and `PostCategoryField` of `new-post.tsx`): title,
+  summary, text (the rich editor on the post's HTML), category, and who can see it for a post
+  outside a group whose audience the site offers. The cover, photos and videos change on the
+  site, so the form has no field for them. The API keeps no revisions, so the form never sends
+  what it could not have whole. A text the editor would lose something of (`isEditableText`: a
+  heading of another level, a table, an iframe or a video, a colour or another style) is shown
+  as it reads with a note that it is edited on the site, and is never sent. `Post.summary` is
+  not always the author's: the API cuts it at 300 characters with a "…" and answers with the
+  start of the text when there is none (`postSummary`). One that is the start of the text
+  starts the field empty; one that was cut is shown without a field and is never sent. The
+  post's own category stays in the list when the site no longer offers it, and none is
+  required. Only what changed is sent, and only that is checked (a post with a short title can
+  change its category; a text of pictures only is a text, as on the site), with an
+  Idempotency-Key that is used again after an answer that never came; a field a 422 names says
+  why under it. Cmd/Ctrl+Enter saves, Esc or Cancel puts the form away (asking first when that
+  throws changes away), focus goes back to More and "Post saved" is announced. Saved, the
+  post's view has the answer, its rows in the lists take it (as lists have a post: without its
+  text), and the Posts lists, the feeds and its feed item are read again. Like the new post
+  form it keeps no draft.
 
 ## Groups
 

@@ -649,3 +649,5 @@ export function getMenuItemTitleForUri(menu: MenuWithItems | null | undefined, u
     const item = (menu?.items || []).find((i) => String(i?.link || '').replace(/^\/+/, '') === uri);
     return item?.title || '';
 }
+
+export { withMenuButtonParams } from 'app/lib/menu-button-params';

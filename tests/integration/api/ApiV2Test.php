@@ -974,9 +974,9 @@ class ApiV2Test extends ApiV2TestCase
         $aForm = $this->consentForm($a['body']);
         $this->assertNotEmpty($aForm['csrf_token'] ?? '');
         $this->assertSame($sXss, $aForm['state'], 'the escaped state comes back unchanged');
-        $this->assertSame('0', $aForm['profile_id'], 'nothing is chosen until the person clicks');
-        $this->assertStringContainsString("val('" . $aOwn[0] . "')", $a['body'], 'the page offers the account\'s profile');
-        $this->assertStringNotContainsString("val('" . $iForeign . "')", $a['body'], 'and not the one in the query');
+        $this->assertArrayNotHasKey('profile_id', $aForm, 'nothing is chosen until the person presses a profile\'s button');
+        $this->assertStringContainsString('name="profile_id" value="' . $aOwn[0] . '"', $a['body'], 'the page offers the account\'s profile');
+        $this->assertStringNotContainsString('name="profile_id" value="' . $iForeign . '"', $a['body'], 'and not the one in the query');
 
         // a POST needs the consent form's token (the module's: tied to the account and its session)
         foreach (['no token' => ['csrf_token' => null], 'wrong token' => ['csrf_token' => str_repeat('0', 64)]] as $sCase => $aChange) {

@@ -54,8 +54,27 @@ class BxTasksGridPreValues extends BxBaseModGeneralGrid
         return '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' . $this->_sObject . '&a=' . $sAction . '&profile_id=' . $this->_iContextPid . '&list=' . $this->_sList . '&id=' . $iId;
     }
 
+    public function getCode ($isDisplayHeader = true)
+    {
+        if(!$this->_isAllowedManage())
+            return '';
+
+        return parent::getCode($isDisplayHeader);
+    }
+
+    public function getCodeAPI($bForceReturn = false)
+    {
+        if(!$this->_isAllowedManage())
+            return [];
+
+        return parent::getCodeAPI($bForceReturn);
+    }
+
     public function performActionAdd()
     {
+        if(!$this->_isAllowedManage())
+            return $this->_getActionResult([]);
+
         if(!$this->_sList)
             return $this->_getActionResult(($sMsg = _t('_bx_tasks_txt_err_empty_pre_list')) && $this->_bIsApi ? bx_api_get_msg($sMsg) : ['msg' => $sMsg]);
 
@@ -88,9 +107,13 @@ class BxTasksGridPreValues extends BxBaseModGeneralGrid
     {
         $sAction = 'edit';
 
+        if(!$this->_isAllowedManage())
+            return $this->_getActionResult([]);
+
         $iItemId = $this->_getIds();
         $aItem = $this->_oModule->_oDb->getPreValues(['sample' => 'id', 'id' => $iItemId]);
-        if(!$aItem)
+        //--- The value comes by its id, so it has to be one of the context the permission is checked for.
+        if(!$aItem || (int)($aItem['context_id'] ?? 0) != $this->_iContextPid)
             return $this->_bIsApi ? [] : echoJson([]);
 
         $oForm = $this->_getForm($sAction, $aItem);
@@ -117,12 +140,54 @@ class BxTasksGridPreValues extends BxBaseModGeneralGrid
 
     public function performActionActivate()
     {
+        if(!$this->_isAllowedManage())
+            return $this->_getActionResult([]);
+
     	parent::performActionEnable(1);
     }
 
     public function performActionDeactivate()
     {
+        if(!$this->_isAllowedManage())
+            return $this->_getActionResult([]);
+
         parent::performActionEnable(0);
+    }
+
+    public function performActionDelete()
+    {
+        if(!$this->_isAllowedManage())
+            return $this->_getActionResult([]);
+
+        return parent::performActionDelete();
+    }
+
+    protected function _delete ($mixedId)
+    {
+        return $this->_isInContext($mixedId) ? parent::_delete($mixedId) : false;
+    }
+
+    protected function _enable ($mixedId, $isChecked)
+    {
+        return $this->_isInContext($mixedId) ? parent::_enable($mixedId, $isChecked) : false;
+    }
+
+    /**
+     * Values come by their ids, so each has to be one of the context the permission is checked for.
+     */
+    protected function _isInContext($iId)
+    {
+        $aItem = $this->_oModule->_oDb->getPreValues(['sample' => 'id', 'id' => (int)$iId]);
+
+        return !empty($aItem) && (int)($aItem['context_id'] ?? 0) == (int)$this->_iContextPid;
+    }
+
+    /**
+     * A context's properties: the `manage_properties` permission of the viewer's role there; site-wide ones: site administrators.
+     */
+    protected function _isAllowedManage()
+    {
+        return $this->_iContextPid ? $this->_oModule->getTimeRights($this->_iContextPid)['manage_properties'] : isAdmin();
     }
 
     protected function _getActionAdd($sType, $sKey, $a, $isSmall = false, $isDisabled = false, $aRow = [])

@@ -26,6 +26,9 @@ class BxTasksGridTimeContextCommon extends BxTasksGridTimeContextAdministration
     {
         $sAction = 'add';
 
+        if(!$this->_oModule->getTimeRights($this->_iContextPid)['log'])
+            return $this->_getActionResult([]);
+
         $oForm = $this->_getFormObject($sAction);
         $oForm->initChecker();
         if($oForm->isSubmittedAndValid()) {
@@ -35,6 +38,7 @@ class BxTasksGridTimeContextCommon extends BxTasksGridTimeContextAdministration
                 'author_id' => $this->_iLogged,
                 'author_nip' => bx_get_ip_hash(getVisitorIP()),
                 'value' => $iValue,
+                'value_original' => $iValue,
                 'value_date' => $oForm->getCleanValue('value_date') ?: $iNow,
                 'date' => $iNow
             ];

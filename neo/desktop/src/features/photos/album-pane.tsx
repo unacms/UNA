@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useEffect, useId, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 
 import { problemMessage } from 'una-api';
 
@@ -12,6 +12,7 @@ import { ApiError, ensureOk, isGone, retryOnce, unwrap } from '../../lib/api';
 import { useWindowAnnounce } from '../../lib/announce';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
+import { idempotencyKeyFor, type IdempotencySlot, settleIdempotency } from '../../lib/idempotency';
 import { t, tn } from '../../lib/i18n';
 import { confirmAction } from '../../lib/native';
 import { useNavigation } from '../../lib/navigation';
@@ -29,13 +30,18 @@ import { EntryActions, EntryComments, useEntryItem } from './entry-item';
 import { PhotoGrid } from './photo-grid';
 import { MoreButton } from './photo-list';
 import { PhotoDropZone, usePhotoUploads } from './photo-uploads';
+import { sendBlocker, tookAll } from './upload-answers';
 import { afterAddedToAlbum, type Album, albumFromLists, albumItemsKey, albumKey, dropAlbum, fetchAlbumItems, itemsText, putAlbum } from './photos';
 
 /**
  * Adding photos to the album: they upload as they are picked or dropped, then go in at its end.
- * Esc or Cancel closes it (the uploads nothing took are deleted).
+ * Esc or Cancel closes it (the uploads nothing took are deleted). Photos still being made ready
+ * hold Add as ones that are uploading; while they are being added it takes no photo and lets
+ * none go (Esc and Cancel wait too, as the other forms' fields do), and a request that got no
+ * answer leaves it as it was, to send again. Left through the pane meanwhile (Close, another
+ * album), the request keeps its uploads and its answer does nothing to what is shown then.
  */
-function AddPhotos({ album, uploader, onDone, announce }: { album: Album; uploader?: Uploader; onDone: (added: number) => void; announce: (text: string) => void }) {
+function AddPhotos({ album, uploader, onDone, announce }: Readonly<{ album: Album; uploader?: Uploader; onDone: (added: number, read?: Promise<void>) => void; announce: (text: string) => void }>) {
     const { api } = useApp();
     const queryClient = useQueryClient();
     const id = useId();
@@ -43,6 +49,9 @@ function AddPhotos({ album, uploader, onDone, announce }: { album: Album; upload
     const [error, setError] = useState<string | null>(null);
     const [sending, setSending] = useState(false);
     const n = uploads.ids.length;
+    // the Idempotency-Key it went with: sending the same again after an answer that never came
+    // gets the site's first answer, not the photos a second time
+    const sent = useRef<IdempotencySlot['current']>(null);
 
     // the button that opened it is gone (it shows only while this is closed): focus goes to choosing the photos
     useEffect(() => {
@@ -51,7 +60,7 @@ function AddPhotos({ album, uploader, onDone, announce }: { album: Album; upload
 
     const submit = async () => {
         if (sending) return;
-        const blocker = uploads.blocker ?? (n ? null : t('Choose the photos to add.'));
+        const blocker = sendBlocker(uploads, t('Choose the photos to add.'));
         if (blocker) {
             setError(blocker);
             document.getElementById(`${id}-pick`)?.focus();
@@ -59,15 +68,34 @@ function AddPhotos({ album, uploader, onDone, announce }: { album: Album; upload
         }
         setSending(true);
         setError(null);
-        const result = await api.POST('/albums/{id}/items', { params: { path: { id: album.id } }, body: { media_ids: uploads.ids } });
-        setSending(false);
+        let result;
+        try {
+            const body = { media_ids: uploads.ids };
+            result = await uploads.claim(api.POST('/albums/{id}/items', { params: { path: { id: album.id }, header: { 'Idempotency-Key': idempotencyKeyFor(sent, [`/albums/${album.id}/items`, body]) } }, body }), tookAll);
+        } catch (e) {
+            if (uploads.gone()) return;
+            // no answer came: the key stays, so sending it again gets the site's answer to this one
+            setSending(false);
+            setError(t('The photos were not added: {{reason}}', { reason: errorMessage(e) }));
+            return;
+        }
+        settleIdempotency(sent, result.response.status);
         if (result.error !== undefined || !result.data) {
+            if (uploads.gone()) return;
+            setSending(false);
             setError(problemMessage(result.error, t('The photos were not added')));
             return;
         }
-        uploads.markTaken();
-        await afterAddedToAlbum(queryClient, album.id);
-        onDone(result.data.length);
+        // the album is read again without the panel waiting for it (nor being there: the pane may
+        // show another album by now): the photos are in it, and a site slow to answer the reading
+        // would keep a panel that Cancel and Esc can't close
+        const read = afterAddedToAlbum(queryClient, album.id);
+        if (!uploads.gone()) onDone(result.data.length, read);
+    };
+
+    const cancel = () => {
+        if (sending) return;
+        onDone(0);
     };
 
     return (
@@ -78,20 +106,20 @@ function AddPhotos({ album, uploader, onDone, announce }: { album: Album; upload
                 if (e.key !== 'Escape') return;
                 e.preventDefault();
                 e.stopPropagation();
-                onDone(0);
+                cancel();
             }}
         >
             <h3 id={`${id}-heading`} className="section-title">
                 {t('Add photos to {{name}}', { name: album.title })}
             </h3>
-            <PhotoDropZone uploads={uploads} pickId={`${id}-pick`} describedBy={error ? `${id}-error` : undefined} />
+            <PhotoDropZone uploads={uploads} pickId={`${id}-pick`} describedBy={error ? `${id}-error` : undefined} held={sending} />
             {error ? (
                 <p id={`${id}-error`} className="error small" role="alert">
                     {error}
                 </p>
             ) : null}
             <div className="settings-actions">
-                <button type="button" className="btn" onClick={() => onDone(0)}>
+                <button type="button" className="btn" onClick={cancel} aria-disabled={sending || undefined}>
                     {t('Cancel')}
                 </button>
                 <button type="button" className="btn btn-primary" onClick={() => void submit()} aria-disabled={sending || undefined} aria-busy={sending || undefined}>
@@ -118,6 +146,12 @@ export function AlbumPane({ id, uploader }: { id: string; uploader?: Uploader })
     const [editing, setEditing] = useState(false);
     const [adding, setAdding] = useState(false);
     const [viewing, setViewing] = useState<number | null>(null);
+    // the album photos were just added to, until it is read again: what is shown of it meanwhile
+    // is from before them, and must not say it has none
+    const [reading, setReading] = useState<string | null>(null);
+    // which reading that is: one from an earlier add ends (or is given up for the next) while
+    // the latest is still on its way
+    const rereads = useRef(0);
 
     const album = useQuery({
         queryKey: albumKey(id),
@@ -138,6 +172,7 @@ export function AlbumPane({ id, uploader }: { id: string; uploader?: Uploader })
     useFillEmptyPages(items);
     const photos = items.data?.pages.flatMap((p) => p.items) ?? [];
     const shown = photos.filter((p) => p.media);
+    const awaited = reading === id && !photos.length;
 
     const itemId = a?.content_id ?? null;
     const activity = useEntryItem(itemId, a?.stats.comments, albumKey(id));
@@ -246,21 +281,29 @@ export function AlbumPane({ id, uploader }: { id: string; uploader?: Uploader })
                                     album={a}
                                     uploader={uploader}
                                     announce={announce}
-                                    onDone={(added) => {
+                                    onDone={(added, read) => {
                                         setAdding(false);
+                                        if (added && read) {
+                                            const mine = ++rereads.current;
+                                            const done = () => {
+                                                if (rereads.current === mine) setReading(null);
+                                            };
+                                            setReading(id);
+                                            void read.then(done, done);
+                                        }
                                         if (added) announce(tn(added, 'A photo was added to the album', '{{count}} photos were added to the album'));
                                         focusMoreButton('album');
                                     }}
                                 />
                             ) : null}
-                            <section className="album-photos" aria-label={t('Photos in {{name}}', { name: a.title })}>
-                                <SkeletonRows loading={items.isLoading} />
+                            <section className="album-photos" aria-label={t('Photos in {{name}}', { name: a.title })} aria-busy={items.isLoading || awaited || undefined}>
+                                <SkeletonRows loading={items.isLoading || awaited} />
                                 {items.isError ? (
                                     <p className="error small" role="alert">
                                         {t('Its photos can’t be shown: {{reason}}', { reason: errorMessage(items.error) })}
                                     </p>
                                 ) : null}
-                                {!items.isLoading && !items.isError && !photos.length ? (
+                                {!items.isLoading && !items.isError && !photos.length && !awaited ? (
                                     <EmptyState
                                         icon="images"
                                         title={t('No photos in this album yet')}

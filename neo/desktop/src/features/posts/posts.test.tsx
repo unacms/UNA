@@ -1,24 +1,28 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, createEvent, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import type { ReactNode } from 'react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { createUnaApi, type Schema, type UnaApi } from 'una-api';
 
 import { ActivityCard } from '../../components/activity-card';
-import { ago } from '../../lib/api';
+import { MenuHost } from '../../components/menu-popover';
+import { ago, SAVE_ANSWER_MS } from '../../lib/api';
 import { AnnounceContext } from '../../lib/announce';
 import { AppContext, type AppContextValue } from '../../lib/context';
-import { RouterProvider } from '../../lib/navigation';
+import { RouterProvider, useRoute } from '../../lib/navigation';
 import { opensInWindow } from '../../lib/open-in-window';
 import { parseRoute, type Route, RouteHistory, routeToPath } from '../../lib/router';
 import { setSiteModules } from '../../lib/site-modules';
+import type { Uploader } from '../../lib/uploads';
 import { contextTabs, tabLabel } from '../groups/group-view';
+import { EditPost, isEditableText, mayBeCutSummary, postChanges, postChangesBlocker, postSummary, postValue } from './edit-post';
 import { NewPost, newPostBlocker, newPostFieldError } from './new-post';
 import { Posts, PostsOfTab } from './post-list';
 import { PostPane } from './post-pane';
-import { activityDetail, type Post, postRowText, readingText, stateText } from './posts';
-import { setRichText } from '../../components/rich-editor/test-utils';
+import { activityDetail, type Post, postKey, postListKey, postRowText, readingText, stateText } from './posts';
+import { richText, setRichText, typeRich } from '../../components/rich-editor/test-utils';
+import { docToHtml } from '../../lib/rich-html';
 
 const lily: Schema<'Profile'> = { id: '4', kind: 'person', module: 'bx_persons', display_name: 'Lily Carter', status: 'active', about: '', created_at: '2026-01-01T00:00:00Z' };
 const mila: Schema<'Profile'> = { id: '8', kind: 'person', module: 'bx_persons', display_name: 'Mila Novak', status: 'active', about: '', created_at: '2026-01-01T00:00:00Z', badges: [{ id: '9', name: 'Photographer', color: null, icon: null }] };
@@ -61,7 +65,9 @@ function post(over: Partial<Post> = {}): Post {
 
 type Call = { method: string; path: string; query: string; body: string; key?: string | null };
 
-function site(answer: (c: Call) => { status: number; body?: unknown } | 'lost' | null = () => null) {
+type Answer = { status: number; body?: unknown } | 'lost' | null;
+
+function site(answer: (c: Call) => Answer | Promise<Answer> = () => null, groups: unknown[] = []) {
     const calls: Call[] = [];
     const api: UnaApi = createUnaApi({
         siteUrl: 'https://community.example',
@@ -70,24 +76,31 @@ function site(answer: (c: Call) => { status: number; body?: unknown } | 'lost' |
             const url = new URL(request.url);
             const c = { method: request.method, path: url.pathname.replace(/^\/api\/v2/, '') || '/', query: url.search, body: request.method === 'GET' ? '' : await request.text(), key: request.headers.get('Idempotency-Key') };
             calls.push(c);
-            const a = c.path === '/' ? { status: 200, body: { modules: MODULES } } : c.path === '/me/groups' || c.path === '/me/spaces' ? { status: 200, body: [] } : answer(c);
+            // a request that is stopped fails as fetch has it, answered or not
+            const stopped = new Promise<never>((_, reject) => request.signal.addEventListener('abort', () => reject(request.signal.reason as Error), { once: true }));
+            stopped.catch(() => {});
+            const a = c.path === '/' ? { status: 200, body: { modules: MODULES } } : c.path === '/me/groups' ? { status: 200, body: groups } : c.path === '/me/spaces' ? { status: 200, body: [] } : await Promise.race([answer(c), stopped]);
             if (a === 'lost') throw new TypeError('Load failed');
-            if (!a) return new Promise<Response>(() => {});
+            if (!a) return stopped;
             return a.body === undefined ? new Response(null, { status: a.status }) : new Response(JSON.stringify(a.body), { status: a.status, headers: { 'Content-Type': 'application/json' } });
         },
     });
     return { api, calls };
 }
 
-function renderWith(node: ReactNode, api: UnaApi, route: Route = { list: { section: 'posts' }, detail: null }) {
+function renderWith(node: ReactNode, api: UnaApi, route: Route = { list: { section: 'posts' }, detail: null }, seed?: (client: QueryClient) => void) {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } }, logger: { log: () => {}, warn: () => {}, error: () => {} } });
+    seed?.(client);
     const ctx: AppContextValue = { api, siteUrl: 'https://community.example', me, signOut: () => {}, signingOut: false, messageTo: () => {} };
     const history = new RouteHistory(route);
     render(
         <QueryClientProvider client={client}>
             <AppContext.Provider value={ctx}>
                 <AnnounceContext.Provider value={() => {}}>
-                    <RouterProvider history={history}>{node}</RouterProvider>
+                    <RouterProvider history={history}>
+                        {node}
+                        <MenuHost />
+                    </RouterProvider>
                 </AnnounceContext.Provider>
             </AppContext.Provider>
         </QueryClientProvider>,
@@ -95,8 +108,28 @@ function renderWith(node: ReactNode, api: UnaApi, route: Route = { list: { secti
     return { client, history };
 }
 
+/** The post the route shows, as the detail pane keys it: another post is another pane. */
+function Shown() {
+    const d = useRoute().detail;
+    return d?.kind === 'article' ? <PostPane key={d.id} id={d.id} /> : null;
+}
+
+/** An answer the test gives when it chooses: until then the request is on its way. */
+function later() {
+    let give: (answer: Answer) => void = () => {};
+    const answer = new Promise<Answer>((resolve) => (give = resolve));
+    return { answer, give };
+}
+
+const PICTURE = 'https://community.example/image_transcoder.php?o=sys_images_editor&h=7&s=abc';
+const PICTURE_ANSWER: Answer = { status: 201, body: { url: PICTURE, width: 640, height: 480, mime_type: 'image/png' } };
+const pastePicture = (box: HTMLElement) => fireEvent.paste(box, { clipboardData: { files: [new File([new Uint8Array([137, 80, 78, 71])], 'map.png', { type: 'image/png' })], getData: () => '' } });
+/** What a held button says of itself: the words its aria-describedby points to. */
+const heldFor = (button: HTMLElement) => document.getElementById(button.getAttribute('aria-describedby') ?? '')?.textContent ?? null;
+
 afterEach(() => {
     cleanup();
+    vi.restoreAllMocks();
     localStorage.clear();
     setSiteModules(null);
 });
@@ -305,6 +338,74 @@ describe('New post', () => {
         expect(body.body_html).toContain('<img src="https://community.example/image_transcoder.php?o=sys_images_editor&amp;h=7&amp;s=abc" width="640" height="480">');
     });
 
+    it('holds Post while a picture of the text is uploading, and sends the post with it once it is in the text', async () => {
+        setSiteModules(MODULES);
+        const upload = later();
+        const { api, calls } = site((c) => {
+            if (c.path === '/uploads/inline' && c.method === 'POST') return upload.answer;
+            if (c.path === '/posts' && c.method === 'POST') return { status: 201, body: post({ id: '61', title: 'With a map' }) };
+            return null;
+        });
+        renderWith(<NewPost />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+        const text = screen.getByRole('textbox', { name: 'Text' });
+        const title = screen.getByRole('textbox', { name: 'Title' });
+        setRichText(text, 'See the map');
+        fireEvent.change(title, { target: { value: 'With a map' } });
+        const send = screen.getByRole('button', { name: 'Post' });
+        expect(send.getAttribute('aria-disabled')).toBeNull();
+        pastePicture(text);
+        // from the paste on, not only once the upload has started
+        await waitFor(() => expect(send.getAttribute('aria-disabled')).toBe('true'));
+        expect(heldFor(send)).toBe('Wait until the uploads are done.');
+        await waitFor(() => expect(calls.some((c) => c.path === '/uploads/inline')).toBe(true));
+        expect(send.getAttribute('aria-disabled')).toBe('true');
+        fireEvent.click(send);
+        fireEvent.keyDown(title, { key: 'Enter', metaKey: true, ctrlKey: true });
+        await act(async () => {});
+        expect(calls.some((c) => c.path === '/posts' && c.method === 'POST')).toBe(false);
+        upload.give(PICTURE_ANSWER);
+        await waitFor(() => expect(send.getAttribute('aria-disabled')).toBeNull());
+        expect(send.getAttribute('aria-describedby')).toBeNull();
+        expect(text.querySelector('img')).toBeTruthy();
+        fireEvent.click(send);
+        await waitFor(() => expect(calls.some((c) => c.path === '/posts' && c.method === 'POST')).toBe(true));
+        expect((JSON.parse(calls.find((c) => c.path === '/posts' && c.method === 'POST')?.body ?? '{}') as { body_html: string }).body_html).toContain('<img src=');
+    });
+
+    it('holds a Post pressed when the picture has come and the form is not drawn with it yet', async () => {
+        setSiteModules(MODULES);
+        const upload = later();
+        const { api, calls } = site((c) => {
+            if (c.path === '/uploads/inline' && c.method === 'POST') return upload.answer;
+            if (c.path === '/posts' && c.method === 'POST') return { status: 201, body: post({ id: '61', title: 'With a map' }) };
+            return null;
+        });
+        renderWith(<NewPost />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+        const text = screen.getByRole('textbox', { name: 'Text' });
+        setRichText(text, 'See the map');
+        fireEvent.change(screen.getByRole('textbox', { name: 'Title' }), { target: { value: 'With a map' } });
+        const send = screen.getByRole('button', { name: 'Post' });
+        pastePicture(text);
+        await waitFor(() => expect(calls.some((c) => c.path === '/uploads/inline')).toBe(true));
+        // pressed the moment the picture is in the text: the form still has the text without it
+        let pressed = false;
+        const seen = new MutationObserver(() => {
+            if (pressed || !text.querySelector('img')) return;
+            pressed = true;
+            fireEvent.click(send);
+        });
+        seen.observe(text, { childList: true, subtree: true });
+        upload.give(PICTURE_ANSWER);
+        await waitFor(() => expect(pressed).toBe(true));
+        seen.disconnect();
+        await waitFor(() => expect(send.getAttribute('aria-disabled')).toBeNull());
+        fireEvent.click(send);
+        await waitFor(() => expect(calls.some((c) => c.path === '/posts' && c.method === 'POST')).toBe(true));
+        const sent = calls.filter((c) => c.path === '/posts' && c.method === 'POST').map((c) => (JSON.parse(c.body) as { body_html: string }).body_html);
+        expect(sent).toHaveLength(1);
+        expect(sent[0]).toContain('<img src=');
+    });
+
     it('writes a post through POST /posts, with the same key again after an answer that never came, and opens it', async () => {
         setSiteModules(MODULES);
         let posts = 0;
@@ -357,5 +458,1042 @@ describe('New post', () => {
         expect(JSON.parse(calls.find((c) => c.method === 'POST')?.body ?? '{}').category_id).toBe('2');
         expect((await screen.findByRole('alert')).textContent).toBe('A post needs text.');
         expect(document.activeElement).toBe(screen.getByRole('textbox', { name: 'Text' }));
+    });
+    it('takes no change while it is being sent, and takes them again with what was typed when it was not sent', async () => {
+        setSiteModules(MODULES);
+        const first = later();
+        let posts = 0;
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/categories') return { status: 200, body: [{ id: '1', slug: '1', name: 'Animals & Pets' }, { id: '2', slug: '2', name: 'Architecture' }] };
+            if (c.path === '/posts' && c.method === 'POST') return ++posts === 1 ? first.answer : { status: 201, body: post({ id: '60', title: 'Notes from the meetup' }) };
+            return null;
+        });
+        const pick = vi.fn(async () => ({ files: [{ handle: 'h-cover', name: 'cover.jpg', size: 100, mime: 'image/jpeg', kind: 'image' as const }], refused: [] }));
+        const uploader: Uploader = {
+            pick,
+            fromFiles: async () => ({ files: [], refused: [] }),
+            fromPaths: async () => ({ files: [], refused: [] }),
+            upload: async () => ({ id: '91', kind: 'image', mime: 'image/jpeg', size: 100, state: 'ready', original_name: 'cover.jpg', url: '', download_url: '', variants: {}, width: 4, height: 3 }),
+            cancel: () => {},
+            release: () => {},
+        };
+        const { history } = renderWith(<NewPost uploader={uploader} />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+        const title = screen.getByRole('textbox', { name: 'Title' }) as HTMLInputElement;
+        const summary = screen.getByRole('textbox', { name: 'Summary' }) as HTMLTextAreaElement;
+        const text = screen.getByRole('textbox', { name: 'Text' });
+        const category = (await screen.findByRole('combobox', { name: 'Category' })) as HTMLSelectElement;
+        const who = screen.getByRole('combobox', { name: 'Who can see it' }) as HTMLSelectElement;
+        fireEvent.change(title, { target: { value: 'Notes from the meetup' } });
+        fireEvent.change(summary, { target: { value: 'The short version.' } });
+        setRichText(text, 'First.');
+        fireEvent.change(category, { target: { value: '2' } });
+        await waitFor(() => expect(who.value).toBe('public'));
+        fireEvent.click(screen.getByRole('button', { name: 'Choose a cover…' }));
+        const remove = await screen.findByRole('button', { name: 'Remove Photo cover.jpg' });
+        await screen.findByText(/^Ready/);
+        const choose = screen.getByRole('button', { name: 'Choose another…' }) as HTMLButtonElement;
+        const send = screen.getByRole('button', { name: 'Post' });
+        const look = [choose.className, remove.className];
+        fireEvent.click(send);
+        await waitFor(() => expect(send.getAttribute('aria-busy')).toBe('true'));
+        // the site has not answered: nothing in the form takes a change
+        expect(title.readOnly).toBe(true);
+        expect(summary.readOnly).toBe(true);
+        expect(text.getAttribute('aria-readonly')).toBe('true');
+        // the lists take none either, and keep the keyboard: disabled would drop focus to the page
+        for (const list of [category, who]) {
+            expect(list.getAttribute('aria-disabled')).toBe('true');
+            expect(list.disabled).toBe(false);
+            expect(fireEvent.mouseDown(list)).toBe(false);
+            expect(fireEvent.keyDown(list, { key: 'ArrowDown' })).toBe(false);
+            expect(fireEvent.keyDown(list, { key: 'Tab' })).toBe(true);
+        }
+        fireEvent.change(title, { target: { value: 'Typed while it was sent' } });
+        fireEvent.change(summary, { target: { value: 'Typed while it was sent' } });
+        fireEvent.change(category, { target: { value: '1' } });
+        fireEvent.change(who, { target: { value: 'friends' } });
+        typeRich(text, ' Typed while it was sent');
+        expect(title.value).toBe('Notes from the meetup');
+        expect(summary.value).toBe('The short version.');
+        expect(category.value).toBe('2');
+        expect(who.value).toBe('public');
+        expect(richText(text)).toBe('First.');
+        // the cover stays the one that went: its buttons are the same buttons, and do nothing
+        for (const button of [choose, remove as HTMLButtonElement]) {
+            expect(button.getAttribute('aria-disabled')).toBe('true');
+            expect(button.disabled).toBe(false);
+        }
+        expect([choose.className, remove.className]).toEqual(look);
+        fireEvent.click(choose);
+        fireEvent.click(remove);
+        expect(pick).toHaveBeenCalledTimes(1);
+        expect(screen.getByRole('button', { name: 'Remove Photo cover.jpg' })).toBe(remove);
+        // no picture goes in the text, and it is not sent a second time
+        pastePicture(text);
+        fireEvent.click(send);
+        await act(async () => {});
+        expect(calls.some((c) => c.path === '/uploads/inline')).toBe(false);
+        expect(calls.filter((c) => c.method === 'POST' && c.path === '/posts')).toHaveLength(1);
+        // it was not sent: the form stays, with what was typed, and takes changes again
+        first.give('lost');
+        await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('The post was not sent: Load failed'));
+        expect(title.value).toBe('Notes from the meetup');
+        expect(richText(text)).toBe('First.');
+        expect(title.readOnly).toBe(false);
+        expect(summary.readOnly).toBe(false);
+        expect(text.getAttribute('aria-readonly')).toBeNull();
+        for (const control of [category, who, choose, remove]) expect(control.getAttribute('aria-disabled')).toBeNull();
+        fireEvent.change(summary, { target: { value: 'The shorter version.' } });
+        expect(summary.value).toBe('The shorter version.');
+        fireEvent.change(summary, { target: { value: 'The short version.' } });
+        fireEvent.click(send);
+        await waitFor(() => expect(history.current.detail).toEqual({ kind: 'article', id: '60' }));
+        const sent = calls.filter((c) => c.method === 'POST' && c.path === '/posts');
+        expect(sent.map((c) => JSON.parse(c.body))).toEqual(Array(2).fill({ title: 'Notes from the meetup', body_html: '<p>First.</p>', summary: 'The short version.', category_id: '2', cover_media_id: '91', audience: 'public' }));
+        expect(sent[1]?.key).toBe(sent[0]?.key);
+    });
+
+    it('waits for an answer that takes longer than a save may: the post is not said to be unsent, is sent once, and opens', async () => {
+        vi.useFakeTimers({ shouldAdvanceTime: true });
+        try {
+            setSiteModules(MODULES);
+            const first = later();
+            const { api, calls } = site((c) => (c.path === '/posts' && c.method === 'POST' ? first.answer : null));
+            const { history } = renderWith(<NewPost />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+            const title = screen.getByRole('textbox', { name: 'Title' }) as HTMLInputElement;
+            fireEvent.change(title, { target: { value: 'Notes from the meetup' } });
+            setRichText(screen.getByRole('textbox', { name: 'Text' }), 'First.');
+            await waitFor(() => expect((screen.getByRole('combobox', { name: 'Who can see it' }) as HTMLSelectElement).value).toBe('public'));
+            const send = screen.getByRole('button', { name: 'Post' });
+            fireEvent.click(send);
+            await waitFor(() => expect(send.getAttribute('aria-busy')).toBe('true'));
+            // the site is still making it: stopped here and sent again changed, it would be there twice
+            await act(async () => vi.advanceTimersByTimeAsync(SAVE_ANSWER_MS + 5000));
+            expect(screen.queryByRole('alert')).toBeNull();
+            expect(send.getAttribute('aria-busy')).toBe('true');
+            expect(title.readOnly).toBe(true);
+            fireEvent.click(send);
+            first.give({ status: 201, body: post({ id: '60', title: 'Notes from the meetup' }) });
+            await waitFor(() => expect(history.current.detail).toEqual({ kind: 'article', id: '60' }));
+            expect(calls.filter((c) => c.method === 'POST' && c.path === '/posts')).toHaveLength(1);
+        } finally {
+            vi.useRealTimers();
+        }
+    });
+
+    const COVER_FILE = { handle: 'h-cover', name: 'cover.jpg', size: 100, mime: 'image/jpeg', kind: 'image' as const };
+    const COVER_MEDIA: Schema<'Media'> = { id: '91', kind: 'image', mime: 'image/jpeg', size: 100, state: 'ready', original_name: 'cover.jpg', url: '', download_url: '', variants: {}, width: 4, height: 3 };
+    /** An uploader of one cover. */
+    const coverUploader = (over: Partial<Uploader> = {}): Uploader => ({
+        pick: async () => ({ files: [COVER_FILE], refused: [] }),
+        fromFiles: async () => ({ files: [COVER_FILE], refused: [] }),
+        fromPaths: async () => ({ files: [], refused: [] }),
+        upload: async () => COVER_MEDIA,
+        cancel: () => {},
+        release: () => {},
+        ...over,
+    });
+    const dropped = () => ({ dataTransfer: { types: ['Files'], files: [new File([new Uint8Array([255, 216])], 'cover.jpg', { type: 'image/jpeg' })] } });
+    const fill = async () => {
+        fireEvent.change(screen.getByRole('textbox', { name: 'Title' }), { target: { value: 'Notes from the meetup' } });
+        setRichText(screen.getByRole('textbox', { name: 'Text' }), 'First.');
+        await waitFor(() => expect((screen.getByRole('combobox', { name: 'Who can see it' }) as HTMLSelectElement).value).toBe('public'));
+        return screen.getByRole('button', { name: 'Post' });
+    };
+
+    it('holds Post while a cover is being made ready, and sends the post with it once it is uploaded', async () => {
+        setSiteModules(MODULES);
+        const { api, calls } = site((c) => (c.path === '/posts' && c.method === 'POST' ? { status: 201, body: post({ id: '60', title: 'Notes from the meetup' }) } : null));
+        let ready: (staging: { files: (typeof COVER_FILE)[]; refused: string[] }) => void = () => {};
+        const uploader = coverUploader({ pick: () => new Promise((resolve) => (ready = resolve)) });
+        const { history } = renderWith(<NewPost uploader={uploader} />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+        const send = await fill();
+        const choose = screen.getByRole('button', { name: 'Choose a cover…' });
+        fireEvent.click(choose);
+        // chosen, and not in the form yet: sent now, the post would go without it
+        fireEvent.click(send);
+        expect((await screen.findByRole('alert')).textContent).toBe('Wait until the uploads are done.');
+        expect(document.activeElement).toBe(choose);
+        fireEvent.keyDown(screen.getByRole('textbox', { name: 'Title' }), { key: 'Enter', metaKey: true, ctrlKey: true });
+        await act(async () => {});
+        expect(calls.some((c) => c.method === 'POST' && c.path === '/posts')).toBe(false);
+        await act(async () => ready({ files: [COVER_FILE], refused: [] }));
+        await screen.findByText(/^Ready/);
+        fireEvent.click(send);
+        await waitFor(() => expect(history.current.detail).toEqual({ kind: 'article', id: '60' }));
+        const sent = calls.filter((c) => c.method === 'POST' && c.path === '/posts');
+        expect(sent).toHaveLength(1);
+        expect(JSON.parse(sent[0]?.body ?? '{}').cover_media_id).toBe('91');
+    });
+
+    it('holds a Post pressed when the cover is in the tray and the form is not drawn with it yet', async () => {
+        setSiteModules(MODULES);
+        const { api, calls } = site((c) => (c.path === '/posts' && c.method === 'POST' ? { status: 201, body: post({ id: '60', title: 'Notes from the meetup' }) } : null));
+        let ready: (staging: { files: (typeof COVER_FILE)[]; refused: string[] }) => void = () => {};
+        const upload = vi.fn(async () => COVER_MEDIA);
+        const uploader = coverUploader({ pick: () => new Promise((resolve) => (ready = resolve)), upload });
+        const { history } = renderWith(<NewPost uploader={uploader} />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+        const send = await fill();
+        fireEvent.click(screen.getByRole('button', { name: 'Choose a cover…' }));
+        await act(async () => {
+            ready({ files: [COVER_FILE], refused: [] });
+            // made ready and added (its upload has started), and React has not drawn the form with it
+            for (let i = 0; i < 20 && !upload.mock.calls.length; i++) await Promise.resolve();
+            expect(upload).toHaveBeenCalledTimes(1);
+            // nothing is being made ready any more: only the tray knows of the cover
+            for (let i = 0; i < 5; i++) await Promise.resolve();
+            expect(screen.queryByRole('button', { name: 'Remove Photo cover.jpg' })).toBeNull();
+            fireEvent.click(send);
+        });
+        expect(calls.some((c) => c.method === 'POST' && c.path === '/posts')).toBe(false);
+        await screen.findByText(/^Ready/);
+        fireEvent.click(send);
+        await waitFor(() => expect(history.current.detail).toEqual({ kind: 'article', id: '60' }));
+        const sent = calls.filter((c) => c.method === 'POST' && c.path === '/posts');
+        expect(sent).toHaveLength(1);
+        expect(JSON.parse(sent[0]?.body ?? '{}').cover_media_id).toBe('91');
+    });
+
+    it('is no place to drop a cover on while it is being sent: no highlight, the drop is not taken, and nothing is made ready', async () => {
+        setSiteModules(MODULES);
+        const first = later();
+        const { api } = site((c) => (c.path === '/posts' && c.method === 'POST' ? first.answer : null));
+        const fromFiles = vi.fn(async () => ({ files: [COVER_FILE], refused: [] }));
+        renderWith(<NewPost uploader={coverUploader({ fromFiles })} />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+        const send = await fill();
+        const zone = screen.getByRole('button', { name: 'Choose a cover…' }).parentElement as HTMLElement;
+        // before it is sent the zone takes a file dragged over it
+        expect(fireEvent.dragOver(zone, dropped())).toBe(false);
+        expect(zone.getAttribute('data-dragging')).toBe('true');
+        fireEvent.dragLeave(zone);
+        expect(zone.getAttribute('data-dragging')).toBeNull();
+        fireEvent.dragOver(zone, dropped());
+        fireEvent.click(send);
+        await waitFor(() => expect(send.getAttribute('aria-busy')).toBe('true'));
+        // sent while a file was over it: the highlight goes, and the file dragged on is left alone
+        expect(zone.getAttribute('data-dragging')).toBeNull();
+        // (still the zone's, with a cursor that refuses: left to the browser, the file would open in place of the app)
+        const over = createEvent.dragOver(zone, dropped());
+        expect(fireEvent(zone, over)).toBe(false);
+        expect((over as unknown as DragEvent).dataTransfer?.dropEffect).toBe('none');
+        expect(zone.getAttribute('data-dragging')).toBeNull();
+        expect(fireEvent.drop(zone, dropped())).toBe(false);
+        await act(async () => {});
+        expect(fromFiles).not.toHaveBeenCalled();
+        expect(screen.queryByRole('button', { name: 'Remove Photo cover.jpg' })).toBeNull();
+        // not sent: it takes a cover again
+        first.give('lost');
+        await waitFor(() => expect(send.getAttribute('aria-busy')).toBeNull());
+        fireEvent.drop(zone, dropped());
+        expect(await screen.findByRole('button', { name: 'Remove Photo cover.jpg' })).toBeTruthy();
+        expect(fromFiles).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps the cover its request names when the form goes while the post is being sent, and does not open the post over what is shown then', async () => {
+        setSiteModules(MODULES);
+        for (const outcome of ['taken', 'refused', 'unknown'] as const) {
+            const first = later();
+            const { api, calls } = site((c) => (c.path === '/posts' && c.method === 'POST' ? first.answer : null));
+            const { history, client } = renderWith(<NewPost uploader={coverUploader()} />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+            const send = await fill();
+            fireEvent.click(screen.getByRole('button', { name: 'Choose a cover…' }));
+            await screen.findByText(/^Ready/);
+            fireEvent.click(send);
+            await waitFor(() => expect(calls.filter((c) => c.method === 'POST' && c.path === '/posts')).toHaveLength(1));
+            // the form goes (Close, another item, another tab): the request still names the cover
+            cleanup();
+            await act(async () => {});
+            const deleted = () => calls.filter((c) => c.method === 'DELETE').map((c) => c.path);
+            expect(deleted()).toEqual([]);
+            if (outcome === 'taken') {
+                first.give({ status: 201, body: post({ id: '60', title: 'Notes from the meetup' }) });
+                await waitFor(() => expect(client.getQueryData(postKey('60'))).toBeTruthy());
+                await act(async () => {});
+                expect(deleted()).toEqual([]);
+            } else if (outcome === 'refused') {
+                // the site refused it: nothing took the cover, and it is deleted once
+                first.give({ status: 403, body: { type: 'urn:una:problem:forbidden', title: 'Forbidden', status: 403, code: 'forbidden' } });
+                await waitFor(() => expect(deleted()).toEqual(['/uploads/91']));
+                await act(async () => {});
+                expect(deleted()).toHaveLength(1);
+            } else {
+                // no answer: the site may be making the post with it, so it is not deleted
+                first.give('lost');
+                await act(async () => new Promise<void>((resolve) => setTimeout(resolve, 0)));
+                await act(async () => new Promise<void>((resolve) => setTimeout(resolve, 0)));
+                expect(deleted()).toEqual([]);
+            }
+            expect(history.current.detail).toEqual({ kind: 'new-article' });
+        }
+    });
+
+    it('holds the list of where it goes while it is being sent', async () => {
+        setSiteModules(MODULES);
+        const first = later();
+        const hikers = { id: '12', kind: 'group', module: 'bx_groups', handle: 'hikers', display_name: 'Hikers', about: '', status: 'active', avatar: null, cover: null, url: 'https://community.example/view-group-profile/12', created_at: '2026-01-01T00:00:00Z', visibility: 'public', join_policy: 'open', member_count: 3, content_visible: true, content_kinds: ['posts'], viewer: { status: 'active', role: 'member', can_join: false, join_on_site: false, can_leave: true, can_post: true, can_edit: false } };
+        const { api, calls } = site((c) => (c.path === '/posts' && c.method === 'POST' ? first.answer : null), [hikers]);
+        const { history } = renderWith(<NewPost />, api, { list: { section: 'posts' }, detail: { kind: 'new-article' } });
+        const where = (await screen.findByRole('combobox', { name: 'Where' })) as HTMLSelectElement;
+        expect(within(where).getByRole('option', { name: 'Hikers' })).toBeTruthy();
+        const send = await fill();
+        fireEvent.click(send);
+        await waitFor(() => expect(send.getAttribute('aria-busy')).toBe('true'));
+        expect(where.getAttribute('aria-disabled')).toBe('true');
+        expect(where.disabled).toBe(false);
+        expect(fireEvent.mouseDown(where)).toBe(false);
+        expect(fireEvent.keyDown(where, { key: 'ArrowDown' })).toBe(false);
+        expect(fireEvent.keyDown(where, { key: 'Tab' })).toBe(true);
+        fireEvent.change(where, { target: { value: '12' } });
+        await act(async () => {});
+        expect(where.value).toBe('');
+        expect(screen.getByRole('combobox', { name: 'Who can see it' })).toBeTruthy();
+        first.give({ status: 201, body: post({ id: '60', title: 'Notes from the meetup' }) });
+        await waitFor(() => expect(history.current.detail).toEqual({ kind: 'article', id: '60' }));
+        expect(JSON.parse(calls.find((c) => c.method === 'POST' && c.path === '/posts')?.body ?? '{}')).toEqual({ title: 'Notes from the meetup', body_html: '<p>First.</p>', audience: 'public' });
+    });
+});
+
+describe('Editing a post', () => {
+    const mine = (over: Partial<Post> = {}) => post({ body_html: '<p>A 35mm lens makes you walk.</p>', viewer: { reaction: null, favorited: false, can_react: true, can_comment: true, can_edit: true, can_delete: true }, ...over });
+    const route: Route = { list: { section: 'posts' }, detail: { kind: 'article', id: '37' } };
+    const CATEGORIES = [{ id: '3', slug: '3', name: 'Art' }, { id: '5', slug: '5', name: 'Travel' }];
+    const openForm = async () => {
+        fireEvent.click(await screen.findByRole('button', { name: 'More for the post' }));
+        fireEvent.click(screen.getByRole('menuitem', { name: 'Edit Post' }));
+        return (await screen.findByRole('textbox', { name: 'Title' })) as HTMLInputElement;
+    };
+
+    it('sends only what changed, and never the audience of a post in a context', () => {
+        const initial = postValue(mine());
+        expect(initial).toEqual({ title: 'A slow walk with one lens', summary: 'Why I left the zoom at home for a month.', html: '<p>A 35mm lens makes you walk.</p>', category: '3', audience: 'public' });
+        const all = { text: true, summary: true, audience: true };
+        expect(postChanges(initial, initial, all)).toEqual({});
+        expect(postChanges(initial, { ...initial, title: ' One lens ', audience: 'friends' }, all)).toEqual({ title: 'One lens', audience: 'friends' });
+        const changed = { ...initial, summary: '', html: '<p>New.</p>', category: '5', audience: 'friends' as const };
+        expect(postChanges(initial, changed, { ...all, audience: false })).toEqual({ summary: '', body_html: '<p>New.</p>', category_id: '5' });
+        // a text or a summary the form does not offer is never sent, whatever the form holds
+        expect(postChanges(initial, changed, { text: false, summary: false, audience: false })).toEqual({ category_id: '5' });
+    });
+
+    it('edits only a text the editor keeps whole', () => {
+        expect(isEditableText('<p>One <strong>bold</strong> <a href="https://example.com">link</a>.</p><h2>Part</h2><ul><li>a</li></ul><p style="text-align: center">mid</p>')).toBe(true);
+        expect(isEditableText('<h1>Big heading</h1><p>End.</p>')).toBe(false);
+        expect(isEditableText('<p>Clip</p><iframe src="https://video.example/1"></iframe>')).toBe(false);
+        expect(isEditableText('<table><tr><td>cell</td></tr></table>')).toBe(false);
+        expect(isEditableText('<p><span style="color: rgb(230, 0, 0);">Red text</span></p>')).toBe(false);
+        // such a text is the form's as the site has it, not as the editor would rewrite it
+        const html = '<h1>Big heading</h1><p>End.</p>';
+        expect(postValue(mine({ body_html: html })).html).toBe(html);
+    });
+
+    it('leaves to the site a text whose formatting is in classes or attributes the editor does not write back', () => {
+        // the site's editor: indentation and list nesting, direction; and whatever else a class or an attribute says
+        const lost = [
+            '<p class="ql-indent-1">Set in.</p>',
+            '<p class="ql-direction-rtl">Right to left.</p>',
+            '<ul><li>One</li><li class="ql-indent-1">Under one</li></ul>',
+            '<ol class="steps"><li>One<ol><li class="ql-indent-2">Under one</li></ol></li></ol>',
+            '<p class="lead">An opening.</p>',
+            '<p style="margin-left: 30px;">Set in.</p>',
+            '<p style="direction: rtl; text-align: right;">Right to left.</p>',
+            '<ul><li style="text-align: center">Mid</li></ul>',
+            '<p dir="rtl">Right to left.</p>',
+            '<p>H<sub>2</sub>O</p>',
+            '<p><img src="data:image/png;base64,AAAA"></p>',
+            '<p><img src="https://community.example/s/1.jpg" style="float: left"></p>',
+        ];
+        for (const html of lost) {
+            expect(isEditableText(html), html).toBe(false);
+            expect(postValue(mine({ body_html: html })).html, html).toBe(html);
+        }
+        // a class the editor keeps as it is written, or writes its own way, loses nothing
+        expect(isEditableText('<p class="ql-align-center">Mid</p><p class="text-right">End</p>')).toBe(true);
+    });
+
+    it('edits a text the editor itself wrote, and one the site’s editor wrote with what the editor keeps', () => {
+        const own = docToHtml(
+            {
+                type: 'doc',
+                content: [
+                    { type: 'heading', attrs: { level: 2, align: 'ql-align-center' }, content: [{ type: 'text', text: 'Part' }] },
+                    { type: 'paragraph', content: [{ type: 'text', text: 'One ' }, { type: 'text', text: 'bold', marks: [{ type: 'bold' }, { type: 'italic' }] }, { type: 'text', text: ' and example.com, ' }, { type: 'mention', attrs: { id: '4', label: 'Lily Carter', href: 'https://community.example/u/lily' } }, { type: 'hardBreak' }, { type: 'image', attrs: { src: 'https://community.example/s/1.jpg', width: 640, height: 480 } }] },
+                    { type: 'paragraph' },
+                    { type: 'bulletList', content: [{ type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'a' }] }, { type: 'orderedList', attrs: { start: 3 }, content: [{ type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'b' }] }] }] }] }] },
+                    { type: 'blockquote', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Said.' }] }] },
+                    { type: 'codeBlock', content: [{ type: 'text', text: 'let a = 1;\n  a < 2;' }] },
+                    { type: 'embed', attrs: { url: 'https://video.example/1' } },
+                ],
+            },
+            'full',
+        );
+        expect(own).toContain('<ul><li><p>a</p><ol start="3"><li>b</li></ol></li></ul>');
+        expect(isEditableText(own)).toBe(true);
+        expect(postValue(mine({ body_html: own })).html).toBe(own);
+        // as the site's editor writes the same things
+        const quill =
+            '<p>Hello <em><strong>both</strong></em> <s><u>struck</u></s> <a href="https://example.com/x" rel="noopener noreferrer" target="_blank">a link</a> and example.com.</p><p><br></p>' +
+            '<h3 style="text-align: right;">Part</h3><ol><li>one</li><li>two</li></ol><blockquote>quote</blockquote><pre class="ql-syntax" spellcheck="false">let a = 1;\n</pre>' +
+            '<p><img src="https://community.example/s/1.jpg" width="320"></p><div class="bx-embed-link" source="https://video.example/1">embed&nbsp;</div>' +
+            '<p>Hi <a href="https://community.example/u/lily" title="Lily Carter" dchar="@" data-profile-id="4" class="bx-mention-link">@Lily Carter</a></p><p><br></p>';
+        expect(isEditableText(quill)).toBe(true);
+        // a list nested as HTML has it, without classes
+        expect(isEditableText('<ul><li>a<ul><li>b</li></ul></li></ul>')).toBe(true);
+    });
+
+    it('edits a text as the site stores it: its class on every link, a URL it linked, a mention, a hashtag, a picture, an embed', () => {
+        // what clear_xss and bx_process_input make of a member's text (BxDolHTMLPurifierFilterAddBxLinksClass, HTML.Nofollow, bx_linkify_html)
+        const stored = [
+            '<p>See <a href="https://example.com/x" class="bx-link" rel="nofollow">this page</a>.</p>',
+            '<p><strong>See <a href="https://community.example/page/about" class="bx-link">about us</a></strong></p>',
+            // a URL the editor linked itself, and one the site linked when it stored the text
+            '<p>See <a href="https://example.com/x" class="bx-link" rel="nofollow">https://example.com/x</a> and <a href="http://www.example.org" class="bx-link" rel="nofollow">www.example.org</a></p>',
+            '<p>See <a class="bx-link" target="_blank" rel="nofollow" href="https://example.com/x">https://example.com/x</a> now</p>',
+            '<p>Hi <a href="https://community.example/u/lily" title="Lily Carter" dchar="@" data-profile-id="4" class="bx-mention-link bx-link">@Lily Carter</a></p>',
+            '<p>Going <a class="bx-tag-link bx-link" dchar="#" href="https://community.example/tags/hiking">#hiking</a></p>',
+            '<p>Going <a class="bx-tag-link bx-link" rel="tag" href="https://community.example/tags/hiking">#hiking</a></p>',
+            '<p><img src="https://community.example/s/1.jpg" width="640" height="480" alt="1.jpg" /></p>',
+            '<div class="bx-embed-link" source="https://video.example/1">https://video.example/1</div>',
+        ];
+        for (const html of stored) expect(isEditableText(html), html).toBe(true);
+        expect(isEditableText(stored.join(''))).toBe(true);
+        // the form starts from it as the editor writes it, so nothing counts as changed
+        expect(postValue(mine({ body_html: stored[0] })).html).toBe('<p>See <a href="https://example.com/x">this page</a>.</p>');
+        // another class on a link is not the site's, and the editor would drop it
+        expect(isEditableText('<p><a href="https://example.com/x" class="bx-link button">this page</a></p>')).toBe(false);
+    });
+
+    it('leaves to the site formatting around a block and a list that starts elsewhere, and edits an empty paragraph of a space and code in a code element', () => {
+        for (const html of ['<span style="color: red"><p>text</p></span>', '<span class="note"><ul><li>a</li></ul></span>', '<ol start="0"><li>a</li></ol>', '<ol start="-2"><li>a</li></ol>', '<pre><code class="language-js">let a = 1;</code></pre>']) expect(isEditableText(html), html).toBe(false);
+        for (const html of ['<span><p>text</p></span>', '<ol start="1"><li>a</li></ol>', '<ol start="3"><li>a</li></ol>', '<p>a</p><p>&nbsp;</p>', '<p>&nbsp;</p><p>a</p>', '<p>&nbsp;</p>', '<p>a</p><p>&nbsp;</p><p>b</p>', '<pre><code>let a = 1;\n  a &lt; 2;</code></pre>']) expect(isEditableText(html), html).toBe(true);
+    });
+
+    it('takes a summary that is the start of the text as none, and leaves one the API cut alone', () => {
+        expect(postSummary({ summary: 'Why I left the zoom at home.', body_html: '<p>A 35mm lens makes you walk.</p>' })).toEqual({ editable: true, text: 'Why I left the zoom at home.' });
+        // no summary of its own: the API answers with the start of the text
+        expect(postSummary({ summary: 'First line.\nSecond & last.', body_html: '<p>First line.</p><p>Second &amp; last.</p>' })).toEqual({ editable: true, text: '' });
+        const long = 'word '.repeat(100).trim();
+        const cut = `${long.slice(0, 299).trimEnd()}…`;
+        expect(postSummary({ summary: cut, body_html: `<p>${long}</p>` })).toEqual({ editable: true, text: '' });
+        // an abstract longer than the API shows: its start is not the summary
+        expect(postSummary({ summary: cut, body_html: '<p>Another text.</p>' })).toEqual({ editable: false, text: cut });
+    });
+
+    it('takes any summary that may be the API’s cut as one, whatever its length', () => {
+        // BxDolApiV2Map::text: the first 299 characters, white space trimmed from their end, and "…"
+        const served = (whole: string) => ([...whole.trim()].length > 300 ? `${[...whole.trim()].slice(0, 299).join('').trimEnd()}…` : whole.trim());
+        // blank lines where the API cuts: what comes back is far shorter than 300 characters
+        const whole = `The short start.${'\n'.repeat(290)}And the ending that must not be lost.`;
+        const cut = served(whole);
+        expect(cut).toBe('The short start.…');
+        expect(mayBeCutSummary(cut)).toBe(true);
+        expect(postSummary({ summary: cut, body_html: '<p>Another text.</p>' })).toEqual({ editable: false, text: cut });
+        // one written whole that ends the same way reads the same, so it is left alone too
+        expect(postSummary({ summary: 'To be continued…', body_html: '<p>Another text.</p>' })).toEqual({ editable: false, text: 'To be continued…' });
+        // known whole: no "…" at its end, a space before it (the API trims there), longer than the API serves, or nothing else
+        for (const summary of ['Why I left the zoom at home.', 'To be continued …', 'An aside…\n…', `${'é'.repeat(300)}…`, '…']) {
+            expect(mayBeCutSummary(summary), summary).toBe(false);
+            expect(postSummary({ summary, body_html: '<p>Another text.</p>' }), summary).toEqual({ editable: true, text: summary });
+        }
+        // 300 characters with the "…" is the longest the API cuts to
+        expect(mayBeCutSummary(`${'é'.repeat(299)}…`)).toBe(true);
+    });
+
+    it('checks only the fields that are sent, and takes a picture as a text', () => {
+        expect(postChangesBlocker({ category_id: '5' }, '')).toBeNull();
+        expect(postChangesBlocker({ title: 'Hi' }, 'Text')?.field).toBe('title');
+        expect(postChangesBlocker({ summary: 'é'.repeat(5001) }, 'Text')?.field).toBe('summary');
+        expect(postChangesBlocker({ body_html: '<p></p>' }, '')).toEqual({ field: 'text', text: 'Write the post.' });
+        expect(postChangesBlocker({ body_html: '<p><img src="https://community.example/s/1.jpg"></p>' }, '')).toBeNull();
+        expect(newPostBlocker({ title: 'A title', text: '', html: '<p><img src="https://community.example/s/1.jpg"></p>', coverBlocker: null })).toBeNull();
+    });
+
+    it('is offered only to who may edit', async () => {
+        const { api } = site((c) => (c.path === '/posts/37' ? { status: 200, body: mine({ viewer: { reaction: null, favorited: false, can_react: true, can_comment: true, can_edit: false, can_delete: true } }) } : null));
+        renderWith(<PostPane id="37" />, api, route);
+        await screen.findByText('A 35mm lens makes you walk.');
+        fireEvent.click(screen.getByRole('button', { name: 'More for the post' }));
+        expect(screen.getByRole('menuitem', { name: 'Delete Post…' })).toBeTruthy();
+        expect(screen.queryByRole('menuitem', { name: 'Edit Post' })).toBeNull();
+    });
+
+    it('is not offered on a list’s row or a copy kept from before, until the site has answered here', async () => {
+        // the site never answers: what shows is what the app had
+        const { api } = site(() => null);
+        const row = mine({ body_html: null });
+        renderWith(<PostPane id="37" />, api, route, (client) => client.setQueryData(postListKey({ feed: 'latest' }), { pages: [{ items: [row], next_cursor: null }], pageParams: [undefined] }));
+        fireEvent.click(await screen.findByRole('button', { name: 'More for the post' }));
+        expect(screen.getByRole('menuitem', { name: 'Delete Post…' })).toBeTruthy();
+        expect(screen.queryByRole('menuitem', { name: 'Edit Post' })).toBeNull();
+        cleanup();
+
+        // a whole copy kept from before (the cache is persisted) may be older than the site's
+        const kept = site(() => null);
+        renderWith(<PostPane id="37" />, kept.api, route, (client) => client.setQueryData(postKey('37'), mine()));
+        expect(await screen.findByText('A 35mm lens makes you walk.')).toBeTruthy();
+        fireEvent.click(screen.getByRole('button', { name: 'More for the post' }));
+        expect(screen.getByRole('menuitem', { name: 'Delete Post…' })).toBeTruthy();
+        expect(screen.queryByRole('menuitem', { name: 'Edit Post' })).toBeNull();
+    });
+
+    it('shows a text written on the site with what the editor would lose, and never sends it', async () => {
+        const html = '<h1>Big heading</h1><p>End.</p><iframe src="https://video.example/1"></iframe>';
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine({ body_html: html }) };
+            if (c.path === '/posts/37' && c.method === 'PATCH') return { status: 200, body: mine({ title: 'One lens', body_html: html }) };
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        const title = await openForm();
+        expect(screen.queryByRole('textbox', { name: 'Text' })).toBeNull();
+        const shown = screen.getByRole('group', { name: 'Text' });
+        expect(within(shown).getByText('Big heading')).toBeTruthy();
+        expect(within(shown).getByText('This text has formatting that editing here would remove, so it is edited on the network’s site.')).toBeTruthy();
+        fireEvent.change(title, { target: { value: 'One lens' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        expect(calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body))).toEqual([{ title: 'One lens' }]);
+    });
+
+    it('shows a summary the API cut without a field for it, and starts empty for one that is the start of the text', async () => {
+        const long = 'word '.repeat(100).trim();
+        const cut = `${long.slice(0, 299).trimEnd()}…`;
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine({ summary: cut }) };
+            if (c.path === '/posts/37' && c.method === 'PATCH') return { status: 200, body: mine({ title: 'One lens', summary: cut }) };
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        const title = await openForm();
+        expect(screen.queryByRole('textbox', { name: 'Summary' })).toBeNull();
+        const shown = screen.getByRole('group', { name: 'Summary' });
+        expect(within(shown).getByText(cut)).toBeTruthy();
+        expect(within(shown).getByText('This summary ends with “…”, so the app may have only its start: it is edited on the network’s site.')).toBeTruthy();
+        fireEvent.change(title, { target: { value: 'One lens' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        expect(calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body))).toEqual([{ title: 'One lens' }]);
+        cleanup();
+
+        const derived = site((c) => (c.path === '/posts/37' && c.method === 'GET' ? { status: 200, body: mine({ summary: 'A 35mm lens makes you walk.' }) } : null));
+        renderWith(<PostPane id="37" />, derived.api, route);
+        await openForm();
+        expect((screen.getByRole('textbox', { name: 'Summary' }) as HTMLTextAreaElement).value).toBe('');
+    });
+
+    it('keeps a category the site no longer lists, and lets a post with a short title change its category', async () => {
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/categories') return { status: 200, body: CATEGORIES };
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine({ title: 'Hi', category: { id: '9', slug: '9', name: 'Retired' } }) };
+            if (c.path === '/posts/37' && c.method === 'PATCH') return { status: 200, body: mine({ title: 'Hi', category: CATEGORIES[1] ?? null }) };
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        await openForm();
+        const category = (await screen.findByRole('combobox', { name: 'Category' })) as HTMLSelectElement;
+        await waitFor(() => expect(within(category).getAllByRole('option').map((o) => o.textContent)).toEqual(['Choose a category', 'Retired', 'Art', 'Travel']));
+        expect(category.value).toBe('9');
+        expect(category.required).toBe(false);
+        fireEvent.change(category, { target: { value: '5' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        expect(calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body))).toEqual([{ category_id: '5' }]);
+    });
+
+    it('changes who sees it through the form, and leaves an audience the site does not offer alone', async () => {
+        setSiteModules(MODULES);
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine() };
+            if (c.path === '/posts/37' && c.method === 'PATCH') return { status: 200, body: mine({ audience: 'friends' }) };
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        await openForm();
+        const who = (await screen.findByRole('combobox', { name: 'Who can see it' })) as HTMLSelectElement;
+        await waitFor(() => expect(who.value).toBe('public'));
+        fireEvent.change(who, { target: { value: 'friends' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        expect(calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body))).toEqual([{ audience: 'friends' }]);
+        cleanup();
+
+        // 'members' is not one of the audiences the site offers for posts: the form has no field for it
+        const other = site((c) => {
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine({ audience: 'members' }) };
+            if (c.path === '/posts/37' && c.method === 'PATCH') return { status: 200, body: mine({ title: 'One lens', audience: 'members' }) };
+            return null;
+        });
+        renderWith(<PostPane id="37" />, other.api, route);
+        const title = await openForm();
+        await waitFor(() => expect(screen.queryByRole('combobox', { name: 'Who can see it' })).toBeNull());
+        fireEvent.change(title, { target: { value: 'One lens' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        expect(other.calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body))).toEqual([{ title: 'One lens' }]);
+    });
+
+    it('saves the changed fields through PATCH /posts/{id}, then shows the post as saved in its view and the lists', async () => {
+        setSiteModules(MODULES);
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/categories') return { status: 200, body: CATEGORIES };
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine() };
+            if (c.path === '/posts/37' && c.method === 'PATCH') {
+                const body = JSON.parse(c.body) as Schema<'PostChanges'>;
+                return { status: 200, body: mine({ title: body.title ?? '', body_html: body.body_html ?? '', category: CATEGORIES[1] ?? null }) };
+            }
+            return null;
+        });
+        const { client } = renderWith(<PostPane id="37" />, api, route);
+        client.setQueryData(postListKey({ feed: 'latest' }), { pages: [{ items: [post()], next_cursor: null }], pageParams: [undefined] });
+        const invalidate = vi.spyOn(client, 'invalidateQueries');
+        const title = await openForm();
+        expect(screen.getByRole('form', { name: 'Edit the post' })).toBeTruthy();
+        expect(title.value).toBe('A slow walk with one lens');
+        expect((screen.getByRole('textbox', { name: 'Summary' }) as HTMLTextAreaElement).value).toBe('Why I left the zoom at home for a month.');
+        const category = (await screen.findByRole('combobox', { name: 'Category' })) as HTMLSelectElement;
+        expect(category.value).toBe('3');
+        await waitFor(() => expect((screen.getByRole('combobox', { name: 'Who can see it' }) as HTMLSelectElement).value).toBe('public'));
+        // the cover changes on the site: the form has no field for it
+        expect(screen.queryByRole('group', { name: 'Cover' })).toBeNull();
+
+        fireEvent.change(title, { target: { value: 'One lens, one month' } });
+        setRichText(screen.getByRole('textbox', { name: 'Text' }), 'It makes you walk.\nA lot.');
+        fireEvent.change(category, { target: { value: '5' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(calls.some((c) => c.method === 'PATCH')).toBe(true));
+        const patch = calls.find((c) => c.method === 'PATCH');
+        expect(JSON.parse(patch?.body ?? '{}')).toEqual({ title: 'One lens, one month', body_html: '<p>It makes you walk.</p><p>A lot.</p>', category_id: '5' });
+        expect(patch?.key).toBeTruthy();
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        expect(screen.queryByRole('form', { name: 'Edit the post' })).toBeNull();
+        expect(screen.getByText('A lot.')).toBeTruthy();
+        expect(client.getQueryData<Post>(postKey('37'))?.title).toBe('One lens, one month');
+        // the list's row is the saved post, as lists have one: without its text
+        const list = client.getQueryData<{ pages: { items: Post[] }[] }>(postListKey({ feed: 'latest' }));
+        expect([list?.pages[0]?.items[0]?.title, list?.pages[0]?.items[0]?.body_html]).toEqual(['One lens, one month', null]);
+        // the lists, the feeds and its feed item are read again
+        expect(invalidate.mock.calls.map((c) => c[0])).toEqual(expect.arrayContaining([['posts', 'list'], ['feed'], ['activity', '7700']]));
+        // focus is back where the form was opened from
+        await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('button', { name: 'More for the post' })));
+    });
+
+    it('says a 422 at its field, saves again with the same key after an answer that never came, and leaves who sees a post in a group alone', async () => {
+        let patches = 0;
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine({ context_id: '12', audience: 'context' }) };
+            if (c.path === '/posts/37' && c.method === 'PATCH') {
+                patches++;
+                if (patches === 1) return { status: 422, body: { type: 'urn:una:problem:validation', title: 'Invalid', status: 422, code: 'validation', errors: [{ field: 'title', code: 'invalid', message: 'This title is taken' }] } };
+                return patches === 2 ? 'lost' : { status: 200, body: mine({ title: 'Another title', context_id: '12', audience: 'context' }) };
+            }
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        const title = await openForm();
+        expect(screen.queryByRole('combobox', { name: 'Who can see it' })).toBeNull();
+        fireEvent.change(title, { target: { value: 'ab' } });
+        const save = screen.getByRole('button', { name: 'Save' });
+        fireEvent.click(save);
+        expect((await screen.findByRole('alert')).textContent).toBe('A title has at least 3 characters.');
+        expect(calls.some((c) => c.method === 'PATCH')).toBe(false);
+        fireEvent.change(title, { target: { value: 'A taken title' } });
+        fireEvent.click(save);
+        await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('This title is taken.'));
+        expect(document.activeElement).toBe(title);
+        expect(title.getAttribute('aria-invalid')).toBe('true');
+        fireEvent.change(title, { target: { value: 'Another title' } });
+        fireEvent.click(save);
+        await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('It was not saved: Load failed'));
+        fireEvent.click(save);
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        const sent = calls.filter((c) => c.method === 'PATCH');
+        expect(sent.map((c) => JSON.parse(c.body))).toEqual([{ title: 'A taken title' }, { title: 'Another title' }, { title: 'Another title' }]);
+        expect(sent[2]?.key).toBe(sent[1]?.key);
+        expect(sent[1]?.key).not.toBe(sent[0]?.key);
+    });
+
+    it('takes no change while it is being saved, and takes them again with what was typed when it was not saved', async () => {
+        setSiteModules(MODULES);
+        let answer: (a: Answer) => void = () => {};
+        let patches = 0;
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/categories') return { status: 200, body: CATEGORIES };
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine() };
+            if (c.path === '/posts/37' && c.method === 'PATCH') {
+                patches++;
+                return patches === 1 ? new Promise<Answer>((resolve) => (answer = resolve)) : { status: 200, body: mine({ title: 'One lens' }) };
+            }
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        const title = await openForm();
+        const summary = screen.getByRole('textbox', { name: 'Summary' }) as HTMLTextAreaElement;
+        const text = screen.getByRole('textbox', { name: 'Text' });
+        const category = (await screen.findByRole('combobox', { name: 'Category' })) as HTMLSelectElement;
+        const who = (await screen.findByRole('combobox', { name: 'Who can see it' })) as HTMLSelectElement;
+        fireEvent.change(title, { target: { value: 'One lens' } });
+        const save = screen.getByRole('button', { name: 'Save' });
+        fireEvent.click(save);
+        await waitFor(() => expect(save.getAttribute('aria-busy')).toBe('true'));
+        // the site has not answered: nothing in the form takes a change
+        expect(title.readOnly).toBe(true);
+        expect(summary.readOnly).toBe(true);
+        expect(text.getAttribute('aria-readonly')).toBe('true');
+        // the lists take none either, and keep the keyboard: disabled would drop focus to the page
+        for (const list of [category, who]) {
+            expect(list.getAttribute('aria-disabled')).toBe('true');
+            expect(list.disabled).toBe(false);
+            expect(fireEvent.mouseDown(list)).toBe(false);
+            expect(fireEvent.keyDown(list, { key: 'ArrowDown' })).toBe(false);
+            expect(fireEvent.keyDown(list, { key: ' ' })).toBe(false);
+            expect(fireEvent.keyDown(list, { key: 'Tab' })).toBe(true);
+        }
+        fireEvent.change(title, { target: { value: 'One lens, typed while it saved' } });
+        fireEvent.change(summary, { target: { value: 'Typed while it saved' } });
+        fireEvent.change(category, { target: { value: '5' } });
+        fireEvent.change(who, { target: { value: 'friends' } });
+        expect(title.value).toBe('One lens');
+        expect(summary.value).toBe('Why I left the zoom at home for a month.');
+        expect(category.value).toBe('3');
+        expect(who.value).toBe('public');
+        // it was not saved: the form stays, with what was typed, and takes changes again
+        answer('lost');
+        await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('It was not saved: Load failed'));
+        expect(title.value).toBe('One lens');
+        expect(title.readOnly).toBe(false);
+        expect(summary.readOnly).toBe(false);
+        expect(text.getAttribute('aria-readonly')).toBeNull();
+        expect(category.getAttribute('aria-disabled')).toBeNull();
+        expect(who.getAttribute('aria-disabled')).toBeNull();
+        expect(fireEvent.keyDown(category, { key: 'ArrowDown' })).toBe(true);
+        fireEvent.click(save);
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        expect(calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body))).toEqual([{ title: 'One lens' }, { title: 'One lens' }]);
+    });
+
+    it('keeps the keyboard in a list the save started from, so the form still hears its keys after a save that failed', async () => {
+        setSiteModules(MODULES);
+        let answer: (a: Answer) => void = () => {};
+        let patches = 0;
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/categories') return { status: 200, body: CATEGORIES };
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine() };
+            if (c.path === '/posts/37' && c.method === 'PATCH') {
+                patches++;
+                return patches === 1 ? new Promise<Answer>((resolve) => (answer = resolve)) : { status: 200, body: mine({ title: 'One lens' }) };
+            }
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        const title = await openForm();
+        const category = (await screen.findByRole('combobox', { name: 'Category' })) as HTMLSelectElement;
+        fireEvent.change(title, { target: { value: 'One lens' } });
+        category.focus();
+        fireEvent.keyDown(category, { key: 'Enter', metaKey: true, ctrlKey: true });
+        const save = screen.getByRole('button', { name: 'Save' });
+        await waitFor(() => expect(save.getAttribute('aria-busy')).toBe('true'));
+        expect(document.activeElement).toBe(category);
+        // jsdom leaves focus on a control that becomes disabled, so focus alone would not tell
+        expect(category.disabled).toBe(false);
+        expect(category.getAttribute('aria-disabled')).toBe('true');
+        answer('lost');
+        await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('It was not saved: Load failed'));
+        // still in the list, so the form's own keys still reach it
+        expect(document.activeElement).toBe(category);
+        fireEvent.keyDown(document.activeElement!, { key: 'Enter', metaKey: true, ctrlKey: true });
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        expect(calls.filter((c) => c.method === 'PATCH')).toHaveLength(2);
+    });
+
+    it('holds a leave while it is being saved, without a question: it leaves once the post was saved and stays when it was not', async () => {
+        let answer: (a: Answer) => void = () => {};
+        const { api, calls } = site((c) => {
+            if (/^\/posts\/\d+$/.test(c.path) && c.method === 'GET') return { status: 200, body: mine({ id: c.path.slice(7) }) };
+            if (c.path === '/posts/37' && c.method === 'PATCH') return new Promise<Answer>((resolve) => (answer = resolve));
+            return null;
+        });
+        const here = route;
+        const other: Route = { list: { section: 'posts' }, detail: { kind: 'article', id: '38' } };
+        const { history } = renderWith(<Shown />, api, here);
+        const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
+        const title = await openForm();
+        fireEvent.change(title, { target: { value: 'One lens' } });
+        const save = screen.getByRole('button', { name: 'Save' });
+        fireEvent.click(save);
+        await waitFor(() => expect(save.getAttribute('aria-busy')).toBe('true'));
+        // the site has not answered: the leave waits, and nobody is told the post stays as it was
+        act(() => history.push(other));
+        await act(async () => {});
+        expect(confirm).not.toHaveBeenCalled();
+        expect(history.current).toEqual(here);
+        expect(screen.getByRole('form', { name: 'Edit the post' })).toBeTruthy();
+        // it was not saved: the leave is dropped, the form stays with why
+        await act(async () => answer('lost'));
+        await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('It was not saved: Load failed'));
+        await act(async () => {});
+        expect(confirm).not.toHaveBeenCalled();
+        expect(history.current).toEqual(here);
+        expect((screen.getByRole('textbox', { name: 'Title' }) as HTMLInputElement).value).toBe('One lens');
+        // saved while a leave waited: the leave happens, still without a question
+        fireEvent.click(save);
+        await waitFor(() => expect(save.getAttribute('aria-busy')).toBe('true'));
+        act(() => history.push(other));
+        await act(async () => {});
+        expect(history.current).toEqual(here);
+        await act(async () => answer({ status: 200, body: mine({ title: 'One lens' }) }));
+        await waitFor(() => expect(history.current).toEqual(other));
+        expect(confirm).not.toHaveBeenCalled();
+        expect(calls.filter((c) => c.method === 'PATCH')).toHaveLength(2);
+    });
+
+    it('stops a save the site never answers: it was not saved, a leave that waited is dropped, Cancel asks again, and saving again sends the same key', async () => {
+        vi.useFakeTimers({ shouldAdvanceTime: true });
+        try {
+            let patches = 0;
+            const { api, calls } = site((c) => {
+                if (/^\/posts\/\d+$/.test(c.path) && c.method === 'GET') return { status: 200, body: mine({ id: c.path.slice(7) }) };
+                // the first save is taken and never answered
+                if (c.path === '/posts/37' && c.method === 'PATCH') return ++patches === 1 ? null : { status: 200, body: mine({ title: 'One lens' }) };
+                return null;
+            });
+            const here = route;
+            const other: Route = { list: { section: 'posts' }, detail: { kind: 'article', id: '38' } };
+            const { history } = renderWith(<Shown />, api, here);
+            const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+            const title = await openForm();
+            fireEvent.change(title, { target: { value: 'One lens' } });
+            const save = screen.getByRole('button', { name: 'Save' });
+            fireEvent.click(save);
+            await waitFor(() => expect(save.getAttribute('aria-busy')).toBe('true'));
+            // a leave and Cancel wait for the answer
+            act(() => history.push(other));
+            fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+            await act(async () => vi.advanceTimersByTimeAsync(SAVE_ANSWER_MS - 1000));
+            expect(save.getAttribute('aria-busy')).toBe('true');
+            expect(history.current).toEqual(here);
+            // no answer in time: the save is stopped and said as not saved, and the leave is dropped
+            await act(async () => vi.advanceTimersByTimeAsync(1000));
+            await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('It was not saved: the site did not answer in time'));
+            expect(save.getAttribute('aria-busy')).toBeNull();
+            expect(confirm).not.toHaveBeenCalled();
+            expect(history.current).toEqual(here);
+            expect((screen.getByRole('textbox', { name: 'Title' }) as HTMLInputElement).value).toBe('One lens');
+            // the form is the person's again: Cancel asks, and so does a leave
+            fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+            await waitFor(() => expect(confirm).toHaveBeenCalledTimes(1));
+            act(() => history.push(other));
+            await waitFor(() => expect(confirm).toHaveBeenCalledTimes(2));
+            expect(history.current).toEqual(here);
+            // saved again with the key it went with, so the site answers for the first one if it took it
+            fireEvent.click(save);
+            await waitFor(() => expect(screen.queryByRole('form', { name: 'Edit the post' })).toBeNull());
+            const sent = calls.filter((c) => c.method === 'PATCH');
+            expect(sent).toHaveLength(2);
+            expect(sent[1]?.key).toBe(sent[0]?.key);
+        } finally {
+            vi.useRealTimers();
+        }
+    });
+
+    it('asks before anything else takes a changed form away: the pane closing, another post, Back', async () => {
+        const { api } = site((c) => (/^\/posts\/\d+$/.test(c.path) && c.method === 'GET' ? { status: 200, body: mine({ id: c.path.slice(7) }) } : null));
+        const here: Route = { list: { section: 'posts' }, detail: { kind: 'article', id: '38' } };
+        const other = route;
+        const { history } = renderWith(<Shown />, api, { list: { section: 'posts' }, detail: null });
+        act(() => history.push(other));
+        const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+        await openForm();
+        // nothing changed: leaving asks nothing
+        act(() => history.push(here));
+        expect(confirm).not.toHaveBeenCalled();
+        expect(history.current).toEqual(here);
+        await waitFor(() => expect(screen.queryByRole('form', { name: 'Edit the post' })).toBeNull());
+        const title = await openForm();
+        fireEvent.change(title, { target: { value: 'Changed' } });
+        // the pane's Close and Esc on the toolbar (closeDetail), another row (openDetail), Back, the sidebar
+        const leaves = [() => history.push({ list: here.list, detail: null }), () => history.push(other), () => void history.back(), () => history.push({ list: { section: 'home' }, detail: null })];
+        for (const [i, leave] of leaves.entries()) {
+            act(leave);
+            await waitFor(() => expect(confirm).toHaveBeenCalledTimes(i + 1));
+            await act(async () => {});
+            expect(history.current).toEqual(here);
+            expect((screen.getByRole('textbox', { name: 'Title' }) as HTMLInputElement).value).toBe('Changed');
+        }
+        // another list beside the same post takes nothing away
+        act(() => history.push({ list: { section: 'posts', feed: 'mine' }, detail: here.detail }));
+        expect(confirm).toHaveBeenCalledTimes(leaves.length);
+        expect((screen.getByRole('textbox', { name: 'Title' }) as HTMLInputElement).value).toBe('Changed');
+        // a browser tab warns before it unloads while the changes are there
+        const unload = new Event('beforeunload', { cancelable: true });
+        window.dispatchEvent(unload);
+        expect(unload.defaultPrevented).toBe(true);
+        // agreed: the other post shows
+        confirm.mockReturnValue(true);
+        act(() => history.push(other));
+        await waitFor(() => expect(history.current).toEqual(other));
+        await waitFor(() => expect(screen.queryByRole('form', { name: 'Edit the post' })).toBeNull());
+        const quiet = new Event('beforeunload', { cancelable: true });
+        window.dispatchEvent(quiet);
+        expect(quiet.defaultPrevented).toBe(false);
+    });
+
+    it('holds Save while a picture of the text is uploading and nothing else changed: the form stays, a leave asks, and the picture is saved once it is in the text', async () => {
+        const upload = later();
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine() };
+            if (c.path === '/uploads/inline' && c.method === 'POST') return upload.answer;
+            if (c.path === '/posts/37' && c.method === 'PATCH') return { status: 200, body: mine({ body_html: (JSON.parse(c.body) as Schema<'PostChanges'>).body_html ?? '' }) };
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        const title = await openForm();
+        const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+        const save = screen.getByRole('button', { name: 'Save' });
+        expect(save.getAttribute('aria-disabled')).toBeNull();
+        pastePicture(screen.getByRole('textbox', { name: 'Text' }));
+        await waitFor(() => expect(save.getAttribute('aria-disabled')).toBe('true'));
+        expect(heldFor(save)).toBe('Wait until the uploads are done.');
+        await waitFor(() => expect(calls.some((c) => c.path === '/uploads/inline')).toBe(true));
+        // Save and its keys: the form neither closes as unchanged nor sends
+        fireEvent.click(save);
+        fireEvent.keyDown(title, { key: 'Enter', metaKey: true, ctrlKey: true });
+        await act(async () => {});
+        expect(screen.getByRole('form', { name: 'Edit the post' })).toBeTruthy();
+        expect(calls.some((c) => c.method === 'PATCH')).toBe(false);
+        // the picture on its way is a change: Esc asks, and a browser tab warns before it unloads
+        fireEvent.keyDown(title, { key: 'Escape' });
+        await waitFor(() => expect(confirm).toHaveBeenCalledTimes(1));
+        expect(screen.getByRole('form', { name: 'Edit the post' })).toBeTruthy();
+        const unload = new Event('beforeunload', { cancelable: true });
+        window.dispatchEvent(unload);
+        expect(unload.defaultPrevented).toBe(true);
+        upload.give(PICTURE_ANSWER);
+        await waitFor(() => expect(save.getAttribute('aria-disabled')).toBeNull());
+        expect(save.getAttribute('aria-describedby')).toBeNull();
+        fireEvent.click(save);
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        const sent = calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body) as Schema<'PostChanges'>);
+        expect(sent).toHaveLength(1);
+        expect(Object.keys(sent[0] ?? {})).toEqual(['body_html']);
+        expect(sent[0]?.body_html).toContain('<img src="https://community.example/image_transcoder.php?o=sys_images_editor&amp;h=7&amp;s=abc" width="640" height="480">');
+    });
+
+    it('holds Save while a picture is uploading beside other changes, and sends them together', async () => {
+        const uploads = [later(), later()];
+        let asked = 0;
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine() };
+            if (c.path === '/uploads/inline' && c.method === 'POST') return uploads[asked++]?.answer ?? null;
+            if (c.path === '/posts/37' && c.method === 'PATCH') return { status: 200, body: mine({ title: 'One lens' }) };
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        const title = await openForm();
+        fireEvent.change(title, { target: { value: 'One lens' } });
+        const save = screen.getByRole('button', { name: 'Save' });
+        const text = screen.getByRole('textbox', { name: 'Text' });
+        pastePicture(text);
+        await waitFor(() => expect(calls.some((c) => c.path === '/uploads/inline')).toBe(true));
+        expect(save.getAttribute('aria-disabled')).toBe('true');
+        // an upload the site refuses holds nothing any longer
+        uploads[0]?.give({ status: 413, body: { type: 'urn:una:problem:too_large', title: 'Too large', status: 413, code: 'too_large' } });
+        await waitFor(() => expect(save.getAttribute('aria-disabled')).toBeNull());
+        pastePicture(text);
+        await waitFor(() => expect(calls.filter((c) => c.path === '/uploads/inline')).toHaveLength(2));
+        expect(save.getAttribute('aria-disabled')).toBe('true');
+        fireEvent.click(save);
+        fireEvent.keyDown(title, { key: 'Enter', metaKey: true, ctrlKey: true });
+        await act(async () => {});
+        // not the title alone, with the form gone before the picture came
+        expect(calls.some((c) => c.method === 'PATCH')).toBe(false);
+        expect(screen.getByRole('form', { name: 'Edit the post' })).toBeTruthy();
+        uploads[1]?.give(PICTURE_ANSWER);
+        await waitFor(() => expect(save.getAttribute('aria-disabled')).toBeNull());
+        fireEvent.click(save);
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        const sent = calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body) as Schema<'PostChanges'>);
+        expect(sent).toHaveLength(1);
+        expect(sent[0]?.title).toBe('One lens');
+        expect(sent[0]?.body_html).toContain('<img src=');
+    });
+
+    it('holds a Save pressed when the picture has come and the form is not drawn with it yet', async () => {
+        const upload = later();
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/37' && c.method === 'GET') return { status: 200, body: mine() };
+            if (c.path === '/uploads/inline' && c.method === 'POST') return upload.answer;
+            if (c.path === '/posts/37' && c.method === 'PATCH') return { status: 200, body: mine({ body_html: (JSON.parse(c.body) as Schema<'PostChanges'>).body_html ?? '' }) };
+            return null;
+        });
+        renderWith(<PostPane id="37" />, api, route);
+        await openForm();
+        const save = screen.getByRole('button', { name: 'Save' });
+        const text = screen.getByRole('textbox', { name: 'Text' });
+        pastePicture(text);
+        await waitFor(() => expect(calls.some((c) => c.path === '/uploads/inline')).toBe(true));
+        // pressed the moment the picture is in the text: the form still has the text without it
+        let pressed = false;
+        const seen = new MutationObserver(() => {
+            if (pressed || !text.querySelector('img')) return;
+            pressed = true;
+            fireEvent.click(save);
+        });
+        seen.observe(text, { childList: true, subtree: true });
+        upload.give(PICTURE_ANSWER);
+        await waitFor(() => expect(pressed).toBe(true));
+        seen.disconnect();
+        // not closed as unchanged, with the picture lost
+        expect(screen.getByRole('form', { name: 'Edit the post' })).toBeTruthy();
+        expect(calls.some((c) => c.method === 'PATCH')).toBe(false);
+        await waitFor(() => expect(save.getAttribute('aria-disabled')).toBeNull());
+        fireEvent.click(save);
+        expect(await screen.findByText('Post saved')).toBeTruthy();
+        const sent = calls.filter((c) => c.method === 'PATCH').map((c) => JSON.parse(c.body) as Schema<'PostChanges'>);
+        expect(sent).toHaveLength(1);
+        expect(sent[0]?.body_html).toContain('<img src=');
+    });
+
+    it('takes no picture pasted while it is being saved: no upload is started, and it says why', async () => {
+        const answer = later();
+        const { api, calls } = site((c) => {
+            if (c.path === '/posts/37' && c.method === 'PATCH') return answer.answer;
+            return null;
+        });
+        const said: string[] = [];
+        const done = vi.fn();
+        renderWith(<EditPost post={mine()} announce={(text) => said.push(text)} onDone={done} />, api, route);
+        fireEvent.change(screen.getByRole('textbox', { name: 'Title' }), { target: { value: 'One lens' } });
+        const save = screen.getByRole('button', { name: 'Save' });
+        fireEvent.click(save);
+        await waitFor(() => expect(save.getAttribute('aria-busy')).toBe('true'));
+        const text = screen.getByRole('textbox', { name: 'Text' });
+        pastePicture(text);
+        await waitFor(() => expect(said).toEqual(['Pictures can’t be added while the text is being sent.']));
+        await act(async () => {});
+        expect(calls.some((c) => c.path === '/uploads/inline')).toBe(false);
+        answer.give({ status: 200, body: mine({ title: 'One lens' }) });
+        await waitFor(() => expect(done).toHaveBeenCalledTimes(1));
+        expect(text.querySelector('img')).toBeNull();
+        expect(said).toHaveLength(1);
+    });
+
+    it('asks before Esc or Cancel throws changes away, and sends nothing when nothing changed', async () => {
+        const { api, calls } = site((c) => (c.path === '/posts/37' && c.method === 'GET' ? { status: 200, body: mine() } : null));
+        renderWith(<PostPane id="37" />, api, route);
+        let title = await openForm();
+        const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+        fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(screen.queryByRole('form', { name: 'Edit the post' })).toBeNull());
+        expect(confirm).not.toHaveBeenCalled();
+        title = await openForm();
+        fireEvent.change(title, { target: { value: 'Changed' } });
+        fireEvent.keyDown(title, { key: 'Escape' });
+        await waitFor(() => expect(confirm).toHaveBeenCalledTimes(1));
+        expect(screen.getByRole('form', { name: 'Edit the post' })).toBeTruthy();
+        confirm.mockReturnValue(true);
+        fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+        await waitFor(() => expect(screen.queryByRole('form', { name: 'Edit the post' })).toBeNull());
+        expect(screen.getByText('A 35mm lens makes you walk.')).toBeTruthy();
+        await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('button', { name: 'More for the post' })));
+        expect(calls.some((c) => c.method === 'PATCH')).toBe(false);
     });
 });

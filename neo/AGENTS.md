@@ -235,6 +235,47 @@ Use `NeoButton`, `NeoButtonLink` or `NeoButtonRef` from `app/design/controls`. T
 - `NeoButtonGroup` joins buttons into one control with the same `style`, `controlSize`, `borderShape`, `role` / `tint` and `width` axes. The group paints the style's surface once (no border: outline and glass are shadow rings); each NeoButton inside becomes a segment through context, with the group's style and size, only the state washes, square inner corners and no hit area over its neighbours. Segments always use the JS surface; a `glass` group on iOS 26+ draws native liquid glass behind them. Recipes are `neo_button.group` in `settings/theme/buttons.js`. Object menus (reactions, likes, scores) build theirs through `ButtonsGroupMenu`, which uses `group.defaultStyle`.
 - `/pg` is a playground for every axis (`apps/next/app/pg/page.js`, `apps/expo/app/pg/`). It isn't gated, so production builds serve it too.
 
+### Menu button style and size
+
+UNA says per menu how its buttons look and how big they are: Studio > Navigation > a menu > "Button style" (Automatic, Regular, Glass, Plain) and "Button size" (Automatic, Mini, Small, Regular, Large). The menu's API carries them as `button_style` and `button_size` (empty for Automatic).
+
+- `components/menu.js` fills them into the menu's `params` with `withMenuButtonParams` (`lib/util/menu.ts`): `regular` is NeoButton `bordered`, `glass` is `glass`, `plain` is `plain`; the sizes are NeoButton's control sizes of the same names.
+- They are the default, not an override: a call site that passes `button_style`, the legacy `button_variant` or `button_size` keeps its own. To let UNA decide for a menu, leave those out at the call site.
+- A call site that needs a look for a menu UNA leaves on Automatic passes `button_style_default` / `button_size_default` instead: UNA's choice wins over them, and they apply when UNA has none. The order is fixed value, UNA, default (`lib/menu-button-params.ts`, with tests).
+- A menu that still draws its buttons through the legacy adapter passes `button_variant_default` (a legacy variant) as its default look.
+- UNA's style is set as `button_style` and also as `button_variant`, because the items drawn by the legacy adapter (likes, favorites, reports and the like) read only the variant. The adapter and `ButtonsGroupMenu` take a NeoButton style name there.
+- Menus that follow UNA this way, with their defaults for Automatic:
+  - the cover's actions (`CoverMenu`, `CoverMenuMore` in `components/elements/covers/menu-cover.js`): glass on phone and tablet, where the actions sit over the cover picture, bordered on desktop;
+  - a content page's actions (`components/elements/entity-actions.js`): the legacy default variant (bordered), small;
+  - the action button of a people or groups card (`UnitRecommendation` in `components/units/helpers.js`), from the card's snippet meta menu: borderless, small.
+- Glass is for a menu over a picture or another backdrop that varies (a cover, a header without chrome). Prefer setting it on the menu in UNA over hard-coding `glass` at a call site, so the site and the apps agree.
+
+### Form labels
+
+UNA picks how forms label their text fields: above the field (regular, the default) or floating inside it (adaptive). It is one setting for the site and the apps, Studio > Designer > Settings, and a form display can have its own (Studio > Forms > Displays). Every form's API carries the resolved style as `params.label_style`.
+
+- `Form` passes it to each field as `label_style`; `hasAdaptiveLabel` (`lib/form/label-style.ts`) floats the label only for field types that can (text, password, phone, embed). Every other field, and every form of a UNA that sends no style, shows regular labels.
+- `forms.adaptive_labels` overrides UNA for the whole app: `null` follows UNA, `false` never floats labels, `true` always does. `forms.without_captions` (empty by default) lists forms that show captions as placeholders instead of labels.
+- Required marks follow UNA too (`params.required_mark`, "mark the fewer"): `none` when every labelled field is required or none is (login, sign-up), `optional` puts "(optional)" on the optional fields, `required` puts the `forms.mandatory_icon` on the required ones. A UNA that sends no mode keeps the icon. `forms.optional_text` replaces the word "optional".
+- The sign-in form's "Forgot password?" is drawn by the Password field (`forms.sys_login.forgot_password_link`, `fieldLink` on `Field`): at the end of the label's line, or under the field (on the description's line) when the label floats. Emptied, `AuthPanel` shows the centred link under the form again.
+
+### Block header
+
+A block's header (`BlockWrapper`, parts in `ui/molecules/page/page-block.js`, classes in `theme.blocks`) is a row, in shadcn/ui's Card terms: the icon, CardTitle over CardDescription, CardAction.
+
+- `BlockHeaderIcon` draws the block's `header_icon` (Studio > Pages > block > "Header icon"): a 44px tile, as tall as the title (a 24px line) and one line of description (14px on 20px, may wrap) together.
+- `BlockTitleIcon` draws the block's `icon` ("Title icon"): a 24px icon in a 28px box with no background, before the title on its line. A block can have either, both or none.
+- With a description the title and description stack with no gap (`BlockNameStacked`, `BlockTitleStacked`, `BlockDescription`); without one the title keeps its own line height (`BlockName`, `BlockTitle`).
+- `BlockActions` close the row; `BlockContent` and `BlockFooter` follow. UNA's design boxes use the same composition (Artificer `general.css`).
+
+### Sign-in and join blocks
+
+UNA's sign-in and join blocks are ordinary page blocks, so their icon, title and description come from the block (Studio > Pages) and `BlockWrapper` draws them. With the form UNA also sends the parts the site shows around it, on the form's content item:
+
+- `auth`: `methods` (other sign-in methods are offered in this block), `separator` (the form is shown, so an "or" goes first) and `switch` (`text`, `action`, `url`: "Don't have an account? Sign up"). `BlockWrapper` draws them inside the block, under the form (`AuthBlockPart`); the methods themselves are the app's own (`AuthPanel`, `auth` settings).
+- `footer`: the block's footer, a notice with links (the terms). `BlockWrapper` draws it in `BlockFooter` through `BlockNotice` (small, muted, centred).
+- A UNA that sends neither keeps the old layout: the login page layout and the splash draw the methods and the link under the block (`pageHasAuthPart`, `blockAuthPart` in `lib/util/page-data.ts`).
+
 ### Interface sounds
 
 Sounds are [Cuelume](https://cuelume.dev/agents.md)'s cues, one per interface job. Pick a cue by its job from Cuelume's "Which cue?" table: subtle emphasis for frequent actions, strong only for rare ones that matter. Never play one on hover, on page load, per item of a burst, or for a number that updates constantly. Everything is in `app/lib/sound`.

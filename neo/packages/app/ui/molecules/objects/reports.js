@@ -275,11 +275,7 @@ export default function ElementReports(props) {
                     system,
                     objectId
                 );
-                const response = await socialActionRequest(
-                    target,
-                    'do',
-                    submitParams
-                );
+                const response = await objectRequest(object_params, 'do', submitParams);
                 applyActionResponse(resolveActionPayload(response));
 
                 if (values?.sys == 'bx_tasks_time') {
@@ -314,10 +310,7 @@ export default function ElementReports(props) {
 
         try {
             setLoading(true);
-            const response = await socialActionRequest(
-                target,
-                'get_performed_by'
-            );
+            const response = await objectRequest(object_params, 'get_performed_by');
             const payload = response?.data ?? response;
             setPerformedBy(resolvePerformedBy(payload));
             setPerformedByVisible(true);

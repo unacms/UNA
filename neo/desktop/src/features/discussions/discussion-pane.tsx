@@ -1,23 +1,25 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { type FormEvent, type KeyboardEvent, type ReactNode, useEffect, useId, useMemo, useState } from 'react';
+import { type FormEvent, type KeyboardEvent, type ReactNode, useEffect, useId, useRef, useState } from 'react';
 
 import { problemMessage, type Schema } from 'una-api';
 
 import { longTime, useContextGroup } from '../../components/activity-card';
 import { Icon } from '../../components/icon';
 import { ProfileBadges } from '../../components/profile-badges';
-import { inlineUploader } from '../../components/rich-editor/images';
 import { RichEditor } from '../../components/rich-editor/rich-editor';
+import { type TextImages, uploadsHold, useTextImages } from '../../components/rich-editor/text-images';
 import { normalizeHtml } from '../../components/rich-editor/schema';
 import { RichText } from '../../components/rich-text';
-import { ago, ApiError, ensureOk, isGone, retryOnce, unwrap } from '../../lib/api';
+import { ago, ApiError, ensureOk, isGone, retryOnce, saveLimit, unwrap } from '../../lib/api';
 import { t, tn } from '../../lib/i18n';
 import { isMac } from '../../lib/platform';
 import { BODY_HTML_FOR_COMMENTS_AND_DISCUSSIONS, textToRichHtml } from '../../lib/rich-html';
 import { useWindowAnnounce } from '../../lib/announce';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
-import { makeUploader, type Uploader } from '../../lib/uploads';
+import { heldSelect } from '../../lib/held-select';
+import { idempotencyKeyFor, type IdempotencySlot, settleIdempotency } from '../../lib/idempotency';
+import { useLeaveGuard } from '../../lib/leave-guard';
 import { confirmAction } from '../../lib/native';
 import { useNavigation } from '../../lib/navigation';
 import { DetailShell, focusMoreButton } from '../../shell/detail-shell';
@@ -281,10 +283,22 @@ function DiscussionHead({ discussion: d, groupName, replies, actions }: { discus
  * Its title, text and category in place. A text with links or formatting is edited on the site
  * (the API takes plain text, which would lose them): then only the title and category change
  * here, and the text is shown as it reads. Esc and Cancel ask first when that throws changes
- * away; Cmd+Enter (Ctrl+Enter) saves.
+ * away, and so does whatever else takes the form away (the pane's Close, another discussion, the
+ * sidebar, Back, another tab, the window closing: useLeaveGuard); Cmd+Enter (Ctrl+Enter) saves.
+ * While a picture pasted or dropped in the text is uploading, Save is held and says why (saved then, the text would go without it), and the
+ * picture counts as a change. While it is being saved the form takes no change (what was typed
+ * then would not be saved, and the form would close on it); it takes them again when it was not
+ * saved, which a save the site never answers is after SAVE_ANSWER_MS. Whatever would leave the
+ * form while it is being saved waits for that answer, without a question, as Cancel and Esc do:
+ * it leaves once the discussion was saved, and stays when it was not (as EditPost).
  */
 function EditDiscussion({ discussion: d, onDone }: { discussion: Discussion; onDone: (saved: Discussion | null) => void }) {
     const { api } = useApp();
+    // said where the text box says its own (the window's live region)
+    const announce = useWindowAnnounce();
+    const images = useTextImages();
+    // a picture of the text still on its way: it is a change that is not in the text yet
+    const uploading = images.pending > 0;
     const setup = useDiscussionSetup();
     const categories = setup.data?.categories ?? [];
     // the HTML is edited as it is (body_html); plain text only where it has no markup to lose
@@ -294,13 +308,23 @@ function EditDiscussion({ discussion: d, onDone }: { discussion: Discussion; onD
     const [fieldError, setFieldError] = useState<FieldError | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
+    const sent = useRef<IdempotencySlot['current']>(null);
+    // the save on its way, for whatever would leave the form meanwhile: true once it was saved
+    const pending = useRef<Promise<boolean> | null>(null);
     const formId = useId();
     const textChanged = BODY_HTML_FOR_COMMENTS_AND_DISCUSSIONS ? value.bodyHtml !== initial.bodyHtml : value.body !== initial.body;
-    const changed = value.title !== initial.title || (textEditable && textChanged) || value.categoryId !== initial.categoryId;
+    const changed = uploading || value.title !== initial.title || (textEditable && textChanged) || value.categoryId !== initial.categoryId;
 
     const submit = async (e?: FormEvent) => {
         e?.preventDefault();
         if (saving) return;
+        // saved now, the text would go without the picture, or the form would close as unchanged;
+        // `busy()` for a press before the upload is drawn, `uploading` for one before the picture is
+        // (the upload is over, and `value` here is still the text without it)
+        if (uploading || images.busy()) {
+            announce(uploadsHold());
+            return;
+        }
         if (!value.title.trim()) {
             setFieldError({ field: 'title', text: t('Give it a title.') });
             document.getElementById(`${formId}-title`)?.focus();
@@ -323,21 +347,46 @@ function EditDiscussion({ discussion: d, onDone }: { discussion: Discussion; onD
         }
         setSaving(true);
         setError(null);
-        const result = await api.PATCH('/discussions/{id}', { params: { path: { id: d.id } }, body });
+        let settle: (saved: boolean) => void = () => {};
+        const save = new Promise<boolean>((resolve) => (settle = resolve));
+        pending.current = save;
+        const settled = (saved: boolean) => {
+            if (pending.current === save) pending.current = null;
+            settle(saved);
+        };
+        // a site that never answers must not hold the form, or a leave that waits for this save
+        const limit = saveLimit();
+        let result;
+        try {
+            result = await api.PATCH('/discussions/{id}', { params: { path: { id: d.id }, header: { 'Idempotency-Key': idempotencyKeyFor(sent, [`/discussions/${d.id}`, body]) } }, body, signal: limit.signal });
+        } catch (err) {
+            // no answer came: the key stays, so saving it again gets the site's answer to this one
+            setSaving(false);
+            setError(t('It was not saved: {{reason}}', { reason: limit.signal.aborted ? t('the site did not answer in time') : errorMessage(err) }));
+            settled(false);
+            return;
+        } finally {
+            limit.done();
+        }
+        settleIdempotency(sent, result.response.status);
         setSaving(false);
         if (result.error !== undefined || !result.data) {
             setError(problemMessage(result.error, t('It was not saved')));
+            settled(false);
             return;
         }
         onDone(result.data);
+        settled(true);
     };
+
+    const discard = () => confirmAction({ title: t('Discard your changes?'), message: t('The discussion stays as it was.'), okLabel: t('Discard') });
+    // a leave while it is being saved is not asked about (the discussion may no longer stay as it
+    // was): it waits for the site's answer, happens when it was saved, and is dropped when it was not
+    useLeaveGuard(changed, () => pending.current ?? discard());
 
     const cancel = async () => {
         if (saving) return;
-        if (changed) {
-            const discard = await confirmAction({ title: t('Discard your changes?'), message: t('The discussion stays as it was.'), okLabel: t('Discard') });
-            if (!discard) return;
-        }
+        if (changed && !(await discard())) return;
         onDone(null);
     };
 
@@ -360,20 +409,26 @@ function EditDiscussion({ discussion: d, onDone }: { discussion: Discussion; onD
             }}
             noValidate
         >
-            <DiscussionFields id={formId} value={value} onChange={setValue} categories={categories} textEditable={textEditable} textHtml={d.body_html} error={fieldError} autoFocus />
+            <DiscussionFields id={formId} value={value} onChange={(change) => (saving ? undefined : setValue(change))} held={saving} categories={categories} textEditable={textEditable} textHtml={d.body_html} error={fieldError} autoFocus images={images} />
             {error ? (
                 <p className="error" role="alert">
                     {error}
                 </p>
             ) : null}
             <div className="settings-actions">
-                <span className="muted small" aria-hidden="true">
-                    {t('{{keys}} to save', { keys: isMac ? '⌘↩' : 'Ctrl+Enter' })}
-                </span>
+                {uploading ? (
+                    <span id={`${formId}-held`} className="muted small">
+                        {uploadsHold()}
+                    </span>
+                ) : (
+                    <span className="muted small" aria-hidden="true">
+                        {t('{{keys}} to save', { keys: isMac ? '⌘↩' : 'Ctrl+Enter' })}
+                    </span>
+                )}
                 <button type="button" className="btn" onClick={() => void cancel()}>
                     {t('Cancel')}
                 </button>
-                <button type="submit" className="btn btn-primary" aria-disabled={saving || undefined} aria-busy={saving || undefined} aria-keyshortcuts={isMac ? 'Meta+Enter' : 'Control+Enter'}>
+                <button type="submit" className="btn btn-primary" aria-disabled={saving || uploading || undefined} aria-busy={saving || undefined} aria-describedby={uploading ? `${formId}-held` : undefined} aria-keyshortcuts={isMac ? 'Meta+Enter' : 'Control+Enter'}>
                     {t('Save')}
                 </button>
             </div>
@@ -381,11 +436,14 @@ function EditDiscussion({ discussion: d, onDone }: { discussion: Discussion; onD
     );
 }
 
+const NO_PICTURES = { refusal: t('Pictures can’t be added to a discussion’s text here.') };
+
 /**
  * The title, the text and the category (when there is more than one to choose from). A field
  * the form refused says why under it, marked invalid and described by that message, so a
  * screen reader landing on it hears the reason. A text that is edited on the site
- * (`textEditable` false) is shown as it reads, in a grouped box, not as a field.
+ * (`textEditable` false) is shown as it reads, in a grouped box, not as a field. While `held`
+ * (the form is being sent) they show what they hold, keep focus and take no change.
  */
 export function DiscussionFields({
     id,
@@ -396,7 +454,8 @@ export function DiscussionFields({
     textHtml,
     error,
     autoFocus,
-    uploader,
+    images,
+    held = false,
 }: {
     id: string;
     value: Changes;
@@ -407,15 +466,11 @@ export function DiscussionFields({
     textHtml?: string;
     error?: FieldError | null;
     autoFocus?: boolean;
-    /** Tests give their own; the app makes the one for where it runs. */
-    uploader?: Uploader;
+    /** The pictures of the text (the form's `useTextImages`, which holds its Save while one uploads). */
+    images: TextImages;
+    /** While the form is being sent: read-only fields and a held list (heldSelect). */
+    held?: boolean;
 }) {
-    const { api } = useApp();
-    // pictures go in the text (POST /uploads/inline) where the text is HTML
-    const images = useMemo(() => {
-        const base = uploader ?? makeUploader(api);
-        return BODY_HTML_FOR_COMMENTS_AND_DISCUSSIONS ? { uploader: base, uploadInline: inlineUploader(base) } : { refusal: t('Pictures can’t be added to a discussion’s text here.') };
-    }, [uploader, api]);
     const errorId = `${id}-error`;
     const bodyHint = `${id}-body-hint`;
     const invalid = (field: FieldError['field']) => (error?.field === field ? true : undefined);
@@ -436,6 +491,7 @@ export function DiscussionFields({
                     required
                     dir="auto"
                     autoFocus={autoFocus}
+                    readOnly={held}
                     aria-invalid={invalid('title')}
                     aria-describedby={error?.field === 'title' ? errorId : undefined}
                     onChange={(e) => onChange({ ...value, title: e.target.value })}
@@ -445,7 +501,7 @@ export function DiscussionFields({
             {categories.length > 1 ? (
                 <div className="settings-field">
                     <label htmlFor={`${id}-category`}>{t('Category')}</label>
-                    <select id={`${id}-category`} value={value.categoryId} onChange={(e) => onChange({ ...value, categoryId: e.target.value })}>
+                    <select id={`${id}-category`} value={value.categoryId} {...heldSelect(held, (e) => onChange({ ...value, categoryId: e.target.value }))}>
                         {categories.map((c) => (
                             <option key={c.id} value={c.id}>
                                 {c.title}
@@ -468,10 +524,12 @@ export function DiscussionFields({
                         label={t('Text')}
                         labelledBy={`${id}-body-label`}
                         invalid={!!invalid('body')}
+                        readOnly={held}
                         describedBy={error?.field === 'body' ? `${errorId} ${bodyHint}` : bodyHint}
                         // mentions only where they are sent as the site's links
                         mentions={BODY_HTML_FOR_COMMENTS_AND_DISCUSSIONS}
-                        images={images}
+                        // pictures go in the text (POST /uploads/inline) where the text is HTML
+                        images={BODY_HTML_FOR_COMMENTS_AND_DISCUSSIONS ? images : NO_PICTURES}
                         windowDrops
                         onChange={(html, text) => onChange({ ...value, body: text, bodyHtml: html })}
                     />

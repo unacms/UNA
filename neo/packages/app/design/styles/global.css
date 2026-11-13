@@ -157,6 +157,53 @@
 }
 
 /*
+ * Glass prominent (NeoButton `glassProminent` and its group), web only: `glass-prominent` (fill),
+ * `glass-prominent-hover` (hovered and pressed fill), `shadow-glass-prominent dark:shadow-glass-prominent-deep`
+ * (edge). Tuned to the iOS 26 button (Playground "Get started", 3x): a fill that stays the primary colour,
+ * a 1pt rim of lighter tint along the top and the bottom, a soft glow inside them (3pt light, 7pt dark),
+ * a hairline of darker tint that is darker still at the sides (black on dark), a faint drop below.
+ * iOS light: fill 36/97/233, rim 66/143/255, hairline 31/91/223, sides 21/79/204; dark: rim 73/151/255.
+ *
+ * The fill is 90% over a blurred backdrop, so a picture behind tints it a little. The backdrop is dimmed
+ * to 70% first: over white the fill would lose the label's contrast (4.8:1 with it, 4.3:1 without).
+ *
+ * Rim, glow and hairline are mixed from the fill (`--neo-gp`), so a `tint` or a destructive role gets its
+ * own colours: NeoButton sets `--neo-gp-fill` beside the inline background. The variables are declared on
+ * the button, not on :root, because a variable is substituted where it is declared.
+ * Here, not in theme.css: Expo imports theme.css, and native can't take CSS-variable colours in a
+ * box-shadow (`--neo-shadow-btn-glass-prominent*` there are the native JS fallback's).
+ */
+@utility glass-prominent {
+    --neo-gp: var(--neo-gp-fill, rgb(var(--primary)));
+    background-color: color-mix(in srgb, var(--neo-gp) 90%, transparent);
+    -webkit-backdrop-filter: blur(12px) saturate(180%) brightness(70%);
+    backdrop-filter: blur(12px) saturate(180%) brightness(70%);
+}
+
+@utility glass-prominent-hover {
+    --neo-gp: var(--neo-gp-fill, rgb(var(--primary-hover)));
+    background-color: color-mix(in srgb, var(--neo-gp) 90%, transparent);
+    -webkit-backdrop-filter: blur(12px) saturate(180%) brightness(70%);
+    backdrop-filter: blur(12px) saturate(180%) brightness(70%);
+}
+
+@utility shadow-glass-prominent {
+    --neo-gp-rim: color-mix(in oklab, var(--neo-gp) 75%, white);
+    --neo-gp-glow: color-mix(in srgb, var(--neo-gp-rim) 30%, transparent);
+    --neo-gp-edge: color-mix(in oklab, var(--neo-gp) 88%, black);
+    --neo-gp-side: color-mix(in oklab, var(--neo-gp) 78%, black);
+    --tw-shadow: inset 0 2px 1px -1px var(--neo-gp-rim), inset 0 -2px 1px -1px var(--neo-gp-rim), inset 0 5px 4px -4px var(--neo-gp-glow), inset 0 -5px 4px -4px var(--neo-gp-glow), 0 0 0 0.6px var(--neo-gp-edge), 1px 0 0 -0.4px var(--neo-gp-side), -1px 0 0 -0.4px var(--neo-gp-side), 0 4px 10px -2px rgb(0 0 0 / 0.06);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+
+@utility shadow-glass-prominent-deep {
+    --neo-gp-rim: color-mix(in oklab, var(--neo-gp) 75%, white);
+    --neo-gp-glow: color-mix(in srgb, var(--neo-gp-rim) 20%, transparent);
+    --tw-shadow: inset 0 2px 1px -1px var(--neo-gp-rim), inset 0 -2px 1px -1px var(--neo-gp-rim), inset 0 8px 8px -6px var(--neo-gp-glow), inset 0 -8px 8px -6px var(--neo-gp-glow), 0 0 0 0.6px rgb(0 0 0 / 0.5), 1px 0 0 -0.4px rgb(0 0 0 / 0), -1px 0 0 -0.4px rgb(0 0 0 / 0), 0 4px 10px -2px rgb(0 0 0 / 0.3);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+
+/*
  * Selected (tinted) glass fill, web only: `glass-tint dark:glass-tint-dark` with `glass-backdrop` and
  * `shadow-btn-glass-tinted`. The accent, a little deeper (iOS saturates its tint), at 88% / 96% so the
  * blurred backdrop shows through. Over the page it lands on the iOS tinted tab: light 209/228/252

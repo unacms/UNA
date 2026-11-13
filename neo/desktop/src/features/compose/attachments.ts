@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useRef } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 
 import type { Schema, UnaApi } from 'una-api';
 
@@ -149,8 +149,13 @@ export function useAttachments({
 }) {
     const [items, dispatch] = useReducer(attachmentsReducer, []);
     const latest = useRef(items);
+    // files being made ready (picked, pasted or dropped, not in the tray yet), and whether some
+    // were added that the composer is not drawn with yet: what it sends now would go without them
+    const making = useRef(0);
+    const undrawn = useRef(false);
     useEffect(() => {
         latest.current = items;
+        undrawn.current = false;
     }, [items]);
 
     // The sheet goes away (another profile, sign-out): uploads on their way stop, and files
@@ -159,10 +164,14 @@ export function useAttachments({
     useEffect(() => {
         uploaderRef.current = uploader;
     }, [uploader]);
+    // gone: files made ready for it after that (a paste or a drop still on its way) are let go
+    const gone = useRef(false);
     useEffect(() => {
         const all = latest;
         const up = uploaderRef;
+        gone.current = false;
         return () => {
+            gone.current = true;
             for (const a of all.current) {
                 revoke(a.preview);
                 if (!a.picked) continue;
@@ -201,6 +210,11 @@ export function useAttachments({
     /** Add what was picked, dropped or pasted; says what was left out. */
     const add = useCallback(
         (staging: Staging) => {
+            // the tray is gone: nothing shows them, takes them off or sends them
+            if (gone.current) {
+                for (const file of staging.files) uploader.release(file);
+                return 0;
+            }
             const room = max - latest.current.length;
             const taken = staging.files.slice(0, Math.max(0, room));
             for (const extra of staging.files.slice(taken.length)) uploader.release(extra);
@@ -215,7 +229,12 @@ export function useAttachments({
                 sent: 0,
                 total: picked.size,
             }));
-            if (added.length) dispatch({ type: 'add', items: added, max });
+            if (added.length) {
+                undrawn.current = true;
+                dispatch({ type: 'add', items: added, max });
+                // known at once (not only after the render): the tray going before it is drawn lets them go too
+                latest.current = [...latest.current, ...added].slice(0, max);
+            }
             added.forEach((item) => start(item));
 
             const notes: string[] = [];
@@ -259,13 +278,25 @@ export function useAttachments({
         [start],
     );
 
-    /** Start over with these (a draft's uploads), or none once the post is sent. */
-    const reset = useCallback((next: Attachment[] = []) => {
-        for (const a of latest.current) revoke(a.preview);
-        dispatch({ type: 'reset', items: next });
-        // known at once (not only after the render): a check of these may answer first
-        latest.current = next;
-    }, []);
+    /**
+     * Start over with these (a draft's uploads, or those a request did not take), or none once
+     * the post is sent. A file of one that leaves the tray unsent (on its way, or failed) is let go.
+     */
+    const reset = useCallback(
+        (next: Attachment[] = []) => {
+            for (const a of latest.current) {
+                if (next.some((x) => x.key === a.key)) continue;
+                revoke(a.preview);
+                if (!a.picked) continue;
+                if (a.status === 'uploading') uploader.cancel(a.picked);
+                uploader.release(a.picked);
+            }
+            dispatch({ type: 'reset', items: next });
+            // known at once (not only after the render): a check of these may answer first
+            latest.current = next;
+        },
+        [uploader],
+    );
 
     /**
      * Ask the site about a finished upload: 'gone' when it deleted it (an upload no post took
@@ -342,5 +373,47 @@ export function useAttachments({
         };
     }, [converting, check, announce]);
 
-    return { items, add, remove, retry, reset, restore };
+    // how many times files on their way stopped being so: who said "wait" for them stops saying
+    // it then, the tray changed or not (a dialog closed with nothing chosen, files it refused)
+    const [settled, setSettled] = useState(0);
+
+    /**
+     * Counts files as on their way while they are made ready (`staging`), until what the caller
+     * does with them at once (its own `then` on this promise: `add`) is done, so nothing is
+     * between "made ready" and "added, not drawn yet". Answers the same promise.
+     */
+    const wait = useCallback(<T>(made: Promise<T>): Promise<T> => {
+        making.current++;
+        const done = () =>
+            // after the caller's reactions to the same promise, which are queued behind this one
+            queueMicrotask(() => {
+                making.current--;
+                if (!making.current && !gone.current) setSettled((n) => n + 1);
+            });
+        made.then(done, done);
+        return made;
+    }, []);
+
+    /**
+     * Takes files that are being made ready (a pick, a paste, a drop) once they are: into the
+     * tray, or let go when the form is `held` by then (it began to be sent: its request left
+     * without them, so no upload is started and nothing keeps them).
+     */
+    const stage = useCallback(
+        (made: Promise<Staging>, held: () => boolean = () => false) => {
+            void wait(made).then((staging) => {
+                if (held()) for (const file of staging.files) uploader.release(file);
+                else add(staging);
+            });
+        },
+        [wait, add, uploader],
+    );
+
+    /**
+     * Whether files are on their way into the tray: being made ready, or added and not drawn
+     * yet. What is sent now would go without them (`postBlocker` says nothing of them yet).
+     */
+    const staging = useCallback(() => making.current > 0 || undrawn.current, []);
+
+    return { items, add, remove, retry, reset, restore, wait, stage, staging, settled };
 }

@@ -11,6 +11,7 @@ import i18n from 'i18next'
 import { queueFormEnsureVisible } from 'app/lib/form/form-ensure-visible'
 import { nativeDriver } from 'app/lib/platform/animation'
 import { InputLabelInsideContext } from 'app/design/controls/input-label-context'
+import { hasAdaptiveLabel } from 'app/lib/form/label-style'
 
 const isWeb = Platform.OS === 'web'
 const inputSettings = appSetting('theme', 'inputs')
@@ -42,6 +43,22 @@ function FieldCaption({ htmlFor, className, children }) {
         )
     }
     return label
+}
+
+/**
+ * A floating label's text with the form's mark (`required_mark`): "(optional)" on an optional
+ * field, or an asterisk on a required one. A label above the field draws its mark beside it.
+ */
+export function adaptiveCaption({ caption, required_mark, required, checker }) {
+    if (!caption) return caption
+    const isRequired = !!(checker || required)
+    if (required_mark === 'optional' && !isRequired) {
+        const optionalText = appSetting('forms', 'optional_text')
+        return caption + ' (' + (optionalText != '' ? optionalText : i18n.t('optional')) + ')'
+    }
+    // No asterisk where a fork turned the mandatory icon off, as beside a label above the field.
+    if (required_mark === 'required' && isRequired && appSetting('forms', 'mandatory_icon')) return caption + ' *'
+    return caption
 }
 
 /** Whether the adaptive label of an input of this size floats inside it (`theme.inputs.adaptive_label_inside_sizes`). */
@@ -161,6 +178,8 @@ export default function Field({
     classes,
     use_caption_as_placeholder,
     type,
+    label_style,
+    required_mark,
     checker,
     required,
     children,
@@ -171,7 +190,8 @@ export default function Field({
     isAdaptiveLabel,
     info,
     size,
-    captionAccessory,
+    captionAccessory: captionAccessoryProp,
+    fieldLink,
 }) {
     const caption = format === 'notitle' ? '' : captionProp
     const wrapRef = useRef(null)
@@ -230,11 +250,18 @@ export default function Field({
 
     const optionalText = appSetting('forms', 'optional_text')
     const mandatoryIcon = appSetting('forms', 'mandatory_icon')
-    const isShowOptional = optionalText != '' ? '(' + optionalText + ')' : ''
+    // UNA says which fields are marked (`required_mark`, see lib/form/label-style): the optional
+    // ones with "(optional)", the required ones with the icon, or none.
+    const isRequired = !!(checker || required)
+    const optionalLabel = '(' + (optionalText != '' ? optionalText : i18n.t('optional')) + ')'
+    const showOptional = required_mark === 'optional' && !isRequired
+    const showAsterisk = required_mark !== 'none' && required_mark !== 'optional' && isRequired && !!mandatoryIcon
     const isShowCaption =
         !!captionProp &&
         format == 'default' &&
         !use_caption_as_placeholder &&
+        // a floating label is the field's caption (drawn below, or by the field itself: phone)
+        !hasAdaptiveLabel({ label_style, caption: captionProp, format, type }) &&
         ['switcher', 'checkbox'].includes(type) == false
 
     // Wide form container: caption column 1/4, control column 3/4.
@@ -242,6 +269,11 @@ export default function Field({
     // control column aligned via ml-auto. Inline ('hor') and placeholder-caption
     // forms keep the flat full-width layout.
     const isGrid = form_layout !== 'hor' && !use_caption_as_placeholder
+
+    // `fieldLink` (the sign-in form's "Forgot password?") shares the label's line, at its end. With no
+    // label line (a floating label) it goes under the control, at the end of the description's line.
+    const captionAccessory = captionAccessoryProp ?? (isShowCaption ? fieldLink : null)
+    const linkUnderControl = !isShowCaption && !captionAccessoryProp ? fieldLink : null
 
     const captionLabel = isShowCaption ? (
         <Text className={cn('text-secondary-foreground block px-0.5', !captionAccessory && 'w-full')}>
@@ -252,19 +284,16 @@ export default function Field({
                 >
                     {caption}
                 </FieldCaption>
-                {checker || required ? (
-                    <></>
-                ) : (
-                    <Text className="text-sm sm: text-base text-muted-foreground ">
-                        {isShowOptional}
+                {showOptional && (
+                    <Text className="text-sm text-muted-foreground">
+                        {optionalLabel}
                     </Text>
                 )}
-                {!!mandatoryIcon && (checker || required) ? (
-                    <Text className="text-destructive mb-auto leading-5">
-                        <Icon icon={mandatoryIcon} size={12} />
-                    </Text>
-                ) : (
-                    <></>
+                {showAsterisk && (
+                    // A View, not Text: an icon inside a native Text is clipped at the line's top.
+                    <View className="self-start pt-0.5">
+                        <Icon icon={mandatoryIcon} size={12} className="text-destructive" />
+                    </View>
                 )}
             </Row>
         </Text>
@@ -288,7 +317,7 @@ export default function Field({
             {!isShowCaption && captionAccessory}
             {!isShowCaption && isAdaptiveLabel && caption ? (
                 <AdaptiveLabel
-                    caption={caption}
+                    caption={adaptiveCaption({ caption, required_mark, required, checker })}
                     value={value}
                     focused={focused}
                     htmlFor={inputId}
@@ -309,7 +338,14 @@ export default function Field({
             {!!error && !Array.isArray(error) && (
                 <FormError errorText={error} errorId={errorId} />
             )}
-            {!!info && (
+            {linkUnderControl ? (
+                <Row className="mt-1 items-start justify-between gap-3">
+                    <Text className="flex-1 px-1 text-xs text-muted-foreground">
+                        {info ? stripTags(info) : ''}
+                    </Text>
+                    {linkUnderControl}
+                </Row>
+            ) : !!info && (
                 <View className="label">
                     <Text className="mt-1 px-1 text-xs text-muted-foreground">
                         {stripTags(info)}

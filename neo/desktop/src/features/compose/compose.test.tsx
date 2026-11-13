@@ -12,7 +12,7 @@ import { AppContext, type AppContextValue } from '../../lib/context';
 import { draftKey, draftStore, setDraftStore } from '../../lib/drafts';
 import { RouterProvider } from '../../lib/navigation';
 import { RouteHistory } from '../../lib/router';
-import type { Picked, Uploader } from '../../lib/uploads';
+import type { Picked, Staging, Uploader } from '../../lib/uploads';
 import { UploadError } from '../../lib/uploads';
 import { type Attachment, attachmentsReducer, fromDraft, mediaIds, POLL_FIRST_MS, postBlocker, useAttachments } from './attachments';
 import { ComposeProvider, NEW_POST_FIELD, useCompose } from './compose-sheet';
@@ -160,6 +160,95 @@ describe('the attachment tray', () => {
         act(() => result.current.remove(result.current.items[0]!.key));
         expect(result.current.items).toHaveLength(0);
         await waitFor(() => expect(calls.some((c) => c.method === 'DELETE' && c.path === '/uploads/42')).toBe(true));
+    });
+
+    // a file made ready is kept by the app until it is uploaded or let go
+    const file = (handle: string): Picked => ({ handle, name: `${handle}.png`, size: 10, mime: 'image/png', kind: 'image' });
+
+    it('lets go files made ready after the tray went away, and starts no upload', () => {
+        const api = fakeApi([]);
+        const { uploader, pending, released } = fakeUploader();
+        const { result, unmount } = renderHook(() => useAttachments({ uploader, api, announce: () => {} }), { wrapper: wrapper(api) });
+        const { add } = result.current;
+        unmount();
+        // a paste or a drop that was still being made ready when the composer closed
+        expect(add({ files: [file('a'), file('b')], refused: [] })).toBe(0);
+        expect(released).toEqual(['a', 'b']);
+        expect(pending.size).toBe(0);
+    });
+
+    it('lets go a file added the moment the tray goes away, before it was drawn', () => {
+        const api = fakeApi([]);
+        const { uploader, released, cancelled } = fakeUploader();
+        const { result, unmount } = renderHook(() => useAttachments({ uploader, api, announce: () => {} }), { wrapper: wrapper(api) });
+        act(() => {
+            result.current.add({ files: [file('a')], refused: [] });
+            unmount();
+        });
+        expect(cancelled).toEqual(['a']);
+        expect(released).toEqual(['a']);
+    });
+
+    it('lets go a failed or unfinished upload when the tray starts over, and keeps those that stay', async () => {
+        const api = fakeApi([]);
+        const { uploader, pending, released, cancelled } = fakeUploader();
+        const { result } = renderHook(() => useAttachments({ uploader, api, announce: () => {} }), { wrapper: wrapper(api) });
+        act(() => void result.current.add({ files: [file('a'), file('b'), file('c')], refused: [] }));
+        await act(async () => pending.get('a')?.reject(new UploadError('Too large', 413, 'file_too_big')));
+        expect(result.current.items.map((a) => a.status)).toEqual(['failed', 'uploading', 'uploading']);
+        // the third stays (a request that took the others): nothing of it is stopped or let go
+        act(() => result.current.reset([result.current.items[2]!]));
+        expect(cancelled).toEqual(['b']);
+        expect(released).toEqual(['a', 'b']);
+        expect(result.current.items.map((a) => a.name)).toEqual(['c.png']);
+    });
+
+    it('counts files as on their way from when they are made ready until the tray is drawn with them', async () => {
+        const api = fakeApi([]);
+        const { uploader } = fakeUploader();
+        const { result } = renderHook(() => useAttachments({ uploader, api, announce: () => {} }), { wrapper: wrapper(api) });
+        expect(result.current.staging()).toBe(false);
+        let ready: (staging: Staging) => void = () => {};
+        const asked: boolean[] = [];
+        result.current.stage(new Promise<Staging>((resolve) => (ready = resolve)), () => {
+            // asked once they are made ready, before they are added: they are still on their way
+            asked.push(result.current.staging());
+            return false;
+        });
+        expect(result.current.staging()).toBe(true);
+        let undrawn = false;
+        await act(async () => {
+            ready({ files: [file('a')], refused: [] });
+            await Promise.resolve();
+            await Promise.resolve();
+            // added, and the tray not drawn with it yet
+            undrawn = result.current.items.length === 0 && result.current.staging();
+        });
+        expect(asked).toEqual([true]);
+        expect(undrawn).toBe(true);
+        expect(result.current.items).toHaveLength(1);
+        expect(result.current.staging()).toBe(false);
+    });
+
+    it('stops counting files that came to nothing: none made ready, the form held, or making them ready failed', async () => {
+        const api = fakeApi([]);
+        const { uploader, released, pending } = fakeUploader();
+        const { result } = renderHook(() => useAttachments({ uploader, api, announce: () => {} }), { wrapper: wrapper(api) });
+        const settled = result.current.settled;
+        // a dialog closed with nothing chosen: the tray does not change, and that it is over is told
+        await act(async () => result.current.stage(Promise.resolve({ files: [], refused: ['notes.txt'] })));
+        expect(result.current.staging()).toBe(false);
+        expect(result.current.settled).toBe(settled + 1);
+        // the form began to be sent meanwhile: let go, never uploaded
+        await act(async () => result.current.stage(Promise.resolve({ files: [file('a')], refused: [] }), () => true));
+        expect(released).toEqual(['a']);
+        expect(pending.size).toBe(0);
+        expect(result.current.items).toHaveLength(0);
+        expect(result.current.staging()).toBe(false);
+        // making them ready failed
+        await act(async () => void result.current.wait(Promise.reject(new Error('The file could not be read'))).catch(() => undefined));
+        expect(result.current.staging()).toBe(false);
+        expect(result.current.settled).toBe(settled + 3);
     });
 });
 
@@ -477,6 +566,96 @@ describe('the compose sheet', () => {
         await act(async () => answer({ status: 422, body: { type: 'about:blank', title: 'Invalid', status: 422, code: 'invalid', detail: 'Too long' } }));
         expect((await within(sheet).findByRole('alert')).textContent).toBe('Too long');
         expect(screen.queryByText('Draft kept')).toBeNull();
+    });
+
+    // files on their way into the tray (being made ready): a post sent now would go without them
+    const WAIT = 'Wait until the uploads are done';
+    const posts = (calls: Call[]) => calls.filter((c) => c.method === 'POST' && c.path === '/feed-posts');
+    const postApi = (calls: Call[]) => fakeApi(calls, (c) => (c.method === 'POST' && c.path === '/feed-posts' ? { status: 201, body: created('5', [media('77')]) } : { status: 204 }));
+    /** The sheet open with "Hi" typed, its uploader making files ready only when `ready` is called. */
+    function sheetMaking(calls: Call[], way: 'pick' | 'fromFiles') {
+        const { uploader: base, pending } = fakeUploader();
+        let ready: (empty?: boolean) => void = () => {};
+        const uploader: Uploader = {
+            ...base,
+            [way]: (...args: [File[]]) =>
+                new Promise<Staging>((resolve) => {
+                    ready = (empty = false) => resolve(empty ? { files: [], refused: [] } : way === 'pick' ? base.pick() : base.fromFiles(...args));
+                }),
+        };
+        renderSheet(postApi(calls), uploader);
+        fireEvent.click(screen.getByRole('button', { name: 'Write' }));
+        const sheet = screen.getByRole('dialog', { name: 'New post' });
+        const box = within(sheet).getByRole('textbox', { name: "What's new?" });
+        setRichText(box, 'Hi');
+        const post = within(sheet).getByRole('button', { name: 'Post' }) as HTMLButtonElement;
+        return { sheet, box, post, pending, ready: (empty?: boolean) => act(async () => ready(empty)) };
+    }
+
+    it('does not post while files picked in the dialog are on their way into the tray, says to wait, and posts with them once they are up', async () => {
+        const calls: Call[] = [];
+        const { sheet, box, post, pending, ready } = sheetMaking(calls, 'pick');
+        fireEvent.click(within(sheet).getByRole('button', { name: 'Add photos or videos' }));
+        // the button, then the keyboard: neither sends, and both say why
+        fireEvent.click(post);
+        await act(async () => {});
+        expect(posts(calls)).toHaveLength(0);
+        expect(document.getElementById('compose-blocker')?.textContent).toBe(WAIT);
+        expect(post.getAttribute('aria-describedby')).toBe('compose-blocker');
+        expect(within(sheet).getByRole('status').textContent).toBe(WAIT);
+        fireEvent.keyDown(box, { key: 'Enter', metaKey: true });
+        await act(async () => {});
+        expect(posts(calls)).toHaveLength(0);
+        expect(post.getAttribute('aria-busy')).toBe('false');
+
+        // made ready: the tray shows it, and Post waits for its upload as for any other
+        await ready();
+        expect(await within(sheet).findByRole('list', { name: '1 attachment' })).toBeTruthy();
+        expect(post.disabled).toBe(true);
+        expect(document.getElementById('compose-blocker')?.textContent).toBe(WAIT);
+        await act(async () => pending.get('h-picked')?.resolve(media('77')));
+        await waitFor(() => expect(post.disabled).toBe(false));
+        expect(document.getElementById('compose-blocker')).toBeNull();
+        fireEvent.click(post);
+        await waitFor(() => expect(posts(calls)).toHaveLength(1));
+        expect(posts(calls)[0]?.body).toEqual({ audience: 'public', body_html: '<p>Hi</p>', media_ids: ['77'] });
+    });
+
+    for (const where of ['the text box', 'the sheet'] as const)
+        it(`does not post while a photo pasted in ${where} is being made ready, and posts with it once it is up`, async () => {
+            const calls: Call[] = [];
+            const { sheet, box, post, pending, ready } = sheetMaking(calls, 'fromFiles');
+            const photo = new File([new Uint8Array([1, 2, 3])], 'beach.png', { type: 'image/png' });
+            fireEvent.paste(where === 'the text box' ? box : within(sheet).getByRole('combobox', { name: 'Who can see it' }), { clipboardData: { files: [photo], getData: () => '' } });
+            fireEvent.keyDown(box, { key: 'Enter', metaKey: true });
+            await act(async () => {});
+            expect(posts(calls)).toHaveLength(0);
+            expect(document.getElementById('compose-blocker')?.textContent).toBe(WAIT);
+
+            await ready();
+            expect(await within(sheet).findByRole('list', { name: '1 attachment' })).toBeTruthy();
+            await act(async () => pending.get('h-beach.png')?.resolve(media('77')));
+            await waitFor(() => expect(post.disabled).toBe(false));
+            fireEvent.keyDown(box, { key: 'Enter', metaKey: true });
+            await waitFor(() => expect(posts(calls)).toHaveLength(1));
+            expect(posts(calls)[0]?.body).toEqual({ audience: 'public', body_html: '<p>Hi</p>', media_ids: ['77'] });
+        });
+
+    it('stops saying to wait when nothing came of the files on their way (the dialog closed with none), and posts then', async () => {
+        const calls: Call[] = [];
+        const { sheet, post, ready } = sheetMaking(calls, 'pick');
+        fireEvent.click(within(sheet).getByRole('button', { name: 'Add photos or videos' }));
+        fireEvent.click(post);
+        await act(async () => {});
+        expect(document.getElementById('compose-blocker')?.textContent).toBe(WAIT);
+        // nothing was chosen: the tray does not change, and there is nothing to wait for
+        await ready(true);
+        expect(document.getElementById('compose-blocker')).toBeNull();
+        expect(post.getAttribute('aria-describedby')).toBeNull();
+        expect(posts(calls)).toHaveLength(0);
+        fireEvent.click(post);
+        await waitFor(() => expect(posts(calls)).toHaveLength(1));
+        expect(posts(calls)[0]?.body).toEqual({ audience: 'public', body_html: '<p>Hi</p>' });
     });
 });
 

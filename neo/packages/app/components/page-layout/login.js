@@ -7,7 +7,8 @@ import Page from 'app/ui/molecules/page/page'
 import { PageFooter } from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
-import { getPageContentWidth } from 'app/lib/util'
+import { appSetting, getPageContentWidth } from 'app/lib/util'
+import { pageHasAuthPart } from 'app/lib/util/page-data'
 import { PageHeaderOptions } from 'app/ui/molecules/header/options'
 import { PageChromeProvider } from 'app/ui/molecules/page/page-chrome'
 // `withAuthLinks`: the login page's own extras (forgot password, social sign-in, sign up).
@@ -21,7 +22,7 @@ function PageContent({ children, withAuthLinks }) {
                 {children}
                 {withAuthLinks ? (
                     <>
-                        <AuthPanel showSeparator={true} forgotPasswordLink={true} />
+                        <AuthPanel showSeparator={true} forgotPasswordLink={!appSetting('forms', 'sys_login')?.forgot_password_link} />
 
                         <Row className=" mx-auto gap-1 justify-center items-center text-center">
                             <Text className="text-base text-secondary-foreground">
@@ -61,7 +62,8 @@ export default function PageLayout({ data, children, pageClasses }) {
                         : null}
                     <View className={`w-full mx-auto ${contentWidth}`}>
                         <PageChromeProvider inset={paddingTiers}>
-                            <PageContent withAuthLinks={data?.uri === 'login'}>{children}</PageContent>
+                            {/* A UNA that sends the parts with the form has the block draw them (AuthBlockPart). */}
+                            <PageContent withAuthLinks={data?.uri === 'login' && !pageHasAuthPart(data)}>{children}</PageContent>
                         </PageChromeProvider>
                     </View>
                 </View>

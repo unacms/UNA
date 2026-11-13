@@ -238,13 +238,15 @@ class BxBaseModGeneralFormsEntryHelper extends BxDolProfileForms
         }
 
         // insert data into database
-        $aValsToAdd = array ();
+        $aValsToAdd = [];
         if(isset($CNF['FIELD_AUTHOR']))
             $aValsToAdd[$CNF['FIELD_AUTHOR']] = $iProfile;
         if(($sK = $CNF['FIELD_ADDED'] ?? false) && ($iAdded = $aValues[$sK] ?? false))
             $aValsToAdd[$sK] = $iAdded;
         if(($sK = $CNF['FIELD_CHANGED'] ?? false) && ($iChanged = $aValues[$sK] ?? false))
             $aValsToAdd[$sK] = $iChanged;
+        if(($sK = $CNF['FIELD_PUBLISHED'] ?? false) && ($iPublished = $aValues[$sK] ?? false))
+            $aValsToAdd[$sK] = $iPublished;
 
         $iContentId = $oForm->insert($aValsToAdd);
         if (!$iContentId) {

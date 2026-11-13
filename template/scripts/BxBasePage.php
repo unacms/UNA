@@ -512,6 +512,16 @@ class BxBasePage extends BxDolPage
     }
 
     /**
+     * Get block header icon: the larger icon before the block's title and description. getBlockIcon is the title
+     * icon, the small one on the title's line.
+     * @return string
+     */
+    public function getBlockHeaderIcon ($aBlock)
+    {
+        return $aBlock['header_icon'] ?? '';
+    }
+
+    /**
      * Get help control if help is available for the block.
      * @return string
      */
@@ -915,10 +925,21 @@ class BxBasePage extends BxDolPage
                         $sIcon = $sIconHtml;
                 }
 
+                $sHeaderIcon = '';
+                if(($sHeaderIcon = $this->getBlockHeaderIcon($aBlock))) {
+                    list($sHeaderIcon, $sIconUrl, $sIconA, $sIconHtml) = $this->_oTemplate->getTemplateFunctions()->getIcon($sHeaderIcon);
+
+                    if($sHeaderIcon)
+                        $sHeaderIcon = BxDolIconset::getObjectInstance()->getIcon($sHeaderIcon);
+                    else if($sIconHtml)
+                        $sHeaderIcon = $sIconHtml;
+                }
+
                 $aCells[$sKey][$i] = array_merge($aCells[$sKey][$i], [
                     'title' => isset($mBlock['title']) ? $mBlock['title'] : $this->getBlockTitle($aBlock),
                     'description' => isset($mBlock['description']) ? $mBlock['description'] : $this->getBlockDescription($aBlock),
                     'icon' => $sIcon,
+                    'header_icon' => $sHeaderIcon,
                     'content' => isset($mBlock['content']) ? $mBlock['content'] : $mBlock,
                     'menu' => isset($mBlock['menu']) ? $mBlock['menu'] : '',
                     'source' => $sSource
@@ -1089,6 +1110,7 @@ class BxBasePage extends BxDolPage
         $sTitle = $this->getBlockTitle($aBlock);
         $sDescription = $this->getBlockDescription($aBlock);
         $sIcon = $this->getBlockIcon($aBlock);
+        $sHeaderIcon = $this->getBlockHeaderIcon($aBlock);
         $sHelp = $this->getBlockHelp($aBlock);
 
         $sFunc = '_getBlock' . ucfirst($aBlock['type']);
@@ -1104,7 +1126,7 @@ class BxBasePage extends BxDolPage
 
             $sContent = $this->getBlockAsyncCode($aBlock, $iAsync);
             $aParams = [
-                ($sBlTitle = $sTitle . $sHelpTitle) && ($sDescription || $sIcon) ? [$sBlTitle, $sDescription, $sIcon] : $sBlTitle,
+                ($sBlTitle = $sTitle . $sHelpTitle) && ($sDescription || $sIcon || $sHeaderIcon) ? [$sBlTitle, $sDescription, $sIcon, $sHeaderIcon] : $sBlTitle,
                 $sContent . $sHelpContent,
                 $iDesignboxId
             ];
@@ -1141,7 +1163,7 @@ class BxBasePage extends BxDolPage
                     $sHelpContent = $sHelp;
 
                 $aParams = [
-                    ($sBlTitle = ($mixedContent['title'] ?? $sTitle) . $sHelpTitle) && ($sDescription || $sIcon) ? [$sBlTitle, $sDescription, $sIcon] : $sBlTitle,
+                    ($sBlTitle = ($mixedContent['title'] ?? $sTitle) . $sHelpTitle) && ($sDescription || $sIcon || $sHeaderIcon) ? [$sBlTitle, $sDescription, $sIcon, $sHeaderIcon] : $sBlTitle,
                     $mixedContent['content'] . $sHelpContent,
                     $iDesignboxId
                 ];
@@ -1171,7 +1193,7 @@ class BxBasePage extends BxDolPage
                     $sHelpContent = $sHelp;
 
                 $aParams = array(
-                    ($sBlTitle = $sTitle . $sHelpTitle) && ($sDescription || $sIcon) ? [$sBlTitle, $sDescription, $sIcon] : $sBlTitle,
+                    ($sBlTitle = $sTitle . $sHelpTitle) && ($sDescription || $sIcon || $sHeaderIcon) ? [$sBlTitle, $sDescription, $sIcon, $sHeaderIcon] : $sBlTitle,
                     $mixedContent . $sHelpContent,
                     $iDesignboxId
                 );

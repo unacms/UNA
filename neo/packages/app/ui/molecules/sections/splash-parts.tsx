@@ -8,7 +8,8 @@ import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Logo from 'app/ui/atoms/logo'
 import Illustration from 'app/ui/molecules/content/illustration'
-import { BlockDataByName } from 'app/lib/util'
+import { appSetting, BlockDataByName } from 'app/lib/util'
+import { blockAuthPart } from 'app/lib/util/page-data'
 import type { SplashSlotName } from 'app/lib/splash/splash-html'
 
 type SplashPartProps = { data: any }
@@ -42,6 +43,7 @@ export function SplashSocialLogin() {
  */
 export function SplashLoginForm({ data }: Readonly<SplashPartProps>) {
     const isShowCreateAccount = BlockDataByName(data, 'system:login_form')
+    const inBlock = !!blockAuthPart(BlockDataByName(data, isShowCreateAccount ? 'system:login_form' : 'system:login_form_only'))
     return (
         <View className="w-full max-w-md gap-6">
             <BlockByName
@@ -52,8 +54,13 @@ export function SplashLoginForm({ data }: Readonly<SplashPartProps>) {
                     button_full_width: true,
                 }}
             />
-            <AuthPanel forgotPasswordLink={true} showSeparator={true} />
-            <SplashJoinLink data={data} />
+            {/* A UNA that sends the parts with the form has the block draw them (AuthBlockPart). */}
+            {inBlock ? null : (
+                <>
+                    <AuthPanel forgotPasswordLink={!appSetting('forms', 'sys_login')?.forgot_password_link} showSeparator={true} />
+                    <SplashJoinLink data={data} />
+                </>
+            )}
         </View>
     )
 }

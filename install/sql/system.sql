@@ -479,8 +479,8 @@ INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `or
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
-(@iCategoryId, 'site_email_html_template_header', '_adm_stg_cpt_option_site_email_html_template_header', '<html>\r\n    <head></head>\r\n    <body bgcolor="#fff" style="margin:0; padding:0;">\r\n        <div style="background-color:#fff;">\r\n            <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">\r\n                <tr><td valign="top">\r\n                    <div style="color:#333; padding:20px; font:14px Helvetica, Arial, sans-serif;">\r\n                        <div style="border-bottom:2px solid #eee; padding-bottom:10px; margin-bottom:20px; font-weight:bold; font-size:22px; color:#999;">{site_name}</div>', 'text', '', '', '', 1),
-(@iCategoryId, 'site_email_html_template_footer', '_adm_stg_cpt_option_site_email_html_template_footer', '\r\n                    </div>\r\n                </td></tr>\r\n                <tr><td valign="top">\r\n                    <div style="color:#999; padding:0 20px 20px 20px; font:11px Helvetica, Arial, sans-serif;">\r\n                        <div style="border-top:2px solid #eee; padding-top:10px;">{about_us}&nbsp;&nbsp;&nbsp;{unsubscribe}</div>\r\n                    </div>\r\n                </td></tr>\r\n            </table>\r\n        </div>\r\n    </body>\r\n</html>', 'text', '', '', '', 2),
+(@iCategoryId, 'site_email_html_template_header', '_adm_stg_cpt_option_site_email_html_template_header', '<html>\r\n    <head>\r\n        <meta name="color-scheme" content="light dark">\r\n        <meta name="supported-color-schemes" content="light dark">\r\n        <style>\r\n            :root { color-scheme: light dark; supported-color-schemes: light dark; }\r\n            @media (prefers-color-scheme: dark) {\r\n                .bx-email-bg { background-color:#18181b !important; }\r\n                .bx-email-text { color:#e4e4e7 !important; }\r\n                .bx-email-muted { color:#a1a1aa !important; }\r\n                .bx-email-line { border-color:#3f3f46 !important; }\r\n                .bx-email-bg a { color:#8ab4f8 !important; }\r\n                .bx-email-logo-light { display:none !important; }\r\n                .bx-email-logo-dark { display:block !important; max-height:none !important; overflow:visible !important; }\r\n            }\r\n        </style>\r\n    </head>\r\n    <body bgcolor="#fff" class="bx-email-bg" style="margin:0; padding:0;">\r\n        <div class="bx-email-bg" style="background-color:#fff;">\r\n            <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">\r\n                <tr><td valign="top">\r\n                    <div class="bx-email-text" style="color:#333; padding:20px; font:14px Helvetica, Arial, sans-serif;">\r\n                        <div class="bx-email-line bx-email-muted" style="border-bottom:2px solid #eee; padding-bottom:10px; margin-bottom:20px; font-weight:bold; font-size:22px; color:#666;">{site_logo}</div>', 'text', '', '', '', 1),
+(@iCategoryId, 'site_email_html_template_footer', '_adm_stg_cpt_option_site_email_html_template_footer', '\r\n                    </div>\r\n                </td></tr>\r\n                <tr><td valign="top">\r\n                    <div class="bx-email-muted" style="color:#666; padding:0 20px 20px 20px; font:11px Helvetica, Arial, sans-serif;">\r\n                        <div class="bx-email-line" style="border-top:2px solid #eee; padding-top:10px;">{about_us}&nbsp;&nbsp;&nbsp;{unsubscribe}</div>\r\n                    </div>\r\n                </td></tr>\r\n            </table>\r\n        </div>\r\n    </body>\r\n</html>', 'text', '', '', '', 2),
 
 (@iCategoryId, 'sys_site_icon', '', '0', 'digit', '', '', '', 15),
 (@iCategoryId, 'sys_site_icon_svg', '', '0', 'digit', '', '', '', 16),
@@ -541,7 +541,9 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'template', '_adm_stg_cpt_option_template', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:13:"get_templates";s:5:"class";s:21:"TemplTemplateServices";}', 'Template', '_adm_stg_err_option_template', 1),
 
 (@iCategoryId, 'sys_pt_default_visitor', '_adm_stg_cpt_option_sys_pt_default_visitor', '3', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:14:"get_page_types";s:5:"class";s:21:"TemplTemplateServices";}', '', '', 10),
-(@iCategoryId, 'sys_pt_default_member', '_adm_stg_cpt_option_sys_pt_default_member', '3', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:14:"get_page_types";s:5:"class";s:21:"TemplTemplateServices";}', '', '', 11);
+(@iCategoryId, 'sys_pt_default_member', '_adm_stg_cpt_option_sys_pt_default_member', '3', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:14:"get_page_types";s:5:"class";s:21:"TemplTemplateServices";}', '', '', 11),
+
+(@iCategoryId, 'sys_form_label_style', '_adm_stg_cpt_option_sys_form_label_style', 'regular', 'select', 'regular,adaptive', '', '', 20);
 
 --
 -- CATEGORY: General (Site Settings)
@@ -4005,6 +4007,7 @@ CREATE TABLE IF NOT EXISTS `sys_form_displays` (
   `object` varchar(64) NOT NULL,
   `title` varchar(255) NOT NULL,
   `view_mode` tinyint(4) NOT NULL DEFAULT '0',
+  `label_style` varchar(16) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `object_display_name` (`object`,`display_name`)
 );
@@ -4968,6 +4971,8 @@ CREATE TABLE IF NOT EXISTS `sys_objects_menu` (
   `set_name` varchar(64) NOT NULL,
   `module` varchar(32) NOT NULL,
   `template_id` int(11) NOT NULL,
+  `button_style` varchar(16) NOT NULL DEFAULT '',
+  `button_size` varchar(16) NOT NULL DEFAULT '',
   `config_api` text NOT NULL,
   `persistent` tinyint(4) NOT NULL DEFAULT '0',
   `cache` enum('off','guest','global','per_user','per_acl') NOT NULL DEFAULT 'off',
@@ -6426,6 +6431,7 @@ CREATE TABLE IF NOT EXISTS `sys_pages_blocks` (
   `title` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL DEFAULT '',
   `icon` text NOT NULL,
+  `header_icon` text NOT NULL,
   `designbox_id` int(11) NOT NULL DEFAULT '11',
   `class` varchar(128) NOT NULL DEFAULT '',
   `submenu` varchar(64) NOT NULL DEFAULT '',
@@ -6593,6 +6599,10 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('sys_recom_subscriptions', 1, 'system', '', '_sys_page_block_title_recom_subscriptions', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:36:"browse_recommendations_subscriptions";s:6:"params";a:2:{i:0;s:12:"{profile_id}";i:1;a:1:{s:13:"empty_message";b:1;}}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 0, 1, 1),
 
 ('sys_ntfs_context_invitations', 1, 'system', '', '_sys_page_block_title_ntfs_context_invitations', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"browse_invitations";s:6:"params";a:2:{i:0;s:19:"{logged_profile_id}";i:1;a:1:{s:13:"empty_message";b:1;}}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 1);
+
+-- The sign-in and join blocks, on their pages and on the home page: a title icon and a line under the title
+UPDATE `sys_pages_blocks` SET `icon`='user-round-key', `description`='_sys_page_block_desc_login' WHERE `object` IN ('sys_login', 'sys_home') AND `module`='system' AND `title`='_sys_page_block_title_login';
+UPDATE `sys_pages_blocks` SET `icon`='user-plus', `description`='_sys_page_block_desc_create_account' WHERE `object` IN ('sys_create_account', 'sys_home') AND `module`='system' AND `title`='_sys_page_block_title_create_account';
 
 -- The "create profile" block describes itself: title, description and icon are shown by
 -- API clients (NEO) in the block header and can be changed in Studio.

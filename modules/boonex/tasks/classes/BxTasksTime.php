@@ -72,7 +72,7 @@ class BxTasksTime extends BxTemplReport
         $iAuthorId = $this->_getAuthorId();
         $bPerformed = $this->isPerformed($iObjectId, $iAuthorId);
 
-        $this->_oModule->serviceProcessTimer('pause', $iObjectId, $iAuthorId);
+        $this->_oModule->pauseTimer($iObjectId, $iAuthorId);
 
         if(($sK = 'show_do_report_form') && ($iShowDoReportForm = bx_get($sK)) !== false && !$iShowDoReportForm) {
             if(!$this->isEnabled())
@@ -98,7 +98,6 @@ class BxTasksTime extends BxTemplReport
                 'value_h' => $iHours,
                 'value_m' => $iMinutes + 1,
                 'text' => '',
-                'billable' => 1,
                 'timer_id' => $aTimer['id']
             ]), $oForm);
         }
@@ -111,6 +110,17 @@ class BxTasksTime extends BxTemplReport
             ];
 
         return $mixedResult;
+    }
+
+    /**
+     * Logging time also needs the `time_log` permission of the viewer's role in the task's context.
+     */
+    public function isAllowedReport($isPerformAction = false)
+    {
+        if(!parent::isAllowedReport($isPerformAction))
+            return false;
+
+        return $this->_oModule->getTimeRightsByContentId($this->_iId, $this->_getAuthorId())['log'];
     }
 
     /**
@@ -213,10 +223,22 @@ class BxTasksTime extends BxTemplReport
         $sText = ($sKey = 'text') && $this->_bIsApi ? $aParams[$sKey] : ($aParams[$sKey] ?? $oForm->getCleanValue($sKey));
         $sText = bx_process_input($sText);
 
-        //--- A switcher that wasn't submitted reads as 0, but time is billable unless the viewer says otherwise.
-        $iBillable = (int)(($aParams['billable'] ?? null) ?? ($this->_bIsApi ? 1 : $oForm->getCleanValue('billable')));
+        //--- Logged from a timer (Log, Edit and log) or entered by hand. The original time is what the timer measured
+        //--- (rounded up to a minute, as Log does), so a change made in Edit and log is the manual part, + or -;
+        //--- time entered by hand is its own original. Billed time follows the Logged one (NULL) until somebody sets it.
+        $iByTimer = 0;
+        $iOriginal = $iValue;
+        if(($iTimerId = (int)($aParams['timer_id'] ?? $oForm->getCleanValue('timer_id')))) {
+            $iByTimer = 1;
 
-        $iId = (int)$oForm->insert(['object_id' => $iObjectId, 'author_id' => $iAuthorId, 'author_nip' => $iAuthorNip, 'value' => $iValue, 'billable' => $iBillable, 'text' => $sText,  'date' => time()]);
+            $aTimer = $this->_oModule->_oDb->getTimers(['sample' => 'id', 'id' => $iTimerId]);
+            if(!empty($aTimer['duration']) && (int)$aTimer['profile_id'] == $iAuthorId && (int)$aTimer['content_id'] == (int)$iObjectId) {
+                list($iH, $iM) = $this->_oModule->_oConfig->timeI2A((int)$aTimer['duration'], true);
+                $iOriginal = $this->_oModule->_oConfig->timeA2I([(int)$iH, (int)$iM + 1]);
+            }
+        }
+
+        $iId = (int)$oForm->insert(['object_id' => $iObjectId, 'author_id' => $iAuthorId, 'author_nip' => $iAuthorNip, 'value' => $iValue, 'value_original' => $iOriginal, 'by_timer' => $iByTimer, 'text' => $sText,  'date' => time()]);
         if($iId != 0 && $this->putReport($iObjectId, $iAuthorId, $iId)) {
             $aReport = $this->_getReport($iObjectId, true);
             $aResult = $this->_returnReportData($iObjectId, $iAuthorId, $iId, $aReport, !$bPerformed);
@@ -261,8 +283,16 @@ class BxTasksTime extends BxTemplReport
     {
         $aTmplReports = [];
 
+        //--- Everybody's Logged time, or the Billed time (clients), or the viewer's own Logged time.
+        $iViewerId = bx_get_logged_profile_id();
+        $aRights = $this->_oModule->getTimeRightsByContentId($this->getId(), $iViewerId);
+        $bBilled = $aRights['view_billed'] && !$aRights['view_logged_any'];
+
         $aReports = $this->_oQuery->getPerformedBy($this->getId());
         foreach($aReports as $aReport) {
+            if(!$aRights['view_logged_any'] && !$bBilled && (int)$aReport['author_id'] != $iViewerId)
+                continue;
+
             list($sUserName, $sUserUrl, $sUserIcon, $sUserUnit) = $this->_getAuthorInfo($aReport['author_id']);
 
             $sText = bx_process_output($aReport['text'], BX_DATA_TEXT_MULTILINE);
@@ -270,7 +300,7 @@ class BxTasksTime extends BxTemplReport
             $aTmplReports[] = [
                 'style_prefix' => $this->_sStylePrefix,
                 'user_unit' => $sUserUnit,
-                'value' => $this->_oModule->_oConfig->timeI2S($aReport['value']),
+                'value' => $this->_oModule->_oConfig->timeI2S($bBilled ? $this->_oModule->getTrackBilled($aReport) : $aReport['value']),
                 'date' => $aReport['value_date'] ? bx_time_js($aReport['value_date'], BX_FORMAT_DATE, true) : '',
             	'bx_if:show_text' => [
                     'condition' => strlen($sText) > 0,

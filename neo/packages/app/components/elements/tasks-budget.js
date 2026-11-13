@@ -3,12 +3,11 @@ import { Text } from 'app/design/typography'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { Icon } from 'app/ui/atoms/icon'
 import { cn } from 'app/lib/util'
+import { formatTaskMinutes } from 'app/lib/tasks-meta'
 import { useTranslation } from 'react-i18next'
 
 const EMPTY = {}
-const NUMBER_OPTIONS = { minimumFractionDigits: 0, maximumFractionDigits: 2 }
 const PERCENT_OPTIONS = { minimumFractionDigits: 0, maximumFractionDigits: 1 }
-const numberFormatters = new Map()
 const percentFormatters = new Map()
 
 function toNumber(value) {
@@ -16,16 +15,13 @@ function toNumber(value) {
     return Number.isFinite(amount) ? amount : 0
 }
 
-function getFormatter(cache, locale, options, currency) {
-    const key = currency ? `${locale}|${currency}` : String(locale || '')
+function getFormatter(cache, locale, options) {
+    const key = String(locale || '')
     let formatter = cache.get(key)
     if (formatter) return formatter
 
     try {
-        formatter = new Intl.NumberFormat(
-            locale,
-            currency ? { style: 'currency', currency, ...options } : options
-        )
+        formatter = new Intl.NumberFormat(locale, options)
     } catch {
         formatter = new Intl.NumberFormat(undefined, options)
     }
@@ -33,8 +29,10 @@ function getFormatter(cache, locale, options, currency) {
     return formatter
 }
 
-function formatAmount(value, locale, currency) {
-    return getFormatter(numberFormatters, locale, NUMBER_OPTIONS, currency).format(toNumber(value))
+// UNA keeps the budget in minutes; show it as hours and minutes.
+function formatTime(value) {
+    const minutes = Math.round(toNumber(value))
+    return (minutes < 0 ? '-' : '') + formatTaskMinutes(Math.abs(minutes))
 }
 
 function formatPercent(value, locale) {
@@ -67,7 +65,6 @@ export default function TasksBudget({ data, blockWrapperProps }) {
     const remainsPercent = budget.remains_percent == null
         ? (total > 0 ? (remains / total) * 100 : 0)
         : toNumber(budget.remains_percent)
-    const currency = budget.currency || budget.currency_code
     const spentPercent = total > 0 ? Math.min(100, Math.max(0, (spent / total) * 100)) : 0
     const overBudget = remains < 0 || spent > total
     const remainsClass = overBudget ? 'text-destructive' : 'text-foreground'
@@ -84,7 +81,7 @@ export default function TasksBudget({ data, blockWrapperProps }) {
                             </Text>
                         </Row>
                         <Text className={cn('text-2xl font-bold tabular-nums', remainsClass)}>
-                            {formatAmount(remains, locale, currency)}
+                            {formatTime(remains)}
                         </Text>
                     </View>
                     <View className="bg-muted rounded-full px-2 py-1">
@@ -107,8 +104,8 @@ export default function TasksBudget({ data, blockWrapperProps }) {
                 </View>
 
                 <Row className="gap-4">
-                    <Stat label={t('tasks_budget_total')} value={formatAmount(total, locale, currency)} />
-                    <Stat label={t('tasks_budget_spent')} value={formatAmount(spent, locale, currency)} />
+                    <Stat label={t('tasks_budget_total')} value={formatTime(total)} />
+                    <Stat label={t('tasks_budget_spent')} value={formatTime(spent)} />
                 </Row>
             </View>
         </BlockWrapper>

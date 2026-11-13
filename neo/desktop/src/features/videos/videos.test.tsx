@@ -10,7 +10,7 @@ import { RouterProvider } from '../../lib/navigation';
 import { opensInWindow } from '../../lib/open-in-window';
 import { feedRoute, parseRoute, type Route, RouteHistory, routeToPath, sectionRoute } from '../../lib/router';
 import { setSiteModules } from '../../lib/site-modules';
-import { type Picked, UploadError, type Uploader, videoUploader } from '../../lib/uploads';
+import { type Picked, type Staging, UploadError, type Uploader, videoUploader } from '../../lib/uploads';
 import { type CommandHandler, Shell } from '../../shell/shell';
 import type { NavItem } from '../../shell/sidebar';
 import { contextTabs } from '../groups/group-view';
@@ -18,7 +18,7 @@ import { groupKey } from '../groups/groups';
 import { navigationEntries } from '../palette/commands';
 import { isVideoLink, NewVideo, titleFromName, uploadStatusText } from './new-video';
 import { videoRowText } from './video-list';
-import { durationText, mediaState, playable, playerUrl, textToHtml, thumbnail, type Video } from './videos';
+import { durationText, mediaState, playable, playerUrl, textToHtml, thumbnail, type Video, videoKey } from './videos';
 
 vi.mock('../../lib/native', async (importOriginal) => ({ ...(await importOriginal<typeof import('../../lib/native')>()), confirmAction: vi.fn(async () => true), openExternal: vi.fn(async () => {}) }));
 
@@ -142,8 +142,10 @@ describe('video routes', () => {
 });
 
 type Call = { method: string; path: string; query: string; body: string };
+/** An answer the test gives in place of the site's, when it says so; 'lost' is no answer at all. */
+type Held = { status: number; body?: unknown } | 'lost';
 
-function site(opts: { videos?: boolean } = {}) {
+function site(opts: { videos?: boolean; over?: (c: Call) => Promise<Held> | null } = {}) {
     const all: Record<string, Video> = {
         '1': video('1', 'Test roll: night tram', { content_id: '5614', viewer: { reaction: null, favorited: false, can_react: true, can_comment: true, can_edit: true, can_delete: true } }),
         '2': video('2', 'Lantern test', { state: 'processing', media: media({ state: 'processing', variants: {}, duration_ms: null }) }),
@@ -187,7 +189,9 @@ function site(opts: { videos?: boolean } = {}) {
             const url = new URL(request.url);
             const c = { method: request.method, path: url.pathname.replace(/^\/api\/v2/, '') || '/', query: url.search, body: request.method === 'GET' ? '' : await request.text() };
             calls.push(c);
-            const a = answer(c);
+            const held = await opts.over?.(c);
+            if (held === 'lost') throw new TypeError('Load failed');
+            const a = held ?? answer(c);
             if (!a) return new Promise<Response>(() => {});
             return a.body === undefined ? new Response(null, { status: a.status }) : new Response(JSON.stringify(a.body), { status: a.status, headers: { 'Content-Type': 'application/json' } });
         },
@@ -373,6 +377,40 @@ describe('adding a video', () => {
         expect(await screen.findByText('Uploaded and ready.')).toBeTruthy();
     });
 
+    it('lets go a video picked after the form went away, and uploads nothing', async () => {
+        const { api } = site();
+        const { base, pending } = fakeUploader();
+        const released: string[] = [];
+        let picked: (staging: Staging) => void = () => {};
+        const uploader: Uploader = { ...base, pick: () => new Promise<Staging>((resolve) => (picked = resolve)), release: (f) => void released.push(f.handle ?? '') };
+        renderApp({ list: { section: 'media' }, detail: { kind: 'new-video' } }, api, <NewVideo uploader={uploader} />);
+        fireEvent.click(await screen.findByRole('button', { name: 'Choose a video…' }));
+        // the form closes while the system's dialog is open
+        cleanup();
+        await act(async () => picked({ files: [{ handle: 'h-clip', name: 'Harbour at dawn.mp4', size: 2_000_000, mime: 'video/mp4', kind: 'video' }], refused: [] }));
+        expect(released).toEqual(['h-clip']);
+        expect(pending.size).toBe(0);
+    });
+
+    it('stops and lets go a video the moment the form goes away, before it was drawn', async () => {
+        const { api } = site();
+        const { base } = fakeUploader();
+        const released: string[] = [];
+        const cancelled: string[] = [];
+        let picked: (staging: Staging) => void = () => {};
+        const uploader: Uploader = { ...base, pick: () => new Promise<Staging>((resolve) => (picked = resolve)), cancel: (f) => void cancelled.push(f.handle ?? ''), release: (f) => void released.push(f.handle ?? '') };
+        renderApp({ list: { section: 'media' }, detail: { kind: 'new-video' } }, api, <NewVideo uploader={uploader} />);
+        fireEvent.click(await screen.findByRole('button', { name: 'Choose a video…' }));
+        await act(async () => {
+            picked({ files: [{ handle: 'h-clip', name: 'Harbour at dawn.mp4', size: 2_000_000, mime: 'video/mp4', kind: 'video' }], refused: [] });
+            await Promise.resolve();
+            await Promise.resolve();
+            cleanup();
+        });
+        expect(cancelled).toEqual(['h-clip']);
+        expect(released).toEqual(['h-clip']);
+    });
+
     it('deletes an upload left behind when a link is added instead', async () => {
         const { api, calls } = site();
         const { base, pending } = fakeUploader();
@@ -389,6 +427,174 @@ describe('adding a video', () => {
         await waitFor(() => expect(calls.some((c) => c.method === 'DELETE' && c.path === '/uploads/99')).toBe(true));
         expect(JSON.parse(calls.find((c) => c.method === 'POST' && c.path === '/videos')!.body)).toMatchObject({ embed_url: 'https://www.youtube.com/watch?v=aqz-KE-bpKQ', title: 'A plane' });
         expect(released).toEqual(['h-clip']);
+    });
+
+    // ---- the form while its request (POST /videos) is in flight, and after an answer that says nothing ----
+
+    const refusal = (status: number): Held => ({ status, body: { type: 'about:blank', title: 'Refused', status, code: 'refused', detail: 'The site refused it' } });
+    /** The first POST /videos is answered when the test says so; the site answers the ones after it. */
+    function firstAdd() {
+        let give: (a: Held) => void = () => {};
+        const first = new Promise<Held>((resolve) => (give = resolve));
+        let asked = 0;
+        return { over: (c: Call) => (c.method === 'POST' && c.path === '/videos' && !asked++ ? first : null), give: (a: Held) => act(async () => give(a)) };
+    }
+    /** The form with its video uploaded (upload 99), ready to be added. */
+    async function uploaded(over: (c: Call) => Promise<Held> | null, uploaderOver: (base: Uploader) => Partial<Uploader> = () => ({})) {
+        const { api, calls } = site({ over });
+        const { base, pending } = fakeUploader();
+        const released: string[] = [];
+        const uploader: Uploader = { ...base, release: (f) => void released.push(f.handle ?? ''), ...uploaderOver(base) };
+        const app = renderApp({ list: { section: 'media' }, detail: { kind: 'new-video' } }, api, <NewVideo uploader={uploader} />);
+        fireEvent.click(await screen.findByRole('button', { name: 'Choose a video…' }));
+        await waitFor(() => expect(pending.get('h-clip')).toBeTruthy());
+        await act(async () => pending.get('h-clip')?.resolve(media({ id: '99' })));
+        expect(await screen.findByText('Uploaded and ready.')).toBeTruthy();
+        const adds = () => calls.filter((c) => c.method === 'POST' && c.path === '/videos');
+        const deletes = () => calls.filter((c) => c.method === 'DELETE' && c.path === '/uploads/99');
+        const add = async (times = 1) => {
+            fireEvent.click(screen.getByRole('button', { name: 'Add video' }));
+            await waitFor(() => expect(adds()).toHaveLength(times));
+        };
+        return { ...app, calls, pending, released, adds, deletes, add };
+    }
+    const settle = () => act(async () => {});
+
+    it('keeps the upload its request names when the form goes while it is sent and the site takes it: nothing is deleted or opened, the lists know the video', async () => {
+        const first = firstAdd();
+        const { history, client, released, deletes, add } = await uploaded(first.over);
+        await add();
+        cleanup();
+        // the form let its copy of the file go, and left the upload to the request
+        expect(released).toEqual(['h-clip']);
+        expect(deletes()).toHaveLength(0);
+        await first.give({ status: 201, body: video('1', 'Harbour at dawn') });
+        await settle();
+        expect(deletes()).toHaveLength(0);
+        // nothing opens in place of a form that is not there
+        expect(history.current.detail).toEqual({ kind: 'new-video' });
+        expect(client.getQueryData<Video>(videoKey('1'))?.title).toBe('Harbour at dawn');
+    });
+
+    it('deletes the upload once, after the answer, when the form went while it was sent and the site refused it', async () => {
+        const first = firstAdd();
+        const { history, deletes, add } = await uploaded(first.over);
+        await add();
+        cleanup();
+        // not under the request: its answer says whether the site took it
+        await settle();
+        expect(deletes()).toHaveLength(0);
+        await first.give(refusal(422));
+        await settle();
+        expect(deletes()).toHaveLength(1);
+        expect(history.current.detail).toEqual({ kind: 'new-video' });
+    });
+
+    for (const [how, answer] of [
+        ['got no answer', 'lost'],
+        ['was answered 500', refusal(500)],
+        ['was answered 409 (the first sending still runs)', refusal(409)],
+    ] as [string, Held][]) {
+        it(`never deletes the upload of a request that ${how} after the form went: the site may have taken it`, async () => {
+            const first = firstAdd();
+            const { history, deletes, add } = await uploaded(first.over);
+            await add();
+            cleanup();
+            await first.give(answer);
+            await settle();
+            expect(deletes()).toHaveLength(0);
+            expect(history.current.detail).toEqual({ kind: 'new-video' });
+        });
+
+        it(`keeps the upload of a request that ${how} when the form goes later, but not when another file is chosen instead`, async () => {
+            const first = firstAdd();
+            const { deletes, add } = await uploaded(first.over);
+            await add();
+            await first.give(answer);
+            expect((await screen.findByRole('alert')).textContent).toMatch(answer === 'lost' ? /^The video was not added: / : /The site refused it/);
+            cleanup();
+            await settle();
+            expect(deletes()).toHaveLength(0);
+
+            // the same, and then another file is chosen: the person's own doing, as Remove is
+            const again = firstAdd();
+            const other = await uploaded(again.over);
+            await other.add();
+            await again.give(answer);
+            await screen.findByRole('alert');
+            fireEvent.click(screen.getByRole('button', { name: 'Choose another video…' }));
+            await waitFor(() => expect(other.deletes()).toHaveLength(1));
+        });
+    }
+
+    it('keeps an upload a request said nothing of when a link is added instead', async () => {
+        const first = firstAdd();
+        const { history, calls, deletes, add } = await uploaded(first.over);
+        await add();
+        await first.give('lost');
+        await screen.findByRole('alert');
+        fireEvent.click(screen.getByLabelText(/Link to a video on another site/));
+        fireEvent.change(screen.getByLabelText('Address of the video'), { target: { value: 'https://www.youtube.com/watch?v=aqz-KE-bpKQ' } });
+        await add(2);
+        await waitFor(() => expect(history.current.detail).toEqual({ kind: 'video', id: '1' }));
+        expect(JSON.parse(calls.filter((c) => c.method === 'POST' && c.path === '/videos')[1]!.body)).toMatchObject({ embed_url: 'https://www.youtube.com/watch?v=aqz-KE-bpKQ' });
+        cleanup();
+        await settle();
+        expect(deletes()).toHaveLength(0);
+    });
+
+    it('takes no change while it is being sent: a file made ready meanwhile is let go, the fields are held, and it is sent once', async () => {
+        const first = firstAdd();
+        const late: Picked = { handle: 'h-late', name: 'Late.mp4', size: 10, mime: 'video/mp4', kind: 'video' };
+        const dropped: Picked = { handle: 'h-dropped', name: 'Dropped.mp4', size: 10, mime: 'video/mp4', kind: 'video' };
+        let picks = 0;
+        let ready: (staging: Staging) => void = () => {};
+        const { history, pending, released, adds, deletes, add } = await uploaded(first.over, (base) => ({
+            // the first dialog gives the clip; the second is still open when the form is sent
+            pick: (o) => (picks++ ? new Promise<Staging>((resolve) => (ready = resolve)) : base.pick(o)),
+            fromFiles: async () => ({ files: [dropped], refused: [] }),
+        }));
+        const pick = screen.getByRole('button', { name: 'Choose another video…' }) as HTMLButtonElement;
+        fireEvent.click(pick);
+        expect(picks).toBe(2);
+        await add();
+
+        // the dialog answers, and a file is dropped: neither is uploaded or takes the upload's place
+        await act(async () => ready({ files: [late], refused: [] }));
+        fireEvent.drop(pick.parentElement!, { dataTransfer: { files: [new File(['x'], 'Dropped.mp4', { type: 'video/mp4' })], types: ['Files'] } });
+        await settle();
+        expect(released).toEqual(['h-late', 'h-dropped']);
+        expect(pending.has('h-late') || pending.has('h-dropped')).toBe(false);
+        expect(deletes()).toHaveLength(0);
+        expect(screen.getByText('Uploaded and ready.')).toBeTruthy();
+
+        // held, never disabled (focus stays where it is)
+        expect(pick.getAttribute('aria-disabled')).toBe('true');
+        expect(pick.disabled).toBe(false);
+        fireEvent.click(pick);
+        expect(picks).toBe(2);
+        const title = screen.getByLabelText('Title') as HTMLInputElement;
+        const text = screen.getByLabelText('Description') as HTMLTextAreaElement;
+        expect([title.readOnly, text.readOnly, title.disabled, text.disabled]).toEqual([true, true, false, false]);
+        const audience = screen.getByLabelText('Who can see it') as HTMLSelectElement;
+        expect(audience.getAttribute('aria-disabled')).toBe('true');
+        expect(audience.disabled).toBe(false);
+        fireEvent.change(audience, { target: { value: 'friends' } });
+        expect(audience.value).toBe('public');
+        const link = screen.getByLabelText(/Link to a video on another site/) as HTMLInputElement;
+        expect(link.getAttribute('aria-disabled')).toBe('true');
+        expect(link.disabled).toBe(false);
+        fireEvent.click(link);
+        expect(screen.queryByLabelText('Address of the video')).toBeNull();
+        // a second Add video is not a second request
+        fireEvent.click(screen.getByRole('button', { name: 'Add video' }));
+        await settle();
+        expect(adds()).toHaveLength(1);
+
+        await first.give({ status: 201, body: video('1', 'Harbour at dawn') });
+        await waitFor(() => expect(history.current.detail).toEqual({ kind: 'video', id: '1' }));
+        expect(JSON.parse(adds()[0]!.body)).toEqual({ media_id: '99', title: 'Harbour at dawn', audience: 'public' });
+        expect(deletes()).toHaveLength(0);
     });
 
     it('names the event it adds a video to, and who will see it', async () => {

@@ -18,6 +18,7 @@
  * No `overflow-hidden`: it would clip the segments' focus rings.
  */
 import React, { createContext, useContext, Fragment, type ReactNode } from 'react';
+import { Platform } from 'react-native';
 import { Row, View } from 'app/design/view';
 import { GlassSurface } from 'app/ui/atoms/glass-surface';
 import { appSetting, cn, hasLiquidGlass } from 'app/lib/util';
@@ -25,6 +26,7 @@ import {
     NeoButtonStyleProvider,
     NeoControlSizeProvider,
     normalizeStyleProp,
+    resolveScoped,
     useNeoButtonStyle,
     useResolvedNeoButton,
 } from 'app/design/controls/neo-button/neo-button-resolver';
@@ -38,10 +40,24 @@ const SEGMENT_ROUNDED: Record<string, Record<SegmentPosition, string>> = {
     'rounded-none': { only: 'rounded-none', first: 'rounded-none',   middle: 'rounded-none', last: 'rounded-none' },
     'rounded-md':   { only: 'rounded-md',   first: 'rounded-s-md',   middle: 'rounded-none', last: 'rounded-e-md' },
     'rounded-lg':   { only: 'rounded-lg',   first: 'rounded-s-lg',   middle: 'rounded-none', last: 'rounded-e-lg' },
+    'rounded-control-sm': { only: 'rounded-control-sm', first: 'rounded-s-control-sm', middle: 'rounded-none', last: 'rounded-e-control-sm' },
     'rounded-xl':   { only: 'rounded-xl',   first: 'rounded-s-xl',   middle: 'rounded-none', last: 'rounded-e-xl' },
     'rounded-2xl':  { only: 'rounded-2xl',  first: 'rounded-s-2xl',  middle: 'rounded-none', last: 'rounded-e-2xl' },
     'rounded-full': { only: 'rounded-full', first: 'rounded-s-full', middle: 'rounded-none', last: 'rounded-e-full' },
 };
+
+/** Inline fill of a prominent group: a `tint` colour, or on web glass prominent the variable its CSS mixes from. */
+function groupFillStyle(tintFill: string | null, glassFill: string | null): Record<string, string> | undefined {
+    if (glassFill) return { '--neo-gp-fill': glassFill };
+    return tintFill ? { backgroundColor: tintFill } : undefined;
+}
+
+function currentPlatform(): 'web' | 'ios' | 'android' {
+    if (Platform.OS === 'web') return 'web';
+    return Platform.OS === 'ios' ? 'ios' : 'android';
+}
+
+const PLATFORM = currentPlatform();
 
 const PROMINENT_STYLES = new Set(['borderedProminent', 'glassProminent']);
 
@@ -114,8 +130,15 @@ export function NeoButtonGroup({
     // A prominent group is filled with its tint: a role's fill class (it may
     // be a CSS variable, which native can't read inline), or a `tint` colour.
     const prominent = PROMINENT_STYLES.has(style);
-    const roleFill = prominent && !tint ? appSetting('theme', 'neo_button', 'roles')?.[role ?? '']?.fillClass : null;
-    const tintFill = prominent && !roleFill && resolved.tint ? resolved.tint : null;
+    // Web glass prominent mixes its fill, rim and hairline from `--neo-gp-fill`
+    // (global.css): a tinted or destructive group names its colour there and
+    // the container paints it, at 90% over the blurred backdrop like the
+    // untinted one. A fill class or an inline colour would make it opaque.
+    const glassFill = PLATFORM === 'web' && style === 'glassProminent' && resolved.tint ? resolved.tint : null;
+    const roleFill = prominent && !tint && !glassFill ? appSetting('theme', 'neo_button', 'roles')?.[role ?? '']?.fillClass : null;
+    const tintFill = prominent && !roleFill && !glassFill && resolved.tint ? resolved.tint : null;
+    // A container may differ per platform (`{ default, web }`), like the segments' states.
+    const containerCls = resolveScoped(liquidGlass ? groupStyle.liquidContainer : groupStyle.container, { platform: PLATFORM });
     const fill = width === 'fill';
     const corners = SEGMENT_ROUNDED[resolved.rounded] ?? SEGMENT_ROUNDED['rounded-xl']!;
 
@@ -130,11 +153,11 @@ export function NeoButtonGroup({
                         'relative flex-row items-stretch',
                         fill ? 'w-full' : 'self-start max-w-full',
                         resolved.rounded,
-                        liquidGlass ? groupStyle.liquidContainer : groupStyle.container,
+                        containerCls,
                         roleFill,
                         className,
                     )}
-                    style={tintFill ? { backgroundColor: tintFill } : undefined}
+                    style={groupFillStyle(tintFill, glassFill)}
                 >
                     {liquidGlass ? <GlassSurface rounded={resolved.rounded} /> : null}
                     {items.map((child, i) => {

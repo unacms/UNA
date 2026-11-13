@@ -71,7 +71,17 @@ export function MessageComposer({ id, placeholder, submitLabel = t('Send'), purp
     const { api } = useApp();
     const uploader = useMemo(() => photoUploader(given ?? makeUploader(api), purpose), [given, api, purpose]);
     const attachments = useAttachments({ uploader, api, announce, forMessage: true });
-    const { add, reset, restore } = attachments;
+    const { add, reset, restore, wait, staging } = attachments;
+    // the box makes pasted and dropped files ready with this one: they count as on their way
+    // into the tray from then, so a message is not sent without them (`staging`)
+    const boxUploader = useMemo<Uploader>(
+        () => ({ ...uploader, fromFiles: (...args: Parameters<Uploader['fromFiles']>) => wait(uploader.fromFiles(...args)), fromPaths: (...args: Parameters<Uploader['fromPaths']>) => wait(uploader.fromPaths(...args)) }),
+        [uploader, wait],
+    );
+    // Send was pressed while files were on their way into the tray: it waits, and says so until
+    // the tray shows them
+    const [waitingWith, setWaitingWith] = useState<{ items: typeof attachments.items; settled: number } | null>(null);
+    const waiting = waitingWith?.items === attachments.items && waitingWith.settled === attachments.settled;
     const hintId = useId();
     const { sendWithCmdEnter } = useSettings();
     const addId = `${useId()}-add`;
@@ -123,6 +133,12 @@ export function MessageComposer({ id, placeholder, submitLabel = t('Send'), purp
 
     const send = useCallback(async () => {
         if (!canSend || sending.current) return;
+        // photos on their way into the tray: the message would go without them
+        if (staging()) {
+            setWaitingWith({ items: attachments.items, settled: attachments.settled });
+            announce(t('Wait until the uploads are done'));
+            return;
+        }
         sending.current = true;
         setBusy(true);
         setError(null);
@@ -140,7 +156,12 @@ export function MessageComposer({ id, placeholder, submitLabel = t('Send'), purp
             sending.current = false;
             setBusy(false);
         }
-    }, [canSend, onSend, text, content.html, ids, reset, lasting]);
+    }, [canSend, onSend, text, content.html, ids, reset, lasting, staging, announce, attachments.items, attachments.settled]);
+
+    // the line under the box: why it can't be sent, that it waits for photos on their way, or how to send
+    let hint = sendHint(sendWithCmdEnter);
+    if (blocker && (text.trim() || ids.length)) hint = blocker;
+    else if (waiting) hint = t('Wait until the uploads are done');
 
     const onKeyDown = (e: globalThis.KeyboardEvent): boolean => {
         if (!isSendKey(e, sendWithCmdEnter)) return false;
@@ -160,7 +181,7 @@ export function MessageComposer({ id, placeholder, submitLabel = t('Send'), purp
             <AttachmentTray items={attachments.items} onRemove={attachments.remove} onRetry={attachments.retry} fallbackFocusId={addId} />
             <div className="message-composer-row">
                 <Tooltip text={t('Add photos')}>
-                    <button type="button" id={addId} className="tb-btn" aria-label={t('Add photos')} onClick={() => uploader.pick().then(add, (e: unknown) => setError(errorMessage(e)))}>
+                    <button type="button" id={addId} className="tb-btn" aria-label={t('Add photos')} onClick={() => wait(uploader.pick()).then(add, (e: unknown) => setError(errorMessage(e)))}>
                         <Icon name="image-plus" />
                     </button>
                 </Tooltip>
@@ -174,7 +195,7 @@ export function MessageComposer({ id, placeholder, submitLabel = t('Send'), purp
                     label={placeholder}
                     describedBy={hintId}
                     autoFocus={autoFocus}
-                    images={{ uploader, attach: add }}
+                    images={{ uploader: boxUploader, attach: add }}
                     windowDrops
                     announce={announce}
                     onChange={(html, plain) => setContent({ html, text: plain })}
@@ -186,7 +207,7 @@ export function MessageComposer({ id, placeholder, submitLabel = t('Send'), purp
                 </button>
             </div>
             <p id={hintId} className="message-composer-hint">
-                {blocker && (text.trim() || ids.length) ? blocker : sendHint(sendWithCmdEnter)}
+                {hint}
             </p>
             {error ? (
                 <p className="error" role="alert">

@@ -1,4 +1,5 @@
 import { View } from 'app/design/view'
+import { resolveRequiredMark } from 'app/lib/form/label-style'
 import { getFormFieldByData, getHiddenFields } from 'app/lib/form/form-helpers'
 import { appSetting } from 'app/lib/util'
 import MediaAttachments, { getMediaFields } from 'app/components/form-fields/media-attachments'
@@ -19,6 +20,7 @@ export default function FormAds(props) {
     )
     const lastKey = renderKeys[renderKeys.length - 1]
     const useCaptionAsPlaceholder = appSetting('forms', 'without_captions').includes(name)
+    const requiredMark = resolveRequiredMark(data?.params?.required_mark)
 
     return (
         <View className={appSetting('forms', 'form_container')}>
@@ -45,6 +47,7 @@ export default function FormAds(props) {
                             form_name: name,
                             noPadding: key === lastKey,
                             use_caption_as_placeholder: useCaptionAsPlaceholder,
+                            required_mark: requiredMark,
                         },
                         key
                     )

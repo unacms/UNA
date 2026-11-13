@@ -156,7 +156,7 @@ class BxTasksGridBudgetContextAdministration extends BxBaseModGeneralGrid
         if(!$iContextPid)
             return false;
 
-        return $this->_oModule->isAllowManageByContext($this->_iContextPid);
+        return $this->_oModule->isAdministratorByContext($iContextPid);
     }
 
     protected function _delete ($mixedId)

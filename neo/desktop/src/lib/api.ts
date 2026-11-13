@@ -148,3 +148,17 @@ export function ago(iso: string): string {
     for (const [unit, size] of steps) if (Math.abs(seconds) >= size) return rtf.format(Math.round(seconds / size), unit);
     return rtf.format(0, 'second');
 }
+
+/**
+ * How long a save waits for the site's answer. The API client gives up only on a site it can't
+ * reach (api.rs CONNECT_TIMEOUT), and a form takes no change while it is being saved, so a save
+ * the site never answers is stopped here: it is then not saved, as far as the app knows.
+ */
+export const SAVE_ANSWER_MS = 60_000;
+
+/** The limit of one save: the signal that stops it after SAVE_ANSWER_MS, and `done` for when it ended. */
+export function saveLimit(): { signal: AbortSignal; done: () => void } {
+    const stop = new AbortController();
+    const limit = setTimeout(() => stop.abort(), SAVE_ANSWER_MS);
+    return { signal: stop.signal, done: () => clearTimeout(limit) };
+}

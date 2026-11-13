@@ -1,8 +1,9 @@
 import { getCurrentWebview } from '@tauri-apps/api/webview';
-import { type DragEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { type DragEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Icon, type IconName } from '../../components/icon';
 import { useApp } from '../../lib/context';
+import { saysNothingOfFirstSending } from '../../lib/idempotency';
 import { t, tn } from '../../lib/i18n';
 import { inApp } from '../../lib/native';
 import { isOverDropTarget } from '../../components/rich-editor/images';
@@ -11,12 +12,26 @@ import { AttachmentTray } from '../compose/attachment-tray';
 import { mediaIds, postBlocker, useAttachments } from '../compose/attachments';
 import { MAX_FILES } from '../files/files';
 import { MAX_ALBUM_PHOTOS, MAX_PHOTOS } from './photos';
+import { takenOf } from './upload-answers';
+
+/**
+ * Whether an answer says nothing of what the site took of the uploads its request names: the
+ * first sending still runs (409), the rate limit answered before the Idempotency-Key was looked
+ * at (429: a first sending with this key may still run), or a server error (a gateway's 502 or
+ * 504 while the site works on, a 500 after part of the work). The same answers a form keeps its
+ * Idempotency-Key on (`settleIdempotency`), by one rule: what says nothing of the first sending
+ * says nothing of its uploads, and an upload deleted under a running request loses the file.
+ */
+export function saysNothingOfUploads(status: number): boolean {
+    return saysNothingOfFirstSending(status);
+}
 
 /**
  * The photos a form uploads (new photos, a new album, photos added to an album), or the files of
  * new files (`file`: any type): each upload starts as it is picked or dropped, with the form's
  * purpose; Retry and Remove as in a post's tray. Uploads nothing took are deleted on the site
- * when the form goes.
+ * when the form goes, but for those a request names that is in flight, or named and said nothing
+ * of (`claim`).
  */
 export function usePhotoUploads({ purpose, uploader: given, announce }: { purpose: 'photo' | 'album' | 'file' | 'post_cover'; uploader?: Uploader; announce: (text: string) => void }) {
     const { api } = useApp();
@@ -29,11 +44,60 @@ export function usePhotoUploads({ purpose, uploader: given, announce }: { purpos
     useEffect(() => {
         latest.current = uploads.items;
     }, [uploads.items]);
-    useEffect(
-        () => () => {
-            for (const a of latest.current) if (a.status === 'done' && a.media) void api.DELETE('/uploads/{id}', { params: { path: { id: a.media.id } } }).catch(() => undefined);
+    // the uploads a request in flight names: the form going does not delete them under it (the
+    // request's answer says which it took), and whether the form is gone
+    const claimed = useRef<readonly string[]>([]);
+    const gone = useRef(false);
+    // the uploads a request named that said nothing of what the site took (no answer, or one
+    // that tells nothing): the site may be taking them, now or later, so nothing here deletes
+    // them again, whatever a later request is told (only Remove does, which the site refuses for
+    // one it took)
+    const unknown = useRef<ReadonlySet<string>>(new Set());
+    const drop = useCallback((id: string) => void api.DELETE('/uploads/{id}', { params: { path: { id } } }).catch(() => undefined), [api]);
+    useEffect(() => {
+        gone.current = false;
+        return () => {
+            gone.current = true;
+            for (const a of latest.current) if (a.status === 'done' && a.media && !claimed.current.includes(a.media.id) && !unknown.current.has(a.media.id)) drop(a.media.id);
+        };
+    }, [drop]);
+
+    const { reset } = uploads;
+    const claim = useCallback(
+        <T extends { response: { status: number } }>(request: Promise<T>, took: (answer: T) => boolean | readonly string[]): Promise<T> => {
+            const named = mediaIds(latest.current);
+            claimed.current = named;
+            // null: the request said nothing of what the site took
+            const settle = (answer: boolean | readonly string[] | null) => {
+                claimed.current = [];
+                // they stay as they are: in the tray to send again, and never deleted here
+                if (answer === null) {
+                    unknown.current = new Set([...unknown.current, ...named]);
+                    return;
+                }
+                const taken = takenOf(answer, named);
+                // the form went meanwhile: what the request named and did not take is deleted now
+                if (gone.current) {
+                    for (const id of named) if (!taken.includes(id) && !unknown.current.has(id)) drop(id);
+                    return;
+                }
+                if (!taken.length) return;
+                const left = latest.current.filter((a) => !(a.media && taken.includes(a.media.id)));
+                latest.current = left;
+                reset(left);
+            };
+            return request.then(
+                (answer) => {
+                    settle(saysNothingOfUploads(answer.response.status) ? null : took(answer));
+                    return answer;
+                },
+                (e: unknown) => {
+                    settle(null);
+                    throw e;
+                },
+            );
         },
-        [api],
+        [drop, reset],
     );
 
     return {
@@ -44,14 +108,25 @@ export function usePhotoUploads({ purpose, uploader: given, announce }: { purpos
         /** Why the request can't go yet (uploads on their way or failed), or null. */
         blocker: postBlocker(uploads.items),
         /**
-         * The site took them (all, or those of these upload ids): they leave the tray, and the
-         * form going no longer deletes them. Those it did not take stay, to send again or remove.
+         * The request that takes the uploads (`ids`), from when it is sent: until it is answered
+         * the form going does not delete them. `took` says what its answer took: all it named
+         * (true), none (false: the site refused it), or those of these upload ids. Those it took
+         * leave the tray and are never deleted here; those it did not take stay, to send again or
+         * remove, or are deleted once when the form is gone by then. A request that threw (no
+         * answer) or whose answer tells nothing (`saysNothingOfUploads`) says nothing of what
+         * the site took, and `took` is not asked: its uploads stay in the tray and are never
+         * deleted here again, with the form, after it, or when a later request that names them
+         * is refused (that one's answer tells nothing of the first, which may still run). They
+         * leave the tray when a later request takes them, or by Remove, which still deletes one
+         * (the site refuses for one it took, and deletes those nothing took after its ghost
+         * lifetime).
          */
-        markTaken: (taken?: readonly string[]) => {
-            const left = taken ? uploads.items.filter((a) => !(a.media && taken.includes(a.media.id))) : [];
-            latest.current = left;
-            uploads.reset(left);
-        },
+        claim,
+        /**
+         * Whether the form is gone (closed, or another item opened in its place): what is left of
+         * a submit after its request must not act on it then.
+         */
+        gone: () => gone.current,
     };
 }
 
@@ -59,16 +134,22 @@ type Uploads = ReturnType<typeof usePhotoUploads>;
 
 /**
  * Where a form takes its photos (or files): a button for the system's dialog (photos only, or any file), a drop zone
- * (the app window's drops come here while it is shown), and the tray of uploads.
+ * (the app window's drops come here while it is shown), and the tray of uploads. While `held`
+ * (the form is being sent) it takes no photo and lets none go: the buttons keep their place and
+ * the keyboard (aria-disabled), a drop does nothing and the zone does not show itself as a place
+ * to drop on; files that were being made ready when it began are let go, not added.
  */
-export function PhotoDropZone({ uploads, pickId, describedBy, label = t('Choose photos…'), icon = 'image-plus', dropHint = t('or drop them here') }: { uploads: Uploads; pickId: string; describedBy?: string; label?: string; icon?: IconName; dropHint?: string }) {
+export function PhotoDropZone({ uploads, pickId, describedBy, label = t('Choose photos…'), icon = 'image-plus', dropHint = t('or drop them here'), held = false }: { uploads: Uploads; pickId: string; describedBy?: string; label?: string; icon?: IconName; dropHint?: string; held?: boolean }) {
     const [dragging, setDragging] = useState(false);
-    const { uploader, add } = uploads;
+    const { uploader, stage } = uploads;
 
-    const addRef = useRef(add);
+    const stageRef = useRef(stage);
+    const heldRef = useRef(held);
     useEffect(() => {
-        addRef.current = add;
+        stageRef.current = stage;
+        heldRef.current = held;
     });
+    const isHeld = () => heldRef.current;
     useEffect(() => {
         if (!inApp) return;
         const release = claimWindowDrops();
@@ -82,8 +163,8 @@ export function PhotoDropZone({ uploads, pickId, describedBy, label = t('Choose 
                 else if (p.type === 'drop') {
                     setDragging(false);
                     // a drop on a text box that takes pictures itself (a post's text) is the box's
-                    if (isOverDropTarget(p.position)) return;
-                    void uploader.fromPaths(p.paths).then((s) => addRef.current(s));
+                    if (isOverDropTarget(p.position) || heldRef.current) return;
+                    stageRef.current(uploader.fromPaths(p.paths), isHeld);
                 }
             })
             .then(
@@ -105,8 +186,11 @@ export function PhotoDropZone({ uploads, pickId, describedBy, label = t('Choose 
         : {
               onDragOver: (e: DragEvent) => {
                   if (!e.dataTransfer.types.includes('Files')) return;
+                  // always the zone's: left to the browser, a file dropped here opens in place of the app
                   e.preventDefault();
-                  setDragging(true);
+                  // held: no place to drop on (the cursor says so, no highlight)
+                  if (held) e.dataTransfer.dropEffect = 'none';
+                  else setDragging(true);
               },
               onDragLeave: (e: DragEvent) => {
                   if (e.currentTarget === e.target) setDragging(false);
@@ -115,22 +199,23 @@ export function PhotoDropZone({ uploads, pickId, describedBy, label = t('Choose 
                   if (!e.dataTransfer.files.length) return;
                   e.preventDefault();
                   setDragging(false);
-                  void uploader.fromFiles(Array.from(e.dataTransfer.files)).then(add);
+                  if (held) return;
+                  stage(uploader.fromFiles(Array.from(e.dataTransfer.files)), isHeld);
               },
           };
 
     return (
         <>
-            <div className="video-drop" data-dragging={dragging || undefined} {...dropProps}>
+            <div className="video-drop" data-dragging={(dragging && !held) || undefined} {...dropProps}>
                 <Icon name={icon} size={20} />
-                <button type="button" id={pickId} className="btn" onClick={() => void uploader.pick().then(add)} aria-describedby={[describedBy, `${pickId}-hint`].filter(Boolean).join(' ')}>
+                <button type="button" id={pickId} className="btn" aria-disabled={held || undefined} onClick={() => (held ? undefined : stage(uploader.pick(), isHeld))} aria-describedby={[describedBy, `${pickId}-hint`].filter(Boolean).join(' ')}>
                     {label}
                 </button>
                 <span id={`${pickId}-hint`} className="small muted">
                     {dropHint}
                 </span>
             </div>
-            <AttachmentTray items={uploads.items} onRemove={uploads.remove} onRetry={uploads.retry} fallbackFocusId={pickId} />
+            <AttachmentTray items={uploads.items} onRemove={uploads.remove} onRetry={uploads.retry} fallbackFocusId={pickId} held={held} />
         </>
     );
 }

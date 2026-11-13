@@ -436,6 +436,7 @@ class BxTasksDb extends BxBaseModTextDb
 
         if(($aParams['with_stats'] ?? false)) {
             $sSelectClause .= $this->prepareAsString(", (SELECT SUM(`value`) FROM `" . $CNF['TABLE_TIME_TRACK'] . "` WHERE `object_id`=`te`.`id` AND `author_id`=?) AS `time`, `tt`.`sum` AS `time_total`", bx_get_logged_profile_id());
+            $sSelectClause .= ", (SELECT SUM(IFNULL(`value_billed`, `value`)) FROM `" . $CNF['TABLE_TIME_TRACK'] . "` WHERE `object_id`=`te`.`id`) AS `time_billed`";
 
             $sJoinClause .= " LEFT JOIN `" . $CNF['TABLE_TIME'] . "` AS `tt` ON `te`.`id`=`tt`.`object_id`";
         }
@@ -721,12 +722,17 @@ class BxTasksDb extends BxBaseModTextDb
                     ];
 
                     $sDate = "IF(`ttt`.`value_date` > 0, `ttt`.`value_date`, `ttt`.`date`)";
-                    $sSelectClause = "`ttt`.`author_id`, `ttt`.`object_id`, `ttt`.`billable`, `te`.`" . $CNF['FIELD_TITLE'] . "` AS `object_title`";
+                    $sBilled = "IFNULL(`ttt`.`value_billed`, `ttt`.`value`)";
+                    $sSelectClause = "`ttt`.`author_id`, `ttt`.`object_id`, `te`.`" . $CNF['FIELD_TITLE'] . "` AS `object_title`";
                     foreach($aParams['periods'] as $sName => $aPeriod) {
                         $sName = preg_replace('/[^a-z0-9_]/', '', $sName);
                         $aMethod['params'][1][$sName . '_from'] = (int)$aPeriod['from'];
                         $aMethod['params'][1][$sName . '_to'] = (int)$aPeriod['to'];
-                        $sSelectClause .= ", SUM(IF(" . $sDate . " >= :" . $sName . "_from AND " . $sDate . " < :" . $sName . "_to, `ttt`.`value`, 0)) AS `" . $sName . "`";
+
+                        $sInPeriod = $sDate . " >= :" . $sName . "_from AND " . $sDate . " < :" . $sName . "_to";
+                        $sSelectClause .= ", SUM(IF(" . $sInPeriod . ", `ttt`.`value`, 0)) AS `" . $sName . "`";
+                        $sSelectClause .= ", SUM(IF(" . $sInPeriod . ", " . $sBilled . ", 0)) AS `" . $sName . "_billed`";
+                        $sSelectClause .= ", SUM(IF(" . $sInPeriod . " AND `ttt`.`by_timer` = 1, `ttt`.`value_original`, 0)) AS `" . $sName . "_timer`";
                     }
 
                     $sJoinClause = "INNER JOIN `" . $CNF['TABLE_ENTRIES'] . "` AS `te` ON `ttt`.`object_id` = `te`.`" . $CNF['FIELD_ID'] . "`";
@@ -737,7 +743,7 @@ class BxTasksDb extends BxBaseModTextDb
                         $sWhereClause .= " AND `ttt`.`author_id` = :author_id";
                     }
 
-                    $sWhereClause .= " GROUP BY `ttt`.`author_id`, `ttt`.`object_id`, `ttt`.`billable`, `te`.`" . $CNF['FIELD_TITLE'] . "`";
+                    $sWhereClause .= " GROUP BY `ttt`.`author_id`, `ttt`.`object_id`, `te`.`" . $CNF['FIELD_TITLE'] . "`";
                     break;
 
                 case 'author_period_sum':
@@ -778,6 +784,16 @@ class BxTasksDb extends BxBaseModTextDb
             return false;
 
         return $this->query("INSERT INTO `" . $CNF['TABLE_TIME_TRACK'] . "` SET " . $this->arrayToSQL($aParamsSet)) ? $this->lastId() : false;
+    }
+
+    public function updateTimeTrack($aParamsSet, $aParamsWhere)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        if(empty($aParamsSet) || empty($aParamsWhere))
+            return false;
+
+        return $this->query("UPDATE `" . $CNF['TABLE_TIME_TRACK'] . "` SET " . $this->arrayToSQL($aParamsSet) . " WHERE " . $this->arrayToSQL($aParamsWhere, " AND ")) !== false;
     }
 
     public function getTimers($aParams = []) 
@@ -836,13 +852,22 @@ class BxTasksDb extends BxBaseModTextDb
                         $sWhereClause .= " AND `tt`.`started` <> '0'";
                     }
                     break;
+
+                //--- Timers running without a pause since `started_before` or earlier.
+                case 'running_since':
+                    $aMethod['params'][1] = [
+                        'started_before' => (int)$aParams['started_before']
+                    ];
+
+                    $sWhereClause = "AND `tt`.`started` <> '0' AND `tt`.`started` <= :started_before";
+                    break;
             }
 
         if(!empty($sOrderClause))
             $sOrderClause = "ORDER BY " . $sOrderClause;
 
-        $aMethod['params'][0] = "SELECT 
-                " . $sSelectClause . " 
+        $aMethod['params'][0] = "SELECT
+                " . $sSelectClause . "
             FROM `" . $CNF['TABLE_TIMERS'] . "` AS `tt` " . $sJoinClause . " 
             WHERE 1 " . $sWhereClause . " " . $sOrderClause;
 

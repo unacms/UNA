@@ -6,6 +6,7 @@ import { problemMessage, type Schema } from 'una-api';
 import { retryOnce } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
+import { heldSelect } from '../../lib/held-select';
 import { t, tn } from '../../lib/i18n';
 import { idempotencyKeyFor, type IdempotencySlot, settleIdempotency } from '../../lib/idempotency';
 import { useNavigation } from '../../lib/navigation';
@@ -17,6 +18,7 @@ import { useAnnouncer } from '../feed/feed-list';
 import { contextKind, fetchAnyContext, groupKey } from '../groups/groups';
 import { textToHtml } from '../videos/videos';
 import { PhotoDropZone, usePhotoUploads } from './photo-uploads';
+import { sendBlocker, tookAll, tookSome } from './upload-answers';
 import { addedText, afterAlbumAdded, afterPhotosAdded } from './photos';
 
 export type Audience = NonNullable<Schema<'NewPhotos'>['audience']>;
@@ -53,7 +55,26 @@ function seenAsItsPlaceText(noun: string, context: ReturnType<typeof useFormCont
  * Who will see it: the context's members, or the audience picked from those the site offers for
  * the module of `tag` (GET /api/v2's `modules`: a privacy group the site turned off is not one).
  */
-export function AudienceField({ id, tag, contextId, context, audience, onAudience, noun }: { id: string; tag: string; contextId?: string; context: ReturnType<typeof useFormContext>; audience: Audience; onAudience: (a: Audience) => void; noun: string }) {
+export function AudienceField({
+    id,
+    tag,
+    contextId,
+    context,
+    audience,
+    held = false,
+    onAudience,
+    noun,
+}: {
+    id: string;
+    tag: string;
+    contextId?: string;
+    context: ReturnType<typeof useFormContext>;
+    audience: Audience;
+    /** While the form is being saved: it takes no change and keeps the keyboard (heldSelect). */
+    held?: boolean;
+    onAudience: (a: Audience) => void;
+    noun: string;
+}) {
     const offered = useAudiences(tag);
     const options = AUDIENCES.filter((a) => offered.includes(a.value));
     // the one picked is always one the site offers (the first, when the default is not)
@@ -70,7 +91,7 @@ export function AudienceField({ id, tag, contextId, context, audience, onAudienc
     return (
         <div className="settings-field">
             <label htmlFor={`${id}-audience`}>{noun === 'them' ? t('Who can see them') : t('Who can see it')}</label>
-            <select id={`${id}-audience`} value={value} onChange={(e) => onAudience(e.target.value as Audience)}>
+            <select id={`${id}-audience`} value={value} {...heldSelect(held, (e) => onAudience(e.target.value as Audience))}>
                 {options.map((a) => (
                     <option key={a.value} value={a.value}>
                         {a.label}
@@ -89,11 +110,35 @@ export const submitKeys = (submit: () => void) => (e: KeyboardEvent) => {
 };
 
 /**
+ * What POST /photos (and POST /files, of the same shape) is sent: the uploads, one title and text
+ * for all of them when given, and the place they go in, or who can see them when in none.
+ */
+export function mediaBody(ids: string[], title: string, text: string, contextId: string | undefined, audience: Audience): Schema<'NewPhotos'> {
+    const body: Schema<'NewPhotos'> = { media_ids: ids };
+    if (title.trim()) body.title = title.trim();
+    if (text.trim()) body.text_html = textToHtml(text);
+    if (contextId) body.context_id = contextId;
+    else body.audience = audience;
+    return body;
+}
+
+/** What POST /albums is sent: its title, the text and the uploads when there are any, and the place it goes in, or who can see it when in none. */
+function albumBody(ids: string[], title: string, text: string, contextId: string | undefined, audience: Audience): Schema<'NewAlbum'> {
+    const body: Schema<'NewAlbum'> = { title: title.trim() };
+    if (text.trim()) body.text_html = textToHtml(text);
+    if (ids.length) body.media_ids = ids;
+    if (contextId) body.context_id = contextId;
+    else body.audience = audience;
+    return body;
+}
+
+/**
  * Adding photos in the detail pane: photos picked in the system's dialog or dropped on the window
  * (each uploading at once, with its progress, Retry and Remove), one title and text for all of
  * them (each file's name when no title is given), and who can see them, or the group they go in
  * when it was started from one. Added, the first one opens; uploads nothing took are deleted
- * when the form goes.
+ * when the form goes. Photos still being made ready hold Add as ones that are uploading; while it
+ * is being sent the form takes no change, as the new post form (NewPost).
  */
 export function NewPhotos({ contextId, uploader }: { contextId?: string; uploader?: Uploader }) {
     const { api } = useApp();
@@ -116,25 +161,24 @@ export function NewPhotos({ contextId, uploader }: { contextId?: string; uploade
     const submit = async (e?: FormEvent) => {
         e?.preventDefault();
         if (sending) return;
-        const blocker = uploads.blocker ?? (uploads.ids.length ? null : t('Choose the photos to add.'));
+        const blocker = sendBlocker(uploads, t('Choose the photos to add.'));
         if (blocker) {
             setFieldError(blocker);
             document.getElementById(`${id}-pick`)?.focus();
             return;
         }
         setFieldError(null);
-        const body: Schema<'NewPhotos'> = { media_ids: uploads.ids };
-        if (title.trim()) body.title = title.trim();
-        if (text.trim()) body.text_html = textToHtml(text);
-        if (contextId) body.context_id = contextId;
-        else body.audience = audience;
+        const body = mediaBody(uploads.ids, title, text, contextId, audience);
         const from = history.current;
         setSending(true);
         setError(null);
         let result;
         try {
-            result = await api.POST('/photos', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/photos', body]) } }, body });
+            // the site stops adding once the membership level's limit is reached: what it did not take stays here
+            // (a photo's media id is the upload's: the ones no photo has are those left)
+            result = await uploads.claim(api.POST('/photos', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/photos', body]) } }, body }), (r) => tookSome(r, body.media_ids.length));
         } catch (e) {
+            if (uploads.gone()) return;
             // no answer came: the key stays, so sending it again gets the site's answer to this one
             setSending(false);
             setError(t('The photos were not added: {{reason}}', { reason: errorMessage(e) }));
@@ -142,16 +186,15 @@ export function NewPhotos({ contextId, uploader }: { contextId?: string; uploade
         }
         settleIdempotency(sent, result.response.status);
         if (result.error !== undefined || !result.data) {
+            if (uploads.gone()) return;
             setSending(false);
             setError(problemMessage(result.error, t('The photos were not added')));
             return;
         }
-        // the site stops adding once the membership level's limit is reached: what it did not take stays here
-        // (a photo's media id is the upload's: the ones no photo has are those left)
         const asked = body.media_ids.length;
         const partial = result.data.length < asked;
-        uploads.markTaken(partial ? result.data.flatMap((p) => (p.media ? [p.media.id] : [])) : undefined);
         await afterPhotosAdded(queryClient, result.data);
+        if (uploads.gone()) return;
         if (partial) {
             setSending(false);
             const left = asked - result.data.length;
@@ -163,6 +206,13 @@ export function NewPhotos({ contextId, uploader }: { contextId?: string; uploade
         if (!first || !replaceDetail({ kind: 'photo', id: first.id }, from)) setSending(false);
     };
 
+    // while it is sent a change is refused, not only by the fields: an update that was already on its way
+    const edit =
+        <T,>(set: (value: T) => void) =>
+        (value: T) => {
+            if (!sending) set(value);
+        };
+
     return (
         <Pane pane="detail" title={context ? t('Add photos to {{name}}', { name: context.display_name }) : t('Add photos')} actions={<CloseDetailButton />}>
             <div className="column settings">
@@ -172,7 +222,7 @@ export function NewPhotos({ contextId, uploader }: { contextId?: string; uploade
                 <form className="settings-form discussion-form new-photos" aria-labelledby="detail-title" onSubmit={(e) => void submit(e)} onKeyDown={(e) => submitKeys(() => void submit())(e)} noValidate>
                     <fieldset className="settings-field settings-fieldset photo-field">
                         <legend>{t('Photos')}</legend>
-                        <PhotoDropZone uploads={uploads} pickId={`${id}-pick`} describedBy={fieldError ? `${id}-photos-error` : undefined} label={uploads.items.length ? t('Add more photos…') : t('Choose photos…')} />
+                        <PhotoDropZone uploads={uploads} pickId={`${id}-pick`} describedBy={fieldError ? `${id}-photos-error` : undefined} label={uploads.items.length ? t('Add more photos…') : t('Choose photos…')} held={sending} />
                         {fieldError ? (
                             <p id={`${id}-photos-error`} className="error small" role="alert">
                                 {fieldError}
@@ -181,16 +231,16 @@ export function NewPhotos({ contextId, uploader }: { contextId?: string; uploade
                     </fieldset>
                     <div className="settings-field">
                         <label htmlFor={`${id}-title`}>{t('Title')}</label>
-                        <input id={`${id}-title`} value={title} maxLength={255} dir="auto" aria-describedby={`${id}-title-hint`} onChange={(e) => setTitle(e.target.value)} />
+                        <input id={`${id}-title`} value={title} maxLength={255} dir="auto" readOnly={sending} aria-describedby={`${id}-title-hint`} onChange={(e) => edit(setTitle)(e.target.value)} />
                         <p id={`${id}-title-hint`} className="small muted">
                             {t('Every photo’s title. Leave it empty to title each with its file’s name, which whoever can see the photo sees.')}
                         </p>
                     </div>
                     <div className="settings-field">
                         <label htmlFor={`${id}-text`}>{t('Description')}</label>
-                        <textarea id={`${id}-text`} rows={4} value={text} maxLength={50000} dir="auto" onChange={(e) => setText(e.target.value)} />
+                        <textarea id={`${id}-text`} rows={4} value={text} maxLength={50000} dir="auto" readOnly={sending} onChange={(e) => edit(setText)(e.target.value)} />
                     </div>
-                    <AudienceField id={id} tag="photos" contextId={contextId} context={context} audience={audience} onAudience={setAudience} noun="them" />
+                    <AudienceField id={id} tag="photos" contextId={contextId} context={context} audience={audience} held={sending} onAudience={edit(setAudience)} noun="them" />
                     {error ? (
                         <p className="error" role="alert">
                             {error}
@@ -213,6 +263,8 @@ export function NewPhotos({ contextId, uploader }: { contextId?: string; uploade
 /**
  * Making an album in the detail pane: its title (needed), description, who can see it (or the
  * group it goes in), and photos to put in it now (more can be added later). Made, it opens.
+ * Photos still being made ready hold Make album as ones that are uploading; while it is being
+ * made the form takes no change, as the new post form (NewPost).
  */
 export function NewAlbum({ contextId, uploader }: { contextId?: string; uploader?: Uploader }) {
     const { api } = useApp();
@@ -240,24 +292,23 @@ export function NewAlbum({ contextId, uploader }: { contextId?: string; uploader
             document.getElementById(`${id}-title`)?.focus();
             return;
         }
-        if (uploads.blocker) {
-            setFieldError({ field: 'photos', text: uploads.blocker });
+        // it can go with no photo: only ones on their way (or failed) hold it
+        const blocker = sendBlocker(uploads);
+        if (blocker) {
+            setFieldError({ field: 'photos', text: blocker });
             document.getElementById(`${id}-pick`)?.focus();
             return;
         }
         setFieldError(null);
-        const body: Schema<'NewAlbum'> = { title: title.trim() };
-        if (text.trim()) body.text_html = textToHtml(text);
-        if (uploads.ids.length) body.media_ids = uploads.ids;
-        if (contextId) body.context_id = contextId;
-        else body.audience = audience;
+        const body = albumBody(uploads.ids, title, text, contextId, audience);
         const from = history.current;
         setSending(true);
         setError(null);
         let result;
         try {
-            result = await api.POST('/albums', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/albums', body]) } }, body });
+            result = await uploads.claim(api.POST('/albums', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/albums', body]) } }, body }), tookAll);
         } catch (e) {
+            if (uploads.gone()) return;
             // no answer came: the key stays, so sending it again gets the site's answer to this one
             setSending(false);
             setError(t('The album was not made: {{reason}}', { reason: errorMessage(e) }));
@@ -265,6 +316,7 @@ export function NewAlbum({ contextId, uploader }: { contextId?: string; uploader
         }
         settleIdempotency(sent, result.response.status);
         if (result.error !== undefined || !result.data) {
+            if (uploads.gone()) return;
             setSending(false);
             const problem = result.error as { errors?: { field?: string; message?: string }[] } | undefined;
             const message = problemMessage(result.error, t('The album was not made'));
@@ -272,10 +324,17 @@ export function NewAlbum({ contextId, uploader }: { contextId?: string; uploader
             else setError(message);
             return;
         }
-        uploads.markTaken();
         await afterAlbumAdded(queryClient, result.data);
+        if (uploads.gone()) return;
         if (!replaceDetail({ kind: 'album', id: result.data.id }, from)) setSending(false);
     };
+
+    // while it is sent a change is refused, not only by the fields: an update that was already on its way
+    const edit =
+        <T,>(set: (value: T) => void) =>
+        (value: T) => {
+            if (!sending) set(value);
+        };
 
     return (
         <Pane pane="detail" title={context ? t('New album in {{name}}', { name: context.display_name }) : t('New album')} actions={<CloseDetailButton />}>
@@ -293,9 +352,10 @@ export function NewAlbum({ contextId, uploader }: { contextId?: string; uploader
                             required
                             dir="auto"
                             autoFocus
+                            readOnly={sending}
                             aria-invalid={fieldError?.field === 'title' || undefined}
                             aria-describedby={fieldError?.field === 'title' ? `${id}-title-error` : undefined}
-                            onChange={(e) => setTitle(e.target.value)}
+                            onChange={(e) => edit(setTitle)(e.target.value)}
                         />
                         {fieldError?.field === 'title' ? (
                             <p id={`${id}-title-error`} className="error small" role="alert">
@@ -305,12 +365,12 @@ export function NewAlbum({ contextId, uploader }: { contextId?: string; uploader
                     </div>
                     <div className="settings-field">
                         <label htmlFor={`${id}-text`}>{t('Description')}</label>
-                        <textarea id={`${id}-text`} rows={3} value={text} maxLength={50000} dir="auto" onChange={(e) => setText(e.target.value)} />
+                        <textarea id={`${id}-text`} rows={3} value={text} maxLength={50000} dir="auto" readOnly={sending} onChange={(e) => edit(setText)(e.target.value)} />
                     </div>
-                    <AudienceField id={id} tag="albums" contextId={contextId} context={context} audience={audience} onAudience={setAudience} noun="it" />
+                    <AudienceField id={id} tag="albums" contextId={contextId} context={context} audience={audience} held={sending} onAudience={edit(setAudience)} noun="it" />
                     <fieldset className="settings-field settings-fieldset photo-field">
                         <legend>{t('Photos')}</legend>
-                        <PhotoDropZone uploads={uploads} pickId={`${id}-pick`} describedBy={fieldError?.field === 'photos' ? `${id}-photos-error` : undefined} label={uploads.items.length ? t('Add more photos…') : t('Choose photos…')} />
+                        <PhotoDropZone uploads={uploads} pickId={`${id}-pick`} describedBy={fieldError?.field === 'photos' ? `${id}-photos-error` : undefined} label={uploads.items.length ? t('Add more photos…') : t('Choose photos…')} held={sending} />
                         {fieldError?.field === 'photos' ? (
                             <p id={`${id}-photos-error`} className="error small" role="alert">
                                 {fieldError.text}

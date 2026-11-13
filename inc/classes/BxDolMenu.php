@@ -78,6 +78,99 @@
  */
 class BxDolMenu extends BxDolFactory implements iBxDolFactoryObject, iBxDolReplaceable
 {
+    /**
+     * How a menu draws its buttons (`sys_objects_menu`.`button_style`, Studio > Navigation > a menu). The menu's
+     * style (its template) says how items are laid out; this says what a button in it looks like, on the site and
+     * in the apps (the menu's API carries it as `button_style`).
+     * - auto (empty): the template's own button, glass where the site knows the button is over a picture (a cover);
+     * - regular: the flat translucent fill, for a plain surface;
+     * - glass: the frosted button, for a picture or any backdrop that varies;
+     * - plain: no fill, the label alone.
+     */
+    const BUTTON_STYLE_AUTO = '';
+    const BUTTON_STYLE_REGULAR = 'regular';
+    const BUTTON_STYLE_GLASS = 'glass';
+    const BUTTON_STYLE_PLAIN = 'plain';
+
+    /**
+     * The size of a menu's buttons (`sys_objects_menu`.`button_size`): empty leaves each button the size its
+     * template gives it, otherwise every button in the menu takes this one.
+     */
+    const BUTTON_SIZE_AUTO = '';
+    const BUTTON_SIZE_MINI = 'mini';
+    const BUTTON_SIZE_SMALL = 'small';
+    const BUTTON_SIZE_REGULAR = 'regular';
+    const BUTTON_SIZE_LARGE = 'large';
+
+    /**
+     * Class names by value, written out in full: a class built from parts is one no stylesheet search finds.
+     */
+    protected static $_aButtonStyleClasses = [
+        self::BUTTON_STYLE_REGULAR => 'bx-menu-btn-style-regular',
+        self::BUTTON_STYLE_GLASS => 'bx-menu-btn-style-glass',
+        self::BUTTON_STYLE_PLAIN => 'bx-menu-btn-style-plain',
+    ];
+    protected static $_aButtonSizeClasses = [
+        self::BUTTON_SIZE_MINI => 'bx-menu-btn-size-mini',
+        self::BUTTON_SIZE_SMALL => 'bx-menu-btn-size-small',
+        self::BUTTON_SIZE_REGULAR => 'bx-menu-btn-size-regular',
+        self::BUTTON_SIZE_LARGE => 'bx-menu-btn-size-large',
+    ];
+
+    /**
+     * Button styles a menu can be given, the automatic one (empty) first.
+     */
+    public static function getButtonStyles()
+    {
+        return array_merge([self::BUTTON_STYLE_AUTO], array_keys(self::$_aButtonStyleClasses));
+    }
+
+    /**
+     * Button sizes a menu can be given, the automatic one (empty) first.
+     */
+    public static function getButtonSizes()
+    {
+        return array_merge([self::BUTTON_SIZE_AUTO], array_keys(self::$_aButtonSizeClasses));
+    }
+
+    /**
+     * This menu's button style: one of the BUTTON_STYLE_* values, the automatic one for anything else stored.
+     */
+    public function getButtonStyle()
+    {
+        $s = isset($this->_aObject['button_style']) ? (string)$this->_aObject['button_style'] : '';
+        return isset(self::$_aButtonStyleClasses[$s]) ? $s : self::BUTTON_STYLE_AUTO;
+    }
+
+    /**
+     * This menu's button size: one of the BUTTON_SIZE_* values, the automatic one for anything else stored.
+     */
+    public function getButtonSize()
+    {
+        $s = isset($this->_aObject['button_size']) ? (string)$this->_aObject['button_size'] : '';
+        return isset(self::$_aButtonSizeClasses[$s]) ? $s : self::BUTTON_SIZE_AUTO;
+    }
+
+    /**
+     * The classes that carry this menu's button style and size, with a leading space each; empty when both are
+     * automatic. They go on every item of the menu (the one place every menu template prints a class the menu
+     * controls), and the stylesheet styles the .bx-btn inside.
+     */
+    public function getButtonClasses()
+    {
+        $s = '';
+
+        $sStyle = $this->getButtonStyle();
+        if($sStyle != self::BUTTON_STYLE_AUTO)
+            $s .= ' ' . self::$_aButtonStyleClasses[$sStyle];
+
+        $sSize = $this->getButtonSize();
+        if($sSize != self::BUTTON_SIZE_AUTO)
+            $s .= ' ' . self::$_aButtonSizeClasses[$sSize];
+
+        return $s;
+    }
+
     protected static $SEL_MODULE = '';
     protected static $SEL_NAME = '';
 

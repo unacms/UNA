@@ -3,6 +3,10 @@
  * and Forward history and scroll positions, and the tabs, the one shown, the tabs closed lately
  * (Reopen Closed Tab) and the places visited lately (the top bar's History) are kept per network
  * on this computer, so the next launch opens them again. One tab always stays.
+ *
+ * Showing another tab, or closing the one shown, takes away what that tab has open: when a form
+ * in it has unsaved changes (RouteHistory.guard), it happens only once the person agreed to
+ * discard them.
  */
 import { parseRoute, type Route, RouteHistory, routeToPath, ScrollMemory } from './router';
 
@@ -140,10 +144,46 @@ export class TabsModel {
         return () => this.listeners.delete(listener);
     }
 
-    select(id: string): void {
+    /**
+     * Show a tab: at once, or, when the one shown has unsaved changes, once the person agreed to
+     * discard them. `shown` runs when it is the tab shown (at once for the one that already is),
+     * and never when the leave is refused.
+     */
+    select(id: string, shown?: () => void): void {
+        if (!this.list.some((t) => t.id === id)) return;
+        if (id === this.activeId) {
+            shown?.();
+            return;
+        }
+        this.leave(() => {
+            this.show(id);
+            if (this.activeId === id) shown?.();
+        });
+    }
+
+    /** What takes the shown tab's view away: at once, or once its unsaved changes may go. */
+    private leave(run: () => void): void {
+        this.active.history.leaveThen(run);
+    }
+
+    private show(id: string): void {
         if (id === this.activeId || !this.list.some((t) => t.id === id)) return;
         this.activeId = id;
         this.changed();
+    }
+
+    /** A tab made elsewhere put after the one shown (or after `after`), and shown unless in the background; `added` runs once it is among the tabs. */
+    private insert(tab: Tab, background: boolean, after = this.activeId, added?: () => void): void {
+        const add = () => {
+            if (this.list.length >= TABS_MAX) return;
+            this.list.splice(this.indexOf(after) + 1, 0, tab);
+            this.watch(tab);
+            if (!background) this.activeId = tab.id;
+            this.changed();
+            added?.();
+        };
+        if (background) add();
+        else this.leave(add);
     }
 
     /** The n-th tab (1 to 8), or the last one for 9, as browsers do. */
@@ -163,36 +203,46 @@ export class TabsModel {
 
     /**
      * A new tab after the one shown at a route (Home, or wherever), shown at once unless in the
-     * background (Cmd+click). Null when the window holds TABS_MAX already.
+     * background (Cmd+click). Null when the window holds TABS_MAX already. One that is shown
+     * joins the tabs only once unsaved changes in the tab it replaces may go.
      */
     open(route: Route, { background = false, title = '', icon = '' }: { background?: boolean; title?: string; icon?: string } = {}): Tab | null {
         if (this.list.length >= TABS_MAX) return null;
         const tab = this.make(new RouteHistory(route), undefined, title, icon);
-        this.list.splice(this.indexOf(this.activeId) + 1, 0, tab);
-        this.watch(tab);
-        if (!background) this.activeId = tab.id;
-        this.changed();
+        this.insert(tab, background);
         return tab;
     }
 
-    /** A copy of a tab beside it, with its history, shown. */
-    duplicate(id: string): Tab | null {
+    /**
+     * A copy of a tab beside it, with its history, shown. Null when there is no such tab or the
+     * window holds TABS_MAX already. Like a new tab that is shown, the copy joins the tabs only
+     * once unsaved changes in the tab shown may go: `added` runs when it has, never otherwise.
+     */
+    duplicate(id: string, added?: () => void): Tab | null {
         const from = this.list.find((t) => t.id === id);
         if (!from || this.list.length >= TABS_MAX) return null;
         const kept = keep(from);
         const tab = this.make(historyFrom(kept.paths, kept.index, this.initial), undefined, from.title, from.icon);
-        this.list.splice(this.indexOf(id) + 1, 0, tab);
-        this.watch(tab);
-        this.activeId = tab.id;
-        this.changed();
+        this.insert(tab, false, id, added);
         return tab;
     }
 
     /**
      * Close a tab; the last one stays (false). The tab shown next is the one after it, else the
-     * one before, as browsers do.
+     * one before, as browsers do. True when it closes: at once, or, for the tab shown with
+     * unsaved changes in it, once the person agreed to discard them. `closed` runs when it has.
      */
-    close(id: string): boolean {
+    close(id: string, closed?: () => void): boolean {
+        if (this.indexOf(id) < 0 || this.list.length <= 1) return false;
+        const run = () => {
+            if (this.drop(id)) closed?.();
+        };
+        if (id === this.activeId) this.leave(run);
+        else run();
+        return true;
+    }
+
+    private drop(id: string): boolean {
         const i = this.indexOf(id);
         if (i < 0 || this.list.length <= 1) return false;
         const [tab] = this.list.splice(i, 1);
@@ -208,20 +258,27 @@ export class TabsModel {
     /** Close every tab but this one. */
     closeOthers(id: string): void {
         if (!this.list.some((t) => t.id === id)) return;
-        for (const t of [...this.list].reverse()) if (t.id !== id) this.close(t.id);
-        this.select(id);
+        const run = () => {
+            for (const t of [...this.list].reverse()) if (t.id !== id) this.drop(t.id);
+            this.show(id);
+        };
+        if (id === this.activeId) run();
+        else this.leave(run);
     }
 
     /** The tab closed last, back where it was with its history, shown. */
     reopen(): Tab | null {
-        const [kept, ...rest] = this.closed;
+        const [kept] = this.closed;
         if (!kept || this.list.length >= TABS_MAX) return null;
-        this.closed = rest;
         const tab = this.make(historyFrom(kept.paths, kept.index, this.initial), undefined, kept.title, kept.icon);
-        this.list.splice(this.indexOf(this.activeId) + 1, 0, tab);
-        this.watch(tab);
-        this.activeId = tab.id;
-        this.changed();
+        this.leave(() => {
+            if (this.list.length >= TABS_MAX || !this.closed.includes(kept)) return;
+            this.closed = this.closed.filter((k) => k !== kept);
+            this.list.splice(this.indexOf(this.activeId) + 1, 0, tab);
+            this.watch(tab);
+            this.activeId = tab.id;
+            this.changed();
+        });
         return tab;
     }
 

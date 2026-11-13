@@ -15,7 +15,7 @@ import { inApp } from '../../lib/native';
 import { isMac } from '../../lib/platform';
 import { useClick } from '../../lib/use-click';
 import { docToHtml, docToText, type EditorMode } from '../../lib/rich-html';
-import type { Staging } from '../../lib/uploads';
+import type { Picked, Staging, Uploader } from '../../lib/uploads';
 import { DEFAULT_REFUSAL, type ImageSink, placementOf, registerDropTarget } from './images';
 import { LinkForm } from './link-form';
 import { cleanPastedHtml } from './paste';
@@ -165,12 +165,45 @@ export function RichEditor(props: Props) {
         [hashtags, say],
     );
 
+    // a text that is being sent takes no picture (readOnlyGuard): said, and true, when that is so now
+    const heldNow = useCallback((): boolean => {
+        const sink = latest.current.images;
+        if (!readOnlyRef.current || placementOf(latest.current.mode, sink) !== 'inline') return false;
+        say(t('Pictures can’t be added while the text is being sent.'));
+        return true;
+    }, [say]);
+
+    // Pictures of the text on their way to the site, each with the uploader that made it ready.
+    // A file made ready is kept by the app (a pasted one as its bytes) until it is uploaded or
+    // let go, so every one the text does not take is let go here: one that is no picture, one
+    // whose upload failed, and all of them when the box goes away meanwhile.
+    const uploads = useRef(new Map<Picked, Uploader>());
+    const gone = useRef(false);
+    useEffect(() => {
+        gone.current = false;
+        const sending = uploads.current;
+        return () => {
+            gone.current = true;
+            for (const [file, uploader] of sending) {
+                uploader.cancel(file);
+                uploader.release(file);
+            }
+            sending.clear();
+        };
+    }, []);
+
     // pictures: the composer's attachments, the text (phase 2), or a refusal
     const placeImages = useCallback(
-        (staging: Staging) => {
+        (staging: Staging, madeReadyBy?: Uploader) => {
             const sink = latest.current.images;
             const placement = placementOf(latest.current.mode, sink);
+            const uploader = madeReadyBy ?? sink?.uploader;
+            const letGo = (files: readonly Picked[]) => {
+                for (const file of files) uploader?.release(file);
+            };
             if (!sink || placement === 'none') {
+                // refused after they were made ready (the composer changed meanwhile)
+                letGo(staging.files);
                 if (staging.files.length || staging.refused.length) say(sink?.refusal ?? DEFAULT_REFUSAL);
                 return;
             }
@@ -180,22 +213,45 @@ export function RichEditor(props: Props) {
             }
             const upload = sink.uploadInline;
             if (!upload) return;
+            // sent while they were made ready (or given by the composer): no upload is started
+            // for them, and nothing keeps them (a pasted one is its bytes, held by the app)
+            if (readOnlyRef.current) {
+                letGo(staging.files);
+                if (staging.files.length || staging.refused.length) heldNow();
+                return;
+            }
+            // the box went away while they were made ready: there is no text to put them in
+            if (gone.current) {
+                letGo(staging.files);
+                return;
+            }
             const pictures = staging.files.filter((f) => f.kind === 'image');
+            // a video made ready with them: the text does not take it
+            letGo(staging.files.filter((f) => f.kind !== 'image'));
             if (staging.refused.length || pictures.length < staging.files.length) say(t('Only pictures go in the text.'));
             for (const file of pictures) {
                 say(t('Uploading {{name}}…', { name: file.name }));
+                if (uploader) uploads.current.set(file, uploader);
                 upload(file).then(
                     (img) => {
+                        // uploaded: the app let it go itself
+                        uploads.current.delete(file);
                         const editor = editorRef.current;
                         if (!editor || editor.isDestroyed) return;
+                        if (heldNow()) return;
                         editor.chain().focus().insertContent({ type: 'image', attrs: { src: img.src, alt: img.alt ?? null, width: img.width ?? null, height: img.height ?? null } }).run();
                         say(t('{{name}} added to the text', { name: file.name }));
                     },
-                    (e: unknown) => say(t('{{name}} was not added: {{reason}}', { name: file.name, reason: errorMessage(e) })),
+                    (e: unknown) => {
+                        // not sent, and nothing sends it again: let go, unless the box going away did that
+                        if (uploads.current.delete(file)) uploader?.release(file);
+                        if (gone.current) return;
+                        say(t('{{name}} was not added: {{reason}}', { name: file.name, reason: errorMessage(e) }));
+                    },
                 );
             }
         },
-        [say],
+        [say, heldNow],
     );
 
     const takeFiles = useCallback(
@@ -205,9 +261,12 @@ export function RichEditor(props: Props) {
                 say(sink?.refusal ?? DEFAULT_REFUSAL);
                 return;
             }
-            void sink.uploader.fromFiles(files).then(placeImages);
+            // before anything is made ready: a refused picture is not kept by the app
+            if (heldNow()) return;
+            const uploader = sink.uploader;
+            void uploader.fromFiles(files).then((staging) => placeImages(staging, uploader));
         },
-        [placeImages, say],
+        [placeImages, say, heldNow],
     );
 
     // the editor, made once per mode (mounted in the box by the effect below)
@@ -427,7 +486,9 @@ export function RichEditor(props: Props) {
                     say(sink?.refusal ?? DEFAULT_REFUSAL);
                     return;
                 }
-                void sink.uploader.fromPaths(p.paths).then(placeImages);
+                if (heldNow()) return;
+                const uploader = sink.uploader;
+                void uploader.fromPaths(p.paths).then((staging) => placeImages(staging, uploader));
             })
             .then(
                 (fn) => {
@@ -441,7 +502,7 @@ export function RichEditor(props: Props) {
             release();
             stop?.();
         };
-    }, [windowDrops, placeImages, say]);
+    }, [windowDrops, placeImages, say, heldNow]);
 
     useImperativeHandle(
         ref,

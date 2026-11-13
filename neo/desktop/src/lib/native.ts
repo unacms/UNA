@@ -267,10 +267,126 @@ export async function openWindow(route: string): Promise<void> {
     await invoke<void>('open_window', { route });
 }
 
-/** Close this window (a window of its own, when what it showed is closed). */
+/**
+ * Close this window as the person does (a Close button in a window of its own): a form in it
+ * with unsaved changes is asked about first (guardWindowClose).
+ */
 export function closeThisWindow(): void {
     if (inApp) void getCurrentWindow().close().catch((e: unknown) => console.error('close window', e));
     else window.close();
+}
+
+/**
+ * Close this window as the person did, once what it showed is gone (Esc, the pane's Close): any
+ * question was answered before that (the history's guard), so none is asked again. The page
+ * stops listening for close requests first, and only then closes: an ordinary close, which the
+ * window hears itself (WindowEvent::CloseRequested), so where and how it stood is remembered
+ * (the window-state plugin keeps maximized and full screen then, and destroy() would skip it).
+ */
+export async function closeThisWindowAsked(): Promise<void> {
+    if (!inApp) {
+        window.close();
+        return;
+    }
+    // also the stop a form already began when it went (its guard's cleanup), and whether or not it worked
+    await unwatchClose();
+    try {
+        await getCurrentWindow().close();
+    } catch (e) {
+        console.error('close window', e);
+    }
+}
+
+/**
+ * Close this window whatever is in it, asking nothing: its session is over (a refused token,
+ * another sign-in), so no answer could keep it. destroy() never reaches the page's close listener.
+ */
+export function forceCloseThisWindow(): void {
+    if (inApp) void getCurrentWindow().destroy().catch((e: unknown) => console.error('close window', e));
+    else window.close();
+}
+
+const closeQuestions = new Set<() => Promise<boolean>>();
+/** The listener for close requests, while a question is there to ask: what stops it, once it listens. */
+let closeWatch: Promise<() => void> | null = null;
+
+function watchClose(): void {
+    if (closeWatch) return;
+    const watch = getCurrentWindow().onCloseRequested(async (event) => {
+        for (const ask of [...closeQuestions]) {
+            // one that went while another was open is not asked
+            if (!closeQuestions.has(ask)) continue;
+            let leave = false;
+            try {
+                leave = await ask();
+            } catch (e) {
+                console.error('close question', e);
+            }
+            if (leave) continue;
+            event.preventDefault();
+            return;
+        }
+    });
+    closeWatch = watch;
+    watch.catch((e: unknown) => {
+        if (closeWatch === watch) closeWatch = null;
+        console.error('close requests', e);
+    });
+}
+
+/** The last stop of that listener, while Rust has not answered it yet: settled once it has, never rejected. */
+let closeUnwatched: Promise<void> = Promise.resolve();
+
+/**
+ * Stop listening for close requests: settled once Rust no longer hands a close to the page, also
+ * for a stop begun earlier (a call with no listener left waits for that one).
+ */
+function unwatchClose(): Promise<void> {
+    const watch = closeWatch;
+    if (!watch) return closeUnwatched;
+    closeWatch = null;
+    const earlier = closeUnwatched;
+    closeUnwatched = watch
+        .then(
+            // what stops it answers once the listener is gone in Rust too (the event API's unlisten)
+            async (stop) => {
+                const stopped: unknown = stop();
+                await stopped;
+            },
+            // it never listened: watchClose said why
+            () => undefined,
+        )
+        .catch((e: unknown) => console.error('close requests', e))
+        .then(() => earlier);
+    return closeUnwatched;
+}
+
+/**
+ * Ask before this window goes while something in it is unsaved (lib/leave-guard.ts), until the
+ * returned function is called; `confirm` answers true to let it go. A window of its own asks
+ * when the person closes it (its close button, Cmd+W, closeThisWindow): while a listener is
+ * there Tauri hands every close() to the page, which closes the window itself when no answer
+ * refuses (the window API's onCloseRequested then destroys it). The listener is there only
+ * while a question is, so a window with nothing unsaved closes as any other does; a close that
+ * must not be asked about (the session is over: windows.rs close_all, forceCloseThisWindow)
+ * destroys the window and never reaches it, and one whose question was answered already
+ * (closeThisWindowAsked) stops the listener first. The main window is not asked: its close is Rust's
+ * (it hides to the tray, or the app quits: lib.rs). In a plain browser the tab warns before it
+ * unloads, in the browser's own words.
+ */
+export function guardWindowClose(confirm: () => Promise<boolean>): () => void {
+    if (!inApp) {
+        const warn = (e: BeforeUnloadEvent) => e.preventDefault();
+        window.addEventListener('beforeunload', warn);
+        return () => window.removeEventListener('beforeunload', warn);
+    }
+    if (!isSecondaryWindow) return () => {};
+    closeQuestions.add(confirm);
+    watchClose();
+    return () => {
+        closeQuestions.delete(confirm);
+        if (!closeQuestions.size) void unwatchClose();
+    };
 }
 
 /** What a download did: saved under this name, or nothing (the person cancelled the dialog). */

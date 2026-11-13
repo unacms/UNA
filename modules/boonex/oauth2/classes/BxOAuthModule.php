@@ -558,20 +558,28 @@ class BxOAuthModule extends BxDolModule
         $sTitle = $aNativeApp ? $aNativeApp['title'] : $this->_oDb->getClientTitle($aParams['client_id']);
         $sRedirectHost = $bNativeApp ? $this->_getRedirectHost($aParams) : '';
 
+        // what the `api` scope of a native app allows, one line each
+        $aScopes = array();
+        if ($bNativeApp && in_array('api', preg_split('/[\s,]+/', $aParams['scope'], -1, PREG_SPLIT_NO_EMPTY), true)) {
+            $sIcon = BxTemplFunctions::getInstance()->getIconAsHtml('check');
+            foreach (array('read', 'write', 'messages', 'profiles') as $sScope)
+                $aScopes[] = array('icon' => $sIcon, 'title' => _t('_bx_oauth_authorize_can_' . $sScope));
+        }
+
+        // the list's lead-in is the end of the first line, not a heading of its own
+        $sText = _t('_bx_oauth_authorize_lead', $this->_escapeAttribute($sTitle), $this->_escapeAttribute(getParam('site_title')));
+        if ($aScopes)
+            $sText .= ' ' . _t('_bx_oauth_authorize_can');
+
         $aVars = array(
-            'text' => _t('_bx_oauth_authorize_app', $this->_escapeAttribute($sTitle)),
-            'bx_if:native_app' => array(
-                'condition' => $bNativeApp,
-                'content' => array(
-                    'bx_if:scope_api' => array(
-                        'condition' => $bNativeApp && in_array('api', preg_split('/[\s,]+/', $aParams['scope'], -1, PREG_SPLIT_NO_EMPTY), true),
-                        'content' => array('scope_api_text' => _t('_bx_oauth_authorize_scope_api')),
-                    ),
-                    'bx_if:redirect' => array(
-                        'condition' => $sRedirectHost !== '',
-                        'content' => array('redirect_text' => _t('_bx_oauth_authorize_redirect', $this->_escapeAttribute($sRedirectHost))),
-                    ),
-                ),
+            'text' => $sText,
+            'bx_if:scopes' => array(
+                'condition' => !empty($aScopes),
+                'content' => array('bx_repeat:items' => $aScopes),
+            ),
+            'bx_if:redirect' => array(
+                'condition' => $sRedirectHost !== '',
+                'content' => array('redirect_text' => _t('_bx_oauth_authorize_redirect', $this->_escapeAttribute($sRedirectHost))),
             ),
             'url' => BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'auth',
             'csrf_token' => $this->_escapeAttribute($this->getConsentToken()),
@@ -587,7 +595,8 @@ class BxOAuthModule extends BxDolModule
                     'code_challenge_method' => $this->_escapeAttribute($aParams['code_challenge_method'] ?? ''),
                 ),
             ),
-            'profiles' => BxDolService::call('system', 'account_profile_switcher', array(getLoggedId(), false, "javascript: $('#bx-auth-profile-id').val('{profile_id}'); $('#bx-auth-form form').submit(); void(0);", true, _t('_bx_oauth_connect'), 'unit_wo_links'), 'TemplServiceProfiles')['content'],
+            'bx_repeat:profiles' => $this->_getAuthorizeProfileRows(),
+            'footer' => BxTemplFunctions::getInstance()->designBoxFooter(BxDolService::call('system', 'get_agreement', array('_bx_oauth_authorize_agreement'), 'TemplServiceLogin')),
         );
 
         $this->_oTemplate->addCss('main.css');
@@ -666,6 +675,33 @@ class BxOAuthModule extends BxDolModule
     {
         $oAccount = BxDolAccount::getInstance();
         return $oAccount ? $oAccount->getProfiles() : array();
+    }
+
+    /**
+     * Rows of the consent form: the profiles of the signed-in account a person can act as, each with its
+     * own submit button. The same profiles as the account's profile switcher lists.
+     */
+    protected function _getAuthorizeProfileRows()
+    {
+        $oModuleDb = BxDolModuleQuery::getInstance();
+
+        $aRows = array();
+        foreach ($this->_getAuthorizeProfiles() as $aProfile) {
+            if (!$oModuleDb->isEnabledByName($aProfile['type']) || !BxDolService::call($aProfile['type'], 'act_as_profile'))
+                continue;
+
+            $oProfile = BxDolProfile::getInstance($aProfile['id']);
+            if (!$oProfile)
+                continue;
+
+            $aRows[] = array(
+                'id' => (int)$aProfile['id'],
+                'unit' => $oProfile->getUnit(0, array('template' => 'unit_wo_links')),
+                'connect_label' => $this->_escapeAttribute(_t('_bx_oauth_connect_as', $oProfile->getDisplayName())),
+            );
+        }
+
+        return $aRows;
     }
 
     /**

@@ -415,4 +415,42 @@ describe('New poll in the compose sheet', () => {
         expect(retry?.key).toBe(first?.key);
         await waitFor(() => expect(screen.queryByRole('dialog', { name: 'New poll' })).toBeNull());
     });
+
+    it('is posted while files are on their way into the tray: a poll takes none', async () => {
+        const modules = [{ module: 'bx_polls', tag: 'polls', title: 'Polls', kind: 'poll', audiences: ['public', 'friends', 'private'] }];
+        setSiteModules(modules as Parameters<typeof setSiteModules>[0]);
+        const sent: string[] = [];
+        const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
+        const api = createUnaApi({
+            siteUrl: 'https://community.example',
+            fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
+                const request = input instanceof Request ? input : new Request(input, init);
+                const path = new URL(request.url).pathname.replace(/^\/api\/v2/, '') || '/';
+                if (path === '/') return json({ modules });
+                if (path === '/polls' && request.method === 'POST') {
+                    sent.push(await request.text());
+                    return json(poll({ id: '30', content_id: null }), 201);
+                }
+                if (path === '/me/groups' || path === '/me/spaces') return json([]);
+                return new Promise<Response>(() => {});
+            },
+        });
+        // a paste that is never made ready
+        const uploader = { pick: async () => ({ files: [], refused: [] }), fromFiles: () => new Promise<never>(() => {}), fromPaths: async () => ({ files: [], refused: [] }), upload: () => new Promise<never>(() => {}), cancel: () => {}, release: () => {} };
+        renderWith(
+            <ComposeProvider uploader={uploader}>
+                <PollOpener />
+            </ComposeProvider>,
+            api,
+        );
+        fireEvent.click(screen.getByRole('button', { name: 'Ask' }));
+        const sheet = await screen.findByRole('dialog', { name: 'New poll' });
+        fireEvent.paste(within(sheet).getByRole('textbox', { name: 'Answer 1' }), { clipboardData: { files: [new File(['x'], 'beach.png', { type: 'image/png' })], getData: () => '' } });
+        fireEvent.change(within(sheet).getByRole('textbox', { name: 'Answer 1' }), { target: { value: 'Friday' } });
+        fireEvent.change(within(sheet).getByRole('textbox', { name: 'Answer 2' }), { target: { value: 'Saturday' } });
+        setRichText(within(sheet).getByRole('textbox', { name: 'Question' }), 'Which day suits you?');
+        fireEvent.click(within(sheet).getByRole('button', { name: 'Post poll' }));
+        await waitFor(() => expect(sent).toHaveLength(1));
+        expect(screen.queryByText('Wait until the uploads are done')).toBeNull();
+    });
 });
