@@ -99,9 +99,14 @@ class EmailHeaderLogoTest extends BxDolIntegrationTestCase
 
     public function testDefaultHeaderSwitchesLogosInDarkMode(): void
     {
-        $sSql = file_get_contents(BX_DIRECTORY_PATH_ROOT . 'install/sql/system.sql');
-        $this->assertSame(1, preg_match("#'site_email_html_template_header', '[^']*', '((?:[^'\\\\]|\\\\.)*)'#", $sSql, $a));
-        $sHeader = stripcslashes($a[1]);
+        // The install SQL when it is there (CI removes install/ before these tests), otherwise the installed site's header.
+        $sSqlFile = BX_DIRECTORY_PATH_ROOT . 'install/sql/system.sql';
+        if (is_file($sSqlFile)) {
+            $this->assertSame(1, preg_match("#'site_email_html_template_header', '[^']*', '((?:[^'\\\\]|\\\\.)*)'#", file_get_contents($sSqlFile), $a));
+            $sHeader = stripcslashes($a[1]);
+        }
+        else
+            $sHeader = (string)getParam('site_email_html_template_header');
 
         $this->assertStringContainsString('<meta name="color-scheme" content="light dark">', $sHeader);
         $this->assertStringContainsString('@media (prefers-color-scheme: dark)', $sHeader);
