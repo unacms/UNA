@@ -57,7 +57,7 @@ class BxBaseEmailLetterAvatarTest extends BxDolTestCase
         foreach (['width: 48px', 'height: 48px', 'line-height: 48px', 'border-radius: 50%', 'color: #ffffff', 'text-align: center', 'font-family: Arial, Helvetica, sans-serif', 'font-size: 20px', 'font-weight: bold'] as $s)
             $this->assertStringContainsString($s, $sHtml);
 
-        $this->assertMatchesRegularExpression('/background-color: #[0-9a-f]{6};/', $sHtml);
+        $this->assertMatchesRegularExpression('/bgcolor="#[0-9a-f]{6}"/', $sHtml);
     }
 
     public function testColourIsTheSiteColourKeptReadable(): void
@@ -70,7 +70,7 @@ class BxBaseEmailLetterAvatarTest extends BxDolTestCase
         $iSame = 0;
         $iCount = count(BxDolTemplate::getColorPalette());
         for ($iId = 0; $iId < $iCount; $iId++) {
-            preg_match('/background-color: #([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2});/', $this->avatar('Name', $iId), $a);
+            preg_match('/bgcolor="#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})"/', $this->avatar('Name', $iId), $a);
             $aRgb = [hexdec($a[1]), hexdec($a[2]), hexdec($a[3])];
             $aSite = array_slice(BxDolTemplate::getColorCode($iId), 0, 3);
 
