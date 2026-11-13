@@ -640,10 +640,16 @@ html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
    - by itself inside a cover (.bx-cover-wrapper) and on the buttons that edit a picture in place (.bx-image-edit-buttons), unless the menu's
      Button style says Regular or Plain;
    - .bx-btn-glass on a button that is in no menu and sits over a picture.
-   A primary button there is the glass prominent one (below); a disabled button keeps its own fill. */
-.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) {
+   A bordered menu item (.bx-stl-mib, the actions beside a profile's name) of a menu whose Button style is Glass takes the same look.
+   A primary button there is the glass prominent one (below); a disabled button keeps its own fill. Inside a cover all of them are capsules. */
+.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *),
+body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *) {
     background-color: rgb(255 255 255 / 0.3);
     color: #0a0a0c;
+
+    /* No border: the rim is an inset shadow, which starts inside a border, so the 1px transparent one of a regular button would push the rim
+       1px in and leave a line of plain fill around it. The height is a min-height, so only the width loses 2px, as NeoButton's has none. */
+    border-width: 0;
 
     -webkit-backdrop-filter: blur(12px) saturate(150%) contrast(50%) brightness(130%);
     backdrop-filter: blur(12px) saturate(150%) contrast(50%) brightness(130%);
@@ -651,18 +657,25 @@ html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
     /* --tw-shadow, not box-shadow: the focus ring is drawn by the same box-shadow and stays. */
     --tw-shadow: inset 0 3px 1.5px -1.5px rgb(255 255 255 / 1), inset 0 -3px 1.5px -1.5px rgb(255 255 255 / 1), 0 0 0 0.6px rgb(0 0 0 / 0.08), 1px 0 0 -0.4px rgb(0 0 0 / 0.22), -1px 0 0 -0.4px rgb(0 0 0 / 0.22), 0 4px 10px -2px rgb(0 0 0 / 0.03);
 }
-.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):hover {
+.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):hover,
+body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *):hover {
     background-color: rgb(255 255 255 / 0.4);
     color: #0a0a0c;
 }
-.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):active {
+.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):active,
+body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *):active {
     background-color: rgb(255 255 255 / 0.55);
     color: #0a0a0c;
 }
-.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) i:not(.sys-colored) {
+.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) i:not(.sys-colored),
+body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass :is(.sys-action-do-icon, .bx-mi-icon):not(.bx-popup *) {
     color: inherit;
 }
-.dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) {
+body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *) {
+    box-shadow: var(--tw-shadow); /* a menu item has no shadow utility to carry --tw-shadow, as .bx-btn has */
+}
+.dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *),
+.dark body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *) {
     background-color: rgb(255 255 255 / 0.15);
     color: #fafafc;
 
@@ -671,30 +684,55 @@ html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
 
     --tw-shadow: inset 0 1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 -1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 4px 5px -4px rgb(255 255 255 / 0.08), inset 0 -4px 5px -4px rgb(255 255 255 / 0.08), 0 0 0 0.6px rgb(0 0 0 / 0.5);
 }
-.dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):hover {
+.dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):hover,
+.dark body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *):hover {
     background-color: rgb(255 255 255 / 0.19);
     color: #fafafc;
 }
-.dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):active {
+.dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):active,
+.dark body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *):active {
     background-color: rgb(255 255 255 / 0.23);
     color: #fafafc;
 }
 
 /* Glass prominent: the primary button wherever a regular one is glass (NeoButton `glassProminent`, web; NEO maps a menu's primary items
-   to it the same way, `button_primary_style`). It keeps the primary fill, which is opaque, so a picture cannot wash the colour out; what
-   makes it glass is the edge: a faint light rim with a brighter top line, and a soft shadow that lifts it off the picture and shrinks
-   when pressed. */
+   to it the same way, `button_primary_style`). The same values as NEO's `glass-prominent` and `shadow-glass-prominent` (global.css there),
+   tuned to the iOS button: the primary fill at 90% over a blurred backdrop, so a picture behind tints it a little (the backdrop is dimmed
+   first: over white the label would drop under 4.5:1); a rim of lighter tint along the top and the bottom with a soft glow inside it; a
+   hairline of darker tint, darker still at the sides (black on dark); a faint drop below.
+   Rim, glow and hairline are mixed from the fill (--bx-gp), so hover and active only change that one colour. */
 .bx-btn.bx-btn-primary:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) {
-    --tw-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.1), inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 0 0 1px rgb(0 0 0 / 0.01), 0 2px 8px -2px rgb(0 0 0 / 0.1), 0 4px 16px -4px rgb(0 0 0 / 0.1);
+    --bx-gp: rgb(37 99 235);
+    --bx-gp-rim: color-mix(in oklab, var(--bx-gp) 75%, white);
+    --bx-gp-glow: color-mix(in srgb, var(--bx-gp-rim) 30%, transparent);
+    --bx-gp-edge: color-mix(in oklab, var(--bx-gp) 88%, black);
+    --bx-gp-side: color-mix(in oklab, var(--bx-gp) 78%, black);
+
+    background-color: color-mix(in srgb, var(--bx-gp) 90%, transparent);
+    border-width: 0; /* as the glass button above: the rim has to sit on the edge */
+
+    -webkit-backdrop-filter: blur(12px) saturate(180%) brightness(70%);
+    backdrop-filter: blur(12px) saturate(180%) brightness(70%);
+
+    /* --tw-shadow, not box-shadow: the focus ring is drawn by the same box-shadow and stays. */
+    --tw-shadow: inset 0 2px 1px -1px var(--bx-gp-rim), inset 0 -2px 1px -1px var(--bx-gp-rim), inset 0 5px 4px -4px var(--bx-gp-glow), inset 0 -5px 4px -4px var(--bx-gp-glow), 0 0 0 0.6px var(--bx-gp-edge), 1px 0 0 -0.4px var(--bx-gp-side), -1px 0 0 -0.4px var(--bx-gp-side), 0 4px 10px -2px rgb(0 0 0 / 0.06);
+}
+.bx-btn.bx-btn-primary:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):hover {
+    --bx-gp: rgb(29 78 216);
 }
 .bx-btn.bx-btn-primary:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):active {
-    --tw-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.1), inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 0 0 1px rgb(0 0 0 / 0.01), 0 1px 4px -1px rgb(0 0 0 / 0.1), 0 2px 8px -2px rgb(0 0 0 / 0.1);
+    --bx-gp: rgb(30 64 175);
 }
 .dark .bx-btn.bx-btn-primary:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) {
-    --tw-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.1), inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 8px -2px rgb(0 0 0 / 0.5), 0 4px 16px -4px rgb(0 0 0 / 0.5);
+    --bx-gp-glow: color-mix(in srgb, var(--bx-gp-rim) 20%, transparent);
+
+    --tw-shadow: inset 0 2px 1px -1px var(--bx-gp-rim), inset 0 -2px 1px -1px var(--bx-gp-rim), inset 0 8px 8px -6px var(--bx-gp-glow), inset 0 -8px 8px -6px var(--bx-gp-glow), 0 0 0 0.6px rgb(0 0 0 / 0.5), 1px 0 0 -0.4px rgb(0 0 0 / 0), -1px 0 0 -0.4px rgb(0 0 0 / 0), 0 4px 10px -2px rgb(0 0 0 / 0.3);
 }
-.dark .bx-btn.bx-btn-primary:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):active {
-    --tw-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.1), inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 0 0 1px rgb(0 0 0 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.5), 0 2px 8px -2px rgb(0 0 0 / 0.5);
+
+/* Over a cover the buttons are capsules, as NEO draws the buttons of its covers and header. A menu whose Button style says Regular or
+   Plain keeps the regular corners with the regular look. */
+.bx-cover-wrapper .bx-btn:not(.bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) {
+    border-radius: 9999px;
 }
 
 /* A menu whose Button style is Plain (BxDolMenu::BUTTON_STYLE_PLAIN; NeoButton `plain`): no fill in any state, the label alone. */

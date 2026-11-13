@@ -332,13 +332,13 @@ export const settingsButtons = {
         borderShapes: {
             capsule:   { rounded: 'rounded-full', iconOnlyPadded: true },
             rectangle: { rounded: 'rounded-none' },
-            // 6 / 8 / 12 / 12 / 16px; inputs match (12 at regular and large), cards and blocks
+            // 6 / 10 / 12 / 12 / 16px (small is `rounded-control-sm`, theme.css); inputs match (12 at regular and large), cards and blocks
             // are 16. Native iOS and Android buttons read this too.
             roundedRectangle: {
                 rounded: {
                     default: 'rounded-xl',
                     mini:    'rounded-md',
-                    small:   'rounded-lg',
+                    small:   'rounded-control-sm',
                     regular: 'rounded-xl',
                     large:   'rounded-xl',
                     xlarge:  'rounded-2xl',
@@ -442,7 +442,10 @@ export const settingsButtons = {
                     },
                 },
                 glassProminent: {
-                    container: 'web:backdrop-blur-md bg-primary shadow-btn-glass-prominent dark:shadow-btn-glass-prominent-deep',
+                    container: {
+                        default: 'bg-primary shadow-btn-glass-prominent dark:shadow-btn-glass-prominent-deep',
+                        web: 'glass-prominent shadow-glass-prominent dark:shadow-glass-prominent-deep',
+                    },
                     separator: 'bg-primary-foreground/30',
                     segment: {
                         default: '',
@@ -506,7 +509,7 @@ export const settingsButtons = {
                     disabled: 'opacity-50',
                 },
                 text: {
-                    base: 'font-medium',
+                    base: 'font-semibold',
                     default: 'text-card-foreground',
                     hovered: 'text-card-foreground',
                     focused: 'text-card-foreground',
@@ -536,7 +539,7 @@ export const settingsButtons = {
                     disabled: 'bg-button/50 ',
                 },
                 text: {
-                    base: 'font-medium tracking-tight',
+                    base: 'font-semibold',
                     default: 'text-button-foreground',
                     hovered: 'text-button-foreground',
                     focused: 'text-button-foreground',
@@ -562,7 +565,7 @@ export const settingsButtons = {
                     disabled: 'bg-primary opacity-50',
                 },
                 text: {
-                    base: 'font-medium tracking-tight',
+                    base: 'font-semibold',
                     default: 'text-primary-foreground',
                     hovered: 'text-primary-foreground',
                     focused: 'text-primary-foreground',
@@ -587,7 +590,7 @@ export const settingsButtons = {
                     disabled: 'opacity-50',
                 },
                 text: {
-                    base: 'font-semibold tracking-tight',
+                    base: 'font-semibold',
                     default: 'text-card-foreground',
                     hovered: 'text-foreground',
                     focused: 'text-foreground',
@@ -614,7 +617,7 @@ export const settingsButtons = {
                     disabled: 'opacity-50',
                 },
                 text: {
-                    base: 'font-medium tracking-tight',
+                    base: 'font-semibold',
                     default: 'text-card-foreground',
                     hovered: 'text-foreground',
                     focused: 'text-foreground',
@@ -637,7 +640,7 @@ export const settingsButtons = {
                             pressedToggle: 'bg-button-hover',
                             disabled: 'opacity-50' },
                 text: {
-                    base: 'font-medium tracking-tight text-accent-foreground',
+                    base: 'font-medium text-accent-foreground',
                     default: ' ',
                     hovered: ' ',
                     focused: ' ',
@@ -696,7 +699,7 @@ export const settingsButtons = {
                     disabled: 'bg-muted/50',
                 },
                 text: {
-                    base: 'font-medium',
+                    base: 'font-semibold',
                     // Native glass draws its label black / white: the foreground, not card text.
                     default: 'text-foreground',
                     hovered: 'text-foreground',
@@ -724,19 +727,34 @@ export const settingsButtons = {
             },
 
             // SwiftUI .glassProminent — primary action colour with glass lift.
+            // Web draws the iOS button: the primary fill at 90% over a blurred
+            // backdrop, a rim of lighter tint along the top and bottom, a
+            // hairline of darker tint (`glass-prominent`, `shadow-glass-prominent`
+            // in global.css; the colours follow the fill, so also a `tint`).
+            // A press deepens the fill and the edge follows it. The native JS
+            // fallback keeps the flat fill and the `shadow-btn-glass-prominent` tokens.
             glassProminent: {
                 container: {
-                    base: 'web:backdrop-blur-md shadow-btn-glass-prominent dark:shadow-btn-glass-prominent-deep',
-                    default: 'bg-primary',
-                    hovered: 'bg-primary-hover',
-                    focused: 'bg-primary-hover',
-                    pressed: 'bg-primary-hover shadow-btn-glass-prominent-pressed dark:shadow-btn-glass-prominent-pressed-deep',
-                    active: 'bg-primary-hover',
-                    pressedToggle: 'bg-primary-hover shadow-btn-glass-prominent-pressed dark:shadow-btn-glass-prominent-pressed-deep',
-                    disabled: 'bg-primary opacity-50',
+                    base: {
+                        default: 'shadow-btn-glass-prominent dark:shadow-btn-glass-prominent-deep',
+                        web: 'shadow-glass-prominent dark:shadow-glass-prominent-deep',
+                    },
+                    default: { default: 'bg-primary', web: 'glass-prominent' },
+                    hovered: { default: 'bg-primary-hover', web: 'glass-prominent-hover' },
+                    focused: { default: 'bg-primary-hover', web: 'glass-prominent-hover' },
+                    pressed: {
+                        default: 'bg-primary-hover shadow-btn-glass-prominent-pressed dark:shadow-btn-glass-prominent-pressed-deep',
+                        web: 'glass-prominent-hover',
+                    },
+                    active: { default: 'bg-primary-hover', web: 'glass-prominent-hover' },
+                    pressedToggle: {
+                        default: 'bg-primary-hover shadow-btn-glass-prominent-pressed dark:shadow-btn-glass-prominent-pressed-deep',
+                        web: 'glass-prominent-hover',
+                    },
+                    disabled: { default: 'bg-primary opacity-50', web: 'glass-prominent opacity-50' },
                 },
                 text: {
-                    base: 'font-medium tracking-tight',
+                    base: 'font-semibold',
                     default: 'text-primary-foreground',
                     hovered: 'text-primary-foreground',
                     focused: 'text-primary-foreground',

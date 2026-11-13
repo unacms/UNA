@@ -39,7 +39,7 @@ export const settingsInputs = {
         default_size: 'large',
         // Shared control heights + default radius — text inputs, selects, matching surfaces.
         size:{
-            small: 'px-3 py-1.5 leading-4 min-h-9 rounded-lg',
+            small: 'px-3 py-1.5 leading-4 min-h-9 rounded-control-sm',
             regular: 'px-3 py-2 leading-5 min-h-11 rounded-xl',
             // 52px, the height of a large NeoButton.
             large: 'px-4 py-2 leading-6 min-h-13 rounded-xl',

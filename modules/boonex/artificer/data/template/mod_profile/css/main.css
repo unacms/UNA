@@ -238,6 +238,37 @@ div.bx-base-general-entity-actions .bx-menu-custom-hor > li .sys-action-element-
 div.bx-base-general-entity-actions .bx-menu-custom-hor > li .sys-action-counter-holder a {
     display: block;
 }
+/* The actions are regular buttons (see .bx-stl-mib in template/css/tailwind.css). Their height and side padding are the links' paddings:
+   the buttons' scale, small (36px high, 12px at the sides) unless the menu sets a Button size: mini 28 / 10, regular 44 / 16,
+   large 52 / 24. Not in the "more" popup, where the items are rows. */
+div.bx-base-general-entity-actions .bx-menu-custom-hor > li.bx-stl-mib .sys-action-element-holder > a:not(.bx-popup *),
+div.bx-base-general-entity-actions .bx-menu-custom-hor > li.bx-stl-mib > .bx-base-general-entity-action > a:not(.bx-popup *) {
+    padding: 0.5rem 0.75rem;
+}
+div.bx-base-general-entity-actions .bx-menu-custom-hor > li.bx-stl-mib .sys-action-counter-holder > a:not(.bx-popup *) {
+    padding: 0.5rem 0.75rem 0.5rem 0.375rem;
+}
+div.bx-base-general-entity-actions .bx-menu-custom-hor > li.bx-stl-mib.bx-menu-btn-size-mini .sys-action-element-holder > a:not(.bx-popup *),
+div.bx-base-general-entity-actions .bx-menu-custom-hor > li.bx-stl-mib.bx-menu-btn-size-mini > .bx-base-general-entity-action > a:not(.bx-popup *) {
+    padding: 0.375rem 0.625rem;
+}
+div.bx-base-general-entity-actions .bx-menu-custom-hor > li.bx-stl-mib.bx-menu-btn-size-mini .sys-action-counter-holder > a:not(.bx-popup *) {
+    padding: 0.375rem 0.625rem 0.375rem 0.25rem;
+}
+div.bx-base-general-entity-actions .bx-menu-custom-hor > li.bx-stl-mib.bx-menu-btn-size-regular .sys-action-element-holder > a:not(.bx-popup *),
+div.bx-base-general-entity-actions .bx-menu-custom-hor > li.bx-stl-mib.bx-menu-btn-size-regular > .bx-base-general-entity-action > a:not(.bx-popup *) {
+    padding: 0.625rem 1rem;
+}
+div.bx-base-general-entity-actions .bx-menu-custom-hor > li.bx-stl-mib.bx-menu-btn-size-regular .sys-action-counter-holder > a:not(.bx-popup *) {
+    padding: 0.625rem 1rem 0.625rem 0.5rem;
+}
+div.bx-base-general-entity-actions .bx-menu-custom-hor > li.bx-stl-mib.bx-menu-btn-size-large .sys-action-element-holder > a:not(.bx-popup *),
+div.bx-base-general-entity-actions .bx-menu-custom-hor > li.bx-stl-mib.bx-menu-btn-size-large > .bx-base-general-entity-action > a:not(.bx-popup *) {
+    padding: 0.875rem 1.5rem;
+}
+div.bx-base-general-entity-actions .bx-menu-custom-hor > li.bx-stl-mib.bx-menu-btn-size-large .sys-action-counter-holder > a:not(.bx-popup *) {
+    padding: 0.875rem 1.5rem 0.875rem 0.5rem;
+}
 div.bx-base-general-entity-actions .bx-menu-custom-hor li.bx-menu-item-more-auto .bx-popup .bx-menu-custom-ver .bx-menu-item {
     border-color: transparent;
     border-radius: 0;

@@ -772,6 +772,12 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
     const isProminent = resolved.style === 'borderedProminent' || resolved.style === 'glassProminent';
     // A segment's fill is the group's (it paints the tint itself).
     const tintFillsSurface = !segment && resolved.tint && isProminent;
+    // Web glass prominent mixes its fill, rim and hairline from `--neo-gp-fill`
+    // (global.css): the tint is named there. The standard surface then paints
+    // the fill itself, at 90% over the blurred backdrop like the untinted one;
+    // an inline colour would make it opaque. Realistic glass keeps the inline fill.
+    const webGlassProminent = isWeb && resolved.style === 'glassProminent';
+    const tintIsGlassFill = webGlassProminent && !resolved.glassFx;
 
     // Only the values that have no utility-class equivalent remain inline:
     // unmapped size/padding fallbacks, asymmetric contentInsets overrides, and
@@ -785,7 +791,8 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
         ...(needsPaddingFallback ? { paddingLeft: resolved.paddingX, paddingRight: resolved.paddingX } : null),
         ...(insetLeft != null ? { paddingLeft: insetLeft } : null),
         ...(insetRight != null ? { paddingRight: insetRight } : null),
-        ...(tintFillsSurface ? { backgroundColor: resolved.tint } : null),
+        ...(tintFillsSurface && !tintIsGlassFill ? { backgroundColor: resolved.tint } : null),
+        ...(tintFillsSurface && webGlassProminent ? { '--neo-gp-fill': resolved.tint } : null),
         ...(customHit ? {
             '--neo-hit-t': hitInsets.top ?? 0,
             '--neo-hit-r': hitInsets.right ?? 0,
