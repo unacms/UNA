@@ -925,17 +925,19 @@ export default function RftText(props) {
         style.bottom =
             suggestionsSize[1] - (mentionCoords[1] > 0 ? mentionCoords[1] - 24 : 0)
     }
+    // `bg="transparent"`: the host draws the field's surface (the comment composer's box), so the
+    // editor adds none of its own, with a toolbar too.
+    let surfaceClass = ''
+    if (bg != 'transparent') {
+        surfaceClass = isToolBar
+            ? ' px-4 py-2 bg-card shadow-input-outline dark:shadow-input-outline-deep rounded-xl focus:bg-card focus:ring-border flex-auto overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-100 '
+            : cn(inputSettings.base, inputSettings.size.regular)
+    }
+
     return (
         <View
             onLayout={handleLayout}
-            // `bg="transparent"`: the host draws the field's surface (the comment composer's box),
-            // so the editor adds none of its own, with a toolbar too.
-            className={`relative flex-auto ${bg == 'transparent'
-                ? ''
-                : (isToolBar
-                    ? ' px-4 py-2 bg-card shadow-input-outline dark:shadow-input-outline-deep rounded-xl focus:bg-card focus:ring-border flex-auto overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-100 '
-                    : cn(inputSettings.base, inputSettings.size.regular))
-                }`}
+            className={`relative flex-auto ${surfaceClass}`}
         >
             <MentionSuggestionsDropdown
                 suggestions={suggestions}

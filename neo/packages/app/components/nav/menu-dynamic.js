@@ -54,7 +54,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
             // fits by its items' widths runs past its container by the gaps.
             const row = itemsRowRef.current;
             const gap = isWeb && row && typeof getComputedStyle === 'function'
-                ? parseFloat(getComputedStyle(row).columnGap) || 0
+                ? Number.parseFloat(getComputedStyle(row).columnGap) || 0
                 : 0;
             let shown = 0;
             for (let i = 0; i < itemRefs.current.length; i++) {
