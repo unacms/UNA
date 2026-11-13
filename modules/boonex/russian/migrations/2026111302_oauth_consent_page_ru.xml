@@ -4,12 +4,12 @@
 <resources name="ru" flag="ru" title="Russian" category="OAuth2 Server">
     <string_add name="_bx_oauth_authorization_desc"><![CDATA[Подключите приложение к своему аккаунту.]]></string_add>
     <string_add name="_bx_oauth_authorize_lead"><![CDATA[<strong>{0}</strong> запрашивает доступ к вашему аккаунту на {1}.]]></string_add>
-    <string_add name="_bx_oauth_authorize_can"><![CDATA[Приложение сможет]]></string_add>
+    <string_add name="_bx_oauth_authorize_can"><![CDATA[Приложение сможет:]]></string_add>
     <string_add name="_bx_oauth_authorize_can_read"><![CDATA[Читать всё, что вы видите на сайте]]></string_add>
     <string_add name="_bx_oauth_authorize_can_write"><![CDATA[Публиковать, комментировать и ставить реакции от вашего имени]]></string_add>
     <string_add name="_bx_oauth_authorize_can_messages"><![CDATA[Читать и отправлять ваши сообщения]]></string_add>
     <string_add name="_bx_oauth_authorize_can_profiles"><![CDATA[Действовать от того из ваших профилей, который используется на сайте. Переключение профиля в приложении переключает его и на сайте]]></string_add>
-    <string_add name="_bx_oauth_authorize_choose"><![CDATA[Подключить как]]></string_add>
+    <string_add name="_bx_oauth_authorize_choose"><![CDATA[Подключить как:]]></string_add>
     <string_add name="_bx_oauth_connect_as"><![CDATA[Подключить как {0}]]></string_add>
     <string_add name="_bx_oauth_authorize_agreement"><![CDATA[Подключая приложение, вы принимаете <a href="{0}">Условия использования</a> и <a href="{1}">Политику конфиденциальности</a>.]]></string_add>
     <string_upd name="_bx_oauth_connect"><![CDATA[Подключить]]></string_upd>

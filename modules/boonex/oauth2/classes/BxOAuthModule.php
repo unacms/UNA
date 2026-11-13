@@ -560,12 +560,19 @@ class BxOAuthModule extends BxDolModule
 
         // what the `api` scope of a native app allows, one line each
         $aScopes = array();
-        if ($bNativeApp && in_array('api', preg_split('/[\s,]+/', $aParams['scope'], -1, PREG_SPLIT_NO_EMPTY), true))
+        if ($bNativeApp && in_array('api', preg_split('/[\s,]+/', $aParams['scope'], -1, PREG_SPLIT_NO_EMPTY), true)) {
+            $sIcon = BxTemplFunctions::getInstance()->getIconAsHtml('check');
             foreach (array('read', 'write', 'messages', 'profiles') as $sScope)
-                $aScopes[] = array('title' => _t('_bx_oauth_authorize_can_' . $sScope));
+                $aScopes[] = array('icon' => $sIcon, 'title' => _t('_bx_oauth_authorize_can_' . $sScope));
+        }
+
+        // the list's lead-in is the end of the first line, not a heading of its own
+        $sText = _t('_bx_oauth_authorize_lead', $this->_escapeAttribute($sTitle), $this->_escapeAttribute(getParam('site_title')));
+        if ($aScopes)
+            $sText .= ' ' . _t('_bx_oauth_authorize_can');
 
         $aVars = array(
-            'text' => _t('_bx_oauth_authorize_lead', $this->_escapeAttribute($sTitle), $this->_escapeAttribute(getParam('site_title'))),
+            'text' => $sText,
             'bx_if:scopes' => array(
                 'condition' => !empty($aScopes),
                 'content' => array('bx_repeat:items' => $aScopes),

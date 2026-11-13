@@ -231,6 +231,9 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
         $a = $this->auth('GET', $aQuery + ['code_challenge' => $sChallenge, 'code_challenge_method' => 'S256'], $sCookie);
         $this->assertSame(200, $a['status'], $a['body']);
         $this->assertSame(4, substr_count($a['body'], '<li class="bx-auth-scope">'));
+        $this->assertSame(4, preg_match_all('#<span class="bx-auth-scope-icon" aria-hidden="true">\s*<(svg|i) #', $a['body']), 'each line has the site\'s check icon');
+        $this->assertStringContainsString(' ' . _t('_bx_oauth_authorize_can') . '</p>', $a['body'], 'the list is led in by the first line');
+        $this->assertStringNotContainsString('<h3', (string)substr($a['body'], (int)strpos($a['body'], 'id="bx-auth-form"'), 4000), 'no headings inside the block');
         foreach (['read', 'write', 'messages', 'profiles'] as $sScope)
             $this->assertStringContainsString(_t('_bx_oauth_authorize_can_' . $sScope), $a['body']);
         $this->assertStringContainsString('<strong>127.0.0.1:47031</strong>', $a['body']);
