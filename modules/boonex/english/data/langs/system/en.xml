@@ -491,6 +491,7 @@
         <string name="_adm_api_msg_removed_for"><![CDATA[All apps settings were removed.]]></string>
         <string name="_adm_api_popup_import"><![CDATA[Import Settings]]></string>
         <string name="_adm_api_ttl_module"><![CDATA[Module]]></string>
+        <string name="_adm_api_ttl_sync_api"><![CDATA[Keep in sync]]></string>
 	<string name="_adm_block_cpt_categories"><![CDATA[Categories]]></string>
 	<string name="_adm_block_cpt_category"><![CDATA[Category: {0}]]></string>
 	<string name="_adm_block_cpt_checkout"><![CDATA[Checkout]]></string>
