@@ -226,7 +226,10 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
     // A page with an empty centre cell keeps its content in the top and bottom cells (a glossary
     // term: the text on top, the actions and comments below). Draw those, or nothing would show.
     const isOuterOnly = cellCenterBlocks.length === 0;
-    const contentBlocks = isOuterOnly ? [...topBlocks, ...bottomBlocks] : cellCenterBlocks;
+    // The entry itself can sit in the top cell above the centre's text and actions (a photo: the
+    // picture, its title and description). It opens the column, as on the site.
+    const topContentBlocks = isOuterOnly ? [] : topBlocks.filter((item) => blockHasContentType(item, data, 'entity_text'));
+    const contentBlocks = isOuterOnly ? [...topBlocks, ...bottomBlocks] : [...topContentBlocks, ...cellCenterBlocks];
 
     // UNA puts some entities' action bars (Discussions) in the top cell, where the
     // web site draws them above the content. Show them after the text, where Posts
@@ -271,9 +274,13 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
     const commentsAt = centerBlocks.findIndex((item) => blockHasContentType(item, data, 'comments'));
     const beforeComments = commentsAt < 0 ? centerBlocks : centerBlocks.slice(0, commentsAt);
     const fromComments = commentsAt < 0 ? [] : centerBlocks.slice(commentsAt);
-    const mainBlocks = foldSidebars
+    const orderedBlocks = foldSidebars
         ? [...foldedAuthorBlocks, ...beforeComments, ...(hasTextBlock ? [] : infoBlocks), ...foldedRestBlocks, ...fromComments]
         : centerBlocks;
+    // The author opens the column on every type, as on Posts, also where UNA puts it after the
+    // text and actions (photos, videos).
+    const isAuthor = (item) => blockHasContentType(item, data, 'entity_author');
+    const mainBlocks = [...orderedBlocks.filter(isAuthor), ...orderedBlocks.filter((item) => !isAuthor(item))];
     const ownsPageComments = !!(commentsBrowse || commentsForm);
     const commentsBlockName = blocks?.comments?.name;
     const threadBlocks = ownsPageComments

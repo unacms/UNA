@@ -145,7 +145,8 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
                 }
 
                 <View className={data.text ? '' : 'flex-auto'}>
-                    <Profile {...data.author_data} displayType="unit" displaySize="base" className='hidden lg:flex' showInfo={sInfo} />
+                    {/* The avatar shows on every size: on phones the header names no author either. */}
+                    <Profile {...data.author_data} displayType="unit" displaySize="base" showInfo={sInfo} />
                 </View>
 
                 {(data.text && false) && (
