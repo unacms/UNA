@@ -958,7 +958,7 @@ class BxAlbumsModule extends BxBaseModTextModule
 
             $aItems = $this->_oDb->getMediaListByContentId($aData[$CNF['FIELD_ID']], 1);
             foreach($aItems as $aItem) {
-                list($iWidth, $iHeight) = $aData['data'] ? explode('x', $aData['data']) : [0, 0];
+                list($iWidth, $iHeight) = !empty($aItem['data']) ? explode('x', $aItem['data']) : [0, 0];
 
                 $aImage = [
                     'storage' => $sStorage,
@@ -982,6 +982,10 @@ class BxAlbumsModule extends BxBaseModTextModule
 
         $iId = (int)$aData[$CNF['FIELD_ID']];
         $sUrl = bx_api_get_relative_url($this->_oConfig->getMediaUrl($iId));
+
+        // A media row has no date of its own, it is the file's: the media browse joins it, other rows get it here.
+        if(!isset($aData[$CNF['FIELD_ADDED']]) && ($aMediaInfo = $this->_oDb->getMediaInfoById($iId)))
+            $aData[$CNF['FIELD_ADDED']] = $aMediaInfo['added'];
 
         $aImage = $aVideo = [];
         if(($sStorage = $CNF['OBJECT_STORAGE']) && ($oStorage = BxDolStorage::getObjectInstance($sStorage)) !== false) {
@@ -1016,7 +1020,7 @@ class BxAlbumsModule extends BxBaseModTextModule
             'id' => $iId,
             'module' => $sModule,
             'module_title' => _t($CNF['T']['txt_sample_single']),
-            'added' => $aData[$CNF['FIELD_ADDED']],
+            'added' => $aData[$CNF['FIELD_ADDED']] ?? 0,
             'author' => $aData[$CNF['FIELD_AUTHOR']],
             'author_data' => !empty($aData[$CNF['FIELD_AUTHOR']]) ? BxDolProfile::getData($aData[$CNF['FIELD_AUTHOR']]) : '',
             'title' => $aData[$CNF['FIELD_TITLE']],
@@ -1025,11 +1029,13 @@ class BxAlbumsModule extends BxBaseModTextModule
             'video' => $aVideo
         ];
 
+        // A media row has no text column.
         if(isset($aParams['extended']) && $aParams['extended'] === true)
-            $aResult['text'] = $aData[$CNF['FIELD_TEXT']];
+            $aResult['text'] = $aData[$CNF['FIELD_TEXT']] ?? '';
 
-        if(!empty($CNF['OBJECT_MENU_SNIPPET_META']) && ($oMetaMenu = BxDolMenu::getObjectInstance($CNF['OBJECT_MENU_SNIPPET_META'], $this->_oTemplate)) !== false) {
-            $oMetaMenu->setContentId($iId);
+        // The media item's own meta (date, author, views), not the album's whose id equals the media id.
+        if(!empty($CNF['OBJECT_MENU_SNIPPET_META']) && ($oMetaMenu = BxDolMenu::getObjectInstance($CNF['OBJECT_MENU_SNIPPET_META'], $this->_oTemplate)) !== false && method_exists($oMetaMenu, 'setMediaId')) {
+            $oMetaMenu->setMediaId($iId);
 
             $aResult['meta'] = $oMetaMenu->getCodeAPI();
         }

@@ -39,6 +39,15 @@ class BxBaseModGeneralMenuSnippetMeta extends BxTemplMenuUnitMeta
         return parent::getCode();
     }
 
+    protected function _getMenuItem($a)
+    {
+        // No content (an unknown id): no items, like getCode() shows nothing, instead of reading keys of false.
+        if(empty($this->_aContentInfo) || !is_array($this->_aContentInfo))
+            return false;
+
+        return parent::_getMenuItem($a);
+    }
+
     public function setContentId($iContentId)
     {
         $this->_iButtons = 0;
