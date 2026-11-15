@@ -6,6 +6,7 @@ import { clearLinks, getYouTubeVideoId } from 'app/lib/util'
 /** The fields of an entity text block's data that decide whether it shows anything. */
 export type EntityTextData = {
     entry_text?: string | null;
+    entry_title?: string | null;
     video?: unknown;
     image?: unknown;
     video_embed?: string | null;
@@ -20,7 +21,9 @@ export function checkEntityText(data: EntityTextData | null | undefined): Entity
     if (!data) return null;
     const text = clearLinks(data.entry_text);
     const videoId = data.video_embed ? getYouTubeVideoId(data.video_embed) : null;
-    if (!text && !data.video && !data.image && !videoId)
+    // A title alone is content too: a file or a post without a description still shows its name.
+    const title = typeof data.entry_title === 'string' ? data.entry_title.trim() : '';
+    if (!text && !title && !data.video && !data.image && !videoId)
         return null;
 
     return { text, videoId };

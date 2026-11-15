@@ -369,11 +369,10 @@ function Default({ data, showPad, sidebar, block, blockWrapperProps, editable, a
     const att = getImagesData(data);
     const isSmall = block?.module == "bx_market";
     const checked = checkEntityText(data);
-    const text = checked?.text ?? clearLinks(data.entry_text);
     const videoId = checked?.videoId ?? null;
     const requestUrl = data?.params?.request_url;
 
-    if (!editable && !text && !data.video && !data.image && !videoId)
+    if (!editable && !checked)
         return null
 
     return (
