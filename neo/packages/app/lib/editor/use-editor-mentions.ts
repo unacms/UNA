@@ -1,7 +1,6 @@
 'use client'
 import { useState, useCallback, useRef } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { useCurrentUser } from 'app/context/user'
 import { useMentionSuggestions } from 'app/lib/editor/use-mention-suggestions'
 import { buildMentionSearchUrl } from 'app/lib/editor/editor-mention-shared'
 
@@ -10,16 +9,12 @@ import { buildMentionSearchUrl } from 'app/lib/editor/editor-mention-shared'
  *
  * Both engines call `setTrigger(term, indicator)` / `clearTrigger()` from their
  * own detection paths (iframe postMessage vs TipTap/native callbacks), then
- * share fetch, recents, keyboard selection, and recordMention.
+ * share fetch and keyboard selection.
  */
 export function useEditorMentions({ fieldName, mentions }: { fieldName?: string; mentions?: any[] } = {}) {
     const formContext = useFormContext()
-    const { currentUser } = useCurrentUser()
     // [term, indicator] — indicator falsy means inactive
     const [trigger, setTriggerState] = useState(['', ''])
-    // Set on the first focus: the connections seed for "@" is fetched only then.
-    const [armed, setArmed] = useState(false)
-    const armConnections = useCallback(() => setArmed(true), [])
 
     const objectPrivacyView =
         formContext.watch('object_privacy_view') ||
@@ -33,13 +28,10 @@ export function useEditorMentions({ fieldName, mentions }: { fieldName?: string;
         mentions,
     })
 
-    const { suggestions, setSuggestions, recordMention } = useMentionSuggestions({
+    const { suggestions, setSuggestions } = useMentionSuggestions({
         url: mentionUrl,
         term: trigger[0],
         indicator: trigger[1],
-        userId: (currentUser || undefined)?.id,
-        // A typed trigger arms it too, for an editor that reports no focus.
-        armed: armed || !!trigger[1],
     })
 
     const setTrigger = useCallback((term: string, indicator: string) => {
@@ -73,7 +65,6 @@ export function useEditorMentions({ fieldName, mentions }: { fieldName?: string;
         moveSelected,
         clearTrigger,
         trigger,
-        recordMention,
     }
 
     return {
@@ -86,9 +77,7 @@ export function useEditorMentions({ fieldName, mentions }: { fieldName?: string;
         clearTrigger,
         moveSelected,
         selectedSuggestion,
-        recordMention,
         handlersRef,
         queryToken: trigger[1] ? trigger[1] + trigger[0] : '',
-        armConnections,
     }
 }

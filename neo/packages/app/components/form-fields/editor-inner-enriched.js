@@ -133,15 +133,13 @@ export default function RftTextEnriched(props) {
     const onChangeState = useCallback((e) => setStyleState(e.nativeEvent), [])
     const onChangeSelection = useCallback((e) => setSelection(e.nativeEvent || EMPTY_SELECTION), [])
 
-    // Shared mention pipeline (same fetch/recents/nav as tentap).
+    // Shared mention pipeline (same fetch/nav as tentap).
     const {
         indicator: mentionIndicator,
         suggestions,
         setTrigger,
         clearTrigger,
-        recordMention,
         handlersRef,
-        armConnections,
     } = useEditorMentions({ fieldName: name, mentions: props.mentions })
 
     // ---- initial / external value ----
@@ -228,9 +226,8 @@ export default function RftTextEnriched(props) {
                 mentionAttributesForUser(user, indicator)
             )
         }
-        recordMention(user)
         clearTrigger()
-    }, [mentionIndicator, tipTap, recordMention, clearTrigger])
+    }, [mentionIndicator, tipTap, clearTrigger])
 
     const dropdownPos = useEnrichedMentionDropdown({
         tipTap,
@@ -407,9 +404,8 @@ export default function RftTextEnriched(props) {
     }), [initialHeight, maxHeight, contentInsetBottom, editorTextColor])
 
     const handleFocus = useCallback(() => {
-        armConnections()
         if (onFocus) onFocus()
-    }, [onFocus, armConnections])
+    }, [onFocus])
 
     // Web: clicks on padding / empty chrome around ProseMirror (toolbar field
     // padding, areas outside the stretched contenteditable) should still focus.
