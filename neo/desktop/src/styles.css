@@ -1358,6 +1358,9 @@ img.cover { box-shadow: none; border-block-end: 1px solid var(--image-outline); 
 .row-state { display: inline-flex; align-items: center; gap: var(--space-1); font-size: var(--text-sm); line-height: var(--leading-sm); color: var(--text-secondary); }
 .row-actions { display: flex; gap: var(--space-1); flex: none; }
 .connections { display: grid; gap: 0; }
+/* a tab's own switch over its list (a group's or a person's Upcoming and Past events): in line
+   with the list's rows, 16px in, as a section's switch is in its list */
+.connections > .segmented { margin: var(--space-2) var(--space-4); justify-self: start; }
 /* one's own profile's Friends, Followers and Following: where to manage them */
 .connections-manage { margin: var(--space-2) var(--space-4) 0; font-size: var(--text-sm); line-height: var(--leading-sm); }
 
@@ -1745,7 +1748,7 @@ img.cover { box-shadow: none; border-block-end: 1px solid var(--image-outline); 
 }
 
 /* the thread (6.1): a 640px column */
-.thread { max-inline-size: var(--reading-width); margin-inline: auto; padding: 20px 32px 0; display: grid; gap: 0; align-content: start; }
+.thread { --thread-inset: 32px; max-inline-size: var(--reading-width); margin-inline: auto; padding: 20px var(--thread-inset) 0; display: grid; gap: 0; align-content: start; }
 .thread > .skeleton { height: 180px; border-radius: var(--radius-card); }
 .thread > .inline-error { padding-inline: 0; }
 .activity-detail { grid-template-columns: 44px minmax(0, 1fr); }
@@ -1827,7 +1830,7 @@ img.cover { box-shadow: none; border-block-end: 1px solid var(--image-outline); 
    the comments are still below the fold) */
 .comment-composer.docked {
     position: sticky; inset-block-end: 0; z-index: 2; display: grid; gap: 4px;
-    margin: 24px -32px 0; padding: 12px 32px; background: var(--bg-content); box-shadow: 0 -1px 0 var(--separator);
+    margin: 24px calc(-1 * var(--thread-inset)) 0; padding: 12px var(--thread-inset); background: var(--bg-content); box-shadow: 0 -1px 0 var(--separator);
 }
 .composer-as { margin: 0; font-size: var(--text-sm); line-height: var(--leading-sm); color: var(--text-secondary); }
 .composer-field-row { display: flex; align-items: flex-end; gap: var(--space-2); }
@@ -1845,6 +1848,10 @@ img.cover { box-shadow: none; border-block-end: 1px solid var(--image-outline); 
 .profile-view { --hero-inset: 24px; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); align-content: start; padding-block-end: var(--space-6); }
 @container pane (min-width: 900px) {
     .profile-view { --hero-inset: 32px; }
+}
+@container pane (max-width: 560px) {
+    .profile-view { --hero-inset: 16px; }
+    .thread { --thread-inset: 16px; }
 }
 .profile-view > :not(.hero, .sr-only, .profile-tabs) { width: 100%; max-inline-size: var(--reading-width); margin-inline: auto; }
 .profile-view > :is(.inline-error, .hero-error, .tab-note) { padding-inline: 24px; }
@@ -1898,6 +1905,11 @@ img.cover { box-shadow: none; border-block-end: 1px solid var(--image-outline); 
 }
 .profile-panel { width: 100%; }
 .group-view > :is(.list, section) { padding-inline: 24px; }
+/* in a narrow pane these follow the hero's 16px (after the rules they change) */
+@container pane (max-width: 560px) {
+    .profile-view > :is(.inline-error, .hero-error, .tab-note), .group-view > :is(.list, section) { padding-inline: 16px; }
+    .profile-view > .hero-note { width: calc(100% - 32px); }
+}
 @media (forced-colors: active) {
     .hero-note { border: 1px solid CanvasText; }
 }
@@ -2535,12 +2547,11 @@ button.task-prop-chip:hover .task-assignees .avatar { box-shadow: 0 0 0 1.5px va
 /* Posts in a feed are cards, as in NEO: a card's own surface (lighter than the content in dark
    mode, white in light) with a faint ring, 9px apart, its fill the row's ::before (so hover and
    selection tint the card itself), and no hairline between them. Inside, 16px from the card's
-   edges on every side (the card is the row less 4px above and 5px below). Keyboard focus rings
-   the card. As in NEO and on the site, the author's picture, name and the line under it are a
+   edges on every side (the card is the row less 4px above and 5px below, and as wide as the
+   row, beside an open post too). Keyboard focus rings the card. As in NEO and on the site, the author's picture, name and the line under it are a
    row at the top, and what was posted starts under the picture, at the card's edge: the
    content's wrapper (.activity-main) is not a box here, so its children sit in the card's grid. */
-.feed .activity-list { padding: 20px 24px 21px; justify-items: start; }
-.panes[data-detail='closed'] .feed .activity-list { padding-inline: 16px; }
+.feed .activity-list { --row-fill-inset: 4px 0 5px; padding: 20px 16px 21px; justify-items: start; }
 .feed .activity-list > .activity-main { display: contents; }
 .feed .activity-list > .activity-above, .feed .activity-list > .activity-main > * { grid-column: 1 / -1; }
 .feed .activity-list > .activity-avatar { margin-block-end: var(--space-2); }
