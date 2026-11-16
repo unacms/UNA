@@ -71,21 +71,26 @@ class BxBaseMenuToolbar extends BxTemplMenu
      */
     protected function _isSelected ($a)
     {
-        if(parent::_isSelected($a))
-            return true;
+        $bModuleItem = !$this->_bIsApi && !empty($a['module']) && $a['module'] != 'system' && $a['module'] == self::$SEL_MODULE;
 
-        if($this->_bIsApi || empty($a['module']) || $a['module'] == 'system' || $a['module'] != self::$SEL_MODULE)
-            return false;
+        return parent::_isSelected($a) || ($bModuleItem && $this->_getModuleHomePage($a['module']) === self::$SEL_NAME);
+    }
 
-        if(!BxDolModuleQuery::getInstance()->isEnabledByName($a['module']) || !($oModule = BxDolModule::getInstance($a['module'])))
-            return false;
+    /**
+     * URI of an enabled module's home page (its URL_HOME, page.php?i=<uri>), or an empty string.
+     */
+    protected function _getModuleHomePage ($sModule)
+    {
+        $sUri = '';
+        if(BxDolModuleQuery::getInstance()->isEnabledByName($sModule) && ($oModule = BxDolModule::getInstance($sModule))) {
+            $oConfig = $oModule->_oConfig;
+            if(!empty($oConfig->CNF['URL_HOME'])) {
+                parse_str((string)parse_url($oConfig->CNF['URL_HOME'], PHP_URL_QUERY), $aQuery);
+                $sUri = isset($aQuery['i']) ? (string)$aQuery['i'] : '';
+            }
+        }
 
-        $oConfig = $oModule->_oConfig;
-        if(empty($oConfig->CNF['URL_HOME']))
-            return false;
-
-        parse_str((string)parse_url($oConfig->CNF['URL_HOME'], PHP_URL_QUERY), $aQuery);
-        return isset($aQuery['i']) && $aQuery['i'] === self::$SEL_NAME;
+        return $sUri;
     }
 
     protected function _getMenuItem ($a)
