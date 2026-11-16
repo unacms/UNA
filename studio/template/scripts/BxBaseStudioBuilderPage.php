@@ -998,7 +998,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
         if(!empty($aBlock['title_system'])) {
             $sTitle = _t($aBlock['title_system']);
         }
-        else if(!empty($aBlock['title'])) {
+        elseif(!empty($aBlock['title'])) {
             $sTitle = $oPage ? $oPage->getBlockTitle($aBlock) : _t($aBlock['title']);
         }
 

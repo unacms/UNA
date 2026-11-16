@@ -215,10 +215,9 @@ BxDolStudioBuilderPage.prototype.onChangeDesignbox = function(oSelect) {
     // Only a Block Layout with a title or with padding has a size for it.
     var oForm = $(oSelect).parents('form:first');
     var sValue = $(oSelect).val();
-    var oBuilder = this;
-    $.each(['title', 'padding'], function(iIndex, sPart) {
+    ['title', 'padding'].forEach((sPart) => {
         var aWith = ($(oSelect).attr('data-' + sPart) || '').split(',');
-        oForm.find('#bx-form-element-' + sPart + '_size').bx_anim(aWith.includes(sValue) ? 'show' : 'hide', oBuilder.sAnimationEffect, oBuilder.iAnimationSpeed);
+        oForm.find('#bx-form-element-' + sPart + '_size').bx_anim(aWith.includes(sValue) ? 'show' : 'hide', this.sAnimationEffect, this.iAnimationSpeed);
     });
 };
 
