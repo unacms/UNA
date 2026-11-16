@@ -110,6 +110,30 @@ class BxDolCover extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * The art page covers show without a picture, which Studio > Designer > Cover previews as the default and the apps
+     * get with the home cover: a template's own art (its data/template/system/images/cover-default.svg, with
+     * cover-default-dark.svg for dark mode, as Artificer has), else the base template's images/cover.svg. An upload in
+     * Studio > Designer > Cover (sys_site_cover_common), or the page's own cover picture, wins over it.
+     * @param array $aTemplateModule the template's module (its `path`), [] for the base template
+     * @return array [light URL, dark URL]; the dark one is empty when the art has none
+     */
+    public static function getDefaultArt($aTemplateModule = [])
+    {
+        $sPath = !empty($aTemplateModule['path']) ? $aTemplateModule['path'] . 'data/template/system/images/' : '';
+        $fTemplateFile = function($sFile) use ($sPath) {
+            return $sPath !== '' && file_exists(BX_DIRECTORY_PATH_MODULES . $sPath . $sFile) ? BX_DOL_URL_MODULES . $sPath . $sFile : '';
+        };
+
+        $sLight = $fTemplateFile('cover-default.svg');
+        if($sLight !== '') {
+            return [$sLight, $fTemplateFile('cover-default-dark.svg')];
+        }
+
+        $sBase = file_exists(BX_DIRECTORY_PATH_ROOT . 'template/images/cover.svg') ? BX_DOL_URL_ROOT . 'template/images/cover.svg' : '';
+        return [$sBase, ''];
+    }
+
+    /**
      * Determine whether cover is enabled globally or not.
      */
     public function isEnabled()

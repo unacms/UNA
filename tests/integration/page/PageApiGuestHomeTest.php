@@ -165,8 +165,10 @@ class PageApiGuestHomeTest extends BxDolIntegrationTestCase
         $this->assertIsArray($aCover);
         if ((int)BxDolDb::getInstance()->getOne("SELECT `cover_image` FROM `sys_objects_page` WHERE `object` = 'sys_home'") === 0)
             $this->assertSame('', $aCover['image'], 'no picture in Studio');
-        foreach (['light', 'dark'] as $sScheme)
-            $this->assertMatchesRegularExpression('/^https?:\/\/.+\.svg$/', (string)($aCover['image_default'][$sScheme] ?? ''), $sScheme . ': the art the site shows');
+        // The default Studio > Designer > Cover shows for the site's template.
+        list($sLight, $sDark) = BxDolCover::getDefaultArt(BxDolModuleQuery::getInstance()->getModuleByUri(BxDolTemplate::getInstance()->getCode()));
+        $this->assertNotSame('', $sLight);
+        $this->assertSame(['light' => $sLight, 'dark' => $sDark], $aCover['image_default']);
     }
 
     public function testCoversOffInTheDesignerLeaveTheHomeCoverOut(): void
