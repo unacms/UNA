@@ -137,6 +137,61 @@ class BxBaseMenuToolbarTest extends BxDolTestCase
         $this->assertStringContainsString('aria-controls="bx-sidebar-site"', $a['attrs']);
     }
 
+    public function testNotificationsTriggerKeepsItsOpenState(): void
+    {
+        $oMenu = $this->getToolbar('sys_toolbar_member');
+        if (!self::isArtificer($oMenu))
+            $this->markTestSkipped('The notifications popup trigger is rewritten by the Artificer template.');
+
+        $aRows = $this->getToolbarRows($oMenu);
+        if (!isset($aRows['notifications-preview']))
+            $this->markTestSkipped('The Notifications module is not installed.');
+
+        //--- Members only: open it to the test's guest, the rendering is the same.
+        $a = $this->callProtected($oMenu, '_getMenuItem', [array_merge($aRows['notifications-preview'], ['visible_for_levels' => 2147483647])]);
+        if ($a === false)
+            $this->markTestSkipped('The notifications item is not shown here.');
+
+        //--- The link is the popup's trigger (bx_menu_popup keeps its aria-expanded, which the open look keys on);
+        //--- the popup itself stays anchored on the toolbar's <ul>.
+        $sOnclick = $a['bx_if:onclick']['content']['onclick'];
+        $this->assertStringContainsString("bx_menu_popup('bx_notifications_preview', this,", $sOnclick);
+        $this->assertStringContainsString("pointer:{el:$(this).parents('ul:first'), ", $sOnclick);
+        $this->assertStringNotContainsString('bx_menu_slide', $sOnclick);
+        $this->assertStringContainsString('aria-haspopup="dialog"', $a['attrs']);
+        $this->assertStringContainsString('aria-expanded="false"', $a['attrs']);
+        $this->assertStringNotContainsString('aria-controls=', $a['attrs'], 'The popup is created lazily, so there is no id to point at.');
+    }
+
+    public function testToolbarButtonsLookLikeNeosHeaderButtons(): void
+    {
+        $sCss = str_replace("\r\n", "\n", self::readFile('template/css/tailwind.css'));
+        $sNeo = self::readFile('neo/packages/app/design/styles/palette-schemes.css');
+
+        //--- One fill in both apps and both schemes: the ink at 8%, 12% hovered and pressed.
+        $this->assertSame(2, substr_count($sNeo, '--button-fill: color-mix(in oklab, rgb(var(--ink)) 8%, transparent);'), 'NEO: 8% in light and dark.');
+        $this->assertSame(2, substr_count($sNeo, '--button-fill-hover: color-mix(in oklab, rgb(var(--ink)) 12%, transparent);'), 'NEO: 12% in light and dark.');
+        $this->assertStringContainsString('@apply bg-gray-950/[0.08] dark:bg-gray-50/[0.08];', $sCss, 'UNA buttons rest at 8%.');
+        $this->assertStringContainsString('@apply hover:bg-gray-950/[0.12] dark:hover:bg-gray-50/[0.12];', $sCss);
+        $this->assertStringContainsString('@apply active:bg-gray-950/[0.12] dark:active:bg-gray-50/[0.12];', $sCss);
+
+        //--- The glyph goes from 700 to 900 (300 to 100 in dark) on hover, in both apps.
+        $this->assertStringContainsString('--button-foreground: var(--neutral-700);', $sNeo);
+        $this->assertStringContainsString('--button-foreground-hover: var(--neutral-900);', $sNeo);
+        $this->assertStringContainsString('--button-foreground: var(--neutral-300);', $sNeo);
+        $this->assertStringContainsString('--button-foreground-hover: var(--neutral-100);', $sNeo);
+
+        //--- The header toolbar takes its look from one rule, with the press scale and the open (accent) look.
+        $this->assertMatchesRegularExpression('/\.bx-artificer \.bx-menu-toolbar \.bx-menu-toolbar-item \{\s*@apply bg-gray-950\/\[0\.08\] hover:bg-gray-950\/\[0\.12\] active:bg-gray-950\/\[0\.12\] dark:bg-gray-50\/\[0\.08\]/', $sCss);
+        $this->assertStringContainsString('@apply text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100;', $sCss);
+        $this->assertStringContainsString('.bx-menu-toolbar-item:has(> a[aria-expanded="true"])', $sCss);
+        $this->assertStringContainsString('body:not(.bx-std) .bx-btn[aria-expanded="true"]:not(.bx-btn-primary)', $sCss);
+        $this->assertStringContainsString('body:not(.bx-std) .bx-btn:not(.bx-btn-disabled):active', $sCss);
+
+        $sTemplate = self::readFile('modules/boonex/artificer/data/template/system/menu_toolbar.html');
+        $this->assertStringNotContainsString('bg-gray-100', $sTemplate, 'No colours of its own on the item: the rule above paints it.');
+    }
+
     public function testApiReadsTheToolbarsWithoutWarnings(): void
     {
         $mixedApiBackup = $_GET['api'] ?? null;

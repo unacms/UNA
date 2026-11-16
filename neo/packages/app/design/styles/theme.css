@@ -25,11 +25,11 @@
      * Neutral fills: the scheme's ink (palette-schemes.css) at an alpha, so they
      * stack. color-mix, not `rgb(var(--ink) / a)`: Uniwind (native) only keeps
      * the alpha of a color-mix. Buttons take their alpha from the scheme
-     * (--button-fill, palette-schemes.css): in dark a button on the page must be
-     * lighter than a card. Every step stays even and text keeps AA.
+     * (--button-fill, palette-schemes.css). Every step stays even and text keeps AA.
      */
     --color-button: var(--button-fill);
     --color-button-foreground: rgb(var(--button-foreground));
+    --color-button-foreground-hover: rgb(var(--button-foreground-hover));
     --color-button-hover: var(--button-fill-hover);
     /*
      * Opaque neutral fill (the legacy --button) for native surfaces that cast a
