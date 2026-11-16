@@ -123,8 +123,8 @@ class BxBasePageHome extends BxTemplPage
      */
     protected function _getCoverHomeLookAPI()
     {
-        // The base template's cover (cover_home.html, .bx-cover-homepage in cover.css).
-        $sArt = (string)$this->_oTemplate->getImageUrl('cover-homepage.svg');
+        // The default Studio > Designer > Cover shows for the site's template: its own art, else cover.svg.
+        list($sArtLight, $sArtDark) = BxDolCover::getDefaultArt(BxDolModuleQuery::getInstance()->getModuleByUri($this->_oTemplate->getCode()));
 
         return [
             'title' => _t('_sys_txt_splash_title'),
@@ -134,8 +134,8 @@ class BxBasePageHome extends BxTemplPage
             'login' => _t('_sys_txt_splash_login'),
             'join_icon' => '',
             'login_icon' => '',
-            'image_light' => $sArt,
-            'image_dark' => $sArt,
+            'image_light' => $sArtLight,
+            'image_dark' => $sArtDark,
         ];
     }
 
