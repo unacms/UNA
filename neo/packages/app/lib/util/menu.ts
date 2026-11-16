@@ -368,9 +368,12 @@ export function launcherItemsWithoutTabs(launcherItems: MenuItemList, tabs: Menu
     });
 }
 
-/** The navbar's More dropdown holding `items`. */
+/**
+ * The navbar's More dropdown holding `items`. Its icon is the vertical dots of UNA's main menu (the site menu's
+ * `more-auto` item, `ellipsis-v`), through the iconset like the other UNA icons.
+ */
 export function navbarMoreItem(items: MenuItem[]): MenuItem {
-    return { name: 'more', title: 'More', link: '', icon: 'Menu', showTitle: false, chevron: '', animated: true, items };
+    return { name: 'more', title: 'More', link: '', icon: findIconFromRemote('ellipsis-v') || 'EllipsisVertical', showTitle: false, chevron: '', animated: true, items };
 }
 
 const DROPDOWN_SECTION_MIN = 240; // w-60
