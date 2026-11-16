@@ -6442,6 +6442,7 @@ CREATE TABLE IF NOT EXISTS `sys_pages_blocks` (
   `title_hidden_on` varchar(255) NOT NULL DEFAULT '',
   `bg_hidden_on` varchar(255) NOT NULL DEFAULT '',
   `padding_hidden_on` varchar(255) NOT NULL DEFAULT '',
+  `padding_size` varchar(16) NOT NULL DEFAULT '',
   `type` enum('raw','html','creative','bento_grid','lang','image','rss','menu','custom','service','wiki') NOT NULL DEFAULT 'raw',
   `content` mediumtext NOT NULL,
   `content_empty` varchar(255) NOT NULL DEFAULT '',

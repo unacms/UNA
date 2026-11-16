@@ -55,6 +55,22 @@
 }
 */
 
+/* A block's padding size (Studio > Pages > block: "Padding"; BxDolPageDesignbox adds the class to the block's
+   container): 8px compact, 24px relaxed, for the content and the title above it; regular is the design box's 16px.
+   "Padding hidden on" below still takes it off. */
+.bx-db-padding-compact > .bx-db-container > .bx-db-header {
+    padding: 0.5rem 0.5rem 0;
+}
+.bx-db-padding-compact > .bx-db-container > .bx-content-padding-block {
+    padding: 0.5rem;
+}
+.bx-db-padding-relaxed > .bx-db-container > .bx-db-header {
+    padding: 1.5rem 1.5rem 0;
+}
+.bx-db-padding-relaxed > .bx-db-container > .bx-content-padding-block {
+    padding: 1.5rem;
+}
+
 /* A block's design box per screen size (Studio > Pages > block: "Title / Background / Padding hidden on",
    kept in its App config; BxDolPageDesignbox adds the classes to the block's container). */
 .bx-media-phone .bx-db-hide-title-phone .bx-db-header,

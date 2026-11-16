@@ -113,6 +113,10 @@ class BxDolStudioBuilderPage extends BxTemplStudioWidget
         $iDesignboxId = (int)str_replace($this->sSelectKeyPrefix, '', $oForm->getCleanValue('designbox_id'));
         BxDolForm::setSubmittedValue('designbox_id', $iDesignboxId, $oForm->aFormAttrs['method']);
 
+        // Only the sizes BxDolPageDesignbox knows are kept; anything else is the regular padding.
+        if(isset($oForm->aInputs['padding_size']))
+            BxDolForm::setSubmittedValue('padding_size', BxDolPageDesignbox::normalizePaddingSize($oForm->getCleanValue('padding_size')), $oForm->aFormAttrs['method']);
+
         $iVisibleFor = BxDolStudioUtils::getVisibilityValue($oForm->getCleanValue('visible_for'), $oForm->getCleanValue('visible_for_levels'));
         BxDolForm::setSubmittedValue('visible_for_levels', $iVisibleFor, $oForm->aFormAttrs['method']);
         unset($oForm->aInputs['visible_for']);

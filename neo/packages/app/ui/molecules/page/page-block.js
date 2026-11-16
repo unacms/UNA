@@ -2,6 +2,7 @@ import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util'
 import { blockBgClasses, normalizeTiers, responsiveClasses } from 'app/lib/responsive-classes'
+import { blockPaddingKey, blockPaddingSize, withoutGap } from 'app/lib/block-padding'
 
 const blockTheme = appSetting('theme', 'blocks')
 
@@ -16,6 +17,7 @@ function createBlockComponent({
         className = '',
         isBg,
         isPad,
+        padSize,
         rounded,
         ...props
     }) {
@@ -35,13 +37,22 @@ function createBlockComponent({
             : baseClass === 'u-block-header' || baseClass === 'u-block-content' || baseClass === 'u-block-footer'
                 ? 'pad-x'
                 : ''
+        // padSize: Studio's "Padding" (compact, relaxed; '' regular), see lib/block-padding.ts. A theme without
+        // the sized keys keeps its regular padding.
+        const size = pad ? blockPaddingSize(padSize) : ''
+        const sizedKey = blockPaddingKey('u-block-' + padSide, size)
         const padClass = !padSide || !pad
             ? ''
-            : pad === true ? blockTheme['u-block-' + padSide] : responsiveClasses('block-' + padSide, pad)
+            : pad === true
+                ? blockTheme[sizedKey] ?? blockTheme['u-block-' + padSide]
+                : responsiveClasses(blockTheme[sizedKey] != null ? blockPaddingKey('block-' + padSide, size) : 'block-' + padSide, pad)
+        // The gap between the title and the content follows the size, as the site's title follows its content.
+        const sizedGap = baseClass === 'u-block-base' && size ? blockTheme['u-block-gap-' + size] : null
+        const themeClass = sizedGap != null ? `${withoutGap(blockTheme[baseClass])} ${sizedGap}` : blockTheme[baseClass] || ''
 
         return (
             <Component
-                className={`${baseClass} ${bgClass} ${padClass} ${animate ? blockTheme['u-block-animate'] || '' : ''} ${blockTheme[baseClass] || ''} ${roundedClass} ${className}`}
+                className={`${baseClass} ${bgClass} ${padClass} ${animate ? blockTheme['u-block-animate'] || '' : ''} ${themeClass} ${roundedClass} ${className}`}
                 role={role}
                 aria-level={ariaLevel}
                 {...props}

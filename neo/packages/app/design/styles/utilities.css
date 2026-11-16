@@ -24,6 +24,8 @@
 @source inline("{sm:,lg:,}{bg-card,bg-card/60,bg-transparent,shadow-block-outline,shadow-none}");
 @source inline("{sm:,lg:,}dark:{shadow-block-outline-deep,shadow-none}");
 @source inline("{sm:,md:,lg:,}{px,py,my}-{0..5}");
+/* Studio's "Padding" relaxed (u-block-pad-*-relaxed). */
+@source inline("{sm:,md:,lg:,}{px,py}-6");
 /* Panel handle offsets: half the page gap (gap-N → -mx-N/2), see page-layout/universal.js. */
 @source inline("{sm:,md:,lg:,}-mx-{0.5,1,1.5,2}");
 @source inline("{sm:,md:,lg:,}mx-0");

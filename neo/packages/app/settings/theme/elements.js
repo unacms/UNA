@@ -186,6 +186,24 @@ export const settingsElements = {
             ' py-4 ',
         'u-block-pad-x':
             ' px-4 ',
+        // Studio's "Padding" (UNA's `padding_size`): 8px compact, 24px relaxed. The gap between the title and the
+        // content follows it (`u-block-gap-*` replaces the gap of `u-block-base`), as on the site.
+        'u-block-pad-compact':
+            ' p-2 ',
+        'u-block-pad-y-compact':
+            ' py-2 ',
+        'u-block-pad-x-compact':
+            ' px-2 ',
+        'u-block-gap-compact':
+            ' gap-2 ',
+        'u-block-pad-relaxed':
+            ' p-6 ',
+        'u-block-pad-y-relaxed':
+            ' py-6 ',
+        'u-block-pad-x-relaxed':
+            ' px-6 ',
+        'u-block-gap-relaxed':
+            ' gap-6 ',
         // 20px (`rounded-popover`), as menus and UNA's blocks: a row or tile with 12px corners 8px inside runs parallel.
         // Blocks take these per breakpoint (lib/responsive-classes.ts), so every prefixed form is named here for
         // Tailwind to find: rounded-popover sm:rounded-popover lg:rounded-popover.
