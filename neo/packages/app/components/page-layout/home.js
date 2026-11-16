@@ -24,6 +24,7 @@ import { useHeaderHeight } from 'app/context/jotai/layout';
 import { PageHeaderOptions } from 'app/ui/molecules/header/options';
 import { NeoButtonLink } from 'app/design/controls';
 import HomeCover from 'app/components/elements/covers/home-cover';
+import { PageFooter } from 'app/components/nav/menu-footer';
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 const getTimelineBlock = (name, timelineBlocks) => {
@@ -208,9 +209,19 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     )
     
     // UNA's home cover (Studio > Pages > Home > Cover, sent as `cover_home`) and the blocks of the top cell (the home
-    // menu), in the page's content width above the feed, as UNA's site shows them.
+    // menu). On the web the side columns are fixed to the window, so whatever is above them would slide under them:
+    // with side columns these go at the top of the middle column, above the feed; without any (a guest's home), across
+    // the page's content width above it, as UNA's site shows them.
+    const hasLeftColumn = layoutName == 'hor' && (
+        (appSetting('layout', 'show_profile_info') && !!currentUser) || feedList.length > 1 || navBarBlocks.length > 0
+    )
+    const hasSideColumns = isWeb && (hasLeftColumn || sideBarBlocks.length > 0)
+    // A feed to show (a guest's home has none unless UNA gives guests a timeline block).
+    const hasFeed = timelineBlocks.length > 0 || feedList.some(item => blocks?.[item.name + '_feed'])
     const hasTop = Boolean(data?.cover_home) || centerBlocks?.length > 0
-    const BlocksCenter = hasTop ? <View className={`${appSetting('layout', 'page_content_width_default')} mx-auto gap-4 px-0 pt-0 sm:px-4 sm:pt-4`}>
+    const BlocksCenter = hasTop ? <View className={hasSideColumns
+        ? 'w-full gap-4 pb-4'
+        : `${appSetting('layout', 'page_content_width_default')} mx-auto gap-4 px-0 pt-0 sm:px-4 sm:pt-4`}>
         <HomeCover cover={data?.cover_home} hiddenOn={data?.cover_hidden_on} />
         {centerBlocks?.map((item, index) => {
             return (
@@ -452,14 +463,14 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
         }
     }, [currentBreakpointName]);
 
-    return (
+    const content = (
         <>
             <PageHeaderOptions sub={subHeader} band mobileOnly />
             {/* The home cover is the page's heading: no title in the header over it. */}
             {data?.cover_home ? <PageHeaderOptions showTitle={false} /> : null}
-            {BlocksCenter}
+            {hasSideColumns ? null : BlocksCenter}
         
-            <PanelGroup
+            {hasFeed || hasSideColumns ? <PanelGroup
                 ref={groupRef}
                 key={`cells-home${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
                 autoSaveId={cellsCustomConfig.sizable ? `cells-home` : undefined}
@@ -486,6 +497,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
                         {/* The viewer's informers first, beside the fixed left column (layout.web.js leaves them out here):
                             16px around them on phones, where the feed runs edge to edge; the column's own padding from tablet. */}
                         <InformerList className="p-4 sm:p-0 sm:pb-4" />
+                        {hasSideColumns ? BlocksCenter : null}
                         {FeedContent}
                     </View>
                 </Panel>
@@ -504,7 +516,18 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
                         </Panel>
                     </>
                 )}
-            </PanelGroup>
+            </PanelGroup> : null}
         </>
+    )
+
+    // A member's feed loads on as it scrolls and has the footer's links in the account menu. A guest's home ends with
+    // the site footer, at the bottom of the screen at least, as UNA's does.
+    if (currentUser) return content
+    return (
+        <View className="w-full flex-col" style={isWeb ? { minHeight: `calc(100vh - ${headerHeight}px)` } : undefined}>
+            {content}
+            <View className="flex-1" />
+            <PageFooter />
+        </View>
     )
 }
