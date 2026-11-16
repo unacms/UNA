@@ -4,6 +4,10 @@
 // UNA counterparts: commented examples in menus.example.js.
 export const settingsMenus = {
     menu_items: {
+        // A section's menu on large screens on web when UNA doesn't say (an older UNA without `section_nav`):
+        // 'sidebar' (a column beside the content, as before) or 'tabs'. UNA's choice wins (Studio > Navigation >
+        // a menu > Section navigation in the apps); `menu_items[<object>].section_nav` sets it for one menu.
+        section_nav_default: 'sidebar',
         transpile_urls: [
             // URLS for tabs in native app index = tab index
             { index: 1, url: '/friend-requests' },

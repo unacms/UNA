@@ -7,6 +7,7 @@ import {
     appSetting,
     decodeTextNode,
     getMenuSettings,
+    getMenuSectionNav,
     menuItemsFilter,
 } from 'app/lib/util'
 import { usePref, setPref, usePrefsStore } from 'app/context/prefs'
@@ -972,7 +973,7 @@ export const LeftColumnContainer = ({
                         <SidebarTitle title={title} icon={icon} actions={addButtons} />
                     )}
                     <View className="flex-1 gap-4">
-                        {layoutName == 'navigator' && routes.length > 1 && (
+                        {layoutName == 'navigator' && getMenuSectionNav(menu) === 'sidebar' && routes.length > 1 && (
                             <View className={appSetting('conductor', 'sidebar_nav')}>
                                 {hasConductorSubitems(routes) ? (
                                     <SidebarNav
@@ -1182,8 +1183,12 @@ export function TopSidebar({
     layoutName,
     omitDefaultBackground = false,
     contentWidth,
+    sectionSidebar = true,
 }) {
-    const isHideOnDesktop = layoutName !== 'profile'
+    // From `hide_top_menu_from` (lg) the left column carries the section nav, so the row hides: not on a profile (no
+    // nav column) nor on a section whose menu keeps its tabs on large screens (`sectionSidebar` false).
+    const isProfile = layoutName === 'profile'
+    const isHideOnDesktop = !isProfile && sectionSidebar
     const widthClass = contentWidth || appSetting('layout', 'page_content_width_default')
     return (
         <View
@@ -1196,12 +1201,13 @@ export function TopSidebar({
             >
                     {/*
                       * Section title on the tab row, on desktop only: phones and tablets show it
-                      * in the page header's main row, and from `hide_top_menu_from` (lg) this
-                      * whole bar is hidden and the left column carries the title. It shows only
-                      * where a fork keeps the bar past `lg` (a wider `hide_top_menu_from`).
+                      * in the page header's main row. From `hide_top_menu_from` (lg) a section with
+                      * a sidebar hides this bar and the left column carries the title; it shows here
+                      * where the bar stays: a section that keeps its tabs on large screens, or a fork
+                      * that keeps the bar past `lg` (a wider `hide_top_menu_from`).
                       */}
                     <Row className="w-full items-center gap-4 min-w-0">
-                        {(!!title && conductorTheme.show_title !== false && isHideOnDesktop) && (
+                        {(!!title && conductorTheme.show_title !== false && !isProfile) && (
                             // At most a third of the row, so a long section name truncates and the tabs keep their room.
                             <Row className="hidden lg:flex items-center gap-2 shrink min-w-0 max-w-1/3 pl-4">
                                 {/* The desktop sidebar title's icon (SidebarTitle), from the same settings. */}
@@ -1283,6 +1289,7 @@ export const TabBar = ({
     return (
         <TopSidebar
             layoutName={layoutName}
+            sectionSidebar={layoutName !== 'navigator' || getMenuSectionNav(menu) === 'sidebar'}
             omitDefaultBackground={omitDefaultBackground}
             addButtons={addButtons}
             layout={layout}

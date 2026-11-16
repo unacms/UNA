@@ -6,6 +6,7 @@ import {
     getURI,
     getPageContentWidth,
     getMenuHub,
+    getMenuSectionNav,
 } from 'app/lib/util'
 import {
     fillTabs,
@@ -267,8 +268,10 @@ export function Conductor({
      * re-expand. The center list always follows `activeRoute`.
      */
     const tabRoute = activeRoute?.inited ? activeRoute : prevRoute
-    // Navigator always keeps its left column: it holds the section nav itself.
-    const hasLeftColumn = tabRoute?.leftbar?.content?.length > 0 || layoutName === 'navigator'
+    // Navigator keeps a left column for the section nav where the section's menu asks for a sidebar on large screens
+    // (UNA's `section_nav`, getMenuSectionNav); otherwise the nav stays in the tab row, as on the site.
+    const isSectionSidebar = layoutName === 'navigator' && getMenuSectionNav(menu) === 'sidebar'
+    const hasLeftColumn = tabRoute?.leftbar?.content?.length > 0 || isSectionSidebar
     const hasRightColumn = (tabRoute?.sidebar?.content?.length > 0) || !!tabRoute?.blocks?.browse_sidebar
     // TabSceneColumns hides each side panel below its configured breakpoint,
     // which need not match the desktop switch (`tablet_mode_from`). The list

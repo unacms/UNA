@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Navigation: how the apps show a section's menu on large screens. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_nav_txt_menus_section_nav"><![CDATA[Section navigation in the apps]]></string_add>
+    <string_add name="_adm_nav_dsc_menus_section_nav"><![CDATA[When this menu is a section's menu (the tabs of its pages), how the apps show it on large screens: Tabs above the content, as the site shows them, or Sidebar, a column beside the content, for a section with many pages. Phones and tablets always show tabs.]]></string_add>
+    <string_add name="_adm_nav_txt_menus_section_nav_tabs"><![CDATA[Tabs]]></string_add>
+    <string_add name="_adm_nav_txt_menus_section_nav_sidebar"><![CDATA[Sidebar]]></string_add>
+</resources>
