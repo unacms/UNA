@@ -23,6 +23,7 @@ import { useBreakpoint, useIsDesktop, useBreakpointName } from 'app/context/meas
 import { useHeaderHeight } from 'app/context/jotai/layout';
 import { PageHeaderOptions } from 'app/ui/molecules/header/options';
 import { NeoButtonLink } from 'app/design/controls';
+import HomeCover from 'app/components/elements/covers/home-cover';
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 const getTimelineBlock = (name, timelineBlocks) => {
@@ -204,7 +205,11 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
         </>
     )
     
-    const BlocksCenter = <View className={` mx-auto w-full`}>
+    // UNA's home cover (Studio > Pages > Home > Cover, sent as `cover_home`) and the blocks of the top cell (the home
+    // menu), in the page's content width above the feed, as UNA's site shows them.
+    const hasTop = Boolean(data?.cover_home) || centerBlocks?.length > 0
+    const BlocksCenter = hasTop ? <View className={`${appSetting('layout', 'page_content_width_default')} mx-auto gap-4 px-0 pt-0 sm:px-4 sm:pt-4`}>
+        <HomeCover cover={data?.cover_home} hiddenOn={data?.cover_hidden_on} />
         {centerBlocks?.map((item, index) => {
             return (
                 <BlockByName
@@ -214,7 +219,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
                     {...item.block.props}
                 />
             )
-        })}</View>
+        })}</View> : null
 
     const MenuItemSubmenu = components['menu-item']['submenu'];
 
@@ -448,6 +453,8 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     return (
         <>
             <PageHeaderOptions sub={subHeader} band mobileOnly />
+            {/* The home cover is the page's heading: no title in the header over it. */}
+            {data?.cover_home ? <PageHeaderOptions showTitle={false} /> : null}
             {BlocksCenter}
         
             <PanelGroup

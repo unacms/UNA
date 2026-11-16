@@ -6,6 +6,8 @@
 -- 'config_api' settings
 --
 UPDATE `sys_objects_menu` SET `config_api`='{"icon":"compass"}' WHERE `object`='sys_homepage_submenu';
+-- Home menu: the apps draw it as a grid, as the site does
+UPDATE `sys_objects_menu` SET `config_api`='{"view":"grid"}' WHERE `object`='sys_homepage';
 UPDATE `sys_objects_menu` SET `config_api`='{}' WHERE `object`='sys_ntfs_submenu';
 -- Settings: `hub` is the page that lists the section; `group` puts an item under Account or the current profile
 UPDATE `sys_objects_menu` SET `config_api`='{"hub":"settings"}' WHERE `object`='sys_account_settings_submenu';

@@ -4,7 +4,8 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Link from 'app/ui/atoms/link'
 import { components } from 'app/components/registry';
-import { appSetting, getMenuHub } from 'app/lib/util';
+import { appSetting, getMenuHub, getMenuView } from 'app/lib/util';
+import DropdownGridItem from 'app/ui/atoms/dropdown-grid-item';
 import { useState } from 'react';
 import SettingsMenu, { hasSettingsGroups } from './settings-menu';
 
@@ -125,6 +126,30 @@ export default function ElementMenu({ data, blockWrapperProps, url, itemsClassNa
         return (
             <BlockWrapper {...blockWrapperProps}>
                 <SettingsMenu items={topLevelItems} hub={getMenuHub(data?.content)} />
+            </BlockWrapper>
+        );
+    }
+
+    // A menu UNA draws as a grid (its config says `"view": "grid"`, the home menu) is a grid of icon tiles, as the
+    // apps launcher: three across on phones, more as the block gets wider.
+    if (getMenuView(data?.content) === 'grid') {
+        return (
+            <BlockWrapper {...blockWrapperProps}>
+                <View className="w-full flex-row flex-wrap">
+                    {topLevelItems.map((item, index) => {
+                        const path = String(item?.url || item?.link || '');
+                        const href = !path || path === 'javascript:void(0)' ? '' : /^https?:/.test(path) || path.startsWith('/') ? path : `/${path}`;
+                        return (
+                            <View key={getItemId(item, String(index))} className="w-1/3 sm:w-1/6 lg:w-1/8">
+                                <DropdownGridItem
+                                    item={{ ...item, title: item?.title || item?.name, icon: item?.icon || 'Circle' }}
+                                    index={index}
+                                    link={href || undefined}
+                                />
+                            </View>
+                        );
+                    })}
+                </View>
             </BlockWrapper>
         );
     }

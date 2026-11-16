@@ -597,8 +597,13 @@ class BxBasePage extends BxDolPage
         $sUri = $this->_aObject['uri'];
         $sUrl = ($bGetParams && !empty($aGetParams[0]) ? $aGetParams[0] : $sUri) . ($sQueryString != '' ? '?' . $sQueryString : '');
         $sModule = $this->getModule();
+        // A guest's home is the splash where Studio > Designer > Splash turns it on for the asking app (X-Neo-Platform).
+        $sSplashPlatform = BxDolSplash::getPlatformFromRequest();
+        $bSplash = !$bLogged && $sUri == 'home' && BxDolSplash::getInstance()->isEnabledForApp($sSplashPlatform);
+
         // A closed page has no blocks either: the blocks of a pending entry show it, NEO shows the error by page_status.
-        $aElements = $bIsAllowed ? $this->getPageBlocksAPI($aBlocks) : [];
+        // The splash draws the page's sign-in and join blocks, also while they are off for the apps.
+        $aElements = $bIsAllowed ? $this->getPageBlocksAPI($aBlocks, $bSplash ? BxDolSplash::AUTH_BLOCKS : []) : [];
 
         if(!$bLogged && !in_array($sUri, ['home', 'login', 'create-account']) && ($sAutoProfile = getParam('sys_account_default_profile_type'))) {
             $sRedirect = getParam($sAutoProfile . '_redirect_aadd');
@@ -608,10 +613,6 @@ class BxBasePage extends BxDolPage
                     BxDolSession::getInstance()->setValue('custom-referrer', $sUrl);
             }
         }
-
-        // A guest's home is the splash where Studio > Designer > Splash turns it on for the asking app (X-Neo-Platform).
-        $sSplashPlatform = BxDolSplash::getPlatformFromRequest();
-        $bSplash = !$bLogged && $sUri == 'home' && BxDolSplash::getInstance()->isEnabledForApp($sSplashPlatform);
 
         $a = [
             'id' => $this->_aObject['id'],
@@ -858,7 +859,25 @@ class BxBasePage extends BxDolPage
         ] + ($bIsLocked ? ['page_status' => 403] : []);
     }
 
-    public function getPageBlocksAPI($aBlocks = [])
+    /**
+     * `module:method` of a service block, empty for any other block.
+     */
+    protected static function getBlockServiceSource($aBlock)
+    {
+        if(($aBlock['type'] ?? '') != 'service')
+            return '';
+
+        $aContent = @unserialize($aBlock['content']);
+        return is_array($aContent) && isset($aContent['module'], $aContent['method']) ? $aContent['module'] . ':' . $aContent['method'] : '';
+    }
+
+    /**
+     * The page's blocks for the apps, by cell.
+     * @param array $aBlocks only these blocks (`module:method` of a service block, a custom block's content, `system:block_<id>`)
+     * @param array $aSourcesOff these service blocks also while they are off for the apps (`active_api`), e.g. the splash's
+     *              sign-in blocks (BxDolSplash::AUTH_BLOCKS)
+     */
+    public function getPageBlocksAPI($aBlocks = [], $aSourcesOff = [])
     {
         $aHiddenOn = [
             pow(2, BX_DB_HIDDEN_PHONE - 1) => 'phone',
@@ -870,9 +889,16 @@ class BxBasePage extends BxDolPage
 
         $bBlocks = !empty($aBlocks) && is_array($aBlocks);
 
-        $aCells = $this->_oQuery->getPageBlocks(true);
+        $bSourcesOff = !empty($aSourcesOff) && is_array($aSourcesOff);
+
+        $aCells = $this->_oQuery->getPageBlocks(true, $bSourcesOff);
         foreach($aCells as $sKey => &$aCell) {
             foreach($aCell as $i => &$aBlock) {
+                if($bSourcesOff && (int)$aBlock['active_api'] != 1 && !in_array(self::getBlockServiceSource($aBlock), $aSourcesOff, true)) {
+                    unset($aCells[$sKey][$i]);
+                    continue;
+                }
+
                 if(!$this->_isVisibleBlock($aBlock)) {
                     unset($aCells[$sKey][$i]);
                     continue;
@@ -882,11 +908,8 @@ class BxBasePage extends BxDolPage
                 $aBlock = $aCells[$sKey][$i];
 
                 $sSource = '';
-                if($aBlock['type'] == 'service') {
-                    $aContent = @unserialize($aBlock['content']);
-                    if(isset($aContent['module'], $aContent['method']))
-                        $sSource = $aContent['module'] . ':' . $aContent['method'];
-                }
+                if($aBlock['type'] == 'service')
+                    $sSource = self::getBlockServiceSource($aBlock);
                 else if($aBlock['type'] == 'custom')
                     $sSource = $aBlock['content'];
                 else

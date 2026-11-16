@@ -43,6 +43,20 @@ class BxTemplPageHome extends BxBasePageHome
 
         BxDolMenu::setSelectedGlobal('system', $sSelName);
     }
+
+    /**
+     * The words of Artificer's home cover (cover_home.html) for the apps.
+     */
+    protected function _getCoverHomeTextsAPI()
+    {
+        return [
+            'title' => _t('_bx_artificer_txt_splash_welcome_l1'),
+            'title_accent' => _t('_bx_artificer_txt_splash_welcome_l2'),
+            'text' => _t('_bx_artificer_txt_splash_welcome_l3'),
+            'join' => _t('_bx_artificer_txt_splash_welcome_a1'),
+            'login' => _t('_bx_artificer_txt_splash_welcome_a2'),
+        ];
+    }
 }
 
 /** @} */

@@ -51,6 +51,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_albums_delete_me
 
 -- MENUS: active_api
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='bx_albums' AND `name`='albums-home';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_homepage' AND `module`='bx_albums' AND `name`='albums-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_add_content_links' AND `module`='bx_albums' AND `name`='create-album';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='bx_albums' AND `name`='profile-stats-my-albums';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_albums_view' AND `module`='bx_albums' AND `name`='add-images-to-album';

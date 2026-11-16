@@ -59,6 +59,66 @@ class BxBasePageHome extends BxTemplPage
         return $s;
     }
 
+    /**
+     * The page for the apps, with the home cover the site shows above the blocks (`cover_home`) while the page's cover
+     * is on for this viewer (Studio > Pages > Home > Cover) and the guest gets no splash.
+     */
+    public function getPageAPI($aBlocks = [])
+    {
+        $a = parent::getPageAPI($aBlocks);
+
+        if(($a['layout'] ?? '') != 'splash' && empty($a['page_status']) && $this->isPage() && $this->isPageCover())
+            $a['cover_home'] = $this->getCoverHomeAPI();
+
+        return $a;
+    }
+
+    /**
+     * The home cover for the apps: the words, the cover picture (the page's, else the site's common cover) and, for
+     * guests, the links to sign up and to log in, the first of them the primary one.
+     * @return array title, title_accent (shown after the title, highlighted; may be empty), text, image (URL or empty), actions
+     */
+    public function getCoverHomeAPI()
+    {
+        $aTexts = $this->_getCoverHomeTextsAPI();
+
+        $sImage = '';
+        $aCover = $this->getPageCoverImage();
+        if(!empty($aCover['id']) && ($oTranscoder = BxDolTranscoder::getObjectInstance($aCover['transcoder'])))
+            $sImage = (string)$oTranscoder->getFileUrlById($aCover['id']);
+
+        $aActions = [];
+        // The apps' own routes, as the splash's __join_link__ and __login_link__ (BxDolSplash).
+        if(!isLogged())
+            $aActions = [
+                ['name' => 'join', 'title' => $aTexts['join'], 'link' => '/create-account', 'primary' => true],
+                ['name' => 'login', 'title' => $aTexts['login'], 'link' => '/login', 'primary' => false],
+            ];
+
+        return [
+            'title' => $aTexts['title'],
+            'title_accent' => $aTexts['title_accent'],
+            'text' => $aTexts['text'],
+            'image' => $sImage,
+            'actions' => $aActions,
+        ];
+    }
+
+    /**
+     * The words of the home cover for the apps, translated: title, title_accent, text, join, login.
+     * A template with a cover of its own words overrides it.
+     */
+    protected function _getCoverHomeTextsAPI()
+    {
+        return [
+            'title' => _t('_sys_txt_splash_title'),
+            'title_accent' => '',
+            'text' => _t('_sys_txt_splash_slogan'),
+            'join' => _t('_sys_txt_splash_join'),
+            'login' => _t('_sys_txt_splash_login'),
+        ];
+    }
+
     protected function _getBlockRaw($aBlock)
     {
         if(strpos($aBlock['title'], 'splash') !== false) {

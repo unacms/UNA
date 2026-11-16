@@ -26,6 +26,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_market_licenses'
 
 -- MENUS: active_api
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='bx_market' AND `name`='products-home';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_homepage' AND `module`='bx_market' AND `name`='products-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_market_submenu' AND `module`='bx_market' AND `name`='products-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_market_submenu' AND `module`='bx_market' AND `name`='products-featured';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_market_submenu' AND `module`='bx_market' AND `name`='products-top';
