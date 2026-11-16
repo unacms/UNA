@@ -80,6 +80,25 @@ const defineCells = (blocks, data) => {
 };
 
 
+/**
+ * What the home page has beside and under its top blocks on this screen: side columns (web only, where they are
+ * pinned to the window: the member's profile and feed menu or left blocks, right blocks) and a feed (a guest's home
+ * has none unless UNA gives guests a timeline block).
+ */
+const homeColumns = ({ isWeb, layoutName, currentUser, feedList, blocks, navBarBlocks, sideBarBlocks, timelineBlocks }) => {
+    const hasProfile = Boolean(appSetting('layout', 'show_profile_info') && currentUser)
+    const hasLeftColumn = layoutName == 'hor' && (hasProfile || feedList.length > 1 || navBarBlocks.length > 0)
+    return {
+        hasSideColumns: isWeb && (hasLeftColumn || sideBarBlocks.length > 0),
+        hasFeed: timelineBlocks.length > 0 || feedList.some(item => blocks?.[item.name + '_feed']),
+    }
+}
+
+/** The top blocks open the middle column beside side columns, else they run across the page's content width. */
+const topBlocksClassName = (inColumn) => inColumn
+    ? 'w-full gap-4 pb-4'
+    : `${appSetting('layout', 'page_content_width_default')} mx-auto gap-4 px-0 pt-0 sm:px-4 sm:pt-4`
+
 export default function ({ data, blocks }) {
 /*
 return <View className='bg-blue-500 w-full h-full pt-24'>
@@ -212,16 +231,9 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     // menu). On the web the side columns are fixed to the window, so whatever is above them would slide under them:
     // with side columns these go at the top of the middle column, above the feed; without any (a guest's home), across
     // the page's content width above it, as UNA's site shows them.
-    const hasLeftColumn = layoutName == 'hor' && (
-        (appSetting('layout', 'show_profile_info') && !!currentUser) || feedList.length > 1 || navBarBlocks.length > 0
-    )
-    const hasSideColumns = isWeb && (hasLeftColumn || sideBarBlocks.length > 0)
-    // A feed to show (a guest's home has none unless UNA gives guests a timeline block).
-    const hasFeed = timelineBlocks.length > 0 || feedList.some(item => blocks?.[item.name + '_feed'])
+    const { hasSideColumns, hasFeed } = homeColumns({ isWeb, layoutName, currentUser, feedList, blocks, navBarBlocks, sideBarBlocks, timelineBlocks })
     const hasTop = Boolean(data?.cover_home) || centerBlocks?.length > 0
-    const BlocksCenter = hasTop ? <View className={hasSideColumns
-        ? 'w-full gap-4 pb-4'
-        : `${appSetting('layout', 'page_content_width_default')} mx-auto gap-4 px-0 pt-0 sm:px-4 sm:pt-4`}>
+    const BlocksCenter = hasTop ? <View className={topBlocksClassName(hasSideColumns)}>
         <HomeCover cover={data?.cover_home} hiddenOn={data?.cover_hidden_on} />
         {centerBlocks?.map((item, index) => {
             return (
