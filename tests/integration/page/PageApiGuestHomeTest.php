@@ -26,13 +26,13 @@ class PageApiGuestHomeTest extends BxDolIntegrationTestCase
         $oDb = BxDolDb::getInstance();
         foreach (self::OPTIONS as $sName)
             $this->_aOptionsBackup[$sName] = getParam($sName);
-        $this->_aBlocksBackup = $oDb->getPairs("SELECT `id`, `active_api` FROM `sys_pages_blocks` WHERE `object` = 'sys_home'", 'id', 'active_api');
+        $this->_aBlocksBackup = $oDb->getAllWithKey("SELECT `id`, `active_api`, `visible_for_levels` FROM `sys_pages_blocks` WHERE `object` = 'sys_home'", 'id');
         $this->_mCoverBackup = $oDb->getOne("SELECT `cover` FROM `sys_objects_page` WHERE `object` = 'sys_home'");
         $this->_aGetBackup = $_GET;
         $this->_mPlatformBackup = $_SERVER['HTTP_X_NEO_PLATFORM'] ?? null;
 
-        // As installed: the home menu on, the sign-in, join and forgot password blocks off for the apps.
-        $oDb->query("UPDATE `sys_pages_blocks` SET `active_api` = 1 WHERE `object` = 'sys_home' AND `type` = 'menu' AND `content` = 'sys_homepage'");
+        // As installed: the home menu on for guests only, the sign-in, join and forgot password blocks off for the apps.
+        $oDb->query("UPDATE `sys_pages_blocks` SET `active_api` = 1, `visible_for_levels` = 1 WHERE `object` = 'sys_home' AND `type` = 'menu' AND `content` = 'sys_homepage'");
         $oDb->query("UPDATE `sys_pages_blocks` SET `active_api` = 0 WHERE `object` = 'sys_home' AND `module` = 'system' AND `title` IN ('_sys_page_block_title_create_account', '_sys_page_block_title_login', '_sys_page_block_title_forgot_password')");
         $this->setHomeCover(2);
 
@@ -45,8 +45,8 @@ class PageApiGuestHomeTest extends BxDolIntegrationTestCase
         $oDb = BxDolDb::getInstance();
         foreach ($this->_aOptionsBackup as $sName => $sValue)
             setParam($sName, $sValue);
-        foreach ($this->_aBlocksBackup as $iId => $iActiveApi)
-            $oDb->query("UPDATE `sys_pages_blocks` SET `active_api` = :active_api WHERE `id` = :id", ['active_api' => (int)$iActiveApi, 'id' => (int)$iId]);
+        foreach ($this->_aBlocksBackup as $iId => $aBlock)
+            $oDb->query("UPDATE `sys_pages_blocks` SET `active_api` = :active_api, `visible_for_levels` = :levels WHERE `id` = :id", ['active_api' => (int)$aBlock['active_api'], 'levels' => (int)$aBlock['visible_for_levels'], 'id' => (int)$iId]);
         $this->setHomeCover((int)$this->_mCoverBackup);
 
         $_GET = $this->_aGetBackup ?? [];
@@ -140,6 +140,23 @@ class PageApiGuestHomeTest extends BxDolIntegrationTestCase
 
         $this->bxLoginAsAdmin();
         $this->assertSame([], $this->sources($this->requestHome(), true), 'a member gets none');
+    }
+
+    public function testTheHomeMenuIsForGuests(): void
+    {
+        setParam('sys_site_splash_web_enabled', 'off');
+        $iMenuBlock = (int)BxDolDb::getInstance()->getOne("SELECT `id` FROM `sys_pages_blocks` WHERE `object` = 'sys_home' AND `type` = 'menu' AND `content` = 'sys_homepage'");
+        $sMenu = 'system:block_' . $iMenuBlock;
+
+        $this->assertContains($sMenu, $this->sources($this->requestHome()), 'a guest gets the home menu');
+
+        $this->bxLoginAsAdmin();
+        $this->assertNotContains($sMenu, $this->sources($this->requestHome()), 'a member does not');
+
+        // The site's own home page follows the same visibility.
+        $oPage = BxDolPage::getObjectInstance('sys_home');
+        $aBlock = BxDolDb::getInstance()->getRow("SELECT * FROM `sys_pages_blocks` WHERE `id` = :id", ['id' => $iMenuBlock]);
+        $this->assertEmpty((new ReflectionMethod($oPage, '_isVisibleBlock'))->invoke($oPage, $aBlock), 'not on the site either');
     }
 
     public function testGuestsGetTheHomeCoverWithSignUpAndLogIn(): void

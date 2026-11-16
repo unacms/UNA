@@ -325,4 +325,10 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         foreach (['padding_size', 'title_size'] as $sColumn)
             $this->assertMatchesRegularExpression("/CREATE TABLE IF NOT EXISTS `sys_pages_blocks` \\([^;]*`" . $sColumn . "` varchar\\(16\\) NOT NULL DEFAULT ''/s", $sSql, $sColumn);
     }
+
+    public function testTheHomeMenuIsForGuests(): void
+    {
+        // The home page's menu block (the grid of sections) shows to guests only (level 1, MEMBERSHIP_ID_NON_MEMBER).
+        $this->assertMatchesRegularExpression("/\\('sys_home', 1, 'system', '', '_sys_page_block_title_homepage_menu', 13, 0, 0, 1, 'menu', 'sys_homepage',/", self::systemSql());
+    }
 }
