@@ -138,6 +138,36 @@ class BxBaseMenuToolbarTest extends BxDolTestCase
         $this->assertStringContainsString('aria-controls="bx-sidebar-site"', $a['attrs']);
     }
 
+    public function testGuestToolbarHasLogInAndSignUpForTheSiteAndTheApps(): void
+    {
+        $sSql = self::readFile('install/sql/system.sql');
+        $this->assertStringContainsString("('sys_toolbar_member', 'system', 'login', '_sys_menu_item_title_system_login', '_sys_menu_item_title_login', 'page.php?i=login'", $sSql, 'Log in has a label to show.');
+        $this->assertStringContainsString("('sys_toolbar_member', 'system', 'create-account', '_sys_menu_item_title_system_join', '_sys_menu_item_title_join', 'page.php?i=create-account', '', '', 'user-plus',  '', '', 0, 1, 0, 1, 0, 3)", $sSql, 'Sign up is a guests-only item of the member toolbar.');
+        $this->assertStringContainsString("SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='create-account';", self::readFile('modules/system/install/sql/enable-app-menus.sql'));
+
+        $sMigration = self::readFile('migrations/2026111640_guest_toolbar_sign_up.sql');
+        $this->assertStringContainsString("WHERE NOT EXISTS (SELECT 1 FROM `sys_menu_items` WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='create-account')", $sMigration);
+        $this->assertStringContainsString("`name`='login' AND `title`=''", $sMigration, 'A label a site set itself stays.');
+
+        //--- Artificer draws them as labelled buttons; NEO shows its two while the menu lists them for the apps.
+        $this->assertStringContainsString("case 'create-account':", self::readFile('modules/boonex/artificer/data/template/system/scripts/BxTemplMenuToolbar.php'));
+        $sNeo = self::readFile('neo/packages/app/settings/header-toolbar.js');
+        $this->assertStringContainsString("una: 'login'", $sNeo);
+        $this->assertStringContainsString("una: 'create-account'", $sNeo);
+        $this->assertStringContainsString("if (item.una && !currentUser) return inGuestToolbar(item.una)", self::readFile('neo/packages/app/ui/molecules/header/header-element.js'));
+
+        $oMenu = $this->getToolbar('sys_toolbar_member');
+        $aRows = $this->getToolbarRows($oMenu);
+        if (!isset($aRows['create-account']))
+            $this->markTestSkipped('The migration is not applied on this site.');
+
+        $a = $this->callProtected($oMenu, '_getMenuItem', [$aRows['create-account']]);
+        if ($a === false)
+            $this->markTestSkipped('Sign up is for guests and this run is not one.');
+        if (self::isArtificer($oMenu))
+            $this->assertStringContainsString('bx-menu-toolbar-item-button bx-menu-toolbar-item-primary', $a['class_add']);
+    }
+
     public function testNotificationsTriggerKeepsItsOpenState(): void
     {
         $oMenu = $this->getToolbar('sys_toolbar_member');

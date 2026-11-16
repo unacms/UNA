@@ -58,8 +58,10 @@ export default function HeaderElement({ url, uri }) {
     // A web guest is `null` on the server and through hydration (seeded only in a layout effect), and
     // `false` afterwards; the guest toolbar is server-seeded, so fetch it for both so Search is in the
     // server HTML and doesn't pop in on hydration. A member is an object here and never reaches this.
+    // Log In and Sign Up (`una: <item name>`) follow it the same way: the site's guest header is that menu.
+    const followsGuestToolbar = has('search') || itemsToRender.some((item) => !!item.una)
     const { menuData: guestToolbar } = useMenuData(
-        !currentUser && has('search') ? appSetting('menu_items', 'objects', 'toolbar') : null
+        !currentUser && followsGuestToolbar ? appSetting('menu_items', 'objects', 'toolbar') : null
     )
     const inGuestToolbar = (name) => Array.isArray(guestToolbar?.items) && guestToolbar.items.some((item) => item?.name === name)
     const addMenu = useMenuAddItems(has('add'))
@@ -77,6 +79,7 @@ export default function HeaderElement({ url, uri }) {
             case "notifications":
                 return bNotifs && inUnaToolbar('notifications-preview')
             case "link":
+                if (item.una && !currentUser) return inGuestToolbar(item.una)
                 return item.href !== '{messenger}' || inUnaToolbar('notifications-messenger')
             case "account":
             case "menu_navigation":

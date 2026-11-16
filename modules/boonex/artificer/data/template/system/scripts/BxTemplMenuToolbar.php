@@ -63,6 +63,15 @@ class BxTemplMenuToolbar extends BxBaseMenuToolbar
                 $sAttrsAdd = 'aria-haspopup="dialog" aria-expanded="false" aria-controls="bx-sidebar-site"';
                 break;
 
+            case 'login':
+            case 'create-account':
+                //--- A guest's Log in and Sign up: labelled buttons from the small screens up, Sign up the primary one, as in the
+                //--- apps. Phones have them at the top of the main menu's sidebar instead.
+                if(isset($a['class_add'])) {
+                    $a['class_add'] .= ' bx-menu-toolbar-item-button' . ($a['name'] == 'create-account' ? ' bx-menu-toolbar-item-primary' : '');
+                }
+                break;
+
             case 'account':
                 $a['class_add_a'] = ' bx-sidebar-account-trigger';
                 $a['link'] = 'javascript:void(0)';
