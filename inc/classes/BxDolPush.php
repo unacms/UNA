@@ -9,12 +9,18 @@
 
 class BxDolPush extends BxDolFactoryObject
 {
+    protected $_sEndpoint;
+    protected $_sAppId;
+
     protected $_sApiUrlRootPush;
     protected $_sApiUrlRootEmail;
 
     protected function __construct($aObject, $oTemplate = null, $sDbClassName = 'BxDolPushQuery')
     {
         parent::__construct($aObject, $oTemplate, $sDbClassName);
+
+        $this->_sEndpoint = '';
+        $this->_sAppId = '';
 
         $this->_sApiUrlRootEmail = $this->_getUrlRoot('email');
         $this->_sApiUrlRootPush = $this->_getUrlRoot('push');
@@ -50,13 +56,17 @@ class BxDolPush extends BxDolFactoryObject
         if (!$oProfile || !$oAccount)
             return false;
 
+        $oPush = self::getObjectInstance();
+        if (!$oPush)
+            return false;
+
         $sEmail = $oAccount->getEmail();
-        $a = array (
+        $a = [
             'user_hash' => encryptUserId($iProfileId),
             'real_name' => $oProfile->getDisplayName(),
             'email' => $sEmail,
-            'email_hash' => $sEmail ? hash_hmac('sha256', $sEmail, getParam('sys_push_app_id')) : '',
-        );
+            'email_hash' => $sEmail ? hash_hmac('sha256', $sEmail, $oPush->getAppId()) : '',
+        ];
 
          /**
          * @hooks
@@ -69,7 +79,10 @@ class BxDolPush extends BxDolFactoryObject
          *      - `tags` - [array] by ref, array of tags, can be overridden in hook processing
          * @hook @ref hook-system-push_tags
          */
-        bx_alert('system', 'push_tags', $iProfileId, $iProfileId, array('tags' => &$a, 'tags_ref' => &$a));
+        bx_alert('system', 'push_tags', $iProfileId, $iProfileId, [
+            'tags' => &$a, 
+            'tags_ref' => &$a
+        ]);
 
         return $a;
     }
@@ -129,6 +142,11 @@ class BxDolPush extends BxDolFactoryObject
         }
 
         return $iBubbles;
+    }
+
+    public function getAppId()
+    {
+        return $this->_sAppId;
     }
 
     public function getCode($sFor = '')

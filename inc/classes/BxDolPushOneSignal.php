@@ -9,9 +9,6 @@
 
 class BxDolPushOneSignal extends BxDolPush
 {
-    protected $_sEndpoint;
-
-    protected $_sAppId;
     protected $_sRestApi;
 
     protected $_sShortName;
@@ -32,6 +29,11 @@ class BxDolPushOneSignal extends BxDolPush
         $this->_sSafariWebId = getParam('sys_push_onesignal_safari_id');
 
         $this->_bCodeAdded = false;
+    }
+
+    public function getAppId()
+    {
+        return $this->_sAppId;
     }
 
     public function send($iProfileId, $aMessage, $bAddToQueue = false)

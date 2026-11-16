@@ -9,9 +9,6 @@
 
 class BxDolPushWonderPush extends BxDolPush
 {
-    protected $_sEndpoint;
-
-    protected $_sAppId;
     protected $_sAcessToken;
     protected $_sWebKey;
 
@@ -28,6 +25,11 @@ class BxDolPushWonderPush extends BxDolPush
         $this->_sWebKey = getParam('sys_push_wonderpush_web_key');
 
         $this->_bCodeAdded = false;
+    }
+
+    public function getAppId()
+    {
+        return $this->_sAppId;
     }
 
     public function send($iProfileId, $aMessage, $bAddToQueue = false)
