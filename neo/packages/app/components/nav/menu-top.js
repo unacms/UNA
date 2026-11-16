@@ -206,7 +206,7 @@ export default function MenuTop({ url, uri }) {
             {menu_navbar_items.map((item, index) => {
                 const isActive = index === activeIndex;
                 return (
-                    <View key={`wrap-${index}`} onLayout={(e) => handleItemLayout(index, e?.nativeEvent?.layout)} className="flex-none relative z-10">
+                    <View key={`wrap-${item.name || item.link || item.title}`} onLayout={(e) => handleItemLayout(index, e?.nativeEvent?.layout)} className="flex-none relative z-10">
                         <MenuTopItem
                             index={index}
                             link={item.link}
