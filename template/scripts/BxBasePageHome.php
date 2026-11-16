@@ -67,8 +67,9 @@ class BxBasePageHome extends BxTemplPage
     {
         $a = parent::getPageAPI($aBlocks);
 
-        if(($a['layout'] ?? '') != 'splash' && empty($a['page_status']) && $this->isPage() && $this->isPageCover())
+        if(($a['layout'] ?? '') != 'splash' && empty($a['page_status']) && $this->isPage() && $this->isPageCover()) {
             $a['cover_home'] = $this->getCoverHomeAPI();
+        }
 
         return $a;
     }
@@ -84,16 +85,18 @@ class BxBasePageHome extends BxTemplPage
 
         $sImage = '';
         $aCover = $this->getPageCoverImage();
-        if(!empty($aCover['id']) && ($oTranscoder = BxDolTranscoder::getObjectInstance($aCover['transcoder'])))
+        if(!empty($aCover['id']) && ($oTranscoder = BxDolTranscoder::getObjectInstance($aCover['transcoder']))) {
             $sImage = (string)$oTranscoder->getFileUrlById($aCover['id']);
+        }
 
         $aActions = [];
         // The apps' own routes, as the splash's __join_link__ and __login_link__ (BxDolSplash).
-        if(!isLogged())
+        if(!isLogged()) {
             $aActions = [
                 ['name' => 'join', 'title' => $aTexts['join'], 'link' => '/create-account', 'primary' => true],
                 ['name' => 'login', 'title' => $aTexts['login'], 'link' => '/login', 'primary' => false],
             ];
+        }
 
         return [
             'title' => $aTexts['title'],

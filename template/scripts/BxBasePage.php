@@ -604,7 +604,8 @@ class BxBasePage extends BxDolPage
         // A closed page has no blocks either: the blocks of a pending entry show it, NEO shows the error by page_status.
         // A guest's home also has its sign-in and join blocks while they are off for the apps, marked `splash_only`: the
         // splash draws them, also one an app forces on itself (NEO's `layout.use_splash_page`), the home page doesn't.
-        $aElements = $bIsAllowed ? $this->getPageBlocksAPI($aBlocks, !$bLogged && $sUri == 'home' ? BxDolSplash::AUTH_BLOCKS : []) : [];
+        $aSourcesOff = !$bLogged && $sUri == 'home' ? BxDolSplash::AUTH_BLOCKS : [];
+        $aElements = $bIsAllowed ? $this->getPageBlocksAPI($aBlocks, $aSourcesOff) : [];
 
         if(!$bLogged && !in_array($sUri, ['home', 'login', 'create-account']) && ($sAutoProfile = getParam('sys_account_default_profile_type'))) {
             $sRedirect = getParam($sAutoProfile . '_redirect_aadd');
@@ -865,8 +866,9 @@ class BxBasePage extends BxDolPage
      */
     protected static function getBlockServiceSource($aBlock)
     {
-        if(($aBlock['type'] ?? '') != 'service')
+        if(($aBlock['type'] ?? '') != 'service') {
             return '';
+        }
 
         $aContent = @unserialize($aBlock['content']);
         return is_array($aContent) && isset($aContent['module'], $aContent['method']) ? $aContent['module'] . ':' . $aContent['method'] : '';
@@ -910,8 +912,9 @@ class BxBasePage extends BxDolPage
                 $aBlock = $aCells[$sKey][$i];
 
                 $sSource = '';
-                if($aBlock['type'] == 'service')
+                if($aBlock['type'] == 'service') {
                     $sSource = self::getBlockServiceSource($aBlock);
+                }
                 else if($aBlock['type'] == 'custom')
                     $sSource = $aBlock['content'];
                 else
@@ -971,8 +974,9 @@ class BxBasePage extends BxDolPage
                 ]);
 
                 // Off for the apps, sent for the splash only.
-                if($bSplashOnly)
+                if($bSplashOnly) {
                     $aCells[$sKey][$i]['splash_only'] = true;
+                }
 
                 if(($sK = 'hidden_on') && !empty($aBlock[$sK])) {
                     $aHoResults = [];

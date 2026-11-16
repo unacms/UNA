@@ -33,6 +33,14 @@ function MenuChoiceRow({ item, href }) {
     )
 }
 
+/** A grid tile's link: an app path (`/...`) or a full URL; none for an item that only opens something on the site. */
+function gridItemHref(item) {
+    const path = String(item?.url || item?.link || '');
+    if (!path || path === 'javascript:void(0)') return '';
+    if (/^https?:/.test(path) || path.startsWith('/')) return path;
+    return `/${path}`;
+}
+
 // `itemsClassName`: classes for the list of links in place of `w-full`, e.g. the Conductor's left
 // panel lines them up with its own links (`-mx-1`: a fixed `w-full` would cancel the right margin).
 export default function ElementMenu({ data, blockWrapperProps, url, itemsClassName = '' }) {
@@ -137,8 +145,7 @@ export default function ElementMenu({ data, blockWrapperProps, url, itemsClassNa
             <BlockWrapper {...blockWrapperProps}>
                 <View className="w-full flex-row flex-wrap">
                     {topLevelItems.map((item, index) => {
-                        const path = String(item?.url || item?.link || '');
-                        const href = !path || path === 'javascript:void(0)' ? '' : /^https?:/.test(path) || path.startsWith('/') ? path : `/${path}`;
+                        const href = gridItemHref(item);
                         return (
                             <View key={getItemId(item, String(index))} className="w-1/3 sm:w-1/6 lg:w-1/8">
                                 <DropdownGridItem

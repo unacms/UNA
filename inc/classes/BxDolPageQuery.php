@@ -182,7 +182,12 @@ class BxDolPageQuery extends BxDolDb
      */
     public function getPageBlocks($bIsApi = false, $bWithServicesOff = false)
     {
-        $sActiveClause = $bIsApi ? ($bWithServicesOff ? "(`active_api` = 1 OR `type` = 'service')" : "`active_api` = 1") : "`active` = 1";
+        if(!$bIsApi) {
+            $sActiveClause = "`active` = 1";
+        }
+        else {
+            $sActiveClause = $bWithServicesOff ? "(`active_api` = 1 OR `type` = 'service')" : "`active_api` = 1";
+        }
         $aLayoutColumns = $bIsApi ? $this->getPageLayoutColumns($this->_aObject['layout_id']) : [];
         
         $aRet = [];
