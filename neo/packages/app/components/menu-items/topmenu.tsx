@@ -35,7 +35,7 @@ export default function MenuTopItem({ link, title, icon, isTitle, isActive, item
         <DropdownMenu
             mode="popup"
             triggerAccessibilityLabel={title}
-            triggerClassName="group rounded-full"
+            triggerClassName="group rounded-full web:active:scale-95 web:duration-100"
             items={items}
             columns={columns}
             defaultOpen={false}

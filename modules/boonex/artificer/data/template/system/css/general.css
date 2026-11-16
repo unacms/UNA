@@ -425,6 +425,31 @@ html.dark .bx-menu-object-sys_profile_stats.bx-menu-highlight-list::before {
 .bx-menu-object-sys_profile_stats.bx-menu-highlight-list > li:not(.bx-menu-tab-active) > .bx-stl-mil-wo-gaps:hover {
     background-color: transparent;
 }
+/* Pressing a header tab, as in NEO's header (menu-items/topmenu.tsx, .neo-menu-highlight-bar in its global.web.css):
+   the tab shrinks to 95% and the highlight under it shrinks with it and takes the full hover colour, so the press is on
+   the one capsule. */
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list > li {
+    transition: scale 100ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list > li:has(> .bx-stl-mil:active) {
+    scale: 0.95;
+}
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list.bx-menu-highlight-on:has(> li > .bx-stl-mil:active)::before {
+    background-color: rgb(228, 228, 231); /* gray-200 */
+    transform: translate(var(--bx-menu-highlight-x, 0), var(--bx-menu-highlight-y, 0)) scale(0.95);
+    transition: transform 100ms cubic-bezier(0.4, 0, 0.2, 1), background-color 100ms cubic-bezier(0.4, 0, 0.2, 1), opacity 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+html.dark #bx-toolbar .bx-menu-main.bx-menu-highlight-list.bx-menu-highlight-on:has(> li > .bx-stl-mil:active)::before {
+    background-color: rgb(63, 63, 70); /* gray-700 */
+}
+@media (prefers-reduced-motion: reduce) {
+    #bx-toolbar .bx-menu-main.bx-menu-highlight-list > li:has(> .bx-stl-mil:active) {
+        scale: none;
+    }
+    #bx-toolbar .bx-menu-main.bx-menu-highlight-list.bx-menu-highlight-on:has(> li > .bx-stl-mil:active)::before {
+        transform: translate(var(--bx-menu-highlight-x, 0), var(--bx-menu-highlight-y, 0));
+    }
+}
 
 /* The profile menu beside the feed has the popup menus' rows (tailwind.css, "Popup menu items look and behave like
    NEO's regular menu items"): 12px corners, 4px apart, a 20px glyph in a 32px circle 8px from the row's side and from

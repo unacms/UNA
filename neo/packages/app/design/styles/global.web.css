@@ -924,15 +924,28 @@ webview {
 }
 
 /* The header's tabs: the highlight is a capsule like their rows (`rounded-full`, menu-items/topmenu.tsx), and a tab's
- * own hover fill gives way to it; the pressed and the open (More) fills stay. The row (`h-11`) is the tab's child, or
+ * own hover and pressed fills give way to it; only the open (More) fill stays. The row (`h-11`) is the tab's child, or
  * one level deeper where a tooltip or a menu trigger wraps it (icon-only tabs, More). */
 .neo-menu-highlight-bar::before {
     border-radius: var(--radius-full);
 }
 
-.neo-menu-highlight-bar > * > .group:hover > .h-11:not(:active):not(.bg-accent),
-.neo-menu-highlight-bar > * > .group:hover > * > .h-11:not(:active):not(.bg-accent) {
+.neo-menu-highlight-bar > * > .group:hover > .h-11:not(.bg-accent),
+.neo-menu-highlight-bar > * > .group:hover > * > .h-11:not(.bg-accent) {
     background-color: transparent;
+}
+
+/* Pressing a tab presses the highlight itself: it takes the pressed fill (the full muted, as the tab's own
+ * `web:active:bg-muted` off the bar) and shrinks to 95% with the tab (`web:active:scale-95`, 100ms), around the tab's
+ * centre, so there is one capsule and not a second, smaller one painted on the hover one. UNA's header does the same
+ * (Artificer general.css). */
+.neo-menu-highlight-bar.neo-menu-highlight-on:has(> * > .group:active)::before {
+    background-color: rgb(var(--muted));
+    transform: translate(var(--neo-menu-highlight-x, 0), var(--neo-menu-highlight-y, 0)) scale(0.95);
+    transition:
+        transform 100ms cubic-bezier(0.4, 0, 0.2, 1),
+        background-color 100ms cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 150ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 /* The item's own hover fill (`item_ver`); the selected item keeps its fill. */
