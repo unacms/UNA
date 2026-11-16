@@ -15,6 +15,7 @@ import { components } from 'app/components/registry'
 import { usePathname } from 'app/lib/hooks/router'
 import { normalizeTiers, responsiveClasses } from 'app/lib/responsive-classes'
 import { withoutHiddenOn } from 'app/lib/hidden-on'
+import { blockSizeKey } from 'app/lib/block-size'
 import { usePageChrome } from 'app/ui/molecules/page/page-chrome'
 
 function pathComparable(path) {
@@ -210,8 +211,8 @@ function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg
     const headerName = (
         <>
             {!!block.header_icon && (
-                <BlockHeaderIcon>
-                    <BlockIconGlyph icon={block.header_icon} size={blockTheme['u-block-header-icon-size']} />
+                <BlockHeaderIcon titleSize={block.title_size}>
+                    <BlockIconGlyph icon={block.header_icon} size={blockTheme[blockSizeKey('u-block-header-icon-size', block.title_size)] ?? blockTheme['u-block-header-icon-size']} />
                 </BlockHeaderIcon>
             )}
             {/* Beside a header icon a title without a description is centred on the tile. */}

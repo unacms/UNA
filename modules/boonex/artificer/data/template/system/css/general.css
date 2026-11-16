@@ -575,16 +575,17 @@ html.dark .bx-artificer .bx-db-footer {
 }
 
 /* A block's header, as in NEO (theme.blocks): a row of the header icon, the title over the description, the actions.
-   The header icon (a block's "Header icon") is a 44px tile, as tall as the title (24px) and one line of the description
-   (14px on 20px, which may wrap) together, with no gap between them. The title icon (a block's "Title icon") is a 24px
+   The header icon (a block's "Header icon") is a 48px tile, as tall as the title over a description (24px), a 4px gap and
+   one line of the description (14px on 20px, which may wrap) together; a block's Title size makes it 44px or 56px
+   (css/page_layouts.css). The title icon (a block's "Title icon") is a 24px
    icon in a 28px box with no background, before the title on its line. */
 .bx-artificer .bx-db-title > .bx-dbt-hic {
     display: flex;
     flex: none;
     align-items: center;
     justify-content: center;
-    width: 2.75rem;
-    height: 2.75rem;
+    width: 3rem;
+    height: 3rem;
 
     border-radius: 0.5rem;
     background: rgba(10, 10, 12, 0.045);
@@ -627,6 +628,7 @@ html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
     line-height: 1.25rem;
     letter-spacing: normal;
     white-space: normal;
+    margin-top: 0.25rem;
 }
 
 /* Glass buttons: a regular button over a picture or any backdrop that varies.

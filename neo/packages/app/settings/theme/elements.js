@@ -215,10 +215,15 @@ export const settingsElements = {
         'u-block-header':
             ' flex-row gap-3  ',
         // A block's header is a row: the header icon, the title over the description, the actions.
-        // Header icon (UNA's block "Header icon"): a 44px tile, as tall as the title (24px) and one
-        // line of description (20px) together.
-        'u-block-header-icon': 'items-center justify-center w-11 h-11 rounded-lg bg-muted/50 flex-none',
+        // Header icon (UNA's block "Header icon"): a tile as tall as the title over a description, the 4px gap and one
+        // line of the description (20px): 48px for the regular title (24px line), 44px compact (20px line), 56px large
+        // (32px line), the avatar and control sizes used elsewhere.
+        'u-block-header-icon': 'items-center justify-center w-12 h-12 rounded-lg bg-muted/50 flex-none',
         'u-block-header-icon-size': 24,
+        'u-block-header-icon-compact': 'items-center justify-center w-11 h-11 rounded-lg bg-muted/50 flex-none',
+        'u-block-header-icon-size-compact': 24,
+        'u-block-header-icon-large': 'items-center justify-center w-14 h-14 rounded-xl bg-muted/50 flex-none',
+        'u-block-header-icon-size-large': 28,
         // Title icon (UNA's block "Title icon", `icon`): a 24px icon in a 28px box, no background, before the title on its line.
         'u-block-title-icon': 'items-center justify-center w-7 h-7 flex-none',
         'u-block-title-icon-size': 24,
@@ -229,21 +234,21 @@ export const settingsElements = {
         // text-xl on every screen size; line height = the mini (legacy xs) button height, 28px, so the title lines up with header buttons.
         'u-block-title':
             'text-card-foreground text-xl leading-7 font-semibold tracking-tight',
-        // The title over a description: no gap, the title on a 24px line.
-        'u-block-name-stacked': 'flex-auto min-w-0',
+        // The title over a description: 4px apart, the regular title on a 24px line.
+        'u-block-name-stacked': 'flex-auto min-w-0 gap-1',
         'u-block-title-stacked':
             'text-card-foreground text-xl leading-6 font-semibold tracking-tight',
         // Studio's "Title size" (UNA's `title_size`): text-base on 24px (compact) or text-2xl on 32px (large) instead of
-        // the regular text-xl on 28px. Over a description the compact and regular titles keep a 24px line, so the 44px
-        // header icon is as tall as the title and one line of the description; the large one takes 28px.
+        // the regular text-xl on 28px. Over a description: 16px on 20px, 20px on 24px, 24px on 32px, so with the 4px gap
+        // and the description's 20px line they are as tall as the header icon (44, 48, 56px).
         'u-block-title-compact':
             'text-card-foreground text-base leading-6 font-semibold tracking-tight',
         'u-block-title-large':
             'text-card-foreground text-2xl leading-8 font-semibold tracking-tight',
         'u-block-title-stacked-compact':
-            'text-card-foreground text-base leading-6 font-semibold tracking-tight',
+            'text-card-foreground text-base leading-5 font-semibold tracking-tight',
         'u-block-title-stacked-large':
-            'text-card-foreground text-2xl leading-7 font-semibold tracking-tight',
+            'text-card-foreground text-2xl leading-8 font-semibold tracking-tight',
         // 14px on a 20px line; it may wrap.
         'u-block-description': 'text-card-foreground text-sm leading-5',
         'u-block-content': 'gap-0.5 ',  

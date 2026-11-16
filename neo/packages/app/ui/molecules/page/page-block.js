@@ -19,8 +19,8 @@ function padClasses(padSide, pad, size) {
     return responsiveClasses(hasSized ? blockSizeKey('block-' + padSide, size) : 'block-' + padSide, pad)
 }
 
-/** The parts whose type follows Studio's "Title size" (`theme.blocks` `<part>-compact` / `-large`). */
-const TITLE_PARTS = new Set(['u-block-title', 'u-block-title-stacked'])
+/** The parts that follow Studio's "Title size" (`theme.blocks` `<part>-compact` / `-large`): the title and the header icon. */
+const TITLE_PARTS = new Set(['u-block-title', 'u-block-title-stacked', 'u-block-header-icon'])
 
 /**
  * The part's theme classes. The gap between a block's title and content follows its padding size, as on the site; the
