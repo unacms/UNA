@@ -1293,14 +1293,24 @@ class BxMarketModule extends BxBaseModTextModule
 
     	$aItem = $this->serviceGetCartItem($iItemId);
         if(empty($aItem) || !is_array($aItem))
-            return array();
+            return [];
 
         $aProduct = $this->_oDb->getContentInfoById($iItemId);
         if(empty($aProduct) || !is_array($aProduct))
-            return array();
+            return [];
+
+        $oClient = BxDolProfile::getInstanceMagic($iClientId);
+        $oSeller = BxDolProfile::getInstanceMagic($iSellerId);
+        $sProductUrl = bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=view-product&id=' . $aProduct[$CNF['FIELD_ID']]));
 
         if(!BxDolPrivacy::getObjectInstance($CNF['OBJECT_PRIVACY_PURCHASE'])->check((int)$iItemId, $iClientId))
-            return array();
+            sendMailTemplate($CNF['ETEMPLATE_UNAUTHORIZED_PURCHASE'], 0, $iSellerId, [
+                'client_name' => $oClient->getDisplayName(),
+                'client_url' => $oClient->getUrl(),
+                'product_name' => $aProduct[$CNF['FIELD_TITLE']],
+                'product_url' => $sProductUrl,
+                'license' => $sLicense,
+            ]);
 
         $iTrial = 0;
         $sDuration = '';
@@ -1308,15 +1318,15 @@ class BxMarketModule extends BxBaseModTextModule
         if($sType == BX_MARKET_LICENSE_TYPE_RECURRING) {
             $iTrial = $aProduct[$this->_oConfig->CNF['FIELD_TRIAL_RECURRING']];
             $sDuration = $aProduct[$this->_oConfig->CNF['FIELD_DURATION_RECURRING']];
-            
+
             if($this->_oDb->hasLicenseByOrder($iClientId, $iItemId, $sOrder))
                 $sAction = 'prolong';
         }
 
         if(!$this->_oDb->{$sAction . 'License'}($iClientId, $iItemId, $iItemCount, $sOrder, $sLicense, $sType, $sDuration, $iTrial))
-            return array();
+            return [];
 
-        bx_alert($this->getName(), 'license_' . $sAction, 0, false, array(
+        bx_alert($this->getName(), 'license_' . $sAction, 0, false, [
             'product_id' => $iItemId,
             'profile_id' => $iClientId,
             'order' => $sOrder,
@@ -1325,10 +1335,8 @@ class BxMarketModule extends BxBaseModTextModule
             'count' => $iItemCount,
             'duration' => $sDuration,
             'trial' => $iTrial
-        ));
+        ]);
 
-        $oClient = BxDolProfile::getInstanceMagic($iClientId);
-        $oSeller = BxDolProfile::getInstanceMagic($iSellerId);
         $sSellerUrl = $oSeller->getUrl();
         $sSellerName = $oSeller->getDisplayName();
 
@@ -1336,15 +1344,15 @@ class BxMarketModule extends BxBaseModTextModule
         if(empty($sNote))
             $sNote = _t('_bx_market_txt_purchased_note', $sSellerUrl, $sSellerName);
 
-        sendMailTemplate($CNF['ETEMPLATE_PURCHASED'], 0, $iClientId, array(
+        sendMailTemplate($CNF['ETEMPLATE_PURCHASED'], 0, $iClientId, [
             'client_name' => $oClient->getDisplayName(),
             'product_name' => $aProduct[$CNF['FIELD_TITLE']],
-            'product_url' => bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=view-product&id=' . $aProduct[$CNF['FIELD_ID']])),
+            'product_url' => $sProductUrl,
             'vendor_url' => $sSellerUrl,
             'vendor_name' => $sSellerName,
             'license' => $sLicense,
             'notes' => $sNote,
-        ));
+        ]);
 
         return $aItem;
     }

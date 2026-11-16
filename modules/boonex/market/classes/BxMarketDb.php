@@ -462,6 +462,9 @@ class BxMarketDb extends BxBaseModTextDb
                     $sWhereClause .= " AND `tl`.`order`=:order";
                 }
 
+                if(isset($aParams['active']) && (int)$aParams['active'] == 1)
+                    $sWhereClause .= " AND (`tl`.`expired`='0' OR `tl`.`expired` > UNIX_TIMESTAMP())";
+
                 $sLimitClause = "1";
             break;
         }
@@ -494,12 +497,13 @@ class BxMarketDb extends BxBaseModTextDb
 
     public function hasLicense ($iProfileId, $iProductId, $sDomain = '')
     {
-        $aParams = array(
+        $aParams = [
     		'type' => 'has_by', 
     		'profile_id' => $iProfileId, 
     		'product_id' => $iProductId, 
-    		'domain' => !empty($sDomain) ? $sDomain : ''
-    	);
+    		'domain' => !empty($sDomain) ? $sDomain : '',
+            'active' => 1
+    	];
  
         $iLicenseId = (int)$this->getLicense($aParams);
     	if($iLicenseId > 0)
