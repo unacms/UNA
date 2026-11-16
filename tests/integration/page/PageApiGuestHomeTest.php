@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\Group;
 #[Group('integration')]
 class PageApiGuestHomeTest extends BxDolIntegrationTestCase
 {
-    private const OPTIONS = ['sys_api_root_page_guest', 'sys_site_splash_web_enabled'];
+    private const OPTIONS = ['sys_api_root_page_guest', 'sys_site_splash_web_enabled', 'sys_site_cover_disabled', 'sys_site_cover_common'];
 
     private array $_aOptionsBackup = [];
     private array $_aBlocksBackup = [];
@@ -154,6 +154,30 @@ class PageApiGuestHomeTest extends BxDolIntegrationTestCase
         $this->assertSame(['join', 'login'], array_column($aCover['actions'], 'name'));
         $this->assertSame(['/create-account', '/login'], array_column($aCover['actions'], 'link'));
         $this->assertSame([true, false], array_column($aCover['actions'], 'primary'));
+    }
+
+    public function testWithoutAPictureTheCoverHasTheTemplatesArt(): void
+    {
+        setParam('sys_site_splash_web_enabled', 'off');
+        setParam('sys_site_cover_common', '0');
+
+        $aCover = $this->requestHome()['cover_home'] ?? null;
+        $this->assertIsArray($aCover);
+        if ((int)BxDolDb::getInstance()->getOne("SELECT `cover_image` FROM `sys_objects_page` WHERE `object` = 'sys_home'") === 0)
+            $this->assertSame('', $aCover['image'], 'no picture in Studio');
+        foreach (['light', 'dark'] as $sScheme)
+            $this->assertMatchesRegularExpression('/^https?:\/\/.+\.svg$/', (string)($aCover['image_default'][$sScheme] ?? ''), $sScheme . ': the art the site shows');
+    }
+
+    public function testCoversOffInTheDesignerLeaveTheHomeCoverOut(): void
+    {
+        setParam('sys_site_splash_web_enabled', 'off');
+
+        setParam('sys_site_cover_disabled', 'on');
+        $this->assertArrayNotHasKey('cover_home', $this->requestHome(), 'Studio > Designer > Cover: off');
+
+        setParam('sys_site_cover_disabled', '');
+        $this->assertArrayHasKey('cover_home', $this->requestHome(), 'on again');
     }
 
     public function testNoHomeCoverOnTheSplashOrWhereTheCoverIsOff(): void

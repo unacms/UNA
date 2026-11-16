@@ -60,14 +60,16 @@ class BxBasePageHome extends BxTemplPage
     }
 
     /**
-     * The page for the apps, with the home cover the site shows above the blocks (`cover_home`) while the page's cover
-     * is on for this viewer (Studio > Pages > Home > Cover) and the guest gets no splash.
+     * The page for the apps, with the home cover the site shows above the blocks (`cover_home`) where the site shows it:
+     * covers on in Studio > Designer > Cover, the page's cover on for this viewer (Studio > Pages > Home > Cover), and
+     * no splash for the guest.
      */
     public function getPageAPI($aBlocks = [])
     {
         $a = parent::getPageAPI($aBlocks);
 
-        if(($a['layout'] ?? '') != 'splash' && empty($a['page_status']) && $this->isPage() && $this->isPageCover()) {
+        $bCover = ($a['layout'] ?? '') != 'splash' && empty($a['page_status']) && $this->isPage();
+        if($bCover && BxDolCover::getInstance()->isEnabled() && $this->isPageCover()) {
             $a['cover_home'] = $this->getCoverHomeAPI();
         }
 
@@ -75,13 +77,16 @@ class BxBasePageHome extends BxTemplPage
     }
 
     /**
-     * The home cover for the apps: the words, the cover picture (the page's, else the site's common cover) and, for
-     * guests, the links to sign up and to log in, the first of them the primary one.
-     * @return array title, title_accent (shown after the title, highlighted; may be empty), text, image (URL or empty), actions
+     * The home cover for the apps, as the site draws it: the words, the picture and, for guests, the links to sign up
+     * and to log in, the first of them the primary one.
+     * @return array title, title_accent (shown after the title, highlighted; may be empty), text, image (the page's
+     *         cover picture, else the site's common cover from Studio > Designer > Cover; empty for none),
+     *         image_default (the template's own art the site shows when there is no picture: light and dark URLs),
+     *         actions (name, title, link, primary, icon)
      */
     public function getCoverHomeAPI()
     {
-        $aTexts = $this->_getCoverHomeTextsAPI();
+        $aLook = $this->_getCoverHomeLookAPI();
 
         $sImage = '';
         $aCover = $this->getPageCoverImage();
@@ -93,32 +98,44 @@ class BxBasePageHome extends BxTemplPage
         // The apps' own routes, as the splash's __join_link__ and __login_link__ (BxDolSplash).
         if(!isLogged()) {
             $aActions = [
-                ['name' => 'join', 'title' => $aTexts['join'], 'link' => '/create-account', 'primary' => true],
-                ['name' => 'login', 'title' => $aTexts['login'], 'link' => '/login', 'primary' => false],
+                ['name' => 'join', 'title' => $aLook['join'], 'link' => '/create-account', 'primary' => true, 'icon' => $aLook['join_icon']],
+                ['name' => 'login', 'title' => $aLook['login'], 'link' => '/login', 'primary' => false, 'icon' => $aLook['login_icon']],
             ];
         }
 
         return [
-            'title' => $aTexts['title'],
-            'title_accent' => $aTexts['title_accent'],
-            'text' => $aTexts['text'],
+            'title' => $aLook['title'],
+            'title_accent' => $aLook['title_accent'],
+            'text' => $aLook['text'],
             'image' => $sImage,
+            'image_default' => [
+                'light' => $aLook['image_light'],
+                'dark' => $aLook['image_dark'],
+            ],
             'actions' => $aActions,
         ];
     }
 
     /**
-     * The words of the home cover for the apps, translated: title, title_accent, text, join, login.
-     * A template with a cover of its own words overrides it.
+     * How the template draws its home cover, for the apps: the words (translated: title, title_accent, text, join,
+     * login), the buttons' icons (join_icon, login_icon) and the art it shows without a picture (image_light,
+     * image_dark: URLs). A template with a cover of its own overrides it.
      */
-    protected function _getCoverHomeTextsAPI()
+    protected function _getCoverHomeLookAPI()
     {
+        // The base template's cover (cover_home.html, .bx-cover-homepage in cover.css).
+        $sArt = (string)$this->_oTemplate->getImageUrl('cover-homepage.svg');
+
         return [
             'title' => _t('_sys_txt_splash_title'),
             'title_accent' => '',
             'text' => _t('_sys_txt_splash_slogan'),
             'join' => _t('_sys_txt_splash_join'),
             'login' => _t('_sys_txt_splash_login'),
+            'join_icon' => '',
+            'login_icon' => '',
+            'image_light' => $sArt,
+            'image_dark' => $sArt,
         ];
     }
 

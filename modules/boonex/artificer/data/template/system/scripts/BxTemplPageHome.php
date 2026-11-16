@@ -45,17 +45,21 @@ class BxTemplPageHome extends BxBasePageHome
     }
 
     /**
-     * The words of Artificer's home cover (cover_home.html) for the apps.
+     * Artificer's home cover (cover_home.html) for the apps: its words, the arrow on Log in, and the art of covers without
+     * a picture (cover.css, .bx-cover-wrapper), light and dark.
      */
-    protected function _getCoverHomeTextsAPI()
+    protected function _getCoverHomeLookAPI()
     {
-        return [
+        return array_merge(parent::_getCoverHomeLookAPI(), [
             'title' => _t('_bx_artificer_txt_splash_welcome_l1'),
             'title_accent' => _t('_bx_artificer_txt_splash_welcome_l2'),
             'text' => _t('_bx_artificer_txt_splash_welcome_l3'),
             'join' => _t('_bx_artificer_txt_splash_welcome_a1'),
             'login' => _t('_bx_artificer_txt_splash_welcome_a2'),
-        ];
+            'login_icon' => 'arrow-right',
+            'image_light' => (string)$this->_oTemplate->getImageUrl('cover-default.svg'),
+            'image_dark' => (string)$this->_oTemplate->getImageUrl('cover-default-dark.svg'),
+        ]);
     }
 }
 

@@ -1084,3 +1084,12 @@ webview {
 @media (min-width: 1024px) and (max-width: 1279.98px) { .neo-panel-ssr { --neo-panel-grow: var(--neo-panel-grow-lg, var(--neo-panel-grow-base)); } }
 @media (min-width: 1280px) and (max-width: 1535.98px) { .neo-panel-ssr { --neo-panel-grow: var(--neo-panel-grow-xl, var(--neo-panel-grow-base)); } }
 @media (min-width: 1536px) { .neo-panel-ssr { --neo-panel-grow: var(--neo-panel-grow-2xl, var(--neo-panel-grow-base)); } }
+
+/* The home cover's accent line over a picture or the template's art (components/elements/covers/home-cover.tsx):
+   UNA's gradient (Artificer cover_home.html, Tailwind green-200 to blue-200). Native draws it white. */
+.neo-home-cover-accent {
+    background-image: linear-gradient(to right, #bbf7d0, #bfdbfe);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}

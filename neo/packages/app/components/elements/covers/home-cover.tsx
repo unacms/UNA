@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography';
 import { NeoButtonLink } from 'app/design/controls';
 import type { NeoButtonStyle } from 'app/design/controls/neo-button/neo-button.types';
 import Image from 'app/ui/atoms/image';
-import { appSetting, decodeTextNode } from 'app/lib/util';
+import { appSetting, decodeTextNode, findIconFromRemote } from 'app/lib/util';
 import { isPageCoverHiddenOn } from 'app/lib/page-cover';
 
 /** One link of the home cover (`cover_home.actions`): Sign up (primary) and Log in, for guests. */
@@ -13,6 +13,8 @@ export type HomeCoverAction = {
     title?: string;
     link?: string;
     primary?: boolean;
+    /** The button's icon as UNA names it (Artificer's Log in has an arrow); empty for none. */
+    icon?: string;
 };
 
 /**
@@ -25,8 +27,10 @@ export type HomeCoverData = {
     /** Shown after the title on a line of its own, in the accent colour. */
     title_accent?: string;
     text?: string;
-    /** The cover picture (the page's, else the site's common cover); empty for none. */
+    /** The cover picture (the page's, else the site's common cover from Studio > Designer > Cover); empty for none. */
     image?: string;
+    /** The template's own art the site shows when there is no picture, light and dark. */
+    image_default?: { light?: string; dark?: string };
     actions?: HomeCoverAction[];
 };
 
@@ -43,18 +47,42 @@ const TIER_VISIBILITY = {
     desktop: { shown: 'lg:flex', hidden: 'lg:hidden' },
 } as const;
 
-/** The cover's text colours: white over a picture, the accent surface's own colours without one. */
+/**
+ * The cover's text colours: white over a picture or the template's art, as UNA's covers (the accent line in UNA's
+ * green-to-blue gradient on web, `.neo-home-cover-accent` in global.web.css), and the accent surface's own colours
+ * when UNA sends neither (an older UNA).
+ */
 const TONES = {
-    picture: { title: 'text-white', accent: 'text-white', text: 'text-white', surface: 'bg-neutral-900' },
+    picture: { title: 'text-white', accent: 'text-white neo-home-cover-accent', text: 'text-white', surface: 'bg-neutral-900' },
     // Muted text on the accent surface is under 4.5:1 in dark mode (neutral-400 on accent-900): full foreground there.
     plain: { title: 'text-foreground', accent: 'text-accent-foreground', text: 'text-muted-foreground dark:text-foreground', surface: 'bg-accent' },
 } as const;
 
-/** Glass over a picture, as menus over a cover; the regular styles on the accent surface. */
+/** Glass over a picture or the art, as UNA styles every button in a cover; the regular styles on the accent surface. */
 const BUTTON_STYLES: Record<'picture' | 'plain', { primary: NeoButtonStyle; other: NeoButtonStyle }> = {
     picture: { primary: 'glassProminent', other: 'glass' },
     plain: { primary: 'borderedProminent', other: 'bordered' },
 };
+
+/** The template's art for a cover without a picture: its light version, and its dark one in dark mode. */
+function CoverArt({ light, dark }: Readonly<{ light?: string; dark?: string }>) {
+    if (!light && !dark) return null;
+    const lightSrc = light || dark || '';
+    const darkSrc = dark || light || '';
+    if (lightSrc === darkSrc) {
+        return <Image src={lightSrc} alt="" view="cover" sizes="100vw" className="absolute inset-0 h-full w-full" />;
+    }
+    return (
+        <>
+            <View className="absolute inset-0 dark:hidden">
+                <Image src={lightSrc} alt="" view="cover" sizes="100vw" className="absolute inset-0 h-full w-full" />
+            </View>
+            <View className="absolute inset-0 hidden dark:flex">
+                <Image src={darkSrc} alt="" view="cover" sizes="100vw" className="absolute inset-0 h-full w-full" />
+            </View>
+        </>
+    );
+}
 
 /** The classes that show the cover on the screen sizes Studio leaves it on ("Cover hidden on"). */
 function visibilityClasses(hiddenOn: unknown): string {
@@ -94,6 +122,7 @@ function CoverActions({ actions, tone }: Readonly<{ actions: HomeCoverAction[]; 
                     key={action.name || String(index)}
                     href={action.link}
                     label={action.title}
+                    image={action.icon ? findIconFromRemote(action.icon) : undefined}
                     controlSize="large"
                     borderShape="capsule"
                     style={action.primary ? styles.primary : styles.other}
@@ -116,7 +145,8 @@ export default function HomeCover({ cover, hiddenOn }: Readonly<HomeCoverProps>)
     const actions = (cover.actions || []).filter((action) => action?.link && action?.title);
     if (!title && !accent && !text && !actions.length) return null;
 
-    const tone = cover.image ? 'picture' : 'plain';
+    const art = cover.image ? null : cover.image_default;
+    const tone = cover.image || art?.light || art?.dark ? 'picture' : 'plain';
     const rounded = appSetting('theme', 'blocks', 'u-block-rounded-default') || '';
 
     return (
@@ -129,6 +159,8 @@ export default function HomeCover({ cover, hiddenOn }: Readonly<HomeCoverProps>)
                         <View className="absolute inset-0 bg-black/55" />
                     </>
                 ) : null}
+                {/* The template's art is dark enough for white text without a scrim, as on the site. */}
+                <CoverArt light={art?.light} dark={art?.dark} />
                 <View className="w-full items-center gap-4 px-6 py-12 sm:py-16 lg:py-20">
                     <CoverTitle title={title} accent={accent} tone={tone} />
                     {text ? (
