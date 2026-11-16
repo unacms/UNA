@@ -5,7 +5,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import Link from 'app/ui/atoms/link'
 import { components } from 'app/components/registry';
 import { appSetting, getMenuHub, getMenuView } from 'app/lib/util';
-import DropdownGridItem from 'app/ui/atoms/dropdown-grid-item';
+import MenuGrid from './menu-grid';
 import { useState } from 'react';
 import SettingsMenu, { hasSettingsGroups } from './settings-menu';
 
@@ -31,14 +31,6 @@ function MenuChoiceRow({ item, href }) {
             </Row>
         </Link>
     )
-}
-
-/** A grid tile's link: an app path (`/...`) or a full URL; none for an item that only opens something on the site. */
-function gridItemHref(item) {
-    const path = String(item?.url || item?.link || '');
-    if (!path || path === 'javascript:void(0)') return '';
-    if (/^https?:/.test(path) || path.startsWith('/')) return path;
-    return `/${path}`;
 }
 
 // `itemsClassName`: classes for the list of links in place of `w-full`, e.g. the Conductor's left
@@ -138,25 +130,11 @@ export default function ElementMenu({ data, blockWrapperProps, url, itemsClassNa
         );
     }
 
-    // A menu UNA draws as a grid (its config says `"view": "grid"`, the home menu) is a grid of icon tiles, as the
-    // apps launcher: three across on phones, more as the block gets wider.
+    // A menu UNA draws as a grid (its config says `"view": "grid"`, the home menu): tiles, as UNA's site draws it.
     if (getMenuView(data?.content) === 'grid') {
         return (
             <BlockWrapper {...blockWrapperProps}>
-                <View className="w-full flex-row flex-wrap">
-                    {topLevelItems.map((item, index) => {
-                        const href = gridItemHref(item);
-                        return (
-                            <View key={getItemId(item, String(index))} className="w-1/3 sm:w-1/6 lg:w-1/8">
-                                <DropdownGridItem
-                                    item={{ ...item, title: item?.title || item?.name, icon: item?.icon || 'Circle' }}
-                                    index={index}
-                                    link={href || undefined}
-                                />
-                            </View>
-                        );
-                    })}
-                </View>
+                <MenuGrid items={topLevelItems} />
             </BlockWrapper>
         );
     }
