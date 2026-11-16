@@ -73,13 +73,13 @@ class BxBaseMenuToolbar extends BxTemplMenu
     {
         $bModuleItem = !$this->_bIsApi && !empty($a['module']) && $a['module'] != 'system' && $a['module'] == self::$SEL_MODULE;
 
-        return parent::_isSelected($a) || ($bModuleItem && $this->_getModuleHomePage($a['module']) === self::$SEL_NAME);
+        return parent::_isSelected($a) || ($bModuleItem && $this->getModuleHomePage($a['module']) === self::$SEL_NAME);
     }
 
     /**
      * URI of an enabled module's home page (its URL_HOME, page.php?i=<uri>), or an empty string.
      */
-    protected function _getModuleHomePage ($sModule)
+    protected function getModuleHomePage ($sModule)
     {
         $sUri = '';
         if(BxDolModuleQuery::getInstance()->isEnabledByName($sModule) && ($oModule = BxDolModule::getInstance($sModule))) {
