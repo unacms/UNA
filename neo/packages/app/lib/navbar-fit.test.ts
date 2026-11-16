@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { navbarTabsThatFit } from './navbar-fit.ts';
+import { navbarTabBox, navbarTabsThatFit } from './navbar-fit.ts';
 
 // The header at 1440px: Home, People, Posts, Orgs, Albums, Market (as both clients measure them), 8px apart, More 44px.
 const TABS = [104, 111, 101, 96, 116, 112];
@@ -36,4 +36,12 @@ test('persistent tabs stay even when they do not fit', () => {
 test('an unmeasured bar keeps every tab', () => {
     assert.equal(navbarTabsThatFit({ ...base, available: 0 }), 6);
     assert.equal(navbarTabsThatFit({ ...base, widths: [], available: 500 }), 0);
+});
+
+test('a tab sits where the centred row puts it', () => {
+    // 100 + 8 + 50 + 8 + 44 = 210 in a 300px bar: the row starts at 45
+    assert.deepEqual(navbarTabBox([100, 50, 44], 0, 300, 8), { x: 45, width: 100 });
+    assert.deepEqual(navbarTabBox([100, 50, 44], 2, 300, 8), { x: 211, width: 44 });
+    // a row wider than the bar overflows evenly on both sides
+    assert.deepEqual(navbarTabBox([200, 200], 0, 300, 8), { x: -54, width: 200 });
 });

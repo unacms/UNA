@@ -332,7 +332,7 @@ export function navbarItemsFromSiteMenu(items: MenuItemList, maxTabs: number): M
         };
         // Home leads the bar wherever the site menu puts it, and doesn't count as a tab.
         if (item.name === 'home') home = next;
-        else if (!(maxTabs > 0) || tabs.length < maxTabs) tabs.push(next);
+        else if (maxTabs <= 0 || tabs.length < maxTabs) tabs.push(next);
         else more.push(next);
     });
 

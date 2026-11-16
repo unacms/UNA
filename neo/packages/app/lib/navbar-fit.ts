@@ -43,3 +43,14 @@ export function navbarTabsThatFit({ widths, available, gap, more, persistent = 0
     }
     return fit;
 }
+
+/**
+ * Where tab `index` sits in the bar, whose tabs (`widths`, `gap` apart) are centred in its `available` width (a row
+ * wider than the bar overflows evenly on both sides, as CSS centres it): its left edge from the bar's and its width.
+ */
+export function navbarTabBox(widths: number[], index: number, available: number, gap: number): { x: number; width: number } {
+    const total = widths.reduce((sum, width) => sum + width, 0) + gap * Math.max(0, widths.length - 1);
+    let x = (available - total) / 2;
+    for (let i = 0; i < index; i++) x += (widths[i] ?? 0) + gap;
+    return { x, width: widths[index] ?? 0 };
+}
