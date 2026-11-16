@@ -164,6 +164,34 @@ class BxBaseMenuToolbarTest extends BxDolTestCase
         $this->assertStringNotContainsString('aria-controls=', $a['attrs'], 'The popup is created lazily, so there is no id to point at.');
     }
 
+    public function testToolbarItemIsCurrentOnItsModulesHomePage(): void
+    {
+        $oMenu = $this->getToolbar('sys_toolbar_member');
+        $aRows = $this->getToolbarRows($oMenu);
+        if (!isset($aRows['notifications-preview']) || !BxDolModuleQuery::getInstance()->isEnabledByName($aRows['notifications-preview']['module']))
+            $this->markTestSkipped('The Notifications module is not installed.');
+
+        $aRow = $aRows['notifications-preview'];
+        try {
+            //--- The notifications page (BxBasePage selects its own module and URI).
+            BxDolMenu::setSelectedGlobal($aRow['module'], 'notifications-view');
+            $this->assertTrue($this->callProtected($oMenu, '_isSelected', [$aRow]), 'The bell is current on the notifications page, as in the apps.');
+
+            BxDolMenu::setSelectedGlobal($aRow['module'], 'notifications-settings');
+            $this->assertFalse($this->callProtected($oMenu, '_isSelected', [$aRow]), 'Not on the module\'s other pages.');
+
+            BxDolMenu::setSelectedGlobal('system', 'home');
+            $this->assertFalse($this->callProtected($oMenu, '_isSelected', [$aRow]));
+            $this->assertFalse($this->callProtected($oMenu, '_isSelected', [$aRows['account'] ?? ['module' => 'system', 'name' => 'account']]), 'System items stay as they were.');
+        } finally {
+            BxDolMenu::setSelectedGlobal('', '');
+        }
+
+        $sCss = str_replace("\r\n", "\n", self::readFile('template/css/tailwind.css'));
+        $this->assertStringContainsString(".bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item.bx-menu-tab-active {", $sCss, 'The current item takes the accent colours.');
+        $this->assertMatchesRegularExpression('/#bx-toolbar \.bx-menu-main > \.bx-menu-item\.bx-menu-tab-active > \.bx-stl-mil \{\s*@apply bg-blue-100 dark:bg-blue-900 text-blue-700/', $sCss, 'So does the current page\'s tab.');
+    }
+
     public function testToolbarButtonsLookLikeNeosHeaderButtons(): void
     {
         $sCss = str_replace("\r\n", "\n", self::readFile('template/css/tailwind.css'));

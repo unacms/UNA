@@ -1767,7 +1767,8 @@
     /* Common elements: Toolbar menu
        The header's buttons (Artificer menu_toolbar.html) are regular buttons, as NEO's header buttons: the ink at 8%, 12% hovered and pressed,
        a gray-700 glyph (gray-300 in dark) that goes to gray-900 (gray-100) on hover, the press scale, and the accent colours while the item's
-       popup, sidebar or search is open (its link's aria-expanded="true"). See "Common elements: Buttons" and "Buttons: press and open". */
+       popup, sidebar or search is open (its link's aria-expanded="true") and while its page is the one open (bx-menu-tab-active: the
+       notifications item on the notifications page, BxBaseMenuToolbar::_isSelected), as NEO's header buttons. See "Common elements: Buttons" and "Buttons: press and open". */
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item {
         @apply bg-gray-950/[0.08] hover:bg-gray-950/[0.12] active:bg-gray-950/[0.12] dark:bg-gray-50/[0.08] dark:hover:bg-gray-50/[0.12] dark:active:bg-gray-50/[0.12];
         @apply text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100;
@@ -1778,7 +1779,8 @@
             @apply scale-110;
         }
     }
-    .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item:has(> a[aria-expanded="true"]) {
+    .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item:has(> a[aria-expanded="true"]),
+    .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item.bx-menu-tab-active {
         @apply bg-blue-100 hover:bg-blue-100 active:bg-blue-100 dark:bg-blue-900 dark:hover:bg-blue-900 dark:active:bg-blue-900;
         @apply text-blue-700 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-300;
     }
@@ -1792,6 +1794,12 @@
     /* Header: the main menu's tabs are capsules at the header's control height (44px, NEO's regular button). */
     #bx-toolbar .bx-menu-main > .bx-menu-item {
         @apply rounded-full;
+    }
+    /* Header: the current page's tab is in the accent colours, NEO's bg-accent and text-accent-foreground (blue-100 and blue-700,
+       blue-900 and blue-300 in dark), as the toolbar buttons that are current or open. NEO marks its tab with the accent label and a
+       sliding underline instead. */
+    #bx-toolbar .bx-menu-main > .bx-menu-item.bx-menu-tab-active > .bx-stl-mil {
+        @apply bg-blue-100 dark:bg-blue-900 text-blue-700 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-300 ring-0;
     }
     /* Header main menu: centered between the logo and the toolbar (BxDolMenuMoreAuto keeps it hidden until measured, see artificer menu.css). */
     #bx-toolbar .bx-menu-main {
