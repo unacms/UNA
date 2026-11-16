@@ -1796,8 +1796,8 @@
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item-button > a > span:not(.bx-menu-toolbar-item-title) {
         @apply hidden;
     }
-    .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item-button .bx-menu-toolbar-item-title {
-        @apply not-sr-only whitespace-nowrap;
+    #bx-toolbar .bx-menu-toolbar .bx-menu-toolbar-item.bx-menu-toolbar-item-button .bx-menu-toolbar-item-title {
+        @apply not-sr-only inline whitespace-nowrap; /* shown: media-phone.css hides toolbar labels up to the tablet width, by the toolbar's id */
     }
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item.bx-menu-toolbar-item-primary {
         @apply bg-blue-600 hover:bg-blue-700 active:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:active:bg-blue-700;
