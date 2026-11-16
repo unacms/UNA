@@ -1156,8 +1156,14 @@ export const HeaderContainer = ({
         )
     }
 
+    // A section that keeps its tabs on large screens pins its tab bar under the page header while the content
+    // scrolls, as a profile cover pins its tab row (cover-morph-body). Below lg the page header carries the tabs.
+    const isStickyTabBar = layoutName === 'navigator' && getMenuSectionNav(menu) === 'tabs'
     return (
-        <View className={`ns--cover-wrapper-- z-40 ne--`}>
+        <View
+            className={`ns--cover-wrapper-- z-40 ne--${isStickyTabBar ? ' lg:sticky' : ''}`}
+            style={isStickyTabBar ? { top: stickyTop } : undefined}
+        >
             <View className={`header-fixed w-full `}>
                 {tabBarContent}
             </View>
