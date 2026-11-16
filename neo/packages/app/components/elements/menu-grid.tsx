@@ -5,7 +5,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import Link from 'app/ui/atoms/link';
 import { MENU_HIGHLIGHT_CLASS, useMenuHighlight } from 'app/ui/atoms/menu-highlight';
 import { cueAttributes } from 'app/lib/sound';
-import { decodeTextNode } from 'app/lib/util';
+import { decodeTextNode, findIconFromRemote } from 'app/lib/util';
 
 /** A UNA menu item as a menu block sends it. */
 export type MenuGridItem = {
@@ -35,7 +35,8 @@ const WEB_GRID_STYLE: any = Platform.OS === 'web'
 /**
  * A menu block UNA draws as a grid (the menu's App config says `"view": "grid"`, the home menu), as UNA's site draws
  * it: tiles with a 32px icon over the label, no circle, edge to edge, sitting 8px from the block's edges (the list
- * reaches 8px into the block's 16px padding) with 8px corners, one highlight sliding under the pointer.
+ * reaches 8px into the block's 16px padding) with 12px corners (8px inside the block's 20px), one highlight sliding
+ * under the pointer. The icons are the animated ones of the main menu, mapped the same way, moving on hover.
  */
 export default function MenuGrid({ items }: Readonly<{ items: MenuGridItem[] }>) {
     const highlightRef = useMenuHighlight();
@@ -46,9 +47,10 @@ export default function MenuGrid({ items }: Readonly<{ items: MenuGridItem[] }>)
                 const title = decodeTextNode(item?.title || item?.name || '');
                 const href = itemHref(item);
                 const tile = (
-                    <View className="w-full min-w-0 items-center justify-center rounded-lg p-2">
+                    <View className="w-full min-w-0 items-center justify-center rounded-xl p-2">
                         <View className="m-2 size-8 items-center justify-center">
-                            <Icon icon={item?.icon || 'Circle'} size={32} className="text-muted-foreground web:group-hover:text-foreground" />
+                            {/* Hover reaches the icon through the link's `group` class (animated-icons.md). */}
+                            <Icon icon={findIconFromRemote(item?.icon) || 'Circle'} animated size={32} className="text-muted-foreground web:group-hover:text-foreground" />
                         </View>
                         {title ? (
                             <Text numberOfLines={1} className="max-w-full text-center text-sm font-medium text-muted-foreground web:group-hover:text-foreground">
@@ -65,7 +67,7 @@ export default function MenuGrid({ items }: Readonly<{ items: MenuGridItem[] }>)
                                 href={href}
                                 mode="plain"
                                 alt={title || undefined}
-                                className="group block w-full rounded-lg"
+                                className="group block w-full rounded-xl"
                                 target={item.target === 'blank' ? '_blank' : item.target}
                                 asExternal={item.target === '_blank' || item.target === 'blank'}
                                 {...cueAttributes('select')}
