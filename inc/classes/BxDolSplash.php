@@ -41,8 +41,8 @@ class BxDolSplash extends BxDolFactory implements iBxDolSingleton
 
     /**
      * The home page's sign-in and join blocks (`module:method` of their service), which the apps' splash draws
-     * (the `login_form` and `join_link` slots, a project's own splash). The splash gets them while they are off for
-     * the apps (`active_api`), so the guest home without the splash can leave them out.
+     * (the `login_form` and `join_link` slots, a project's own splash). A guest's home page gets them while they are off
+     * for the apps (`active_api`), marked `splash_only`: the splash draws them, the home page without the splash doesn't.
      */
     public const AUTH_BLOCKS = ['system:login_form', 'system:login_form_only', 'system:create_account_form', 'system:forgot_password'];
 

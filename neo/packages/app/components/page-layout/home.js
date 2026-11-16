@@ -38,8 +38,10 @@ const getTimelineBlock = (name, timelineBlocks) => {
     return timelineBlocks.find(item => item.name === map[name]);
 };
 
+// A block UNA marks `splash_only` (the sign-in and join blocks while they are off for the apps) is for the splash,
+// which finds it in the page's blocks; the home page leaves it out.
 const mapLayoutBlocks = (items = []) =>
-    items.map(({ source }) => ({
+    items.filter((item) => !item?.splash_only).map(({ source }) => ({
         name: source,
         block: { name: source },
     }));

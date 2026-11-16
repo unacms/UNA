@@ -602,8 +602,9 @@ class BxBasePage extends BxDolPage
         $bSplash = !$bLogged && $sUri == 'home' && BxDolSplash::getInstance()->isEnabledForApp($sSplashPlatform);
 
         // A closed page has no blocks either: the blocks of a pending entry show it, NEO shows the error by page_status.
-        // The splash draws the page's sign-in and join blocks, also while they are off for the apps.
-        $aElements = $bIsAllowed ? $this->getPageBlocksAPI($aBlocks, $bSplash ? BxDolSplash::AUTH_BLOCKS : []) : [];
+        // A guest's home also has its sign-in and join blocks while they are off for the apps, marked `splash_only`: the
+        // splash draws them, also one an app forces on itself (NEO's `layout.use_splash_page`), the home page doesn't.
+        $aElements = $bIsAllowed ? $this->getPageBlocksAPI($aBlocks, !$bLogged && $sUri == 'home' ? BxDolSplash::AUTH_BLOCKS : []) : [];
 
         if(!$bLogged && !in_array($sUri, ['home', 'login', 'create-account']) && ($sAutoProfile = getParam('sys_account_default_profile_type'))) {
             $sRedirect = getParam($sAutoProfile . '_redirect_aadd');
@@ -874,8 +875,8 @@ class BxBasePage extends BxDolPage
     /**
      * The page's blocks for the apps, by cell.
      * @param array $aBlocks only these blocks (`module:method` of a service block, a custom block's content, `system:block_<id>`)
-     * @param array $aSourcesOff these service blocks also while they are off for the apps (`active_api`), e.g. the splash's
-     *              sign-in blocks (BxDolSplash::AUTH_BLOCKS)
+     * @param array $aSourcesOff these service blocks also while they are off for the apps (`active_api`), marked
+     *              `splash_only` (the guest home's sign-in blocks, BxDolSplash::AUTH_BLOCKS)
      */
     public function getPageBlocksAPI($aBlocks = [], $aSourcesOff = [])
     {
@@ -894,7 +895,8 @@ class BxBasePage extends BxDolPage
         $aCells = $this->_oQuery->getPageBlocks(true, $bSourcesOff);
         foreach($aCells as $sKey => &$aCell) {
             foreach($aCell as $i => &$aBlock) {
-                if($bSourcesOff && (int)$aBlock['active_api'] != 1 && !in_array(self::getBlockServiceSource($aBlock), $aSourcesOff, true)) {
+                $bSplashOnly = $bSourcesOff && (int)$aBlock['active_api'] != 1;
+                if($bSplashOnly && !in_array(self::getBlockServiceSource($aBlock), $aSourcesOff, true)) {
                     unset($aCells[$sKey][$i]);
                     continue;
                 }
@@ -967,6 +969,10 @@ class BxBasePage extends BxDolPage
                     'menu' => isset($mBlock['menu']) ? $mBlock['menu'] : '',
                     'source' => $sSource
                 ]);
+
+                // Off for the apps, sent for the splash only.
+                if($bSplashOnly)
+                    $aCells[$sKey][$i]['splash_only'] = true;
 
                 if(($sK = 'hidden_on') && !empty($aBlock[$sK])) {
                     $aHoResults = [];

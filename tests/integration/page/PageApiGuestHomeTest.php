@@ -5,7 +5,8 @@ use PHPUnit\Framework\Attributes\Group;
 /**
  * The guest home in the apps shows what the site shows: the home cover (`cover_home`, BxBasePageHome::getCoverHomeAPI)
  * while the page's cover is on for the viewer, and the home menu as a grid. The sign-in, join and forgot password blocks
- * are off for the apps, but the splash still gets them (BxDolSplash::AUTH_BLOCKS): its sign-in form is that block.
+ * are off for the apps, but a guest's home still has them, marked `splash_only` (BxDolSplash::AUTH_BLOCKS): the splash's
+ * sign-in form is that block, also where an app forces the splash on itself while UNA's switch is off.
  */
 #[Group('integration')]
 class PageApiGuestHomeTest extends BxDolIntegrationTestCase
@@ -88,43 +89,57 @@ class PageApiGuestHomeTest extends BxDolIntegrationTestCase
         return $aData;
     }
 
-    /** The sources of the page's blocks (`module:method`, `system:block_<id>`). */
-    private function sources(array $aData): array
+    /** The sources of the page's blocks (`module:method`, `system:block_<id>`), `$bSplashOnly` the ones marked `splash_only` or the others. */
+    private function sources(array $aData, bool $bSplashOnly = false): array
     {
         $aResult = [];
         foreach ($aData['elements'] ?? [] as $aCell)
             foreach ($aCell as $aBlock)
-                $aResult[] = $aBlock['source'] ?? '';
+                if (!empty($aBlock['splash_only']) === $bSplashOnly)
+                    $aResult[] = $aBlock['source'] ?? '';
 
         return $aResult;
     }
 
-    public function testTheSplashGetsTheSignInBlocksWhileTheyAreOffInTheApps(): void
+    public function testAGuestsHomeHasTheSignInBlocksForTheSplashOnly(): void
     {
-        setParam('sys_site_splash_web_enabled', 'on');
-        $aData = $this->requestHome();
-        $this->assertSame('splash', $aData['layout']);
-        foreach (['system:login_form', 'system:create_account_form', 'system:forgot_password'] as $sSource)
-            $this->assertContains($sSource, $this->sources($aData), $sSource . ': the splash draws it');
-
-        setParam('sys_site_splash_web_enabled', 'off');
-        $aData = $this->requestHome();
-        $this->assertNotSame('splash', $aData['layout']);
-        $aSources = $this->sources($aData);
-        foreach (['system:login_form', 'system:create_account_form', 'system:forgot_password'] as $sSource)
-            $this->assertNotContains($sSource, $aSources, $sSource . ': off for the apps, and no splash');
-
+        $aAuth = ['system:login_form', 'system:create_account_form', 'system:forgot_password'];
         $iMenuBlock = (int)BxDolDb::getInstance()->getOne("SELECT `id` FROM `sys_pages_blocks` WHERE `object` = 'sys_home' AND `type` = 'menu' AND `content` = 'sys_homepage'");
-        $this->assertContains('system:block_' . $iMenuBlock, $aSources, 'the home menu');
+
+        foreach (['on', 'off'] as $sSplash) {
+            setParam('sys_site_splash_web_enabled', $sSplash);
+            $aData = $this->requestHome();
+            $this->assertSame($sSplash == 'on', $aData['layout'] === 'splash', 'splash ' . $sSplash);
+
+            foreach ($aAuth as $sSource) {
+                $this->assertContains($sSource, $this->sources($aData, true), $sSource . ', splash ' . $sSplash . ': there for a splash, also one an app forces');
+                $this->assertNotContains($sSource, $this->sources($aData), $sSource . ', splash ' . $sSplash . ': not for the home page');
+            }
+            $this->assertContains('system:block_' . $iMenuBlock, $this->sources($aData), 'the home menu is on for the apps');
+        }
     }
 
-    public function testTheSplashLeavesOutOtherBlocksThatAreOff(): void
+    public function testASignInBlockOnForTheAppsIsAnOrdinaryBlock(): void
+    {
+        setParam('sys_site_splash_web_enabled', 'off');
+        BxDolDb::getInstance()->query("UPDATE `sys_pages_blocks` SET `active_api` = 1 WHERE `object` = 'sys_home' AND `module` = 'system' AND `title` = '_sys_page_block_title_login'");
+
+        $aData = $this->requestHome();
+        $this->assertContains('system:login_form', $this->sources($aData), 'on for the apps: the home page shows it');
+        $this->assertNotContains('system:login_form', $this->sources($aData, true));
+    }
+
+    public function testOnlyTheSignInBlocksComeAlongAndNotForMembersOrOtherPages(): void
     {
         setParam('sys_site_splash_web_enabled', 'on');
         BxDolDb::getInstance()->query("UPDATE `sys_pages_blocks` SET `active_api` = 0 WHERE `object` = 'sys_home' AND `type` = 'menu' AND `content` = 'sys_homepage'");
 
         $iMenuBlock = (int)BxDolDb::getInstance()->getOne("SELECT `id` FROM `sys_pages_blocks` WHERE `object` = 'sys_home' AND `type` = 'menu' AND `content` = 'sys_homepage'");
-        $this->assertNotContains('system:block_' . $iMenuBlock, $this->sources($this->requestHome()), 'only the sign-in blocks come along');
+        $aData = $this->requestHome();
+        $this->assertNotContains('system:block_' . $iMenuBlock, array_merge($this->sources($aData), $this->sources($aData, true)), 'a menu that is off stays out');
+
+        $this->bxLoginAsAdmin();
+        $this->assertSame([], $this->sources($this->requestHome(), true), 'a member gets none');
     }
 
     public function testGuestsGetTheHomeCoverWithSignUpAndLogIn(): void
