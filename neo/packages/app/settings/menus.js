@@ -18,7 +18,7 @@ export const settingsMenus = {
             site: 'sys_site',
             // Tab bar (web bottom bar, native tabs) when `menu_tabbar_*` are empty.
             tabbar: 'sys_tabbar',
-            // UNA's member toolbar: guests' header tools (Search) show while it has them for the apps.
+            // UNA's member toolbar: guests' header tools (Search, Log In, Sign Up) show while it has them for the apps.
             toolbar: 'sys_toolbar_member',
         },
         // Most tabs after Home in a navbar built from `objects.site`; 0: as many as fit. The tabs that don't fit go
