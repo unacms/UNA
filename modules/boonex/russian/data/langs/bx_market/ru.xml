@@ -503,4 +503,10 @@
 <p>Вы приобрели <a href="{product_url}">{product_name}</a> продукт у <a href="{vendor_url}">{vendor_name}</a>.<br />Ваша лицензия - <b>{license}</b>.</p>
 <p>{notes}</p>
 {email_footer}]]></string>
+    <string name="_bx_market_et_txt_name_unauthorized_purchase"><![CDATA[Несанкционированная покупка товара.]]></string>
+    <string name="_bx_market_et_txt_subject_unauthorized_purchase"><![CDATA[Ваш продукт {product_name} был приобретён без разрешения.]]></string>
+    <string name="_bx_market_et_txt_body_unauthorized_purchase"><![CDATA[{email_header}
+<p>Здравствуйте, {vendor_name}.</p>
+<p><a href="{client_url}">{client_name}</a> приобрел ваш продукт <a href="{product_url}">{product_name}</a> без разрешения.<br />Зарегистрированная лицензия - <b>{license}</b>.</p>
+{email_footer}]]></string>
 </resources>

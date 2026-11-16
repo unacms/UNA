@@ -200,6 +200,7 @@ class BxMarketConfig extends BxBaseModTextConfig
 
             // email templates
             'ETEMPLATE_PURCHASED' => 'bx_market_purchased',
+            'ETEMPLATE_UNAUTHORIZED_PURCHASE' => 'bx_market_unauthorized_purchase',
 
             // some language keys
             'T' => array (

@@ -508,4 +508,10 @@
 <p>You've purchased <a href="{product_url}">{product_name}</a> product from <a href="{vendor_url}">{vendor_name}</a>.<br />Your license is <b>{license}</b>.</p>
 <p>{notes}</p>
 {email_footer}]]></string>
+    <string name="_bx_market_et_txt_name_unauthorized_purchase"><![CDATA[Unauthorized product purchase.]]></string>
+    <string name="_bx_market_et_txt_subject_unauthorized_purchase"><![CDATA[Your product {product_name} was purchased without permission.]]></string>
+    <string name="_bx_market_et_txt_body_unauthorized_purchase"><![CDATA[{email_header}
+<p>Hello, {vendor_name}.</p>
+<p>Your product <a href="{product_url}">{product_name}</a> was purchased by <a href="{client_url}">{client_name}</a> without permission.<br />A registered license is <b>{license}</b>.</p>
+{email_footer}]]></string>
 </resources>

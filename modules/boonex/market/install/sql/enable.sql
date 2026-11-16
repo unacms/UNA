@@ -683,4 +683,5 @@ INSERT INTO `sys_cron_jobs` (`name`, `time`, `class`, `file`, `service_call`) VA
 
 -- EMAIL TEMPLATES
 INSERT INTO `sys_email_templates` (`Module`, `NameSystem`, `Name`, `Subject`, `Body`) VALUES 
-('bx_market', '_bx_market_et_txt_name_purchased', 'bx_market_purchased', '_bx_market_et_txt_subject_purchased', '_bx_market_et_txt_body_purchased');
+('bx_market', '_bx_market_et_txt_name_purchased', 'bx_market_purchased', '_bx_market_et_txt_subject_purchased', '_bx_market_et_txt_body_purchased'),
+('bx_market', '_bx_market_et_txt_name_unauthorized_purchase', 'bx_market_unauthorized_purchase', '_bx_market_et_txt_subject_unauthorized_purchase', '_bx_market_et_txt_body_unauthorized_purchase');
