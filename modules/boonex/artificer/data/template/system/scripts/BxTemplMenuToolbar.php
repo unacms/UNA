@@ -67,8 +67,9 @@ class BxTemplMenuToolbar extends BxBaseMenuToolbar
             case 'create-account':
                 //--- A guest's Log in and Sign up: labelled buttons from the small screens up, Sign up the primary one, as in the
                 //--- apps. Phones have them at the top of the main menu's sidebar instead.
-                if(isset($a['class_add']))
+                if(isset($a['class_add'])) {
                     $a['class_add'] .= ' bx-menu-toolbar-item-button' . ($a['name'] == 'create-account' ? ' bx-menu-toolbar-item-primary' : '');
+                }
                 break;
 
             case 'account':
