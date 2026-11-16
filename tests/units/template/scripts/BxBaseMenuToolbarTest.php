@@ -189,7 +189,7 @@ class BxBaseMenuToolbarTest extends BxDolTestCase
 
         $sCss = str_replace("\r\n", "\n", self::readFile('template/css/tailwind.css'));
         $this->assertStringContainsString(".bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item.bx-menu-tab-active {", $sCss, 'The current item takes the accent colours.');
-        $this->assertMatchesRegularExpression('/#bx-toolbar \.bx-menu-main > \.bx-menu-item\.bx-menu-tab-active > \.bx-stl-mil \{\s*@apply bg-blue-200\/70 dark:bg-blue-900\/70 text-blue-700/', $sCss, 'So does the current page\'s tab.');
+        $this->assertMatchesRegularExpression('/#bx-toolbar \.bx-menu-main > \.bx-menu-item\.bx-menu-tab-active > \.bx-stl-mil \{\s*@apply bg-blue-200\/60 dark:bg-blue-900\/60 text-blue-700/', $sCss, 'So does the current page\'s tab.');
     }
 
     public function testToolbarButtonsLookLikeNeosHeaderButtons(): void

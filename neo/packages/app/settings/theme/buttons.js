@@ -375,7 +375,7 @@ export const settingsButtons = {
                         focused: 'bg-button-hover',
                         pressed: 'bg-button-hover',
                         active: 'bg-button-hover',
-                        pressedToggle: 'bg-accent-200/70 dark:bg-accent-900/70',
+                        pressedToggle: 'bg-accent-200/60 dark:bg-accent-900/60',
                         voted: 'bg-accent/60',
                         disabled: 'opacity-50',
                     },
@@ -533,8 +533,8 @@ export const settingsButtons = {
                     pressed: 'bg-button-hover ',
                     active: 'bg-button-hover ',
                     // Selected must differ from hover; matches the native expo_ui bordered toggle. A step stronger than --accent and
-                    // translucent (accent-200 / 900 at 70%), as UNA's open and current buttons; menu rows keep --accent.
-                    pressedToggle: 'bg-accent-200/70 dark:bg-accent-900/70',
+                    // translucent (accent-200 / 900 at 60%), as UNA's open and current buttons; menu rows keep --accent.
+                    pressedToggle: 'bg-accent-200/60 dark:bg-accent-900/60',
                     // A cast like or reaction (selectedState="voted").
                     voted: 'bg-accent/60',
                     disabled: 'bg-button/50 ',

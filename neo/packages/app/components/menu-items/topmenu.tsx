@@ -63,7 +63,7 @@ const ROW_LAYOUT = {
     plain: 'px-2.5',
 }
 const ROW_STATE = {
-    open: 'bg-accent-200/70 dark:bg-accent-900/70 text-accent-foreground',
+    open: 'bg-accent-200/60 dark:bg-accent-900/60 text-accent-foreground',
     active: 'text-accent-foreground',
     // The focus fill is for keyboard focus only: a dropdown hands focus back to its tab when it
     // closes, and after a click that would leave More looking hovered.
