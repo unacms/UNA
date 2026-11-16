@@ -237,6 +237,16 @@ const getIconWrapClass = (presets: Presets, item: DropdownRowItem, plain?: boole
     return isOn(item) ? (presets.item_icon_active ?? presets.item_icon) : presets.item_icon;
 };
 
+/** Whether a row draws plain icons (the theme has them and the menu asks), and the icon's size. */
+const getIconSetup = (presets: Presets, plainIcons?: boolean): { plain: boolean; iconSize: number; showIconBox: boolean } => {
+    const plain = !!plainIcons && !!presets.item_plain_icon;
+    return {
+        plain,
+        iconSize: (plain ? presets.item_plain_icon_size : presets.icon_size) || 16,
+        showIconBox: plain || !!menuSettings.item_icon,
+    };
+};
+
 /** A disclosure row's chevron: down while closed, turned up while open. */
 function DisclosureChevron({ expanded, size }: Readonly<{ expanded: boolean; size: number }>) {
     return (
@@ -249,8 +259,7 @@ function DisclosureChevron({ expanded, size }: Readonly<{ expanded: boolean; siz
 export default function DropdownMenuItem({ item, index, link, handleSelect, classes, className, counter, handleCounter, size, expanded, nested, plainIcons }: Readonly<DropdownMenuItemProps>) {
     const key = item.id ?? index;
     const presets: Presets = { ...menuSettings, ...sizedPresets(size) };
-    const plain = !!plainIcons && !!presets.item_plain_icon;
-    const iconSize = (plain ? presets.item_plain_icon_size : presets.icon_size) || 16;
+    const { plain, iconSize, showIconBox } = getIconSetup(presets, plainIcons);
 
     // A node title renders itself; its onPress is already handled inside MenuItemEx, so no outer Pressable.
     if (typeof item.title !== 'string')
@@ -287,7 +296,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
                     the chevron's middle: the chevron is taller than a label without an icon, which the row's
                     `items-start` would leave above the labels of the rows around it. */}
                 <View className={cn(itemCntClass, disclosure && 'flex-1 self-center')}>
-                {(!!icon && (!!menuSettings.item_icon || plain)) && <View className={iconWrapClass}>{icon}</View>}
+                {!!icon && showIconBox && <View className={iconWrapClass}>{icon}</View>}
                 {!!item.title && <ItemLabel item={item} textClass={getTextClass(presets, item, classes, plain)} />}
                 </View>
                 {!!counter && typeof handleCounter === 'function' && (
