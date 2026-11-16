@@ -36,12 +36,18 @@
      * each layer below). A fork's palette tints it through --neutral-950.
      */
     --ink: var(--neutral-950);
-    /* `bg-button` / `bg-button-hover`: the ink at an alpha (theme.css). */
-    --button-fill: color-mix(in oklab, rgb(var(--ink)) 7%, transparent);
-    --button-fill-hover: color-mix(in oklab, rgb(var(--ink)) 10%, transparent);
+    /*
+     * `bg-button` / `bg-button-hover`: the ink at an alpha (theme.css), the same
+     * in both schemes and in UNA's buttons (template/css/tailwind.css). A press
+     * keeps the hover fill: the button scales instead.
+     */
+    --button-fill: color-mix(in oklab, rgb(var(--ink)) 8%, transparent);
+    --button-fill-hover: color-mix(in oklab, rgb(var(--ink)) 12%, transparent);
     /* Opaque fill for shadowed native buttons (`bg-button-solid`); bg-button is the ink. */
     --button: var(--neutral-200);
-    --button-foreground: var(--neutral-800);
+    /* Label and icon; they darken on hover, as UNA's do. */
+    --button-foreground: var(--neutral-700);
+    --button-foreground-hover: var(--neutral-900);
     --button-hover: var(--neutral-300);
     --ring: var(--accent-600);
     --segment: var(--neutral-200);
@@ -97,15 +103,13 @@
     --control-border: var(--neutral-500);
     /* Near-white ink in dark mode (see the light scheme). */
     --ink: var(--neutral-50);
-    /*
-     * A stronger alpha than light: dark surfaces rise towards the light, so a button
-     * on the page has to be lighter than a card (bg-card/60), not the same shade.
-     */
-    --button-fill: color-mix(in oklab, rgb(var(--ink)) 12%, transparent);
-    --button-fill-hover: color-mix(in oklab, rgb(var(--ink)) 15%, transparent);
+    /* The same alphas as light (see the light scheme). */
+    --button-fill: color-mix(in oklab, rgb(var(--ink)) 8%, transparent);
+    --button-fill-hover: color-mix(in oklab, rgb(var(--ink)) 12%, transparent);
     /* Opaque fill for shadowed native buttons (`bg-button-solid`); bg-button is the ink. */
     --button: var(--neutral-800);
-    --button-foreground: var(--neutral-200);
+    --button-foreground: var(--neutral-300);
+    --button-foreground-hover: var(--neutral-100);
     --button-hover: var(--neutral-700);
     /* accent-600 is under 3:1 on a dark card; 500 is about 4:1 there. */
     --ring: var(--accent-500);

@@ -541,10 +541,11 @@ export const settingsButtons = {
                 text: {
                     base: 'font-semibold',
                     default: 'text-button-foreground',
-                    hovered: 'text-button-foreground',
-                    focused: 'text-button-foreground',
-                    pressed: 'text-button-foreground',
-                    active: 'text-button-foreground',
+                    // The label and icon darken on hover (lighten in dark), as UNA's buttons do.
+                    hovered: 'text-button-foreground-hover',
+                    focused: 'text-button-foreground-hover',
+                    pressed: 'text-button-foreground-hover',
+                    active: 'text-button-foreground-hover',
                     pressedToggle: 'text-accent-foreground',
                     voted: 'text-accent-foreground',
                     disabled: 'text-muted-foreground',

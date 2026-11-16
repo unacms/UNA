@@ -861,10 +861,11 @@
     }
 
     /* Common elements: Buttons
-       The regular button is NEO's bordered button: a flat translucent fill of the text ink (gray-950 at 7%, 10% hovered; gray-50 at 12% and 15% in
-       the dark scheme: --button-fill in neo/packages/app/design/styles/palette-schemes.css), so it reads on the page, a block or a popup alike. No
-       outline and no shadow: the 1px border stays, transparent, only to keep every button's size and to carry the focus colour. Studio paints its
-       own buttons (see "Studio: Buttons" below) and takes none of this. */
+       The regular button is NEO's bordered button: a flat translucent fill of the text ink (gray-950, gray-50 in the dark scheme) at 8%, 12%
+       hovered and pressed (--button-fill in neo/packages/app/design/styles/palette-schemes.css), so it reads on the page, a block or a popup alike.
+       The label and icon are gray-700 (gray-300 in dark) and go to gray-900 (gray-100) on hover. A press scales the button and an open menu tints
+       it, as NEO's do (see "Buttons: press and open" below). No outline and no shadow: the 1px border stays, transparent, only to keep every
+       button's size and to carry the focus colour. Studio paints its own buttons (see "Studio: Buttons" below) and takes none of this. */
     .bx-btn-shadow {
         @apply shadow-none;
     }
@@ -872,14 +873,14 @@
         @apply border border-transparent rounded-md;
     }
     .bx-btn-bg {
-        @apply bg-gray-950/[0.07] dark:bg-gray-50/[0.12];
+        @apply bg-gray-950/[0.08] dark:bg-gray-50/[0.08];
     }
     .bx-btn-text {
-        @apply text-sm text-gray-800 dark:text-gray-200 font-medium ;
+        @apply text-sm text-gray-700 dark:text-gray-300 font-medium ;
     }
     .bx-btn-hover {
-        @apply hover:bg-gray-950/10 dark:hover:bg-gray-50/[0.15];
-        @apply hover:text-gray-900 dark:hover:text-white;
+        @apply hover:bg-gray-950/[0.12] dark:hover:bg-gray-50/[0.12];
+        @apply hover:text-gray-900 dark:hover:text-gray-100;
         @apply hover:no-underline;
     }
     .bx-btn-focus {
@@ -888,9 +889,8 @@
     }
     
     .bx-btn-active {
-        @apply active:bg-gray-950/10 dark:active:bg-gray-50/[0.15];
-        @apply active:text-gray-900 dark:active:text-gray-200;
-        @apply active:translate-y-px;
+        @apply active:bg-gray-950/[0.12] dark:active:bg-gray-50/[0.12];
+        @apply active:text-gray-900 dark:active:text-gray-100;
     }
     .bx-btn {
         @apply relative inline-flex items-center min-h-11 px-4 py-2 touch-manipulation;
@@ -914,12 +914,12 @@
     }
     .bx-btn i:not(.sys-colored),
     .bx-btn img {
-        @apply text-gray-600 dark:text-gray-300;
+        @apply text-gray-700 dark:text-gray-300;
     }
 
     .bx-btn:hover i:not(.sys-colored), 
     .bx-btn:hover img {
-        @apply text-gray-800 dark:text-gray-100;
+        @apply text-gray-900 dark:text-gray-100;
     }
 
     .bx-btn i {
@@ -955,7 +955,32 @@
     }
     
     .bx-btn.bx-btn-disabled {
-        @apply bg-gray-950/[0.035] dark:bg-gray-50/[0.06] hover:bg-gray-950/[0.035] dark:hover:bg-gray-50/[0.06] text-gray-400 hover:text-gray-400 dark:hover:text-gray-400 focus:ring-0 focus:ring-offset-0 shadow-none cursor-default !important;
+        @apply bg-gray-950/[0.04] dark:bg-gray-50/[0.04] hover:bg-gray-950/[0.04] dark:hover:bg-gray-50/[0.04] text-gray-400 hover:text-gray-400 dark:hover:text-gray-400 focus:ring-0 focus:ring-offset-0 shadow-none cursor-default !important;
+    }
+
+    /* Buttons: press and open, as NEO's buttons (NeoButton's press transition and `selected` state, neo/packages/app/settings/theme/buttons.js).
+       A press scales the button to 98%, and to 110% on a touch screen, where the finger covers it. A button whose menu or popup is open
+       (aria-expanded="true", which bx_menu_popup and bx_menu_popup_inline keep) takes the accent colours, NEO's bg-accent and
+       text-accent-foreground (blue-100 and blue-700, blue-900 and blue-300 in dark), and a primary one the darker primary, while it stays open.
+       Studio keeps its own buttons. */
+    body:not(.bx-std) .bx-btn:not(.bx-btn-disabled):active {
+        @apply scale-[0.98];
+    }
+    @media (hover: none) and (pointer: coarse) {
+        body:not(.bx-std) .bx-btn:not(.bx-btn-disabled):active {
+            @apply scale-110;
+        }
+    }
+    body:not(.bx-std) .bx-btn[aria-expanded="true"]:not(.bx-btn-primary) {
+        @apply bg-blue-100 hover:bg-blue-100 active:bg-blue-100 dark:bg-blue-900 dark:hover:bg-blue-900 dark:active:bg-blue-900;
+        @apply text-blue-700 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-300;
+    }
+    body:not(.bx-std) .bx-btn[aria-expanded="true"]:not(.bx-btn-primary) i:not(.sys-colored),
+    body:not(.bx-std) .bx-btn[aria-expanded="true"]:not(.bx-btn-primary) img {
+        @apply text-blue-700 dark:text-blue-300;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-primary[aria-expanded="true"] {
+        @apply bg-blue-700 border-blue-700;
     }
 
     /* Help tour (Shepherd): the vendored plugins_public/shepherd/css/shepherd.css paints the primary button #3288e6 with 75% white text (#cce1f9, 2.71:1) and is
@@ -1561,12 +1586,12 @@
        paddings in Artificer's mod_profile/css/main.css. */
     body:not(.bx-std) .bx-stl-mib:is(.bx-stl-mil, .bx-stl-mil-sm, .bx-stl-mil-wo-gaps, .bx-stl-mil-wo-gaps-sm):not(.bx-popup *) {
         @apply border-0 rounded-[10px] font-semibold;
-        @apply text-gray-800 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white;
+        @apply text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100;
     }
     body:not(.bx-std) .bx-stl-mib:is(.bx-stl-mil, .bx-stl-mil-sm, .bx-stl-mil-wo-gaps, .bx-stl-mil-wo-gaps-sm):not(.bx-popup *, .bx-menu-btn-style-glass, .bx-menu-btn-style-plain) {
-        @apply bg-gray-950/[0.07] dark:bg-gray-50/[0.12];
-        @apply hover:bg-gray-950/10 dark:hover:bg-gray-50/[0.15];
-        @apply active:bg-gray-950/10 dark:active:bg-gray-50/[0.15];
+        @apply bg-gray-950/[0.08] dark:bg-gray-50/[0.08];
+        @apply hover:bg-gray-950/[0.12] dark:hover:bg-gray-50/[0.12];
+        @apply active:bg-gray-950/[0.12] dark:active:bg-gray-50/[0.12];
     }
     body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-plain:is(.bx-stl-mil, .bx-stl-mil-sm, .bx-stl-mil-wo-gaps, .bx-stl-mil-wo-gaps-sm):not(.bx-popup *) {
         @apply bg-transparent hover:bg-transparent active:bg-transparent dark:bg-transparent dark:hover:bg-transparent dark:active:bg-transparent;
@@ -1739,7 +1764,24 @@
         background-color: transparent;
     }
 
-    /* Common elements: Toolbar menu */
+    /* Common elements: Toolbar menu
+       The header's buttons (Artificer menu_toolbar.html) are regular buttons, as NEO's header buttons: the ink at 8%, 12% hovered and pressed,
+       a gray-700 glyph (gray-300 in dark) that goes to gray-900 (gray-100) on hover, the press scale, and the accent colours while the item's
+       popup, sidebar or search is open (its link's aria-expanded="true"). See "Common elements: Buttons" and "Buttons: press and open". */
+    .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item {
+        @apply bg-gray-950/[0.08] hover:bg-gray-950/[0.12] active:bg-gray-950/[0.12] dark:bg-gray-50/[0.08] dark:hover:bg-gray-50/[0.12] dark:active:bg-gray-50/[0.12];
+        @apply text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100;
+        @apply transform-gpu transition duration-150 active:scale-[0.98];
+    }
+    @media (hover: none) and (pointer: coarse) {
+        .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item:active {
+            @apply scale-110;
+        }
+    }
+    .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item:has(> a[aria-expanded="true"]) {
+        @apply bg-blue-100 hover:bg-blue-100 active:bg-blue-100 dark:bg-blue-900 dark:hover:bg-blue-900 dark:active:bg-blue-900;
+        @apply text-blue-700 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-300;
+    }
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item .bx-menu-toolbar-item-unit {
         @apply border-[6px] border-transparent; /* 32px avatar + 2 x 6px = 44px, like the other header buttons */
     }

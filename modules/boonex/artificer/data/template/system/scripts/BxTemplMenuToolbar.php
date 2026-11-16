@@ -101,13 +101,22 @@ class BxTemplMenuToolbar extends BxBaseMenuToolbar
                 break;
 
             case 'notifications-preview':
-                if(isset($a['bx_if:onclick']['content']['onclick']))
-                    $a['bx_if:onclick']['content']['onclick'] = str_replace(["bx_menu_slide", "'site', "], ['bx_menu_popup'], $a['bx_if:onclick']['content']['onclick']);
-
-                //--- No aria-controls, because bx_menu_popup() creates the popup lazily and the id does not
-                //--- exist yet, and no aria-expanded, because the popup is anchored on the ancestor <ul>
-                //--- rather than on this link, so nothing is in a position to keep the state honest.
+                //--- The popup stays anchored on the ancestor <ul> (the pointer's element), but the link is
+                //--- the trigger, so bx_menu_popup() keeps its aria-expanded, which the open look keys on.
                 $sAttrsAdd = 'aria-haspopup="dialog"';
+                if(isset($a['bx_if:onclick']['content']['onclick'])) {
+                    $sOnclick = str_replace(["bx_menu_slide", "'site', "], ['bx_menu_popup'], $a['bx_if:onclick']['content']['onclick']);
+
+                    $sAnchor = "$(this).parents('ul:first')";
+                    if(str_contains($sOnclick, $sAnchor . ',') && str_contains($sOnclick, 'pointer:{')) {
+                        $sOnclick = str_replace([$sAnchor . ',', 'pointer:{'], ['this,', 'pointer:{el:' . $sAnchor . ', '], $sOnclick);
+                        $sAttrsAdd .= ' aria-expanded="false"';
+                    }
+
+                    $a['bx_if:onclick']['content']['onclick'] = $sOnclick;
+                }
+
+                //--- No aria-controls: bx_menu_popup() creates the popup lazily, so its id does not exist yet.
                 break;
         }
 
