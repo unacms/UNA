@@ -53,11 +53,8 @@ class MenuSectionNavTest extends BxDolIntegrationTestCase
         if(!$oMenu)
             $this->markTestSkipped('The connections menu is not installed.');
 
+        // The install SQL itself is checked by tests/units/install/MenuSectionNavSqlTest.php: an installed site may have no install/ folder.
         $this->assertSame(BxDolMenu::SECTION_NAV_SIDEBAR, $oMenu->getSectionNav());
-
-        $sSql = file_get_contents(BX_DIRECTORY_PATH_ROOT . 'install/sql/system.sql');
-        $this->assertStringContainsString("`section_nav` varchar(16) NOT NULL DEFAULT ''", $sSql);
-        $this->assertStringContainsString("UPDATE `sys_objects_menu` SET `section_nav`='sidebar' WHERE `object`='sys_con_submenu';", $sSql);
     }
 
     public function testStudioHasTheField(): void
