@@ -53,12 +53,14 @@ export default function MenuTopItem({ link, title, icon, isTitle, isActive, item
 // The link (or a dropdown's trigger) around it is a capsule too, for its focus ring. The bar's
 // sliding hover highlight is a capsule in CSS, which also finds this row by its `h-11`
 // (`.neo-menu-highlight-bar` in design/styles/global.web.css): change them together.
-const ROW_BASE = 'items-center content-center justify-center h-11 min-w-11 flex-auto rounded-full'
+// One structure with UNA's main menu (Artificer tailwind.css, `#bx-toolbar .bx-menu-main`): the icon, the label and a
+// dropdown's chevron 8 px apart, 12 px before the icon and 16 px after the label (the 24 px icon has ~3 px of air, so
+// its side gets 4 px less to look even), the width its content's. MenuTop's hidden probe repeats these: change together.
+const ROW_BASE = 'items-center justify-center gap-2 h-11 min-w-11 rounded-full'
 const ROW_LAYOUT = {
-    // icon and label side by side: 12 px before the icon, 8 px after the label's own padding
-    labelled: 'flex-wrap ps-3 pe-2',
+    labelled: 'ps-3 pe-4',
     // the icon alone (an icon-only item, or a bar too narrow for labels): a 44 px circle
-    plain: 'flex-wrap px-2',
+    plain: 'px-2.5',
 }
 const ROW_STATE = {
     open: 'bg-accent text-accent-foreground',
@@ -68,14 +70,14 @@ const ROW_STATE = {
     idle: 'text-secondary-foreground web:group-hover:text-foreground web:hover:bg-muted/50 web:group-focus-visible:bg-muted/50 web:active:bg-muted',
 }
 const ICON_CLASS = {
-    on: 'text-accent-foreground h-9 w-9 items-center justify-center flex',
-    off: 'text-secondary-foreground web:group-hover:text-foreground h-9 w-9 items-center justify-center flex',
+    on: 'text-accent-foreground size-6 shrink-0',
+    off: 'text-secondary-foreground web:group-hover:text-foreground size-6 shrink-0',
 }
 // The label is UNA's main menu label: 16 px medium at the default spacing. MenuTop's hidden probe
 // (components/nav/menu-top.js) repeats these classes to measure the bar: change them together.
 const LABEL_BASE = 'whitespace-nowrap text-ellipsis overflow-hidden font-medium'
 const LABEL_TONE = { on: 'text-accent-foreground', off: 'text-secondary-foreground' }
-const LABEL_SIZE = 'text-base px-2 leading-6'
+const LABEL_SIZE = 'text-base leading-6'
 const CHEVRON_TONE = { on: 'text-accent-foreground', off: 'text-secondary-foreground web:group-hover:text-foreground' }
 
 function rowLayout(labelled: boolean): string {

@@ -1756,7 +1756,7 @@
         @apply justify-center;
     }
     #bx-toolbar .bx-menu-main > .bx-menu-item > .bx-stl-mil {
-        @apply h-11 py-0 ltr:pl-3 ltr:pr-4 rtl:pr-3 rtl:pl-4 rounded-full bx-stl-mil-hover-text; /* the icon's 24px box has ~3px of air, so its side gets 4px less padding to look even */
+        @apply h-11 py-0 ltr:pl-3 ltr:pr-4 rtl:pr-3 rtl:pl-4 border-0 rounded-full bx-stl-mil-hover-text; /* the icon's 24px box has ~3px of air, so its side gets 4px less padding to look even; no border: the tabs' states are the sliding highlight, and NEO's tabs are as wide (components/menu-items/topmenu.tsx) */
     }
     #bx-toolbar .bx-menu-main > .bx-menu-item-more-auto > .bx-stl-mil {
         @apply w-11 px-0 justify-center; /* icon-only: a 44px circle like the toolbar buttons */

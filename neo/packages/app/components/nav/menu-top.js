@@ -160,9 +160,10 @@ export default function MenuTop({ url, uri }) {
         return (
             <Row className={`${appSetting('layout', 'header', 'content_center')} relative`} role="navigation" aria-label="Primary" aria-busy>
                 {Array.from({ length: siteTabs + 2 }, (_, index) => (
-                    <View key={`menu-top-skeleton-${index}`} className="flex-auto relative z-10">
-                        <Row className="items-center justify-center px-2 h-11 min-w-11">
+                    <View key={`menu-top-skeleton-${index}`} className="flex-none relative z-10">
+                        <Row className="items-center justify-center gap-2 ps-3 pe-4 h-11 min-w-11">
                             <View className="h-6 w-6 rounded-full bg-muted animate-pulse" />
+                            <View className="h-4 w-12 rounded-full bg-muted animate-pulse" />
                         </Row>
                     </View>
                 ))}
@@ -205,7 +206,7 @@ export default function MenuTop({ url, uri }) {
             {menu_navbar_items.map((item, index) => {
                 const isActive = index === activeIndex;
                 return (
-                    <View key={`wrap-${index}`} onLayout={(e) => handleItemLayout(index, e?.nativeEvent?.layout)} className={`${compact ? 'flex-none' : 'flex-auto'} relative z-10`}>
+                    <View key={`wrap-${index}`} onLayout={(e) => handleItemLayout(index, e?.nativeEvent?.layout)} className="flex-none relative z-10">
                         <MenuTopItem
                             index={index}
                             link={item.link}
@@ -256,10 +257,10 @@ function MenuTopProbe({ items, t, onWidth }) {
                 }}
             >
                 {items.map((item) => (
-                    <Row key={item.name || item.link || item.title} className={`items-center justify-center h-11 min-w-11 shrink-0 ${item.icon && item.showTitle ? 'ps-3 pe-2' : 'px-2'}`}>
+                    <Row key={item.name || item.link || item.title} className={`items-center justify-center gap-2 h-11 min-w-11 shrink-0 ${item.icon && item.showTitle ? 'ps-3 pe-4' : 'px-2.5'}`}>
                         {item.icon ? <View className="h-6 w-6 shrink-0" /> : null}
                         {item.showTitle ? (
-                            <Text className="whitespace-nowrap font-medium text-base px-2 leading-6">{t(item.title)}</Text>
+                            <Text className="whitespace-nowrap font-medium text-base leading-6">{t(item.title)}</Text>
                         ) : null}
                         {item.chevron ? <View className="h-4 w-4 shrink-0" /> : null}
                     </Row>
