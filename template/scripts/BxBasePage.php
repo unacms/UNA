@@ -1044,8 +1044,10 @@ class BxBasePage extends BxDolPage
                     $sClassAdd .= ' ' . $sDesignboxClasses;
 
                 // Its padding size, compact or relaxed (Studio).
-                if(($sPaddingClass = BxDolPageDesignbox::getPaddingSizeClass($aBlock)))
+                $sPaddingClass = BxDolPageDesignbox::getPaddingSizeClass($aBlock);
+                if($sPaddingClass) {
                     $sClassAdd .= ' ' . $sPaddingClass;
+                }
 
                 if ($sContentWithBox)
                     $sCell .= $this->_oTemplate->parseHtmlByName('designbox_container.html', array(

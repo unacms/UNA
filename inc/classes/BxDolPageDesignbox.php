@@ -74,8 +74,9 @@ class BxDolPageDesignbox
      */
     public static function getPaddingSize($aBlock)
     {
-        if(!self::hasPart(isset($aBlock['designbox_id']) ? $aBlock['designbox_id'] : 0, 'padding'))
+        if(!self::hasPart(isset($aBlock['designbox_id']) ? $aBlock['designbox_id'] : 0, 'padding')) {
             return '';
+        }
 
         return self::normalizePaddingSize(isset($aBlock['padding_size']) ? $aBlock['padding_size'] : '');
     }

@@ -214,7 +214,7 @@ BxDolStudioBuilderPage.prototype.onChangeVisibleFor = function(oSelect) {
 BxDolStudioBuilderPage.prototype.onChangeDesignbox = function(oSelect) {
     // Only a Block Layout with padding has a size for it.
     var aWithPadding = ($(oSelect).attr('data-padding') || '').split(',');
-    $(oSelect).parents('form:first').find('#bx-form-element-padding_size').bx_anim($.inArray($(oSelect).val(), aWithPadding) != -1 ? 'show' : 'hide', this.sAnimationEffect, this.iAnimationSpeed);
+    $(oSelect).parents('form:first').find('#bx-form-element-padding_size').bx_anim(aWithPadding.indexOf($(oSelect).val()) !== -1 ? 'show' : 'hide', this.sAnimationEffect, this.iAnimationSpeed);
 };
 
 BxDolStudioBuilderPage.prototype.onEditBlockBeforeShow = function(oPopup) {

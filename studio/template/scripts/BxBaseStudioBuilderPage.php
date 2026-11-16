@@ -918,8 +918,9 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
         $aDBoxesPadding = array();
         foreach($aDBoxes as $aDBox) {
             $aForm['inputs']['designbox_id']['values'][] = array('key' => $this->sSelectKeyPrefix . $aDBox['id'], 'value' => _t($aDBox['title']));
-            if(BxDolPageDesignbox::hasPart($aDBox['id'], 'padding'))
+            if(BxDolPageDesignbox::hasPart($aDBox['id'], 'padding')) {
                 $aDBoxesPadding[] = $this->sSelectKeyPrefix . $aDBox['id'];
+            }
         }
         // The Block Layouts with padding, for the Padding row to follow the choice (onChangeDesignbox).
         $aForm['inputs']['designbox_id']['attrs']['data-padding'] = implode(',', $aDBoxesPadding);

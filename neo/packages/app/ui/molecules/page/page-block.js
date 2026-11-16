@@ -6,6 +6,26 @@ import { blockPaddingKey, blockPaddingSize, withoutGap } from 'app/lib/block-pad
 
 const blockTheme = appSetting('theme', 'blocks')
 
+/**
+ * UNA padding classes for one side (`pad-x`, `pad-y`) on the tiers in `pad`, at Studio's "Padding" `size`
+ * (compact, relaxed; '' regular, see lib/block-padding.ts). A theme without the sized keys keeps its regular padding.
+ */
+function padClasses(padSide, pad, size) {
+    if (!padSide || !pad) return ''
+    const regularKey = 'u-block-' + padSide
+    const sizedKey = blockPaddingKey(regularKey, size)
+    const hasSized = blockTheme[sizedKey] != null
+    if (pad === true) return hasSized ? blockTheme[sizedKey] : blockTheme[regularKey]
+    return responsiveClasses(hasSized ? blockPaddingKey('block-' + padSide, size) : 'block-' + padSide, pad)
+}
+
+/** The part's theme classes; the gap between a block's title and content follows its padding size, as on the site. */
+function themeClasses(baseClass, size) {
+    const sizedGap = baseClass === 'u-block-base' && size ? blockTheme['u-block-gap-' + size] : null
+    if (sizedGap == null) return blockTheme[baseClass] || ''
+    return `${withoutGap(blockTheme[baseClass])} ${sizedGap}`
+}
+
 function createBlockComponent({
     baseClass,
     Component = View,
@@ -37,18 +57,9 @@ function createBlockComponent({
             : baseClass === 'u-block-header' || baseClass === 'u-block-content' || baseClass === 'u-block-footer'
                 ? 'pad-x'
                 : ''
-        // padSize: Studio's "Padding" (compact, relaxed; '' regular), see lib/block-padding.ts. A theme without
-        // the sized keys keeps its regular padding.
         const size = pad ? blockPaddingSize(padSize) : ''
-        const sizedKey = blockPaddingKey('u-block-' + padSide, size)
-        const padClass = !padSide || !pad
-            ? ''
-            : pad === true
-                ? blockTheme[sizedKey] ?? blockTheme['u-block-' + padSide]
-                : responsiveClasses(blockTheme[sizedKey] != null ? blockPaddingKey('block-' + padSide, size) : 'block-' + padSide, pad)
-        // The gap between the title and the content follows the size, as the site's title follows its content.
-        const sizedGap = baseClass === 'u-block-base' && size ? blockTheme['u-block-gap-' + size] : null
-        const themeClass = sizedGap != null ? `${withoutGap(blockTheme[baseClass])} ${sizedGap}` : blockTheme[baseClass] || ''
+        const padClass = padClasses(padSide, pad, size)
+        const themeClass = themeClasses(baseClass, size)
 
         return (
             <Component

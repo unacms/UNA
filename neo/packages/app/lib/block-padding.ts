@@ -7,11 +7,11 @@
 
 export type BlockPaddingSize = '' | 'compact' | 'relaxed';
 
-const SIZES: readonly BlockPaddingSize[] = ['compact', 'relaxed'];
+const SIZES: ReadonlySet<unknown> = new Set(['compact', 'relaxed']);
 
 /** `value` as a padding size; anything UNA doesn't send is the regular one (''). */
 export function blockPaddingSize(value: unknown): BlockPaddingSize {
-    return SIZES.includes(value as BlockPaddingSize) ? (value as BlockPaddingSize) : '';
+    return SIZES.has(value) ? (value as BlockPaddingSize) : '';
 }
 
 /** The theme key (`theme.blocks`) or responsive preset for `key` at `size`: `u-block-pad-x` → `u-block-pad-x-compact`. */
