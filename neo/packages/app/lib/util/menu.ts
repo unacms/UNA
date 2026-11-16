@@ -306,8 +306,9 @@ export function withSiteMenuHomeLink(item: MenuItem): MenuItem {
 
 /**
  * Navbar from the UNA site menu (`sys_site`), used when the
- * `menu_items.menu_navbar` setting is empty: the first `maxTabs` items
- * as tabs, the rest under More. Home is the site menu's own item, so
+ * `menu_items.menu_navbar` setting is empty: its items as tabs (the first
+ * `maxTabs` when it is above 0), the rest under More. MenuTop then moves the tabs
+ * that don't fit the bar under More too. Home is the site menu's own item, so
  * Studio's "Active (for App)" switch shows or hides it like any other.
  */
 export function navbarItemsFromSiteMenu(items: MenuItemList, maxTabs: number): MenuItem[] {
@@ -331,7 +332,7 @@ export function navbarItemsFromSiteMenu(items: MenuItemList, maxTabs: number): M
         };
         // Home leads the bar wherever the site menu puts it, and doesn't count as a tab.
         if (item.name === 'home') home = next;
-        else if (tabs.length < maxTabs) tabs.push(next);
+        else if (!(maxTabs > 0) || tabs.length < maxTabs) tabs.push(next);
         else more.push(next);
     });
 

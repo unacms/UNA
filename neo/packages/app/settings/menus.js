@@ -21,8 +21,9 @@ export const settingsMenus = {
             // UNA's member toolbar: guests' header tools (Search) show while it has them for the apps.
             toolbar: 'sys_toolbar_member',
         },
-        // Tabs after Home in a navbar built from `objects.site`; the rest go under More.
-        menu_navbar_site_tabs: 5,
+        // Most tabs after Home in a navbar built from `objects.site`; 0: as many as fit. The tabs that don't fit go
+        // under More, as on UNA's site; the site menu's "Persistent items" (Studio) never do.
+        menu_navbar_site_tabs: 0,
         // Columns in the navbar's dropdowns (More); an item's own `columns` wins.
         menu_navbar_more_columns: 2,
         // Width (px) of the header menu's popup below `lg` (`menu_navigation`, else `objects.site`). It keeps this
