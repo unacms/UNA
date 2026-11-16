@@ -90,7 +90,7 @@ export default function HeaderElement({ url, uri }) {
         .filter(({ item }) => ((isWeb ? item.web : item.native) ?? true) && isShown(item))
 
     return (
-        <Row className="justify-end gap-3 items-center">
+        <Row className="justify-end gap-2 items-center">
             {shownItems.map(({ item, index }) => (
                 <View key={index} className={item.className}>
                     {(() => {
@@ -105,7 +105,7 @@ export default function HeaderElement({ url, uri }) {
                                 return <NotificationButton uri={uri} buttonProps={tierButtonProps(item)} />
                             case "account":
                                 return (
-                                    <Row className="items-center gap-3">
+                                    <Row className="items-center gap-2">
                                         <OperatorAgentHeaderButton />
                                         <MenuAccount buttonProps={tierButtonProps(item)} />
                                     </Row>
