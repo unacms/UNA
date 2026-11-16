@@ -1221,12 +1221,14 @@ export function TopSidebar({
                 <View className={`${widthClass} mx-auto w-full`}>
                     {/* First line, from lg: below it the page header shows the title and the actions. */}
                     {(showTitle || showAddButtons) && (
-                        <Row className={`${desktopFlex} w-full items-center gap-3 min-w-0 px-4 pt-4 pb-1`}>
-                            <Row className="flex-1 items-center gap-3 min-w-0">
+                        // 44px icon with 10px above and below: the 64px strip of a compact profile cover, the group centred in it.
+                        <Row className={`${desktopFlex} w-full items-center gap-3 min-w-0 px-4 py-2.5`}>
+                            <Row className="group flex-1 items-center gap-3 min-w-0">
                                 {showTitle && !!icon && (
-                                    // The section's icon where a profile has its avatar: a 44px circle.
+                                    // The section's icon where a profile has its avatar: a 44px circle around the main
+                                    // menu's animated 24px icon, in its current-tab state (topmenu MenuTopIcon).
                                     <View className="size-11 shrink-0 items-center justify-center rounded-full bg-button">
-                                        <Icon icon={icon} size={24} className="text-card-foreground" />
+                                        <Icon icon={icon} animated active size={24} className="text-card-foreground" />
                                     </View>
                                 )}
                                 {showTitle && (
