@@ -1857,7 +1857,8 @@
      * timelines keep the plain edge.
      */
     @supports (animation-timeline: scroll()) {
-        .bx-artificer .bx-popup-menu .bx-popup-content {
+        .bx-artificer .bx-popup-menu .bx-popup-content,
+        #bx-sidebar-site .bx-sidebar-site-list {
             mask-image: linear-gradient(to bottom,
                 transparent 0, #000 var(--bx-scroll-fade-top),
                 #000 calc(100% - var(--bx-scroll-fade-bottom)), transparent 100%);
@@ -2000,17 +2001,59 @@
         padding-left: 0.5rem;
         padding-right: 0.5rem;
     }
-    /* Main menu sidebar (sidebar_site): the same rows, inset 8px by its nav, no gaps. */
-    .bx-artificer .bx-sidebar-item > a,
-    .bx-artificer .bx-sidebar-dropdown-content > li > a {
-        min-height: 2.75rem; /* 44px */
-        padding-top: 0;
-        padding-bottom: 0;
-        padding-inline-start: 0.75rem;
-        padding-inline-end: 1rem;
-        border-radius: 0.5rem;
-        font-size: 1rem;
-        line-height: 1.5rem;
+    /* Main menu dropdown (Artificer sidebar_site.html, below `lg`): the main menu as a dropdown under the header's menu button, as NEO's
+       header menu: 320px wide, 8px under the menu button (62px from the top) and 16px in from the screen's edge, the menu popups' surface and 20px corners, and the
+       rows of the header's More list: a 24px icon without a circle 12px from the row's side and 8px from the label, a 14px medium label,
+       12px corners, the full text colour and the hover fill on hover, the press scale, and the current page's row in the current tab's
+       colours. A row with sub-pages unfolds them in place (bx_sidebar_dropdown_toggle); Log in and Sign up are buttons at the top.
+       The opening motion is in Artificer's menu-sidebar.css. */
+    #bx-sidebar-site .bx-sidebar-cnt {
+        @apply absolute top-[3.875rem] ltr:right-4 rtl:left-4 w-80 max-w-[calc(100%-2rem)] overflow-hidden rounded-[1.25rem] bg-white dark:bg-gray-800 smooth-shadow-popover;
+        max-height: calc(100vh - 4.875rem);
+        max-height: calc(100dvh - 4.875rem);
+    }
+    #bx-sidebar-site .bx-sidebar-site-list,
+    #bx-sidebar-site .bx-sidebar-item.bx-si-dropdown-open .bx-sidebar-dropdown-content {
+        @apply flex flex-col gap-1;
+    }
+    #bx-sidebar-site .bx-sidebar-item.bx-si-dropdown-open .bx-sidebar-dropdown-content {
+        @apply mt-1;
+    }
+    #bx-sidebar-site .bx-sidebar-buttons {
+        @apply px-2 pt-1.5 pb-3 mb-1.5; /* as NEO's: the buttons inset 8px, above a divider */
+    }
+    #bx-sidebar-site .bx-sidebar-button {
+        @apply rounded-full; /* capsules, as NEO's Log In and Sign Up there and in the header */
+    }
+    #bx-sidebar-site .bx-sidebar-item > a,
+    #bx-sidebar-site .bx-sidebar-dropdown-content > li > a {
+        @apply flex items-center min-h-11 py-0 ps-3 pe-3 rounded-xl border-0 text-sm leading-5 font-medium text-gray-600 dark:text-gray-400 no-underline;
+        transition: color 150ms cubic-bezier(0, 0, 0.2, 1), background-color 150ms cubic-bezier(0, 0, 0.2, 1), scale 100ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #bx-sidebar-site .bx-sidebar-item > a:hover,
+    #bx-sidebar-site .bx-sidebar-dropdown-content > li > a:hover {
+        @apply bg-gray-200/50 dark:bg-gray-700/50 text-gray-950 dark:text-gray-50;
+    }
+    #bx-sidebar-site .bx-sidebar-item > a:active,
+    #bx-sidebar-site .bx-sidebar-dropdown-content > li > a:active {
+        @apply bg-gray-200 dark:bg-gray-700 scale-95 motion-reduce:scale-100;
+    }
+    #bx-sidebar-site .bx-sidebar-item.bx-menu-tab-active > a,
+    #bx-sidebar-site .bx-sidebar-item.bx-menu-tab-active > a:hover,
+    #bx-sidebar-site .bx-sidebar-dropdown-content > li.bx-menu-tab-active > a,
+    #bx-sidebar-site .bx-sidebar-dropdown-content > li.bx-menu-tab-active > a:hover {
+        @apply bg-blue-200/60 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 ring-0;
+    }
+    #bx-sidebar-site .bx-si-icon {
+        @apply flex items-center justify-center w-6 h-6 me-2 p-0 bg-transparent dark:bg-transparent rounded-none;
+        color: inherit;
+    }
+    #bx-sidebar-site .bx-si-icon > * {
+        @apply w-6 h-6 m-0;
+        color: inherit;
+    }
+    #bx-sidebar-site .bx-si-dropdown-icon {
+        @apply ms-2 text-gray-400 dark:text-gray-500;
     }
     /* Side menus (profile stats, categories, tags): the same rows, on the block's own padding. */
     .bx-artificer ul.bx-menu-vertical-more-less > li,

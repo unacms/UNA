@@ -114,7 +114,7 @@ export default function HeaderElement({ url, uri }) {
                                     </Row>
                                 )
                             case "menu_navigation":
-                                return <MenuHeaderNavigation {...(tierButtonProps(item) || {})} />
+                                return <MenuHeaderNavigation {...(tierButtonProps(item) || {})} url={url} uri={uri} />
                             case "link":
                                 if (item.props?.neoButton) {
                                     const { neoButton, primary, ...neoButtonProps } = item.props;

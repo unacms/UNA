@@ -26,8 +26,7 @@
     -moz-transition: -moz-transform 0.5s 0s;
     transition: transform 0.5s 0s;
 }
-/*--- Both sidebars slide in from the trailing edge, where their triggers are. ---*/
-.bx-dir-ltr .bx-sidebar.bx-sidebar-site .bx-sidebar-cnt,
+/*--- The account sidebar slides in from the trailing edge, where its trigger is. The site one is a dropdown (below). ---*/
 .bx-dir-ltr .bx-sidebar.bx-sidebar-account .bx-sidebar-cnt {
     -webkit-transform: translateX(100%);
     -moz-transform: translateX(100%);
@@ -35,7 +34,6 @@
     -o-transform: translateX(100%);
     transform: translateX(100%);
 }
-.bx-dir-rtl .bx-sidebar.bx-sidebar-site .bx-sidebar-cnt,
 .bx-dir-rtl .bx-sidebar.bx-sidebar-account .bx-sidebar-cnt {
     -webkit-transform: translateX(-100%);
     -moz-transform: translateX(-100%);
@@ -52,7 +50,6 @@
     transition: opacity 0.3s 0s;
 }
     
-.bx-sidebar.bx-sidebar-site.bx-sidebar-active .bx-sidebar-cnt,
 .bx-sidebar.bx-sidebar-account.bx-sidebar-active .bx-sidebar-cnt {   
     -webkit-transform: translateX(0);
     -moz-transform: translateX(0);
@@ -78,7 +75,31 @@
     list-style: none;
 }
 
-/*--- Site Sidebar ---*/
+/*--- Site Sidebar: the main menu below `lg`, a dropdown under the header's menu button (as NEO's header menu) that fades and
+      grows in from the button's corner in a popup's 150ms (its surface and rows are in tailwind.css, "Main menu dropdown"). ---*/
+.bx-sidebar.bx-sidebar-site {
+    transition: opacity 150ms cubic-bezier(0, 0, 0.2, 1) 0s, visibility 0s 150ms;
+}
+.bx-sidebar.bx-sidebar-site.bx-sidebar-active {
+    transition: opacity 150ms cubic-bezier(0, 0, 0.2, 1) 0s;
+}
+.bx-sidebar.bx-sidebar-site .bx-sidebar-cnt {
+    transform: scale(0.95);
+    transform-origin: top right;
+    transition: transform 150ms cubic-bezier(0, 0, 0.2, 1) 0s;
+}
+.bx-dir-rtl .bx-sidebar.bx-sidebar-site .bx-sidebar-cnt {
+    transform-origin: top left;
+}
+.bx-sidebar.bx-sidebar-site.bx-sidebar-active .bx-sidebar-cnt {
+    transform: scale(1);
+}
+@media (prefers-reduced-motion: reduce) {
+    .bx-sidebar.bx-sidebar-site .bx-sidebar-cnt {
+        transform: none;
+        transition: none;
+    }
+}
 .bx-sidebar-site-logo a:hover {
     text-decoration: none;
 }
