@@ -2623,10 +2623,10 @@ jiti@^1.21.7:
   resolved "https://registry.yarnpkg.com/jiti/-/jiti-1.21.7.tgz#9dd81043424a3d28458b193d965f0d18a2300ba9"
   integrity sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A==
 
-jquery-form@^4.4.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/jquery-form/-/jquery-form-4.4.0.tgz#cd6d4689778ae53fb437698e57d77ef1a74a7ee0"
-  integrity sha512-dCjOdu1fHKhL2zbaDhnVhkRDzrFj9LDm6g/NLx6f5Rdp0spW13R00Fsppqs8StnudU/HFiYjMe/ZTccQXakmvw==
+jquery-form@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/jquery-form/-/jquery-form-4.5.0.tgz#ac2485830bad5583c051aebc5b308267ba45a7ed"
+  integrity sha512-GgPYf1LilbOQ5+5+SZuWfwuoMZbangNA30VtPKVHbeZBfvMBmR3LcRLjsd8y9Spd8+VLwu2jB8SStgfaLjTXEw==
   dependencies:
     jquery ">=1.7.2"
 
