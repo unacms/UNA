@@ -207,16 +207,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.403.2",
+            "version": "3.403.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "20e883c6952986c3de686515a99b63caeb8dfafe"
+                "reference": "6e52905dabd868c1bc7fd491e0deec6f78a0f7d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/20e883c6952986c3de686515a99b63caeb8dfafe",
-                "reference": "20e883c6952986c3de686515a99b63caeb8dfafe",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/6e52905dabd868c1bc7fd491e0deec6f78a0f7d1",
+                "reference": "6e52905dabd868c1bc7fd491e0deec6f78a0f7d1",
                 "shasum": ""
             },
             "require": {
@@ -298,9 +298,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.403.2"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.403.5"
             },
-            "time": "2026-11-09T19:36:28+00:00"
+            "time": "2026-11-12T19:40:30+00:00"
         },
         {
             "name": "bshaffer/oauth2-server-php",
