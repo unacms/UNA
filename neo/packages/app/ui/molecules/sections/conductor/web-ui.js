@@ -1189,12 +1189,16 @@ export function TopSidebar({
     // nav column) nor on a section whose menu keeps its tabs on large screens (`sectionSidebar` false).
     const isProfile = layoutName === 'profile'
     const isHideOnDesktop = !isProfile && sectionSidebar
+    // A section that keeps its tabs on large screens draws the bar as the compact profile cover draws its tab row
+    // (cover-morph-body: `cover_base` surface and a border-b separator), so the tabs read as the section's own chrome.
+    const isSectionTabBar = !isProfile && !sectionSidebar
     const widthClass = contentWidth || appSetting('layout', 'page_content_width_default')
+    const showAddButtons = layout != 'mixed' && !isProfile
     return (
         <View
             style={styles}
             className={`${!omitDefaultBackground ? conductorTheme.menu : ''} ${isHideOnDesktop ? conductorTheme.hide_top_menu_from + ':hidden' : ''
-                }`}
+                } ${isSectionTabBar ? 'lg:bg-card-surface lg:border-b lg:border-border/60' : ''}`}
         >
             <View
                 className={`${isHideOnDesktop ? '' : 'mx-auto'} ${widthClass} mx-auto`}
@@ -1227,12 +1231,14 @@ export function TopSidebar({
                             </Row>
                         )}
                         <View className="flex-1 min-w-0">{children}</View>
+                        {/* The section's own actions (Search, Add...) at the end of the tab row, where the sidebar
+                          * would show them in its title row. Below `hide_top_menu_from` the page header carries them. */}
+                        {showAddButtons && (
+                            <Row className={`hidden ${conductorTheme.hide_top_menu_from}:flex shrink-0 items-center cond-buttons-add pr-4`}>
+                                {addButtons}
+                            </Row>
+                        )}
                     </Row>
-                    {(layout != 'mixed' && layoutName !== 'profile') && (
-                        <Row className={`hidden ${conductorTheme.hide_top_menu_from}:flex cond-buttons-add px-3 lg:px-4`}>
-                            {addButtons}
-                        </Row>
-                    )}
             </View>
         </View>
     )
