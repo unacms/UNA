@@ -643,6 +643,16 @@ export function getMenuHub(menu?: MenuWithItems | null): string {
     return settings && !Array.isArray(settings) && settings.hub ? String(settings.hub) : '';
 }
 
+/**
+ * How a menu block draws its items: `grid` (icon tiles, as UNA's home menu) when the menu's `config`
+ * (UNA's `sys_objects_menu.config_api`) says `"view": "grid"`, otherwise a list.
+ */
+export function getMenuView(menu?: MenuWithItems | null): 'grid' | 'list' {
+    if (!menu?.object) return 'list';
+    const settings = getMenuSettings(menu.object, menu.config, menu);
+    return settings && !Array.isArray(settings) && settings.view === 'grid' ? 'grid' : 'list';
+}
+
 /** The title of `menu`'s item that opens page `uri` (UNA sends item links as page uris). */
 export function getMenuItemTitleForUri(menu: MenuWithItems | null | undefined, uri?: string): string {
     if (!uri) return '';

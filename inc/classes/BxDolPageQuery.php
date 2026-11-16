@@ -174,9 +174,20 @@ class BxDolPageQuery extends BxDolDb
         ]);
     }
 
-    public function getPageBlocks($bIsApi = false)
+    /**
+     * The page's blocks by cell, the ones active on the site or (`$bIsApi`) in the apps.
+     * @param bool $bIsApi the apps' blocks (`active_api`)
+     * @param bool $bWithServicesOff also the service blocks that are off in the apps, for a caller that picks some of them
+     *             (the splash's sign-in blocks, see BxDolSplash::AUTH_BLOCKS)
+     */
+    public function getPageBlocks($bIsApi = false, $bWithServicesOff = false)
     {
-        $sActiveClause = $bIsApi ? "`active_api` = 1" : "`active` = 1";
+        if(!$bIsApi) {
+            $sActiveClause = "`active` = 1";
+        }
+        else {
+            $sActiveClause = $bWithServicesOff ? "(`active_api` = 1 OR `type` = 'service')" : "`active_api` = 1";
+        }
         $aLayoutColumns = $bIsApi ? $this->getPageLayoutColumns($this->_aObject['layout_id']) : [];
         
         $aRet = [];

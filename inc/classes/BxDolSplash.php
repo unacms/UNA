@@ -39,6 +39,13 @@ class BxDolSplash extends BxDolFactory implements iBxDolSingleton
     /** What the apps draw in place of `<neo-slot name="...">`. */
     public const SLOTS = ['login_form', 'social_login', 'join_link', 'logo', 'site_title', 'illustration'];
 
+    /**
+     * The home page's sign-in and join blocks (`module:method` of their service), which the apps' splash draws
+     * (the `login_form` and `join_link` slots, a project's own splash). A guest's home page gets them while they are off
+     * for the apps (`active_api`), marked `splash_only`: the splash draws them, the home page without the splash doesn't.
+     */
+    public const AUTH_BLOCKS = ['system:login_form', 'system:login_form_only', 'system:create_account_form', 'system:forgot_password'];
+
     /** Elements with this attribute are left out of the apps' code. */
     public const ATTR_SITE_ONLY = 'data-site-only';
 

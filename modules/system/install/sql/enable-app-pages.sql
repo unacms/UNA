@@ -16,16 +16,14 @@ UPDATE `sys_pages_blocks` SET `config_api`='{\r\n\"content_type\":\"browse_simpl
 UPDATE `sys_pages_blocks` SET `config_api`='{"designbox": {"bg": true, "padding": true, "title": false}}' WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_title_sys_create_post';
 
 -- 'active_api' switch
-UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title`='_sys_page_block_title_create_account';
-UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_system_title_login';
-UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title`='_sys_page_block_title_forgot_password';
+-- Home: the apps show the home menu as the site does; the sign-in and join blocks stay off, the splash gets them anyway (BxDolSplash::AUTH_BLOCKS)
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `type`='menu' AND `content`='sys_homepage';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title`='_sys_page_block_title_profile_menu';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_title_sys_create_post';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_title_sys_recom_friends';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_title_sys_recom_subscriptions';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_title_sys_invitations';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_ntfs_context_invitations' AND `module`='system' AND `title`='_sys_page_block_title_ntfs_context_invitations';
-UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_system_title_login';
 
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_about' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_about';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_terms' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_terms';

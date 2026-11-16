@@ -4,7 +4,8 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Link from 'app/ui/atoms/link'
 import { components } from 'app/components/registry';
-import { appSetting, getMenuHub } from 'app/lib/util';
+import { appSetting, getMenuHub, getMenuView } from 'app/lib/util';
+import MenuGrid from './menu-grid';
 import { useState } from 'react';
 import SettingsMenu, { hasSettingsGroups } from './settings-menu';
 
@@ -125,6 +126,15 @@ export default function ElementMenu({ data, blockWrapperProps, url, itemsClassNa
         return (
             <BlockWrapper {...blockWrapperProps}>
                 <SettingsMenu items={topLevelItems} hub={getMenuHub(data?.content)} />
+            </BlockWrapper>
+        );
+    }
+
+    // A menu UNA draws as a grid (its config says `"view": "grid"`, the home menu): tiles, as UNA's site draws it.
+    if (getMenuView(data?.content) === 'grid') {
+        return (
+            <BlockWrapper {...blockWrapperProps}>
+                <MenuGrid items={topLevelItems} />
             </BlockWrapper>
         );
     }
