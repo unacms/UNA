@@ -86,6 +86,9 @@ export type DropdownMenuProps = {
     /** Row size of a vertical list, the NeoButton heights: mini 28, small 36, regular 44 (default), large 52, xlarge 64.
         Popups and the JS bottom sheet (Android) use it; iOS draws text-only sheet rows natively at the system size. */
     size?: DropdownMenuItemSize;
+    /** Popup rows draw their icons as a 24px glyph without a circle, and the current page's row (`current`) as the
+        header's current tab (the header's More, components/menu-items/topmenu.tsx). */
+    plainIcons?: boolean;
 };
 
 export type DropdownMenuItemSize = 'mini' | 'small' | 'regular' | 'large' | 'xlarge';
@@ -169,6 +172,7 @@ function DropdownMenuPopup({
     popupWidth,
     columns = 1,
     size,
+    plainIcons,
 }: DropdownMenuPopupProps) {
     const DropdownMenuItem = getDropdownMenuItem();
     const redirectdRef = useRef<RedirectHandle | null>(null);
@@ -387,6 +391,7 @@ function DropdownMenuPopup({
                                                 classes={classes}
                                                 className={item.className}
                                                 size={size}
+                                                plainIcons={plainIcons}
                                             />
                                         );
                                     })}
@@ -401,6 +406,7 @@ function DropdownMenuPopup({
                         handleSelect={handleSelect}
                         classes={classes}
                         size={size}
+                        plainIcons={plainIcons}
                         listRef={menuHighlightRef}
                         listClassName={listClassName}
                     />
@@ -411,7 +417,7 @@ function DropdownMenuPopup({
     );
 }
 
-type DropdownMenuListProps = Pick<DropdownMenuProps, 'items' | 'onSelect' | 'size'> & {
+type DropdownMenuListProps = Pick<DropdownMenuProps, 'items' | 'onSelect' | 'size' | 'plainIcons'> & {
     handleSelect: (event: unknown, item: DropdownMenuItemData) => void;
     classes: Record<string, string>;
     listRef: ReturnType<typeof useMenuHighlight>;
@@ -423,7 +429,7 @@ type DropdownMenuListProps = Pick<DropdownMenuProps, 'items' | 'onSelect' | 'siz
  * the list's own children, so the sliding highlight and the focus order treat them as rows of the list. The open
  * group lives here, inside the popup, which unmounts once the menu has closed, so every opening starts closed.
  */
-function DropdownMenuList({ items, onSelect, handleSelect, classes, size, listRef, listClassName }: Readonly<DropdownMenuListProps>) {
+function DropdownMenuList({ items, onSelect, handleSelect, classes, size, plainIcons, listRef, listClassName }: Readonly<DropdownMenuListProps>) {
     const DropdownMenuItem = getDropdownMenuItem();
     const groupKey = (item: DropdownMenuItemData, index: number) => item.id ?? `group-${index}`;
     // A menu that is a single group has nothing else to show: that group starts open.
@@ -444,6 +450,7 @@ function DropdownMenuList({ items, onSelect, handleSelect, classes, size, listRe
                 className={item.className}
                 size={size}
                 nested={nested}
+                plainIcons={plainIcons}
             />
         );
     };
@@ -464,6 +471,7 @@ function DropdownMenuList({ items, onSelect, handleSelect, classes, size, listRe
                         classes={classes}
                         className={item.className}
                         size={size}
+                        plainIcons={plainIcons}
                     />,
                     ...(open ? item.rows.map((sub, i) => row(sub, `${key}/${sub.id ?? i}`, i, true)) : []),
                 ];
@@ -692,6 +700,7 @@ export default function DropdownMenu({
     popupWidth,
     columns,
     size,
+    plainIcons,
 }: DropdownMenuProps) {
     const isWeb = Platform.OS === 'web';
 
@@ -721,6 +730,7 @@ export default function DropdownMenu({
                 popupWidth={popupWidth}
                 columns={columns}
                 size={size}
+                plainIcons={plainIcons}
             />
         );
     }

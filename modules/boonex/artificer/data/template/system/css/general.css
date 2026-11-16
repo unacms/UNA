@@ -366,7 +366,7 @@ html.dark {
 
 /* Menus on the page: one highlight slides under the items to the one the pointer is on (bx_menu_highlight_list in
    functions.js), as in popup menus, in the items' own hover colour, and the items don't light up on their own. It is
-   the list's ::before. On the header's main menu (a capsule like its tabs; the current tab keeps its own background),
+   the list's ::before. On the header's main menu (12px corners like its tabs; the current tab keeps its own background),
    the homepage's apps grid and the profile menu beside the feed. */
 #bx-toolbar .bx-menu-main.bx-menu-highlight-list,
 #bx-toolbar .bx-menu-main.bx-menu-highlight-list > li,
@@ -394,9 +394,6 @@ html.dark {
 
     transform: translate(var(--bx-menu-highlight-x, 0), var(--bx-menu-highlight-y, 0));
     transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1), width 150ms cubic-bezier(0.22, 1, 0.36, 1), height 150ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms cubic-bezier(0, 0, 0.2, 1);
-}
-#bx-toolbar .bx-menu-main.bx-menu-highlight-list::before {
-    border-radius: 9999px;
 }
 html.dark #bx-toolbar .bx-menu-main.bx-menu-highlight-list::before,
 html.dark .bx-menu-object-sys_homepage.bx-menu-highlight-list::before,
@@ -427,7 +424,7 @@ html.dark .bx-menu-object-sys_profile_stats.bx-menu-highlight-list::before {
 }
 /* Pressing a header tab, as in NEO's header (menu-items/topmenu.tsx, .neo-menu-highlight-bar in its global.web.css):
    the tab shrinks to 95% and the highlight under it shrinks with it and takes the full hover colour, so the press is on
-   the one capsule. */
+   the one highlight. */
 #bx-toolbar .bx-menu-main.bx-menu-highlight-list > li {
     transition: scale 100ms cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -442,7 +439,28 @@ html.dark .bx-menu-object-sys_profile_stats.bx-menu-highlight-list::before {
 html.dark #bx-toolbar .bx-menu-main.bx-menu-highlight-list.bx-menu-highlight-on:has(> li > .bx-stl-mil:active)::before {
     background-color: rgb(63, 63, 70); /* gray-700 */
 }
+/* The More list's rows press the same way (tailwind.css draws them as the tabs). */
+#bx-toolbar .bx-menu-submenu-more-auto.bx-menu-highlight-list > li {
+    transition: scale 100ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+#bx-toolbar .bx-menu-submenu-more-auto.bx-menu-highlight-list > li:has(> .bx-stl-mil:active) {
+    scale: 0.95;
+}
+#bx-toolbar .bx-menu-submenu-more-auto.bx-menu-highlight-list.bx-menu-highlight-on:has(> li > .bx-stl-mil:active)::before {
+    background-color: rgb(228, 228, 231); /* gray-200 */
+    transform: translate(var(--bx-menu-highlight-x, 0), var(--bx-menu-highlight-y, 0)) scale(0.95);
+    transition: transform 100ms cubic-bezier(0.4, 0, 0.2, 1), background-color 100ms cubic-bezier(0.4, 0, 0.2, 1), opacity 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+html.dark #bx-toolbar .bx-menu-submenu-more-auto.bx-menu-highlight-list.bx-menu-highlight-on:has(> li > .bx-stl-mil:active)::before {
+    background-color: rgb(63, 63, 70); /* gray-700 */
+}
 @media (prefers-reduced-motion: reduce) {
+    #bx-toolbar .bx-menu-submenu-more-auto.bx-menu-highlight-list > li:has(> .bx-stl-mil:active) {
+        scale: none;
+    }
+    #bx-toolbar .bx-menu-submenu-more-auto.bx-menu-highlight-list.bx-menu-highlight-on:has(> li > .bx-stl-mil:active)::before {
+        transform: translate(var(--bx-menu-highlight-x, 0), var(--bx-menu-highlight-y, 0));
+    }
     #bx-toolbar .bx-menu-main.bx-menu-highlight-list > li:has(> .bx-stl-mil:active) {
         scale: none;
     }

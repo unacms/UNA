@@ -117,4 +117,33 @@ class ArtificerMenuRowsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertMatchesRegularExpression('/\.bx-popup \.bx-menu-highlight-list::before \{[^}]*opacity 150ms ' . $sCurve . ';/', $sCss, 'The sliding highlight fades on the same curve as the items\' colours.');
     }
+
+    public function testHeaderTabsAndMoreListMatchNeo(): void
+    {
+        $sCss = self::read('template/css/tailwind.css');
+        $sGeneral = self::read('modules/boonex/artificer/data/template/system/css/general.css');
+        $sTab = self::read('neo/packages/app/components/menu-items/topmenu.tsx');
+        $sTheme = self::read('neo/packages/app/settings/theme/elements.js');
+
+        //--- Tabs: a regular button's 12px corners and the popup menus' 14px label, in both apps.
+        $this->assertMatchesRegularExpression('/#bx-toolbar \.bx-menu-main > \.bx-menu-item \{\s*@apply rounded-xl;/', $sCss);
+        $this->assertStringContainsString('@apply h-11 py-0 ltr:pl-3 ltr:pr-4 rtl:pr-3 rtl:pl-4 border-0 rounded-xl', $sCss);
+        $this->assertMatchesRegularExpression('/#bx-toolbar \.bx-menu-main > \.bx-menu-item > \.bx-stl-mil \.bx-stl-mit \{\s*@apply text-sm leading-5;/', $sCss);
+        $this->assertStringNotContainsString("#bx-toolbar .bx-menu-main.bx-menu-highlight-list::before {\n    border-radius: 9999px;", $sGeneral, 'The sliding highlight keeps the 12px corners.');
+        $this->assertStringContainsString("const ROW_BASE = 'items-center justify-center gap-2 h-11 min-w-11 rounded-xl'", $sTab);
+        $this->assertStringContainsString("const LABEL_SIZE = 'text-sm leading-5'", $sTab);
+
+        //--- More: 24px icons without a circle, the current page's row in the current tab's colours, in both apps.
+        $this->assertMatchesRegularExpression('/#bx-toolbar \.bx-menu-submenu-more-auto > li \.bx-stl-mii:has\(> \*\),[^{]*\{\s*@apply w-6 h-6 bg-transparent/', $sCss);
+        $this->assertMatchesRegularExpression('/#bx-toolbar \.bx-menu-submenu-more-auto > li\.bx-menu-tab-active \{\s*@apply bg-blue-200\/60 dark:bg-blue-900\/60;/', $sCss);
+        $this->assertStringContainsString('plainIcons', $sTab, 'NEO\'s More draws plain icons.');
+        $this->assertStringContainsString("item_plain_current: 'neo-menu-current bg-accent-200/60 dark:bg-accent-900/60'", $sTheme);
+
+        //--- The same states as the tabs: medium label, the full text colour on hover, the press on the highlight.
+        $this->assertMatchesRegularExpression('/#bx-toolbar \.bx-menu-submenu-more-auto > li \.bx-stl-mit \{\s*@apply font-medium;/', $sCss);
+        $this->assertMatchesRegularExpression('/#bx-toolbar \.bx-menu-main > \.bx-menu-item:not\(\.bx-menu-tab-active\) > \.bx-stl-mil:hover \{\s*@apply text-gray-950 dark:text-gray-50;/', $sCss);
+        $this->assertStringContainsString('#bx-toolbar .bx-menu-submenu-more-auto.bx-menu-highlight-list > li:has(> .bx-stl-mil:active) {', $sGeneral);
+        $this->assertStringContainsString("item_plain_row: 'neo-menu-plain web:active:scale-95 web:duration-100'", $sTheme);
+        $this->assertStringContainsString("off: 'text-secondary-foreground web:group-hover:text-foreground'", $sTab);
+    }
 }
