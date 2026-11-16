@@ -961,7 +961,7 @@
     /* Buttons: press and open, as NEO's buttons (NeoButton's press transition and `selected` state, neo/packages/app/settings/theme/buttons.js).
        A press scales the button to 98%, and to 110% on a touch screen, where the finger covers it. A button whose menu or popup is open
        (aria-expanded="true", which bx_menu_popup and bx_menu_popup_inline keep) takes the accent colours, NEO's bg-accent and
-       text-accent-foreground (blue-100 and blue-700, blue-900 and blue-300 in dark), and a primary one the darker primary, while it stays open.
+       text-accent-foreground, a step stronger and translucent (blue-200 at 70% and blue-700; blue-900 at 70% and blue-300 in dark), and a primary one the darker primary, while it stays open.
        Studio keeps its own buttons. */
     body:not(.bx-std) .bx-btn:not(.bx-btn-disabled):active {
         @apply scale-[0.98];
@@ -972,7 +972,7 @@
         }
     }
     body:not(.bx-std) .bx-btn[aria-expanded="true"]:not(.bx-btn-primary) {
-        @apply bg-blue-100 hover:bg-blue-100 active:bg-blue-100 dark:bg-blue-900 dark:hover:bg-blue-900 dark:active:bg-blue-900;
+        @apply bg-blue-200/70 hover:bg-blue-200/70 active:bg-blue-200/70 dark:bg-blue-900/70 dark:hover:bg-blue-900/70 dark:active:bg-blue-900/70;
         @apply text-blue-700 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-300;
     }
     body:not(.bx-std) .bx-btn[aria-expanded="true"]:not(.bx-btn-primary) i:not(.sys-colored),
@@ -1781,7 +1781,7 @@
     }
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item:has(> a[aria-expanded="true"]),
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item.bx-menu-tab-active {
-        @apply bg-blue-100 hover:bg-blue-100 active:bg-blue-100 dark:bg-blue-900 dark:hover:bg-blue-900 dark:active:bg-blue-900;
+        @apply bg-blue-200/70 hover:bg-blue-200/70 active:bg-blue-200/70 dark:bg-blue-900/70 dark:hover:bg-blue-900/70 dark:active:bg-blue-900/70;
         @apply text-blue-700 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-300;
     }
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item .bx-menu-toolbar-item-unit {
@@ -1795,11 +1795,11 @@
     #bx-toolbar .bx-menu-main > .bx-menu-item {
         @apply rounded-full;
     }
-    /* Header: the current page's tab is in the accent colours, NEO's bg-accent and text-accent-foreground (blue-100 and blue-700,
-       blue-900 and blue-300 in dark), as the toolbar buttons that are current or open. NEO marks its tab with the accent label and a
+    /* Header: the current page's tab is in the accent colours, NEO's open and current buttons (blue-200 at 70% and blue-700,
+       blue-900 at 70% and blue-300 in dark), as the toolbar buttons that are current or open. NEO marks its tab with the accent label and a
        sliding underline instead. */
     #bx-toolbar .bx-menu-main > .bx-menu-item.bx-menu-tab-active > .bx-stl-mil {
-        @apply bg-blue-100 dark:bg-blue-900 text-blue-700 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-300 ring-0;
+        @apply bg-blue-200/70 dark:bg-blue-900/70 text-blue-700 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-300 ring-0;
     }
     /* Header main menu: centered between the logo and the toolbar (BxDolMenuMoreAuto keeps it hidden until measured, see artificer menu.css). */
     #bx-toolbar .bx-menu-main {
