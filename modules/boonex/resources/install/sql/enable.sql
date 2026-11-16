@@ -267,17 +267,19 @@ INSERT INTO `sys_objects_chart` (`object`, `title`, `table`, `field_date_ts`, `f
 
 -- GRIDS: moderation tools
 INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `override_class_name`, `override_class_file`) VALUES
-('bx_resources_administration', 'Sql', 'SELECT * FROM `bx_resources_entries` WHERE 1 ', 'bx_resources_entries', 'id', 'added', 'status_admin', '', 20, NULL, 'start', '', 'title,text', '', 'like', 'reports', '', 192, 'BxResourcesGridAdministration', 'modules/boonex/resources/classes/BxResourcesGridAdministration.php'),
+('bx_resources_administration', 'Sql', 'SELECT `te`.*, `tp`.`id` AS `context_pid`, `tp`.`type` AS `context_module`, `tp`.`content_id` AS `context_cid` FROM `bx_resources_entries` AS `te` INNER JOIN `sys_profiles` AS `tp` ON ABS(`te`.`allow_view_to`)=`tp`.`id`  WHERE 1 ', 'bx_resources_entries', 'id', 'added', 'status_admin', '', 20, NULL, 'start', '', 'te`.`title,te`.`text', '', 'like', 'reports', '', 192, 'BxResourcesGridAdministration', 'modules/boonex/resources/classes/BxResourcesGridAdministration.php'),
 ('bx_resources_common', 'Sql', 'SELECT * FROM `bx_resources_entries` WHERE 1 ', 'bx_resources_entries', 'id', 'added', 'status', '', 20, NULL, 'start', '', 'title,text', '', 'like', '', '', 2147483647, 'BxResourcesGridCommon', 'modules/boonex/resources/classes/BxResourcesGridCommon.php');
 
 INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `order`) VALUES
 ('bx_resources_administration', 'checkbox', '_sys_select', '2%', 0, 0, '', 1),
 ('bx_resources_administration', 'switcher', '_bx_resources_grid_column_title_adm_active', '8%', 0, 0, '', 2),
 ('bx_resources_administration', 'reports', '_sys_txt_reports_title', '5%', 0, 0, '', 3),
-('bx_resources_administration', 'title', '_bx_resources_grid_column_title_adm_title', '35%', 0, 25, '', 4),
-('bx_resources_administration', 'added', '_bx_resources_grid_column_title_adm_added', '10%', 1, 25, '', 5),
-('bx_resources_administration', 'author', '_bx_resources_grid_column_title_adm_author', '20%', 0, 25, '', 6),
-('bx_resources_administration', 'actions', '', '20%', 0, 0, '', 7),
+('bx_resources_administration', 'context_module', '_bx_resources_grid_column_title_adm_context_module', '5%', 0, 0, '', 4),
+('bx_resources_administration', 'context_cid', '_bx_resources_grid_column_title_adm_context_cid', '20%', 0, 0, '', 5),
+('bx_resources_administration', 'title', '_bx_resources_grid_column_title_adm_title', '20%', 0, 25, '', 6),
+('bx_resources_administration', 'added', '_bx_resources_grid_column_title_adm_added', '5%', 1, 25, '', 6),
+('bx_resources_administration', 'author', '_bx_resources_grid_column_title_adm_author', '15%', 0, 25, '', 8),
+('bx_resources_administration', 'actions', '', '20%', 0, 0, '', 9),
 
 ('bx_resources_common', 'checkbox', '_sys_select', '2%', 0, 0, '', 1),
 ('bx_resources_common', 'switcher', '_bx_resources_grid_column_title_adm_active', '8%', 0, 0, '', 2),

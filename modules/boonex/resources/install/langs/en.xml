@@ -176,6 +176,7 @@
     <!-- Grids -->
     <string name="_bx_resources_grid_filter_item_title_adm_select_one_filter1"><![CDATA[All Statuses]]></string>
     <string name="_bx_resources_grid_filter_item_title_adm_select_one_filter2"><![CDATA[Any Audience]]></string>
+    <string name="_bx_resources_grid_filter_item_title_adm_select_one_filter3"><![CDATA[All Modules]]></string>
     <string name="_bx_resources_grid_filter_item_title_adm_active"><![CDATA[Active]]></string>
     <string name="_bx_resources_grid_filter_item_title_adm_hidden"><![CDATA[Hidden]]></string>
     <string name="_bx_resources_grid_filter_item_title_adm_pending"><![CDATA[Pending]]></string>
@@ -185,6 +186,8 @@
     <string name="_bx_resources_grid_column_title_adm_added"><![CDATA[Added]]></string>
     <string name="_bx_resources_grid_column_title_adm_author"><![CDATA[Author]]></string>>
     <string name="_bx_resources_grid_column_title_adm_status_admin"><![CDATA[Moderation]]></string>
+    <string name="_bx_resources_grid_column_title_adm_context_cid"><![CDATA[Context]]></string>
+    <string name="_bx_resources_grid_column_title_adm_context_module"><![CDATA[Module]]></string>
     <string name="_bx_resources_grid_action_title_adm_add"><![CDATA[Add]]></string>
     <string name="_bx_resources_grid_action_title_adm_audit_content"><![CDATA[Audit actions]]></string>
     <string name="_bx_resources_grid_action_title_adm_clear_reports"><![CDATA[Сlear reports]]></string>

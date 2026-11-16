@@ -192,7 +192,7 @@ class BxResourcesModule extends BxBaseModTextModule
 
     public function serviceManageTools($sType = 'common')
     {
-        $aResult = parent::serviceManageTools('common');
+        $aResult = parent::serviceManageTools($sType);
         if($sType == 'common' && isset($aResult['menu']))
             unset($aResult['menu']);
 
@@ -317,7 +317,31 @@ class BxResourcesModule extends BxBaseModTextModule
     {
         return $this->isAllowManage($aDataEntry) ? CHECK_ACTION_RESULT_ALLOWED : _t('_sys_txt_access_denied');
     }
-    
+
+    public function getModuleTitle($sName)
+    {
+        $sResult = $sName;
+
+        if(($_sTitle = '_' . $sName) && ($sTitle = _t($_sTitle)) && strcmp($_sTitle, $sTitle) != 0)
+            $sResult = $sTitle;
+        else if(($aModule = $this->_oDb->getModuleByName($sName)) && is_array($aModule))
+            $sResult = $aModule['title'] ?? _t('_undefined');
+
+        return $sResult;
+    }
+
+    public function getContexts()
+    {
+        $aModules = bx_srv('system', 'get_modules_by_type', ['profile', ['name_as_key' => true]]);
+        $aModules = array_merge($aModules, bx_srv('system', 'get_modules_by_type', ['context', ['name_as_key' => true]]));
+
+        $aContexts = [];
+        foreach($aModules as $sModule => $aModule)
+            $aContexts[$sModule] = ($_sTitle = '_' . $sModule) && ($sTitle = _t($_sTitle)) && strcmp($_sTitle, $sTitle) != 0 ? $sTitle : $aModule['title'];
+        
+        return $aContexts; 
+    }
+
     public function decodeDataAPI($aData, $aParams = [])
     {
         return array_merge(parent::decodeDataAPI($aData, $aParams), [
