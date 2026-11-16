@@ -14,16 +14,18 @@
  * classes (css/page_layouts.css); the apps get the screen size names (phone, tablet, desktop, mobile-app).
  * A part the block's design box doesn't have (designbox_id) stays off whatever is set.
  *
- * Its padding has a size too (Studio > Pages > block: "Padding", `padding_size`): '' is the design box's own
- * 16px (regular), 'compact' is 8px and 'relaxed' 24px, for the content and the title above it. The site adds
- * bx-db-padding-<size> to the block's container; the apps get the size name.
+ * Its title and its padding have a size too (Studio > Pages > block: "Title size", "Padding"; `title_size`,
+ * `padding_size`): '' is regular, today's design box, 'compact' a step smaller and 'large' a step larger. Padding is
+ * 8px, 16px or 24px around the title and the content; the title is 16px, 18px or 20px text with its line height. The
+ * site adds bx-db-<part>-<size> to the block's container (css/page_layouts.css); the apps get the size names.
  */
 class BxDolPageDesignbox
 {
     const PARTS = ['title', 'bg', 'padding'];
 
-    /** Padding sizes besides the regular one (''). */
-    const PADDING_SIZES = ['compact', 'relaxed'];
+    /** The parts that have a size, and the sizes besides the regular one (''). */
+    const SIZED_PARTS = ['title', 'padding'];
+    const SIZES = ['compact', 'large'];
 
     /** Design boxes without each part, as the design box templates (designbox_<id>.html) draw them. */
     protected static $_aWithout = [
@@ -62,32 +64,40 @@ class BxDolPageDesignbox
     }
 
     /**
-     * A padding size as it is kept: 'compact', 'relaxed', or '' (regular) for anything else.
+     * A size as it is kept: 'compact', 'large', or '' (regular) for anything else.
      */
-    public static function normalizePaddingSize($sSize)
+    public static function normalizeSize($sSize)
     {
-        return is_string($sSize) && in_array($sSize, self::PADDING_SIZES, true) ? $sSize : '';
+        return is_string($sSize) && in_array($sSize, self::SIZES, true) ? $sSize : '';
     }
 
     /**
-     * The block's padding size: 'compact', 'relaxed', or '' (regular, and for a design box without padding).
+     * The size of the block's $sPart (title, padding): 'compact', 'large', or '' (regular, and for a design box
+     * without that part).
      */
-    public static function getPaddingSize($aBlock)
+    public static function getSize($aBlock, $sPart)
     {
-        if(!self::hasPart(isset($aBlock['designbox_id']) ? $aBlock['designbox_id'] : 0, 'padding')) {
+        if(!in_array($sPart, self::SIZED_PARTS, true) || !self::hasPart(isset($aBlock['designbox_id']) ? $aBlock['designbox_id'] : 0, $sPart)) {
             return '';
         }
 
-        return self::normalizePaddingSize(isset($aBlock['padding_size']) ? $aBlock['padding_size'] : '');
+        return self::normalizeSize(isset($aBlock[$sPart . '_size']) ? $aBlock[$sPart . '_size'] : '');
     }
 
     /**
-     * Class for the block's container on the site: bx-db-padding-<size>, '' for the regular padding.
+     * Classes for the block's container on the site: bx-db-<part>-<size> for each part that isn't regular.
      */
-    public static function getPaddingSizeClass($aBlock)
+    public static function getSizeClasses($aBlock)
     {
-        $sSize = self::getPaddingSize($aBlock);
-        return $sSize !== '' ? 'bx-db-padding-' . $sSize : '';
+        $aClasses = [];
+        foreach(self::SIZED_PARTS as $sPart) {
+            $sSize = self::getSize($aBlock, $sPart);
+            if($sSize !== '') {
+                $aClasses[] = 'bx-db-' . $sPart . '-' . $sSize;
+            }
+        }
+
+        return implode(' ', $aClasses);
     }
 }
 

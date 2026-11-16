@@ -321,7 +321,8 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertMatchesRegularExpression("/CREATE TABLE IF NOT EXISTS `sys_objects_page` \\([^;]*`cover_hidden_on` varchar\\(255\\) NOT NULL DEFAULT ''/s", $sSql);
         foreach (['title_hidden_on', 'bg_hidden_on', 'padding_hidden_on'] as $sColumn)
             $this->assertMatchesRegularExpression("/CREATE TABLE IF NOT EXISTS `sys_pages_blocks` \\([^;]*`" . $sColumn . "` varchar\\(255\\) NOT NULL DEFAULT ''/s", $sSql, $sColumn);
-        // A block's padding size: regular ('') on a fresh install.
-        $this->assertMatchesRegularExpression("/CREATE TABLE IF NOT EXISTS `sys_pages_blocks` \\([^;]*`padding_size` varchar\\(16\\) NOT NULL DEFAULT ''/s", $sSql);
+        // A block's title and padding sizes: regular ('') on a fresh install.
+        foreach (['padding_size', 'title_size'] as $sColumn)
+            $this->assertMatchesRegularExpression("/CREATE TABLE IF NOT EXISTS `sys_pages_blocks` \\([^;]*`" . $sColumn . "` varchar\\(16\\) NOT NULL DEFAULT ''/s", $sSql, $sColumn);
     }
 }

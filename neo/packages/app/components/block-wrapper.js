@@ -218,7 +218,7 @@ function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg
             <Name className={block.header_icon && !stacked ? 'justify-center' : undefined}>
                 <View className="flex-row items-center gap-2">
                     {titleIcon}
-                    <Title>{title}</Title>
+                    <Title titleSize={block.title_size}>{title}</Title>
                 </View>
                 {stacked && <BlockDescription>{block.description}</BlockDescription>}
             </Name>

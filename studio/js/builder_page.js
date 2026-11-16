@@ -32,7 +32,7 @@ function BxDolStudioBuilderPage(oOptions) {
         templateSelection: d => d.text
     });
 
-    var $this = this;
+    var oThis = this;
     $(document).ready(function() {
     	$($this.aSortingConf.parent).sortable({
             handle: $($this.aSortingConf.item + ' .adm-bpb-drag-handle'),
@@ -120,7 +120,7 @@ BxDolStudioBuilderPage.prototype.onCreatePage = function(sType, sPage) {
 };
 
 BxDolStudioBuilderPage.prototype.deletePage = function() {
-    var $this = this;
+    var oThis = this;
 
     bx_confirm(aDolLang['_adm_bp_wrn_page_delete'], function() {
         $this.performAction('page_delete');
@@ -128,7 +128,7 @@ BxDolStudioBuilderPage.prototype.deletePage = function() {
 };
 
 BxDolStudioBuilderPage.prototype.reorder = function(oDraggable) {
-    var $this = this;
+    var oThis = this;
     var oDate = new Date();
 
     var aParams = new Array();
@@ -161,7 +161,7 @@ BxDolStudioBuilderPage.prototype.reorder = function(oDraggable) {
  * "Add Block" popup methods. 
  */
 BxDolStudioBuilderPage.prototype.onChangeModule = function(sName, oLink) {
-    var $this = this;
+    var oThis = this;
     var oDate = new Date();
 
     var sClass = 'bx-menu-tab-active';
@@ -212,9 +212,14 @@ BxDolStudioBuilderPage.prototype.onChangeVisibleFor = function(oSelect) {
 };
 
 BxDolStudioBuilderPage.prototype.onChangeDesignbox = function(oSelect) {
-    // Only a Block Layout with padding has a size for it.
-    var aWithPadding = ($(oSelect).attr('data-padding') || '').split(',');
-    $(oSelect).parents('form:first').find('#bx-form-element-padding_size').bx_anim(aWithPadding.includes($(oSelect).val()) ? 'show' : 'hide', this.sAnimationEffect, this.iAnimationSpeed);
+    // Only a Block Layout with a title or with padding has a size for it.
+    var oForm = $(oSelect).parents('form:first');
+    var sValue = $(oSelect).val();
+    var oThis = this;
+    $.each(['title', 'padding'], function(iIndex, sPart) {
+        var aWith = ($(oSelect).attr('data-' + sPart) || '').split(',');
+        oForm.find('#bx-form-element-' + sPart + '_size').bx_anim(aWith.includes(sValue) ? 'show' : 'hide', oThis.sAnimationEffect, oThis.iAnimationSpeed);
+    });
 };
 
 BxDolStudioBuilderPage.prototype.onEditBlockBeforeShow = function(oPopup) {
@@ -242,7 +247,7 @@ BxDolStudioBuilderPage.prototype.onEditBlockCancel = function(oButton) {
 };
 
 BxDolStudioBuilderPage.prototype.deleteBlock = function(iId) {
-    var $this = this;
+    var oThis = this;
 
     bx_confirm(aDolLang['_adm_bp_wrn_page_block_delete'], function() {
         bx_loading($this.oHtmlIds['edit_block_popup_id'], true);
@@ -265,7 +270,7 @@ BxDolStudioBuilderPage.prototype.onDeleteBlock = function(iId, oData) {
  * "Settings" popup methods.
  */
 BxDolStudioBuilderPage.prototype.onChangeSettingGroup = function(sName, oLink) {
-    var $this = this;
+    var oThis = this;
 
     bx_sound('select');
 
@@ -305,7 +310,7 @@ BxDolStudioBuilderPage.prototype.onCloseSettings = function() {
  * General methods.
  */
 BxDolStudioBuilderPage.prototype.performAction = function(sAction, aParams) {
-    var $this = this;
+    var oThis = this;
     var oDate = new Date();
 
     if(aParams == undefined)

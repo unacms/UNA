@@ -55,20 +55,30 @@
 }
 */
 
-/* A block's padding size (Studio > Pages > block: "Padding"; BxDolPageDesignbox adds the class to the block's
-   container): 8px compact, 24px relaxed, for the content and the title above it; regular is the design box's 16px.
-   "Padding hidden on" below still takes it off. */
+/* A block's title and padding sizes (Studio > Pages > block: "Title size", "Padding"; BxDolPageDesignbox adds the
+   classes to the block's container). Padding: 8px compact, 24px large, for the content and the title above it; regular
+   is the design box's 16px. "Padding hidden on" below still takes it off. Title: a type step smaller (16px on a 24px
+   line) or larger (20px on a 28px line) than the regular 18px on 28px; over a description it keeps its 24px line, so
+   the 44px header icon stays as tall as the title and one line of the description. */
 .bx-db-padding-compact > .bx-db-container > .bx-db-header {
     padding: 0.5rem 0.5rem 0;
 }
 .bx-db-padding-compact > .bx-db-container > .bx-content-padding-block {
     padding: 0.5rem;
 }
-.bx-db-padding-relaxed > .bx-db-container > .bx-db-header {
+.bx-db-padding-large > .bx-db-container > .bx-db-header {
     padding: 1.5rem 1.5rem 0;
 }
-.bx-db-padding-relaxed > .bx-db-container > .bx-content-padding-block {
+.bx-db-padding-large > .bx-db-container > .bx-content-padding-block {
     padding: 1.5rem;
+}
+.bx-db-title-compact > .bx-db-container > .bx-db-header .bx-db-title {
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+.bx-db-title-large > .bx-db-container > .bx-db-header .bx-db-title {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
 }
 
 /* A block's design box per screen size (Studio > Pages > block: "Title / Background / Padding hidden on",

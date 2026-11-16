@@ -5,7 +5,7 @@ use PHPUnit\Framework\Attributes\Group;
 /**
  * Studio's per-screen-size switches reach the apps: a page's "Cover hidden on" as `cover_hidden_on`, a block's
  * "Title / Background / Padding hidden on" as `title_hidden_on`, `bg_hidden_on` and `padding_hidden_on` (screen size
- * names: phone, tablet, desktop, mobile-app), and its "Padding" as `padding_size`. The rows are changed for the test
+ * names: phone, tablet, desktop, mobile-app), and its "Title size" and "Padding" as `title_size` and `padding_size`. The rows are changed for the test
  * and put back.
  */
 #[Group('integration')]
@@ -23,7 +23,7 @@ class PageScreenSizesTest extends BxDolIntegrationTestCase
 
         $oDb = BxDolDb::getInstance();
         $this->_aPageBackup = $oDb->getRow("SELECT `id`, `cover`, `cover_hidden_on` FROM `sys_objects_page` WHERE `uri` = 'about'");
-        $this->_aBlockBackup = $oDb->getRow("SELECT `id`, `designbox_id`, `title_hidden_on`, `bg_hidden_on`, `padding_hidden_on`, `padding_size` FROM `sys_pages_blocks` WHERE `object` = 'sys_about' AND `active_api` = 1 ORDER BY `order` LIMIT 1");
+        $this->_aBlockBackup = $oDb->getRow("SELECT `id`, `designbox_id`, `title_hidden_on`, `bg_hidden_on`, `padding_hidden_on`, `padding_size`, `title_size` FROM `sys_pages_blocks` WHERE `object` = 'sys_about' AND `active_api` = 1 ORDER BY `order` LIMIT 1");
         if (empty($this->_aPageBackup) || empty($this->_aBlockBackup))
             $this->markTestSkipped('The About page has no block for the apps.');
     }
@@ -34,7 +34,7 @@ class PageScreenSizesTest extends BxDolIntegrationTestCase
         if (!empty($this->_aPageBackup))
             $oDb->query("UPDATE `sys_objects_page` SET `cover` = :cover, `cover_hidden_on` = :hidden WHERE `id` = :id", ['cover' => $this->_aPageBackup['cover'], 'hidden' => $this->_aPageBackup['cover_hidden_on'], 'id' => $this->_aPageBackup['id']]);
         if (!empty($this->_aBlockBackup))
-            $oDb->query("UPDATE `sys_pages_blocks` SET `designbox_id` = :d, `title_hidden_on` = :t, `bg_hidden_on` = :b, `padding_hidden_on` = :p, `padding_size` = :s WHERE `id` = :id", ['d' => $this->_aBlockBackup['designbox_id'], 't' => $this->_aBlockBackup['title_hidden_on'], 'b' => $this->_aBlockBackup['bg_hidden_on'], 'p' => $this->_aBlockBackup['padding_hidden_on'], 's' => $this->_aBlockBackup['padding_size'], 'id' => $this->_aBlockBackup['id']]);
+            $oDb->query("UPDATE `sys_pages_blocks` SET `designbox_id` = :d, `title_hidden_on` = :t, `bg_hidden_on` = :b, `padding_hidden_on` = :p, `padding_size` = :s, `title_size` = :ts WHERE `id` = :id", ['d' => $this->_aBlockBackup['designbox_id'], 't' => $this->_aBlockBackup['title_hidden_on'], 'b' => $this->_aBlockBackup['bg_hidden_on'], 'p' => $this->_aBlockBackup['padding_hidden_on'], 's' => $this->_aBlockBackup['padding_size'], 'ts' => $this->_aBlockBackup['title_size'], 'id' => $this->_aBlockBackup['id']]);
         $oDb->cleanCache('sys_pages_objects_data');
         $oDb->cleanMemoryAll();
         $_GET = $this->_aGetBackup ?? [];
@@ -94,25 +94,36 @@ class PageScreenSizesTest extends BxDolIntegrationTestCase
         $this->assertFalse($aBlock['padding_hidden_on']);
     }
 
-    public function testPaddingSizeReachesTheAppsAndTheSite(): void
+    public function testSizesReachTheAppsAndTheSite(): void
     {
         $oDb = BxDolDb::getInstance();
         $iId = (int)$this->_aBlockBackup['id'];
 
-        $oDb->query("UPDATE `sys_pages_blocks` SET `designbox_id` = :d, `padding_size` = '' WHERE `id` = :id", ['d' => BX_DB_PADDING_DEF, 'id' => $iId]);
-        $this->assertSame('', $this->block($this->request('about'))['padding_size'], 'Regular by default.');
+        $oDb->query("UPDATE `sys_pages_blocks` SET `designbox_id` = :d, `padding_size` = '', `title_size` = '' WHERE `id` = :id", ['d' => BX_DB_PADDING_DEF, 'id' => $iId]);
+        $aBlock = $this->block($this->request('about'));
+        $this->assertSame('', $aBlock['padding_size'], 'Regular by default.');
+        $this->assertSame('', $aBlock['title_size'], 'Regular by default.');
 
-        $oDb->query("UPDATE `sys_pages_blocks` SET `padding_size` = 'compact' WHERE `id` = :id", ['id' => $iId]);
-        $this->assertSame('compact', $this->block($this->request('about'))['padding_size']);
-        $this->assertStringContainsString('bx-db-padding-compact', $this->siteBlockContainer($iId));
+        $oDb->query("UPDATE `sys_pages_blocks` SET `padding_size` = 'compact', `title_size` = 'large' WHERE `id` = :id", ['id' => $iId]);
+        $aBlock = $this->block($this->request('about'));
+        $this->assertSame('compact', $aBlock['padding_size']);
+        $this->assertSame('large', $aBlock['title_size']);
+        $sContainer = $this->siteBlockContainer($iId);
+        $this->assertStringContainsString('bx-db-padding-compact', $sContainer);
+        $this->assertStringContainsString('bx-db-title-large', $sContainer);
 
-        $oDb->query("UPDATE `sys_pages_blocks` SET `padding_size` = 'huge' WHERE `id` = :id", ['id' => $iId]);
-        $this->assertSame('', $this->block($this->request('about'))['padding_size'], 'Only the sizes UNA knows.');
+        $oDb->query("UPDATE `sys_pages_blocks` SET `padding_size` = 'relaxed', `title_size` = 'huge' WHERE `id` = :id", ['id' => $iId]);
+        $aBlock = $this->block($this->request('about'));
+        $this->assertSame('', $aBlock['padding_size'], 'Only the sizes UNA knows: Relaxed is now Large.');
+        $this->assertSame('', $aBlock['title_size'], 'Only the sizes UNA knows.');
 
-        // A design box without padding has no size for it.
-        $oDb->query("UPDATE `sys_pages_blocks` SET `designbox_id` = 1, `padding_size` = 'relaxed' WHERE `id` = :id", ['id' => $iId]);
+        // A design box without padding or a title has no size for it.
+        $oDb->query("UPDATE `sys_pages_blocks` SET `designbox_id` = 1, `padding_size` = 'large' WHERE `id` = :id", ['id' => $iId]);
         $this->assertSame('', $this->block($this->request('about'))['padding_size']);
-        $this->assertStringNotContainsString('bx-db-padding-relaxed', $this->siteBlockContainer($iId));
+        $this->assertStringNotContainsString('bx-db-padding-large', $this->siteBlockContainer($iId));
+        $oDb->query("UPDATE `sys_pages_blocks` SET `designbox_id` = :d, `title_size` = 'compact' WHERE `id` = :id", ['d' => BX_DB_PADDING_NO_CAPTION, 'id' => $iId]);
+        $this->assertSame('', $this->block($this->request('about'))['title_size']);
+        $this->assertStringNotContainsString('bx-db-title-compact', $this->siteBlockContainer($iId));
     }
 
     /** The opening tag of the block's container on the site's About page. */

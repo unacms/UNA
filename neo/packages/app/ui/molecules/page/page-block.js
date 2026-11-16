@@ -2,26 +2,35 @@ import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util'
 import { blockBgClasses, normalizeTiers, responsiveClasses } from 'app/lib/responsive-classes'
-import { blockPaddingKey, blockPaddingSize, withoutGap } from 'app/lib/block-padding'
+import { blockSize, blockSizeKey, withoutGap } from 'app/lib/block-size'
 
 const blockTheme = appSetting('theme', 'blocks')
 
 /**
  * UNA padding classes for one side (`pad-x`, `pad-y`) on the tiers in `pad`, at Studio's "Padding" `size`
- * (compact, relaxed; '' regular, see lib/block-padding.ts). A theme without the sized keys keeps its regular padding.
+ * (compact, large; '' regular, see lib/block-size.ts). A theme without the sized keys keeps its regular padding.
  */
 function padClasses(padSide, pad, size) {
     if (!padSide || !pad) return ''
     const regularKey = 'u-block-' + padSide
-    const sizedKey = blockPaddingKey(regularKey, size)
+    const sizedKey = blockSizeKey(regularKey, size)
     const hasSized = blockTheme[sizedKey] != null
     if (pad === true) return hasSized ? blockTheme[sizedKey] : blockTheme[regularKey]
-    return responsiveClasses(hasSized ? blockPaddingKey('block-' + padSide, size) : 'block-' + padSide, pad)
+    return responsiveClasses(hasSized ? blockSizeKey('block-' + padSide, size) : 'block-' + padSide, pad)
 }
 
-/** The part's theme classes; the gap between a block's title and content follows its padding size, as on the site. */
-function themeClasses(baseClass, size) {
-    const sizedGap = baseClass === 'u-block-base' && size ? blockTheme['u-block-gap-' + size] : null
+/** The parts whose type follows Studio's "Title size" (`theme.blocks` `<part>-compact` / `-large`). */
+const TITLE_PARTS = new Set(['u-block-title', 'u-block-title-stacked'])
+
+/**
+ * The part's theme classes. The gap between a block's title and content follows its padding size, as on the site; the
+ * title takes its sized type (a theme without the sized keys keeps the regular title).
+ */
+function themeClasses(baseClass, padSize, titleSize) {
+    if (TITLE_PARTS.has(baseClass) && titleSize) {
+        return blockTheme[blockSizeKey(baseClass, titleSize)] ?? blockTheme[baseClass] ?? ''
+    }
+    const sizedGap = baseClass === 'u-block-base' && padSize ? blockTheme['u-block-gap-' + padSize] : null
     if (sizedGap == null) return blockTheme[baseClass] || ''
     return `${withoutGap(blockTheme[baseClass])} ${sizedGap}`
 }
@@ -38,6 +47,7 @@ function createBlockComponent({
         isBg,
         isPad,
         padSize,
+        titleSize,
         rounded,
         ...props
     }) {
@@ -57,9 +67,9 @@ function createBlockComponent({
             : baseClass === 'u-block-header' || baseClass === 'u-block-content' || baseClass === 'u-block-footer'
                 ? 'pad-x'
                 : ''
-        const size = pad ? blockPaddingSize(padSize) : ''
+        const size = pad ? blockSize(padSize) : ''
         const padClass = padClasses(padSide, pad, size)
-        const themeClass = themeClasses(baseClass, size)
+        const themeClass = themeClasses(baseClass, size, blockSize(titleSize))
 
         return (
             <Component
