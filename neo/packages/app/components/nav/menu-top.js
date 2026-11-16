@@ -210,7 +210,7 @@ export default function MenuTop({ url, uri }) {
                             isTitle={!!item.showTitle}
                             title={t(item.title)}
                             isActive={isActive}
-                            items={flattenMenuItemsForDropdown(item.items)}
+                            items={item.items ? markCurrentRows(flattenMenuItemsForDropdown(item.items), url, uri) : undefined}
                             chevron={item.chevron}
                             animated={item.animated}
                             addClassName={item.addClassName}
@@ -272,8 +272,18 @@ function navbarShownItems(tabs, fitCount, moreItem) {
 }
 
 /** The current page's tab, or More when that tab is among the `overflow` tabs at the top of More; -1 for neither. */
+/** The tab (or More row) of the page at `url` / `uri`. */
+function isCurrentTab(item, url, uri) {
+    return (item?.link === '/' + url) || (item?.link === '/' && uri === 'home');
+}
+
+/** More's rows, the current page's marked `current` (drawn as the current tab, topmenu.tsx). */
+function markCurrentRows(items, url, uri) {
+    return items.map((item) => (isCurrentTab(item, url, uri) ? { ...item, current: true } : item));
+}
+
 function navbarActiveIndex(shownItems, overflow, url, uri) {
-    const isCurrent = (item) => (item?.link === '/' + url) || (item?.link === '/' && uri === 'home');
+    const isCurrent = (item) => isCurrentTab(item, url, uri);
     const index = shownItems.findIndex(isCurrent);
     if (index >= 0) return index;
     const more = shownItems.findIndex((item) => item?.name === 'more');
@@ -302,7 +312,7 @@ function MenuTopProbe({ items, t, onWidth }) {
                     >
                         {item.icon ? <View className="h-6 w-6 shrink-0" /> : null}
                         {item.showTitle ? (
-                            <Text className="whitespace-nowrap font-medium text-base leading-6">{t(item.title)}</Text>
+                            <Text className="whitespace-nowrap font-medium text-sm leading-5">{t(item.title)}</Text>
                         ) : null}
                         {item.chevron ? <View className="h-4 w-4 shrink-0" /> : null}
                     </Row>

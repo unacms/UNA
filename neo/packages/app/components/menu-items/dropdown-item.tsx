@@ -31,6 +31,8 @@ export type DropdownRowItem = {
     type?: string;
     /** true or false makes the row a radio option; true marks it current. */
     selected?: boolean;
+    /** The current page's row of a navigation menu: the selected look and `aria-current`, not a radio option. */
+    current?: boolean;
     /** First group header of a sectioned menu. */
     first?: boolean;
     /** The cue the row plays when pressed (web); false for none. */
@@ -70,9 +72,14 @@ export type DropdownMenuItemProps = {
     expanded?: boolean;
     /** A row (or group title) inside an open group, inset by `theme.dropdown_menu.item_nested`. */
     nested?: boolean;
+    /** Icons as a 24px glyph without a circle (`theme.dropdown_menu.item_plain_*`), as in the header's tabs. */
+    plainIcons?: boolean;
 };
 
-const getIcon = (oItem: DropdownRowItem, iconSize: number, imageClass = 'h-8 w-8 rounded-full') => {
+/** Selected (a picked option) or the current page's row. */
+const isOn = (item: DropdownRowItem): boolean => !!item.selected || !!item.current;
+
+const getIcon = (oItem: DropdownRowItem, iconSize: number, imageClass = 'h-8 w-8 rounded-full', plain = false) => {
     const image = oItem?.image
     if (typeof image === 'string' && image && /^(https?:|file:|content:|data:)/i.test(image)) {
         return (
@@ -86,11 +93,14 @@ const getIcon = (oItem: DropdownRowItem, iconSize: number, imageClass = 'h-8 w-8
     }
     if (!oItem?.icon) return null;
 
-    const selected = !!oItem.selected;
+    const selected = isOn(oItem);
     // In the item's icon circle the glyph takes the label's colour; the selected one is the circle's foreground.
-    let glyphClass = menuSettings.item_icon ? menuSettings.item_icon_glyph : null;
+    // A plain glyph (no circle) takes the label's colour too, and the current row's accent-foreground.
+    let glyphClass = menuSettings.item_icon || plain ? menuSettings.item_icon_glyph : null;
     if (selected)
-        glyphClass = menuSettings.item_icon_selected ?? 'text-accent-foreground';
+        glyphClass = plain
+            ? (menuSettings.item_plain_current_glyph ?? 'text-accent-foreground')
+            : (menuSettings.item_icon_selected ?? 'text-accent-foreground');
     const className = [oItem?.class_item_icon, oItem?.addClassName, glyphClass]
         .filter(Boolean)
         .join(' ');
@@ -173,9 +183,9 @@ const getPressProps = (item: DropdownRowItem, handleSelect?: SelectHandler, expa
 };
 
 /** Label classes: the variant's text preset (`classes.item_text_key`), its `_selected` twin for the picked item. */
-const getTextClass = (presets: Presets, item: DropdownRowItem, classes?: DropdownRowClasses): string => {
-    const itemTextKey = classes?.item_text_key || 'item_text';
-    const selectedClass = item.selected ? presets[`${itemTextKey}_selected`] : null;
+const getTextClass = (presets: Presets, item: DropdownRowItem, classes?: DropdownRowClasses, plain?: boolean): string => {
+    const itemTextKey = classes?.item_text_key || (plain && presets.item_plain_text ? 'item_plain_text' : 'item_text');
+    const selectedClass = isOn(item) ? presets[`${itemTextKey}_selected`] : null;
     return selectedClass ?? presets[itemTextKey] ?? presets.item_text;
 };
 
@@ -204,19 +214,28 @@ const getPressCue = (item: DropdownRowItem, expanded?: boolean): PressCue => {
     return expanded ? 'close' : 'open';
 };
 
+/** The selected row's fill: the accent, or with plain icons the header's current tab. */
+const getOnClass = (item: DropdownRowItem, plain?: boolean): string | false => {
+    if (!isOn(item)) return false;
+    return plain ? (menuSettings.item_plain_current ?? 'bg-accent') : (menuSettings.item_selected ?? 'bg-accent');
+};
+
 /** The row's own classes: the variant's preset, the selected look, the inset of a row inside an open group. */
-const getRowClass = (presets: Presets, item: DropdownRowItem, classes?: DropdownRowClasses, className?: string, nested?: boolean): string =>
+const getRowClass = (presets: Presets, item: DropdownRowItem, classes?: DropdownRowClasses, className?: string, nested?: boolean, plain?: boolean): string =>
     cn(
         'group',
         className,
         presets[classes?.item || 'item_ver'],
-        item.selected && (menuSettings.item_selected ?? 'bg-accent'),
+        getOnClass(item, plain),
+        plain && menuSettings.item_plain_row,
         nested && menuSettings.item_nested
     );
 
 /** The icon circle's classes: the solid one for the selected item. */
-const getIconWrapClass = (presets: Presets, item: DropdownRowItem): string =>
-    item.selected ? (presets.item_icon_active ?? presets.item_icon) : presets.item_icon;
+const getIconWrapClass = (presets: Presets, item: DropdownRowItem, plain?: boolean): string => {
+    if (plain) return presets.item_plain_icon;
+    return isOn(item) ? (presets.item_icon_active ?? presets.item_icon) : presets.item_icon;
+};
 
 /** A disclosure row's chevron: down while closed, turned up while open. */
 function DisclosureChevron({ expanded, size }: Readonly<{ expanded: boolean; size: number }>) {
@@ -227,10 +246,11 @@ function DisclosureChevron({ expanded, size }: Readonly<{ expanded: boolean; siz
     );
 }
 
-export default function DropdownMenuItem({ item, index, link, handleSelect, classes, className, counter, handleCounter, size, expanded, nested }: Readonly<DropdownMenuItemProps>) {
+export default function DropdownMenuItem({ item, index, link, handleSelect, classes, className, counter, handleCounter, size, expanded, nested, plainIcons }: Readonly<DropdownMenuItemProps>) {
     const key = item.id ?? index;
     const presets: Presets = { ...menuSettings, ...sizedPresets(size) };
-    const iconSize = presets.icon_size || 16;
+    const plain = !!plainIcons && !!presets.item_plain_icon;
+    const iconSize = (plain ? presets.item_plain_icon_size : presets.icon_size) || 16;
 
     // A node title renders itself; its onPress is already handled inside MenuItemEx, so no outer Pressable.
     if (typeof item.title !== 'string')
@@ -245,8 +265,8 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
 
     const disclosure = typeof expanded === 'boolean';
 
-    const icon = getIcon(item, iconSize, presets.item_image);
-    const iconWrapClass = getIconWrapClass(presets, item);
+    const icon = getIcon(item, iconSize, presets.item_image, plain);
+    const iconWrapClass = getIconWrapClass(presets, item, plain);
 
     const itemCntClass = menuSettings[classes?.item_cnt_key ?? 'item_cnt'] ?? menuSettings.item_cnt;
     const rowClassName = classes?.item_row ?? 'justify-between items-start';
@@ -257,7 +277,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     const pressProps = getPressProps(item, handleSelect, expanded);
     const Content = (
         <Wrapper
-            className={getRowClass(presets, item, classes, className, nested)}
+            className={getRowClass(presets, item, classes, className, nested, plain)}
             key={key}
             {...pressProps}
             {...(handleSelect || link ? cueAttributes(getPressCue(item, expanded)) : {})}
@@ -267,8 +287,8 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
                     the chevron's middle: the chevron is taller than a label without an icon, which the row's
                     `items-start` would leave above the labels of the rows around it. */}
                 <View className={cn(itemCntClass, disclosure && 'flex-1 self-center')}>
-                {(!!icon && !!menuSettings.item_icon) && <View className={iconWrapClass}>{icon}</View>}
-                {!!item.title && <ItemLabel item={item} textClass={getTextClass(presets, item, classes)} />}
+                {(!!icon && (!!menuSettings.item_icon || plain)) && <View className={iconWrapClass}>{icon}</View>}
+                {!!item.title && <ItemLabel item={item} textClass={getTextClass(presets, item, classes, plain)} />}
                 </View>
                 {!!counter && typeof handleCounter === 'function' && (
                     <Pressable className='mr-1' onPress={(event: GestureResponderEvent) => handleCounter(event, item)}>
@@ -288,7 +308,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
                 className="block"
                 target={item.target === 'blank' ? '_blank' : item.target}
                 asExternal={item.target === '_blank' || item.target === 'blank'}
-                aria-current={item.selected ? 'page' : undefined}
+                aria-current={isOn(item) ? 'page' : undefined}
             >
                 {Content}
             </Link>

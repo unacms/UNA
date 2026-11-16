@@ -90,6 +90,17 @@ export const settingsElements = {
         item_selected: ' bg-accent ',
         item_text_selected: `${MENU_TEXT_SELECTED_BASE} ${MENU_ITEM_SIZES.regular.text}`,
         item_icon_selected: 'text-primary-foreground',
+        /** Plain icons (`DropdownMenu plainIcons`, the header's More): a 24px glyph without a circle, 12px from the row's
+            side and 8px from the label, as in the header's tabs. The current page's row (`item.current`) is the header's
+            current tab: accent-200 at 60% (accent-900 in dark) with an accent-foreground glyph and label, as UNA's. */
+        item_plain_icon: 'flex size-6 shrink-0 items-center justify-center ms-1',
+        item_plain_icon_size: 24,
+        item_plain_current: 'neo-menu-current bg-accent-200/60 dark:bg-accent-900/60',
+        item_plain_current_glyph: 'text-accent-foreground',
+        /** The tabs' medium label, and their press: the row shrinks to 95% with the sliding highlight (global.web.css). */
+        item_plain_text: 'block w-full font-medium text-secondary-foreground web:group-hover:text-foreground px-2 web:transition-colors web:duration-150 web:ease-out text-sm',
+        item_plain_text_selected: 'block w-full font-medium text-accent-foreground px-2 web:transition-colors web:duration-150 web:ease-out text-sm',
+        item_plain_row: 'neo-menu-plain web:active:scale-95 web:duration-100',
         item_description: 'block w-full text-xs font-normal leading-tight text-pretty text-muted-foreground px-2 break-words',
         item_group_header: 'px-2 pt-3 pb-1',
         item_group_header_first: 'p-2.5',

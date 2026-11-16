@@ -1791,9 +1791,9 @@
         @apply h-8 w-8;
     }
 
-    /* Header: the main menu's tabs are capsules at the header's control height (44px, NEO's regular button). */
+    /* Header: the main menu's tabs are the header's control height (44px, NEO's regular button) with a regular button's 12px corners. */
     #bx-toolbar .bx-menu-main > .bx-menu-item {
-        @apply rounded-full;
+        @apply rounded-xl;
     }
     /* Header: the current page's tab is in the accent colours, NEO's open and current buttons (blue-200 at 60% and blue-700,
        blue-900 at 60% and blue-300 in dark), as the toolbar buttons that are current or open. NEO marks its tab with the accent label and a
@@ -1806,10 +1806,16 @@
         @apply justify-center;
     }
     #bx-toolbar .bx-menu-main > .bx-menu-item > .bx-stl-mil {
-        @apply h-11 py-0 ltr:pl-3 ltr:pr-4 rtl:pr-3 rtl:pl-4 border-0 rounded-full bx-stl-mil-hover-text; /* the icon's 24px box has ~3px of air, so its side gets 4px less padding to look even; no border: the tabs' states are the sliding highlight, and NEO's tabs are as wide (components/menu-items/topmenu.tsx) */
+        @apply h-11 py-0 ltr:pl-3 ltr:pr-4 rtl:pr-3 rtl:pl-4 border-0 rounded-xl bx-stl-mil-hover-text; /* the icon's 24px box has ~3px of air, so its side gets 4px less padding to look even; no border: the tabs' states are the sliding highlight, and NEO's tabs are as wide (components/menu-items/topmenu.tsx) */
     }
     #bx-toolbar .bx-menu-main > .bx-menu-item-more-auto > .bx-stl-mil {
-        @apply w-11 px-0 justify-center; /* icon-only: a 44px circle like the toolbar buttons */
+        @apply w-11 px-0 justify-center; /* icon-only: a 44px square with the tabs' corners */
+    }
+    #bx-toolbar .bx-menu-main > .bx-menu-item:not(.bx-menu-tab-active) > .bx-stl-mil:hover {
+        @apply text-gray-950 dark:text-gray-50; /* the full text colour on hover, as the rows of the More list and NEO's tabs */
+    }
+    #bx-toolbar .bx-menu-main > .bx-menu-item > .bx-stl-mil .bx-stl-mit {
+        @apply text-sm leading-5; /* the size of the labels in the More list and the other popup menus, as NEO's tabs */
     }
     #bx-toolbar .bx-menu-main .bx-stl-mii:not(:last-child) > * {
         @apply ltr:mr-2 rtl:ml-2; /* 8px between icon and label in the tabs and the More list */
@@ -1941,6 +1947,34 @@
     }
     .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li.bx-menu-tab-active .bx-stl-mii:has(> *) {
         @apply bg-blue-600 text-white;
+    }
+    /* Header: the More list's rows are drawn as the main menu's tabs: a 24px icon without its circle, 12px from the row's side and
+       8px from the label, and the current page's row in the current tab's colours (blue-200 at 60% with a blue-700 icon and label;
+       blue-900 at 60% and blue-300 in dark). NEO's More does the same (DropdownMenu plainIcons, components/menu-items/topmenu.tsx). */
+    #bx-toolbar .bx-menu-submenu-more-auto > li > a:has(> .bx-stl-mii > *) {
+        padding-inline-start: calc(0.75rem - 1px); /* the link's 1px border makes it 12px, as in the tabs */
+    }
+    #bx-toolbar .bx-menu-submenu-more-auto > li .bx-stl-mit {
+        @apply font-medium; /* the tabs' weight */
+    }
+    #bx-toolbar .bx-menu-submenu-more-auto > li .bx-stl-mii:has(> *),
+    #bx-toolbar .bx-menu-submenu-more-auto > li:hover .bx-stl-mii:has(> *) {
+        @apply w-6 h-6 bg-transparent dark:bg-transparent;
+    }
+    #bx-toolbar .bx-menu-submenu-more-auto > li .bx-stl-mii > * {
+        @apply w-6 h-6;
+    }
+    #bx-toolbar .bx-menu-submenu-more-auto > li.bx-menu-tab-active {
+        @apply bg-blue-200/60 dark:bg-blue-900/60;
+    }
+    #bx-toolbar .bx-menu-submenu-more-auto > li.bx-menu-tab-active > .bx-stl-mil {
+        @apply bg-transparent dark:bg-transparent ring-0;
+    }
+    #bx-toolbar .bx-menu-submenu-more-auto > li.bx-menu-tab-active .bx-stl-mii:has(> *),
+    #bx-toolbar .bx-menu-submenu-more-auto > li.bx-menu-tab-active .bx-stl-mit,
+    #bx-toolbar .bx-menu-submenu-more-auto > li.bx-menu-tab-active:hover .bx-stl-mii:has(> *),
+    #bx-toolbar .bx-menu-submenu-more-auto > li.bx-menu-tab-active:hover .bx-stl-mit {
+        @apply text-blue-700 dark:text-blue-300;
     }
     /* Account panel: its list is inset 8px like the popups (Artificer's menu.css zeroes list padding, so not a class). */
     .bx-artificer ul.bx-menu-floating-blocks-wide {
