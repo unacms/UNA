@@ -86,6 +86,13 @@
         var oTrigger = $('.bx-sidebar-' + sType + '-trigger');
         oTrigger.attr('aria-expanded', !bSidebarActive ? 'true' : 'false');
 
+        //--- The main menu dropdown scrolls with the menu popups' overlay scrollbar, drawn over its rounded box.
+        if(!bSidebarActive && sType == 'site' && typeof(bx_scrollbar_overlay) == 'function') {
+            var oList = oSidebar.find('.bx-sidebar-site-list').get(0);
+            if(oList)
+                bx_scrollbar_overlay(oList, oSidebar.find('.bx-sidebar-cnt').get(0) || oList, {inset: 4});
+        }
+
         if(!bSidebarActive) {
             var aFocusable = bx_get_focusable(oSidebar.get(0));
             if(aFocusable && aFocusable.length > 0)

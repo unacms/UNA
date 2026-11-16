@@ -2052,6 +2052,16 @@
         @apply w-6 h-6 m-0;
         color: inherit;
     }
+    /* A sub-page without an icon has no empty icon slot: its label lines up with the label of the row it unfolds from (12px + 24px + 8px). */
+    #bx-sidebar-site .bx-si-icon:not(:has(*)) {
+        @apply hidden;
+    }
+    #bx-sidebar-site .bx-sidebar-dropdown-content > li {
+        @apply ps-0;
+    }
+    #bx-sidebar-site .bx-sidebar-dropdown-content > li > a {
+        padding-inline-start: 2.75rem;
+    }
     #bx-sidebar-site .bx-si-dropdown-icon {
         @apply ms-2 text-gray-400 dark:text-gray-500;
     }
