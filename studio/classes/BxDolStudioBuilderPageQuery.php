@@ -401,6 +401,7 @@ class BxDolStudioBuilderPageQuery extends BxDolStudioPageQuery
             `tpb`.`title_hidden_on` AS `title_hidden_on`,
             `tpb`.`bg_hidden_on` AS `bg_hidden_on`,
             `tpb`.`padding_hidden_on` AS `padding_hidden_on`,
+            `tpb`.`padding_size` AS `padding_size`,
             `tpb`.`visible_for_levels` AS `visible_for_levels`,
             `tpb`.`type` AS `type`,
             `tpb`.`content` AS `content`,

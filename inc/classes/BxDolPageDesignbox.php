@@ -13,10 +13,17 @@
  * `title_hidden_on`, `bg_hidden_on` and `padding_hidden_on`, like its "Hidden on". The site hides the part with
  * classes (css/page_layouts.css); the apps get the screen size names (phone, tablet, desktop, mobile-app).
  * A part the block's design box doesn't have (designbox_id) stays off whatever is set.
+ *
+ * Its padding has a size too (Studio > Pages > block: "Padding", `padding_size`): '' is the design box's own
+ * 16px (regular), 'compact' is 8px and 'relaxed' 24px, for the content and the title above it. The site adds
+ * bx-db-padding-<size> to the block's container; the apps get the size name.
  */
 class BxDolPageDesignbox
 {
     const PARTS = ['title', 'bg', 'padding'];
+
+    /** Padding sizes besides the regular one (''). */
+    const PADDING_SIZES = ['compact', 'relaxed'];
 
     /** Design boxes without each part, as the design box templates (designbox_<id>.html) draw them. */
     protected static $_aWithout = [
@@ -52,6 +59,35 @@ class BxDolPageDesignbox
         }
 
         return implode(' ', $aClasses);
+    }
+
+    /**
+     * A padding size as it is kept: 'compact', 'relaxed', or '' (regular) for anything else.
+     */
+    public static function normalizePaddingSize($sSize)
+    {
+        return is_string($sSize) && in_array($sSize, self::PADDING_SIZES, true) ? $sSize : '';
+    }
+
+    /**
+     * The block's padding size: 'compact', 'relaxed', or '' (regular, and for a design box without padding).
+     */
+    public static function getPaddingSize($aBlock)
+    {
+        if(!self::hasPart(isset($aBlock['designbox_id']) ? $aBlock['designbox_id'] : 0, 'padding')) {
+            return '';
+        }
+
+        return self::normalizePaddingSize(isset($aBlock['padding_size']) ? $aBlock['padding_size'] : '');
+    }
+
+    /**
+     * Class for the block's container on the site: bx-db-padding-<size>, '' for the regular padding.
+     */
+    public static function getPaddingSizeClass($aBlock)
+    {
+        $sSize = self::getPaddingSize($aBlock);
+        return $sSize !== '' ? 'bx-db-padding-' . $sSize : '';
     }
 }
 

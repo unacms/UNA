@@ -268,6 +268,7 @@ function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg
                     key={block.id}
                     isBg={bIsShowBg}
                     isPad={bIsShowPadding}
+                    padSize={block.padding_size}
                     rounded={rounded}
                     className={[
                         "w-full mx-auto",
@@ -282,6 +283,7 @@ function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg
                     {bIsShowTitle && !overlayHeader && (
                         <BlockHeader
                             isPad={bIsShowPadding}
+                            padSize={block.padding_size}
                             className={[
                                 fill ? 'shrink-0' : '',
                                 fill && !bIsShowPadding ? 'px-4 pt-4' : '',
@@ -294,6 +296,7 @@ function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg
                     )}
                     <BlockContent
                         isPad={bIsShowPadding}
+                        padSize={block.padding_size}
                         className={
                             fill
                                 ? `flex min-h-0 flex-1 flex-col ${clip ? 'overflow-hidden' : ''}`
@@ -307,7 +310,7 @@ function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg
                     </BlockContent>
                     {/* The block's footer: UNA's notice under the content (the terms a form's visitor agrees to). */}
                     {footerHtml ? (
-                        <BlockFooter isPad={bIsShowPadding} className="mt-4 border-t border-border pt-4 items-center justify-center">
+                        <BlockFooter isPad={bIsShowPadding} padSize={block.padding_size} className="mt-4 border-t border-border pt-4 items-center justify-center">
                             <BlockNotice html={footerHtml} />
                         </BlockFooter>
                     ) : null}

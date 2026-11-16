@@ -2,8 +2,29 @@ import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util'
 import { blockBgClasses, normalizeTiers, responsiveClasses } from 'app/lib/responsive-classes'
+import { blockPaddingKey, blockPaddingSize, withoutGap } from 'app/lib/block-padding'
 
 const blockTheme = appSetting('theme', 'blocks')
+
+/**
+ * UNA padding classes for one side (`pad-x`, `pad-y`) on the tiers in `pad`, at Studio's "Padding" `size`
+ * (compact, relaxed; '' regular, see lib/block-padding.ts). A theme without the sized keys keeps its regular padding.
+ */
+function padClasses(padSide, pad, size) {
+    if (!padSide || !pad) return ''
+    const regularKey = 'u-block-' + padSide
+    const sizedKey = blockPaddingKey(regularKey, size)
+    const hasSized = blockTheme[sizedKey] != null
+    if (pad === true) return hasSized ? blockTheme[sizedKey] : blockTheme[regularKey]
+    return responsiveClasses(hasSized ? blockPaddingKey('block-' + padSide, size) : 'block-' + padSide, pad)
+}
+
+/** The part's theme classes; the gap between a block's title and content follows its padding size, as on the site. */
+function themeClasses(baseClass, size) {
+    const sizedGap = baseClass === 'u-block-base' && size ? blockTheme['u-block-gap-' + size] : null
+    if (sizedGap == null) return blockTheme[baseClass] || ''
+    return `${withoutGap(blockTheme[baseClass])} ${sizedGap}`
+}
 
 function createBlockComponent({
     baseClass,
@@ -16,6 +37,7 @@ function createBlockComponent({
         className = '',
         isBg,
         isPad,
+        padSize,
         rounded,
         ...props
     }) {
@@ -35,13 +57,13 @@ function createBlockComponent({
             : baseClass === 'u-block-header' || baseClass === 'u-block-content' || baseClass === 'u-block-footer'
                 ? 'pad-x'
                 : ''
-        const padClass = !padSide || !pad
-            ? ''
-            : pad === true ? blockTheme['u-block-' + padSide] : responsiveClasses('block-' + padSide, pad)
+        const size = pad ? blockPaddingSize(padSize) : ''
+        const padClass = padClasses(padSide, pad, size)
+        const themeClass = themeClasses(baseClass, size)
 
         return (
             <Component
-                className={`${baseClass} ${bgClass} ${padClass} ${animate ? blockTheme['u-block-animate'] || '' : ''} ${blockTheme[baseClass] || ''} ${roundedClass} ${className}`}
+                className={`${baseClass} ${bgClass} ${padClass} ${animate ? blockTheme['u-block-animate'] || '' : ''} ${themeClass} ${roundedClass} ${className}`}
                 role={role}
                 aria-level={ariaLevel}
                 {...props}

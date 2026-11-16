@@ -683,6 +683,9 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                         array('key' => '', 'value' => _t('_adm_bp_txt_block_designbox_empty')),
                     ),
                     'required' => '1',
+                    'attrs' => array(
+                        'onchange' => $sJsObject . '.onChangeDesignbox(this)',
+                    ),
                     'db' => array (
                         'pass' => 'Xss',
                     ),
@@ -772,6 +775,23 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                     'values' => $aDesignboxHiddenOn,
                     'db' => array (
                         'pass' => 'Set',
+                    )
+                ),
+                // Only design boxes with padding have a size for it (BxDolPageDesignbox); the row follows the Block Layout.
+                'padding_size' => array(
+                    'type' => 'select',
+                    'name' => 'padding_size',
+                    'caption' => _t('_adm_bp_txt_block_padding_size'),
+                    'info' => _t('_adm_bp_txt_block_padding_size_info'),
+                    'value' => BxDolPageDesignbox::normalizePaddingSize(isset($aBlock['padding_size']) ? $aBlock['padding_size'] : ''),
+                    'values' => array(
+                        array('key' => '', 'value' => _t('_adm_bp_txt_block_padding_size_regular')),
+                        array('key' => 'compact', 'value' => _t('_adm_bp_txt_block_padding_size_compact')),
+                        array('key' => 'relaxed', 'value' => _t('_adm_bp_txt_block_padding_size_relaxed')),
+                    ),
+                    'tr_attrs' => BxDolPageDesignbox::hasPart($aBlock['designbox_id'], 'padding') ? array() : array('style' => 'display:none'),
+                    'db' => array (
+                        'pass' => 'Xss',
                     )
                 ),
                 'visible_for' => array(
@@ -895,8 +915,15 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
 
         $aDBoxes = array();
         $this->oDb->getDesignBoxes(array('type' => 'ordered'), $aDBoxes, false);
-        foreach($aDBoxes as $aDBox)
+        $aDBoxesPadding = array();
+        foreach($aDBoxes as $aDBox) {
             $aForm['inputs']['designbox_id']['values'][] = array('key' => $this->sSelectKeyPrefix . $aDBox['id'], 'value' => _t($aDBox['title']));
+            if(BxDolPageDesignbox::hasPart($aDBox['id'], 'padding')) {
+                $aDBoxesPadding[] = $this->sSelectKeyPrefix . $aDBox['id'];
+            }
+        }
+        // The Block Layouts with padding, for the Padding row to follow the choice (onChangeDesignbox).
+        $aForm['inputs']['designbox_id']['attrs']['data-padding'] = implode(',', $aDBoxesPadding);
 
         $aContentPlaceholders = $this->oDb->getContentPlaceholders();
         $aForm['inputs']['async']['values'][] = array('key' => 0, 'value' => _t('_sys_no_async'));

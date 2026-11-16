@@ -992,6 +992,8 @@ class BxBasePage extends BxDolPage
                 // Where its title, background or padding is hidden (Studio), for the apps' design box per screen size.
                 foreach(BxDolPageDesignbox::PARTS as $sPart)
                     $aCells[$sKey][$i][$sPart . '_hidden_on'] = !empty($aBlock[$sPart . '_hidden_on']) ? self::getHiddenOnNamesAPI($aBlock[$sPart . '_hidden_on']) : false;
+                // Its padding size (Studio): '' (regular), 'compact' or 'relaxed'.
+                $aCells[$sKey][$i]['padding_size'] = BxDolPageDesignbox::getPaddingSize($aBlock);
 
                 $aCells[$sKey][$i] = array_diff_key($aCells[$sKey][$i], array_flip($aFieldsUnset));
             }
@@ -1040,6 +1042,12 @@ class BxBasePage extends BxDolPage
                 // Its title, background or padding hidden on some screen sizes (Studio).
                 if(($sDesignboxClasses = BxDolPageDesignbox::getHiddenOnClasses($aBlock)))
                     $sClassAdd .= ' ' . $sDesignboxClasses;
+
+                // Its padding size, compact or relaxed (Studio).
+                $sPaddingClass = BxDolPageDesignbox::getPaddingSizeClass($aBlock);
+                if($sPaddingClass) {
+                    $sClassAdd .= ' ' . $sPaddingClass;
+                }
 
                 if ($sContentWithBox)
                     $sCell .= $this->_oTemplate->parseHtmlByName('designbox_container.html', array(

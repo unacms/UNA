@@ -211,6 +211,12 @@ BxDolStudioBuilderPage.prototype.onChangeVisibleFor = function(oSelect) {
     $(oSelect).parents('form:first').find('#bx-form-element-visible_for_levels').bx_anim($(oSelect).val() == 'all' ? 'hide' : 'show', this.sAnimationEffect, this.iAnimationSpeed);
 };
 
+BxDolStudioBuilderPage.prototype.onChangeDesignbox = function(oSelect) {
+    // Only a Block Layout with padding has a size for it.
+    var aWithPadding = ($(oSelect).attr('data-padding') || '').split(',');
+    $(oSelect).parents('form:first').find('#bx-form-element-padding_size').bx_anim(aWithPadding.includes($(oSelect).val()) ? 'show' : 'hide', this.sAnimationEffect, this.iAnimationSpeed);
+};
+
 BxDolStudioBuilderPage.prototype.onEditBlockBeforeShow = function(oPopup) {
     var oTextarea = $(oPopup).find("textarea.bx-form-input-textarea-codemirror[name = 'content']");
     if(oTextarea.length > 0)

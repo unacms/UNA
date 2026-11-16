@@ -605,6 +605,11 @@
         <string name="_adm_bp_txt_block_hidden_on_mobile"><![CDATA[мобильное приложение]]></string>
         <string name="_adm_bp_txt_block_icon"><![CDATA[Иконка заголовка]]></string>
 	<string name="_adm_bp_txt_block_padding_hidden_on"><![CDATA[Отступы скрыты на]]></string>
+	<string name="_adm_bp_txt_block_padding_size"><![CDATA[Отступы]]></string>
+	<string name="_adm_bp_txt_block_padding_size_compact"><![CDATA[Компактные]]></string>
+	<string name="_adm_bp_txt_block_padding_size_info"><![CDATA[Расстояние от края блока до заголовка и содержимого. Только для отображений блока с отступами.]]></string>
+	<string name="_adm_bp_txt_block_padding_size_regular"><![CDATA[Обычные]]></string>
+	<string name="_adm_bp_txt_block_padding_size_relaxed"><![CDATA[Просторные]]></string>
 	<string name="_adm_bp_txt_block_part_hidden_on_info"><![CDATA[На сайте и в приложениях. Если в оформлении блока этой части нет, она так и не показывается.]]></string>
 	<string name="_adm_bp_txt_block_selected"><![CDATA[блоков выбрано]]></string>
         <string name="_adm_bp_txt_block_submenu"><![CDATA[Подменю блока]]></string>
