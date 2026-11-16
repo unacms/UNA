@@ -64,6 +64,35 @@ class BxBaseMenuToolbar extends BxTemplMenu
         return $a;
     }
 
+    /**
+     * A toolbar item opens its module's popup rather than a page, so it is never the page's own menu item. It is the
+     * current one while its module's home page is open (the notifications item on the notifications page), as the apps
+     * mark it, and takes the selected look (bx-menu-tab-active).
+     */
+    protected function _isSelected ($a)
+    {
+        $bModuleItem = !$this->_bIsApi && !empty($a['module']) && $a['module'] != 'system' && $a['module'] == self::$SEL_MODULE;
+
+        return parent::_isSelected($a) || ($bModuleItem && $this->getModuleHomePage($a['module']) === self::$SEL_NAME);
+    }
+
+    /**
+     * URI of an enabled module's home page (its URL_HOME, page.php?i=<uri>), or an empty string.
+     */
+    protected function getModuleHomePage ($sModule)
+    {
+        $sUri = '';
+        if(BxDolModuleQuery::getInstance()->isEnabledByName($sModule) && ($oModule = BxDolModule::getInstance($sModule))) {
+            $oConfig = $oModule->_oConfig;
+            if(!empty($oConfig->CNF['URL_HOME'])) {
+                parse_str((string)parse_url($oConfig->CNF['URL_HOME'], PHP_URL_QUERY), $aQuery);
+                $sUri = isset($aQuery['i']) ? (string)$aQuery['i'] : '';
+            }
+        }
+
+        return $sUri;
+    }
+
     protected function _getMenuItem ($a)
     {
         $a = parent::_getMenuItem ($a);
