@@ -8,11 +8,13 @@
 
 $oDb = BxDolDb::getInstance();
 
-if(!$oDb->isFieldExists('sys_objects_menu', 'section_nav') && $oDb->query("ALTER TABLE `sys_objects_menu` ADD `section_nav` varchar(16) NOT NULL DEFAULT '' AFTER `button_size`") === false)
+if(!$oDb->isFieldExists('sys_objects_menu', 'section_nav') && $oDb->query("ALTER TABLE `sys_objects_menu` ADD `section_nav` varchar(16) NOT NULL DEFAULT '' AFTER `button_size`") === false) {
     return false;
+}
 
-if($oDb->query("UPDATE `sys_objects_menu` SET `section_nav`='sidebar' WHERE `object`='sys_con_submenu' AND `section_nav`=''") === false)
+if($oDb->query("UPDATE `sys_objects_menu` SET `section_nav`='sidebar' WHERE `object`='sys_con_submenu' AND `section_nav`=''") === false) {
     return false;
+}
 
 // Menu objects are cached as whole rows: without this the new column is missing from them until the cache expires.
 $oDb->cleanCache('sys_menu_objects');
