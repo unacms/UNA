@@ -55,20 +55,51 @@
 }
 */
 
-/* A block's padding size (Studio > Pages > block: "Padding"; BxDolPageDesignbox adds the class to the block's
-   container): 8px compact, 24px relaxed, for the content and the title above it; regular is the design box's 16px.
-   "Padding hidden on" below still takes it off. */
+/* A block's title and padding sizes (Studio > Pages > block: "Title size", "Padding"; BxDolPageDesignbox adds the
+   classes to the block's container). Padding: 8px compact, 24px large, for the content and the title above it; regular
+   is the design box's 16px. "Padding hidden on" below still takes it off. Title: 16px on a 24px line (compact), 20px on
+   28px (regular, tailwind.css .bx-db-title) or 24px on 32px (large). Over a description the title sits on a 20px, 24px
+   or 32px line, so with the 4px gap and the description's 20px line it is as tall as the header icon: 44px, 48px
+   (Artificer general.css) or 56px. */
 .bx-db-padding-compact > .bx-db-container > .bx-db-header {
     padding: 0.5rem 0.5rem 0;
 }
 .bx-db-padding-compact > .bx-db-container > .bx-content-padding-block {
     padding: 0.5rem;
 }
-.bx-db-padding-relaxed > .bx-db-container > .bx-db-header {
+.bx-db-padding-large > .bx-db-container > .bx-db-header {
     padding: 1.5rem 1.5rem 0;
 }
-.bx-db-padding-relaxed > .bx-db-container > .bx-content-padding-block {
+.bx-db-padding-large > .bx-db-container > .bx-content-padding-block {
     padding: 1.5rem;
+}
+.bx-db-title-compact > .bx-db-container > .bx-db-header .bx-db-title {
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+.bx-db-title-large > .bx-db-container > .bx-db-header .bx-db-title {
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+.bx-db-title-compact > .bx-db-container > .bx-db-header .bx-db-title:has(.bx-dbt-dsc) .bx-dbt-ttl {
+    line-height: 1.25rem;
+}
+.bx-db-title-compact > .bx-db-container > .bx-db-header .bx-db-title > .bx-dbt-hic {
+    width: 2.75rem;
+    height: 2.75rem;
+}
+.bx-db-title-large > .bx-db-container > .bx-db-header .bx-db-title:has(.bx-dbt-dsc) .bx-dbt-ttl {
+    line-height: 2rem;
+}
+.bx-db-title-large > .bx-db-container > .bx-db-header .bx-db-title > .bx-dbt-hic {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 0.75rem;
+    font-size: 1.75rem;
+}
+.bx-db-title-large > .bx-db-container > .bx-db-header .bx-db-title > .bx-dbt-hic :is(svg, .sys-icon) {
+    width: 1.75rem;
+    height: 1.75rem;
 }
 
 /* A block's design box per screen size (Studio > Pages > block: "Title / Background / Padding hidden on",

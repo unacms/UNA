@@ -151,7 +151,7 @@ function OperatorAgentBody({ data, params, onClose }) {
                 <EdgeBlurView edge="top" config={edgeBlurConfig('footer')} washClassName={edgeWash('panel').top} pointerEvents="box-none">
                     <Row className="items-center justify-between ps-4 pe-2 pt-2 pb-4" pointerEvents="box-none" onLayout={onTitleBarLayout}>
                         {/* Sized like a block title (theme `u-block-title`). */}
-                        <Text className="text-lg font-semibold tracking-tight text-card-foreground">
+                        <Text className="text-xl font-semibold tracking-tight text-card-foreground">
                             {t('operator_agent_title')}
                         </Text>
                         <Row className="items-center gap-1">

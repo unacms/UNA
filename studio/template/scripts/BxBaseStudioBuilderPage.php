@@ -173,7 +173,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
 
                 $aTmplVarsCell = array('id' => $i, 'bx_repeat:blocks' => array());
                 foreach($aBlocks as $aBlock) {
-                    $sTitle = strip_tags(!empty($aBlock['title_system']) ? _t($aBlock['title_system']) : $oPage->getBlockTitle($aBlock));
+                    $sTitle = $this->getBlockTitleForStudio($aBlock, $oPage);
                     list($sIcon, $sIconUrl) = $this->getBlockIcon($aBlock);
 
                     $aTmplVarsCell['bx_repeat:blocks'][] = array(
@@ -777,23 +777,10 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                         'pass' => 'Set',
                     )
                 ),
-                // Only design boxes with padding have a size for it (BxDolPageDesignbox); the row follows the Block Layout.
-                'padding_size' => array(
-                    'type' => 'select',
-                    'name' => 'padding_size',
-                    'caption' => _t('_adm_bp_txt_block_padding_size'),
-                    'info' => _t('_adm_bp_txt_block_padding_size_info'),
-                    'value' => BxDolPageDesignbox::normalizePaddingSize(isset($aBlock['padding_size']) ? $aBlock['padding_size'] : ''),
-                    'values' => array(
-                        array('key' => '', 'value' => _t('_adm_bp_txt_block_padding_size_regular')),
-                        array('key' => 'compact', 'value' => _t('_adm_bp_txt_block_padding_size_compact')),
-                        array('key' => 'relaxed', 'value' => _t('_adm_bp_txt_block_padding_size_relaxed')),
-                    ),
-                    'tr_attrs' => BxDolPageDesignbox::hasPart($aBlock['designbox_id'], 'padding') ? array() : array('style' => 'display:none'),
-                    'db' => array (
-                        'pass' => 'Xss',
-                    )
-                ),
+                // A title and padding size, each only for the Block Layouts with that part (BxDolPageDesignbox); the rows
+                // follow the Block Layout (onChangeDesignbox).
+                'title_size' => $this->getBlockSizeInput($aBlock, 'title'),
+                'padding_size' => $this->getBlockSizeInput($aBlock, 'padding'),
                 'visible_for' => array(
                     'type' => 'select',
                     'name' => 'visible_for',
@@ -915,15 +902,19 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
 
         $aDBoxes = array();
         $this->oDb->getDesignBoxes(array('type' => 'ordered'), $aDBoxes, false);
-        $aDBoxesPadding = array();
+        $aDBoxesWith = array_fill_keys(BxDolPageDesignbox::SIZED_PARTS, array());
         foreach($aDBoxes as $aDBox) {
             $aForm['inputs']['designbox_id']['values'][] = array('key' => $this->sSelectKeyPrefix . $aDBox['id'], 'value' => _t($aDBox['title']));
-            if(BxDolPageDesignbox::hasPart($aDBox['id'], 'padding')) {
-                $aDBoxesPadding[] = $this->sSelectKeyPrefix . $aDBox['id'];
+            foreach(BxDolPageDesignbox::SIZED_PARTS as $sPart) {
+                if(BxDolPageDesignbox::hasPart($aDBox['id'], $sPart)) {
+                    $aDBoxesWith[$sPart][] = $this->sSelectKeyPrefix . $aDBox['id'];
+                }
             }
         }
-        // The Block Layouts with padding, for the Padding row to follow the choice (onChangeDesignbox).
-        $aForm['inputs']['designbox_id']['attrs']['data-padding'] = implode(',', $aDBoxesPadding);
+        // The Block Layouts with a title and with padding, for the size rows to follow the choice (onChangeDesignbox).
+        foreach($aDBoxesWith as $sPart => $aIds) {
+            $aForm['inputs']['designbox_id']['attrs']['data-' . $sPart] = implode(',', $aIds);
+        }
 
         $aContentPlaceholders = $this->oDb->getContentPlaceholders();
         $aForm['inputs']['async']['values'][] = array('key' => 0, 'value' => _t('_sys_no_async'));
@@ -966,13 +957,57 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                 return array('msg' => _t('_adm_bp_err_block_edit'));
         }
 
-        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($this->aHtmlIds['edit_block_popup_id'], _t('_adm_bp_txt_edit_block_popup', _t($aBlock['title_system'])), $oTemplate->parseHtmlByName('bp_add_block.html', array(
+        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($this->aHtmlIds['edit_block_popup_id'], _t('_adm_bp_txt_edit_block_popup', $this->getBlockTitleForStudio($aBlock)), $oTemplate->parseHtmlByName('bp_add_block.html', array(
         	'action' => 'edit',
             'form_id' => $aForm['form_attrs']['id'],
             'form' => $oForm->getCode(true)
         )));
 
         return array('popup' => array('html' => $sContent, 'options' => array('onBeforeShow' => $sJsObject . '.onEditBlockBeforeShow($el)')));
+    }
+
+    /**
+     * The select of a block's title or padding size (BxDolPageDesignbox), hidden for a Block Layout without that part.
+     */
+    protected function getBlockSizeInput($aBlock, $sPart)
+    {
+        return array(
+            'type' => 'select',
+            'name' => $sPart . '_size',
+            'caption' => _t('_adm_bp_txt_block_' . $sPart . '_size'),
+            'info' => _t('_adm_bp_txt_block_' . $sPart . '_size_info'),
+            'value' => BxDolPageDesignbox::normalizeSize(isset($aBlock[$sPart . '_size']) ? $aBlock[$sPart . '_size'] : ''),
+            'values' => array(
+                array('key' => '', 'value' => _t('_adm_bp_txt_block_size_regular')),
+                array('key' => 'compact', 'value' => _t('_adm_bp_txt_block_size_compact')),
+                array('key' => 'large', 'value' => _t('_adm_bp_txt_block_size_large')),
+            ),
+            'tr_attrs' => BxDolPageDesignbox::hasPart($aBlock['designbox_id'], $sPart) ? array() : array('style' => 'display:none'),
+            'db' => array (
+                'pass' => 'Xss',
+            )
+        );
+    }
+
+    /**
+     * A block's name in Studio, as the page's block list shows it: its system title, else its title, else its type.
+     */
+    protected function getBlockTitleForStudio($aBlock, $oPage = null)
+    {
+        $sTitle = '';
+        if(!empty($aBlock['title_system'])) {
+            $sTitle = _t($aBlock['title_system']);
+        }
+        elseif(!empty($aBlock['title'])) {
+            $sTitle = $oPage ? $oPage->getBlockTitle($aBlock) : _t($aBlock['title']);
+        }
+
+        $sTitle = trim(strip_tags((string)$sTitle));
+        if($sTitle === '' && !empty($aBlock['type'])) {
+            $sTitle = _t('_sys_block_type_' . $aBlock['type']);
+        }
+
+        return $sTitle;
     }
 
     protected function actionBlockDelete()

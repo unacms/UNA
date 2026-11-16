@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Pages > block: the size of its title, and the size names it shares with the padding (Relaxed is Large). -->
+<resources name="en" flag="gb" title="English" category="System">
+	<string_add name="_adm_bp_txt_block_size_compact"><![CDATA[Compact]]></string_add>
+	<string_add name="_adm_bp_txt_block_size_large"><![CDATA[Large]]></string_add>
+	<string_add name="_adm_bp_txt_block_size_regular"><![CDATA[Regular]]></string_add>
+	<string_add name="_adm_bp_txt_block_title_size"><![CDATA[Title size]]></string_add>
+	<string_add name="_adm_bp_txt_block_title_size_info"><![CDATA[Text size of the block's title, on the site and in the apps. Only for block layouts with a title.]]></string_add>
+	<string_del name="_adm_bp_txt_block_padding_size_compact"></string_del>
+	<string_del name="_adm_bp_txt_block_padding_size_regular"></string_del>
+	<string_del name="_adm_bp_txt_block_padding_size_relaxed"></string_del>
+</resources>

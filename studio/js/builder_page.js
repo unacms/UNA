@@ -212,9 +212,13 @@ BxDolStudioBuilderPage.prototype.onChangeVisibleFor = function(oSelect) {
 };
 
 BxDolStudioBuilderPage.prototype.onChangeDesignbox = function(oSelect) {
-    // Only a Block Layout with padding has a size for it.
-    var aWithPadding = ($(oSelect).attr('data-padding') || '').split(',');
-    $(oSelect).parents('form:first').find('#bx-form-element-padding_size').bx_anim(aWithPadding.includes($(oSelect).val()) ? 'show' : 'hide', this.sAnimationEffect, this.iAnimationSpeed);
+    // Only a Block Layout with a title or with padding has a size for it.
+    var oForm = $(oSelect).parents('form:first');
+    var sValue = $(oSelect).val();
+    ['title', 'padding'].forEach((sPart) => {
+        var aWith = ($(oSelect).attr('data-' + sPart) || '').split(',');
+        oForm.find('#bx-form-element-' + sPart + '_size').bx_anim(aWith.includes(sValue) ? 'show' : 'hide', this.sAnimationEffect, this.iAnimationSpeed);
+    });
 };
 
 BxDolStudioBuilderPage.prototype.onEditBlockBeforeShow = function(oPopup) {

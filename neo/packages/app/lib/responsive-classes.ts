@@ -53,7 +53,7 @@ const PRESETS: Record<string, ResponsivePreset> = {
         default: () => '',
         off: 'px-0',
     },
-    // The same at Studio's padding sizes (lib/block-padding.ts `blockPaddingKey`).
+    // The same at Studio's padding sizes (lib/block-size.ts `blockSizeKey`).
     'block-pad-y-compact': {
         on: () => appSetting('theme', 'blocks', 'u-block-pad-y-compact'),
         default: () => '',
@@ -64,13 +64,13 @@ const PRESETS: Record<string, ResponsivePreset> = {
         default: () => '',
         off: 'px-0',
     },
-    'block-pad-y-relaxed': {
-        on: () => appSetting('theme', 'blocks', 'u-block-pad-y-relaxed'),
+    'block-pad-y-large': {
+        on: () => appSetting('theme', 'blocks', 'u-block-pad-y-large'),
         default: () => '',
         off: 'py-0',
     },
-    'block-pad-x-relaxed': {
-        on: () => appSetting('theme', 'blocks', 'u-block-pad-x-relaxed'),
+    'block-pad-x-large': {
+        on: () => appSetting('theme', 'blocks', 'u-block-pad-x-large'),
         default: () => '',
         off: 'px-0',
     },
