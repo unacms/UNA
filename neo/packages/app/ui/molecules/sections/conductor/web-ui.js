@@ -1,5 +1,5 @@
 import { useCallback, useState, useEffect, useLayoutEffect, useRef, useMemo, memo, createContext, useContext } from 'react'
-import { Text } from 'app/design/typography'
+import { Text, headingProps } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import { Icon } from 'app/ui/atoms/icon'
 import { SidebarTitle } from 'app/ui/molecules/sidebar-title'
@@ -563,12 +563,16 @@ function getAddMenuItems(menu, filter, currentUser) {
  * - "Add" → opens the create form in a modal (one FormModal for all buttons)
  * - anything else with a link → plain navigation
  */
-const AddMenu = ({ menu, filter }) => {
+const AddMenu = ({ menu, filter, only }) => {
     // false = closed, 'loading' while the form JSON is fetched, then the form.
     const [pageData, setPageData] = useState(false)
     const { currentUser } = useCurrentUser()
     const { t } = useTranslation()
-    const addButtonsSet = getAddMenuItems(menu, filter, currentUser)
+    // `only`: 'search' keeps the Search trigger, 'actions' everything else (a section's two-line header splits them).
+    const addButtonsSet = getAddMenuItems(menu, filter, currentUser).filter((button) => (
+        !only || (only === 'search') === !!button.section
+    ))
+    if (only && !addButtonsSet.length) return null
 
     return (
         <Row className="gap-x-2">
@@ -1184,6 +1188,8 @@ export const HeaderContainer = ({
 export function TopSidebar({
     styles,
     addButtons,
+    actionButtons,
+    toolButtons,
     children,
     title,
     icon,
@@ -1197,16 +1203,68 @@ export function TopSidebar({
     // nav column) nor on a section whose menu keeps its tabs on large screens (`sectionSidebar` false).
     const isProfile = layoutName === 'profile'
     const isHideOnDesktop = !isProfile && sectionSidebar
-    // A section that keeps its tabs on large screens draws the bar as the compact profile cover draws its tab row
-    // (cover-morph-body: `cover_base` surface and a border-b separator), so the tabs read as the section's own chrome.
+    // A section that keeps its tabs on large screens is laid out as a compact profile cover (cover-morph-body): on the
+    // `cover_base` surface with a border-b separator, a first line with the section's icon and name (the avatar and
+    // name) and its actions (Add...), and a second line with the tabs and the section's tools (filters, Search).
     const isSectionTabBar = !isProfile && !sectionSidebar
     const widthClass = contentWidth || appSetting('layout', 'page_content_width_default')
     const showAddButtons = layout != 'mixed' && !isProfile
+    const showTitle = !!title && conductorTheme.show_title !== false && !isProfile
+    const desktopFlex = `hidden ${conductorTheme.hide_top_menu_from}:flex`
+
+    if (isSectionTabBar) {
+        return (
+            <View
+                style={styles}
+                className={`${!omitDefaultBackground ? conductorTheme.menu : ''} lg:bg-card-surface lg:border-b lg:border-border/60`}
+            >
+                <View className={`${widthClass} mx-auto w-full`}>
+                    {/* First line, from lg: below it the page header shows the title and the actions. */}
+                    {(showTitle || showAddButtons) && (
+                        <Row className={`${desktopFlex} w-full items-center gap-3 min-w-0 px-4 pt-4 pb-1`}>
+                            <Row className="flex-1 items-center gap-3 min-w-0">
+                                {showTitle && !!icon && (
+                                    // The section's icon where a profile has its avatar: a 44px circle.
+                                    <View className="size-11 shrink-0 items-center justify-center rounded-full bg-button">
+                                        <Icon icon={icon} size={24} className="text-card-foreground" />
+                                    </View>
+                                )}
+                                {showTitle && (
+                                    <Text
+                                        // The section's name is the page's heading.
+                                        {...headingProps(1)}
+                                        numberOfLines={1}
+                                        className="min-w-0 shrink text-2xl leading-8 font-bold tracking-tight text-card-foreground font-main"
+                                    >
+                                        {title}
+                                    </Text>
+                                )}
+                            </Row>
+                            {showAddButtons && (
+                                <Row className="shrink-0 items-center gap-2 cond-buttons-add">
+                                    {actionButtons}
+                                </Row>
+                            )}
+                        </Row>
+                    )}
+                    {/* Second line: the tabs, then the section's tools (filters, Search) at its end. */}
+                    <Row className="w-full items-center min-w-0">
+                        <View className="flex-1 min-w-0">{children}</View>
+                        {showAddButtons && (
+                            <Row className={`${desktopFlex} shrink-0 items-center gap-2 pr-4`}>
+                                {toolButtons}
+                            </Row>
+                        )}
+                    </Row>
+                </View>
+            </View>
+        )
+    }
+
     return (
         <View
             style={styles}
-            className={`${!omitDefaultBackground ? conductorTheme.menu : ''} ${isHideOnDesktop ? conductorTheme.hide_top_menu_from + ':hidden' : ''
-                } ${isSectionTabBar ? 'lg:bg-card-surface lg:border-b lg:border-border/60' : ''}`}
+            className={`${!omitDefaultBackground ? conductorTheme.menu : ''} ${isHideOnDesktop ? conductorTheme.hide_top_menu_from + ':hidden' : ''}`}
         >
             <View
                 className={`${isHideOnDesktop ? '' : 'mx-auto'} ${widthClass} mx-auto`}
@@ -1215,11 +1273,10 @@ export function TopSidebar({
                       * Section title on the tab row, on desktop only: phones and tablets show it
                       * in the page header's main row. From `hide_top_menu_from` (lg) a section with
                       * a sidebar hides this bar and the left column carries the title; it shows here
-                      * where the bar stays: a section that keeps its tabs on large screens, or a fork
-                      * that keeps the bar past `lg` (a wider `hide_top_menu_from`).
+                      * where the bar stays: a fork that keeps the bar past `lg` (a wider `hide_top_menu_from`).
                       */}
                     <Row className="w-full items-center gap-4 min-w-0">
-                        {(!!title && conductorTheme.show_title !== false && !isProfile) && (
+                        {showTitle && (
                             // At most a third of the row, so a long section name truncates and the tabs keep their room.
                             <Row className="hidden lg:flex items-center gap-2 shrink min-w-0 max-w-1/3 pl-4">
                                 {/* The desktop sidebar title's icon (SidebarTitle), from the same settings. */}
@@ -1239,10 +1296,8 @@ export function TopSidebar({
                             </Row>
                         )}
                         <View className="flex-1 min-w-0">{children}</View>
-                        {/* The section's own actions (Search, Add...) at the end of the tab row, where the sidebar
-                          * would show them in its title row. Below `hide_top_menu_from` the page header carries them. */}
                         {showAddButtons && (
-                            <Row className={`hidden ${conductorTheme.hide_top_menu_from}:flex shrink-0 items-center cond-buttons-add pr-4`}>
+                            <Row className={`${desktopFlex} shrink-0 items-center cond-buttons-add pr-4`}>
                                 {addButtons}
                             </Row>
                         )}
@@ -1306,6 +1361,8 @@ export const TabBar = ({
             sectionSidebar={layoutName !== 'navigator' || getMenuSectionNav(menu) === 'sidebar'}
             omitDefaultBackground={omitDefaultBackground}
             addButtons={addButtons}
+            actionButtons={<AddMenu menu={menu} filter="hideInTopBar" only="actions" />}
+            toolButtons={<AddMenu menu={menu} filter="hideInTopBar" only="search" />}
             layout={layout}
             title={t(menuSettings?.name)}
             icon={menuSettings?.icon || menu?.icon}
