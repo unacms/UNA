@@ -2060,16 +2060,16 @@
         },
         {
             "name": "neuron-core/neuron-ai",
-            "version": "4.1.22",
+            "version": "4.1.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neuron-core/neuron-ai.git",
-                "reference": "fdae7e292490b0d7451ae3210c5f11845d941d29"
+                "reference": "aeea883b2c1c0cfa5ae6897b54c4519370acceb0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/neuron-core/neuron-ai/zipball/fdae7e292490b0d7451ae3210c5f11845d941d29",
-                "reference": "fdae7e292490b0d7451ae3210c5f11845d941d29",
+                "url": "https://api.github.com/repos/neuron-core/neuron-ai/zipball/aeea883b2c1c0cfa5ae6897b54c4519370acceb0",
+                "reference": "aeea883b2c1c0cfa5ae6897b54c4519370acceb0",
                 "shasum": ""
             },
             "require": {
@@ -2141,7 +2141,7 @@
             "description": "A unified layer for building AI-native applications in PHP.",
             "support": {
                 "issues": "https://github.com/neuron-core/neuron-ai/issues",
-                "source": "https://github.com/neuron-core/neuron-ai/tree/4.1.22"
+                "source": "https://github.com/neuron-core/neuron-ai/tree/4.1.24"
             },
             "funding": [
                 {
@@ -2149,7 +2149,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-11-05T23:03:55+00:00"
+            "time": "2026-11-11T17:11:02+00:00"
         },
         {
             "name": "nyholm/psr7",
