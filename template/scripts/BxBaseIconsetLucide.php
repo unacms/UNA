@@ -151,9 +151,33 @@ class BxBaseIconsetLucide extends BxBaseIconset
         ];
     }
 
+    /**
+     * The icons' styles: the room an icon takes before its script has drawn it.
+     */
+    public function getPreloaderCss()
+    {
+        return 'icons_lucide.css';
+    }
+
+    /**
+     * Lucide's script is every icon as data (about 114 KB compressed) and a page shows a few dozen of them, so it is
+     * not one of the scripts every page waits for in <head>: getCodeHead() loads it beside them.
+     */
     public function getPreloaderJs()
     {
-        return '{dir_plugins_public}lucide/|lucide.min.js';
+        return false;
+    }
+
+    /**
+     * The script loads without holding the page back (async) and draws the icons when it arrives; the code at the
+     * end of the page (getCode) draws them when it is there already. The icons keep their room meanwhile
+     * (icons_lucide.css).
+     */
+    public function getCodeHead()
+    {
+        return $this->_oTemplate->parseHtmlByName('iconset_lucide_head.html', [
+            'url' => bx_html_attribute(bx_append_url_params(BX_DOL_URL_PLUGINS_PUBLIC . 'lucide/lucide.min.js', ['rev' => getParam('sys_revision')])),
+        ]);
     }
 
     public function getIcon($sIcon)
