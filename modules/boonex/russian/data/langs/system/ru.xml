@@ -3757,6 +3757,7 @@
     <string name="_sys_menu_item_title_more_auto"><![CDATA[]]></string>
     <string name="_sys_menu_item_title_orders"><![CDATA[Заказы]]></string>
     <string name="_sys_menu_item_title_profile"><![CDATA[Профиль]]></string>
+    <string name="_sys_menu_item_title_switch_profile"><![CDATA[Сменить профиль]]></string>
     <string name="_sys_menu_item_title_set_acl_level"><![CDATA[Назначить членство]]></string>
     <string name="_sys_menu_item_title_set_badges"><![CDATA[Назначить бейджи]]></string>
     <string name="_sys_menu_item_title_studio"><![CDATA[Студия]]></string>
@@ -3868,6 +3869,7 @@
     <string name="_sys_menu_item_title_system_orders"><![CDATA[Заказы]]></string>
     <string name="_sys_menu_item_title_system_powered_by"><![CDATA[Сделано с помощью]]></string>
     <string name="_sys_menu_item_title_system_profile"><![CDATA[Профиль]]></string>
+    <string name="_sys_menu_item_title_system_switch_profile"><![CDATA[Переключение профиля]]></string>
     <string name="_sys_menu_item_title_system_public_menu"><![CDATA[Публичное меню]]></string>
     <string name="_sys_menu_item_title_system_search"><![CDATA[Поиск]]></string>
     <string name="_sys_menu_item_title_system_set_acl_level"><![CDATA[Назначить членство]]></string>

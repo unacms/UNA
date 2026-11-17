@@ -5228,15 +5228,16 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('sys_toolbar_member', 'system', 'login', '_sys_menu_item_title_system_login', '_sys_menu_item_title_login', 'page.php?i=login', '', '', 'user',  '', '', 0, 1, 0, 1, 0, 2),
 ('sys_toolbar_member', 'system', 'create-account', '_sys_menu_item_title_system_join', '_sys_menu_item_title_join', 'page.php?i=create-account', '', '', 'user-plus',  '', '', 0, 1, 0, 1, 0, 3);
 
--- account popup menu
+-- account popup menu; its own profile list (profile-switcher) is off on the site: the account menu's switch-profile item shows it
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
 ('sys_account_popup', 'system', 'profile-active', '_sys_menu_item_title_system_ap_profile_active', '', '', '', '', '', '', '', 2147483646, 1, 1, 1),
 ('sys_account_popup', 'system', 'profile-notifications', '_sys_menu_item_title_system_ap_profile_notifications', '', '', '', '', '', '', '', 2147483646, 1, 1, 2),
-('sys_account_popup', 'system', 'profile-switcher', '_sys_menu_item_title_system_ap_profile_switcher', '', '', '', '', '', '', '', 2147483646, 1, 1, 3),
+('sys_account_popup', 'system', 'profile-switcher', '_sys_menu_item_title_system_ap_profile_switcher', '', '', '', '', '', '', '', 2147483646, 0, 1, 3),
 ('sys_account_popup', 'system', 'profile-create', '_sys_menu_item_title_system_ap_profile_create', '', '', '', '', '', '', '', 2147483646, 1, 1, 4);
 
--- notifications menu in account popup
+-- notifications menu in account popup; switch-profile lists the account's other profiles there (BxBaseMenuAccountNotifications), the apps draw their own switcher for it
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
+('sys_account_notifications', 'system', 'switch-profile', '_sys_menu_item_title_system_switch_profile', '_sys_menu_item_title_switch_profile', '{switch_profile}', '', '', 'users', '', '', 2147483646, 1, 1, 0),
 ('sys_account_notifications', 'system', 'dashboard', '_sys_menu_item_title_system_dashboard', '_sys_menu_item_title_dashboard', 'page.php?i=dashboard', '', '', 'tachometer-alt', '', '', 2147483646, 1, 1, 1),
 ('sys_account_notifications', 'system', 'profile', '_sys_menu_item_title_system_profile', '_sys_menu_item_title_profile', '{own_profile_url}', '', '', 'user', '', '', 2147483644, 1, 1, 2),
 ('sys_account_notifications', 'system', 'account-settings', '_sys_menu_item_title_system_account_settings', '_sys_menu_item_title_account_settings', 'page.php?i=account-settings-email', '', '', 'cog', '', '', 2147483646, 1, 1, 3),
