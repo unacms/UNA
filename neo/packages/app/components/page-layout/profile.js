@@ -9,6 +9,7 @@ import { subscribe } from 'app/ui/atoms/socket';
 import { patchCachedPageDataByUrl } from 'app/lib/cache/native-tab-page-cache';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { withInformerBlock } from 'app/components/elements/informer';
+import { CONNECTION_PATCHED } from 'app/lib/connection-cache';
 
 const ConductorMemo = memo(Conductor, (prev, next) => (
     prev.ts === next.ts && prev.data?.timestamp === next.data?.timestamp
@@ -55,6 +56,32 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
         });
         return () => subscription.remove();
     }, [pageData?.url, adoptPageData]);
+
+    // The viewer followed, befriended or left this profile: its cover (the counts, their avatars and the actions)
+    // is asked for again on its own, without the page's blocks (`blocks: 'none'`), and replaces the one shown.
+    // With sockets on, UNA's connection event reloads the whole page as well (above); this needs none.
+    useEffect(() => {
+        const profileId = pageData?.cover_block?.profile?.id;
+        const pageUrl = pageData?.url;
+        if (!profileId || !pageUrl) return;
+
+        let active = true;
+        const subscription = emitter.addListener(EVENTS.connections, async (payload) => {
+            if (payload?.action !== CONNECTION_PATCHED || String(payload.profileId) !== String(profileId)) return;
+            const response = await getPageData(pageUrl, false, {}, 'none');
+            const cover = response?.data?.cover_block;
+            if (!active || !cover || String(cover.profile?.id) !== String(profileId)) return;
+            setPageData((current) => (
+                String(current?.cover_block?.profile?.id) === String(profileId)
+                    ? { ...current, cover_block: cover, timestamp: Date.now() }
+                    : current
+            ));
+        });
+        return () => {
+            active = false;
+            subscription.remove();
+        };
+    }, [pageData?.cover_block?.profile?.id, pageData?.url]);
 
     // Soft-reload profile/group page when UNA pushes profile_{id} / changed
     // (e.g. after entity edit). Do not touch currentUser — payload is the entity.

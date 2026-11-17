@@ -10,6 +10,8 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { useBottomSheetData } from 'app/context/bottomsheet'
 import { Platform } from 'react-native';
 import { connectionButtonIcon, connectionIconSet, withConnectionRowIcons } from 'app/lib/connection-icons';
+import { patchFromReply } from 'app/lib/connection-patch';
+import { applyConnectionPatch } from 'app/lib/connection-cache';
 
 
 const getKey = (sO, iIid, iCid) => {
@@ -31,7 +33,12 @@ export default function ElementConnections({
 }) {
 
     const DropdownMenuItem = components['menu-item']['dropdown'];
-    const [elementData, setElementData] = useState({ name, actions, title });
+    // The button's state after a press is kept here, until the props catch up: a card's list takes the reply too
+    // (applyConnectionPatch), so its props then carry the new state, and a change from elsewhere (another tab, the
+    // other person) arrives through them as well. A button outside a list (a profile's cover) keeps the local state.
+    const propsKey = JSON.stringify([name, title, actions]);
+    const [pressed, setPressed] = useState(null);
+    const elementData = pressed && pressed.key === propsKey ? pressed.data : { name, actions, title };
     const [modalContent, setModalContent] = useState(false);
     const { t } = useTranslation();
     const { setBottomSheetData } = useBottomSheetData();
@@ -100,7 +107,12 @@ export default function ElementConnections({
         }
         const paramsDefault = { o: object, iid: item_id, cid: content_id, a: action, r: 'object', ...(short ? { short: 1 } : {}) };
         const response = await fetcher('/api.php?r=system/perform/TemplServiceConnections&params[]=' + JSON.stringify(paramsDefault));
-        setElementData({ name: response.data.name, actions: response.data.actions, title: response.data.title })
+        const reply = response?.data;
+        // No element in the reply (UNA refused, or has no button to offer now): the button stays as it is.
+        if (reply?.title === undefined) return;
+        setPressed({ key: propsKey, data: { name: reply.name, actions: reply.actions ?? [], title: reply.title } });
+        // The profile's cards in every loaded list take the new counts and this button's state.
+        applyConnectionPatch(patchFromReply(object, content_id, reply, 'connections_ext'), { own: true });
     }
 
     // On a card the menu sits inside the card's link: a click that reaches its wrapper is not a visit to the profile.
@@ -110,7 +122,7 @@ export default function ElementConnections({
         setModalContent(false);
     }
     if (mode == 'dropdown-menu') {
-        return elementData.actions.length > 0 ?
+        return elementData.actions?.length > 0 ?
             <DropdownMenu
                 mode="popup"
                 items={menuItems}
@@ -140,7 +152,7 @@ export default function ElementConnections({
     else {
         return (
             <>
-                {elementData.actions.length > 0 ? (
+                {elementData.actions?.length > 0 ? (
                     // On a card the button sits inside the card's link: a click on the trigger or on a row of its
                     // menu (they bubble here through React's tree) is not a visit to the profile.
                     <View {...linkGuardProps}>
