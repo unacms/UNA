@@ -12,6 +12,7 @@ import { type CSSProperties, type DragEvent, type KeyboardEvent, useEffect, useL
 import { Icon } from '../components/icon';
 import { SiteIcon } from '../components/site-icon';
 import { SECTION_ICONS } from '../lib/section-icons';
+import { sectionName } from '../lib/sections';
 import { Tooltip } from '../components/tooltip';
 import { useWindowAnnounce } from '../lib/announce';
 import { errorMessage } from '../lib/errors';
@@ -32,33 +33,12 @@ export const tabElementId = (id: string) => `tab-${id}`;
 /** What a detail is called before it has loaded (a tab opened behind, with Cmd+click). */
 const DETAIL_NAMES: Record<string, string> = { post: t('Post'), conversation: t('Conversation'), profile: t('Profile'), discussion: t('Discussion'), video: t('Video'), photo: t('Photo'), album: t('Album'), file: t('File'), task: t('Task'), poll: t('Poll'), article: t('Post') };
 
-/** A section's name, for a tab the shell has not named yet. */
-const SECTION_NAMES: Record<string, string> = {
-    home: t('Home'),
-    explore: t('Explore'),
-    notifications: t('Notifications'),
-    messages: t('Messages'),
-    connections: t('Connections'),
-    people: t('People'),
-    posts: t('Posts'),
-    discussions: t('Discussions'),
-    events: t('Events'),
-    media: t('Media'),
-    tasks: t('Tasks'),
-    search: t('Search'),
-    profile: t('Profile'),
-    groups: t('Groups'),
-    spaces: t('Spaces'),
-    settings: t('Settings'),
-    page: t('Page'),
-};
-
 /** A tab's name: what the shell called it, else what it shows by its route. */
 export function tabTitle(tab: Tab): string {
     if (tab.title) return tab.title;
     const { list, detail } = tab.history.current;
     if (detail && DETAIL_NAMES[detail.kind]) return DETAIL_NAMES[detail.kind]!;
-    return SECTION_NAMES[list.section] ?? list.section.charAt(0).toUpperCase() + list.section.slice(1);
+    return sectionName(list.section);
 }
 
 /** A tab's icon: the one the shell named it with (maybe a site's), else its section's. */

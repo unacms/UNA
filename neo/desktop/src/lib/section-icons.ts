@@ -5,32 +5,19 @@
  * A site row's own icon (Studio's choice) wins over these wherever that row is the current one.
  */
 import type { IconName } from '../components/icon';
+import { SECTION_INFO } from './sections';
 
-export const SECTION_ICONS: Readonly<Record<string, IconName>> = {
-    home: 'house',
-    explore: 'compass',
-    notifications: 'bell',
-    messages: 'message-circle',
+/** Places a site's menu names that are no section of the app's. */
+const PLACE_ICONS: Readonly<Record<string, IconName>> = {
     conversations: 'message-circle',
-    profile: 'circle-user-round',
-    connections: 'users-round',
-    people: 'user-round',
     persons: 'user-round',
-    posts: 'newspaper',
-    discussions: 'messages-square',
-    events: 'calendar',
-    groups: 'users-round',
-    spaces: 'orbit',
-    tasks: 'list-checks',
-    media: 'film',
     videos: 'film',
     photos: 'image',
     albums: 'images',
     files: 'file',
-    search: 'search',
-    settings: 'settings',
-    page: 'file-text',
 };
+
+export const SECTION_ICONS: Readonly<Record<string, IconName>> = { ...Object.fromEntries(Object.entries(SECTION_INFO).map(([section, info]) => [section, info.icon])), ...PLACE_ICONS };
 
 /** A section's icon, or a page's for one the table does not name. */
 export function sectionIcon(section: string): IconName {
