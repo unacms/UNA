@@ -192,3 +192,31 @@ td:last-child .bx-grid-cell-single-actions-wrapper {
     line-height: 1;
     cursor: pointer;
 }
+
+/* --------------- a text cell longer than one line of its column: it wraps and shows two lines; the button that
+   shows it in full (.bx-str-limit) is there only where they don't hold it (BxDolGrid.js marks the cell) */
+
+.bx-grid-cell-clamp {
+    position: relative;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    white-space: normal;
+    overflow-wrap: break-word;
+    line-height: 1.25rem;
+}
+.bx-grid-cell-clamp .bx-str-limit {
+    display: none;
+}
+.bx-grid-cell-clamp.bx-grid-cell-clamped {
+    padding-right: 1.75rem;
+}
+.bx-grid-cell-clamp.bx-grid-cell-clamped .bx-str-limit {
+    display: inline-flex;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 0;
+}

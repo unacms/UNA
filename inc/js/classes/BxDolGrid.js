@@ -42,6 +42,16 @@ BxDolGrid.prototype.init = function (oOptions) {
 
     this._onDataReloaded();
 
+    // A column's width follows the window: which text cells don't fit their two lines is worked out again.
+    var $this = this;
+    var sResize = 'resize.bxGridClamp' + this._sObject;
+    jQuery(window).off(sResize).on(sResize, function () {
+        clearTimeout($this._iClampTimer);
+        $this._iClampTimer = setTimeout(function () {
+            $this.markClampedCells();
+        }, 150);
+    });
+
     if (this._sOrderField.length)
         this.setSorting (this._sOrderField, this._sOrderDir, true);
 };
@@ -536,7 +546,20 @@ BxDolGrid.prototype._onDataReloaded = function (isSkipSearchInput) {
 
     this._bindActions(isSkipSearchInput);
 
+    this.markClampedCells();
+
     this.onDataReloaded(isSkipSearchInput);
+};
+
+/**
+ * Text cells show two lines of their text (.bx-grid-cell-clamp, css/grid.css): the cells whose text doesn't fit them
+ * are marked, which shows their button for the text in full. Measured without the mark, which makes the text narrower.
+ */
+BxDolGrid.prototype.markClampedCells = function () {
+    jQuery('#' + this._sIdTable + ' .bx-grid-cell-clamp').each(function () {
+        var eCell = jQuery(this).removeClass('bx-grid-cell-clamped');
+        eCell.toggleClass('bx-grid-cell-clamped', this.scrollHeight > this.clientHeight + 1);
+    });
 };
 
 BxDolGrid.prototype.onDataReloaded = function (isSkipSearchInput) {};

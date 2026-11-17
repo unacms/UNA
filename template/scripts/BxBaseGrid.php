@@ -24,6 +24,15 @@ class BxBaseGrid extends BxDolGrid
     protected $_aConfirmMessages = false;
     protected $_bSelectAll = false;
     protected $_isDisplayPopupOnTextOverflow = true;
+
+    /**
+     * A text cell (a field with `chars_limit` in `sys_grid_fields`: the characters that fit one line of its column)
+     * wraps in its column and shows two lines (css/grid.css, .bx-grid-cell-clamp). The button that shows the text in
+     * full is there only where the two lines don't hold it (BxDolGrid.js, markClampedCells). The text itself is cut
+     * only past this many lines' worth of characters, far beyond what two lines of any column show.
+     */
+    protected $_iCharsLimitLinesMax = 6;
+    protected $_bCellClamp = false; ///< the cell being built has text longer than one line: _getCellDefault wraps it
     protected $_aFilterAreaLabels = []; // filter name => accessible name (lang key or plain text); filter controls are rendered without a visible caption
 
     public function __construct ($aOptions, $oTemplate)
@@ -929,6 +938,13 @@ class BxBaseGrid extends BxDolGrid
             'bx-grid-cell' . (!empty($aField['name']) ? ' bx-gc-' . $aField['name'] : '') . ' bx-def-padding-sec-bottom bx-def-padding-sec-top', // add default classes
             isset($aField['width']) ? 'width:' . $aField['width'] : false // add default styles
         );
+
+        // Text longer than one line of its column (_limitMaxLength): two lines, see $_iCharsLimitLinesMax.
+        $bClamp = $this->_bCellClamp;
+        $this->_bCellClamp = false;
+        if($bClamp && is_string($mixedValue))
+            $mixedValue = '<div class="bx-grid-cell-clamp">' . $mixedValue . '</div>';
+
         return '<td ' . $sAttr . '>' . $mixedValue . '</td>';
     }
 
@@ -1278,10 +1294,22 @@ class BxBaseGrid extends BxDolGrid
 
     protected function _limitMaxLength ($mixedValue, $sKey, $aField, $aRow, $isDisplayPopupOnTextOverflow, $bReturnString = true)
     {
-        if((int)$aField['chars_limit'] <= 0)
+        $iLimit = (int)$aField['chars_limit'];
+        if($iLimit <= 0)
             return $mixedValue;
 
-        return $this->_oFunctions->getStringWithLimitedLength([strip_tags($mixedValue), $mixedValue], $aField['chars_limit'], $isDisplayPopupOnTextOverflow, $bReturnString);
+        // Text that fits one line of the column, or a grid without the "show in full" button: as before.
+        $sPlain = strip_tags($mixedValue);
+        $aCut = $this->_oFunctions->getStringWithLimitedLength([$sPlain, $mixedValue], $iLimit, $isDisplayPopupOnTextOverflow, false);
+        if(!$isDisplayPopupOnTextOverflow || !isset($aCut[1]))
+            return $bReturnString ? implode('', $aCut) : $aCut;
+
+        // Longer text goes out whole (to a generous cap) with the button: the cell shows two lines of it, and the button
+        // only where they don't hold it.
+        $this->_bCellClamp = true;
+        $aResult = [$this->_oFunctions->getStringWithLimitedLength($sPlain, $iLimit * $this->_iCharsLimitLinesMax), $aCut[1]];
+
+        return $bReturnString ? implode('', $aResult) : $aResult;
     }
 
     protected function _convertAttrs ($aField, $sAttrName, $sClasses = false, $sStyles = false)
