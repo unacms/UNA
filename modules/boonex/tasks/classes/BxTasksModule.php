@@ -464,6 +464,17 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         if(!$aContentInfo || !$this->isAllowManage($iContentId))
             return [];
 
+        // labels (stickers, a set) come as a comma-separated list of values, stored as bit (value - 1) for each
+        if($this->_bIsApi && $sProperty == $CNF['FIELD_STICKERS']) {
+            $iMask = 0;
+            foreach(array_filter(explode(',', urldecode((string)$mixedValue)), 'strlen') as $sValue)
+                if(($i = (int)$sValue) >= 1 && $i <= 31)
+                    $iMask |= 1 << ($i - 1);
+
+            $mResult = $this->setStickers($iContentId, $iMask);
+            return $mResult === true ? [] : $mResult;
+        }
+
         $aProperties = $this->_oConfig->getProperties();
         if($this->_bIsApi)
             $aProperties = array_merge($aProperties, [$CNF['FIELD_TITLE'], $CNF['FIELD_TEXT']]);

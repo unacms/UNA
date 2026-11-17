@@ -361,6 +361,94 @@ function EditableSelect({ field, requestUrl, openHref }) {
     return withTasksListLink(select, href, field.caption)
 }
 
+function checkboxSetSelected(value) {
+    const list = Array.isArray(value) ? value : String(value ?? '').split(',')
+    return list.map((v) => String(v).trim()).filter(Boolean)
+}
+
+/** A label (UNA sticker): a pill in the colour the module gives it, as UNA draws `.bx-def-label`. */
+function LabelChip({ title, color }) {
+    return (
+        <View
+            className={cn('px-2.5 py-0.5 rounded-full max-w-full', !color && 'bg-button')}
+            style={color ? { backgroundColor: color } : undefined}
+        >
+            <Text
+                className={cn('text-xs font-medium', color ? 'text-white' : 'text-secondary-foreground')}
+                numberOfLines={1}
+            >
+                {title}
+            </Text>
+        </View>
+    )
+}
+
+function LabelChips({ options, selected, colors }) {
+    const chosen = options.filter((o) => selected.includes(String(o.key)))
+    return (
+        <Row className="items-center flex-wrap gap-1 min-w-0 max-w-full">
+            {chosen.map((o) => (
+                <LabelChip key={o.key} title={o.value} color={colors?.[o.key]} />
+            ))}
+        </Row>
+    )
+}
+
+/** checkbox_set (tasks' Labels): coloured pills; when editable a popup toggles each one and saves at once. */
+function EditableCheckboxSet({ field, requestUrl }) {
+    const [isOpen, setIsOpen] = useState(false)
+    const options = normalizeSelectValues(field.values).filter((o) => String(o.key) !== '')
+    const { value: selected, commit } = useEditableRequest({
+        initialValue: checkboxSetSelected(field.value),
+        requestUrl,
+        fieldName: field.name,
+        toParam: (ids) => encodeURIComponent((Array.isArray(ids) ? ids : []).join(',')),
+    })
+
+    const toggle = (key) => {
+        const id = String(key)
+        commit(selected.includes(id) ? selected.filter((v) => v !== id) : [...selected, id])
+    }
+
+    const chips = selected.length ? (
+        <LabelChips options={options} selected={selected} colors={field.colors} />
+    ) : (
+        <Text className="text-sm text-secondary-foreground">Select...</Text>
+    )
+
+    if (!field.editable) return selected.length ? chips : false
+
+    return (
+        <DropdownPopup
+            trigger={<View className="min-h-9 px-3 justify-center self-start max-w-full min-w-0">{chips}</View>}
+            triggerAccessibilityLabel={field.caption}
+            minPopupWidth={280}
+            open={isOpen}
+            onOpenChange={setIsOpen}
+        >
+            <View className="py-1">
+                {options.map((o) => {
+                    const checked = selected.includes(String(o.key))
+                    return (
+                        <Pressable
+                            key={o.key}
+                            onPress={() => toggle(o.key)}
+                            accessibilityRole="checkbox"
+                            accessibilityState={{ checked }}
+                            className="px-3 py-2 web:hover:bg-muted/50 flex-row items-center gap-2"
+                        >
+                            <View className="w-5 items-center">
+                                {checked ? <Icon icon="Check" size={16} /> : null}
+                            </View>
+                            <LabelChip title={o.value} color={field.colors?.[o.key]} />
+                        </Pressable>
+                    )
+                })}
+            </View>
+        </DropdownPopup>
+    )
+}
+
 function dedupeProfiles(list) {
     if (!Array.isArray(list)) return []
     return list.filter((item, index, arr) => arr.findIndex((x) => x.id === item.id) === index)
@@ -590,6 +678,14 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                 }
                 return <AssigneeChips profiles={a.value_data} />
 
+            case 'checkbox_set':
+                return (
+                    <EditableCheckboxSet
+                        field={a}
+                        requestUrl={data.params?.request_url}
+                    />
+                )
+
             case 'switcher':
                 return <ReadonlyValue label={a.value == 1 ? 'Yes' : 'No'} />
 
@@ -736,7 +832,9 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
 
     const inputs = Object.keys(data.inputs).map(function (key) {
         const a = data.inputs[key]
-        const v = a.values ? a.values[a.value] : a.value
+        const v = a.type === 'checkbox_set'
+            ? checkboxSetSelected(a.value).length
+            : a.values ? a.values[a.value] : a.value
         if (v || a.editable) {
             if (a.type) {
                 let value = getValue(a);
@@ -754,7 +852,8 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                                     </Text>
                                 </View>
                             </Row>
-                            <View className="flex-auto">
+                            {/* A set's pills wrap inside the value column: with `flex-auto` (basis = content) the whole column dropped under the caption. */}
+                            <View className={a.type === 'checkbox_set' ? 'flex-1 min-w-0' : 'flex-auto'}>
                                 {value}
                             </View>
                         </View>
