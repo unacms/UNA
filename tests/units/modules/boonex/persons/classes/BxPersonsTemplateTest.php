@@ -11,7 +11,8 @@ class BxPersonsTemplateTest extends BxPersonsTestCase
         $aPerson = $this->bxSamplePerson();
 
         $this->assertSame('bx-base-pofile-unit', $this->bxCallProtected($o, '_getUnitClass', $aPerson, 'unit.html'));
-        $this->assertSame('bx-base-pofile-unit-with-cover', $this->bxCallProtected($o, '_getUnitClass', $aPerson, 'unit_with_cover.html'));
+        // a person's gallery card is the apps' card (unit_card.html): its own class, and a wider picture
+        $this->assertSame('bx-base-pofile-unit-with-cover bx-base-pofile-card', $this->bxCallProtected($o, '_getUnitClass', $aPerson, 'unit_with_cover.html'));
         $this->assertSame('bx-base-pofile-unit-wo-info', $this->bxCallProtected($o, '_getUnitClass', $aPerson, 'unit_wo_info.html'));
         $this->assertSame(
             'bx-base-pofile-unit-with-cover bx-base-unit-showcase bx-base-pofile-unit-showcase',
@@ -22,7 +23,8 @@ class BxPersonsTemplateTest extends BxPersonsTestCase
             $this->bxCallProtected($o, '_getUnitClass', $aPerson, 'unit_wo_info_showcase.html')
         );
 
-        $this->assertSame('ava', $this->bxCallProtected($o, '_getUnitSize', $aPerson, 'unit_with_cover.html'));
+        $this->assertSame('card', $this->bxCallProtected($o, '_getUnitSize', $aPerson, 'unit_with_cover.html'));
+        $this->assertSame('ava', $this->bxCallProtected($o, '_getUnitSize', $aPerson, 'unit_with_cover_showcase.html'));
         $this->assertSame('thumb', $this->bxCallProtected($o, '_getUnitSize', $aPerson, 'unit.html'));
         $this->assertTrue($this->bxCallProtected($o, '_isUnitThumb', $aPerson, 'unit.html'));
         $this->assertTrue($this->bxCallProtected($o, '_isTemplateWithMeta', 'unit_with_cover.html'));

@@ -22,6 +22,8 @@ class BxOrgsTemplate extends BxBaseModGroupsTemplate
 
         $this->_bLetterAvatar = true;
 
+        $this->_bUnitCard = true;
+
         $this->_sUnitClass = 'bx-base-pofile-unit';
         $this->_sUnitClassWoCover = $this->_sUnitClass;
         $this->_sUnitClassWithCover = 'bx-base-pofile-unit-with-cover';

@@ -5,6 +5,7 @@ import { Text, headingProps } from 'app/design/typography'
 import { appSetting, formatDateInterval, cloneObject, cn, useDateLocaleTag } from 'app/lib/util';
 import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
+import { withMergedItemLists } from 'app/lib/profile-connections'
 import { useIsDesktop, useBreakpointName } from 'app/context/measure'
 import { components } from 'app/components/registry'
 import {
@@ -119,7 +120,9 @@ export function CoverMorphBody({
                     : flowH
 
     const profileTitle = profileData.display_name || profileData.title || ''
-    const metaMenuItems = (data.meta_menu?.items || []).slice(
+    // The counts that come with their first profiles (friends, followers) share one group of avatars, before the
+    // first of them: a friend is usually a follower too (lib/profile-connections.ts).
+    const metaMenuItems = withMergedItemLists(data.meta_menu?.items, { exclude: currentUser?.id }).slice(
         0,
         breakpointName ? undefined : 2,
     )

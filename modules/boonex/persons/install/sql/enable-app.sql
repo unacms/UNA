@@ -85,6 +85,11 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_view_sub
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_snippet_meta' AND `module`='bx_persons' AND `name`='subscribe';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_snippet_meta' AND `module`='bx_persons' AND `name`='ignore-befriend';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_snippet_meta' AND `module`='bx_persons' AND `name`='ignore-subscribe';
+-- a card's buttons in the apps are the site's: the friend and follow toggles (the apps draw the first two)
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_snippet_meta' AND `module`='bx_persons' AND `name`='obj-friends';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_snippet_meta' AND `module`='bx_persons' AND `name`='obj-subscriptions';
+-- and Friend Suggestions' Add friend, next to its Remove (the site shows both)
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_snippet_meta' AND `module`='bx_persons' AND `name`='befriend';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_menu_manage_tools' AND `module`='bx_persons' AND `name`='clear-reports';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_menu_manage_tools' AND `module`='bx_persons' AND `name`='manage-cf';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_menu_manage_tools' AND `module`='bx_persons' AND `name`='delete-with-content';

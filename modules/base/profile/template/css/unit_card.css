@@ -1,0 +1,434 @@
+@charset "UTF-8";
+/**
+ * A profile's card in a gallery (unit_card.html: people, organizations), laid out as the apps' card (NEO:
+ * components/units/content-list/bx-persons.js): a square picture, the name, one group of avatars for the friends and
+ * followers before their counts, then the card's two buttons, the first one the main one. Below 640px a card is a row: a round
+ * picture, the name over the counts, and the buttons as icons at the end.
+ *
+ * Spacing, as NEO's: the name and the counts are 8px apart, like the two buttons; the counts and the buttons 12px.
+ */
+
+/* ---------- the row (phones) ---------- */
+
+.bx-base-pofile-units-wrapper .bx-base-pofile-unit-with-cover.bx-base-pofile-card,
+#sys_search_results .bx-base-pofile-units-wrapper .bx-base-pofile-unit-with-cover.bx-base-pofile-card {
+    display: block;
+    -webkit-flex: 0 0 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding: 0.25rem 0.5rem;
+    overflow: visible;
+}
+
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-cnt {
+    position: relative;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 0.75rem;
+    height: 100%;
+    padding: 0.5rem;
+    box-sizing: border-box;
+    border-radius: 1.25rem;
+}
+
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-picture {
+    position: relative;
+    display: block;
+    -webkit-flex: none;
+    flex: none;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 9999px;
+    overflow: hidden;
+    background-color: rgba(127, 127, 127, 0.16);
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-letter {
+    /* the profile's colour, which the template gives as "r, g, b, a" */
+    background-color: rgba(var(--bx-card-letter, 127, 127, 127, 1));
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.5rem;
+    line-height: 1;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-picture .bx-base-pofile-unit-online {
+    right: 0.25rem;
+    bottom: 0.25rem;
+}
+
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-info {
+    position: relative;
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
+    min-width: 0;
+    /* the two icon buttons at the end of the row: 44px + 8px + 44px, and 8px before them */
+    padding-right: 6.5rem;
+}
+
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-name {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 0;
+    height: 1.5rem;
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    /* NEO's text-foreground: neutral-950, and neutral-100 in dark */
+    color: #0a0a0c;
+}
+.dark .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-title {
+    color: #f4f4f5;
+}
+
+/* the meta menu: the counts on one line, then the buttons */
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: flex-start;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item {
+    -webkit-flex: 0 1 auto;
+    flex: 0 1 auto;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item-nl {
+    display: none;
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item:not(.bx-menu-item-button) .bx-base-profile-unit-meta-item {
+    display: -webkit-flex;
+    display: flex;
+    min-width: 0;
+}
+
+/* the counts: "2 friends · 3 followers", 14px on a 20px line, after one group of avatars for both (the card grid only) */
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-conn-counter {
+    min-width: 0;
+    overflow: hidden;
+    padding: 0;
+    height: 1.25rem;
+    border-radius: 0;
+    background-color: transparent;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    white-space: nowrap;
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-conn-counter:hover .bx-conn-counter-text {
+    text-decoration: underline;
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-base-pofile-connections-preview {
+    display: none;
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-conn-counter-label {
+    min-width: 0;
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-conn-counter-text {
+    margin: 0;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item:not(.bx-menu-item-button) + li.bx-menu-item:not(.bx-menu-item-button):not(.bx-menu-item-nl)::before {
+    content: "·";
+    -webkit-flex: none;
+    flex: none;
+    margin: 0 0.25rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #71717a;
+}
+
+/* the buttons: icons alone at the end of the row; their labels stay for screen readers */
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item.bx-menu-item-button,
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-view {
+    margin-top: 0;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item.bx-menu-item-button-first {
+    right: 3.25rem;
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item.bx-menu-item-button-first:last-child {
+    right: 0;
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item-button .bx-base-profile-unit-meta-item {
+    display: block;
+    padding: 0;
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-view {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-info .bx-btn {
+    -webkit-justify-content: center;
+    justify-content: center;
+    min-width: 2.75rem;
+    white-space: nowrap;
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-info .bx-btn .sys-action-do {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    gap: 0.375rem;
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-info .bx-btn .sys-action-do-icon {
+    display: -webkit-flex;
+    display: flex;
+}
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-info .bx-btn .sys-action-do-text,
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-info .bx-btn u {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+/* a button without an icon keeps its label */
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-info .bx-btn:not(:has(svg, i, img)) .sys-action-do-text,
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-info .bx-btn:not(:has(svg, i, img)) u {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+}
+
+/* "You" on the viewer's own card: not a button, a slot of a button's size with a dashed outline */
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-you {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    min-height: 2.25rem;
+    padding: 0 0.75rem;
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: dashed;
+    border-radius: 0.625rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* ---------- the card (from 640px) ---------- */
+
+@media (min-width: 640px) {
+    /* 2 cards in a row; 3 from 768px and 4 from 1024px in a full-width column, 3 from 1024px in a wide one */
+    .bx-base-pofile-units-wrapper .bx-base-pofile-unit-with-cover.bx-base-pofile-card,
+    html .bx-layout-column-wide .bx-base-pofile-units-wrapper .bx-base-pofile-unit-with-cover.bx-base-pofile-card,
+    html .bx-layout-column-fullwidth .bx-base-pofile-units-wrapper .bx-base-pofile-unit-with-cover.bx-base-pofile-card,
+    html #sys_search_results .bx-base-pofile-units-wrapper .bx-base-pofile-unit-with-cover.bx-base-pofile-card {
+        -webkit-flex: 0 0 50%;
+        flex: 0 0 50%;
+        max-width: 50%;
+        padding: 0.5rem;
+    }
+    html .bx-layout-column-thin .bx-base-pofile-units-wrapper .bx-base-pofile-unit-with-cover.bx-base-pofile-card {
+        -webkit-flex: 0 0 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-cnt {
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        -webkit-align-items: stretch;
+        align-items: stretch;
+        gap: 0.25rem;
+    }
+
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-picture {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1 / 1;
+        border-radius: 0.75rem;
+    }
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-letter {
+        font-size: 3.75rem;
+    }
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-picture .bx-base-pofile-unit-online {
+        right: 0.5rem;
+        bottom: 0.5rem;
+    }
+
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-info {
+        padding: 0.25rem;
+    }
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-name {
+        margin-bottom: 0.5rem;
+    }
+
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor {
+        -webkit-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+    /* the counts' line keeps its 20px on a card with no count, so every card's buttons start at the same place */
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor::before {
+        content: "";
+        -webkit-flex: none;
+        flex: none;
+        width: 0;
+        height: 1.25rem;
+    }
+    /* one group of 20px avatars for the friends and the followers, before their counts */
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-base-pofile-connections-preview {
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex: none;
+        flex: none;
+        margin-right: 0.25rem;
+    }
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-base-pofile-connections-preview .bx-def-icon-size {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-base-pofile-connections-preview p.bx-base-pofile-unit-thumb {
+        font-size: 0.625rem;
+        line-height: 1.25rem;
+        font-weight: 600;
+    }
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-base-pofile-connections-preview .bx-base-pofile-unit-online {
+        display: none;
+    }
+
+    /* the buttons start on their own line, 12px under the counts */
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item-nl {
+        display: block;
+        -webkit-flex: 0 0 100%;
+        flex: 0 0 100%;
+        height: 0;
+    }
+
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item.bx-menu-item-button,
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-view {
+        /* in the grid's flow, 12px under the counts */
+        margin-top: 0.75rem;
+        position: static;
+        -webkit-transform: none;
+        transform: none;
+    }
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item.bx-menu-item-button {
+        display: block;
+        -webkit-flex: 0 0 100%;
+        flex: 0 0 100%;
+    }
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item.bx-menu-item-button + li.bx-menu-item.bx-menu-item-button {
+        margin-top: 0.5rem;
+    }
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item-button .sys-action,
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item-button .sys-action-cnt,
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item-button .sys-action-element-holder {
+        display: block;
+        width: 100%;
+    }
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-view {
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        -webkit-align-items: stretch;
+        align-items: stretch;
+    }
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-info .bx-btn {
+        display: -webkit-flex;
+        display: flex;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-info .bx-btn .sys-action-do {
+        width: 100%;
+    }
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-info .bx-btn .sys-action-do-text,
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-info .bx-btn u {
+        position: static;
+        width: auto;
+        height: auto;
+        margin: 0;
+        overflow: visible;
+        clip: auto;
+    }
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-info .bx-btn u {
+        margin-left: 0.375rem;
+    }
+}
+
+@media (min-width: 768px) {
+    html .bx-layout-column-fullwidth .bx-base-pofile-units-wrapper .bx-base-pofile-unit-with-cover.bx-base-pofile-card,
+    html #sys_search_results .bx-base-pofile-units-wrapper .bx-base-pofile-unit-with-cover.bx-base-pofile-card {
+        -webkit-flex: 0 0 33.3333%;
+        flex: 0 0 33.3333%;
+        max-width: 33.3333%;
+    }
+}
+
+@media (min-width: 1024px) {
+    html .bx-layout-column-fullwidth .bx-base-pofile-units-wrapper .bx-base-pofile-unit-with-cover.bx-base-pofile-card,
+    html #sys_search_results .bx-base-pofile-units-wrapper .bx-base-pofile-unit-with-cover.bx-base-pofile-card {
+        -webkit-flex: 0 0 25%;
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+    html .bx-layout-column-wide .bx-base-pofile-units-wrapper .bx-base-pofile-unit-with-cover.bx-base-pofile-card {
+        -webkit-flex: 0 0 33.3333%;
+        flex: 0 0 33.3333%;
+        max-width: 33.3333%;
+    }
+}
+
+@media (min-width: 1280px) {
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-letter {
+        font-size: 4.5rem;
+    }
+}

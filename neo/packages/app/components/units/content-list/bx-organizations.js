@@ -1,13 +1,12 @@
-import { View, Row } from 'app/design/view'
+import { View } from 'app/design/view'
 import { useTranslation } from 'react-i18next'
 import {
     getProfileListLabel,
-    PROFILE_ROW_COUNT,
     PROFILE_ROW_NAME,
     PROFILE_ROW_NAME_SKELETON,
     UnitActions,
     UnitProfileImage,
-    UnitProfileList,
+    UnitProfileConnections,
     UnitTitle,
     UnitWrapper,
     useUnitActions,
@@ -36,7 +35,9 @@ export default function Unit({ data, unitType, module }) {
                 <UnitProfileImage data={data} skeleton={isSkeleton} />
                 {deleteMenuItem ? <View className="hidden sm:flex absolute right-1 top-1 z-10 shrink-0">{deleteMenuItem}</View> : null}
                 <View className="flex-row sm:flex-col items-center sm:items-stretch gap-2 sm:gap-0 my-auto sm:p-2 flex-auto min-w-0">
-                    <View className="sm:h-12 flex-1 sm:flex-none min-w-0">
+                    {/* The grid card: the name and the connections line are 8px apart, like the two buttons (24px +
+                        8px + 20px: the block keeps its height on a card with no line), and 12px from the buttons. */}
+                    <View className="sm:h-13 sm:gap-2 flex-1 sm:flex-none min-w-0">
                         <UnitTitle
                             title={data.title}
                             skeleton={isSkeleton}
@@ -45,23 +46,14 @@ export default function Unit({ data, unitType, module }) {
                             skeletonClassName={PROFILE_ROW_NAME_SKELETON}
                         />
                         {hasCount ? (
-                            <Row className="items-center h-5">
-                                <UnitProfileList
-                                    data={data}
-                                    unitType={unitType}
-                                    profile
-                                    skeleton={isSkeleton}
-                                    showList={false}
-                                    labelClassName={PROFILE_ROW_COUNT}
-                                />
-                            </Row>
+                            <UnitProfileConnections data={data} unitType={unitType} skeleton={isSkeleton} />
                         ) : null}
                     </View>
                     <UnitActions
                         primaryMenuItem={primaryMenuItem}
                         secondaryMenuItem={secondaryMenuItem}
                         skeleton={isSkeleton}
-                        className="flex-none flex-row gap-2 sm:gap-0 sm:flex-col sm:pt-2"
+                        className="flex-none flex-row gap-2 sm:gap-0 sm:flex-col sm:pt-3"
                         primaryClassName="sm:w-full"
                         compactOnMobile
                         secondaryClassName={`sm:w-auto${primaryMenuItem ? ' sm:mt-2' : ''}`}

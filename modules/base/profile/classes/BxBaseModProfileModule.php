@@ -477,6 +477,54 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
         return $this->_oTemplate->unit($aContentInfo, $bCheckPrivateContent, array_values($aUnitTemplate), $aUnitParams);
     }
 
+    /**
+     * The first profiles connected with a profile, as one group for its friends and its followers: a friend is
+     * usually a follower too, so a group per count shows the same faces twice. The friends the viewer shares with
+     * the profile come first, then its friends, then its followers, each once; the viewer and the profile itself
+     * are left out. The apps merge the lists they get the same way (NEO: lib/profile-connections.ts).
+     * @param $iProfileId the profile
+     * @param $bFriends take its friends (when friends are on for the module)
+     * @param $bFollowers take its followers
+     * @param $iMax how many profiles at most
+     * @return array of profile ids
+     */
+    public function getConnectionsPreviewIds($iProfileId, $bFriends = true, $bFollowers = true, $iMax = 3)
+    {
+        $iProfileId = (int)$iProfileId;
+        $iMax = max(1, (int)$iMax);
+        $iViewerId = (int)bx_get_logged_profile_id();
+
+        // one more than shown, since the viewer may be among them
+        $iRead = $iMax + 1;
+
+        $aIds = [];
+        if($bFriends && $this->_oConfig->isFriends() && ($oFriends = BxDolConnection::getObjectInstance('sys_profiles_friends')) !== false) {
+            if($iViewerId && $iViewerId != $iProfileId) {
+                $aIds = array_merge($aIds, $oFriends->getCommonContent($iProfileId, $iViewerId, true, 0, $iMax));
+            }
+
+            $aIds = array_merge($aIds, $oFriends->getConnectedContent($iProfileId, true, 0, $iRead));
+        }
+        if($bFollowers && ($oFollowers = BxDolConnection::getObjectInstance('sys_profiles_subscriptions')) !== false) {
+            $aIds = array_merge($aIds, $oFollowers->getConnectedInitiators($iProfileId, false, 0, $iRead));
+        }
+
+        $aResult = [];
+        foreach($aIds as $iId) {
+            $iId = (int)$iId;
+            if(!$iId || $iId == $iViewerId || $iId == $iProfileId || in_array($iId, $aResult)) {
+                continue;
+            }
+
+            $aResult[] = $iId;
+            if(count($aResult) >= $iMax) {
+                break;
+            }
+        }
+
+        return $aResult;
+    }
+
     public function serviceProfileUnitApi ($iContentId, $aParams = [])
     {
         $mixedContent = $this->_getContent($iContentId);

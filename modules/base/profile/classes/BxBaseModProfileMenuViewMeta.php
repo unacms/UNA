@@ -25,6 +25,12 @@ class BxBaseModProfileMenuViewMeta extends BxTemplMenuUnitMeta
     protected $_oContentProfile;
     protected $_aContentProfileInfo;
 
+    /**
+     * The friends' and followers' counts share one group of avatars, drawn before the first of them
+     * (BxBaseModProfileTemplate::getConnectionsPreview); whether it is drawn already.
+     */
+    protected $_bConnectionsPreview;
+
     public function __construct($aObject, $oTemplate = false)
     {
         $this->_oModule = BxDolModule::getInstance($this->_sModule);
@@ -38,11 +44,13 @@ class BxBaseModProfileMenuViewMeta extends BxTemplMenuUnitMeta
         $this->_bContentPublic = false;
         $this->_oContentProfile = null;
         $this->_aContentProfileInfo = [];
+        $this->_bConnectionsPreview = false;
     }
 
     public function setContentId($iContentId)
     {
         $this->_iContentId = $iContentId;
+        $this->_bConnectionsPreview = false;
         $this->_aContentInfo = $this->_oModule->_oDb->getContentInfoById($this->_iContentId);
         if(empty($this->_aContentInfo) || !is_array($this->_aContentInfo))
             return;
@@ -70,6 +78,39 @@ class BxBaseModProfileMenuViewMeta extends BxTemplMenuUnitMeta
             $this->_retrieveContentId();
 
         return parent::getCode();
+    }
+
+    /**
+     * A count of the profile's friends or followers on the site: its text, after the one group of avatars the two
+     * counts share where it is the first of them drawn.
+     */
+    protected function _getConnectionCounter($oConnection, $bIsMutual, $aItem)
+    {
+        $iContentProfileId = $this->_oContentProfile->id();
+
+        $sCounter = $oConnection->getCounter($iContentProfileId, $bIsMutual, [
+            'content_type' => BX_CONNECTIONS_CONTENT_TYPE_INITIATORS, 
+            'caption' => $aItem['title'], 
+            'show_counter_label_with_profiles' => false,
+            'show_counter_label_icon' => false
+        ]);
+        if(empty($sCounter) || $this->_bConnectionsPreview) {
+            return $sCounter;
+        }
+
+        $this->_bConnectionsPreview = true;
+
+        return $this->_oModule->_oTemplate->getConnectionsPreview($iContentProfileId, $this->_isCountShown('friends'), $this->_isCountShown('subscribers')) . $sCounter;
+    }
+
+    protected function _isCountShown($sName)
+    {
+        if(!isset($this->_aObject['menu_items'][$sName])) {
+            return false;
+        }
+
+        $aItem = $this->_aObject['menu_items'][$sName];
+        return $this->_isActive($aItem) && $this->_isVisible($aItem);
     }
 
     protected function _getMenuItemMembership($aItem)
@@ -147,11 +188,7 @@ class BxBaseModProfileMenuViewMeta extends BxTemplMenuUnitMeta
             ]);
         }
 
-        return $oConnection->getCounter($iContentProfileId, true, [
-            'content_type' => BX_CONNECTIONS_CONTENT_TYPE_INITIATORS, 
-            'caption' => $aItem['title'], 
-            'custom_icon' => BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->getIconAsHtml(!empty($aItem['icon']) ? $aItem['icon'] : '')
-        ]);
+        return $this->_getConnectionCounter($oConnection, true, $aItem);
     }
 
     protected function _getMenuItemSubscribers($aItem)
@@ -184,11 +221,7 @@ class BxBaseModProfileMenuViewMeta extends BxTemplMenuUnitMeta
             ]);
         }
 
-        return $oConnection->getCounter($iContentProfileId, false, [
-            'content_type' => BX_CONNECTIONS_CONTENT_TYPE_INITIATORS, 
-            'caption' => $aItem['title'], 
-            'custom_icon' => BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->getIconAsHtml(!empty($aItem['icon']) ? $aItem['icon'] : '')
-        ]);
+        return $this->_getConnectionCounter($oConnection, false, $aItem);
     }
 
     protected function _getMenuItemRelations($aItem)

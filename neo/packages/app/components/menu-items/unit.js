@@ -1,43 +1,75 @@
+import { use } from 'react';
 import { NeoButton } from 'app/design/controls'
+import { View } from 'app/design/view'
+import { Text } from 'app/design/typography'
 import { components } from 'app/components/registry';
-import { useUnitActionHugs } from 'app/components/units/unit-action-width';
+import { UnitActionWidthContext, useUnitActionHugs } from 'app/components/units/unit-action-width';
 
+
+/**
+ * Not an action: a slot the size of a button with a dashed outline ("You" on the viewer's own card), so the card is
+ * as tall as its neighbours with two buttons, and its phone row ends as theirs do.
+ */
+function UnitActionNote({ title }) {
+    return (
+        <View className="min-h-9 sm:w-full flex-row items-center justify-center rounded-control-sm border border-dashed border-border px-3">
+            <Text numberOfLines={1} className="text-sm font-semibold text-secondary-foreground">
+                {title}
+            </Text>
+        </View>
+    );
+}
+
+/** The params of a card's element button (a connection, a suggestion's action). */
+function elementParams(params, { hugs, iconOnlyOnPhones }) {
+    const result = {
+        ...params,
+        button_rounded: params?.button_rounded || false,
+        button_full_width: hugs ? false : (params?.button_full_width ?? true),
+        only_icon: params?.only_icon || false,
+        on_done: () => {
+            // Handle action completion
+        },
+    };
+    if (iconOnlyOnPhones && !params?.button_show_title_from_size) {
+        result.button_show_title_from_size = 'sm';
+    }
+    return result;
+}
 
 export default function MenuItemSubmenu({ menuItem, isPrimary }) {
     // Profile rows on phones: a compact button on the right (unit-action-width.js).
     const hugs = useUnitActionHugs();
+    // A profile row on a phone keeps its room for the name: its buttons (Add friend, Follow, View profile) show
+    // their icons alone below `sm`, and their labels again in the card grid. A button without an icon keeps its label.
+    const iconOnlyOnPhones = use(UnitActionWidthContext) === 'compact-mobile';
     if (!menuItem) return null;
+    if (menuItem.note) return <UnitActionNote title={menuItem.title} />;
+
     if (menuItem.data?.type) {
         const Element = components['molecule'][String(menuItem.data.type)]
-        if (Element) {
-            const oElementParams = {
-                ...menuItem.data,
-                primary: isPrimary,
-                params: {
-                    ...menuItem.data?.params,
-                    button_rounded: menuItem.data?.params?.button_rounded || false,
-                    button_full_width: hugs ? false : (menuItem.data?.params?.button_full_width ?? true),
-                    only_icon: menuItem.data?.params?.only_icon || false,
-                    on_done: (sAction, oData) => {
-                        // Handle action completion
-                    },
-                },
-            };
-            return <Element key={menuItem.id || menuItem.name} {...oElementParams} />;
-        }
-    } else {
+        if (!Element) return null;
         return (
-            <NeoButton
-                style={isPrimary ? 'borderedProminent' : undefined}
-                controlSize="small"
-                width={hugs ? undefined : 'fill'}
-                image={menuItem.icon || undefined}
-                label={menuItem.title || undefined}
-                classNames={{ root: 'my-auto' }}
-                expoUI={false}
-                onPress={menuItem.onPress}
+            <Element
+                key={menuItem.id || menuItem.name}
+                {...menuItem.data}
+                primary={isPrimary}
+                params={elementParams(menuItem.data.params, { hugs, iconOnlyOnPhones })}
             />
         );
     }
-    return null;
+
+    return (
+        <NeoButton
+            style={isPrimary ? 'borderedProminent' : undefined}
+            controlSize="small"
+            width={hugs ? undefined : 'fill'}
+            image={menuItem.icon || undefined}
+            label={menuItem.title || undefined}
+            showTitleFromSize={iconOnlyOnPhones ? 'sm' : undefined}
+            classNames={{ root: 'my-auto' }}
+            expoUI={false}
+            onPress={menuItem.onPress}
+        />
+    );
 }

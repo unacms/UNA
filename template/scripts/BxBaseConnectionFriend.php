@@ -79,9 +79,15 @@ class BxBaseConnectionFriend extends BxDolConnectionFriend
         ];
     }
 
+    /**
+     * The button's icon is its state's (`name` of _getActions): adding a friend, or `default` once the request is
+     * sent or accepted; a row of its menu takes its action's (Cancel request, Unfriend, Reject: `remove`). The names
+     * are ones both icon sets have; Lucide draws user-round-check, user-round-plus and user-round-x for them
+     * (BxBaseIconsetLucide), the same icons the apps draw (NEO: settings/social-actions.js).
+     */
     protected function _getActionIconAsIcon($sAction)
     {
-        $sDefault = 'user';
+        $sDefault = 'user-check';
 
         $aA2I = [
             'add' => 'user-plus',
@@ -105,7 +111,7 @@ class BxBaseConnectionFriend extends BxDolConnectionFriend
 
     protected function _getActionIconAsImage($sAction)
     {
-        $sDefault = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>';
+        $sDefault = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-check-icon lucide-user-round-check"><path d="M2 21a8 8 0 0 1 13.292-6"/><circle cx="10" cy="8" r="5"/><path d="m16 19 2 2 4-4"/></svg>';
 
         $aA2I = [
             'add' => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-plus-icon lucide-user-round-plus"><path d="M2 21a8 8 0 0 1 13.292-6"/><circle cx="10" cy="8" r="5"/><path d="M19 16v6"/><path d="M22 19h-6"/></svg>',

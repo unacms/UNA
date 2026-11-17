@@ -13,6 +13,8 @@ import { components } from 'app/components/registry';
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting, cn, tp, sanitazeUrl, withMenuButtonParams } from 'app/lib/util';
 import { getUnitMenuItems } from 'app/customization/functions';
+import { useCurrentUser } from 'app/context/user';
+import { CONNECTIONS_PREVIEW_MAX, mergeConnectionProfiles } from 'app/lib/profile-connections';
 import { UnitActionWidthContext } from 'app/components/units/unit-action-width';
 import { useRouter, useCurrentTabPath, useFocusEffect } from 'app/lib/hooks/router';
 import { nativeTabPageHref } from 'app/lib/navigation/tab-history';
@@ -248,15 +250,30 @@ function isFollowersUnitType(unitType) {
 
 /**
  * A profile's connections as its card shows them, as UNA's site card does: its friends (the ones it shares with the
- * viewer, when there are any) and its followers, "2 friends · 5 followers". A count of zero is left out, so a profile
- * with neither has no text. UNA sends the counts where its "connections in profile units" setting is on.
+ * viewer, when there are any), then its followers, each as its count text ("2 friends"). A count of zero is left
+ * out, so a profile with neither has no part. UNA sends them where its "connections in profile units" setting is on.
  */
+export function getProfileConnectionsParts(data) {
+    const hasMutual = data?.mutual_friends_count > 0;
+    return [
+        {
+            key: 'friends',
+            label: hasMutual
+                ? tp('mutual_friends', data.mutual_friends_count, false)
+                : getCountLabel(data?.friends_count, 'friends'),
+        },
+        {
+            key: 'followers',
+            label: getCountLabel(data?.followers_count, 'followers'),
+        },
+    ]
+        .map((part) => ({ ...part, label: String(part.label || '').trim() }))
+        .filter((part) => part.label);
+}
+
+/** The same as one text: "2 friends · 5 followers". */
 export function getProfileConnectionsLabel(data) {
-    const friends = data?.mutual_friends_count > 0
-        ? tp('mutual_friends', data.mutual_friends_count, false)
-        : getCountLabel(data?.friends_count, 'friends');
-    const followers = getCountLabel(data?.followers_count, 'followers');
-    return [friends, followers].map((part) => String(part || '').trim()).filter(Boolean).join(' · ');
+    return getProfileConnectionsParts(data).map((part) => part.label).join(' · ');
 }
 
 function getPersonSocialList(data, { isFollowers } = {}) {
@@ -292,6 +309,11 @@ export function useUnitActions({ unitType, data, module, t = null }) {
     routerRef.current = router;
     tabPathRef.current = tabPath;
 
+    // The card of the viewer's current profile (a card's `author_data` is its own profile).
+    const { currentUser } = useCurrentUser();
+    const cardProfileId = data?.author_data?.id;
+    const isOwn = !!currentUser?.id && !!cardProfileId && String(currentUser.id) === String(cardProfileId);
+
     return useMemo(
         () => getUnitMenuItems(unitType, data, (event, url) => {
             event?.preventDefault?.();
@@ -302,8 +324,8 @@ export function useUnitActions({ unitType, data, module, t = null }) {
                     ? url
                     : nativeTabPageHref(url, tabPathRef.current),
             );
-        }, t, module),
-        [unitType, data, module, t],
+        }, t, module, { isOwn }),
+        [unitType, data, module, t, isOwn],
     );
 }
 
@@ -642,6 +664,42 @@ export function UnitRecommendation({ data, params, primary = false }) {
                 button_border_shape: params?.button_border_shape ?? (isIgnore ? 'circle' : undefined),
             }}
         />
+    );
+}
+
+/**
+ * A profile card's connections line (20px high): the counts as one text ("2 friends · 5 followers"), and in the card
+ * grid (from `sm` up) one group of avatars before it: the first of the profile's mutual friends, friends and
+ * followers, each person once and without the viewer (lib/profile-connections.ts), as on UNA's site card. A phone row
+ * has room for the text only. The avatars are not links: the card itself is one. They are 20px and go through the
+ * image optimizer at that size (`Profile`), never the stored picture as it is.
+ */
+export function UnitProfileConnections({ data, skeleton, labelClassName = PROFILE_ROW_COUNT, maxCount = CONNECTIONS_PREVIEW_MAX }) {
+    const { currentUser } = useCurrentUser();
+    const label = skeleton ? '' : getProfileConnectionsLabel(data);
+    const profiles = skeleton || !label
+        ? []
+        : mergeConnectionProfiles(
+            [data?.mutual_friends_list, data?.friends_list, data?.followers_list],
+            { max: maxCount, exclude: currentUser?.id },
+        );
+    return (
+        <Row className="items-center gap-1 h-5 min-w-0">
+            <Skeleton className="h-4 w-20" visible={skeleton}>
+                {profiles.length > 0 ? (
+                    <View className="hidden sm:flex flex-none">
+                        <ProfilesList
+                            data={profiles}
+                            showEmpty={false}
+                            maxCount={maxCount}
+                            displaySize="2xs"
+                            showLinks={false}
+                        />
+                    </View>
+                ) : null}
+                {label ? <Text numberOfLines={1} className={labelClassName}>{label}</Text> : null}
+            </Skeleton>
+        </Row>
     );
 }
 
