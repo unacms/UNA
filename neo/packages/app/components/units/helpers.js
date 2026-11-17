@@ -1,8 +1,9 @@
-import { useMemo, useRef, useState, useCallback, createContext, use } from 'react';
+import { Fragment, useMemo, useRef, useState, useCallback, createContext, use } from 'react';
 import { Platform } from 'react-native';
 import Image from 'app/ui/atoms/image';
 import Letter from 'app/ui/atoms/letter';
 import { Text } from 'app/design/typography';
+import CountText from 'app/ui/atoms/count-text';
 import { View, Row } from 'app/design/view';
 import { NeoButton, legacyToNeoButtonProps } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile/profile';
@@ -262,10 +263,23 @@ export function getProfileConnectionsParts(data) {
     const isPrivate = isContext && data?.visibility !== undefined && data?.visibility !== null && String(data.visibility) !== '3';
     return [
         ...(isPrivate ? [{ key: 'privacy', label: i18n.t('Private') }] : []),
-        ...getCardCountParts(data).map((part) => ({ key: part.key, label: tp(part.labelKey, part.count, false) })),
+        ...getCardCountParts(data).map((part) => ({ key: part.key, label: tp(part.labelKey, part.count, false), count: part.count })),
     ]
         .map((part) => ({ ...part, label: String(part.label || '').trim() }))
         .filter((part) => part.label);
+}
+
+/** Whose counts a card shows: its profile (a recycled list row showing someone else has not changed its counts). */
+const countOwner = (data) => data?.author_data?.id ?? data?.id;
+
+/** A profile's counts as one line ("2 friends · 5 followers"), each showing its change (CountText). Goes in a Text. */
+function ConnectionCounts({ parts, owner }) {
+    return parts.map((part, index) => (
+        <Fragment key={part.key}>
+            {index > 0 ? ' · ' : null}
+            <CountText text={part.label} value={part.count} owner={owner} />
+        </Fragment>
+    ));
 }
 
 /** The same as one text: "2 friends · 5 followers". */
@@ -509,6 +523,8 @@ export function UnitProfileList({
         countKey,
         fallbackCountKey,
     })
+    // A profile's connections: each count shows its change (a follow from this card), see CountText.
+    const connections = unitType || profile ? getProfileConnectionsParts(data) : null
 
     return (
         <Skeleton preset={showList ? 'profile-list' : undefined} className="h-4 w-20" visible={skeleton}>
@@ -522,7 +538,11 @@ export function UnitProfileList({
                     />
                 ) : null}
                 {resolvedLabel ? (
-                    <Text className={labelClassName}>{resolvedLabel}</Text>
+                    <Text className={labelClassName}>
+                        {connections?.length
+                            ? <ConnectionCounts parts={connections} owner={countOwner(data)} />
+                            : resolvedLabel}
+                    </Text>
                 ) : null}
             </Row>
         </Skeleton>
@@ -679,7 +699,8 @@ export function UnitRecommendation({ data, params, primary = false }) {
  */
 export function UnitProfileConnections({ data, skeleton, labelClassName = PROFILE_ROW_COUNT, maxCount = CONNECTIONS_PREVIEW_MAX }) {
     const { currentUser } = useCurrentUser();
-    const label = skeleton ? '' : getProfileConnectionsLabel(data);
+    const parts = skeleton ? [] : getProfileConnectionsParts(data);
+    const label = parts.map((part) => part.label).join(' · ');
     const profiles = skeleton || !label
         ? []
         : mergeConnectionProfiles(
@@ -700,7 +721,11 @@ export function UnitProfileConnections({ data, skeleton, labelClassName = PROFIL
                         />
                     </View>
                 ) : null}
-                {label ? <Text numberOfLines={1} className={labelClassName}>{label}</Text> : null}
+                {label ? (
+                    <Text numberOfLines={1} className={labelClassName}>
+                        <ConnectionCounts parts={parts} owner={countOwner(data)} />
+                    </Text>
+                ) : null}
             </Skeleton>
         </Row>
     );

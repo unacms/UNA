@@ -12,6 +12,9 @@
  */
 class BxBaseServiceConnections extends BxDol
 {
+    /** The connections a profile's card shows: its friend and follow buttons, and their counts. */
+    protected static $CARD_CONNECTIONS = ['sys_profiles_friends', 'sys_profiles_subscriptions'];
+
     public function __construct()
     {
         parent::__construct();
@@ -71,16 +74,130 @@ class BxBaseServiceConnections extends BxDol
         if($aResult['err'] !== false)
             return ['code' => 3, 'message' => $aResult['msg']];
 
+        // the profile's new counts go back with the reply, so the app updates its card without another request
+        $aCounts = $this->_getCardCounts($aParams['o'], (int)$aParams['cid']);
+
         // the toggle as it is now; a card's keeps its short wording (`short`, see BxBaseConnection::getElementAPI)
-        if(($aParams['r'] ?? '') == 'object') 
-            return $oConnection->getElementAPI($aParams['cid'], $aParams['iid'], !empty($aParams['short']) ? ['show_do_label_short' => true] : []);
+        if(($aParams['r'] ?? '') == 'object') {
+            $aElement = $oConnection->getElementAPI($aParams['cid'], $aParams['iid'], !empty($aParams['short']) ? ['show_do_label_short' => true] : []);
+            if(!is_array($aElement)) {
+                return $aElement;
+            }
+
+            return $aCounts ? array_merge($aElement, ['counts' => $aCounts]) : $aElement;
+        }
 
         $aFlip = ['add' => 'remove', 'remove' => 'add'];
 
-        return [
+        $aResult = [
             'a' => $aFlip[$aParams['a']],
             'title' => $this->serviceGetActionTitle($aParams['o'], $aParams['a'], $aParams['iid'], $aParams['cid'], true),
         ];
+        if($aCounts) {
+            $aResult['counts'] = $aCounts;
+        }
+
+        return $aResult;
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_system_general System Services
+     * @subsection bx_system_general-connections Connections
+     * @subsubsection bx_system_general-get_card_state get_card_state
+     *
+     * @code bx_srv('system', 'get_card_state', [['cid' => 12]], 'TemplServiceConnections'); @endcode
+     *
+     * What a profile's card shows of its connections, for the logged in viewer: the counts and the state of the
+     * friend and follow buttons. The apps ask for it when the viewer's connection with the profile changed
+     * somewhere else (another tab or device), to update the cards they already show.
+     * @param $aParams an array with 'cid', the profile's id
+     *
+     * @see BxBaseServiceConnections::serviceGetCardState
+     */
+    /** 
+     * @ref bx_system_general-get_card_state "get_card_state"
+     * @api @ref bx_system_general-get_card_state "get_card_state"
+     */
+    public function serviceGetCardState($aParams)
+    {
+        if(is_string($aParams)) {
+            $aParams = json_decode($aParams, true);
+        }
+
+        $iContent = is_array($aParams) && isset($aParams['cid']) ? (int)$aParams['cid'] : 0;
+        $iViewer = (int)bx_get_logged_profile_id();
+        if(!$iContent || !$iViewer || $iContent == $iViewer) {
+            return ['code' => 1];
+        }
+
+        if(!$this->_isCardViewable($iContent)) {
+            return ['code' => 2];
+        }
+
+        $aElements = [];
+        foreach(self::$CARD_CONNECTIONS as $sObject) {
+            $oConnection = BxDolConnection::getObjectInstance($sObject);
+            if(!$oConnection) {
+                continue;
+            }
+
+            $aElement = $oConnection->getElementAPI($iContent, $iViewer);
+            if(!empty($aElement) && is_array($aElement)) {
+                $aElements[$sObject] = $aElement;
+            }
+        }
+
+        return [
+            'profile_id' => $iContent,
+            'counts' => $this->_getCardCounts(self::$CARD_CONNECTIONS[0], $iContent),
+            'elements' => $aElements,
+        ];
+    }
+
+    /**
+     * A card shows its profile's data only to a viewer who may view the profile (a private one is a placeholder).
+     */
+    protected function _isCardViewable($iProfileId)
+    {
+        $oProfile = BxDolProfile::getInstance($iProfileId);
+        if(!$oProfile) {
+            return false;
+        }
+
+        $sModule = $oProfile->getModule();
+        if(!BxDolRequest::serviceExists($sModule, 'check_allowed_profile_view')) {
+            return false;
+        }
+
+        return bx_srv($sModule, 'check_allowed_profile_view', [$oProfile->getContentId()]) === CHECK_ACTION_RESULT_ALLOWED;
+    }
+
+    /**
+     * The counts a profile's card shows (as BxBaseModProfileModule::decodeDataAPI sends them), after a friendship or
+     * a subscription with it changed. Nothing for other connections, or when cards have no counts.
+     */
+    protected function _getCardCounts($sObject, $iProfileId)
+    {
+        if(!$iProfileId || !in_array($sObject, self::$CARD_CONNECTIONS) || getParam('sys_api_conn_in_prof_units') != 'on') {
+            return [];
+        }
+
+        if(!$this->_isCardViewable($iProfileId)) {
+            return [];
+        }
+
+        $aResult = ['profile_id' => $iProfileId];
+
+        if(($oConnection = BxDolConnection::getObjectInstance('sys_profiles_friends')) !== false) {
+            $aResult['friends_count'] = (int)$oConnection->getConnectedContentCount($iProfileId, true);
+        }
+
+        if(($oConnection = BxDolConnection::getObjectInstance('sys_profiles_subscriptions')) !== false) {
+            $aResult['followers_count'] = (int)$oConnection->getConnectedInitiatorsCount($iProfileId);
+        }
+
+        return $aResult;
     }
 
     public function serviceGetActionTitle($sObject, $sAction, $iInitiatorId, $iContentId, $bFlip = false)

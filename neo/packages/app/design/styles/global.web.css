@@ -1127,3 +1127,60 @@ webview {
     background-clip: text;
     color: transparent;
 }
+
+/* A count that changed (ui/atoms/count-text.tsx): its text takes the accent colour, then eases back to its own
+   (the keyframes name no end, so it is whatever the text has), while the old number rolls out and the new one in:
+   up for more, down for fewer. The line it sits in clips the roll (`truncate`), as an odometer's window does. */
+.neo-count-flash {
+    animation: neo-count-flash 900ms cubic-bezier(0.2, 0, 0, 1);
+}
+.neo-count-num {
+    display: inline-block;
+    position: relative;
+}
+.neo-count-num > span {
+    display: inline-block;
+}
+.neo-count-out-up,
+.neo-count-out-down {
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0;
+}
+.neo-count-in-up {
+    animation: neo-count-in-up 350ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+.neo-count-out-up {
+    animation: neo-count-out-up 350ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+.neo-count-in-down {
+    animation: neo-count-in-down 350ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+.neo-count-out-down {
+    animation: neo-count-out-down 350ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+@keyframes neo-count-flash {
+    0%, 45% { color: rgb(var(--accent-foreground)); }
+}
+@keyframes neo-count-in-up {
+    from { transform: translateY(100%); opacity: 0; }
+}
+@keyframes neo-count-out-up {
+    to { transform: translateY(-100%); opacity: 0; }
+}
+@keyframes neo-count-in-down {
+    from { transform: translateY(-100%); opacity: 0; }
+}
+@keyframes neo-count-out-down {
+    to { transform: translateY(100%); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .neo-count-in-up,
+    .neo-count-in-down {
+        animation: none;
+    }
+    .neo-count-out-up,
+    .neo-count-out-down {
+        display: none;
+    }
+}

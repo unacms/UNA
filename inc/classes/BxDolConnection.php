@@ -564,6 +564,8 @@ class BxDolConnection extends BxDolFactory implements iBxDolFactoryObject
             $sMessage = json_encode([
                 'object' => $this->_sObject, 
                 'action' => 'deleted',
+                'initiator' => $iInitiator,
+                'content' => $iContent,
             ]);
 
             $oSockets->sendEvent(self::SOCKET_NAME, $iInitiator , 'changed', $sMessage);
