@@ -259,6 +259,15 @@ UNA says per menu how its buttons look and how big they are: Studio > Navigation
   - the action button of a people or groups card (`UnitRecommendation` in `components/units/helpers.js`), from the card's snippet meta menu: borderless, small.
 - Glass is for a menu over a picture or another backdrop that varies (a cover, a header without chrome). Prefer setting it on the menu in UNA over hard-coding `glass` at a call site, so the site and the apps agree.
 
+### Card buttons
+
+A people or organizations card shows the buttons UNA's site shows on it, unless the list has its own.
+
+- UNA sends a card's snippet meta menu (Studio > Navigation > the module's "Snippet meta" menu) as `meta.items`: counts and other text, and the card's buttons, each an element with a `data.type` (`connections_ext`: a friend or follow toggle; `connections`: one action such as Join; `recommendation`: a suggestion's Add and Ignore). An item is sent when it is on for the apps (`active_api`) and visible in the list's context, as on the site.
+- `getUnitMenuItems` (`default/functions.js`) names the actions a list type wants (Friends: Message; Suggestions: Add and dismiss; Requests: Accept and Decline ...). Where the list type names none, or UNA sends none of those it names, the card takes UNA's buttons in the menu's order (`getSiteUnitActions` in `lib/unit-actions.ts`, with tests): the first two, as the site shows two, and a suggestion's Ignore as the dismiss button. With no button from UNA (a guest, the viewer's own card) the card keeps "View".
+- A profile row on a phone has room for one labelled button: the second shows its icon alone below `sm` (`components/menu-items/unit.js`).
+- The card is a link and its buttons sit inside it. A button's press calls `preventDefault()`, and a toggle that opens a menu wraps it in an element that does the same for the menu's rows; the web link (`ui/atoms/link.web.tsx`) then neither navigates nor announces a link press, which would close the menu that just opened.
+
 ### Form labels
 
 UNA picks how forms label their text fields: above the field (regular, the default) or floating inside it (adaptive). It is one setting for the site and the apps, Studio > Designer > Settings, and a form display can have its own (Studio > Forms > Displays). Every form's API carries the resolved style as `params.label_style`.

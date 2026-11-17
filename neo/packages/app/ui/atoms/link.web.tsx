@@ -75,6 +75,14 @@ export default function ElementLink({
     // The click event goes to `onClick` so a handler can `preventDefault()`
     // (Next's Link then skips its own navigation).
     const handleLinkClick = useCallback((event?: any) => {
+        // A control inside the link took the click (a card's Follow button, the menu it opens): Next's Link
+        // skips its navigation, and it is no press of the link either, so the menus and dialogs that close
+        // when a link is pressed stay open.
+        if (event?.defaultPrevented) {
+            onClick?.(event);
+            return;
+        }
+
         // A link opened in another tab leaves this page where it is.
         const sameTab = opensInThisTab(event, resolvedTarget);
         emitter.emit(EVENTS.link, { action: 'pressed', href: sameTab ? href : undefined });

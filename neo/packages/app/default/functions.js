@@ -4,6 +4,7 @@ import { updateRouteDataForConnection, appSetting } from 'app/lib/util'
 import { normalizeTiers, responsiveClasses } from 'app/lib/responsive-classes'
 import { withoutHiddenOn } from 'app/lib/hidden-on'
 import { FLUSH_LIST_MODULES } from 'app/components/units/flush-list'
+import { getSiteUnitActions } from 'app/lib/unit-actions'
 import { components } from 'app/components/registry';
 import { settingsLayout } from 'app/settings/layout'
 import i18n from 'i18next'
@@ -223,7 +224,6 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
                     break;
                 case "person_friends_suggestion":
                     sPrimary = "befriend";
-                    bMenuItemsMoreShow = false;
                     break;
                 case "person_friend_requested":
                     sPrimary = "unfriend";
@@ -253,15 +253,26 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
         }
 
         if (!primaryMenuItem) {
-            primaryMenuItem = data.meta.items.find(item => item.name === sPrimary);
+            primaryMenuItem = data.meta.items?.find(item => item.name === sPrimary);
         }
 
         if (!secondaryMenuItem) {
-            secondaryMenuItem = data.meta.items.find(item => item.name === sSecondary);
+            secondaryMenuItem = data.meta.items?.find(item => item.name === sSecondary);
         }
 
         if (!deleteMenuItem) {
-            deleteMenuItem = data.meta.items.find(item => item.name === sDelete);
+            deleteMenuItem = data.meta.items?.find(item => item.name === sDelete);
+        }
+
+        // A list type that names no action, or names ones UNA doesn't send for this card: the card's buttons are
+        // the ones UNA's site shows on it (lib/unit-actions.ts), the first two of its snippet meta menu.
+        if (!primaryMenuItem && !secondaryMenuItem) {
+            const siteActions = getSiteUnitActions(data.meta.items);
+            primaryMenuItem = siteActions.primary;
+            secondaryMenuItem = siteActions.secondary;
+            if (!deleteMenuItem) {
+                deleteMenuItem = siteActions.dismiss;
+            }
         }
 
         if (!primaryMenuItem && secondaryMenuItem) {

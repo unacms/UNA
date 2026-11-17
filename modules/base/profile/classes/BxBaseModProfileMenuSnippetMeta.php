@@ -288,8 +288,13 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
         ];
 
         if($this->_bIsApi) {
+            // no element (the viewer's own profile, no action to offer): no item, as the site shows no button
+            $aElement = $oObject->getElementApi($iContentProfile, false, $aObjectOptions);
+            if(empty($aElement) || !is_array($aElement))
+                return false;
+
             return $this->_getMenuItemAPI($aItem, ['display' => 'element'], [
-                'data' => array_merge($oObject->getElementApi($iContentProfile, false, $aObjectOptions), [
+                'data' => array_merge($aElement, [
                     'primary' => !empty($aItem['primary']),
                 ])
             ]);

@@ -104,5 +104,12 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_sn
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_snippet_meta' AND `module`='bx_organizations' AND `name`='join-paid';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_snippet_meta' AND `module`='bx_organizations' AND `name`='join';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_snippet_meta' AND `module`='bx_organizations' AND `name`='befriend';
+-- a card's buttons in the apps are the site's: the friend and follow toggles (the apps draw the first two)
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_snippet_meta' AND `module`='bx_organizations' AND `name`='obj-friends';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_snippet_meta' AND `module`='bx_organizations' AND `name`='obj-subscriptions';
+-- and the suggestion lists' buttons, as people's cards: Follow in Who to follow, and Remove next to Add friend and Follow
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_snippet_meta' AND `module`='bx_organizations' AND `name`='subscribe';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_snippet_meta' AND `module`='bx_organizations' AND `name`='ignore-befriend';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_snippet_meta' AND `module`='bx_organizations' AND `name`='ignore-subscribe';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_menu_manage_tools' AND `module`='bx_organizations' AND `name`='clear-reports';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_menu_manage_tools' AND `module`='bx_organizations' AND `name`='delete-with-content';

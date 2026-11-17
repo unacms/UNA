@@ -85,6 +85,8 @@ export default function ElementConnections({
     };
 
     const _handleRequset = async (action, event) => {
+        // On a card the button sits inside the card's link: the press is the action, not a visit to the profile.
+        event?.preventDefault?.();
         if (Platform.OS !== 'web') {
             setBottomSheetData(false);
         }
@@ -128,15 +130,20 @@ export default function ElementConnections({
         return (
             <>
                 {elementData.actions.length > 0 ? (
-                    <DropdownMenu
-                        mode="popup"
-                        items={elementData.actions}
-                        defaultOpen={false}
-                        onSelect={(item) => { _handleRequset(item.name) }}
-
-                    >
-                        {renderActionButton()}
-                    </DropdownMenu>
+                    // On a card the button sits inside the card's link: a click on the trigger or on a row of its
+                    // menu (they bubble here through React's tree) is not a visit to the profile.
+                    <View {...(Platform.OS === 'web' ? { onClick: (event) => event.preventDefault() } : null)}>
+                        <DropdownMenu
+                            mode="popup"
+                            items={elementData.actions}
+                            defaultOpen={false}
+                            onSelect={(item) => { _handleRequset(item.name) }}
+                            // The trigger keeps its name where the button shows its icon alone (a card row on phones).
+                            triggerAccessibilityLabel={elementData.title}
+                        >
+                            {renderActionButton()}
+                        </DropdownMenu>
+                    </View>
                 ) : (
                     renderActionButton({ onPress: (event) => _handleRequset(elementData.name, event) })
                 )}
