@@ -7,6 +7,8 @@ import { fetcher } from 'app/lib/fetcher';
 import { subscribe } from 'app/ui/atoms/socket';
 import emitter, { EVENTS } from 'app/context/emitter'
 import { checkActionsOnConnectionsChanged } from 'app/customization/functions';
+import { cardProfileOfEvent } from 'app/lib/connection-patch';
+import { refreshCardFromServer } from 'app/lib/connection-cache';
 
 // Socket channels are public, so UNA's events only say what changed: the signed-in
 // profile is reloaded through the API, with the viewer's session.
@@ -40,6 +42,9 @@ export default function Subscriber() {
     const onUpdateConnections = useCallback((data, userId, isActive) => {
         storageClear();
         const oData = JSON.parse(data);
+        // A friendship or a follow with a profile whose card a loaded list shows: that card takes its new
+        // counts and buttons (one small request), whatever the page does next.
+        refreshCardFromServer(cardProfileOfEvent(oData, userId));
         const oActions = checkActionsOnConnectionsChanged(oData);
         if (!oActions?.update_user && !oActions?.reload_page) return;
 

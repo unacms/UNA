@@ -3,6 +3,8 @@ import Submenu from './submenu';
 import SubmenuShare from './submenu-share';
 import ProfilesList from 'app/ui/molecules/profile/profile-list';
 import { Text } from 'app/design/typography';
+import CountText from 'app/ui/atoms/count-text';
+import { splitCount } from 'app/lib/count-change';
 import MenuItemActionBase, {
     formatMenuHref,
     getMenuItemFlags,
@@ -13,6 +15,18 @@ import MenuItemActionBase, {
 const SUBMENU_MAP = {
     'bx_timeline_menu_item_share': SubmenuShare,
 };
+
+/**
+ * An item that counts profiles and lists the first of them ("3 followers" on a profile's cover) shows its count's
+ * change (CountText) when the page takes a new cover after a follow. Its number is read from its title, which UNA
+ * sends as text; its link (the list it opens) says whose count it is.
+ */
+function countTitle(oProps) {
+    if (!Array.isArray(oProps?.list) || typeof oProps.title !== 'string') return null;
+    const number = splitCount(oProps.title).number.replace(/\D/g, '');
+    if (!number) return null;
+    return <CountText text={oProps.title} value={Number(number)} owner={oProps.link || oProps.name} />;
+}
 
 /** The item itself is pressable (a dropdown row, a no-action link, an onclick). */
 const onPressProvided = (oProps) => !!(oProps.onPress || oProps.params?.onclick);
@@ -66,7 +80,7 @@ export default function MenuItemButton(oProps) {
     return (
         <MenuItemActionBase
             item={oProps}
-            title={oProps.title}
+            title={(!isDropdown && countTitle(oProps)) || oProps.title}
             icon={sButtonIcon}
             onPress={onPress}
             href={href}
@@ -85,7 +99,7 @@ export default function MenuItemButton(oProps) {
             innerAs="row"
         >
             {hasList && !oProps.params?.button_style ? (
-                <Text className="text-secondary-foreground web:hover:text-foreground px-2 text-sm font-medium">{oProps.title}</Text>
+                <Text className="text-secondary-foreground web:hover:text-foreground px-2 text-sm font-medium">{countTitle(oProps) || oProps.title}</Text>
             ) : undefined}
         </MenuItemActionBase>
     );
