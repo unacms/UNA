@@ -373,6 +373,27 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
         return true;
     }
 
+    /**
+     * One group of avatars for a profile's friends and followers together, shown before their counts on a card and
+     * on the profile's page (BxBaseModProfileModule::getConnectionsPreviewIds); empty when there is nobody to show.
+     */
+    function getConnectionsPreview ($iProfileId, $bFriends = true, $bFollowers = true)
+    {
+        $aTmplVarsProfiles = [];
+        foreach($this->getModule()->getConnectionsPreviewIds($iProfileId, $bFriends, $bFollowers) as $iId)
+            if(($oProfile = BxDolProfile::getInstanceMagic($iId)) !== false)
+                $aTmplVarsProfiles[] = [
+                    'unit' => $oProfile->getUnit(0, ['template' => ['name' => 'unit_wo_info_links', 'size' => 'icon']])
+                ];
+
+        if(empty($aTmplVarsProfiles))
+            return '';
+
+        return $this->parseHtmlByName('connections_preview.html', [
+            'bx_repeat:profiles' => $aTmplVarsProfiles
+        ]);
+    }
+
     function getSnippetMenuVars ($iProfileId, $bPublic = null, $aParams = [])
     {
         $CNF = &$this->_oConfig->CNF;

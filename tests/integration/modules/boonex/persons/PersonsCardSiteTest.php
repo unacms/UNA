@@ -119,6 +119,22 @@ class PersonsCardSiteTest extends BxDolIntegrationTestCase
         $this->assertStringNotContainsString('bx-base-pofile-card-view', $sCard, 'A card with buttons has no "View profile".');
     }
 
+    /** The friends' and followers' counts share one group of avatars: neither count has avatars of its own. */
+    public function testCountsShareOneGroupOfAvatars(): void
+    {
+        list($iOtherProfileId, $iOtherContentId) = $this->otherPerson($this->_iProfileId);
+        if(!$iOtherProfileId)
+            $this->markTestSkipped('The site has no other person.');
+
+        $this->bxLoginAsAdmin();
+        $this->viewAs($this->_iProfileId);
+
+        $sCard = $this->card($iOtherContentId);
+
+        $this->assertLessThanOrEqual(1, substr_count($sCard, 'bx-base-pofile-connections-preview'));
+        $this->assertStringNotContainsString('bx-conn-counter-profiles', $sCard);
+    }
+
     public function testOwnCardOpensTheProfileAndSaysYou(): void
     {
         $this->assertGreaterThan(0, $this->_iProfileId, 'The test admin has no profile.');

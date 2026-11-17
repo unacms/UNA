@@ -24,6 +24,12 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
      */
     protected $_bCard;
 
+    /**
+     * The friends' and followers' counts share one group of avatars, drawn before the first of them
+     * (BxBaseModProfileTemplate::getConnectionsPreview); whether it is drawn for the current profile.
+     */
+    protected $_bConnectionsPreview;
+
     public function __construct($aObject, $oTemplate = false)
     {
         parent::__construct($aObject, $oTemplate);
@@ -36,6 +42,7 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
         $this->_bContentPublic = false;
         $this->_oContentProfile = null;
         $this->_bCard = false;
+        $this->_bConnectionsPreview = false;
 
         $this->_aConnectionToFunctionCheck = $this->_oModule->_oConfig->getConnectionToFunctionCheck();
     }
@@ -43,6 +50,8 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
     public function setContentId($iContentId)
     {
         parent::setContentId($iContentId);
+
+        $this->_bConnectionsPreview = false;
 
         if(!empty($this->_iContentId))
             $this->_oContentProfile = BxDolProfile::getInstanceByContentAndType($iContentId, $this->_sModule);
@@ -61,6 +70,44 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
     public function setContentPublic($bContentPublic)
     {
         $this->_bContentPublic = $bContentPublic;
+    }
+
+    /**
+     * The group of avatars before the first count drawn for the current profile: of its friends and followers
+     * together, as far as the menu shows their counts.
+     */
+    protected function _getConnectionsPreview()
+    {
+        if($this->_bConnectionsPreview || !$this->_oContentProfile)
+            return '';
+
+        $this->_bConnectionsPreview = true;
+
+        return $this->_oModule->_oTemplate->getConnectionsPreview($this->_oContentProfile->id(), $this->_isCountShown('friends'), $this->_isCountShown('subscribers'));
+    }
+
+    protected function _isCountShown($sName)
+    {
+        if(!isset($this->_aObject['menu_items'][$sName]))
+            return false;
+
+        $aItem = $this->_aObject['menu_items'][$sName];
+        return $this->_isActive($aItem) && $this->_isVisible($aItem) && $this->_isVisibleInContext($aItem);
+    }
+
+    /**
+     * A count without avatars of its own: its text, after the shared group where it is the first count.
+     */
+    protected function _getConnectionCounter($oConnection, $iContentProfile, $aObjectOptions)
+    {
+        $sCounter = $oConnection->getCounter($iContentProfile, false, array_merge($aObjectOptions, [
+            'show_counter_label_with_profiles' => false,
+            'show_counter_label_icon' => false
+        ]));
+        if(empty($sCounter))
+            return false;
+
+        return $this->getUnitMetaItemCustom($this->_getConnectionsPreview() . $sCounter);
     }
 
     public function setCard($bCard)
@@ -195,10 +242,7 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
         $aObjectOptions = [
             'caption' => ($sKey = 'menu_item_title_sm_friends') && isset($CNF['T'][$sKey]) ? $CNF['T'][$sKey] : '_sys_' . $sKey
         ];
-        if(!empty($aItem['icon']))
-            $aObjectOptions['custom_icon'] = $this->_oFunctions->getIconAsHtml($aItem['icon']);
-
-        return $this->getUnitMetaItemCustom($oConnection->getCounter($iContentProfile, false, $aObjectOptions));
+        return $this->_getConnectionCounter($oConnection, $iContentProfile, $aObjectOptions);
     }
 
     protected function _getMenuItemFriendsMutual($aItem)
@@ -264,10 +308,7 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
             'content_type' => BX_CONNECTIONS_CONTENT_TYPE_INITIATORS,
             'caption' => ($sKey = 'menu_item_title_sm_subscribers') && isset($CNF['T'][$sKey]) ? $CNF['T'][$sKey] : '_sys_' . $sKey
         ];
-        if(!empty($aItem['icon']))
-            $aObjectOptions['custom_icon'] = $this->_oFunctions->getIconAsHtml($aItem['icon']);
-
-        return $this->getUnitMetaItemCustom($oConnection->getCounter($iContentProfile, false, $aObjectOptions));
+        return $this->_getConnectionCounter($oConnection, $iContentProfile, $aObjectOptions);
     }
 
     protected function _getMenuItemMembership($aItem)

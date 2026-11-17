@@ -1,8 +1,8 @@
 @charset "UTF-8";
 /**
  * A profile's card in a gallery (unit_card.html: people, organizations), laid out as the apps' card (NEO:
- * components/units/content-list/bx-persons.js): a square picture, the name, the friends and followers with their
- * first avatars, then the card's two buttons, the first one the main one. Below 640px a card is a row: a round
+ * components/units/content-list/bx-persons.js): a square picture, the name, one group of avatars for the friends and
+ * followers before their counts, then the card's two buttons, the first one the main one. Below 640px a card is a row: a round
  * picture, the name over the counts, and the buttons as icons at the end.
  *
  * Spacing, as NEO's: the name and the counts are 8px apart, like the two buttons; the counts and the buttons 12px.
@@ -136,7 +136,7 @@
     min-width: 0;
 }
 
-/* a count: its first profiles' avatars (the card grid only) and its text, 14px on a 20px line */
+/* the counts: "2 friends · 3 followers", 14px on a 20px line, after one group of avatars for both (the card grid only) */
 .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-conn-counter {
     min-width: 0;
     overflow: hidden;
@@ -151,7 +151,7 @@
 .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-conn-counter:hover .bx-conn-counter-text {
     text-decoration: underline;
 }
-.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-conn-counter-profiles {
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-base-pofile-connections-preview {
     display: none;
 }
 .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-conn-counter-label {
@@ -313,8 +313,6 @@
     .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor {
         -webkit-flex-wrap: wrap;
         flex-wrap: wrap;
-        -webkit-column-gap: 0.5rem;
-        column-gap: 0.5rem;
     }
     /* the counts' line keeps its 20px on a card with no count, so every card's buttons start at the same place */
     .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor::before {
@@ -323,26 +321,25 @@
         flex: none;
         width: 0;
         height: 1.25rem;
-        margin-right: -0.5rem;
     }
-    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item:not(.bx-menu-item-button) + li.bx-menu-item:not(.bx-menu-item-button):not(.bx-menu-item-nl)::before {
-        content: none;
-    }
-    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-conn-counter-profiles {
+    /* one group of 20px avatars for the friends and the followers, before their counts */
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-base-pofile-connections-preview {
         display: -webkit-flex;
         display: flex;
+        -webkit-flex: none;
+        flex: none;
         margin-right: 0.25rem;
     }
-    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-conn-counter-profile .bx-def-icon-size {
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-base-pofile-connections-preview .bx-def-icon-size {
         width: 1.25rem;
         height: 1.25rem;
     }
-    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-conn-counter-profile p.bx-base-pofile-unit-thumb {
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-base-pofile-connections-preview p.bx-base-pofile-unit-thumb {
         font-size: 0.625rem;
         line-height: 1.25rem;
         font-weight: 600;
     }
-    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-conn-counter-profile .bx-base-pofile-unit-online {
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor .bx-base-pofile-connections-preview .bx-base-pofile-unit-online {
         display: none;
     }
 
