@@ -834,7 +834,7 @@ class BxBaseGrid extends BxDolGrid
 
         $sAttr = $this->_convertAttrs(
             $aField, 'attr_cell',
-            'bx-def-padding-sec-bottom bx-def-padding-sec-top' . $this->_getCellHugClass($sKey), // add default classes
+            $this->_getControlsCellClasses($sKey), // add default classes
             $this->_getCellWidthStyle($sKey, $aField)  // add default styles
         );
         $sDisabled = ($this->_isCheckboxDisabled($aRow) ? 'disabled="disabled"' : '');
@@ -858,7 +858,7 @@ class BxBaseGrid extends BxDolGrid
 
         $sAttr = $this->_convertAttrs(
             $aField, 'attr_cell',
-            'bx-def-padding-sec-bottom bx-def-padding-sec-top' . $this->_getCellHugClass($sKey), // add default classes
+            $this->_getControlsCellClasses($sKey), // add default classes
             $this->_getCellWidthStyle($sKey, $aField)  // add default styles
         );
 
@@ -897,7 +897,7 @@ class BxBaseGrid extends BxDolGrid
 
         $sAttr = $this->_convertAttrs(
             $aField, 'attr_cell',
-            'bx-def-padding-sec-bottom bx-def-padding-sec-top' . $this->_getCellHugClass($sKey), // add default classes
+            $this->_getControlsCellClasses($sKey), // add default classes
             $this->_getCellWidthStyle($sKey, $aField)  // add default styles
         );
 
@@ -908,7 +908,7 @@ class BxBaseGrid extends BxDolGrid
     {
         $sAttr = $this->_convertAttrs(
             $aField, 'attr_cell',
-            'bx-def-padding-sec-bottom bx-def-padding-sec-top' . $this->_getCellHugClass($sKey), // add default classes
+            $this->_getControlsCellClasses($sKey), // add default classes
             $this->_getCellWidthStyle($sKey, $aField)  // add default styles
         );
 
@@ -1302,6 +1302,14 @@ class BxBaseGrid extends BxDolGrid
     protected function _isControlsColumn ($sKey)
     {
         return in_array($sKey, ['checkbox', 'switcher', 'actions']) || (!empty($this->_aOptions['field_order']) && $this->_aOptions['field_order'] == $sKey);
+    }
+
+    /**
+     * Default classes of a cell of controls (checkbox, drag handle, switch, action buttons).
+     */
+    protected function _getControlsCellClasses ($sKey)
+    {
+        return 'bx-def-padding-sec-bottom bx-def-padding-sec-top' . $this->_getCellHugClass($sKey);
     }
 
     protected function _getCellHugClass ($sKey)
