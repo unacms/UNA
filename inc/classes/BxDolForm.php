@@ -2066,6 +2066,9 @@ class BxDolFormCheckerHelper
 
     static public function passSet ($s)
     {
+        if(bx_is_api() && $s)
+            $s = explode(',', $s);
+
         if (is_array($s)) {
             $i = 0;
             foreach ($s as $v)
