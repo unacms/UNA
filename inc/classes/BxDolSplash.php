@@ -95,6 +95,24 @@ class BxDolSplash extends BxDolFactory implements iBxDolSingleton
     /**
      * The app that asks, from `X-Neo-Platform`; anything else (another client, a link preview) counts as the web app.
      */
+    /**
+     * The meta description of the site's splash page (splash.php). The splash stands in for the home page, so it is
+     * the home page's own description (Studio > Pages > Home > Settings), or the site's default one
+     * (`_sys_page_meta_description_default`) when the home page has none. Empty when both are.
+     */
+    public function getMetaDescription()
+    {
+        $oPage = BxDolPage::getObjectInstance('sys_home');
+        $sKey = $oPage ? (string)$oPage->getMetaDescription() : '';
+
+        $sResult = $sKey !== '' ? _t($sKey) : '';
+        if(trim(strip_tags($sResult)) === '')
+            $sResult = _t('_sys_page_meta_description_default');
+
+        $sResult = bx_replace_markers($sResult, ['site_title' => getParam('site_title')]);
+        return trim(strip_tags($sResult)) !== '' ? $sResult : '';
+    }
+
     public static function getPlatformFromRequest()
     {
         $sPlatform = isset($_SERVER['HTTP_X_NEO_PLATFORM']) ? mb_strtolower(trim((string)$_SERVER['HTTP_X_NEO_PLATFORM'])) : '';

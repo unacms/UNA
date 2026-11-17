@@ -576,7 +576,7 @@ html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-m
 #sys-form-login .bx-form-section-content:has(> #bx-form-element-Password.bx-form-element-adaptive) > #bx-form-element-submit_text {
     order: 2;
     height: auto;
-    margin-top: 0.25rem;
+    margin-top: 0.375rem; /* the link is 15px tall: 6px from the field keep a 24px circle around it clear of the field (WCAG 2.5.8) */
 }
 #sys-form-login .bx-form-section-content:has(> #bx-form-element-Password.bx-form-element-adaptive > .bx-form-info) > #bx-form-element-submit_text {
     height: 0;
@@ -592,6 +592,10 @@ html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-m
 #sys-form-login #bx-form-element-Password.bx-form-element-adaptive > .bx-form-info,
 #sys-form-login #bx-form-element-Password.bx-form-element-adaptive > .bx-form-info ~ .bx-form-warn {
     padding-inline-end: 9.5rem;
+}
+/* The same 6px between the field and the line the link shares with the description. */
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-submit_text) > #bx-form-element-Password.bx-form-element-adaptive > .bx-form-info {
+    margin-top: 0.375rem;
 }
 
 /* A block's footer (designbox_footer.html, BxBaseFunctions::designBoxFooter): a quiet, centred notice under the block's

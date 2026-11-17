@@ -22,7 +22,7 @@ class BxBaseStudioAgents extends BxDolStudioAgents
 
         $this->sSubpageUrl = BX_DOL_URL_STUDIO . 'agents.php?page=';
 
-        $this->aPageJs = array_merge($this->aPageJs, ['agents.js']);
+        $this->aPageJs = array_merge($this->aPageJs, ['bundle.js', 'agents.js']); // bundle.js: the agent chat (una.Chat)
         $this->aPageCss = array_merge($this->aPageCss, ['cmts.css', 'agents.css']);
 
         $this->sPageJsClass = 'BxDolStudioPageAgents';
