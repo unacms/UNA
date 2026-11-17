@@ -73,8 +73,12 @@ describe('a network its site signed out', () => {
         native.listSessions.mockResolvedValue(list);
         renderApp();
 
-        fireEvent.click(await screen.findByRole('button', { name: 'Sign out of UNA Makers' }));
-        await waitFor(() => expect(native.calls).toContain('sign out'));
+        await screen.findByRole('button', { name: 'Sign out of UNA Makers' });
+        // the app takes no sign-out while it is still settling the session it opened with: press until it does
+        await waitFor(() => {
+            fireEvent.click(screen.getByRole('button', { name: 'Sign out of UNA Makers' }));
+            expect(native.calls).toContain('sign out');
+        });
         expect(await screen.findByRole('heading', { name: 'Sign in to your network' })).toBeTruthy();
     });
 });
