@@ -61,6 +61,7 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_popup' 
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_popup' AND `module`='system' AND `name`='profile-notifications';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_popup' AND `module`='system' AND `name`='profile-switcher';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_popup' AND `module`='system' AND `name`='profile-create';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_notifications' AND `module`='system' AND `name`='switch-profile';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_notifications' AND `module`='system' AND `name`='dashboard';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_notifications' AND `module`='system' AND `name`='profile';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_notifications' AND `module`='system' AND `name`='account-settings';

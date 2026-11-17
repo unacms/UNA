@@ -3787,6 +3787,7 @@
     <string name="_sys_menu_item_title_more_auto"><![CDATA[]]></string>
     <string name="_sys_menu_item_title_orders"><![CDATA[Orders]]></string>
     <string name="_sys_menu_item_title_profile"><![CDATA[Profile]]></string>
+    <string name="_sys_menu_item_title_switch_profile"><![CDATA[Switch profile]]></string>
     <string name="_sys_menu_item_title_set_acl_level"><![CDATA[Set membership]]></string>
     <string name="_sys_menu_item_title_set_badges"><![CDATA[Set badges]]></string>
     <string name="_sys_menu_item_title_studio"><![CDATA[Studio]]></string>
@@ -3904,6 +3905,7 @@
     <string name="_sys_menu_item_title_system_orders"><![CDATA[Orders]]></string>
     <string name="_sys_menu_item_title_system_powered_by"><![CDATA[Powered By]]></string>
     <string name="_sys_menu_item_title_system_profile"><![CDATA[Profile]]></string>
+    <string name="_sys_menu_item_title_system_switch_profile"><![CDATA[Switch Profile]]></string>
     <string name="_sys_menu_item_title_system_public_menu"><![CDATA[Public Menu]]></string>
     <string name="_sys_menu_item_title_system_search"><![CDATA[Search]]></string>
     <string name="_sys_menu_item_title_system_set_acl_level"><![CDATA[Set membership]]></string>
