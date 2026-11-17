@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { getSiteUnitActions, isUnitActionItem, isUnitDismissItem } from './unit-actions.ts';
+import { getSiteUnitActions, getUnitActionNames, isUnitActionItem, isUnitDismissItem, pickUnitActions } from './unit-actions.ts';
 
 const friends = { name: 'obj-friends', data: { type: 'connections_ext', o: 'sys_profiles_friends' } };
 const follow = { name: 'obj-subscriptions', data: { type: 'connections_ext', o: 'sys_profiles_subscriptions' } };
@@ -43,4 +43,46 @@ test('no buttons from UNA: none', () => {
     assert.deepEqual(getSiteUnitActions([]), none);
     assert.deepEqual(getSiteUnitActions(null), none);
     assert.deepEqual(getSiteUnitActions(undefined), none);
+});
+
+test('lists that name their own actions', () => {
+    assert.deepEqual(getUnitActionNames('person_friends_recommendations', 'bx_persons'), { primary: 'befriend', secondary: '', dismiss: 'ignore-befriend' });
+    assert.deepEqual(getUnitActionNames('browse_friend_requests', 'system'), { primary: 'befriend', secondary: 'unfriend', dismiss: '' });
+    assert.deepEqual(getUnitActionNames('person_followers', 'bx_organizations'), { primary: 'subscribe', secondary: 'unsubscribe', dismiss: '' });
+    assert.deepEqual(getUnitActionNames(undefined, 'bx_persons'), { primary: '', secondary: '', dismiss: '' }, "People's own lists name none");
+    assert.deepEqual(getUnitActionNames('person_friends', 'bx_persons'), { primary: '', secondary: '', dismiss: '' }, 'Friends makes its own Message');
+});
+
+test('contexts join, channels follow', () => {
+    assert.deepEqual(getUnitActionNames(undefined, 'bx_groups'), { primary: 'join', secondary: 'leave', dismiss: '' });
+    assert.deepEqual(getUnitActionNames('context_recommendations', 'bx_events'), { primary: 'join', secondary: 'leave', dismiss: 'ignore-join' });
+    assert.deepEqual(getUnitActionNames(undefined, 'bx_channels'), { primary: 'subscribe', secondary: 'unsubscribe', dismiss: '' });
+});
+
+test("the list's named actions win over UNA's order", () => {
+    const names = getUnitActionNames('person_friends_recommendations', 'bx_persons');
+    assert.deepEqual(pickUnitActions([ignore, friends, add], names), { primary: add, secondary: null, dismiss: ignore });
+});
+
+test("a list that names none, or finds none, takes UNA's buttons", () => {
+    const none = getUnitActionNames(undefined, 'bx_persons');
+    assert.deepEqual(pickUnitActions([count, friends, follow], none), { primary: friends, secondary: follow, dismiss: null });
+    const followers = getUnitActionNames('person_followers', 'bx_persons');
+    assert.deepEqual(pickUnitActions([friends, follow], followers), { primary: friends, secondary: follow, dismiss: null });
+    assert.deepEqual(pickUnitActions([count], none), { primary: null, secondary: null, dismiss: null });
+    assert.deepEqual(pickUnitActions(undefined, none), { primary: null, secondary: null, dismiss: null });
+});
+
+test('a lone second button takes the first place', () => {
+    const leave = { name: 'leave', data: { type: 'connections', a: 'remove' } };
+    assert.deepEqual(pickUnitActions([leave], getUnitActionNames(undefined, 'bx_groups')), { primary: leave, secondary: null, dismiss: null });
+});
+
+test("a button the list makes itself keeps its place, with nothing beside it", () => {
+    const message = { title: 'Message' };
+    assert.deepEqual(pickUnitActions([friends, follow], getUnitActionNames('person_friends', 'bx_persons'), message), {
+        primary: message,
+        secondary: null,
+        dismiss: null,
+    });
 });

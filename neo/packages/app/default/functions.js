@@ -4,7 +4,7 @@ import { updateRouteDataForConnection, appSetting } from 'app/lib/util'
 import { normalizeTiers, responsiveClasses } from 'app/lib/responsive-classes'
 import { withoutHiddenOn } from 'app/lib/hidden-on'
 import { FLUSH_LIST_MODULES } from 'app/components/units/flush-list'
-import { getSiteUnitActions } from 'app/lib/unit-actions'
+import { getUnitActionNames, isProfileUnitModule, pickUnitActions } from 'app/lib/unit-actions'
 import { components } from 'app/components/registry';
 import { settingsLayout } from 'app/settings/layout'
 import i18n from 'i18next'
@@ -188,145 +188,75 @@ export function checkActionsOnConnectionsChanged(oData) {
     return {update_user:true, reload_page:true};
 }
 
+/** Friends' own button: opens the conversation with that friend. */
+function unitMessageItem(data, handleClick, t) {
+    return {
+        title: t("Message"),
+        icon: "MessageCircleMore",
+        onPress: async (event) => {
+            event.preventDefault();
+            const request_url = `/api.php?r=bx_messenger/get_convo_url/Services&params[]=${JSON.stringify({ recipient: data.author_data.id })}`;
+            const sResponse = await fetcher(request_url);
+            handleClick(event, sResponse.data);
+        },
+    };
+}
+
+/** A card's dismiss button (a suggestion's Ignore): a small round icon button. */
+function unitDismissItem(item) {
+    return {
+        ...item,
+
+        data: {
+            ...item.data,
+            title: '',
+            params: {
+                ...item.data.params,
+                button_full_width: false,
+                button_rounded: true,
+                only_icon: true,
+                button_style: 'glass',
+                button_border_shape: 'circle',
+                button_size: 'small',
+            },
+        },
+    };
+}
+
 /**
- * A card's buttons. `options.isOwn`: the card is the viewer's current profile, which has no action to offer: it opens
- * the profile, and a "You" slot keeps it as tall as the cards with two buttons.
+ * A card's buttons. The list's own or UNA's (lib/unit-actions.ts); with none, the card opens its page.
+ * `options.isOwn`: the card is the viewer's current profile, which has no action to offer: it opens the profile, and
+ * a "You" slot keeps it as tall as the cards with two buttons.
  */
 export function getUnitMenuItems(unitType, data, handleClick, t, moduleName, options = {}) {
-
-    let primaryMenuItem = null;
-    let secondaryMenuItem = null;
-    let deleteMenuItem = null;
+    if (!data?.meta) {
+        return { primaryMenuItem: null, secondaryMenuItem: null, deleteMenuItem: null };
+    }
 
     const MenuItem = components['menu-item']['unit']
 
-    if (data?.meta) {
-        let sPrimary = "";
-        let sSecondary = "";
-        let sDelete = "";
-        if (moduleName == 'bx_persons' || moduleName == 'bx_organizations' || moduleName == 'system') {
-            switch (unitType) {
-                case "person_friends":
-                    primaryMenuItem = {
-                        title: t("Message"),
-                        icon: "MessageCircleMore",
-                        onPress: async (event) => {
-                            event.preventDefault();
-                            const request_url = `/api.php?r=bx_messenger/get_convo_url/Services&params[]=${JSON.stringify({ recipient: data.author_data.id })}`;
-                            const sResponse = await fetcher(request_url);
-                            handleClick(event, sResponse.data);
-                        },
-                    };
-                    break;
-                case "person_friends_recommendations":
-                    sPrimary = "befriend";
-                    sDelete = "ignore-befriend";
-                    break;
-                case "browse_friend_requests":
-                    sPrimary = "befriend";
-                    sSecondary = "unfriend";
-                    break;
-                case "person_friends_suggestion":
-                    sPrimary = "befriend";
-                    break;
-                case "person_friend_requested":
-                    sPrimary = "unfriend";
-                    break;
-                case "person_following_recommendations":
-                    sPrimary = "subscribe";
-                    sDelete = "ignore-subscribe";
-                    break;
-                case "person_followers":
-                    sPrimary = "subscribe";
-                    sSecondary = "unsubscribe";
-                    break;
-                case "person_following":
-                    sPrimary = "unsubscribe";
-                    break;
-            }
-        }
-        else {
-            sPrimary = "join";
-            sSecondary = "leave";
-            if (unitType == 'context_recommendations')
-                sDelete = "ignore-join";
-            if (moduleName == "bx_channels") {
-                sPrimary = "subscribe";
-                sSecondary = "unsubscribe";
-            }
-        }
+    const ownButton = isProfileUnitModule(moduleName) && unitType === 'person_friends'
+        ? unitMessageItem(data, handleClick, t)
+        : null;
+    const actions = pickUnitActions(data.meta.items, getUnitActionNames(unitType, moduleName), ownButton);
 
-        if (!primaryMenuItem) {
-            primaryMenuItem = data.meta.items?.find(item => item.name === sPrimary);
-        }
-
-        if (!secondaryMenuItem) {
-            secondaryMenuItem = data.meta.items?.find(item => item.name === sSecondary);
-        }
-
-        if (!deleteMenuItem) {
-            deleteMenuItem = data.meta.items?.find(item => item.name === sDelete);
-        }
-
-        // A list type that names no action, or names ones UNA doesn't send for this card: the card's buttons are
-        // the ones UNA's site shows on it (lib/unit-actions.ts), the first two of its snippet meta menu.
-        if (!primaryMenuItem && !secondaryMenuItem) {
-            const siteActions = getSiteUnitActions(data.meta.items);
-            primaryMenuItem = siteActions.primary;
-            secondaryMenuItem = siteActions.secondary;
-            if (!deleteMenuItem) {
-                deleteMenuItem = siteActions.dismiss;
-            }
-        }
-
-        if (!primaryMenuItem && secondaryMenuItem) {
-            primaryMenuItem = secondaryMenuItem;
-            secondaryMenuItem = null;
-        }
-
-        if (!primaryMenuItem) {
-            const isProfile = moduleName == 'bx_persons' || moduleName == 'bx_organizations';
-            primaryMenuItem = {
-                title: isProfile ? i18n.t('View profile') : i18n.t('View'),
-                onPress: (event) => handleClick(event, data.url),
-            };
-            if (options?.isOwn && !secondaryMenuItem) {
-                secondaryMenuItem = { note: true, title: i18n.t('You') };
-            }
-        }
-
-        if (primaryMenuItem) {
-            primaryMenuItem = <MenuItem menuItem={primaryMenuItem} isPrimary={true}/>;
-        }
-        secondaryMenuItem = secondaryMenuItem
-            ? <MenuItem menuItem={secondaryMenuItem} isPrimary={false}/>
-            : null;
-        if (deleteMenuItem) {
-            deleteMenuItem = {
-                ...deleteMenuItem,
-
-                data: {
-                    ...deleteMenuItem.data,
-                    title: '',
-                    params: {
-                        ...deleteMenuItem.data.params,
-                        button_full_width: false,
-                        button_rounded: true,
-                        only_icon: true,
-                        button_style: 'glass',
-                        button_border_shape: 'circle',
-                        button_size: 'small',
-                    },
-                },
-            };
-            deleteMenuItem = <MenuItem menuItem={deleteMenuItem} isPrimary={false}/>
+    let primary = actions.primary;
+    let secondary = actions.secondary;
+    if (!primary) {
+        const isProfile = moduleName == 'bx_persons' || moduleName == 'bx_organizations';
+        primary = {
+            title: isProfile ? i18n.t('View profile') : i18n.t('View'),
+            onPress: (event) => handleClick(event, data.url),
+        };
+        if (options?.isOwn && !secondary) {
+            secondary = { note: true, title: i18n.t('You') };
         }
     }
 
     return {
-        primaryMenuItem,
-        secondaryMenuItem,
-        deleteMenuItem
+        primaryMenuItem: <MenuItem menuItem={primary} isPrimary={true}/>,
+        secondaryMenuItem: secondary ? <MenuItem menuItem={secondary} isPrimary={false}/> : null,
+        deleteMenuItem: actions.dismiss ? <MenuItem menuItem={unitDismissItem(actions.dismiss)} isPrimary={false}/> : null,
     };
 }
 
