@@ -355,19 +355,7 @@ class BxMarketTemplate extends BxBaseModTextTemplate
                     'read_only' => $bEmbed
                 ]);
 
-            $sPricing = "";
-            if((float)$aData[$CNF['FIELD_PRICE_RECURRING']] != 0) {
-                $sDuration = 'txt_per_' . $aData[$CNF['FIELD_DURATION_RECURRING']] . '_short';
-                $sDuration = _t(!empty($CNF['T'][$sDuration]) ? $CNF['T'][$sDuration] : '_bx_market_txt_per_' . $aData[$CNF['FIELD_DURATION_RECURRING']] . '_short');
-
-                $sPricing = _t('_bx_market_txt_price_recurring_short', $sAuthorCurrencySign, $aData[$CNF['FIELD_PRICE_RECURRING']], $sDuration);
-            }
-
-            if(empty($sPricing) && (float)$aData[$CNF['FIELD_PRICE_SINGLE']] != 0)
-                $sPricing = _t('_bx_market_txt_price_single_short', $sAuthorCurrencySign, $aData[$CNF['FIELD_PRICE_SINGLE']]);
-
-            if(empty($sPricing))
-                 $sPricing = _t('_bx_market_txt_price_free');
+            $sPricing = $oModule->getPriceText($aData, $sAuthorCurrencySign);
 
             $aTmplVarsSectionVoting = array(
                 'voting' => $sVoting,

@@ -228,6 +228,7 @@ class BxJobsConfig extends BxBaseModGroupsConfig
 
             // some language keys
             'T' => array (
+                'txt_unit_view' => '_bx_jobs_txt_unit_view',
                 'txt_sample_single' => '_bx_jobs_txt_sample_single',
                 'txt_sample_single_with_article' => '_bx_jobs_txt_sample_single_with_article',
                 'txt_sample_comment_single' => '_bx_jobs_txt_sample_comment_single',

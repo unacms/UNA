@@ -172,16 +172,13 @@ class PersonsCardSiteTest extends BxDolIntegrationTestCase
         $this->assertStringNotContainsString('bx-menu-item-button', $sCard);
     }
 
-    /** Groups, events and spaces have the card too (GroupsCardTest); a module that does not ask for it keeps its own. */
+    /** Contexts have the card too (GroupsCardTest, ContentCardTest). */
     public function testProfilesTurnTheCardOn(): void
     {
         $this->assertTrue($this->isCard('bx_persons'));
 
-        $oQuery = BxDolModuleQuery::getInstance();
-        if($oQuery->isEnabledByName('bx_organizations'))
+        if(BxDolModuleQuery::getInstance()->isEnabledByName('bx_organizations'))
             $this->assertTrue($this->isCard('bx_organizations'));
-        if($oQuery->isEnabledByName('bx_channels'))
-            $this->assertFalse($this->isCard('bx_channels'));
     }
 
     public function testStringsAndIconAreThere(): void

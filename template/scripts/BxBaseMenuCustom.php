@@ -88,12 +88,13 @@ class BxBaseMenuCustom extends BxTemplMenuMoreAuto
             return false;
 
         if($this->_bIsApi) {
-            if(is_array($mixedItem))
-                $mixedItem = array_merge($mixedItem, [
-                    'primary' => isset($aItem['primary']) ? $aItem['primary'] : 0,
-                ]);
+            // an item drawn as the site's markup (a line break, a script switcher) means nothing to the apps
+            if(!is_array($mixedItem))
+                return false;
 
-            return $mixedItem;
+            return array_merge($mixedItem, [
+                'primary' => isset($aItem['primary']) ? $aItem['primary'] : 0,
+            ]);
         }
 
         $sItem = $sClass = '';

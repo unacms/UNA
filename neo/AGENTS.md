@@ -274,6 +274,16 @@ People, organizations, groups, events and spaces share one card (`UnitProfileCar
 - A profile row on a phone keeps its room for the name and the counts: its buttons show their icons alone below `sm`, and their labels in the card grid (`components/menu-items/unit.js`). A button without an icon keeps its label, so give a card button one ("View profile": `CircleUserRound`).
 - The card is a link and its buttons sit inside it. A button's press calls `preventDefault()`, and a toggle that opens a menu wraps it in an element that does the same for the menu's rows; the web link (`ui/atoms/link.web.tsx`) then neither navigates nor announces a link press, which would close the menu that just opened.
 
+### Content cards
+
+A content item in a list (a post, an ad, a poll, an album, a video, a photo, a file, a product, a project, a discussion in search results) has one card, `UnitContentCard` in `components/units/helpers.js`, and UNA's site draws the same one (`unit_gallery.html` of each module with `modules/base/general/template/css/unit_content_card.css`). A change to its layout belongs on both sides.
+
+- From `sm` it is the grid card: 20px corners, 8px padding, the picture (16:9, 12px corners) where the item has one, the title (16/24 semibold, two lines), the summary (14/20, two lines), and the byline at the card's foot so the bylines of a row line up. An item without a picture is a text card: no empty or tinted box in the picture's place.
+- Below `sm` it is a row: a 56px thumbnail where there is a picture, the title over the byline, no summary.
+- The byline is the author's 20px avatar, "Name · 3d" and the price at the end. The price is UNA's text in the seller's currency (`price_text`, `BxMarketModule::getPriceText`, `BxAdsModule::getPriceText`); never build one from `price_single` and a "$". On the site the byline is the module's snippet meta menu, whose author item has the avatar on a card (`BxBaseModGeneralMenuSnippetMeta::setCard`).
+- The whole card is the link; it has no buttons. Courses, channels and jobs are contexts and use `UnitProfileCard`.
+- What the card shows comes from `lib/content-card.ts` (with tests). UNA sends no site markup in a menu's items: a custom menu drops an item drawn as HTML in API mode (`BxBaseMenuCustom::_getMenuItem`).
+
 ### Form labels
 
 UNA picks how forms label their text fields: above the field (regular, the default) or floating inside it (adaptive). It is one setting for the site and the apps, Studio > Designer > Settings, and a form display can have its own (Studio > Forms > Displays). Every form's API carries the resolved style as `params.label_style`.

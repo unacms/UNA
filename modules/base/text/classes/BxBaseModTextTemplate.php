@@ -84,6 +84,10 @@ class BxBaseModTextTemplate extends BxBaseModGeneralTemplate
             'tmpl_vars_ref' => &$aTemplateVars,
         ]);
 
+        // a gallery's card is the apps' card (unit_content_card.css; NEO: UnitContentCard)
+        if($sTemplateName == 'unit_gallery.html')
+            $this->addCss('unit_content_card.css');
+
         return $this->parseHtmlByName($sTemplateName, $aTemplateVars);
     }
 
@@ -523,6 +527,8 @@ class BxBaseModTextTemplate extends BxBaseModGeneralTemplate
                 $oMenuMeta->setContentId($aData[$CNF['FIELD_ID']]);
                 if(isset($aParams['context']))
                     $oMenuMeta->setContext($aParams['context']);
+                if(method_exists($oMenuMeta, 'setCard'))
+                    $oMenuMeta->setCard(($aParams['template_name'] ?? '') == 'unit_gallery.html');
 
                 $aTmplVarsMeta = [
                     'meta' => $oMenuMeta->getCode()
@@ -552,6 +558,7 @@ class BxBaseModTextTemplate extends BxBaseModGeneralTemplate
             'badges' => $oModule->serviceGetBadges($aData[$CNF['FIELD_ID']], $bBadgesSingle, $bBadgesCompact),
             'title_attr' => bx_html_attribute($sTitle),
             'summary' => $sSummary,
+            'summary_plain' => $sSummaryPlain,
             'text' => $sText,
             'author' => $oProfile->getDisplayName(),
             'author_url' => $oProfile->getUrl(),

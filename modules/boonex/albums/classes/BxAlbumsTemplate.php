@@ -84,6 +84,9 @@ class BxAlbumsTemplate extends BxBaseModTextTemplate
             $oMenuMeta = BxDolMenu::getObjectInstance($CNF['OBJECT_MENU_SNIPPET_META'], $this);
             if($oMenuMeta) {
                 $oMenuMeta->setContentId($aData[$CNF['FIELD_ID']]);
+                // the gallery's card is the apps' card: the author with an avatar
+                if(method_exists($oMenuMeta, 'setCard'))
+                    $oMenuMeta->setCard($sTemplateName == 'unit_gallery.html');
                 $aTmplVarsMeta = array(
                     'meta' => $oMenuMeta->getCode()
                 );
@@ -131,6 +134,9 @@ class BxAlbumsTemplate extends BxBaseModTextTemplate
             ),
 
         );
+
+        if($sTemplateName == 'unit_gallery.html')
+            $this->addCss('unit_content_card.css');
 
         return $this->parseHtmlByName($sTemplateName, $aVars);
     }
