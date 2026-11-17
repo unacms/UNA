@@ -6,7 +6,8 @@ use PHPUnit\Framework\Attributes\Group;
  * The `settings` page is the settings section's own page: members only, with no blocks and no item in the settings
  * menu (sys_account_settings_submenu). The site opens the menu's first page there (Account); the apps show the menu
  * itself on phones and tablets, as a list (the menu's `section_nav_small`), and a sidebar on large screens
- * (`section_nav`). The menu's `config_api` names that page (`hub`), and each item says whose setting it is (its
+ * (`section_nav`). The menu's `config_api` names that page (`hub`) and the section's icon in the apps (`icon`), and each
+ * item says whose setting it is (its
  * group, `group_name`: Studio > Navigation > an item > "Group in the apps"), so the apps list them under the account
  * or the profile. The pages it lists (account-settings-email ...) stay as they are.
  */
@@ -18,7 +19,7 @@ class SettingsPageTest extends BxDolIntegrationTestCase
     {
         $oDb = BxDolDb::getInstance();
 
-        $this->assertSame(['hub' => 'settings'], json_decode($oDb->getOne("SELECT `config_api` FROM `sys_objects_menu` WHERE `object` = 'sys_account_settings_submenu'"), true));
+        $this->assertSame(['hub' => 'settings', 'icon' => 'settings'], json_decode($oDb->getOne("SELECT `config_api` FROM `sys_objects_menu` WHERE `object` = 'sys_account_settings_submenu'"), true));
 
         $aGroups = $oDb->getPairs("SELECT `name`, `group_name` FROM `sys_menu_items` WHERE `set_name` = 'sys_account_settings' AND `module` = 'system'", 'name', 'group_name');
         $this->assertSame(BxDolMenu::ITEM_GROUP_ACCOUNT, $aGroups['account-settings-info']);

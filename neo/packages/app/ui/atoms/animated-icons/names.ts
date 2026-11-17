@@ -38,4 +38,5 @@ export const ANIMATED_ICON_NAMES = [
     'ShieldCheck',
     'CircleGauge',
     'QrCode',
+    'Settings',
 ] as const;
