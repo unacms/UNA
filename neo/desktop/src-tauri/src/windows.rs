@@ -1,6 +1,6 @@
 //! A conversation, post, discussion, video, photo, album, file, task, poll, Posts module post, profile, group, space or event in a window of its own (Cmd+Enter or Cmd+click in the
 //! main window). The page asks with a route (src/lib/router.ts routeToPath); the window loads
-//! the same page with the route in its URL's fragment (src/main.tsx) and shows only that
+//! the same page with the route in its URL's fragment (src/boot.tsx) and shows only that
 //! detail. These windows get the reduced capability `secondary` (capabilities/secondary.json):
 //! they may read and reply, but not sign in or out, open windows or touch the tray.
 

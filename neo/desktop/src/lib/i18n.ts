@@ -16,7 +16,9 @@
  * is a quantity and is written the language's way (1,234); pass a year or an id as a string.
  *
  * The language is this computer's, like the theme: chosen in Settings or the system's, kept in
- * localStorage and read before anything is drawn. It never changes while a page lives: choosing
+ * localStorage and read before anything is drawn. Only its own file is loaded (`loadLanguage`,
+ * which main.tsx awaits before it imports the rest of the app, so a `t` at a module's top level
+ * already has the words). It never changes while a page lives: choosing
  * another one reloads the window (`chooseLanguage`), so `t` is a plain function that any module
  * may call, at any time, with no hook and nothing to re-render.
  *
@@ -25,14 +27,20 @@
  */
 import i18next from 'i18next';
 
-import de from '../locales/de.json';
-import es from '../locales/es.json';
-import fr from '../locales/fr.json';
-import ru from '../locales/ru.json';
 import { readStored, writeStored } from './storage';
 
-/** The languages the app has words for; English is the source. Add one: its file, and a line here. */
-const RESOURCES: Record<string, Record<string, string>> = { de, es, fr, ru };
+type Words = Record<string, string>;
+
+/**
+ * The languages the app has words for; English is the source. Add one: its file, and a line here.
+ * Each file is a chunk of its own: the app loads the one it shows.
+ */
+const RESOURCES: Record<string, () => Promise<{ default: Words }>> = {
+    de: () => import('../locales/de.json'),
+    es: () => import('../locales/es.json'),
+    fr: () => import('../locales/fr.json'),
+    ru: () => import('../locales/ru.json'),
+};
 
 export const LANGUAGES = ['en', ...Object.keys(RESOURCES)] as const;
 export type Language = string;
@@ -86,11 +94,12 @@ let numbers = numberFormat();
 void i18next.init({
     lng: current.language,
     fallbackLng: 'en',
-    resources: Object.fromEntries(Object.entries(RESOURCES).map(([lang, translation]) => [lang, { translation }])),
+    // a language's words are added by loadLanguage; until then (and for English) `t` gives the English
+    resources: {},
     // the keys are English sentences: a dot or a colon in one is punctuation
     keySeparator: false,
     nsSeparator: false,
-    // inline resources, so `t` works as soon as this module is loaded
+    // no backend, so `t` works as soon as this module is loaded
     initImmediate: false,
     returnNull: false,
     interpolation: {
@@ -102,6 +111,21 @@ void i18next.init({
 });
 
 if (typeof document !== 'undefined') document.documentElement.lang = current.language;
+
+/**
+ * Load the words of the language in use. main.tsx awaits it before anything else is imported. A
+ * file that fails to load leaves the English, which is better than no window.
+ */
+export async function loadLanguage(): Promise<void> {
+    const lang = current.language;
+    const load = RESOURCES[lang];
+    if (!load || i18next.hasResourceBundle(lang, 'translation')) return;
+    try {
+        i18next.addResourceBundle(lang, 'translation', (await load()).default);
+    } catch (e) {
+        console.error('language', lang, e);
+    }
+}
 
 export type Vars = Record<string, string | number> & { context?: string };
 
@@ -163,9 +187,10 @@ export function chooseLanguage(choice: LanguageChoice, reload: () => void = () =
 }
 
 /** For tests: use a language without loading the page again. */
-export function setLanguageForTest(choice: LanguageChoice, preferred: readonly string[] = ['en-US']): void {
+export async function setLanguageForTest(choice: LanguageChoice, preferred: readonly string[] = ['en-US']): Promise<void> {
     current = resolveLanguage(choice, preferred);
     numbers = numberFormat();
-    void i18next.changeLanguage(current.language);
+    await loadLanguage();
+    await i18next.changeLanguage(current.language);
     if (typeof document !== 'undefined') document.documentElement.lang = current.language;
 }
