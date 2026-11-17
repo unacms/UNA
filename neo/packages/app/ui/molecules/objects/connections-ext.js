@@ -101,6 +101,9 @@ export default function ElementConnections({
         setElementData({ name: response.data.name, actions: response.data.actions, title: response.data.title })
     }
 
+    // On a card the menu sits inside the card's link: a click that reaches its wrapper is not a visit to the profile.
+    const linkGuardProps = Platform.OS === 'web' ? { onClick: (event) => event.preventDefault() } : null;
+
     const _handleCloseModal = () => {
         setModalContent(false);
     }
@@ -138,7 +141,7 @@ export default function ElementConnections({
                 {elementData.actions.length > 0 ? (
                     // On a card the button sits inside the card's link: a click on the trigger or on a row of its
                     // menu (they bubble here through React's tree) is not a visit to the profile.
-                    <View {...(Platform.OS === 'web' ? { onClick: (event) => event.preventDefault() } : null)}>
+                    <View {...linkGuardProps}>
                         <DropdownMenu
                             mode="popup"
                             items={menuItems}
