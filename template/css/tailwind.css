@@ -794,16 +794,19 @@
     /* Their edge is NEO's outline: a light hairline inside the surface and one soft drop under it, never a border. Studio draws
        its own (.bx-std rules below). */
     /* A Tailwind shadow at a single class's weight (:where adds none), so a card's own hover:shadow-lg still lifts it. */
-    .bx-def-border-block,
+    .bx-def-border-block {
+        @apply shadow-[inset_0_0_0_1px_rgb(255_255_255/1),0_1px_8px_-1px_rgb(0_0_0/0.1)] dark:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_1px_8px_-1px_rgb(0_0_0/0.5)];
+    }
+    /* Boxes are NEO's cards (shadow-card-outline): a lighter line inside and a faint one outside, which a shadow colour can tint. */
     .bx-def-color-bg-box:where(:not(.bx-std *)),
     .bx-def-box:where(:not(.bx-std *)) {
-        @apply shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5),0_2px_8px_-2px_rgb(0_0_0/0.1)] dark:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_2px_8px_-2px_rgb(0_0_0/0.2)];
+        @apply shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5),0_1px_8px_-1px_rgb(0_0_0/0.1),0_0_0_1px_var(--tw-shadow-color,rgb(0_0_0/0.025))] dark:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_1px_8px_-1px_rgb(0_0_0/0.5),0_0_0_1px_var(--tw-shadow-color,rgb(0_0_0/0.25))];
     }
     .bx-std .bx-def-box,
     .bx-popup-border {
         @apply ring-1 ring-gray-300/50 dark:ring-gray-600/50;
     }
-    /* Blocks and cards have the menu popups' 20px corners: a row or tile with 12px corners 8px inside them runs parallel (NEO's rounded-popover). */
+    /* Blocks and cards have the menu popups' 20px corners: a row or tile with 12px corners 8px inside them runs parallel (NEO's rounded-block). */
     .bx-def-border-radius-block,
     .bx-def-box-round-corners {
         border-radius: 1.25rem;
@@ -1929,7 +1932,7 @@
     /*
      * Popup menu items look and behave like NEO's regular menu items (theme.dropdown_menu in NEO's settings): a 20px
      * glyph in a 32px circle, 8px from the row's side and from the label and 6px from its top and bottom, and a 14px
-     * semibold label. At rest the label and the
+     * medium label. At rest the label and the
      * glyph are both a step lighter than the text; on hover they turn to the full text colour while the circle darkens,
      * all in the sliding highlight's 150ms and curve (Tailwind's ease-out), so nothing swaps ahead of the rest. The current item is the
      * accent row (blue-100 / blue-900, its label blue-700 / blue-300) with a solid blue-600 circle and a white glyph,
@@ -1950,7 +1953,7 @@
         @apply w-8 h-8 rounded-full object-cover; /* a picture fills the circle */
     }
     .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .bx-stl-mit {
-        @apply text-sm font-semibold text-gray-600 dark:text-gray-400;
+        @apply text-sm font-medium text-gray-600 dark:text-gray-400; /* every menu's label: 14px medium, as the main menu's tabs and NEO's menus */
         transition: color 150ms cubic-bezier(0, 0, 0.2, 1);
     }
     .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li:hover .bx-stl-mii:has(> *) {
@@ -1973,9 +1976,6 @@
        blue-900 at 60% and blue-300 in dark). NEO's More does the same (DropdownMenu plainIcons, components/menu-items/topmenu.tsx). */
     #bx-toolbar .bx-menu-submenu-more-auto > li > a:has(> .bx-stl-mii > *) {
         padding-inline-start: calc(0.75rem - 1px); /* the link's 1px border makes it 12px, as in the tabs */
-    }
-    #bx-toolbar .bx-menu-submenu-more-auto > li .bx-stl-mit {
-        @apply font-medium; /* the tabs' weight */
     }
     #bx-toolbar .bx-menu-submenu-more-auto > li .bx-stl-mii:has(> *),
     #bx-toolbar .bx-menu-submenu-more-auto > li:hover .bx-stl-mii:has(> *) {
@@ -2080,8 +2080,9 @@
     }
 
     /* Common elements: Page Submenu */
+    /* The current subtab's label in the current tab's colour, as the main menu's and NEO's subtabs. */
     .bx-artificer .bx-menu-main-submenu .bx-menu-item.bx-menu-tab-active a {
-        @apply text-gray-900 dark:text-gray-100;
+        @apply text-blue-700 dark:text-blue-300;
     }
     .bx-artificer .bx-menu-main-submenu .bx-menu-item.bx-menu-tab-active .bx-mi-underline {
         @apply bg-blue-500 group-hover:bg-blue-500;

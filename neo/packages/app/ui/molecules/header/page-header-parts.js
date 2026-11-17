@@ -25,6 +25,7 @@ import {
     useSetScrollDirection,
 } from 'app/context/jotai/layout';
 import { useHeaderOptions } from 'app/ui/molecules/header/options';
+import { SectionIcon, useSectionIcon } from 'app/ui/molecules/section-icon';
 import { useIsTabSlideCopy } from 'app/context/tab-route-override';
 import MenuTop from 'app/components/nav/menu-top';
 import { isPageCoverShown, isPageCoverHiddenOn } from 'app/lib/page-cover';
@@ -221,7 +222,7 @@ export const TextHeader = memo(({ text }) => {
     const title = (
         <Text
             numberOfLines={Platform.OS === 'web' ? undefined : 1}
-            className="font-bold truncate leading-12 text-card-foreground text-2xl tracking-tight"
+            className="font-bold truncate text-card-foreground text-2xl tracking-tight"
         >
             {text}
         </Text>
@@ -291,6 +292,8 @@ export function usePageHeaderBase(pageData) {
     const isShowTitle = !isDesktop && !pageData?.page_status
         && (options.showTitle ?? (!isOwnHeading && (Boolean(options.title) || isCoverShown)));
     const isBackButton = header.backButton;
+    // A section's page (it has a section menu) shows the section's icon before its name, as the desktop section header.
+    const sectionIcon = useSectionIcon(pageData?.menu?.object ? pageData.menu : null, pageData?.uri);
 
     const menuSettings = getMenuSettings(
         pageData?.menu?.object,
@@ -400,6 +403,7 @@ export function usePageHeaderBase(pageData) {
         isShowTitle,
         isWeb,
         onHeaderLayout,
+        sectionIcon,
         onMainHeaderLayout,
         onSubHeaderLayout,
         pageTitle,
@@ -424,6 +428,7 @@ export const PageHeaderBody = memo(({
     pageData,
     pageTitle,
     router,
+    sectionIcon,
 }) => {
     const { t } = useTranslation();
     // Logo variant per breakpoint. Web picks it with classes (SSR-safe);
@@ -502,17 +507,24 @@ export const PageHeaderBody = memo(({
                     {appStatic('logo')}
                 </NeoButtonLink>
             </View>}
-            {/* Desktop: just the logo at the header's px-4 inset, 40px tall as in UNA, in a
-                link at least 44px tall like the header's buttons. */}
+            {/* Desktop: the logo at 40px as in UNA, 2px inside the link (p-0.5), so its 40px mark sits in a 44px
+                square at the header's px-4 inset, centred over the 44px icons below it (a section's icon circle,
+                the page title's icon) and as tall as the header's buttons. */}
             {(isWeb || logoSize === 'desktop') && <View className="hidden lg:flex">
-                <Link href="/home" alt={t('Home')} className="flex min-h-11 min-w-11 items-center justify-center">
+                <Link href="/home" alt={t('Home')} className="flex min-h-11 min-w-11 items-center justify-center p-0.5">
                     {appStatic('logo', { mode: 'full', height: 40 })}
                 </Link>
             </View>}
         </>
     );
 
-    const titleElement = isShowTitle && pageTitle ? <TextHeader text={pageTitle} /> : null;
+    // The section's icon leads its name.
+    const titleElement = isShowTitle && pageTitle ? (
+        <Row className="min-w-0 shrink items-center gap-2">
+            <SectionIcon icon={sectionIcon} />
+            <View className="min-w-0 shrink"><TextHeader text={pageTitle} /></View>
+        </Row>
+    ) : null;
     let leftElement = titleElement;
     if (hasTabBar && isFullContextSelector) {
         leftElement = <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />;

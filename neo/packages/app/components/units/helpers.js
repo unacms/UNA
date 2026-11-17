@@ -304,6 +304,7 @@ export function useUnitActions({ unitType, data, module, t = null }) {
 
 // Mobile rows use the theme's `xl` avatar (56px), like Messages and
 // Notifications; the sm+ grid shows the photo as a full-width square.
+// Its corners there are 12px (rounded-xl): the card's 20px (rounded-block) less its 8px padding, so they run parallel.
 const ROW_AVATAR = appSetting('theme', 'profile_sizes', 'xl');
 
 // Profile row name and count line: the feed author / Messages title type, then
@@ -316,23 +317,23 @@ export function UnitProfileImage({
     data,
     skeleton,
     skeletonClassName = `${ROW_AVATAR.container} sm:h-auto sm:w-full aspect-square`,
-    rounded = 'rounded-full sm:rounded-lg',
+    rounded = 'rounded-full sm:rounded-xl',
 }) {
     return (
         <Skeleton className={skeletonClassName} rounded={rounded} visible={skeleton}>
-            <View className={`${ROW_AVATAR.container} sm:h-auto sm:w-full aspect-square rounded-full sm:rounded-lg overflow-hidden items-center bg-muted justify-center`}>
+            <View className={`${ROW_AVATAR.container} sm:h-auto sm:w-full aspect-square rounded-full sm:rounded-xl overflow-hidden items-center bg-muted justify-center`}>
                 <Image
                     src={data?.image?.src}
                     alt={data.title}
                     view="cover"
-                    className="absolute u-cover rounded-full sm:rounded-lg"
+                    className="absolute u-cover rounded-full sm:rounded-xl"
                     sizes="auto"
                 />
                 {data?.image?.src ? null : (
                     <Letter
                         title={data?.fullname || data?.title}
                         id={data?.author_data?.id}
-                        className="w-full h-full rounded-full sm:rounded-lg"
+                        className="w-full h-full rounded-full sm:rounded-xl"
                         textClassName={`${ROW_AVATAR.letter_font} sm:text-6xl xl:text-7xl`}
                     />
                 )}

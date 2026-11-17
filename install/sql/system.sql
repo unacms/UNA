@@ -4973,6 +4973,7 @@ CREATE TABLE IF NOT EXISTS `sys_objects_menu` (
   `template_id` int(11) NOT NULL,
   `button_style` varchar(16) NOT NULL DEFAULT '',
   `button_size` varchar(16) NOT NULL DEFAULT '',
+  `section_nav` varchar(16) NOT NULL DEFAULT '',
   `config_api` text NOT NULL,
   `persistent` tinyint(4) NOT NULL DEFAULT '0',
   `cache` enum('off','guest','global','per_user','per_acl') NOT NULL DEFAULT 'off',
@@ -5033,6 +5034,9 @@ INSERT INTO `sys_objects_menu` (`object`, `title`, `title_public`, `set_name`, `
 ('sys_ntfs_submenu', '_sys_menu_title_ntfs_submenu', '_sys_menu_title_public_ntfs_submenu', 'sys_ntfs_submenu', 'system', 8, 0, 1, 'BxTemplMenuSubmenuWithAddons', ''),
 
 ('sys_studio_account_popup', '_sys_menu_title_studio_account_popup', '', 'sys_studio_account_popup', 'system', 4, 0, 1, 'BxTemplStudioMenuAccountPopup', '');
+
+-- The connections (Friends, Requests, Suggestions...) are a section with many pages: the apps show it as a column on large screens.
+UPDATE `sys_objects_menu` SET `section_nav`='sidebar' WHERE `object`='sys_con_submenu';
 
 UPDATE `sys_objects_menu` SET `cache` = 'per_acl' WHERE `object` IN('sys_site', 'sys_account_notifications', 'sys_add_content', 'sys_toolbar_site', 'sys_footer', 'sys_site_submenu', 'sys_homepage_submenu', 'sys_homepage', 'sys_application', 'sys_site_in_panel');
 UPDATE `sys_objects_menu` SET `cache` = 'per_user' WHERE `object` IN('sys_toolbar_member', 'sys_profile_stats');

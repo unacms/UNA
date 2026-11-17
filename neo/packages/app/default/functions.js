@@ -94,9 +94,10 @@ export function paddingForList(endpoint) {
     // list's edges too (below the subtabs, and inside the card where it shows).
     if (endpoint?.unit == "notifications")
         return ['sm:py-1.5', card].join(' ').trim();
-    // Groups and grid layouts get padding for better spacing
+    // Groups cards pad themselves 6px (12px between them): 10px around the list puts their edges 16px in, in line
+    // with the page header and the section's icon, on every screen size.
     if (endpoint?.module == 'bx_groups' || endpoint?.request_url?.includes('r=bx_groups'))
-        return ['m-1.5 @list-md/list:m-1.5', card].join(' ').trim();
+        return ['m-2.5', card].join(' ').trim();
     // Profile lists run flush rows on mobile: edge-to-edge card rows, each 1px
     // below the one above, like the Notifications and Messages rows. The
     // sm+ grid spaces its cards (`padding_content`: container queries from

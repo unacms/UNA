@@ -19,8 +19,8 @@ const MENU_ITEM_SIZES = {
 const MENU_ITEM_BASE = 'group flex w-full min-w-0 flex-row items-center font-medium web:hover:bg-muted/80 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer';
 const MENU_ICON_BASE = 'flex shrink-0 items-center bg-muted/50 web:group-hover:bg-border rounded-full justify-center web:transition-colors web:duration-150 web:ease-out';
 const MENU_ICON_ACTIVE_BASE = 'flex shrink-0 items-center bg-primary rounded-full justify-center';
-const MENU_TEXT_BASE = 'block w-full font-semibold text-secondary-foreground web:group-hover:text-foreground px-2 web:transition-colors web:duration-150 web:ease-out';
-const MENU_TEXT_SELECTED_BASE = 'block w-full font-semibold text-accent-foreground px-2 web:transition-colors web:duration-150 web:ease-out';
+const MENU_TEXT_BASE = 'block w-full font-medium text-secondary-foreground web:group-hover:text-foreground px-2 web:transition-colors web:duration-150 web:ease-out';
+const MENU_TEXT_SELECTED_BASE = 'block w-full font-medium text-accent-foreground px-2 web:transition-colors web:duration-150 web:ease-out';
 
 export const settingsElements = {
     conductor: {
@@ -30,7 +30,9 @@ export const settingsElements = {
         // otherwise tabs clip at the inset instead of scrolling edge-to-edge.
         // Below lg: a 52px row (8px above and below the pills) plus mb-0.5,
         // 10px from the pills to the end of the header band.
-        menu_cnt: ' flex-row flex-none w-max gap-2 min-h-13 lg:min-h-14 mb-0.5 lg:mb-0 items-center px-4 ',
+        // The pills' row, inside the tab row's horizontal scroller, which clips both axes: the 10px above and below the
+        // 36px pills (a 56px row) are inside it, so the pills' shadows (glass spreads) have room and aren't cut.
+        menu_cnt: ' flex-row flex-none w-max gap-2 items-center px-4 py-2.5 ',
         menu_categ_indent: ' pl-8 ',
         topmenu_cnt:
             'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
@@ -42,6 +44,11 @@ export const settingsElements = {
         topmenu_button_pressed: true,
         left_menu_cnt: '  ',
         cover_base: 'ns--cover-base- w-full bg-card-surface ne--',
+        // The cover's bars (name and actions, tabs) and a section's bar: the page header's chrome on web, translucent
+        // card over a blur, as content scrolls under them once they pin. Native keeps the opaque surface.
+        cover_bar: 'ns--cover-bar- w-full bg-card-surface web:bg-card/60 web:backdrop-blur-lg ne--',
+        // Their lower edge once they pin (compact cover, a section's bar): the page header's shadow, not a border.
+        cover_bar_edge: 'border-b border-border/60 web:border-b-0 web:shadow-border-b web:dark:shadow-border-b-deep',
         cover_content:
             'ns--conductor-cover-content-- items-center h-full w-full justify-between lg:p-4 ne--',
         cover_small: 'mx-auto flex-row items-center ',
@@ -156,15 +163,15 @@ export const settingsElements = {
     cards: {
         // The card surface (bg-card/60) on every size: edge to edge with no outline shadow on
         // mobile, detached and rounded with the outline shadow from sm. Overlays use bg-popover.
-        // Corners: 20px (`rounded-popover`), as blocks, menus and UNA's blocks and cards.
-        'u-card-list': ' u-card-list bg-card/60 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-popover ',
-        'u-card-list-padding': 'p-4 sm:rounded-popover',
+        // Corners: 20px (`rounded-block`), as blocks and UNA's blocks and cards.
+        'u-card-list': ' u-card-list bg-card/60 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-block ',
+        'u-card-list-padding': 'p-4 sm:rounded-block',
         // Profile listings: photo + meta + actions on mobile, card chrome from sm (grid).
         // Mobile: edge-to-edge rows on the card surface, 1px apart (feed cards are 2px), like
         // the Messages and Notifications rows.
-        'u-card-list-flush': ' u-card-list u-flush-nav relative isolate mt-px sm:mt-0 bg-card/60 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-popover transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
-        'u-card-list-flush-padding': 'px-4 py-2 sm:p-4 sm:rounded-popover',
-        'u-card-base': 'u-card-base rounded-popover bg-card/60 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
+        'u-card-list-flush': ' u-card-list u-flush-nav relative isolate mt-px sm:mt-0 bg-card/60 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-block transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
+        'u-card-list-flush-padding': 'px-4 py-2 sm:p-4 sm:rounded-block',
+        'u-card-base': 'u-card-base rounded-block bg-card/60 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
         'u-card-padding': 'py-4 ',
         'u-card-header': 'px-4',
         'u-card-icon': ' ',
@@ -215,14 +222,14 @@ export const settingsElements = {
             ' px-6 ',
         'u-block-gap-large':
             ' gap-6 ',
-        // 20px (`rounded-popover`), as menus and UNA's blocks: a row or tile with 12px corners 8px inside runs parallel.
+        // 20px (`rounded-block`), as UNA's blocks: a row or tile with 12px corners 8px inside runs parallel.
         // Blocks take these per breakpoint (lib/responsive-classes.ts), so every prefixed form is named here for
-        // Tailwind to find: rounded-popover sm:rounded-popover lg:rounded-popover.
-        'u-block-rounded': 'rounded-popover',
+        // Tailwind to find: rounded-block sm:rounded-block lg:rounded-block.
+        'u-block-rounded': 'rounded-block',
         // Corners of a block that doesn't set `designbox.rounded`, in layouts that don't say
         // where their padding is (home, profile, post ...). Elsewhere corners follow the page
         // padding: rounded where it keeps the block off the screen edge (block-wrapper.js).
-        'u-block-rounded-default': 'sm:rounded-popover',
+        'u-block-rounded-default': 'sm:rounded-block',
         'u-block-header':
             ' flex-row gap-3  ',
         // A block's header is a row: the header icon, the title over the description, the actions.

@@ -26,13 +26,21 @@ let __menuTopIndicatorPersist = { initialized: false, translateX: 0, width: 0 };
 const INDICATOR_SETTLE_MS = 500;
 let __menuTopIndicatorSettling = false;
 
+// The first time the indicator shows, it waits until its place has held for this long: when the site menu arrives the
+// tabs replace the placeholders and the bar is measured at the placeholders' width for a frame, so the place first
+// worked out is off and the indicator would jump to its tab. It then fades in and the line slides up into place.
+const INDICATOR_REVEAL_MS = 200;
+let __menuTopIndicatorRevealed = false;
+const INDICATOR_REVEAL = 'opacity 0.25s ease-out, translate 0.25s ease-out';
+
 // The transitions of the indicator's two layers: its background and the line.
 const INDICATOR_TRANSITIONS = {
-    bg: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out',
-    line: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), width 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out',
+    bg: `transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), ${INDICATOR_REVEAL}`,
+    line: `transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), width 1s cubic-bezier(0.4, 0, 0.2, 1), ${INDICATOR_REVEAL}`,
 };
-// The ones in use: none until the settle window has passed.
-let __menuTopIndicatorTransitions = { bg: 'none', line: 'none' };
+// The ones in use: until the settle window has passed only the reveal (fade, slide up) animates; the place follows
+// the tabs at once.
+let __menuTopIndicatorTransitions = { bg: INDICATOR_REVEAL, line: INDICATOR_REVEAL };
 
 /** Starts the settle window once, when the indicator first shows; transitions apply after it. */
 function startIndicatorSettle() {
@@ -115,37 +123,8 @@ export default function MenuTop({ url, uri }) {
     const target = ready && containerLayout.measured && activeIndex >= 0 && shownWidths[activeIndex] > 0
         ? navbarTabBox(shownWidths, activeIndex, containerLayout.width, TAB_GAP)
         : null;
-    const isMeasured = !!target;
-    let indicatorStyle;
-    if (activeIndex === -1) {
-        indicatorStyle = { translateX: 0, width: 0, visible: false };
-    } else if (!isMeasured) {
-        // Keep the last known dimensions but hide the indicator until the active tab is measured.
-        indicatorStyle = {
-            translateX: __menuTopIndicatorPersist.translateX,
-            width: __menuTopIndicatorPersist.width,
-            visible: false,
-        };
-    } else {
-        indicatorStyle = {
-            translateX: target.x,
-            width: target.width,
-            visible: true,
-        };
-    }
-
+    const { indicatorStyle, isIndicatorShown, isIndicatorRevealed } = useNavbarIndicator(target, activeIndex);
     const indicatorTransitions = __menuTopIndicatorTransitions;
-
-    // Persist for future remounts
-    useEffect(() => {
-        if (!indicatorStyle.visible) return;
-        __menuTopIndicatorPersist = {
-            initialized: true,
-            translateX: indicatorStyle.translateX,
-            width: indicatorStyle.width,
-        };
-        startIndicatorSettle();
-    }, [indicatorStyle.visible, indicatorStyle.translateX, indicatorStyle.width]);
 
     const MenuTopItem = components['menu-item']['topmenu'];
 
@@ -180,7 +159,7 @@ export default function MenuTop({ url, uri }) {
                 style={{
                     width: indicatorStyle.width,
                     transform: `translateX(${indicatorStyle.translateX}px)`,
-                    opacity: indicatorStyle.visible ? 1 : 0,
+                    opacity: isIndicatorShown ? 1 : 0,
                     pointerEvents: 'none',
                     zIndex: 0,
                     transition: indicatorTransitions.bg
@@ -192,7 +171,10 @@ export default function MenuTop({ url, uri }) {
                 style={{
                     width: indicatorStyle.width,
                     transform: `translateX(${indicatorStyle.translateX}px)`,
-                    opacity: indicatorStyle.visible ? 1 : 0,
+                    // The line rises 4px into place as it first fades in; after that it keeps its height (a tab switch
+                    // can hide it for a frame while the new tab is measured, and it must not dip then).
+                    translate: isIndicatorRevealed ? '0 0' : '0 4px',
+                    opacity: isIndicatorShown ? 1 : 0,
                     pointerEvents: 'none',
                     zIndex: 0,
                     transition: indicatorTransitions.line
@@ -222,6 +204,59 @@ export default function MenuTop({ url, uri }) {
         </Row>
 
     )
+}
+
+/**
+ * The active tab's indicator: where it goes (`target`, from the measured widths) and whether it shows. Until the active
+ * tab is measured it keeps the last place, hidden; the first time it shows it waits until its place has held for
+ * INDICATOR_REVEAL_MS, then fades in.
+ */
+function useNavbarIndicator(target, activeIndex) {
+    const isMeasured = !!target;
+    let indicatorStyle;
+    if (activeIndex === -1) {
+        indicatorStyle = { translateX: 0, width: 0, visible: false };
+    } else if (!isMeasured) {
+        // Keep the last known dimensions but hide the indicator until the active tab is measured.
+        indicatorStyle = {
+            translateX: __menuTopIndicatorPersist.translateX,
+            width: __menuTopIndicatorPersist.width,
+            visible: false,
+        };
+    } else {
+        indicatorStyle = {
+            translateX: target.x,
+            width: target.width,
+            visible: true,
+        };
+    }
+
+
+    // Revealed once its place has held for INDICATOR_REVEAL_MS (every change restarts the wait); for good after that,
+    // so a tab switch or a later mount moves it at once.
+    const [revealed, setRevealed] = useState(__menuTopIndicatorRevealed);
+    const targetKey = target ? `${Math.round(target.x)}:${Math.round(target.width)}` : '';
+    useEffect(() => {
+        if (revealed || !targetKey) return undefined;
+        const timer = setTimeout(() => {
+            __menuTopIndicatorRevealed = true;
+            setRevealed(true);
+        }, INDICATOR_REVEAL_MS);
+        return () => clearTimeout(timer);
+    }, [revealed, targetKey]);
+    const isIndicatorShown = indicatorStyle.visible && revealed;
+
+    // Persist for future remounts
+    useEffect(() => {
+        if (!isIndicatorShown) return;
+        __menuTopIndicatorPersist = {
+            initialized: true,
+            translateX: indicatorStyle.translateX,
+            width: indicatorStyle.width,
+        };
+        startIndicatorSettle();
+    }, [isIndicatorShown, indicatorStyle.translateX, indicatorStyle.width]);
+    return { indicatorStyle, isIndicatorShown, isIndicatorRevealed: revealed };
 }
 
 /** The nav's measured position and width; the same object while neither changed (no re-render). */

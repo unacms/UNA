@@ -108,7 +108,7 @@ class ArtificerMenuRowsTest extends \PHPUnit\Framework\TestCase
         $this->assertMatchesRegularExpression($sItem . ' > a:has\(> \.bx-stl-mii > \*\) \{\s*padding-inline-start: 0\.5rem;/', $s, 'The circle is 8px from the row\'s side (6px above and below in the 44px row).');
         $this->assertMatchesRegularExpression($sItem . ' \.bx-stl-mii > img \{\s*@apply w-8 h-8 rounded-full/', $s, 'A picture fills the 32px circle.');
         $this->assertMatchesRegularExpression($sItem . ' \.bx-stl-mii > \* \{\s*@apply w-5 h-5 m-0[^;]*;\s*color: inherit;/', $s, 'The glyph is 20px and takes the circle\'s colour.');
-        $this->assertMatchesRegularExpression($sItem . ' \.bx-stl-mit \{\s*@apply text-sm font-semibold text-gray-600 dark:text-gray-400;\s*transition: color 150ms ' . $sCurve . ';/', $s, 'Labels are 14px semibold, a step lighter at rest.');
+        $this->assertMatchesRegularExpression($sItem . ' \.bx-stl-mit \{\s*@apply text-sm font-medium text-gray-600 dark:text-gray-400;[^\n]*\s*transition: color 150ms ' . $sCurve . ';/', $s, 'Labels are 14px medium, as every menu\'s in both apps, a step lighter at rest.');
         $this->assertMatchesRegularExpression($sItem . ':hover \.bx-stl-mii:has\(> \*\) \{\s*@apply bg-gray-300 dark:bg-gray-700 text-gray-950 dark:text-gray-50;/', $s, 'On hover the circle darkens and the glyph turns to the text colour.');
         $this->assertMatchesRegularExpression($sItem . ':hover \.bx-stl-mit \{\s*@apply text-gray-950 dark:text-gray-50;/', $s, 'And so does the label.');
         $this->assertMatchesRegularExpression($sItem . '\.bx-menu-tab-active \{\s*@apply bg-blue-100 dark:bg-blue-900;/', $s, 'The current item is the accent row, a step brighter in dark mode so it shows on the popup.');
@@ -140,7 +140,9 @@ class ArtificerMenuRowsTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString("item_plain_current: 'neo-menu-current bg-accent-200/60 dark:bg-accent-900/60'", $sTheme);
 
         //--- The same states as the tabs: medium label, the full text colour on hover, the press on the highlight.
-        $this->assertMatchesRegularExpression('/#bx-toolbar \.bx-menu-submenu-more-auto > li \.bx-stl-mit \{\s*@apply font-medium;/', $sCss);
+        // More's rows take the popup rows' medium label (asserted above): no weight of their own.
+        $this->assertDoesNotMatchRegularExpression('/#bx-toolbar \.bx-menu-submenu-more-auto > li \.bx-stl-mit \{\s*@apply font-/', $sCss);
+        $this->assertStringContainsString("const MENU_TEXT_BASE = 'block w-full font-medium text-secondary-foreground", $sTheme, 'NEO\'s dropdown rows are medium too.');
         $this->assertMatchesRegularExpression('/#bx-toolbar \.bx-menu-main > \.bx-menu-item:not\(\.bx-menu-tab-active\) > \.bx-stl-mil:hover \{\s*@apply text-gray-950 dark:text-gray-50;/', $sCss);
         $this->assertStringContainsString('#bx-toolbar .bx-menu-submenu-more-auto.bx-menu-highlight-list > li:has(> .bx-stl-mil:active) {', $sGeneral);
         $this->assertStringContainsString("item_plain_row: 'neo-menu-plain web:active:scale-95 web:duration-100'", $sTheme);

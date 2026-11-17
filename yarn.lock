@@ -39,15 +39,15 @@
   dependencies:
     "@types/hammerjs" "^2.0.36"
 
-"@full-ui/headless-calendar@7.1.4":
-  version "7.1.4"
-  resolved "https://registry.yarnpkg.com/@full-ui/headless-calendar/-/headless-calendar-7.1.4.tgz#32c31729207ea922c06a1b9934db8f905ce98331"
-  integrity sha512-b0o9zsbJKpeM+e5eh27paqfDseQgMQkOy4jjp+nCLABmUQWn2kJ+vV3QdSNXL/9R7S+SwN6Ky21p1hDYvDdgUg==
+"@full-ui/headless-calendar@7.1.5":
+  version "7.1.5"
+  resolved "https://registry.yarnpkg.com/@full-ui/headless-calendar/-/headless-calendar-7.1.5.tgz#b9235bfef607c530c8597ad55758a45b8fbb5f84"
+  integrity sha512-kTSGhUM7NkdJFvv6Pu9WWQrLDUg9L/1l1DSOp/IoOEutH0n2AEu10wWXl37kgXHU1+3WpxDM7h+MXTaO++QH2A==
 
-"@fullcalendar/core@7.1.4":
-  version "7.1.4"
-  resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-7.1.4.tgz#836342ed0644b456fa0b96cc995472deea4908e5"
-  integrity sha512-Pkjagkqa4U9n2PemmdjrejmgrbiN6UyeP0pd0qKSjnvPDZzMJGPJvQ00sgm67KL0FAyQSnKMy0odSz9yv6s2XA==
+"@fullcalendar/core@7.1.5":
+  version "7.1.5"
+  resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-7.1.5.tgz#bd99d3f7fa5da64ec44d3c662ad8da7b277bd7f4"
+  integrity sha512-adUp5YFeQmEJ5MAF0Qs3U0cNNvxQQ+dmAXiG5FFzrHULMkdB0ktnyTkcGcfM9ZlDlO4cxrRLXFiBwALJ13+Utg==
 
 "@gar/promise-retry@^1.0.0", "@gar/promise-retry@^1.0.2", "@gar/promise-retry@^1.0.3":
   version "1.0.3"
@@ -1837,13 +1837,13 @@ fsevents@~2.3.2:
   resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.3.tgz#cac6407785d03675a2a5e1a5305c697b347d90d6"
   integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
 
-fullcalendar@^7.1.3:
-  version "7.1.4"
-  resolved "https://registry.yarnpkg.com/fullcalendar/-/fullcalendar-7.1.4.tgz#d54f042009cb49c26de4e083df5accd19d6ae0c0"
-  integrity sha512-RLaHmd8rkoIha1QHVana64v/Dq5rGFft5Yo25sp48D5isoCR2et5OZ+VOPdjvW/CSfa12WYlOqAz94yTt4728A==
+fullcalendar@^7.1.5:
+  version "7.1.5"
+  resolved "https://registry.yarnpkg.com/fullcalendar/-/fullcalendar-7.1.5.tgz#46329b8e9c32b3bd761bde9d7e74d8dc9b5d3eaf"
+  integrity sha512-xWxQ6Mn2GhiwY663/dinfeUTMq7066tJfEdKy5Dxw8UoC1g/Dp3x6bnMapHrX4MaOgxyUsXEdUvMFB6PbZlHpg==
   dependencies:
-    "@full-ui/headless-calendar" "7.1.4"
-    "@fullcalendar/core" "7.1.4"
+    "@full-ui/headless-calendar" "7.1.5"
+    "@fullcalendar/core" "7.1.5"
     preact "^10.29.8"
 
 function-bind@^1.1.2:
@@ -2865,10 +2865,10 @@ lru-cache@^11.0.0, lru-cache@^11.1.0, lru-cache@^11.2.1:
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-11.5.3.tgz#a7767b4034e35269562d2b9da2b185b5df70c421"
   integrity sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==
 
-lucide-static@^1.70.0:
-  version "1.70.0"
-  resolved "https://registry.yarnpkg.com/lucide-static/-/lucide-static-1.70.0.tgz#5e8408d50248890e4262e79b8f7477056bbc2400"
-  integrity sha512-A9UgY98g94IuHQY7rl7/AFwHX7T1qNpzryim+Kw5CGhdV2STobtBY+ib/Z44ohyqXEJB88gvXFAeJ87uOOHKLw==
+lucide-static@^1.72.0:
+  version "1.72.0"
+  resolved "https://registry.yarnpkg.com/lucide-static/-/lucide-static-1.72.0.tgz#4669f7a0ec8f7c72ab9fc5bd255762afc159425b"
+  integrity sha512-QhdZ60O7Zcs/e8gw40uMfEn055xZTHBZoNi0xb+/1R2dTd0v4FXS46VL6rKSwC+V92tLBiqsAbCcijy7Wy4j4w==
 
 lucide@^1.72.0:
   version "1.72.0"

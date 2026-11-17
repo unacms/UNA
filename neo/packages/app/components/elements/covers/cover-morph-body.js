@@ -69,6 +69,8 @@ export function CoverMorphBody({
 
     const contentWidth = appSetting('layout', 'page_content_width_default')
     const coverBase = appSetting('theme', 'conductor').cover_base
+    const coverBar = appSetting('theme', 'conductor').cover_bar || coverBase
+    const coverBarEdge = appSetting('theme', 'conductor').cover_bar_edge || 'border-b border-border/60'
     const coverMode =
         appSetting('cover', 'view_by_module', profileData?.module) || mode
     const bPerson =
@@ -224,7 +226,7 @@ export function CoverMorphBody({
                     pinNoneChrome
                         ? cn(
                             'z-50 w-full',
-                            coverBase,
+                            coverBar,
                             Platform.OS === 'web' && 'header-fixed sticky',
                         )
                         : 'web:contents'
@@ -241,7 +243,8 @@ export function CoverMorphBody({
                 onLayout={onBarLayout}
                 className={cn(
                     'z-50 w-full overflow-visible',
-                    coverBase,
+                    // Inside the pinned `none` wrapper the wrapper draws the chrome: one translucent layer, not two.
+                    !pinNoneChrome && coverBar,
                     MORPH_TRANSITION,
                     pinNoneChrome ? undefined : (isNone ? 'header-fixed sticky' : barClassName),
                 )}
@@ -449,8 +452,8 @@ export function CoverMorphBody({
                     ref={tabBarRef}
                     className={cn(
                         'w-full',
-                        coverBase,
-                        (collapsed || isNone) && 'border-b border-border/60',
+                        !pinNoneChrome && coverBar,
+                        (collapsed || isNone) && coverBarEdge,
                         tabBarClassName,
                         !pinNoneChrome && 'header-fixed sticky z-40',
                     )}
