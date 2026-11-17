@@ -130,6 +130,12 @@ export default function MenuAccount({ buttonProps, children }) {
             : item
     )
 
+    // The viewer's own profile row (UNA's `profile` item, or a `{profile}` link resolved to the viewer's url)
+    // shows the viewer's avatar instead of its icon; a row's image wins over its icon.
+    const ownUrl = String(currentUser?.url || '').replace(/^\/+/, '')
+    const isOwnProfileItem = (item) =>
+        item.name === 'profile' || (!!ownUrl && String(item.link || '').replace(/^\/+/, '') === ownUrl)
+
     const handleSwitch = async (id) => {
         if (id != currentUser.id) {
             const result = await fetcher(
@@ -224,6 +230,9 @@ export default function MenuAccount({ buttonProps, children }) {
                         target: item.target,
                         content: item.content,
                         icon: item.icon,
+                        image: !sType && typeof sTitle === 'string' && currentUser?.avatar && isOwnProfileItem(item)
+                            ? currentUser.avatar
+                            : undefined,
                         className: item.className,
                         description: item.description,
                     }

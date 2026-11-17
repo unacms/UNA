@@ -140,6 +140,13 @@ export function isProfileTab(tab) {
     return tab?.url === '{profile}';
 }
 
+/** Whether `url` is the viewer's own profile page (leading slashes and the site origin aside). */
+function isOwnProfileUrl(url, currentUser) {
+    const strip = (value) => String(value || '').replace(/^https?:\/\/[^/]+/i, '').replace(/^\/+/, '');
+    const own = strip(currentUser?.url);
+    return !!own && strip(url) === own;
+}
+
 export function isDashboardTab(tab, currentUser) {
     const tabUrl = resolveTabUrl(tab, currentUser);
     return tabUrl === appSetting('dashboard', 'url') || tab.icon === 'dashboard';
@@ -239,6 +246,9 @@ export function buildTabBarMoreMenuItems({
             isOverflow: !!isOverflow,
             isProfile: isProfileTab(tab),
         };
+        // A row to the viewer's own profile (the `{profile}` tab, or a plain link to the same page) shows the
+        // viewer's avatar, as the profile tab does (a row's image wins over its icon).
+        if (currentUser?.avatar && (item.isProfile || isOwnProfileUrl(url, currentUser))) item.image = currentUser.avatar;
 
         if (mode === 'web') {
             item.link = url;
