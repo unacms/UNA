@@ -1391,7 +1391,9 @@ export const TabBar = ({
             contentWidth={contentWidth}
         >
              {isShowSecondLine && <Row className="px-0 w-full items-center">
-                <View className="flex-1 min-h-13 lg:min-h-14 min-w-0">
+                {/* The tab row's height, on every screen: the 36px pills with 10px above and below, as the header's
+                  44px buttons and a section's 44px icon have 10px around them. The one place it is set. */}
+                <View className="flex-1 min-h-14 justify-center min-w-0">
                     {routes.length > 1 && <TabMenu
                         routes={routes}
                         index={index}
