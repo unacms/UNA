@@ -32,6 +32,7 @@ class BxDolCover extends BxDolFactory implements iBxDolSingleton
     protected $_sTemplateNameEmpty = 'cover_empty.html';
     protected $_sCoverImageUrl = false;
     protected $_aOptiondDefault = array();
+    protected $_bPageHasHeading = false;
 
     protected function __construct()
     {
@@ -147,6 +148,15 @@ class BxDolCover extends BxDolFactory implements iBxDolSingleton
     public function isCover()
     {
     	return !empty($this->_sCoverImageUrl) || !empty($this->_aOptions);
+    }
+
+    /**
+     * Say that the page's content has its own <h1> (the splash's title), so a page without a cover gets no hidden one
+     * from the empty cover.
+     */
+    public function setPageHasHeading($bHasHeading = true)
+    {
+        $this->_bPageHasHeading = (bool)$bHasHeading;
     }
 
     /**

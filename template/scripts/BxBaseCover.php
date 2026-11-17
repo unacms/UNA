@@ -115,7 +115,7 @@ class BxBaseCover extends BxDolCover
 
         return $this->_oTemplate->parseHtmlByName($this->_sTemplateNameEmpty, [
             'bx_if:title' => [
-                'condition' => $aTmplVarsTitle !== false,
+                'condition' => !$this->_bPageHasHeading && $aTmplVarsTitle !== false,
                 'content' => $aTmplVarsTitle,
             ],
         ]);

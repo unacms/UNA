@@ -70,9 +70,22 @@ check_logged();
 
 $oTemplate = BxDolTemplate::getInstance();
 $oTemplate->setPageNameIndex(BX_PAGE_DEFAULT);
-$oTemplate->setPageType(BX_PAGE_TYPE_DEFAULT_WO_HF);
 $oTemplate->setPageHeader(bx_replace_markers(_t('_sys_page_title_home'), array('site_title' => getParam('site_title'))));
-$oTemplate->setPageContent('page_main_code', getPageMainCode());
+
+// The splash stands in for the home page: it has the home page's description, or the site's default one.
+$sDescription = BxDolPage::getMetaDescriptionByObject('sys_home');
+if($sDescription !== '') {
+    $oTemplate->setPageDescription($sDescription);
+}
+
+// The page is drawn in the site's shell, between its header and footer. The shell gives a page without a cover a hidden
+// <h1>; a splash with a title of its own keeps the one.
+$sPageMainCode = getPageMainCode();
+if(preg_match('/<h1[\s>]/i', $sPageMainCode)) {
+    BxDolCover::getInstance()->setPageHasHeading();
+}
+
+$oTemplate->setPageContent('page_main_code', $sPageMainCode);
 $oTemplate->getPageCode();
 
 /** @} */

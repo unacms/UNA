@@ -953,6 +953,25 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
         return $this->_aObject['submenu'];
     }
 
+    /**
+     * The meta description of a page by its object name, without making the page: the page's own description, else
+     * the site's default one (`_sys_page_meta_description_default`), with the site's title in place of its marker.
+     * For a script that stands in for a page (splash.php for the home page). Empty when both are.
+     */
+    public static function getMetaDescriptionByObject($sObject)
+    {
+        $aObject = BxDolPageQuery::getPageObject($sObject);
+        $sKey = is_array($aObject) ? (string)$aObject['meta_description'] : '';
+
+        $sResult = $sKey !== '' ? _t($sKey) : '';
+        if(trim(strip_tags($sResult)) === '') {
+            $sResult = _t('_sys_page_meta_description_default');
+        }
+
+        $sResult = bx_replace_markers($sResult, ['site_title' => getParam('site_title')]);
+        return trim(strip_tags($sResult)) !== '' ? $sResult : '';
+    }
+
     public function getMetaDescription ()
     {
         return $this->_aObject['meta_description'];
