@@ -2,18 +2,17 @@ import { useEffect, useRef } from 'react';
 
 import { fileSizeText } from '../features/files/files';
 import { APP_NAME } from '../lib/brand';
-import { locale, t, tn } from '../lib/i18n';
+import { t, tn } from '../lib/i18n';
 import { isWindows } from '../lib/platform';
 import { appUpdates, type UpdateInfo, type UpdatesStore, useUpdates } from '../lib/updates';
 import { Dialog } from './dialog';
+import { longDate } from '../lib/dates';
 
 const TITLE_ID = 'update-title';
 
 /** The release date as the person's language writes a date, or nothing when there is none. */
 export function releaseDate(date: string | null | undefined): string | null {
-    if (!date) return null;
-    const d = new Date(date);
-    return Number.isNaN(d.getTime()) ? null : d.toLocaleDateString(locale(), { year: 'numeric', month: 'long', day: 'numeric' });
+    return longDate(date);
 }
 
 /** How far a download has come: "4.2 MB of 12.0 MB", or "4.2 MB" while the size is not known. */

@@ -12,6 +12,7 @@ import type { Schema, UnaApi } from 'una-api';
 import { ensureOk, unwrap } from '../../lib/api';
 import { locale, t, tn } from '../../lib/i18n';
 import type { Context } from '../groups/groups';
+import { dateFormat, viewerZone } from '../../lib/dates';
 
 export type Event = Schema<'Event'>;
 export type EventList = 'upcoming' | 'going' | 'past';
@@ -106,22 +107,17 @@ export function goingText(n: number): string {
     return tn(n, '{{count}} going', '{{count}} going');
 }
 
-/** The viewer's own zone. */
-export function viewerZone(): string {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone;
-}
-
 /** The offset of a zone at a moment, in minutes. */
 function offsetAt(iso: string, zone: string): number {
     const d = new Date(iso);
-    const parts = new Intl.DateTimeFormat('en-US', { timeZone: zone, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' }).formatToParts(d);
+    const parts = dateFormat({ timeZone: zone, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' }, 'en-US').formatToParts(d);
     const get = (t: string) => Number(parts.find((p) => p.type === t)?.value ?? 0);
     const asUtc = Date.UTC(get('year'), get('month') - 1, get('day'), get('hour') % 24, get('minute'));
     return Math.round((asUtc - Math.floor(d.getTime() / 60_000) * 60_000) / 60_000);
 }
 
 function dayParts(iso: string, zone: string): { y: number; m: number; d: number } {
-    const parts = new Intl.DateTimeFormat('en-US', { timeZone: zone, year: 'numeric', month: 'numeric', day: 'numeric' }).formatToParts(new Date(iso));
+    const parts = dateFormat({ timeZone: zone, year: 'numeric', month: 'numeric', day: 'numeric' }, 'en-US').formatToParts(new Date(iso));
     const get = (t: string) => Number(parts.find((p) => p.type === t)?.value ?? 0);
     return { y: get('year'), m: get('month'), d: get('day') };
 }
@@ -147,8 +143,8 @@ function daysFrom(iso: string, now: Date, zone: string): number {
 export function eventWhen(e: Pick<Event, 'starts_at' | 'ends_at'>, zone: string = viewerZone(), now: Date = new Date(), tag: string = locale()): string {
     if (!e.starts_at) return t('Date to be set');
     const thisYear = dayParts(e.starts_at, zone).y === dayParts(now.toISOString(), zone).y && (!e.ends_at || dayParts(e.ends_at, zone).y === dayParts(now.toISOString(), zone).y);
-    const date = new Intl.DateTimeFormat(tag, { timeZone: zone, weekday: 'short', day: 'numeric', month: 'short', ...(thisYear ? {} : { year: 'numeric' }) });
-    const time = new Intl.DateTimeFormat(tag, { timeZone: zone, hour: '2-digit', minute: '2-digit' });
+    const date = dateFormat({ timeZone: zone, weekday: 'short', day: 'numeric', month: 'short', ...(thisYear ? {} : { year: 'numeric' }) }, tag);
+    const time = dateFormat({ timeZone: zone, hour: '2-digit', minute: '2-digit' }, tag);
     const start = new Date(e.starts_at);
     if (!e.ends_at || e.ends_at === e.starts_at) return `${date.format(start)}, ${time.format(start)}`;
     const end = new Date(e.ends_at);
@@ -177,8 +173,8 @@ export function dateTile(e: Pick<Event, 'starts_at'>, zone: string = viewerZone(
     if (!e.starts_at) return null;
     const d = new Date(e.starts_at);
     return {
-        month: new Intl.DateTimeFormat(tag, { timeZone: zone, month: 'short' }).format(d).replace('.', '').toUpperCase(),
-        day: new Intl.DateTimeFormat(tag, { timeZone: zone, day: 'numeric' }).format(d),
+        month: dateFormat({ timeZone: zone, month: 'short' }, tag).format(d).replace('.', '').toUpperCase(),
+        day: dateFormat({ timeZone: zone, day: 'numeric' }, tag).format(d),
     };
 }
 
@@ -211,7 +207,7 @@ export function eventGroup(e: Pick<Event, 'starts_at' | 'ends_at'>, past: boolea
     if (past && days < -1 && days > -7) return { key: 'week', label: t('This week') };
     const { y, m } = dayParts(e.starts_at, zone);
     const sameYear = y === dayParts(now.toISOString(), zone).y;
-    const label = new Intl.DateTimeFormat(tag, { timeZone: 'UTC', month: 'long', ...(sameYear ? {} : { year: 'numeric' }) }).format(new Date(Date.UTC(y, m - 1, 15)));
+    const label = dateFormat({ timeZone: 'UTC', month: 'long', ...(sameYear ? {} : { year: 'numeric' }) }, tag).format(new Date(Date.UTC(y, m - 1, 15)));
     return { key: `${y}-${m}`, label };
 }
 

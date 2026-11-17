@@ -3,14 +3,14 @@ import { type FormEvent, type KeyboardEvent, type ReactNode, useEffect, useId, u
 
 import { problemMessage, type Schema } from 'una-api';
 
-import { longTime, useContextGroup } from '../../components/activity-card';
+import { useContextGroup } from '../../components/activity-card';
 import { Icon } from '../../components/icon';
 import { ProfileBadges } from '../../components/profile-badges';
 import { RichEditor } from '../../components/rich-editor/rich-editor';
 import { type TextImages, uploadsHold, useTextImages } from '../../components/rich-editor/text-images';
 import { normalizeHtml } from '../../components/rich-editor/schema';
 import { RichText } from '../../components/rich-text';
-import { ago, ApiError, ensureOk, isGone, retryOnce, saveLimit, unwrap } from '../../lib/api';
+import { ApiError, ensureOk, isGone, retryOnce, saveLimit, unwrap } from '../../lib/api';
 import { t, tn } from '../../lib/i18n';
 import { isMac } from '../../lib/platform';
 import { BODY_HTML_FOR_COMMENTS_AND_DISCUSSIONS, textToRichHtml } from '../../lib/rich-html';
@@ -29,6 +29,7 @@ import { ReactionButton, ReactionCount } from '../feed/reaction-button';
 import { ProfileAvatar, ProfileName } from '../profile/profile-link';
 import { commentBoxId, type CommentTarget, CommentTree, REPLY_WORDS } from '../thread/comment-tree';
 import { type Discussion, discussionKey, dropDiscussion, fromLists, putDiscussion, repliesText, useDiscussionSetup } from './discussions';
+import { ago, longTime } from '../../lib/dates';
 
 type Activity = Schema<'Activity'>;
 

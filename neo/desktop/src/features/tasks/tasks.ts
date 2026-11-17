@@ -11,6 +11,7 @@ import type { Schema, UnaApi } from 'una-api';
 
 import { ensureOk, unwrap } from '../../lib/api';
 import { list, locale, t, tn } from '../../lib/i18n';
+import { dateFormat, viewerZone } from '../../lib/dates';
 
 export type Task = Schema<'Task'>;
 export type TaskList = Schema<'TaskList'>;
@@ -198,13 +199,8 @@ export function completedText(task: Pick<Task, 'title'>, completed: boolean): st
     return completed ? t('Completed: {{title}}', { title: task.title }) : t('Reopened: {{title}}', { title: task.title });
 }
 
-/** The viewer's own zone. */
-export function viewerZone(): string {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone;
-}
-
 function dayParts(d: Date, zone: string): { y: number; m: number; d: number } {
-    const parts = new Intl.DateTimeFormat('en-US', { timeZone: zone, year: 'numeric', month: 'numeric', day: 'numeric' }).formatToParts(d);
+    const parts = dateFormat({ timeZone: zone, year: 'numeric', month: 'numeric', day: 'numeric' }, 'en-US').formatToParts(d);
     const get = (type: string) => Number(parts.find((p) => p.type === type)?.value ?? 0);
     return { y: get('year'), m: get('month'), d: get('day') };
 }
@@ -256,10 +252,10 @@ export function dueText(task: Pick<Task, 'due_at'>, now: Date = new Date(), zone
               : days === -1
                 ? t('Yesterday')
                 : days > 1 && days < 7
-                  ? new Intl.DateTimeFormat(tag, { timeZone: zone, weekday: 'short' }).format(at)
-                  : new Intl.DateTimeFormat(tag, { timeZone: zone, day: 'numeric', month: 'short', ...(sameYear ? {} : { year: 'numeric' }) }).format(at);
-    const time = new Intl.DateTimeFormat('en-GB', { timeZone: zone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(at);
-    return time === '00:00' ? day : `${day}, ${new Intl.DateTimeFormat(tag, { timeZone: zone, hour: '2-digit', minute: '2-digit' }).format(at)}`;
+                  ? dateFormat({ timeZone: zone, weekday: 'short' }, tag).format(at)
+                  : dateFormat({ timeZone: zone, day: 'numeric', month: 'short', ...(sameYear ? {} : { year: 'numeric' }) }, tag).format(at);
+    const time = dateFormat({ timeZone: zone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }, 'en-GB').format(at);
+    return time === '00:00' ? day : `${day}, ${dateFormat({ timeZone: zone, hour: '2-digit', minute: '2-digit' }, tag).format(at)}`;
 }
 
 export type TaskRowItem = { kind: 'heading'; key: string; label: string; count: number } | { kind: 'task'; task: Task };

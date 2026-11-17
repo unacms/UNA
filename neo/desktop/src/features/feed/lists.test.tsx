@@ -10,13 +10,14 @@ import { forgetFailures } from '../../lib/media';
 import { kindBadge } from '../notifications/kind-icon';
 import { dayGroup, withDayHeadings } from '../notifications/days';
 import { TODAY_CHECK_MS, useToday } from '../notifications/inbox';
-import { inboxTime, previewOf } from '../../screens/messages';
+import { previewOf } from '../../screens/messages';
 import { keptMeasurements, remeasureRows } from './feed-list';
 import { MediaGrid, photoAlt, pictureOf, shownMedia, videoOf } from './media';
 import { type PostMenuFacts, postMenuEntries, postMenuItems } from './post-menu';
 import { placePicker } from './reaction-picker';
 import { reactionLabel } from './reaction-button';
 import { newAuthorsOf } from './use-feed';
+import { inboxTime } from '../../lib/dates';
 
 afterEach(() => {
     cleanup();

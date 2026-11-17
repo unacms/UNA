@@ -7,7 +7,7 @@ import { createUnaApi, type Schema, type UnaApi } from 'una-api';
 
 import { ActivityCard } from '../../components/activity-card';
 import { MenuHost } from '../../components/menu-popover';
-import { ago, SAVE_ANSWER_MS } from '../../lib/api';
+import { SAVE_ANSWER_MS } from '../../lib/api';
 import { AnnounceContext } from '../../lib/announce';
 import { AppContext, type AppContextValue } from '../../lib/context';
 import { RouterProvider, useRoute } from '../../lib/navigation';
@@ -23,6 +23,7 @@ import { PostPane } from './post-pane';
 import { activityDetail, type Post, postKey, postListKey, postRowText, readingText, stateText } from './posts';
 import { richText, setRichText, typeRich } from '../../components/rich-editor/test-utils';
 import { docToHtml } from '../../lib/rich-html';
+import { ago } from '../../lib/dates';
 
 const lily: Schema<'Profile'> = { id: '4', kind: 'person', module: 'bx_persons', display_name: 'Lily Carter', status: 'active', about: '', created_at: '2026-01-01T00:00:00Z' };
 const mila: Schema<'Profile'> = { id: '8', kind: 'person', module: 'bx_persons', display_name: 'Mila Novak', status: 'active', about: '', created_at: '2026-01-01T00:00:00Z', badges: [{ id: '9', name: 'Photographer', color: null, icon: null }] };

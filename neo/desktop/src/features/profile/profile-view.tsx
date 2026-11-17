@@ -15,7 +15,7 @@ import { ApiError, isGone, retryOnce, unwrap } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { useCopyLink } from '../../lib/copy-link';
 import { errorMessage } from '../../lib/errors';
-import { locale, t } from '../../lib/i18n';
+import { t } from '../../lib/i18n';
 import { openExternal } from '../../lib/native';
 import { type MenuEntry, showMenu, useMenuExpanded } from '../../lib/native-menu';
 import { useNavigation, useRoute } from '../../lib/navigation';
@@ -40,6 +40,7 @@ import { useFriendRequestsAction } from './friend-requests';
 import { type ConnectionList, connectionsKey, countText, profileKey, profileSummaryKey, relationSummary } from './graph';
 import { relationItems, useRelation } from './relation-buttons';
 import { joinEntries, moreAction, ReportDialog, type ReportTarget, siteMoreEntries, useSiteActions } from './site-more';
+import { monthYear } from '../../lib/dates';
 
 const TAB_LABELS: Record<ProfileTab, string> = { posts: t('Posts'), friends: t('Friends'), followers: t('Followers'), following: t('Following'), events: t('Events'), articles: t('Posts'), videos: t('Videos'), photos: t('Photos'), albums: t('Albums'), files: t('Files'), polls: t('Polls'), about: t('About') };
 
@@ -104,9 +105,8 @@ function refusedError(error: unknown): boolean {
 
 /** "Member since March 2026". */
 export function memberSince(iso: string): string | null {
-    const d = new Date(iso);
-    if (Number.isNaN(d.getTime())) return null;
-    return t('Member since {{month}}', { month: new Intl.DateTimeFormat(locale(), { month: 'long', year: 'numeric' }).format(d) });
+    const month = monthYear(iso);
+    return month === null ? null : t('Member since {{month}}', { month });
 }
 
 /** The hero while a profile or group loads: the cover band, the picture's place and three bars. */

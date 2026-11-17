@@ -10,12 +10,11 @@ import { useContextGroup } from '../../components/activity-card';
 import { unwrap } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
-import { locale, t } from '../../lib/i18n';
+import { t } from '../../lib/i18n';
 import { useNavigation, useRoute } from '../../lib/navigation';
 import { isWindowGesture, isWindowKey, openElsewhereHint, useOpenInWindow } from '../../lib/open-in-window';
 import { emptyListText, useFillEmptyPages } from '../../lib/paging';
 import { categoryPage } from '../../lib/router';
-import { inboxTime } from '../../screens/messages';
 import { Pane, ToolbarButton } from '../../shell/pane';
 import { CategoryFilter, PageColumns } from '../page-blocks/page-blocks';
 import { SECTION_PAGES } from '../page-blocks/page-layout';
@@ -32,6 +31,7 @@ import {
     stateText,
     useDiscussionSetup,
 } from './discussions';
+import { exactTime, inboxTime } from '../../lib/dates';
 
 const SORTS: readonly DiscussionSort[] = ['latest', 'new'];
 const PANEL_ID = 'discussions-panel';
@@ -73,7 +73,7 @@ export function DiscussionRow({ discussion: d, selected, myIds }: { discussion: 
                         </span>
                         <span className="sr-only">{stateText(d)}</span>
                         <DiscussionMarks discussion={d} />
-                        <time className="conv-time" dateTime={when} title={new Date(when).toLocaleString(locale())}>
+                        <time className="conv-time" dateTime={when} title={exactTime(when)}>
                             {inboxTime(when)}
                         </time>
                     </span>

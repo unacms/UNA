@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 
-import { audienceText, longTime, useContextGroup } from '../../components/activity-card';
+import { audienceText, useContextGroup } from '../../components/activity-card';
 import { Icon } from '../../components/icon';
 import { ProfileBadges } from '../../components/profile-badges';
 import { RichText } from '../../components/rich-text';
@@ -24,6 +24,7 @@ import { EntryActions, EntryComments, useEntryItem } from '../photos/entry-item'
 import { ProfileAvatar, ProfileName } from '../profile/profile-link';
 import { EditPost } from './edit-post';
 import { dropPost, isWebUrl, type Post, postFromLists, postKey, postTime, putPost, readingText, stateText } from './posts';
+import { longTime } from '../../lib/dates';
 
 /** The cover across the top of the post: its large copy, else a smaller one. */
 function PostCover({ post }: { post: Post }) {

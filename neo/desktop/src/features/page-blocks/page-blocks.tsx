@@ -12,11 +12,10 @@ import type { Schema } from 'una-api';
 
 import { ProfileBadges } from '../../components/profile-badges';
 import { RichText } from '../../components/rich-text';
-import { ago } from '../../lib/api';
 import { useWindowAnnounce } from '../../lib/announce';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
-import { locale, num, t, tn } from '../../lib/i18n';
+import { num, t, tn } from '../../lib/i18n';
 import { rich } from '../../lib/i18n-rich';
 import { useNavigation, useRoute } from '../../lib/navigation';
 import { type CategorySection, categoryPage, contextDetailRoute, isCategorySection } from '../../lib/router';
@@ -31,6 +30,7 @@ import { usePanesMode } from '../../shell/layout';
 import { usePaneBody } from '../../shell/pane';
 import { SideCard, SideDivider, StickySide, useSideColumn } from './side-columns';
 import { complementary, pageBlockKey, readBlock, type ResolvedBlock, type Screen, screenOf, usePageLayout, useWidth } from './page-layout';
+import { ago, exactTime, mediumDate } from '../../lib/dates';
 
 type Profile = Schema<'Profile'>;
 type Post = Schema<'Post'>;
@@ -270,7 +270,7 @@ function PostsBlock({ block, screen }: { block: ResolvedBlock; screen: Screen })
                                         </span>
                                     ) : null}
                                     {p.author ? <span aria-hidden="true">·</span> : null}
-                                    <time dateTime={when} title={new Date(when).toLocaleString(locale())}>
+                                    <time dateTime={when} title={exactTime(when)}>
                                         {ago(when)}
                                     </time>
                                 </span>
@@ -347,7 +347,7 @@ export function infoWhen(field: Pick<InfoField, 'value' | 'datetime'>): string {
     const d = field.datetime ? new Date(field.datetime) : null;
     if (!d || Number.isNaN(d.getTime())) return field.value;
     const timed = /T(?!00:00(:00)?)\d/.test(field.datetime ?? '');
-    return new Intl.DateTimeFormat(locale(), timed ? { dateStyle: 'medium', timeStyle: 'short' } : { dateStyle: 'medium' }).format(d);
+    return mediumDate(d, timed);
 }
 
 /** What the hero already says (its facts line): not repeated in Info. */
@@ -474,7 +474,7 @@ function DiscussionsBlock({ block, screen }: { block: ResolvedBlock; screen: Scr
                                 <span className="row-sub">
                                     {by ? <bdi className="truncate">{by}</bdi> : null}
                                     {by ? <span aria-hidden="true">·</span> : null}
-                                    <time dateTime={when} title={new Date(when).toLocaleString(locale())}>
+                                    <time dateTime={when} title={exactTime(when)}>
                                         {ago(when)}
                                     </time>
                                 </span>

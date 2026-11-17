@@ -5,15 +5,15 @@ import { EmptyState } from '../../components/empty-state';
 import { Icon } from '../../components/icon';
 import { ProfileBadges } from '../../components/profile-badges';
 import { InlineError, SkeletonRows } from '../../components/skeleton';
-import { ago } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
-import { locale, t } from '../../lib/i18n';
+import { t } from '../../lib/i18n';
 import { useNavigation, useRoute } from '../../lib/navigation';
 import { isWindowGesture, isWindowKey, useOpenInWindow } from '../../lib/open-in-window';
 import { emptyListText, useFillEmptyPages } from '../../lib/paging';
 import { useCompose } from '../compose/compose-sheet';
 import { fetchPolls, type Poll, pollKey, pollListKey, pollRowText, type PollsOf, votersText } from './polls';
+import { ago, exactTime } from '../../lib/dates';
 
 /**
  * One poll in a list: its question opens it beside the list (Cmd+click, Cmd+Enter or a
@@ -68,7 +68,7 @@ export function PollRow({ poll: p, selected }: { poll: Poll; selected: boolean }
                         </span>
                     ) : null}
                     {p.author ? <span>·</span> : null}
-                    <time dateTime={p.created_at ?? undefined} title={p.created_at ? new Date(p.created_at).toLocaleString(locale()) : undefined}>
+                    <time dateTime={p.created_at ?? undefined} title={p.created_at ? exactTime(p.created_at) : undefined}>
                         {p.created_at ? ago(p.created_at) : ''}
                     </time>
                 </span>

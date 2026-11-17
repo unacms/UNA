@@ -11,9 +11,10 @@ import type { InfiniteData, QueryClient } from '@tanstack/react-query';
 import type { Schema, UnaApi } from 'una-api';
 
 import type { IconName } from '../../components/icon';
-import { ago, unwrap } from '../../lib/api';
+import { unwrap } from '../../lib/api';
 import { num, t, tn } from '../../lib/i18n';
 import { badgeNames } from '../../components/profile-badges';
+import { ago } from '../../lib/dates';
 
 export type FileEntry = Schema<'FileItem'>;
 export type FilePage = Schema<'Page_FileItem'>;

@@ -1,13 +1,12 @@
 import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
 import { type FormEvent, useEffect, useId, useState } from 'react';
 
-import { longTime } from '../../components/activity-card';
 import { Dialog } from '../../components/dialog';
 import { EmptyState } from '../../components/empty-state';
 import { Icon } from '../../components/icon';
 import { InlineError, SkeletonRows } from '../../components/skeleton';
 import { Tooltip } from '../../components/tooltip';
-import { ago, ApiError } from '../../lib/api';
+import { ApiError } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
 import { t } from '../../lib/i18n';
@@ -38,6 +37,7 @@ import {
     type TaskBudget,
 } from './budget';
 import { useTaskContexts } from './task-board';
+import { ago, longTime } from '../../lib/dates';
 
 /** The value, once it has stayed the same for `ms`: a search sent as one stops typing. */
 function useSettled<T>(value: T, ms = 250): T {

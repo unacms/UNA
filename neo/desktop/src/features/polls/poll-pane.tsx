@@ -1,6 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { longTime } from '../../components/activity-card';
 import { ProfileBadges } from '../../components/profile-badges';
 import { ApiError, ensureOk, isGone, retryOnce, unwrap } from '../../lib/api';
 import { useWindowAnnounce } from '../../lib/announce';
@@ -19,6 +18,7 @@ import { EntryActions, EntryComments, useEntryItem } from '../photos/entry-item'
 import { ProfileAvatar, ProfileName } from '../profile/profile-link';
 import { PollCard } from './poll-card';
 import { type Poll, pollFromCache, pollKey } from './polls';
+import { longTime } from '../../lib/dates';
 
 /** The picture its author chose for it: the large copy, else a smaller one. */
 function PollImage({ poll }: { poll: Poll }) {

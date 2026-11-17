@@ -8,7 +8,7 @@ import { ensureOk, isGone, unwrap } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { type Draft, useDraftKey } from '../../lib/drafts';
 import { errorMessage } from '../../lib/errors';
-import { locale, t, tn } from '../../lib/i18n';
+import { t, tn } from '../../lib/i18n';
 import { useMediaSrc } from '../../lib/media';
 import { confirmAction, isSecondaryWindow } from '../../lib/native';
 import { useCopyLink } from '../../lib/copy-link';
@@ -30,12 +30,13 @@ import { profileSummaryKey } from '../profile/graph';
 import { ProfileAvatar, ProfileName } from '../profile/profile-link';
 import { Lightbox } from '../thread/lightbox';
 import { type Anchor, captureAnchor, isAtBottom, measureRows, nearTop, restoreScrollTop } from './anchor';
-import { timeLabel, withDays } from './days';
+import { withDays } from './days';
 import { MessageComposer } from './message-composer';
 import { choosePreopened, PREOPEN_READ_MS, usePreopened, useShownFor } from './preopen';
 import { RecipientField } from './recipient-field';
 import { chronological, firstUnreadAtOpen, type Message, messagesKey, type Thread, withEdited, withHead, withOlderAt, withSent } from './thread-cache';
 import { MessageEditor } from './message-editor';
+import { exactTime, timeLabel } from '../../lib/dates';
 
 type Conv = Schema<'Conversation'>;
 type Profile = Schema<'Profile'>;
@@ -628,7 +629,7 @@ function MessageRow({
                         {t('Edit')}
                     </button>
                 ) : null}
-                <time className="bubble-time" dateTime={m.created_at} title={new Date(m.created_at).toLocaleString(locale())}>
+                <time className="bubble-time" dateTime={m.created_at} title={exactTime(m.created_at)}>
                     {timeLabel(m.created_at)}
                 </time>
             </article>

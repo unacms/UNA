@@ -14,7 +14,7 @@ import { fetchAnyContext, type Group, groupKey, MY_GROUPS_KEY, MY_SPACES_KEY } f
 import { ProfileAvatar, ProfileName } from '../features/profile/profile-link';
 import { commentBoxId } from '../features/thread/comment-tree';
 import { useWindowAnnounce } from '../lib/announce';
-import { ago, ensureOk } from '../lib/api';
+import { ensureOk } from '../lib/api';
 import { useApp } from '../lib/context';
 import { errorMessage } from '../lib/errors';
 import { locale, t, tn } from '../lib/i18n';
@@ -31,6 +31,7 @@ import { ProfileBadges } from './profile-badges';
 import { RichText } from './rich-text';
 import { Tooltip } from './tooltip';
 import { VisuallyHidden } from './visually-hidden';
+import { ago, exactTime, longTime } from '../lib/dates';
 
 export { dropFromFeeds };
 
@@ -329,7 +330,7 @@ export function ActivityCard({ activity, variant = 'list', selected = false, lis
     };
 
     const time = (
-        <time id={`${idBase}-time`} dateTime={activity.created_at} title={new Date(activity.created_at).toLocaleString(locale())}>
+        <time id={`${idBase}-time`} dateTime={activity.created_at} title={exactTime(activity.created_at)}>
             {ago(activity.created_at)}
         </time>
     );
@@ -543,15 +544,6 @@ export function ActivityCard({ activity, variant = 'list', selected = false, lis
             </div>
         </article>
     );
-}
-
-/** "6 November 2026 at 09:14": the open post says when exactly (spec 6.1). */
-export function longTime(iso: string): string {
-    try {
-        return new Intl.DateTimeFormat(locale(), { dateStyle: 'long', timeStyle: 'short' }).format(new Date(iso));
-    } catch {
-        return new Date(iso).toLocaleString(locale());
-    }
 }
 
 /** "1.2K" for the stats line. */

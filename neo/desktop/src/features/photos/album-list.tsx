@@ -7,16 +7,16 @@ import { EmptyState } from '../../components/empty-state';
 import { Icon } from '../../components/icon';
 import { ProfileBadges } from '../../components/profile-badges';
 import { InlineError, SkeletonRows } from '../../components/skeleton';
-import { ago } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
-import { locale, t } from '../../lib/i18n';
+import { t } from '../../lib/i18n';
 import { useMediaSrc, usePicture } from '../../lib/media';
 import { useNavigation, useRoute } from '../../lib/navigation';
 import { isWindowGesture, isWindowKey, useOpenInWindow } from '../../lib/open-in-window';
 import { emptyListText, useFillEmptyPages } from '../../lib/paging';
 import { MoreButton } from './photo-list';
 import { type Album, albumCardText, albumKey, albumListKey, fetchAlbums, itemsText, type MediaOf, tileSrc } from './photos';
+import { ago, exactTime } from '../../lib/dates';
 
 type Media = Schema<'Media'>;
 
@@ -92,7 +92,7 @@ export function AlbumCard({ album: a, selected }: { album: Album; selected: bool
                 <span className="row-sub" aria-hidden="true">
                     <span>{itemsText(a.stats.items)}</span>
                     <span>·</span>
-                    <time dateTime={a.created_at} title={new Date(a.created_at).toLocaleString(locale())}>
+                    <time dateTime={a.created_at} title={exactTime(a.created_at)}>
                         {ago(a.created_at)}
                     </time>
                 </span>
