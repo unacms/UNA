@@ -1,13 +1,12 @@
-import { View, Row } from 'app/design/view'
+import { View } from 'app/design/view'
 import { useTranslation } from 'react-i18next'
 import {
     getProfileListLabel,
-    PROFILE_ROW_COUNT,
     PROFILE_ROW_NAME,
     PROFILE_ROW_NAME_SKELETON,
     UnitActions,
     UnitProfileImage,
-    UnitProfileList,
+    UnitProfileConnections,
     UnitTitle,
     UnitWrapper,
     useUnitActions,
@@ -43,16 +42,7 @@ export default function Unit({ data, unitType, module }) {
                             skeletonClassName={PROFILE_ROW_NAME_SKELETON}
                         />
                         {hasCount ? (
-                            <Row className="items-center gap-1 h-5">
-                                <UnitProfileList
-                                    data={data}
-                                    unitType={unitType}
-                                    profile
-                                    skeleton={isSkeleton}
-                                    showList={false}
-                                    labelClassName={PROFILE_ROW_COUNT}
-                                />
-                            </Row>
+                            <UnitProfileConnections data={data} unitType={unitType} skeleton={isSkeleton} />
                         ) : null}
                     </View>
                     <UnitActions

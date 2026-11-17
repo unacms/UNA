@@ -249,15 +249,33 @@ function isFollowersUnitType(unitType) {
 
 /**
  * A profile's connections as its card shows them, as UNA's site card does: its friends (the ones it shares with the
- * viewer, when there are any) and its followers, "2 friends · 5 followers". A count of zero is left out, so a profile
- * with neither has no text. UNA sends the counts where its "connections in profile units" setting is on.
+ * viewer, when there are any), then its followers, each with its count text ("2 friends") and its first profiles
+ * (UNA sends up to five). A count of zero is left out, so a profile with neither has no part. UNA sends them where its
+ * "connections in profile units" setting is on.
  */
+export function getProfileConnectionsParts(data) {
+    const hasMutual = data?.mutual_friends_count > 0;
+    return [
+        {
+            key: 'friends',
+            label: hasMutual
+                ? tp('mutual_friends', data.mutual_friends_count, false)
+                : getCountLabel(data?.friends_count, 'friends'),
+            list: hasMutual ? data?.mutual_friends_list : data?.friends_list,
+        },
+        {
+            key: 'followers',
+            label: getCountLabel(data?.followers_count, 'followers'),
+            list: data?.followers_list,
+        },
+    ]
+        .map((part) => ({ ...part, label: String(part.label || '').trim() }))
+        .filter((part) => part.label);
+}
+
+/** The same as one text: "2 friends · 5 followers". */
 export function getProfileConnectionsLabel(data) {
-    const friends = data?.mutual_friends_count > 0
-        ? tp('mutual_friends', data.mutual_friends_count, false)
-        : getCountLabel(data?.friends_count, 'friends');
-    const followers = getCountLabel(data?.followers_count, 'followers');
-    return [friends, followers].map((part) => String(part || '').trim()).filter(Boolean).join(' · ');
+    return getProfileConnectionsParts(data).map((part) => part.label).join(' · ');
 }
 
 function getPersonSocialList(data, { isFollowers } = {}) {
@@ -323,6 +341,8 @@ const ROW_AVATAR = appSetting('theme', 'profile_sizes', 'xl');
 export const PROFILE_ROW_NAME = 'text-base leading-6 font-semibold tracking-tight text-foreground web:hover:underline';
 export const PROFILE_ROW_NAME_SKELETON = 'h-4 my-1 w-3/4';
 export const PROFILE_ROW_COUNT = 'truncate text-sm leading-5 font-normal flex-auto text-secondary-foreground';
+// The same text after its avatars in the card grid: it keeps its width, the part after it gives way.
+const PROFILE_CARD_COUNT = 'truncate text-sm leading-5 font-normal min-w-0 shrink text-secondary-foreground';
 
 export function UnitProfileImage({
     data,
@@ -648,6 +668,46 @@ export function UnitRecommendation({ data, params, primary = false }) {
                 button_border_shape: params?.button_border_shape ?? (isIgnore ? 'circle' : undefined),
             }}
         />
+    );
+}
+
+/**
+ * A profile card's connections line (20px high). A phone row has room for the text only ("2 friends · 5
+ * followers"); from `sm` up, in the card grid, each count comes after its first profiles' avatars, as on UNA's site
+ * card. The avatars are not links: the card itself is one. They are 20px and go through the image optimizer at that
+ * size (`Profile`), never the stored picture as it is.
+ */
+export function UnitProfileConnections({ data, unitType, skeleton, labelClassName = PROFILE_ROW_COUNT, maxCount = 3 }) {
+    const parts = skeleton ? [] : getProfileConnectionsParts(data);
+    return (
+        <>
+            <Row className="items-center gap-1 h-5 sm:hidden">
+                <UnitProfileList
+                    data={data}
+                    unitType={unitType}
+                    profile
+                    skeleton={skeleton}
+                    showList={false}
+                    labelClassName={labelClassName}
+                />
+            </Row>
+            <Row className="hidden sm:flex items-center gap-2 h-5 min-w-0">
+                <Skeleton className="h-4 w-20" visible={skeleton}>
+                    {parts.map((part) => (
+                        <Row key={part.key} className="items-center gap-1 min-w-0 shrink">
+                            <ProfilesList
+                                data={part.list}
+                                showEmpty={false}
+                                maxCount={maxCount}
+                                displaySize="2xs"
+                                showLinks={false}
+                            />
+                            <Text numberOfLines={1} className={PROFILE_CARD_COUNT}>{part.label}</Text>
+                        </Row>
+                    ))}
+                </Skeleton>
+            </Row>
+        </>
     );
 }
 
