@@ -24,6 +24,13 @@ if (!defined('BX_DOL_SKIP_ATIME_UPDATE'))
  */
 class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
 {
+    /**
+     * Storages of the files which editors put in texts as image_transcoder.php links:
+     * the editor's pictures and videos, and the pictures of the Froala module's own storage.
+     * @see isUnsignedHandlerAllowed
+     */
+    const UNSIGNED_LINK_STORAGES = ['sys_images_editor', 'sys_videos_editor', 'bx_froala_files'];
+
     protected $_sLog = ''; ///< file conversion log
     protected $_aObject; ///< object properties
     protected $_oStorage; ///< storage object, transcoded files are stored here
@@ -843,6 +850,35 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
             return false;
 
         return hash_equals($this->getHandlerSignature($mixedHandler), $sSignature);
+    }
+
+    /**
+     * Is a link to image_transcoder.php without a signature still served.
+     * Editors save the link of a picture or a video in the text of a post, and a link saved before
+     * links were signed (15.0.0-RC4) has no signature. Such a link works for a public file of an
+     * editor storage (@see UNSIGNED_LINK_STORAGES) which was uploaded before the site started to sign
+     * links: the time in the 'sys_transcoder_unsigned_before' option, set when the site is updated,
+     * 0 on a site installed with signed links. Files uploaded later need the signature.
+     * @param $mixedHandler - file handler
+     * @return true if the link is served without a signature, false otherwise
+     */
+    public function isUnsignedHandlerAllowed($mixedHandler)
+    {
+        $iBefore = (int)getParam('sys_transcoder_unsigned_before');
+        if ($iBefore <= 0)
+            return false;
+
+        $sStorage = 'Storage' === ($this->_aObject['source_type'] ?? '') ? ($this->_aObject['source_params']['object'] ?? '') : '';
+        if (!in_array($sStorage, self::UNSIGNED_LINK_STORAGES, true))
+            return false;
+
+        if (!is_scalar($mixedHandler) || !ctype_digit((string)$mixedHandler))
+            return false;
+
+        $oStorage = BxDolStorage::getObjectInstance($sStorage);
+        $aFile = $oStorage ? $oStorage->getFile((int)$mixedHandler) : false;
+
+        return $aFile && !$aFile['private'] && (int)$aFile['added'] < $iBefore;
     }
 
     public function getTmpFilename ($sOverrideName = false)

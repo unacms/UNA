@@ -2096,6 +2096,7 @@
     <string name="_adm_stg_cpt_option_sys_template_cache_minify_css_enable"><![CDATA[Задействовать уменьшение для файлов CSS (кэш должен быть задействован)]]></string>
     <string name="_adm_stg_cpt_option_sys_template_cache_minify_js_enable"><![CDATA[Задействовать уменьшение для файлов JS (кэш должен быть задействован)]]></string>
     <string name="_adm_stg_cpt_option_sys_transcoder_queue_storage"><![CDATA[Удалённая раскодировка видео (требуется дополнительная настройка)]]></string>
+    <string name="_adm_stg_cpt_option_sys_transcoder_unsigned_before"><![CDATA[Файлы редактора, загруженные до этого времени, открываются по ссылкам без подписи]]></string>
     <string name="_adm_stg_cpt_option_sys_session_lifetime_in_min"><![CDATA[Время жизни сессии (в минутах)]]></string>
     <string name="_adm_stg_cpt_option_sys_live_search_limit"><![CDATA[Результаты интерактивного поиска]]></string>
     <string name="_adm_stg_inf_option_sys_live_search_limit"><![CDATA[Установите максимальное количество результатов, отображаемых в поле предложений интерактивного поиска.]]></string>

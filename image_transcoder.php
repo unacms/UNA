@@ -16,8 +16,11 @@ $sHandler = bx_process_input(bx_get('h'));
 
 $oTranscoder = BxDolTranscoderImage::getObjectInstance($sTranscoderObject);
 
-// Only links made by the site (signed when a page shows the file) are served, see BxDolTranscoder::getHandlerSignature
-if (!$oTranscoder || !$oTranscoder->isHandlerSignatureValid($sHandler, bx_get('s'))) {
+// Only links made by the site (signed when a page shows the file) are served, see BxDolTranscoder::getHandlerSignature.
+// A link without a signature is one an editor saved in a text before links were signed, see BxDolTranscoder::isUnsignedHandlerAllowed.
+$sSignature = bx_get('s');
+$bUnsigned = false === $sSignature || '' === $sSignature;
+if (!$oTranscoder || !($bUnsigned ? $oTranscoder->isUnsignedHandlerAllowed($sHandler) : $oTranscoder->isHandlerSignatureValid($sHandler, $sSignature))) {
     ob_end_clean();
     bx_transcoder_error_occured();
     exit;
