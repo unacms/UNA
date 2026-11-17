@@ -217,11 +217,13 @@ function useNavbarIndicator(target, activeIndex) {
     if (activeIndex === -1) {
         indicatorStyle = { translateX: 0, width: 0, visible: false };
     } else if (!isMeasured) {
-        // Keep the last known dimensions but hide the indicator until the active tab is measured.
+        // Until the active tab is measured the indicator stays where it last was: hidden before it has ever shown,
+        // shown once it has (a tab switch mounts the bar again), so it slides from the old tab to the new one instead
+        // of fading out and in.
         indicatorStyle = {
             translateX: __menuTopIndicatorPersist.translateX,
             width: __menuTopIndicatorPersist.width,
-            visible: false,
+            visible: __menuTopIndicatorRevealed && __menuTopIndicatorPersist.initialized,
         };
     } else {
         indicatorStyle = {
