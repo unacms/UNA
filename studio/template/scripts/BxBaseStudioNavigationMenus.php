@@ -383,6 +383,21 @@ class BxBaseStudioNavigationMenus extends BxDolStudioNavigationMenus
                         'pass' => 'Xss',
                     ),
                 ),
+                'section_nav' => array(
+                    'type' => 'select',
+                    'name' => 'section_nav',
+                    'caption' => _t('_adm_nav_txt_menus_section_nav'),
+                    'info' => _t('_adm_nav_dsc_menus_section_nav'),
+                    'value' => isset($aMenu['section_nav']) ? $aMenu['section_nav'] : BxDolMenu::SECTION_NAV_TABS,
+                    'values' => array(
+                        array('key' => BxDolMenu::SECTION_NAV_TABS, 'value' => _t('_adm_nav_txt_menus_section_nav_tabs')),
+                        array('key' => BxDolMenu::SECTION_NAV_SIDEBAR, 'value' => _t('_adm_nav_txt_menus_section_nav_sidebar')),
+                    ),
+                    'required' => '0',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                ),
                 'persistent' => array(
                     'type' => 'text',
                     'name' => 'persistent',

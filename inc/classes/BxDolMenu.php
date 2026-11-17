@@ -103,6 +103,16 @@ class BxDolMenu extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     const BUTTON_SIZE_LARGE = 'large';
 
     /**
+     * How the apps show a section's menu on large screens (`sys_objects_menu`.`section_nav`, Studio > Navigation >
+     * a menu), when the menu is the submenu of a section's pages (the menu's API carries it as `section_nav`):
+     * - tabs (empty): a row of tabs above the content, as the site shows it;
+     * - sidebar: a column beside the content, for a section with many pages (the connections' Friends, Requests...).
+     * Phones and tablets always show tabs.
+     */
+    const SECTION_NAV_TABS = '';
+    const SECTION_NAV_SIDEBAR = 'sidebar';
+
+    /**
      * Class names by value, written out in full: a class built from parts is one no stylesheet search finds.
      */
     protected static $_aButtonStyleClasses = [
@@ -149,6 +159,24 @@ class BxDolMenu extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     {
         $s = isset($this->_aObject['button_size']) ? (string)$this->_aObject['button_size'] : '';
         return isset(self::$_aButtonSizeClasses[$s]) ? $s : self::BUTTON_SIZE_AUTO;
+    }
+
+    /**
+     * Section navigations a menu can be given, tabs (empty) first.
+     */
+    public static function getSectionNavs()
+    {
+        return [self::SECTION_NAV_TABS, self::SECTION_NAV_SIDEBAR];
+    }
+
+    /**
+     * How the apps show this menu as a section's navigation on large screens: one of the SECTION_NAV_* values, tabs for
+     * anything else stored.
+     */
+    public function getSectionNav()
+    {
+        $s = isset($this->_aObject['section_nav']) ? (string)$this->_aObject['section_nav'] : '';
+        return in_array($s, self::getSectionNavs(), true) ? $s : self::SECTION_NAV_TABS;
     }
 
     /**

@@ -1,7 +1,10 @@
 /* Shared Tailwind v4 utilities — imported by Next (global.css) and Expo (global.combined.css). */
 
+/* Lists and other content blocks: as wide as the page content (`max-w-8xl`, `layout.page_content_width_default`
+   and `max_width_block`), so a list inside a page fills it and lines up with the page's headers instead of
+   centring at a narrower width. `inline`: the value itself, for native too. */
 @utility u-max-width-block {
-    max-width: 80rem;
+    max-width: --theme(--container-8xl inline);
 }
 
 @utility border {

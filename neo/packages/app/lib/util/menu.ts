@@ -632,6 +632,20 @@ export function getMenuSettings(object: string, config?: unknown, menu?: { title
 type MenuWithItems = { object?: string; config?: unknown; title?: string; items?: { title?: string; link?: string }[] };
 
 /**
+ * How a section's menu shows on large screens on web (the conductor): `sidebar`, a column beside the content, or
+ * `tabs`, the row above it that the site shows. UNA says it per menu (`section_nav`, Studio > Navigation > a menu;
+ * empty is tabs). A UNA that doesn't send it keeps the column, as before: a fork can set `section_nav` in the menu's
+ * `menu_items[object]` setting, or `menu_items.section_nav_default` for every menu, for that case.
+ */
+export function getMenuSectionNav(menu?: (MenuWithItems & { section_nav?: unknown }) | null): 'sidebar' | 'tabs' {
+    if (!menu?.object) return 'tabs';
+    if (typeof menu.section_nav === 'string') return menu.section_nav === 'sidebar' ? 'sidebar' : 'tabs';
+    const local = localMenuSettings(menu.object);
+    const fallback = (!Array.isArray(local) && local.section_nav) || appSetting('menu_items', 'section_nav_default') || 'sidebar';
+    return fallback === 'tabs' ? 'tabs' : 'sidebar';
+}
+
+/**
  * A section whose menu names a page that lists it (`hub` in the menu's `config`, UNA's
  * `sys_objects_menu.config_api`; Settings). Below desktop that page replaces the section's tab
  * row, so each of its pages shows its own item's title.
