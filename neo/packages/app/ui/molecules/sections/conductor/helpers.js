@@ -420,6 +420,12 @@ export function mergeConductorRoutes(freshTabs, prevRoutes) {
     })
 }
 
+/** An item that is none of UNA's for the menu (UNA's have a positive id): the stand-in for a page the menu lacks. */
+function isStandInMenuItem(item) {
+    const id = Number(item?.id)
+    return Number.isNaN(id) || id <= 0
+}
+
 /** Build conductor tab routes from menu; hydrate the current URL tab. */
 export function fillTabs(
     menu,
@@ -485,7 +491,7 @@ export function fillTabs(
         currentIndex = routes.push(createConductorRoute(item, routes.length, 0, null, hub, true, false)) - 1
     }
     const currentRoute = routes[currentIndex]
-    if (currentRoute && isRootPage && !(Number(currentRoute.item?.id) > 0)) {
+    if (currentRoute && isRootPage && isStandInMenuItem(currentRoute.item)) {
         currentRoute.sectionRoot = true
         currentRoute.hideInTop = true
         const listMenu = { ...menu, items: (menu.items || []).filter((item) => item !== currentRoute.item && item?.id !== -1) }

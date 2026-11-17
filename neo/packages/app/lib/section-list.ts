@@ -21,8 +21,8 @@ export function resolveSectionNavSmall(value: unknown, hub: string): SectionNavS
 }
 
 /** A page url or uri as UNA names the page: no `page/` prefix, outer slashes or query. */
-function pagePath(url: unknown): string {
-    let path = String(url ?? '').split('?')[0] ?? '';
+function pagePath(url: string | undefined): string {
+    let path = (url ?? '').split('?')[0] ?? '';
     if (path.startsWith('page/')) path = path.slice(5);
     while (path.startsWith('/')) path = path.slice(1);
     return path;

@@ -123,20 +123,17 @@ class BxBasePageAccount extends BxTemplPage
      */
     public function getSectionFirstPageUrl()
     {
-        if($this->_sObject != 'sys_settings' || !($oMenu = BxDolMenu::getObjectInstance('sys_account_settings_submenu')))
+        $oMenu = $this->_sObject == 'sys_settings' ? BxDolMenu::getObjectInstance('sys_account_settings_submenu') : false;
+        if(!$oMenu || array_filter($this->_oQuery->getPageBlocks())) {
             return '';
-
-        foreach($this->_oQuery->getPageBlocks() as $aCell)
-            if(!empty($aCell))
-                return '';
+        }
 
         $sLinkOwn = BxDolPermalinks::getInstance()->permalink('page.php?i=' . $this->_aObject['uri']);
         foreach($oMenu->getMenuItems() as $aItem) {
             $sLink = isset($aItem['link']) ? (string)$aItem['link'] : '';
-            if($sLink === '' || $sLink === $sLinkOwn || mb_stripos($sLink, 'javascript:') === 0)
-                continue;
-
-            return bx_absolute_url($sLink);
+            if($sLink !== '' && $sLink !== $sLinkOwn && mb_stripos($sLink, 'javascript:') !== 0) {
+                return bx_absolute_url($sLink);
+            }
         }
 
         return '';
