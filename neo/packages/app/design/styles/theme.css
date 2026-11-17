@@ -157,8 +157,8 @@
     --shadow-xl-deep: 0 12px 24px rgb(0 0 0 / 0.5);
     --shadow-2xl: 0 24px 48px rgb(0 0 0 / 0.1);
     --shadow-2xl-deep: 0 24px 48px rgb(0 0 0 / 0.5);
-    --shadow-border-b: 0 1px 0 0 rgb(0 0 0 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.05);
-    --shadow-border-b-deep: 0 1px 0 0 rgb(255 255 255 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.5);
+    --shadow-border-b: var(--neo-shadow-border-b);
+    --shadow-border-b-deep: var(--neo-shadow-border-b-deep);
     --shadow-avatar: inset 0 0 0 1px rgb(0 0 0 / 0.05);
     --shadow-avatar-deep: inset 0 0 0 1px rgb(255 255 255 / 0.05);
     --shadow-avatar-stack: 0 0 0 1px rgb(var(--card));
@@ -218,8 +218,13 @@
            square at that height, 12 is the regular control's. */
         --neo-radius-control-sm: 0.625rem;
 
-        --neo-shadow-card-outline:        inset 0 0 0 1px rgb(255 255 255 / 0.5), 0 2px 8px -2px rgb(0 0 0 / 0.1);
-        --neo-shadow-card-outline-deep:  inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 2px 8px -2px rgb(0 0 0 / 0.2);
+        /* Cards, and the lower edge of bars (the page header, a cover's or a section's pinned bars): a light line inside,
+           a soft drop and a faint line outside, which `shadow-<colour>` can tint (only that line: these go through a
+           variable, so Tailwind doesn't recolour every layer). UNA's boxes and header use the same values. */
+        --neo-shadow-card-outline:        inset 0 0 0 1px rgb(255 255 255 / 0.5), 0 1px 8px -1px rgb(0 0 0 / 0.1), 0 0 0 1px var(--tw-shadow-color, rgb(0 0 0 / 0.025));
+        --neo-shadow-card-outline-deep:  inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 1px 8px -1px rgb(0 0 0 / 0.5), 0 0 0 1px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
+        --neo-shadow-border-b:           inset 0 -1px 0 0 rgb(255 255 255 / 0.5), 0 1px 8px -1px rgb(0 0 0 / 0.1), 0 1px 0 0 var(--tw-shadow-color, rgb(0 0 0 / 0.025));
+        --neo-shadow-border-b-deep:      inset 0 -1px 0 0 rgb(255 255 255 / 0.05), 0 1px 8px -1px rgb(0 0 0 / 0.5), 0 1px 0 0 var(--tw-shadow-color, rgb(0 0 0 / 0.25));
 
         /* Floating surfaces (menus, dropdowns, modals): a hairline edge and a soft drop, the same as UNA's
            smooth-shadow-popover. The drop reaches 32px below the box, 20px to the sides. In dark mode the edge
