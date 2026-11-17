@@ -5,7 +5,8 @@ import { Icon } from 'app/ui/atoms/icon'
 import Link from 'app/ui/atoms/link'
 import { useCurrentUser } from 'app/context/user'
 import { useScreenTier } from 'app/context/measure'
-import { appSetting, cn, strToObj } from 'app/lib/util'
+import { appSetting, cn } from 'app/lib/util'
+import { MENU_GROUPS, getMenuItemGroup, type MenuGroup } from 'app/lib/menu-groups'
 
 type SettingsMenuItem = {
     id?: string | number
@@ -14,28 +15,16 @@ type SettingsMenuItem = {
     link?: string
     url?: string
     icon?: string
+    group?: string
     config?: string
     hidden_on?: string[] | false
     subitems?: SettingsMenuItem[]
 }
 
-/** Groups in the order the list shows them; an item without one goes to `other`. */
-const GROUPS = ['account', 'profile', 'other', 'danger'] as const
-type SettingsGroup = (typeof GROUPS)[number]
+/** Groups in the order the list shows them (`lib/menu-groups.ts`); an item without one goes to `other`. */
+type SettingsGroup = MenuGroup
 
 const CARD = cn(appSetting('theme', 'cards')['u-card-base'], 'w-full overflow-hidden')
-
-/** An item's group from its UNA `config_api` (`{"group":"account"}`); `null` when it has none. */
-export function getSettingsItemGroup(item: SettingsMenuItem): SettingsGroup | null {
-    const config = item?.config ? strToObj(item.config) : null
-    const group = config && typeof config === 'object' ? config.group : null
-    return GROUPS.includes(group) ? group : null
-}
-
-/** True when the menu's items say which group they belong to, so the list is drawn grouped. */
-export function hasSettingsGroups(items: SettingsMenuItem[]): boolean {
-    return items.some((item) => getSettingsItemGroup(item) !== null)
-}
 
 /**
  * Every row the list shows: items nested under a parent in Studio (`subitems`) come right after it,
@@ -44,7 +33,7 @@ export function hasSettingsGroups(items: SettingsMenuItem[]): boolean {
 function flattenSettingsItems(items: SettingsMenuItem[], skip: (item: SettingsMenuItem) => boolean, parentGroup: SettingsGroup | null = null): { item: SettingsMenuItem; group: SettingsGroup }[] {
     return items.flatMap((item) => {
         if (skip(item)) return []
-        const group = getSettingsItemGroup(item) ?? parentGroup
+        const group = getMenuItemGroup(item) ?? parentGroup
         const row = itemHref(item) ? [{ item, group: group ?? 'other' }] : []
         return [...row, ...flattenSettingsItems(item.subitems || [], skip, group)]
     })
@@ -74,9 +63,11 @@ function SettingsRow({ item, first, danger }: Readonly<{ item: SettingsMenuItem;
 }
 
 /**
- * The settings list (UNA's `sys_account_settings` menu on the `settings` page): one card per group,
- * the account's first, then the current profile's under its name, then the rest, and deleting the
- * account last on its own. One list for both, so switching profiles visibly changes the second card.
+ * The settings list (UNA's `sys_account_settings` menu on the `settings` page): one card per group
+ * (Studio > Navigation > an item > "Group in the apps"), the account's first, then the current profile's
+ * under its name, then the rest, and deleting the account last on its own. One list for both, so
+ * switching profiles visibly changes the second card. The desktop sidebar shows the same sections
+ * (`SidebarNavSections` in the conductor's web-ui.js).
  */
 export default function SettingsMenu({ items, hub = '' }: Readonly<{ items: SettingsMenuItem[]; hub?: string }>) {
     const { t } = useTranslation()
@@ -102,7 +93,7 @@ export default function SettingsMenu({ items, hub = '' }: Readonly<{ items: Sett
         // Rows read as a list, not a table: a phone-like width on wide screens too. Below desktop the
         // section's tab pane has no inset of its own, so the list keeps the page's 16px on every side.
         <View className="w-full max-w-2xl gap-6 p-4 lg:p-0">
-            {GROUPS.filter((group) => byGroup.has(group)).map((group) => (
+            {MENU_GROUPS.filter((group) => byGroup.has(group)).map((group) => (
                 <View key={group} className="w-full gap-2">
                     {headings[group] ? (
                         <Text className="px-4 text-sm font-semibold text-muted-foreground" numberOfLines={1}>

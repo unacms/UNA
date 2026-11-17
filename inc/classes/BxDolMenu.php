@@ -125,6 +125,17 @@ class BxDolMenu extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     const SECTION_NAV_SMALL_LIST = 'list';
 
     /**
+     * The group of a menu item (`sys_menu_items`.`group_name`, Studio > Navigation > an item > "Group in the apps"; the
+     * item's API carries it as `group`). The apps draw a menu whose items have groups as sections, in this order: the
+     * account's items, the current profile's under its name, the items without a group, and the dangerous ones last
+     * (deleting the account). The account's settings use them.
+     */
+    const ITEM_GROUP_NONE = '';
+    const ITEM_GROUP_ACCOUNT = 'account';
+    const ITEM_GROUP_PROFILE = 'profile';
+    const ITEM_GROUP_DANGER = 'danger';
+
+    /**
      * Class names by value, written out in full: a class built from parts is one no stylesheet search finds.
      */
     protected static $_aButtonStyleClasses = [
@@ -171,6 +182,22 @@ class BxDolMenu extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     {
         $s = isset($this->_aObject['button_size']) ? (string)$this->_aObject['button_size'] : '';
         return isset(self::$_aButtonSizeClasses[$s]) ? $s : self::BUTTON_SIZE_AUTO;
+    }
+
+    /**
+     * Groups a menu item can be given, none (empty) first.
+     */
+    public static function getItemGroups()
+    {
+        return [self::ITEM_GROUP_NONE, self::ITEM_GROUP_ACCOUNT, self::ITEM_GROUP_PROFILE, self::ITEM_GROUP_DANGER];
+    }
+
+    /**
+     * A menu item's group as it is kept: one of the ITEM_GROUP_* values, none for anything else.
+     */
+    public static function normalizeItemGroup($sGroup)
+    {
+        return is_string($sGroup) && in_array($sGroup, self::getItemGroups(), true) ? $sGroup : self::ITEM_GROUP_NONE;
     }
 
     /**

@@ -651,6 +651,8 @@ class BxBaseMenu extends BxDolMenu
             'hidden_on' => isset($a['hidden_on']) ? $a['hidden_on'] : false,
             'hidden_on_col' => isset($a['hidden_on_col']) ? $a['hidden_on_col'] : false,
             'config' => isset($a['config_api']) ? $a['config_api'] : '',
+            // Studio's "Group in the apps": BxDolMenu::ITEM_GROUP_*, empty for none.
+            'group' => BxDolMenu::normalizeItemGroup(isset($a['group_name']) ? $a['group_name'] : ''),
             'primary' => isset($a['primary']) ? $a['primary'] : 0,
             'persistent' => isset($a['persistent']) ? $a['persistent'] : 0,
             // Studio's "Icon only": the apps show the item's title next to its icon unless it is on, as the site does.

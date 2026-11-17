@@ -37,4 +37,25 @@ class MenuSectionNavSqlTest extends PHPUnit\Framework\TestCase
             'Account is the first settings page.'
         );
     }
+
+    /**
+     * A menu item's group (Studio > Navigation > an item > "Group in the apps"): the column, and the settings items'
+     * groups in the apps' SQL, the system's and the modules', no longer in the items' app config.
+     */
+    public function testFreshInstallGroupsTheSettingsItems(): void
+    {
+        $sRoot = __DIR__ . '/../../../';
+        $this->assertStringContainsString("`group_name` varchar(32) NOT NULL DEFAULT ''", (string)file_get_contents($sRoot . 'install/sql/system.sql'));
+
+        $sApp = (string)file_get_contents($sRoot . 'modules/system/install/sql/enable-app-menus.sql');
+        $this->assertStringContainsString("SET `group_name`='account' WHERE `set_name`='sys_account_settings'", $sApp);
+        $this->assertStringContainsString("SET `group_name`=IF(`name`='account-settings-delete', 'danger', 'profile')", $sApp);
+
+        foreach(['acl', 'notifications', 'payment'] as $sModule) {
+            $sSql = (string)file_get_contents($sRoot . 'modules/boonex/' . $sModule . '/install/sql/enable-app.sql');
+            $this->assertStringContainsString("SET `group_name`='profile' WHERE `set_name`='sys_account_settings' AND `module`='bx_" . $sModule . "'", $sSql, $sModule);
+            $this->assertStringNotContainsString('{"group"', $sSql, $sModule);
+        }
+        $this->assertStringNotContainsString('{"group"', $sApp);
+    }
 }

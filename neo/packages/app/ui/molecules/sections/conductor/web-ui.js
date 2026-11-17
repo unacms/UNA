@@ -3,6 +3,7 @@ import { Text, headingProps } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import { Icon } from 'app/ui/atoms/icon'
 import { SidebarTitle } from 'app/ui/molecules/sidebar-title'
+import { getMenuItemGroup, groupMenuEntries, hasMenuGroups } from 'app/lib/menu-groups'
 import {
     appSetting,
     decodeTextNode,
@@ -877,7 +878,7 @@ export function SidebarNav({ routes, index, onSelect }) {
  * a real anchor and is *not* intercepted, so the page actually navigates.
  * Everything else switches the tab in place and only pushes the URL.
  */
-function NavigatorMenuLink({ item, index, setIndex }) {
+function NavigatorMenuLink({ item, index, setIndex, danger = false }) {
     const MenuItemSidebar = registeredComponent('menu-item', 'sidebar')
     const isActive = item.index === index
     const isStar = item?.icon == '*'
@@ -888,6 +889,7 @@ function NavigatorMenuLink({ item, index, setIndex }) {
             title={item.title}
             icon={item.icon || ''}
             isActive={isActive}
+            danger={danger}
         />
     )
 
@@ -919,6 +921,57 @@ function NavigatorMenuLink({ item, index, setIndex }) {
         >
             {btn}
         </NeoButtonLink>
+    )
+}
+
+/** The flat sidebar links: in sections where the menu's items have groups, else one list. */
+function SidebarNavLinks({ routes, index, setIndex }) {
+    const shown = routes.filter((aItem) => aItem.hideInTop != true)
+    if (hasMenuGroups(shown.map((route) => route.item))) {
+        return <SidebarNavSections routes={shown} index={index} setIndex={setIndex} />
+    }
+    return shown.map((item) => (
+        <NavigatorMenuLink
+            key={`lmenu-${item.index}`}
+            item={item}
+            index={index}
+            setIndex={setIndex}
+        />
+    ))
+}
+
+/**
+ * The flat sidebar links of a menu whose items have groups (Settings), in the sections the phone list shows
+ * (`lib/menu-groups.ts`, `settings-menu.tsx`): the account's under "Account", the current profile's under its name,
+ * then the rest, and the dangerous ones last in the destructive colour.
+ */
+function SidebarNavSections({ routes, index, setIndex }) {
+    const { t } = useTranslation()
+    const { currentUser } = useCurrentUser()
+    const headings = { account: t('Account'), profile: currentUser?.display_name || '' }
+    const sections = groupMenuEntries(routes, (route) => getMenuItemGroup(route.item))
+
+    return (
+        <View className="w-full gap-3">
+            {sections.map(({ group, entries }) => (
+                <View key={group} className="w-full gap-0.5">
+                    {headings[group] ? (
+                        <Text className="px-2 pt-1 pb-0.5 text-sm font-semibold text-muted-foreground" numberOfLines={1}>
+                            {headings[group]}
+                        </Text>
+                    ) : null}
+                    {entries.map((item) => (
+                        <NavigatorMenuLink
+                            key={`lmenu-${item.index}`}
+                            item={item}
+                            index={index}
+                            setIndex={setIndex}
+                            danger={group === 'danger'}
+                        />
+                    ))}
+                </View>
+            ))}
+        </View>
     )
 }
 
@@ -987,16 +1040,9 @@ export const LeftColumnContainer = ({
                                         index={index}
                                         onSelect={onSelectSidebar}
                                     />
-                                ) : routes
-                                    .filter((aItem) => aItem.hideInTop != true)
-                                    .map((item) => (
-                                        <NavigatorMenuLink
-                                            key={`lmenu-${item.index}`}
-                                            item={item}
-                                            index={index}
-                                            setIndex={setIndex}
-                                        />
-                                    ))}
+                                ) : (
+                                    <SidebarNavLinks routes={routes} index={index} setIndex={setIndex} />
+                                )}
                             </View>
                         )}
 

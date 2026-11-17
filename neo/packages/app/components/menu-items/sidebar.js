@@ -9,18 +9,18 @@ function isImageSource(value) {
     return typeof value === 'string' && /^(https?:|file:|content:|data:)/i.test(value)
 }
 
-export default function MenuItemSidebar({ title, icon, isActive, addon, iconEnd }) {
+/** `danger`: an item that does something that can't be undone (deleting the account), in the destructive colour. */
+export default function MenuItemSidebar({ title, icon, isActive, addon, iconEnd, danger = false }) {
     const CounterIndicator = components['molecule']['counter_indicator']
-    const iconClassName = isActive
-        ? 'text-primary-foreground'
-        : 'text-secondary-foreground web:group-hover:text-foreground'
+    const restClassName = danger ? 'text-destructive' : 'text-secondary-foreground web:group-hover:text-foreground'
+    const iconClassName = isActive ? 'text-primary-foreground' : restClassName
     return (
         <Row className="w-full items-center min-h-8">
 
             {/* An item without an icon (UNA's module submenus ship none) gets no chip, not a placeholder. */}
             {!!icon && <View className={`h-8 w-8 items-center justify-center flex rounded-full ${isActive
                     ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted/50 text-secondary-foreground web:group-hover:bg-muted web:group-hover:text-foreground web:duration-100'
+                    : `bg-muted/50 web:group-hover:bg-muted web:duration-100 ${restClassName}`
                 }`}>
                 {isImageSource(icon) ? (
                     <Image src={icon} className="h-8 w-8 rounded-full" view="cover" sizes="auto" />
@@ -31,7 +31,7 @@ export default function MenuItemSidebar({ title, icon, isActive, addon, iconEnd 
                 )}
             </View>}
 
-            <Text numberOfLines={2} className={`flex-1 px-2 text-sm leading-4 font-semibold line-clamp-2 ${isActive ? 'text-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>{title}</Text>
+            <Text numberOfLines={2} className={`flex-1 px-2 text-sm leading-4 font-semibold line-clamp-2 ${isActive && !danger ? 'text-foreground' : restClassName}`}>{title}</Text>
             {!!iconEnd && <View className={`ml-auto h-8 w-8 items-center justify-center flex rounded-full ${isActive
                     ? ' text-primary-foreground'
                     : 'text-secondary-foreground '

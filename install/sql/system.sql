@@ -5122,6 +5122,7 @@ CREATE TABLE IF NOT EXISTS `sys_menu_items` (
   `hidden_on_pt` int(11) NOT NULL DEFAULT '0',
   `hidden_on_col` int(11) NOT NULL DEFAULT '0',
   `config_api` text NOT NULL,
+  `group_name` varchar(32) NOT NULL DEFAULT '',
   `primary` tinyint(4) NOT NULL DEFAULT '0',
   `collapsed` tinyint(4) NOT NULL DEFAULT '0',
   `persistent` tinyint(4) NOT NULL DEFAULT '0',

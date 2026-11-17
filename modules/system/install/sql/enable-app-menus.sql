@@ -10,10 +10,11 @@ UPDATE `sys_objects_menu` SET `config_api`='{"icon":"compass"}' WHERE `object`='
 UPDATE `sys_objects_menu` SET `config_api`='{"view":"grid"}' WHERE `object`='sys_homepage';
 UPDATE `sys_objects_menu` SET `config_api`='{}' WHERE `object`='sys_ntfs_submenu';
 -- Settings: `hub` is the section's own page, where the apps show the menu as a list on phones and tablets (the menu's
--- `section_nav_small`); `group` puts an item under Account or the current profile
+-- `section_nav_small`); an item's group (Studio > Navigation > an item > "Group in the apps") puts it under Account or
+-- the current profile
 UPDATE `sys_objects_menu` SET `config_api`='{"hub":"settings"}' WHERE `object`='sys_account_settings_submenu';
-UPDATE `sys_menu_items` SET `config_api`='{"group":"account"}' WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name` IN ('account-profile-switcher', 'account-settings-info', 'account-settings-email', 'account-settings-password');
-UPDATE `sys_menu_items` SET `config_api`=IF(`name`='account-settings-delete', '{"group":"danger"}', '{"group":"profile"}') WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name` IN ('profile-settings-cfilter', 'account-settings-delete');
+UPDATE `sys_menu_items` SET `group_name`='account' WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name` IN ('account-profile-switcher', 'account-settings-info', 'account-settings-email', 'account-settings-password');
+UPDATE `sys_menu_items` SET `group_name`=IF(`name`='account-settings-delete', 'danger', 'profile') WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name` IN ('profile-settings-cfilter', 'account-settings-delete');
 UPDATE `sys_menu_items` SET `config_api`='{"badge":"friends"}' WHERE `set_name`='sys_tabbar' AND `module`='system' AND `name`='friends';
 -- Site menu: Log in and Sign up show as buttons above the other items, in the apps and in UNA's phone sidebar (`primary` picks the prominent one)
 UPDATE `sys_menu_items` SET `config_api`='{"button":true}' WHERE `set_name`='sys_site' AND `module`='system' AND `name` IN ('login', 'create-account');
