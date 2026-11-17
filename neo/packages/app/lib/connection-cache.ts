@@ -2,12 +2,8 @@ import type { Query } from '@tanstack/react-query';
 import { fetcher } from 'app/lib/fetcher';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { getQueryClient } from 'app/lib/platform/query-client';
-import {
-    listHasCard,
-    patchFromCardState,
-    patchListPages,
-    type ConnectionPatch,
-} from 'app/lib/connection-patch';
+import { createPatchKeeper } from 'app/lib/patch-keeper';
+import { listHasCard, patchFromCardState, patchListPages, type ConnectionPatch } from 'app/lib/connection-patch';
 
 /**
  * Profile cards in the query cache follow a connection change without their lists being requested again
@@ -29,10 +25,14 @@ const refreshTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
 const isListQuery = (query: Query) => Array.isArray((query.state.data as { pages?: unknown } | undefined)?.pages);
 
+let keeper: ReturnType<typeof createPatchKeeper<ConnectionPatch>> | null = null;
+
 export function applyConnectionPatch(patch: ConnectionPatch | null | undefined, { own = false } = {}): void {
     if (!patch || patch.profileId == null) return;
     if (own) ownActions.set(String(patch.profileId), Date.now());
-    getQueryClient().setQueriesData({ predicate: isListQuery }, (cached: unknown) => patchListPages(cached, patch));
+    // Written into every cached list, and again over a list answer that left UNA before the change (patch-keeper.ts).
+    keeper ??= createPatchKeeper(getQueryClient(), patchListPages);
+    keeper.apply(patch);
     // A page that shows this profile outside a list (its own page: the cover's counts and actions) refreshes that
     // part itself (components/page-layout/profile.js). `Layouts` reloads a page only on 'changed'.
     emitter.emit(EVENTS.connections, { action: CONNECTION_PATCHED, profileId: patch.profileId });
