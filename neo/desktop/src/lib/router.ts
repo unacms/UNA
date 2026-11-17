@@ -159,14 +159,14 @@ type AnyField = { [S in Section]: keyof SectionFields[S] }[Section];
  * as absent rather than left out, so any list route can be asked for any field (a route of
  * Home has no `group`) while none can be made with a field its section does not have.
  */
-export type SectionRoute<S extends Section = Section> = S extends Section ? { section: S } & SectionFields[S] & { [K in Exclude<AnyField, keyof SectionFields[S]>]?: undefined } : never;
+export type SectionRoute<S extends Section> = S extends Section ? { section: S } & SectionFields[S] & { [K in Exclude<AnyField, keyof SectionFields[S]>]?: undefined } : never;
 
 /**
  * A list: a section and what its route says (SectionFields). Some sections are pages that fill
  * the content pane: Groups, Spaces or Events with a `group` is that context's page, and Profile
  * is a profile's page.
  */
-export type ListRoute = SectionRoute;
+export type ListRoute = SectionRoute<Section>;
 
 /** A path on the site GET /layout/resolve takes: one path, from its root, without a host. */
 export function isSitePath(path: string): boolean {
