@@ -1604,9 +1604,12 @@
 	<string name="_adm_nav_txt_menus_button_size"><![CDATA[Button size]]></string>
 	<string name="_adm_nav_txt_menus_button_size_large"><![CDATA[Large]]></string>
 	<string name="_adm_nav_txt_menus_section_nav"><![CDATA[Section navigation in the apps]]></string>
-	<string name="_adm_nav_dsc_menus_section_nav"><![CDATA[When this menu is a section's menu (the tabs of its pages), how the apps show it on large screens: Tabs above the content, as the site shows them, or Sidebar, a column beside the content, for a section with many pages. Phones and tablets always show tabs.]]></string>
+	<string name="_adm_nav_dsc_menus_section_nav"><![CDATA[When this menu is a section's menu (the tabs of its pages), how the apps show it on large screens: Tabs above the content, as the site shows them, or Sidebar, a column beside the content, for a section with many pages. Phones and tablets have their own setting, below.]]></string>
+	<string name="_adm_nav_dsc_menus_section_nav_small"><![CDATA[When this menu is a section's menu, how the apps show it on phones and tablets: Tabs above the content, or List, where the section opens on a list of its pages and each page opens from it with Back (the account's Settings). List needs the section's own page, which the menu names in its App config (hub); a menu without one keeps tabs.]]></string>
 	<string name="_adm_nav_txt_menus_section_nav_tabs"><![CDATA[Tabs]]></string>
 	<string name="_adm_nav_txt_menus_section_nav_sidebar"><![CDATA[Sidebar]]></string>
+	<string name="_adm_nav_txt_menus_section_nav_small"><![CDATA[Section navigation in the apps on phones and tablets]]></string>
+	<string name="_adm_nav_txt_menus_section_nav_small_list"><![CDATA[List]]></string>
 	<string name="_adm_nav_txt_menus_button_size_mini"><![CDATA[Mini]]></string>
 	<string name="_adm_nav_txt_menus_button_size_regular"><![CDATA[Regular]]></string>
 	<string name="_adm_nav_txt_menus_button_size_small"><![CDATA[Small]]></string>
@@ -3748,7 +3751,6 @@
     <string name="_sys_menu_item_title_account_settings_delete"><![CDATA[Delete]]></string>
     <string name="_sys_menu_item_title_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_account_settings_info"><![CDATA[Account]]></string>
-    <string name="_sys_menu_item_title_account_settings_overview"><![CDATA[Overview]]></string>
     <string name="_sys_menu_item_title_account_settings_pwd"><![CDATA[Password]]></string>
     <string name="_sys_menu_item_title_profile_settings_cfilter"><![CDATA[Content Filter]]></string>
     <string name="_sys_menu_item_title_public_menu"><![CDATA[Browse]]></string>
@@ -3859,7 +3861,6 @@
     <string name="_sys_menu_item_title_system_account_settings_delete"><![CDATA[Delete]]></string>
     <string name="_sys_menu_item_title_system_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_system_account_settings_info"><![CDATA[Account]]></string>
-    <string name="_sys_menu_item_title_system_account_settings_overview"><![CDATA[Overview]]></string>
     <string name="_sys_menu_item_title_system_account_settings_pwd"><![CDATA[Password]]></string>
     <string name="_sys_menu_item_title_system_profile_settings_cfilter"><![CDATA[Content Filter]]></string>
     <string name="_sys_menu_item_title_system_add_content"><![CDATA[Add Content]]></string>
@@ -4216,7 +4217,6 @@
     <string name="_sys_page_block_title_forgot_password"><![CDATA[Forgot password]]></string>
     <string name="_sys_page_block_title_search_keyword_form"><![CDATA[Search Form]]></string>
     <string name="_sys_page_block_title_search_keyword_result"><![CDATA[Search Result]]></string>
-    <string name="_sys_page_block_title_settings"><![CDATA[Settings]]></string>
     <string name="_sys_page_block_title_sys_search_ai"><![CDATA[AI Search]]></string>
     <string name="_sys_page_block_title_search_ai"><![CDATA[Search]]></string>
     <string name="_sys_page_block_title_membership_stats"><![CDATA[Membership Limits]]></string>

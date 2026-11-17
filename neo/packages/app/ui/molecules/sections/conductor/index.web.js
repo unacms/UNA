@@ -7,12 +7,14 @@ import {
     getPageContentWidth,
     getMenuHub,
     getMenuSectionNav,
+    isMenuSectionList,
 } from 'app/lib/util'
 import {
     fillTabs,
     ensureRouteInited,
     findConductorRouteIndex,
     firstShownConductorRoute,
+    isConductorRouteLeft,
     hideRoutesOnTier,
     conductorHref,
     getConductorLayoutCols,
@@ -212,13 +214,18 @@ export function Conductor({
     const routes = useMemo(() => hideRoutesOnTier(storedRoutes, tier), [storedRoutes, tier])
     const router = useRouter()
 
-    // A tab hidden at this screen size (Settings' Overview on desktop) opens the first tab shown, as
-    // its own page (the URL replaced), so the page header, title and Back follow it.
+    // A section that opens on its own menu below desktop (Settings, `isMenuSectionList`): the list is the
+    // section's own page there, and the tab row is gone.
+    const showsSectionList = !isDesktop && isMenuSectionList(menu)
+
+    // A tab hidden at this screen size, and the section's own page where it is not the list (desktop: Settings
+    // opens Account), open the first tab shown, as its own page (the URL replaced), so the page header, title
+    // and Back follow it.
     useEffect(() => {
-        if (!hydrated || !routes.find((route) => route.index === index)?.hiddenOnTier) return
+        if (!hydrated || !isConductorRouteLeft(routes.find((route) => route.index === index), showsSectionList)) return
         const href = conductorHref(firstShownConductorRoute(routes)?.link)
         if (href) router.replace(href)
-    }, [hydrated, routes, index, router])
+    }, [hydrated, routes, index, router, showsSectionList])
 
     // ==================================================================
     // 2. Layout config (columns, widths, page header)
@@ -368,10 +375,19 @@ export function Conductor({
      * Deps list `data.*` fields rather than `data` itself: the page object is a
      * new reference on every poll, and rebuilding this would remount the cover.
      */
-    // A section listed by its own page (Settings, `isMenuHub`) has no tab row below desktop: that page
-    // lists the tabs, and each one opens from it with Back.
+    // A section that opens on its own menu (Settings) has no tab row below desktop: its own page lists the
+    // tabs, and each one opens from it with Back.
     const menuHub = getMenuHub(menu)
-    const hideTabs = !isDesktop && menuHub !== ''
+    const hideTabs = showsSectionList
+    // The section's own page while it is being left for the first tab (desktop, or a menu on tabs) draws nothing:
+    // the list would flash before the tab's page. The server can't know the screen, so until hydration the class
+    // decides at the desktop breakpoint.
+    const sectionRootHidden = useMemo(() => {
+        if (!activeRoute?.sectionRoot) return ''
+        if (!isMenuSectionList(menu)) return ' invisible'
+        if (!hydrated) return ' lg:invisible'
+        return showsSectionList ? '' : ' invisible'
+    }, [activeRoute?.sectionRoot, menu, hydrated, showsSectionList])
     // Back to the list: the previous page when there is one, else the list itself (a visit that
     // opened the list in a new tab has no earlier page for the header's own Back).
     const backToHub = useCallback(() => {
@@ -474,7 +490,7 @@ export function Conductor({
             <View
                 // Grows to the wrapper's viewport min-height (flex-auto), so the columns and the
                 // column line reach the page bottom on a short or empty tab, as on wiki pages.
-                className={`ns--conductor-tab-content-- ${contentWidth} mx-auto ${tmplLayout == 'mixed' ? 'mt-12' : ''}${isTasksHome ? ' min-h-0 flex-1 h-full overflow-hidden' : ' flex-auto'}`}
+                className={`ns--conductor-tab-content-- ${contentWidth} mx-auto ${tmplLayout == 'mixed' ? 'mt-12' : ''}${isTasksHome ? ' min-h-0 flex-1 h-full overflow-hidden' : ' flex-auto'}${sectionRootHidden}`}
             >
                 <TabSceneHeader
                     route={activeRoute}

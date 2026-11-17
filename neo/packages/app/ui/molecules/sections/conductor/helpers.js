@@ -13,7 +13,9 @@ import {
     deepEqual,
     LAYOUT_BREAKPOINTS,
     findElementBySource,
+    getMenuHub,
 } from 'app/lib/util'
+import { isSectionRootPage, withSectionListBlock } from 'app/lib/section-list'
 import { fetcher } from 'app/lib/fetcher'
 import { getSkeletonByEndPoint } from 'app/customization/functions'
 import { components } from 'app/components/registry'
@@ -93,6 +95,14 @@ export function hideRoutesOnTier(routes, tier) {
 /** The first tab the menu shows (not hidden here, with a page of its own), or `undefined`. */
 export function firstShownConductorRoute(routes) {
     return (routes || []).find((route) => route.depth === 0 && route.canNavigate && !route.hideInTop)
+}
+
+/**
+ * Whether the open route is one the conductor leaves for the first tab shown: a tab hidden at this screen size, or
+ * the section's own page (`sectionRoot`) where it is not the section's list (large screens, or a menu on tabs).
+ */
+export function isConductorRouteLeft(route, showsSectionList) {
+    return !!route?.hiddenOnTier || (!!route?.sectionRoot && !showsSectionList)
 }
 
 /** Match URL to a tab index; supports nested paths. Returns -1 if none. */
@@ -464,8 +474,24 @@ export function fillTabs(
         const pagePath = normalizeConductorLink(data.url).split('?')[0]
         currentIndex = routes.findIndex((route) => !!route.link && !route.link.includes('?') && route.link === pagePath)
     }
-    if (currentIndex !== -1) {
-        applyCurrentPageToRoute(routes[currentIndex], data, blocks)
+    // The section's own page (the menu's `hub`: Settings) is none of UNA's items for the menu: its route is the
+    // stand-in the navigator layout adds for a page its menu lacks, or one made here. It has no tab, is marked
+    // `sectionRoot`, and its one block is the menu itself: the section's list on phones and tablets
+    // (`isMenuSectionList`). Anywhere else the conductor opens the first tab instead (`isConductorRouteLeft`).
+    const hub = getMenuHub(menu)
+    const isRootPage = isSectionRootPage(data, hub)
+    if (isRootPage && currentIndex === -1) {
+        const item = { id: -1, name: hub, title: data?.name || menu?.title || '', link: hub, hideInTop: true }
+        currentIndex = routes.push(createConductorRoute(item, routes.length, 0, null, hub, true, false)) - 1
+    }
+    const currentRoute = routes[currentIndex]
+    if (currentRoute && isRootPage && !(Number(currentRoute.item?.id) > 0)) {
+        currentRoute.sectionRoot = true
+        currentRoute.hideInTop = true
+        const listMenu = { ...menu, items: (menu.items || []).filter((item) => item !== currentRoute.item && item?.id !== -1) }
+        applyCurrentPageToRoute(currentRoute, withSectionListBlock(data, listMenu), blocks)
+    } else if (currentRoute) {
+        applyCurrentPageToRoute(currentRoute, data, blocks)
     }
 
     return routes

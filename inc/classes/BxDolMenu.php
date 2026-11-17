@@ -107,10 +107,22 @@ class BxDolMenu extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
      * a menu), when the menu is the submenu of a section's pages (the menu's API carries it as `section_nav`):
      * - tabs (empty): a row of tabs above the content, as the site shows it;
      * - sidebar: a column beside the content, for a section with many pages (the connections' Friends, Requests...).
-     * Phones and tablets always show tabs.
+     * Phones and tablets have their own choice, SECTION_NAV_SMALL_*.
      */
     const SECTION_NAV_TABS = '';
     const SECTION_NAV_SIDEBAR = 'sidebar';
+
+    /**
+     * How the apps show a section's menu on phones and tablets (`sys_objects_menu`.`section_nav_small`, Studio >
+     * Navigation > a menu; the menu's API carries it as `section_nav_small`):
+     * - tabs (empty): a row of tabs above the content, as the site shows it;
+     * - list: the section opens on the menu itself, a list of its pages, and each page opens from it with Back (the
+     *   account's Settings). The list is at the section's own page, which the menu names in its API config (`hub`, the
+     *   page's uri: `settings`); a menu that names none keeps tabs. On large screens, and on the site, that page opens
+     *   the menu's first item.
+     */
+    const SECTION_NAV_SMALL_TABS = '';
+    const SECTION_NAV_SMALL_LIST = 'list';
 
     /**
      * Class names by value, written out in full: a class built from parts is one no stylesheet search finds.
@@ -177,6 +189,24 @@ class BxDolMenu extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     {
         $s = isset($this->_aObject['section_nav']) ? (string)$this->_aObject['section_nav'] : '';
         return in_array($s, self::getSectionNavs(), true) ? $s : self::SECTION_NAV_TABS;
+    }
+
+    /**
+     * Section navigations a menu can be given for phones and tablets, tabs (empty) first.
+     */
+    public static function getSectionNavsSmall()
+    {
+        return [self::SECTION_NAV_SMALL_TABS, self::SECTION_NAV_SMALL_LIST];
+    }
+
+    /**
+     * How the apps show this menu as a section's navigation on phones and tablets: one of the SECTION_NAV_SMALL_*
+     * values, tabs for anything else stored.
+     */
+    public function getSectionNavSmall()
+    {
+        $s = isset($this->_aObject['section_nav_small']) ? (string)$this->_aObject['section_nav_small'] : '';
+        return in_array($s, self::getSectionNavsSmall(), true) ? $s : self::SECTION_NAV_SMALL_TABS;
     }
 
     /**

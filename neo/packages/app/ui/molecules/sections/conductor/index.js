@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { View } from 'app/design/view'
-import { deepEqual, isMenuHub } from 'app/lib/util'
+import { deepEqual, isMenuSectionList } from 'app/lib/util'
 import {
     fillTabs,
     mergeConductorRoutes,
     ensureRouteInited,
     findConductorRouteIndex,
     firstShownConductorRoute,
+    isConductorRouteLeft,
     hideRoutesOnTier,
     conductorHref,
     conductorListQueryKey,
@@ -270,15 +271,20 @@ export function Conductor({
     const routes = useMemo(() => hideRoutesOnTier(storedRoutes, tier), [storedRoutes, tier])
     const router = useRouter()
 
-    // A tab hidden at this screen size (Settings' Overview on a wide tablet) opens the first tab shown,
-    // as the page of this same screen (`redirectTo` swaps its params: no deep link, no other tab), and
-    // only while the screen is focused, so a tab in the background never takes over.
+    // A section that opens on its own menu below desktop (Settings, `isMenuSectionList`): the list is the
+    // section's own page there, and the tab row is gone.
+    const showsSectionList = !isDesktop && isMenuSectionList(menu)
+
+    // A tab hidden at this screen size, and the section's own page where it is not the list (a wide tablet:
+    // Settings opens Account), open the first tab shown, as the page of this same screen (`redirectTo` swaps
+    // its params: no deep link, no other tab), and only while the screen is focused, so a tab in the
+    // background never takes over.
     const pathname = usePathname()
     useEffect(() => {
-        if (!hydrated || !isFocused || !routes.find((route) => route.index === index)?.hiddenOnTier) return
+        if (!hydrated || !isFocused || !isConductorRouteLeft(routes.find((route) => route.index === index), showsSectionList)) return
         const href = conductorHref(firstShownConductorRoute(routes)?.link)
         if (href) redirectTo(router, href, getTabKeyFromPathname(pathname))
-    }, [hydrated, isFocused, routes, index, router, pathname])
+    }, [hydrated, isFocused, routes, index, router, pathname, showsSectionList])
 
     /** Tab press: pin the cover first, then switch. */
     const onSelectTab = useCallback((tab) => {
@@ -431,9 +437,9 @@ export function Conductor({
         [showFiltersBtn, showFilters]
     )
 
-    // A section listed by its own page (Settings, `isMenuHub`) has no tab row below desktop: that page
-    // lists the tabs, and each one opens from it with Back.
-    const hideTabs = !isDesktop && isMenuHub(menu)
+    // A section that opens on its own menu (Settings) has no tab row below desktop: its own page lists the
+    // tabs, and each one opens from it with Back.
+    const hideTabs = showsSectionList
 
     /** The tab strip itself; the cover embeds it and collapses around it. */
     const sceneHeader = useMemo(

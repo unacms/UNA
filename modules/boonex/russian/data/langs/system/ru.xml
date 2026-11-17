@@ -1582,9 +1582,12 @@
 	<string name="_adm_nav_txt_menus_button_size"><![CDATA[Размер кнопок]]></string>
 	<string name="_adm_nav_txt_menus_button_size_large"><![CDATA[Большие]]></string>
 	<string name="_adm_nav_txt_menus_section_nav"><![CDATA[Навигация раздела в приложениях]]></string>
-	<string name="_adm_nav_dsc_menus_section_nav"><![CDATA[Если это меню раздела (вкладки его страниц), как приложения показывают его на больших экранах: «Вкладки» над содержимым, как на сайте, или «Боковая панель», колонка рядом с содержимым, для раздела с большим числом страниц. На телефонах и планшетах всегда показываются вкладки.]]></string>
+	<string name="_adm_nav_dsc_menus_section_nav"><![CDATA[Если это меню раздела (вкладки его страниц), как приложения показывают его на больших экранах: «Вкладки» над содержимым, как на сайте, или «Боковая панель», колонка рядом с содержимым, для раздела с большим числом страниц. Для телефонов и планшетов есть своя настройка ниже.]]></string>
+	<string name="_adm_nav_dsc_menus_section_nav_small"><![CDATA[Если это меню раздела, как приложения показывают его на телефонах и планшетах: «Вкладки» над содержимым или «Список», когда раздел открывается списком своих страниц, а каждая страница открывается из него с кнопкой «Назад» (настройки аккаунта). Для списка нужна собственная страница раздела, которую меню называет в настройках для приложений (hub); меню без неё показывает вкладки.]]></string>
 	<string name="_adm_nav_txt_menus_section_nav_tabs"><![CDATA[Вкладки]]></string>
 	<string name="_adm_nav_txt_menus_section_nav_sidebar"><![CDATA[Боковая панель]]></string>
+	<string name="_adm_nav_txt_menus_section_nav_small"><![CDATA[Навигация раздела в приложениях на телефонах и планшетах]]></string>
+	<string name="_adm_nav_txt_menus_section_nav_small_list"><![CDATA[Список]]></string>
 	<string name="_adm_nav_txt_menus_button_size_mini"><![CDATA[Мини]]></string>
 	<string name="_adm_nav_txt_menus_button_size_regular"><![CDATA[Обычные]]></string>
 	<string name="_adm_nav_txt_menus_button_size_small"><![CDATA[Маленькие]]></string>
@@ -3718,7 +3721,6 @@
     <string name="_sys_menu_item_title_account_settings_delete"><![CDATA[Удалить]]></string>
     <string name="_sys_menu_item_title_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_account_settings_info"><![CDATA[Аккаунт]]></string>
-    <string name="_sys_menu_item_title_account_settings_overview"><![CDATA[Обзор]]></string>
     <string name="_sys_menu_item_title_account_settings_pwd"><![CDATA[Пароль]]></string>
     <string name="_sys_menu_item_title_profile_settings_cfilter"><![CDATA[Фильтр контента]]></string>
     <string name="_sys_menu_item_title_public_menu"><![CDATA[Обзор]]></string>
@@ -3823,7 +3825,6 @@
     <string name="_sys_menu_item_title_system_account_settings_delete"><![CDATA[Удалить]]></string>
     <string name="_sys_menu_item_title_system_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_system_account_settings_info"><![CDATA[Аккаунт]]></string>
-    <string name="_sys_menu_item_title_system_account_settings_overview"><![CDATA[Обзор]]></string>
     <string name="_sys_menu_item_title_system_account_settings_pwd"><![CDATA[Пароль]]></string>
     <string name="_sys_menu_item_title_system_profile_settings_cfilter"><![CDATA[Фильтр контента]]></string>
     <string name="_sys_menu_item_title_system_add_content"><![CDATA[Добавить Содержимое]]></string>
@@ -4173,7 +4174,6 @@
 	<string name="_sys_page_block_title_forgot_password"><![CDATA[Забыли пароль]]></string>
         <string name="_sys_page_block_title_search_keyword_form"><![CDATA[Форма поиска]]></string>
         <string name="_sys_page_block_title_search_keyword_result"><![CDATA[Результаты поиска]]></string>
-        <string name="_sys_page_block_title_settings"><![CDATA[Настройки]]></string>
         <string name="_sys_page_block_title_sys_search_ai"><![CDATA[AI поиск]]></string>
         <string name="_sys_page_block_title_search_ai"><![CDATA[Поиск]]></string>
         <string name="_sys_page_block_title_membership_stats"><![CDATA[Лимиты членства]]></string>

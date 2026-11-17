@@ -5,7 +5,7 @@ import { ScopedTheme } from 'uniwind';
 import { nativeDriver } from 'app/lib/platform/animation';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { FeedbackHaptics, appSetting, getBreakpoint, getMenuItemTitleForUri, getMenuSettings, isOwnHeadingPage } from 'app/lib/util';
+import { FeedbackHaptics, appSetting, getBreakpoint, getMenuItemTitleForUri, getMenuSettings, isMenuSectionList, isOwnHeadingPage } from 'app/lib/util';
 import { playCue } from 'app/lib/sound';
 import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
@@ -316,9 +316,9 @@ export function usePageHeaderBase(pageData) {
         // every People tab, as UNA's cover); other pages take the title UNA's cover shows (`cover_title`), else
         // their name (older UNA).
         let nextTitle = menuSettings.name || pageData?.cover_title || pageData?.name;
-        // A section listed by its own page (Settings): below desktop that list replaces the tab row,
-        // so each page is named by its item ("Email"); the list page (Overview) keeps the section name.
-        if (menuSettings.hub && !isDesktop && pageData?.uri !== menuSettings.hub) {
+        // A section that opens on its own menu (Settings): below desktop that list replaces the tab row,
+        // so each page is named by its item ("Email"); the section's own page, the list, keeps the section name.
+        if (!isDesktop && isMenuSectionList(pageData?.menu) && pageData?.uri !== menuSettings.hub) {
             nextTitle = getMenuItemTitleForUri(pageData?.menu, pageData?.uri) || nextTitle;
         }
         if (header.title) {

@@ -200,6 +200,8 @@ class BxBaseMenu extends BxDolMenu
             'button_size' => $this->getButtonSize(),
             // How the apps show the menu as a section's navigation on large screens: BxDolMenu::SECTION_NAV_*, empty for tabs.
             'section_nav' => $this->getSectionNav(),
+            // And on phones and tablets: BxDolMenu::SECTION_NAV_SMALL_*, empty for tabs.
+            'section_nav_small' => $this->getSectionNavSmall(),
             'params' => $this->getContentParams(),
             'items' => $aItems
         ];

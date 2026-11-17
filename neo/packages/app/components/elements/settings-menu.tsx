@@ -83,7 +83,7 @@ export default function SettingsMenu({ items, hub = '' }: Readonly<{ items: Sett
     const { currentUser } = useCurrentUser()
     const tier = useScreenTier()
 
-    // Not the list's own page (the menu's `hub`, its Overview item), nor what UNA hides at this size.
+    // Not the list's own page (the menu's `hub`, an item of the menu in an older UNA), nor what UNA hides at this size.
     const skip = (item: SettingsMenuItem) =>
         (!!hub && itemHref(item).replace(/^\/+/, '') === hub)
         || (Array.isArray(item.hidden_on) && item.hidden_on.includes(tier))
