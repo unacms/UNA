@@ -517,8 +517,10 @@ export const PageHeaderBody = memo(({
     let leftElement = titleElement;
     if (hasTabBar && isFullContextSelector) {
         leftElement = <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />;
-    } else if (isShowLogo && titleElement) {
-        // The title truncates in the room the header's actions leave.
+    } else if ((isShowLogo || !canShowBackButton) && titleElement) {
+        // The logo leads the page title, as it leads the header on large screens: for members on phones and tablets
+        // too (a section's name: Posts, People), unless Back takes its place. The title truncates in the room the
+        // header's actions leave.
         leftElement = (
             <Row className="min-w-0 shrink items-center gap-3">
                 {Logo}
