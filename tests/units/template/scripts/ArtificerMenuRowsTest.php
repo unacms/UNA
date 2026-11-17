@@ -40,7 +40,7 @@ class ArtificerMenuRowsTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString('rounded-md', self::read('modules/boonex/artificer/data/template/system/profile_stats.html'), 'The profile row has 8px corners like the menu rows.');
 
         $sCss = self::read('template/css/tailwind.css');
-        $this->assertMatchesRegularExpression('/\.bx-artificer \.bx-sidebar-item > a,[^{]*\{[^}]*min-height: 2\.75rem;[^}]*border-radius: 0\.5rem;/', $sCss, 'Main menu sidebar rows are 44px with 8px corners.');
+        $this->assertMatchesRegularExpression('/#bx-sidebar-site \.bx-sidebar-item > a,[^{]*\{\s*@apply flex items-center min-h-11 [^;]*rounded-xl/', $sCss, 'Main menu dropdown rows are 44px with 12px corners, as the More list.');
         $this->assertMatchesRegularExpression('/\.bx-profile-stats \.bx-profile-avatar-cnt,[^{]*\{\s*margin: -0\.5rem;/', self::read('modules/boonex/artificer/data/template/system/css/menu.css'), 'The stats card\'s rows, the profile one included, sit 8px from its edges (16px block padding less 8px).');
     }
 
@@ -89,7 +89,7 @@ class ArtificerMenuRowsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertMatchesRegularExpression('/@property --bx-scroll-fade-top \{[^}]*initial-value: 0px;/', $sCss, 'At rest there is no fade.');
         $this->assertMatchesRegularExpression('/@keyframes bx-scroll-fade-bottom \{\s*from \{ --bx-scroll-fade-bottom: 1\.5rem; \}\s*to \{ --bx-scroll-fade-bottom: 0px; \}/', $sCss, 'The bottom fade goes away as the list reaches its end.');
-        $this->assertMatchesRegularExpression('/@supports \(animation-timeline: scroll\(\)\) \{\s*\.bx-artificer \.bx-popup-menu \.bx-popup-content \{\s*mask-image: linear-gradient\([^;]*var\(--bx-scroll-fade-top\)[^;]*var\(--bx-scroll-fade-bottom\)[^;]*;\s*animation: bx-scroll-fade-top linear both, bx-scroll-fade-bottom linear both;\s*animation-timeline: scroll\(self\), scroll\(self\);/', $sCss, 'Menu popups fade rows into their edges while scrolling, the timeline after the animation shorthand that resets it.');
+        $this->assertMatchesRegularExpression('/@supports \(animation-timeline: scroll\(\)\) \{\s*\.bx-artificer \.bx-popup-menu \.bx-popup-content,\s*#bx-sidebar-site \.bx-sidebar-site-list \{\s*mask-image: linear-gradient\([^;]*var\(--bx-scroll-fade-top\)[^;]*var\(--bx-scroll-fade-bottom\)[^;]*;\s*animation: bx-scroll-fade-top linear both, bx-scroll-fade-bottom linear both;\s*animation-timeline: scroll\(self\), scroll\(self\);/', $sCss, 'Menu popups and the phone main menu fade rows into their edges while scrolling, the timeline after the animation shorthand that resets it.');
     }
 
     public function testPopupMenuItemsLookLikeNeos(): void
@@ -147,5 +147,33 @@ class ArtificerMenuRowsTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('#bx-toolbar .bx-menu-submenu-more-auto.bx-menu-highlight-list > li:has(> .bx-stl-mil:active) {', $sGeneral);
         $this->assertStringContainsString("item_plain_row: 'neo-menu-plain web:active:scale-95 web:duration-100'", $sTheme);
         $this->assertStringContainsString("off: 'text-secondary-foreground web:group-hover:text-foreground'", $sTab);
+    }
+
+    public function testPhoneMainMenuIsADropdownLikeNeos(): void
+    {
+        $sHtml = self::read('modules/boonex/artificer/data/template/system/sidebar_site.html');
+        $sCss = self::read('template/css/tailwind.css');
+        $sMotion = self::read('modules/boonex/artificer/data/template/system/css/menu-sidebar.css');
+
+        //--- The same dialog and menu object, as a dropdown: no logo, no close button, no dimmed page.
+        $this->assertStringContainsString('<bx_menu:bx_artificer_sidebar_site />', $sHtml);
+        $this->assertStringContainsString('role="dialog"', $sHtml);
+        $this->assertStringContainsString('bx-focus-trap', $sHtml);
+        $this->assertStringNotContainsString('__main_logo__', $sHtml);
+        $this->assertStringNotContainsString('bx-sidebar-site-close', $sHtml);
+        $this->assertStringNotContainsString('bg-gray-600', $sHtml);
+
+        //--- NEO's header menu: 320px, 8px under the button, the menu popups' 20px corners; More's rows.
+        $this->assertMatchesRegularExpression('/#bx-sidebar-site \.bx-sidebar-cnt \{\s*@apply absolute top-\[3\.875rem\] ltr:right-4 rtl:left-4 w-80 [^;]*rounded-\[1\.25rem\]/', $sCss);
+        $this->assertMatchesRegularExpression('/#bx-sidebar-site \.bx-sidebar-item > a,\s*#bx-sidebar-site \.bx-sidebar-dropdown-content > li > a \{\s*@apply flex items-center min-h-11 py-0 ps-3 pe-3 rounded-xl border-0 text-sm leading-5 font-medium/', $sCss);
+        $this->assertStringContainsString('@apply bg-blue-200/60 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 ring-0;', $sCss);
+        $this->assertMatchesRegularExpression('/#bx-sidebar-site \.bx-si-icon \{\s*@apply flex items-center justify-center w-6 h-6/', $sCss, '24px icons without a circle.');
+
+        //--- It grows from the button's corner; the account sidebar still slides in.
+        $this->assertStringContainsString('.bx-sidebar.bx-sidebar-site.bx-sidebar-active .bx-sidebar-cnt {' . "\n" . '    transform: scale(1);', $sMotion);
+        $this->assertStringNotContainsString('.bx-dir-ltr .bx-sidebar.bx-sidebar-site .bx-sidebar-cnt,', $sMotion);
+        $this->assertStringContainsString('.bx-dir-ltr .bx-sidebar.bx-sidebar-account .bx-sidebar-cnt {', $sMotion);
+
+        $this->assertStringContainsString('plainIcons', self::read('neo/packages/app/components/nav/menu-header-navigation.tsx'), 'NEO\'s phone menu has the same rows.');
     }
 }

@@ -13,6 +13,13 @@ import type { MenuHeaderNavigationProps } from 'app/components/nav/menu-header-n
 // Log In and Sign Up share the row equally, whatever their label widths.
 const AUTH_BUTTON_CLASSES = { root: 'basis-0' }
 
+/** The row of the page at `url` / `uri`, marked `current` (drawn as the header's current tab, as in More). */
+const markCurrent = (item: DropdownMenuItemData, url?: string, uri?: string): DropdownMenuItemData => {
+    const link = typeof item.link === 'string' ? item.link : ''
+    const current = !!link && ((url !== undefined && link === '/' + url) || (link === '/' && uri === 'home'))
+    return current ? { ...item, current: true } : item
+}
+
 /** The popup's width (`menu_items.menu_navigation_width`); none for a popup sized to its rows. */
 const getPopupWidth = (): number | undefined => {
     const width = Number(appSetting('menu_items', 'menu_navigation_width'))
@@ -21,7 +28,8 @@ const getPopupWidth = (): number | undefined => {
 
 /**
  * Header-toolbar menu (`menu_navigation`, else UNA's site menu): icon trigger opens the same style of popup
- * menu as navbar “more” (DropdownMenu + menu_items dropdown rows). A group is a row with a
+ * menu as navbar “more” (DropdownMenu + menu_items dropdown rows, with More's plain 24px icons and its current
+ * row), as UNA's main menu dropdown below `lg` (Artificer sidebar_site.html). A group is a row with a
  * chevron that folds its subitems in place, one group at a time; all start closed unless the
  * menu is a single group. The popup has one width (`menu_items.menu_navigation_width`), so
  * opening a group doesn't resize it. Items marked as buttons (the site menu's Log In and
@@ -43,7 +51,9 @@ export default function MenuHeaderNavigation(props: Readonly<MenuHeaderNavigatio
     // A group is a row like the others that folds its rows in place (DropdownMenu `rows`): its nested
     // groups (Products > Software) keep their section titles, so the levels stay apart.
     const items: DropdownMenuItemData[] = entries.map(({ key, item, rows }) =>
-        rows.length ? { ...describe(item), id: item.id ?? `group-${key}`, rows: rows.map(describe) } : describe(item)
+        rows.length
+            ? { ...markCurrent(describe(item), props.url, props.uri), id: item.id ?? `group-${key}`, rows: rows.map((row) => markCurrent(describe(row), props.url, props.uri)) }
+            : markCurrent(describe(item), props.url, props.uri)
     )
 
     // The `auth` fallback follows the toolbar, which has its own Log In and Sign Up from `sm`.
@@ -58,6 +68,8 @@ export default function MenuHeaderNavigation(props: Readonly<MenuHeaderNavigatio
     const {
         neoButton: _neoButton,
         auth: _auth,
+        url: _url,
+        uri: _uri,
         rounded = false,
         startDecorator = 'Menu',
         alt = 'Menu',
@@ -76,6 +88,7 @@ export default function MenuHeaderNavigation(props: Readonly<MenuHeaderNavigatio
             mode="popup"
             items={items}
             popupWidth={getPopupWidth()}
+            plainIcons
             open={open}
             onOpenChange={setOpen}
             header={

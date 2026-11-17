@@ -36,6 +36,8 @@ export type DropdownMenuItemData = DropdownGridMenuItem & {
      * only item of a menu, and closing the menu closes them.
      */
     rows?: DropdownMenuItemData[];
+    /** The current page's row of a navigation menu: the selected look and `aria-current`, not a radio option. */
+    current?: boolean;
 };
 
 export type DropdownMenuVariant = 'vertical' | 'horizontal' | 'nopad' | 'grid' | 'tabs-overflow';

@@ -15,5 +15,8 @@ export type MenuHeaderNavigationProps = {
      * Log In button of its own there.
      */
     auth?: boolean;
+    /** The page's URL path (without the leading slash) and UNA URI, to mark its row as the current one. */
+    url?: string;
+    uri?: string;
     [key: string]: unknown;
 };
