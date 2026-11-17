@@ -11,8 +11,8 @@ UPDATE `sys_objects_menu` SET `config_api`='{"view":"grid"}' WHERE `object`='sys
 UPDATE `sys_objects_menu` SET `config_api`='{}' WHERE `object`='sys_ntfs_submenu';
 -- Settings: `hub` is the section's own page, where the apps show the menu as a list on phones and tablets (the menu's
 -- `section_nav_small`); an item's group (Studio > Navigation > an item > "Group in the apps") puts it under Account or
--- the current profile
-UPDATE `sys_objects_menu` SET `config_api`='{"hub":"settings"}' WHERE `object`='sys_account_settings_submenu';
+-- the current profile; `icon` is the section's icon in the apps (the gear: Lucide `settings`, as the account menu's Settings item is drawn)
+UPDATE `sys_objects_menu` SET `config_api`='{"hub":"settings","icon":"settings"}' WHERE `object`='sys_account_settings_submenu';
 UPDATE `sys_menu_items` SET `group_name`='account' WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name` IN ('account-profile-switcher', 'account-settings-info', 'account-settings-email', 'account-settings-password');
 UPDATE `sys_menu_items` SET `group_name`=IF(`name`='account-settings-delete', 'danger', 'profile') WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name` IN ('profile-settings-cfilter', 'account-settings-delete');
 UPDATE `sys_menu_items` SET `config_api`='{"badge":"friends"}' WHERE `set_name`='sys_tabbar' AND `module`='system' AND `name`='friends';

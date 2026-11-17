@@ -328,4 +328,15 @@ export const specs: Record<string, AnimatedIconSpec> = {
             { nodes: [path('M12 21v-1')], motion: { kind: 'appear', ms: 160 } },
         ],
     },
+    // The account's Settings section: the gear turns by one tooth.
+    Settings: {
+        parts: [
+            {
+                nodes: [path('M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915')],
+                fill: true,
+                motion: { kind: 'rotate', deg: 60, origin: [12, 12], ms: 500 },
+            },
+            { nodes: [circle(12, 12, 3)] },
+        ],
+    },
 };
