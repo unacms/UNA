@@ -14,6 +14,9 @@ export type CountChange = {
     tick: number;
 };
 
+/** Whose count it is: an id, or nothing. */
+type Owner = string | number | null | undefined;
+
 export type CountState = {
     text: string;
     value: number | null;
@@ -41,7 +44,7 @@ const toValue = (value: unknown): number | null => {
     return value == null || value === '' || !Number.isFinite(number) ? null : number;
 };
 
-export function initialCountState(text: string, value: unknown, owner: unknown): CountState {
+export function initialCountState(text: string, value: unknown, owner: Owner): CountState {
     return { text, value: toValue(value), owner: String(owner ?? ''), change: null, tick: 0 };
 }
 
@@ -50,7 +53,7 @@ export function initialCountState(text: string, value: unknown, owner: unknown):
  * list row now shows someone else) or a first number is not: nothing changed for the reader. The same object comes
  * back when nothing differs.
  */
-export function nextCountState(state: CountState, text: string, value: unknown, owner: unknown): CountState {
+export function nextCountState(state: CountState, text: string, value: unknown, owner: Owner): CountState {
     const nextValue = toValue(value);
     const nextOwner = String(owner ?? '');
 
@@ -71,5 +74,5 @@ export function nextCountState(state: CountState, text: string, value: unknown, 
 
 /** The effect has played: the state without it. A newer change (another tick) stays. */
 export function settleCountState(state: CountState, tick: number): CountState {
-    return state.change && state.change.tick === tick ? { ...state, change: null } : state;
+    return state.change?.tick === tick ? { ...state, change: null } : state;
 }

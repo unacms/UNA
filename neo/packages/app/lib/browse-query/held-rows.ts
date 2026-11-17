@@ -4,7 +4,7 @@
  * after a follow, `lib/connection-cache.ts`) is not a new row to hold back; without this it would stay as it was
  * until the reader took the new rows. The held rows come back as they are when no copy is newer.
  */
-export function refreshHeldRows<T extends { id?: unknown }>(held: T[], cached: readonly T[]): T[] {
+export function refreshHeldRows<T extends { id?: string | number | null }>(held: T[], cached: readonly T[]): T[] {
     if (!held.length || !cached.length) return held;
 
     const newest = new Map<string, T>();

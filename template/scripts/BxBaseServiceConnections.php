@@ -79,8 +79,9 @@ class BxBaseServiceConnections extends BxDol
 
         if(($aParams['r'] ?? '') == 'object') {
             $aElement = $oConnection->getElementAPI($aParams['cid'], $aParams['iid']);
-            if(!is_array($aElement))
+            if(!is_array($aElement)) {
                 return $aElement;
+            }
 
             return $aCounts ? array_merge($aElement, ['counts' => $aCounts]) : $aElement;
         }
@@ -91,25 +92,26 @@ class BxBaseServiceConnections extends BxDol
             'a' => $aFlip[$aParams['a']],
             'title' => $this->serviceGetActionTitle($aParams['o'], $aParams['a'], $aParams['iid'], $aParams['cid'], true),
         ];
-        if($aCounts)
+        if($aCounts) {
             $aResult['counts'] = $aCounts;
+        }
 
         return $aResult;
     }
 
     /**
      * @page service Service Calls
-     * @section bx_system_general System Services 
+     * @section bx_system_general System Services
      * @subsection bx_system_general-connections Connections
      * @subsubsection bx_system_general-get_card_state get_card_state
-     * 
+     *
      * @code bx_srv('system', 'get_card_state', [['cid' => 12]], 'TemplServiceConnections'); @endcode
-     * 
-     * What a profile's card shows of its connections, for the logged in viewer: the counts and the state of the 
-     * friend and follow buttons. The apps ask for it when the viewer's connection with the profile changed 
+     *
+     * What a profile's card shows of its connections, for the logged in viewer: the counts and the state of the
+     * friend and follow buttons. The apps ask for it when the viewer's connection with the profile changed
      * somewhere else (another tab or device), to update the cards they already show.
-     * @param $aParams an array with 'cid', the profile's id 
-     * 
+     * @param $aParams an array with 'cid', the profile's id
+     *
      * @see BxBaseServiceConnections::serviceGetCardState
      */
     /** 
@@ -118,26 +120,31 @@ class BxBaseServiceConnections extends BxDol
      */
     public function serviceGetCardState($aParams)
     {
-        if(is_string($aParams))
+        if(is_string($aParams)) {
             $aParams = json_decode($aParams, true);
+        }
 
         $iContent = is_array($aParams) && isset($aParams['cid']) ? (int)$aParams['cid'] : 0;
         $iViewer = (int)bx_get_logged_profile_id();
-        if(!$iContent || !$iViewer || $iContent == $iViewer)
+        if(!$iContent || !$iViewer || $iContent == $iViewer) {
             return ['code' => 1];
+        }
 
-        if(!$this->_isCardViewable($iContent))
+        if(!$this->_isCardViewable($iContent)) {
             return ['code' => 2];
+        }
 
         $aElements = [];
         foreach(self::$CARD_CONNECTIONS as $sObject) {
             $oConnection = BxDolConnection::getObjectInstance($sObject);
-            if(!$oConnection)
+            if(!$oConnection) {
                 continue;
+            }
 
             $aElement = $oConnection->getElementAPI($iContent, $iViewer);
-            if(!empty($aElement) && is_array($aElement))
+            if(!empty($aElement) && is_array($aElement)) {
                 $aElements[$sObject] = $aElement;
+            }
         }
 
         return [
@@ -153,12 +160,14 @@ class BxBaseServiceConnections extends BxDol
     protected function _isCardViewable($iProfileId)
     {
         $oProfile = BxDolProfile::getInstance($iProfileId);
-        if(!$oProfile)
+        if(!$oProfile) {
             return false;
+        }
 
         $sModule = $oProfile->getModule();
-        if(!BxDolRequest::serviceExists($sModule, 'check_allowed_profile_view'))
+        if(!BxDolRequest::serviceExists($sModule, 'check_allowed_profile_view')) {
             return false;
+        }
 
         return bx_srv($sModule, 'check_allowed_profile_view', [$oProfile->getContentId()]) === CHECK_ACTION_RESULT_ALLOWED;
     }
@@ -169,19 +178,23 @@ class BxBaseServiceConnections extends BxDol
      */
     protected function _getCardCounts($sObject, $iProfileId)
     {
-        if(!$iProfileId || !in_array($sObject, self::$CARD_CONNECTIONS) || getParam('sys_api_conn_in_prof_units') != 'on')
+        if(!$iProfileId || !in_array($sObject, self::$CARD_CONNECTIONS) || getParam('sys_api_conn_in_prof_units') != 'on') {
             return [];
+        }
 
-        if(!$this->_isCardViewable($iProfileId))
+        if(!$this->_isCardViewable($iProfileId)) {
             return [];
+        }
 
         $aResult = ['profile_id' => $iProfileId];
 
-        if(($oConnection = BxDolConnection::getObjectInstance('sys_profiles_friends')) !== false)
+        if(($oConnection = BxDolConnection::getObjectInstance('sys_profiles_friends')) !== false) {
             $aResult['friends_count'] = (int)$oConnection->getConnectedContentCount($iProfileId, true);
+        }
 
-        if(($oConnection = BxDolConnection::getObjectInstance('sys_profiles_subscriptions')) !== false)
+        if(($oConnection = BxDolConnection::getObjectInstance('sys_profiles_subscriptions')) !== false) {
             $aResult['followers_count'] = (int)$oConnection->getConnectedInitiatorsCount($iProfileId);
+        }
 
         return $aResult;
     }

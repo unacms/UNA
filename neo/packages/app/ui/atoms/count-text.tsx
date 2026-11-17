@@ -25,7 +25,7 @@ type CountTextProps = {
  * Native has no transforms inside a line of text, so there the colour alone marks the change. People who ask for
  * reduced motion get the colour without the roll.
  */
-export default function CountText({ text, value, owner }: CountTextProps) {
+export default function CountText({ text, value, owner }: Readonly<CountTextProps>) {
     const [state, setState] = useState(() => initialCountState(text, value, owner));
     // Adjusting state while rendering: the change starts in the same commit as the new number.
     const shown = nextCountState(state, text, value, owner);

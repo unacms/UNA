@@ -28,7 +28,7 @@ export type ConnectionPatch = {
     elements?: Record<string, CardElement | null | undefined> | null;
 };
 
-const sameId = (a: unknown, b: unknown) => a != null && b != null && String(a) === String(b);
+const sameId = (a: Id | null | undefined, b: Id | null | undefined) => a != null && b != null && String(a) === String(b);
 const sameValue = (a: unknown, b: unknown) => a === b || JSON.stringify(a) === JSON.stringify(b);
 
 export function isCardConnection(object: unknown): boolean {
