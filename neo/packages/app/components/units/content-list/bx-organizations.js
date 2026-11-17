@@ -26,7 +26,7 @@ export default function Unit({ data, unitType, module }) {
 
     const isSkeleton = data?.skeleton
     // No count: drop the second line so the name centres on the photo (mobile).
-    const hasCount = isSkeleton || !!getProfileListLabel({ data, unitType })
+    const hasCount = isSkeleton || !!getProfileListLabel({ data, unitType, profile: true })
 
     return (
         <UnitWrapper data={data} module={module} as="list" padding="p-1">
@@ -49,6 +49,7 @@ export default function Unit({ data, unitType, module }) {
                                 <UnitProfileList
                                     data={data}
                                     unitType={unitType}
+                                    profile
                                     skeleton={isSkeleton}
                                     showList={false}
                                     labelClassName={PROFILE_ROW_COUNT}
