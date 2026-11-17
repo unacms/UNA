@@ -36,6 +36,8 @@ type CustomInputProps = {
     style?: any;
     rounded?: keyof typeof InputRounded;
     size?: keyof typeof InputSize;
+    /** Read only, but opens a picker (a date field): drawn as an ordinary field, not locked. */
+    pickerTrigger?: boolean;
     multiline?: boolean;
     editable?: boolean;
     secureTextEntry?: boolean;
@@ -151,7 +153,7 @@ export const TextInputClear = forwardRef<any, CustomInputProps>(
 TextInputClear.displayName = 'TextInputClear';
 
 export const Input = forwardRef<any, CustomInputProps>(
-    ({ className = '', style, rounded = InputRounded.default, size = DEFAULT_SIZE, multiline, ...props }, ref) => {
+    ({ className = '', style, rounded = InputRounded.default, size = DEFAULT_SIZE, multiline, pickerTrigger, ...props }, ref) => {
         const Component = multiline ? 'textarea' : 'input';
         const labelInside = useContext(InputLabelInsideContext) && isLabelInsideSize(size);
         return (
@@ -162,7 +164,7 @@ export const Input = forwardRef<any, CustomInputProps>(
                     inputSettings.size[size] ?? inputSettings.size.regular,
                     labelInside && inputSettings.adaptive_input_inside,
                     rounded === InputRounded.full && inputSettings.rounded.full,
-                    (props.readOnly || props.editable === false) && inputSettings.locked,
+                    !pickerTrigger && (props.readOnly || props.editable === false) && inputSettings.locked,
                     className,
                 )}
                 style={style}

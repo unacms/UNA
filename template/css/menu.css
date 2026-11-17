@@ -501,6 +501,18 @@ ul.bx-menu-floating-blocks {
     width:100px;
     width:6.25rem;
 }
+/* The account menu's profile switcher (BxBaseMenuAccountNotifications): the item's row holds the other profiles, a
+   full-width row each, instead of a link. */
+.bx-menu-floating-blocks-wide li.bx-menu-item-switch-profile,
+.bx-menu-floating-blocks li.bx-menu-item-switch-profile {
+    display: block;
+    width: auto;
+    height: auto;
+}
+.bx-menu-floating-blocks-wide li.bx-menu-item-switch-profile:hover,
+.bx-menu-floating-blocks li.bx-menu-item-switch-profile:hover {
+    opacity: 1.0;
+}
 .bx-menu-floating-blocks-wide li .bx-menu-item-addon {
     right:10px;
     right:0.625rem;

@@ -376,6 +376,9 @@ export default function DatePicker({ name, value = '', type, onChange, children,
                         placeholder={t('Select date')}
                         rounded="default"
                         readOnly
+                        pickerTrigger
+                        // A disabled <input> (how web draws read only) swallows the click; let it reach the Pressable.
+                        className="web:pointer-events-none"
                         editable={Platform.OS === 'web' ? undefined : false}
                         pointerEvents="none"
                         {...(Platform.OS !== 'web' ? { showSoftInputOnFocus: false } : {})}
