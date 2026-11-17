@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { listen } from '@tauri-apps/api/event';
-import { type RefObject, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { type RefObject, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 
 import type { Schema } from 'una-api';
 
@@ -108,7 +108,9 @@ export function App() {
     const current = useRef<{ session: Session | null | undefined; sessions: SessionSummary[]; adding: boolean }>({ session: undefined, sessions: [], adding: false });
     const queryClient = useQueryClient();
 
-    useEffect(() => {
+    // with the commit, not after it: a control drawn for a session (Sign out of it) can be pressed
+    // before a passive effect runs, and was then refused as not the open one
+    useLayoutEffect(() => {
         current.current = { session, sessions, adding };
     }, [session, sessions, adding]);
 
