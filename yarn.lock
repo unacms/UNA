@@ -2865,10 +2865,10 @@ lru-cache@^11.0.0, lru-cache@^11.1.0, lru-cache@^11.2.1:
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-11.5.3.tgz#a7767b4034e35269562d2b9da2b185b5df70c421"
   integrity sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==
 
-lucide-static@^1.70.0:
-  version "1.70.0"
-  resolved "https://registry.yarnpkg.com/lucide-static/-/lucide-static-1.70.0.tgz#5e8408d50248890e4262e79b8f7477056bbc2400"
-  integrity sha512-A9UgY98g94IuHQY7rl7/AFwHX7T1qNpzryim+Kw5CGhdV2STobtBY+ib/Z44ohyqXEJB88gvXFAeJ87uOOHKLw==
+lucide-static@^1.72.0:
+  version "1.72.0"
+  resolved "https://registry.yarnpkg.com/lucide-static/-/lucide-static-1.72.0.tgz#4669f7a0ec8f7c72ab9fc5bd255762afc159425b"
+  integrity sha512-QhdZ60O7Zcs/e8gw40uMfEn055xZTHBZoNi0xb+/1R2dTd0v4FXS46VL6rKSwC+V92tLBiqsAbCcijy7Wy4j4w==
 
 lucide@^1.72.0:
   version "1.72.0"
