@@ -229,7 +229,7 @@
         --neo-shadow-popover-deep:   inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 12px 24px -4px rgb(0 0 0 / 0.5);
         
         --neo-shadow-block-outline:        inset 0 0 0 1px rgb(255 255 255 / 1), 0 1px 8px -1px rgb(0 0 0 / 0.1);
-        --neo-shadow-block-outline-deep:  inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 2px 8px -2px rgb(0 0 0 / 0.2);
+        --neo-shadow-block-outline-deep:  inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 1px 8px -1px rgb(0 0 0 / 0.5);
 
 
         --neo-shadow-input-outline:      inset 0 0 0 1px rgb(0 0 0 / 0.1);
