@@ -806,7 +806,7 @@
     .bx-popup-border {
         @apply ring-1 ring-gray-300/50 dark:ring-gray-600/50;
     }
-    /* Blocks and cards have the menu popups' 20px corners: a row or tile with 12px corners 8px inside them runs parallel (NEO's rounded-popover). */
+    /* Blocks and cards have the menu popups' 20px corners: a row or tile with 12px corners 8px inside them runs parallel (NEO's rounded-block). */
     .bx-def-border-radius-block,
     .bx-def-box-round-corners {
         border-radius: 1.25rem;
