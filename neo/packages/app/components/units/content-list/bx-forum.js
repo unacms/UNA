@@ -15,6 +15,7 @@ import {
     UnitWrapper,
     getPostedTs,
     resolveUnitVariant,
+    UnitContentCard,
 } from 'app/components/units/helpers'
 import { useTranslation } from 'react-i18next'
 
@@ -31,37 +32,9 @@ function CategoryIcon({ icon }) {
     return <Icon icon={icon} size={16} className="text-muted-foreground" />
 }
 
-Units.Search = function Search({ data }) {
-    const isSkeleton = data?.skeleton
-    return (
-        <UnitWrapper data={data} padding="p-1">
-            <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-muted   ">
-                <UnitImage
-                    image={data.image}
-                    alt={data.title}
-                    skeleton={isSkeleton}
-                    view="cover"
-                    skeletonClassName="h-full w-full"
-                    rounded="rounded-xl"
-                />
-            </View>
-            <View className="flex-auto sm:h-40 flex-col p-2">
-                <UnitTitle
-                    title={data.title}
-                    skeleton={isSkeleton}
-                    skeletonClassName="h-6 w-3/4 mt-2"
-                />
-                <UnitText
-                    text={data.summary_plain}
-                    skeleton={isSkeleton}
-                    numberOfLines={3}
-                    skeletonClassName="h-16 w-full mt-2"
-                    className="text-muted-foreground  mt-2 mb-auto text-xs "
-                />
-                <UnitAuthor authorData={data.author_data} skeleton={isSkeleton} className="mt-2" />
-            </View>
-        </UnitWrapper>
-    )
+// A discussion's card in search results: UnitContentCard, as the other content cards.
+Units.Search = function Search({ data, listIndex }) {
+    return <UnitContentCard data={data} module="bx_forum" listIndex={listIndex} />
 }
 
 Units.Small = function Small({ data }) {

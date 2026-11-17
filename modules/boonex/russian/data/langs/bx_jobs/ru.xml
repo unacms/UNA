@@ -443,6 +443,7 @@
     <string name="_bx_jobs_txt_account_pending"><![CDATA[Это задание ожидает одобрения. Пожалуйста, дождитесь его активации.]]></string>
     <string name="_bx_jobs_txt_account_suspended"><![CDATA[Это задание заблокировано.]]></string>
     <string name="_bx_jobs_txt_status_hidden"><![CDATA[Это задание было скрыто.]]></string>
+    <string name="_bx_jobs_txt_unit_view"><![CDATA[Смотреть вакансию]]></string>
     <string name="_bx_jobs_txt_N_fans"><![CDATA[{0} участников]]></string>
     <string name="_bx_jobs_txt_ban_added"><![CDATA[Заблокирован]]></string>
     <string name="_bx_jobs_txt_role"><![CDATA[Роль]]></string>

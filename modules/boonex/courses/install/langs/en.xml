@@ -500,6 +500,7 @@
     <string name="_bx_courses_txt_summary_joined"><![CDATA[Attended]]></string>
     <string name="_bx_courses_txt_summary_passed"><![CDATA[Passed]]></string>
     <string name="_bx_courses_txt_summary_not_started"><![CDATA[Not started]]></string>
+    <string name="_bx_courses_txt_unit_view"><![CDATA[View course]]></string>
 
     <string name="_bx_courses_msg_performed"><![CDATA[The action was successfully performed.]]></string>
     <string name="_bx_courses_err_price_duplicate"><![CDATA[Similar pricing plan is already exists.]]></string>

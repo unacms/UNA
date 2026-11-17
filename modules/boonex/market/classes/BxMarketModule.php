@@ -155,6 +155,30 @@ class BxMarketModule extends BxBaseModTextModule
         return $this->$sMethodPerform($aContentInfo);
     }
     
+    /**
+     * A product's price as its card shows it: the recurring price with its period, else the single price, in the
+     * seller's currency, or "Free".
+     */
+    public function getPriceText($aData, $sCurrencySign = null)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        if($sCurrencySign === null)
+            $sCurrencySign = BxDolPayments::getInstance()->getCurrencySign((int)$aData[$CNF['FIELD_AUTHOR']]);
+
+        if((float)$aData[$CNF['FIELD_PRICE_RECURRING']] != 0) {
+            $sDuration = 'txt_per_' . $aData[$CNF['FIELD_DURATION_RECURRING']] . '_short';
+            $sDuration = _t(!empty($CNF['T'][$sDuration]) ? $CNF['T'][$sDuration] : '_bx_market_txt_per_' . $aData[$CNF['FIELD_DURATION_RECURRING']] . '_short');
+
+            return _t('_bx_market_txt_price_recurring_short', $sCurrencySign, $aData[$CNF['FIELD_PRICE_RECURRING']], $sDuration);
+        }
+
+        if((float)$aData[$CNF['FIELD_PRICE_SINGLE']] != 0)
+            return _t('_bx_market_txt_price_single_short', $sCurrencySign, $aData[$CNF['FIELD_PRICE_SINGLE']]);
+
+        return _t('_bx_market_txt_price_free');
+    }
+
     public function decodeDataAPI($aData, $aParams = [])
     {
         $CNF = $this->_oConfig->CNF;
@@ -164,6 +188,8 @@ class BxMarketModule extends BxBaseModTextModule
             'price_single' => $aData[$CNF['FIELD_PRICE_SINGLE']],
             'price_recurring' => $aData[$CNF['FIELD_PRICE_RECURRING']],
             'duration_recurring' => $aData[$CNF['FIELD_DURATION_RECURRING']],
+            // the price as the site's card shows it, in the seller's currency ("Free" when there is none)
+            'price_text' => $this->getPriceText($aData),
             'cover_raw' => $aData[$CNF['FIELD_COVER_RAW']],
             'cover' => $this->serviceGetCover($aData[$CNF['FIELD_COVER']])
         ]);

@@ -19,6 +19,12 @@ class BxBaseModGeneralMenuSnippetMeta extends BxTemplMenuUnitMeta
     protected $_iContentId;
     protected $_aContentInfo;
 
+    /**
+     * The menu is drawn on a card in a gallery (a profile's unit_card.html, a content item's unit_gallery.html), as
+     * the apps draw it: the author with a 20px avatar; a profile's card has two buttons at most.
+     */
+    protected $_bCard;
+
     public function __construct($aObject, $oTemplate = false)
     {
         $this->_oModule = BxDolModule::getInstance($this->_sModule);
@@ -29,6 +35,12 @@ class BxBaseModGeneralMenuSnippetMeta extends BxTemplMenuUnitMeta
 
         $this->_sStylePrefix = 'bx-base-general-unit-meta';
         $this->_bShowZeros = false;
+        $this->_bCard = false;
+    }
+
+    public function setCard($bCard)
+    {
+        $this->_bCard = (bool)$bCard;
     }
 
     public function getCode()
@@ -68,6 +80,14 @@ class BxBaseModGeneralMenuSnippetMeta extends BxTemplMenuUnitMeta
             ]);
 
         $oProfile = BxDolProfile::getInstanceMagic($this->_aContentInfo[$CNF['FIELD_AUTHOR']]);
+
+        // on a card: the author's 20px avatar (the letter where there is no picture) before the name, as the apps
+        if($this->_bCard)
+            return $this->getUnitMetaItemCustom($this->_oModule->_oTemplate->parseHtmlByName('unit_meta_author.html', [
+                'url' => $oProfile->getUrl(),
+                'avatar' => $oProfile->getUnit(0, ['template' => ['name' => 'unit_wo_info_links', 'size' => 'icon']]),
+                'name' => $oProfile->getDisplayName()
+            ]));
 
         return $this->getUnitMetaItemLink($oProfile->getDisplayName(), array(
             'href' => $oProfile->getUrl(),

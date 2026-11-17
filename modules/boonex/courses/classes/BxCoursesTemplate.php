@@ -22,6 +22,11 @@ class BxCoursesTemplate extends BxBaseModGroupsTemplate
 
         parent::__construct($oConfig, $oDb);
 
+        // the gallery card (unit.html here) is the apps' card (unit_card.html), as groups' is
+        $this->_bUnitCard = true;
+        $this->_aUnitCardTemplates = ['unit.html', 'unit_with_cover.html'];
+        $this->_sUnitCardViewIcon = 'arrow-circle-right';
+
         $this->_iProfileId = bx_get_logged_profile_id();
     }
 

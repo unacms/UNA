@@ -116,6 +116,8 @@ test('a card with no action names what it opens', () => {
     assert.deepEqual(getUnitViewAction('bx_groups'), { title: 'View group', icon: 'CircleArrowRight' });
     assert.deepEqual(getUnitViewAction('bx_events'), { title: 'View event', icon: 'CircleArrowRight' });
     assert.deepEqual(getUnitViewAction('bx_spaces'), { title: 'View space', icon: 'CircleArrowRight' });
+    assert.deepEqual(getUnitViewAction('bx_courses'), { title: 'View course', icon: 'CircleArrowRight' });
+    assert.deepEqual(getUnitViewAction('bx_channels'), { title: 'View channel', icon: 'CircleArrowRight' });
     assert.deepEqual(getUnitViewAction('bx_posts'), { title: 'View', icon: '' });
     assert.deepEqual(getUnitViewAction(undefined), { title: 'View', icon: '' });
 });

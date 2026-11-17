@@ -260,6 +260,7 @@
 	<string name="_bx_channels_txt_sample_vote_single"><![CDATA[vote to channel]]></string>
         <string name="_bx_channels_txt_sample_score_up_single"><![CDATA[score up vote to channel]]></string>
         <string name="_bx_channels_txt_sample_score_down_single"><![CDATA[score down vote to channel]]></string>
+        <string name="_bx_channels_txt_unit_view"><![CDATA[View channel]]></string>
         <string name="_bx_channels_msg_empty_author"><![CDATA['Default author for automatically created channels' is empty. You need to select some profile in this setting.]]></string>
 
     <string name="_bx_channels_txt_ntfs_timeline_post_common"><![CDATA[New post <b class="bx-ntfs-content-entry">{subentry_sample}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b> channel timeline]]></string>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- A job's card with no button to offer says View job. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_bx_jobs_txt_unit_view"><![CDATA[View job]]></string_add>
+</resources>

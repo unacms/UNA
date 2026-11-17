@@ -18,6 +18,11 @@ class BxCnlTemplate extends BxBaseModGroupsTemplate
     {
         $this->MODULE = 'bx_channels';
         parent::__construct($oConfig, $oDb);
+
+        // the gallery card (unit.html here) is the apps' card (unit_card.html), as groups' is
+        $this->_bUnitCard = true;
+        $this->_aUnitCardTemplates = ['unit.html', 'unit_with_cover.html'];
+        $this->_sUnitCardViewIcon = 'arrow-circle-right';
     }
 
     public function entryBreadcrumb($aContentInfo, $aTmplVarsItems = array())

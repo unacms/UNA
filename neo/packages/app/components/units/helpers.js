@@ -15,6 +15,8 @@ import { appSetting, cn, tp, sanitazeUrl, withMenuButtonParams } from 'app/lib/u
 import { getUnitMenuItems } from 'app/customization/functions';
 import { useCurrentUser } from 'app/context/user';
 import { CONNECTIONS_PREVIEW_MAX, getCardCountParts, getCardPreviewLists, mergeConnectionProfiles } from 'app/lib/profile-connections';
+import { getContentCardImage, getContentCardPrice, getContentCardSummary, getContentCardTime } from 'app/lib/content-card';
+import Time from 'app/ui/atoms/time';
 import { UnitActionWidthContext } from 'app/components/units/unit-action-width';
 import { useRouter, useCurrentTabPath, useFocusEffect } from 'app/lib/hooks/router';
 import { nativeTabPageHref } from 'app/lib/navigation/tab-history';
@@ -763,6 +765,106 @@ export function UnitProfileCard({ data, unitType, module, subtitle = null }) {
                         skeletonClassName="h-9 w-24 sm:w-full"
                     />
                     {deleteMenuItem ? <View className="sm:hidden flex-none">{deleteMenuItem}</View> : null}
+                </View>
+            </View>
+        </UnitWrapper>
+    );
+}
+
+// A content card's title: the profile card's name type on up to two lines.
+const CONTENT_CARD_TITLE = 'text-base leading-6 font-semibold tracking-tight text-foreground web:hover:underline';
+const CONTENT_CARD_TEXT = 'text-sm leading-5 font-normal text-secondary-foreground';
+
+/**
+ * A content card's last line (20px): the author's 20px avatar, "Name · 3 days ago", and the price at the end where the
+ * item has one. The avatar is no link: the card is one.
+ */
+export function UnitContentByline({ data, skeleton }) {
+    const author = data?.author_data;
+    const ts = getContentCardTime(data);
+    const price = getContentCardPrice(data);
+    return (
+        <Skeleton preset="author" className="h-5 w-32" visible={skeleton}>
+            <Row className="items-center gap-1 h-5 min-w-0">
+                {author?.display_name ? (
+                    <>
+                        <View className="flex-none pointer-events-none">
+                            <Profile
+                                url_avatar={author.url_avatar}
+                                display_name={author.display_name}
+                                id={author.id}
+                                displayType="unit_wo_info"
+                                displaySize="2xs"
+                                showLinks={false}
+                            />
+                        </View>
+                        <Text numberOfLines={1} className={cn(CONTENT_CARD_TEXT, 'flex-shrink min-w-0')}>{author.display_name}</Text>
+                    </>
+                ) : null}
+                {ts ? (
+                    <>
+                        {author?.display_name ? <Text className={cn(CONTENT_CARD_TEXT, 'flex-none')}>·</Text> : null}
+                        <Time ts={ts} stylesName={cn(CONTENT_CARD_TEXT, 'flex-none')} />
+                    </>
+                ) : null}
+                {price ? (
+                    <Text numberOfLines={1} className="ml-auto pl-2 flex-none text-sm leading-5 font-semibold text-foreground">{price}</Text>
+                ) : null}
+            </Row>
+        </Skeleton>
+    );
+}
+
+/**
+ * The card of a content item in a list (a post, an ad, a poll, a product, a file, a photo, an album, a video), as
+ * UNA's site draws it (`modules/base/general/template/css/unit_content_card.css`). The whole card is the link; it has
+ * no buttons.
+ *
+ * From `sm` it is the grid card: the picture (16:9, 12px corners inside the card's 8px padding) where the item has
+ * one, the title on up to two lines, the summary, and the byline at the card's foot, so the bylines of a row line up.
+ * An item without a picture draws no empty box. Below `sm` it is a row: a 56px thumbnail, the title over the byline.
+ */
+export function UnitContentCard({ data, module, listIndex, summary = true }) {
+    const isSkeleton = data?.skeleton;
+    const image = getContentCardImage(data);
+    const showMedia = isSkeleton || !!image;
+    const summaryText = summary && !isSkeleton ? getContentCardSummary(data) : '';
+
+    return (
+        <UnitWrapper data={data} module={module} as="list" padding="p-3 sm:p-2" className="sm:h-full">
+            <View className="flex-row sm:flex-col items-center sm:items-stretch gap-3 sm:gap-1 sm:flex-1">
+                {showMedia ? (
+                    <View className={`${ROW_AVATAR.container} sm:h-auto sm:w-full aspect-square sm:aspect-video flex-none rounded-xl overflow-hidden bg-muted`}>
+                        <UnitImage
+                            image={image}
+                            alt={data.title}
+                            skeleton={isSkeleton}
+                            view="cover"
+                            className="absolute u-cover"
+                            skeletonClassName="h-full w-full"
+                            rounded="rounded-xl"
+                            priority={listIndex === 0}
+                        />
+                    </View>
+                ) : null}
+                <View className="flex-auto sm:flex-1 min-w-0 sm:p-1 gap-1 sm:gap-3">
+                    <View className="gap-1 min-w-0">
+                        <UnitTitle
+                            title={data.title}
+                            skeleton={isSkeleton}
+                            numberOfLines={2}
+                            className={CONTENT_CARD_TITLE}
+                            skeletonClassName={PROFILE_ROW_NAME_SKELETON}
+                        />
+                        {summaryText ? (
+                            <View className="hidden sm:flex">
+                                <Text numberOfLines={2} className={CONTENT_CARD_TEXT}>{summaryText}</Text>
+                            </View>
+                        ) : null}
+                    </View>
+                    <View className="sm:mt-auto">
+                        <UnitContentByline data={data} skeleton={isSkeleton} />
+                    </View>
                 </View>
             </View>
         </UnitWrapper>

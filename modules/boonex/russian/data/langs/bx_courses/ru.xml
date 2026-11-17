@@ -498,6 +498,7 @@
     <string name="_bx_courses_txt_summary_joined"><![CDATA[Записан на]]></string>
     <string name="_bx_courses_txt_summary_passed"><![CDATA[Закончено]]></string>
     <string name="_bx_courses_txt_summary_not_started"><![CDATA[Не начато]]></string>
+    <string name="_bx_courses_txt_unit_view"><![CDATA[Смотреть курс]]></string>
 
     <string name="_bx_courses_msg_performed"><![CDATA[Действие было успешно выполнено.]]></string>
     <string name="_bx_courses_err_price_duplicate"><![CDATA[Аналогичный ценовой план уже существует.]]></string>

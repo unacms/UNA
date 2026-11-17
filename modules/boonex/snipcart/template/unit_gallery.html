@@ -1,30 +1,21 @@
-<div class="bx-base-text-unit bx-base-text-unit-gallery bx-def-gal-unit-size bx-def-padding-sec bx-def-margin-sec-bottom">
-	<div class="bx-base-text-unit-cnt bx-def-box bx-def-round-corners bx-def-color-bg-box bx-def-box-sizing">
-		<div class="bx-base-text-unit-text bx-def-padding-leftright bx-def-padding-sec-topbottom bx-def-font-align-center bx-def-box-sizing">
-			<h2><a href="__content_url__">__title__</a></h2>
-		    <div class="bx-base-text-unit-info">
-                <bx_if:meta><div class="bx-base-general-unit-meta">__meta__</div></bx_if:meta>
+<div class="__class__ bx-base-text-unit bx-base-text-unit-gallery bx-base-content-card bx-def-gal-unit-size flex flex-col w-full p-2 box-border">
+    <div class="bx-base-text-unit-cnt bx-base-content-card-cnt bx-def-box bx-def-color-bg-box">
+        <bx_if:thumb>
+            <a class="bx-base-content-card-media" href="__content_url__" aria-hidden="true" tabindex="-1">
+                <span class="bx-base-content-card-img" style="background-image:url(__gallery_url__)"></span>
+            </a>
+        </bx_if:thumb>
+        <div class="bx-base-text-unit-text bx-base-content-card-info">
+            <div class="bx-base-content-card-name">
+                <a class="bx-base-content-card-title" href="__content_url__">__title__</a>
+                <div class="bx-base-text-unit-badges">__badges__</div>
             </div>
-		</div>
-	    <bx_if:thumb>
-	        <a href="__content_url__" title="__summary_attr__">
-	            <div class="bx-base-text-unit-thumb bx-def-gal-div-size bx-def-round-corners bx-def-font-middle" style="background-image:url(__gallery_url__)">
-	                <div class="bx-base-text-unit-strecher">__strecher__</div>
-	            </div>
-	        </a>
-	    </bx_if:thumb>
-	    <bx_if:no_thumb>
-	        <div class="bx-def-gal-img-column">
-	            <div class="bx-base-text-unit-no-thumb bx-def-gal-div-size bx-def-font-middle bx-def-font-grayed bx-def-padding bx-def-box-sizing">
-	                __summary_plain__
-	                <div class="bx-base-text-unit-strecher">__strecher__</div>
-	            </div>
-	        </div>
-	    </bx_if:no_thumb>
-	    <bx_if:show_buy>
-            <div class="bx-snipcart-unit-actions bx-def-margin-sec-topbottom">
-                <a class="bx-btn bx-snipcart-buy" href="__buy_url__">__buy_title__</a>
-            </div>
-        </bx_if:show_buy>
-	</div>
+            <bx_if:meta><div class="bx-base-text-unit-info bx-base-content-card-meta"><div class="bx-base-general-unit-meta">__meta__</div></div></bx_if:meta>
+            <bx_if:show_buy>
+                <div class="bx-snipcart-unit-actions bx-base-content-card-actions bx-menu-btn-size-small">
+                    <a class="bx-btn bx-btn-primary bx-snipcart-buy" href="__buy_url__">__buy_title__</a>
+                </div>
+            </bx_if:show_buy>
+        </div>
+    </div>
 </div>

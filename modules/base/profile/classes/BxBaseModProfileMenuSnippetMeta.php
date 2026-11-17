@@ -19,12 +19,6 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
     protected $_aConnectionToFunctionCheck;
 
     /**
-     * The menu is drawn on a profile's card (unit_card.html), as the apps' card: two buttons at most, the first
-     * one the main (primary) one.
-     */
-    protected $_bCard;
-
-    /**
      * The friends' and followers' counts share one group of avatars, drawn before the first of them
      * (BxBaseModProfileTemplate::getConnectionsPreview); whether it is drawn for the current profile.
      */
@@ -115,11 +109,6 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
         }
 
         return $this->getUnitMetaItemCustom($this->_getConnectionsPreview() . $sCounter);
-    }
-
-    public function setCard($bCard)
-    {
-        $this->_bCard = (bool)$bCard;
     }
 
     /**

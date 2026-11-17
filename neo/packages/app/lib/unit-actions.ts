@@ -81,6 +81,9 @@ const UNIT_VIEW_ACTIONS: Record<string, UnitViewAction> = {
     bx_groups: { title: 'View group', icon: 'CircleArrowRight' },
     bx_events: { title: 'View event', icon: 'CircleArrowRight' },
     bx_spaces: { title: 'View space', icon: 'CircleArrowRight' },
+    bx_courses: { title: 'View course', icon: 'CircleArrowRight' },
+    bx_channels: { title: 'View channel', icon: 'CircleArrowRight' },
+    bx_jobs: { title: 'View job', icon: 'CircleArrowRight' },
 };
 
 /** Its label (a translation key) and icon, as UNA's site card names them; "View" for a module with no card of its own. */

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- A channel's card with no button to offer says View channel. -->
+<resources name="ru" flag="ru" title="Russian" category="Channels">
+    <string_add name="_bx_channels_txt_unit_view"><![CDATA[Смотреть канал]]></string_add>
+</resources>

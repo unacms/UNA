@@ -1,0 +1,345 @@
+@charset "UTF-8";
+/**
+ * A content item's card in a gallery (unit_gallery.html of posts, ads, polls, albums, videos, photos, files, market,
+ * snipcart), drawn as the apps draw it (NEO: UnitContentCard in components/units/helpers.js) and with the metrics of
+ * the profile card (modules/base/profile/template/css/unit_card.css): 20px corners, 8px padding, a 16:9 picture with
+ * 12px corners where the item has one (no empty box where it has none), the title 16/24 on up to two lines, the
+ * summary, and the byline (the snippet meta menu) at the card's foot, so the bylines of a row line up. The whole card
+ * leads to the item; it has no buttons but a module's own (snipcart's Buy).
+ *
+ * Below 640px the card is a row: a 56px thumbnail, the title over the byline.
+ */
+
+.bx-base-content-card {
+    box-sizing: border-box;
+}
+
+.bx-base-content-card .bx-base-content-card-cnt {
+    position: relative;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 0.75rem;
+    height: 100%;
+    margin: 0;
+    padding: 0.75rem;
+    box-sizing: border-box;
+    border-radius: 1.25rem;
+    text-align: left;
+}
+
+/* a module's slots before and after the card's content, when they are empty */
+.bx-base-content-card .bx-base-text-unit-content-before:empty,
+.bx-base-content-card .bx-base-text-unit-content-after:empty {
+    display: none;
+}
+
+/* ---------- the picture ---------- */
+
+.bx-base-content-card .bx-base-content-card-media {
+    position: relative;
+    display: block;
+    -webkit-flex: none;
+    flex: none;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background-color: rgba(127, 127, 127, 0.16);
+}
+.bx-base-content-card .bx-base-content-card-img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    object-fit: cover;
+}
+/* an item that has a type but no picture (a file): its icon in the picture's place */
+.bx-base-content-card .bx-base-content-card-icon {
+    position: absolute;
+    inset: 0;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #71717a;
+}
+.bx-base-content-card .bx-base-content-card-icon .sys-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+/* a badge on the picture (a video's length) */
+.bx-base-content-card .bx-base-content-card-media-badge {
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    display: none;
+    padding: 0 0.375rem;
+    border-radius: 0.375rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+}
+
+/* ---------- the text ---------- */
+
+.bx-base-content-card .bx-base-content-card-info {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.bx-base-content-card .bx-base-content-card-name {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+.bx-base-content-card .bx-base-content-card-name .bx-base-text-unit-badges:empty {
+    display: none;
+}
+.bx-base-text-unit.bx-base-content-card a.bx-base-content-card-title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    /* NEO's text-foreground: neutral-950, and neutral-100 in dark */
+    color: #0a0a0c;
+    text-decoration: none;
+}
+.bx-base-text-unit.bx-base-content-card a.bx-base-content-card-title:hover {
+    text-decoration: underline;
+}
+.dark .bx-base-text-unit.bx-base-content-card a.bx-base-content-card-title {
+    color: #f4f4f5;
+}
+
+.bx-base-content-card .bx-base-content-card-summary {
+    display: none;
+    overflow: hidden;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #52525b;
+}
+.dark .bx-base-content-card .bx-base-content-card-summary {
+    color: #a1a1aa;
+}
+.bx-base-content-card .bx-base-content-card-summary:empty {
+    display: none !important;
+}
+
+/* the byline: the snippet meta menu on one 20px line, "Name · 3 days ago", 14px */
+.bx-base-content-card .bx-base-content-card-meta,
+.bx-base-content-card .bx-base-content-card-meta .bx-base-general-unit-meta {
+    min-width: 0;
+    padding: 0;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #52525b;
+}
+.dark .bx-base-content-card .bx-base-content-card-meta,
+.dark .bx-base-content-card .bx-base-content-card-meta .bx-base-general-unit-meta {
+    color: #a1a1aa;
+}
+.bx-base-content-card .bx-base-content-card-meta ul.bx-menu-custom {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-align-items: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+    height: 1.25rem;
+    overflow: hidden;
+}
+.bx-base-content-card .bx-base-content-card-meta ul.bx-menu-custom > li {
+    -webkit-flex: 0 1 auto;
+    flex: 0 1 auto;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+}
+.bx-base-content-card .bx-base-content-card-meta ul.bx-menu-custom > li.bx-menu-item-nl {
+    display: none;
+}
+.bx-base-content-card .bx-base-content-card-meta .bx-base-profile-unit-meta-item,
+.bx-base-content-card .bx-base-content-card-meta .bx-base-general-unit-meta-item,
+.bx-base-content-card .bx-base-content-card-meta li > span,
+.bx-base-content-card .bx-base-content-card-meta li > a {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    min-width: 0;
+    padding: 0;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.bx-base-content-card .bx-base-content-card-meta a {
+    color: inherit;
+}
+.bx-base-content-card .bx-base-content-card-meta li + li:not(.bx-menu-item-nl)::before {
+    content: "·";
+    -webkit-flex: none;
+    flex: none;
+    margin: 0 0.25rem;
+}
+.bx-base-content-card .bx-base-content-card-meta .bx-base-general-unit-meta-div {
+    display: none;
+}
+/* the author: a 20px avatar before the name (BxBaseModGeneralMenuSnippetMeta on a card) */
+.bx-base-content-card .bx-base-content-card-author {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 0;
+}
+.bx-base-content-card .bx-base-content-card-author-ava,
+.bx-base-content-card .bx-base-content-card-author-ava .bx-def-icon-size,
+.bx-base-content-card .bx-base-content-card-author-ava .bx-def-unit-img {
+    -webkit-flex: none;
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    line-height: 1.25rem;
+}
+.bx-base-content-card .bx-base-content-card-author-ava p.bx-base-pofile-unit-thumb {
+    font-size: 0.625rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+}
+.bx-base-content-card .bx-base-content-card-author-ava .bx-base-pofile-unit-online {
+    display: none;
+}
+.bx-base-content-card .bx-base-content-card-author-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+/* icons in the byline (a rating's stars) at the line's size */
+.bx-base-content-card .bx-base-content-card-meta svg.sys-icon,
+.bx-base-content-card .bx-base-content-card-meta .bx-vote-star {
+    width: 1rem;
+    height: 1rem;
+    font-size: 1rem;
+}
+/* a price in the byline (ads, market): in the title's colour */
+.bx-base-content-card .bx-base-content-card-meta .price,
+.bx-base-content-card .bx-base-content-card-price {
+    font-weight: 600;
+    color: #0a0a0c;
+}
+.dark .bx-base-content-card .bx-base-content-card-meta .price,
+.dark .bx-base-content-card .bx-base-content-card-price {
+    color: #f4f4f5;
+}
+.bx-base-content-card .bx-base-content-card-foot {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+}
+.bx-base-content-card .bx-base-content-card-foot > .bx-base-content-card-meta {
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+.bx-base-content-card .bx-base-content-card-foot > .bx-base-content-card-price {
+    -webkit-flex: none;
+    flex: none;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+/* a module's own button (snipcart's Buy) under the byline */
+.bx-base-content-card .bx-base-content-card-actions {
+    display: none;
+}
+.bx-base-content-card .bx-base-content-card-actions .bx-btn {
+    width: 100%;
+    box-sizing: border-box;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+/* ---------- the card (from 640px) ---------- */
+
+@media (min-width: 640px) {
+    .bx-base-content-card .bx-base-content-card-cnt {
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        -webkit-align-items: stretch;
+        align-items: stretch;
+        gap: 0.25rem;
+        padding: 0.5rem;
+    }
+
+    .bx-base-content-card .bx-base-content-card-media {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+    }
+    .bx-base-content-card .bx-base-content-card-icon {
+        font-size: 3rem;
+    }
+    .bx-base-content-card .bx-base-content-card-icon .sys-icon {
+        width: 3rem;
+        height: 3rem;
+    }
+    .bx-base-content-card .bx-base-content-card-media-badge {
+        display: block;
+    }
+
+    .bx-base-content-card .bx-base-content-card-info {
+        -webkit-flex: 1 1 auto;
+        flex: 1 1 auto;
+        gap: 0.75rem;
+        padding: 0.25rem;
+    }
+    .bx-base-content-card .bx-base-content-card-summary {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+    }
+    /* the byline at the card's foot, so the bylines of a row line up */
+    .bx-base-content-card .bx-base-content-card-foot,
+    .bx-base-content-card .bx-base-content-card-info > .bx-base-content-card-meta {
+        margin-top: auto;
+    }
+    .bx-base-content-card .bx-base-content-card-actions {
+        display: block;
+    }
+}

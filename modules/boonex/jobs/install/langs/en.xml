@@ -443,6 +443,7 @@
     <string name="_bx_jobs_txt_account_pending"><![CDATA[This job is pending approval, please wait until it is activated.]]></string>
     <string name="_bx_jobs_txt_account_suspended"><![CDATA[This job is suspended.]]></string>
     <string name="_bx_jobs_txt_status_hidden"><![CDATA[This job was hidden.]]></string>
+    <string name="_bx_jobs_txt_unit_view"><![CDATA[View job]]></string>
     <string name="_bx_jobs_txt_N_fans"><![CDATA[{0} assignees]]></string>
     <string name="_bx_jobs_txt_ban_added"><![CDATA[Banned]]></string>
     <string name="_bx_jobs_txt_role"><![CDATA[Role]]></string>

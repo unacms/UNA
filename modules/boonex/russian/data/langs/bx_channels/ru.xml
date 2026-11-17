@@ -259,6 +259,7 @@
     <string name="_bx_channels_txt_sample_vote_single"><![CDATA[голос за канал]]></string>
     <string name="_bx_channels_txt_sample_score_up_single"><![CDATA[голос за канал]]></string>
     <string name="_bx_channels_txt_sample_score_down_single"><![CDATA[голос против канала]]></string>
+    <string name="_bx_channels_txt_unit_view"><![CDATA[Смотреть канал]]></string>
     <string name="_bx_channels_msg_empty_author"><![CDATA['Автор по умолчанию для автоматически создаваемых каналов' пуст. Вам нужно выбрать профиль в этой настройке.]]></string>
 	
     <string name="_bx_channels_txt_ntfs_timeline_post_common"><![CDATA[В канале <b class="bx-ntfs-content-profile">{owner_name}</b> новая публикация <b class="bx-ntfs-content-entry">{subentry_sample}</b>]]></string>

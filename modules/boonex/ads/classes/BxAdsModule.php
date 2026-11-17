@@ -50,6 +50,21 @@ class BxAdsModule extends BxBaseModTextModule
         );
     }
     
+    /**
+     * An ad's price as its card shows it: in the seller's currency, or "Free".
+     */
+    public function getPriceText($aContentInfo)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        if(empty($CNF['FIELD_PRICE']) || empty($aContentInfo[$CNF['FIELD_PRICE']]))
+            return _t('_bx_ads_txt_free');
+
+        return _t_format_currency_ext((float)$aContentInfo[$CNF['FIELD_PRICE']], [
+            'sign' => BxDolPayments::getInstance()->getCurrencySign((int)$aContentInfo[$CNF['FIELD_AUTHOR']])
+        ]);
+    }
+
     public function decodeDataApi ($aData, $bExtended = false)
     {
         $CNF = $this->_oConfig->CNF;
@@ -57,7 +72,9 @@ class BxAdsModule extends BxBaseModTextModule
         $aResult = array_merge(parent::decodeDataApi($aData, $bExtended), [
             $CNF['FIELD_PRICE'] => $aData[$CNF['FIELD_PRICE']],
             $CNF['FIELD_QUANTITY'] => $aData[$CNF['FIELD_QUANTITY']],
-            $CNF['FIELD_NOTES_PURCHASED'] => $aData[$CNF['FIELD_NOTES_PURCHASED']]
+            $CNF['FIELD_NOTES_PURCHASED'] => $aData[$CNF['FIELD_NOTES_PURCHASED']],
+            // the price as the site shows it, in the seller's currency ("Free" when there is none)
+            'price_text' => $this->getPriceText($aData)
         ]);
 
         if($this->_oConfig->isSources() && !empty($aData[$CNF['FIELD_URL']]))
@@ -2766,11 +2783,7 @@ class BxAdsModule extends BxBaseModTextModule
             $sCategoryLink = bx_absolute_url(BxDolPermalinks::getInstance()->permalink($CNF['URL_CATEGORIES'], array($CNF['GET_PARAM_CATEGORY'] => $iCategory)));
         }
 
-        $sPrice = _t('_bx_ads_txt_free');
-        if(!empty($CNF['FIELD_PRICE']) && !empty($aContentInfo[$CNF['FIELD_PRICE']]))
-            $sPrice = _t_format_currency_ext((float)$aContentInfo[$CNF['FIELD_PRICE']], [
-                'sign' => BxDolPayments::getInstance()->getCurrencySign((int)$aContentInfo[$CNF['FIELD_AUTHOR']])
-            ]);
+        $sPrice = $this->getPriceText($aContentInfo);
 
         $aResult = parent::_getContentForTimelinePost($aEvent, $aContentInfo, $aBrowseParams);
 
