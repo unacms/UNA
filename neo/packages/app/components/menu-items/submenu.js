@@ -3,6 +3,7 @@ import { NeoButton, NeoButtonLink, useNeoButtonExpoUI } from 'app/design/control
 import { sanitazeUrl } from 'app/lib/util';
 
 const isWeb = Platform.OS === 'web';
+const TAB_CLASS_NAMES = { text: 'font-medium' };
 
 export default function MenuItemSubmenu({ icon, title, pressed, disabled, addon, onPress, href }) {
     const controlSize = 'small';
@@ -29,6 +30,9 @@ export default function MenuItemSubmenu({ icon, title, pressed, disabled, addon,
         addon,
         haptics: 'Medium',
         onPress,
+        // A tab is navigation, not an action: the menus' medium weight (main menu, More, dropdown rows), not the
+        // buttons' semibold.
+        classNames: TAB_CLASS_NAMES,
     };
 
     const finalHref = sanitazeUrl(href);

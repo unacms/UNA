@@ -19,8 +19,8 @@ const MENU_ITEM_SIZES = {
 const MENU_ITEM_BASE = 'group flex w-full min-w-0 flex-row items-center font-medium web:hover:bg-muted/80 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer';
 const MENU_ICON_BASE = 'flex shrink-0 items-center bg-muted/50 web:group-hover:bg-border rounded-full justify-center web:transition-colors web:duration-150 web:ease-out';
 const MENU_ICON_ACTIVE_BASE = 'flex shrink-0 items-center bg-primary rounded-full justify-center';
-const MENU_TEXT_BASE = 'block w-full font-semibold text-secondary-foreground web:group-hover:text-foreground px-2 web:transition-colors web:duration-150 web:ease-out';
-const MENU_TEXT_SELECTED_BASE = 'block w-full font-semibold text-accent-foreground px-2 web:transition-colors web:duration-150 web:ease-out';
+const MENU_TEXT_BASE = 'block w-full font-medium text-secondary-foreground web:group-hover:text-foreground px-2 web:transition-colors web:duration-150 web:ease-out';
+const MENU_TEXT_SELECTED_BASE = 'block w-full font-medium text-accent-foreground px-2 web:transition-colors web:duration-150 web:ease-out';
 
 export const settingsElements = {
     conductor: {

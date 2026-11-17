@@ -240,6 +240,10 @@ Use `NeoButton`, `NeoButtonLink` or `NeoButtonRef` from `app/design/controls`. T
 - `NeoButtonGroup` joins buttons into one control with the same `style`, `controlSize`, `borderShape`, `role` / `tint` and `width` axes. The group paints the style's surface once (no border: outline and glass are shadow rings); each NeoButton inside becomes a segment through context, with the group's style and size, only the state washes, square inner corners and no hit area over its neighbours. Segments always use the JS surface; a `glass` group on iOS 26+ draws native liquid glass behind them. Recipes are `neo_button.group` in `settings/theme/buttons.js`. Object menus (reactions, likes, scores) build theirs through `ButtonsGroupMenu`, which uses `group.defaultStyle`.
 - `/pg` is a playground for every axis (`apps/next/app/pg/page.js`, `apps/expo/app/pg/`). It isn't gated, so production builds serve it too.
 
+### Menu labels
+
+Every menu's labels are the same in NEO and UNA: 14px on a 20px line, medium (500), normal tracking; `text-secondary-foreground` at rest (gray-600, gray-400 in dark), `text-foreground` on hover, `text-accent-foreground` for the current item (blue-700, blue-300 in dark). That covers the main menu and its More rows, a section's subtabs (`menu-items/submenu.js`, which sets `font-medium` over NeoButton's semibold: tabs are navigation, not actions), dropdown rows (`dropdown_menu.item_text`, the footer's language, theme and sounds switchers among them) and the home menu grid. UNA's popup rows (`.bx-popup ... .bx-stl-mit` in `template/css/tailwind.css`) and current subtab (`.bx-menu-main-submenu`) match. Buttons keep semibold.
+
 ### Menu button style and size
 
 UNA says per menu how its buttons look and how big they are: Studio > Navigation > a menu > "Button style" (Automatic, Regular, Glass, Plain) and "Button size" (Automatic, Mini, Small, Regular, Large). The menu's API carries them as `button_style` and `button_size` (empty for Automatic).

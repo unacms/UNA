@@ -1952,7 +1952,7 @@
         @apply w-8 h-8 rounded-full object-cover; /* a picture fills the circle */
     }
     .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .bx-stl-mit {
-        @apply text-sm font-semibold text-gray-600 dark:text-gray-400;
+        @apply text-sm font-medium text-gray-600 dark:text-gray-400; /* every menu's label: 14px medium, as the main menu's tabs and NEO's menus */
         transition: color 150ms cubic-bezier(0, 0, 0.2, 1);
     }
     .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li:hover .bx-stl-mii:has(> *) {
@@ -1975,9 +1975,6 @@
        blue-900 at 60% and blue-300 in dark). NEO's More does the same (DropdownMenu plainIcons, components/menu-items/topmenu.tsx). */
     #bx-toolbar .bx-menu-submenu-more-auto > li > a:has(> .bx-stl-mii > *) {
         padding-inline-start: calc(0.75rem - 1px); /* the link's 1px border makes it 12px, as in the tabs */
-    }
-    #bx-toolbar .bx-menu-submenu-more-auto > li .bx-stl-mit {
-        @apply font-medium; /* the tabs' weight */
     }
     #bx-toolbar .bx-menu-submenu-more-auto > li .bx-stl-mii:has(> *),
     #bx-toolbar .bx-menu-submenu-more-auto > li:hover .bx-stl-mii:has(> *) {
@@ -2030,8 +2027,9 @@
     }
 
     /* Common elements: Page Submenu */
+    /* The current subtab's label in the current tab's colour, as the main menu's and NEO's subtabs. */
     .bx-artificer .bx-menu-main-submenu .bx-menu-item.bx-menu-tab-active a {
-        @apply text-gray-900 dark:text-gray-100;
+        @apply text-blue-700 dark:text-blue-300;
     }
     .bx-artificer .bx-menu-main-submenu .bx-menu-item.bx-menu-tab-active .bx-mi-underline {
         @apply bg-blue-500 group-hover:bg-blue-500;
