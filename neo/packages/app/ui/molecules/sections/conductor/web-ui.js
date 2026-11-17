@@ -566,7 +566,7 @@ function getAddMenuItems(menu, filter, currentUser) {
  * - "Add" → opens the create form in a modal (one FormModal for all buttons)
  * - anything else with a link → plain navigation
  */
-const AddMenu = ({ menu, filter, only }) => {
+const AddMenu = ({ menu, filter, only, controlSize = 'small' }) => {
     // false = closed, 'loading' while the form JSON is fetched, then the form.
     const [pageData, setPageData] = useState(false)
     const { currentUser } = useCurrentUser()
@@ -588,7 +588,7 @@ const AddMenu = ({ menu, filter, only }) => {
                             params={{
                                 trigger: {
                                     style: 'bordered',
-                                    controlSize: 'small',
+                                    controlSize,
                                 },
                             }}
                         />
@@ -599,7 +599,7 @@ const AddMenu = ({ menu, filter, only }) => {
                             label={t(button.title)}
                             image={button.icon}
                             style="bordered"
-                            controlSize="small"
+                            controlSize={controlSize}
                             borderShape="circle"
                             onPress={() => {
                                 setPageData('loading')
@@ -1382,8 +1382,9 @@ export const TabBar = ({
             sectionSidebar={layoutName !== 'navigator' || getMenuSectionNav(menu) === 'sidebar'}
             omitDefaultBackground={omitDefaultBackground}
             addButtons={addButtons}
-            actionButtons={<AddMenu menu={menu} filter="hideInTopBar" only="actions" />}
-            toolButtons={<AddMenu menu={menu} filter="hideInTopBar" only="search" />}
+            // Regular, as the header's own buttons: the section's two-line header is laid out on the same 44px grid.
+            actionButtons={<AddMenu menu={menu} filter="hideInTopBar" only="actions" controlSize="regular" />}
+            toolButtons={<AddMenu menu={menu} filter="hideInTopBar" only="search" controlSize="regular" />}
             layout={layout}
             title={t(menuSettings?.name)}
             icon={sectionIcon}
