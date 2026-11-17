@@ -1931,7 +1931,7 @@
     /*
      * Popup menu items look and behave like NEO's regular menu items (theme.dropdown_menu in NEO's settings): a 20px
      * glyph in a 32px circle, 8px from the row's side and from the label and 6px from its top and bottom, and a 14px
-     * semibold label. At rest the label and the
+     * medium label. At rest the label and the
      * glyph are both a step lighter than the text; on hover they turn to the full text colour while the circle darkens,
      * all in the sliding highlight's 150ms and curve (Tailwind's ease-out), so nothing swaps ahead of the rest. The current item is the
      * accent row (blue-100 / blue-900, its label blue-700 / blue-300) with a solid blue-600 circle and a white glyph,
