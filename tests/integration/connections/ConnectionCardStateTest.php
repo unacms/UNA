@@ -8,7 +8,8 @@ use PHPUnit\Framework\Attributes\Group;
  *   counts (`counts`: friends_count, followers_count), as the card shows them;
  * - `system/get_card_state/TemplServiceConnections` gives one profile's counts and the state of its friend and follow
  *   buttons, for a change made somewhere else (another tab or device, the other person);
- * - the sockets event of a removed connection names both profiles, as the one of an added connection does.
+ * - the sockets event of a removed connection names both profiles, as the one of an added connection does
+ *   (SocketPayloadsTest).
  * Nothing is sent to a guest, about the viewer's own profile, for another kind of connection, or when cards have no
  * counts (`sys_api_conn_in_prof_units`).
  *
@@ -160,18 +161,5 @@ class ConnectionCardStateTest extends BxDolIntegrationTestCase
     {
         $this->assertTrue((bool)bx_srv('system', 'is_safe_service', ['get_card_state'], 'TemplServices'));
         $this->assertTrue((bool)bx_srv('system', 'is_safe_service', ['perform'], 'TemplServices'));
-    }
-
-    public function testRemovedConnectionEventNamesBothProfiles(): void
-    {
-        $sSource = file_get_contents(BX_DIRECTORY_PATH_INC . 'classes/BxDolConnection.php');
-
-        $iRemoved = strpos($sSource, 'public function onRemoved(');
-        $this->assertNotFalse($iRemoved);
-
-        $sRemoved = substr($sSource, $iRemoved, 900);
-        $this->assertStringContainsString("'action' => 'deleted'", $sRemoved);
-        $this->assertStringContainsString("'initiator' => \$iInitiator", $sRemoved);
-        $this->assertStringContainsString("'content' => \$iContent", $sRemoved);
     }
 }

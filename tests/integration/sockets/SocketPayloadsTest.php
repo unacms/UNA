@@ -81,9 +81,12 @@ class SocketPayloadsTest extends BxDolIntegrationTestCase
 
         $this->_aSent = [];
         $oConnection->onRemoved($iInitiator, $iContent, 0);
+        // both profiles, as for an added connection: the apps update the other one's card (ids only)
         $aDeleted = [
             'object' => 'sys_profiles_friends',
             'action' => 'deleted',
+            'initiator' => $iInitiator,
+            'content' => $iContent,
         ];
         $this->assertSame([
             ['sys_connections_' . $iInitiator, 'changed', $aDeleted],
