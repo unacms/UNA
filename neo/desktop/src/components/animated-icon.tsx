@@ -13,16 +13,13 @@ import { type AnimatedIconData, type AnimationController, createAnimatedElement,
 import type { IconName } from './icon';
 import { SiteIcon } from './site-icon';
 
-const GLOB = import.meta.glob<AnimatedIconData>(['xymbols-dist/generated/animated/*.js', '!**/index.js'], { import: 'default' });
-/** The loaders by Lucide name (the file's name). */
-const ANIMATED = new Map(Object.entries(GLOB).map(([path, load]) => [path.slice(path.lastIndexOf('/') + 1, -'.js'.length), load]));
-
 const loaded = new Map<string, AnimatedIconData | null>();
 
-/** The loader of an icon's animation, by its Lucide name; null for none. */
-export function animationLoader(name: string): (() => Promise<AnimatedIconData>) | null {
+/** The loader of an icon's animation, by its Lucide name; null for none. The map of loaders is a chunk of its own. */
+export async function animationLoader(name: string): Promise<(() => Promise<AnimatedIconData>) | null> {
     if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(name)) return null;
-    return ANIMATED.get(name) ?? null;
+    const { animated } = await import('./icon-loaders');
+    return animated.get(name) ?? null;
 }
 
 type Props = {
@@ -46,19 +43,16 @@ export function AnimatedIcon({ name, fallback, active = false, size = 20, group 
 
     useEffect(() => {
         if (!name || loaded.has(name)) return;
-        const load = animationLoader(name);
-        if (!load) {
-            loaded.set(name, null);
-            return;
-        }
         let live = true;
-        load().then(
-            (icon) => {
-                loaded.set(name, icon);
-                if (live) setFresh({ name, icon });
-            },
-            () => loaded.set(name, null),
-        );
+        animationLoader(name)
+            .then((load) => (load ? load() : null))
+            .then(
+                (icon) => {
+                    loaded.set(name, icon);
+                    if (live && icon) setFresh({ name, icon });
+                },
+                () => loaded.set(name, null),
+            );
         return () => {
             live = false;
         };

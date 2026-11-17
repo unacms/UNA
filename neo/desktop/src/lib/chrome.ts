@@ -37,7 +37,7 @@ export async function windowMaterial(): Promise<Material> {
 }
 
 /**
- * Set the root's data attributes, before the first render (main.tsx awaits it while the window
+ * Set the root's data attributes, before the first render (boot.tsx awaits it while the window
  * is still hidden, so nothing is drawn on the wrong background).
  */
 export async function initChrome(root: HTMLElement = document.documentElement): Promise<void> {

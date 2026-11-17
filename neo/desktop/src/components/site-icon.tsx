@@ -8,13 +8,13 @@ import { useEffect, useState } from 'react';
 
 import { Icon, type IconName, isIconName, svgMarkup } from './icon';
 
-const LUCIDE = import.meta.glob<string>('../../node_modules/lucide-static/icons/*.svg', { query: '?raw', import: 'default' });
-
 const loaded = new Map<string, string | null>();
 
-function loader(name: string): (() => Promise<string>) | null {
+/** The loader of a Lucide icon, by name; null for none. The map of loaders is a chunk of its own. */
+async function loader(name: string): Promise<(() => Promise<string>) | null> {
     if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(name)) return null;
-    return LUCIDE[`../../node_modules/lucide-static/icons/${name}.svg`] ?? null;
+    const { lucide } = await import('./icon-loaders');
+    return lucide.get(name) ?? null;
 }
 
 type Props = { name: string | null | undefined; fallback: IconName; size?: 16 | 20 };
@@ -24,14 +24,14 @@ export function SiteIcon({ name, fallback, size = 20 }: Props) {
     const [html, setHtml] = useState<string | null>(() => (name && !own ? (loaded.get(name) ?? null) : null));
     useEffect(() => {
         if (!name || own || loaded.has(name)) return;
-        const load = loader(name);
-        if (!load) {
-            loaded.set(name, null);
-            return;
-        }
         let live = true;
-        load()
+        loader(name)
+            .then((load) => (load ? load() : null))
             .then((raw) => {
+                if (raw === null) {
+                    loaded.set(name, null);
+                    return;
+                }
                 const markup = svgMarkup(raw);
                 loaded.set(name, markup);
                 if (live) setHtml(markup);
