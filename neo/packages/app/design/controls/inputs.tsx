@@ -40,6 +40,8 @@ interface CustomInputProps extends Omit<TextInputProps, 'style'> {
     style?: any;
     rounded?: keyof typeof InputRounded;
     size?: keyof typeof InputSize;
+    /** Read only, but opens a picker (a date field): drawn as an ordinary field, not locked. */
+    pickerTrigger?: boolean;
 }
 
 interface InputWithIconsProps extends CustomInputProps {
@@ -64,7 +66,7 @@ const getInputStyleProps = (style: any, multiline?: boolean) =>
         : {};
 
 export const Input = forwardRef<TextInputInstance, CustomInputProps>(
-    ({ className, style, rounded = InputRounded.default, size = DEFAULT_SIZE, ...props }, ref) => {
+    ({ className, style, rounded = InputRounded.default, size = DEFAULT_SIZE, pickerTrigger, ...props }, ref) => {
         const labelInside = useContext(InputLabelInsideContext) && isLabelInsideSize(size);
         // A read only field takes no focus either, and looks it.
         const locked = !!props.readOnly || props.editable === false;
@@ -75,7 +77,7 @@ export const Input = forwardRef<TextInputInstance, CustomInputProps>(
                     inputSettings.size[size] ?? inputSettings.size.regular,
                     labelInside && inputSettings.adaptive_input_inside,
                     rounded === InputRounded.full && inputSettings.rounded.full,
-                    locked && inputSettings.locked,
+                    locked && !pickerTrigger && inputSettings.locked,
                     className,
                 )}
                 {...getInputStyleProps(style, props.multiline)}
