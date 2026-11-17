@@ -5,15 +5,15 @@ import { EmptyState } from '../../components/empty-state';
 import { Icon } from '../../components/icon';
 import { badgeNames, ProfileBadges } from '../../components/profile-badges';
 import { InlineError, SkeletonRows } from '../../components/skeleton';
-import { ago } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
-import { locale, t } from '../../lib/i18n';
+import { t } from '../../lib/i18n';
 import { useMediaSrc, usePicture } from '../../lib/media';
 import { useNavigation, useRoute } from '../../lib/navigation';
 import { isWindowGesture, isWindowKey, useOpenInWindow } from '../../lib/open-in-window';
 import { emptyListText, useFillEmptyPages } from '../../lib/paging';
 import { durationText, fetchVideos, mediaState, thumbnail, type Video, videoKey, videoListKey, type VideosOf, viewsText } from './videos';
+import { ago, exactTime } from '../../lib/dates';
 
 /** The still of a row: a 16:9 box (drawn before the picture loads), the length over it. */
 function Thumbnail({ video: v }: { video: Video }) {
@@ -100,7 +100,7 @@ export function VideoRow({ video: v, selected }: { video: Video; selected: boole
                     ) : null}
                 </span>
                 <span className="row-sub" aria-hidden="true">
-                    <time dateTime={v.created_at} title={new Date(v.created_at).toLocaleString(locale())}>
+                    <time dateTime={v.created_at} title={exactTime(v.created_at)}>
                         {ago(v.created_at)}
                     </time>
                     <span>·</span>

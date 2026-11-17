@@ -3,7 +3,7 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 
 import { problemMessage } from 'una-api';
 
-import { longTime, useContextGroup } from '../../components/activity-card';
+import { useContextGroup } from '../../components/activity-card';
 import { EmptyState } from '../../components/empty-state';
 import { ProfileBadges } from '../../components/profile-badges';
 import { RichText } from '../../components/rich-text';
@@ -32,6 +32,7 @@ import { MoreButton } from './photo-list';
 import { PhotoDropZone, usePhotoUploads } from './photo-uploads';
 import { sendBlocker, tookAll } from './upload-answers';
 import { afterAddedToAlbum, type Album, albumFromLists, albumItemsKey, albumKey, dropAlbum, fetchAlbumItems, itemsText, putAlbum } from './photos';
+import { longTime } from '../../lib/dates';
 
 /**
  * Adding photos to the album: they upload as they are picked or dropped, then go in at its end.

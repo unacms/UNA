@@ -6,8 +6,7 @@ import { Icon } from '../../components/icon';
 import { ProfileBadges } from '../../components/profile-badges';
 import { RichText } from '../../components/rich-text';
 import { Tooltip } from '../../components/tooltip';
-import { longTime } from '../../components/activity-card';
-import { ago, ApiError, ensureOk, isGone, retryOnce, unwrap } from '../../lib/api';
+import { ApiError, ensureOk, isGone, retryOnce, unwrap } from '../../lib/api';
 import { useWindowAnnounce } from '../../lib/announce';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
@@ -28,6 +27,7 @@ import { neighbours, subscribeTaskOrder, taskOrder } from './board';
 import { TaskCheck } from './task-list';
 import { TaskProperties, TaskPropertyChips, useTaskKeys } from './task-props';
 import { dropTask, dueText, isOverdue, type Task, taskFromLists, taskKey, taskListsKey } from './tasks';
+import { ago, longTime } from '../../lib/dates';
 
 /** A profile with its badges after the name. */
 function Person({ profile }: { profile: NonNullable<Task['author']> }) {

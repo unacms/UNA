@@ -133,22 +133,6 @@ export function ensureOk(result: { error?: unknown; response: Response }): void 
     if (result.error !== undefined || !result.response.ok) fail(result);
 }
 
-const rtf = new Intl.RelativeTimeFormat(locale(), { numeric: 'auto' });
-const steps: [Intl.RelativeTimeFormatUnit, number][] = [
-    ['year', 31536000],
-    ['month', 2592000],
-    ['week', 604800],
-    ['day', 86400],
-    ['hour', 3600],
-    ['minute', 60],
-];
-
-export function ago(iso: string): string {
-    const seconds = (new Date(iso).getTime() - Date.now()) / 1000;
-    for (const [unit, size] of steps) if (Math.abs(seconds) >= size) return rtf.format(Math.round(seconds / size), unit);
-    return rtf.format(0, 'second');
-}
-
 /**
  * How long a save waits for the site's answer. The API client gives up only on a site it can't
  * reach (api.rs CONNECT_TIMEOUT), and a form takes no change while it is being saved, so a save

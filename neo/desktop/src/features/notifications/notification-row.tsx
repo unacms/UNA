@@ -6,12 +6,12 @@ import { Avatar } from '../../components/avatar';
 import { Icon } from '../../components/icon';
 import { ProfileBadges } from '../../components/profile-badges';
 import { SiteMark } from '../../components/site-mark';
-import { ago } from '../../lib/api';
 import { useSiteInfo } from '../../lib/branding';
 import { useApp } from '../../lib/context';
-import { locale, t } from '../../lib/i18n';
+import { t } from '../../lib/i18n';
 import { useOpenProfile } from '../profile/profile-link';
 import { kindBadge } from './kind-icon';
+import { ago, exactTime } from '../../lib/dates';
 
 type Notification = Schema<'Notification'>;
 
@@ -141,7 +141,7 @@ export function NotificationRow({ notification: n, selected, onOpen, onOpenInWin
                     </span>
                     <span id={metaId} className="notification-meta">
                         {day ? <span className="sr-only">{`${day}, `}</span> : null}
-                        <time dateTime={n.created_at} title={new Date(n.created_at).toLocaleString(locale())}>
+                        <time dateTime={n.created_at} title={exactTime(n.created_at)}>
                             {ago(n.created_at)}
                         </time>
                         {n.read ? null : <span className="sr-only">{`, ${t('unread')}`}</span>}

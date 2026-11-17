@@ -1,13 +1,12 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { type FormEvent, type KeyboardEvent, type ReactNode, useEffect, useId, useRef, useState } from 'react';
 
-import { longTime } from '../../components/activity-card';
 import { Avatar } from '../../components/avatar';
 import { Icon, type IconName } from '../../components/icon';
 import { unwrap } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
-import { locale, t, tn } from '../../lib/i18n';
+import { t, tn } from '../../lib/i18n';
 import { rich } from '../../lib/i18n-rich';
 import { type MenuEntry, showMenu, useMenuExpanded } from '../../lib/native-menu';
 import { useSettings } from '../../lib/settings';
@@ -19,6 +18,7 @@ import { changeTask, dateOf, dueFromDate, logTime, type PropertyPick, PROPERTY_K
 import { useContextMembers, useTaskChoices } from './task-board';
 import { useNow, useTimerAction } from './task-timers';
 import { dueText, fetchTaskLists, isOverdue, type Task, taskListsKey } from './tasks';
+import { dateFormat, longTime } from '../../lib/dates';
 
 /** The id of a property's button (its key opens it from anywhere in the task). */
 const propId = (task: Pick<Task, 'id'>, kind: PropertyKind | 'due') => `task-${task.id}-prop-${kind}`;
@@ -292,7 +292,7 @@ function TimeProperty({ task, readAt, announce }: { task: Task; readAt: number; 
                             {r.author ? <Avatar profile={r.author} size={16} /> : null}
                             <span>{clockText(r.seconds)}</span>
                             <time className="muted" dateTime={r.date}>
-                                {new Date(`${r.date}T12:00:00`).toLocaleDateString(locale(), { day: 'numeric', month: 'short' })}
+                                {dateFormat({ day: 'numeric', month: 'short' }).format(new Date(`${r.date}T12:00:00`))}
                             </time>
                             {r.text ? <bdi className="muted truncate">{r.text}</bdi> : null}
                         </li>

@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 
 import { problemMessage } from 'una-api';
 
-import { longTime, useContextGroup } from '../../components/activity-card';
+import { useContextGroup } from '../../components/activity-card';
 import { Icon } from '../../components/icon';
 import { ProfileBadges } from '../../components/profile-badges';
 import { RichText } from '../../components/rich-text';
@@ -25,6 +25,7 @@ import { viewsText } from '../videos/videos';
 import { EditTitleText } from './edit-title-text';
 import { EntryActions, EntryComments, useEntryItem } from './entry-item';
 import { dropPhoto, type Photo, photoFromLists, photoKey, photoSiblings, putPhoto, viewerLabel } from './photos';
+import { longTime } from '../../lib/dates';
 
 /** The picture of a photo, in a box of its shape: a button that shows it full size. */
 export function PhotoPicture({ photo: p, onView }: { photo: Photo; onView: () => void }) {

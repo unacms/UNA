@@ -6,10 +6,9 @@ import { Icon } from '../../components/icon';
 import { ProfileBadges } from '../../components/profile-badges';
 import { SegmentedTabs } from '../../components/segmented-tabs';
 import { InlineError, SkeletonRows } from '../../components/skeleton';
-import { ago } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
-import { locale, t } from '../../lib/i18n';
+import { t } from '../../lib/i18n';
 import { useMediaSrc, usePicture } from '../../lib/media';
 import { useNavigation, useRoute } from '../../lib/navigation';
 import { isWindowGesture, isWindowKey, useOpenInWindow } from '../../lib/open-in-window';
@@ -20,6 +19,7 @@ import { CategoryFilter, PageColumns } from '../page-blocks/page-blocks';
 import { SECTION_PAGES } from '../page-blocks/page-layout';
 import { usePostCategories } from './new-post';
 import { commentsText, FEED_LABELS, fetchPosts, type Post, postKey, postListKey, postRowText, type PostsFeed, POSTS_FEEDS, postsFeed, type PostsOf, postTime, readingText, stateText } from './posts';
+import { ago, exactTime } from '../../lib/dates';
 
 /** A post's cover in its row: the small copy, 3:2, or nothing for a post without one. */
 function Cover({ post }: { post: Post }) {
@@ -95,7 +95,7 @@ export function PostRow({ post: p, selected }: { post: Post; selected: boolean }
                         <span>{t('Anonymous')}</span>
                     ) : null}
                     {p.author || p.anonymous ? <span>·</span> : null}
-                    <time dateTime={when} title={new Date(when).toLocaleString(locale())}>
+                    <time dateTime={when} title={exactTime(when)}>
                         {ago(when)}
                     </time>
                     <span>·</span>

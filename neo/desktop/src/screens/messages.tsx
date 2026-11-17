@@ -6,7 +6,7 @@ import type { Schema } from 'una-api';
 import { unwrap } from '../lib/api';
 import { useApp } from '../lib/context';
 import { errorMessage } from '../lib/errors';
-import { locale, t, tn } from '../lib/i18n';
+import { t, tn } from '../lib/i18n';
 import { useNavigation, useRoute } from '../lib/navigation';
 import { isWindowGesture, isWindowKey, openElsewhereHint, useOpenInWindow } from '../lib/open-in-window';
 import { emptyListText, useFillEmptyPages } from '../lib/paging';
@@ -18,6 +18,7 @@ import { VisuallyHidden } from '../components/visually-hidden';
 import { choosePreopened, isPreopened, markPreopenedEntry, preopenedId, setPreopened } from '../features/messages/preopen';
 import { usePanesMode } from '../shell/layout';
 import { Pane, paneHeadingId, ToolbarButton } from '../shell/pane';
+import { exactTime, inboxTime } from '../lib/dates';
 
 type Conversation = Schema<'Conversation'>;
 
@@ -29,17 +30,6 @@ export function lastActivity(c: Pick<Conversation, 'last_reply_at' | 'created_at
 /** Newest first, by the last reply (or the start). */
 export function newestFirst(list: readonly Conversation[]): Conversation[] {
     return [...list].sort((a, b) => Date.parse(lastActivity(b)) - Date.parse(lastActivity(a)));
-}
-
-/** "09:14" today, "Yesterday", the weekday within the week ("Mon"), else "3 Nov" (with the year when not this one). */
-export function inboxTime(iso: string, now: Date = new Date()): string {
-    const d = new Date(iso);
-    const start = (x: Date) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
-    const days = Math.round((start(now) - start(d)) / 86_400_000);
-    if (days <= 0) return d.toLocaleTimeString(locale(), { hour: '2-digit', minute: '2-digit' });
-    if (days === 1) return t('Yesterday');
-    if (days < 7) return d.toLocaleDateString(locale(), { weekday: 'short' });
-    return d.toLocaleDateString(locale(), d.getFullYear() === now.getFullYear() ? { day: 'numeric', month: 'short' } : { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 /**
@@ -198,7 +188,7 @@ export function Messages() {
                                                 )}
                                             </span>
                                             {c.unread ? <VisuallyHidden>{tn(c.unread, ', {{count}} unread', ', {{count}} unread')}</VisuallyHidden> : null}
-                                            <time className="conv-time" dateTime={when} title={new Date(when).toLocaleString(locale())}>
+                                            <time className="conv-time" dateTime={when} title={exactTime(when)}>
                                                 {inboxTime(when)}
                                             </time>
                                         </span>

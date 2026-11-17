@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { problemMessage } from 'una-api';
 
-import { longTime, useContextGroup } from '../../components/activity-card';
+import { useContextGroup } from '../../components/activity-card';
 import { Icon } from '../../components/icon';
 import { ProfileBadges } from '../../components/profile-badges';
 import { RichText } from '../../components/rich-text';
@@ -25,6 +25,7 @@ import { ProfileAvatar, ProfileName } from '../profile/profile-link';
 import { viewsText } from '../videos/videos';
 import { FileTypeIcon } from './file-list';
 import { downloadName, dropFile, type FileEntry, fileFromLists, fileKey, filePreview, fileSizeText, fileType, putFile } from './files';
+import { longTime } from '../../lib/dates';
 
 /**
  * What a file shows of itself: an image's copy, a converted video's player, an audio player,

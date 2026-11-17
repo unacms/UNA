@@ -6,7 +6,7 @@
 import type { Schema } from 'una-api';
 
 import { t } from '../../lib/i18n';
-import { dayLabel } from '../messages/days';
+import { dayLabel } from '../../lib/dates';
 
 type Notification = Schema<'Notification'>;
 

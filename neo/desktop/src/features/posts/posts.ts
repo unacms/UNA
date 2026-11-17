@@ -9,9 +9,10 @@ import type { InfiniteData, QueryClient } from '@tanstack/react-query';
 
 import type { Schema, UnaApi } from 'una-api';
 
-import { ago, unwrap } from '../../lib/api';
-import { locale, t, tn } from '../../lib/i18n';
+import { unwrap } from '../../lib/api';
+import { t, tn } from '../../lib/i18n';
 import type { DetailRoute, FeedName } from '../../lib/router';
+import { ago, mediumDate } from '../../lib/dates';
 
 export type Post = Schema<'Post'>;
 export type PostPage = Schema<'Page_Post'>;
@@ -110,7 +111,7 @@ export function commentsText(n: number): string {
 
 /** What a post of one's own is when it is not simply published: shown in its row and its view. */
 export function stateText(post: Pick<Post, 'state' | 'moderation' | 'publish_at'>): string | null {
-    if (post.state === 'scheduled') return post.publish_at ? t('Scheduled for {{when}}', { when: new Date(post.publish_at).toLocaleString(locale(), { dateStyle: 'medium', timeStyle: 'short' }) }) : t('Scheduled');
+    if (post.state === 'scheduled') return post.publish_at ? t('Scheduled for {{when}}', { when: mediumDate(new Date(post.publish_at), true) }) : t('Scheduled');
     if (post.state === 'processing') return t('Its video is being processed');
     if (post.state === 'hidden') return t('Hidden');
     if (post.moderation === 'pending') return t('Waiting for approval');

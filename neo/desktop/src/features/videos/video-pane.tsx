@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { problemMessage, type Schema } from 'una-api';
 
-import { longTime, useContextGroup } from '../../components/activity-card';
+import { useContextGroup } from '../../components/activity-card';
 import { Icon } from '../../components/icon';
 import { ProfileBadges } from '../../components/profile-badges';
 import { RichText } from '../../components/rich-text';
@@ -23,6 +23,7 @@ import { ProfileAvatar, ProfileName } from '../profile/profile-link';
 import { EditTitleText } from '../photos/edit-title-text';
 import { commentBoxId, CommentTree } from '../thread/comment-tree';
 import { dropVideo, fromLists, mediaState, playable, putVideo, thumbnail, type Video, videoAspect, videoKey, viewsText } from './videos';
+import { longTime } from '../../lib/dates';
 
 type Activity = Schema<'Activity'>;
 

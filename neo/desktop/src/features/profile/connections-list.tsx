@@ -8,10 +8,10 @@ import { Icon, type IconName } from '../../components/icon';
 import { ProfileBadges } from '../../components/profile-badges';
 import { InlineError, SkeletonRows } from '../../components/skeleton';
 
-import { ago, unwrap } from '../../lib/api';
+import { unwrap } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
-import { locale, t } from '../../lib/i18n';
+import { t } from '../../lib/i18n';
 import { useListCommands } from '../../lib/list-commands';
 import { confirmAction } from '../../lib/native';
 import { type MenuEntry, showMenu, useMenuExpanded } from '../../lib/native-menu';
@@ -21,6 +21,7 @@ import { useAnnouncer } from '../feed/feed-list';
 import { ACTION_LABELS, announcement, type ConnectionList, connectionListKey, FRIEND_REQUESTS_KEY, type GraphAction, SENT_REQUESTS_KEY } from './graph';
 import { ProfileAvatar, ProfileName } from './profile-link';
 import { useGraphAction } from './relation-buttons';
+import { ago, exactTime, monthYear } from '../../lib/dates';
 
 type Page = Schema<'Page_Connected'>;
 type Connected = Schema<'Connected'>;
@@ -88,7 +89,7 @@ export function useFriendRequestsPreview(enabled: boolean): Schema<'Profile'>[] 
 
 /** "March 2026": when a connection started, to the month. */
 export function monthText(iso: string): string {
-    return new Date(iso).toLocaleDateString(locale(), { month: 'long', year: 'numeric' });
+    return monthYear(iso) ?? '';
 }
 
 /** The second line of a connection's row (spec 4.4); a person in People: when they joined, or nothing when that is not known. */
@@ -298,7 +299,7 @@ function ConnectedRow({ connected: c, source, manage, onRemoved }: { connected: 
                     <ProfileBadges badges={c.profile.badges} />
                 </span>
                 {sinceText ? (
-                    <time className="row-sub" dateTime={c.since} title={new Date(c.since).toLocaleString(locale())}>
+                    <time className="row-sub" dateTime={c.since} title={exactTime(c.since)}>
                         {sinceText}
                     </time>
                 ) : null}

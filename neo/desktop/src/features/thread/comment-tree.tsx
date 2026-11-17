@@ -9,11 +9,11 @@ import { Icon } from '../../components/icon';
 import { ProfileBadges } from '../../components/profile-badges';
 import { RichText } from '../../components/rich-text';
 import { Tooltip } from '../../components/tooltip';
-import { ago, ApiError, ensureOk, retryOnce, unwrap } from '../../lib/api';
+import { ApiError, ensureOk, retryOnce, unwrap } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { draftStore, useDraftKey } from '../../lib/drafts';
 import { errorMessage } from '../../lib/errors';
-import { locale, t, tn } from '../../lib/i18n';
+import { t, tn } from '../../lib/i18n';
 import { confirmAction } from '../../lib/native';
 import { coalesce, useRealtime } from '../../lib/realtime';
 import { paneHeadingId } from '../../shell/pane';
@@ -22,6 +22,7 @@ import { appendComment, commentItems, commentsKey, countReply, dropComment, putC
 import { normalizeHtml } from '../../components/rich-editor/schema';
 import { BODY_HTML_FOR_COMMENTS_AND_DISCUSSIONS } from '../../lib/rich-html';
 import { CommentComposer } from './comment-composer';
+import { ago, exactTime } from '../../lib/dates';
 
 type Comment = Schema<'Comment'>;
 type Item = Schema<'Item'>;
@@ -561,7 +562,7 @@ function CommentView({ comment: c, replyingTo }: ViewProps) {
                 <Icon name="list-checks" size={14} />
                 <div className="comment-activity-text">
                     <RichText html={c.body_html} />{' '}
-                    <time className="comment-time" dateTime={c.created_at} title={new Date(c.created_at).toLocaleString(locale())}>
+                    <time className="comment-time" dateTime={c.created_at} title={exactTime(c.created_at)}>
                         {ago(c.created_at)}
                     </time>
                 </div>
@@ -580,7 +581,7 @@ function CommentView({ comment: c, replyingTo }: ViewProps) {
                             <ProfileBadges badges={c.author?.badges} />
                         </span>
                         {replyingTo ? <span className="comment-to"> {t('replying to {{name}}', { name: replyingTo })}</span> : null}{' '}
-                        <time className="comment-time" dateTime={c.created_at} title={new Date(c.created_at).toLocaleString(locale())}>
+                        <time className="comment-time" dateTime={c.created_at} title={exactTime(c.created_at)}>
                             {ago(c.created_at)}
                         </time>
                         {c.pinned ? <span className="comment-time"> · {t('pinned')}</span> : null}
