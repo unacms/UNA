@@ -35,8 +35,8 @@ export default function Unit({ data, unitType, module }) {
                 <UnitProfileImage data={data} skeleton={isSkeleton} />
                 {deleteMenuItem ? <View className="hidden sm:flex absolute right-1 top-1 z-10 shrink-0">{deleteMenuItem}</View> : null}
                 <View className="flex-row sm:flex-col items-center sm:items-stretch gap-2 sm:gap-0 my-auto sm:p-2 flex-auto min-w-0">
-                    {/* The grid card: the name, the connections line and the buttons are 8px apart, like the buttons
-                        themselves (24px + 8px + 20px: the block keeps its height on a card with no line). */}
+                    {/* The grid card: the name and the connections line are 8px apart, like the two buttons (24px +
+                        8px + 20px: the block keeps its height on a card with no line), and 12px from the buttons. */}
                     <View className="sm:h-13 sm:gap-2 flex-1 sm:flex-none min-w-0">
                         <UnitTitle
                             title={data.title}
@@ -53,7 +53,7 @@ export default function Unit({ data, unitType, module }) {
                         primaryMenuItem={primaryMenuItem}
                         secondaryMenuItem={secondaryMenuItem}
                         skeleton={isSkeleton}
-                        className="flex-none flex-row gap-2 sm:gap-0 sm:flex-col sm:pt-2"
+                        className="flex-none flex-row gap-2 sm:gap-0 sm:flex-col sm:pt-3"
                         primaryClassName="sm:w-full"
                         compactOnMobile
                         secondaryClassName={`sm:w-auto${primaryMenuItem ? ' sm:mt-2' : ''}`}

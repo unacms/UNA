@@ -32,9 +32,9 @@ export default function Unit({ data, unitType, module }) {
             <View className="flex-row sm:flex-col items-center sm:items-stretch gap-3 sm:gap-1">
                 <UnitProfileImage data={data} skeleton={isSkeleton} />
                 {deleteMenuItem ? <View className="hidden sm:flex absolute right-1 top-1 z-10 shrink-0">{deleteMenuItem}</View> : null}
-                <View className="flex-row sm:flex-col items-center sm:items-stretch sm:p-1 sm:justify-between gap-2 flex-auto min-w-0">
-                    {/* The grid card: the name, the connections line and the buttons are 8px apart, like the buttons
-                        themselves (24px + 8px + 20px: the block keeps its height on a card with no line). */}
+                <View className="flex-row sm:flex-col items-center sm:items-stretch sm:p-1 sm:justify-between gap-2 sm:gap-3 flex-auto min-w-0">
+                    {/* The grid card: the name and the connections line are 8px apart, like the two buttons (24px +
+                        8px + 20px: the block keeps its height on a card with no line), and 12px from the buttons. */}
                     <View className="sm:h-13 sm:gap-2 flex-1 sm:flex-none min-w-0">
                         <UnitTitle
                             title={data.title}
