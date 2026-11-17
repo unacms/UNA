@@ -74,9 +74,10 @@ $oTemplate->setPageType(BX_PAGE_TYPE_DEFAULT_WO_HF);
 $oTemplate->setPageHeader(bx_replace_markers(_t('_sys_page_title_home'), array('site_title' => getParam('site_title'))));
 
 // The splash stands in for the home page: it has the home page's description, or the site's default one.
-$sDescription = BxDolSplash::getInstance()->getMetaDescription();
-if($sDescription !== '')
+$sDescription = BxDolPage::getMetaDescriptionByObject('sys_home');
+if($sDescription !== '') {
     $oTemplate->setPageDescription($sDescription);
+}
 
 $oTemplate->setPageContent('page_main_code', getPageMainCode());
 $oTemplate->getPageCode();
