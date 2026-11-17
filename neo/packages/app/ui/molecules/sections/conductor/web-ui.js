@@ -1213,17 +1213,8 @@ export function TopSidebar({
     const showAddButtons = layout != 'mixed' && !isProfile
     const showTitle = !!title && conductorTheme.show_title !== false && !isProfile
     const desktopFlex = `hidden ${conductorTheme.hide_top_menu_from}:flex`
-    // Tablets (sm to lg) have room for the section on one line: its icon and name, the tabs, then its actions and
-    // tools at the end. The page header leaves the title out there (`PageHeaderOptions tabletTitle={false}`, index.web.js);
-    // phones keep it in the header.
-    const tabletTitle = showTitle && (
-        <Row className="hidden sm:flex lg:hidden shrink-0 max-w-1/3 min-w-0 items-center gap-2 pl-4">
-            <SectionIcon icon={icon} />
-            <Text {...headingProps(1)} numberOfLines={1} className="min-w-0 shrink text-2xl leading-8 font-bold tracking-tight text-card-foreground font-main">
-                {title}
-            </Text>
-        </Row>
-    )
+    // Tablets (sm to lg): the section's actions and tools at the end of the tab row (the page header shows its icon and
+    // name, as on phones).
     const tabletButtons = showAddButtons && (
         <Row className="hidden sm:flex lg:hidden shrink-0 items-center gap-2 pr-4 cond-buttons-add">
             {actionButtons}
@@ -1265,7 +1256,6 @@ export function TopSidebar({
                     )}
                     {/* Second line: the tabs, then the section's tools (filters, Search) at its end. */}
                     <Row className="w-full items-center min-w-0">
-                        {tabletTitle}
                         <View className="flex-1 min-w-0">{children}</View>
                         {tabletButtons}
                         {showAddButtons && (
@@ -1294,7 +1284,6 @@ export function TopSidebar({
                       * where the bar stays: a fork that keeps the bar past `lg` (a wider `hide_top_menu_from`).
                       */}
                     <Row className="w-full items-center lg:gap-4 min-w-0">
-                        {tabletTitle}
                         {showTitle && (
                             // At most a third of the row, so a long section name truncates and the tabs keep their room.
                             <Row className="hidden lg:flex items-center gap-2 shrink min-w-0 max-w-1/3 pl-4">

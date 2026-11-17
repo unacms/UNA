@@ -256,7 +256,6 @@ export function usePageHeaderBase(pageData) {
         backButton: options.backButton,
         ownBackButton: options.ownBackButton,
         title: options.title,
-        tabletTitle: options.tabletTitle !== false,
         band: isHeaderBandOn(options.band),
     }), [options]);
     const scrollDirection = useScrollDirection();
@@ -295,8 +294,6 @@ export function usePageHeaderBase(pageData) {
     const isBackButton = header.backButton;
     // A section's page (it has a section menu) shows the section's icon before its name, as the desktop section header.
     const sectionIcon = useSectionIcon(pageData?.menu?.object ? pageData.menu : null, pageData?.uri);
-    // Native tablets leave the title to the page as web does with classes (`tabletTitle`).
-    const isTitleOnThisTier = isWeb || header.tabletTitle || screenTier === 'phone';
 
     const menuSettings = getMenuSettings(
         pageData?.menu?.object,
@@ -403,7 +400,7 @@ export function usePageHeaderBase(pageData) {
         isFullContextSelector,
         hasTabBar,
         isShowLogo,
-        isShowTitle: isShowTitle && isTitleOnThisTier,
+        isShowTitle,
         isWeb,
         onHeaderLayout,
         sectionIcon,
@@ -521,10 +518,9 @@ export const PageHeaderBody = memo(({
         </>
     );
 
-    // The section's icon leads its name; on web a page that draws the title itself on tablets (`tabletTitle`)
-    // keeps it to phones.
+    // The section's icon leads its name.
     const titleElement = isShowTitle && pageTitle ? (
-        <Row className={`min-w-0 shrink items-center gap-2${isWeb && !header.tabletTitle ? ' sm:hidden' : ''}`}>
+        <Row className="min-w-0 shrink items-center gap-2">
             <SectionIcon icon={sectionIcon} />
             <View className="min-w-0 shrink"><TextHeader text={pageTitle} /></View>
         </Row>
