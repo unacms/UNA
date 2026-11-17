@@ -16,7 +16,7 @@
     "dashjs": "^5.2.1",
     "fancybox": "^3.0.1",
     "fg-loadcss": "^3.1.0",
-    "filepond": "^4.32.12",
+    "filepond": "^4.32.14",
     "filepond-plugin-file-validate-size": "^2.2.8",
     "filepond-plugin-file-validate-type": "^1.2.9",
     "filepond-plugin-image-crop": "^2.0.6",
