@@ -232,8 +232,9 @@ $(document).on('click', '.bx-std-page-menu-toggle', function() {
  * a track and a thumb over the block, along the box's right edge and round its rounded corners, with the block's own class names.
  */
 function bx_std_scrollbars(sSelector) {
-    // Block contents, and the forms that scroll inside their block under a fixed Save footer (page.css "Options forms").
-    $(sSelector || 'div.bx-std-block-content, form[name="adm-settings-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-logo-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-icon-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-cover-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-splash-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-injections-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-pwa-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-settings-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-templates-form"] > .bx-form-advanced-wrapper').each(function() {
+    // Block contents, the forms that scroll inside their block under a fixed Save footer (page.css "Options forms") and grids,
+    // which scroll between their toolbar and footer (page.css "Grids").
+    $(sSelector || 'div.bx-std-block-content, form[name="adm-settings-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-logo-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-icon-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-cover-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-splash-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-injections-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-pwa-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-settings-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-templates-form"] > .bx-form-advanced-wrapper, div.bx-std-block-content > [id^="bx-grid-wrap-"]').each(function() {
         bx_std_scrollbar(this);
     });
 }
@@ -243,6 +244,8 @@ function bx_std_scrollbar(oScroller) {
     if(!oBlock)
         return;
 
+    bx_std_scrollbar_pinned(oScroller);
+
     bx_scrollbar_overlay(oScroller, oBlock, {
         svg: 'bx-std-scrollbar',
         track: 'bx-std-scrollbar-track',
@@ -251,6 +254,41 @@ function bx_std_scrollbar(oScroller) {
         scrolling: 'bx-std-scrolling',
         hover: '' // page.css shows the bar on div.bx-std-block:hover
     });
+}
+
+/**
+ * A grid pins its toolbar to the top of its scroll box and its footer to the bottom (page.css "Grids"); an options form pins its last
+ * section, the Save footer ("Options forms"). Their heights become the box's scroll-padding, which the overlay bar keeps clear of: it
+ * runs between the two instead of under them, and a row or field focused from the keyboard scrolls into the part that shows. The
+ * toolbar wraps on narrow screens and the footer comes and goes, so both are watched.
+ */
+function bx_std_scrollbar_pinned(oScroller) {
+    var oHeader = $(oScroller).children('.bx-grid-header')[0], oFooter = $(oScroller).children('.bx-grid-footer')[0];
+    if(!oFooter) {
+        oFooter = $(oScroller).filter('.bx-form-advanced-wrapper').children('.bx-form-section-wrapper:last-child:not(:first-child)')[0];
+        if(oFooter && getComputedStyle(oFooter).position !== 'sticky')
+            oFooter = null;
+    }
+    if(!oHeader && !oFooter)
+        return;
+
+    var fUpdate = function() {
+        oScroller.style.scrollPaddingTop = (oHeader ? oHeader.offsetHeight : 0) + 'px';
+        oScroller.style.scrollPaddingBottom = (oFooter ? oFooter.offsetHeight : 0) + 'px';
+
+        if(oScroller.bxScrollbar)
+            bx_scrollbar_overlay_update(oScroller.bxScrollbar);
+    };
+
+    if(window.ResizeObserver) {
+        var oResize = new ResizeObserver(fUpdate);
+        if(oHeader)
+            oResize.observe(oHeader);
+        if(oFooter)
+            oResize.observe(oFooter);
+    }
+
+    fUpdate();
 }
 
 $(document).ready(function() {
