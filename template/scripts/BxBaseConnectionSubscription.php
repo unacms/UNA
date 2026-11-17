@@ -55,16 +55,17 @@ class BxBaseConnectionSubscription extends BxDolConnectionSubscription
     
     /**
      * The button's icon is its state's (`name` of _getActions): Follow, or `default` once following; the row of its
-     * menu takes its action's (Unfollow: `remove`). Lucide names, the same ones the apps draw (NEO:
+     * menu takes its action's (Unfollow: `remove`). The names are ones both icon sets have; Lucide draws
+     * circle-check, circle-plus and circle-minus for them (BxBaseIconsetLucide), the same icons the apps draw (NEO:
      * settings/social-actions.js).
      */
     protected function _getActionIconAsIcon($sAction)
     {
-        $sDefault = 'circle-check';
+        $sDefault = 'check-circle';
 
         $aA2I = [
-            'add' => 'circle-plus',
-            'remove' => 'circle-minus'
+            'add' => 'plus-circle',
+            'remove' => 'minus-circle'
         ];
 
         return isset($aA2I[$sAction]) ? $aA2I[$sAction] : $sDefault;

@@ -27,6 +27,14 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
      * Enable/Disable Letter based thumbnail in "Unit with Cover" only.
      */
     protected $_bLetterAvatar;
+
+    /**
+     * The gallery card (unit_with_cover.html) is drawn as the apps draw a profile's card (unit_card.html): a square
+     * picture, the name, the friends and followers, and two buttons. People and organizations turn it on; the
+     * modules of contexts (groups, events, spaces ...) keep the card with a cover.
+     */
+    protected $_bUnitCard;
+    protected $_sUnitCard;
     
     function __construct(&$oConfig, &$oDb)
     {
@@ -42,6 +50,9 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
         $this->_sUnitClassShowCase = 'bx-base-pofile-unit-with-cover bx-base-unit-showcase bx-base-pofile-unit-showcase';
 
         $this->_bLetterAvatar = true;
+
+        $this->_bUnitCard = false;
+        $this->_sUnitCard = 'unit_card.html';
     }
 
     public function addLocationBase()
@@ -115,14 +126,22 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
         }
 
         // get snippet menu
+        $bCard = $this->_isUnitCard($sTemplate);
         $aTmplVarsMeta = array();
         if($this->_isTemplateWithMeta($sTemplate)) {
-            $aTmplVarsMeta = $this->getSnippetMenuVars ($iProfile, $bPublic, $aParams);
+            $aTmplVarsMeta = $this->getSnippetMenuVars ($iProfile, $bPublic, array_merge($aParams, ['card' => $bCard]));
         }
 
         // snippet meta menu is never cached
         $aVars['bx_if:meta']['condition'] = !empty($aTmplVarsMeta);
         $aVars['bx_if:meta']['content'] = $aTmplVarsMeta;
+
+        // a card with no button to offer (a guest's, the viewer's own) opens the profile; the viewer's own says so
+        if($bCard) {
+            $aVars = array_merge($aVars, $this->_getUnitCardVars($aVars, $iProfile, !empty($aTmplVarsMeta['buttons'])));
+            $sTemplate = $this->_sUnitCard;
+            $this->addCss('unit_card.css');
+        }
 
         $aExtras = [
             'module' => $oModule->getName(),
@@ -376,9 +395,58 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
         if(isset($aParams['context']))
             $oMetaMenu->setContext($aParams['context']);
 
-        return [
+        $bCard = !empty($aParams['card']) && method_exists($oMetaMenu, 'setCard');
+        if(method_exists($oMetaMenu, 'setCard'))
+            $oMetaMenu->setCard($bCard);
+
+        $aResult = [
             'meta' => $oMetaMenu->getCode()
         ];
+        if($bCard)
+            $aResult['buttons'] = $oMetaMenu->getButtonsCount();
+
+        return $aResult;
+    }
+
+    /**
+     * The parts of a profile's card (unit_card.html) which depend on the viewer, so they are never cached.
+     */
+    protected function _getUnitCardVars($aVars, $iProfile, $bButtons)
+    {
+        $bOwn = $iProfile && $iProfile == bx_get_logged_profile_id();
+
+        return [
+            'bx_if:show_view' => [
+                'condition' => !$bButtons,
+                'content' => [
+                    'content_url' => $aVars['content_url'],
+                    'content_click' => $aVars['content_click'],
+                    'view' => _t('_sys_profile_unit_view'),
+                    'bx_if:show_you' => [
+                        'condition' => $bOwn,
+                        'content' => [
+                            'you' => _t('_sys_profile_unit_you'),
+                        ]
+                    ],
+                ]
+            ],
+        ];
+    }
+
+    protected function _isUnitCard($sTemplateName = 'unit.html')
+    {
+        return $this->_bUnitCard && $sTemplateName == 'unit_with_cover.html';
+    }
+
+    /**
+     * Get the picture of a profile's card: wider than the avatars, since the card shows it across its whole width.
+     */
+    function urlCard ($aData, $bSubstituteNoImage = true)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $sTranscoder = !empty($CNF['OBJECT_IMAGES_TRANSCODER_GALLERY']) ? $CNF['OBJECT_IMAGES_TRANSCODER_GALLERY'] : $CNF['OBJECT_IMAGES_TRANSCODER_AVATAR_BIG'];
+        return $this->_image ($CNF['FIELD_PICTURE'], $sTranscoder, 'no-picture-preview.png', $aData, $bSubstituteNoImage);
     }
 
     function getBlockCover($aData, $aParams = [])
@@ -944,7 +1012,7 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
                 break;
 
             case 'unit_with_cover.html':
-                $sResult = $this->_sUnitClassWithCover;
+                $sResult = $this->_sUnitClassWithCover . ($this->_isUnitCard($sTemplateName) ? ' bx-base-pofile-card' : '');
                 break;
 
             case 'unit_wo_info.html':
@@ -967,6 +1035,9 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
     protected function _getUnitSize($aData, $sTemplateName = 'unit.html')
     {
         $sResult = '';
+
+        if($this->_isUnitCard($sTemplateName))
+            return 'card';
 
         switch($sTemplateName) {
             case 'unit_with_cover.html':

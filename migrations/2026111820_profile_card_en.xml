@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- A person's or an organization's card: the button of a card with no action to offer, and the slot on the viewer's own card. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_profile_unit_view"><![CDATA[View profile]]></string_add>
+    <string_add name="_sys_profile_unit_you"><![CDATA[You]]></string_add>
+</resources>

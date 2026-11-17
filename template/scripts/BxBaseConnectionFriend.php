@@ -81,16 +81,17 @@ class BxBaseConnectionFriend extends BxDolConnectionFriend
 
     /**
      * The button's icon is its state's (`name` of _getActions): adding a friend, or `default` once the request is
-     * sent or accepted; a row of its menu takes its action's (Cancel request, Unfriend, Reject: `remove`). Lucide
-     * names, the same ones the apps draw (NEO: settings/social-actions.js).
+     * sent or accepted; a row of its menu takes its action's (Cancel request, Unfriend, Reject: `remove`). The names
+     * are ones both icon sets have; Lucide draws user-round-check, user-round-plus and user-round-x for them
+     * (BxBaseIconsetLucide), the same icons the apps draw (NEO: settings/social-actions.js).
      */
     protected function _getActionIconAsIcon($sAction)
     {
-        $sDefault = 'user-round-check';
+        $sDefault = 'user-check';
 
         $aA2I = [
-            'add' => 'user-round-plus',
-            'remove' => 'user-round-x'
+            'add' => 'user-plus',
+            'remove' => 'user-times'
         ];
 
         return isset($aA2I[$sAction]) ? $aA2I[$sAction] : $sDefault;

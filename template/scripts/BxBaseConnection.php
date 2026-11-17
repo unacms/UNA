@@ -59,6 +59,7 @@ class BxBaseConnection extends BxDolConnection
             'dynamic_mode' => true,
             'show_do_as_button_small' => false,
             'show_do_as_button' => false,
+            'show_do_as_primary' => false,
             'show_do_icon' => true,
             'show_do_label' => true,
             'show_counter' => false,
@@ -125,6 +126,9 @@ class BxBaseConnection extends BxDolConnection
             $sClassDo = ' bx-btn';
         else if ($bShowDoAsButtonSmall)
             $sClassDo = ' bx-btn bx-btn-small';
+        // a card's first button is its main one (BxBaseModProfileMenuSnippetMeta::setCard)
+        if($sClassDo && isset($aParams['show_do_as_primary']) && (bool)$aParams['show_do_as_primary'] === true)
+            $sClassDo .= ' bx-btn-primary';
 
         $aTmplVarsAction = $aTmplVarsActions = [];
         if(count($aActions['items']) == 1) {
@@ -205,6 +209,15 @@ class BxBaseConnection extends BxDolConnection
             ],
             'script' => $this->_getJsScript($iContent, $this->_bMutual, $aParams)
         ]);
+    }
+
+    /**
+     * The icon of an action of this connection (add, remove) or of its made state (default), as a name of the site's
+     * icon set; empty for a connection which has none.
+     */
+    public function getActionIconName($sAction)
+    {
+        return method_exists($this, '_getActionIconAsIcon') ? (string)$this->_getActionIconAsIcon($sAction) : '';
     }
 
     public function getElementAPI($iContent, $iInitiator = false, $aParams = [])

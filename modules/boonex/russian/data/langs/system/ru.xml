@@ -4493,6 +4493,8 @@
         <string name="_sys_profile_friend_request_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> предложил дружбу <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
 	<string name="_sys_profile_friendship_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> и <b class="bx-ntfs-content-entry">{entry_caption}</b> теперь друзья]]></string>
 	<string name="_sys_profile_subscription_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> следит за <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+	<string name="_sys_profile_unit_view"><![CDATA[Смотреть профиль]]></string>
+	<string name="_sys_profile_unit_you"><![CDATA[Вы]]></string>
 	<string name="_sys_profile_status_active"><![CDATA[Активный]]></string>
     <string name="_sys_profile_status_pending"><![CDATA[В ожидании]]></string>
     <string name="_sys_profile_status_suspended"><![CDATA[Заблокированный]]></string>

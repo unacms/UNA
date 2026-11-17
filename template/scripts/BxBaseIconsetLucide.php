@@ -101,6 +101,7 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'pencil-ruler' => 'ruler',
             'photo-video' => 'image-play',
             'plus-circle' => 'circle-plus',
+            'minus-circle' => 'circle-minus',
             'qrcode' => 'qr-code',
             'question' => 'circle-question-mark',
             'question-circle' => 'circle-question-mark',
@@ -134,7 +135,8 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'user-shield' => 'user-shield', // Lucide has it now; keep the entry so the name is not remapped by a later rule
             'user-tag' => 'user-star',
             'user-check' => 'user-round-check',
-            'user-times' => 'user-x',
+            'user-times' => 'user-round-x',
+            'user-circle' => 'circle-user-round',
             'users' => 'users-round',
             'video-camera' => 'video',
             'volume-up' => 'volume-2',

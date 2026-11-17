@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\Group;
  * connection, `default` once it is made or asked for ("Request sent", "Friends", "Following"). A row of the button's
  * menu shows its action: `remove` for Cancel request, Unfriend, Reject and Unfollow.
  *
- * The site's names are Lucide's (kebab-case), the apps' the same icons in PascalCase
+ * The icons below are Lucide's (kebab-case), which the site's names resolve to; the apps name the same icons in PascalCase
  * (neo/packages/app/settings/social-actions.js, `connection_ext`): a change to one side fails here until the other
  * follows.
  */
@@ -45,8 +45,10 @@ class ConnectionToggleIconsTest extends BxDolIntegrationTestCase
             $oConnection = $this->connection($sObject);
 
             foreach($aIcons as $sAction => $sIcon) {
-                $this->assertSame($sIcon, $this->icon($oConnection, 'Icon', $sAction), $sObject . ': ' . $sAction);
-                $this->assertFileExists(BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'lucide/icons/' . $sIcon . '.svg', 'The iconset has the icon.');
+                // the site's name is one both icon sets have; the Lucide set, the default, draws the icon the apps draw
+                $sName = $this->icon($oConnection, 'Icon', $sAction);
+                $this->assertSame($sIcon, BxDolIconset::getObjectInstance('sys_lucide')->getLucideName($sName), $sObject . ': ' . $sAction . ' (' . $sName . ')');
+                $this->assertDoesNotMatchRegularExpression('/round|^circle-/', $sName, 'A Font Awesome name, so that icon set draws it too.');
 
                 // the inline picture (`use_icon_as` => image) is the same icon
                 $this->assertStringContainsString('lucide-' . $sIcon . '"', $this->icon($oConnection, 'Image', $sAction), $sObject . ': ' . $sAction);

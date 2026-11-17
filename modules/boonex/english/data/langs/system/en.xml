@@ -4563,6 +4563,8 @@
         <string name="_sys_profile_friend_request_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> befriended <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
 	<string name="_sys_profile_friendship_added"><![CDATA[Now <b class="bx-ntfs-content-profile">{owner_name}</b> and <b class="bx-ntfs-content-entry">{entry_caption}</b> are friends]]></string>
 	<string name="_sys_profile_subscription_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> followed <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+	<string name="_sys_profile_unit_view"><![CDATA[View profile]]></string>
+	<string name="_sys_profile_unit_you"><![CDATA[You]]></string>
 	<string name="_sys_profile_status_active"><![CDATA[Active]]></string>
 	<string name="_sys_profile_status_pending"><![CDATA[Pending]]></string>
 	<string name="_sys_profile_status_suspended"><![CDATA[Suspended]]></string>

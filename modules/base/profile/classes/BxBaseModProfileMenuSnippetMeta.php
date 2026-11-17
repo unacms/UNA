@@ -18,6 +18,12 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
 
     protected $_aConnectionToFunctionCheck;
 
+    /**
+     * The menu is drawn on a profile's card (unit_card.html), as the apps' card: two buttons at most, the first
+     * one the main (primary) one.
+     */
+    protected $_bCard;
+
     public function __construct($aObject, $oTemplate = false)
     {
         parent::__construct($aObject, $oTemplate);
@@ -29,6 +35,7 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
 
         $this->_bContentPublic = false;
         $this->_oContentProfile = null;
+        $this->_bCard = false;
 
         $this->_aConnectionToFunctionCheck = $this->_oModule->_oConfig->getConnectionToFunctionCheck();
     }
@@ -54,6 +61,58 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
     public function setContentPublic($bContentPublic)
     {
         $this->_bContentPublic = $bContentPublic;
+    }
+
+    public function setCard($bCard)
+    {
+        $this->_bCard = (bool)$bCard;
+    }
+
+    /**
+     * How many buttons the menu drew for the current profile (counted since setContentId).
+     */
+    public function getButtonsCount()
+    {
+        return (int)$this->_iButtons;
+    }
+
+    /**
+     * A card's first button: none drawn yet for this profile.
+     */
+    protected function _isCardFirstButton()
+    {
+        return $this->_bCard && (int)$this->_iButtons == 0;
+    }
+
+    protected function _getButtonClass($aItem)
+    {
+        return !empty($aItem['primary']) || $this->_isCardFirstButton() ? 'bx-btn-primary' : '';
+    }
+
+    protected function _getButtonItemClass($bFirst)
+    {
+        return 'bx-menu-item-button' . ($bFirst ? ' bx-menu-item-button-first' : '');
+    }
+
+    /**
+     * A card's button has its action's icon before its title, so a narrow card can show the icon alone.
+     */
+    protected function _getCardButtonContent($sTitle, $sIcon)
+    {
+        if(!$this->_bCard || empty($sIcon))
+            return $sTitle;
+
+        return $this->_oTemplate->parseHtmlByName('unit_card_button.html', [
+            'icon' => $sIcon,
+            'title' => $sTitle
+        ]);
+    }
+
+    protected function _getConnectionIcon($sConnection, $sAction)
+    {
+        $oConnection = BxDolConnection::getObjectInstance($sConnection);
+
+        return $oConnection && method_exists($oConnection, 'getActionIconName') ? $oConnection->getActionIconName($sAction) : '';
     }
 
     protected function _getMenuItemObjFriends($aItem)
@@ -157,7 +216,8 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
         $iProfileId = $this->_oContentProfile->id();
 
         $iFriends = $oConnection->getCommonContentCount($iProfileId, bx_get_logged_profile_id(), true);
-        if(!$iFriends && !$this->_bShowZeros)
+        // a card leaves a count of zero out, as its friends and followers are
+        if(!$iFriends && (!$this->_bShowZeros || $this->_bCard))
             return false;
 
         $CNF = &$this->_oModule->_oConfig->CNF;
@@ -259,12 +319,13 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
                 ]
             ]);
 
-        $mixedItem = $this->getUnitMetaItemButton($sTitle, [
-            'class' => !empty($aItem['primary']) ? 'bx-btn-primary' : '',
+        $bFirst = $this->_isCardFirstButton();
+        $mixedItem = $this->getUnitMetaItemButton($this->_getCardButtonContent($sTitle, $this->_getConnectionIcon($sConnection, $sAction)), [
+            'class' => $this->_getButtonClass($aItem),
             'onclick' => $this->getMenuItemConnectionJsCode($sConnection, $sAction, $iContentProfile, $aItem)
         ]);
 
-        return $mixedItem !== false ? [$mixedItem, 'bx-menu-item-button'] : false;
+        return $mixedItem !== false ? [$mixedItem, $this->_getButtonItemClass($bFirst)] : false;
     }
 
     protected function _getMenuItemConnectionObj($sConnection, $sAction, &$aItem)
@@ -301,7 +362,21 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
             ]);
         }
 
-        return ($mixedItem = $oObject->getElement($iContentProfile, false, $aObjectOptions)) && ($mixedItem = $this->getUnitMetaItemCustom($mixedItem)) ? [$mixedItem, 'bx-menu-item-button'] : false;
+        // on a card a toggle is one of its two buttons, and the first one is the main one
+        if($this->_bCard && !$this->_buttonsCounterCheck())
+            return false;
+
+        $bFirst = $this->_isCardFirstButton();
+        if($bFirst)
+            $aObjectOptions['show_do_as_primary'] = true;
+
+        if(!($mixedItem = $oObject->getElement($iContentProfile, false, $aObjectOptions)) || !($mixedItem = $this->getUnitMetaItemCustom($mixedItem)))
+            return false;
+
+        if($this->_bCard)
+            $this->_buttonsCounterIncrement();
+
+        return [$mixedItem, $this->_getButtonItemClass($bFirst)];
     }
 
     protected function _getMenuItemRecommendation($sObject, $sAction, $aItem)
@@ -337,12 +412,14 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
                 ]
             ]);
 
-        $mixedItem = $this->getUnitMetaItemButton($sTitle, [
-            'class' => !empty($aItem['primary']) ? 'bx-btn-primary' : '',
+        $bFirst = $this->_isCardFirstButton();
+        $sIcon = $sAction == 'ignore' ? 'times' : $this->_getConnectionIcon($sConnection, $sAction);
+        $mixedItem = $this->getUnitMetaItemButton($this->_getCardButtonContent($sTitle, $sIcon), [
+            'class' => $this->_getButtonClass($aItem),
             'onclick' => $this->getMenuItemRecommendationJsCode($sObject, $sAction, $iContentProfile, $aItem)
         ]);
 
-        return $mixedItem !== false ? [$mixedItem, 'bx-menu-item-button'] : false;
+        return $mixedItem !== false ? [$mixedItem, $this->_getButtonItemClass($bFirst)] : false;
     }
 }
 

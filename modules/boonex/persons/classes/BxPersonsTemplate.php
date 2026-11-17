@@ -18,6 +18,8 @@ class BxPersonsTemplate extends BxBaseModProfileTemplate
     {
         $this->MODULE = 'bx_persons';
         parent::__construct($oConfig, $oDb);
+
+        $this->_bUnitCard = true;
     }
 }
 
