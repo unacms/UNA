@@ -188,7 +188,11 @@ export function checkActionsOnConnectionsChanged(oData) {
     return {update_user:true, reload_page:true};
 }
 
-export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
+/**
+ * A card's buttons. `options.isOwn`: the card is the viewer's current profile, which has no action to offer: it opens
+ * the profile, and a "You" slot keeps it as tall as the cards with two buttons.
+ */
+export function getUnitMenuItems(unitType, data, handleClick, t, moduleName, options = {}) {
 
     let primaryMenuItem = null;
     let secondaryMenuItem = null;
@@ -281,10 +285,14 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
         }
 
         if (!primaryMenuItem) {
+            const isProfile = moduleName == 'bx_persons' || moduleName == 'bx_organizations';
             primaryMenuItem = {
-                title: i18n.t('View'),
+                title: isProfile ? i18n.t('View profile') : i18n.t('View'),
                 onPress: (event) => handleClick(event, data.url),
             };
+            if (options?.isOwn && !secondaryMenuItem) {
+                secondaryMenuItem = { note: true, title: i18n.t('You') };
+            }
         }
 
         if (primaryMenuItem) {

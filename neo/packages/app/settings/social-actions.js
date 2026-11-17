@@ -96,10 +96,14 @@ export const settingsSocialActions = {
             show_action_label: true,
             haptics_type: 'Medium',
         },
+        // Connection icons are UNA's (BxBaseConnectionFriend / BxBaseConnectionSubscription): change both together.
         connection: {
             show_action_as_button: true,
             sys_profiles_friends: {
-                icons: { add: 'UserRoundPlus', remove: 'UserRoundMinus' },
+                icons: { add: 'UserRoundPlus', remove: 'UserRoundX' },
+            },
+            sys_profiles_subscriptions: {
+                icons: { add: 'CirclePlus', remove: 'CircleMinus' },
             },
             bx_events_fans: {
                 icons: { add: 'LogIn', remove: 'LogOut' },
@@ -108,10 +112,15 @@ export const settingsSocialActions = {
                 icons: { add: 'LogIn', remove: 'LogOut' },
             },
         },
+        // A toggle: the button shows its state (`add`, or `default` once made or asked for), its menu's rows their
+        // actions (lib/connection-icons.ts).
         connection_ext: {
             show_action_as_button: true,
             sys_profiles_friends: {
-                icons: { add: 'UserRoundPlus', remove: 'UserRoundMinus', default: 'UserRoundCheck' },
+                icons: { add: 'UserRoundPlus', remove: 'UserRoundX', default: 'UserRoundCheck' },
+            },
+            sys_profiles_subscriptions: {
+                icons: { add: 'CirclePlus', remove: 'CircleMinus', default: 'CircleCheck' },
             },
             bx_events_fans: {
                 icons: { add: 'LogIn', remove: 'LogOut' },

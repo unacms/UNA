@@ -13,6 +13,7 @@ import { components } from 'app/components/registry';
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting, cn, tp, sanitazeUrl, withMenuButtonParams } from 'app/lib/util';
 import { getUnitMenuItems } from 'app/customization/functions';
+import { useCurrentUser } from 'app/context/user';
 import { UnitActionWidthContext } from 'app/components/units/unit-action-width';
 import { useRouter, useCurrentTabPath, useFocusEffect } from 'app/lib/hooks/router';
 import { nativeTabPageHref } from 'app/lib/navigation/tab-history';
@@ -292,6 +293,11 @@ export function useUnitActions({ unitType, data, module, t = null }) {
     routerRef.current = router;
     tabPathRef.current = tabPath;
 
+    // The card of the viewer's current profile (a card's `author_data` is its own profile).
+    const { currentUser } = useCurrentUser();
+    const cardProfileId = data?.author_data?.id;
+    const isOwn = !!currentUser?.id && !!cardProfileId && String(currentUser.id) === String(cardProfileId);
+
     return useMemo(
         () => getUnitMenuItems(unitType, data, (event, url) => {
             event?.preventDefault?.();
@@ -302,8 +308,8 @@ export function useUnitActions({ unitType, data, module, t = null }) {
                     ? url
                     : nativeTabPageHref(url, tabPathRef.current),
             );
-        }, t, module),
-        [unitType, data, module, t],
+        }, t, module, { isOwn }),
+        [unitType, data, module, t, isOwn],
     );
 }
 

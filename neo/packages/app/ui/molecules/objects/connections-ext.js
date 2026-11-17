@@ -9,6 +9,7 @@ import { components } from 'app/components/registry'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { useBottomSheetData } from 'app/context/bottomsheet'
 import { Platform } from 'react-native';
+import { connectionButtonIcon, withConnectionRowIcons } from 'app/lib/connection-icons';
 
 
 const getKey = (sO, iIid, iCid) => {
@@ -56,12 +57,17 @@ export default function ElementConnections({
         ring: initial_params?.button_ring
     };
 
+    // The button shows its state's icon, each row of its menu its action's.
+    const hasMenu = elementData.actions?.length > 0;
+    const stateIcon = connectionButtonIcon(icons, elementData.name, hasMenu);
+    const menuItems = withConnectionRowIcons(elementData.actions, icons);
+
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
-    if (!!icons[elementData.name] && buttonProps.hide_icon !== true)
-        buttonProps.startDecorator = icons[elementData.name];
+    if (!!stateIcon && buttonProps.hide_icon !== true)
+        buttonProps.startDecorator = stateIcon;
 
     const renderActionButton = (extraProps = {}) => {
-        const actionIcon = buttonProps.hide_icon === true ? '' : icons[elementData.name];
+        const actionIcon = buttonProps.hide_icon === true ? '' : stateIcon;
 
         if (initial_params?.button_style) {
             const neoButtonStyle = primary
@@ -102,7 +108,7 @@ export default function ElementConnections({
         return elementData.actions.length > 0 ?
             <DropdownMenu
                 mode="popup"
-                items={elementData.actions}
+                items={menuItems}
                 defaultOpen={false}
                 onSelect={(item) => { _handleRequset(item.name) }}
 
@@ -110,9 +116,9 @@ export default function ElementConnections({
                 <DropdownMenuItem
                     item={{
                         title: elementData.title,
-                        icon: icons[elementData.name]
+                        icon: stateIcon
                     }}
-                    icon={icons[elementData.name]}
+                    icon={stateIcon}
                     handleSelect={(event) => { _handleRequset(elementData.name, event) }}
                 />
             </DropdownMenu>
@@ -120,9 +126,9 @@ export default function ElementConnections({
             <DropdownMenuItem
                 item={{
                     title: elementData.title,
-                    icon: icons[elementData.name]
+                    icon: stateIcon
                 }}
-                icon={icons[elementData.name]}
+                icon={stateIcon}
                 handleSelect={(event) => { _handleRequset(elementData.name, event) }}
             />;
     }
@@ -135,7 +141,7 @@ export default function ElementConnections({
                     <View {...(Platform.OS === 'web' ? { onClick: (event) => event.preventDefault() } : null)}>
                         <DropdownMenu
                             mode="popup"
-                            items={elementData.actions}
+                            items={menuItems}
                             defaultOpen={false}
                             onSelect={(item) => { _handleRequset(item.name) }}
                             // The trigger keeps its name where the button shows its icon alone (a card row on phones).

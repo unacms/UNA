@@ -122,8 +122,8 @@ export default function ElementRecommendations(props) {
         case 'add':
             if (buttonProps.onlyIcon) {
                 title = '';
-                if (props.o == 'sys_friends') icon = 'UserPlus';
-                if (props.o == 'sys_subscriptions') icon = 'UserCheck';
+                if (props.o == 'sys_friends') icon = 'UserRoundPlus';
+                if (props.o == 'sys_subscriptions') icon = 'CirclePlus';
             }
             break;
     }
