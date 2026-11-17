@@ -30,7 +30,7 @@ export function useSectionIcon(menu: SectionMenu, uri?: string, routes?: RouteLi
     const useSiteMenu = !Array.isArray(staticNavbar) || !staticNavbar.length
     const { menuData } = useMenuData(menu && useSiteMenu ? appSetting('menu_items', 'objects', 'site') : null)
     if (!menu) return ''
-    const menuSettings = getMenuSettings(menu.object, menu.config, menu)
+    const menuSettings = getMenuSettings(menu.object ?? '', menu.config, menu)
     const pages = [uri, ...(routes ?? menuItemList(menu.items)).flatMap((route) => [route?.link, route?.key])]
     const siteIcon = siteMenuIconForPages(useSiteMenu ? menuData?.items : staticNavbar, pages)
     return findIconFromRemote(siteIcon || menuSettings?.icon || menu.icon) || ''
