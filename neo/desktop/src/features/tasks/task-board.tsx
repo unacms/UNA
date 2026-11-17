@@ -17,7 +17,7 @@ import { isContextMenuKey, showMenu, type MenuEntry, useMenuExpanded } from '../
 import { useNavigation, useRoute } from '../../lib/navigation';
 import { isWindowGesture, isWindowKey, useOpenInWindow } from '../../lib/open-in-window';
 import { emptyListText, useFillEmptyPages } from '../../lib/paging';
-import { type ListRoute, tasksPage } from '../../lib/router';
+import { type ListRoute, type SectionRoute, tasksPage } from '../../lib/router';
 import { readStoredJson, writeStoredJson } from '../../lib/storage';
 import { Pane } from '../../shell/pane';
 import { useAnnouncer } from '../feed/feed-list';
@@ -652,7 +652,7 @@ export function routeScope(list: ListRoute): TaskScope {
  * too, as removable chips); a + on a group adds a task to it (in a context). Beside it, when the
  * pane is wide, the lists (or contexts) and the counts by label, priority and assignee.
  */
-export function TaskBoard({ list }: { list: ListRoute }) {
+export function TaskBoard({ list }: { list: SectionRoute<'tasks'> }) {
     const { api, siteUrl } = useApp();
     const route = useRoute();
     const { history } = useNavigation();

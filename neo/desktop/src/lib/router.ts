@@ -105,44 +105,68 @@ export function sectionContext(section: Section): ContextPageKind | null {
     return section === 'groups' ? 'group' : section === 'spaces' ? 'space' : section === 'events' ? 'event' : null;
 }
 
+/** The feeds of one section. */
+type FeedOf<S extends keyof typeof SECTION_FEEDS> = (typeof SECTION_FEEDS)[S][number];
+
+/** A context's page in its section: the context's profile id (none: the ones to browse) and the tab of its page, when it is not Posts. */
+type ContextFields = { group?: string; groupTab?: GroupTab };
+
 /**
- * A list: a section, the feed or filter it shows, for Search the words (`q`, trimmed, never
- * empty when present) and the result tab (only when it is not People). Some sections are pages
- * that fill the content pane: Groups or Spaces with a `group` (the context's profile id) is that
- * group's or space's page (none: the ones to browse) at `groupTab`, and Profile is a profile's
- * page, `profile` (none: the acting profile) at `profileTab`. Default tabs are not written out.
+ * What a section's list route may say besides its section, one entry per section. Default
+ * values are never written out, so a route has one form.
  */
-export type ListRoute = {
-    section: Section;
-    feed?: FeedName;
-    filter?: ListFilter;
-    q?: string;
-    tab?: SearchTab;
-    group?: string;
-    groupTab?: GroupTab;
-    profile?: string;
-    profileTab?: ProfileTab;
+type SectionFields = {
+    home: { feed?: FeedOf<'home'> };
+    explore: { feed?: FeedOf<'explore'> };
+    /** All (no filter) or Unread. */
+    notifications: { filter?: ListFilter };
+    messages: object;
     /** The tab of Connections, when it is not Friends. */
-    connections?: ConnectionsTab;
-    /** Posts' or Discussions' list of one category (its id), as a Categories block opens it. */
-    category?: string;
+    connections: { connections?: ConnectionsTab };
+    people: { feed?: FeedOf<'people'> };
+    /** `category`: the list of one category (its id), as a Categories block opens it. */
+    posts: { feed?: FeedOf<'posts'>; category?: string };
+    discussions: { feed?: FeedOf<'discussions'>; category?: string };
+    events: { feed?: FeedOf<'events'> } & ContextFields;
+    media: { feed?: FeedOf<'media'> };
     /**
-     * Tasks: whose tasks the section shows. None of these: My tasks, assigned to one (`taskRole`
+     * Whose tasks the section shows. None of these: My tasks, assigned to one (`taskRole`
      * `created`: those one added; `feed` `completed`: the completed ones). `taskView` `timers`:
      * My timers. `taskContext`: a context's tasks (`taskList`: one of its lists, `inbox` its
      * Inbox), open or (`feed`) completed; with `taskView` `budget`, its budget instead.
      */
-    taskRole?: 'created';
-    taskView?: 'timers' | 'budget';
-    taskContext?: string;
-    taskList?: string;
+    tasks: { feed?: FeedOf<'tasks'>; taskRole?: 'created'; taskView?: 'timers' | 'budget'; taskContext?: string; taskList?: string };
+    /** The words (`q`, trimmed, never empty when present) and the result tab, when it is not People. */
+    search: { q?: string; tab?: SearchTab };
+    /** A profile's page: `profile` (none: the acting profile) at `profileTab`, when it is not Posts. */
+    profile: { profile?: string; profileTab?: ProfileTab };
+    groups: { feed?: FeedOf<'groups'> } & ContextFields;
+    spaces: { feed?: FeedOf<'spaces'> } & ContextFields;
+    settings: object;
     /**
-     * `page`: a page of the site the app has no screen of its own for, drawn from its blocks
-     * (GET /layout/resolve): its path there (`/page/<uri>`, with its query). A sidebar item of the
+     * A page of the site the app has no screen of its own for, drawn from its blocks (GET
+     * /layout/resolve): its path there (`/page/<uri>`, with its query). A sidebar item of the
      * site's menus opens one (shell/sidebar-navigation.tsx).
      */
-    page?: string;
+    page: { page?: string };
 };
+
+/** Every field some section's route has. */
+type AnyField = { [S in Section]: keyof SectionFields[S] }[Section];
+
+/**
+ * The list route of one section: its own fields and no other section's. The others are typed
+ * as absent rather than left out, so any list route can be asked for any field (a route of
+ * Home has no `group`) while none can be made with a field its section does not have.
+ */
+export type SectionRoute<S extends Section = Section> = S extends Section ? { section: S } & SectionFields[S] & { [K in Exclude<AnyField, keyof SectionFields[S]>]?: undefined } : never;
+
+/**
+ * A list: a section and what its route says (SectionFields). Some sections are pages that fill
+ * the content pane: Groups, Spaces or Events with a `group` is that context's page, and Profile
+ * is a profile's page.
+ */
+export type ListRoute = SectionRoute;
 
 /** A path on the site GET /layout/resolve takes: one path, from its root, without a host. */
 export function isSitePath(path: string): boolean {
@@ -221,7 +245,7 @@ export function isCategorySection(section: Section): section is CategorySection 
  * drops it.
  */
 export function categoryPage(section: CategorySection, category: string | null, feed?: FeedName): ListRoute {
-    const list = feed ? feedRoute(section, feed) : { section };
+    const list: SectionRoute<CategorySection> = feed ? feedRoute(section, feed) : { section };
     return category && list.feed !== 'mine' ? { ...list, category } : list;
 }
 
@@ -233,7 +257,9 @@ export function groupPage(id: string, tab: GroupTab = 'posts'): ListRoute {
 /** A group's or a space's page in the content pane, at one of its tabs. */
 export function contextPage(kind: ContextPageKind, id: string, tab: GroupTab = 'posts'): ListRoute {
     const section = CONTEXT_SECTIONS[kind];
-    return tab === 'posts' ? { section, group: id } : { section, group: id, groupTab: tab };
+    const page: ContextFields = tab === 'posts' ? { group: id } : { group: id, groupTab: tab };
+    // three sections with the same fields: too many forms for the compiler to match one by one
+    return { section, ...page } as ListRoute;
 }
 
 /** The detail route of a context (a window of its own shows it); Posts is not written out. */
@@ -327,9 +353,15 @@ export function listFeed(list: ListRoute): FeedName | null {
 }
 
 /** The list route of a section's feed; the default feed is not written out. */
-export function feedRoute(section: Section, feed: FeedName): ListRoute {
+export function feedRoute<S extends Section>(section: S, feed: FeedName): SectionRoute<S> {
     const feeds = sectionFeeds(section);
-    return feeds.includes(feed) && feeds[0] !== feed ? { section, feed } : { section };
+    // the feed is one of this section's: the check above the cast says so
+    return (feeds.includes(feed) && feeds[0] !== feed ? { section, feed } : { section }) as SectionRoute<S>;
+}
+
+/** The list route of a section's list at a filter (none: all of it); a section without that filter shows all. */
+export function filterRoute(section: Section, filter?: ListFilter): ListRoute {
+    return section === 'notifications' && filter && sectionFilters(section).includes(filter) ? { section, filter } : { section };
 }
 
 /** The parts of a profile's page; Posts (the timeline) is the default, `articles` the Posts module's posts. */
@@ -545,7 +577,7 @@ export function parseRoute(path: string): Route | null {
             list = feedRoute(section, feed as FeedName);
         } else if (filter !== null) {
             if (!sectionFilters(section).includes(filter as ListFilter)) return null;
-            list = { section, filter: filter as ListFilter };
+            list = filterRoute(section, filter as ListFilter);
         } else return null;
     }
     if (kind === undefined) return { list, detail: null };
