@@ -217,7 +217,7 @@ export default function ModuleStructure({ data }) {
                     <Row className='items-center justify-center gap-x-2'>
                         {(!isEditable && !!item.pass_title) && <NeoButton controlSize="small" borderShape="capsule" image="ArrowRight" imagePlacement="trailing" label={item.pass_title} classNames={{ root: 'self-center' }} onPress={() => { getLessonData(item.id, item.parent_id, true) }} />}
                         {isEditable && <>
-                            <DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }} buttonProps={{ controlSize: 'small', borderShape: 'circle', image: 'Cog', accessibilityLabel: t('Settings'), classNames: { root: 'self-center' } }} /><DragControl dragHandleProps={dragHandleProps} accessibilityLabel={t('Reorder')} className="u-neo-btn-link hit-area-4"><NeoButton controlSize="small" borderShape="circle" image="ArrowUpDown" interactive /></DragControl>
+                            <DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }} buttonProps={{ controlSize: 'small', borderShape: 'circle', image: 'Settings', accessibilityLabel: t('Settings'), classNames: { root: 'self-center' } }} /><DragControl dragHandleProps={dragHandleProps} accessibilityLabel={t('Reorder')} className="u-neo-btn-link hit-area-4"><NeoButton controlSize="small" borderShape="circle" image="ArrowUpDown" interactive /></DragControl>
                             </>}
                     </Row>
                 </Row>

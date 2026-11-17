@@ -136,7 +136,7 @@ export const settingsExpoUi = {
                 Hash: 'number',
                 Info: 'info.circle',
                 Clock: 'clock',
-                Cog: 'gearshape',
+                Settings: 'gearshape',
                 UserRound: 'person',
                 UsersRound: 'person.2',
                 UserPlus: 'person.badge.plus',
