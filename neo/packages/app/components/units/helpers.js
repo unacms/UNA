@@ -246,12 +246,17 @@ function isFollowersUnitType(unitType) {
     );
 }
 
-function getPersonSocialLabel(data, { isFollowers } = {}) {
-    if (isFollowers) return tp('followers', data?.followers_count ?? 0, false);
-    if (data?.mutual_friends_count > 0) {
-        return tp('mutual_friends', data.mutual_friends_count, false);
-    }
-    return tp('friends', data?.friends_count, false);
+/**
+ * A profile's connections as its card shows them, as UNA's site card does: its friends (the ones it shares with the
+ * viewer, when there are any) and its followers, "2 friends · 5 followers". A count of zero is left out, so a profile
+ * with neither has no text. UNA sends the counts where its "connections in profile units" setting is on.
+ */
+export function getProfileConnectionsLabel(data) {
+    const friends = data?.mutual_friends_count > 0
+        ? tp('mutual_friends', data.mutual_friends_count, false)
+        : getCountLabel(data?.friends_count, 'friends');
+    const followers = getCountLabel(data?.followers_count, 'followers');
+    return [friends, followers].map((part) => String(part || '').trim()).filter(Boolean).join(' · ');
 }
 
 function getPersonSocialList(data, { isFollowers } = {}) {
@@ -420,19 +425,24 @@ export function UnitImage({
     );
 }
 
-/** The count text UnitProfileList shows ("6 friends", "12 members"); '' when there is none. */
+/**
+ * The count text UnitProfileList shows ("6 friends · 2 followers", "12 members"); '' when there is none. `profile`: the
+ * unit is a profile's card (People, Organizations), which shows its connections on every list, not only the
+ * connections' own (a `unitType`).
+ */
 export function getProfileListLabel({
     data,
     label,
     unitType,
+    profile = false,
     listKey = 'members_list',
     countKey = 'members',
     fallbackCountKey,
 }) {
     const primaryCount =
         listKey === 'followers_list' ? data?.followers_count : data?.members_count
-    const resolved = unitType
-        ? getPersonSocialLabel(data, { isFollowers: isFollowersUnitType(unitType) })
+    const resolved = unitType || profile
+        ? getProfileConnectionsLabel(data)
         : (label ?? (
             getCountLabel(primaryCount, countKey) ||
             (fallbackCountKey
@@ -447,6 +457,8 @@ export function UnitProfileList({
     data,
     label,
     unitType,
+    /** A profile's card: its connections text on every list (see getProfileListLabel). */
+    profile = false,
     /** Which array on `data` to show when not a person unitType. Default: members_list */
     listKey = 'members_list',
     countKey = 'members',
@@ -467,6 +479,7 @@ export function UnitProfileList({
         data,
         label,
         unitType,
+        profile,
         listKey,
         countKey,
         fallbackCountKey,
