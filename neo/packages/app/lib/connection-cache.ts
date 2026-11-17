@@ -1,5 +1,6 @@
 import type { Query } from '@tanstack/react-query';
 import { fetcher } from 'app/lib/fetcher';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { getQueryClient } from 'app/lib/platform/query-client';
 import {
     listHasCard,
@@ -15,6 +16,9 @@ import {
  */
 type Id = number | string;
 
+/** The `EVENTS.connections` action sent when a profile's connection state was written into the lists. */
+export const CONNECTION_PATCHED = 'patched';
+
 const CARD_STATE_URL = '/api.php?r=system/get_card_state/TemplServiceConnections&params[]=';
 /** A socket event that follows this tab's own action brings nothing its reply didn't. */
 const OWN_ACTION_MS = 5000;
@@ -29,6 +33,9 @@ export function applyConnectionPatch(patch: ConnectionPatch | null | undefined, 
     if (!patch || patch.profileId == null) return;
     if (own) ownActions.set(String(patch.profileId), Date.now());
     getQueryClient().setQueriesData({ predicate: isListQuery }, (cached: unknown) => patchListPages(cached, patch));
+    // A page that shows this profile outside a list (its own page: the cover's counts and actions) refreshes that
+    // part itself (components/page-layout/profile.js). `Layouts` reloads a page only on 'changed'.
+    emitter.emit(EVENTS.connections, { action: CONNECTION_PATCHED, profileId: patch.profileId });
 }
 
 function isOwnRecentAction(profileId: Id): boolean {
