@@ -27,6 +27,8 @@ import { components } from 'app/components/registry';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { View } from 'app/design/view';
 import { Modal, NeoButton } from 'app/design/controls';
+import { patchFromReply } from 'app/lib/connection-patch';
+import { applyConnectionPatch } from 'app/lib/connection-cache';
 
 async function connectionRequest(o, iid, cid, action, params) {
     const body = { o, iid, cid, ...(params || {}) };
@@ -76,6 +78,8 @@ export default function ElementConnections(props) {
         } else if (!data?.redirect) {
             // Redirect leaves the page — don't flip title/action before navigation.
             setElementData((prev) => mergeState(prev, data));
+            // The profile's cards in the loaded lists take the new counts and this button's state.
+            applyConnectionPatch(patchFromReply(props.o, props.cid, data, 'connections'), { own: true });
         }
 
         if (typeof params?.on_done === 'function') params.on_done(data);

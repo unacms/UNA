@@ -157,6 +157,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'GetPerformedBy' => 'BxBaseFavoriteServices',
 
             'Perform' => 'BxBaseServiceConnections',
+            'GetCardState' => 'BxBaseServiceConnections',
             'Perform' => 'BxBaseServiceRecommendations',
             'GetDataApi' => 'BxBaseCmtsServices',
 
