@@ -8,7 +8,6 @@ import {
     decodeTextNode,
     getMenuSettings,
     getMenuSectionNav,
-    findIconFromRemote,
     menuItemsFilter,
 } from 'app/lib/util'
 import { usePref, setPref, usePrefsStore } from 'app/context/prefs'
@@ -35,8 +34,7 @@ import {
     FiltersButton,
 } from './shared-ui'
 import { useConductorList } from './use-conductor-list'
-import { useMenuData } from 'app/context/menu-data'
-import { siteMenuIconForPages } from 'app/lib/section-icon'
+import { SectionIcon, useSectionIcon } from 'app/ui/molecules/section-icon'
 import { NeoButton, NeoButtonLink } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import { getSkeletonForList, skeletonSlotsForLayout } from 'app/lib/skeleton-helpers'
@@ -626,20 +624,6 @@ const AddMenu = ({ menu, filter, only, controlSize = 'small' }) => {
     )
 }
 
-/**
- * The section's icon as the header's main menu draws it: the site menu's item for one of the section's pages
- * (lib/section-icon), from the menu store the header has already filled. Else the section menu's own icon.
- */
-function useSectionIcon(menu, routes, uri) {
-    const staticNavbar = appSetting('menu_items', 'menu_navbar')
-    const useSiteMenu = !Array.isArray(staticNavbar) || !staticNavbar.length
-    const { menuData } = useMenuData(useSiteMenu ? appSetting('menu_items', 'objects', 'site') : null)
-    const menuSettings = getMenuSettings(menu.object, menu.config, menu)
-    const pages = [uri, ...routes.flatMap((route) => [route.link, route.key])]
-    const siteIcon = siteMenuIconForPages(useSiteMenu ? menuData?.items : staticNavbar, pages)
-    return findIconFromRemote(siteIcon || menuSettings?.icon || menu?.icon)
-}
-
 /*
  * ============================================================================
  * Top tab bar. Two render modes, picked by `conductorTheme.menu_is_dynamic`:
@@ -970,7 +954,7 @@ export const LeftColumnContainer = ({
     const addButtons = <AddMenu menu={menu} filter="hideInSideBar" />
     // Profile has its name in the cover already — no title row here.
     const title = layoutName == 'profile' ? '' : t(menuSettings?.name)
-    const sectionIcon = useSectionIcon(menu, routes)
+    const sectionIcon = useSectionIcon(menu, undefined, routes)
     const icon = layoutName == 'profile' ? '' : sectionIcon
     const padClass =
         layoutName == 'profile'
@@ -1229,6 +1213,23 @@ export function TopSidebar({
     const showAddButtons = layout != 'mixed' && !isProfile
     const showTitle = !!title && conductorTheme.show_title !== false && !isProfile
     const desktopFlex = `hidden ${conductorTheme.hide_top_menu_from}:flex`
+    // Tablets (sm to lg) have room for the section on one line: its icon and name, the tabs, then its actions and
+    // tools at the end. The page header leaves the title out there (`PageHeaderOptions tabletTitle={false}`, index.web.js);
+    // phones keep it in the header.
+    const tabletTitle = showTitle && (
+        <Row className="hidden sm:flex lg:hidden shrink-0 max-w-1/3 min-w-0 items-center gap-3 pl-4">
+            <SectionIcon icon={icon} />
+            <Text {...headingProps(1)} numberOfLines={1} className="min-w-0 shrink text-2xl leading-8 font-bold tracking-tight text-card-foreground font-main">
+                {title}
+            </Text>
+        </Row>
+    )
+    const tabletButtons = showAddButtons && (
+        <Row className="hidden sm:flex lg:hidden shrink-0 items-center gap-2 pr-4 cond-buttons-add">
+            {actionButtons}
+            {toolButtons}
+        </Row>
+    )
 
     if (isSectionTabBar) {
         return (
@@ -1242,13 +1243,8 @@ export function TopSidebar({
                         // 44px icon with 10px above and below: the 64px strip of a compact profile cover, the group centred in it.
                         <Row className={`${desktopFlex} w-full items-center gap-3 min-w-0 px-4 py-2.5`}>
                             <Row className="group flex-1 items-center gap-3 min-w-0">
-                                {showTitle && !!icon && (
-                                    // The section's icon where a profile has its avatar: a 44px circle around the main
-                                    // menu's animated 24px icon, in its current-tab state (topmenu MenuTopIcon).
-                                    <View className="size-11 shrink-0 items-center justify-center rounded-full bg-button">
-                                        <Icon icon={icon} animated active size={24} className="text-card-foreground" />
-                                    </View>
-                                )}
+                                {/* The section's icon where a profile has its avatar. */}
+                                {showTitle && <SectionIcon icon={icon} />}
                                 {showTitle && (
                                     <Text
                                         // The section's name is the page's heading.
@@ -1269,7 +1265,9 @@ export function TopSidebar({
                     )}
                     {/* Second line: the tabs, then the section's tools (filters, Search) at its end. */}
                     <Row className="w-full items-center min-w-0">
+                        {tabletTitle}
                         <View className="flex-1 min-w-0">{children}</View>
+                        {tabletButtons}
                         {showAddButtons && (
                             <Row className={`${desktopFlex} shrink-0 items-center gap-2 pr-4`}>
                                 {toolButtons}
@@ -1295,7 +1293,8 @@ export function TopSidebar({
                       * a sidebar hides this bar and the left column carries the title; it shows here
                       * where the bar stays: a fork that keeps the bar past `lg` (a wider `hide_top_menu_from`).
                       */}
-                    <Row className="w-full items-center gap-4 min-w-0">
+                    <Row className="w-full items-center lg:gap-4 min-w-0">
+                        {tabletTitle}
                         {showTitle && (
                             // At most a third of the row, so a long section name truncates and the tabs keep their room.
                             <Row className="hidden lg:flex items-center gap-2 shrink min-w-0 max-w-1/3 pl-4">
@@ -1316,6 +1315,7 @@ export function TopSidebar({
                             </Row>
                         )}
                         <View className="flex-1 min-w-0">{children}</View>
+                        {tabletButtons}
                         {showAddButtons && (
                             <Row className={`${desktopFlex} shrink-0 items-center cond-buttons-add pr-4`}>
                                 {addButtons}
@@ -1357,7 +1357,7 @@ export const TabBar = ({
     // panel is off screen (below its breakpoint, which can be wider than `isDesktop`).
     const hasLeftColumnMenus = (showLeftColumnMenus ?? !isDesktop) && leftColumnMenus.length > 0
     const hasRowEnd = hasLeftColumnMenus || showFilters
-    const sectionIcon = useSectionIcon(menu, routes, pageData?.uri)
+    const sectionIcon = useSectionIcon(menu, pageData?.uri, routes)
 
     if (!routes.length) return null
 

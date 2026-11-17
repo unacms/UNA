@@ -467,7 +467,8 @@ export function Conductor({
                 visible while the content scrolls. */}
             {isUseCurrentHeader
                 ? <PageHeaderOptions hidden mobileOnly />
-                : <PageHeaderOptions sub={headerComponent} mobileOnly />}
+                // On tablets the tab row starts with the section's icon and name (TopSidebar), so the header leaves it out.
+                : <PageHeaderOptions sub={headerComponent} tabletTitle={hideTabs || !routes.length} mobileOnly />}
             {/* Below desktop a hub section's page was opened from its list: Back returns there. */}
             {hideTabs && data?.uri !== menuHub ? <PageHeaderOptions backButton={backToHub} mobileOnly /> : null}
             {(isUseCurrentHeader || isDesktop) && headerComponent}

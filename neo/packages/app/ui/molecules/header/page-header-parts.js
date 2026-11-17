@@ -25,6 +25,7 @@ import {
     useSetScrollDirection,
 } from 'app/context/jotai/layout';
 import { useHeaderOptions } from 'app/ui/molecules/header/options';
+import { SectionIcon, useSectionIcon } from 'app/ui/molecules/section-icon';
 import { useIsTabSlideCopy } from 'app/context/tab-route-override';
 import MenuTop from 'app/components/nav/menu-top';
 import { isPageCoverShown, isPageCoverHiddenOn } from 'app/lib/page-cover';
@@ -255,6 +256,7 @@ export function usePageHeaderBase(pageData) {
         backButton: options.backButton,
         ownBackButton: options.ownBackButton,
         title: options.title,
+        tabletTitle: options.tabletTitle !== false,
         band: isHeaderBandOn(options.band),
     }), [options]);
     const scrollDirection = useScrollDirection();
@@ -291,6 +293,10 @@ export function usePageHeaderBase(pageData) {
     const isShowTitle = !isDesktop && !pageData?.page_status
         && (options.showTitle ?? (!isOwnHeading && (Boolean(options.title) || isCoverShown)));
     const isBackButton = header.backButton;
+    // A section's page (it has a section menu) shows the section's icon before its name, as the desktop section header.
+    const sectionIcon = useSectionIcon(pageData?.menu?.object ? pageData.menu : null, pageData?.uri);
+    // Native tablets leave the title to the page as web does with classes (`tabletTitle`).
+    const isTitleOnThisTier = isWeb || header.tabletTitle || screenTier === 'phone';
 
     const menuSettings = getMenuSettings(
         pageData?.menu?.object,
@@ -397,9 +403,10 @@ export function usePageHeaderBase(pageData) {
         isFullContextSelector,
         hasTabBar,
         isShowLogo,
-        isShowTitle,
+        isShowTitle: isShowTitle && isTitleOnThisTier,
         isWeb,
         onHeaderLayout,
+        sectionIcon,
         onMainHeaderLayout,
         onSubHeaderLayout,
         pageTitle,
@@ -424,6 +431,7 @@ export const PageHeaderBody = memo(({
     pageData,
     pageTitle,
     router,
+    sectionIcon,
 }) => {
     const { t } = useTranslation();
     // Logo variant per breakpoint. Web picks it with classes (SSR-safe);
@@ -513,14 +521,19 @@ export const PageHeaderBody = memo(({
         </>
     );
 
-    const titleElement = isShowTitle && pageTitle ? <TextHeader text={pageTitle} /> : null;
+    // The section's icon leads its name; on web a page that draws the title itself on tablets (`tabletTitle`)
+    // keeps it to phones.
+    const titleElement = isShowTitle && pageTitle ? (
+        <Row className={`min-w-0 shrink items-center gap-3${isWeb && !header.tabletTitle ? ' sm:hidden' : ''}`}>
+            <SectionIcon icon={sectionIcon} />
+            <View className="min-w-0 shrink"><TextHeader text={pageTitle} /></View>
+        </Row>
+    ) : null;
     let leftElement = titleElement;
     if (hasTabBar && isFullContextSelector) {
         leftElement = <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />;
-    } else if ((isShowLogo || !canShowBackButton) && titleElement) {
-        // The logo leads the page title, as it leads the header on large screens: for members on phones and tablets
-        // too (a section's name: Posts, People), unless Back takes its place. The title truncates in the room the
-        // header's actions leave.
+    } else if (isShowLogo && titleElement) {
+        // The title truncates in the room the header's actions leave.
         leftElement = (
             <Row className="min-w-0 shrink items-center gap-3">
                 {Logo}
