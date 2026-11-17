@@ -1206,7 +1206,7 @@ export function TopSidebar({
     const isProfile = layoutName === 'profile'
     const isHideOnDesktop = !isProfile && sectionSidebar
     // A section that keeps its tabs on large screens is laid out as a compact profile cover (cover-morph-body): on the
-    // `cover_base` surface with a border-b separator, a first line with the section's icon and name (the avatar and
+    // page header's chrome (translucent card over a blur, its shadow edge; `conductor.cover_bar`), a first line with the section's icon and name (the avatar and
     // name) and its actions (Add...), and a second line with the tabs and the section's tools (filters, Search).
     const isSectionTabBar = !isProfile && !sectionSidebar
     const widthClass = contentWidth || appSetting('layout', 'page_content_width_default')
@@ -1235,7 +1235,7 @@ export function TopSidebar({
         return (
             <View
                 style={styles}
-                className={`${!omitDefaultBackground ? conductorTheme.menu : ''} lg:bg-card-surface lg:border-b lg:border-border/60`}
+                className={`${!omitDefaultBackground ? conductorTheme.menu : ''} lg:bg-card/60 lg:backdrop-blur-lg lg:shadow-border-b dark:lg:shadow-border-b-deep`}
             >
                 <View className={`${widthClass} mx-auto w-full`}>
                     {/* First line, from lg: below it the page header shows the title and the actions. */}

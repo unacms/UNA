@@ -44,6 +44,11 @@ export const settingsElements = {
         topmenu_button_pressed: true,
         left_menu_cnt: '  ',
         cover_base: 'ns--cover-base- w-full bg-card-surface ne--',
+        // The cover's bars (name and actions, tabs) and a section's bar: the page header's chrome on web, translucent
+        // card over a blur, as content scrolls under them once they pin. Native keeps the opaque surface.
+        cover_bar: 'ns--cover-bar- w-full bg-card-surface web:bg-card/60 web:backdrop-blur-lg ne--',
+        // Their lower edge once they pin (compact cover, a section's bar): the page header's shadow, not a border.
+        cover_bar_edge: 'border-b border-border/60 web:border-b-0 web:shadow-border-b web:dark:shadow-border-b-deep',
         cover_content:
             'ns--conductor-cover-content-- items-center h-full w-full justify-between lg:p-4 ne--',
         cover_small: 'mx-auto flex-row items-center ',
