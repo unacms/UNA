@@ -127,8 +127,9 @@ class BxBaseConnection extends BxDolConnection
         else if ($bShowDoAsButtonSmall)
             $sClassDo = ' bx-btn bx-btn-small';
         // a card's first button is its main one (BxBaseModProfileMenuSnippetMeta::setCard)
-        if($sClassDo && isset($aParams['show_do_as_primary']) && (bool)$aParams['show_do_as_primary'] === true)
+        if($sClassDo && isset($aParams['show_do_as_primary']) && (bool)$aParams['show_do_as_primary'] === true) {
             $sClassDo .= ' bx-btn-primary';
+        }
 
         $aTmplVarsAction = $aTmplVarsActions = [];
         if(count($aActions['items']) == 1) {

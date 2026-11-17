@@ -78,8 +78,9 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
      */
     protected function _getConnectionsPreview()
     {
-        if($this->_bConnectionsPreview || !$this->_oContentProfile)
+        if($this->_bConnectionsPreview || !$this->_oContentProfile) {
             return '';
+        }
 
         $this->_bConnectionsPreview = true;
 
@@ -88,8 +89,9 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
 
     protected function _isCountShown($sName)
     {
-        if(!isset($this->_aObject['menu_items'][$sName]))
+        if(!isset($this->_aObject['menu_items'][$sName])) {
             return false;
+        }
 
         $aItem = $this->_aObject['menu_items'][$sName];
         return $this->_isActive($aItem) && $this->_isVisible($aItem) && $this->_isVisibleInContext($aItem);
@@ -104,8 +106,9 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
             'show_counter_label_with_profiles' => false,
             'show_counter_label_icon' => false
         ]));
-        if(empty($sCounter))
+        if(empty($sCounter)) {
             return false;
+        }
 
         return $this->getUnitMetaItemCustom($this->_getConnectionsPreview() . $sCounter);
     }
@@ -146,8 +149,9 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
      */
     protected function _getCardButtonContent($sTitle, $sIcon)
     {
-        if(!$this->_bCard || empty($sIcon))
+        if(!$this->_bCard || empty($sIcon)) {
             return $sTitle;
+        }
 
         return $this->_oTemplate->parseHtmlByName('unit_card_button.html', [
             'icon' => $sIcon,
@@ -261,8 +265,9 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
 
         $iFriends = $oConnection->getCommonContentCount($iProfileId, bx_get_logged_profile_id(), true);
         // a card leaves a count of zero out, as its friends and followers are
-        if(!$iFriends && (!$this->_bShowZeros || $this->_bCard))
+        if(!$iFriends && (!$this->_bShowZeros || $this->_bCard)) {
             return false;
+        }
 
         $CNF = &$this->_oModule->_oConfig->CNF;
 
@@ -404,18 +409,22 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
         }
 
         // on a card a toggle is one of its two buttons, and the first one is the main one
-        if($this->_bCard && !$this->_buttonsCounterCheck())
+        if($this->_bCard && !$this->_buttonsCounterCheck()) {
             return false;
+        }
 
         $bFirst = $this->_isCardFirstButton();
-        if($bFirst)
+        if($bFirst) {
             $aObjectOptions['show_do_as_primary'] = true;
+        }
 
-        if(!($mixedItem = $oObject->getElement($iContentProfile, false, $aObjectOptions)) || !($mixedItem = $this->getUnitMetaItemCustom($mixedItem)))
+        if(!($mixedItem = $oObject->getElement($iContentProfile, false, $aObjectOptions)) || !($mixedItem = $this->getUnitMetaItemCustom($mixedItem))) {
             return false;
+        }
 
-        if($this->_bCard)
+        if($this->_bCard) {
             $this->_buttonsCounterIncrement();
+        }
 
         return [$mixedItem, $this->_getButtonItemClass($bFirst)];
     }

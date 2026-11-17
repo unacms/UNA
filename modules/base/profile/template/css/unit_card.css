@@ -53,6 +53,8 @@
     object-fit: cover;
 }
 .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-letter {
+    /* the profile's colour, which the template gives as "r, g, b, a" */
+    background-color: rgba(var(--bx-card-letter, 127, 127, 127, 1));
     display: -webkit-flex;
     display: flex;
     -webkit-align-items: center;
@@ -353,6 +355,8 @@
 
     .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item.bx-menu-item-button,
     .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-view {
+        /* in the grid's flow, 12px under the counts */
+        margin-top: 0.75rem;
         position: static;
         -webkit-transform: none;
         transform: none;
@@ -361,10 +365,6 @@
         display: block;
         -webkit-flex: 0 0 100%;
         flex: 0 0 100%;
-    }
-    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item.bx-menu-item-button,
-    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-view {
-        margin-top: 0.75rem;
     }
     .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-general-unit-meta ul.bx-menu-custom.bx-menu-custom-hor > li.bx-menu-item.bx-menu-item-button + li.bx-menu-item.bx-menu-item-button {
         margin-top: 0.5rem;

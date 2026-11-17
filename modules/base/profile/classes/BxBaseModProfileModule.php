@@ -499,23 +499,27 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
 
         $aIds = [];
         if($bFriends && $this->_oConfig->isFriends() && ($oFriends = BxDolConnection::getObjectInstance('sys_profiles_friends')) !== false) {
-            if($iViewerId && $iViewerId != $iProfileId)
+            if($iViewerId && $iViewerId != $iProfileId) {
                 $aIds = array_merge($aIds, $oFriends->getCommonContent($iProfileId, $iViewerId, true, 0, $iMax));
+            }
 
             $aIds = array_merge($aIds, $oFriends->getConnectedContent($iProfileId, true, 0, $iRead));
         }
-        if($bFollowers && ($oFollowers = BxDolConnection::getObjectInstance('sys_profiles_subscriptions')) !== false)
+        if($bFollowers && ($oFollowers = BxDolConnection::getObjectInstance('sys_profiles_subscriptions')) !== false) {
             $aIds = array_merge($aIds, $oFollowers->getConnectedInitiators($iProfileId, false, 0, $iRead));
+        }
 
         $aResult = [];
         foreach($aIds as $iId) {
             $iId = (int)$iId;
-            if(!$iId || $iId == $iViewerId || $iId == $iProfileId || in_array($iId, $aResult))
+            if(!$iId || $iId == $iViewerId || $iId == $iProfileId || in_array($iId, $aResult)) {
                 continue;
+            }
 
             $aResult[] = $iId;
-            if(count($aResult) >= $iMax)
+            if(count($aResult) >= $iMax) {
                 break;
+            }
         }
 
         return $aResult;

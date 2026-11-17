@@ -932,8 +932,9 @@ class BxBaseServiceProfiles extends BxDol
             $aBlock = BxDolPage::getBlockProcessing();
 
             $sApiContentType = 'browse';
-            if(($sK = 'config_api') && !empty($aBlock[$sK]) && is_array($aBlock[$sK]))
+            if(($sK = 'config_api') && !empty($aBlock[$sK]) && is_array($aBlock[$sK])) {
                 $sApiContentType = $aBlock[$sK]['content_type'] ?? $sApiContentType;
+            }
 
             $bApiBrowseSimple = $sApiContentType == 'browse_simple';
             $bApiGetData = !defined('BX_API_PAGE') || $bApiBrowseSimple;
@@ -1171,8 +1172,9 @@ class BxBaseServiceProfiles extends BxDol
             $aBlock = BxDolPage::getBlockProcessing();
             
             $sContentType = 'browse';
-            if(($sK = 'config_api') && !empty($aBlock[$sK]) && is_array($aBlock[$sK]))
+            if(($sK = 'config_api') && !empty($aBlock[$sK]) && is_array($aBlock[$sK])) {
                 $sContentType = $aBlock[$sK]['content_type'] ?? $sContentType;
+            }
 
             $bBrowseSimple = $sContentType == 'browse_simple';
 

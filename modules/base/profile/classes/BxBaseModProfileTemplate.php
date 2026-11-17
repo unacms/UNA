@@ -377,17 +377,20 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
      * One group of avatars for a profile's friends and followers together, shown before their counts on a card and
      * on the profile's page (BxBaseModProfileModule::getConnectionsPreviewIds); empty when there is nobody to show.
      */
-    function getConnectionsPreview ($iProfileId, $bFriends = true, $bFollowers = true)
+    public function getConnectionsPreview ($iProfileId, $bFriends = true, $bFollowers = true)
     {
         $aTmplVarsProfiles = [];
-        foreach($this->getModule()->getConnectionsPreviewIds($iProfileId, $bFriends, $bFollowers) as $iId)
-            if(($oProfile = BxDolProfile::getInstanceMagic($iId)) !== false)
+        foreach($this->getModule()->getConnectionsPreviewIds($iProfileId, $bFriends, $bFollowers) as $iId) {
+            if(($oProfile = BxDolProfile::getInstanceMagic($iId)) !== false) {
                 $aTmplVarsProfiles[] = [
                     'unit' => $oProfile->getUnit(0, ['template' => ['name' => 'unit_wo_info_links', 'size' => 'icon']])
                 ];
+            }
+        }
 
-        if(empty($aTmplVarsProfiles))
+        if(empty($aTmplVarsProfiles)) {
             return '';
+        }
 
         return $this->parseHtmlByName('connections_preview.html', [
             'bx_repeat:profiles' => $aTmplVarsProfiles
@@ -417,14 +420,16 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
             $oMetaMenu->setContext($aParams['context']);
 
         $bCard = !empty($aParams['card']) && method_exists($oMetaMenu, 'setCard');
-        if(method_exists($oMetaMenu, 'setCard'))
+        if(method_exists($oMetaMenu, 'setCard')) {
             $oMetaMenu->setCard($bCard);
+        }
 
         $aResult = [
             'meta' => $oMetaMenu->getCode()
         ];
-        if($bCard)
+        if($bCard) {
             $aResult['buttons'] = $oMetaMenu->getButtonsCount();
+        }
 
         return $aResult;
     }
@@ -462,7 +467,7 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
     /**
      * Get the picture of a profile's card: wider than the avatars, since the card shows it across its whole width.
      */
-    function urlCard ($aData, $bSubstituteNoImage = true)
+    public function urlCard ($aData, $bSubstituteNoImage = true)
     {
         $CNF = &$this->_oConfig->CNF;
 
@@ -1057,8 +1062,9 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
     {
         $sResult = '';
 
-        if($this->_isUnitCard($sTemplateName))
+        if($this->_isUnitCard($sTemplateName)) {
             return 'card';
+        }
 
         switch($sTemplateName) {
             case 'unit_with_cover.html':

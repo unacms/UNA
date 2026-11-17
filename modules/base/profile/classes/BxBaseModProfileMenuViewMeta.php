@@ -94,8 +94,9 @@ class BxBaseModProfileMenuViewMeta extends BxTemplMenuUnitMeta
             'show_counter_label_with_profiles' => false,
             'show_counter_label_icon' => false
         ]);
-        if(empty($sCounter) || $this->_bConnectionsPreview)
+        if(empty($sCounter) || $this->_bConnectionsPreview) {
             return $sCounter;
+        }
 
         $this->_bConnectionsPreview = true;
 
@@ -104,8 +105,9 @@ class BxBaseModProfileMenuViewMeta extends BxTemplMenuUnitMeta
 
     protected function _isCountShown($sName)
     {
-        if(!isset($this->_aObject['menu_items'][$sName]))
+        if(!isset($this->_aObject['menu_items'][$sName])) {
             return false;
+        }
 
         $aItem = $this->_aObject['menu_items'][$sName];
         return $this->_isActive($aItem) && $this->_isVisible($aItem);
