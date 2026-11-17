@@ -228,48 +228,57 @@ class BxBaseModGroupsConnectionFans extends BxTemplConnection
         return parent::_checkAllowedConnectContent($oContent);
     }
 
+    /**
+     * The toggle's state and actions. With `show_do_label_short` (a card, where the button sits under the name of
+     * what is joined) the wording is the card's: "Join", then "Request sent" with Cancel in its menu, "Invited" with
+     * Accept and Decline, or "Joined" with Leave; a module can have its own words (an event: "Attend", "Going").
+     */
     protected function _getActions($iInitiator, $iContent, $aParams = [])
     {
-        $CNF = &$this->_oModule->_oConfig->CNF;
-        
+        $bShort = isset($aParams['show_do_label_short']) && (bool)$aParams['show_do_label_short'] === true;
+
         $sName = $sTitle = '';
         $aActions = [];
 
+        /*
+         * An empty array item shows the items in a popup, under the button with the state.
+         */
         if($this->isConnectedNotMutual($iInitiator, $iContent)) {
             $aActions = [[
                 'name' => 'remove',
                 'title' => $this->_getLKey('menu_item_title_sm_leave_cancel')
             ]];
+            if($bShort) {
+                $sName = 'default';
+                $sTitle = $this->_getLKey('menu_item_title_sm_join_requested_short');
+                $aActions[] = [];
+            }
         }
         else if($this->isConnectedNotMutual($iContent, $iInitiator)) {
             $sName = 'add';
-            $sTitle = $this->_aT['do_content'];
+            $sTitle = $bShort ? $this->_getLKey('menu_item_title_sm_join_invited') : $this->_aT['do_content'];
             $aActions = [[
                 'name' => 'add',
-                'title' => $this->_getLKey('menu_item_title_sm_join_confirm')
+                'title' => $this->_getLKey($bShort ? 'menu_item_title_sm_join_accept' : 'menu_item_title_sm_join_confirm')
             ], [
                 'name' => 'remove',
-                'title' => $this->_getLKey('menu_item_title_sm_leave_reject')
+                'title' => $this->_getLKey($bShort ? 'menu_item_title_sm_join_decline' : 'menu_item_title_sm_leave_reject')
             ]];
         }
         else if($this->isConnected($iInitiator, $iContent, true)) {
             $sName = 'default';
-            $sTitle = $this->_aT['do_initiator'];
+            $sTitle = $bShort ? $this->_getLKey('menu_item_title_sm_joined') : $this->_aT['do_initiator'];
             $aActions = [[
                 'name' => 'remove',
                 'title' => $this->_getLKey('menu_item_title_sm_leave')
-            ], [
-                /*
-                 * An empty array item to show all items in popup.
-                 * More actions will be added later.
-                 */
-            ]];
+            ], []];
         }
-        else
+        else {
             $aActions = [[
                 'name' => 'add',
-                'title' => $this->_getLKey('menu_item_title_sm_join')
+                'title' => $this->_getLKey($bShort ? 'menu_item_title_sm_join_short' : 'menu_item_title_sm_join')
             ]];
+        }
 
         return [
             'name' => $sName,

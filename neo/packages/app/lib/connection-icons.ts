@@ -1,6 +1,7 @@
 /**
- * Icons of a connection toggle (friends, follow: `connections_ext`), the same ones UNA's site draws
- * (BxBaseConnectionFriend / BxBaseConnectionSubscription `_getActionIconAsIcon`; here `social_actions.connection_ext`).
+ * Icons of a connection toggle (friends, follow, membership: `connections_ext`), the same ones UNA's site draws
+ * (BxBaseConnectionFriend / BxBaseConnectionSubscription / BxBaseModGroupsConnectionFans `_getActionIconAsIcon`; here
+ * `social_actions.connection_ext`).
  * The button shows its state: `add` before the connection (Add friend, Follow) and `default` once it is made or asked
  * for (Request sent, Friends, Following). Each row of the button's menu shows its action: `remove` for Cancel request,
  * Unfriend, Reject and Unfollow, `add` for Confirm.
@@ -30,4 +31,25 @@ export function withConnectionRowIcons<T extends ConnectionAction>(
         const icon = action.icon || (action.name ? icons?.[action.name] : undefined);
         return icon ? { ...action, icon } : action;
     });
+}
+
+export type ConnectionIconSettings = Record<string, unknown> | null | undefined;
+
+function iconsOf(entry: unknown): ConnectionIcons | undefined {
+    const icons = (entry as { icons?: unknown } | null | undefined)?.icons;
+    return icons && typeof icons === 'object' ? (icons as ConnectionIcons) : undefined;
+}
+
+/**
+ * The icon set of a connection object out of `social_actions.connection_ext`: its own entry, else `fans` for a
+ * membership (`bx_groups_fans`, `bx_spaces_fans`, a module NEO has no entry for), else `fallback`.
+ */
+export function connectionIconSet(
+    settings: ConnectionIconSettings,
+    object: unknown,
+    fallback: ConnectionIcons = {},
+): ConnectionIcons {
+    const name = typeof object === 'string' ? object : '';
+    if (!name || !settings) return fallback;
+    return iconsOf(settings[name]) ?? (name.endsWith('_fans') ? iconsOf(settings.fans) : undefined) ?? fallback;
 }

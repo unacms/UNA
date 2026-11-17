@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- An event's card: the membership button says Attend, then Going; a card with no button says View event. -->
+<resources name="ru" flag="ru" title="Russian" category="Events">
+    <string_add name="_bx_events_menu_item_title_sm_join_short"><![CDATA[Пойду]]></string_add>
+    <string_add name="_bx_events_menu_item_title_sm_joined"><![CDATA[Иду]]></string_add>
+    <string_add name="_bx_events_txt_unit_view"><![CDATA[Смотреть событие]]></string_add>
+</resources>

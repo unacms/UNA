@@ -35,6 +35,8 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
      */
     protected $_bUnitCard;
     protected $_sUnitCard;
+    protected $_aUnitCardTemplates;
+    protected $_sUnitCardViewIcon;
     
     function __construct(&$oConfig, &$oDb)
     {
@@ -53,6 +55,8 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
 
         $this->_bUnitCard = false;
         $this->_sUnitCard = 'unit_card.html';
+        $this->_aUnitCardTemplates = ['unit_with_cover.html'];
+        $this->_sUnitCardViewIcon = 'user-circle';
     }
 
     public function addLocationBase()
@@ -297,6 +301,12 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
             $sThumbUrl = $this->_getUnitThumbUrl($sTemplateSize, $aData, false);
         $bThumbUrl = !empty($sThumbUrl);
 
+        // a card with no picture of its own (a group, an event) shows its cover in the picture's place
+        if(!$bThumbUrl && $bCoverUrl && $this->_isUnitCard($sTemplate)) {
+            $sThumbUrl = $sCoverUrl;
+            $bThumbUrl = true;
+        }
+
         $aTmplVarsThumbnail = array(
             'class_size' => '',
             'bx_if:show_thumb_image' => array(
@@ -333,7 +343,8 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
             'id' => $iContentId,
             'public' => $bPublic,
             'bx_if:show_thumbnail' => array(
-                'condition' => $bThumbUrl || $this->_bLetterAvatar,
+                // a card always has its picture's place filled: the letter where there is no picture and no cover
+                'condition' => $bThumbUrl || $this->_bLetterAvatar || $this->_isUnitCard($sTemplate),
                 'content' => $aTmplVarsThumbnail
             ),
             'cover_url' => $sCoverUrl,
@@ -377,10 +388,10 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
      * One group of avatars for a profile's friends and followers together, shown before their counts on a card and
      * on the profile's page (BxBaseModProfileModule::getConnectionsPreviewIds); empty when there is nobody to show.
      */
-    public function getConnectionsPreview ($iProfileId, $bFriends = true, $bFollowers = true)
+    public function getConnectionsPreview ($iProfileId, $aShow = [])
     {
         $aTmplVarsProfiles = [];
-        foreach($this->getModule()->getConnectionsPreviewIds($iProfileId, $bFriends, $bFollowers) as $iId) {
+        foreach($this->getModule()->getConnectionsPreviewIds($iProfileId, $aShow) as $iId) {
             if(($oProfile = BxDolProfile::getInstanceMagic($iId)) !== false) {
                 $aTmplVarsProfiles[] = [
                     'unit' => $oProfile->getUnit(0, ['template' => ['name' => 'unit_wo_info_links', 'size' => 'icon']])
@@ -441,13 +452,27 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
     {
         $bOwn = $iProfile && $iProfile == bx_get_logged_profile_id();
 
+        // "View profile"; a group, an event or a space names itself (View group)
+        $CNF = &$this->_oConfig->CNF;
+        $sView = !empty($CNF['T']['txt_unit_view']) ? $CNF['T']['txt_unit_view'] : '_sys_profile_unit_view';
+
+        // a line under the name: an event's date
+        $sSubtitle = !empty($aVars['date_start_f']) ? $aVars['date_start_f'] : '';
+
         return [
+            'bx_if:show_subtitle' => [
+                'condition' => $sSubtitle !== '',
+                'content' => [
+                    'subtitle' => $sSubtitle
+                ]
+            ],
             'bx_if:show_view' => [
                 'condition' => !$bButtons,
                 'content' => [
                     'content_url' => $aVars['content_url'],
                     'content_click' => $aVars['content_click'],
-                    'view' => _t('_sys_profile_unit_view'),
+                    'view' => _t($sView),
+                    'view_icon' => $this->_sUnitCardViewIcon,
                     'bx_if:show_you' => [
                         'condition' => $bOwn,
                         'content' => [
@@ -461,7 +486,7 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
 
     protected function _isUnitCard($sTemplateName = 'unit.html')
     {
-        return $this->_bUnitCard && $sTemplateName == 'unit_with_cover.html';
+        return $this->_bUnitCard && in_array($sTemplateName, $this->_aUnitCardTemplates);
     }
 
     /**
@@ -1038,7 +1063,7 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
                 break;
 
             case 'unit_with_cover.html':
-                $sResult = $this->_sUnitClassWithCover . ($this->_isUnitCard($sTemplateName) ? ' bx-base-pofile-card' : '');
+                $sResult = $this->_sUnitClassWithCover;
                 break;
 
             case 'unit_wo_info.html':
@@ -1053,6 +1078,10 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
             case 'unit_wo_info_showcase.html':
                 $sResult = $this->_sUnitClassWoInfoShowCase;
                 break;
+        }
+
+        if($this->_isUnitCard($sTemplateName)) {
+            $sResult = $this->_sUnitClassWithCover . ' bx-base-pofile-card';
         }
 
         return $sResult;

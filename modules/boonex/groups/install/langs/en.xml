@@ -399,6 +399,7 @@
     <string name="_bx_groups_txt_account_pending"><![CDATA[This group is pending approval, please wait until it is activated.]]></string>
     <string name="_bx_groups_txt_account_suspended"><![CDATA[This group is suspended.]]></string>
     <string name="_bx_groups_txt_status_hidden"><![CDATA[This group was hidden.]]></string>
+    <string name="_bx_groups_txt_unit_view"><![CDATA[View group]]></string>
     <string name="_bx_groups_txt_N_fans"><![CDATA[{0} members]]></string>
     <string name="_bx_groups_txt_ban_added"><![CDATA[Banned]]></string>
     <string name="_bx_groups_txt_role"><![CDATA[Role]]></string>

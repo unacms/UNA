@@ -3784,8 +3784,14 @@
     <string name="_sys_menu_item_title_sm_unfriend_cancel"><![CDATA[Отменить запрос]]></string>
     <string name="_sys_menu_item_title_sm_unfriend_reject"><![CDATA[Отвергнуть запрос о дружбе]]></string>
     <string name="_sys_menu_item_title_sm_join_paid"><![CDATA[Оплатить и присоединиться]]></string>
+    <string name="_sys_menu_item_title_sm_join_requested_short"><![CDATA[Запрос отправлен]]></string>
+    <string name="_sys_menu_item_title_sm_join_short"><![CDATA[Вступить]]></string>
     <string name="_sys_menu_item_title_sm_join"><![CDATA[Присоединиться]]></string>
+    <string name="_sys_menu_item_title_sm_join_accept"><![CDATA[Принять]]></string>
     <string name="_sys_menu_item_title_sm_join_confirm"><![CDATA[Одобрить присоединение]]></string>
+    <string name="_sys_menu_item_title_sm_join_decline"><![CDATA[Отклонить]]></string>
+    <string name="_sys_menu_item_title_sm_join_invited"><![CDATA[Вас пригласили]]></string>
+    <string name="_sys_menu_item_title_sm_joined"><![CDATA[Вы участник]]></string>
     <string name="_sys_menu_item_title_sm_leave"><![CDATA[Покинуть]]></string>
     <string name="_sys_menu_item_title_sm_leave_cancel"><![CDATA[Отменить присоединение]]></string>
     <string name="_sys_menu_item_title_sm_leave_reject"><![CDATA[Отвергнуть присоединение]]></string>

@@ -3,8 +3,9 @@
 use PHPUnit\Framework\Attributes\Group;
 
 /**
- * The friend and follow toggles (BxBaseConnectionFriend, BxBaseConnectionSubscription: the buttons of a profile and of
- * a person's card) draw the same icons on the site and in the apps. The button shows its state: `add` before the
+ * The friend, follow and membership toggles (BxBaseConnectionFriend, BxBaseConnectionSubscription,
+ * BxBaseModGroupsConnectionFans, BxEventsConnectionFans: the buttons of a profile and of a card) draw the same icons
+ * on the site and in the apps. The button shows its state: `add` before the
  * connection, `default` once it is made or asked for ("Request sent", "Friends", "Following"). A row of the button's
  * menu shows its action: `remove` for Cancel request, Unfriend, Reject and Unfollow.
  *
@@ -18,7 +19,14 @@ class ConnectionToggleIconsTest extends BxDolIntegrationTestCase
     protected const ICONS = [
         'sys_profiles_friends' => ['add' => 'user-round-plus', 'remove' => 'user-round-x', 'default' => 'user-round-check'],
         'sys_profiles_subscriptions' => ['add' => 'circle-plus', 'remove' => 'circle-minus', 'default' => 'circle-check'],
+        // a membership (Join, Leave, Joined): the apps keep one set for every `*_fans` object, under `fans`
+        'bx_groups_fans' => ['add' => 'log-in', 'remove' => 'log-out', 'default' => 'users-round'],
+        // an event's (Attend, Not going, Going)
+        'bx_events_fans' => ['add' => 'calendar-plus', 'remove' => 'calendar-x', 'default' => 'calendar-check'],
     ];
+    /** The module of an object that is not the system's, and the apps' name of its set where it is not the object's. */
+    protected const MODULES = ['bx_groups_fans' => 'bx_groups', 'bx_events_fans' => 'bx_events'];
+    protected const APP_SETS = ['bx_groups_fans' => 'fans'];
 
     protected function connection(string $sObject): BxDolConnection
     {
@@ -42,6 +50,9 @@ class ConnectionToggleIconsTest extends BxDolIntegrationTestCase
     public function testSiteIcons(): void
     {
         foreach(self::ICONS as $sObject => $aIcons) {
+            if(isset(self::MODULES[$sObject]) && !BxDolModuleQuery::getInstance()->isEnabledByName(self::MODULES[$sObject]))
+                continue;
+
             $oConnection = $this->connection($sObject);
 
             foreach($aIcons as $sAction => $sIcon) {
@@ -68,7 +79,7 @@ class ConnectionToggleIconsTest extends BxDolIntegrationTestCase
         $sToggles = get_mb_substr($sSettings, $iToggles, 1200);
 
         foreach(self::ICONS as $sObject => $aIcons) {
-            $sExpected = $sObject . ": {\n                icons: { add: '" . $this->pascal($aIcons['add']) . "', remove: '" . $this->pascal($aIcons['remove']) . "', default: '" . $this->pascal($aIcons['default']) . "' },";
+            $sExpected = (self::APP_SETS[$sObject] ?? $sObject) . ": {\n                icons: { add: '" . $this->pascal($aIcons['add']) . "', remove: '" . $this->pascal($aIcons['remove']) . "', default: '" . $this->pascal($aIcons['default']) . "' },";
             $this->assertStringContainsString($sExpected, $sToggles, $sObject);
         }
     }

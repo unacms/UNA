@@ -396,6 +396,7 @@
     <string name="_bx_groups_txt_account_pending"><![CDATA[Эта группа ожидает одобрения. Пожалуйста, дождитесь ее активации.]]></string>
     <string name="_bx_groups_txt_account_suspended"><![CDATA[Эта группа заблокирована.]]></string>
     <string name="_bx_groups_txt_status_hidden"><![CDATA[Эта группа была скрыта.]]></string>
+    <string name="_bx_groups_txt_unit_view"><![CDATA[Смотреть группу]]></string>
     <string name="_bx_groups_txt_N_fans"><![CDATA[{0} участников]]></string>
     <string name="_bx_groups_txt_ban_added"><![CDATA[Заблокирован]]></string>
     <string name="_bx_groups_txt_role"><![CDATA[Роль]]></string>

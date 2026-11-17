@@ -190,6 +190,9 @@ class BxBaseModGroupsTemplate extends BxBaseModProfileTemplate
     {
         $sResult = '';
 
+        if($this->_isUnitCard($sTemplateName))
+            return 'card';
+
         switch($sTemplateName) {
             case 'unit.html':
             case 'unit_with_cover.html':

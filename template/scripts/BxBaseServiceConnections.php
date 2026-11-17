@@ -71,8 +71,9 @@ class BxBaseServiceConnections extends BxDol
         if($aResult['err'] !== false)
             return ['code' => 3, 'message' => $aResult['msg']];
 
+        // the toggle as it is now; a card's keeps its short wording (`short`, see BxBaseConnection::getElementAPI)
         if(($aParams['r'] ?? '') == 'object') 
-            return $oConnection->getElementAPI($aParams['cid'], $aParams['iid']);
+            return $oConnection->getElementAPI($aParams['cid'], $aParams['iid'], !empty($aParams['short']) ? ['show_do_label_short' => true] : []);
 
         $aFlip = ['add' => 'remove', 'remove' => 'add'];
 

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- A space's card with no button to offer says View space. -->
+<resources name="ru" flag="ru" title="Russian" category="Spaces">
+    <string_add name="_bx_spaces_txt_unit_view"><![CDATA[Смотреть пространство]]></string_add>
+</resources>

@@ -64,7 +64,7 @@ class PersonsConnectionsPreviewTest extends BxDolIntegrationTestCase
 
     protected function ids(bool $bFriends = true, bool $bFollowers = true, int $iMax = 3): array
     {
-        return BxDolModule::getInstance('bx_persons')->getConnectionsPreviewIds(self::PROFILE, $bFriends, $bFollowers, $iMax);
+        return BxDolModule::getInstance('bx_persons')->getConnectionsPreviewIds(self::PROFILE, ['friends' => $bFriends, 'followers' => $bFollowers], $iMax);
     }
 
     public function testFriendsAndFollowersMakeOneGroupEachPersonOnce(): void

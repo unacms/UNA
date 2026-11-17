@@ -1,82 +1,16 @@
 import { formatDateInterval, useDateLocaleTag } from 'app/lib/util'
-import { Text } from 'app/design/typography'
-import { View, Row } from 'app/design/view'
-import { useTranslation } from 'react-i18next';
-import { Skeleton } from 'app/ui/atoms/skeleton';
-import {
-    UnitActions,
-    UnitImage,
-    UnitProfileList,
-    UnitTitle,
-    UnitVisibility,
-    UnitWrapper,
-    useUnitActions,
-} from 'app/components/units/helpers';
+import { useTranslation } from 'react-i18next'
+import { UnitProfileCard } from 'app/components/units/helpers'
 
+// The same card as people's, with the event's date under its name: the picture (the cover where it has none), the
+// name, the date, who is going and interested, then Attend and Follow.
 export default function Unit({ data, unitType, module }) {
-    const { t } = useTranslation();
-    const dateLocaleTag = useDateLocaleTag();
-    const { primaryMenuItem, secondaryMenuItem } = useUnitActions({
-        unitType,
-        data,
-        module,
-        t,
-    });
+    const { t } = useTranslation()
+    const dateLocaleTag = useDateLocaleTag()
+    // A skeleton keeps the date's line, so the card does not grow when it loads.
+    const subtitle = data?.date_start
+        ? formatDateInterval(data.date_start, data.date_end, t, dateLocaleTag)
+        : (data?.skeleton ? ' ' : null)
 
-    const isSkeleton = data?.skeleton;
-
-    return (
-        <UnitWrapper data={data} module={module} as="list" padding="p-1">
-            <View className="flex-row sm:flex-col p-1">
-                <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-lg sm:rounded-xl overflow-hidden items-center justify-center bg-muted-foreground/20">
-                    <UnitImage
-                        image={data.cover}
-                        alt={data.title}
-                        skeleton={isSkeleton}
-                        view="cover"
-                        className="absolute u-cover rounded-lg"
-                    />
-                </View>
-                <View className="p-3 flex-auto flex-col justify-between gap-3">
-                    <View className="h-22 flex-col">
-                        <Skeleton visible={isSkeleton} className="h-4 w-1/2">
-                            {data.date_start ? (
-                                <Text
-                                    numberOfLines={1}
-                                    className="text-muted-foreground text-xs uppercase font-semibold tracking-tight"
-                                >
-                                    {formatDateInterval(data.date_start, data.date_end, t, dateLocaleTag)}
-                                </Text>
-                            ) : null}
-                        </Skeleton>
-                        <UnitTitle
-                            title={data.title}
-                            skeleton={isSkeleton}
-                            numberOfLines={2}
-                            skeletonClassName="h-10 w-3/4 mt-1"
-                        />
-                        <Row className="items-center h-6 mt-auto justify-between">
-                            <UnitProfileList
-                                data={data}
-                                skeleton={isSkeleton}
-                                listKey="followers_list"
-                                countKey="intrested"
-                                fallbackCountKey="going"
-                                displaySize="xs"
-                                labelClassName="truncate text-xs leading-tight flex-auto text-muted-foreground"
-                            />
-                            <UnitVisibility visibility={data.visibility} skeleton={isSkeleton} />
-                        </Row>
-                    </View>
-                    <UnitActions
-                        primaryMenuItem={primaryMenuItem}
-                        secondaryMenuItem={secondaryMenuItem}
-                        skeleton={isSkeleton}
-                        className="flex-row sm:flex-col gap-2 w-full"
-                        inlineSecondary
-                    />
-                </View>
-            </View>
-        </UnitWrapper>
-    );
+    return <UnitProfileCard data={data} unitType={unitType} module={module} subtitle={subtitle} />
 }

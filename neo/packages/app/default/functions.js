@@ -4,7 +4,7 @@ import { updateRouteDataForConnection, appSetting } from 'app/lib/util'
 import { normalizeTiers, responsiveClasses } from 'app/lib/responsive-classes'
 import { withoutHiddenOn } from 'app/lib/hidden-on'
 import { FLUSH_LIST_MODULES } from 'app/components/units/flush-list'
-import { getUnitActionNames, isProfileUnitModule, pickUnitActions } from 'app/lib/unit-actions'
+import { getUnitActionNames, getUnitViewAction, isProfileUnitModule, pickUnitActions } from 'app/lib/unit-actions'
 import { components } from 'app/components/registry';
 import { settingsLayout } from 'app/settings/layout'
 import i18n from 'i18next'
@@ -243,10 +243,10 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName, opt
     let primary = actions.primary;
     let secondary = actions.secondary;
     if (!primary) {
-        const isProfile = moduleName == 'bx_persons' || moduleName == 'bx_organizations';
+        const view = getUnitViewAction(moduleName);
         primary = {
-            title: isProfile ? i18n.t('View profile') : i18n.t('View'),
-            icon: isProfile ? 'CircleUserRound' : undefined,
+            title: i18n.t(view.title),
+            icon: view.icon || undefined,
             onPress: (event) => handleClick(event, data.url),
         };
         if (options?.isOwn && !secondary) {

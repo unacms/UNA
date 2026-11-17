@@ -100,7 +100,11 @@ class BxBaseModProfileMenuViewMeta extends BxTemplMenuUnitMeta
 
         $this->_bConnectionsPreview = true;
 
-        return $this->_oModule->_oTemplate->getConnectionsPreview($iContentProfileId, $this->_isCountShown('friends'), $this->_isCountShown('subscribers')) . $sCounter;
+        return $this->_oModule->_oTemplate->getConnectionsPreview($iContentProfileId, [
+            'friends' => $this->_isCountShown('friends'),
+            'followers' => $this->_isCountShown('subscribers'),
+            'members' => false
+        ]) . $sCounter;
     }
 
     protected function _isCountShown($sName)

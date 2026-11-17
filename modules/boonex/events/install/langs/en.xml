@@ -464,6 +464,8 @@
 
     <string name="_bx_events_menu_item_title_system_sm_date_start"><![CDATA[Date start]]></string>
     <string name="_bx_events_menu_item_title_sm_date_start"><![CDATA[Date start]]></string>
+    <string name="_bx_events_menu_item_title_sm_join_short"><![CDATA[Attend]]></string>
+    <string name="_bx_events_menu_item_title_sm_joined"><![CDATA[Going]]></string>
     <string name="_bx_events_menu_item_title_system_sm_date_end"><![CDATA[Date end]]></string>
     <string name="_bx_events_menu_item_title_sm_date_end"><![CDATA[Date end]]></string>
     <string name="_bx_events_menu_item_title_ical_export"><![CDATA[Sync to Calendar]]></string>
@@ -534,6 +536,7 @@
     <string name="_bx_events_txt_account_suspended"><![CDATA[This event is suspended.]]></string>
     <string name="_bx_events_txt_scheduled_awaiting"><![CDATA[Event publishing date is {date_publish_uf}]]></string>
     <string name="_bx_events_txt_status_hidden"><![CDATA[This event was hidden.]]></string>
+    <string name="_bx_events_txt_unit_view"><![CDATA[View event]]></string>
     <string name="_bx_events_txt_N_fans"><![CDATA[{0} going]]></string>
     <string name="_bx_events_txt_role"><![CDATA[Role]]></string>
     <string name="_bx_events_txt_role_added"><![CDATA[Added]]></string>

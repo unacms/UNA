@@ -387,6 +387,7 @@
     <string name="_bx_spaces_txt_account_pending"><![CDATA[Это пространство ожидает одобрения. Пожалуйста, дождитесь ее активации.]]></string>
     <string name="_bx_spaces_txt_account_suspended"><![CDATA[Это пространство заблокировано.]]></string>
     <string name="_bx_spaces_txt_status_hidden"><![CDATA[Это пространство было скрыто.]]></string>
+    <string name="_bx_spaces_txt_unit_view"><![CDATA[Смотреть пространство]]></string>
     <string name="_bx_spaces_txt_N_fans"><![CDATA[{0} участников]]></string>
     <string name="_bx_spaces_txt_role"><![CDATA[Роль]]></string>
     <string name="_bx_spaces_txt_role_added"><![CDATA[Начало]]></string>

@@ -391,6 +391,7 @@
     <string name="_bx_spaces_txt_account_pending"><![CDATA[This space is pending approval, please wait until it is activated.]]></string>
     <string name="_bx_spaces_txt_account_suspended"><![CDATA[This space is suspended.]]></string>
     <string name="_bx_spaces_txt_status_hidden"><![CDATA[This space was hidden.]]></string>
+    <string name="_bx_spaces_txt_unit_view"><![CDATA[View space]]></string>
     <string name="_bx_spaces_txt_N_fans"><![CDATA[{0} members]]></string>
     <string name="_bx_spaces_txt_role"><![CDATA[Role]]></string>
     <string name="_bx_spaces_txt_role_added"><![CDATA[Added]]></string>

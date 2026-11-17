@@ -1,6 +1,6 @@
 @charset "UTF-8";
 /**
- * A profile's card in a gallery (unit_card.html: people, organizations), laid out as the apps' card (NEO:
+ * A profile's card in a gallery (unit_card.html: people, organizations, groups, events, spaces), laid out as the apps' card (NEO:
  * components/units/content-list/bx-persons.js): a square picture, the name, one group of avatars for the friends and
  * followers before their counts, then the card's two buttons, the first one the main one. Below 640px a card is a row: a round
  * picture, the name over the counts, and the buttons as icons at the end.
@@ -106,6 +106,15 @@
 }
 .dark .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-title {
     color: #f4f4f5;
+}
+
+/* a line under the name: an event's date */
+.bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-subtitle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
 }
 
 /* the meta menu: the counts on one line, then the buttons */
@@ -309,6 +318,11 @@
         padding: 0.25rem;
     }
     .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-name {
+        margin-bottom: 0.5rem;
+    }
+    /* the date belongs to the name: 4px under it, then the 8px before the counts */
+    .bx-base-pofile-unit-with-cover.bx-base-pofile-card .bx-base-pofile-card-subtitle {
+        margin-top: -0.25rem;
         margin-bottom: 0.5rem;
     }
 

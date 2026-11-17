@@ -2891,6 +2891,21 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
 
         return array($iProfileId, $iGroupProfileId, $oGroupProfile);
     }
+
+    /**
+     * A group's, an event's or an organization's members come first in the group of avatars before its counts.
+     */
+    protected function _getConnectionsPreviewIds($iProfileId, $iViewerId, $aShow, $iMax)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aIds = [];
+        if(!empty($aShow['members']) && !empty($CNF['OBJECT_CONNECTIONS']) && ($oMembers = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTIONS'])) !== false) {
+            $aIds = $oMembers->getConnectedInitiators($iProfileId, true, 0, $iMax + 1);
+        }
+
+        return array_merge($aIds, parent::_getConnectionsPreviewIds($iProfileId, $iViewerId, $aShow, $iMax));
+    }
 }
 
 /** @} */

@@ -417,7 +417,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_groups_snippet_meta', 'bx_groups', 'join-paid', '_sys_menu_item_title_system_sm_join_paid', '_sys_menu_item_title_sm_join_paid', '', '', '', '', '', 2147483647, 'a:3:{s:6:"module";s:9:"bx_groups";s:6:"method";s:33:"is_paid_join_avaliable_by_content";s:6:"params";a:1:{i:0;s:12:"{content_id}";}}', '', 1, 0, 1, 40),
 ('bx_groups_snippet_meta', 'bx_groups', 'join', '_sys_menu_item_title_system_sm_join', '_sys_menu_item_title_sm_join', '', '', '', '', '', 2147483647, 'a:3:{s:6:"module";s:9:"bx_groups";s:6:"method";s:33:"is_free_join_avaliable_by_content";s:6:"params";a:1:{i:0;s:12:"{content_id}";}}', '', 1, 0, 1, 45),
 ('bx_groups_snippet_meta', 'bx_groups', 'leave', '_sys_menu_item_title_system_sm_leave', '_sys_menu_item_title_sm_leave', '', '', '', '', '', 2147483647, '', 'recom_groups_fans', 0, 0, 1, 50),
-('bx_groups_snippet_meta', 'bx_groups', 'subscribe', '_sys_menu_item_title_system_sm_subscribe', '_sys_menu_item_title_sm_subscribe', '', '', '', '', '', 2147483647, '', 'recom_groups_fans', 0, 0, 1, 55),
+('bx_groups_snippet_meta', 'bx_groups', 'subscribe', '_sys_menu_item_title_system_sm_subscribe', '_sys_menu_item_title_sm_subscribe', '', '', '', '', '', 2147483647, '', 'recom_groups_fans', 1, 0, 1, 55),
 ('bx_groups_snippet_meta', 'bx_groups', 'unsubscribe', '_sys_menu_item_title_system_sm_unsubscribe', '_sys_menu_item_title_sm_unsubscribe', '', '', '', '', '', 2147483647, '', 'recom_groups_fans', 0, 0, 1, 60),
 ('bx_groups_snippet_meta', 'bx_groups', 'ignore-join', '_sys_menu_item_title_system_sm_ignore', '_sys_menu_item_title_sm_ignore', '', '', '', '', '', 2147483647, '', 'all!recom_groups_fans', 1, 0, 1, 70);
 

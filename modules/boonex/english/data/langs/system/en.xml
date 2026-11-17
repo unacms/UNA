@@ -3820,8 +3820,14 @@
     <string name="_sys_menu_item_title_sm_unfriend_cancel"><![CDATA[Cancel request]]></string>
     <string name="_sys_menu_item_title_sm_unfriend_reject"><![CDATA[Reject friend request]]></string>
     <string name="_sys_menu_item_title_sm_join_paid"><![CDATA[Pay & Join]]></string>
+    <string name="_sys_menu_item_title_sm_join_requested_short"><![CDATA[Request sent]]></string>
+    <string name="_sys_menu_item_title_sm_join_short"><![CDATA[Join]]></string>
     <string name="_sys_menu_item_title_sm_join"><![CDATA[Join]]></string>
+    <string name="_sys_menu_item_title_sm_join_accept"><![CDATA[Accept]]></string>
     <string name="_sys_menu_item_title_sm_join_confirm"><![CDATA[Accept join request]]></string>
+    <string name="_sys_menu_item_title_sm_join_decline"><![CDATA[Decline]]></string>
+    <string name="_sys_menu_item_title_sm_join_invited"><![CDATA[Invited]]></string>
+    <string name="_sys_menu_item_title_sm_joined"><![CDATA[Joined]]></string>
     <string name="_sys_menu_item_title_sm_leave"><![CDATA[Leave]]></string>
     <string name="_sys_menu_item_title_sm_leave_cancel"><![CDATA[Cancel join request]]></string>
     <string name="_sys_menu_item_title_sm_leave_reject"><![CDATA[Reject join request]]></string>
