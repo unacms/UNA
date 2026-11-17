@@ -137,9 +137,9 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title`, `designb
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title`, `designbox_id`, `tabs`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `order`, `active`) VALUES
 ('', 0, @sName, '_bx_messenger_page_block_title_messenger', 11, 1, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_messenger";s:6:"method";s:19:"get_block_messenger";s:6:"params";a:1:{i:0;s:6:"{type}";}}', 1, 1, 0, 0);
 
--- PAGE: service my contacts block
-INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title`, `designbox_id`, `tabs`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `order`, `active`) VALUES
-('', 0, @sName, '_bx_messenger_page_block_contacts_title', 11, 1, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_messenger";s:6:"method";s:28:"get_block_contacts_messenger";}}', 1, 1, 0, 0);
+-- PAGE: service my contacts block, with a compact title
+INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title`, `designbox_id`, `title_size`, `tabs`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `order`, `active`) VALUES
+('', 0, @sName, '_bx_messenger_page_block_contacts_title', 11, 'compact', 1, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_messenger";s:6:"method";s:28:"get_block_contacts_messenger";}}', 1, 1, 0, 0);
 
 -- PAGES: add page block on home
 SET @iPBCellHome = 1;

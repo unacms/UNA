@@ -6611,6 +6611,9 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 UPDATE `sys_pages_blocks` SET `icon`='user-round-key', `description`='_sys_page_block_desc_login' WHERE `object` IN ('sys_login', 'sys_home') AND `module`='system' AND `title`='_sys_page_block_title_login';
 UPDATE `sys_pages_blocks` SET `icon`='user-plus', `description`='_sys_page_block_desc_create_account' WHERE `object` IN ('sys_create_account', 'sys_home') AND `module`='system' AND `title`='_sys_page_block_title_create_account';
 
+-- The friend and follow suggestions, in the blocks list and in the home page's sidebar: a compact title
+UPDATE `sys_pages_blocks` SET `title_size`='compact' WHERE `object` IN ('', 'sys_home') AND `module`='system' AND `title` IN ('_sys_page_block_title_recom_friends', '_sys_page_block_title_recom_subscriptions');
+
 -- The "create profile" block describes itself: title, description and icon are shown by
 -- API clients (NEO) in the block header and can be changed in Studio.
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `description`, `icon`, `designbox_id`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
