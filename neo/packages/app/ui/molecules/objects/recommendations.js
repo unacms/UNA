@@ -119,12 +119,16 @@ export default function ElementRecommendations(props) {
                 icon = 'X';
             }
             break;
+        // The connection toggles' icons (settings/social-actions.js), so a suggestion's button reads as the same
+        // action, and shows its icon alone where a card row hides labels.
         case 'add':
-            if (buttonProps.onlyIcon) {
-                title = '';
-                if (props.o == 'sys_friends') icon = 'UserRoundPlus';
-                if (props.o == 'sys_subscriptions') icon = 'CirclePlus';
-            }
+            if (props.o == 'sys_friends') icon = 'UserRoundPlus';
+            if (props.o == 'sys_subscriptions') icon = 'CirclePlus';
+            if (buttonProps.onlyIcon) title = '';
+            break;
+        case 'sent':
+            if (props.o == 'sys_friends') icon = 'UserRoundCheck';
+            if (props.o == 'sys_subscriptions') icon = 'CircleCheck';
             break;
     }
 

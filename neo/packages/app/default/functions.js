@@ -246,6 +246,7 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName, opt
         const isProfile = moduleName == 'bx_persons' || moduleName == 'bx_organizations';
         primary = {
             title: isProfile ? i18n.t('View profile') : i18n.t('View'),
+            icon: isProfile ? 'CircleUserRound' : undefined,
             onPress: (event) => handleClick(event, data.url),
         };
         if (options?.isOwn && !secondary) {

@@ -40,9 +40,9 @@ function elementParams(params, { hugs, iconOnlyOnPhones }) {
 export default function MenuItemSubmenu({ menuItem, isPrimary }) {
     // Profile rows on phones: a compact button on the right (unit-action-width.js).
     const hugs = useUnitActionHugs();
-    // A profile row on a phone has room for one labelled button next to the name: the second one (Follow
-    // beside Add friend) shows its icon alone below `sm`, and its label again in the card grid.
-    const iconOnlyOnPhones = !isPrimary && use(UnitActionWidthContext) === 'compact-mobile';
+    // A profile row on a phone keeps its room for the name: its buttons (Add friend, Follow, View profile) show
+    // their icons alone below `sm`, and their labels again in the card grid. A button without an icon keeps its label.
+    const iconOnlyOnPhones = use(UnitActionWidthContext) === 'compact-mobile';
     if (!menuItem) return null;
     if (menuItem.note) return <UnitActionNote title={menuItem.title} />;
 
@@ -66,6 +66,7 @@ export default function MenuItemSubmenu({ menuItem, isPrimary }) {
             width={hugs ? undefined : 'fill'}
             image={menuItem.icon || undefined}
             label={menuItem.title || undefined}
+            showTitleFromSize={iconOnlyOnPhones ? 'sm' : undefined}
             classNames={{ root: 'my-auto' }}
             expoUI={false}
             onPress={menuItem.onPress}
