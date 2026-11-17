@@ -38,13 +38,13 @@ export function useSectionIcon(menu: SectionMenu, uri?: string, routes?: RouteLi
 
 /**
  * A section's icon before its name (the phone header, the tablet tab row, the desktop section header): the main
- * menu's animated icon at 36px in its current-tab state, in a plain 44px box, as tall as the header's buttons.
+ * menu's animated icon at 32px in its current-tab state, in a plain 44px box, as tall as the header's buttons.
  */
 export function SectionIcon({ icon }: Readonly<{ icon?: string }>) {
     if (!icon) return null
     return (
         <View className="size-11 shrink-0 items-center justify-center">
-            <Icon icon={icon} animated active size={36} className="text-card-foreground" />
+            <Icon icon={icon} animated active size={32} className="text-card-foreground" />
         </View>
     )
 }
