@@ -2,20 +2,18 @@ import { create } from 'zustand';
 import { Dimensions } from 'react-native';
 import { appSetting, getBreakpoint, LAYOUT_BREAKPOINTS, screenTierOf } from 'app/lib/util';
 import { useState, useEffect, useSyncExternalStore } from 'react';
+import { breakpointFor, getMediaMatcher } from 'app/lib/media-breakpoint';
 import { Platform } from 'react-native'
 const DESKTOP_KEY = appSetting('layout', 'tablet_mode_from') || 'lg';
 const DESKTOP_FROM = LAYOUT_BREAKPOINTS[DESKTOP_KEY as keyof typeof LAYOUT_BREAKPOINTS] ?? LAYOUT_BREAKPOINTS.lg;
 // SSR has no viewport; assume 2xl so responsive panel configs (e.g. wiki side columns
 // with defaultSize: 0 until xl) resolve to desktop sizes on the first render.
 const SSR_LAYOUT_BREAKPOINT = LAYOUT_BREAKPOINTS['2xl'] ?? DESKTOP_FROM;
-const BP_VALUES_DESC = (Object.values(LAYOUT_BREAKPOINTS) as number[]).sort((a, b) => b - a);
+const BP_VALUES = Object.values(LAYOUT_BREAKPOINTS) as number[];
 
-const getBP = (w: number): number => {
-    for (const value of BP_VALUES_DESC) {
-        if (w >= value) return value;
-    }
-    return 0;
-};
+// The breakpoint CSS is at: on web the browser's media queries decide, since the measured width is without the
+// scrollbar and a tier taken from it is behind `sm:` / `lg:` classes for the scrollbar's width (lib/media-breakpoint.ts).
+const getBP = (w: number): number => breakpointFor(w, BP_VALUES, getMediaMatcher());
 
 const initW = Math.round(Dimensions.get('window').width);
 const initH = Math.round(Dimensions.get('window').height);
@@ -34,14 +32,14 @@ export const useMeasureStore = create<MeasureStore>()((set, get) => ({
     currentBreakpoint: getBP(initW),
     windowWidth: initW,
     windowHeight: initH,
-    isDesktop: isSSR ? true : initW >= DESKTOP_FROM,
+    isDesktop: isSSR ? true : getBP(initW) >= DESKTOP_FROM,
 
     setWindowSize: (w, h) => {
         const { windowWidth, windowHeight, currentBreakpoint, isDesktop } = get();
         if (w === windowWidth && h === windowHeight) return;
 
         const nextBP = getBP(w);
-        const nextIsDesktop = w >= DESKTOP_FROM;
+        const nextIsDesktop = nextBP >= DESKTOP_FROM;
 
         const update: Partial<MeasureStore> = { windowWidth: w, windowHeight: h };
         if (nextBP !== currentBreakpoint) update.currentBreakpoint = nextBP;
