@@ -38,16 +38,17 @@ class BxBaseMenuAccountNotifications extends BxTemplMenu
     }
 
     /**
-     * The menu, with the profile switcher item replaced by the account's other profiles. The menu itself may come from
-     * the cache (per ACL); the list is the viewer's own, so it goes in afterwards.
+     * The menu, with the profile switcher item's content replaced by the account's other profiles. The menu itself may
+     * come from the cache (per ACL); the list is the viewer's own, so it goes in afterwards.
      */
     public function getCode ()
     {
         $sCode = parent::getCode();
-        if(!$sCode || !self::hasSwitchProfileItem($sCode))
+        if(!$sCode || !self::hasSwitchProfileItem($sCode)) {
             return $sCode;
+        }
 
-        return self::replaceSwitchProfileItem($sCode, $this->_getSwitchProfileCode());
+        return self::replaceSwitchProfileItem($sCode, $this->getSwitchProfileCode());
     }
 
     /**
@@ -55,35 +56,40 @@ class BxBaseMenuAccountNotifications extends BxTemplMenu
      */
     public static function hasSwitchProfileItem ($sCode)
     {
-        return (bool)preg_match(self::_getSwitchProfileItemPattern(), (string)$sCode);
+        return (bool)preg_match(self::getSwitchProfileItemPattern(), (string)$sCode);
     }
 
     /**
-     * The menu's markup with the profile switcher item's `li` replaced by $sSwitcher (empty removes it).
+     * The menu's markup with the profile switcher item's content (its link) replaced by $sSwitcher, inside the item's own
+     * `li`, which the menu's CSS draws as a plain block (template/css/menu.css); an empty $sSwitcher removes the item.
      */
     public static function replaceSwitchProfileItem ($sCode, $sSwitcher)
     {
-        $sResult = preg_replace_callback(self::_getSwitchProfileItemPattern(), function () use ($sSwitcher) {
-            return $sSwitcher;
+        $sResult = preg_replace_callback(self::getSwitchProfileItemPattern(), function ($aMatch) use ($sSwitcher) {
+            return $sSwitcher === '' ? '' : $aMatch[1] . $sSwitcher . $aMatch[2];
         }, (string)$sCode, 1);
 
         return $sResult === null ? (string)$sCode : $sResult;
     }
 
-    protected static function _getSwitchProfileItemPattern ()
+    /**
+     * The item's `li`: group 1 is its opening tag, group 2 its closing one.
+     */
+    protected static function getSwitchProfileItemPattern ()
     {
-        return '#<li class="[^"]*\bbx-menu-item-' . preg_quote(self::ITEM_SWITCH_PROFILE, '#') . '(?=[\s"])[^>]*>.*?</li>#s';
+        return '#(<li class="[^"]*\bbx-menu-item-' . preg_quote(self::ITEM_SWITCH_PROFILE, '#') . '(?=[\s"])[^>]*>).*?(</li>)#s';
     }
 
     /**
      * The account's other profiles, each with its Switch button, as the account popup listed them; empty for an
      * account with one profile.
      */
-    protected function _getSwitchProfileCode ()
+    protected function getSwitchProfileCode ()
     {
         $aSwitcher = bx_srv('system', 'account_profile_switcher', [], 'TemplServiceProfiles');
-        if(!is_array($aSwitcher) || empty($aSwitcher['content']) || trim($aSwitcher['content']) === '')
+        if(!is_array($aSwitcher) || empty($aSwitcher['content']) || trim($aSwitcher['content']) === '') {
             return '';
+        }
 
         return $this->_oTemplate->parseHtmlByName('menu_account_switch_profile.html', [
             'content' => $aSwitcher['content'],
@@ -139,8 +145,9 @@ class BxBaseMenuAccountNotifications extends BxTemplMenu
     protected function _getMenuItem ($a)
     {
         // A `{switch_profile}` item added in Studio under another name is the switcher too; the apps match the link.
-        if(!$this->_bIsApi && isset($a['link']) && $a['link'] == self::LINK_SWITCH_PROFILE)
+        if(!$this->_bIsApi && isset($a['link']) && $a['link'] == self::LINK_SWITCH_PROFILE) {
             $a['name'] = self::ITEM_SWITCH_PROFILE;
+        }
 
         if($a['name'] == 'sounds')
             $a['attrs_add'] = trim((!empty($a['attrs_add']) ? $a['attrs_add'] : '') . ' role="button" data-bx-sounds-switch="1"');

@@ -27,6 +27,17 @@ ul.bx-menu-btns-icon-hor {
 
 li.bx-mi-aux {}
 
+/* The account menu's profile switcher (BxBaseMenuAccountNotifications): the item's row holds the other profiles
+   instead of a link, so it drops the row's layout, padding and hover fill. */
+.bx-menu-floating-blocks-wide li.bx-menu-item-switch-profile {
+    display: block;
+    min-height: 0;
+    padding: 0;
+}
+.bx-menu-floating-blocks-wide li.bx-menu-item-switch-profile:hover {
+    background-color: transparent;
+}
+
 /* --- Home page app grid (sys_homepage) ---*/
 /* Tiles share the row: as many 6.5rem columns as fit, stretched to fill it. Empty tracks are kept (auto-fill),
    so one or two apps don't grow wider than two columns' worth. 6.5rem is wider than a tile is tall, so a tile

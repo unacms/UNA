@@ -58,15 +58,19 @@ class BxBaseMenuAccountNotificationsTest extends BxDolTestCase
     public function testReplacesTheItemOfTheBaseTemplate(): void
     {
         $sCode = '<ul class="bx-menu-floating-blocks-wide">'
-            . '<li class="bx-menu-item bx-menu-item-switch-profile bx-def-round-corners ">' . "\n"
-            . '<a href="{switch_profile}"><div class="bx-menu-floating-blocks-title">Switch profile</div></a>' . "\n"
+            . '<li class="bx-menu-item bx-menu-item-switch-profile bx-def-round-corners ">' . "
+"
+            . '<a href="{switch_profile}"><div class="bx-menu-floating-blocks-title">Switch profile</div></a>' . "
+"
             . '</li><li class="bx-menu-item bx-menu-item-dashboard bx-def-round-corners "><a href="page.php?i=dashboard">Dashboard</a></li>'
             . '</ul>';
 
-        $sResult = BxBaseMenuAccountNotifications::replaceSwitchProfileItem($sCode, '<li class="bx-menu-item-switch-profile-list">LIST</li>');
+        $sResult = BxBaseMenuAccountNotifications::replaceSwitchProfileItem($sCode, '<div class="bx-menu-item-switch-profile-cnt">LIST</div>');
 
+        // The item keeps its own `li`; only its link gives way to the list.
         $this->assertSame(
-            '<ul class="bx-menu-floating-blocks-wide"><li class="bx-menu-item-switch-profile-list">LIST</li>'
+            '<ul class="bx-menu-floating-blocks-wide"><li class="bx-menu-item bx-menu-item-switch-profile bx-def-round-corners ">'
+            . '<div class="bx-menu-item-switch-profile-cnt">LIST</div></li>'
             . '<li class="bx-menu-item bx-menu-item-dashboard bx-def-round-corners "><a href="page.php?i=dashboard">Dashboard</a></li></ul>',
             $sResult
         );
@@ -74,14 +78,19 @@ class BxBaseMenuAccountNotificationsTest extends BxDolTestCase
 
     public function testReplacesTheItemOfTheArtificerTemplate(): void
     {
-        $sCode = "<ul>\n        <li class=\"bx-menu-item bx-menu-item-switch-profile  bx-stl-mil-hover group relative flex\">\n"
-            . "            <a class=\"flex flex-1\" href=\"{switch_profile}\">Switch profile</a>\n        </li>\n"
-            . "        <li class=\"bx-menu-item bx-menu-item-profile  bx-stl-mil-hover\"><a href=\"page.php?i=view-persons-profile\">Profile</a></li>\n</ul>";
+        $sCode = "<ul>
+        <li class=\"bx-menu-item bx-menu-item-switch-profile  bx-stl-mil-hover group relative flex\">
+"
+            . "            <a class=\"flex flex-1\" href=\"{switch_profile}\">Switch profile</a>
+        </li>
+"
+            . "        <li class=\"bx-menu-item bx-menu-item-profile  bx-stl-mil-hover\"><a href=\"page.php?i=view-persons-profile\">Profile</a></li>
+</ul>";
 
         $sResult = BxBaseMenuAccountNotifications::replaceSwitchProfileItem($sCode, 'LIST');
 
         $this->assertStringNotContainsString('{switch_profile}', $sResult);
-        $this->assertStringContainsString("<ul>\n        LIST\n", $sResult);
+        $this->assertStringContainsString('<li class="bx-menu-item bx-menu-item-switch-profile  bx-stl-mil-hover group relative flex">LIST</li>', $sResult);
         $this->assertStringContainsString('bx-menu-item-profile ', $sResult);
     }
 
@@ -90,7 +99,10 @@ class BxBaseMenuAccountNotificationsTest extends BxDolTestCase
         // Studio may put the menu on 'menu_account_notifications.html', whose rows carry only `bx-menu-item-<name>`.
         $sCode = '<ul class="bx-menu-notif"><li class="bx-menu-item-switch-profile bx-def-border-bottom"><a href="{switch_profile}"><span>Switch profile</span></a></li></ul>';
 
-        $this->assertSame('<ul class="bx-menu-notif">LIST</ul>', BxBaseMenuAccountNotifications::replaceSwitchProfileItem($sCode, 'LIST'));
+        $this->assertSame(
+            '<ul class="bx-menu-notif"><li class="bx-menu-item-switch-profile bx-def-border-bottom">LIST</li></ul>',
+            BxBaseMenuAccountNotifications::replaceSwitchProfileItem($sCode, 'LIST')
+        );
     }
 
     public function testAnAccountWithOneProfileLosesTheItem(): void
@@ -117,6 +129,15 @@ class BxBaseMenuAccountNotificationsTest extends BxDolTestCase
         $sCode = '<ul><li class="bx-menu-item bx-menu-item-switch-profile"><a href="{switch_profile}">S</a></li></ul>';
 
         $this->assertTrue(BxBaseMenuAccountNotifications::hasSwitchProfileItem($sCode));
-        $this->assertSame('<ul>A $1 \\0 B</ul>', BxBaseMenuAccountNotifications::replaceSwitchProfileItem($sCode, 'A $1 \\0 B'));
+        $this->assertSame(
+            '<ul><li class="bx-menu-item bx-menu-item-switch-profile">A $1 \0 B</li></ul>',
+            BxBaseMenuAccountNotifications::replaceSwitchProfileItem($sCode, 'A $1 \0 B')
+        );
+    }
+
+    public function testTheSwitcherTemplateHasNoListItemOfItsOwn(): void
+    {
+        // The item's own `li` holds the list, so the template is its content only.
+        $this->assertStringNotContainsString('<li', self::readFile('template/menu_account_switch_profile.html'));
     }
 }
