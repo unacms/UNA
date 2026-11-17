@@ -30,8 +30,9 @@ export const settingsElements = {
         // otherwise tabs clip at the inset instead of scrolling edge-to-edge.
         // Below lg: a 52px row (8px above and below the pills) plus mb-0.5,
         // 10px from the pills to the end of the header band.
-        // The pills' row; its height is the tab row's (TabBar, min-h-14: the 36px pills with 10px above and below).
-        menu_cnt: ' flex-row flex-none w-max gap-2 items-center px-4 ',
+        // The pills' row, inside the tab row's horizontal scroller, which clips both axes: the 10px above and below the
+        // 36px pills (a 56px row) are inside it, so the pills' shadows (glass spreads) have room and aren't cut.
+        menu_cnt: ' flex-row flex-none w-max gap-2 items-center px-4 py-2.5 ',
         menu_categ_indent: ' pl-8 ',
         topmenu_cnt:
             'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',

@@ -1391,8 +1391,9 @@ export const TabBar = ({
             contentWidth={contentWidth}
         >
              {isShowSecondLine && <Row className="px-0 w-full items-center">
-                {/* The tab row's height, on every screen: the 36px pills with 10px above and below, as the header's
-                  44px buttons and a section's 44px icon have 10px around them. The one place it is set. */}
+                {/* The tab row is 56px on every screen: the 36px pills with 10px above and below (`menu_cnt` py-2.5, inside
+                  the scroller so their shadows aren't clipped), as the header's 44px buttons and a section's 44px icon
+                  have 10px around them. min-h-14 keeps the row when there are no tabs (filters only). */}
                 <View className="flex-1 min-h-14 justify-center min-w-0">
                     {routes.length > 1 && <TabMenu
                         routes={routes}
