@@ -4,6 +4,7 @@ import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { appSetting } from 'app/lib/util'
 import emitter, { EVENTS } from 'app/context/emitter'
 import { subscribe } from 'app/ui/atoms/socket'
+import { refreshHeldRows } from 'app/lib/browse-query/held-rows'
 import {
     isSameItemsForUniList,
     flattenPagesForUniList,
@@ -371,7 +372,12 @@ export function useUniListQuery({
     }
 
     const isFrozen = !!frozen && frozen.key === qKeyId
-    const listItems = isFrozen ? frozen.items : cacheItems
+    // Held rows keep their place but show their newest copy: a row changed in place is not a new row (held-rows.ts).
+    const heldItems = isFrozen ? frozen.items : null
+    const listItems = useMemo(
+        () => (heldItems ? refreshHeldRows(heldItems, cacheItems) : cacheItems),
+        [heldItems, cacheItems]
+    )
     const listReady = !queryEnabled || !!pagesData || status === 'error'
 
     /*
