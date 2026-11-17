@@ -169,6 +169,11 @@ div.bx-std-page-columns-cnt {
     flex: 1 1 auto;
     min-height: 0;
 }
+/* The column keeps its height too: left at its content height (min-height: auto) it grew with a long list or form, the block
+   with it, and the page scrolled instead of the block's content (the Apps lists, settings forms, long grids). */
+.bx-std-page-column.bx-std-page-content div.bx-std-page-column-cnt:has(> div.bx-std-block:only-of-type) {
+    min-height: 0;
+}
 /* Nothing scrolls around a single block, so it doesn't need the 1px ring room: its top and bottom line up with the sidebar. */
 .bx-std-page-column.bx-std-page-content:has(> .bx-std-page-column-cnt > div.bx-std-block:only-of-type) div.bx-std-page-column-cnt {
     padding-top: 0;

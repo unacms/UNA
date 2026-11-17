@@ -70,8 +70,10 @@ class BxBaseStudioAudit extends BxDolStudioAudit
             return '';
 
         $oTemplate = BxDolStudioTemplate::getInstance();
-        $oTemplate->addJs(array('BxDolAuditManageTools.js', 'BxDolGrid.js', 'jquery.form.min.js', 'jquery-ui/jquery-ui.min.js'));
-        $oTemplate->addCss(array('grid.css', 'manage_tools.css'));
+        // The grid adds its files to the site template, which Studio does not print: the date filter's calendar is added here with the rest.
+        list($aCssCalendar, $aJsCalendar) = BxBaseFormView::getCssJsCalendar();
+        $oTemplate->addJs(array_merge($aJsCalendar, ['BxDolAuditManageTools.js', 'BxDolGrid.js', 'jquery.form.min.js', 'jquery-ui/jquery-ui.min.js']));
+        $oTemplate->addCss(array_merge($aCssCalendar, ['grid.css', 'manage_tools.css']));
         $oTemplate->addJsTranslation(array('_sys_grid_search'));
 
         return BxDolStudioTemplate::getInstance()->parseHtmlByName('audit.html', array(

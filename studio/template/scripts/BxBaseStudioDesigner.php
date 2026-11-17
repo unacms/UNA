@@ -397,11 +397,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
             'header_save' => [ // a section of its own for the Save button: the block footer (page.css) is that last section
                 'type' => 'block_header',
             ],
-            'save' => [
-                'type' => 'submit',
-                'name' => 'save',
-                'value' => _t('_adm_btn_settings_save'),
-            ]
+            'save' => $this->getFormSave(),
         ]);
 
         $oForm = new BxTemplStudioFormView($aForm);
@@ -680,11 +676,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
             'header_save' => [ // a section of its own for the Save button: the block footer (page.css) is that last section
                 'type' => 'block_header',
             ],
-            'save' => [
-                'type' => 'submit',
-                'name' => 'save',
-                'value' => _t('_adm_btn_settings_save'),
-            ]
+            'save' => $this->getFormSave(),
         ]);
 
         $oForm = new BxTemplStudioFormView($aForm);
@@ -899,11 +891,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
             'header_save' => [ // a section of its own for the Save button: the block footer (page.css) is that last section
                 'type' => 'block_header',
             ],
-            'save' => [
-                'type' => 'submit',
-                'name' => 'save',
-                'value' => _t('_adm_btn_settings_save'),
-            ]
+            'save' => $this->getFormSave(),
         ]);
 
         $oForm = new BxTemplStudioFormView($aForm);
@@ -1113,11 +1101,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 'header_save' => [ // a section of its own for the Save button: the block footer (page.css) is that last section
                     'type' => 'block_header',
                 ],
-                'save' => [
-                    'type' => 'submit',
-                    'name' => 'save',
-                    'value' => _t('_adm_btn_settings_save'),
-                ]
+                'save' => $this->getFormSave(),
             ]
         ];
 
@@ -1247,11 +1231,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
             'header_save' => [ // a section of its own for the Save button: the block footer (page.css) is that last section
                 'type' => 'block_header',
             ],
-            'save' => [
-                'type' => 'submit',
-                'name' => 'save',
-                'value' => _t('_adm_btn_settings_save'),
-            ]
+            'save' => $this->getFormSave(),
         ];
 
         $oForm = new BxTemplStudioFormView($aForm, $oTemplate);
@@ -1420,11 +1400,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
             'header_save' => [ // a section of its own for the Save button: the block footer (page.css) is that last section
                 'type' => 'block_header',
             ],
-            'save' => [
-                'type' => 'submit',
-                'name' => 'save',
-                'value' => _t('_adm_btn_settings_save'),
-            ]
+            'save' => $this->getFormSave(),
         ];
 
         $oForm = new BxTemplStudioFormView($aForm, $oTemplate);
@@ -1575,11 +1551,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
             'header_save' => [ // a section of its own for the Save button: the block footer (page.css) is that last section
                 'type' => 'block_header',
             ],
-            'save' => [
-                'type' => 'submit',
-                'name' => 'save',
-                'value' => _t('_adm_btn_settings_save'),
-            ]
+            'save' => $this->getFormSave(),
         ];
 
         $oForm = new BxTemplStudioFormView($aForm, $oTemplate);
@@ -1668,6 +1640,19 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
             return 0;
 
         return (int)$aSetting['id'];
+    }
+
+    /**
+     * The Save button of a Designer form. The form's footer is pinned (page.css), so the button is the toolbar size, 36px.
+     */
+    protected function getFormSave()
+    {
+        return [
+            'type' => 'submit',
+            'name' => 'save',
+            'value' => _t('_adm_btn_settings_save'),
+            'attrs' => ['class' => 'bx-btn-small'],
+        ];
     }
 }
 

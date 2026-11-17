@@ -139,7 +139,8 @@ class BxBaseStudioOptions extends BxDolStudioOptions
                 'save' => [
                     'type' => 'submit',
                     'name' => 'save',
-                    'value' => _t("_adm_btn_settings_save")
+                    'value' => _t("_adm_btn_settings_save"),
+                    'attrs' => ['class' => 'bx-btn-small'], // the pinned footer's button is the toolbar size, 36px (page.css)
                 ],
             ])
         );
