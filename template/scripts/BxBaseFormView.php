@@ -3001,6 +3001,11 @@ BLAH;
         ];
     }
     
+    /**
+     * jQuery UI's widgets (slider, autocomplete, sortable). Every page has its position utility alone
+     * (serviceGetPreloaderContent, 'jquery_ui_js'), so a form that needs a widget adds the whole library; in a form
+     * that arrives later it is loaded when no widget is there yet (jQuery.ui.sortable).
+     */
     function addCssJsUi ()
     {
         if (self::$_isCssJsUiAdded)
@@ -3008,7 +3013,7 @@ BLAH;
 
         $this->_addJs(array(
             'jquery-ui/jquery-ui.min.js',
-        ), "'undefined' === typeof(jQuery.ui.position)");
+        ), "'undefined' === typeof(jQuery.ui.sortable)");
         
         $this->_addCss('jquery-ui/jquery-ui.min.css');
 
@@ -3022,7 +3027,7 @@ BLAH;
 
         $this->_addJs(array(
             'jquery-ui/jquery-ui.min.js'
-        ), "'undefined' === typeof(jQuery.ui.position)");
+        ), "'undefined' === typeof(jQuery.ui.sortable)");
 
         self::$_isCssJsUiSortableAdded = true;
     }

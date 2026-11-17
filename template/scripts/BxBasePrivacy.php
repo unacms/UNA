@@ -61,7 +61,7 @@ class BxBasePrivacy extends BxDolPrivacy
 
         if($bDynamicMode) {
             $sCode = "var " . $this->_sJsObjName . " = null;
-            if(typeof(jQuery.ui.position) == 'undefined')
+            if(typeof(jQuery.ui.sortable) == 'undefined')
                 $.getScript('" . bx_js_string($this->_oTemplate->getJsUrl('jquery-ui/jquery-ui.min.js'), BX_ESCAPE_STR_APOS) . "');
             if(window['" . $this->_sJsObjName . "'] === null)
                 $.getScript('" . bx_js_string($this->_oTemplate->getJsUrl('BxDolPrivacy.js'), BX_ESCAPE_STR_APOS) . "', function(data, textStatus, jqxhr) {

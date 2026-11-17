@@ -25,7 +25,7 @@ class BxAntispamGridIpTable extends BxTemplGrid
     {
         parent::_addJsCss();
 
-        $this->_oTemplate->addJs(array('jquery-ui/jquery-ui.custom.min.js', 'jquery.form.min.js'));
+        $this->_oTemplate->addJs(array('jquery-ui/jquery-ui.min.js', 'jquery.form.min.js'));
 
         $oForm = new BxTemplFormView(array());
         $oForm->addCssJs();

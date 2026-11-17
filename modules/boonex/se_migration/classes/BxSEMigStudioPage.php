@@ -27,7 +27,7 @@ class BxSEMigStudioPage extends BxTemplStudioModule
             'config' => array('name' => 'config', 'icon' => 'exchange-alt', 'title' => '_bx_se_migration_cpt_transfer_data'),
         );	
 
-        $this -> _oModule -> _oTemplate -> addStudioJs(array('jquery-ui/jquery-ui.custom.min.js', 'transfer.js', 'BxDolGrid.js'));
+        $this -> _oModule -> _oTemplate -> addStudioJs(array('jquery-ui/jquery-ui.min.js', 'transfer.js', 'BxDolGrid.js'));
         $this -> _oModule -> _oTemplate -> addStudioCss(array('main.css'));	
      } 
 	

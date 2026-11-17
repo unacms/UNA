@@ -1436,7 +1436,7 @@ class BxBaseGrid extends BxDolGrid
     {
         if ($this->_aOptions['field_order']) {            
             $this->_oTemplate->addJs(array(
-                'jquery-ui/jquery-ui.custom.min.js',
+                'jquery-ui/jquery-ui.min.js',
                 'URI.min.js',
             ));
         }

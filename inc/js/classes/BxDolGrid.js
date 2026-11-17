@@ -109,6 +109,14 @@ BxDolGrid.prototype.orderable = function () {
 
 BxDolGrid.prototype.sortable = function () {
     var $this = this;
+
+    // The whole jQuery UI is on the pages of grids with an order; a grid that arrives later loads it first.
+    if (jQuery.fn.sortable === undefined && typeof bx_jquery_ui === 'function')
+        return bx_jquery_ui(function () {
+            if (jQuery.fn.sortable !== undefined)
+                $this.sortable();
+        });
+
     jQuery('#' + this._sIdTable + ' tbody .bx-grid-drag-handle').show();
     jQuery('#' + this._sIdTable + ' tbody').sortable({
         handle: '.bx-grid-drag-handle',
