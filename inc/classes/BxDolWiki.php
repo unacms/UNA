@@ -180,7 +180,8 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
             $sContent = _t('_sys_wiki_error_no_revs');
         }
 
-        $mixedControls = '';
+        // No revision and no right to edit: there are no controls, and the API merges them as an array.
+        $mixedControls = $this->_bIsApi ? [] : '';
         if ($aWikiVer || $this->isAllowed('edit'))
             $mixedControls = bx_srv('system', 'wiki_controls', [$this, $aWikiVer, $aWikiLatest, $iBlockId], 'TemplServiceWiki');
 
