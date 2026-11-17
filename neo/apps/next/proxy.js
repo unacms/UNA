@@ -7,6 +7,7 @@ import {
     applySetCookies, hasStaleSessionMark, needsSessionTouch, sessionMarkAge, sessionMarkCookie,
 } from './lib/session-touch';
 import { dropTenantHeaders } from './lib/tenant';
+import { clearUnaPageCache, isUnaAuthRequest } from './lib/una-page-cache';
 
 export const config = {
     // Skip public files: exact names, or folders ending in `/`. A prefix such as
@@ -231,6 +232,8 @@ export async function proxy(request) {
         // would otherwise see raw JSON. Serve a tiny HTML bridge that re-fetches
         // the same URL as XHR (rewrite below) and redirects to data.url.
         const apiMethod = url.searchParams.get('r') || '';
+        // Sign-in and sign-out: no page kept from before may be served after.
+        if (isUnaAuthRequest(request.method, apiMethod)) clearUnaPageCache();
         const isCheckoutReturn =
             apiMethod.includes('initialize_checkout_api') &&
             url.searchParams.has('session_id');

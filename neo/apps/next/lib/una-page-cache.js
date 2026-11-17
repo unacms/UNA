@@ -5,8 +5,12 @@ const MAX_ENTRIES = 80;
 const DEFAULT_TTL_SECONDS = 20;
 const DEFAULT_PROFILE_TTL_SECONDS = 30;
 
-const store = new Map();
-const inflight = new Map();
+/**
+ * One copy per server process, on `globalThis`: `proxy.js` is bundled apart from the page,
+ * and it resets the cache on sign-in (`clearUnaPageCache`).
+ */
+const shared = globalThis.__neoUnaPageCache ??= { store: new Map(), inflight: new Map(), generation: 0 };
+const { store, inflight } = shared;
 
 const PROFILE_PAGE_HEAD = new Set([
     'view-persons-profile',
@@ -69,10 +73,9 @@ function shouldStore(payload) {
     if (!payload || typeof payload !== 'object') return false;
     if (payload.code === 404 || payload.code === 500 || payload.code === 503) return false;
     if (payload.data?.page_status == 404) return false;
-    // Unconfirmed viewer: confirm_email keeps the same cookie, so a cached page would
-    // keep showing the confirm lock after a successful confirmation.
-    const user = payload.data?.user;
-    if (user && (!user.confirmed || user.confirmed === '0')) return false;
+    // Guests' pages only: a member's page is theirs alone, and UNA may sign a viewer in or out
+    // keeping the same session cookie.
+    if (payload.data?.user) return false;
     return Boolean(payload.data);
 }
 
@@ -87,17 +90,31 @@ function evict(now) {
 }
 
 /**
- * Cross-request cache + in-flight coalescing for UNA get_page_by_request.
- * Keyed by URL + tenant + fingerprint of the cookies that can change the page
- * (never store the cookie).
+ * Cross-request cache + in-flight coalescing for UNA get_page_by_request, for guests only.
+ * Keyed by URL + tenant. Null (no caching) when the request carries a cookie that can change
+ * the page: UNA's session cookie stays the same when its owner signs in (`sys_session_auth`),
+ * so a page kept for it would show the guest page after sign-in.
  */
 export function unaPageCacheKey({ url, tenant, cookieString }) {
-    return `${tenant || ''}|${url}|${fingerprint(cookieString, url)}`;
+    if (fingerprint(cookieString, url) !== 'guest') return null;
+    return `${tenant || ''}|${url}`;
+}
+
+/** Drops every cached page and lets no load already running store its result (sign-in). */
+export function clearUnaPageCache() {
+    shared.generation++;
+    store.clear();
+    inflight.clear();
+}
+
+/** Whether an API request signs the viewer in (or out): the page cache is reset for it. */
+export function isUnaAuthRequest(method, apiRoute) {
+    return method !== 'GET' && method !== 'HEAD' && /login|logout/i.test(String(apiRoute || ''));
 }
 
 export async function cachedUnaPageJson({ path, key, load }) {
     const ttlMs = Math.max(0, ttlSeconds(path)) * 1000;
-    if (!ttlMs) return load();
+    if (!ttlMs || !key) return load();
 
     const now = Date.now();
     const hit = store.get(key);
@@ -109,10 +126,11 @@ export async function cachedUnaPageJson({ path, key, load }) {
     const pending = inflight.get(key);
     if (pending) return pending;
 
+    const generation = shared.generation;
     const request = Promise.resolve()
         .then(load)
         .then((value) => {
-            if (shouldStore(value)) {
+            if (generation === shared.generation && shouldStore(value)) {
                 evict(Date.now());
                 store.set(key, {
                     expires: Date.now() + ttlMs,
@@ -124,7 +142,7 @@ export async function cachedUnaPageJson({ path, key, load }) {
             return value;
         })
         .finally(() => {
-            inflight.delete(key);
+            if (inflight.get(key) === request) inflight.delete(key);
         });
 
     inflight.set(key, request);
