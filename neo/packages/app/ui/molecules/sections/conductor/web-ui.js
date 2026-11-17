@@ -8,6 +8,7 @@ import {
     decodeTextNode,
     getMenuSettings,
     getMenuSectionNav,
+    findIconFromRemote,
     menuItemsFilter,
 } from 'app/lib/util'
 import { usePref, setPref, usePrefsStore } from 'app/context/prefs'
@@ -34,6 +35,8 @@ import {
     FiltersButton,
 } from './shared-ui'
 import { useConductorList } from './use-conductor-list'
+import { useMenuData } from 'app/context/menu-data'
+import { siteMenuIconForPages } from 'app/lib/section-icon'
 import { NeoButton, NeoButtonLink } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import { getSkeletonForList, skeletonSlotsForLayout } from 'app/lib/skeleton-helpers'
@@ -623,6 +626,20 @@ const AddMenu = ({ menu, filter, only }) => {
     )
 }
 
+/**
+ * The section's icon as the header's main menu draws it: the site menu's item for one of the section's pages
+ * (lib/section-icon), from the menu store the header has already filled. Else the section menu's own icon.
+ */
+function useSectionIcon(menu, routes, uri) {
+    const staticNavbar = appSetting('menu_items', 'menu_navbar')
+    const useSiteMenu = !Array.isArray(staticNavbar) || !staticNavbar.length
+    const { menuData } = useMenuData(useSiteMenu ? appSetting('menu_items', 'objects', 'site') : null)
+    const menuSettings = getMenuSettings(menu.object, menu.config, menu)
+    const pages = [uri, ...routes.flatMap((route) => [route.link, route.key])]
+    const siteIcon = siteMenuIconForPages(useSiteMenu ? menuData?.items : staticNavbar, pages)
+    return findIconFromRemote(siteIcon || menuSettings?.icon || menu?.icon)
+}
+
 /*
  * ============================================================================
  * Top tab bar. Two render modes, picked by `conductorTheme.menu_is_dynamic`:
@@ -953,7 +970,8 @@ export const LeftColumnContainer = ({
     const addButtons = <AddMenu menu={menu} filter="hideInSideBar" />
     // Profile has its name in the cover already — no title row here.
     const title = layoutName == 'profile' ? '' : t(menuSettings?.name)
-    const icon = layoutName == 'profile' ? '' : (menuSettings?.icon || menu?.icon)
+    const sectionIcon = useSectionIcon(menu, routes)
+    const icon = layoutName == 'profile' ? '' : sectionIcon
     const padClass =
         layoutName == 'profile'
             ? 'mt-0.5 sm:m-0 sm:p-3 lg:p-4'
@@ -1339,6 +1357,7 @@ export const TabBar = ({
     // panel is off screen (below its breakpoint, which can be wider than `isDesktop`).
     const hasLeftColumnMenus = (showLeftColumnMenus ?? !isDesktop) && leftColumnMenus.length > 0
     const hasRowEnd = hasLeftColumnMenus || showFilters
+    const sectionIcon = useSectionIcon(menu, routes, pageData?.uri)
 
     if (!routes.length) return null
 
@@ -1367,7 +1386,7 @@ export const TabBar = ({
             toolButtons={<AddMenu menu={menu} filter="hideInTopBar" only="search" />}
             layout={layout}
             title={t(menuSettings?.name)}
-            icon={menuSettings?.icon || menu?.icon}
+            icon={sectionIcon}
             contentWidth={contentWidth}
         >
              {isShowSecondLine && <Row className="px-0 w-full items-center">
