@@ -943,8 +943,9 @@ class BxBaseGrid extends BxDolGrid
         // Text longer than one line of its column (_limitMaxLength): two lines, and all of it when pointed at.
         $sClampText = $this->_sCellClampText;
         $this->_sCellClampText = '';
-        if($sClampText !== '' && is_string($mixedValue))
+        if($sClampText !== '' && is_string($mixedValue)) {
             $mixedValue = '<div class="bx-grid-cell-clamp" data-full-text="' . bx_html_attribute($sClampText) . '">' . $mixedValue . '</div>';
+        }
 
         return '<td ' . $sAttr . '>' . $mixedValue . '</td>';
     }
@@ -1310,13 +1311,15 @@ class BxBaseGrid extends BxDolGrid
 
     protected function _getCellWidthStyle ($sKey, $aField)
     {
-        if(!isset($aField['width']) || $this->_isControlsColumn($sKey))
+        if(!isset($aField['width']) || $this->_isControlsColumn($sKey)) {
             return false;
+        }
 
         $sWidth = $aField['width'];
         $fScale = $this->_getTextColumnsScale();
-        if($fScale != 1.0)
+        if($fScale != 1.0) {
             $sWidth = round((float)$sWidth * $fScale, 2) . '%';
+        }
 
         return 'width:' . $sWidth;
     }
@@ -1328,14 +1331,16 @@ class BxBaseGrid extends BxDolGrid
      */
     protected function _getTextColumnsScale ()
     {
-        if($this->_fTextColumnsScale !== null)
+        if($this->_fTextColumnsScale !== null) {
             return $this->_fTextColumnsScale;
+        }
 
         $fSum = 0;
         $aFields = !empty($this->_aOptions['fields']) && is_array($this->_aOptions['fields']) ? $this->_aOptions['fields'] : [];
         foreach($aFields as $sKey => $aField) {
-            if($this->_isControlsColumn($sKey))
+            if($this->_isControlsColumn($sKey)) {
                 continue;
+            }
 
             if(!isset($aField['width']) || !preg_match('/^\s*[0-9.]+\s*%\s*$/', (string)$aField['width'])) {
                 $fSum = 0;
@@ -1351,8 +1356,9 @@ class BxBaseGrid extends BxDolGrid
     protected function _limitMaxLength ($mixedValue, $sKey, $aField, $aRow, $isDisplayPopupOnTextOverflow, $bReturnString = true)
     {
         $iLimit = (int)$aField['chars_limit'];
-        if($iLimit <= 0)
+        if($iLimit <= 0) {
             return $mixedValue;
+        }
 
         // Text that fits one line of the column: as it is. A grid that shows no text in full cuts it there, as before.
         $sPlain = strip_tags($mixedValue);

@@ -43,14 +43,11 @@ BxDolGrid.prototype.init = function (oOptions) {
     this._onDataReloaded();
 
     // A column's width follows the window: which text cells don't fit their two lines is worked out again.
-    var $this = this;
     var sResize = 'resize.bxGridClamp' + this._sObject;
-    jQuery(window).off(sResize).on(sResize, function () {
-        clearTimeout($this._iClampTimer);
-        $this._iClampTimer = setTimeout(function () {
-            $this.markClampedCells();
-        }, 150);
-    });
+    jQuery(window).off(sResize).on(sResize, jQuery.proxy(function () {
+        clearTimeout(this._iClampTimer);
+        this._iClampTimer = setTimeout(jQuery.proxy(this.markClampedCells, this), 150);
+    }, this));
 
     if (this._sOrderField.length)
         this.setSorting (this._sOrderField, this._sOrderDir, true);
@@ -563,21 +560,26 @@ BxDolGrid.prototype.markClampedCells = function () {
         var sText = eCell.attr('data-full-text') || '';
 
         eCell.toggleClass('bx-grid-cell-clamped', bClamped);
-        if (bClamped)
+        if (bClamped) {
             eCell.attr('title', sText);
-        else
+        }
+        else {
             eCell.removeAttr('title');
+        }
 
         eCell.find('a').each(function () {
             var eLink = jQuery(this);
-            if (eLink.attr('data-title') === undefined)
+            if (eLink.attr('data-title') === undefined) {
                 eLink.attr('data-title', eLink.attr('title') || '');
+            }
 
             var sTitle = bClamped ? sText : eLink.attr('data-title');
-            if (sTitle)
+            if (sTitle) {
                 eLink.attr('title', sTitle);
-            else
+            }
+            else {
                 eLink.removeAttr('title');
+            }
         });
     });
 };
