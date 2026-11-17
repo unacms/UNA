@@ -1217,7 +1217,7 @@ export function TopSidebar({
     // tools at the end. The page header leaves the title out there (`PageHeaderOptions tabletTitle={false}`, index.web.js);
     // phones keep it in the header.
     const tabletTitle = showTitle && (
-        <Row className="hidden sm:flex lg:hidden shrink-0 max-w-1/3 min-w-0 items-center gap-3 pl-4">
+        <Row className="hidden sm:flex lg:hidden shrink-0 max-w-1/3 min-w-0 items-center gap-2 pl-4">
             <SectionIcon icon={icon} />
             <Text {...headingProps(1)} numberOfLines={1} className="min-w-0 shrink text-2xl leading-8 font-bold tracking-tight text-card-foreground font-main">
                 {title}
@@ -1242,7 +1242,7 @@ export function TopSidebar({
                     {(showTitle || showAddButtons) && (
                         // 44px icon with 10px above and below: the 64px strip of a compact profile cover, the group centred in it.
                         <Row className={`${desktopFlex} w-full items-center gap-3 min-w-0 px-4 py-2.5`}>
-                            <Row className="group flex-1 items-center gap-3 min-w-0">
+                            <Row className="group flex-1 items-center gap-2 min-w-0">
                                 {/* The section's icon where a profile has its avatar. */}
                                 {showTitle && <SectionIcon icon={icon} />}
                                 {showTitle && (

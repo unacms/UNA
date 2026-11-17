@@ -39,6 +39,7 @@ export function useSectionIcon(menu: SectionMenu, uri?: string, routes?: RouteLi
 /**
  * A section's icon before its name (the phone header, the tablet tab row, the desktop section header): the main
  * menu's animated icon at 32px in its current-tab state, in a plain 44px box, as tall as the header's buttons.
+ * Its row puts the name 8px after it (gap-2) wherever it shows.
  */
 export function SectionIcon({ icon }: Readonly<{ icon?: string }>) {
     if (!icon) return null

@@ -524,7 +524,7 @@ export const PageHeaderBody = memo(({
     // The section's icon leads its name; on web a page that draws the title itself on tablets (`tabletTitle`)
     // keeps it to phones.
     const titleElement = isShowTitle && pageTitle ? (
-        <Row className={`min-w-0 shrink items-center gap-3${isWeb && !header.tabletTitle ? ' sm:hidden' : ''}`}>
+        <Row className={`min-w-0 shrink items-center gap-2${isWeb && !header.tabletTitle ? ' sm:hidden' : ''}`}>
             <SectionIcon icon={sectionIcon} />
             <View className="min-w-0 shrink"><TextHeader text={pageTitle} /></View>
         </Row>
