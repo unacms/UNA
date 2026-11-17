@@ -4974,6 +4974,7 @@ CREATE TABLE IF NOT EXISTS `sys_objects_menu` (
   `button_style` varchar(16) NOT NULL DEFAULT '',
   `button_size` varchar(16) NOT NULL DEFAULT '',
   `section_nav` varchar(16) NOT NULL DEFAULT '',
+  `section_nav_small` varchar(16) NOT NULL DEFAULT '',
   `config_api` text NOT NULL,
   `persistent` tinyint(4) NOT NULL DEFAULT '0',
   `cache` enum('off','guest','global','per_user','per_acl') NOT NULL DEFAULT 'off',
@@ -5037,6 +5038,8 @@ INSERT INTO `sys_objects_menu` (`object`, `title`, `title_public`, `set_name`, `
 
 -- The connections (Friends, Requests, Suggestions...) are a section with many pages: the apps show it as a column on large screens.
 UPDATE `sys_objects_menu` SET `section_nav`='sidebar' WHERE `object`='sys_con_submenu';
+-- The account's settings too, and on phones and tablets the apps open the section on the menu itself, a list of its pages.
+UPDATE `sys_objects_menu` SET `section_nav`='sidebar', `section_nav_small`='list' WHERE `object`='sys_account_settings_submenu';
 
 UPDATE `sys_objects_menu` SET `cache` = 'per_acl' WHERE `object` IN('sys_site', 'sys_account_notifications', 'sys_add_content', 'sys_toolbar_site', 'sys_footer', 'sys_site_submenu', 'sys_homepage_submenu', 'sys_homepage', 'sys_application', 'sys_site_in_panel');
 UPDATE `sys_objects_menu` SET `cache` = 'per_user' WHERE `object` IN('sys_toolbar_member', 'sys_profile_stats');
@@ -5119,6 +5122,7 @@ CREATE TABLE IF NOT EXISTS `sys_menu_items` (
   `hidden_on_pt` int(11) NOT NULL DEFAULT '0',
   `hidden_on_col` int(11) NOT NULL DEFAULT '0',
   `config_api` text NOT NULL,
+  `group_name` varchar(32) NOT NULL DEFAULT '',
   `primary` tinyint(4) NOT NULL DEFAULT '0',
   `collapsed` tinyint(4) NOT NULL DEFAULT '0',
   `persistent` tinyint(4) NOT NULL DEFAULT '0',
@@ -5250,17 +5254,12 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 
 -- account settings menu
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
-('sys_account_settings', 'system', 'account-profile-switcher', '_sys_menu_item_title_system_account_profile_context', '_sys_menu_item_title_account_profile_context', 'page.php?i=account-profile-switcher', '', '', 'user', '', 2147483646, '', 1, 1, 1),
-('sys_account_settings', 'system', 'account-settings-info', '_sys_menu_item_title_system_account_settings_info', '_sys_menu_item_title_account_settings_info', 'page.php?i=account-settings-info', '', '', 'info-circle', '', 2147483646, '', 1, 1, 2),
+('sys_account_settings', 'system', 'account-settings-info', '_sys_menu_item_title_system_account_settings_info', '_sys_menu_item_title_account_settings_info', 'page.php?i=account-settings-info', '', '', 'info-circle', '', 2147483646, '', 1, 1, 1),
+('sys_account_settings', 'system', 'account-profile-switcher', '_sys_menu_item_title_system_account_profile_context', '_sys_menu_item_title_account_profile_context', 'page.php?i=account-profile-switcher', '', '', 'user', '', 2147483646, '', 1, 1, 2),
 ('sys_account_settings', 'system', 'account-settings-email', '_sys_menu_item_title_system_account_settings_email', '_sys_menu_item_title_account_settings_email', 'page.php?i=account-settings-email', '', '', 'envelope', '', 2147483646, '', 1, 1, 3),
 ('sys_account_settings', 'system', 'account-settings-password', '_sys_menu_item_title_system_account_settings_pwd', '_sys_menu_item_title_account_settings_pwd', 'page.php?i=account-settings-password', '', '', 'key', '', 2147483646, '', 1, 1, 4),
 ('sys_account_settings', 'system', 'profile-settings-cfilter', '_sys_menu_item_title_system_profile_settings_cfilter', '_sys_menu_item_title_profile_settings_cfilter', 'page.php?i=profile-settings-cfilter', '', '', 'filter', '', 2147483646, 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"is_enabled_cfilter";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 1, 1, 5),
 ('sys_account_settings', 'system', 'account-settings-delete', '_sys_menu_item_title_system_account_settings_delete', '_sys_menu_item_title_account_settings_delete', 'page.php?i=account-settings-delete', '', '', 'remove', '', 2147483646, '', 1, 1, 9999);
--- Overview: the settings page itself, which lists the items. Inactive by default: the menu shows the
--- settings pages only. Hidden on desktop when activated.
-INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `hidden_on`, `active`, `copyable`, `order`) VALUES
-('sys_account_settings', 'system', 'settings', '_sys_menu_item_title_system_account_settings_overview', '_sys_menu_item_title_account_settings_overview', 'page.php?i=settings', '', '', 'cog', '', 2147483646, '', '4', 0, 1, 0);
-
 -- account dashboard
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
 ('sys_account_dashboard', 'system', 'dashboard', '_sys_menu_item_title_system_account_dashboard', '_sys_menu_item_title_account_dashboard', 'page.php?i=dashboard', '', '', 'tachometer-alt', '', '', 2147483646, 1, 1, 1),
@@ -6619,9 +6618,8 @@ UPDATE `sys_pages_blocks` SET `title_size`='compact' WHERE `object` IN ('', 'sys
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `description`, `icon`, `designbox_id`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
 ('sys_account_profile_switcher', 1, 'system', '', '_sys_page_block_title_account_profile_create', '_sys_page_block_desc_account_profile_create', 'user-plus', 11, 0, 0, 2147483647, 'menu', 'sys_add_profile', 0, 1, 1, 1);
 
--- settings: every settings page, from the settings submenu
-INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
-('sys_settings', 1, 'system', '', '_sys_page_block_title_settings', 0, 0, 0, 2147483647, 'menu', 'sys_account_settings_submenu', 0, 1, 1, 1);
+-- settings (sys_settings) has no blocks: the site opens the settings menu's first page there (BxBasePageAccount), the apps
+-- show the menu itself on phones and tablets (BxDolMenu::SECTION_NAV_SMALL_LIST)
 
 -- studio dashboard blocks
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `icon`, `designbox_id`, `class`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES

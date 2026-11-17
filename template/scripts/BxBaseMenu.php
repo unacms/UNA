@@ -200,6 +200,8 @@ class BxBaseMenu extends BxDolMenu
             'button_size' => $this->getButtonSize(),
             // How the apps show the menu as a section's navigation on large screens: BxDolMenu::SECTION_NAV_*, empty for tabs.
             'section_nav' => $this->getSectionNav(),
+            // And on phones and tablets: BxDolMenu::SECTION_NAV_SMALL_*, empty for tabs.
+            'section_nav_small' => $this->getSectionNavSmall(),
             'params' => $this->getContentParams(),
             'items' => $aItems
         ];
@@ -649,6 +651,8 @@ class BxBaseMenu extends BxDolMenu
             'hidden_on' => isset($a['hidden_on']) ? $a['hidden_on'] : false,
             'hidden_on_col' => isset($a['hidden_on_col']) ? $a['hidden_on_col'] : false,
             'config' => isset($a['config_api']) ? $a['config_api'] : '',
+            // Studio's "Group in the apps": BxDolMenu::ITEM_GROUP_*, empty for none.
+            'group' => BxDolMenu::normalizeItemGroup(isset($a['group_name']) ? $a['group_name'] : ''),
             'primary' => isset($a['primary']) ? $a['primary'] : 0,
             'persistent' => isset($a['persistent']) ? $a['persistent'] : 0,
             // Studio's "Icon only": the apps show the item's title next to its icon unless it is on, as the site does.

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Navigation > an item: the item's group in the apps. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_nav_txt_items_group"><![CDATA[Группа в приложениях]]></string_add>
+    <string_add name="_adm_nav_dsc_items_group"><![CDATA[Приложения показывают меню, у пунктов которого есть группы, разделами: сначала аккаунт, затем пункты текущего профиля под его именем, пункты без группы и в конце опасные. Так устроены настройки аккаунта.]]></string_add>
+    <string_add name="_adm_nav_txt_items_group_none"><![CDATA[Нет]]></string_add>
+    <string_add name="_adm_nav_txt_items_group_account"><![CDATA[Аккаунт]]></string_add>
+    <string_add name="_adm_nav_txt_items_group_profile"><![CDATA[Профиль]]></string_add>
+    <string_add name="_adm_nav_txt_items_group_danger"><![CDATA[Опасные]]></string_add>
+</resources>

@@ -7,7 +7,8 @@ import { components } from 'app/components/registry';
 import { appSetting, getMenuHub, getMenuView } from 'app/lib/util';
 import MenuGrid from './menu-grid';
 import { useState } from 'react';
-import SettingsMenu, { hasSettingsGroups } from './settings-menu';
+import SettingsMenu from './settings-menu';
+import { hasMenuGroups } from 'app/lib/menu-groups';
 
 const conductorTheme = appSetting('theme', 'conductor');
 
@@ -122,7 +123,7 @@ export default function ElementMenu({ data, blockWrapperProps, url, itemsClassNa
         });
 
     // A menu whose items name their group (the Settings page's `sys_account_settings`) is a grouped list.
-    if (hasSettingsGroups(topLevelItems)) {
+    if (hasMenuGroups(topLevelItems)) {
         return (
             <BlockWrapper {...blockWrapperProps}>
                 <SettingsMenu items={topLevelItems} hub={getMenuHub(data?.content)} />

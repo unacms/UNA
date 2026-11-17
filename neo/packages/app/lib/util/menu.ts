@@ -5,6 +5,7 @@ import { appSetting } from './settings';
 import { strToObj } from './object';
 import { getURI } from './url';
 import { isHiddenOn } from 'app/lib/hidden-on';
+import { resolveSectionNavSmall } from 'app/lib/section-list';
 
 /** UNA / settings menu item: `name`, `title`, `link`, `icon`, `type`, nested `items` / `subitems`, visibility flags… */
 export type MenuItem = { [key: string]: any };
@@ -646,15 +647,15 @@ export function getMenuSectionNav(menu?: (MenuWithItems & { section_nav?: unknow
 }
 
 /**
- * A section whose menu names a page that lists it (`hub` in the menu's `config`, UNA's
- * `sys_objects_menu.config_api`; Settings). Below desktop that page replaces the section's tab
- * row, so each of its pages shows its own item's title.
+ * A section that opens on its own menu below desktop (UNA's `section_nav_small` = `list`, Studio > Navigation > a
+ * menu; Settings): the menu, as a list at the section's own page (`getMenuHub`), replaces the tab row, so each page
+ * opens from the list with Back and shows its own item's title. See `lib/section-list.ts`.
  */
-export function isMenuHub(menu?: MenuWithItems | null): boolean {
-    return getMenuHub(menu) !== '';
+export function isMenuSectionList(menu?: (MenuWithItems & { section_nav_small?: unknown }) | null): boolean {
+    return resolveSectionNavSmall(menu?.section_nav_small, getMenuHub(menu)) === 'list';
 }
 
-/** The page uri a section's menu names as its list (`hub`), or `''`. */
+/** The uri of the section's own page, which its menu names in its `config` (`hub`; UNA's `sys_objects_menu.config_api`), or `''`. */
 export function getMenuHub(menu?: MenuWithItems | null): string {
     if (!menu?.object) return '';
     const settings = getMenuSettings(menu.object, menu.config, menu);

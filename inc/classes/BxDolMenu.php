@@ -107,10 +107,33 @@ class BxDolMenu extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
      * a menu), when the menu is the submenu of a section's pages (the menu's API carries it as `section_nav`):
      * - tabs (empty): a row of tabs above the content, as the site shows it;
      * - sidebar: a column beside the content, for a section with many pages (the connections' Friends, Requests...).
-     * Phones and tablets always show tabs.
+     * Phones and tablets have their own choice, SECTION_NAV_SMALL_*.
      */
     const SECTION_NAV_TABS = '';
     const SECTION_NAV_SIDEBAR = 'sidebar';
+
+    /**
+     * How the apps show a section's menu on phones and tablets (`sys_objects_menu`.`section_nav_small`, Studio >
+     * Navigation > a menu; the menu's API carries it as `section_nav_small`):
+     * - tabs (empty): a row of tabs above the content, as the site shows it;
+     * - list: the section opens on the menu itself, a list of its pages, and each page opens from it with Back (the
+     *   account's Settings). The list is at the section's own page, which the menu names in its API config (`hub`, the
+     *   page's uri: `settings`); a menu that names none keeps tabs. On large screens, and on the site, that page opens
+     *   the menu's first item.
+     */
+    const SECTION_NAV_SMALL_TABS = '';
+    const SECTION_NAV_SMALL_LIST = 'list';
+
+    /**
+     * The group of a menu item (`sys_menu_items`.`group_name`, Studio > Navigation > an item > "Group in the apps"; the
+     * item's API carries it as `group`). The apps draw a menu whose items have groups as sections, in this order: the
+     * account's items, the current profile's under its name, the items without a group, and the dangerous ones last
+     * (deleting the account). The account's settings use them.
+     */
+    const ITEM_GROUP_NONE = '';
+    const ITEM_GROUP_ACCOUNT = 'account';
+    const ITEM_GROUP_PROFILE = 'profile';
+    const ITEM_GROUP_DANGER = 'danger';
 
     /**
      * Class names by value, written out in full: a class built from parts is one no stylesheet search finds.
@@ -162,6 +185,22 @@ class BxDolMenu extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     }
 
     /**
+     * Groups a menu item can be given, none (empty) first.
+     */
+    public static function getItemGroups()
+    {
+        return [self::ITEM_GROUP_NONE, self::ITEM_GROUP_ACCOUNT, self::ITEM_GROUP_PROFILE, self::ITEM_GROUP_DANGER];
+    }
+
+    /**
+     * A menu item's group as it is kept: one of the ITEM_GROUP_* values, none for anything else.
+     */
+    public static function normalizeItemGroup($sGroup)
+    {
+        return is_string($sGroup) && in_array($sGroup, self::getItemGroups(), true) ? $sGroup : self::ITEM_GROUP_NONE;
+    }
+
+    /**
      * Section navigations a menu can be given, tabs (empty) first.
      */
     public static function getSectionNavs()
@@ -177,6 +216,24 @@ class BxDolMenu extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     {
         $s = isset($this->_aObject['section_nav']) ? (string)$this->_aObject['section_nav'] : '';
         return in_array($s, self::getSectionNavs(), true) ? $s : self::SECTION_NAV_TABS;
+    }
+
+    /**
+     * Section navigations a menu can be given for phones and tablets, tabs (empty) first.
+     */
+    public static function getSectionNavsSmall()
+    {
+        return [self::SECTION_NAV_SMALL_TABS, self::SECTION_NAV_SMALL_LIST];
+    }
+
+    /**
+     * How the apps show this menu as a section's navigation on phones and tablets: one of the SECTION_NAV_SMALL_*
+     * values, tabs for anything else stored.
+     */
+    public function getSectionNavSmall()
+    {
+        $s = isset($this->_aObject['section_nav_small']) ? (string)$this->_aObject['section_nav_small'] : '';
+        return in_array($s, self::getSectionNavsSmall(), true) ? $s : self::SECTION_NAV_SMALL_TABS;
     }
 
     /**
