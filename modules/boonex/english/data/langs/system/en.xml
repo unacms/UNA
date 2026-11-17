@@ -2125,6 +2125,7 @@
     <string name="_adm_stg_cpt_option_sys_template_cache_minify_css_enable"><![CDATA[Enable lessening for CSS files (cache should be enabled)]]></string>
     <string name="_adm_stg_cpt_option_sys_template_cache_minify_js_enable"><![CDATA[Enable lessening for JS files (cache should be enabled)]]></string>
     <string name="_adm_stg_cpt_option_sys_transcoder_queue_storage"><![CDATA[Remote video transcoding (requires special setup)]]></string>
+    <string name="_adm_stg_cpt_option_sys_transcoder_unsigned_before"><![CDATA[Editor files uploaded before this time open by links without a signature]]></string>
     <string name="_adm_stg_cpt_option_sys_live_search_limit"><![CDATA[Live Search Results]]></string>
     <string name="_adm_stg_inf_option_sys_live_search_limit"><![CDATA[Set the maximum number of results displayed in Live Search suggestion box.]]></string>
     <string name="_adm_stg_cpt_option_sys_profiles_search_limit"><![CDATA[Profile Search Results]]></string>

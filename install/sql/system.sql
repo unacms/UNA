@@ -384,6 +384,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_eq_time', '_adm_stg_cpt_option_sys_eq_time', '0', 'digit', '', '', '', '', 6),
 (@iCategoryId, 'sys_push_queue_time', '_adm_stg_cpt_option_sys_push_queue_time', '0', 'digit', '', '', '', '', 7),
 (@iCategoryId, 'sys_audit_report', '_adm_stg_cpt_option_sys_audit_report', '', 'text', '', '', '', '', 8),
+(@iCategoryId, 'sys_transcoder_unsigned_before', '_adm_stg_cpt_option_sys_transcoder_unsigned_before', '0', 'digit', '', '', '', '', 9),
 
 (@iCategoryId, 'sys_ftp_login', '_adm_stg_cpt_option_sys_ftp_login', '', 'digit', '', '', '', '', 10),
 (@iCategoryId, 'sys_ftp_password', '_adm_stg_cpt_option_sys_ftp_password', '', 'secret', '', '', '', '', 11),
