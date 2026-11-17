@@ -1719,7 +1719,8 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         ]);
 
         foreach ($aSelectedBadges as $iSelectedBadge)
-           $oBadges->add($iSelectedBadge, $iContentId, $sModule);
+           if((int)$iSelectedBadge)
+               $oBadges->add($iSelectedBadge, $iContentId, $sModule);
 
         checkActionModule($iPerformerId, 'set badge', 'system', true);
         return true;

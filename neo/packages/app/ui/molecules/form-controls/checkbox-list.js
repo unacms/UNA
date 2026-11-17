@@ -21,6 +21,7 @@ export default function ({
     multi = true,
     showApply = true,
     searchable = false,
+    allowEmpty = false,
 }) {
     const { t } = useTranslation();
     const selected = Array.isArray(selectedValue) ? selectedValue : [];
@@ -76,7 +77,7 @@ export default function ({
                 <View className='flex-row justify-end pt-3 mt-3 border-t border-border/60 '>
                     <NeoButton
                         style="borderedProminent"
-                        disabled={value2.length === 0}
+                        disabled={!allowEmpty && value2.length === 0}
                         label={t('Apply')}
                         onPress={() => setValue(value2)}
                     />

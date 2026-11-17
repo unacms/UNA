@@ -69,7 +69,7 @@ const handleClick = async (event, oProps, setBottomSheetData, redirectdRef, butt
             icon: null,
             label: <Badge data={{ ...badge, text: badge.label }} />,
         }));
-        setBottomSheetData({ title: 'Choose badges', showClose: true, snapPoints: ['70%', '70%'], content: <ChkList values={badges} setValue={setBadges} selectedValue={oProps.data.value} /> });
+        setBottomSheetData({ title: 'Choose badges', showClose: true, snapPoints: ['70%', '70%'], content: <ChkList values={badges} setValue={setBadges} allowEmpty selectedValue={oProps.data.value} /> });
         return;
     }
 
