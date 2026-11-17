@@ -20,6 +20,10 @@ class BxMarketMenuSnippetMeta extends BxBaseModTextMenuSnippetMeta
 
     protected function _getMenuItemAuthor($aItem)
     {
+        // on a card, and for the apps, the author as every content card shows it (with the avatar)
+        if($this->_bCard || $this->_bIsApi)
+            return parent::_getMenuItemAuthor($aItem);
+
         $CNF = &$this->_oModule->_oConfig->CNF;
 
         $oProfile = BxDolProfile::getInstance($this->_aContentInfo[$CNF['FIELD_AUTHOR']]);
