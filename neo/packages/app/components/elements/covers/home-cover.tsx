@@ -148,13 +148,10 @@ export default function HomeCover({ cover, hiddenOn }: Readonly<HomeCoverProps>)
     const art = cover.image ? null : cover.image_default;
     const tone = cover.image || art?.light || art?.dark ? 'picture' : 'plain';
     const rounded = appSetting('theme', 'blocks', 'u-block-rounded-default') || '';
-    // The blocks' outline (`u-block-bg`): its drop outside the cover, and its inset light line, which the picture (a
-    // child, not a background) would cover, again over the picture on an overlay with the same corners.
-    const outline = 'shadow-block-outline dark:shadow-block-outline-deep';
 
     return (
         <View className={`${visibilityClasses(hiddenOn)} w-full`}>
-            <View className={`relative w-full overflow-hidden ${rounded} ${outline} ${TONES[tone].surface}`}>
+            <View className={`relative w-full overflow-hidden ${rounded} ${TONES[tone].surface}`}>
                 {cover.image ? (
                     <>
                         <Image src={cover.image} alt="" view="cover" sizes="100vw" className="absolute inset-0 h-full w-full" />
@@ -171,7 +168,6 @@ export default function HomeCover({ cover, hiddenOn }: Readonly<HomeCoverProps>)
                     ) : null}
                     <CoverActions actions={actions} tone={tone} />
                 </View>
-                <View pointerEvents="none" className={`absolute inset-0 ${rounded} ${outline}`} />
             </View>
         </View>
     );
