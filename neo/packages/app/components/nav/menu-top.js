@@ -123,7 +123,7 @@ export default function MenuTop({ url, uri }) {
     const target = ready && containerLayout.measured && activeIndex >= 0 && shownWidths[activeIndex] > 0
         ? navbarTabBox(shownWidths, activeIndex, containerLayout.width, TAB_GAP)
         : null;
-    const { indicatorStyle, isIndicatorShown } = useNavbarIndicator(target, activeIndex);
+    const { indicatorStyle, isIndicatorShown, isIndicatorRevealed } = useNavbarIndicator(target, activeIndex);
     const indicatorTransitions = __menuTopIndicatorTransitions;
 
     const MenuTopItem = components['menu-item']['topmenu'];
@@ -171,8 +171,9 @@ export default function MenuTop({ url, uri }) {
                 style={{
                     width: indicatorStyle.width,
                     transform: `translateX(${indicatorStyle.translateX}px)`,
-                    // The line rises 4px into place as it fades in.
-                    translate: isIndicatorShown ? '0 0' : '0 4px',
+                    // The line rises 4px into place as it first fades in; after that it keeps its height (a tab switch
+                    // can hide it for a frame while the new tab is measured, and it must not dip then).
+                    translate: isIndicatorRevealed ? '0 0' : '0 4px',
                     opacity: isIndicatorShown ? 1 : 0,
                     pointerEvents: 'none',
                     zIndex: 0,
@@ -255,7 +256,7 @@ function useNavbarIndicator(target, activeIndex) {
         };
         startIndicatorSettle();
     }, [isIndicatorShown, indicatorStyle.translateX, indicatorStyle.width]);
-    return { indicatorStyle, isIndicatorShown };
+    return { indicatorStyle, isIndicatorShown, isIndicatorRevealed: revealed };
 }
 
 /** The nav's measured position and width; the same object while neither changed (no re-render). */
