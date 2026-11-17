@@ -63,7 +63,7 @@ export const settingsMenus = {
             'tachometer-alt': 'LayoutDashboard',
             wrench: 'Wand',
             'cart-plus': 'Wallet',
-            cog: 'Cog',
+            cog: 'Settings',
             'sign-out-alt': 'LogOut',
             clock: 'Clock',
             'item-copy': 'Clipboard',
