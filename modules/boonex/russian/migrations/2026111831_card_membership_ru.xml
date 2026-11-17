@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The membership button of a card (a group, a space, an organization): its short wording and states. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_sys_menu_item_title_sm_join_short"><![CDATA[Вступить]]></string_add>
+    <string_add name="_sys_menu_item_title_sm_join_requested_short"><![CDATA[Запрос отправлен]]></string_add>
+    <string_add name="_sys_menu_item_title_sm_join_invited"><![CDATA[Вас пригласили]]></string_add>
+    <string_add name="_sys_menu_item_title_sm_join_accept"><![CDATA[Принять]]></string_add>
+    <string_add name="_sys_menu_item_title_sm_join_decline"><![CDATA[Отклонить]]></string_add>
+    <string_add name="_sys_menu_item_title_sm_joined"><![CDATA[Вы участник]]></string_add>
+</resources>

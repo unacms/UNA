@@ -96,7 +96,8 @@ export const settingsSocialActions = {
             show_action_label: true,
             haptics_type: 'Medium',
         },
-        // Connection icons are UNA's (BxBaseConnectionFriend / BxBaseConnectionSubscription): change both together.
+        // Connection icons are UNA's (BxBaseConnectionFriend / BxBaseConnectionSubscription /
+        // BxBaseModGroupsConnectionFans / BxEventsConnectionFans): change both together.
         connection: {
             show_action_as_button: true,
             sys_profiles_friends: {
@@ -105,11 +106,13 @@ export const settingsSocialActions = {
             sys_profiles_subscriptions: {
                 icons: { add: 'CirclePlus', remove: 'CircleMinus' },
             },
-            bx_events_fans: {
-                icons: { add: 'LogIn', remove: 'LogOut' },
+            // A membership (`*_fans`: groups, spaces, organizations ...): Join, Joined, Leave.
+            fans: {
+                icons: { add: 'LogIn', remove: 'LogOut', default: 'UsersRound' },
             },
-            bx_groups_fans: {
-                icons: { add: 'LogIn', remove: 'LogOut' },
+            // An event's: Attend, Going, Not going.
+            bx_events_fans: {
+                icons: { add: 'CalendarPlus', remove: 'CalendarX', default: 'CalendarCheck' },
             },
         },
         // A toggle: the button shows its state (`add`, or `default` once made or asked for), its menu's rows their
@@ -122,11 +125,13 @@ export const settingsSocialActions = {
             sys_profiles_subscriptions: {
                 icons: { add: 'CirclePlus', remove: 'CircleMinus', default: 'CircleCheck' },
             },
-            bx_events_fans: {
-                icons: { add: 'LogIn', remove: 'LogOut' },
+            // A membership (`*_fans`: groups, spaces, organizations ...): Join, Joined, Leave.
+            fans: {
+                icons: { add: 'LogIn', remove: 'LogOut', default: 'UsersRound' },
             },
-            bx_groups_fans: {
-                icons: { add: 'LogIn', remove: 'LogOut' },
+            // An event's: Attend, Going, Not going.
+            bx_events_fans: {
+                icons: { add: 'CalendarPlus', remove: 'CalendarX', default: 'CalendarCheck' },
             },
         },
         recommendation: {

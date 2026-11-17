@@ -251,6 +251,7 @@ class BxGroupsConfig extends BxBaseModGroupsConfig
                 'menu_item_manage_my' => '_bx_groups_menu_item_title_manage_my',
                 'menu_item_manage_all' => '_bx_groups_menu_item_title_manage_all',
                 'menu_item_title_sm_fans' => '_bx_groups_menu_item_title_fans',
+                'txt_unit_view' => '_bx_groups_txt_unit_view',
                 'menu_item_title_sm_join' => '_bx_groups_menu_item_title_become_fan',
                 'menu_item_title_sm_join_requested' => '_bx_groups_menu_item_title_become_fan_sent',
                 'menu_item_title_sm_leave' => '_bx_groups_menu_item_title_leave_group',

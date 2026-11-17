@@ -84,7 +84,11 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
 
         $this->_bConnectionsPreview = true;
 
-        return $this->_oModule->_oTemplate->getConnectionsPreview($this->_oContentProfile->id(), $this->_isCountShown('friends'), $this->_isCountShown('subscribers'));
+        return $this->_oModule->_oTemplate->getConnectionsPreview($this->_oContentProfile->id(), [
+            'friends' => $this->_isCountShown('friends'),
+            'followers' => $this->_isCountShown('subscribers'),
+            'members' => $this->_isCountShown('members')
+        ]);
     }
 
     protected function _isCountShown($sName)
@@ -100,9 +104,9 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
     /**
      * A count without avatars of its own: its text, after the shared group where it is the first count.
      */
-    protected function _getConnectionCounter($oConnection, $iContentProfile, $aObjectOptions)
+    protected function _getConnectionCounter($oConnection, $iContentProfile, $aObjectOptions, $bIsMutual = false)
     {
-        $sCounter = $oConnection->getCounter($iContentProfile, false, array_merge($aObjectOptions, [
+        $sCounter = $oConnection->getCounter($iContentProfile, $bIsMutual, array_merge($aObjectOptions, [
             'show_counter_label_with_profiles' => false,
             'show_counter_label_icon' => false
         ]));
@@ -189,16 +193,35 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
         return $this->_getMenuItemConnection('sys_profiles_friends', 'remove', $aItem);
     }
 
+    /**
+     * An action's item is drawn as its connection's toggle on a card and in the apps: one button shows the state
+     * and holds the way back in its menu, where a plain action's button would just disappear once pressed.
+     */
+    protected function _isToggle()
+    {
+        return $this->_bCard || $this->_bIsApi;
+    }
+
     protected function _getMenuItemSubscribe($aItem)
     {
-        if($this->_sContext == 'recom_subscriptions')
+        if($this->_sContext == 'recom_subscriptions') {
             return $this->_getMenuItemRecommendation('sys_subscriptions', 'add', $aItem);
-        else
-            return $this->_getMenuItemConnection('sys_profiles_subscriptions', 'add', $aItem);
+        }
+
+        if($this->_isToggle()) {
+            return $this->_getMenuItemConnectionObj('sys_profiles_subscriptions', 'subscriptions', $aItem);
+        }
+
+        return $this->_getMenuItemConnection('sys_profiles_subscriptions', 'add', $aItem);
     }
 
     protected function _getMenuItemUnsubscribe($aItem)
     {
+        // the toggle of Follow holds it
+        if($this->_isToggle()) {
+            return false;
+        }
+
         return $this->_getMenuItemConnection('sys_profiles_subscriptions', 'remove', $aItem);
     }
 
@@ -382,17 +405,26 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
         if(!isLogged() || $this->_oModule->{$this->_aConnectionToFunctionCheck[$sConnection][$sAction]}($this->_aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
             return false;
 
+        return $this->_getMenuItemConnectionElement($sConnection, $aItem);
+    }
+
+    /**
+     * A connection's toggle as the item: one button with the state (Follow, Following; Join, Joined) and the way
+     * back in its menu. Its caller checks who may see it.
+     */
+    protected function _getMenuItemConnectionElement($sConnection, &$aItem, $aOptions = [])
+    {
         $iContentProfile = $this->_oContentProfile->id();
 
         $oObject = BxDolConnection::getObjectInstance($sConnection);
         if(!$oObject)
             return false;
 
-        $aObjectOptions = [
+        $aObjectOptions = array_merge([
             'uniq_id' => genRndPwd(8, false),
             'show_do_as_button' => true,
             'show_do_label' => true
-        ];
+        ], $aOptions);
 
         if($this->_bIsApi) {
             // no element (the viewer's own profile, no action to offer): no item, as the site shows no button

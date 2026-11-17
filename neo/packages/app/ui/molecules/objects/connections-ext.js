@@ -9,7 +9,7 @@ import { components } from 'app/components/registry'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { useBottomSheetData } from 'app/context/bottomsheet'
 import { Platform } from 'react-native';
-import { connectionButtonIcon, withConnectionRowIcons } from 'app/lib/connection-icons';
+import { connectionButtonIcon, connectionIconSet, withConnectionRowIcons } from 'app/lib/connection-icons';
 import { patchFromReply } from 'app/lib/connection-patch';
 import { applyConnectionPatch } from 'app/lib/connection-cache';
 
@@ -28,6 +28,8 @@ export default function ElementConnections({
     name,
     actions,
     title = '',
+    /** A card's toggle, with its short wording ("Join", "Joined"): the answer to an action keeps it. */
+    short = false,
 }) {
 
     const DropdownMenuItem = components['menu-item']['dropdown'];
@@ -45,11 +47,11 @@ export default function ElementConnections({
 
     const keyName = useMemo(() => getKey(object, item_id, content_id), [object, item_id, content_id]);
 
-    const icons = object && settings[object]?.icons != undefined ? settings[object].icons : {
+    const icons = connectionIconSet(settings, object, {
         add: 'UserPlus',
         remove: 'UserX',
         hz: 'UserPlus'
-    };
+    });
 
     const bShowActionAsButton = params?.show_action_as_button !== false;
 
@@ -103,7 +105,7 @@ export default function ElementConnections({
         if (Platform.OS !== 'web') {
             setBottomSheetData(false);
         }
-        const paramsDefault = { o: object, iid: item_id, cid: content_id, a: action, r: 'object' };
+        const paramsDefault = { o: object, iid: item_id, cid: content_id, a: action, r: 'object', ...(short ? { short: 1 } : {}) };
         const response = await fetcher('/api.php?r=system/perform/TemplServiceConnections&params[]=' + JSON.stringify(paramsDefault));
         const reply = response?.data;
         // No element in the reply (UNA refused, or has no button to offer now): the button stays as it is.

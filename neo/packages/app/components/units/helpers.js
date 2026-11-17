@@ -15,11 +15,12 @@ import { fetcher } from 'app/lib/fetcher';
 import { appSetting, cn, tp, sanitazeUrl, withMenuButtonParams } from 'app/lib/util';
 import { getUnitMenuItems } from 'app/customization/functions';
 import { useCurrentUser } from 'app/context/user';
-import { CONNECTIONS_PREVIEW_MAX, mergeConnectionProfiles } from 'app/lib/profile-connections';
+import { CONNECTIONS_PREVIEW_MAX, getCardCountParts, getCardPreviewLists, mergeConnectionProfiles } from 'app/lib/profile-connections';
 import { UnitActionWidthContext } from 'app/components/units/unit-action-width';
 import { useRouter, useCurrentTabPath, useFocusEffect } from 'app/lib/hooks/router';
 import { nativeTabPageHref } from 'app/lib/navigation/tab-history';
 import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 import { Card, CardList } from 'app/ui/molecules/page/card';
 import LinkOrModal from 'app/ui/molecules/dialogs/link-or-modal';
 import { NeoButtonLink } from 'app/design/controls'
@@ -250,25 +251,17 @@ function isFollowersUnitType(unitType) {
 }
 
 /**
- * A profile's connections as its card shows them, as UNA's site card does: its friends (the ones it shares with the
- * viewer, when there are any), then its followers, each as its count text ("2 friends"). A count of zero is left
- * out, so a profile with neither has no part. UNA sends them where its "connections in profile units" setting is on.
+ * A card's counts as it shows them, as UNA's site card does (lib/profile-connections.ts getCardCountParts): a group's
+ * members, a profile's friends (the ones it shares with the viewer, when there are any) and followers, an event's
+ * "going" and "interested", each as its count text ("2 friends"). A count of zero is left out, so a card with none
+ * has no part. A group, an event or a space that is not public says so first, as the site's card does.
  */
 export function getProfileConnectionsParts(data) {
-    const hasMutual = data?.mutual_friends_count > 0;
+    const isContext = data?.module === 'bx_groups' || data?.module === 'bx_events' || data?.module === 'bx_spaces';
+    const isPrivate = isContext && data?.visibility !== undefined && data?.visibility !== null && String(data.visibility) !== '3';
     return [
-        {
-            key: 'friends',
-            label: hasMutual
-                ? tp('mutual_friends', data.mutual_friends_count, false)
-                : getCountLabel(data?.friends_count, 'friends'),
-            count: hasMutual ? data.mutual_friends_count : data?.friends_count,
-        },
-        {
-            key: 'followers',
-            label: getCountLabel(data?.followers_count, 'followers'),
-            count: data?.followers_count,
-        },
+        ...(isPrivate ? [{ key: 'privacy', label: i18n.t('Private') }] : []),
+        ...getCardCountParts(data).map((part) => ({ key: part.key, label: tp(part.labelKey, part.count, false), count: part.count })),
     ]
         .map((part) => ({ ...part, label: String(part.label || '').trim() }))
         .filter((part) => part.label);
@@ -325,9 +318,10 @@ export function useUnitActions({ unitType, data, module, t = null }) {
     routerRef.current = router;
     tabPathRef.current = tabPath;
 
-    // The card of the viewer's current profile (a card's `author_data` is its own profile).
+    // The card of the viewer's current profile. A person's `author_data` is its own profile; a group's or an
+    // organization's is the profile that made it, which is not the card.
     const { currentUser } = useCurrentUser();
-    const cardProfileId = data?.author_data?.id;
+    const cardProfileId = (data?.module ?? module) === 'bx_persons' ? data?.author_data?.id : null;
     const isOwn = !!currentUser?.id && !!cardProfileId && String(currentUser.id) === String(cardProfileId);
 
     return useMemo(
@@ -355,6 +349,8 @@ const ROW_AVATAR = appSetting('theme', 'profile_sizes', 'xl');
 export const PROFILE_ROW_NAME = 'text-base leading-6 font-semibold tracking-tight text-foreground web:hover:underline';
 export const PROFILE_ROW_NAME_SKELETON = 'h-4 my-1 w-3/4';
 export const PROFILE_ROW_COUNT = 'truncate text-sm leading-5 font-normal flex-auto text-secondary-foreground';
+// A line that belongs to the name (an event's date): the count line's type.
+const PROFILE_ROW_SUBTITLE = 'truncate text-sm leading-5 font-normal text-secondary-foreground';
 
 export function UnitProfileImage({
     data,
@@ -362,17 +358,20 @@ export function UnitProfileImage({
     skeletonClassName = `${ROW_AVATAR.container} sm:h-auto sm:w-full aspect-square`,
     rounded = 'rounded-full sm:rounded-xl',
 }) {
+    // The picture; a card with none of its own (a group, an event) shows its cover in the picture's place, and the
+    // letter where it has neither, as UNA's site card does.
+    const src = data?.image?.src || data?.cover?.src;
     return (
         <Skeleton className={skeletonClassName} rounded={rounded} visible={skeleton}>
             <View className={`${ROW_AVATAR.container} sm:h-auto sm:w-full aspect-square rounded-full sm:rounded-xl overflow-hidden items-center bg-muted justify-center`}>
                 <Image
-                    src={data?.image?.src}
+                    src={src}
                     alt={data.title}
                     view="cover"
                     className="absolute u-cover rounded-full sm:rounded-xl"
                     sizes="auto"
                 />
-                {data?.image?.src ? null : (
+                {src ? null : (
                     <Letter
                         title={data?.fullname || data?.title}
                         id={data?.author_data?.id}
@@ -690,9 +689,9 @@ export function UnitRecommendation({ data, params, primary = false }) {
 }
 
 /**
- * A profile card's connections line (20px high): the counts as one text ("2 friends · 5 followers"), and in the card
- * grid (from `sm` up) one group of avatars before it: the first of the profile's mutual friends, friends and
- * followers, each person once and without the viewer (lib/profile-connections.ts), as on UNA's site card. A phone row
+ * A card's connections line (20px high): the counts as one text ("2 friends · 5 followers"), and in the card
+ * grid (from `sm` up) one group of avatars before it: the first of a group's members and of the profile's mutual
+ * friends, friends and followers, each person once and without the viewer (lib/profile-connections.ts), as on UNA's site card. A phone row
  * has room for the text only. The avatars are not links: the card itself is one. They are 20px and go through the
  * image optimizer at that size (`Profile`), never the stored picture as it is.
  */
@@ -703,7 +702,7 @@ export function UnitProfileConnections({ data, skeleton, labelClassName = PROFIL
     const profiles = skeleton || !label
         ? []
         : mergeConnectionProfiles(
-            [data?.mutual_friends_list, data?.friends_list, data?.followers_list],
+            getCardPreviewLists(data),
             { max: maxCount, exclude: currentUser?.id },
         );
     return (
@@ -727,6 +726,71 @@ export function UnitProfileConnections({ data, skeleton, labelClassName = PROFIL
                 ) : null}
             </Skeleton>
         </Row>
+    );
+}
+
+/**
+ * The card of a profile or a context in a list: people, organizations, groups, events and spaces share it, as on UNA's
+ * site (unit_card.html). Below `sm` it is a row: a round picture, the name over the counts, and the buttons as icons
+ * at the end. From `sm` it is the grid card: a square picture with 12px corners inside the card's 8px padding, the
+ * name, the counts 8px under it (like the two buttons), then the buttons 12px lower, full width. `subtitle` is a
+ * line that belongs to the name (an event's date), 4px under it.
+ */
+export function UnitProfileCard({ data, unitType, module, subtitle = null }) {
+    const { t } = useTranslation();
+    const { primaryMenuItem, secondaryMenuItem, deleteMenuItem } = useUnitActions({
+        unitType,
+        data,
+        module,
+        t,
+    });
+
+    const isSkeleton = data?.skeleton;
+    // No count: drop the line so the name centres on the photo (mobile).
+    const hasCount = isSkeleton || !!getProfileConnectionsLabel(data);
+    const hasSubtitle = !!subtitle;
+
+    return (
+        <UnitWrapper data={data} module={module} as="list" padding="p-3 sm:p-2">
+            <View className="flex-row sm:flex-col items-center sm:items-stretch gap-3 sm:gap-1">
+                <UnitProfileImage data={data} skeleton={isSkeleton} />
+                {deleteMenuItem ? <View className="hidden sm:flex absolute right-1 top-1 z-10 shrink-0">{deleteMenuItem}</View> : null}
+                <View className="flex-row sm:flex-col items-center sm:items-stretch sm:p-1 sm:justify-between gap-2 sm:gap-3 flex-auto min-w-0">
+                    {/* The grid card: 24px name + 8px + 20px counts (with a date: 24px + 4px + 20px + 8px + 20px);
+                        the block keeps its height on a card with no counts, so every card's buttons line up. */}
+                    <View className={cn('sm:gap-2 flex-1 sm:flex-none min-w-0', hasSubtitle ? 'sm:h-19' : 'sm:h-13')}>
+                        <View className="sm:gap-1 min-w-0">
+                            <UnitTitle
+                                title={data.title}
+                                skeleton={isSkeleton}
+                                numberOfLines={1}
+                                className={PROFILE_ROW_NAME}
+                                skeletonClassName={PROFILE_ROW_NAME_SKELETON}
+                            />
+                            {hasSubtitle ? (
+                                <Skeleton visible={isSkeleton} className="h-4 w-1/2">
+                                    <Text numberOfLines={1} className={PROFILE_ROW_SUBTITLE}>{subtitle}</Text>
+                                </Skeleton>
+                            ) : null}
+                        </View>
+                        {hasCount ? (
+                            <UnitProfileConnections data={data} skeleton={isSkeleton} />
+                        ) : null}
+                    </View>
+                    <UnitActions
+                        primaryMenuItem={primaryMenuItem}
+                        secondaryMenuItem={secondaryMenuItem}
+                        skeleton={isSkeleton}
+                        className="flex-none flex-row sm:flex-col gap-2"
+                        primaryClassName="sm:w-full"
+                        compactOnMobile
+                        secondaryClassName="sm:w-full"
+                        skeletonClassName="h-9 w-24 sm:w-full"
+                    />
+                    {deleteMenuItem ? <View className="sm:hidden flex-none">{deleteMenuItem}</View> : null}
+                </View>
+            </View>
+        </UnitWrapper>
     );
 }
 

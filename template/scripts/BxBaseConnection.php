@@ -60,6 +60,7 @@ class BxBaseConnection extends BxDolConnection
             'show_do_as_button_small' => false,
             'show_do_as_button' => false,
             'show_do_as_primary' => false,
+            'show_do_label_short' => false,
             'show_do_icon' => true,
             'show_do_label' => true,
             'show_counter' => false,
@@ -249,7 +250,7 @@ class BxBaseConnection extends BxDolConnection
                     $aActions[$iKey]['title'] = _t($aAction['title']);
         }       
 
-        return [
+        $aResult = [
             'type' => 'connections_ext',
             'o' => $this->_sObject,
             'iid' => $iInitiator,
@@ -258,6 +259,12 @@ class BxBaseConnection extends BxDolConnection
             'title' => _t($sTitle),
             'actions' => $aActions,
         ];
+
+        // a card's toggle (its short wording): the apps send it back with an action, so the answer keeps the wording
+        if(!empty($aParams['show_do_label_short']))
+            $aResult['short'] = true;
+
+        return $aResult;
     }
 
     public function getCounter($iProfileId, $bIsMutual = false, $aParams = [])

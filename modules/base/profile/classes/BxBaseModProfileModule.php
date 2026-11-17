@@ -478,39 +478,27 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
     }
 
     /**
-     * The first profiles connected with a profile, as one group for its friends and its followers: a friend is
-     * usually a follower too, so a group per count shows the same faces twice. The friends the viewer shares with
-     * the profile come first, then its friends, then its followers, each once; the viewer and the profile itself
-     * are left out. The apps merge the lists they get the same way (NEO: lib/profile-connections.ts).
+     * The first profiles connected with a profile, as one group for its counts (friends and followers; members too
+     * for a group, an event or an organization): a friend is usually a follower too, so a group per count shows the
+     * same faces twice. The friends the viewer shares with the profile come first, then its friends, then its
+     * followers, each once; the viewer and the profile itself are left out. The apps merge the lists they get the
+     * same way (NEO: lib/profile-connections.ts).
      * @param $iProfileId the profile
-     * @param $bFriends take its friends (when friends are on for the module)
-     * @param $bFollowers take its followers
+     * @param $aShow which connections to take, the ones whose counts are shown: `friends`, `followers`, `members`
+     *      (all by default)
      * @param $iMax how many profiles at most
      * @return array of profile ids
      */
-    public function getConnectionsPreviewIds($iProfileId, $bFriends = true, $bFollowers = true, $iMax = 3)
+    public function getConnectionsPreviewIds($iProfileId, $aShow = [], $iMax = 3)
     {
         $iProfileId = (int)$iProfileId;
         $iMax = max(1, (int)$iMax);
         $iViewerId = (int)bx_get_logged_profile_id();
 
-        // one more than shown, since the viewer may be among them
-        $iRead = $iMax + 1;
-
-        $aIds = [];
-        if($bFriends && $this->_oConfig->isFriends() && ($oFriends = BxDolConnection::getObjectInstance('sys_profiles_friends')) !== false) {
-            if($iViewerId && $iViewerId != $iProfileId) {
-                $aIds = array_merge($aIds, $oFriends->getCommonContent($iProfileId, $iViewerId, true, 0, $iMax));
-            }
-
-            $aIds = array_merge($aIds, $oFriends->getConnectedContent($iProfileId, true, 0, $iRead));
-        }
-        if($bFollowers && ($oFollowers = BxDolConnection::getObjectInstance('sys_profiles_subscriptions')) !== false) {
-            $aIds = array_merge($aIds, $oFollowers->getConnectedInitiators($iProfileId, false, 0, $iRead));
-        }
+        $aShow = array_merge(['friends' => true, 'followers' => true, 'members' => true], is_array($aShow) ? $aShow : []);
 
         $aResult = [];
-        foreach($aIds as $iId) {
+        foreach($this->_getConnectionsPreviewIds($iProfileId, $iViewerId, $aShow, $iMax) as $iId) {
             $iId = (int)$iId;
             if(!$iId || $iId == $iViewerId || $iId == $iProfileId || in_array($iId, $aResult)) {
                 continue;
@@ -523,6 +511,29 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
         }
 
         return $aResult;
+    }
+
+    /**
+     * The ids getConnectionsPreviewIds picks from, in their order; a person may be there more than once.
+     */
+    protected function _getConnectionsPreviewIds($iProfileId, $iViewerId, $aShow, $iMax)
+    {
+        // one more than shown, since the viewer may be among them
+        $iRead = $iMax + 1;
+
+        $aIds = [];
+        if(!empty($aShow['friends']) && $this->_oConfig->isFriends() && ($oFriends = BxDolConnection::getObjectInstance('sys_profiles_friends')) !== false) {
+            if($iViewerId && $iViewerId != $iProfileId) {
+                $aIds = array_merge($aIds, $oFriends->getCommonContent($iProfileId, $iViewerId, true, 0, $iMax));
+            }
+
+            $aIds = array_merge($aIds, $oFriends->getConnectedContent($iProfileId, true, 0, $iRead));
+        }
+        if(!empty($aShow['followers']) && ($oFollowers = BxDolConnection::getObjectInstance('sys_profiles_subscriptions')) !== false) {
+            $aIds = array_merge($aIds, $oFollowers->getConnectedInitiators($iProfileId, false, 0, $iRead));
+        }
+
+        return $aIds;
     }
 
     public function serviceProfileUnitApi ($iContentId, $aParams = [])

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { connectionProfileId, mergeConnectionProfiles, withMergedItemLists } from './profile-connections.ts';
+import { connectionProfileId, mergeConnectionProfiles, withMergedItemLists, getCardCountParts, getCardPreviewLists } from './profile-connections.ts';
 
 const card = (profileId: number, contentId = profileId + 100) => ({ id: contentId, module: 'bx_persons', author_data: { id: profileId } });
 const lily = card(4), mila = card(8), eric = card(6), tom = card(10), viewer = card(116);
@@ -62,4 +62,51 @@ test('nothing to merge', () => {
     assert.deepEqual(withMergedItemLists([{ name: 'subscribers', title: '1 follower', list: [viewer] }], { exclude: 116 }), [
         { name: 'subscribers', title: '1 follower' },
     ]);
+});
+
+test("a person's counts: friends, then followers", () => {
+    assert.deepEqual(getCardCountParts({ module: 'bx_persons', friends_count: 2, followers_count: 5 }), [
+        { key: 'friends', count: 2, labelKey: 'friends' },
+        { key: 'followers', count: 5, labelKey: 'followers' },
+    ]);
+    assert.deepEqual(getCardCountParts({ module: 'bx_persons', friends_count: 4, mutual_friends_count: 1, followers_count: 0 }), [
+        { key: 'friends', count: 1, labelKey: 'mutual_friends' },
+    ]);
+    assert.deepEqual(getCardCountParts({ module: 'bx_persons' }), []);
+    assert.deepEqual(getCardCountParts(null), []);
+});
+
+test("a group's and a space's: members, then followers", () => {
+    assert.deepEqual(getCardCountParts({ module: 'bx_groups', members_count: 12, followers_count: '3' }), [
+        { key: 'members', count: 12, labelKey: 'members' },
+        { key: 'followers', count: 3, labelKey: 'followers' },
+    ]);
+    assert.deepEqual(getCardCountParts({ module: 'bx_spaces', members_count: 0, followers_count: 1 }), [
+        { key: 'followers', count: 1, labelKey: 'followers' },
+    ]);
+});
+
+test("an event's: going and interested", () => {
+    assert.deepEqual(getCardCountParts({ module: 'bx_events', members_count: 7, followers_count: 2 }), [
+        { key: 'members', count: 7, labelKey: 'going' },
+        { key: 'followers', count: 2, labelKey: 'intrested' },
+    ]);
+});
+
+test('an organization has room for its first two counts', () => {
+    assert.deepEqual(getCardCountParts({ module: 'bx_organizations', members_count: 3, friends_count: 2, followers_count: 9 }).map((part) => part.key), [
+        'members',
+        'friends',
+    ]);
+    assert.deepEqual(getCardCountParts({ module: 'bx_organizations', members_count: 0, friends_count: 2, followers_count: 9 }).map((part) => part.key), [
+        'friends',
+        'followers',
+    ]);
+});
+
+test('the members come first in the group of avatars', () => {
+    const data = { members_list: [lily], mutual_friends_list: [mila], friends_list: [mila, eric], followers_list: [lily, tom] };
+    assert.deepEqual(mergeConnectionProfiles(getCardPreviewLists(data), { max: 4 }), [lily, mila, eric, tom]);
+    assert.deepEqual(mergeConnectionProfiles(getCardPreviewLists({ followers_list: [tom] })), [tom]);
+    assert.deepEqual(mergeConnectionProfiles(getCardPreviewLists(null)), []);
 });

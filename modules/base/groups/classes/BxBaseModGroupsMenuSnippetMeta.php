@@ -66,6 +66,9 @@ class BxBaseModGroupsMenuSnippetMeta extends BxBaseModProfileMenuSnippetMeta
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
 
+        if($this->_isJoinToggle())
+            return $this->_getMenuItemJoinToggle($aItem);
+
         if(!isLogged() || $this->_oModule->checkAllowedFanAdd($this->_aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
             return false;
 
@@ -78,9 +81,48 @@ class BxBaseModGroupsMenuSnippetMeta extends BxBaseModProfileMenuSnippetMeta
             return $this->_getMenuItemConnection($CNF['OBJECT_CONNECTIONS'], 'add', $aItem);
     }
 
+    /**
+     * Join on a card and in the apps is the membership's toggle, with the card's short wording: "Join", then
+     * "Joined" (or "Request sent") with the way back in its menu. A join that asks questions first keeps the
+     * plain action, which opens them.
+     */
+    protected function _isJoinToggle()
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        if(!$this->_isToggle() || !isset($CNF['OBJECT_CONNECTIONS']) || !$this->_oContentProfile)
+            return false;
+
+        if(($sKey = 'OBJECT_RECOMMENDATIONS_FANS') && isset($CNF[$sKey]) && $this->_sContext == BxDolRecommendation::getContextName($CNF[$sKey]))
+            return false;
+
+        $oConnection = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTIONS']);
+        return $oConnection && !$oConnection->hasQuestionnaire($this->_oContentProfile->id());
+    }
+
+    protected function _getMenuItemJoinToggle($aItem)
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        if(!isLogged() || !$this->_isVisibleInContext($aItem))
+            return false;
+
+        // someone who may join, and a member (or someone who asked to be one), who may take it back
+        if($this->_oModule->checkAllowedFanAdd($this->_aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED && $this->_oModule->checkAllowedFanRemove($this->_aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
+        return $this->_getMenuItemConnectionElement($CNF['OBJECT_CONNECTIONS'], $aItem, [
+            'show_do_label_short' => true
+        ]);
+    }
+
     protected function _getMenuItemLeave($aItem)
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
+
+        // the toggle of Join holds it
+        if($this->_isJoinToggle())
+            return false;
 
         if(!isLogged() || $this->_oModule->checkAllowedFanRemove($this->_aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
             return false;
@@ -140,12 +182,10 @@ class BxBaseModGroupsMenuSnippetMeta extends BxBaseModProfileMenuSnippetMeta
                 'title' => _t($sTitle, $iMembers)
             ]);
 
-        $sIcon = BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->getIconAsHtml(!empty($aItem['icon']) ? $aItem['icon'] : '');
-
-        return $this->getUnitMetaItemCustom($oConnection->getCounter($this->_oContentProfile->id(), true, [
-            'caption' => $sTitle, 
-            'custom_icon' => $sIcon
-        ], BX_CONNECTIONS_CONTENT_TYPE_INITIATORS));
+        // the count's text, after the one group of avatars the card's counts share
+        return $this->_getConnectionCounter($oConnection, $this->_oContentProfile->id(), [
+            'caption' => $sTitle
+        ], true);
     }
 
     protected function _getMenuItemCountry($aItem)

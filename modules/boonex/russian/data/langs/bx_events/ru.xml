@@ -446,6 +446,8 @@
 
     <string name="_bx_events_menu_item_title_system_sm_date_start"><![CDATA[Начало]]></string>
     <string name="_bx_events_menu_item_title_sm_date_start"><![CDATA[Начало]]></string>
+    <string name="_bx_events_menu_item_title_sm_join_short"><![CDATA[Пойду]]></string>
+    <string name="_bx_events_menu_item_title_sm_joined"><![CDATA[Иду]]></string>
     <string name="_bx_events_menu_item_title_system_sm_date_end"><![CDATA[Конец]]></string>
     <string name="_bx_events_menu_item_title_sm_date_end"><![CDATA[Конец]]></string>
     <string name="_bx_events_menu_item_title_ical_export"><![CDATA[Добавить в календарь]]></string>
@@ -498,6 +500,7 @@
     <string name="_bx_events_txt_account_suspended"><![CDATA[Это событие заблокировано.]]></string>
     <string name="_bx_events_txt_scheduled_awaiting"><![CDATA[Дата публикации события: {date_publish_uf}]]></string>
     <string name="_bx_events_txt_status_hidden"><![CDATA[Это событие было скрыто.]]></string>
+    <string name="_bx_events_txt_unit_view"><![CDATA[Смотреть событие]]></string>
     <string name="_bx_events_txt_N_fans"><![CDATA[{0} участников]]></string>
     <string name="_bx_events_txt_role"><![CDATA[Роль]]></string>
     <string name="_bx_events_txt_role_added"><![CDATA[Начало]]></string>

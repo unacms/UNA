@@ -66,3 +66,54 @@ export function withMergedItemLists<T extends ListItem>(
         return next;
     });
 }
+
+/** A card's data, as far as its counts go. */
+export type CardCountsData = {
+    module?: unknown;
+    members_count?: unknown;
+    members_list?: unknown;
+    mutual_friends_count?: unknown;
+    mutual_friends_list?: unknown;
+    friends_count?: unknown;
+    friends_list?: unknown;
+    followers_count?: unknown;
+    followers_list?: unknown;
+    [key: string]: unknown;
+} | null | undefined;
+
+/** One count of a card's line: `labelKey` is its plural translation key ("members": "3 members"). */
+export type CardCountPart = { key: string; count: number; labelKey: string };
+
+/** A card's line has room for this many counts. */
+export const CARD_COUNTS_MAX = 2;
+
+function countOf(value: unknown): number {
+    const count = Number(value);
+    return Number.isFinite(count) && count > 0 ? count : 0;
+}
+
+/**
+ * The counts a card shows under its name, as UNA's site card does, in its order: the members of a group, a space or
+ * an organization (an event's are "going"), the friends (the ones shared with the viewer, when there are any), the
+ * followers (an event's are "interested"). A count of zero is left out; the line has room for the first two.
+ */
+export function getCardCountParts(data: CardCountsData, max = CARD_COUNTS_MAX): CardCountPart[] {
+    const isEvent = data?.module === 'bx_events';
+    const mutual = countOf(data?.mutual_friends_count);
+    return [
+        { key: 'members', count: countOf(data?.members_count), labelKey: isEvent ? 'going' : 'members' },
+        mutual
+            ? { key: 'friends', count: mutual, labelKey: 'mutual_friends' }
+            : { key: 'friends', count: countOf(data?.friends_count), labelKey: 'friends' },
+        { key: 'followers', count: countOf(data?.followers_count), labelKey: isEvent ? 'intrested' : 'followers' },
+    ].filter((part) => part.count > 0).slice(0, max);
+}
+
+/**
+ * The lists the card's one group of avatars is merged from, in UNA's order
+ * (BxBaseModGroupsModule::_getConnectionsPreviewIds): the members first, then the friends shared with the viewer,
+ * the friends, the followers.
+ */
+export function getCardPreviewLists<T = ConnectionProfile>(data: CardCountsData): Array<T[] | null | undefined> {
+    return [data?.members_list, data?.mutual_friends_list, data?.friends_list, data?.followers_list] as Array<T[] | null | undefined>;
+}

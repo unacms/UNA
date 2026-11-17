@@ -63,13 +63,29 @@ export function getUnitActionNames(unitType: unknown, moduleName: unknown): Unit
         const named = typeof unitType === 'string' ? PROFILE_LIST_ACTIONS[unitType] : undefined;
         return { primary: named?.primary ?? '', secondary: named?.secondary ?? '', dismiss: named?.dismiss ?? '' };
     }
-    // contexts (groups, events, spaces ...): joining, or following a channel
-    const follows = moduleName === 'bx_channels';
+    // contexts (groups, events, spaces ...): UNA's own buttons in its order (Join and Follow, each a toggle with
+    // the way back in its menu; an older UNA sends Join or Leave), and a suggestion's Ignore
     return {
-        primary: follows ? 'subscribe' : 'join',
-        secondary: follows ? 'unsubscribe' : 'leave',
+        primary: '',
+        secondary: '',
         dismiss: unitType === 'context_recommendations' ? 'ignore-join' : '',
     };
+}
+
+/** The button of a card with no action to offer (a guest's, the viewer's own): it opens the card's page. */
+export type UnitViewAction = { title: string; icon: string };
+
+const UNIT_VIEW_ACTIONS: Record<string, UnitViewAction> = {
+    bx_persons: { title: 'View profile', icon: 'CircleUserRound' },
+    bx_organizations: { title: 'View profile', icon: 'CircleUserRound' },
+    bx_groups: { title: 'View group', icon: 'CircleArrowRight' },
+    bx_events: { title: 'View event', icon: 'CircleArrowRight' },
+    bx_spaces: { title: 'View space', icon: 'CircleArrowRight' },
+};
+
+/** Its label (a translation key) and icon, as UNA's site card names them; "View" for a module with no card of its own. */
+export function getUnitViewAction(moduleName: unknown): UnitViewAction {
+    return (typeof moduleName === 'string' ? UNIT_VIEW_ACTIONS[moduleName] : undefined) ?? { title: 'View', icon: '' };
 }
 
 /**

@@ -26,6 +26,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { components } from 'app/components/registry';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { View } from 'app/design/view';
+import { connectionIconSet } from 'app/lib/connection-icons';
 import { Modal, NeoButton } from 'app/design/controls';
 import { patchFromReply } from 'app/lib/connection-patch';
 import { applyConnectionPatch } from 'app/lib/connection-cache';
@@ -57,10 +58,7 @@ export default function ElementConnections(props) {
     const settings = appSetting('social_actions', 'connection');
     const params = { ...settings, ...props.params };
 
-    const icons =
-        props?.o && settings[props.o]?.icons != undefined
-            ? settings[props.o].icons
-            : { add: 'UserCheck', remove: 'UserX' };
+    const icons = connectionIconSet(settings, props?.o, { add: 'UserCheck', remove: 'UserX' });
 
     const { showAsButton } = resolveActionButtonFlags(params);
     const buttonProps = {

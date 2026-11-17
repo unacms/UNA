@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { getSiteUnitActions, getUnitActionNames, isUnitActionItem, isUnitDismissItem, pickUnitActions } from './unit-actions.ts';
+import { getSiteUnitActions, getUnitActionNames, getUnitViewAction, isUnitActionItem, isUnitDismissItem, pickUnitActions } from './unit-actions.ts';
 
 const friends = { name: 'obj-friends', data: { type: 'connections_ext', o: 'sys_profiles_friends' } };
 const follow = { name: 'obj-subscriptions', data: { type: 'connections_ext', o: 'sys_profiles_subscriptions' } };
@@ -53,10 +53,10 @@ test('lists that name their own actions', () => {
     assert.deepEqual(getUnitActionNames('person_friends', 'bx_persons'), { primary: '', secondary: '', dismiss: '' }, 'Friends makes its own Message');
 });
 
-test('contexts join, channels follow', () => {
-    assert.deepEqual(getUnitActionNames(undefined, 'bx_groups'), { primary: 'join', secondary: 'leave', dismiss: '' });
-    assert.deepEqual(getUnitActionNames('context_recommendations', 'bx_events'), { primary: 'join', secondary: 'leave', dismiss: 'ignore-join' });
-    assert.deepEqual(getUnitActionNames(undefined, 'bx_channels'), { primary: 'subscribe', secondary: 'unsubscribe', dismiss: '' });
+test("contexts name no action: they take UNA's own", () => {
+    assert.deepEqual(getUnitActionNames(undefined, 'bx_groups'), { primary: '', secondary: '', dismiss: '' });
+    assert.deepEqual(getUnitActionNames('context_recommendations', 'bx_events'), { primary: '', secondary: '', dismiss: 'ignore-join' });
+    assert.deepEqual(getUnitActionNames(undefined, 'bx_channels'), { primary: '', secondary: '', dismiss: '' });
 });
 
 test("the list's named actions win over UNA's order", () => {
@@ -85,4 +85,37 @@ test("a button the list makes itself keeps its place, with nothing beside it", (
         secondary: null,
         dismiss: null,
     });
+});
+
+test("a context's card: Join and Follow, each a toggle", () => {
+    const joinToggle = { name: 'join', data: { type: 'connections_ext', o: 'bx_groups_fans', name: 'add' } };
+    const followToggle = { name: 'subscribe', data: { type: 'connections_ext', o: 'sys_profiles_subscriptions', name: 'add' } };
+    const members = { name: 'members', title: '3 members' };
+    assert.deepEqual(pickUnitActions([members, joinToggle, followToggle], getUnitActionNames(undefined, 'bx_groups')), {
+        primary: joinToggle,
+        secondary: followToggle,
+        dismiss: null,
+    });
+    // a channel, which nobody joins: its Follow alone
+    assert.deepEqual(pickUnitActions([followToggle], getUnitActionNames(undefined, 'bx_channels')), { primary: followToggle, secondary: null, dismiss: null });
+});
+
+test("a suggested group: UNA's Join, and its Ignore as the dismiss button", () => {
+    const suggest = { name: 'join', data: { type: 'recommendation', a: 'add' } };
+    const skip = { name: 'ignore-join', data: { type: 'recommendation', a: 'ignore' } };
+    assert.deepEqual(pickUnitActions([suggest, skip], getUnitActionNames('context_recommendations', 'bx_groups')), {
+        primary: suggest,
+        secondary: null,
+        dismiss: skip,
+    });
+});
+
+test('a card with no action names what it opens', () => {
+    assert.deepEqual(getUnitViewAction('bx_persons'), { title: 'View profile', icon: 'CircleUserRound' });
+    assert.deepEqual(getUnitViewAction('bx_organizations'), { title: 'View profile', icon: 'CircleUserRound' });
+    assert.deepEqual(getUnitViewAction('bx_groups'), { title: 'View group', icon: 'CircleArrowRight' });
+    assert.deepEqual(getUnitViewAction('bx_events'), { title: 'View event', icon: 'CircleArrowRight' });
+    assert.deepEqual(getUnitViewAction('bx_spaces'), { title: 'View space', icon: 'CircleArrowRight' });
+    assert.deepEqual(getUnitViewAction('bx_posts'), { title: 'View', icon: '' });
+    assert.deepEqual(getUnitViewAction(undefined), { title: 'View', icon: '' });
 });

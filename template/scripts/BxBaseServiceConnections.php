@@ -77,8 +77,9 @@ class BxBaseServiceConnections extends BxDol
         // the profile's new counts go back with the reply, so the app updates its card without another request
         $aCounts = $this->_getCardCounts($aParams['o'], (int)$aParams['cid']);
 
+        // the toggle as it is now; a card's keeps its short wording (`short`, see BxBaseConnection::getElementAPI)
         if(($aParams['r'] ?? '') == 'object') {
-            $aElement = $oConnection->getElementAPI($aParams['cid'], $aParams['iid']);
+            $aElement = $oConnection->getElementAPI($aParams['cid'], $aParams['iid'], !empty($aParams['short']) ? ['show_do_label_short' => true] : []);
             if(!is_array($aElement)) {
                 return $aElement;
             }
