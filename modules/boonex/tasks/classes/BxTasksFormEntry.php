@@ -27,6 +27,8 @@ class BxTasksFormEntry extends BxBaseModTextFormEntry
 
     protected $_aProperties;
 
+    protected $_aStickerColors = [];
+
     public function __construct($aInfo, $oTemplate = false)
     {
         $this->MODULE = 'bx_tasks';
@@ -103,9 +105,13 @@ class BxTasksFormEntry extends BxBaseModTextFormEntry
 
             if($aItems && is_array($aItems)) {
                 $this->aInputs[$CNF[$sKf]]['values'] = [];
+                $this->_aStickerColors = [];
 
-                foreach($aItems as $aItem)
+                foreach($aItems as $aItem) {
                     $this->aInputs[$CNF[$sKf]]['values'][$aItem['value']] = $aItem['title'];
+                    if(!empty($aItem['color']))
+                        $this->_aStickerColors[$aItem['value']] = $aItem['color'];
+                }
             }
         }
     }
@@ -141,15 +147,21 @@ class BxTasksFormEntry extends BxBaseModTextFormEntry
 
     public function getCodeAPI()
     {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
         $aResult = parent::getCodeAPI();
-        
+
         $aResult['params'] ??= [];
         if(($sK = 'view_mode') && isset($this->aParams[$sK]) && $this->aParams[$sK]) {
             $aResult['params']['request_url'] = $this->MODULE . '/set_property/&params[]=' . $this->_iContentId . '&params[]=';
             $aResult['params']['context_id'] = (int)$this->_iContextId;
             foreach($aResult['inputs'] as $aInput)
-                if(($sName = $aInput['name'] ?? false) && in_array($sName, $this->_aProperties))
+                if(($sName = $aInput['name'] ?? false) && (in_array($sName, $this->_aProperties) || $sName == ($CNF['FIELD_STICKERS'] ?? '')))
                     $aResult['inputs'][$sName]['editable'] = true;
+
+            // labels' colours (value => colour), as the site draws them
+            if(($sKs = $CNF['FIELD_STICKERS'] ?? false) && isset($aResult['inputs'][$sKs]))
+                $aResult['inputs'][$sKs]['colors'] = $this->_aStickerColors ?: new stdClass();
         }
 
         return $aResult;
