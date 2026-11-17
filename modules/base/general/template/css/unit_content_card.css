@@ -149,9 +149,6 @@
 .dark .bx-base-content-card .bx-base-content-card-summary {
     color: #a1a1aa;
 }
-.bx-base-content-card .bx-base-content-card-summary:empty {
-    display: none !important;
-}
 
 /* the byline: the snippet meta menu on one 20px line, "Name · 3 days ago", 14px */
 .bx-base-content-card .bx-base-content-card-meta,
@@ -333,6 +330,9 @@
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
         line-clamp: 2;
+    }
+    .bx-base-content-card .bx-base-content-card-summary:empty {
+        display: none;
     }
     /* the byline at the card's foot, so the bylines of a row line up */
     .bx-base-content-card .bx-base-content-card-foot,

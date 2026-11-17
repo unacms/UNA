@@ -8,9 +8,9 @@ export default function Unit({ data, unitType, module }) {
     const { t } = useTranslation()
     const dateLocaleTag = useDateLocaleTag()
     // A skeleton keeps the date's line, so the card does not grow when it loads.
-    const subtitle = data?.date_start
-        ? formatDateInterval(data.date_start, data.date_end, t, dateLocaleTag)
-        : (data?.skeleton ? ' ' : null)
+    let subtitle = data?.skeleton ? ' ' : null
+    if (data?.date_start)
+        subtitle = formatDateInterval(data.date_start, data.date_end, t, dateLocaleTag)
 
     return <UnitProfileCard data={data} unitType={unitType} module={module} subtitle={subtitle} />
 }

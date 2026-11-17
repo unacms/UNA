@@ -3,11 +3,11 @@
  * UNA sends for it. The card itself is `UnitContentCard` in `components/units/helpers.js`; UNA's site draws the same
  * card (`modules/base/general/template/css/unit_content_card.css`).
  */
-export type ContentImage = { src?: unknown; [key: string]: unknown } | null | undefined | false | '';
+export type ContentImage = { src?: unknown; [key: string]: unknown };
 
 export type ContentCardData = {
-    image?: ContentImage;
-    cover?: ContentImage;
+    image?: ContentImage | null | false | '';
+    cover?: ContentImage | null | false | '';
     price_text?: unknown;
     summary_plain?: unknown;
     date?: unknown;
@@ -16,7 +16,7 @@ export type ContentCardData = {
     [key: string]: unknown;
 } | null | undefined;
 
-function hasSrc(image: ContentImage): image is { src: string; [key: string]: unknown } {
+function hasSrc(image: ContentImage | null | undefined | false | ''): image is { src: string; [key: string]: unknown } {
     return !!image && typeof image === 'object' && typeof image.src === 'string' && image.src !== '';
 }
 
