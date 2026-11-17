@@ -193,11 +193,10 @@ td:last-child .bx-grid-cell-single-actions-wrapper {
     cursor: pointer;
 }
 
-/* --------------- a text cell longer than one line of its column: it wraps and shows two lines; the button that
-   shows it in full (.bx-str-limit) is there only where they don't hold it (BxDolGrid.js marks the cell) */
+/* --------------- a text cell longer than one line of its column: it wraps and shows two lines, close together;
+   where they don't hold the text, pointing at it shows it in full (its title, set by BxDolGrid.js) */
 
 .bx-grid-cell-clamp {
-    position: relative;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
@@ -205,18 +204,13 @@ td:last-child .bx-grid-cell-single-actions-wrapper {
     overflow: hidden;
     white-space: normal;
     overflow-wrap: break-word;
-    line-height: 1.25rem;
+    line-height: 1.2;
 }
-.bx-grid-cell-clamp .bx-str-limit {
-    display: none;
+
+/* --------------- a column of controls (checkbox, drag handle, switch, action buttons): as wide as what is in it */
+
+.bx-grid-table .bx-grid-cell-hug {
+    width: 1px;
+    white-space: nowrap;
 }
-.bx-grid-cell-clamp.bx-grid-cell-clamped {
-    padding-right: 1.75rem;
-}
-.bx-grid-cell-clamp.bx-grid-cell-clamped .bx-str-limit {
-    display: inline-flex;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    padding: 0;
-}
+

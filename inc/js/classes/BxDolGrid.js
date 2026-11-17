@@ -552,13 +552,33 @@ BxDolGrid.prototype._onDataReloaded = function (isSkipSearchInput) {
 };
 
 /**
- * Text cells show two lines of their text (.bx-grid-cell-clamp, css/grid.css): the cells whose text doesn't fit them
- * are marked, which shows their button for the text in full. Measured without the mark, which makes the text narrower.
+ * Text cells show two lines of their text (.bx-grid-cell-clamp, css/grid.css). A cell whose text doesn't fit them
+ * shows it in full when pointed at: its text becomes its title, and the title of a link in it, whose own title would
+ * show instead (kept, and put back when the text fits again, as after the window is resized).
  */
 BxDolGrid.prototype.markClampedCells = function () {
     jQuery('#' + this._sIdTable + ' .bx-grid-cell-clamp').each(function () {
-        var eCell = jQuery(this).removeClass('bx-grid-cell-clamped');
-        eCell.toggleClass('bx-grid-cell-clamped', this.scrollHeight > this.clientHeight + 1);
+        var eCell = jQuery(this);
+        var bClamped = this.scrollHeight > this.clientHeight + 1;
+        var sText = eCell.attr('data-full-text') || '';
+
+        eCell.toggleClass('bx-grid-cell-clamped', bClamped);
+        if (bClamped)
+            eCell.attr('title', sText);
+        else
+            eCell.removeAttr('title');
+
+        eCell.find('a').each(function () {
+            var eLink = jQuery(this);
+            if (eLink.attr('data-title') === undefined)
+                eLink.attr('data-title', eLink.attr('title') || '');
+
+            var sTitle = bClamped ? sText : eLink.attr('data-title');
+            if (sTitle)
+                eLink.attr('title', sTitle);
+            else
+                eLink.removeAttr('title');
+        });
     });
 };
 

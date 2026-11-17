@@ -27,12 +27,13 @@ class BxBaseGrid extends BxDolGrid
 
     /**
      * A text cell (a field with `chars_limit` in `sys_grid_fields`: the characters that fit one line of its column)
-     * wraps in its column and shows two lines (css/grid.css, .bx-grid-cell-clamp). The button that shows the text in
-     * full is there only where the two lines don't hold it (BxDolGrid.js, markClampedCells). The text itself is cut
-     * only past this many lines' worth of characters, far beyond what two lines of any column show.
+     * wraps in its column and shows two lines (css/grid.css, .bx-grid-cell-clamp). Where the two lines don't hold the
+     * text, pointing at it shows it in full (its `title`; BxDolGrid.js, markClampedCells). The text itself is cut only
+     * past this many lines' worth of characters, far beyond what two lines of any column show.
      */
     protected $_iCharsLimitLinesMax = 6;
-    protected $_bCellClamp = false; ///< the cell being built has text longer than one line: _getCellDefault wraps it
+    protected $_fTextColumnsScale = null; ///< what the text columns' percent widths are multiplied by, see _getTextColumnsScale
+    protected $_sCellClampText = ''; ///< the full text of the cell being built, when it is longer than one line: _getCellDefault wraps it
     protected $_aFilterAreaLabels = []; // filter name => accessible name (lang key or plain text); filter controls are rendered without a visible caption
 
     public function __construct ($aOptions, $oTemplate)
@@ -639,8 +640,8 @@ class BxBaseGrid extends BxDolGrid
 
         $sAttr = $this->_convertAttrs(
             $aField, 'attr_head',
-            'bx-def-padding-sec-bottom bx-def-padding-sec-top bx-grid-header-' . $sKey, // add default classes
-            isset($aField['width']) ? 'width:' . $aField['width'] : false // add default styles
+            'bx-def-padding-sec-bottom bx-def-padding-sec-top bx-grid-header-' . $sKey . $this->_getCellHugClass($sKey), // add default classes
+            $this->_getCellWidthStyle($sKey, $aField) // add default styles
         );
 
         return $this->_getCellHeaderWrapper ($sKey, $aField, $sHeader, $sAttr);
@@ -665,8 +666,8 @@ class BxBaseGrid extends BxDolGrid
 
         $sAttrHead = $this->_convertAttrs(
             $aField, 'attr_head',
-            'bx-def-padding-sec-bottom bx-def-padding-sec-top bx-grid-header-' . $sKey, // add default classes
-            isset($aField['width']) ? 'width:' . $aField['width'] : false // add default styles
+            'bx-def-padding-sec-bottom bx-def-padding-sec-top bx-grid-header-' . $sKey . $this->_getCellHugClass($sKey), // add default classes
+            $this->_getCellWidthStyle($sKey, $aField) // add default styles
         );
         return $this->_getCellHeaderWrapper ($sKey, $aField, ' <input ' . $this->_convertAttrs($aField, 'attr') . ' /> ', $sAttrHead);
     }
@@ -833,8 +834,8 @@ class BxBaseGrid extends BxDolGrid
 
         $sAttr = $this->_convertAttrs(
             $aField, 'attr_cell',
-            'bx-def-padding-sec-bottom bx-def-padding-sec-top', // add default classes
-            isset($aField['width']) ? 'width:' . $aField['width'] : false  // add default styles
+            'bx-def-padding-sec-bottom bx-def-padding-sec-top' . $this->_getCellHugClass($sKey), // add default classes
+            $this->_getCellWidthStyle($sKey, $aField)  // add default styles
         );
         $sDisabled = ($this->_isCheckboxDisabled($aRow) ? 'disabled="disabled"' : '');
         $sSelected = ($this->_isCheckboxSelected($mixedValue, $sKey, $aField, $aRow) ? 'checked="checked"' : '');
@@ -857,8 +858,8 @@ class BxBaseGrid extends BxDolGrid
 
         $sAttr = $this->_convertAttrs(
             $aField, 'attr_cell',
-            'bx-def-padding-sec-bottom bx-def-padding-sec-top', // add default classes
-            isset($aField['width']) ? 'width:' . $aField['width'] : false  // add default styles
+            'bx-def-padding-sec-bottom bx-def-padding-sec-top' . $this->_getCellHugClass($sKey), // add default classes
+            $this->_getCellWidthStyle($sKey, $aField)  // add default styles
         );
 
         $oForm = new BxTemplFormView(array(), $this->_oTemplate);
@@ -896,8 +897,8 @@ class BxBaseGrid extends BxDolGrid
 
         $sAttr = $this->_convertAttrs(
             $aField, 'attr_cell',
-            'bx-def-padding-sec-bottom bx-def-padding-sec-top', // add default classes
-            isset($aField['width']) ? 'width:' . $aField['width'] : false  // add default styles
+            'bx-def-padding-sec-bottom bx-def-padding-sec-top' . $this->_getCellHugClass($sKey), // add default classes
+            $this->_getCellWidthStyle($sKey, $aField)  // add default styles
         );
 
         return '<td ' . $sAttr . '><div id="' . $this->_sObject . '_cell_' . $aRow[$this->_aOptions['field_id']] . '" class="bx-grid-drag-handle"><i class="sys-icon grip-vertical"></i></div></td>';
@@ -907,8 +908,8 @@ class BxBaseGrid extends BxDolGrid
     {
         $sAttr = $this->_convertAttrs(
             $aField, 'attr_cell',
-            'bx-def-padding-sec-bottom bx-def-padding-sec-top', // add default classes
-            isset($aField['width']) ? 'width:' . $aField['width'] : false  // add default styles
+            'bx-def-padding-sec-bottom bx-def-padding-sec-top' . $this->_getCellHugClass($sKey), // add default classes
+            $this->_getCellWidthStyle($sKey, $aField)  // add default styles
         );
 
         $mixedDisabledBehavior = $this->_getActionsDisabledBehavior($aRow);
@@ -936,14 +937,14 @@ class BxBaseGrid extends BxDolGrid
         $sAttr = $this->_convertAttrs(
             $aField, 'attr_cell',
             'bx-grid-cell' . (!empty($aField['name']) ? ' bx-gc-' . $aField['name'] : '') . ' bx-def-padding-sec-bottom bx-def-padding-sec-top', // add default classes
-            isset($aField['width']) ? 'width:' . $aField['width'] : false // add default styles
+            $this->_getCellWidthStyle($sKey, $aField) // add default styles
         );
 
-        // Text longer than one line of its column (_limitMaxLength): two lines, see $_iCharsLimitLinesMax.
-        $bClamp = $this->_bCellClamp;
-        $this->_bCellClamp = false;
-        if($bClamp && is_string($mixedValue))
-            $mixedValue = '<div class="bx-grid-cell-clamp">' . $mixedValue . '</div>';
+        // Text longer than one line of its column (_limitMaxLength): two lines, and all of it when pointed at.
+        $sClampText = $this->_sCellClampText;
+        $this->_sCellClampText = '';
+        if($sClampText !== '' && is_string($mixedValue))
+            $mixedValue = '<div class="bx-grid-cell-clamp" data-full-text="' . bx_html_attribute($sClampText) . '">' . $mixedValue . '</div>';
 
         return '<td ' . $sAttr . '>' . $mixedValue . '</td>';
     }
@@ -968,7 +969,7 @@ class BxBaseGrid extends BxDolGrid
         $sAttr = $this->_convertAttrs(
             $aField, 'attr_cell',
             'bx-grid-cell' . (!empty($aField['name']) ? ' bx-gc-' . $aField['name'] : '') . ' bx-def-padding-sec-bottom bx-def-padding-sec-top',
-            isset($aField['width']) ? 'width:' . $aField['width'] : false
+            $this->_getCellWidthStyle($sKey, $aField)
         );
 
         $sToggle = '';
@@ -1292,24 +1293,79 @@ class BxBaseGrid extends BxDolGrid
         return _t('_sys_grid_total_count', $this->_iTotalCount);
     }
 
+    /**
+     * A column of controls (the row's checkbox, drag handle, switch and action buttons) is as wide as what is in it:
+     * its width in `sys_grid_fields` is left out and its cells get this class (css/grid.css). Text columns share the
+     * room that is left by their widths.
+     */
+    protected function _isControlsColumn ($sKey)
+    {
+        return in_array($sKey, ['checkbox', 'switcher', 'actions']) || (!empty($this->_aOptions['field_order']) && $this->_aOptions['field_order'] == $sKey);
+    }
+
+    protected function _getCellHugClass ($sKey)
+    {
+        return $this->_isControlsColumn($sKey) ? ' bx-grid-cell-hug' : '';
+    }
+
+    protected function _getCellWidthStyle ($sKey, $aField)
+    {
+        if(!isset($aField['width']) || $this->_isControlsColumn($sKey))
+            return false;
+
+        $sWidth = $aField['width'];
+        $fScale = $this->_getTextColumnsScale();
+        if($fScale != 1.0)
+            $sWidth = round((float)$sWidth * $fScale, 2) . '%';
+
+        return 'width:' . $sWidth;
+    }
+
+    /**
+     * The text columns' widths are percents of the table that left room for the columns of controls. Those take only
+     * what is in them now, so the text columns' percents are scaled to fill the table: room they don't claim would go
+     * to the columns of controls. 1 when a text column's width is not a percent.
+     */
+    protected function _getTextColumnsScale ()
+    {
+        if($this->_fTextColumnsScale !== null)
+            return $this->_fTextColumnsScale;
+
+        $fSum = 0;
+        $aFields = !empty($this->_aOptions['fields']) && is_array($this->_aOptions['fields']) ? $this->_aOptions['fields'] : [];
+        foreach($aFields as $sKey => $aField) {
+            if($this->_isControlsColumn($sKey))
+                continue;
+
+            if(!isset($aField['width']) || !preg_match('/^\s*[0-9.]+\s*%\s*$/', (string)$aField['width'])) {
+                $fSum = 0;
+                break;
+            }
+
+            $fSum += (float)$aField['width'];
+        }
+
+        return $this->_fTextColumnsScale = $fSum > 0 ? 100 / $fSum : 1.0;
+    }
+
     protected function _limitMaxLength ($mixedValue, $sKey, $aField, $aRow, $isDisplayPopupOnTextOverflow, $bReturnString = true)
     {
         $iLimit = (int)$aField['chars_limit'];
         if($iLimit <= 0)
             return $mixedValue;
 
-        // Text that fits one line of the column, or a grid without the "show in full" button: as before.
+        // Text that fits one line of the column: as it is. A grid that shows no text in full cuts it there, as before.
         $sPlain = strip_tags($mixedValue);
-        $aCut = $this->_oFunctions->getStringWithLimitedLength([$sPlain, $mixedValue], $iLimit, $isDisplayPopupOnTextOverflow, false);
-        if(!$isDisplayPopupOnTextOverflow || !isset($aCut[1]))
-            return $bReturnString ? implode('', $aCut) : $aCut;
+        if(!$isDisplayPopupOnTextOverflow || mb_strlen($sPlain, 'UTF-8') <= $iLimit) {
+            $sResult = $this->_oFunctions->getStringWithLimitedLength($sPlain, $iLimit);
+            return $bReturnString ? $sResult : [$sResult];
+        }
 
-        // Longer text goes out whole (to a generous cap) with the button: the cell shows two lines of it, and the button
-        // only where they don't hold it.
-        $this->_bCellClamp = true;
-        $aResult = [$this->_oFunctions->getStringWithLimitedLength($sPlain, $iLimit * $this->_iCharsLimitLinesMax), $aCut[1]];
+        // Longer text goes out whole (to a generous cap): the cell shows two lines of it, and all of it when pointed at.
+        $this->_sCellClampText = $sPlain;
+        $sResult = $this->_oFunctions->getStringWithLimitedLength($sPlain, $iLimit * $this->_iCharsLimitLinesMax);
 
-        return $bReturnString ? implode('', $aResult) : $aResult;
+        return $bReturnString ? $sResult : [$sResult];
     }
 
     protected function _convertAttrs ($aField, $sAttrName, $sClasses = false, $sStyles = false)
