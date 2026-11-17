@@ -17,32 +17,16 @@ import { useAnnouncer } from '../features/feed/feed-list';
 import { commentBoxId } from '../features/thread/comment-tree';
 import { CONVERSATION_REPLY_FIELD } from '../screens/conversation';
 import { ComposeProvider, NEW_POST_FIELD, useCompose } from '../features/compose/compose-sheet';
-import { Feed } from '../screens/feed';
-import { Messages } from '../screens/messages';
 import { forgetPreopenedEntry, isPreopened, preopenedId, resumePreopened, setPreopened } from '../features/messages/preopen';
-import { Discussions } from '../features/discussions/discussion-list';
-import { Posts } from '../features/posts/post-list';
 import { activityDetail } from '../features/posts/posts';
-import { Notifications } from '../screens/notifications';
-import { Profile } from '../screens/profile';
 import { type PaletteEntry, RecentEntries } from '../features/palette/commands';
 import { CommandPalette } from '../features/palette/palette';
 import { profileSummaryKey, FRIEND_REQUESTS_KEY, SENT_REQUESTS_KEY, connectionsKey } from '../features/profile/graph';
 import { useSwitchProfile } from '../features/profile/use-switch-profile';
-import { SEARCH_FIELD, SearchView, SidebarSearchContext } from '../features/search/search-view';
-import { ContextsBrowse, GroupsBrowse } from '../features/groups/group-list';
-import { GroupView } from '../features/groups/group-view';
+import { SEARCH_FIELD, SidebarSearchContext } from '../features/search/search-view';
 import { SidebarContexts, SidebarGroups } from '../features/groups/sidebar-groups';
-import { SettingsList } from '../features/settings/settings-list';
-import { EventsBrowse } from '../features/events/event-list';
-import { MediaBrowse, mediaTabs } from '../features/media/media-browse';
-import { SitePage } from '../features/page-blocks/site-page';
-import { ConnectionsPage } from '../features/connections/connections-page';
-import { PeoplePage } from '../features/people/people-page';
+import { mediaTabs } from '../features/media/media-browse';
 import { focusTaskAdd } from '../features/tasks/task-list';
-import { TaskBoard } from '../features/tasks/task-board';
-import { TaskBudgetView } from '../features/tasks/task-budget';
-import { MyTimers } from '../features/tasks/task-timers';
 import { SidebarTasks } from '../features/tasks/sidebar-tasks';
 import { MenuHost } from '../components/menu-popover';
 import { useSiteAccent, useSiteInfo } from '../lib/branding';
@@ -63,6 +47,8 @@ import { StatusBanner } from './status-banner';
 import { TopBar } from './top-bar';
 import { tabTitle } from './tab-strip';
 import { SidebarNavigation } from './sidebar-navigation';
+import { ListPane } from './section-panes';
+import { sectionItem, sectionName } from '../lib/sections';
 import { appRealtime, useRealtime, useRealtimeStatus } from '../lib/realtime';
 import { currentRowIcon, type NavRowModel, sidebarModel, useSiteNavigation } from '../lib/site-navigation';
 import { sectionIcon as sectionIconOf, type ShownIcon } from '../lib/section-icons';
@@ -78,56 +64,6 @@ const SECTION_COMMANDS: Partial<Record<CommandId, Section>> = { 'go-home': 'home
 
 const PANES = ['sidebar', 'list', 'detail'] as const;
 type AnyPane = (typeof PANES)[number];
-
-function ListPane({ list }: { list: ListRoute }) {
-    switch (list.section) {
-        case 'home':
-            return <Feed key="home" section="home" />;
-        case 'explore':
-            return <Feed key="explore" section="explore" />;
-        case 'notifications':
-            return <Notifications />;
-        case 'messages':
-            return <Messages />;
-        case 'connections':
-            // one's friends, requests received and sent, following and followers, a tab each
-            return <ConnectionsPage />;
-        case 'people':
-            // the network's people: Recent, Active, Online (Persons' pages), and one's friends
-            return <PeoplePage />;
-        case 'posts':
-            // the Posts module's posts: the newest, the most viewed, or one's own
-            return <Posts />;
-        case 'discussions':
-            return <Discussions />;
-        case 'search':
-            return <SearchView />;
-        case 'profile':
-            // a page: someone's profile, or one's own
-            return <Profile list={list} />;
-        case 'groups':
-            // a group's page, or the groups to browse
-            return list.group ? <GroupView key={list.group} id={list.group} tab={list.groupTab ?? 'posts'} /> : <GroupsBrowse joined={list.feed === 'joined'} />;
-        case 'spaces':
-            // a space's page, or the top level spaces to browse
-            return list.group ? <GroupView key={`space-${list.group}`} id={list.group} tab={list.groupTab ?? 'posts'} kind="space" /> : <ContextsBrowse kind="space" joined={list.feed === 'joined'} />;
-        case 'events':
-            // an event's page, or the events: upcoming, one's own, past
-            return list.group ? <GroupView key={`event-${list.group}`} id={list.group} tab={list.groupTab ?? 'posts'} kind="event" /> : <EventsBrowse />;
-        case 'media':
-            // the media modules' lists: Videos, Photos, Albums
-            return <MediaBrowse />;
-        case 'tasks':
-            // My timers, a context's budget, or a board: My tasks (assigned or created), a context's tasks or one of its lists
-            if (list.taskView === 'budget' && list.taskContext) return <TaskBudgetView key={`budget-${list.taskContext}`} contextId={list.taskContext} />;
-            return list.taskView === 'timers' ? <MyTimers /> : <TaskBoard key={list.taskContext ? `context-${list.taskContext}` : `mine-${list.taskRole ?? 'assigned'}`} list={list} />;
-        case 'settings':
-            return <SettingsList />;
-        case 'page':
-            // a page of the site's that the app has no screen for: its blocks (a sidebar item opens one)
-            return <SitePage key={list.page ?? ''} path={list.page ?? null} />;
-    }
-}
 
 /** The icon rail's own row after the site's: it has no search field. */
 const RAIL_SEARCH: NavRowModel = { key: 'app|search', label: t('Search'), icon: null, fallbackIcon: 'search', list: { section: 'search' }, command: 'go-search', counter: null };
@@ -454,7 +390,7 @@ function ShellFrame({ siteUrl, items, requests = 0, profile, commands }: Props) 
     }, []);
 
     const label =
-        items.find((i) => i.section === route.list.section)?.label ?? (route.list.section === 'people' ? t('People') : route.list.section === 'groups' ? t('Groups') : route.list.section === 'spaces' ? t('Spaces') : route.list.section === 'events' ? t('Events') : route.list.section === 'media' ? t('Media') : route.list.section === 'tasks' ? t('Tasks') : route.list.section === 'settings' ? t('Settings') : route.list.section === 'search' ? t('Search') : 'UNA');
+        items.find((i) => i.section === route.list.section)?.label ?? sectionName(route.list.section);
     // the native window's title too: the Window menu, Mission Control and screen readers read
     // it. The open detail or the page names it ("Lily Carter – UNA Makers"), else the section.
     const site = useSiteInfo();
@@ -788,9 +724,9 @@ function ShellFrame({ siteUrl, items, requests = 0, profile, commands }: Props) 
                                         rail
                                             ? [
                                                   ...items,
-                                                  { section: 'search', label: t('Search'), command: 'go-search', icon: 'search' },
-                                                  { section: 'groups', label: t('Groups'), icon: 'users-round' },
-                                                  ...(spaces ? [{ section: 'spaces', label: t('Spaces'), icon: 'orbit' } as const] : []),
+                                                  { ...sectionItem('search'), command: 'go-search' },
+                                                  sectionItem('groups'),
+                                                  ...(spaces ? [sectionItem('spaces')] : []),
                                               ]
                                             : // with names, Tasks is a section of its own under the rows (SidebarTasks)
                                               items.filter((i) => i.section !== 'tasks')

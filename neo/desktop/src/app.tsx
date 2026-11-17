@@ -52,7 +52,7 @@ import { networkNumber, type CommandId } from './lib/shortcuts';
 import type { Notification } from './lib/sync';
 import { SyncProvider, useSync } from './lib/sync-provider';
 import { makeLinkOpener } from './lib/link-opener';
-import { sectionIcon } from './lib/section-icons';
+import { sectionItem } from './lib/sections';
 import { themeAnnouncement, type Theme } from './lib/theme';
 import { useAnnouncer } from './features/feed/feed-list';
 import { useNotificationActions } from './features/notifications/actions';
@@ -701,27 +701,25 @@ function BadgedShell({ siteUrl, profile, commands }: { siteUrl: string; profile?
     const people = useSiteHasTag('persons') === true;
     const requests = badges?.friend_requests ?? 0;
     const items: NavItem[] = [
-        { section: 'home', label: t('Home'), command: 'go-home', icon: 'house' },
-        { section: 'explore', label: t('Explore'), command: 'go-explore', icon: 'compass' },
-        { section: 'notifications', label: t('Notifications'), command: 'go-notifications', badge: badges?.notifications, icon: 'bell' },
-        { section: 'messages', label: t('Messages'), command: 'go-messages', badge: badges?.messages, icon: 'message-circle' },
-        { section: 'profile', label: t('Profile'), command: 'go-profile', icon: 'circle-user-round' },
+        { ...sectionItem('home'), command: 'go-home' },
+        { ...sectionItem('explore'), command: 'go-explore' },
+        { ...sectionItem('notifications'), command: 'go-notifications', badge: badges?.notifications },
+        { ...sectionItem('messages'), command: 'go-messages', badge: badges?.messages },
+        { ...sectionItem('profile'), command: 'go-profile' },
         // friends, friend requests (the badge: those waiting), following and followers
         {
-            section: 'connections',
-            label: t('Connections'),
-            icon: sectionIcon('connections'),
+            ...sectionItem('connections'),
             badge: requests,
             spokenBadge: tn(requests, ', {{count}} friend request waiting', ', {{count}} friend requests waiting'),
         },
         // after the numbered rows (Cmd+1..5), so they keep their places and nothing above it
         // moves when the answer comes (on a site without Discussions it never does)
-        ...(people ? [{ section: 'people', label: t('People'), icon: 'user-round' } as const] : []),
-        ...(posts ? [{ section: 'posts', label: t('Posts'), icon: 'newspaper' } as const] : []),
-        ...(discussions ? [{ section: 'discussions', label: t('Discussions'), icon: 'messages-square' } as const] : []),
-        ...(events ? [{ section: 'events', label: t('Events'), icon: 'calendar' } as const] : []),
-        ...(media ? [{ section: 'media', label: t('Media'), icon: 'film' } as const] : []),
-        ...(tasks ? [{ section: 'tasks', label: t('Tasks'), icon: 'list-checks' } as const] : []),
+        ...(people ? [sectionItem('people')] : []),
+        ...(posts ? [sectionItem('posts')] : []),
+        ...(discussions ? [sectionItem('discussions')] : []),
+        ...(events ? [sectionItem('events')] : []),
+        ...(media ? [sectionItem('media')] : []),
+        ...(tasks ? [sectionItem('tasks')] : []),
     ];
     // Search is the sidebar's field, not a row; friend requests are Connections' badge and its Requests tab
     return <Shell siteUrl={siteUrl} items={items} requests={requests} profile={profile} commands={commands} />;

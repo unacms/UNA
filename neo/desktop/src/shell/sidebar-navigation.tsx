@@ -24,7 +24,8 @@ import { Avatar } from '../components/avatar';
 import { Icon } from '../components/icon';
 import { language, t, tn } from '../lib/i18n';
 import { isWindowGesture, isWindowKey, useOpenInWindow } from '../lib/open-in-window';
-import { type ListRoute, listPath, type Section } from '../lib/router';
+import { type ListRoute, listPath } from '../lib/router';
+import { SECTION_INFO } from '../lib/sections';
 import { currentRow, type LiveBadge, type NavFollowingsModel, type NavGroupModel, type NavRowModel } from '../lib/site-navigation';
 import { readStored, writeStored } from '../lib/storage';
 import { SidebarTasks } from '../features/tasks/sidebar-tasks';
@@ -62,22 +63,9 @@ export function allLabel(title: string): string {
     return t('All {{title}}', { title: language() === 'en' ? `${title.charAt(0).toLowerCase()}${title.slice(1)}` : title });
 }
 
-/** Browse's name for the sections a followed module opens, each a sentence of its own. */
-const BROWSE_LABELS: Partial<Record<Section, string>> = {
-    people: t('Browse people'),
-    groups: t('Browse groups'),
-    spaces: t('Browse spaces'),
-    events: t('Browse events'),
-    posts: t('Browse posts'),
-    discussions: t('Browse discussions'),
-    media: t('Browse media'),
-    tasks: t('Browse tasks'),
-    connections: t('Browse connections'),
-};
-
 /** Browse's name: the section it opens (Browse groups), not the heading (Your groups). */
 export function browseLabel(browse: ListRoute): string {
-    return browse.section === 'page' ? t('Browse all') : (BROWSE_LABELS[browse.section] ?? t('Browse {{section}}', { section: browse.section }));
+    return SECTION_INFO[browse.section].browse ?? t('Browse {{section}}', { section: browse.section });
 }
 
 function collapsedKey(key: string): string {
