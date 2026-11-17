@@ -1,6 +1,6 @@
 import { useApp } from '../lib/context';
 import { t } from '../lib/i18n';
-import type { ListRoute } from '../lib/router';
+import type { SectionRoute } from '../lib/router';
 import { ProfileView } from '../features/profile/profile-view';
 import { Pane } from '../shell/pane';
 
@@ -9,7 +9,7 @@ import { Pane } from '../shell/pane';
  * names none (the sidebar's Profile), at the route's tab. One's own page has Edit profile and the
  * friend requests; acting as another profile and signing out are in the profile menu and Settings.
  */
-export function Profile({ list }: { list: ListRoute }) {
+export function Profile({ list }: { list: SectionRoute<'profile'> }) {
     const { me } = useApp();
     const active = me.profiles.find((p) => p.id === me.active_profile_id) ?? me.profiles[0];
     const id = list.profile ?? active?.id;

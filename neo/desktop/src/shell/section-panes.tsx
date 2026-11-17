@@ -4,7 +4,7 @@
  */
 import type { ReactNode } from 'react';
 
-import type { ListRoute, Section } from '../lib/router';
+import type { ListRoute, Section, SectionRoute } from '../lib/router';
 import { ConnectionsPage } from '../features/connections/connections-page';
 import { Discussions } from '../features/discussions/discussion-list';
 import { EventsBrowse } from '../features/events/event-list';
@@ -24,7 +24,8 @@ import { Messages } from '../screens/messages';
 import { Notifications } from '../screens/notifications';
 import { Profile } from '../screens/profile';
 
-const SECTION_PANES: Readonly<Record<Section, (list: ListRoute) => ReactNode>> = {
+/** Each pane is given its own section's route: it can read that section's fields and no other's. */
+const SECTION_PANES: { readonly [S in Section]: (list: SectionRoute<S>) => ReactNode } = {
     home: () => <Feed key="home" section="home" />,
     explore: () => <Feed key="explore" section="explore" />,
     notifications: () => <Notifications />,
@@ -59,5 +60,6 @@ const SECTION_PANES: Readonly<Record<Section, (list: ListRoute) => ReactNode>> =
 
 /** The list pane of the section a route is in. */
 export function ListPane({ list }: { list: ListRoute }) {
-    return SECTION_PANES[list.section](list);
+    // the route's section picks its own pane, which the compiler cannot follow across a union
+    return (SECTION_PANES[list.section] as (list: ListRoute) => ReactNode)(list);
 }

@@ -73,6 +73,7 @@ describe('a network its site signed out', () => {
         native.listSessions.mockResolvedValue(list);
         renderApp();
 
+        // pressed as soon as it is drawn: the app knows the session it shows by then
         fireEvent.click(await screen.findByRole('button', { name: 'Sign out of UNA Makers' }));
         await waitFor(() => expect(native.calls).toContain('sign out'));
         expect(await screen.findByRole('heading', { name: 'Sign in to your network' })).toBeTruthy();

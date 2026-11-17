@@ -1,7 +1,7 @@
 /** React bindings of the router (router.ts): the current route, navigation, scroll memory. */
 import { createContext, type ReactNode, type RefObject, useContext, useLayoutEffect, useMemo, useSyncExternalStore } from 'react';
 
-import { type DetailRoute, type FeedName, feedRoute, isPage, type ListFilter, type Route, RouteHistory, sameRoute, ScrollMemory, type SearchTab, searchRoute, type Section, sectionRoute } from './router';
+import { type DetailRoute, type FeedName, feedRoute, filterRoute, isPage, type ListFilter, type Route, RouteHistory, sameRoute, ScrollMemory, type SearchTab, searchRoute, type Section, sectionRoute } from './router';
 import type { Tab, TabsModel } from './tabs';
 
 type RouterValue = { history: RouteHistory; scroll: ScrollMemory; resetAll?: (route: Route) => void };
@@ -105,8 +105,7 @@ function makeNavigation(history: RouteHistory, scroll: ScrollMemory, resetAll?: 
         },
         showFeed: (feed) => history.push({ list: feedRoute(history.current.list.section, feed), detail: history.current.detail }),
         showFilter: (filter) => {
-            const { section } = history.current.list;
-            history.push({ list: filter ? { section, filter } : { section }, detail: history.current.detail });
+            history.push({ list: filterRoute(history.current.list.section, filter ?? undefined), detail: history.current.detail });
         },
         showSearch: (q, tab, replace) => {
             const route = { list: searchRoute(q, tab), detail: history.current.detail };

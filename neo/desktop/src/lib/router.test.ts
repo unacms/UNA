@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { categoryPage, connectionsPage, connectionsRoute, feedRoute, groupPage, groupRoute, isPage, listFeed, listPath, pageDetail, pageRoute, parseRoute, profilePage, profileRoute, type Route, RouteHistory, routeToPath, ScrollMemory, searchRoute, sectionRoute, SECTIONS, settingsRoute } from './router';
+import { categoryPage, connectionsPage, connectionsRoute, feedRoute, filterRoute, groupPage, groupRoute, isPage, listFeed, listPath, pageDetail, pageRoute, parseRoute, profilePage, profileRoute, type ListRoute, type Route, RouteHistory, routeToPath, ScrollMemory, searchRoute, sectionRoute, SECTIONS, settingsRoute } from './router';
 
 describe('search routes', () => {
     it('keep the words and the tab in the path, and read it back', () => {
@@ -307,6 +307,39 @@ describe('route paths', () => {
 
     it('takes paths without the leading or trailing slash', () => {
         expect(parseRoute('home/post/3/')).toEqual(post('3'));
+    });
+});
+
+describe('a list route has its own section\'s fields only', () => {
+    it('refuses a field of another section, a feed of another section and a filter where there is none', () => {
+        const ok: ListRoute[] = [{ section: 'groups', group: '67', groupTab: 'members' }, { section: 'home', feed: 'hot' }, { section: 'tasks', taskContext: '5', feed: 'completed' }, { section: 'notifications', filter: 'unread' }];
+        expect(ok).toHaveLength(4);
+        // @ts-expect-error Home has no group
+        const group: ListRoute = { section: 'home', group: '67' };
+        // @ts-expect-error Upcoming is a feed of Events
+        const feed: ListRoute = { section: 'home', feed: 'upcoming' };
+        // @ts-expect-error only Notifications has a filter
+        const filter: ListRoute = { section: 'messages', filter: 'unread' };
+        // @ts-expect-error Search has no category
+        const category: ListRoute = { section: 'search', q: 'lily', category: '3' };
+        expect([group, feed, filter, category]).toHaveLength(4);
+    });
+
+    it('can be asked for any field', () => {
+        const list: ListRoute = sectionRoute('home').list;
+        expect(list.group).toBeUndefined();
+        expect(list.taskContext).toBeUndefined();
+    });
+
+    it('filters only the sections that have the filter', () => {
+        expect(filterRoute('notifications', 'unread')).toEqual({ section: 'notifications', filter: 'unread' });
+        expect(filterRoute('notifications')).toEqual({ section: 'notifications' });
+        expect(filterRoute('messages', 'unread')).toEqual({ section: 'messages' });
+    });
+
+    it('leaves out a feed its section does not have', () => {
+        expect(feedRoute('home', 'upcoming')).toEqual({ section: 'home' });
+        expect(feedRoute('events', 'past')).toEqual({ section: 'events', feed: 'past' });
     });
 });
 
