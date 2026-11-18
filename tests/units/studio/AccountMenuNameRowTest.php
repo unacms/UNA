@@ -52,6 +52,6 @@ class AccountMenuNameRowTest extends BxDolTestCase
         $sJs = self::read('inc/js/jquery.dolPopup.js');
         $this->assertStringContainsString("if (\$el.hasClass('bx-popup-menu') && \$el.closest('.bx-std').length)\n                \$el.removeClass('bx-popup-responsive');", $sJs, 'Not a full screen sheet (media-phone.css) in Studio.');
 
-        $this->assertMatchesRegularExpression('/\.bx-popup-applied\.bx-popup-menu \.bx-popup-close-wrapper \{\n    display: none !important;\n\}/', self::read('studio/template/css/common.less'), 'A menu closes by a press outside or Escape.');
+        $this->assertMatchesRegularExpression('/\.bx-popup-applied\.bx-popup-menu \.bx-popup-close-wrapper \{\n    display: none;\n\}/', self::read('studio/template/css/common.less'), 'A menu closes by a press outside or Escape.');
     }
 }
