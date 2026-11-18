@@ -112,4 +112,21 @@ class DesignRadiusScaleTest extends BxDolTestCase
 
         $this->assertStringContainsString('UNA-Migration-Min-System-Version:', $sMigration);
     }
+
+    /**
+     * A plain stylesheet that redefines a Tailwind radius class with a fixed value wins over the scale on every page that loads it
+     * (uploaders.css did, for .rounded-lg: the Pages builder's header button lost its corner size).
+     */
+    public function testNoStylesheetRedefinesARadiusUtility(): void
+    {
+        $aFiles = array_merge(glob(__DIR__ . '/../../../template/css/*.css'), glob(__DIR__ . '/../../../studio/template/css/*.css'));
+        $this->assertNotEmpty($aFiles);
+
+        foreach ($aFiles as $sFile) {
+            if (basename($sFile) == 'tailwind.css')
+                continue;
+
+            $this->assertDoesNotMatchRegularExpression('/(^|\n|\})\s*\.rounded(-[a-z0-9]+)?\s*\{/', file_get_contents($sFile), basename($sFile) . ' redefines a rounded-* class.');
+        }
+    }
 }

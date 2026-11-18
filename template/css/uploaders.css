@@ -117,9 +117,6 @@
 .border-dashed {
     border-style: dashed;
 }
-.rounded-lg {
-    border-radius: .5rem;
-}
 
 /* crop uploader */
 
