@@ -18,6 +18,7 @@ const SESSION_KEY = 'prefs';
 export type PersistedPrefs = {
     feedType: string | null;
     panelSizes: Record<string, number[]>;
+    sidebarNarrow: boolean;
 };
 
 export type SessionPrefs = {
@@ -39,6 +40,8 @@ const PERSISTED_DEFAULTS: PersistedPrefs = {
     feedType: null,
     /** Resizable panel sizes: { [`${panelGroupId}-${breakpoint}`]: sizes[] }. */
     panelSizes: {},
+    /** The Application layout's sidebar on wide screens: icons only (app/ui/molecules/sidebar/app-sidebar). */
+    sidebarNarrow: false,
 };
 
 const SESSION_DEFAULTS: SessionPrefs = {

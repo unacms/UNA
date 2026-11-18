@@ -24,6 +24,8 @@ export const settingsMenus = {
             tabbar: 'sys_tabbar',
             // UNA's member toolbar: guests' header tools (Search, Log In, Sign Up) show while it has them for the apps.
             toolbar: 'sys_toolbar_member',
+            // The Application layout's sidebar (web): each item is a submenu, listed one under another.
+            panel: 'sys_site_panel',
         },
         // Most tabs after Home in a navbar built from `objects.site`; 0: as many as fit. The tabs that don't fit go
         // under More, as on UNA's site; the site menu's "Persistent items" (Studio) never do.

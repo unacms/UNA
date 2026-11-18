@@ -29,6 +29,7 @@ import { SectionIcon, useSectionIcon } from 'app/ui/molecules/section-icon';
 import { useIsTabSlideCopy } from 'app/context/tab-route-override';
 import MenuTop from 'app/components/nav/menu-top';
 import { resolveHeaderLayout } from 'app/lib/header-layout';
+import { AppSidebarOpenButton } from 'app/ui/molecules/sidebar/app-sidebar';
 import { isPageCoverShown, isPageCoverHiddenOn } from 'app/lib/page-cover';
 
 const DEFAULT_CONTENT_PINNED_FIXED =
@@ -531,7 +532,7 @@ export const PageHeaderBody = memo(({
             {/* Desktop: the logo at 40px as in UNA, 2px inside the link (p-0.5), so its 40px mark sits in a 44px
                 square at the header's px-4 inset, centred over the 44px icons below it (a section's icon circle,
                 the page title's icon) and as tall as the header's buttons. */}
-            {(isWeb || logoSize === 'desktop') && <View className="hidden lg:flex">
+            {(isWeb || logoSize === 'desktop') && <View className="hidden lg:flex neo-header-logo">
                 <Link href="/home" alt={t('Home')} className="flex min-h-11 min-w-11 items-center justify-center p-0.5">
                     {appStatic('logo', { mode: 'full', height: 40 })}
                 </Link>
@@ -597,6 +598,8 @@ export const PageHeaderBody = memo(({
         <>
                 <View className={' ' + appSetting('layout', 'header', 'content_left')}>
                     <Row className='min-w-0 shrink items-center gap-3'>
+                        {/* The Application layout's sidebar as a drawer (below `xl`); shown only inside its shell. */}
+                        {isWeb && <AppSidebarOpenButton />}
                         {canShowBackButton && (
                             <BackButtonElement />
                         )}
