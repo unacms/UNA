@@ -67,9 +67,9 @@ class ArtificerMenuRowsTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('.bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"])', $sPopup, 'One rule styles every vertical menu in a popup.');
         $this->assertStringContainsString(':not(.bx-menu-floating-blocks-wide)', $sPopup, 'The account panel pads its own rows, so links there get no second padding.');
         $this->assertMatchesRegularExpression('/min-height: 2\.75rem;/', $sPopup, 'Popup rows are 44px.');
-        $this->assertMatchesRegularExpression('/border-radius: 0\.75rem;/', $sPopup, 'Popup rows have 12px corners, as NEO\'s regular menu items.');
+        $this->assertMatchesRegularExpression('/border-radius: var\(--bx-radius-xl\);/', $sPopup, 'Popup rows have 12px corners, as NEO\'s regular menu items.');
         $this->assertMatchesRegularExpression('/min-height: 2\.75rem;[^}]*padding-inline-start: 1rem;\s*padding-inline-end: 1rem;/', $sPopup, 'A label is 16px from either side of its row.');
-        $this->assertMatchesRegularExpression('/\.bx-artificer \.bx-popup-menu \.bx-popup-border \{\s*border-radius: 1\.25rem;/', $sCss, 'Menu popups have 20px corners, concentric with the rows\' 12px ones in the 8px inset.');
+        $this->assertMatchesRegularExpression('/\.bx-artificer \.bx-popup-menu \.bx-popup-border \{\s*border-radius: calc\(1\.25rem \* var\(--bx-radius-scale\)\);/', $sCss, 'Menu popups have 20px corners, concentric with the rows\' 12px ones in the 8px inset.');
         $this->assertMatchesRegularExpression('/\.bx-popup \.bx-menu-highlight-list::before \{[^}]*\brounded-xl\b/', $sCss, 'The sliding highlight has the rows\' corners.');
 
         $sList = '\.bx-artificer \.bx-popup ul:is\(\.bx-menu-ver, \.bx-menu-custom-ver, \[class\*="bx-menu-object-"\]\):not\(\.bx-menu-hor\):not\(\.bx-menu-custom-hor\):not\(\.bx-menu-floating-blocks-wide\)';
@@ -164,7 +164,7 @@ class ArtificerMenuRowsTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString('bg-gray-600', $sHtml);
 
         //--- NEO's header menu: 320px, 8px under the button, the menu popups' 20px corners; More's rows.
-        $this->assertMatchesRegularExpression('/#bx-sidebar-site \.bx-sidebar-cnt \{\s*@apply absolute top-\[3\.875rem\] ltr:right-4 rtl:left-4 w-80 [^;]*rounded-\[1\.25rem\]/', $sCss);
+        $this->assertMatchesRegularExpression('/#bx-sidebar-site \.bx-sidebar-cnt \{\s*@apply absolute top-\[3\.875rem\] ltr:right-4 rtl:left-4 w-80 [^;]*rounded-\[calc\(1\.25rem_\*_var\(--bx-radius-scale\)\)\]/', $sCss);
         $this->assertMatchesRegularExpression('/#bx-sidebar-site \.bx-sidebar-item > a,\s*#bx-sidebar-site \.bx-sidebar-dropdown-content > li > a \{\s*@apply flex items-center min-h-11 py-0 ps-3 pe-3 rounded-xl border-0 text-sm leading-5 font-medium/', $sCss);
         $this->assertStringContainsString('@apply bg-blue-200/60 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 ring-0;', $sCss);
         $this->assertMatchesRegularExpression('/#bx-sidebar-site \.bx-si-icon \{\s*@apply flex items-center justify-center w-6 h-6/', $sCss, '24px icons without a circle.');

@@ -31,6 +31,21 @@ module.exports = {
   ],
   darkMode: 'class', // false or 'media' or 'class'
   theme: {
+    // Corner radii: Tailwind's own steps, each a variable from template/css/tailwind.css (--bx-radius-*), which is the
+    // step's default size times the site's scale (Studio > Designer > Settings > Corners: none, small, large; and the
+    // smooth corners' multiplier). So rounded-lg is 8px, rounded-2xl 16px and rounded-3xl 24px by default and all of
+    // them follow the setting. rounded-full is not on the scale: a pill or a circle stays one.
+    borderRadius: {
+        'none': '0px',
+        'sm': 'var(--bx-radius-sm)',
+        DEFAULT: 'var(--bx-radius)',
+        'md': 'var(--bx-radius-md)',
+        'lg': 'var(--bx-radius-lg)',
+        'xl': 'var(--bx-radius-xl)',
+        '2xl': 'var(--bx-radius-2xl)',
+        '3xl': 'var(--bx-radius-3xl)',
+        'full': '9999px',
+    },
     fontFamily: {
         'inter': ['ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"', '"Noto Color Emoji"'],
     },
@@ -159,6 +174,8 @@ module.exports = {
     aspectRatio: true,
   },
   plugins: [
+    // A pill or a circle keeps round corners where the page's corners are smooth (corner-shape, tailwind.css).
+    function ({ addUtilities }) { addUtilities({ '.rounded-full': { 'corner-shape': 'round' } }); },
     require('@tailwindcss/typography'),
     require('@tailwindcss/aspect-ratio'),
     require('@tailwindcss/container-queries'),

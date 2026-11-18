@@ -11,7 +11,7 @@ div.bx-std-menu-top-wrp {
 div.bx-std-menu-top-gap {
     margin: 0.75rem 0.75rem 0;
     padding: 1rem;
-    border-radius: 1.5rem; /* 24px = the tiles' 8px corners + the 16px padding, so the bar's corners run parallel with theirs (and with the 16px corners of their 8px hover halo, 8px in); the blocks' corners too */
+    border-radius: var(--bx-radius-3xl); /* 24px = the tiles' 8px corners + the 16px padding, so the bar's corners run parallel with theirs (and with the 16px corners of their 8px hover halo, 8px in); the blocks' corners too */
     backdrop-filter: blur(16px);
 }
 div.bx-std-menu-top-wrp .bx-std-menu-top.bx-std-menu-top-center:first-child {
@@ -143,7 +143,7 @@ div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item.bx-menu-bc-page .bx-m
     max-width: none; /* Tailwind's base caps images at their box */
     height: calc(100% + 2px);
     margin: -1px;
-    border-radius: calc(0.5rem + 1px);
+    border-radius: calc(var(--bx-radius-lg) + 1px);
     object-fit: cover;
 }
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon + .bx-mi-title {
@@ -201,7 +201,7 @@ div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-cle
     justify-content: center;
     width: 2.25rem;
     height: 2.25rem;
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
     color: rgb(113 113 122);
     cursor: pointer;
     transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
@@ -329,7 +329,7 @@ div.bx-std-menu-top .bx-menu-top-center li .sys-icon {
     height: 2.25rem;
 
     margin: 0;
-    border-radius: 0.5rem; /* matches rounded-lg on the icon wrapper, whose ring/shadow must not be clipped */
+    border-radius: var(--bx-radius-lg); /* matches rounded-lg on the icon wrapper, whose ring/shadow must not be clipped */
 }
 
 /* The dock's art: 1px beyond its 36px tile on every side (9px corners), as large as a header button with its outer hairline; the tile's
@@ -343,7 +343,7 @@ div.bx-std-menu-top .bx-menu-top-center li svg.bx-std-app-icon {
     max-width: none; /* Tailwind's base caps images at their box */
     height: calc(2.25rem + 2px);
     margin: -1px;
-    border-radius: calc(0.5rem + 1px);
+    border-radius: calc(var(--bx-radius-lg) + 1px);
 }
 /* The tile keeps its 36px: its own block formatting context holds the art's -1px margins instead of letting them collapse through it. */
 div.bx-std-menu-top .bx-menu-top-center li .bx-icon-tile {
@@ -384,7 +384,7 @@ div.bx-std-menu-top ul li.bx-menu-tab-search > div.bx-menu-tab-item {
     height: 2.25rem;
     right: 0;
 
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
 }
 .bx-dir-rtl div.bx-std-menu-top ul li.bx-menu-tab-search > div.bx-menu-tab-item {
     left: 0;
@@ -437,7 +437,7 @@ div.bx-std-menu-top .bx-menu-toolbar li {
     height: 2.25rem;
     min-width: 2.25rem;
     
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
 
     line-height: 2.25rem;
 }
@@ -454,7 +454,7 @@ div.bx-std-menu-top .bx-menu-toolbar li:not(.bx-menu-tab-search) button {
     width: 100%;
     height: 100%;
 
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
 }
 
 div.bx-std-menu-top .bx-menu-toolbar li a:hover,
@@ -494,7 +494,7 @@ body > .bx-popup-wrapper.bx-std-mod-popup-settings-wrapper,
 .bx-std-mod-popup-settings-wrapper.bx-popup-applied:not(.bx-popup-chain) .bx-popup {
     margin: 0;
     border-width: 0;
-    border-radius: 0.75rem; /* same as the dropdown menus */
+    border-radius: var(--bx-radius-2xl); /* same as the dropdown menus */
 }
 #bx-std-pcap-menu-popup-actions .bx-popup-content {
     padding: 1.0rem;

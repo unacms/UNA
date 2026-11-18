@@ -952,12 +952,20 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
 
     public function getPopupAlert()
     {
-        return $this->transBox('bx-popup-alert', $this->_oTemplate->parseHtmlByName('popup_trans_alert_cnt.html', array()), true);
+        return $this->transBox('bx-popup-alert', [
+            'content' => $this->_oTemplate->parseHtmlByName('popup_trans_alert_cnt.html', []),
+            'wrapper_role' => 'alertdialog',
+            'wrapper_attrs' => 'aria-labelledby="bx-popup-alert-text"',
+        ], true);
     }
 
     public function getPopupConfirm()
     {
-        return $this->transBox('bx-popup-confirm', $this->_oTemplate->parseHtmlByName('popup_trans_confirm_cnt.html', array()), true);
+        return $this->transBox('bx-popup-confirm', [
+            'content' => $this->_oTemplate->parseHtmlByName('popup_trans_confirm_cnt.html', []),
+            'wrapper_role' => 'alertdialog',
+            'wrapper_attrs' => 'aria-labelledby="bx-popup-confirm-text"',
+        ], true);
     }
 
     public function getPopupPrompt()
@@ -975,9 +983,12 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         );
 
         $oForm = new BxTemplFormView(array(), $this->_oTemplate);
-        return $this->transBox('bx-popup-prompt', $this->_oTemplate->parseHtmlByName('popup_trans_prompt_cnt.html', array(
-            'input' => $oForm->genRow($aInputText)
-        )), true);
+        return $this->transBox('bx-popup-prompt', [
+            'content' => $this->_oTemplate->parseHtmlByName('popup_trans_prompt_cnt.html', [
+                'input' => $oForm->genRow($aInputText)
+            ]),
+            'wrapper_attrs' => 'aria-labelledby="bx-popup-prompt-text"',
+        ], true);
     }
 
     public function getPopupToast()
@@ -1247,6 +1258,36 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
 
         $sCode = $oIconset->getCodeHead();
         return $sCode !== false ? $sCode : '';
+    }
+
+    /**
+     * The site's corner radii (Studio > Designer > Settings > Corners) for the styles: the size as a factor of the
+     * design's own radii, and smooth corners with their multiplier (design_radius.html, template/css/tailwind.css).
+     * Nothing is printed for the design's own corners.
+     * A smooth corner (corner-shape: squircle) looks tighter than a round one of the same radius, so where the browser
+     * draws it the radii are multiplied to look the same size. A pill or a circle stays round.
+     */
+    protected function getInjHeadDesignRadius()
+    {
+        $aSizes = ['none' => '0', 'small' => '0.75', 'large' => '1'];
+        $sSize = (string)getParam('sys_design_radius');
+        $sSize = isset($aSizes[$sSize]) ? $sSize : 'large';
+
+        $bSmooth = getParam('sys_design_radius_smooth') == 'on' && $sSize != 'none';
+        if($sSize == 'large' && !$bSmooth) {
+            return '';
+        }
+
+        // the multiplier is a number between 1 and 3, whatever was saved
+        $fFactor = min(2, max(1, (float)getParam('sys_design_radius_smooth_factor')));
+
+        return $this->_oTemplate->parseHtmlByName('design_radius.html', [
+            'size' => $aSizes[$sSize],
+            'bx_if:smooth' => [
+                'condition' => $bSmooth,
+                'content' => ['factor' => rtrim(rtrim(number_format($fFactor, 2, '.', ''), '0'), '.')],
+            ],
+        ]);
     }
 
     protected function getInjHeadLiveUpdates() 

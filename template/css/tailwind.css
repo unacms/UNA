@@ -3,6 +3,37 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Corner radii. One scale for the site and Studio: every regular radius is its default size times --bx-radius-scale.
+ *   --bx-radius-size    Studio > Designer > Settings > Corners: 1 large (default), 0.75 small, 0 none
+ *   --bx-radius-smooth  1, or the smooth corners' multiplier where the browser draws them (design_radius.html)
+ * Tailwind's rounded-* classes read these (tailwind.config.js), and plain CSS uses the variables themselves:
+ * var(--bx-radius-lg) for 8px, var(--bx-radius-2xl) for 16px, var(--bx-radius-3xl) for 24px. That is the nesting: a
+ * surface 24px, what is 8px inside it 16px, what is 16px inside it 8px. A pill or a circle (rounded-full, 9999px, 50%)
+ * is not on the scale.
+ *   --bx-radius-max     the largest radius a surface gets, 34px: half of a 68px bar (Studio's header), the most such a
+ *                       bar can draw. With a multiplier, tall blocks stop there too, so bars and blocks match.
+ *   --bx-radius-max-row the same for the 16px step, 26px: half of a 52px row (Studio's sidebar items), so a dropdown or a
+ *                       card with that step has the corners of the rows.
+ */
+@layer base {
+    :root {
+        --bx-radius-size: 1;
+        --bx-radius-smooth: 1;
+        --bx-radius-scale: calc(var(--bx-radius-size) * var(--bx-radius-smooth));
+        --bx-radius-max: 2.125rem;
+        --bx-radius-max-row: 1.625rem;
+
+        --bx-radius-sm: calc(0.125rem * var(--bx-radius-scale));
+        --bx-radius: calc(0.25rem * var(--bx-radius-scale));
+        --bx-radius-md: calc(0.375rem * var(--bx-radius-scale));
+        --bx-radius-lg: calc(0.5rem * var(--bx-radius-scale));
+        --bx-radius-xl: calc(0.75rem * var(--bx-radius-scale));
+        --bx-radius-2xl: min(calc(1rem * var(--bx-radius-scale)), var(--bx-radius-max-row));
+        --bx-radius-3xl: min(calc(1.5rem * var(--bx-radius-scale)), var(--bx-radius-max));
+    }
+}
+
 /* The fade a scrolling popup menu gives its top and bottom edges (".bx-popup-menu .bx-popup-content" below; NEO's
    .neo-scroll-fade does the same): the fade at each edge grows in over the first or last 24px of scrolling. */
 @property --bx-scroll-fade-top {
@@ -809,7 +840,7 @@
     /* Blocks and cards have the menu popups' 20px corners: a row or tile with 12px corners 8px inside them runs parallel (NEO's rounded-block). */
     .bx-def-border-radius-block,
     .bx-def-box-round-corners {
-        border-radius: 1.25rem;
+        border-radius: calc(1.25rem * var(--bx-radius-scale));
     }
     .bx-popup-border {
         @apply rounded-2xl;
@@ -1009,7 +1040,7 @@
         @apply min-h-[3.25rem] px-5 text-base rounded-xl;
     }
     .bx-btn.bx-btn-xlarge {
-        @apply min-h-[3.75rem] px-6 text-lg rounded-[14px];
+        @apply min-h-[3.75rem] px-6 text-lg rounded-[calc(14px_*_var(--bx-radius-scale))];
     }
 
     .bx-btn.bx-btn-mini i, 
@@ -1038,7 +1069,7 @@
         @apply text-base;
     }
     body:not(.bx-std) .bx-btn.bx-btn-small {
-        @apply rounded-[10px];
+        @apply rounded-[calc(10px_*_var(--bx-radius-scale))];
     }
     body:not(.bx-std) .bx-btn.bx-btn-large {
         @apply px-6;
@@ -1068,7 +1099,7 @@
         @apply after:content-[''] after:absolute after:-inset-y-2 after:-inset-x-1;
     }
     body:not(.bx-std) .bx-menu-btn-size-small .bx-btn {
-        @apply min-h-9 px-3 py-1 text-sm rounded-[10px];
+        @apply min-h-9 px-3 py-1 text-sm rounded-[calc(10px_*_var(--bx-radius-scale))];
     }
     body:not(.bx-std) .bx-menu-btn-size-regular .bx-btn {
         @apply min-h-11 px-4 py-2 text-base rounded-xl;
@@ -1486,7 +1517,7 @@
     }
     /* Menu popups: their rows' 12px corners plus the 8px around them, so the corners are concentric (NEO's rounded-popover). */
     .bx-artificer .bx-popup-menu .bx-popup-border {
-        border-radius: 1.25rem;
+        border-radius: calc(1.25rem * var(--bx-radius-scale));
     }
 
     .bx-artificer .bx-popup-width {
@@ -1588,7 +1619,7 @@
        is on the icon there: the "more" item is itself such an item and holds the popup), height and side padding with the links'
        paddings in Artificer's mod_profile/css/main.css. */
     body:not(.bx-std) .bx-stl-mib:is(.bx-stl-mil, .bx-stl-mil-sm, .bx-stl-mil-wo-gaps, .bx-stl-mil-wo-gaps-sm):not(.bx-popup *) {
-        @apply border-0 rounded-[10px] font-semibold;
+        @apply border-0 rounded-[calc(10px_*_var(--bx-radius-scale))] font-semibold;
         @apply text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100;
     }
     body:not(.bx-std) .bx-stl-mib:is(.bx-stl-mil, .bx-stl-mil-sm, .bx-stl-mil-wo-gaps, .bx-stl-mil-wo-gaps-sm):not(.bx-popup *, .bx-menu-btn-style-glass, .bx-menu-btn-style-plain) {
@@ -1913,7 +1944,7 @@
     .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > a,
     .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > span > a,
     .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .sys-action-element-holder > a {
-        border-radius: 0.75rem;
+        border-radius: var(--bx-radius-xl);
         font-size: 1rem;
         line-height: 1.5rem;
     }
@@ -2008,7 +2039,7 @@
        colours. A row with sub-pages unfolds them in place (bx_sidebar_dropdown_toggle); Log in and Sign up are buttons at the top.
        The opening motion is in Artificer's menu-sidebar.css. */
     #bx-sidebar-site .bx-sidebar-cnt {
-        @apply absolute top-[3.875rem] ltr:right-4 rtl:left-4 w-80 max-w-[calc(100%-2rem)] overflow-hidden rounded-[1.25rem] bg-white dark:bg-gray-800 smooth-shadow-popover;
+        @apply absolute top-[3.875rem] ltr:right-4 rtl:left-4 w-80 max-w-[calc(100%-2rem)] overflow-hidden rounded-[calc(1.25rem_*_var(--bx-radius-scale))] bg-white dark:bg-gray-800 smooth-shadow-popover;
         max-height: calc(100vh - 4.875rem);
         max-height: calc(100dvh - 4.875rem);
     }
@@ -2068,7 +2099,7 @@
     /* Side menus (profile stats, categories, tags): the same rows, on the block's own padding. */
     .bx-artificer ul.bx-menu-vertical-more-less > li,
     .bx-artificer ul.bx-menu-vertical-more-less > li > div {
-        border-radius: 0.5rem;
+        border-radius: var(--bx-radius-lg);
         border-width: 0;
     }
     .bx-artificer ul.bx-menu-vertical-more-less > li > div > a {
@@ -2260,11 +2291,11 @@
         @apply bg-gray-200 dark:bg-black;
     }
 
-    /* Active dock item: the sidebar's active item round its tile, as a ring: 0.5rem of black/10 (white/10 in dark), one step over the hover
-       halo's black/5, straight off the tile like the buttons' halo (the tile's own outer hairline is its inner edge), so neighbours 18px apart
-       keep 2px between their rings. The app is named beside the current-app tile in the breadcrumb too, so the ring is not its only cue. */
-    .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon {
-        @apply ring-[0.5rem] ring-black/10 dark:ring-white/10;
+    /* Active dock item: the sidebar's active item round its tile, the hover halo's layer one step darker: black/10 (white/10 in dark), 0.5rem
+       round the tile, so neighbours 18px apart keep 2px between their layers. The app is named beside the current-app tile in the
+       breadcrumb too, so the layer is not its only cue. */
+    .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon::after {
+        @apply bg-black/10 dark:bg-white/10;
     }
     /* The divider follows the dock items it separates: both are hidden below md. */
     .bx-std .bx-menu-top-center .bx-menu-item-divider {
@@ -2300,21 +2331,43 @@
         @apply transition duration-300 active:duration-100 active:scale-95;
         @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5),0_0_0_1px_rgb(0_0_0/0.1)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
     }
-    /* The header's own controls keep a hover halo, drawn on the element under the ::after hairlines: a 0.5rem (8px) black/10 (white/10 in dark) ring
-       straight off the plate, as wide as the sidebar items' background round their tiles (16px outer corners), no offset gap (an offset ring
-       reads as a bright halo in the light scheme). The plate's outer hairline is the halo's inner edge, a 1px line that sets the two apart.
-       In rem like the bar's padding and corners, so the tile (0.5rem corners), the halo (1rem) and the bar (1.5rem) stay concentric at any text size.
-       Its black/5 (white/5) is the sidebar items' hover background, and the active dock item takes their active black/10 (white/10). */
-    .bx-std .bx-menu-toolbar .bx-menu-tab-item,
-    .bx-std .bx-std-search-trigger,
-    .bx-std .bx-std-header-btn {
-        @apply hover:ring-[0.5rem] hover:ring-black/5 dark:hover:ring-white/5;
+    /* The header's hover halo is a background layer behind the tile, like the sidebar items' and the subtabs' background: 0.5rem (8px) round
+       the tile with their corners (--bx-radius-2xl), black/5 (white/5 in dark), so tile, halo and bar stay concentric at any corner size and
+       text size. A ring would not: its corner is the tile's plus its own width. The plate's outer hairline sets the tile apart from it.
+       The layer takes no presses; the 44px hit areas are separate. It sits behind its tile:
+       - the home button's on its link, which comes before the plate;
+       - a toolbar button's and a dock tile's at z-index -1 of the bar section (.bx-std-menu-top, a stacking context of its own);
+       - the current-app tile's at z-index -1 of the tile, behind its art. */
+    .bx-std a:has(> .bx-std-header-btn),
+    .bx-std .bx-menu-top-center li .bx-mi-icon {
+        @apply relative;
     }
-    /* Dock and current-app tiles: the same halo, straight off the tile: its art carries the buttons' two hairlines (below), so the outer one is the
-       halo's inner edge as on the buttons. The selected dock item keeps its active ring and a keyboard-focused one its focus ring
+    .bx-std a:has(> .bx-std-header-btn)::before,
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item::before,
+    .bx-std .bx-menu-top-center li .bx-mi-icon::after,
+    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile::before {
+        content: '';
+        position: absolute;
+        inset: -0.5rem;
+        border-radius: var(--bx-radius-2xl);
+        pointer-events: none;
+        @apply transition-colors duration-300;
+    }
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item::before,
+    .bx-std .bx-menu-top-center li .bx-mi-icon::after,
+    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile::before {
+        z-index: -1;
+    }
+    /* The selected dock item keeps its active layer and a keyboard-focused one its focus ring
        (left out with :where, so the halo gains no specificity over either). */
-    .bx-std .bx-menu-top-center li:where(:not(.bx-menu-tab-active)) a:where(:not(:focus-visible)) .bx-mi-icon,
-    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile {
+    .bx-std a:has(> .bx-std-header-btn):hover::before,
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item:hover::before,
+    .bx-std .bx-menu-top-center li:where(:not(.bx-menu-tab-active)) a:where(:not(:focus-visible)) .bx-mi-icon:hover::after,
+    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile:hover::before {
+        @apply bg-black/5 dark:bg-white/5;
+    }
+    /* The launcher's search button (phones) has both pseudo-elements taken: it keeps a ring. */
+    .bx-std .bx-std-search-trigger {
         @apply hover:ring-[0.5rem] hover:ring-black/5 dark:hover:ring-white/5;
     }
     .bx-std .bx-menu-toolbar .bx-menu-tab-item a,
@@ -2346,14 +2399,14 @@
         @apply text-gray-800 dark:text-gray-100;
     }
 
+    /* One weight (500) in every state: a heavier name on hover or for the current item changes the text's width and makes it jump. */
     .bx-std-pmen-item {
         @apply hover:bg-black/5 dark:hover:bg-white/5;
-        @apply hover:font-medium;
+        @apply font-medium;
         @apply duration-300;
     }
     .bx-std-pmen-item.bx-menu-tab-active {
         @apply bg-black/10 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/10;
-        @apply font-semibold;
     }
     /* The item background (8px round the tile) plays the role of the header icons' hover halo, and the tile is set apart from it the same
        way: by its own outer hairline (the buttons' pair, below), in both schemes. */
@@ -2393,10 +2446,11 @@
     }
     /* The art itself runs 1px past the tile (menu_top.css, general.css), as far as a button's outer hairline reaches, and a 1px black/20 line
        over that outer pixel darkens the art's own edge: a darker shade of whatever colour the icon has there, so the edge is always darker than
-       the icon and never a gray that clashes with it, in both schemes. The tile buttons in the sidebar (plain glyphs) keep the buttons' hairlines. */
+       the icon and never a gray that clashes with it. In the dark scheme the line is white/15, as on the launcher's tiles: a darker edge leaves a dark icon without
+       an outline on the dark bar. The tile buttons in the sidebar (plain glyphs) keep the buttons' hairlines. */
     .bx-std .bx-std-menu-top .bx-icon-tile,
     .bx-std .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) {
-        @apply after:-inset-px after:rounded-[calc(0.5rem_+_1px)] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.2)];
+        @apply after:-inset-px after:rounded-[calc(var(--bx-radius-lg)_+_1px)] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.2)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.15)];
     }
 
     /* Tiles and buttons in the header (36px): a tight stack that stays inside the bar. The md stack above is sized for the 72px launcher tiles and lands mostly below the bar, where it reads as no shadow at all. */
@@ -2419,6 +2473,14 @@
         @apply text-black/80 dark:text-white/80;
         @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5),0_0_0_1px_rgb(0_0_0/0.1)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
     }
+    /* Dark scheme, the 36px buttons that sit beside app tiles (header, sidebar): the outer hairline is white/15, the line the tiles' art has on its
+       outer pixel. A black hairline does not show on the dark bar, so the buttons read 1px smaller than the tiles next to them. */
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item,
+    .bx-std .bx-std-search-trigger,
+    .bx-std .bx-std-header-btn,
+    .bx-std .bx-std-tile-btn {
+        @apply dark:after:shadow-[0_0_0_1px_rgb(255_255_255/0.15)];
+    }
     /* 24px glyph in the 36px tile, like the header buttons (the svg fills the 6px padding box, menu_side.html; font icons get the same size). */
     .bx-std .bx-std-tile-btn > .sys-icon {
         @apply flex items-center justify-center text-[24px] leading-6;
@@ -2435,7 +2497,7 @@
     }
     /* Popup menus: same item treatment as the page sidebar, with 20px icons. */
     .bx-std .bx-popup-content:has(> .bx-menu-verlit) {
-        @apply p-1;
+        @apply p-2;
     }
     .bx-std .bx-menu-verlit li {
         @apply mt-0.5 first:mt-0 rounded-lg duration-300;
@@ -2458,11 +2520,12 @@
     .bx-std .bx-menu-verlit li .sys-icon {
         @apply flex-none w-5 h-5 m-0;
     }
-    /* Dropdown menus are tighter than modals: 12px outer radius over 8px items with 4px padding. */
+    /* Dropdown menus are tighter than modals: 16px outer radius over 36px rows with an 8px radius, 8px padding around the rows and 2px between them. The popup has the corners of
+       the sidebar's rows (the 16px step). */
     .bx-std .bx-popup-menu .bx-popup-border {
-        @apply rounded-xl;
+        @apply rounded-2xl;
     }
-    /* Account menu: the signed-in name is a label and the theme row holds a segmented control; neither is a link. */
+    /* Account menu: the signed-in name links to the profile and the theme row holds a segmented control; neither is a link. */
     .bx-std .bx-menu-account {
         @apply min-w-48;
     }
@@ -2473,23 +2536,27 @@
         @apply flex items-center gap-3 h-9 px-2.5 text-sm whitespace-nowrap;
     }
     .bx-std .bx-menu-verlit li.bx-mv-label {
-        @apply mb-1 pb-1 rounded-none border-b border-black/10 dark:border-white/10;
+        @apply mb-1 pb-1 rounded-none border-b border-black/[0.06] dark:border-white/[0.06]; /* a faint divider: the popup is a small surface, and NEO's black/10 block lines read heavy on it */
     }
-    .bx-std .bx-menu-verlit li.bx-mv-label > div {
-        @apply font-semibold;
+    /* The name row links to the profile: the link, not the row with its divider, takes the hover. */
+    .bx-std .bx-menu-verlit li.bx-mv-label > a {
+        @apply font-semibold hover:bg-black/5 dark:hover:bg-white/5 active:bg-blue-500/10 dark:active:bg-blue-400/10 transition-colors duration-300;
+    }
+    .bx-std .bx-menu-verlit li.bx-mv-label .bx-mv-picture {
+        @apply w-6 h-6 -mx-0.5 rounded-full object-cover;
     }
     .bx-std .bx-menu-verlit li.bx-mv-theme {
-        @apply mt-1 pt-1 rounded-none border-t border-black/10 dark:border-white/10;
+        @apply mt-1 pt-1 rounded-none border-t border-black/[0.06] dark:border-white/[0.06];
     }
     .bx-std .bx-menu-verlit li.bx-mv-theme > div > span {
         @apply flex-auto;
     }
-    /* Segmented switcher: a pill of text tabs with the selected one raised on white; the theme toggle below is its icon-only sibling. */
+    /* Segmented switcher, 36px (32px tabs in a 2px frame), the height of the buttons and tiles beside it: a pill of text tabs with the selected one raised on white; the theme toggle below is its icon-only sibling. */
     .bx-std .bx-std-segmented {
         @apply inline-flex p-0.5 rounded-full bg-black/5 dark:bg-white/5; /* translucent track, like the hero plates */
     }
     .bx-std .bx-std-segment {
-        @apply flex items-center justify-center h-7 px-3 rounded-full text-sm font-medium text-gray-600 dark:text-gray-300 transition-colors duration-150; /* 4.5:1 on the gray track */
+        @apply flex items-center justify-center h-8 px-3 rounded-full text-sm font-medium text-gray-600 dark:text-gray-300 transition-colors duration-150; /* 4.5:1 on the gray track */
         @apply hover:text-gray-900 dark:hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500;
     }
     .bx-std .bx-std-segment[aria-selected="true"] {
@@ -2989,10 +3056,10 @@
     /* Studio: Forms: collapsible sections (Settings accordion) follow the sidebar items: a 48px title row (studio/template/form_field_section_title.html) on a flat 5% black / 5% white plate with the sidebar's 14px radius, no border, ring, shadow or gradient; the whole section keeps the plate when expanded, and the title darkens a step on hover. */
     .bx-std .bx-form-section.bx-form-section-header,
     .bx-std .bx-form-section.bx-form-section-header:not(.bx-form-collapsed) {
-        @apply border-0 rounded-[0.875rem] bg-black/5 dark:bg-white/5 shadow-none;
+        @apply border-0 rounded-[calc(0.875rem_*_var(--bx-radius-scale))] bg-black/5 dark:bg-white/5 shadow-none;
     }
     .bx-std .bx-form-section.bx-form-section-header .bx-form-section-title:hover {
-        @apply rounded-[0.875rem] bg-none bg-black/5 dark:bg-white/5;
+        @apply rounded-[calc(0.875rem_*_var(--bx-radius-scale))] bg-none bg-black/5 dark:bg-white/5;
     }
     .bx-std .bx-form-section.bx-form-section-header:not(.bx-form-collapsed) .bx-form-section-title:hover {
         @apply rounded-b-none;

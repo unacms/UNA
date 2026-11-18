@@ -679,8 +679,10 @@
         <string name="_adm_btn_settings_mix_publish"><![CDATA[Публиковать]]></string>
 	<string name="_adm_btn_store_search"><![CDATA[Поиск]]></string>
 	<string name="_adm_dbd_btn_update"><![CDATA[Обновить]]></string>
+	<string name="_adm_dbd_btn_ver_access_enable"><![CDATA[Включить автообновления]]></string>
 	<string name="_adm_dbd_txt_ver_installed"><![CDATA[Первая установка]]></string>
 	<string name="_adm_dbd_txt_ver_updated"><![CDATA[Последнее обновление]]></string>
+	<string name="_adm_dbd_txt_ver_access_on"><![CDATA[Автообновления доступны]]></string>
 	<string name="_adm_dbd_txt_ver_applied"><![CDATA[Установлена {0}]]></string>
 	<string name="_adm_dbd_txt_ver_latest_stable"><![CDATA[Последняя стабильная]]></string>
 	<string name="_adm_dbd_txt_ver_latest_beta"><![CDATA[Последняя бета]]></string>
@@ -843,6 +845,9 @@
 	<string name="_adm_dsg_inf_pwa_sw_enable"><![CDATA[Когда вы меняете стили или скрипты сайта, посетители получают новые при следующем открытии сайта.]]></string>
 	<string name="_adm_dsg_inf_pwa_sw_offline"><![CDATA[Показывается вместо ошибки браузера, когда нет связи: адрес на этом сайте, например page.php?i=about. Оставьте пустым, чтобы показывать страницу браузера.]]></string>
 	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Цвет заголовка окна приложения, а на телефонах — строки состояния. По умолчанию — цвет, заданный шаблоном.]]></string>
+	<string name="_adm_dsg_inf_settings_radius_smooth"><![CDATA[Рисует углы плавной кривой в браузерах, которые это поддерживают, например в Chrome. В остальных углы остаются круглыми.]]></string>
+	<string name="_adm_dsg_inf_settings_radius_smooth_factor"><![CDATA[Плавный угол выглядит меньше круглого того же радиуса. Там, где углы плавные, радиусы умножаются на это число, от 1 до 2.]]></string>
+	<string name="_adm_dsg_inf_settings_section_corners"><![CDATA[Насколько скруглены углы блоков, кнопок, полей и всплывающих окон на сайте и в Студии. Капсулы и круги сохраняют форму.]]></string>
 	<string name="_adm_dsg_inf_settings_section_forms"><![CDATA[Как формы подписывают однострочные текстовые поля на сайте и в приложениях. Отдельному виду формы можно задать свой стиль в разделе <a href="{0}">Формы</a>. Приложение без плавающих подписей показывает их над полями.]]></string>
 	<string name="_adm_dsg_inf_settings_section_header"><![CDATA[Ширина страниц, ширина шапки и место главного меню в ней для каждого макета страницы, отдельно для гостей и для участников. Им следуют сайт и приложения; шаблон может задать свои в своих настройках.]]></string>
 	<string name="_adm_dsg_inf_settings_section_layout"><![CDATA[Где вокруг содержимого страницы стоят шапка, меню и подвал. Страницы со своим макетом в разделе <a href="{0}">Страницы</a> сохраняют его, остальные используют макеты ниже.]]></string>
@@ -920,6 +925,10 @@
 	<string name="_adm_dsg_txt_settings_page_width_full"><![CDATA[Во всю ширину]]></string>
 	<string name="_adm_dsg_txt_settings_page_width_limited"><![CDATA[Ограничена]]></string>
 	<string name="_adm_dsg_txt_settings_page_width_px"><![CDATA[Ширина страницы в пикселях]]></string>
+	<string name="_adm_dsg_txt_settings_radius_large"><![CDATA[Большой]]></string>
+	<string name="_adm_dsg_txt_settings_radius_none"><![CDATA[Без скругления]]></string>
+	<string name="_adm_dsg_txt_settings_radius_small"><![CDATA[Маленький]]></string>
+	<string name="_adm_dsg_txt_settings_section_corners"><![CDATA[Углы]]></string>
 	<string name="_adm_dsg_txt_settings_section_forms"><![CDATA[Формы]]></string>
 	<string name="_adm_dsg_txt_settings_section_header"><![CDATA[Страница и шапка]]></string>
 	<string name="_adm_dsg_txt_settings_section_layout"><![CDATA[Макет страниц]]></string>
@@ -2150,6 +2159,9 @@
     <string name="_adm_stg_cpt_option_sys_session_auth"><![CDATA[Аутентификация через сессию]]></string>
     <string name="_adm_stg_cpt_option_sys_default_curl_timeout"><![CDATA[cURL - Таймаут по умолчанию]]></string>
     <string name="_adm_stg_cpt_option_sys_default_socket_timeout"><![CDATA[Таймаут чтения HTTP контекста (в секундах, -1 - неограниченно)]]></string>
+    <string name="_adm_stg_cpt_option_sys_design_radius"><![CDATA[Размер скругления]]></string>
+    <string name="_adm_stg_cpt_option_sys_design_radius_smooth"><![CDATA[Плавные углы]]></string>
+    <string name="_adm_stg_cpt_option_sys_design_radius_smooth_factor"><![CDATA[Множитель плавных углов]]></string>
     <string name="_adm_stg_cpt_option_sys_ssl_allow_untrusted"><![CDATA[cURL - доверять неподписанным сертификатам или неподтвержденным хостам]]></string>
     <string name="_adm_stg_cpt_option_sys_csp_frame_ancestors"><![CDATA[Значение заголовка 'Content-Security-Policy: frame-ancestors']]></string>
     <string name="_adm_stg_cpt_option_sys_x_frame_options"><![CDATA[Значение заголовка 'X-Frame-Options' (Off - отключить заголовок)]]></string>

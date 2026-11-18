@@ -554,11 +554,17 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_header_align_application_member', '_adm_stg_cpt_option_sys_header_align_application_member', 'start', 'select', 'start,center,end', '', '', 19),
 
 (@iCategoryId, 'sys_form_label_style', '_adm_stg_cpt_option_sys_form_label_style', 'regular', 'select', 'regular,adaptive', '', '', 20),
+-- Corners (Studio > Designer > Settings): the size of every regular corner radius of the site and Studio (large is the
+-- design's own, small is half of it, none is square), and smooth (superellipse) corners where the browser draws
+-- them, with the multiplier that makes them look the size of the round ones. See template/css/tailwind.css.
+(@iCategoryId, 'sys_design_radius', '_adm_stg_cpt_option_sys_design_radius', 'large', 'select', 'none,small,large', '', '', 21),
+(@iCategoryId, 'sys_design_radius_smooth', '_adm_stg_cpt_option_sys_design_radius_smooth', '', 'checkbox', '', '', '', 22),
+(@iCategoryId, 'sys_design_radius_smooth_factor', '_adm_stg_cpt_option_sys_design_radius_smooth_factor', '1.75', 'digit', '', '', '', 23),
 
-(@iCategoryId, 'sys_page_width_standard_visitor', '_adm_stg_cpt_option_sys_page_width_standard_visitor', '1280', 'text', '', '', '', 21),
-(@iCategoryId, 'sys_page_width_standard_member', '_adm_stg_cpt_option_sys_page_width_standard_member', '1280', 'text', '', '', '', 22),
-(@iCategoryId, 'sys_page_width_application_visitor', '_adm_stg_cpt_option_sys_page_width_application_visitor', '1280', 'text', '', '', '', 23),
-(@iCategoryId, 'sys_page_width_application_member', '_adm_stg_cpt_option_sys_page_width_application_member', '1280', 'text', '', '', '', 24);
+(@iCategoryId, 'sys_page_width_standard_visitor', '_adm_stg_cpt_option_sys_page_width_standard_visitor', '1280', 'text', '', '', '', 24),
+(@iCategoryId, 'sys_page_width_standard_member', '_adm_stg_cpt_option_sys_page_width_standard_member', '1280', 'text', '', '', '', 25),
+(@iCategoryId, 'sys_page_width_application_visitor', '_adm_stg_cpt_option_sys_page_width_application_visitor', '1280', 'text', '', '', '', 26),
+(@iCategoryId, 'sys_page_width_application_member', '_adm_stg_cpt_option_sys_page_width_application_member', '1280', 'text', '', '', '', 27);
 
 --
 -- CATEGORY: General (Site Settings)

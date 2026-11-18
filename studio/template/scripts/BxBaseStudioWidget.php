@@ -245,6 +245,7 @@ class BxBaseStudioWidget extends BxDolStudioWidget
             return '';
         
         $oTemplate = BxDolStudioTemplate::getInstance();
+        $sControls = $this->getBlockCaptionControls($aBlock);
 
         $aTmplActions = array();
         if(!empty($aBlock['actions']) && is_array($aBlock['actions']))
@@ -311,7 +312,22 @@ class BxBaseStudioWidget extends BxDolStudioWidget
                     'bx_repeat:actions' => $aTmplActions
                 ]
             ],
+            'bx_if:show_controls' => [
+                'condition' => $sControls != '',
+                'content' => [
+                    'controls' => $sControls
+                ]
+            ],
         ]);
+    }
+
+    /**
+     * The block's own actions (buttons that create, open or delete something), shown in the caption beside the title. What narrows or
+     * orders the block's content (selects, filters, search) goes into the row under it, getBlockPanelTop.
+     */
+    public function getBlockCaptionControls($aBlock)
+    {
+        return !empty($aBlock['caption_controls']) && is_string($aBlock['caption_controls']) ? $aBlock['caption_controls'] : '';
     }
 
     public function getBlockPanelTop($aBlock)

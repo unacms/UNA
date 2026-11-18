@@ -34,11 +34,15 @@ a:hover > .sys-icon-a i {
 .bx-popup-applied.bx-popup-chain .bx-popup-chain-item {
     margin: 0.5rem;
 
-    .radius(24px);
+    border-radius: var(--bx-radius-3xl);
 }
 .bx-popup-applied.bx-popup-menu:not(.bx-popup-chain) .bx-popup {
     margin: 0; /* dropdowns hang from their trigger, the gap is set on .bx-popup-gap */
-    .radius(12px);
+    border-radius: var(--bx-radius-2xl);
+}
+/* A dropdown menu closes by a press outside or Escape: no close row, on phones too. */
+.bx-popup-applied.bx-popup-menu .bx-popup-close-wrapper {
+    display: none;
 }
 .bx-popup-applied .bx-popup-gap .bx-popup {
     margin-left: 0;

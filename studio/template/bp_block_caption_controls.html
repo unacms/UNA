@@ -1,0 +1,11 @@
+<button type="button" class="bx-btn bx-btn-primary" onclick="javascript:__js_object__.performAction('__action_page_create__');"><bx_text:_adm_bp_btn_create_new /></button>
+<bx_if:show_actions>
+    <button type="button" class="bx-btn" onclick="javascript:__js_object__.performAction('__action_block_create__')"><bx_text:_adm_bp_btn_add_block /></button>
+    <bx_if:can_view>
+        <button type="button" class="bx-btn bx-btn-icon" onclick="javascript:window.open('__url_view__','_blank');" title="<bx_text_attribute:_adm_bp_btn_view_page />" aria-label="<bx_text_attribute:_adm_bp_btn_view_page />"><bx_icon_inline:bp-view.svg /></button>
+    </bx_if:can_view>
+    <button type="button" class="bx-btn bx-btn-icon" onclick="javascript:__js_object__.performAction('__action_page_edit__')" title="<bx_text_attribute:_adm_bp_btn_settings />" aria-label="<bx_text_attribute:_adm_bp_btn_settings />"><bx_icon_inline:bp-settings.svg /></button>
+    <bx_if:can_delete>
+        <button type="button" class="bx-btn" onclick="javascript:__js_object__.deletePage();"><bx_text:_adm_bp_btn_delete /></button>
+    </bx_if:can_delete>
+</bx_if:show_actions>

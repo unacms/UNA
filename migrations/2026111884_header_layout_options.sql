@@ -25,10 +25,10 @@ SELECT @iCategoryId, 'sys_header_align_application_member', '_adm_stg_cpt_option
 
 SET @sPageWidth = (SELECT `value` FROM `sys_options` WHERE `name` = 'bx_artificer_page_width' AND `value` REGEXP '^[0-9]+$' AND `value` BETWEEN 480 AND 3840 LIMIT 1);
 INSERT IGNORE INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`)
-SELECT @iCategoryId, 'sys_page_width_standard_visitor', '_adm_stg_cpt_option_sys_page_width_standard_visitor', IFNULL(@sPageWidth, '1280'), 'text', '', '', '', 21 FROM DUAL WHERE @iCategoryId IS NOT NULL;
+SELECT @iCategoryId, 'sys_page_width_standard_visitor', '_adm_stg_cpt_option_sys_page_width_standard_visitor', IFNULL(@sPageWidth, '1280'), 'text', '', '', '', 24 FROM DUAL WHERE @iCategoryId IS NOT NULL;
 INSERT IGNORE INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`)
-SELECT @iCategoryId, 'sys_page_width_standard_member', '_adm_stg_cpt_option_sys_page_width_standard_member', IFNULL(@sPageWidth, '1280'), 'text', '', '', '', 22 FROM DUAL WHERE @iCategoryId IS NOT NULL;
+SELECT @iCategoryId, 'sys_page_width_standard_member', '_adm_stg_cpt_option_sys_page_width_standard_member', IFNULL(@sPageWidth, '1280'), 'text', '', '', '', 25 FROM DUAL WHERE @iCategoryId IS NOT NULL;
 INSERT IGNORE INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`)
-SELECT @iCategoryId, 'sys_page_width_application_visitor', '_adm_stg_cpt_option_sys_page_width_application_visitor', IFNULL(@sPageWidth, '1280'), 'text', '', '', '', 23 FROM DUAL WHERE @iCategoryId IS NOT NULL;
+SELECT @iCategoryId, 'sys_page_width_application_visitor', '_adm_stg_cpt_option_sys_page_width_application_visitor', IFNULL(@sPageWidth, '1280'), 'text', '', '', '', 26 FROM DUAL WHERE @iCategoryId IS NOT NULL;
 INSERT IGNORE INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`)
-SELECT @iCategoryId, 'sys_page_width_application_member', '_adm_stg_cpt_option_sys_page_width_application_member', IFNULL(@sPageWidth, '1280'), 'text', '', '', '', 24 FROM DUAL WHERE @iCategoryId IS NOT NULL;
+SELECT @iCategoryId, 'sys_page_width_application_member', '_adm_stg_cpt_option_sys_page_width_application_member', IFNULL(@sPageWidth, '1280'), 'text', '', '', '', 27 FROM DUAL WHERE @iCategoryId IS NOT NULL;

@@ -110,7 +110,7 @@ class ControlSizesTest extends BxDolTestCase
         $s = str_replace("\r\n", "\n", file_get_contents(__DIR__ . '/../../../studio/template/css/menu_top.css'));
 
         // 16px round the 36px tiles and buttons: a 68px bar, the block captions' height, with 24px corners = the tiles' 8px + the 16px padding
-        $this->assertMatchesRegularExpression('/div\.bx-std-menu-top-gap \{[^}]*padding: 1rem;\s*border-radius: 1\.5rem;/', $s);
+        $this->assertMatchesRegularExpression('/div\.bx-std-menu-top-gap \{[^}]*padding: 1rem;\s*border-radius: var\(--bx-radius-3xl\);/', $s);
         $this->assertMatchesRegularExpression('/div\.bx-std-menu-top-wrp \{[^}]*height: 5\.75rem;/', $s, 'The wrapper: the bar and 12px above and below.');
         $this->assertMatchesRegularExpression('/div\.bx-std-menu-top \.bx-menu-toolbar li \{[^}]*height: 2\.25rem;\s*min-width: 2\.25rem;/', $s);
         $this->assertMatchesRegularExpression('/div\.bx-std-menu-top \.bx-menu-top-center li \{[^}]*width: 2\.25rem;[^}]*height: 2\.25rem;/', $s);
