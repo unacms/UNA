@@ -51,8 +51,9 @@ class BxBaseStudioMenuAccountPopup extends BxDolStudioMenuAccountPopup
             'onclick_attr' => !empty($aItem['onclick']) ? 'onclick="' . bx_html_attribute($aItem['onclick']) . '"' : '',
             'icon_html' => $aItem['bx_if:image_inline']['condition'] ? $aItem['bx_if:image_inline']['content']['image'] : $this->getMenuIconHtml($aItem['icon']),
         ];
-        if($sName == 'account' && ($sPicture = $this->_getProfilePicture()) != '')
+        if($sName == 'account' && ($sPicture = $this->getProfilePicture()) != '') {
             $aContent['icon_html'] = $sPicture;
+        }
         if($sName == 'scheme')
             $aContent = array_merge($aContent, [
                 'js_object' => BxTemplStudioMenuTop::getInstance()->getJsObject(),
@@ -87,15 +88,17 @@ class BxBaseStudioMenuAccountPopup extends BxDolStudioMenuAccountPopup
     /**
      * The signed-in profile's picture for the name row, or an empty string when the profile has none.
      */
-    protected function _getProfilePicture()
+    protected function getProfilePicture()
     {
         $oProfile = isLogged() ? BxDolProfile::getInstance() : false;
-        if(!$oProfile)
+        if(!$oProfile) {
             return '';
+        }
 
         $sUrl = $oProfile->getIcon();
-        if(empty($sUrl) || !is_string($sUrl))
+        if(empty($sUrl) || !is_string($sUrl)) {
             return '';
+        }
 
         return $this->_oTemplate->parseHtmlByName('menu_account_popup_picture.html', [
             'url' => bx_html_attribute($sUrl)

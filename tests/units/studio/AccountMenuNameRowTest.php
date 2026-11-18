@@ -28,7 +28,7 @@ class AccountMenuNameRowTest extends BxDolTestCase
         $this->assertSame('<img class="bx-mv-picture" src="__url__" alt="" />', trim(self::read('studio/template/menu_account_popup_picture.html')), 'Decorative: the name is next to it.');
 
         $s = self::read('studio/template/scripts/BxBaseStudioMenuAccountPopup.php');
-        $this->assertStringContainsString("if(\$sName == 'account' && (\$sPicture = \$this->_getProfilePicture()) != '')", $s);
+        $this->assertStringContainsString("if(\$sName == 'account' && (\$sPicture = \$this->getProfilePicture()) != '') {", $s);
         $this->assertStringContainsString("parseHtmlByName('menu_account_popup_picture.html', [", $s);
         $this->assertStringContainsString("'url' => bx_html_attribute(\$sUrl)", $s);
     }
