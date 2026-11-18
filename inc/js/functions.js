@@ -1949,10 +1949,10 @@ function bx_sync_theme_color()
     var bDark = document.documentElement.classList.contains('dark');
 
     document.querySelectorAll('meta[name="theme-color"][data-bx-dark]').forEach(function (oMeta) {
-        if(!oMeta.hasAttribute('data-bx-light'))
-            oMeta.setAttribute('data-bx-light', oMeta.getAttribute('content'));
+        if(oMeta.dataset.bxLight === undefined)
+            oMeta.dataset.bxLight = oMeta.getAttribute('content');
 
-        var sColor = oMeta.getAttribute(bDark ? 'data-bx-dark' : 'data-bx-light');
+        var sColor = bDark ? oMeta.dataset.bxDark : oMeta.dataset.bxLight;
         if(oMeta.getAttribute('content') !== sColor)
             oMeta.setAttribute('content', sColor);
     });
