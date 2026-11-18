@@ -1,4 +1,14 @@
 <div id="bx-ai-chat" class="h-[32rem]"></div>
 <script>
-    una.Chat.init('#bx-ai-chat', { agentId: __id__, formatting: true });
+    (function () {
+        var fInit = function () {
+            una.Chat.init('#bx-ai-chat', { agentId: __id__, formatting: true });
+        };
+
+        // The chat's script is on the pages that render this block; a block that arrives later loads it itself.
+        if (window.una && window.una.Chat)
+            fInit();
+        else
+            bx_get_scripts(['__bundle_url__'], fInit);
+    })();
 </script>

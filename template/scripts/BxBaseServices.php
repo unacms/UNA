@@ -204,6 +204,10 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
                     $sResult = $sJs;
                 break;
 
+            case 'datetime_js':
+                $sResult = $this->_getPreloaderMoment(bx_lang_code_with_country());
+                break;
+
             case 'jquery_ui_js':
                 // Every page has pointer popups, which need jQuery UI's position utility alone (about 2 KB compressed).
                 // The whole library (about 68 KB) is added by the pages that use its widgets: BxBaseFormView::addCssJsUi,
@@ -231,6 +235,40 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         return $sResult;
     }
             
+    /**
+     * Moment for the scripts every page loads: its core and the locale of the viewer's language only, where the
+     * build with every locale (about 79 KB compressed, 21 KB this way) was loaded for all. English is in the core.
+     * The locale is the language's code with its country ("pt-BR" is pt-br.js), else the language alone, else none:
+     * Moment then writes in English, as it did for a language it has no locale for. A site whose plugins_public was
+     * built before the split files keeps the build with every locale.
+     * @param string $sLangCode the language's code, with a country or not (bx_lang_code_with_country)
+     * @return array|string files for the preloader
+     */
+    protected function _getPreloaderMoment($sLangCode)
+    {
+        $sDir = BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'moment/';
+        if(!file_exists($sDir . 'moment.min.js')) {
+            return 'moment-with-locales.min.js';
+        }
+
+        $aResult = ['{dir_plugins_public}moment/|moment.min.js'];
+
+        $sCode = mb_strtolower(str_replace('_', '-', (string)$sLangCode));
+        if(!preg_match('/^[a-z]{2,3}(-[a-z0-9]{2,8})*$/', $sCode)) {
+            return $aResult;
+        }
+
+        $aCodes = array_unique([$sCode, explode('-', $sCode)[0]]);
+        foreach($aCodes as $sLocale) {
+            if($sLocale != 'en' && file_exists($sDir . 'locale/' . $sLocale . '.js')) {
+                $aResult[] = '{dir_plugins_public}moment/locale/|' . $sLocale . '.js';
+                break;
+            }
+        }
+
+        return $aResult;
+    }
+
     /**
      * @page service Service Calls
      * @section bx_system_general System Services 

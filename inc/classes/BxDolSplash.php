@@ -10,7 +10,8 @@
 /**
  * The guest splash (Studio > Designer > Splash): what guests see on the home page, set per platform.
  *
- * The site shows `sys_site_splash_code` from splash.php when `sys_site_splash_enabled` is on. The apps (NEO web, iOS,
+ * The site shows `sys_site_splash_code` from splash.php when `sys_site_splash_enabled` is on, in the guests' page shell:
+ * between the site's header and footer, so the code has none of its own. The apps (NEO web, iOS,
  * Android) ask for the home page through the page API (BxBasePage::getPageAPI), which says which client asks in
  * `X-Neo-Platform`. When that platform's switch is on, the page comes back with `layout: 'splash'` and a `splash`
  * object made here: `source: 'una'` and `code`, the platform's own code, else the shared code, prepared for the apps.
@@ -26,8 +27,7 @@
  * - `{site_title}` in text becomes `<neo-slot name="site_title">Site title</neo-slot>`, in attributes the plain title.
  * - `__join_link__` and `__login_link__` are the apps' own paths, `/create-account` and `/login`.
  * - Macros run as on the site. `<main>` becomes a `<div>` (the apps have their own). Scripts, inline event handlers and javascript: links are removed, and so are the
- *   elements that have a `data-site-only` attribute (the site page's own header and footer, which the apps draw
- *   themselves).
+ *   elements that have a `data-site-only` attribute (parts for the site only).
  */
 class BxDolSplash extends BxDolFactory implements iBxDolSingleton
 {
