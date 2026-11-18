@@ -74,4 +74,18 @@ class PageScrollbarTest extends BxDolTestCase
         $iBase = strpos($s, "\nsvg.bx-std-scrollbar {");
         $this->assertMatchesRegularExpression('/z-index: 2;/', substr($s, $iBase, 200), 'Blocks draw theirs under the page bar.');
     }
+
+    public function testBarFollowsSmoothCornersTwoPixelsFromTheBlocksEdge(): void
+    {
+        $sJs = self::read('inc/js/functions.js');
+
+        // corner-shape: squircle is a superellipse of exponent 4; the bar is that curve moved inwards along its normal
+        $this->assertStringContainsString('function bx_scrollbar_overlay_power(oCss, sSide)', $sJs);
+        $this->assertStringContainsString("oCss['corner' + sSide + 'RightShape']", $sJs);
+        $this->assertStringContainsString('function bx_scrollbar_overlay_corner(fCx, fCy, fR, fInset, fPower, bBottom)', $sJs);
+        $this->assertStringContainsString("fPowerB > 2 && fRadiusB >= 3 * fInset ? bx_scrollbar_overlay_corner(", $sJs, 'Round corners keep their arcs.');
+
+        // 4px wide, its centre 4px in: 2px from the block's edge, in the middle of the block's 8px
+        $this->assertStringContainsString("inset: 4 //", self::read('studio/js/page.js'));
+    }
 }
