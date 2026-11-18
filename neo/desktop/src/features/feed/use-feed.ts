@@ -17,7 +17,7 @@ import type { Schema } from 'una-api';
 
 import { useFillEmptyPages } from '../../lib/paging';
 import { coalesce, eventId, useRealtime, useRealtimeStatus } from '../../lib/realtime';
-import { dropFromFeeds, type FeedData, feedItems, headKeyOf } from './cache';
+import { dropFromFeeds, type FeedData, feedItems, headKeyOf, activityKey } from './cache';
 
 type Page = Schema<'Page_Activity'>;
 type Activity = Schema<'Activity'>;
@@ -134,7 +134,7 @@ export function useFeed(source: FeedSource): Feed {
     useRealtime(enabled && poll ? live : null, (e) => {
         const id = eventId(e);
         if (e.event === 'deleted' && id) dropFromFeeds(queryClient, id);
-        else if (e.event === 'edited' && id) void queryClient.invalidateQueries({ queryKey: ['activity', id], exact: true });
+        else if (e.event === 'edited' && id) void queryClient.invalidateQueries({ queryKey: activityKey(id), exact: true });
         if (query.data) checkHead();
     });
 

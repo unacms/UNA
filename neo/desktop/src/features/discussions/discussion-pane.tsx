@@ -28,8 +28,9 @@ import { useAnnouncer } from '../feed/feed-list';
 import { ReactionButton, ReactionCount } from '../feed/reaction-button';
 import { ProfileAvatar, ProfileName } from '../profile/profile-link';
 import { commentBoxId, type CommentTarget, CommentTree, REPLY_WORDS } from '../thread/comment-tree';
-import { type Discussion, discussionKey, dropDiscussion, fromLists, putDiscussion, repliesText, useDiscussionSetup } from './discussions';
+import { type Discussion, discussionKey, dropDiscussion, fromLists, putDiscussion, repliesText, useDiscussionSetup, DISCUSSIONS_LIST_KEY } from './discussions';
 import { ago, longTime } from '../../lib/dates';
+import { activityKey } from '../feed/cache';
 
 type Activity = Schema<'Activity'>;
 
@@ -80,7 +81,7 @@ export function DiscussionPane({ id, comment }: { id: string; comment?: CommentT
 
     // its Item, whose comments are the replies: the same cache entry as the post's thread
     const activity = useQuery({
-        queryKey: ['activity', itemId ?? ''],
+        queryKey: activityKey(itemId ?? ''),
         queryFn: async (): Promise<Activity> => unwrap(await api.GET('/activities/{id}', { params: { path: { id: itemId ?? '' } } })),
         enabled: !!itemId,
         retry: retryOnce,
@@ -93,7 +94,7 @@ export function DiscussionPane({ id, comment }: { id: string; comment?: CommentT
     useEffect(() => {
         if (comments === undefined || replies === undefined || comments === replies) return;
         void queryClient.invalidateQueries(discussionKey(id));
-        void queryClient.invalidateQueries(['discussions', 'list']);
+        void queryClient.invalidateQueries(DISCUSSIONS_LIST_KEY);
     }, [comments, replies, id, queryClient]);
 
     const group = useContextGroup(d ?? { context_id: null, audience: 'public' });

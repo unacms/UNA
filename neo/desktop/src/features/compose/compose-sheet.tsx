@@ -33,8 +33,8 @@ import { closeModal, openModal } from '../../components/dialog';
 import { Icon } from '../../components/icon';
 import { isOverDropTarget } from '../../components/rich-editor/images';
 import { RichEditor, type RichEditorHandle } from '../../components/rich-editor/rich-editor';
-import { prependToFeed } from '../feed/cache';
-import { MAX_OPTIONS, MIN_OPTIONS, OPTION_MAX_LENGTH } from '../polls/polls';
+import { prependToFeed, feedKey } from '../feed/cache';
+import { MAX_OPTIONS, MIN_OPTIONS, OPTION_MAX_LENGTH, POLLS_LIST_KEY } from '../polls/polls';
 import { AttachmentTray } from './attachment-tray';
 import { draftMedia, fromDraft, MAX_ATTACHMENTS, mediaIds, postBlocker, useAttachments } from './attachments';
 import { AudiencePicker, ContextPicker, isAudience, usePostContexts } from './pickers';
@@ -362,11 +362,11 @@ function ComposeSheet({ ref, open, onClose, uploader: given, sayOutside, onDropF
         if (itemId) {
             const res = await api.GET('/activities/{id}', { params: { path: { id: itemId } } });
             if (res.data) {
-                prependToFeed(queryClient, ['feed', 'following'], res.data);
+                prependToFeed(queryClient, feedKey('following'), res.data);
                 if (contextId) prependToFeed(queryClient, groupFeedKey(contextId), res.data);
             }
         }
-        await queryClient.invalidateQueries(['polls', 'list']);
+        await queryClient.invalidateQueries(POLLS_LIST_KEY);
     };
 
     const send = async () => {
@@ -392,7 +392,7 @@ function ComposeSheet({ ref, open, onClose, uploader: given, sayOutside, onDropF
                 const created = unwrap(await api.POST('/feed-posts', { params: { header: { 'Idempotency-Key': idempotencyKeyFor(sent, ['/feed-posts', body]) } }, body }));
                 // Your own post goes on top of Following at once (and of its polled first page,
                 // so showing new posts keeps it); other feeds load it when next shown.
-                prependToFeed(queryClient, ['feed', 'following'], created);
+                prependToFeed(queryClient, feedKey('following'), created);
                 // and on top of the group's feed, when it went into one
                 if (contextId) prependToFeed(queryClient, groupFeedKey(contextId), created);
             }

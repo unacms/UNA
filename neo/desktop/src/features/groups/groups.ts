@@ -16,7 +16,8 @@ import { useApp } from '../../lib/context';
 import { t, tn } from '../../lib/i18n';
 import type { ContextPageKind } from '../../lib/router';
 import { contextKindOf, siteHasTag, useSiteHasTag } from '../../lib/site-modules';
-import { type Event, fetchAttendees, fetchEventContext, rsvpEvent, rsvpStatus, withdrawRsvp } from '../events/events';
+import { type Event, fetchAttendees, fetchEventContext, rsvpEvent, rsvpStatus, withdrawRsvp, EVENTS_KEY } from '../events/events';
+import { feedKey } from '../feed/cache';
 
 export type Group = Schema<'Group'>;
 export type GroupViewer = Schema<'GroupViewer'>;
@@ -71,10 +72,12 @@ export const myContextsKey = (kind: ContextKind) => (kind === 'space' ? MY_SPACE
 export const browseContextsKey = (kind: ContextKind) => (kind === 'space' ? BROWSE_SPACES_KEY : BROWSE_GROUPS_KEY);
 /** A group or a space: profile ids are the site's, so one key holds either. */
 export const groupKey = (id: string) => ['group', id] as const;
-export const subspacesKey = (id: string) => ['subspaces', id] as const;
+/** Every space's subspaces. */
+export const SUBSPACES_KEY = ['subspaces'] as const;
+export const subspacesKey = (id: string) => [...SUBSPACES_KEY, id] as const;
 export const groupMembersKey = (id: string) => ['group-members', id] as const;
 /** A group's feed is its profile's timeline, the same pages a profile's posts are. */
-export const groupFeedKey = (id: string) => ['feed', 'profile', id] as const;
+export const groupFeedKey = (id: string) => feedKey('profile', id);
 
 /** GET /groups/{id}: what GroupView shows, and what is read again after joining or leaving. */
 export async function fetchGroup(api: UnaApi, id: string): Promise<Group> {
@@ -318,13 +321,13 @@ export async function afterMembershipChange(queryClient: QueryClient, id: string
         queryClient.invalidateQueries({ queryKey: BROWSE_GROUPS_KEY }),
         queryClient.invalidateQueries({ queryKey: MY_SPACES_KEY }),
         queryClient.invalidateQueries({ queryKey: BROWSE_SPACES_KEY }),
-        queryClient.invalidateQueries({ queryKey: ['subspaces'] }),
+        queryClient.invalidateQueries({ queryKey: SUBSPACES_KEY }),
         // the Events section's lists and the contexts' Events tabs
-        queryClient.invalidateQueries({ queryKey: ['events'] }),
+        queryClient.invalidateQueries({ queryKey: EVENTS_KEY }),
         ...(opts.gone
             ? []
             : [queryClient.invalidateQueries({ queryKey: groupMembersKey(id) }), queryClient.invalidateQueries({ queryKey: groupFeedKey(id) })]),
         // the home feeds follow the groups one is in
-        queryClient.invalidateQueries({ queryKey: ['feed', 'following'], refetchType: 'none' }),
+        queryClient.invalidateQueries({ queryKey: feedKey('following'), refetchType: 'none' }),
     ]);
 }

@@ -18,7 +18,9 @@ export type Discussion = Schema<'Discussion'>;
 export type DiscussionPage = Schema<'Page_Discussion'>;
 export type DiscussionSort = 'latest' | 'new';
 
-export const discussionListKey = (sort: DiscussionSort, groupId?: string | null, category?: string | null) => ['discussions', 'list', sort, groupId ?? '', category ?? ''] as const;
+/** Every list of the module's entries: one changed or removed is changed in each. */
+export const DISCUSSIONS_LIST_KEY = ['discussions', 'list'] as const;
+export const discussionListKey = (sort: DiscussionSort, groupId?: string | null, category?: string | null) => [...DISCUSSIONS_LIST_KEY, sort, groupId ?? '', category ?? ''] as const;
 /** The categories and whether the viewer may start one; null on a site without the module. */
 export const DISCUSSION_SETUP_KEY = ['discussions', 'setup'] as const;
 export const discussionKey = (id: string) => ['discussion', id] as const;
@@ -109,7 +111,7 @@ type Pages = InfiniteData<DiscussionPage>;
 
 /** A discussion as a list already loaded it, so the detail shows it at once. */
 export function fromLists(queryClient: QueryClient, id: string): Discussion | undefined {
-    for (const [, data] of queryClient.getQueriesData<Pages>(['discussions', 'list'])) {
+    for (const [, data] of queryClient.getQueriesData<Pages>(DISCUSSIONS_LIST_KEY)) {
         for (const page of data?.pages ?? []) {
             const found = page.items.find((d) => d.id === id);
             if (found) return found;
@@ -121,7 +123,7 @@ export function fromLists(queryClient: QueryClient, id: string): Discussion | un
 /** A discussion as the site has it now: in its detail and wherever a list shows it. */
 export function putDiscussion(queryClient: QueryClient, fresh: Discussion): void {
     queryClient.setQueryData(discussionKey(fresh.id), fresh);
-    queryClient.setQueriesData<Pages>(['discussions', 'list'], (data) =>
+    queryClient.setQueriesData<Pages>(DISCUSSIONS_LIST_KEY, (data) =>
         data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.map((d) => (d.id === fresh.id ? fresh : d)) })) } : data,
     );
 }
@@ -129,7 +131,7 @@ export function putDiscussion(queryClient: QueryClient, fresh: Discussion): void
 /** A discussion that is gone: out of every list, its detail forgotten. */
 export function dropDiscussion(queryClient: QueryClient, id: string): void {
     queryClient.removeQueries(discussionKey(id));
-    queryClient.setQueriesData<Pages>(['discussions', 'list'], (data) =>
+    queryClient.setQueriesData<Pages>(DISCUSSIONS_LIST_KEY, (data) =>
         data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.filter((d) => d.id !== id) })) } : data,
     );
 }

@@ -65,7 +65,8 @@ import {
 import { changeTask } from './task-actions';
 import { AddTask } from './task-list';
 import { type ListRights, type TaskListActions, useTaskListActions } from './task-list-actions';
-import { assigneesText, dueText, fetchTaskLists, isOverdue, type Task, type TaskList, taskKey, taskListsKey, titleProblem, TITLE_MAX } from './tasks';
+import { assigneesText, dueText, fetchTaskLists, isOverdue, type Task, type TaskList, taskKey, taskListsKey, titleProblem, TITLE_MAX, TASKS_KEY, TASK_FACETS_KEY } from './tasks';
+import { taskMembersKey } from './board';
 
 const PAGE = 50;
 
@@ -85,7 +86,7 @@ export function useTaskChoices(contextId: string | null, enabled = true) {
 export function useContextMembers(context: Pick<Schema<'Profile'>, 'id' | 'module'> | null | undefined, enabled = true) {
     const { api } = useApp();
     return useQuery({
-        queryKey: ['task-members', context?.id ?? ''],
+        queryKey: taskMembersKey(context?.id ?? ''),
         queryFn: async () => (await fetchMembers(api, contextKind(context), context!.id, undefined, 100)).items.map((m) => m.profile),
         enabled: enabled && !!context,
         staleTime: 5 * 60_000,
@@ -318,7 +319,7 @@ function QuickAdd({ contextId, listId, group, onDone, announce }: { contextId: s
             }
             setTitle('');
             announce(t('Added “{{title}}” to {{group}}', { title: result.data.title, group: group.label }));
-            await Promise.all([queryClient.invalidateQueries({ queryKey: ['tasks'] }), queryClient.invalidateQueries({ queryKey: ['task-facets'] }), queryClient.invalidateQueries({ queryKey: TASK_CONTEXTS_KEY }), queryClient.invalidateQueries({ queryKey: taskListsKey(contextId) })]);
+            await Promise.all([queryClient.invalidateQueries({ queryKey: TASKS_KEY }), queryClient.invalidateQueries({ queryKey: TASK_FACETS_KEY }), queryClient.invalidateQueries({ queryKey: TASK_CONTEXTS_KEY }), queryClient.invalidateQueries({ queryKey: taskListsKey(contextId) })]);
         } catch (err) {
             setError(errorMessage(err));
         } finally {

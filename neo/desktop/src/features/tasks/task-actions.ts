@@ -12,7 +12,7 @@ import { unwrap } from '../../lib/api';
 import { t } from '../../lib/i18n';
 import type { MenuEntry } from '../../lib/native-menu';
 import { afterTaskChange, TIMERS_KEY, type TaskChanges, type TaskChoice, type TaskChoices, taskTimeKey } from './board';
-import { putTask, type Task, type TaskList } from './tasks';
+import { putTask, type Task, type TaskList, TASKS_KEY, taskKey } from './tasks';
 
 /**
  * Change a task: shown at once in every list that shows it (`shown`, what the change will look
@@ -39,10 +39,10 @@ export async function timerAction(api: UnaApi, queryClient: QueryClient, task: P
     putTask(queryClient, saved);
     void queryClient.invalidateQueries({ queryKey: TIMERS_KEY });
     // starting one pauses another: every list's timers are stale
-    if (action === 'start' || action === 'resume') void queryClient.invalidateQueries({ queryKey: ['tasks'], refetchType: 'none' });
+    if (action === 'start' || action === 'resume') void queryClient.invalidateQueries({ queryKey: TASKS_KEY, refetchType: 'none' });
     if (action === 'log') {
         void queryClient.invalidateQueries({ queryKey: taskTimeKey(task.id) });
-        void queryClient.invalidateQueries({ queryKey: ['tasks'] });
+        void queryClient.invalidateQueries({ queryKey: TASKS_KEY });
     }
     return saved;
 }
@@ -51,8 +51,8 @@ export async function timerAction(api: UnaApi, queryClient: QueryClient, task: P
 export async function logTime(api: UnaApi, queryClient: QueryClient, task: Pick<Task, 'id'>, minutes: number, date: string | null, text: string): Promise<Schema<'TimeRecord'>> {
     const saved = unwrap(await api.POST('/tasks/{id}/time', { params: { path: { id: task.id } }, body: { minutes, date, text: text.trim() || null } }));
     void queryClient.invalidateQueries({ queryKey: taskTimeKey(task.id) });
-    void queryClient.invalidateQueries({ queryKey: ['task', task.id] });
-    void queryClient.invalidateQueries({ queryKey: ['tasks'] });
+    void queryClient.invalidateQueries({ queryKey: taskKey(task.id) });
+    void queryClient.invalidateQueries({ queryKey: TASKS_KEY });
     return saved;
 }
 

@@ -5,7 +5,7 @@ import { problemMessage, type Schema } from 'una-api';
 
 import { Avatar } from '../../components/avatar';
 import { unwrap } from '../../lib/api';
-import { useApp } from '../../lib/context';
+import { useApp, ME_KEY } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
 import { t } from '../../lib/i18n';
 import { useMediaSrc } from '../../lib/media';
@@ -220,7 +220,7 @@ export function EditProfile({ id }: { id: string }) {
             const saved = result.data as Profile;
             queryClient.setQueryData(profileKey(id), saved);
             queryClient.setQueryData(profileSummaryKey(id), (old: Schema<'Profile'> | undefined) => (old ? { ...old, display_name: saved.display_name, avatar: saved.avatar } : old));
-            void queryClient.invalidateQueries(['me']);
+            void queryClient.invalidateQueries(ME_KEY);
             setAvatar({ kind: 'keep' });
             setCover({ kind: 'keep' });
             setName(saved.display_name);

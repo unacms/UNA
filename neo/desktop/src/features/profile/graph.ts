@@ -8,7 +8,7 @@ import type { Schema } from 'una-api';
 
 import { t, tn } from '../../lib/i18n';
 import { FRIEND_REQUESTS_KEY, requestSync } from '../../lib/sync';
-import { type FeedData, feedItems } from '../feed/cache';
+import { type FeedData, feedItems, feedKey, headKeyOf } from '../feed/cache';
 
 export type Connections = Schema<'Connections'>;
 export type Relation = Schema<'Relation'>;
@@ -20,7 +20,9 @@ export const profileKey = (id: string) => ['profile', id] as const;
 /** A Profile seen elsewhere (a post's author), so a profile or a new message shows the name at once. */
 export const profileSummaryKey = (id: string) => ['profile-summary', id] as const;
 export const connectionsKey = (id: string) => ['connections', id] as const;
-export const connectionListKey = (id: string, list: ConnectionList) => ['connection-list', id, list] as const;
+/** Every list of a profile's connections (friends, followers, following). */
+export const connectionListsKey = (id: string) => ['connection-list', id] as const;
+export const connectionListKey = (id: string, list: ConnectionList) => [...connectionListsKey(id), list] as const;
 /** Friend requests waiting (lists and counts); the sync refetches them when the count changes. */
 export { FRIEND_REQUESTS_KEY };
 /** The friend requests the acting profile sent that wait for an answer (GET /me/friend-requests/sent). */
@@ -147,16 +149,16 @@ export function countText(n: number, list: ConnectionList): string {
 export function afterGraphChange(queryClient: QueryClient, profileId: string, viewerId: string): void {
     for (const id of [profileId, viewerId]) {
         void queryClient.invalidateQueries(connectionsKey(id));
-        void queryClient.invalidateQueries(['connection-list', id]);
+        void queryClient.invalidateQueries(connectionListsKey(id));
     }
     void queryClient.invalidateQueries(FRIEND_REQUESTS_KEY);
     void queryClient.invalidateQueries(SENT_REQUESTS_KEY);
     // the friend requests badge
     requestSync();
-    void queryClient.invalidateQueries(['feed', 'following'], { refetchType: 'none' });
-    void queryClient.invalidateQueries(['feed-head', 'following']);
+    void queryClient.invalidateQueries(feedKey('following'), { refetchType: 'none' });
+    void queryClient.invalidateQueries(headKeyOf(feedKey('following')));
     void queryClient.refetchQueries({
-        queryKey: ['feed', 'following'],
+        queryKey: feedKey('following'),
         type: 'active',
         predicate: (q) => feedItems(q.state.data as FeedData | undefined).length === 0,
     });

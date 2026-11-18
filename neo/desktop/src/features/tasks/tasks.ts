@@ -20,9 +20,15 @@ export type TaskPage = Schema<'Page_Task'>;
 
 export const TASKS_PAGE = 50;
 
+/** Every list of tasks: a context's, the boards', a search's. A change to a task reaches them all. */
+export const TASKS_KEY = ['tasks'] as const;
+/** The counts beside every board's filters. */
+export const TASK_FACETS_KEY = ['task-facets'] as const;
+/** The contexts one has tasks in (the sidebar's Tasks section). */
+export const TASK_CONTEXTS_KEY = ['task-contexts'] as const;
 export const taskKey = (id: string) => ['task', id] as const;
 /** A context's tasks, every list's (its Inbox's too) in one list: the Tasks tab groups them. */
-export const contextTasksKey = (contextId: string) => ['tasks', 'context', contextId] as const;
+export const contextTasksKey = (contextId: string) => [...TASKS_KEY, 'context', contextId] as const;
 export const taskListsKey = (contextId: string) => ['task-lists', contextId] as const;
 
 /**
@@ -115,9 +121,9 @@ export async function fetchTaskLists(api: UnaApi, contextId: string): Promise<Ta
 async function listsChanged(queryClient: QueryClient, contextId: string): Promise<void> {
     await Promise.all([
         queryClient.invalidateQueries({ queryKey: taskListsKey(contextId) }),
-        queryClient.invalidateQueries({ queryKey: ['task-contexts'] }),
-        queryClient.invalidateQueries({ queryKey: ['task-facets'] }),
-        queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+        queryClient.invalidateQueries({ queryKey: TASK_CONTEXTS_KEY }),
+        queryClient.invalidateQueries({ queryKey: TASK_FACETS_KEY }),
+        queryClient.invalidateQueries({ queryKey: TASKS_KEY }),
     ]);
 }
 
@@ -149,7 +155,7 @@ type Pages = { pages: TaskPage[]; pageParams: unknown[] };
 
 /** The task as it is now, in every list that shows it and its own answer (kept where it is in each list). */
 export function putTask(queryClient: QueryClient, task: Task): void {
-    queryClient.setQueriesData<Pages>({ queryKey: ['tasks'] }, (data) =>
+    queryClient.setQueriesData<Pages>({ queryKey: TASKS_KEY }, (data) =>
         data?.pages ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.map((item) => (item.id === task.id ? task : item)) })) } : data,
     );
     const own = queryClient.getQueryData<Task>(taskKey(task.id));
@@ -159,14 +165,14 @@ export function putTask(queryClient: QueryClient, task: Task): void {
 
 /** A task that is gone: out of every list, which are stale now (their cursors moved: loadMoreTasks). */
 export function dropTask(queryClient: QueryClient, id: string): void {
-    queryClient.setQueriesData<Pages>({ queryKey: ['tasks'] }, (data) => (data?.pages ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.filter((item) => item.id !== id) })) } : data));
-    void queryClient.invalidateQueries({ queryKey: ['tasks'], refetchType: 'none' });
+    queryClient.setQueriesData<Pages>({ queryKey: TASKS_KEY }, (data) => (data?.pages ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.filter((item) => item.id !== id) })) } : data));
+    void queryClient.invalidateQueries({ queryKey: TASKS_KEY, refetchType: 'none' });
     queryClient.removeQueries({ queryKey: taskKey(id) });
 }
 
 /** The task as a list showed it, for its detail to show at once. */
 export function taskFromLists(queryClient: QueryClient, id: string): Task | undefined {
-    for (const [, data] of queryClient.getQueriesData<Pages>({ queryKey: ['tasks'] })) {
+    for (const [, data] of queryClient.getQueriesData<Pages>({ queryKey: TASKS_KEY })) {
         const found = data?.pages?.flatMap((p) => p.items).find((item) => item.id === id);
         if (found) return found;
     }
@@ -185,7 +191,7 @@ export async function setCompleted(api: UnaApi, queryClient: QueryClient, task: 
     try {
         const saved = unwrap(await api.PATCH('/tasks/{id}', { params: { path: { id: task.id } }, body: { completed } }));
         putTask(queryClient, saved);
-        void queryClient.invalidateQueries({ queryKey: ['tasks'], refetchType: 'none' });
+        void queryClient.invalidateQueries({ queryKey: TASKS_KEY, refetchType: 'none' });
         if (saved.context_id) void queryClient.invalidateQueries({ queryKey: taskListsKey(saved.context_id) });
         return saved;
     } catch (e) {

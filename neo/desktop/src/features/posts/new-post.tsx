@@ -21,7 +21,8 @@ import { RichEditor, type RichEditorHandle } from '../../components/rich-editor/
 import { type TextImages, uploadsHold, useTextImages } from '../../components/rich-editor/text-images';
 import { RichText } from '../../components/rich-text';
 import { textToRichHtml } from '../../lib/rich-html';
-import { postCategoriesKey, postKey, SUMMARY_MAX, TEXT_MAX, TITLE_MAX, TITLE_MIN } from './posts';
+import { postCategoriesKey, postKey, SUMMARY_MAX, TEXT_MAX, TITLE_MAX, TITLE_MIN, POSTS_LIST_KEY } from './posts';
+import { FEEDS_KEY } from '../feed/cache';
 
 export type Field = 'title' | 'summary' | 'text' | 'cover' | 'category';
 export type FieldError = { field: Field; text: string };
@@ -378,8 +379,8 @@ export function NewPost({ contextId, uploader }: { contextId?: string; uploader?
         }
         const created = result.data;
         queryClient.setQueryData(postKey(created.id), created);
-        void queryClient.invalidateQueries(['posts', 'list']);
-        void queryClient.invalidateQueries(['feed']);
+        void queryClient.invalidateQueries(POSTS_LIST_KEY);
+        void queryClient.invalidateQueries(FEEDS_KEY);
         if (cover.gone()) return;
         if (!replaceDetail({ kind: 'article', id: created.id }, from)) setSending(false);
     };

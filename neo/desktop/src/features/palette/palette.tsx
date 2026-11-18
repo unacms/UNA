@@ -33,8 +33,12 @@ import {
     type RecentEntries,
     resultsText,
 } from './commands';
+import { activityKey } from '../feed/cache';
 
 /** Wait this long after the last key before asking the site. */
+/** What the palette found of one kind for the words typed. */
+const paletteKey = (kind: string, q: string) => ['palette', kind, q] as const;
+
 export const SEARCH_DEBOUNCE_MS = 200;
 
 type Props = {
@@ -49,7 +53,7 @@ type Props = {
 /** A post entry whose thread found the post deleted or no longer visible (GET /activities/{id}). */
 export function postGone(queryClient: QueryClient, entry: PaletteEntry): boolean {
     if (entry.action.kind !== 'post') return false;
-    const state = queryClient.getQueryState(['activity', entry.action.activity.id]);
+    const state = queryClient.getQueryState(activityKey(entry.action.activity.id));
     return state?.status === 'error' && isGone(state.error);
 }
 
@@ -88,14 +92,14 @@ export function CommandPalette({ open, onClose, onChoose, recent }: Props) {
     const enabled = open && searched.length > 0 && searched === words;
 
     const people = useQuery({
-        queryKey: ['palette', 'people', searched],
+        queryKey: paletteKey('people', searched),
         queryFn: async () => unwrap(await api.GET('/search/profiles', { params: { query: { q: searched, limit: 5 } } })),
         enabled,
         staleTime: 30_000,
         keepPreviousData: true,
     });
     const groups = useQuery({
-        queryKey: ['palette', 'groups', searched],
+        queryKey: paletteKey('groups', searched),
         queryFn: async () => {
             try {
                 return unwrap(await api.GET('/search/groups', { params: { query: { q: searched, limit: 3 } } }));
@@ -110,7 +114,7 @@ export function CommandPalette({ open, onClose, onChoose, recent }: Props) {
         keepPreviousData: true,
     });
     const posts = useQuery({
-        queryKey: ['palette', 'posts', searched],
+        queryKey: paletteKey('posts', searched),
         queryFn: async () => unwrap(await api.GET('/search/content', { params: { query: { q: searched, limit: 5 } } })),
         enabled,
         staleTime: 30_000,

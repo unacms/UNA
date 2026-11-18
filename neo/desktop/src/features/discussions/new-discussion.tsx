@@ -17,7 +17,7 @@ import { uploadsHold, useTextImages } from '../../components/rich-editor/text-im
 import { useWindowAnnounce } from '../../lib/announce';
 import { useMyGroups, useMySpaces } from '../groups/groups';
 import { type Changes, DiscussionFields, type FieldError, isSubmitKey } from './discussion-pane';
-import { discussionKey, useDiscussionSetup } from './discussions';
+import { discussionKey, useDiscussionSetup, DISCUSSIONS_LIST_KEY } from './discussions';
 
 type Audience = NonNullable<Schema<'NewDiscussion'>['audience']>;
 
@@ -132,7 +132,7 @@ export function NewDiscussion({ groupId }: { groupId?: string }) {
         lasting.clear();
         const created = result.data;
         queryClient.setQueryData(discussionKey(created.id), created);
-        void queryClient.invalidateQueries(['discussions', 'list']);
+        void queryClient.invalidateQueries(DISCUSSIONS_LIST_KEY);
         // gone elsewhere meanwhile: this form (if still shown) starts over
         if (!replaceDetail({ kind: 'discussion', id: created.id }, from)) {
             setValue({ title: '', body: '', categoryId: '' });

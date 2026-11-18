@@ -22,6 +22,9 @@ type Props = {
 };
 
 /** Hover this long over the toggle and the choices open. */
+/** The site's reactions, with their names and pictures. */
+const REACTION_DETAILS_KEY = ['reactions', 'details'] as const;
+
 export const HOVER_OPEN_MS = 400;
 /** The choices close this long after the pointer left both the toggle and the capsule. */
 export const HOVER_CLOSE_MS = 300;
@@ -38,7 +41,7 @@ export const REACT_WITH = 'una-react-with';
 export function useReactionDetails(): Details | undefined {
     const { api } = useApp();
     const reactions = useQuery({
-        queryKey: ['reactions', 'details'],
+        queryKey: REACTION_DETAILS_KEY,
         queryFn: async () => unwrap(await api.GET('/reactions/details')),
         staleTime: Infinity,
     });
