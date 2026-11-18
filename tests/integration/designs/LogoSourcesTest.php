@@ -172,6 +172,38 @@ class LogoSourcesTest extends BxDolIntegrationTestCase
         }
     }
 
+    /**
+     * The logo is among the first things a page paints (on the landing page it can be the largest one), so the
+     * browser is told to fetch it first. The mark is the logo of a narrow screen, so it is not lazy either. The dark
+     * images are hidden in most modes and load when they are shown.
+     */
+    public function testTheLogoIsFetchedFirstAndOnlyTheDarkImagesAreLazy(): void
+    {
+        $this->assertStringContainsString('fetchpriority="high"', file_get_contents(BX_DIRECTORY_PATH_ROOT . 'template/logo_main.html'), 'base templates');
+
+        if (getParam('template') != 'artificer')
+            $this->markTestSkipped('The site\'s template is not Artificer.');
+
+        $aImages = [];
+        preg_match_all('/<img\b[^>]*>/', BxTemplFunctions::getInstance()->getMainLogo(), $aMatches);
+        foreach ($aMatches[0] as $sImage)
+            if (preg_match('/\bid="([^"]+)"/', $sImage, $aId))
+                $aImages[$aId[1]] = $sImage;
+
+        $this->assertSame(['bx-logo', 'bx-logo-dark', 'bx-mark', 'bx-mark-dark'], array_keys($aImages));
+
+        $this->assertStringContainsString('fetchpriority="high"', $aImages['bx-logo']);
+        $this->assertStringNotContainsString('loading="lazy"', $aImages['bx-logo']);
+
+        $this->assertStringNotContainsString('loading="lazy"', $aImages['bx-mark'], 'a phone shows the mark at once');
+        $this->assertStringNotContainsString('fetchpriority', $aImages['bx-mark'], 'one image is fetched first, not two');
+
+        foreach (['bx-logo-dark', 'bx-mark-dark'] as $sId) {
+            $this->assertStringContainsString('loading="lazy"', $aImages[$sId], $sId);
+            $this->assertStringNotContainsString('fetchpriority', $aImages[$sId], $sId);
+        }
+    }
+
     public function testBothHeadersDrawTheSystemDefaultWhenNothingIsUploaded(): void
     {
         $sDefault = 'template/images/logo-generic.svg';
