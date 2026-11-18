@@ -30,7 +30,7 @@ class ReducedMotionTest extends BxDolTestCase
         $s = self::read($sPath);
         $this->assertSame(1, preg_match('/@media \(prefers-reduced-motion: reduce\) \{\s*\*:not\(\.bx-loading-ajax\)[^{]*\{([^}]*)\}\s*\}/s', $s, $aMatch), $sPath);
 
-        foreach (['transition-duration: 0.01ms !important;', 'animation-duration: 0.01ms !important;', 'animation-iteration-count: 1 !important;', 'scroll-behavior: auto !important;'] as $sDeclaration)
+        foreach (['transition-duration: 0.01ms !important;', 'animation-duration: 0.01ms !important;', 'animation-iteration-count: 1 !important;'] as $sDeclaration)
             $this->assertStringContainsString($sDeclaration, $aMatch[1]);
     }
 

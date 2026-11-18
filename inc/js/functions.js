@@ -506,8 +506,10 @@ function bx_reduced_motion_sync()
 
 (function () {
     var oQuery = bx_reduced_motion_sync();
-    if(oQuery && oQuery.addEventListener)
-        oQuery.addEventListener('change', bx_reduced_motion_sync);
+    if(!oQuery)
+        return;
+
+    oQuery.addEventListener('change', bx_reduced_motion_sync);
 })();
 
 function bx_loading_orb_still()
