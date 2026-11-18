@@ -98,7 +98,7 @@
     "build:htmx": "mkdir -p plugins_public/htmx; cd plugins_public/htmx; cp ../../node_modules/htmx.org/dist/htmx.min.js .; cp ../../node_modules/htmx.org/dist/ext/hx-head.min.js head-support.min.js; cp ../../node_modules/htmx.org/dist/ext/hx-preload.min.js preload.min.js",
     "build:jquery-minicolors": "mkdir -p plugins_public/jquery-minicolors; cd node_modules/@claviska/jquery-minicolors; cp jquery.minicolors.* ../../../plugins_public/jquery-minicolors",
     "build:jquery": "mkdir -p plugins_public/jquery; cd plugins_public/jquery; cp ../../node_modules/jquery/dist/jquery.min.* .; cp ../../node_modules/jquery-migrate/dist/jquery-migrate.min.* .",
-    "build:jquery-ui": "mkdir -p plugins_public/jquery-ui; cd plugins_public/jquery-ui; cp ../../node_modules/jquery-ui/dist/jquery-ui.min.js .",
+    "build:jquery-ui": "mkdir -p plugins_public/jquery-ui; cd plugins_public/jquery-ui; cp ../../node_modules/jquery-ui/dist/jquery-ui.min.js .; cat ../../node_modules/jquery-ui/ui/version.js ../../node_modules/jquery-ui/ui/position.js > jquery-ui.position.js",
     "build:jstree": "mkdir -p plugins_public/jstree; cd plugins_public/jstree; cp -r ../../node_modules/jstree/dist/* .",
     "build:jush": "mkdir -p plugins_public/jush; cd node_modules/jush; php compile.php; cp -r jush.* ../../plugins_public/jush",
     "build:leaflet": "mkdir -p plugins_public/leaflet; cd plugins_public/leaflet; cp -r ../../node_modules/leaflet/dist/* .",

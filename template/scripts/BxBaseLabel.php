@@ -68,7 +68,7 @@ class BxBaseLabel extends BxDolLabel
             $sCode = "var " . $this->_sJsObjName . " = null;";
 
             if($sType == 'form')
-                $sCode .= "if(typeof(jQuery.ui.position) == 'undefined')
+                $sCode .= "if(typeof(jQuery.ui.sortable) == 'undefined')
                     $.getScript('" . bx_js_string($this->_oTemplate->getJsUrl('jquery-ui/jquery-ui.min.js'), BX_ESCAPE_STR_APOS) . "');";
 
             $sCode .= "if(window['" . $this->_sJsObjName . "'] === null)

@@ -1755,6 +1755,13 @@ function bx_get_param(s) {
 }
 
 function bx_autocomplete_fields(iId, sUrl, sName, bShowImg, bOnlyOnce, onSelect){
+	// The suggestions' list is jQuery UI's autocomplete: a field on a page without the whole library loads it first.
+	if (jQuery.fn.autocomplete === undefined)
+		return bx_jquery_ui(function () {
+			if (jQuery.fn.autocomplete !== undefined)
+				bx_autocomplete_fields(iId, sUrl, sName, bShowImg, bOnlyOnce, onSelect);
+		});
+
 	if (!$('#' + iId).hasClass('bx-form-input-autotoken'))
 			$('#' + iId).addClass('bx-form-input-autotoken');
 	
@@ -2683,6 +2690,19 @@ function bx_script_is_on_page (sKey)
             return true;
 
     return 'undefined' !== typeof(aIncludedJs) && Array.isArray(aIncludedJs) && aIncludedJs.map(bx_script_key).indexOf(sKey) != -1;
+}
+
+/**
+ * Run code that needs jQuery UI's widgets (sortable, slider, autocomplete). Every page has its position utility
+ * alone; the pages that use a widget add the whole library, and content that arrives later without it (a grid or a
+ * form in a popup) gets it here, once, before the code runs.
+ */
+function bx_jquery_ui (fCallback)
+{
+    if (jQuery.fn.sortable !== undefined && jQuery.fn.autocomplete !== undefined)
+        return fCallback();
+
+    bx_get_scripts([sUrlRoot + 'plugins_public/jquery-ui/jquery-ui.min.js'], fCallback);
 }
 
 function bx_get_scripts (aFiles, fCallback)

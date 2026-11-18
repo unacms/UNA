@@ -253,10 +253,8 @@ BxDolUploaderBase.prototype._showRestoredGhosts = function (aData, bInitReorderi
                 });
             };
 
-            if($.sortable !== undefined)
-                fInitReordering();
-            else
-                setTimeout(fInitReordering, 2000);
+            // $.sortable was never there, so reordering always began 2 seconds late; it begins when the widget is there.
+            bx_jquery_ui(fInitReordering);
         }
     }
 

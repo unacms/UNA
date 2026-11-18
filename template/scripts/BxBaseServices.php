@@ -208,6 +208,14 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
                 $sResult = $this->_getPreloaderMoment(bx_lang_code_with_country());
                 break;
 
+            case 'jquery_ui_js':
+                // Every page has pointer popups, which need jQuery UI's position utility alone (about 2 KB compressed).
+                // The whole library (about 68 KB) is added by the pages that use its widgets: BxBaseFormView::addCssJsUi,
+                // BxBaseGrid, Studio's launcher and page builder. A plugins_public built before the position file was
+                // made keeps the whole library.
+                $sResult = '{dir_plugins_public}jquery-ui/|' . (file_exists(BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'jquery-ui/jquery-ui.position.js') ? 'jquery-ui.position.js' : 'jquery-ui.min.js');
+                break;
+
             case 'tailwind':
                 $sFile = getParam('sys_css_tailwind_default');
                 if(empty($sFile))
