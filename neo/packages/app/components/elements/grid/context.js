@@ -305,26 +305,29 @@ const createGridStore = (initial) => createStore((set, get) => ({
     },
 
     /**
-     * Enable/disable a row: optimistic immutable patch, then `enable` API + reload.
+     * Turn a row's switch: optimistic immutable patch, then the switch's action + reload.
+     * `column` is the switch's column (`switcher`, or `switcher_api` for the apps),
+     * `action` the one UNA names in the cell (`enable`, `enable_api`).
      *
      * The row is looked up by id, not by position — sorting, a delete or the
      * next loaded page can shift indexes between render and press.
      */
-    toggleSwitch: async (id) => {
+    toggleSwitch: async (id, column = 'switcher', action = 'enable') => {
         const { getRows, updateRow, runGridAction, reloadGrid } = get();
 
         let bChecked = false;
         const currentItem = getRows().find((item) => item.id == id);
-        if (currentItem?.switcher) {
-            const nextData = SWITCHER_NEXT[currentItem.switcher.data];
+        const currentCell = currentItem?.[column];
+        if (currentCell) {
+            const nextData = SWITCHER_NEXT[currentCell.data];
             bChecked = nextData == 'active' || nextData == '1';
             updateRow(id, {
                 ...currentItem,
-                switcher: { ...currentItem.switcher, data: nextData },
+                [column]: { ...currentCell, data: nextData },
             });
         }
 
-        await runGridAction('enable', '&ids[]=' + id + (bChecked ? '&checked=1' : ''));
+        await runGridAction(action || 'enable', '&ids[]=' + id + (bChecked ? '&checked=1' : ''));
         reloadGrid();
     },
 

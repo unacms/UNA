@@ -154,20 +154,35 @@ BxDolGrid.prototype.blink = function (sId) {
     setTimeout('glGrids.' + this._sObject + '._blinkCallback("' + sId + '")', 200);
 };
 
-BxDolGrid.prototype.enable = function (sId, isEnable) {
+/**
+ * Turn a row's switch on or off: 'enable' (on the site, the default) or 'enable_api' (in the apps).
+ * The row is displayed as disabled only when none of these switches is on.
+ */
+BxDolGrid.prototype.enable = function (sId, isEnable, sAction) {
+    sAction = sAction || 'enable';
+
     var e = jQuery('#' + sId);
-    var eSwitch = e.find('.bx-switcher-cont:has([bx_grid_action_single = "enable"])');
+    var eSwitch = e.find('.bx-switcher-cont:has([bx_grid_action_single = "' + sAction + '"])');
+    if (isEnable)
+        eSwitch.removeClass('off').addClass('on');
+    else
+        eSwitch.removeClass('on').addClass('off');
+
+    var eSwitches = e.find('.bx-switcher-cont:has([bx_grid_action_single = "enable"]), .bx-switcher-cont:has([bx_grid_action_single = "enable_api"])');
+    var isRowEnabled = eSwitches.length > 1 ? eSwitches.filter('.on').length > 0 : isEnable;
+    var isRowDisabled = e.hasClass('bx-grid-table-row-disabled');
+    if (eSwitches.length > 1 && isRowEnabled != isRowDisabled)
+        return; // the row's state did not change
+
     var eActions = e.find('.bx-grid-cell-single-actions-wrapper *[bx_grid_action_single]').not('*[bx_grid_permanent_state]');
 
-    if (isEnable) {        
+    if (isRowEnabled) {
         e.removeClass('bx-grid-table-row-disabled bx-def-font-grayed');
-        eSwitch.removeClass('off').addClass('on');
         eActions.removeClass('bx-btn-disabled');
         if (eActions.length)
             this._bindActionsSingle(e);
     } else {
         eActions.addClass('bx-btn-disabled');
-        eSwitch.removeClass('on').addClass('off');
         e.addClass('bx-grid-table-row-disabled bx-def-font-grayed');        
         if (eActions.length)
             this._unbindActionsSingle(e);
@@ -329,6 +344,15 @@ BxDolGrid.prototype.processJson = function (oData, sAction, isDisableLoading) {
             } else {
                 $this.enable($this._sObject + '_row_' + oData.enable, true);
             }
+        }
+        var aSwitches = {disable_api: ['enable_api', false], enable_api: ['enable_api', true]};
+        for (var sKey in aSwitches) {
+            if (!oData || undefined == oData[sKey])
+                continue;
+
+            var aIds = 'object' == typeof(oData[sKey]) ? oData[sKey] : [oData[sKey]];
+            for(var i in aIds)
+                $this.enable($this._sObject + '_row_' + aIds[i], aSwitches[sKey][1], aSwitches[sKey][0]);
         }
         if (oData && undefined != oData.popup) {
             var sId = 'grid-popup-' + $this._sObject + '-' + sAction;

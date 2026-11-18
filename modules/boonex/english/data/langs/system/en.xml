@@ -574,8 +574,8 @@
 	<string name="_adm_bp_mi_page_seo"><![CDATA[SEO]]></string>
 	<string name="_adm_bp_mi_page_visibility"><![CDATA[Visibility]]></string>
 	<string name="_adm_bp_scs_save"><![CDATA[The changes were successfully saved]]></string>
-	<string name="_adm_bp_txt_block_active"><![CDATA[Active]]></string>
-        <string name="_adm_bp_txt_block_active_api"><![CDATA[Active (for App)]]></string>
+	<string name="_adm_bp_txt_block_active"><![CDATA[Show on the site]]></string>
+        <string name="_adm_bp_txt_block_active_api"><![CDATA[Show in the apps]]></string>
 	<string name="_adm_bp_txt_block_async"><![CDATA[Asynchronous Mode]]></string>
 	<string name="_adm_bp_txt_block_bg_hidden_on"><![CDATA[Background hidden on]]></string>
 	<string name="_adm_bp_txt_block_cache_lifetime"><![CDATA[Block Cache Lifetime (in seconds)]]></string>
@@ -1603,7 +1603,7 @@
         <string name="_adm_nav_txt_items_parent_id"><![CDATA[Parent Item]]></string>
         <string name="_adm_nav_txt_items_parent_id_empty"><![CDATA[No Parent Item]]></string>
         <string name="_adm_nav_txt_items_primary"><![CDATA[Primary]]></string>
-        <string name="_adm_nav_txt_items_active_api"><![CDATA[Active (for App)]]></string>
+        <string name="_adm_nav_txt_items_active_api"><![CDATA[Show in the apps]]></string>
 	<string name="_adm_nav_txt_items_show_to_popup"><![CDATA[Show "{0}" menu item to: ]]></string>
 	<string name="_adm_nav_txt_items_submenu"><![CDATA[Submenu]]></string>
 	<string name="_adm_nav_txt_items_submenu_empty"><![CDATA[No Submenu]]></string>
@@ -3610,9 +3610,13 @@
 	<string name="_sys_format_size_mb"><![CDATA[{0} MB]]></string>
 	<string name="_sys_format_size_tb"><![CDATA[{0} TB]]></string>
 	<string name="_sys_grid_lbl_actions"><![CDATA[Actions]]></string>
+	<string name="_sys_grid_lbl_apps"><![CDATA[Apps]]></string>
 	<string name="_sys_grid_lbl_order"><![CDATA[Order]]></string>
 	<string name="_sys_grid_lbl_select"><![CDATA[Select]]></string>
 	<string name="_sys_grid_lbl_select_all"><![CDATA[Select all]]></string>
+	<string name="_sys_grid_lbl_show_in_apps"><![CDATA[Show in the apps (web app, iOS, Android)]]></string>
+	<string name="_sys_grid_lbl_show_on_site"><![CDATA[Show on the site]]></string>
+	<string name="_sys_grid_lbl_site"><![CDATA[Site]]></string>
 	<string name="_sys_str_limit_show"><![CDATA[Show full text]]></string>
 	<string name="_adm_grid_lbl_search"><![CDATA[Search]]></string>
 	<string name="_adm_grid_lbl_module"><![CDATA[Module]]></string>

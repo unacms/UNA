@@ -571,8 +571,8 @@
 	<string name="_adm_bp_mi_page_seo"><![CDATA[Оптимизация для поисковых машин]]></string>
 	<string name="_adm_bp_mi_page_visibility"><![CDATA[Видимость]]></string>
 	<string name="_adm_bp_scs_save"><![CDATA[Изменения успешно сохранены]]></string>
-	<string name="_adm_bp_txt_block_active"><![CDATA[Активный]]></string>
-        <string name="_adm_bp_txt_block_active_api"><![CDATA[Активный (для приложения)]]></string>
+	<string name="_adm_bp_txt_block_active"><![CDATA[Показывать на сайте]]></string>
+        <string name="_adm_bp_txt_block_active_api"><![CDATA[Показывать в приложениях]]></string>
         <string name="_adm_bp_txt_block_async"><![CDATA[Асинхронный режим]]></string>
         <string name="_adm_bp_txt_block_bg_hidden_on"><![CDATA[Фон скрыт на]]></string>
         <string name="_adm_bp_txt_block_cache_lifetime"><![CDATA[Кэш для блока (в секундах)]]></string>
@@ -1581,7 +1581,7 @@
         <string name="_adm_nav_txt_items_parent_id"><![CDATA[Родительский пункт]]></string>
         <string name="_adm_nav_txt_items_parent_id_empty"><![CDATA[Нет родительского пункта]]></string>
         <string name="_adm_nav_txt_items_primary"><![CDATA[Основная]]></string>
-        <string name="_adm_nav_txt_items_active_api"><![CDATA[Активный (для приложения)]]></string>
+        <string name="_adm_nav_txt_items_active_api"><![CDATA[Показывать в приложениях]]></string>
 	<string name="_adm_nav_txt_items_show_to_popup"><![CDATA[Отображать "{0}" элемент меню для: ]]></string>
 	<string name="_adm_nav_txt_items_submenu"><![CDATA[Подменю]]></string>
 	<string name="_adm_nav_txt_items_submenu_empty"><![CDATA[Без подменю]]></string>
@@ -3580,9 +3580,13 @@
 	<string name="_sys_format_size_mb"><![CDATA[{0} МБ]]></string>
 	<string name="_sys_format_size_tb"><![CDATA[{0} ТБ]]></string>
 	<string name="_sys_grid_lbl_actions"><![CDATA[Действия]]></string>
+	<string name="_sys_grid_lbl_apps"><![CDATA[Приложения]]></string>
 	<string name="_sys_grid_lbl_order"><![CDATA[Порядок]]></string>
 	<string name="_sys_grid_lbl_select"><![CDATA[Выбор]]></string>
 	<string name="_sys_grid_lbl_select_all"><![CDATA[Выбрать все]]></string>
+	<string name="_sys_grid_lbl_show_in_apps"><![CDATA[Показывать в приложениях (веб-приложение, iOS, Android)]]></string>
+	<string name="_sys_grid_lbl_show_on_site"><![CDATA[Показывать на сайте]]></string>
+	<string name="_sys_grid_lbl_site"><![CDATA[Сайт]]></string>
 	<string name="_sys_str_limit_show"><![CDATA[Показать полностью]]></string>
 	<string name="_adm_grid_lbl_search"><![CDATA[Поиск]]></string>
 	<string name="_adm_grid_lbl_module"><![CDATA[Модуль]]></string>
