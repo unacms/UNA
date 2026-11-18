@@ -70,4 +70,12 @@ class ApplicationShellHeaderTest extends BxDolTestCase
         foreach (['template/profile_avatar.html', 'modules/boonex/artificer/data/template/system/profile_avatar.html'] as $sPath)
             $this->assertStringContainsString('arrows-alt-v', self::read($sPath), $sPath);
     }
+
+    public function testHeaderMenuIconsTakeTheTabsColour(): void
+    {
+        // the Application menu's items carry icon colours that are unreadable on the dark header
+        $this->assertStringContainsString("'home col-gray-dark'", self::read('install/sql/system.sql'));
+
+        $this->assertMatchesRegularExpression('/\n#bx-toolbar \.bx-menu-main \.bx-stl-mii \.sys-icon \{\n    color: inherit;\n\}/', self::read('modules/boonex/artificer/data/template/system/css/menu.css'));
+    }
 }

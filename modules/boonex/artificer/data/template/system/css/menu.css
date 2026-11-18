@@ -124,6 +124,12 @@ li.bx-mi-hidden {
  * row there as far as that room allows (_balance). The #bx-toolbar selectors outrank tailwind.css, which centres the
  * header's menu for templates without this setting.
  */
+/* Header main menu: a tab's icon is the tab's colour (gray, the full text colour on hover, the accent when current). A menu item may
+   carry its own icon colour (the Application menu's home is col-gray-dark, its about col-blue3-dark): fixed colours that vanish
+   on the dark header and fight the current tab's accent. */
+#bx-toolbar .bx-menu-main .bx-stl-mii .sys-icon {
+    color: inherit;
+}
 .bx-header-menu-start ul.bx-menu-main,
 #bx-toolbar .bx-header-menu-start ul.bx-menu-main {
     justify-content: flex-start;
