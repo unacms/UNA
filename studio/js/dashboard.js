@@ -339,7 +339,7 @@ BxDolStudioDashboard.prototype.showChart = function(sType, oData) {
 
         // The largest items, biggest first (the Cache block lists its caches in a fixed order), written under the bar like the audit's outcome counts.
         var aTop = [];
-        var aBySize = oC.top ? aItems.slice().sort(function(a, b) { return b.bytes - a.bytes; }) : [];
+        var aBySize = oC.top ? aItems.toSorted(function(a, b) { return b.bytes - a.bytes; }) : [];
         for(var j = 0; j < aBySize.length && aTop.length < oC.top; j++)
             if(aBySize[j].bytes > 0 || oC.top_zero)
                 aTop.push(aBySize[j].name + ' ' + aBySize[j].size);
