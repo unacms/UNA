@@ -184,7 +184,7 @@ html {
         display: none;
     }
     .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar .bx-mc-cnt {
-        padding: 0 1rem; /* 64px less the 32px icons */
+        padding: 0 0.5rem; /* as expanded: a row is 48px wide with its 32px icon in the middle, so its hover plate is a near square, not a sliver */
     }
     /* A narrow row is its 32px icon alone: the link's side paddings (made for an icon and a label) would squeeze or clip it. */
     .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar .bx-menu-panel li a {

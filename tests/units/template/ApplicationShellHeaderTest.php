@@ -59,7 +59,7 @@ class ApplicationShellHeaderTest extends BxDolTestCase
 
         $sCss = self::read('modules/boonex/artificer/data/template/system/css/menu.css');
         $this->assertMatchesRegularExpression('/\n#sidebar \.bx-menu-panel \.bx-profile-avatar \{\n    padding: 0 0\.5rem;\n\}/', $sCss);
-        $this->assertMatchesRegularExpression('/\n#sidebar\.bx-mc-narrowed \.bx-menu-panel \.bx-profile-avatar \{\n    padding: 0;\n\}/', $sCss);
+        $this->assertStringNotContainsString('#sidebar.bx-mc-narrowed .bx-menu-panel .bx-profile-avatar', $sCss, 'The same 8px in the narrow sidebar: its rows are as wide as their hover plate.');
     }
 
     public function testProfileSwitcherButtonHasAnIcon(): void

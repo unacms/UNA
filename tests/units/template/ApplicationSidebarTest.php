@@ -148,4 +148,11 @@ class ApplicationSidebarTest extends BxDolTestCase
         $this->assertMatchesRegularExpression('/\.bx-app-sidebar-narrow \.bx-app-sidebar-icon-open \{\n        display: flex;\n    \}/', $sCss);
         $this->assertStringContainsString('justify-content: flex-end; /* the button ends the row', $sCss);
     }
+
+    public function testNarrowRowsKeepARoomyHoverPlate(): void
+    {
+        // 64px less 8px a side: a 48px row round its 32px icon; 16px a side left a 32px sliver under the pointer
+        $sCss = self::read('modules/boonex/artificer/data/template/system/css/common.css');
+        $this->assertMatchesRegularExpression('/\.bx-app-sidebar-narrow \.bx-app-sidebar \.bx-mc-cnt \{\n        padding: 0 0\.5rem;/', $sCss);
+    }
 }
