@@ -7,7 +7,7 @@ SET @iCategoryId = (SELECT `category_id` FROM `sys_options` WHERE `name` = 'sys_
 INSERT IGNORE INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`)
 SELECT @iCategoryId, 'sys_header_width_standard', '_adm_stg_cpt_option_sys_header_width_standard', 'page', 'select', 'page,full', '', '', 12 FROM DUAL WHERE @iCategoryId IS NOT NULL;
 INSERT IGNORE INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`)
-SELECT @iCategoryId, 'sys_header_align_standard', '_adm_stg_cpt_option_sys_header_align_standard', 'start', 'select', 'start,center,end', '', '', 13 FROM DUAL WHERE @iCategoryId IS NOT NULL;
+SELECT @iCategoryId, 'sys_header_align_standard', '_adm_stg_cpt_option_sys_header_align_standard', 'center', 'select', 'start,center,end', '', '', 13 FROM DUAL WHERE @iCategoryId IS NOT NULL;
 INSERT IGNORE INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`)
 SELECT @iCategoryId, 'sys_header_width_application', '_adm_stg_cpt_option_sys_header_width_application', 'full', 'select', 'page,full', '', '', 14 FROM DUAL WHERE @iCategoryId IS NOT NULL;
 INSERT IGNORE INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`)

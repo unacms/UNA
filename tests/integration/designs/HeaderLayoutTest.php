@@ -72,8 +72,18 @@ class HeaderLayoutTest extends BxDolIntegrationTestCase
     {
         $this->setHeader('wide', 'middle', '', '');
 
-        $this->assertSame(['layout' => 'standard', 'width' => 'page', 'align' => 'start'], BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_STANDARD));
+        $this->assertSame(['layout' => 'standard', 'width' => 'page', 'align' => 'center'], BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_STANDARD));
         $this->assertSame(['layout' => 'application', 'width' => 'full', 'align' => 'start'], BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_APPLICATION));
+    }
+
+    public function testStartAndEndOutrankTheHeadersCentring(): void
+    {
+        // tailwind.css centres '#bx-toolbar .bx-menu-main' for every template; the setting's rules must be stronger.
+        foreach (['template/css/menu.css', 'modules/boonex/artificer/data/template/system/css/menu.css'] as $sFile) {
+            $sCss = file_get_contents(BX_DIRECTORY_PATH_ROOT . $sFile);
+            foreach (['start', 'center', 'end'] as $sAlign)
+                $this->assertStringContainsString('#bx-toolbar .bx-header-menu-' . $sAlign . ' ul.bx-menu-main', $sCss, $sFile);
+        }
     }
 
     public function testDesignerSavesOnlyRealValues(): void

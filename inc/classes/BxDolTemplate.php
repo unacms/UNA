@@ -905,9 +905,10 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         if(!in_array($sWidth, self::HEADER_WIDTHS, true))
             $sWidth = $sLayout == 'application' ? 'full' : 'page';
 
+        // As the header was before the setting: the site centres the menu of Standard pages, Application's follows the logo.
         $sAlign = getParam('sys_header_align_' . $sLayout);
         if(!in_array($sAlign, self::HEADER_ALIGNS, true))
-            $sAlign = 'start';
+            $sAlign = $sLayout == 'application' ? 'start' : 'center';
 
         return ['layout' => $sLayout, 'width' => $sWidth, 'align' => $sAlign];
     }
