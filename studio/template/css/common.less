@@ -40,6 +40,10 @@ a:hover > .sys-icon-a i {
     margin: 0; /* dropdowns hang from their trigger, the gap is set on .bx-popup-gap */
     border-radius: var(--bx-radius-2xl);
 }
+/* A dropdown menu closes by a press outside or Escape: no close row, on phones too. */
+.bx-popup-applied.bx-popup-menu .bx-popup-close-wrapper {
+    display: none !important;
+}
 .bx-popup-applied .bx-popup-gap .bx-popup {
     margin-left: 0;
     margin-right: 0;

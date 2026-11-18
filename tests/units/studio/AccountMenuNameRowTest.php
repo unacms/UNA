@@ -46,4 +46,12 @@ class AccountMenuNameRowTest extends BxDolTestCase
 
         $this->assertMatchesRegularExpression('/set on \.bx-popup-gap \*\/\n    border-radius: var\(--bx-radius-2xl\);/', self::read('studio/template/css/common.less'));
     }
+
+    public function testDropdownStaysAMenuOnPhones(): void
+    {
+        $sJs = self::read('inc/js/jquery.dolPopup.js');
+        $this->assertStringContainsString("if (\$el.hasClass('bx-popup-menu') && \$el.closest('.bx-std').length)\n                \$el.removeClass('bx-popup-responsive');", $sJs, 'Not a full screen sheet (media-phone.css) in Studio.');
+
+        $this->assertMatchesRegularExpression('/\.bx-popup-applied\.bx-popup-menu \.bx-popup-close-wrapper \{\n    display: none !important;\n\}/', self::read('studio/template/css/common.less'), 'A menu closes by a press outside or Escape.');
+    }
 }

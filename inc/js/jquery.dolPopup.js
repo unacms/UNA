@@ -215,6 +215,10 @@
             if (o.cssClass && o.cssClass != '' && !$el.hasClass(o.cssClass))
                 $el.addClass(o.cssClass);
 
+            // Studio: a dropdown menu stays a menu under its trigger on phones too, not a full screen sheet (media-phone.css).
+            if ($el.hasClass('bx-popup-menu') && $el.closest('.bx-std').length)
+                $el.removeClass('bx-popup-responsive');
+
             // default style for correct positioning
             $el.css({
                 display: 'block',
