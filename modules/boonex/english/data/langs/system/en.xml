@@ -850,7 +850,7 @@
 	<string name="_adm_dsg_inf_pwa_sw_offline"><![CDATA[Shown instead of the browser error when there is no connection: an address on this site, such as page.php?i=about. Leave it empty to use the browser page.]]></string>
 	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Colors the app title bar and, on phones, the status bar. Defaults to the color your template sets.]]></string>
 	<string name="_adm_dsg_inf_settings_radius_smooth"><![CDATA[Draws corners as a smooth curve in browsers that support it, such as Chrome. Other browsers keep round corners.]]></string>
-	<string name="_adm_dsg_inf_settings_radius_smooth_factor"><![CDATA[A smooth corner looks smaller than a round one of the same radius. Where corners are smooth, radii are multiplied by this number, from 1 to 3.]]></string>
+	<string name="_adm_dsg_inf_settings_radius_smooth_factor"><![CDATA[A smooth corner looks smaller than a round one of the same radius. Where corners are smooth, radii are multiplied by this number, from 1 to 2.]]></string>
 	<string name="_adm_dsg_inf_settings_section_corners"><![CDATA[How round the corners of blocks, buttons, fields and popups are, on the site and in Studio. Pills and circles keep their shape.]]></string>
 	<string name="_adm_dsg_inf_settings_section_forms"><![CDATA[How forms label their one-line text fields, on the site and in the apps. A form display can use a style of its own, set in <a href="{0}">Forms</a>. An app without floating labels shows them above the fields.]]></string>
 	<string name="_adm_dsg_inf_settings_section_layout"><![CDATA[Where the header, menus and footer go around the content of a page. Pages with a layout of their own in <a href="{0}">Pages</a> keep it; all the others use the ones below.]]></string>

@@ -11,5 +11,5 @@
     <string_add name="_adm_stg_cpt_option_sys_design_radius_smooth"><![CDATA[Smooth corners]]></string_add>
     <string_add name="_adm_dsg_inf_settings_radius_smooth"><![CDATA[Draws corners as a smooth curve in browsers that support it, such as Chrome. Other browsers keep round corners.]]></string_add>
     <string_add name="_adm_stg_cpt_option_sys_design_radius_smooth_factor"><![CDATA[Smooth corner multiplier]]></string_add>
-    <string_add name="_adm_dsg_inf_settings_radius_smooth_factor"><![CDATA[A smooth corner looks smaller than a round one of the same radius. Where corners are smooth, radii are multiplied by this number, from 1 to 3.]]></string_add>
+    <string_add name="_adm_dsg_inf_settings_radius_smooth_factor"><![CDATA[A smooth corner looks smaller than a round one of the same radius. Where corners are smooth, radii are multiplied by this number, from 1 to 2.]]></string_add>
 </resources>

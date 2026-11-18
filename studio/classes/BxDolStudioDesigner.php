@@ -559,7 +559,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
 
         $sFactor = str_replace(',', '.', trim((string)bx_process_input(bx_get('sys_design_radius_smooth_factor'))));
         if(is_numeric($sFactor)) {
-            $aValues['sys_design_radius_smooth_factor'] = (string)min(3, max(1, round((float)$sFactor, 2)));
+            $aValues['sys_design_radius_smooth_factor'] = (string)min(2, max(1, round((float)$sFactor, 2)));
         }
 
         // As Studio's settings forms save (BxDolStudioOptions::saveChanges): an alert per changed option, then fresh caches.

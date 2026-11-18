@@ -63,7 +63,7 @@ class DesignRadiusHeadTest extends BxDolIntegrationTestCase
 
     public static function factors(): array
     {
-        return [['1.75', '1.75'], ['1.5', '1.5'], ['2', '2'], ['1.25', '1.25'], ['0', '1'], ['9', '3'], ['abc', '1']];
+        return [['1.75', '1.75'], ['1.5', '1.5'], ['2', '2'], ['1.25', '1.25'], ['0', '1'], ['9', '2'], ['3', '2'], ['abc', '1']];
     }
 
     #[DataProvider('factors')]

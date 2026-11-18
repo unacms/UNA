@@ -1247,7 +1247,7 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         }
 
         // the multiplier is a number between 1 and 3, whatever was saved
-        $fFactor = min(3, max(1, (float)getParam('sys_design_radius_smooth_factor')));
+        $fFactor = min(2, max(1, (float)getParam('sys_design_radius_smooth_factor')));
 
         return $this->_oTemplate->parseHtmlByName('design_radius.html', [
             'size' => $aSizes[$sSize],
