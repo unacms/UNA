@@ -16,7 +16,7 @@ div.bx-dbd-block-content {
     --bx-dbd-col-max: 40rem;
     --bx-dbd-cols-max: 4;
     --bx-dbd-gap: 0.75rem; /* 12px, like the gutters around the page */
-    --bx-dbd-row: 21.25rem; /* 340px: the 68px caption plus 272px of content */
+    --bx-dbd-row: 21.9375rem; /* 351px: a two-row block (714px with the 12px gap) is the 68px caption plus the Updates block's 646px, so it shows whole: the 144px hero, 10px, three 52px switches and six 52px rows 2px apart, 8px under them */
     max-width: calc(var(--bx-dbd-cols-max) * var(--bx-dbd-col-max) + (var(--bx-dbd-cols-max) - 1) * var(--bx-dbd-gap));
     margin-left: auto;
     margin-right: auto;
