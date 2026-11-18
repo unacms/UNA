@@ -194,43 +194,6 @@ export function tasksPage(page: { role?: 'assigned' | 'created'; view?: 'timers'
     return list;
 }
 
-function tasksQuery(list: ListRoute): string {
-    const params = new URLSearchParams();
-    if (list.taskView === 'timers') params.set('view', 'timers');
-    else if (list.taskView === 'budget' && list.taskContext) {
-        params.set('context', list.taskContext);
-        params.set('view', 'budget');
-    } else {
-        if (list.taskContext) {
-            params.set('context', list.taskContext);
-            if (list.taskList) params.set('list', list.taskList);
-        } else if (list.taskRole === 'created') params.set('role', 'created');
-        if (list.feed === 'completed') params.set('feed', 'completed');
-    }
-    const q = params.toString();
-    return q ? `?${q}` : '';
-}
-
-/** The Tasks list route of a path's query, or null when it is not one tasksQuery writes. */
-function parseTasksQuery(query: string): ListRoute | null {
-    const params = new URLSearchParams(query);
-    const keys = [...params.keys()];
-    if (keys.some((k) => !['view', 'role', 'context', 'list', 'feed'].includes(k)) || new Set(keys).size !== keys.length) return null;
-    const view = params.get('view');
-    const role = params.get('role');
-    const context = params.get('context');
-    const taskList = params.get('list');
-    const feed = params.get('feed');
-    if (view !== null && view !== 'timers' && view !== 'budget') return null;
-    if (role !== null && role !== 'created') return null;
-    if (feed !== null && feed !== 'completed') return null;
-    if (context !== null && !ID.test(context)) return null;
-    if (taskList !== null && (context === null || (taskList !== 'inbox' && !ID.test(taskList)))) return null;
-    const list = tasksPage({ view: view ?? undefined, role: role ?? undefined, context: context ?? undefined, list: taskList, completed: feed !== null } as Parameters<typeof tasksPage>[0]);
-    // one form only
-    return tasksQuery(list) === `?${query}` ? list : null;
-}
-
 /** The sections whose list can show one category: Posts and Discussions. */
 export const CATEGORY_SECTIONS = ['posts', 'discussions'] as const;
 export type CategorySection = (typeof CATEGORY_SECTIONS)[number];
@@ -465,29 +428,209 @@ function commentPart(comment: string, thread?: string): string {
 
 const COMMENT_PART = /^comment-([1-9][0-9]*)(?:-in-([1-9][0-9]*))?$/;
 
-function listQuery(list: ListRoute): string {
-    if (list.section === 'tasks') return tasksQuery(list);
-    if (list.section === 'page') return list.page ? `?path=${encodeURIComponent(list.page)}` : '';
-    if (list.category && isCategorySection(list.section)) return `?${list.feed ? `feed=${list.feed}&` : ''}category=${encodeURIComponent(list.category)}`;
-    if (list.feed) return `?feed=${list.feed}`;
-    if (list.section === 'connections') return list.connections && list.connections !== 'friends' ? `?tab=${list.connections}` : '';
-    const contextParam = CONTEXT_PARAMS[list.section];
-    if (contextParam) return list.group ? `?${contextParam}=${encodeURIComponent(list.group)}${list.groupTab && list.groupTab !== 'posts' ? `&tab=${list.groupTab}` : ''}` : '';
-    if (list.section === 'profile') {
+/**
+ * How one section's list route is written in a path's query (after "?", "" for none) and read
+ * back. A path has one form only: a reader refuses a query its writer would not have written
+ * (`oneForm`), with one exception kept from the start: a feed or a filter written out though it
+ * is the default.
+ */
+type QueryCodec = {
+    write: (list: ListRoute) => string;
+    read: (section: Section, query: string) => ListRoute | null;
+};
+
+/** The list read from a query, if its section's codec writes that query back the same. */
+function oneForm(list: ListRoute | null, query: string): ListRoute | null {
+    return list && codecOf(list.section).write(list) === query ? list : null;
+}
+
+/** A section's feed (`feed=hot`) or filter (`filter=unread`); the default feed is not written out. */
+const FEED_OR_FILTER: QueryCodec = {
+    write: (list) => {
+        if (list.feed) return `feed=${list.feed}`;
+        return list.filter ? `filter=${list.filter}` : '';
+    },
+    read: (section, query) => {
+        const params = new URLSearchParams(query);
+        const feed = params.get('feed');
+        const filter = params.get('filter');
+        if ([...params.keys()].length !== 1) return null;
+        if (feed !== null) return sectionFeeds(section).includes(feed as FeedName) ? feedRoute(section, feed as FeedName) : null;
+        if (filter !== null) return sectionFilters(section).includes(filter as ListFilter) ? filterRoute(section, filter as ListFilter) : null;
+        return null;
+    },
+};
+
+/** Posts and Discussions: a feed, or one category at a feed (`feed=popular&category=3`). */
+const CATEGORY_LIST: QueryCodec = {
+    write: (list) => {
+        if (!list.category) return FEED_OR_FILTER.write(list);
+        const category = `category=${encodeURIComponent(list.category)}`;
+        return list.feed ? `feed=${list.feed}&${category}` : category;
+    },
+    read: (section, query) => {
+        const params = new URLSearchParams(query);
+        if (!params.has('category') || !isCategorySection(section)) return FEED_OR_FILTER.read(section, query);
+        const category = params.get('category');
+        const feed = params.get('feed');
+        if (category === null || !ID.test(category) || [...params.keys()].some((k) => k !== 'category' && k !== 'feed')) return null;
+        if (feed !== null && !sectionFeeds(section).includes(feed as FeedName)) return null;
+        // the feed first, the default feed not written out, no category with Mine
+        return oneForm(categoryPage(section, category, (feed ?? undefined) as FeedName | undefined), query);
+    },
+};
+
+/** Groups, Spaces and Events: a feed of the ones to browse, or one context's page at a tab (`group=67&tab=members`). */
+const CONTEXT_LIST: QueryCodec = {
+    write: (list) => {
+        if (list.feed) return `feed=${list.feed}`;
+        const param = CONTEXT_PARAMS[list.section];
+        if (!param || !list.group) return '';
+        const context = `${param}=${encodeURIComponent(list.group)}`;
+        return list.groupTab && list.groupTab !== 'posts' ? `${context}&tab=${list.groupTab}` : context;
+    },
+    read: (section, query) => {
+        const params = new URLSearchParams(query);
+        const context = sectionContext(section);
+        const param = CONTEXT_PARAMS[section];
+        if (params.has('feed') || !context || !param) return FEED_OR_FILTER.read(section, query);
+        const group = params.get(param);
+        const groupTab = params.get('tab');
+        if (group === null || !ID.test(group) || [...params.keys()].some((k) => k !== param && k !== 'tab')) return null;
+        if (groupTab !== null && !contextHasTab(context, groupTab)) return null;
+        // the context first, the default tab not written out
+        return oneForm(contextPage(context, group, (groupTab ?? 'posts') as GroupTab), query);
+    },
+};
+
+const CONNECTIONS_LIST: QueryCodec = {
+    write: (list) => (list.connections && list.connections !== 'friends' ? `tab=${list.connections}` : ''),
+    read: (_section, query) => {
+        const params = new URLSearchParams(query);
+        const tab = params.get('tab');
+        if ([...params.keys()].some((k) => k !== 'tab') || tab === null || !(CONNECTIONS_TABS as readonly string[]).includes(tab)) return null;
+        return oneForm(connectionsPage(tab as ConnectionsTab), query);
+    },
+};
+
+const PROFILE_LIST: QueryCodec = {
+    write: (list) => {
         const params = new URLSearchParams();
         if (list.profile) params.set('id', list.profile);
         if (list.profileTab && list.profileTab !== 'posts') params.set('tab', list.profileTab);
-        const query = params.toString();
-        return query ? `?${query}` : '';
-    }
-    if (list.section === 'search') {
+        return params.toString();
+    },
+    read: (_section, query) => {
+        const params = new URLSearchParams(query);
+        const profile = params.get('id');
+        const profileTab = params.get('tab');
+        if ([...params.keys()].some((k) => k !== 'id' && k !== 'tab')) return null;
+        if (profile !== null && !ID.test(profile)) return null;
+        if (profileTab !== null && !(PROFILE_TABS as readonly string[]).includes(profileTab)) return null;
+        return oneForm(profilePage(profile, (profileTab ?? 'posts') as ProfileTab), query);
+    },
+};
+
+const SEARCH_LIST: QueryCodec = {
+    write: (list) => {
         const params = new URLSearchParams();
         if (list.q) params.set('q', list.q);
         if (list.tab && list.tab !== 'people') params.set('tab', list.tab);
-        const query = params.toString();
-        return query ? `?${query}` : '';
-    }
-    return list.filter ? `?filter=${list.filter}` : '';
+        return params.toString();
+    },
+    read: (_section, query) => {
+        const params = new URLSearchParams(query);
+        const keys = [...params.keys()];
+        if (!keys.length || keys.some((k) => k !== 'q' && k !== 'tab') || new Set(keys).size !== keys.length) return null;
+        const q = params.get('q');
+        const tab = params.get('tab');
+        if (q !== null && (q !== q.trim() || !q || q.length > SEARCH_MAX)) return null;
+        // the default tab is never written out
+        if (tab !== null && (tab === 'people' || !(SEARCH_TABS as readonly string[]).includes(tab))) return null;
+        // one order of the parameters only: q first
+        return oneForm(searchRoute(q ?? '', (tab ?? 'people') as SearchTab), query);
+    },
+};
+
+/** A page of the site the app has no screen for: its path there (`path=%2Fpage%2Fabout`). */
+const SITE_PAGE: QueryCodec = {
+    write: (list) => (list.page ? `path=${encodeURIComponent(list.page)}` : ''),
+    read: (_section, query) => {
+        const params = new URLSearchParams(query);
+        const page = params.get('path');
+        if ([...params.keys()].some((k) => k !== 'path') || page === null) return null;
+        return oneForm(sitePage(page), query);
+    },
+};
+
+/** My tasks, My timers, a context's tasks (a list of it) or its budget: see tasksPage. */
+const TASKS_LIST: QueryCodec = {
+    write: (list) => {
+        const params = new URLSearchParams();
+        if (list.taskView === 'timers') params.set('view', 'timers');
+        else if (list.taskView === 'budget' && list.taskContext) {
+            params.set('context', list.taskContext);
+            params.set('view', 'budget');
+        } else {
+            if (list.taskContext) {
+                params.set('context', list.taskContext);
+                if (list.taskList) params.set('list', list.taskList);
+            } else if (list.taskRole === 'created') params.set('role', 'created');
+            if (list.feed === 'completed') params.set('feed', 'completed');
+        }
+        return params.toString();
+    },
+    read: (_section, query) => {
+        const params = new URLSearchParams(query);
+        const keys = [...params.keys()];
+        if (keys.some((k) => !['view', 'role', 'context', 'list', 'feed'].includes(k)) || new Set(keys).size !== keys.length) return null;
+        const view = params.get('view');
+        const role = params.get('role');
+        const context = params.get('context');
+        const taskList = params.get('list');
+        const feed = params.get('feed');
+        if (view !== null && view !== 'timers' && view !== 'budget') return null;
+        if (role !== null && role !== 'created') return null;
+        if (feed !== null && feed !== 'completed') return null;
+        if (context !== null && !ID.test(context)) return null;
+        if (taskList !== null && (context === null || (taskList !== 'inbox' && !ID.test(taskList)))) return null;
+        return oneForm(tasksPage({ view: view ?? undefined, role: role ?? undefined, context: context ?? undefined, list: taskList, completed: feed !== null } as Parameters<typeof tasksPage>[0]), query);
+    },
+};
+
+/** Each section's codec: a new section does not compile until it has one. */
+const QUERY_CODECS: Readonly<Record<Section, QueryCodec>> = {
+    home: FEED_OR_FILTER,
+    explore: FEED_OR_FILTER,
+    notifications: FEED_OR_FILTER,
+    messages: FEED_OR_FILTER,
+    connections: CONNECTIONS_LIST,
+    people: FEED_OR_FILTER,
+    posts: CATEGORY_LIST,
+    discussions: CATEGORY_LIST,
+    events: CONTEXT_LIST,
+    media: FEED_OR_FILTER,
+    tasks: TASKS_LIST,
+    search: SEARCH_LIST,
+    profile: PROFILE_LIST,
+    groups: CONTEXT_LIST,
+    spaces: CONTEXT_LIST,
+    settings: FEED_OR_FILTER,
+    page: SITE_PAGE,
+};
+
+function codecOf(section: Section): QueryCodec {
+    return QUERY_CODECS[section];
+}
+
+function listQuery(list: ListRoute): string {
+    const query = codecOf(list.section).write(list);
+    return query ? `?${query}` : '';
+}
+
+/** The list route of a path's section and query, or null when the query is not one its codec writes. */
+function parseList(section: Section, query: string | undefined): ListRoute | null {
+    return query === undefined ? { section } : codecOf(section).read(section, query);
 }
 
 /** The list part of a route as a path, e.g. "/home", "/connections?tab=requests", "/home?feed=hot", "/posts?feed=popular&category=3", "/notifications?filter=unread", "/search?q=lily&tab=posts", "/groups?group=67&tab=members", "/spaces?space=725&tab=spaces" or "/profile?id=8&tab=friends". Keys the list's scroll memory. */
@@ -514,147 +657,85 @@ export function parseRoute(path: string): Route | null {
     if (!section || !isSection(section) || rest.length) return null;
     // only a profile, group, space or event (its tab) and a post or discussion (a comment in it) have a fourth part
     if (tab !== undefined && kind !== 'profile' && kind !== 'group' && kind !== 'space' && kind !== 'event' && kind !== 'post' && kind !== 'discussion') return null;
-    let list: ListRoute = { section };
-    if (section === 'search') {
-        const parsed = parseSearchQuery(query);
-        if (!parsed) return null;
-        list = parsed;
-    } else if (sectionContext(section) && query !== undefined && !new URLSearchParams(query).has('feed')) {
-        const param = CONTEXT_PARAMS[section] ?? 'group';
-        const params = new URLSearchParams(query);
-        const group = params.get(param);
-        const groupTab = params.get('tab');
-        if (group === null || !ID.test(group) || [...params.keys()].some((k) => k !== param && k !== 'tab')) return null;
-        const context = sectionContext(section) ?? 'group';
-        if (groupTab !== null && !contextHasTab(context, groupTab)) return null;
-        list = contextPage(context, group, (groupTab ?? 'posts') as GroupTab);
-        // one form only: group first, the default tab not written out
-        if (listQuery(list) !== `?${query}`) return null;
-    } else if (section === 'connections' && query !== undefined) {
-        const params = new URLSearchParams(query);
-        const tab = params.get('tab');
-        if ([...params.keys()].some((k) => k !== 'tab') || tab === null || !(CONNECTIONS_TABS as readonly string[]).includes(tab)) return null;
-        list = connectionsPage(tab as ConnectionsTab);
-        // the default tab is never written out, so a path has one form only
-        if (listQuery(list) !== `?${query}`) return null;
-    } else if (section === 'profile' && query !== undefined) {
-        const params = new URLSearchParams(query);
-        const profile = params.get('id');
-        const profileTab = params.get('tab');
-        if ([...params.keys()].some((k) => k !== 'id' && k !== 'tab')) return null;
-        if (profile !== null && !ID.test(profile)) return null;
-        if (profileTab !== null && !(PROFILE_TABS as readonly string[]).includes(profileTab)) return null;
-        list = profilePage(profile, (profileTab ?? 'posts') as ProfileTab);
-        if (listQuery(list) !== `?${query}`) return null;
-    } else if (section === 'page' && query !== undefined) {
-        const params = new URLSearchParams(query);
-        const page = params.get('path');
-        if ([...params.keys()].some((k) => k !== 'path') || page === null) return null;
-        const parsed = sitePage(page);
-        if (!parsed || listQuery(parsed) !== `?${query}`) return null;
-        list = parsed;
-    } else if (section === 'tasks' && query !== undefined) {
-        const parsed = parseTasksQuery(query);
-        if (!parsed) return null;
-        list = parsed;
-    } else if (query !== undefined && isCategorySection(section) && new URLSearchParams(query).has('category')) {
-        const params = new URLSearchParams(query);
-        const category = params.get('category');
-        const feed = params.get('feed');
-        if (category === null || !ID.test(category) || [...params.keys()].some((k) => k !== 'category' && k !== 'feed')) return null;
-        if (feed !== null && !sectionFeeds(section).includes(feed as FeedName)) return null;
-        list = categoryPage(section, category, (feed ?? undefined) as FeedName | undefined);
-        // one form only: the feed first, the default feed not written out, no category with Mine
-        if (listQuery(list) !== `?${query}`) return null;
-    } else if (query !== undefined) {
-        const params = new URLSearchParams(query);
-        const keys = [...params.keys()];
-        const feed = params.get('feed');
-        const filter = params.get('filter');
-        if (keys.length !== 1) return null;
-        if (feed !== null) {
-            if (!sectionFeeds(section).includes(feed as FeedName)) return null;
-            list = feedRoute(section, feed as FeedName);
-        } else if (filter !== null) {
-            if (!sectionFilters(section).includes(filter as ListFilter)) return null;
-            list = filterRoute(section, filter as ListFilter);
-        } else return null;
-    }
+    const list = parseList(section, query);
+    if (!list) return null;
     if (kind === undefined) return { list, detail: null };
     // the friend requests were a detail beside any list once (an older path, a una:// link):
     // they are Connections' Requests tab now
     if (kind === 'friend-requests') return rawId === undefined && tab === undefined ? connectionsRoute('requests') : null;
-    if ((kind === 'new-message' || kind === 'new-discussion' || kind === 'new-video' || kind === 'new-photos' || kind === 'new-album' || kind === 'new-files' || kind === 'new-article') && rawId === undefined) return { list, detail: { kind } };
-    if (rawId === undefined || rawId === '') return null;
-    let id: string;
-    try {
-        id = decodeURIComponent(rawId);
-    } catch {
-        return null;
-    }
-    switch (kind) {
-        case 'post':
-        case 'discussion': {
-            if (tab === undefined) return { list, detail: { kind, id } };
-            const m = COMMENT_PART.exec(tab);
-            if (!m?.[1]) return null;
-            return { list, detail: m[2] ? { kind, id, comment: m[1], thread: m[2] } : { kind, id, comment: m[1] } };
-        }
-        case 'conversation':
-            return tab === undefined ? { list, detail: { kind, id } } : null;
-        case 'group':
-        case 'space':
-        case 'event':
-            if (!ID.test(id)) return null;
-            if (tab === undefined) return { list, detail: { kind, id } };
-            if (tab === 'posts' || !contextHasTab(kind, tab)) return null;
-            return { list, detail: { kind, id, tab } };
-        case 'edit-profile':
-            return ID.test(id) ? { list, detail: { kind, id } } : null;
-        case 'settings':
-            return (SETTINGS_TABS as readonly string[]).includes(id) ? { list, detail: { kind, tab: id as SettingsTab } } : null;
-        case 'new-message':
-            return { list, detail: { kind, profileId: id } };
-        case 'new-discussion':
-            return ID.test(id) ? { list, detail: { kind, groupId: id } } : null;
-        case 'new-video':
-        case 'new-photos':
-        case 'new-album':
-        case 'new-files':
-        case 'new-article':
-            return tab === undefined && ID.test(id) ? { list, detail: { kind, contextId: id } } : null;
-        case 'video':
-        case 'photo':
-        case 'album':
-        case 'file':
-        case 'task':
-        case 'poll':
-        case 'article':
-            return tab === undefined && ID.test(id) ? { list, detail: { kind, id } } : null;
-        case 'profile':
-            if (tab === undefined) return { list, detail: { kind, id } };
-            // the default tab is never written out, so a path has one form only
-            if (tab === 'posts' || !(PROFILE_TABS as readonly string[]).includes(tab)) return null;
-            return { list, detail: { kind, id, tab: tab as ProfileTab } };
-        default:
-            return null;
-    }
+    const detail = parseDetail(kind, rawId, tab);
+    return detail ? { list, detail } : null;
 }
 
-/** The list route of a search path's query, or null when it is not one routeToPath makes. */
-function parseSearchQuery(query: string | undefined): ListRoute | null {
-    if (query === undefined) return { section: 'search' };
-    const params = new URLSearchParams(query);
-    const keys = [...params.keys()];
-    if (!keys.length || keys.some((k) => k !== 'q' && k !== 'tab') || new Set(keys).size !== keys.length) return null;
-    const q = params.get('q');
-    const tab = params.get('tab');
-    if (q !== null && (q !== q.trim() || !q || q.length > SEARCH_MAX)) return null;
-    // the default tab is never written out, so a path has one form only
-    if (tab !== null && (tab === 'people' || !(SEARCH_TABS as readonly string[]).includes(tab))) return null;
-    const list = searchRoute(q ?? '', (tab ?? 'people') as SearchTab);
-    // one order of the parameters only: q first
-    return listQuery(list) === `?${query}` ? list : null;
+/** New items: a detail with no id ("new-message"), the same as the forms that take one. */
+const NEW_KINDS = ['new-message', 'new-discussion', 'new-video', 'new-photos', 'new-album', 'new-files', 'new-article'] as const;
+
+/** A post or a discussion, at a comment in it ("comment-99", "comment-99-in-55" for a reply under 55). */
+function readCommented(kind: 'post' | 'discussion', id: string, tab: string | undefined): DetailRoute | null {
+    if (tab === undefined) return { kind, id };
+    const m = COMMENT_PART.exec(tab);
+    if (!m?.[1]) return null;
+    return m[2] ? { kind, id, comment: m[1], thread: m[2] } : { kind, id, comment: m[1] };
+}
+
+/** A group, a space or an event, at a tab its page has (Posts, the default, never written out). */
+function readContext(kind: ContextPageKind, id: string, tab: string | undefined): DetailRoute | null {
+    if (!ID.test(id)) return null;
+    if (tab === undefined) return { kind, id };
+    return tab !== 'posts' && contextHasTab(kind, tab) ? { kind, id, tab } : null;
+}
+
+/** A profile, at one of its tabs (Posts, the default, never written out). */
+function readProfile(id: string, tab: string | undefined): DetailRoute | null {
+    if (tab === undefined) return { kind: 'profile', id };
+    return tab !== 'posts' && (PROFILE_TABS as readonly string[]).includes(tab) ? { kind: 'profile', id, tab: tab as ProfileTab } : null;
+}
+
+/** An item of a module, by its number; it has no fourth part. */
+const readItem = (kind: 'video' | 'photo' | 'album' | 'file' | 'task' | 'poll' | 'article') => (id: string, tab: string | undefined): DetailRoute | null => (tab === undefined && ID.test(id) ? { kind, id } : null);
+
+/** A form for a new item in a context (its number); it has no fourth part. */
+const readNewInContext = (kind: 'new-video' | 'new-photos' | 'new-album' | 'new-files' | 'new-article') => (id: string, tab: string | undefined): DetailRoute | null =>
+    tab === undefined && ID.test(id) ? { kind, contextId: id } : null;
+
+/** How each kind of detail is read from its id (decoded) and a fourth part; a kind not here is no detail. */
+const DETAIL_READERS: Readonly<Record<string, (id: string, tab: string | undefined) => DetailRoute | null>> = {
+    post: (id, tab) => readCommented('post', id, tab),
+    discussion: (id, tab) => readCommented('discussion', id, tab),
+    conversation: (id, tab) => (tab === undefined ? { kind: 'conversation', id } : null),
+    group: (id, tab) => readContext('group', id, tab),
+    space: (id, tab) => readContext('space', id, tab),
+    event: (id, tab) => readContext('event', id, tab),
+    'edit-profile': (id) => (ID.test(id) ? { kind: 'edit-profile', id } : null),
+    settings: (id) => ((SETTINGS_TABS as readonly string[]).includes(id) ? { kind: 'settings', tab: id as SettingsTab } : null),
+    'new-message': (id) => ({ kind: 'new-message', profileId: id }),
+    'new-discussion': (id) => (ID.test(id) ? { kind: 'new-discussion', groupId: id } : null),
+    'new-video': readNewInContext('new-video'),
+    'new-photos': readNewInContext('new-photos'),
+    'new-album': readNewInContext('new-album'),
+    'new-files': readNewInContext('new-files'),
+    'new-article': readNewInContext('new-article'),
+    video: readItem('video'),
+    photo: readItem('photo'),
+    album: readItem('album'),
+    file: readItem('file'),
+    task: readItem('task'),
+    poll: readItem('poll'),
+    article: readItem('article'),
+    profile: readProfile,
+};
+
+/** The detail of a path's parts after its section: its kind, its id and a fourth part (a tab, a comment). */
+function parseDetail(kind: string, rawId: string | undefined, tab: string | undefined): DetailRoute | null {
+    if ((NEW_KINDS as readonly string[]).includes(kind) && rawId === undefined) return { kind: kind as (typeof NEW_KINDS)[number] };
+    const read = Object.hasOwn(DETAIL_READERS, kind) ? DETAIL_READERS[kind] : undefined;
+    if (!read || rawId === undefined || rawId === '') return null;
+    try {
+        return read(decodeURIComponent(rawId), tab);
+    } catch {
+        // an id that is no valid escape
+        return null;
+    }
 }
 
 export function sameRoute(a: Route, b: Route): boolean {
