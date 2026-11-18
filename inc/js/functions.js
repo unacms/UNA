@@ -489,6 +489,29 @@ function bx_loading_orb_add(oCanvas, oModule)
         glBxOrbs.raf = requestAnimationFrame(bx_loading_orb_tick);
 }
 
+/*
+ * Less motion on request (the system's "reduce motion" setting): jQuery's animations (fadeIn, slideDown, animate)
+ * jump to their end and still call their callbacks. The styles do the same for CSS transitions and animations
+ * (common.css). It follows the setting when it changes.
+ */
+function bx_reduced_motion_sync()
+{
+    var oQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    if(!oQuery || typeof jQuery === 'undefined')
+        return;
+
+    jQuery.fx.off = oQuery.matches;
+    return oQuery;
+}
+
+(function () {
+    var oQuery = bx_reduced_motion_sync();
+    if(!oQuery)
+        return;
+
+    oQuery.addEventListener('change', bx_reduced_motion_sync);
+})();
+
 function bx_loading_orb_still()
 {
     return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
