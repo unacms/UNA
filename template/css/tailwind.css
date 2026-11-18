@@ -2536,7 +2536,7 @@
         @apply flex items-center gap-3 h-9 px-2.5 text-sm whitespace-nowrap;
     }
     .bx-std .bx-menu-verlit li.bx-mv-label {
-        @apply mb-1 pb-1 rounded-none border-b border-black/10 dark:border-white/10;
+        @apply mb-1 pb-1 rounded-none border-b border-black/[0.06] dark:border-white/[0.06]; /* a faint divider: the popup is a small surface, and NEO's black/10 block lines read heavy on it */
     }
     /* The name row links to the profile: the link, not the row with its divider, takes the hover. */
     .bx-std .bx-menu-verlit li.bx-mv-label > a {
@@ -2546,7 +2546,7 @@
         @apply w-6 h-6 -mx-0.5 rounded-full object-cover;
     }
     .bx-std .bx-menu-verlit li.bx-mv-theme {
-        @apply mt-1 pt-1 rounded-none border-t border-black/10 dark:border-white/10;
+        @apply mt-1 pt-1 rounded-none border-t border-black/[0.06] dark:border-white/[0.06];
     }
     .bx-std .bx-menu-verlit li.bx-mv-theme > div > span {
         @apply flex-auto;
