@@ -117,6 +117,41 @@
         eBodyHtml.toggleClass('bx-popup-lock', bLock);
     };
 
+    /**
+     * While a popup with a fog is open, the page behind it is inert: out of the tab order and out of the accessibility
+     * tree in every browser and screen reader (aria-modal alone is not honoured by all of them). The page is what
+     * shows in <body> when the popup opens, apart from popups, the fog, toasts and live regions, and whatever holds an
+     * open popup; parts that are hidden then (a date picker, a suggestions list) are left alone, so they work when a
+     * field in the popup shows them. It is given back when the last such popup closes.
+     * @param $el the popup that opens, or null when one has closed
+     */
+    function _dolPopupInert ($el) {
+        if (!('inert' in document.documentElement))
+            return;
+
+        if (!$el) {
+            if ($('.bx-popup-wrapper[aria-modal="true"]').length)
+                return;
+
+            $('[data-bx-popup-inert]').each(function () {
+                this.inert = false;
+                this.removeAttribute('data-bx-popup-inert');
+            });
+            return;
+        }
+
+        $(document.body).children().each(function () {
+            var e = $(this);
+            if (this.inert || e.is('script, style, link, noscript, template, #bx-popup-fog, .bx-popup-wrapper, [id^="bx-popup"], [id^="bx-sliding-menu"], [aria-live], [role="status"], [role="alert"]'))
+                return;
+            if (e.css('display') == 'none' || this === $el.get(0) || $.contains(this, $el.get(0)) || e.find('.bx-popup-active').length)
+                return;
+
+            this.inert = true;
+            this.setAttribute('data-bx-popup-inert', '1');
+        });
+    };
+
     $.fn.dolPopup = function(options) {
         var $this = this;
         var options = options || {};
@@ -199,6 +234,8 @@
 
                 // a popup behind a fog is modal for assistive technology as well
                 $el.attr('aria-modal', o.fog ? 'true' : null);
+                if (o.fog)
+                    _dolPopupInert($el);
 
                 // remove any transitions before setting popup position
                 $el.removeClass('bx-popup-transitions bx-popup-inactive'); 
@@ -454,6 +491,7 @@
             }
             
             _dolPopupLockScreen(false);
+            _dolPopupInert(null);
         });
     };
 
