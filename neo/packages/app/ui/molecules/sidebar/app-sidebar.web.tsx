@@ -27,14 +27,30 @@ import type { AppSidebarProps } from './app-sidebar.types';
 
 type MenuItem = { [key: string]: any };
 
-const comparable = (value: unknown) => String(value || '').replace(/^https?:\/\/[^/]+/, '').replace(/^\/+|\/+$/g, '');
+/** A link or a page URL as a bare path, so the two compare: no origin, no slashes around it. */
+function comparable(value: unknown): string {
+    if (typeof value !== 'string' || !value) return '';
+    let path = value;
+    const scheme = /^https?:\/\//.exec(path);
+    if (scheme) {
+        const slash = path.indexOf('/', scheme[0].length);
+        path = slash === -1 ? '' : path.slice(slash);
+    }
+    return path.split('/').filter(Boolean).join('/');
+}
+
+function rowHref(link: string): string | undefined {
+    if (!link || link === 'javascript:void(0)') return undefined;
+    if (link.startsWith('/') || /^https?:/.test(link)) return link;
+    return `/${link}`;
+}
 
 /** The script that sets the state before React is there; the effect below keeps it in step afterwards. */
 const PREPAINT = `(function(){try{var p=JSON.parse(localStorage.getItem('neo:v1:prefs')||'{}');document.documentElement.setAttribute('data-neo-sidebar',p&&p.sidebarNarrow?'narrow':'expanded')}catch(e){document.documentElement.setAttribute('data-neo-sidebar','expanded')}})()`;
 
-function SidebarRow({ item, current }: { item: MenuItem; current: boolean }) {
-    const link = String(item?.link || item?.url || '');
-    const href = link && link !== 'javascript:void(0)' ? (link.startsWith('/') || /^https?:/.test(link) ? link : `/${link}`) : undefined;
+function SidebarRow({ item, current }: Readonly<{ item: MenuItem; current: boolean }>) {
+    const link = [item?.link, item?.url].find((value) => typeof value === 'string' && value) ?? '';
+    const href = rowHref(link);
     const title = item?.title || item?.name;
     const count = item?.addon && typeof item.addon !== 'object' ? String(item.addon) : '';
 
@@ -66,7 +82,7 @@ function SidebarRow({ item, current }: { item: MenuItem; current: boolean }) {
 }
 
 /** One of the panel's submenus: its rows, and the rows under a row that has its own (a list of followed contexts). */
-function SidebarMenu({ object, url }: { object: string; url: string }) {
+function SidebarMenu({ object, url }: Readonly<{ object: string; url: string }>) {
     const { menuData } = useMenuData(object);
     const items: MenuItem[] = Array.isArray(menuData?.items) ? menuData.items : [];
     if (!items.length) return null;
@@ -85,22 +101,32 @@ function SidebarMenu({ object, url }: { object: string; url: string }) {
     );
 }
 
-export default function AppSidebar({ pageData }: AppSidebarProps) {
+export default function AppSidebar({ pageData }: Readonly<AppSidebarProps>) {
     const { t } = useTranslation();
     const narrow = usePref('sidebarNarrow');
     const open = useAppSidebarOpen();
     const toggleRef = useRef<HTMLDivElement>(null);
+    const backdropRef = useRef<HTMLDivElement>(null);
     const { menuData } = useMenuData(appSetting('menus', 'objects', 'panel') || 'sys_site_panel');
     const panels: MenuItem[] = Array.isArray(menuData?.items) ? menuData.items : [];
     const url = comparable(pageData?.url);
 
     // The stored choice, once the prefs are read: the script set the same before the first paint.
     useEffect(() => {
-        document.documentElement.setAttribute('data-neo-sidebar', narrow ? 'narrow' : 'expanded');
+        document.documentElement.dataset.neoSidebar = narrow ? 'narrow' : 'expanded';
     }, [narrow]);
     useEffect(() => () => {
-        document.documentElement.removeAttribute('data-neo-sidebar');
+        delete document.documentElement.dataset.neoSidebar;
         setAppSidebarOpen(false);
+    }, []);
+
+    // A press outside the drawer closes it. Pointer only: the keyboard has Escape, and the scrim is not a control.
+    useEffect(() => {
+        const backdrop = backdropRef.current;
+        if (!backdrop) return;
+        const close = () => setAppSidebarOpen(false);
+        backdrop.addEventListener('click', close);
+        return () => backdrop.removeEventListener('click', close);
     }, []);
 
     // The drawer is a modal: the page behind takes no focus or presses, Escape closes it, focus comes back.
@@ -166,7 +192,7 @@ export default function AppSidebar({ pageData }: AppSidebarProps) {
                         : null))}
                 </View>
             </aside>
-            <div className="neo-app-sidebar-backdrop" data-open={open ? 'true' : undefined} onClick={() => setAppSidebarOpen(false)} />
+            <div ref={backdropRef} className="neo-app-sidebar-backdrop" aria-hidden="true" data-open={open ? 'true' : undefined} />
         </>
     );
 }
