@@ -863,7 +863,7 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
      * (bx-logo, ...), which only the first copy keeps. The layout shows one of the two at a time.
      * @return string
      */
-    function getMainLogoCopy($aParams = array())
+    public function getMainLogoCopy($aParams = array())
     {
         return (string)preg_replace('/\sid="[^"]*"/', '', $this->getMainLogo($aParams));
     }
