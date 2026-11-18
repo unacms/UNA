@@ -12,7 +12,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { type KeyboardEvent as ReactKeyboardEvent, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 
 import { Icon } from '../../components/icon';
-import { RichEditor, type RichEditorHandle } from '../../components/rich-editor/rich-editor';
+import { RichEditor, type RichEditorHandle } from '../../components/rich-editor/lazy';
 import { RichText } from '../../components/rich-text';
 import { VisuallyHidden } from '../../components/visually-hidden';
 import { useWindowAnnounce } from '../../lib/announce';

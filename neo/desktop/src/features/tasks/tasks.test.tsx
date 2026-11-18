@@ -20,7 +20,8 @@ import { commandEntries, navigationEntries } from '../palette/commands';
 import { type BudgetEntry, entryHoursText, entryText, hoursProblem, hoursText, parseHours, percentText, spentShare, spentText } from './budget';
 import { boardParams, clockText, groupTasks, neighbours, parseDuration, timerText, toggleFilter } from './board';
 import { dateOf, dueFromDate } from './task-actions';
-import { ContextTasks, focusTaskAdd } from './task-list';
+import { ContextTasks } from './task-list';
+import { focusTaskAdd } from './tasks';
 import { completedText, dueGroup, dueText, isOverdue, openCountText, type Task, type TaskList, taskAddShown, taskRowText, tasksByList, titleProblem, withDueHeadings } from './tasks';
 
 const lily: Schema<'Profile'> = { id: '4', kind: 'person', module: 'bx_persons', display_name: 'Lily Carter', status: 'active', about: '', created_at: '2026-01-01T00:00:00Z' };

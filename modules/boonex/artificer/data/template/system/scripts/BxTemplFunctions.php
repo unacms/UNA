@@ -20,6 +20,16 @@ class BxTemplFunctions extends BxBaseFunctions
         $this->_sModule = 'bx_artificer';
     }
 
+    /**
+     * How each logo image loads: the attributes of its <img>.
+     */
+    const LOGO_LOADING = [
+        'logo' => 'fetchpriority="high"',
+        'mark' => '',
+        'logo_dark' => 'loading="lazy"',
+        'mark_dark' => 'loading="lazy"',
+    ];
+
     public function getMainLogoDarkUrl()
     {
         return BxDolDesigns::getInstance()->getSiteLogoDarkUrl();
@@ -87,8 +97,9 @@ class BxTemplFunctions extends BxBaseFunctions
                 'class' => '',
                 'style' => $sLogoWidth . ' ' . $sLogoHeight . $aSize['style'],
                 'size' => $aSize['attrs'],
-                // the dark logo and the marks are hidden by CSS in most modes, so they load when shown
-                'loading' => $sType == 'logo' ? '' : 'loading="lazy"',
+                // The logo is among the first things painted, so it is fetched first. The mark is the logo of a
+                // narrow screen, so it is not lazy. The dark ones are hidden in most modes: they load when shown.
+                'loading' => self::LOGO_LOADING[$sType],
             ];
 
             ${'b' . $sTypeUc} = true;
