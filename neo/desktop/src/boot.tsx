@@ -7,6 +7,8 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { App } from './app';
+import { editorChunk } from './components/rich-editor/lazy';
+import { taskViewsChunk } from './features/tasks/lazy';
 import { retryOnce } from './lib/api';
 import { initChrome } from './lib/chrome';
 import { windowRoute } from './lib/native';
@@ -41,5 +43,12 @@ void initChrome().finally(() => {
         <StrictMode>
             <QueryClientProvider client={queryClient}>{route ? <SecondaryApp path={route} /> : <App />}</QueryClientProvider>
         </StrictMode>,
+    );
+    // the editor and the task views are not in the startup script (lib/lazy-module.ts): they load
+    // once the window has drawn, unless something drawn first needed them sooner
+    requestAnimationFrame(() =>
+        setTimeout(() => {
+            for (const chunk of [editorChunk, taskViewsChunk]) void chunk.load().catch((e: unknown) => console.error('loading a part of the app', e));
+        }, 0),
     );
 });

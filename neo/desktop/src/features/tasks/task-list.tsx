@@ -44,22 +44,6 @@ import { TASK_CONTEXTS_KEY, TASK_FACETS_KEY } from './tasks';
 /** The field that adds a task to a list (Cmd+N focuses it): `data-task-add` inside the list's `data-task-list`. */
 export const taskAddId = (contextId: string, listId: string | null) => `task-add-${contextId}-${listId ?? 'inbox'}`;
 
-/**
- * Cmd+N on a context's Tasks tab: the add field of the list focus is in, else of the first list
- * that has one on the page. False where no task list is shown (Cmd+N is New Post there).
- */
-export function focusTaskAdd(): boolean {
-    const active = document.activeElement;
-    const within = active instanceof Element ? active.closest('[data-task-list]') : null;
-    const field =
-        within?.querySelector<HTMLInputElement>('input[data-task-add]') ??
-        Array.from(document.querySelectorAll<HTMLInputElement>('[data-task-lists] input[data-task-add]')).find((el) => !el.closest('[inert], [hidden]')) ??
-        null;
-    if (!field || field.closest('[inert], [hidden]')) return false;
-    field.focus();
-    return true;
-}
-
 /** Who a task is assigned to, as up to three small pictures (the row's text names them). */
 function Assignees({ task }: { task: Task }) {
     if (!task.assignees.length) return null;

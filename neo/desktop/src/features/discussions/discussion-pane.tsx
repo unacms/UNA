@@ -6,9 +6,8 @@ import { problemMessage, type Schema } from 'una-api';
 import { useContextGroup } from '../../components/activity-card';
 import { Icon } from '../../components/icon';
 import { ProfileBadges } from '../../components/profile-badges';
-import { RichEditor } from '../../components/rich-editor/rich-editor';
+import { RichEditor, useEditor, withEditor } from '../../components/rich-editor/lazy';
 import { type TextImages, uploadsHold, useTextImages } from '../../components/rich-editor/text-images';
-import { normalizeHtml } from '../../components/rich-editor/schema';
 import { RichText } from '../../components/rich-text';
 import { ApiError, ensureOk, isGone, retryOnce, saveLimit, unwrap } from '../../lib/api';
 import { t, tn } from '../../lib/i18n';
@@ -294,7 +293,10 @@ function DiscussionHead({ discussion: d, groupName, replies, actions }: { discus
  * form while it is being saved waits for that answer, without a question, as Cancel and Esc do:
  * it leaves once the discussion was saved, and stays when it was not (as EditPost).
  */
-function EditDiscussion({ discussion: d, onDone }: { discussion: Discussion; onDone: (saved: Discussion | null) => void }) {
+const EditDiscussion = withEditor(EditDiscussionForm);
+
+function EditDiscussionForm({ discussion: d, onDone }: { discussion: Discussion; onDone: (saved: Discussion | null) => void }) {
+    const { normalizeHtml } = useEditor();
     const { api } = useApp();
     // said where the text box says its own (the window's live region)
     const announce = useWindowAnnounce();

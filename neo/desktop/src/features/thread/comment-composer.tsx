@@ -1,7 +1,6 @@
 import { useId, useMemo, useState } from 'react';
 
-import { RichEditor } from '../../components/rich-editor/rich-editor';
-import { htmlToDoc, normalizeHtml } from '../../components/rich-editor/schema';
+import { loadedEditor, RichEditor, useEditor, withEditor } from '../../components/rich-editor/lazy';
 
 import { Icon } from '../../components/icon';
 import { Avatar } from '../../components/avatar';
@@ -51,9 +50,12 @@ type Props = {
  * edit (in a text box Esc is the box's, so it never closes the pane). The text stays if sending
  * fails.
  */
-export function CommentComposer({ label, submitLabel, onSubmit, onCancel, initialHtml, initialText = '', draft, onTextChange, draftKey = null, autoFocus, id, rows = 2, docked = false, asText = (name) => t('Commenting as {{name}}', { name }), sendLabel = t('Send comment') }: Props) {
+export const CommentComposer = withEditor(CommentComposerForm);
+
+function CommentComposerForm({ label, submitLabel, onSubmit, onCancel, initialHtml, initialText = '', draft, onTextChange, draftKey = null, autoFocus, id, rows = 2, docked = false, asText = (name) => t('Commenting as {{name}}', { name }), sendLabel = t('Send comment') }: Props) {
+    const { normalizeHtml } = useEditor();
     // what is being edited, as the editor writes it back
-    const startHtml = useMemo(() => (initialHtml !== undefined ? normalizeHtml(initialHtml, 'mini') : textToRichHtml(initialText)), [initialHtml, initialText]);
+    const startHtml = useMemo(() => (initialHtml !== undefined ? normalizeHtml(initialHtml, 'mini') : textToRichHtml(initialText)), [initialHtml, initialText, normalizeHtml]);
     const editing = initialHtml !== undefined || initialText !== '';
     const [content, setContent] = useState(() => (draft ? { html: draft, text: plainOf(draft) } : { html: startHtml, text: plainOf(startHtml) }));
     const text = content.text;
@@ -211,5 +213,5 @@ export function CommentComposer({ label, submitLabel, onSubmit, onCancel, initia
 
 /** The plain text of mini HTML. */
 function plainOf(html: string): string {
-    return docToText(htmlToDoc(html, 'mini'));
+    return docToText(loadedEditor().htmlToDoc(html, 'mini'));
 }

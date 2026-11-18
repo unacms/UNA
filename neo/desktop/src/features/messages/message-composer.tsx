@@ -3,7 +3,7 @@ import { type KeyboardEvent, useCallback, useEffect, useId, useMemo, useRef, use
 import type { Schema } from 'una-api';
 
 import { Icon } from '../../components/icon';
-import { RichEditor, type RichEditorHandle } from '../../components/rich-editor/rich-editor';
+import { RichEditor, type RichEditorHandle } from '../../components/rich-editor/lazy';
 import { Tooltip } from '../../components/tooltip';
 import { useApp } from '../../lib/context';
 import { type Draft, useDraft } from '../../lib/drafts';

@@ -11,8 +11,7 @@ import { t } from '../../lib/i18n';
 import { confirmAction } from '../../lib/native';
 import { isMac } from '../../lib/platform';
 import { docToHtml, docToText } from '../../lib/rich-html';
-import { RichEditor } from '../../components/rich-editor/rich-editor';
-import { htmlToDoc } from '../../components/rich-editor/schema';
+import { loadedEditor, RichEditor, useEditor, withEditor } from '../../components/rich-editor/lazy';
 import { putActivity } from '../feed/cache';
 import { AudiencePicker, isAudience } from './pickers';
 import { isEditableHtml } from './post-text';
@@ -38,7 +37,7 @@ export function takeEditRequest(activityId: string): boolean {
 
 /** A post's stored HTML as the editor writes it back (so an untouched text is no change). */
 export function editedHtml(stored: string): string {
-    return docToHtml(htmlToDoc(stored, 'mini'), 'mini');
+    return docToHtml(loadedEditor().htmlToDoc(stored, 'mini'), 'mini');
 }
 
 /**
@@ -51,7 +50,7 @@ export function postChanges(
 ): Schema<'FeedPostChanges'> {
     const item = activity.object;
     const body: Schema<'FeedPostChanges'> = {};
-    if (next.html !== null && docToText(htmlToDoc(next.html, 'mini'))) {
+    if (next.html !== null && docToText(loadedEditor().htmlToDoc(next.html, 'mini'))) {
         if (next.html !== editedHtml(item.card.body_html ?? '')) body.body_html = next.html;
     }
     if (next.audience !== null && next.audience !== item.audience) body.audience = next.audience;
@@ -65,7 +64,10 @@ export function postChanges(
  * (not for a post in a group or event, which decides that).
  * Cmd/Ctrl+Enter saves, Esc or Cancel puts it away (asking first when that throws changes away).
  */
-export function PostEditor({ activity, onDone }: { activity: Activity; onDone: (saved: boolean) => void }) {
+export const PostEditor = withEditor(PostEditorForm);
+
+function PostEditorForm({ activity, onDone }: { activity: Activity; onDone: (saved: boolean) => void }) {
+    const { htmlToDoc } = useEditor();
     const { api } = useApp();
     const queryClient = useQueryClient();
     const item = activity.object;

@@ -34,7 +34,7 @@ import { AlbumsOfTab } from '../photos/album-list';
 import { PhotosOfTab } from '../photos/photo-list';
 import { PollsOfTab } from '../polls/poll-list';
 import { PostsOfTab } from '../posts/post-list';
-import { ContextTasks } from '../tasks/task-list';
+import { ContextTasks } from '../tasks/lazy';
 import { VideosOfTab } from '../videos/video-list';
 import { type Event, eventWhen, eventZoneNote, goingText, hasEnded, isOngoing } from '../events/events';
 import { FeedList, useAnnouncer } from '../feed/feed-list';

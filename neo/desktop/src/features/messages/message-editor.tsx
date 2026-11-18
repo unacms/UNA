@@ -6,8 +6,7 @@ import { errorMessage } from '../../lib/errors';
 import { t } from '../../lib/i18n';
 import { confirmAction } from '../../lib/native';
 import { isMac } from '../../lib/platform';
-import { RichEditor } from '../../components/rich-editor/rich-editor';
-import { normalizeHtml } from '../../components/rich-editor/schema';
+import { RichEditor, useEditor, withEditor } from '../../components/rich-editor/lazy';
 import type { Message } from './thread-cache';
 import './message-editor.css';
 
@@ -17,7 +16,10 @@ import './message-editor.css';
  * links); ⌘↩ (Ctrl+Enter) or Save saves, Esc or Cancel puts it away, asking first when that
  * throws a change away. Its photos stay as they are.
  */
-export function MessageEditor({ conversationId, message, onDone }: { conversationId: string; message: Message; onDone: (saved: Message | null) => void }) {
+export const MessageEditor = withEditor(MessageEditorForm);
+
+function MessageEditorForm({ conversationId, message, onDone }: { conversationId: string; message: Message; onDone: (saved: Message | null) => void }) {
+    const { normalizeHtml } = useEditor();
     const { api } = useApp();
     const ids = useId();
     const [initial] = useState(() => normalizeHtml(message.body_html, 'mini'));

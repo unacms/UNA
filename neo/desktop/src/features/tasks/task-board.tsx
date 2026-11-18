@@ -63,18 +63,13 @@ import {
     toggleFilter,
 } from './board';
 import { changeTask } from './task-actions';
+import { useTaskContexts } from './task-contexts';
 import { AddTask } from './task-list';
 import { type ListRights, type TaskListActions, useTaskListActions } from './task-list-actions';
 import { assigneesText, dueText, fetchTaskLists, isOverdue, type Task, type TaskList, taskKey, taskListsKey, titleProblem, TITLE_MAX, TASKS_KEY, TASK_FACETS_KEY } from './tasks';
 import { taskMembersKey } from './board';
 
 const PAGE = 50;
-
-/** The contexts one has tasks in, with their lists and counts (the sidebar's Tasks, a board's title). */
-export function useTaskContexts() {
-    const { api } = useApp();
-    return useQuery({ queryKey: TASK_CONTEXTS_KEY, queryFn: async (): Promise<TaskContext[]> => (await api.GET('/me/task-contexts')).data?.items ?? [] });
-}
 
 /** The types, priorities, estimates, states and labels a task may have here (a context's own where it has them). */
 export function useTaskChoices(contextId: string | null, enabled = true) {

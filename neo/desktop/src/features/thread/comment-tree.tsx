@@ -19,7 +19,7 @@ import { coalesce, useRealtime } from '../../lib/realtime';
 import { paneHeadingId } from '../../shell/pane';
 import { updateItem, activityKey } from '../feed/cache';
 import { appendComment, commentItems, commentsKey, countReply, dropComment, putComment, repliesKey, REPLIES_KEY } from './cache';
-import { normalizeHtml } from '../../components/rich-editor/schema';
+import { loadedEditor } from '../../components/rich-editor/lazy';
 import { BODY_HTML_FOR_COMMENTS_AND_DISCUSSIONS } from '../../lib/rich-html';
 import { CommentComposer } from './comment-composer';
 import { ago, exactTime } from '../../lib/dates';
@@ -592,7 +592,7 @@ function CommentView({ comment: c, replyingTo }: ViewProps) {
                             submitLabel={t('Save')}
                             initialHtml={c.body_html}
                             draft={draft(editBox)}
-                            onTextChange={(html, text) => keepDraft(editBox, normalizeHtml(c.body_html, 'mini'), html, text)}
+                            onTextChange={(html, text) => keepDraft(editBox, loadedEditor().normalizeHtml(c.body_html, 'mini'), html, text)}
                             autoFocus
                             onSubmit={(text, html) => edit(c, text, html)}
                             onCancel={() => void cancel(editBox, editButtonId(c.id))}

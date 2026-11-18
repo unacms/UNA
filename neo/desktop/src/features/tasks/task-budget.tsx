@@ -36,7 +36,7 @@ import {
     spentText,
     type TaskBudget,
 } from './budget';
-import { useTaskContexts } from './task-board';
+import { useTaskContexts } from './task-contexts';
 import { ago, longTime } from '../../lib/dates';
 
 /** The value, once it has stayed the same for `ms`: a search sent as one stops typing. */
