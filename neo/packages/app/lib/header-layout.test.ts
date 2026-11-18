@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { HEADER_LAYOUT_DEFAULT, resolveHeaderLayout, resolvePageWidth } from './header-layout.ts';
+import { HEADER_LAYOUT_DEFAULT, resolveHeaderLayout, resolvePageLayout, resolvePageWidth } from './header-layout.ts';
 
 test('UNA decides when the app has no setting of its own', () => {
     assert.deepEqual(resolveHeaderLayout({ layout: 'standard', width: 'page', align: 'start' }, { width: null, align: null }), { width: 'page', align: 'start' });
@@ -36,4 +36,14 @@ test('a page without a width keeps the previous one, and odd values are skipped'
     assert.equal(resolvePageWidth('wide', 'calc(1px)'), null);
     assert.equal(resolvePageWidth(-5, '1280px; color: red'), null);
     assert.equal(resolvePageWidth('88rem', null), null, 'UNA sends pixels or full, not lengths');
+});
+
+test("the page's layout is UNA's unless the app sets one, and a page without one keeps the previous", () => {
+    assert.equal(resolvePageLayout({ layout: 'application', width: 'full', align: 'start' }), 'application');
+    assert.equal(resolvePageLayout({ layout: 'standard' }), 'standard');
+    assert.equal(resolvePageLayout({ layout: 'application' }, 'standard'), 'standard');
+    assert.equal(resolvePageLayout({ layout: 'standard' }, 'application'), 'application');
+    assert.equal(resolvePageLayout(undefined, null, 'application'), 'application');
+    assert.equal(resolvePageLayout(undefined), 'standard');
+    assert.equal(resolvePageLayout({ layout: 'dashboard' }, 'wide'), 'standard');
 });

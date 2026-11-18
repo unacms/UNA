@@ -20,6 +20,9 @@ export const settingsLayout = {
         // Web: the page's width, which `max-w-8xl` follows. null: UNA's Designer, per page layout and audience
         // (`page_width` of the page JSON); a CSS length ('88rem') or 'full' sets it for every page.
         page_width: null,
+        // Web: the page's layout. null: UNA's, per page and audience (`header.layout` of the page JSON); 'standard'
+        // never shows the Application layout's sidebar, 'application' shows it on every page.
+        page_layout: null,
         
         page_content_width:{
             layout_1_column_thin: 'w-full max-w-md',

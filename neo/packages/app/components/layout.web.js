@@ -17,7 +17,12 @@ import PopupModal from 'app/ui/molecules/dialogs/popup-modal'
 import { PageHeader } from 'app/ui/molecules/header/page-header';
 import { HeaderOptionsProvider } from 'app/ui/molecules/header/options';
 import { useFooter } from 'app/context/jotai/layout';
+import AppSidebar from 'app/ui/molecules/sidebar/app-sidebar';
+import { resolvePageLayout } from 'app/lib/header-layout';
 import Script from 'next/script';
+
+// The layout the previous page had: a page whose data has none yet keeps the shell as it is.
+let __lastPageLayout = null;
 
 const MemoizedContent = React.memo(({ currentUser, pageLayoutName, layoutName, data, children, blocks }) => {
     const [isModal, setIsModal] = useState(false);
@@ -36,14 +41,24 @@ const MemoizedContent = React.memo(({ currentUser, pageLayoutName, layoutName, d
     }
 
 
+    // The page's layout from UNA (lib/header-layout.ts); a page without one keeps the previous page's.
+    const pageLayout = resolvePageLayout(data?.header, appSetting('layout', 'page_layout'), __lastPageLayout);
+    useEffect(() => {
+        if (data?.header) __lastPageLayout = pageLayout;
+    }, [data?.header, pageLayout]);
+
     if (data.page_status == 503 || currentUser?.page_status == 503) {
         return <>
             {appStatic('maintenance_mode')}
         </>
     }
 
+    // UNA's Application layout: the sidebar is the page's left column, and the header and the content start beside it
+    // (`neo-app-shell`, design/styles/global.web.css). Members only: the sidebar's menus are theirs.
+    const hasSidebar = pageLayout === 'application' && !!currentUser;
+
     return (
-        <View className="w-full flex-1 bg-background">
+        <View className={`w-full flex-1 bg-background ${hasSidebar ? 'neo-app-shell' : ''}`}>
             <a
                 href="#main-content"
                 className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[10000] focus:h-auto focus:w-auto focus:overflow-visible focus:whitespace-normal focus:rounded-lg focus:border focus:border-border focus:bg-card focus:px-4 focus:py-2.5 focus:text-sm focus:font-medium focus:text-card-foreground focus:shadow-md focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-ring"
@@ -52,6 +67,7 @@ const MemoizedContent = React.memo(({ currentUser, pageLayoutName, layoutName, d
             </a>
             <Suggestions />
             <AsyncWorker />
+            {hasSidebar && <AppSidebar pageData={data} />}
             <HeaderOptionsProvider>
                 <PageHeader layoutName={layoutName} pageLayoutName={pageLayoutName} pageData={data} />
                 <Content layoutName={layoutName} children={children} currentUser={currentUser} url={data?.url} />

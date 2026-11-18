@@ -10,6 +10,21 @@ export type HeaderLayout = { width: HeaderWidth; align: HeaderAlign };
 const WIDTHS: readonly HeaderWidth[] = ['page', 'full'];
 const ALIGNS: readonly HeaderAlign[] = ['start', 'center', 'end'];
 
+/** The page's layout: UNA's Application layout has a sidebar, the page's left column (`app/ui/molecules/sidebar/app-sidebar`). */
+export type PageLayout = 'standard' | 'application';
+
+const LAYOUTS: readonly PageLayout[] = ['standard', 'application'];
+
+/**
+ * The page's layout as UNA resolves it for the viewer (`header.layout` of the page JSON): the app's own setting wins
+ * (`layout.page_layout`, null follows UNA), then the page's, then the one the previous page had, so a page whose data
+ * has none yet keeps the shell as it is. Standard when nothing says otherwise.
+ */
+export function resolvePageLayout(fromUna: unknown, override?: unknown, previous?: PageLayout | null): PageLayout {
+    const una = fromUna && typeof fromUna === 'object' ? (fromUna as { layout?: unknown }) : {};
+    return pick(LAYOUTS, override, una.layout, previous) ?? 'standard';
+}
+
 /** The header before UNA sent one: full width, the tabs in the middle. */
 export const HEADER_LAYOUT_DEFAULT: HeaderLayout = { width: 'full', align: 'center' };
 
