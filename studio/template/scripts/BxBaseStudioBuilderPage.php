@@ -59,6 +59,11 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
         array('name' => 'injections', 'title' => '_adm_bp_mi_page_injections', 'icon' => 'mi-bp-injections.svg', 'active' => 0)
     );
 
+    /**
+     * Fields of a block which its switches in the layout turn on and off (actionBlockSwitch).
+     */
+    protected $aBlockSwitchFields = array('active', 'active_api');
+
     function __construct($sType = '', $sPage = '')
     {
         parent::__construct($sType, $sPage);
@@ -179,7 +184,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                     $aTmplVarsCell['bx_repeat:blocks'][] = array(
                         'html_id' => $this->aHtmlIds['block_id'] . $aBlock['id'],
                         'bx_if:is_inactive' => array(
-                            'condition' => (int)$aBlock['active'] == 0,
+                            'condition' => $this->isBlockInactive($aBlock),
                             'content' => array()
                         ),
                         'bx_if:show_link' => array(
@@ -193,9 +198,11 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                             'condition' => false,
                             'content' => array()
                         ),
-                        'bx_if:show_api' => [
-                            'condition' => (int)$aBlock['active_api'] != 0,
-                            'content' => []
+                        'bx_if:show_switchers' => [
+                            'condition' => true,
+                            'content' => [
+                                'content' => $this->getBlockSwitchers($aBlock, $sTitle)
+                            ]
                         ],
                         'bx_if:image' => array (
                             'condition' => (bool)$sIconUrl,
@@ -1028,6 +1035,85 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
 
         $this->onBlockDelete($aBlock);
         return array('eval' => $sJsObject . '.onDeleteBlock(' . $iId . ', oData)');
+    }
+
+    /**
+     * Turn a block on or off on the site (`active`) or in the apps (`active_api`) from its switch in the layout.
+     */
+    protected function actionBlockSwitch()
+    {
+        $sJsObject = $this->getPageJsObject();
+
+        $iId = (int)bx_get('id');
+        $sField = bx_process_input(bx_get('field'));
+        if(!$iId || !in_array($sField, $this->aBlockSwitchFields, true))
+            return array('msg' => _t('_adm_bp_err_cannot_process_action'));
+
+        $aBlock = array();
+        $this->oDb->getBlocks(array('type' => 'by_id', 'value' => $iId), $aBlock, false);
+        if(empty($aBlock) || !is_array($aBlock))
+            return array('msg' => _t('_adm_bp_err_block_not_found'));
+
+        $iValue = (int)bx_get('checked') != 0 ? 1 : 0;
+        if((int)$aBlock[$sField] != $iValue && !$this->oDb->updateBlock($iId, array($sField => $iValue)))
+            return array('msg' => _t('_adm_bp_err_block_edit'));
+
+        $aBlock[$sField] = $iValue;
+        return array(
+            'eval' => $sJsObject . '.onSwitchBlock(' . $iId . ', oData)',
+            'active' => (int)$aBlock['active'],
+            'active_api' => (int)$aBlock['active_api']
+        );
+    }
+
+    /**
+     * A block is greyed out in the layout only when it is off both on the site and in the apps.
+     */
+    protected function isBlockInactive($aBlock)
+    {
+        return (int)$aBlock['active'] == 0 && (int)$aBlock['active_api'] == 0;
+    }
+
+    /**
+     * The block's two switches in the layout: Site (`active`) and Apps (`active_api`). Each saves when it is turned.
+     */
+    protected function getBlockSwitchers($aBlock, $sTitle)
+    {
+        $oTemplate = BxDolStudioTemplate::getInstance();
+        $oForm = new BxTemplStudioFormView(array());
+
+        $sJsObject = $this->getPageJsObject();
+        $sTitle = strip_tags($sTitle);
+
+        $aSwitchers = array(
+            'active' => array('_sys_grid_lbl_site', '_sys_grid_lbl_show_on_site'),
+            'active_api' => array('_sys_grid_lbl_apps', '_sys_grid_lbl_show_in_apps')
+        );
+
+        $sResult = '';
+        foreach($aSwitchers as $sField => $aTitles) {
+            $sLabel = _t($aTitles[1]) . ($sTitle !== '' ? ': ' . $sTitle : '');
+
+            $aInput = array(
+                'type' => 'switcher',
+                'name' => 'bp_block_' . $sField . '_' . $aBlock['id'],
+                'caption' => '',
+                'value' => 1,
+                'checked' => (int)$aBlock[$sField] != 0,
+                'attrs' => array(
+                    'aria-label' => $sLabel,
+                    'onchange' => $sJsObject . ".switchBlock(this, " . (int)$aBlock['id'] . ", '" . $sField . "')"
+                )
+            );
+
+            $sResult .= $oTemplate->parseHtmlByName('bp_block_switcher.html', array(
+                'title' => bx_html_attribute($sLabel),
+                'switcher' => $oForm->genInput($aInput),
+                'caption' => _t($aTitles[0]),
+            ));
+        }
+
+        return $sResult;
     }
 
     protected function actionUriGet()
@@ -1959,7 +2045,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                         'title' => _t(!empty($aBlock['title_system']) ? $aBlock['title_system'] : $aBlock['title']),
                     ]
                 ],
-                'bx_if:show_api' => [
+                'bx_if:show_switchers' => [
                     'condition' => false,
                     'content' => [true]
                 ],

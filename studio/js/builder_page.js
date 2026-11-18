@@ -266,6 +266,45 @@ BxDolStudioBuilderPage.prototype.onDeleteBlock = function(iId, oData) {
 };
 
 /**
+ * A block's switches in the layout: on the site (active) and in the apps (active_api). Each saves when it is turned.
+ */
+BxDolStudioBuilderPage.prototype.switchBlock = function(oInput, iId, sField) {
+    var oDate = new Date();
+
+    $.post(
+        this.sActionUrl,
+        {
+            bp_action: 'block_switch',
+            bp_type: this.sType,
+            bp_page: this.sPage,
+            id: iId,
+            field: sField,
+            checked: oInput.checked ? 1 : 0,
+            _t: oDate.getTime()
+        },
+        function(oData) {
+            processJsonData(oData);
+        },
+        'json'
+    );
+};
+
+/**
+ * Show the block's state as saved: both switches, and the block greyed out only when it is off on the site and in the apps.
+ */
+BxDolStudioBuilderPage.prototype.onSwitchBlock = function(iId, oData) {
+    var oBlock = $('#' + this.oHtmlIds['block_id'] + iId);
+
+    $.each(['active', 'active_api'], function(iIndex, sField) {
+        var bOn = parseInt(oData[sField]) != 0;
+        var oSwitcher = oBlock.find('input[name="bp_block_' + sField + '_' + iId + '"]').prop('checked', bOn).parents('.bx-switcher-cont:first');
+        oSwitcher.toggleClass('on', bOn).toggleClass('off', !bOn).find('[role="switch"]').attr('aria-checked', bOn ? 'true' : 'false');
+    });
+
+    oBlock.toggleClass('adm-bpb-inactive', parseInt(oData.active) == 0 && parseInt(oData.active_api) == 0);
+};
+
+/**
  * "Settings" popup methods.
  */
 BxDolStudioBuilderPage.prototype.onChangeSettingGroup = function(sName, oLink) {
