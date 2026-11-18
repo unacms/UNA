@@ -112,7 +112,7 @@ class ApplicationSidebarTest extends BxDolTestCase
         $this->assertStringContainsString('--bx-sidebar-head: 4rem;', $sCss, 'The variable the row and the logo read is the one that is set.');
         $this->assertStringNotContainsString('--bx-app-sidebar-head', $sCss);
         $this->assertMatchesRegularExpression('/\.bx-main\.bx-pt-application #bx-toolbar \{[^}]*contain: layout;/', $sWide, 'The header is the block the logo is placed in.');
-        $this->assertSame(1, substr_count($sWide, ".bx-main.bx-pt-application #bx-toolbar {"), 'One rule for the header.');
+        $this->assertSame(1, substr_count($sWide, "\n    .bx-main.bx-pt-application #bx-toolbar {"), 'One rule for the header.');
         $this->assertStringContainsString(".bx-main.bx-pt-application .bx-app-sidebar {\n        z-index: 4999;", $sWide, 'Under the header, whose logo is drawn over it.');
     }
 
