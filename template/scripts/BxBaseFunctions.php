@@ -1217,6 +1217,36 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         return $sCode !== false ? $sCode : '';
     }
 
+    /**
+     * The site's corner radii (Studio > Designer > Settings > Corners) for the styles: the size as a factor of the
+     * design's own radii, and smooth corners with their multiplier (design_radius.html, template/css/tailwind.css).
+     * Nothing is printed for the design's own corners.
+     * A smooth corner (corner-shape: squircle) looks tighter than a round one of the same radius, so where the browser
+     * draws it the radii are multiplied to look the same size. A pill or a circle stays round.
+     */
+    protected function getInjHeadDesignRadius()
+    {
+        $aSizes = ['none' => '0', 'small' => '0.5', 'large' => '1'];
+        $sSize = (string)getParam('sys_design_radius');
+        $sSize = isset($aSizes[$sSize]) ? $sSize : 'large';
+
+        $bSmooth = getParam('sys_design_radius_smooth') == 'on' && $sSize != 'none';
+        if($sSize == 'large' && !$bSmooth) {
+            return '';
+        }
+
+        // the multiplier is a number between 1 and 3, whatever was saved
+        $fFactor = min(3, max(1, (float)getParam('sys_design_radius_smooth_factor')));
+
+        return $this->_oTemplate->parseHtmlByName('design_radius.html', [
+            'size' => $aSizes[$sSize],
+            'bx_if:smooth' => [
+                'condition' => $bSmooth,
+                'content' => ['factor' => rtrim(rtrim(number_format($fFactor, 2, '.', ''), '0'), '.')],
+            ],
+        ]);
+    }
+
     protected function getInjHeadLiveUpdates() 
     {
         $sContent = '';

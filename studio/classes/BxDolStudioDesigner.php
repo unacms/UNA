@@ -550,6 +550,16 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         if(array_key_exists($sLabelStyle, $this->getSettingsLabelStyleList()))
             $aValues['sys_form_label_style'] = $sLabelStyle;
 
+        $sRadius = bx_process_input(bx_get('sys_design_radius'));
+        if(array_key_exists($sRadius, $this->getSettingsRadiusList()))
+            $aValues['sys_design_radius'] = $sRadius;
+
+        $aValues['sys_design_radius_smooth'] = bx_get('sys_design_radius_smooth') == 'on' ? 'on' : '';
+
+        $sFactor = str_replace(',', '.', trim((string)bx_process_input(bx_get('sys_design_radius_smooth_factor'))));
+        if(is_numeric($sFactor))
+            $aValues['sys_design_radius_smooth_factor'] = (string)min(3, max(1, round((float)$sFactor, 2)));
+
         // As Studio's settings forms save (BxDolStudioOptions::saveChanges): an alert per changed option, then fresh caches.
         $aCategory = [];
         BxDolStudioOptionsQuery::getInstance()->getCategories(['type' => 'by_name', 'value' => 'templates'], $aCategory, false); // BX_DOL_STUDIO_STG_CATEGORY_TEMPLATES, defined with BxDolStudioOptions, which this page doesn't load
@@ -581,6 +591,33 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             BxDolForm::LABEL_STYLE_REGULAR => _t('_adm_dsg_txt_settings_label_style_regular'),
             BxDolForm::LABEL_STYLE_ADAPTIVE => _t('_adm_dsg_txt_settings_label_style_adaptive'),
         ];
+    }
+
+    /**
+     * Corner sizes of the site and Studio: the design's own radii (large), half of them (small), square (none).
+     */
+    public function getSettingsRadiusList()
+    {
+        return [
+            'large' => _t('_adm_dsg_txt_settings_radius_large'),
+            'small' => _t('_adm_dsg_txt_settings_radius_small'),
+            'none' => _t('_adm_dsg_txt_settings_radius_none'),
+        ];
+    }
+
+    public function getSettingsRadius()
+    {
+        $sValue = (string)getParam('sys_design_radius');
+        return array_key_exists($sValue, $this->getSettingsRadiusList()) ? $sValue : 'large';
+    }
+
+    /**
+     * The smooth corners' multiplier, between 1 and 3 (1.5 unless another is saved).
+     */
+    public function getSettingsRadiusSmoothFactor()
+    {
+        $fValue = (float)getParam('sys_design_radius_smooth_factor');
+        return (string)($fValue >= 1 && $fValue <= 3 ? $fValue : 1.5);
     }
 
     /**

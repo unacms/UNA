@@ -123,7 +123,7 @@ div.bx-std-block-caption .bx-std-bcap-icon {
     justify-content: center;
     width: 2rem;
     height: 2rem;
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
     background: rgb(0 0 0 / 0.1); /* the same plate as the dashboard row icons */
     color: rgb(82 82 91);
 }
@@ -225,15 +225,15 @@ div.bx-std-block-content {
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
-    border-radius: 0 0 1.5rem 1.5rem; /* the scroll box clips to the block's 24px corners instead of squaring them off */
+    border-radius: 0 0 var(--bx-radius-3xl) var(--bx-radius-3xl); /* the scroll box clips to the block's 24px corners instead of squaring them off */
     padding: 0.5rem;
 }
 div.bx-std-block-content:not(:last-child) {
     border-radius: 0; /* a bottom panel follows and owns the corners */
 }
 div.bx-std-block-content:first-child {
-    border-top-left-radius: 1.5rem; /* no caption above: the scroll box owns the top corners too */
-    border-top-right-radius: 1.5rem;
+    border-top-left-radius: var(--bx-radius-3xl); /* no caption above: the scroll box owns the top corners too */
+    border-top-right-radius: var(--bx-radius-3xl);
 }
 /* A grid wider than its block scrolls sideways inside the block (grid.css hides the overflow, which cuts off the action column on narrower desktops). */
 div.bx-std-block-content .bx-grid-table-wrapper {
@@ -303,7 +303,7 @@ form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-i
     width: auto;
     margin: auto calc(-1 * var(--bx-std-inset)) 0; /* spans the block edge to edge over the scroller's inset; auto pushes it down */
     padding: 1rem;
-    border-radius: 0 0 1.5rem 1.5rem;
+    border-radius: 0 0 var(--bx-radius-3xl) var(--bx-radius-3xl);
     background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)) #e4e4e7; /* the gray-200 page under the block's white/60, so the sticky row matches the block around it; layered, not pre-mixed: a mixed colour is a shade off on displays that blend in their own colour space */
     box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.05);
 }
@@ -372,7 +372,7 @@ div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer {
     align-items: center;
     margin: auto 0 0;
     padding: 1rem;
-    border-radius: 0 0 1.5rem 1.5rem;
+    border-radius: 0 0 var(--bx-radius-3xl) var(--bx-radius-3xl);
     background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)) #e4e4e7; /* the gray-200 page under the block's white/60, so the sticky row matches the block around it; layered, not pre-mixed: a mixed colour is a shade off on displays that blend in their own colour space */
     box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.05);
 }

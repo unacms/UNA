@@ -88,7 +88,7 @@ div.adm-bpb-icon {
 }
 div.adm-bpb-icon-bg {
     background-color: #323c46;
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
 }
 div.adm-bpb-icon-cnt {
     position: absolute;
@@ -105,7 +105,7 @@ div.adm-bpb-icon-cnt i.sys-icon {
     font-size: 20px;
 }
 div.adm-bpb-icon img {
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
 }
 div.adm-bpb-info {
     -webkit-flex-grow: 2;
@@ -347,7 +347,7 @@ div#adm-bp-settings-group-layout > form {
 }
 div.adm-bp-layout {
     position: relative;
-    border-radius: 1rem;
+    border-radius: var(--bx-radius-2xl);
     background: rgba(0, 0, 0, 0.05);
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.025);
     transition: background-color 0.3s;

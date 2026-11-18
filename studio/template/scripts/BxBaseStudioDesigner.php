@@ -1533,6 +1533,44 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
             ],
         ];
 
+        // The corner radii of the site and Studio (template/css/tailwind.css, BxBaseFunctions::getInjHeadDesignRadius).
+        $aForm['inputs'] += [
+            'corners_section' => [
+                'type' => 'block_header',
+                'name' => 'corners_section',
+                'caption' => _t('_adm_dsg_txt_settings_section_corners'),
+            ],
+            'corners_info' => [
+                'type' => 'custom',
+                'name' => 'corners_info',
+                'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', [
+                    'text' => _t('_adm_dsg_inf_settings_section_corners')
+                ]),
+            ],
+            'sys_design_radius' => [
+                'type' => 'select',
+                'name' => 'sys_design_radius',
+                'caption' => _t('_adm_stg_cpt_option_sys_design_radius'),
+                'values' => $this->getSettingsRadiusList(),
+                'value' => $this->getSettingsRadius(),
+            ],
+            'sys_design_radius_smooth' => [
+                'type' => 'switcher',
+                'name' => 'sys_design_radius_smooth',
+                'caption' => _t('_adm_stg_cpt_option_sys_design_radius_smooth'),
+                'info' => _t('_adm_dsg_inf_settings_radius_smooth'),
+                'value' => 'on',
+                'checked' => getParam('sys_design_radius_smooth') == 'on',
+            ],
+            'sys_design_radius_smooth_factor' => [
+                'type' => 'text',
+                'name' => 'sys_design_radius_smooth_factor',
+                'caption' => _t('_adm_stg_cpt_option_sys_design_radius_smooth_factor'),
+                'info' => _t('_adm_dsg_inf_settings_radius_smooth_factor'),
+                'value' => $this->getSettingsRadiusSmoothFactor(),
+            ],
+        ];
+
         $aForm['inputs'] += [
             'header_note' => [ // the note under the sections, in a section of its own
                 'type' => 'block_header',

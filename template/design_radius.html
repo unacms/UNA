@@ -1,0 +1,18 @@
+<style id="bx-design-radius">
+    :root {
+        --bx-radius-size: __size__;
+    }
+    <bx_if:smooth>
+    @supports (corner-shape: squircle) {
+        :root {
+            --bx-radius-smooth: __factor__;
+        }
+        :where(html) * {
+            corner-shape: squircle;
+        }
+        :where(html) :is([class*="rounded-full"], [type="radio"], .bx-stl-mil-sm, .bx-stl-mii, .bx-cover-wrapper .bx-btn, .adm-dsg-choice-badge, .bx-dbd-chart-mark, .bx-dbd-htools-dot, .bx-dbd-users-online-dot, .bx-analytics-online-dot) {
+            corner-shape: round;
+        }
+    }
+    </bx_if:smooth>
+</style>

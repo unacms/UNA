@@ -126,7 +126,7 @@ class HoverHaloTest extends BxDolTestCase
 
         // app art runs 1px past its tile, as far as a button's outer hairline, and a black/20 line over that outer pixel darkens the art's own
         // edge (always darker than the icon, in its hue) in both schemes; glyph tile buttons keep the buttons' hairlines; no extra ring on hover or when active
-        $this->assertStringContainsString("    .bx-std .bx-std-menu-top .bx-icon-tile,\n    .bx-std .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) {\n        @apply after:-inset-px after:rounded-[calc(0.5rem_+_1px)] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.2)];", $s);
+        $this->assertStringContainsString("    .bx-std .bx-std-menu-top .bx-icon-tile,\n    .bx-std .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) {\n        @apply after:-inset-px after:rounded-[calc(var(--bx-radius-lg)_+_1px)] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.2)];", $s);
         foreach (['studio/template/css/menu_top.css' => 2, 'studio/template/css/general.css' => 1] as $sFile => $iRules) { // current-app tile and dock; sidebar
             $sCss = self::read($sFile);
             $this->assertSame($iRules, substr_count($sCss, "max-width: none; /* Tailwind's base caps images at their box */"), $sFile . ': the art is not capped at its tile.');
@@ -137,7 +137,7 @@ class HoverHaloTest extends BxDolTestCase
 
         // the item's 8px padding round the 36px tile is the halo, with the same 16px outer corners: a 52px item (88px square in the strip)
         $sGeneral = self::read('studio/template/css/general.css');
-        $this->assertMatchesRegularExpression('/div\.bx-std-pmen-item \{[^}]*height: 3\.25rem;[^}]*border-radius: 1rem;/', $sGeneral);
+        $this->assertMatchesRegularExpression('/div\.bx-std-pmen-item \{[^}]*height: 3\.25rem;[^}]*border-radius: var\(--bx-radius-2xl\);/', $sGeneral);
         $this->assertMatchesRegularExpression('/div\.bx-std-pmen-item-cnt \{[^}]*padding: 0\.5rem;/', $sGeneral);
         $this->assertMatchesRegularExpression('/div\.bx-std-pmen-item \.bx-std-pmen-ic-icon \{[^}]*width: 2\.25rem;\s*height: 2\.25rem;/', $sGeneral);
         $this->assertStringContainsString('height: 3.25rem; /* the 36px tile with 8px around it', $sGeneral, 'The phone tabs.');
