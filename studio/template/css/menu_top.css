@@ -494,7 +494,7 @@ body > .bx-popup-wrapper.bx-std-mod-popup-settings-wrapper,
 .bx-std-mod-popup-settings-wrapper.bx-popup-applied:not(.bx-popup-chain) .bx-popup {
     margin: 0;
     border-width: 0;
-    border-radius: var(--bx-radius-xl); /* same as the dropdown menus */
+    border-radius: var(--bx-radius-2xl); /* same as the dropdown menus */
 }
 #bx-std-pcap-menu-popup-actions .bx-popup-content {
     padding: 1.0rem;

@@ -13,6 +13,8 @@
  * is not on the scale.
  *   --bx-radius-max     the largest radius a surface gets, 34px: half of a 68px bar (Studio's header), the most such a
  *                       bar can draw. With a multiplier, tall blocks stop there too, so bars and blocks match.
+ *   --bx-radius-max-row the same for the 16px step, 26px: half of a 52px row (Studio's sidebar items), so a dropdown or a
+ *                       card with that step has the corners of the rows.
  */
 @layer base {
     :root {
@@ -20,13 +22,14 @@
         --bx-radius-smooth: 1;
         --bx-radius-scale: calc(var(--bx-radius-size) * var(--bx-radius-smooth));
         --bx-radius-max: 2.125rem;
+        --bx-radius-max-row: 1.625rem;
 
         --bx-radius-sm: calc(0.125rem * var(--bx-radius-scale));
         --bx-radius: calc(0.25rem * var(--bx-radius-scale));
         --bx-radius-md: calc(0.375rem * var(--bx-radius-scale));
         --bx-radius-lg: calc(0.5rem * var(--bx-radius-scale));
         --bx-radius-xl: calc(0.75rem * var(--bx-radius-scale));
-        --bx-radius-2xl: calc(1rem * var(--bx-radius-scale));
+        --bx-radius-2xl: min(calc(1rem * var(--bx-radius-scale)), var(--bx-radius-max-row));
         --bx-radius-3xl: min(calc(1.5rem * var(--bx-radius-scale)), var(--bx-radius-max));
     }
 }
@@ -2470,6 +2473,14 @@
         @apply text-black/80 dark:text-white/80;
         @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5),0_0_0_1px_rgb(0_0_0/0.1)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
     }
+    /* Dark scheme, the 36px buttons that sit beside app tiles (header, sidebar): the outer hairline is white/15, the line the tiles' art has on its
+       outer pixel. A black hairline does not show on the dark bar, so the buttons read 1px smaller than the tiles next to them. */
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item,
+    .bx-std .bx-std-search-trigger,
+    .bx-std .bx-std-header-btn,
+    .bx-std .bx-std-tile-btn {
+        @apply dark:after:shadow-[0_0_0_1px_rgb(255_255_255/0.15)];
+    }
     /* 24px glyph in the 36px tile, like the header buttons (the svg fills the 6px padding box, menu_side.html; font icons get the same size). */
     .bx-std .bx-std-tile-btn > .sys-icon {
         @apply flex items-center justify-center text-[24px] leading-6;
@@ -2486,7 +2497,7 @@
     }
     /* Popup menus: same item treatment as the page sidebar, with 20px icons. */
     .bx-std .bx-popup-content:has(> .bx-menu-verlit) {
-        @apply p-1;
+        @apply p-2;
     }
     .bx-std .bx-menu-verlit li {
         @apply mt-0.5 first:mt-0 rounded-lg duration-300;
@@ -2509,11 +2520,12 @@
     .bx-std .bx-menu-verlit li .sys-icon {
         @apply flex-none w-5 h-5 m-0;
     }
-    /* Dropdown menus are tighter than modals: 12px outer radius over 8px items with 4px padding. */
+    /* Dropdown menus are tighter than modals: 16px outer radius over 36px rows with an 8px radius, 8px padding around the rows and 2px between them. The popup has the corners of
+       the sidebar's rows (the 16px step). */
     .bx-std .bx-popup-menu .bx-popup-border {
-        @apply rounded-xl;
+        @apply rounded-2xl;
     }
-    /* Account menu: the signed-in name is a label and the theme row holds a segmented control; neither is a link. */
+    /* Account menu: the signed-in name links to the profile and the theme row holds a segmented control; neither is a link. */
     .bx-std .bx-menu-account {
         @apply min-w-48;
     }
@@ -2526,8 +2538,12 @@
     .bx-std .bx-menu-verlit li.bx-mv-label {
         @apply mb-1 pb-1 rounded-none border-b border-black/10 dark:border-white/10;
     }
-    .bx-std .bx-menu-verlit li.bx-mv-label > div {
-        @apply font-semibold;
+    /* The name row links to the profile: the link, not the row with its divider, takes the hover. */
+    .bx-std .bx-menu-verlit li.bx-mv-label > a {
+        @apply font-semibold hover:bg-black/5 dark:hover:bg-white/5 active:bg-blue-500/10 dark:active:bg-blue-400/10 transition-colors duration-300;
+    }
+    .bx-std .bx-menu-verlit li.bx-mv-label .bx-mv-picture {
+        @apply w-6 h-6 -mx-0.5 rounded-full object-cover;
     }
     .bx-std .bx-menu-verlit li.bx-mv-theme {
         @apply mt-1 pt-1 rounded-none border-t border-black/10 dark:border-white/10;
