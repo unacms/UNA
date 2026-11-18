@@ -2,8 +2,9 @@
     $(document).ready(function () {
 		if (aDolOptions.sys_fixed_header !== undefined && aDolOptions.sys_fixed_header != 'on'){
 			// hide toolbar on scrolldown, show - on scroll up
+			// not in the Application layout (.bx-pt-application): its header stays beside the sidebar, which carries the header's logo
 			var oToolbar = $('#bx-toolbar');
-			if(oToolbar && oToolbar.length > 0)
+			if(oToolbar && oToolbar.length > 0 && !oToolbar.closest('.bx-pt-application').length)
 				new Headroom(oToolbar.get(0), {
 					tolerance: {
 						down: 10,

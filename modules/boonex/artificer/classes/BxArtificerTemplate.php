@@ -39,9 +39,10 @@ class BxArtificerTemplate extends BxBaseModGeneralTemplate
 
             case 'footer':
                 // sidebar.js works the application page type's own sidebar (pt_application.html); no other page has its elements.
+                // Artificer's own script: the other templates keep modules/base/template/js/sidebar.js for their markup.
                 if(BxDolTemplate::getInstance()->getPageType() == BX_PAGE_TYPE_APPLICATION) {
                     $sResult .= $this->addJs([
-                        'modules/base/template/js/|sidebar.js',
+                        'modules/boonex/artificer/js/|sidebar.js',
                     ], true);
                 }
                 break;

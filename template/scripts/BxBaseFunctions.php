@@ -107,6 +107,11 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                 $mixedResult = $mixedWidth == 'full' ? 'none' : (int)$mixedWidth . 'px';
                 break;
 
+            // The logo once more, for a layout that shows it in two places (the Application layout's sidebar and header).
+            case 'sys_main_logo_copy':
+                $mixedResult = $this->getMainLogoCopy();
+                break;
+
             // Where the main menu sits: next to the logo, in the middle of the header or next to the toolbar.
             case 'sys_header_align':
                 $mixedResult = 'bx-header-menu-' . $this->getHeaderLayout()['align'];
@@ -851,6 +856,16 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         ]);
 
         return $this->_oTemplate->parseHtmlByName($sTmplName, $aTmplVars);
+    }
+
+    /**
+     * The logo for a second place on the same page: the same link and images as getMainLogo, without the element ids
+     * (bx-logo, ...), which only the first copy keeps. The layout shows one of the two at a time.
+     * @return string
+     */
+    public function getMainLogoCopy($aParams = array())
+    {
+        return (string)preg_replace('/\sid="[^"]*"/', '', $this->getMainLogo($aParams));
     }
 
     /**

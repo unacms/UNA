@@ -387,7 +387,7 @@ html.dark {
     width: var(--bx-menu-highlight-w, 0);
     height: var(--bx-menu-highlight-h, 0);
 
-    border-radius: 0.75rem; /* the items' own corners: 12px, 8px inside their block's 20px */
+    border-radius: var(--bx-radius-xl); /* the items' own corners (rounded-xl): 12px on the radius scale, so the hover has the current tab's corners at any corner size */
     background-color: rgba(228, 228, 231, 0.5); /* gray-200 at 50%, the items' hover */
     opacity: 0;
     pointer-events: none;

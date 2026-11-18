@@ -35,9 +35,10 @@ class ApplicationShellHeaderTest extends BxDolTestCase
     {
         $sApp = self::read('modules/boonex/artificer/data/template/system/pt_application.html');
 
-        foreach (['toggleSidebar', 'toggleSidebarMobile'] as $sId) {
+        // toggleSidebar sits in the sidebar's own head and narrows it (or closes the drawer); toggleSidebarMobile, in the header, opens the drawer
+        foreach (['toggleSidebar' => 'sidebar-content', 'toggleSidebarMobile' => 'sidebar'] as $sId => $sControls) {
             $this->assertSame(1, preg_match('/<button type="button" id="' . $sId . '"([^\n]*)>\n/', $sApp, $a), $sId);
-            $this->assertStringContainsString('aria-controls="sidebar"', $a[1]);
+            $this->assertStringContainsString('aria-controls="' . $sControls . '"', $a[1]);
             $this->assertStringContainsString('aria-label="<bx_text_attribute:_sys_menu_item_title_system_main_menu />"', $a[1], 'An icon-only button has a name.');
             $this->assertMatchesRegularExpression('/class="bx-sidebar-toggle [^"]*\bh-11 w-11\b[^"]*\brounded-full\b/', $a[1], '44px, as the member toolbar\'s buttons.');
         }
@@ -54,11 +55,11 @@ class ApplicationShellHeaderTest extends BxDolTestCase
     public function testSidebarRowsAndTheProfileRowStartOnOneLine(): void
     {
         $sApp = self::read('modules/boonex/artificer/data/template/system/pt_application.html');
-        $this->assertStringContainsString('<div class="bx-mc-cnt flex-1 px-2 space-y-1 ', $sApp, '8px to the rows, whose icons are 8px inside them.');
+        $this->assertStringContainsString('<div class="bx-mc-cnt px-2 space-y-1 ', $sApp, '8px to the rows, whose icons are 8px inside them.');
 
         $sCss = self::read('modules/boonex/artificer/data/template/system/css/menu.css');
         $this->assertMatchesRegularExpression('/\n#sidebar \.bx-menu-panel \.bx-profile-avatar \{\n    padding: 0 0\.5rem;\n\}/', $sCss);
-        $this->assertMatchesRegularExpression('/\n#sidebar\.bx-mc-narrowed \.bx-menu-panel \.bx-profile-avatar \{\n    padding: 0;\n\}/', $sCss);
+        $this->assertStringNotContainsString('#sidebar.bx-mc-narrowed .bx-menu-panel .bx-profile-avatar', $sCss, 'The same 8px in the narrow sidebar: its rows are as wide as their hover plate.');
     }
 
     public function testProfileSwitcherButtonHasAnIcon(): void
@@ -68,5 +69,31 @@ class ApplicationShellHeaderTest extends BxDolTestCase
 
         foreach (['template/profile_avatar.html', 'modules/boonex/artificer/data/template/system/profile_avatar.html'] as $sPath)
             $this->assertStringContainsString('arrows-alt-v', self::read($sPath), $sPath);
+    }
+
+    public function testHeaderMenuIconsTakeTheTabsColour(): void
+    {
+        // the Application menu's items carry icon colours that are unreadable on the dark header
+        $this->assertStringContainsString("'home col-gray-dark'", self::read('install/sql/system.sql'));
+
+        $this->assertMatchesRegularExpression('/\n#bx-toolbar \.bx-menu-main \.bx-stl-mii \.sys-icon \{\n    color: inherit;\n\}/', self::read('modules/boonex/artificer/data/template/system/css/menu.css'));
+    }
+
+    public function testHeaderStaysInPlaceInTheApplicationLayout(): void
+    {
+        // the header hides on scroll by its id (Headroom); the Application header has that id now, and stays: the sidebar beside it does
+        $s = self::read('template/_header_js_toolbar.html');
+        $this->assertStringContainsString("!oToolbar.closest('.bx-pt-application').length", $s);
+        $this->assertLessThan(strpos($s, 'new Headroom('), strpos($s, "closest('.bx-pt-application')"), 'Checked before the header is handed to Headroom.');
+    }
+
+    public function testHoverHighlightHasTheTabsCorners(): void
+    {
+        // the tabs are rounded-xl, on the radius scale (Designer > Corners); a fixed 12px highlight under a hovered tab was smaller than the current tab
+        $s = self::read('modules/boonex/artificer/data/template/system/css/general.css');
+        $this->assertSame(1, preg_match('/#bx-toolbar \.bx-menu-main\.bx-menu-highlight-list::before,[^{]*\{[^}]*\}/', $s, $a));
+        $this->assertStringContainsString('border-radius: var(--bx-radius-xl);', $a[0]);
+
+        $this->assertMatchesRegularExpression('/#bx-toolbar \.bx-menu-main > \.bx-menu-item \{\s*@apply rounded-xl;/', self::read('template/css/tailwind.css'));
     }
 }
