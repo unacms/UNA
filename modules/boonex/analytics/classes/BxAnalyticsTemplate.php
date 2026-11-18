@@ -772,7 +772,8 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
         for($i = 0; $i < $aData['weeks']; $i++)
             $aWeeks[] = ['week' => _t('_bx_analytics_txt_week_n', $i)];
 
-        $oTz = new DateTimeZone($aData['tz']);
+        bx_import('Filter', $this->_oConfig->getName());
+        $oTz = BxAnalyticsFilter::getTimeZone($aData['tz']) ?: new DateTimeZone('UTC');
         $aRows = [];
         foreach($aData['rows'] as $aRow) {
             $aCells = [];
