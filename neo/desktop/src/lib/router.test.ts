@@ -343,6 +343,44 @@ describe('a list route has its own section\'s fields only', () => {
     });
 });
 
+describe('each section reads back the paths it writes', () => {
+    it('round-trips a list of every section, with what its query can say', () => {
+        const lists: ListRoute[] = [
+            { section: 'home' },
+            { section: 'home', feed: 'hot' },
+            { section: 'explore', feed: 'hot' },
+            { section: 'notifications', filter: 'unread' },
+            { section: 'messages' },
+            connectionsPage('sent'),
+            { section: 'people', feed: 'online' },
+            categoryPage('posts', '3', 'popular'),
+            categoryPage('discussions', '7'),
+            { section: 'events', feed: 'past' },
+            { section: 'events', group: '821', groupTab: 'attendees' },
+            { section: 'media', feed: 'photos' },
+            { section: 'tasks', taskContext: '5', taskList: 'inbox', feed: 'completed' },
+            { section: 'tasks', taskView: 'timers' },
+            searchRoute('lily carter', 'groups'),
+            profilePage('8', 'friends'),
+            groupPage('67', 'members'),
+            { section: 'spaces', group: '725', groupTab: 'spaces' },
+            { section: 'spaces', feed: 'joined' },
+            { section: 'settings' },
+            { section: 'page', page: '/page/about?x=1' },
+        ];
+        // every section is in the list
+        expect(new Set(lists.map((l) => l.section))).toEqual(new Set(SECTIONS));
+        for (const list of lists) expect(parseRoute(routeToPath({ list, detail: null }))).toEqual({ list, detail: null });
+    });
+
+    it('refuses a query of another section', () => {
+        expect(parseRoute('/messages?filter=unread')).toBeNull();
+        expect(parseRoute('/home?group=67')).toBeNull();
+        expect(parseRoute('/settings?tab=friends')).toBeNull();
+        expect(parseRoute('/notifications?category=3')).toBeNull();
+    });
+});
+
 describe('RouteHistory', () => {
     it('pushes, goes back and forward', () => {
         const h = new RouteHistory(sectionRoute('home'));
