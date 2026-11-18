@@ -46,8 +46,9 @@ class BxDolMigrationsHelper
     {
         $oQuery = self::_getQuery();
         return $oQuery->withExceptions(function () use ($oQuery, $sTable, $sColumn) {
-            if (!$oQuery->isColumn($sTable, $sColumn))
+            if (!$oQuery->isColumn($sTable, $sColumn)) {
                 return false;
+            }
 
             $oQuery->dropColumn($sTable, $sColumn);
             return true;

@@ -103,8 +103,8 @@ export function buildMenuSections<T>(entries: T[], itemOf: (entry: T) => MenuSec
         const item = itemOf(entry);
         const danger = isMenuItemDanger(item);
         const parent = item?.section?.key ?? '';
-        const last = sections[sections.length - 1];
-        if (last && !danger && !last.danger && parents[parents.length - 1] === parent) {
+        const last = sections.at(-1);
+        if (last && !danger && !last.danger && parents.at(-1) === parent) {
             last.entries.push(entry);
             return;
         }

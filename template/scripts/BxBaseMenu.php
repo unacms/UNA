@@ -344,8 +344,9 @@ class BxBaseMenu extends BxDolMenu
      */
     protected function _getMenuItemsShown ($aItems)
     {
-        if ($this->_bIsApi || !$this->isMultilevel() || !is_array($aItems) || $this->_hasSubitemsTemplate())
+        if ($this->_bIsApi || !$this->isMultilevel() || !is_array($aItems) || $this->_hasSubitemsTemplate()) {
             return $aItems;
+        }
 
         $aResult = [];
         foreach ($aItems as $sKey => $a) {
@@ -354,15 +355,17 @@ class BxBaseMenu extends BxDolMenu
                 continue;
             }
 
-            if (!$this->_isActive($a) || !$this->_isVisible($a))
+            if (!$this->_isActive($a) || !$this->_isVisible($a)) {
                 continue;
+            }
 
             $aSubitems = $a['subitems'];
             unset($a['subitems']);
 
             $sLink = isset($a['link']) ? trim((string)$a['link']) : '';
-            if ($sLink !== '' && mb_stripos($sLink, 'javascript:') !== 0)
+            if ($sLink !== '' && mb_stripos($sLink, 'javascript:') !== 0) {
                 $aResult[$sKey] = $a;
+            }
 
             $aResult = array_merge($aResult, $this->_getMenuItemsShown($aSubitems));
         }
@@ -377,7 +380,15 @@ class BxBaseMenu extends BxDolMenu
     protected function _hasSubitemsTemplate ()
     {
         $sTemplate = $this->getTemplateName();
-        return $sTemplate !== '' && $this->_oTemplate->isHtml(str_replace('.html', '_subitems.html', $sTemplate));
+        return $sTemplate !== '' && $this->_oTemplate->isHtml($this->_getSubitemsTemplateName($sTemplate));
+    }
+
+    /**
+     * The subitems template beside a menu template: `menu_x.html` has `menu_x_subitems.html`.
+     */
+    protected function _getSubitemsTemplateName ($sTemplate)
+    {
+        return str_replace('.html', '_subitems.html', $sTemplate);
     }
     
     /**
@@ -658,7 +669,7 @@ class BxBaseMenu extends BxDolMenu
                     ]
                 ];
 
-            $aTmplVarsSubitems['subitems'] = $this->_oTemplate->parseHtmlByName(str_replace('.html', '_subitems.html', $this->getTemplateName()), array(
+            $aTmplVarsSubitems['subitems'] = $this->_oTemplate->parseHtmlByName($this->_getSubitemsTemplateName($this->getTemplateName()), array(
                 'bx_repeat:menu_items' => $aSubitems,
             ));
         }
