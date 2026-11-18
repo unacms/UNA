@@ -2,7 +2,9 @@
     :root {
         --bx-radius-size: __size__;
     }
-    <bx_if:smooth>
+</style>
+<bx_if:smooth>
+<style id="bx-design-radius-smooth">
     @supports (corner-shape: squircle) {
         :root {
             --bx-radius-smooth: __factor__;
@@ -14,5 +16,5 @@
             corner-shape: round;
         }
     }
-    </bx_if:smooth>
 </style>
+</bx_if:smooth>

@@ -8,8 +8,9 @@
 $oDb = BxDolDb::getInstance();
 
 $iCategoryId = (int)$oDb->getOne("SELECT `id` FROM `sys_options_categories` WHERE `name` = 'templates' LIMIT 1");
-if(!$iCategoryId)
+if(!$iCategoryId) {
     return false;
+}
 
 $aOptions = [
     ['sys_design_radius', 'large', 'select', 'none,small,large', 21],
@@ -17,8 +18,9 @@ $aOptions = [
     ['sys_design_radius_smooth_factor', '1.5', 'digit', '', 23],
 ];
 foreach($aOptions as $aOption) {
-    if($oDb->getOne("SELECT `id` FROM `sys_options` WHERE `name` = :name LIMIT 1", ['name' => $aOption[0]]))
+    if($oDb->getOne("SELECT `id` FROM `sys_options` WHERE `name` = :name LIMIT 1", ['name' => $aOption[0]])) {
         continue;
+    }
 
     $oDb->query("INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES (:category, :name, :caption, :value, :type, :extra, '', '', :order)", [
         'category' => $iCategoryId,

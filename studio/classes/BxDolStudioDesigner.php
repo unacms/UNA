@@ -551,14 +551,16 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             $aValues['sys_form_label_style'] = $sLabelStyle;
 
         $sRadius = bx_process_input(bx_get('sys_design_radius'));
-        if(array_key_exists($sRadius, $this->getSettingsRadiusList()))
+        if(array_key_exists($sRadius, $this->getSettingsRadiusList())) {
             $aValues['sys_design_radius'] = $sRadius;
+        }
 
         $aValues['sys_design_radius_smooth'] = bx_get('sys_design_radius_smooth') == 'on' ? 'on' : '';
 
         $sFactor = str_replace(',', '.', trim((string)bx_process_input(bx_get('sys_design_radius_smooth_factor'))));
-        if(is_numeric($sFactor))
+        if(is_numeric($sFactor)) {
             $aValues['sys_design_radius_smooth_factor'] = (string)min(3, max(1, round((float)$sFactor, 2)));
+        }
 
         // As Studio's settings forms save (BxDolStudioOptions::saveChanges): an alert per changed option, then fresh caches.
         $aCategory = [];

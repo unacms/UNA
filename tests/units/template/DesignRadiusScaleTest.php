@@ -78,7 +78,7 @@ class DesignRadiusScaleTest extends BxDolTestCase
         $s = self::read('template/design_radius.html');
 
         $this->assertStringContainsString('--bx-radius-size: __size__;', $s);
-        $this->assertMatchesRegularExpression('/<bx_if:smooth>\s*@supports \(corner-shape: squircle\) \{.*--bx-radius-smooth: __factor__;.*\}\s*<\/bx_if:smooth>/s', $s);
+        $this->assertMatchesRegularExpression('/<bx_if:smooth>\s*<style id="bx-design-radius-smooth">\s*@supports \(corner-shape: squircle\) \{.*--bx-radius-smooth: __factor__;.*\}\s*<\/style>\s*<\/bx_if:smooth>/s', $s);
         $this->assertStringContainsString('[class*="rounded-full"]', $s);
         $this->assertStringContainsString('corner-shape: round;', $s);
     }
