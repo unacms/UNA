@@ -6,38 +6,15 @@ import Link from 'app/ui/atoms/link'
 import { useCurrentUser } from 'app/context/user'
 import { useScreenTier } from 'app/context/measure'
 import { appSetting, cn } from 'app/lib/util'
-import { MENU_GROUPS, getMenuItemGroup, type MenuGroup } from 'app/lib/menu-groups'
+import { buildMenuSections, type MenuSectionItem } from 'app/lib/menu-sections'
 
-type SettingsMenuItem = {
+type SettingsMenuItem = MenuSectionItem & {
     id?: string | number
-    name?: string
-    title?: string
-    link?: string
-    url?: string
     icon?: string
-    group?: string
-    config?: string
     hidden_on?: string[] | false
-    subitems?: SettingsMenuItem[]
 }
-
-/** Groups in the order the list shows them (`lib/menu-groups.ts`); an item without one goes to `other`. */
-type SettingsGroup = MenuGroup
 
 const CARD = cn(appSetting('theme', 'cards')['u-card-base'], 'w-full overflow-hidden')
-
-/**
- * Every row the list shows: items nested under a parent in Studio (`subitems`) come right after it,
- * in its group unless they name their own; a parent that only groups them (no link) has no row.
- */
-function flattenSettingsItems(items: SettingsMenuItem[], skip: (item: SettingsMenuItem) => boolean, parentGroup: SettingsGroup | null = null): { item: SettingsMenuItem; group: SettingsGroup }[] {
-    return items.flatMap((item) => {
-        if (skip(item)) return []
-        const group = getMenuItemGroup(item) ?? parentGroup
-        const row = itemHref(item) ? [{ item, group: group ?? 'other' }] : []
-        return [...row, ...flattenSettingsItems(item.subitems || [], skip, group)]
-    })
-}
 
 function itemHref(item: SettingsMenuItem): string {
     const path = String(item?.url || item?.link || '')
@@ -63,51 +40,50 @@ function SettingsRow({ item, first, danger }: Readonly<{ item: SettingsMenuItem;
 }
 
 /**
- * The settings list (UNA's `sys_account_settings` menu on the `settings` page): one card per group
- * (Studio > Navigation > an item > "Group in the apps"), the account's first, then the current profile's
- * under its name, then the rest, and deleting the account last on its own. One list for both, so
- * switching profiles visibly changes the second card. The desktop sidebar shows the same sections
- * (`SidebarNavSections` in the conductor's web-ui.js).
+ * The settings list (UNA's `sys_account_settings` menu on the `settings` page): one card per section
+ * (`lib/menu-sections.ts`). UNA makes the sections with items without a link: "Account", then the current
+ * profile's, titled with its name, so switching profiles visibly changes the second card. The items outside them
+ * follow, and deleting the account last on its own. `items` come with their section parents lifted out
+ * (`getMenuSectionListItems`). The desktop sidebar shows the same sections (`SidebarNavSections` in the conductor's
+ * web-ui.js).
  */
 export default function SettingsMenu({ items, hub = '' }: Readonly<{ items: SettingsMenuItem[]; hub?: string }>) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const tier = useScreenTier()
 
-    // Not the list's own page (the menu's `hub`, an item of the menu in an older UNA), nor what UNA hides at this size.
-    const skip = (item: SettingsMenuItem) =>
-        (!!hub && itemHref(item).replace(/^\/+/, '') === hub)
-        || (Array.isArray(item.hidden_on) && item.hidden_on.includes(tier))
+    // Not the list's own page (the menu's `hub`, an item of the menu in an older UNA), nor what UNA hides at this
+    // size, nor a parent that only holds its subitems.
+    const shown = (items || []).filter((item) =>
+        !!itemHref(item)
+        && !(!!hub && itemHref(item).replace(/^\/+/, '') === hub)
+        && !(Array.isArray(item.hidden_on) && item.hidden_on.includes(tier)))
 
-    const byGroup = new Map<SettingsGroup, SettingsMenuItem[]>()
-    for (const { item, group } of flattenSettingsItems(items, skip)) {
-        byGroup.set(group, [...(byGroup.get(group) || []), item])
-    }
-
-    const headings: Partial<Record<SettingsGroup, string>> = {
+    // An older UNA's groups have no titles of their own.
+    const sections = buildMenuSections(shown, (item) => item, {
         account: t('Account'),
         profile: currentUser ? currentUser.display_name : '',
-    }
+    })
 
     return (
         // Rows read as a list, not a table: a phone-like width on wide screens too. Below desktop the
         // section's tab pane has no inset of its own, so the list keeps the page's 16px on every side,
         // and it is the page itself there (the section's list), centred on a tablet.
         <View className="mx-auto w-full max-w-2xl gap-6 p-4 lg:mx-0 lg:p-0">
-            {MENU_GROUPS.filter((group) => byGroup.has(group)).map((group) => (
-                <View key={group} className="w-full gap-2">
-                    {headings[group] ? (
+            {sections.map((section) => (
+                <View key={section.key} className="w-full gap-2">
+                    {section.title ? (
                         <Text className="px-4 text-sm font-semibold text-muted-foreground" numberOfLines={1}>
-                            {headings[group]}
+                            {section.title}
                         </Text>
                     ) : null}
                     <View className={CARD}>
-                        {(byGroup.get(group) || []).map((item, index) => (
+                        {section.entries.map((item, index) => (
                             <SettingsRow
                                 key={String(item.id || item.name || index)}
                                 item={item}
                                 first={index === 0}
-                                danger={group === 'danger'}
+                                danger={section.danger}
                             />
                         ))}
                     </View>

@@ -73,10 +73,15 @@ class BxTemplMenuToolbar extends BxBaseMenuToolbar
                 break;
 
             case 'account':
-                $a['class_add_a'] = ' bx-sidebar-account-trigger';
+                //--- The account menu is a popup under the avatar (sys_account_popup, menu_account_popup.html), as in the apps.
+                $a['class_add_a'] = ' bx-menu-account-trigger';
                 $a['link'] = 'javascript:void(0)';
                 $a['onclick'] = '';
-                $sAttrsAdd = 'aria-haspopup="dialog" aria-expanded="false" aria-controls="bx-sidebar-account"';
+                if(isset($a['bx_if:onclick']['content']['onclick'])) {
+                    $a['bx_if:onclick']['condition'] = true;
+                    $a['bx_if:onclick']['content']['onclick'] = "oBxArtificerUtils.getAccountMenu('#bx-sliding-menu-account', this);";
+                }
+                $sAttrsAdd = 'aria-haspopup="true" aria-expanded="false" aria-controls="bx-sliding-menu-account"';
                 break;
 
             case 'add-content':

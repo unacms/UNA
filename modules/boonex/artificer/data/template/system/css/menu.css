@@ -162,7 +162,31 @@ li.bx-mi-hidden {
     display: none;
 }
 
-/*--- Account Popup ---*/
+/*--- Account Popup: the member's menu, a dropdown under the avatar at the header's end, as in the apps (it was a
+      sidebar). 16rem wide like the apps' menus; taller than the window, its rows scroll and the profile row and the
+      button under them stay. ---*/
+#bx-sliding-menu-account .bx-popup-content {
+    width: 16rem;
+    max-width: calc(100vw - 2rem);
+}
+#bx-sliding-menu-account .bx-menu-account-popup {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 5.5rem);
+    max-height: calc(100dvh - 5.5rem);
+}
+#bx-sliding-menu-account .bx-menu-account-popup > div {
+    flex: none;
+}
+#bx-sliding-menu-account .bx-menu-account-popup > .bx-menu-account-popup-profile-notifications {
+    flex: 0 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+#bx-sliding-menu-account .bx-menu-account-popup-profile-active .bx-def-unit {
+    margin: 0 1rem 0.5rem 1rem;
+}
 #bx-sliding-menu-account .bx-menu-account-popup .bx-menu-item-addon.bx-def-unit-alert {
     position: relative;
     padding: 0 0.25rem;
@@ -172,6 +196,13 @@ li.bx-mi-hidden {
     display: flex;
     -webkit-justify-content: center;
     justify-content: center;
+}
+#bx-sliding-menu-account .bx-menu-account-popup-profile-create .bx-map-profile-create-cnt {
+    width: 100%;
+}
+#bx-sliding-menu-account .bx-menu-account-popup-profile-create .bx-btn {
+    justify-content: center;
+    width: 100%;
 }
 
 /*--- Add Popup ---*/

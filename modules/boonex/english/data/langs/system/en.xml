@@ -1535,7 +1535,6 @@
 	<string name="_adm_nav_btn_sets_delete"><![CDATA[Delete set]]></string>
 	<string name="_adm_nav_btn_sets_edit"><![CDATA[Edit set]]></string>
         <string name="_adm_nav_dsc_items_area_label"><![CDATA[Accessible name for the link. It is useful when the visible text content of the link is not descriptive enough or absent.]]></string>
-	<string name="_adm_nav_dsc_items_group"><![CDATA[The apps draw a menu whose items have groups as sections: Account first, then the current profile's items under its name, the items without a group, and the dangerous ones last. The account's settings use them.]]></string>
 	<string name="_adm_nav_dsc_items_icon"><![CDATA[You may use font icon, SVG or Emoji code here]]></string>
 	<string name="_adm_nav_dsc_items_icon_image"><![CDATA[or upload a small image to be displayed near the link.]]></string>
 	<string name="_adm_nav_dsc_items_icon_image_current"><![CDATA[No icon uploaded. Text is used in menu item.]]></string>
@@ -1596,11 +1595,6 @@
 	<string name="_adm_nav_txt_items_gl_module"><![CDATA[Module]]></string>
 	<string name="_adm_nav_txt_items_gl_title_system"><![CDATA[System Name]]></string>
 	<string name="_adm_nav_txt_items_gl_visible"><![CDATA[Visible For]]></string>
-	<string name="_adm_nav_txt_items_group"><![CDATA[Group in the apps]]></string>
-	<string name="_adm_nav_txt_items_group_account"><![CDATA[Account]]></string>
-	<string name="_adm_nav_txt_items_group_danger"><![CDATA[Danger]]></string>
-	<string name="_adm_nav_txt_items_group_none"><![CDATA[None]]></string>
-	<string name="_adm_nav_txt_items_group_profile"><![CDATA[Profile]]></string>
 	<string name="_adm_nav_txt_items_icon"><![CDATA[Icon]]></string>
 	<string name="_adm_nav_txt_items_icon_image"><![CDATA[]]></string>
 	<string name="_adm_nav_txt_items_icon_image_new"><![CDATA[]]></string>
@@ -3802,6 +3796,8 @@
     <string name="_sys_menu_item_title_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_account_settings_info"><![CDATA[Account]]></string>
     <string name="_sys_menu_item_title_account_settings_pwd"><![CDATA[Password]]></string>
+    <string name="_sys_menu_item_title_account_settings_section_account"><![CDATA[Account]]></string>
+    <string name="_sys_menu_item_title_account_settings_section_profile"><![CDATA[{member_display_name}]]></string>
     <string name="_sys_menu_item_title_profile_settings_cfilter"><![CDATA[Content Filter]]></string>
     <string name="_sys_menu_item_title_public_menu"><![CDATA[Browse]]></string>
     <string name="_sys_menu_item_title_add_content"><![CDATA[Add...]]></string>
@@ -3919,6 +3915,8 @@
     <string name="_sys_menu_item_title_system_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_system_account_settings_info"><![CDATA[Account]]></string>
     <string name="_sys_menu_item_title_system_account_settings_pwd"><![CDATA[Password]]></string>
+    <string name="_sys_menu_item_title_system_account_settings_section_account"><![CDATA[Account (section)]]></string>
+    <string name="_sys_menu_item_title_system_account_settings_section_profile"><![CDATA[Current profile (section)]]></string>
     <string name="_sys_menu_item_title_system_profile_settings_cfilter"><![CDATA[Content Filter]]></string>
     <string name="_sys_menu_item_title_system_add_content"><![CDATA[Add Content]]></string>
     <string name="_sys_menu_item_title_system_apps"><![CDATA[Apps]]></string>

@@ -877,23 +877,6 @@ class BxBaseStudioNavigationItems extends BxDolStudioNavigationItems
                         'pass' => 'Int',
                     )
                 ),
-                'group_name' => array(
-                    'type' => 'select',
-                    'name' => 'group_name',
-                    'caption' => _t('_adm_nav_txt_items_group'),
-                    'info' => _t('_adm_nav_dsc_items_group'),
-                    'value' => isset($aItem['group_name']) ? $aItem['group_name'] : BxDolMenu::ITEM_GROUP_NONE,
-                    'values' => array(
-                        array('key' => BxDolMenu::ITEM_GROUP_NONE, 'value' => _t('_adm_nav_txt_items_group_none')),
-                        array('key' => BxDolMenu::ITEM_GROUP_ACCOUNT, 'value' => _t('_adm_nav_txt_items_group_account')),
-                        array('key' => BxDolMenu::ITEM_GROUP_PROFILE, 'value' => _t('_adm_nav_txt_items_group_profile')),
-                        array('key' => BxDolMenu::ITEM_GROUP_DANGER, 'value' => _t('_adm_nav_txt_items_group_danger')),
-                    ),
-                    'required' => '0',
-                    'db' => array (
-                        'pass' => 'Xss',
-                    ),
-                ),
                 'primary' => array(
                     'type' => 'switcher',
                     'name' => 'primary',
