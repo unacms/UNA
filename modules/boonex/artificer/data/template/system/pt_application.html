@@ -41,7 +41,7 @@
         <!-- BEG: Sidebar: the left column, top to bottom (the header starts beside it). Wide screens: expanded (16rem) or narrow
              (4rem, icons only), as the member left it; below the breakpoint: a drawer over the page. One state, the classes
              bx-app-sidebar-narrow / bx-app-sidebar-open on .bx-main, drives the styles (css/common.css "Application"); js/sidebar.js flips it. -->
-        <aside id="sidebar" class="bx-app-sidebar bx-main-column narrow bg-white dark:bg-gray-800" aria-label="<bx_text_attribute:_sys_menu_item_title_system_main_menu />">
+        <aside id="sidebar" class="bx-app-sidebar bx-main-column narrow bg-white/60 dark:bg-gray-800/60 backdrop-blur-lg" aria-label="<bx_text_attribute:_sys_menu_item_title_system_main_menu />">
             <script>
                 // before the first paint: the narrow sidebar as it was left, on wide screens only (the drawer is never narrow)
                 (function(oSidebar) {

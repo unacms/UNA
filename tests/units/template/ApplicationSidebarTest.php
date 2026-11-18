@@ -89,4 +89,34 @@ class ApplicationSidebarTest extends BxDolTestCase
 
         $this->assertStringContainsString("'modules/boonex/artificer/js/|sidebar.js'", self::read('modules/boonex/artificer/classes/BxArtificerTemplate.php'));
     }
+
+    public function testSidebarHasTheHeadersSurfaceAndCarriesTheLogoWhenExpanded(): void
+    {
+        $sApp = self::read('modules/boonex/artificer/data/template/system/pt_application.html');
+        $this->assertSame(1, preg_match('/<header id="bx-toolbar" class="([^"]+)">/', $sApp, $aHeader));
+        $this->assertSame(1, preg_match('/<aside id="sidebar" class="([^"]+)"/', $sApp, $aSidebar));
+        $aSurface = array_filter(explode(' ', $aHeader[1]), fn($s) => preg_match('/^(dark:)?bg-|^backdrop-/', $s));
+        $this->assertNotEmpty($aSurface);
+        foreach ($aSurface as $sClass)
+            $this->assertContains($sClass, explode(' ', $aSidebar[1]), 'The sidebar is the colour of the header.');
+
+        $this->assertSame(1, substr_count($sApp, '__main_logo__'), 'One logo on the page: no element ids twice.');
+
+        // drawn over the expanded sidebar's head; back in the header when the sidebar is narrow or a drawer
+        $sCss = self::read('modules/boonex/artificer/data/template/system/css/common.css');
+        $iWide = strpos($sCss, '@media (min-width: 1280px) {');
+        $sWide = substr($sCss, $iWide, strpos($sCss, '@media (max-width: 1279.98px) {') - $iWide);
+        $this->assertStringContainsString(".bx-main.bx-pt-application:not(.bx-app-sidebar-narrow) #bx-logo-container {\n        position: fixed;", $sWide);
+        $this->assertStringContainsString('left: calc(4rem - var(--bx-sidebar-width));', $sWide);
+        $this->assertStringContainsString(".bx-main.bx-pt-application #bx-toolbar {\n        contain: layout;", $sWide, 'The header is the block the logo is placed in.');
+        $this->assertStringContainsString(".bx-main.bx-pt-application .bx-app-sidebar {\n        z-index: 4999;", $sWide, 'Under the header, whose logo is drawn over it.');
+    }
+
+    public function testNarrowRowsAreTheirIconAlone(): void
+    {
+        $sCss = self::read('modules/boonex/artificer/data/template/system/css/common.css');
+
+        $this->assertMatchesRegularExpression('/\.bx-app-sidebar-narrow \.bx-app-sidebar \.bx-menu-panel li a \{\n        justify-content: center;\n        padding-left: 0;\n        padding-right: 0;\n    \}/', $sCss, 'The label\'s paddings would clip or squeeze a 32px icon in 32px.');
+        $this->assertMatchesRegularExpression('/\.bx-app-sidebar-narrow \.bx-app-sidebar \.bx-menu-panel \.bx-stl-mii \{\n        flex: none;/', $sCss);
+    }
 }

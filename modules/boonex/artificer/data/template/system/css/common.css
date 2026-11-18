@@ -138,6 +138,32 @@ html {
     .bx-main.bx-pt-application .bx-app-sidebar-open-btn {
         display: none;
     }
+    /* The expanded sidebar carries the logo, beside its button. The page has one logo, the header's: it is drawn over the sidebar's
+       head, so the sidebar sits under the header here (only the drawer has to cover it). The header is the block the logo is placed
+       in (contain: layout), whatever the width of the header's content. Narrow, the logo is back at the start of the header. */
+    .bx-main.bx-pt-application .bx-app-sidebar {
+        z-index: 4999;
+    }
+    .bx-main.bx-pt-application #bx-toolbar {
+        contain: layout;
+    }
+    .bx-main.bx-pt-application:not(.bx-app-sidebar-narrow) #bx-logo-container {
+        position: fixed;
+        top: calc((var(--bx-sidebar-head) - 2.75rem) / 2); /* its 44px link in the middle of the 64px row, level with the button */
+        left: calc(4rem - var(--bx-sidebar-width)); /* after the 44px button and its 10px sides */
+        max-width: calc(var(--bx-sidebar-width) - 4.75rem);
+    }
+    .bx-dir-rtl .bx-main.bx-pt-application:not(.bx-app-sidebar-narrow) #bx-logo-container {
+        left: auto;
+        right: calc(4rem - var(--bx-sidebar-width));
+    }
+    .bx-main.bx-pt-application:not(.bx-app-sidebar-narrow) #bx-logo-container :is(img, svg) {
+        max-width: 100%;
+        height: auto;
+    }
+    .bx-main.bx-pt-application:not(.bx-app-sidebar-narrow) #bx-toolbar .bx-ti-menu {
+        margin-inline-start: 0; /* the menu starts the header: the logo before it is over the sidebar */
+    }
     /* Narrow: icons only, centred in the 64px, with no scrollbar taking a side. */
     .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar [sidebar-toggle-item] {
         display: none;
@@ -150,6 +176,19 @@ html {
     }
     .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar .bx-mc-cnt {
         padding: 0 1rem; /* 64px less the 32px icons */
+    }
+    /* A narrow row is its 32px icon alone: the link's side paddings (made for an icon and a label) would squeeze or clip it. */
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar .bx-menu-panel li a {
+        justify-content: center;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar .bx-menu-panel .bx-stl-mii {
+        flex: none;
+        margin: 0;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar .bx-menu-panel .bx-stl-mii > * {
+        margin: 0;
     }
     .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-foot {
         flex-direction: column;
