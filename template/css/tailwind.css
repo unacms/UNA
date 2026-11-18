@@ -2551,12 +2551,12 @@
     .bx-std .bx-menu-verlit li.bx-mv-theme > div > span {
         @apply flex-auto;
     }
-    /* Segmented switcher: a pill of text tabs with the selected one raised on white; the theme toggle below is its icon-only sibling. */
+    /* Segmented switcher, 36px (32px tabs in a 2px frame), the height of the buttons and tiles beside it: a pill of text tabs with the selected one raised on white; the theme toggle below is its icon-only sibling. */
     .bx-std .bx-std-segmented {
         @apply inline-flex p-0.5 rounded-full bg-black/5 dark:bg-white/5; /* translucent track, like the hero plates */
     }
     .bx-std .bx-std-segment {
-        @apply flex items-center justify-center h-7 px-3 rounded-full text-sm font-medium text-gray-600 dark:text-gray-300 transition-colors duration-150; /* 4.5:1 on the gray track */
+        @apply flex items-center justify-center h-8 px-3 rounded-full text-sm font-medium text-gray-600 dark:text-gray-300 transition-colors duration-150; /* 4.5:1 on the gray track */
         @apply hover:text-gray-900 dark:hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500;
     }
     .bx-std .bx-std-segment[aria-selected="true"] {

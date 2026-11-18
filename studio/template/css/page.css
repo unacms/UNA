@@ -144,7 +144,7 @@ div.bx-std-block-caption .bx-std-bcap-icon svg {
     width: 1.5rem;
     height: 1.5rem;
 }
-/* A segmented switcher in the caption sits on the right; its 32px frame is the row's height. */
+/* A segmented switcher in the caption sits on the right; its 36px frame is the row's height. */
 div.bx-std-block-caption > .bx-std-segmented {
     flex: none;
 }
