@@ -42,8 +42,12 @@ class DesignRadiusScaleTest extends BxDolTestCase
         $this->assertStringContainsString('--bx-radius-smooth: 1;', $s);
         $this->assertStringContainsString('--bx-radius-scale: calc(var(--bx-radius-size) * var(--bx-radius-smooth));', $s);
 
-        foreach (['-sm' => '0.125rem', '' => '0.25rem', '-md' => '0.375rem', '-lg' => '0.5rem', '-xl' => '0.75rem', '-2xl' => '1rem', '-3xl' => '1.5rem'] as $sSuffix => $sSize)
+        foreach (['-sm' => '0.125rem', '' => '0.25rem', '-md' => '0.375rem', '-lg' => '0.5rem', '-xl' => '0.75rem', '-2xl' => '1rem'] as $sSuffix => $sSize)
             $this->assertStringContainsString('--bx-radius' . $sSuffix . ': calc(' . $sSize . ' * var(--bx-radius-scale));', $s);
+
+        // The largest step stops at what a 68px bar can draw, so a multiplier rounds bars and tall blocks alike.
+        $this->assertStringContainsString('--bx-radius-max: 2.125rem;', $s);
+        $this->assertStringContainsString('--bx-radius-3xl: min(calc(1.5rem * var(--bx-radius-scale)), var(--bx-radius-max));', $s);
     }
 
     public function testNoFixedRadiusIsLeftInTheSharedStyles(): void

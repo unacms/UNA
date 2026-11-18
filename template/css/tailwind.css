@@ -11,12 +11,15 @@
  * var(--bx-radius-lg) for 8px, var(--bx-radius-2xl) for 16px, var(--bx-radius-3xl) for 24px. That is the nesting: a
  * surface 24px, what is 8px inside it 16px, what is 16px inside it 8px. A pill or a circle (rounded-full, 9999px, 50%)
  * is not on the scale.
+ *   --bx-radius-max     the largest radius a surface gets, 34px: half of a 68px bar (Studio's header), the most such a
+ *                       bar can draw. With a multiplier, tall blocks stop there too, so bars and blocks match.
  */
 @layer base {
     :root {
         --bx-radius-size: 1;
         --bx-radius-smooth: 1;
         --bx-radius-scale: calc(var(--bx-radius-size) * var(--bx-radius-smooth));
+        --bx-radius-max: 2.125rem;
 
         --bx-radius-sm: calc(0.125rem * var(--bx-radius-scale));
         --bx-radius: calc(0.25rem * var(--bx-radius-scale));
@@ -24,7 +27,7 @@
         --bx-radius-lg: calc(0.5rem * var(--bx-radius-scale));
         --bx-radius-xl: calc(0.75rem * var(--bx-radius-scale));
         --bx-radius-2xl: calc(1rem * var(--bx-radius-scale));
-        --bx-radius-3xl: calc(1.5rem * var(--bx-radius-scale));
+        --bx-radius-3xl: min(calc(1.5rem * var(--bx-radius-scale)), var(--bx-radius-max));
     }
 }
 
@@ -2440,10 +2443,11 @@
     }
     /* The art itself runs 1px past the tile (menu_top.css, general.css), as far as a button's outer hairline reaches, and a 1px black/20 line
        over that outer pixel darkens the art's own edge: a darker shade of whatever colour the icon has there, so the edge is always darker than
-       the icon and never a gray that clashes with it, in both schemes. The tile buttons in the sidebar (plain glyphs) keep the buttons' hairlines. */
+       the icon and never a gray that clashes with it. In the dark scheme the line is white/15, as on the launcher's tiles: a darker edge leaves a dark icon without
+       an outline on the dark bar. The tile buttons in the sidebar (plain glyphs) keep the buttons' hairlines. */
     .bx-std .bx-std-menu-top .bx-icon-tile,
     .bx-std .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) {
-        @apply after:-inset-px after:rounded-[calc(var(--bx-radius-lg)_+_1px)] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.2)];
+        @apply after:-inset-px after:rounded-[calc(var(--bx-radius-lg)_+_1px)] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.2)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.15)];
     }
 
     /* Tiles and buttons in the header (36px): a tight stack that stays inside the bar. The md stack above is sized for the 72px launcher tiles and lands mostly below the bar, where it reads as no shadow at all. */

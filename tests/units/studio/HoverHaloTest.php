@@ -124,8 +124,8 @@ class HoverHaloTest extends BxDolTestCase
         $s = self::read('template/css/tailwind.css');
 
         // app art runs 1px past its tile, as far as a button's outer hairline, and a black/20 line over that outer pixel darkens the art's own
-        // edge (always darker than the icon, in its hue) in both schemes; glyph tile buttons keep the buttons' hairlines; no extra ring on hover or when active
-        $this->assertStringContainsString("    .bx-std .bx-std-menu-top .bx-icon-tile,\n    .bx-std .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) {\n        @apply after:-inset-px after:rounded-[calc(var(--bx-radius-lg)_+_1px)] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.2)];", $s);
+        // edge (always darker than the icon, in its hue); in the dark scheme the line is white/15, as on the launcher's tiles, so a dark icon keeps an outline on the dark bar; glyph tile buttons keep the buttons' hairlines; no extra ring on hover or when active
+        $this->assertStringContainsString("    .bx-std .bx-std-menu-top .bx-icon-tile,\n    .bx-std .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) {\n        @apply after:-inset-px after:rounded-[calc(var(--bx-radius-lg)_+_1px)] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.2)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.15)];", $s);
         foreach (['studio/template/css/menu_top.css' => 2, 'studio/template/css/general.css' => 1] as $sFile => $iRules) { // current-app tile and dock; sidebar
             $sCss = self::read($sFile);
             $this->assertSame($iRules, substr_count($sCss, "max-width: none; /* Tailwind's base caps images at their box */"), $sFile . ': the art is not capped at its tile.');
