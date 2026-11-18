@@ -29,6 +29,7 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'angle-double-left' => 'chevrons-left',
             'angle-double-right' => 'chevrons-right',
             'arrows-alt' => 'move',
+            'arrows-alt-v' => 'chevrons-up-down', // the profile switcher's button (profile_avatar.html, profile_stats.html)
             'bars' => 'menu',
             'book-reader' => 'book-open-text',
             'buffer' => 'layers',

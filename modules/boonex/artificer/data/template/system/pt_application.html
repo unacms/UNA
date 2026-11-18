@@ -2,26 +2,27 @@
 <div id="bx-content-preload" class="hidden"></div>
 <div class="bx-main bx-pt-application <bx_injection:injection_main_class />">
     <bx_injection:top />
-    <!-- BEG: Navigation -->
-    <nav class="bx-def-z-index-nav fixed w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-        <div class="bx-header-cnt __sys_header_width__ __sys_header_align__ mx-auto px-3 py-3 lg:px-5 lg:pl-3 box-border">
-            <div class="flex items-center justify-between">
-                <div class="flex flex-1 items-center justify-start">
-                    <!-- Sidebar Toggler -->
-                    <button id="toggleSidebar" aria-expanded="true" aria-controls="sidebar" class="hidden mr-6 bg-gray-100 dark:bg-gray-700/50 text-gray-600 rounded-full cursor-pointer xl:inline hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700">
-                      <div class="bx-icon bx-icon-hamburger flex items-center justify-center h-10 w-10">
-                          <bx_image_auto:bars />
-                      </div>
+    <!-- BEG: Navigation: the standard header (_page_toolbar.html) with the sidebar's button before the logo, so the header's styles
+         (#bx-toolbar in tailwind.css: the main menu's tabs, the toolbar's buttons, the popups) are the same in both layouts. -->
+    <header id="bx-toolbar" class="bx-header bx-def-z-index-nav fixed top-0 w-full shadow-[inset_0_-1px_0_0_rgb(255_255_255/0.5),0_1px_8px_-1px_rgb(0_0_0/0.1),0_1px_0_0_var(--tw-shadow-color,rgb(0_0_0/0.025))] dark:shadow-[inset_0_-1px_0_0_rgb(255_255_255/0.05),0_1px_8px_-1px_rgb(0_0_0/0.5),0_1px_0_0_var(--tw-shadow-color,rgb(0_0_0/0.25))] bg-white/60 dark:bg-gray-800/60 backdrop-blur-lg">
+        <div class="bx-header-cnt __sys_header_width__ __sys_header_align__ mx-auto px-4 box-border">
+            <div class="bx-toolbar-content-wrapper">
+                <div id="bx-toolbar-content" class="bx-toolbar-content relative flex items-center justify-start h-16">
+                    <!-- Sidebar toggle: a header button (44px, as the member toolbar's), centred over the narrow sidebar's 64px -->
+                    <button type="button" id="toggleSidebar" aria-expanded="true" aria-controls="sidebar" title="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" aria-label="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" class="bx-sidebar-toggle hidden xl:inline-flex flex-none items-center justify-center h-11 w-11 ltr:-ml-1.5 rtl:-mr-1.5 ltr:mr-4 rtl:ml-4 rounded-full cursor-pointer">
+                        <span class="bx-icon bx-icon-hamburger flex items-center justify-center">
+                            <bx_image_auto:bars />
+                        </span>
                     </button>
-                    <button id="toggleSidebarMobile" aria-expanded="true" aria-controls="sidebar" class="mr-2 bg-gray-100 dark:bg-gray-700/50 text-gray-600 rounded-full cursor-pointer xl:hidden hover:text-gray-900 hover:bg-gray-100 focus:bg-gray-100 dark:focus:bg-gray-700 focus:ring-2 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                      <div id="toggleSidebarMobileHamburger" class="bx-icon bx-icon-hamburger flex items-center justify-center h-10 w-10">
-                          <bx_image_auto:bars />
-                      </div>
-                      <div id="toggleSidebarMobileClose" class="bx-icon bx-icon-close hidden flex items-center justify-center h-10 w-10">
-                        <bx_image_auto:times />
-                      </div>
+                    <button type="button" id="toggleSidebarMobile" aria-expanded="false" aria-controls="sidebar" title="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" aria-label="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" class="bx-sidebar-toggle inline-flex xl:hidden flex-none items-center justify-center h-11 w-11 ltr:mr-3 rtl:ml-3 rounded-full cursor-pointer">
+                        <span id="toggleSidebarMobileHamburger" class="bx-icon bx-icon-hamburger flex items-center justify-center">
+                            <bx_image_auto:bars />
+                        </span>
+                        <span id="toggleSidebarMobileClose" class="bx-icon bx-icon-close hidden flex items-center justify-center">
+                            <bx_image_auto:times />
+                        </span>
                     </button>
-                    <div class="bx-toolbar-items-group relative flex flex-1 items-center justify-start">
+                    <div class="bx-toolbar-items-group relative flex flex-1 items-center justify-start h-16">
                         <!-- Logo -->
                         <div id="bx-logo-container" class="bx-toolbar-item bx-ti-left bx-ti-logo flex-none items-center">
                             <bx_injection:injection_logo_before />
@@ -29,19 +30,19 @@
                             <bx_injection:injection_logo_after />
                         </div>
                         <!-- Menu -->
-                        <div class="bx-toolbar-item bx-ti-menu flex-2 hidden xl:block w-64 ml-4">
-                            <div id="bx-menu-toolbar-1-container" class="bx-toolbar-item bx-ti-menu w-full">
+                        <div class="bx-toolbar-item bx-ti-menu flex-2 hidden xl:block w-64 min-w-0 ltr:ml-8 rtl:mr-8 ltr:mr-6 rtl:ml-6">
+                            <nav id="bx-menu-toolbar-1-container" class="bx-toolbar-item bx-ti-menu w-full">
                                 <bx_menu:sys_application />
-                            </div>
+                            </nav>
                         </div>
                         <!-- Search box, opened by the 'search' item of the member toolbar -->
                         __sys_toolbar_search__
                     </div>
+                    <bx_menu:sys_toolbar_member />
                 </div>
-                <bx_menu:sys_toolbar_member />
             </div>
         </div>
-    </nav>
+    </header>
     <!-- END: Navigation -->
 
     <div class="bx-main-content flex pt-16 overflow-hidden">
@@ -49,7 +50,7 @@
         <aside id="sidebar" class="bx-main-column narrow fixed top-0 left-0 z-20 hidden xl:flex flex-col flex-shrink-0 w-64 h-full pt-16 duration-75 transition-width" aria-label="Sidebar">
             <div class="bx-mc-border relative flex flex-col flex-1 min-h-0 max-h-full h-full pt-0 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <div class="flex flex-col flex-1 py-2 overflow-y-auto">
-                    <div class="bx-mc-cnt flex-1 px-4 space-y-1 bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                    <div class="bx-mc-cnt flex-1 px-2 space-y-1 bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                         <bx_menu:sys_site_panel />
                     </div>
                 </div>
