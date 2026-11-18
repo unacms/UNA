@@ -86,4 +86,14 @@ class ApplicationShellHeaderTest extends BxDolTestCase
         $this->assertStringContainsString("!oToolbar.closest('.bx-pt-application').length", $s);
         $this->assertLessThan(strpos($s, 'new Headroom('), strpos($s, "closest('.bx-pt-application')"), 'Checked before the header is handed to Headroom.');
     }
+
+    public function testHoverHighlightHasTheTabsCorners(): void
+    {
+        // the tabs are rounded-xl, on the radius scale (Designer > Corners); a fixed 12px highlight under a hovered tab was smaller than the current tab
+        $s = self::read('modules/boonex/artificer/data/template/system/css/general.css');
+        $this->assertSame(1, preg_match('/#bx-toolbar \.bx-menu-main\.bx-menu-highlight-list::before,[^{]*\{[^}]*\}/', $s, $a));
+        $this->assertStringContainsString('border-radius: var(--bx-radius-xl);', $a[0]);
+
+        $this->assertMatchesRegularExpression('/#bx-toolbar \.bx-menu-main > \.bx-menu-item \{\s*@apply rounded-xl;/', self::read('template/css/tailwind.css'));
+    }
 }
