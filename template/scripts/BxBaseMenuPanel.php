@@ -20,6 +20,11 @@ class BxBaseMenuPanel extends BxTemplMenu
 
     protected function _getMenuItem ($aItem)
     {
+        // The apps draw the panel themselves (NEO's Application sidebar), so they get each item as any menu gives it:
+        // its name and its submenu's name (`submenu`), whose items they ask for. Not the submenu's HTML.
+        if($this->_bIsApi)
+            return parent::_getMenuItem($aItem);
+
         $aHiddenOn = array(
             pow(2, BX_DB_HIDDEN_PHONE - 1) => 'bx-def-media-phone-hide',
             pow(2, BX_DB_HIDDEN_TABLET - 1) => 'bx-def-media-tablet-hide',
