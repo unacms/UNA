@@ -446,7 +446,10 @@ function oneForm(list: ListRoute | null, query: string): ListRoute | null {
 
 /** A section's feed (`feed=hot`) or filter (`filter=unread`); the default feed is not written out. */
 const FEED_OR_FILTER: QueryCodec = {
-    write: (list) => (list.feed ? `feed=${list.feed}` : list.filter ? `filter=${list.filter}` : ''),
+    write: (list) => {
+        if (list.feed) return `feed=${list.feed}`;
+        return list.filter ? `filter=${list.filter}` : '';
+    },
     read: (section, query) => {
         const params = new URLSearchParams(query);
         const feed = params.get('feed');
@@ -460,7 +463,11 @@ const FEED_OR_FILTER: QueryCodec = {
 
 /** Posts and Discussions: a feed, or one category at a feed (`feed=popular&category=3`). */
 const CATEGORY_LIST: QueryCodec = {
-    write: (list) => (list.category ? `${list.feed ? `feed=${list.feed}&` : ''}category=${encodeURIComponent(list.category)}` : FEED_OR_FILTER.write(list)),
+    write: (list) => {
+        if (!list.category) return FEED_OR_FILTER.write(list);
+        const category = `category=${encodeURIComponent(list.category)}`;
+        return list.feed ? `feed=${list.feed}&${category}` : category;
+    },
     read: (section, query) => {
         const params = new URLSearchParams(query);
         if (!params.has('category') || !isCategorySection(section)) return FEED_OR_FILTER.read(section, query);
@@ -478,7 +485,9 @@ const CONTEXT_LIST: QueryCodec = {
     write: (list) => {
         if (list.feed) return `feed=${list.feed}`;
         const param = CONTEXT_PARAMS[list.section];
-        return param && list.group ? `${param}=${encodeURIComponent(list.group)}${list.groupTab && list.groupTab !== 'posts' ? `&tab=${list.groupTab}` : ''}` : '';
+        if (!param || !list.group) return '';
+        const context = `${param}=${encodeURIComponent(list.group)}`;
+        return list.groupTab && list.groupTab !== 'posts' ? `${context}&tab=${list.groupTab}` : context;
     },
     read: (section, query) => {
         const params = new URLSearchParams(query);
@@ -661,62 +670,71 @@ export function parseRoute(path: string): Route | null {
 /** New items: a detail with no id ("new-message"), the same as the forms that take one. */
 const NEW_KINDS = ['new-message', 'new-discussion', 'new-video', 'new-photos', 'new-album', 'new-files', 'new-article'] as const;
 
+/** A post or a discussion, at a comment in it ("comment-99", "comment-99-in-55" for a reply under 55). */
+function readCommented(kind: 'post' | 'discussion', id: string, tab: string | undefined): DetailRoute | null {
+    if (tab === undefined) return { kind, id };
+    const m = COMMENT_PART.exec(tab);
+    if (!m?.[1]) return null;
+    return m[2] ? { kind, id, comment: m[1], thread: m[2] } : { kind, id, comment: m[1] };
+}
+
+/** A group, a space or an event, at a tab its page has (Posts, the default, never written out). */
+function readContext(kind: ContextPageKind, id: string, tab: string | undefined): DetailRoute | null {
+    if (!ID.test(id)) return null;
+    if (tab === undefined) return { kind, id };
+    return tab !== 'posts' && contextHasTab(kind, tab) ? { kind, id, tab } : null;
+}
+
+/** A profile, at one of its tabs (Posts, the default, never written out). */
+function readProfile(id: string, tab: string | undefined): DetailRoute | null {
+    if (tab === undefined) return { kind: 'profile', id };
+    return tab !== 'posts' && (PROFILE_TABS as readonly string[]).includes(tab) ? { kind: 'profile', id, tab: tab as ProfileTab } : null;
+}
+
+/** An item of a module, by its number; it has no fourth part. */
+const readItem = (kind: 'video' | 'photo' | 'album' | 'file' | 'task' | 'poll' | 'article') => (id: string, tab: string | undefined): DetailRoute | null => (tab === undefined && ID.test(id) ? { kind, id } : null);
+
+/** A form for a new item in a context (its number); it has no fourth part. */
+const readNewInContext = (kind: 'new-video' | 'new-photos' | 'new-album' | 'new-files' | 'new-article') => (id: string, tab: string | undefined): DetailRoute | null =>
+    tab === undefined && ID.test(id) ? { kind, contextId: id } : null;
+
+/** How each kind of detail is read from its id (decoded) and a fourth part; a kind not here is no detail. */
+const DETAIL_READERS: Readonly<Record<string, (id: string, tab: string | undefined) => DetailRoute | null>> = {
+    post: (id, tab) => readCommented('post', id, tab),
+    discussion: (id, tab) => readCommented('discussion', id, tab),
+    conversation: (id, tab) => (tab === undefined ? { kind: 'conversation', id } : null),
+    group: (id, tab) => readContext('group', id, tab),
+    space: (id, tab) => readContext('space', id, tab),
+    event: (id, tab) => readContext('event', id, tab),
+    'edit-profile': (id) => (ID.test(id) ? { kind: 'edit-profile', id } : null),
+    settings: (id) => ((SETTINGS_TABS as readonly string[]).includes(id) ? { kind: 'settings', tab: id as SettingsTab } : null),
+    'new-message': (id) => ({ kind: 'new-message', profileId: id }),
+    'new-discussion': (id) => (ID.test(id) ? { kind: 'new-discussion', groupId: id } : null),
+    'new-video': readNewInContext('new-video'),
+    'new-photos': readNewInContext('new-photos'),
+    'new-album': readNewInContext('new-album'),
+    'new-files': readNewInContext('new-files'),
+    'new-article': readNewInContext('new-article'),
+    video: readItem('video'),
+    photo: readItem('photo'),
+    album: readItem('album'),
+    file: readItem('file'),
+    task: readItem('task'),
+    poll: readItem('poll'),
+    article: readItem('article'),
+    profile: readProfile,
+};
+
 /** The detail of a path's parts after its section: its kind, its id and a fourth part (a tab, a comment). */
 function parseDetail(kind: string, rawId: string | undefined, tab: string | undefined): DetailRoute | null {
     if ((NEW_KINDS as readonly string[]).includes(kind) && rawId === undefined) return { kind: kind as (typeof NEW_KINDS)[number] };
-    if (rawId === undefined || rawId === '') return null;
-    let id: string;
+    const read = Object.hasOwn(DETAIL_READERS, kind) ? DETAIL_READERS[kind] : undefined;
+    if (!read || rawId === undefined || rawId === '') return null;
     try {
-        id = decodeURIComponent(rawId);
+        return read(decodeURIComponent(rawId), tab);
     } catch {
+        // an id that is no valid escape
         return null;
-    }
-    switch (kind) {
-        case 'post':
-        case 'discussion': {
-            if (tab === undefined) return { kind, id };
-            const m = COMMENT_PART.exec(tab);
-            if (!m?.[1]) return null;
-            return m[2] ? { kind, id, comment: m[1], thread: m[2] } : { kind, id, comment: m[1] };
-        }
-        case 'conversation':
-            return tab === undefined ? { kind, id } : null;
-        case 'group':
-        case 'space':
-        case 'event':
-            if (!ID.test(id)) return null;
-            if (tab === undefined) return { kind, id };
-            if (tab === 'posts' || !contextHasTab(kind, tab)) return null;
-            return { kind, id, tab };
-        case 'edit-profile':
-            return ID.test(id) ? { kind, id } : null;
-        case 'settings':
-            return (SETTINGS_TABS as readonly string[]).includes(id) ? { kind, tab: id as SettingsTab } : null;
-        case 'new-message':
-            return { kind, profileId: id };
-        case 'new-discussion':
-            return ID.test(id) ? { kind, groupId: id } : null;
-        case 'new-video':
-        case 'new-photos':
-        case 'new-album':
-        case 'new-files':
-        case 'new-article':
-            return tab === undefined && ID.test(id) ? { kind, contextId: id } : null;
-        case 'video':
-        case 'photo':
-        case 'album':
-        case 'file':
-        case 'task':
-        case 'poll':
-        case 'article':
-            return tab === undefined && ID.test(id) ? { kind, id } : null;
-        case 'profile':
-            if (tab === undefined) return { kind, id };
-            // the default tab is never written out, so a path has one form only
-            if (tab === 'posts' || !(PROFILE_TABS as readonly string[]).includes(tab)) return null;
-            return { kind, id, tab: tab as ProfileTab };
-        default:
-            return null;
     }
 }
 
