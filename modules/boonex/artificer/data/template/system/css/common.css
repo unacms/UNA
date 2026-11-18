@@ -446,8 +446,37 @@ html.dark .bx-loading-ajax-btn .bx-loading-orb {
     color: inherit;
 }
 
+/* The default orb sits on a round plate: half-transparent, blurring what is behind it, so the orb reads over any
+   content. The plate is padding that the margin takes back, so the orb's box keeps its size. An orb in a button
+   has no plate: the button is its background. */
+.bx-loading-orb {
+    box-sizing: content-box;
+    padding: 12px;
+    margin: -12px;
+    border-radius: 9999px;
+    corner-shape: round;
+    background-color: rgb(255 255 255 / 0.5);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+html.dark .bx-loading-orb {
+    background-color: rgb(38 38 42 / 0.5);
+}
+.bx-loading-orb[data-bx-orb-size="32"] {
+    padding: 6px;
+    margin: -6px;
+}
+.bx-loading-ajax-btn .bx-loading-orb,
+html.dark .bx-loading-ajax-btn .bx-loading-orb {
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+
 /* Transition pages: the orb in the middle of the screen with the page's message under it. A plain "Please wait"
-   (transition_wait.html, after signing in) is for screen readers only: the orb says it. */
+   (transition_wait.html, after signing in or out) is for screen readers only: the orb says it. */
 .bx-transition {
     position: fixed;
     inset: 0;
