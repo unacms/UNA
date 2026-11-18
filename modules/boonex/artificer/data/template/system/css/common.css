@@ -8,6 +8,14 @@ html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+/* The browser's own parts follow the theme in use (the "dark" class on <html>): form controls, scrollbars, autofill
+   and the page's canvas before the styles load. */
+:root {
+    color-scheme: light;
+}
+:root.dark {
+    color-scheme: dark;
+}
 .bx-clear {
     clear:both;
     float:none;

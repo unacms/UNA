@@ -1939,6 +1939,30 @@ function bx_set_color_scheme_html()
 }
 
 /*
+ * The browser's own chrome (a phone's address bar, an installed app's title bar) takes its colour from
+ * <meta name="theme-color">. A template's default one can name its dark colour in data-bx-dark: it is used while
+ * <html> has the "dark" class, whoever sets it. A colour set in Designer > PWA has no dark value and stays as set;
+ * it comes first in <head>, so browsers use it.
+ */
+function bx_sync_theme_color()
+{
+    var bDark = document.documentElement.classList.contains('dark');
+
+    document.querySelectorAll('meta[name="theme-color"][data-bx-dark]').forEach(function (oMeta) {
+        if(oMeta.dataset.bxLight === undefined)
+            oMeta.dataset.bxLight = oMeta.getAttribute('content');
+
+        var sColor = bDark ? oMeta.dataset.bxDark : oMeta.dataset.bxLight;
+        if(oMeta.getAttribute('content') !== sColor)
+            oMeta.setAttribute('content', sColor);
+    });
+}
+
+if(typeof MutationObserver !== 'undefined')
+    new MutationObserver(bx_sync_theme_color).observe(document.documentElement, {attributes: true, attributeFilter: ['class']});
+document.addEventListener('DOMContentLoaded', bx_sync_theme_color);
+
+/*
  * Introduction tours (BxDolTours): the homepage tour for operators and the Studio tour, both
  * built on Shepherd (plugins_public/shepherd) and styled by template/css/tour.css.
  *
