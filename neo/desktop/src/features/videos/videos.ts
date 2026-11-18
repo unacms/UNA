@@ -24,7 +24,11 @@ export type VideosOf = { all: true } | { context: string } | { author: string };
 
 /** Every list of the module's entries: one changed or removed is changed in each. */
 export const VIDEOS_LIST_KEY = ['videos', 'list'] as const;
-export const videoListKey = (of: VideosOf) => ('context' in of ? ([...VIDEOS_LIST_KEY, 'context', of.context] as const) : 'author' in of ? ([...VIDEOS_LIST_KEY, 'author', of.author] as const) : ([...VIDEOS_LIST_KEY, 'all'] as const));
+export function videoListKey(of: VideosOf) {
+    if ('context' in of) return [...VIDEOS_LIST_KEY, 'context', of.context] as const;
+    if ('author' in of) return [...VIDEOS_LIST_KEY, 'author', of.author] as const;
+    return [...VIDEOS_LIST_KEY, 'all'] as const;
+}
 export const videoKey = (id: string) => ['video', id] as const;
 
 /** A page of a list of videos, the newest first. */
