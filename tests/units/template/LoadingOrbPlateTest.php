@@ -28,9 +28,10 @@ class LoadingOrbPlateTest extends BxDolTestCase
     {
         $s = self::read($sPath);
 
-        $this->assertSame(1, preg_match('/\n\.bx-loading-orb \{\n    box-sizing: content-box;[^}]*\}/', $s, $a), 'The plate rule.');
+        $this->assertSame(1, preg_match('/\n\.bx-loading-orb \{[^}]*\}/', $s, $a), 'The plate rule.');
         $sRule = $a[0];
 
+        $this->assertStringContainsString('box-sizing: content-box;', $sRule);
         $this->assertStringContainsString('border-radius: 9999px;', $sRule);
         $this->assertStringContainsString('corner-shape: round;', $sRule, 'A circle with smooth corners on too.');
         $this->assertStringContainsString('background-color: rgb(255 255 255 / 0.5);', $sRule);
@@ -40,7 +41,7 @@ class LoadingOrbPlateTest extends BxDolTestCase
         $this->assertSame(1, preg_match('/padding: (\d+)px;\n    margin: -(\d+)px;/', $sRule, $aBox), 'The margin takes the padding back.');
         $this->assertSame($aBox[1], $aBox[2], 'The orb\'s box keeps its size.');
 
-        $this->assertMatchesRegularExpression('/html\.dark \.bx-loading-orb \{\n    background-color: rgb\(\d+ \d+ \d+ \/ 0\.5\);\n\}/', $s);
+        $this->assertMatchesRegularExpression('/html\.dark \.bx-loading-orb \{\n    color: #fafafc;\n    background-color: rgb\(\d+ \d+ \d+ \/ 0\.5\);\n\}/', $s);
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('styles')]
@@ -48,7 +49,17 @@ class LoadingOrbPlateTest extends BxDolTestCase
     {
         $s = self::read($sPath);
 
-        $this->assertMatchesRegularExpression('/\.bx-loading-ajax-btn \.bx-loading-orb,\nhtml\.dark \.bx-loading-ajax-btn \.bx-loading-orb \{\n    padding: 0;\n    margin: 0;\n    background-color: transparent;\n    -webkit-backdrop-filter: none;\n    backdrop-filter: none;\n\}/', $s);
+        $this->assertMatchesRegularExpression('/\.bx-loading-ajax-btn \.bx-loading-orb,\nhtml\.dark \.bx-loading-ajax-btn \.bx-loading-orb \{\n    padding: 0;\n    margin: 0;\n    color: inherit;\n    background-color: transparent;\n    -webkit-backdrop-filter: none;\n    backdrop-filter: none;\n\}/', $s);
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('styles')]
+    public function testEachOrbSelectorIsDeclaredOnce(string $sPath): void
+    {
+        $s = self::read($sPath);
+
+        $this->assertSame(1, preg_match_all('/^\.bx-loading-orb \{/m', $s));
+        $this->assertSame(1, preg_match_all('/^html\.dark \.bx-loading-orb \{/m', $s));
+        $this->assertSame(1, preg_match_all('/^html\.dark \.bx-loading-ajax-btn \.bx-loading-orb \{/m', $s));
     }
 
     public static function transitions(): array
