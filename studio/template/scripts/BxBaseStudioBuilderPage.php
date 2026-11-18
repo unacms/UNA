@@ -21,7 +21,8 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
     protected $sActionBlockCreate = 'block_create';
     protected $sActionBlockEdit = 'block_edit';
 
-    protected $_aTmplVarsBlockPanelTop = null;
+    protected $aTmplVarsBlockPanelTop = null;
+    protected $bBlockCaptionControls = true; // false: a builder that keeps its actions in its own row under the caption
 
     protected $sStorage;
     protected $sTranscoder;
@@ -268,6 +269,10 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
      */
     public function getBlockCaptionControls($aBlock)
     {
+        if(!$this->bBlockCaptionControls) {
+            return '';
+        }
+
         return BxDolStudioTemplate::getInstance()->parseHtmlByName('bp_block_caption_controls.html', $this->_getTmplVarsBlockPanelTop());
     }
 
@@ -2118,8 +2123,9 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
     protected function _getTmplVarsBlockPanelTop()
     {
         // the caption's controls and the row under it are built from the same values
-        if($this->_aTmplVarsBlockPanelTop !== null)
-            return $this->_aTmplVarsBlockPanelTop;
+        if($this->aTmplVarsBlockPanelTop !== null) {
+            return $this->aTmplVarsBlockPanelTop;
+        }
 
         $oPermalink = BxDolPermalinks::getInstance();
         $sJsObject = $this->getPageJsObject();
@@ -2198,7 +2204,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
 
         $oForm = new BxTemplStudioFormView([]);
 
-        return $this->_aTmplVarsBlockPanelTop = [
+        return $this->aTmplVarsBlockPanelTop = [
             'js_object' => $sJsObject,
             'bx_if:show_selector_types' => [
                 'condition' => !empty($aInputTypes),

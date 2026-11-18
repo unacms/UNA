@@ -29,6 +29,9 @@ class BxDevBuilderPage extends BxTemplStudioBuilderPage
 
         $this->oModule = BxDolModule::getInstance('bx_developer');
 
+        // this builder keeps its actions in its own row under the caption (bp_block_panel_top.html of this module)
+        $this->bBlockCaptionControls = false;
+
         $this->oModule->_oTemplate->addStudioCss(array('builder_page.css'));
     }
 
@@ -42,14 +45,6 @@ class BxDevBuilderPage extends BxTemplStudioBuilderPage
          return BxBaseStudioWidget::getBlockPanelTop(
             array('panel_top' => $this->oModule->_oTemplate->parseHtmlByName('bp_block_panel_top.html', $this->_getTmplVarsBlockPanelTop()))
         );
-    }
-
-    /**
-     * This builder keeps its actions in its own row under the caption (bp_block_panel_top.html of this module).
-     */
-    public function getBlockCaptionControls($aBlock)
-    {
-        return '';
     }
 
     protected function actionPageCreate()
