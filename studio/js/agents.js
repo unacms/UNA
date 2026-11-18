@@ -251,7 +251,7 @@ BxDolStudioPageAgents.prototype._loadReadonlyAgentChat = function(sSelector, iAg
 
     this._iAgentChatLoad = (this._iAgentChatLoad || 0) + 1;
     var iLoad = this._iAgentChatLoad;
-    el.innerHTML = '';
+    el.replaceChildren();
 
     if (Array.isArray(aCached)) {
         this._renderReadonlyAgentChat(el, aCached);
@@ -277,7 +277,7 @@ BxDolStudioPageAgents.prototype._loadReadonlyAgentChat = function(sSelector, iAg
     }).fail(function() {
         if (iLoad !== $this._iAgentChatLoad)
             return;
-        el.innerHTML = '';
+        el.replaceChildren();
     });
 };
 
@@ -447,7 +447,7 @@ BxDolStudioPageAgents.prototype.destroyAgentChat = function(bKeepBox) {
     if (this._sAgentChatSelector) {
         var el = document.querySelector(this._sAgentChatSelector);
         if (el)
-            el.innerHTML = '';
+            el.replaceChildren();
     }
 
     if (!bKeepBox) {

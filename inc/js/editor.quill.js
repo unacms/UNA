@@ -490,6 +490,10 @@ function bx_editor_init(oParams) {
     });
     
    oEditor.container.addEventListener('keydown', function(event) {
+        // Enter that confirms a word in an input method (Chinese, Japanese, Korean) is not the end of a line.
+        if (event.isComposing || event.keyCode === 229)
+            return;
+
         if (event.key === 'Enter' || event.keyCode === 13) {
              bx_editor_on_space_enter (oEditor.container.firstChild.innerHTML, oParams.selector);
         }
