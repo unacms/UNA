@@ -3094,12 +3094,8 @@ function bx_scrollbar_overlay_update(o)
     var fPowerB = bx_scrollbar_overlay_power(Number.parseFloat(oCss.borderBottomRightRadius) ? oCss : oCssFrame, 'Bottom');
 
     // round the top corner when the scroll box starts at the frame's top, down the right edge, round the bottom corner
-    var sPath = 'M' + (fX - fRt) + ' ' + (fTop + fInset);
-    if(fRt > 0)
-        sPath += fPowerT > 2 && fRadiusT >= 3 * fInset ? bx_scrollbar_overlay_corner(fRight - fRadiusT, fTop + fRadiusT, fRadiusT, fInset, fPowerT, false) : ' A' + fRt + ' ' + fRt + ' 0 0 1 ' + fX + ' ' + (fTop + fInset + fRt);
-    sPath += ' L' + fX + ' ' + (fBottom - fInset - fRb);
-    if(fRb > 0)
-        sPath += fPowerB > 2 && fRadiusB >= 3 * fInset ? bx_scrollbar_overlay_corner(fRight - fRadiusB, fBottom - fRadiusB, fRadiusB, fInset, fPowerB, true) : ' A' + fRb + ' ' + fRb + ' 0 0 1 ' + (fX - fRb) + ' ' + (fBottom - fInset);
+    var sPath = 'M' + (fX - fRt) + ' ' + (fTop + fInset) + bx_scrollbar_overlay_turn(fRight, fTop, fRadiusT, fInset, fPowerT, false);
+    sPath += ' L' + fX + ' ' + (fBottom - fInset - fRb) + bx_scrollbar_overlay_turn(fRight, fBottom, fRadiusB, fInset, fPowerB, true);
 
     o.svg.setAttribute('viewBox', '0 0 ' + fW + ' ' + fH);
     o.track.setAttribute('d', sPath);
@@ -3132,6 +3128,24 @@ function bx_scrollbar_overlay_power(oCss, sSide)
 }
 
 /**
+ * The bar's way round a right corner of the frame (radius fRadius, at the frame's top or bottom edge fEdge): nothing for a square
+ * corner, an arc for a round one, the superellipse's own curve for a smooth one. A smooth corner too small for the inset
+ * (under three times it) gets the arc: moved inwards, its curve would fold over itself.
+ */
+function bx_scrollbar_overlay_turn(fRight, fEdge, fRadius, fInset, fPower, bBottom)
+{
+    var fR = Math.max(fRadius - fInset, 0);
+    if(fR <= 0)
+        return '';
+
+    if(fPower > 2 && fRadius >= 3 * fInset)
+        return bx_scrollbar_overlay_corner(fRight - fRadius, bBottom ? fEdge - fRadius : fEdge + fRadius, fRadius, fInset, fPower, bBottom);
+
+    var fX = fRight - fInset;
+    return ' A' + fR + ' ' + fR + ' 0 0 1 ' + (bBottom ? (fX - fR) + ' ' + (fEdge - fInset) : fX + ' ' + (fEdge + fInset + fR));
+}
+
+/**
  * A right corner of the bar's centre line: the frame's superellipse corner (centre fCx, fCy; radius fR; exponent fPower) moved inwards
  * by the inset along its normal, so the bar stays parallel to the edge all the way round. Line segments: from the top edge to the
  * right edge (top corner) or from the right edge to the bottom edge (bottom corner).
@@ -3144,7 +3158,7 @@ function bx_scrollbar_overlay_corner(fCx, fCy, fR, fInset, fPower, bBottom)
 
         // a point of |u|^p + |v|^p = 1 in the corner's quadrant (u to the right, v away from the centre vertically) and its normal
         var fU = Math.pow(Math.sin(fT), 2 / fPower), fV = Math.pow(Math.cos(fT), 2 / fPower);
-        var fNu = Math.pow(fU, fPower - 1), fNv = Math.pow(fV, fPower - 1), fN = Math.sqrt(fNu * fNu + fNv * fNv) || 1;
+        var fNu = Math.pow(fU, fPower - 1), fNv = Math.pow(fV, fPower - 1), fN = Math.hypot(fNu, fNv) || 1;
 
         var fX = fCx + fR * fU - fInset * fNu / fN;
         var fY = fR * fV - fInset * fNv / fN;
