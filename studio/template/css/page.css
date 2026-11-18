@@ -148,6 +148,15 @@ div.bx-std-block-caption .bx-std-bcap-icon svg {
 div.bx-std-block-caption > .bx-std-segmented {
     flex: none;
 }
+/* The block's actions (the page builder's New Page, Add Blocks, view, settings, delete) sit in the caption beside the title, 8px apart;
+   selects, filters and search go in the row under it (div.bx-std-block-panel-top). */
+div.bx-std-bcap-controls {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
 /* A button in the caption (the Cache block's "Clear all caches") keeps its width beside the flexible title. */
 div.bx-std-block-caption > .bx-btn {
     flex: none;
@@ -454,6 +463,15 @@ div.bx-std-block-panel-bottom .bx-std-pt-cnt {
     div.bx-std-block-caption > .bx-std-segmented .bx-std-segment {
         padding: 0 0.5rem;
         font-size: 0.75rem;
+    }
+    /* The caption's actions take their own line under the title when both do not fit. */
+    div.bx-std-block-caption:has(> .bx-std-bcap-controls) {
+        flex-wrap: wrap;
+    }
+    div.bx-std-bcap-controls {
+        flex: 1 1 auto;
+        flex-wrap: wrap;
+        justify-content: flex-start;
     }
     div.bx-std-block-caption .bx-std-bcap-text {
         min-width: 0;

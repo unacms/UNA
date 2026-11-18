@@ -44,6 +44,14 @@ class BxDevBuilderPage extends BxTemplStudioBuilderPage
         );
     }
 
+    /**
+     * This builder keeps its actions in its own row under the caption (bp_block_panel_top.html of this module).
+     */
+    public function getBlockCaptionControls($aBlock)
+    {
+        return '';
+    }
+
     protected function actionPageCreate()
     {
     	$sFormObject = $this->oModule->_oConfig->getObject('form_bp_page');

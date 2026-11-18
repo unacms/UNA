@@ -21,6 +21,8 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
     protected $sActionBlockCreate = 'block_create';
     protected $sActionBlockEdit = 'block_edit';
 
+    protected $_aTmplVarsBlockPanelTop = null;
+
     protected $sStorage;
     protected $sTranscoder;
     protected $aUploaders; 
@@ -251,11 +253,22 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
         return $sResult . $oTemplate->parseHtmlByName('builder_page.html', $aTmplVars);
     }
 
+    /**
+     * The row under the caption picks the page (and, for apps' pages, the app).
+     */
     function getBlockPanelTop($aBlock)
     {
         return parent::getBlockPanelTop(
             array('panel_top' => BxDolStudioTemplate::getInstance()->parseHtmlByName('bp_block_panel_top.html', $this->_getTmplVarsBlockPanelTop()))
         );
+    }
+
+    /**
+     * The page's actions (new page, add blocks, view, settings, delete) sit in the caption, beside the title.
+     */
+    public function getBlockCaptionControls($aBlock)
+    {
+        return BxDolStudioTemplate::getInstance()->parseHtmlByName('bp_block_caption_controls.html', $this->_getTmplVarsBlockPanelTop());
     }
 
     protected function actionPageCreate()
@@ -2104,6 +2117,10 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
 
     protected function _getTmplVarsBlockPanelTop()
     {
+        // the caption's controls and the row under it are built from the same values
+        if($this->_aTmplVarsBlockPanelTop !== null)
+            return $this->_aTmplVarsBlockPanelTop;
+
         $oPermalink = BxDolPermalinks::getInstance();
         $sJsObject = $this->getPageJsObject();
 
@@ -2181,7 +2198,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
 
         $oForm = new BxTemplStudioFormView([]);
 
-        return [
+        return $this->_aTmplVarsBlockPanelTop = [
             'js_object' => $sJsObject,
             'bx_if:show_selector_types' => [
                 'condition' => !empty($aInputTypes),
