@@ -141,7 +141,7 @@
     "build:jquery-touch-punch": "cp bower_components/jqueryui-touch-punch/jquery.ui.touch-punch.min.js plugins_public",
     "build:loadcss": "cp node_modules/fg-loadcss/dist/loadCSS.js plugins_public",
     "build:masonry": "cp node_modules/masonry-layout/dist/masonry.pkgd.min.js plugins_public",
-    "build:moment": "cp node_modules/moment/min/moment-with-locales.min.js plugins_public; cp node_modules/moment-timezone/builds/moment-timezone-with-data-1970-2030.min.js plugins_public",
+    "build:moment": "mkdir -p plugins_public/moment/locale; cp node_modules/moment/min/moment.min.js plugins_public/moment; cp node_modules/moment/locale/*.js plugins_public/moment/locale; cp node_modules/moment/min/moment-with-locales.min.js plugins_public; cp node_modules/moment-timezone/builds/moment-timezone-with-data-1970-2030.min.js plugins_public",
     "build:recordrtc": "cp node_modules/recordrtc/RecordRTC.min.js plugins_public",
     "build:jekyll-toc": "cp node_modules/jekyll-toc/toc.js plugins_public; patch -p1 < patches/plugins_public_toc-js.txt",
     "build:urijs": "cp node_modules/urijs/src/URI.min.js plugins_public",

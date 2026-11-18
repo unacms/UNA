@@ -7487,7 +7487,7 @@ INSERT INTO `sys_preloader`(`module`, `type`, `content`, `active`, `order`) VALU
 ('system', 'js_system', 'jquery.cookie.min.js', 1, 5),
 ('system', 'js_system', 'jquery.form.min.js', 1, 6),
 ('system', 'js_system', 'spin.js/spin.js', 1, 7),
-('system', 'js_system', 'moment-with-locales.min.js', 1, 8),
+('system', 'js_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:11:"datetime_js";}s:5:"class";s:12:"BaseServices";}', 1, 8),
 ('system', 'js_system', 'marka/marka.min.js', 1, 9),
 ('system', 'js_system', 'headroom.min.js', 1, 10),
 ('system', 'js_system', 'at.js/js/jquery.atwho.min.js', 1, 11),
