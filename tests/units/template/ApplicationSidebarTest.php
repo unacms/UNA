@@ -100,20 +100,27 @@ class ApplicationSidebarTest extends BxDolTestCase
         foreach ($aSurface as $sClass)
             $this->assertContains($sClass, explode(' ', $aSidebar[1]), 'The sidebar is the colour of the header.');
 
-        $this->assertSame(1, substr_count($sApp, '__main_logo__'), 'One logo on the page: no element ids twice.');
+        // The sidebar has its own logo: a copy of the header's without its element ids, first in the sidebar's top row.
+        $this->assertSame(1, substr_count($sApp, '__main_logo__'), 'The header keeps the logo with its ids.');
+        $this->assertSame(1, substr_count($sApp, '__sys_main_logo_copy__'));
+        $iHead = strpos($sApp, '<div class="bx-app-sidebar-head">');
+        $iLogo = strpos($sApp, '<div class="bx-app-sidebar-logo bx-ti-logo">__sys_main_logo_copy__</div>');
+        $this->assertTrue($iHead !== false && $iLogo !== false && $iHead < $iLogo && $iLogo < strpos($sApp, 'id="toggleSidebar"'), 'The logo comes before the button.');
 
-        // drawn over the expanded sidebar's head; back in the header when the sidebar is narrow or a drawer
+        $sFn = self::read('template/scripts/BxBaseFunctions.php');
+        $this->assertStringContainsString("case 'sys_main_logo_copy':\n                \$mixedResult = \$this->getMainLogoCopy();", $sFn);
+        $this->assertStringContainsString("preg_replace('/\\sid=\"[^\"]*\"/', '', \$this->getMainLogo(\$aParams))", $sFn, 'No element id twice on the page.');
+
+        // One of the two shows: the sidebar's while it is expanded and in the drawer, the header's while it is narrow or the drawer is closed.
         $sCss = self::read('modules/boonex/artificer/data/template/system/css/common.css');
         $iWide = strpos($sCss, '@media (min-width: 1280px) {');
-        $sWide = substr($sCss, $iWide, strpos($sCss, '@media (max-width: 1279.98px) {') - $iWide);
-        $this->assertStringContainsString(".bx-main.bx-pt-application:not(.bx-app-sidebar-narrow) #bx-logo-container {\n        position: fixed;", $sWide);
-        $this->assertStringContainsString('left: calc(1rem - var(--bx-sidebar-width));', $sWide, 'First in the row, on the sidebar\'s 16px line.');
-        $this->assertStringContainsString('top: calc((var(--bx-sidebar-head) - 2.75rem) / 2);', $sWide);
-        $this->assertStringContainsString('--bx-sidebar-head: 4rem;', $sCss, 'The variable the row and the logo read is the one that is set.');
-        $this->assertStringNotContainsString('--bx-app-sidebar-head', $sCss);
-        $this->assertMatchesRegularExpression('/\.bx-main\.bx-pt-application #bx-toolbar \{[^}]*contain: layout;/', $sWide, 'The header is the block the logo is placed in.');
-        $this->assertSame(1, substr_count($sWide, "\n    .bx-main.bx-pt-application #bx-toolbar {"), 'One rule for the header.');
-        $this->assertStringContainsString(".bx-main.bx-pt-application .bx-app-sidebar {\n        z-index: 4999;", $sWide, 'Under the header, whose logo is drawn over it.');
+        $iDrawer = strpos($sCss, '@media (max-width: 1279.98px) {');
+        $sWide = substr($sCss, $iWide, $iDrawer - $iWide);
+        $this->assertStringContainsString(".bx-main.bx-pt-application:not(.bx-app-sidebar-narrow) #bx-logo-container {\n        display: none;", $sWide);
+        $this->assertStringContainsString(".bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-logo {\n        display: none;", $sWide);
+        $this->assertStringNotContainsString('bx-app-sidebar-logo', substr($sCss, $iDrawer), 'The drawer shows the sidebar\'s logo as it is.');
+        $this->assertStringNotContainsString('contain: layout', $sCss, 'No logo moved out of the header any more.');
+        $this->assertStringNotContainsString('z-index: 4999', $sCss);
     }
 
     public function testNarrowRowsAreTheirIconAlone(): void
@@ -146,7 +153,7 @@ class ApplicationSidebarTest extends BxDolTestCase
         $this->assertMatchesRegularExpression('/\n\.bx-main\.bx-pt-application \.bx-app-sidebar-icon-open \{\n    display: none;\n\}/', $sCss);
         $this->assertMatchesRegularExpression('/\.bx-app-sidebar-narrow \.bx-app-sidebar-icon-close \{\n        display: none;\n    \}/', $sCss);
         $this->assertMatchesRegularExpression('/\.bx-app-sidebar-narrow \.bx-app-sidebar-icon-open \{\n        display: flex;\n    \}/', $sCss);
-        $this->assertStringContainsString('justify-content: flex-end; /* the button ends the row', $sCss);
+        $this->assertStringContainsString('justify-content: space-between; /* the sidebar\'s logo starts the row, its button ends it */', $sCss);
     }
 
     public function testNarrowRowsKeepARoomyHoverPlate(): void
