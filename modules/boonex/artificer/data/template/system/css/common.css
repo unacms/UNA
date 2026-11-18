@@ -67,7 +67,7 @@ html {
 .bx-main.bx-pt-application {
     --bx-sidebar-width: 16rem;
     --bx-sidebar-width-narrow: 4rem;
-    --bx-app-sidebar-head: 4rem; /* the header's height: the sidebar's own top row lines up with it */
+    --bx-sidebar-head: 4rem; /* the header's height: the sidebar's own top row lines up with it */
 }
 .bx-main.bx-pt-application .bx-app-sidebar {
     position: fixed;
@@ -92,8 +92,13 @@ html {
     display: flex;
     flex: none;
     align-items: center;
-    height: var(--bx-app-sidebar-head);
+    justify-content: flex-end; /* the button ends the row: the logo starts it while the sidebar is expanded */
+    height: var(--bx-sidebar-head);
     padding: 0 0.625rem; /* the 44px button centred over the narrow sidebar's 64px */
+}
+/* The button shows what a press does: panel-left-close while the sidebar is open, panel-left-open while it is narrow. */
+.bx-main.bx-pt-application .bx-app-sidebar-icon-open {
+    display: none;
 }
 .bx-main.bx-pt-application .bx-app-sidebar-body {
     flex: 1 1 auto;
@@ -138,7 +143,7 @@ html {
     .bx-main.bx-pt-application .bx-app-sidebar-open-btn {
         display: none;
     }
-    /* The expanded sidebar carries the logo, beside its button. The page has one logo, the header's: it is drawn over the sidebar's
+    /* The expanded sidebar carries the logo: first in its top row, the button at the row's end. The page has one logo, the header's: it is drawn over the sidebar's
        head, so the sidebar sits under the header here (only the drawer has to cover it). The header is the block the logo is placed
        in (contain: layout), whatever the width of the header's content. Narrow, the logo is back at the start of the header. */
     .bx-main.bx-pt-application .bx-app-sidebar {
@@ -150,12 +155,12 @@ html {
     .bx-main.bx-pt-application:not(.bx-app-sidebar-narrow) #bx-logo-container {
         position: fixed;
         top: calc((var(--bx-sidebar-head) - 2.75rem) / 2); /* its 44px link in the middle of the 64px row, level with the button */
-        left: calc(4rem - var(--bx-sidebar-width)); /* after the 44px button and its 10px sides */
-        max-width: calc(var(--bx-sidebar-width) - 4.75rem);
+        left: calc(1rem - var(--bx-sidebar-width)); /* on the sidebar's 16px line, where its rows' icons start */
+        max-width: calc(var(--bx-sidebar-width) - 5rem); /* up to 8px before the button at the row's end */
     }
     .bx-dir-rtl .bx-main.bx-pt-application:not(.bx-app-sidebar-narrow) #bx-logo-container {
         left: auto;
-        right: calc(4rem - var(--bx-sidebar-width));
+        right: calc(1rem - var(--bx-sidebar-width));
     }
     .bx-main.bx-pt-application:not(.bx-app-sidebar-narrow) #bx-logo-container :is(img, svg) {
         max-width: 100%;
@@ -167,6 +172,12 @@ html {
     /* Narrow: icons only, centred in the 64px, with no scrollbar taking a side. */
     .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar [sidebar-toggle-item] {
         display: none;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-icon-close {
+        display: none;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-icon-open {
+        display: flex;
     }
     .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-body {
         scrollbar-width: none;

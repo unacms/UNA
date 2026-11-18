@@ -10,8 +10,8 @@
                 <div id="bx-toolbar-content" class="bx-toolbar-content relative flex items-center justify-start h-16">
                     <!-- Sidebar drawer button: below the sidebar's breakpoint the sidebar is a drawer, opened from here -->
                     <button type="button" id="toggleSidebarMobile" aria-expanded="false" aria-controls="sidebar" title="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" aria-label="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" class="bx-sidebar-toggle bx-app-sidebar-open-btn inline-flex flex-none items-center justify-center h-11 w-11 ltr:-ml-1.5 rtl:-mr-1.5 ltr:mr-3 rtl:ml-3 rounded-full cursor-pointer">
-                        <span class="bx-icon bx-icon-hamburger flex items-center justify-center">
-                            <bx_image_auto:bars />
+                        <span class="bx-icon flex items-center justify-center">
+                            <bx_image_auto:panel-left-open />
                         </span>
                     </button>
                     <div class="bx-toolbar-items-group relative flex flex-1 items-center justify-start h-16">
@@ -55,10 +55,14 @@
                 })(document.currentScript.parentNode);
             </script>
             <div class="bx-app-sidebar-head">
-                <!-- Wide screens: narrows and widens the sidebar. In the drawer: closes it. A header button (44px). -->
+                <!-- Wide screens: narrows and widens the sidebar (panel-left-close / panel-left-open). In the drawer: closes it. A header
+                     button (44px), at the end of the row: the logo comes first while the sidebar is expanded. -->
                 <button type="button" id="toggleSidebar" aria-expanded="true" aria-controls="sidebar-content" title="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" aria-label="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" class="bx-sidebar-toggle inline-flex flex-none items-center justify-center h-11 w-11 rounded-full cursor-pointer">
-                    <span class="bx-icon bx-icon-hamburger flex items-center justify-center">
-                        <bx_image_auto:bars />
+                    <span class="bx-app-sidebar-icon-close bx-icon flex items-center justify-center">
+                        <bx_image_auto:panel-left-close />
+                    </span>
+                    <span class="bx-app-sidebar-icon-open bx-icon flex items-center justify-center">
+                        <bx_image_auto:panel-left-open />
                     </span>
                 </button>
             </div>

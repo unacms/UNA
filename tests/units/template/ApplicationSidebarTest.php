@@ -107,7 +107,10 @@ class ApplicationSidebarTest extends BxDolTestCase
         $iWide = strpos($sCss, '@media (min-width: 1280px) {');
         $sWide = substr($sCss, $iWide, strpos($sCss, '@media (max-width: 1279.98px) {') - $iWide);
         $this->assertStringContainsString(".bx-main.bx-pt-application:not(.bx-app-sidebar-narrow) #bx-logo-container {\n        position: fixed;", $sWide);
-        $this->assertStringContainsString('left: calc(4rem - var(--bx-sidebar-width));', $sWide);
+        $this->assertStringContainsString('left: calc(1rem - var(--bx-sidebar-width));', $sWide, 'First in the row, on the sidebar\'s 16px line.');
+        $this->assertStringContainsString('top: calc((var(--bx-sidebar-head) - 2.75rem) / 2);', $sWide);
+        $this->assertStringContainsString('--bx-sidebar-head: 4rem;', $sCss, 'The variable the row and the logo read is the one that is set.');
+        $this->assertStringNotContainsString('--bx-app-sidebar-head', $sCss);
         $this->assertStringContainsString(".bx-main.bx-pt-application #bx-toolbar {\n        contain: layout;", $sWide, 'The header is the block the logo is placed in.');
         $this->assertStringContainsString(".bx-main.bx-pt-application .bx-app-sidebar {\n        z-index: 4999;", $sWide, 'Under the header, whose logo is drawn over it.');
     }
@@ -118,5 +121,30 @@ class ApplicationSidebarTest extends BxDolTestCase
 
         $this->assertMatchesRegularExpression('/\.bx-app-sidebar-narrow \.bx-app-sidebar \.bx-menu-panel li a \{\n        justify-content: center;\n        padding-left: 0;\n        padding-right: 0;\n    \}/', $sCss, 'The label\'s paddings would clip or squeeze a 32px icon in 32px.');
         $this->assertMatchesRegularExpression('/\.bx-app-sidebar-narrow \.bx-app-sidebar \.bx-menu-panel \.bx-stl-mii \{\n        flex: none;/', $sCss);
+    }
+
+    public function testTriggersUseThePanelIcons(): void
+    {
+        $sApp = self::read('modules/boonex/artificer/data/template/system/pt_application.html');
+
+        // in the sidebar: what a press does, panel-left-close while it is open and panel-left-open while it is narrow
+        $iToggle = strpos($sApp, 'id="toggleSidebar"');
+        $sToggle = substr($sApp, $iToggle, strpos($sApp, '</button>', $iToggle) - $iToggle);
+        $this->assertMatchesRegularExpression('/<span class="bx-app-sidebar-icon-close [^"]*">\s*<bx_image_auto:panel-left-close \/>/', $sToggle);
+        $this->assertMatchesRegularExpression('/<span class="bx-app-sidebar-icon-open [^"]*">\s*<bx_image_auto:panel-left-open \/>/', $sToggle);
+
+        // in the header: opens the drawer
+        $iOpen = strpos($sApp, 'id="toggleSidebarMobile"');
+        $this->assertStringContainsString('<bx_image_auto:panel-left-open />', substr($sApp, $iOpen, strpos($sApp, '</button>', $iOpen) - $iOpen));
+        $this->assertStringNotContainsString('<bx_image_auto:bars />', $sApp);
+
+        foreach (['panel-left-close', 'panel-left-open'] as $sIcon)
+            $this->assertFileExists(__DIR__ . '/../../../plugins_public/lucide/icons/' . $sIcon . '.svg');
+
+        $sCss = self::read('modules/boonex/artificer/data/template/system/css/common.css');
+        $this->assertMatchesRegularExpression('/\n\.bx-main\.bx-pt-application \.bx-app-sidebar-icon-open \{\n    display: none;\n\}/', $sCss);
+        $this->assertMatchesRegularExpression('/\.bx-app-sidebar-narrow \.bx-app-sidebar-icon-close \{\n        display: none;\n    \}/', $sCss);
+        $this->assertMatchesRegularExpression('/\.bx-app-sidebar-narrow \.bx-app-sidebar-icon-open \{\n        display: flex;\n    \}/', $sCss);
+        $this->assertStringContainsString('justify-content: flex-end; /* the button ends the row', $sCss);
     }
 }
