@@ -8,7 +8,7 @@
 
     <string name="_bx_artificer_stg_cpt_category_system"><![CDATA[General]]></string>
     <string name="_bx_artificer_stg_cpt_option_switcher_name"><![CDATA[Name in Template Switcher]]></string>	
-    <string name="_bx_artificer_stg_cpt_option_page_width"><![CDATA[Page Width]]></string>
+    <string name="_bx_artificer_stg_cpt_option_page_width"><![CDATA[Page width in pixels (empty: as set in Designer)]]></string>
     <string name="_bx_artificer_stg_cpt_option_header_width"><![CDATA[Header width]]></string>
     <string name="_bx_artificer_stg_cpt_option_header_width_full"><![CDATA[Full width]]></string>
     <string name="_bx_artificer_stg_cpt_option_header_width_page"><![CDATA[Page width]]></string>

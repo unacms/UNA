@@ -579,6 +579,40 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     line-height: 1.25rem;
     color: #52525b;
 }
+.adm-dsg-ht-control-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+/* The page's pixels, beside Limited; gone while the page is Full width. */
+.adm-dsg-ht-px {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    color: #52525b;
+}
+.adm-dsg-ht-control:has([data-kind="page"][value="full"]:checked) .adm-dsg-ht-px {
+    display: none;
+}
+.adm-dsg-ht-px-input {
+    box-sizing: border-box;
+    width: 5.5rem;
+    min-height: 2.75rem;
+    padding: 0 0.5rem;
+    border: 0;
+    border-radius: 0.75rem;
+    background-color: #fff;
+    color: #18181b;
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+.adm-dsg-ht-px-input:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
 
 /* A segmented control of radio buttons, the chosen one raised. The radio stays in place, transparent, for the keyboard. */
 .adm-dsg-seg {
@@ -658,7 +692,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     padding: 0 0.5rem;
     transition: width 200ms ease, padding 200ms ease;
 }
-.adm-dsg-ht-cell:has(.adm-dsg-seg-input[value="page"]:checked) .adm-dsg-hd-inner {
+.adm-dsg-ht-cell:has([data-kind="width"][value="page"]:checked) .adm-dsg-hd-inner {
     width: 72%;
     padding: 0;
 }
@@ -678,10 +712,10 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     flex: 1 1 auto;
     gap: 0.125rem;
 }
-.adm-dsg-ht-cell:has(.adm-dsg-seg-input[value="center"]:checked) .adm-dsg-hd-menu {
+.adm-dsg-ht-cell:has([data-kind="align"][value="center"]:checked) .adm-dsg-hd-menu {
     justify-content: center;
 }
-.adm-dsg-ht-cell:has(.adm-dsg-seg-input[value="end"]:checked) .adm-dsg-hd-menu {
+.adm-dsg-ht-cell:has([data-kind="align"][value="end"]:checked) .adm-dsg-hd-menu {
     justify-content: flex-end;
 }
 .adm-dsg-hd-menu > span {
@@ -710,9 +744,14 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     background-color: #fff;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
 }
-.adm-dsg-hd-application .adm-dsg-hd-body {
+/* A Full width page fills the window, and so does a header of Page width on it. */
+.adm-dsg-ht-cell:has([data-kind="page"][value="full"]:checked) .adm-dsg-hd-body {
     width: auto;
     margin: 0 0.5rem;
+}
+.adm-dsg-ht-cell:has([data-kind="page"][value="full"]:checked) .adm-dsg-hd-inner {
+    width: 100%;
+    padding: 0 0.5rem;
 }
 .adm-dsg-hd-application .adm-dsg-hd-side {
     display: block;
@@ -774,8 +813,17 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     background-color: rgba(255, 255, 255, 0.05);
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
-.dark .adm-dsg-ht-label {
+.dark .adm-dsg-ht-label,
+.dark .adm-dsg-ht-px {
     color: #a1a1aa;
+}
+.dark .adm-dsg-ht-px-input {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: #fafafa;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+.dark .adm-dsg-ht-px-input:focus-visible {
+    outline-color: #60a5fa;
 }
 .dark .adm-dsg-seg {
     background-color: rgba(255, 255, 255, 0.06);

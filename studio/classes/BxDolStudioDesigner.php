@@ -557,6 +557,17 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
                         $aValues[$sName] = $sValue;
                 }
 
+        // The page width per layout and audience: Full width, or whole pixels brought into Designer's range.
+        foreach(BxDolTemplate::HEADER_LAYOUTS as $sLayout)
+            foreach(BxDolTemplate::HEADER_AUDIENCES as $sWho) {
+                $sSuffix = $sLayout . '_' . $sWho;
+                $sKind = bx_process_input(bx_get('sys_page_width_kind_' . $sSuffix));
+                if($sKind == 'full')
+                    $aValues['sys_page_width_' . $sSuffix] = 'full';
+                else if($sKind == 'limited' && preg_match('/^\s*\d{1,6}\s*$/', (string)bx_get('sys_page_width_' . $sSuffix)))
+                    $aValues['sys_page_width_' . $sSuffix] = (string)min(BxDolTemplate::PAGE_WIDTH_MAX, max(BxDolTemplate::PAGE_WIDTH_MIN, (int)bx_get('sys_page_width_' . $sSuffix)));
+            }
+
         $sLabelStyle = bx_process_input(bx_get('sys_form_label_style'));
         if(array_key_exists($sLabelStyle, $this->getSettingsLabelStyleList()))
             $aValues['sys_form_label_style'] = $sLabelStyle;

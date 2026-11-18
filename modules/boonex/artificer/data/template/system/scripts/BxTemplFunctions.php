@@ -224,6 +224,15 @@ class BxTemplFunctions extends BxBaseFunctions
         return $aResult;
     }
 
+    /**
+     * Designer's page width for the page's layout and audience, unless Artificer's Page width sets one for all.
+     */
+    public function getPageWidth()
+    {
+        $mixedWidth = BxDolModule::getInstance($this->_sModule)->_oConfig->getPageWidth();
+        return $mixedWidth !== '' ? $mixedWidth : parent::getPageWidth();
+    }
+
     public function TemplPageAddComponent($sKey)
     {
         $mixedResult = false;

@@ -8,7 +8,7 @@
 
     <string name="_bx_artificer_stg_cpt_category_system"><![CDATA[Общие]]></string>
     <string name="_bx_artificer_stg_cpt_option_switcher_name"><![CDATA[Название в переключателе тем]]></string>	
-    <string name="_bx_artificer_stg_cpt_option_page_width"><![CDATA[Ширина страницы]]></string>
+    <string name="_bx_artificer_stg_cpt_option_page_width"><![CDATA[Ширина страницы в пикселях (пусто: как в Дизайнере)]]></string>
     <string name="_bx_artificer_stg_cpt_option_header_width"><![CDATA[Ширина шапки]]></string>
     <string name="_bx_artificer_stg_cpt_option_header_width_full"><![CDATA[Во всю ширину]]></string>
     <string name="_bx_artificer_stg_cpt_option_header_width_page"><![CDATA[По ширине страницы]]></string>

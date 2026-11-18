@@ -123,6 +123,20 @@ class BxArtificerConfig extends BxBaseModTemplateConfig
         return in_array($sValue, BxDolTemplate::HEADER_ALIGNS, true) ? $sValue : '';
     }
 
+    /**
+     * The page's width on every layout: pixels, or 'full' for 100%; '' leaves it to Designer (per layout and audience).
+     * @return int|string
+     */
+    public function getPageWidth()
+    {
+        $sValue = trim((string)getParam('bx_artificer_page_width'));
+        if($sValue === '100%')
+            return 'full';
+
+        $mixedWidth = BxDolTemplate::checkPageWidth($sValue);
+        return $mixedWidth !== false ? $mixedWidth : '';
+    }
+
     public function getLogoParams()
     {
     	$sPrefix = $this->getPrefix('option');

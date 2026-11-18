@@ -553,7 +553,12 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_header_width_application_member', '_adm_stg_cpt_option_sys_header_width_application_member', 'full', 'select', 'page,full', '', '', 18),
 (@iCategoryId, 'sys_header_align_application_member', '_adm_stg_cpt_option_sys_header_align_application_member', 'start', 'select', 'start,center,end', '', '', 19),
 
-(@iCategoryId, 'sys_form_label_style', '_adm_stg_cpt_option_sys_form_label_style', 'regular', 'select', 'regular,adaptive', '', '', 20);
+(@iCategoryId, 'sys_form_label_style', '_adm_stg_cpt_option_sys_form_label_style', 'regular', 'select', 'regular,adaptive', '', '', 20),
+
+(@iCategoryId, 'sys_page_width_standard_visitor', '_adm_stg_cpt_option_sys_page_width_standard_visitor', '1280', 'text', '', '', '', 21),
+(@iCategoryId, 'sys_page_width_standard_member', '_adm_stg_cpt_option_sys_page_width_standard_member', '1280', 'text', '', '', '', 22),
+(@iCategoryId, 'sys_page_width_application_visitor', '_adm_stg_cpt_option_sys_page_width_application_visitor', '1280', 'text', '', '', '', 23),
+(@iCategoryId, 'sys_page_width_application_member', '_adm_stg_cpt_option_sys_page_width_application_member', '1280', 'text', '', '', '', 24);
 
 --
 -- CATEGORY: General (Site Settings)

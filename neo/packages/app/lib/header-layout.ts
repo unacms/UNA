@@ -29,3 +29,18 @@ export function resolveHeaderLayout(fromUna: unknown, override?: { width?: unkno
         align: pick(ALIGNS, override?.align, una.align, previous?.align) ?? HEADER_LAYOUT_DEFAULT.align,
     };
 }
+
+/**
+ * The page's content width as a CSS `max-width`: the app's own setting wins (`layout.page_width`, null follows UNA:
+ * a CSS length, or 'full'), then the page's from UNA (`page_width`: pixels, or 'full'), then the previous page's.
+ * 'full' is `none`. null when there is none, so the theme's 1440px stays (`--container-8xl`, design/styles/global.css).
+ */
+export function resolvePageWidth(fromUna: unknown, override?: unknown, previous?: string | null): string | null {
+    for (const value of [override, fromUna]) {
+        if (value === 'full') return 'none';
+        if (typeof value === 'number' && Number.isFinite(value) && value > 0) return `${Math.round(value)}px`;
+        if (typeof value === 'string' && /^\d+$/.test(value) && Number(value) > 0) return `${Number(value)}px`;
+        if (value === override && typeof value === 'string' && /^\d+(\.\d+)?(px|rem|em|vw|%)$/.test(value)) return value;
+    }
+    return previous ?? null;
+}

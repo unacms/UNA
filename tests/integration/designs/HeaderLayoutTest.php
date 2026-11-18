@@ -3,10 +3,11 @@
 use PHPUnit\Framework\Attributes\Group;
 
 /**
- * The header per page layout and audience (Studio > Designer > Settings > Header): its width and where the main menu
- * sits, for Standard and Application pages, for visitors and for members (BxDolTemplate::getHeaderLayout). Designer
- * saves only the values there are, the site's header takes them (BxBaseFunctions::TemplPageAddComponent, Artificer's
- * own settings winning), and the apps get them with each page (`header` of the page API).
+ * The page and its header per page layout and audience (Studio > Designer > Settings > Page and header): the page's
+ * width, the header's width and where the main menu sits, for Standard and Application pages, for visitors and for
+ * members (BxDolTemplate::getPageWidth, getHeaderLayout). Designer saves only the values there are, the site takes
+ * them (BxBaseFunctions::TemplPageAddComponent, Artificer's own settings winning), and the apps get them with each page
+ * (`page_width` and `header` of the page API).
  */
 #[Group('integration')]
 class HeaderLayoutTest extends BxDolIntegrationTestCase
@@ -15,7 +16,8 @@ class HeaderLayoutTest extends BxDolIntegrationTestCase
         'sys_pt_default_visitor', 'sys_pt_default_member',
         'sys_header_width_standard_visitor', 'sys_header_align_standard_visitor', 'sys_header_width_application_visitor', 'sys_header_align_application_visitor',
         'sys_header_width_standard_member', 'sys_header_align_standard_member', 'sys_header_width_application_member', 'sys_header_align_application_member',
-        'bx_artificer_header_width', 'bx_artificer_header_align',
+        'sys_page_width_standard_visitor', 'sys_page_width_standard_member', 'sys_page_width_application_visitor', 'sys_page_width_application_member',
+        'bx_artificer_header_width', 'bx_artificer_header_align', 'bx_artificer_page_width',
     ];
 
     private array $_aOptionsBackup = [];
@@ -94,6 +96,8 @@ class HeaderLayoutTest extends BxDolIntegrationTestCase
         $this->bxLoginAsAdmin(); // any signed-in account
         try {
             $this->assertSame(['layout' => 'standard', 'width' => 'full', 'align' => 'end'], BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_STANDARD));
+            $this->setPageWidth(['standard_visitor' => '1280', 'standard_member' => 'full']);
+            $this->assertSame('full', BxDolTemplate::getPageWidth(BX_PAGE_TYPE_STANDARD), 'and the members\' page width');
         }
         finally {
             $this->bxBecomeGuest();
@@ -141,14 +145,18 @@ class HeaderLayoutTest extends BxDolIntegrationTestCase
     {
         $this->setHeader('visitor', 'full', 'center', 'page', 'end');
         $this->setHeader('member', 'page', 'start', 'full', 'center');
+        $this->setPageWidth(['standard_visitor' => '1100', 'standard_member' => 'full', 'application_visitor' => '1280', 'application_member' => 'full']);
 
         $sTable = (new ReflectionMethod('BxBaseStudioDesigner', 'getSettingsHeader'))->invoke($this->designer());
 
         foreach (['visitor' => ['full', 'center', 'page', 'end'], 'member' => ['page', 'start', 'full', 'center']] as $sWho => $aValues)
             foreach (array_combine(['width_standard', 'align_standard', 'width_application', 'align_application'], $aValues) as $sName => $sValue)
-                $this->assertMatchesRegularExpression('/name="sys_header_' . $sName . '_' . $sWho . '" value="' . $sValue . '" checked="checked"/', $sTable);
-        $this->assertSame(20, substr_count($sTable, 'type="radio"'), 'four headers, each with two widths and three places');
-        $this->assertSame(8, substr_count($sTable, 'checked="checked"'), 'one choice per control');
+                $this->assertMatchesRegularExpression('/name="sys_header_' . $sName . '_' . $sWho . '" value="' . $sValue . '" data-kind="\\w+" checked="checked"/', $sTable);
+        $this->assertMatchesRegularExpression('/name="sys_page_width_kind_standard_member" value="full" data-kind="page" checked="checked"/', $sTable);
+        $this->assertMatchesRegularExpression('/name="sys_page_width_kind_standard_visitor" value="limited" data-kind="page" checked="checked"/', $sTable);
+        $this->assertStringContainsString('name="sys_page_width_standard_visitor" value="1100"', $sTable, 'the pixels beside Limited');
+        $this->assertSame(28, substr_count($sTable, 'type="radio"'), 'four cells, each with two page widths, two header widths and three places');
+        $this->assertSame(12, substr_count($sTable, 'checked="checked"'), 'one choice per control');
         $this->assertStringContainsString('aria-labelledby="adm-dsg-ht-application adm-dsg-ht-member"', $sTable, 'each cell is named by its row and column');
     }
 
@@ -188,6 +196,85 @@ class HeaderLayoutTest extends BxDolIntegrationTestCase
         $this->assertSame('bx-header-menu-start', $oFunctions->TemplPageAddComponent('sys_header_align'));
     }
 
+    public function testEachLayoutAndAudienceHasItsPageWidth(): void
+    {
+        // Setup A: a limited site for guests, the whole window for members.
+        $this->setPageWidth(['standard_visitor' => '1280', 'standard_member' => 'full', 'application_visitor' => '1024', 'application_member' => '1600']);
+
+        $this->assertSame(1280, BxDolTemplate::getPageWidth(BX_PAGE_TYPE_STANDARD, false));
+        $this->assertSame('full', BxDolTemplate::getPageWidth(BX_PAGE_TYPE_STANDARD, true));
+        $this->assertSame(1024, BxDolTemplate::getPageWidth(BX_PAGE_TYPE_APPLICATION, false));
+        $this->assertSame(1600, BxDolTemplate::getPageWidth(BX_PAGE_TYPE_APPLICATION, true));
+        $this->assertSame(1280, BxDolTemplate::getPageWidth(BX_PAGE_TYPE_STANDARD), 'a guest gets the visitors\' width');
+
+        setParam('sys_pt_default_member', BX_PAGE_TYPE_APPLICATION);
+        $this->assertSame(1600, BxDolTemplate::getPageWidth(BX_PAGE_TYPE_DEFAULT, true), 'Default is the audience\'s layout');
+    }
+
+    public function testUnknownPageWidthsAreTheDefault(): void
+    {
+        $this->setPageWidth(['standard_visitor' => 'wide', 'standard_member' => '100', 'application_visitor' => '99999', 'application_member' => '1280px']);
+
+        foreach ([[BX_PAGE_TYPE_STANDARD, false], [BX_PAGE_TYPE_STANDARD, true], [BX_PAGE_TYPE_APPLICATION, false], [BX_PAGE_TYPE_APPLICATION, true]] as [$iType, $bMember])
+            $this->assertSame(BxDolTemplate::PAGE_WIDTH_DEFAULT, BxDolTemplate::getPageWidth($iType, $bMember));
+    }
+
+    public function testDesignerSavesPageWidths(): void
+    {
+        $this->setPageWidth(['standard_visitor' => '1280', 'standard_member' => '1280', 'application_visitor' => '1280', 'application_member' => '1280']);
+
+        $_GET = [
+            'sys_page_width_kind_standard_visitor' => 'limited', 'sys_page_width_standard_visitor' => '1100',
+            'sys_page_width_kind_standard_member' => 'full', 'sys_page_width_standard_member' => '1100',
+            'sys_page_width_kind_application_visitor' => 'limited', 'sys_page_width_application_visitor' => '100',
+            'sys_page_width_kind_application_member' => 'limited', 'sys_page_width_application_member' => '9000',
+        ];
+        $this->designer()->submitSettings();
+        $this->assertSame(['1100', 'full', '480', '3840'], $this->getPageWidths(), 'Full width, or pixels brought into the range');
+
+        $_GET = [
+            'sys_page_width_kind_standard_visitor' => 'limited', 'sys_page_width_standard_visitor' => '12px; color: red',
+            'sys_page_width_kind_standard_member' => 'wide', 'sys_page_width_standard_member' => '900',
+            'sys_page_width_kind_application_visitor' => 'limited', 'sys_page_width_application_visitor' => '',
+        ];
+        $this->designer()->submitSettings();
+        $this->assertSame(['1100', 'full', '480', '3840'], $this->getPageWidths(), 'other values are not saved');
+    }
+
+    public function testTheSiteTakesThePageWidth(): void
+    {
+        $this->setPageWidth(['standard_visitor' => '1100', 'standard_member' => 'full', 'application_visitor' => 'full', 'application_member' => '1280']);
+        setParam('bx_artificer_page_width', '');
+        $oFunctions = BxTemplFunctions::getInstance();
+
+        BxDolTemplate::getInstance()->setPageType(BX_PAGE_TYPE_STANDARD);
+        $this->assertSame('1100px', $oFunctions->TemplPageAddComponent('sys_page_width'));
+        BxDolTemplate::getInstance()->setPageType(BX_PAGE_TYPE_APPLICATION);
+        $this->assertSame('none', $oFunctions->TemplPageAddComponent('sys_page_width'), 'Full width has no limit');
+
+        // <body> carries it, and .bx-def-page-width reads it in the templates that follow Designer.
+        $this->assertStringContainsString('style="--bx-page-width: __sys_page_width__"', file_get_contents(BX_DIRECTORY_PATH_ROOT . 'template/_header.html'));
+        foreach (['template/css/default.less', 'modules/boonex/artificer/data/template/system/css/default.less'] as $sFile)
+            $this->assertStringContainsString('max-width: var(--bx-page-width, @bx-page-width);', file_get_contents(BX_DIRECTORY_PATH_ROOT . $sFile), $sFile);
+    }
+
+    public function testArtificersPageWidthWins(): void
+    {
+        $oFunctions = BxTemplFunctions::getInstance();
+        if ((new ReflectionMethod($oFunctions, 'getPageWidth'))->getDeclaringClass()->getName() != 'BxTemplFunctions')
+            $this->markTestSkipped('Artificer is not the site template');
+
+        $this->setPageWidth(['standard_visitor' => '1100', 'standard_member' => '1100', 'application_visitor' => '1100', 'application_member' => '1100']);
+        BxDolTemplate::getInstance()->setPageType(BX_PAGE_TYPE_STANDARD);
+
+        setParam('bx_artificer_page_width', '960');
+        $this->assertSame('960px', $oFunctions->TemplPageAddComponent('sys_page_width'));
+        setParam('bx_artificer_page_width', '100%');
+        $this->assertSame('none', $oFunctions->TemplPageAddComponent('sys_page_width'));
+        setParam('bx_artificer_page_width', '');
+        $this->assertSame('1100px', $oFunctions->TemplPageAddComponent('sys_page_width'), 'empty follows Designer');
+    }
+
     public function testTheHeaderTemplatesHaveTheKeys(): void
     {
         foreach (['template/_page_toolbar.html', 'modules/boonex/artificer/data/template/system/pt_application.html'] as $sFile) {
@@ -210,6 +297,7 @@ class HeaderLayoutTest extends BxDolIntegrationTestCase
         $this->assertIsArray($aData['header'] ?? null, 'the page carries its header');
         $this->assertSame('full', $aData['header']['width']);
         $this->assertSame('end', $aData['header']['align']);
+        $this->assertSame(BxDolTemplate::getPageWidth(BX_PAGE_TYPE_STANDARD, false), $aData['page_width'] ?? null, 'and its width');
     }
 
     private function setHeader(string $sWho, string $sWidthStandard, string $sAlignStandard, string $sWidthApplication, string $sAlignApplication): void
@@ -226,6 +314,17 @@ class HeaderLayoutTest extends BxDolIntegrationTestCase
             'sys_header_width_application_' . $sWho => $sWidthApplication,
             'sys_header_align_application_' . $sWho => $sAlignApplication,
         ];
+    }
+
+    private function setPageWidth(array $aValues): void
+    {
+        foreach ($aValues as $sSuffix => $sValue)
+            setParam('sys_page_width_' . $sSuffix, $sValue);
+    }
+
+    private function getPageWidths(): array
+    {
+        return array_map(fn($sSuffix) => getParam('sys_page_width_' . $sSuffix), ['standard_visitor', 'standard_member', 'application_visitor', 'application_member']);
     }
 
     private function getHeader(string $sWho): array

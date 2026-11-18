@@ -81,6 +81,16 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         return BxDolTemplate::getHeaderLayout(BxDolTemplate::getInstance()->getPageType());
     }
 
+    /**
+     * How wide the content of the page being shown is: Designer's for its layout and audience
+     * (BxDolTemplate::getPageWidth). A template with a page width of its own overrides this.
+     * @return int|string pixels, or 'full'
+     */
+    public function getPageWidth()
+    {
+        return BxDolTemplate::getPageWidth(BxDolTemplate::getInstance()->getPageType());
+    }
+
     function TemplPageAddComponent($sKey)
     {
         $mixedResult = false; // if you have not such component, return false!
@@ -89,6 +99,12 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
             // The header's content is as wide as the page's, or as the window.
             case 'sys_header_width':
                 $mixedResult = $this->getHeaderLayout()['width'] == 'full' ? '' : 'bx-def-page-width';
+                break;
+
+            // The page's width for .bx-def-page-width (default.less), set on <body> as --bx-page-width.
+            case 'sys_page_width':
+                $mixedWidth = $this->getPageWidth();
+                $mixedResult = $mixedWidth == 'full' ? 'none' : (int)$mixedWidth . 'px';
                 break;
 
             // Where the main menu sits: next to the logo, in the middle of the header or next to the toolbar.

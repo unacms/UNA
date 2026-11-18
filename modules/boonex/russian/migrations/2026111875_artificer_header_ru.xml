@@ -11,4 +11,5 @@
 	<string_add name="_bx_artificer_stg_cpt_option_header_align_start"><![CDATA[В начале]]></string_add>
 	<string_add name="_bx_artificer_stg_cpt_option_header_designer"><![CDATA[Как в Дизайнере]]></string_add>
 	<string_del name="_bx_artificer_stg_cpt_option_header_stretched"></string_del>
+	<string_upd name="_bx_artificer_stg_cpt_option_page_width"><![CDATA[Ширина страницы в пикселях (пусто: как в Дизайнере)]]></string_upd>
 </resources>

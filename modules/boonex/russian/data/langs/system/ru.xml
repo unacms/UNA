@@ -844,7 +844,7 @@
 	<string name="_adm_dsg_inf_pwa_sw_offline"><![CDATA[Показывается вместо ошибки браузера, когда нет связи: адрес на этом сайте, например page.php?i=about. Оставьте пустым, чтобы показывать страницу браузера.]]></string>
 	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Цвет заголовка окна приложения, а на телефонах — строки состояния. По умолчанию — цвет, заданный шаблоном.]]></string>
 	<string name="_adm_dsg_inf_settings_section_forms"><![CDATA[Как формы подписывают однострочные текстовые поля на сайте и в приложениях. Отдельному виду формы можно задать свой стиль в разделе <a href="{0}">Формы</a>. Приложение без плавающих подписей показывает их над полями.]]></string>
-	<string name="_adm_dsg_inf_settings_section_header"><![CDATA[Ширина шапки и место главного меню в ней для каждого макета страницы, отдельно для гостей и для участников. Им следуют сайт и приложения; шаблон может задать свои в своих настройках.]]></string>
+	<string name="_adm_dsg_inf_settings_section_header"><![CDATA[Ширина страниц, ширина шапки и место главного меню в ней для каждого макета страницы, отдельно для гостей и для участников. Им следуют сайт и приложения; шаблон может задать свои в своих настройках.]]></string>
 	<string name="_adm_dsg_inf_settings_section_layout"><![CDATA[Где вокруг содержимого страницы стоят шапка, меню и подвал. Страницы со своим макетом в разделе <a href="{0}">Страницы</a> сохраняют его, остальные используют макеты ниже.]]></string>
 	<string name="_adm_dsg_inf_settings_section_template"><![CDATA[Шаблон отвечает за весь вид сайта: шапку, меню, цвета и шрифты. Все видят этот шаблон, если сами не выбрали другой включённый.]]></string>
 	<string name="_adm_dsg_inf_splash_section_apps"><![CDATA[Код только для одного приложения. Пустое поле использует код страницы выше. Приложения рисуют формы, логотип и иллюстрацию своими компонентами и пропускают скрипты и всё, что отмечено <code>data-site-only</code>. Приложения для iOS и Android показывают текст, заголовки, списки и ссылки без стилей и раскладки. Добавьте <code>&lt;neo-slot name="social_login"&gt;&lt;/neo-slot&gt;</code>, чтобы показать только кнопки входа через соцсети.]]></string>
@@ -908,7 +908,7 @@
 	<string name="_adm_dsg_txt_settings_header_align_start"><![CDATA[В начале]]></string>
 	<string name="_adm_dsg_txt_settings_header_application"><![CDATA[Макет приложения]]></string>
 	<string name="_adm_dsg_txt_settings_header_standard"><![CDATA[Обычный макет]]></string>
-	<string name="_adm_dsg_txt_settings_header_width"><![CDATA[Ширина]]></string>
+	<string name="_adm_dsg_txt_settings_header_width"><![CDATA[Ширина шапки]]></string>
 	<string name="_adm_dsg_txt_settings_header_width_full"><![CDATA[Во всю ширину]]></string>
 	<string name="_adm_dsg_txt_settings_header_width_page"><![CDATA[По ширине страницы]]></string>
 	<string name="_adm_dsg_txt_settings_label_style_adaptive"><![CDATA[Плавающие: в пустом поле, на верхней границе после заполнения]]></string>
@@ -916,8 +916,12 @@
 	<string name="_adm_dsg_txt_settings_layout_member"><![CDATA[Для участников]]></string>
 	<string name="_adm_dsg_txt_settings_layout_visitor"><![CDATA[Для гостей]]></string>
 	<string name="_adm_dsg_txt_settings_note"><![CDATA[Макет без шапки и подвала не оставляет меню для перехода по сайту. Задавайте его отдельным страницам в разделе Страницы, а не по умолчанию.]]></string>
+	<string name="_adm_dsg_txt_settings_page_width"><![CDATA[Ширина страницы]]></string>
+	<string name="_adm_dsg_txt_settings_page_width_full"><![CDATA[Во всю ширину]]></string>
+	<string name="_adm_dsg_txt_settings_page_width_limited"><![CDATA[Ограничена]]></string>
+	<string name="_adm_dsg_txt_settings_page_width_px"><![CDATA[Ширина страницы в пикселях]]></string>
 	<string name="_adm_dsg_txt_settings_section_forms"><![CDATA[Формы]]></string>
-	<string name="_adm_dsg_txt_settings_section_header"><![CDATA[Шапка]]></string>
+	<string name="_adm_dsg_txt_settings_section_header"><![CDATA[Страница и шапка]]></string>
 	<string name="_adm_dsg_txt_settings_section_layout"><![CDATA[Макет страниц]]></string>
 	<string name="_adm_dsg_txt_settings_section_template"><![CDATA[Шаблон сайта]]></string>
 	<string name="_adm_dsg_txt_settings_template_current"><![CDATA[Используется]]></string>
@@ -2043,6 +2047,10 @@
     <string name="_adm_stg_cpt_option_sys_oauth_secret"><![CDATA[UNA-аккаунт - Secret (секретное слово)]]></string>
     <string name="_adm_stg_cpt_option_sys_page_cache_enable"><![CDATA[Задействовать кэш для страниц]]></string>
     <string name="_adm_stg_cpt_option_sys_page_cache_engine"><![CDATA[Кэш-движок для страниц (значение, отличное от File, может потребовать дополнительной настройки сервера)]]></string>
+    <string name="_adm_stg_cpt_option_sys_page_width_application_member"><![CDATA[Ширина страницы на страницах-приложениях для участников]]></string>
+    <string name="_adm_stg_cpt_option_sys_page_width_application_visitor"><![CDATA[Ширина страницы на страницах-приложениях для гостей]]></string>
+    <string name="_adm_stg_cpt_option_sys_page_width_standard_member"><![CDATA[Ширина страницы на обычных страницах для участников]]></string>
+    <string name="_adm_stg_cpt_option_sys_page_width_standard_visitor"><![CDATA[Ширина страницы на обычных страницах для гостей]]></string>
     <string name="_adm_stg_cpt_option_sys_pb_cache_enable"><![CDATA[Задействовать кэш для блоков страниц]]></string>
     <string name="_adm_stg_cpt_option_sys_pb_cache_engine"><![CDATA[Кэш-движок для блоков страниц (значение, отличное от File, может потребовать дополнительной настройки сервера)]]></string>
     <string name="_adm_stg_cpt_option_sys_per_page_search_keyword_single"><![CDATA[Результаты поиска по ключевому слову]]></string>

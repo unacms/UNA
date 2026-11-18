@@ -17,6 +17,9 @@ export const settingsLayout = {
 
         max_width: ' ns--undefined-- w-full flex-auto web:h-full ne--  ',
         page_content_width_default: ' ns--page-content-width-- w-full max-w-8xl ne--  ',
+        // Web: the page's width, which `max-w-8xl` follows. null: UNA's Designer, per page layout and audience
+        // (`page_width` of the page JSON); a CSS length ('88rem') or 'full' sets it for every page.
+        page_width: null,
         
         page_content_width:{
             layout_1_column_thin: 'w-full max-w-md',
