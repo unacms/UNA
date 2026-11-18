@@ -241,6 +241,13 @@ div.bx-popup-menu-main.sys-add-content ul {
     -webkit-justify-content: center;
     justify-content: center;
 }
+/* The sidebar's rows are 8px from its edges, their 32px icons 8px inside the row: the profile row's picture starts on the same 16px line. */
+#sidebar .bx-menu-panel .bx-profile-avatar {
+    padding: 0 0.5rem;
+}
+#sidebar.bx-mc-narrowed .bx-menu-panel .bx-profile-avatar {
+    padding: 0;
+}
 
 /*--- Footer Menu ---*/
 #bx-menu-footer.bx-menu-hor > li.bx-menu-item-powered_by .sys-icon-svg {

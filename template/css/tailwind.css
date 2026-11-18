@@ -1809,9 +1809,17 @@
         @apply transform-gpu transition duration-150 active:scale-[0.98];
     }
     @media (hover: none) and (pointer: coarse) {
-        .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item:active {
+        .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item:active,
+        .bx-artificer .bx-sidebar-toggle:active {
             @apply scale-110;
         }
+    }
+    /* The Application layout's sidebar button (pt_application.html) is one more header button: the same plate, glyph and press. */
+    .bx-artificer .bx-sidebar-toggle {
+        @apply bg-gray-950/[0.08] hover:bg-gray-950/[0.12] active:bg-gray-950/[0.12] dark:bg-gray-50/[0.08] dark:hover:bg-gray-50/[0.12] dark:active:bg-gray-50/[0.12];
+        @apply text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100;
+        @apply transform-gpu transition duration-150 active:scale-[0.98];
+        @apply border-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500;
     }
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item:has(> a[aria-expanded="true"]),
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item.bx-menu-tab-active {
