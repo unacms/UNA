@@ -555,15 +555,14 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     text-align: start;
     cursor: pointer;
 }
+/* Hover as the page sidebar's items (.bx-std-pmen-item, tailwind.css): black/5, white/5 in the dark scheme. */
 .bx-dbd-audit-toggle:hover,
 .bx-dbd-chart-link:hover {
-    background: rgba(0, 0, 0, 0.05);
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.025);
+    background: rgb(0 0 0 / 0.05);
 }
 .dark .bx-dbd-audit-toggle:hover,
 .dark .bx-dbd-chart-link:hover {
-    background: rgba(255, 255, 255, 0.025);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+    background: rgb(255 255 255 / 0.05);
 }
 .bx-dbd-audit-toggle:focus-visible,
 .bx-dbd-chart-link:focus-visible {
@@ -663,30 +662,49 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     border: 0;
     border-radius: var(--bx-radius-2xl); /* the same plate as the hero panels */
     background: none;
-    color: inherit;
+    color: rgb(39 39 42); /* gray-800, gray-900 hovered or picked: the sidebar items' text */
     font: inherit;
     text-align: start;
     cursor: pointer;
+    transition: background-color 300ms, color 300ms;
 }
+/* Rows that switch the chart look like the page sidebar's items (.bx-std-pmen-item, tailwind.css): black/5 and a medium name on hover,
+   black/10 and a semibold name for the one picked; white/5 and white/10 in the dark scheme. */
 .bx-dbd-users-row:hover {
-    background: rgba(0, 0, 0, 0.03);
+    background: rgb(0 0 0 / 0.05);
+    color: rgb(24 24 27);
+}
+.bx-dbd-users-row:hover .bx-dbd-htools-name {
+    font-weight: 500;
 }
 .bx-dbd-users-row[aria-pressed="true"],
 .bx-dbd-users-row[aria-pressed="true"]:hover {
-    background: rgba(0, 0, 0, 0.05);
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.025);
+    background: rgb(0 0 0 / 0.1);
+    color: rgb(24 24 27);
+}
+.bx-dbd-users-row[aria-pressed="true"] .bx-dbd-htools-name {
+    font-weight: 600;
 }
 .bx-dbd-users-row:focus-visible {
     outline: 2px solid rgb(59 130 246);
     outline-offset: -2px;
 }
+.dark .bx-dbd-users-row {
+    color: rgb(228 228 231);
+}
 .dark .bx-dbd-users-row:hover {
-    background: rgba(255, 255, 255, 0.025);
+    background: rgb(255 255 255 / 0.05);
+    color: rgb(255 255 255);
 }
 .dark .bx-dbd-users-row[aria-pressed="true"],
 .dark .bx-dbd-users-row[aria-pressed="true"]:hover {
-    background: rgba(255, 255, 255, 0.05);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+    background: rgb(255 255 255 / 0.1);
+    color: rgb(255 255 255);
+}
+@media (prefers-reduced-motion: reduce) {
+    .bx-dbd-users-row {
+        transition: none;
+    }
 }
 .bx-dbd-users-bars {
     display: flex;
