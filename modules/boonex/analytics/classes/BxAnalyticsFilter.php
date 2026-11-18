@@ -32,6 +32,31 @@ class BxAnalyticsFilter
      */
     const TZ_COOKIE = 'bx_analytics_tz';
 
+    /**
+     * Timezone names browsers still report (Chrome and Hermes say Asia/Calcutta for India) and the names they have
+     * today. A server's timezone database may come without the old names (Debian and Ubuntu moved them to a package
+     * of their own, tzdata-legacy), and then PHP knows only the new one.
+     */
+    const TZ_RENAMED = [
+        'Asia/Calcutta' => 'Asia/Kolkata',
+        'Asia/Saigon' => 'Asia/Ho_Chi_Minh',
+        'Asia/Katmandu' => 'Asia/Kathmandu',
+        'Asia/Rangoon' => 'Asia/Yangon',
+        'Asia/Dacca' => 'Asia/Dhaka',
+        'Asia/Thimbu' => 'Asia/Thimphu',
+        'Asia/Ulan_Bator' => 'Asia/Ulaanbaatar',
+        'Asia/Macao' => 'Asia/Macau',
+        'Asia/Ujung_Pandang' => 'Asia/Makassar',
+        'Europe/Kiev' => 'Europe/Kyiv',
+        'Atlantic/Faeroe' => 'Atlantic/Faroe',
+        'America/Buenos_Aires' => 'America/Argentina/Buenos_Aires',
+        'America/Godthab' => 'America/Nuuk',
+        'America/Indianapolis' => 'America/Indiana/Indianapolis',
+        'America/Louisville' => 'America/Kentucky/Louisville',
+        'Pacific/Ponape' => 'Pacific/Pohnpei',
+        'Pacific/Truk' => 'Pacific/Chuuk',
+    ];
+
     public static $aRanges = ['today', 'yesterday', '24h', '7d', '30d', '90d', '12m', 'custom'];
 
     protected $_oDb;
@@ -104,6 +129,36 @@ class BxAnalyticsFilter
         return $a;
     }
 
+    /**
+     * The timezone of a name a client sent: the name as it is, or today's name of a renamed zone when the server's
+     * database has only that one (TZ_RENAMED), or the old name when it has only that one. Null for anything else.
+     * @param mixed $mixedName an IANA timezone name
+     * @return DateTimeZone|null
+     */
+    public static function getTimeZone($mixedName)
+    {
+        if(!is_string($mixedName) || $mixedName === '' || !preg_match('/^[A-Za-z0-9_+\-\/]{1,64}$/', $mixedName)) {
+            return null;
+        }
+
+        $aNames = [$mixedName];
+        if(isset(self::TZ_RENAMED[$mixedName])) {
+            $aNames[] = self::TZ_RENAMED[$mixedName];
+        }
+        elseif(($sOld = array_search($mixedName, self::TZ_RENAMED, true)) !== false) {
+            $aNames[] = $sOld;
+        }
+
+        $aKnown = timezone_identifiers_list(DateTimeZone::ALL_WITH_BC);
+        foreach($aNames as $sName) {
+            if(in_array($sName, $aKnown, true)) {
+                return new DateTimeZone($sName);
+            }
+        }
+
+        return null;
+    }
+
     protected function _parse($aInput)
     {
         $sRange = isset($aInput['range']) && in_array($aInput['range'], self::$aRanges, true) ? $aInput['range'] : self::RANGE_DEFAULT;
@@ -111,13 +166,24 @@ class BxAnalyticsFilter
         // with the backward-compatible names (Asia/Calcutta, Europe/Kiev), which Intl still
         // reports on some runtimes; without one in the request, the viewer's own from the
         // dashboard's cookie, so a page opened from a menu isn't drawn in UTC and then again
-        $aZones = timezone_identifiers_list(DateTimeZone::ALL_WITH_BC);
+        // The name stays the client's own; the zone is the one the server has for it (getTimeZone).
         $sTz = 'UTC';
-        if(isset($aInput['tz']) && is_string($aInput['tz']) && in_array($aInput['tz'], $aZones, true))
-            $sTz = $aInput['tz'];
-        elseif(!isset($aInput['tz']) && isset($_COOKIE[self::TZ_COOKIE]) && is_string($_COOKIE[self::TZ_COOKIE]) && in_array($_COOKIE[self::TZ_COOKIE], $aZones, true))
-            $sTz = $_COOKIE[self::TZ_COOKIE];
-        $oTz = new DateTimeZone($sTz);
+        $oTz = null;
+        if(isset($aInput['tz'])) {
+            $oTz = self::getTimeZone($aInput['tz']);
+            if($oTz) {
+                $sTz = $aInput['tz'];
+            }
+        }
+        elseif(isset($_COOKIE[self::TZ_COOKIE])) {
+            $oTz = self::getTimeZone($_COOKIE[self::TZ_COOKIE]);
+            if($oTz) {
+                $sTz = $_COOKIE[self::TZ_COOKIE];
+            }
+        }
+        if(!$oTz) {
+            $oTz = new DateTimeZone('UTC');
+        }
 
         $oNow = (new DateTime('@' . $this->_iNow))->setTimezone($oTz);
         $oToday = (clone $oNow)->setTime(0, 0);
