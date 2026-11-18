@@ -18,7 +18,7 @@ import './message-editor.css';
  */
 export const MessageEditor = withEditor(MessageEditorForm);
 
-function MessageEditorForm({ conversationId, message, onDone }: { conversationId: string; message: Message; onDone: (saved: Message | null) => void }) {
+function MessageEditorForm({ conversationId, message, onDone }: Readonly<{ conversationId: string; message: Message; onDone: (saved: Message | null) => void }>) {
     const { normalizeHtml } = useEditor();
     const { api } = useApp();
     const ids = useId();

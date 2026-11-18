@@ -66,7 +66,7 @@ export function postChanges(
  */
 export const PostEditor = withEditor(PostEditorForm);
 
-function PostEditorForm({ activity, onDone }: { activity: Activity; onDone: (saved: boolean) => void }) {
+function PostEditorForm({ activity, onDone }: Readonly<{ activity: Activity; onDone: (saved: boolean) => void }>) {
     const { htmlToDoc } = useEditor();
     const { api } = useApp();
     const queryClient = useQueryClient();

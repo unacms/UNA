@@ -295,7 +295,7 @@ function DiscussionHead({ discussion: d, groupName, replies, actions }: { discus
  */
 const EditDiscussion = withEditor(EditDiscussionForm);
 
-function EditDiscussionForm({ discussion: d, onDone }: { discussion: Discussion; onDone: (saved: Discussion | null) => void }) {
+function EditDiscussionForm({ discussion: d, onDone }: Readonly<{ discussion: Discussion; onDone: (saved: Discussion | null) => void }>) {
     const { normalizeHtml } = useEditor();
     const { api } = useApp();
     // said where the text box says its own (the window's live region)

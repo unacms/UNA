@@ -52,7 +52,7 @@ type Props = {
  */
 export const CommentComposer = withEditor(CommentComposerForm);
 
-function CommentComposerForm({ label, submitLabel, onSubmit, onCancel, initialHtml, initialText = '', draft, onTextChange, draftKey = null, autoFocus, id, rows = 2, docked = false, asText = (name) => t('Commenting as {{name}}', { name }), sendLabel = t('Send comment') }: Props) {
+function CommentComposerForm({ label, submitLabel, onSubmit, onCancel, initialHtml, initialText = '', draft, onTextChange, draftKey = null, autoFocus, id, rows = 2, docked = false, asText = (name) => t('Commenting as {{name}}', { name }), sendLabel = t('Send comment') }: Readonly<Props>) {
     const { normalizeHtml } = useEditor();
     // what is being edited, as the editor writes it back
     const startHtml = useMemo(() => (initialHtml !== undefined ? normalizeHtml(initialHtml, 'mini') : textToRichHtml(initialText)), [initialHtml, initialText, normalizeHtml]);

@@ -36,9 +36,10 @@ function LoadedEditor(props: Props) {
 }
 
 /** The box the editor will be, while it loads: its frame and height, nothing to type in yet. */
-function EditorPlaceholder({ mode, rows, className, invalid }: Props) {
+function EditorPlaceholder({ mode, rows, className, invalid }: Readonly<Props>) {
+    const classes = ['rich-editor', `rich-editor-${mode}`, 'is-loading', invalid ? 'is-invalid' : '', className ?? ''].filter(Boolean).join(' ');
     return (
-        <div className={`rich-editor rich-editor-${mode} is-loading${invalid ? ' is-invalid' : ''}${className ? ` ${className}` : ''}`} style={{ ['--rich-rows' as string]: rows }} aria-hidden="true">
+        <div className={classes} style={{ ['--rich-rows' as string]: rows }} aria-hidden="true">
             <div className="rich-editor-body">
                 <div className="rich-editor-text" />
             </div>
