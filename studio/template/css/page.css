@@ -121,8 +121,8 @@ div.bx-std-block-caption .bx-std-bcap-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2rem;
-    height: 2rem;
+    width: 2.25rem; /* 36px with a 24px glyph, as the tiles and buttons in the header and the sidebar */
+    height: 2.25rem;
     border-radius: var(--bx-radius-lg);
     background: rgb(0 0 0 / 0.1); /* the same plate as the dashboard row icons */
     color: rgb(82 82 91);
@@ -134,15 +134,15 @@ div.bx-std-block-caption .bx-std-bcap-icon {
 div.bx-std-block-caption .bx-std-bcap-icon .sys-icon {
     color: rgb(0 0 0); /* black at 80% through the element's opacity (white in the dark scheme), not the site-wide accent that .sys-icon carries */
     opacity: 0.8;
-    font-size: 1.25rem;
-    line-height: 1.25rem;
+    font-size: 1.5rem;
+    line-height: 1.5rem;
 }
 .dark div.bx-std-block-caption .bx-std-bcap-icon .sys-icon {
     color: rgb(255 255 255);
 }
 div.bx-std-block-caption .bx-std-bcap-icon svg {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 1.5rem;
+    height: 1.5rem;
 }
 /* A segmented switcher in the caption sits on the right; its 32px frame is the row's height. */
 div.bx-std-block-caption > .bx-std-segmented {
