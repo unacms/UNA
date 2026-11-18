@@ -60,9 +60,9 @@ export default function MenuTop({ url, uri, align = 'center', headerBox = null }
     const { t } = useTranslation()
     // Web: one hover highlight slides from tab to tab, as in the dropdown menus.
     const highlightRef = useMenuHighlight();
-    // The launcher's apps join More when `layout.apps` is on: the `menu_launcher`
-    // setting if set, else UNA's launcher menu.
-    const showApps = !!appSetting('layout', 'apps');
+    // The launcher's apps join More when `layout.apps` and `layout.apps_in_more` are on: the `menu_launcher`
+    // setting if set, else UNA's launcher menu. Off by default, so More holds what UNA's site has there.
+    const showApps = !!appSetting('layout', 'apps') && !!appSetting('layout', 'apps_in_more');
     const staticLauncher = appSetting('menu_items', 'menu_launcher');
     const useStaticLauncher = Array.isArray(staticLauncher) && staticLauncher.length > 0;
     const { menuData: launcherMenuData } = useMenuData(

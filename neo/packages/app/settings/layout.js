@@ -54,6 +54,9 @@ export const settingsLayout = {
         sidebar_search: true,
         extended_search: true,
         apps: true,
+        // The desktop header's More also lists the launcher's apps (`menu_items.objects.launcher`, UNA's homepage
+        // grid). Off by default: More holds only the site menu's items that don't fit, as on UNA's site.
+        apps_in_more: false,
         add_menu: true,
         show_profile_info: true,
         tooltips: true,
