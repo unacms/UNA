@@ -6,6 +6,7 @@ import { strToObj } from './object';
 import { getURI } from './url';
 import { isHiddenOn } from 'app/lib/hidden-on';
 import { resolveSectionNavSmall } from 'app/lib/section-list';
+import { flattenMenuSections } from 'app/lib/menu-sections';
 
 /** UNA / settings menu item: `name`, `title`, `link`, `icon`, `type`, nested `items` / `subitems`, visibility flags… */
 export type MenuItem = { [key: string]: any };
@@ -675,8 +676,24 @@ export function getMenuView(menu?: MenuWithItems | null): 'grid' | 'list' {
 /** The title of `menu`'s item that opens page `uri` (UNA sends item links as page uris). */
 export function getMenuItemTitleForUri(menu: MenuWithItems | null | undefined, uri?: string): string {
     if (!uri) return '';
-    const item = (menu?.items || []).find((i) => String(i?.link || '').replace(/^\/+/, '') === uri);
-    return item?.title || '';
+    const find = (items: MenuItem[] | undefined): MenuItem | undefined => {
+        for (const i of items || []) {
+            if (String(i?.link || '').replace(/^\/+/, '') === uri) return i;
+            const sub = find(i?.subitems);
+            if (sub) return sub;
+        }
+        return undefined;
+    };
+    return find(menu?.items)?.title || '';
+}
+
+/**
+ * The items of a section that opens on its own menu (`isMenuSectionList`: Settings) with its section parents lifted
+ * out, each subitem marked with its `section` (`lib/menu-sections.ts`), so its tabs and routes are one flat list, as
+ * the site's tab row shows it; any other menu's items as they are.
+ */
+export function getMenuSectionListItems<T extends MenuItem>(menu: (MenuWithItems & { section_nav_small?: unknown }) | null | undefined, items: T[]): T[] {
+    return isMenuSectionList(menu) ? flattenMenuSections(items || []) : items;
 }
 
 export { withMenuButtonParams } from 'app/lib/menu-button-params';

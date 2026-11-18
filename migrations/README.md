@@ -128,12 +128,15 @@ error, which fails the migration.
 ```php
 BxDolMigrationsHelper::addColumn('sys_keys', 'scope', "tinyint(4) NOT NULL DEFAULT '0' AFTER `data`");
 BxDolMigrationsHelper::addIndex('bx_timeline_events', 'date_id', ['date', 'id']);
+BxDolMigrationsHelper::dropColumn('sys_menu_items', 'group_name');
 BxDolMigrationsHelper::moduleUpdated('timeline', '15.0.7', '15.0.8');
 ```
 
 - `addColumn($sTable, $sColumn, $sDefinition)` and `addIndex($sTable, $sIndex, $aColumns)` add the
   column or index only when it is missing and return whether they did. Names are letters, digits
   and `_` only.
+- `dropColumn($sTable, $sColumn)` drops the column only when it is there and returns whether it
+  did.
 - `moduleUpdated($sModuleUri, $sFrom, $sTo)` sets `sys_modules`.`version` to `$sTo`, and only when
   the module has `$sFrom` now (`15.0.0.RC3` and `15.0.0-RC3` are the same version). It also sets
   the module's `note` from its `install/config.php`, when that defines one. The URI is
