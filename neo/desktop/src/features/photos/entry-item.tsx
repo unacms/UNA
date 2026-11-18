@@ -10,6 +10,7 @@ import { errorMessage } from '../../lib/errors';
 import { t } from '../../lib/i18n';
 import { ReactionButton, ReactionCount } from '../feed/reaction-button';
 import { commentBoxId, CommentTree } from '../thread/comment-tree';
+import { activityKey } from '../feed/cache';
 
 type Activity = Schema<'Activity'>;
 
@@ -22,7 +23,7 @@ export function useEntryItem(itemId: string | null, knownComments: number | unde
     const { api } = useApp();
     const queryClient = useQueryClient();
     const activity = useQuery({
-        queryKey: ['activity', itemId ?? ''],
+        queryKey: activityKey(itemId ?? ''),
         queryFn: async (): Promise<Activity> => unwrap(await api.GET('/activities/{id}', { params: { path: { id: itemId ?? '' } } })),
         enabled: !!itemId,
         retry: retryOnce,
@@ -31,6 +32,8 @@ export function useEntryItem(itemId: string | null, knownComments: number | unde
     const [kind, id] = entryKey;
     useEffect(() => {
         if (comments === undefined || knownComments === undefined || comments === knownComments) return;
+        // the caller's key, put together again from its parts so the effect depends on their values
+        // eslint-disable-next-line no-restricted-syntax
         void queryClient.invalidateQueries([kind, id]);
     }, [comments, knownComments, queryClient, kind, id]);
     return activity;

@@ -18,6 +18,9 @@ import { fetchOf } from './api';
 import { inApp } from './native';
 import { readStoredJson, writeStoredJson } from './storage';
 
+/** A network's name, logo and colour. */
+const siteInfoKey = (siteUrl: string) => ['site-info', siteUrl] as const;
+
 export type SiteInfo = {
     /** "UNA Makers", or the host when the site's name is not known. */
     name: string;
@@ -118,7 +121,7 @@ export function useSiteInfo(): SiteInfo {
     const { siteUrl, api, sessions = [], sessionKey } = useApp();
     const here = sessions.find((s) => s.key === sessionKey);
     const info = useQuery({
-        queryKey: ['site-info', siteUrl],
+        queryKey: siteInfoKey(siteUrl),
         queryFn: async () => {
             noteAsked(siteUrl);
             const found = await discover(siteUrl, fetchOf(api));

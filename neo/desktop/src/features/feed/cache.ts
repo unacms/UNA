@@ -18,8 +18,18 @@ type ItemViewer = Schema<'ItemViewer'>;
 type Page = Schema<'Page_Activity'>;
 export type FeedData = InfiniteData<Page>;
 
+/** Every loaded feed's pages. */
+export const FEEDS_KEY = ['feed'] as const;
+/** One feed's pages: `feedKey('following')`, `feedKey('profile', id)`. */
+export const feedKey = (...parts: string[]): readonly ['feed', ...string[]] => ['feed', ...parts];
+/** Every feed's polled first page. */
+export const FEED_HEADS_KEY = ['feed-head'] as const;
 /** The polled first page of the feed whose pages are under `feedKey`. */
-export const headKeyOf = (feedKey: readonly unknown[]): unknown[] => ['feed-head', ...feedKey.slice(1)];
+export const headKeyOf = (feedKey: readonly unknown[]): unknown[] => [...FEED_HEADS_KEY, ...feedKey.slice(1)];
+/** Every post opened in the detail pane. */
+export const ACTIVITIES_KEY = ['activity'] as const;
+/** One post, as the detail pane loads it. */
+export const activityKey = (id: string) => [...ACTIVITIES_KEY, id] as const;
 
 /** One page with `fn` applied to each activity (null drops it); the same object when nothing changed. */
 export function mapPage(page: Page, fn: (a: Activity) => Activity | null): Page {
@@ -44,9 +54,9 @@ function mapFeed(data: FeedData | undefined, fn: (a: Activity) => Activity | nul
  * before this change, so its answer would undo it: it is called off, and the next poll asks again.
  */
 function mapFeeds(queryClient: QueryClient, fn: (a: Activity) => Activity | null): void {
-    void queryClient.cancelQueries(['feed-head']);
-    queryClient.setQueriesData<FeedData>(['feed'], (data) => mapFeed(data, fn));
-    queryClient.setQueriesData<Page>(['feed-head'], (page) => (page ? mapPage(page, fn) : page));
+    void queryClient.cancelQueries(FEED_HEADS_KEY);
+    queryClient.setQueriesData<FeedData>(FEEDS_KEY, (data) => mapFeed(data, fn));
+    queryClient.setQueriesData<Page>(FEED_HEADS_KEY, (page) => (page ? mapPage(page, fn) : page));
 }
 
 /** An activity that is gone (deleted, or hidden from this viewer) leaves every loaded feed. */
@@ -56,7 +66,7 @@ export function dropFromFeeds(queryClient: QueryClient, id: string): void {
 
 /** A fresh copy of an activity replaces the one in every feed and in the detail cache. */
 export function putActivity(queryClient: QueryClient, fresh: Activity): void {
-    queryClient.setQueryData(['activity', fresh.id], fresh);
+    queryClient.setQueryData(activityKey(fresh.id), fresh);
     mapFeeds(queryClient, (a) => (a.id === fresh.id ? fresh : a));
 }
 
@@ -71,7 +81,7 @@ export function updateItem(queryClient: QueryClient, itemId: string, fn: (item: 
         return object === a.object ? a : { ...a, object };
     };
     mapFeeds(queryClient, apply);
-    queryClient.setQueriesData<Activity>(['activity'], (data) => (data ? apply(data) : data));
+    queryClient.setQueriesData<Activity>(ACTIVITIES_KEY, (data) => (data ? apply(data) : data));
 }
 
 /** A post just made goes on top of the feed under `feedKey`, in its pages and in its polled first page. */

@@ -12,7 +12,7 @@ import { makeApi, unwrap } from './lib/api';
 import { useReloadWhenApiBack } from './lib/api-availability';
 import { useSiteAccent } from './lib/branding';
 import { MENU_EVENT } from './lib/command-bus';
-import { AppContext, type AppContextValue, useApp } from './lib/context';
+import { AppContext, type AppContextValue, useApp, ME_KEY } from './lib/context';
 import { errorMessage } from './lib/errors';
 import { t } from './lib/i18n';
 import { makeLinkOpener } from './lib/link-opener';
@@ -114,7 +114,7 @@ function SecondarySignedIn({ session, route, onLinkError }: { session: Session; 
     // a profile or group stays the detail this window shows (the main window opens them as pages)
     const [history] = useState(() => new RouteHistory(route, undefined, (r) => r));
     const [scroll] = useState(() => new ScrollMemory());
-    const me = useQuery({ queryKey: ['me'], queryFn: async () => unwrap(await api.GET('/me')) });
+    const me = useQuery({ queryKey: ME_KEY, queryFn: async () => unwrap(await api.GET('/me')) });
     // the network's API was turned off and answers again (Rust tells every window): what this
     // window shows loads again, its "could not load" screen included
     useReloadWhenApiBack(session.siteUrl);

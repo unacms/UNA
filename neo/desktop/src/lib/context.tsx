@@ -5,6 +5,9 @@ import type { Schema, UnaApi } from 'una-api';
 import type { SessionSummary } from './native';
 import type { CommandId } from './shortcuts';
 
+/** The signed-in account and its profiles (GET /me). */
+export const ME_KEY = ['me'] as const;
+
 export type AppContextValue = {
     api: UnaApi;
     siteUrl: string;

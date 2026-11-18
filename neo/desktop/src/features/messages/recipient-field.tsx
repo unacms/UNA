@@ -12,6 +12,9 @@ import { Avatar } from '../../components/avatar';
 type Profile = Schema<'Profile'>;
 
 /** How long after the last key people are searched for. */
+/** The people found for the words typed in the recipient field. */
+const recipientsKey = (q: string) => ['recipients', q] as const;
+
 export const RECIPIENT_SEARCH_DELAY_MS = 200;
 /** Recipients a conversation takes (NewConversation.recipients). */
 export const MAX_RECIPIENTS = 50;
@@ -61,7 +64,7 @@ export function RecipientField({ id, label, value, onChange, exclude, autoFocus,
     }, [words]);
 
     const found = useQuery({
-        queryKey: ['recipients', searched],
+        queryKey: recipientsKey(searched),
         queryFn: async () => unwrap(await api.GET('/search/profiles', { params: { query: { q: searched, limit: 8 } } })),
         enabled: searched.length > 0,
         staleTime: 30_000,

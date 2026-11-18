@@ -12,7 +12,7 @@ import type { Schema, UnaApi } from 'una-api';
 import { unwrap } from '../../lib/api';
 import { t, tn } from '../../lib/i18n';
 import type { IconName } from '../../components/icon';
-import type { Task, TaskPage } from './tasks';
+import { type Task, TASK_CONTEXTS_KEY, TASK_FACETS_KEY, type TaskPage, TASKS_KEY, taskListsKey } from './tasks';
 
 export type TaskChoice = Schema<'TaskChoice'>;
 export type TaskChoices = Schema<'TaskChoices'>;
@@ -73,11 +73,15 @@ export function boardParams(view: Omit<BoardView, 'show' | 'sort'> & { show?: Ta
 }
 
 /** Board pages are under ['tasks'], so completing or changing a task reaches them (putTask, dropTask). */
-export const boardKey = (view: BoardView) => ['tasks', 'board', boardParams(view)] as const;
-export const facetsKey = (view: Omit<BoardView, 'show' | 'sort'>) => ['task-facets', boardParams(view)] as const;
+/** Every board's pages. */
+export const BOARDS_KEY = [...TASKS_KEY, 'board'] as const;
+export const boardKey = (view: BoardView) => [...BOARDS_KEY, boardParams(view)] as const;
+export const facetsKey = (view: Omit<BoardView, 'show' | 'sort'>) => [...TASK_FACETS_KEY, boardParams(view)] as const;
 export const choicesKey = (contextId: string | null) => ['task-choices', contextId ?? ''] as const;
 export const savedFiltersKey = (contextId: string | null) => ['task-filters', contextId ?? ''] as const;
-export const TASK_CONTEXTS_KEY = ['task-contexts'] as const;
+export { TASK_CONTEXTS_KEY };
+/** The people a task of a context can be assigned to. */
+export const taskMembersKey = (contextId: string) => ['task-members', contextId] as const;
 export const TIMERS_KEY = ['task-timers'] as const;
 export const taskTimeKey = (id: string) => ['task-time', id] as const;
 
@@ -318,8 +322,8 @@ export type TaskChanges = Schema<'TaskChanges'>;
 
 /** After a change: the boards' and the counts' copies are stale (their orders and groups moved). */
 export function afterTaskChange(queryClient: QueryClient, task: Pick<Task, 'context_id'>): void {
-    void queryClient.invalidateQueries({ queryKey: ['tasks'], refetchType: 'none' });
-    void queryClient.invalidateQueries({ queryKey: ['task-facets'] });
+    void queryClient.invalidateQueries({ queryKey: TASKS_KEY, refetchType: 'none' });
+    void queryClient.invalidateQueries({ queryKey: TASK_FACETS_KEY });
     void queryClient.invalidateQueries({ queryKey: TASK_CONTEXTS_KEY });
-    if (task.context_id) void queryClient.invalidateQueries({ queryKey: ['task-lists', task.context_id] });
+    if (task.context_id) void queryClient.invalidateQueries({ queryKey: taskListsKey(task.context_id) });
 }

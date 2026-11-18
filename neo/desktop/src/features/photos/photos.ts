@@ -31,9 +31,13 @@ export const MAX_ALBUM_PHOTOS = 50;
 export type MediaOf = { all: true } | { context: string } | { author: string };
 
 const ofKey = (of: MediaOf) => ('context' in of ? (['context', of.context] as const) : 'author' in of ? (['author', of.author] as const) : (['all'] as const));
-export const photoListKey = (of: MediaOf) => ['photos', 'list', ...ofKey(of)] as const;
+/** Every list of the module's entries: one changed or removed is changed in each. */
+export const PHOTOS_LIST_KEY = ['photos', 'list'] as const;
+export const photoListKey = (of: MediaOf) => [...PHOTOS_LIST_KEY, ...ofKey(of)] as const;
 export const photoKey = (id: string) => ['photo', id] as const;
-export const albumListKey = (of: MediaOf) => ['albums', 'list', ...ofKey(of)] as const;
+/** Every list of the module's entries: one changed or removed is changed in each. */
+export const ALBUMS_LIST_KEY = ['albums', 'list'] as const;
+export const albumListKey = (of: MediaOf) => [...ALBUMS_LIST_KEY, ...ofKey(of)] as const;
 export const albumKey = (id: string) => ['album', id] as const;
 export const albumItemsKey = (id: string) => ['album-items', id] as const;
 
@@ -90,7 +94,7 @@ type AlbumPages = InfiniteData<AlbumPage>;
 
 /** A photo as a list already loaded it, so the detail shows it at once. */
 export function photoFromLists(queryClient: QueryClient, id: string): Photo | undefined {
-    for (const [, data] of queryClient.getQueriesData<PhotoPages>(['photos', 'list'])) {
+    for (const [, data] of queryClient.getQueriesData<PhotoPages>(PHOTOS_LIST_KEY)) {
         for (const page of data?.pages ?? []) {
             const found = page.items.find((p) => p.id === id);
             if (found) return found;
@@ -120,7 +124,7 @@ function ofListKey(key: readonly unknown[]): ViewerOf | null {
  */
 export function photoSiblings(queryClient: QueryClient, id: string): { photos: Photo[]; of: ViewerOf | null } {
     let found: { photos: Photo[]; of: ViewerOf | null } | null = null;
-    for (const [key, data] of queryClient.getQueriesData<PhotoPages>(['photos', 'list'])) {
+    for (const [key, data] of queryClient.getQueriesData<PhotoPages>(PHOTOS_LIST_KEY)) {
         const all = (data?.pages ?? []).flatMap((p) => p.items);
         if (!all.some((p) => p.id === id)) continue;
         if (key[2] !== 'search') return { photos: all, of: ofListKey(key) };
@@ -143,7 +147,7 @@ export function viewerLabel(of: ViewerOf | null, photo: Pick<Photo, 'title' | 'a
 
 /** An album as a list already loaded it. */
 export function albumFromLists(queryClient: QueryClient, id: string): Album | undefined {
-    for (const [, data] of queryClient.getQueriesData<AlbumPages>(['albums', 'list'])) {
+    for (const [, data] of queryClient.getQueriesData<AlbumPages>(ALBUMS_LIST_KEY)) {
         for (const page of data?.pages ?? []) {
             const found = page.items.find((a) => a.id === id);
             if (found) return found;
@@ -155,7 +159,7 @@ export function albumFromLists(queryClient: QueryClient, id: string): Album | un
 /** A photo as the site has it now: its detail and wherever a list shows it (a list item keeps no text). */
 export function putPhoto(queryClient: QueryClient, fresh: Photo): void {
     queryClient.setQueryData(photoKey(fresh.id), fresh);
-    queryClient.setQueriesData<PhotoPages>(['photos', 'list'], (data) =>
+    queryClient.setQueriesData<PhotoPages>(PHOTOS_LIST_KEY, (data) =>
         data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.map((x) => (x.id === fresh.id ? { ...fresh, text_html: null } : x)) })) } : data,
     );
 }
@@ -163,13 +167,13 @@ export function putPhoto(queryClient: QueryClient, fresh: Photo): void {
 /** A photo that is gone: out of every list, its detail forgotten. */
 export function dropPhoto(queryClient: QueryClient, id: string): void {
     queryClient.removeQueries(photoKey(id));
-    queryClient.setQueriesData<PhotoPages>(['photos', 'list'], (data) => (data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.filter((x) => x.id !== id) })) } : data));
+    queryClient.setQueriesData<PhotoPages>(PHOTOS_LIST_KEY, (data) => (data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.filter((x) => x.id !== id) })) } : data));
 }
 
 /** An album as the site has it now: its detail and its cards. */
 export function putAlbum(queryClient: QueryClient, fresh: Album): void {
     queryClient.setQueryData(albumKey(fresh.id), fresh);
-    queryClient.setQueriesData<AlbumPages>(['albums', 'list'], (data) =>
+    queryClient.setQueriesData<AlbumPages>(ALBUMS_LIST_KEY, (data) =>
         data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.map((x) => (x.id === fresh.id ? { ...fresh, text_html: null } : x)) })) } : data,
     );
 }
@@ -178,19 +182,19 @@ export function putAlbum(queryClient: QueryClient, fresh: Album): void {
 export function dropAlbum(queryClient: QueryClient, id: string): void {
     queryClient.removeQueries(albumKey(id));
     queryClient.removeQueries(albumItemsKey(id));
-    queryClient.setQueriesData<AlbumPages>(['albums', 'list'], (data) => (data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.filter((x) => x.id !== id) })) } : data));
+    queryClient.setQueriesData<AlbumPages>(ALBUMS_LIST_KEY, (data) => (data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.filter((x) => x.id !== id) })) } : data));
 }
 
 /** After new photos: the lists load again (they are first in the newest-first ones). */
 export async function afterPhotosAdded(queryClient: QueryClient, photos: readonly Photo[]): Promise<void> {
     for (const p of photos) queryClient.setQueryData(photoKey(p.id), p);
-    await queryClient.invalidateQueries({ queryKey: ['photos', 'list'] });
+    await queryClient.invalidateQueries({ queryKey: PHOTOS_LIST_KEY });
 }
 
 /** After a new album: its detail is there, the lists load again. */
 export async function afterAlbumAdded(queryClient: QueryClient, album: Album): Promise<void> {
     queryClient.setQueryData(albumKey(album.id), album);
-    await queryClient.invalidateQueries({ queryKey: ['albums', 'list'] });
+    await queryClient.invalidateQueries({ queryKey: ALBUMS_LIST_KEY });
 }
 
 /**
@@ -199,7 +203,7 @@ export async function afterAlbumAdded(queryClient: QueryClient, album: Album): P
  */
 export function afterAddedToAlbum(queryClient: QueryClient, albumId: string): Promise<void> {
     void queryClient.invalidateQueries({ queryKey: albumKey(albumId) });
-    void queryClient.invalidateQueries({ queryKey: ['albums', 'list'] });
+    void queryClient.invalidateQueries({ queryKey: ALBUMS_LIST_KEY });
     return queryClient.invalidateQueries({ queryKey: albumItemsKey(albumId) });
 }
 

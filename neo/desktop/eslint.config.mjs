@@ -50,6 +50,23 @@ const config = [
             '@typescript-eslint/no-unused-vars': unused,
         },
     },
+    {
+        // A query key is made by the module that owns the data (`activityKey(id)`, `TASKS_KEY`),
+        // never written out where it is used: a key spelled by hand that matches no query fails
+        // silently (the cache is not updated, nothing says so). Tests may spell them.
+        files: ['src/**/*.{ts,tsx}'],
+        ignores: ['src/**/*.test.{ts,tsx}'],
+        rules: {
+            'no-restricted-syntax': [
+                'error',
+                { selector: "Property[key.name='queryKey'] > ArrayExpression", message: 'Use a query-key helper of the module that owns the data, not a key written by hand.' },
+                {
+                    selector: "CallExpression[callee.property.name=/^(invalidateQueries|refetchQueries|cancelQueries|removeQueries|resetQueries|setQueryData|getQueryData|getQueryState|setQueriesData|getQueriesData|fetchQuery|prefetchQuery)$/] > ArrayExpression.arguments:first-child",
+                    message: 'Use a query-key helper of the module that owns the data, not a key written by hand.',
+                },
+            ],
+        },
+    },
 ];
 
 export default config;

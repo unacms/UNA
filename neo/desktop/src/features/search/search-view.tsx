@@ -37,10 +37,14 @@ import { DiscussionRow } from '../discussions/discussion-list';
 import { type Discussion, useHasDiscussions } from '../discussions/discussions';
 import { useSiteHasTag } from '../../lib/site-modules';
 import { isModuleTab, moduleCount, moduleFoundText, ModuleResults, moduleTabName, useModuleSearches } from './module-results';
+import { feedKey } from '../feed/cache';
 
 type Profile = Schema<'Profile'>;
 
 /** The search field's id: Cmd+F (go-search) focuses it. */
+/** One tab's results for the words searched. */
+const searchKey = (tab: string, q: string) => ['search', tab, q] as const;
+
 export const SEARCH_FIELD = 'search-field';
 /** How long typing pauses before the results follow. */
 export const SEARCH_TYPING_MS = 300;
@@ -193,13 +197,13 @@ export function SearchView() {
     const [announcement, announce] = useAnnouncer();
 
     const people = useQuery({
-        queryKey: ['search', 'people', q],
+        queryKey: searchKey('people', q),
         queryFn: async () => unwrap(await api.GET('/search/profiles', { params: { query: { q, limit: PEOPLE_LIMIT } } })),
         enabled: !!q,
         staleTime: 30_000,
     });
     const groups = useQuery({
-        queryKey: ['search', 'groups', q],
+        queryKey: searchKey('groups', q),
         // null: a site without the Groups module has no group search (404), which is no error,
         // so Refresh (refetchQueries with throwOnError) does not fail on it
         queryFn: async (): Promise<Profile[] | null> => {
@@ -217,7 +221,7 @@ export function SearchView() {
     // spaces only where GET /api/v2 lists the module
     const hasSpaces = useSiteHasTag('spaces') === true;
     const spaces = useQuery({
-        queryKey: ['search', 'spaces', q],
+        queryKey: searchKey('spaces', q),
         queryFn: async (): Promise<Profile[]> => unwrap(await api.GET('/search/spaces', { params: { query: { q, limit: PEOPLE_LIMIT } } })),
         enabled: !!q && hasSpaces,
         staleTime: 30_000,
@@ -225,13 +229,13 @@ export function SearchView() {
     // events only where GET /api/v2 lists the module
     const hasEvents = useSiteHasTag('events') === true;
     const events = useQuery({
-        queryKey: ['search', 'events', q],
+        queryKey: searchKey('events', q),
         queryFn: async (): Promise<Event[]> => unwrap(await api.GET('/search/events', { params: { query: { q, limit: PEOPLE_LIMIT } } })),
         enabled: !!q && hasEvents,
         staleTime: 30_000,
     });
     const discussions = useQuery({
-        queryKey: ['search', 'discussions', q],
+        queryKey: searchKey('discussions', q),
         // null: a site without Discussions has no discussion search (404), which is no error
         queryFn: async (): Promise<{ items: Discussion[]; more: boolean } | null> => {
             try {
@@ -260,7 +264,7 @@ export function SearchView() {
 
     const source = useMemo<FeedSource>(
         () => ({
-            key: ['feed', 'search', q],
+            key: feedKey('search', q),
             enabled: !!q,
             poll: false,
             load: async (cursor) => {

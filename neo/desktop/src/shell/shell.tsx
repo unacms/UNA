@@ -15,7 +15,7 @@ import { ComposeProvider } from '../features/compose/compose-sheet';
 import { activityDetail } from '../features/posts/posts';
 import { type PaletteEntry, RecentEntries } from '../features/palette/commands';
 import { CommandPalette } from '../features/palette/palette';
-import { profileSummaryKey, FRIEND_REQUESTS_KEY, SENT_REQUESTS_KEY, connectionsKey } from '../features/profile/graph';
+import { profileSummaryKey, FRIEND_REQUESTS_KEY, SENT_REQUESTS_KEY, connectionsKey, connectionListsKey } from '../features/profile/graph';
 import { useSwitchProfile } from '../features/profile/use-switch-profile';
 import { SEARCH_FIELD, SidebarSearchContext } from '../features/search/search-view';
 import { SidebarContexts, SidebarGroups } from '../features/groups/sidebar-groups';
@@ -49,6 +49,7 @@ import { useSiteModules } from '../lib/site-modules';
 import { readStored, writeStored } from '../lib/storage';
 import { useSync } from '../lib/sync-provider';
 import { APP_NAME } from '../lib/brand';
+import { activityKey } from '../features/feed/cache';
 
 /** The icon rail's own row after the site's: it has no search field. */
 const RAIL_SEARCH: NavRowModel = { key: 'app|search', label: t('Search'), icon: null, fallbackIcon: 'search', list: { section: 'search' }, command: 'go-search', counter: null };
@@ -137,7 +138,7 @@ function ShellFrame({ siteUrl, items, requests = 0, profile, commands }: Props) 
         void queryClient.invalidateQueries({ queryKey: SENT_REQUESTS_KEY });
         if (profile) {
             void queryClient.invalidateQueries({ queryKey: connectionsKey(profile.id) });
-            void queryClient.invalidateQueries({ queryKey: ['connection-list', profile.id] });
+            void queryClient.invalidateQueries({ queryKey: connectionListsKey(profile.id) });
         }
     });
     // the agent chats open in this window: per network and acting profile (another profile's
@@ -327,7 +328,7 @@ function ShellFrame({ siteUrl, items, requests = 0, profile, commands }: Props) 
                 case 'post':
                     // the thread shows the post at once while it loads its own copy: written as
                     // stale (updatedAt 0), so the thread fetches it and finds a post that is gone
-                    if (!queryClient.getQueryData(['activity', a.activity.id])) queryClient.setQueryData(['activity', a.activity.id], a.activity, { updatedAt: 0 });
+                    if (!queryClient.getQueryData(activityKey(a.activity.id))) queryClient.setQueryData(activityKey(a.activity.id), a.activity, { updatedAt: 0 });
                     openDetail(activityDetail(a.activity));
                     return;
                 case 'search':

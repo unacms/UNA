@@ -13,6 +13,7 @@ import { unwrap } from '../../lib/api';
 import { t, tn } from '../../lib/i18n';
 import type { DetailRoute, FeedName } from '../../lib/router';
 import { ago, mediumDate } from '../../lib/dates';
+import { FEEDS_KEY, activityKey } from '../feed/cache';
 
 export type Post = Schema<'Post'>;
 export type PostPage = Schema<'Page_Post'>;
@@ -35,12 +36,14 @@ export const FEED_LABELS: Record<PostsFeed, string> = { latest: t('Latest'), pop
 /** Whose posts a list shows: the section's (a sort, or one's own), a context's or a profile's. */
 export type PostsOf = { feed: PostsFeed; category?: string | null } | { context: string } | { author: string };
 
+/** Every list of the module's entries: one changed or removed is changed in each. */
+export const POSTS_LIST_KEY = ['posts', 'list'] as const;
 export const postListKey = (of: PostsOf) =>
     'feed' in of
-        ? (['posts', 'list', 'feed', of.feed, of.category ?? ''] as const)
+        ? ([...POSTS_LIST_KEY, 'feed', of.feed, of.category ?? ''] as const)
         : 'context' in of
-          ? (['posts', 'list', 'context', of.context] as const)
-          : (['posts', 'list', 'author', of.author] as const);
+          ? ([...POSTS_LIST_KEY, 'context', of.context] as const)
+          : ([...POSTS_LIST_KEY, 'author', of.author] as const);
 export const postKey = (id: string) => ['article', id] as const;
 export const postCategoriesKey = ['posts', 'categories'] as const;
 
@@ -63,7 +66,7 @@ export async function fetchPosts(api: UnaApi, of: PostsOf, cursor: string | unde
 
 /** A post as a list loaded it (no text), so its view shows it at once while it loads its own. */
 export function postFromLists(queryClient: QueryClient, id: string): Post | undefined {
-    for (const [, data] of queryClient.getQueriesData<InfiniteData<PostPage>>(['posts', 'list'])) {
+    for (const [, data] of queryClient.getQueriesData<InfiniteData<PostPage>>(POSTS_LIST_KEY)) {
         const found = data?.pages.flatMap((p) => p.items).find((p) => p.id === id);
         if (found) return found;
     }
@@ -78,16 +81,16 @@ export function postFromLists(queryClient: QueryClient, id: string): Post | unde
 export function putPost(queryClient: QueryClient, fresh: Post): void {
     queryClient.setQueryData(postKey(fresh.id), fresh);
     const row: Post = { ...fresh, body_html: null, media: [], links: [] };
-    queryClient.setQueriesData<InfiniteData<PostPage>>(['posts', 'list'], (data) => (data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.map((x) => (x.id === fresh.id ? row : x)) })) } : data));
-    void queryClient.invalidateQueries(['posts', 'list']);
-    void queryClient.invalidateQueries(['feed']);
-    if (fresh.content_id) void queryClient.invalidateQueries(['activity', fresh.content_id]);
+    queryClient.setQueriesData<InfiniteData<PostPage>>(POSTS_LIST_KEY, (data) => (data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.map((x) => (x.id === fresh.id ? row : x)) })) } : data));
+    void queryClient.invalidateQueries(POSTS_LIST_KEY);
+    void queryClient.invalidateQueries(FEEDS_KEY);
+    if (fresh.content_id) void queryClient.invalidateQueries(activityKey(fresh.content_id));
 }
 
 /** A post gone (deleted): out of its view's cache and every list. */
 export function dropPost(queryClient: QueryClient, id: string): void {
     queryClient.removeQueries(postKey(id), { exact: true });
-    queryClient.setQueriesData<InfiniteData<PostPage>>(['posts', 'list'], (data) => (data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.filter((x) => x.id !== id) })) } : data));
+    queryClient.setQueriesData<InfiniteData<PostPage>>(POSTS_LIST_KEY, (data) => (data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.filter((x) => x.id !== id) })) } : data));
 }
 
 /**

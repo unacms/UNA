@@ -22,7 +22,9 @@ export const VIDEOS_PAGE = 24;
 /** Whose videos a list shows: the network's, a context's (`context`) or a profile's (`author`). */
 export type VideosOf = { all: true } | { context: string } | { author: string };
 
-export const videoListKey = (of: VideosOf) => ('context' in of ? (['videos', 'list', 'context', of.context] as const) : 'author' in of ? (['videos', 'list', 'author', of.author] as const) : (['videos', 'list', 'all'] as const));
+/** Every list of the module's entries: one changed or removed is changed in each. */
+export const VIDEOS_LIST_KEY = ['videos', 'list'] as const;
+export const videoListKey = (of: VideosOf) => ('context' in of ? ([...VIDEOS_LIST_KEY, 'context', of.context] as const) : 'author' in of ? ([...VIDEOS_LIST_KEY, 'author', of.author] as const) : ([...VIDEOS_LIST_KEY, 'all'] as const));
 export const videoKey = (id: string) => ['video', id] as const;
 
 /** A page of a list of videos, the newest first. */
@@ -106,7 +108,7 @@ type Pages = InfiniteData<VideoPage>;
 
 /** A video as a list already loaded it, so the detail shows it at once. */
 export function fromLists(queryClient: QueryClient, id: string): Video | undefined {
-    for (const [, data] of queryClient.getQueriesData<Pages>(['videos', 'list'])) {
+    for (const [, data] of queryClient.getQueriesData<Pages>(VIDEOS_LIST_KEY)) {
         for (const page of data?.pages ?? []) {
             const found = page.items.find((v) => v.id === id);
             if (found) return found;
@@ -118,7 +120,7 @@ export function fromLists(queryClient: QueryClient, id: string): Video | undefin
 /** A video as the site has it now: in its detail and wherever a list shows it (a list item keeps no text). */
 export function putVideo(queryClient: QueryClient, fresh: Video): void {
     queryClient.setQueryData(videoKey(fresh.id), fresh);
-    queryClient.setQueriesData<Pages>(['videos', 'list'], (data) =>
+    queryClient.setQueriesData<Pages>(VIDEOS_LIST_KEY, (data) =>
         data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.map((v) => (v.id === fresh.id ? { ...fresh, text_html: null } : v)) })) } : data,
     );
 }
@@ -126,11 +128,11 @@ export function putVideo(queryClient: QueryClient, fresh: Video): void {
 /** A video that is gone: out of every list, its detail forgotten. */
 export function dropVideo(queryClient: QueryClient, id: string): void {
     queryClient.removeQueries(videoKey(id));
-    queryClient.setQueriesData<Pages>(['videos', 'list'], (data) => (data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.filter((v) => v.id !== id) })) } : data));
+    queryClient.setQueriesData<Pages>(VIDEOS_LIST_KEY, (data) => (data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.filter((v) => v.id !== id) })) } : data));
 }
 
 /** After a new video: the lists load again (it is first in the newest-first ones). */
 export async function afterVideoAdded(queryClient: QueryClient, video: Video): Promise<void> {
     queryClient.setQueryData(videoKey(video.id), video);
-    await queryClient.invalidateQueries({ queryKey: ['videos', 'list'] });
+    await queryClient.invalidateQueries({ queryKey: VIDEOS_LIST_KEY });
 }

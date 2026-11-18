@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
 import { ensureOk, unwrap } from '../../lib/api';
-import { useApp } from '../../lib/context';
+import { useApp, ME_KEY } from '../../lib/context';
 import { useNavigation } from '../../lib/navigation';
 import { requestSync } from '../../lib/sync';
 
@@ -21,7 +21,7 @@ export function useSwitchProfile(): (profileId: string) => Promise<void> {
         async (profileId: string) => {
             ensureOk(await api.PUT('/me/active-profile', { body: { profile_id: profileId } }));
             const fresh = unwrap(await api.GET('/me'));
-            queryClient.setQueryData(['me'], fresh);
+            queryClient.setQueryData(ME_KEY, fresh);
             reset('profile');
             await queryClient.resetQueries({ predicate: (q) => q.queryKey[0] !== 'me' });
             requestSync();

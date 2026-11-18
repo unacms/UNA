@@ -20,13 +20,15 @@ export type EventList = 'upcoming' | 'going' | 'past';
 export const EVENTS_PAGE = 30;
 
 /** Pages of one list of the Events section. */
-export const eventListKey = (list: EventList) => ['events', list] as const;
+/** Every list of events. */
+export const EVENTS_KEY = ['events'] as const;
+export const eventListKey = (list: EventList) => [...EVENTS_KEY, list] as const;
 /** Whose events an Events tab lists: a group's or space's (`context`), or a profile's own (`author`). */
 export type EventsOf = { context: string } | { author: string };
 /** Upcoming or past: an Events tab's two lists. */
 export type EventsWhen = 'upcoming' | 'past';
 /** The events of a group, space or profile (its Events tab), upcoming or past. */
-export const eventsOfKey = (of: EventsOf, when: EventsWhen) => ('context' in of ? (['events', 'context', of.context, when] as const) : (['events', 'author', of.author, when] as const));
+export const eventsOfKey = (of: EventsOf, when: EventsWhen) => ('context' in of ? ([...EVENTS_KEY, 'context', of.context, when] as const) : ([...EVENTS_KEY, 'author', of.author, when] as const));
 
 /** A page of a group's, space's or profile's events: upcoming soonest first, past the latest first. */
 export async function fetchEventsOf(api: UnaApi, of: EventsOf, when: EventsWhen, cursor: string | undefined, limit = EVENTS_PAGE): Promise<Schema<'Page_Event'>> {
@@ -99,7 +101,7 @@ export async function fetchAttendees(api: UnaApi, id: string, cursor: string | u
 
 /** After going or not going: the Events section's lists and the context Events tabs load again. */
 export async function afterRsvpChange(queryClient: QueryClient): Promise<void> {
-    await queryClient.invalidateQueries({ queryKey: ['events'] });
+    await queryClient.invalidateQueries({ queryKey: EVENTS_KEY });
 }
 
 /** "3 going". */

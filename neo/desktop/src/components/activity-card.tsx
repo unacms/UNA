@@ -4,7 +4,7 @@ import { createContext, type FocusEvent, type KeyboardEvent, type MouseEvent, us
 import type { Schema } from 'una-api';
 
 import { EDIT_POST_EVENT, PostEditor, requestEdit, takeEditRequest } from '../features/compose/post-editor';
-import { dropFromFeeds } from '../features/feed/cache';
+import { dropFromFeeds, activityKey } from '../features/feed/cache';
 import { MediaGrid } from '../features/feed/media';
 import { type PostMenuItem, postMenuEntries, postMenuItems } from '../features/feed/post-menu';
 import { REACT_WITH, ReactionButton, ReactionCount, useReactionKinds } from '../features/feed/reaction-button';
@@ -238,7 +238,7 @@ export function ActivityCard({ activity, variant = 'list', selected = false, lis
             ensureOk(await api.DELETE('/activities/{id}', { params: { path: { id: activity.id } } }));
             // closes the post if it is open in the detail pane, and Back cannot reopen it
             forget({ kind: 'post', id: activity.id });
-            queryClient.removeQueries(['activity', activity.id], { exact: true });
+            queryClient.removeQueries(activityKey(activity.id), { exact: true });
             listItem?.onRemove();
             dropFromFeeds(queryClient, activity.id);
         } catch (e) {

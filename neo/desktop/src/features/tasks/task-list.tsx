@@ -38,6 +38,8 @@ import {
     useTaskAddField,
 } from './tasks';
 import { type TaskListActions, useTaskListActions } from './task-list-actions';
+import { BOARDS_KEY } from './board';
+import { TASK_CONTEXTS_KEY, TASK_FACETS_KEY } from './tasks';
 
 /** The field that adds a task to a list (Cmd+N focuses it): `data-task-add` inside the list's `data-task-list`. */
 export const taskAddId = (contextId: string, listId: string | null) => `task-add-${contextId}-${listId ?? 'inbox'}`;
@@ -223,11 +225,10 @@ export function AddTask({ contextId, list, announce, disabled = false }: { conte
             await Promise.all([
                 queryClient.invalidateQueries({ queryKey: contextTasksKey(contextId) }),
                 queryClient.invalidateQueries({ queryKey: taskListsKey(contextId) }),
-                queryClient.invalidateQueries({ queryKey: ['tasks', 'mine'] }),
                 // the Tasks section's boards and their counts
-                queryClient.invalidateQueries({ queryKey: ['tasks', 'board'] }),
-                queryClient.invalidateQueries({ queryKey: ['task-facets'] }),
-                queryClient.invalidateQueries({ queryKey: ['task-contexts'] }),
+                queryClient.invalidateQueries({ queryKey: BOARDS_KEY }),
+                queryClient.invalidateQueries({ queryKey: TASK_FACETS_KEY }),
+                queryClient.invalidateQueries({ queryKey: TASK_CONTEXTS_KEY }),
             ]);
         } catch (err) {
             setError(errorMessage(err));

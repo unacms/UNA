@@ -27,7 +27,9 @@ export const OPTION_MAX_LENGTH = 255;
 /** Whose polls a list shows: a context's (`context`) or a profile's (`author`). */
 export type PollsOf = { context: string } | { author: string };
 
-export const pollListKey = (of: PollsOf) => ('context' in of ? (['polls', 'list', 'context', of.context] as const) : (['polls', 'list', 'author', of.author] as const));
+/** Every list of the module's entries: one changed or removed is changed in each. */
+export const POLLS_LIST_KEY = ['polls', 'list'] as const;
+export const pollListKey = (of: PollsOf) => ('context' in of ? ([...POLLS_LIST_KEY, 'context', of.context] as const) : ([...POLLS_LIST_KEY, 'author', of.author] as const));
 export const pollKey = (id: string) => ['poll', id] as const;
 
 /** A page of a list of polls, the newest first. */
@@ -54,7 +56,7 @@ export async function fetchPoll(api: UnaApi, id: string): Promise<Poll> {
 export function putPoll(queryClient: QueryClient, poll: Poll): void {
     if (poll.content_id) updateItem(queryClient, poll.content_id, (item) => (item.poll?.id === poll.id ? { ...item, poll: { ...poll, text_html: item.poll.text_html ?? null } } : item));
     queryClient.setQueryData<Poll>(pollKey(poll.id), (old) => (old ? { ...poll, text_html: poll.text_html ?? old.text_html ?? null } : old));
-    queryClient.setQueriesData<InfiniteData<PollPage>>(['polls', 'list'], (data) =>
+    queryClient.setQueriesData<InfiniteData<PollPage>>(POLLS_LIST_KEY, (data) =>
         data ? { ...data, pages: data.pages.map((page) => (page.items.some((p) => p.id === poll.id) ? { ...page, items: page.items.map((p) => (p.id === poll.id ? { ...poll, text_html: null } : p)) } : page)) } : data,
     );
 }
@@ -74,7 +76,7 @@ export function withVote(poll: Poll, optionId: string): Poll {
 export function pollFromCache(queryClient: QueryClient, id: string): Poll | undefined {
     const own = queryClient.getQueryData<Poll>(pollKey(id));
     if (own) return own;
-    for (const [, data] of queryClient.getQueriesData<InfiniteData<PollPage>>(['polls', 'list'])) {
+    for (const [, data] of queryClient.getQueriesData<InfiniteData<PollPage>>(POLLS_LIST_KEY)) {
         const found = data?.pages.flatMap((p) => p.items).find((p) => p.id === id);
         if (found) return found;
     }

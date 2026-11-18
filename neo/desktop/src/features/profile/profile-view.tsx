@@ -41,6 +41,7 @@ import { type ConnectionList, connectionsKey, countText, profileKey, profileSumm
 import { relationItems, useRelation } from './relation-buttons';
 import { joinEntries, moreAction, ReportDialog, type ReportTarget, siteMoreEntries, useSiteActions } from './site-more';
 import { monthYear } from '../../lib/dates';
+import { feedKey } from '../feed/cache';
 
 const TAB_LABELS: Record<ProfileTab, string> = { posts: t('Posts'), friends: t('Friends'), followers: t('Followers'), following: t('Following'), events: t('Events'), articles: t('Posts'), videos: t('Videos'), photos: t('Photos'), albums: t('Albums'), files: t('Files'), polls: t('Polls'), about: t('About') };
 
@@ -507,7 +508,7 @@ function ProfileTimeline({ profile, own, page, selectedId }: { profile: Schema<'
     const { api, siteUrl } = useApp();
     const compose = useCompose();
     const source = useMemo<FeedSource>(
-        () => ({ key: ['feed', 'profile', profile.id], load: async (cursor) => unwrap(await api.GET('/profiles/{id}/timeline', { params: { path: { id: profile.id }, query: { cursor, limit: PAGE_SIZE } } })) }),
+        () => ({ key: feedKey('profile', profile.id), load: async (cursor) => unwrap(await api.GET('/profiles/{id}/timeline', { params: { path: { id: profile.id }, query: { cursor, limit: PAGE_SIZE } } })) }),
         [api, profile.id],
     );
     const feed = useFeed(source);

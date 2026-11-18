@@ -11,7 +11,7 @@ import { AnnounceContext } from './lib/announce';
 import { makeApi, type Refusal, unwrap } from './lib/api';
 import { useReloadWhenApiBack, useRetryWithCheck } from './lib/api-availability';
 import { listenForCommands } from './lib/command-bus';
-import { AppContext, type AppContextValue, useApp } from './lib/context';
+import { AppContext, type AppContextValue, useApp, ME_KEY } from './lib/context';
 import { deepLinkTarget, parseDeepLink } from './lib/deep-link';
 import { TabsProvider, useNavigation } from './lib/navigation';
 import {
@@ -584,7 +584,7 @@ function SignedIn({ session, sessions, openAt, onSignOut, onRefused, signingOut,
         };
     }, [history, tabs, setNavigator]);
 
-    const me = useQuery({ queryKey: ['me'], queryFn: async () => unwrap(await api.GET('/me')), enabled: restored });
+    const me = useQuery({ queryKey: ME_KEY, queryFn: async () => unwrap(await api.GET('/me')), enabled: restored });
     // the network's API was turned off and answers again: whatever is on screen loads again,
     // the "could not load" screen below included (it has no status banner)
     useReloadWhenApiBack(session.siteUrl);

@@ -30,7 +30,9 @@ export const MAX_FILES = 20;
 export type FilesOf = { all: true } | { context: string } | { author: string };
 
 const ofKey = (of: FilesOf) => ('context' in of ? (['context', of.context] as const) : 'author' in of ? (['author', of.author] as const) : (['all'] as const));
-export const fileListKey = (of: FilesOf) => ['files', 'list', ...ofKey(of)] as const;
+/** Every list of the module's entries: one changed or removed is changed in each. */
+export const FILES_LIST_KEY = ['files', 'list'] as const;
+export const fileListKey = (of: FilesOf) => [...FILES_LIST_KEY, ...ofKey(of)] as const;
 export const fileKey = (id: string) => ['file', id] as const;
 
 /** A page of files, the newest first. */
@@ -139,7 +141,7 @@ type Pages = InfiniteData<FilePage>;
 
 /** A file as a list already loaded it, so the detail shows it at once. */
 export function fileFromLists(queryClient: QueryClient, id: string): FileEntry | undefined {
-    for (const [, data] of queryClient.getQueriesData<Pages>(['files', 'list'])) {
+    for (const [, data] of queryClient.getQueriesData<Pages>(FILES_LIST_KEY)) {
         for (const page of data?.pages ?? []) {
             const found = page.items.find((f) => f.id === id);
             if (found) return found;
@@ -151,7 +153,7 @@ export function fileFromLists(queryClient: QueryClient, id: string): FileEntry |
 /** A file as the site has it now: its detail and wherever a list shows it (a list item keeps no text). */
 export function putFile(queryClient: QueryClient, fresh: FileEntry): void {
     queryClient.setQueryData(fileKey(fresh.id), fresh);
-    queryClient.setQueriesData<Pages>(['files', 'list'], (data) =>
+    queryClient.setQueriesData<Pages>(FILES_LIST_KEY, (data) =>
         data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.map((x) => (x.id === fresh.id ? { ...fresh, text_html: null } : x)) })) } : data,
     );
 }
@@ -159,13 +161,13 @@ export function putFile(queryClient: QueryClient, fresh: FileEntry): void {
 /** A file that is gone: out of every list, its detail forgotten. */
 export function dropFile(queryClient: QueryClient, id: string): void {
     queryClient.removeQueries(fileKey(id));
-    queryClient.setQueriesData<Pages>(['files', 'list'], (data) => (data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.filter((x) => x.id !== id) })) } : data));
+    queryClient.setQueriesData<Pages>(FILES_LIST_KEY, (data) => (data ? { ...data, pages: data.pages.map((p) => ({ ...p, items: p.items.filter((x) => x.id !== id) })) } : data));
 }
 
 /** After new files: their details are there, the lists load again (they are first in the newest-first ones). */
 export async function afterFilesAdded(queryClient: QueryClient, files: readonly FileEntry[]): Promise<void> {
     for (const f of files) queryClient.setQueryData(fileKey(f.id), f);
-    await queryClient.invalidateQueries({ queryKey: ['files', 'list'] });
+    await queryClient.invalidateQueries({ queryKey: FILES_LIST_KEY });
 }
 
 /** "3 of 8 files were added.": what a request that the site took only part of did. */

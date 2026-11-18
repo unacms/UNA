@@ -17,8 +17,8 @@ import { t, tn } from '../../lib/i18n';
 import { confirmAction } from '../../lib/native';
 import { coalesce, useRealtime } from '../../lib/realtime';
 import { paneHeadingId } from '../../shell/pane';
-import { updateItem } from '../feed/cache';
-import { appendComment, commentItems, commentsKey, countReply, dropComment, putComment, repliesKey } from './cache';
+import { updateItem, activityKey } from '../feed/cache';
+import { appendComment, commentItems, commentsKey, countReply, dropComment, putComment, repliesKey, REPLIES_KEY } from './cache';
 import { normalizeHtml } from '../../components/rich-editor/schema';
 import { BODY_HTML_FOR_COMMENTS_AND_DISCUSSIONS } from '../../lib/rich-html';
 import { CommentComposer } from './comment-composer';
@@ -191,8 +191,8 @@ export function CommentTree({ item, target, words = COMMENT_WORDS }: { item: Ite
         () =>
             coalesce(() => {
                 void queryClient.invalidateQueries({ queryKey: commentsKey(item.id) });
-                void queryClient.invalidateQueries({ queryKey: ['replies'] });
-                void queryClient.invalidateQueries({ queryKey: ['activity', item.id], exact: true });
+                void queryClient.invalidateQueries({ queryKey: REPLIES_KEY });
+                void queryClient.invalidateQueries({ queryKey: activityKey(item.id), exact: true });
             }, LIVE_COMMENTS_MS),
         [queryClient, item.id],
     );

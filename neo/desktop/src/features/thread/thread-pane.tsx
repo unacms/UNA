@@ -14,14 +14,14 @@ import { useOpenInWindow } from '../../lib/open-in-window';
 import { EmptyState } from '../../components/empty-state';
 import { Icon } from '../../components/icon';
 import { CloseDetailButton, Pane, ToolbarButton } from '../../shell/pane';
-import { dropFromFeeds } from '../feed/cache';
+import { dropFromFeeds, FEEDS_KEY, activityKey } from '../feed/cache';
 import { photosOf } from '../feed/media';
 import { type CommentTarget, CommentTree } from './comment-tree';
 import { Lightbox } from './lightbox';
 
 /** The activity as a feed already loaded it, so the detail pane shows it at once. */
 function fromFeeds(queryClient: QueryClient, id: string): Schema<'Activity'> | undefined {
-    for (const [, data] of queryClient.getQueriesData<InfiniteData<Schema<'Page_Activity'>>>(['feed'])) {
+    for (const [, data] of queryClient.getQueriesData<InfiniteData<Schema<'Page_Activity'>>>(FEEDS_KEY)) {
         for (const page of data?.pages ?? []) {
             const found = page.items.find((a) => a.id === id);
             if (found) return found;
@@ -44,7 +44,7 @@ export function ThreadPane({ id, comment }: { id: string; comment?: CommentTarge
     const openInWindow = useOpenInWindow();
 
     const post = useQuery({
-        queryKey: ['activity', id],
+        queryKey: activityKey(id),
         queryFn: async () => unwrap(await api.GET('/activities/{id}', { params: { path: { id } } })),
         initialData: () => fromFeeds(queryClient, id),
         // what a feed had may be old: show it and fetch the current one

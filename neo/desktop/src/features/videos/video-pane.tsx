@@ -24,6 +24,7 @@ import { EditTitleText } from '../photos/edit-title-text';
 import { commentBoxId, CommentTree } from '../thread/comment-tree';
 import { dropVideo, fromLists, mediaState, playable, putVideo, thumbnail, type Video, videoAspect, videoKey, viewsText } from './videos';
 import { longTime } from '../../lib/dates';
+import { activityKey } from '../feed/cache';
 
 type Activity = Schema<'Activity'>;
 
@@ -118,7 +119,7 @@ export function VideoPane({ id }: { id: string }) {
 
     // its Item, whose comments and reactions are the video's: the same cache entry as a post's thread
     const activity = useQuery({
-        queryKey: ['activity', itemId ?? ''],
+        queryKey: activityKey(itemId ?? ''),
         queryFn: async (): Promise<Activity> => unwrap(await api.GET('/activities/{id}', { params: { path: { id: itemId ?? '' } } })),
         enabled: !!itemId,
         retry: retryOnce,

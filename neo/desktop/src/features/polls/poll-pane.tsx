@@ -17,7 +17,7 @@ import { useAnnouncer } from '../feed/feed-list';
 import { EntryActions, EntryComments, useEntryItem } from '../photos/entry-item';
 import { ProfileAvatar, ProfileName } from '../profile/profile-link';
 import { PollCard } from './poll-card';
-import { type Poll, pollFromCache, pollKey } from './polls';
+import { type Poll, pollFromCache, pollKey, POLLS_LIST_KEY } from './polls';
 import { longTime } from '../../lib/dates';
 
 /** The picture its author chose for it: the large copy, else a smaller one. */
@@ -68,7 +68,7 @@ export function PollPane({ id }: { id: string }) {
         announceInWindow(t('Poll deleted'));
         if (p.content_id) dropFromFeeds(queryClient, p.content_id);
         queryClient.removeQueries(pollKey(id), { exact: true });
-        void queryClient.invalidateQueries(['polls', 'list']);
+        void queryClient.invalidateQueries(POLLS_LIST_KEY);
         forget({ kind: 'poll', id });
     };
 

@@ -15,7 +15,7 @@ import { useCopyLink } from '../../lib/copy-link';
 import { type MenuEntry, showMenu, useMenuExpanded } from '../../lib/native-menu';
 import { useNavigation } from '../../lib/navigation';
 import { useOpenInWindow } from '../../lib/open-in-window';
-import { requestSync } from '../../lib/sync';
+import { requestSync, CONVERSATIONS_KEY } from '../../lib/sync';
 import type { Uploader } from '../../lib/uploads';
 import { Avatar } from '../../components/avatar';
 import { EmptyState } from '../../components/empty-state';
@@ -140,7 +140,7 @@ export function Conversation({ id, uploader }: { id: string; uploader?: Uploader
         keptUnread.current = null;
         void api.POST('/conversations/{id}/read', { params: { path: { id } } }).then((r) => {
             ensureOk(r);
-            void queryClient.invalidateQueries(['conversations']);
+            void queryClient.invalidateQueries(CONVERSATIONS_KEY);
             // read now, so the next unread message changes the flag again
             void queryClient.invalidateQueries(conversationKey(id));
             requestSync();
@@ -300,7 +300,7 @@ export function Conversation({ id, uploader }: { id: string; uploader?: Uploader
         // a poll that asked before the reply was there would take it away again when it answers
         await queryClient.cancelQueries(messagesKey(id));
         queryClient.setQueryData<Thread>(messagesKey(id), (prev) => withSent(prev, sent));
-        void queryClient.invalidateQueries(['conversations']);
+        void queryClient.invalidateQueries(CONVERSATIONS_KEY);
         announce(t('Sent'));
     };
 
@@ -320,7 +320,7 @@ export function Conversation({ id, uploader }: { id: string; uploader?: Uploader
             ensureOk(await api.DELETE('/conversations/{id}/read', { params: { path: { id } } }));
             // the inbox shows its dot again; this view stays open and does not read it again
             keptUnread.current = conv.data?.replies ?? null;
-            void queryClient.invalidateQueries(['conversations']);
+            void queryClient.invalidateQueries(CONVERSATIONS_KEY);
             requestSync();
             announce(t('Marked as unread'));
         } catch (e) {
@@ -428,7 +428,7 @@ export function Conversation({ id, uploader }: { id: string; uploader?: Uploader
                         onLeft={() => {
                             // said by the window: this pane and its live region go now
                             announceInWindow(t('You left the conversation'));
-                            void queryClient.invalidateQueries(['conversations']);
+                            void queryClient.invalidateQueries(CONVERSATIONS_KEY);
                             queryClient.removeQueries(conversationKey(id));
                             queryClient.removeQueries(messagesKey(id));
                             forget({ kind: 'conversation', id });
@@ -827,7 +827,7 @@ export function NewConversation({ profileId, uploader }: { profileId?: string; u
                         if (mediaIds.length) body.media_ids = mediaIds;
                         const c = unwrap(await api.POST('/conversations', { body }));
                         queryClient.setQueryData(conversationKey(c.id), c);
-                        await queryClient.invalidateQueries(['conversations']);
+                        await queryClient.invalidateQueries(CONVERSATIONS_KEY);
                         const left = recipients.filter((p) => !c.participants.some((x) => x.id === p.id)).map((p) => p.display_name);
                         if (left.length) announce(t('You may not contact {{names}}: they were left out', { names: left.join(', ') }));
                         // its reply box takes focus: this pane and the box that had it go now

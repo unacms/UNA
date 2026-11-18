@@ -15,6 +15,7 @@ import { t } from '../lib/i18n';
 import { useNavigation, useRoute } from '../lib/navigation';
 import { type FeedName, listFeed, sectionFeeds } from '../lib/router';
 import { Pane, ToolbarButton } from '../shell/pane';
+import { feedKey } from '../features/feed/cache';
 
 /** Where Cmd+N puts the cursor: the compose sheet's text box. */
 export { NEW_POST_FIELD };
@@ -87,7 +88,7 @@ export function Feed({ section }: { section: 'home' | 'explore' }) {
     const selected = route.detail?.kind === 'post' ? route.detail.id : null;
 
     const source = useMemo<FeedSource>(
-        () => ({ key: ['feed', name], load: (cursor) => loadFeed(api, name, cursor), ranked: RANKED.has(name) }),
+        () => ({ key: feedKey(name), load: (cursor) => loadFeed(api, name, cursor), ranked: RANKED.has(name) }),
         [api, name],
     );
     const feed = useFeed(source);

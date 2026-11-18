@@ -19,6 +19,7 @@ import { choosePreopened, isPreopened, markPreopenedEntry, preopenedId, setPreop
 import { usePanesMode } from '../shell/layout';
 import { Pane, paneHeadingId, ToolbarButton } from '../shell/pane';
 import { exactTime, inboxTime } from '../lib/dates';
+import { CONVERSATIONS_KEY } from '../lib/sync';
 
 type Conversation = Schema<'Conversation'>;
 
@@ -61,7 +62,7 @@ export function Messages() {
     const selected = route.detail?.kind === 'conversation' ? route.detail.id : null;
 
     const inbox = useInfiniteQuery({
-        queryKey: ['conversations'],
+        queryKey: CONVERSATIONS_KEY,
         queryFn: async ({ pageParam }) => unwrap(await api.GET('/conversations', { params: { query: { cursor: pageParam as string | undefined, limit: 30 } } })),
         getNextPageParam: (last) => last.next_cursor ?? undefined,
         refetchInterval: 30_000,

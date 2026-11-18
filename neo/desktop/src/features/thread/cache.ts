@@ -11,8 +11,12 @@ type Comment = Schema<'Comment'>;
 type Page = Schema<'Page_Comment'>;
 export type CommentsData = InfiniteData<Page>;
 
-export const commentsKey = (itemId: string) => ['comments', itemId] as const;
-export const repliesKey = (commentId: string) => ['replies', commentId] as const;
+/** Every item's top-level comments. */
+export const COMMENTS_KEY = ['comments'] as const;
+export const commentsKey = (itemId: string) => [...COMMENTS_KEY, itemId] as const;
+/** Every comment's replies. */
+export const REPLIES_KEY = ['replies'] as const;
+export const repliesKey = (commentId: string) => [...REPLIES_KEY, commentId] as const;
 
 /** Each comment once, in page order: pages counted by offset can overlap after a change. */
 export function commentItems(data: CommentsData | undefined): Comment[] {
@@ -48,7 +52,7 @@ export function mapComments(data: CommentsData | undefined, fn: (c: Comment) => 
 }
 
 function mapAll(queryClient: QueryClient, fn: (c: Comment) => Comment | null): void {
-    for (const prefix of ['comments', 'replies']) queryClient.setQueriesData<CommentsData>([prefix], (data) => mapComments(data, fn));
+    for (const key of [COMMENTS_KEY, REPLIES_KEY]) queryClient.setQueriesData<CommentsData>(key, (data) => mapComments(data, fn));
 }
 
 /** A comment as the site now has it (after an edit) replaces the cached copy. */
@@ -64,7 +68,7 @@ export function putComment(queryClient: QueryClient, fresh: Comment): void {
  * next page is asked for, so such a list is loaded again.
  */
 export function dropComment(queryClient: QueryClient, gone: Comment): void {
-    const lists = [...queryClient.getQueriesData<CommentsData>(['comments']), ...queryClient.getQueriesData<CommentsData>(['replies'])];
+    const lists = [...queryClient.getQueriesData<CommentsData>(COMMENTS_KEY), ...queryClient.getQueriesData<CommentsData>(REPLIES_KEY)];
     const cached = lists.flatMap(([, data]) => commentItems(data));
     const ids = new Set([gone.id]);
     for (let grew = true; grew; ) {
