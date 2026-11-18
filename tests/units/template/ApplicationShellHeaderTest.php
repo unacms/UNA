@@ -78,4 +78,12 @@ class ApplicationShellHeaderTest extends BxDolTestCase
 
         $this->assertMatchesRegularExpression('/\n#bx-toolbar \.bx-menu-main \.bx-stl-mii \.sys-icon \{\n    color: inherit;\n\}/', self::read('modules/boonex/artificer/data/template/system/css/menu.css'));
     }
+
+    public function testHeaderStaysInPlaceInTheApplicationLayout(): void
+    {
+        // the header hides on scroll by its id (Headroom); the Application header has that id now, and stays: the sidebar beside it does
+        $s = self::read('template/_header_js_toolbar.html');
+        $this->assertStringContainsString("!oToolbar.closest('.bx-pt-application').length", $s);
+        $this->assertLessThan(strpos($s, 'new Headroom('), strpos($s, "closest('.bx-pt-application')"), 'Checked before the header is handed to Headroom.');
+    }
 }
