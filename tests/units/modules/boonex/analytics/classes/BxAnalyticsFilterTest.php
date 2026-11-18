@@ -67,6 +67,29 @@ class BxAnalyticsFilterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(gmmktime(18, 30, 0, 10, 12, 2026), $a['from']);
     }
 
+    public function testARenamedTimezoneIsFoundByEitherOfItsNames()
+    {
+        // A server's timezone database may have only today's name, or only the old one.
+        $aKnown = timezone_identifiers_list(DateTimeZone::ALL_WITH_BC);
+        foreach(BxAnalyticsFilter::TZ_RENAMED as $sOld => $sNew) {
+            if(!in_array($sOld, $aKnown, true) && !in_array($sNew, $aKnown, true))
+                continue;
+
+            $this->assertInstanceOf(DateTimeZone::class, BxAnalyticsFilter::getTimeZone($sOld), $sOld);
+            $this->assertInstanceOf(DateTimeZone::class, BxAnalyticsFilter::getTimeZone($sNew), $sNew);
+        }
+
+        $this->assertSame(19800, BxAnalyticsFilter::getTimeZone('Asia/Calcutta')->getOffset(new DateTime('2026-10-13')));
+    }
+
+    public function testWhatIsNotATimezoneNameIsRefused()
+    {
+        foreach(['', 'Mars/Olympus', '../../etc/passwd', 'Asia/Kolkata; DROP', ['Asia/Kolkata'], null, 5] as $mixedName)
+            $this->assertNull(BxAnalyticsFilter::getTimeZone($mixedName));
+
+        $this->assertSame('UTC', $this->filter(['range' => 'today', 'tz' => 'Mars/Olympus'])->get()['tz']);
+    }
+
     public function testTimezoneFromTheDashboardCookie()
     {
         $aCookie = $_COOKIE;
