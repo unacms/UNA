@@ -17,7 +17,7 @@ import { useAnnouncer } from '../feed/feed-list';
 import { useMyGroups, useMySpaces } from '../groups/groups';
 import { type Audience, AudienceField, submitKeys, useFormContext } from '../photos/new-media';
 import { PhotoDropZone, usePhotoUploads } from '../photos/photo-uploads';
-import { RichEditor, type RichEditorHandle } from '../../components/rich-editor/rich-editor';
+import { RichEditor, type RichEditorHandle } from '../../components/rich-editor/lazy';
 import { type TextImages, uploadsHold, useTextImages } from '../../components/rich-editor/text-images';
 import { RichText } from '../../components/rich-text';
 import { textToRichHtml } from '../../lib/rich-html';

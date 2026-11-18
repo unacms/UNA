@@ -33,7 +33,7 @@ import { PollRow } from '../polls/poll-list';
 import { type Poll, POLLS_PAGE } from '../polls/polls';
 import { PostRow } from '../posts/post-list';
 import { type Post, POSTS_PAGE } from '../posts/posts';
-import { TaskRow } from '../tasks/task-list';
+import { TaskRow } from '../tasks/lazy';
 import { loadMoreTasks, type Task, TASKS_PAGE } from '../tasks/tasks';
 import { VideoRow } from '../videos/video-list';
 import { type Video, VIDEOS_PAGE } from '../videos/videos';

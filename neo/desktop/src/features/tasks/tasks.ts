@@ -312,3 +312,19 @@ export function openCountText(list: Pick<TaskList, 'task_count' | 'open_count'>)
     if (!list.task_count) return t('No tasks');
     return list.open_count ? tn(list.open_count, '{{count}} open', '{{count}} open') : t('All done');
 }
+
+/**
+ * Cmd+N on a context's Tasks tab: the add field of the list focus is in, else of the first list
+ * that has one on the page. False where no task list is shown (Cmd+N is New Post there).
+ */
+export function focusTaskAdd(): boolean {
+    const active = document.activeElement;
+    const within = active instanceof Element ? active.closest('[data-task-list]') : null;
+    const field =
+        within?.querySelector<HTMLInputElement>('input[data-task-add]') ??
+        Array.from(document.querySelectorAll<HTMLInputElement>('[data-task-lists] input[data-task-add]')).find((el) => !el.closest('[inert], [hidden]')) ??
+        null;
+    if (!field || field.closest('[inert], [hidden]')) return false;
+    field.focus();
+    return true;
+}

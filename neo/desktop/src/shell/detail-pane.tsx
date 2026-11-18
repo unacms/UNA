@@ -14,7 +14,7 @@ import { NewAlbum, NewPhotos } from '../features/photos/new-media';
 import { PhotoPane } from '../features/photos/photo-pane';
 import { NewVideo } from '../features/videos/new-video';
 import { VideoPane } from '../features/videos/video-pane';
-import { TaskPane } from '../features/tasks/task-pane';
+import { TaskPane } from '../features/tasks/lazy';
 import { PollPane } from '../features/polls/poll-pane';
 import { NewPost } from '../features/posts/new-post';
 import { PostPane } from '../features/posts/post-pane';

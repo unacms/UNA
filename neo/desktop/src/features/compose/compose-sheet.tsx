@@ -32,7 +32,7 @@ import { useAudiences, useSiteHasTag } from '../../lib/site-modules';
 import { closeModal, openModal } from '../../components/dialog';
 import { Icon } from '../../components/icon';
 import { isOverDropTarget } from '../../components/rich-editor/images';
-import { RichEditor, type RichEditorHandle } from '../../components/rich-editor/rich-editor';
+import { RichEditor, type RichEditorHandle } from '../../components/rich-editor/lazy';
 import { prependToFeed, feedKey } from '../feed/cache';
 import { MAX_OPTIONS, MIN_OPTIONS, OPTION_MAX_LENGTH, POLLS_LIST_KEY } from '../polls/polls';
 import { AttachmentTray } from './attachment-tray';

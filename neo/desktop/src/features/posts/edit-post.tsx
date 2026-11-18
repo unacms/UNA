@@ -2,9 +2,7 @@ import { type FormEvent, useId, useMemo, useRef, useState } from 'react';
 
 import { problemMessage, type Schema } from 'una-api';
 
-import { type RichEditorHandle } from '../../components/rich-editor/rich-editor';
-import { survivesEditor } from '../../components/rich-editor/round-trip';
-import { normalizeHtml } from '../../components/rich-editor/schema';
+import { loadedEditor, type RichEditorHandle, useEditor, withEditor } from '../../components/rich-editor/lazy';
 import { SAVE_ANSWER_MS } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { errorMessage } from '../../lib/errors';
@@ -37,7 +35,7 @@ export type PostEditable = { text: boolean; summary: boolean; audience: boolean 
  * rewrite with less is edited there.
  */
 export function isEditableText(html: string): boolean {
-    return survivesEditor(html, 'full');
+    return loadedEditor().survivesEditor(html, 'full');
 }
 
 /** A text without its white space: how a summary is compared with the start of the post's text. */
@@ -85,7 +83,7 @@ export function postSummary(post: Pick<Post, 'summary' | 'body_html'>): { editab
  */
 export function postValue(post: Post): PostValue {
     const html = post.body_html ?? '';
-    return { title: post.title, summary: postSummary(post).text, html: isEditableText(html) ? normalizeHtml(html, 'full') : html, category: post.category?.id ?? '', audience: post.audience };
+    return { title: post.title, summary: postSummary(post).text, html: isEditableText(html) ? loadedEditor().normalizeHtml(html, 'full') : html, category: post.category?.id ?? '', audience: post.audience };
 }
 
 /**
@@ -132,7 +130,11 @@ export function postChangesBlocker(body: PostChanges, plain: string): FieldError
  * The fields keep the keyboard meanwhile (the lists are aria-disabled, not disabled), so
  * Cmd+Enter and Esc still reach the form after a save that failed. Like the new post form it keeps no draft.
  */
-export function EditPost({ post, uploader, announce, onDone }: { post: Post; uploader?: Uploader; announce?: (text: string) => void; onDone: (saved: Post | null) => void }) {
+export const EditPost = withEditor(EditPostForm);
+
+function EditPostForm({ post, uploader, announce, onDone }: { post: Post; uploader?: Uploader; announce?: (text: string) => void; onDone: (saved: Post | null) => void }) {
+    // postValue and isEditableText read the text with the editor's schema
+    useEditor();
     const { api } = useApp();
     const id = useId();
     const images = useTextImages(uploader);

@@ -7,7 +7,7 @@ import { type RefObject, useCallback } from 'react';
 
 import { NEW_POST_FIELD, useCompose } from '../features/compose/compose-sheet';
 import { SEARCH_FIELD } from '../features/search/search-view';
-import { focusTaskAdd } from '../features/tasks/task-list';
+import { focusTaskAdd } from '../features/tasks/tasks';
 import { commentBoxId } from '../features/thread/comment-tree';
 import { useApp } from '../lib/context';
 import { errorMessage } from '../lib/errors';
