@@ -26,6 +26,11 @@ class BxTemplFunctions extends BxBaseFunctions
 
     protected function getInjFooterIncludeCssJs() 
     {
+        // sidebar.js works the application page type's own sidebar (pt_application.html); no other page has its elements.
+        if($this->_oTemplate->getPageType() != BX_PAGE_TYPE_APPLICATION) {
+            return '';
+        }
+
         return $this->_oTemplate->addJs([
             'modules/base/template/js/|sidebar.js',
         ], true);
