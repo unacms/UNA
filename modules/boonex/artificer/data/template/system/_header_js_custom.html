@@ -74,14 +74,16 @@
         return oSidebar.hasClass('bx-sidebar-active');
     }
 
+    //--- The account menu was a sidebar; callers that still ask for it (the native wrapper) get its popup.
+    function bx_sidebar_account_menu() {
+        var oAccount = $('.bx-menu-account-trigger:visible').get(0);
+        if(oAccount && typeof(oBxArtificerUtils) != 'undefined')
+            oBxArtificerUtils.getAccountMenu('#bx-sliding-menu-account', oAccount);
+    }
+
     function bx_sidebar_toggle(sType) {
-        //--- The account menu was a sidebar; callers that still ask for it (the native wrapper) get its popup.
-        if(sType == 'account') {
-            var oAccount = $('.bx-menu-account-trigger:visible').get(0);
-            if(oAccount && typeof(oBxArtificerUtils) != 'undefined')
-                oBxArtificerUtils.getAccountMenu('#bx-sliding-menu-account', oAccount);
-            return;
-        }
+        if(sType == 'account')
+            return bx_sidebar_account_menu();
 
         var oSidebar = bx_sidebar_get(sType);
         var bSidebarActive = bx_sidebar_active(sType);

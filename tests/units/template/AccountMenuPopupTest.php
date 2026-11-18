@@ -51,7 +51,8 @@ class AccountMenuPopupTest extends BxDolTestCase
         $s = self::read(self::DIR . '_header_js_custom.html');
 
         $this->assertStringContainsString("var aSidebars = ['site'];", $s);
-        $this->assertMatchesRegularExpression('/function bx_sidebar_toggle\(sType\) \{.*?if\(sType == \'account\'\) \{.*?oBxArtificerUtils\.getAccountMenu\(\'#bx-sliding-menu-account\', oAccount\);\s*return;/s', $s);
+        $this->assertMatchesRegularExpression('/function bx_sidebar_toggle\(sType\) \{\s*if\(sType == \'account\'\)\s*return bx_sidebar_account_menu\(\);/', $s);
+        $this->assertMatchesRegularExpression('/function bx_sidebar_account_menu\(\) \{.*?oBxArtificerUtils\.getAccountMenu\(\'#bx-sliding-menu-account\', oAccount\);/s', $s);
 
         $this->assertStringContainsString("oBxArtificerUtils.getAccountMenu('#bx-sliding-menu-account'", self::read('modules/boonex/nexus/template/js.html'));
     }

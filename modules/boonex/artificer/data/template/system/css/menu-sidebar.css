@@ -26,14 +26,6 @@
     -moz-transition: -moz-transform 0.5s 0s;
     transition: transform 0.5s 0s;
 }
-.bx-sidebar.bx-sidebar-site.bx-sidebar-active {
-    opacity: 1;
-
-    -webkit-transition: opacity 0.3s 0s;
-    -moz-transition: opacity 0.3s 0s;
-    transition: opacity 0.3s 0s;
-}
-
 .bx-sidebar-item.bx-si-dropdown-has .bx-si-dropdown-icon {
     display: flex;
 }
@@ -53,6 +45,7 @@
     transition: opacity 150ms cubic-bezier(0, 0, 0.2, 1) 0s, visibility 0s 150ms;
 }
 .bx-sidebar.bx-sidebar-site.bx-sidebar-active {
+    opacity: 1;
     transition: opacity 150ms cubic-bezier(0, 0, 0.2, 1) 0s;
 }
 .bx-sidebar.bx-sidebar-site .bx-sidebar-cnt {
