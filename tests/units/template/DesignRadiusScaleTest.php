@@ -73,6 +73,16 @@ class DesignRadiusScaleTest extends BxDolTestCase
         $this->assertGreaterThan(50, $iRadii);
     }
 
+    public function testStudioPopupsAndHalosFollowTheScale(): void
+    {
+        $sLess = self::read('studio/template/css/common.less');
+        $this->assertStringContainsString("    margin: 0.5rem;\n\n    border-radius: var(--bx-radius-3xl);", $sLess, 'Studio popups and dialogs.');
+        $this->assertDoesNotMatchRegularExpression('/\.radius\((?:24|12)px\)/', $sLess);
+
+        // a ring's corner is the tile's plus its width, so the hover halo and the active ring are drawn wide and clipped to the scaled shape
+        $this->assertMatchesRegularExpression('/\.bx-std \.bx-std-header-btn,\s*\.bx-std \.bx-menu-top-center li \.bx-mi-icon,\s*\.bx-std \.bx-menu-breadcrumb li\.bx-menu-bc-page \.bx-mi-icon\.bx-icon-tile \{\s*clip-path: inset\(-0\.5rem round var\(--bx-radius-2xl\)\);/', self::read('template/css/tailwind.css'));
+    }
+
     public function testHeadStylesSetTheSizeAndSmoothCornersOnlyWhereSupported(): void
     {
         $s = self::read('template/design_radius.html');

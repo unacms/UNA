@@ -31,7 +31,7 @@ class HoverHaloTest extends BxDolTestCase
         $sRule = self::rule(self::read('template/css/tailwind.css'), "    .bx-std .bx-menu-toolbar .bx-menu-tab-item,\n    .bx-std .bx-std-search-trigger,\n    .bx-std .bx-std-header-btn");
 
         // 0.5rem (8px) in rem like the bar's padding and corners, so tile, halo and bar stay concentric at any text size
-        $this->assertStringContainsString('@apply hover:ring-[0.5rem] hover:ring-black/5 dark:hover:ring-white/5;', $sRule, 'The sidebar items\' hover background.');
+        $this->assertStringContainsString('@apply hover:ring-[3rem] hover:ring-black/5 dark:hover:ring-white/5;', $sRule, 'The sidebar items\' hover background.');
         $this->assertStringNotContainsString('ring-offset', $sRule, 'The plate\'s own outer hairline is the separation.');
     }
 
@@ -40,7 +40,7 @@ class HoverHaloTest extends BxDolTestCase
         $sRule = self::rule(self::read('template/css/tailwind.css'), "    .bx-std .bx-menu-top-center li:where(:not(.bx-menu-tab-active)) a:where(:not(:focus-visible)) .bx-mi-icon,\n    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile");
 
         // straight off the tile as on the buttons: the tile's own outer hairline is the halo's inner edge
-        $this->assertStringContainsString('@apply hover:ring-[0.5rem] hover:ring-black/5 dark:hover:ring-white/5;', $sRule);
+        $this->assertStringContainsString('@apply hover:ring-[3rem] hover:ring-black/5 dark:hover:ring-white/5;', $sRule);
         $this->assertStringNotContainsString('ring-offset', $sRule);
     }
 
@@ -50,7 +50,7 @@ class HoverHaloTest extends BxDolTestCase
 
         // the selected app's ring is not replaced by the halo while hovered: the halo rule leaves it out; it is the halo one step darker,
         // the sidebar's active item: 0.5rem of black/10 (white/10 in dark), straight off the tile like the hover halo
-        $this->assertStringContainsString("    .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon {\n        @apply ring-[0.5rem] ring-black/10 dark:ring-white/10;", $s);
+        $this->assertStringContainsString("    .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon {\n        @apply ring-[3rem] ring-black/10 dark:ring-white/10;", $s);
         $this->assertStringContainsString('@apply bg-black/10 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/10;', $s, 'The sidebar\'s active item, the same neutral.');
         $this->assertDoesNotMatchRegularExpression('/\.bx-menu-top-center (li )?\.bx-mi-icon[^{]*\{[^}]*hover:ring/', $s, 'Every dock hover halo rule excludes the selected item.');
     }

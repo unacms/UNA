@@ -932,8 +932,21 @@
         });
 
         var fOnShow = options.onShow;
+        // The field takes the focus, with its value selected, and Enter in it is OK.
+        var oInput = oPPopup.find('[name="bx-popup-prompt-value"]');
+        oInput.off('keydown.prompt').on('keydown.prompt', function(oEvent) {
+            if(oEvent.key != 'Enter' || oEvent.isComposing)
+                return;
+
+            oEvent.preventDefault();
+            oBtnOk.trigger('click');
+        });
+
         options.onShow = function(oPopup) {
-            oBtnOk.focus();
+            if(oInput.length)
+                oInput.trigger('focus').trigger('select');
+            else
+                oBtnOk.focus();
 
             if(typeof(fOnShow) == 'function')
                 fOnShow(oPPopup);
