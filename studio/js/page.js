@@ -252,7 +252,8 @@ function bx_std_scrollbar(oScroller) {
         thumb: 'bx-std-scrollbar-thumb',
         scroller: '', // page.css hides the native bar of div.bx-std-block-content
         scrolling: 'bx-std-scrolling',
-        hover: '' // page.css shows the bar on div.bx-std-block:hover
+        hover: '', // page.css shows the bar on div.bx-std-block:hover
+        inset: 4 // the 4px bar 2px from the block's edge: in the middle of the 8px the block keeps round its content
     });
 }
 

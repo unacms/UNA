@@ -128,7 +128,7 @@ div.bx-std-widget-empty {
 
     width: 4.5rem;
     height: 4.5rem;
-    border-radius: 1rem; /* matches rounded-2xl on the link, so its ring/shadow hugs the icon without clipping the wrapper */
+    border-radius: var(--bx-radius-2xl); /* matches rounded-2xl on the link, so its ring/shadow hugs the icon without clipping the wrapper */
 
     background-color: transparent;
     background-position: 0px 0px;
@@ -159,7 +159,7 @@ div.bx-std-widget-notices {
     
     background-color: #ff3b38;
     border: 2px solid rgba(0, 0, 0, 0.1);
-    border-radius: 1.25rem;
+    border-radius: calc(1.25rem * var(--bx-radius-scale));
 
     line-height: 2rem;
     text-align: center;

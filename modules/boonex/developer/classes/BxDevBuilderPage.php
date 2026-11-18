@@ -29,6 +29,9 @@ class BxDevBuilderPage extends BxTemplStudioBuilderPage
 
         $this->oModule = BxDolModule::getInstance('bx_developer');
 
+        // this builder keeps its actions in its own row under the caption (bp_block_panel_top.html of this module)
+        $this->bBlockCaptionControls = false;
+
         $this->oModule->_oTemplate->addStudioCss(array('builder_page.css'));
     }
 

@@ -544,7 +544,13 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_pt_default_visitor', '_adm_stg_cpt_option_sys_pt_default_visitor', '3', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:14:"get_page_types";s:5:"class";s:21:"TemplTemplateServices";}', '', '', 10),
 (@iCategoryId, 'sys_pt_default_member', '_adm_stg_cpt_option_sys_pt_default_member', '3', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:14:"get_page_types";s:5:"class";s:21:"TemplTemplateServices";}', '', '', 11),
 
-(@iCategoryId, 'sys_form_label_style', '_adm_stg_cpt_option_sys_form_label_style', 'regular', 'select', 'regular,adaptive', '', '', 20);
+(@iCategoryId, 'sys_form_label_style', '_adm_stg_cpt_option_sys_form_label_style', 'regular', 'select', 'regular,adaptive', '', '', 20),
+-- Corners (Studio > Designer > Settings): the size of every regular corner radius of the site and Studio (large is the
+-- design's own, small is half of it, none is square), and smooth (superellipse) corners where the browser draws
+-- them, with the multiplier that makes them look the size of the round ones. See template/css/tailwind.css.
+(@iCategoryId, 'sys_design_radius', '_adm_stg_cpt_option_sys_design_radius', 'large', 'select', 'none,small,large', '', '', 21),
+(@iCategoryId, 'sys_design_radius_smooth', '_adm_stg_cpt_option_sys_design_radius_smooth', '', 'checkbox', '', '', '', 22),
+(@iCategoryId, 'sys_design_radius_smooth_factor', '_adm_stg_cpt_option_sys_design_radius_smooth_factor', '1.75', 'digit', '', '', '', 23);
 
 --
 -- CATEGORY: General (Site Settings)

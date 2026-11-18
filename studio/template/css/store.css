@@ -88,9 +88,9 @@ div.bx-std-block-content > .bx-std-products {
 
 	vertical-align: middle;
 
-	border-radius: 0.75rem;
-	-moz-border-radius: 0.75rem;
-	-webkit-border-radius: 0.75rem;
+	border-radius: var(--bx-radius-xl);
+	-moz-border-radius: var(--bx-radius-xl);
+	-webkit-border-radius: var(--bx-radius-xl);
 
 	text-align: center;
 	overflow: hidden;
@@ -298,9 +298,9 @@ div.bx-std-pvs-right {
 	height: 50px;
 	top: 76px;
 	background-color: rgba(255, 255, 255, 0.7);
-	border-radius:15px;
-	-moz-border-radius:15px;
-	-webkit-border-radius:15px;
+	border-radius:calc(15px * var(--bx-radius-scale));
+	-moz-border-radius:calc(15px * var(--bx-radius-scale));
+	-webkit-border-radius:calc(15px * var(--bx-radius-scale));
 	line-height: 50px;
 	font-size: 70px;
 	cursor: pointer; 

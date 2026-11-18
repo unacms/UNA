@@ -180,7 +180,7 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
         // when the running version was applied: the last update, or the installation itself when it was never updated
         $iApplied = $aSysInfo['updated'] > 0 ? $aSysInfo['updated'] : $aSysInfo['date'];
 
-        // the last status row: whether the site can receive automatic updates (see isAutoUpdateAccess)
+        // in the hero, beside "Check for updates": the way to get automatic updates, or a note that the site has them (see isAutoUpdateAccess)
         $bAccess = $this->isAutoUpdateAccess();
 
         $sContent = BxDolStudioTemplate::getInstance()->parseHtmlByName('dbd_versions.html', array(
@@ -198,8 +198,6 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
             'icon_apps' => $this->getChartIcon('layout-grid')['svg'],
             'apps' => $this->getAppsCountText(),
             'checking' => _t('_adm_dbd_txt_ver_checking'),
-            'icon_access' => $this->getChartIcon('badge-check')['svg'],
-            'access_class' => $bAccess ? ' bx-dbd-htools-item-ok' : '', // the same bx_if twice in one row would be cut as one span by the template parser
             'bx_if:access_active' => ['condition' => $bAccess, 'content' => []],
             'bx_if:access_inactive' => ['condition' => !$bAccess, 'content' => [
                 'access_url' => 'https://unacms.com/start' // a bx_if block only sees its own content
