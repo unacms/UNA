@@ -26,33 +26,32 @@ class HoverHaloTest extends BxDolTestCase
         return substr($sCss, $i, strpos($sCss, "\n    }", $i) - $i);
     }
 
-    public function testHeaderButtonsHaveAHalfRemHalo(): void
-    {
-        $sRule = self::rule(self::read('template/css/tailwind.css'), "    .bx-std .bx-menu-toolbar .bx-menu-tab-item,\n    .bx-std .bx-std-search-trigger,\n    .bx-std .bx-std-header-btn");
-
-        // 0.5rem (8px) in rem like the bar's padding and corners, so tile, halo and bar stay concentric at any text size
-        $this->assertStringContainsString('@apply hover:ring-[3rem] hover:ring-black/5 dark:hover:ring-white/5;', $sRule, 'The sidebar items\' hover background.');
-        $this->assertStringNotContainsString('ring-offset', $sRule, 'The plate\'s own outer hairline is the separation.');
-    }
-
-    public function testDockAndAppTilesMatchTheButtons(): void
-    {
-        $sRule = self::rule(self::read('template/css/tailwind.css'), "    .bx-std .bx-menu-top-center li:where(:not(.bx-menu-tab-active)) a:where(:not(:focus-visible)) .bx-mi-icon,\n    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile");
-
-        // straight off the tile as on the buttons: the tile's own outer hairline is the halo's inner edge
-        $this->assertStringContainsString('@apply hover:ring-[3rem] hover:ring-black/5 dark:hover:ring-white/5;', $sRule);
-        $this->assertStringNotContainsString('ring-offset', $sRule);
-    }
-
-    public function testSelectedDockItemKeepsItsRingOnHover(): void
+    public function testHeaderHaloIsABackgroundLayerBehindTheTile(): void
     {
         $s = self::read('template/css/tailwind.css');
 
-        // the selected app's ring is not replaced by the halo while hovered: the halo rule leaves it out; it is the halo one step darker,
-        // the sidebar's active item: 0.5rem of black/10 (white/10 in dark), straight off the tile like the hover halo
-        $this->assertStringContainsString("    .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon {\n        @apply ring-[3rem] ring-black/10 dark:ring-white/10;", $s);
+        // 0.5rem round the tile with the sidebar items' corners, so tile, halo and bar stay concentric at any corner size; it takes no presses
+        $sLayer = self::rule($s, "    .bx-std a:has(> .bx-std-header-btn)::before,\n    .bx-std .bx-menu-toolbar .bx-menu-tab-item::before,\n    .bx-std .bx-menu-top-center li .bx-mi-icon::after,\n    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile::before");
+        foreach (["content: '';", 'position: absolute;', 'inset: -0.5rem;', 'border-radius: var(--bx-radius-2xl);', 'pointer-events: none;'] as $sDeclaration)
+            $this->assertStringContainsString($sDeclaration, $sLayer);
+
+        // behind the tile: at z-index -1 of the bar section or of the tile; the home button's is on its link, before the plate
+        $this->assertMatchesRegularExpression('/\n    \.bx-std \.bx-menu-toolbar \.bx-menu-tab-item::before,\n    \.bx-std \.bx-menu-top-center li \.bx-mi-icon::after,\n    \.bx-std \.bx-menu-breadcrumb li\.bx-menu-bc-page \.bx-mi-icon\.bx-icon-tile::before \{\n        z-index: -1;/', "\n" . $s);
+
+        // the sidebar items' hover background; the selected dock item and a keyboard-focused one are left out
+        $this->assertStringContainsString('@apply bg-black/5 dark:bg-white/5;', self::rule($s, "    .bx-std a:has(> .bx-std-header-btn):hover::before,\n    .bx-std .bx-menu-toolbar .bx-menu-tab-item:hover::before,\n    .bx-std .bx-menu-top-center li:where(:not(.bx-menu-tab-active)) a:where(:not(:focus-visible)) .bx-mi-icon:hover::after,\n    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile:hover::before"));
+
+        $this->assertDoesNotMatchRegularExpression('/\.bx-std \.(?:bx-std-header-btn|bx-menu-toolbar \.bx-menu-tab-item|bx-menu-top-center[^{]*\.bx-mi-icon)[^{]*\{[^}]*ring-\[(?:0\.5|3)rem\]/', $s, 'No ring: its corner would be the tile\'s plus its width.');
+        $this->assertStringNotContainsString('clip-path: inset(-0.5rem', $s);
+    }
+
+    public function testSelectedDockItemKeepsItsLayerOnHover(): void
+    {
+        $s = self::read('template/css/tailwind.css');
+
+        // the selected app's layer is the halo one step darker, the sidebar's active item: black/10 (white/10 in dark)
+        $this->assertStringContainsString("    .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon::after {\n        @apply bg-black/10 dark:bg-white/10;", $s);
         $this->assertStringContainsString('@apply bg-black/10 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/10;', $s, 'The sidebar\'s active item, the same neutral.');
-        $this->assertDoesNotMatchRegularExpression('/\.bx-menu-top-center (li )?\.bx-mi-icon[^{]*\{[^}]*hover:ring/', $s, 'Every dock hover halo rule excludes the selected item.');
     }
 
     public function testHeaderIconsLeaveRoomForTwoRings(): void
@@ -74,7 +73,7 @@ class HoverHaloTest extends BxDolTestCase
         // a focused tile under the pointer shows the focus ring: the halo leaves focused links out, and :where keeps its specificity at
         // (0,4,1), under the focus rule's (0,4,2), in both schemes
         $this->assertStringContainsString('.bx-std .bx-menu-top-center li a:focus-visible .bx-mi-icon', $s);
-        $this->assertStringContainsString('.bx-std .bx-menu-top-center li:where(:not(.bx-menu-tab-active)) a:where(:not(:focus-visible)) .bx-mi-icon,', $s);
+        $this->assertStringContainsString('.bx-std .bx-menu-top-center li:where(:not(.bx-menu-tab-active)) a:where(:not(:focus-visible)) .bx-mi-icon:hover::after,', $s);
     }
 
     public function testHeaderFocusRingFillsTheHalo(): void

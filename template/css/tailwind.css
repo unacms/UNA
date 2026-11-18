@@ -2285,11 +2285,11 @@
         @apply bg-gray-200 dark:bg-black;
     }
 
-    /* Active dock item: the sidebar's active item round its tile, as a ring: 0.5rem of black/10 (white/10 in dark), one step over the hover
-       halo's black/5, straight off the tile like the buttons' halo (the tile's own outer hairline is its inner edge), so neighbours 18px apart
-       keep 2px between their rings. The app is named beside the current-app tile in the breadcrumb too, so the ring is not its only cue. */
-    .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon {
-        @apply ring-[3rem] ring-black/10 dark:ring-white/10;
+    /* Active dock item: the sidebar's active item round its tile, the hover halo's layer one step darker: black/10 (white/10 in dark), 0.5rem
+       round the tile, so neighbours 18px apart keep 2px between their layers. The app is named beside the current-app tile in the
+       breadcrumb too, so the layer is not its only cue. */
+    .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon::after {
+        @apply bg-black/10 dark:bg-white/10;
     }
     /* The divider follows the dock items it separates: both are hidden below md. */
     .bx-std .bx-menu-top-center .bx-menu-item-divider {
@@ -2325,32 +2325,44 @@
         @apply transition duration-300 active:duration-100 active:scale-95;
         @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5),0_0_0_1px_rgb(0_0_0/0.1)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
     }
-    /* The halo's and the active ring's shape: 0.5rem round the tile with the sidebar items' corners (--bx-radius-2xl), at any corner size.
-       A ring's own corner is the tile's plus its width, which only matches at the default size, so the rings are drawn wider (3rem) and
-       clipped to that shape. The focus ring (0.5rem in all) and the buttons' shadow fit inside it. */
-    .bx-std .bx-menu-toolbar .bx-menu-tab-item,
-    .bx-std .bx-std-search-trigger,
-    .bx-std .bx-std-header-btn,
-    .bx-std .bx-menu-top-center li .bx-mi-icon,
-    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile {
-        clip-path: inset(-0.5rem round var(--bx-radius-2xl));
+    /* The header's hover halo is a background layer behind the tile, like the sidebar items' and the subtabs' background: 0.5rem (8px) round
+       the tile with their corners (--bx-radius-2xl), black/5 (white/5 in dark), so tile, halo and bar stay concentric at any corner size and
+       text size. A ring would not: its corner is the tile's plus its own width. The plate's outer hairline sets the tile apart from it.
+       The layer takes no presses; the 44px hit areas are separate. It sits behind its tile:
+       - the home button's on its link, which comes before the plate;
+       - a toolbar button's and a dock tile's at z-index -1 of the bar section (.bx-std-menu-top, a stacking context of its own);
+       - the current-app tile's at z-index -1 of the tile, behind its art. */
+    .bx-std a:has(> .bx-std-header-btn),
+    .bx-std .bx-menu-top-center li .bx-mi-icon {
+        @apply relative;
     }
-    /* The header's own controls keep a hover halo, drawn on the element under the ::after hairlines: a 0.5rem (8px) black/10 (white/10 in dark) ring
-       straight off the plate, as wide as the sidebar items' background round their tiles (16px outer corners), no offset gap (an offset ring
-       reads as a bright halo in the light scheme). The plate's outer hairline is the halo's inner edge, a 1px line that sets the two apart.
-       In rem like the bar's padding and corners, so the tile (0.5rem corners), the halo (1rem) and the bar (1.5rem) stay concentric at any text size.
-       Its black/5 (white/5) is the sidebar items' hover background, and the active dock item takes their active black/10 (white/10). */
-    .bx-std .bx-menu-toolbar .bx-menu-tab-item,
-    .bx-std .bx-std-search-trigger,
-    .bx-std .bx-std-header-btn {
-        @apply hover:ring-[3rem] hover:ring-black/5 dark:hover:ring-white/5;
+    .bx-std a:has(> .bx-std-header-btn)::before,
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item::before,
+    .bx-std .bx-menu-top-center li .bx-mi-icon::after,
+    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile::before {
+        content: '';
+        position: absolute;
+        inset: -0.5rem;
+        border-radius: var(--bx-radius-2xl);
+        pointer-events: none;
+        @apply transition-colors duration-300;
     }
-    /* Dock and current-app tiles: the same halo, straight off the tile: its art carries the buttons' two hairlines (below), so the outer one is the
-       halo's inner edge as on the buttons. The selected dock item keeps its active ring and a keyboard-focused one its focus ring
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item::before,
+    .bx-std .bx-menu-top-center li .bx-mi-icon::after,
+    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile::before {
+        z-index: -1;
+    }
+    /* The selected dock item keeps its active layer and a keyboard-focused one its focus ring
        (left out with :where, so the halo gains no specificity over either). */
-    .bx-std .bx-menu-top-center li:where(:not(.bx-menu-tab-active)) a:where(:not(:focus-visible)) .bx-mi-icon,
-    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile {
-        @apply hover:ring-[3rem] hover:ring-black/5 dark:hover:ring-white/5;
+    .bx-std a:has(> .bx-std-header-btn):hover::before,
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item:hover::before,
+    .bx-std .bx-menu-top-center li:where(:not(.bx-menu-tab-active)) a:where(:not(:focus-visible)) .bx-mi-icon:hover::after,
+    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile:hover::before {
+        @apply bg-black/5 dark:bg-white/5;
+    }
+    /* The launcher's search button (phones) has both pseudo-elements taken: it keeps a ring. */
+    .bx-std .bx-std-search-trigger {
+        @apply hover:ring-[0.5rem] hover:ring-black/5 dark:hover:ring-white/5;
     }
     .bx-std .bx-menu-toolbar .bx-menu-tab-item a,
     .bx-std .bx-menu-toolbar .bx-menu-tab-item button {
