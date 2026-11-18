@@ -35,6 +35,14 @@ class BxBaseIconset extends BxDolIconset
         return false;
     }
 
+    /**
+     * Code for the page's <head>: a set that loads its script without holding the page back prints the tag here.
+     */
+    public function getCodeHead()
+    {
+        return false;
+    }
+
     public function getIcon($sIcon)
     {
         return $sIcon;

@@ -1,0 +1,29 @@
+/* Lucide icons are drawn by a script that loads beside the page (BxBaseIconsetLucide::getCodeHead). Until it has
+   drawn an icon, its placeholder takes the room the icon will: Lucide's 24px square, which the rules for .sys-icon
+   size as they size the icon itself. So nothing moves when the icons arrive. A placeholder the script has been to
+   (data-lucide) and left, for a name the set does not have, takes no room, as before. */
+i.sys-icon:empty:not([data-lucide]) {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+}
+
+/* Where a rule sizes the drawn icon by its tag (svg) or by Lucide's own class (.lucide), the placeholder has the same
+   size: actions (votes, views, reports), comment counters, the password field's eye, the search popup's Close, a
+   content card's byline, the footer menu. A new rule of that kind needs its line here. */
+.sys-action .sys-action-element-holder .sys-action-do-icon i.sys-icon:empty:not([data-lucide]),
+.bx-vote .sys-action-element-holder .sys-action-do-icon i.sys-icon:empty:not([data-lucide]),
+.bx-vote-counter .bx-vote-counter-label .bx-vote-counter-icon i.sys-icon:empty:not([data-lucide]),
+.bx-form-input-wrapper-password > .password-show i.sys-icon:empty:not([data-lucide]),
+.bx-form-input-wrapper-password > .password-hide i.sys-icon:empty:not([data-lucide]),
+#bx-site-search-popup .bx-popup-element-close i.sys-icon:empty:not([data-lucide]) {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+.cmt-counter .cmt-counter-icon i.sys-icon:empty:not([data-lucide]),
+.bx-base-content-card .bx-base-content-card-meta i.sys-icon:empty:not([data-lucide]),
+#bx-menu-footer > li > a > i.sys-icon:empty:not([data-lucide]) {
+    width: 1rem;
+    height: 1rem;
+}

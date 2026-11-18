@@ -1202,6 +1202,21 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         return false;
     }
 
+    /**
+     * The icon set's code for <head> (BxBaseIconset::getCodeHead): Lucide loads its script here, beside the page's
+     * own scripts.
+     */
+    protected function getInjHeadIcons()
+    {
+        $oIconset = BxDolIconset::getObjectInstance();
+        if(!$oIconset) {
+            return '';
+        }
+
+        $sCode = $oIconset->getCodeHead();
+        return $sCode !== false ? $sCode : '';
+    }
+
     protected function getInjHeadLiveUpdates() 
     {
         $sContent = '';
