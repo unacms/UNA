@@ -57,11 +57,130 @@ html {
 .bx-main.bx-pt-application .bx-menu-toolbar-padding {
     padding-top: 0;
 }
-.bx-main.bx-pt-application .bx-main-column.narrow {
-    z-index: 4999;
+/*
+ * The sidebar is the page's left column from top to bottom; the header and the content start beside it.
+ *   wide (1280px and up): expanded, --bx-sidebar-width 16rem, or narrow, 4rem with icons only (.bx-app-sidebar-narrow on .bx-main)
+ *   below it: a drawer, 16rem (at most 85% of the screen) over the page, shown while .bx-main has .bx-app-sidebar-open
+ * js/sidebar.js flips the two classes and nothing else; pt_application.html sets the narrow one before the first paint.
+ * NEO and the native apps follow the same three states and sizes.
+ */
+.bx-main.bx-pt-application {
+    --bx-sidebar-width: 16rem;
+    --bx-sidebar-width-narrow: 4rem;
+    --bx-app-sidebar-head: 4rem; /* the header's height: the sidebar's own top row lines up with it */
 }
-.bx-main.bx-pt-application .bx-main-column.narrow.bx-mc-narrowed .bx-mc-cnt {
-    padding: 0;
+.bx-main.bx-pt-application .bx-app-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5001; /* over the header (.bx-def-z-index-nav, 5000): the drawer covers it */
+    display: flex;
+    flex-direction: column;
+    width: var(--bx-sidebar-width);
+    max-width: 85vw;
+    box-shadow: 1px 0 0 0 rgb(0 0 0 / 0.08);
+}
+.dark .bx-main.bx-pt-application .bx-app-sidebar {
+    box-shadow: 1px 0 0 0 rgb(255 255 255 / 0.08);
+}
+.bx-dir-rtl .bx-main.bx-pt-application .bx-app-sidebar {
+    left: auto;
+    right: 0;
+}
+.bx-main.bx-pt-application .bx-app-sidebar-head {
+    display: flex;
+    flex: none;
+    align-items: center;
+    height: var(--bx-app-sidebar-head);
+    padding: 0 0.625rem; /* the 44px button centred over the narrow sidebar's 64px */
+}
+.bx-main.bx-pt-application .bx-app-sidebar-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding-bottom: 0.5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+.bx-main.bx-pt-application .bx-app-sidebar-foot {
+    display: flex;
+    flex: none;
+    justify-content: center;
+    gap: 1rem;
+}
+.bx-main.bx-pt-application .bx-app-sidebar-foot:empty {
+    display: none;
+}
+.bx-main.bx-pt-application .bx-app-sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    background: rgb(0 0 0 / 0.5);
+}
+
+/* Wide: the header and the content start where the sidebar ends. */
+@media (min-width: 1280px) {
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow {
+        --bx-sidebar-width: var(--bx-sidebar-width-narrow);
+    }
+    .bx-main.bx-pt-application #bx-toolbar {
+        left: var(--bx-sidebar-width);
+        width: calc(100% - var(--bx-sidebar-width));
+    }
+    .bx-dir-rtl .bx-main.bx-pt-application #bx-toolbar {
+        left: 0;
+    }
+    .bx-main.bx-pt-application #main-content {
+        margin-inline-start: var(--bx-sidebar-width);
+    }
+    .bx-main.bx-pt-application .bx-app-sidebar-open-btn {
+        display: none;
+    }
+    /* Narrow: icons only, centred in the 64px, with no scrollbar taking a side. */
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar [sidebar-toggle-item] {
+        display: none;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-body {
+        scrollbar-width: none;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-body::-webkit-scrollbar {
+        display: none;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar .bx-mc-cnt {
+        padding: 0 1rem; /* 64px less the 32px icons */
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-foot {
+        flex-direction: column;
+    }
+}
+
+/* Below the breakpoint: a drawer that slides in over the page and its header. */
+@media (max-width: 1279.98px) {
+    .bx-main.bx-pt-application .bx-app-sidebar {
+        visibility: hidden;
+        transform: translateX(-100%);
+        transition: transform 250ms cubic-bezier(0.2, 0.7, 0.3, 1), visibility 0s linear 250ms;
+        box-shadow: none;
+    }
+    .bx-dir-rtl .bx-main.bx-pt-application .bx-app-sidebar {
+        transform: translateX(100%);
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-open .bx-app-sidebar {
+        visibility: visible;
+        transform: none;
+        transition: transform 250ms cubic-bezier(0.2, 0.7, 0.3, 1), visibility 0s;
+        box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06), 0 12px 24px -4px rgb(0 0 0 / 0.2);
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-open .bx-app-sidebar-backdrop {
+        display: block;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .bx-main.bx-pt-application .bx-app-sidebar {
+        transition: none;
+    }
 }
 
 /*--- Design Boxes ---*/

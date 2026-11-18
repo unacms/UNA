@@ -8,18 +8,10 @@
         <div class="bx-header-cnt __sys_header_width__ __sys_header_align__ mx-auto px-4 box-border">
             <div class="bx-toolbar-content-wrapper">
                 <div id="bx-toolbar-content" class="bx-toolbar-content relative flex items-center justify-start h-16">
-                    <!-- Sidebar toggle: a header button (44px, as the member toolbar's), centred over the narrow sidebar's 64px -->
-                    <button type="button" id="toggleSidebar" aria-expanded="true" aria-controls="sidebar" title="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" aria-label="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" class="bx-sidebar-toggle hidden xl:inline-flex flex-none items-center justify-center h-11 w-11 ltr:-ml-1.5 rtl:-mr-1.5 ltr:mr-4 rtl:ml-4 rounded-full cursor-pointer">
+                    <!-- Sidebar drawer button: below the sidebar's breakpoint the sidebar is a drawer, opened from here -->
+                    <button type="button" id="toggleSidebarMobile" aria-expanded="false" aria-controls="sidebar" title="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" aria-label="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" class="bx-sidebar-toggle bx-app-sidebar-open-btn inline-flex flex-none items-center justify-center h-11 w-11 ltr:-ml-1.5 rtl:-mr-1.5 ltr:mr-3 rtl:ml-3 rounded-full cursor-pointer">
                         <span class="bx-icon bx-icon-hamburger flex items-center justify-center">
                             <bx_image_auto:bars />
-                        </span>
-                    </button>
-                    <button type="button" id="toggleSidebarMobile" aria-expanded="false" aria-controls="sidebar" title="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" aria-label="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" class="bx-sidebar-toggle inline-flex xl:hidden flex-none items-center justify-center h-11 w-11 ltr:mr-3 rtl:ml-3 rounded-full cursor-pointer">
-                        <span id="toggleSidebarMobileHamburger" class="bx-icon bx-icon-hamburger flex items-center justify-center">
-                            <bx_image_auto:bars />
-                        </span>
-                        <span id="toggleSidebarMobileClose" class="bx-icon bx-icon-close hidden flex items-center justify-center">
-                            <bx_image_auto:times />
                         </span>
                     </button>
                     <div class="bx-toolbar-items-group relative flex flex-1 items-center justify-start h-16">
@@ -46,24 +38,44 @@
     <!-- END: Navigation -->
 
     <div class="bx-main-content flex pt-16 overflow-hidden">
-        <!-- BEG: Sidebar -->
-        <aside id="sidebar" class="bx-main-column narrow fixed top-0 left-0 z-20 hidden xl:flex flex-col flex-shrink-0 w-64 h-full pt-16 duration-75 transition-width" aria-label="Sidebar">
-            <div class="bx-mc-border relative flex flex-col flex-1 min-h-0 max-h-full h-full pt-0 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                <div class="flex flex-col flex-1 py-2 overflow-y-auto">
-                    <div class="bx-mc-cnt flex-1 px-2 space-y-1 bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                        <bx_menu:sys_site_panel />
-                    </div>
-                </div>
-                <div class="absolute bottom-0 left-0 justify-center hidden w-full p-4 space-x-4 xl:flex" sidebar-bottom-menu>
-                    <!-- Some button based menu may be here -->
+        <!-- BEG: Sidebar: the left column, top to bottom (the header starts beside it). Wide screens: expanded (16rem) or narrow
+             (4rem, icons only), as the member left it; below the breakpoint: a drawer over the page. One state, the classes
+             bx-app-sidebar-narrow / bx-app-sidebar-open on .bx-main, drives the styles (css/common.css "Application"); js/sidebar.js flips it. -->
+        <aside id="sidebar" class="bx-app-sidebar bx-main-column narrow bg-white dark:bg-gray-800" aria-label="<bx_text_attribute:_sys_menu_item_title_system_main_menu />">
+            <script>
+                // before the first paint: the narrow sidebar as it was left, on wide screens only (the drawer is never narrow)
+                (function(oSidebar) {
+                    var bNarrow = false;
+                    try { bNarrow = localStorage.getItem('sidebarExpanded') === 'false'; } catch(e) {}
+                    if(!bNarrow || !window.matchMedia || !window.matchMedia('(min-width: 1280px)').matches)
+                        return;
+
+                    oSidebar.classList.add('bx-mc-narrowed');
+                    oSidebar.closest('.bx-main').classList.add('bx-app-sidebar-narrow');
+                })(document.currentScript.parentNode);
+            </script>
+            <div class="bx-app-sidebar-head">
+                <!-- Wide screens: narrows and widens the sidebar. In the drawer: closes it. A header button (44px). -->
+                <button type="button" id="toggleSidebar" aria-expanded="true" aria-controls="sidebar-content" title="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" aria-label="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" class="bx-sidebar-toggle inline-flex flex-none items-center justify-center h-11 w-11 rounded-full cursor-pointer">
+                    <span class="bx-icon bx-icon-hamburger flex items-center justify-center">
+                        <bx_image_auto:bars />
+                    </span>
+                </button>
+            </div>
+            <div id="sidebar-content" class="bx-app-sidebar-body">
+                <div class="bx-mc-cnt px-2 space-y-1 divide-y divide-gray-200 dark:divide-gray-700">
+                    <bx_menu:sys_site_panel />
                 </div>
             </div>
+            <div class="bx-app-sidebar-foot" sidebar-bottom-menu>
+                <!-- Some button based menu may be here -->
+            </div>
         </aside>
-        <div class="fixed inset-0 z-10 hidden bg-gray-900/50 dark:bg-gray-900/90" id="sidebarBackdrop"></div>
+        <div id="sidebarBackdrop" class="bx-app-sidebar-backdrop"></div>
         <!-- END: Sidebar -->    
 
         <!-- BEG: Main Content -->
-        <div id="main-content" class="bx-main-column wide relative w-full h-full overflow-y-auto xl:ml-64">
+        <div id="main-content" class="bx-main-column wide relative w-full h-full overflow-y-auto">
             <main role="main" id="bx-content-main" tabindex="-1">
                 <bx_injection:injection_between_cover_logo />
                 __cover__

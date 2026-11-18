@@ -35,9 +35,10 @@ class ApplicationShellHeaderTest extends BxDolTestCase
     {
         $sApp = self::read('modules/boonex/artificer/data/template/system/pt_application.html');
 
-        foreach (['toggleSidebar', 'toggleSidebarMobile'] as $sId) {
+        // toggleSidebar sits in the sidebar's own head and narrows it (or closes the drawer); toggleSidebarMobile, in the header, opens the drawer
+        foreach (['toggleSidebar' => 'sidebar-content', 'toggleSidebarMobile' => 'sidebar'] as $sId => $sControls) {
             $this->assertSame(1, preg_match('/<button type="button" id="' . $sId . '"([^\n]*)>\n/', $sApp, $a), $sId);
-            $this->assertStringContainsString('aria-controls="sidebar"', $a[1]);
+            $this->assertStringContainsString('aria-controls="' . $sControls . '"', $a[1]);
             $this->assertStringContainsString('aria-label="<bx_text_attribute:_sys_menu_item_title_system_main_menu />"', $a[1], 'An icon-only button has a name.');
             $this->assertMatchesRegularExpression('/class="bx-sidebar-toggle [^"]*\bh-11 w-11\b[^"]*\brounded-full\b/', $a[1], '44px, as the member toolbar\'s buttons.');
         }
@@ -54,7 +55,7 @@ class ApplicationShellHeaderTest extends BxDolTestCase
     public function testSidebarRowsAndTheProfileRowStartOnOneLine(): void
     {
         $sApp = self::read('modules/boonex/artificer/data/template/system/pt_application.html');
-        $this->assertStringContainsString('<div class="bx-mc-cnt flex-1 px-2 space-y-1 ', $sApp, '8px to the rows, whose icons are 8px inside them.');
+        $this->assertStringContainsString('<div class="bx-mc-cnt px-2 space-y-1 ', $sApp, '8px to the rows, whose icons are 8px inside them.');
 
         $sCss = self::read('modules/boonex/artificer/data/template/system/css/menu.css');
         $this->assertMatchesRegularExpression('/\n#sidebar \.bx-menu-panel \.bx-profile-avatar \{\n    padding: 0 0\.5rem;\n\}/', $sCss);
