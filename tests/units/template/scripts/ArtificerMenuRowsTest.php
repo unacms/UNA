@@ -169,10 +169,10 @@ class ArtificerMenuRowsTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('@apply bg-blue-200/60 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 ring-0;', $sCss);
         $this->assertMatchesRegularExpression('/#bx-sidebar-site \.bx-si-icon \{\s*@apply flex items-center justify-center w-6 h-6/', $sCss, '24px icons without a circle.');
 
-        //--- It grows from the button's corner; the account sidebar still slides in.
+        //--- It grows from the button's corner. The account menu is a popup now (AccountMenuPopupTest), so no sidebar slides.
         $this->assertStringContainsString('.bx-sidebar.bx-sidebar-site.bx-sidebar-active .bx-sidebar-cnt {' . "\n" . '    transform: scale(1);', $sMotion);
         $this->assertStringNotContainsString('.bx-dir-ltr .bx-sidebar.bx-sidebar-site .bx-sidebar-cnt,', $sMotion);
-        $this->assertStringContainsString('.bx-dir-ltr .bx-sidebar.bx-sidebar-account .bx-sidebar-cnt {', $sMotion);
+        $this->assertStringNotContainsString('bx-sidebar-account', $sMotion);
 
         $this->assertStringContainsString('plainIcons', self::read('neo/packages/app/components/nav/menu-header-navigation.tsx'), 'NEO\'s phone menu has the same rows.');
     }

@@ -2,7 +2,8 @@
     $(document).ready(function () {
         bx_activate_anim_icons('#283C50');
 
-        var aSidebars = ['site', 'account'];
+        //--- The site's main menu on small screens. The account menu is a popup (oBxArtificerUtils.getAccountMenu).
+        var aSidebars = ['site'];
         for(var i in aSidebars) {
             if(typeof(aSidebars[i]) != 'string')
                 continue;
@@ -74,6 +75,14 @@
     }
 
     function bx_sidebar_toggle(sType) {
+        //--- The account menu was a sidebar; callers that still ask for it (the native wrapper) get its popup.
+        if(sType == 'account') {
+            var oAccount = $('.bx-menu-account-trigger:visible').get(0);
+            if(oAccount && typeof(oBxArtificerUtils) != 'undefined')
+                oBxArtificerUtils.getAccountMenu('#bx-sliding-menu-account', oAccount);
+            return;
+        }
+
         var oSidebar = bx_sidebar_get(sType);
         var bSidebarActive = bx_sidebar_active(sType);
 
