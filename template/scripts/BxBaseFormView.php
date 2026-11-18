@@ -1990,7 +1990,15 @@ BLAH;
         }
 
         $bTagsAllowed = $bHtml || $bCode || ($aInput['html_tags'] ?? false);
-        $sValue = isset($aInput['value']) ? bx_process_output($bTagsAllowed ? $aInput['value'] : strip_tags($aInput['value']), BX_DATA_TEXT, ['no_process_macros']) : '';
+        $sValue = '';
+        if(isset($aInput['value'])) {
+            // Code keeps its entities: an "&copy;" or "&lt;" left as it is would be shown by the browser as its
+            // character, and the save would store the character in place of the entity.
+            if($bCode)
+                $sValue = htmlspecialchars((string)$aInput['value'], ENT_COMPAT, 'UTF-8');
+            else
+                $sValue = bx_process_output($bTagsAllowed ? $aInput['value'] : strip_tags($aInput['value']), BX_DATA_TEXT, ['no_process_macros']);
+        }
         if(($aInput['secret'] ?? false) && $sValue)
             $sValue = bx_gen_secret($sValue);
 
