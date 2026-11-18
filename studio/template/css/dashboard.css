@@ -131,6 +131,7 @@ div.bx-std-block-content .bx-dbd-tile.bx-dbd-tile-lg {
 .bx-dbd-version-toggle-name {
     flex: 1 1 auto;
     min-width: 0;
+    font-weight: 500; /* every row's name on this page is 500, in every state */
 }
 .bx-dbd-htools-value a {
     color: rgb(59 130 246);
@@ -306,6 +307,7 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
 }
 .bx-dbd-chart-name {
     flex: 1 1 auto;
+    font-weight: 500;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -495,8 +497,10 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     flex: 1 1 auto;
     flex-direction: column;
     min-width: 0;
+    font-weight: 500;
 }
 .bx-dbd-htools-desc {
+    font-weight: 400; /* the note under a name stays regular */
     font-size: 0.875rem;
     line-height: 1.25rem;
     color: rgb(82 82 91); /* gray-600: gray-500 misses 4.5:1 on white */
@@ -668,22 +672,19 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     cursor: pointer;
     transition: background-color 300ms, color 300ms;
 }
-/* Rows that switch the chart look like the page sidebar's items (.bx-std-pmen-item, tailwind.css): black/5 and a medium name on hover,
-   black/10 and a semibold name for the one picked; white/5 and white/10 in the dark scheme. */
+/* Rows that switch the chart look like the page sidebar's items (.bx-std-pmen-item, tailwind.css): black/5 on hover, black/10 for the
+   one picked; white/5 and white/10 in the dark scheme. The name keeps the rows' 500 in every state, so it never changes width. */
 .bx-dbd-users-row:hover {
     background: rgb(0 0 0 / 0.05);
-    color: rgb(24 24 27);
-}
-.bx-dbd-users-row:hover .bx-dbd-htools-name {
-    font-weight: 500;
 }
 .bx-dbd-users-row[aria-pressed="true"],
 .bx-dbd-users-row[aria-pressed="true"]:hover {
     background: rgb(0 0 0 / 0.1);
-    color: rgb(24 24 27);
 }
-.bx-dbd-users-row[aria-pressed="true"] .bx-dbd-htools-name {
-    font-weight: 600;
+/* The text of a hovered or picked row, apart from its plate: the plates are translucent tints over the block, not the text's background. */
+.bx-dbd-users-row:hover,
+.bx-dbd-users-row[aria-pressed="true"] {
+    color: rgb(24 24 27);
 }
 .bx-dbd-users-row:focus-visible {
     outline: 2px solid rgb(59 130 246);
@@ -694,11 +695,13 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
 }
 .dark .bx-dbd-users-row:hover {
     background: rgb(255 255 255 / 0.05);
-    color: rgb(255 255 255);
 }
 .dark .bx-dbd-users-row[aria-pressed="true"],
 .dark .bx-dbd-users-row[aria-pressed="true"]:hover {
     background: rgb(255 255 255 / 0.1);
+}
+.dark .bx-dbd-users-row:hover,
+.dark .bx-dbd-users-row[aria-pressed="true"] {
     color: rgb(255 255 255);
 }
 @media (prefers-reduced-motion: reduce) {
