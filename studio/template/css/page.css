@@ -115,7 +115,7 @@ div.bx-std-block-caption {
 .dark div.bx-std-block-caption {
     box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.025);
 }
-/* Optional title icon: a flat gray 32px square, 8px radius (no plate, ring or shadow: a label, not a button) with a 20px glyph. */
+/* Optional title icon: a flat gray 36px square, 8px radius (no plate, ring or shadow: a label, not a button) with a 24px glyph. */
 div.bx-std-block-caption .bx-std-bcap-icon {
     flex: none;
     display: flex;
@@ -160,6 +160,10 @@ div.bx-std-block-caption > .bx-btn {
     line-height: 2.25rem; /* the row is 36px with or without an icon or a button, so every caption is the same height */
     font-weight: 600;
     font-size: 1.25rem;
+    color: rgb(24 24 27); /* gray-900 (gray-100 in the dark scheme), as a block's title on the site (.bx-db-title) */
+}
+.dark .bx-std-bcap-text {
+    color: rgb(244 244 245);
 }
 /* Button loader (dashboard.js loadingButton): the launcher's tile wave (loading-double.svg, 40x10, its own keyframes) stands in for a pressed
    button's label, at the button's width, until its request ends; the button is disabled meanwhile and takes no clicks (an <a> button has no disabled state). */
