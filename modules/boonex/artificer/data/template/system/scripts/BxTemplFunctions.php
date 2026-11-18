@@ -286,8 +286,12 @@ class BxTemplFunctions extends BxBaseFunctions
             'results' => $oSearch->getResultsContainer(),
         ));
 
-        if(isLogged())
+        //--- The member's menus open as popups under their buttons: Add content, and the account menu under the avatar
+        //--- (menu_account_popup.html), as the apps have it. The account menu was a sidebar across the page's height.
+        if(isLogged()) {
             $sContent .= $this->_oTemplate->getMenu('sys_add_content');
+            $sContent .= $this->_oTemplate->getMenu('sys_account_popup');
+        }
 
         return $sContent;
     }
@@ -321,22 +325,6 @@ class BxTemplFunctions extends BxBaseFunctions
             ),
             'search_form' => $sSearch,
         ));
-    }
-
-    protected function getInjFooterSidebarAccount() 
-    {
-        $oProfile = BxDolProfile::getInstance();
-        if(!$oProfile)
-            return '';
-
-        $sMenuAccountPopup = 'sys_account_popup';
-        $oMenuAccountPopup = BxTemplMenu::getObjectInstance($sMenuAccountPopup);
-
-        return $this->_oTemplate->parsePageByName('sidebar_account.html', [
-            'color_scheme_switcher' => $this->getColorSchemeSwitcher(),
-            'ap_menu_object' => $sMenuAccountPopup,
-            'bx_repeat:ap_menu_items' => $oMenuAccountPopup->getMenuItems(),
-        ]);
     }
 }
 

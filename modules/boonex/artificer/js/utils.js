@@ -166,19 +166,21 @@ BxArtificerUtils.prototype.getColorSchemeMenu = function() {
 BxArtificerUtils.prototype.getAddContentMenu = function(sMenu, e, sPosition) {
     $('.bx-popup-applied:visible').dolPopupHide();
 
-    var sSidebar = 'account';
-    if(bx_sidebar_active(sSidebar))
-        bx_sidebar_toggle(sSidebar);
-
     bx_menu_popup_inline(sMenu, e, {});
+};
+
+/**
+ * The account menu: a popup under the member's avatar, at the header's end (sys_account_popup, menu_account_popup.html),
+ * as the apps have it. Opening it closes the other header popups, and its button closes it again.
+ */
+BxArtificerUtils.prototype.getAccountMenu = function(sMenu, e) {
+    $('.bx-popup-applied:visible').not(sMenu).dolPopupHide();
+
+    bx_menu_popup_inline(sMenu, e, {pointer: {align: 'right'}});
 };
 
 BxArtificerUtils.prototype.getNotificationsMenu = function(sMenu, e, sPosition, oOptions) {
     $('.bx-popup-applied:visible').dolPopupHide();
-
-    var sSidebar = 'account';
-    if(bx_sidebar_active(sSidebar))
-        bx_sidebar_toggle(sSidebar);
 
     oOptions = $.extend({}, {pointer: {align:'right'}, cssClass: ''}, oOptions);
 
