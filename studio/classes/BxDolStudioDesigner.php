@@ -614,12 +614,12 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
     }
 
     /**
-     * The smooth corners' multiplier, between 1 and 3 (1.5 unless another is saved).
+     * The smooth corners' multiplier, between 1 and 3 (1.75 unless another is saved).
      */
     public function getSettingsRadiusSmoothFactor()
     {
         $fValue = (float)getParam('sys_design_radius_smooth_factor');
-        return (string)($fValue >= 1 && $fValue <= 3 ? $fValue : 1.5);
+        return (string)($fValue >= 1 && $fValue <= 3 ? $fValue : 1.75);
     }
 
     /**

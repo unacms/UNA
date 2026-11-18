@@ -550,7 +550,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 -- them, with the multiplier that makes them look the size of the round ones. See template/css/tailwind.css.
 (@iCategoryId, 'sys_design_radius', '_adm_stg_cpt_option_sys_design_radius', 'large', 'select', 'none,small,large', '', '', 21),
 (@iCategoryId, 'sys_design_radius_smooth', '_adm_stg_cpt_option_sys_design_radius_smooth', '', 'checkbox', '', '', '', 22),
-(@iCategoryId, 'sys_design_radius_smooth_factor', '_adm_stg_cpt_option_sys_design_radius_smooth_factor', '1.5', 'digit', '', '', '', 23);
+(@iCategoryId, 'sys_design_radius_smooth_factor', '_adm_stg_cpt_option_sys_design_radius_smooth_factor', '1.75', 'digit', '', '', '', 23);
 
 --
 -- CATEGORY: General (Site Settings)

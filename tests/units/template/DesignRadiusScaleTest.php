@@ -81,6 +81,7 @@ class DesignRadiusScaleTest extends BxDolTestCase
         $this->assertMatchesRegularExpression('/<bx_if:smooth>\s*<style id="bx-design-radius-smooth">\s*@supports \(corner-shape: squircle\) \{.*--bx-radius-smooth: __factor__;.*\}\s*<\/style>\s*<\/bx_if:smooth>/s', $s);
         $this->assertStringContainsString('[class*="rounded-full"]', $s);
         $this->assertStringContainsString('corner-shape: round;', $s);
+        $this->assertMatchesRegularExpression('/\*::before,\s*:where\(html\) \*::after \{\s*corner-shape: inherit;/', $s, 'A ring or a highlight drawn by a pseudo-element has its element\'s corners.');
     }
 
     public function testOptionsAreInstalledAndMigrated(): void
@@ -88,7 +89,7 @@ class DesignRadiusScaleTest extends BxDolTestCase
         $sInstall = self::read('install/sql/system.sql');
         $sMigration = self::read('migrations/2026111900_design_radius.php');
 
-        foreach (["'sys_design_radius'" => "'large'", "'sys_design_radius_smooth'" => "''", "'sys_design_radius_smooth_factor'" => "'1.5'"] as $sName => $sValue) {
+        foreach (["'sys_design_radius'" => "'large'", "'sys_design_radius_smooth'" => "''", "'sys_design_radius_smooth_factor'" => "'1.75'"] as $sName => $sValue) {
             $this->assertMatchesRegularExpression('/' . preg_quote($sName, '/') . ',\s*[^\n]*' . preg_quote($sValue, '/') . '/', $sInstall, $sName);
             $this->assertStringContainsString(trim($sName, "'"), $sMigration);
         }

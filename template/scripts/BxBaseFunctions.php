@@ -1226,7 +1226,7 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
      */
     protected function getInjHeadDesignRadius()
     {
-        $aSizes = ['none' => '0', 'small' => '0.5', 'large' => '1'];
+        $aSizes = ['none' => '0', 'small' => '0.75', 'large' => '1'];
         $sSize = (string)getParam('sys_design_radius');
         $sSize = isset($aSizes[$sSize]) ? $sSize : 'large';
 

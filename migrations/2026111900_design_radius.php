@@ -15,7 +15,7 @@ if(!$iCategoryId) {
 $aOptions = [
     ['sys_design_radius', 'large', 'select', 'none,small,large', 21],
     ['sys_design_radius_smooth', '', 'checkbox', '', 22],
-    ['sys_design_radius_smooth_factor', '1.5', 'digit', '', 23],
+    ['sys_design_radius_smooth_factor', '1.75', 'digit', '', 23],
 ];
 foreach($aOptions as $aOption) {
     if($oDb->getOne("SELECT `id` FROM `sys_options` WHERE `name` = :name LIMIT 1", ['name' => $aOption[0]])) {

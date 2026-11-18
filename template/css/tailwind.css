@@ -5,7 +5,7 @@
 
 /*
  * Corner radii. One scale for the site and Studio: every regular radius is its default size times --bx-radius-scale.
- *   --bx-radius-size    Studio > Designer > Settings > Corners: 1 large (default), 0.5 small, 0 none
+ *   --bx-radius-size    Studio > Designer > Settings > Corners: 1 large (default), 0.75 small, 0 none
  *   --bx-radius-smooth  1, or the smooth corners' multiplier where the browser draws them (design_radius.html)
  * Tailwind's rounded-* classes read these (tailwind.config.js), and plain CSS uses the variables themselves:
  * var(--bx-radius-lg) for 8px, var(--bx-radius-2xl) for 16px, var(--bx-radius-3xl) for 24px. That is the nesting: a
