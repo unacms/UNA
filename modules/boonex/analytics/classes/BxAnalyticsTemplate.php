@@ -766,14 +766,29 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
         ]);
     }
 
+    /**
+     * The timezone of a report's data, by the name its filter kept (BxAnalyticsFilter::getTimeZone); UTC for a name
+     * the server does not know.
+     */
+    protected function _getTimeZone($sName)
+    {
+        bx_import('Filter', $this->_oConfig->getName());
+
+        $oTz = BxAnalyticsFilter::getTimeZone($sName);
+        if(!$oTz) {
+            $oTz = new DateTimeZone('UTC');
+        }
+
+        return $oTz;
+    }
+
     protected function _getRetentionHtml($aData, $oFilter)
     {
         $aWeeks = [];
         for($i = 0; $i < $aData['weeks']; $i++)
             $aWeeks[] = ['week' => _t('_bx_analytics_txt_week_n', $i)];
 
-        bx_import('Filter', $this->_oConfig->getName());
-        $oTz = BxAnalyticsFilter::getTimeZone($aData['tz']) ?: new DateTimeZone('UTC');
+        $oTz = $this->_getTimeZone($aData['tz']);
         $aRows = [];
         foreach($aData['rows'] as $aRow) {
             $aCells = [];
