@@ -2399,14 +2399,14 @@
         @apply text-gray-800 dark:text-gray-100;
     }
 
+    /* One weight (500) in every state: a heavier name on hover or for the current item changes the text's width and makes it jump. */
     .bx-std-pmen-item {
         @apply hover:bg-black/5 dark:hover:bg-white/5;
-        @apply hover:font-medium;
+        @apply font-medium;
         @apply duration-300;
     }
     .bx-std-pmen-item.bx-menu-tab-active {
         @apply bg-black/10 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/10;
-        @apply font-semibold;
     }
     /* The item background (8px round the tile) plays the role of the header icons' hover halo, and the tile is set apart from it the same
        way: by its own outer hairline (the buttons' pair, below), in both schemes. */
