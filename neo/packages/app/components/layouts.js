@@ -3,6 +3,7 @@ import Layout from 'app/components/layout';
 import { useCurrentUser, isWebAuthReady } from 'app/context/user'
 import { components } from 'app/components/registry';
 import { appSetting, getLayoutName, getPageContentPaddingTiers, getPageContentWidth, getPageData, getPageSettings, isSplashPage, strToObj } from 'app/lib/util'
+import PageWidthStyle from 'app/ui/molecules/page/page-width-style'
 import emitter, { EVENTS } from 'app/context/emitter';
 import { responsiveClasses } from 'app/lib/responsive-classes'
 import { sidePaddingTiers } from 'app/lib/page-inset'
@@ -92,6 +93,7 @@ export default function Layouts({ path, data }) {
 
     return (
         <Layout layout={layout} data={pageData}>
+            <PageWidthStyle data={pageData} />
             <PageLayoutContent layout={layout} path={path} data={pageData} />
             <WindowSizeSync />
             <UnsavedFormConfirmHost />

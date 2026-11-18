@@ -207,17 +207,37 @@ class BxTemplFunctions extends BxBaseFunctions
         return $this->_oTemplate->parseHtmlByName($sTmplName, $aTmplVars);
     }
 
+    /**
+     * Designer's header for the page's layout, unless Artificer's settings set the width or the menu's place for
+     * every layout.
+     */
+    public function getHeaderLayout()
+    {
+        $aResult = parent::getHeaderLayout();
+
+        $oConfig = BxDolModule::getInstance($this->_sModule)->_oConfig;
+        if(($sWidth = $oConfig->getHeaderWidth()) !== '')
+            $aResult['width'] = $sWidth;
+        if(($sAlign = $oConfig->getHeaderAlign()) !== '')
+            $aResult['align'] = $sAlign;
+
+        return $aResult;
+    }
+
+    /**
+     * Designer's page width for the page's layout and audience, unless Artificer's Page width sets one for all.
+     */
+    public function getPageWidth()
+    {
+        $mixedWidth = BxDolModule::getInstance($this->_sModule)->_oConfig->getPageWidth();
+        return $mixedWidth !== '' ? $mixedWidth : parent::getPageWidth();
+    }
+
     public function TemplPageAddComponent($sKey)
     {
         $mixedResult = false;
 
         switch($sKey) {
-            case 'sys_header_width':
-                $mixedResult = '';
-                if(getParam('bx_artificer_header_stretched') != 'on')
-                    $mixedResult = parent::TemplPageAddComponent($sKey);
-                break;
-
             case 'sys_toolbar_search':
                 if(getParam('bx_artificer_header_search') == 'on')
                     $mixedResult = parent::TemplPageAddComponent($sKey);

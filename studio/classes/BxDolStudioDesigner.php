@@ -529,7 +529,8 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
     }
 
     /**
-     * Designer > Settings: the site template and the default page layouts, each only from what can be chosen.
+     * Designer > Settings: the site template, the default page layouts and the header per layout, each only from what
+     * can be chosen.
      */
     public function submitSettings()
     {
@@ -545,6 +546,27 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             if(isset($aLayouts[$iType]))
                 $aValues[$sName] = $iType;
         }
+
+        // The header per layout and audience: only the widths and places there are.
+        foreach(BxDolTemplate::HEADER_LAYOUTS as $sLayout)
+            foreach(BxDolTemplate::HEADER_AUDIENCES as $sWho)
+                foreach(['width' => BxDolTemplate::HEADER_WIDTHS, 'align' => BxDolTemplate::HEADER_ALIGNS] as $sKind => $aAllowed) {
+                    $sName = 'sys_header_' . $sKind . '_' . $sLayout . '_' . $sWho;
+                    $sValue = bx_process_input(bx_get($sName));
+                    if(in_array($sValue, $aAllowed, true))
+                        $aValues[$sName] = $sValue;
+                }
+
+        // The page width per layout and audience: Full width, or whole pixels brought into Designer's range.
+        foreach(BxDolTemplate::HEADER_LAYOUTS as $sLayout)
+            foreach(BxDolTemplate::HEADER_AUDIENCES as $sWho) {
+                $sSuffix = $sLayout . '_' . $sWho;
+                $sKind = bx_process_input(bx_get('sys_page_width_kind_' . $sSuffix));
+                if($sKind == 'full')
+                    $aValues['sys_page_width_' . $sSuffix] = 'full';
+                else if($sKind == 'limited' && preg_match('/^\s*\d{1,6}\s*$/', (string)bx_get('sys_page_width_' . $sSuffix)))
+                    $aValues['sys_page_width_' . $sSuffix] = (string)min(BxDolTemplate::PAGE_WIDTH_MAX, max(BxDolTemplate::PAGE_WIDTH_MIN, (int)bx_get('sys_page_width_' . $sSuffix)));
+            }
 
         $sLabelStyle = bx_process_input(bx_get('sys_form_label_style'));
         if(array_key_exists($sLabelStyle, $this->getSettingsLabelStyleList()))

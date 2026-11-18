@@ -150,6 +150,19 @@ define('BX_PAGE_TYPE_APPLICATION', 4); ///< regular page divided on columns with
  */
 class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
 {
+    /** How wide the header's content is: as the page's (Page width) or the window's. */
+    public const HEADER_WIDTHS = ['page', 'full'];
+    /** Where the main menu sits in the header: next to the logo, in the middle or next to the toolbar. */
+    public const HEADER_ALIGNS = ['start', 'center', 'end'];
+    /** The page layouts with a header of their own: Application, and Standard for every other layout. */
+    public const HEADER_LAYOUTS = ['standard', 'application'];
+    /** Who the header is for: visitors (guests) and members (signed in). */
+    public const HEADER_AUDIENCES = ['visitor', 'member'];
+    /** The page width when Designer has none, and the narrowest and widest it takes, in pixels. */
+    public const PAGE_WIDTH_DEFAULT = 1280;
+    public const PAGE_WIDTH_MIN = 480;
+    public const PAGE_WIDTH_MAX = 3840;
+
     protected static $_sColorClassPrefix = 'col-';
     protected static $_sColorClassPrefixBg = 'bg-col-';
     protected static $_aColors = array(
@@ -867,10 +880,97 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         if(isset($this->aPage['type']))
             $iType = (int)$this->aPage['type'];
 
-        if($iType == BX_PAGE_TYPE_DEFAULT) 
+        return self::resolvePageType($iType);
+    }
+
+    /**
+     * The layout a page of this type has for the current viewer: Default is the one Designer sets for visitors or
+     * members (sys_pt_default_visitor, sys_pt_default_member).
+     * @param int $iType page type
+     * @return int page type, never Default
+     */
+    public static function resolvePageType($iType)
+    {
+        $iType = (int)$iType;
+        if($iType == BX_PAGE_TYPE_DEFAULT)
             $iType = (int)getParam('sys_pt_default_' . (isLogged() ? 'member' : 'visitor'));
 
         return $iType;
+    }
+
+    /**
+     * The header of a page of this type, as Designer sets it per layout and audience (Designer > Settings > Header):
+     * the Application layout has its own, every other layout the Standard one's, and each has one for visitors and
+     * one for members. Templates may override it on the site (BxBaseFunctions::getHeaderLayout); the apps get Designer's.
+     * @param int $iType page type, Default is resolved for the current viewer
+     * @param bool|null $bMember whose header: a member's or a visitor's; null is the current viewer's
+     * @return array ['layout' => 'standard' or 'application', 'width' => 'page' or 'full', 'align' => 'start', 'center' or 'end']
+     */
+    public static function getHeaderLayout($iType, $bMember = null)
+    {
+        [$sLayout, $sSuffix] = self::_getLayoutAudience($iType, $bMember);
+
+        $sWidth = getParam('sys_header_width_' . $sSuffix);
+        if(!in_array($sWidth, self::HEADER_WIDTHS, true))
+            $sWidth = $sLayout == 'application' ? 'full' : 'page';
+
+        // As the header was before the setting: the site centres the menu of Standard pages, Application's follows the logo.
+        $sAlign = getParam('sys_header_align_' . $sSuffix);
+        if(!in_array($sAlign, self::HEADER_ALIGNS, true))
+            $sAlign = $sLayout == 'application' ? 'start' : 'center';
+
+        return ['layout' => $sLayout, 'width' => $sWidth, 'align' => $sAlign];
+    }
+
+    /**
+     * How wide the content of a page of this type is, as Designer sets it per layout and audience (Designer >
+     * Settings > Header): a number of pixels, or 'full' for the window's width. A header of Page width is as wide.
+     * Templates may override it on the site (BxBaseFunctions::getPageWidth); the apps get Designer's.
+     * @param int $iType page type, Default is resolved for the current viewer
+     * @param bool|null $bMember whose page: a member's or a visitor's; null is the current viewer's
+     * @return int|string pixels, or 'full'
+     */
+    public static function getPageWidth($iType, $bMember = null)
+    {
+        [, $sSuffix] = self::_getLayoutAudience($iType, $bMember);
+
+        $mixedWidth = self::checkPageWidth(getParam('sys_page_width_' . $sSuffix));
+        return $mixedWidth !== false ? $mixedWidth : self::PAGE_WIDTH_DEFAULT;
+    }
+
+    /**
+     * A page width as Designer keeps it: 'full', or whole pixels from PAGE_WIDTH_MIN to PAGE_WIDTH_MAX.
+     * @param mixed $mixedValue
+     * @return int|string|false the width, or false when the value is not one
+     */
+    public static function checkPageWidth($mixedValue)
+    {
+        $sValue = trim((string)$mixedValue);
+        if($sValue === 'full')
+            return 'full';
+
+        if(!preg_match('/^\d{1,5}$/', $sValue))
+            return false;
+
+        $iValue = (int)$sValue;
+        return $iValue >= self::PAGE_WIDTH_MIN && $iValue <= self::PAGE_WIDTH_MAX ? $iValue : false;
+    }
+
+    /**
+     * A page's layout for its header and width settings, and the settings' suffix with the audience.
+     * @return array [layout ('standard' or 'application'), suffix ('<layout>_visitor' or '<layout>_member')]
+     */
+    protected static function _getLayoutAudience($iType, $bMember)
+    {
+        if($bMember === null)
+            $bMember = isLogged();
+
+        $iType = (int)$iType;
+        if($iType == BX_PAGE_TYPE_DEFAULT)
+            $iType = (int)getParam('sys_pt_default_' . ($bMember ? 'member' : 'visitor'));
+
+        $sLayout = $iType == BX_PAGE_TYPE_APPLICATION ? 'application' : 'standard';
+        return [$sLayout, $sLayout . '_' . ($bMember ? 'member' : 'visitor')];
     }
 
     /**

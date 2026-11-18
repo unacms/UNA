@@ -67,6 +67,15 @@
 @import './palette.css';
 
 /*
+ * Web: pages and the header's Page width are as wide as UNA's Designer sets for the page's layout and audience
+ * (`page_width` of the page JSON; PageWidthStyle puts it on :root as --neo-page-width). Before a page sends one, and
+ * on native, the theme's 1440px.
+ */
+@theme inline {
+    --container-8xl: var(--neo-page-width, 1440px);
+}
+
+/*
  * Colour-scheme scopes (web). The palette declares its semantic tokens on <html> only, so
  * an element with `.light` / `.dark` declares them again for its subtree: NeoButtons under
  * `NeoButtonColorSchemeContext` (the header on a coloured band, `layout.header.band_scheme`)

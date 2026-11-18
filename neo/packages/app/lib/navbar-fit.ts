@@ -44,13 +44,32 @@ export function navbarTabsThatFit({ widths, available, gap, more, persistent = 0
     return fit;
 }
 
+/** The width of a row of tabs `gap` apart. */
+export function navbarRowWidth(widths: number[], gap: number): number {
+    return widths.reduce((sum, width) => sum + width, 0) + gap * Math.max(0, widths.length - 1);
+}
+
 /**
- * Where tab `index` sits in the bar, whose tabs (`widths`, `gap` apart) are centred in its `available` width (a row
- * wider than the bar overflows evenly on both sides, as CSS centres it): its left edge from the bar's and its width.
+ * Where the row of tabs (`total` wide) starts in the bar (`available` wide), from the bar's left edge, for the main
+ * menu's place in the header (UNA's Designer > Settings > Header): next to the logo (`start`), next to the toolbar
+ * (`end`), or in the middle (`center`). In the middle it is centred on the header, `centre` px from the bar's left edge,
+ * as far as the bar leaves room: the logo and the toolbar are not as wide, so the bar itself is off-centre. Without
+ * `centre` it is centred in the bar, as CSS centres it (a row wider than the bar overflows evenly on both sides).
  */
-export function navbarTabBox(widths: number[], index: number, available: number, gap: number): { x: number; width: number } {
-    const total = widths.reduce((sum, width) => sum + width, 0) + gap * Math.max(0, widths.length - 1);
-    let x = (available - total) / 2;
+export function navbarRowStart(align: string, available: number, total: number, centre?: number | null): number {
+    const free = available - total;
+    if (align === 'start') return 0;
+    if (align === 'end') return free;
+    if (typeof centre !== 'number' || !Number.isFinite(centre) || free <= 0) return free / 2;
+    return Math.min(Math.max(centre - total / 2, 0), free);
+}
+
+/**
+ * Where tab `index` sits in the bar, whose tabs (`widths`, `gap` apart) start `start` px from its left edge (centred in
+ * its `available` width when not given): its left edge from the bar's and its width.
+ */
+export function navbarTabBox(widths: number[], index: number, available: number, gap: number, start?: number): { x: number; width: number } {
+    let x = typeof start === 'number' ? start : (available - navbarRowWidth(widths, gap)) / 2;
     for (let i = 0; i < index; i++) x += (widths[i] ?? 0) + gap;
     return { x, width: widths[index] ?? 0 };
 }

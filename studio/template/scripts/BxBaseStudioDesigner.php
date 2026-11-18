@@ -1554,6 +1554,25 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 'content' => $this->getSettingsLayouts('sys_pt_default_' . $sWho, _t('_adm_dsg_txt_settings_layout_' . $sWho)),
             ];
 
+        // The header per layout: the site's templates and the apps follow it (BxDolTemplate::getHeaderLayout).
+        $aForm['inputs'] += [
+            'header_section' => [
+                'type' => 'block_header',
+                'name' => 'header_section',
+                'caption' => _t('_adm_dsg_txt_settings_section_header'),
+            ],
+            'header_info' => [
+                'type' => 'custom',
+                'name' => 'header_info',
+                'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_settings_section_header')]),
+            ],
+        ];
+        $aForm['inputs']['header_table'] = [
+            'type' => 'custom',
+            'name' => 'header_table',
+            'content' => $this->getSettingsHeader(),
+        ];
+
         // One style for the site's forms and the apps', which read it from the form API (BxBaseFormView::getLabelStyle).
         $aForm['inputs'] += [
             'forms_section' => [
@@ -1675,6 +1694,95 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         return BxDolStudioTemplate::getInstance()->parseHtmlByName('dsr_settings_layouts.html', [
             'caption' => $sCaption,
             'bx_repeat:layouts' => $aCards
+        ]);
+    }
+
+    /**
+     * The page and header settings as a table: a row per layout (Standard, Application), a column per audience
+     * (visitors, members), and in each cell a sketch of that page over three segmented controls: the page's width
+     * (with its pixels), the header's width and the main menu's place. The sketch follows the controls (designer.css, :has).
+     */
+    protected function getSettingsHeader()
+    {
+        $oTemplate = BxDolStudioTemplate::getInstance();
+
+        $aAudiences = [];
+        foreach(BxDolTemplate::HEADER_AUDIENCES as $sWho)
+            $aAudiences[] = ['audience' => $sWho, 'caption' => _t('_adm_dsg_txt_settings_layout_' . $sWho)];
+
+        $sRows = '';
+        foreach(BxDolTemplate::HEADER_LAYOUTS as $sLayout) {
+            $aCells = [];
+            foreach(BxDolTemplate::HEADER_AUDIENCES as $sWho) {
+                $iType = $sLayout == 'application' ? BX_PAGE_TYPE_APPLICATION : BX_PAGE_TYPE_STANDARD;
+                $sSuffix = $sLayout . '_' . $sWho;
+                $aCurrent = BxDolTemplate::getHeaderLayout($iType, $sWho == 'member');
+                $mixedPageWidth = BxDolTemplate::getPageWidth($iType, $sWho == 'member');
+
+                // The page's width: Limited, with its pixels next to it, or Full width.
+                $sControls = $this->getSettingsHeaderControl('sys_page_width_kind_' . $sSuffix, 'page', _t('_adm_dsg_txt_settings_page_width'), [
+                    'limited' => _t('_adm_dsg_txt_settings_page_width_limited'),
+                    'full' => _t('_adm_dsg_txt_settings_page_width_full'),
+                ], $mixedPageWidth == 'full' ? 'full' : 'limited', $oTemplate->parseHtmlByName('dsr_settings_header_page_width.html', [
+                    'name' => 'sys_page_width_' . $sSuffix,
+                    'value' => $mixedPageWidth == 'full' ? BxDolTemplate::PAGE_WIDTH_DEFAULT : (int)$mixedPageWidth,
+                    'title' => bx_html_attribute(_t('_adm_dsg_txt_settings_page_width_px')),
+                ]));
+
+                foreach(['width' => BxDolTemplate::HEADER_WIDTHS, 'align' => BxDolTemplate::HEADER_ALIGNS] as $sKind => $aValues) {
+                    $aChoices = [];
+                    foreach($aValues as $sValue)
+                        $aChoices[$sValue] = _t('_adm_dsg_txt_settings_header_' . $sKind . '_' . $sValue);
+
+                    $sControls .= $this->getSettingsHeaderControl('sys_header_' . $sKind . '_' . $sSuffix, $sKind, _t('_adm_dsg_txt_settings_header_' . $sKind), $aChoices, $aCurrent[$sKind]);
+                }
+
+                $aCells[] = [
+                    'layout' => $sLayout,
+                    'audience' => $sWho,
+                    'audience_caption' => _t('_adm_dsg_txt_settings_layout_' . $sWho),
+                    'controls' => $sControls,
+                ];
+            }
+
+            $sRows .= $oTemplate->parseHtmlByName('dsr_settings_header_row.html', [
+                'layout' => $sLayout,
+                'caption' => _t('_adm_dsg_txt_settings_header_' . $sLayout),
+                'bx_repeat:cells' => $aCells,
+            ]);
+        }
+
+        return $oTemplate->parseHtmlByName('dsr_settings_header.html', [
+            'bx_repeat:audiences' => $aAudiences,
+            'rows' => $sRows,
+        ]);
+    }
+
+    /**
+     * One segmented control of the page and header table.
+     * @param string $sName the radios' name
+     * @param string $sKind what it sets, for the sketch: 'page', 'width' or 'align'
+     * @param array $aChoices value => title
+     * @param string $sCurrent the chosen value
+     * @param string $sExtra HTML after the control (the page's pixels)
+     */
+    protected function getSettingsHeaderControl($sName, $sKind, $sCaption, $aChoices, $sCurrent, $sExtra = '')
+    {
+        $aRepeat = [];
+        foreach($aChoices as $sValue => $sTitle)
+            $aRepeat[] = [
+                'name' => $sName,
+                'value' => $sValue,
+                'kind' => $sKind,
+                'title' => $sTitle,
+                'checked' => $sCurrent == $sValue ? 'checked="checked"' : '',
+            ];
+
+        return BxDolStudioTemplate::getInstance()->parseHtmlByName('dsr_settings_header_control.html', [
+            'id' => 'adm-dsg-ht-' . $sName,
+            'caption' => $sCaption,
+            'bx_repeat:choices' => $aRepeat,
+            'extra' => $sExtra,
         ]);
     }
 
