@@ -40,26 +40,23 @@ div.bx-dbd-block-content {
 .bx-page-block-container.bx-dbd-block-large {
     grid-row: span 3;
 }
-/* Builder blocks on this page: the block shell's 8px inset plus 8px here, so content sits 16px from the edges; the bottom inset is 8px, since every block ends with a 48px row whose own 8px of air brings its tile 16px from the edge, mirroring the hero 8px under the caption. */
+/* Builder blocks on this page: the block shell's 8px inset plus 8px here, so content sits 16px from the edges; the bottom inset is 8px, since every block ends with a 52px row whose own 8px of air brings its tile 16px from the edge, mirroring the hero 8px under the caption. */
 .bx-page-block-container div.bx-std-block-content {
     padding: 1rem 1rem 0.5rem;
 }
 
 /*--- Updates block: the version panel, the update switches, then the status rows; the Update button sits in the block caption. ---*/
-/*--- Hero panels: the muted panel that opens the Updates (icon + version), Space/Cache/Queues (headline + bar), Server (gauges) and Audit (outcomes) blocks; each is as tall as its content, 16px inset, and reaches 8px past the block's 16px content inset (top and sides) to sit 8px from the block edges, flush with the audit accordion's hover plates. ---*/
+/*--- Hero panels: the muted panel that opens the Updates (icon + version), Space/Cache/Queues (headline + bar), Server (gauges) and Audit (outcomes) blocks; each is as tall as its content, 16px inset, and reaches past the block's 16px content inset (top and sides) to the block's edgess, flush with the audit accordion's hover plates. ---*/
 .bx-dbd-hero {
     position: relative; /* the chart's slice tooltip is placed in it */
     display: flex;
     flex-direction: column;
-    margin: -0.5rem -0.5rem 0;
+    margin: -1rem -1rem 0; /* edge to edge: from the caption's divider to both sides of the block, square, its content on the block's 16px line */
     padding: 1rem;
-    border-radius: var(--bx-radius-2xl);
     background: rgba(0, 0, 0, 0.05);
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.025);
 }
 .dark .bx-dbd-hero {
     background: rgba(255, 255, 255, 0.025);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025);
 }
 /* Updates: the 64px UNA icon with the version and, under it, when that version was installed beside it, the "Check for updates" button 16px under them. */
 .bx-dbd-version-head {
@@ -72,7 +69,7 @@ div.bx-dbd-block-content {
     gap: 0.75rem;
     width: 100%;
 }
-/* The UNA icon is a 64px app icon with 16px corners; the rows below keep 32px tiles. */
+/* The UNA icon is a 64px app icon with 16px corners; the rows below keep 36px tiles. */
 div.bx-std-block-content .bx-dbd-tile.bx-dbd-tile-lg {
     width: 4rem;
     height: 4rem;
@@ -109,7 +106,7 @@ div.bx-std-block-content .bx-dbd-tile.bx-dbd-tile-lg {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    min-height: 3rem;
+    min-height: 3.25rem;
 }
 .bx-dbd-version-toggle-name {
     flex: 1 1 auto;
@@ -214,7 +211,7 @@ div.bx-dbd-chart {
     min-width: 0.375rem; /* a sliver stays wide enough to hover */
     cursor: default; /* hover shows the slice's item name */
 }
-/* Rows on the block's rhythm: 48px rows, 2px apart, a 32px icon tile like the sidebar tiles; one group of rows per chart, the groups continuing the same list. */
+/* Rows on the block's rhythm: 52px rows, 2px apart, a 36px icon tile like the sidebar tiles; one group of rows per chart, the groups continuing the same list. */
 .bx-dbd-chart-group {
     display: flex;
     flex-direction: column;
@@ -227,7 +224,7 @@ div.bx-dbd-chart {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    min-height: 3rem;
+    min-height: 3.25rem;
 }
 /* Colour mark after the value (before a row's clear button): an 8 x 20px pill in the row's slice colour. */
 .bx-dbd-chart-mark {
@@ -236,15 +233,15 @@ div.bx-dbd-chart {
     height: 1.25rem;
     border-radius: 9999px;
 }
-/* Icon tiles (chart rows, the Version block): 32px sidebar-style tiles, 8px radius, hairline ring, no button shadow (the selector outweighs the tile button's shadow rule). */
+/* Icon tiles (chart rows, the Version block): 36px sidebar-style tiles, 8px radius, hairline ring, no button shadow (the selector outweighs the tile button's shadow rule). */
 div.bx-std-block-content .bx-dbd-tile {
     position: relative;
     display: flex;
     flex: none;
     align-items: center;
     justify-content: center;
-    width: 2rem;
-    height: 2rem;
+    width: 2.25rem; /* 36px with a 24px glyph, as the block caption's icon */
+    height: 2.25rem;
     border-radius: var(--bx-radius-lg);
     box-shadow: none;
 }
@@ -266,8 +263,8 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     color: rgb(255 255 255);
 }
 .bx-dbd-tile svg {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 1.5rem;
+    height: 1.5rem;
 }
 .bx-dbd-tile-app img {
     width: 100%;
@@ -425,7 +422,7 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     text-transform: uppercase;
     color: rgb(82 82 91); /* gray-600: gray-500 misses 4.5:1 on white */
 }
-/* Status rows: 48px rows with 2px between them; a row with a note grows to fit it. */
+/* Status rows: 52px rows with 2px between them; a row with a note grows to fit it. */
 .bx-dbd-htools-items {
     display: flex;
     flex-direction: column;
@@ -452,8 +449,8 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    min-height: 3rem;
-    padding: 0.25rem 0;
+    min-height: 3.25rem;
+    padding: 0.5rem 0;
 }
 /* The status dot sits after the row's value (like the chart rows' colour marks), 10px, in the status colour. */
 .bx-dbd-htools-dot {
@@ -504,7 +501,7 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     text-decoration: none;
 }
 /* Audit tab: the outcome bar's segments in the status colours; then the sections as an accordion, each header a button on the
-   same 48px row as the Status rows (its hover plate reaching 8px past the content), its rows folded under it, indented past the tile. */
+   same 52px row as the Status rows (its hover plate reaching 8px past the content), its rows folded under it, indented past the tile. */
 .bx-dbd-audit-slice-ok {
     background: rgb(34 197 94);
 }
@@ -528,7 +525,7 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
 .bx-dbd-chart-link {
     width: calc(100% + 1rem);
     margin: 0 -0.5rem;
-    padding: 0.25rem 0.5rem;
+    padding: 0.5rem; /* 8px round the 36px tile: the hover plate's edge */
     border: 0;
     border-radius: var(--bx-radius-2xl); /* the same plate as the hero panels */
     background: none;
@@ -566,7 +563,7 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     transform: rotate(180deg);
 }
 .bx-dbd-audit-rows {
-    padding: 0 0 0.5rem 2.75rem;
+    padding: 0 0 0.5rem 3rem;
 }
 .bx-dbd-audit-rows[hidden] {
     display: none; /* the list's flex display would otherwise beat the attribute */
@@ -641,7 +638,7 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
 .bx-dbd-users-row {
     width: calc(100% + 1rem);
     margin: 0 -0.5rem;
-    padding: 0.25rem 0.5rem;
+    padding: 0.5rem; /* 8px round the 36px tile: the hover plate's edge */
     border: 0;
     border-radius: var(--bx-radius-2xl); /* the same plate as the hero panels */
     background: none;
