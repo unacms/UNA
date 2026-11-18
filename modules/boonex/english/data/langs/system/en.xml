@@ -697,7 +697,9 @@
 	<string name="_adm_dbd_txt_ver_force"><![CDATA[Force Automatic Updates]]></string>
 	<string name="_adm_dbd_txt_ver_access"><![CDATA[Access to automatic updates]]></string>
 	<string name="_adm_dbd_txt_ver_access_active"><![CDATA[Active]]></string>
+	<string name="_adm_dbd_txt_ver_access_on"><![CDATA[Automatic updates are available]]></string>
 	<string name="_adm_dbd_btn_ver_access_activate"><![CDATA[Activate]]></string>
+	<string name="_adm_dbd_btn_ver_access_enable"><![CDATA[Enable automatic updates]]></string>
 	<string name="_adm_dbd_txt_us_period"><![CDATA[Period]]></string>
 	<string name="_adm_dbd_txt_us_series"><![CDATA[Chart data]]></string>
 	<string name="_adm_dbd_txt_us_7d"><![CDATA[7d]]></string>

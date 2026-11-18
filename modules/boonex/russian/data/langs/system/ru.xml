@@ -679,8 +679,10 @@
         <string name="_adm_btn_settings_mix_publish"><![CDATA[Публиковать]]></string>
 	<string name="_adm_btn_store_search"><![CDATA[Поиск]]></string>
 	<string name="_adm_dbd_btn_update"><![CDATA[Обновить]]></string>
+	<string name="_adm_dbd_btn_ver_access_enable"><![CDATA[Включить автообновления]]></string>
 	<string name="_adm_dbd_txt_ver_installed"><![CDATA[Первая установка]]></string>
 	<string name="_adm_dbd_txt_ver_updated"><![CDATA[Последнее обновление]]></string>
+	<string name="_adm_dbd_txt_ver_access_on"><![CDATA[Автообновления доступны]]></string>
 	<string name="_adm_dbd_txt_ver_applied"><![CDATA[Установлена {0}]]></string>
 	<string name="_adm_dbd_txt_ver_latest_stable"><![CDATA[Последняя стабильная]]></string>
 	<string name="_adm_dbd_txt_ver_latest_beta"><![CDATA[Последняя бета]]></string>
