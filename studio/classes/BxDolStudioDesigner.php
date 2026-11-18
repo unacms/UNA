@@ -529,7 +529,8 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
     }
 
     /**
-     * Designer > Settings: the site template and the default page layouts, each only from what can be chosen.
+     * Designer > Settings: the site template, the default page layouts and the header per layout, each only from what
+     * can be chosen.
      */
     public function submitSettings()
     {
@@ -545,6 +546,15 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             if(isset($aLayouts[$iType]))
                 $aValues[$sName] = $iType;
         }
+
+        // The header per layout: only the widths and places there are.
+        foreach(['standard', 'application'] as $sLayout)
+            foreach(['width' => BxDolTemplate::HEADER_WIDTHS, 'align' => BxDolTemplate::HEADER_ALIGNS] as $sKind => $aAllowed) {
+                $sName = 'sys_header_' . $sKind . '_' . $sLayout;
+                $sValue = bx_process_input(bx_get($sName));
+                if(in_array($sValue, $aAllowed, true))
+                    $aValues[$sName] = $sValue;
+            }
 
         $sLabelStyle = bx_process_input(bx_get('sys_form_label_style'));
         if(array_key_exists($sLabelStyle, $this->getSettingsLabelStyleList()))

@@ -28,6 +28,7 @@ import { useHeaderOptions } from 'app/ui/molecules/header/options';
 import { SectionIcon, useSectionIcon } from 'app/ui/molecules/section-icon';
 import { useIsTabSlideCopy } from 'app/context/tab-route-override';
 import MenuTop from 'app/components/nav/menu-top';
+import { resolveHeaderLayout } from 'app/lib/header-layout';
 import { isPageCoverShown, isPageCoverHiddenOn } from 'app/lib/page-cover';
 
 const DEFAULT_CONTENT_PINNED_FIXED =
@@ -412,6 +413,17 @@ export function usePageHeaderBase(pageData) {
     };
 }
 
+// The header the last page with one had: a page whose data has none yet keeps it, so the header doesn't jump.
+let __lastHeaderLayout = null;
+
+/** The header row's place in the window: the main menu centres its tabs on it. Same object while it didn't move. */
+function nextHeaderBox(prev, layout) {
+    const x = layout?.x || 0;
+    const width = layout?.width || 0;
+    if (prev && prev.x === x && prev.width === width) return prev;
+    return { x, width };
+}
+
 export const PageHeaderBody = memo(({
     contentClassName,
     currentUser,
@@ -431,6 +443,15 @@ export const PageHeaderBody = memo(({
     sectionIcon,
 }) => {
     const { t } = useTranslation();
+    // UNA's Designer sets the header per page layout: its width and where the main menu sits (lib/header-layout.ts).
+    const headerLayout = resolveHeaderLayout(pageData?.header, {
+        width: appSetting('layout', 'header', 'width'),
+        align: appSetting('layout', 'header', 'align'),
+    }, __lastHeaderLayout);
+    useEffect(() => {
+        if (pageData?.header) __lastHeaderLayout = { width: headerLayout.width, align: headerLayout.align };
+    }, [pageData?.header, headerLayout.width, headerLayout.align]);
+    const [headerBox, setHeaderBox] = useState(null);
     // Logo variant per breakpoint. Web picks it with classes (SSR-safe);
     // native renders only the matching one, since `display: none` subtrees of
     // native (Expo UI) buttons trip Fabric's layout ownership assert in debug
@@ -572,9 +593,8 @@ export const PageHeaderBody = memo(({
         );
     }
 
-    return (
+    const headerRow = (
         <>
-            <Row className={' ' + contentClassName} onLayout={onMainHeaderLayout}>
                 <View className={' ' + appSetting('layout', 'header', 'content_left')}>
                     <Row className='min-w-0 shrink items-center gap-3'>
                         {canShowBackButton && (
@@ -585,12 +605,28 @@ export const PageHeaderBody = memo(({
                         {contextSelectorElement}
                     </Row>
                 </View>
-                {isWeb && <MenuTop url={pageData?.url} uri={pageData?.uri} />}
+                {isWeb && <MenuTop url={pageData?.url} uri={pageData?.uri} align={headerLayout.align} headerBox={headerBox} />}
                 <View className={' ' + appSetting('layout', 'header', 'content_right')}>
                 
                     {header.headerActions ?? <HeaderElement url={pageData?.url} uri={pageData?.uri} />}
                 
                 </View>
+        </>
+    );
+
+    return (
+        <>
+            <Row className={' ' + contentClassName} onLayout={onMainHeaderLayout}>
+                {/* Web: the row is as wide as the page's content or the window (`layout.header.content_width`); the
+                    header's background stays full width. */}
+                {isWeb ? (
+                    <Row
+                        className={`flex-1 min-w-0 self-stretch items-center justify-between gap-4 mx-auto w-full ${appSetting('layout', 'header', 'content_width')?.[headerLayout.width] ?? ''}`}
+                        onLayout={(e) => setHeaderBox((prev) => nextHeaderBox(prev, e?.nativeEvent?.layout))}
+                    >
+                        {headerRow}
+                    </Row>
+                ) : headerRow}
             </Row>
             {isWeb ? (
                 header.subHeader ? (

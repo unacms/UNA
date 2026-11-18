@@ -118,11 +118,22 @@ export const settingsLayout = {
             content_scrolled: ' ns--header-content-scrolled-- lg:backdrop-blur-lg ',
             content_pinned_fixed: '  ',
             // Shrinks (the page title truncates) so the actions on the right keep their room.
-            content_left: 'min-w-0 shrink 2xl:w-full 2xl:max-w-1/5 ps-4 gap-3',
-            // Up to 896px: Home, five tabs with 16px labels and More need about 770px, so 768 (3xl) left them no
-            // room and one longer title turned the bar to icons on any screen.
-            content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-4xl ',
-            content_right: ' items-end flex-none 2xl:w-full 2xl:max-w-1/5 pe-4 gap-3',
+            content_left: 'min-w-0 shrink ps-4 gap-3',
+            // The site menu's bar takes the room between the logo and the actions; its tabs sit at its start, its
+            // middle or its end (`content_center_align`), as UNA's Designer places the main menu.
+            content_center: ' hidden flex-1 min-w-0 lg:flex gap-2 items-center ',
+            content_right: ' items-end flex-none pe-4 gap-3',
+            /**
+             * The header's width and the main menu's place, as UNA's Designer sets them per page layout (Designer >
+             * Settings > Header) and sends them with each page (`header`; lib/header-layout.ts). null follows UNA; a
+             * fork can fix either for the app: width `page` or `full`, align `start`, `center` or `end`.
+             */
+            width: null,
+            align: null,
+            // The header's row at each width: `page` is as wide as the page's content (`page_content_width_default`).
+            content_width: { page: 'lg:max-w-8xl', full: '' },
+            // The tabs in the bar per place. In the middle they are centred on the header (components/nav/menu-top.js).
+            content_center_align: { start: 'justify-start', center: 'justify-center', end: 'justify-end' },
             // 10px under the 44px tabs: on the bottom edge of the 64px header.
             active_item_indicator: 'absolute -bottom-2.5 left-0 h-0.5 rounded-full flex-none bg-ring',
             active_item_indicator_bg: 'absolute bottom-0 left-0 h-11 w-full overflow-hidden rounded-xl flex-none',

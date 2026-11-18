@@ -516,6 +516,95 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     display: none !important;
 }
 
+/* Header settings: per layout a row of width cards and a row of main menu cards, each with a sketch of the header
+   (logo, menu, toolbar) over the page's content, which is always the page's width. */
+.adm-dsg-header-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.adm-dsg-header-row {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.adm-dsg-header-row-legend {
+    margin-bottom: 0.5rem;
+    padding: 0;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #52525b;
+}
+.adm-dsg-choices-compact {
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+}
+.adm-dsg-hd {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0.375rem;
+    height: 5rem;
+    padding: 0.75rem 0;
+    box-sizing: border-box;
+}
+.adm-dsg-hd-bar {
+    display: flex;
+    flex: none;
+    align-items: center;
+    height: 1.25rem;
+    padding: 0 0.5rem;
+    background-color: #fff;
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.08);
+}
+.adm-dsg-hd-inner {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: 0.375rem;
+    margin: 0 auto;
+}
+.adm-dsg-hd-width-page .adm-dsg-hd-inner {
+    flex: none;
+    width: 72%;
+}
+.adm-dsg-hd-logo,
+.adm-dsg-hd-tools {
+    flex: none;
+    width: 1rem;
+    height: 0.5rem;
+    border-radius: 0.125rem;
+    background-color: #a1a1aa;
+}
+.adm-dsg-hd-tools {
+    border-radius: 9999px;
+}
+.adm-dsg-hd-menu {
+    display: flex;
+    flex: 1 1 auto;
+    gap: 0.125rem;
+}
+.adm-dsg-hd-align-center .adm-dsg-hd-menu {
+    justify-content: center;
+}
+.adm-dsg-hd-align-end .adm-dsg-hd-menu {
+    justify-content: flex-end;
+}
+.adm-dsg-hd-menu > span {
+    width: 0.75rem;
+    height: 0.375rem;
+    border-radius: 9999px;
+    background-color: #60a5fa;
+}
+.adm-dsg-hd-body {
+    flex: 1 1 auto;
+    width: 72%;
+    margin: 0 auto;
+    border-radius: 0.25rem;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
 .dark .adm-dsg-choice {
     background-color: rgba(255, 255, 255, 0.05);
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -553,6 +642,25 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     background-color: #3f3f46;
 }
 .dark .adm-dsg-pt-content > span {
+    background-color: #27272a;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.dark .adm-dsg-header-row-legend {
+    color: #a1a1aa;
+}
+.dark .adm-dsg-hd-bar {
+    background-color: #27272a;
+    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.08);
+}
+.dark .adm-dsg-hd-logo,
+.dark .adm-dsg-hd-tools {
+    background-color: #52525b;
+}
+.dark .adm-dsg-hd-menu > span {
+    background-color: #3b82f6;
+}
+.dark .adm-dsg-hd-body {
     background-color: #27272a;
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
 }

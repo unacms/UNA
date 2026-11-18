@@ -8,13 +8,15 @@ import { useEffect, useMemo, useState } from 'react';
 import { Platform } from 'react-native';
 import { MENU_HIGHLIGHT_BAR_CLASS, useMenuHighlight } from 'app/ui/atoms/menu-highlight';
 import { Text } from 'app/design/typography';
-import { navbarTabBox, navbarTabsThatFit } from 'app/lib/navbar-fit';
+import { navbarRowStart, navbarRowWidth, navbarTabBox, navbarTabsThatFit } from 'app/lib/navbar-fit';
 
 // The bar's spacing (the Row's `gap-2`) and More's width (a 44px circle): the fit counts with them.
 const TAB_GAP = 8;
 const MORE_WIDTH = 44;
 // The last fit, so a page that mounts the bar again (client navigation) shows the same row at once.
 let __menuTopFit = { signature: '', available: 0, count: -1 };
+// Where the last centred row started in its bar, so a page that mounts the bar again starts it there before it measures.
+let __menuTopRowStart = null;
 
 // Persist indicator state across remounts (web/native)
 let __menuTopIndicatorPersist = { initialized: false, translateX: 0, width: 0 };
@@ -49,7 +51,11 @@ function startIndicatorSettle() {
     setTimeout(() => { __menuTopIndicatorTransitions = INDICATOR_TRANSITIONS; }, INDICATOR_SETTLE_MS);
 }
 
-export default function MenuTop({ url, uri }) {
+/**
+ * @param align where the tabs sit in the bar: `start`, `center` or `end` (UNA's Designer, lib/header-layout.ts)
+ * @param headerBox the header row's place in the window ({x, width}): centred tabs are centred on it
+ */
+export default function MenuTop({ url, uri, align = 'center', headerBox = null }) {
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation()
     // Web: one hover highlight slides from tab to tab, as in the dropdown menus.
@@ -120,8 +126,20 @@ export default function MenuTop({ url, uri }) {
     // follows from the widths before it (navbarTabBox). Deriving it in render (instead of mirroring it into state from
     // an effect) avoids a setState-in-effect cascade during idle hydration of the page Suspense boundary.
     const shownWidths = shownItems.map((item) => tabWidths[tabKey(item)] || (item?.name === 'more' ? MORE_WIDTH : 0));
+    // Where the row starts in the bar. In the middle it is centred on the header, not in the bar between the logo and
+    // the actions, which are not as wide: the bar's padding moves it there, as far as the bar leaves room (its width
+    // stays, so the fit doesn't change). Until both are measured a remounted bar starts it where it last did.
+    const rowWidth = navbarRowWidth(shownWidths, TAB_GAP);
+    const headerCentre = headerBox && headerBox.width > 0 ? headerBox.x + headerBox.width / 2 - containerLayout.x : null;
+    const isCentred = align === 'center';
+    const rowStart = containerLayout.measured ? navbarRowStart(align, containerLayout.width, rowWidth, headerCentre) : null;
+    const isRowPlaced = isCentred && rowStart !== null && headerCentre !== null && rowStart >= 0;
+    const barPadding = isRowPlaced ? rowStart : (isCentred && !containerLayout.measured ? __menuTopRowStart : null);
+    useEffect(() => {
+        if (isRowPlaced) __menuTopRowStart = rowStart;
+    }, [isRowPlaced, rowStart]);
     const target = ready && containerLayout.measured && activeIndex >= 0 && shownWidths[activeIndex] > 0
-        ? navbarTabBox(shownWidths, activeIndex, containerLayout.width, TAB_GAP)
+        ? navbarTabBox(shownWidths, activeIndex, containerLayout.width, TAB_GAP, rowStart ?? undefined)
         : null;
     const { indicatorStyle, isIndicatorShown, isIndicatorRevealed } = useNavbarIndicator(target, activeIndex);
     const indicatorTransitions = __menuTopIndicatorTransitions;
@@ -132,7 +150,7 @@ export default function MenuTop({ url, uri }) {
     // doesn't grow from Home alone to every tab. Home, the tabs and More.
     if (useSiteMenu && !siteMenuFetched) {
         return (
-            <Row className={`${appSetting('layout', 'header', 'content_center')} relative`} role="navigation" aria-label="Primary" aria-busy>
+            <Row className={`${appSetting('layout', 'header', 'content_center')} ${appSetting('layout', 'header', 'content_center_align')?.[align] ?? ''} relative`} role="navigation" aria-label="Primary" aria-busy>
                 {Array.from({ length: (siteTabs || 5) + 2 }, (_, index) => (
                     <View key={`menu-top-skeleton-${index}`} className="flex-none relative z-10">
                         <Row className="items-center justify-center gap-2 ps-3 pe-4 h-11 min-w-11">
@@ -148,10 +166,13 @@ export default function MenuTop({ url, uri }) {
     return (
         <Row
             ref={highlightRef}
-            className={`${appSetting('layout', 'header', 'content_center')} relative ${MENU_HIGHLIGHT_BAR_CLASS}`}
+            className={`${appSetting('layout', 'header', 'content_center')} ${typeof barPadding === 'number' ? 'justify-start' : (appSetting('layout', 'header', 'content_center_align')?.[align] ?? '')} relative ${MENU_HIGHLIGHT_BAR_CLASS}`}
             role="navigation"
             aria-label="Primary"
-            style={ready ? undefined : { opacity: 0 }}
+            style={{
+                ...(ready ? null : { opacity: 0 }),
+                ...(typeof barPadding === 'number' ? { paddingLeft: barPadding } : null),
+            }}
             onLayout={(e) => handleContainerLayout(e?.nativeEvent?.layout)}
         >
             <View

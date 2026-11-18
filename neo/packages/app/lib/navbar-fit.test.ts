@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { navbarTabBox, navbarTabsThatFit } from './navbar-fit.ts';
+import { navbarRowStart, navbarRowWidth, navbarTabBox, navbarTabsThatFit } from './navbar-fit.ts';
 
 // The header at 1440px: Home, People, Posts, Orgs, Albums, Market (as both clients measure them), 8px apart, More 44px.
 const TABS = [104, 111, 101, 96, 116, 112];
@@ -44,4 +44,29 @@ test('a tab sits where the centred row puts it', () => {
     assert.deepEqual(navbarTabBox([100, 50, 44], 2, 300, 8), { x: 211, width: 44 });
     // a row wider than the bar overflows evenly on both sides
     assert.deepEqual(navbarTabBox([200, 200], 0, 300, 8), { x: -54, width: 200 });
+});
+
+test('the row starts where the main menu is placed in the header', () => {
+    // a 210px row in a 300px bar
+    assert.equal(navbarRowWidth([100, 50, 44], 8), 210);
+    assert.equal(navbarRowStart('start', 300, 210), 0);
+    assert.equal(navbarRowStart('end', 300, 210), 90);
+    assert.equal(navbarRowStart('center', 300, 210), 45);
+});
+
+test("a centred row is centred on the header, as far as the bar leaves room", () => {
+    // the header's middle is 160px from the bar's left edge: the row starts at 160 - 105
+    assert.equal(navbarRowStart('center', 300, 210, 160), 55);
+    // too far either way: the row stays inside the bar
+    assert.equal(navbarRowStart('center', 300, 210, 20), 0);
+    assert.equal(navbarRowStart('center', 300, 210, 400), 90);
+    // a row that fills the bar can't move
+    assert.equal(navbarRowStart('center', 210, 210, 160), 0);
+    // no header measured yet: centred in the bar
+    assert.equal(navbarRowStart('center', 300, 210, null), 45);
+});
+
+test('a tab sits where its row starts', () => {
+    assert.deepEqual(navbarTabBox([100, 50, 44], 1, 300, 8, 0), { x: 108, width: 50 });
+    assert.deepEqual(navbarTabBox([100, 50, 44], 0, 300, 8, 90), { x: 90, width: 100 });
 });

@@ -544,6 +544,11 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_pt_default_visitor', '_adm_stg_cpt_option_sys_pt_default_visitor', '3', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:14:"get_page_types";s:5:"class";s:21:"TemplTemplateServices";}', '', '', 10),
 (@iCategoryId, 'sys_pt_default_member', '_adm_stg_cpt_option_sys_pt_default_member', '3', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:14:"get_page_types";s:5:"class";s:21:"TemplTemplateServices";}', '', '', 11),
 
+(@iCategoryId, 'sys_header_width_standard', '_adm_stg_cpt_option_sys_header_width_standard', 'page', 'select', 'page,full', '', '', 12),
+(@iCategoryId, 'sys_header_align_standard', '_adm_stg_cpt_option_sys_header_align_standard', 'start', 'select', 'start,center,end', '', '', 13),
+(@iCategoryId, 'sys_header_width_application', '_adm_stg_cpt_option_sys_header_width_application', 'full', 'select', 'page,full', '', '', 14),
+(@iCategoryId, 'sys_header_align_application', '_adm_stg_cpt_option_sys_header_align_application', 'start', 'select', 'start,center,end', '', '', 15),
+
 (@iCategoryId, 'sys_form_label_style', '_adm_stg_cpt_option_sys_form_label_style', 'regular', 'select', 'regular,adaptive', '', '', 20);
 
 --

@@ -1095,3 +1095,15 @@ ul.bx-menu-btns-icon-hor li:last-child .bx-btn {
 .bx-menu-meta-item-ex A{
     display: flex !important;
 }
+
+/*
+ * Where the main menu sits in the header (Designer > Settings > Header, or the template's own setting). In the
+ * middle it is centred in the header, not in the room between the logo and the toolbar: BxDolMenuMoreAuto moves the
+ * row there as far as that room allows (_balance).
+ */
+.bx-header-menu-center ul.bx-menu-main {
+    justify-content: center;
+}
+.bx-header-menu-end ul.bx-menu-main {
+    justify-content: flex-end;
+}

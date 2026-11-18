@@ -636,6 +636,8 @@ class BxBasePage extends BxDolPage
             'added' => $this->_aObject['added'],
             'module' => $sModule,
             'type' => $this->getType (),
+            // The header for this page's layout and this viewer, as Designer sets it: its width and where the main menu sits.
+            'header' => BxDolTemplate::getHeaderLayout($this->getType()),
             'layout' => $bSplash ? 'splash' : str_replace('.html', '', $this->_aObject['template']),
             'layout_parsed' => !is_numeric(trim(current(array_keys($aElements)), 'cell_')),
             'cover_block' => '',

@@ -118,6 +118,18 @@ li.bx-mi-hidden {
     }
 }
 
+/*
+ * Where the main menu sits in the header (Designer > Settings > Header, or the template's own setting). In the
+ * middle it is centred in the header, not in the room between the logo and the toolbar: BxDolMenuMoreAuto moves the
+ * row there as far as that room allows (_balance).
+ */
+.bx-header-menu-center ul.bx-menu-main {
+    justify-content: center;
+}
+.bx-header-menu-end ul.bx-menu-main {
+    justify-content: flex-end;
+}
+
 /*--- Page Submenu ---*/
 .bx-menu-main-submenu {
     -webkit-justify-content: center;

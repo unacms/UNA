@@ -71,13 +71,29 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         return $this->_oTemplate->parseHtmlByName('designbox_footer.html', ['content' => $sContent]);
     }
 
+    /**
+     * The header of the page being shown: Designer's for its layout (BxDolTemplate::getHeaderLayout). A template
+     * with header settings of its own overrides this.
+     * @return array ['layout' => ..., 'width' => 'page' or 'full', 'align' => 'start', 'center' or 'end']
+     */
+    public function getHeaderLayout()
+    {
+        return BxDolTemplate::getHeaderLayout(BxDolTemplate::getInstance()->getPageType());
+    }
+
     function TemplPageAddComponent($sKey)
     {
         $mixedResult = false; // if you have not such component, return false!
 
         switch($sKey) {
+            // The header's content is as wide as the page's, or as the window.
             case 'sys_header_width':
-                $mixedResult = 'bx-def-page-width';
+                $mixedResult = $this->getHeaderLayout()['width'] == 'full' ? '' : 'bx-def-page-width';
+                break;
+
+            // Where the main menu sits: next to the logo, in the middle of the header or next to the toolbar.
+            case 'sys_header_align':
+                $mixedResult = 'bx-header-menu-' . $this->getHeaderLayout()['align'];
                 break;
 
             case 'sys_toolbar_search':

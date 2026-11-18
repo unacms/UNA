@@ -150,6 +150,11 @@ define('BX_PAGE_TYPE_APPLICATION', 4); ///< regular page divided on columns with
  */
 class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
 {
+    /** How wide the header's content is: as the page's (Page width) or the window's. */
+    public const HEADER_WIDTHS = ['page', 'full'];
+    /** Where the main menu sits in the header: next to the logo, in the middle or next to the toolbar. */
+    public const HEADER_ALIGNS = ['start', 'center', 'end'];
+
     protected static $_sColorClassPrefix = 'col-';
     protected static $_sColorClassPrefixBg = 'bg-col-';
     protected static $_aColors = array(
@@ -867,10 +872,44 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         if(isset($this->aPage['type']))
             $iType = (int)$this->aPage['type'];
 
-        if($iType == BX_PAGE_TYPE_DEFAULT) 
+        return self::resolvePageType($iType);
+    }
+
+    /**
+     * The layout a page of this type has for the current viewer: Default is the one Designer sets for visitors or
+     * members (sys_pt_default_visitor, sys_pt_default_member).
+     * @param int $iType page type
+     * @return int page type, never Default
+     */
+    public static function resolvePageType($iType)
+    {
+        $iType = (int)$iType;
+        if($iType == BX_PAGE_TYPE_DEFAULT)
             $iType = (int)getParam('sys_pt_default_' . (isLogged() ? 'member' : 'visitor'));
 
         return $iType;
+    }
+
+    /**
+     * The header of a page of this type, as Designer sets it per layout (Designer > Settings > Header): the
+     * Application layout has its own, every other layout the Standard one's. Templates may override it on the site
+     * (BxBaseFunctions::getHeaderLayout); the apps get Designer's.
+     * @param int $iType page type, Default is resolved for the current viewer
+     * @return array ['layout' => 'standard' or 'application', 'width' => 'page' or 'full', 'align' => 'start', 'center' or 'end']
+     */
+    public static function getHeaderLayout($iType)
+    {
+        $sLayout = self::resolvePageType($iType) == BX_PAGE_TYPE_APPLICATION ? 'application' : 'standard';
+
+        $sWidth = getParam('sys_header_width_' . $sLayout);
+        if(!in_array($sWidth, self::HEADER_WIDTHS, true))
+            $sWidth = $sLayout == 'application' ? 'full' : 'page';
+
+        $sAlign = getParam('sys_header_align_' . $sLayout);
+        if(!in_array($sAlign, self::HEADER_ALIGNS, true))
+            $sAlign = 'start';
+
+        return ['layout' => $sLayout, 'width' => $sWidth, 'align' => $sAlign];
     }
 
     /**

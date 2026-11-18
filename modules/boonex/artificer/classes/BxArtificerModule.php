@@ -53,6 +53,30 @@ class BxArtificerModule extends BxBaseModTemplateModule
         return $aResult;
     }
 
+    /**
+     * The choices of the "Header width" setting: Designer's, or one width for every layout.
+     */
+    public function serviceGetOptionsHeaderWidth()
+    {
+        $aResult = ['' => _t('_bx_artificer_stg_cpt_option_header_designer')];
+        foreach(BxDolTemplate::HEADER_WIDTHS as $sOption)
+            $aResult[$sOption] = _t('_bx_artificer_stg_cpt_option_header_width_' . $sOption);
+
+        return $aResult;
+    }
+
+    /**
+     * The choices of the "Main menu alignment" setting: Designer's, or one place for every layout.
+     */
+    public function serviceGetOptionsHeaderAlign()
+    {
+        $aResult = ['' => _t('_bx_artificer_stg_cpt_option_header_designer')];
+        foreach(BxDolTemplate::HEADER_ALIGNS as $sOption)
+            $aResult[$sOption] = _t('_bx_artificer_stg_cpt_option_header_align_' . $sOption);
+
+        return $aResult;
+    }
+
     public function serviceGetSplashMarker($sName)
     {
         $sResult = '';
