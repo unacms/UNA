@@ -12,6 +12,7 @@ import { useMenuData } from 'app/context/menu-data';
 import { usePref, setPref } from 'app/context/prefs';
 import { useAppSidebarOpen, setAppSidebarOpen } from 'app/context/app-sidebar';
 import type { AppSidebarProps } from './app-sidebar.types';
+import { comparable, rowHref, type SidebarMenuItem } from './app-sidebar-entries';
 
 /**
  * UNA's Application layout on the web: the sidebar is the page's left column from top to bottom, and the header and
@@ -25,25 +26,7 @@ import type { AppSidebarProps } from './app-sidebar.types';
  * each of its items is a submenu (`sys_profile_stats`, `sys_profile_followings`...), listed one under another.
  */
 
-type MenuItem = { [key: string]: any };
-
-/** A link or a page URL as a bare path, so the two compare: no origin, no slashes around it. */
-function comparable(value: unknown): string {
-    if (typeof value !== 'string' || !value) return '';
-    let path = value;
-    const scheme = /^https?:\/\//.exec(path);
-    if (scheme) {
-        const slash = path.indexOf('/', scheme[0].length);
-        path = slash === -1 ? '' : path.slice(slash);
-    }
-    return path.split('/').filter(Boolean).join('/');
-}
-
-function rowHref(link: string): string | undefined {
-    if (!link || link === 'javascript:void(0)') return undefined;
-    if (link.startsWith('/') || /^https?:/.test(link)) return link;
-    return `/${link}`;
-}
+type MenuItem = SidebarMenuItem;
 
 /** The script that sets the state before React is there; the effect below keeps it in step afterwards. */
 const PREPAINT = `(function(){try{var p=JSON.parse(localStorage.getItem('neo:v1:prefs')||'{}');document.documentElement.setAttribute('data-neo-sidebar',p&&p.sidebarNarrow?'narrow':'expanded')}catch(e){document.documentElement.setAttribute('data-neo-sidebar','expanded')}})()`;
@@ -207,4 +190,9 @@ export function AppSidebarOpenButton() {
             <NeoButton borderShape="circle" image="PanelLeftOpen" style="glass" controlSize="regular" accessibilityLabel={t('Main menu')} sound={false} onPress={() => setAppSidebarOpen(!open)} />
         </View>
     );
+}
+
+/** Native only (app-sidebar.tsx): the web hides the header's logo with styles (`neo-header-logo`). */
+export function useAppSidebarHasLogo() {
+    return false;
 }
