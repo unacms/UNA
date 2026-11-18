@@ -8,7 +8,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { forgetPreopenedEntry, isPreopened, preopenedId, resumePreopened, setPreopened } from '../features/messages/preopen';
 import { focusWhenPresent } from '../lib/focused-entry';
 import { useNavigation, useRoute } from '../lib/navigation';
-import { detailPath, isPage, type ListRoute, type Route, sameRoute } from '../lib/router';
+import { type DetailRoute, detailPath, isPage, type ListRoute, type Route, sameRoute } from '../lib/router';
 import { paneHeadingId, type PaneName } from './pane';
 
 const PANES = ['sidebar', 'list', 'detail'] as const;
@@ -30,6 +30,78 @@ export function focusHeading(pane: PaneName): boolean {
     if (!heading || heading.closest('[inert], [hidden]')) return false;
     heading.focus();
     return true;
+}
+
+/** A navigation as focus sees it: where the window was and is, and what the shell kept about it. */
+type Move = {
+    before: Route;
+    route: Route;
+    /** The id of an element a command asked to have focused after this navigation. */
+    want: string | null;
+    /** The detail that closed is the conversation the inbox had opened by itself. */
+    closingPreopened: boolean;
+    /** What had focus when the detail that closed was opened. */
+    opener: HTMLElement | undefined;
+};
+
+/** A detail that just opened: its heading, unless something in it took focus itself (a new message's text box). */
+function focusOpenedDetail(detail: DetailRoute, sectionChanged: boolean): void {
+    if (isPreopened(detail)) {
+        // shown beside the inbox, not gone to: focus stays in the sidebar or the list
+        // (Messages entered with it, by Back or Forward: the list's heading, as a section)
+        if (sectionChanged) focusHeading('list');
+        return;
+    }
+    if (!document.activeElement?.closest('[data-pane="detail"]')) focusHeading('detail');
+}
+
+/**
+ * The conversation the inbox opened by itself has closed. Nothing opened it: focus stays where
+ * it is, unless it was in the pane that closed (then the conversation's row in the list).
+ */
+function focusAfterPreopened(before: Route): void {
+    // closed where it was opened: Back to that entry opens it as any other
+    forgetPreopenedEntry(before);
+    const active = document.activeElement;
+    if (active instanceof HTMLElement && active !== document.body && active.isConnected && !active.closest('[inert], [hidden]')) return;
+    const id = before.detail?.kind === 'conversation' ? before.detail.id : '';
+    const row = document.querySelector<HTMLElement>(`[data-pane="list"] [data-conversation="${CSS.escape(id)}"]`);
+    if (row && !row.closest('[inert], [hidden]')) row.focus();
+    else focusHeading('list');
+}
+
+/** A detail has closed: back to what opened it, else the row of the post it showed, else the list's heading. */
+function focusOpener(closed: DetailRoute, opener: HTMLElement | undefined): void {
+    // a virtualized feed may have drawn the post's row anew: the post it opened is the row with its id
+    const postId = closed.kind === 'post' ? closed.id : null;
+    const row = postId ? (Array.from(document.querySelectorAll<HTMLElement>('[data-pane="list"] article[data-id]')).find((el) => el.dataset.id === postId) ?? null) : null;
+    const target = opener?.isConnected ? opener : row;
+    if (target && !target.closest('[inert], [hidden]')) target.focus();
+    else focusHeading('list');
+}
+
+/**
+ * Focus follows navigation: a new section focuses the list's heading, an opened detail its
+ * heading, a closed detail what opened it. Screen readers read the heading that got focus.
+ */
+function moveFocus({ before, route, want, closingPreopened, opener }: Move): void {
+    if (want) {
+        // the detail it is in may still be loading; if it never comes, the detail's heading
+        focusWhenPresent(want, 3000, route.detail ? paneHeadingId('detail') : undefined);
+        return;
+    }
+    const sectionChanged = before.list.section !== route.list.section || pageKey(before.list) !== pageKey(route.list);
+    if (route.detail && (!before.detail || detailPath(before.detail) !== detailPath(route.detail))) {
+        focusOpenedDetail(route.detail, sectionChanged);
+        return;
+    }
+    if (sectionChanged) {
+        focusHeading('list');
+        return;
+    }
+    if (route.detail || !before.detail) return;
+    if (closingPreopened) focusAfterPreopened(before);
+    else focusOpener(before.detail, opener);
 }
 
 export type ShellFocus = {
@@ -82,9 +154,6 @@ export function useShellFocus(): ShellFocus {
         });
     }, [history]);
 
-    // Focus follows navigation: a new section focuses the list's heading, an opened detail its
-    // heading (unless something in it took focus itself, like a new message's text box), a
-    // closed detail what opened it. Screen readers read the heading that got focus.
     // the conversation the inbox opened by itself (preopen.ts) while it is the one open
     const preopenedPath = useRef<string | null>(null);
     useLayoutEffect(() => {
@@ -104,51 +173,9 @@ export function useShellFocus(): ShellFocus {
         if (preopenedId() !== null && !isPreopened(route.detail)) setPreopened(null);
         const closingPreopened = !route.detail && !!before.detail && preopenedPath.current === detailPath(before.detail);
         preopenedPath.current = route.detail && isPreopened(route.detail) ? detailPath(route.detail) : null;
-        const sectionChanged = before.list.section !== route.list.section || pageKey(before.list) !== pageKey(route.list);
-
         const want = pendingFocus.current;
         pendingFocus.current = null;
-        if (want) {
-            // the detail it is in may still be loading; if it never comes, the detail's heading
-            focusWhenPresent(want, 3000, route.detail ? paneHeadingId('detail') : undefined);
-            return;
-        }
-        if (route.detail && (!before.detail || detailPath(before.detail) !== detailPath(route.detail))) {
-            if (isPreopened(route.detail)) {
-                // shown beside the inbox, not gone to: focus stays in the sidebar or the list
-                // (Messages entered with it, by Back or Forward: the list's heading, as a section)
-                if (sectionChanged) focusHeading('list');
-                return;
-            }
-            if (!document.activeElement?.closest('[data-pane="detail"]')) focusHeading('detail');
-            return;
-        }
-        if (sectionChanged) {
-            focusHeading('list');
-            return;
-        }
-        if (closingPreopened && before.detail) {
-            // closed where it was opened: Back to that entry opens it as any other
-            forgetPreopenedEntry(before);
-            // nothing opened it: focus stays where it is, unless it was in the pane that closed
-            // (then the conversation's row in the list)
-            const active = document.activeElement;
-            if (active instanceof HTMLElement && active !== document.body && active.isConnected && !active.closest('[inert], [hidden]')) return;
-            const id = before.detail.kind === 'conversation' ? before.detail.id : '';
-            const row = document.querySelector<HTMLElement>(`[data-pane="list"] [data-conversation="${CSS.escape(id)}"]`);
-            if (row && !row.closest('[inert], [hidden]')) row.focus();
-            else focusHeading('list');
-            return;
-        }
-        if (!route.detail && before.detail) {
-            const opener = openers.current.get(detailPath(before.detail));
-            // a virtualized feed may have drawn the post's row anew: the post it opened is the row with its id
-            const postId = before.detail.kind === 'post' ? before.detail.id : null;
-            const row = postId ? (Array.from(document.querySelectorAll<HTMLElement>('[data-pane="list"] article[data-id]')).find((el) => el.dataset.id === postId) ?? null) : null;
-            const target = opener?.isConnected ? opener : row;
-            if (target && !target.closest('[inert], [hidden]')) target.focus();
-            else focusHeading('list');
-        }
+        moveFocus({ before, route, want, closingPreopened, opener: before.detail ? openers.current.get(detailPath(before.detail)) : undefined });
     }, [route, history]);
 
     useEffect(() => {
