@@ -39,23 +39,34 @@ class MenuSectionNavSqlTest extends PHPUnit\Framework\TestCase
     }
 
     /**
-     * A menu item's group (Studio > Navigation > an item > "Group in the apps"): the column, and the settings items'
-     * groups in the apps' SQL, the system's and the modules', no longer in the items' app config.
+     * The settings menu's sections are items without a link that the items sit under (Account, the current profile),
+     * the modules' items join the profile's, deleting the account is `danger` in its app config, and no item has a
+     * group (the removed `group_name` column, Studio's "Group in the apps").
      */
-    public function testFreshInstallGroupsTheSettingsItems(): void
+    public function testFreshInstallMakesTheSettingsSections(): void
     {
         $sRoot = __DIR__ . '/../../../';
-        $this->assertStringContainsString("`group_name` varchar(32) NOT NULL DEFAULT ''", (string)file_get_contents($sRoot . 'install/sql/system.sql'));
+        $sSystem = (string)file_get_contents($sRoot . 'install/sql/system.sql');
+        $this->assertStringNotContainsString('`group_name`', $sSystem);
+        $this->assertStringContainsString("('sys_account_settings', 'system', 'account-settings-section-account',", $sSystem);
+        $this->assertStringContainsString("('sys_account_settings', 'system', 'account-settings-section-profile',", $sSystem);
+        $this->assertStringContainsString("UPDATE `sys_menu_items` SET `parent_id`=@iMiAccountSettingsAccount WHERE `set_name`='sys_account_settings'", $sSystem);
+        $this->assertStringContainsString("UPDATE `sys_menu_items` SET `parent_id`=@iMiAccountSettingsProfile WHERE `set_name`='sys_account_settings'", $sSystem);
 
         $sApp = (string)file_get_contents($sRoot . 'modules/system/install/sql/enable-app-menus.sql');
-        $this->assertStringContainsString("SET `group_name`='account' WHERE `set_name`='sys_account_settings'", $sApp);
-        $this->assertStringContainsString("SET `group_name`=IF(`name`='account-settings-delete', 'danger', 'profile')", $sApp);
+        $this->assertStringContainsString("SET `config_api`='{\"danger\":true}' WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name`='account-settings-delete'", $sApp);
+        $this->assertStringContainsString("`name` IN ('account-settings-section-account', 'account-settings-section-profile')", $sApp);
+        $this->assertStringNotContainsString('group_name', $sApp);
+        $this->assertStringNotContainsString('{"group"', $sApp);
 
         foreach(['acl', 'notifications', 'payment'] as $sModule) {
+            $sEnable = (string)file_get_contents($sRoot . 'modules/boonex/' . $sModule . '/install/sql/enable.sql');
+            $this->assertStringContainsString("`name`='account-settings-section-profile'", $sEnable, $sModule);
+            $this->assertStringContainsString("SET `parent_id`=IFNULL(@iMiAccountSettingsProfile, 0) WHERE `set_name`='sys_account_settings'", $sEnable, $sModule);
+
             $sSql = (string)file_get_contents($sRoot . 'modules/boonex/' . $sModule . '/install/sql/enable-app.sql');
-            $this->assertStringContainsString("SET `group_name`='profile' WHERE `set_name`='sys_account_settings' AND `module`='bx_" . $sModule . "'", $sSql, $sModule);
+            $this->assertStringNotContainsString('group_name', $sSql, $sModule);
             $this->assertStringNotContainsString('{"group"', $sSql, $sModule);
         }
-        $this->assertStringNotContainsString('{"group"', $sApp);
     }
 }

@@ -1499,7 +1499,6 @@
 	<string name="_adm_nav_btn_sets_delete"><![CDATA[Удалить набор]]></string>
 	<string name="_adm_nav_btn_sets_edit"><![CDATA[Редактировать набор]]></string>
         <string name="_adm_nav_dsc_items_area_label"><![CDATA[Доступное имя для ссылки. Полезно, когда видимое текстовое содержимое ссылки недостаточно описательно или отсутствует.]]></string>
-	<string name="_adm_nav_dsc_items_group"><![CDATA[Приложения показывают меню, у пунктов которого есть группы, разделами: сначала аккаунт, затем пункты текущего профиля под его именем, пункты без группы и в конце опасные. Так устроены настройки аккаунта.]]></string>
 	<string name="_adm_nav_dsc_items_icon"><![CDATA[Вы можете использовать здесь иконку для шрифта, SVG код или эмодзи]]></string>
 	<string name="_adm_nav_dsc_items_icon_image"><![CDATA[или загрузить маленькую картинку для отображения рядом со ссылкой.]]></string>
 	<string name="_adm_nav_dsc_items_icon_image_current"><![CDATA[Картинка не загружена. В элементе меню будет использован текст.]]></string>
@@ -1559,11 +1558,6 @@
 	<string name="_adm_nav_txt_items_gl_module"><![CDATA[Модуль]]></string>
 	<string name="_adm_nav_txt_items_gl_title_system"><![CDATA[Системное имя]]></string>
 	<string name="_adm_nav_txt_items_gl_visible"><![CDATA[Видимо для]]></string>
-	<string name="_adm_nav_txt_items_group"><![CDATA[Группа в приложениях]]></string>
-	<string name="_adm_nav_txt_items_group_account"><![CDATA[Аккаунт]]></string>
-	<string name="_adm_nav_txt_items_group_danger"><![CDATA[Опасные]]></string>
-	<string name="_adm_nav_txt_items_group_none"><![CDATA[Нет]]></string>
-	<string name="_adm_nav_txt_items_group_profile"><![CDATA[Профиль]]></string>
 	<string name="_adm_nav_txt_items_icon"><![CDATA[Иконка]]></string>
 	<string name="_adm_nav_txt_items_icon_image"><![CDATA[]]></string>
 	<string name="_adm_nav_txt_items_icon_image_new"><![CDATA[]]></string>
@@ -3745,6 +3739,8 @@
     <string name="_sys_menu_item_title_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_account_settings_info"><![CDATA[Аккаунт]]></string>
     <string name="_sys_menu_item_title_account_settings_pwd"><![CDATA[Пароль]]></string>
+    <string name="_sys_menu_item_title_account_settings_section_account"><![CDATA[Аккаунт]]></string>
+    <string name="_sys_menu_item_title_account_settings_section_profile"><![CDATA[{member_display_name}]]></string>
     <string name="_sys_menu_item_title_profile_settings_cfilter"><![CDATA[Фильтр контента]]></string>
     <string name="_sys_menu_item_title_public_menu"><![CDATA[Обзор]]></string>
     <string name="_sys_menu_item_title_add_content"><![CDATA[Добавить...]]></string>
@@ -3856,6 +3852,8 @@
     <string name="_sys_menu_item_title_system_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_system_account_settings_info"><![CDATA[Аккаунт]]></string>
     <string name="_sys_menu_item_title_system_account_settings_pwd"><![CDATA[Пароль]]></string>
+    <string name="_sys_menu_item_title_system_account_settings_section_account"><![CDATA[Аккаунт (раздел)]]></string>
+    <string name="_sys_menu_item_title_system_account_settings_section_profile"><![CDATA[Текущий профиль (раздел)]]></string>
     <string name="_sys_menu_item_title_system_profile_settings_cfilter"><![CDATA[Фильтр контента]]></string>
     <string name="_sys_menu_item_title_system_add_content"><![CDATA[Добавить Содержимое]]></string>
     <string name="_sys_menu_item_title_system_apps"><![CDATA[Приложения]]></string>

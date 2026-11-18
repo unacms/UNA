@@ -4,11 +4,11 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Link from 'app/ui/atoms/link'
 import { components } from 'app/components/registry';
-import { appSetting, getMenuHub, getMenuView } from 'app/lib/util';
+import { appSetting, getMenuHub, getMenuSectionListItems, getMenuView } from 'app/lib/util';
 import MenuGrid from './menu-grid';
 import { useState } from 'react';
 import SettingsMenu from './settings-menu';
-import { hasMenuGroups } from 'app/lib/menu-groups';
+import { hasMenuSections } from 'app/lib/menu-sections';
 
 const conductorTheme = appSetting('theme', 'conductor');
 
@@ -122,11 +122,13 @@ export default function ElementMenu({ data, blockWrapperProps, url, itemsClassNa
             );
         });
 
-    // A menu whose items name their group (the Settings page's `sys_account_settings`) is a grouped list.
-    if (hasMenuGroups(topLevelItems)) {
+    // A section's own list (the Settings page's `sys_account_settings`) in the sections its items without a link make
+    // (`lib/menu-sections.ts`; an older UNA: the items' groups).
+    const sectionItems = getMenuSectionListItems(data?.content, topLevelItems);
+    if (hasMenuSections(sectionItems)) {
         return (
             <BlockWrapper {...blockWrapperProps}>
-                <SettingsMenu items={topLevelItems} hub={getMenuHub(data?.content)} />
+                <SettingsMenu items={sectionItems} hub={getMenuHub(data?.content)} />
             </BlockWrapper>
         );
     }

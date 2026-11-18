@@ -324,13 +324,71 @@ class BxBaseMenu extends BxDolMenu
             $this->_aObject['menu_items'] = $this->getMenuItemsRaw ();
 
         $aItems = array();
-        foreach ($this->_aObject['menu_items'] as $aItem) {
+        foreach ($this->_getMenuItemsShown($this->_aObject['menu_items']) as $aItem) {
             $aItem = $this->_getMenuItem ($aItem);
             if($aItem !== false)
                 $aItems[] = $aItem;
         }
 
         return $aItems;
+    }
+
+    /**
+     * The items as the menu's template can show them. A template with no subitems template of its own (a tab row,
+     * such as the settings submenu's `menu_main_submenu.html`) would drop a multilevel set's subitems, so on the site
+     * they are lifted to the parent's level: a parent without a link only groups them (the apps draw it as a section
+     * heading) and gives way to them, a parent with a link stays before them. A hidden or inactive parent hides them.
+     * The apps (API mode) always get the hierarchy.
+     * @param $aItems menu items, with `subitems` in a multilevel set
+     * @return array
+     */
+    protected function _getMenuItemsShown ($aItems)
+    {
+        if ($this->_bIsApi || !$this->isMultilevel() || !is_array($aItems) || $this->_hasSubitemsTemplate()) {
+            return $aItems;
+        }
+
+        $aResult = [];
+        foreach ($aItems as $sKey => $a) {
+            if (empty($a['subitems']) || !is_array($a['subitems'])) {
+                $aResult[$sKey] = $a;
+                continue;
+            }
+
+            if (!$this->_isActive($a) || !$this->_isVisible($a)) {
+                continue;
+            }
+
+            $aSubitems = $a['subitems'];
+            unset($a['subitems']);
+
+            $sLink = isset($a['link']) ? trim((string)$a['link']) : '';
+            if ($sLink !== '' && mb_stripos($sLink, 'javascript:') !== 0) {
+                $aResult[$sKey] = $a;
+            }
+
+            $aResult = array_merge($aResult, $this->_getMenuItemsShown($aSubitems));
+        }
+
+        return $aResult;
+    }
+
+    /**
+     * Whether the menu's template has a subitems template beside it (`menu_*_subitems.html`), which shows a
+     * multilevel set's subitems under their parent.
+     */
+    protected function _hasSubitemsTemplate ()
+    {
+        $sTemplate = $this->getTemplateName();
+        return $sTemplate !== '' && $this->_oTemplate->isHtml($this->_getSubitemsTemplateName($sTemplate));
+    }
+
+    /**
+     * The subitems template beside a menu template: `menu_x.html` has `menu_x_subitems.html`.
+     */
+    protected function _getSubitemsTemplateName ($sTemplate)
+    {
+        return str_replace('.html', '_subitems.html', $sTemplate);
     }
     
     /**
@@ -611,7 +669,7 @@ class BxBaseMenu extends BxDolMenu
                     ]
                 ];
 
-            $aTmplVarsSubitems['subitems'] = $this->_oTemplate->parseHtmlByName(str_replace('.html', '_subitems.html', $this->getTemplateName()), array(
+            $aTmplVarsSubitems['subitems'] = $this->_oTemplate->parseHtmlByName($this->_getSubitemsTemplateName($this->getTemplateName()), array(
                 'bx_repeat:menu_items' => $aSubitems,
             ));
         }
@@ -651,8 +709,6 @@ class BxBaseMenu extends BxDolMenu
             'hidden_on' => isset($a['hidden_on']) ? $a['hidden_on'] : false,
             'hidden_on_col' => isset($a['hidden_on_col']) ? $a['hidden_on_col'] : false,
             'config' => isset($a['config_api']) ? $a['config_api'] : '',
-            // Studio's "Group in the apps": BxDolMenu::ITEM_GROUP_*, empty for none.
-            'group' => BxDolMenu::normalizeItemGroup(isset($a['group_name']) ? $a['group_name'] : ''),
             'primary' => isset($a['primary']) ? $a['primary'] : 0,
             'persistent' => isset($a['persistent']) ? $a['persistent'] : 0,
             // Studio's "Icon only": the apps show the item's title next to its icon unless it is on, as the site does.

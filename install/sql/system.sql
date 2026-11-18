@@ -5129,7 +5129,6 @@ CREATE TABLE IF NOT EXISTS `sys_menu_items` (
   `hidden_on_pt` int(11) NOT NULL DEFAULT '0',
   `hidden_on_col` int(11) NOT NULL DEFAULT '0',
   `config_api` text NOT NULL,
-  `group_name` varchar(32) NOT NULL DEFAULT '',
   `primary` tinyint(4) NOT NULL DEFAULT '0',
   `collapsed` tinyint(4) NOT NULL DEFAULT '0',
   `persistent` tinyint(4) NOT NULL DEFAULT '0',
@@ -5268,6 +5267,15 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_account_settings', 'system', 'account-settings-password', '_sys_menu_item_title_system_account_settings_pwd', '_sys_menu_item_title_account_settings_pwd', 'page.php?i=account-settings-password', '', '', 'key', '', 2147483646, '', 1, 1, 4),
 ('sys_account_settings', 'system', 'profile-settings-cfilter', '_sys_menu_item_title_system_profile_settings_cfilter', '_sys_menu_item_title_profile_settings_cfilter', 'page.php?i=profile-settings-cfilter', '', '', 'filter', '', 2147483646, 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"is_enabled_cfilter";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 1, 1, 5),
 ('sys_account_settings', 'system', 'account-settings-delete', '_sys_menu_item_title_system_account_settings_delete', '_sys_menu_item_title_account_settings_delete', 'page.php?i=account-settings-delete', '', '', 'remove', '', 2147483646, '', 1, 1, 9999);
+-- Its sections, items without a link: the apps draw each as a heading over its subitems (the current profile's under
+-- the profile's name), the site's tab row shows the subitems in their place
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
+('sys_account_settings', 'system', 'account-settings-section-account', '_sys_menu_item_title_system_account_settings_section_account', '_sys_menu_item_title_account_settings_section_account', '', '', '', '', '', 2147483646, '', 1, 0, 1),
+('sys_account_settings', 'system', 'account-settings-section-profile', '_sys_menu_item_title_system_account_settings_section_profile', '_sys_menu_item_title_account_settings_section_profile', '', '', '', '', '', 2147483646, '', 1, 0, 2);
+SET @iMiAccountSettingsAccount = (SELECT `id` FROM `sys_menu_items` WHERE `set_name`='sys_account_settings' AND `name`='account-settings-section-account' LIMIT 1);
+SET @iMiAccountSettingsProfile = (SELECT `id` FROM `sys_menu_items` WHERE `set_name`='sys_account_settings' AND `name`='account-settings-section-profile' LIMIT 1);
+UPDATE `sys_menu_items` SET `parent_id`=@iMiAccountSettingsAccount WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name` IN ('account-settings-info', 'account-profile-switcher', 'account-settings-email', 'account-settings-password');
+UPDATE `sys_menu_items` SET `parent_id`=@iMiAccountSettingsProfile WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name`='profile-settings-cfilter';
 -- account dashboard
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
 ('sys_account_dashboard', 'system', 'dashboard', '_sys_menu_item_title_system_account_dashboard', '_sys_menu_item_title_account_dashboard', 'page.php?i=dashboard', '', '', 'tachometer-alt', '', '', 2147483646, 1, 1, 1),
