@@ -1523,12 +1523,11 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_settings_section_header')]),
             ],
         ];
-        foreach(['standard', 'application'] as $sLayout)
-            $aForm['inputs']['header_' . $sLayout] = [
-                'type' => 'custom',
-                'name' => 'header_' . $sLayout,
-                'content' => $this->getSettingsHeader($sLayout),
-            ];
+        $aForm['inputs']['header_table'] = [
+            'type' => 'custom',
+            'name' => 'header_table',
+            'content' => $this->getSettingsHeader(),
+        ];
 
         // One style for the site's forms and the apps', which read it from the form API (BxBaseFormView::getLabelStyle).
         $aForm['inputs'] += [
@@ -1653,41 +1652,61 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
     }
 
     /**
-     * A layout's header as two rows of cards, its width and the main menu's place, each with a sketch of the header.
-     * @param string $sLayout 'standard' or 'application'
+     * The headers as a table: a row per layout (Standard, Application), a column per audience (visitors, members),
+     * and in each cell a sketch of that header over two segmented controls, its width and the main menu's place.
+     * The sketch follows the controls (designer.css, :has).
      */
-    protected function getSettingsHeader($sLayout)
+    protected function getSettingsHeader()
     {
         $oTemplate = BxDolStudioTemplate::getInstance();
-        $aCurrent = BxDolTemplate::getHeaderLayout($sLayout == 'application' ? BX_PAGE_TYPE_APPLICATION : BX_PAGE_TYPE_STANDARD);
 
-        $aRows = [
-            'width' => ['option' => 'sys_header_width_' . $sLayout, 'values' => BxDolTemplate::HEADER_WIDTHS],
-            'align' => ['option' => 'sys_header_align_' . $sLayout, 'values' => BxDolTemplate::HEADER_ALIGNS],
-        ];
+        $aAudiences = [];
+        foreach(BxDolTemplate::HEADER_AUDIENCES as $sWho)
+            $aAudiences[] = ['audience' => $sWho, 'caption' => _t('_adm_dsg_txt_settings_layout_' . $sWho)];
 
         $sRows = '';
-        foreach($aRows as $sKind => $aRow) {
-            $aChoices = [];
-            foreach($aRow['values'] as $sValue)
-                $aChoices[] = [
-                    'name' => $aRow['option'],
-                    'value' => $sValue,
-                    'title' => _t('_adm_dsg_txt_settings_header_' . $sKind . '_' . $sValue),
-                    'checked' => $aCurrent[$sKind] == $sValue ? 'checked="checked"' : '',
-                    // The width cards show the menu where it is now, the menu cards the width it is now.
-                    'width' => $sKind == 'width' ? $sValue : $aCurrent['width'],
-                    'align' => $sKind == 'align' ? $sValue : $aCurrent['align'],
+        foreach(BxDolTemplate::HEADER_LAYOUTS as $sLayout) {
+            $aCells = [];
+            foreach(BxDolTemplate::HEADER_AUDIENCES as $sWho) {
+                $aCurrent = BxDolTemplate::getHeaderLayout($sLayout == 'application' ? BX_PAGE_TYPE_APPLICATION : BX_PAGE_TYPE_STANDARD, $sWho == 'member');
+
+                $sControls = '';
+                foreach(['width' => BxDolTemplate::HEADER_WIDTHS, 'align' => BxDolTemplate::HEADER_ALIGNS] as $sKind => $aValues) {
+                    $sName = 'sys_header_' . $sKind . '_' . $sLayout . '_' . $sWho;
+
+                    $aChoices = [];
+                    foreach($aValues as $sValue)
+                        $aChoices[] = [
+                            'name' => $sName,
+                            'value' => $sValue,
+                            'title' => _t('_adm_dsg_txt_settings_header_' . $sKind . '_' . $sValue),
+                            'checked' => $aCurrent[$sKind] == $sValue ? 'checked="checked"' : '',
+                        ];
+
+                    $sControls .= $oTemplate->parseHtmlByName('dsr_settings_header_control.html', [
+                        'id' => 'adm-dsg-ht-' . $sName,
+                        'caption' => _t('_adm_dsg_txt_settings_header_' . $sKind),
+                        'bx_repeat:choices' => $aChoices,
+                    ]);
+                }
+
+                $aCells[] = [
+                    'layout' => $sLayout,
+                    'audience' => $sWho,
+                    'audience_caption' => _t('_adm_dsg_txt_settings_layout_' . $sWho),
+                    'controls' => $sControls,
                 ];
+            }
 
             $sRows .= $oTemplate->parseHtmlByName('dsr_settings_header_row.html', [
-                'caption' => _t('_adm_dsg_txt_settings_header_' . $sKind),
-                'bx_repeat:choices' => $aChoices,
+                'layout' => $sLayout,
+                'caption' => _t('_adm_dsg_txt_settings_header_' . $sLayout),
+                'bx_repeat:cells' => $aCells,
             ]);
         }
 
         return $oTemplate->parseHtmlByName('dsr_settings_header.html', [
-            'caption' => _t('_adm_dsg_txt_settings_header_' . $sLayout),
+            'bx_repeat:audiences' => $aAudiences,
             'rows' => $sRows,
         ]);
     }

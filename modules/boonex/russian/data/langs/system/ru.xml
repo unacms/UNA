@@ -844,7 +844,7 @@
 	<string name="_adm_dsg_inf_pwa_sw_offline"><![CDATA[Показывается вместо ошибки браузера, когда нет связи: адрес на этом сайте, например page.php?i=about. Оставьте пустым, чтобы показывать страницу браузера.]]></string>
 	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Цвет заголовка окна приложения, а на телефонах — строки состояния. По умолчанию — цвет, заданный шаблоном.]]></string>
 	<string name="_adm_dsg_inf_settings_section_forms"><![CDATA[Как формы подписывают однострочные текстовые поля на сайте и в приложениях. Отдельному виду формы можно задать свой стиль в разделе <a href="{0}">Формы</a>. Приложение без плавающих подписей показывает их над полями.]]></string>
-	<string name="_adm_dsg_inf_settings_section_header"><![CDATA[Ширина шапки и место главного меню в ней для каждого макета страницы. Им следуют сайт и приложения; шаблон может задать свои в своих настройках.]]></string>
+	<string name="_adm_dsg_inf_settings_section_header"><![CDATA[Ширина шапки и место главного меню в ней для каждого макета страницы, отдельно для гостей и для участников. Им следуют сайт и приложения; шаблон может задать свои в своих настройках.]]></string>
 	<string name="_adm_dsg_inf_settings_section_layout"><![CDATA[Где вокруг содержимого страницы стоят шапка, меню и подвал. Страницы со своим макетом в разделе <a href="{0}">Страницы</a> сохраняют его, остальные используют макеты ниже.]]></string>
 	<string name="_adm_dsg_inf_settings_section_template"><![CDATA[Шаблон отвечает за весь вид сайта: шапку, меню, цвета и шрифты. Все видят этот шаблон, если сами не выбрали другой включённый.]]></string>
 	<string name="_adm_dsg_inf_splash_section_apps"><![CDATA[Код только для одного приложения. Пустое поле использует код страницы выше. Приложения рисуют формы, логотип и иллюстрацию своими компонентами и пропускают скрипты и всё, что отмечено <code>data-site-only</code>. Приложения для iOS и Android показывают текст, заголовки, списки и ссылки без стилей и раскладки. Добавьте <code>&lt;neo-slot name="social_login"&gt;&lt;/neo-slot&gt;</code>, чтобы показать только кнопки входа через соцсети.]]></string>
@@ -2009,10 +2009,14 @@
     <string name="_adm_stg_cpt_option_sys_ftp_dir"><![CDATA[Путь к скрипту на FTP-сервере]]></string>
     <string name="_adm_stg_cpt_option_sys_ftp_login"><![CDATA[FTP-сервер - Логин]]></string>
     <string name="_adm_stg_cpt_option_sys_ftp_password"><![CDATA[FTP-сервер - Пароль]]></string>
-    <string name="_adm_stg_cpt_option_sys_header_align_application"><![CDATA[Положение главного меню на страницах-приложениях]]></string>
-    <string name="_adm_stg_cpt_option_sys_header_align_standard"><![CDATA[Положение главного меню на обычных страницах]]></string>
-    <string name="_adm_stg_cpt_option_sys_header_width_application"><![CDATA[Ширина шапки на страницах-приложениях]]></string>
-    <string name="_adm_stg_cpt_option_sys_header_width_standard"><![CDATA[Ширина шапки на обычных страницах]]></string>
+    <string name="_adm_stg_cpt_option_sys_header_align_application_member"><![CDATA[Положение главного меню на страницах-приложениях для участников]]></string>
+    <string name="_adm_stg_cpt_option_sys_header_align_application_visitor"><![CDATA[Положение главного меню на страницах-приложениях для гостей]]></string>
+    <string name="_adm_stg_cpt_option_sys_header_align_standard_member"><![CDATA[Положение главного меню на обычных страницах для участников]]></string>
+    <string name="_adm_stg_cpt_option_sys_header_align_standard_visitor"><![CDATA[Положение главного меню на обычных страницах для гостей]]></string>
+    <string name="_adm_stg_cpt_option_sys_header_width_application_member"><![CDATA[Ширина шапки на страницах-приложениях для участников]]></string>
+    <string name="_adm_stg_cpt_option_sys_header_width_application_visitor"><![CDATA[Ширина шапки на страницах-приложениях для гостей]]></string>
+    <string name="_adm_stg_cpt_option_sys_header_width_standard_member"><![CDATA[Ширина шапки на обычных страницах для участников]]></string>
+    <string name="_adm_stg_cpt_option_sys_header_width_standard_visitor"><![CDATA[Ширина шапки на обычных страницах для гостей]]></string>
     <string name="_adm_stg_cpt_option_sys_cron_time"><![CDATA[Дата последнего запуска планировщика]]></string>
     <string name="_adm_stg_cpt_option_sys_update_time"><![CDATA[Последнее обновление]]></string>
     <string name="_adm_stg_cpt_option_sys_upgrade_channel"><![CDATA[Канал обновлений]]></string>

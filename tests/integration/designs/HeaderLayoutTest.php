@@ -3,17 +3,18 @@
 use PHPUnit\Framework\Attributes\Group;
 
 /**
- * The header per page layout (Studio > Designer > Settings > Header): its width and where the main menu sits, one pair
- * for Standard pages and one for Application pages (BxDolTemplate::getHeaderLayout). Designer saves only the values
- * there are, the site's header takes them (BxBaseFunctions::TemplPageAddComponent, Artificer's own settings winning),
- * and the apps get them with each page (`header` of the page API).
+ * The header per page layout and audience (Studio > Designer > Settings > Header): its width and where the main menu
+ * sits, for Standard and Application pages, for visitors and for members (BxDolTemplate::getHeaderLayout). Designer
+ * saves only the values there are, the site's header takes them (BxBaseFunctions::TemplPageAddComponent, Artificer's
+ * own settings winning), and the apps get them with each page (`header` of the page API).
  */
 #[Group('integration')]
 class HeaderLayoutTest extends BxDolIntegrationTestCase
 {
     private const OPTIONS = [
         'sys_pt_default_visitor', 'sys_pt_default_member',
-        'sys_header_width_standard', 'sys_header_align_standard', 'sys_header_width_application', 'sys_header_align_application',
+        'sys_header_width_standard_visitor', 'sys_header_align_standard_visitor', 'sys_header_width_application_visitor', 'sys_header_align_application_visitor',
+        'sys_header_width_standard_member', 'sys_header_align_standard_member', 'sys_header_width_application_member', 'sys_header_align_application_member',
         'bx_artificer_header_width', 'bx_artificer_header_align',
     ];
 
@@ -50,30 +51,64 @@ class HeaderLayoutTest extends BxDolIntegrationTestCase
 
     public function testEachLayoutHasItsOwnHeader(): void
     {
-        $this->setHeader('page', 'start', 'full', 'center');
+        $this->setHeader('visitor', 'page', 'start', 'full', 'center');
 
         $this->assertSame(['layout' => 'standard', 'width' => 'page', 'align' => 'start'], BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_STANDARD));
         $this->assertSame(['layout' => 'application', 'width' => 'full', 'align' => 'center'], BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_APPLICATION));
         $this->assertSame('standard', BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_DEFAULT_WO_HF)['layout'], 'other layouts take the Standard header');
     }
 
-    public function testDefaultIsTheViewersLayout(): void
+    public function testVisitorsAndMembersHaveTheirOwnHeaders(): void
     {
-        $this->setHeader('page', 'start', 'full', 'end');
+        // Setup A: a site for guests (page width, links next to the logo), full width centred tabs for members.
+        $this->setHeader('visitor', 'page', 'start', 'full', 'start');
+        $this->setHeader('member', 'full', 'center', 'page', 'end');
 
-        setParam('sys_pt_default_visitor', BX_PAGE_TYPE_APPLICATION);
-        $this->assertSame('application', BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_DEFAULT)['layout'], 'a guest gets the visitors\' layout');
+        $this->assertSame(['layout' => 'standard', 'width' => 'page', 'align' => 'start'], BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_STANDARD, false));
+        $this->assertSame(['layout' => 'standard', 'width' => 'full', 'align' => 'center'], BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_STANDARD, true));
+        $this->assertSame(['layout' => 'application', 'width' => 'page', 'align' => 'end'], BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_APPLICATION, true));
+        $this->assertSame('start', BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_STANDARD)['align'], 'a guest gets the visitors\' header');
+    }
 
+    public function testDefaultIsTheAudiencesLayout(): void
+    {
+        // Setup B: guests get Standard pages, members Application pages, each with its own header.
+        $this->setHeader('visitor', 'page', 'start', 'full', 'end');
+        $this->setHeader('member', 'full', 'center', 'full', 'start');
         setParam('sys_pt_default_visitor', BX_PAGE_TYPE_STANDARD);
-        $this->assertSame('standard', BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_DEFAULT)['layout']);
+        setParam('sys_pt_default_member', BX_PAGE_TYPE_APPLICATION);
+
+        $this->assertSame(['layout' => 'standard', 'width' => 'page', 'align' => 'start'], BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_DEFAULT, false));
+        $this->assertSame(['layout' => 'application', 'width' => 'full', 'align' => 'start'], BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_DEFAULT, true));
+        $this->assertSame('standard', BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_DEFAULT)['layout'], 'a guest gets the visitors\' layout');
+
+        // A page with a layout of its own keeps it for members too (About, Terms, a wiki).
+        $this->assertSame(['layout' => 'standard', 'width' => 'full', 'align' => 'center'], BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_STANDARD, true));
+    }
+
+    public function testASignedInViewerGetsTheMembersHeader(): void
+    {
+        $this->setHeader('visitor', 'page', 'start', 'page', 'start');
+        $this->setHeader('member', 'full', 'end', 'full', 'end');
+
+        $this->bxLoginAsAdmin(); // any signed-in account
+        try {
+            $this->assertSame(['layout' => 'standard', 'width' => 'full', 'align' => 'end'], BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_STANDARD));
+        }
+        finally {
+            $this->bxBecomeGuest();
+        }
     }
 
     public function testUnknownValuesKeepTheHeaderAsItWas(): void
     {
-        $this->setHeader('wide', 'middle', '', '');
+        $this->setHeader('visitor', 'wide', 'middle', '', '');
+        $this->setHeader('member', '', '', 'huge', 'left');
 
-        $this->assertSame(['layout' => 'standard', 'width' => 'page', 'align' => 'center'], BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_STANDARD));
-        $this->assertSame(['layout' => 'application', 'width' => 'full', 'align' => 'start'], BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_APPLICATION));
+        foreach ([false, true] as $bMember) {
+            $this->assertSame(['layout' => 'standard', 'width' => 'page', 'align' => 'center'], BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_STANDARD, $bMember));
+            $this->assertSame(['layout' => 'application', 'width' => 'full', 'align' => 'start'], BxDolTemplate::getHeaderLayout(BX_PAGE_TYPE_APPLICATION, $bMember));
+        }
     }
 
     public function testStartAndEndOutrankTheHeadersCentring(): void
@@ -88,35 +123,38 @@ class HeaderLayoutTest extends BxDolIntegrationTestCase
 
     public function testDesignerSavesOnlyRealValues(): void
     {
-        $this->setHeader('page', 'start', 'full', 'start');
+        $this->setHeader('visitor', 'page', 'start', 'full', 'start');
+        $this->setHeader('member', 'page', 'start', 'full', 'start');
 
-        $_GET = ['sys_header_width_standard' => 'full', 'sys_header_align_standard' => 'center', 'sys_header_width_application' => 'page', 'sys_header_align_application' => 'end'];
+        $_GET = $this->request('visitor', 'full', 'center', 'page', 'end') + $this->request('member', 'page', 'end', 'full', 'center');
         $this->designer()->submitSettings();
-        $this->assertSame(['full', 'center', 'page', 'end'], $this->getHeader());
+        $this->assertSame(['full', 'center', 'page', 'end'], $this->getHeader('visitor'));
+        $this->assertSame(['page', 'end', 'full', 'center'], $this->getHeader('member'));
 
-        $_GET = ['sys_header_width_standard' => 'huge', 'sys_header_align_standard' => 'left', 'sys_header_width_application' => '', 'sys_header_align_application' => '<b>'];
+        $_GET = $this->request('visitor', 'huge', 'left', '', '<b>') + $this->request('member', 'wide', '1', 'page width', 'middle');
         $this->designer()->submitSettings();
-        $this->assertSame(['full', 'center', 'page', 'end'], $this->getHeader(), 'unknown values are not saved');
+        $this->assertSame(['full', 'center', 'page', 'end'], $this->getHeader('visitor'), 'unknown values are not saved');
+        $this->assertSame(['page', 'end', 'full', 'center'], $this->getHeader('member'), 'unknown values are not saved');
     }
 
-    public function testDesignerShowsTheChoicesOfBothLayouts(): void
+    public function testDesignerShowsTheTable(): void
     {
-        $this->setHeader('full', 'center', 'page', 'end');
+        $this->setHeader('visitor', 'full', 'center', 'page', 'end');
+        $this->setHeader('member', 'page', 'start', 'full', 'center');
 
-        $oMethod = new ReflectionMethod('BxBaseStudioDesigner', 'getSettingsHeader');
-        $sStandard = $oMethod->invoke($this->designer(), 'standard');
-        $sApplication = $oMethod->invoke($this->designer(), 'application');
+        $sTable = (new ReflectionMethod('BxBaseStudioDesigner', 'getSettingsHeader'))->invoke($this->designer());
 
-        $this->assertMatchesRegularExpression('/name="sys_header_width_standard" value="full" checked="checked"/', $sStandard);
-        $this->assertMatchesRegularExpression('/name="sys_header_align_standard" value="center" checked="checked"/', $sStandard);
-        $this->assertMatchesRegularExpression('/name="sys_header_width_application" value="page" checked="checked"/', $sApplication);
-        $this->assertMatchesRegularExpression('/name="sys_header_align_application" value="end" checked="checked"/', $sApplication);
-        $this->assertSame(5, substr_count($sStandard, 'type="radio"'), 'two widths and three places');
+        foreach (['visitor' => ['full', 'center', 'page', 'end'], 'member' => ['page', 'start', 'full', 'center']] as $sWho => $aValues)
+            foreach (array_combine(['width_standard', 'align_standard', 'width_application', 'align_application'], $aValues) as $sName => $sValue)
+                $this->assertMatchesRegularExpression('/name="sys_header_' . $sName . '_' . $sWho . '" value="' . $sValue . '" checked="checked"/', $sTable);
+        $this->assertSame(20, substr_count($sTable, 'type="radio"'), 'four headers, each with two widths and three places');
+        $this->assertSame(8, substr_count($sTable, 'checked="checked"'), 'one choice per control');
+        $this->assertStringContainsString('aria-labelledby="adm-dsg-ht-application adm-dsg-ht-member"', $sTable, 'each cell is named by its row and column');
     }
 
     public function testTheSiteHeaderTakesTheLayoutsHeader(): void
     {
-        $this->setHeader('full', 'center', 'page', 'end');
+        $this->setHeader('visitor', 'full', 'center', 'page', 'end');
         setParam('bx_artificer_header_width', '');
         setParam('bx_artificer_header_align', '');
         $oFunctions = BxTemplFunctions::getInstance();
@@ -136,7 +174,7 @@ class HeaderLayoutTest extends BxDolIntegrationTestCase
         if (!method_exists($oFunctions, 'getHeaderLayout') || (new ReflectionMethod($oFunctions, 'getHeaderLayout'))->getDeclaringClass()->getName() != 'BxTemplFunctions')
             $this->markTestSkipped('Artificer is not the site template');
 
-        $this->setHeader('page', 'start', 'page', 'start');
+        $this->setHeader('visitor', 'page', 'start', 'page', 'start');
         BxDolTemplate::getInstance()->setPageType(BX_PAGE_TYPE_STANDARD);
 
         setParam('bx_artificer_header_width', 'full');
@@ -160,7 +198,7 @@ class HeaderLayoutTest extends BxDolIntegrationTestCase
 
     public function testTheAppsGetThePagesHeader(): void
     {
-        $this->setHeader('full', 'end', 'page', 'center');
+        $this->setHeader('visitor', 'full', 'end', 'page', 'center');
         setParam('sys_pt_default_visitor', BX_PAGE_TYPE_STANDARD);
 
         if (($sObject = BxDolPageQuery::getPageObjectNameByURI('home')))
@@ -174,17 +212,25 @@ class HeaderLayoutTest extends BxDolIntegrationTestCase
         $this->assertSame('end', $aData['header']['align']);
     }
 
-    private function setHeader(string $sWidthStandard, string $sAlignStandard, string $sWidthApplication, string $sAlignApplication): void
+    private function setHeader(string $sWho, string $sWidthStandard, string $sAlignStandard, string $sWidthApplication, string $sAlignApplication): void
     {
-        setParam('sys_header_width_standard', $sWidthStandard);
-        setParam('sys_header_align_standard', $sAlignStandard);
-        setParam('sys_header_width_application', $sWidthApplication);
-        setParam('sys_header_align_application', $sAlignApplication);
+        foreach ($this->request($sWho, $sWidthStandard, $sAlignStandard, $sWidthApplication, $sAlignApplication) as $sName => $sValue)
+            setParam($sName, $sValue);
     }
 
-    private function getHeader(): array
+    private function request(string $sWho, string $sWidthStandard, string $sAlignStandard, string $sWidthApplication, string $sAlignApplication): array
     {
-        return [getParam('sys_header_width_standard'), getParam('sys_header_align_standard'), getParam('sys_header_width_application'), getParam('sys_header_align_application')];
+        return [
+            'sys_header_width_standard_' . $sWho => $sWidthStandard,
+            'sys_header_align_standard_' . $sWho => $sAlignStandard,
+            'sys_header_width_application_' . $sWho => $sWidthApplication,
+            'sys_header_align_application_' . $sWho => $sAlignApplication,
+        ];
+    }
+
+    private function getHeader(string $sWho): array
+    {
+        return array_map('getParam', array_keys($this->request($sWho, '', '', '', '')));
     }
 
     private function designer(): BxDolStudioDesigner

@@ -850,7 +850,7 @@
 	<string name="_adm_dsg_inf_pwa_sw_offline"><![CDATA[Shown instead of the browser error when there is no connection: an address on this site, such as page.php?i=about. Leave it empty to use the browser page.]]></string>
 	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Colors the app title bar and, on phones, the status bar. Defaults to the color your template sets.]]></string>
 	<string name="_adm_dsg_inf_settings_section_forms"><![CDATA[How forms label their one-line text fields, on the site and in the apps. A form display can use a style of its own, set in <a href="{0}">Forms</a>. An app without floating labels shows them above the fields.]]></string>
-	<string name="_adm_dsg_inf_settings_section_header"><![CDATA[How wide the header is and where the main menu sits in it, for each page layout. The site and the apps follow these; a template can set its own in its settings.]]></string>
+	<string name="_adm_dsg_inf_settings_section_header"><![CDATA[How wide the header is and where the main menu sits in it, for each page layout, for visitors and for members. The site and the apps follow these; a template can set its own in its settings.]]></string>
 	<string name="_adm_dsg_inf_settings_section_layout"><![CDATA[Where the header, menus and footer go around the content of a page. Pages with a layout of their own in <a href="{0}">Pages</a> keep it; all the others use the ones below.]]></string>
 	<string name="_adm_dsg_inf_settings_section_template"><![CDATA[The template draws the whole site: its header, menus, colors and fonts. Everyone sees this one unless they pick another enabled template themselves.]]></string>
 	<string name="_adm_dsg_inf_splash_section_apps"><![CDATA[Code for one app only. An empty field uses the page code above. The apps draw the forms, the logo and the illustration with their own components, and leave out scripts and anything marked <code>data-site-only</code>. The iOS and Android apps show text, headings, lists and links, without styles or layout. Add <code>&lt;neo-slot name="social_login"&gt;&lt;/neo-slot&gt;</code> for the social sign-in buttons alone.]]></string>
@@ -2038,10 +2038,14 @@
     <string name="_adm_stg_cpt_option_sys_ftp_dir"><![CDATA[Path to the script on FTP server]]></string>
     <string name="_adm_stg_cpt_option_sys_ftp_login"><![CDATA[FTP server login]]></string>
     <string name="_adm_stg_cpt_option_sys_ftp_password"><![CDATA[FTP server password]]></string>
-    <string name="_adm_stg_cpt_option_sys_header_align_application"><![CDATA[Main menu alignment on Application pages]]></string>
-    <string name="_adm_stg_cpt_option_sys_header_align_standard"><![CDATA[Main menu alignment on Standard pages]]></string>
-    <string name="_adm_stg_cpt_option_sys_header_width_application"><![CDATA[Header width on Application pages]]></string>
-    <string name="_adm_stg_cpt_option_sys_header_width_standard"><![CDATA[Header width on Standard pages]]></string>
+    <string name="_adm_stg_cpt_option_sys_header_align_application_member"><![CDATA[Main menu alignment on Application pages for members]]></string>
+    <string name="_adm_stg_cpt_option_sys_header_align_application_visitor"><![CDATA[Main menu alignment on Application pages for visitors]]></string>
+    <string name="_adm_stg_cpt_option_sys_header_align_standard_member"><![CDATA[Main menu alignment on Standard pages for members]]></string>
+    <string name="_adm_stg_cpt_option_sys_header_align_standard_visitor"><![CDATA[Main menu alignment on Standard pages for visitors]]></string>
+    <string name="_adm_stg_cpt_option_sys_header_width_application_member"><![CDATA[Header width on Application pages for members]]></string>
+    <string name="_adm_stg_cpt_option_sys_header_width_application_visitor"><![CDATA[Header width on Application pages for visitors]]></string>
+    <string name="_adm_stg_cpt_option_sys_header_width_standard_member"><![CDATA[Header width on Standard pages for members]]></string>
+    <string name="_adm_stg_cpt_option_sys_header_width_standard_visitor"><![CDATA[Header width on Standard pages for visitors]]></string>
     <string name="_adm_stg_cpt_option_sys_cron_time"><![CDATA[Last cron execution time]]></string>
     <string name="_adm_stg_cpt_option_sys_update_time"><![CDATA[Last update]]></string>
     <string name="_adm_stg_cpt_option_sys_upgrade_channel"><![CDATA[Update channel]]></string>

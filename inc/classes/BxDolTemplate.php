@@ -154,6 +154,10 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
     public const HEADER_WIDTHS = ['page', 'full'];
     /** Where the main menu sits in the header: next to the logo, in the middle or next to the toolbar. */
     public const HEADER_ALIGNS = ['start', 'center', 'end'];
+    /** The page layouts with a header of their own: Application, and Standard for every other layout. */
+    public const HEADER_LAYOUTS = ['standard', 'application'];
+    /** Who the header is for: visitors (guests) and members (signed in). */
+    public const HEADER_AUDIENCES = ['visitor', 'member'];
 
     protected static $_sColorClassPrefix = 'col-';
     protected static $_sColorClassPrefixBg = 'bg-col-';
@@ -891,22 +895,31 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
-     * The header of a page of this type, as Designer sets it per layout (Designer > Settings > Header): the
-     * Application layout has its own, every other layout the Standard one's. Templates may override it on the site
-     * (BxBaseFunctions::getHeaderLayout); the apps get Designer's.
+     * The header of a page of this type, as Designer sets it per layout and audience (Designer > Settings > Header):
+     * the Application layout has its own, every other layout the Standard one's, and each has one for visitors and
+     * one for members. Templates may override it on the site (BxBaseFunctions::getHeaderLayout); the apps get Designer's.
      * @param int $iType page type, Default is resolved for the current viewer
+     * @param bool|null $bMember whose header: a member's or a visitor's; null is the current viewer's
      * @return array ['layout' => 'standard' or 'application', 'width' => 'page' or 'full', 'align' => 'start', 'center' or 'end']
      */
-    public static function getHeaderLayout($iType)
+    public static function getHeaderLayout($iType, $bMember = null)
     {
-        $sLayout = self::resolvePageType($iType) == BX_PAGE_TYPE_APPLICATION ? 'application' : 'standard';
+        if($bMember === null)
+            $bMember = isLogged();
 
-        $sWidth = getParam('sys_header_width_' . $sLayout);
+        $iType = (int)$iType;
+        if($iType == BX_PAGE_TYPE_DEFAULT)
+            $iType = (int)getParam('sys_pt_default_' . ($bMember ? 'member' : 'visitor'));
+
+        $sLayout = $iType == BX_PAGE_TYPE_APPLICATION ? 'application' : 'standard';
+        $sSuffix = $sLayout . '_' . ($bMember ? 'member' : 'visitor');
+
+        $sWidth = getParam('sys_header_width_' . $sSuffix);
         if(!in_array($sWidth, self::HEADER_WIDTHS, true))
             $sWidth = $sLayout == 'application' ? 'full' : 'page';
 
         // As the header was before the setting: the site centres the menu of Standard pages, Application's follows the logo.
-        $sAlign = getParam('sys_header_align_' . $sLayout);
+        $sAlign = getParam('sys_header_align_' . $sSuffix);
         if(!in_array($sAlign, self::HEADER_ALIGNS, true))
             $sAlign = $sLayout == 'application' ? 'start' : 'center';
 

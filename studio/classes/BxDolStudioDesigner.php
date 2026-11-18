@@ -547,14 +547,15 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
                 $aValues[$sName] = $iType;
         }
 
-        // The header per layout: only the widths and places there are.
-        foreach(['standard', 'application'] as $sLayout)
-            foreach(['width' => BxDolTemplate::HEADER_WIDTHS, 'align' => BxDolTemplate::HEADER_ALIGNS] as $sKind => $aAllowed) {
-                $sName = 'sys_header_' . $sKind . '_' . $sLayout;
-                $sValue = bx_process_input(bx_get($sName));
-                if(in_array($sValue, $aAllowed, true))
-                    $aValues[$sName] = $sValue;
-            }
+        // The header per layout and audience: only the widths and places there are.
+        foreach(BxDolTemplate::HEADER_LAYOUTS as $sLayout)
+            foreach(BxDolTemplate::HEADER_AUDIENCES as $sWho)
+                foreach(['width' => BxDolTemplate::HEADER_WIDTHS, 'align' => BxDolTemplate::HEADER_ALIGNS] as $sKind => $aAllowed) {
+                    $sName = 'sys_header_' . $sKind . '_' . $sLayout . '_' . $sWho;
+                    $sValue = bx_process_input(bx_get($sName));
+                    if(in_array($sValue, $aAllowed, true))
+                        $aValues[$sName] = $sValue;
+                }
 
         $sLabelStyle = bx_process_input(bx_get('sys_form_label_style'));
         if(array_key_exists($sLabelStyle, $this->getSettingsLabelStyleList()))

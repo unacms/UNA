@@ -1,6 +1,6 @@
 /**
- * The desktop header's width and where its main menu sits, as UNA's Designer sets them per page layout (Designer >
- * Settings > Header) and sends them with each page (`header` of the page JSON, `BxDolTemplate::getHeaderLayout`).
+ * The desktop header's width and where its main menu sits, as UNA's Designer sets them per page layout and audience
+ * (Designer > Settings > Header) and sends them, resolved for the viewer, with each page (`header` of the page JSON, `BxDolTemplate::getHeaderLayout`).
  * No app imports, so `node --test packages/app/lib/header-layout.test.ts` runs it from the NEO root.
  */
 export type HeaderWidth = 'page' | 'full';
