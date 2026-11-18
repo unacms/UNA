@@ -67,4 +67,29 @@ class SplashSiteShellTest extends BxDolTestCase
         $this->assertSame(1, substr_count($s, 'UPDATE `sys_options`'));
         $this->assertStringContainsString('<header class="bx-landing-header" data-site-only>', $s, 'The previous default is what it looks for.');
     }
+
+    /**
+     * A save in Studio stored the footer's "&copy;" as the copyright sign, and the first migration missed that
+     * code: the site showed its header and footer and the splash's own. The second one takes either form.
+     */
+    public function testSecondMigrationTakesThePreviousDefaultWithTheCopyrightSign(): void
+    {
+        $sFirst = self::read('migrations/2026111880_splash_in_site_shell.sql');
+        $sSecond = self::read('migrations/2026111897_splash_in_site_shell_copyright.sql');
+
+        $sWhere = "WHERE `name` = 'sys_site_splash_code' AND REPLACE(REPLACE(`value`, '\\r', ''), _utf8mb4 0xC2A9, '&copy;') = REPLACE('";
+        $this->assertSame(1, substr_count($sSecond, $sWhere));
+        $this->assertSame(1, substr_count($sSecond, 'UPDATE `sys_options`'));
+
+        // The code it looks for and the code it gives are the first migration's.
+        $aFirst = explode("WHERE `name` = 'sys_site_splash_code' AND REPLACE(`value`, '\\r', '') = REPLACE('", $sFirst);
+        $aSecond = explode($sWhere, $sSecond);
+        $this->assertCount(2, $aFirst);
+        $this->assertSame($aFirst[1], $aSecond[1], 'It looks for the same previous default.');
+        $this->assertStringContainsString('<span>&copy; {site_title}</span>', $aSecond[1]);
+        $this->assertSame(substr($aFirst[0], strpos($aFirst[0], 'UPDATE `sys_options`')), substr($aSecond[0], strpos($aSecond[0], 'UPDATE `sys_options`')), 'It gives the same code.');
+
+        // And that code is the install default.
+        $this->assertStringContainsString("SET `value` = '" . str_replace(["\n", "'"], ['\r\n', "\\'"], self::defaultCode()) . "'", $sSecond);
+    }
 }
