@@ -2440,26 +2440,33 @@
         @apply bg-white dark:bg-[#1a1a1a]; /* popups float over content, so the surface is solid: white, and in dark the black page plus white/10 composite (one step above the white/6 blocks) */
     }
 
-    /* Icon tiles (launcher, top menu, side menu): soft outer shadow plus an inset hairline that darkens the tile in light mode and lightens it in dark mode, so the edge takes on the artwork's own hue. */
+    /* Icon tiles (launcher, top menu, side menu): soft outer shadow plus inset hairlines over the artwork's edge: in light mode a black/10 line with
+       a white/5 one inside it (the edge takes on the artwork's own hue), in dark mode a white/15 line. */
     .bx-std .bx-icon-tile {
         @apply relative smooth-shadow-md;
         @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none;
     }
     .bx-std .bx-icon-tile:not(.bx-std-pmen-ic-icon):not(.bx-std-menu-top .bx-icon-tile) {
-        @apply after:ring-1 after:ring-inset after:ring-black/10 dark:after:ring-white/15;
+        @apply after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.1),inset_0_0_0_2px_rgb(255_255_255/0.05)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.15)];
     }
     /* Art tiles in the header (dock, current app) and the sidebar, all 36px: the header buttons' plate under the artwork (isolate keeps the z-index:-1 image above it). */
     .bx-std .bx-std-menu-top .bx-icon-tile,
     .bx-std .bx-std-pmen-ic-icon {
         @apply isolate border-0 bg-gradient-to-b from-white to-black/5 dark:from-white/10 dark:to-white/5;
     }
-    /* The art fills its 36px tile (menu_top.css, general.css), as the buttons beside it keep their hairlines inside theirs, and a 1px black/20 line
-       over the art's outer pixel darkens its own edge: a darker shade of whatever colour the icon has there, so the edge is always darker than
-       the icon and never a gray that clashes with it. In the dark scheme the line is white/15, as on the launcher's tiles: a darker edge leaves a dark icon without
+    /* The art fills its 36px tile (menu_top.css, general.css), as the buttons beside it keep their hairlines inside theirs, and the launcher
+       tiles' lines lie over its outer pixels: a 1px black/10 one darkens the art's own edge (a darker shade of whatever colour the icon has
+       there, never a gray that clashes with it) and a 2px white/5 one inside it lifts it a little. In the dark scheme the line is white/15, as on the launcher's tiles: a darker edge leaves a dark icon without
        an outline on the dark bar. The tile buttons in the sidebar (plain glyphs) keep the buttons' hairlines. */
     .bx-std .bx-std-menu-top .bx-icon-tile,
     .bx-std .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) {
-        @apply after:inset-0 after:rounded-[inherit] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.2)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.15)];
+        @apply after:inset-0 after:rounded-[inherit] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.1),inset_0_0_0_2px_rgb(255_255_255/0.05)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.15)];
+    }
+    /* Hovered (the tile, or the link it sits in), light mode: the dark line deepens to black/20. The class twice outweighs the launcher
+       tiles' :not() chain above. */
+    .bx-std a:hover .bx-icon-tile.bx-icon-tile:not(:is(.dark *))::after,
+    .bx-std .bx-icon-tile.bx-icon-tile:hover:not(:is(.dark *))::after {
+        --tw-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.2), inset 0 0 0 2px rgb(255 255 255 / 0.05);
     }
 
     /* Tiles and buttons in the header (36px): a tight stack that stays inside the bar. The md stack above is sized for the 72px launcher tiles and lands mostly below the bar, where it reads as no shadow at all. */
