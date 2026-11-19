@@ -57,11 +57,11 @@ class BxOAuthUserCredentialsStorage extends OAuth2\Storage\Pdo implements OAuth2
 
     /**
      * Whether a client is one an MCP client registered: an id of MCP_CLIENT_PREFIX with a row and no secret, while
-     * API v2 is on.
+     * the MCP server is on (BxDolMcpServer::isEnabled()).
      */
     public function isMcpClient($sClientId)
     {
-        if (!is_string($sClientId) || !str_starts_with($sClientId, self::MCP_CLIENT_PREFIX) || !getParam(BxDolApiV2Router::OPTION_ENABLE))
+        if (!is_string($sClientId) || !str_starts_with($sClientId, self::MCP_CLIENT_PREFIX) || !BxDolMcpServer::isEnabled())
             return false;
 
         $aClient = parent::getClientDetails($sClientId);
@@ -801,7 +801,7 @@ class BxOAuthModule extends BxDolModule
      * Dynamic client registration (RFC 7591) for MCP clients such as Claude or ChatGPT: a client registers itself
      * before it signs a person in, with no one at the site doing anything. It becomes a public client
      * (BxOAuthUserCredentialsStorage::isMcpClient): PKCE with S256, the `api` scope, its redirects matched exactly.
-     * Only while API v2 is on. A few registrations a minute from an address.
+     * Only while the MCP server is on (Studio > Agents > Settings). A few registrations a minute from an address.
      *
      * **HTTP Method:** `POST`, a JSON body: `redirect_uris` (required: https:// or loopback ones), `client_name`,
      * and when sent `token_endpoint_auth_method` `none`, `grant_types` of `authorization_code` and `refresh_token`,
@@ -818,8 +818,8 @@ class BxOAuthModule extends BxDolModule
             return $this->_jsonAnswer(204, null, $aHeaders);
         if ($sMethod !== 'POST')
             return $this->_jsonAnswer(405, array('error' => 'invalid_request', 'error_description' => 'Register with POST'), $aHeaders + array('Allow' => 'POST'));
-        if (!getParam('sys_api_enable') || !getParam(BxDolApiV2Router::OPTION_ENABLE))
-            return $this->_jsonAnswer(404, array('error' => 'not_found', 'error_description' => 'API v2 is off on this site'), $aHeaders);
+        if (!BxDolMcpServer::isEnabled())
+            return $this->_jsonAnswer(404, array('error' => 'not_found', 'error_description' => 'The MCP server is off on this site'), $aHeaders);
 
         $sSubject = BxDolApiV2RateLimit::subject(0);
         if ($sSubject !== null && ($iWait = BxDolApiV2RateLimit::hit($sSubject, 'mcp_register', self::REGISTER_PER_MINUTE)) > 0)

@@ -41,6 +41,12 @@ class BxDolMcpServer
     const SERVER_NAME = 'una';
     const SERVER_VERSION = '1.0.0';
 
+    /**
+     * The MCP server's own switch (Studio > Agents > Settings), off as installed. It is apart from API v2's: the
+     * server runs API v2's operations inside itself (BxDolApiV2Router::dispatch()), with no /api/v2 open.
+     */
+    const OPTION_ENABLE = 'sys_mcp_enable';
+
     /** The Studio role action (Studio > Roles) that lets an operator use the operator tools. */
     const ROLE_ACTION = 'use mcp';
 
@@ -77,8 +83,8 @@ class BxDolMcpServer
             return;
         }
 
-        if (!getParam('sys_api_enable') || !getParam(BxDolApiV2Router::OPTION_ENABLE)) {
-            self::_emit(503, self::_error(null, self::JSONRPC_INTERNAL_ERROR, 'The API is turned off on this site (an administrator turns API v2 on in Studio > API > Settings)'));
+        if (!self::isEnabled()) {
+            self::_emit(503, self::_error(null, self::JSONRPC_INTERNAL_ERROR, 'The MCP server is turned off on this site (an administrator turns it on in Studio > Agents > Settings)'));
             return;
         }
 
@@ -125,6 +131,14 @@ class BxDolMcpServer
         }
 
         self::_emit(200, $aAnswer);
+    }
+
+    /**
+     * Whether the MCP server is on (Studio > Agents > Settings).
+     */
+    public static function isEnabled()
+    {
+        return getParam(self::OPTION_ENABLE) == 'on';
     }
 
     /**
@@ -176,7 +190,7 @@ class BxDolMcpServer
         BxDolApiV2Router::takeRequest();
 
         $aCors = ['Access-Control-Allow-Origin' => '*'];
-        if (!getParam('sys_api_enable') || !getParam(BxDolApiV2Router::OPTION_ENABLE)) {
+        if (!self::isEnabled()) {
             self::_emit(404, ['error' => 'not_found'], $aCors);
             return;
         }

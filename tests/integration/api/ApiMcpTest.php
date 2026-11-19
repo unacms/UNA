@@ -12,12 +12,40 @@ use PHPUnit\Framework\Attributes\Group;
 class ApiMcpTest extends ApiV2TestCase
 {
     protected $_aPersonalTokens = [];
+    protected $_sMcpEnable = null;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        // the MCP server's own switch, off as installed: on for the test, put back after
+        $this->_sMcpEnable = (string)getParam(BxDolMcpServer::OPTION_ENABLE);
+        if ($this->_sMcpEnable !== 'on')
+            setParam(BxDolMcpServer::OPTION_ENABLE, 'on');
+    }
 
     protected function tearDown(): void
     {
         foreach ($this->_aPersonalTokens as list($iId, $iAccountId))
             BxDolApiTokens::revoke($iId, $iAccountId);
+        if ($this->_sMcpEnable !== null && (string)getParam(BxDolMcpServer::OPTION_ENABLE) !== $this->_sMcpEnable)
+            setParam(BxDolMcpServer::OPTION_ENABLE, $this->_sMcpEnable);
         parent::tearDown();
+    }
+
+    public function testTheServerIsOffWithItsSwitch()
+    {
+        list(, $sToken) = $this->personalToken($this->bxAccount('user'));
+        setParam(BxDolMcpServer::OPTION_ENABLE, '');
+
+        $a = $this->mcpRequest('POST', ['Authorization' => 'Bearer ' . $sToken, 'Content-Type' => 'application/json'], '{"jsonrpc":"2.0","id":1,"method":"ping"}');
+        $this->assertSame(503, $a['status']);
+        $this->assertSame(404, $this->raw('GET', '/api_mcp.php?_wk=protected-resource')['status']);
+
+        // API v2's own switch is not the MCP server's: off, and the server works
+        setParam(BxDolMcpServer::OPTION_ENABLE, 'on');
+        setParam(BxDolApiV2Router::OPTION_ENABLE, '');
+        $a = $this->mcpRequest('POST', ['Authorization' => 'Bearer ' . $sToken, 'Content-Type' => 'application/json'], '{"jsonrpc":"2.0","id":1,"method":"ping"}');
+        $this->assertSame(200, $a['status'], $a['body']);
     }
 
     /**

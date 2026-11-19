@@ -124,11 +124,11 @@ class BxBaseStudioAgents extends BxDolStudioAgents
         $this->aPageJsOptions['sPageUrl'] .= 'connectors';
 
         return BxDolStudioTemplate::getInstance()->parseHtmlByName('agents_connectors.html', [
-            'txt_info' => _t('_sys_api_tokens_txt_info_operator'),
+            'txt_info' => BxDolApiTokens::getInfoText(),
             'txt_mcp_url' => _t('_sys_api_tokens_txt_mcp_url'),
             'txt_copy' => _t('_sys_api_tokens_btn_copy'),
             'mcp_url' => bx_html_attribute(BxDolApiTokens::getMcpUrl()),
-            'clients' => BxDolApiTokens::getMcpClientsCode(BxDolStudioTemplate::getInstance()),
+            'clients' => BxDolMcpServer::isEnabled() ? BxDolApiTokens::getMcpClientsCode(BxDolStudioTemplate::getInstance()) : '',
             'txt_tokens' => _t('_sys_agents_connectors_txt_tokens'),
             'grid' => $this->getGrid($this->aGridObjects[BX_DOL_STUDIO_AGENTS_TYPE_CONNECTORS]),
         ]);

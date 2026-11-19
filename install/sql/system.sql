@@ -1012,7 +1012,8 @@ SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
 (@iCategoryId, 'sys_agents_inspector_key', '_adm_stg_cpt_option_sys_agents_inspector_key', '_adm_stg_cpt_option_sys_agents_inspector_key_info', '', 'digit', '', '', '', 0),
-(@iCategoryId, 'sys_agents_operator_agent', '_adm_stg_cpt_option_sys_agents_operator_agent', '_adm_stg_cpt_option_sys_agents_operator_agent_info', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:26:"get_options_operator_agent";s:5:"class";s:13:"TemplServices";}', '', '', 1);
+(@iCategoryId, 'sys_agents_operator_agent', '_adm_stg_cpt_option_sys_agents_operator_agent', '_adm_stg_cpt_option_sys_agents_operator_agent_info', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:26:"get_options_operator_agent";s:5:"class";s:13:"TemplServices";}', '', '', 1),
+(@iCategoryId, 'sys_mcp_enable', '_adm_stg_cpt_option_sys_mcp_enable', '_adm_stg_cpt_option_sys_mcp_enable_info', '', 'checkbox', '', '', '', 10);
 
 --
 -- CATEGORY (HIDDEN): Agents (usage)

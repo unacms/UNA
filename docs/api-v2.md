@@ -1521,9 +1521,12 @@ the refresh token (`token_type_hint=refresh_token`) and then the access token at
 
 `/api/mcp` (`api_mcp.php`, `BxDolMcpServer`) is a Model Context Protocol server (protocol
 `2026-07-28`, the version `tools/` speaks too) for AI assistants: one JSON-RPC message per POST,
-answered as JSON; a notification gets 202. It needs API v2 on and a token: a personal access
-token or an OAuth one with the `api` scope (401 with `WWW-Authenticate` otherwise; the session
-cookie is not taken). It answers `server/discover`, `tools/list`, `tools/call` and `ping`.
+answered as JSON; a notification gets 202. It has its own switch, `sys_mcp_enable` (Studio >
+Agents > Settings, off as installed; 503 while off), apart from API v2's: it runs API v2's
+operations inside itself, with no `/api/v2` open. It needs a token: a personal access token or an
+OAuth one with the `api` scope (401 with `WWW-Authenticate` otherwise; the session cookie is not
+taken). It answers `initialize`, `server/discover`, `tools/list`, `tools/call` and `ping`. Its
+tool calls are counted in API v2's rate limits.
 
 **Connecting.** A person adds the URL in their assistant (Claude, ChatGPT: "add a custom
 connector") and signs in; nobody copies a token. That is the MCP authorization flow, on the OAuth2

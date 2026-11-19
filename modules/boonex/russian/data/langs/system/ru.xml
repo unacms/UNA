@@ -2259,6 +2259,8 @@
     <string name="_adm_stg_cpt_option_sys_agents_inspector_key_info"><![CDATA[Получить ключ на https://app.inspector.dev/]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_operator_agent"><![CDATA[Агент оператора]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_operator_agent_info"><![CDATA[Агент для операторов сайта: блок на Dashboard и плавающий чат в App. Настройки блока зашиты в get_block_ai_agent_operator.]]></string>
+    <string name="_adm_stg_cpt_option_sys_mcp_enable"><![CDATA[MCP-сервер: разрешить ИИ-ассистентам подключаться к сайту]]></string>
+    <string name="_adm_stg_cpt_option_sys_mcp_enable_info"><![CDATA[Включает /api/mcp: пользователи подключают ассистентов, например Claude или ChatGPT, в настройках аккаунта > Подключения, и их инструменты действуют с правами пользователя. Операторы получают и инструменты, включённые для них на вкладке Tools.]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_asst_chats_trans_del"><![CDATA[Автоматическое удаление временных чатов каждый день]]></string>
     <string name="_adm_stg_cpt_option_sys_viewport_meta_tag"><![CDATA[Метатег области просмотра]]></string>
 
@@ -2719,6 +2721,8 @@
         <string name="_sys_api_tokens_txt_info"><![CDATA[Подключите к своему аккаунту ИИ-ассистентов, например Claude или ChatGPT: в ассистенте добавьте коннектор с адресом MCP-сервера ниже и войдите на этот сайт, когда он попросит. Они работают с вашим контентом так же, как вы на сайте. Инструменту разработчика, который не умеет входить, нужен токен доступа.]]></string>
         <string name="_sys_api_tokens_txt_info_operator"><![CDATA[Подключите к своему аккаунту ИИ-ассистентов, например Claude или ChatGPT: в ассистенте добавьте коннектор с адресом MCP-сервера ниже и войдите на этот сайт, когда он попросит. Поскольку вы оператор, они получают и операторские инструменты, включённые в Studio > Agents > Tools, которые могут изменить на сайте что угодно. Инструменту разработчика, который не умеет входить, нужен токен доступа.]]></string>
         <string name="_sys_api_tokens_txt_mcp_url"><![CDATA[Адрес MCP-сервера]]></string>
+        <string name="_sys_api_mcp_txt_off"><![CDATA[MCP-сервер на этом сайте выключен, поэтому ИИ-ассистенты пока не могут подключиться.]]></string>
+        <string name="_sys_api_mcp_txt_off_admin"><![CDATA[MCP-сервер на этом сайте выключен: включите его в Studio > Agents > Settings.]]></string>
         <string name="_sys_api_mcp_clients_txt_title"><![CDATA[Подключить ассистента]]></string>
         <string name="_sys_api_mcp_clients_txt_command"><![CDATA[Выполните команду или откройте ссылку, затем войдите на этот сайт в открывшемся браузере.]]></string>
         <string name="_sys_api_mcp_clients_btn_add_to"><![CDATA[Добавить в {0}]]></string>

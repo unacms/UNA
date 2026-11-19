@@ -133,7 +133,7 @@ class BxDolApiTokens
         // the apps (NEO): what it is for and where to connect, then the grid
         if (bx_is_api())
             return array_merge([
-                bx_api_get_block('msg', _t(isAdmin() ? '_sys_api_tokens_txt_info_operator' : '_sys_api_tokens_txt_info') . ' ' . _t('_sys_api_tokens_txt_mcp_url') . ': ' . self::getMcpUrl()),
+                bx_api_get_block('msg', BxDolMcpServer::isEnabled() ? self::getInfoText() . ' ' . _t('_sys_api_tokens_txt_mcp_url') . ': ' . self::getMcpUrl() : self::getInfoText()),
                 bx_api_get_block('grid', $oGrid->getCodeAPI()),
             ], is_array($mixedApps) ? $mixedApps : []);
 
@@ -141,14 +141,26 @@ class BxDolApiTokens
             $oTemplate = BxDolTemplate::getInstance();
 
         return $oTemplate->parseHtmlByName('api_tokens_info.html', [
-            'txt_info' => _t(isAdmin() ? '_sys_api_tokens_txt_info_operator' : '_sys_api_tokens_txt_info'),
+            'txt_info' => self::getInfoText(),
             'txt_mcp_url' => _t('_sys_api_tokens_txt_mcp_url'),
             'txt_copy' => _t('_sys_api_tokens_btn_copy'),
             'mcp_url' => bx_html_attribute(self::getMcpUrl()),
-            'clients' => self::getMcpClientsCode($oTemplate),
+            'clients' => BxDolMcpServer::isEnabled() ? self::getMcpClientsCode($oTemplate) : '',
             'grid' => $oGrid->getCode(),
             'apps' => is_string($mixedApps) ? $mixedApps : '',
         ]);
+    }
+
+    /**
+     * What Connectors says first: how to connect an assistant (an operator's tools too), or, while the MCP server is
+     * off, that it is (and to an operator, where to turn it on).
+     */
+    public static function getInfoText()
+    {
+        if (!BxDolMcpServer::isEnabled())
+            return _t(isAdmin() ? '_sys_api_mcp_txt_off_admin' : '_sys_api_mcp_txt_off');
+
+        return _t(isAdmin() ? '_sys_api_tokens_txt_info_operator' : '_sys_api_tokens_txt_info');
     }
 
     /**

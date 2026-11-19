@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\Group;
  *   asks for. It is built in (no row in bx_oauth_clients) and the server knows it only while
  *   API v2 is on; with API v2 off its id is like any other.
  *
- * - An MCP client that registers itself (/m/oauth2/register, RFC 7591) while API v2 is on: a
+ * - An MCP client that registers itself (/m/oauth2/register, RFC 7591) while the MCP server is on: a
  *   public client with PKCE, the `api` scope, its redirect matched exactly, a resource that is
  *   the site's MCP server.
  *
@@ -28,7 +28,7 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
     private static $_oServer;
 
     private $_sApiV2Enable;
-    private $_sApiEnable = null;
+    private $_sMcpEnable = null;
     private $_aClients = [];
     private $_aCodes = [];
     private $_aAccessTokens = [];
@@ -59,8 +59,8 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
 
         if ($this->_sApiV2Enable !== null && getParam(self::OPTION_API_V2) !== $this->_sApiV2Enable)
             setParam(self::OPTION_API_V2, $this->_sApiV2Enable);
-        if ($this->_sApiEnable !== null && (string)getParam('sys_api_enable') !== $this->_sApiEnable)
-            setParam('sys_api_enable', $this->_sApiEnable);
+        if ($this->_sMcpEnable !== null && (string)getParam(BxDolMcpServer::OPTION_ENABLE) !== $this->_sMcpEnable)
+            setParam(BxDolMcpServer::OPTION_ENABLE, $this->_sMcpEnable);
 
         parent::tearDown();
     }
@@ -406,8 +406,7 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
 
     public function testMcpClientRegistersItselfAndSignsInWithPkce(): void
     {
-        $this->apiV2(true);
-        $this->apiOn();
+        $this->mcpOn(true);
         list($oAccount, $sCookie) = $this->signedInUser();
         $iProfile = (int)$oAccount->getProfilesIds()[0];
         // the module's file declares its storage class (BxOAuthUserCredentialsStorage) too
@@ -482,9 +481,9 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
             $this->assertSame(0, (int)BxDolDb::getInstance()->getOne("SELECT COUNT(*) FROM `" . $sTable . "` WHERE `client_id` = :c", ['c' => $sClientId]), $sTable);
     }
 
-    public function testMcpRegistrationIsOffWithApiV2(): void
+    public function testMcpRegistrationIsOffWithTheMcpServer(): void
     {
-        $this->apiV2(false);
+        $this->mcpOn(false);
         $a = $this->register(['redirect_uris' => ['https://assistant.example/cb']]);
         $this->assertSame(404, $a['status'], $a['body']);
     }
@@ -509,14 +508,13 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
     }
 
     /**
-     * API v1 and v2 on for the test (the registration needs both); put back after it.
+     * The MCP server's switch for the test (the registration and its clients need it); put back after it.
      */
-    private function apiOn(): void
+    private function mcpOn(bool $bOn): void
     {
-        if (getParam('sys_api_enable') !== 'on') {
-            $this->_sApiEnable = (string)getParam('sys_api_enable');
-            setParam('sys_api_enable', 'on');
-        }
+        if ($this->_sMcpEnable === null)
+            $this->_sMcpEnable = (string)getParam(BxDolMcpServer::OPTION_ENABLE);
+        setParam(BxDolMcpServer::OPTION_ENABLE, $bOn ? 'on' : '');
     }
 
     /**
