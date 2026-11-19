@@ -1,7 +1,7 @@
 -- UNA-Migration-Min-System-Version: 15.0.0-RC4
--- The Application layout's sidebar: the logo and the sidebar's button on top, the context switcher with the new Application
--- toolbar menu (Search and Add) under them, the menus, and the member's account at the foot, so the member's avatar item of
--- the panel menu goes off (only where it is still on as installed).
+-- The Application layout's sidebar: the logo with the new Application toolbar menu (Search and Add) on its first row, the
+-- context switcher, the menus, and the member's account at the foot, so the member's avatar item of the panel menu goes off
+-- (only where it is still on as installed).
 -- sys_objects_menu (object) and sys_menu_sets (set_name) have unique keys; sys_menu_items has none, so its rows are added only
 -- when the menu has no item of that name.
 INSERT IGNORE INTO `sys_objects_menu` (`object`, `title`, `title_public`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES
