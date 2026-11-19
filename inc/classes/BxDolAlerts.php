@@ -52,6 +52,12 @@ class BxDolAlerts extends BxDol
     protected static $_aCacheData;
 
     /**
+     * Silent mode added to every alert which doesn't set its own, null when it's off.
+     * @see BxDolAlerts::setSilentMode
+     */
+    protected static $_mixedSilentMode = null;
+
+    /**
      * Constructor
      * @param string $sType     - system type
      * @param string $sAction   - system action
@@ -73,6 +79,9 @@ class BxDolAlerts extends BxDol
         $this->sAction = $sAction;
         $this->iObject = $iObjectId;
         $this->aExtras = $aExtras;
+        if (self::$_mixedSilentMode !== null && is_array($this->aExtras) && !isset($this->aExtras['silent_mode']))
+            $this->aExtras['silent_mode'] = self::$_mixedSilentMode;
+
         if (false === $iSender) {
             $oProfile = BxDolProfile::getInstance();
             $this->iSender = $oProfile ? $oProfile->id() : 0;
@@ -91,6 +100,32 @@ class BxDolAlerts extends BxDol
 		    if(!$this->_oCacheObject->isAvailable())
 			    $this->_oCacheObject = bx_instance('BxDolCacheFile');
         }
+    }
+
+    /**
+     * Mark all alerts fired from now on as silent, for bulk operations (imports, migrations) 
+     * which create content through the regular paths and must not notify anyone. 
+     * Modules read it as 'silent_mode' in the alert's extras, the same as if the caller had passed it:
+     * 1 (BX_BASE_MOD_NTFS_SLTMODE_ABSOLUTE) - no notifications and no timeline events.
+     * Always restore the previous value when the operation ends:
+     * @code
+     *  $mixedPrev = BxDolAlerts::setSilentMode(1);
+     *  try { ... } finally { BxDolAlerts::setSilentMode($mixedPrev); }
+     * @endcode
+     *
+     * @param mixed $mixedMode - silent mode or null to turn it off
+     * @return mixed previous value
+     */
+    public static function setSilentMode($mixedMode)
+    {
+        $mixedPrev = self::$_mixedSilentMode;
+        self::$_mixedSilentMode = $mixedMode === null ? null : (int)$mixedMode;
+        return $mixedPrev;
+    }
+
+    public static function getSilentMode()
+    {
+        return self::$_mixedSilentMode;
     }
 
     public static function cacheInvalidate()
