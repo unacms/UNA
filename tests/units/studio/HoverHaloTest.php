@@ -142,4 +142,10 @@ class HoverHaloTest extends BxDolTestCase
         $this->assertStringContainsString('height: 3.25rem; /* the 36px tile with 8px around it', $sGeneral, 'The phone tabs.');
         $this->assertStringContainsString('<bx_if:show_icon_bg> bx-std-tile-btn p-1.5</bx_if:show_icon_bg>', self::read('studio/template/menu_side.html'), 'A 24px glyph in the 36px tile.');
     }
+
+    public function testLauncherAndOpenMenuButtonsTakeTheActiveLayer(): void
+    {
+        $sCss = self::read('template/css/tailwind.css');
+        $this->assertSame(1, preg_match('/\n    \.bx-std\.bx-std-page-launcher \.bx-menu-bc-home a:has\(> \.bx-std-header-btn\)::before,\s*\.bx-std \.bx-menu-toolbar \.bx-menu-tab-item:has\(> \[aria-expanded="true"\]\)::before \{\s*@apply bg-black\/10 dark:bg-white\/10;/', $sCss), 'The launcher button on the launcher and the menu button with its menu open take the current dock item\'s layer.');
+    }
 }

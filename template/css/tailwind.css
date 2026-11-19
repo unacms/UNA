@@ -2306,6 +2306,12 @@
     .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon::after {
         @apply bg-black/10 dark:bg-white/10;
     }
+    /* The same active layer on the launcher button while the launcher is open, and on the menu button while its menu is open
+       (bx_menu_popup_inline keeps the button's aria-expanded); both outweigh the hover halo. */
+    .bx-std.bx-std-page-launcher .bx-menu-bc-home a:has(> .bx-std-header-btn)::before,
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item:has(> [aria-expanded="true"])::before {
+        @apply bg-black/10 dark:bg-white/10;
+    }
     /* The divider follows the dock items it separates: both are hidden below md. */
     .bx-std .bx-menu-top-center .bx-menu-item-divider {
         @apply hidden md:flex border-l border-black/10 dark:border-white/10;
