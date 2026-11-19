@@ -5022,6 +5022,7 @@ INSERT INTO `sys_objects_menu` (`object`, `title`, `title_public`, `set_name`, `
 ('sys_tabbar', '_sys_menu_title_tabbar', '', 'sys_tabbar', 'system', 1, 0, 1, '', ''),
 ('sys_toolbar_site', '_sys_menu_title_toolbar_site', '', 'sys_toolbar_site', 'system', 33, 0, 1, 'BxTemplMenuToolbar', ''),
 ('sys_toolbar_member', '_sys_menu_title_toolbar_member', '', 'sys_toolbar_member', 'system', 34, 0, 1, 'BxTemplMenuToolbar', ''),
+('sys_toolbar_application', '_sys_menu_title_toolbar_application', '', 'sys_toolbar_application', 'system', 34, 0, 1, 'BxTemplMenuToolbar', ''),
 ('sys_add_content', '_sys_menu_title_add_content', '', 'sys_add_content_links', 'system', 29, 0, 1, 'BxTemplMenuSite', ''),
 ('sys_add_profile', '_sys_menu_title_add_profile', '', 'sys_add_profile_links', 'system', 14, 0, 1, 'BxTemplMenuProfileAdd', ''),
 ('sys_add_profile_vertical', '_sys_menu_title_add_profile_vertical', '', 'sys_add_profile_links', 'system', 6, 0, 1, 'BxTemplMenuProfileAdd', ''),
@@ -5087,6 +5088,7 @@ INSERT INTO `sys_menu_sets` (`set_name`, `module`, `title`, `deletable`) VALUES
 ('sys_tabbar', 'system', '_sys_menu_set_title_tabbar', 0),
 ('sys_toolbar_site', 'system', '_sys_menu_set_title_toolbar_site', 0),
 ('sys_toolbar_member', 'system', '_sys_menu_set_title_toolbar_member', 0),
+('sys_toolbar_application', 'system', '_sys_menu_set_title_toolbar_application', 0),
 ('sys_account_popup', 'system', '_sys_menu_set_title_account_popup', 0),
 ('sys_account_notifications', 'system', '_sys_menu_set_title_account_notifications', 0),
 ('sys_add_content_links', 'system', '_sys_menu_set_title_add_content', 0),
@@ -5179,7 +5181,7 @@ UPDATE `sys_menu_items` SET `order` = 9999 WHERE `set_name` = 'sys_site' AND `na
 -- are for the apps' drawer (enable-app-menus.sql turns them on there): the modules, the account's own menu and the
 -- footer's links. They are off on the site, whose header and footer have them.
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
-('sys_site_panel', 'system', 'member-avatar', '_sys_menu_item_title_system_member_avatar', '', '', '', '', '', '', 2147483646, 1, 0, 1),
+('sys_site_panel', 'system', 'member-avatar', '_sys_menu_item_title_system_member_avatar', '', '', '', '', '', '', 2147483646, 0, 0, 1),
 ('sys_site_panel', 'system', 'public-menu', '_sys_menu_item_title_system_public_menu', '', '', '', '', '', 'sys_site_in_panel', 2147483647, 0, 0, 2),
 ('sys_site_panel', 'system', 'member-menu', '_sys_menu_item_title_system_member_menu', '_sys_menu_item_title_member_menu', '', '', '', '', 'sys_profile_stats', 2147483646, 1, 0, 3),
 ('sys_site_panel', 'system', 'member-followings', '_sys_menu_item_title_system_member_followings', '_sys_menu_item_title_member_followings', '', '', '', '', 'sys_profile_followings', 2147483646, 1, 0, 4),
@@ -5245,6 +5247,11 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 -- site toolbar menu
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
 ('sys_toolbar_site', 'system', 'main-menu', '_sys_menu_item_title_system_main_menu', '', 'javascript:void(0);', 'bx_menu_slide_inline(\'#bx-sliding-menu-sys_site\', this, \'site\');', '', 'bars', '', 2147483647, 1, 1, 1);
+
+-- application toolbar menu: the Application layout's sidebar, beside the context switcher (the member's account is at the sidebar's foot)
+INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `submenu_popup`, `visible_for_levels`, `hidden_on_pt`, `active`, `copyable`, `order`) VALUES
+('sys_toolbar_application', 'system', 'search', '_sys_menu_item_title_system_search', '', 'javascript:void(0);', 'bx_menu_slide_inline(''#bx-sliding-menu-search'', this, ''site'');', '', 'search', '', '', 0, 2147483646, 0, 1, 1, 1),
+('sys_toolbar_application', 'system', 'add-content', '_sys_menu_item_title_system_add_content', '', 'javascript:void(0);', 'bx_menu_slide_inline(''#bx-sliding-menu-sys_add_content'', this, ''site'');', '', 'plus', '', '', 0, 2147483646, 0, 1, 1, 2);
 
 -- member toolbar menu
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `submenu_popup`, `visible_for_levels`, `hidden_on_pt`, `active`, `copyable`, `order`) VALUES

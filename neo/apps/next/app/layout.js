@@ -5,6 +5,7 @@ import { fontVars } from 'app/customization/design/fonts/fonts-web'
 import { getCornerSmoothingHtmlProps } from 'app/design/corner-smoothing'
 import { appSetting } from 'app/config'
 import { resources } from 'app/customization/translation'
+import { SIDEBAR_PREPAINT } from 'app/ui/molecules/sidebar/app-sidebar-prepaint'
 import 'app/design/styles/global.css'
 import 'app/customization/design/styles/global.css'
 import 'app/design/styles/global.web.css'
@@ -28,6 +29,10 @@ export default async function RootLayout({ children }) {
             style={cornerSmooth.style}
             suppressHydrationWarning
         >
+            <head>
+                {/* The Application sidebar's stored state on <html> before the first paint (app-sidebar-prepaint). */}
+                <script dangerouslySetInnerHTML={{ __html: SIDEBAR_PREPAINT }} />
+            </head>
             <body className={appSetting('layout', 'body')}>
                 <Providers initialLang={langCode} initialResources={initialResources} initialMenus={initialMenus} trackerConfig={trackerConfig} onVercel={!!process.env.VERCEL}>{children}</Providers>
             </body>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The Application layout's toolbar menu, in its sidebar's top row, and the sidebar's resize handle. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_menu_title_toolbar_application"><![CDATA[Application toolbar]]></string_add>
+    <string_add name="_sys_menu_set_title_toolbar_application"><![CDATA[Application toolbar]]></string_add>
+    <string_add name="_sys_txt_sidebar_resize"><![CDATA[Resize the sidebar]]></string_add>
+</resources>

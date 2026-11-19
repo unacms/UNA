@@ -54,6 +54,8 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `mo
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `module`='system' AND `name`='powered_by';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_site' AND `module`='system' AND `name`='main-menu';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='search';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_application' AND `module`='system' AND `name`='search';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_application' AND `module`='system' AND `name`='add-content';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='add-content';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='apps';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='account';

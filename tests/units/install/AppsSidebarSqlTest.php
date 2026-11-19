@@ -104,7 +104,8 @@ class AppsSidebarSqlTest extends \PHPUnit\Framework\TestCase
         // the site menu and the member menu have no item that is there for the apps' sidebar
         $this->assertSame(['home', 'about', 'search', 'more-auto', 'login', 'create-account'], array_keys(self::items($sSystem, 'sys_site')));
         $this->assertSame(['profile-stats-profile', 'friend-suggestions'], array_keys(self::items($sSystem, 'sys_profile_stats')));
-        // the Site Panel: its four items in the site's order, then the three that are for the apps' drawer and off on
+        // the Site Panel: its four items in the site's order (the avatar off: the Application layout has the account at the
+        // sidebar's foot), then the three that are for the apps' drawer and off on
         // the site (the modules, the account's menu, the footer's links). A title heads a menu in the apps; the site
         // draws the menus without one.
         $this->assertSame(['member-avatar', 'public-menu', 'member-menu', 'member-followings', 'homepage-menu', 'account-menu', 'footer-menu'], array_keys(self::items($sSystem, 'sys_site_panel')));
