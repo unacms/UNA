@@ -2652,12 +2652,12 @@
         transform: translateX(var(--bx-seg-x, 0));
         border-radius: calc(var(--bx-radius-lg) - 0.125rem); /* 6px */
         pointer-events: none;
-        background-image: linear-gradient(to bottom, theme('colors.gray.100'), theme('colors.gray.200')); /* a regular button's plate, a 1px white ring round it (white/10 in dark) and a subtle drop shadow */
-        box-shadow: 0 0 0 1px rgb(255 255 255), 0 1px 2px rgba(0, 0, 0, 0.1);
+        background-color: rgb(255 255 255); /* a flat white plate with a subtle drop shadow */
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
     .bx-std .bx-std-segmented[data-bx-seg]:is(.dark *)::after {
-        background-image: linear-gradient(to bottom, rgb(255 255 255 / 0.2), rgb(255 255 255 / 0.1));
-        box-shadow: 0 0 0 1px rgb(255 255 255 / 0.1), 0 1px 2px rgba(0, 0, 0, 0.3);
+        background-color: rgb(255 255 255 / 0.1);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
     .bx-std .bx-std-segmented[data-bx-seg="on"]::after {
         transition: transform 450ms cubic-bezier(0.34, 1.56, 0.64, 1), width 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -2668,7 +2668,7 @@
         }
     }
     .bx-std .bx-std-segmented[data-bx-seg] .bx-std-segment[aria-selected="true"] {
-        background-image: none; /* the track's sliding plate stands in for it */
+        background-color: transparent; /* the track's sliding plate stands in for it */
     }
     .bx-std .bx-std-segmented[data-bx-seg] .bx-std-segment[aria-selected="true"]:not(:focus-visible) {
         box-shadow: none; /* its focus ring stays */
@@ -2679,12 +2679,12 @@
     }
     .bx-std .bx-std-segment[aria-selected="true"] {
         @apply text-gray-900 dark:text-white;
-        background-image: linear-gradient(to bottom, theme('colors.gray.100'), theme('colors.gray.200')); /* without page.js: the tab is its own plate, a regular button's */
-        box-shadow: 0 0 0 1px rgb(255 255 255), 0 1px 2px rgba(0, 0, 0, 0.1);
+        background-color: rgb(255 255 255); /* without page.js: the tab is its own plate */
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
     .bx-std .bx-std-segment[aria-selected="true"]:is(.dark *) {
-        background-image: linear-gradient(to bottom, rgb(255 255 255 / 0.2), rgb(255 255 255 / 0.1));
-        box-shadow: 0 0 0 1px rgb(255 255 255 / 0.1), 0 1px 2px rgba(0, 0, 0, 0.3);
+        background-color: rgb(255 255 255 / 0.1);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
     .bx-std .bx-std-segment:disabled {
         @apply opacity-50 cursor-default;
