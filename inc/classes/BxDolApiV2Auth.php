@@ -110,6 +110,9 @@ class BxDolApiV2Auth
 
             $oAccount = BxDolAccount::getInstance((int)$aPersonal['account_id']);
             $iProfileId = $oAccount ? (int)BxDolProfileQuery::getInstance()->getCurrentProfileByAccount($oAccount->id()) : 0;
+            // an account that never chose one acts as its first profile, as at sign-in
+            if (!$iProfileId && $oAccount && ($oFirst = BxDolProfile::getInstanceByAccount($oAccount->id())))
+                $iProfileId = (int)$oFirst->id();
             $aToken = ['profile_id' => $iProfileId, 'scopes' => [self::SCOPE], 'client_id' => null, 'personal_id' => (int)$aPersonal['id']];
         }
         elseif (BxDolModuleQuery::getInstance()->isEnabledByName('bx_oauth'))

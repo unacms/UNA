@@ -270,7 +270,7 @@ class BxDolMcpServer
             'Most tools are API v2 operations, named by their operationId: path params and query params are arguments of their own, a JSON request body is the `body` argument, and lists are paged with `cursor` (the `next_cursor` of the previous page) and `limit`.',
         ];
         if ($this->isOperator())
-            $a[] = 'As an operator you also have the tools of the site\'s operator agent (snake_case names, such as content_search, content_update and mysql_select). They can change anything on the site: confirm a change with the person before you make it, and prefer dry_run where a tool has one.';
+            $a[] = 'As an operator you also have the tools of the site\'s operator agent (snake_case names, such as content_search, content_update and mysql_select_query). They can change anything on the site: confirm a change with the person before you make it, and prefer dry_run where a tool has one.';
 
         return implode("\n\n", $a);
     }
@@ -519,7 +519,7 @@ class BxDolMcpServer
         header('Cache-Control: no-store');
         foreach ($aHeaders as $sName => $sValue)
             header($sName . ': ' . $sValue);
-        echo json_encode($aBody, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
+        echo json_encode($aBody, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_PARTIAL_OUTPUT_ON_ERROR);
     }
 }
 

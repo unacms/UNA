@@ -131,10 +131,10 @@ class ApiMcpTest extends ApiV2TestCase
 
         $aNames = $this->toolNames($sToken);
         $this->assertContains('getMe', $aNames);
-        $this->assertNotContains('mysql_select', $aNames);
+        $this->assertNotContains('mysql_select_query', $aNames);
         $this->assertNotContains('content_update', $aNames);
 
-        $a = $this->mcp($sToken, 'tools/call', ['name' => 'mysql_select', 'arguments' => ['query' => 'SELECT 1']]);
+        $a = $this->mcp($sToken, 'tools/call', ['name' => 'mysql_select_query', 'arguments' => ['query' => 'SELECT 1']]);
         $this->assertSame(BxDolMcpServer::JSONRPC_INVALID_PARAMS, $a['error']['code']);
     }
 
@@ -168,11 +168,11 @@ class ApiMcpTest extends ApiV2TestCase
 
         $aNames = $this->toolNames($sToken);
         $this->assertContains('getMe', $aNames);
-        $this->assertContains('mysql_select', $aNames);
+        $this->assertContains('mysql_select_query', $aNames);
         $this->assertNotContains('chat_buttons', $aNames);
         $this->assertNotContains('chat_title', $aNames);
 
-        $a = $this->mcp($sToken, 'tools/call', ['name' => 'mysql_select', 'arguments' => ['query' => 'SELECT 1 AS `one`']]);
+        $a = $this->mcp($sToken, 'tools/call', ['name' => 'mysql_select_query', 'arguments' => ['query' => 'SELECT 1 AS `one`']]);
         $this->assertFalse($a['result']['isError'], json_encode($a));
     }
 }
