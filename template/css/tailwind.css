@@ -2852,11 +2852,12 @@
         @apply text-inherit; /* glyphs follow the label */
     }
     .bx-std .bx-btn.bx-btn-primary {
-        @apply from-gray-700 to-gray-800 dark:from-gray-100 dark:to-gray-200;
-        @apply hover:from-gray-600 hover:to-gray-700 dark:hover:from-gray-200 dark:hover:to-gray-300;
+        @apply from-gray-600 to-gray-700 dark:from-gray-100 dark:to-gray-200;
+        @apply hover:from-gray-500 hover:to-gray-600 dark:hover:from-gray-200 dark:hover:to-gray-300;
         @apply border-0 text-gray-100 dark:text-gray-800 hover:text-white dark:hover:text-gray-900 active:text-white dark:active:text-gray-900;
-        /* The inset light hairline reads as a grey blur on the dark plate, so light mode keeps only the outer hairline; the dark scheme keeps both (user request 2026-09-09). */
-        @apply after:shadow-[0_0_0_1px_rgb(0_0_0/0.1)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
+        /* Both hairlines inside the box, as on the other buttons: a dark 1px edge and a light 2px line within it. On the dark plate (light
+           mode) the light line is white/10, faint enough not to blur; on the light plate (dark scheme) the default buttons' black/15 and white/50. */
+        @apply after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.2),inset_0_0_0_2px_rgb(255_255_255/0.1)] dark:after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.15),inset_0_0_0_2px_rgb(255_255_255/0.5)];
     }
     /* Studio notices: a message box (the grid's EMPTY notice, MsgBox()) is a black/5 (white/5 in dark) plate with 60% text instead of the site's gray plate. */
     .bx-std .bx-msg-box {
