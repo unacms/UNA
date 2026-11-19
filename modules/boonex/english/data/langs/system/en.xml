@@ -2734,6 +2734,9 @@
     <string name="_sys_agents_json_field_err"><![CDATA[Invalid JSON format.]]></string>
     <string name="_sys_agents_unauthorized"><![CDATA[You are not allowed to interact with this agent.]]></string>
     <string name="_sys_agents_connectors_txt_tokens"><![CDATA[Your access tokens]]></string>
+    <string name="_sys_agents_connectors_txt_tools"><![CDATA[Tools for AI assistants]]></string>
+    <string name="_sys_agents_connectors_txt_tools_info"><![CDATA[Which agent tools AI assistants get through MCP. Operator tools act on the whole site. Member tools act as the member, with their permissions on the site, and only tools made for that can be given to members. A tool turned off on the Tools tab is not given.]]></string>
+    <string name="_sys_agents_mcp_txt_tool_off"><![CDATA[off]]></string>
     <string name="_sys_agents_mcp_txt_operators"><![CDATA[Operators]]></string>
     <string name="_sys_agents_mcp_txt_members"><![CDATA[Members]]></string>
     <string name="_sys_agents_mcp_txt_operators_only"><![CDATA[Operators only]]></string>
