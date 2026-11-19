@@ -350,7 +350,7 @@ function bx_std_loading_btn(oButton, bShow) {
  * Placed without the slide first (data-bx-seg="1"), then on; kept in place when the track resizes (compact phone tabs, fonts loading).
  */
 (function() {
-    if(window.MutationObserver === undefined)
+    if(!('MutationObserver' in window))
         return;
 
     var place = function(oTrack) {
@@ -367,11 +367,11 @@ function bx_std_loading_btn(oButton, bShow) {
         }
     };
 
-    var oResize = window.ResizeObserver === undefined ? null : new ResizeObserver(function(aEntries) {
+    var oResize = 'ResizeObserver' in window ? new ResizeObserver(function(aEntries) {
         aEntries.forEach(function(oEntry) {
             place(oEntry.target);
         });
-    });
+    }) : null;
 
     var init = function(oRoot) {
         $(oRoot).find('.bx-std-segmented').addBack('.bx-std-segmented').each(function() {
