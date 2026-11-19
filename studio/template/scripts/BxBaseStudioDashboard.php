@@ -94,23 +94,30 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
                 $bUpgradeAvailable = true;
         }
 
-        // The Apps row is named after the number of installed apps; its value is the number waiting for an update.
-        $sApps = $this->getAppsCountText();
-        $mixedUpdates = BxDolStudioInstallerUtils::getInstance()->checkUpdates();
-        if(!is_array($mixedUpdates))
-            $aApps = ['status' => 'undef', 'name' => $sApps, 'value' => _t('_adm_dbd_txt_ht_na')];
-        else if(($iUpdates = count($mixedUpdates)) > 0)
-            $aApps = ['status' => 'warn', 'name' => $sApps, 'value' => '<a href="' . BX_DOL_URL_STUDIO . 'store.php?page=updates">' . _t('_adm_dbd_txt_ver_apps_updates', $iUpdates) . '</a>'];
-        else
-            $aApps = ['status' => 'ok', 'name' => $sApps, 'value' => _t('_adm_dbd_txt_ver_up_to_date')];
-
         return [
             'upgrade' => (int)$bUpgradeAvailable,
             'current' => $this->getVersionStatus(bx_get_ver(), $aLatest['stable'], $aLatest['beta'], getParam('sys_upgrade_channel') == 'beta' ? 'beta' : 'stable'),
             'stable' => $aRows['stable'],
             'beta' => $aRows['beta'],
-            'apps' => $aApps
+            'apps' => $this->getVersionAppsRow()
         ];
+    }
+
+    /**
+     * The Updates block's Apps row: named after the number of installed apps; its value is the number waiting for an update.
+     */
+    protected function getVersionAppsRow()
+    {
+        $sApps = $this->getAppsCountText();
+        $mixedUpdates = BxDolStudioInstallerUtils::getInstance()->checkUpdates();
+        if(!is_array($mixedUpdates))
+            return ['status' => 'undef', 'name' => $sApps, 'value' => _t('_adm_dbd_txt_ht_na')];
+
+        $iUpdates = count($mixedUpdates);
+        if($iUpdates > 0)
+            return ['status' => 'warn', 'name' => $sApps, 'value' => '<a href="' . BX_DOL_URL_STUDIO . 'store.php?page=updates">' . _t('_adm_dbd_txt_ver_apps_updates', $iUpdates) . '</a>'];
+
+        return ['status' => 'ok', 'name' => $sApps, 'value' => _t('_adm_dbd_txt_ver_up_to_date')];
     }
 
     public function serviceGetWidgetNotices() {
@@ -776,36 +783,42 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
      */
     public function getVersionStatus($sInstalled, $sStable, $sBeta, $sChannel)
     {
-        if($sStable === '' && $sBeta === '')
-            return ['status' => 'undef', 'value' => _t('_adm_dbd_txt_ver_check_failed')];
+        $iStable = $this->compareVersion($sStable, $sInstalled);
+        $iBeta = $this->compareVersion($sBeta, $sInstalled);
+        $bBeta = $sChannel == 'beta';
+        $iFollowed = $bBeta ? $iBeta : $iStable; // the channel the site follows
+        $iOther = $bBeta ? $iStable : $iBeta;
 
-        $fNewer = function($sVersion) use ($sInstalled) {
-            return $sVersion !== '' && version_compare(strtolower($sVersion), strtolower($sInstalled)) > 0;
-        };
+        $aStatus = ['undef', '_adm_dbd_txt_ver_is_newer', ''];
+        if($iStable === null && $iBeta === null) {
+            $aStatus = ['undef', '_adm_dbd_txt_ver_check_failed', ''];
+        }
+        else if($iFollowed === 1) {
+            $aStatus = ['fail', '_adm_dbd_txt_ver_update_to', $bBeta ? $sBeta : $sStable];
+        }
+        else if($iStable === 0) {
+            $aStatus = ['ok', '_adm_dbd_txt_ver_is_latest_stable', ''];
+        }
+        else if($iBeta === 0) {
+            $aStatus = ['ok', '_adm_dbd_txt_ver_is_latest_beta', ''];
+        }
+        else if($iOther === 1) {
+            // neither latest: an older beta on the stable channel (or an older stable on the beta one) is behind the other channel's release
+            $aStatus = ['fail', '_adm_dbd_txt_ver_update_to', $bBeta ? $sStable : $sBeta];
+        }
 
-        $fUpdate = function($sVersion) {
-            return ['status' => 'fail', 'value' => _t('_adm_dbd_txt_ver_update_to', bx_process_output($sVersion))];
-        };
+        return ['status' => $aStatus[0], 'value' => _t($aStatus[1], bx_process_output($aStatus[2]))];
+    }
 
-        // a newer release on the channel the site follows
-        $sFollowed = $sChannel == 'beta' ? $sBeta : $sStable;
-        if($fNewer($sFollowed))
-            return $fUpdate($sFollowed);
+    /**
+     * @return int|null 1 when the release is newer than the installed version, 0 when it is the same, -1 when older, null when the check gave none
+     */
+    protected function compareVersion($sRelease, $sInstalled)
+    {
+        if($sRelease === '')
+            return null;
 
-        $fSame = function($sVersion) use ($sInstalled) {
-            return $sVersion !== '' && version_compare(strtolower($sVersion), strtolower($sInstalled)) == 0;
-        };
-        if($fSame($sStable))
-            return ['status' => 'ok', 'value' => _t('_adm_dbd_txt_ver_is_latest_stable')];
-        if($fSame($sBeta))
-            return ['status' => 'ok', 'value' => _t('_adm_dbd_txt_ver_is_latest_beta')];
-
-        // neither latest: an older beta on the stable channel (or an older stable on the beta one) is behind the other channel's release
-        $sOther = $sChannel == 'beta' ? $sStable : $sBeta;
-        if($fNewer($sOther))
-            return $fUpdate($sOther);
-
-        return ['status' => 'undef', 'value' => _t('_adm_dbd_txt_ver_is_newer')];
+        return version_compare(strtolower($sRelease), strtolower($sInstalled));
     }
 
     /**
