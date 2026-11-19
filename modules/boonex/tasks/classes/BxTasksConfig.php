@@ -288,6 +288,7 @@ class BxTasksConfig extends BxBaseModTextConfig
             'time' => 'BxTasksTime',
             'timer' => 'BxTasksTimer',
             'pre_values' => 'BxTasksPreValues',
+            'import' => 'BxTasksImport',
         ]);
 
         $this->_aJsObjects = array_merge($this->_aJsObjects, [
@@ -297,6 +298,7 @@ class BxTasksConfig extends BxBaseModTextConfig
             'time' => 'oBxTasksTime',
             'timer' => 'oBxTasksTimer',
             'pre_values' => 'oBxTasksPreValues',
+            'import' => 'oBxTasksImport',
         ]);
 
         $this->_aGridObjects = [
@@ -321,6 +323,8 @@ class BxTasksConfig extends BxBaseModTextConfig
             'time_summary_period' => $sPrefix . '-time-summary-period-',
             'timers_actions' => $sPrefix . '-timers-actions',
             'pre_values_popup' => $sPrefix . '-pv-popup-',
+            'import_form' => $sPrefix . '-import-form',
+            'import_field_params' => $sPrefix . '-import-ff-params',
         ]);
 
         $this->_bAttachmentsInTimeline = true;

@@ -19,13 +19,26 @@ class BxTasksImportLinear extends BxDol
         $this->_oModule = $oModule;
     }
 
+    public function getRequestParams($aParams = [])
+    {
+        $aResult = [
+            'api_key' => $aParams['api_key'] ?? 'lin_api_key',
+            'params' => [
+                'filter' => array_merge(['project' => 'lin_api_project_name'], ($aParams['filter'] ?? [])),
+                'limit' => 1
+            ]
+        ];
+
+        return $aResult;
+    }
+
     public function perform($iContextId = 0, $aParams = [])
     {
-        $sReqApiKey = $aParams['req_api_key'] ?? '';
+        $sReqApiKey = $aParams['api_key'] ?? '';
         if(!$sReqApiKey || !BxDolProfile::getInstance($iContextId))
             return false;
 
-        $aReqParams = $aParams['req_params'] ?? [];
+        $aReqParams = $aParams['params'] ?? [];
 
         $sEndpoint = 'https://api.linear.app/graphql';
         $aRequest = [
@@ -103,6 +116,8 @@ class BxTasksImportLinear extends BxDol
         $iProfileAuthor = $this->getProfile($aData['creator'] ?? []);
         if(!$iProfileAuthor)
             return false;
+
+        $GLOBALS['glForceCurrentProfileId'] = $iProfileAuthor;
 
         $aStateCnv = [
             'Backlog' => BX_TASKS_STATE_BACBLOG,
@@ -182,6 +197,8 @@ class BxTasksImportLinear extends BxDol
             if(in_array($aContentInfo[$CNF['FIELD_STATE']], [BX_TASKS_STATE_CANCELLED, BX_TASKS_STATE_DUPLICATE, BX_TASKS_STATE_DONE]))
                 $this->_oModule->_oDb->updateEntriesBy([$CNF['FIELD_COMPLETED'] => 1], [$CNF['FIELD_ID'] => (int)$iContentId]);
         }
+
+        $GLOBALS['glForceCurrentProfileId'] = 0;
 
         return $bResult;
     }

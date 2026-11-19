@@ -462,67 +462,12 @@ class BxBaseServiceProfiles extends BxDol
 
     public function serviceProfilesSearch ($sTerm, $mixedParams = [])
     {
-        $bParams = is_array($mixedParams);
+        return $this->_getSearchResults('profiles', $sTerm, $mixedParams);
+    }
 
-        $iLimit = 0;
-        if((is_numeric($mixedParams) && ($_iLimit = (int)$mixedParams)) || ($bParams && isset($mixedParams['limit']) && ($_iLimit = (int)$mixedParams['limit']))) 
-            $iLimit = $_iLimit;
-        else
-            $iLimit = (int)getParam('sys_profiles_search_limit');
-
-        // display friends by default
-        if (!$sTerm)
-            return $this->serviceProfilesFriends($iLimit);
-
-        // get list of "profiles" modules
-        $aModules = $this->serviceGetProfilesModules();
-
-        $mixedSearchParams = (int)getParam('sys_per_page_search_keyword_single');
-        if($bParams && !empty($mixedParams['search_params']) && is_array($mixedParams['search_params']))
-            $mixedSearchParams = [
-                'search_params' => $mixedParams['search_params'], 
-                'limit' => $mixedSearchParams
-            ];
-
-        // search in each module
-        $a = [];
-        foreach ($aModules as $aModule) {
-            if(!bx_srv($aModule['name'], 'act_as_profile'))
-                continue;
-
-            $a = array_merge($a, bx_srv($aModule['name'], 'profiles_search', [$sTerm, $mixedSearchParams]));
-        }
-
-        // sort result
-        $sOrderField = $mixedParams['order_by'] ?? 'label';
-        usort($a, function($r1, $r2) use ($sOrderField) {    
-            if($sOrderField == 'weight')
-                return -((int)$r1[$sOrderField] - (int)$r2[$sOrderField]);
-            else
-                return strcmp($r1[$sOrderField], $r2[$sOrderField]);
-        });
-
-         /**
-         * @hooks
-         * @hookdef hook-system-profiles_search_by_location 'system', 'profiles_search_by_location' - hook on serach profiles by location
-         * - $unit_name - equals `system`
-         * - $action - equals `profiles_search_by_location` 
-         * - $object_id - not used 
-         * - $sender_id - not used 
-         * - $extra_params - array of additional params with the following array keys:
-         *      - `module` - [string]  module name
-         *      - `term` - [string] term for searching
-         *      - `result` - [array] by ref, array of results, can be overridden in hook processing
-         * @hook @ref hook-account-profiles_search_by_location
-         */
-        bx_alert('system', 'profiles_search', 0, 0, [
-            'module' => $bParams && isset($mixedParams['module']) ? $mixedParams['module'] : '',
-            'term' => $sTerm,
-            'result' => &$a
-        ]);
-
-        // return as array
-        return array_slice($a, 0, $iLimit);
+    public function serviceContextsSearch ($sTerm, $mixedParams = [])
+    {
+        return $this->_getSearchResults('contexts', $sTerm, $mixedParams);
     }
 
     public function serviceProfilesSearchByLocation ($aLocation, $iRadius, $mixedParams = [])
@@ -1696,6 +1641,77 @@ class BxBaseServiceProfiles extends BxDol
         }
 
         return $aRet;
+    }
+
+    protected function _getSearchResults($sType, $sTerm, $mixedParams = [])
+    {
+        $bTypeProfiles = $sType == 'profiles';
+        $bTypeContexts = $sType == 'contexts';
+
+        $bParams = is_array($mixedParams);
+
+        $iLimit = 0;
+        if((is_numeric($mixedParams) && ($_iLimit = (int)$mixedParams)) || ($bParams && isset($mixedParams['limit']) && ($_iLimit = (int)$mixedParams['limit']))) 
+            $iLimit = $_iLimit;
+        else
+            $iLimit = (int)getParam('sys_profiles_search_limit');
+
+        // display friends by default
+        if ($bTypeProfiles && !$sTerm)
+            return $this->serviceProfilesFriends($iLimit);
+
+        // get list of "profiles"/"contexts" modules
+        $aModules = [];
+        if(($bTypeProfiles && ($sMt = 'profile')) || ($bTypeContexts && ($sMt = 'context')))
+            $aModules = bx_srv('system', 'get_modules_by_type', [$sMt]);
+
+        $mixedSearchParams = (int)getParam('sys_per_page_search_keyword_single');
+        if($bParams && !empty($mixedParams['search_params']) && is_array($mixedParams['search_params']))
+            $mixedSearchParams = [
+                'search_params' => $mixedParams['search_params'], 
+                'limit' => $mixedSearchParams
+            ];
+
+        // search in each module
+        $a = [];
+        foreach ($aModules as $aModule) {
+            $bActAsProfile = bx_srv($aModule['name'], 'act_as_profile');
+            if(($bTypeProfiles && !$bActAsProfile) || ($bTypeContexts && $bActAsProfile))
+                continue;
+
+            $a = array_merge($a, bx_srv($aModule['name'], 'profiles_search', [$sTerm, $mixedSearchParams]));
+        }
+
+        // sort result
+        $sOrderField = $mixedParams['order_by'] ?? 'label';
+        usort($a, function($r1, $r2) use ($sOrderField) {    
+            if($sOrderField == 'weight')
+                return -((int)$r1[$sOrderField] - (int)$r2[$sOrderField]);
+            else
+                return strcmp($r1[$sOrderField], $r2[$sOrderField]);
+        });
+
+         /**
+         * @hooks
+         * @hookdef hook-system-profiles_search_by_location 'system', 'profiles_search_by_location' - hook on serach profiles by location
+         * - $unit_name - equals `system`
+         * - $action - equals `profiles_search_by_location` 
+         * - $object_id - not used 
+         * - $sender_id - not used 
+         * - $extra_params - array of additional params with the following array keys:
+         *      - `module` - [string]  module name
+         *      - `term` - [string] term for searching
+         *      - `result` - [array] by ref, array of results, can be overridden in hook processing
+         * @hook @ref hook-account-profiles_search_by_location
+         */
+        bx_alert('system', $sType . '_search', 0, 0, [
+            'module' => $bParams && isset($mixedParams['module']) ? $mixedParams['module'] : '',
+            'term' => $sTerm,
+            'result' => &$a
+        ]);
+
+        // return as array
+        return array_slice($a, 0, $iLimit);
     }
 
     protected function _serviceBrowseConnections ($sMode, $aParams = [], $iDesignBox = BX_DB_PADDING_DEF, $bDisplayEmptyMsg = false, $bAjaxPaginate = true)
