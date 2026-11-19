@@ -1340,16 +1340,11 @@ webview {
         background: transparent;
         transition: background-color 150ms;
     }
+    /* Hovered, dragged or focused: the accent (the primary buttons' colour). */
     .neo-app-sidebar-resizer:hover::after,
+    .neo-app-sidebar-resizer:focus-visible::after,
     html[data-neo-sidebar-dragging] .neo-app-sidebar-resizer::after {
-        background: rgb(0 0 0 / 0.12);
-    }
-    .dark .neo-app-sidebar-resizer:hover::after,
-    html.dark[data-neo-sidebar-dragging] .neo-app-sidebar-resizer::after {
-        background: rgb(255 255 255 / 0.16);
-    }
-    .neo-app-sidebar-resizer:focus-visible::after {
-        background: rgb(var(--ring));
+        background: rgb(var(--primary));
     }
     html[data-neo-sidebar-dragging] {
         cursor: col-resize;
