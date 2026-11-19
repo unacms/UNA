@@ -1,0 +1,9 @@
+<!-- The Application layout's sidebar foot: the member's picture and name, opening the account menu (sys_account_popup,
+     menu_account_popup.html), which has the profile switcher. The narrow sidebar shows the picture alone. -->
+<button type="button" class="bx-app-sidebar-account bx-menu-account-trigger flex items-center w-full gap-3 p-2 rounded-xl text-left cursor-pointer" onclick="oBxArtificerUtils.getAccountMenu('#bx-sliding-menu-account', this, {align: 'left', flip: true});" aria-haspopup="true" aria-expanded="false" aria-controls="bx-sliding-menu-account" title="<bx_text_attribute:_sys_menu_item_title_system_account_menu />">
+    <span class="bx-app-sidebar-account-img flex-none w-10 h-10 rounded-full overflow-hidden bg-gray-950/[0.08] dark:bg-gray-50/[0.08]">
+        <bx_if:image><img class="block w-full h-full object-cover" src="__thumb__" alt="" /></bx_if:image>
+    </span>
+    <span class="bx-app-sidebar-account-name flex-1 min-w-0 truncate text-sm leading-5 font-semibold text-gray-900 dark:text-gray-100" sidebar-toggle-item>__name__</span>
+    <span class="bx-app-sidebar-account-chevron flex-none text-gray-500 dark:text-gray-400" sidebar-toggle-item><bx_image_auto:chevrons-up-down /></span>
+</button>

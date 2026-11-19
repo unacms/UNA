@@ -173,10 +173,11 @@ BxArtificerUtils.prototype.getAddContentMenu = function(sMenu, e, sPosition) {
  * The account menu: a popup under the member's avatar, at the header's end (sys_account_popup, menu_account_popup.html),
  * as the apps have it. Opening it closes the other header popups, and its button closes it again.
  */
-BxArtificerUtils.prototype.getAccountMenu = function(sMenu, e) {
+BxArtificerUtils.prototype.getAccountMenu = function(sMenu, e, oPointer) {
     $('.bx-popup-applied:visible').not(sMenu).dolPopupHide();
 
-    bx_menu_popup_inline(sMenu, e, {pointer: {align: 'right'}});
+    // the header's avatar opens it under itself, at its end; the Application sidebar's account, at the sidebar's foot, above itself
+    bx_menu_popup_inline(sMenu, e, {pointer: $.extend({align: 'right'}, oPointer || {})});
 };
 
 BxArtificerUtils.prototype.getNotificationsMenu = function(sMenu, e, sPosition, oOptions) {

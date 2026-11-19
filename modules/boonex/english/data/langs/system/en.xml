@@ -4042,6 +4042,7 @@
     <string name="_sys_menu_set_title_apps_sidebar"><![CDATA[Apps Sidebar]]></string>
     <string name="_sys_menu_set_title_panel"><![CDATA[Panel]]></string>
     <string name="_sys_menu_set_title_homepage"><![CDATA[Content modules]]></string>
+    <string name="_sys_menu_set_title_toolbar_application"><![CDATA[Application toolbar]]></string>
     <string name="_sys_menu_set_title_toolbar_member"><![CDATA[Toolbar Member]]></string>
     <string name="_sys_menu_set_title_toolbar_site"><![CDATA[Toolbar Site]]></string>
     <string name="_sys_menu_set_title_snippet_meta"><![CDATA[Snippet Meta Info]]></string>
@@ -4128,6 +4129,7 @@
     <string name="_sys_menu_title_manage"><![CDATA[Manage Submenu]]></string>
     <string name="_sys_menu_title_panel"><![CDATA[Site Panel]]></string>
     <string name="_sys_menu_title_submenu"><![CDATA[Site Submenu]]></string>
+    <string name="_sys_menu_title_toolbar_application"><![CDATA[Application toolbar]]></string>
     <string name="_sys_menu_title_toolbar_member"><![CDATA[Member Toolbar]]></string>
     <string name="_sys_menu_title_toolbar_site"><![CDATA[Site Toolbar]]></string>
     <string name="_sys_menu_title_switch_language_popup"><![CDATA[Language Switcher (popup)]]></string>
@@ -4922,6 +4924,7 @@
         <string name="_sys_txt_share_popup_url"><![CDATA[URL]]></string>
         <string name="_sys_txt_share_popup_copy_to_clipboard_text"><![CDATA[Click for copy to the clipboard]]></string>
         <string name="_sys_txt_share_popup_embeded_code"><![CDATA[Embeded code]]></string>
+        <string name="_sys_txt_sidebar_resize"><![CDATA[Resize the sidebar]]></string>
         <string name="_sys_txt_sounds_level_full"><![CDATA[Sounds: Full]]></string>
         <string name="_sys_txt_sounds_level_off"><![CDATA[Sounds: Off]]></string>
         <string name="_sys_txt_sounds_level_quiet"><![CDATA[Sounds: Quiet]]></string>

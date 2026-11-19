@@ -42,7 +42,7 @@ class AccountMenuPopupTest extends BxDolTestCase
     {
         $s = self::read('modules/boonex/artificer/js/utils.js');
 
-        $this->assertMatchesRegularExpression('/getAccountMenu = function\(sMenu, e\) \{\s*\$\(\'\.bx-popup-applied:visible\'\)\.not\(sMenu\)\.dolPopupHide\(\);\s*bx_menu_popup_inline\(sMenu, e, \{pointer: \{align: \'right\'\}\}\);/', $s);
+        $this->assertMatchesRegularExpression('/getAccountMenu = function\(sMenu, e, oPointer\) \{\s*\$\(\'\.bx-popup-applied:visible\'\)\.not\(sMenu\)\.dolPopupHide\(\);\s*\/\/[^\n]*\n\s*bx_menu_popup_inline\(sMenu, e, \{pointer: \$\.extend\(\{align: \'right\'\}, oPointer \|\| \{\}\)\}\);/', $s);
         $this->assertStringNotContainsString("var sSidebar = 'account';", $s);
     }
 

@@ -4004,6 +4004,7 @@
     <string name="_sys_menu_set_title_apps_sidebar"><![CDATA[Боковая панель приложений]]></string>
     <string name="_sys_menu_set_title_panel"><![CDATA[Панель]]></string>
     <string name="_sys_menu_set_title_homepage"><![CDATA[Модули с содержимым]]></string>
+    <string name="_sys_menu_set_title_toolbar_application"><![CDATA[Панель инструментов приложения]]></string>
     <string name="_sys_menu_set_title_toolbar_member"><![CDATA[Панель инструментов - Пользователь]]></string>
     <string name="_sys_menu_set_title_toolbar_site"><![CDATA[Панель инструментов - Сайт]]></string>
     <string name="_sys_menu_set_title_snippet_meta"><![CDATA[Мета информация в карточке]]></string>
@@ -4089,6 +4090,7 @@
     <string name="_sys_menu_title_manage"><![CDATA[Подменю управления]]></string>
     <string name="_sys_menu_title_panel"><![CDATA[Панель сайта]]></string>
     <string name="_sys_menu_title_submenu"><![CDATA[Подменю сайта]]></string>
+    <string name="_sys_menu_title_toolbar_application"><![CDATA[Панель инструментов приложения]]></string>
     <string name="_sys_menu_title_toolbar_member"><![CDATA[Панель инструментов - Пользователь]]></string>
     <string name="_sys_menu_title_toolbar_site"><![CDATA[Панель инструментов - Сайт]]></string>
     <string name="_sys_menu_title_switch_language_popup"><![CDATA[Переключатель языка (попап)]]></string>
@@ -4844,6 +4846,7 @@
         <string name="_sys_txt_share_popup_url"><![CDATA[URL]]></string>
         <string name="_sys_txt_share_popup_copy_to_clipboard_text"><![CDATA[Кликните чтобы скопировать]]></string>
         <string name="_sys_txt_share_popup_embeded_code"><![CDATA[Код для вставки]]></string>
+        <string name="_sys_txt_sidebar_resize"><![CDATA[Изменить ширину боковой панели]]></string>
         <string name="_sys_txt_sounds_level_full"><![CDATA[Звуки: громко]]></string>
         <string name="_sys_txt_sounds_level_off"><![CDATA[Звуки: выкл.]]></string>
         <string name="_sys_txt_sounds_level_quiet"><![CDATA[Звуки: тихо]]></string>

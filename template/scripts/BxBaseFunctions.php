@@ -117,6 +117,14 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                 $mixedResult = 'bx-header-menu-' . $this->getHeaderLayout()['align'];
                 break;
 
+            // The Application layout's header toolbar: the member toolbar, which the layout's styles hide on wide screens for a
+            // member (their tools and account are in the sidebar there); guests keep it (Log in, Join), and narrow screens have the
+            // standard header with it.
+            case 'sys_application_toolbar':
+                $oMenu = BxDolMenu::getObjectInstance('sys_toolbar_member');
+                $mixedResult = $oMenu ? $oMenu->getCode() : '';
+                break;
+
             case 'sys_toolbar_search':
                 $oSearch = new BxTemplSearch();
                 $oSearch->setLiveSearch(true);
