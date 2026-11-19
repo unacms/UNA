@@ -1,4 +1,4 @@
-import { useId, useMemo, useState } from 'react';
+import { useId, useMemo, useState, type FormEvent, type ReactNode } from 'react';
 
 import { loadedEditor, RichEditor, useEditor, withEditor } from '../../components/rich-editor/lazy';
 
@@ -52,65 +52,95 @@ type Props = {
  */
 export const CommentComposer = withEditor(CommentComposerForm);
 
-function CommentComposerForm({ label, submitLabel, onSubmit, onCancel, initialHtml, initialText = '', draft, onTextChange, draftKey = null, autoFocus, id, rows = 2, docked = false, asText = (name) => t('Commenting as {{name}}', { name }), sendLabel = t('Send comment') }: Readonly<Props>) {
-    const { normalizeHtml } = useEditor();
-    // what is being edited, as the editor writes it back
-    const startHtml = useMemo(() => (initialHtml !== undefined ? normalizeHtml(initialHtml, 'mini') : textToRichHtml(initialText)), [initialHtml, initialText, normalizeHtml]);
-    const editing = initialHtml !== undefined || initialText !== '';
-    const [content, setContent] = useState(() => (draft ? { html: draft, text: plainOf(draft) } : { html: startHtml, text: plainOf(startHtml) }));
-    const text = content.text;
-    const setTextState = (plain: string, html?: string) => setContent({ html: html ?? textToRichHtml(plain), text: plain.trim() });
+type Content = { html: string; text: string };
+
+/** Mini HTML with its plain text. */
+const contentOf = (html: string): Content => ({ html, text: plainOf(html) });
+
+/**
+ * The box's text: its draft, else what is being edited. A lasting draft comes in once read,
+ * unless something was typed already; a new key (another profile) starts over with that key's
+ * draft, never keeping the other one's text.
+ */
+function useComposerText(startHtml: string, draft: string | undefined, draftKey: string | null, onTextChange: Props['onTextChange']) {
+    const [content, setContent] = useState<Content>(() => contentOf(draft || startHtml));
     const lasting = useDraft(draftKey);
-    // the lasting draft comes in once read, unless something was typed already; a new key
-    // (another profile) starts over with that key's draft, never keeping the other one's text
     const [restoredFor, setRestoredFor] = useState<{ key: string | null } | null>(null);
     if (lasting.loaded !== undefined && restoredFor?.key !== draftKey) {
         const first = restoredFor === null;
         setRestoredFor({ key: draftKey });
         const kept = lasting.loaded?.text ?? '';
-        const keptHtml = lasting.loaded?.html;
-        if (!first) {
-            const html = kept ? (keptHtml ?? textToRichHtml(kept)) : startHtml;
-            setContent({ html, text: plainOf(html) });
-            onTextChange?.(html, plainOf(html));
-        } else if (kept && content.html === startHtml && !draft) {
-            const html = keptHtml ?? textToRichHtml(kept);
-            setContent({ html, text: plainOf(html) });
-            onTextChange?.(html, plainOf(html));
+        const keptHtml = kept ? (lasting.loaded?.html ?? textToRichHtml(kept)) : null;
+        // the first read only fills an untouched box; a new key takes its draft, or the start
+        let next: string | null = keptHtml ?? startHtml;
+        if (first) next = keptHtml && content.html === startHtml && !draft ? keptHtml : null;
+        if (next !== null) {
+            const restored = contentOf(next);
+            setContent(restored);
+            onTextChange?.(restored.html, restored.text);
         }
     }
+    const setText = (html: string, text: string) => {
+        setContent({ html, text });
+        onTextChange?.(html, text);
+        if (draftKey) lasting.save({ text, html });
+    };
+    const clear = () => {
+        setContent({ html: textToRichHtml(''), text: '' });
+        onTextChange?.('', '');
+        lasting.clear();
+    };
+    return { content, setText, clear };
+}
+
+/** Cmd/Ctrl+Enter sends; Esc cancels when the box can be put away. True when the key was the box's. */
+function composerKeys(e: KeyboardEvent, submit: () => void, onCancel: (() => void) | undefined): boolean {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+        submit();
+        return true;
+    }
+    if (e.key === 'Escape' && onCancel) {
+        onCancel();
+        return true;
+    }
+    return false;
+}
+
+const SEND_KEYS = isMac ? '⌘↩' : 'Ctrl+Enter';
+
+function CommentComposerForm({ label, submitLabel, onSubmit, onCancel, initialHtml, initialText = '', draft, onTextChange, draftKey = null, autoFocus, id, rows = 2, docked = false, asText = (name) => t('Commenting as {{name}}', { name }), sendLabel = t('Send comment') }: Readonly<Props>) {
+    const { normalizeHtml } = useEditor();
+    // what is being edited, as the editor writes it back
+    const startHtml = useMemo(() => (initialHtml !== undefined ? normalizeHtml(initialHtml, 'mini') : textToRichHtml(initialText)), [initialHtml, initialText, normalizeHtml]);
+    const editing = initialHtml !== undefined || initialText !== '';
+    const { content, setText, clear } = useComposerText(startHtml, draft, draftKey, onTextChange);
+    const text = content.text.trim();
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const errorId = useId();
     const hintId = useId();
-    const { me } = useApp();
-    // only the post's own box says who writes; a reply or an edit is under one's own name already
-    const writer = docked ? (me.profiles.find((p) => p.id === me.active_profile_id) ?? null) : null;
-    const unchanged = content.html === startHtml;
-    const setText = (html: string, next: string) => {
-        setContent({ html, text: next });
-        onTextChange?.(html, next);
-        if (draftKey) lasting.save({ text: next, html });
-    };
+    const blocked = !text || busy || (editing && content.html === startHtml);
 
     const submit = async () => {
-        if (!text.trim() || busy || (editing && unchanged)) return;
+        if (blocked) return;
         setBusy(true);
         setError(null);
         try {
-            await onSubmit(text.trim(), content.html);
-            setTextState('');
-            onTextChange?.('', '');
-            lasting.clear();
+            await onSubmit(text, content.html);
+            clear();
         } catch (e) {
             setError(errorMessage(e));
         } finally {
             setBusy(false);
         }
     };
+    const onFormSubmit = (e: FormEvent) => {
+        e.preventDefault();
+        void submit();
+    };
 
     // an edit or a draft starts with the caret after the text (the editor's start)
-    const textarea = (
+    const field = (
         <RichEditor
             mode="mini"
             id={id}
@@ -124,17 +154,7 @@ function CommentComposerForm({ label, submitLabel, onSubmit, onCancel, initialHt
             mentions={BODY_HTML_FOR_COMMENTS_AND_DISCUSSIONS}
             images={{ refusal: t('Photos can’t be added to a comment here.') }}
             onChange={setText}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-                    void submit();
-                    return true;
-                }
-                if (e.key === 'Escape' && onCancel) {
-                    onCancel();
-                    return true;
-                }
-                return false;
-            }}
+            onKeyDown={(e) => composerKeys(e, () => void submit(), onCancel)}
             // not disabled: a disabled box would drop focus to the page while it sends
             readOnly={busy}
         />
@@ -146,55 +166,15 @@ function CommentComposerForm({ label, submitLabel, onSubmit, onCancel, initialHt
     ) : null;
 
     if (docked) {
-        const empty = !text.trim();
-        return (
-            <form
-                className="comment-composer docked"
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    void submit();
-                }}
-            >
-                {writer ? (
-                    <p className="composer-as">{asText(writer.display_name)}</p>
-                ) : null}
-                <div className="composer-field-row">
-                    <Avatar profile={writer} size={24} />
-                    {textarea}
-                    {/* never disabled: a focused button that is disabled drops focus to the page; submit() ignores it */}
-                    <button
-                        className="send-circle"
-                        type="submit"
-                        aria-label={sendLabel}
-                        aria-disabled={empty || busy || undefined}
-                        aria-busy={busy || undefined}
-                        aria-describedby={hintId}
-                        aria-keyshortcuts="Meta+Enter Control+Enter"
-                    >
-                        <Icon name="arrow-up" strong />
-                    </button>
-                </div>
-                <p id={hintId} className="composer-hint">
-                    {empty ? t('Write something to send · {{keys}} sends', { keys: isMac ? '⌘↩' : 'Ctrl+Enter' }) : t('{{keys}} sends', { keys: isMac ? '⌘↩' : 'Ctrl+Enter' })}
-                </p>
-                {errorText}
-            </form>
-        );
+        return <DockedComposer field={field} errorText={errorText} empty={!text} busy={busy} hintId={hintId} asText={asText} sendLabel={sendLabel} onSubmit={onFormSubmit} />;
     }
-
     return (
-        <form
-            className="composer comment-composer"
-            onSubmit={(e) => {
-                e.preventDefault();
-                void submit();
-            }}
-        >
-            {textarea}
+        <form className="composer comment-composer" onSubmit={onFormSubmit}>
+            {field}
             {errorText}
             <div className="composer-row">
                 <span className="composer-hint" aria-hidden="true">
-                    {t('{{keys}} to send', { keys: isMac ? '⌘↩' : 'Ctrl+Enter' })}
+                    {t('{{keys}} to send', { keys: SEND_KEYS })}
                 </span>
                 <div className="composer-buttons">
                     {onCancel ? (
@@ -202,11 +182,56 @@ function CommentComposerForm({ label, submitLabel, onSubmit, onCancel, initialHt
                             {t('Cancel')}
                         </button>
                     ) : null}
-                    <button className="btn btn-primary" type="submit" disabled={!text.trim() || busy || (editing && unchanged)} aria-busy={busy} aria-keyshortcuts="Meta+Enter Control+Enter">
+                    <button className="btn btn-primary" type="submit" disabled={blocked} aria-busy={busy} aria-keyshortcuts="Meta+Enter Control+Enter">
                         {submitLabel}
                     </button>
                 </div>
             </div>
+        </form>
+    );
+}
+
+type DockedProps = {
+    field: ReactNode;
+    errorText: ReactNode;
+    empty: boolean;
+    busy: boolean;
+    hintId: string;
+    asText: (name: string) => string;
+    sendLabel: string;
+    onSubmit: (e: FormEvent) => void;
+};
+
+/**
+ * The post's own box under its comments: who writes it above the field (a reply or an edit is
+ * under one's own name already), the send button a circle beside it, a hint under it.
+ */
+function DockedComposer({ field, errorText, empty, busy, hintId, asText, sendLabel, onSubmit }: Readonly<DockedProps>) {
+    const { me } = useApp();
+    const writer = me.profiles.find((p) => p.id === me.active_profile_id) ?? null;
+    return (
+        <form className="comment-composer docked" onSubmit={onSubmit}>
+            {writer ? <p className="composer-as">{asText(writer.display_name)}</p> : null}
+            <div className="composer-field-row">
+                <Avatar profile={writer} size={24} />
+                {field}
+                {/* never disabled: a focused button that is disabled drops focus to the page; submit() ignores it */}
+                <button
+                    className="send-circle"
+                    type="submit"
+                    aria-label={sendLabel}
+                    aria-disabled={empty || busy || undefined}
+                    aria-busy={busy || undefined}
+                    aria-describedby={hintId}
+                    aria-keyshortcuts="Meta+Enter Control+Enter"
+                >
+                    <Icon name="arrow-up" strong />
+                </button>
+            </div>
+            <p id={hintId} className="composer-hint">
+                {empty ? t('Write something to send · {{keys}} sends', { keys: SEND_KEYS }) : t('{{keys}} sends', { keys: SEND_KEYS })}
+            </p>
+            {errorText}
         </form>
     );
 }
