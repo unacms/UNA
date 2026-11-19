@@ -85,8 +85,12 @@ class BxTasksImportLinear extends BxDol
                 $iProcessed++;
             }
 
-            if(($aPageInfo = $aData['pageInfo'] ?? false) && $aPageInfo['hasNextPage'])
-                $sAfter = $aPageInfo['endCursor'];
+            if(($aPageInfo = $aData['data']['issues']['pageInfo'] ?? false)) {
+                if($aPageInfo['hasNextPage'])
+                    $sAfter = $aPageInfo['endCursor'];
+                else
+                    break;
+            }
         }
 
         return [$iProcessed, $iIssues];
