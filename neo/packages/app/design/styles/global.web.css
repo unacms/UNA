@@ -1186,14 +1186,21 @@ webview {
     }
 }
 
-/* Application sidebar (ui/molecules/sidebar/app-sidebar.web.tsx): UNA's Application layout. The sidebar is the page's
-   left column from top to bottom; the header and the content start beside it.
-     wide (xl, 80rem and up): expanded, --neo-sidebar-width 16rem, or narrow, 4rem with icons only
-                              (data-neo-sidebar="narrow" on <html>, set before the first paint)
-     below it:                a drawer, 16rem (at most 85% of the screen) over the page and its header, while it has data-open
-   The same three states and sizes as UNA's own sidebar (Artificer's css/common.css "Application"). */
+/* Application sidebar (ui/molecules/sidebar/app-sidebar.web.tsx): UNA's Application layout, as Artificer's
+   css/common.css "Application" draws it.
+     wide (xl, 80rem and up): the header is a bare 16px strip in the page's colour, the sidebar the left column under
+                              it, outside the content, which is one block (the blocks' surface, edge and corners) 16px
+                              from the window's other edges. The window scrolls the page: the block's surface
+                              (.neo-app-frame) is fixed behind it, its edge (.neo-app-frame-edge) over it, with the
+                              page's colour spread around it, which hides what scrolls past the block.
+                              The sidebar is expanded (--neo-sidebar-width-expanded: 16rem, or the width its edge
+                              was dragged to) or narrow, 4rem with icons only (data-neo-sidebar="narrow" on <html>,
+                              set before the first paint).
+     below it:                the Standard layout: the regular header, the page without a frame, and the sidebar a
+                              drawer over them (16rem, at most 85% of the screen) while it has data-open. */
 .neo-app-shell {
-    --neo-sidebar-width: 16rem;
+    --neo-sidebar-width: var(--neo-sidebar-width-expanded, 16rem);
+    --neo-app-gap: 1rem;
 }
 .neo-app-sidebar {
     position: fixed;
@@ -1205,16 +1212,22 @@ webview {
     flex-direction: column;
     width: var(--neo-sidebar-width);
     max-width: 85vw;
-    box-shadow: 1px 0 0 0 rgb(0 0 0 / 0.08);
-}
-.dark .neo-app-sidebar {
-    box-shadow: 1px 0 0 0 rgb(255 255 255 / 0.08);
 }
 .neo-app-sidebar-head {
-    padding: 0 0.625rem; /* the 44px button centred over the narrow sidebar's 64px */
+    padding: 0.75rem 1rem 0.5rem; /* the logo on the 16px line where the rows' icons start */
 }
 .neo-app-sidebar-logo {
-    margin-inline-start: 0.375rem; /* on the sidebar's 16px line, where its rows' icons start */
+    min-width: 0;
+    overflow: hidden;
+}
+.neo-app-sidebar-logo-mark {
+    display: none;
+}
+.neo-app-sidebar-tools {
+    margin-inline-start: auto;
+}
+.neo-app-sidebar-tools:not(:has(*)) {
+    display: none;
 }
 .neo-app-sidebar-body {
     overflow-x: hidden;
@@ -1227,7 +1240,24 @@ webview {
 .dark .neo-app-sidebar-menu + .neo-app-sidebar-menu {
     border-top-color: rgb(255 255 255 / 0.08);
 }
-.neo-app-sidebar-icon-open,
+.neo-app-sidebar-foot {
+    box-shadow: 0 -1px 0 0 rgb(0 0 0 / 0.08);
+}
+.dark .neo-app-sidebar-foot {
+    box-shadow: 0 -1px 0 0 rgb(255 255 255 / 0.08);
+}
+.neo-app-sidebar-account {
+    transition: background-color 200ms;
+}
+.neo-app-sidebar-account:hover {
+    background-color: rgb(0 0 0 / 0.05);
+}
+.dark .neo-app-sidebar-account:hover {
+    background-color: rgb(255 255 255 / 0.05);
+}
+.neo-app-frame,
+.neo-app-frame-edge,
+.neo-app-sidebar-resizer,
 .neo-app-sidebar-open,
 .neo-app-sidebar-backdrop {
     display: none;
@@ -1239,49 +1269,141 @@ webview {
     background: rgb(0 0 0 / 0.5);
 }
 
-/* Wide: the header and the content start where the sidebar ends. */
+/* Wide: the strips, the sidebar between them and the content's block beside it. */
 @media (min-width: 80rem) {
     html[data-neo-sidebar="narrow"] .neo-app-shell {
         --neo-sidebar-width: 4rem;
     }
     .neo-app-shell {
-        padding-inline-start: var(--neo-sidebar-width);
+        isolation: isolate; /* the block's surface (z-index -1) paints over the shell's background, under the page */
+        padding-inline: var(--neo-sidebar-width) var(--neo-app-gap);
+        padding-bottom: var(--neo-app-gap);
     }
+    /* The header: a strip in the page's colour; the sidebar has the logo and the tools. */
     .neo-app-shell .header-fixed {
-        left: var(--neo-sidebar-width);
-        width: calc(100% - var(--neo-sidebar-width)); /* the header is w-full: without this it would run past the right edge */
+        height: var(--neo-app-gap);
+        overflow: hidden;
+        background: rgb(var(--background));
+        box-shadow: none;
     }
-    /* The expanded sidebar shows the logo, so the header's is hidden; narrow, it is the other way round. */
-    html:not([data-neo-sidebar="narrow"]) .neo-app-shell .neo-header-logo,
-    html[data-neo-sidebar="narrow"] .neo-app-sidebar-logo,
-    html[data-neo-sidebar="narrow"] .neo-app-sidebar-icon-close,
+    .neo-app-shell .header-fixed > * {
+        visibility: hidden;
+    }
+    .neo-app-frame,
+    .neo-app-frame-edge {
+        display: block;
+        position: fixed;
+        top: var(--neo-app-gap);
+        bottom: var(--neo-app-gap);
+        left: var(--neo-sidebar-width);
+        right: var(--neo-app-gap);
+        pointer-events: none;
+    }
+    .neo-app-frame {
+        z-index: -1;
+    }
+    /* Over the page and under the header (z-50) and the sidebar: the block's edge, and the page's colour around it. */
+    .neo-app-frame-edge {
+        z-index: 45;
+        box-shadow: var(--neo-shadow-block-outline), 0 0 0 200vmax rgb(var(--background));
+    }
+    .dark .neo-app-frame-edge {
+        box-shadow: var(--neo-shadow-block-outline-deep), 0 0 0 200vmax rgb(var(--background));
+    }
+    .neo-app-sidebar {
+        top: var(--neo-app-gap);
+        bottom: var(--neo-app-gap);
+    }
+    .neo-app-sidebar-close {
+        display: none;
+    }
+    /* The edge: a handle 8px wide over the sidebar's border, a line while it is hovered or dragged. */
+    .neo-app-sidebar-resizer {
+        display: block;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        inset-inline-end: -0.25rem;
+        width: 0.5rem;
+        cursor: col-resize;
+        touch-action: none;
+        outline: none;
+    }
+    .neo-app-sidebar-resizer::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: calc(50% - 1px);
+        width: 2px;
+        border-radius: 1px;
+        background: transparent;
+        transition: background-color 150ms;
+    }
+    .neo-app-sidebar-resizer:hover::after,
+    html[data-neo-sidebar-dragging] .neo-app-sidebar-resizer::after {
+        background: rgb(0 0 0 / 0.12);
+    }
+    .dark .neo-app-sidebar-resizer:hover::after,
+    html.dark[data-neo-sidebar-dragging] .neo-app-sidebar-resizer::after {
+        background: rgb(255 255 255 / 0.16);
+    }
+    .neo-app-sidebar-resizer:focus-visible::after {
+        background: rgb(var(--ring));
+    }
+    html[data-neo-sidebar-dragging] {
+        cursor: col-resize;
+        user-select: none;
+    }
+
+    /* Narrow: the logo's mark, then Search and Add under it, 12px apart, and the rows' icons. */
+    html[data-neo-sidebar="narrow"] .neo-app-sidebar-head {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 0.75rem 0 0.125rem; /* the first row's icon 16px under Add */
+    }
+    html[data-neo-sidebar="narrow"] .neo-app-sidebar-tools {
+        flex-direction: column;
+        margin-inline-start: 0;
+    }
+    html[data-neo-sidebar="narrow"] .neo-app-sidebar-logo {
+        justify-content: center;
+    }
+    html[data-neo-sidebar="narrow"] .neo-app-sidebar-logo-full,
     html[data-neo-sidebar="narrow"] .neo-app-sidebar-label {
         display: none;
     }
-    html[data-neo-sidebar="narrow"] .neo-app-sidebar-icon-open {
+    html[data-neo-sidebar="narrow"] .neo-app-sidebar-logo-mark {
         display: flex;
-    }
-    html[data-neo-sidebar="narrow"] .neo-app-sidebar-head {
-        justify-content: center;
     }
     html[data-neo-sidebar="narrow"] .neo-app-sidebar-body {
         scrollbar-width: none;
     }
 }
 
-/* Below the breakpoint: a drawer that slides in over the page and its header. */
+/* Below the breakpoint: the Standard layout's page, and the sidebar a drawer that slides in over it and its header. */
 @media (max-width: 79.98rem) {
     .neo-app-sidebar {
         visibility: hidden;
         transform: translateX(-100%);
         transition: transform 250ms cubic-bezier(0.2, 0.7, 0.3, 1), visibility 0s linear 250ms;
-        box-shadow: none;
+        background: rgb(var(--background));
     }
     .neo-app-sidebar[data-open] {
         visibility: visible;
         transform: none;
         transition: transform 250ms cubic-bezier(0.2, 0.7, 0.3, 1), visibility 0s;
         box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06), 0 12px 24px -4px rgb(0 0 0 / 0.2);
+    }
+    .neo-app-sidebar-head {
+        padding-inline-end: 0.75rem;
+    }
+    /* The row holds Search, Add and the close button too: the logo's mark, as on phones. */
+    .neo-app-sidebar-logo-full {
+        display: none;
+    }
+    .neo-app-sidebar-logo-mark {
+        display: flex;
     }
     .neo-app-sidebar-backdrop[data-open] {
         display: block;
