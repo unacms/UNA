@@ -191,16 +191,14 @@ div.bx-std-pmen-item .bx-std-tile-btn svg,
 div.bx-std-pmen-item .bx-std-tile-btn .sys-icon {
     border-radius: 0;
 }
-/* App art: 1px beyond its 36px tile on every side (9px corners), as large as a tile button with its outer hairline; the tile's darker edge
-   line sits over that outer 1px (tailwind.css). */
+/* App art: its 36px tile (8px corners), as large as a tile button; the tile's darker edge line sits over the art's outer pixel
+   (tailwind.css). */
 div.bx-std-pmen-item .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) > img,
 div.bx-std-pmen-item .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) > svg {
     display: block;
-    width: calc(100% + 2px);
-    max-width: none; /* Tailwind's base caps images at their box */
-    height: calc(100% + 2px);
-    margin: -1px;
-    border-radius: calc(var(--bx-radius-lg) + 1px);
+    width: 100%;
+    height: 100%;
+    border-radius: var(--bx-radius-lg);
 }
 
 div.bx-std-pmen-item a, 

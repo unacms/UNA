@@ -2453,13 +2453,13 @@
     .bx-std .bx-std-pmen-ic-icon {
         @apply isolate border-0 bg-gradient-to-b from-white to-black/5 dark:from-white/10 dark:to-white/5;
     }
-    /* The art itself runs 1px past the tile (menu_top.css, general.css), as far as a button's outer hairline reaches, and a 1px black/20 line
-       over that outer pixel darkens the art's own edge: a darker shade of whatever colour the icon has there, so the edge is always darker than
+    /* The art fills its 36px tile (menu_top.css, general.css), as the buttons beside it keep their hairlines inside theirs, and a 1px black/20 line
+       over the art's outer pixel darkens its own edge: a darker shade of whatever colour the icon has there, so the edge is always darker than
        the icon and never a gray that clashes with it. In the dark scheme the line is white/15, as on the launcher's tiles: a darker edge leaves a dark icon without
        an outline on the dark bar. The tile buttons in the sidebar (plain glyphs) keep the buttons' hairlines. */
     .bx-std .bx-std-menu-top .bx-icon-tile,
     .bx-std .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) {
-        @apply after:-inset-px after:rounded-[calc(var(--bx-radius-lg)_+_1px)] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.2)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.15)];
+        @apply after:inset-0 after:rounded-[inherit] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.2)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.15)];
     }
 
     /* Tiles and buttons in the header (36px): a tight stack that stays inside the bar. The md stack above is sized for the 72px launcher tiles and lands mostly below the bar, where it reads as no shadow at all. */
