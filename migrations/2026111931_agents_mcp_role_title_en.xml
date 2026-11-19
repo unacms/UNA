@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- MCP in Studio: the role action without its aside, the Tools tab's switches, and its operator tools. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_adm_rl_txt_action_use_mcp"><![CDATA[Use the operator tools through MCP]]></string_upd>
+    <string_upd name="_sys_agents_mcp_txt_operators"><![CDATA[MCP for Operators]]></string_upd>
+    <string_upd name="_sys_agents_mcp_txt_members"><![CDATA[MCP for Users]]></string_upd>
+    <string_add name="_sys_agents_tools_txt_agents"><![CDATA[Agents]]></string_add>
+    <string_add name="_sys_agents_tools_txt_operator_agent"><![CDATA[Operator agent]]></string_add>
+    <string_add name="_sys_agents_tools_err_locked"><![CDATA[This tool belongs to the operator agent: only its MCP switch can be changed.]]></string_add>
+</resources>

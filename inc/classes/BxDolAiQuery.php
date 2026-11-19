@@ -222,14 +222,15 @@ class BxDolAiQuery extends BxDolDb
     }
 
     /**
-     * Active tools the MCP server gives: to operators ('mcp') or to every member ('mcp_members'), oldest first.
+     * Tools switched on for the MCP server: for operators ('mcp') or for every member ('mcp_members'), oldest first.
+     * Whether agents have a tool (`active`) is another switch.
      */
     public function getMcpTools(string $sFlag): array
     {
         if (!in_array($sFlag, ['mcp', 'mcp_members'], true))
             return [];
 
-        return $this->getAll("SELECT * FROM `sys_agents_tools` WHERE `active` = 1 AND `" . $sFlag . "` = 1 ORDER BY `id` ASC");
+        return $this->getAll("SELECT * FROM `sys_agents_tools` WHERE `" . $sFlag . "` = 1 ORDER BY `id` ASC");
     }
 
     /**

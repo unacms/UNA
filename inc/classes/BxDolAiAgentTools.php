@@ -55,6 +55,27 @@ class BxDolAiAgentTools
     }
 
     /**
+     * Whether a tool type is the operator agent's own (OPERATOR): no other agent can be given it, and Studio > Agents
+     * > Tools lists it locked for agents, with its MCP switch only.
+     */
+    public static function isOperatorOnly(string $sType): bool
+    {
+        return in_array($sType, self::OPERATOR, true);
+    }
+
+    /**
+     * Studio > Agents > Tools: every tool but those each agent has in code (ALWAYS), which have nothing to switch.
+     * The operator's own (OPERATOR) are listed for their MCP switch and locked for agents there.
+     */
+    public static function excludeFromToolsGrid(string $sSource): string
+    {
+        if (stripos($sSource, ' WHERE ') === false)
+            $sSource .= ' WHERE 1 ';
+
+        return $sSource . ' AND `type` NOT IN (' . BxDolDb::getInstance()->implode_escape(self::ALWAYS) . ')';
+    }
+
+    /**
      * One active row per type that this agent must have, lowest id.
      *
      * @return int[]

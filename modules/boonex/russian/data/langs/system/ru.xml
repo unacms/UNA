@@ -1879,7 +1879,7 @@
         <string name="_adm_rl_txt_action_use_extensions_dsc"><![CDATA[]]></string>
         <string name="_adm_rl_txt_action_use_integrations"><![CDATA[Использовать приложения в категории 'Интеграции']]></string>
         <string name="_adm_rl_txt_action_use_integrations_dsc"><![CDATA[]]></string>
-        <string name="_adm_rl_txt_action_use_mcp"><![CDATA[Использовать операторские инструменты через MCP (ИИ-ассистенты)]]></string>
+        <string name="_adm_rl_txt_action_use_mcp"><![CDATA[Использовать операторские инструменты через MCP]]></string>
         <string name="_adm_rl_txt_action_use_mcp_dsc"><![CDATA[]]></string>
         <string name="_adm_rl_txt_role_title"><![CDATA[Заголовок]]></string>
         <string name="_adm_rl_err_role_title"><![CDATA[Нужно ввести имя (3, 100) для всех языков]]></string>
@@ -2708,10 +2708,13 @@
         <string name="_sys_agents_connectors_txt_tools"><![CDATA[Инструменты для ИИ-ассистентов]]></string>
         <string name="_sys_agents_connectors_txt_tools_info"><![CDATA[Какие инструменты агентов ИИ-ассистенты получают через MCP. Операторские инструменты действуют на весь сайт. Инструменты участников действуют от имени участника, с его правами на сайте, и дать участникам можно только те, что для этого сделаны. Инструмент, выключенный на вкладке Tools, не выдаётся.]]></string>
         <string name="_sys_agents_mcp_txt_tool_off"><![CDATA[выключен]]></string>
-        <string name="_sys_agents_mcp_txt_operators"><![CDATA[Операторам]]></string>
-        <string name="_sys_agents_mcp_txt_members"><![CDATA[Участникам]]></string>
+        <string name="_sys_agents_mcp_txt_operators"><![CDATA[MCP для операторов]]></string>
+        <string name="_sys_agents_mcp_txt_members"><![CDATA[MCP для пользователей]]></string>
         <string name="_sys_agents_mcp_txt_operators_only"><![CDATA[Только операторам]]></string>
         <string name="_sys_agents_mcp_err_not_for_members"><![CDATA[Этот инструмент не сделан для участников: он действовал бы на весь сайт.]]></string>
+        <string name="_sys_agents_tools_txt_agents"><![CDATA[Агентам]]></string>
+        <string name="_sys_agents_tools_txt_operator_agent"><![CDATA[Агент-оператор]]></string>
+        <string name="_sys_agents_tools_err_locked"><![CDATA[Этот инструмент принадлежит агенту-оператору: можно менять только его переключатель MCP.]]></string>
         <string name="_sys_api_tokens_txt_created"><![CDATA[Ваш новый токен доступа, он показывается только один раз: {0} Скопируйте его сейчас и никому не передавайте. Адрес MCP-сервера: {1}]]></string>
         <string name="_sys_api_tokens_txt_info"><![CDATA[Подключите к своему аккаунту ИИ-ассистентов, например Claude или ChatGPT. Они работают с вашим контентом так же, как вы на сайте. Создайте отдельный токен для каждого ассистента; отзовите токен, чтобы отключить его.]]></string>
         <string name="_sys_api_tokens_txt_info_operator"><![CDATA[Подключите к своему аккаунту ИИ-ассистентов, например Claude или ChatGPT. Поскольку вы оператор, ваши токены дают им и операторские инструменты, включённые в Studio > Agents > Tools, которые могут изменить на сайте что угодно. Создайте отдельный токен для каждого ассистента; отзовите токен, чтобы отключить его.]]></string>

@@ -21,6 +21,12 @@ use NeuronAI\Tools\ToolProperty;
  */
 class BxDolAIToolChatTitle extends BxDolAITool
 {
+    /** Works only inside an agent's chat: never given through MCP. */
+    public static function isMcpAllowed(): bool
+    {
+        return false;
+    }
+
     const MAX_WORDS = 6;
     const MAX_CHARS = 80;
 

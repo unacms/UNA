@@ -75,12 +75,32 @@ class BxDolMcpServerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(BxDolMcpServer::JSONRPC_INVALID_PARAMS, $a['error']['code']);
     }
 
-    public function testChatOnlyToolsAreNotOperatorTools()
+    public function testTheToolsCodeDecidesWhetherItIsForMcp()
     {
-        foreach (['chat_buttons', 'chat_title', 'chat_artifact_save', 'chat_goal_reached', 'prompt_feedback'] as $sType)
-            $this->assertFalse(BxDolMcpServer::isOperatorToolType($sType), $sType);
-        foreach (['mysql_select', 'mysql_write_safe', 'content_update', 'agent_create'] as $sType)
-            $this->assertTrue(BxDolMcpServer::isOperatorToolType($sType), $sType);
+        // tools of the AI library, by type: MySQL Write never
+        $this->assertFalse(BxDolAIToolFactory::isMcpAllowed(['type' => 'mysql_write', 'class_name' => '']));
+        foreach (['mysql_select', 'mysql_schema', 'tavily_web_search'] as $sType)
+            $this->assertTrue(BxDolAIToolFactory::isMcpAllowed(['type' => $sType, 'class_name' => '']), $sType);
+
+        // UNA tools, by their class: those that work only in an agent's chat never
+        foreach (['BxDolAIToolChatButtons', 'BxDolAIToolChatTitle', 'BxDolAIToolChatArtifactSave', 'BxDolAIToolChatGoalReached', 'BxDolAIToolPromptFeedback'] as $sClass)
+            $this->assertFalse(BxDolAIToolFactory::isMcpAllowed(['type' => 'x', 'class_name' => $sClass]), $sClass);
+        foreach (['BxDolAIToolContentGet', 'BxDolAIToolMysqlWrite', 'BxDolAIToolAgentCreate', 'BxDolAIToolSplash'] as $sClass)
+            $this->assertTrue(BxDolAIToolFactory::isMcpAllowed(['type' => 'x', 'class_name' => $sClass]), $sClass);
+
+        $this->assertFalse(BxDolAIToolFactory::isMcpAllowed(['type' => 'x', 'class_name' => 'NoSuchToolClass']));
+    }
+
+    public function testToolsGridHidesOnlyWhatEveryAgentHasInCode()
+    {
+        $sSource = BxDolAiAgentTools::excludeFromToolsGrid('SELECT * FROM `sys_agents_tools` WHERE 1 ');
+        foreach (BxDolAiAgentTools::ALWAYS as $sType)
+            $this->assertStringContainsString("'" . $sType . "'", $sSource);
+        // the operator's own are listed, locked for agents
+        foreach (BxDolAiAgentTools::OPERATOR as $sType)
+            $this->assertStringNotContainsString("'" . $sType . "'", $sSource);
+        $this->assertTrue(BxDolAiAgentTools::isOperatorOnly('agent_create'));
+        $this->assertFalse(BxDolAiAgentTools::isOperatorOnly('content_get'));
     }
 
     public function testMemberSafeTools()

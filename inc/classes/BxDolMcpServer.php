@@ -20,12 +20,13 @@
  * - every API v2 operation (BxDolApiV2Router), named by its operationId and run through
  *   BxDolApiV2Router::dispatch() with its rate limit and its checks: what any member may do with
  *   their own content. Uploads and streamed answers are left out;
- * - the agent tools (sys_agents_tools) switched on in Studio > Agents > Connectors: for every member
+ * - the agent tools (sys_agents_tools) switched on in Studio > Agents > Tools, apart from whether agents
+ *   have them, and only those whose code allows it (BxDolAIToolFactory::isMcpAllowed()): for every member
  *   those with `mcp_members`, which only a tool made for it can have (BxDolAITool::isMemberSafe()):
  *   it then runs in the member's scope (BxDolAITool::setMemberScope()), acting as the member with
  *   the site's permission checks; for an operator (isAdmin(), with the Studio role action `use mcp`)
  *   also those with `mcp`, which act on
- *   the whole site, each call logged. Tools that only work in an agent's chat are never given.
+ *   the whole site, each call logged.
  */
 class BxDolMcpServer
 {
@@ -421,7 +422,7 @@ class BxDolMcpServer
 
         $aTools = [];
         foreach ((new BxDolAiQuery())->getMcpTools($bMember ? 'mcp_members' : 'mcp') as $aRow) {
-            if (!self::isOperatorToolType((string)$aRow['type']) || ($bMember && !self::isMemberSafeTool($aRow)))
+            if (!BxDolAIToolFactory::isMcpAllowed($aRow) || ($bMember && !self::isMemberSafeTool($aRow)))
                 continue;
 
             try {
@@ -466,15 +467,6 @@ class BxDolMcpServer
         }
 
         return $aTools;
-    }
-
-    /**
-     * Whether a tool type is one for MCP: not those that only work inside an agent's chat (its buttons, title,
-     * artifacts, goal and feedback on its prompt).
-     */
-    public static function isOperatorToolType($sType)
-    {
-        return !str_starts_with($sType, 'chat_') && $sType !== 'prompt_feedback' && !in_array($sType, BxDolAiAgentTools::ALWAYS, true);
     }
 
     /**

@@ -1532,8 +1532,10 @@ The tools act as the token's account, so the site's permission checks decide wha
   the `body` argument, and paged lists take `cursor` and `limit`. A call runs through
   `BxDolApiV2Router::dispatch()`: the operation's auth, rate limit, query and body checks, as for
   an HTTP request. An error is a tool result with `isError` and the problem document.
-- Agent tools (`sys_agents_tools`) switched on in the two MCP columns of Studio > Agents > Tools, never those that
-  only work in an agent's chat (`chat_*`, `prompt_feedback`), and only while the tool is active:
+- Agent tools (`sys_agents_tools`) switched on in the two MCP columns of Studio > Agents > Tools, apart from
+  whether agents have them (the Agents column, `active`), and only those whose code allows it
+  (`BxDolAIToolFactory::isMcpAllowed()`: never MySQL Write or the tools that work only in an agent's chat). The
+  operator agent's own tools are listed there too, locked for agents, for their MCP switch:
   - `mcp`: for operators (`isAdmin()`) whose Studio role has the action `use mcp` (Studio >
     Roles; every role has it as installed). They act on the whole site; each call is logged to
     `sys_agents`.

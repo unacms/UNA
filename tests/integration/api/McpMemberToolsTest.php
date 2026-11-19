@@ -120,8 +120,7 @@ class McpMemberToolsTest extends BxDolIntegrationTestCase
 
         $aAdd = $this->toolRow('content_add');
         $aSelect = $this->toolRow('mysql_select');
-        if (empty($aAdd['active']) || empty($aSelect['active']))
-            $this->markTestSkipped('The tools are off on this site.');
+        // whether agents have them (`active`) is another switch
         $this->flags($aAdd, 0, 1);
         $this->flags($aSelect, 1, 1); // not made for members: never given to them, whatever the flag says
 

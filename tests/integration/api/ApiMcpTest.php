@@ -160,8 +160,8 @@ class ApiMcpTest extends ApiV2TestCase
 
     public function testOperatorGetsOperatorTools()
     {
-        $aSelect = BxDolDb::getInstance()->getRow("SELECT `active`, `mcp` FROM `sys_agents_tools` WHERE `type` = 'mysql_select' ORDER BY `id` LIMIT 1");
-        if (empty($aSelect['active']) || empty($aSelect['mcp']))
+        $aSelect = BxDolDb::getInstance()->getRow("SELECT `mcp` FROM `sys_agents_tools` WHERE `type` = 'mysql_select' ORDER BY `id` LIMIT 1");
+        if (empty($aSelect['mcp']))
             $this->markTestSkipped('mysql_select is not given to operators on this site.');
 
         $oAccount = BxDolProfile::getInstance($this->adminProfileIdOtherThan([]))->getAccountObject();

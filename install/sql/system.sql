@@ -6019,11 +6019,11 @@ INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `fie
 ('sys_studio_agents_tools', 'Sql', 'SELECT * FROM `sys_agents_tools` WHERE 1 ', 'sys_agents_tools', 'id', 'id', 'active', '', 20, NULL, 'start', '', 'title,type', '', 'like', '', '', 128, 1, 1, 'BxTemplStudioAgentsTools', '');
 
 INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `hidden_on`, `order`) VALUES
-('sys_studio_agents_tools', 'switcher', '_sys_active', '10%', 0, 0, '', '', 10),
+('sys_studio_agents_tools', 'switcher', '_sys_agents_tools_txt_agents', '10%', 0, 0, '', '', 10),
+('sys_studio_agents_tools', 'mcp', '_sys_agents_mcp_txt_operators', '10%', 0, 0, '', '', 11),
+('sys_studio_agents_tools', 'mcp_members', '_sys_agents_mcp_txt_members', '10%', 0, 0, '', '', 12),
 ('sys_studio_agents_tools', 'type', '_adm_form_txt_fields_type', '10%', 0, 0, '', '', 20),
 ('sys_studio_agents_tools', 'title', '_Title', '40%', 0, 0, '', '', 30),
-('sys_studio_agents_tools', 'mcp', '_sys_agents_mcp_txt_operators', '10%', 0, 0, '', '', 35),
-('sys_studio_agents_tools', 'mcp_members', '_sys_agents_mcp_txt_members', '10%', 0, 0, '', '', 36),
 ('sys_studio_agents_tools', 'actions', '', '40%', 0, 0, '', '', 40);
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `active`, `order`) VALUES
@@ -7423,7 +7423,8 @@ INSERT INTO `sys_agents_tools` (`type`, `title`, `docs`, `params`, `params_user`
 ('agent_create', 'Agent create', 'Create or update a Studio agent (sys_agents_agents). Do not use mysql_write on that table. action=catalog|create|update. Never ask for numeric profile_id — catalog.profile_buttons as chat_buttons, then profile=Name or profile_new=Name; create without a profile is refused. preset=comment_reply for comment-reply alert agents.', '{}', NULL, 0, 0, 1, 'BxDolAIToolAgentCreate', '');
 
 -- The MCP server (/api/mcp, BxDolMcpServer): `mcp` gives a tool to operators, `mcp_members` to every member, which
--- only a tool made for it can be (BxDolAITool::isMemberSafe()). Studio > Agents > Connectors switches them.
+-- only a tool made for it can be (BxDolAITool::isMemberSafe()), apart from `active` (agents). Studio > Agents > Tools
+-- switches them; a tool whose code says no (BxDolAIToolFactory::isMcpAllowed()) is never given.
 -- Operators start with the tools the operator agent has.
 UPDATE `sys_agents_tools` SET `mcp` = 1 WHERE `type` IN ('content_structure', 'content_search', 'content_get', 'comments_get', 'mysql_schema', 'mysql_select', 'mysql_write_safe', 'mysql_undo', 'agent_create', 'mockup_upsert', 'splash_update');
 

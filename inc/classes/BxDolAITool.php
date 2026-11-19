@@ -40,7 +40,16 @@ class BxDolAITool extends Tool
     }
 
     /**
-     * Whether the tool may be given to members (Studio > Agents > Connectors): while a member's call runs
+     * Whether the tool may be given through the MCP server at all (BxDolMcpServer), to operators or members; a tool
+     * that can do what no assistant should, or that works only inside an agent's chat, says no.
+     */
+    public static function isMcpAllowed(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Whether the tool may be given to members (Studio > Agents > Tools): while a member's call runs
      * (getMemberScope()) it acts as that member, with the permission checks the site makes for them.
      */
     public static function isMemberSafe(): bool
