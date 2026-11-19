@@ -23,7 +23,8 @@
  * - the agent tools (sys_agents_tools) switched on in Studio > Agents > Connectors: for every member
  *   those with `mcp_members`, which only a tool made for it can have (BxDolAITool::isMemberSafe()):
  *   it then runs in the member's scope (BxDolAITool::setMemberScope()), acting as the member with
- *   the site's permission checks; for an operator (isAdmin()) also those with `mcp`, which act on
+ *   the site's permission checks; for an operator (isAdmin(), with the Studio role action `use mcp`)
+ *   also those with `mcp`, which act on
  *   the whole site, each call logged. Tools that only work in an agent's chat are never given.
  */
 class BxDolMcpServer
@@ -31,6 +32,9 @@ class BxDolMcpServer
     const PROTOCOL_VERSION = '2026-07-28';
     const SERVER_NAME = 'una';
     const SERVER_VERSION = '1.0.0';
+
+    /** The Studio role action (Studio > Roles) that lets an operator use the operator tools. */
+    const ROLE_ACTION = 'use mcp';
 
     /** Largest request body, bytes. */
     const BODY_MAX = 1048576;
@@ -212,7 +216,12 @@ class BxDolMcpServer
      */
     public function isOperator()
     {
-        return $this->_oAuth->getProfileId() > 0 && isAdmin();
+        if ($this->_oAuth->getProfileId() <= 0 || !isAdmin())
+            return false;
+
+        // the Studio role's action (Studio > Roles), as the operator's other apps are; every role has it as installed
+        $oProfile = BxDolProfile::getInstance($this->_oAuth->getProfileId());
+        return $oProfile && BxDolStudioRolesUtils::getInstance()->isActionAllowed(self::ROLE_ACTION, (int)$oProfile->getAccountId());
     }
 
     /**

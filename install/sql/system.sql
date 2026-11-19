@@ -6022,6 +6022,8 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('sys_studio_agents_tools', 'switcher', '_sys_active', '10%', 0, 0, '', '', 10),
 ('sys_studio_agents_tools', 'type', '_adm_form_txt_fields_type', '10%', 0, 0, '', '', 20),
 ('sys_studio_agents_tools', 'title', '_Title', '40%', 0, 0, '', '', 30),
+('sys_studio_agents_tools', 'mcp', '_sys_agents_mcp_txt_operators', '10%', 0, 0, '', '', 35),
+('sys_studio_agents_tools', 'mcp_members', '_sys_agents_mcp_txt_members', '10%', 0, 0, '', '', 36),
 ('sys_studio_agents_tools', 'actions', '', '40%', 0, 0, '', '', 40);
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `active`, `order`) VALUES
@@ -6045,15 +6047,6 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 ('sys_studio_agents_connectors', 'independent', 'add', '_sys_api_tokens_btn_add', '', 0, 0, 1, 10),
 ('sys_studio_agents_connectors', 'single', 'delete', '_sys_api_tokens_btn_revoke', 'remove', 1, 1, 1, 20);
 
--- GRID: Agents MCP tools, which agent tools the MCP server gives to operators (`mcp`) and to every member (`mcp_members`)
-INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `responsive`, `show_total_count`, `override_class_name`, `override_class_file`) VALUES
-('sys_studio_agents_mcp_tools', 'Sql', 'SELECT * FROM `sys_agents_tools` WHERE `type` NOT IN (''chat_buttons'', ''chat_title'', ''chat_artifact_save'', ''chat_goal_reached'', ''prompt_feedback'') ', 'sys_agents_tools', 'id', 'id', '', '', 50, NULL, 'start', '', 'title,type', '', 'like', '', '', 128, 1, 0, 'BxDolStudioAgentsMcpTools', '');
-
-INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `hidden_on`, `order`) VALUES
-('sys_studio_agents_mcp_tools', 'title', '_Title', '40%', 0, 0, '', '', 10),
-('sys_studio_agents_mcp_tools', 'type', '_adm_form_txt_fields_type', '20%', 0, 0, '', '', 20),
-('sys_studio_agents_mcp_tools', 'mcp', '_sys_agents_mcp_txt_operators', '20%', 0, 0, '', '', 30),
-('sys_studio_agents_mcp_tools', 'mcp_members', '_sys_agents_mcp_txt_members', '20%', 0, 0, '', '', 40);
 
 -- --------------------------------------------------------
 
@@ -7713,6 +7706,10 @@ INSERT INTO `sys_std_roles_actions` (`name`, `title`, `description`) VALUES
 ('use integrations', '_adm_rl_txt_action_use_integrations', '_adm_rl_txt_action_use_integrations_dsc');
 SET @iIdActionUseIntegrations = LAST_INSERT_ID();
 
+INSERT INTO `sys_std_roles_actions` (`name`, `title`, `description`) VALUES
+('use mcp', '_adm_rl_txt_action_use_mcp', '_adm_rl_txt_action_use_mcp_dsc');
+SET @iIdActionUseMcp = LAST_INSERT_ID();
+
 SET @iMaster = 1;
 SET @iOperator = 2;
 
@@ -7748,7 +7745,11 @@ INSERT INTO `sys_std_roles_actions2roles` (`role_id`, `action_id`) VALUES
 
 -- use integrations
 (@iMaster, @iIdActionUseIntegrations),
-(@iOperator, @iIdActionUseIntegrations);
+(@iOperator, @iIdActionUseIntegrations),
+
+-- use mcp: the operator tools of the MCP server (BxDolMcpServer)
+(@iMaster, @iIdActionUseMcp),
+(@iOperator, @iIdActionUseMcp);
 
 -- --------------------------------------------------------
 

@@ -97,6 +97,62 @@ class BxBaseStudioAgentsTools extends BxDolStudioAgentsInstruments
         ];
     }
 
+    /**
+     * The MCP server's switches (BxDolMcpServer): give the tool to operators.
+     */
+    public function performActionMcp()
+    {
+        return $this->_switchMcp('mcp');
+    }
+
+    /**
+     * The MCP server's switches: give the tool to every member, only a tool made for it (BxDolAITool::isMemberSafe()).
+     */
+    public function performActionMcpMembers()
+    {
+        return $this->_switchMcp('mcp_members');
+    }
+
+    protected function _switchMcp($sFlag)
+    {
+        $aIds = bx_get('ids');
+        if (!$aIds || !is_array($aIds))
+            return $this->_getActionResult([]);
+
+        $bOn = (int)bx_get('checked') === 1;
+        foreach ($aIds as $mixedId) {
+            $aRow = BxDolAiQuery::getToolObject((int)$mixedId);
+            if (!$aRow || !BxDolMcpServer::isOperatorToolType((string)$aRow['type']))
+                continue;
+            // members get only the tools made for them
+            if ($sFlag === 'mcp_members' && $bOn && !BxDolMcpServer::isMemberSafeTool($aRow))
+                return $this->_getActionResult(['msg' => _t('_sys_agents_mcp_err_not_for_members'), 'grid' => $this->getCode(false)]);
+
+            $this->_oDb->setToolMcpFlag((int)$aRow['id'], $sFlag, $bOn);
+        }
+
+        return $this->_getActionResult([]);
+    }
+
+    protected function _getCellMcp ($mixedValue, $sKey, $aField, $aRow)
+    {
+        if (!BxDolMcpServer::isOperatorToolType((string)$aRow['type']))
+            return parent::_getCellDefault('', $sKey, $aField, $aRow);
+
+        return $this->_getCellSwitcherFor('mcp', 'mcp', _t('_sys_agents_mcp_txt_operators'), $sKey, $aField, $aRow);
+    }
+
+    protected function _getCellMcpMembers ($mixedValue, $sKey, $aField, $aRow)
+    {
+        if (!BxDolMcpServer::isOperatorToolType((string)$aRow['type']))
+            return parent::_getCellDefault('', $sKey, $aField, $aRow);
+
+        if (!BxDolMcpServer::isMemberSafeTool($aRow))
+            return parent::_getCellDefault('<span class="bx-def-font-grayed">' . _t('_sys_agents_mcp_txt_operators_only') . '</span>', $sKey, $aField, $aRow);
+
+        return $this->_getCellSwitcherFor('mcp_members', 'mcp_members', _t('_sys_agents_mcp_txt_members'), $sKey, $aField, $aRow);
+    }
+
     protected function _delete ($mixedId)
     {
         $aTool = $this->_oDb->getToolById($mixedId);

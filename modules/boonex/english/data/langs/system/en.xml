@@ -1907,6 +1907,8 @@
         <string name="_adm_rl_txt_action_use_extensions_dsc"><![CDATA[]]></string>
         <string name="_adm_rl_txt_action_use_integrations"><![CDATA[Use 'Integrations' apps]]></string>
         <string name="_adm_rl_txt_action_use_integrations_dsc"><![CDATA[]]></string>
+        <string name="_adm_rl_txt_action_use_mcp"><![CDATA[Use the operator tools through MCP (AI assistants)]]></string>
+        <string name="_adm_rl_txt_action_use_mcp_dsc"><![CDATA[]]></string>
         <string name="_adm_rl_txt_role_title"><![CDATA[Title]]></string>
         <string name="_adm_rl_err_role_title"><![CDATA[You need to enter name(3, 100) for all languages]]></string>
         <string name="_adm_rl_txt_role_description"><![CDATA[Description]]></string>
@@ -2732,16 +2734,13 @@
     <string name="_sys_agents_json_field_err"><![CDATA[Invalid JSON format.]]></string>
     <string name="_sys_agents_unauthorized"><![CDATA[You are not allowed to interact with this agent.]]></string>
     <string name="_sys_agents_connectors_txt_tokens"><![CDATA[Your access tokens]]></string>
-    <string name="_sys_agents_connectors_txt_tools"><![CDATA[Tools for AI assistants]]></string>
-    <string name="_sys_agents_connectors_txt_tools_info"><![CDATA[Which agent tools AI assistants get through MCP. Operator tools act on the whole site. Member tools act as the member, with their permissions on the site, and only tools made for that can be given to members. A tool turned off on the Tools tab is not given.]]></string>
     <string name="_sys_agents_mcp_txt_operators"><![CDATA[Operators]]></string>
     <string name="_sys_agents_mcp_txt_members"><![CDATA[Members]]></string>
     <string name="_sys_agents_mcp_txt_operators_only"><![CDATA[Operators only]]></string>
-    <string name="_sys_agents_mcp_txt_tool_off"><![CDATA[off]]></string>
     <string name="_sys_agents_mcp_err_not_for_members"><![CDATA[This tool is not made for members: it would act on the whole site.]]></string>
     <string name="_sys_api_tokens_txt_created"><![CDATA[Your new access token, shown only once: {0} Copy it now and keep it private. MCP server URL: {1}]]></string>
     <string name="_sys_api_tokens_txt_info"><![CDATA[Connect AI assistants, such as Claude or ChatGPT, to your account. They work with your own content the way you can on the site. Make a token for each assistant, and revoke one to cut it off.]]></string>
-    <string name="_sys_api_tokens_txt_info_operator"><![CDATA[Connect AI assistants, such as Claude or ChatGPT, to your account. As an operator, your tokens also give them the operator tools switched on below, which can change anything on the site. Make a token for each assistant, and revoke one to cut it off.]]></string>
+    <string name="_sys_api_tokens_txt_info_operator"><![CDATA[Connect AI assistants, such as Claude or ChatGPT, to your account. As an operator, your tokens also give them the operator tools switched on in Studio > Agents > Tools, which can change anything on the site. Make a token for each assistant, and revoke one to cut it off.]]></string>
     <string name="_sys_api_tokens_txt_mcp_url"><![CDATA[MCP server URL]]></string>
     <string name="_sys_api_tokens_txt_title"><![CDATA[Name]]></string>
     <string name="_sys_api_tokens_txt_title_info"><![CDATA[What the token is for, such as the assistant that uses it]]></string>

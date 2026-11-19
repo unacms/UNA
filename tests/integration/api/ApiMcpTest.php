@@ -165,6 +165,8 @@ class ApiMcpTest extends ApiV2TestCase
             $this->markTestSkipped('mysql_select is not given to operators on this site.');
 
         $oAccount = BxDolProfile::getInstance($this->adminProfileIdOtherThan([]))->getAccountObject();
+        if (!BxDolStudioRolesUtils::getInstance()->isActionAllowed(BxDolMcpServer::ROLE_ACTION, $oAccount->id()))
+            $this->markTestSkipped('The Studio role of the administrator does not use MCP.');
         list(, $sToken) = $this->personalToken($oAccount);
 
         $aNames = $this->toolNames($sToken);

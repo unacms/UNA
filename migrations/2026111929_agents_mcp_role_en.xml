@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- MCP: its switches are on the Tools tab, and a Studio role decides who uses the operator tools. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_rl_txt_action_use_mcp"><![CDATA[Use the operator tools through MCP (AI assistants)]]></string_add>
+    <string_add name="_adm_rl_txt_action_use_mcp_dsc"><![CDATA[]]></string_add>
+    <string_upd name="_sys_api_tokens_txt_info_operator"><![CDATA[Connect AI assistants, such as Claude or ChatGPT, to your account. As an operator, your tokens also give them the operator tools switched on in Studio > Agents > Tools, which can change anything on the site. Make a token for each assistant, and revoke one to cut it off.]]></string_upd>
+    <string_del name="_sys_agents_connectors_txt_tools"></string_del>
+    <string_del name="_sys_agents_connectors_txt_tools_info"></string_del>
+    <string_del name="_sys_agents_mcp_txt_tool_off"></string_del>
+</resources>
