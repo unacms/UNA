@@ -126,7 +126,7 @@ html {
     gap: 0.5rem;
     padding: 0 0.875rem 0.5rem;
 }
-/* The Application toolbar's 36px buttons (Search, Add) at the end of the logo's row. */
+/* The Application toolbar's buttons (Search, Add) at the end of the logo's row: 44px, the header toolbar's size. */
 .bx-main.bx-pt-application .bx-app-sidebar-head .bx-ti-right {
     margin: 0;
     margin-inline-start: auto;
@@ -137,11 +137,11 @@ html {
     padding: 0;
 }
 .bx-main.bx-pt-application .bx-app-sidebar-head .bx-menu-toolbar .bx-menu-toolbar-item {
-    width: 2.25rem;
-    height: 2.25rem;
+    width: 2.75rem;
+    height: 2.75rem;
     margin: 0;
 }
-/* The button's link and its icon box (44px in the header) take the 36px, so the icon stays in the middle. */
+/* The button's link and its icon box fill the item, so the icon stays in the middle. */
 .bx-main.bx-pt-application .bx-app-sidebar-head .bx-menu-toolbar .bx-menu-toolbar-item > a,
 .bx-main.bx-pt-application .bx-app-sidebar-head .bx-menu-toolbar .bx-menu-toolbar-item > a > span {
     display: flex;
@@ -271,12 +271,9 @@ html {
         left: calc(50% - 1px);
         width: 2px;
         border-radius: 1px;
-        background-color: rgb(0 0 0 / 0.15);
+        background-color: rgb(37 99 235); /* the accent (blue-600, the primary buttons' colour) */
         opacity: 0;
         transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .dark .bx-main.bx-pt-application .bx-app-sidebar-resizer::after {
-        background-color: rgb(255 255 255 / 0.2);
     }
     .bx-main.bx-pt-application .bx-app-sidebar-resizer:hover::after,
     .bx-main.bx-pt-application.bx-app-sidebar-dragging .bx-app-sidebar-resizer::after {
@@ -284,7 +281,6 @@ html {
     }
     .bx-main.bx-pt-application .bx-app-sidebar-resizer:focus-visible::after {
         opacity: 1;
-        background-color: rgb(59 130 246); /* the focus ring's blue */
     }
     /* While it is dragged: the page follows the pointer without a delay or a text selection. */
     .bx-main.bx-pt-application.bx-app-sidebar-dragging,
@@ -392,6 +388,30 @@ html {
 /* Below the breakpoint: a page of the Standard layout (its header, the window scrolling the content, no footer strip) whose
    sidebar is a drawer that slides in over the page and its header. */
 @media (max-width: 1279.98px) {
+    /* The drawer's first row also holds Search, Add and its close button (44px each): the logo's mark, as the narrow sidebar
+       shows it. */
+    .bx-main.bx-pt-application .bx-app-sidebar-logo:not(:has(#bx-mark)) img {
+        width: 2.25rem !important;
+        object-fit: cover;
+        object-position: left center;
+    }
+    .bx-main.bx-pt-application .bx-app-sidebar-logo:has(#bx-mark) :is(#bx-logo, #bx-logo-dark) {
+        display: none !important;
+    }
+    .bx-main.bx-pt-application .bx-app-sidebar-logo #bx-mark {
+        display: block !important;
+        width: 2.25rem !important;
+    }
+    .bx-main.bx-pt-application .bx-app-sidebar-logo #bx-mark-dark {
+        display: none !important;
+    }
+    .dark .bx-main.bx-pt-application .bx-app-sidebar-logo:has(#bx-mark-dark) #bx-mark {
+        display: none !important;
+    }
+    .dark .bx-main.bx-pt-application .bx-app-sidebar-logo #bx-mark-dark {
+        display: block !important;
+        width: 2.25rem !important;
+    }
     .bx-main.bx-pt-application #bx-toolbar {
         background-color: rgb(255 255 255 / 0.6);
         -webkit-backdrop-filter: blur(16px);
@@ -409,10 +429,6 @@ html {
     }
     /* The drawer's button the size of the member toolbar's (44px), the logo 12px after it (outweighing the phone styles, which
        take the logo's margins off: .bx-media-phone #bx-toolbar-content .bx-toolbar-item.bx-ti-logo). */
-    .bx-main.bx-pt-application #toggleSidebarMobile {
-        width: 2.75rem;
-        height: 2.75rem;
-    }
     .bx-main.bx-pt-application #bx-toolbar-content .bx-app-header-logo.bx-ti-logo {
         display: flex;
         margin-inline-start: 0.75rem;

@@ -54,7 +54,7 @@ class ApplicationShellHeaderTest extends BxDolTestCase
             $this->assertSame(1, preg_match('/<button type="button" id="' . $sId . '"([^\n]*)>\n/', $sApp, $a), $sId);
             $this->assertStringContainsString('aria-controls="' . $sControls . '"', $a[1]);
             $this->assertStringContainsString('aria-label="<bx_text_attribute:_sys_menu_item_title_system_main_menu />"', $a[1], 'An icon-only button has a name.');
-            $this->assertMatchesRegularExpression('/class="bx-sidebar-toggle [^"]*\bh-9 w-9\b[^"]*\brounded-full\b/', $a[1], '36px, as the sidebar\'s toolbar buttons and the 44px strip.');
+            $this->assertMatchesRegularExpression('/class="bx-sidebar-toggle [^"]*\bh-11 w-11\b[^"]*\brounded-full\b/', $a[1], '44px, as the header toolbar\'s and the sidebar\'s toolbar buttons.');
         }
 
         $sCss = self::read('template/css/tailwind.css');

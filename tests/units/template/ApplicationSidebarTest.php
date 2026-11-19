@@ -116,7 +116,9 @@ class ApplicationSidebarTest extends BxDolTestCase
         $this->assertStringNotContainsString(".bx-app-sidebar-narrow .bx-app-sidebar-logo {\n        display: none;", $sWide);
         $this->assertStringContainsString(".bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-logo:not(:has(#bx-mark)) img {\n        width: 2.25rem !important;\n        object-fit: cover;\n        object-position: left center;", $sWide);
         $this->assertStringContainsString(".bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-logo #bx-mark {\n        display: block !important;", $sWide);
-        $this->assertStringNotContainsString('bx-app-sidebar-logo', substr($sCss, $iDrawer));
+        $sDrawer = substr($sCss, $iDrawer);
+        $this->assertStringContainsString(".bx-main.bx-pt-application .bx-app-sidebar-logo:not(:has(#bx-mark)) img {\n        width: 2.25rem !important;", $sDrawer, 'The drawer\'s row also holds three 44px buttons: the logo\'s mark, as in the narrow sidebar.');
+        $this->assertStringNotContainsString(".bx-app-sidebar-logo {\n        display: none;", $sDrawer, 'The drawer never hides the logo.');
         $this->assertStringNotContainsString('#bx-logo-container', $sCss, 'The logo is never hidden for being in the header.');
     }
 
@@ -170,6 +172,7 @@ class ApplicationSidebarTest extends BxDolTestCase
         $this->assertMatchesRegularExpression('/<div class="bx-app-sidebar-tools">\s*__sys_app_context_switcher__\s*<\/div>/', $sApp);
         $this->assertTrue(strpos($sApp, '<bx_menu:sys_toolbar_application />') > strpos($sApp, '__main_logo__') && strpos($sApp, '<bx_menu:sys_toolbar_application />') < strpos($sApp, 'id="toggleSidebar"'), 'Search and Add on the logo\'s row.');
         $this->assertMatchesRegularExpression('/<div class="bx-app-sidebar-foot">\s*__sys_app_account__/', $sApp);
+        $this->assertStringContainsString(".bx-app-sidebar-head .bx-menu-toolbar .bx-menu-toolbar-item {\n    width: 2.75rem;\n    height: 2.75rem;", self::read('modules/boonex/artificer/data/template/system/css/common.css'), 'Search and Add are 44px, as the header toolbar\'s buttons and NEO\'s.');
 
         $sSql = self::read('install/sql/system.sql');
         foreach (['search', 'add-content'] as $sName)
@@ -217,6 +220,7 @@ class ApplicationSidebarTest extends BxDolTestCase
         $sWide = substr($sCss, strpos($sCss, '@media (min-width: 1280px) {'));
         $this->assertStringContainsString(".bx-main.bx-pt-application #toggleSidebar {\n        display: none;", $sWide, 'Wide screens have the handle, not the button.');
         $this->assertStringContainsString('cursor: col-resize;', $sWide);
+        $this->assertMatchesRegularExpression('/\.bx-app-sidebar-resizer::after \{[^}]*background-color: rgb\(37 99 235\);/', $sWide, 'Hovered, dragged or focused, the handle is the accent colour, as in NEO.');
 
         $this->assertStringContainsString('_sys_txt_sidebar_resize', self::read('modules/boonex/english/data/langs/system/en.xml'));
         $this->assertStringContainsString('_sys_txt_sidebar_resize', self::read('migrations/2026111951_application_toolbar_en.xml'));
