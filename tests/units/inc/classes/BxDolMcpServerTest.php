@@ -54,6 +54,11 @@ class BxDolMcpServerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('2025-06-18', $a['result']['protocolVersion']);
         $this->assertArrayHasKey('tools', $a['result']['capabilities']);
         $this->assertSame(BxDolMcpServer::SERVER_NAME, $a['result']['serverInfo']['name']);
+        // the site's address and icons, for the client to draw next to its name
+        $this->assertSame(BX_DOL_URL_ROOT, $a['result']['serverInfo']['websiteUrl']);
+        $this->assertNotEmpty($a['result']['serverInfo']['icons']);
+        foreach ($a['result']['serverInfo']['icons'] as $aIcon)
+            $this->assertNotSame('', $aIcon['src']);
 
         $a = $this->server()->handle(self::message('initialize', ['protocolVersion' => '2024-01-01'], 4, false));
         $this->assertSame(BxDolMcpServer::INITIALIZE_VERSIONS[0], $a['result']['protocolVersion']);

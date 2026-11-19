@@ -134,6 +134,35 @@ class BxDolMcpServer
     }
 
     /**
+     * The server as a client shows it: the site's title, its address and its icons (Studio > Designer > Icons, the
+     * template's when it has none), so the client draws the site's icon next to its name.
+     */
+    public static function getServerInfo()
+    {
+        $aIcons = [];
+
+        $sSvg = ($iId = (int)getParam('sys_site_icon_svg')) && ($oStorage = BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES)) ? (string)$oStorage->getFileUrlById($iId) : '';
+        if ($sSvg === '')
+            $sSvg = (string)BxDolTemplate::getInstance()->getIconUrl('favicon.svg');
+        if ($sSvg !== '')
+            $aIcons[] = ['src' => $sSvg, 'mimeType' => 'image/svg+xml', 'sizes' => ['any']];
+
+        $sPng = ($iId = (int)getParam('sys_site_icon_apple')) && ($oTranscoder = BxDolTranscoderImage::getObjectInstance(BX_DOL_TRANSCODER_OBJ_ICON_APPLE)) ? (string)$oTranscoder->getFileUrl($iId) : '';
+        if ($sPng === '')
+            $sPng = (string)BxDolTemplate::getInstance()->getIconUrl('apple-touch-icon.png');
+        if ($sPng !== '')
+            $aIcons[] = ['src' => $sPng, 'mimeType' => 'image/png', 'sizes' => ['180x180']];
+
+        return [
+            'name' => self::SERVER_NAME,
+            'title' => getParam('site_title'),
+            'version' => self::SERVER_VERSION,
+            'websiteUrl' => BX_DOL_URL_ROOT,
+            'icons' => $aIcons,
+        ];
+    }
+
+    /**
      * Whether the MCP server is on (Studio > Agents > Settings).
      */
     public static function isEnabled()
@@ -261,7 +290,7 @@ class BxDolMcpServer
                     'capabilities' => [
                         'tools' => ['listChanged' => false],
                     ],
-                    'serverInfo' => ['name' => self::SERVER_NAME, 'title' => getParam('site_title'), 'version' => self::SERVER_VERSION],
+                    'serverInfo' => self::getServerInfo(),
                     'instructions' => $this->_instructions(),
                     'ttlMs' => 3600000,
                     'cacheScope' => 'private',
@@ -309,7 +338,7 @@ class BxDolMcpServer
             'capabilities' => [
                 'tools' => ['listChanged' => false],
             ],
-            'serverInfo' => ['name' => self::SERVER_NAME, 'title' => getParam('site_title'), 'version' => self::SERVER_VERSION],
+            'serverInfo' => self::getServerInfo(),
             'instructions' => $this->_instructions(),
         ];
     }
