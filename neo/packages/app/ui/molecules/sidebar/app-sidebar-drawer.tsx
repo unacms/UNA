@@ -23,6 +23,8 @@ type AppSidebarDrawerProps = {
     /** The scrim's name for the screen reader. */
     closeLabel: string;
     renderSidebar: () => ReactNode;
+    /** Beside the tabs, not over them: what presents itself (an iPhone's menu sheet). */
+    overlay?: ReactNode;
     style?: StyleProp<ViewStyle>;
     children: ReactNode;
 };
@@ -31,7 +33,7 @@ const DURATION = 250;
 const SCRIM_OPACITY = 0.4;
 const EASING = Easing.bezier(0.32, 0.72, 0, 1);
 
-export default function AppSidebarDrawer({ enabled, open, warm = false, width, onClose, closeLabel, renderSidebar, style, children }: Readonly<AppSidebarDrawerProps>) {
+export default function AppSidebarDrawer({ enabled, open, warm = false, width, onClose, closeLabel, renderSidebar, overlay, style, children }: Readonly<AppSidebarDrawerProps>) {
     const reduceMotion = useReduceMotion();
     const shown = enabled && open;
     // 0 closed, 1 open.
@@ -91,6 +93,7 @@ export default function AppSidebarDrawer({ enabled, open, warm = false, width, o
             >
                 {children}
             </View>
+            {overlay}
             {drawerMounted && (
                 <Animated.View style={[StyleSheet.absoluteFill, styles.scrim, scrimStyle]} pointerEvents={shown ? 'auto' : 'none'}>
                     <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityRole="button" accessibilityLabel={closeLabel} />

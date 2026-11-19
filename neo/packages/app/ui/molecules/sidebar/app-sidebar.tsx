@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
+import { Platform, useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { View, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { NeoButton } from 'app/design/controls';
-import { appSetting, decodeTextNode, isExternalUrl, isIos, isNativeTabsEnabled, openExternalLink, sanitazeUrl } from 'app/lib/util';
+import { appSetting, decodeTextNode, hasLiquidGlass, isExternalUrl, isIos, isNativeTabsEnabled, openExternalLink, sanitazeUrl } from 'app/lib/util';
 import { appStatic } from 'app/lib/app-static';
 import { useCurrentUser } from 'app/context/user';
 import { useMenuData } from 'app/context/menu-data';
@@ -18,16 +18,17 @@ import { AUTH_BUTTONS, useMenuNavigationEntries } from 'app/components/nav/menu-
 import Profile from 'app/ui/molecules/profile/profile';
 import ProfileSwitcher from 'app/components/elements/profile-switcher';
 import AppSidebarDrawer from './app-sidebar-drawer';
+import { GlassSurface } from 'app/ui/atoms/glass-surface';
 import AppSidebarList from './app-sidebar-list';
+import AppSidebarSheet from './app-sidebar-sheet';
 import { comparable, panelSections } from './app-sidebar-entries';
 import { useDrawerPrefs } from './app-sidebar-prefs';
 import type { AppSidebarProps } from './app-sidebar.types';
 
 /**
- * The native apps' drawer: what is the viewer's own, apart from the pages the tab bar leads to. It opens from the
- * Menu button at the start of the header of a tab's first page (a page pushed over it has Back there), over the
- * page, its header and the tab bar, on a phone and on a tablet alike, and closes on a press outside, a swipe or a
- * choice. `native.drawer` turns it off for members or for guests.
+ * The native apps' menu: what is the viewer's own, apart from the pages the tab bar leads to. It opens from the Menu
+ * button at the start of the header of a tab's first page (a page pushed over it has Back there) and closes on a
+ * press outside, a swipe or a choice. `native.drawer` turns it off for members or for guests.
  *   - a member: their profile and the profile switcher, then UNA's site panel menu (`sys_site_panel`), each item of
  *     which is another menu: the profile's own pages, what they follow, the modules, the account's menu (Settings,
  *     Log out), the footer's links;
@@ -35,14 +36,19 @@ import type { AppSidebarProps } from './app-sidebar.types';
  *   - then the Preferences: language, theme, sounds.
  * Studio's Navigation decides the menus: an item "Active (for App)" there is a section here.
  *
+ * Where it shows follows the platform:
+ *   - an iPhone: a native sheet on the system Liquid Glass material (app-sidebar-sheet.ios.tsx): iOS has no drawer,
+ *     and the profile switcher's sheet stacks over it;
+ *   - an iPad: a panel over the page from the leading edge, floating on glass like the system's sidebars;
+ *   - Android (and iOS with `expo_ui.sidebar` or `expo_ui.bottom_sheet` off): a drawer over the page, its header and
+ *     the tab bar.
+ * The drawer's shell is the app's own (app-sidebar-drawer): Expo UI has none on either platform, and a native split
+ * view cannot hold the tabs. On iOS the menus are one SwiftUI List (app-sidebar-list.ios.tsx).
+ *
  * The web has the same panel as the Application layout's sidebar (app-sidebar.web.tsx), without the items marked for
  * the drawer: its header and footer have them.
  *
- * The shell is the app's own (app-sidebar-drawer): Expo UI has no drawer on either platform, and a native split view
- * cannot hold the tabs. What is inside is native where it can be: on iOS the menus are one SwiftUI List
- * (app-sidebar-list.ios.tsx).
- *
- * The drawer stands outside the tabs, so it does not know the page: the focused page reports its URL
+ * The menu stands outside the tabs, so it does not know the page: the focused page reports its URL
  * (components/layout.js → app/context/app-sidebar).
  */
 const WIDTH_MAX = 320;
@@ -52,6 +58,19 @@ const WARM_UP_MS = 2000;
 const PAGE_EDGE = 56;
 
 const closeSidebar = () => setAppSidebarOpen(false);
+
+type Presentation = 'none' | 'sheet' | 'drawer';
+
+/** Where this viewer's menu shows on this device. */
+function menuPresentation(currentUser: unknown): Presentation {
+    if (!hasAppDrawer(currentUser)) return 'none';
+    const expoUi = appSetting('theme', 'expo_ui');
+    const iPhone = Platform.OS === 'ios' && !Platform.isPad;
+    return iPhone && expoUi?.sidebar !== false && expoUi?.bottom_sheet !== false ? 'sheet' : 'drawer';
+}
+
+/** The head's insets: in line with the list under it (its rows' icons start 32pt in, their counters end 24pt from the edge). */
+const HEAD_INSET = 'ps-8 pe-6';
 
 /** Opens a row's page the way a link in a page does: in the tab that owns it, or pushed onto the current one. */
 function useSidebarNavigate() {
@@ -75,16 +94,21 @@ function useSidebarNavigate() {
     }, [router, currentUser, tabList]);
 }
 
+type HeadProps = {
+    onNavigate: (href: string) => void;
+    /** The head's own top and bottom padding, which its place decides. */
+    className: string;
+};
+
 /** A member's head: the avatar and the name open the profile; the button beside them lists the account's profiles. */
-function MemberHead({ onNavigate }: Readonly<{ onNavigate: (href: string) => void }>) {
+function MemberHead({ onNavigate, className }: Readonly<HeadProps>) {
     const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
     if (!currentUser) return null;
     const name = String(decodeTextNode(currentUser.display_name) || '');
 
-    // In line with the list under it: the rows' icons start 32pt in, their counters end 24pt from the edge.
     return (
-        <View className="flex-none flex-row items-center gap-2 ps-8 pe-6 pt-3 pb-2">
+        <View className={`flex-none flex-row items-center gap-2 ${HEAD_INSET} ${className}`}>
             <Pressable
                 onPress={() => currentUser.url && onNavigate(String(currentUser.url))}
                 accessibilityRole="link"
@@ -108,13 +132,13 @@ function MemberHead({ onNavigate }: Readonly<{ onNavigate: (href: string) => voi
 }
 
 /** A guest's head: the logo, then Log In and Sign Up, the site menu's buttons (or the app's own two without them). */
-function GuestHead({ onNavigate }: Readonly<{ onNavigate: (href: string) => void }>) {
+function GuestHead({ onNavigate, className }: Readonly<HeadProps>) {
     const { t } = useTranslation();
     const { buttons } = useMenuNavigationEntries();
     const shown = buttons.length ? buttons : AUTH_BUTTONS;
 
     return (
-        <View className="flex-none gap-3 ps-8 pe-6 pt-3 pb-2">
+        <View className={`flex-none gap-3 ${HEAD_INSET} ${className}`}>
             <Pressable
                 onPress={() => onNavigate('/home')}
                 accessibilityRole="link"
@@ -142,44 +166,98 @@ function GuestHead({ onNavigate }: Readonly<{ onNavigate: (href: string) => void
     );
 }
 
-function SidebarContent() {
-    const { currentUser } = useCurrentUser();
+/** What the menu lists, wherever it shows. */
+function useMenuContent() {
     const url = useAppSidebarUrl();
     const { menuData } = useMenuData(appSetting('menus', 'objects', 'panel') || 'sys_site_panel');
     const panels = useMemo(() => panelSections(menuData, true), [menuData]);
     const prefs = useDrawerPrefs();
-    const navigate = useSidebarNavigate();
+    const onNavigate = useSidebarNavigate();
+    return { panels, prefs, url: comparable(url), onNavigate };
+}
+
+function Head(props: Readonly<HeadProps>) {
+    const { currentUser } = useCurrentUser();
+    return currentUser ? <MemberHead {...props} /> : <GuestHead {...props} />;
+}
+
+/** The drawer's content. On iOS with Liquid Glass it floats: a rounded glass panel 8pt in from the window's edges. */
+function DrawerContent() {
+    const content = useMenuContent();
     // The shell is as tall as the window, except under iOS's JS tab bar, where the app's root keeps the safe area.
     const insets = isIos && !isNativeTabsEnabled() ? { top: 0, bottom: 0 } : getWindowSafeAreaInsets();
+    const body = (
+        <>
+            <Head onNavigate={content.onNavigate} className="pt-3 pb-2" />
+            <AppSidebarList {...content} />
+        </>
+    );
+
+    if (hasLiquidGlass && appSetting('theme', 'expo_ui', 'sidebar') !== false) {
+        return (
+            <View className="flex-1 p-2">
+                <View
+                    className="flex-1 overflow-hidden rounded-3xl"
+                    style={{ paddingTop: Math.max(insets.top - 8, 8), paddingBottom: Math.max(insets.bottom - 8, 8) }}
+                >
+                    <GlassSurface rounded="rounded-3xl" />
+                    {body}
+                </View>
+            </View>
+        );
+    }
 
     return (
         <View className="flex-1 bg-card" style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
-            {currentUser ? <MemberHead onNavigate={navigate} /> : <GuestHead onNavigate={navigate} />}
-            <AppSidebarList panels={panels} prefs={prefs} url={comparable(url)} onNavigate={navigate} />
+            {body}
         </View>
     );
 }
 
+/** A menu loaded ahead of the sheet's first opening. */
+function MenuPreload({ object }: Readonly<{ object: string }>) {
+    useMenuData(object);
+    return null;
+}
+
+/** An iPhone's menu: the sheet, and its menus loaded before it opens. */
+function SheetMenu({ open }: Readonly<{ open: boolean }>) {
+    const content = useMenuContent();
+    return (
+        <>
+            {content.panels.map((section) => <MenuPreload key={section.object} object={section.object} />)}
+            <AppSidebarSheet
+                {...content}
+                open={open}
+                onClose={closeSidebar}
+                // Under the sheet's grabber.
+                head={<Head onNavigate={content.onNavigate} className="pt-7 pb-2" />}
+            />
+        </>
+    );
+}
+
 /**
- * Around the tabs (apps/expo/app/(tabs)/_layout.js): the tabs, and the drawer over them. `style` is the tabs' host
+ * Around the tabs (apps/expo/app/(tabs)/_layout.js): the tabs, and the menu over them. `style` is the tabs' host
  * style, which makes the shell as tall as the window.
  */
 export function AppSidebarShell({ children, style }: Readonly<{ children: ReactNode; style?: StyleProp<ViewStyle> }>) {
     const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
     const { width } = useWindowDimensions();
-    const enabled = hasAppDrawer(currentUser);
+    const presentation = menuPresentation(currentUser);
+    const enabled = presentation !== 'none';
     const open = useAppSidebarOpen();
     const url = useAppSidebarUrl();
     const viewer = currentUser ? currentUser.id : null;
 
-    // Going to another page closes the drawer; so does signing in or out and switching the profile.
+    // Going to another page closes the menu; so does signing in or out and switching the profile.
     useEffect(() => {
         setAppSidebarOpen(false);
     }, [url, viewer, enabled]);
 
-    // The drawer's content mounts off screen a moment after the app starts: its menus load and its list is laid out
-    // before the first opening, so it slides in complete.
+    // The menu gets ready a moment after the app starts: the drawer's content mounts off screen, the sheet's menus
+    // load. Either opens complete the first time.
     const [warm, setWarm] = useState(false);
     useEffect(() => {
         if (!enabled) return undefined;
@@ -189,13 +267,14 @@ export function AppSidebarShell({ children, style }: Readonly<{ children: ReactN
 
     return (
         <AppSidebarDrawer
-            enabled={enabled}
+            enabled={presentation === 'drawer'}
             open={open}
             warm={warm}
             width={Math.min(WIDTH_MAX, width - PAGE_EDGE)}
             onClose={closeSidebar}
             closeLabel={t('Close')}
-            renderSidebar={() => <SidebarContent />}
+            renderSidebar={() => <DrawerContent />}
+            overlay={presentation === 'sheet' && (warm || open) ? <SheetMenu open={open} /> : null}
             style={style}
         >
             {children}
@@ -203,7 +282,7 @@ export function AppSidebarShell({ children, style }: Readonly<{ children: ReactN
     );
 }
 
-/** In the header: opens the drawer. Nothing where the viewer has none. */
+/** In the header: opens the menu. Nothing where the viewer has none. */
 export function AppSidebarOpenButton() {
     const { t } = useTranslation();
     const { currentUser } = useCurrentUser();

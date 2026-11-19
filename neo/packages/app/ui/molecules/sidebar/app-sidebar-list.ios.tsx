@@ -1,5 +1,7 @@
 import type { ComponentProps } from 'react';
-import { Button, HStack, Host, Image, List, Picker, Section, Spacer, Text } from '@expo/ui/swift-ui';
+import { StyleSheet, View } from 'react-native';
+import { Image as ExpoImage } from 'expo-image';
+import { Button, HStack, Host, Image, List, Picker, RNHostView, Section, Spacer, Text } from '@expo/ui/swift-ui';
 import {
     accessibilityLabel,
     background,
@@ -40,6 +42,7 @@ type SFSymbol = NonNullable<ComponentProps<typeof Image>['systemName']>;
  * menu of its options.
  */
 const ICON_PT = 20;
+const PICTURE_STYLE = StyleSheet.create({ image: { width: 24, height: 24, borderRadius: 12 } }).image;
 const ROW_RADIUS = 12;
 const CLEAR = '#00000000';
 
@@ -78,7 +81,14 @@ function Row({ row, colors, onNavigate }: Readonly<{ row: SidebarRowEntry; color
                     contentShape(shape),
                 ]}
             >
-                {row.icon ? <RowIcon icon={row.icon} color={ink} /> : null}
+                {row.image ? (
+                    <RNHostView matchContents>
+                        <View collapsable={false} pointerEvents="none">
+                            <ExpoImage source={{ uri: row.image }} style={PICTURE_STYLE} contentFit="cover" />
+                        </View>
+                    </RNHostView>
+                ) : null}
+                {!row.image && row.icon ? <RowIcon icon={row.icon} color={ink} /> : null}
                 <Text modifiers={[font({ size: 16, weight: 'medium' }), lineLimit(1), ...(ink ? [foregroundStyle(ink)] : [])]}>
                     {row.title}
                 </Text>
@@ -144,7 +154,11 @@ function Pref({ pref, colors }: Readonly<{ pref: DrawerPref; colors: Colors }>) 
     );
 }
 
-function NativeList({ panels, prefs, url, onNavigate }: Readonly<AppSidebarListProps>) {
+/**
+ * The menus and the Preferences as a SwiftUI List, for a SwiftUI parent: the drawer's Host (below), or the menu's
+ * sheet on an iPhone (app-sidebar-sheet.ios.tsx).
+ */
+export function SidebarListView({ panels, prefs, url, onNavigate }: Readonly<AppSidebarListProps>) {
     const colors: Colors = {
         fill: useNativeTokenColor('bg-accent') as string | undefined,
         ink: useNativeTokenColor('text-accent-foreground') as string | undefined,
@@ -153,15 +167,21 @@ function NativeList({ panels, prefs, url, onNavigate }: Readonly<AppSidebarListP
     };
 
     return (
+        <List modifiers={[listStyle('sidebar'), scrollContentBackground('hidden'), listSectionSpacing(8)]}>
+            {panels.map((section) => <Menu key={section.object} section={section} url={url} colors={colors} onNavigate={onNavigate} />)}
+            {prefs.length ? (
+                <Section>
+                    {prefs.map((pref) => <Pref key={pref.key} pref={pref} colors={colors} />)}
+                </Section>
+            ) : null}
+        </List>
+    );
+}
+
+function NativeList(props: Readonly<AppSidebarListProps>) {
+    return (
         <Host style={{ flex: 1 }}>
-            <List modifiers={[listStyle('sidebar'), scrollContentBackground('hidden'), listSectionSpacing(8)]}>
-                {panels.map((section) => <Menu key={section.object} section={section} url={url} colors={colors} onNavigate={onNavigate} />)}
-                {prefs.length ? (
-                    <Section>
-                        {prefs.map((pref) => <Pref key={pref.key} pref={pref} colors={colors} />)}
-                    </Section>
-                ) : null}
-            </List>
+            <SidebarListView {...props} />
         </Host>
     );
 }

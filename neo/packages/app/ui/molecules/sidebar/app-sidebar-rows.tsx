@@ -1,3 +1,5 @@
+import { StyleSheet } from 'react-native';
+import { Image as ExpoImage } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { View, Pressable, ScrollView } from 'app/design/view';
 import { Text } from 'app/design/typography';
@@ -7,6 +9,8 @@ import { useMenuData } from 'app/context/menu-data';
 import { useAppSidebarExpanded, setAppSidebarExpanded } from 'app/context/app-sidebar';
 import { DRAWER_SECTION_OPEN_MAX, drawerRows, type PanelSection, type SidebarRowEntry } from './app-sidebar-entries';
 import type { AppSidebarListProps, DrawerPref } from './app-sidebar.types';
+
+const PICTURE_STYLE = StyleSheet.create({ image: { width: 24, height: 24, borderRadius: 12 } }).image;
 
 /**
  * The drawer's menus as the app's own rows, the web sidebar's look: Android, and iOS with `expo_ui.sidebar` off.
@@ -22,7 +26,12 @@ function Row({ row, onNavigate }: Readonly<{ row: SidebarRowEntry; onNavigate: (
             accessibilityState={{ selected: row.current }}
             className={`min-h-11 w-full flex-row items-center rounded-xl px-2 active:bg-muted ${row.current ? 'bg-accent' : ''}`}
         >
-            {!!row.icon && (
+            {!!row.image && (
+                <View className="h-8 w-8 flex-none items-center justify-center">
+                    <ExpoImage source={{ uri: row.image }} style={PICTURE_STYLE} contentFit="cover" />
+                </View>
+            )}
+            {!row.image && !!row.icon && (
                 <View className={`h-8 w-8 flex-none items-center justify-center rounded-full ${row.current ? '' : 'bg-muted/50'}`}>
                     <Icon icon={row.icon} size="20" className={ink} />
                 </View>

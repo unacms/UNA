@@ -2,6 +2,7 @@
  * What the Application sidebar lists, the same on the web and in the native apps: UNA's `sys_site_panel` menu, whose
  * items are submenus (`sys_profile_stats`, `sys_profile_followings`...), and a menu item as a row.
  */
+import { UNA_URL } from 'app/config';
 import { strToObj } from 'app/lib/util';
 
 export type SidebarMenuItem = { [key: string]: any };
@@ -13,6 +14,8 @@ export type SidebarRowEntry = {
     icon: string;
     /** Where the row goes; none for a row that is only a label. */
     href?: string;
+    /** The drawer: a picture in place of the icon (a followed profile's). */
+    image?: string;
     /** The item's counter; empty when there is none or it is zero. */
     count: string;
     /** The row of the page on screen. */
@@ -111,11 +114,17 @@ export function drawerRows(object: string, menuData: unknown, url: string): Side
     const rows: SidebarRowEntry[] = [];
     const add = (item: SidebarMenuItem, key: string) => {
         if (!item || item.display_type === 'text' || DRAWER_OWN.has(String(item.name ?? ''))) return;
-        // The footer's badge is an SVG, not an icon's name.
-        const row = toRow(typeof item.icon === 'string' && item.icon.startsWith('<') ? { ...item, icon: '' } : item, key, url, '');
+        const icon = typeof item.icon === 'string' ? item.icon : '';
+        // A picture (a followed profile's, sent as `image`, or an icon that is an address) is the row's image; the
+        // footer's badge is an SVG, not a name.
+        const picture = [item.image, icon].find((value) => typeof value === 'string' && /^(https?:)?\/\//.test(value));
+        const image = typeof picture === 'string' ? picture : undefined;
+        const row = toRow(image || icon.startsWith('<') ? { ...item, icon: '' } : item, key, url, '');
         // `{switch_profile}` and the like: a marker the site fills in, not a page.
         if (!row.href || row.href.includes('{') || !item.title) return;
-        rows.push(row);
+        // UNA names its own pages in full (a followed profile's): the app opens them as its pages, not in the browser.
+        const href = UNA_URL && row.href.startsWith(`${UNA_URL}/`) ? row.href.slice(UNA_URL.length) : row.href;
+        rows.push({ ...row, href, image });
     };
     items.forEach((item: SidebarMenuItem, index: number) => {
         const key = `${object}-${item?.name ?? index}`;
