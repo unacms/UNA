@@ -2324,9 +2324,10 @@
         @apply rounded-lg;
     }
 
-    /* Header buttons: a translucent top-to-bottom gradient (white to black/5; white/10 to white/5 in the dark scheme) with the same two
-       hairlines in both schemes, a light one inset (white/50; white/5 in dark) and a dark one outside (black/10; black/20 in dark), drawn by
-       ::after so nothing covers them; hover only deepens the gradient and the glyph. Every Studio .bx-btn shares it (see "Studio: Buttons" below). */
+    /* Header buttons: a translucent top-to-bottom gradient (white to black/5; white/10 to white/5 in the dark scheme) with two hairlines
+       drawn by ::after so nothing covers them. Light: both inside the 36px, a dark 1px edge (black/15) and a light 2px one within it
+       (white/50), so the button is no larger than its box. Dark: a light one inset (white/5) and a dark one outside (black/20), which does
+       not show on the dark bar. Hover only deepens the gradient and the glyph. Every Studio .bx-btn shares it (see "Studio: Buttons" below). */
     .bx-std .bx-menu-toolbar .bx-menu-tab-item,
     .bx-std .bx-std-search-trigger,
     .bx-std .bx-std-header-btn,
@@ -2337,7 +2338,7 @@
         @apply hover:from-white hover:to-black/10 dark:hover:from-white/20 dark:hover:to-white/10;
         @apply text-black/80 dark:text-white/80 hover:text-black dark:hover:text-white;
         @apply transition duration-300 active:duration-100 active:scale-95;
-        @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5),0_0_0_1px_rgb(0_0_0/0.1)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
+        @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.15),inset_0_0_0_2px_rgb(255_255_255/0.5)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
     }
     /* The header's hover halo is a background layer behind the tile, like the sidebar items' and the subtabs' background: 0.5rem (8px) round
        the tile with their corners (--bx-radius-2xl), black/5 (white/5 in dark), so tile, halo and bar stay concentric at any corner size and
@@ -2479,15 +2480,7 @@
     .bx-std .bx-std-tile-btn {
         @apply relative border-0 bg-gradient-to-b from-white to-black/5 dark:from-white/10 dark:to-white/5;
         @apply text-black/80 dark:text-white/80;
-        @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5),0_0_0_1px_rgb(0_0_0/0.1)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
-    }
-    /* Dark scheme, the 36px buttons that sit beside app tiles (header, sidebar): the outer hairline is white/15, the line the tiles' art has on its
-       outer pixel. A black hairline does not show on the dark bar, so the buttons read 1px smaller than the tiles next to them. */
-    .bx-std .bx-menu-toolbar .bx-menu-tab-item,
-    .bx-std .bx-std-search-trigger,
-    .bx-std .bx-std-header-btn,
-    .bx-std .bx-std-tile-btn {
-        @apply dark:after:shadow-[0_0_0_1px_rgb(255_255_255/0.15)];
+        @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.15),inset_0_0_0_2px_rgb(255_255_255/0.5)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
     }
     /* 24px glyph in the 36px tile, like the header buttons (the svg fills the 6px padding box, menu_side.html; font icons get the same size). */
     .bx-std .bx-std-tile-btn > .sys-icon {
