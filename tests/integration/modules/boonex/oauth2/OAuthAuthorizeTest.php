@@ -476,7 +476,10 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
         $aApps = BxDolModule::getInstance('bx_oauth')->_oDb->getConnectedApps([$iProfile]);
         $this->assertContains($sClientId, array_column($aApps, 'client_id'));
         BxDolModule::getInstance('bx_oauth')->_oDb->disconnectApp($sClientId, [$iProfile]);
-        $this->assertFalse(bx_srv('bx_oauth', 'get_access_token_data', [$a['json']['access_token']]));
+        // the module itself, not bx_srv(): a service call's answer is kept for the rest of the process
+        $this->assertFalse(BxDolModule::getInstance('bx_oauth')->serviceGetAccessTokenData($a['json']['access_token']));
+        foreach (['bx_oauth_access_tokens', 'bx_oauth_refresh_tokens'] as $sTable)
+            $this->assertSame(0, (int)BxDolDb::getInstance()->getOne("SELECT COUNT(*) FROM `" . $sTable . "` WHERE `client_id` = :c", ['c' => $sClientId]), $sTable);
     }
 
     public function testMcpRegistrationIsOffWithApiV2(): void
