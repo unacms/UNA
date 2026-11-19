@@ -27,6 +27,9 @@ function menuItemList(items: unknown): RouteLike[] {
  * pages, lib/section-icon), else the tab bar's (UNA's `sys_tabbar`: Dashboard, Friends, Notifications, which the site
  * menu doesn't list), else the section menu's own icon. The menus come from the stores the header and the tab bar
  * already fill. `routes` defaults to the menu's own items.
+ *
+ * A page without a section menu that the tab bar leads to (Messenger) is a top-level page too: it takes its tab's icon,
+ * so its header shows one as the sections' do.
  */
 export function useSectionIcon(menu: SectionMenu, uri?: string, routes?: RouteLike[]): string {
     const staticNavbar = appSetting('menu_items', 'menu_navbar')
@@ -34,7 +37,7 @@ export function useSectionIcon(menu: SectionMenu, uri?: string, routes?: RouteLi
     const { menuData } = useMenuData(menu && useSiteMenu ? appSetting('menu_items', 'objects', 'site') : null)
     const { currentUser } = useCurrentUser()
     const { tabList } = useTabList(currentUser)
-    if (!menu) return ''
+    if (!menu) return findIconFromRemote(siteMenuIconForPages(tabList.map((tab) => ({ icon: tab.icon, link: tab.url })), [uri]) || '') || ''
     const menuSettings = getMenuSettings(menu.object ?? '', menu.config, menu)
     const pages = [uri, ...(routes ?? menuItemList(menu.items)).flatMap((route) => [route?.link, route?.key])]
     const siteIcon = siteMenuIconForPages(useSiteMenu ? menuData?.items : staticNavbar, pages)

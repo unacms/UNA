@@ -1,19 +1,16 @@
 import { cloneElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { Text } from 'app/design/typography';
-import { View, Row } from 'app/design/view';
+import { View, Row, ScrollView } from 'app/design/view';
 import { NeoButton } from 'app/design/controls';
 import { appSetting } from 'app/lib/util';
-import { getBackButtonWeb } from 'app/lib/common-helpers';
 import DropdownMenu, { type DropdownMenuItemData } from 'app/ui/atoms/dropdown-menu';
 import { getDataForMenu } from 'app/lib/util/menu';
-import { components } from 'app/components/registry';
 import { useTranslation } from 'react-i18next';
 import { MenuSwitcher, SearchInput, useDebouncedSearch } from 'app/components/elements/chat/parts/headers';
 import type { AddButtons, ApiMenu, ConvoAction, MessengerMenuItem, ShortMenu } from 'app/components/elements/messenger/parts/messenger.types';
 
 const isWeb = Platform.OS === 'web';
-const registry = components as Record<string, Record<string, any> | undefined>;
 
 /** Native: `header.content` uses fixed `h-16`; messenger title/actions can paint taller. */
 export function messengerHeaderContentClass() {
@@ -157,77 +154,83 @@ export function ConvoSearchField({ onSearch }: { onSearch: (term: string) => voi
     return <SearchInput value={search.value} onChangeText={search.setValue} autoFocus />;
 }
 
-type MobileListHeaderProps = {
-    pageData?: Record<string, any>;
-    onSearch: (term: string) => void;
+/**
+ * Small screens, list mode: the conversation search, opened from the header's Search button and shown in the row under
+ * it. Kept by the list's page, which passes the button to the header (`MobileListActions`) and the field to the row
+ * under it (`MobileListSubHeader`).
+ */
+export function useMessengerListSearch(onSearch: (term: string) => void) {
+    const [open, setOpen] = useState(false);
+    const { value, setValue, reset } = useDebouncedSearch(onSearch);
+    // Closing the field clears the term, so the list shows every conversation again.
+    const toggle = useCallback(() => {
+        if (open) reset();
+        setOpen(!open);
+    }, [open, reset]);
+    return { open, toggle, value, setValue };
+}
+
+type MobileListActionsProps = {
+    searchOpen: boolean;
+    onSearchToggle: () => void;
     addButtons?: AddButtons;
+};
+
+/**
+ * Small screens, list mode: the header's actions (its end), in place of the site's toolbar: Search, which searches the
+ * conversations, and the buttons that start one. The header draws the rest as on every other page: the sidebar or menu
+ * button, the section's icon and the title.
+ */
+export function MobileListActions({ searchOpen, onSearchToggle, addButtons }: MobileListActionsProps) {
+    const { t } = useTranslation();
+    return (
+        <Row className="items-center gap-3">
+            <NeoButton
+                style="glass"
+                selected={searchOpen}
+                selectedState="pressedToggle"
+                controlSize="regular"
+                borderShape="circle"
+                image="Search"
+                accessibilityLabel={t('Search')}
+                onPress={onSearchToggle}
+            />
+            {Array.isArray(addButtons)
+                ? addButtons.map((button, i) => (button ? cloneElement(button, { key: button.key ?? i, style: 'glass' } as Record<string, unknown>) : null))
+                : addButtons}
+        </Row>
+    );
+}
+
+type MobileListSubHeaderProps = {
+    searchOpen: boolean;
+    searchValue: string;
+    onSearchChange: (value: string) => void;
     menuItems?: MessengerMenuItem[];
     menuIndex: number;
     onMenuChange: (index: number) => void;
 };
 
 /**
- * Small screens, list mode: injected page header (stable "Messages" title +
- * search + create, plus the inbox/direct switcher row). The switcher lives
- * inside this component because PageHeader skips the `subHeader` slot when a
- * custom `header` is injected.
+ * Small screens, list mode: the row under the header, as a section's tab row (the conductor's): the inbox/direct
+ * switcher, and the search field while the search is open.
  */
-export function MobileListHeader({ pageData, onSearch, addButtons, menuItems, menuIndex, onMenuChange }: MobileListHeaderProps) {
-    const { t } = useTranslation();
-    const [showSearch, setShowSearch] = useState(false);
-    const search = useDebouncedSearch(onSearch);
-    const ContextSelector = registry['molecule']?.['context_selector'];
-    const listTitle = t('Messages');
-
-    // Header height comes from PageHeader's own onLayout, which also counts the
-    // edge-to-edge status bar inset. Measuring here would publish only this
-    // content's height and slide the first list row under the inbox/direct row.
+export function MobileListSubHeader({ searchOpen, searchValue, onSearchChange, menuItems, menuIndex, onMenuChange }: MobileListSubHeaderProps) {
+    const hasMenu = !!menuItems && menuItems.length > 1;
+    if (!searchOpen && !hasMenu) return null;
     return (
         <View className="w-full">
-            <Row className={`${appSetting('layout', 'page_content_width_default')} ${messengerHeaderContentClass()} max-w-full`}>
-                {showSearch ? (
-                    <View className="flex-1 min-w-0 px-4">
-                        <SearchInput value={search.value} onChangeText={search.setValue} autoFocus />
-                    </View>
-                ) : (
-                    <Row className="flex-1 min-w-0 items-center gap-3 px-4 ">
-                        {appSetting('messenger', 'back_button') ? getBackButtonWeb() : null}
-                        {appSetting('context_selector', 'show_always') && ContextSelector ? (
-                            <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />
-                        ) : (
-                            <Text className="font-bold truncate flex-1 min-w-0 text-card-foreground text-2xl tracking-tight font-main" numberOfLines={1}>
-                                {listTitle}
-                            </Text>
-                        )}
-                    </Row>
-                )}
-                <Row className="my-auto shrink-0 items-center gap-3 pe-4">
-                    <NeoButton
-                        style="glass"
-                        selected={showSearch}
-                        selectedState="pressedToggle"
-                        controlSize="regular"
-                        borderShape="circle"
-                        image="Search"
-                        accessibilityLabel={t('Search')}
-                        onPress={() => {
-                            setShowSearch((prev) => {
-                                if (prev) search.reset();
-                                return !prev;
-                            });
-                        }}
-                    />
-                    {Array.isArray(addButtons)
-                        ? addButtons.map((button, i) => (button ? cloneElement(button, { key: button.key ?? i, style: 'glass' } as Record<string, unknown>) : null))
-                        : addButtons}
-                </Row>
-            </Row>
-            {menuItems && menuItems.length > 1 ? (
-                // Same box as the conductor tab row (web `conductor.menu_cnt`,
-                // native-ui TabBar), so pills sit at the same height under the title.
-                <Row className="w-full items-center px-4 min-h-14">
+            {searchOpen ? (
+                <View className="w-full px-4 pb-2">
+                    <SearchInput value={searchValue} onChangeText={onSearchChange} autoFocus />
+                </View>
+            ) : null}
+            {hasMenu ? (
+                // Same box as the conductor tab row (web `conductor.menu_cnt`, native-ui TabBar); the pills scroll
+                // sideways when they don't fit, so they never widen the page.
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} className="w-full" contentContainerClassName="items-center px-4 py-1 min-h-14">
                     <MenuSwitcher items={menuItems} index={menuIndex} onChange={onMenuChange} />
-                </Row>
+                </ScrollView>
             ) : null}
         </View>
     );
