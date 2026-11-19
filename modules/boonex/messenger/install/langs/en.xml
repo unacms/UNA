@@ -133,7 +133,8 @@
 	<string name="_bx_messenger_search_query_issue"><![CDATA[There was an issue with querying the server.]]></string>
 	<string name="_bx_messenger_search_desc"><![CDATA[Joined - {1}<br/>Last login - {0}]]></string>
 	<string name="_bx_messenger_message"><![CDATA[Message]]></string>
-	<string name="_bx_ntfs_alert_action_got_jot_ntfs_personal"><![CDATA[New message in talk where I'm participant]]></string>
+	<string name="_bx_ntfs_alert_action_got_jot_ntfs_personal"><![CDATA[New messages in your conversations]]></string>
+	<string name="_bx_ntfs_alert_action_info_got_jot_ntfs_personal"><![CDATA[Someone sent a message to a conversation you take part in.]]></string>
 	<string name="_bx_messenger_txt_sample_comment_single"><![CDATA[message - <b>{0}</b>]]></string>
 	<string name="_bx_messenger_txt_sample_comment_file_single"><![CDATA[<b>{0} file(s) </b>]]></string>
 	<string name="_bx_messenger_max_ntfs_number"><![CDATA[Maximum notifications number per member from one Talk during 1 hour]]></string>
@@ -235,8 +236,9 @@
 	<string name="_bx_messenger_notification_subject_message"><![CDATA[Message from {0}]]></string>
 	<string name="_bx_messenger_notification_subject_mention"><![CDATA[{0} mentioned You]]></string>
 	<string name="_bx_ntfs_alert_action_got_mention_ntfs_personal"><![CDATA[Mentions in Messenger]]></string>
-	<string 
-name="_bx_ntfs_alert_action_got_broadcast_ntfs_personal"><![CDATA[Broadcast message from Messenger]]></string>
+	<string name="_bx_ntfs_alert_action_info_got_mention_ntfs_personal"><![CDATA[Someone mentioned you in a conversation.]]></string>
+	<string name="_bx_ntfs_alert_action_got_broadcast_ntfs_personal"><![CDATA[Messenger broadcasts]]></string>
+	<string name="_bx_ntfs_alert_action_info_got_broadcast_ntfs_personal"><![CDATA[A broadcast message was sent to you in Messenger.]]></string>
 	<string name="_bx_messenger_txt_subobject_added_message"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> sent a {subentry_sample}]]></string>
 	<string name="_bx_messenger_txt_subobject_added_mention"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> mentioned you in a {subentry_sample}]]></string>
 	<string name="_bx_messenger_date_time_today"><![CDATA[Today]]></string>

@@ -60,37 +60,37 @@
     <string name="_bx_ntfs_lmi_cpt_etemplates_text"><![CDATA[Email Texts]]></string>
 
     <string name="_bx_ntfs_options_category_system"><![CDATA[System]]></string>
-    <string name="_bx_ntfs_option_events_per_page"><![CDATA[Number of items per page]]></string>
-    <string name="_bx_ntfs_option_events_per_preview"><![CDATA[Number of items in preview]]></string>
-    <string name="_bx_ntfs_option_events_hide_site"><![CDATA[Onsite notifications]]></string>
-    <string name="_bx_ntfs_option_events_hide_email"><![CDATA[Email notifications]]></string>
-    <string name="_bx_ntfs_option_events_hide_push"><![CDATA[Push notifications]]></string>
-    <string name="_bx_ntfs_option_enable_group_settings"><![CDATA[Group settings by category]]></string>
+    <string name="_bx_ntfs_option_events_per_page"><![CDATA[Notifications per page]]></string>
+    <string name="_bx_ntfs_option_events_per_preview"><![CDATA[Notifications in the preview]]></string>
+    <string name="_bx_ntfs_option_events_hide_site"><![CDATA[Hidden on-site notifications]]></string>
+    <string name="_bx_ntfs_option_events_hide_email"><![CDATA[Hidden email notifications]]></string>
+    <string name="_bx_ntfs_option_events_hide_push"><![CDATA[Hidden push notifications]]></string>
+    <string name="_bx_ntfs_option_enable_group_settings"><![CDATA[Group notification settings by category]]></string>
     <string name="_bx_ntfs_option_enable_group_events"><![CDATA[Group notifications by event]]></string>
     <string name="_bx_ntfs_option_enable_group_events_db"><![CDATA[Group notifications by event (on DB level, experimental)]]></string>
-    <string name="_bx_ntfs_option_enable_clicked_indicator"><![CDATA[Enable 'clicked' indicator]]></string>
-    <string name="_bx_ntfs_option_delivery_timeout"><![CDATA[Delay before sending Email and/or Push notifications (in seconds)]]></string>
-    <string name="_bx_ntfs_option_delivery_timeout_inf"><![CDATA[Positive value other than '0' means that notifications will be send via Internal queue.]]></string>
-    <string name="_bx_ntfs_option_queue_add_threshold"><![CDATA[Threshold to add to Internal queue]]></string>
-    <string name="_bx_ntfs_option_queue_add_threshold_inf"><![CDATA['0' means that adding in the queue will be performed only when the queue is empty.]]></string>
-    <string name="_bx_ntfs_option_queue_add_limit"><![CDATA[Number of notifications to process and add to queue (Internal or System) per execution]]></string>
-    <string name="_bx_ntfs_option_queue_add_limit_inf"><![CDATA['0' means that all available notifications will be processed at once.]]></string>
-    <string name="_bx_ntfs_option_processed_event"><![CDATA[The last processed event upon notifications sending]]></string>
-    <string name="_bx_ntfs_option_clear_interval"><![CDATA[Notification lifetime, in days (0 - no limit)]]></string>
-    <string name="_bx_ntfs_option_enable_own_actions"><![CDATA[Notify a user about his own actions]]></string>
-    <string name="_bx_ntfs_option_enable_comment_post_ext"><![CDATA[Notify a user about new comments for a content he's previously commented]]></string>
-    <string name="_bx_ntfs_option_enable_reply_as_comment"><![CDATA[Treat replies as comments in 'New comments' notification.]]></string>
-    <string name="_bx_ntfs_option_summary_chars"><![CDATA[Number of characters in auto-cropped summary (applied before saving a notification)]]></string>
-    <string name="_bx_ntfs_option_owner_name_chars"><![CDATA[Number of characters in auto-cropped author name in notification text]]></string>
-    <string name="_bx_ntfs_option_content_chars"><![CDATA[Number of characters in auto-cropped content title in notification text]]></string>
-    <string name="_bx_ntfs_option_email_subject_chars"><![CDATA[Number of characters in auto-cropped email notification subject (0 - no limit)]]></string>
-    <string name="_bx_ntfs_option_push_message_chars"><![CDATA[Number of characters in auto-cropped push notification message]]></string>
+    <string name="_bx_ntfs_option_enable_clicked_indicator"><![CDATA[Mark notifications that haven't been clicked yet with a dot]]></string>
+    <string name="_bx_ntfs_option_delivery_timeout"><![CDATA[Delay before sending email and push notifications, in seconds]]></string>
+    <string name="_bx_ntfs_option_delivery_timeout_inf"><![CDATA[With 0 they go to the email and push queues at once. Any other value holds them in the Notifications queue first.]]></string>
+    <string name="_bx_ntfs_option_queue_add_threshold"><![CDATA[Notifications queue limit]]></string>
+    <string name="_bx_ntfs_option_queue_add_threshold_inf"><![CDATA[New notifications wait while the Notifications queue holds more items than this. With 0 they wait until it is empty.]]></string>
+    <string name="_bx_ntfs_option_queue_add_limit"><![CDATA[Notifications to process per cron run]]></string>
+    <string name="_bx_ntfs_option_queue_add_limit_inf"><![CDATA[With 0 all waiting notifications are processed at once.]]></string>
+    <string name="_bx_ntfs_option_processed_event"><![CDATA[Last processed notification event]]></string>
+    <string name="_bx_ntfs_option_clear_interval"><![CDATA[Keep notifications for, in days (0: no limit)]]></string>
+    <string name="_bx_ntfs_option_enable_own_actions"><![CDATA[Notify members about their own actions]]></string>
+    <string name="_bx_ntfs_option_enable_comment_post_ext"><![CDATA[Notify members about new comments on content they have commented on]]></string>
+    <string name="_bx_ntfs_option_enable_reply_as_comment"><![CDATA[Count replies as comments in 'New comments' notifications]]></string>
+    <string name="_bx_ntfs_option_summary_chars"><![CDATA[Summary length, in characters (cropped when a notification is saved)]]></string>
+    <string name="_bx_ntfs_option_owner_name_chars"><![CDATA[Author name length in notifications, in characters]]></string>
+    <string name="_bx_ntfs_option_content_chars"><![CDATA[Content title length in notifications, in characters]]></string>
+    <string name="_bx_ntfs_option_email_subject_chars"><![CDATA[Email subject length, in characters (0: no limit)]]></string>
+    <string name="_bx_ntfs_option_push_message_chars"><![CDATA[Push message length, in characters]]></string>
 
     <string name="_bx_ntfs_privacy_view"><![CDATA[View event]]></string>
 
     <string name="_bx_ntfs_alert_action_group_comment"><![CDATA[New comments]]></string>
     <string name="_bx_ntfs_alert_action_group_content_updated"><![CDATA[Content was updated]]></string>
-    <string name="_bx_ntfs_alert_action_group_action_required"><![CDATA[Your action required]]></string>    
+    <string name="_bx_ntfs_alert_action_group_action_required"><![CDATA[Action required]]></string>    
     <string name="_bx_ntfs_alert_action_group_info_mention"><![CDATA[A member mentioned your name in a post or comment.]]></string>
     <string name="_bx_ntfs_alert_action_group_info_friendship"><![CDATA[A member became your friend.]]></string>
     <string name="_bx_ntfs_alert_action_group_info_subscription"><![CDATA[A member is now following your profile.]]></string>
@@ -114,12 +114,12 @@
     <string name="_bx_ntfs_alert_action_group_info_join_personal"><![CDATA[Someone requested to join your space (group, event, etc.).]]></string>
     <string name="_bx_ntfs_alert_action_group_info_join_follow_member"><![CDATA[Someone you follow received a new join request for their space.]]></string>
     <string name="_bx_ntfs_alert_action_group_info_join_follow_context"><![CDATA[A space you follow received a new join request.]]></string>
-    <string name="_bx_ntfs_alert_action_group_info_content_personal"><![CDATA[A new post, article, or update relevant to you was published.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_content_personal"><![CDATA[New posts on your profile or in your spaces, reposts of your posts and updates to tasks assigned to you.]]></string>
     <string name="_bx_ntfs_alert_action_group_info_content_follow_member"><![CDATA[Someone you follow published new content.]]></string>
     <string name="_bx_ntfs_alert_action_group_info_content_follow_context"><![CDATA[New content was published in a space you follow.]]></string>
     <string name="_bx_ntfs_alert_action_group_info_action_required"><![CDATA[There is an item or request that needs your attention.]]></string>
     <string name="_bx_ntfs_alert_action_group_info_content_updated"><![CDATA[Your previously posted content was edited or updated.]]></string>
-    <string name="_bx_ntfs_alert_action_group_info_timeline_post_personal"><![CDATA[New posts have been added to your timeline.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_timeline_post_personal"><![CDATA[Someone posted on your timeline.]]></string>
     <string name="_bx_ntfs_alert_action_group_info_timeline_post_follow_member"><![CDATA[Someone you follow shared a new post on their timeline.]]></string>
     <string name="_bx_ntfs_alert_action_group_info_timeline_post_follow_context"><![CDATA[New posts were shared on the timeline of a space you follow.]]></string>
 
@@ -128,23 +128,23 @@
     <string name="_bx_ntfs_alert_action_replyPost"><![CDATA[reply to own comment]]></string>
     <string name="_bx_ntfs_alert_action_doVote"><![CDATA[add vote]]></string>
     <string name="_bx_ntfs_alert_action_timeline_post_common"><![CDATA[post to timeline]]></string>
-    <string name="_bx_ntfs_alert_action_mention_added_personal"><![CDATA[Someone mentions you]]></string>
-    <string name="_bx_ntfs_alert_action_friendship_added_personal"><![CDATA[You get a new friend]]></string>
-    <string name="_bx_ntfs_alert_action_subscription_added_personal"><![CDATA[You get a new follower]]></string>
+    <string name="_bx_ntfs_alert_action_mention_added_personal"><![CDATA[Mentions]]></string>
+    <string name="_bx_ntfs_alert_action_friendship_added_personal"><![CDATA[New friends]]></string>
+    <string name="_bx_ntfs_alert_action_subscription_added_personal"><![CDATA[New followers]]></string>
     <string name="_bx_ntfs_alert_action_comment_added_personal"><![CDATA[Someone adds a comment on a content you've already commented]]></string>
     <string name="_bx_ntfs_alert_action_added_follow_member"><![CDATA[New content]]></string>
     <string name="_bx_ntfs_alert_action_added_follow_context"><![CDATA[New content]]></string>
     <string name="_bx_ntfs_alert_action_commentPost_personal"><![CDATA[Someone adds a comment on your content]]></string>
     <string name="_bx_ntfs_alert_action_commentPost_follow_member"><![CDATA[New comments]]></string>
     <string name="_bx_ntfs_alert_action_commentPost_follow_context"><![CDATA[New comments]]></string>
-    <string name="_bx_ntfs_alert_action_replyPost_personal"><![CDATA[Someone adds a reply to your comment]]></string>
-    <string name="_bx_ntfs_alert_action_doVote_personal"><![CDATA[Someone adds a like to your content]]></string>
+    <string name="_bx_ntfs_alert_action_replyPost_personal"><![CDATA[Replies to your comments]]></string>
+    <string name="_bx_ntfs_alert_action_doVote_personal"><![CDATA[New likes]]></string>
     <string name="_bx_ntfs_alert_action_doVote_follow_member"><![CDATA[New likes]]></string>
     <string name="_bx_ntfs_alert_action_doVote_follow_context"><![CDATA[New likes]]></string>
-    <string name="_bx_ntfs_alert_action_doVoteUp_personal"><![CDATA[Someone adds an 'Up' vote to your content]]></string>
+    <string name="_bx_ntfs_alert_action_doVoteUp_personal"><![CDATA[New 'Up' votes]]></string>
     <string name="_bx_ntfs_alert_action_doVoteUp_follow_member"><![CDATA[New 'Up' votes]]></string>
     <string name="_bx_ntfs_alert_action_doVoteUp_follow_context"><![CDATA[New 'Up' votes]]></string>
-    <string name="_bx_ntfs_alert_action_doVoteDown_personal"><![CDATA[Someone adds a 'Down' vote to your content]]></string>
+    <string name="_bx_ntfs_alert_action_doVoteDown_personal"><![CDATA[New 'Down' votes]]></string>
     <string name="_bx_ntfs_alert_action_doVoteDown_follow_member"><![CDATA[New 'Down' votes]]></string>
     <string name="_bx_ntfs_alert_action_doVoteDown_follow_context"><![CDATA[New 'Down' votes]]></string>
     <string name="_bx_ntfs_alert_action_fan_added_personal"><![CDATA[New fans]]></string>
@@ -153,12 +153,14 @@
     <string name="_bx_ntfs_alert_action_join_request_personal"><![CDATA[New join requests]]></string>
     <string name="_bx_ntfs_alert_action_join_request_follow_member"><![CDATA[New join requests]]></string>
     <string name="_bx_ntfs_alert_action_join_request_follow_context"><![CDATA[New join requests]]></string>
-    <string name="_bx_ntfs_alert_action_join_invitation_notif_personal"><![CDATA[New join invitation]]></string>
+    <string name="_bx_ntfs_alert_action_join_invitation_notif_personal"><![CDATA[Invitations to join]]></string>
     <string name="_bx_ntfs_alert_action_timeline_post_common_personal"><![CDATA[New posts on Timeline]]></string>
     <string name="_bx_ntfs_alert_action_timeline_post_common_follow_member"><![CDATA[New posts on Timeline]]></string>
     <string name="_bx_ntfs_alert_action_timeline_post_common_follow_context"><![CDATA[New posts on Timeline]]></string>
-    <string name="_bx_ntfs_alert_action_publish_failed_personal"><![CDATA[Delayed publishing failed]]></string>
-    <string name="_bx_ntfs_alert_action_publish_succeeded_personal"><![CDATA[Delayed publishing succeeded]]></string>
+    <string name="_bx_ntfs_alert_action_publish_failed_personal"><![CDATA[Scheduled publishing failed]]></string>
+    <string name="_bx_ntfs_alert_action_publish_succeeded_personal"><![CDATA[Scheduled publishing succeeded]]></string>
+    <string name="_bx_ntfs_alert_action_info_publish_failed_personal"><![CDATA[Content you scheduled could not be published.]]></string>
+    <string name="_bx_ntfs_alert_action_info_publish_succeeded_personal"><![CDATA[Content you scheduled was published.]]></string>
     <string name="_bx_ntfs_alert_action_pending_approval_personal"><![CDATA[New pending approval content]]></string>
     <string name="_bx_ntfs_alert_action_approved_personal"><![CDATA[Your content was approved]]></string>
     <string name="_bx_ntfs_alert_action_reported_content_personal"><![CDATA[New report]]></string>
@@ -166,8 +168,8 @@
     <string name="_bx_ntfs_setting_title_mask"><![CDATA[{0}: {1}]]></string>
     <string name="_bx_ntfs_setting_type_personal"><![CDATA[Activity related to you]]></string>
     <string name="_bx_ntfs_setting_type_follow_member"><![CDATA[Activity by members you follow]]></string>
-    <string name="_bx_ntfs_setting_type_follow_context"><![CDATA[Activity in spaces (groups, events, etc.) you follow]]></string>
-    <string name="_bx_ntfs_setting_type_other"><![CDATA[Other Activity]]></string>
+    <string name="_bx_ntfs_setting_type_follow_context"><![CDATA[Activity in groups, events and other spaces you follow]]></string>
+    <string name="_bx_ntfs_setting_type_other"><![CDATA[Other activity]]></string>
 
     <string name="_bx_ntfs_alert_module_comment"><![CDATA[Comments]]></string>
     <string name="_bx_ntfs_alert_module_sys_cmts"><![CDATA[Comments]]></string>
@@ -208,12 +210,12 @@
 <div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;">{content}</div>
 {email_footer}]]></string>
 
-    <string name="_bx_ntfs_grid_column_title_active"><![CDATA[Active]]></string>
+    <string name="_bx_ntfs_grid_column_title_active"><![CDATA[Available]]></string>
     <string name="_bx_ntfs_grid_column_title_unit"><![CDATA[Module]]></string>
     <string name="_bx_ntfs_grid_column_title_type"><![CDATA[Type]]></string>
     <string name="_bx_ntfs_grid_column_title_title"><![CDATA[Notification]]></string>
     <string name="_bx_ntfs_grid_column_title_title_warning"><![CDATA[The setting's value is corrupted. It is recommended to enable/disable it and reload the page.]]></string>
-    <string name="_bx_ntfs_grid_column_title_value"><![CDATA[Default value]]></string>
+    <string name="_bx_ntfs_grid_column_title_value"><![CDATA[On by default]]></string>
     <string name="_bx_ntfs_grid_action_title_activate"><![CDATA[Activate]]></string>
     <string name="_bx_ntfs_grid_action_title_deactivate"><![CDATA[Deactivate]]></string>
 
