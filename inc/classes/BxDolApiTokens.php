@@ -113,8 +113,8 @@ class BxDolApiTokens
     }
 
     /**
-     * The block of account settings > Connectors and Studio > Agents > Connectors: where to connect,
-     * and the signed-in account's tokens (the grid sys_grid_api_tokens).
+     * The block of account settings > Connectors: where to connect, and the signed-in account's tokens
+     * (the grid sys_grid_api_tokens). Studio > Agents > Connectors draws its own (BxBaseStudioAgents).
      * @param BxDolTemplate|null $oTemplate the template the grid and its popups are drawn with
      */
     public static function getBlockCode($oTemplate = null)

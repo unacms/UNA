@@ -1,0 +1,14 @@
+<div class="bx-agents-connectors">
+    <div class="bx-agents-connectors-info bx-informer-msg bx-informer-msg-info rounded-xl p-3 m-4">
+        <div class="bx-informer-indicator" aria-hidden="true"><i class="sys-icon plug"></i></div>
+        <div class="bx-informer-body flex-1 min-w-0">
+            <div class="bx-informer-content">__txt_info__</div>
+            <label for="bx-agents-connectors-url" class="block mt-3 mb-1 bx-def-font-grayed">__txt_mcp_url__</label>
+            <div class="flex items-center gap-2">
+                <input type="text" id="bx-agents-connectors-url" class="bx-def-font-inputs bx-form-input-text flex-1 min-w-0" readonly="readonly" value="__mcp_url__" onclick="this.select()" />
+                <button type="button" class="bx-btn bx-btn-small" onclick="var o = $(this).prev('input'); o.select(); if (navigator.clipboard) navigator.clipboard.writeText(o.val());">__txt_copy__</button>
+            </div>
+        </div>
+    </div>
+    __grid__
+</div>

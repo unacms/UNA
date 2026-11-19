@@ -46,6 +46,7 @@ class BxBaseStudioAgents extends BxDolStudioAgents
             BX_DOL_STUDIO_AGENTS_TYPE_AI_PROVIDERS => 'sys_studio_agents_models',
             BX_DOL_STUDIO_AGENTS_TYPE_TOOLS => 'sys_studio_agents_tools',
             BX_DOL_STUDIO_AGENTS_TYPE_VECTOR_STORE => 'sys_studio_agents_vector_store',
+            BX_DOL_STUDIO_AGENTS_TYPE_CONNECTORS => 'sys_studio_agents_connectors',
         ];
     }
 
@@ -115,12 +116,20 @@ class BxBaseStudioAgents extends BxDolStudioAgents
     }
 
     /**
-     * The operator's own personal access tokens for AI clients (the MCP server): the block of
-     * account settings > Connectors.
+     * The operator's own personal access tokens for AI assistants (the MCP server), the same as in
+     * account settings > Connectors: where to connect, and the tokens' grid.
      */
     protected function getConnectors()
     {
-        return BxDolApiTokens::getBlockCode(BxDolStudioTemplate::getInstance());
+        $this->aPageJsOptions['sPageUrl'] .= 'connectors';
+
+        return BxDolStudioTemplate::getInstance()->parseHtmlByName('agents_connectors.html', [
+            'txt_info' => _t('_sys_api_tokens_txt_info_operator'),
+            'txt_mcp_url' => _t('_sys_api_tokens_txt_mcp_url'),
+            'txt_copy' => _t('_sys_api_tokens_btn_copy'),
+            'mcp_url' => bx_html_attribute(BxDolApiTokens::getMcpUrl()),
+            'grid' => $this->getGrid($this->aGridObjects[BX_DOL_STUDIO_AGENTS_TYPE_CONNECTORS]),
+        ]);
     }
 
     protected function getAgents()
