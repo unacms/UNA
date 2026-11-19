@@ -790,6 +790,8 @@
 	<string name="_adm_dsg_btn_logo_remove"><![CDATA[Удалить]]></string>
 	<string name="_adm_dsg_btn_logo_remove_logo"><![CDATA[Удалить логотип светлой темы]]></string>
 	<string name="_adm_dsg_btn_logo_remove_logo_dark"><![CDATA[Удалить логотип тёмной темы]]></string>
+	<string name="_adm_dsg_btn_logo_remove_logo_email"><![CDATA[Удалить логотип писем для светлой темы]]></string>
+	<string name="_adm_dsg_btn_logo_remove_logo_email_dark"><![CDATA[Удалить логотип писем для тёмной темы]]></string>
 	<string name="_adm_dsg_btn_logo_remove_mark"><![CDATA[Удалить знак светлой темы]]></string>
 	<string name="_adm_dsg_btn_logo_remove_mark_dark"><![CDATA[Удалить знак тёмной темы]]></string>
 	<string name="_adm_dsg_btn_make_default"><![CDATA[Сделать основным]]></string>
@@ -815,6 +817,7 @@
 	<string name="_adm_dsg_inf_cover_section_unit"><![CDATA[Изображение вверху карточек профилей, у которых нет своей обложки.]]></string>
 	<string name="_adm_dsg_inf_cover_upload_page"><![CDATA[Широкое изображение, обрезается до 1920×720.]]></string>
 	<string name="_adm_dsg_inf_cover_upload_unit"><![CDATA[Широкое изображение, обрезается до 640×240.]]></string>
+	<string name="_adm_dsg_inf_email_section"><![CDATA[Показывается в шапке писем. Загрузите PNG, JPEG или GIF: почтовые клиенты блокируют SVG. Без него письма используют логотип сайта, если он в одном из этих форматов.]]></string>
 	<string name="_adm_dsg_inf_icon_section_home"><![CDATA[Показывается, когда сайт добавляют на главный экран телефона, и на экране запуска Android, пока сайт открывается. Используйте квадратное изображение с полями и фоном вокруг символа.]]></string>
 	<string name="_adm_dsg_inf_icon_section_tab"><![CDATA[Показывается во вкладках браузера, закладках и истории. Браузеры, которые читают SVG, берут SVG-иконку, остальные — favicon.ico.]]></string>
 	<string name="_adm_dsg_inf_icon_upload_icon"><![CDATA[Файл .ico размером 32×32.]]></string>
@@ -976,6 +979,12 @@
 	<string name="_adm_dsg_txt_tmpl_section_list"><![CDATA[Шаблоны]]></string>
 	<string name="_adm_dsg_txt_tmpl_section_preview"><![CDATA[Предпросмотр]]></string>
 	<string name="_adm_dsg_txt_default"><![CDATA[по умолчанию]]></string>
+	<string name="_adm_dsg_txt_email_dark_src_none"><![CDATA[Нет. В тёмной теме письма показывают логотип светлой темы.]]></string>
+	<string name="_adm_dsg_txt_email_dark_src_site"><![CDATA[Не задан. Письма используют логотип сайта для тёмной темы.]]></string>
+	<string name="_adm_dsg_txt_email_section"><![CDATA[Логотип в письмах]]></string>
+	<string name="_adm_dsg_txt_email_src_none"><![CDATA[Нет. Письма показывают название сайта текстом.]]></string>
+	<string name="_adm_dsg_txt_email_src_site"><![CDATA[Не задан. Письма используют логотип сайта.]]></string>
+	<string name="_adm_dsg_txt_email_src_unusable"><![CDATA[Не PNG, JPEG или GIF, поэтому письма его не показывают.]]></string>
         <string name="_adm_dsg_txt_icon"><![CDATA[Фавикон (32x32)]]></string>
         <string name="_adm_dsg_txt_icon_svg"><![CDATA[Иконка SVG со светлым/темным стилями]]></string>
         <string name="_adm_dsg_txt_icon_upload_icon"><![CDATA[Загрузить favicon.ico]]></string>
@@ -3055,145 +3064,122 @@
     <string name="_sys_done"><![CDATA[Готово]]></string>
     <string name="_sys_et_txt_about_us"><![CDATA[О нас]]></string>
     <string name="_sys_et_txt_body_admin_email"><![CDATA[{email_header}
-<p>Сообщение от администрации сайта <a href="{site_url}">{site_name}</a>:</p>
-<p> </p>
-<p>{MessageText}</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Сообщение от администрации сайта <a href="{site_url}">{site_name}</a>:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{MessageText}</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_comment_replied"><![CDATA[{email_header}
-<p>{sender_display_name} ответил на Ваш комментарий:</p>
-<p> </p>
-<p>{reply_text}</p>
-<p> </p>
-<p>Ответ можно посмотреть здесь: <a href="{page_url}">{page_title}</a>.</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{sender_display_name} ответил на Ваш комментарий:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{reply_text}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ответ можно посмотреть здесь: <a href="{page_url}">{page_title}</a>.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_system_reported"><![CDATA[{email_header}
-<p>Была получена новая жалоба <b>{report_type}</b>:</p>
-<p> </p>
-<p>{report_text}</p>
-<p> </p>
-<p><a href="{report_url}">Посмотреть жалобу</a>.</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Была получена новая жалоба <b>{report_type}</b>:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{report_text}</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{report_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Посмотреть жалобу</a>
+</td></tr></tbody>
+</table>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_confirmation"><![CDATA[{email_header}
-<p>Привет, {name} ({email}).</p>
-<p>Пожалуйста, подтвердите ваш email, нажав по ссылке:</p>
-<p> </p>
-<p><a href="{conf_link}">{conf_link}</a></p>
-<p> </p>
-<p>или используя код:</p>
-<p><span class="h3">{conf_code}</span></p>
-<p> </p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Привет, {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Пожалуйста, подтвердите ваш email, нажав по ссылке:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{conf_link}">{conf_link}</a></p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">или используя код:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><span class="bx-email-title" style="display:inline-block; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:4px; color:#14171e;">{conf_code}</span></p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_welcome"><![CDATA[{email_header}
-<p>Привет, {name} ({email}).</p>
-<p>Добро пожаловать в {site_name}</p>
-<p> </p>
-<p>Вы подтвердили свой профиль и готовы пользоваться нашим сайтом.</p>
-<p>Не стесняйтесь обращаться к нам, если вам понадобится помощь.</p>
-<p> </p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Добро пожаловать, {name}!</h1>
+<p style="margin:0 auto 32px auto; max-width:380px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center;">Вы подтвердили свой профиль, и он готов к работе.<br />Добро пожаловать в {site_name}.</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 24px auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{site_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Открыть {site_name}</a>
+</td></tr></tbody>
+</table>
+<p class="bx-email-muted" style="margin:32px auto 0 auto; max-width:400px; font:400 13px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color:#7b7d81; text-align:center;">Если понадобится помощь, свяжитесь с нами.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_delayed_module_uninstall"><![CDATA[{email_header}
-<p>Модуль: <b>{Module}</b></p>
-<p>Результат демонтажа: {Result}</p>
-<p> </p>
-<p>{Message}</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Модуль: <b>{Module}</b></p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Результат демонтажа: {Result}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{Message}</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_forgot"><![CDATA[{email_header}
-<p>Привет {name} ({email})</p>,
-<p>Пожалуйста, нажмите по ссылке, чтобы сбросить свой пароль:</p>
-<p> </p>
-<p><a href="{forgot_password_url}">Сбросить мой пароль</a>.</p>
-<p> </p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Привет {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Пожалуйста, нажмите по ссылке, чтобы сбросить свой пароль:</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{forgot_password_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Сбросить мой пароль</a>
+</td></tr></tbody>
+</table>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_mem_changed"><![CDATA[{email_header}
-<p>Уровень членства профиля <b>{profile_name}</b> изменён на <b>{membership_level}</b>.</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Уровень членства профиля <b>{profile_name}</b> изменён на <b>{membership_level}</b>.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_mem_prolonged"><![CDATA[{email_header}
-<p>Уровень членства (<b>{membership_level}</b>) профиля <b>{profile_name}</b> был продлён.</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Уровень членства (<b>{membership_level}</b>) профиля <b>{profile_name}</b> был продлён.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_mem_expiration"><![CDATA[{email_header}
-<p>Ваше {membership_name} членство истекает через {expire_days} дней (-1 означает: уже истекло).</p>
-<p>Нажмите по ссылке, чтобы обновить ваше членство:</p>
-<p> </p>
-<p><a href="{page_url}">Обновить моё членство</a>.</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваше {membership_name} членство истекает через {expire_days} дней (-1 означает: уже истекло).</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Нажмите по ссылке, чтобы обновить ваше членство:</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{page_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Обновить моё членство</a>
+</td></tr></tbody>
+</table>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_profile_change_status_active"><![CDATA[{email_header}
-<p>Данные вашего аккаунта на сайте {site_name}:</p>
-<p> </p>
-<p>Имя: {account_name}</p>
-<p>Email: {account_email}</p>
-<p>URL: <a href="{site_url}">{site_url}</a></p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Данные вашего аккаунта на сайте {site_name}:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Имя: {account_name}</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Email: {account_email}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">URL: <a href="{site_url}">{site_url}</a></p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_profile_change_status_pending"><![CDATA[{email_header}
-<p>Привет {profile_name},</p>
-<p>Ваш профиль ожидает одобрения. Мы сообщим Вам о результатах в ближайшее время.</p>
-<p> </p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Привет {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш профиль ожидает одобрения. Мы сообщим Вам о результатах в ближайшее время.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_profile_change_status_suspended"><![CDATA[{email_header}
-<p>Ваш профиль заблокирован.</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш профиль заблокирован.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_account_change_status_activate"><![CDATA[{email_header}
-<p>Ваш аккаунт и все связанные с ним профили активированы.</p>
-<p></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш аккаунт и все связанные с ним профили активированы.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_account_change_status_suspended"><![CDATA[{email_header}
-<p>Ваш аккаунт и все связанные с ним профили заблокированы.</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш аккаунт и все связанные с ним профили заблокированы.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_account"><![CDATA[{email_header}
-<p>{account_output}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{account_output}</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_account_password_expired"><![CDATA[{email_header}
-<p>Срок действия вашего пароля истекает {expired_date}</p>
-<p>Пожалуйста, войдите в систему и измените пароль.</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Срок действия вашего пароля истекает {expired_date}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Пожалуйста, войдите в систему и измените пароль.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_pruning"><![CDATA[{email_header}
-<p>{pruning_output}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{pruning_output}</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_upgrade_failed"><![CDATA[{email_header}
-<p>Обновление не удалось в связи со следующей ошибкой:</p>
-<p> </p>
-<p>{error_msg}</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Обновление не удалось в связи со следующей ошибкой:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{error_msg}</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_upgrade_modules_failed"><![CDATA[{email_header}
-<p>В процессе обновления модулей произошли следующие ошибки:</p>
-<p> </p>
-<p>{conclusion}</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">В процессе обновления модулей произошли следующие ошибки:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{conclusion}</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_upgrade_success"><![CDATA[{email_header}
-<p>Сайт был удачно обновлён до {new_version}.</p>
-<p>Нужно зайти в <b>Студию &gt; Магазин Приложений &gt; Обновления</b>, чтобы проверить обновления для модулей.</p>
-<p> </p>
-{conclusion}
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Сайт был удачно обновлён до {new_version}.</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Нужно зайти в <b>Студию &gt; Магазин Приложений &gt; Обновления</b>, чтобы проверить обновления для модулей.</p>
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;">{conclusion}</div>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_upgrade_modules_success"><![CDATA[{email_header}
-<p>Следующие модули были удачно обновлены.</p>
-<p> </p>
-{conclusion}
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Следующие модули были удачно обновлены.</p>
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;">{conclusion}</div>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_bg_operation_failed"><![CDATA[{email_header}
-<p>Фоновый процесс завершился ошибкой со следующим сообщением.</p>
-<p> </p>
-{conclusion}
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Фоновый процесс завершился ошибкой со следующим сообщением.</p>
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;">{conclusion}</div>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_manage_approve"><![CDATA[{email_header}
-<p>У команды модераторов есть к вам вопрос о '{content_title}':</p>
-<p> </p>
-<p>{notes}</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">У команды модераторов есть к вам вопрос о '{content_title}':</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{notes}</p>
 {email_footer}]]></string>
 	<string name="_sys_et_txt_body_modules_upgrade_success"><![CDATA[<b>{0}</b> модуль: up to {1} версия.<br />]]></string>
 	<string name="_sys_et_txt_body_modules_upgrade_failed"><![CDATA[<b>{0}</b> молуль: {1}<br />]]></string>

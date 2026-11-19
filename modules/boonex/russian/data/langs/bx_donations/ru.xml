@@ -93,8 +93,8 @@
     <string name="_bx_donations_et_txt_name_donated"><![CDATA[Пожертвование было сделано.]]></string>
     <string name="_bx_donations_et_txt_subject_donated"><![CDATA[Вы сделали пожертвование.]]></string>
     <string name="_bx_donations_et_txt_body_donated"><![CDATA[{email_header}
-<p>Здравствуйте, {client_name}.</p>
-<p>Вы сделали пожертвование.<br />Спасибо!</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {client_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Вы сделали пожертвование.<br />Спасибо!</p>
 {email_footer}]]></string>
 
     <!-- Messages/Errors -->

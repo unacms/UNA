@@ -150,7 +150,7 @@ URI DNSBL - это DNSBL, которые перечисляют доменные
   <string name="_bx_antispam_spam_report_name"><![CDATA[Сообщение отчёта о спаме]]></string>
     <string name="_bx_antispam_spam_report_subject"><![CDATA[Автоматический отчёт о спаме]]></string>
     <string name="_bx_antispam_spam_report_body"><![CDATA[{email_header}
-<b>Профиль:</b> <a href="{SpammerUrl}">{SpammerNickName}</a><br />
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Профиль:</b> <a href="{SpammerUrl}">{SpammerNickName}</a><br />
 
 <b>Страница:</b> {Page}<br /><br />
 
@@ -167,7 +167,7 @@ URI DNSBL - это DNSBL, которые перечисляют доменные
 <b>Спам-контент:</b>
 <pre>
 {SpamContent}
-</pre>
+</pre></div>
 {email_footer}]]></string>
 
 
@@ -186,25 +186,25 @@ URI DNSBL - это DNSBL, которые перечисляют доменные
 	<string name="_bx_antispam_toxicity_blocked_report_name"><![CDATA[Сообщение о заблокированном токсичном контенте]]></string>
     <string name="_bx_antispam_toxicity_blocked_report_subject"><![CDATA[Токсичный контент был заблокирован]]></string>
     <string name="_bx_antispam_toxicity_blocked_report_body"><![CDATA[{email_header}
-<b>Профиль:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Профиль:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
 <b>Страница:</b> {Page}<br /><br />
 <b>Контент:</b>
 <pre>
 {Content}
-</pre>
+</pre></div>
 {email_footer}]]></string>
 
     <string name="_bx_antispam_toxicity_posted_report_name"><![CDATA[Сообщение о размещенном токсичном контенте]]></string>
     <string name="_bx_antispam_toxicity_posted_report_subject"><![CDATA[Токсичный контент был добавлен]]></string>
     <string name="_bx_antispam_toxicity_posted_report_body"><![CDATA[{email_header}
-<b>Профиль:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Профиль:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
 <b>Страница:</b> {Page}<br /><br />
 <bx_if:content_url>
 	<b>Ссылка:</b> <a href="{c_url}">{c_url}</a><br /><br />
 </bx_if:content_url>
 <bx_if:manage_content_url>
 	<b>Управлять:</b> <a href="{m_url}">{m_url}</a><br /><br />
-</bx_if:manage_content_url>
+</bx_if:manage_content_url></div>
 {email_footer}]]></string>
 
     <string name="_bx_antispam_adm_stg_cpt_category_lasso_moderation"><![CDATA[Lasso Moderation]]></string>
@@ -223,12 +223,12 @@ URI DNSBL - это DNSBL, которые перечисляют доменные
     <string name="_bx_antispam_et_lasso_moderation_report_name"><![CDATA[Сообщение о размещенном вредоносном контенте]]></string>
     <string name="_bx_antispam_et_lasso_moderation_report_subject"><![CDATA[Размещен вредоносный контент]]></string>
     <string name="_bx_antispam_et_lasso_moderation_report_body"><![CDATA[{email_header}
-<b>Профиль:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Профиль:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
 <bx_if:content_url>
     <b>Ссылка:</b> <a href="{c_url}">{c_url}</a><br /><br />
 </bx_if:content_url>
 <bx_if:manage_content_url>
     <b>Управлять:</b> <a href="{m_url}">{m_url}</a><br /><br />
-</bx_if:manage_content_url>
+</bx_if:manage_content_url></div>
 {email_footer}]]></string>
 </resources>

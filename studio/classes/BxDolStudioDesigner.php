@@ -32,6 +32,8 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
     protected $sParamMarkDark;
     protected $sParamMarkInline;
     protected $sParamLogoAlt;
+    protected $sParamLogoEmail;
+    protected $sParamLogoEmailDark;
     protected $sLogoTemplate; // the template module whose own logo settings this page edits, '' for Designer's (every template's)
 
     protected $aLogos;
@@ -58,6 +60,8 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         $this->sParamMarkDark = 'sys_site_mark_dark';
         $this->sParamMarkInline = 'sys_site_mark_inline';
         $this->sParamLogoAlt = 'sys_site_logo_alt';
+        $this->sParamLogoEmail = 'sys_site_logo_email';
+        $this->sParamLogoEmailDark = 'sys_site_logo_email_dark';
         $this->sLogoTemplate = '';
 
         $this->aLogos = [
@@ -86,6 +90,16 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             ],
             'mark_inline' => [
                 'param' => 'sParamMarkInline',
+            ],
+            'logo_email' => [
+                'param' => 'sParamLogoEmail',
+                'storage' => 'sys_images_custom',
+                'transcoder' => 'sys_custom_images'
+            ],
+            'logo_email_dark' => [
+                'param' => 'sParamLogoEmailDark',
+                'storage' => 'sys_images_custom',
+                'transcoder' => 'sys_custom_images'
             ],
         ];
 
@@ -196,8 +210,9 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
 
     /**
      * Points the page at a template's own logo options (its config's getLogoParams()). A slot the
-     * template doesn't declare is cleared, so the page never edits Designer's site-wide option for it.
-     * @param array $aParams option names by slot (logo, logo_dark, logo_inline, mark, mark_dark, mark_inline, logo_alt)
+     * template doesn't declare is cleared, so the page never edits Designer's site-wide option for it
+     * (the email logos are Designer's alone).
+     * @param array $aParams option names by slot (logo, logo_dark, logo_inline, mark, mark_dark, mark_inline, logo_alt, logo_email, logo_email_dark)
      */
     public function setLogoParams($aParams)
     {
@@ -209,6 +224,8 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             'mark_dark' => 'sParamMarkDark',
             'mark_inline' => 'sParamMarkInline',
             'logo_alt' => 'sParamLogoAlt',
+            'logo_email' => 'sParamLogoEmail',
+            'logo_email_dark' => 'sParamLogoEmailDark',
         ];
 
         foreach($aSlots as $sSlot => $sProperty)

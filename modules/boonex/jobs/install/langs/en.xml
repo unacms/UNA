@@ -503,48 +503,48 @@
     <string name="_bx_jobs_email_join_request"><![CDATA[Job join request]]></string>
     <string name="_bx_jobs_email_join_request_subject"><![CDATA[Request to join your job]]></string>
     <string name="_bx_jobs_email_join_request_body"><![CDATA[{email_header}
-<p>New request to join <a href="{EntryUrl}">{EntryTitle}</a> job from <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">New request to join <a href="{EntryUrl}">{EntryTitle}</a> job from <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
 {email_footer}]]></string>
 
     <string name="_bx_jobs_email_join_reject"><![CDATA[Job join request was rejected]]></string>
     <string name="_bx_jobs_email_join_reject_subject"><![CDATA[Request to join a job was rejected]]></string>
     <string name="_bx_jobs_email_join_reject_body"><![CDATA[{email_header}
-<p>Your request to join <a href="{EntryUrl}">{EntryTitle}</a> job was rejected by job admin.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> job was rejected by job admin.</p>
 {email_footer}]]></string>
 
     <string name="_bx_jobs_email_join_confirm"><![CDATA[Job join request was confirmed]]></string>
     <string name="_bx_jobs_email_join_confirm_subject"><![CDATA[Your request to join a job was confirmed]]></string>
     <string name="_bx_jobs_email_join_confirm_body"><![CDATA[{email_header}
-<p>Your request to join <a href="{EntryUrl}">{EntryTitle}</a> job was confirmed by the job admin.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> job was confirmed by the job admin.</p>
 {email_footer}]]></string>
 
     <string name="_bx_jobs_email_fan_remove"><![CDATA[Profile was removed from job fans]]></string>
     <string name="_bx_jobs_email_fan_remove_subject"><![CDATA[Your profile was removed from the job]]></string>
     <string name="_bx_jobs_email_fan_remove_body"><![CDATA[{email_header}
-<p>Your profile was removed from <a href="{EntryUrl}">{EntryTitle}</a> job by the job admin.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your profile was removed from <a href="{EntryUrl}">{EntryTitle}</a> job by the job admin.</p>
 {email_footer}]]></string>
 
     <string name="_bx_jobs_email_fan_become_admin"><![CDATA[Job admin status was granted]]></string>
     <string name="_bx_jobs_email_fan_become_admin_subject"><![CDATA[You are a job admin now]]></string>
     <string name="_bx_jobs_email_fan_become_admin_body"><![CDATA[{email_header}
-<p>You are an admin of <a href="{EntryUrl}">{EntryTitle}</a> job now.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You are an admin of <a href="{EntryUrl}">{EntryTitle}</a> job now.</p>
 {email_footer}]]></string>
 
     <string name="_bx_jobs_email_admin_become_fan"><![CDATA[Job admin status was revoked]]></string>
     <string name="_bx_jobs_email_admin_become_fan_subject"><![CDATA[Your job admin status was revoked]]></string>
     <string name="_bx_jobs_email_admin_become_fan_body"><![CDATA[{email_header}
-<p>Your admin status was revoked from <a href="{EntryUrl}">{EntryTitle}</a> job.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your admin status was revoked from <a href="{EntryUrl}">{EntryTitle}</a> job.</p>
 {email_footer}]]></string>
 
     <string name="_bx_jobs_email_set_role"><![CDATA[Job assignee status was changed]]></string>
     <string name="_bx_jobs_email_set_role_subject"><![CDATA[Your job status was changed]]></string>
     <string name="_bx_jobs_email_set_role_body"><![CDATA[{email_header}
-<p>Your status in <a href="{EntryUrl}">{EntryTitle}</a> job was changed to <b>{Role}</b>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your status in <a href="{EntryUrl}">{EntryTitle}</a> job was changed to <b>{Role}</b>.</p>
 {email_footer}]]></string>
 
     <string name="_bx_jobs_email_invitation"><![CDATA[Invitation to job]]></string>
     <string name="_bx_jobs_email_invitation_subject"><![CDATA[Invitation to "{EntryTitle}" job]]></string>
     <string name="_bx_jobs_email_invitation_body"><![CDATA[{email_header}
-<p><a href="{InviterUrl}">{InviterDisplayName}</a> invited you to <a href="{EntryUrl}">{EntryTitle} job</a>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{InviterUrl}">{InviterDisplayName}</a> invited you to <a href="{EntryUrl}">{EntryTitle} job</a>.</p>
 {email_footer}]]></string>
 </resources>

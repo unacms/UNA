@@ -457,48 +457,48 @@
     <string name="_bx_groups_email_join_request"><![CDATA[Запрос на присоединение к группе]]></string>
     <string name="_bx_groups_email_join_request_subject"><![CDATA[Запрос на присоединение к группе]]></string>
     <string name="_bx_groups_email_join_request_body"><![CDATA[{email_header}
-<p>Получен запрос на присоединение к группе <a href="{EntryUrl}">{EntryTitle}</a> от <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Получен запрос на присоединение к группе <a href="{EntryUrl}">{EntryTitle}</a> от <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_join_reject"><![CDATA[Отклонение запроса на присоединение к группе]]></string>
     <string name="_bx_groups_email_join_reject_subject"><![CDATA[Ваш запрос на присоединение к группе был отклонен]]></string>
     <string name="_bx_groups_email_join_reject_body"><![CDATA[{email_header}
-<p>Ваш запрос на присоединение к группе <a href="{EntryUrl}">{EntryTitle}</a> был отклонен администратором группы.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш запрос на присоединение к группе <a href="{EntryUrl}">{EntryTitle}</a> был отклонен администратором группы.</p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_join_confirm"><![CDATA[Одобрение запроса на присоединение к группе]]></string>
     <string name="_bx_groups_email_join_confirm_subject"><![CDATA[Ваш запрос на присоединение к группе был одобрен]]></string>
     <string name="_bx_groups_email_join_confirm_body"><![CDATA[{email_header}
-<p>Ваш запрос на присоединение к группе <a href="{EntryUrl}">{EntryTitle}</a> был одобрен.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш запрос на присоединение к группе <a href="{EntryUrl}">{EntryTitle}</a> был одобрен.</p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_fan_remove"><![CDATA[Удаление из группы]]></string>
     <string name="_bx_groups_email_fan_remove_subject"><![CDATA[Вы были удалены из группы]]></string>
     <string name="_bx_groups_email_fan_remove_body"><![CDATA[{email_header}
-<p>Ваш профиль был удален из группы <a href="{EntryUrl}">{EntryTitle}</a> администратором группы.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш профиль был удален из группы <a href="{EntryUrl}">{EntryTitle}</a> администратором группы.</p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_fan_become_admin"><![CDATA[Получение статуса администратора группы]]></string>
     <string name="_bx_groups_email_fan_become_admin_subject"><![CDATA[Вы стали администратором группы]]></string>
     <string name="_bx_groups_email_fan_become_admin_body"><![CDATA[{email_header}
-<p>Вы получили статус администратора группы <a href="{EntryUrl}">{EntryTitle}</a>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Вы получили статус администратора группы <a href="{EntryUrl}">{EntryTitle}</a>.</p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_admin_become_fan"><![CDATA[Лишение статуса администратора группы]]></string>
     <string name="_bx_groups_email_admin_become_fan_subject"><![CDATA[Вы были лишены статуса администратора группы]]></string>
     <string name="_bx_groups_email_admin_become_fan_body"><![CDATA[{email_header}
-<p>Вы были лишены статуса администратора группы <a href="{EntryUrl}">{EntryTitle}</a></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Вы были лишены статуса администратора группы <a href="{EntryUrl}">{EntryTitle}</a></p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_set_role"><![CDATA[Изменение статуса в группе]]></string>
     <string name="_bx_groups_email_set_role_subject"><![CDATA[Ваш статус в группе был изменен]]></string>
     <string name="_bx_groups_email_set_role_body"><![CDATA[{email_header}
-<p>Ваш статус в группе <a href="{EntryUrl}">{EntryTitle}</a> был изменен на <b>{Role}</b>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш статус в группе <a href="{EntryUrl}">{EntryTitle}</a> был изменен на <b>{Role}</b>.</p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_invitation"><![CDATA[Приглашение в группу]]></string>
     <string name="_bx_groups_email_invitation_subject"><![CDATA[Приглашение в группу "{EntryTitle}"]]></string>
     <string name="_bx_groups_email_invitation_body"><![CDATA[{email_header}
-<p><a href="{InviterUrl}">{InviterDisplayName}</a> пригласил Вас в группу <a href="{EntryUrl}">{EntryTitle}</a>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{InviterUrl}">{InviterDisplayName}</a> пригласил Вас в группу <a href="{EntryUrl}">{EntryTitle}</a>.</p>
 {email_footer}]]></string>
 </resources>

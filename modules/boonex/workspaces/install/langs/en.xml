@@ -340,6 +340,6 @@
     <string name="_bx_workspaces_email_friend_request"><![CDATA[Friend request]]></string>
     <string name="_bx_workspaces_email_friend_request_subject"><![CDATA[Friendship Request]]></string>
     <string name="_bx_workspaces_email_friend_request_body"><![CDATA[{email_header}
-<p><a href="{SenderUrl}">{SenderDisplayName}</a> wants to be friends with you. <a href="{FriendsLink}">Respond</a>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{SenderUrl}">{SenderDisplayName}</a> wants to be friends with you. <a href="{FriendsLink}">Respond</a>.</p>
 {email_footer}]]></string>
 </resources>

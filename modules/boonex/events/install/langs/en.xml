@@ -661,59 +661,57 @@
     <string name="_bx_events_email_join_request"><![CDATA[Event join request]]></string>
     <string name="_bx_events_email_join_request_subject"><![CDATA[Request to join your event]]></string>
     <string name="_bx_events_email_join_request_body"><![CDATA[{email_header}
-<p>New request to join <a href="{EntryUrl}">{EntryTitle}</a> event from <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">New request to join <a href="{EntryUrl}">{EntryTitle}</a> event from <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
 {email_footer}]]></string>
 
     <string name="_bx_events_email_join_reject"><![CDATA[Event join request was rejected]]></string>
     <string name="_bx_events_email_join_reject_subject"><![CDATA[Request to join an event was rejected]]></string>
     <string name="_bx_events_email_join_reject_body"><![CDATA[{email_header}
-<p>Your request to join <a href="{EntryUrl}">{EntryTitle}</a> event was rejected by event admin.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> event was rejected by event admin.</p>
 {email_footer}]]></string>
 
     <string name="_bx_events_email_join_confirm"><![CDATA[Event join request was confirmed]]></string>
     <string name="_bx_events_email_join_confirm_subject"><![CDATA[Your request to join an event was confirmed]]></string>
     <string name="_bx_events_email_join_confirm_body"><![CDATA[{email_header}
-<p>Your request to join <a href="{EntryUrl}">{EntryTitle}</a> event was confirmed by the event admin.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> event was confirmed by the event admin.</p>
 {email_footer}]]></string>
 
     <string name="_bx_events_email_fan_remove"><![CDATA[Profile was removed from event participants]]></string>
     <string name="_bx_events_email_fan_remove_subject"><![CDATA[Your profile was removed from the event]]></string>
     <string name="_bx_events_email_fan_remove_body"><![CDATA[{email_header}
-<p>Your profile was removed from <a href="{EntryUrl}">{EntryTitle}</a> event by the event admin.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your profile was removed from <a href="{EntryUrl}">{EntryTitle}</a> event by the event admin.</p>
 {email_footer}]]></string>
 
     <string name="_bx_events_email_fan_become_admin"><![CDATA[Event admin status was granted]]></string>
     <string name="_bx_events_email_fan_become_admin_subject"><![CDATA[You are an event admin now]]></string>
     <string name="_bx_events_email_fan_become_admin_body"><![CDATA[{email_header}
-<p>You are an admin of <a href="{EntryUrl}">{EntryTitle}</a> event now.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You are an admin of <a href="{EntryUrl}">{EntryTitle}</a> event now.</p>
 {email_footer}]]></string>
 
     <string name="_bx_events_email_admin_become_fan"><![CDATA[Event admin status was revoked]]></string>
     <string name="_bx_events_email_admin_become_fan_subject"><![CDATA[Your event admin status was revoked]]></string>
     <string name="_bx_events_email_admin_become_fan_body"><![CDATA[{email_header}
-<p>Your admin status was revoked from <a href="{EntryUrl}">{EntryTitle}</a> event.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your admin status was revoked from <a href="{EntryUrl}">{EntryTitle}</a> event.</p>
 {email_footer}]]></string>
 
     <string name="_bx_events_email_invitation"><![CDATA[Invitation to event]]></string>
     <string name="_bx_events_email_invitation_subject"><![CDATA[Invitation to "{EntryTitle}" event]]></string>
     <string name="_bx_events_email_invitation_body"><![CDATA[{email_header}
-<p><a href="{InviterUrl}">{InviterDisplayName}</a> invited you to <a href="{EntryUrl}">{EntryTitle} event</a>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{InviterUrl}">{InviterDisplayName}</a> invited you to <a href="{EntryUrl}">{EntryTitle} event</a>.</p>
 {email_footer}]]></string>
 
     <string name="_bx_events_email_set_role"><![CDATA[Event member status was changed]]></string>
     <string name="_bx_events_email_set_role_subject"><![CDATA[Your event status was changed]]></string>
     <string name="_bx_events_email_set_role_body"><![CDATA[{email_header}
-<p>Your status in <a href="{EntryUrl}">{EntryTitle}</a> event was changed to <b>{Role}</b>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your status in <a href="{EntryUrl}">{EntryTitle}</a> event was changed to <b>{Role}</b>.</p>
 {email_footer}]]></string>
 
     <string name="_bx_events_email_reminder"><![CDATA[Reminder for the event]]></string>
     <string name="_bx_events_email_reminder_subject"><![CDATA["{EntryTitle}" event - {EntryBeginShort}]]></string>
     <string name="_bx_events_email_reminder_body"><![CDATA[{email_header}
-<p class="vevent">
-    <a href="{EntryUrl}" class="summary">{EntryTitle}</a> event reminder:</a><br />
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{EntryUrl}" class="summary">{EntryTitle}</a> event reminder:</a><br />
     Date: <abbr class="dtstart" title="{EntryBeginUTC}">{EntryBegin}</abbr><br />
-    {EntryLocation}
-</p>
+    {EntryLocation}</p>
 {email_footer}]]></string>
     <string name="_bx_events_email_reminder_location"><![CDATA[Location: <span class="location">{0}</span>]]></string>
 </resources>

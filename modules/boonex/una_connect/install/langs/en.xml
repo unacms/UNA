@@ -23,7 +23,7 @@ Then enter generated on the master site the Key & Server pair in this module set
 	<string name="_bx_unacon_et_password_generated"><![CDATA[UNA connect temporary password]]></string>
 	<string name="_bx_unacon_et_password_generated_subject"><![CDATA[Temporary password]]></string>
 	<string name="_bx_unacon_et_password_generated_body"><![CDATA[{email_header}
-<p>Temporary password - <b>{password}</b></p>
-<p>Change it after logging-in.</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Temporary password - <b>{password}</b></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Change it after logging-in.</p>
 {email_footer}]]></string>
 </resources>

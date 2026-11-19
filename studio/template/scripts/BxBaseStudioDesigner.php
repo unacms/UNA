@@ -291,8 +291,8 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         ];
 
         // A section per image: the previews of what the header shows, then the uploads and the SVG code.
-        $aPreviews = $this->getLogoPreviews($sTemplate);
-        foreach(['logo' => ['logo', 'logo_dark', 'logo_inline'], 'mark' => ['mark', 'mark_dark', 'mark_inline']] as $sSection => $aLogos) {
+        $aPreviews = array_merge($this->getLogoPreviews($sTemplate), $this->getLogoEmailPreviews());
+        foreach(['logo' => ['logo', 'logo_dark', 'logo_inline'], 'mark' => ['mark', 'mark_dark', 'mark_inline'], 'email' => ['logo_email', 'logo_email_dark']] as $sSection => $aLogos) {
             $aInputs = [];
             foreach($aLogos as $sLogo) {
                 $aLogo = $this->aLogos[$sLogo];
@@ -499,6 +499,83 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 ],
                 'bx_if:show_remove' => [
                     'condition' => (int)getParam($this->{$this->aLogos[$sType]['param']}) != 0,
+                    'content' => [
+                        'js_object' => $this->getPageJsObject(),
+                        'name' => $sType,
+                        'label' => bx_html_attribute(_t('_adm_dsg_btn_logo_remove_' . $sType)),
+                        'confirm' => bx_html_attribute(_t('_adm_dsg_cnf_logo_remove')),
+                    ]
+                ],
+            ];
+        }
+
+        return $aResult;
+    }
+
+    /**
+     * A preview per email logo: what the email header shows (BxBaseFunctions::getEmailLogoSources), and where that comes from.
+     */
+    protected function getLogoEmailPreviews()
+    {
+        if(empty($this->sParamLogoEmail) && empty($this->sParamLogoEmailDark))
+            return [];
+
+        $aSources = BxTemplFunctions::getInstance()->getEmailLogoSources();
+
+        $sAlt = getParam($this->sParamLogoAlt);
+        if(empty($sAlt))
+            $sAlt = getParam('site_title');
+
+        $aResult = [];
+        foreach(['logo_email' => 'logo', 'logo_email_dark' => 'logo_dark'] as $sType => $sSource) {
+            $sParam = $this->{$this->aLogos[$sType]['param']};
+            if(empty($sParam))
+                continue;
+
+            $bDark = $sSource == 'logo_dark';
+            $bSet = (int)getParam($sParam) != 0;
+
+            // The dark mode one shows what emails show in dark mode: its own, else the light one.
+            $aShow = $aSources[$sSource];
+            if($bDark && $aShow['source'] == 'none')
+                $aShow = $aSources['logo'];
+            $bImage = !empty($aShow['url']);
+
+            if($aSources[$sSource]['source'] == 'email')
+                $sInfo = _t('_adm_dsg_txt_logo_src_here');
+            else if($bSet)
+                $sInfo = _t('_adm_dsg_txt_email_src_unusable');
+            else if($aSources[$sSource]['source'] == 'site')
+                $sInfo = _t($bDark ? '_adm_dsg_txt_email_dark_src_site' : '_adm_dsg_txt_email_src_site');
+            else
+                $sInfo = _t($bDark && $aSources['logo']['source'] != 'none' ? '_adm_dsg_txt_email_dark_src_none' : '_adm_dsg_txt_email_src_none');
+
+            $aResult[] = [
+                'name' => $sType,
+                'scheme' => $bDark ? 'dark' : 'light',
+                'caption' => _t($bDark ? '_adm_dsg_txt_logo_upload_dark' : '_adm_dsg_txt_logo_upload_light'),
+                'info' => $sInfo,
+                'bx_if:show_image' => [
+                    'condition' => $bImage,
+                    'content' => [
+                        'url' => $bImage ? bx_html_attribute($aShow['url']) : '',
+                        'alt' => bx_html_attribute($sAlt),
+                    ]
+                ],
+                'bx_if:show_code' => [
+                    'condition' => false,
+                    'content' => [
+                        'code' => '',
+                    ]
+                ],
+                'bx_if:show_text' => [
+                    'condition' => !$bImage,
+                    'content' => [
+                        'text' => bx_process_output(getParam('site_title')),
+                    ]
+                ],
+                'bx_if:show_remove' => [
+                    'condition' => $bSet,
                     'content' => [
                         'js_object' => $this->getPageJsObject(),
                         'name' => $sType,

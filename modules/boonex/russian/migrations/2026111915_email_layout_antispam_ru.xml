@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Email templates in the new email layout: a title from the greeting, centered text, a button for a lone link. -->
+<resources name="ru" flag="ru" title="Russian" category="Antispam">
+    <string_upd name="_bx_antispam_spam_report_body"><![CDATA[{email_header}
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Профиль:</b> <a href="{SpammerUrl}">{SpammerNickName}</a><br />
+
+<b>Страница:</b> {Page}<br /><br />
+
+<b>GET переменные:</b>
+<pre>
+{Get}
+</pre>
+
+<b>POST переменные:</b>
+<pre>
+{Post}
+</pre>
+
+<b>Спам-контент:</b>
+<pre>
+{SpamContent}
+</pre></div>
+{email_footer}]]></string_upd>
+    <string_upd name="_bx_antispam_toxicity_blocked_report_body"><![CDATA[{email_header}
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Профиль:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
+<b>Страница:</b> {Page}<br /><br />
+<b>Контент:</b>
+<pre>
+{Content}
+</pre></div>
+{email_footer}]]></string_upd>
+    <string_upd name="_bx_antispam_toxicity_posted_report_body"><![CDATA[{email_header}
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Профиль:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
+<b>Страница:</b> {Page}<br /><br />
+<bx_if:content_url>
+	<b>Ссылка:</b> <a href="{c_url}">{c_url}</a><br /><br />
+</bx_if:content_url>
+<bx_if:manage_content_url>
+	<b>Управлять:</b> <a href="{m_url}">{m_url}</a><br /><br />
+</bx_if:manage_content_url></div>
+{email_footer}]]></string_upd>
+    <string_upd name="_bx_antispam_et_lasso_moderation_report_body"><![CDATA[{email_header}
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Профиль:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
+<bx_if:content_url>
+    <b>Ссылка:</b> <a href="{c_url}">{c_url}</a><br /><br />
+</bx_if:content_url>
+<bx_if:manage_content_url>
+    <b>Управлять:</b> <a href="{m_url}">{m_url}</a><br /><br />
+</bx_if:manage_content_url></div>
+{email_footer}]]></string_upd>
+</resources>
