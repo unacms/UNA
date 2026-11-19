@@ -39,8 +39,6 @@ import { comparable, panelSubmenus, rowHref, type SidebarMenuItem } from './app-
 
 type MenuItem = SidebarMenuItem;
 
-/** The script that sets the state before React is there; the effects below keep it in step afterwards. */
-const PREPAINT = `(function(){var d=document.documentElement;try{var p=JSON.parse(localStorage.getItem('neo:v1:prefs')||'{}');d.setAttribute('data-neo-sidebar',p&&p.sidebarNarrow?'narrow':'expanded');if(p&&p.sidebarWidth>0)d.style.setProperty('--neo-sidebar-width-expanded',p.sidebarWidth+'px')}catch(e){d.setAttribute('data-neo-sidebar','expanded')}})()`;
 
 const WIDE = '(min-width: 80rem)';
 const WIDTH_MIN = 240;
@@ -295,7 +293,7 @@ export default function AppSidebar({ pageData }: Readonly<AppSidebarProps>) {
     const context = (pageData as { context?: { current?: { id?: unknown } } } | null | undefined)?.context;
     const hasContextSelector = !!context && (!!appSetting('context_selector', 'show_always') || !!context.current?.id);
 
-    // The stored choice, once the prefs are read: the script set the same before the first paint.
+    // The stored choice, once the prefs are read: SIDEBAR_PREPAINT (the root layout's <head>) set the same before the first paint.
     useEffect(() => {
         document.documentElement.dataset.neoSidebar = narrow ? 'narrow' : 'expanded';
     }, [narrow]);
@@ -354,7 +352,6 @@ export default function AppSidebar({ pageData }: Readonly<AppSidebarProps>) {
 
     return (
         <>
-            <script dangerouslySetInnerHTML={{ __html: PREPAINT }} />
             {/* Wide screens: the content's block. Its surface is behind the page; its edge is over it, with the page's colour
                 spread around it, so what scrolls past the block is hidden there (the strips above and below, the corners). */}
             <div className="neo-app-frame rounded-block bg-card/60" aria-hidden="true" />
