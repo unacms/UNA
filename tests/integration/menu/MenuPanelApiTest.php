@@ -50,6 +50,43 @@ class MenuPanelApiTest extends BxDolIntegrationTestCase
             $this->assertNotFalse(BxDolMenu::getObjectInstance($sSubmenu), 'The submenu "' . $sSubmenu . '" is a menu the apps can ask for.');
     }
 
+    /**
+     * The apps' drawer also lists the modules, the account's own menu and the footer's links: three items that are on
+     * in the apps only, marked `drawer` so the web app's sidebar leaves them out.
+     */
+    public function testAppsGetTheDrawerMenus(): void
+    {
+        $this->bxLoginAsAdmin();
+
+        $aDrawer = [];
+        foreach($this->panel(true)->getMenuItems() as $aItem) {
+            // The title heads the menu in the apps.
+            if($aItem['submenu'] !== '')
+                $this->assertNotSame('', $aItem['title'], 'The menu "' . $aItem['name'] . '" has a title.');
+
+            $aConfig = !empty($aItem['config']) ? json_decode($aItem['config'], true) : [];
+            if(!empty($aConfig['drawer']))
+                $aDrawer[$aItem['name']] = $aItem['submenu'];
+        }
+
+        $this->assertSame([
+            'homepage-menu' => 'sys_homepage',
+            'account-menu' => 'sys_account_notifications',
+            'footer-menu' => 'sys_footer',
+        ], $aDrawer);
+    }
+
+    public function testGuestsGetTheLinksOnly(): void
+    {
+        $this->bxBecomeGuest();
+
+        $aNames = array_column($this->panel(true)->getMenuItems(), 'name');
+
+        $this->assertContains('footer-menu', $aNames);
+        $this->assertNotContains('account-menu', $aNames, 'The account\'s menu is a member\'s.');
+        $this->assertNotContains('member-menu', $aNames);
+    }
+
     public function testSiteStillGetsHtml(): void
     {
         $this->bxLoginAsAdmin();
