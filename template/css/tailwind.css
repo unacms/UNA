@@ -2631,7 +2631,7 @@
         @apply flex-auto;
     }
     /* Segmented switcher, 36px (28px tabs in a 4px frame), the height of the buttons and tiles beside it: a track with the buttons' 8px
-       corners and text tabs with 6px ones, the selected one raised on white; the theme toggle below is its icon-only sibling.
+       corners and text tabs with 5px ones, the selected one raised on white; the theme toggle below is its icon-only sibling.
        With page.js the raised plate is one layer of the track (::after) that slides to the selected tab with a slight overshoot
        (--bx-seg-x and --bx-seg-w; data-bx-seg="on" once it is placed, so the first placement does not slide). */
     .bx-std .bx-std-segmented {
@@ -2650,7 +2650,7 @@
         left: 0;
         width: var(--bx-seg-w, 0);
         transform: translateX(var(--bx-seg-x, 0));
-        border-radius: calc(var(--bx-radius-lg) - 0.125rem); /* 6px */
+        border-radius: calc(var(--bx-radius-lg) - 0.1875rem); /* 5px */
         pointer-events: none;
         background-color: rgb(255 255 255); /* a flat white plate with a subtle drop shadow */
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -2674,7 +2674,7 @@
         box-shadow: none; /* its focus ring stays */
     }
     .bx-std .bx-std-segment {
-        @apply flex items-center justify-center h-7 px-3 rounded-[calc(var(--bx-radius-lg)-0.125rem)] text-sm font-medium text-gray-600 dark:text-gray-300 transition-colors duration-150; /* 4.5:1 on the gray track */
+        @apply flex items-center justify-center h-7 px-3 rounded-[calc(var(--bx-radius-lg)-0.1875rem)] text-sm font-medium text-gray-600 dark:text-gray-300 transition-colors duration-150; /* 4.5:1 on the gray track */
         @apply hover:text-gray-900 dark:hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500;
     }
     .bx-std .bx-std-segment[aria-selected="true"] {

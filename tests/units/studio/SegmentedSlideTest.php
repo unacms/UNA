@@ -19,7 +19,7 @@ class SegmentedSlideTest extends BxDolTestCase
     {
         $s = self::read('template/css/tailwind.css');
         $this->assertStringContainsString('@apply relative isolate inline-flex p-1 rounded-lg bg-black/5 dark:bg-white/5;', $s, 'The track has the buttons\' corners.');
-        $this->assertStringContainsString('h-7 px-3 rounded-[calc(var(--bx-radius-lg)-0.125rem)]', $s, 'Tabs: 28px with 6px corners.');
+        $this->assertStringContainsString('h-7 px-3 rounded-[calc(var(--bx-radius-lg)-0.1875rem)]', $s, 'Tabs: 28px with 5px corners.');
         $this->assertStringNotContainsString('inset 0 1px 2px', $s, 'The track has no inner fade shadow.');
         $this->assertStringContainsString("box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.05); /* a 1px edge", $s, 'Only a 1px inner edge.');
         $this->assertStringContainsString("    .bx-std .bx-std-segmented[data-bx-seg]:is(.dark *)::after {\n        background-color: rgb(255 255 255 / 0.1);\n        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);", $s, 'The plate is flat (white in light mode) with a subtle drop shadow, no rings.');
