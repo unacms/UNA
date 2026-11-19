@@ -6031,7 +6031,7 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 
 -- GRID: Agents Connectors, the operator's own personal access tokens (the same as account settings > Connectors)
 INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `responsive`, `show_total_count`, `override_class_name`, `override_class_file`) VALUES
-('sys_studio_agents_connectors', 'Sql', 'SELECT `id`, `title`, `hint`, `added`, `expires`, `last_used` FROM `sys_api_tokens` WHERE `account_id` = {account_id} ', 'sys_api_tokens', 'id', '', '', '', 20, NULL, 'start', '', '', '', 'auto', '', '', 128, 1, 0, 'BxTemplStudioAgentsConnectors', '');
+('sys_studio_agents_connectors', 'Sql', 'SELECT `id`, `title`, `hint`, `added`, `expires`, `last_used` FROM `sys_api_tokens` WHERE `account_id` = {account_id} ', 'sys_api_tokens', 'id', '', '', '', 20, NULL, 'start', '', '', '', 'auto', '', '', 128, 1, 0, 'BxDolStudioAgentsConnectors', '');
 
 INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `hidden_on`, `order`) VALUES
 ('sys_studio_agents_connectors', 'title', '_sys_api_tokens_txt_title', '25%', 0, 0, '', '', 10),
@@ -6047,7 +6047,7 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 
 -- GRID: Agents MCP tools, which agent tools the MCP server gives to operators (`mcp`) and to every member (`mcp_members`)
 INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `responsive`, `show_total_count`, `override_class_name`, `override_class_file`) VALUES
-('sys_studio_agents_mcp_tools', 'Sql', 'SELECT * FROM `sys_agents_tools` WHERE `type` NOT IN (''chat_buttons'', ''chat_title'', ''chat_artifact_save'', ''chat_goal_reached'', ''prompt_feedback'') ', 'sys_agents_tools', 'id', 'id', '', '', 50, NULL, 'start', '', 'title,type', '', 'like', '', '', 128, 1, 0, 'BxTemplStudioAgentsMcpTools', '');
+('sys_studio_agents_mcp_tools', 'Sql', 'SELECT * FROM `sys_agents_tools` WHERE `type` NOT IN (''chat_buttons'', ''chat_title'', ''chat_artifact_save'', ''chat_goal_reached'', ''prompt_feedback'') ', 'sys_agents_tools', 'id', 'id', '', '', 50, NULL, 'start', '', 'title,type', '', 'like', '', '', 128, 1, 0, 'BxDolStudioAgentsMcpTools', '');
 
 INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `hidden_on`, `order`) VALUES
 ('sys_studio_agents_mcp_tools', 'title', '_Title', '40%', 0, 0, '', '', 10),

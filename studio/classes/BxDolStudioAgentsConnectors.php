@@ -3,17 +3,16 @@
  * Copyright (c) UNA, Inc - https://una.io
  * MIT License - https://opensource.org/licenses/MIT
  *
- * @defgroup    UnaView UNA Studio Representation classes
- * @ingroup     UnaStudio
+ * @defgroup    UnaStudio UNA Studio
  * @{
  */
 
 /**
- * Studio > Agents > Connectors: the operator's own personal access tokens (BxDolApiTokens), drawn as
- * Studio's other grids are. The same tokens as in account settings > Connectors.
+ * Studio > Agents > Connectors: the operator's own personal access tokens (BxDolApiTokens), drawn as Studio's other
+ * grids are. The same tokens as in account settings > Connectors.
  * @see BxDolApiTokensGrid
  */
-class BxBaseStudioAgentsConnectors extends BxTemplStudioGridAgents
+class BxDolStudioAgentsConnectors extends BxTemplStudioGrid
 {
     use BxDolApiTokensGrid;
 
@@ -33,6 +32,17 @@ class BxBaseStudioAgentsConnectors extends BxTemplStudioGridAgents
     protected function _getApiTokensPopup($sId, $sTitle, $sContent)
     {
         return BxTemplStudioFunctions::getInstance()->popupBox($sId, $sTitle, $sContent);
+    }
+
+    protected function _addJsCss()
+    {
+        parent::_addJsCss();
+
+        // the add form's popup is sent with ajaxForm
+        $this->_oTemplate->addJs(['jquery.form.min.js']);
+
+        $oForm = new BxTemplStudioFormView([]);
+        $oForm->addCssJs();
     }
 }
 

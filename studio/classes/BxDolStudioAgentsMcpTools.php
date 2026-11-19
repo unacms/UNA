@@ -3,8 +3,7 @@
  * Copyright (c) UNA, Inc - https://una.io
  * MIT License - https://opensource.org/licenses/MIT
  *
- * @defgroup    UnaView UNA Studio Representation classes
- * @ingroup     UnaStudio
+ * @defgroup    UnaStudio UNA Studio
  * @{
  */
 
@@ -13,7 +12,7 @@
  * every member (`mcp_members`). Only a tool made for members (BxDolAITool::isMemberSafe()) has the members' switch.
  * The Tools tab and the agents keep using the tools as before.
  */
-class BxBaseStudioAgentsMcpTools extends BxTemplStudioGridAgents
+class BxDolStudioAgentsMcpTools extends BxTemplStudioGrid
 {
     public function __construct ($aOptions, $oTemplate = false)
     {

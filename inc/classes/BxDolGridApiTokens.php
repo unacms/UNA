@@ -9,7 +9,7 @@
 
 /**
  * The signed-in account's personal access tokens (BxDolApiTokens) in account settings > Connectors,
- * on the site and in the apps. Studio's grid of them is BxBaseStudioAgentsConnectors.
+ * on the site and in the apps. Studio's grid of them is BxDolStudioAgentsConnectors.
  * @see BxDolApiTokensGrid
  */
 class BxDolGridApiTokens extends BxTemplGrid

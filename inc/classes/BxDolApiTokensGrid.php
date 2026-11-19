@@ -10,7 +10,7 @@
 /**
  * What the grids of the signed-in account's personal access tokens (BxDolApiTokens) share: the site's
  * (account settings > Connectors, BxDolGridApiTokens) and Studio's (Agents > Connectors,
- * BxBaseStudioAgentsConnectors). Only the account's own rows are listed and revoked; a new token is
+ * BxDolStudioAgentsConnectors). Only the account's own rows are listed and revoked; a new token is
  * shown once, in the popup that follows the form (in a message in the apps).
  *
  * A grid that uses it calls _initApiTokens() in its constructor, and may draw its form and popups
