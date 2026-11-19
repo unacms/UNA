@@ -46,6 +46,18 @@
     inherits: false;
     initial-value: 0px;
 }
+/* Studio's button plates (".bx-std .bx-btn" and the header buttons below) draw their gradient from these two colours, so a hover or a press
+   fades the gradient in the 300ms the header's hover halo takes. Tailwind's from-/to- stops carry a position and cannot be animated. */
+@property --bx-plate-from {
+    syntax: '<color>';
+    inherits: false;
+    initial-value: transparent;
+}
+@property --bx-plate-to {
+    syntax: '<color>';
+    inherits: false;
+    initial-value: transparent;
+}
 @keyframes bx-scroll-fade-top {
     from { --bx-scroll-fade-top: 0px; }
     to { --bx-scroll-fade-top: 1.5rem; }
@@ -932,7 +944,7 @@
         @apply bx-btn-bg;
         @apply bx-btn-border rounded-xl; /* 12px, as NEO's regular button and the rows of a dropdown menu */
         @apply bx-btn-text;
-        @apply transition duration-200; /* colours and shadows only: no transform on hover or press */
+        @apply transition duration-300; /* colours, opacity and shadows only: no transform on hover or press */
         @apply cursor-pointer;
         @apply bx-btn-hover bx-btn-focus bx-btn-active;
     }
@@ -993,10 +1005,13 @@
     }
 
     /* Buttons: press and open, as NEO's buttons (NeoButton's press transition and `selected` state, neo/packages/app/settings/theme/buttons.js).
-       A press only deepens the colours (12% ink, the darker primary): no scale, which shrank wide buttons too far. A button whose menu or popup is open
+       A press shows the whole button at 50% with no shadow: no scale, which shrank wide buttons too far. A button whose menu or popup is open
        (aria-expanded="true", which bx_menu_popup and bx_menu_popup_inline keep) takes the accent colours, NEO's bg-accent and
        text-accent-foreground, a step stronger and translucent (blue-200 at 60% and blue-700; blue-900 at 60% and blue-300 in dark), and a primary one the darker primary, while it stays open.
        Studio keeps its own buttons. */
+    body:not(.bx-std) .bx-btn:not(.bx-btn-disabled):active {
+        @apply opacity-50 shadow-none;
+    }
     body:not(.bx-std) .bx-btn[aria-expanded="true"]:not(.bx-btn-primary) {
         @apply bg-blue-200/60 hover:bg-blue-200/60 active:bg-blue-200/60 dark:bg-blue-900/60 dark:hover:bg-blue-900/60 dark:active:bg-blue-900/60;
         @apply text-blue-700 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-300;
@@ -1798,13 +1813,13 @@
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item {
         @apply bg-gray-950/[0.08] hover:bg-gray-950/[0.12] active:bg-gray-950/[0.12] dark:bg-gray-50/[0.08] dark:hover:bg-gray-50/[0.12] dark:active:bg-gray-50/[0.12];
         @apply text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100;
-        @apply transition duration-200;
+        @apply transition duration-300 active:opacity-50 active:shadow-none;
     }
     /* The Application layout's sidebar button (pt_application.html) is one more header button: the same plate, glyph and press. */
     .bx-artificer .bx-sidebar-toggle {
         @apply bg-gray-950/[0.08] hover:bg-gray-950/[0.12] active:bg-gray-950/[0.12] dark:bg-gray-50/[0.08] dark:hover:bg-gray-50/[0.12] dark:active:bg-gray-50/[0.12];
         @apply text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100;
-        @apply transition duration-200;
+        @apply transition duration-300 active:opacity-50 active:shadow-none;
         @apply border-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500;
     }
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item:has(> a[aria-expanded="true"]),
@@ -2320,13 +2335,42 @@
     .bx-std .bx-std-header-btn,
     .bx-std .bx-btn,
     .bx-std .bx-btn-group {
-        @apply relative border-0 bg-gradient-to-b from-gray-100 to-gray-200 dark:from-white/20 dark:to-white/10;
+        @apply relative border-0;
         @apply bg-transparent hover:bg-transparent active:bg-transparent; /* no gray fill under the gradient (the site's .bx-btn paints gray-100 / gray-700): the plate is only white and black over what it sits on */
-        @apply hover:from-gray-200 hover:to-gray-300 dark:hover:from-white/30 dark:hover:to-white/15;
+        --bx-plate-from: theme('colors.gray.100');
+        --bx-plate-to: theme('colors.gray.200');
+        background-image: linear-gradient(to bottom, var(--bx-plate-from), var(--bx-plate-to));
         @apply text-black/80 dark:text-white/80 hover:text-black dark:hover:text-white;
-        @apply active:from-gray-300 active:to-gray-300 dark:active:from-white/35 dark:active:to-white/20; /* a press is a step past the hover: colour only, no scale */
-        @apply transition duration-200;
+        @apply transition duration-300 after:transition-shadow after:duration-300;
+        transition-property: color, background-color, border-color, opacity, box-shadow, --bx-plate-from, --bx-plate-to;
         @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.15),inset_0_0_0_2px_rgb(255_255_255/0.5)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
+    }
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item:hover,
+    .bx-std .bx-std-search-trigger:hover,
+    .bx-std .bx-std-header-btn:hover,
+    .bx-std .bx-btn:hover,
+    .bx-std .bx-btn-group:hover,
+    .bx-std .group:hover .bx-std-tile-btn {
+        --bx-plate-from: theme('colors.gray.200');
+        --bx-plate-to: theme('colors.gray.300');
+    }
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item:is(.dark *),
+    .bx-std .bx-std-search-trigger:is(.dark *),
+    .bx-std .bx-std-header-btn:is(.dark *),
+    .bx-std .bx-btn:is(.dark *),
+    .bx-std .bx-btn-group:is(.dark *),
+    .bx-std .bx-std-tile-btn:is(.dark *) {
+        --bx-plate-from: rgb(255 255 255 / 0.2);
+        --bx-plate-to: rgb(255 255 255 / 0.1);
+    }
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item:hover:is(.dark *),
+    .bx-std .bx-std-search-trigger:hover:is(.dark *),
+    .bx-std .bx-std-header-btn:hover:is(.dark *),
+    .bx-std .bx-btn:hover:is(.dark *),
+    .bx-std .bx-btn-group:hover:is(.dark *),
+    .bx-std .group:hover .bx-std-tile-btn:is(.dark *) {
+        --bx-plate-from: rgb(255 255 255 / 0.3);
+        --bx-plate-to: rgb(255 255 255 / 0.15);
     }
     /* The header's hover halo is a background layer behind the tile, like the sidebar items' and the subtabs' background: 0.5rem (8px) round
        the tile with their corners (--bx-radius-2xl), black/5 (white/5 in dark), so tile, halo and bar stay concentric at any corner size and
@@ -2348,7 +2392,7 @@
         inset: -0.5rem;
         border-radius: var(--bx-radius-2xl);
         pointer-events: none;
-        @apply transition-colors duration-200;
+        @apply transition-colors duration-300; /* as the plate's gradient: halo and plate change together */
     }
     .bx-std .bx-menu-toolbar .bx-menu-tab-item::before,
     .bx-std .bx-menu-top-center li .bx-mi-icon::after,
@@ -2482,10 +2526,30 @@
     .bx-std .bx-btn-group:is(.dark *) {
         --tw-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.5);
     }
+    /* Pressed: the whole button at 50% and no drop shadow; its hairlines stay. No scale, so its size never changes. After the shadow rules
+       above, which it overrides at the same specificity. */
+    .bx-std .bx-std-menu-top .bx-icon-tile:active,
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item:active,
+    .bx-std .bx-std-search-trigger:active,
+    .bx-std .bx-std-header-btn:active,
+    .bx-std .group:active .bx-std-tile-btn,
+    .bx-std .bx-btn:not(.bx-btn-disabled):active,
+    .bx-std .bx-btn-group:active {
+        --tw-shadow: 0 0 #0000;
+        @apply opacity-50;
+    }
+    .bx-std .bx-btn-group > .bx-btn:active {
+        @apply opacity-100; /* the group dims as a whole */
+    }
 
     /* Sidebar icon tiles: the same translucent gradient button as the header tools, hovered through the parent link (.group). */
     .bx-std .bx-std-tile-btn {
-        @apply relative border-0 bg-gradient-to-b from-gray-100 to-gray-200 dark:from-white/20 dark:to-white/10;
+        @apply relative border-0;
+        --bx-plate-from: theme('colors.gray.100');
+        --bx-plate-to: theme('colors.gray.200');
+        background-image: linear-gradient(to bottom, var(--bx-plate-from), var(--bx-plate-to));
+        @apply transition duration-300;
+        transition-property: color, opacity, box-shadow, --bx-plate-from, --bx-plate-to;
         @apply text-black/80 dark:text-white/80;
         @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.15),inset_0_0_0_2px_rgb(255_255_255/0.5)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
     }
@@ -2496,7 +2560,7 @@
     }
     /* group-hover can't be @applied here (Tailwind would put .group above .bx-std), so the hovered link is spelled out. */
     .bx-std .group:hover .bx-std-tile-btn {
-        @apply from-gray-200 to-gray-300 dark:from-white/30 dark:to-white/15 text-black dark:text-white;
+        @apply text-black dark:text-white; /* the plate colours are with the header buttons' hover */
     }
 
     /* Popups float above blocks, so they get the larger shadow stack and the blocks' inset hairline instead of an outer ring. */
@@ -2699,7 +2763,7 @@
         @apply block w-5 h-5 text-inherit;
     }
 
-    /* Studio: Buttons: every .bx-btn is the header button (plate, hairline, shadow, hover halo and press colours come from the "Header buttons" rules above), with the label one step darker than the header glyphs so it passes AA on the plate. Primary is the same plate inverted: the dark-mode plate in light mode and the light-mode plate in dark mode.
+    /* Studio: Buttons: every .bx-btn is the header button (plate, hairline, shadow, hover halo and press come from the "Header buttons" rules above), with the label one step darker than the header glyphs so it passes AA on the plate. Primary is the same plate inverted: the dark-mode plate in light mode and the light-mode plate in dark mode.
        Sizes are the site's and NEO's scale: small 36px (12px sides, 14px text, 8px corners) is the default, for the toolbars, grid rows, cards and
        captions; regular 44px (16px sides, 16px text, 12px corners) is a form's and a dialog's; .bx-btn-small, -mini (28px) and -large (52px) keep theirs anywhere. */
     .bx-std .bx-btn {
@@ -2840,13 +2904,24 @@
         @apply text-inherit; /* glyphs follow the label */
     }
     .bx-std .bx-btn.bx-btn-primary {
-        @apply from-gray-600 to-gray-700 dark:from-gray-100 dark:to-gray-200;
-        @apply hover:from-gray-500 hover:to-gray-600 dark:hover:from-gray-200 dark:hover:to-gray-300;
-        @apply active:from-gray-400 active:to-gray-500 dark:active:from-gray-300 dark:active:to-gray-400;
+        --bx-plate-from: theme('colors.gray.600');
+        --bx-plate-to: theme('colors.gray.700');
         @apply border-0 text-gray-100 dark:text-gray-800 hover:text-white dark:hover:text-gray-900 active:text-white dark:active:text-gray-900;
         /* The app icons' edge (.bx-icon-tile): a black/10 line with a white/5 one inside it, the black line black/20 when hovered; white/15 in
            the dark scheme. Both inside the box, like the other buttons' hairlines. */
         @apply after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.1),inset_0_0_0_2px_rgb(255_255_255/0.05)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.15)];
+    }
+    .bx-std .bx-btn.bx-btn-primary:hover {
+        --bx-plate-from: theme('colors.gray.500');
+        --bx-plate-to: theme('colors.gray.600');
+    }
+    .bx-std .bx-btn.bx-btn-primary:is(.dark *) {
+        --bx-plate-from: theme('colors.gray.100');
+        --bx-plate-to: theme('colors.gray.200');
+    }
+    .bx-std .bx-btn.bx-btn-primary:hover:is(.dark *) {
+        --bx-plate-from: theme('colors.gray.200');
+        --bx-plate-to: theme('colors.gray.300');
     }
     .bx-std .bx-btn.bx-btn-primary:hover:not(:is(.dark *))::after {
         --tw-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.2), inset 0 0 0 2px rgb(255 255 255 / 0.05);
@@ -2866,15 +2941,14 @@
         background-color: rgb(255 255 255 / 0.05) !important;
         color: rgb(255 255 255 / 0.4) !important;
     }
-    /* Joined button groups (the grid pager): the plate, hairline, shadow, halo and press colours belong to the group (it is in the header-plate
-       lists above); the segments are flat, square, hairline-separated, and only darken on hover and press. */
+    /* Joined button groups (the grid pager): the plate, hairline, shadow, halo and press belong to the group (it is in the header-plate
+       lists above); the segments are flat, square, hairline-separated, and only darken on hover. */
     .bx-std .bx-btn-group {
         @apply inline-flex items-stretch rounded-lg;
         @apply after:z-10; /* the group's hairline draws over the segments */
     }
     .bx-std .bx-btn-group > .bx-btn {
         @apply rounded-none shadow-none hover:ring-0 hover:ring-offset-0 active:shadow-none;
-        @apply active:from-white active:to-black/15 dark:active:from-white/25 dark:active:to-white/15; /* a pressed segment darkens a step further than a hovered plate, in the same translucent tones */
         @apply after:hidden;
     }
     .bx-std .bx-btn-group > .bx-btn:first-child {

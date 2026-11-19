@@ -105,7 +105,7 @@ class HoverHaloTest extends BxDolTestCase
     public static function templates(): array
     {
         return [
-            'dock' => ['studio/template/menu_top_center.html', '<div class="bx-mi-icon rounded-lg active:opacity-80 duration-200">'],
+            'dock' => ['studio/template/menu_top_center.html', '<div class="bx-mi-icon rounded-lg duration-300">'],
             'current app' => ['studio/template/page_breadcrumb.html', '<div class="bx-mi-icon bx-icon-tile flex-0 flex items-center justify-center w-9 h-9 rounded-lg">'],
         ];
     }
