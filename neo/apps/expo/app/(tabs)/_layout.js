@@ -10,6 +10,7 @@ import { queryClient } from 'app/lib/platform/query-client'
 import { Provider as JotaiProvider } from 'jotai'
 import { NetworkStatus } from 'app/ui/molecules/system/net-info';
 import { AnalyticsTracker } from 'app/lib/analytics';
+import { AppSidebarShell } from 'app/ui/molecules/sidebar/app-sidebar';
 
 //import RNScreenshotPrevent, { addListener } from 'react-native-screenshot-prevent';
 import i18n from 'i18next';
@@ -75,13 +76,14 @@ const AppLayout = React.memo(() => {
     const nativeTabs = isNativeTabsEnabled();
     const hostStyle = nativeTabs ? getNativeTabsHostStyle() : { flex: 1 };
     const containerStyle = useMemo(() => [
-        hostStyle,
+        // The sidebar's shell around it takes the host style, so the drawer covers the window from edge to edge too.
+        { flex: 1 },
         {
             backgroundColor: nativeTabs
                 ? (colors.background || 'transparent')
                 : (colors.safeAreaBackground || colors.barsBackground),
         },
-    ], [hostStyle, nativeTabs, colors.background, colors.safeAreaBackground, colors.barsBackground]);
+    ], [nativeTabs, colors.background, colors.safeAreaBackground, colors.barsBackground]);
 
     // NativeTabs must be edge-to-edge. A SafeAreaView (even left/right only)
     // shrinks the host; iOS then adds the home-indicator gap again and the
@@ -101,11 +103,14 @@ const AppLayout = React.memo(() => {
             <JotaiProvider>
                 <NetworkStatus >
                     <QueryClientProvider client={queryClient}>
-                        <Shell {...shellProps}>
-                            <Tabs />
-                            <PortalHost />
-                            <AnalyticsTracker />
-                        </Shell>
+                        {/* UNA's Application layout: the sidebar is a drawer over the tabs, or the column beside them. */}
+                        <AppSidebarShell style={hostStyle}>
+                            <Shell {...shellProps}>
+                                <Tabs />
+                                <PortalHost />
+                                <AnalyticsTracker />
+                            </Shell>
+                        </AppSidebarShell>
                     </QueryClientProvider>
                 </NetworkStatus>
             </JotaiProvider>

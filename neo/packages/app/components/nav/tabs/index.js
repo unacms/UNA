@@ -35,6 +35,7 @@ import { subscribeDeepLink, takeDeepLink } from 'app/lib/navigation/deep-link';
 import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet-native';
 import { buildTabUrlIndex, getTabRouteRootUrl, getTabsSessionKey, splitTabBarItems } from './tab-menu';
 import { useTabList } from 'app/lib/navigation/tab-bar-menu';
+import { setMenuViewer } from 'app/context/menu-data';
 
 function getTabNavigator() {
     return isNativeTabsEnabled()
@@ -151,6 +152,14 @@ export default function Tabs() {
         clearAllPageCache();
         rememberSelectedTab(getTabKeyFromPathname(pathname));
     }, [currentUser?.id, currentUser?.confirmed]);
+
+    // UNA's menus are the viewer's: another viewer gets them loaded again (context/menu-data). Nobody yet while the
+    // app does not know who is signed in (`null`).
+    const viewerKnown = currentUser !== null;
+    const viewerId = currentUser?.id;
+    useEffect(() => {
+        if (viewerKnown) setMenuViewer(viewerId ? `user-${viewerId}` : 'guest');
+    }, [viewerKnown, viewerId]);
     // DEEP LINKING
 
     // Android system Back → one in-tab history pop (same as header back), not RN global history.

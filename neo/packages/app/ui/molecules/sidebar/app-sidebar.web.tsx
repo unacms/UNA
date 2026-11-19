@@ -12,6 +12,7 @@ import { useMenuData } from 'app/context/menu-data';
 import { usePref, setPref } from 'app/context/prefs';
 import { useAppSidebarOpen, setAppSidebarOpen } from 'app/context/app-sidebar';
 import type { AppSidebarProps } from './app-sidebar.types';
+import { comparable, panelSubmenus, rowHref, type SidebarMenuItem } from './app-sidebar-entries';
 
 /**
  * UNA's Application layout on the web: the sidebar is the page's left column from top to bottom, and the header and
@@ -25,25 +26,7 @@ import type { AppSidebarProps } from './app-sidebar.types';
  * each of its items is a submenu (`sys_profile_stats`, `sys_profile_followings`...), listed one under another.
  */
 
-type MenuItem = { [key: string]: any };
-
-/** A link or a page URL as a bare path, so the two compare: no origin, no slashes around it. */
-function comparable(value: unknown): string {
-    if (typeof value !== 'string' || !value) return '';
-    let path = value;
-    const scheme = /^https?:\/\//.exec(path);
-    if (scheme) {
-        const slash = path.indexOf('/', scheme[0].length);
-        path = slash === -1 ? '' : path.slice(slash);
-    }
-    return path.split('/').filter(Boolean).join('/');
-}
-
-function rowHref(link: string): string | undefined {
-    if (!link || link === 'javascript:void(0)') return undefined;
-    if (link.startsWith('/') || /^https?:/.test(link)) return link;
-    return `/${link}`;
-}
+type MenuItem = SidebarMenuItem;
 
 /** The script that sets the state before React is there; the effect below keeps it in step afterwards. */
 const PREPAINT = `(function(){try{var p=JSON.parse(localStorage.getItem('neo:v1:prefs')||'{}');document.documentElement.setAttribute('data-neo-sidebar',p&&p.sidebarNarrow?'narrow':'expanded')}catch(e){document.documentElement.setAttribute('data-neo-sidebar','expanded')}})()`;
@@ -108,7 +91,8 @@ export default function AppSidebar({ pageData }: Readonly<AppSidebarProps>) {
     const toggleRef = useRef<HTMLDivElement>(null);
     const backdropRef = useRef<HTMLDivElement>(null);
     const { menuData } = useMenuData(appSetting('menus', 'objects', 'panel') || 'sys_site_panel');
-    const panels: MenuItem[] = Array.isArray(menuData?.items) ? menuData.items : [];
+    // Without the items marked for the native apps' drawer: the header and the footer have what they list.
+    const panels = panelSubmenus(menuData);
     const url = comparable(pageData?.url);
 
     // The stored choice, once the prefs are read: the script set the same before the first paint.
@@ -187,9 +171,7 @@ export default function AppSidebar({ pageData }: Readonly<AppSidebarProps>) {
                     </View>
                 </View>
                 <View className="neo-app-sidebar-body min-h-0 flex-1 px-2 pb-2">
-                    {panels.map((panel, index) => (typeof panel?.submenu === 'string' && panel.submenu
-                        ? <SidebarMenu key={`${panel.submenu}-${index}`} object={panel.submenu} url={url} />
-                        : null))}
+                    {panels.map((object) => <SidebarMenu key={object} object={object} url={url} />)}
                 </View>
             </aside>
             <div ref={backdropRef} className="neo-app-sidebar-backdrop" aria-hidden="true" data-open={open ? 'true' : undefined} />
