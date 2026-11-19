@@ -598,8 +598,9 @@ export const PageHeaderBody = memo(({
         <>
                 <View className={' ' + appSetting('layout', 'header', 'content_left')}>
                     <Row className='min-w-0 shrink items-center gap-3'>
-                        {/* The Application layout's sidebar as a drawer (below `xl`); shown only inside its shell. */}
-                        {isWeb && <AppSidebarOpenButton />}
+                        {/* The start of the header. Native: Menu, which opens the drawer, on a tab's first page; a page
+                            pushed over it has Back there. Web: the Application layout's sidebar as a drawer, below `xl`. */}
+                        {(isWeb || !isPushedScreen) && <AppSidebarOpenButton />}
                         {canShowBackButton && (
                             <BackButtonElement />
                         )}

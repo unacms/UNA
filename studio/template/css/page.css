@@ -38,7 +38,7 @@ div.bx-std-block {
 }
 /*
  * Overlay scrollbar (bx_std_scrollbar in studio/js/page.js): the scroll box hides its native bar, and an SVG drawn over the block runs a
- * thumb down the right edge and round the 24px bottom corner (the top one too when nothing sits above the scroll box), like a bar that
+ * thumb down the right edge and round the 22px bottom corner (the top one too when nothing sits above the scroll box), like a bar that
  * follows the panel's shape; the thumb shows while the pointer is over the block or the content scrolls.
  */
 div.bx-std-block-content,
@@ -109,7 +109,7 @@ div.bx-std-block-caption {
     z-index: 1;
 
     gap: 0.75rem;
-    padding: 1rem; /* 16px round a 36px row (a small button's height): a 68px caption like the header bar, its icon, buttons and tabs on the block's 16px content line, their 8px corners concentric with the block's 24px */
+    padding: 1rem; /* 16px round a 36px row (a small button's height): a 68px caption like the header bar, its icon, buttons and tabs on the block's 16px content line, their 8px corners inside the block's 22px */
     box-shadow: inset 0 -1px 0 0 rgb(0 0 0 / 0.05); /* hairline divider on the row's own bottom pixel: a shadow, so it adds no height */
 }
 .dark div.bx-std-block-caption {
@@ -238,7 +238,7 @@ div.bx-std-block-content {
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
-    border-radius: 0 0 var(--bx-radius-3xl) var(--bx-radius-3xl); /* the scroll box clips to the block's 24px corners instead of squaring them off */
+    border-radius: 0 0 var(--bx-radius-3xl) var(--bx-radius-3xl); /* the scroll box clips to the block's 22px corners instead of squaring them off */
     padding: 0.5rem;
 }
 div.bx-std-block-content:not(:last-child) {

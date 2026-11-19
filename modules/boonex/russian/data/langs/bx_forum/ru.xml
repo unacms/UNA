@@ -133,7 +133,7 @@
 	<string name="_bx_forum_page_title_browse_featured"><![CDATA[Продвинутые обсуждения]]></string>
 	<string name="_bx_forum_page_title_browse_by_category"><![CDATA[Обсуждения в {category_name}]]></string>
 	<string name="_bx_forum_page_title_browse_new"><![CDATA[Новые обсуждения]]></string>
-    <string name="_bx_forum_page_title_browse_latest"><![CDATA[Недавние обсуждения]]></string>
+    <string name="_bx_forum_page_title_browse_latest"><![CDATA[Обсуждения с последними сообщениями]]></string>
     <string name="_bx_forum_page_title_browse_top"><![CDATA[ТОП обсуждений]]></string>
     <string name="_bx_forum_page_title_browse_popular"><![CDATA[Популарные обсуждения]]></string>
     <string name="_bx_forum_page_title_browse_updated"><![CDATA[Обновлённые обсуждения]]></string>
@@ -450,8 +450,8 @@
     <string name="_bx_forum_email_new_reply"><![CDATA[Новый ответ]]></string>
     <string name="_bx_forum_email_new_reply_subject"><![CDATA[Новый ответ в "{PageTitle}" дискуссии]]></string>
     <string name="_bx_forum_email_new_reply_body"><![CDATA[{email_header}
-<p>Новый ответ в <a href="{PageUrl}">{PageTitle}</a> дискуссии от <a href="{SenderUrl}">{SenderDisplayName}</a>:</p>
-<hr />
-<p>{Message}</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Новый ответ в <a href="{PageUrl}">{PageTitle}</a> дискуссии от <a href="{SenderUrl}">{SenderDisplayName}</a>:</p>
+<div class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><hr /></div>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{Message}</p>
 {email_footer}]]></string>
 </resources>

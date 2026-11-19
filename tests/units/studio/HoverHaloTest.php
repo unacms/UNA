@@ -2,7 +2,7 @@
 
 /**
  * Studio hover halos: the header's buttons, the dock and current-app tiles, and the sidebar (subtab) items all show the same 8px halo round
- * a 36px tile with 8px corners (16px outer corners) in the same neutrals, black/5 on hover and black/10 when active (white/5 and white/10 in
+ * a 36px tile with 8px corners (16px outer corners) in the same neutrals, black/5 on hover and black/8 when active (white/5 and white/10 in
  * dark), set apart from it by a 1px line: the outer of the two hairlines that header buttons and app tiles alike carry.
  */
 class HoverHaloTest extends BxDolTestCase
@@ -49,9 +49,9 @@ class HoverHaloTest extends BxDolTestCase
     {
         $s = self::read('template/css/tailwind.css');
 
-        // the selected app's layer is the halo one step darker, the sidebar's active item: black/10 (white/10 in dark)
-        $this->assertStringContainsString("    .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon::after {\n        @apply bg-black/10 dark:bg-white/10;", $s);
-        $this->assertStringContainsString('@apply bg-black/10 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/10;', $s, 'The sidebar\'s active item, the same neutral.');
+        // the selected app's layer is the halo one step darker, the sidebar's active item: black/8 (white/10 in dark)
+        $this->assertStringContainsString("    .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon::after {\n        @apply bg-black/[0.08] dark:bg-white/10;", $s);
+        $this->assertStringContainsString('@apply bg-black/[0.08] hover:bg-black/[0.08] dark:bg-white/10 dark:hover:bg-white/10;', $s, 'The sidebar\'s active item, the same neutral.');
     }
 
     public function testHeaderIconsLeaveRoomForTwoRings(): void
@@ -105,7 +105,7 @@ class HoverHaloTest extends BxDolTestCase
     public static function templates(): array
     {
         return [
-            'dock' => ['studio/template/menu_top_center.html', '<div class="bx-mi-icon rounded-lg active:opacity-80 duration-300">'],
+            'dock' => ['studio/template/menu_top_center.html', '<div class="bx-mi-icon rounded-lg duration-300">'],
             'current app' => ['studio/template/page_breadcrumb.html', '<div class="bx-mi-icon bx-icon-tile flex-0 flex items-center justify-center w-9 h-9 rounded-lg">'],
         ];
     }
@@ -123,13 +123,13 @@ class HoverHaloTest extends BxDolTestCase
     {
         $s = self::read('template/css/tailwind.css');
 
-        // app art runs 1px past its tile, as far as a button's outer hairline, and a black/20 line over that outer pixel darkens the art's own
+        // app art fills its 36px tile, as the buttons keep their hairlines inside theirs, and a black/10 line (with a white/5 2px one inside) over its outer pixels darkens the art's own
         // edge (always darker than the icon, in its hue); in the dark scheme the line is white/15, as on the launcher's tiles, so a dark icon keeps an outline on the dark bar; glyph tile buttons keep the buttons' hairlines; no extra ring on hover or when active
-        $this->assertStringContainsString("    .bx-std .bx-std-menu-top .bx-icon-tile,\n    .bx-std .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) {\n        @apply after:-inset-px after:rounded-[calc(var(--bx-radius-lg)_+_1px)] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.2)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.15)];", $s);
+        $this->assertStringContainsString("    .bx-std .bx-std-menu-top .bx-icon-tile,\n    .bx-std .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) {\n        @apply after:inset-0 after:rounded-[inherit] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.1),inset_0_0_0_2px_rgb(255_255_255/0.05)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.15)];", $s);
         foreach (['studio/template/css/menu_top.css' => 2, 'studio/template/css/general.css' => 1] as $sFile => $iRules) { // current-app tile and dock; sidebar
             $sCss = self::read($sFile);
-            $this->assertSame($iRules, substr_count($sCss, "max-width: none; /* Tailwind's base caps images at their box */"), $sFile . ': the art is not capped at its tile.');
-            $this->assertSame($iRules, substr_count($sCss, "    margin: -1px;\n"), $sFile . ': the art overhangs its tile by 1px.');
+            $this->assertSame(0, substr_count($sCss, "    margin: -1px;\n"), $sFile . ': the art does not overhang its tile.');
+            $this->assertGreaterThanOrEqual($iRules, substr_count($sCss, "    border-radius: var(--bx-radius-lg);\n}"), $sFile . ': the art has the tile\'s 8px corners.');
         }
         $this->assertStringContainsString("div.bx-std-menu-top .bx-menu-top-center li .bx-icon-tile {\n    display: flow-root;", self::read('studio/template/css/menu_top.css'), 'The dock tile keeps 36px: the art margins do not collapse through it.');
         $this->assertStringNotContainsString('.bx-std-pmen-item:hover .bx-std-pmen-ic-icon,', $s);
@@ -141,5 +141,11 @@ class HoverHaloTest extends BxDolTestCase
         $this->assertMatchesRegularExpression('/div\.bx-std-pmen-item \.bx-std-pmen-ic-icon \{[^}]*width: 2\.25rem;\s*height: 2\.25rem;/', $sGeneral);
         $this->assertStringContainsString('height: 3.25rem; /* the 36px tile with 8px around it', $sGeneral, 'The phone tabs.');
         $this->assertStringContainsString('<bx_if:show_icon_bg> bx-std-tile-btn p-1.5</bx_if:show_icon_bg>', self::read('studio/template/menu_side.html'), 'A 24px glyph in the 36px tile.');
+    }
+
+    public function testLauncherAndOpenMenuButtonsTakeTheActiveLayer(): void
+    {
+        $sCss = self::read('template/css/tailwind.css');
+        $this->assertSame(1, preg_match('/\n    \.bx-std\.bx-std-page-launcher \.bx-menu-bc-home a:has\(> \.bx-std-header-btn\)::before,\s*\.bx-std \.bx-menu-toolbar \.bx-menu-tab-item:has\(> \[aria-expanded="true"\]\)::before \{\s*@apply bg-black\/\[0\.08\] dark:bg-white\/10;/', $sCss), 'The launcher button on the launcher and the menu button with its menu open take the current dock item\'s layer.');
     }
 }

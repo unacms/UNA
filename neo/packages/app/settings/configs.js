@@ -32,6 +32,11 @@ export const settingsConfigs = {
         // Tab drawn as the viewer's avatar (web mobile footer + native): 'profile', the own-profile
         // ({profile}) item, or 'dashboard'. A menu without a profile item uses the dashboard.
         tab_avatar: 'profile',
+        // The viewer's menu, opened from the Menu button at the start of the header of a tab's first page: their
+        // profile and the profile switcher (a guest: Log In and Sign Up), UNA's site panel menu (`menus.objects.panel`)
+        // and the language, theme and sounds preferences. A sheet on an iPhone, a glass panel on an iPad, a drawer
+        // on Android. Guests then get no menu button at the header's end.
+        drawer: { member: true, guest: true },
     },
     urls: {
         embeds: '/oembed.php?html=1&a=get_link&l=',

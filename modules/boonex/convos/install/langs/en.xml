@@ -126,18 +126,18 @@
     <string name="_bx_cnv_email_new_message"><![CDATA[New message]]></string>
     <string name="_bx_cnv_email_new_message_subject"><![CDATA[New message from {SenderDisplayName}]]></string>
     <string name="_bx_cnv_email_new_message_body"><![CDATA[{email_header}
-<p><a href="{PageUrl}">New message</a> from <a href="{SenderUrl}">{SenderDisplayName}</a>:</p>
-<hr />
-<p>{Message}</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{PageUrl}">New message</a> from <a href="{SenderUrl}">{SenderDisplayName}</a>:</p>
+<div class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><hr /></div>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{Message}</p>
 {email_footer}]]></string>
 
     <string name="_bx_cnv_email_new_reply"><![CDATA[New reply]]></string>
     <string name="_bx_cnv_email_new_reply_subject"><![CDATA[New reply in conversation from {SenderDisplayName}]]></string>
     <string name="_bx_cnv_email_new_reply_body"><![CDATA[{email_header}
-<p>New reply in <a href="{PageUrl}">{PageTitle}</a> conversation from <a href="{SenderUrl}">{SenderDisplayName}</a>:</p>
-<hr />
-<p>{Message}</p>
-<hr />
-Don't reply to this email, to reply to the sender please go to <a href="{PageUrl}">conversation page</a>.
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">New reply in <a href="{PageUrl}">{PageTitle}</a> conversation from <a href="{SenderUrl}">{SenderDisplayName}</a>:</p>
+<div class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><hr /></div>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{Message}</p>
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><hr />
+Don't reply to this email, to reply to the sender please go to <a href="{PageUrl}">conversation page</a>.</div>
 {email_footer}]]></string>
 </resources>

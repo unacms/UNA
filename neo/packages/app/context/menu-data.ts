@@ -18,6 +18,8 @@ type MenuEntry = {
 
 type MenuDataStore = {
     menus: Record<string, MenuEntry>;
+    /** Counts the times the menus were dropped for another viewer (`setMenuViewer`): loaded menus then load again. */
+    epoch: number;
     /** Load (or reuse) a menu; `force` refetches. Resolves to the data or `false`. */
     fetchMenu: (object: MenuObject, force?: boolean) => Promise<any>;
 };
@@ -31,6 +33,7 @@ export const InitialMenusContext = createContext<Record<string, any> | null>(nul
 
 export const useMenuDataStore = create<MenuDataStore>()((set, get) => ({
     menus: {},
+    epoch: 0,
 
     fetchMenu: async (object, force = false) => {
         const key = typeof object === 'string' ? object : JSON.stringify(object);
@@ -38,8 +41,11 @@ export const useMenuDataStore = create<MenuDataStore>()((set, get) => ({
         if (existing?.data && !force) return existing.data;
         if (existing?.promise && !force) return existing.promise;
 
+        // A reply that arrives after the viewer changed is the previous viewer's menu: it is not stored.
+        const epoch = get().epoch;
         const promise: Promise<any> = getDataForMenu({ object, params: null }, (data: any) => data)
             .then((data: any) => {
+                if (get().epoch !== epoch) return data;
                 set((state) => ({
                     menus: {
                         ...state.menus,
@@ -49,6 +55,7 @@ export const useMenuDataStore = create<MenuDataStore>()((set, get) => ({
                 return data;
             })
             .catch((error: unknown) => {
+                if (get().epoch !== epoch) return false;
                 set((state) => ({
                     menus: {
                         ...state.menus,
@@ -96,6 +103,20 @@ export function seedMenuData(menus: Record<string, any> | null | undefined): voi
     });
 }
 
+let menuViewer: string | null = null;
+
+/**
+ * Native apps: who the loaded menus are for (`user-<id>`, `guest`). UNA answers a menu for the session's viewer, so
+ * when the viewer changes (signing in or out, switching the profile) the loaded menus are dropped and the mounted
+ * ones load again. The first viewer of the app run drops nothing.
+ */
+export function setMenuViewer(viewer: string): void {
+    const previous = menuViewer;
+    menuViewer = viewer;
+    if (previous === null || previous === viewer) return;
+    useMenuDataStore.setState((state) => ({ menus: {}, epoch: state.epoch + 1 }));
+}
+
 /** A loaded (or server-sent) menu's data, read outside React; null when there is none yet. */
 export function getLoadedMenuData(object: string): any {
     return useMenuDataStore.getState().menus[object]?.data || null;
@@ -109,11 +130,12 @@ export const useMenuData = (object: MenuObject | null | undefined) => {
     const isLoading = useMenuDataStore((state) => state.menus[key]?.loading ?? false);
     const isFetched = useMenuDataStore((state) => state.menus[key]?.fetched ?? false) || !!seeded;
     const fetchMenu = useMenuDataStore((state) => state.fetchMenu);
+    const epoch = useMenuDataStore((state) => state.epoch);
     const tier = useScreenTier();
 
     useEffect(() => {
         if (object) fetchMenu(object);
-    }, [object, fetchMenu]);
+    }, [object, fetchMenu, epoch]);
 
     const refetch = useCallback(() => {
         if (object) fetchMenu(object, true);

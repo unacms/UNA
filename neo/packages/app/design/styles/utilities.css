@@ -25,7 +25,7 @@
 /* Block design box per breakpoint (responsive-classes `bg`, `block-pad-*`, `title`): keep in
    sync with theme.blocks u-block-bg / u-block-pad-x / u-block-pad-y (settings/theme/elements.js). */
 @source inline("{sm:,lg:,}{bg-card,bg-card/60,bg-transparent,shadow-block-outline,shadow-none}");
-@source inline("{sm:,lg:,}dark:{shadow-block-outline-deep,shadow-none}");
+@source inline("{sm:,lg:,}dark:{shadow-block-outline-deep,shadow-none,bg-white/10,bg-transparent}");
 @source inline("{sm:,md:,lg:,}{px,py,my}-{0..5}");
 /* Studio's "Padding" large (u-block-pad-*-large). */
 @source inline("{sm:,md:,lg:,}{px,py}-6");

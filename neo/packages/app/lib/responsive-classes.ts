@@ -40,7 +40,7 @@ const PRESETS: Record<string, ResponsivePreset> = {
     bg: {
         on: () => appSetting('theme', 'blocks', 'u-block-bg'),
         default: () => '',
-        off: 'bg-transparent shadow-none dark:shadow-none',
+        off: 'bg-transparent dark:bg-transparent shadow-none dark:shadow-none',
         multi: true,
     },
     'block-pad-y': {

@@ -117,6 +117,14 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                 $mixedResult = 'bx-header-menu-' . $this->getHeaderLayout()['align'];
                 break;
 
+            // The Application layout's header toolbar: the member toolbar, which the layout's styles hide on wide screens for a
+            // member (their tools and account are in the sidebar there); guests keep it (Log in, Join), and narrow screens have the
+            // standard header with it.
+            case 'sys_application_toolbar':
+                $oMenu = BxDolMenu::getObjectInstance('sys_toolbar_member');
+                $mixedResult = $oMenu ? $oMenu->getCode() : '';
+                break;
+
             case 'sys_toolbar_search':
                 $oSearch = new BxTemplSearch();
                 $oSearch->setLiveSearch(true);
@@ -1106,8 +1114,8 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
-     * Site logo for the email header ({site_logo} marker): the logo uploaded in Designer when
-     * it is a PNG, JPEG or GIF, otherwise the site title as text, since email clients block SVG.
+     * Site logo for the email header ({site_logo} marker): the email logo uploaded in Designer, else the site logo,
+     * when it is a PNG, JPEG or GIF, otherwise the site title as text, since email clients block SVG.
      * The dark-mode logo goes next to it, hidden; the default header shows it in dark mode.
      * @return string HTML
      */
@@ -1116,8 +1124,9 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         $sTitle = trim(html_entity_decode((string)getParam('site_title'), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
 
         $oDesigns = BxDolDesigns::getInstance();
-        $sUrl = $this->_getEmailLogoUrl((int)$oDesigns->getSiteLogo());
-        $sUrlDark = $sUrl !== '' ? $this->_getEmailLogoUrl((int)$oDesigns->getSiteLogoDark()) : '';
+        $aSources = $this->getEmailLogoSources();
+        $sUrl = $aSources['logo']['url'];
+        $sUrlDark = $aSources['logo_dark']['url'];
 
         $sAlt = trim(html_entity_decode((string)$oDesigns->getSiteLogoAlt(), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
         if($sAlt === '')
@@ -1147,6 +1156,34 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                 ]
             ],
         ]);
+    }
+
+    /**
+     * Where the email header's logos come from: the email logos uploaded in Designer (sys_site_logo_email*) when they
+     * are a PNG, JPEG or GIF, else the site's logos. Without a light logo there is no dark one either, and a light email
+     * logo is never paired with the site's dark logo.
+     * @return array by type (logo, logo_dark): ['source' => 'email' | 'site' | 'none', 'url' => string]
+     */
+    public function getEmailLogoSources()
+    {
+        $oDesigns = BxDolDesigns::getInstance();
+        $aNone = ['source' => 'none', 'url' => ''];
+
+        $aResult = ['logo' => $aNone, 'logo_dark' => $aNone];
+        if(($sUrl = $this->_getEmailLogoUrl((int)getParam('sys_site_logo_email'))) !== '')
+            $aResult['logo'] = ['source' => 'email', 'url' => $sUrl];
+        else if(($sUrl = $this->_getEmailLogoUrl((int)$oDesigns->getSiteLogo())) !== '')
+            $aResult['logo'] = ['source' => 'site', 'url' => $sUrl];
+
+        if($aResult['logo']['source'] == 'none')
+            return $aResult;
+
+        if(($sUrl = $this->_getEmailLogoUrl((int)getParam('sys_site_logo_email_dark'))) !== '')
+            $aResult['logo_dark'] = ['source' => 'email', 'url' => $sUrl];
+        else if($aResult['logo']['source'] == 'site' && ($sUrl = $this->_getEmailLogoUrl((int)$oDesigns->getSiteLogoDark())) !== '')
+            $aResult['logo_dark'] = ['source' => 'site', 'url' => $sUrl];
+
+        return $aResult;
     }
 
     /**

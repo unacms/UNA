@@ -1,8 +1,9 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Animated, Easing } from 'react-native';
+import { Animated, Easing, type ViewStyle } from 'react-native';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { NeoButtonLink } from 'app/design/controls';
+import { useNativeTokenColor } from 'app/design/controls/neo-button/native-style-colors';
 import { isWeb, hasDropdownActions, flattenMenuItemsForDropdown } from 'app/lib/util';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { useMenuAddItems } from 'app/components/nav/menu-add';
@@ -51,6 +52,25 @@ const PREVIEW_OPACITY = 0.55;
 const DURATION_MS = 320;
 
 /**
+ * Native: the fade over the preview, from the page's colour at no opacity to the page's colour. The classes the web
+ * uses (`from-transparent to-background`) start there from clear black, and a native gradient mixes the colour and
+ * the opacity apart, so on a light page the middle of the fade turned grey. Undefined on the web, and until the
+ * page's colour is known.
+ */
+function usePageFade(): ViewStyle | undefined {
+    const page = useNativeTokenColor('bg-background');
+    if (isWeb || typeof page !== 'string' || !/^#[0-9a-f]{6}/i.test(page)) return undefined;
+    const solid = page.slice(0, 7);
+    return {
+        experimental_backgroundImage: [{
+            type: 'linear-gradient',
+            direction: 'to bottom',
+            colorStops: [{ color: `${solid}00`, positions: ['0%'] }, { color: solid, positions: ['100%'] }],
+        }],
+    };
+}
+
+/**
  * The empty state of a list, centred in the space the list would fill: a few of the list's own
  * skeleton items, laid out as the list lays its items out and fading away downwards, then UNA's
  * title, text and buttons (a block's Studio app config can set them; see BxDolEmptyState).
@@ -82,6 +102,7 @@ export default function EmptyState({ preview, fromSkeletons = false, state, fall
     const [menuOpen, setMenuOpen] = useState(false);
     const title = state?.title || fallbackTitle;
     const buttons = state?.buttons ?? [];
+    const pageFade = usePageFade();
 
     // On web at least the list's share of a tall window (60svh), so the words sit mid-page, not in its top third.
     return (
@@ -105,7 +126,10 @@ export default function EmptyState({ preview, fromSkeletons = false, state, fall
                         {preview}
                     </Animated.View>
                     {/* The list fades into the page: the words below read as its end. */}
-                    <View className="absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-b from-transparent to-background" />
+                    <View
+                        className={'absolute inset-x-0 bottom-0 h-2/3' + (pageFade ? '' : ' bg-linear-to-b from-transparent to-background')}
+                        style={pageFade}
+                    />
                 </View>
             ) : null}
             <Animated.View style={{ opacity: wordsOpacity }} className="items-center gap-2 px-6 -mt-6">

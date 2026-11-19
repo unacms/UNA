@@ -19,6 +19,8 @@ export type PersistedPrefs = {
     feedType: string | null;
     panelSizes: Record<string, number[]>;
     sidebarNarrow: boolean;
+    sidebarWidth: number | null;
+    sidebarCollapsed: string[];
 };
 
 export type SessionPrefs = {
@@ -42,6 +44,10 @@ const PERSISTED_DEFAULTS: PersistedPrefs = {
     panelSizes: {},
     /** The Application layout's sidebar on wide screens: icons only (app/ui/molecules/sidebar/app-sidebar). */
     sidebarNarrow: false,
+    /** The expanded sidebar's width the member dragged its edge to (px); null: 16rem. */
+    sidebarWidth: null,
+    /** The Application sidebar's groups the member closed (a followings group's menu and item names). */
+    sidebarCollapsed: [],
 };
 
 const SESSION_DEFAULTS: SessionPrefs = {

@@ -360,7 +360,7 @@ div.adm-bp-epf-controls .bx-def-margin-sec-left {
     margin-left: 0.5rem;
 }
 /* Layout gallery: a grid that fills the panel (as many 104px-plus columns as fit, stretched to the width), each layout a card on the
-   dashboard hero plate (translucent fill, 2.5% inset hairline, 16px radius) with its name under the picture, like the launcher tiles;
+   dashboard hero plate (translucent fill, 2.5% inset hairline, 14px radius) with its name under the picture, like the launcher tiles;
    the chosen one carries a 2px blue ring and a bold name. */
 div#adm-bp-settings-group-layout {
     display: grid;

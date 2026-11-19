@@ -225,55 +225,55 @@
     <string name="_bx_credits_et_txt_name_granted"><![CDATA[Кредиты подарены.]]></string>
     <string name="_bx_credits_et_txt_subject_granted"><![CDATA[Вам подарили {amount} кредитов.]]></string>
     <string name="_bx_credits_et_txt_body_granted"><![CDATA[{email_header}
-<p>Здравствуйте, {profile_name}.</p>
-<p>Вам подарили <b>{amount}</b> кредитов.</p>
-<p>{message}</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Вам подарили <b>{amount}</b> кредитов.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{message}</p>
 {email_footer}]]></string>
     <string name="_bx_credits_et_txt_name_received"><![CDATA[Кредиты получены.]]></string>
     <string name="_bx_credits_et_txt_subject_received"><![CDATA[Вы получили {amount} кредитов.]]></string>
     <string name="_bx_credits_et_txt_body_received"><![CDATA[{email_header}
-<p>Здравствуйте, {profile_name}.</p>
-<p>Вы получили <b>{amount}</b> кредитов от <a href="{performer_link}">{performer_name}</a>.<br />Ордер: <b>{order}</b>.</p>
-<p>{message}</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Вы получили <b>{amount}</b> кредитов от <a href="{performer_link}">{performer_name}</a>.<br />Ордер: <b>{order}</b>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{message}</p>
 {email_footer}]]></string>
     <string name="_bx_credits_et_txt_name_purchased"><![CDATA[Кредиты куплены.]]></string>
     <string name="_bx_credits_et_txt_subject_purchased"><![CDATA[Вы приобрели {bundle_title} пакет кредитов.]]></string>
     <string name="_bx_credits_et_txt_body_purchased"><![CDATA[{email_header}
-<p>Здравствуйте, {client_name}.</p>
-<p>Вы приобрели <a href="{bundle_url}">{bundle_title}</a> пакет кредитов.<br />Ваш ордер: <b>{order}</b>.</p>
-<p>{notes}</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {client_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Вы приобрели <a href="{bundle_url}">{bundle_title}</a> пакет кредитов.<br />Ваш ордер: <b>{order}</b>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{notes}</p>
 {email_footer}]]></string>
     <string name="_bx_credits_et_txt_name_in"><![CDATA[Входящие кредиты.]]></string>
     <string name="_bx_credits_et_txt_subject_in"><![CDATA[Входящие кредиты.]]></string>
     <string name="_bx_credits_et_txt_body_in"><![CDATA[{email_header}
-<p>Здравствуйте, {profile_name}.</p>
-<p>Вы получили <b>{amount}</b> кредитов от {second_profile_name}.</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Вы получили <b>{amount}</b> кредитов от {second_profile_name}.</p>
 {email_footer}]]></string>
     <string name="_bx_credits_et_txt_name_out"><![CDATA[Исходящие кредиты.]]></string>
     <string name="_bx_credits_et_txt_subject_out"><![CDATA[Исходящие кредиты.]]></string>
     <string name="_bx_credits_et_txt_body_out"><![CDATA[{email_header}
-<p>Здравствуйте, {profile_name}.</p>
-<p>Вы отправили <b>{amount}</b> кредитов на счет {second_profile_name}.</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Вы отправили <b>{amount}</b> кредитов на счет {second_profile_name}.</p>
 {email_footer}]]></string>
     <string name="_bx_credits_et_txt_name_withdraw_requested"><![CDATA[Запрос на снятие.]]></string>
     <string name="_bx_credits_et_txt_subject_withdraw_requested"><![CDATA[Запрос на снятие.]]></string>
     <string name="_bx_credits_et_txt_body_withdraw_requested"><![CDATA[{email_header}
-<p><a href="{profile_link}">{profile_name}</a> запросил снятие <b>{amount}</b> кредитов с его/её баланса.</p>
-<p>Текущий коэффициент вывода: <b>{rate}</b></p>
-<p>Подтвердить вывод можно перейдя по <a href="{confirm_url}">ссылке</a>.</p>
-<p>Примечания от <b>{profile_name}</b>:<br />{message}</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{profile_link}">{profile_name}</a> запросил снятие <b>{amount}</b> кредитов с его/её баланса.</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Текущий коэффициент вывода: <b>{rate}</b></p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Подтвердить вывод можно перейдя по <a href="{confirm_url}">ссылке</a>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Примечания от <b>{profile_name}</b>:<br />{message}</p>
 {email_footer}]]></string>
     <string name="_bx_credits_et_txt_name_withdraw_canceled"><![CDATA[Запрос на вывод средств отменен.]]></string>
     <string name="_bx_credits_et_txt_subject_withdraw_canceled"><![CDATA[Запрос на вывод средств отменен.]]></string>
     <string name="_bx_credits_et_txt_body_withdraw_canceled"><![CDATA[{email_header}
-<p><a href="{profile_link}">{profile_name}</a> отменил заявку на вывод средств на сумму <b>{amount}</b> кредитов.</p>
-<p>Отмененный запрос на вывод средств можно увидеть <a href="{manage_url}">здесь</a>.</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{profile_link}">{profile_name}</a> отменил заявку на вывод средств на сумму <b>{amount}</b> кредитов.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Отмененный запрос на вывод средств можно увидеть <a href="{manage_url}">здесь</a>.</p>
 {email_footer}]]></string>
     <string name="_bx_credits_et_txt_name_withdraw_sent"><![CDATA[Снятие было выполнено.]]></string>
     <string name="_bx_credits_et_txt_subject_withdraw_sent"><![CDATA[Снятие было выполнено.]]></string>
     <string name="_bx_credits_et_txt_body_withdraw_sent"><![CDATA[{email_header}
-<p>Здравствуйте, {profile_name}.</p>
-<p>Запрашиваемая сумма кредитов (<b>{amount}</b>) была отправлена.</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Запрашиваемая сумма кредитов (<b>{amount}</b>) была отправлена.</p>
 {email_footer}]]></string>
 
 

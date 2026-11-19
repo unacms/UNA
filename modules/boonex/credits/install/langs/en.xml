@@ -225,55 +225,55 @@
     <string name="_bx_credits_et_txt_name_granted"><![CDATA[Credits granted.]]></string>
     <string name="_bx_credits_et_txt_subject_granted"><![CDATA[You're granted {amount} credits.]]></string>
     <string name="_bx_credits_et_txt_body_granted"><![CDATA[{email_header}
-<p>Hello, {profile_name}.</p>
-<p>You're granted <b>{amount}</b> credits.</p>
-<p>{message}</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello, {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You're granted <b>{amount}</b> credits.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{message}</p>
 {email_footer}]]></string>
     <string name="_bx_credits_et_txt_name_received"><![CDATA[Credits received.]]></string>
     <string name="_bx_credits_et_txt_subject_received"><![CDATA[You've received {amount} credits.]]></string>
     <string name="_bx_credits_et_txt_body_received"><![CDATA[{email_header}
-<p>Hello, {profile_name}.</p>
-<p>You've received <b>{amount}</b> credits from <a href="{performer_link}">{performer_name}</a>.<br />The order is <b>{order}</b>.</p>
-<p>{message}</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello, {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You've received <b>{amount}</b> credits from <a href="{performer_link}">{performer_name}</a>.<br />The order is <b>{order}</b>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{message}</p>
 {email_footer}]]></string>
     <string name="_bx_credits_et_txt_name_purchased"><![CDATA[Credits purchased.]]></string>
     <string name="_bx_credits_et_txt_subject_purchased"><![CDATA[You've purchased {bundle_title} credits bundle.]]></string>
     <string name="_bx_credits_et_txt_body_purchased"><![CDATA[{email_header}
-<p>Hello, {client_name}.</p>
-<p>You've purchased <a href="{bundle_url}">{bundle_title}</a> credits bundle.<br />Your order is <b>{order}</b>.</p>
-<p>{notes}</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello, {client_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You've purchased <a href="{bundle_url}">{bundle_title}</a> credits bundle.<br />Your order is <b>{order}</b>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{notes}</p>
 {email_footer}]]></string>
     <string name="_bx_credits_et_txt_name_in"><![CDATA[Credits in.]]></string>
     <string name="_bx_credits_et_txt_subject_in"><![CDATA[Credits in.]]></string>
     <string name="_bx_credits_et_txt_body_in"><![CDATA[{email_header}
-<p>Hello, {profile_name}.</p>
-<p>You've received <b>{amount}</b> credits from {second_profile_name}.</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello, {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You've received <b>{amount}</b> credits from {second_profile_name}.</p>
 {email_footer}]]></string>
     <string name="_bx_credits_et_txt_name_out"><![CDATA[Credits out.]]></string>
     <string name="_bx_credits_et_txt_subject_out"><![CDATA[Credits out.]]></string>
     <string name="_bx_credits_et_txt_body_out"><![CDATA[{email_header}
-<p>Hello, {profile_name}.</p>
-<p>You've sent <b>{amount}</b> credits to {second_profile_name}.</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello, {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You've sent <b>{amount}</b> credits to {second_profile_name}.</p>
 {email_footer}]]></string>
     <string name="_bx_credits_et_txt_name_withdraw_requested"><![CDATA[Withdrawal request.]]></string>
     <string name="_bx_credits_et_txt_subject_withdraw_requested"><![CDATA[Withdrawal request.]]></string>
     <string name="_bx_credits_et_txt_body_withdraw_requested"><![CDATA[{email_header}
-<p><a href="{profile_link}">{profile_name}</a> requested to withdraw <b>{amount}</b> credits from his/her balance.</p>
-<p>Current withdrawal conversion rate is <b>{rate}</b></p>
-<p>Withdrawal can be confirmed <a href="{confirm_url}">here</a>.</p>
-<p>Notes from <b>{profile_name}</b>:<br />{message}</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{profile_link}">{profile_name}</a> requested to withdraw <b>{amount}</b> credits from his/her balance.</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Current withdrawal conversion rate is <b>{rate}</b></p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Withdrawal can be confirmed <a href="{confirm_url}">here</a>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Notes from <b>{profile_name}</b>:<br />{message}</p>
 {email_footer}]]></string>
     <string name="_bx_credits_et_txt_name_withdraw_canceled"><![CDATA[Withdrawal request canceled.]]></string>
     <string name="_bx_credits_et_txt_subject_withdraw_canceled"><![CDATA[Withdrawal request canceled.]]></string>
     <string name="_bx_credits_et_txt_body_withdraw_canceled"><![CDATA[{email_header}
-<p><a href="{profile_link}">{profile_name}</a> canceled his/her withdrawal request for <b>{amount}</b> credits.</p>
-<p>The canceled withdrawal request can be seen <a href="{manage_url}">here</a>.</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{profile_link}">{profile_name}</a> canceled his/her withdrawal request for <b>{amount}</b> credits.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">The canceled withdrawal request can be seen <a href="{manage_url}">here</a>.</p>
 {email_footer}]]></string>
     <string name="_bx_credits_et_txt_name_withdraw_sent"><![CDATA[Withdraw was sent.]]></string>
     <string name="_bx_credits_et_txt_subject_withdraw_sent"><![CDATA[Withdraw was sent.]]></string>
     <string name="_bx_credits_et_txt_body_withdraw_sent"><![CDATA[{email_header}
-<p>Hello, {profile_name}.</p>
-<p>The requested amount of credits (<b>{amount}</b>) was withdrawn to you.</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello, {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">The requested amount of credits (<b>{amount}</b>) was withdrawn to you.</p>
 {email_footer}]]></string>
 
 

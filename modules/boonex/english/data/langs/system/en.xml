@@ -683,6 +683,9 @@
 	<string name="_adm_btn_store_search"><![CDATA[Search]]></string>
 	<string name="_adm_dbd_btn_update"><![CDATA[Update]]></string>
 	<string name="_adm_dbd_txt_ver_installed"><![CDATA[First Installed]]></string>
+	<string name="_adm_dbd_txt_ver_is_latest_beta"><![CDATA[Latest Beta Installed]]></string>
+	<string name="_adm_dbd_txt_ver_is_latest_stable"><![CDATA[Latest Stable Installed]]></string>
+	<string name="_adm_dbd_txt_ver_is_newer"><![CDATA[Newer than the latest release]]></string>
 	<string name="_adm_dbd_txt_ver_updated"><![CDATA[Last Updated]]></string>
 	<string name="_adm_dbd_txt_ver_applied"><![CDATA[Installed {0}]]></string>
 	<string name="_adm_dbd_txt_ver_latest_stable"><![CDATA[Latest Stable]]></string>
@@ -690,7 +693,9 @@
 	<string name="_adm_dbd_txt_ver_apps_count"><![CDATA[{0} Apps]]></string>
 	<string name="_adm_dbd_txt_ver_apps_updates"><![CDATA[Updates: {0}]]></string>
 	<string name="_adm_dbd_txt_ver_up_to_date"><![CDATA[Up to date]]></string>
+	<string name="_adm_dbd_txt_ver_update_to"><![CDATA[Update available: {0}]]></string>
 	<string name="_adm_dbd_txt_ver_check"><![CDATA[Check for updates]]></string>
+	<string name="_adm_dbd_txt_ver_check_failed"><![CDATA[Couldn't check for updates]]></string>
 	<string name="_adm_dbd_txt_ver_checking"><![CDATA[Checking...]]></string>
 	<string name="_adm_dbd_txt_ver_auto"><![CDATA[Automatic Updates]]></string>
 	<string name="_adm_dbd_txt_ver_beta"><![CDATA[Beta Updates]]></string>
@@ -796,6 +801,8 @@
 	<string name="_adm_dsg_btn_logo_remove"><![CDATA[Remove]]></string>
 	<string name="_adm_dsg_btn_logo_remove_logo"><![CDATA[Remove the light mode logo]]></string>
 	<string name="_adm_dsg_btn_logo_remove_logo_dark"><![CDATA[Remove the dark mode logo]]></string>
+	<string name="_adm_dsg_btn_logo_remove_logo_email"><![CDATA[Remove the light mode email logo]]></string>
+	<string name="_adm_dsg_btn_logo_remove_logo_email_dark"><![CDATA[Remove the dark mode email logo]]></string>
 	<string name="_adm_dsg_btn_logo_remove_mark"><![CDATA[Remove the light mode mark]]></string>
 	<string name="_adm_dsg_btn_logo_remove_mark_dark"><![CDATA[Remove the dark mode mark]]></string>
 	<string name="_adm_dsg_btn_make_default"><![CDATA[Make Default]]></string>
@@ -821,6 +828,7 @@
 	<string name="_adm_dsg_inf_cover_section_unit"><![CDATA[The image at the top of profile cards, for profiles without a cover of their own.]]></string>
 	<string name="_adm_dsg_inf_cover_upload_page"><![CDATA[A wide image, cropped to 1920×720.]]></string>
 	<string name="_adm_dsg_inf_cover_upload_unit"><![CDATA[A wide image, cropped to 640×240.]]></string>
+	<string name="_adm_dsg_inf_email_section"><![CDATA[Shown in the header of emails. Upload a PNG, JPEG or GIF: email clients block SVG. Without it, emails use the site logo when it is one of these.]]></string>
 	<string name="_adm_dsg_inf_icon_section_home"><![CDATA[Shown when someone adds the site to a phone's home screen, and on Android's launch screen while the site opens. Use a square image with some space and a background around the symbol.]]></string>
 	<string name="_adm_dsg_inf_icon_section_tab"><![CDATA[Shown in browser tabs, bookmarks and history. Browsers that read SVG use the SVG icon, the others favicon.ico.]]></string>
 	<string name="_adm_dsg_inf_icon_upload_icon"><![CDATA[A 32×32 .ico file.]]></string>
@@ -982,6 +990,12 @@
 	<string name="_adm_dsg_txt_tmpl_section_list"><![CDATA[Templates]]></string>
 	<string name="_adm_dsg_txt_tmpl_section_preview"><![CDATA[Preview]]></string>
 	<string name="_adm_dsg_txt_default"><![CDATA[default]]></string>
+	<string name="_adm_dsg_txt_email_dark_src_none"><![CDATA[None. Emails show the light mode logo in dark mode too.]]></string>
+	<string name="_adm_dsg_txt_email_dark_src_site"><![CDATA[Not set. Emails use the site's dark mode logo.]]></string>
+	<string name="_adm_dsg_txt_email_section"><![CDATA[Email logo]]></string>
+	<string name="_adm_dsg_txt_email_src_none"><![CDATA[None. Emails show the site name as text.]]></string>
+	<string name="_adm_dsg_txt_email_src_site"><![CDATA[Not set. Emails use the site logo.]]></string>
+	<string name="_adm_dsg_txt_email_src_unusable"><![CDATA[Not a PNG, JPEG or GIF, so emails don't show it.]]></string>
 	<string name="_adm_dsg_txt_icon"><![CDATA[Favicon (32x32)]]></string>
         <string name="_adm_dsg_txt_icon_svg"><![CDATA[SVG icon with light/dark styles]]></string>
         <string name="_adm_dsg_txt_icon_upload_icon"><![CDATA[Upload favicon.ico]]></string>
@@ -3085,144 +3099,121 @@
     <string name="_sys_done"><![CDATA[Done]]></string>    
     <string name="_sys_et_txt_about_us"><![CDATA[About us]]></string>
     <string name="_sys_et_txt_body_admin_email"><![CDATA[{email_header}
-<p>Message from <a href="{site_url}">{site_name}</a> admin:</p>
-<p> </p>
-<p>{MessageText}</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Message from <a href="{site_url}">{site_name}</a> admin:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{MessageText}</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_comment_replied"><![CDATA[{email_header}
-<p>User {sender_display_name} posted reply to your comment: </p>
-<p> </p>
-<p>{reply_text}</p>
-<p> </p>
-<p>View and reply here: <a href="{page_url}">{page_title}</a>.</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">User {sender_display_name} posted reply to your comment:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{reply_text}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">View and reply here: <a href="{page_url}">{page_title}</a>.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_system_reported"><![CDATA[{email_header}
-<p>New <b>{report_type}</b> report received:</p>
-<p> </p>
-<p>{report_text}</p>
-<p> </p>
-<p><a href="{report_url}">View report</a>.</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">New <b>{report_type}</b> report received:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{report_text}</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{report_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">View report</a>
+</td></tr></tbody>
+</table>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_confirmation"><![CDATA[{email_header}
-<p>Hello {name} ({email}),</p>
-<p>Please confirm your email address by clicking the link below:</p>
-<p> </p>
-<p><a href="{conf_link}">{conf_link}</a></p>
-<p> </p>
-<p>or use the code:</p>
-<p><span class="h3">{conf_code}</span></p>
-<p> </p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Please confirm your email address by clicking the link below:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{conf_link}">{conf_link}</a></p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">or use the code:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><span class="bx-email-title" style="display:inline-block; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:4px; color:#14171e;">{conf_code}</span></p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_welcome"><![CDATA[{email_header}
-<p>Hello {name},</p>
-<p>You are welcome to {site_name}</p>
-<p> </p>
-<p>You've confirmed your profile and is ready to use our site.</p>
-<p>Feel free to contact us if you need some help.</p>
-<p> </p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Welcome, {name}!</h1>
+<p style="margin:0 auto 32px auto; max-width:380px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center;">You've confirmed your profile and it is ready to use.<br />Welcome to {site_name}.</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 24px auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{site_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Open {site_name}</a>
+</td></tr></tbody>
+</table>
+<p class="bx-email-muted" style="margin:32px auto 0 auto; max-width:400px; font:400 13px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color:#7b7d81; text-align:center;">Feel free to contact us if you need some help.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_delayed_module_uninstall"><![CDATA[{email_header}
-<p>Module: <b>{Module}</b></p>
-<p>Uninstallation result: {Result}</p>
-<p> </p>
-<p>{Message}</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Module: <b>{Module}</b></p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Uninstallation result: {Result}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{Message}</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_forgot"><![CDATA[{email_header}
-<p>Hello {name} ({email})</p>,
-<p>Click the link below to reset your password, please:</p>
-<p> </p>
-<p><a href="{forgot_password_url}">Reset my password</a>.</p>
-<p> </p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Click the link below to reset your password, please:</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{forgot_password_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Reset my password</a>
+</td></tr></tbody>
+</table>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_mem_changed"><![CDATA[{email_header}
-<p><b>{profile_name}</b> profile membership level is now <b>{membership_level}</b>.</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><b>{profile_name}</b> profile membership level is now <b>{membership_level}</b>.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_mem_prolonged"><![CDATA[{email_header}
-<p><b>{profile_name}</b> profile membership level (<b>{membership_level}</b>) was prolonged.</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><b>{profile_name}</b> profile membership level (<b>{membership_level}</b>) was prolonged.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_mem_expiration"><![CDATA[{email_header}
-<p>Your {membership_name} membership will expire in {expire_days} days (-1 means already expired).</p>
-<p>Click the link below to renew your membership:</p>
-<p> </p>
-<p><a href="{page_url}">Renew my membership</a></p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your {membership_name} membership will expire in {expire_days} days (-1 means already expired).</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Click the link below to renew your membership:</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{page_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Renew my membership</a>
+</td></tr></tbody>
+</table>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_profile_change_status_active"><![CDATA[{email_header}
-<p>Your {site_name} account details:</p>
-<p> </p>
-<p>Name: {account_name}</p>
-<p>Email: {account_email}</p>
-<p>URL: <a href="{site_url}">{site_url}</a></p>
-<p></p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your {site_name} account details:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Name: {account_name}</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Email: {account_email}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">URL: <a href="{site_url}">{site_url}</a></p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_profile_change_status_pending"><![CDATA[{email_header}
-<p>Your profile is pending review. We will send you the review result shortly.</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your profile is pending review. We will send you the review result shortly.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_profile_change_status_suspended"><![CDATA[{email_header}
-<p>Your profile is currently suspended.</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your profile is currently suspended.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_account_change_status_activate"><![CDATA[{email_header}
-<p>Your account and all your related profiles are currently activated.</p>
-<p></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your account and all your related profiles are currently activated.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_account_change_status_suspended"><![CDATA[{email_header}
-<p>Your account and all your related profiles are currently suspended.</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your account and all your related profiles are currently suspended.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_account"><![CDATA[{email_header}
-<p>{account_output}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{account_output}</p>
 {email_footer}]]></string>
      <string name="_sys_et_txt_body_account_password_expired"><![CDATA[{email_header}
-<p>Your password will expire {expired_date}</p>
-<p>Please, sign-in and change password</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your password will expire {expired_date}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Please, sign-in and change password</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_pruning"><![CDATA[{email_header}
-<p>{pruning_output}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{pruning_output}</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_upgrade_failed"><![CDATA[{email_header}
-<p>Upgrade failed due to the following error:</p>
-<p> </p>
-<p>{error_msg}</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Upgrade failed due to the following error:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{error_msg}</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_upgrade_modules_failed"><![CDATA[{email_header}
-<p>The following errors appeared during modules upgrade:</p>
-<p> </p>
-<p>{conclusion}</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">The following errors appeared during modules upgrade:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{conclusion}</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_upgrade_success"><![CDATA[{email_header}
-<p>Site was successfully upgraded to {new_version}.</p>
-<p>Please go to <b>Studio &gt; App Store &gt; Updates</b> to check for modules updates.</p>
-<p> </p>
-{conclusion}
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Site was successfully upgraded to {new_version}.</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Please go to <b>Studio &gt; App Store &gt; Updates</b> to check for modules updates.</p>
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;">{conclusion}</div>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_upgrade_modules_success"><![CDATA[{email_header}
-<p>The following modules were successfully upgraded.</p>
-<p> </p>
-{conclusion}
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">The following modules were successfully upgraded.</p>
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;">{conclusion}</div>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_bg_operation_failed"><![CDATA[{email_header}
-<p>Background operation failed with the following message.</p>
-<p> </p>
-{conclusion}
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Background operation failed with the following message.</p>
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;">{conclusion}</div>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_manage_approve"><![CDATA[{email_header}
-<p>Moderation team has a question for you about '{content_title}':</p>
-<p> </p>
-<p>{notes}</p>
-<p> </p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Moderation team has a question for you about '{content_title}':</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{notes}</p>
 {email_footer}]]></string>
 	<string name="_sys_et_txt_body_modules_upgrade_success"><![CDATA[<b>{0}</b> module: up to {1} version.<br />]]></string>
 	<string name="_sys_et_txt_body_modules_upgrade_failed"><![CDATA[<b>{0}</b> module: {1}<br />]]></string>
@@ -4051,6 +4042,7 @@
     <string name="_sys_menu_set_title_apps_sidebar"><![CDATA[Apps Sidebar]]></string>
     <string name="_sys_menu_set_title_panel"><![CDATA[Panel]]></string>
     <string name="_sys_menu_set_title_homepage"><![CDATA[Content modules]]></string>
+    <string name="_sys_menu_set_title_toolbar_application"><![CDATA[Application toolbar]]></string>
     <string name="_sys_menu_set_title_toolbar_member"><![CDATA[Toolbar Member]]></string>
     <string name="_sys_menu_set_title_toolbar_site"><![CDATA[Toolbar Site]]></string>
     <string name="_sys_menu_set_title_snippet_meta"><![CDATA[Snippet Meta Info]]></string>
@@ -4137,6 +4129,7 @@
     <string name="_sys_menu_title_manage"><![CDATA[Manage Submenu]]></string>
     <string name="_sys_menu_title_panel"><![CDATA[Site Panel]]></string>
     <string name="_sys_menu_title_submenu"><![CDATA[Site Submenu]]></string>
+    <string name="_sys_menu_title_toolbar_application"><![CDATA[Application toolbar]]></string>
     <string name="_sys_menu_title_toolbar_member"><![CDATA[Member Toolbar]]></string>
     <string name="_sys_menu_title_toolbar_site"><![CDATA[Site Toolbar]]></string>
     <string name="_sys_menu_title_switch_language_popup"><![CDATA[Language Switcher (popup)]]></string>
@@ -4931,6 +4924,7 @@
         <string name="_sys_txt_share_popup_url"><![CDATA[URL]]></string>
         <string name="_sys_txt_share_popup_copy_to_clipboard_text"><![CDATA[Click for copy to the clipboard]]></string>
         <string name="_sys_txt_share_popup_embeded_code"><![CDATA[Embeded code]]></string>
+        <string name="_sys_txt_sidebar_resize"><![CDATA[Resize the sidebar]]></string>
         <string name="_sys_txt_sounds_level_full"><![CDATA[Sounds: Full]]></string>
         <string name="_sys_txt_sounds_level_off"><![CDATA[Sounds: Off]]></string>
         <string name="_sys_txt_sounds_level_quiet"><![CDATA[Sounds: Quiet]]></string>

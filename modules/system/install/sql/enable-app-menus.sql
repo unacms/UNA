@@ -29,6 +29,8 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `modu
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site_panel' AND `module`='system' AND `name`='member-avatar';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site_panel' AND `module`='system' AND `name`='member-menu';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site_panel' AND `module`='system' AND `name`='member-followings';
+-- the apps' drawer only (`drawer`): the web app's sidebar leaves them out, its header and footer have them
+UPDATE `sys_menu_items` SET `active_api`=1, `config_api`='{"drawer":true}' WHERE `set_name`='sys_site_panel' AND `module`='system' AND `name` IN ('homepage-menu', 'account-menu', 'footer-menu');
 -- the apps' sidebar (API v2 GET /navigation): its groups and the Apps Menu's items; Member Menu and Member Following stay off as installed
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_apps_sidebar' AND `module`='system' AND `name`='member-avatar';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_apps_sidebar' AND `module`='system' AND `name`='apps-menu';
@@ -52,6 +54,8 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `mo
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `module`='system' AND `name`='powered_by';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_site' AND `module`='system' AND `name`='main-menu';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='search';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_application' AND `module`='system' AND `name`='search';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_application' AND `module`='system' AND `name`='add-content';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='add-content';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='apps';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='account';

@@ -23,12 +23,26 @@ class ApplicationShellHeaderTest extends BxDolTestCase
 
         $this->assertSame(1, preg_match('/<header id="bx-toolbar" class="([^"]+)">/', $sStd, $aStd));
         $this->assertSame(1, preg_match('/<header id="bx-toolbar" class="([^"]+)">/', $sApp, $aApp), 'The same element and id, so #bx-toolbar rules apply.');
-        $this->assertSame($aStd[1], $aApp[1], 'The same bar: surface, blur and edge.');
+        $this->assertSame('bx-header bx-app-header bx-def-z-index-nav fixed top-0 w-full', $aApp[1], 'No surface of its own: no fill, blur, edge or shadow.');
 
         $this->assertStringContainsString('<div class="bx-header-cnt __sys_header_width__ __sys_header_align__ mx-auto px-4 box-border">', $sApp);
-        $this->assertStringContainsString('<div id="bx-toolbar-content" class="bx-toolbar-content relative flex items-center justify-start h-16">', $sApp);
-        $this->assertMatchesRegularExpression('/<nav id="bx-menu-toolbar-1-container"[^>]*>\s*<bx_menu:sys_application \/>\s*<\/nav>/', $sApp);
-        $this->assertStringContainsString('<bx_menu:sys_toolbar_member />', $sApp);
+        // 8px above and below what it holds, a 16px strip while empty (members: their logo, tools and account are in the sidebar);
+        // guests keep Log in and Join; the script keeps its height in --bx-app-header, which the sidebar and the content start under
+        $this->assertStringContainsString('<div id="bx-toolbar-content" class="bx-toolbar-content relative flex items-center justify-start py-2">', $sApp);
+        $this->assertStringContainsString('<div class="bx-main-content flex overflow-hidden">', $sApp);
+        $this->assertStringContainsString("--bx-app-header: 1rem;", self::read('modules/boonex/artificer/data/template/system/css/common.css'));
+        $this->assertStringContainsString("[['bx-toolbar', '--bx-app-header'], ['bx-app-footer', '--bx-app-footer']]", self::read('modules/boonex/artificer/js/sidebar.js'));
+
+        // the footer strip, the same: no surface, 8px above and below, 16px while empty (as installed)
+        $this->assertMatchesRegularExpression('/<footer id="bx-app-footer" class="bx-app-footer bx-def-z-index-nav fixed bottom-0 w-full">\s*<div class="bx-app-footer-cnt flex items-center px-4 py-2"><\/div>\s*<\/footer>/', $sApp);
+        $this->assertStringNotContainsString('<bx_menu:sys_application />', $sApp);
+        $this->assertStringNotContainsString('<bx_menu:sys_toolbar_member />', $sApp);
+        $this->assertStringContainsString('__sys_application_toolbar__', $sApp);
+        $this->assertStringContainsString("case 'sys_application_toolbar':\n                \$oMenu = BxDolMenu::getObjectInstance('sys_toolbar_member');", self::read('template/scripts/BxBaseFunctions.php'));
+        // wide screens hide it for a member (their tools and account are in the sidebar); below them it is the standard header's
+        $sCss = self::read('modules/boonex/artificer/data/template/system/css/common.css');
+        $this->assertStringContainsString(".bx-main.bx-pt-application:has(.bx-app-sidebar-account) #bx-toolbar .bx-ti-right {\n        display: none;", $sCss);
+        $this->assertStringContainsString("min-height: 4rem; /* the standard header's 64px */", substr($sCss, strpos($sCss, '@media (max-width: 1279.98px) {')));
     }
 
     public function testSidebarButtonsAreHeaderButtons(): void
@@ -40,16 +54,17 @@ class ApplicationShellHeaderTest extends BxDolTestCase
             $this->assertSame(1, preg_match('/<button type="button" id="' . $sId . '"([^\n]*)>\n/', $sApp, $a), $sId);
             $this->assertStringContainsString('aria-controls="' . $sControls . '"', $a[1]);
             $this->assertStringContainsString('aria-label="<bx_text_attribute:_sys_menu_item_title_system_main_menu />"', $a[1], 'An icon-only button has a name.');
-            $this->assertMatchesRegularExpression('/class="bx-sidebar-toggle [^"]*\bh-11 w-11\b[^"]*\brounded-full\b/', $a[1], '44px, as the member toolbar\'s buttons.');
+            $this->assertMatchesRegularExpression('/class="bx-sidebar-toggle [^"]*\bh-9 w-9\b[^"]*\brounded-full\b/', $a[1], '36px, as the sidebar\'s toolbar buttons and the 44px strip.');
         }
 
         $sCss = self::read('template/css/tailwind.css');
         $this->assertSame(1, preg_match('/\n    \.bx-artificer \.bx-sidebar-toggle \{[^}]*\}/', $sCss, $aRule));
         $this->assertSame(1, preg_match('/\n    \.bx-artificer \.bx-menu-toolbar \.bx-menu-toolbar-item \{[^}]*\}/', $sCss, $aToolbar));
-        foreach (['bg-gray-950/[0.08] hover:bg-gray-950/[0.12]', 'text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100', 'active:scale-[0.98]'] as $sLook) {
+        foreach (['bg-gray-950/[0.08] hover:bg-gray-950/[0.12]', 'text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100', 'transition duration-300 active:opacity-50 active:shadow-none'] as $sLook) {
             $this->assertStringContainsString($sLook, $aToolbar[0]);
             $this->assertStringContainsString($sLook, $aRule[0], 'The toolbar buttons\' look.');
         }
+        $this->assertStringNotContainsString('scale', $aToolbar[0] . $aRule[0], 'A press dims the button: no scale.');
     }
 
     public function testSidebarRowsAndTheProfileRowStartOnOneLine(): void

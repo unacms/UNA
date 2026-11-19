@@ -150,7 +150,7 @@ This antispam method scan submitted content for the URLs and check them if any o
   <string name="_bx_antispam_spam_report_name"><![CDATA[Spam report message]]></string>
     <string name="_bx_antispam_spam_report_subject"><![CDATA[Automatic spam report]]></string>
     <string name="_bx_antispam_spam_report_body"><![CDATA[{email_header}
-<b>Profile:</b> <a href="{SpammerUrl}">{SpammerNickName}</a><br />
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Profile:</b> <a href="{SpammerUrl}">{SpammerNickName}</a><br />
 
 <b>Page:</b> {Page}<br /><br />
 
@@ -167,7 +167,7 @@ This antispam method scan submitted content for the URLs and check them if any o
 <b>Spam content:</b>
 <pre>
 {SpamContent}
-</pre>
+</pre></div>
 {email_footer}]]></string>
 
 	<string name="_bx_antispam_type_toxicity_filter"><![CDATA[Toxicity Filter]]></string>
@@ -185,25 +185,25 @@ This antispam method scan submitted content for the URLs and check them if any o
 	<string name="_bx_antispam_toxicity_blocked_report_name"><![CDATA[Toxicity blocked report message]]></string>
     <string name="_bx_antispam_toxicity_blocked_report_subject"><![CDATA[Toxic content has been blocked]]></string>
     <string name="_bx_antispam_toxicity_blocked_report_body"><![CDATA[{email_header}
-<b>Profile:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Profile:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
 <b>Page:</b> {Page}<br /><br />
 <b>Content:</b>
 <pre>
 {Content}
-</pre>
+</pre></div>
 {email_footer}]]></string>
 
 	<string name="_bx_antispam_toxicity_posted_report_name"><![CDATA[Toxicity posted report message]]></string>
     <string name="_bx_antispam_toxicity_posted_report_subject"><![CDATA[Toxic content has been posted]]></string>
     <string name="_bx_antispam_toxicity_posted_report_body"><![CDATA[{email_header}
-<b>Profile:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Profile:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
 <b>Page:</b> {Page}<br /><br />
 <bx_if:content_url>
 	<b>Content:</b> <a href="{c_url}">{c_url}</a><br /><br />
 </bx_if:content_url>
 <bx_if:manage_content_url>
 	<b>Manage:</b> <a href="{m_url}">{m_url}</a><br /><br />
-</bx_if:manage_content_url>
+</bx_if:manage_content_url></div>
 {email_footer}]]></string>
 
     <string name="_bx_antispam_adm_stg_cpt_category_lasso_moderation"><![CDATA[Lasso Moderation]]></string>
@@ -222,12 +222,12 @@ This antispam method scan submitted content for the URLs and check them if any o
     <string name="_bx_antispam_et_lasso_moderation_report_name"><![CDATA[Harmful content posted report message]]></string>
     <string name="_bx_antispam_et_lasso_moderation_report_subject"><![CDATA[Harmful content has been posted]]></string>
     <string name="_bx_antispam_et_lasso_moderation_report_body"><![CDATA[{email_header}
-<b>Profile:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Profile:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
 <bx_if:content_url>
 	<b>Content:</b> <a href="{c_url}">{c_url}</a><br /><br />
 </bx_if:content_url>
 <bx_if:manage_content_url>
 	<b>Manage:</b> <a href="{m_url}">{m_url}</a><br /><br />
-</bx_if:manage_content_url>
+</bx_if:manage_content_url></div>
 {email_footer}]]></string>
 </resources>
