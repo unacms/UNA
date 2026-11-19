@@ -344,4 +344,65 @@ function bx_std_loading_btn(oButton, bShow) {
         oButton.removeAttr('aria-label');
 }
 
+/**
+ * Segmented switchers (.bx-std-segmented, tailwind.css): the selected tab's raised plate is the track's ::after, placed under the tab
+ * through --bx-seg-x and --bx-seg-w, so it slides from tab to tab when aria-selected moves (the block scripts only set the attribute).
+ * Placed without the slide first (data-bx-seg="1"), then on; kept in place when the track resizes (compact phone tabs, fonts loading).
+ */
+(function() {
+    if(!('MutationObserver' in window))
+        return;
+
+    var place = function(oTrack) {
+        var oTab = oTrack.querySelector('[aria-selected="true"]');
+        if(!oTab?.offsetWidth)
+            return;
+
+        oTrack.style.setProperty('--bx-seg-x', oTab.offsetLeft + 'px');
+        oTrack.style.setProperty('--bx-seg-w', oTab.offsetWidth + 'px');
+        if(oTrack.dataset.bxSeg === undefined) {
+            oTrack.dataset.bxSeg = '1';
+            oTrack.getBoundingClientRect(); // the first place is applied before the slide is turned on
+            oTrack.dataset.bxSeg = 'on';
+        }
+    };
+
+    var oResize = 'ResizeObserver' in window ? new ResizeObserver(function(aEntries) {
+        aEntries.forEach(function(oEntry) {
+            place(oEntry.target);
+        });
+    }) : null;
+
+    var init = function(oRoot) {
+        $(oRoot).find('.bx-std-segmented').addBack('.bx-std-segmented').each(function() {
+            if(this.bxSeg)
+                return;
+
+            this.bxSeg = true;
+            place(this);
+            if(oResize)
+                oResize.observe(this);
+        });
+    };
+
+    $(document).ready(function() {
+        init(document.body);
+
+        new MutationObserver(function(aMutations) {
+            aMutations.forEach(function(oMutation) {
+                if(oMutation.type == 'attributes') {
+                    var oTrack = $(oMutation.target).closest('.bx-std-segmented').get(0);
+                    if(oTrack)
+                        place(oTrack);
+                }
+                else
+                    oMutation.addedNodes.forEach(function(oNode) {
+                        if(oNode.nodeType == 1)
+                            init(oNode);
+                    });
+            });
+        }).observe(document.body, {subtree: true, childList: true, attributes: true, attributeFilter: ['aria-selected']});
+    });
+})();
+
 /** @} */

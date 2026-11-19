@@ -79,8 +79,10 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
         // Latest Stable and Latest Beta each show the newest version on that channel: green when the site has it, orange when it is newer.
         $bUpgradeAvailable = false;
         $aRows = [];
+        $aLatest = [];
         foreach(['stable', 'beta'] as $sChannel) {
             list($sVersion, $bNewer, $bUpgrade) = $this->getVersionChannelInfo($sChannel);
+            $aLatest[$sChannel] = $sVersion;
 
             if($sVersion)
                 $aRows[$sChannel] = ['status' => $bNewer ? 'warn' : 'ok', 'value' => $sVersion];
@@ -92,22 +94,32 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
                 $bUpgradeAvailable = true;
         }
 
-        // The Apps row is named after the number of installed apps; its value is the number waiting for an update.
-        $sApps = $this->getAppsCountText();
-        $mixedUpdates = BxDolStudioInstallerUtils::getInstance()->checkUpdates();
-        if(!is_array($mixedUpdates))
-            $aApps = ['status' => 'undef', 'name' => $sApps, 'value' => _t('_adm_dbd_txt_ht_na')];
-        else if(($iUpdates = count($mixedUpdates)) > 0)
-            $aApps = ['status' => 'warn', 'name' => $sApps, 'value' => '<a href="' . BX_DOL_URL_STUDIO . 'store.php?page=updates">' . _t('_adm_dbd_txt_ver_apps_updates', $iUpdates) . '</a>'];
-        else
-            $aApps = ['status' => 'ok', 'name' => $sApps, 'value' => _t('_adm_dbd_txt_ver_up_to_date')];
-
         return [
             'upgrade' => (int)$bUpgradeAvailable,
+            'current' => $this->getVersionStatus(bx_get_ver(), $aLatest['stable'], $aLatest['beta'], getParam('sys_upgrade_channel') == 'beta' ? 'beta' : 'stable'),
             'stable' => $aRows['stable'],
             'beta' => $aRows['beta'],
-            'apps' => $aApps
+            'apps' => $this->getVersionAppsRow()
         ];
+    }
+
+    /**
+     * The Updates block's Apps row: named after the number of installed apps; its value is the number waiting for an update.
+     */
+    protected function getVersionAppsRow()
+    {
+        $sApps = $this->getAppsCountText();
+        $mixedUpdates = BxDolStudioInstallerUtils::getInstance()->checkUpdates();
+        if(!is_array($mixedUpdates)) {
+            return ['status' => 'undef', 'name' => $sApps, 'value' => _t('_adm_dbd_txt_ht_na')];
+        }
+
+        $iUpdates = count($mixedUpdates);
+        if($iUpdates > 0) {
+            return ['status' => 'warn', 'name' => $sApps, 'value' => '<a href="' . BX_DOL_URL_STUDIO . 'store.php?page=updates">' . _t('_adm_dbd_txt_ver_apps_updates', $iUpdates) . '</a>'];
+        }
+
+        return ['status' => 'ok', 'name' => $sApps, 'value' => _t('_adm_dbd_txt_ver_up_to_date')];
     }
 
     public function serviceGetWidgetNotices() {
@@ -187,7 +199,6 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
             'js_object' => $sJsObject,
             'domain' => getParam('site_title'),
             'version' => bx_get_ver(),
-            'version_time' => _t('_adm_dbd_txt_ver_applied', bx_time_js($iApplied, BX_FORMAT_DATE_TIME, true)),
             'bx_repeat:toggles' => $aTmplVarsToggles,
             'installed' => bx_time_js($aSysInfo['date'], BX_FORMAT_DATE, true),
             'updated' => bx_time_js($iApplied, BX_FORMAT_DATE, true),
@@ -759,6 +770,57 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
             'js_object' => $this->getPageJsObject(),
             'chart_data' => $sChartData,
         ])];
+    }
+
+    /**
+     * The line under the installed version in the Updates hero: the latest stable or beta release (green), the update that is
+     * available (red; the followed channel's release when it is newer; the other channel's when the installed version is neither
+     * latest release, e.g. an older beta on the stable channel), a version newer than both
+     * releases (a development copy) or a failed check (gray).
+     * @param string $sInstalled the installed version
+     * @param string $sStable latest stable release, '' when the check failed
+     * @param string $sBeta latest beta release, '' when the check failed
+     * @param string $sChannel the channel the site follows: stable or beta
+     * @return array [status: ok / fail / undef, value: the text]
+     */
+    public function getVersionStatus($sInstalled, $sStable, $sBeta, $sChannel)
+    {
+        $iStable = $this->compareVersion($sStable, $sInstalled);
+        $iBeta = $this->compareVersion($sBeta, $sInstalled);
+        $bBeta = $sChannel == 'beta';
+        $iFollowed = $bBeta ? $iBeta : $iStable; // the channel the site follows
+        $iOther = $bBeta ? $iStable : $iBeta;
+
+        // the first that holds: [condition, status, language key, version]; neither latest and nothing newer is a development copy
+        $aChecks = [
+            [$iStable === null && $iBeta === null, 'undef', '_adm_dbd_txt_ver_check_failed', ''],
+            [$iFollowed === 1, 'fail', '_adm_dbd_txt_ver_update_to', $bBeta ? $sBeta : $sStable],
+            [$iStable === 0, 'ok', '_adm_dbd_txt_ver_is_latest_stable', ''],
+            [$iBeta === 0, 'ok', '_adm_dbd_txt_ver_is_latest_beta', ''],
+            // an older beta on the stable channel (or an older stable on the beta one) is behind the other channel's release
+            [$iOther === 1, 'fail', '_adm_dbd_txt_ver_update_to', $bBeta ? $sStable : $sBeta],
+        ];
+        $aStatus = ['undef', '_adm_dbd_txt_ver_is_newer', ''];
+        foreach($aChecks as $aCheck) {
+            if($aCheck[0]) {
+                $aStatus = array_slice($aCheck, 1);
+                break;
+            }
+        }
+
+        return ['status' => $aStatus[0], 'value' => _t($aStatus[1], bx_process_output($aStatus[2]))];
+    }
+
+    /**
+     * @return int|null 1 when the release is newer than the installed version, 0 when it is the same, -1 when older, null when the check gave none
+     */
+    protected function compareVersion($sRelease, $sInstalled)
+    {
+        if($sRelease === '') {
+            return null;
+        }
+
+        return version_compare(strtolower($sRelease), strtolower($sInstalled));
     }
 
     /**

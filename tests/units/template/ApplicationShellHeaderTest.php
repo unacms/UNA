@@ -46,10 +46,11 @@ class ApplicationShellHeaderTest extends BxDolTestCase
         $sCss = self::read('template/css/tailwind.css');
         $this->assertSame(1, preg_match('/\n    \.bx-artificer \.bx-sidebar-toggle \{[^}]*\}/', $sCss, $aRule));
         $this->assertSame(1, preg_match('/\n    \.bx-artificer \.bx-menu-toolbar \.bx-menu-toolbar-item \{[^}]*\}/', $sCss, $aToolbar));
-        foreach (['bg-gray-950/[0.08] hover:bg-gray-950/[0.12]', 'text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100', 'active:scale-[0.98]'] as $sLook) {
+        foreach (['bg-gray-950/[0.08] hover:bg-gray-950/[0.12]', 'text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100', 'transition duration-300 active:opacity-50 active:shadow-none'] as $sLook) {
             $this->assertStringContainsString($sLook, $aToolbar[0]);
             $this->assertStringContainsString($sLook, $aRule[0], 'The toolbar buttons\' look.');
         }
+        $this->assertStringNotContainsString('scale', $aToolbar[0] . $aRule[0], 'A press dims the button: no scale.');
     }
 
     public function testSidebarRowsAndTheProfileRowStartOnOneLine(): void

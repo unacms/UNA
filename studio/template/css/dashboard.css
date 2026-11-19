@@ -81,7 +81,7 @@ div.bx-dbd-block-content {
     line-height: 1.25rem;
 }
 .bx-dbd-version-access .bx-dbd-htools-dot {
-    background: rgb(34 197 94);
+    background-color: rgb(34 197 94);
 }
 .bx-dbd-version-id {
     display: flex;
@@ -99,6 +99,7 @@ div.bx-std-block-content .bx-dbd-tile.bx-dbd-tile-lg {
     flex: 1 1 auto;
     min-width: 0;
 }
+/* The version: a block title's text (.bx-std-bcap-text, page.css): 20px semibold gray-900 (gray-100 in dark). */
 .bx-dbd-vi-title {
     overflow: hidden;
     white-space: nowrap;
@@ -106,6 +107,16 @@ div.bx-std-block-content .bx-dbd-tile.bx-dbd-tile-lg {
     font-size: 1.25rem;
     font-weight: 600;
     line-height: 1.75rem;
+    color: rgb(24 24 27);
+}
+.dark .bx-dbd-vi-title {
+    color: rgb(244 244 245);
+}
+/* Under it, the update state: the status rows' dot (green, red, gray) before the text. */
+.bx-dbd-vi-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 .bx-dbd-vi-time {
     font-size: 0.875rem;
@@ -294,16 +305,22 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     border-radius: inherit;
     object-fit: cover;
 }
+/* App art: the launcher's and the header's icon edge (tailwind.css, .bx-icon-tile), a black/10 line with a white/5 one inside it over the
+   art's outer pixels, the black line black/20 while its row is hovered; white/15 in the dark scheme. */
 .bx-dbd-tile-app::after {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.1); /* the same inset hairline the tile plates draw */
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.1), inset 0 0 0 2px rgb(255 255 255 / 0.05);
 }
-.dark .bx-dbd-tile-app::after {
-    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05);
+:is(a, button):hover > .bx-dbd-tile-app::after {
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.2), inset 0 0 0 2px rgb(255 255 255 / 0.05);
+}
+.dark .bx-dbd-tile-app::after,
+.dark :is(a, button):hover > .bx-dbd-tile-app::after {
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.15);
 }
 .bx-dbd-chart-name {
     flex: 1 1 auto;
@@ -475,22 +492,35 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     min-height: 3.25rem;
     padding: 0.5rem 0;
 }
-/* The status dot sits after the row's value (like the chart rows' colour marks), 10px, in the status colour. */
+/* The status dot sits after the row's value (like the chart rows' colour marks; the Updates rows put it before), 10px, in the status
+   colour, lit like a small bead: a white highlight fading down its top half, a 1px darker edge inside it and a 1px drop shadow under it. */
 .bx-dbd-htools-dot {
     flex: none;
     width: 0.625rem;
     height: 0.625rem;
     border-radius: 9999px;
-    background: rgb(161 161 170); /* unknown */
+    background-color: rgb(161 161 170); /* unknown */
+    background-image: linear-gradient(to bottom, rgb(255 255 255 / 0.4), rgb(255 255 255 / 0) 60%);
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.12), 0 1px 1px rgb(0 0 0 / 0.15);
+}
+.dark .bx-dbd-htools-dot {
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.2), 0 1px 1px rgb(0 0 0 / 0.5);
 }
 .bx-dbd-htools-item-ok .bx-dbd-htools-dot {
-    background: rgb(34 197 94);
+    background-color: rgb(34 197 94);
 }
 .bx-dbd-htools-item-warn .bx-dbd-htools-dot {
-    background: rgb(249 115 22);
+    background-color: rgb(249 115 22);
 }
 .bx-dbd-htools-item-fail .bx-dbd-htools-dot {
-    background: rgb(239 68 68);
+    background-color: rgb(239 68 68);
+}
+/* Updates: the dot before the value, 8px from it, as in the line under the version. */
+#bx-dbd-version .bx-dbd-htools-name + .bx-dbd-htools-dot {
+    margin-left: 1rem;
+}
+#bx-dbd-version .bx-dbd-htools-dot + .bx-dbd-htools-value {
+    margin-left: -0.25rem;
 }
 .bx-dbd-htools-name {
     display: flex;
@@ -679,7 +709,7 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
 }
 .bx-dbd-users-row[aria-pressed="true"],
 .bx-dbd-users-row[aria-pressed="true"]:hover {
-    background: rgb(0 0 0 / 0.1);
+    background: rgb(0 0 0 / 0.08);
 }
 /* The text of a hovered or picked row, apart from its plate: the plates are translucent tints over the block, not the text's background. */
 .bx-dbd-users-row:hover,

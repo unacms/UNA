@@ -683,6 +683,9 @@
 	<string name="_adm_btn_store_search"><![CDATA[Search]]></string>
 	<string name="_adm_dbd_btn_update"><![CDATA[Update]]></string>
 	<string name="_adm_dbd_txt_ver_installed"><![CDATA[First Installed]]></string>
+	<string name="_adm_dbd_txt_ver_is_latest_beta"><![CDATA[Latest Beta Installed]]></string>
+	<string name="_adm_dbd_txt_ver_is_latest_stable"><![CDATA[Latest Stable Installed]]></string>
+	<string name="_adm_dbd_txt_ver_is_newer"><![CDATA[Newer than the latest release]]></string>
 	<string name="_adm_dbd_txt_ver_updated"><![CDATA[Last Updated]]></string>
 	<string name="_adm_dbd_txt_ver_applied"><![CDATA[Installed {0}]]></string>
 	<string name="_adm_dbd_txt_ver_latest_stable"><![CDATA[Latest Stable]]></string>
@@ -690,7 +693,9 @@
 	<string name="_adm_dbd_txt_ver_apps_count"><![CDATA[{0} Apps]]></string>
 	<string name="_adm_dbd_txt_ver_apps_updates"><![CDATA[Updates: {0}]]></string>
 	<string name="_adm_dbd_txt_ver_up_to_date"><![CDATA[Up to date]]></string>
+	<string name="_adm_dbd_txt_ver_update_to"><![CDATA[Update available: {0}]]></string>
 	<string name="_adm_dbd_txt_ver_check"><![CDATA[Check for updates]]></string>
+	<string name="_adm_dbd_txt_ver_check_failed"><![CDATA[Couldn't check for updates]]></string>
 	<string name="_adm_dbd_txt_ver_checking"><![CDATA[Checking...]]></string>
 	<string name="_adm_dbd_txt_ver_auto"><![CDATA[Automatic Updates]]></string>
 	<string name="_adm_dbd_txt_ver_beta"><![CDATA[Beta Updates]]></string>
