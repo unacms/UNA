@@ -2388,11 +2388,11 @@
         @apply w-6 h-6;
     }
 
-    /* Studio surfaces: translucent white (60% light, 6% dark) with a 2px inset ring (white 50% light, 2.5% dark) and an outer shadow, no border. */
+    /* Studio surfaces: translucent white (60% light, 6% dark) with an inset ring (white 50% light, 2.5% dark) and an outer shadow, no border. */
     .bx-std-block.cnt-ttl-bg,
     .bx-std-block.cnt-bg {
-        @apply bg-white/60 dark:bg-white/10 ring-2 ring-inset ring-white/50 dark:ring-white/[0.025];
-        @apply rounded-3xl smooth-shadow-sm; /* 22px, the same corner as the header bar and the sidebar column */
+        @apply bg-white/60 dark:bg-white/10 ring-1 ring-inset ring-white/50 dark:ring-white/[0.025];
+        @apply rounded-3xl smooth-shadow-sm; /* 24px, the same corner as the header bar and the sidebar column */
     }
 
     #bx-std-pcap-menu-popup-account .bx-popup li a,
@@ -2433,7 +2433,7 @@
     }
 
     .bx-std .bx-def-color-bg-block {
-        @apply bg-white/60 dark:bg-white/10 ring-2 ring-inset ring-white/50 dark:ring-white/[0.025] smooth-shadow-sm;
+        @apply bg-white/60 dark:bg-white/10 ring-1 ring-inset ring-white/50 dark:ring-white/[0.025] smooth-shadow-sm;
     }
     .bx-std .bx-popup-color-bg {
         @apply bg-white dark:bg-[#1a1a1a]; /* popups float over content, so the surface is solid: white, and in dark the black page plus white/10 composite (one step above the white/6 blocks) */
