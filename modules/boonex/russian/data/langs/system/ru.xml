@@ -2719,6 +2719,10 @@
         <string name="_sys_api_tokens_txt_info"><![CDATA[Подключите к своему аккаунту ИИ-ассистентов, например Claude или ChatGPT: в ассистенте добавьте коннектор с адресом MCP-сервера ниже и войдите на этот сайт, когда он попросит. Они работают с вашим контентом так же, как вы на сайте. Инструменту разработчика, который не умеет входить, нужен токен доступа.]]></string>
         <string name="_sys_api_tokens_txt_info_operator"><![CDATA[Подключите к своему аккаунту ИИ-ассистентов, например Claude или ChatGPT: в ассистенте добавьте коннектор с адресом MCP-сервера ниже и войдите на этот сайт, когда он попросит. Поскольку вы оператор, они получают и операторские инструменты, включённые в Studio > Agents > Tools, которые могут изменить на сайте что угодно. Инструменту разработчика, который не умеет входить, нужен токен доступа.]]></string>
         <string name="_sys_api_tokens_txt_mcp_url"><![CDATA[Адрес MCP-сервера]]></string>
+        <string name="_sys_api_mcp_clients_txt_title"><![CDATA[Подключить ассистента]]></string>
+        <string name="_sys_api_mcp_clients_txt_command"><![CDATA[Выполните команду или откройте ссылку, затем войдите на этот сайт в открывшемся браузере.]]></string>
+        <string name="_sys_api_mcp_clients_btn_add_to"><![CDATA[Добавить в {0}]]></string>
+        <string name="_sys_api_mcp_clients_txt_web"><![CDATA[Claude, ChatGPT и другие ассистенты в браузере: в Settings > Connectors добавьте свой коннектор с адресом MCP-сервера и войдите.]]></string>
         <string name="_sys_api_tokens_txt_title"><![CDATA[Название]]></string>
         <string name="_sys_api_tokens_txt_title_info"><![CDATA[Для чего этот токен, например какой ассистент им пользуется]]></string>
         <string name="_sys_api_tokens_txt_hint"><![CDATA[Токен]]></string>

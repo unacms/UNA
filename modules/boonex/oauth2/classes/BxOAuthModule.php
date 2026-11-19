@@ -810,7 +810,7 @@ class BxOAuthModule extends BxDolModule
      * **Response:** 201 with the client (`client_id`, `client_id_issued_at`, `client_name`, `redirect_uris`, ...),
      * or 400 with `error` `invalid_redirect_uri` or `invalid_client_metadata` and `error_description`.
      */
-    function actionRegister ()
+    public function actionRegister ()
     {
         $aHeaders = array('Access-Control-Allow-Origin' => '*', 'Access-Control-Allow-Headers' => 'Content-Type', 'Access-Control-Allow-Methods' => 'POST');
         $sMethod = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
@@ -941,7 +941,7 @@ class BxOAuthModule extends BxDolModule
      * Disconnect an app from the signed-in account (POST from serviceConnectedApps): its codes and tokens for the
      * account's profiles are deleted, so it has to be connected again.
      */
-    function actionDisconnect ()
+    public function actionDisconnect ()
     {
         $sBack = BX_DOL_URL_ROOT . BxDolPermalinks::getInstance()->permalink('page.php?i=account-settings-connectors');
 

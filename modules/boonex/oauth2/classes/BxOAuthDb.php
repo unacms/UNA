@@ -116,7 +116,7 @@ class BxOAuthDb extends BxDolModuleDb
     /**
      * The clients profiles have codes or tokens of: client_id and title (none for a built-in native app), by title.
      */
-    function getConnectedApps($aProfileIds)
+    public function getConnectedApps($aProfileIds)
     {
         if (!$aProfileIds)
             return array();
@@ -133,7 +133,7 @@ class BxOAuthDb extends BxDolModuleDb
     /**
      * Delete a client's codes and tokens of these profiles.
      */
-    function disconnectApp($sClientId, $aProfileIds)
+    public function disconnectApp($sClientId, $aProfileIds)
     {
         if (!$aProfileIds)
             return false;

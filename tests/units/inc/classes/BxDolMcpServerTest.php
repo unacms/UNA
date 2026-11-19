@@ -152,6 +152,25 @@ class BxDolMcpServerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, BxDolAITool::getMemberScope());
     }
 
+    public function testCommandsAndInstallLinksOfMcpClients()
+    {
+        $sName = BxDolApiTokens::getMcpServerName();
+        $this->assertMatchesRegularExpression('/^[a-z0-9]+(-[a-z0-9]+)*$/', $sName);
+
+        $sUrl = BxDolApiTokens::getMcpUrl();
+        $a = BxDolApiTokens::getMcpClients();
+        $this->assertSame('claude mcp add --transport http ' . $sName . ' ' . $sUrl, $a['commands']['Claude Code']);
+        $this->assertSame('codex mcp add ' . $sName . ' --url ' . $sUrl . ' && codex mcp login ' . $sName, $a['commands']['Codex']);
+
+        parse_str((string)parse_url($a['links']['Cursor'], PHP_URL_QUERY), $aCursor);
+        $this->assertStringStartsWith('cursor://anysphere.cursor-deeplink/mcp/install?', $a['links']['Cursor']);
+        $this->assertSame($sName, $aCursor['name']);
+        $this->assertSame(['url' => $sUrl], json_decode(base64_decode($aCursor['config']), true));
+
+        $this->assertStringStartsWith('vscode:mcp/install?', $a['links']['VS Code']);
+        $this->assertSame(['name' => $sName, 'type' => 'http', 'url' => $sUrl], json_decode(rawurldecode(substr($a['links']['VS Code'], strlen('vscode:mcp/install?'))), true));
+    }
+
     public function testToolErrorShape()
     {
         $a = BxDolMcpServer::toolError('Nope', ['code' => 'forbidden']);

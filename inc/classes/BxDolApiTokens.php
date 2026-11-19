@@ -145,6 +145,7 @@ class BxDolApiTokens
             'txt_mcp_url' => _t('_sys_api_tokens_txt_mcp_url'),
             'txt_copy' => _t('_sys_api_tokens_btn_copy'),
             'mcp_url' => bx_html_attribute(self::getMcpUrl()),
+            'clients' => self::getMcpClientsCode($oTemplate),
             'grid' => $oGrid->getCode(),
             'apps' => is_string($mixedApps) ? $mixedApps : '',
         ]);
@@ -156,6 +157,75 @@ class BxDolApiTokens
     public static function getMcpUrl()
     {
         return BX_DOL_URL_ROOT . 'api/mcp';
+    }
+
+    /**
+     * The name an MCP client gives the site's server: its host, letters, digits and dashes.
+     */
+    public static function getMcpServerName()
+    {
+        $s = strtolower((string)parse_url(BX_DOL_URL_ROOT, PHP_URL_HOST));
+        $s = trim(preg_replace('/[^a-z0-9]+/', '-', preg_replace('/^www\./', '', $s)), '-');
+        return $s !== '' ? $s : 'una';
+    }
+
+    /**
+     * Ways to add the site's MCP server to the AI clients that can be told what to add: a command to run (it then
+     * opens the sign-in) or an install link. Claude and ChatGPT on the web take the URL in their settings.
+     * @return array ['commands' => [title => command], 'links' => [title => URL]]
+     */
+    public static function getMcpClients()
+    {
+        $sUrl = self::getMcpUrl();
+        $sName = self::getMcpServerName();
+
+        return [
+            'commands' => [
+                'Claude Code' => 'claude mcp add --transport http ' . $sName . ' ' . $sUrl,
+                'Codex' => 'codex mcp add ' . $sName . ' --url ' . $sUrl . ' && codex mcp login ' . $sName,
+            ],
+            'links' => [
+                'Cursor' => 'cursor://anysphere.cursor-deeplink/mcp/install?name=' . rawurlencode($sName) . '&config=' . rawurlencode(base64_encode(json_encode(['url' => $sUrl], JSON_UNESCAPED_SLASHES))),
+                'VS Code' => 'vscode:mcp/install?' . rawurlencode(json_encode(['name' => $sName, 'type' => 'http', 'url' => $sUrl], JSON_UNESCAPED_SLASHES)),
+            ],
+        ];
+    }
+
+    /**
+     * The "Connect an assistant" part of Connectors: getMcpClients() as fields to copy and buttons.
+     * @param BxDolTemplate|null $oTemplate the site's or Studio's
+     */
+    public static function getMcpClientsCode($oTemplate = null)
+    {
+        if (!$oTemplate)
+            $oTemplate = BxDolTemplate::getInstance();
+
+        $aClients = self::getMcpClients();
+
+        $aCommands = [];
+        $i = 0;
+        foreach ($aClients['commands'] as $sTitle => $sCommand)
+            $aCommands[] = [
+                'cmd_id' => 'sys-api-mcp-client-' . (++$i),
+                'cmd_title' => bx_process_output($sTitle),
+                'command' => bx_html_attribute($sCommand),
+                'txt_copy' => _t('_sys_api_tokens_btn_copy'),
+            ];
+
+        $aLinks = [];
+        foreach ($aClients['links'] as $sTitle => $sLink)
+            $aLinks[] = [
+                'link_href' => bx_html_attribute($sLink),
+                'link_label' => bx_process_output(_t('_sys_api_mcp_clients_btn_add_to', $sTitle)),
+            ];
+
+        return $oTemplate->parseHtmlByName('api_mcp_clients.html', [
+            'txt_title' => _t('_sys_api_mcp_clients_txt_title'),
+            'txt_command' => _t('_sys_api_mcp_clients_txt_command'),
+            'txt_web' => _t('_sys_api_mcp_clients_txt_web'),
+            'bx_repeat:commands' => $aCommands,
+            'bx_repeat:links' => $aLinks,
+        ]);
     }
 }
 
