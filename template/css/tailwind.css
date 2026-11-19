@@ -8,12 +8,12 @@
  *   --bx-radius-size    Studio > Designer > Settings > Corners: 1 large (default), 0.75 small, 0 none
  *   --bx-radius-smooth  1, or the smooth corners' multiplier where the browser draws them (design_radius.html)
  * Tailwind's rounded-* classes read these (tailwind.config.js), and plain CSS uses the variables themselves:
- * var(--bx-radius-lg) for 8px, var(--bx-radius-2xl) for 16px, var(--bx-radius-3xl) for 22px. That is the nesting: a
- * surface (a block, a header bar) 22px, what is inside it 16px, what is inside that 8px. A pill or a circle (rounded-full, 9999px, 50%)
+ * var(--bx-radius-lg) for 8px, var(--bx-radius-2xl) for 14px, var(--bx-radius-3xl) for 22px. That is the nesting: a
+ * surface (a block, a header bar) 22px, what is 8px inside it 14px, what is inside that 8px. A pill or a circle (rounded-full, 9999px, 50%)
  * is not on the scale.
  *   --bx-radius-max     the largest radius a surface gets, 34px: half of a 68px bar (Studio's header), the most such a
  *                       bar can draw. With a multiplier, tall blocks stop there too, so bars and blocks match.
- *   --bx-radius-max-row the same for the 16px step, 26px: half of a 52px row (Studio's sidebar items), so a dropdown or a
+ *   --bx-radius-max-row the same for the 14px step, 26px: half of a 52px row (Studio's sidebar items), so a dropdown or a
  *                       card with that step has the corners of the rows.
  */
 @layer base {
@@ -29,7 +29,7 @@
         --bx-radius-md: calc(0.375rem * var(--bx-radius-scale));
         --bx-radius-lg: calc(0.5rem * var(--bx-radius-scale));
         --bx-radius-xl: calc(0.75rem * var(--bx-radius-scale));
-        --bx-radius-2xl: min(calc(1rem * var(--bx-radius-scale)), var(--bx-radius-max-row));
+        --bx-radius-2xl: min(calc(0.875rem * var(--bx-radius-scale)), var(--bx-radius-max-row));
         --bx-radius-3xl: min(calc(1.375rem * var(--bx-radius-scale)), var(--bx-radius-max));
     }
 }

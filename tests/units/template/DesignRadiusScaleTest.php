@@ -48,7 +48,7 @@ class DesignRadiusScaleTest extends BxDolTestCase
         // The largest step stops at what a 68px bar can draw, so a multiplier rounds bars and tall blocks alike.
         $this->assertStringContainsString('--bx-radius-max: 2.125rem;', $s);
         $this->assertStringContainsString('--bx-radius-max-row: 1.625rem;', $s);
-        $this->assertStringContainsString('--bx-radius-2xl: min(calc(1rem * var(--bx-radius-scale)), var(--bx-radius-max-row));', $s);
+        $this->assertStringContainsString('--bx-radius-2xl: min(calc(0.875rem * var(--bx-radius-scale)), var(--bx-radius-max-row));', $s);
         $this->assertStringContainsString('--bx-radius-3xl: min(calc(1.375rem * var(--bx-radius-scale)), var(--bx-radius-max));', $s);
     }
 
