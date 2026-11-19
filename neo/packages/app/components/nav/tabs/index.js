@@ -153,11 +153,13 @@ export default function Tabs() {
         rememberSelectedTab(getTabKeyFromPathname(pathname));
     }, [currentUser?.id, currentUser?.confirmed]);
 
-    // UNA's menus are the viewer's: another viewer gets them loaded again (context/menu-data).
-    const menuViewer = currentUser === null ? null : (currentUser?.id ? `user-${currentUser.id}` : 'guest');
+    // UNA's menus are the viewer's: another viewer gets them loaded again (context/menu-data). Nobody yet while the
+    // app does not know who is signed in (`null`).
+    const viewerKnown = currentUser !== null;
+    const viewerId = currentUser?.id;
     useEffect(() => {
-        if (menuViewer) setMenuViewer(menuViewer);
-    }, [menuViewer]);
+        if (viewerKnown) setMenuViewer(viewerId ? `user-${viewerId}` : 'guest');
+    }, [viewerKnown, viewerId]);
     // DEEP LINKING
 
     // Android system Back → one in-tab history pop (same as header back), not RN global history.
