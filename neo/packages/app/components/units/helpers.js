@@ -343,7 +343,7 @@ export function useUnitActions({ unitType, data, module, t = null }) {
 
 // Mobile rows use the theme's `xl` avatar (56px), like Messages and
 // Notifications; the sm+ grid shows the photo as a full-width square.
-// Its corners there are 12px (rounded-xl): the card's 20px (rounded-block) less its 8px padding, so they run parallel.
+// Its corners there are 12px (rounded-xl): the card's 20px (rounded-card) less its 8px padding, so they run parallel.
 const ROW_AVATAR = appSetting('theme', 'profile_sizes', 'xl');
 
 // Profile row name and count line: the feed author / Messages title type, then
