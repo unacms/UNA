@@ -12,6 +12,16 @@ use NeuronAI\Tools\ToolProperty;;
 
 class BxDolAIToolCmtsAdd extends BxDolAITool
 {
+    public static function isMemberSafe(): bool
+    {
+        return true;
+    }
+
+    public static function memberScopedArgs(): array
+    {
+        return ['author_profile_id'];
+    }
+
     public function __construct()
     {
         parent::__construct(
@@ -58,13 +68,14 @@ class BxDolAIToolCmtsAdd extends BxDolAITool
 
     public function __invoke(string $module, int $content_id, string $comment_text, ?int $parent_comment_id = null, ?int $author_profile_id = null): array
     {
-        if ($author_profile_id) {
-            $GLOBALS['glForceCurrentProfileId'] = $author_profile_id;
-        }
+        $iPrevious = $this->actAs((int)$author_profile_id);
 
         $a = [];
         $o = BxDolCmts::getObjectInstance($module, $content_id);
-        if ($o) {
+        if ($o && ($aError = $this->memberCmtsError($o, 'post'))) {
+            $a = $aError;
+        }
+        elseif ($o) {
             $aData = [
                 'sys' => $module,
                 'id' => $content_id,
@@ -83,7 +94,7 @@ class BxDolAIToolCmtsAdd extends BxDolAITool
             $a = ['msg' => '_sys_txt_not_found', 'code' => 404];
         }
 
-        $GLOBALS['glForceCurrentProfileId'] = 0;
+        $this->endActingAs($iPrevious);
 
         return $a;
     }

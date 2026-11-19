@@ -6045,6 +6045,16 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 ('sys_studio_agents_connectors', 'independent', 'add', '_sys_api_tokens_btn_add', '', 0, 0, 1, 10),
 ('sys_studio_agents_connectors', 'single', 'delete', '_sys_api_tokens_btn_revoke', 'remove', 1, 1, 1, 20);
 
+-- GRID: Agents MCP tools, which agent tools the MCP server gives to operators (`mcp`) and to every member (`mcp_members`)
+INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `responsive`, `show_total_count`, `override_class_name`, `override_class_file`) VALUES
+('sys_studio_agents_mcp_tools', 'Sql', 'SELECT * FROM `sys_agents_tools` WHERE `type` NOT IN (''chat_buttons'', ''chat_title'', ''chat_artifact_save'', ''chat_goal_reached'', ''prompt_feedback'') ', 'sys_agents_tools', 'id', 'id', '', '', 50, NULL, 'start', '', 'title,type', '', 'like', '', '', 128, 1, 0, 'BxTemplStudioAgentsMcpTools', '');
+
+INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `hidden_on`, `order`) VALUES
+('sys_studio_agents_mcp_tools', 'title', '_Title', '40%', 0, 0, '', '', 10),
+('sys_studio_agents_mcp_tools', 'type', '_adm_form_txt_fields_type', '20%', 0, 0, '', '', 20),
+('sys_studio_agents_mcp_tools', 'mcp', '_sys_agents_mcp_txt_operators', '20%', 0, 0, '', '', 30),
+('sys_studio_agents_mcp_tools', 'mcp_members', '_sys_agents_mcp_txt_members', '20%', 0, 0, '', '', 40);
+
 -- --------------------------------------------------------
 
 
@@ -7380,6 +7390,8 @@ CREATE TABLE IF NOT EXISTS `sys_agents_tools` (
   `duplicate` tinyint(4) NOT NULL DEFAULT 1,
   `changed` int(11) NOT NULL DEFAULT 0,
   `active` tinyint(4) NOT NULL DEFAULT 0,
+  `mcp` tinyint(4) NOT NULL DEFAULT 0,
+  `mcp_members` tinyint(4) NOT NULL DEFAULT 0,
   `class_name` varchar(255) NOT NULL DEFAULT '',
   `class_file` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
@@ -7416,6 +7428,11 @@ INSERT INTO `sys_agents_tools` (`type`, `title`, `docs`, `params`, `params_user`
 ('mockup_upsert', 'Mockup upsert', 'Save a NEO mockup JSON tree (view/row/text/image/icon/button) onto a get_mockup_block service page block. The tree is stored in sys_pages_blocks_data and rendered by the NEO app as a mockup block. Add a "get_mockup_block" service block (system / get_mockup_block / TemplServices) to the page first. Do not use MySQL Write for mockups.', '{}', NULL, 0, 0, 1, 'BxDolAIToolMockup', ''),
 ('splash_update', 'Splash update', 'Read or change the guest splash of Studio > Designer > Splash: the switch and code of the site and of each app (web, iOS, Android). Refuses scripts, frames and inline event handlers. Each change is snapshotted into sys_agents_sql_log, so MySQL Undo rolls it back.', '{}', NULL, 0, 0, 1, 'BxDolAIToolSplash', ''),
 ('agent_create', 'Agent create', 'Create or update a Studio agent (sys_agents_agents). Do not use mysql_write on that table. action=catalog|create|update. Never ask for numeric profile_id — catalog.profile_buttons as chat_buttons, then profile=Name or profile_new=Name; create without a profile is refused. preset=comment_reply for comment-reply alert agents.', '{}', NULL, 0, 0, 1, 'BxDolAIToolAgentCreate', '');
+
+-- The MCP server (/api/mcp, BxDolMcpServer): `mcp` gives a tool to operators, `mcp_members` to every member, which
+-- only a tool made for it can be (BxDolAITool::isMemberSafe()). Studio > Agents > Connectors switches them.
+-- Operators start with the tools the operator agent has.
+UPDATE `sys_agents_tools` SET `mcp` = 1 WHERE `type` IN ('content_structure', 'content_search', 'content_get', 'comments_get', 'mysql_schema', 'mysql_select', 'mysql_write_safe', 'mysql_undo', 'agent_create', 'mockup_upsert', 'splash_update');
 
 CREATE TABLE IF NOT EXISTS `sys_agents_chat_history` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,

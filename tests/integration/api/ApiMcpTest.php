@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\Group;
  * Personal access tokens and the MCP server over real HTTP (PHP's built-in server in front of
  * api_mcp.php and api_v2.php): a token signs in to API v2 and to /api/mcp as its account, a
  * revoked or expired one does not, a member gets the API v2 operations as tools and an operator
- * also the operator agent's tools.
+ * also the agent tools switched on for operators.
  */
 #[Group('integration')]
 class ApiMcpTest extends ApiV2TestCase
@@ -160,8 +160,9 @@ class ApiMcpTest extends ApiV2TestCase
 
     public function testOperatorGetsOperatorTools()
     {
-        if (!(new BxDolAiQuery())->getAgentByName(BxDolMcpServer::OPERATOR_AGENT))
-            $this->markTestSkipped('The site has no operator agent.');
+        $aSelect = BxDolDb::getInstance()->getRow("SELECT `active`, `mcp` FROM `sys_agents_tools` WHERE `type` = 'mysql_select' ORDER BY `id` LIMIT 1");
+        if (empty($aSelect['active']) || empty($aSelect['mcp']))
+            $this->markTestSkipped('mysql_select is not given to operators on this site.');
 
         $oAccount = BxDolProfile::getInstance($this->adminProfileIdOtherThan([]))->getAccountObject();
         list(, $sToken) = $this->personalToken($oAccount);

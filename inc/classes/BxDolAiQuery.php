@@ -221,10 +221,26 @@ class BxDolAiQuery extends BxDolDb
         return call_user_func_array([$this, $aMethod['name']], $aMethod['params']);
     }
 
-    public function getAgentByName(string $sName): array|false
+    /**
+     * Active tools the MCP server gives: to operators ('mcp') or to every member ('mcp_members'), oldest first.
+     */
+    public function getMcpTools(string $sFlag): array
     {
-        $a = $this->getRow("SELECT * FROM `sys_agents_agents` WHERE `name` = :name LIMIT 1", ['name' => $sName]);
-        return is_array($a) && $a ? $a : false;
+        if (!in_array($sFlag, ['mcp', 'mcp_members'], true))
+            return [];
+
+        return $this->getAll("SELECT * FROM `sys_agents_tools` WHERE `active` = 1 AND `" . $sFlag . "` = 1 ORDER BY `id` ASC");
+    }
+
+    /**
+     * Switch a tool's MCP flag ('mcp' or 'mcp_members').
+     */
+    public function setToolMcpFlag(int $iId, string $sFlag, bool $bOn): bool
+    {
+        if (!in_array($sFlag, ['mcp', 'mcp_members'], true))
+            return false;
+
+        return $this->query("UPDATE `sys_agents_tools` SET `" . $sFlag . "` = :on WHERE `id` = :id", ['on' => $bOn ? 1 : 0, 'id' => $iId]) !== false;
     }
 
     public function getAgentById(int $iId): mixed

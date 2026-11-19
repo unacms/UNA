@@ -14,6 +14,16 @@ use NeuronAI\Tools\ObjectProperty;
 
 class BxDolAIToolContentUpdate extends BxDolAITool
 {
+    public static function isMemberSafe(): bool
+    {
+        return true;
+    }
+
+    public static function memberScopedArgs(): array
+    {
+        return ['profile_id'];
+    }
+
     public function __construct()
     {
         parent::__construct(
@@ -60,13 +70,14 @@ class BxDolAIToolContentUpdate extends BxDolAITool
 
     public function __invoke(string $module, int $content_id, array $data, int $profile_id): array
     {
-        if ($profile_id) {
-            $GLOBALS['glForceCurrentProfileId'] = $profile_id;
-        }
+        if (($aError = $this->memberContentError($module, $content_id, 'edit')))
+            return $aError;
+
+        $iPrevious = $this->actAs($profile_id);
 
         $a = bx_srv('system', 'update', [$module, $content_id, $this->convertArrayToKeyValue($data)], 'TemplServiceContent');
 
-        $GLOBALS['glForceCurrentProfileId'] = 0;
+        $this->endActingAs($iPrevious);
 
         return $a;
     }

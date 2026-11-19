@@ -83,6 +83,27 @@ class BxDolMcpServerTest extends \PHPUnit\Framework\TestCase
             $this->assertTrue(BxDolMcpServer::isOperatorToolType($sType), $sType);
     }
 
+    public function testMemberSafeTools()
+    {
+        foreach (['BxDolAIToolContentStructure', 'BxDolAIToolContentSearch', 'BxDolAIToolContentGet', 'BxDolAIToolContentAdd', 'BxDolAIToolContentUpdate', 'BxDolAIToolContentDelete', 'BxDolAIToolCmtsGet', 'BxDolAIToolCmtsAdd', 'BxDolAIToolCmtsUpdate', 'BxDolAIToolCmtsDelete'] as $sClass)
+            $this->assertTrue($sClass::isMemberSafe(), $sClass);
+        foreach (['BxDolAIToolMysqlWrite', 'BxDolAIToolMysqlUndo', 'BxDolAIToolAgentCreate', 'BxDolAIToolSplash', 'BxDolAIToolMockup', 'BxDolAIToolEmailSend', 'BxDolAIToolCmtsGetSingle'] as $sClass)
+            $this->assertFalse($sClass::isMemberSafe(), $sClass);
+
+        // who acts is the member's, never an argument
+        $this->assertSame(['profile_id'], BxDolAIToolContentAdd::memberScopedArgs());
+        $this->assertSame(['profile_id'], BxDolAIToolContentUpdate::memberScopedArgs());
+        $this->assertSame(['author_profile_id'], BxDolAIToolCmtsAdd::memberScopedArgs());
+        $this->assertSame([], BxDolAIToolContentGet::memberScopedArgs());
+    }
+
+    public function testMemberScopeIsOffByDefault()
+    {
+        $this->assertSame(0, BxDolAITool::getMemberScope());
+        BxDolAITool::setMemberScope(-5);
+        $this->assertSame(0, BxDolAITool::getMemberScope());
+    }
+
     public function testToolErrorShape()
     {
         $a = BxDolMcpServer::toolError('Nope', ['code' => 'forbidden']);

@@ -20,18 +20,17 @@
  * - every API v2 operation (BxDolApiV2Router), named by its operationId and run through
  *   BxDolApiV2Router::dispatch() with its rate limit and its checks: what any member may do with
  *   their own content. Uploads and streamed answers are left out;
- * - for an operator (isAdmin()), also the tools of the `una_operator` agent (Studio > Agents), as
- *   that agent has them: BxDolAiAgentTools::resolveIds(), without the ones that only make sense in
- *   its chat. Each call is logged.
+ * - the agent tools (sys_agents_tools) switched on in Studio > Agents > Connectors: for every member
+ *   those with `mcp_members`, which only a tool made for it can have (BxDolAITool::isMemberSafe()):
+ *   it then runs in the member's scope (BxDolAITool::setMemberScope()), acting as the member with
+ *   the site's permission checks; for an operator (isAdmin()) also those with `mcp`, which act on
+ *   the whole site, each call logged. Tools that only work in an agent's chat are never given.
  */
 class BxDolMcpServer
 {
     const PROTOCOL_VERSION = '2026-07-28';
     const SERVER_NAME = 'una';
     const SERVER_VERSION = '1.0.0';
-
-    /** The agent whose tools operators get. */
-    const OPERATOR_AGENT = 'una_operator';
 
     /** Largest request body, bytes. */
     const BODY_MAX = 1048576;
@@ -217,7 +216,8 @@ class BxDolMcpServer
     }
 
     /**
-     * The tools of the signed-in account: name => ['tool' => its MCP description, 'kind' => 'api'|'operator', ...].
+     * The tools of the signed-in account: name => ['tool' => its MCP description, 'kind' => 'api'|'operator'|'member', ...].
+     * A name is given once: an API v2 operation first, then an operator's tool, then a member's.
      */
     public function getTools()
     {
@@ -225,8 +225,8 @@ class BxDolMcpServer
             return $this->_aTools;
 
         $aTools = $this->_apiTools();
-        if ($this->isOperator())
-            foreach ($this->_operatorTools() as $sName => $a)
+        foreach ($this->isOperator() ? ['operator', 'member'] : ['member'] as $sKind)
+            foreach ($this->_agentTools($sKind) as $sName => $a)
                 if (!isset($aTools[$sName]))
                     $aTools[$sName] = $a;
 
@@ -240,7 +240,7 @@ class BxDolMcpServer
     public function callTool(array $aTool, array $aArgs)
     {
         try {
-            return $aTool['kind'] === 'operator' ? $this->_callOperatorTool($aTool, $aArgs) : $this->_callApiTool($aTool, $aArgs);
+            return $aTool['kind'] === 'api' ? $this->_callApiTool($aTool, $aArgs) : $this->_callAgentTool($aTool, $aArgs);
         }
         catch (BxDolApiV2Problem $e) {
             $aProblem = $e->toArray();
@@ -248,7 +248,7 @@ class BxDolMcpServer
         }
         catch (Throwable $e) {
             bx_log('sys_agents', 'MCP tool ' . $aTool['tool']['name'] . ' failed: ' . get_class($e) . ': ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine(), BX_LOG_ERR);
-            return self::toolError($aTool['kind'] === 'operator' ? $e->getMessage() : 'Something went wrong on the server');
+            return self::toolError($aTool['kind'] === 'api' ? 'Something went wrong on the server' : $e->getMessage());
         }
     }
 
@@ -269,8 +269,9 @@ class BxDolMcpServer
             'Tools of the community site ' . getParam('site_title') . ' (' . BX_DOL_URL_ROOT . '). They act as the signed-in member, with the permissions that member has on the site.',
             'Most tools are API v2 operations, named by their operationId: path params and query params are arguments of their own, a JSON request body is the `body` argument, and lists are paged with `cursor` (the `next_cursor` of the previous page) and `limit`.',
         ];
+        $a[] = 'Tools with snake_case names (such as content_search or comments_add) are the site\'s agent tools that its operators made available here.';
         if ($this->isOperator())
-            $a[] = 'As an operator you also have the tools of the site\'s operator agent (snake_case names, such as content_search, content_update and mysql_select_query). They can change anything on the site: confirm a change with the person before you make it, and prefer dry_run where a tool has one.';
+            $a[] = 'As an operator you also have operator tools, which act on the whole site (such as mysql_select_query): confirm a change with the person before you make it, and prefer dry_run where a tool has one.';
 
         return implode("\n\n", $a);
     }
@@ -401,44 +402,53 @@ class BxDolMcpServer
         return $a;
     }
 
-    protected function _operatorTools()
+    /**
+     * The agent tools of a kind: 'operator' (switched on for operators, `mcp`) or 'member' (switched on for every
+     * member, `mcp_members`, and made for it). A member's tool leaves out the arguments that name who acts.
+     */
+    protected function _agentTools($sKind)
     {
-        $aAgent = (new BxDolAiQuery())->getAgentByName(self::OPERATOR_AGENT);
-        if (!$aAgent)
-            return [];
+        $bMember = $sKind === 'member';
 
         $aTools = [];
-        foreach (BxDolAiAgentTools::resolveIds($aAgent) as $iId) {
-            $aRow = BxDolAiQuery::getToolObject((int)$iId);
-            if (!$aRow || empty($aRow['active']) || !self::isOperatorToolType((string)$aRow['type']))
+        foreach ((new BxDolAiQuery())->getMcpTools($bMember ? 'mcp_members' : 'mcp') as $aRow) {
+            if (!self::isOperatorToolType((string)$aRow['type']) || ($bMember && !self::isMemberSafeTool($aRow)))
                 continue;
 
             try {
-                $oTool = BxDolAIToolFactory::getToolInstance((int)$iId);
+                $oTool = BxDolAIToolFactory::getToolInstance((int)$aRow['id']);
                 $sName = $oTool->getName();
                 $aSchema = $oTool->getInputSchema();
             }
             catch (Throwable $e) {
-                bx_log('sys_agents', 'MCP: tool ' . $iId . ' could not be loaded: ' . $e->getMessage(), BX_LOG_ERR);
+                bx_log('sys_agents', 'MCP: tool ' . $aRow['id'] . ' could not be loaded: ' . $e->getMessage(), BX_LOG_ERR);
                 continue;
             }
 
             if ($sName === '' || isset($aTools[$sName]))
                 continue;
 
-            $aSchema['required'] = array_values($aSchema['required'] ?? []);
+            $aScoped = $bMember && $oTool instanceof BxDolAITool ? $oTool::memberScopedArgs() : [];
+            $aProperties = is_array($aSchema['properties'] ?? null) ? $aSchema['properties'] : [];
+            foreach ($aScoped as $sArg)
+                unset($aProperties[$sArg]);
+            $aSchema['properties'] = $aProperties ?: new stdClass();
+            $aSchema['required'] = array_values(array_diff($aSchema['required'] ?? [], $aScoped));
+
+            $sTitle = (string)($aRow['title'] ?? $sName);
             $aTools[$sName] = [
-                'kind' => 'operator',
-                'id' => (int)$iId,
+                'kind' => $sKind,
+                'id' => (int)$aRow['id'],
+                'scoped' => $aScoped,
                 'tool' => [
                     'name' => $sName,
-                    'title' => (string)($aRow['title'] ?? $sName),
-                    'description' => trim((string)$oTool->getDescription() . "\n\nOperator tool: acts on the whole site."),
+                    'title' => $sTitle,
+                    'description' => trim((string)$oTool->getDescription() . "\n\n" . ($bMember ? 'Acts as you, with your permissions on the site.' : 'Operator tool: acts on the whole site.')),
                     'inputSchema' => $aSchema,
                     'annotations' => [
-                        'title' => (string)($aRow['title'] ?? $sName),
+                        'title' => $sTitle,
                         'readOnlyHint' => in_array($aRow['type'], ['mysql_schema', 'mysql_select', 'content_structure', 'content_get', 'content_search', 'comments_get', 'comment_get'], true),
-                        'destructiveHint' => true,
+                        'destructiveHint' => !in_array($aRow['type'], ['content_add', 'comments_add'], true),
                         'idempotentHint' => false,
                         'openWorldHint' => in_array($aRow['type'], ['tavily_web_search', 'tavily_extract', 'jina_web_search', 'jina_url_reader'], true),
                     ],
@@ -450,33 +460,63 @@ class BxDolMcpServer
     }
 
     /**
-     * Whether a tool type of the operator agent is one for MCP: not those that only work inside the
-     * agent's chat (its buttons, title, artifacts, goal and feedback on its prompt).
+     * Whether a tool type is one for MCP: not those that only work inside an agent's chat (its buttons, title,
+     * artifacts, goal and feedback on its prompt).
      */
     public static function isOperatorToolType($sType)
     {
         return !str_starts_with($sType, 'chat_') && $sType !== 'prompt_feedback' && !in_array($sType, BxDolAiAgentTools::ALWAYS, true);
     }
 
-    protected function _callOperatorTool(array $aTool, array $aArgs)
+    /**
+     * Whether a row of sys_agents_tools may be given to members: a UNA tool class made for it (BxDolAITool::isMemberSafe()).
+     */
+    public static function isMemberSafeTool(array $aRow)
     {
+        $sClass = (string)($aRow['class_name'] ?? '');
+        if ($sClass === '')
+            return false;
+
+        if (!empty($aRow['class_file']) && is_file(BX_DIRECTORY_PATH_ROOT . $aRow['class_file']))
+            require_once(BX_DIRECTORY_PATH_ROOT . $aRow['class_file']);
+
+        return class_exists($sClass) && is_subclass_of($sClass, 'BxDolAITool') && $sClass::isMemberSafe();
+    }
+
+    protected function _callAgentTool(array $aTool, array $aArgs)
+    {
+        $bOperator = $aTool['kind'] === 'operator';
+
         // checked again: the list of tools may be older than a change of the account's role
-        if (!$this->isOperator())
+        if ($bOperator && !$this->isOperator())
             return self::toolError(_t('_sys_txt_access_denied'));
 
-        bx_log('sys_agents', 'MCP operator tool ' . $aTool['tool']['name'] . ' by profile ' . $this->_oAuth->getProfileId() . ': ' . json_encode($aArgs, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE), BX_LOG_INFO);
+        if ($bOperator)
+            bx_log('sys_agents', 'MCP operator tool ' . $aTool['tool']['name'] . ' by profile ' . $this->_oAuth->getProfileId() . ': ' . json_encode($aArgs, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE), BX_LOG_INFO);
 
-        $oTool = clone BxDolAIToolFactory::getToolInstance($aTool['id']);
-        $oTool->setInputs($aArgs);
-        $oTool->execute();
+        // a member acts as themselves, whatever the arguments say
+        foreach ($aTool['scoped'] ?? [] as $sArg)
+            $aArgs[$sArg] = $this->_oAuth->getProfileId();
 
-        $mResult = $oTool->getResult();
+        BxDolAITool::setMemberScope($bOperator ? 0 : $this->_oAuth->getProfileId());
+        try {
+            $oTool = clone BxDolAIToolFactory::getToolInstance($aTool['id']);
+            $oTool->setInputs($aArgs);
+            $oTool->execute();
+            $mResult = $oTool->getResult();
+        }
+        finally {
+            BxDolAITool::setMemberScope(0);
+        }
+
         if ($mResult instanceof NeuronAI\Tools\ToolOutput)
             return ['content' => [['type' => 'text', 'text' => $mResult->getText()]], 'isError' => $mResult->isError()];
 
         $sResult = (string)$mResult;
-        $a = ['content' => [['type' => 'text', 'text' => $sResult]], 'isError' => false];
         $m = json_decode($sResult, true);
+        // the tools answer a refusal as {"code": 403, ...}
+        $bError = is_array($m) && isset($m['code']) && is_numeric($m['code']) && (int)$m['code'] >= 400;
+        $a = ['content' => [['type' => 'text', 'text' => $sResult]], 'isError' => $bError];
         if (is_array($m) && $m && !array_is_list($m))
             $a['structuredContent'] = $m;
         return $a;

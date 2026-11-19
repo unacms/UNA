@@ -12,6 +12,11 @@ use NeuronAI\Tools\ToolProperty;
 
 class BxDolAIToolCmtsUpdate extends BxDolAITool
 {
+    public static function isMemberSafe(): bool
+    {
+        return true;
+    }
+
     public function __construct()
     {
         parent::__construct(
@@ -54,7 +59,10 @@ class BxDolAIToolCmtsUpdate extends BxDolAITool
     {
         $a = [];
         $o = BxDolCmts::getObjectInstance($module, $content_id);
-        if ($o) {
+        if ($o && ($aError = $this->memberCmtsError($o, 'edit', $comment_id))) {
+            $a = $aError;
+        }
+        elseif ($o) {
             $a = $o->edit(['cmt_text' => $comment_text], $comment_id);
             unset($a['content']);
         }

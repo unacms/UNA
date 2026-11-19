@@ -116,8 +116,8 @@ class BxBaseStudioAgents extends BxDolStudioAgents
     }
 
     /**
-     * The operator's own personal access tokens for AI assistants (the MCP server), the same as in
-     * account settings > Connectors: where to connect, and the tokens' grid.
+     * AI assistants (the MCP server): where to connect, the operator's own personal access tokens (the same as in
+     * account settings > Connectors), and which agent tools assistants get, operators' and members'.
      */
     protected function getConnectors()
     {
@@ -128,7 +128,11 @@ class BxBaseStudioAgents extends BxDolStudioAgents
             'txt_mcp_url' => _t('_sys_api_tokens_txt_mcp_url'),
             'txt_copy' => _t('_sys_api_tokens_btn_copy'),
             'mcp_url' => bx_html_attribute(BxDolApiTokens::getMcpUrl()),
+            'txt_tokens' => _t('_sys_agents_connectors_txt_tokens'),
             'grid' => $this->getGrid($this->aGridObjects[BX_DOL_STUDIO_AGENTS_TYPE_CONNECTORS]),
+            'txt_tools' => _t('_sys_agents_connectors_txt_tools'),
+            'txt_tools_info' => _t('_sys_agents_connectors_txt_tools_info'),
+            'grid_tools' => $this->getGrid('sys_studio_agents_mcp_tools'),
         ]);
     }
 

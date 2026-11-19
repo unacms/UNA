@@ -1532,10 +1532,17 @@ The tools act as the token's account, so the site's permission checks decide wha
   the `body` argument, and paged lists take `cursor` and `limit`. A call runs through
   `BxDolApiV2Router::dispatch()`: the operation's auth, rate limit, query and body checks, as for
   an HTTP request. An error is a tool result with `isError` and the problem document.
-- For an operator (`isAdmin()`), also the tools of the `una_operator` agent as that agent has them
-  in Studio > Agents (`BxDolAiAgentTools::resolveIds()`), without those that only work in its
-  chat (`chat_*`, `prompt_feedback`). They act on the whole site; each call is logged to
-  `sys_agents`.
+- Agent tools (`sys_agents_tools`) switched on in Studio > Agents > Connectors, never those that
+  only work in an agent's chat (`chat_*`, `prompt_feedback`), and only while the tool is active:
+  - `mcp`: for operators (`isAdmin()`). They act on the whole site; each call is logged to
+    `sys_agents`.
+  - `mcp_members`: for every member, and only a tool made for it can have it
+    (`BxDolAITool::isMemberSafe()`: the content and comments tools). The call runs in the
+    member's scope (`BxDolAITool::setMemberScope()`): it acts as the member whatever its
+    arguments say (`memberScopedArgs()` are left out of its schema), the module's own checks
+    decide (`checkAllowedView/Add/Edit/Delete`, the comments' `isViewAllowed`, `isPostAllowed`,
+    `isEditAllowed`, `isRemoveAllowed`), and accounts and profiles are refused. Agents never set
+    that scope, so their tools work as before.
 
 ## Rate limits
 
