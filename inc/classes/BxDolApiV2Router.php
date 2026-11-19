@@ -204,6 +204,75 @@ class BxDolApiV2Router
     }
 
     /**
+     * The operation with this operationId, null when there is none.
+     */
+    public function findOperation($sId)
+    {
+        foreach ($this->getOperations() as $aOp)
+            if ($aOp['attr']->id === $sId)
+                return $aOp;
+        return null;
+    }
+
+    /**
+     * Run one operation for a caller that is not an HTTP request to it (the MCP server, BxDolMcpServer),
+     * with the checks run() makes: who may call it, its rate limit, its query params and its JSON body.
+     * The request's own superglobals are not read: what the operation gets is passed here.
+     * @param array $aOp an operation of getOperations()
+     * @param array $aPathParams path param => value
+     * @param array $aQuery query param => string value
+     * @param mixed $mBody the JSON body, decoded; null for an operation that takes none
+     * @return BxDolApiV2Response
+     * @throws BxDolApiV2Problem
+     */
+    public function dispatch(array $aOp, array $aPathParams, array $aQuery, $mBody, BxDolApiV2Auth $oAuth)
+    {
+        $oOp = $aOp['attr'];
+
+        if ($oOp->auth === 'required' && !$oAuth->getProfileId())
+            throw BxDolApiV2Problem::unauthorized();
+
+        if (preg_match_all('/\{([a-z_]+)\}/', $oOp->path, $m))
+            foreach ($m[1] as $sName)
+                if (!isset($aPathParams[$sName]) || !is_string($aPathParams[$sName]) || !preg_match('#^[^/]+$#', $aPathParams[$sName]))
+                    throw BxDolApiV2Problem::validation([['field' => $sName, 'code' => 'required', 'message' => 'Is required']]);
+
+        BxDolApiV2RateLimit::check($oOp, $oAuth);
+
+        if (($aQueryErrors = self::checkQuery($aOp['query'] ?? [], $aQuery)))
+            throw BxDolApiV2Problem::validation($aQueryErrors);
+
+        if ($oOp->body !== null && str_starts_with($oOp->body, 'multipart:'))
+            throw new BxDolApiV2Problem(415, 'unsupported_media_type', 'This operation takes an upload, which only an HTTP request to it can send');
+
+        if ($oOp->body !== null && in_array($oOp->method, ['POST', 'PUT', 'PATCH'], true)) {
+            if ($mBody === null)
+                $mBody = [];
+            $aErrors = (new BxDolApiV2Validator($this->getSchemas()))->validate($mBody, ['$ref' => '#/components/schemas/' . $oOp->body]);
+            if ($aErrors)
+                throw BxDolApiV2Problem::validation($aErrors);
+        }
+        else
+            $mBody = null;
+
+        $oRequest = new BxDolApiV2Request($oOp->method, $aPathParams, $aQuery, $mBody, [], $oAuth);
+        self::_load($aOp['class'], $this->_table()['classes'][$aOp['class']] ?? '');
+        $oEndpoint = new $aOp['class']();
+        $mResult = $oEndpoint->{$aOp['method']}($oRequest);
+
+        return $mResult instanceof BxDolApiV2Response ? $mResult : new BxDolApiV2Response(200, $mResult);
+    }
+
+    /**
+     * A schema with its references to component schemas replaced by what they name; null when one
+     * names nothing or they nest too deep (a schema that refers to itself).
+     */
+    public static function inlineSchema(array $aSchema, array $aSchemas)
+    {
+        return self::_inlined($aSchema, $aSchemas);
+    }
+
+    /**
      * Every operation: [['attr' => BxDolApiV2Operation, 'class' => ..., 'method' => ..., 'regex' => ..., 'params' => ...], ...],
      * literal paths before those with params. No endpoint class is loaded for it when the
      * site's table is kept (_siteTable()).

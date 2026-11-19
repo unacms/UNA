@@ -1472,6 +1472,12 @@ once a minute), a few hundred once after a change.
   from the site's origin (scheme, host and port all the same) or one in `sys_api_origins`.
   Other `Authorization` schemes, such as HTTP Basic in front of a staging site, are ignored.
 - Neither: a guest. `auth: 'required'` operations answer 401.
+- `Authorization: Bearer una_pat_<40 hex>`: a personal access token (`BxDolApiTokens`) that the
+  account made for itself in account settings > Connectors (operators also in Studio > Agents >
+  Connectors). It acts as the account's current profile, like an OAuth token, until it expires
+  (30, 90 or 365 days, or never) or the account revokes it. Only its sha256 is kept
+  (`sys_api_tokens`), so it is shown once; it is used mainly by AI assistants through the MCP
+  server below, and deleting the account deletes its tokens.
 - `PUT /me/active-profile` switches only between profiles of the token's account (403
   otherwise), even for admins, who can switch to anyone's profile on the site.
 
@@ -1510,6 +1516,26 @@ can't prove who it is (RFC 8252 8.6), so it always gets the consent page; confid
 (with a secret) keep the old shortcuts (one profile, or connected before). Sign-out should revoke
 the refresh token (`token_type_hint=refresh_token`) and then the access token at
 `/m/oauth2/revoke`.
+
+## MCP server
+
+`/api/mcp` (`api_mcp.php`, `BxDolMcpServer`) is a Model Context Protocol server (protocol
+`2026-07-28`, the version `tools/` speaks too) for AI assistants: one JSON-RPC message per POST,
+answered as JSON; a notification gets 202. It needs API v2 on and a token: a personal access
+token or an OAuth one with the `api` scope (401 with `WWW-Authenticate` otherwise; the session
+cookie is not taken). It answers `server/discover`, `tools/list`, `tools/call` and `ping`.
+
+The tools act as the token's account, so the site's permission checks decide what they may do:
+
+- Every API v2 operation is a tool named by its operationId (`getMe`, `getProfile`, ...), except
+  uploads and streamed answers. Path and query params are arguments of their own, a JSON body is
+  the `body` argument, and paged lists take `cursor` and `limit`. A call runs through
+  `BxDolApiV2Router::dispatch()`: the operation's auth, rate limit, query and body checks, as for
+  an HTTP request. An error is a tool result with `isError` and the problem document.
+- For an operator (`isAdmin()`), also the tools of the `una_operator` agent as that agent has them
+  in Studio > Agents (`BxDolAiAgentTools::resolveIds()`), without those that only work in its
+  chat (`chat_*`, `prompt_feedback`). They act on the whole site; each call is logged to
+  `sys_agents`.
 
 ## Rate limits
 

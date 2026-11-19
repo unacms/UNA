@@ -1,0 +1,106 @@
+<?php
+
+/**
+ * The MCP server's JSON-RPC handling that needs no database: messages it refuses, ping, the
+ * protocol version it speaks, notifications. And what a personal access token looks like.
+ */
+class BxDolMcpServerTest extends \PHPUnit\Framework\TestCase
+{
+    protected function server(): BxDolMcpServer
+    {
+        return new BxDolMcpServer(new BxDolApiV2Auth());
+    }
+
+    protected static function message(string $sMethod, array $aParams = [], $mId = 1, bool $bMeta = true)
+    {
+        if ($bMeta)
+            $aParams['_meta'] = [
+                'io.modelcontextprotocol/protocolVersion' => BxDolMcpServer::PROTOCOL_VERSION,
+                'io.modelcontextprotocol/clientCapabilities' => new stdClass(),
+            ];
+        return json_decode(json_encode(['jsonrpc' => '2.0', 'id' => $mId, 'method' => $sMethod, 'params' => $aParams ?: new stdClass()]));
+    }
+
+    public function testNotAnObjectIsInvalidRequest()
+    {
+        $a = $this->server()->handle([1, 2]);
+        $this->assertSame(BxDolMcpServer::JSONRPC_INVALID_REQUEST, $a['error']['code']);
+        $this->assertNull($a['id']);
+    }
+
+    public function testNotificationGetsNoAnswer()
+    {
+        $this->assertNull($this->server()->handle(json_decode('{"jsonrpc":"2.0","method":"notifications/cancelled","params":{}}')));
+    }
+
+    public function testWrongJsonRpcVersionIsInvalidRequest()
+    {
+        $a = $this->server()->handle(json_decode('{"jsonrpc":"1.0","id":7,"method":"ping"}'));
+        $this->assertSame(BxDolMcpServer::JSONRPC_INVALID_REQUEST, $a['error']['code']);
+        $this->assertSame(7, $a['id']);
+    }
+
+    public function testPingAnswersEmpty()
+    {
+        $a = $this->server()->handle(json_decode('{"jsonrpc":"2.0","id":"p","method":"ping"}'));
+        $this->assertSame('p', $a['id']);
+        $this->assertEquals(new stdClass(), $a['result']);
+    }
+
+    public function testMetaIsRequired()
+    {
+        $a = $this->server()->handle(self::message('tools/list', [], 2, false));
+        $this->assertSame(BxDolMcpServer::JSONRPC_INVALID_PARAMS, $a['error']['code']);
+    }
+
+    public function testOtherProtocolVersionIsRefused()
+    {
+        $o = self::message('tools/list');
+        $o->params->_meta->{'io.modelcontextprotocol/protocolVersion'} = '2024-11-05';
+        $a = $this->server()->handle($o);
+        $this->assertSame(BxDolMcpServer::MCP_UNSUPPORTED_PROTOCOL_VERSION, $a['error']['code']);
+        $this->assertSame([BxDolMcpServer::PROTOCOL_VERSION], $a['error']['data']['supported']);
+        $this->assertSame('2024-11-05', $a['error']['data']['requested']);
+    }
+
+    public function testUnknownMethodIsNotFound()
+    {
+        $a = $this->server()->handle(self::message('resources/list'));
+        $this->assertSame(BxDolMcpServer::JSONRPC_METHOD_NOT_FOUND, $a['error']['code']);
+    }
+
+    public function testToolCallNeedsAName()
+    {
+        $a = $this->server()->handle(self::message('tools/call', ['arguments' => new stdClass()]));
+        $this->assertSame(BxDolMcpServer::JSONRPC_INVALID_PARAMS, $a['error']['code']);
+    }
+
+    public function testChatOnlyToolsAreNotOperatorTools()
+    {
+        foreach (['chat_buttons', 'chat_title', 'chat_artifact_save', 'chat_goal_reached', 'prompt_feedback'] as $sType)
+            $this->assertFalse(BxDolMcpServer::isOperatorToolType($sType), $sType);
+        foreach (['mysql_select', 'mysql_write_safe', 'content_update', 'agent_create'] as $sType)
+            $this->assertTrue(BxDolMcpServer::isOperatorToolType($sType), $sType);
+    }
+
+    public function testToolErrorShape()
+    {
+        $a = BxDolMcpServer::toolError('Nope', ['code' => 'forbidden']);
+        $this->assertTrue($a['isError']);
+        $this->assertSame('Nope', $a['content'][0]['text']);
+        $this->assertSame(['code' => 'forbidden'], $a['structuredContent']);
+        $this->assertArrayNotHasKey('structuredContent', BxDolMcpServer::toolError('Nope'));
+    }
+
+    public function testPersonalTokenFormat()
+    {
+        $this->assertTrue(BxDolApiTokens::isToken(BxDolApiTokens::PREFIX . str_repeat('a1', 20)));
+        // OAuth access tokens are 40 hex characters with no prefix
+        $this->assertFalse(BxDolApiTokens::isToken(str_repeat('a1', 20)));
+        $this->assertFalse(BxDolApiTokens::isToken(BxDolApiTokens::PREFIX . str_repeat('a1', 19)));
+        $this->assertFalse(BxDolApiTokens::isToken(BxDolApiTokens::PREFIX . str_repeat('A1', 20)));
+        $this->assertFalse(BxDolApiTokens::isToken(BxDolApiTokens::PREFIX . str_repeat('a1', 20) . "\n"));
+        $this->assertFalse(BxDolApiTokens::isToken(null));
+        $this->assertSame(64, strlen(BxDolApiTokens::hash('x')));
+    }
+}

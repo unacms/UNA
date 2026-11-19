@@ -221,6 +221,12 @@ class BxDolAiQuery extends BxDolDb
         return call_user_func_array([$this, $aMethod['name']], $aMethod['params']);
     }
 
+    public function getAgentByName(string $sName): array|false
+    {
+        $a = $this->getRow("SELECT * FROM `sys_agents_agents` WHERE `name` = :name LIMIT 1", ['name' => $sName]);
+        return is_array($a) && $a ? $a : false;
+    }
+
     public function getAgentById(int $iId): mixed
     {
         return $this->getAgentsBy(['sample' => 'id', 'id' => $iId]);

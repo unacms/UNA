@@ -37,6 +37,7 @@ class BxBaseStudioAgents extends BxDolStudioAgents
             BX_DOL_STUDIO_AGENTS_TYPE_AI_PROVIDERS => ['icon' => 'mi-agt-providers.svg'],
             BX_DOL_STUDIO_AGENTS_TYPE_TOOLS => ['icon' => 'mi-agt-tools.svg'],
             BX_DOL_STUDIO_AGENTS_TYPE_VECTOR_STORE => ['icon' => 'mi-agt-vector-store.svg'],
+            BX_DOL_STUDIO_AGENTS_TYPE_CONNECTORS => ['icon' => 'mi-agt-connectors.svg'],
             BX_DOL_STUDIO_AGENTS_TYPE_SETTINGS => ['icon' => 'mi-agt-settings.svg']
         ];
 
@@ -111,6 +112,15 @@ class BxBaseStudioAgents extends BxDolStudioAgents
         $this->aPageJsOptions['sPageUrl'] .= 'vector_store';
 
         return $this->getGrid($this->aGridObjects[BX_DOL_STUDIO_AGENTS_TYPE_VECTOR_STORE]);
+    }
+
+    /**
+     * The operator's own personal access tokens for AI clients (the MCP server): the block of
+     * account settings > Connectors.
+     */
+    protected function getConnectors()
+    {
+        return BxDolApiTokens::getBlockCode(BxDolStudioTemplate::getInstance());
     }
 
     protected function getAgents()
