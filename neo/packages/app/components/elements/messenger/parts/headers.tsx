@@ -181,7 +181,7 @@ type MobileListActionsProps = {
  * conversations, and the buttons that start one. The header draws the rest as on every other page: the sidebar or menu
  * button, the section's icon and the title.
  */
-export function MobileListActions({ searchOpen, onSearchToggle, addButtons }: MobileListActionsProps) {
+export function MobileListActions({ searchOpen, onSearchToggle, addButtons }: Readonly<MobileListActionsProps>) {
     const { t } = useTranslation();
     return (
         <Row className="items-center gap-3">
@@ -215,7 +215,7 @@ type MobileListSubHeaderProps = {
  * Small screens, list mode: the row under the header, as a section's tab row (the conductor's): the inbox/direct
  * switcher, and the search field while the search is open.
  */
-export function MobileListSubHeader({ searchOpen, searchValue, onSearchChange, menuItems, menuIndex, onMenuChange }: MobileListSubHeaderProps) {
+export function MobileListSubHeader({ searchOpen, searchValue, onSearchChange, menuItems, menuIndex, onMenuChange }: Readonly<MobileListSubHeaderProps>) {
     const hasMenu = !!menuItems && menuItems.length > 1;
     if (!searchOpen && !hasMenu) return null;
     return (
