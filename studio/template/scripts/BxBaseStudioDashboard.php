@@ -110,12 +110,14 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
     {
         $sApps = $this->getAppsCountText();
         $mixedUpdates = BxDolStudioInstallerUtils::getInstance()->checkUpdates();
-        if(!is_array($mixedUpdates))
+        if(!is_array($mixedUpdates)) {
             return ['status' => 'undef', 'name' => $sApps, 'value' => _t('_adm_dbd_txt_ht_na')];
+        }
 
         $iUpdates = count($mixedUpdates);
-        if($iUpdates > 0)
+        if($iUpdates > 0) {
             return ['status' => 'warn', 'name' => $sApps, 'value' => '<a href="' . BX_DOL_URL_STUDIO . 'store.php?page=updates">' . _t('_adm_dbd_txt_ver_apps_updates', $iUpdates) . '</a>'];
+        }
 
         return ['status' => 'ok', 'name' => $sApps, 'value' => _t('_adm_dbd_txt_ver_up_to_date')];
     }
@@ -789,22 +791,21 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
         $iFollowed = $bBeta ? $iBeta : $iStable; // the channel the site follows
         $iOther = $bBeta ? $iStable : $iBeta;
 
+        // the first that holds: [condition, status, language key, version]; neither latest and nothing newer is a development copy
+        $aChecks = [
+            [$iStable === null && $iBeta === null, 'undef', '_adm_dbd_txt_ver_check_failed', ''],
+            [$iFollowed === 1, 'fail', '_adm_dbd_txt_ver_update_to', $bBeta ? $sBeta : $sStable],
+            [$iStable === 0, 'ok', '_adm_dbd_txt_ver_is_latest_stable', ''],
+            [$iBeta === 0, 'ok', '_adm_dbd_txt_ver_is_latest_beta', ''],
+            // an older beta on the stable channel (or an older stable on the beta one) is behind the other channel's release
+            [$iOther === 1, 'fail', '_adm_dbd_txt_ver_update_to', $bBeta ? $sStable : $sBeta],
+        ];
         $aStatus = ['undef', '_adm_dbd_txt_ver_is_newer', ''];
-        if($iStable === null && $iBeta === null) {
-            $aStatus = ['undef', '_adm_dbd_txt_ver_check_failed', ''];
-        }
-        else if($iFollowed === 1) {
-            $aStatus = ['fail', '_adm_dbd_txt_ver_update_to', $bBeta ? $sBeta : $sStable];
-        }
-        else if($iStable === 0) {
-            $aStatus = ['ok', '_adm_dbd_txt_ver_is_latest_stable', ''];
-        }
-        else if($iBeta === 0) {
-            $aStatus = ['ok', '_adm_dbd_txt_ver_is_latest_beta', ''];
-        }
-        else if($iOther === 1) {
-            // neither latest: an older beta on the stable channel (or an older stable on the beta one) is behind the other channel's release
-            $aStatus = ['fail', '_adm_dbd_txt_ver_update_to', $bBeta ? $sStable : $sBeta];
+        foreach($aChecks as $aCheck) {
+            if($aCheck[0]) {
+                $aStatus = array_slice($aCheck, 1);
+                break;
+            }
         }
 
         return ['status' => $aStatus[0], 'value' => _t($aStatus[1], bx_process_output($aStatus[2]))];
@@ -815,8 +816,9 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
      */
     protected function compareVersion($sRelease, $sInstalled)
     {
-        if($sRelease === '')
+        if($sRelease === '') {
             return null;
+        }
 
         return version_compare(strtolower($sRelease), strtolower($sInstalled));
     }

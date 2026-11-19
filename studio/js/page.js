@@ -350,28 +350,28 @@ function bx_std_loading_btn(oButton, bShow) {
  * Placed without the slide first (data-bx-seg="1"), then on; kept in place when the track resizes (compact phone tabs, fonts loading).
  */
 (function() {
-    if(typeof window.MutationObserver == 'undefined')
+    if(window.MutationObserver === undefined)
         return;
 
     var place = function(oTrack) {
         var oTab = oTrack.querySelector('[aria-selected="true"]');
-        if(!oTab || !oTab.offsetWidth)
+        if(!oTab?.offsetWidth)
             return;
 
         oTrack.style.setProperty('--bx-seg-x', oTab.offsetLeft + 'px');
         oTrack.style.setProperty('--bx-seg-w', oTab.offsetWidth + 'px');
-        if(!oTrack.hasAttribute('data-bx-seg')) {
-            oTrack.setAttribute('data-bx-seg', '1');
+        if(oTrack.dataset.bxSeg === undefined) {
+            oTrack.dataset.bxSeg = '1';
             oTrack.getBoundingClientRect(); // the first place is applied before the slide is turned on
-            oTrack.setAttribute('data-bx-seg', 'on');
+            oTrack.dataset.bxSeg = 'on';
         }
     };
 
-    var oResize = typeof window.ResizeObserver != 'undefined' ? new ResizeObserver(function(aEntries) {
+    var oResize = window.ResizeObserver === undefined ? null : new ResizeObserver(function(aEntries) {
         aEntries.forEach(function(oEntry) {
             place(oEntry.target);
         });
-    }) : null;
+    });
 
     var init = function(oRoot) {
         $(oRoot).find('.bx-std-segmented').addBack('.bx-std-segmented').each(function() {

@@ -81,7 +81,7 @@ div.bx-dbd-block-content {
     line-height: 1.25rem;
 }
 .bx-dbd-version-access .bx-dbd-htools-dot {
-    background: rgb(34 197 94);
+    background-color: rgb(34 197 94);
 }
 .bx-dbd-version-id {
     display: flex;
@@ -492,22 +492,35 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     min-height: 3.25rem;
     padding: 0.5rem 0;
 }
-/* The status dot sits after the row's value (like the chart rows' colour marks), 10px, in the status colour. */
+/* The status dot sits after the row's value (like the chart rows' colour marks; the Updates rows put it before), 10px, in the status
+   colour, lit like a small bead: a white highlight fading down its top half, a 1px darker edge inside it and a 1px drop shadow under it. */
 .bx-dbd-htools-dot {
     flex: none;
     width: 0.625rem;
     height: 0.625rem;
     border-radius: 9999px;
-    background: rgb(161 161 170); /* unknown */
+    background-color: rgb(161 161 170); /* unknown */
+    background-image: linear-gradient(to bottom, rgb(255 255 255 / 0.4), rgb(255 255 255 / 0) 60%);
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.12), 0 1px 1px rgb(0 0 0 / 0.15);
+}
+.dark .bx-dbd-htools-dot {
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.2), 0 1px 1px rgb(0 0 0 / 0.5);
 }
 .bx-dbd-htools-item-ok .bx-dbd-htools-dot {
-    background: rgb(34 197 94);
+    background-color: rgb(34 197 94);
 }
 .bx-dbd-htools-item-warn .bx-dbd-htools-dot {
-    background: rgb(249 115 22);
+    background-color: rgb(249 115 22);
 }
 .bx-dbd-htools-item-fail .bx-dbd-htools-dot {
-    background: rgb(239 68 68);
+    background-color: rgb(239 68 68);
+}
+/* Updates: the dot before the value, 8px from it, as in the line under the version. */
+#bx-dbd-version .bx-dbd-htools-name + .bx-dbd-htools-dot {
+    margin-left: 1rem;
+}
+#bx-dbd-version .bx-dbd-htools-dot + .bx-dbd-htools-value {
+    margin-left: -0.25rem;
 }
 .bx-dbd-htools-name {
     display: flex;
