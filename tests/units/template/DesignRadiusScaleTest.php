@@ -49,7 +49,7 @@ class DesignRadiusScaleTest extends BxDolTestCase
         $this->assertStringContainsString('--bx-radius-max: 2.125rem;', $s);
         $this->assertStringContainsString('--bx-radius-max-row: 1.625rem;', $s);
         $this->assertStringContainsString('--bx-radius-2xl: min(calc(1rem * var(--bx-radius-scale)), var(--bx-radius-max-row));', $s);
-        $this->assertStringContainsString('--bx-radius-3xl: min(calc(1.5rem * var(--bx-radius-scale)), var(--bx-radius-max));', $s);
+        $this->assertStringContainsString('--bx-radius-3xl: min(calc(1.375rem * var(--bx-radius-scale)), var(--bx-radius-max));', $s);
     }
 
     public function testNoFixedRadiusIsLeftInTheSharedStyles(): void

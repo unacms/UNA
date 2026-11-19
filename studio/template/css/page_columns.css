@@ -25,7 +25,7 @@ div.bx-std-page-columns-cnt {
     position: relative;
     -webkit-flex: 0 0 20rem;
     flex: 0 0 20rem;
-    border-radius: var(--bx-radius-3xl); /* 24px, like the blocks and the header bar */
+    border-radius: var(--bx-radius-3xl); /* 22px, like the blocks and the header bar */
 
     width: 20rem;
     height: 100%;

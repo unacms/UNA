@@ -11,7 +11,7 @@ div.bx-std-menu-top-wrp {
 div.bx-std-menu-top-gap {
     margin: 0.75rem 0.75rem 0;
     padding: 1rem;
-    border-radius: var(--bx-radius-3xl); /* 24px = the tiles' 8px corners + the 16px padding, so the bar's corners run parallel with theirs (and with the 16px corners of their 8px hover halo, 8px in); the blocks' corners too */
+    border-radius: var(--bx-radius-3xl); /* 22px, the blocks' corners too; the tiles 16px inside it have 8px corners, their hover halo 8px inside it 16px */
     backdrop-filter: blur(16px);
 }
 div.bx-std-menu-top-wrp .bx-std-menu-top.bx-std-menu-top-center:first-child {
