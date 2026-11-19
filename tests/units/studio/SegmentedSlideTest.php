@@ -21,8 +21,8 @@ class SegmentedSlideTest extends BxDolTestCase
         $this->assertStringContainsString('@apply relative isolate inline-flex p-1 rounded-lg bg-black/5 dark:bg-white/5;', $s, 'The track has the buttons\' corners.');
         $this->assertStringContainsString('h-7 px-3 rounded-[calc(var(--bx-radius-lg)-0.125rem)]', $s, 'Tabs: 28px with 6px corners.');
         $this->assertStringNotContainsString('inset 0 1px 2px', $s, 'The track has no inner fade shadow.');
-        $this->assertStringContainsString("box-shadow: 0 0 0 1px rgb(0 0 0 / 0.05); /* a 1px edge round it", $s, 'Only a 1px inner edge.');
-        $this->assertStringContainsString("    .bx-std .bx-std-segmented[data-bx-seg]:is(.dark *)::after {\n        background-image: linear-gradient(to bottom, rgb(255 255 255 / 0.2), rgb(255 255 255 / 0.1));\n        box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 0 0 1px rgb(0 0 0 / 0.2), 0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.2);", $s, 'The plate is a regular button\'s: gradient, hairlines and drop shadow.');
+        $this->assertStringContainsString("box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.05); /* a 1px edge", $s, 'Only a 1px inner edge.');
+        $this->assertStringContainsString("    .bx-std .bx-std-segmented[data-bx-seg]:is(.dark *)::after {\n        background-image: linear-gradient(to bottom, rgb(255 255 255 / 0.2), rgb(255 255 255 / 0.1));\n        box-shadow: 0 0 0 1px rgb(0 0 0 / 0.2), 0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.2);", $s, 'The plate is a regular button\'s gradient and drop shadow, with a 1px ring round it.');
         $this->assertStringContainsString('[aria-selected="true"]:not(:focus-visible) {', $s, 'A focused selected tab keeps its ring.');
     }
 
