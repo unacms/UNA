@@ -186,6 +186,13 @@
     <string name="_bx_tasks_popup_pv_title_add"><![CDATA[Add Value]]></string>
     <string name="_bx_tasks_popup_pv_title_edit"><![CDATA[Edit Value]]></string>
 
+    <string name="_bx_tasks_form_import_input_source"><![CDATA[Source]]></string>
+    <string name="_bx_tasks_form_import_input_source_linear"><![CDATA[Linear]]></string>
+    <string name="_bx_tasks_form_import_input_destination"><![CDATA[Destination]]></string>
+    <string name="_bx_tasks_form_import_input_params"><![CDATA[Params]]></string>
+    <string name="_bx_tasks_form_import_input_submit"><![CDATA[Import]]></string>
+    <string name="_bx_tasks_form_import_input_err"><![CDATA[This field in essential. Please, fill it in.]]></string>
+
     <string name="_bx_tasks_category_form_entry"><![CDATA[Categories Form]]></string>
     <string name="_bx_tasks_category_display_add"><![CDATA[Add category]]></string>
     <string name="_bx_tasks_category_display_edit"><![CDATA[Edit category]]></string>
@@ -453,6 +460,7 @@
     <string name="_bx_tasks_menu_item_title_mt_submenu_time_administration"><![CDATA[Time administration]]></string>
     <string name="_bx_tasks_menu_title_browse"><![CDATA[Browse Tasks]]></string>
     <string name="_bx_tasks_menu_set_title_browse"><![CDATA[Browse Tasks]]></string>
+    <string name="_bx_tasks_menu_item_title_import"><![CDATA[Import]]></string>
 
     <!-- Grids -->
     <string name="_bx_tasks_grid_filter_item_title_adm_select_one_filter1"><![CDATA[All Statuses]]></string>
@@ -660,6 +668,7 @@
     <string name="_bx_tasks_txt_err_delete_list"><![CDATA[Cannot delete the list.]]></string>
     <string name="_bx_tasks_txt_err_timer_not_found"><![CDATA[Timer wasn't found or empty.]]></string>
     <string name="_bx_tasks_txt_msg_perform_action"><![CDATA[The action was performed.]]></string>
+    <string name="_bx_tasks_txt_msg_schedule_action"><![CDATA[The action was scheduled.]]></string>
     <string name="_bx_tasks_txt_msg_status_hidden"><![CDATA[This task was hidden.]]></string>
     <string name="_bx_tasks_txt_msg_status_pending"><![CDATA[This task is pending approval.]]></string>
     <string name="_bx_tasks_txt_msg_confirm_tasklist_deletion"><![CDATA[You will delete all tasks that are contained in this tasklist. Are you sure?]]></string>

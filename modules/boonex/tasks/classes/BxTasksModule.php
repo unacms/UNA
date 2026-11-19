@@ -35,11 +35,47 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
             $CNF['FIELD_ALLOW_COMMENTS']
         ));
     }
-	
+
     /**
     * Action methods
     */
-	
+    public function actionImportAction($sAction)
+    {
+        $aResults = [];
+
+        switch($sAction) {
+            case 'get_params':
+                $sSource = '';
+                if(!($sSource = bx_get('source')) || !($sSource = bx_process_input($sSource)) || !in_array($sSource, ['linear']))
+                    break;
+
+                $sClass = 'Import' . bx_gen_method_name($sSource);
+                bx_import($sClass, $this->_aModule);
+
+                $sClass = $this->_oConfig->getClassPrefix() . $sClass;
+                $oImport = new $sClass($this);
+
+                $aResults = [
+                    'content' => $oImport->getRequestParams(),
+                    'eval' => $this->_oConfig->getJsObject('import') . '.onChangeSource(oData)'
+                ];
+                break;
+        }
+
+        echoJson($aResults);
+    }
+
+    public function actionAjaxGetDestinations()
+    {
+        $sTerm = bx_get('term');
+        $aResults = bx_srv('system', 'contexts_search', [$sTerm, [
+            'module' => $this->_oConfig->getName(),
+        ]], 'TemplServiceProfiles');
+
+        header('Content-Type:text/javascript; charset=utf-8');
+        echo json_encode($aResults);
+    }
+
     /**
      * Get possible recipients for start conversation form
      */
