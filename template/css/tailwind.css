@@ -2300,17 +2300,17 @@
         @apply bg-gray-200 dark:bg-black;
     }
 
-    /* Active dock item: the sidebar's active item round its tile, the hover halo's layer one step darker: black/10 (white/10 in dark), 0.5rem
+    /* Active dock item: the sidebar's active item round its tile, the hover halo's layer one step darker: black/8 (white/10 in dark), 0.5rem
        round the tile, so neighbours 18px apart keep 2px between their layers. The app is named beside the current-app tile in the
        breadcrumb too, so the layer is not its only cue. */
     .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon::after {
-        @apply bg-black/10 dark:bg-white/10;
+        @apply bg-black/[0.08] dark:bg-white/10;
     }
     /* The same active layer on the launcher button while the launcher is open, and on the menu button while its menu is open
        (bx_menu_popup_inline keeps the button's aria-expanded); both outweigh the hover halo. */
     .bx-std.bx-std-page-launcher .bx-menu-bc-home a:has(> .bx-std-header-btn)::before,
     .bx-std .bx-menu-toolbar .bx-menu-tab-item:has(> [aria-expanded="true"])::before {
-        @apply bg-black/10 dark:bg-white/10;
+        @apply bg-black/[0.08] dark:bg-white/10;
     }
     /* The divider follows the dock items it separates: both are hidden below md. */
     .bx-std .bx-menu-top-center .bx-menu-item-divider {
@@ -2453,7 +2453,7 @@
         @apply duration-300;
     }
     .bx-std-pmen-item.bx-menu-tab-active {
-        @apply bg-black/10 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/10;
+        @apply bg-black/[0.08] hover:bg-black/[0.08] dark:bg-white/10 dark:hover:bg-white/10;
     }
     /* The item background (8px round the tile) plays the role of the header icons' hover halo, and the tile is set apart from it the same
        way: by its own outer hairline (the buttons' pair, below), in both schemes. */

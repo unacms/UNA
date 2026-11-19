@@ -79,8 +79,10 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
         // Latest Stable and Latest Beta each show the newest version on that channel: green when the site has it, orange when it is newer.
         $bUpgradeAvailable = false;
         $aRows = [];
+        $aLatest = [];
         foreach(['stable', 'beta'] as $sChannel) {
             list($sVersion, $bNewer, $bUpgrade) = $this->getVersionChannelInfo($sChannel);
+            $aLatest[$sChannel] = $sVersion;
 
             if($sVersion)
                 $aRows[$sChannel] = ['status' => $bNewer ? 'warn' : 'ok', 'value' => $sVersion];
@@ -104,6 +106,7 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
 
         return [
             'upgrade' => (int)$bUpgradeAvailable,
+            'current' => $this->getVersionStatus(bx_get_ver(), $aLatest['stable'], $aLatest['beta'], getParam('sys_upgrade_channel') == 'beta' ? 'beta' : 'stable'),
             'stable' => $aRows['stable'],
             'beta' => $aRows['beta'],
             'apps' => $aApps
@@ -187,7 +190,6 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
             'js_object' => $sJsObject,
             'domain' => getParam('site_title'),
             'version' => bx_get_ver(),
-            'version_time' => _t('_adm_dbd_txt_ver_applied', bx_time_js($iApplied, BX_FORMAT_DATE_TIME, true)),
             'bx_repeat:toggles' => $aTmplVarsToggles,
             'installed' => bx_time_js($aSysInfo['date'], BX_FORMAT_DATE, true),
             'updated' => bx_time_js($iApplied, BX_FORMAT_DATE, true),
@@ -759,6 +761,51 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
             'js_object' => $this->getPageJsObject(),
             'chart_data' => $sChartData,
         ])];
+    }
+
+    /**
+     * The line under the installed version in the Updates hero: the latest stable or beta release (green), the update that is
+     * available (red; the followed channel's release when it is newer; the other channel's when the installed version is neither
+     * latest release, e.g. an older beta on the stable channel), a version newer than both
+     * releases (a development copy) or a failed check (gray).
+     * @param string $sInstalled the installed version
+     * @param string $sStable latest stable release, '' when the check failed
+     * @param string $sBeta latest beta release, '' when the check failed
+     * @param string $sChannel the channel the site follows: stable or beta
+     * @return array [status: ok / fail / undef, value: the text]
+     */
+    public function getVersionStatus($sInstalled, $sStable, $sBeta, $sChannel)
+    {
+        if($sStable === '' && $sBeta === '')
+            return ['status' => 'undef', 'value' => _t('_adm_dbd_txt_ver_check_failed')];
+
+        $fNewer = function($sVersion) use ($sInstalled) {
+            return $sVersion !== '' && version_compare(strtolower($sVersion), strtolower($sInstalled)) > 0;
+        };
+
+        $fUpdate = function($sVersion) {
+            return ['status' => 'fail', 'value' => _t('_adm_dbd_txt_ver_update_to', bx_process_output($sVersion))];
+        };
+
+        // a newer release on the channel the site follows
+        $sFollowed = $sChannel == 'beta' ? $sBeta : $sStable;
+        if($fNewer($sFollowed))
+            return $fUpdate($sFollowed);
+
+        $fSame = function($sVersion) use ($sInstalled) {
+            return $sVersion !== '' && version_compare(strtolower($sVersion), strtolower($sInstalled)) == 0;
+        };
+        if($fSame($sStable))
+            return ['status' => 'ok', 'value' => _t('_adm_dbd_txt_ver_is_latest_stable')];
+        if($fSame($sBeta))
+            return ['status' => 'ok', 'value' => _t('_adm_dbd_txt_ver_is_latest_beta')];
+
+        // neither latest: an older beta on the stable channel (or an older stable on the beta one) is behind the other channel's release
+        $sOther = $sChannel == 'beta' ? $sStable : $sBeta;
+        if($fNewer($sOther))
+            return $fUpdate($sOther);
+
+        return ['status' => 'undef', 'value' => _t('_adm_dbd_txt_ver_is_newer')];
     }
 
     /**

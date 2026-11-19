@@ -2,7 +2,7 @@
 
 /**
  * Studio hover halos: the header's buttons, the dock and current-app tiles, and the sidebar (subtab) items all show the same 8px halo round
- * a 36px tile with 8px corners (16px outer corners) in the same neutrals, black/5 on hover and black/10 when active (white/5 and white/10 in
+ * a 36px tile with 8px corners (16px outer corners) in the same neutrals, black/5 on hover and black/8 when active (white/5 and white/10 in
  * dark), set apart from it by a 1px line: the outer of the two hairlines that header buttons and app tiles alike carry.
  */
 class HoverHaloTest extends BxDolTestCase
@@ -49,9 +49,9 @@ class HoverHaloTest extends BxDolTestCase
     {
         $s = self::read('template/css/tailwind.css');
 
-        // the selected app's layer is the halo one step darker, the sidebar's active item: black/10 (white/10 in dark)
-        $this->assertStringContainsString("    .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon::after {\n        @apply bg-black/10 dark:bg-white/10;", $s);
-        $this->assertStringContainsString('@apply bg-black/10 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/10;', $s, 'The sidebar\'s active item, the same neutral.');
+        // the selected app's layer is the halo one step darker, the sidebar's active item: black/8 (white/10 in dark)
+        $this->assertStringContainsString("    .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon::after {\n        @apply bg-black/[0.08] dark:bg-white/10;", $s);
+        $this->assertStringContainsString('@apply bg-black/[0.08] hover:bg-black/[0.08] dark:bg-white/10 dark:hover:bg-white/10;', $s, 'The sidebar\'s active item, the same neutral.');
     }
 
     public function testHeaderIconsLeaveRoomForTwoRings(): void
@@ -146,6 +146,6 @@ class HoverHaloTest extends BxDolTestCase
     public function testLauncherAndOpenMenuButtonsTakeTheActiveLayer(): void
     {
         $sCss = self::read('template/css/tailwind.css');
-        $this->assertSame(1, preg_match('/\n    \.bx-std\.bx-std-page-launcher \.bx-menu-bc-home a:has\(> \.bx-std-header-btn\)::before,\s*\.bx-std \.bx-menu-toolbar \.bx-menu-tab-item:has\(> \[aria-expanded="true"\]\)::before \{\s*@apply bg-black\/10 dark:bg-white\/10;/', $sCss), 'The launcher button on the launcher and the menu button with its menu open take the current dock item\'s layer.');
+        $this->assertSame(1, preg_match('/\n    \.bx-std\.bx-std-page-launcher \.bx-menu-bc-home a:has\(> \.bx-std-header-btn\)::before,\s*\.bx-std \.bx-menu-toolbar \.bx-menu-tab-item:has\(> \[aria-expanded="true"\]\)::before \{\s*@apply bg-black\/\[0\.08\] dark:bg-white\/10;/', $sCss), 'The launcher button on the launcher and the menu button with its menu open take the current dock item\'s layer.');
     }
 }

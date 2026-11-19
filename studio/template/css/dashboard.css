@@ -99,6 +99,7 @@ div.bx-std-block-content .bx-dbd-tile.bx-dbd-tile-lg {
     flex: 1 1 auto;
     min-width: 0;
 }
+/* The version: a block title's text (.bx-std-bcap-text, page.css): 20px semibold gray-900 (gray-100 in dark). */
 .bx-dbd-vi-title {
     overflow: hidden;
     white-space: nowrap;
@@ -106,6 +107,16 @@ div.bx-std-block-content .bx-dbd-tile.bx-dbd-tile-lg {
     font-size: 1.25rem;
     font-weight: 600;
     line-height: 1.75rem;
+    color: rgb(24 24 27);
+}
+.dark .bx-dbd-vi-title {
+    color: rgb(244 244 245);
+}
+/* Under it, the update state: the status rows' dot (green, red, gray) before the text. */
+.bx-dbd-vi-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 .bx-dbd-vi-time {
     font-size: 0.875rem;
@@ -685,7 +696,7 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
 }
 .bx-dbd-users-row[aria-pressed="true"],
 .bx-dbd-users-row[aria-pressed="true"]:hover {
-    background: rgb(0 0 0 / 0.1);
+    background: rgb(0 0 0 / 0.08);
 }
 /* The text of a hovered or picked row, apart from its plate: the plates are translucent tints over the block, not the text's background. */
 .bx-dbd-users-row:hover,
