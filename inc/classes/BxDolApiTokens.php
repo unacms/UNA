@@ -172,13 +172,40 @@ class BxDolApiTokens
     }
 
     /**
-     * The name an MCP client gives the site's server: its host, letters, digits and dashes.
+     * The site's host as a name: letters, digits and dashes (example-com).
+     */
+    public static function getMcpHostName()
+    {
+        $s = preg_replace('/^www\./i', '', (string)parse_url(BX_DOL_URL_ROOT, PHP_URL_HOST));
+        // only ASCII is left after the first replace, so strtolower is safe
+        $s = strtolower(trim(preg_replace('/[^A-Za-z0-9]+/', '-', $s), '-'));
+        return $s !== '' ? $s : 'una';
+    }
+
+    /**
+     * The name a command line client (Claude Code, Codex) gives the site's server, which only takes letters, digits,
+     * dashes and underscores: the site's title then its host (my-community-example-com), the host alone when the
+     * title has no Latin letters or digits.
      */
     public static function getMcpServerName()
     {
-        $s = strtolower((string)parse_url(BX_DOL_URL_ROOT, PHP_URL_HOST));
-        $s = trim(preg_replace('/[^a-z0-9]+/', '-', preg_replace('/^www\./', '', $s)), '-');
-        return $s !== '' ? $s : 'una';
+        $sHost = self::getMcpHostName();
+        // only ASCII is left after the replace, so strtolower is safe
+        $sTitle = strtolower(trim(preg_replace('/[^A-Za-z0-9]+/', '-', strip_tags((string)getParam('site_title'))), '-'));
+        $sName = $sTitle !== '' && $sTitle !== $sHost ? $sTitle . '-' . $sHost : $sHost;
+        return trim(substr($sName, 0, 64), '-');
+    }
+
+    /**
+     * The name an editor (Cursor, VS Code) shows for the site's server: the site's title and its host,
+     * "My Community (example-com)"; the host alone when the site has no title.
+     */
+    public static function getMcpServerTitle()
+    {
+        $sHost = self::getMcpHostName();
+        $sTitle = trim(strip_tags((string)getParam('site_title')));
+        $sTitle = get_mb_substr($sTitle, 0, 60);
+        return $sTitle !== '' ? $sTitle . ' (' . $sHost . ')' : $sHost;
     }
 
     /**
@@ -190,6 +217,7 @@ class BxDolApiTokens
     {
         $sUrl = self::getMcpUrl();
         $sName = self::getMcpServerName();
+        $sTitle = self::getMcpServerTitle();
 
         return [
             'commands' => [
@@ -197,8 +225,8 @@ class BxDolApiTokens
                 'Codex' => 'codex mcp add ' . $sName . ' --url ' . $sUrl . ' && codex mcp login ' . $sName,
             ],
             'links' => [
-                'Cursor' => 'cursor://anysphere.cursor-deeplink/mcp/install?name=' . rawurlencode($sName) . '&config=' . rawurlencode(base64_encode(json_encode(['url' => $sUrl], JSON_UNESCAPED_SLASHES))),
-                'VS Code' => 'vscode:mcp/install?' . rawurlencode(json_encode(['name' => $sName, 'type' => 'http', 'url' => $sUrl], JSON_UNESCAPED_SLASHES)),
+                'Cursor' => 'cursor://anysphere.cursor-deeplink/mcp/install?name=' . rawurlencode($sTitle) . '&config=' . rawurlencode(base64_encode(json_encode(['url' => $sUrl], JSON_UNESCAPED_SLASHES))),
+                'VS Code' => 'vscode:mcp/install?' . rawurlencode(json_encode(['name' => $sTitle, 'type' => 'http', 'url' => $sUrl], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)),
             ],
         ];
     }

@@ -159,8 +159,13 @@ class BxDolMcpServerTest extends \PHPUnit\Framework\TestCase
 
     public function testCommandsAndInstallLinksOfMcpClients()
     {
+        // a command's name: Latin letters, digits and dashes, ending in the host
         $sName = BxDolApiTokens::getMcpServerName();
         $this->assertMatchesRegularExpression('/^[a-z0-9]+(-[a-z0-9]+)*$/', $sName);
+        $this->assertStringEndsWith(BxDolApiTokens::getMcpHostName(), $sName);
+        // an editor's name: the site's title and the host
+        $sTitle = BxDolApiTokens::getMcpServerTitle();
+        $this->assertStringEndsWith(getParam('site_title') !== '' ? '(' . BxDolApiTokens::getMcpHostName() . ')' : BxDolApiTokens::getMcpHostName(), $sTitle);
 
         $sUrl = BxDolApiTokens::getMcpUrl();
         $a = BxDolApiTokens::getMcpClients();
@@ -169,11 +174,11 @@ class BxDolMcpServerTest extends \PHPUnit\Framework\TestCase
 
         parse_str((string)parse_url($a['links']['Cursor'], PHP_URL_QUERY), $aCursor);
         $this->assertStringStartsWith('cursor://anysphere.cursor-deeplink/mcp/install?', $a['links']['Cursor']);
-        $this->assertSame($sName, $aCursor['name']);
+        $this->assertSame($sTitle, $aCursor['name']);
         $this->assertSame(['url' => $sUrl], json_decode(base64_decode($aCursor['config']), true));
 
         $this->assertStringStartsWith('vscode:mcp/install?', $a['links']['VS Code']);
-        $this->assertSame(['name' => $sName, 'type' => 'http', 'url' => $sUrl], json_decode(rawurldecode(substr($a['links']['VS Code'], strlen('vscode:mcp/install?'))), true));
+        $this->assertSame(['name' => $sTitle, 'type' => 'http', 'url' => $sUrl], json_decode(rawurldecode(substr($a['links']['VS Code'], strlen('vscode:mcp/install?'))), true));
     }
 
     public function testToolErrorShape()
