@@ -29,7 +29,7 @@ import { SectionIcon, useSectionIcon } from 'app/ui/molecules/section-icon';
 import { useIsTabSlideCopy } from 'app/context/tab-route-override';
 import MenuTop from 'app/components/nav/menu-top';
 import { resolveHeaderLayout } from 'app/lib/header-layout';
-import { AppSidebarOpenButton, useAppSidebarHasLogo } from 'app/ui/molecules/sidebar/app-sidebar';
+import { AppSidebarOpenButton } from 'app/ui/molecules/sidebar/app-sidebar';
 import { isPageCoverShown, isPageCoverHiddenOn } from 'app/lib/page-cover';
 
 const DEFAULT_CONTENT_PINNED_FIXED =
@@ -281,9 +281,7 @@ export function usePageHeaderBase(pageData) {
     // Guests (and unconfirmed members on a locked site) have no bottom tab bar on phones and
     // tablets, so the logo is their way home there; members see it on Home and on desktop.
     const hasTabBar = !!currentUser && !(appSetting('layout', 'lock_unconfirmed') && !currentUser?.confirmed);
-    // Native: a sidebar that shows the logo (app-sidebar) takes it from the header.
-    const sidebarHasLogo = useAppSidebarHasLogo();
-    const isShowLogo = (isDesktop || !hasTabBar || isHome) && !sidebarHasLogo;
+    const isShowLogo = isDesktop || !hasTabBar || isHome;
     // The page title follows the page's cover for this viewer (Studio → Pages → page → Cover); a
     // page that passes `title` always shows it, one that draws its own heading sets
     // `showTitle={false}` (the splash, login and create-account pages are known from the page data,
@@ -600,8 +598,9 @@ export const PageHeaderBody = memo(({
         <>
                 <View className={' ' + appSetting('layout', 'header', 'content_left')}>
                     <Row className='min-w-0 shrink items-center gap-3'>
-                        {/* The Application layout's sidebar as a drawer (the web below `xl`, a phone); nothing where there is none. */}
-                        <AppSidebarOpenButton />
+                        {/* The start of the header. Native: Menu, which opens the drawer, on a tab's first page; a page
+                            pushed over it has Back there. Web: the Application layout's sidebar as a drawer, below `xl`. */}
+                        {(isWeb || !isPushedScreen) && <AppSidebarOpenButton />}
                         {canShowBackButton && (
                             <BackButtonElement />
                         )}

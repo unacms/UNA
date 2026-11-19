@@ -1,5 +1,5 @@
 import type { ComponentProps } from 'react';
-import { Button, HStack, Host, Image, List, Section, Spacer, Text } from '@expo/ui/swift-ui';
+import { Button, HStack, Host, Image, List, Picker, Section, Spacer, Text } from '@expo/ui/swift-ui';
 import {
     accessibilityLabel,
     background,
@@ -15,24 +15,29 @@ import {
     listSectionSpacing,
     listStyle,
     padding,
+    pickerStyle,
     resizable,
     scrollContentBackground,
     shapes,
+    tag,
+    tint,
 } from '@expo/ui/swift-ui/modifiers';
 import { useNativeTokenColor } from 'app/design/controls/neo-button/native-style-colors';
 import { getNativeIcon } from 'app/design/controls/neo-button/neo-button-expoui';
 import { appSetting } from 'app/lib/util';
 import { useMenuData } from 'app/context/menu-data';
 import AppSidebarRows from './app-sidebar-rows';
-import { menuRows, type SidebarRowEntry } from './app-sidebar-entries';
-import type { AppSidebarListProps } from './app-sidebar.types';
+import { useAppSidebarExpanded, setAppSidebarExpanded } from 'app/context/app-sidebar';
+import { DRAWER_SECTION_OPEN_MAX, drawerRows, type PanelSection, type SidebarRowEntry } from './app-sidebar-entries';
+import type { AppSidebarListProps, DrawerPref } from './app-sidebar.types';
 
 type SFSymbol = NonNullable<ComponentProps<typeof Image>['systemName']>;
 
 /**
- * iOS: the sidebar's menus as one SwiftUI List in the sidebar style (`expo_ui.sidebar`; false = the app's own rows,
+ * iOS: the drawer's menus as one SwiftUI List in the sidebar style (`expo_ui.sidebar`; false = the app's own rows,
  * app-sidebar-rows). One Host for the whole list: native scrolling and Dynamic Type, and no Host per row. A submenu
- * is a Section, so each can load on its own.
+ * is a Section, so each can load on its own; the Preferences are the last one, each a Picker that opens the system
+ * menu of its options.
  */
 const ICON_PT = 20;
 const ROW_RADIUS = 12;
@@ -50,7 +55,7 @@ function RowIcon({ icon, color }: Readonly<{ icon: string; color?: string }>) {
         : <Image systemName={name as SFSymbol} size={ICON_PT - 2} color={color} modifiers={[box]} />;
 }
 
-function Row({ row, narrow, colors, onNavigate }: Readonly<{ row: SidebarRowEntry; narrow?: boolean; colors: Colors; onNavigate: (href: string) => void }>) {
+function Row({ row, colors, onNavigate }: Readonly<{ row: SidebarRowEntry; colors: Colors; onNavigate: (href: string) => void }>) {
     const ink = row.current ? colors.ink : colors.label;
     const shape = shapes.roundedRectangle({ cornerRadius: ROW_RADIUS, roundedCornerStyle: 'continuous' });
     return (
@@ -67,20 +72,18 @@ function Row({ row, narrow, colors, onNavigate }: Readonly<{ row: SidebarRowEntr
             <HStack
                 spacing={12}
                 modifiers={[
-                    padding({ horizontal: narrow ? 0 : 10, vertical: 8 }),
-                    frame({ maxWidth: Infinity, alignment: narrow ? 'center' : 'leading' }),
+                    padding({ horizontal: 10, vertical: 8 }),
+                    frame({ maxWidth: Infinity, alignment: 'leading' }),
                     ...(row.current && colors.fill ? [background(colors.fill, shape)] : []),
                     contentShape(shape),
                 ]}
             >
-                <RowIcon icon={row.icon} color={ink} />
-                {narrow ? null : (
-                    <Text modifiers={[font({ size: 16, weight: 'medium' }), lineLimit(1), ...(ink ? [foregroundStyle(ink)] : [])]}>
-                        {row.title}
-                    </Text>
-                )}
-                {narrow ? null : <Spacer />}
-                {!narrow && row.count ? (
+                {row.icon ? <RowIcon icon={row.icon} color={ink} /> : null}
+                <Text modifiers={[font({ size: 16, weight: 'medium' }), lineLimit(1), ...(ink ? [foregroundStyle(ink)] : [])]}>
+                    {row.title}
+                </Text>
+                <Spacer />
+                {row.count ? (
                     <Text modifiers={[font({ size: 13, weight: 'medium' }), ...(colors.muted ? [foregroundStyle(colors.muted)] : [])]}>
                         {row.count}
                     </Text>
@@ -90,19 +93,58 @@ function Row({ row, narrow, colors, onNavigate }: Readonly<{ row: SidebarRowEntr
     );
 }
 
-function Menu({ object, url, narrow, colors, onNavigate }: Readonly<{ object: string; colors: Colors } & Omit<AppSidebarListProps, 'panels'>>) {
+/**
+ * A menu of the panel: a section under the panel item's title. With a title it can be closed; a long one starts
+ * closed, and what the viewer chooses stays while the app runs.
+ */
+function Menu({ section, url, colors, onNavigate }: Readonly<{ section: PanelSection; colors: Colors } & Pick<AppSidebarListProps, 'url' | 'onNavigate'>>) {
+    const { object, title } = section;
     const { menuData } = useMenuData(object);
-    const rows = menuRows(object, menuData, url);
+    const chosen = useAppSidebarExpanded(object);
+    const rows = drawerRows(object, menuData, url);
     if (!rows.length) return null;
 
+    const list = rows.map((row) => <Row key={row.key} row={row} colors={colors} onNavigate={onNavigate} />);
+    if (!title) return <Section>{list}</Section>;
+
+    // The page on screen keeps its menu open, so its row shows.
+    const expanded = chosen ?? (rows.length <= DRAWER_SECTION_OPEN_MAX || rows.some((row) => row.current));
     return (
-        <Section>
-            {rows.map((row) => <Row key={row.key} row={row} narrow={narrow} colors={colors} onNavigate={onNavigate} />)}
+        <Section title={title} isExpanded={expanded} onIsExpandedChange={(next) => setAppSidebarExpanded(object, next)}>
+            {list}
         </Section>
     );
 }
 
-function NativeList({ panels, url, narrow, onNavigate }: Readonly<AppSidebarListProps>) {
+/** A preference: its name with the icon of the current choice, and the choice, which opens the options' menu. */
+function Pref({ pref, colors }: Readonly<{ pref: DrawerPref; colors: Colors }>) {
+    return (
+        <Picker
+            selection={pref.value}
+            onSelectionChange={(id) => pref.onSelect(String(id))}
+            label={(
+                <HStack spacing={12}>
+                    <RowIcon icon={pref.icon} color={colors.label} />
+                    <Text modifiers={[font({ size: 16, weight: 'medium' }), lineLimit(1), ...(colors.label ? [foregroundStyle(colors.label)] : [])]}>
+                        {pref.title}
+                    </Text>
+                </HStack>
+            )}
+            modifiers={[
+                pickerStyle('menu'),
+                ...(colors.muted ? [tint(colors.muted)] : []),
+                // The rows' own inset: 8pt to the row's shape, 10pt inside it.
+                listRowInsets({ top: 1, bottom: 1, leading: 18, trailing: 10 }),
+                listRowBackground(CLEAR),
+                listRowSeparator('hidden'),
+            ]}
+        >
+            {pref.options.map((option) => <Text key={option.id} modifiers={[tag(option.id)]}>{option.title}</Text>)}
+        </Picker>
+    );
+}
+
+function NativeList({ panels, prefs, url, onNavigate }: Readonly<AppSidebarListProps>) {
     const colors: Colors = {
         fill: useNativeTokenColor('bg-accent') as string | undefined,
         ink: useNativeTokenColor('text-accent-foreground') as string | undefined,
@@ -113,7 +155,12 @@ function NativeList({ panels, url, narrow, onNavigate }: Readonly<AppSidebarList
     return (
         <Host style={{ flex: 1 }}>
             <List modifiers={[listStyle('sidebar'), scrollContentBackground('hidden'), listSectionSpacing(8)]}>
-                {panels.map((object) => <Menu key={object} object={object} url={url} narrow={narrow} colors={colors} onNavigate={onNavigate} />)}
+                {panels.map((section) => <Menu key={section.object} section={section} url={url} colors={colors} onNavigate={onNavigate} />)}
+                {prefs.length ? (
+                    <Section>
+                        {prefs.map((pref) => <Pref key={pref.key} pref={pref} colors={colors} />)}
+                    </Section>
+                ) : null}
             </List>
         </Host>
     );

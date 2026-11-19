@@ -5,20 +5,16 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { useReduceMotion } from 'app/lib/hooks/use-reduce-motion';
 
 /**
- * The sidebar's place in the window of a native app, around the tabs: a column beside them (`mode` "column"), a
- * drawer over them ("drawer"), or nothing ("none"). The tabs keep their place in the tree in all three, so changing
- * the mode (signing in, turning a tablet's window narrow) never mounts them again.
+ * The drawer's place in the window of a native app, around the tabs: over them while it is open. The tabs keep their
+ * place in the tree whether there is a drawer or not (`enabled`), so signing in or out never mounts them again.
  *
  * The drawer slides in from the leading edge over a scrim. A press on the scrim, a swipe towards the edge and
  * Android's back button close it; while it is open the page behind is hidden from the screen reader. Its content is
  * mounted only while it is open or on its way out.
  */
-type Mode = 'none' | 'column' | 'drawer';
-
 type AppSidebarDrawerProps = {
-    mode: Mode;
+    enabled: boolean;
     open: boolean;
-    /** The column's or the drawer's width. */
     width: number;
     onClose: () => void;
     /** The scrim's name for the screen reader. */
@@ -32,9 +28,9 @@ const DURATION = 250;
 const SCRIM_OPACITY = 0.4;
 const EASING = Easing.bezier(0.32, 0.72, 0, 1);
 
-export default function AppSidebarDrawer({ mode, open, width, onClose, closeLabel, renderSidebar, style, children }: Readonly<AppSidebarDrawerProps>) {
+export default function AppSidebarDrawer({ enabled, open, width, onClose, closeLabel, renderSidebar, style, children }: Readonly<AppSidebarDrawerProps>) {
     const reduceMotion = useReduceMotion();
-    const shown = mode === 'drawer' && open;
+    const shown = enabled && open;
     // 0 closed, 1 open.
     const progress = useSharedValue(0);
     // Mounted from the render that opens it, until the way out ends.
@@ -80,12 +76,10 @@ export default function AppSidebarDrawer({ mode, open, width, onClose, closeLabe
         opacity: progress.get() * SCRIM_OPACITY,
     }));
 
-    const drawerMounted = mode === 'drawer' && mounted;
+    const drawerMounted = enabled && mounted;
 
     return (
         <View style={[styles.root, style]}>
-            {/* The column: before the tabs in the row. The drawer is the same view, lifted over them. */}
-            {mode === 'column' && <View style={{ width }}>{renderSidebar()}</View>}
             <View
                 style={styles.main}
                 accessibilityElementsHidden={shown}
@@ -110,7 +104,7 @@ export default function AppSidebarDrawer({ mode, open, width, onClose, closeLabe
 }
 
 const styles = StyleSheet.create({
-    root: { flex: 1, flexDirection: 'row' },
+    root: { flex: 1 },
     main: { flex: 1 },
     scrim: { backgroundColor: '#000' },
     panel: { position: 'absolute', top: 0, bottom: 0, start: 0 },

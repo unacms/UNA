@@ -14,6 +14,7 @@ import { Platform } from 'react-native'
 import { useRouter } from 'app/lib/hooks/router'
 import { useTranslation } from 'react-i18next'
 import { useMenuData } from 'app/context/menu-data'
+import { hasAppDrawer } from 'app/context/app-sidebar'
 
 // Web: the side of the desktop breakpoint a toolbar item shows on, read from its classes, so its
 // buttons take that tier's style in the server HTML (rendered for desktop) and keep it after
@@ -82,8 +83,10 @@ export default function HeaderElement({ url, uri }) {
                 if (item.una && !currentUser) return inGuestToolbar(item.una)
                 return item.href !== '{messenger}' || inUnaToolbar('notifications-messenger')
             case "account":
-            case "menu_navigation":
                 return true
+            case "menu_navigation":
+                // Native: the drawer has the menu's place (Log In, Sign Up and the links), opened from the header's start.
+                return isWeb || !hasAppDrawer(currentUser)
             default:
                 return false
         }

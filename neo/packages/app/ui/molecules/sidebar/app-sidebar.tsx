@@ -2,52 +2,54 @@ import { useCallback, useEffect, useMemo, type ReactNode } from 'react';
 import { useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { View, Pressable } from 'app/design/view';
+import { Text } from 'app/design/typography';
 import { NeoButton } from 'app/design/controls';
-import { appSetting, isExternalUrl, isIos, isNativeTabsEnabled, openExternalLink, sanitazeUrl } from 'app/lib/util';
+import { appSetting, decodeTextNode, isExternalUrl, isIos, isNativeTabsEnabled, openExternalLink, sanitazeUrl } from 'app/lib/util';
 import { appStatic } from 'app/lib/app-static';
 import { useCurrentUser } from 'app/context/user';
 import { useMenuData } from 'app/context/menu-data';
-import { usePref, setPref } from 'app/context/prefs';
-import { useAppSidebarOpen, setAppSidebarOpen, useAppSidebarLayout, useAppSidebarUrl } from 'app/context/app-sidebar';
+import { hasAppDrawer, useAppSidebarOpen, setAppSidebarOpen, useAppSidebarUrl } from 'app/context/app-sidebar';
 import { useRouter, getWindowSafeAreaInsets } from 'app/lib/hooks/router';
 import { nativeTabPageHref } from 'app/lib/navigation/tab-history';
 import { getSelectedTabKey } from 'app/lib/navigation/tab-path';
 import { findTabPathForUrl } from 'app/components/nav/tabs/tab-menu';
 import { useTabList } from 'app/lib/navigation/tab-bar-menu';
+import { AUTH_BUTTONS, useMenuNavigationEntries } from 'app/components/nav/menu-header-navigation-entries';
+import Profile from 'app/ui/molecules/profile/profile';
+import ProfileSwitcher from 'app/components/elements/profile-switcher';
 import AppSidebarDrawer from './app-sidebar-drawer';
 import AppSidebarList from './app-sidebar-list';
-import { comparable, panelSubmenus } from './app-sidebar-entries';
+import { comparable, panelSections } from './app-sidebar-entries';
+import { useDrawerPrefs } from './app-sidebar-prefs';
 import type { AppSidebarProps } from './app-sidebar.types';
 
 /**
- * UNA's Application layout in the native apps: the same sidebar as on the web (app-sidebar.web.tsx), the same menu
- * (`sys_site_panel`) and the same three states.
- *   - a phone: a drawer over the page, its header and the tab bar, opened by AppSidebarOpenButton in the header and
- *     closed by a press outside, a swipe or a row;
- *   - a tablet (768pt and wider): the window's left column from top to bottom, expanded (16rem) or narrow (4rem, icons
- *     only); the choice is the web's `sidebarNarrow` (app/context/prefs).
- * The shell is the app's own (app-sidebar-drawer): Expo UI has no drawer on either platform, and a native split view
- * cannot hold the tabs (SwiftUI's NavigationSplitView hosts React views, not view controllers, and turns into a
- * push stack on a phone; expo-router's SplitView is iOS only and cannot change its columns after it mounts; the tab
- * bar's own sidebar lists only the tabs). What is inside is native where it can be: on iOS the menus are one SwiftUI
- * List (app-sidebar-list.ios.tsx).
+ * The native apps' drawer: what is the viewer's own, apart from the pages the tab bar leads to. It opens from the
+ * Menu button at the start of the header of a tab's first page (a page pushed over it has Back there), over the
+ * page, its header and the tab bar, on a phone and on a tablet alike, and closes on a press outside, a swipe or a
+ * choice. `native.drawer` turns it off for members or for guests.
+ *   - a member: their profile and the profile switcher, then UNA's site panel menu (`sys_site_panel`), each item of
+ *     which is another menu: the profile's own pages, what they follow, the modules, the account's menu (Settings,
+ *     Log out), the footer's links;
+ *   - a guest: Log In and Sign Up, then the same menu as guests get it (the modules, the footer's links);
+ *   - then the Preferences: language, theme, sounds.
+ * Studio's Navigation decides the menus: an item "Active (for App)" there is a section here.
  *
- * The sidebar stands outside the tabs, so it does not know the page: the focused page reports its layout and URL
- * (components/layout.js → app/context/app-sidebar). Members only, as on the web.
+ * The web has the same panel as the Application layout's sidebar (app-sidebar.web.tsx), without the items marked for
+ * the drawer: its header and footer have them.
+ *
+ * The shell is the app's own (app-sidebar-drawer): Expo UI has no drawer on either platform, and a native split view
+ * cannot hold the tabs. What is inside is native where it can be: on iOS the menus are one SwiftUI List
+ * (app-sidebar-list.ios.tsx).
+ *
+ * The drawer stands outside the tabs, so it does not know the page: the focused page reports its URL
+ * (components/layout.js → app/context/app-sidebar).
  */
-const WIDTH_EXPANDED = 256;
-const WIDTH_NARROW = 64;
-const WIDTH_DRAWER_MAX = 304;
-const TABLET_MIN_WIDTH = 768;
+const WIDTH_MAX = 320;
+/** What stays of the page beside the open drawer: room to press outside it. */
+const PAGE_EDGE = 56;
 
 const closeSidebar = () => setAppSidebarOpen(false);
-
-function useSidebarState() {
-    const { currentUser } = useCurrentUser();
-    const layout = useAppSidebarLayout();
-    const { width } = useWindowDimensions();
-    return { enabled: !!currentUser && layout === 'application', permanent: width >= TABLET_MIN_WIDTH, width };
-}
 
 /** Opens a row's page the way a link in a page does: in the tab that owns it, or pushed onto the current one. */
 function useSidebarNavigate() {
@@ -71,85 +73,117 @@ function useSidebarNavigate() {
     }, [router, currentUser, tabList]);
 }
 
-function SidebarContent({ permanent }: Readonly<{ permanent: boolean }>) {
+/** A member's head: the avatar and the name open the profile; the button beside them lists the account's profiles. */
+function MemberHead({ onNavigate }: Readonly<{ onNavigate: (href: string) => void }>) {
     const { t } = useTranslation();
-    const narrow = usePref('sidebarNarrow') && permanent;
+    const { currentUser } = useCurrentUser();
+    if (!currentUser) return null;
+    const name = String(decodeTextNode(currentUser.display_name) || '');
+
+    // In line with the list under it: the rows' icons start 32pt in, their counters end 24pt from the edge.
+    return (
+        <View className="flex-none flex-row items-center gap-2 ps-8 pe-6 pt-3 pb-2">
+            <Pressable
+                onPress={() => currentUser.url && onNavigate(String(currentUser.url))}
+                accessibilityRole="link"
+                accessibilityLabel={`${name}. ${t('View profile')}`}
+                className="min-h-11 min-w-0 flex-1 flex-row items-center gap-3 rounded-xl active:opacity-70"
+            >
+                <View pointerEvents="none">
+                    <Profile {...currentUser} url_avatar={currentUser.avatar} url="" showLinks={false} displayType="unit_wo_info" displaySize="md" />
+                </View>
+                <View className="min-w-0 flex-1">
+                    <Text numberOfLines={1} className="text-base leading-5 font-semibold text-foreground">{name}</Text>
+                    <Text numberOfLines={1} className="text-sm leading-5 text-muted-foreground">{t('View profile')}</Text>
+                </View>
+            </Pressable>
+            {/* Nothing where the account has one profile and can add none (ProfileSwitcher). */}
+            <ProfileSwitcher hideTitle accessibilityLabel={t('Switch profile')} className="u-neo-btn-link">
+                <NeoButton borderShape="circle" image="ArrowLeftRight" style="bordered" controlSize="regular" interactive />
+            </ProfileSwitcher>
+        </View>
+    );
+}
+
+/** A guest's head: the logo, then Log In and Sign Up, the site menu's buttons (or the app's own two without them). */
+function GuestHead({ onNavigate }: Readonly<{ onNavigate: (href: string) => void }>) {
+    const { t } = useTranslation();
+    const { buttons } = useMenuNavigationEntries();
+    const shown = buttons.length ? buttons : AUTH_BUTTONS;
+
+    return (
+        <View className="flex-none gap-3 ps-8 pe-6 pt-3 pb-2">
+            <Pressable
+                onPress={() => onNavigate('/home')}
+                accessibilityRole="link"
+                accessibilityLabel={t('Home')}
+                className="min-h-11 min-w-11 items-start justify-center self-start"
+            >
+                {appStatic('logo', undefined)}
+            </Pressable>
+            {/* As tall as its buttons: a native button reports its height a commit late, and the list would start under them. */}
+            <View className="h-11 flex-row gap-2">
+                {shown.map(({ key, item, primary }) => (
+                    <View key={key} className="min-w-0 flex-1">
+                        <NeoButton
+                            label={t(String(item.title ?? ''))}
+                            accessibilityLabel={t(String(item.title ?? ''))}
+                            style={primary ? 'borderedProminent' : 'bordered'}
+                            controlSize="regular"
+                            width="fill"
+                            onPress={() => onNavigate(String(item.link ?? ''))}
+                        />
+                    </View>
+                ))}
+            </View>
+        </View>
+    );
+}
+
+function SidebarContent() {
+    const { currentUser } = useCurrentUser();
     const url = useAppSidebarUrl();
     const { menuData } = useMenuData(appSetting('menus', 'objects', 'panel') || 'sys_site_panel');
-    const panels = useMemo(() => panelSubmenus(menuData), [menuData]);
+    const panels = useMemo(() => panelSections(menuData, true), [menuData]);
+    const prefs = useDrawerPrefs();
     const navigate = useSidebarNavigate();
     // The shell is as tall as the window, except under iOS's JS tab bar, where the app's root keeps the safe area.
     const insets = isIos && !isNativeTabsEnabled() ? { top: 0, bottom: 0 } : getWindowSafeAreaInsets();
 
-    const onToggle = () => {
-        if (permanent) setPref('sidebarNarrow', !narrow);
-        else setAppSidebarOpen(false);
-    };
-
     return (
-        <View
-            className={`flex-1 bg-card ${permanent ? 'border-e border-border' : ''}`}
-            style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
-        >
-            <View className={`h-16 flex-none flex-row items-center gap-2 ${narrow ? 'justify-center' : 'justify-between ps-4 pe-3'}`}>
-                {!narrow && (
-                    <Pressable
-                        onPress={() => navigate('/home')}
-                        accessibilityRole="link"
-                        accessibilityLabel={t('Home')}
-                        className="min-h-11 min-w-11 shrink items-start justify-center"
-                    >
-                        {appStatic('logo', undefined)}
-                    </Pressable>
-                )}
-                {/* What a press does: panel-left-close while the sidebar is open, panel-left-open while it is narrow. */}
-                <NeoButton
-                    borderShape="circle"
-                    image={narrow ? 'PanelLeftOpen' : 'PanelLeftClose'}
-                    style="bordered"
-                    controlSize="regular"
-                    accessibilityLabel={t('Main menu')}
-                    sound={false}
-                    onPress={onToggle}
-                />
-            </View>
-            <AppSidebarList panels={panels} url={comparable(url)} narrow={narrow} onNavigate={navigate} />
+        <View className="flex-1 bg-card" style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
+            {currentUser ? <MemberHead onNavigate={navigate} /> : <GuestHead onNavigate={navigate} />}
+            <AppSidebarList panels={panels} prefs={prefs} url={comparable(url)} onNavigate={navigate} />
         </View>
     );
 }
 
 /**
- * Around the tabs (apps/expo/app/(tabs)/_layout.js): the drawer or the column, and the tabs beside or under it.
- * `style` is the tabs' host style, which makes the shell as tall as the window.
+ * Around the tabs (apps/expo/app/(tabs)/_layout.js): the tabs, and the drawer over them. `style` is the tabs' host
+ * style, which makes the shell as tall as the window.
  */
 export function AppSidebarShell({ children, style }: Readonly<{ children: ReactNode; style?: StyleProp<ViewStyle> }>) {
     const { t } = useTranslation();
-    const { enabled, permanent, width } = useSidebarState();
+    const { currentUser } = useCurrentUser();
+    const { width } = useWindowDimensions();
+    const enabled = hasAppDrawer(currentUser);
     const open = useAppSidebarOpen();
-    const narrow = usePref('sidebarNarrow');
     const url = useAppSidebarUrl();
-    const column = enabled && permanent;
-    const drawer = enabled && !permanent;
+    const viewer = currentUser ? currentUser.id : null;
 
-    // Going to another page closes the drawer; so does losing the sidebar or getting the column.
+    // Going to another page closes the drawer; so does signing in or out and switching the profile.
     useEffect(() => {
         setAppSidebarOpen(false);
-    }, [url, drawer]);
-
-    let sidebarWidth = Math.min(WIDTH_DRAWER_MAX, width - 56);
-    if (column) sidebarWidth = narrow ? WIDTH_NARROW : WIDTH_EXPANDED;
-    let mode: 'none' | 'column' | 'drawer' = 'none';
-    if (column) mode = 'column';
-    else if (drawer) mode = 'drawer';
+    }, [url, viewer, enabled]);
 
     return (
         <AppSidebarDrawer
-            mode={mode}
+            enabled={enabled}
             open={open}
-            width={sidebarWidth}
+            width={Math.min(WIDTH_MAX, width - PAGE_EDGE)}
             onClose={closeSidebar}
             closeLabel={t('Close')}
-            renderSidebar={() => <SidebarContent permanent={permanent} />}
+            renderSidebar={() => <SidebarContent />}
             style={style}
         >
             {children}
@@ -157,16 +191,16 @@ export function AppSidebarShell({ children, style }: Readonly<{ children: ReactN
     );
 }
 
-/** In the header of a phone: opens the sidebar as a drawer. Nothing where there is no sidebar or it is a column. */
+/** In the header: opens the drawer. Nothing where the viewer has none. */
 export function AppSidebarOpenButton() {
     const { t } = useTranslation();
-    const { enabled, permanent } = useSidebarState();
-    if (!enabled || permanent) return null;
+    const { currentUser } = useCurrentUser();
+    if (!hasAppDrawer(currentUser)) return null;
 
     return (
         <NeoButton
             borderShape="circle"
-            image="PanelLeftOpen"
+            image="Menu"
             style="glass"
             controlSize="regular"
             accessibilityLabel={t('Main menu')}
@@ -174,16 +208,6 @@ export function AppSidebarOpenButton() {
             onPress={() => setAppSidebarOpen(true)}
         />
     );
-}
-
-/**
- * The sidebar shows the logo, so the header does not: the drawer of a phone and the expanded column, as on the web;
- * the narrow column has none, so the header keeps its own.
- */
-export function useAppSidebarHasLogo() {
-    const { enabled, permanent } = useSidebarState();
-    const narrow = usePref('sidebarNarrow');
-    return enabled && !(permanent && narrow);
 }
 
 /** The web's place for the sidebar, inside the page (components/layout.web.js). Native has AppSidebarShell. */

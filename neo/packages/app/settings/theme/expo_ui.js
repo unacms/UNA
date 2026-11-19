@@ -164,8 +164,8 @@ export const settingsExpoUi = {
         // `mode="popup"`) list their rows natively; other content is hosted as is.
         // false = the JS sheet (@gorhom/bottom-sheet), as on Android.
         bottom_sheet: true,
-        // The Application layout's sidebar (ui/molecules/sidebar/app-sidebar): iOS lists its menus as one SwiftUI
-        // List in the sidebar style. false = the app's own rows, as on Android.
+        // The drawer (ui/molecules/sidebar/app-sidebar): iOS lists its menus as one SwiftUI List in the sidebar
+        // style. false = the app's own rows, as on Android.
         sidebar: true,
         tabs: {
             // More opens a native sheet listing every route (tab routes,

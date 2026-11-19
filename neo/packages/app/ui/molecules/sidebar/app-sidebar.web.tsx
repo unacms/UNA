@@ -12,7 +12,7 @@ import { useMenuData } from 'app/context/menu-data';
 import { usePref, setPref } from 'app/context/prefs';
 import { useAppSidebarOpen, setAppSidebarOpen } from 'app/context/app-sidebar';
 import type { AppSidebarProps } from './app-sidebar.types';
-import { comparable, rowHref, type SidebarMenuItem } from './app-sidebar-entries';
+import { comparable, panelSubmenus, rowHref, type SidebarMenuItem } from './app-sidebar-entries';
 
 /**
  * UNA's Application layout on the web: the sidebar is the page's left column from top to bottom, and the header and
@@ -91,7 +91,8 @@ export default function AppSidebar({ pageData }: Readonly<AppSidebarProps>) {
     const toggleRef = useRef<HTMLDivElement>(null);
     const backdropRef = useRef<HTMLDivElement>(null);
     const { menuData } = useMenuData(appSetting('menus', 'objects', 'panel') || 'sys_site_panel');
-    const panels: MenuItem[] = Array.isArray(menuData?.items) ? menuData.items : [];
+    // Without the items marked for the native apps' drawer: the header and the footer have what they list.
+    const panels = panelSubmenus(menuData);
     const url = comparable(pageData?.url);
 
     // The stored choice, once the prefs are read: the script set the same before the first paint.
@@ -170,9 +171,7 @@ export default function AppSidebar({ pageData }: Readonly<AppSidebarProps>) {
                     </View>
                 </View>
                 <View className="neo-app-sidebar-body min-h-0 flex-1 px-2 pb-2">
-                    {panels.map((panel, index) => (typeof panel?.submenu === 'string' && panel.submenu
-                        ? <SidebarMenu key={`${panel.submenu}-${index}`} object={panel.submenu} url={url} />
-                        : null))}
+                    {panels.map((object) => <SidebarMenu key={object} object={object} url={url} />)}
                 </View>
             </aside>
             <div ref={backdropRef} className="neo-app-sidebar-backdrop" aria-hidden="true" data-open={open ? 'true' : undefined} />
@@ -190,9 +189,4 @@ export function AppSidebarOpenButton() {
             <NeoButton borderShape="circle" image="PanelLeftOpen" style="glass" controlSize="regular" accessibilityLabel={t('Main menu')} sound={false} onPress={() => setAppSidebarOpen(!open)} />
         </View>
     );
-}
-
-/** Native only (app-sidebar.tsx): the web hides the header's logo with styles (`neo-header-logo`). */
-export function useAppSidebarHasLogo() {
-    return false;
 }
