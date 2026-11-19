@@ -2509,7 +2509,7 @@
     }
 
     /* Tiles and buttons in the header and the sidebar (36px), app icons and buttons alike: a tight two-layer shadow that stays inside the bar,
-       black/5 in light mode and black/50 in dark, where a faint one does not show. The md stack above is sized for the 72px launcher tiles and
+       black/5 in light mode and black/20 in dark, where a fainter one does not show. The md stack above is sized for the 72px launcher tiles and
        lands mostly below the bar, where it reads as no shadow at all. */
     .bx-std .bx-std-menu-top .bx-icon-tile,
     .bx-std .bx-menu-toolbar .bx-menu-tab-item,
@@ -2531,7 +2531,7 @@
     .bx-std .bx-std-pmen-ic-icon:is(.dark *),
     .bx-std .bx-btn:is(.dark *),
     .bx-std .bx-btn-group:is(.dark *) {
-        --tw-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.5);
+        --tw-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.2);
     }
     /* Pressed: the whole button at 50% and no drop shadow; its hairlines stay. No scale, so its size never changes. After the shadow rules
        above, which it overrides at the same specificity. */
