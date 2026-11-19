@@ -869,6 +869,9 @@ class BxOAuthModule extends BxDolModule
         if (!is_array($aBody))
             return array('error' => 'invalid_client_metadata', 'error_description' => 'Send the client metadata as a JSON object');
 
+        // the redirect rules are the authorize controller's, loaded only for the OAuth server (initOAuth)
+        bx_import('AuthorizeController', 'bx_oauth');
+
         $aUris = $aBody['redirect_uris'] ?? null;
         if (!is_array($aUris) || !$aUris || count($aUris) > 5 || !array_is_list($aUris))
             return array('error' => 'invalid_redirect_uri', 'error_description' => 'redirect_uris is a list of one to five URLs');

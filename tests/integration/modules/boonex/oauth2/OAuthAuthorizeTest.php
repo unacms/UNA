@@ -410,6 +410,8 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
         $this->apiOn();
         list($oAccount, $sCookie) = $this->signedInUser();
         $iProfile = (int)$oAccount->getProfilesIds()[0];
+        // the module's file declares its storage class (BxOAuthUserCredentialsStorage) too
+        BxDolModule::getInstance('bx_oauth');
 
         // registrations it refuses
         foreach ([
@@ -486,6 +488,8 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
 
     public function testMcpRedirects(): void
     {
+        bx_import('AuthorizeController', 'bx_oauth');
+
         $this->assertTrue(BxOAuthAuthorizeController::isMcpRedirectUri('https://claude.ai/api/mcp/auth_callback'));
         $this->assertTrue(BxOAuthAuthorizeController::isMcpRedirectUri('http://localhost:33418/callback'));
         $this->assertTrue(BxOAuthAuthorizeController::isMcpRedirectUri('http://127.0.0.1/cb'));
