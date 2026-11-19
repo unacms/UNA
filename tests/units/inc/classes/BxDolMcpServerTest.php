@@ -47,10 +47,38 @@ class BxDolMcpServerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(new stdClass(), $a['result']);
     }
 
-    public function testMetaIsRequired()
+    public function testClientsOfEarlierVersionsOpenWithInitialize()
     {
-        $a = $this->server()->handle(self::message('tools/list', [], 2, false));
+        // the version asked for when the server speaks it, else the latest it speaks with initialize
+        $a = $this->server()->handle(self::message('initialize', ['protocolVersion' => '2025-06-18', 'capabilities' => new stdClass(), 'clientInfo' => ['name' => 'x', 'version' => '1']], 3, false));
+        $this->assertSame('2025-06-18', $a['result']['protocolVersion']);
+        $this->assertArrayHasKey('tools', $a['result']['capabilities']);
+        $this->assertSame(BxDolMcpServer::SERVER_NAME, $a['result']['serverInfo']['name']);
+
+        $a = $this->server()->handle(self::message('initialize', ['protocolVersion' => '2024-01-01'], 4, false));
+        $this->assertSame(BxDolMcpServer::INITIALIZE_VERSIONS[0], $a['result']['protocolVersion']);
+    }
+
+    public function testARequestWithoutMetaNeedsAVersionTheServerSpeaks()
+    {
+        $a = $this->server()->handle(self::message('tools/list', [], 5, false), '2024-01-01');
+        $this->assertSame(BxDolMcpServer::MCP_UNSUPPORTED_PROTOCOL_VERSION, $a['error']['code']);
+
+        // with one it speaks, the request goes on: a call with no name is refused as a call
+        $a = $this->server()->handle(self::message('tools/call', [], 6, false), '2025-11-25');
         $this->assertSame(BxDolMcpServer::JSONRPC_INVALID_PARAMS, $a['error']['code']);
+    }
+
+    public function testDiscoveryDocuments()
+    {
+        $this->assertSame(BX_DOL_URL_ROOT . 'api/mcp', BxDolMcpServer::getResourceUrl());
+        $this->assertStringContainsString('resource_metadata="' . BX_DOL_URL_ROOT . '.well-known/oauth-protected-resource"', BxDolMcpServer::wwwAuthenticate());
+        $this->assertStringEndsWith(', error="invalid_token"', BxDolMcpServer::wwwAuthenticate('invalid_token'));
+
+        $a = BxDolMcpServer::getProtectedResourceMetadata();
+        $this->assertSame(BxDolMcpServer::getResourceUrl(), $a['resource']);
+        $this->assertSame([BxDolApiV2Auth::SCOPE], $a['scopes_supported']);
+        $this->assertSame(BxDolMcpServer::getIssuer() !== null ? [BxDolMcpServer::getIssuer()] : [], $a['authorization_servers']);
     }
 
     public function testOtherProtocolVersionIsRefused()

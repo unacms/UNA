@@ -66,7 +66,44 @@ class ApiMcpTest extends ApiV2TestCase
     {
         $a = $this->mcpRequest('POST', ['Content-Type' => 'application/json'], '{"jsonrpc":"2.0","id":1,"method":"ping"}');
         $this->assertSame(401, $a['status']);
-        $this->assertStringContainsString('Bearer', (string)BxDolTestPhpServer::header($a, 'www-authenticate'));
+        // where a client finds how to sign in (RFC 9728)
+        $this->assertStringContainsString('resource_metadata="' . BX_DOL_URL_ROOT . '.well-known/oauth-protected-resource"', (string)BxDolTestPhpServer::header($a, 'www-authenticate'));
+    }
+
+    public function testDiscoveryDocuments()
+    {
+        // the rewrite of /.well-known/... ends here (.htaccess)
+        $this->mcpRequest('GET');
+        $a = $this->raw('GET', '/api_mcp.php?_wk=protected-resource');
+        $this->assertSame(200, $a['status'], $a['body']);
+        $this->assertSame(BxDolMcpServer::getResourceUrl(), $a['json']['resource']);
+
+        $a = $this->raw('GET', '/api_mcp.php?_wk=authorization-server');
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_oauth')) {
+            $this->assertSame(404, $a['status']);
+            return;
+        }
+        $this->assertSame(200, $a['status'], $a['body']);
+        $this->assertSame(rtrim(BX_DOL_URL_ROOT, '/'), $a['json']['issuer']);
+        $this->assertStringEndsWith('/register', $a['json']['registration_endpoint']);
+        $this->assertSame(['S256'], $a['json']['code_challenge_methods_supported']);
+    }
+
+    public function testAClientOfAnEarlierVersionOpensWithInitialize()
+    {
+        list(, $sToken) = $this->personalToken($this->bxAccount('user'));
+
+        $a = $this->mcpRequest('POST', ['Authorization' => 'Bearer ' . $sToken, 'Content-Type' => 'application/json', 'Accept' => 'application/json, text/event-stream'], json_encode(['jsonrpc' => '2.0', 'id' => 1, 'method' => 'initialize', 'params' => ['protocolVersion' => '2025-06-18', 'capabilities' => new stdClass(), 'clientInfo' => ['name' => 'test', 'version' => '1']]]));
+        $this->assertSame(200, $a['status'], $a['body']);
+        $this->assertSame('2025-06-18', $a['json']['result']['protocolVersion']);
+
+        $a = $this->mcpRequest('POST', ['Authorization' => 'Bearer ' . $sToken, 'Content-Type' => 'application/json', 'MCP-Protocol-Version' => '2025-06-18'], json_encode(['jsonrpc' => '2.0', 'method' => 'notifications/initialized']));
+        $this->assertSame(202, $a['status']);
+
+        $a = $this->mcpRequest('POST', ['Authorization' => 'Bearer ' . $sToken, 'Content-Type' => 'application/json', 'MCP-Protocol-Version' => '2025-06-18'], json_encode(['jsonrpc' => '2.0', 'id' => 2, 'method' => 'tools/list']));
+        $this->assertSame(200, $a['status'], $a['body']);
+        $this->assertContains('getMe', array_column($a['json']['result']['tools'], 'name'));
+        $this->assertArrayNotHasKey('ttlMs', $a['json']['result']);
     }
 
     public function testGetIs405()

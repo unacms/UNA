@@ -48,6 +48,26 @@ class BxOAuthUserCredentialsStorage extends OAuth2\Storage\Pdo implements OAuth2
         return self::getNativeAppClient($sClientId) !== false;
     }
 
+    /**
+     * Ids of the clients MCP clients (Claude, ChatGPT and the like) register for themselves (RFC 7591,
+     * BxOAuthModule::actionRegister). They are public clients of the MCP server (BxDolMcpServer) with the rules of
+     * native apps (PKCE with S256, the `api` scope) and redirects matched exactly, a loopback one on any port.
+     */
+    const MCP_CLIENT_PREFIX = 'mcp-';
+
+    /**
+     * Whether a client is one an MCP client registered: an id of MCP_CLIENT_PREFIX with a row and no secret, while
+     * API v2 is on.
+     */
+    public function isMcpClient($sClientId)
+    {
+        if (!is_string($sClientId) || !str_starts_with($sClientId, self::MCP_CLIENT_PREFIX) || !getParam(BxDolApiV2Router::OPTION_ENABLE))
+            return false;
+
+        $aClient = parent::getClientDetails($sClientId);
+        return is_array($aClient) && empty($aClient['client_secret']);
+    }
+
     // what the library asks about a client: a native app's is answered here, any other by the library, as it always was
 
     public function getClientDetails($sClientId)
@@ -453,7 +473,7 @@ class BxOAuthModule extends BxDolModule
             case 'error':
                 // a native app waits for its redirect, so with a valid redirect_uri the error goes back to it
                 // (RFC 6749 4.1.2.1); every other client gets the site's error page, as before
-                if ($oResponse->isRedirection() && $this->_isNativeAppRequest()) {
+                if ($oResponse->isRedirection() && ($this->_isNativeAppRequest() || $this->_isMcpClientRequest())) {
                     $oResponse->send();
                     break;
                 }
@@ -553,14 +573,17 @@ class BxOAuthModule extends BxDolModule
         // A native app: what it asks for, and where the browser goes back to, so a person can tell an app on
         // this computer from a website. Its PKCE challenge is in the form too: the form's POST is validated as
         // the request was. Every other client gets the page as it always was.
+        // An MCP client (Claude, ChatGPT ...) that registered itself gets the same: it names itself, so where the
+        // browser goes back to is what a person can check.
         $bNativeApp = $this->_isNativeAppRequest();
+        $bMcpClient = $this->_isMcpClientRequest();
         $aNativeApp = $bNativeApp ? BxOAuthUserCredentialsStorage::getNativeAppClient($aParams['client_id']) : false;
         $sTitle = $aNativeApp ? $aNativeApp['title'] : $this->_oDb->getClientTitle($aParams['client_id']);
-        $sRedirectHost = $bNativeApp ? $this->_getRedirectHost($aParams) : '';
+        $sRedirectHost = $bNativeApp || $bMcpClient ? $this->_getRedirectHost($aParams) : '';
 
-        // what the `api` scope of a native app allows, one line each
+        // what the `api` scope of a native app or an MCP client allows, one line each
         $aScopes = array();
-        if ($bNativeApp && in_array('api', preg_split('/[\s,]+/', $aParams['scope'], -1, PREG_SPLIT_NO_EMPTY), true)) {
+        if (($bNativeApp || $bMcpClient) && in_array('api', preg_split('/[\s,]+/', $aParams['scope'], -1, PREG_SPLIT_NO_EMPTY), true)) {
             $sIcon = BxTemplFunctions::getInstance()->getIconAsHtml('check');
             foreach (array('read', 'write', 'messages', 'profiles') as $sScope)
                 $aScopes[] = array('icon' => $sIcon, 'title' => _t('_bx_oauth_authorize_can_' . $sScope));
@@ -714,6 +737,15 @@ class BxOAuthModule extends BxDolModule
     }
 
     /**
+     * Whether the authorize request validated last names a client an MCP client registered.
+     */
+    protected function _isMcpClientRequest()
+    {
+        $oController = $this->_oServer->getAuthorizeController();
+        return method_exists($oController, 'isMcpClientRequest') && $oController->isMcpClientRequest();
+    }
+
+    /**
      * Where the browser goes back to after the consent page: host[:port] of the redirect in the
      * request, or of the registered one when the request has none.
      */
@@ -736,6 +768,226 @@ class BxOAuthModule extends BxDolModule
     {
         $s = $oResponse->getParameter('error_description');
         return htmlspecialchars_adv($s ? $s : _t('_error occured'));
+    }
+
+    /**
+     * Authorization server metadata (RFC 8414) for MCP clients (BxDolMcpServer::serveWellKnown): where they register,
+     * sign a person in and get tokens.
+     * @param string $sIssuer the issuer, the site's URL with no trailing slash
+     */
+    public function serviceGetAuthorizationServerMetadata($sIssuer)
+    {
+        $sBase = BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri();
+
+        return array(
+            'issuer' => (string)$sIssuer,
+            'authorization_endpoint' => $sBase . 'auth',
+            'token_endpoint' => $sBase . 'token',
+            'registration_endpoint' => $sBase . 'register',
+            'revocation_endpoint' => $sBase . 'revoke',
+            'response_types_supported' => array('code'),
+            'grant_types_supported' => array('authorization_code', 'refresh_token'),
+            'code_challenge_methods_supported' => array('S256'),
+            'token_endpoint_auth_methods_supported' => array('none', 'client_secret_post', 'client_secret_basic'),
+            'scopes_supported' => array(BxDolApiV2Auth::SCOPE),
+            'service_documentation' => BX_DOL_URL_ROOT . 'page.php?i=account-settings-connectors',
+        );
+    }
+
+    /**
+     * @page public_api API Public
+     * @section public_api_register /m/oauth2/register
+     *
+     * Dynamic client registration (RFC 7591) for MCP clients such as Claude or ChatGPT: a client registers itself
+     * before it signs a person in, with no one at the site doing anything. It becomes a public client
+     * (BxOAuthUserCredentialsStorage::isMcpClient): PKCE with S256, the `api` scope, its redirects matched exactly.
+     * Only while API v2 is on. A few registrations a minute from an address.
+     *
+     * **HTTP Method:** `POST`, a JSON body: `redirect_uris` (required: https:// or loopback ones), `client_name`,
+     * and when sent `token_endpoint_auth_method` `none`, `grant_types` of `authorization_code` and `refresh_token`,
+     * `response_types` `code`.
+     *
+     * **Response:** 201 with the client (`client_id`, `client_id_issued_at`, `client_name`, `redirect_uris`, ...),
+     * or 400 with `error` `invalid_redirect_uri` or `invalid_client_metadata` and `error_description`.
+     */
+    function actionRegister ()
+    {
+        $aHeaders = array('Access-Control-Allow-Origin' => '*', 'Access-Control-Allow-Headers' => 'Content-Type', 'Access-Control-Allow-Methods' => 'POST');
+        $sMethod = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
+        if ($sMethod === 'OPTIONS')
+            return $this->_jsonAnswer(204, null, $aHeaders);
+        if ($sMethod !== 'POST')
+            return $this->_jsonAnswer(405, array('error' => 'invalid_request', 'error_description' => 'Register with POST'), $aHeaders + array('Allow' => 'POST'));
+        if (!getParam('sys_api_enable') || !getParam(BxDolApiV2Router::OPTION_ENABLE))
+            return $this->_jsonAnswer(404, array('error' => 'not_found', 'error_description' => 'API v2 is off on this site'), $aHeaders);
+
+        $sSubject = BxDolApiV2RateLimit::subject(0);
+        if ($sSubject !== null && ($iWait = BxDolApiV2RateLimit::hit($sSubject, 'mcp_register', self::REGISTER_PER_MINUTE)) > 0)
+            return $this->_jsonAnswer(429, array('error' => 'too_many_requests', 'error_description' => 'Try again in ' . $iWait . ' s'), $aHeaders + array('Retry-After' => (string)$iWait));
+
+        $aBody = json_decode((string)file_get_contents('php://input', false, null, 0, 65536), true, 16);
+        $mixedClient = self::checkRegistration(is_array($aBody) ? $aBody : null);
+        if (isset($mixedClient['error']))
+            return $this->_jsonAnswer(400, $mixedClient, $aHeaders);
+
+        $sClientId = BxOAuthUserCredentialsStorage::MCP_CLIENT_PREFIX . bin2hex(random_bytes(16));
+        $iNow = time();
+        if (!$this->_oDb->addClient(array(
+            'title' => $mixedClient['client_name'],
+            'client_id' => $sClientId,
+            'client_secret' => '',
+            'redirect_uri' => implode(' ', $mixedClient['redirect_uris']),
+            'grant_types' => 'authorization_code,refresh_token',
+            'scope' => BxDolApiV2Auth::SCOPE,
+            'parent_id' => 0,
+            'user_id' => 0,
+        )))
+            return $this->_jsonAnswer(500, array('error' => 'server_error', 'error_description' => 'The client could not be registered'), $aHeaders);
+
+        return $this->_jsonAnswer(201, array(
+            'client_id' => $sClientId,
+            'client_id_issued_at' => $iNow,
+            'client_name' => $mixedClient['client_name'],
+            'redirect_uris' => $mixedClient['redirect_uris'],
+            'grant_types' => array('authorization_code', 'refresh_token'),
+            'response_types' => array('code'),
+            'token_endpoint_auth_method' => 'none',
+            'scope' => BxDolApiV2Auth::SCOPE,
+        ), $aHeaders);
+    }
+
+    /** Registrations a minute from one address (actionRegister). */
+    const REGISTER_PER_MINUTE = 10;
+
+    /**
+     * The client a registration (RFC 7591) asks for, checked: ['client_name' => ..., 'redirect_uris' => [...]], or
+     * ['error' => ..., 'error_description' => ...].
+     * @param array|null $aBody the request's JSON body
+     */
+    public static function checkRegistration($aBody)
+    {
+        if (!is_array($aBody))
+            return array('error' => 'invalid_client_metadata', 'error_description' => 'Send the client metadata as a JSON object');
+
+        $aUris = $aBody['redirect_uris'] ?? null;
+        if (!is_array($aUris) || !$aUris || count($aUris) > 5 || !array_is_list($aUris))
+            return array('error' => 'invalid_redirect_uri', 'error_description' => 'redirect_uris is a list of one to five URLs');
+        foreach ($aUris as $sUri)
+            if (!BxOAuthAuthorizeController::isMcpRedirectUri($sUri))
+                return array('error' => 'invalid_redirect_uri', 'error_description' => 'A redirect URI is https:// or a loopback one (http://127.0.0.1, http://[::1], http://localhost), with no fragment');
+        $aUris = array_values(array_unique($aUris));
+        if (strlen(implode(' ', $aUris)) > 255)
+            return array('error' => 'invalid_redirect_uri', 'error_description' => 'The redirect URIs are too long');
+
+        if (isset($aBody['token_endpoint_auth_method']) && $aBody['token_endpoint_auth_method'] !== 'none')
+            return array('error' => 'invalid_client_metadata', 'error_description' => 'Only public clients register here: token_endpoint_auth_method is none');
+        if (isset($aBody['grant_types']) && (!is_array($aBody['grant_types']) || array_diff($aBody['grant_types'], array('authorization_code', 'refresh_token'))))
+            return array('error' => 'invalid_client_metadata', 'error_description' => 'grant_types are authorization_code and refresh_token');
+        if (isset($aBody['response_types']) && (!is_array($aBody['response_types']) || array_diff($aBody['response_types'], array('code'))))
+            return array('error' => 'invalid_client_metadata', 'error_description' => 'response_types is code');
+
+        $sName = isset($aBody['client_name']) && is_string($aBody['client_name']) ? trim(strip_tags($aBody['client_name'])) : '';
+        if ($sName === '')
+            $sName = (string)parse_url($aUris[0], PHP_URL_HOST);
+        $sName = get_mb_substr($sName, 0, 100);
+
+        return array('client_name' => $sName, 'redirect_uris' => $aUris);
+    }
+
+    /**
+     * The apps (MCP clients, the desktop app and other OAuth clients) the signed-in account connected: their titles
+     * and a button to disconnect each, for account settings > Connectors. Empty for a guest and when there are none.
+     */
+    public function serviceConnectedApps()
+    {
+        $aProfileIds = $this->_getAccountProfileIds();
+        if (!$aProfileIds)
+            return bx_is_api() ? array() : '';
+
+        $aApps = array();
+        foreach ($this->_oDb->getConnectedApps($aProfileIds) as $aRow) {
+            $aNative = BxOAuthUserCredentialsStorage::getNativeAppClient($aRow['client_id']);
+            $aApps[] = array(
+                'client_id' => $aRow['client_id'],
+                'title' => $aNative ? $aNative['title'] : ($aRow['title'] !== null && $aRow['title'] !== '' ? $aRow['title'] : $aRow['client_id']),
+            );
+        }
+
+        if (bx_is_api())
+            return $aApps ? array(bx_api_get_block('msg', _t('_bx_oauth_connected_apps_api', implode(', ', array_column($aApps, 'title'))))) : array();
+
+        if (!$aApps)
+            return '';
+
+        $aRows = array();
+        foreach ($aApps as $aApp)
+            $aRows[] = array(
+                'app_title' => $this->_escapeAttribute($aApp['app_title']),
+                'client_id' => $this->_escapeAttribute($aApp['client_id']),
+                'url' => BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'disconnect',
+                'csrf_token' => $this->_escapeAttribute($this->getAccountToken('disconnect')),
+                'disconnect' => _t('_bx_oauth_connected_apps_disconnect'),
+                'confirm' => bx_js_string(_t('_bx_oauth_connected_apps_confirm', $aApp['title'])),
+            );
+
+        return $this->_oTemplate->parseHtmlByName('connected_apps.html', array(
+            'title' => _t('_bx_oauth_connected_apps'),
+            'info' => _t('_bx_oauth_connected_apps_info'),
+            'bx_repeat:apps' => $aRows,
+        ));
+    }
+
+    /**
+     * Disconnect an app from the signed-in account (POST from serviceConnectedApps): its codes and tokens for the
+     * account's profiles are deleted, so it has to be connected again.
+     */
+    function actionDisconnect ()
+    {
+        $sBack = BX_DOL_URL_ROOT . BxDolPermalinks::getInstance()->permalink('page.php?i=account-settings-connectors');
+
+        $sClientId = bx_get('client_id');
+        $aProfileIds = $this->_getAccountProfileIds();
+        if ('POST' == ($_SERVER['REQUEST_METHOD'] ?? '') && is_string($sClientId) && $sClientId !== '' && $aProfileIds && $this->isAccountTokenValid('disconnect', bx_get('csrf_token')))
+            $this->_oDb->disconnectApp($sClientId, $aProfileIds);
+
+        header('Location: ' . $sBack, true, 303);
+        exit;
+    }
+
+    /**
+     * A token of a form of the signed-in account's own, tied to the account, its session and what the form does.
+     */
+    public function getAccountToken($sPurpose)
+    {
+        $iAccountId = (int)getLoggedId();
+        $oSession = BxDolSession::getInstance();
+        if (!$iAccountId || !($sSessionId = $oSession->getId()))
+            return '';
+
+        return hash_hmac('sha256', 'bx_oauth_' . $sPurpose . '|' . $iAccountId . '|' . $sSessionId, BX_DOL_SECRET);
+    }
+
+    public function isAccountTokenValid($sPurpose, $sToken)
+    {
+        $sExpected = $this->getAccountToken($sPurpose);
+        return is_string($sToken) && $sToken !== '' && $sExpected !== '' && hash_equals($sExpected, $sToken);
+    }
+
+    protected function _getAccountProfileIds()
+    {
+        return isLogged() ? array_map('intval', array_keys($this->_getAuthorizeProfiles())) : array();
+    }
+
+    protected function _jsonAnswer($iStatus, $mBody, $aHeaders = array())
+    {
+        http_response_code((int)$iStatus);
+        header('Content-Type: application/json; charset=utf-8');
+        header('Cache-Control: no-store');
+        foreach ($aHeaders as $sName => $sValue)
+            header($sName . ': ' . $sValue);
+        if ($mBody !== null)
+            echo json_encode($mBody, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        return null;
     }
 
     function serviceGetClientsBy ($aParams = array())

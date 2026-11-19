@@ -126,12 +126,16 @@ class BxDolApiTokens
         if (!$oGrid)
             return '';
 
+        // the apps the account connected with OAuth (an AI assistant that signed in, the desktop app)
+        $bOAuth = BxDolModuleQuery::getInstance()->isEnabledByName('bx_oauth');
+        $mixedApps = $bOAuth ? bx_srv('bx_oauth', 'connected_apps') : '';
+
         // the apps (NEO): what it is for and where to connect, then the grid
         if (bx_is_api())
-            return [
+            return array_merge([
                 bx_api_get_block('msg', _t(isAdmin() ? '_sys_api_tokens_txt_info_operator' : '_sys_api_tokens_txt_info') . ' ' . _t('_sys_api_tokens_txt_mcp_url') . ': ' . self::getMcpUrl()),
                 bx_api_get_block('grid', $oGrid->getCodeAPI()),
-            ];
+            ], is_array($mixedApps) ? $mixedApps : []);
 
         if (!$oTemplate)
             $oTemplate = BxDolTemplate::getInstance();
@@ -142,6 +146,7 @@ class BxDolApiTokens
             'txt_copy' => _t('_sys_api_tokens_btn_copy'),
             'mcp_url' => bx_html_attribute(self::getMcpUrl()),
             'grid' => $oGrid->getCode(),
+            'apps' => is_string($mixedApps) ? $mixedApps : '',
         ]);
     }
 

@@ -31,6 +31,13 @@
 class BxDolMcpServer
 {
     const PROTOCOL_VERSION = '2026-07-28';
+
+    /**
+     * The versions before it, which open with `initialize` and carry no `_meta` in a request (the version is the
+     * MCP-Protocol-Version header after it): what Claude, ChatGPT and other MCP clients speak today. The server
+     * keeps no session, so every request is answered as it comes.
+     */
+    const INITIALIZE_VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26'];
     const SERVER_NAME = 'una';
     const SERVER_VERSION = '1.0.0';
 
@@ -81,13 +88,17 @@ class BxDolMcpServer
             $oAuth = BxDolApiV2Auth::fromRequest('POST');
         }
         catch (BxDolApiV2Problem $e) {
-            self::_emit($e->getStatus(), self::_error(null, self::JSONRPC_INVALID_REQUEST, $e->getMessage()), $e->getHeaders());
+            $aHeaders = $e->getHeaders();
+            // where a client finds how to sign in (RFC 9728 5.1)
+            if ($e->getStatus() === 401)
+                $aHeaders['WWW-Authenticate'] = self::wwwAuthenticate('invalid_token');
+            self::_emit($e->getStatus(), self::_error(null, self::JSONRPC_INVALID_REQUEST, $e->getMessage()), $aHeaders);
             return;
         }
 
         // a token only: the site's session cookie is for the site's own pages
         if ($oAuth->getMode() !== BxDolApiV2Auth::MODE_TOKEN || !$oAuth->getProfileId()) {
-            self::_emit(401, self::_error(null, self::JSONRPC_INVALID_REQUEST, 'Send a personal access token (account settings > Connectors) as "Authorization: Bearer <token>"'), ['WWW-Authenticate' => 'Bearer realm="mcp"']);
+            self::_emit(401, self::_error(null, self::JSONRPC_INVALID_REQUEST, 'Sign in: connect this site in your AI assistant, or send a personal access token (account settings > Connectors) as "Authorization: Bearer <token>"'), ['WWW-Authenticate' => self::wwwAuthenticate()]);
             return;
         }
 
@@ -105,7 +116,8 @@ class BxDolMcpServer
             return;
         }
 
-        $aAnswer = (new static($oAuth))->handle($mMessage);
+        $sHeaderVersion = isset($_SERVER['HTTP_MCP_PROTOCOL_VERSION']) ? trim((string)$_SERVER['HTTP_MCP_PROTOCOL_VERSION']) : null;
+        $aAnswer = (new static($oAuth))->handle($mMessage, $sHeaderVersion);
         if ($aAnswer === null) {
             // a notification: nothing to answer
             http_response_code(202);
@@ -116,10 +128,79 @@ class BxDolMcpServer
     }
 
     /**
+     * Where an MCP client connects, the resource its tokens are for (RFC 8707).
+     */
+    public static function getResourceUrl()
+    {
+        return BX_DOL_URL_ROOT . 'api/mcp';
+    }
+
+    /**
+     * The OAuth 2 authorization server of the site, by its issuer (RFC 8414): the site itself, while the OAuth2
+     * server module is on; null otherwise.
+     */
+    public static function getIssuer()
+    {
+        return BxDolModuleQuery::getInstance()->isEnabledByName('bx_oauth') ? rtrim(BX_DOL_URL_ROOT, '/') : null;
+    }
+
+    /**
+     * The 401's challenge: where the protected resource's metadata is, so a client can find how to sign in.
+     */
+    public static function wwwAuthenticate($sError = '')
+    {
+        return 'Bearer resource_metadata="' . BX_DOL_URL_ROOT . '.well-known/oauth-protected-resource"' . ($sError !== '' ? ', error="' . $sError . '"' : '');
+    }
+
+    /**
+     * Protected resource metadata (RFC 9728): what MCP clients read first to find the authorization server.
+     */
+    public static function getProtectedResourceMetadata()
+    {
+        $sIssuer = self::getIssuer();
+        return [
+            'resource' => self::getResourceUrl(),
+            'authorization_servers' => $sIssuer !== null ? [$sIssuer] : [],
+            'scopes_supported' => [BxDolApiV2Auth::SCOPE],
+            'bearer_methods_supported' => ['header'],
+            'resource_name' => getParam('site_title'),
+        ];
+    }
+
+    /**
+     * Answer a discovery document: 'protected-resource' or 'authorization-server' (its endpoints are those of the
+     * OAuth2 server module, which describes them).
+     */
+    public static function serveWellKnown($sDocument)
+    {
+        BxDolApiV2Router::takeRequest();
+
+        $aCors = ['Access-Control-Allow-Origin' => '*'];
+        if (!getParam('sys_api_enable') || !getParam(BxDolApiV2Router::OPTION_ENABLE)) {
+            self::_emit(404, ['error' => 'not_found'], $aCors);
+            return;
+        }
+
+        if ($sDocument === 'protected-resource') {
+            self::_emit(200, self::getProtectedResourceMetadata(), $aCors);
+            return;
+        }
+
+        $aMetadata = $sDocument === 'authorization-server' && self::getIssuer() !== null ? bx_srv('bx_oauth', 'get_authorization_server_metadata', [self::getIssuer()]) : null;
+        if (empty($aMetadata) || !is_array($aMetadata)) {
+            self::_emit(404, ['error' => 'not_found'], $aCors);
+            return;
+        }
+
+        self::_emit(200, $aMetadata, $aCors);
+    }
+
+    /**
      * One JSON-RPC message, decoded with objects as stdClass.
+     * @param string|null $sHeaderVersion the MCP-Protocol-Version header of a client that opened with `initialize`
      * @return array|null the answer, null for a notification
      */
-    public function handle($mMessage)
+    public function handle($mMessage, $sHeaderVersion = null)
     {
         if (!is_object($mMessage))
             return self::_error(null, self::JSONRPC_INVALID_REQUEST, 'Invalid Request');
@@ -141,8 +222,23 @@ class BxDolMcpServer
         if ($sMethod === 'ping')
             return self::_result($mId, new stdClass());
 
-        if (($aProtocolError = self::protocolError($oParams)) !== null)
+        // a client of an earlier version: `initialize`, then requests without `_meta`
+        $bInitialize = !isset($oParams->_meta);
+        if ($sMethod === 'initialize')
+            return self::_result($mId, $this->_initializeResult($oParams));
+
+        if ($bInitialize) {
+            if ($sHeaderVersion !== null && $sHeaderVersion !== '' && !in_array($sHeaderVersion, self::INITIALIZE_VERSIONS, true))
+                return self::_error($mId, self::MCP_UNSUPPORTED_PROTOCOL_VERSION, 'Unsupported protocol version', [
+                    'supported' => array_merge([self::PROTOCOL_VERSION], self::INITIALIZE_VERSIONS),
+                    'requested' => $sHeaderVersion,
+                ]);
+        }
+        elseif (($aProtocolError = self::protocolError($oParams)) !== null)
             return self::_error($mId, $aProtocolError[0], $aProtocolError[1], $aProtocolError[2]);
+
+        // how long a client may keep a list: a field of the current version only
+        $aCache = $bInitialize ? [] : ['ttlMs' => 3600000, 'cacheScope' => 'private'];
 
         switch ($sMethod) {
             case 'server/discover':
@@ -161,15 +257,13 @@ class BxDolMcpServer
                 if (isset($oParams->cursor) && $oParams->cursor !== '') {
                     if (!is_string($oParams->cursor))
                         return self::_error($mId, self::JSONRPC_INVALID_PARAMS, 'Invalid params: cursor must be a string');
-                    return self::_result($mId, ['tools' => [], 'ttlMs' => 3600000, 'cacheScope' => 'private']);
+                    return self::_result($mId, ['tools' => []] + $aCache);
                 }
                 return self::_result($mId, [
                     'tools' => array_values(array_map(function ($a) {
                         return $a['tool'];
                     }, $this->getTools())),
-                    'ttlMs' => 3600000,
-                    'cacheScope' => 'private',
-                ]);
+                ] + $aCache);
 
             case 'tools/call':
                 if (!isset($oParams->name) || !is_string($oParams->name) || $oParams->name === '')
@@ -186,6 +280,24 @@ class BxDolMcpServer
         }
 
         return self::_error($mId, self::JSONRPC_METHOD_NOT_FOUND, 'Method not found');
+    }
+
+    /**
+     * The answer to `initialize`: the version the client asked for when the server speaks it, else the latest of those
+     * it speaks with `initialize` (the client then decides whether it goes on).
+     */
+    protected function _initializeResult($oParams)
+    {
+        $sAsked = isset($oParams->protocolVersion) && is_string($oParams->protocolVersion) ? $oParams->protocolVersion : '';
+
+        return [
+            'protocolVersion' => in_array($sAsked, self::INITIALIZE_VERSIONS, true) ? $sAsked : self::INITIALIZE_VERSIONS[0],
+            'capabilities' => [
+                'tools' => ['listChanged' => false],
+            ],
+            'serverInfo' => ['name' => self::SERVER_NAME, 'title' => getParam('site_title'), 'version' => self::SERVER_VERSION],
+            'instructions' => $this->_instructions(),
+        ];
     }
 
     /**

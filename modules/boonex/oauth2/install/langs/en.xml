@@ -35,4 +35,9 @@ Specify the following "Main UNA Site URL" on the client sites:<br />
     <string name="_bx_oauth_adm_stg_cpt_category_general"><![CDATA[General]]></string>
     <string name="_bx_oauth_adm_stg_opt_refresh_token_lifetime"><![CDATA[Refresh token lifetime (in seconds)]]></string>
     <string name="_bx_oauth_adm_stg_opt_always_issue_new_refresh_token"><![CDATA[Always issue new refresh token]]></string>
+    <string name="_bx_oauth_connected_apps"><![CDATA[Connected apps]]></string>
+    <string name="_bx_oauth_connected_apps_info"><![CDATA[Apps and AI assistants you signed in to with this account. Disconnect one to take its access away: it has to be connected again.]]></string>
+    <string name="_bx_oauth_connected_apps_disconnect"><![CDATA[Disconnect]]></string>
+    <string name="_bx_oauth_connected_apps_confirm"><![CDATA[Disconnect {0}?]]></string>
+    <string name="_bx_oauth_connected_apps_api"><![CDATA[Connected apps: {0}. Disconnect them on the site, in account settings > Connectors.]]></string>
 </resources>

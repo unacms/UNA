@@ -1525,6 +1525,32 @@ answered as JSON; a notification gets 202. It needs API v2 on and a token: a per
 token or an OAuth one with the `api` scope (401 with `WWW-Authenticate` otherwise; the session
 cookie is not taken). It answers `server/discover`, `tools/list`, `tools/call` and `ping`.
 
+**Connecting.** A person adds the URL in their assistant (Claude, ChatGPT: "add a custom
+connector") and signs in; nobody copies a token. That is the MCP authorization flow, on the OAuth2
+server module (`bx_oauth`):
+
+1. `/api/mcp` without a token answers 401 with
+   `WWW-Authenticate: Bearer resource_metadata="<site>/.well-known/oauth-protected-resource"`.
+2. `/.well-known/oauth-protected-resource` (RFC 9728) names the authorization server, the site
+   itself; `/.well-known/oauth-authorization-server` (RFC 8414) lists its endpoints. Both are
+   `api_mcp.php?_wk=...` behind the rewrite. A site in a folder of its host has them only under the
+   folder, so a client must follow `resource_metadata` there.
+3. The client registers itself at `/m/oauth2/register` (RFC 7591, `BxOAuthModule::actionRegister`):
+   a public client with an `mcp-` id, `https://` or loopback redirects, ten registrations a minute
+   from an address. Such a client signs in like the desktop app: PKCE with S256 is required, its
+   redirect matches exactly (a loopback one on any port), it gets the `api` scope when it asks for
+   none, and a `resource` it sends must be the MCP server (RFC 8707).
+4. The person signs in and approves it on the consent page, which says what it may do and where
+   the browser goes back to; the client gets an access token and a refresh token.
+
+Account settings > Connectors lists the apps the account connected (MCP clients, the desktop app,
+other OAuth clients) with a button to disconnect each: its codes and tokens are deleted. A personal
+access token is for developer tools that can't sign in.
+
+Clients of the versions before `2026-07-28` open with `initialize` and send no `_meta`; the server
+answers them too (`2025-11-25`, `2025-06-18`, `2025-03-26`, the `MCP-Protocol-Version` header), with
+no session.
+
 The tools act as the token's account, so the site's permission checks decide what they may do:
 
 - Every API v2 operation is a tool named by its operationId (`getMe`, `getProfile`, ...), except

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Connected apps in account settings > Connectors, with a button to disconnect each. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_bx_oauth_connected_apps"><![CDATA[Connected apps]]></string_add>
+    <string_add name="_bx_oauth_connected_apps_info"><![CDATA[Apps and AI assistants you signed in to with this account. Disconnect one to take its access away: it has to be connected again.]]></string_add>
+    <string_add name="_bx_oauth_connected_apps_disconnect"><![CDATA[Disconnect]]></string_add>
+    <string_add name="_bx_oauth_connected_apps_confirm"><![CDATA[Disconnect {0}?]]></string_add>
+    <string_add name="_bx_oauth_connected_apps_api"><![CDATA[Connected apps: {0}. Disconnect them on the site, in account settings > Connectors.]]></string_add>
+</resources>

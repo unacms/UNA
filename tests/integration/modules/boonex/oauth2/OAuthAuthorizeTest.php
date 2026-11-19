@@ -12,6 +12,10 @@ use PHPUnit\Framework\Attributes\Group;
  *   asks for. It is built in (no row in bx_oauth_clients) and the server knows it only while
  *   API v2 is on; with API v2 off its id is like any other.
  *
+ * - An MCP client that registers itself (/m/oauth2/register, RFC 7591) while API v2 is on: a
+ *   public client with PKCE, the `api` scope, its redirect matched exactly, a resource that is
+ *   the site's MCP server.
+ *
  * Needs the OAuth2 server module and the test user (UNA_TEST_USER_EMAIL) with a profile; skips
  * otherwise. Clients, codes and tokens the cases make are removed after each of them.
  */
@@ -24,6 +28,7 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
     private static $_oServer;
 
     private $_sApiV2Enable;
+    private $_sApiEnable = null;
     private $_aClients = [];
     private $_aCodes = [];
     private $_aAccessTokens = [];
@@ -54,6 +59,8 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
 
         if ($this->_sApiV2Enable !== null && getParam(self::OPTION_API_V2) !== $this->_sApiV2Enable)
             setParam(self::OPTION_API_V2, $this->_sApiV2Enable);
+        if ($this->_sApiEnable !== null && (string)getParam('sys_api_enable') !== $this->_sApiEnable)
+            setParam('sys_api_enable', $this->_sApiEnable);
 
         parent::tearDown();
     }
@@ -394,6 +401,127 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
     }
 
     // helpers
+
+    // an MCP client that registers itself (RFC 7591)
+
+    public function testMcpClientRegistersItselfAndSignsInWithPkce(): void
+    {
+        $this->apiV2(true);
+        $this->apiOn();
+        list($oAccount, $sCookie) = $this->signedInUser();
+        $iProfile = (int)$oAccount->getProfilesIds()[0];
+
+        // registrations it refuses
+        foreach ([
+            'no redirect' => [['client_name' => 'X'], 'invalid_redirect_uri'],
+            'plain http' => [['redirect_uris' => ['http://client.example/cb']], 'invalid_redirect_uri'],
+            'a fragment' => [['redirect_uris' => ['https://client.example/cb#x']], 'invalid_redirect_uri'],
+            'a secret' => [['redirect_uris' => ['https://client.example/cb'], 'token_endpoint_auth_method' => 'client_secret_basic'], 'invalid_client_metadata'],
+            'another grant' => [['redirect_uris' => ['https://client.example/cb'], 'grant_types' => ['password']], 'invalid_client_metadata'],
+        ] as $sCase => list($aBody, $sError)) {
+            $a = $this->register($aBody);
+            $this->assertSame(400, $a['status'], $sCase . ': ' . $a['body']);
+            $this->assertSame($sError, $a['json']['error'] ?? '', $sCase);
+        }
+
+        $sRedirect = 'https://assistant.example/api/mcp/auth_callback';
+        $a = $this->register(['redirect_uris' => [$sRedirect], 'client_name' => 'Assistant <b>X</b>', 'token_endpoint_auth_method' => 'none']);
+        $this->assertSame(201, $a['status'], $a['body']);
+        $sClientId = (string)$a['json']['client_id'];
+        $this->assertStringStartsWith(BxOAuthUserCredentialsStorage::MCP_CLIENT_PREFIX, $sClientId);
+        $this->assertSame('Assistant X', $a['json']['client_name']);
+        $this->assertSame('none', $a['json']['token_endpoint_auth_method']);
+        $this->assertSame('', (string)BxDolDb::getInstance()->getOne("SELECT `client_secret` FROM `bx_oauth_clients` WHERE `client_id` = :c", ['c' => $sClientId]), 'a public client');
+
+        $sVerifier = rtrim(strtr(base64_encode(random_bytes(48)), '+/', '-_'), '=');
+        $sChallenge = rtrim(strtr(base64_encode(hash('sha256', $sVerifier, true)), '+/', '-_'), '=');
+        $aQuery = ['client_id' => $sClientId, 'response_type' => 'code', 'redirect_uri' => $sRedirect, 'state' => 'm1'];
+
+        // PKCE is required, and the error goes back to the client
+        $a = $this->auth('GET', $aQuery, $sCookie);
+        $this->assertSame(302, $a['status'], $a['body']);
+        parse_str((string)parse_url((string)BxDolTestPhpServer::header($a, 'location'), PHP_URL_QUERY), $aBack);
+        $this->assertSame('invalid_request', $aBack['error'] ?? '');
+
+        // its redirect matches exactly: a longer one is refused on the site
+        $a = $this->auth('GET', array_merge($aQuery, ['redirect_uri' => $sRedirect . '/more', 'code_challenge' => $sChallenge, 'code_challenge_method' => 'S256']), $sCookie);
+        $this->assertNull(BxDolTestPhpServer::header($a, 'location'));
+        $this->assertStringNotContainsString('id="bx-auth-form"', $a['body']);
+
+        // a token for another resource is not given
+        $a = $this->auth('GET', $aQuery + ['code_challenge' => $sChallenge, 'code_challenge_method' => 'S256', 'resource' => 'https://elsewhere.example/mcp'], $sCookie);
+        $this->assertSame(302, $a['status'], $a['body']);
+        parse_str((string)parse_url((string)BxDolTestPhpServer::header($a, 'location'), PHP_URL_QUERY), $aBack);
+        $this->assertSame('invalid_target', $aBack['error'] ?? '');
+
+        // asked for no scope: the MCP server's own, on a consent page that says what it allows and where it goes back to
+        $a = $this->auth('GET', $aQuery + ['code_challenge' => $sChallenge, 'code_challenge_method' => 'S256', 'resource' => BxDolMcpServer::getResourceUrl()], $sCookie);
+        $this->assertSame(200, $a['status'], $a['body']);
+        $this->assertSame(4, substr_count($a['body'], '<li class="bx-auth-scope">'));
+        $this->assertStringContainsString('<strong>assistant.example</strong>', $a['body']);
+        $aForm = $this->consentForm($a['body']);
+        $this->assertSame('api', $aForm['scope']);
+
+        $sCode = $this->approve($aForm, $iProfile, $sCookie, $sRedirect);
+        $a = $this->token(['grant_type' => 'authorization_code', 'code' => $sCode, 'redirect_uri' => $sRedirect, 'client_id' => $sClientId, 'code_verifier' => $sVerifier]);
+        $this->assertSame(200, $a['status'], $a['body']);
+        $this->assertSame('api', $a['json']['scope']);
+        $this->assertNotEmpty($a['json']['refresh_token'] ?? '');
+
+        // the token signs in to the MCP server's API, and the account sees the app, and disconnects it
+        $aData = bx_srv('bx_oauth', 'get_access_token_data', [$a['json']['access_token']]);
+        $this->assertSame($iProfile, (int)$aData['profile_id']);
+        $aApps = BxDolModule::getInstance('bx_oauth')->_oDb->getConnectedApps([$iProfile]);
+        $this->assertContains($sClientId, array_column($aApps, 'client_id'));
+        BxDolModule::getInstance('bx_oauth')->_oDb->disconnectApp($sClientId, [$iProfile]);
+        $this->assertFalse(bx_srv('bx_oauth', 'get_access_token_data', [$a['json']['access_token']]));
+    }
+
+    public function testMcpRegistrationIsOffWithApiV2(): void
+    {
+        $this->apiV2(false);
+        $a = $this->register(['redirect_uris' => ['https://assistant.example/cb']]);
+        $this->assertSame(404, $a['status'], $a['body']);
+    }
+
+    public function testMcpRedirects(): void
+    {
+        $this->assertTrue(BxOAuthAuthorizeController::isMcpRedirectUri('https://claude.ai/api/mcp/auth_callback'));
+        $this->assertTrue(BxOAuthAuthorizeController::isMcpRedirectUri('http://localhost:33418/callback'));
+        $this->assertTrue(BxOAuthAuthorizeController::isMcpRedirectUri('http://127.0.0.1/cb'));
+        $this->assertFalse(BxOAuthAuthorizeController::isMcpRedirectUri('http://client.example/cb'));
+        $this->assertFalse(BxOAuthAuthorizeController::isMcpRedirectUri('https://user@client.example/cb'));
+        $this->assertFalse(BxOAuthAuthorizeController::isMcpRedirectUri('javascript:alert(1)'));
+
+        $this->assertTrue(BxOAuthAuthorizeController::isRegisteredMcpRedirect('https://a.example/cb', 'https://b.example/x https://a.example/cb'));
+        $this->assertFalse(BxOAuthAuthorizeController::isRegisteredMcpRedirect('https://a.example/cb/x', 'https://a.example/cb'));
+        // a loopback one on any port, the same host and path
+        $this->assertTrue(BxOAuthAuthorizeController::isRegisteredMcpRedirect('http://localhost:5123/callback', 'http://localhost:33418/callback'));
+        $this->assertFalse(BxOAuthAuthorizeController::isRegisteredMcpRedirect('http://localhost:5123/other', 'http://localhost:33418/callback'));
+        $this->assertFalse(BxOAuthAuthorizeController::isRegisteredMcpRedirect('http://127.0.0.1:5123/callback', 'http://localhost:33418/callback'));
+    }
+
+    /**
+     * API v1 and v2 on for the test (the registration needs both); put back after it.
+     */
+    private function apiOn(): void
+    {
+        if (getParam('sys_api_enable') !== 'on') {
+            $this->_sApiEnable = (string)getParam('sys_api_enable');
+            setParam('sys_api_enable', 'on');
+        }
+    }
+
+    /**
+     * /m/oauth2/register with a JSON body; a client it makes is removed after the test.
+     */
+    private function register(array $aBody): array
+    {
+        $a = $this->request('POST', '/modules/index.php?r=oauth2/register', ['Content-Type' => 'application/json'], json_encode($aBody));
+        if (!empty($a['json']['client_id']))
+            $this->_aClients[] = $a['json']['client_id'];
+        return $a;
+    }
 
     private function apiV2(bool $bOn): void
     {
