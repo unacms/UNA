@@ -46,7 +46,7 @@ class BxDolGridApiTokens extends BxTemplGrid
         if ($oForm->isSubmittedAndValid()) {
             $mixedResult = BxDolApiTokens::create($this->_iAccountId, $oForm->getCleanValue('title'), (int)$oForm->getCleanValue('expires'));
             if (!is_array($mixedResult))
-                return $this->_bIsApi ? [bx_api_get_block('msg', $mixedResult)] : echoJson(['msg' => $mixedResult]);
+                return $this->_bIsApi ? [bx_api_get_block('msg', $mixedResult)] : $this->_getActionResult(['msg' => $mixedResult]);
 
             // the apps show the token in a message: it is shown once, here
             if ($this->_bIsApi)
@@ -62,7 +62,7 @@ class BxDolGridApiTokens extends BxTemplGrid
                 'txt_copy' => _t('_sys_api_tokens_btn_copy'),
             ]));
 
-            return echoJson([
+            return $this->_getActionResult([
                 'grid' => $this->getCode(false),
                 'blink' => $mixedResult['id'],
                 'popup' => ['html' => $sContent, 'options' => ['closeOnOuterClick' => false]],
@@ -79,7 +79,7 @@ class BxDolGridApiTokens extends BxTemplGrid
             'action' => $sAction,
         ]));
 
-        return echoJson(['popup' => ['html' => $sContent, 'options' => ['closeOnOuterClick' => false]]]);
+        return $this->_getActionResult(['popup' => ['html' => $sContent, 'options' => ['closeOnOuterClick' => false]]]);
     }
 
     public function getFormBlockAPI($oForm, $sAction, $iId = 0)
