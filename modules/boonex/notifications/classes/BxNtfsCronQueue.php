@@ -38,10 +38,25 @@ class BxNtfsCronQueue extends BxDolCron
 
         $this->_oModule->_oDb->queueDeleteByIds(array_keys($aItems));
 
+        /**
+         * Settings are checked when a notification is added to this queue (BxNtfsCronNotify). 
+         * Check the Studio switch again here, so turning a notification off for a delivery type 
+         * also stops the ones which are already waiting. Items of deleted events are dropped too.
+         */
+        $aActive = array();
+
         $aSent = array();
-        foreach($aItems as $aItem)
+        foreach($aItems as $aItem) {
+            $sKey = (int)$aItem['event_id'] . '_' . $aItem['delivery'];
+            if(!isset($aActive[$sKey]))
+                $aActive[$sKey] = $this->_oModule->_oDb->isEventDeliveryActive($aItem['event_id'], $aItem['delivery']);
+
+            if(!$aActive[$sKey])
+                continue;
+
             if($this->_oModule->{'sendNotification' . bx_gen_method_name($aItem['delivery'])}($aItem['profile_id'], unserialize($aItem['content'])) !== false)
                 $aSent[] = $aItem['id'];
+        }
     }
 }
 

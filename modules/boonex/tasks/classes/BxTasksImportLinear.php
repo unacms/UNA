@@ -60,33 +60,53 @@ class BxTasksImportLinear extends BxDol
             foreach($aFilter as $sKey => $sValue)
                 $aRequest['variables']['filter'][$sKey] = ['name' => ['eq' => $sValue]];
 
+        /**
+         * Imported tasks and comments are history: they go through the regular paths, 
+         * which fire the same alerts as new content, so nobody should be notified about them.
+         * 1 = BX_BASE_MOD_NTFS_SLTMODE_ABSOLUTE
+         */
+        $mixedSilentMode = BxDolAlerts::setSilentMode(1);
+
         $iProcessed = $iIssues = 0;
         $sAfter = null;
-        while($iProcessed < $iLimit) {
-            $aRequest['variables'] = array_merge($aRequest['variables'], [
-                'first' => min(100, $iLimit - $iProcessed),
-                'after' => $sAfter,
-            ]);
+        try {
+            while($iProcessed < $iLimit) {
+                $aRequest['variables'] = array_merge($aRequest['variables'], [
+                    'first' => min(100, $iLimit - $iProcessed),
+                    'after' => $sAfter,
+                ]);
 
-            $sData = bx_file_get_contents($sEndpoint, $aRequest, 'post-json', [
-                'Authorization: ' . $sReqApiKey
-            ]);
-            if(!$sData)
-                break;
+                $sData = bx_file_get_contents($sEndpoint, $aRequest, 'post-json', [
+                    'Authorization: ' . $sReqApiKey
+                ]);
+                if(!$sData)
+                    break;
 
-            $aData = json_decode($sData, true);
-            if(!$aData || !is_array($aData))
-                break;
+                $aData = json_decode($sData, true);
+                if(!$aData || !is_array($aData))
+                    break;
 
-            foreach($aData['data']['issues']['nodes'] ?? [] as $aNode) {
-                if($this->addTask($iContextId, $aNode) !== false)
-                    $iIssues++;
+                $aNodes = $aData['data']['issues']['nodes'] ?? [];
+                if(!$aNodes || !is_array($aNodes))
+                    break;
 
-                $iProcessed++;
-            }
+                foreach($aNodes as $aNode) {
+                    if($this->addTask($iContextId, $aNode) !== false)
+                        $iIssues++;
 
-            if(($aPageInfo = $aData['pageInfo'] ?? false) && $aPageInfo['hasNextPage'])
+                    $iProcessed++;
+                }
+
+                // without a next page the same page would be imported again
+                $aPageInfo = $aData['data']['issues']['pageInfo'] ?? [];
+                if(empty($aPageInfo['hasNextPage']) || empty($aPageInfo['endCursor']))
+                    break;
+
                 $sAfter = $aPageInfo['endCursor'];
+            }
+        }
+        finally {
+            BxDolAlerts::setSilentMode($mixedSilentMode);
         }
 
         return [$iProcessed, $iIssues];
