@@ -2636,10 +2636,10 @@
        (--bx-seg-x and --bx-seg-w; data-bx-seg="on" once it is placed, so the first placement does not slide). */
     .bx-std .bx-std-segmented {
         @apply relative isolate inline-flex p-1 rounded-lg bg-black/5 dark:bg-white/5; /* translucent track, like the hero plates */
-        box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.1); /* a 1px edge, as the switches' track has (gray-300 there, opaque) */
+        box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.05); /* a 1px edge, as the switches' track has (gray-300 there, opaque) */
     }
     .bx-std .bx-std-segmented:is(.dark *) {
-        box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1);
+        box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05);
     }
     .bx-std .bx-std-segmented[data-bx-seg]::after {
         content: '';
