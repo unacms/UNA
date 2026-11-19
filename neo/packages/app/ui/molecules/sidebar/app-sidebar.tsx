@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { View, Pressable } from 'app/design/view';
@@ -46,6 +46,8 @@ import type { AppSidebarProps } from './app-sidebar.types';
  * (components/layout.js → app/context/app-sidebar).
  */
 const WIDTH_MAX = 320;
+/** After the app knows the viewer, how long the first page has to itself before the drawer loads behind it. */
+const WARM_UP_MS = 2000;
 /** What stays of the page beside the open drawer: room to press outside it. */
 const PAGE_EDGE = 56;
 
@@ -176,10 +178,20 @@ export function AppSidebarShell({ children, style }: Readonly<{ children: ReactN
         setAppSidebarOpen(false);
     }, [url, viewer, enabled]);
 
+    // The drawer's content mounts off screen a moment after the app starts: its menus load and its list is laid out
+    // before the first opening, so it slides in complete.
+    const [warm, setWarm] = useState(false);
+    useEffect(() => {
+        if (!enabled) return undefined;
+        const timer = setTimeout(() => setWarm(true), WARM_UP_MS);
+        return () => clearTimeout(timer);
+    }, [enabled]);
+
     return (
         <AppSidebarDrawer
             enabled={enabled}
             open={open}
+            warm={warm}
             width={Math.min(WIDTH_MAX, width - PAGE_EDGE)}
             onClose={closeSidebar}
             closeLabel={t('Close')}

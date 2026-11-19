@@ -10,11 +10,14 @@ import { useReduceMotion } from 'app/lib/hooks/use-reduce-motion';
  *
  * The drawer slides in from the leading edge over a scrim. A press on the scrim, a swipe towards the edge and
  * Android's back button close it; while it is open the page behind is hidden from the screen reader. Its content is
- * mounted only while it is open or on its way out.
+ * mounted while it is open or on its way out, and from then on once it is `warm`: mounted off screen ahead of the
+ * first opening, so its menus are loaded and laid out when it slides in.
  */
 type AppSidebarDrawerProps = {
     enabled: boolean;
     open: boolean;
+    /** Keep the content mounted while the drawer is closed. */
+    warm?: boolean;
     width: number;
     onClose: () => void;
     /** The scrim's name for the screen reader. */
@@ -28,7 +31,7 @@ const DURATION = 250;
 const SCRIM_OPACITY = 0.4;
 const EASING = Easing.bezier(0.32, 0.72, 0, 1);
 
-export default function AppSidebarDrawer({ enabled, open, width, onClose, closeLabel, renderSidebar, style, children }: Readonly<AppSidebarDrawerProps>) {
+export default function AppSidebarDrawer({ enabled, open, warm = false, width, onClose, closeLabel, renderSidebar, style, children }: Readonly<AppSidebarDrawerProps>) {
     const reduceMotion = useReduceMotion();
     const shown = enabled && open;
     // 0 closed, 1 open.
@@ -77,6 +80,7 @@ export default function AppSidebarDrawer({ enabled, open, width, onClose, closeL
     }));
 
     const drawerMounted = enabled && mounted;
+    const panelMounted = enabled && (mounted || warm);
 
     return (
         <View style={[styles.root, style]}>
@@ -92,9 +96,16 @@ export default function AppSidebarDrawer({ enabled, open, width, onClose, closeL
                     <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityRole="button" accessibilityLabel={closeLabel} />
                 </Animated.View>
             )}
-            {drawerMounted && (
+            {panelMounted && (
                 <GestureDetector gesture={pan}>
-                    <Animated.View style={[styles.panel, { width }, panelStyle]} accessibilityViewIsModal={shown}>
+                    {/* Closed, it waits off screen: out of reach of touches and of the screen reader. */}
+                    <Animated.View
+                        style={[styles.panel, { width }, panelStyle]}
+                        pointerEvents={shown ? 'auto' : 'none'}
+                        accessibilityViewIsModal={shown}
+                        accessibilityElementsHidden={!shown}
+                        importantForAccessibility={shown ? 'auto' : 'no-hide-descendants'}
+                    >
                         {renderSidebar()}
                     </Animated.View>
                 </GestureDetector>
