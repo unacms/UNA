@@ -2719,7 +2719,9 @@
         @apply inline-flex items-center justify-center h-9 min-h-9 px-3 py-0 rounded-lg;
         @apply text-sm font-medium leading-5;
         @apply text-black/80 dark:text-white/80 hover:text-black dark:hover:text-white active:text-black dark:active:text-white;
-        @apply hover:translate-y-0 active:translate-y-0; /* the site button lifts on hover and sinks on press; the header button scales instead */
+        @apply active:translate-y-0; /* the site button sinks on press; the header button scales instead. Nothing on hover: a 2D transform
+           there replaced the button's resting translate3d (.bx-btn) for the 300ms transition, and one at a fractional position (the
+           Dashboard's "Enable automatic updates") was drawn a pixel off until it ended. */
     }
     .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .bx-btn:where(:not(.bx-btn-small, .bx-btn-mini, .bx-btn-large, .bx-btn-xlarge)) {
         @apply h-11 min-h-11 px-4 rounded-xl text-base leading-6;
