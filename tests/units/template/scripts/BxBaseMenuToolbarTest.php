@@ -240,12 +240,12 @@ class BxBaseMenuToolbarTest extends BxDolTestCase
         $this->assertStringContainsString('--button-foreground: var(--neutral-300);', $sNeo);
         $this->assertStringContainsString('--button-foreground-hover: var(--neutral-100);', $sNeo);
 
-        //--- The header toolbar takes its look from one rule, with the press scale and the open (accent) look.
+        //--- The header toolbar takes its look from one rule, with the press colour and the open (accent) look.
         $this->assertMatchesRegularExpression('/\.bx-artificer \.bx-menu-toolbar \.bx-menu-toolbar-item \{\s*@apply bg-gray-950\/\[0\.08\] hover:bg-gray-950\/\[0\.12\] active:bg-gray-950\/\[0\.12\] dark:bg-gray-50\/\[0\.08\]/', $sCss);
         $this->assertStringContainsString('@apply text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100;', $sCss);
         $this->assertStringContainsString('.bx-menu-toolbar-item:has(> a[aria-expanded="true"])', $sCss);
         $this->assertStringContainsString('body:not(.bx-std) .bx-btn[aria-expanded="true"]:not(.bx-btn-primary)', $sCss);
-        $this->assertStringContainsString('body:not(.bx-std) .bx-btn:not(.bx-btn-disabled):active', $sCss);
+        $this->assertStringNotContainsString('body:not(.bx-std) .bx-btn:not(.bx-btn-disabled):active', $sCss, 'A press changes colour only: no scale.');
 
         $sTemplate = self::readFile('modules/boonex/artificer/data/template/system/menu_toolbar.html');
         $this->assertStringNotContainsString('bg-gray-100', $sTemplate, 'No colours of its own on the item: the rule above paints it.');

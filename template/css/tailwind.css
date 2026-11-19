@@ -897,7 +897,7 @@
     /* Common elements: Buttons
        The regular button is NEO's bordered button: a flat translucent fill of the text ink (gray-950, gray-50 in the dark scheme) at 8%, 12%
        hovered and pressed (--button-fill in neo/packages/app/design/styles/palette-schemes.css), so it reads on the page, a block or a popup alike.
-       The label and icon are gray-700 (gray-300 in dark) and go to gray-900 (gray-100) on hover. A press scales the button and an open menu tints
+       The label and icon are gray-700 (gray-300 in dark) and go to gray-900 (gray-100) on hover. A press deepens the fill and an open menu tints
        it, as NEO's do (see "Buttons: press and open" below). No outline and no shadow: the 1px border stays, transparent, only to keep every
        button's size and to carry the focus colour. Studio paints its own buttons (see "Studio: Buttons" below) and takes none of this. */
     .bx-btn-shadow {
@@ -932,7 +932,7 @@
         @apply bx-btn-bg;
         @apply bx-btn-border rounded-xl; /* 12px, as NEO's regular button and the rows of a dropdown menu */
         @apply bx-btn-text;
-        @apply transform-gpu transition duration-150;
+        @apply transition duration-200; /* colours and shadows only: no transform on hover or press */
         @apply cursor-pointer;
         @apply bx-btn-hover bx-btn-focus bx-btn-active;
     }
@@ -993,18 +993,10 @@
     }
 
     /* Buttons: press and open, as NEO's buttons (NeoButton's press transition and `selected` state, neo/packages/app/settings/theme/buttons.js).
-       A press scales the button to 98%, and to 110% on a touch screen, where the finger covers it. A button whose menu or popup is open
+       A press only deepens the colours (12% ink, the darker primary): no scale, which shrank wide buttons too far. A button whose menu or popup is open
        (aria-expanded="true", which bx_menu_popup and bx_menu_popup_inline keep) takes the accent colours, NEO's bg-accent and
        text-accent-foreground, a step stronger and translucent (blue-200 at 60% and blue-700; blue-900 at 60% and blue-300 in dark), and a primary one the darker primary, while it stays open.
        Studio keeps its own buttons. */
-    body:not(.bx-std) .bx-btn:not(.bx-btn-disabled):active {
-        @apply scale-[0.98];
-    }
-    @media (hover: none) and (pointer: coarse) {
-        body:not(.bx-std) .bx-btn:not(.bx-btn-disabled):active {
-            @apply scale-110;
-        }
-    }
     body:not(.bx-std) .bx-btn[aria-expanded="true"]:not(.bx-btn-primary) {
         @apply bg-blue-200/60 hover:bg-blue-200/60 active:bg-blue-200/60 dark:bg-blue-900/60 dark:hover:bg-blue-900/60 dark:active:bg-blue-900/60;
         @apply text-blue-700 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-300;
@@ -1800,25 +1792,19 @@
 
     /* Common elements: Toolbar menu
        The header's buttons (Artificer menu_toolbar.html) are regular buttons, as NEO's header buttons: the ink at 8%, 12% hovered and pressed,
-       a gray-700 glyph (gray-300 in dark) that goes to gray-900 (gray-100) on hover, the press scale, and the accent colours while the item's
+       a gray-700 glyph (gray-300 in dark) that goes to gray-900 (gray-100) on hover, and the accent colours while the item's
        popup, sidebar or search is open (its link's aria-expanded="true") and while its page is the one open (bx-menu-tab-active: the
        notifications item on the notifications page, BxBaseMenuToolbar::_isSelected), as NEO's header buttons. See "Common elements: Buttons" and "Buttons: press and open". */
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item {
         @apply bg-gray-950/[0.08] hover:bg-gray-950/[0.12] active:bg-gray-950/[0.12] dark:bg-gray-50/[0.08] dark:hover:bg-gray-50/[0.12] dark:active:bg-gray-50/[0.12];
         @apply text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100;
-        @apply transform-gpu transition duration-150 active:scale-[0.98];
-    }
-    @media (hover: none) and (pointer: coarse) {
-        .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item:active,
-        .bx-artificer .bx-sidebar-toggle:active {
-            @apply scale-110;
-        }
+        @apply transition duration-200;
     }
     /* The Application layout's sidebar button (pt_application.html) is one more header button: the same plate, glyph and press. */
     .bx-artificer .bx-sidebar-toggle {
         @apply bg-gray-950/[0.08] hover:bg-gray-950/[0.12] active:bg-gray-950/[0.12] dark:bg-gray-50/[0.08] dark:hover:bg-gray-50/[0.12] dark:active:bg-gray-50/[0.12];
         @apply text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100;
-        @apply transform-gpu transition duration-150 active:scale-[0.98];
+        @apply transition duration-200;
         @apply border-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500;
     }
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item:has(> a[aria-expanded="true"]),
@@ -2043,7 +2029,7 @@
     /* Main menu dropdown (Artificer sidebar_site.html, below `lg`): the main menu as a dropdown under the header's menu button, as NEO's
        header menu: 320px wide, 8px under the menu button (62px from the top) and 16px in from the screen's edge, the menu popups' surface and 20px corners, and the
        rows of the header's More list: a 24px icon without a circle 12px from the row's side and 8px from the label, a 14px medium label,
-       12px corners, the full text colour and the hover fill on hover, the press scale, and the current page's row in the current tab's
+       12px corners, the full text colour and the hover fill on hover, a stronger fill on press, and the current page's row in the current tab's
        colours. A row with sub-pages unfolds them in place (bx_sidebar_dropdown_toggle); Log in and Sign up are buttons at the top.
        The opening motion is in Artificer's menu-sidebar.css. */
     #bx-sidebar-site .bx-sidebar-cnt {
@@ -2067,7 +2053,7 @@
     #bx-sidebar-site .bx-sidebar-item > a,
     #bx-sidebar-site .bx-sidebar-dropdown-content > li > a {
         @apply flex items-center min-h-11 py-0 ps-3 pe-3 rounded-xl border-0 text-sm leading-5 font-medium text-gray-600 dark:text-gray-400 no-underline;
-        transition: color 150ms cubic-bezier(0, 0, 0.2, 1), background-color 150ms cubic-bezier(0, 0, 0.2, 1), scale 100ms cubic-bezier(0.4, 0, 0.2, 1);
+        transition: color 150ms cubic-bezier(0, 0, 0.2, 1), background-color 150ms cubic-bezier(0, 0, 0.2, 1);
     }
     #bx-sidebar-site .bx-sidebar-item > a:hover,
     #bx-sidebar-site .bx-sidebar-dropdown-content > li > a:hover {
@@ -2075,7 +2061,7 @@
     }
     #bx-sidebar-site .bx-sidebar-item > a:active,
     #bx-sidebar-site .bx-sidebar-dropdown-content > li > a:active {
-        @apply bg-gray-200 dark:bg-gray-700 scale-95 motion-reduce:scale-100;
+        @apply bg-gray-200 dark:bg-gray-700;
     }
     #bx-sidebar-site .bx-sidebar-item.bx-menu-tab-active > a,
     #bx-sidebar-site .bx-sidebar-item.bx-menu-tab-active > a:hover,
@@ -2338,7 +2324,8 @@
         @apply bg-transparent hover:bg-transparent active:bg-transparent; /* no gray fill under the gradient (the site's .bx-btn paints gray-100 / gray-700): the plate is only white and black over what it sits on */
         @apply hover:from-gray-200 hover:to-gray-300 dark:hover:from-white/30 dark:hover:to-white/15;
         @apply text-black/80 dark:text-white/80 hover:text-black dark:hover:text-white;
-        @apply transition duration-300 active:duration-100 active:scale-95;
+        @apply active:from-gray-300 active:to-gray-300 dark:active:from-white/35 dark:active:to-white/20; /* a press is a step past the hover: colour only, no scale */
+        @apply transition duration-200;
         @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.15),inset_0_0_0_2px_rgb(255_255_255/0.5)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
     }
     /* The header's hover halo is a background layer behind the tile, like the sidebar items' and the subtabs' background: 0.5rem (8px) round
@@ -2361,7 +2348,7 @@
         inset: -0.5rem;
         border-radius: var(--bx-radius-2xl);
         pointer-events: none;
-        @apply transition-colors duration-300;
+        @apply transition-colors duration-200;
     }
     .bx-std .bx-menu-toolbar .bx-menu-tab-item::before,
     .bx-std .bx-menu-top-center li .bx-mi-icon::after,
@@ -2712,16 +2699,14 @@
         @apply block w-5 h-5 text-inherit;
     }
 
-    /* Studio: Buttons: every .bx-btn is the header button (plate, hairline, shadow, hover halo and press scale come from the "Header buttons" rules above), with the label one step darker than the header glyphs so it passes AA on the plate. Primary is the same plate inverted: the dark-mode plate in light mode and the light-mode plate in dark mode.
+    /* Studio: Buttons: every .bx-btn is the header button (plate, hairline, shadow, hover halo and press colours come from the "Header buttons" rules above), with the label one step darker than the header glyphs so it passes AA on the plate. Primary is the same plate inverted: the dark-mode plate in light mode and the light-mode plate in dark mode.
        Sizes are the site's and NEO's scale: small 36px (12px sides, 14px text, 8px corners) is the default, for the toolbars, grid rows, cards and
        captions; regular 44px (16px sides, 16px text, 12px corners) is a form's and a dialog's; .bx-btn-small, -mini (28px) and -large (52px) keep theirs anywhere. */
     .bx-std .bx-btn {
         @apply inline-flex items-center justify-center h-9 min-h-9 px-3 py-0 rounded-lg;
         @apply text-sm font-medium leading-5;
         @apply text-black/80 dark:text-white/80 hover:text-black dark:hover:text-white active:text-black dark:active:text-white;
-        @apply active:translate-y-0; /* the site button sinks on press; the header button scales instead. Nothing on hover: a 2D transform
-           there replaced the button's resting translate3d (.bx-btn) for the 300ms transition, and one at a fractional position (the
-           Dashboard's "Enable automatic updates") was drawn a pixel off until it ended. */
+
     }
     .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .bx-btn:where(:not(.bx-btn-small, .bx-btn-mini, .bx-btn-large, .bx-btn-xlarge)) {
         @apply h-11 min-h-11 px-4 rounded-xl text-base leading-6;
@@ -2857,6 +2842,7 @@
     .bx-std .bx-btn.bx-btn-primary {
         @apply from-gray-600 to-gray-700 dark:from-gray-100 dark:to-gray-200;
         @apply hover:from-gray-500 hover:to-gray-600 dark:hover:from-gray-200 dark:hover:to-gray-300;
+        @apply active:from-gray-400 active:to-gray-500 dark:active:from-gray-300 dark:active:to-gray-400;
         @apply border-0 text-gray-100 dark:text-gray-800 hover:text-white dark:hover:text-gray-900 active:text-white dark:active:text-gray-900;
         /* The app icons' edge (.bx-icon-tile): a black/10 line with a white/5 one inside it, the black line black/20 when hovered; white/15 in
            the dark scheme. Both inside the box, like the other buttons' hairlines. */
@@ -2873,21 +2859,21 @@
        no press. !important because the site's .bx-btn-disabled rule above forces its gray-50 / gray-700 plate the same way. */
     .bx-std .bx-btn.bx-btn-disabled {
         @apply bg-none bg-black/5 hover:bg-black/5 text-black/40 hover:text-black/40 !important;
-        @apply active:scale-100 cursor-default;
+        @apply cursor-default;
     }
     .bx-std .bx-btn.bx-btn-disabled:is(.dark *) {
         /* plain declarations: the dark: variant did not survive @apply … !important, and .dark .bx-std would miss a .bx-std on the root element */
         background-color: rgb(255 255 255 / 0.05) !important;
         color: rgb(255 255 255 / 0.4) !important;
     }
-    /* Joined button groups (the grid pager): the plate, hairline, shadow, halo and press scale belong to the group (it is in the header-plate
+    /* Joined button groups (the grid pager): the plate, hairline, shadow, halo and press colours belong to the group (it is in the header-plate
        lists above); the segments are flat, square, hairline-separated, and only darken on hover and press. */
     .bx-std .bx-btn-group {
         @apply inline-flex items-stretch rounded-lg;
         @apply after:z-10; /* the group's hairline draws over the segments */
     }
     .bx-std .bx-btn-group > .bx-btn {
-        @apply rounded-none shadow-none hover:ring-0 hover:ring-offset-0 active:scale-100 active:shadow-none;
+        @apply rounded-none shadow-none hover:ring-0 hover:ring-offset-0 active:shadow-none;
         @apply active:from-white active:to-black/15 dark:active:from-white/25 dark:active:to-white/15; /* a pressed segment darkens a step further than a hovered plate, in the same translucent tones */
         @apply after:hidden;
     }
