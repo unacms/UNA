@@ -99,6 +99,7 @@ class BxForumConfig extends BxBaseModTextConfig
             'URL_HOME' => 'page.php?i=discussions-home',
             'URL_UPDATED' => 'page.php?i=discussions-updated',
             'URL_NEW' => 'page.php?i=discussions-new',
+            'URL_LATEST' => 'page.php?i=discussions-latest',
             'URL_TOP' => 'page.php?i=discussions-top',
             'URL_POPULAR' => 'page.php?i=discussions-popular',
             'URL_PARTAKEN' => 'page.php?i=discussions-partaken',

@@ -85,8 +85,8 @@ class BxForumGrid extends BxBaseModGeneralGrid
         ];
 
         if(($sFilter3 = bx_get($this->_sFilter3Name)) !== false) {
-            $this->_sFilter1Value = bx_process_input($sFilter3);
-            $this->_aQueryAppend['filter3'] = $this->_sFilter1Value;
+            $this->_sFilter3Value = bx_process_input($sFilter3);
+            $this->_aQueryAppend['filter3'] = $this->_sFilter3Value;
         }
 
         $this->_aFilterAreaLabels = [
@@ -410,17 +410,25 @@ class BxForumGrid extends BxBaseModGeneralGrid
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
 
-        if(isset($this->_sFilter3Value) && $this->_sFilter3Value != ''){
+        if(isset($this->_sFilter3Value) && $this->_sFilter3Value != '') {
             $sOrderField = $this->_aBrowseParams['type'] = $this->_sFilter3Value;
             if (!empty($this->_aBrowseParams['type']) && $this->_aBrowseParams['type'] != 'partaken'){
                 $this->_aBrowseParams['type'] = $this->_aBrowseParams['type'] = $this->_sFilter3Value;
             }
         }
-        
+
     	$sOrder = parent::_getDataSqlOrderClause($sOrderByFilter, $sOrderField, $sOrderDir, true);
-                
+
         if(!empty($this->_aBrowseParams['type']))
             switch($this->_aBrowseParams['type']) {
+                case 'latest':
+                    $sOrder = '`' . $CNF['TABLE_ENTRIES'] . '`.`' . $CNF['FIELD_LR_ADDED'] . '` ' . $this->_sDefaultSortingOrder;
+                    break;
+
+                case 'new':
+                    $sOrder = '`' . $CNF['TABLE_ENTRIES'] . '`.`' . $CNF['FIELD_ADDED'] . '` ' . $this->_sDefaultSortingOrder;
+                    break;
+
                 case 'top':
                     $aPartsUp = $aPartsDown = array(0);
                     if(($oVote = BxDolVote::getObjectInstance($CNF['OBJECT_VOTES'], 0, false)) !== false && $oVote->isEnabled()) {
@@ -444,6 +452,10 @@ class BxForumGrid extends BxBaseModGeneralGrid
                     }
 
                     $sOrder = pow(10, 8) . ' * ((' . implode(' + ', $aPartsUp) . ') - (' . implode(' + ', $aPartsDown) . ')) / (UNIX_TIMESTAMP() - `' . $this->_aOptions['table'] . '`.`' . $CNF['FIELD_ADDED'] . '`) ' . $this->_sDefaultSortingOrder;
+                    break;
+
+                case 'popular':
+                    $sOrder = '`' . $CNF['TABLE_ENTRIES'] . '`.`' . $CNF['FIELD_VIEWS'] . '` ' . $this->_sDefaultSortingOrder;
                     break;
 
                 case 'partaken':

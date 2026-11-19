@@ -133,7 +133,7 @@
 	<string name="_bx_forum_page_title_browse_featured"><![CDATA[Продвинутые обсуждения]]></string>
 	<string name="_bx_forum_page_title_browse_by_category"><![CDATA[Обсуждения в {category_name}]]></string>
 	<string name="_bx_forum_page_title_browse_new"><![CDATA[Новые обсуждения]]></string>
-    <string name="_bx_forum_page_title_browse_latest"><![CDATA[Недавние обсуждения]]></string>
+    <string name="_bx_forum_page_title_browse_latest"><![CDATA[Обсуждения с последними сообщениями]]></string>
     <string name="_bx_forum_page_title_browse_top"><![CDATA[ТОП обсуждений]]></string>
     <string name="_bx_forum_page_title_browse_popular"><![CDATA[Популарные обсуждения]]></string>
     <string name="_bx_forum_page_title_browse_updated"><![CDATA[Обновлённые обсуждения]]></string>
