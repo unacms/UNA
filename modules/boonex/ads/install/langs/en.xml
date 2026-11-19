@@ -560,58 +560,58 @@
     <string name="_bx_ads_et_txt_name_interested"><![CDATA[I'm interested.]]></string>
     <string name="_bx_ads_et_txt_subject_interested"><![CDATA[{viewer_name} is interested in your ad.]]></string>
     <string name="_bx_ads_et_txt_body_interested"><![CDATA[{email_header}
-<p>Hello, {profile_name}.</p>
-<p><b><a href="{viewer_url}">{viewer_name}</a></b> is interested in your ad <b><a href="{ad_url}">{ad_name}</a></b>.</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello, {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><b><a href="{viewer_url}">{viewer_name}</a></b> is interested in your ad <b><a href="{ad_url}">{ad_name}</a></b>.</p>
 {email_footer}]]></string>
 
     <string name="_bx_ads_et_txt_name_purchased"><![CDATA[Ad was purchased.]]></string>
     <string name="_bx_ads_et_txt_subject_purchased"><![CDATA[You've purchased {entry_name} ad.]]></string>
     <string name="_bx_ads_et_txt_body_purchased"><![CDATA[{email_header}
-<p>Hello, {client_name}.</p>
-<p>You've purchased <a href="{entry_url}">{entry_name}</a> ad ({count} item(s)) from <a href="{vendor_url}">{vendor_name}</a>.<br />Your license is <b>{license}</b>.</p>
-<p>{notes}</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello, {client_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You've purchased <a href="{entry_url}">{entry_name}</a> ad ({count} item(s)) from <a href="{vendor_url}">{vendor_name}</a>.<br />Your license is <b>{license}</b>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{notes}</p>
 {email_footer}]]></string>
 
     <string name="_bx_ads_et_txt_name_shipped"><![CDATA[Ad was shipped.]]></string>
     <string name="_bx_ads_et_txt_subject_shipped"><![CDATA[Ad {entry_name} was shipped.]]></string>
     <string name="_bx_ads_et_txt_body_shipped"><![CDATA[{email_header}
-<p>Hello, {profile_name}.</p>
-<p>The <a href="{entry_url}">{entry_name}</a> ad was shipped by <a href="{vendor_url}">{vendor_name}</a>.</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello, {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">The <a href="{entry_url}">{entry_name}</a> ad was shipped by <a href="{vendor_url}">{vendor_name}</a>.</p>
 {email_footer}]]></string>
 
     <string name="_bx_ads_et_txt_name_received"><![CDATA[Ad received.]]></string>
     <string name="_bx_ads_et_txt_subject_received"><![CDATA[Ad {entry_name} was received.]]></string>
     <string name="_bx_ads_et_txt_body_received"><![CDATA[{email_header}
-<p>Hello, {profile_name}.</p>
-<p>The <a href="{entry_url}">{entry_name}</a> ad was received by <a href="{client_url}">{client_name}</a>.</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello, {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">The <a href="{entry_url}">{entry_name}</a> ad was received by <a href="{client_url}">{client_name}</a>.</p>
 {email_footer}]]></string>
 
     <string name="_bx_ads_et_txt_name_offer_added"><![CDATA[New offer was added.]]></string>
     <string name="_bx_ads_et_txt_subject_offer_added"><![CDATA[{viewer_name} added an offer for your ad.]]></string>
     <string name="_bx_ads_et_txt_body_offer_added"><![CDATA[{email_header}
-<p>Hello, {profile_name}.</p>
-<p><b><a href="{viewer_url}">{viewer_name}</a></b> added an offer for your ad <b><a href="{entry_url}">{entry_name}</a></b>.</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello, {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><b><a href="{viewer_url}">{viewer_name}</a></b> added an offer for your ad <b><a href="{entry_url}">{entry_name}</a></b>.</p>
 {email_footer}]]></string>
 
     <string name="_bx_ads_et_txt_name_offer_accepted"><![CDATA[The offer was accepted.]]></string>
     <string name="_bx_ads_et_txt_subject_offer_accepted"><![CDATA[Your offer for {entry_name} ad was accepted.]]></string>
     <string name="_bx_ads_et_txt_body_offer_accepted"><![CDATA[{email_header}
-<p>Hello, {offerer_name}.</p>
-<p>Your offer for <b><a href="{entry_url}">{entry_name}</a></b> ad was accepted.</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello, {offerer_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your offer for <b><a href="{entry_url}">{entry_name}</a></b> ad was accepted.</p>
 {email_footer}]]></string>
 
     <string name="_bx_ads_et_txt_name_offer_declined"><![CDATA[The offer was declined.]]></string>
     <string name="_bx_ads_et_txt_subject_offer_declined"><![CDATA[Your offer for {entry_name} ad was declined.]]></string>
     <string name="_bx_ads_et_txt_body_offer_declined"><![CDATA[{email_header}
-<p>Hello, {offerer_name}.</p>
-<p>Your offer for <b><a href="{entry_url}">{entry_name}</a></b> ad was declined.</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello, {offerer_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your offer for <b><a href="{entry_url}">{entry_name}</a></b> ad was declined.</p>
 {email_footer}]]></string>
 
     <string name="_bx_ads_et_txt_name_offer_canceled"><![CDATA[The offer was canceled.]]></string>
     <string name="_bx_ads_et_txt_subject_offer_canceled"><![CDATA[{offerer_name} canceled the offer for {entry_name} ad.]]></string>
     <string name="_bx_ads_et_txt_body_offer_canceled"><![CDATA[{email_header}
-<p>Hello, {profile_name}.</p>
-<p><a href="{offerer_url}">{offerer_name}</a> canceled the offer for <b><a href="{entry_url}">{entry_name}</a></b> ad.</p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello, {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{offerer_url}">{offerer_name}</a> canceled the offer for <b><a href="{entry_url}">{entry_name}</a></b> ad.</p>
 {email_footer}]]></string>
 
     <string name="_bx_ads_txt_all_entries_in"><![CDATA[<a href="{0}">All Ads in {1} ({2})</a>]]></string>

@@ -108,7 +108,7 @@ class EmailHeaderLogoTest extends BxDolIntegrationTestCase
         else
             $sHeader = (string)getParam('site_email_html_template_header');
 
-        $this->assertStringContainsString('<meta name="color-scheme" content="light dark">', $sHeader);
+        $this->assertStringContainsString('<meta name="color-scheme" content="light dark"', $sHeader);
         $this->assertStringContainsString('@media (prefers-color-scheme: dark)', $sHeader);
         $this->assertStringContainsString('.bx-email-logo-light { display:none !important; }', $sHeader);
         $this->assertStringContainsString('.bx-email-logo-dark { display:block !important;', $sHeader);

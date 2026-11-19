@@ -105,9 +105,9 @@
     <string name="_bx_acl_et_txt_name_subscription_cancel_required"><![CDATA[Subscription cancel required.]]></string>
     <string name="_bx_acl_et_txt_subject_subscription_cancel_required"><![CDATA[Subscription cancel required.]]></string>
     <string name="_bx_acl_et_txt_body_subscription_cancel_required"><![CDATA[{email_header}
-<p>Hello,</p>
-<p>You've paid for a new membership level but your old level's subscription is still active. You need to cancel it manually.</p>
-<p>Old subscription info:<br />Membership level: {level}<br />Order: {order}<br />Date Starts: {date_starts}<br />Date Expires: {date_expires}</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Hello,</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You've paid for a new membership level but your old level's subscription is still active. You need to cancel it manually.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Old subscription info:<br />Membership level: {level}<br />Order: {order}<br />Date Starts: {date_starts}<br />Date Expires: {date_expires}</p>
 {email_footer}]]></string>
 
 

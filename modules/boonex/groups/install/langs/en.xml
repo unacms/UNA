@@ -460,48 +460,48 @@
     <string name="_bx_groups_email_join_request"><![CDATA[Group join request]]></string>
     <string name="_bx_groups_email_join_request_subject"><![CDATA[Request to join your group]]></string>
     <string name="_bx_groups_email_join_request_body"><![CDATA[{email_header}
-<p>New request to join <a href="{EntryUrl}">{EntryTitle}</a> group from <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">New request to join <a href="{EntryUrl}">{EntryTitle}</a> group from <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_join_reject"><![CDATA[Group join request was rejected]]></string>
     <string name="_bx_groups_email_join_reject_subject"><![CDATA[Request to join a group was rejected]]></string>
     <string name="_bx_groups_email_join_reject_body"><![CDATA[{email_header}
-<p>Your request to join <a href="{EntryUrl}">{EntryTitle}</a> group was rejected by group admin.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> group was rejected by group admin.</p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_join_confirm"><![CDATA[Group join request was confirmed]]></string>
     <string name="_bx_groups_email_join_confirm_subject"><![CDATA[Your request to join a group was confirmed]]></string>
     <string name="_bx_groups_email_join_confirm_body"><![CDATA[{email_header}
-<p>Your request to join <a href="{EntryUrl}">{EntryTitle}</a> group was confirmed by the group admin.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> group was confirmed by the group admin.</p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_fan_remove"><![CDATA[Profile was removed from group fans]]></string>
     <string name="_bx_groups_email_fan_remove_subject"><![CDATA[Your profile was removed from the group]]></string>
     <string name="_bx_groups_email_fan_remove_body"><![CDATA[{email_header}
-<p>Your profile was removed from <a href="{EntryUrl}">{EntryTitle}</a> group by the group admin.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your profile was removed from <a href="{EntryUrl}">{EntryTitle}</a> group by the group admin.</p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_fan_become_admin"><![CDATA[Group admin status was granted]]></string>
     <string name="_bx_groups_email_fan_become_admin_subject"><![CDATA[You are a group admin now]]></string>
     <string name="_bx_groups_email_fan_become_admin_body"><![CDATA[{email_header}
-<p>You are an admin of <a href="{EntryUrl}">{EntryTitle}</a> group now.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You are an admin of <a href="{EntryUrl}">{EntryTitle}</a> group now.</p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_admin_become_fan"><![CDATA[Group admin status was revoked]]></string>
     <string name="_bx_groups_email_admin_become_fan_subject"><![CDATA[Your group admin status was revoked]]></string>
     <string name="_bx_groups_email_admin_become_fan_body"><![CDATA[{email_header}
-<p>Your admin status was revoked from <a href="{EntryUrl}">{EntryTitle}</a> group.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your admin status was revoked from <a href="{EntryUrl}">{EntryTitle}</a> group.</p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_set_role"><![CDATA[Group member status was changed]]></string>
     <string name="_bx_groups_email_set_role_subject"><![CDATA[Your group status was changed]]></string>
     <string name="_bx_groups_email_set_role_body"><![CDATA[{email_header}
-<p>Your status in <a href="{EntryUrl}">{EntryTitle}</a> group was changed to <b>{Role}</b>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your status in <a href="{EntryUrl}">{EntryTitle}</a> group was changed to <b>{Role}</b>.</p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_invitation"><![CDATA[Invitation to group]]></string>
     <string name="_bx_groups_email_invitation_subject"><![CDATA[Invitation to "{EntryTitle}" group]]></string>
     <string name="_bx_groups_email_invitation_body"><![CDATA[{email_header}
-<p><a href="{InviterUrl}">{InviterDisplayName}</a> invited you to <a href="{EntryUrl}">{EntryTitle} group</a>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{InviterUrl}">{InviterDisplayName}</a> invited you to <a href="{EntryUrl}">{EntryTitle} group</a>.</p>
 {email_footer}]]></string>
 </resources>
