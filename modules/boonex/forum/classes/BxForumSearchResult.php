@@ -111,7 +111,7 @@ class BxForumSearchResult extends BxBaseModTextSearchResult
                 $this->aCurrent['paginate']['perPage'] = getParam('bx_forum_per_page_index');
 
             case 'latest':
-                $this->sBrowseUrl = BxDolPermalinks::getInstance()->permalink($CNF['URL_TOP']);
+                $this->sBrowseUrl = BxDolPermalinks::getInstance()->permalink($CNF['URL_LATEST']);
                 $this->aCurrent['title'] = _t('_bx_forum_page_title_browse_latest');
                 $this->aCurrent['rss']['link'] = 'modules/?r=forum/rss/' . $sMode;
                 $this->aCurrent['sorting'] = 'latest';

@@ -133,7 +133,7 @@
 	<string name="_bx_forum_page_title_browse_featured"><![CDATA[Featured Discussions]]></string>
 	<string name="_bx_forum_page_title_browse_by_category"><![CDATA[Discussions by {category_name}]]></string>
 	<string name="_bx_forum_page_title_browse_new"><![CDATA[New Discussions]]></string>
-    <string name="_bx_forum_page_title_browse_latest"><![CDATA[Latest Discussions]]></string>
+    <string name="_bx_forum_page_title_browse_latest"><![CDATA[Discussions With Recent Posts]]></string>
     <string name="_bx_forum_page_title_browse_top"><![CDATA[Top Discussions]]></string>
     <string name="_bx_forum_page_title_browse_popular"><![CDATA[Popular Discussions]]></string>
     <string name="_bx_forum_page_title_browse_updated"><![CDATA[Updated Discussions]]></string>
