@@ -5175,12 +5175,17 @@ UPDATE `sys_menu_items` SET `hidden_on` = '1' WHERE `set_name` = 'sys_site' AND 
 UPDATE `sys_menu_items` SET `order` = 10010 WHERE `set_name` = 'sys_site' AND `name` = 'more-auto';
 UPDATE `sys_menu_items` SET `order` = 9999 WHERE `set_name` = 'sys_site' AND `name` = 'about';
 
--- panel menu
+-- panel menu. An item's title heads its menu in the apps (the site draws the menus without one). The last three items
+-- are for the apps' drawer (enable-app-menus.sql turns them on there): the modules, the account's own menu and the
+-- footer's links. They are off on the site, whose header and footer have them.
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
 ('sys_site_panel', 'system', 'member-avatar', '_sys_menu_item_title_system_member_avatar', '', '', '', '', '', '', 2147483646, 1, 0, 1),
 ('sys_site_panel', 'system', 'public-menu', '_sys_menu_item_title_system_public_menu', '', '', '', '', '', 'sys_site_in_panel', 2147483647, 0, 0, 2),
-('sys_site_panel', 'system', 'member-menu', '_sys_menu_item_title_system_member_menu', '', '', '', '', '', 'sys_profile_stats', 2147483646, 1, 0, 3),
-('sys_site_panel', 'system', 'member-followings', '_sys_menu_item_title_system_member_followings', '', '', '', '', '', 'sys_profile_followings', 2147483646, 1, 0, 4);
+('sys_site_panel', 'system', 'member-menu', '_sys_menu_item_title_system_member_menu', '_sys_menu_item_title_member_menu', '', '', '', '', 'sys_profile_stats', 2147483646, 1, 0, 3),
+('sys_site_panel', 'system', 'member-followings', '_sys_menu_item_title_system_member_followings', '_sys_menu_item_title_member_followings', '', '', '', '', 'sys_profile_followings', 2147483646, 1, 0, 4),
+('sys_site_panel', 'system', 'homepage-menu', '_sys_menu_title_homepage', '_apps', '', '', '', '', 'sys_homepage', 2147483647, 0, 0, 5),
+('sys_site_panel', 'system', 'account-menu', '_sys_menu_title_account_notifications', '_sys_menu_item_title_account_settings_section_account', '', '', '', '', 'sys_account_notifications', 2147483646, 0, 0, 6),
+('sys_site_panel', 'system', 'footer-menu', '_sys_menu_title_footer', '_sys_menu_item_title_about', '', '', '', '', 'sys_footer', 2147483647, 0, 0, 7);
 
 -- the apps' sidebar (API v2 GET /navigation, BxBaseApiV2Navigation): menus of its own, which the site does not draw and
 -- API v1 is not asked for. Each item of Apps Sidebar is a group: its submenu's items for the apps, under its title when

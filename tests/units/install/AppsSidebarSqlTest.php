@@ -104,14 +104,25 @@ class AppsSidebarSqlTest extends \PHPUnit\Framework\TestCase
         // the site menu and the member menu have no item that is there for the apps' sidebar
         $this->assertSame(['home', 'about', 'search', 'more-auto', 'login', 'create-account'], array_keys(self::items($sSystem, 'sys_site')));
         $this->assertSame(['profile-stats-profile', 'friend-suggestions'], array_keys(self::items($sSystem, 'sys_profile_stats')));
-        // the Site Panel: its four items, none with a heading, in the site's order
-        $this->assertSame(['member-avatar', 'public-menu', 'member-menu', 'member-followings'], array_keys(self::items($sSystem, 'sys_site_panel')));
-        foreach (['public-menu' => ['sys_site_in_panel', '2147483647, 0, 0, 2'], 'member-menu' => ['sys_profile_stats', '2147483646, 1, 0, 3'], 'member-followings' => ['sys_profile_followings', '2147483646, 1, 0, 4']] as $sName => [$sSubmenu, $sRest])
-            $this->assertStringContainsString("('sys_site_panel', 'system', '" . $sName . "', '_sys_menu_item_title_system_" . str_replace('-', '_', $sName) . "', '', '', '', '', '', '" . $sSubmenu . "', " . $sRest . ")", $sSystem, $sName);
+        // the Site Panel: its four items in the site's order, then the three that are for the apps' drawer and off on
+        // the site (the modules, the account's menu, the footer's links). A title heads a menu in the apps; the site
+        // draws the menus without one.
+        $this->assertSame(['member-avatar', 'public-menu', 'member-menu', 'member-followings', 'homepage-menu', 'account-menu', 'footer-menu'], array_keys(self::items($sSystem, 'sys_site_panel')));
+        $aPanel = [
+            'public-menu' => ['_sys_menu_item_title_system_public_menu', '', 'sys_site_in_panel', '2147483647, 0, 0, 2'],
+            'member-menu' => ['_sys_menu_item_title_system_member_menu', '_sys_menu_item_title_member_menu', 'sys_profile_stats', '2147483646, 1, 0, 3'],
+            'member-followings' => ['_sys_menu_item_title_system_member_followings', '_sys_menu_item_title_member_followings', 'sys_profile_followings', '2147483646, 1, 0, 4'],
+            'homepage-menu' => ['_sys_menu_title_homepage', '_apps', 'sys_homepage', '2147483647, 0, 0, 5'],
+            'account-menu' => ['_sys_menu_title_account_notifications', '_sys_menu_item_title_account_settings_section_account', 'sys_account_notifications', '2147483646, 0, 0, 6'],
+            'footer-menu' => ['_sys_menu_title_footer', '_sys_menu_item_title_about', 'sys_footer', '2147483647, 0, 0, 7'],
+        ];
+        foreach ($aPanel as $sName => [$sTitleSystem, $sTitle, $sSubmenu, $sRest])
+            $this->assertStringContainsString("('sys_site_panel', 'system', '" . $sName . "', '" . $sTitleSystem . "', '" . $sTitle . "', '', '', '', '', '" . $sSubmenu . "', " . $sRest . ")", $sSystem, $sName);
 
         $sApp = self::read('modules/system/install/sql/enable-app-menus.sql');
         $this->assertStringNotContainsString("`set_name`='sys_site_panel' AND `module`='system' AND `name`='public-menu'", $sApp, 'The Site Panel\'s Public Menu stays off in the apps.');
         $this->assertStringContainsString("SET `active_api`=1 WHERE `set_name`='sys_site_panel' AND `module`='system' AND `name`='member-followings';", $sApp);
+        $this->assertStringContainsString("SET `active_api`=1, `config_api`='{\"drawer\":true}' WHERE `set_name`='sys_site_panel' AND `module`='system' AND `name` IN ('homepage-menu', 'account-menu', 'footer-menu');", $sApp, 'The drawer\'s three are on in the apps, and marked for the drawer.');
         $this->assertStringNotContainsString("`set_name`='sys_profile_stats' AND `module`='system' AND `name`='friend-suggestions'", $sApp);
 
         // no module adds its Messages or Notifications to the site menu or the member menu for the apps,
