@@ -294,16 +294,22 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     border-radius: inherit;
     object-fit: cover;
 }
+/* App art: the launcher's and the header's icon edge (tailwind.css, .bx-icon-tile), a black/10 line with a white/5 one inside it over the
+   art's outer pixels, the black line black/20 while its row is hovered; white/15 in the dark scheme. */
 .bx-dbd-tile-app::after {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.1); /* the same inset hairline the tile plates draw */
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.1), inset 0 0 0 2px rgb(255 255 255 / 0.05);
 }
-.dark .bx-dbd-tile-app::after {
-    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05);
+:is(a, button):hover > .bx-dbd-tile-app::after {
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.2), inset 0 0 0 2px rgb(255 255 255 / 0.05);
+}
+.dark .bx-dbd-tile-app::after,
+.dark :is(a, button):hover > .bx-dbd-tile-app::after {
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.15);
 }
 .bx-dbd-chart-name {
     flex: 1 1 auto;
