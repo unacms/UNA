@@ -2495,9 +2495,10 @@
         @apply after:inset-0 after:rounded-[inherit] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.1),inset_0_0_0_2px_rgb(255_255_255/0.05)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.15)];
     }
     /* Hovered (the tile, or the link it sits in), light mode: the dark line deepens to black/20. The class twice outweighs the launcher
-       tiles' :not() chain above. */
-    .bx-std a:hover .bx-icon-tile.bx-icon-tile:not(:is(.dark *))::after,
-    .bx-std .bx-icon-tile.bx-icon-tile:hover:not(:is(.dark *))::after {
+       tiles' :not() chain above. Not the sidebar's tile buttons (plain glyphs on the buttons' plate), which keep the buttons' hairlines
+       when their row is hovered, as the header buttons do. */
+    .bx-std a:hover .bx-icon-tile.bx-icon-tile:not(.bx-std-tile-btn):not(:is(.dark *))::after,
+    .bx-std .bx-icon-tile.bx-icon-tile:not(.bx-std-tile-btn):hover:not(:is(.dark *))::after {
         --tw-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.2), inset 0 0 0 2px rgb(255 255 255 / 0.05);
     }
 
