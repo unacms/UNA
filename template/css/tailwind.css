@@ -2324,8 +2324,8 @@
         @apply rounded-lg;
     }
 
-    /* Header buttons: a translucent top-to-bottom gradient (clear to black/5, so the top is the surface's own colour and the button only
-       darkens towards its foot; white/20 to white/10 in the dark scheme) with two hairlines
+    /* Header buttons: a top-to-bottom gradient, opaque in light mode (gray-50 to gray-100, gray-200 at the foot when hovered) so they look
+       the same on any surface, translucent in the dark scheme (white/20 to white/10) with two hairlines
        drawn by ::after so nothing covers them. Light: both inside the 36px, a dark 1px edge (black/15) and a light 2px one within it
        (white/50), so the button is no larger than its box. Dark: a light one inset (white/5) and a dark one outside (black/20), which does
        not show on the dark bar. Hover only deepens the gradient and the glyph. Every Studio .bx-btn shares it (see "Studio: Buttons" below). */
@@ -2334,9 +2334,9 @@
     .bx-std .bx-std-header-btn,
     .bx-std .bx-btn,
     .bx-std .bx-btn-group {
-        @apply relative border-0 bg-gradient-to-b from-white/0 to-black/5 dark:from-white/20 dark:to-white/10;
+        @apply relative border-0 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-white/20 dark:to-white/10;
         @apply bg-transparent hover:bg-transparent active:bg-transparent; /* no gray fill under the gradient (the site's .bx-btn paints gray-100 / gray-700): the plate is only white and black over what it sits on */
-        @apply hover:from-white hover:to-black/10 dark:hover:from-white/30 dark:hover:to-white/15;
+        @apply hover:from-gray-50 hover:to-gray-200 dark:hover:from-white/30 dark:hover:to-white/15;
         @apply text-black/80 dark:text-white/80 hover:text-black dark:hover:text-white;
         @apply transition duration-300 active:duration-100 active:scale-95;
         @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.15),inset_0_0_0_2px_rgb(255_255_255/0.5)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
@@ -2498,7 +2498,7 @@
 
     /* Sidebar icon tiles: the same translucent gradient button as the header tools, hovered through the parent link (.group). */
     .bx-std .bx-std-tile-btn {
-        @apply relative border-0 bg-gradient-to-b from-white/0 to-black/5 dark:from-white/20 dark:to-white/10;
+        @apply relative border-0 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-white/20 dark:to-white/10;
         @apply text-black/80 dark:text-white/80;
         @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.15),inset_0_0_0_2px_rgb(255_255_255/0.5)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
     }
@@ -2509,7 +2509,7 @@
     }
     /* group-hover can't be @applied here (Tailwind would put .group above .bx-std), so the hovered link is spelled out. */
     .bx-std .group:hover .bx-std-tile-btn {
-        @apply from-white to-black/10 dark:from-white/30 dark:to-white/15 text-black dark:text-white;
+        @apply from-gray-50 to-gray-200 dark:from-white/30 dark:to-white/15 text-black dark:text-white;
     }
 
     /* Popups float above blocks, so they get the larger shadow stack and the blocks' inset hairline instead of an outer ring. */
