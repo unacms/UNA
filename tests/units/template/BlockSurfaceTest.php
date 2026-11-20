@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Blocks on the site and in NEO take Studio's block surface (.bx-std-block): 22px corners (--bx-radius-3xl), white at 60% (white at 10%
- * in dark), a white/50 hairline inside (white/2.5 in dark) and smooth-shadow-sm's six soft layers. NEO's rounded-block and
- * shadow-block-outline carry the same values, so a change belongs on both sides.
+ * Blocks on the site, in Studio and in NEO share one surface: 22px corners (--bx-radius-3xl), the card colour at 60% (white, gray-800
+ * in dark), a white/50 hairline inside (white/2.5 in dark) and smooth-shadow-sm's six soft layers, over one page colour (gray-100,
+ * gray-950 in dark). NEO's bg-card/60, rounded-block and shadow-block-outline carry the same values, so a change belongs on every side.
  */
 class BlockSurfaceTest extends BxDolTestCase
 {
@@ -22,13 +22,16 @@ class BlockSurfaceTest extends BxDolTestCase
     {
         $s = self::read('template/css/tailwind.css');
 
-        $this->assertStringContainsString("    .bx-def-color-bg-block {\n        @apply bg-white/60 dark:bg-white/10;", $s);
+        $this->assertStringContainsString("    .bx-def-color-bg-block {\n        @apply bg-white/60 dark:bg-gray-800/60;", $s);
         $this->assertStringContainsString("    .bx-def-border-block {\n        box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.5), " . self::STACK . ';', $s);
         $this->assertStringContainsString("    .bx-def-border-block:is(.dark *) {\n        box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.025), " . self::STACK . ';', $s);
         $this->assertStringContainsString("    .bx-def-border-radius-block {\n        border-radius: var(--bx-radius-3xl);", $s);
 
-        // Studio's own blocks, the reference
-        $this->assertStringContainsString('@apply bg-white/60 dark:bg-white/10 ring-1 ring-inset ring-white/50 dark:ring-white/[0.025];', $s);
+        // Studio's own blocks and page are the site's
+        $this->assertStringContainsString('@apply bg-white/60 dark:bg-gray-800/60 ring-1 ring-inset ring-white/50 dark:ring-white/[0.025];', $s);
+        $this->assertStringContainsString("    .bx-def-color-bg-page{\n        @apply bg-gray-100 dark:bg-gray-950;", $s);
+        $this->assertStringContainsString("    .bx-std-bg.bx-def-color-bg-page {\n        @apply bg-gray-100 dark:bg-gray-950;", $s);
+        $this->assertStringNotContainsString('dark:bg-white/10 ring-1 ring-inset ring-white/50', $s, 'No block keeps the white/10 surface of the black Studio page.');
     }
 
     public function testNeoBlocksMatchTheSite(): void
@@ -39,6 +42,11 @@ class BlockSurfaceTest extends BxDolTestCase
         $this->assertStringContainsString('--neo-shadow-block-outline-deep:  inset 0 0 0 1px rgb(255 255 255 / 0.025), ' . self::STACK . ';', $sTheme);
 
         $sElements = self::read('neo/packages/app/settings/theme/elements.js');
-        $this->assertStringContainsString("' bg-card/60 dark:bg-white/10 shadow-block-outline dark:shadow-block-outline-deep '", $sElements);
+        $this->assertStringContainsString("' bg-card/60 shadow-block-outline dark:shadow-block-outline-deep '", $sElements);
+
+        $sSchemes = self::read('neo/packages/app/design/styles/palette-schemes.css');
+        $this->assertStringContainsString('--background: var(--neutral-100);', $sSchemes);
+        $this->assertStringContainsString('--background: var(--neutral-950);', $sSchemes);
+        $this->assertStringContainsString('--card: var(--neutral-800);', $sSchemes);
     }
 }
