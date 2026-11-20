@@ -123,6 +123,9 @@ BxDolGridAg.prototype._mount = function () {
         },
         onSelectionChanged: function () {
             self._syncChecks();
+        },
+        onModelUpdated: function () {
+            self._fitHeight();
         }
     };
 
@@ -387,6 +390,33 @@ BxDolGridAg.prototype._layoutRow = function (node) {
         return;
     this._oApi.onRowHeightChanged();
     this._oApi.redrawRows({ rowNodes: [node] });
+    this._fitHeight();
+};
+
+/**
+ * The grid is as tall as its rows, up to the max-height of the CSS, and scrolls inside that.
+ * A few rows then leave no empty space above the bulk actions.
+ */
+BxDolGridAg.prototype._fitHeight = function () {
+    var eGrid = document.getElementById('bx-grid-ag-' + this._sObject);
+    if (!eGrid || !this._oApi || !this._oApi.getDisplayedRowCount)
+        return;
+
+    var iMax = parseFloat(window.getComputedStyle(eGrid).maxHeight);
+    if (isNaN(iMax))
+        iMax = Infinity;
+
+    var iCount = this._oApi.getDisplayedRowCount();
+    if (!iCount)
+        return;
+
+    var iHeight = 44 + 2;
+    for (var i = 0; i < iCount && iHeight < iMax; i++) {
+        var oNode = this._oApi.getDisplayedRowAtIndex(i);
+        iHeight += oNode && oNode.rowHeight ? oNode.rowHeight : this._iRowHeight;
+    }
+
+    eGrid.style.height = Math.ceil(Math.min(iHeight, iMax)) + 'px';
 };
 
 BxDolGridAg.prototype.toggleExpand = function (sId, node) {
@@ -550,6 +580,9 @@ BxDolGridAg.prototype._syncChecks = function () {
     var sName = this._sObject + '_check';
     var sField = this._sFieldId;
     var aRows = this._oApi.getSelectedRows() || [];
+    var eWrap = document.getElementById(this._sWrap);
+    if (eWrap)
+        eWrap.classList.toggle('bx-grid-ag-has-selection', aRows.length > 0);
     e.textContent = '';
     for (var i = 0; i < aRows.length; i++) {
         if (!aRows[i] || aRows[i][sField] == null)
