@@ -32,17 +32,3 @@ $sTranslateSvg = '<svg class="bx-install-lang-icon" width="16" height="16" viewB
         <?php endforeach; ?>
     </div>
 </details>
-<script>
-(function () {
-    var d = document.querySelector('.bx-install-lang');
-    if (!d) return;
-    document.addEventListener('click', function (e) {
-        if (!d.contains(e.target))
-            d.removeAttribute('open');
-    });
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape')
-            d.removeAttribute('open');
-    });
-})();
-</script>

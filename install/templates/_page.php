@@ -6,10 +6,27 @@
     <meta name="color-scheme" content="light dark" />
     <title><?=$sTitle; ?></title>
     <script>
-        // Studio's dark scheme is the "dark" class (Tailwind's class strategy); the installer follows the system setting
+        // Studio's dark scheme is the "dark" class (Tailwind's class strategy). The installer follows the system
+        // setting unless the footer's theme menu chose Light or Dark in this browser.
         (function () {
+            var sKey = 'bx_install_scheme';
             var oQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
-            var apply = function () { document.documentElement.classList.toggle('dark', !!(oQuery && oQuery.matches)); };
+            var get = function () {
+                var s = null;
+                try { s = localStorage.getItem(sKey); } catch (e) {}
+                return 'light' === s || 'dark' === s ? s : 'auto';
+            };
+            var apply = function () {
+                var s = get();
+                document.documentElement.classList.toggle('dark', 'dark' === s || ('auto' === s && !!(oQuery && oQuery.matches)));
+            };
+            window.bxInstallScheme = {
+                get: get,
+                set: function (s) {
+                    try { 'auto' === s ? localStorage.removeItem(sKey) : localStorage.setItem(sKey, s); } catch (e) {}
+                    apply();
+                }
+            };
             apply();
             if (oQuery && oQuery.addEventListener)
                 oQuery.addEventListener('change', apply);
@@ -59,14 +76,32 @@
     <footer class="bx-install-footer">
         <div class="bx-install-footer-lang">
             <?php include_once 'lang_switcher.php'; ?>
+            <?php include_once 'scheme_switcher.php'; ?>
         </div>
         <div class="bx-install-footer-links">
-            <a href="https://unacms.com" target="_blank" rel="noopener"><?php echo _t('_sys_inst_footer_product'); ?></a>
             <a href="https://unacms.com/docs" target="_blank" rel="noopener"><?php echo _t('_sys_inst_footer_docs'); ?></a>
             <a href="https://unacms.com/contact" target="_blank" rel="noopener"><?php echo _t('_sys_inst_footer_contact'); ?></a>
         </div>
     </footer>
 </div>
+<script>
+// the footer menus (language, theme) close on a click outside them and on Escape
+(function () {
+    var close = function (oExcept) {
+        document.querySelectorAll('.bx-install-lang[open]').forEach(function (d) {
+            if (d !== oExcept)
+                d.removeAttribute('open');
+        });
+    };
+    document.addEventListener('click', function (e) {
+        close(e.target.closest ? e.target.closest('.bx-install-lang') : null);
+    });
+    document.addEventListener('keydown', function (e) {
+        if ('Escape' === e.key)
+            close(null);
+    });
+})();
+</script>
 
 </body>
 </html>

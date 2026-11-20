@@ -261,6 +261,24 @@ body.bx-install-body {
     color: var(--bx-inst-text);
     text-decoration: none;
 }
+button.bx-install-lang-item {
+    width: 100%;
+    border: 0;
+    background: none;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+.bx-install-footer-lang {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.bx-install-scheme-current:not([hidden]) {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
 .bx-install-lang-item:hover {
     background: var(--bx-inst-subtle);
 }
