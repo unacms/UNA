@@ -11,7 +11,6 @@ class BxDolStudioDashboard extends BxTemplStudioWidget
 {
     protected $aBlocks;
     protected $aItemsCache;
-    protected $aItemsHTools;
 
     protected $aAuditReport = null; // the report getAuditReport() settled on in this request
     protected $aItemsQueues;
@@ -68,12 +67,6 @@ class BxDolStudioDashboard extends BxTemplStudioWidget
             array('name' => 'purifier'),
             array('name' => 'opcache'),
             array('name' => 'custom')
-        );
-
-        $this->aItemsHTools = array (
-            'PHP' => 'requirementsPHP',
-            'MySQL' => 'requirementsMySQL',
-            'Web Server' => 'requirementsWebServer',
         );
 
         //--- Check actions ---//

@@ -1052,6 +1052,7 @@
 	<string name="_adm_err_modules_cannot_delete_from_cart"><![CDATA[Невозможно удалить товар(ы) из корзины.]]></string>
 	<string name="_adm_err_modules_cannot_remove_package"><![CDATA[Невозможно удалить пакет.]]></string>
 	<string name="_adm_err_modules_cannot_subscribe"><![CDATA[Невозможно инициировать подписку.]]></string>
+	<string name="_adm_err_modules_missing_php_packages"><![CDATA[Этому модулю нужны PHP-библиотеки, которые не установлены: {0}. Выполните "composer install" в папке UNA или установите UNA из релизного пакета, в котором они есть.]]></string>
 	<string name="_adm_err_modules_module_not_found"><![CDATA[Модуль не найден]]></string>
 	<string name="_adm_err_modules_module_not_match"><![CDATA[Обновление не применимо к данному модулю.]]></string>
 	<string name="_adm_err_modules_module_not_installed"><![CDATA[Модуль не установлен]]></string>
@@ -1983,7 +1984,7 @@
     <string name="_adm_stg_cpt_option_sys_account_switch_to_profile_redirect"><![CDATA[После смены профиля перенаправить на]]></string>
     <string name="_adm_stg_cpt_option_sys_account_switch_to_profile_redirect_custom"><![CDATA[URL для перенаправления 'Пользовательская страница']]></string>
     <string name="_adm_stg_cpt_option_sys_account_remember_me"><![CDATA[Значение по умолчанию для функции «Запомнить меня»]]></string>
-    <string name="_adm_stg_cpt_option_sys_account_require_profile"><![CDATA[Требовать профайл для работы с сайтом (аккаунты без профайла направляются к его созданию)]]></string>
+    <string name="_adm_stg_cpt_option_sys_account_require_profile"><![CDATA[Аккаунты без профайла]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_switch_to_profile_redirect_back"><![CDATA[Текущая страница]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_switch_to_profile_redirect_home"><![CDATA[Главная страница]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_switch_to_profile_redirect_profile"><![CDATA[Страница профиля]]></string>
@@ -2629,6 +2630,9 @@
 	<string name="_sys_acc_confirmation_type_phone"><![CDATA[телефон подтвержден]]></string>
 	<string name="_sys_acc_confirmation_type_email_and_phone"><![CDATA[email и телефон подтвержден]]></string>
   <string name="_sys_acc_confirmation_type_email_or_phone"><![CDATA[email или телефон подтвержден]]></string>
+	<string name="_sys_acc_profile_requirement_optional"><![CDATA[Необязателен: напоминание вверху каждой страницы]]></string>
+	<string name="_sys_acc_profile_requirement_prompt"><![CDATA[Предлагать после входа: окно «Создайте профайл» на первой странице]]></string>
+	<string name="_sys_acc_profile_requirement_required"><![CDATA[Обязателен: сначала направлять к созданию профайла]]></string>
 	<string name="_sys_acl_action_account"><![CDATA[Вы не создали ни одного профиля, поэтому Вы не можете '{1}'.]]></string>
 	<string name="_sys_acl_action_chart_view"><![CDATA[Диаграммы - Просматривать]]></string>
     <string name="_sys_acl_action_chart_view_desc"><![CDATA[Просматривать статистические диаграммы]]></string>
@@ -2950,6 +2954,7 @@
 	<string name="_sys_audit_msg_cache_engine_optional"><![CDATA[Необязательный движок в памяти: ускоряет работу, если установлен.]]></string>
 	<string name="_sys_audit_msg_x_based_cache_engine"><![CDATA[ ({0})]]></string>
 	<string name="_sys_audit_msg_ffmpeg"><![CDATA[Не найден по пути {0}: конвертация видео и аудио не будет работать.]]></string>
+	<string name="_sys_audit_msg_ffmpeg_not_runnable"><![CDATA[{0} не запускается на этом сервере ({1}): конвертация видео и аудио работать не будет. Установите ffmpeg для этого сервера и укажите путь к нему в BX_SYSTEM_FFMPEG в inc/header.inc.php или выполните здесь "composer install", чтобы скачать подходящую сборку.]]></string>
 	<string name="_sys_audit_msg_hardware_requirements"><![CDATA[Автоматически не проверяется: см. ручной аудит.]]></string>
 	<string name="_sys_audit_msg_mail_send_failed"><![CDATA[Отправка не удалась.]]></string>
 	<string name="_sys_audit_msg_mail_sending"><![CDATA[<span id="bx-sys-adm-audit-test-email"><a href="javascript:void(0);" onclick="bx_sys_adm_audit_test_email()">Отправить тестовое письмо</a></span>]]></string>
@@ -4766,7 +4771,7 @@
     <string name="_sys_txt_account_suspended"><![CDATA[Ваш аккаунт заблокирован.]]></string>
     <string name="_sys_txt_account_unconfirmed_email"><![CDATA[Ваш email не подтверждён. Пожалуйста, проверьте свой эл. ящик ({1}) на наличие письма подтверждения и перейдите по ссылке в нём или используйте код подтверждения (6 цифр), чтобы <a href="{2}">подтвердить свой адрес эл. почты</a>. <br />Не можете найти письмо? Проверьте папку "спам" или <a href="{0}">снова запросите письмо верификации</a>.]]></string>
     <string name="_sys_txt_account_unconfirmed_phone"><![CDATA[Ваш телефон не подтверждён. Пожалуйста, подтвердите его на  <a href="{0}">странице верификации</a>.]]></string>
-    <string name="_sys_txt_account_profile_system"><![CDATA[У вашего аккаунта ещё нет профиля. Создайте его, чтобы начать пользоваться сайтом.]]></string>
+    <string name="_sys_txt_account_profile_system"><![CDATA[У вас ещё нет профиля.]]></string>
     <string name="_sys_txt_account_profile_system_action"><![CDATA[Создать профиль]]></string>
     <string name="_sys_txt_account_need_to_change_password"><![CDATA[Ваш пароль устарел. Пожалуйста <a href="{0}">измените Ваш пароль</a>.]]></string>
     <string name="_sys_txt_account_cannot_delete"><![CDATA[Невозможно удалить единственную учетную запись оператора.]]></string>

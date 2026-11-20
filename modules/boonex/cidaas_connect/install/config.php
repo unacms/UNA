@@ -63,6 +63,13 @@ $aConfig = array(
      * Dependencies Section
      */
     'dependencies' => array(),
+
+    /**
+     * PHP libraries the module needs (class => composer package), installed with UNA's composer.json.
+     */
+    'php_classes' => array(
+        'Cidaas\\OAuth2\\Client\\Provider\\Cidaas' => 'cidaas/oauth2-cidaas',
+    ),
 );
 
 /** @} */

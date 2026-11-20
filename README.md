@@ -107,7 +107,7 @@ Open http://localhost in your browser and follow the installer. On the database 
 | Database user | `una` |
 | Database password | `una` |
 
-Installing every module takes a few minutes; keep the page open until the installer finishes.
+The installer preselects the starter apps; add or remove apps there, or later in Studio. It then installs them in batches and shows its progress, which takes about 3 minutes. Keep the page open until it reaches the finish page.
 
 ### Other port, more than one copy
 
@@ -140,9 +140,16 @@ The older address `http://localhost.una.io` still works on port 80: it is a publ
 
 ### After the installer
 
-- Delete the `install` folder: `rm -rf install`. Until you do, every page sends you to the installer's "remove the install folder" page. Git then lists the folder as deleted; `git checkout install` brings it back when you need it (for a reset, see below).
-- Sign in with the administrator account you created and open Studio at http://localhost/studio/ to add apps and change settings.
-- Cron is already running in the `cron` container every minute, so skip the installer's cron step. Anything UNA's cron prints shows in `docker compose logs -f cron`.
+The finish page lists three next steps. In this setup:
+
+- **Crontab line:** skip it. Cron already runs every minute in the `cron` container; anything UNA's cron prints shows in `docker compose logs -f cron`.
+- **Remove the `install` folder:** do it, from the repository folder: `rm -rf install`. Until then, every page of the site sends you to a page that asks you to remove it.
+- **Go to Studio:** you are already signed in as the administrator you created. Studio is at http://localhost/studio/ (with your port, if you set `UNA_PORT`), where you add apps and change settings.
+
+`install` is part of the repository, so in a git checkout `git status` lists its files as deleted. Don't commit that deletion. `git checkout install` brings the folder back when you need the installer again, for example after a reset (see below).
+
+Other local services:
+
 - Emails go to Mailpit: http://localhost:8025.
 - Database: phpMyAdmin at http://localhost:8080 signs you in as MySQL `root` (password `root`).
 
@@ -181,7 +188,7 @@ NEO is UNA's Next.js web client and its Expo app for iOS and Android. It lives i
    ```
 
    Use your UNA address, with the port if you set `UNA_PORT`.
-3. Start the web app with `yarn web2` in `neo/` and open http://localhost:3000.
+3. Start the web app with `yarn web2` in `neo/` and open http://localhost:3000. It runs the Next.js dev server with the variables from `neo/.env.local`. For another port, run `yarn web2 -p 3001` and use that address in `APP_URL`, `NEXT_PUBLIC_APP_URL` and the Studio origin. (`yarn web` is the same server behind the `portless` proxy, which you would have to install separately.)
 
 For the native apps, other variables, deployment and the rules for changing NEO, see [`neo/README.md`](neo/README.md) and [`neo/AGENTS.md`](neo/AGENTS.md).
 

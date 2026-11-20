@@ -185,6 +185,11 @@ class BxDolStudioInstaller extends BxDolInstallerUtils
                 'result' => false
             );
 
+        //--- Check that the PHP libraries the module needs are installed ---//
+        if(($aResult = $this->_checkPhpClasses($bHtmlResponce)) !== true) {
+            return $aResult;
+        }
+
         //--- Check for available translations ---//
         $oFile = $this->_getFileManager();
         $sModuleUri = $this->_aConfig['home_uri'];
@@ -389,6 +394,11 @@ class BxDolStudioInstaller extends BxDolInstallerUtils
                 'message' => _t('_adm_err_modules_already_enabled'),
                 'result' => false
             );
+
+        //--- Check that the PHP libraries the module needs are installed ---//
+        if(($aResult = $this->_checkPhpClasses(isset($aParams['html_response']) && (bool)$aParams['html_response'])) !== true) {
+            return $aResult;
+        }
 
         $aResult = array();
         if(!empty($this->_aConfig['before_enable'])) {
@@ -1138,6 +1148,47 @@ class BxDolStudioInstaller extends BxDolInstallerUtils
             $oFile = BxDolFile::getInstance();
 
         return $oFile;
+    }
+
+    /**
+     * Libraries the module needs that are missing: the packages of the classes listed in the
+     * 'php_classes' section of its config (class name => composer package) that can't be loaded.
+     * @return array of composer package names
+     */
+    public function getMissingPhpPackages()
+    {
+        if(empty($this->_aConfig['php_classes']) || !is_array($this->_aConfig['php_classes'])) {
+            return [];
+        }
+
+        $aMissing = [];
+        foreach($this->_aConfig['php_classes'] as $sClass => $sPackage) {
+            if(!class_exists($sClass) && !interface_exists($sClass)) {
+                $aMissing[$sPackage] = $sPackage;
+            }
+        }
+
+        return array_values($aMissing);
+    }
+
+    /**
+     * A module whose libraries are missing would fail with a fatal error the first time its code runs,
+     * so it isn't installed or enabled until they are in place.
+     * @return true or an error result
+     */
+    protected function _checkPhpClasses($bHtmlResponce)
+    {
+        $aMissing = $this->getMissingPhpPackages();
+        if(empty($aMissing)) {
+            return true;
+        }
+
+        $sMessage = _t('_adm_err_modules_missing_php_packages', implode(', ', $aMissing));
+        return array(
+            'code' => BX_DOL_STUDIO_IU_RCE_WSV_MI,
+            'message' => $this->_displayResult('check_dependencies', false, $sMessage, $bHtmlResponce),
+            'result' => false
+        );
     }
 
     protected function _isCompatibleWith()

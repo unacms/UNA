@@ -1058,6 +1058,7 @@
 	<string name="_adm_err_modules_cannot_delete_from_cart"><![CDATA[Cannot delete the product(s) from shopping cart.]]></string>
 	<string name="_adm_err_modules_cannot_remove_package"><![CDATA[Cannot remove package.]]></string>
 	<string name="_adm_err_modules_cannot_subscribe"><![CDATA[Cannot initialize the subscription.]]></string>
+	<string name="_adm_err_modules_missing_php_packages"><![CDATA[This module needs PHP libraries that are not installed: {0}. Run "composer install" in the UNA folder, or install UNA from a release package, which includes them.]]></string>
 	<string name="_adm_err_modules_module_not_found"><![CDATA[Module not found]]></string>
 	<string name="_adm_err_modules_module_not_match"><![CDATA[Update is not suitable for this module.]]></string>
 	<string name="_adm_err_modules_module_not_installed"><![CDATA[Module not installed]]></string>
@@ -2012,7 +2013,7 @@
     <string name="_adm_stg_cpt_option_sys_account_switch_to_profile_redirect"><![CDATA[Redirect after profile switch to]]></string>
     <string name="_adm_stg_cpt_option_sys_account_switch_to_profile_redirect_custom"><![CDATA[URL for 'Custom Page' redirect]]></string>
     <string name="_adm_stg_cpt_option_sys_account_remember_me"><![CDATA[Default value for 'Remember me' feature]]></string>
-    <string name="_adm_stg_cpt_option_sys_account_require_profile"><![CDATA[Require a profile before using the site (accounts without one are sent to profile creation)]]></string>
+    <string name="_adm_stg_cpt_option_sys_account_require_profile"><![CDATA[Accounts without a profile]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_switch_to_profile_redirect_back"><![CDATA[Current page]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_switch_to_profile_redirect_home"><![CDATA[Home page]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_switch_to_profile_redirect_profile"><![CDATA[View profile page]]></string>
@@ -2658,6 +2659,9 @@
 	<string name="_sys_acc_confirmation_type_phone"><![CDATA[phone is confirmed]]></string>
 	<string name="_sys_acc_confirmation_type_email_and_phone"><![CDATA[email and phone are confirmed]]></string>
   <string name="_sys_acc_confirmation_type_email_or_phone"><![CDATA[email or phone is confirmed]]></string>
+	<string name="_sys_acc_profile_requirement_optional"><![CDATA[Optional: a reminder bar on every page]]></string>
+	<string name="_sys_acc_profile_requirement_prompt"><![CDATA[Ask after sign-in: a “Create your profile” window on the first page]]></string>
+	<string name="_sys_acc_profile_requirement_required"><![CDATA[Required: send to profile creation before anything else]]></string>
 	<string name="_sys_acl_action_account"><![CDATA[You haven't created any profiles, so you can't '{1}'.]]></string>
 	<string name="_sys_acl_action_chart_view"><![CDATA[View charts]]></string>
 	<string name="_sys_acl_action_chart_view_desc"><![CDATA[View statistical charts]]></string>
@@ -2980,6 +2984,7 @@
 	<string name="_sys_audit_msg_cache_engine_optional"><![CDATA[Optional in-memory engine: adds speed when installed.]]></string>
 	<string name="_sys_audit_msg_x_based_cache_engine"><![CDATA[ ({0})]]></string>
 	<string name="_sys_audit_msg_ffmpeg"><![CDATA[Not found at {0}: video and audio conversion will not work.]]></string>
+	<string name="_sys_audit_msg_ffmpeg_not_runnable"><![CDATA[{0} does not run on this server ({1}): video and audio conversion will not work. Install ffmpeg for this server and set BX_SYSTEM_FFMPEG in inc/header.inc.php to it, or run "composer install" here to download the matching build.]]></string>
 	<string name="_sys_audit_msg_hardware_requirements"><![CDATA[Not checked automatically: see the manual audit.]]></string>
 	<string name="_sys_audit_msg_mail_send_failed"><![CDATA[Sending failed.]]></string>
 	<string name="_sys_audit_msg_mail_sending"><![CDATA[<span id="bx-sys-adm-audit-test-email"><a href="javascript:void(0);" onclick="bx_sys_adm_audit_test_email()">Send a test email</a></span>]]></string>
@@ -4836,7 +4841,7 @@
     <string name="_sys_txt_account_suspended"><![CDATA[Your account is suspended.]]></string>
     <string name="_sys_txt_account_unconfirmed_email"><![CDATA[Your email address is unconfirmed. Please, check your email ({1}) for a confirmation letter and click email confirmation link or use confirmation code (6 digit) to <a href="{2}">confirm your email</a>. Can't find the letter? Check your SPAM folder or <a href="{0}">send the verification letter again</a>.]]></string>
     <string name="_sys_txt_account_unconfirmed_phone"><![CDATA[Your phone is unconfirmed. Please, confirm it on <a href="{0}">verification page</a>.]]></string>
-    <string name="_sys_txt_account_profile_system"><![CDATA[Your account doesn't have a profile yet. Create one to start using the site.]]></string>
+    <string name="_sys_txt_account_profile_system"><![CDATA[You don't have a profile yet.]]></string>
     <string name="_sys_txt_account_profile_system_action"><![CDATA[Create profile]]></string>
     <string name="_sys_txt_account_need_to_change_password"><![CDATA[Your password has been expired. Please <a href="{0}">change your password</a>.]]></string>
     <string name="_sys_txt_account_cannot_delete"><![CDATA[Cannot delete the only Operator account]]></string>
