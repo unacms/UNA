@@ -308,8 +308,8 @@
     <string name="_bx_forum_menu_item_title_entries_new"><![CDATA[New]]></string>
     <string name="_bx_forum_menu_item_title_system_entries_top"><![CDATA[Top]]></string>
     <string name="_bx_forum_menu_item_title_entries_top"><![CDATA[Top]]></string>
-    <string name="_bx_forum_menu_item_title_system_entries_categories"><![CDATA[Сategories]]></string>
-    <string name="_bx_forum_menu_item_title_entries_categories"><![CDATA[Сategories]]></string>
+    <string name="_bx_forum_menu_item_title_system_entries_categories"><![CDATA[Categories]]></string>
+    <string name="_bx_forum_menu_item_title_entries_categories"><![CDATA[Categories]]></string>
     <string name="_bx_forum_menu_item_title_system_entries_search"><![CDATA[Search]]></string>
     <string name="_bx_forum_menu_item_title_entries_search"><![CDATA[Search]]></string>
     <string name="_bx_forum_menu_set_title_view_entry"><![CDATA[Discussion Actions]]></string>

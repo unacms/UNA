@@ -4,7 +4,7 @@
 
     <!-- OPTIONS -->
     <string name="_bx_payment_options_category_general"><![CDATA[General]]></string>
-    <string name="_bx_payment_options_category_currency"><![CDATA[Сurrency]]></string>
+    <string name="_bx_payment_options_category_currency"><![CDATA[Currency]]></string>
     <string name="_bx_payment_options_category_commissions"><![CDATA[Commissions]]></string>
     <string name="_bx_payment_option_default_currency_code"><![CDATA[Currency]]></string>
     <string name="_bx_payment_option_err_default_currency_code"><![CDATA[Currency code cannot be empty.]]></string>
@@ -583,7 +583,7 @@
     <string name="_bx_payment_cbee_test_api_key_cpt"><![CDATA[API Key (test)]]></string>
     <string name="_bx_payment_cbee_test_api_key_dsc"><![CDATA[Your Chargebee API Access key for 'test' mode]]></string>
     <string name="_bx_payment_cbee_check_amount_cpt"><![CDATA[Enable amount checking]]></string>
-    <string name="_bx_payment_cbee_check_amount_dsc"><![CDATA[Enable amount checking for Chargebee Webhooks (recomended). However checking should be disabled when discounts and coupons are used.]]></string>
+    <string name="_bx_payment_cbee_check_amount_dsc"><![CDATA[Enable amount checking for Chargebee Webhooks (recommended). However checking should be disabled when discounts and coupons are used.]]></string>
     <string name="_bx_payment_cbee_ssl_cpt"><![CDATA[Enable SSL]]></string>
     <string name="_bx_payment_cbee_ssl_dsc"><![CDATA[Enable SSL connection to communicate with Chargebee. Note. URLs below will be updated after saving.]]></string>
     <string name="_bx_payment_cbee_cancellation_email_cpt"><![CDATA[Cancellation Email]]></string>
@@ -622,7 +622,7 @@
     <string name="_bx_payment_strp_test_sec_key_cpt"><![CDATA[Secret Key (test)]]></string>
     <string name="_bx_payment_strp_test_sec_key_dsc"><![CDATA[Your Stripe Secret Key for 'test' mode]]></string>
     <string name="_bx_payment_strp_check_amount_cpt"><![CDATA[Enable amount checking]]></string>
-    <string name="_bx_payment_strp_check_amount_dsc"><![CDATA[Enable amount checking for Stripe Webhooks (recomended). However checking should be disabled when discounts and coupons are used.]]></string>
+    <string name="_bx_payment_strp_check_amount_dsc"><![CDATA[Enable amount checking for Stripe Webhooks (recommended). However checking should be disabled when discounts and coupons are used.]]></string>
     <string name="_bx_payment_strp_ssl_cpt"><![CDATA[Enable SSL]]></string>
     <string name="_bx_payment_strp_ssl_dsc"><![CDATA[Enable SSL connection to communicate with Stripe. Note. URLs below will be updated after saving.]]></string>
     <string name="_bx_payment_strp_notify_url_cpt"><![CDATA[Webhooks URL]]></string>

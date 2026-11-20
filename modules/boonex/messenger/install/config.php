@@ -18,7 +18,7 @@ $aConfig = array(
 	'title' => 'Messenger',
 	'note' => 'Messenger, instant messages, chat',
 	'version' => '15.0.2.DEV',
-	'vendor' => 'BoonEx',
+	'vendor' => 'UNA INC',
 	'help_url' => 'http://feed.una.io/?section={module_name}',
 
 	'compatible_with' => array(

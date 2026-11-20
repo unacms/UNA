@@ -232,7 +232,7 @@
     <string name="_bx_classes_grid_column_title_adm_active"><![CDATA[Active]]></string>
     <string name="_bx_classes_grid_column_title_adm_title"><![CDATA[Title]]></string>
     <string name="_bx_classes_grid_action_title_adm_audit_content"><![CDATA[Audit actions]]></string>
-    <string name="_bx_classes_grid_action_title_adm_clear_reports"><![CDATA[Сlear reports]]></string>
+    <string name="_bx_classes_grid_action_title_adm_clear_reports"><![CDATA[Clear reports]]></string>
     <string name="_bx_classes_grid_column_title_adm_added"><![CDATA[Added]]></string>
     <string name="_bx_classes_grid_column_title_adm_author"><![CDATA[Author]]></string>>
     <string name="_bx_classes_grid_action_title_adm_add"><![CDATA[Add]]></string>

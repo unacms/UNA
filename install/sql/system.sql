@@ -1684,7 +1684,6 @@ CREATE TABLE `sys_objects_rss` (
 );
 
 INSERT INTO `sys_objects_rss` (`object`, `class_name`, `class_file`) VALUES
-('sys_boonex', 'BxDolRssBoonEx', ''),
 ('sys_page_block', 'BxDolRssPageBlock', ''),
 ('sys_studio_page_help', 'BxDolStudioRssPageHelp', ''),
 ('sys_studio_module_help', 'BxDolStudioRssModuleHelp', '');

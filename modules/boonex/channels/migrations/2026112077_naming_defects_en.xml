@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Latin letters in place of Cyrillic look-alikes, and typos. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_channels_page_title_sys_entries_of_author"><![CDATA[Channels of author]]></string_upd>
+    <string_upd name="_bx_channels_page_title_entries_of_author"><![CDATA[Channels by {display_name}]]></string_upd>
+    <string_upd name="_bx_channels_page_block_title_sys_entries_of_author"><![CDATA[Followed Channels]]></string_upd>
+    <string_upd name="_bx_channels_page_block_title_entries_of_author"><![CDATA[Followed Channels]]></string_upd>
+</resources>

@@ -62,7 +62,7 @@ class BxCnvFormEntry extends BxBaseModTextFormEntry
          * - $object_id - not used  
          * - $sender_id - account id for current user
          * - $extra_params - array of additional params with the following array keys:
-         *      - `is_spam` - [bool] by ref, сontain spam content or not, can be overridden in hook processing
+         *      - `is_spam` - [bool] by ref, contain spam content or not, can be overridden in hook processing
          *      - `content` - [string] by ref, content, can be overridden in hook processing
          *      - `where` - [string] module name
          * @hook @ref hook-system-check_spam

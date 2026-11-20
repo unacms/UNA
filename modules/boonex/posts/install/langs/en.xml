@@ -298,7 +298,7 @@
     <string name="_bx_posts_grid_action_title_adm_add"><![CDATA[Add]]></string>
     <string name="_bx_posts_grid_action_title_adm_edit"><![CDATA[Edit]]></string>
     <string name="_bx_posts_grid_action_title_adm_delete"><![CDATA[Delete]]></string>
-    <string name="_bx_posts_grid_action_title_adm_clear_reports"><![CDATA[Сlear reports]]></string>
+    <string name="_bx_posts_grid_action_title_adm_clear_reports"><![CDATA[Clear reports]]></string>
     <string name="_bx_posts_grid_action_title_adm_more_actions"><![CDATA[More Actions]]></string>
     <string name="_bx_posts_grid_column_title_adm_status_admin"><![CDATA[Moderation]]></string>
     <string name="_bx_posts_grid_action_err_delete"><![CDATA[Cannot delete the selected post(s).]]></string>

@@ -7,9 +7,9 @@
   <string name="_bx_anon_follow_page_block_title_anon_follow_subscriptions"><![CDATA[Following]]></string>
   <string name="_bx_anon_follow_menu_item_title_system_follow"><![CDATA[Follow anonymously]]></string>
   <string name="_bx_anon_follow_menu_item_title_follow"><![CDATA[Follow anonymously]]></string>
-  <string name="_bx_anon_follow_persons_fields"><![CDATA[Persons filelds]]></string>
-  <string name="_bx_anon_follow_orgs_fields"><![CDATA[Organisations filelds]]></string>
-  <string name="_bx_anon_follow_fields_separator"><![CDATA[Filelds separator]]></string>
+  <string name="_bx_anon_follow_persons_fields"><![CDATA[Persons fields]]></string>
+  <string name="_bx_anon_follow_orgs_fields"><![CDATA[Organizations fields]]></string>
+  <string name="_bx_anon_follow_fields_separator"><![CDATA[Fields separator]]></string>
   
   <string name="_bx_anon_follow_txt_button"><![CDATA[Follow anonimus]]></string>
   <string name="_bx_anon_follow_txt_grid_title_default"><![CDATA[Anonimus ]]></string>
