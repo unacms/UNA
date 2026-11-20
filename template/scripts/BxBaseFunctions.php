@@ -196,6 +196,17 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * A state's icon: the Lucide SVG, or a font icon of the default iconset when Lucide has no such icon.
+     */
+    protected function msgBoxIcon($sIcon)
+    {
+        $oIconset = BxDolIconset::getObjectInstance('sys_lucide', $this->_oTemplate);
+        $sIconHtml = $oIconset ? $oIconset->getIconHtml($sIcon) : false;
+
+        return $sIconHtml !== false ? $sIconHtml : '<i class="sys-icon ' . bx_html_attribute($sIcon) . '"></i>';
+    }
+
+    /**
      * The state version of msgBox: icon, title, text and buttons, centred, as the apps show an empty state.
      */
     protected function msgBoxState($iId, $aState)
@@ -205,14 +216,7 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
             BxDolInformer::hide('sys-account-profile-system');
         }
 
-        $sIconHtml = '';
-        if(!empty($aState['icon']) && is_string($aState['icon'])) {
-            $oIconset = BxDolIconset::getObjectInstance('sys_lucide', $this->_oTemplate);
-            $sIconHtml = $oIconset ? $oIconset->getIconHtml($aState['icon']) : false;
-            if($sIconHtml === false) {
-                $sIconHtml = '<i class="sys-icon ' . bx_html_attribute($aState['icon']) . '"></i>';
-            }
-        }
+        $sIconHtml = !empty($aState['icon']) && is_string($aState['icon']) ? $this->msgBoxIcon($aState['icon']) : '';
 
         $aButtons = [];
         foreach(is_array($aState['buttons'] ?? null) ? $aState['buttons'] : [] as $aButton) {
