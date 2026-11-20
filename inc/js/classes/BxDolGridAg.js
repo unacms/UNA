@@ -965,27 +965,105 @@ BxDolGridAgCell.prototype._actions = function (eGui, aActions, params, oAg) {
             eBtn.title = a.title;
             eBtn.setAttribute('aria-label', a.title);
         }
-        if (a.icon) {
-            var eIcon = document.createElement('i');
-            eIcon.className = 'sys-icon ' + String(a.icon).replace(/[^A-Za-z0-9_ -]/g, '');
-            eBtn.appendChild(eIcon);
-        }
+        if (a.icon)
+            this._actionIcon(eBtn, a.icon);
         if (!parseInt(a.icon_only, 10) && a.title) {
             var eLabel = document.createElement('u');
             eLabel.textContent = a.title;
             eBtn.appendChild(eLabel);
         }
 
-        (function (sName, iConfirm) {
+        // A settings button carries the classic onclick that opens its menu. Calling the action
+        // instead would skip that menu.
+        var oAttr = a.attr && typeof a.attr === 'object' ? a.attr : {};
+        var sOnClick = oAttr.onclick ? String(oAttr.onclick) : '';
+        var aKeep = ['bx_grid_action_single', 'bx_grid_action_data', 'bx_grid_action_confirm', 'bx_grid_action_reset_paginate', 'bx-popup-id'];
+        for (var k = 0; k < aKeep.length; k++) {
+            if (oAttr[aKeep[k]] != null && oAttr[aKeep[k]] !== '')
+                eBtn.setAttribute(aKeep[k], oAttr[aKeep[k]]);
+        }
+        if (!eBtn.getAttribute('bx_grid_action_data') && sId !== '')
+            eBtn.setAttribute('bx_grid_action_data', sId);
+
+        if (sOnClick) {
+            eBtn.setAttribute('onclick', sOnClick);
             eBtn.addEventListener('click', function (ev) {
-                ev.preventDefault();
-                if (oAg._oBx)
-                    oAg._oBx.actionWithId(sId, sName, {}, '', false, iConfirm);
+                ev.stopPropagation();
             });
-        })(a.name, a.confirm ? 1 : 0);
+        } else {
+            (function (sName, iConfirm) {
+                eBtn.addEventListener('click', function (ev) {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    if (oAg._oBx)
+                        oAg._oBx.actionWithId(sId, sName, {}, '', false, iConfirm);
+                });
+            })(a.name, a.confirm ? 1 : 0);
+        }
 
         eGui.appendChild(eBtn);
     }
+};
+
+BxDolGridAgCell.prototype._actionIcon = function (eBtn, sIcon) {
+    var s = String(sIcon || '');
+    if (/<svg[\s>]/i.test(s)) {
+        var eSvg = this._svgNode(s);
+        if (eSvg)
+            eBtn.appendChild(eSvg);
+        return;
+    }
+
+    var sClass = s.replace(/[^A-Za-z0-9_ -]/g, '').replace(/^\s+|\s+$/g, '');
+    if (!sClass)
+        return;
+    var eIcon = document.createElement('i');
+    eIcon.className = 'sys-icon ' + sClass;
+    eBtn.appendChild(eIcon);
+};
+
+BxDolGridAgCell.prototype._svgNode = function (sMarkup) {
+    var eWrap = document.createElement('div');
+    eWrap.innerHTML = String(sMarkup);
+    var eSrc = eWrap.querySelector('svg');
+    if (!eSrc)
+        return null;
+
+    var aAllowed = { svg: 1, path: 1, circle: 1, rect: 1, g: 1, line: 1, polyline: 1, polygon: 1, ellipse: 1, title: 1 };
+    var aAttr = {
+        viewBox: 1, width: 1, height: 1, fill: 1, stroke: 1, 'stroke-width': 1, 'stroke-linecap': 1, 'stroke-linejoin': 1,
+        d: 1, cx: 1, cy: 1, r: 1, x: 1, y: 1, x1: 1, y1: 1, x2: 1, y2: 1, rx: 1, ry: 1, points: 1, transform: 1,
+        xmlns: 1, 'fill-rule': 1, 'clip-rule': 1, opacity: 1
+    };
+    var fCopy = function (eFrom) {
+        var sTag = eFrom.tagName ? eFrom.tagName.toLowerCase() : '';
+        if (!aAllowed[sTag])
+            return null;
+        var e = document.createElementNS('http://www.w3.org/2000/svg', sTag);
+        for (var i = 0; i < eFrom.attributes.length; i++) {
+            var oA = eFrom.attributes[i];
+            if (!aAttr[oA.name])
+                continue;
+            if (/javascript:|url\s*\(/i.test(oA.value))
+                continue;
+            e.setAttribute(oA.name, oA.value);
+        }
+        for (var c = 0; c < eFrom.childNodes.length; c++) {
+            if (eFrom.childNodes[c].nodeType !== 1)
+                continue;
+            var eChild = fCopy(eFrom.childNodes[c]);
+            if (eChild)
+                e.appendChild(eChild);
+        }
+        return e;
+    };
+
+    var eSvg = fCopy(eSrc);
+    if (!eSvg)
+        return null;
+    eSvg.setAttribute('class', 'sys-icon sys-icon-svg');
+    eSvg.setAttribute('aria-hidden', 'true');
+    return eSvg;
 };
 
 BxDolGridAgCell.prototype._secret = function (eGui, cell, params, oAg) {
