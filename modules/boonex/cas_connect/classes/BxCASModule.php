@@ -17,6 +17,14 @@ class BxCASModule extends BxBaseModConnectModule
         parent::__construct($aModule);
     }
 
+    /**
+     * The settings the module needs to sign people in are filled in.
+     */
+    public function isConfigured()
+    {
+        return (bool)(getParam('bx_cas_path_simplesamlphp'));
+    }
+
 	/**
 	 * This service need to be called when we call logout from UNA,
 	 * so it will propagate logout to IDP
@@ -24,7 +32,7 @@ class BxCASModule extends BxBaseModConnectModule
 	 */
 	public function serviceLogout()
 	{
-		if (!getParam('bx_cas_path_simplesamlphp'))
+		if (!$this->isConfigured())
 			return;
 		if (!isLogged())
 			return;
@@ -49,7 +57,7 @@ class BxCASModule extends BxBaseModConnectModule
         if (isLogged())
             $this->_redirect ($this -> _oConfig -> sDefaultRedirectUrl);
 
-        if (!getParam('bx_cas_path_simplesamlphp')) {
+        if (!$this->isConfigured()) {
             require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
             bx_import('BxDolLanguages');
             $sCode =  MsgBox( _t('_bx_cas_profile_error_config') );

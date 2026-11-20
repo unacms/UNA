@@ -11,6 +11,8 @@
 
 class BxReviewsGridVotingOptions extends BxTemplGrid
 {
+    protected $MODULE;
+
     public function __construct ($aOptions, $oTemplate = false)
     {
     	$this->MODULE = 'bx_reviews';

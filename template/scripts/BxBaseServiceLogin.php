@@ -68,6 +68,9 @@ class BxBaseServiceLogin extends BxDol
         // colours are in its logo, as the providers' sign-in guidelines ask.
         $aTmplButtons = array();
         foreach($aAuthTypes as $iKey => $aItems) {
+            if(!$this->_isAuthShown($aItems))
+                continue;
+
             $sIcon = !empty($aItems['Icon']) ? $aItems['Icon'] : '';
             $sSvg = $this->_getAuthBrandIcon($sIcon);
 
@@ -108,6 +111,22 @@ class BxBaseServiceLogin extends BxDol
             ),
             'bx_repeat:buttons' => $aTmplButtons,
         ));
+    }
+
+    /**
+     * A sign-in method added by a connect module is shown once that module is configured: before that its button
+     * leads to a "Please configure the module" message.
+     */
+    protected function _isAuthShown($aAuth)
+    {
+        if(empty($aAuth['Name']) || !BxDolModuleQuery::getInstance()->isEnabledByName($aAuth['Name']))
+            return true;
+
+        $oModule = BxDolModule::getInstance($aAuth['Name']);
+        if(!$oModule || !method_exists($oModule, 'isAuthButtonShown'))
+            return true;
+
+        return (bool)$oModule->isAuthButtonShown();
     }
 
     /**

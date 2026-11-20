@@ -53,6 +53,14 @@ class BxFaceBookConnectModule extends BxBaseModConnectModule
         }
     }
 
+    /**
+     * The settings the module needs to sign people in are filled in.
+     */
+    public function isConfigured()
+    {
+        return (bool)($this->_oConfig->mApiID && $this->_oConfig->mApiSecret);
+    }
+
 
     /**
      * Facebook login callback url;
@@ -69,7 +77,7 @@ class BxFaceBookConnectModule extends BxBaseModConnectModule
         require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
         bx_import('BxDolLanguages');
 
-        if (!$this -> _oConfig -> mApiID || !$this -> _oConfig -> mApiSecret)
+        if (!$this->isConfigured())
             $this->_setLastError(_t('_bx_facebook_profile_error_api_keys'));
 
         if ($sError = $this->_setAccessToken())
@@ -137,7 +145,7 @@ class BxFaceBookConnectModule extends BxBaseModConnectModule
             exit;
         }
 
-        if (!$this -> _oConfig -> mApiID || !$this -> _oConfig -> mApiSecret) {
+        if (!$this->isConfigured()) {
             require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
             bx_import('BxDolLanguages');
             $this->_setLastError(_t('_bx_facebook_profile_error_api_keys'));

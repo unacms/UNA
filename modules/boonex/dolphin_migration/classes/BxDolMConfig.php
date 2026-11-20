@@ -34,6 +34,8 @@ class BxDolMConfig extends BxBaseModGeneralConfig
      */
     public $_bTransferEmpty = true;
 
+    public $_bMediaModulesContent = false;
+
     /**
      * @var bool allows to use members NickName instead of FullName
      */

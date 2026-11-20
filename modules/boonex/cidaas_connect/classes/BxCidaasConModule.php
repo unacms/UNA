@@ -25,6 +25,14 @@ class BxCidaasConModule extends BxBaseModConnectModule
         parent::__construct($aModule);
     }
 
+    /**
+     * The settings the module needs to sign people in are filled in.
+     */
+    public function isConfigured()
+    {
+        return (bool)($this->_oConfig->sBaseUrl && $this->_oConfig->sClientID && ($this->_oConfig->bPkce || $this->_oConfig->sSecret));
+    }
+
 	public function actionLogout()
 	{
 		if (!isLogged())
@@ -103,7 +111,7 @@ class BxCidaasConModule extends BxBaseModConnectModule
             $this->_redirect($this->_oConfig->sDefaultRedirectUrl);
         }
 
-        if (!$this->_oConfig->sBaseUrl || !$this->_oConfig->sClientID || (!$this->_oConfig->bPkce && !$this->_oConfig->sSecret)) {
+        if (!$this->isConfigured()) {
             require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
             bx_import('BxDolLanguages');
             $sCode = MsgBox(_t('_bx_cidaascon_profile_error_api_keys'));
